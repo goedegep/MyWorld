@@ -1,0 +1,53 @@
+h2. ToDo list - Refactoring
+
+* In all editors: when a control looses focus, the value shall be formatted.
+* InvoiceAndPropertiesEditor: enable update button only if there are changes. 
+* Cleanup Database/MijnWereld/Finan (first solve configuration files)
+* Check javadoc generation files under toplevelpom
+* Make filtering work in invoices table and properties table
+* The Vacations app and GpsPrune should share an OSM cache
+
+Top Down
+
+* Remove all Swing code
+Top down
+* Make goedegep.util ready for publishing on GitHub
+** one
+* Add EClass descriptors to EObjectTable
+* Use EClass descriptors in VacationsWindow
+* Extend Vacations with VacationElement etc.
+* Change all component menus into JavaFxStage
+* In all component menu's, implement Edit user settings (where applicable).
+* Find a picture as background for 'Finan hoofdmenu'.
+* If a setting is missing, propose to open the relevant editor. In this editor focus on correct setting.
+It must be possible to search the property which sets the registry value.
+* As far as relevant change all JComboBox-es with LookAheadComboBox or LookAheadComboBoxWithSpinner.
+
+h2. ToDo list - Functional improvements (include adding vacation information)
+
+* Vacations
+In search window, add possibility to update location polygon (other attributes can be copy/pasted).
+* Vacations
+Perform check step by step (from GUI), so problems can directly be reported in output window.
+* Improve getting location info from OSM
+** Search restricted to visible map - checkbox
+** Search on POI category? (only allowed with previous)
+* EObjectTable drop 'between' items in a list (add special nodes to the tree for this)
+* MapRelatedItemsLayer
+Only when zoomed in mouse events on icons work
+
+* Appearance
+** AppResources
+No module specific classes, but image specifications in configuration files.
+
+h2. Vacations ideas
+* Vacations check
+** Every folder under database/Vacations should be coupled to a vacation (not every vacation shall have a folder)
+** Every vacation is expected to have a photos folder set.
+Add an ignore message system (could be a hidden part of the Vacations data model).
+** Every folder under Pictures/Vacation is expected to be coupled to a vacation.
+* at top level there could be an option to have other groups than vacations. There could be a fixed set, which can be enabled via settings.
+
+h2. credits
+* Lake icon by Icons made by <a href="https://www.flaticon.com/authors/freepik" title="Freepik">Freepik</a> from <a href="https://www.flaticon.com/" title="Flaticon"> www.flaticon.com</a>
+* Canyon icon by Icons made by <a href="https://www.flaticon.com/authors/vitaly-gorbachev" title="Vitaly Gorbachev">Vitaly Gorbachev</a> from <a href="https://www.flaticon.com/" title="Flaticon"> www.flaticon.com</a>
