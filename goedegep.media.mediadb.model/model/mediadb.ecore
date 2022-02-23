@@ -1,0 +1,248 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ecore:EPackage xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" name="model" nsURI="http://goedegep.media/mediadb/model" nsPrefix="mediadb">
+  <eClassifiers xsi:type="ecore:EClass" name="Track">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="title" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
+        unsettable="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="duration" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EIntegerObject"
+        unsettable="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="players" upperBound="-1"
+        eType="#//Player" unsettable="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="artist" eType="#//Artist"
+        unsettable="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="parts" upperBound="-1"
+        eType="#//TrackPart" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="authors" upperBound="-1"
+        eType="#//Artist" unsettable="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="referredBy" upperBound="-1"
+        eType="#//TrackReference"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="originalDisc" eType="#//Disc"
+        unsettable="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="MediaDb">
+    <eOperations name="getArtist" eType="#//Artist">
+      <eParameters name="artistName" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    </eOperations>
+    <eOperations name="getAlbum" eType="#//Album">
+      <eParameters name="releaseDate" eType="ecore:EDataType ../../goedegep.types.model/model/types.ecore#//EFlexDate"/>
+      <eParameters name="artist" eType="#//Artist"/>
+      <eParameters name="title" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    </eOperations>
+    <eOperations name="getAlbums" ordered="false" upperBound="-1" eType="#//Album">
+      <eParameters name="releaseDate" eType="ecore:EDataType ../../goedegep.types.model/model/types.ecore#//EFlexDate"/>
+      <eParameters name="artist" eType="#//Artist"/>
+      <eParameters name="title" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    </eOperations>
+    <eOperations name="getTrackCollection" eType="#//TrackCollection">
+      <eParameters name="collection" eType="#//Collection"/>
+    </eOperations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="artists" upperBound="-1"
+        eType="#//Artist" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="albums" upperBound="-1"
+        eType="#//Album" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="tracks" upperBound="-1"
+        eType="#//Track" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="trackcollections" upperBound="-1"
+        eType="#//TrackCollection" containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Artist">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
+        unsettable="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="containerArtist" eType="#//Artist"
+        unsettable="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Some artists have albums under various names, which can best be grouped. For example &quot;Bob Marley&quot; and &quot;Bob Marley The Wailers&quot;. In this case &quot;Bob Marley&quot; is the 'containerArtist' of &quot;Bob Marley The Wailers&quot;."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Album">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="Bijvoorbeeld een LP of CD."/>
+    </eAnnotations>
+    <eOperations name="getTrackReference" eType="#//TrackReference">
+      <eParameters name="discNr" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EIntegerObject"/>
+      <eParameters name="trackNr" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+    </eOperations>
+    <eOperations name="getPlayer" eType="#//Player">
+      <eParameters name="artist" eType="#//Artist"/>
+    </eOperations>
+    <eOperations name="getArtistAndTitle" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Get Artist and Title of the album.&#xD;&#xA;&lt;p>&#xD;&#xA;The information is provided in the format: &amp;lt;artist&amp;gt; - &amp;lt;title&amp;gt;&lt;br/>&#xD;&#xA;where:&lt;br/>&#xD;&#xA; &amp;lt;artist&amp;gt; is the name of the artist of the album, or '&amp;lt;no artist&amp;gt;' if this information isn't available.&lt;br/>.&#xD;&#xA; &amp;lt;title&amp;gt; is the title of the album,  '&amp;lt;no title&amp;gt;' if title isn't set."/>
+      </eAnnotations>
+    </eOperations>
+    <eOperations name="isMultiDiscAlbum" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Check whether the album is a multi disc album, i.e. the album consists of more than one disc.&lt;br/>&#xD;&#xA;The result of this method is the same as: album.getDiscs().size() > 1&#xD;&#xA;@return true if the album is a multi disc album, false otherwise."/>
+      </eAnnotations>
+    </eOperations>
+    <eOperations name="getDisc" eType="#//Disc">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Get the Disc of a single disc album. A RuntimeException is thrown if the album is a multi disc album.&#xD;&#xA;@return the disc of the album, or null if the album has no disc."/>
+      </eAnnotations>
+    </eOperations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="title" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
+        unsettable="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="releaseDate" eType="ecore:EDataType ../../goedegep.types.model/model/types.ecore#//EFlexDate"
+        unsettable="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="discs" upperBound="-1"
+        eType="#//Disc" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="artist" eType="#//Artist"
+        unsettable="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="imagesFront" upperBound="-1"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString" unsettable="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="id" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
+        unsettable="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="players" upperBound="-1"
+        eType="#//Player" unsettable="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="imagesFrontInside" upperBound="-1"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString" unsettable="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="imagesBack" upperBound="-1"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString" unsettable="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="imagesLabel" upperBound="-1"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString" unsettable="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="descriptionTitle" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
+        unsettable="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="description" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
+        unsettable="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="issuedOnMediums" upperBound="-1"
+        eType="#//MediumType" unsettable="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="compilation" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"
+        defaultValueLiteral="false"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="myInfo" eType="#//MyInfo"
+        unsettable="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="soundtrack" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="MyCompilation" eSuperTypes="#//Album">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="To distinguish my own compilations from regular albums this class exists which extends Album."/>
+    </eAnnotations>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="TrackReference">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="This used for (my) compilation albums."/>
+    </eAnnotations>
+    <eOperations name="getTrackNr" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+    <eOperations name="getDisc" eType="#//Disc"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="track" lowerBound="1" eType="#//Track"
+        unsettable="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="bonusTrack" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
+        unsettable="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="myTrackInfo" eType="#//MyTrackInfo"
+        unsettable="true" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="originalAlbumTrackReference"
+        eType="#//TrackReference" unsettable="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Disc">
+    <eOperations name="getAlbum" eType="#//Album"/>
+    <eOperations name="getDiscNr" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="title" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
+        unsettable="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="trackReferences" lowerBound="1"
+        upperBound="-1" eType="#//TrackReference" containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EEnum" name="MediumType">
+    <eLiterals name="NOT_SET" value="-1" literal="&lt;not-set>"/>
+    <eLiterals name="CD_AUDIO" value="1" literal="CD"/>
+    <eLiterals name="CDR_AUDIO" value="2"/>
+    <eLiterals name="CDRW_AUDIO" value="3"/>
+    <eLiterals name="LP" value="4" literal="lp"/>
+    <eLiterals name="SINGLE" value="5" literal="single"/>
+    <eLiterals name="SACD" value="6"/>
+    <eLiterals name="DVD_VIDEO" value="7" literal="DVD"/>
+    <eLiterals name="CD_ROM" value="8" literal="CD ROM"/>
+    <eLiterals name="DVD_ROM" value="9" literal="DVD ROM"/>
+    <eLiterals name="HARDDISK" value="10" literal="HARDDISK"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="MediumInfo">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="mediumType" eType="#//MediumType"
+        defaultValueLiteral="&lt;not-set>" unsettable="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="informationType" eType="#//InformationType"
+        unsettable="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="sourceTypes" upperBound="-1"
+        eType="#//InformationType" unsettable="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="sourceBitRate" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"
+        unsettable="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="MyInfo">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="albumReferences" upperBound="-1"
+        eType="#//Album" unsettable="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="myComments" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
+        unsettable="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="inlayDocument" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
+        unsettable="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="iveHadOnLP" lowerBound="1"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="iWant" eType="#//IWant"
+        defaultValueLiteral="&lt;not-set>" unsettable="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="This attribute is only used if there is no disc/track information present. If disc/track information is present the attribute shall be unset."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="iHaveOn" upperBound="-1"
+        eType="#//MediumInfo" containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EEnum" name="IWant">
+    <eLiterals name="YES" literal="Yes"/>
+    <eLiterals name="NO" literal="No"/>
+    <eLiterals name="DONT_KNOW" literal="Don't know"/>
+    <eLiterals name="NOT_SET" value="-1" literal="&lt;not-set>"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EEnum" name="InformationType">
+    <eLiterals name="NOT_SET" value="-1" literal="&lt;not-set>"/>
+    <eLiterals name="MP3" value="1"/>
+    <eLiterals name="VINYL_ANALOG" value="2"/>
+    <eLiterals name="M2TS" value="4"/>
+    <eLiterals name="FLAC" value="5"/>
+    <eLiterals name="WAV" value="6"/>
+    <eLiterals name="APE" value="7"/>
+    <eLiterals name="AIFF" value="8"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Player">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="artist" eType="#//Artist"
+        unsettable="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="instruments" upperBound="-1"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="TrackPart">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="title" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
+        unsettable="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EEnum" name="Collection">
+    <eLiterals name="EASY_LISTENING" literal="Easy Listening"/>
+    <eLiterals name="FILM_BACKING_TRACKS" value="1" literal="Film Backing Tracks"/>
+    <eLiterals name="FRANSTALIG" value="2" literal="Franstalig"/>
+    <eLiterals name="KLASSIEK" value="3" literal="Klassiek"/>
+    <eLiterals name="NEDERLANDSTALIG" value="4" literal="Nederlandstalig"/>
+    <eLiterals name="POP" value="5" literal="Pop"/>
+    <eLiterals name="ROCK" value="6" literal="Rock"/>
+    <eLiterals name="NOT_SET" value="-1" literal="&lt;not-set>"/>
+    <eLiterals name="PUNK" value="8" literal="Punk"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="MyTrackInfo">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="iWant and iHaveOn are related as follows:&#xD;&#xA;if iWant is set, iHaveOn shall not be set.&#xD;&#xA;If iHaveOn is set, iWant shall not be set."/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="collection" eType="#//Collection"
+        defaultValueLiteral="&lt;not-set>" unsettable="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="iHaveOn" upperBound="-1"
+        eType="#//MediumInfo" unsettable="true" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="iWant" eType="#//IWant"
+        defaultValueLiteral="&lt;not-set>" unsettable="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="compilationTrackReference"
+        eType="#//TrackReference" unsettable="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="DiscAndTrackNrs">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="discNr" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"
+        unsettable="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="trackNrs" lowerBound="1"
+        upperBound="-1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"
+        unsettable="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="TrackCollection">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="collection" eType="#//Collection"
+        defaultValueLiteral="&lt;not-set>" unsettable="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="trackReferences" upperBound="-1"
+        eType="#//TrackReference" containment="true"/>
+  </eClassifiers>
+</ecore:EPackage>
