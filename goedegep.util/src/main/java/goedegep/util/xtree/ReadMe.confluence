@@ -1,0 +1,7 @@
+h3. changeTreeType(XTreeType newTreeType)
+For now I don't have it, as it doesn't fit with OO.
+Instead of changeTreeType you make a copy with a new type, e.g.:
+AsciiSerializedXtree aTree;
+DefaultMutableXTree dTree = new DefaultMutableXTree(aTree)
+
+This may change if I introduce hybrid tree (e.g. a mutable tree with part in binary).
