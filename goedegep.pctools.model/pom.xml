@@ -1,0 +1,28 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>goedegep.pctools</groupId>
+  <artifactId>goedegep-pctools-model</artifactId>
+  <packaging>jar</packaging>
+  <name>PC Tools data models</name>
+  <description>This project contains PC tools related data models.</description>
+  <parent>
+    <groupId>goedegep.toplevelpom</groupId>
+    <artifactId>goedegep-toplevelpom</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <relativePath>../goedegep.toplevelpom</relativePath>
+  </parent>
+  <dependencies>
+    <dependency>
+     <groupId>org.eclipse.emf</groupId>
+	  <artifactId>org.eclipse.emf.common</artifactId>
+    </dependency>
+    <dependency>
+     <groupId>org.eclipse.emf</groupId>
+	  <artifactId>org.eclipse.emf.ecore</artifactId>
+    </dependency>
+    <dependency>
+     <groupId>org.eclipse.emf</groupId>
+	  <artifactId>org.eclipse.emf.ecore.xmi</artifactId>
+    </dependency>
+  </dependencies>
+</project>
