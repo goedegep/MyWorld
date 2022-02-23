@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ecore:EPackage xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" name="model" nsURI="http://www.goedegep.org/vacationchecklist" nsPrefix="VacationChecklist">
+  <eClassifiers xsi:type="ecore:EClass" name="VacationChecklist">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="vacationChecklistLabelsList"
+        lowerBound="1" eType="#//VacationChecklistLabelsList" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="vacationChecklistCategoriesList"
+        lowerBound="1" eType="#//VacationChecklistCategoriesList" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="currentVacation" lowerBound="1"
+        eType="#//CurrentVacation" containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="VacationChecklistItem">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
+        unsettable="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="vacationChecklistLabels"
+        upperBound="-1" eType="#//VacationChecklistLabel"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="VacationChecklistLabelsList">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="vacationChecklistLabels"
+        upperBound="-1" eType="#//VacationChecklistLabel" containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="VacationChecklistLabel">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
+        unsettable="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="VacationChecklistCategory">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
+        unsettable="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="vacationChecklistItems"
+        upperBound="-1" eType="#//VacationChecklistItem" containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="VacationChecklistCategoriesList">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="vacationChecklistCategories"
+        upperBound="-1" eType="#//VacationChecklistCategory" containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="CurrentVacation">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="selectedLabels" upperBound="-1"
+        eType="#//VacationChecklistLabel"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="itemStatuses" upperBound="-1"
+        eType="#//ItemStatus" containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EEnum" name="PackStatus">
+    <eLiterals name="TODO"/>
+    <eLiterals name="PACKED" value="1"/>
+    <eLiterals name="NOT_NEEDED" value="2"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="ItemStatus">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="vacationChecklistItem"
+        eType="#//VacationChecklistItem" unsettable="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="packStatus" eType="#//PackStatus"
+        unsettable="true"/>
+  </eClassifiers>
+</ecore:EPackage>
