@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<goedegep:Rolodex xmi:version="2.0"
+    xmlns:xmi="http://www.omg.org/XMI" xmlns:goedegep="http://goedegep.rolodex/model">
+  <countryList>
+    <countries countryName="Nederland"/>
+    <countries countryName="Duitsland"/>
+  </countryList>
+  <cityList>
+    <cities country="#//@countryList/@countries.0" cityName="Eindhoven"/>
+    <cities country="#//@countryList/@countries.0" cityName="Best"/>
+    <cities country="#//@countryList/@countries.1" cityName="Essen"/>
+    <cities country="#//@countryList/@countries.0" cityName="Middelburg"/>
+    <cities country="#//@countryList/@countries.0" cityName="Oost-Souburg"/>
+  </cityList>
+  <addressList>
+    <addresses streetName="De Regge" houseNumber="24" city="#//@cityList/@cities.0"
+        postalCode="5626 GZ" id="_Ds-pUEoiEeKPSYxGsj9hPA"/>
+    <addresses streetName="Luchthavenweg" houseNumber="48" city="#//@cityList/@cities.0"
+        postalCode="5657 EB"/>
+    <addresses streetName="Prins Hendrikstraat" houseNumber="17" city="#//@cityList/@cities.4"
+        postalCode="4388 KL"/>
+    <addresses streetName="Schubertstrasse" houseNumber="25" houseNumberExtension="A"
+        city="#//@cityList/@cities.2" postalCode="45128"/>
+    <addresses streetName="Maasstraat" houseNumber="6" city="#//@cityList/@cities.3"
+        postalCode="4335 KT"/>
+    <addresses city="#//@cityList/@cities.1" pOBox="230"/>
+    <addresses streetName="Pietersbergweg" houseNumber="29" city="#//@cityList/@cities.0"/>
+  </addressList>
+  <phoneNumberList>
+    <phoneNumbers phoneNumber="040-2621982" description="Vaste telefoon thuis" numberHolders="#//@familyList/@families.0"/>
+    <phoneNumbers phoneNumber="06-44484517" description="Mobieltje Peter" connectionType="Mobiel"
+        numberHolders="#_ZsnCAEolEeKdWpwP0iE9bQ"/>
+    <phoneNumbers phoneNumber="040-2528883" numberHolders="#//@institutionList/@institutions.1 #//@institutionList/@institutions.2"/>
+  </phoneNumberList>
+  <institutionList>
+    <institutions name="TomTom" address="#//@addressList/@addresses.1"/>
+    <institutions phoneNumbers="#//@phoneNumberList/@phoneNumbers.2" name="O.B. de Bergen"
+        address="#//@addressList/@addresses.2"/>
+    <institutions phoneNumbers="#//@phoneNumberList/@phoneNumbers.2" name="Driessen Citroën"
+        address="#//@addressList/@addresses.1"/>
+  </institutionList>
+  <employeeList/>
+  <personList>
+    <persons phoneNumbers="#//@phoneNumberList/@phoneNumbers.1" firstname="Peter"
+        surname="Goedegebure" initials="P."
+        address="#_Ds-pUEoiEeKPSYxGsj9hPA" id="_ZsnCAEolEeKdWpwP0iE9bQ"/>
+  </personList>
+  <familyList>
+    <families phoneNumbers="#//@phoneNumberList/@phoneNumbers.0" familyTitle="familie"
+        familyName="P. Goedegebure" address="#_Ds-pUEoiEeKPSYxGsj9hPA" members="#_ZsnCAEolEeKdWpwP0iE9bQ"/>
+  </familyList>
+  <phoneList>
+    <phones description="Mobieltje Peter" phoneType="Siemens M35">
+      <phoneAddressBook/>
+    </phones>
+    <phones description="Vaste telefoon thuis" phoneType="Siemens Gigaset A245">
+      <phoneAddressBook/>
+    </phones>
+  </phoneList>
+</goedegep:Rolodex>
