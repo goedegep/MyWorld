@@ -1,0 +1,48 @@
+module goedegep.vacations.app {
+  exports goedegep.vacations.app;
+  exports goedegep.vacations.app.logic;
+  exports goedegep.gluonmaps.gpx;
+  exports goedegep.vacations.app.guifx;
+
+  requires atlis.location.base;
+  requires transitive com.atlis.location.nominatim;
+  requires transitive com.gluonhq.maps;
+  requires com.google.common.geometry;
+  requires de.micromata.opengis.kml.v220;
+  requires goedegep.appgen;
+  requires transitive goedegep.appgenfx;
+  requires transitive goedegep.geo;
+  requires transitive goedegep.model.properties;
+  requires transitive goedegep.types.model;
+  requires transitive goedegep.model.vacations;
+  requires goedegep.ov2;
+  requires transitive goedegep.poi.app;
+  requires transitive goedegep.poi.model;
+  requires goedegep.properties.app;
+  requires goedegep.util;
+  requires java.desktop;
+  requires java.logging;
+  requires java.xml;
+  requires javafx.base;
+  requires javafx.controls;
+  requires transitive javafx.graphics;
+  requires javafx.swing;
+  requires javafx.web;
+  requires jimfs;
+  requires openhtmltopdf.core;
+  requires openhtmltopdf.pdfbox;
+  requires org.apache.commons.imaging;
+  requires org.apache.commons.io;
+  requires org.apache.commons.lang3;
+  requires org.commonmark;
+  requires org.eclipse.emf.common;
+  requires org.eclipse.emf.ecore;
+  requires pdfbox;
+  requires spatial4j;
+  requires com.google.gson;
+  requires transitive goedegep.gpx;
+  requires javafx.media;
+  requires jdk.jsobject;
+  requires transitive goedegep.vacations.checklist.model;
+requires goedegep.gpx.model;
+}
