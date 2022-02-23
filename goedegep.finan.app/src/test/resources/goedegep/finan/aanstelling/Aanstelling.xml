@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<Aanstelling xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="Aanstelling.xsd">
+  <DatumInDienstTreding>01-10-1983</DatumInDienstTreding>
+  <BeginSalaris>f30000,00</BeginSalaris>
+  <Events>
+    <Event><Aanzegging><Datum>01-01-1985</Datum><NieuwSalaris>f40000,00</NieuwSalaris></Aanzegging></Event>
+    <Event><CollectieveVerhoging><Datum>01-05-1985</Datum><Percentage>2,50</Percentage></CollectieveVerhoging></Event>
+    <Event><Aanzegging><Datum>01-01-1986</Datum><NieuwSalaris>f49000,00</NieuwSalaris></Aanzegging></Event>
+    <Event><CollectieveVerhoging><Datum>01-07-1986</Datum><Percentage>1,00</Percentage></CollectieveVerhoging></Event>
+    <Event><Aanzegging><Datum>01-01-1987</Datum><NieuwSalaris>f55000,00</NieuwSalaris></Aanzegging></Event>
+    <Event><CollectieveVerhoging><Datum>01-01-1998</Datum><Commentaar>omzetting 3% december uitkering in vast salaris</Commentaar><Percentage>3,00</Percentage></CollectieveVerhoging></Event>
+    <Event><PartTimePercentage><Datum>01-09-1999</Datum><Percentage>80</Percentage></PartTimePercentage></Event>
+    <Event><Aanzegging><Datum>01-01-2000</Datum><NieuwSalaris>f115649,00</NieuwSalaris></Aanzegging></Event>
+    <Event><CollectieveVerhoging><Datum>01-07-2000</Datum><Percentage>3,75</Percentage></CollectieveVerhoging></Event>
+    <Event><CollectieveVerhoging><Datum>01-01-2001</Datum><Commentaar>verhoging i.v.m. afschaffing overhevelingstoeslag</Commentaar><Bedrag>f1499,90</Bedrag></CollectieveVerhoging></Event>
+  </Events>
+</Aanstelling>

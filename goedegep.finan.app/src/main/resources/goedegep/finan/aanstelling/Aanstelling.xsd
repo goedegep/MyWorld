@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSpy v2006 sp2 U (http://www.altova.com) by Peter Goedegebure (None) -->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:element name="Aanstelling">
+		<xs:annotation>
+			<xs:documentation>Comment describing your root element</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="DatumInDienstTreding" type="xs:string"/>
+				<xs:element name="BeginSalaris" type="xs:string"/>
+				<xs:element name="Events">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="Event" maxOccurs="unbounded"/>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:complexType name="Event">
+		<xs:sequence>
+			<xs:element name="Datum" type="xs:string"/>
+			<xs:element name="Commentaar" type="xs:string" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="Aanzegging">
+		<xs:complexContent>
+			<xs:extension base="Event">
+				<xs:sequence>
+					<xs:element name="NieuwSalaris" type="xs:string"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="CollectieveVerhoging">
+		<xs:complexContent>
+			<xs:extension base="Event">
+				<xs:sequence>
+					<xs:element name="Percentage" type="xs:string" minOccurs="0"/>
+					<xs:element name="Bedrag" type="xs:string" minOccurs="0"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="PartTimePercentage">
+		<xs:complexContent>
+			<xs:extension base="Event">
+				<xs:sequence>
+					<xs:element name="Percentage" type="xs:unsignedInt"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+</xs:schema>

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<ClaimEmissions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="ClaimEmissions.xsd">
+  <ClaimEmission>
+    <ShareName>AHOLD KON EUR0.25</ShareName><ClaimId>10-12-2003</ClaimId>
+    <FromAmount>3</FromAmount><ToAmount>2</ToAmount>
+    <PricePerShare>e4,83</PricePerShare><RightRate>e0,63</RightRate>
+  </ClaimEmission>
+</ClaimEmissions>

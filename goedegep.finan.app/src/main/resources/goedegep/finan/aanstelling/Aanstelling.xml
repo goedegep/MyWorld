@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<Aanstelling xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="Aanstelling.xsd">
+  <DatumInDienstTreding>1-10-1984</DatumInDienstTreding>
+  <BeginSalaris>f39800,00</BeginSalaris>
+  <Events>
+    <Event><Aanzegging><Datum>1-1-1985</Datum><NieuwSalaris>f 40500,00</NieuwSalaris></Aanzegging></Event>
+    <Event><CollectieveVerhoging><Datum>1-5-1985</Datum><Percentage>1</Percentage></CollectieveVerhoging></Event>
+    <Event><Aanzegging><Datum>1-1-1986</Datum><NieuwSalaris>f 43300,00</NieuwSalaris></Aanzegging></Event>
+    <Event><CollectieveVerhoging><Datum>1-7-1986</Datum><Percentage>1</Percentage></CollectieveVerhoging></Event>
+    <Event><Aanzegging><Datum>1-1-1987</Datum><NieuwSalaris>f 46000,00</NieuwSalaris></Aanzegging></Event>
+    <Event><CollectieveVerhoging><Datum>1-1-1987</Datum><Percentage>0,5</Percentage></CollectieveVerhoging></Event>
+    <Event><CollectieveVerhoging><Datum>1-7-1987</Datum><Percentage>0,75</Percentage></CollectieveVerhoging></Event>
+    <Event><Aanzegging><Datum>1-1-1988</Datum><NieuwSalaris>f 49100,00</NieuwSalaris></Aanzegging></Event>
+    <Event><CollectieveVerhoging><Datum>1-1-1988</Datum><Percentage>0,75</Percentage></CollectieveVerhoging></Event>
+    <Event><Aanzegging><Datum>1-1-1989</Datum><NieuwSalaris>f 51969,00</NieuwSalaris></Aanzegging></Event>
+    <Event><CollectieveVerhoging><Datum>1-1-1989</Datum><Percentage>0,5</Percentage></CollectieveVerhoging></Event>
+    <Event><CollectieveVerhoging><Datum>1-10-1989</Datum><Percentage>0,5</Percentage></CollectieveVerhoging></Event>
+    <Event><Aanzegging><Datum>1-1-1990</Datum><NieuwSalaris>f 54691,00</NieuwSalaris></Aanzegging></Event>
+    <Event><CollectieveVerhoging><Datum>1-7-1990</Datum><Percentage>3</Percentage></CollectieveVerhoging></Event>
+    <Event><Aanzegging><Datum>1-1-1991</Datum><NieuwSalaris>f 58832,00</NieuwSalaris></Aanzegging></Event>
+    <Event><CollectieveVerhoging><Datum>1-1-1991</Datum><Percentage>0,75</Percentage></CollectieveVerhoging></Event>
+    <Event><CollectieveVerhoging><Datum>1-7-1991</Datum><Percentage>2,5</Percentage></CollectieveVerhoging></Event>
+    <Event><Aanzegging><Datum>1-1-1992</Datum><NieuwSalaris>f 63256,00</NieuwSalaris></Aanzegging></Event>
+    <Event><CollectieveVerhoging><Datum>1-1-1992</Datum><Percentage>0,5</Percentage></CollectieveVerhoging></Event>
+    <Event><CollectieveVerhoging><Datum>1-7-1992</Datum><Percentage>2,5</Percentage></CollectieveVerhoging></Event>
+    <Event><Aanzegging><Datum>1-1-1993</Datum><NieuwSalaris>f 67263,00</NieuwSalaris></Aanzegging></Event>
+    <Event><CollectieveVerhoging><Datum>1-4-1993</Datum><Percentage>2</Percentage></CollectieveVerhoging></Event>
+    <Event><CollectieveVerhoging><Datum>1-10-1993</Datum><Percentage>1,5</Percentage></CollectieveVerhoging></Event>
+    <Event><Aanzegging><Datum>1-1-1994</Datum><NieuwSalaris>f 72139,00</NieuwSalaris></Aanzegging></Event>
+    <Event><CollectieveVerhoging><Datum>1-1-1994</Datum><Percentage>1</Percentage></CollectieveVerhoging></Event>
+    <Event><CollectieveVerhoging><Datum>1-1-1995</Datum><Percentage>0,5</Percentage></CollectieveVerhoging></Event>
+    <Event><Aanzegging><Datum>1-4-1995</Datum><NieuwSalaris>f 75726,00</NieuwSalaris></Aanzegging></Event>
+    <Event><CollectieveVerhoging><Datum>1-7-1995</Datum><Percentage>0,5</Percentage></CollectieveVerhoging></Event>
+    <Event><CollectieveVerhoging><Datum>1-1-1996</Datum><Percentage>0,75</Percentage></CollectieveVerhoging></Event>
+    <Event><Aanzegging><Datum>1-4-1996</Datum><NieuwSalaris>f 80176,00</NieuwSalaris></Aanzegging></Event>
+    <Event><CollectieveVerhoging><Datum>1-7-1996</Datum><Percentage>2,5</Percentage></CollectieveVerhoging></Event>
+    <Event><CollectieveVerhoging><Datum>1-1-1997</Datum><Percentage>0,5</Percentage></CollectieveVerhoging></Event>
+    <Event><Aanzegging><Datum>1-4-1997</Datum><NieuwSalaris>f 85592,00</NieuwSalaris></Aanzegging></Event>
+    <Event><CollectieveVerhoging><Datum>1-7-1997</Datum><Percentage>2,5</Percentage></CollectieveVerhoging></Event>
+    <Event><CollectieveVerhoging><Datum>1-1-1998</Datum><Commentaar>omzetting 3% december uitkering in vast salaris</Commentaar><Percentage>3</Percentage></CollectieveVerhoging></Event>
+    <Event><CollectieveVerhoging><Datum>1-1-1998</Datum><Percentage>0,5</Percentage></CollectieveVerhoging></Event>
+    <Event><Aanzegging><Datum>1-4-1998</Datum><NieuwSalaris>f 99816,00</NieuwSalaris></Aanzegging></Event>
+    <Event><CollectieveVerhoging><Datum>1-7-1998</Datum><Percentage>3,25</Percentage></CollectieveVerhoging></Event>
+    <Event><Aanzegging><Datum>1-1-1999</Datum><NieuwSalaris>f 109799,00</NieuwSalaris></Aanzegging></Event>
+    <Event><CollectieveVerhoging><Datum>1-7-1999</Datum><Percentage>3,25</Percentage></CollectieveVerhoging></Event>
+    <Event><PartTimePercentage><Datum>1-9-1999</Datum><Percentage>80</Percentage></PartTimePercentage></Event>
+    <Event><Aanzegging><Datum>1-1-2000</Datum><NieuwSalaris>f 115649,00</NieuwSalaris></Aanzegging></Event>
+    <Event><CollectieveVerhoging><Datum>1-7-2000</Datum><Percentage>3,75</Percentage></CollectieveVerhoging></Event>
+    <Event><CollectieveVerhoging><Datum>1-10-2000</Datum><Commentaar>aanpassing i.v.m. pensioenregeling (Fulltime klopt niet met parttime)</Commentaar><Bedrag>f 2923,00</Bedrag></CollectieveVerhoging></Event>
+    <Event><Aanzegging><Datum>1-1-2001</Datum><NieuwSalaris>f 125608,00</NieuwSalaris></Aanzegging></Event>
+    <Event><CollectieveVerhoging><Datum>1-1-2001</Datum><Commentaar>verhoging i.v.m. afschaffing overhevelingstoeslag</Commentaar><Bedrag>f 1499,90</Bedrag></CollectieveVerhoging></Event>
+    <Event><CollectieveVerhoging><Datum>1-4-2001</Datum><Commentaar>Bruto maandbedrag klopt niet: moet zijn 8791,63</Commentaar><Percentage>3,75</Percentage></CollectieveVerhoging></Event>
+  </Events>
+</Aanstelling>
