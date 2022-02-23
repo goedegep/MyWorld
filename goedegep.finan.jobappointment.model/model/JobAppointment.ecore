@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ecore:EPackage xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" name="model" nsURI="http://www.goedegep.org/jobappointment" nsPrefix="JobAppointment">
+  <eClassifiers xsi:type="ecore:EClass" name="SalaryEvent" abstract="true" eSuperTypes="../../goedegep.types.model/model/types.ecore#//Event">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="salaryEventType" eType="#//SalaryEventType"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EEnum" name="SalaryEventType">
+    <eLiterals name="CollectiveRaise" literal="COLLECTIVE_RAISE"/>
+    <eLiterals name="ParttimePercentage" value="1" literal="PARTTIME_PERCENTAGE"/>
+    <eLiterals name="SalaryNotice" value="2" literal="SALARY_NOTICE"/>
+    <eLiterals name="SalaryPayment" value="3" literal="SALARY_PAYMENT"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="CollectiveRaise" eSuperTypes="#//SalaryEvent">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="percentage" eType="ecore:EDataType ../../goedegep.types.model/model/types.ecore#//EFixedPointValue"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="amount" eType="ecore:EDataType ../../goedegep.types.model/model/types.ecore#//EMoney"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="ParttimePercentage" eSuperTypes="#//SalaryEvent">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="parttimePercentage" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EIntegerObject"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="SalaryNotice" eSuperTypes="#//SalaryEvent">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="startingDate" eType="ecore:EDataType ../../goedegep.types.model/model/types.ecore#//ELocalDate"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="currentSalaryFulltime"
+        eType="ecore:EDataType ../../goedegep.types.model/model/types.ecore#//EMoney"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="currentSalaryParttime"
+        eType="ecore:EDataType ../../goedegep.types.model/model/types.ecore#//EMoney"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="currentParttimePercentage"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EIntegerObject"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="newSalaryFulltime" eType="ecore:EDataType ../../goedegep.types.model/model/types.ecore#//EMoney"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="newSalaryParttime" eType="ecore:EDataType ../../goedegep.types.model/model/types.ecore#//EMoney"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="newParttimePercentage"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EIntegerObject"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="functionGroup" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="SalaryPayment" eSuperTypes="#//SalaryEvent">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="grossSalary" eType="ecore:EDataType ../../goedegep.types.model/model/types.ecore#//EMoney">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The gross salary paid."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="period" eType="ecore:EDataType ../../goedegep.types.model/model/types.ecore#//EYearMonth">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The period to which the payment applies."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="JobAppointment">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="salaryevents" upperBound="-1"
+        eType="#//SalaryEvent" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="commencementOfEmploymentDate"
+        eType="ecore:EDataType ../../goedegep.types.model/model/types.ecore#//ELocalDate"
+        unsettable="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="startingSalary" eType="ecore:EDataType ../../goedegep.types.model/model/types.ecore#//EMoney"
+        unsettable="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="startingParttimePercentage"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EIntegerObject"
+        unsettable="true"/>
+  </eClassifiers>
+</ecore:EPackage>
