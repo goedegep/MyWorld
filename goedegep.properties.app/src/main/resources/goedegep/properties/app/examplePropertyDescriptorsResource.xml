@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<goedegep.properties:PropertyDescriptorGroup xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:goedegep.properties="http:///org/goedegep/properties.ecore"
+    packageName="goedegep.properties.app" name="Example Groep" description="Voorbeeld waarden"
+    registryClassName="ExampleRegistry">
+  <propertyDescriptors xsi:type="goedegep.properties:FilePropertyDescriptor" type="FILE"
+      name="customPropertiesFile" description="Naam van het bestand met gebruikersinstellingen."
+      displayName="Gebruikersinstellingen bestand naam" initialValue="MijnInstellingen.xmi" installInitialValue="true">
+    <fileExtensions>xmi</fileExtensions>
+  </propertyDescriptors>
+  <propertyDescriptors name="shortProductInfo" description="Korte productinformatie."
+      displayName="KorteProductInformatie" initialValue="Voorbeeld Programma"/>
+  <propertyDescriptors xsi:type="goedegep.properties:FilePropertyDescriptor" type="FILE"
+      name="colorsFile" description="Naam van het bestand met kleuren definities."
+      displayName="kleuren definities bestand naam" registryName="colorDefinitionsFile" initialValue="ColorDefinitions.xml"
+      userSettable="true">
+    <fileExtensions>xml</fileExtensions>
+  </propertyDescriptors>
+</goedegep.properties:PropertyDescriptorGroup>
