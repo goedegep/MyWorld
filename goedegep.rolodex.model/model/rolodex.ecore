@@ -1,0 +1,291 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ecore:EPackage xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" name="model" nsURI="http://goedegep.rolodex/model" nsPrefix="rolodex">
+  <eClassifiers xsi:type="ecore:EClass" name="Rolodex">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="countryList" lowerBound="1"
+        eType="#//CountryList" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="cityList" lowerBound="1"
+        eType="#//CityList" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="addressList" lowerBound="1"
+        eType="#//AddressList" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="phoneNumberList" lowerBound="1"
+        eType="#//PhoneNumberList" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="institutionList" lowerBound="1"
+        eType="#//InstitutionList" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="employeeList" lowerBound="1"
+        eType="#//EmployeeList" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="personList" lowerBound="1"
+        eType="#//PersonList" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="familyList" lowerBound="1"
+        eType="#//FamilyList" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="phoneList" lowerBound="1"
+        eType="#//PhoneList" containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Country" eSuperTypes="../../goedegep.types.model/model/types.ecore#//Comparable">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="A country."/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="countryName" lowerBound="1"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="City" eSuperTypes="../../goedegep.types.model/model/types.ecore#//Comparable">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="A city."/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="country" lowerBound="1"
+        eType="#//Country"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="cityName" lowerBound="1"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="id" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
+        changeable="false" derived="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Address">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="An address. This can be a normal street address (visiting address), or a PO box address (mailing address)."/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="streetName" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="houseNumber" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EIntegerObject"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="houseNumberExtension" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="city" eType="#//City"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="pOBox" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="postalCode" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="id" ordered="false" lowerBound="1"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString" iD="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Person" eSuperTypes="#//PhoneNumberHolder #//AddressHolder #//Description #//Archive">
+    <eOperations name="getName" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eOperations name="retrieveAddress" eType="#//Address"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="firstname" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
+        unsettable="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="infix" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
+        unsettable="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="surname" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
+        unsettable="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="initials" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
+        unsettable="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="gender" eType="#//Gender"
+        unsettable="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="id" ordered="false" lowerBound="1"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString" unsettable="true"
+        iD="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="family" eType="#//Family"
+        eOpposite="#//Family/members"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="birthday" eType="#//Birthday"
+        unsettable="true" containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EEnum" name="Gender">
+    <eLiterals name="MALE" value="1" literal="man"/>
+    <eLiterals name="FEMALE" value="2" literal="vrouw"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Institution" eSuperTypes="#//PhoneNumberHolder #//AddressHolder">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="An institution can be used for anything that isn't a person, like a company, school, shop, ...."/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="mailingAddress" eType="#//Address"
+        unsettable="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Employee" eSuperTypes="#//PhoneNumberHolder">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="An employee is a &lt;code>Person&lt;/code> working at an &lt;code>Institution&lt;/code>."/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="institution" lowerBound="1"
+        eType="#//Institution"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="person" lowerBound="1"
+        eType="#//Person"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="PhoneNumber">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="phoneNumber" lowerBound="1"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="description" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="connectionType" eType="#//ConnectionType"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="numberHolders" upperBound="-1"
+        eType="#//PhoneNumberHolder" eOpposite="#//PhoneNumberHolder/phoneNumbers"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Family" eSuperTypes="#//PhoneNumberHolder #//AddressHolder #//Description #//Archive">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="familyTitle" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="familyName" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="members" lowerBound="1"
+        upperBound="-1" eType="#//Person" eOpposite="#//Person/family"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EEnum" name="ConnectionType">
+    <eLiterals name="VAST" literal="Vast"/>
+    <eLiterals name="MOBIEL" value="1" literal="Mobiel"/>
+    <eLiterals name="SERVICENUMMER_BETAALD" value="2" literal="Servicenummer (betaald)"/>
+    <eLiterals name="SERVICENUMMER_GRATIS" value="3" literal="Servicenummer (gratis)"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="CountryList">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="A list of countries. Each City has a reference to a country."/>
+    </eAnnotations>
+    <eOperations name="addCountry" eType="#//Country">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Create a &lt;code>Country&lt;/code> with the specified name and add it to the &lt;code>countries&lt;/doc>.&#xD;&#xA;&lt;p>&#xD;&#xA;The given name cannot be an empty string. Also there may not yet already exist a &lt;code>Country&lt;/code> with the specified name.&#xD;&#xA;&#xD;&#xA;@param countryName the name of the country to be added.&#xD;&#xA;@return The newly created and added &lt;code>Country&lt;/code>, or null if the &lt;code>countryName&lt;/code> isn't valid."/>
+      </eAnnotations>
+      <eParameters name="countryName" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    </eOperations>
+    <eOperations name="getCountry" eType="#//Country">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Get the &lt;code>Country&lt;/code> with the specified name.&#xD;&#xA;&#xD;&#xA;@param countryName the name of the &lt;code>Country&lt;/code> to be returned.&#xD;&#xA;@returns the &lt;code>Country&lt;/code> with the name &lt;code>countryName&lt;/code>, or null if no such &lt;code>Country&lt;/code> exists."/>
+      </eAnnotations>
+      <eParameters name="countryName" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    </eOperations>
+    <eOperations name="removeCountry">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Remove a &lt;code>Country&lt;/code> from the &lt;code>countries&lt;/code>.&#xD;&#xA;&#xD;&#xA;@param country the &lt;code>Country&lt;/code> to be removed."/>
+      </eAnnotations>
+      <eParameters name="country" eType="#//Country"/>
+    </eOperations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="countries" upperBound="-1"
+        eType="#//Country" containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="CityList">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="A list of cities. Each &lt;code>Address&lt;/code> has a reference to a &lt;code>City&lt;/code>."/>
+    </eAnnotations>
+    <eOperations name="findCityById" eType="#//City">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Get the city for a specified Id.&#xD;&#xA;&#xD;&#xA;@param id the identifying string of a &lt;code>City&lt;/code>&#xD;&#xA;@return the &lt;code>City&lt;/code> with the specified &lt;code>Id&lt;/code>, or &lt;code>null&lt;/code> if there is no &lt;code>City&lt;/code> with the given &lt;code>Id&lt;/code>."/>
+      </eAnnotations>
+      <eParameters name="id" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    </eOperations>
+    <eOperations name="addCity" eType="#//City">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Create a &lt;code>City&lt;/code> with the specified name in a specific &lt;code>Country&lt;/code>, and add it to the &lt;code>cities&lt;/doc>.&#xD;&#xA;&lt;p>&#xD;&#xA;The given name cannot be an empty string. Also there may not yet already exist a &lt;code>City&lt;/code>, in the specified &lt;code>Country&lt;/code>, with the specified name.&#xD;&#xA;&#xD;&#xA;@param cityName the name of the city to be added.&#xD;&#xA;@param country the &lt;code>Country&lt;/code> in which the city is located&#xD;&#xA;@return The newly created and added &lt;code>City&lt;/code>, or null if the &lt;code>countryName&lt;/code>/&lt;code>Country&lt;/code> combination isn't valid."/>
+      </eAnnotations>
+      <eParameters name="cityName" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+      <eParameters name="country" eType="#//Country"/>
+    </eOperations>
+    <eOperations name="getCity" eType="#//City">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Get the &lt;code>City&lt;/code> with the specified name and in the given &lt;code>Country&lt;/code>. &#xD;&#xA;&#xD;&#xA;@param cityName the name of the &lt;code>City&lt;/code> to be returned.&#xD;&#xA;@param country the &lt;code>Country&lt;/code> in which the city shall be located.&#xD;&#xA;@returns the &lt;code>City&lt;/code> with the name &lt;code>cityName&lt;/code> in the specified &lt;code>Country&lt;/code>, or null if no such &lt;code>City&lt;/code> exists."/>
+      </eAnnotations>
+      <eParameters name="cityName" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+      <eParameters name="country" eType="#//Country"/>
+    </eOperations>
+    <eOperations name="getCity" upperBound="-1" eType="#//City">
+      <eParameters name="cityName" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    </eOperations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="cities" upperBound="-1"
+        eType="#//City" containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="AddressList">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="A list of addresses."/>
+    </eAnnotations>
+    <eOperations name="findAddressById" eType="#//Address">
+      <eParameters name="id" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    </eOperations>
+    <eOperations name="findAddressByPostalCode" eType="#//Address">
+      <eParameters name="postalCode" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+      <eParameters name="houseNumber" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EIntegerObject"/>
+      <eParameters name="houseNumberExtension" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    </eOperations>
+    <eOperations name="getAddress" eType="#//Address">
+      <eParameters name="streetName" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+      <eParameters name="houseNumber" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EIntegerObject"/>
+      <eParameters name="houseNumberExternsion" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+      <eParameters name="postalCode" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+      <eParameters name="city" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    </eOperations>
+    <eOperations name="getAddress" eType="#//Address">
+      <eParameters name="streetName" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+      <eParameters name="houseNumber" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EIntegerObject"/>
+      <eParameters name="houseNumberExtension" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+      <eParameters name="city" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    </eOperations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="addresses" upperBound="-1"
+        eType="#//Address" containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="PhoneNumberList">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="phoneNumbers" upperBound="-1"
+        eType="#//PhoneNumber" containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="InstitutionList">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="institutions" upperBound="-1"
+        eType="#//Institution" containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="EmployeeList">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="employees" upperBound="-1"
+        eType="#//Employee" containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="PersonList">
+    <eOperations name="findPersonById" eType="#//Person">
+      <eParameters name="id" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    </eOperations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="persons" upperBound="-1"
+        eType="#//Person" containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="FamilyList">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="families" upperBound="-1"
+        eType="#//Family" containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="PhoneNumberHolder" abstract="true" interface="true">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="phoneNumbers" upperBound="-1"
+        eType="#//PhoneNumber" eOpposite="#//PhoneNumber/numberHolders"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Phone">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="description" lowerBound="1"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="phoneType" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="phoneAddressBook" lowerBound="1"
+        eType="#//PhoneAddressBook" containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="PhoneList">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="phones" upperBound="-1"
+        eType="#//Phone" containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="PhoneAddressBook">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="entries" upperBound="-1"
+        eType="#//PhoneAddressBookEntry" containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="PhoneAddressBookEntry">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="entryName" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="phoneNumber" lowerBound="1"
+        eType="#//PhoneNumber"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="entryType" eType="#//PhoneAddressBookEntryType"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EEnum" name="PhoneAddressBookEntryType">
+    <eLiterals name="NUMBER_LOCATION_0" literal="0"/>
+    <eLiterals name="NUMBER_LOCATION_1" value="1" literal="1"/>
+    <eLiterals name="NUMBER_LOCATION_2" value="2" literal="2"/>
+    <eLiterals name="NUMBER_LOCATION_3" value="3" literal="3"/>
+    <eLiterals name="NUMBER_LOCATION_4" value="4" literal="4"/>
+    <eLiterals name="NUMBER_LOCATION_5" value="5" literal="5"/>
+    <eLiterals name="NUMBER_LOCATION_6" value="6" literal="6"/>
+    <eLiterals name="NUMBER_LOCATION_7" value="7" literal="7"/>
+    <eLiterals name="NUMBER_LOCATION_8" value="8" literal="8"/>
+    <eLiterals name="NUMBER_LOCATION_9" value="9" literal="9"/>
+    <eLiterals name="PHONE_NUMBER_ENTRY" value="101" literal="Alleen telefoonnummer"/>
+    <eLiterals name="NAME_AND_PHONE_NUMBER_ENTRY" value="102" literal="Naam en telefoonnummer"/>
+    <eLiterals name="NAME_AND_PHONE_NUMBER_AND_TYPE_ENTRY" value="103" literal="Naam, telefoonnummer en nummer type"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="AddressHolder" abstract="true" interface="true">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="address" eType="#//Address"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="previousAddresses" upperBound="-1"
+        eType="#//AddressForPeriod" containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Birthday">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="month" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"
+        unsettable="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="day" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"
+        unsettable="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="year" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Description" abstract="true" interface="true">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="description" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
+        unsettable="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="AddressForPeriod">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="fromDate" eType="ecore:EDataType ../../goedegep.types.model/model/types.ecore#//EFlexDate"
+        unsettable="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="untillDate" eType="ecore:EDataType ../../goedegep.types.model/model/types.ecore#//EFlexDate"
+        unsettable="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="address" eType="#//Address"
+        unsettable="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Archive" abstract="true" interface="true">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="archived" eType="ecore:EDataType http://www.eclipse.org/emf/2003/XMLType#//Boolean"
+        unsettable="true"/>
+  </eClassifiers>
+</ecore:EPackage>

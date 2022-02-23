@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<genmodel:GenModel xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" xmlns:genmodel="http://www.eclipse.org/emf/2002/GenModel"
+    modelDirectory="/goedegep.rolodex.model/src/main/java" creationIcons="false"
+    editDirectory="/goedegep.rolodex.model.edit/src-gen" editorDirectory="/goedegep.rolodex.model.editor/src-gen"
+    modelPluginID="" modelName="Rolodex" editPluginClass="goedegep.rolodex.model.provider.RolodexEditPlugin"
+    editorPluginClass="goedegep.rolodex.model.presentation.RolodexEditorPlugin" rootExtendsClass="org.eclipse.emf.ecore.impl.MinimalEObjectImpl$Container"
+    codeFormatting="true" testSuiteClass="goedegep.rolodex.model.tests.RolodexAllTests"
+    importerID="org.eclipse.emf.importer.ecore" complianceLevel="8.0" copyrightFields="false"
+    usedGenPackages="../../goedegep.types.model/model/types.genmodel#//model" operationReflection="true"
+    importOrganizing="true">
+  <foreignModel>rolodex.ecore</foreignModel>
+  <testsDirectory xsi:nil="true"/>
+  <genPackages prefix="Rolodex" basePackage="goedegep.rolodex" disposableProviderFactory="true"
+      ecorePackage="rolodex.ecore#/">
+    <genEnums typeSafeEnumCompatible="false" ecoreEnum="rolodex.ecore#//Gender">
+      <genEnumLiterals ecoreEnumLiteral="rolodex.ecore#//Gender/MALE"/>
+      <genEnumLiterals ecoreEnumLiteral="rolodex.ecore#//Gender/FEMALE"/>
+    </genEnums>
+    <genEnums typeSafeEnumCompatible="false" ecoreEnum="rolodex.ecore#//ConnectionType">
+      <genEnumLiterals ecoreEnumLiteral="rolodex.ecore#//ConnectionType/VAST"/>
+      <genEnumLiterals ecoreEnumLiteral="rolodex.ecore#//ConnectionType/MOBIEL"/>
+      <genEnumLiterals ecoreEnumLiteral="rolodex.ecore#//ConnectionType/SERVICENUMMER_BETAALD"/>
+      <genEnumLiterals ecoreEnumLiteral="rolodex.ecore#//ConnectionType/SERVICENUMMER_GRATIS"/>
+    </genEnums>
+    <genEnums typeSafeEnumCompatible="false" ecoreEnum="rolodex.ecore#//PhoneAddressBookEntryType">
+      <genEnumLiterals ecoreEnumLiteral="rolodex.ecore#//PhoneAddressBookEntryType/NUMBER_LOCATION_0"/>
+      <genEnumLiterals ecoreEnumLiteral="rolodex.ecore#//PhoneAddressBookEntryType/NUMBER_LOCATION_1"/>
+      <genEnumLiterals ecoreEnumLiteral="rolodex.ecore#//PhoneAddressBookEntryType/NUMBER_LOCATION_2"/>
+      <genEnumLiterals ecoreEnumLiteral="rolodex.ecore#//PhoneAddressBookEntryType/NUMBER_LOCATION_3"/>
+      <genEnumLiterals ecoreEnumLiteral="rolodex.ecore#//PhoneAddressBookEntryType/NUMBER_LOCATION_4"/>
+      <genEnumLiterals ecoreEnumLiteral="rolodex.ecore#//PhoneAddressBookEntryType/NUMBER_LOCATION_5"/>
+      <genEnumLiterals ecoreEnumLiteral="rolodex.ecore#//PhoneAddressBookEntryType/NUMBER_LOCATION_6"/>
+      <genEnumLiterals ecoreEnumLiteral="rolodex.ecore#//PhoneAddressBookEntryType/NUMBER_LOCATION_7"/>
+      <genEnumLiterals ecoreEnumLiteral="rolodex.ecore#//PhoneAddressBookEntryType/NUMBER_LOCATION_8"/>
+      <genEnumLiterals ecoreEnumLiteral="rolodex.ecore#//PhoneAddressBookEntryType/NUMBER_LOCATION_9"/>
+      <genEnumLiterals ecoreEnumLiteral="rolodex.ecore#//PhoneAddressBookEntryType/PHONE_NUMBER_ENTRY"/>
+      <genEnumLiterals ecoreEnumLiteral="rolodex.ecore#//PhoneAddressBookEntryType/NAME_AND_PHONE_NUMBER_ENTRY"/>
+      <genEnumLiterals ecoreEnumLiteral="rolodex.ecore#//PhoneAddressBookEntryType/NAME_AND_PHONE_NUMBER_AND_TYPE_ENTRY"/>
+    </genEnums>
+    <genClasses ecoreClass="rolodex.ecore#//Rolodex">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference rolodex.ecore#//Rolodex/countryList"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference rolodex.ecore#//Rolodex/cityList"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference rolodex.ecore#//Rolodex/addressList"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference rolodex.ecore#//Rolodex/phoneNumberList"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference rolodex.ecore#//Rolodex/institutionList"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference rolodex.ecore#//Rolodex/employeeList"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference rolodex.ecore#//Rolodex/personList"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference rolodex.ecore#//Rolodex/familyList"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference rolodex.ecore#//Rolodex/phoneList"/>
+    </genClasses>
+    <genClasses ecoreClass="rolodex.ecore#//Country">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute rolodex.ecore#//Country/countryName"/>
+    </genClasses>
+    <genClasses ecoreClass="rolodex.ecore#//City">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference rolodex.ecore#//City/country"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute rolodex.ecore#//City/cityName"/>
+      <genFeatures property="Readonly" createChild="false" ecoreFeature="ecore:EAttribute rolodex.ecore#//City/id"/>
+    </genClasses>
+    <genClasses ecoreClass="rolodex.ecore#//Address">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute rolodex.ecore#//Address/streetName"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute rolodex.ecore#//Address/houseNumber"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute rolodex.ecore#//Address/houseNumberExtension"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference rolodex.ecore#//Address/city"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute rolodex.ecore#//Address/pOBox"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute rolodex.ecore#//Address/postalCode"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute rolodex.ecore#//Address/id"/>
+    </genClasses>
+    <genClasses ecoreClass="rolodex.ecore#//Person">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute rolodex.ecore#//Person/firstname"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute rolodex.ecore#//Person/infix"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute rolodex.ecore#//Person/surname"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute rolodex.ecore#//Person/initials"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute rolodex.ecore#//Person/gender"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute rolodex.ecore#//Person/id"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference rolodex.ecore#//Person/family"/>
+      <genFeatures children="true" createChild="true" propertySortChoices="true" ecoreFeature="ecore:EReference rolodex.ecore#//Person/birthday"/>
+      <genOperations ecoreOperation="rolodex.ecore#//Person/getName"/>
+      <genOperations ecoreOperation="rolodex.ecore#//Person/retrieveAddress"/>
+    </genClasses>
+    <genClasses ecoreClass="rolodex.ecore#//Institution">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute rolodex.ecore#//Institution/name"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference rolodex.ecore#//Institution/mailingAddress"/>
+    </genClasses>
+    <genClasses ecoreClass="rolodex.ecore#//Employee">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference rolodex.ecore#//Employee/institution"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference rolodex.ecore#//Employee/person"/>
+    </genClasses>
+    <genClasses ecoreClass="rolodex.ecore#//PhoneNumber">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute rolodex.ecore#//PhoneNumber/phoneNumber"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute rolodex.ecore#//PhoneNumber/description"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute rolodex.ecore#//PhoneNumber/connectionType"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference rolodex.ecore#//PhoneNumber/numberHolders"/>
+    </genClasses>
+    <genClasses ecoreClass="rolodex.ecore#//Family">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute rolodex.ecore#//Family/familyTitle"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute rolodex.ecore#//Family/familyName"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference rolodex.ecore#//Family/members"/>
+    </genClasses>
+    <genClasses ecoreClass="rolodex.ecore#//CountryList">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference rolodex.ecore#//CountryList/countries"/>
+      <genOperations ecoreOperation="rolodex.ecore#//CountryList/addCountry">
+        <genParameters ecoreParameter="rolodex.ecore#//CountryList/addCountry/countryName"/>
+      </genOperations>
+      <genOperations ecoreOperation="rolodex.ecore#//CountryList/getCountry">
+        <genParameters ecoreParameter="rolodex.ecore#//CountryList/getCountry/countryName"/>
+      </genOperations>
+      <genOperations ecoreOperation="rolodex.ecore#//CountryList/removeCountry">
+        <genParameters ecoreParameter="rolodex.ecore#//CountryList/removeCountry/country"/>
+      </genOperations>
+    </genClasses>
+    <genClasses ecoreClass="rolodex.ecore#//CityList">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference rolodex.ecore#//CityList/cities"/>
+      <genOperations ecoreOperation="rolodex.ecore#//CityList/findCityById">
+        <genParameters ecoreParameter="rolodex.ecore#//CityList/findCityById/id"/>
+      </genOperations>
+      <genOperations ecoreOperation="rolodex.ecore#//CityList/addCity">
+        <genParameters ecoreParameter="rolodex.ecore#//CityList/addCity/cityName"/>
+        <genParameters ecoreParameter="rolodex.ecore#//CityList/addCity/country"/>
+      </genOperations>
+      <genOperations ecoreOperation="rolodex.ecore#//CityList/getCity">
+        <genParameters ecoreParameter="rolodex.ecore#//CityList/getCity/cityName"/>
+        <genParameters ecoreParameter="rolodex.ecore#//CityList/getCity/country"/>
+      </genOperations>
+      <genOperations ecoreOperation="rolodex.ecore#//CityList/getCity.1">
+        <genParameters ecoreParameter="rolodex.ecore#//CityList/getCity.1/cityName"/>
+      </genOperations>
+    </genClasses>
+    <genClasses ecoreClass="rolodex.ecore#//AddressList">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference rolodex.ecore#//AddressList/addresses"/>
+      <genOperations ecoreOperation="rolodex.ecore#//AddressList/findAddressById">
+        <genParameters ecoreParameter="rolodex.ecore#//AddressList/findAddressById/id"/>
+      </genOperations>
+      <genOperations ecoreOperation="rolodex.ecore#//AddressList/findAddressByPostalCode">
+        <genParameters ecoreParameter="rolodex.ecore#//AddressList/findAddressByPostalCode/postalCode"/>
+        <genParameters ecoreParameter="rolodex.ecore#//AddressList/findAddressByPostalCode/houseNumber"/>
+        <genParameters ecoreParameter="rolodex.ecore#//AddressList/findAddressByPostalCode/houseNumberExtension"/>
+      </genOperations>
+      <genOperations ecoreOperation="rolodex.ecore#//AddressList/getAddress">
+        <genParameters ecoreParameter="rolodex.ecore#//AddressList/getAddress/streetName"/>
+        <genParameters ecoreParameter="rolodex.ecore#//AddressList/getAddress/houseNumber"/>
+        <genParameters ecoreParameter="rolodex.ecore#//AddressList/getAddress/houseNumberExternsion"/>
+        <genParameters ecoreParameter="rolodex.ecore#//AddressList/getAddress/postalCode"/>
+        <genParameters ecoreParameter="rolodex.ecore#//AddressList/getAddress/city"/>
+      </genOperations>
+      <genOperations ecoreOperation="rolodex.ecore#//AddressList/getAddress.1">
+        <genParameters ecoreParameter="rolodex.ecore#//AddressList/getAddress.1/streetName"/>
+        <genParameters ecoreParameter="rolodex.ecore#//AddressList/getAddress.1/houseNumber"/>
+        <genParameters ecoreParameter="rolodex.ecore#//AddressList/getAddress.1/houseNumberExtension"/>
+        <genParameters ecoreParameter="rolodex.ecore#//AddressList/getAddress.1/city"/>
+      </genOperations>
+    </genClasses>
+    <genClasses ecoreClass="rolodex.ecore#//PhoneNumberList">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference rolodex.ecore#//PhoneNumberList/phoneNumbers"/>
+    </genClasses>
+    <genClasses ecoreClass="rolodex.ecore#//InstitutionList">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference rolodex.ecore#//InstitutionList/institutions"/>
+    </genClasses>
+    <genClasses ecoreClass="rolodex.ecore#//EmployeeList">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference rolodex.ecore#//EmployeeList/employees"/>
+    </genClasses>
+    <genClasses ecoreClass="rolodex.ecore#//PersonList">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference rolodex.ecore#//PersonList/persons"/>
+      <genOperations ecoreOperation="rolodex.ecore#//PersonList/findPersonById">
+        <genParameters ecoreParameter="rolodex.ecore#//PersonList/findPersonById/id"/>
+      </genOperations>
+    </genClasses>
+    <genClasses ecoreClass="rolodex.ecore#//FamilyList">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference rolodex.ecore#//FamilyList/families"/>
+    </genClasses>
+    <genClasses image="false" ecoreClass="rolodex.ecore#//PhoneNumberHolder">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference rolodex.ecore#//PhoneNumberHolder/phoneNumbers"/>
+    </genClasses>
+    <genClasses ecoreClass="rolodex.ecore#//Phone">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute rolodex.ecore#//Phone/description"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute rolodex.ecore#//Phone/phoneType"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference rolodex.ecore#//Phone/phoneAddressBook"/>
+    </genClasses>
+    <genClasses ecoreClass="rolodex.ecore#//PhoneList">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference rolodex.ecore#//PhoneList/phones"/>
+    </genClasses>
+    <genClasses ecoreClass="rolodex.ecore#//PhoneAddressBook">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference rolodex.ecore#//PhoneAddressBook/entries"/>
+    </genClasses>
+    <genClasses ecoreClass="rolodex.ecore#//PhoneAddressBookEntry">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute rolodex.ecore#//PhoneAddressBookEntry/entryName"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference rolodex.ecore#//PhoneAddressBookEntry/phoneNumber"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute rolodex.ecore#//PhoneAddressBookEntry/entryType"/>
+    </genClasses>
+    <genClasses ecoreClass="rolodex.ecore#//AddressHolder">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference rolodex.ecore#//AddressHolder/address"/>
+      <genFeatures children="true" createChild="true" propertySortChoices="true" ecoreFeature="ecore:EReference rolodex.ecore#//AddressHolder/previousAddresses"/>
+    </genClasses>
+    <genClasses ecoreClass="rolodex.ecore#//Birthday">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute rolodex.ecore#//Birthday/month"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute rolodex.ecore#//Birthday/day"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute rolodex.ecore#//Birthday/year"/>
+    </genClasses>
+    <genClasses ecoreClass="rolodex.ecore#//Description">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute rolodex.ecore#//Description/description"/>
+    </genClasses>
+    <genClasses ecoreClass="rolodex.ecore#//AddressForPeriod">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute rolodex.ecore#//AddressForPeriod/fromDate"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute rolodex.ecore#//AddressForPeriod/untillDate"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference rolodex.ecore#//AddressForPeriod/address"/>
+    </genClasses>
+    <genClasses ecoreClass="rolodex.ecore#//Archive">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute rolodex.ecore#//Archive/archived"/>
+    </genClasses>
+  </genPackages>
+</genmodel:GenModel>
