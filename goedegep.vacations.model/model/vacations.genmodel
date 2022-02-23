@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<genmodel:GenModel xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" xmlns:genmodel="http://www.eclipse.org/emf/2002/GenModel"
+    modelDirectory="/goedegep.vacations.model/src/main/java" creationIcons="false"
+    editDirectory="/goedegep.vacations.model.edit/src-gen" editorDirectory="/goedegep.vacations.model.editor/src-gen"
+    modelPluginID="" modelName="Vacations" editPluginClass="goedegep.vacations.model.provider.VacationsEditPlugin"
+    editorPluginClass="goedegep.vacations.model.presentation.VacationsEditorPlugin"
+    rootExtendsClass="org.eclipse.emf.ecore.impl.MinimalEObjectImpl$Container" codeFormatting="true"
+    testSuiteClass="goedegep.vacations.model.tests.VacationsAllTests" importerID="org.eclipse.emf.importer.ecore"
+    complianceLevel="8.0" copyrightFields="false" usedGenPackages="../../goedegep.poi.model/model/POI.genmodel#//model ../../goedegep.types.model/model/types.genmodel#//model"
+    operationReflection="true" importOrganizing="true">
+  <foreignModel>vacations.ecore</foreignModel>
+  <testsDirectory xsi:nil="true"/>
+  <genPackages prefix="Vacations" basePackage="goedegep.vacations" disposableProviderFactory="true"
+      ecorePackage="vacations.ecore#/">
+    <genEnums typeSafeEnumCompatible="false" ecoreEnum="vacations.ecore#//ActivityLabel">
+      <genEnumLiterals ecoreEnumLiteral="vacations.ecore#//ActivityLabel/VERBLIJF"/>
+      <genEnumLiterals ecoreEnumLiteral="vacations.ecore#//ActivityLabel/WANDELING"/>
+      <genEnumLiterals ecoreEnumLiteral="vacations.ecore#//ActivityLabel/HEENREIS"/>
+      <genEnumLiterals ecoreEnumLiteral="vacations.ecore#//ActivityLabel/TERUGREIS"/>
+      <genEnumLiterals ecoreEnumLiteral="vacations.ecore#//ActivityLabel/HUURAUTO_OPHALEN"/>
+      <genEnumLiterals ecoreEnumLiteral="vacations.ecore#//ActivityLabel/HUURAUTO_WEGBRENGEN"/>
+      <genEnumLiterals ecoreEnumLiteral="vacations.ecore#//ActivityLabel/UNSPECIFIED"/>
+      <genEnumLiterals ecoreEnumLiteral="vacations.ecore#//ActivityLabel/AUTORIT"/>
+    </genEnums>
+    <genClasses ecoreClass="vacations.ecore#//Vacations">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference vacations.ecore#//Vacations/vacations"/>
+      <genFeatures children="true" createChild="true" propertySortChoices="true" ecoreFeature="ecore:EReference vacations.ecore#//Vacations/home"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute vacations.ecore#//Vacations/tips"/>
+      <genOperations ecoreOperation="vacations.ecore#//Vacations/findVacation">
+        <genParameters ecoreParameter="vacations.ecore#//Vacations/findVacation/date"/>
+        <genParameters ecoreParameter="vacations.ecore#//Vacations/findVacation/title"/>
+      </genOperations>
+      <genOperations ecoreOperation="vacations.ecore#//Vacations/addVacation">
+        <genParameters ecoreParameter="vacations.ecore#//Vacations/addVacation/vacation"/>
+      </genOperations>
+      <genOperations ecoreOperation="vacations.ecore#//Vacations/findVacation.1">
+        <genParameters ecoreParameter="vacations.ecore#//Vacations/findVacation.1/date"/>
+      </genOperations>
+    </genClasses>
+    <genClasses ecoreClass="vacations.ecore#//Vacation">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute vacations.ecore#//Vacation/endDate"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference vacations.ecore#//Vacation/documents"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute vacations.ecore#//Vacation/pictures"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute vacations.ecore#//Vacation/title"/>
+      <genFeatures children="true" createChild="true" propertySortChoices="true" ecoreFeature="ecore:EReference vacations.ecore#//Vacation/elements"/>
+      <genOperations ecoreOperation="vacations.ecore#//Vacation/findDocument">
+        <genParameters ecoreParameter="vacations.ecore#//Vacation/findDocument/documentPath"/>
+      </genOperations>
+      <genOperations ecoreOperation="vacations.ecore#//Vacation/getAllFileReferences"/>
+      <genOperations ecoreOperation="vacations.ecore#//Vacation/getAllReferencedFiles"/>
+      <genOperations ecoreOperation="vacations.ecore#//Vacation/getId"/>
+      <genOperations ecoreOperation="vacations.ecore#//Vacation/getDayNr">
+        <genParameters ecoreParameter="vacations.ecore#//Vacation/getDayNr/vacationElement"/>
+      </genOperations>
+    </genClasses>
+    <genClasses ecoreClass="vacations.ecore#//Location">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute vacations.ecore#//Location/locationType"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute vacations.ecore#//Location/country"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute vacations.ecore#//Location/city"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute vacations.ecore#//Location/street"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute vacations.ecore#//Location/houseNumber"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute vacations.ecore#//Location/latitude"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute vacations.ecore#//Location/longitude"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute vacations.ecore#//Location/name"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute vacations.ecore#//Location/webSite"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute vacations.ecore#//Location/description"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute vacations.ecore#//Location/label"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute vacations.ecore#//Location/duration"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute vacations.ecore#//Location/startDate"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute vacations.ecore#//Location/endDate"/>
+      <genFeatures children="true" createChild="true" propertySortChoices="true" ecoreFeature="ecore:EReference vacations.ecore#//Location/boundingbox"/>
+      <genFeatures children="true" createChild="true" propertySortChoices="true" ecoreFeature="ecore:EReference vacations.ecore#//Location/boundaries"/>
+    </genClasses>
+    <genClasses ecoreClass="vacations.ecore#//VacationElement">
+      <genFeatures children="true" createChild="true" propertySortChoices="true" ecoreFeature="ecore:EReference vacations.ecore#//VacationElement/children"/>
+      <genOperations ecoreOperation="vacations.ecore#//VacationElement/getDayNr"/>
+      <genOperations ecoreOperation="vacations.ecore#//VacationElement/getVacation"/>
+    </genClasses>
+    <genClasses ecoreClass="vacations.ecore#//Text">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute vacations.ecore#//Text/text"/>
+    </genClasses>
+    <genClasses ecoreClass="vacations.ecore#//Day">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute vacations.ecore#//Day/days"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute vacations.ecore#//Day/title"/>
+      <genOperations ecoreOperation="vacations.ecore#//Day/getDate"/>
+    </genClasses>
+    <genClasses ecoreClass="vacations.ecore#//Picture">
+      <genFeatures children="true" createChild="true" propertySortChoices="true" ecoreFeature="ecore:EReference vacations.ecore#//Picture/pictureReference"/>
+    </genClasses>
+    <genClasses ecoreClass="vacations.ecore#//GPXTrack">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference vacations.ecore#//GPXTrack/trackReference"/>
+    </genClasses>
+    <genClasses ecoreClass="vacations.ecore#//BoundingBox">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute vacations.ecore#//BoundingBox/west"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute vacations.ecore#//BoundingBox/north"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute vacations.ecore#//BoundingBox/east"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute vacations.ecore#//BoundingBox/south"/>
+      <genOperations ecoreOperation="vacations.ecore#//BoundingBox/isValid"/>
+    </genClasses>
+    <genClasses ecoreClass="vacations.ecore#//Boundary">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute vacations.ecore#//Boundary/points"/>
+    </genClasses>
+    <genClasses ecoreClass="vacations.ecore#//MapImage">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference vacations.ecore#//MapImage/imageReference"/>
+    </genClasses>
+  </genPackages>
+</genmodel:GenModel>
