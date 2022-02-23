@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<goedegep.model.properties:PropertyGroup xmi:version="2.0"
+    xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:goedegep.model.properties="http://www.goedegep.org/properties" name="TestUserProperties">
+  <properties xsi:type="goedegep.model.properties:Property"
+      name="dataFolder" value="UserDataDir">
+  </properties>
+</goedegep.model.properties:PropertyGroup>
