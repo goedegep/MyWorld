@@ -1,0 +1,2 @@
+A file at the top level of the controlled directory.
+This file is controlled, but modified (this line).

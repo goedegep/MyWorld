@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<properties:PropertyDescriptorGroup xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:properties="http://goedegep.properties/model"
+    name="PCTools" packageName="goedegep.pctools.app.logic"
+    registryClassName="PCToolsRegistry">
+  <propertyDescriptors name="author" description="Author of this program." displayName="Author"
+      initialValue="Peter Goedegebure" installInitialValue="true"/>
+  <propertyDescriptors xsi:type="properties:FilePropertyDescriptor" type="FILE" name="configurationFile"
+      description="Name of the file with configuration information." displayName="Configuration filename"
+      initialValue="PCToolsConfiguration.xmi" installInitialValue="true">
+    <fileExtensions>xmi</fileExtensions>
+  </propertyDescriptors>
+  <propertyDescriptors name="copyrightMessage" description="Copyright information."
+      displayName="Copyright Text" initialValue="Copyright (c) 2001-2021" installInitialValue="true"/>
+  <propertyDescriptors xsi:type="properties:FilePropertyDescriptor" type="FILE" name="customPropertiesFile"
+      description="Name of the file with user preferences." displayName="User preferences filename"
+      initialValue="PCToolsUserPreferences.xmi" installInitialValue="true">
+    <fileExtensions>xmi</fileExtensions>
+  </propertyDescriptors>
+  <propertyDescriptors name="shortProductInfo" description="Short product information."
+      displayName="Short product information" initialValue="PCTools - My computer tools"
+      installInitialValue="true"/>
+  <propertyDescriptors name="version" description="Software version information." displayName="Version"
+      initialValue="0.1" installInitialValue="true"/>
+  <propertyDescriptors xsi:type="properties:FilePropertyDescriptor" type="FILE" name="defaultDiscStructureSpecificationFile"
+      description="The file to be opened when the FilesControlled application starts up."
+      displayName="Disc Structure Specification filename" userSettable="true" installInitialValue="false">
+    <fileExtensions>xmi</fileExtensions>
+  </propertyDescriptors>
+  <propertyDescriptors type="DIRECTORY" name="dataDirectory" description="Default folder for saving Disc Structure Specifications."
+      displayName="Disc Structure Specifications folder" initialValue="D:\Database\MyWorld" userSettable="true"
+      installInitialValue="true"/>
+</properties:PropertyDescriptorGroup>

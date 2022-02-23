@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<goedegep:DiscStructureSpecification xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI"
+    xmlns:goedegep="http://www.goedegep.org/pctools" name="Test disc structure specification" description="Specification for a directory structure under 'src/test/resources' for testing this program">
+  <directorySpecifications directoryPath="C:\EclipseWorkspace\goedegep.pctools\target\test-classes\Test Directory Structure\directory not to be checked\controlled directory"
+      description="Controlled directory" synchronizationSpecification="Yes this is marked as synchronized"/>
+  <directorySpecifications directoryPath="C:\EclipseWorkspace\goedegep.pctools\target\test-classes\Test Directory Structure\directory to be checked"
+      description="Directory to be checked" toBeChecked="true"/>
+  <filesToIgnoreCompletely item="blablafile.bla" description="Dit is alleen maar blabla"/>
+  <directoriesToIgnoreCompletely item="ignoreMeDirectory" description="Een map die genegeerd moet worden"/>
+</goedegep:DiscStructureSpecification>

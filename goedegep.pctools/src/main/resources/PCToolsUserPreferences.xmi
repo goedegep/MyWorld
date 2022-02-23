@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<properties:PropertyGroup xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:properties="http://goedegep.properties/model" name="PCTools">
+  <properties name="defaultDiscStructureSpecificationFile" value="D:\Database\MyWorld\DiscStructureSpecification.xmi"/>
+</properties:PropertyGroup>
