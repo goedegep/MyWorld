@@ -1,0 +1,7 @@
+This project is a copy of Gluon-OSS / Charm-Down.
+The source code is downloaded from: https://bitbucket.org/gluon-oss/charm-down/.
+Currently I've made no source code changes, only:
+* I've added pom.xml (the original is build with gradle).
+* I've moved package-info.java files to a subdirectory, because there were name clashes.
+
+The pom.xml file only builds the parts that I'm currently using.
