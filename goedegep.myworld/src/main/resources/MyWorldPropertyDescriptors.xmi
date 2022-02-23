@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<properties:PropertyDescriptorGroup xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:properties="http://goedegep.properties/model"
+    name="MyWorld" packageName="goedegep.myworld.app"
+    registryClassName="MyWorldRegistry">
+  <propertyDescriptors xsi:type="properties:FilePropertyDescriptor" type="FILE" name="configurationFile"
+      description="Name of the file with configuration information." displayName="Configuration file name"
+      initialValue="MyWorldConfiguration.xmi" installInitialValue="true">
+    <fileExtensions>xmi</fileExtensions>
+  </propertyDescriptors>
+  <propertyDescriptors name="shortProductInfo" description="Short product information."
+      displayName="ShortProductInformation" initialValue="MyWorld - My world on the computer"
+      installInitialValue="true"/>
+  <propertyDescriptors name="version" description="Software version information."
+      displayName="Version" initialValue="1.0 - 09-02-2022 14:00" installInitialValue="true"/>
+  <propertyDescriptors name="copyrightMessage" description="Copyright informatie."
+      displayName="Copyright Text" initialValue="Copyright (c) 2001-2020" installInitialValue="true"/>
+  <propertyDescriptors name="author" description="Author of this applicaton." displayName="Author"
+      initialValue="Peter Goedegebure" installInitialValue="true"/>
+  <propertyDescriptors xsi:type="properties:FilePropertyDescriptor" type="FILE" name="myWorldUserSettingsFileName"
+      description="Name of the file with user settings." displayName="MyWorld User Settings file name"
+      registryName="customPropertiesFile" initialValue="MyWorldUserSettings.xmi" userSettable="true"
+      installInitialValue="true"/>
+  <propertyDescriptors xsi:type="properties:FilePropertyDescriptor" type="FILE" name="finanPropertyDescriptorFileName"
+      description="Name of the file with property descriptors for the module Finan."
+      displayName="Finan property descriptor file name" initialValue="FinanPropertyDescriptors.xmi"
+      installInitialValue="true">
+    <fileExtensions>xmi</fileExtensions>
+  </propertyDescriptors>
+  <propertyDescriptors xsi:type="properties:FilePropertyDescriptor" type="FILE" name="mediaPropertyDescriptorFileName"
+      description="Name of the file with property descriptors for the module Media."
+      displayName="Media property descriptor file name" initialValue="MediaPropertyDescriptors.xmi"
+      installInitialValue="true">
+    <fileExtensions>xmi</fileExtensions>
+  </propertyDescriptors>
+  <propertyDescriptors xsi:type="properties:FilePropertyDescriptor" type="FILE" name="rolodexPropertyDescriptorFileName"
+      description="NName of the file with property descriptors for the module Rolodex."
+      displayName="Rolodex property descriptor file name" initialValue="RolodexPropertyDescriptors.xmi"
+      installInitialValue="true">
+    <fileExtensions>xmi</fileExtensions>
+  </propertyDescriptors>
+  <propertyDescriptors xsi:type="properties:FilePropertyDescriptor" type="FILE" name="invoicesAndPropertiesPropertyDescriptorFileName"
+      description="Name of the file with property descriptors for the module InvoicesAndProperties."
+      displayName="InvoicesAndProperties property descriptor file name" initialValue="InvoicesAndPropertiesPropertyDescriptors.xmi"
+      installInitialValue="true">
+    <fileExtensions>xmi</fileExtensions>
+  </propertyDescriptors>
+  <propertyDescriptors xsi:type="properties:FilePropertyDescriptor" type="FILE" name="unitConverterPropertyDescriptorFileName"
+      description="Name of the file with property descriptors for the module UnitConverter."
+      displayName="UnitConverter property descriptor file name" initialValue="UnitConverterPropertyDescriptors.xmi"
+      installInitialValue="true">
+    <fileExtensions>xmi</fileExtensions>
+  </propertyDescriptors>
+  <propertyDescriptors xsi:type="properties:FilePropertyDescriptor" type="FILE" name="pctoolsPropertyDescriptorsFileName"
+      description="Name of the file with property descriptors for the module PCTools."
+      displayName="PCTools property descriptors file name" initialValue="PCToolsPropertyDescriptors.xmi"
+      installInitialValue="true">
+    <fileExtensions>xmi</fileExtensions>
+  </propertyDescriptors>
+  <propertyDescriptors xsi:type="properties:FilePropertyDescriptor" type="FILE" name="vacationsPropertyDescriptorsFileName"
+      description="Name of the file with property descriptors for the module Vacations."
+      displayName="Vacations property descriptors file name" initialValue="VacationsPropertyDescriptors.xmi"
+      installInitialValue="true">
+    <fileExtensions>xmi</fileExtensions>
+  </propertyDescriptors>
+</properties:PropertyDescriptorGroup>
