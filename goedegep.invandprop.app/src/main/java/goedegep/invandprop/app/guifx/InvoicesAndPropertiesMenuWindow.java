@@ -1,0 +1,499 @@
+package goedegep.invandprop.app.guifx;
+
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.logging.Logger;
+
+import javax.swing.JDialog;
+
+import goedegep.appgen.EMFResource;
+import goedegep.appgen.ImageSize;
+import goedegep.appgen.MessageDialogType;
+import goedegep.appgen.swing.MessageDialog;
+import goedegep.invandprop.app.InvoicesAndPropertiesRegistry;
+import goedegep.invandprop.app.InvoicesAndPropertiesUtil;
+import goedegep.invandprop.model.InvAndPropFactory;
+import goedegep.invandprop.model.InvAndPropPackage;
+import goedegep.invandprop.model.InvoicesAndProperties;
+import goedegep.invandprop.model.Property;
+import goedegep.jfx.ComponentFactoryFx;
+import goedegep.jfx.CustomizationFx;
+import goedegep.jfx.JfxStage;
+import goedegep.jfx.MenuUtil;
+import goedegep.jfx.PropertyDescriptorsEditorFx;
+import goedegep.jfx.collage.CollageImage;
+import goedegep.properties.app.guifx.PropertiesEditor;
+import goedegep.types.model.FileReference;
+import goedegep.util.file.FileUtils;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
+import javafx.geometry.HPos;
+import javafx.geometry.Insets;
+import javafx.scene.Scene;
+import javafx.scene.canvas.Canvas;
+import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.Label;
+import javafx.scene.control.Menu;
+import javafx.scene.control.MenuBar;
+import javafx.scene.control.MenuItem;
+import javafx.scene.image.Image;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyCodeCombination;
+import javafx.scene.input.KeyCombination;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.StackPane;
+import javafx.stage.FileChooser;
+import javafx.stage.FileChooser.ExtensionFilter;
+
+/**
+ * This class is the menu window for the Invoices and Properties component.
+ */
+public class InvoicesAndPropertiesMenuWindow extends JfxStage {
+  private static final Logger LOGGER = Logger.getLogger(InvoicesAndPropertiesMenuWindow.class.getName());
+  private final static String NEWLINE = System.getProperty("line.separator");
+  
+  /**
+   * Base of the window title.
+   */
+  private static final String WINDOW_TITLE   = "Invoices and properties menu window";
+  private static final int MAX_NR_OF_PICTURES_IN_COLLAGE = 30;
+  private static final int MIN_NR_OF_PICTURES_IN_COLLAGE = 5;
+  
+  private static final int WINDOW_WIDTH = 1920 / 2;
+  private static final int WINDOW_HEIGHT = 1080 / 2;
+
+  private CustomizationFx customization;
+  private ComponentFactoryFx componentFactory;
+  private InvoicesAndPropertiesAppResourcesFx appResources;
+  private EMFResource<InvoicesAndProperties> invoicesAndPropertiesResource;
+  private InvoicesAndProperties invoicesAndProperties;
+  private Label statusBar = null;       // Statusbar
+  private File dataDumpFile = null;     // File to which data has been dumped.
+
+  /**
+   * Constructor.
+   * 
+   * @param customization GUI customization.
+   */
+  public InvoicesAndPropertiesMenuWindow(CustomizationFx customization) {
+    super(WINDOW_TITLE, customization);
+    
+    this.customization = customization;
+    
+    componentFactory = getComponentFactory();
+    appResources = (InvoicesAndPropertiesAppResourcesFx) getResources();
+    
+    if (InvoicesAndPropertiesRegistry.invoicesAndPropertiesFile == null) {
+      Alert alert = componentFactory.createErrorDialog(
+          "There's no filename configured for the file with invoices and properties",
+          "Configure the filename (e.g. via the 'Edit User Settings' button below) and restart the application." +
+              NEWLINE +
+              "A restart is needed, because the settings are only read at startup.");
+      
+      ButtonType editorButtonType = new ButtonType("Edit User Settings");
+      alert.getButtonTypes().add(editorButtonType);
+      
+      alert.showAndWait().ifPresent(response -> {
+        if (response == editorButtonType) {
+          showPropertiesEditor();
+        }
+      });
+      
+      return;
+    }
+    
+    getInvoicesAndPropertiesResource();
+    
+//    convertData();
+    
+    createGUI();
+    
+    invoicesAndPropertiesResource.dirtyProperty().addListener(new ChangeListener<Boolean>() {
+
+      @Override
+      public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+        updateTitle();        
+      }
+      
+    });
+    
+    invoicesAndPropertiesResource.fileNameProperty().addListener(new ChangeListener<String>() {
+
+      @Override
+      public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+        updateTitle();
+      }
+      
+    });
+
+    updateTitle();
+  }
+  
+  /**
+   * Create the GUI.
+   * <p>
+   * The root layout is a BorderPane.<br/>
+   * The center is a background image (a generated collage), with the application buttons on top.
+   * The bottom is the statusBar.
+   */
+  private void createGUI() {
+    BorderPane rootLayout = new BorderPane();
+
+    rootLayout.setTop(createMenuBar());
+
+    StackPane mainLayout = new StackPane();
+    
+    // Add the background image
+    Canvas backGroundImage = createCollage();
+
+    if (backGroundImage == null) {
+      backGroundImage = new Canvas();
+      GraphicsContext gc = backGroundImage.getGraphicsContext2D();
+      gc.drawImage(appResources.getPicture(), 0, 0);
+    }
+    mainLayout.getChildren().add(backGroundImage);
+        
+    // Add the buttons
+    GridPane grid = new GridPane();  // not created via componentFactory, as that sets a solid background color.
+    grid.setHgap(10);
+    grid.setVgap(10);
+    grid.setPadding(new Insets(50));
+
+    Button applicationButton;
+
+    applicationButton = componentFactory.createToolButton("Invoices", appResources.getApplicationImage(ImageSize.SIZE_0), "Open the invoices window");
+    applicationButton.setOnAction(e -> {
+//      WindowUtil.showFrameCenteredOnScreen(new NotasWindow(DefaultCustomization.getInstance(), notasEnEigendommenResource.getNotas(), notasEnEigendommenResource.getEigendommenLijst(), false), -200, -100);
+      new InvoicesWindow(customization, invoicesAndPropertiesResource.getEObject());
+      });
+    grid.add(applicationButton, 0, 0);
+
+    applicationButton = componentFactory.createToolButton("Properties", appResources.getApplicationImage(ImageSize.SIZE_0), "Open the properties window");
+    applicationButton.setOnAction(e -> {
+//      WindowUtil.showFrameCenteredOnScreen(new EigendommenWindow(DefaultCustomization.getInstance(), notasEnEigendommenResource.getEigendommenLijst(), notasEnEigendommenResource.getNotas(), false), 200, 100);
+      new PropertiesWindow(customization, invoicesAndPropertiesResource.getEObject());  // TODO HIER VERDER
+    });
+    grid.add(applicationButton, 1, 0);
+    
+    Button button;
+    
+    button = componentFactory.createButton("New Invoice and/or Property", "Create a new invoice and the related property");
+    GridPane.setHalignment(button, HPos.CENTER);
+    button.setOnAction(e -> new InvoiceAndPropertyEditor(customization, invoicesAndProperties));
+    grid.add(button, 0, 2, 2, 1);
+    
+
+    mainLayout.getChildren().add(grid);
+
+    rootLayout.setCenter(mainLayout);
+
+    statusBar = new Label("Welcome to Invoices and Properties");
+    rootLayout.setBottom(statusBar);
+
+    setScene(new Scene(rootLayout));
+  }
+
+  /**
+   * Create the menu bar.
+   * 
+   * @return the created menu bar.
+   */
+  private MenuBar createMenuBar() {
+    MenuBar menuBar = componentFactory.createMenuBar();
+    Menu menu;
+
+    // File menu
+    menu = componentFactory.createMenu("File");
+    
+    // File: Save
+    MenuItem menuItem = componentFactory.createMenuItem("Save");
+    menuItem.setOnAction(new EventHandler<ActionEvent>() {
+      public void handle(ActionEvent e) {
+        saveInvoicesAndProperties();
+      }
+    });
+    menuItem.setAccelerator(new KeyCodeCombination(KeyCode.S, KeyCombination.CONTROL_DOWN));
+    menu.getItems().add(menuItem);
+
+    // File: Edit property descriptors
+    if (InvoicesAndPropertiesRegistry.developmentMode) {
+      MenuUtil.addMenuItem(menu, "Edit property descriptors", e -> showPropertyDescriptorsEditor());
+    }
+
+    // File: Edit user settings
+    MenuUtil.addMenuItem(menu, "Edit user settings", e -> showPropertiesEditor());
+    
+    // File: Dump data
+    MenuUtil.addMenuItem(menu, "Dump data", e-> dumpData());
+    
+
+    menuBar.getMenus().add(menu);
+
+
+    // Help menu
+    menu = componentFactory.createMenu("Help");
+
+    // Help: About
+    MenuUtil.addMenuItem(menu, "About", e-> showHelpAboutDialog());
+
+    menuBar.getMenus().add(menu);
+
+    return menuBar;
+  }
+      
+  /**
+   * Try to get the Invoices and Properties resource.
+   * 
+   * @return true if the resource could be opened, false otherwise.
+   */
+  private boolean getInvoicesAndPropertiesResource() {
+    boolean returnValue = false;
+    
+    invoicesAndPropertiesResource = new EMFResource<InvoicesAndProperties>(InvAndPropPackage.eINSTANCE, () -> InvAndPropFactory.eINSTANCE.createInvoicesAndProperties(), true);
+    
+    try {
+      invoicesAndProperties = invoicesAndPropertiesResource.load(InvoicesAndPropertiesRegistry.invoicesAndPropertiesFile);
+      returnValue = true;
+    } catch (FileNotFoundException e) {
+      LOGGER.severe("File not found: " + e.getMessage());
+      Alert alert = componentFactory.createYesNoConfirmationDialog(
+          null,
+          null,
+          "The file with invoices and properties (" + InvoicesAndPropertiesRegistry.invoicesAndPropertiesFile + ") doesn't exist yet.",
+          "Do you want to create this file now?" + NEWLINE +
+          "If you choose \"No\" you can't do anything in this screen.");
+      Optional<ButtonType> response = alert.showAndWait();
+      if (response.isPresent()  &&  response.get() == ButtonType.YES) {
+        LOGGER.severe("yes, create file");
+        invoicesAndProperties = invoicesAndPropertiesResource.newEObject();
+        try {
+          invoicesAndPropertiesResource.save(InvoicesAndPropertiesRegistry.invoicesAndPropertiesFile);
+          returnValue = true;
+        } catch (IOException e1) {
+          e1.printStackTrace();
+        }
+      } else {
+        LOGGER.severe("no, don't create file");
+      }
+    }
+    
+//    try {
+//      notasEnEigendommenResource = new NotasEnEigendommenResource(false);
+//      returnValue = true;
+//    } catch (IOException e) {
+//      Image image = getCustomization().getResources().getAttentionImage(ImageSize.SIZE_3);
+//      OptionDialog optionDialog = new OptionDialog(
+//          null,
+//          "Hoe verder?",
+//          null,  // TODO image
+//          "Het bestand met nota's en eigendommen, " + e.getMessage() + ", bestaat nog niet.",
+//          NO_INVOICES_AND_PROPERTIES_FILE_OPTIONS,
+//          DEFAULT_NO_INVOICES_AND_PROPERTIES_FILE_OPTION);
+//      optionDialog.setModalityType(java.awt.Dialog.ModalityType.APPLICATION_MODAL);
+//      optionDialog.setVisible(true);
+////      WindowUtil.showDialogCenteredOnParent(this, optionDialog);
+//      String selectedOption = optionDialog.getSelectedOption();
+//      LOGGER.info("Selection = " + selectedOption);
+//      switch (selectedOption) {
+//      case NEW_EMPTY_FILE_OPTION:
+//        try {
+//          notasEnEigendommenResource = new NotasEnEigendommenResource(true);
+//          returnValue = true;
+//        } catch (IOException e1) {
+//          showMessageDialog(MessageDialogType.ERROR,
+//              "Het is niet gelukt om het bestand voor nota's en eigendommen aan te maken. Systeeem foutmelding: " + e1.getMessage());
+//        }
+//        break;
+//
+//      case SELECT_EXISTING_FILE_OPTION:
+//        break;
+//
+//      case NO_FILE_OPTION:
+//        break;
+//      }
+//    }
+    
+    return returnValue;
+  }
+
+  /**
+   * Create a photo collage for the background picture.
+   * <p>
+   * The collage is created from a random selection of the 'afbeeldingen' of the 'eigendommen'.<br/>
+   * Only pictures of belongings that are not archived are used.<br/>
+   * Only the first picture of a belonging is used.
+   * 
+   * @return the generated photo collage.
+   */
+  private Canvas createCollage() {
+    LOGGER.info("=>");
+    
+    Canvas collage = null;
+    List<Property> properties = invoicesAndProperties.getProperties().getProperties();
+    LOGGER.info("number of properties: " + properties.size());
+    
+    // Candidates are the first pictures of properties which aren't archived.
+    List<FileReference> candidates = new ArrayList<>();
+    for (Property property: properties) {
+      FileReference fileReference = null;
+      if (!property.isArchive()  &&  property.getPictures().size() > 0) {
+        fileReference = property.getPictures().get(0);
+      }
+      if (fileReference != null  &&  fileReference.getFile() != null) {
+        candidates.add(fileReference);
+      }
+    }
+    LOGGER.info("number of candidates: " + candidates.size());
+    
+    // Randomly remove candidates until we have the right amount of pictures left over
+    while (candidates.size() > MAX_NR_OF_PICTURES_IN_COLLAGE) {
+      int index = (int) (Math.random() * candidates.size());
+      LOGGER.info("Going to remove candidate with index: "  + index);
+      candidates.remove(index);
+    }
+    LOGGER.info("number of candidates: " + candidates.size());
+    
+    // Only create the collage if there are sufficient pictures
+    if (candidates.size() > MIN_NR_OF_PICTURES_IN_COLLAGE) {
+      List<File> imageFiles = new ArrayList<File>();
+      for (FileReference fileReference: candidates) {
+        File file = new File(fileReference.getFile());
+        if (!file.isAbsolute()) {
+          file = new File(InvoicesAndPropertiesRegistry.propertyRelatedFilesFolder, fileReference.getFile());
+        }
+        
+        imageFiles.add(file);
+      }
+
+      collage = CollageImage.createCollageImage(WINDOW_WIDTH, WINDOW_HEIGHT, imageFiles);
+    } else {
+      LOGGER.severe("Not enough pictures");
+    }
+    
+    return collage;
+  }
+  
+  private void saveInvoicesAndProperties() {    
+    if (invoicesAndPropertiesResource != null) {
+      try {
+        invoicesAndPropertiesResource.save();
+        statusBar.setText("Invoices and properties saved to '" + invoicesAndPropertiesResource.getFileName() + "'");
+      } catch (IOException e) {        
+        componentFactory.createErrorDialog(
+            "Saving the invoices and properties has failed.",
+            "System error message: "  + e.getMessage()
+            ).showAndWait();
+      }
+    }
+  }
+
+  private void showPropertyDescriptorsEditor() {
+    new PropertyDescriptorsEditorFx(customization, InvoicesAndPropertiesRegistry.propertyDescriptorsResource);
+  }
+
+  private void showPropertiesEditor() {
+    new PropertiesEditor("Invoices and Properties properties", customization, InvoicesAndPropertiesRegistry.propertyDescriptorsResource, InvoicesAndPropertiesRegistry.customPropertiesFile);
+  }
+
+  private void dumpData() {
+    FileChooser fileChooser = componentFactory.createFileChooser("Dump data");
+    if (dataDumpFile != null) {
+      fileChooser.setInitialFileName(dataDumpFile.getAbsolutePath());
+    } else {
+      File file = new File(InvoicesAndPropertiesRegistry.invoicesAndPropertiesFile);
+      fileChooser.setInitialDirectory(new File(file.getParent()));
+    }
+    ExtensionFilter extFilter = new FileChooser.ExtensionFilter("Text files", "*.txt");
+    fileChooser.getExtensionFilters().add(extFilter);
+//    fileChooser.setApproveButtonToolTipText("Data naar het gekozen bestand dumpen");
+
+    dataDumpFile = fileChooser.showOpenDialog(this);
+    if (dataDumpFile != null) {
+      try {
+        FileUtils.moveFileToBackupFolder(dataDumpFile.getParent(), dataDumpFile.getName(), true);
+      } catch (IOException e1) {
+        showMessageDialog(MessageDialogType.ERROR, "Het opslaan is mislukt, melding: " + e1.getMessage());
+      }
+
+      dumpDataToFile(dataDumpFile);
+      statusBar.setText("Data gedumpt naar " + dataDumpFile.getAbsolutePath() + ".");
+    }
+  }
+  
+  private void dumpDataToFile(File file) {
+    try {
+      BufferedWriter out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file)));
+      
+      InvoicesAndPropertiesUtil.dumpData(invoicesAndProperties, out);
+      out.close();
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+  }
+  
+  /**
+   * Show the dialog with information about this application.
+   */
+  private void showHelpAboutDialog() {
+    componentFactory.createInformationDialog(
+        "About Invoices and Properties",
+        appResources.getApplicationImage(ImageSize.SIZE_3),
+        null, 
+        InvoicesAndPropertiesRegistry.shortProductInfo + NEWLINE +
+        "Versie: " + InvoicesAndPropertiesRegistry.version + NEWLINE +
+        InvoicesAndPropertiesRegistry.copyrightMessage + NEWLINE +
+        "Auteur: " + InvoicesAndPropertiesRegistry.author)
+        .showAndWait();
+  }
+  
+  // TODO remove
+  public void showMessageDialog(MessageDialogType messageDialogType, String message) {
+    showMessageDialog(messageDialogType, message, null);
+  }
+  
+  public void showMessageDialog(MessageDialogType messageDialogType, String message, Image image) {
+    JDialog dlg;
+    dlg = MessageDialog.createMessageDialog(null, messageDialogType, null, message);
+    dlg.setModalityType(java.awt.Dialog.ModalityType.APPLICATION_MODAL);
+    dlg.setVisible(true);
+  }
+
+  /**
+   * Update the window title.
+   * <p>
+   * The format of the title is: {@link #WINDOW_TITLE} - &lt;dirty&gt;&lt;file-name&gt;<br/>
+   * Where:<br/>
+   * &lt;dirty&gt; is a '*' symbol if the data file is dirty, empty otherwise.<br/>
+   * &lt;file-name&gt; is the name of the file being operated on, or '&lt;NoName&gt' if there's no file name available.
+   */
+  private void updateTitle() {
+    StringBuilder buf = new StringBuilder();
+    
+    buf.append(WINDOW_TITLE);
+    buf.append(" - ");
+    if (invoicesAndPropertiesResource.isDirty()) {
+      buf.append("*");
+    }
+    String fileName = invoicesAndPropertiesResource.getFileName();
+    if (fileName.equals("")) {
+      fileName = "<NoName>";
+    }
+    buf.append(fileName);
+    
+    setTitle(buf.toString());
+  }
+  
+}
