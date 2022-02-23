@@ -1,0 +1,292 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ecore:EPackage xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" name="model" nsURI="http://www.goedegep.org/mortgage" nsPrefix="mortgage">
+  <eClassifiers xsi:type="ecore:EClass" name="Mortgage">
+    <eOperations name="getId" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eOperations name="addMortgageEvent">
+      <eParameters name="mortgageEvent" eType="#//MortgageEvent"/>
+    </eOperations>
+    <eOperations name="addMortgageEvent">
+      <eParameters name="mortgageEvent" eType="#//MortgageEvent"/>
+      <eParameters name="insertLocation" eType="#//MortgageEvent"/>
+      <eParameters name="before" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
+    </eOperations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="lender" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
+        unsettable="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The bank, or other financial institution, providing the mortgage."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="lenderAddress" eType="ecore:EClass ../../goedegep.rolodex.model/model/rolodex.ecore#//Address"
+        unsettable="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Address of the mortgage lender."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="lenderSigner1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
+        unsettable="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Name of the first signer on behalf of the mortgage lender."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="lenderSigner2" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
+        unsettable="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Name of the second signer on behalf of the mortgage lender."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="lenderBankAccountNumber"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString" unsettable="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The bank account number on which the payments have to be done."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="lenderBankAccountNumberNameAndAddress"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString" unsettable="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Name and address (as far as needed) to be provided with payments to the mortgageLenderBankAccountNumber."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="borrowerTitleAndName" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
+        unsettable="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Title and name of the borrower(s)."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="mortgageName" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
+        unsettable="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The name of the mortgage."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="borrowerAddress" eType="ecore:EClass ../../goedegep.rolodex.model/model/rolodex.ecore#//Address"
+        unsettable="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Address of the borrower(s)."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="mortgageNumber" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
+        unsettable="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The identification number of the mortgage."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="mortgageType" eType="#//MortgageType"
+        unsettable="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The type of mortgage."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="startingDate" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDate"
+        unsettable="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The starting date of the mortgage, typically the day the house is bought."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="firstPaymentDate" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDate"
+        unsettable="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The date the first payment is to be made."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="duration" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"
+        unsettable="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The duration in months."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="principal" eType="ecore:EDataType ../../goedegep.types.model/model/types.ecore#//EMoney"
+        unsettable="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The amount of the loan."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="interestRate" eType="ecore:EDataType ../../goedegep.types.model/model/types.ecore#//EFixedPointValue"
+        unsettable="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Interest rate in centi-percent."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="fixedInterestPeriod" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"
+        unsettable="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Period, in months, during which the interest rate is fixed."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="mortgageEvents" upperBound="-1"
+        eType="#//MortgageEvent" containment="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The events like monthly payments and changes in interest rate."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EEnum" name="MortgageType">
+    <eLiterals name="ANNUITY"/>
+    <eLiterals name="INTEREST_ONLY" value="1"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="MortgageEvent" abstract="true">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="date" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDate"
+        unsettable="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The date the event takes place."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="comments" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
+        unsettable="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Any remarks about this event."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="newInterestRate" eType="ecore:EDataType ../../goedegep.types.model/model/types.ecore#//EFixedPointValue"
+        unsettable="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="New interest rate."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="FinalPayment" eSuperTypes="#//MortgageEvent"/>
+  <eClassifiers xsi:type="ecore:EClass" name="PeriodicPayment" eSuperTypes="#//MortgageEvent">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="This class represents a periodic, usually monthly, payment."/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="payment" eType="ecore:EDataType ../../goedegep.types.model/model/types.ecore#//EMoney"
+        unsettable="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The amount paid this period."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="interest" eType="ecore:EDataType ../../goedegep.types.model/model/types.ecore#//EMoney"
+        unsettable="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Interest paid this period. The payment towards the principal is the payment minus this interest."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="balanceAfterPayment" eType="ecore:EDataType ../../goedegep.types.model/model/types.ecore#//EMoney"
+        unsettable="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="New debt (after this payment)."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="interestRate" eType="ecore:EDataType ../../goedegep.types.model/model/types.ecore#//EFixedPointValue"
+        unsettable="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Interest rate for this period. If the interest rate changes each month, this can be specified in this payment. Instead of having a NewInterestRate event each month.&#xD;&#xA;"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="nextPaymentDate" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDate"
+        unsettable="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Date for the next periodic payment."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="NewInterestRate" eSuperTypes="#//MortgageEvent">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="interestRate" eType="ecore:EDataType ../../goedegep.types.model/model/types.ecore#//EFixedPointValue"
+        unsettable="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The new interest rate in centi-percent."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="fixedInterestPeriod" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"
+        unsettable="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="New period, in months, during which the interest rate is fixed."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="startingDate" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDate"
+        unsettable="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Date from which the new rate applies."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Mortgages">
+    <eOperations name="getMortgage" eType="#//Mortgage">
+      <eParameters name="mortgageNumber" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    </eOperations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="mortgages" upperBound="-1"
+        eType="#//Mortgage" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="interestRateSets" upperBound="-1"
+        eType="#//InterestRateSet" containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="InterestCompensationMortgage" eSuperTypes="#//Mortgage">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="compensationPercentageBorrower"
+        eType="ecore:EDataType ../../goedegep.types.model/model/types.ecore#//EFixedPointValue"
+        unsettable="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="percentageDecemberPayment"
+        eType="ecore:EDataType ../../goedegep.types.model/model/types.ecore#//EFixedPointValue"
+        unsettable="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="compensationPaymentsPerYear"
+        upperBound="-1" eType="#//IntegerToEList" containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="IntegerToEList" instanceClassName="java.util.Map$Entry">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="key" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EIntegerObject"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="value" upperBound="-1"
+        eType="#//CompensationPayment" containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="CompensationPayment">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="date" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDate"
+        unsettable="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="amount" eType="ecore:EDataType ../../goedegep.types.model/model/types.ecore#//EMoney"
+        unsettable="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="description" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
+        unsettable="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="CompensationPayments">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="compensationpayments" upperBound="-1"
+        eType="#//CompensationPayment"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="PeriodicPaymentWithCompensation" eSuperTypes="#//PeriodicPayment">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="borrowerCompensation" eType="ecore:EDataType ../../goedegep.types.model/model/types.ecore#//EMoney"
+        unsettable="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="decemberPaymentAccumulation"
+        eType="ecore:EDataType ../../goedegep.types.model/model/types.ecore#//EMoney"
+        unsettable="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="NewInterestRateWithCompensation" eSuperTypes="#//NewInterestRate">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="compensationPercentageBorrower"
+        eType="ecore:EDataType ../../goedegep.types.model/model/types.ecore#//EFixedPointValue"
+        unsettable="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="percentageDecemberPayment"
+        eType="ecore:EDataType ../../goedegep.types.model/model/types.ecore#//EFixedPointValue"
+        unsettable="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="MortgageYearlyOverview">
+    <eOperations name="getPaymentsTotal" eType="ecore:EDataType ../../goedegep.types.model/model/types.ecore#//EMoney"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="debtAtBeginningOfYear"
+        eType="ecore:EDataType ../../goedegep.types.model/model/types.ecore#//EMoney"
+        unsettable="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="debtAtEndOfYear" eType="ecore:EDataType ../../goedegep.types.model/model/types.ecore#//EMoney"
+        unsettable="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="interestPaid" eType="ecore:EDataType ../../goedegep.types.model/model/types.ecore#//EMoney"
+        unsettable="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="repayment" eType="ecore:EDataType ../../goedegep.types.model/model/types.ecore#//EMoney"
+        unsettable="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="year" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EIntegerObject"
+        unsettable="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="InterestCompensationMortgageYearlyOverview"
+      eSuperTypes="#//MortgageYearlyOverview">
+    <eOperations name="getCompensationToBePaid" eType="ecore:EDataType ../../goedegep.types.model/model/types.ecore#//EMoney"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="compensationBorrower" eType="ecore:EDataType ../../goedegep.types.model/model/types.ecore#//EMoney"
+        unsettable="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="decemberPayment" eType="ecore:EDataType ../../goedegep.types.model/model/types.ecore#//EMoney"
+        unsettable="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="compensationPayment" eType="ecore:EDataType ../../goedegep.types.model/model/types.ecore#//EMoney"
+        unsettable="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="InterestRateSet">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="description" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
+        unsettable="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
+        unsettable="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="rates" upperBound="-1"
+        eType="#//Rate" containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Rate">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="date" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDate"
+        unsettable="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="rate" eType="ecore:EDataType ../../goedegep.types.model/model/types.ecore#//EFixedPointValue"
+        unsettable="true"/>
+  </eClassifiers>
+</ecore:EPackage>

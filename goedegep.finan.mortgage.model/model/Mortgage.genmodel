@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<genmodel:GenModel xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore"
+    xmlns:genmodel="http://www.eclipse.org/emf/2002/GenModel" modelDirectory="/goedegep.finan.mortgage.model/src/main/java" modelPluginID=""
+    modelName="Mortgage" rootExtendsClass="org.eclipse.emf.ecore.impl.MinimalEObjectImpl$Container"
+    importerID="org.eclipse.emf.importer.ecore" bundleManifest="false" complianceLevel="13.0"
+    copyrightFields="false" usedGenPackages="../../goedegep.rolodex.model/model/rolodex.genmodel#//model ../../goedegep.types.model/model/types.genmodel#//model"
+    operationReflection="true" importOrganizing="true">
+  <foreignModel>Mortgage.ecore</foreignModel>
+  <genPackages prefix="Mortgage" basePackage="goedegep.finan.mortgage" disposableProviderFactory="true"
+      ecorePackage="Mortgage.ecore#/">
+    <genEnums typeSafeEnumCompatible="false" ecoreEnum="Mortgage.ecore#//MortgageType">
+      <genEnumLiterals ecoreEnumLiteral="Mortgage.ecore#//MortgageType/ANNUITY"/>
+      <genEnumLiterals ecoreEnumLiteral="Mortgage.ecore#//MortgageType/INTEREST_ONLY"/>
+    </genEnums>
+    <genClasses ecoreClass="Mortgage.ecore#//Mortgage">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Mortgage.ecore#//Mortgage/lender"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Mortgage.ecore#//Mortgage/lenderAddress"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Mortgage.ecore#//Mortgage/lenderSigner1"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Mortgage.ecore#//Mortgage/lenderSigner2"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Mortgage.ecore#//Mortgage/lenderBankAccountNumber"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Mortgage.ecore#//Mortgage/lenderBankAccountNumberNameAndAddress"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Mortgage.ecore#//Mortgage/borrowerTitleAndName"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Mortgage.ecore#//Mortgage/mortgageName"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Mortgage.ecore#//Mortgage/borrowerAddress"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Mortgage.ecore#//Mortgage/mortgageNumber"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Mortgage.ecore#//Mortgage/mortgageType"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Mortgage.ecore#//Mortgage/startingDate"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Mortgage.ecore#//Mortgage/firstPaymentDate"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Mortgage.ecore#//Mortgage/duration"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Mortgage.ecore#//Mortgage/principal"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Mortgage.ecore#//Mortgage/interestRate"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Mortgage.ecore#//Mortgage/fixedInterestPeriod"/>
+      <genFeatures children="true" createChild="true" propertySortChoices="true" ecoreFeature="ecore:EReference Mortgage.ecore#//Mortgage/mortgageEvents"/>
+      <genOperations ecoreOperation="Mortgage.ecore#//Mortgage/getId"/>
+      <genOperations ecoreOperation="Mortgage.ecore#//Mortgage/addMortgageEvent">
+        <genParameters ecoreParameter="Mortgage.ecore#//Mortgage/addMortgageEvent/mortgageEvent"/>
+      </genOperations>
+      <genOperations ecoreOperation="Mortgage.ecore#//Mortgage/addMortgageEvent.1">
+        <genParameters ecoreParameter="Mortgage.ecore#//Mortgage/addMortgageEvent.1/mortgageEvent"/>
+        <genParameters ecoreParameter="Mortgage.ecore#//Mortgage/addMortgageEvent.1/insertLocation"/>
+        <genParameters ecoreParameter="Mortgage.ecore#//Mortgage/addMortgageEvent.1/before"/>
+      </genOperations>
+    </genClasses>
+    <genClasses ecoreClass="Mortgage.ecore#//MortgageEvent">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Mortgage.ecore#//MortgageEvent/date"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Mortgage.ecore#//MortgageEvent/comments"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Mortgage.ecore#//MortgageEvent/newInterestRate"/>
+    </genClasses>
+    <genClasses ecoreClass="Mortgage.ecore#//FinalPayment"/>
+    <genClasses ecoreClass="Mortgage.ecore#//PeriodicPayment">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Mortgage.ecore#//PeriodicPayment/payment"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Mortgage.ecore#//PeriodicPayment/interest"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Mortgage.ecore#//PeriodicPayment/balanceAfterPayment"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Mortgage.ecore#//PeriodicPayment/interestRate"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Mortgage.ecore#//PeriodicPayment/nextPaymentDate"/>
+    </genClasses>
+    <genClasses ecoreClass="Mortgage.ecore#//NewInterestRate">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Mortgage.ecore#//NewInterestRate/interestRate"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Mortgage.ecore#//NewInterestRate/fixedInterestPeriod"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Mortgage.ecore#//NewInterestRate/startingDate"/>
+    </genClasses>
+    <genClasses ecoreClass="Mortgage.ecore#//Mortgages">
+      <genFeatures children="true" createChild="true" propertySortChoices="true" ecoreFeature="ecore:EReference Mortgage.ecore#//Mortgages/mortgages"/>
+      <genFeatures children="true" createChild="true" propertySortChoices="true" ecoreFeature="ecore:EReference Mortgage.ecore#//Mortgages/interestRateSets"/>
+      <genOperations ecoreOperation="Mortgage.ecore#//Mortgages/getMortgage">
+        <genParameters ecoreParameter="Mortgage.ecore#//Mortgages/getMortgage/mortgageNumber"/>
+      </genOperations>
+    </genClasses>
+    <genClasses ecoreClass="Mortgage.ecore#//InterestCompensationMortgage">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Mortgage.ecore#//InterestCompensationMortgage/compensationPercentageBorrower"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Mortgage.ecore#//InterestCompensationMortgage/percentageDecemberPayment"/>
+      <genFeatures children="true" createChild="true" propertySortChoices="true" ecoreFeature="ecore:EReference Mortgage.ecore#//InterestCompensationMortgage/compensationPaymentsPerYear"/>
+    </genClasses>
+    <genClasses ecoreClass="Mortgage.ecore#//IntegerToEList">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Mortgage.ecore#//IntegerToEList/key"/>
+      <genFeatures children="true" createChild="true" propertySortChoices="true" ecoreFeature="ecore:EReference Mortgage.ecore#//IntegerToEList/value"/>
+    </genClasses>
+    <genClasses ecoreClass="Mortgage.ecore#//CompensationPayment">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Mortgage.ecore#//CompensationPayment/date"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Mortgage.ecore#//CompensationPayment/amount"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Mortgage.ecore#//CompensationPayment/description"/>
+    </genClasses>
+    <genClasses ecoreClass="Mortgage.ecore#//CompensationPayments">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Mortgage.ecore#//CompensationPayments/compensationpayments"/>
+    </genClasses>
+    <genClasses ecoreClass="Mortgage.ecore#//PeriodicPaymentWithCompensation">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Mortgage.ecore#//PeriodicPaymentWithCompensation/borrowerCompensation"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Mortgage.ecore#//PeriodicPaymentWithCompensation/decemberPaymentAccumulation"/>
+    </genClasses>
+    <genClasses ecoreClass="Mortgage.ecore#//NewInterestRateWithCompensation">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Mortgage.ecore#//NewInterestRateWithCompensation/compensationPercentageBorrower"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Mortgage.ecore#//NewInterestRateWithCompensation/percentageDecemberPayment"/>
+    </genClasses>
+    <genClasses ecoreClass="Mortgage.ecore#//MortgageYearlyOverview">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Mortgage.ecore#//MortgageYearlyOverview/debtAtBeginningOfYear"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Mortgage.ecore#//MortgageYearlyOverview/debtAtEndOfYear"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Mortgage.ecore#//MortgageYearlyOverview/interestPaid"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Mortgage.ecore#//MortgageYearlyOverview/repayment"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Mortgage.ecore#//MortgageYearlyOverview/year"/>
+      <genOperations ecoreOperation="Mortgage.ecore#//MortgageYearlyOverview/getPaymentsTotal"/>
+    </genClasses>
+    <genClasses ecoreClass="Mortgage.ecore#//InterestCompensationMortgageYearlyOverview">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Mortgage.ecore#//InterestCompensationMortgageYearlyOverview/compensationBorrower"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Mortgage.ecore#//InterestCompensationMortgageYearlyOverview/decemberPayment"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Mortgage.ecore#//InterestCompensationMortgageYearlyOverview/compensationPayment"/>
+      <genOperations ecoreOperation="Mortgage.ecore#//InterestCompensationMortgageYearlyOverview/getCompensationToBePaid"/>
+    </genClasses>
+    <genClasses ecoreClass="Mortgage.ecore#//InterestRateSet">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Mortgage.ecore#//InterestRateSet/description"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Mortgage.ecore#//InterestRateSet/name"/>
+      <genFeatures children="true" createChild="true" propertySortChoices="true" ecoreFeature="ecore:EReference Mortgage.ecore#//InterestRateSet/rates"/>
+    </genClasses>
+    <genClasses ecoreClass="Mortgage.ecore#//Rate">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Mortgage.ecore#//Rate/date"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Mortgage.ecore#//Rate/rate"/>
+    </genClasses>
+  </genPackages>
+</genmodel:GenModel>
