@@ -1,0 +1,27 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>goedegep.gpx</groupId>
+  <artifactId>goedegep-gpx</artifactId>
+  <name>goedegep GPX</name>
+  <description>GPX file related functionality</description>
+  <parent>
+    <groupId>goedegep.toplevelpom</groupId>
+    <artifactId>goedegep-toplevelpom</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <relativePath>../goedegep.toplevelpom</relativePath>
+  </parent>
+  <dependencies>
+    <dependency>
+      <groupId>goedegep.geo</groupId>
+      <artifactId>goedegep-geo</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>goedegep.gpx</groupId>
+      <artifactId>goedegep-gpx-model</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>goedegep.util</groupId>
+      <artifactId>goedegep-util</artifactId>
+    </dependency>
+  </dependencies>
+</project>
