@@ -1,0 +1,64 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>goedegep.media</groupId>
+  <artifactId>goedegep-media-photoshow-app</artifactId>
+  <packaging>jar</packaging>
+  <name>PhotoShow</name>
+  <description>This project contains a photo show application.</description>
+  <parent>
+    <groupId>goedegep.toplevelpom</groupId>
+    <artifactId>goedegep-toplevelpom</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <relativePath>../goedegep.toplevelpom</relativePath>
+  </parent>
+  <dependencies>
+    <dependency>
+      <groupId>gluon-oss-maps</groupId>
+      <artifactId>gluon-oss-maps</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>goedegep.util</groupId>
+      <artifactId>goedegep-util</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>goedegep.appgen</groupId>
+      <artifactId>goedegep-appgen</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>goedegep.jfx</groupId>
+      <artifactId>goedegep-jfx</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>goedegep.media</groupId>
+      <artifactId>goedegep-media-photoshow-model</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>goedegep.media</groupId>
+      <artifactId>goedegep-media-app</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>goedegep.properties</groupId>
+      <artifactId>goedegep-properties-app</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.openjfx</groupId>
+      <artifactId>javafx-swing</artifactId>
+    </dependency>
+  </dependencies>
+<!--   <build> -->
+<!--     <plugins> -->
+<!--       <plugin> -->
+<!--         <groupId>org.apache.maven.plugins</groupId> -->
+<!--         <artifactId>maven-jar-plugin</artifactId> -->
+<!--         <configuration> -->
+<!--           <archive> -->
+<!--             <manifest> -->
+<!--               <mainClass>goedegep.fotoshow.FotoShow</mainClass> -->
+<!--               <addClasspath>true</addClasspath> -->
+<!--             </manifest> -->
+<!--           </archive> -->
+<!--         </configuration> -->
+<!--       </plugin> -->
+<!--     </plugins> -->
+<!--   </build> -->
+</project>
