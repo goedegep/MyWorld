@@ -1,0 +1,1 @@
+package goedegep.util.douglaspeuckerreducer;
