@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<genmodel:GenModel xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" xmlns:genmodel="http://www.eclipse.org/emf/2002/GenModel"
+    modelDirectory="/goedegep.configuration.model/src/main/java" creationIcons="false"
+    editDirectory="/goedegep.configuration.model.edit/src-gen" editorDirectory="/goedegep.configuration.model.editor/src-gen"
+    modelPluginID="" modelName="Configuration" rootExtendsClass="org.eclipse.emf.ecore.impl.MinimalEObjectImpl$Container"
+    codeFormatting="true" importerID="org.eclipse.emf.importer.ecore" complianceLevel="8.0"
+    copyrightFields="false" usedGenPackages="../../goedegep.types.model/model/types.genmodel#//model"
+    operationReflection="true" importOrganizing="true">
+  <foreignModel>configuration.ecore</foreignModel>
+  <testsDirectory xsi:nil="true"/>
+  <genPackages prefix="Configuration" basePackage="goedegep.configuration" disposableProviderFactory="true"
+      ecorePackage="configuration.ecore#/">
+    <genClasses ecoreClass="configuration.ecore#//Look">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute configuration.ecore#//Look/backgroundColor"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute configuration.ecore#//Look/buttonBackgroundColor"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute configuration.ecore#//Look/panelBackgroundColor"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute configuration.ecore#//Look/listBackgroundColor"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute configuration.ecore#//Look/labelBackgroundColor"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute configuration.ecore#//Look/boxBackgroundColor"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute configuration.ecore#//Look/textFieldBackgroundColor"/>
+    </genClasses>
+    <genClasses ecoreClass="configuration.ecore#//ModuleLook">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference configuration.ecore#//ModuleLook/look"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute configuration.ecore#//ModuleLook/moduleName"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference configuration.ecore#//ModuleLook/moduleLooks"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute configuration.ecore#//ModuleLook/resourcesClassName"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference configuration.ecore#//ModuleLook/parentModuleLook"/>
+    </genClasses>
+    <genClasses ecoreClass="configuration.ecore#//LookInfo">
+      <genFeatures children="true" createChild="true" propertySortChoices="true" ecoreFeature="ecore:EReference configuration.ecore#//LookInfo/moduleLooks"/>
+    </genClasses>
+  </genPackages>
+</genmodel:GenModel>
