@@ -1,0 +1,24 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>goedegep.media</groupId>
+  <artifactId>goedegep-media-app</artifactId>
+  <packaging>jar</packaging>
+  <name>Launcher window of the media application component</name>
+  <description>This project contains the main window for the application launcher window of the Media component of the MyWorld application.</description>
+  <parent>
+    <groupId>goedegep.toplevelpom</groupId>
+    <artifactId>goedegep-toplevelpom</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <relativePath>../goedegep.toplevelpom</relativePath>
+  </parent>
+  <dependencies>
+    <dependency>
+      <groupId>goedegep.jfx</groupId>
+      <artifactId>goedegep-jfx</artifactId>
+    </dependency>
+    <dependency>
+        <groupId>goedegep.media</groupId>
+        <artifactId>goedegep-media-mediadb-model</artifactId>
+    </dependency>
+  </dependencies>
+</project>
