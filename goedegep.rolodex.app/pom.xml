@@ -1,0 +1,64 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>goedegep.rolodex</groupId>
+  <artifactId>goedegep-rolodex-app</artifactId>
+  <packaging>jar</packaging>
+  <name>Goedegep Rolodex Application</name>
+  <description>This project contains the goedegep rolodex application.</description>
+  <parent>
+    <groupId>goedegep.toplevelpom</groupId>
+    <artifactId>goedegep-toplevelpom</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <relativePath>../goedegep.toplevelpom</relativePath>
+  </parent>
+  <dependencies>
+    <dependency>
+      <groupId>goedegep.appgen</groupId>
+      <artifactId>goedegep-appgen</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>goedegep.jfx</groupId>
+      <artifactId>goedegep-jfx</artifactId>
+    </dependency>
+    <dependency>
+        <groupId>goedegep.configuration</groupId>
+        <artifactId>goedegep-configuration-model</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>goedegep.properties</groupId>
+      <artifactId>goedegep-properties-app</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>goedegep.rolodex</groupId>
+      <artifactId>goedegep-rolodex-model</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>goedegep.util</groupId>
+      <artifactId>goedegep-util</artifactId>
+     </dependency>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+    </dependency>
+    <dependency>
+     <groupId>org.eclipse.emf</groupId>
+	  <artifactId>org.eclipse.emf.common</artifactId>
+    </dependency>
+    <dependency>
+     <groupId>org.eclipse.emf</groupId>
+	  <artifactId>org.eclipse.emf.ecore</artifactId>
+    </dependency>
+    <dependency>
+     <groupId>org.eclipse.emf</groupId>
+	  <artifactId>org.eclipse.emf.ecore.xmi</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.controlsfx</groupId>
+      <artifactId>controlsfx</artifactId>
+    <version>11.0.2</version>
+</dependency><!--     <dependency> -->
+<!--       <groupId>org.springframework</groupId> -->
+<!--       <artifactId>spring</artifactId> -->
+<!--     </dependency> -->
+  </dependencies>
+</project>
