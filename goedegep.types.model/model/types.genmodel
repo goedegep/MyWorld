@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<genmodel:GenModel xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" xmlns:genmodel="http://www.eclipse.org/emf/2002/GenModel"
+    modelDirectory="/goedegep.types.model/src/main/java" creationIcons="false"
+    editDirectory="/goedegep.types.model.edit/src/main/java" editorDirectory="/goedegep.types.model.editor/src/main/java"
+    modelPluginID="" modelName="Types" editPluginClass="goedegep.types.model.provider.TypesEditPlugin"
+    editorPluginClass="goedegep.types.model.presentation.TypesEditorPlugin" rootExtendsClass="org.eclipse.emf.ecore.impl.MinimalEObjectImpl$Container"
+    codeFormatting="true" importerID="org.eclipse.emf.importer.ecore" complianceLevel="8.0"
+    copyrightFields="false" testsPluginID="goedegep.model.types.tests" operationReflection="true"
+    importOrganizing="true">
+  <foreignModel>types.ecore</foreignModel>
+  <testsDirectory xsi:nil="true"/>
+  <genPackages prefix="Types" basePackage="goedegep.types" disposableProviderFactory="true"
+      ecorePackage="types.ecore#/">
+    <genDataTypes ecoreDataType="types.ecore#//EMoney"/>
+    <genDataTypes ecoreDataType="types.ecore#//EFlexDate"/>
+    <genDataTypes ecoreDataType="types.ecore#//EColor"/>
+    <genDataTypes ecoreDataType="types.ecore#//EFixedPointValue"/>
+    <genDataTypes ecoreDataType="types.ecore#//ELocalDate"/>
+    <genDataTypes ecoreDataType="types.ecore#//EWGS84Coordinates"/>
+    <genDataTypes ecoreDataType="types.ecore#//EYearMonth"/>
+    <genClasses ecoreClass="types.ecore#//FileReference">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute types.ecore#//FileReference/file"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute types.ecore#//FileReference/title"/>
+    </genClasses>
+    <genClasses image="false" ecoreClass="types.ecore#//Comparable">
+      <genTypeParameters ecoreTypeParameter="types.ecore#//Comparable/T"/>
+    </genClasses>
+    <genClasses ecoreClass="types.ecore#//DateRateTuplet">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute types.ecore#//DateRateTuplet/date"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute types.ecore#//DateRateTuplet/rate"/>
+    </genClasses>
+    <genClasses ecoreClass="types.ecore#//Event">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute types.ecore#//Event/date"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute types.ecore#//Event/notes"/>
+    </genClasses>
+  </genPackages>
+</genmodel:GenModel>

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ecore:EPackage xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" name="model" nsURI="http:///goedegep.types/model" nsPrefix="types">
+  <eClassifiers xsi:type="ecore:EClass" name="FileReference">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="file" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
+        unsettable="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="title" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
+        unsettable="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EDataType" name="EMoney" instanceClassName="goedegep.util.money.PgCurrency"/>
+  <eClassifiers xsi:type="ecore:EDataType" name="EFlexDate" instanceClassName="goedegep.util.datetime.FlexDate"/>
+  <eClassifiers xsi:type="ecore:EDataType" name="EColor" instanceClassName="javafx.scene.paint.Color"/>
+  <eClassifiers xsi:type="ecore:EClass" name="Comparable" instanceClassName="java.lang.Comparable"
+      abstract="true" interface="true">
+    <eTypeParameters name="T"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EDataType" name="EFixedPointValue" instanceClassName="goedegep.util.fixedpointvalue.FixedPointValue"/>
+  <eClassifiers xsi:type="ecore:EClass" name="DateRateTuplet">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="date" eType="#//ELocalDate"
+        unsettable="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="rate" eType="#//EMoney"
+        unsettable="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Event">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="date" eType="#//EFlexDate"
+        unsettable="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="notes" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
+        unsettable="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EDataType" name="ELocalDate" instanceClassName="java.time.LocalDate"/>
+  <eClassifiers xsi:type="ecore:EDataType" name="EWGS84Coordinates" instanceClassName="goedegep.geo.dbl.WGS84Coordinates"/>
+  <eClassifiers xsi:type="ecore:EDataType" name="EYearMonth" instanceClassName="java.time.YearMonth"/>
+</ecore:EPackage>
