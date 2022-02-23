@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<goedegep.properties.model:PropertyDescriptorGroup xmi:version="2.0"
+    xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:goedegep.properties.model="http://goedegep.properties/model" name="TestProperties"
+    packageName="goedegep.app.configuration.testregistry" registryClassName="TestRegistry">
+  <propertyDescriptors name="author" description="Auteur van dit programma." displayName="Auteur"
+      initialValue="Peter Goedegebure" installInitialValue="true"/>
+  <propertyDescriptors xsi:type="goedegep.properties.model:FilePropertyDescriptor" type="FILE"
+      name="configurationFile" description="Naam van het bestand met configuratie informatie."
+      displayName="Configuratie bestand naam" initialValue="TestAppConfiguration.xmi"
+      installInitialValue="true">
+    <fileExtensions>xmi</fileExtensions>
+  </propertyDescriptors>
+  <propertyDescriptors name="copyrightMessage" description="Copyright informatie."
+      displayName="Copyright Tekst" initialValue="Copyright (c) 2001-2012" installInitialValue="true"/>
+  <propertyDescriptors xsi:type="goedegep.properties.model:FilePropertyDescriptor" type="FILE"
+      name="customPropertiesFile" description="Naam van het bestand met gebruikersinstellingen."
+      displayName="Gebruikersinstellingen bestand naam" initialValue="TestPropertiesUserSettings.xmi"
+      installInitialValue="true">
+    <fileExtensions>xmi</fileExtensions>
+  </propertyDescriptors>
+  <propertyDescriptors name="version" description="Software versie informatie." displayName="Versie"
+      initialValue="1.0" installInitialValue="true"/>
+  <propertyDescriptors xsi:type="goedegep.properties.model:PropertyDescriptor" type="DIRECTORY"
+      name="dataFolder" description="Naam van de map met alle gegevens." registryName="dataDirectory"
+      displayName="Gegevens map" initialValue="DefaultDataDir"
+      installInitialValue="true" userSettable="true">
+  </propertyDescriptors>
+</goedegep.properties.model:PropertyDescriptorGroup>
