@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<genmodel:GenModel xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore"
+    xmlns:genmodel="http://www.eclipse.org/emf/2002/GenModel" modelDirectory="/goedegep.finan.investmentinsurance.model/src/main/java"
+    modelPluginID="" modelName="Investmentinsurance" rootExtendsClass="org.eclipse.emf.ecore.impl.MinimalEObjectImpl$Container"
+    importerID="org.eclipse.emf.importer.ecore" complianceLevel="5.0" copyrightFields="false"
+    usedGenPackages="../../goedegep.rolodex.model/model/rolodex.genmodel#//model ../../goedegep.types.model/model/types.genmodel#//model"
+    operationReflection="true" importOrganizing="true">
+  <foreignModel>InvestmentInsurance.ecore</foreignModel>
+  <genPackages prefix="InvestmentInsurance" basePackage="goedegep.finan.investmentinsurance"
+      disposableProviderFactory="true" ecorePackage="InvestmentInsurance.ecore#/">
+    <genClasses ecoreClass="InvestmentInsurance.ecore#//InvestmentInsurance">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference InvestmentInsurance.ecore#//InvestmentInsurance/insuranceCompany"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute InvestmentInsurance.ecore#//InvestmentInsurance/policyNumber"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute InvestmentInsurance.ecore#//InvestmentInsurance/startingDate"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference InvestmentInsurance.ecore#//InvestmentInsurance/policyHolder"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute InvestmentInsurance.ecore#//InvestmentInsurance/premium"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute InvestmentInsurance.ecore#//InvestmentInsurance/insuredBenefitOnDeath"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference InvestmentInsurance.ecore#//InvestmentInsurance/investmentParts"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference InvestmentInsurance.ecore#//InvestmentInsurance/events"/>
+      <genOperations ecoreOperation="InvestmentInsurance.ecore#//InvestmentInsurance/getLastKnownValue"/>
+      <genOperations ecoreOperation="InvestmentInsurance.ecore#//InvestmentInsurance/getDateForLastKnownValue"/>
+      <genOperations ecoreOperation="InvestmentInsurance.ecore#//InvestmentInsurance/getLastAnnualStatement"/>
+      <genOperations ecoreOperation="InvestmentInsurance.ecore#//InvestmentInsurance/getAverageReturnOnInvestment"/>
+    </genClasses>
+    <genClasses ecoreClass="InvestmentInsurance.ecore#//InvestmentInsurancesData">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference InvestmentInsurance.ecore#//InvestmentInsurancesData/insuranceCompanies"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference InvestmentInsurance.ecore#//InvestmentInsurancesData/investmentInsurances"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference InvestmentInsurance.ecore#//InvestmentInsurancesData/personList"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference InvestmentInsurance.ecore#//InvestmentInsurancesData/addressList"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference InvestmentInsurance.ecore#//InvestmentInsurancesData/cityList"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference InvestmentInsurance.ecore#//InvestmentInsurancesData/phoneNumberList"/>
+      <genOperations ecoreOperation="InvestmentInsurance.ecore#//InvestmentInsurancesData/getLastKnownTotalValue"/>
+      <genOperations ecoreOperation="InvestmentInsurance.ecore#//InvestmentInsurancesData/getDateForLastKnownTotalValue"/>
+      <genOperations ecoreOperation="InvestmentInsurance.ecore#//InvestmentInsurancesData/getTotalPremium"/>
+      <genOperations ecoreOperation="InvestmentInsurance.ecore#//InvestmentInsurancesData/getAverageTotalReturnOnInvestment"/>
+    </genClasses>
+    <genClasses ecoreClass="InvestmentInsurance.ecore#//InsuranceCompany">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference InvestmentInsurance.ecore#//InsuranceCompany/investmentFunds"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute InvestmentInsurance.ecore#//InsuranceCompany/department"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute InvestmentInsurance.ecore#//InsuranceCompany/website"/>
+    </genClasses>
+    <genClasses ecoreClass="InvestmentInsurance.ecore#//AnnualStatement">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute InvestmentInsurance.ecore#//AnnualStatement/periodFrom"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute InvestmentInsurance.ecore#//AnnualStatement/periodUntil"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute InvestmentInsurance.ecore#//AnnualStatement/premiumPaid"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute InvestmentInsurance.ecore#//AnnualStatement/premiumDeathRiskCoverage"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute InvestmentInsurance.ecore#//AnnualStatement/premiumOccupationalDisabilityRiskCoverage"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute InvestmentInsurance.ecore#//AnnualStatement/upkeepPremium"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute InvestmentInsurance.ecore#//AnnualStatement/firstCostsInsuranceCompany"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute InvestmentInsurance.ecore#//AnnualStatement/continuingCostsInsuranceCompany"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute InvestmentInsurance.ecore#//AnnualStatement/managementCosts"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute InvestmentInsurance.ecore#//AnnualStatement/buyAndSellCosts"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute InvestmentInsurance.ecore#//AnnualStatement/mutationCosts"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute InvestmentInsurance.ecore#//AnnualStatement/costsRestitution"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute InvestmentInsurance.ecore#//AnnualStatement/corrections"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute InvestmentInsurance.ecore#//AnnualStatement/earnedOnTheParticipations"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference InvestmentInsurance.ecore#//AnnualStatement/participations"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute InvestmentInsurance.ecore#//AnnualStatement/exampleCapitalOnEndDate"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute InvestmentInsurance.ecore#//AnnualStatement/expectedYearlyCostsIncrease"/>
+      <genOperations ecoreOperation="InvestmentInsurance.ecore#//AnnualStatement/totalCosts"/>
+      <genOperations ecoreOperation="InvestmentInsurance.ecore#//AnnualStatement/valueAtYearStart"/>
+      <genOperations ecoreOperation="InvestmentInsurance.ecore#//AnnualStatement/percentageCosts"/>
+      <genOperations ecoreOperation="InvestmentInsurance.ecore#//AnnualStatement/fixedCosts"/>
+    </genClasses>
+    <genClasses ecoreClass="InvestmentInsurance.ecore#//InvestmentFund">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute InvestmentInsurance.ecore#//InvestmentFund/name"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute InvestmentInsurance.ecore#//InvestmentFund/fundInformation"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference InvestmentInsurance.ecore#//InvestmentFund/stockPrices"/>
+      <genOperations ecoreOperation="InvestmentInsurance.ecore#//InvestmentFund/getStockPrice">
+        <genParameters ecoreParameter="InvestmentInsurance.ecore#//InvestmentFund/getStockPrice/date"/>
+      </genOperations>
+    </genClasses>
+    <genClasses ecoreClass="InvestmentInsurance.ecore#//Participation">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference InvestmentInsurance.ecore#//Participation/investmentFund"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute InvestmentInsurance.ecore#//Participation/participationMutations"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute InvestmentInsurance.ecore#//Participation/exampleReturnOnInvestmentNetHistoric"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute InvestmentInsurance.ecore#//Participation/exampleReturnOnInvestmentGross"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute InvestmentInsurance.ecore#//Participation/exampleReturnOnInvestmentGrossCompanyOwn"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute InvestmentInsurance.ecore#//Participation/exampleReturnOnInvestmentPessimistic"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute InvestmentInsurance.ecore#//Participation/totalExpenseRatio"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute InvestmentInsurance.ecore#//Participation/exampleCapitalNetHistoric"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute InvestmentInsurance.ecore#//Participation/exampleCapitalGross"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute InvestmentInsurance.ecore#//Participation/exampleCapitalGrossCompanyOwn"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute InvestmentInsurance.ecore#//Participation/exampleCapitalPessimistic"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute InvestmentInsurance.ecore#//Participation/returnOnInvestmentReductionNetHistoric"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute InvestmentInsurance.ecore#//Participation/exampleCapitalAfterReduction"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute InvestmentInsurance.ecore#//Participation/distributionPercentage"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute InvestmentInsurance.ecore#//Participation/standardFundReturnOnInvestment"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute InvestmentInsurance.ecore#//Participation/exampleCapitalStandardFundReturnOnInvestment"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute InvestmentInsurance.ecore#//Participation/numberOfParticipationsEnd"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute InvestmentInsurance.ecore#//Participation/participationMutationsComplete"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference InvestmentInsurance.ecore#//Participation/annualStatement"/>
+      <genOperations ecoreOperation="InvestmentInsurance.ecore#//Participation/numberOfParticipationsStart"/>
+      <genOperations ecoreOperation="InvestmentInsurance.ecore#//Participation/endValue"/>
+      <genOperations ecoreOperation="InvestmentInsurance.ecore#//Participation/numberOfParticipationsBought"/>
+      <genOperations ecoreOperation="InvestmentInsurance.ecore#//Participation/numberOfParticipationsSold"/>
+    </genClasses>
+    <genClasses ecoreClass="InvestmentInsurance.ecore#//InvestmentPart">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference InvestmentInsurance.ecore#//InvestmentPart/investmentFund"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute InvestmentInsurance.ecore#//InvestmentPart/percentage"/>
+    </genClasses>
+    <genClasses ecoreClass="InvestmentInsurance.ecore#//FundChange">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference InvestmentInsurance.ecore#//FundChange/fromFund"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference InvestmentInsurance.ecore#//FundChange/toFund"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute InvestmentInsurance.ecore#//FundChange/fromNumberOfParticipations"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute InvestmentInsurance.ecore#//FundChange/toNumberOfParticipations"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute InvestmentInsurance.ecore#//FundChange/fromStockPrice"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute InvestmentInsurance.ecore#//FundChange/toStockPrice"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute InvestmentInsurance.ecore#//FundChange/fromAverageHistoricReturnOnInvestment"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute InvestmentInsurance.ecore#//FundChange/fromTER"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute InvestmentInsurance.ecore#//FundChange/toAverageHistoricReturnOnInvestment"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute InvestmentInsurance.ecore#//FundChange/toTER"/>
+    </genClasses>
+    <genClasses ecoreClass="InvestmentInsurance.ecore#//ExtraInvestment">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute InvestmentInsurance.ecore#//ExtraInvestment/premium"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute InvestmentInsurance.ecore#//ExtraInvestment/depositDate"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference InvestmentInsurance.ecore#//ExtraInvestment/investmentParts"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute InvestmentInsurance.ecore#//ExtraInvestment/overviewDate"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference InvestmentInsurance.ecore#//ExtraInvestment/participations"/>
+    </genClasses>
+  </genPackages>
+</genmodel:GenModel>
