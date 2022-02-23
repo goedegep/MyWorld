@@ -1,0 +1,68 @@
+h2. Functionality
+* List of all discs (as they are in the drawers and on the Dune)
+
+h2. Disc view
+Lists all items in disc
+
+* Disc list
+** goto, search, filter:  a        next
+** starts with, contains
+** disk name, artist, album title, track, any
+
+
+* artist name -   album title – front picture
+** track name 1    duration
+   author
+   player 1
+** track name 2
+* artist name 3   -   album title 2
+** disc 1
+** track name 1
+* mp3 albums D
+** artist name 1 – album title (folder name)
+*** track name 1
+*** track name 2
+
+h2. Artist view
+
+Artist info
+my info
+link to allmusic
+sample
+
+Discography         filters: show related artists, I have only
+                sort: by issue date, by title
+                view: tree, table
+
+artist name -   album title - year  - picture
+    track name 1    duration
+        author
+        player 1
+    track name 2
+artist name 3   -   album title 2
+    disc 1
+        track name 1
+mp3 albums D
+    artist name 1 – album title (folder name)
+        track name 1
+        track name 2
+
+
+h2. Definitions
+Disk name   disk.name or album.artist.name – album.title
+
+h1. Design
+The basis for this project is the mediadb data model (package goedep.media.model.mediadb in the project with the same name).
+This project contains the following packages:
+* goedegep.media.mediadb.app
+The main application.
+For the time being, information is read from the 'AlbumInfo' XML files (package goedegep.media.mediadb.app.albuminfo) and from all my music on disc (package goedegep.media.mediadb.app.musicalbums).
+* goedegep.media.mediadb.app.albuminfo
+This package contains functionality to read 'AlbumInfo' XML files and to store the information in a mediadb model.
+Main class is the AlbumInfoHandler. As references can only be handled after all information is read, the references are stored in two helper classes: AlbumReferenceInfo (for references to albums) and TrackReferenceInfo (for references to tracks).
+Information on errors encountered is stored in objects of type AlbumInfoErrorInfo (which contains among others an error code of type AlbumInfoError).
+* goedegep.media.mediadb.app.dune
+Provides functionality to sync my music on disk to my Dune. 
+* goedegep.media.mediadb.app.musicalbums
+Gathers album information by reading my music disc structure.
+
