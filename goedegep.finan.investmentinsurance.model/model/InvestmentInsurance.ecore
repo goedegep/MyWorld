@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ecore:EPackage xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" name="model" nsURI="http://www.goedegep.org/finan" nsPrefix="finan">
+  <eClassifiers xsi:type="ecore:EClass" name="InvestmentInsurance">
+    <eOperations name="getLastKnownValue" eType="ecore:EDataType ../../goedegep.types.model/model/types.ecore#//EMoney"/>
+    <eOperations name="getDateForLastKnownValue" eType="ecore:EDataType ../../goedegep.types.model/model/types.ecore#//ELocalDate"/>
+    <eOperations name="getLastAnnualStatement" eType="#//AnnualStatement"/>
+    <eOperations name="getAverageReturnOnInvestment" eType="ecore:EDataType ../../goedegep.types.model/model/types.ecore#//EFixedPointValue"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="insuranceCompany" eType="#//InsuranceCompany"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="policyNumber" lowerBound="1"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString" unsettable="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="startingDate" eType="ecore:EDataType ../../goedegep.types.model/model/types.ecore#//ELocalDate"
+        unsettable="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="policyHolder" eType="ecore:EClass ../../goedegep.rolodex.model/model/rolodex.ecore#//Person"
+        unsettable="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="premium" eType="ecore:EDataType ../../goedegep.types.model/model/types.ecore#//EMoney"
+        unsettable="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="insuredBenefitOnDeath"
+        eType="ecore:EDataType ../../goedegep.types.model/model/types.ecore#//EMoney"
+        unsettable="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="investmentParts" upperBound="-1"
+        eType="#//InvestmentPart" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="events" upperBound="-1"
+        eType="ecore:EClass ../../goedegep.types.model/model/types.ecore#//Event"
+        containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="InvestmentInsurancesData">
+    <eOperations name="getLastKnownTotalValue" eType="ecore:EDataType ../../goedegep.types.model/model/types.ecore#//EMoney"/>
+    <eOperations name="getDateForLastKnownTotalValue" eType="ecore:EDataType ../../goedegep.types.model/model/types.ecore#//ELocalDate"/>
+    <eOperations name="getTotalPremium" eType="ecore:EDataType ../../goedegep.types.model/model/types.ecore#//EMoney"/>
+    <eOperations name="getAverageTotalReturnOnInvestment" eType="ecore:EDataType ../../goedegep.types.model/model/types.ecore#//EFixedPointValue"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="insuranceCompanies" upperBound="-1"
+        eType="#//InsuranceCompany" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="investmentInsurances" upperBound="-1"
+        eType="#//InvestmentInsurance" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="personList" lowerBound="1"
+        eType="ecore:EClass ../../goedegep.rolodex.model/model/rolodex.ecore#//PersonList"
+        unsettable="true" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="addressList" eType="ecore:EClass ../../goedegep.rolodex.model/model/rolodex.ecore#//AddressList"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="cityList" eType="ecore:EClass ../../goedegep.rolodex.model/model/rolodex.ecore#//CityList"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="phoneNumberList" eType="ecore:EClass ../../goedegep.rolodex.model/model/rolodex.ecore#//PhoneNumberList"
+        containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="InsuranceCompany" eSuperTypes="../../goedegep.rolodex.model/model/rolodex.ecore#//Institution">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="investmentFunds" upperBound="-1"
+        eType="#//InvestmentFund" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="department" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
+        unsettable="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="website" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
+        unsettable="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="AnnualStatement" eSuperTypes="../../goedegep.types.model/model/types.ecore#//Event">
+    <eOperations name="totalCosts" eType="ecore:EDataType ../../goedegep.types.model/model/types.ecore#//EMoney"/>
+    <eOperations name="valueAtYearStart" eType="ecore:EDataType ../../goedegep.types.model/model/types.ecore#//EMoney"/>
+    <eOperations name="percentageCosts" eType="ecore:EDataType ../../goedegep.types.model/model/types.ecore#//EMoney"/>
+    <eOperations name="fixedCosts" eType="ecore:EDataType ../../goedegep.types.model/model/types.ecore#//EMoney"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="periodFrom" eType="ecore:EDataType ../../goedegep.types.model/model/types.ecore#//ELocalDate"
+        unsettable="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="periodUntil" eType="ecore:EDataType ../../goedegep.types.model/model/types.ecore#//ELocalDate"
+        unsettable="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="premiumPaid" eType="ecore:EDataType ../../goedegep.types.model/model/types.ecore#//EMoney"
+        unsettable="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="premiumDeathRiskCoverage"
+        eType="ecore:EDataType ../../goedegep.types.model/model/types.ecore#//EMoney"
+        unsettable="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="premiumOccupationalDisabilityRiskCoverage"
+        eType="ecore:EDataType ../../goedegep.types.model/model/types.ecore#//EMoney"
+        unsettable="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="upkeepPremium" eType="ecore:EDataType ../../goedegep.types.model/model/types.ecore#//EMoney"
+        unsettable="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="firstCostsInsuranceCompany"
+        eType="ecore:EDataType ../../goedegep.types.model/model/types.ecore#//EMoney"
+        unsettable="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="continuingCostsInsuranceCompany"
+        eType="ecore:EDataType ../../goedegep.types.model/model/types.ecore#//EMoney"
+        unsettable="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="managementCosts" eType="ecore:EDataType ../../goedegep.types.model/model/types.ecore#//EMoney"
+        unsettable="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="buyAndSellCosts" eType="ecore:EDataType ../../goedegep.types.model/model/types.ecore#//EMoney"
+        unsettable="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="mutationCosts" eType="ecore:EDataType ../../goedegep.types.model/model/types.ecore#//EMoney"
+        unsettable="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="costsRestitution" eType="ecore:EDataType ../../goedegep.types.model/model/types.ecore#//EMoney"
+        unsettable="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="corrections" eType="ecore:EDataType ../../goedegep.types.model/model/types.ecore#//EMoney"
+        unsettable="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="earnedOnTheParticipations"
+        eType="ecore:EDataType ../../goedegep.types.model/model/types.ecore#//EMoney"
+        unsettable="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="participations" upperBound="-1"
+        eType="#//Participation" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="exampleCapitalOnEndDate"
+        eType="ecore:EDataType ../../goedegep.types.model/model/types.ecore#//ELocalDate"
+        unsettable="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="expectedYearlyCostsIncrease"
+        eType="ecore:EDataType ../../goedegep.types.model/model/types.ecore#//EFixedPointValue"
+        unsettable="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="InvestmentFund">
+    <eOperations name="getStockPrice" eType="ecore:EDataType ../../goedegep.types.model/model/types.ecore#//EMoney">
+      <eParameters name="date" eType="ecore:EDataType ../../goedegep.types.model/model/types.ecore#//ELocalDate"/>
+    </eOperations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
+        unsettable="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="fundInformation" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
+        unsettable="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="stockPrices" upperBound="-1"
+        eType="ecore:EClass ../../goedegep.types.model/model/types.ecore#//DateRateTuplet"
+        containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Participation">
+    <eOperations name="numberOfParticipationsStart" eType="ecore:EDataType ../../goedegep.types.model/model/types.ecore#//EFixedPointValue"/>
+    <eOperations name="endValue" eType="ecore:EDataType ../../goedegep.types.model/model/types.ecore#//EMoney"/>
+    <eOperations name="numberOfParticipationsBought" eType="ecore:EDataType ../../goedegep.types.model/model/types.ecore#//EFixedPointValue"/>
+    <eOperations name="numberOfParticipationsSold" eType="ecore:EDataType ../../goedegep.types.model/model/types.ecore#//EFixedPointValue"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="investmentFund" lowerBound="1"
+        eType="#//InvestmentFund"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="participationMutations"
+        upperBound="-1" eType="ecore:EDataType ../../goedegep.types.model/model/types.ecore#//EFixedPointValue"
+        unsettable="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="exampleReturnOnInvestmentNetHistoric"
+        eType="ecore:EDataType ../../goedegep.types.model/model/types.ecore#//EFixedPointValue"
+        unsettable="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="exampleReturnOnInvestmentGross"
+        eType="ecore:EDataType ../../goedegep.types.model/model/types.ecore#//EFixedPointValue"
+        unsettable="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="exampleReturnOnInvestmentGrossCompanyOwn"
+        eType="ecore:EDataType ../../goedegep.types.model/model/types.ecore#//EFixedPointValue"
+        unsettable="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="exampleReturnOnInvestmentPessimistic"
+        eType="ecore:EDataType ../../goedegep.types.model/model/types.ecore#//EFixedPointValue"
+        unsettable="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="totalExpenseRatio" eType="ecore:EDataType ../../goedegep.types.model/model/types.ecore#//EFixedPointValue"
+        unsettable="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="exampleCapitalNetHistoric"
+        eType="ecore:EDataType ../../goedegep.types.model/model/types.ecore#//EMoney"
+        unsettable="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="exampleCapitalGross" eType="ecore:EDataType ../../goedegep.types.model/model/types.ecore#//EMoney"
+        unsettable="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="exampleCapitalGrossCompanyOwn"
+        eType="ecore:EDataType ../../goedegep.types.model/model/types.ecore#//EMoney"
+        unsettable="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="exampleCapitalPessimistic"
+        eType="ecore:EDataType ../../goedegep.types.model/model/types.ecore#//EMoney"
+        unsettable="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="returnOnInvestmentReductionNetHistoric"
+        eType="ecore:EDataType ../../goedegep.types.model/model/types.ecore#//EFixedPointValue"
+        unsettable="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="exampleCapitalAfterReduction"
+        eType="ecore:EDataType ../../goedegep.types.model/model/types.ecore#//EMoney"
+        unsettable="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="distributionPercentage"
+        eType="ecore:EDataType ../../goedegep.types.model/model/types.ecore#//EFixedPointValue"
+        unsettable="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="standardFundReturnOnInvestment"
+        eType="ecore:EDataType ../../goedegep.types.model/model/types.ecore#//EFixedPointValue"
+        unsettable="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="exampleCapitalStandardFundReturnOnInvestment"
+        eType="ecore:EDataType ../../goedegep.types.model/model/types.ecore#//EMoney"
+        unsettable="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="numberOfParticipationsEnd"
+        eType="ecore:EDataType ../../goedegep.types.model/model/types.ecore#//EFixedPointValue"
+        unsettable="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="participationMutationsComplete"
+        lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="annualStatement" lowerBound="1"
+        eType="#//AnnualStatement"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="InvestmentPart">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="investmentFund" eType="#//InvestmentFund"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="percentage" eType="ecore:EDataType ../../goedegep.types.model/model/types.ecore#//EFixedPointValue"
+        unsettable="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="FundChange" eSuperTypes="../../goedegep.types.model/model/types.ecore#//Event">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="fromFund" lowerBound="1"
+        eType="#//InvestmentFund" unsettable="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="toFund" lowerBound="1"
+        eType="#//InvestmentFund" unsettable="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="fromNumberOfParticipations"
+        lowerBound="1" eType="ecore:EDataType ../../goedegep.types.model/model/types.ecore#//EFixedPointValue"
+        unsettable="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="toNumberOfParticipations"
+        lowerBound="1" eType="ecore:EDataType ../../goedegep.types.model/model/types.ecore#//EFixedPointValue"
+        unsettable="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="fromStockPrice" eType="ecore:EDataType ../../goedegep.types.model/model/types.ecore#//EMoney"
+        unsettable="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="toStockPrice" eType="ecore:EDataType ../../goedegep.types.model/model/types.ecore#//EMoney"
+        unsettable="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="fromAverageHistoricReturnOnInvestment"
+        eType="ecore:EDataType ../../goedegep.types.model/model/types.ecore#//EFixedPointValue"
+        unsettable="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="fromTER" eType="ecore:EDataType ../../goedegep.types.model/model/types.ecore#//EFixedPointValue"
+        unsettable="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="toAverageHistoricReturnOnInvestment"
+        eType="ecore:EDataType ../../goedegep.types.model/model/types.ecore#//EFixedPointValue"
+        unsettable="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="toTER" eType="ecore:EDataType ../../goedegep.types.model/model/types.ecore#//EFixedPointValue"
+        unsettable="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="ExtraInvestment" eSuperTypes="../../goedegep.types.model/model/types.ecore#//Event">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="premium" eType="ecore:EDataType ../../goedegep.types.model/model/types.ecore#//EMoney"
+        unsettable="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="depositDate" eType="ecore:EDataType ../../goedegep.types.model/model/types.ecore#//ELocalDate"
+        unsettable="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="investmentParts" upperBound="-1"
+        eType="#//InvestmentPart" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="overviewDate" eType="ecore:EDataType ../../goedegep.types.model/model/types.ecore#//ELocalDate"
+        unsettable="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="participations" upperBound="-1"
+        eType="#//Participation" containment="true"/>
+  </eClassifiers>
+</ecore:EPackage>
