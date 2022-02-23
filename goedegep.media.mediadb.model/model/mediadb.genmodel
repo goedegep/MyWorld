@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<genmodel:GenModel xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" xmlns:genmodel="http://www.eclipse.org/emf/2002/GenModel"
+    modelDirectory="/goedegep.media.mediadb.model/src/main/java" creationIcons="false"
+    editDirectory="/goedegep.media.mediadb.model.edit/src-gen" editorDirectory="/goedegep.media.mediadb.model.editor/src-gen"
+    modelPluginID="" modelName="Mediadb" rootExtendsClass="org.eclipse.emf.ecore.impl.MinimalEObjectImpl$Container"
+    codeFormatting="true" importerID="org.eclipse.emf.importer.ecore" complianceLevel="8.0"
+    copyrightFields="false" usedGenPackages="../../goedegep.types.model/model/types.genmodel#//model"
+    operationReflection="true" importOrganizing="true">
+  <foreignModel>mediadb.ecore</foreignModel>
+  <testsDirectory xsi:nil="true"/>
+  <genPackages prefix="Mediadb" basePackage="goedegep.media.mediadb" disposableProviderFactory="true"
+      ecorePackage="mediadb.ecore#/">
+    <genEnums typeSafeEnumCompatible="false" ecoreEnum="mediadb.ecore#//MediumType">
+      <genEnumLiterals ecoreEnumLiteral="mediadb.ecore#//MediumType/NOT_SET"/>
+      <genEnumLiterals ecoreEnumLiteral="mediadb.ecore#//MediumType/CD_AUDIO"/>
+      <genEnumLiterals ecoreEnumLiteral="mediadb.ecore#//MediumType/CDR_AUDIO"/>
+      <genEnumLiterals ecoreEnumLiteral="mediadb.ecore#//MediumType/CDRW_AUDIO"/>
+      <genEnumLiterals ecoreEnumLiteral="mediadb.ecore#//MediumType/LP"/>
+      <genEnumLiterals ecoreEnumLiteral="mediadb.ecore#//MediumType/SINGLE"/>
+      <genEnumLiterals ecoreEnumLiteral="mediadb.ecore#//MediumType/SACD"/>
+      <genEnumLiterals ecoreEnumLiteral="mediadb.ecore#//MediumType/DVD_VIDEO"/>
+      <genEnumLiterals ecoreEnumLiteral="mediadb.ecore#//MediumType/CD_ROM"/>
+      <genEnumLiterals ecoreEnumLiteral="mediadb.ecore#//MediumType/DVD_ROM"/>
+      <genEnumLiterals ecoreEnumLiteral="mediadb.ecore#//MediumType/HARDDISK"/>
+    </genEnums>
+    <genEnums typeSafeEnumCompatible="false" ecoreEnum="mediadb.ecore#//IWant">
+      <genEnumLiterals ecoreEnumLiteral="mediadb.ecore#//IWant/YES"/>
+      <genEnumLiterals ecoreEnumLiteral="mediadb.ecore#//IWant/NO"/>
+      <genEnumLiterals ecoreEnumLiteral="mediadb.ecore#//IWant/DONT_KNOW"/>
+      <genEnumLiterals ecoreEnumLiteral="mediadb.ecore#//IWant/NOT_SET"/>
+    </genEnums>
+    <genEnums typeSafeEnumCompatible="false" ecoreEnum="mediadb.ecore#//InformationType">
+      <genEnumLiterals ecoreEnumLiteral="mediadb.ecore#//InformationType/NOT_SET"/>
+      <genEnumLiterals ecoreEnumLiteral="mediadb.ecore#//InformationType/MP3"/>
+      <genEnumLiterals ecoreEnumLiteral="mediadb.ecore#//InformationType/VINYL_ANALOG"/>
+      <genEnumLiterals ecoreEnumLiteral="mediadb.ecore#//InformationType/M2TS"/>
+      <genEnumLiterals ecoreEnumLiteral="mediadb.ecore#//InformationType/FLAC"/>
+      <genEnumLiterals ecoreEnumLiteral="mediadb.ecore#//InformationType/WAV"/>
+      <genEnumLiterals ecoreEnumLiteral="mediadb.ecore#//InformationType/APE"/>
+      <genEnumLiterals ecoreEnumLiteral="mediadb.ecore#//InformationType/AIFF"/>
+    </genEnums>
+    <genEnums typeSafeEnumCompatible="false" ecoreEnum="mediadb.ecore#//Collection">
+      <genEnumLiterals ecoreEnumLiteral="mediadb.ecore#//Collection/EASY_LISTENING"/>
+      <genEnumLiterals ecoreEnumLiteral="mediadb.ecore#//Collection/FILM_BACKING_TRACKS"/>
+      <genEnumLiterals ecoreEnumLiteral="mediadb.ecore#//Collection/FRANSTALIG"/>
+      <genEnumLiterals ecoreEnumLiteral="mediadb.ecore#//Collection/KLASSIEK"/>
+      <genEnumLiterals ecoreEnumLiteral="mediadb.ecore#//Collection/NEDERLANDSTALIG"/>
+      <genEnumLiterals ecoreEnumLiteral="mediadb.ecore#//Collection/POP"/>
+      <genEnumLiterals ecoreEnumLiteral="mediadb.ecore#//Collection/ROCK"/>
+      <genEnumLiterals ecoreEnumLiteral="mediadb.ecore#//Collection/NOT_SET"/>
+      <genEnumLiterals ecoreEnumLiteral="mediadb.ecore#//Collection/PUNK"/>
+    </genEnums>
+    <genClasses ecoreClass="mediadb.ecore#//Track">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute mediadb.ecore#//Track/title"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute mediadb.ecore#//Track/duration"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference mediadb.ecore#//Track/players"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference mediadb.ecore#//Track/artist"/>
+      <genFeatures children="true" createChild="true" propertySortChoices="true" ecoreFeature="ecore:EReference mediadb.ecore#//Track/parts"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference mediadb.ecore#//Track/authors"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference mediadb.ecore#//Track/referredBy"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference mediadb.ecore#//Track/originalDisc"/>
+    </genClasses>
+    <genClasses ecoreClass="mediadb.ecore#//MediaDb">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference mediadb.ecore#//MediaDb/artists"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference mediadb.ecore#//MediaDb/albums"/>
+      <genFeatures children="true" createChild="true" propertySortChoices="true" ecoreFeature="ecore:EReference mediadb.ecore#//MediaDb/tracks"/>
+      <genFeatures children="true" createChild="true" propertySortChoices="true" ecoreFeature="ecore:EReference mediadb.ecore#//MediaDb/trackcollections"/>
+      <genOperations ecoreOperation="mediadb.ecore#//MediaDb/getArtist">
+        <genParameters ecoreParameter="mediadb.ecore#//MediaDb/getArtist/artistName"/>
+      </genOperations>
+      <genOperations ecoreOperation="mediadb.ecore#//MediaDb/getAlbum">
+        <genParameters ecoreParameter="mediadb.ecore#//MediaDb/getAlbum/releaseDate"/>
+        <genParameters ecoreParameter="mediadb.ecore#//MediaDb/getAlbum/artist"/>
+        <genParameters ecoreParameter="mediadb.ecore#//MediaDb/getAlbum/title"/>
+      </genOperations>
+      <genOperations ecoreOperation="mediadb.ecore#//MediaDb/getAlbums">
+        <genParameters ecoreParameter="mediadb.ecore#//MediaDb/getAlbums/releaseDate"/>
+        <genParameters ecoreParameter="mediadb.ecore#//MediaDb/getAlbums/artist"/>
+        <genParameters ecoreParameter="mediadb.ecore#//MediaDb/getAlbums/title"/>
+      </genOperations>
+      <genOperations ecoreOperation="mediadb.ecore#//MediaDb/getTrackCollection">
+        <genParameters ecoreParameter="mediadb.ecore#//MediaDb/getTrackCollection/collection"/>
+      </genOperations>
+    </genClasses>
+    <genClasses ecoreClass="mediadb.ecore#//Artist">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute mediadb.ecore#//Artist/name"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference mediadb.ecore#//Artist/containerArtist"/>
+    </genClasses>
+    <genClasses ecoreClass="mediadb.ecore#//Album">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute mediadb.ecore#//Album/title"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute mediadb.ecore#//Album/releaseDate"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference mediadb.ecore#//Album/discs"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference mediadb.ecore#//Album/artist"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute mediadb.ecore#//Album/imagesFront"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute mediadb.ecore#//Album/id"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference mediadb.ecore#//Album/players"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute mediadb.ecore#//Album/imagesFrontInside"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute mediadb.ecore#//Album/imagesBack"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute mediadb.ecore#//Album/imagesLabel"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute mediadb.ecore#//Album/descriptionTitle"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute mediadb.ecore#//Album/description"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute mediadb.ecore#//Album/issuedOnMediums"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute mediadb.ecore#//Album/compilation"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference mediadb.ecore#//Album/myInfo"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute mediadb.ecore#//Album/soundtrack"/>
+      <genOperations ecoreOperation="mediadb.ecore#//Album/getTrackReference">
+        <genParameters ecoreParameter="mediadb.ecore#//Album/getTrackReference/discNr"/>
+        <genParameters ecoreParameter="mediadb.ecore#//Album/getTrackReference/trackNr"/>
+      </genOperations>
+      <genOperations ecoreOperation="mediadb.ecore#//Album/getPlayer">
+        <genParameters ecoreParameter="mediadb.ecore#//Album/getPlayer/artist"/>
+      </genOperations>
+      <genOperations ecoreOperation="mediadb.ecore#//Album/getArtistAndTitle"/>
+      <genOperations ecoreOperation="mediadb.ecore#//Album/isMultiDiscAlbum"/>
+      <genOperations ecoreOperation="mediadb.ecore#//Album/getDisc"/>
+    </genClasses>
+    <genClasses ecoreClass="mediadb.ecore#//MyCompilation"/>
+    <genClasses ecoreClass="mediadb.ecore#//TrackReference">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference mediadb.ecore#//TrackReference/track"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute mediadb.ecore#//TrackReference/bonusTrack"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference mediadb.ecore#//TrackReference/myTrackInfo"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference mediadb.ecore#//TrackReference/originalAlbumTrackReference"/>
+      <genOperations ecoreOperation="mediadb.ecore#//TrackReference/getTrackNr"/>
+      <genOperations ecoreOperation="mediadb.ecore#//TrackReference/getDisc"/>
+    </genClasses>
+    <genClasses ecoreClass="mediadb.ecore#//Disc">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute mediadb.ecore#//Disc/title"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference mediadb.ecore#//Disc/trackReferences"/>
+      <genOperations ecoreOperation="mediadb.ecore#//Disc/getAlbum"/>
+      <genOperations ecoreOperation="mediadb.ecore#//Disc/getDiscNr"/>
+    </genClasses>
+    <genClasses ecoreClass="mediadb.ecore#//MediumInfo">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute mediadb.ecore#//MediumInfo/mediumType"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute mediadb.ecore#//MediumInfo/informationType"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute mediadb.ecore#//MediumInfo/sourceTypes"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute mediadb.ecore#//MediumInfo/sourceBitRate"/>
+    </genClasses>
+    <genClasses ecoreClass="mediadb.ecore#//MyInfo">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference mediadb.ecore#//MyInfo/albumReferences"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute mediadb.ecore#//MyInfo/myComments"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute mediadb.ecore#//MyInfo/inlayDocument"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute mediadb.ecore#//MyInfo/iveHadOnLP"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute mediadb.ecore#//MyInfo/iWant"/>
+      <genFeatures children="true" createChild="true" propertySortChoices="true" ecoreFeature="ecore:EReference mediadb.ecore#//MyInfo/iHaveOn"/>
+    </genClasses>
+    <genClasses ecoreClass="mediadb.ecore#//Player">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference mediadb.ecore#//Player/artist"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute mediadb.ecore#//Player/instruments"/>
+    </genClasses>
+    <genClasses ecoreClass="mediadb.ecore#//TrackPart">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute mediadb.ecore#//TrackPart/title"/>
+    </genClasses>
+    <genClasses ecoreClass="mediadb.ecore#//MyTrackInfo">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute mediadb.ecore#//MyTrackInfo/collection"/>
+      <genFeatures children="true" createChild="true" propertySortChoices="true" ecoreFeature="ecore:EReference mediadb.ecore#//MyTrackInfo/iHaveOn"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute mediadb.ecore#//MyTrackInfo/iWant"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference mediadb.ecore#//MyTrackInfo/compilationTrackReference"/>
+    </genClasses>
+    <genClasses ecoreClass="mediadb.ecore#//DiscAndTrackNrs">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute mediadb.ecore#//DiscAndTrackNrs/discNr"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute mediadb.ecore#//DiscAndTrackNrs/trackNrs"/>
+    </genClasses>
+    <genClasses ecoreClass="mediadb.ecore#//TrackCollection">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute mediadb.ecore#//TrackCollection/collection"/>
+      <genFeatures children="true" createChild="true" propertySortChoices="true" ecoreFeature="ecore:EReference mediadb.ecore#//TrackCollection/trackReferences"/>
+    </genClasses>
+  </genPackages>
+</genmodel:GenModel>
