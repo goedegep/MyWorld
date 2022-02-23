@@ -1,0 +1,43 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>gluon-oss-maps</groupId>
+  <artifactId>gluon-oss-maps</artifactId>
+  <parent>
+    <groupId>goedegep.toplevelpom</groupId>
+    <artifactId>goedegep-toplevelpom</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <relativePath>../goedegep.toplevelpom</relativePath>
+  </parent>
+  <dependencies>
+    <dependency>
+      <groupId>gluon-oss-charm-down</groupId>
+      <artifactId>gluon-oss-charm-down</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>goedegep.geo</groupId>
+      <artifactId>goedegep-geo</artifactId>
+    </dependency>
+<!--     <dependency> This code is copied into the project under com.gluonhq.attach.util -->
+<!--       <groupId>com.gluonhq.attach</groupId> -->
+<!--       <artifactId>util</artifactId> -->
+<!--       <version>4.0.2</version> -->
+<!--     </dependency> -->
+<!--     <dependency> This code is copied into the project under com.gluonhq.attach.storage -->
+<!--       <groupId>com.gluonhq.attach</groupId> -->
+<!--       <artifactId>storage</artifactId> -->
+<!--       <version>4.0.2</version> -->
+<!--     </dependency> -->
+  </dependencies>
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <version>${maven-surefire-plugin.version}</version>
+        <configuration>
+          <skipTests>true</skipTests>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+</project>
