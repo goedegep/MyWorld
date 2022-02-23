@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<properties:PropertyDescriptorGroup
+    xmi:version="2.0"
+    xmlns:xmi="http://www.omg.org/XMI"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:properties="http://goedegep.properties/model"
+    name="UnitConverter"
+    packageName="goedegep.unitconverter.app"
+    registryClassName="UnitConverterRegistry">
+  <propertyDescriptors
+      xsi:type="properties:FilePropertyDescriptor"
+      type="FILE"
+      name="configurationFile"
+      description="Name of the file with configuration information."
+      displayName="Configuration filename"
+      initialValue="UnitConverterConfiguration.xmi"
+      installInitialValue="true">
+    <fileExtensions>xmi</fileExtensions>
+  </propertyDescriptors>
+  <propertyDescriptors
+      name="shortProductInfo"
+      description="Short product information."
+      displayName="Short product information"
+      initialValue="Unit conversion application."
+      installInitialValue="true"/>
+  <propertyDescriptors
+      name="version"
+      description="Software version information."
+      displayName="Version"
+      initialValue="1.0"
+      installInitialValue="true"/>
+  <propertyDescriptors
+      name="copyrightMessage"
+      description="Copyright information."
+      displayName="Copyright Text"
+      initialValue="Copyright (c) 2001-2021"
+      installInitialValue="true"/>
+  <propertyDescriptors
+      name="author"
+      description="Author of this program."
+      displayName="Author"
+      initialValue="Peter Goedegebure"
+      installInitialValue="true"/>
+</properties:PropertyDescriptorGroup>
