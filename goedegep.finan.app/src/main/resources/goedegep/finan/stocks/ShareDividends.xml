@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<ShareDividends xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="ShareDividends.xsd">
+  <ShareDividendsList>
+    <ShareName>ABN AMRO HOLDING EUR0.56</ShareName>
+    <Dividend><DividendName>DIV01 -INTERIM-</DividendName><DividendType>ContantOfStock</DividendType><StockDividend><FromAmount>43</FromAmount><ToAmount>1</ToAmount><Koers>e0,43465</Koers></StockDividend></Dividend>
+    <Dividend><DividendName>DIV02</DividendName><DividendType>ContantOfStock</DividendType><StockDividend><FromAmount>0</FromAmount><ToAmount>1</ToAmount><Koers>e0,45400</Koers></StockDividend></Dividend>
+    <Dividend><DividendName>INTERIM DIV02</DividendName><DividendType>ContantOfStock</DividendType><StockDividend><FromAmount>0</FromAmount><ToAmount>1</ToAmount><Koers>e0,44861</Koers></StockDividend></Dividend>
+    <Dividend><DividendName>-DIV03-</DividendName><DividendType>ContantOfStock</DividendType><StockDividend><FromAmount>0</FromAmount><ToAmount>1</ToAmount><Koers>e0,4560</Koers></StockDividend></Dividend>
+    <Dividend><DividendName>INTDIV03</DividendName><DividendType>ContantOfStock</DividendType><StockDividend><FromAmount>36</FromAmount><ToAmount>1</ToAmount><Koers>e0,4544</Koers></StockDividend></Dividend>
+    <Dividend><DividendName>DIV04</DividendName><DividendType>ContantOfStock</DividendType><StockDividend><FromAmount>33</FromAmount><ToAmount>1</ToAmount><Koers>e0,515</Koers></StockDividend></Dividend>
+    <Dividend><DividendName>DIV04-2</DividendName><DividendType>ContantOfStock</DividendType><StockDividend><FromAmount>34</FromAmount><ToAmount>1</ToAmount><Koers>e0,515</Koers></StockDividend></Dividend>
+    <Dividend><DividendName>DIV05</DividendName><DividendType>ContantOfStock</DividendType><StockDividend><FromAmount>37</FromAmount><ToAmount>1</ToAmount><Koers>e0,511</Koers></StockDividend></Dividend>
+    <Dividend><DividendName>-DIV05-</DividendName><DividendType>ContantOfStock</DividendType><StockDividend><FromAmount>39</FromAmount><ToAmount>1</ToAmount><Koers>e0,4917</Koers></StockDividend></Dividend>
+    <Dividend><DividendName>DIV06</DividendName><DividendType>ContantOfStock</DividendType><StockDividend><FromAmount>71</FromAmount><ToAmount>2</ToAmount><Koers>e0,6098</Koers></StockDividend></Dividend>
+    <Dividend><DividendName>DIV06-2</DividendName><DividendType>ContantOfStock</DividendType><StockDividend><FromAmount>39</FromAmount><ToAmount>1</ToAmount><Koers>e0,5671</Koers></StockDividend></Dividend>
+  </ShareDividendsList>
+  <ShareDividendsList>
+    <ShareName>ABN AMRO HOLDING NLG1.25</ShareName>
+    <Dividend><DividendName>DIV01</DividendName><DividendType>ContantOfStock</DividendType><StockDividend><FromAmount>0</FromAmount><ToAmount>1</ToAmount><Koers>e0,49022</Koers></StockDividend></Dividend>
+  </ShareDividendsList>
+  <ShareDividendsList>
+    <ShareName>AHOLD KON EUR0.25</ShareName>
+    <Dividend><DividendName>DIV02</DividendName><DividendType>ContantOfStock</DividendType><StockDividend><FromAmount>100</FromAmount><ToAmount>1</ToAmount><Koers>e0,12500</Koers></StockDividend></Dividend>
+  </ShareDividendsList>
+  <ShareDividendsList>
+    <ShareName>AHOLD KON EUR0.30</ShareName>
+    <Dividend><DividendName>13-05-2008</DividendName><DividendType>Contant</DividendType><DividendAmount>e0,16</DividendAmount></Dividend>
+  </ShareDividendsList>
+  <ShareDividendsList>
+    <ShareName>AHOLD KON NLG0.50</ShareName>
+    <Dividend><DividendName>INTERIM2000</DividendName><DividendType>ContantOfStock</DividendType><StockDividend><FromAmount>100</FromAmount><ToAmount>1</ToAmount><Koers>e0,00</Koers></StockDividend></Dividend>
+  </ShareDividendsList>
+  <ShareDividendsList>
+    <ShareName>ASML HOLDING EUR0.09</ShareName>
+    <Dividend><DividendName>14-05-2008</DividendName><DividendType>Contant</DividendType><DividendAmount>e0,25</DividendAmount></Dividend>
+    <Dividend><DividendName>16-05-2008</DividendName><DividendType>Drip</DividendType><Drip><FromAmount>91,200</FromAmount><PricePerShare>e19,38</PricePerShare></Drip></Dividend>
+  </ShareDividendsList>
+  <ShareDividendsList>
+    <ShareName>ASM LITHOGRAPHY EUR0.02</ShareName>
+  </ShareDividendsList>
+  <ShareDividendsList>
+    <ShareName>CORP EXPRESS EUR1.2</ShareName>
+    <Dividend><DividendName>DIV08</DividendName><DividendType>ContantOfStock</DividendType><StockDividend><FromAmount>34</FromAmount><ToAmount>1</ToAmount><Koers>e0,211</Koers></StockDividend></Dividend>
+  </ShareDividendsList>
+  <ShareDividendsList>
+    <ShareName>GETRONICS EUR0.04</ShareName>
+    <Dividend><DividendName>DIV01</DividendName><DividendType>ContantOfStock</DividendType><StockDividend><FromAmount>138</FromAmount><ToAmount>1</ToAmount><Koers>e0,04377</Koers></StockDividend></Dividend>
+    <Dividend><DividendYear>2004</DividendYear><DividendType>Contant</DividendType><DividendAmount>e0,01</DividendAmount></Dividend>
+  </ShareDividendsList>
+  <ShareDividendsList>
+    <ShareName>GETRONICS EUR0.28</ShareName>
+    <Dividend><DividendName>28-04-2006</DividendName><DividendType>Contant</DividendType><DividendAmount>e0,07</DividendAmount></Dividend>
+  </ShareDividendsList>
+  <ShareDividendsList>
+    <ShareName>HAGEMEYER EUR1.20</ShareName>
+    <Dividend><DividendName>DIV99-2</DividendName><DividendType>Contant</DividendType><DividendAmount>e0,24</DividendAmount></Dividend>
+    <Dividend><DividendName>DIV01</DividendName><DividendType>Contant</DividendType><DividendAmount>e0,52</DividendAmount></Dividend>
+    <Dividend><DividendName>DIV01-2</DividendName><DividendType>Contant</DividendType><DividendAmount>e0,25</DividendAmount></Dividend>
+    <Dividend><DividendName>DIV02</DividendName><DividendType>ContantOfStock</DividendType><StockDividend><FromAmount>0</FromAmount><ToAmount>1</ToAmount><Koers>e0,50068</Koers></StockDividend></Dividend>
+    <Dividend><DividendName>DIV02-2</DividendName><DividendType>Contant</DividendType><DividendAmount>e0,15</DividendAmount></Dividend>
+    <Dividend><DividendName>DIV03</DividendName><DividendType>Contant</DividendType><DividendAmount>e0,18</DividendAmount></Dividend>
+    <Dividend><DividendName>16-05-2007</DividendName><DividendType>Contant</DividendType><DividendAmount>e0,06</DividendAmount></Dividend>
+    <Dividend><DividendName>10-09-2007</DividendName><DividendType>Contant</DividendType><DividendAmount>e0,04</DividendAmount></Dividend>
+  </ShareDividendsList>
+  <ShareDividendsList>
+    <ShareName>HAGEMEYER NLG2.50</ShareName>
+    <Dividend><DividendName>DIV97</DividendName><DividendType>ContantOfStock</DividendType><StockDividend><FromAmount>114</FromAmount><ToAmount>1</ToAmount><Koers>f0,94</Koers></StockDividend></Dividend>
+    <Dividend><DividendName>DIV97-2</DividendName><DividendType>Contant</DividendType><DividendAmount>f0,48</DividendAmount></Dividend>
+    <Dividend><DividendName>DIV98</DividendName><DividendType>ContantOfStock</DividendType><StockDividend><FromAmount>60</FromAmount><ToAmount>1</ToAmount><Koers>e0,55</Koers></StockDividend></Dividend>
+    <Dividend><DividendName>DIV98-2</DividendName><DividendType>Contant</DividendType><DividendAmount>f0,49</DividendAmount></Dividend>
+    <Dividend><DividendName>DIV99</DividendName><DividendType>ContantOfStock</DividendType><StockDividend><FromAmount>44</FromAmount><ToAmount>1</ToAmount><Koers>e0,50</Koers></StockDividend></Dividend>
+  </ShareDividendsList>
+  <ShareDividendsList>
+    <ShareName>HEIJMANS EUR0.03</ShareName>
+    <Dividend><DividendYear>2007</DividendYear><DividendType>Contant</DividendType><DividendAmount>e1,45</DividendAmount></Dividend>
+  </ShareDividendsList>
+  <ShareDividendsList>
+    <ShareName>HEINEKEN EUR1.6</ShareName>
+    <Dividend><DividendYear>2004</DividendYear><DividendType>Contant</DividendType><DividendAmount>e0,16</DividendAmount></Dividend>
+    <Dividend><DividendYear>2005</DividendYear><DividendType>Contant</DividendType><DividendAmount>e0,24</DividendAmount></Dividend>
+    <Dividend><DividendName>21-09-2005</DividendName><DividendType>Contant</DividendType><DividendAmount>e0,16</DividendAmount></Dividend>
+    <Dividend><DividendName>08-05-2006</DividendName><DividendType>Contant</DividendType><DividendAmount>e0,24</DividendAmount></Dividend>
+    <Dividend><DividendName>20-09-2007</DividendName><DividendType>Contant</DividendType><DividendAmount>e0,24</DividendAmount></Dividend>
+    <Dividend><DividendName>25-04-2008</DividendName><DividendType>Contant</DividendType><DividendAmount>e0,46</DividendAmount></Dividend>
+  </ShareDividendsList>
+  <ShareDividendsList>
+    <ShareName>HEINEKEN EUR2</ShareName>
+  </ShareDividendsList>
+  <ShareDividendsList>
+    <ShareName>KON DSM EUR1.5</ShareName>
+    <Dividend><DividendName>13-04-2006</DividendName><DividendType>Contant</DividendType><DividendAmount>e0,71</DividendAmount></Dividend>
+    <Dividend><DividendName>11-08-2006</DividendName><DividendType>Contant</DividendType><DividendAmount>e0,33</DividendAmount></Dividend>
+    <Dividend><DividendName>27-04-2007</DividendName><DividendType>Contant</DividendType><DividendAmount>e0,67</DividendAmount></Dividend>
+    <Dividend><DividendName>DRP 07</DividendName><DividendType>Drip</DividendType><Drip><FromAmount>62,8</FromAmount><PricePerShare>e35,764</PricePerShare></Drip></Dividend>
+    <Dividend><DividendName>24-04-2008</DividendName><DividendType>Contant</DividendType><DividendAmount>e0,87</DividendAmount></Dividend>
+    <Dividend><DividendName>DRIP08</DividendName><DividendType>Drip</DividendType><Drip><FromAmount>44,910</FromAmount><PricePerShare>e33,2108</PricePerShare></Drip></Dividend>
+    <Dividend><DividendName>22-08-2008</DividendName><DividendType>Contant</DividendType><DividendAmount>e0,40</DividendAmount></Dividend>
+    <Dividend><DividendName>DRIP08-2</DividendName><DividendType>Drip</DividendType><Drip><FromAmount>109,800</FromAmount><PricePerShare>e37,33</PricePerShare></Drip></Dividend>
+  </ShareDividendsList>
+  <ShareDividendsList>
+    <ShareName>KON KPN EUR0.24</ShareName>
+    <Dividend><DividendName>INTERIM2000</DividendName><DividendType>ContantOfStock</DividendType><StockDividend><FromAmount>143</FromAmount><ToAmount>1</ToAmount><Koers>e0,18</Koers></StockDividend></Dividend>
+    <Dividend><DividendName>DIV01</DividendName><DividendType>ContantOfStock</DividendType><StockDividend><Koers>e0,28225</Koers></StockDividend></Dividend>
+    <Dividend><DividendYear>2003</DividendYear><DividendType>Contant</DividendType><DividendAmount>e0,25</DividendAmount></Dividend>
+    <Dividend><DividendName>2</DividendName><DividendYear>2003</DividendYear><DividendType>Contant</DividendType><DividendAmount>e0,08</DividendAmount></Dividend>
+    <Dividend><DividendYear>2004</DividendYear><DividendType>Contant</DividendType><DividendAmount>e0,27</DividendAmount></Dividend>
+    <Dividend><DividendName>1</DividendName><DividendYear>2005</DividendYear><DividendType>Contant</DividendType><DividendAmount>e0,13</DividendAmount></Dividend>
+    <Dividend><DividendName>21-04-2006</DividendName><DividendType>Contant</DividendType><DividendAmount>e0,32</DividendAmount></Dividend>
+    <Dividend><DividendName>11-08-2006</DividendName><DividendType>Contant</DividendType><DividendAmount>e0,16</DividendAmount></Dividend>
+    <Dividend><DividendName>27-04-2007</DividendName><DividendType>Contant</DividendType><DividendAmount>e0,34</DividendAmount></Dividend>
+    <Dividend><DividendName>10-08-2007</DividendName><DividendType>Contant</DividendType><DividendAmount>e0,18</DividendAmount></Dividend>
+    <Dividend><DividendName>11-08-2008</DividendName><DividendType>Contant</DividendType><DividendAmount>e0,20</DividendAmount></Dividend>
+  </ShareDividendsList>
+  <ShareDividendsList>
+    <ShareName>KON NUMICO EUR0.25</ShareName>
+    <Dividend><DividendName>DIV06</DividendName><DividendType>ContantOfStock</DividendType><StockDividend><FromAmount>236</FromAmount><ToAmount>1</ToAmount><Koers>e0,1495</Koers></StockDividend></Dividend>
+    <Dividend><DividendName>DIV07</DividendName><DividendType>ContantOfStock</DividendType><StockDividend><FromAmount>91</FromAmount><ToAmount>1</ToAmount><Koers>e0,1980</Koers></StockDividend></Dividend>
+  </ShareDividendsList>
+  <ShareDividendsList>
+    <ShareName>LIBERTEL NLG0.64</ShareName>
+  </ShareDividendsList>
+  <ShareDividendsList>
+    <ShareName>LOGICACMG GBP0.1 -NL-</ShareName>
+    <Dividend><DividendName>19-05-2004</DividendName><DividendType>Contant</DividendType><DividendAmount>e0,05663</DividendAmount><BelastingPercentage>10</BelastingPercentage></Dividend>
+    <Dividend><DividendName>1</DividendName><DividendYear>2004</DividendYear><DividendType>Contant</DividendType><DividendAmount>e0,03762</DividendAmount><BelastingPercentage>10</BelastingPercentage></Dividend>
+    <Dividend><DividendYear>2005</DividendYear><DividendType>Contant</DividendType><DividendAmount>e0,05694</DividendAmount><BelastingPercentage>10</BelastingPercentage></Dividend>
+    <Dividend><DividendName>21-10-2005</DividendName><DividendType>Contant</DividendType><DividendAmount>e0,03939</DividendAmount><BelastingPercentage>10</BelastingPercentage></Dividend>
+    <Dividend><DividendName>18-05-2006</DividendName><DividendType>Contant</DividendType><DividendAmount>e0,05152</DividendAmount><BelastingPercentage>10</BelastingPercentage></Dividend>
+    <Dividend><DividendName>20-10-2006</DividendName><DividendType>Contant</DividendType><DividendAmount>e0,03630</DividendAmount><BelastingPercentage>10</BelastingPercentage></Dividend>
+    <Dividend><DividendName>25-05-2007</DividendName><DividendType>Contant</DividendType><DividendAmount>e0,05568</DividendAmount><BelastingPercentage>10</BelastingPercentage></Dividend>
+    <Dividend><DividendName>19-10-2007</DividendName><DividendType>Contant</DividendType><DividendAmount>e0,03707</DividendAmount><BelastingPercentage>10</BelastingPercentage></Dividend>
+    <Dividend><DividendName>15-05-2008</DividendName><DividendType>Contant</DividendType><DividendAmount>e0,04847</DividendAmount><BelastingPercentage>10</BelastingPercentage></Dividend>
+  </ShareDividendsList>
+  <ShareDividendsList>
+    <ShareName>NUTRECO HOLDING EUR0.24</ShareName>
+    <Dividend><DividendName>DIV01</DividendName><DividendType>ContantOfStock</DividendType><StockDividend><FromAmount>0</FromAmount><ToAmount>1</ToAmount><Koers>e0,57446</Koers></StockDividend></Dividend>
+    <Dividend><DividendName>DIV02</DividendName><DividendType>ContantOfStock</DividendType><StockDividend><FromAmount>0</FromAmount><ToAmount>1</ToAmount><Koers>e0,53116</Koers></StockDividend></Dividend>
+    <Dividend><DividendName>DIV02-2</DividendName><DividendType>ContantOfStock</DividendType><StockDividend><FromAmount>0</FromAmount><ToAmount>1</ToAmount><Koers>e0,28272</Koers></StockDividend></Dividend>
+    <Dividend><DividendName>DIV03</DividendName><DividendType>ContantOfStock</DividendType><StockDividend><FromAmount>0</FromAmount><ToAmount>1</ToAmount><Koers>e0,3767</Koers></StockDividend></Dividend>
+    <Dividend><DividendName>DIV03 1/149E</DividendName><DividendType>ContantOfStock</DividendType><StockDividend><FromAmount>149</FromAmount><ToAmount>1</ToAmount><Koers>e0,1157</Koers></StockDividend></Dividend>
+    <Dividend><DividendName>DIV07</DividendName><DividendType>ContantOfStock</DividendType><StockDividend><FromAmount>153</FromAmount><ToAmount>1</ToAmount><Koers>e0,3581</Koers></StockDividend></Dividend>
+    <Dividend><DividendName>DIV08</DividendName><DividendType>ContantOfStock</DividendType><StockDividend><FromAmount>36</FromAmount><ToAmount>1</ToAmount><Koers>e1,32923</Koers></StockDividend></Dividend>
+    <Dividend><DividendName>DIV08-2</DividendName><DividendType>ContantOfStock</DividendType><StockDividend><FromAmount>110</FromAmount><ToAmount>1</ToAmount><Koers>e0,39146</Koers></StockDividend></Dividend>
+  </ShareDividendsList>
+  <ShareDividendsList>
+    <ShareName>PHILIPS ELECTRONICS KON EUR0.20</ShareName>
+    <Dividend><DividendName>DIV00</DividendName><DividendType>Contant</DividendType><DividendAmount>e0,36</DividendAmount></Dividend>
+    <Dividend><DividendName>DIV01</DividendName><DividendType>Contant</DividendType><DividendAmount>e0,36</DividendAmount></Dividend>
+    <Dividend><DividendName>DIV02</DividendName><DividendType>Contant</DividendType><DividendAmount>e0,36</DividendAmount></Dividend>
+    <Dividend><DividendName>DIV03</DividendName><DividendType>Contant</DividendType><DividendAmount>e0,36</DividendAmount></Dividend>
+    <Dividend><DividendYear>2004</DividendYear><DividendType>Contant</DividendType><DividendAmount>e0,40</DividendAmount></Dividend>
+    <Dividend><DividendYear>2005</DividendYear><DividendType>Contant</DividendType><DividendAmount>e0,44</DividendAmount></Dividend>
+    <Dividend><DividendYear>2006</DividendYear><DividendType>Contant</DividendType><DividendAmount>e0,60</DividendAmount></Dividend>
+    <Dividend><DividendYear>2007</DividendYear><DividendType>Contant</DividendType><DividendAmount>e0,70</DividendAmount></Dividend>
+  </ShareDividendsList>
+  <ShareDividendsList>
+    <ShareName>POSTBANK AANDELENFONDS EUR5 -1-</ShareName>
+    <Dividend><DividendName>DIV01</DividendName><DividendType>Contant</DividendType><DividendAmount>e0,75</DividendAmount></Dividend>
+    <Dividend><DividendName>DIV02</DividendName><DividendType>Contant</DividendType><DividendAmount>e0,40</DividendAmount></Dividend>
+    <Dividend><DividendName>DIV03</DividendName><DividendType>Contant</DividendType><DividendAmount>e0,75</DividendAmount></Dividend>
+    <Dividend><DividendName>DIV04</DividendName><DividendType>Contant</DividendType><DividendAmount>e0,46</DividendAmount></Dividend>
+    <Dividend><DividendName>DIV05</DividendName><DividendType>Contant</DividendType><DividendAmount>e0,61</DividendAmount></Dividend>
+    <Dividend><DividendName>DIV06</DividendName><DividendType>Contant</DividendType><DividendAmount>e0,88</DividendAmount></Dividend>
+    <Dividend><DividendName>02-07-2007</DividendName><DividendType>Contant</DividendType><DividendAmount>e1,25</DividendAmount></Dividend>
+    <Dividend><DividendName>23-06-2008</DividendName><DividendType>Contant</DividendType><DividendAmount>e1,06</DividendAmount></Dividend>
+  </ShareDividendsList>
+  <ShareDividendsList>
+    <ShareName>POSTBANK AANDELENFONDS NLG10</ShareName>
+  </ShareDividendsList>
+  <ShareDividendsList>
+    <ShareName>POSTBANK MULTIMEDIAFONDS EUR0.8</ShareName>
+  </ShareDividendsList>
+  <ShareDividendsList>
+    <ShareName>POSTBANK MULTIMEDIAFONDS EUR5</ShareName>
+  </ShareDividendsList>
+  <ShareDividendsList>
+    <ShareName>POSTBANK WERELDMERKENFDS NLG10</ShareName>
+  </ShareDividendsList>
+  <ShareDividendsList>
+    <ShareName>POSTBK WERELDMERKENFD EUR0.8</ShareName>
+    <Dividend><DividendName>DIV01</DividendName><DividendType>Contant</DividendType><DividendAmount>e0,25</DividendAmount></Dividend>
+    <Dividend><DividendName>DIV03</DividendName><DividendType>Contant</DividendType><DividendAmount>e0,10</DividendAmount></Dividend>
+    <Dividend><DividendName>DIV04</DividendName><DividendType>Contant</DividendType><DividendAmount>e0,05</DividendAmount></Dividend>
+    <Dividend><DividendName>DIV05</DividendName><DividendType>Contant</DividendType><DividendAmount>e0,27</DividendAmount></Dividend>
+    <Dividend><DividendName>DIV06</DividendName><DividendType>Contant</DividendType><DividendAmount>e0,40</DividendAmount></Dividend>
+    <Dividend><DividendName>29-06-2007</DividendName><DividendType>Contant</DividendType><DividendAmount>e0,57</DividendAmount></Dividend>
+    <Dividend><DividendName>20-06-2008</DividendName><DividendType>Contant</DividendType><DividendAmount>e0,66</DividendAmount></Dividend>
+  </ShareDividendsList>
+  <ShareDividendsList>
+    <ShareName>Postbank Beleggingsfonds</ShareName>
+  </ShareDividendsList>
+  <ShareDividendsList>
+    <ShareName>Postbank Financiele Wereldfonds</ShareName>
+  </ShareDividendsList>
+  <ShareDividendsList>
+    <ShareName>SIMAC TECHNIEK EUR0,10</ShareName>
+    <Dividend><DividendName>07-05-2008</DividendName><DividendType>Contant</DividendType><DividendAmount>e0,02</DividendAmount></Dividend>
+  </ShareDividendsList>
+  <ShareDividendsList>
+    <ShareName>TELE ATLAS EUR0.1 -NL-</ShareName>
+  </ShareDividendsList>
+  <ShareDividendsList>
+    <ShareName>TISCALI EUR0.50</ShareName>
+  </ShareDividendsList>
+  <ShareDividendsList>
+    <ShareName>TISCALI ITL10 (nl)</ShareName>
+  </ShareDividendsList>
+  <ShareDividendsList>
+    <ShareName>TOMTOM EUR.2</ShareName>
+  </ShareDividendsList>
+  <ShareDividendsList>
+    <ShareName>UNITED PAN-EUR COM -A- EUR1</ShareName>
+  </ShareDividendsList>
+  <ShareDividendsList>
+    <ShareName>UPC EUR0.02 -A-</ShareName>
+  </ShareDividendsList>
+  <ShareDividendsList>
+    <ShareName>VODAFONE LIBERTEL EUR0.3</ShareName>
+  </ShareDividendsList>
+  <ShareDividendsList>
+    <ShareName>WORLD ONLINE INTL EUR0.4</ShareName>
+  </ShareDividendsList>
+</ShareDividends>

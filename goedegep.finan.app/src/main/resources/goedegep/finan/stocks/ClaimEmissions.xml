@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<ClaimEmissions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="ClaimEmissions.xsd">
+  <ClaimEmission>
+    <ShareName>AHOLD KON EUR0.25</ShareName><ClaimId>10-12-2003</ClaimId>
+    <FromAmount>3</FromAmount><ToAmount>2</ToAmount>
+    <PricePerShare>e4,83</PricePerShare><RightRate>e0,63</RightRate>
+  </ClaimEmission>
+  <ClaimEmission>
+    <ShareName>GETRONICS EUR0.04</ShareName><ClaimId>29-04-2005</ClaimId>
+    <FromAmount>3</FromAmount><ToAmount>2</ToAmount>
+    <PricePerShare>e1,19</PricePerShare><RightRate>e0,08</RightRate>
+  </ClaimEmission>
+  <ClaimEmission>
+    <ShareName>HAGEMEYER EUR1.20</ShareName><ClaimId>04-02-2004</ClaimId>
+    <FromAmount>2</FromAmount><ToAmount>7</ToAmount>
+    <PricePerShare>e1,20</PricePerShare><RightRate>e1,54</RightRate>
+  </ClaimEmission>
+  <ClaimEmission>
+    <ShareName>LOGICACMG GBP0.1 -NL-</ShareName><ClaimId>07-11-2005</ClaimId>
+    <FromAmount>2</FromAmount><ToAmount>1</ToAmount>
+    <PricePerShare>e1,55863</PricePerShare>
+  </ClaimEmission>
+  <ClaimEmission>
+    <ShareName>TISCALI EUR0.50</ShareName><ClaimId>01-02-2008</ClaimId>
+    <FromAmount>17</FromAmount><ToAmount>6</ToAmount>
+    <PricePerShare>e1,00</PricePerShare>
+  </ClaimEmission>
+</ClaimEmissions>

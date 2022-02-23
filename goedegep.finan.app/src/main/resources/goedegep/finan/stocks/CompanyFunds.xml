@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<CompanyFunds xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="CompanyFunds.xsd">
+  <CompanyFundList>
+    <CompanyName>ABN AMRO Holding</CompanyName>
+    <Fund>ABN AMRO Holding</Fund>
+  </CompanyFundList>
+  <CompanyFundList>
+    <CompanyName>ASML Holding</CompanyName>
+    <Fund>ASML Holding</Fund>
+  </CompanyFundList>
+  <CompanyFundList>
+    <CompanyName>Corporate Express</CompanyName>
+    <Fund>Corporate Express</Fund>
+  </CompanyFundList>
+  <CompanyFundList>
+    <CompanyName>Getronics</CompanyName>
+    <Fund>Getronics</Fund>
+  </CompanyFundList>
+  <CompanyFundList>
+    <CompanyName>Hagemeyer</CompanyName>
+    <Fund>Hagemeyer</Fund>
+  </CompanyFundList>
+  <CompanyFundList>
+    <CompanyName>Heijmans</CompanyName>
+    <Fund>Heijmans</Fund>
+  </CompanyFundList>
+  <CompanyFundList>
+    <CompanyName>Heineken</CompanyName>
+    <Fund>Heineken</Fund>
+  </CompanyFundList>
+  <CompanyFundList>
+    <CompanyName>Kon. Ahold</CompanyName>
+    <Fund>Kon. Ahold</Fund>
+  </CompanyFundList>
+  <CompanyFundList>
+    <CompanyName>Kon. DSM</CompanyName>
+    <Fund>Kon. DSM</Fund>
+  </CompanyFundList>
+  <CompanyFundList>
+    <CompanyName>Kon. KPN</CompanyName>
+    <Fund>Kon. KPN</Fund>
+  </CompanyFundList>
+  <CompanyFundList>
+    <CompanyName>Kon. Philips Electronics</CompanyName>
+    <Fund>Kon. Philips Electronics</Fund>
+  </CompanyFundList>
+  <CompanyFundList>
+    <CompanyName>Libertel</CompanyName>
+    <Fund>Libertel</Fund>
+  </CompanyFundList>
+  <CompanyFundList>
+    <CompanyName>LogicaCMG</CompanyName>
+    <Fund>LogicaCMG</Fund>
+  </CompanyFundList>
+  <CompanyFundList>
+    <CompanyName>Numico</CompanyName>
+    <Fund>Numico</Fund>
+  </CompanyFundList>
+  <CompanyFundList>
+    <CompanyName>Nutreco</CompanyName>
+    <Fund>Nutreco</Fund>
+  </CompanyFundList>
+  <CompanyFundList>
+    <CompanyName>Postbank</CompanyName>
+    <Fund>Postbank Aandelenfonds</Fund>
+    <Fund>Postbank Beleggingsfonds</Fund>
+    <Fund>Postbank Multimediafonds</Fund>
+    <Fund>Postbank Financiele Wereldfonds</Fund>
+    <Fund>Postbank WereldMerkenfonds</Fund>
+  </CompanyFundList>
+  <CompanyFundList>
+    <CompanyName>Simac</CompanyName>
+    <Fund>Simac Techniek</Fund>
+  </CompanyFundList>
+  <CompanyFundList>
+    <CompanyName>Tele Atlas</CompanyName>
+    <Fund>Tele Atlas</Fund>
+  </CompanyFundList>
+  <CompanyFundList>
+    <CompanyName>Tiscali</CompanyName>
+    <Fund>Tiscali</Fund>
+  </CompanyFundList>
+  <CompanyFundList>
+    <CompanyName>TomTom</CompanyName>
+    <Fund>TomTom</Fund>
+  </CompanyFundList>
+  <CompanyFundList>
+    <CompanyName>UPC</CompanyName>
+    <Fund>UPC</Fund>
+  </CompanyFundList>
+  <CompanyFundList>
+    <CompanyName>Vodafone</CompanyName>
+    <Fund>Vodafone Libertel</Fund>
+  </CompanyFundList>
+  <CompanyFundList>
+    <CompanyName>World Online</CompanyName>
+    <Fund>World Online</Fund>
+  </CompanyFundList>
+</CompanyFunds>

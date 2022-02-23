@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<FinancieleEenheden xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="FinancieleEenheden.xsd">
+  <FinancieleEenheid>
+    <TeNaamStelling>familie Goedegebure</TeNaamStelling>
+    <AdresId>1</AdresId>
+    <Personen>
+      <PersoonId>1</PersoonId>
+      <PersoonId>2</PersoonId>
+      <PersoonId>3</PersoonId>
+      <PersoonId>4</PersoonId>
+    </Personen>
+  </FinancieleEenheid>
+</FinancieleEenheden>

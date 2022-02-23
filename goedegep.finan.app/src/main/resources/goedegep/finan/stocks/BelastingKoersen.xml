@@ -1,0 +1,568 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<BelastingKoersen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="BelastingKoersen.xsd">
+  <KoersenPerKwartaal>
+    <Jaar>1998</Jaar><Kwartaal>4</Kwartaal>
+    <Koersen>
+      <AandeelKoersInfo><Aandeel>HAGEMEYER NLG2.50</Aandeel><Koers>f68,00</Koers></AandeelKoersInfo>
+    </Koersen>
+  </KoersenPerKwartaal>
+  <KoersenPerKwartaal>
+    <Jaar>1999</Jaar><Kwartaal>4</Kwartaal>
+    <Koersen>
+      <AandeelKoersInfo><Aandeel>HAGEMEYER NLG2.50</Aandeel><Koers>e22,00</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>LIBERTEL NLG0.64</Aandeel><Koers>e26,00</Koers></AandeelKoersInfo>
+    </Koersen>
+  </KoersenPerKwartaal>
+  <KoersenPerKwartaal>
+    <Jaar>2000</Jaar><Kwartaal>1</Kwartaal>
+    <Koersen>
+      <AandeelKoersInfo><Aandeel>HAGEMEYER NLG2.50</Aandeel><Koers>e22,22</Koers></AandeelKoersInfo>
+    </Koersen>
+  </KoersenPerKwartaal>
+  <KoersenPerKwartaal>
+    <Jaar>2000</Jaar><Kwartaal>2</Kwartaal>
+    <Koersen>
+      <AandeelKoersInfo><Aandeel>AHOLD KON NLG0.50</Aandeel><Koers>e30,83</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>HAGEMEYER NLG2.50</Aandeel><Koers>e28,88</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>LIBERTEL NLG0.64</Aandeel><Koers>e15,95</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>WORLD ONLINE INTL EUR0.4</Aandeel><Koers>e12,60</Koers></AandeelKoersInfo>
+    </Koersen>
+  </KoersenPerKwartaal>
+  <KoersenPerKwartaal>
+    <Jaar>2000</Jaar><Kwartaal>3</Kwartaal>
+    <Koersen>
+      <AandeelKoersInfo><Aandeel>ABN AMRO HOLDING NLG1.25</Aandeel><Koers>e26,40</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>AHOLD KON NLG0.50</Aandeel><Koers>e32,13</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>HAGEMEYER EUR1.20</Aandeel><Koers>e30,10</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>KON KPN EUR0.24</Aandeel><Koers>e24,68</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>LIBERTEL NLG0.64</Aandeel><Koers>e13,70</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>POSTBANK AANDELENFONDS NLG10</Aandeel><Koers>e87,90</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>POSTBANK WERELDMERKENFDS NLG10</Aandeel><Koers>e38,50</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>UNITED PAN-EUR COM -A- EUR1</Aandeel><Koers>e22,18</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>WORLD ONLINE INTL EUR0.4</Aandeel><Koers>e14,20</Koers></AandeelKoersInfo>
+    </Koersen>
+  </KoersenPerKwartaal>
+  <KoersenPerKwartaal>
+    <Jaar>2000</Jaar><Kwartaal>4</Kwartaal>
+    <Koersen>
+      <AandeelKoersInfo><Aandeel>ABN AMRO HOLDING NLG1.25</Aandeel><Koers>e24,00</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>AHOLD KON EUR0.25</Aandeel><Koers>e34,00</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>ASM LITHOGRAPHY EUR0.02</Aandeel><Koers>e21,00</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>GETRONICS EUR0.04</Aandeel><Koers>e6,00</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>HAGEMEYER EUR1.20</Aandeel><Koers>e24,00</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>KON KPN EUR0.24</Aandeel><Koers>e12,00</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>LIBERTEL NLG0.64</Aandeel><Koers>e12,00</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>PHILIPS ELECTRONICS KON EUR0.20</Aandeel><Koers>e37,00</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>POSTBANK AANDELENFONDS EUR5 -1-</Aandeel><Koers>e77,00</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>POSTBANK MULTIMEDIAFONDS EUR0.8</Aandeel><Koers>e12,00</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>POSTBK WERELDMERKENFD EUR0.8</Aandeel><Koers>e34,00</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>TISCALI ITL10 (nl)</Aandeel><Koers>e16,00</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>UNITED PAN-EUR COM -A- EUR1</Aandeel><Koers>e10,00</Koers></AandeelKoersInfo>
+    </Koersen>
+  </KoersenPerKwartaal>
+  <KoersenPerKwartaal>
+    <Jaar>2001</Jaar><Kwartaal>1</Kwartaal>
+    <Koersen>
+      <AandeelKoersInfo><Aandeel>ABN AMRO HOLDING NLG1.25</Aandeel><Koers>e20,73</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>ASM LITHOGRAPHY EUR0.02</Aandeel><Koers>e25,20</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>GETRONICS EUR0.04</Aandeel><Koers>e4,83</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>HAGEMEYER EUR1.20</Aandeel><Koers>e23,97</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>KON KPN EUR0.24</Aandeel><Koers>e11,06</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>LIBERTEL NLG0.64</Aandeel><Koers>e9,30</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>NUTRECO HOLDING EUR0.24</Aandeel><Koers>e47,50</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>PHILIPS ELECTRONICS KON EUR0.20</Aandeel><Koers>e31,10</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>POSTBANK AANDELENFONDS EUR5 -1-</Aandeel><Koers>e71,10</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>POSTBANK MULTIMEDIAFONDS EUR0.8</Aandeel><Koers>e11,05</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>POSTBK WERELDMERKENFD EUR0.8</Aandeel><Koers>e32,50</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>TISCALI ITL10 (nl)</Aandeel><Koers>e15,00</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>UNITED PAN-EUR COM -A- EUR1</Aandeel><Koers>e7,04</Koers></AandeelKoersInfo>
+    </Koersen>
+  </KoersenPerKwartaal>
+  <KoersenPerKwartaal>
+    <Jaar>2001</Jaar><Kwartaal>2</Kwartaal>
+    <Koersen>
+      <AandeelKoersInfo><Aandeel>ABN AMRO HOLDING EUR0.56</Aandeel><Koers>e22,19</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>ASM LITHOGRAPHY EUR0.02</Aandeel><Koers>e26,49</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>GETRONICS EUR0.04</Aandeel><Koers>e4,90</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>HAGEMEYER EUR1.20</Aandeel><Koers>e22,75</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>KON KPN EUR0.24</Aandeel><Koers>e6,70</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>LIBERTEL NLG0.64</Aandeel><Koers>e10,45</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>NUTRECO HOLDING EUR0.24</Aandeel><Koers>e50,60</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>PHILIPS ELECTRONICS KON EUR0.20</Aandeel><Koers>e31,31</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>POSTBANK AANDELENFONDS EUR5 -1-</Aandeel><Koers>e75,75</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>POSTBANK MULTIMEDIAFONDS EUR0.8</Aandeel><Koers>e12,55</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>POSTBK WERELDMERKENFD EUR0.8</Aandeel><Koers>e35,50</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>TISCALI ITL10 (nl)</Aandeel><Koers>e10,20</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>UNITED PAN-EUR COM -A- EUR1</Aandeel><Koers>e3,00</Koers></AandeelKoersInfo>
+    </Koersen>
+  </KoersenPerKwartaal>
+  <KoersenPerKwartaal>
+    <Jaar>2001</Jaar><Kwartaal>4</Kwartaal>
+    <Koersen>
+      <AandeelKoersInfo><Aandeel>ABN AMRO HOLDING EUR0.56</Aandeel><Koers>e18,09</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>ASM LITHOGRAPHY EUR0.02</Aandeel><Koers>e19,52</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>GETRONICS EUR0.04</Aandeel><Koers>e3,64</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>HAGEMEYER EUR1.20</Aandeel><Koers>e21,00</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>KON KPN EUR0.24</Aandeel><Koers>e5,71</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>NUTRECO HOLDING EUR0.24</Aandeel><Koers>e35,90</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>PHILIPS ELECTRONICS KON EUR0.20</Aandeel><Koers>e33,38</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>POSTBANK AANDELENFONDS EUR5 -1-</Aandeel><Koers>e66,25</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>POSTBANK MULTIMEDIAFONDS EUR0.8</Aandeel><Koers>e10,13</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>POSTBK WERELDMERKENFD EUR0.8</Aandeel><Koers>e32,20</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>TISCALI EUR0.50</Aandeel><Koers>e10,00</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>UNITED PAN-EUR COM -A- EUR1</Aandeel><Koers>e0,52</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>VODAFONE LIBERTEL EUR0.3</Aandeel><Koers>e10,33</Koers></AandeelKoersInfo>
+    </Koersen>
+  </KoersenPerKwartaal>
+  <KoersenPerKwartaal>
+    <Jaar>2002</Jaar><Kwartaal>1</Kwartaal>
+    <Koersen>
+      <AandeelKoersInfo><Aandeel>ABN AMRO HOLDING EUR0.56</Aandeel><Koers>e21,77</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>ASM LITHOGRAPHY EUR0.02</Aandeel><Koers>e28,90</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>GETRONICS EUR0.04</Aandeel><Koers>e3,81</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>HAGEMEYER EUR1.20</Aandeel><Koers>e25,40</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>KON KPN EUR0.24</Aandeel><Koers>e5,87</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>NUTRECO HOLDING EUR0.24</Aandeel><Koers>e37,45</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>PHILIPS ELECTRONICS KON EUR0.20</Aandeel><Koers>e34,97</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>POSTBANK AANDELENFONDS EUR5 -1-</Aandeel><Koers>e67,35</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>POSTBANK MULTIMEDIAFONDS EUR0.8</Aandeel><Koers>e9,15</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>POSTBK WERELDMERKENFD EUR0.8</Aandeel><Koers>e32,90</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>TISCALI EUR0.50</Aandeel><Koers>e9,71</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>UNITED PAN-EUR COM -A- EUR1</Aandeel><Koers>e0,17</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>VODAFONE LIBERTEL EUR0.3</Aandeel><Koers>e7,40</Koers></AandeelKoersInfo>
+    </Koersen>
+  </KoersenPerKwartaal>
+  <KoersenPerKwartaal>
+    <Jaar>2002</Jaar><Kwartaal>3</Kwartaal>
+    <Koersen>
+      <AandeelKoersInfo><Aandeel>ABN AMRO HOLDING EUR0.56</Aandeel><Koers>e11,08</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>AHOLD KON EUR0.25</Aandeel><Koers>e11,99</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>ASM LITHOGRAPHY EUR0.02</Aandeel><Koers>e6,22</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>GETRONICS EUR0.04</Aandeel><Koers>e0,73</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>HAGEMEYER EUR1.20</Aandeel><Koers>e7,66</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>KON KPN EUR0.24</Aandeel><Koers>e5,25</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>NUTRECO HOLDING EUR0.24</Aandeel><Koers>e14,00</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>PHILIPS ELECTRONICS KON EUR0.20</Aandeel><Koers>e14,70</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>POSTBANK AANDELENFONDS EUR5 -1-</Aandeel><Koers>e43,00</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>POSTBANK MULTIMEDIAFONDS EUR0.8</Aandeel><Koers>e5,05</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>POSTBK WERELDMERKENFD EUR0.8</Aandeel><Koers>e23,00</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>TISCALI EUR0.50</Aandeel><Koers>e3,92</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>UNITED PAN-EUR COM -A- EUR1</Aandeel><Koers>e0,06</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>VODAFONE LIBERTEL EUR0.3</Aandeel><Koers>e8,10</Koers></AandeelKoersInfo>
+      <StockDividendKoersInfo><Aandeel>AHOLD KON EUR0.25</Aandeel><DividendReferentie>DIV02</DividendReferentie><Koers>e0,22</Koers></StockDividendKoersInfo>
+    </Koersen>
+  </KoersenPerKwartaal>
+  <KoersenPerKwartaal>
+    <Jaar>2002</Jaar><Kwartaal>4</Kwartaal>
+    <Koersen>
+      <AandeelKoersInfo><Aandeel>ABN AMRO HOLDING EUR0.56</Aandeel><Koers>e15,58</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>AHOLD KON EUR0.25</Aandeel><Koers>e12,10</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>ASM LITHOGRAPHY EUR0.02</Aandeel><Koers>e7,96</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>GETRONICS EUR0.04</Aandeel><Koers>e0,58</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>HAGEMEYER EUR1.20</Aandeel><Koers>e6,90</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>KON KPN EUR0.24</Aandeel><Koers>e6,20</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>NUTRECO HOLDING EUR0.24</Aandeel><Koers>e17,79</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>PHILIPS ELECTRONICS KON EUR0.20</Aandeel><Koers>e16,70</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>POSTBANK AANDELENFONDS EUR5 -1-</Aandeel><Koers>e42,90</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>POSTBANK MULTIMEDIAFONDS EUR0.8</Aandeel><Koers>e5,02</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>POSTBK WERELDMERKENFD EUR0.8</Aandeel><Koers>e23,00</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>TISCALI EUR0.50</Aandeel><Koers>e4,10</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>UNITED PAN-EUR COM -A- EUR1</Aandeel><Koers>e0,06</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>VODAFONE LIBERTEL EUR0.3</Aandeel><Koers>e10,18</Koers></AandeelKoersInfo>
+    </Koersen>
+  </KoersenPerKwartaal>
+  <KoersenPerKwartaal>
+    <Jaar>2003</Jaar><Kwartaal>1</Kwartaal>
+    <Koersen>
+      <AandeelKoersInfo><Aandeel>ABN AMRO HOLDING EUR0.56</Aandeel><Koers>e13,40</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>AHOLD KON EUR0.25</Aandeel><Koers>e3,05</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>ASM LITHOGRAPHY EUR0.02</Aandeel><Koers>e5,95</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>GETRONICS EUR0.04</Aandeel><Koers>e0,39</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>HAGEMEYER EUR1.20</Aandeel><Koers>e3,47</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>KON KPN EUR0.24</Aandeel><Koers>e5,88</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>NUTRECO HOLDING EUR0.24</Aandeel><Koers>e14,13</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>PHILIPS ELECTRONICS KON EUR0.20</Aandeel><Koers>e14,39</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>POSTBANK AANDELENFONDS EUR5 -1-</Aandeel><Koers>e38,80</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>POSTBANK MULTIMEDIAFONDS EUR0.8</Aandeel><Koers>e4,93</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>POSTBK WERELDMERKENFD EUR0.8</Aandeel><Koers>e22,00</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>TISCALI EUR0.50</Aandeel><Koers>e3,62</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>UPC EUR0.02 -A-</Aandeel><Koers>e0,05</Koers></AandeelKoersInfo>
+    </Koersen>
+  </KoersenPerKwartaal>
+  <KoersenPerKwartaal>
+    <Jaar>2003</Jaar><Kwartaal>2</Kwartaal>
+    <Koersen>
+      <AandeelKoersInfo><Aandeel>ABN AMRO HOLDING EUR0.56</Aandeel><Koers>e16,65</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>AHOLD KON EUR0.25</Aandeel><Koers>e7,23</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>ASM LITHOGRAPHY EUR0.02</Aandeel><Koers>e8,27</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>GETRONICS EUR0.04</Aandeel><Koers>e1,12</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>HAGEMEYER EUR1.20</Aandeel><Koers>e3,35</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>KON KPN EUR0.24</Aandeel><Koers>e6,17</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>NUTRECO HOLDING EUR0.24</Aandeel><Koers>e13,64</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>PHILIPS ELECTRONICS KON EUR0.20</Aandeel><Koers>e16,56</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>POSTBANK AANDELENFONDS EUR5 -1-</Aandeel><Koers>e42,60</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>POSTBANK MULTIMEDIAFONDS EUR0.8</Aandeel><Koers>e5,66</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>POSTBK WERELDMERKENFD EUR0.8</Aandeel><Koers>e22,60</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>TISCALI EUR0.50</Aandeel><Koers>e4,68</Koers></AandeelKoersInfo>
+    </Koersen>
+  </KoersenPerKwartaal>
+  <KoersenPerKwartaal>
+    <Jaar>2003</Jaar><Kwartaal>3</Kwartaal>
+    <Koersen>
+      <AandeelKoersInfo><Aandeel>ABN AMRO HOLDING EUR0.56</Aandeel><Koers>e15,85</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>AHOLD KON EUR0.25</Aandeel><Koers>e8,19</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>ASM LITHOGRAPHY EUR0.02</Aandeel><Koers>e11,25</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>GETRONICS EUR0.04</Aandeel><Koers>e1,09</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>HAGEMEYER EUR1.20</Aandeel><Koers>e3,92</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>HEINEKEN EUR2</Aandeel><Koers>e31,19</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>KON KPN EUR0.24</Aandeel><Koers>e6,43</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>NUTRECO HOLDING EUR0.24</Aandeel><Koers>e19,06</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>PHILIPS ELECTRONICS KON EUR0.20</Aandeel><Koers>e19,46</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>POSTBANK AANDELENFONDS EUR5 -1-</Aandeel><Koers>e44,86</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>POSTBANK MULTIMEDIAFONDS EUR0.8</Aandeel><Koers>e5,86</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>POSTBK WERELDMERKENFD EUR0.8</Aandeel><Koers>e24,10</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>TISCALI EUR0.50</Aandeel><Koers>e5,14</Koers></AandeelKoersInfo>
+    </Koersen>
+  </KoersenPerKwartaal>
+  <KoersenPerKwartaal>
+    <Jaar>2003</Jaar><Kwartaal>4</Kwartaal>
+    <Koersen>
+      <AandeelKoersInfo><Aandeel>ABN AMRO HOLDING EUR0.56</Aandeel><Koers>e18,55</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>AHOLD KON EUR0.25</Aandeel><Koers>e6,04</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>ASM LITHOGRAPHY EUR0.02</Aandeel><Koers>e15,72</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>GETRONICS EUR0.04</Aandeel><Koers>e1,66</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>HAGEMEYER EUR1.20</Aandeel><Koers>e1,79</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>HEINEKEN EUR2</Aandeel><Koers>e30,19</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>KON KPN EUR0.24</Aandeel><Koers>e6,12</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>LOGICACMG GBP0.1 -NL-</Aandeel><Koers>e3,70</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>NUTRECO HOLDING EUR0.24</Aandeel><Koers>e21,78</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>PHILIPS ELECTRONICS KON EUR0.20</Aandeel><Koers>e23,15</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>POSTBANK AANDELENFONDS EUR5 -1-</Aandeel><Koers>e45,94</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>POSTBANK MULTIMEDIAFONDS EUR0.8</Aandeel><Koers>e6,10</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>POSTBK WERELDMERKENFD EUR0.8</Aandeel><Koers>e24,75</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>TISCALI EUR0.50</Aandeel><Koers>e5,59</Koers></AandeelKoersInfo>
+    </Koersen>
+  </KoersenPerKwartaal>
+  <KoersenPerKwartaal>
+    <Jaar>2004</Jaar><Kwartaal>1</Kwartaal>
+    <Koersen>
+      <AandeelKoersInfo><Aandeel>ABN AMRO HOLDING EUR0.56</Aandeel><Koers>e18,15</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>AHOLD KON EUR0.25</Aandeel><Koers>e6,66</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>ASM LITHOGRAPHY EUR0.02</Aandeel><Koers>e14,91</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>GETRONICS EUR0.04</Aandeel><Koers>e2,50</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>HAGEMEYER EUR1.20</Aandeel><Koers>e1,70</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>HEINEKEN EUR2</Aandeel><Koers>e32,60</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>KON KPN EUR0.24</Aandeel><Koers>e6,35</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>LOGICACMG GBP0.1 -NL-</Aandeel><Koers>e3,85</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>PHILIPS ELECTRONICS KON EUR0.20</Aandeel><Koers>e23,53</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>POSTBANK AANDELENFONDS EUR5 -1-</Aandeel><Koers>e47,65</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>POSTBANK MULTIMEDIAFONDS EUR0.8</Aandeel><Koers>e6,45</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>POSTBK WERELDMERKENFD EUR0.8</Aandeel><Koers>e25,75</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>TISCALI EUR0.50</Aandeel><Koers>e4,71</Koers></AandeelKoersInfo>
+    </Koersen>
+  </KoersenPerKwartaal>
+  <KoersenPerKwartaal>
+    <Jaar>2004</Jaar><Kwartaal>2</Kwartaal>
+    <Koersen>
+      <AandeelKoersInfo><Aandeel>ABN AMRO HOLDING EUR0.56</Aandeel><Koers>e17,98</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>AHOLD KON EUR0.25</Aandeel><Koers>e6,45</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>ASM LITHOGRAPHY EUR0.02</Aandeel><Koers>e13,91</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>GETRONICS EUR0.04</Aandeel><Koers>e2,25</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>HAGEMEYER EUR1.20</Aandeel><Koers>e1,74</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>HEINEKEN EUR1.6</Aandeel><Koers>e27,01</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>KON KPN EUR0.24</Aandeel><Koers>e6,26</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>LOGICACMG GBP0.1 -NL-</Aandeel><Koers>e2,77</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>PHILIPS ELECTRONICS KON EUR0.20</Aandeel><Koers>e22,13</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>POSTBANK AANDELENFONDS EUR5 -1-</Aandeel><Koers>e48,01</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>POSTBANK MULTIMEDIAFONDS EUR0.8</Aandeel><Koers>e6,45</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>POSTBK WERELDMERKENFD EUR0.8</Aandeel><Koers>e26,35</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>TISCALI EUR0.50</Aandeel><Koers>e3,68</Koers></AandeelKoersInfo>
+      <OptieKoersInfo><Type>CALL</Type><FondsNaam>ASM LITHOGRAPHY EUR0.02</FondsNaam><Maand>7</Maand><Jaar>2004</Jaar><UitoefeningsKoers>e14,00</UitoefeningsKoers><Koers>e0,40</Koers></OptieKoersInfo>
+    </Koersen>
+  </KoersenPerKwartaal>
+  <KoersenPerKwartaal>
+    <Jaar>2004</Jaar><Kwartaal>3</Kwartaal>
+    <Koersen>
+      <AandeelKoersInfo><Aandeel>ABN AMRO HOLDING EUR0.56</Aandeel><Koers>e18,29</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>AHOLD KON EUR0.25</Aandeel><Koers>e5,14</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>ASM LITHOGRAPHY EUR0.02</Aandeel><Koers>e10,36</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>GETRONICS EUR0.04</Aandeel><Koers>e1,68</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>HAGEMEYER EUR1.20</Aandeel><Koers>e1,50</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>HEINEKEN EUR1.6</Aandeel><Koers>e24,24</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>KON KPN EUR0.24</Aandeel><Koers>e6,03</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>LOGICACMG GBP0.1 -NL-</Aandeel><Koers>e2,55</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>PHILIPS ELECTRONICS KON EUR0.20</Aandeel><Koers>e18,44</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>POSTBANK AANDELENFONDS EUR5 -1-</Aandeel><Koers>e46,85</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>POSTBANK MULTIMEDIAFONDS EUR0.8</Aandeel><Koers>e5,67</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>POSTBK WERELDMERKENFD EUR0.8</Aandeel><Koers>e24,40</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>TISCALI EUR0.50</Aandeel><Koers>e2,90</Koers></AandeelKoersInfo>
+    </Koersen>
+  </KoersenPerKwartaal>
+  <KoersenPerKwartaal>
+    <Jaar>2005</Jaar><Kwartaal>1</Kwartaal>
+    <Koersen>
+      <AandeelKoersInfo><Aandeel>ABN AMRO HOLDING EUR0.56</Aandeel><Koers>e19,14</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>AHOLD KON EUR0.25</Aandeel><Koers>e6,46</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>ASM LITHOGRAPHY EUR0.02</Aandeel><Koers>e13,03</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>GETRONICS EUR0.04</Aandeel><Koers>e1,79</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>HAGEMEYER EUR1.20</Aandeel><Koers>e1,96</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>HEINEKEN EUR1.6</Aandeel><Koers>e26,73</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>KON KPN EUR0.24</Aandeel><Koers>e6,90</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>LOGICACMG GBP0.1 -NL-</Aandeel><Koers>e2,62</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>PHILIPS ELECTRONICS KON EUR0.20</Aandeel><Koers>e21,25</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>POSTBANK AANDELENFONDS EUR5 -1-</Aandeel><Koers>e48,88</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>POSTBANK MULTIMEDIAFONDS EUR0.8</Aandeel><Koers>e5,91</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>POSTBK WERELDMERKENFD EUR0.8</Aandeel><Koers>e25,95</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>TISCALI EUR0.50</Aandeel><Koers>e2,73</Koers></AandeelKoersInfo>
+    </Koersen>
+  </KoersenPerKwartaal>
+  <KoersenPerKwartaal>
+    <Jaar>2005</Jaar><Kwartaal>2</Kwartaal>
+    <Koersen>
+      <AandeelKoersInfo><Aandeel>ABN AMRO HOLDING EUR0.56</Aandeel><Koers>e20,35</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>AHOLD KON EUR0.25</Aandeel><Koers>e6,80</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>ASM LITHOGRAPHY EUR0.02</Aandeel><Koers>e13,02</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>GETRONICS EUR0.28</Aandeel><Koers>e9,76</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>HAGEMEYER EUR1.20</Aandeel><Koers>e1,96</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>HEINEKEN EUR1.6</Aandeel><Koers>e25,54</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>KON KPN EUR0.24</Aandeel><Koers>e6,94</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>LOGICACMG GBP0.1 -NL-</Aandeel><Koers>e2,62</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>PHILIPS ELECTRONICS KON EUR0.20</Aandeel><Koers>e20,90</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>POSTBANK AANDELENFONDS EUR5 -1-</Aandeel><Koers>e51,50</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>POSTBANK MULTIMEDIAFONDS EUR0.8</Aandeel><Koers>e6,45</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>POSTBK WERELDMERKENFD EUR0.8</Aandeel><Koers>e28,50</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>TISCALI EUR0.50</Aandeel><Koers>e2,33</Koers></AandeelKoersInfo>
+    </Koersen>
+  </KoersenPerKwartaal>
+  <KoersenPerKwartaal>
+    <Jaar>2005</Jaar><Kwartaal>3</Kwartaal>
+    <Koersen>
+      <AandeelKoersInfo><Aandeel>ABN AMRO HOLDING EUR0.56</Aandeel><Koers>e19,93</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>AHOLD KON EUR0.25</Aandeel><Koers>e6,29</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>ASM LITHOGRAPHY EUR0.02</Aandeel><Koers>e13,66</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>GETRONICS EUR0.28</Aandeel><Koers>e10,18</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>HAGEMEYER EUR1.20</Aandeel><Koers>e2,45</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>HEINEKEN EUR1.6</Aandeel><Koers>e26,71</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>KON KPN EUR0.24</Aandeel><Koers>e7,46</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>LOGICACMG GBP0.1 -NL-</Aandeel><Koers>e2,59</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>PHILIPS ELECTRONICS KON EUR0.20</Aandeel><Koers>e22,11</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>POSTBANK AANDELENFONDS EUR5 -1-</Aandeel><Koers>e55,55</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>POSTBANK MULTIMEDIAFONDS EUR0.8</Aandeel><Koers>e6,60</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>POSTBK WERELDMERKENFD EUR0.8</Aandeel><Koers>e28,99</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>TISCALI EUR0.50</Aandeel><Koers>e2,85</Koers></AandeelKoersInfo>
+    </Koersen>
+  </KoersenPerKwartaal>
+  <KoersenPerKwartaal>
+    <Jaar>2005</Jaar><Kwartaal>4</Kwartaal>
+    <Koersen>
+      <AandeelKoersInfo><Aandeel>ABN AMRO HOLDING EUR0.56</Aandeel><Koers>e22,09</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>AHOLD KON EUR0.25</Aandeel><Koers>e6,33</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>ASM LITHOGRAPHY EUR0.02</Aandeel><Koers>e16,90</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>GETRONICS EUR0.28</Aandeel><Koers>e11,36</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>HAGEMEYER EUR1.20</Aandeel><Koers>e2,74</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>HEINEKEN EUR1.6</Aandeel><Koers>e26,78</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>KON KPN EUR0.24</Aandeel><Koers>e8,47</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>LOGICACMG GBP0.1 -NL-</Aandeel><Koers>e2,59</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>PHILIPS ELECTRONICS KON EUR0.20</Aandeel><Koers>e26,25</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>POSTBANK AANDELENFONDS EUR5 -1-</Aandeel><Koers>e58,30</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>POSTBANK MULTIMEDIAFONDS EUR0.8</Aandeel><Koers>e6,82</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>POSTBK WERELDMERKENFD EUR0.8</Aandeel><Koers>e30,54</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>TISCALI EUR0.50</Aandeel><Koers>e2,69</Koers></AandeelKoersInfo>
+    </Koersen>
+  </KoersenPerKwartaal>
+  <KoersenPerKwartaal>
+    <Jaar>2006</Jaar><Kwartaal>1</Kwartaal>
+    <Koersen>
+      <AandeelKoersInfo><Aandeel>ABN AMRO HOLDING EUR0.56</Aandeel><Koers>e24,74</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>AHOLD KON EUR0.25</Aandeel><Koers>e6,49</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>ASM LITHOGRAPHY EUR0.02</Aandeel><Koers>e16,85</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>GETRONICS EUR0.28</Aandeel><Koers>e9,99</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>HAGEMEYER EUR1.20</Aandeel><Koers>e4,17</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>HEINEKEN EUR1.6</Aandeel><Koers>e31,32</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>KON DSM EUR1.5</Aandeel><Koers>e37,68</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>KON KPN EUR0.24</Aandeel><Koers>e9,30</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>KON NUMICO EUR0.25</Aandeel><Koers>e36,51</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>LOGICACMG GBP0.1 -NL-</Aandeel><Koers>e2,82</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>PHILIPS ELECTRONICS KON EUR0.20</Aandeel><Koers>e27,89</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>POSTBANK AANDELENFONDS EUR5 -1-</Aandeel><Koers>e61,25</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>POSTBANK MULTIMEDIAFONDS EUR0.8</Aandeel><Koers>e6,87</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>POSTBK WERELDMERKENFD EUR0.8</Aandeel><Koers>e31,52</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>SIMAC TECHNIEK EUR0,10</Aandeel><Koers>e2,04</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>TISCALI EUR0.50</Aandeel><Koers>e2,68</Koers></AandeelKoersInfo>
+    </Koersen>
+  </KoersenPerKwartaal>
+  <KoersenPerKwartaal>
+    <Jaar>2006</Jaar><Kwartaal>2</Kwartaal>
+    <Koersen>
+      <AandeelKoersInfo><Aandeel>ABN AMRO HOLDING EUR0.56</Aandeel><Koers>e21,39</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>AHOLD KON EUR0.25</Aandeel><Koers>e6,79</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>ASM LITHOGRAPHY EUR0.02</Aandeel><Koers>e15,84</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>GETRONICS EUR0.28</Aandeel><Koers>e8,41</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>HAGEMEYER EUR1.20</Aandeel><Koers>e3,61</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>KON DSM EUR1.5</Aandeel><Koers>e32,56</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>KON KPN EUR0.24</Aandeel><Koers>e8,79</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>KON NUMICO EUR0.25</Aandeel><Koers>e35,09</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>LOGICACMG GBP0.1 -NL-</Aandeel><Koers>e2,54</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>PHILIPS ELECTRONICS KON EUR0.20</Aandeel><Koers>e24,43</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>POSTBANK AANDELENFONDS EUR5 -1-</Aandeel><Koers>e56,65</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>POSTBANK MULTIMEDIAFONDS EUR0.8</Aandeel><Koers>e6,31</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>POSTBK WERELDMERKENFD EUR0.8</Aandeel><Koers>e29,88</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>TISCALI EUR0.50</Aandeel><Koers>e2,33</Koers></AandeelKoersInfo>
+    </Koersen>
+  </KoersenPerKwartaal>
+  <KoersenPerKwartaal>
+    <Jaar>2006</Jaar><Kwartaal>3</Kwartaal>
+    <Koersen>
+      <AandeelKoersInfo><Aandeel>ABN AMRO HOLDING EUR0.56</Aandeel><Koers>e23,00</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>AHOLD KON EUR0.25</Aandeel><Koers>e8,38</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>ASM LITHOGRAPHY EUR0.02</Aandeel><Koers>e18,44</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>GETRONICS EUR0.28</Aandeel><Koers>e5,32</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>HAGEMEYER EUR1.20</Aandeel><Koers>e3,84</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>KON DSM EUR1.5</Aandeel><Koers>e34,59</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>KON KPN EUR0.24</Aandeel><Koers>e10,06</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>KON NUMICO EUR0.25</Aandeel><Koers>e35,50</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>LOGICACMG GBP0.1 -NL-</Aandeel><Koers>e2,32</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>PHILIPS ELECTRONICS KON EUR0.20</Aandeel><Koers>e27,67</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>POSTBANK AANDELENFONDS EUR5 -1-</Aandeel><Koers>e58,85</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>POSTBANK MULTIMEDIAFONDS EUR0.8</Aandeel><Koers>e6,80</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>POSTBK WERELDMERKENFD EUR0.8</Aandeel><Koers>e32,12</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>TISCALI EUR0.50</Aandeel><Koers>e2,22</Koers></AandeelKoersInfo>
+    </Koersen>
+  </KoersenPerKwartaal>
+  <KoersenPerKwartaal>
+    <Jaar>2006</Jaar><Kwartaal>4</Kwartaal>
+    <Koersen>
+      <AandeelKoersInfo><Aandeel>ABN AMRO HOLDING EUR0.56</Aandeel><Koers>e24,35</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>AHOLD KON EUR0.25</Aandeel><Koers>e8,06</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>ASM LITHOGRAPHY EUR0.02</Aandeel><Koers>e18,84</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>GETRONICS EUR0.28</Aandeel><Koers>e6,14</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>HAGEMEYER EUR1.20</Aandeel><Koers>e3,84</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>KON KPN EUR0.24</Aandeel><Koers>e10,77</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>LOGICACMG GBP0.1 -NL-</Aandeel><Koers>e2,77</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>PHILIPS ELECTRONICS KON EUR0.20</Aandeel><Koers>e28,57</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>POSTBANK AANDELENFONDS EUR5 -1-</Aandeel><Koers>e61,05</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>POSTBANK MULTIMEDIAFONDS EUR0.8</Aandeel><Koers>e7,46</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>POSTBK WERELDMERKENFD EUR0.8</Aandeel><Koers>e34,15</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>TISCALI EUR0.50</Aandeel><Koers>e2,50</Koers></AandeelKoersInfo>
+    </Koersen>
+  </KoersenPerKwartaal>
+  <KoersenPerKwartaal>
+    <Jaar>2007</Jaar><Kwartaal>1</Kwartaal>
+    <Koersen>
+      <AandeelKoersInfo><Aandeel>AHOLD KON EUR0.25</Aandeel><Koers>e8,75</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>ASM LITHOGRAPHY EUR0.02</Aandeel><Koers>e18,49</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>GETRONICS EUR0.28</Aandeel><Koers>e6,81</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>HAGEMEYER EUR1.20</Aandeel><Koers>e3,56</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>KON DSM EUR1.5</Aandeel><Koers>e33,54</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>KON KPN EUR0.24</Aandeel><Koers>e11,66</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>KON NUMICO EUR0.25</Aandeel><Koers>e38,61</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>LOGICACMG GBP0.1 -NL-</Aandeel><Koers>e2,62</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>PHILIPS ELECTRONICS KON EUR0.20</Aandeel><Koers>e28,59</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>POSTBANK AANDELENFONDS EUR5 -1-</Aandeel><Koers>e60,94</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>POSTBANK MULTIMEDIAFONDS EUR0.8</Aandeel><Koers>e7,40</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>POSTBK WERELDMERKENFD EUR0.8</Aandeel><Koers>e33,72</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>TISCALI EUR0.50</Aandeel><Koers>e2,80</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>TOMTOM EUR.2</Aandeel><Koers>e30,51</Koers></AandeelKoersInfo>
+    </Koersen>
+  </KoersenPerKwartaal>
+  <KoersenPerKwartaal>
+    <Jaar>2007</Jaar><Kwartaal>2</Kwartaal>
+    <Koersen>
+      <AandeelKoersInfo><Aandeel>AHOLD KON EUR0.25</Aandeel><Koers>e9,33</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>ASM LITHOGRAPHY EUR0.02</Aandeel><Koers>e20,50</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>GETRONICS EUR0.28</Aandeel><Koers>e5,50</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>HAGEMEYER EUR1.20</Aandeel><Koers>e3,83</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>KON DSM EUR1.5</Aandeel><Koers>e36,55</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>KON KPN EUR0.24</Aandeel><Koers>e12,32</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>KON NUMICO EUR0.25</Aandeel><Koers>e38,53</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>LOGICACMG GBP0.1 -NL-</Aandeel><Koers>e2,25</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>PHILIPS ELECTRONICS KON EUR0.20</Aandeel><Koers>e31,56</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>POSTBANK AANDELENFONDS EUR5 -1-</Aandeel><Koers>e63,03</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>POSTBANK MULTIMEDIAFONDS EUR0.8</Aandeel><Koers>e8,04</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>POSTBK WERELDMERKENFD EUR0.8</Aandeel><Koers>e34,59</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>SIMAC TECHNIEK EUR0,10</Aandeel><Koers>e2,50</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>TISCALI EUR0.50</Aandeel><Koers>e2,22</Koers></AandeelKoersInfo>
+    </Koersen>
+  </KoersenPerKwartaal>
+  <KoersenPerKwartaal>
+    <Jaar>2007</Jaar><Kwartaal>3</Kwartaal>
+    <Koersen>
+      <AandeelKoersInfo><Aandeel>ASM LITHOGRAPHY EUR0.02</Aandeel><Koers>e23,25</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>CORP EXPRESS EUR1.2</Aandeel><Koers>e7,64</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>GETRONICS EUR0.28</Aandeel><Koers>e6,20</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>HAGEMEYER EUR1.20</Aandeel><Koers>e3,24</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>KON KPN EUR0.24</Aandeel><Koers>e12,17</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>LOGICACMG GBP0.1 -NL-</Aandeel><Koers>e2,17</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>NUTRECO HOLDING EUR0.24</Aandeel><Koers>e49,57</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>PHILIPS ELECTRONICS KON EUR0.20</Aandeel><Koers>e31,65</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>POSTBANK AANDELENFONDS EUR5 -1-</Aandeel><Koers>e61,36</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>POSTBANK MULTIMEDIAFONDS EUR0.8</Aandeel><Koers>e7,80</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>POSTBK WERELDMERKENFD EUR0.8</Aandeel><Koers>e34,06</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>SIMAC TECHNIEK EUR0,10</Aandeel><Koers>e2,23</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>TISCALI EUR0.50</Aandeel><Koers>e1,967</Koers></AandeelKoersInfo>
+    </Koersen>
+  </KoersenPerKwartaal>
+  <KoersenPerKwartaal>
+    <Jaar>2007</Jaar><Kwartaal>4</Kwartaal>
+    <Koersen>
+      <AandeelKoersInfo><Aandeel>AHOLD KON EUR0.30</Aandeel><Koers>e9,53</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>ASML HOLDING EUR0.09</Aandeel><Koers>e21,66</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>CORP EXPRESS EUR1.2</Aandeel><Koers>e5,35</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>HAGEMEYER EUR1.20</Aandeel><Koers>e4,68</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>HEIJMANS EUR0.03</Aandeel><Koers>e25,83</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>HEINEKEN EUR1.6</Aandeel><Koers>e44,22</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>KON DSM EUR1.5</Aandeel><Koers>e32,33</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>KON KPN EUR0.24</Aandeel><Koers>e12,44</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>LOGICACMG GBP0.1 -NL-</Aandeel><Koers>e1,62</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>NUTRECO HOLDING EUR0.24</Aandeel><Koers>e39,56</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>PHILIPS ELECTRONICS KON EUR0.20</Aandeel><Koers>e29,52</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>POSTBANK AANDELENFONDS EUR5 -1-</Aandeel><Koers>e59,62</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>POSTBANK MULTIMEDIAFONDS EUR0.8</Aandeel><Koers>e7,44</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>POSTBK WERELDMERKENFD EUR0.8</Aandeel><Koers>e32,65</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>SIMAC TECHNIEK EUR0,10</Aandeel><Koers>e2,44</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>TISCALI EUR0.50</Aandeel><Koers>e1,90</Koers></AandeelKoersInfo>
+      <OptieKoersInfo><Type>CALL</Type><FondsNaam>TOMTOM EUR.2</FondsNaam><Maand>1</Maand><Jaar>2008</Jaar><UitoefeningsKoers>e54,00</UitoefeningsKoers><Koers>e1,40</Koers></OptieKoersInfo>
+    </Koersen>
+  </KoersenPerKwartaal>
+  <KoersenPerKwartaal>
+    <Jaar>2008</Jaar><Kwartaal>1</Kwartaal>
+    <Koersen>
+      <AandeelKoersInfo><Aandeel>AHOLD KON EUR0.30</Aandeel><Koers>e9,40</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>ASML HOLDING EUR0.09</Aandeel><Koers>e15,58</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>CORP EXPRESS EUR1.2</Aandeel><Koers>e7,37</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>HEIJMANS EUR0.03</Aandeel><Koers>e24,44</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>HEINEKEN EUR1.6</Aandeel><Koers>e36,79</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>KON DSM EUR1.5</Aandeel><Koers>e30,55</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>LOGICACMG GBP0.1 -NL-</Aandeel><Koers>e1,34</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>NUTRECO HOLDING EUR0.24</Aandeel><Koers>e48,70</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>PHILIPS ELECTRONICS KON EUR0.20</Aandeel><Koers>e24,23</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>POSTBANK AANDELENFONDS EUR5 -1-</Aandeel><Koers>e49,65</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>POSTBANK MULTIMEDIAFONDS EUR0.8</Aandeel><Koers>e5,99</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>POSTBK WERELDMERKENFD EUR0.8</Aandeel><Koers>e27,84</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>SIMAC TECHNIEK EUR0,10</Aandeel><Koers>e2,25</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>TISCALI EUR0.50</Aandeel><Koers>e1,84</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>TOMTOM EUR.2</Aandeel><Koers>e26,20</Koers></AandeelKoersInfo>
+    </Koersen>
+  </KoersenPerKwartaal>
+  <KoersenPerKwartaal>
+    <Jaar>2008</Jaar><Kwartaal>2</Kwartaal>
+    <Koersen>
+      <AandeelKoersInfo><Aandeel>AHOLD KON EUR0.30</Aandeel><Koers>e8,54</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>ASML HOLDING EUR0.09</Aandeel><Koers>e15,65</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>HEIJMANS EUR0.03</Aandeel><Koers>e15,28</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>HEINEKEN EUR1.6</Aandeel><Koers>e32,42</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>KON DSM EUR1.5</Aandeel><Koers>e37,37</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>KON KPN EUR0.24</Aandeel><Koers>e10,90</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>LOGICACMG GBP0.1 -NL-</Aandeel><Koers>e1,36</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>NUTRECO HOLDING EUR0.24</Aandeel><Koers>e42,71</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>PHILIPS ELECTRONICS KON EUR0.20</Aandeel><Koers>e21,61</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>POSTBANK AANDELENFONDS EUR5 -1-</Aandeel><Koers>e48,39</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>POSTBANK MULTIMEDIAFONDS EUR0.8</Aandeel><Koers>e5,78</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>POSTBK WERELDMERKENFD EUR0.8</Aandeel><Koers>e25,43</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>SIMAC TECHNIEK EUR0,10</Aandeel><Koers>e2,07</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>TISCALI EUR0.50</Aandeel><Koers>e1,95</Koers></AandeelKoersInfo>
+      <AandeelKoersInfo><Aandeel>TOMTOM EUR.2</Aandeel><Koers>e18,27</Koers></AandeelKoersInfo>
+    </Koersen>
+  </KoersenPerKwartaal>
+</BelastingKoersen>

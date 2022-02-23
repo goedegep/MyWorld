@@ -1,0 +1,4 @@
+Manifest-Version: 1.0
+Main-Class: goedegep.app.finan.finanapp.Finan
+Class-Path: antlr-2.7.6.jar commons-collections-2.1.1.jar commons-logging-1.0.4.jar dom4j-1.6.1.jar goedegep-util-1.0-SNAPSHOT.jar goedegep-appgen-1.0-SNAPSHOT.jar goedegep-finan-help-1.0-SNAPSHOT.jar goedegep-admin-1.0-SNAPSHOT.jar jhall-2.0_05.jar jta-1.0.1B.jar jfreechart-1.0.13.jar hsqldb-1.8.0.1.jar hibernate-3.2.0.ga.jar spring-2.0.2.jar plexus-utils-1.0.3.jar xercesImpl-2.8.1.jar org.eclipse.emf.common_2.7.0.v20110912-0920.jar org.eclipse.emf.ecore_2.7.0.v20110912-0920.jar org.eclipse.emf.ecore.xmi_2.7.0.v20110520-1406.jar
+

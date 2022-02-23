@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSpy v2006 sp2 U (http://www.altova.com) by Peter Goedegebure (None) -->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:element name="ShareDividends">
+		<xs:annotation>
+			<xs:documentation>Comment describing your root element</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="ShareDividendsList" type="ShareDividendsList" minOccurs="0" maxOccurs="unbounded"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:complexType name="Dividend">
+		<xs:sequence>
+			<xs:element name="DividendName" type="xs:string" minOccurs="0"/>
+			<xs:element name="DividendYear" type="xs:int" minOccurs="0"/>
+			<xs:element name="DividendType">
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:enumeration value="Contant"/>
+						<xs:enumeration value="ContantOfStock"/>
+						<xs:enumeration value="Drip"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="DividendAmount" type="xs:string" minOccurs="0"/>
+			<xs:element name="StockDividend" type="StockDividend" minOccurs="0"/>
+			<xs:element name="Drip" type="Drip" minOccurs="0"/>
+			<xs:element name="BelastingPercentage" type="xs:int" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="StockDividend">
+		<xs:sequence>
+			<xs:element name="FromAmount" type="xs:int" minOccurs="0"/>
+			<xs:element name="ToAmount" type="xs:int" minOccurs="0"/>
+			<xs:element name="Koers" type="xs:string"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="ShareDividendsList">
+		<xs:sequence>
+			<xs:element name="ShareName" type="xs:string"/>
+			<xs:element name="Dividend" type="Dividend" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="Drip">
+		<xs:sequence>
+			<xs:element name="FromAmount" type="xs:string"/>
+			<xs:element name="PricePerShare" type="xs:string"/>
+		</xs:sequence>
+	</xs:complexType>
+</xs:schema>
