@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<genmodel:GenModel xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" xmlns:genmodel="http://www.eclipse.org/emf/2002/GenModel"
+    modelDirectory="/goedegep.properties.model/src/main/java" creationIcons="false"
+    editDirectory="/goedegep.properties.model.edit/src-gen" editorDirectory="/goedegep.properties.model.editor/src-gen"
+    modelPluginID="" modelName="Properties" editPluginClass="goedegep.properties.model.provider.PropertiesEditPlugin"
+    editorPluginClass="goedegep.properties.model.presentation.PropertiesEditorPlugin"
+    rootExtendsClass="org.eclipse.emf.ecore.impl.MinimalEObjectImpl$Container" codeFormatting="true"
+    testSuiteClass="goedegep.properties.model.tests.PropertiesAllTests" importerID="org.eclipse.emf.importer.ecore"
+    complianceLevel="8.0" copyrightFields="false" editPluginID="goedegep.properties.model.edit"
+    editorPluginID="goedegep.properties.model.editor" operationReflection="true" importOrganizing="true">
+  <foreignModel>properties.ecore</foreignModel>
+  <testsDirectory xsi:nil="true"/>
+  <genPackages prefix="Properties" basePackage="goedegep.properties" disposableProviderFactory="true"
+      ecorePackage="properties.ecore#/">
+    <genEnums typeSafeEnumCompatible="false" ecoreEnum="properties.ecore#//PropertyType">
+      <genEnumLiterals ecoreEnumLiteral="properties.ecore#//PropertyType/DIRECTORY"/>
+      <genEnumLiterals ecoreEnumLiteral="properties.ecore#//PropertyType/FILE"/>
+      <genEnumLiterals ecoreEnumLiteral="properties.ecore#//PropertyType/STRING"/>
+    </genEnums>
+    <genClasses ecoreClass="properties.ecore#//PropertyDescriptorGroup">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference properties.ecore#//PropertyDescriptorGroup/propertyDescriptors"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference properties.ecore#//PropertyDescriptorGroup/propertyDescriptorGroups"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute properties.ecore#//PropertyDescriptorGroup/name"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute properties.ecore#//PropertyDescriptorGroup/description"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute properties.ecore#//PropertyDescriptorGroup/packageName"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute properties.ecore#//PropertyDescriptorGroup/registryClassName"/>
+      <genOperations ecoreOperation="properties.ecore#//PropertyDescriptorGroup/getPropertyDescriptor">
+        <genParameters ecoreParameter="properties.ecore#//PropertyDescriptorGroup/getPropertyDescriptor/propertyName"/>
+      </genOperations>
+      <genOperations ecoreOperation="properties.ecore#//PropertyDescriptorGroup/getPropertyDescriptorGroup">
+        <genParameters ecoreParameter="properties.ecore#//PropertyDescriptorGroup/getPropertyDescriptorGroup/groupName"/>
+      </genOperations>
+    </genClasses>
+    <genClasses ecoreClass="properties.ecore#//PropertyDescriptor">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute properties.ecore#//PropertyDescriptor/type"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute properties.ecore#//PropertyDescriptor/name"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute properties.ecore#//PropertyDescriptor/description"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute properties.ecore#//PropertyDescriptor/displayName"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute properties.ecore#//PropertyDescriptor/registryName"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute properties.ecore#//PropertyDescriptor/initialValue"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute properties.ecore#//PropertyDescriptor/userSettable"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute properties.ecore#//PropertyDescriptor/installInitialValue"/>
+    </genClasses>
+    <genClasses ecoreClass="properties.ecore#//FilePropertyDescriptor">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute properties.ecore#//FilePropertyDescriptor/fileExtensions"/>
+    </genClasses>
+    <genClasses ecoreClass="properties.ecore#//Property">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute properties.ecore#//Property/name"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute properties.ecore#//Property/value"/>
+    </genClasses>
+    <genClasses ecoreClass="properties.ecore#//PropertyGroup">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference properties.ecore#//PropertyGroup/properties"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute properties.ecore#//PropertyGroup/name"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference properties.ecore#//PropertyGroup/propertyGroups"/>
+    </genClasses>
+  </genPackages>
+</genmodel:GenModel>

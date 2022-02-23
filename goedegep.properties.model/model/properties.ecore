@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ecore:EPackage xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" name="model" nsURI="http://goedegep.properties/model" nsPrefix="properties">
+  <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+    <details key="documentation" value="Properties are name/value pairs. The name identifies the property. The value is always a string, which can of course be interpreted as a number.&lt;br/>&#xD;&#xA;Example of a property:&lt;br/>&#xD;&#xA;name: &quot;addressBookDataFile&quot;&lt;br/>&#xD;&#xA;value: &quot;C:\Users\Jim\My Documents\myAddressBook.xml&quot;&#xD;&#xA;&lt;p/>&#xD;&#xA;Properties are read from a file and stored in a Registry.&#xD;&#xA;&lt;p/>&#xD;&#xA;Properties are hierarchically grouped in a PropertyGroup. A PropertyGroup can have zero or more Properties and zero or more sub groups.&#xD;&#xA;&lt;p/>&#xD;&#xA;A Property Descriptor provides meta information on a property:&#xD;&#xA;&lt;ul>&#xD;&#xA;&lt;li>name - The name which identifies the Property (the same as 'name' of Property).&lt;/li>&#xD;&#xA;&lt;li>displayName - The name of the property which can be shown in an editor.&lt;/li>&#xD;&#xA;&lt;li>description - A textual description for the user. E.g. to be shown in an editor&lt;/li>&#xD;&#xA;&lt;li>type - The PropertyType. This can be used in a property editor. For the types FILE and DIRECTORY a File Chooser can be offered to select the value.&lt;/li>&#xD;&#xA;&lt;li>initialValue - The initial or default value of the property. So a file with Property Descriptors also provide the values. This means that for an application, besides a PropertyDescriptors file only an optional file is needed for user specific values.&lt;/li>&#xD;&#xA;&lt;li>userSettable - Some values cannot be changed by the user. In an editor these can be left out, or made read only. As an example, the name of a file with user settings cannot be changed.&lt;/li>&#xD;&#xA;&lt;li>registryName - Within the application the properties are stored in a Registry. This is the name of the attribute under which this property will be stored in the Registry. If not specified, the 'name' is used.&lt;/li>&#xD;&#xA;&lt;li>installInitialValue - Indicates whether the initial value shall be stored in the Registry of not.&lt;/li>&#xD;&#xA;&lt;/ul>&#xD;&#xA;&#xD;&#xA;Like Properties, Property Descriptors are hierarchically grouped in PropertyDescriptorGroups.&#xD;&#xA;"/>
+  </eAnnotations>
+  <eClassifiers xsi:type="ecore:EClass" name="PropertyDescriptorGroup">
+    <eOperations name="getPropertyDescriptor" eType="#//PropertyDescriptor">
+      <eParameters name="propertyName" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    </eOperations>
+    <eOperations name="getPropertyDescriptorGroup" eType="#//PropertyDescriptorGroup">
+      <eParameters name="groupName" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    </eOperations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="propertyDescriptors" upperBound="-1"
+        eType="#//PropertyDescriptor" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="propertyDescriptorGroups"
+        upperBound="-1" eType="#//PropertyDescriptorGroup" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
+        unsettable="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The name of the PropertyDescriptorGroup. This name is used to identify the group."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="description" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
+        unsettable="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="A description of this PropertyDescriptorGroup."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="packageName" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
+        unsettable="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The package name for the Registry class.&#xD;&#xA;&lt;p/>&#xD;&#xA;Together with the registryClassName, this specifies the Registry class."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="registryClassName" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
+        unsettable="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The name of the Registry class.&#xD;&#xA;&lt;p/>&#xD;&#xA;Together with the packageName, this specifies the Registry class."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="PropertyDescriptor">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="type" lowerBound="1" eType="#//PropertyType"
+        defaultValueLiteral="STRING">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The kind of information provided by the property."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
+        unsettable="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="name of the property. This name is the unique Id of the property. "/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="description" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
+        unsettable="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="A description of the property. This is used to explain the property to the user."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="displayName" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
+        unsettable="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The name shown to the user (e.g. in a properties editor)."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="registryName" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
+        unsettable="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The name under which the property is stored in the Registry. If not set the 'name' is used."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="initialValue" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
+        unsettable="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The system default value of the property. This is the value used, if it isn't overwritten by a user specific value (see Property)."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="userSettable" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"
+        defaultValueLiteral="false">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Indicates whether the property can be set by the user of not. Set by the user means that the user can specify a value for the property in a user properties file."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="installInitialValue" lowerBound="1"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean" defaultValueLiteral="false"
+        unsettable="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Indicates whether the property value has to be installed in the Registry or not."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EEnum" name="PropertyType">
+    <eLiterals name="DIRECTORY"/>
+    <eLiterals name="FILE" value="1"/>
+    <eLiterals name="STRING" value="2"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="FilePropertyDescriptor" eSuperTypes="#//PropertyDescriptor">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="fileExtensions" upperBound="-1"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Property">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
+        unsettable="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="value" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
+        unsettable="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="PropertyGroup">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="properties" upperBound="-1"
+        eType="#//Property" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
+        unsettable="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="propertyGroups" upperBound="-1"
+        eType="#//PropertyGroup" containment="true"/>
+  </eClassifiers>
+</ecore:EPackage>
