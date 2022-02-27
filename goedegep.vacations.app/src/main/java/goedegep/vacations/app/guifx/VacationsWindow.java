@@ -709,116 +709,67 @@ public class VacationsWindow extends JfxStage {
 
     // File: Save vacations
     menuItem = componentFactory.createMenuItem("Save vacations");
-    menuItem.setOnAction(new EventHandler<ActionEvent>() {
-      public void handle(ActionEvent e) {
-        saveVacations();
-      }
-    });
+    menuItem.setOnAction(event -> saveVacations());
     menuItem.setAccelerator(new KeyCodeCombination(KeyCode.S, KeyCombination.CONTROL_DOWN));
     menu.getItems().add(menuItem);
 
     // File: Print selected vacation
     menuItem = componentFactory.createMenuItem("Print selected vacation");
-    menuItem.setOnAction(new EventHandler<ActionEvent>() {
-      public void handle(ActionEvent e) {
-        printVacation();
-      }
-    });
+    menuItem.setOnAction(event -> printVacation());
     menu.getItems().add(menuItem);
 
     // File: Export selected vacation as HTML
     menuItem = componentFactory.createMenuItem("Export selected vacation as HTML");
-    menuItem.setOnAction(new EventHandler<ActionEvent>() {
-      public void handle(ActionEvent e) {
-        exportVacationToHtml();
-      }
-    });
+    menuItem.setOnAction(event -> exportVacationToHtml());
     menu.getItems().add(menuItem);
 
     // File: Print current map
     menuItem = componentFactory.createMenuItem("Print current map");
-    menuItem.setOnAction(new EventHandler<ActionEvent>() {
-      public void handle(ActionEvent e) {
-        print(mapView);
-      }
-    });
+    menuItem.setOnAction(event -> print(mapView));
     menu.getItems().add(menuItem);
     
     // File: Import photos
     menuItem = componentFactory.createMenuItem("Import photos");
-    menuItem.setOnAction(new EventHandler<ActionEvent>() {
-      public void handle(ActionEvent e) {
-        importPhotos();
-      }
-    });
+    menuItem.setOnAction(event -> importPhotos());
     menu.getItems().add(menuItem);    
 
     // File: Import vacations
     menuItem = componentFactory.createMenuItem("Import vacations");
-    menuItem.setOnAction(new EventHandler<ActionEvent>() {
-      public void handle(ActionEvent e) {
-        importVacations();
-      }
-    });
+    menuItem.setOnAction(event -> importVacations());
     menu.getItems().add(menuItem);
     
     // File: Create a kml file
     menuItem = componentFactory.createMenuItem("Create a kml file");
-    menuItem.setOnAction(new EventHandler<ActionEvent>() {
-      public void handle(ActionEvent e) {
-        createVacationsKml();
-      }
-    });
+    menuItem.setOnAction(event -> createVacationsKml());
     menu.getItems().add(menuItem);
     
     // File: Import locations from kml/kmz file
     menuItem = componentFactory.createMenuItem("Import locations from kml/kmz file");
-    menuItem.setOnAction(new EventHandler<ActionEvent>() {
-      public void handle(ActionEvent e) {
-        importLocationsFromKmlFile();
-      }
-    });
+    menuItem.setOnAction(event -> importLocationsFromKmlFile());
     menu.getItems().add(menuItem);
     
     // File: Create OsmAnd favorites file
     menuItem = componentFactory.createMenuItem("Create OsmAnd favorites file");
-    menuItem.setOnAction(new EventHandler<ActionEvent>() {
-      public void handle(ActionEvent e) {
-        createOsmAndFavouritesFile();
-      }
-    });
+    menuItem.setOnAction(event -> createOsmAndFavouritesFile());
     menu.getItems().add(menuItem);
     
     // File: Create TomTom ov2 file
     menuItem = componentFactory.createMenuItem("Create TomTom ov2 file");
-    menuItem.setOnAction(new EventHandler<ActionEvent>() {
-      public void handle(ActionEvent e) {
-        createTomTomOv2File();
-      }
-    });
+    menuItem.setOnAction(event -> createTomTomOv2File());
     menu.getItems().add(menuItem);
     
     if (VacationsRegistry.developmentMode) {
       // File: Edit Property Descriptors
-      MenuUtil.addMenuItem(menu, "Edit Property Descriptors", new EventHandler<ActionEvent>()  {
-        public void handle(ActionEvent e) {
-          showPropertyDescriptorsEditor();
-        }
-      });
+      MenuUtil.addMenuItem(menu, "Edit Property Descriptors", event -> showPropertyDescriptorsEditor());
       
       // File: Edit Properties
-      MenuUtil.addMenuItem(menu, "Edit Properties", new EventHandler<ActionEvent>()  {
-        public void handle(ActionEvent e) {
-          showPropertiesEditor();
-        }
-      });
+      MenuUtil.addMenuItem(menu, "Edit Properties", event -> showPropertiesEditor());
       
       // File: Map Snapshot popup
-      MenuUtil.addMenuItem(menu, "Map Snapshot popup", new EventHandler<ActionEvent>()  {
-        public void handle(ActionEvent e) {
-          showMapSnapshotPopup();
-        }
-      });
+      MenuUtil.addMenuItem(menu, "Map Snapshot popup", event -> showMapSnapshotPopup());
+      
+      // File: Use demo vacations file
+      MenuUtil.addMenuItem(menu, "Use demo vacations file", event -> useDemoVacationsFile());
     }
     
     menuBar.getMenus().add(menu);
@@ -976,13 +927,15 @@ public class VacationsWindow extends JfxStage {
   private void updateTipsPane() {
     String htmlText = "No tips available yet";
     
-    String tips = vacations.getTips();
-    if ((tips != null)  &&  !tips.isEmpty()) {
-      Parser parser = Parser.builder().build();
-      HtmlRenderer renderer = HtmlRenderer.builder().build();
+    if (vacations != null) {
+      String tips = vacations.getTips();
+      if ((tips != null)  &&  !tips.isEmpty()) {
+        Parser parser = Parser.builder().build();
+        HtmlRenderer renderer = HtmlRenderer.builder().build();
 
-      org.commonmark.node.Node document = parser.parse(tips);
-      htmlText = renderer.render(document);  
+        org.commonmark.node.Node document = parser.parse(tips);
+        htmlText = renderer.render(document);  
+      }
     }
     
     tipsBrowser.loadContent(htmlText);
@@ -2735,6 +2688,26 @@ public class VacationsWindow extends JfxStage {
     stage.show();
   }
   
+  private void useDemoVacationsFile() {
+    vacations = null;
+    
+    try {
+      vacations = vacationsResource.load("../../../goedegep.vacations.app/src/main/resources/goedegep/vacations/VacationsDemo.xmi");
+    } catch (FileNotFoundException e) {
+      LOGGER.severe("File not found: " + e.getMessage());
+      Alert alert = componentFactory.createYesNoConfirmationDialog(
+          null,
+          null,
+          translationFormatter.formatText("VacationsWindow.alertVacationsFileNotFound.header", "../../../goedegep.vacations.app/src/main/resources/goedegep/vacations/VacationsDemo.xmi"),
+          TRANSLATIONS.getString("VacationsWindow.alertVacationsFileNotFound.content"));
+      alert.showAndWait();
+    }
+    
+    if (vacations != null) {
+      treeView.setEObject(vacations);
+      updateTitle();
+    }
+  }
 
 
   /**
