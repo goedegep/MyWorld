@@ -7,8 +7,8 @@ import java.io.File;
 import java.lang.reflect.Field;
 import java.util.logging.Logger;
 
-import goedegep.appgen.EMFResource;
 import goedegep.properties.model.PropertyDescriptorGroup;
+import goedegep.util.emf.EMFResource;
 
 /**
  * This class contains settings which are shared throughout the Finan application.

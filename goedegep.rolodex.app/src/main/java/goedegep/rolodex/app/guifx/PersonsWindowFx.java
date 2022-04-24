@@ -10,10 +10,10 @@ import org.eclipse.emf.common.util.EList;
 
 import goedegep.appgen.TableRowOperation;
 import goedegep.appgen.TableRowOperationDescriptor;
-import goedegep.jfx.controls.ObjectControl;
 import goedegep.jfx.ComponentFactoryFx;
 import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.JfxStage;
+import goedegep.jfx.controls.ObjectControl;
 import goedegep.jfx.controls.ObjectControlBoolean;
 import goedegep.jfx.controls.ObjectControlInteger;
 import goedegep.jfx.controls.ObjectControlString;
@@ -39,7 +39,6 @@ import goedegep.rolodex.model.Rolodex;
 import goedegep.rolodex.model.RolodexFactory;
 import goedegep.rolodex.model.RolodexPackage;
 import goedegep.util.PgUtilities;
-import goedegep.util.objectselector.ObjectSelectionListener;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -112,10 +111,7 @@ public class PersonsWindowFx extends JfxStage {
       
     });
     
-    personsTable.addObjectSelectionListener(new ObjectSelectionListener<Person>() {
-
-      @Override
-      public void objectSelected(Person person) {
+    personsTable.addObjectSelectionListener((source, person) -> {
         if (person != null) {
           previousAddressesTable.setObjects(person, person.getPreviousAddresses());
         } else {
@@ -123,8 +119,6 @@ public class PersonsWindowFx extends JfxStage {
         }
         referredByPanel.setObject(person);
         personEditPanel.setPerson(person);
-      }
-      
     });
     
     updateShowArchivedItems();

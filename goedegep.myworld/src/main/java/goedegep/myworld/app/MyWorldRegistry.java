@@ -3,8 +3,8 @@
  */
 package goedegep.myworld.app;
 
-import goedegep.appgen.EMFResource;
 import goedegep.properties.model.PropertyDescriptorGroup;
+import goedegep.util.emf.EMFResource;
 
 /**
  * See also {@link java.util.Calendar#DAY_OF_WEEK}.

@@ -17,6 +17,18 @@
       <groupId>goedegep.geo</groupId>
       <artifactId>goedegep-geo</artifactId>
     </dependency>
+    <dependency>
+      <groupId>goedegep.gpx</groupId>
+      <artifactId>goedegep-gpx-model</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>goedegep.jfx</groupId>
+      <artifactId>goedegep-jfx</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>goedegep.resources</groupId>
+      <artifactId>goedegep-resources</artifactId>
+    </dependency>
 <!--     <dependency> This code is copied into the project under com.gluonhq.attach.util -->
 <!--       <groupId>com.gluonhq.attach</groupId> -->
 <!--       <artifactId>util</artifactId> -->

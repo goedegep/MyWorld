@@ -1586,86 +1586,17 @@ public class LocationImpl extends VacationElementImpl implements Location {
   /**
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @generated
+   * @generated NOT
    */
   @Override
   public String toString() {
-    if (eIsProxy())
-      return super.toString();
-
-    StringBuilder result = new StringBuilder(super.toString());
-    result.append(" (locationType: ");
-    if (locationTypeESet)
-      result.append(locationType);
-    else
-      result.append("<unset>");
-    result.append(", country: ");
-    if (countryESet)
-      result.append(country);
-    else
-      result.append("<unset>");
-    result.append(", city: ");
-    if (cityESet)
-      result.append(city);
-    else
-      result.append("<unset>");
-    result.append(", street: ");
-    if (streetESet)
-      result.append(street);
-    else
-      result.append("<unset>");
-    result.append(", houseNumber: ");
-    if (houseNumberESet)
-      result.append(houseNumber);
-    else
-      result.append("<unset>");
-    result.append(", latitude: ");
-    if (latitudeESet)
-      result.append(latitude);
-    else
-      result.append("<unset>");
-    result.append(", longitude: ");
-    if (longitudeESet)
-      result.append(longitude);
-    else
-      result.append("<unset>");
-    result.append(", name: ");
-    if (nameESet)
-      result.append(name);
-    else
-      result.append("<unset>");
-    result.append(", webSite: ");
-    if (webSiteESet)
-      result.append(webSite);
-    else
-      result.append("<unset>");
-    result.append(", description: ");
-    if (descriptionESet)
-      result.append(description);
-    else
-      result.append("<unset>");
-    result.append(", label: ");
-    if (labelESet)
-      result.append(label);
-    else
-      result.append("<unset>");
-    result.append(", duration: ");
-    if (durationESet)
-      result.append(duration);
-    else
-      result.append("<unset>");
-    result.append(", startDate: ");
-    if (startDateESet)
-      result.append(startDate);
-    else
-      result.append("<unset>");
-    result.append(", endDate: ");
-    if (endDateESet)
-      result.append(endDate);
-    else
-      result.append("<unset>");
-    result.append(')');
-    return result.toString();
+    StringBuilder buf = new StringBuilder();
+    
+    buf.append("LocationType: ").append(getLocationType() != null ? getLocationType().getLiteral() : "(null)");
+    buf.append(", Name: ").append(getName() != null ? getName().toString() : "(null)");
+    buf.append(", City: ").append(getCity() != null ? getCity().toString() : "(null)");
+    
+    return buf.toString();
   }
 
 } //LocatieImpl

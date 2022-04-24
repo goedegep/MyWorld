@@ -12,5 +12,5 @@ public interface ObjectSelectionListener<T> {
    * 
    * @param object the newly selected object.
    */
-  public void objectSelected(T object);
+  public void objectSelected(Object source, T object);
 }

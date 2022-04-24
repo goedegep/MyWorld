@@ -5,4 +5,7 @@ module goedegep.gpx.app {
   requires org.eclipse.emf.ecore;
   requires org.eclipse.emf.ecore.xmi;
   requires javafx.graphics;
+  requires com.gluonhq.maps;
+  requires goedegep.geo;
+  requires goedegep.resources;
 }

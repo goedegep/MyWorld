@@ -753,7 +753,7 @@ public class EObjectJTable<T extends EObject> extends AppGenAbstractTable implem
     
     for (ObjectSelectionListener<T> objectSelectionListener: objectSelectionListeners) {
       LOGGER.fine("Calling: " + objectSelectionListener);
-      objectSelectionListener.objectSelected(selectedObject);
+      objectSelectionListener.objectSelected(this, selectedObject);
     }
   }
 

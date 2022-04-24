@@ -9,11 +9,11 @@ import org.eclipse.emf.common.util.EList;
 
 import goedegep.appgen.TableRowOperation;
 import goedegep.appgen.TableRowOperationDescriptor;
-import goedegep.jfx.controls.ObjectControl;
-import goedegep.jfx.controls.ObjectControlGroup;
 import goedegep.jfx.ComponentFactoryFx;
 import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.JfxStage;
+import goedegep.jfx.controls.ObjectControl;
+import goedegep.jfx.controls.ObjectControlGroup;
 import goedegep.jfx.controls.ObjectControlString;
 import goedegep.jfx.eobjecttable.EObjectTable;
 import goedegep.jfx.eobjecttable.EObjectTableColumnDescriptorAbstract;
@@ -28,7 +28,6 @@ import goedegep.rolodex.model.Rolodex;
 import goedegep.rolodex.model.RolodexFactory;
 import goedegep.rolodex.model.RolodexPackage;
 import goedegep.util.PgUtilities;
-import goedegep.util.objectselector.ObjectSelectionListener;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -88,14 +87,9 @@ public class InstitutionsWindowFx extends JfxStage {
       
     });
     
-    institutionsTable.addObjectSelectionListener(new ObjectSelectionListener<Institution>() {
-
-      @Override
-      public void objectSelected(Institution institution) {
+    institutionsTable.addObjectSelectionListener((source, institution) -> {
         referredByPanel.setObject(institution);
         institutionEditPanel.setInstitution(institution);
-      }
-      
     });
     
     show();

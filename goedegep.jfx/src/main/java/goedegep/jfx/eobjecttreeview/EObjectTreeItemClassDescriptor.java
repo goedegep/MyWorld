@@ -61,6 +61,7 @@ public class EObjectTreeItemClassDescriptor extends EObjectTreeItemDescriptor {
     return buildText;
   }
   
+  @Override
   public String toString(Indent indent) {
     StringBuilder buf = new StringBuilder();
     

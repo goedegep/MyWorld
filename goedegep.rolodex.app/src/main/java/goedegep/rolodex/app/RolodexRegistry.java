@@ -1,8 +1,8 @@
 package goedegep.rolodex.app;
 
-import goedegep.appgen.EMFResource;
 import goedegep.properties.model.PropertyDescriptorGroup;
 import goedegep.rolodex.model.Rolodex;
+import goedegep.util.emf.EMFResource;
 
 public class RolodexRegistry {
   public static String author = null;                        // Name of the author of the application.

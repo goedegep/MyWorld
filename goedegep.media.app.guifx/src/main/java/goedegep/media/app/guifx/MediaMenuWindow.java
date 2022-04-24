@@ -9,7 +9,6 @@ import java.util.logging.Logger;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.WrappedException;
 
-import goedegep.appgen.EMFResource;
 import goedegep.appgen.ImageSize;
 import goedegep.jfx.ComponentFactoryFx;
 import goedegep.jfx.CustomizationFx;
@@ -32,6 +31,7 @@ import goedegep.media.photoshow.model.PhotoShowFactory;
 import goedegep.media.photoshow.model.PhotoShowPackage;
 import goedegep.media.photoshow.model.PhotoShowSpecification;
 import goedegep.properties.app.guifx.PropertiesEditor;
+import goedegep.util.emf.EMFResource;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;

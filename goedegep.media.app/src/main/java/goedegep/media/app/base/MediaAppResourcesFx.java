@@ -17,8 +17,6 @@ public class MediaAppResourcesFx extends AbstractAppResourcesFx  {
   private Image duneImage = null;
   private Image musicFolderImage = null;
   
-  private Image photoImage = null;
-  private Image photoGrayImage = null;
   private Image titleImage = null;
   private Image coordinatesImage = null;
 
@@ -41,8 +39,6 @@ public class MediaAppResourcesFx extends AbstractAppResourcesFx  {
       duneImage = new Image(getClass().getResourceAsStream("Dune HD TV-303D.jpg"), 500.0, 500.0, true, true);
       musicFolderImage = new Image(getClass().getResourceAsStream("MusicFolder.png"), 400.0, 400.0, true, true);
       
-      photoImage = new Image(getClass().getResourceAsStream("Photo.png"), 12, 12, true, true);
-      photoGrayImage = new Image(getClass().getResourceAsStream("Photo gray.png"), 12, 12, true, true);
       titleImage = new Image(getClass().getResourceAsStream("Title.png"), 24, 24, true, true);
       coordinatesImage = new Image(getClass().getResourceAsStream("Coordinates.png"), 24, 24, true, true);
       
@@ -105,14 +101,6 @@ public class MediaAppResourcesFx extends AbstractAppResourcesFx  {
 
   public Image getMusicFolderImage() {
     return musicFolderImage;
-  }
-  
-  public Image getPhotoIcon() {
-    return photoImage;
-  }
-  
-  public Image getPhotoGrayIcon() {
-    return photoGrayImage;
   }
   
   public Image getTitleIcon() {

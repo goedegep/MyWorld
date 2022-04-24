@@ -13,6 +13,7 @@ import goedegep.pctools.app.logic.PCToolsRegistry;
 import goedegep.pctools.filefinder.guifx.FileFinderWindow;
 import goedegep.pctools.filescontrolled.guifx.FilesControlledWindow;
 import goedegep.properties.app.guifx.PropertiesEditor;
+import goedegep.resources.Resources;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -115,7 +116,7 @@ public class PCToolsMenuWindow extends JfxStage {
     });
     gridPane.add(toolButton, 2, 0);
     
-    toolButton = componentFactory.createToolButton("GPX Editor", appResources.getGpxIcon(), "Edit gpx file");
+    toolButton = componentFactory.createToolButton("GPX Editor", Resources.getGpxIcon(), "Edit gpx file");
     toolButton.setOnAction(new EventHandler<ActionEvent>() {
 
       @Override

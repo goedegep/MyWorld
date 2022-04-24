@@ -1,12 +1,13 @@
-package goedegep.gluonmaps.gpx;
+package com.gluonhq.maps;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
 import org.eclipse.emf.common.util.EList;
+import org.eclipse.emf.ecore.util.EContentAdapter;
 
-import com.gluonhq.maps.MapLayer;
 import com.gluonhq.maps.MapLayer.BoundingBoxData;
 
 import goedegep.geo.dbl.WGS84BoundingBox;
@@ -17,8 +18,10 @@ import goedegep.gpx.model.TrkType;
 import goedegep.gpx.model.TrksegType;
 import goedegep.gpx.model.WptType;
 import goedegep.jfx.stringconverters.WGS84CoordinatesStringConverter;
+import goedegep.resources.Resources;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.ObservableMap;
 import javafx.geometry.Point2D;
 import javafx.scene.Node;
 import javafx.scene.canvas.Canvas;
@@ -31,6 +34,29 @@ import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 import javafx.util.Duration;
 
+/**
+ * This class is a {@link MapLayer} to show a GPX track (represented by a {@link GpxType}) on a map.
+ * <p>
+ * The following is shown on the map:
+ * <ul>
+ * <li>Waypoints<br/>
+ * These are shown as yellow flags. A tooltip provides details about each point.
+ * </li>
+ * <li>Routes<br/>
+ * The points of the routes are shown as blue flags. A tooltip provides details about each point.
+ * </li>
+ * <li>Tracks<br/>
+ * The points of each track segment are shown as small circles, connected by blue lines. A tooltip provides details about each point.
+ * </li>
+ * <li>Bounding box<br/>
+ * A bounding box is drawn around all waypoints, routes and tracks.
+ * </li>
+ * <li>Label<br/>
+ * A text label is shown at the center of the bounding box.
+ * </li>
+ * </ul>
+ *
+ */
 public class GPXLayer extends MapLayer {
   private static final Logger LOGGER = Logger.getLogger(GPXLayer.class.getName());
   private static final double WAYPOINT_ICON_SIZE = 24;
@@ -54,9 +80,9 @@ public class GPXLayer extends MapLayer {
   public final static double MAX_DATAPOINTS = 1000d;
   
   /**
-   * All information showns for GPX files.
+   * All information shown for GPX files.
    */
-  private final ObservableList<GpxFileData> gpxFileDataList = FXCollections.observableArrayList();
+  private final ObservableMap<GpxType, GpxFileData> gpxFileDataMap = FXCollections.observableHashMap();
   
   /**
    * Selected track points, which will be highlighted.
@@ -88,9 +114,71 @@ public class GPXLayer extends MapLayer {
    * @param title the (optional) title of the file
    * @param fileName the file name of the GPX file of the {@code gpxType}.
    * @param gpxType the GPX data.
+   * @return a bounding box surrounding all elements of the track.
    */
   public WGS84BoundingBox addGpx(final String title, final String fileName, final GpxType gpxType) {
+    GpxFileData gpxFileData = gpxFileDataMap.get(gpxType);
+    if (gpxFileData != null) {
+      throw new RuntimeException("Cannot add a GPX track that is already shown");
+    }
+    
     fileBoundingBox = null;
+    
+    gpxFileData = createGpxData(title, fileName, gpxType);
+    gpxFileDataMap.put(gpxType, gpxFileData);
+    
+    gpxType.eAdapters().add(new EContentAdapter() {
+
+      @Override
+      public void notifyChanged(org.eclipse.emf.common.notify.Notification notification) {
+        super.notifyChanged(notification);
+        updateGpx(gpxType);
+      }
+
+    });
+
+    this.markDirty();
+    return fileBoundingBox;
+  }
+  
+  /**
+   * Handle any change in a GPX track.
+   * 
+   * @param gpxType the GPX data.
+   * @return a bounding box surrounding all elements of the track.
+   */
+  private WGS84BoundingBox updateGpx(final GpxType gpxType) {
+    GpxFileData gpxFileData = gpxFileDataMap.remove(gpxType);
+    if (gpxFileData == null) {
+      throw new RuntimeException("Cannot update a GPX track that doesn't exist yet");
+    }
+    
+    removeWaypoints(gpxFileData.gpx().waypointsDataList());
+    removeRoutes(gpxFileData.gpx().routeDataList());
+    removeTracks(gpxFileData.gpx().trackDataList());
+    removeBoundingBox(gpxFileData.gpx().boundingBox());
+    removeLabel(gpxFileData.label());
+    
+    fileBoundingBox = null;
+    
+    gpxFileData = createGpxData(gpxFileData.title(), gpxFileData.fileName(), gpxType);
+    gpxFileDataMap.put(gpxType, gpxFileData);
+
+    this.markDirty();
+    return fileBoundingBox;
+  }
+
+  /**
+   * Create the nodes and data for a GPX track.
+   * <p>
+   * All required nodes and the related information are created.
+   *  
+   * @param title the (optional) title of the file
+   * @param fileName the file name of the GPX file of the {@code gpxType}.
+   * @param gpxType the GPX data.
+   * @return the created {@code GpxFileData}
+   */
+  private GpxFileData createGpxData(final String title, final String fileName, final GpxType gpxType) {
     ObservableList<WaypointData> waypointDataList = createWaypoints(title, fileName, gpxType.getWpt());
     ObservableList<RouteData> routeDataList = createRoutes(title, fileName, gpxType.getRte());
     ObservableList<TrackData> trackDataList = addTracks(title, fileName, gpxType.getTrk());
@@ -99,14 +187,11 @@ public class GPXLayer extends MapLayer {
     GpxData gpxData = new GpxData(waypointDataList, routeDataList, trackDataList, boundingBoxData);
     
     GpxFileData gpxFileData = new GpxFileData(title, fileName, gpxData, label);
-    gpxFileDataList.add(gpxFileData);
-
-    this.markDirty();
-    return fileBoundingBox;
+    return gpxFileData;
   }
 
   /**
-   * Create the waypoints.
+   * Create the waypoints. The nodes are added to the map and the related information is created.
    * 
    * @param title the (optional) title of the file
    * @param fileName the file name of the GPX file of the {@code gpxType}.
@@ -117,6 +202,8 @@ public class GPXLayer extends MapLayer {
     ObservableList<WaypointData> waypointDataList = FXCollections.observableArrayList();
     for (WptType gpxWaypoint : waypoints) {
             final ImageView icon = new ImageView(getWaypointFlagImage());
+            icon.setPreserveRatio(true);
+            icon.setFitHeight(16);
             icon.setX(-WAYPOINT_ICON_SIZE/2);
             icon.setY(-WAYPOINT_ICON_SIZE/2);
             
@@ -133,9 +220,21 @@ public class GPXLayer extends MapLayer {
     
     return waypointDataList;
   }
+  
+  /**
+   * Remove a list of waypoints from the map.
+   * This means removing the icon nodes from the map.
+   * 
+   * @param waypointDataList the list of waypoints to be removed.
+   */
+  private void removeWaypoints(ObservableList<WaypointData> waypointDataList) {
+    for (WaypointData waypointData: waypointDataList) {
+      this.getChildren().remove(waypointData.node());
+    }
+  }
 
   /**
-   * Create the routes.
+   * Create the routes. For each route the nodes are added to the map and the related information is created.
    * 
    * @param title the (optional) title of the file
    * @param fileName the file name of the GPX file of the {@code gpxType}.
@@ -154,7 +253,7 @@ public class GPXLayer extends MapLayer {
   }
 
   /**
-   * Create a single route.
+   * Create a single route. The nodes are added to the map and the related information is created.
    * 
    * @param title the (optional) title of the file
    * @param fileName the file name of the GPX file of the {@code gpxType}.
@@ -165,6 +264,8 @@ public class GPXLayer extends MapLayer {
     ObservableList<WaypointData> routePointsDataList = FXCollections.observableArrayList();
     for (WptType gpxWaypoint : route.getRtept()) {
             final ImageView icon = new ImageView(getRoutePointFlagImage());
+            icon.setPreserveRatio(true);
+            icon.setFitHeight(16);
             icon.setX(-ROUTE_POINT_ICON_SIZE/2);
             icon.setY(-ROUTE_POINT_ICON_SIZE/2);
             
@@ -182,6 +283,31 @@ public class GPXLayer extends MapLayer {
     RouteData routeData = new RouteData(routePointsDataList);
     
     return routeData;
+  }
+  
+  /**
+   * Remove routes.
+   * This means that for each route the icon nodes are removed from the map.
+   * 
+   * @param routeDataList the information about the routes.
+   */
+  private void removeRoutes(ObservableList<RouteData> routeDataList) {
+    for (RouteData routeData: routeDataList) {
+      removeRoute(routeData);
+    }
+  }
+  
+  /**
+   * Remove a route.
+   * This means removing the icon nodes from the map.
+   * 
+   * @param routeData the information about the route.
+   */
+  private void removeRoute(RouteData routeData) {
+    ObservableList<WaypointData> routePointsDataList = routeData.routePointsDataList();
+    for (WaypointData waypointData: routePointsDataList) {
+      this.getChildren().remove(waypointData.node());
+    }
   }
 
   /**
@@ -285,25 +411,47 @@ public class GPXLayer extends MapLayer {
     TrackSegmentData trackSegmentData = new TrackSegmentData(trackPointsDataList);
     return trackSegmentData;
   }
+  
+  /**
+   * Remove all nodes for all segments for a list of tracks from the map.
+   * 
+   * @param trackDataList information about the tracks.
+   */
+  private void removeTracks(ObservableList<TrackData> trackDataList) {
+    for (TrackData trackData: trackDataList) {
+      removeTrack(trackData);
+    }
+  }
 
-//  /**
-//   * Create the bounding box around the GPX data.
-//   * 
-//   * @return bounding the created bounding box data.
-//   */
-//  private BoundingBoxData createBoundingBox() {
-//    Polygon polygon = new Polygon();
-//    polygon.setStroke(Color.YELLOW);
-//    polygon.setFill(Color.TRANSPARENT);
-//    polygon.setVisible(true);
-//    getChildren().add(polygon);
-//    
-//    BoundingBoxData boundingBoxData = new BoundingBoxData(fileBoundingBox, polygon);
-//    return boundingBoxData;
-//  }
+  /**
+   * Remove all nodes for all segments of a track from the map.
+   * 
+   * @param trackData information about the track.
+   */
+  private void removeTrack(TrackData trackData) {
+    for (TrackSegmentData trackSegmentData: trackData.trackSegmentsDataList()) {
+      removeTrackSegment(trackSegmentData);
+    }
+
+  }
+
+  /**
+   * Remove all nodes for a segment from the map.
+   * 
+   * @param trackSegmentData information about the track segment.
+   */
+  private void removeTrackSegment(TrackSegmentData trackSegmentData) {
+    for (TrackPointData trackPointData: trackSegmentData.trackPointsDataList()) {
+      this.getChildren().remove(trackPointData.node());
+      this.getChildren().remove(trackPointData.line());
+    }
+
+  }
   
   /**
    * Create a label.
+   * <p>
+   * The text is created by calling {@link #createLabelText}.
    * 
    * @param title the (optional) title of the file
    * @param fileName the file name of the GPX file of the {@code gpxType}.
@@ -316,17 +464,6 @@ public class GPXLayer extends MapLayer {
     Canvas canvas = new Canvas(200, 80);
     GraphicsContext gc = canvas.getGraphicsContext2D();
     gc.fillText(text, 10, 10);
-//    canvas.setOnMouseClicked(new EventHandler<MouseEvent>() {
-//
-//      @Override
-//      public void handle(MouseEvent mouseEvent) {
-//        LOGGER.severe("canvas MouseEvent: x=" + mouseEvent.getX() + ", y=" + mouseEvent.getY());
-//      }
-//
-//    });
-//    canvas.setOnMousePressed(mouseEvent -> {
-//      LOGGER.severe("canvas MousePressesEvent: x=" + mouseEvent.getX() + ", y=" + mouseEvent.getY());
-//    });
     
     String tooltipText = createLabelTooltipText(title, fileName, gpxType);
     final Tooltip tooltip = new Tooltip(tooltipText);
@@ -340,6 +477,8 @@ public class GPXLayer extends MapLayer {
   
   /**
    * Create a label text.
+   * <p>
+   * If a title is specified, this will be the text. Otherwise the text is the file name of {@code fileName} (i.e. the path is removed).
    * 
    * @param title the (optional) title of the file
    * @param fileName the file name of the GPX file of the {@code gpxType}.
@@ -351,7 +490,8 @@ public class GPXLayer extends MapLayer {
     }
     
     if (fileName != null) {
-      return fileName;
+      File file = new File(fileName);
+      return file.getName();
     }
     
     return "<no name>";
@@ -373,11 +513,23 @@ public class GPXLayer extends MapLayer {
     
     return buf.toString();
   }
+  
+  /**
+   * Remove a label from the map.
+   * 
+   * @param canvas the label to be removed.
+   */
+  private void removeLabel(Canvas canvas) {
+    getChildren().remove(canvas);
+  }
 
+  /**
+   * Clear this layer.
+   */
   public void clear() {
     LOGGER.info("=>");
     
-    gpxFileDataList.clear();
+    gpxFileDataMap.clear();
     getChildren().clear();
     markDirty();
 
@@ -390,31 +542,13 @@ public class GPXLayer extends MapLayer {
       this.markDirty();
   }
 
-//  public MapPoint getCenter() {
-//      return new MapPoint(fileBoundingBox.getWest() + fileBoundingBox.getWidth()/2, fileBoundingBox.getNorth() + fileBoundingBox.getHeight()/2);
-//  }
-
-  public double getZoom() {
-      // TODO: calculate zooom level
-      // http://stackoverflow.com/questions/4266754/how-to-calculate-google-maps-zoom-level-for-a-bounding-box-in-java
-      int zoomLevel;
-      
-      final double maxDiff = (fileBoundingBox.getWidth() > fileBoundingBox.getHeight()) ? fileBoundingBox.getWidth() : fileBoundingBox.getHeight();
-      if (maxDiff < 360d / Math.pow(2, 20)) {
-          zoomLevel = 21;
-      } else {
-          zoomLevel = (int) (-1d*( (Math.log(maxDiff)/Math.log(2d)) - (Math.log(360d)/Math.log(2d))) + 1d);
-          if (zoomLevel < 1)
-              zoomLevel = 1;
-      }
-      
-      return zoomLevel;
-  }
-
+  /**
+   * {@inheritDoc}
+   */
   @Override
   protected void layoutLayer() {
     
-    for (GpxFileData gpxFileData: gpxFileDataList) {
+    for (GpxFileData gpxFileData: gpxFileDataMap.values()) {
       GpxData gpxData = gpxFileData.gpx();
 
       // Waypoints
@@ -474,16 +608,19 @@ public class GPXLayer extends MapLayer {
       
       // Bounding box
       BoundingBoxData boundingBoxData = gpxData.boundingBox();
-      layoutBoundingBox(boundingBoxData);
+      if (boundingBoxData != null) {
+        layoutBoundingBox(boundingBoxData);
+      }
       
       // Label
-      WGS84BoundingBox boundingBox = boundingBoxData.boundingBox();
-      WGS84Coordinates center = boundingBox.getCenter();
-      Point2D mapPoint = baseMap.getMapPoint(center.getLatitude(), center.getLongitude());
-      Canvas label = gpxFileData.label();
-      label.setTranslateX(mapPoint.getX() - 30);
-      label.setTranslateY(mapPoint.getY());
-      
+      if (boundingBoxData != null) {
+        WGS84BoundingBox boundingBox = boundingBoxData.boundingBox();
+        WGS84Coordinates center = boundingBox.getCenter();
+        Point2D mapPoint = baseMap.getMapPoint(center.getLatitude(), center.getLongitude());
+        Canvas label = gpxFileData.label();
+        label.setTranslateX(mapPoint.getX() - 30);
+        label.setTranslateY(mapPoint.getY());
+      }
     }
   }
 
@@ -533,7 +670,7 @@ public class GPXLayer extends MapLayer {
    */
   private Image getWaypointFlagImage() {
     if (waypointFlagImage == null) {
-      waypointFlagImage = new Image(getClass().getResourceAsStream("waypointflag.png"), WAYPOINT_ICON_SIZE, WAYPOINT_ICON_SIZE, true, true);
+      waypointFlagImage = Resources.getYellowLocationFlagImage();
     }
     
     return waypointFlagImage;
@@ -546,30 +683,51 @@ public class GPXLayer extends MapLayer {
    */
   private Image getRoutePointFlagImage() {
     if (routePointFlagImage == null) {
-      routePointFlagImage = new Image(getClass().getResourceAsStream("routepointflag.png"), ROUTE_POINT_ICON_SIZE, ROUTE_POINT_ICON_SIZE, true, true);
+      routePointFlagImage = Resources.getBlueLocationFlagImage();
     }
     
     return routePointFlagImage;
   }
 }
 
+/**
+ *  All information needed for a GPX track file.
+ */
 record GpxFileData(String title, String fileName, GpxData gpx, Canvas label) {
 }
 
+/**
+ *  All information needed for a GPX track.
+ */
 record GpxData(ObservableList<WaypointData> waypointsDataList, ObservableList<RouteData> routeDataList, ObservableList<TrackData> trackDataList, BoundingBoxData boundingBox) {
 }
 
+/**
+ *  All information needed for a waypoint of the waypoints.
+ */
 record WaypointData(WptType waypoint, Node node) {
 }
 
+/**
+ *  All information needed for a route.
+ */
 record RouteData(ObservableList<WaypointData> routePointsDataList) {
 }
 
+/**
+ *  All information needed for a track.
+ */
 record TrackData(ObservableList<TrackSegmentData> trackSegmentsDataList) {
 }
 
+/**
+ *  All information needed for a track segment.
+ */
 record TrackSegmentData(ObservableList<TrackPointData> trackPointsDataList) {
 }
 
+/**
+ * All information needed for a waypoint of a track.
+ */
 record TrackPointData(WptType waypoint, Node node, Line line) {
 }

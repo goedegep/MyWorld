@@ -29,7 +29,6 @@ import goedegep.jfx.eobjecttreeview.EObjectTreeItemClassListReferenceDescriptor;
 import goedegep.jfx.eobjecttreeview.EObjectTreeItemContent;
 import goedegep.jfx.eobjecttreeview.EObjectTreeItemDescriptor;
 import goedegep.jfx.eobjecttreeview.EObjectTreeView;
-import goedegep.jfx.stringconverters.WGS84CoordinatesStringConverter;
 import goedegep.poi.app.guifx.POIIcons;
 import goedegep.poi.model.POICategoryId;
 import goedegep.poi.model.POIPackage;
@@ -117,7 +116,7 @@ public class LocationSearchWindow extends JfxStage {
    */
   public LocationSearchWindow(CustomizationFx customization, VacationsWindow vacationsWindow, NominatimAPI nominatimAPI, SearchResultLayer searchResultLayer) {
     super("Search for a Location", customization);
-    LOGGER.severe("=> " + (searchResultLayer != null ? "searchResultLayer" : "no searchResultLayer"));
+    LOGGER.info("=> " + (searchResultLayer != null ? "searchResultLayer" : "no searchResultLayer"));
     
     this.customization = customization;
     this.vacationsWindow = vacationsWindow;
@@ -1502,7 +1501,7 @@ class LocationPanel extends VBox implements ObjectSelectionListener<TreeItem<EOb
   }
 
   @Override
-  public void objectSelected(TreeItem<EObjectTreeItemContent> object) {
+  public void objectSelected(Object source, TreeItem<EObjectTreeItemContent> object) {
     LOGGER.info("=>");
     
     handleNewTreeItemSelected(object);

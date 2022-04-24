@@ -56,7 +56,6 @@ import goedegep.app.finan.postbankapp.PbResources;
 import goedegep.app.finan.postbankapp.PbTransactionContentHandler;
 import goedegep.app.finan.registry.FinanRegistry;
 import goedegep.app.finan.stocksapp.CompanyWindow;
-import goedegep.appgen.EMFResource;
 import goedegep.appgen.ImageSize;
 import goedegep.appgen.MessageDialogType;
 import goedegep.appgen.PgFileFilter;
@@ -100,6 +99,7 @@ import goedegep.jfx.DefaultCustomizationFx;
 import goedegep.jfx.PropertyDescriptorsEditorFx;
 import goedegep.properties.app.guifx.PropertiesEditor;
 import goedegep.rolodex.model.Rolodex;
+import goedegep.util.emf.EMFResource;
 import goedegep.util.sax.ParseException;
 import goedegep.util.text.TextWriter;
 

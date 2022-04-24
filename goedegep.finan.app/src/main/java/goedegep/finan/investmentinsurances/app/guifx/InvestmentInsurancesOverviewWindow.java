@@ -8,7 +8,6 @@ import java.io.OutputStreamWriter;
 import java.util.logging.Logger;
 
 import goedegep.app.finan.registry.FinanRegistry;
-import goedegep.appgen.EMFResource;
 import goedegep.finan.investmentinsurance.model.InvestmentInsuranceFactory;
 import goedegep.finan.investmentinsurance.model.InvestmentInsurancePackage;
 import goedegep.finan.investmentinsurance.model.InvestmentInsurancesData;
@@ -19,6 +18,7 @@ import goedegep.jfx.JfxStage;
 import goedegep.jfx.MenuUtil;
 import goedegep.jfx.browser.BrowserWindow;
 import goedegep.properties.app.guifx.PropertiesEditor;
+import goedegep.util.emf.EMFResource;
 import goedegep.util.text.TextWriter;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;

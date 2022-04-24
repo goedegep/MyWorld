@@ -7,10 +7,10 @@ import java.util.logging.Logger;
 
 import goedegep.appgen.TableRowOperation;
 import goedegep.appgen.TableRowOperationDescriptor;
-import goedegep.jfx.controls.ObjectControl;
 import goedegep.jfx.ComponentFactoryFx;
 import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.JfxStage;
+import goedegep.jfx.controls.ObjectControl;
 import goedegep.jfx.controls.ObjectControlString;
 import goedegep.jfx.eobjecttable.EObjectTable;
 import goedegep.jfx.eobjecttable.EObjectTableColumnDescriptorAbstract;
@@ -23,7 +23,6 @@ import goedegep.rolodex.model.Rolodex;
 import goedegep.rolodex.model.RolodexFactory;
 import goedegep.rolodex.model.RolodexPackage;
 import goedegep.util.PgUtilities;
-import goedegep.util.objectselector.ObjectSelectionListener;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -82,14 +81,9 @@ public class CountriesWindowFx extends JfxStage {
       
     });
     
-    countriesTable.addObjectSelectionListener(new ObjectSelectionListener<Country>() {
-
-      @Override
-      public void objectSelected(Country country) {
+    countriesTable.addObjectSelectionListener((source, country) -> {
         referredByPanel.setObject(country);
         countryEditPanel.setCountry(country);
-      }
-      
     });
     
     show();

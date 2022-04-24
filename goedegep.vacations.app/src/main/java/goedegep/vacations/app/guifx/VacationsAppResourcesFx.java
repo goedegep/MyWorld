@@ -23,9 +23,9 @@ public class VacationsAppResourcesFx extends AbstractAppResourcesFx {
       applicationImages[5] = new Image(getClass().getResourceAsStream("Snow mountain 256x256.png"));
       applicationImages[6] = new Image(getClass().getResourceAsStream("Snow mountain 512x512.png"));
 
-      dayImage = new Image(getClass().getResourceAsStream("Sunrise.png"));
+      dayImage = new Image(getClass().getResourceAsStream("Sunrise.png"), 16, 16, true, true);
       mapImage = new Image(getClass().getResourceAsStream("Map.png"));
-      textImage = new Image(getClass().getResourceAsStream("Text.png"));
+      textImage = new Image(getClass().getResourceAsStream("Text.png"), 16, 16, true, true);
       photoImage = new Image(getClass().getResourceAsStream("Photo.png"), 12, 12, true, true);
     } catch (RuntimeException e) {
       e.printStackTrace();

@@ -8,12 +8,12 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
 
-import goedegep.appgen.EMFResource;
 import goedegep.configuration.model.ConfigurationFactory;
 import goedegep.configuration.model.ConfigurationPackage;
 import goedegep.configuration.model.Look;
 import goedegep.configuration.model.LookInfo;
 import goedegep.configuration.model.ModuleLook;
+import goedegep.util.emf.EMFResource;
 import goedegep.util.string.StringUtil;
 
 /**

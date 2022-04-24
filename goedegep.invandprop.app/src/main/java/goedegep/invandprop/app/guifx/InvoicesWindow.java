@@ -25,7 +25,6 @@ import goedegep.jfx.stringconverters.PgCurrencyStringConverter;
 import goedegep.util.money.PgCurrency;
 import goedegep.util.money.PgCurrencyFormat;
 import goedegep.util.money.PgCurrencyPlusStatus;
-import goedegep.util.objectselector.ObjectSelectionListener;
 import javafx.geometry.Orientation;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -73,17 +72,12 @@ public class InvoicesWindow extends JfxStage {
     
     eObjectTableControlPanel.filterTextProperty().addListener((observable, oldValue, newValue) -> invoicesTable.setFilterExpression(newValue, null));
     
-    invoicesTable.addObjectSelectionListener(new ObjectSelectionListener<Invoice>() {
-
-      @Override
-      public void objectSelected(Invoice invoice) {
+    invoicesTable.addObjectSelectionListener((source, invoice) -> {
         if (invoice != null) {
           invoiceItemsTable.setObjects(invoice, invoice.getInvoiceItems());
         } else {
           invoiceItemsTable.setObjects(null, null);
         }
-      }
-      
     });
     
     show();

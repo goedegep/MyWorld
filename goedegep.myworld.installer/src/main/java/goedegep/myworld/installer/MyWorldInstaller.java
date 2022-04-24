@@ -14,7 +14,6 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import goedegep.appgen.EMFResource;
 import goedegep.jfx.JfxApplication;
 import goedegep.jfx.controls.FolderSelecter;
 import goedegep.properties.model.PropertiesFactory;
@@ -22,6 +21,7 @@ import goedegep.properties.model.PropertiesPackage;
 import goedegep.properties.model.PropertyDescriptor;
 import goedegep.properties.model.PropertyDescriptorGroup;
 import goedegep.util.dir.DirectoryUtils;
+import goedegep.util.emf.EMFResource;
 import goedegep.util.mslinks.ShellLink;
 import goedegep.util.mslinks.ShellLinkException;
 import goedegep.util.mslinks.ShellLinkHeader;
@@ -195,6 +195,7 @@ public class MyWorldInstaller extends JfxApplication {
       "goedegep\\poi\\goedegep-poi-model\\1.0-SNAPSHOT\\goedegep-poi-model-1.0-SNAPSHOT.jar",
       "goedegep\\properties\\goedegep-properties-app\\1.0-SNAPSHOT\\goedegep-properties-app-1.0-SNAPSHOT.jar",
       "goedegep\\properties\\goedegep-properties-model\\1.0-SNAPSHOT\\goedegep-properties-model-1.0-SNAPSHOT.jar",
+      "goedegep\\resources\\goedegep-resources\\1.0-SNAPSHOT\\goedegep-resources-1.0-SNAPSHOT.jar",
       "goedegep\\rolodex\\goedegep-rolodex-app\\1.0-SNAPSHOT\\goedegep-rolodex-app-1.0-SNAPSHOT.jar",
       "goedegep\\rolodex\\goedegep-rolodex-model\\1.0-SNAPSHOT\\goedegep-rolodex-model-1.0-SNAPSHOT.jar",
       "goedegep\\types\\goedegep-types-model\\1.0-SNAPSHOT\\goedegep-types-model-1.0-SNAPSHOT.jar",

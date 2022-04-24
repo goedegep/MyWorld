@@ -267,13 +267,15 @@ public class FullScreenViewer extends Stage {
           moveImageRight(imageView, 10);
           break;
 
-        // Numpad '+' key: zoom in (on cursor if visible).
+        // Numpad '+' key and '=' key (below the '+' so you don't have to use 'Shift'): zoom in (on cursor if visible).
         case ADD:
+        case EQUALS:
           zoomInOnCursorPosition(1.0);
           break;
 
-        // Numpad '-' key: zoom out around the center of the image, moving the image to fill the view if needed.
+        // Numpad '-' key and '-' key: zoom out around the center of the image, moving the image to fill the view if needed.
         case SUBTRACT:
+        case MINUS:
           zoomOutFromCenter(1.0);
           break;
 
@@ -865,7 +867,7 @@ public class FullScreenViewer extends Stage {
     imageX = viewport.getMinX() + imageViewX / imageToViewScaleFactor / zoomFactor;
     imageY = viewport.getMinY() + imageViewY / imageToViewScaleFactor / zoomFactor;
     
-    LOGGER.severe("=> imageViewX=" + imageViewX + ", imageViewY=" + imageViewY + ", viewport.getMinX()=" + viewport.getMinX() + ", imageToViewScaleFactor= " + imageToViewScaleFactor + ", zoomFactor" + zoomFactor + "   <= imageX=" + imageX + ", imageY=" + imageY);
+    LOGGER.info("=> imageViewX=" + imageViewX + ", imageViewY=" + imageViewY + ", viewport.getMinX()=" + viewport.getMinX() + ", imageToViewScaleFactor= " + imageToViewScaleFactor + ", zoomFactor" + zoomFactor + "   <= imageX=" + imageX + ", imageY=" + imageY);
     return new Point2D(imageX, imageY);
   }
   
@@ -886,7 +888,7 @@ public class FullScreenViewer extends Stage {
     double imageViewX = (imageX - viewport.getMinX()) * imageToViewScaleFactor * zoomFactor;
     double imageViewY = (imageY - viewport.getMinY()) * imageToViewScaleFactor * zoomFactor;
     
-    LOGGER.severe("=> imageX=" + imageX + ", imageY=" + imageY + "   <= imageViewX=" + imageViewX + ", imageViewY=" + imageViewY);
+    LOGGER.info("=> imageX=" + imageX + ", imageY=" + imageY + "   <= imageViewX=" + imageViewX + ", imageViewY=" + imageViewY);
     if ((imageViewX < 0)  ||  (imageViewX > imageView.getFitWidth() - 1)  ||
         (imageViewY < 0)  ||  (imageViewY > imageView.getFitHeight() - 1)) {
       System.out.println("<= null");

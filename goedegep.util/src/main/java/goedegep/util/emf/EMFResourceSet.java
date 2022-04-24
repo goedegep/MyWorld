@@ -1,4 +1,4 @@
-package goedegep.appgen;
+package goedegep.util.emf;
 
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;

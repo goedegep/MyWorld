@@ -7,7 +7,6 @@ import java.util.logging.Logger;
 
 import org.eclipse.emf.ecore.EClass;
 
-import goedegep.appgen.EMFResource;
 import goedegep.appgen.TableRowOperation;
 import goedegep.jfx.ComponentFactoryFx;
 import goedegep.jfx.CustomizationFx;
@@ -19,6 +18,7 @@ import goedegep.jfx.eobjecttreeview.EObjectTreeItemClassListReferenceDescriptor;
 import goedegep.jfx.eobjecttreeview.EObjectTreeItemClassReferenceDescriptor;
 import goedegep.jfx.eobjecttreeview.EObjectTreeView;
 import goedegep.jfx.eobjecttreeview.NodeOperationDescriptor;
+import goedegep.util.emf.EMFResource;
 import goedegep.util.emf.EmfPackageHelper;
 import goedegep.vacations.checklist.model.VacationChecklist;
 import goedegep.vacations.checklist.model.VacationChecklistCategory;

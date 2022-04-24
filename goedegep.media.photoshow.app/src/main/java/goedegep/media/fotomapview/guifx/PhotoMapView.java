@@ -23,9 +23,9 @@ import org.apache.commons.imaging.ImageWriteException;
 import org.eclipse.emf.common.util.WrappedException;
 
 import com.gluonhq.maps.MapLayer;
+import com.gluonhq.maps.MapPoint;
 import com.gluonhq.maps.MapView;
 
-import goedegep.appgen.EMFResource;
 import goedegep.geo.dbl.WGS84Coordinates;
 import goedegep.jfx.ComponentFactoryFx;
 import goedegep.jfx.CustomizationFx;
@@ -40,6 +40,7 @@ import goedegep.media.photoshow.model.PhotoShowPackage;
 import goedegep.media.photoshow.model.PhotoShowSpecification;
 import goedegep.util.Tuplet;
 import goedegep.util.datetime.DurationUtil;
+import goedegep.util.emf.EMFResource;
 import goedegep.util.img.PhotoFileMetaDataHandler;
 import goedegep.util.string.StringUtil;
 import javafx.beans.value.ObservableValue;
@@ -191,6 +192,15 @@ public class PhotoMapView extends JfxStage {
     
     createGUI();
     
+    listView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+      photoMapLayer.setSelectedPhoto(this, newValue);
+      if (newValue.getCoordinates() != null) {
+        MapPoint mapPoint = new MapPoint(newValue.getCoordinates().getLatitude(), newValue.getCoordinates().getLongitude());
+        mapView.flyTo(0.2, mapPoint, 2);
+        mapView.setZoom(18);
+      }
+    });
+    
     statusPanel.updateText("Nothing to report for now");
     
     // Update the dirty indication in the window title when photos are changed.
@@ -227,6 +237,8 @@ public class PhotoMapView extends JfxStage {
       }
       
     });
+    
+    photoMapLayer.addObjectSelectionListener(this::handleNewPhotoSelected);
     
     show();
     
@@ -285,6 +297,7 @@ public class PhotoMapView extends JfxStage {
       }
     }
   }
+  
 
   /**
    * Get the {@code PhotoInfo} for a file from the {@code photoInfosPerFolder}.
@@ -701,6 +714,22 @@ public class PhotoMapView extends JfxStage {
     } else {
       LOGGER.info("Save cancelled.");
     }
+  }
+  
+  /**
+   * Handle the fact that a new photo is selected on the map view.
+   * 
+   * @param source the object responsible for the change.
+   * @param photoInfo the new selected photo.
+   */
+  private void handleNewPhotoSelected(Object source, PhotoInfo photoInfo) {
+    if (this.equals(source)) {
+      // no action if we caused the change.
+      return;
+    }
+    
+    listView.getSelectionModel().select(photoInfo);
+    listView.scrollTo(photoInfo);
   }
 
   /**

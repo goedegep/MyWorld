@@ -287,6 +287,7 @@ public class VacationToHtmlConverter extends VacationToTextConverterAbstract {
         buf.append(" - ");
       }
       buf.append(HtmlUtil.encodeHTML(location.getCity()));
+      newLineNeeded = true;
     }
     
     if (location.isSetStreet()) {
@@ -332,7 +333,7 @@ public class VacationToHtmlConverter extends VacationToTextConverterAbstract {
       newLineNeeded = true;
     }
     
-    if (location.isSetLatitude()  &&  location.isSetLongitude()) {
+    if (VacationsRegistry.showCoordinatesInDocument  &&  location.isSetLatitude()  &&  location.isSetLongitude()) {
       if (newLineNeeded) {
         buf.append("<br/>");
       }
@@ -387,9 +388,10 @@ public class VacationToHtmlConverter extends VacationToTextConverterAbstract {
       buf.append("<img src=\"");
       buf.append(HtmlUtil.encodeHTML(picturePath.toUri().toString()));
       buf.append("\" height=\"250\" >");
-      if (pictureReference.getTitle() != null) {
+      String caption = VacationsUtils.getPictureCaption(picture);
+      if (caption != null) {
         buf.append("<figcaption>");
-        buf.append(HtmlUtil.encodeHTML(pictureReference.getTitle()));
+        buf.append(HtmlUtil.encodeHTML(caption));
         buf.append("</figcaption>");
       }
       buf.append("</img>");

@@ -78,7 +78,7 @@ public class ImageComponent extends Component implements ObjectSelectionListener
     }
   }
 
-  public void objectSelected(File imageFile) {    
+  public void objectSelected(Object source, File imageFile) {    
     if (imageFile != null) {
       try {
         img = ImageIO.read(imageFile);
@@ -98,7 +98,7 @@ public class ImageComponent extends Component implements ObjectSelectionListener
     
     ImageComponent imageComponent = new ImageComponent(600, 400);
     File imageFile = new File(imageFileName);
-    imageComponent.objectSelected(imageFile );
+    imageComponent.objectSelected(null, imageFile);
     
     frame.getContentPane().add(imageComponent);
     frame.pack();

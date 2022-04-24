@@ -13,7 +13,6 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import goedegep.appgen.EMFResource;
 import goedegep.rolodex.app.RolodexRegistry;
 import goedegep.rolodex.model.Address;
 import goedegep.rolodex.model.Gender;
@@ -21,6 +20,7 @@ import goedegep.rolodex.model.Person;
 import goedegep.rolodex.model.Rolodex;
 import goedegep.rolodex.model.RolodexFactory;
 import goedegep.rolodex.model.RolodexPackage;
+import goedegep.util.emf.EMFResource;
 
 public class RolodexTest {
 //  private static final String TEST_DATA_DIR = "src/test/resources/goedegep/rolodex";

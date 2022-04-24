@@ -1,7 +1,7 @@
 package goedegep.app.configuration.testregistry;
 
-import goedegep.appgen.EMFResource;
 import goedegep.properties.model.PropertyDescriptorGroup;
+import goedegep.util.emf.EMFResource;
 
 public class TestRegistry {
   

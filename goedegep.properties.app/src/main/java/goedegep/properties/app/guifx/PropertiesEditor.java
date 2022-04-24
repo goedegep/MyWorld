@@ -17,7 +17,6 @@ import org.eclipse.emf.ecore.EcoreFactory;
 import org.eclipse.emf.ecore.EcorePackage;
 import org.eclipse.emf.ecore.util.EContentAdapter;
 
-import goedegep.appgen.EMFResource;
 import goedegep.jfx.ComponentFactoryFx;
 import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.JfxStage;
@@ -33,6 +32,7 @@ import goedegep.properties.model.Property;
 import goedegep.properties.model.PropertyDescriptor;
 import goedegep.properties.model.PropertyDescriptorGroup;
 import goedegep.properties.model.PropertyGroup;
+import goedegep.util.emf.EMFResource;
 import goedegep.util.emf.EmfPackageHelper;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;

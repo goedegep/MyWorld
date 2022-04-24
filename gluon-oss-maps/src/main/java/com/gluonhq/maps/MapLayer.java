@@ -129,6 +129,10 @@ public class MapLayer extends Parent {
      * @return the created bounding box data.
      */
     protected BoundingBoxData createBoundingBoxData(WGS84BoundingBox wgs84BoundingBox) {
+      if (wgs84BoundingBox == null) {
+        return null;
+      }
+      
       Polygon polygon = new Polygon();
       polygon.setStroke(Color.YELLOW);
       polygon.setFill(Color.TRANSPARENT);
@@ -137,6 +141,12 @@ public class MapLayer extends Parent {
       
       BoundingBoxData boundingBoxData = new BoundingBoxData(wgs84BoundingBox, polygon);
       return boundingBoxData;
+    }
+    
+    protected void removeBoundingBox(BoundingBoxData boundingBoxData) {
+      if (boundingBoxData != null) {
+        getChildren().remove(boundingBoxData.polygon());
+      }
     }
     
     /**

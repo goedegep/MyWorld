@@ -248,7 +248,7 @@ public class AlbumDetailsWindowFx extends AlbumDetailsAbstract {
         albumsTableListener = new ObjectSelectionListener<Album>() {
 
           @Override
-          public void objectSelected(Album album) {
+          public void objectSelected(Object source, Album album) {
             setAlbum(album);
           }
 

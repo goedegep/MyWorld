@@ -131,7 +131,7 @@ public class PropertiesWindow extends JfxStage {
     pictureViewPanel = componentFactory.createHBox(0.0, 12.0);
     documentsAndPicturesHBox.getChildren().add(pictureViewPanel);
     
-    propertiesTable.addObjectSelectionListener(p -> handleNewPropertySelected(p));
+    propertiesTable.addObjectSelectionListener(this::handleNewPropertySelected);
     
     splitPane.getItems().add(documentsAndPicturesHBox);
     rootLayout.getChildren().add(splitPane);
@@ -156,7 +156,7 @@ public class PropertiesWindow extends JfxStage {
    * 
    * @param property the newly selected <code>Property</code>.
    */
-  private void handleNewPropertySelected(Property property) {
+  private void handleNewPropertySelected(Object source, Property property) {
     documentReferencesBox.getChildren().clear();
 
     if (property != null) {

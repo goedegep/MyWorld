@@ -132,7 +132,7 @@ public class EObjectTableFrame<T extends EObject> extends AppFrame {
       ObjectSelectionListener<T> objectSelectionListener = new ObjectSelectionListener<T>() {
         @SuppressWarnings("unchecked")
         @Override
-        public void objectSelected(T selectedObject) {
+        public void objectSelected(Object source, T selectedObject) {
           if (selectedObject != null) {
             LOGGER.info("=> new object selected: " + selectedObject);
             EObject eObject = (EObject) selectedObject;
@@ -143,7 +143,6 @@ public class EObjectTableFrame<T extends EObject> extends AppFrame {
               LOGGER.info("subListObject: " + subListObject);
             }
             
-//            Object subListObject = eObject.eGet(eObjectSubTableDescriptor.geteStructuralFeature());
             LOGGER.info("subListObject: " + subListObject);
             @SuppressWarnings("rawtypes")
             EList subList = (EList<EObject>) subListObject;

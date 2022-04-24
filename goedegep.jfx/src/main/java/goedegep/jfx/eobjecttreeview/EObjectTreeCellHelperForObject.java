@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.logging.Logger;
 
 import org.eclipse.emf.common.util.EList;
@@ -57,17 +58,20 @@ public class EObjectTreeCellHelperForObject extends EObjectTreeCellHelperAbstrac
     eObjectTreeCell.setText(getText(eObjectTreeItemContent));
     
     ImageView iconImageView = null;
+    EObjectTreeItemClassDescriptor ebjectTreeItemClassDescriptor = itemDescriptor;
+    if (itemDescriptor instanceof EObjectTreeItemClassReferenceDescriptor) {
+      EClass eClass = itemDescriptor.getEClass();
+      ebjectTreeItemClassDescriptor = eObjectTreeCell.getItem().geteObjectTreeView().getEObjectTreeDescriptor().getDescriptorForEClass(eClass);
+    }
     if (eObjectTreeItemContent != null) {
-      EObjectTreeItemDescriptor itemDescriptor = eObjectTreeItemContent.getPresentationDescriptor();
-      if (itemDescriptor != null) {
-        EObjectTreeItemClassDescriptor descriptor = (EObjectTreeItemClassDescriptor) itemDescriptor;
-        Function<Object, Image> nodeIconFunction = descriptor.getNodeIconFunction();
+      if (ebjectTreeItemClassDescriptor != null) {        
+        Function<Object, Image> nodeIconFunction = ebjectTreeItemClassDescriptor.getNodeIconFunction();
         if (nodeIconFunction != null) {
           Image iconImage = nodeIconFunction.apply(eObjectTreeItemContent.getObject());
           if (iconImage != null) {
             iconImageView = new ImageView(iconImage);
-            iconImageView.setPreserveRatio(true);
-            iconImageView.setFitHeight(16);
+//            iconImageView.setPreserveRatio(true);
+//            iconImageView.setFitHeight(16);
           }
         }
       }
@@ -89,27 +93,25 @@ public class EObjectTreeCellHelperForObject extends EObjectTreeCellHelperAbstrac
   private ContextMenu createContextMenu(EObjectTreeItemContent eObjectTreeItemContent) {
     LOGGER.info("=>");
     
-    // TODO itemDescriptor shall not be null
     if (itemDescriptor == null) {
       return null;
     }
     
     List<NodeOperationDescriptor> nodeOperationDescriptors = itemDescriptor.getNodeOperationDescriptors();
     if (nodeOperationDescriptors == null) {
-      LOGGER.info("<= null");
+      // node operation descriptors, so no context menu.
       return null;
     }
     
     EObjectTreeItem eObjectTreeItem = (EObjectTreeItem) eObjectTreeCell.getTreeItem();
     
-    // An object can only be moved up, if it is not the first one.
+    // Check whether this is the first item in a list. An object can only be moved up, if it is not the first one.
     boolean first = false;
-    LOGGER.info("eObjectTreeItem=" + eObjectTreeItem.toString());
     if (eObjectTreeItem.previousSibling() == null) {
       first = true;
     }
     
-    // An object can only be moved down, if it is not the last one.
+    // Check whether this is the last item in a list. An object can only be moved down, if it is not the last one.
     boolean last = false;
     if (eObjectTreeItem.nextSibling() == null) {
       last = true;
@@ -124,23 +126,28 @@ public class EObjectTreeCellHelperForObject extends EObjectTreeCellHelperAbstrac
      * 
      * Note that the object of this item may be a sub type of the reference type. 
      */
-    EReference eReference;
+    EReference eReference = null;
     if (itemDescriptor instanceof EObjectTreeItemClassReferenceDescriptor) {
       EObjectTreeItemClassReferenceDescriptor eObjectTreeItemClassReferenceDescriptor = (EObjectTreeItemClassReferenceDescriptor) itemDescriptor;
       eReference = eObjectTreeItemClassReferenceDescriptor.getEReference();
     } else {
       EObjectTreeItem parentEObjectTreeItem = (EObjectTreeItem) eObjectTreeItem.getParent();
-      EObjectTreeItemContent eObjectParentTreeItemContent = parentEObjectTreeItem.getValue();
-      EStructuralFeature eStructuralFeature = eObjectParentTreeItemContent.getEStructuralFeature();
-      eReference = (EReference) eStructuralFeature;
+      if (parentEObjectTreeItem != null) {
+        EObjectTreeItemContent eObjectParentTreeItemContent = parentEObjectTreeItem.getValue();
+        EStructuralFeature eStructuralFeature = eObjectParentTreeItemContent.getEStructuralFeature();
+        eReference = (EReference) eStructuralFeature;
+      }
     }
+    
     if (eReference == null) {
-      LOGGER.severe("eReference is null");
       return null;
     }
-    LOGGER.info("Reference name=" + eReference.getName());
+
+    // The type is needed for the 'new' operations.
     EClass listType = eReference.getEReferenceType();
     LOGGER.info("Reference type=" + listType.getName());
+    
+    // If the type has subtypes, a submenu is added with entries for each (non-abstract) subtype.
     EmfPackageHelper emfPackageHelper = new EmfPackageHelper(listType.getEPackage());
     List<EClass> subTypesAll = emfPackageHelper.getSubTypes(listType);
     List<EClass> subTypes = null;
@@ -156,11 +163,10 @@ public class EObjectTreeCellHelperForObject extends EObjectTreeCellHelperAbstrac
         }
       }
     }
-
     
     ContextMenu contextMenu = new ContextMenu();
+    // add a menuItem for each node operation descriptor.
     for (NodeOperationDescriptor nodeOperationDescriptor: nodeOperationDescriptors) {
-      LOGGER.info("Handling operation: " + nodeOperationDescriptor.getOperation().name());
       MenuItem menuItem;
       Menu menu;
       if ((nodeOperationDescriptor.getOperation() == TableRowOperation.NEW_OBJECT_BEFORE)  &&
@@ -187,7 +193,15 @@ public class EObjectTreeCellHelperForObject extends EObjectTreeCellHelperAbstrac
           menuItem.setDisable(true);
         }
         
-        // TODO add disabling extended, based on function from descriptor
+        if (nodeOperationDescriptor.getOperation() == TableRowOperation.EXTENDED_OPERATION) {
+          ExtendedNodeOperationDescriptor extendedNodeOperationDescriptor = (ExtendedNodeOperationDescriptor) nodeOperationDescriptor;
+          Predicate<EObjectTreeItem> predicate = extendedNodeOperationDescriptor.getIsMenuToBeEnabled();
+          if (predicate != null) {
+            if (! predicate.test(eObjectTreeItem)) {
+              menuItem.setDisable(true);
+            }
+          }
+        }
         
         contextMenu.getItems().add(menuItem);
         final TableRowOperation operation = nodeOperationDescriptor.getOperation();

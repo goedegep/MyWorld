@@ -28,7 +28,6 @@ import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.util.EContentAdapter;
 
-import goedegep.appgen.EMFResource;
 import goedegep.appgen.TableRowOperation;
 import goedegep.geo.dbl.WGS84Coordinates;
 import goedegep.jfx.ComponentFactoryFx;
@@ -51,6 +50,7 @@ import goedegep.media.photoshow.model.PhotoShowPackage;
 import goedegep.media.photoshow.model.PhotoShowSpecification;
 import goedegep.util.Tuplet;
 import goedegep.util.datetime.DurationUtil;
+import goedegep.util.emf.EMFResource;
 import goedegep.util.emf.EmfPackageHelper;
 import goedegep.util.file.FileUtils;
 import goedegep.util.mslinks.ShellLink;

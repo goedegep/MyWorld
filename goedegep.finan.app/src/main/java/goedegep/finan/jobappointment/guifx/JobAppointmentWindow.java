@@ -7,7 +7,6 @@ import java.util.Calendar;
 import java.util.logging.Logger;
 
 import goedegep.app.finan.registry.FinanRegistry;
-import goedegep.appgen.EMFResource;
 import goedegep.finan.jobappointment.JobAppointmentUtil;
 import goedegep.finan.jobappointment.model.JobAppointment;
 import goedegep.finan.jobappointment.model.JobAppointmentFactory;
@@ -18,6 +17,7 @@ import goedegep.jfx.JfxStage;
 import goedegep.jfx.controls.ObjectControlCurrency;
 import goedegep.jfx.controls.ObjectControlLocalDate;
 import goedegep.properties.app.guifx.PropertiesEditor;
+import goedegep.util.emf.EMFResource;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;

@@ -1,4 +1,4 @@
-package goedegep.appgen;
+package goedegep.util.emf;
 
 import org.eclipse.emf.common.notify.Notification;
 

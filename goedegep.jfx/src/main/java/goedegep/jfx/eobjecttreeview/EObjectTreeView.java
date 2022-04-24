@@ -15,6 +15,7 @@ import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.util.EContentAdapter;
 
+import goedegep.appgen.TableRowOperation;
 import goedegep.jfx.treeview.TreeItemVisitResult;
 import goedegep.jfx.treeview.TreeItemVisitor;
 import goedegep.jfx.treeview.TreeViewWalker;
@@ -273,7 +274,7 @@ public class EObjectTreeView extends TreeView<EObjectTreeItemContent> implements
    */
   private void handleNewEObject(EObject eObject) {
     if (eObjectTreeDescriptor == null) {
-      eObjectTreeDescriptor = createEObjectTreeDescriptor(eObject);
+      eObjectTreeDescriptor = createDefaultEObjectTreeDescriptor(eObject);
     }
     
     if (eClass == null) {
@@ -297,7 +298,7 @@ public class EObjectTreeView extends TreeView<EObjectTreeItemContent> implements
    * @param eObject the EObject for which a descriptor will be generated.
    * @return the generated presentation descriptor.
    */
-  private EObjectTreeDescriptor createEObjectTreeDescriptor(EObject eObject) {
+  private EObjectTreeDescriptor createDefaultEObjectTreeDescriptor(EObject eObject) {
     LOGGER.info("=>");
     
     EClass eClass = eObject.eClass();
@@ -327,8 +328,11 @@ public class EObjectTreeView extends TreeView<EObjectTreeItemContent> implements
       return;
     }
     
-    EObjectTreeItemClassDescriptor eObjectTreeItemClassDescriptor = new EObjectTreeItemClassDescriptor(eClass);
+    List<NodeOperationDescriptor> nodeOperationDescriptors = new ArrayList<>();
+    nodeOperationDescriptors.add(new NodeOperationDescriptor(TableRowOperation.DELETE_OBJECT, "Delete"));
+    EObjectTreeItemClassDescriptor eObjectTreeItemClassDescriptor = new EObjectTreeItemClassDescriptor(eClass, null, true, nodeOperationDescriptors);
     
+    // Add information for the attributes and references
     for (EStructuralFeature structuralFeature: eClass.getEAllStructuralFeatures()) {
       if (structuralFeature instanceof EAttribute eAttribute) {
         LOGGER.info("Handling attribute: " + eAttribute.getName());
@@ -349,7 +353,7 @@ public class EObjectTreeView extends TreeView<EObjectTreeItemContent> implements
           eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(eObjectTreeItemClassListReferenceDescriptor);          
         } else {
           EObjectTreeItemClassReferenceDescriptor eObjectTreeItemClassReferenceDescriptor =
-              new EObjectTreeItemClassReferenceDescriptor(eReference, referenceClass, (eObject) -> eReference.getName(), false, null);
+              new EObjectTreeItemClassReferenceDescriptor(eReference, referenceClass, (eObject) -> eReference.getName(), false, nodeOperationDescriptors);
           eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(eObjectTreeItemClassReferenceDescriptor);
         }
       } else {
@@ -359,6 +363,7 @@ public class EObjectTreeView extends TreeView<EObjectTreeItemContent> implements
     
     eObjectTreeDescriptor.addEClassDescriptor(eClass, eObjectTreeItemClassDescriptor);
     
+    // Add an EObjectTreeItemClassDescriptor for referenced classes.
     for (EStructuralFeature structuralFeature: eClass.getEAllStructuralFeatures()) {
       if (structuralFeature instanceof EReference) {
         EReference eReference = (EReference) structuralFeature;
@@ -368,6 +373,7 @@ public class EObjectTreeView extends TreeView<EObjectTreeItemContent> implements
       }
     }
     
+    // Add descriptors for any sub class of this class.
     try {
       for (EClass subType : emfPackageHelper.getSubTypes(eClass)) {
         addClassDescriptor(eObjectTreeDescriptor, subType, emfPackageHelper);
@@ -433,6 +439,27 @@ public class EObjectTreeView extends TreeView<EObjectTreeItemContent> implements
 
     };
     eObject.eAdapters().add(eContentAdapter);    
+  }
+  
+  public EObjectTreeItem findTreeItem(Object object) {
+    return (EObjectTreeItem) findTreeItem(getRoot(), object);
+  }
+  
+  public TreeItem<EObjectTreeItemContent> findTreeItem(TreeItem<EObjectTreeItemContent> treeItem, Object object) {
+    EObjectTreeItemContent treeItemContent = treeItem.getValue();
+    Object treeItemContentObject = treeItemContent.getObject();
+    if (treeItemContentObject == object) {
+      return treeItem;
+    }
+    
+    for (TreeItem<EObjectTreeItemContent> child: treeItem.getChildren()) {
+      TreeItem<EObjectTreeItemContent> result = findTreeItem(child, object);
+      if (result != null) {
+        return result;
+      }
+    }
+    
+    return null;
   }
 
   /**
@@ -505,7 +532,7 @@ public class EObjectTreeView extends TreeView<EObjectTreeItemContent> implements
 
   private void notifySelectedObjectListeners(TreeItem<EObjectTreeItemContent> selectedItem) {
     for (ObjectSelectionListener<TreeItem<EObjectTreeItemContent>> objectSelectionListener: objectSelectionListeners) {
-      objectSelectionListener.objectSelected(selectedItem);
+      objectSelectionListener.objectSelected(this, selectedItem);
     }
   }
 

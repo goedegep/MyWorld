@@ -5,13 +5,13 @@ import java.io.FileNotFoundException;
 import java.lang.reflect.Field;
 import java.util.logging.Logger;
 
-import goedegep.appgen.EMFResource;
 import goedegep.properties.model.PropertiesFactory;
 import goedegep.properties.model.PropertiesPackage;
 import goedegep.properties.model.Property;
 import goedegep.properties.model.PropertyDescriptor;
 import goedegep.properties.model.PropertyDescriptorGroup;
 import goedegep.properties.model.PropertyGroup;
+import goedegep.util.emf.EMFResource;
 
 /**
  * This class handles the properties for an application.

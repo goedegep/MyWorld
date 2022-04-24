@@ -13,7 +13,6 @@ import java.util.logging.Logger;
 
 import javax.swing.JDialog;
 
-import goedegep.appgen.EMFResource;
 import goedegep.appgen.ImageSize;
 import goedegep.appgen.MessageDialogType;
 import goedegep.appgen.swing.MessageDialog;
@@ -31,6 +30,7 @@ import goedegep.jfx.PropertyDescriptorsEditorFx;
 import goedegep.jfx.collage.CollageImage;
 import goedegep.properties.app.guifx.PropertiesEditor;
 import goedegep.types.model.FileReference;
+import goedegep.util.emf.EMFResource;
 import goedegep.util.file.FileUtils;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;

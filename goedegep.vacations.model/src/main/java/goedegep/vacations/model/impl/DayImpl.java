@@ -310,26 +310,16 @@ public class DayImpl extends VacationElementImpl implements Day {
   /**
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @generated
+   * @generated NOT
    */
   @Override
   public String toString() {
-    if (eIsProxy())
-      return super.toString();
-
-    StringBuilder result = new StringBuilder(super.toString());
-    result.append(" (days: ");
-    if (daysESet)
-      result.append(days);
-    else
-      result.append("<unset>");
-    result.append(", title: ");
-    if (titleESet)
-      result.append(title);
-    else
-      result.append("<unset>");
-    result.append(')');
-    return result.toString();
+    StringBuilder buf = new StringBuilder();
+    
+    buf.append("Title: ").append(getTitle() != null ? getTitle().toString() : "(null)");
+    buf.append(", Nr. of days: ").append(getDays() != null ? getDays().toString() : "(null)");
+    
+    return buf.toString();
   }
 
 } //VacationElementDayImpl
