@@ -9,10 +9,10 @@ import org.eclipse.emf.common.util.EList;
 
 import goedegep.appgen.TableRowOperation;
 import goedegep.appgen.TableRowOperationDescriptor;
-import goedegep.jfx.controls.ObjectControl;
 import goedegep.jfx.ComponentFactoryFx;
 import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.JfxStage;
+import goedegep.jfx.controls.ObjectControl;
 import goedegep.jfx.controls.ObjectControlEEnumComboBox;
 import goedegep.jfx.controls.ObjectControlString;
 import goedegep.jfx.eobjecttable.EObjectTable;
@@ -28,7 +28,6 @@ import goedegep.rolodex.model.Rolodex;
 import goedegep.rolodex.model.RolodexFactory;
 import goedegep.rolodex.model.RolodexPackage;
 import goedegep.util.PgUtilities;
-import goedegep.util.objectselector.ObjectSelectionListener;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -83,10 +82,7 @@ public class PhonesWindowFx extends JfxStage {
     
     createGUI();
     
-    phonesTable.addObjectSelectionListener(new ObjectSelectionListener<Phone>() {
-
-      @Override
-      public void objectSelected(Phone phone) {
+    phonesTable.addObjectSelectionListener((source, phone) -> {
         referredByPanel.setObject(phone);
         phoneEditPanel.setPhone(phone);
         if (phone != null) {
@@ -96,17 +92,10 @@ public class PhonesWindowFx extends JfxStage {
           phoneAddressBookTable.setObjects(null, null);
           phoneAddressBookEntryEditPanel.setPhoneAddressBook(null);
         }
-      }
-      
     });
     
-    phoneAddressBookTable.addObjectSelectionListener(new ObjectSelectionListener<PhoneAddressBookEntry>() {
-
-      @Override
-      public void objectSelected(PhoneAddressBookEntry phoneAddressBookEntry) {
+    phoneAddressBookTable.addObjectSelectionListener((source, phoneAddressBookEntry) -> {
         phoneAddressBookEntryEditPanel.setPhoneAddressBookEntry(phoneAddressBookEntry);
-      }
-      
     });
     
     show();

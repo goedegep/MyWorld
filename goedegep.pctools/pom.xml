@@ -37,6 +37,10 @@
       <artifactId>goedegep-properties-app</artifactId>
     </dependency>
     <dependency>
+      <groupId>goedegep.resources</groupId>
+      <artifactId>goedegep-resources</artifactId>
+    </dependency>
+    <dependency>
       <groupId>tim.prune</groupId>
       <artifactId>tim.prune.gpsprune</artifactId>
     </dependency>

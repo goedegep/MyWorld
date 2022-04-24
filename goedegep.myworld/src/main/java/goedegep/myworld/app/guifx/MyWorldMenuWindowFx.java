@@ -9,7 +9,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import goedegep.app.finan.guifx.FinanMenuWindow;
-import goedegep.appgen.EMFResource;
 import goedegep.appgen.ImageSize;
 import goedegep.finan.Finan;
 import goedegep.invandprop.app.guifx.InvoicesAndPropertiesMenuWindow;
@@ -30,6 +29,7 @@ import goedegep.properties.model.PropertyDescriptorGroup;
 import goedegep.rolodex.app.RolodexRegistry;
 import goedegep.rolodex.app.guifx.RolodexMenuWindow;
 import goedegep.unitconverter.app.guifx.UnitConverterWindow;
+import goedegep.util.emf.EMFResource;
 import goedegep.vacations.app.guifx.VacationsWindow;
 import javafx.animation.Interpolator;
 import javafx.animation.KeyFrame;

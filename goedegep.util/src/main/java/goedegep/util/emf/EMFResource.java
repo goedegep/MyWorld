@@ -1,4 +1,4 @@
-package goedegep.appgen;
+package goedegep.util.emf;
 
 
 import java.io.File;
@@ -21,12 +21,10 @@ import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.util.EContentAdapter;
 import org.eclipse.emf.ecore.xmi.XMLResource;
 
-import goedegep.appgen.eobjectsexamplemodel.Nota;
-import goedegep.appgen.eobjectsexamplemodel.NotaFactory;
-import goedegep.appgen.eobjectsexamplemodel.NotaPackage;
-import goedegep.appgen.eobjectsexamplemodel.Notas;
-import goedegep.util.emf.EmfObjectCreator;
-import goedegep.util.emf.EmfUtil;
+//import goedegep.appgen.eobjectsexamplemodel.Nota;
+//import goedegep.appgen.eobjectsexamplemodel.NotaFactory;
+//import goedegep.appgen.eobjectsexamplemodel.NotaPackage;
+//import goedegep.appgen.eobjectsexamplemodel.Notas;
 import goedegep.util.file.FileUtils;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -432,35 +430,35 @@ public class EMFResource<E extends EObject> {
    * @throws IOException 
    */
   public static void main(String[] args) throws IOException {
-    // create the resource for a specific package.
-    EMFResource<Notas> emfResource = new EMFResource<>(
-        NotaPackage.eINSTANCE,
-        () -> NotaFactory.eINSTANCE.createNotas());
-    Notas notas = emfResource.load("notas2.xmi");
-    
-    // create some data to store
-    NotaFactory factory = NotaFactory.eINSTANCE;
-    notas = emfResource.newEObject();
-    Nota nota = factory.createNota();
-    nota.setBedrijf("A Company");
-    notas.getNotas().add(nota);
-    
-    // create the initial file
-    emfResource.save("notas.xmi");
-    
-    // simulate shutdown and restart
-    
-    emfResource.unload();
-    
-    notas = emfResource.load("notas2.xmi");
-    
-    // add a new nota and save
-    nota = factory.createNota();
-    nota.setBedrijf("Other Company");
-    notas.getNotas().add(nota);
-    emfResource.save();
-    
-    // save also under a different name
-    emfResource.save("notas new.emfresource");
+//    // create the resource for a specific package.
+//    EMFResource<Notas> emfResource = new EMFResource<>(
+//        NotaPackage.eINSTANCE,
+//        () -> NotaFactory.eINSTANCE.createNotas());
+//    Notas notas = emfResource.load("notas2.xmi");
+//    
+//    // create some data to store
+//    NotaFactory factory = NotaFactory.eINSTANCE;
+//    notas = emfResource.newEObject();
+//    Nota nota = factory.createNota();
+//    nota.setBedrijf("A Company");
+//    notas.getNotas().add(nota);
+//    
+//    // create the initial file
+//    emfResource.save("notas.xmi");
+//    
+//    // simulate shutdown and restart
+//    
+//    emfResource.unload();
+//    
+//    notas = emfResource.load("notas2.xmi");
+//    
+//    // add a new nota and save
+//    nota = factory.createNota();
+//    nota.setBedrijf("Other Company");
+//    notas.getNotas().add(nota);
+//    emfResource.save();
+//    
+//    // save also under a different name
+//    emfResource.save("notas new.emfresource");
   }
 }

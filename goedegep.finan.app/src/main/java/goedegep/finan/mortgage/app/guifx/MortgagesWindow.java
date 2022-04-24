@@ -15,8 +15,6 @@ import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.ecore.EReference;
 
 import goedegep.app.finan.registry.FinanRegistry;
-import goedegep.appgen.EMFNotificationListener;
-import goedegep.appgen.EMFResource;
 import goedegep.finan.mortgage.InterestCompensationMortgageCalculator;
 import goedegep.finan.mortgage.MortgageCalculator;
 import goedegep.finan.mortgage.MortgageReportsGenerator;
@@ -35,6 +33,8 @@ import goedegep.jfx.JfxStage;
 import goedegep.jfx.eobjecttable.EObjectTable;
 import goedegep.properties.app.guifx.PropertiesEditor;
 import goedegep.rolodex.model.Rolodex;
+import goedegep.util.emf.EMFNotificationListener;
+import goedegep.util.emf.EMFResource;
 import goedegep.util.i18n.TranslationFormatter;
 import goedegep.util.text.TextWriter;
 import javafx.event.ActionEvent;

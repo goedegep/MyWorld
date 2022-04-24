@@ -55,7 +55,7 @@ public class ObjectTable<T> extends AppGenAbstractTable implements ObjectSelecto
     T selectedObject = getSelectedObject();
     
     for (ObjectSelectionListener<T> objectSelectionListener: objectSelectionListeners) {
-      objectSelectionListener.objectSelected(selectedObject);
+      objectSelectionListener.objectSelected(this, selectedObject);
     }
   }
 

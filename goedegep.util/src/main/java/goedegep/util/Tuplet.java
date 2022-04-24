@@ -11,8 +11,10 @@ package goedegep.util;
  * @param <U> the type of the second object.
  */
 public class Tuplet<T, U> {
-  T    object1;
-  U    object2;
+  private static final String NEWLINE = System.getProperty("line.separator");
+
+  private T    object1;
+  private U    object2;
 
   /**
    * Constructor.
@@ -43,8 +45,17 @@ public class Tuplet<T, U> {
     return object2;
   }
   
+  
   @Override
   public String toString() {
-    return "{\n  " + (object1 != null ? object1.toString() : "(null)") + ",\n  " + (object2 != null ? object2.toString() : "(null)") + "\n}";
+    StringBuilder buf = new StringBuilder();
+    
+    buf.append("{").append(NEWLINE).append(" ");
+    buf.append(object1 != null ? object1.toString() : "(null)");
+    buf.append(",").append(NEWLINE).append(" ");
+    buf.append(object2 != null ? object2.toString() : "(null)");
+    buf.append(NEWLINE).append("}");
+    
+    return buf.toString();
   }
 }

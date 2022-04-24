@@ -22,4 +22,5 @@ module goedegep.media.fotoshow.app {
   requires org.eclipse.emf.common;
   requires org.eclipse.emf.ecore;
   requires transitive com.gluonhq.maps;
+  requires goedegep.resources;
 }

@@ -4,8 +4,6 @@ import goedegep.jfx.AbstractAppResourcesFx;
 import javafx.scene.image.Image;
 
 public class PCToolsAppResourcesFx extends AbstractAppResourcesFx {
-  private Image gpxImage = null;
-
 
   @Override
   protected void readResources() {
@@ -20,7 +18,6 @@ public class PCToolsAppResourcesFx extends AbstractAppResourcesFx {
       
       picture = new Image(getClass().getResourceAsStream("Acer Aspire M7721.png"));
       
-      gpxImage = new Image(getClass().getResourceAsStream("Gpx.png"));
     } catch (RuntimeException e) {
       e.printStackTrace();
     }
@@ -29,7 +26,4 @@ public class PCToolsAppResourcesFx extends AbstractAppResourcesFx {
     setPicture(picture);
   }
   
-  public Image getGpxIcon() {
-    return gpxImage;
-  }
 }

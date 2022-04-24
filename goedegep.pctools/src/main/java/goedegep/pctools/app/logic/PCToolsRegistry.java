@@ -1,7 +1,7 @@
 package goedegep.pctools.app.logic;
 
-import goedegep.appgen.EMFResource;
 import goedegep.properties.model.PropertyDescriptorGroup;
+import goedegep.util.emf.EMFResource;
 
 public class PCToolsRegistry {
   public static String author = null;                 // Name of the author of the application.

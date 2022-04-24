@@ -9,10 +9,10 @@ import org.eclipse.emf.common.util.EList;
 
 import goedegep.appgen.TableRowOperation;
 import goedegep.appgen.TableRowOperationDescriptor;
-import goedegep.jfx.controls.ObjectControl;
 import goedegep.jfx.ComponentFactoryFx;
 import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.JfxStage;
+import goedegep.jfx.controls.ObjectControl;
 import goedegep.jfx.eobjecttable.EObjectTable;
 import goedegep.jfx.eobjecttable.EObjectTableColumnDescriptorAbstract;
 import goedegep.jfx.eobjecttable.EObjectTableColumnDescriptorBasic;
@@ -30,7 +30,6 @@ import goedegep.rolodex.model.Rolodex;
 import goedegep.rolodex.model.RolodexFactory;
 import goedegep.rolodex.model.RolodexPackage;
 import goedegep.util.PgUtilities;
-import goedegep.util.objectselector.ObjectSelectionListener;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -93,14 +92,9 @@ public class EmployeesWindowFx extends JfxStage {
       
     });
     
-    employeesTable.addObjectSelectionListener(new ObjectSelectionListener<Employee>() {
-
-      @Override
-      public void objectSelected(Employee employee) {
+    employeesTable.addObjectSelectionListener((source, employee) -> {
         referredByPanel.setObject(employee);
         employeeEditPanel.setEmployee(employee);
-      }
-      
     });
     
     show();

@@ -1,7 +1,7 @@
 package goedegep.invandprop.app;
 
-import goedegep.appgen.EMFResource;
 import goedegep.properties.model.PropertyDescriptorGroup;
+import goedegep.util.emf.EMFResource;
 
 public class InvoicesAndPropertiesRegistry {
   public static String author = null;                        // Name of the author of the application.

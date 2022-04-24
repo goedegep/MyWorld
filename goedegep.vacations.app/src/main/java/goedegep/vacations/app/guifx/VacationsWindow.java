@@ -6,8 +6,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.nio.file.DirectoryIteratorException;
-import java.nio.file.DirectoryStream;
 import java.nio.file.FileVisitResult;
 import java.nio.file.FileVisitor;
 import java.nio.file.Files;
@@ -31,27 +29,21 @@ import org.commonmark.parser.Parser;
 import org.commonmark.renderer.html.HtmlRenderer;
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.util.EList;
-import org.eclipse.emf.common.util.TreeIterator;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EEnum;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EStructuralFeature;
-import org.locationtech.spatial4j.distance.DistanceUtils;
 
 import com.atlis.location.nominatim.NominatimAPI;
+import com.gluonhq.maps.GPXLayer;
 import com.gluonhq.maps.MapPoint;
 import com.gluonhq.maps.MapView;
-import com.google.common.geometry.S1Angle;
-import com.google.common.geometry.S2LatLng;
-import com.google.common.geometry.S2LatLngRect;
 
-import goedegep.appgen.EMFResource;
 import goedegep.appgen.ImageSize;
 import goedegep.appgen.TableRowOperation;
 import goedegep.geo.dbl.WGS84BoundingBox;
 import goedegep.geo.dbl.WGS84Coordinates;
-import goedegep.gluonmaps.gpx.GPXLayer;
 import goedegep.gpx.GpxUtil;
 import goedegep.gpx.model.DocumentRoot;
 import goedegep.gpx.model.GPXFactory;
@@ -82,11 +74,13 @@ import goedegep.poi.app.guifx.POIIcons;
 import goedegep.poi.model.POICategoryId;
 import goedegep.poi.model.POIPackage;
 import goedegep.properties.app.guifx.PropertiesEditor;
+import goedegep.resources.Resources;
 import goedegep.types.model.FileReference;
 import goedegep.types.model.TypesFactory;
 import goedegep.types.model.TypesPackage;
 import goedegep.util.Tuplet;
 import goedegep.util.datetime.FlexDateFormat;
+import goedegep.util.emf.EMFResource;
 import goedegep.util.emf.EmfPackageHelper;
 import goedegep.util.emf.EmfUtil;
 import goedegep.util.file.FileUtils;
@@ -97,6 +91,8 @@ import goedegep.vacations.app.VacationsKmlConverter;
 import goedegep.vacations.app.logic.NominatimUtil;
 import goedegep.vacations.app.logic.OsmAndUtil;
 import goedegep.vacations.app.logic.Ov2Util;
+import goedegep.vacations.app.logic.PhotoImportResult;
+import goedegep.vacations.app.logic.PhotosImporter;
 import goedegep.vacations.app.logic.VacationToHtmlConverter;
 import goedegep.vacations.app.logic.VacationsRegistry;
 import goedegep.vacations.app.logic.VacationsUtils;
@@ -301,7 +297,7 @@ public class VacationsWindow extends JfxStage {
     
     try {
       vacationChecklistResource.load(VacationsRegistry.vacationChecklistFileName);
-      LOGGER.severe(VacationsRegistry.vacationChecklistFileName);
+      LOGGER.info(VacationsRegistry.vacationChecklistFileName);
     } catch (FileNotFoundException e) {
       LOGGER.severe("File not found: " + e.getMessage());
       Alert alert = componentFactory.createYesNoConfirmationDialog(
@@ -361,7 +357,7 @@ public class VacationsWindow extends JfxStage {
         
     vacationsResource.addNotificationListener(this::handleChangesInTheVacationsData);
     
-    handleNewTreeItemSelected(null);
+    handleNewTreeItemSelected(null, null);
     updateTipsPane();
     
     show();
@@ -458,7 +454,7 @@ public class VacationsWindow extends JfxStage {
     EObjectTreeDescriptor eObjectTreeDescriptor = createEObjectTreeDescriptor();
     treeView = new VacationsTreeView(eObjectTreeDescriptor, vacationTreeEditableMenuItem.isSelected());
     treeView.setMinWidth(300);
-    treeView.addObjectSelectionListener(treeItem -> handleNewTreeItemSelected(treeItem));
+    treeView.addObjectSelectionListener(this::handleNewTreeItemSelected);
     centerPane.getItems().add(treeView);
 
     // MapView
@@ -730,8 +726,21 @@ public class VacationsWindow extends JfxStage {
     
     // File: Import photos
     menuItem = componentFactory.createMenuItem("Import photos");
-    menuItem.setOnAction(event -> importPhotos());
-    menu.getItems().add(menuItem);    
+    menuItem.setOnAction(event -> {
+      EObjectTreeItem treeItem = treeView.getSelectedObject();
+      Vacation vacation = getVacationForTreeItem(treeItem);
+      if (vacation == null) {
+        Alert alert = componentFactory.createErrorDialog(
+            "No vacation selected",
+            "You have to select a vacation in order to be able to import photos for that vacation");
+        
+        alert.showAndWait();
+      } else {
+        List<PhotoImportResult> photoImportResults = new PhotosImporter().importPhotos(vacation);
+        new PhotoImportResultWindow(customization, treeView, photoImportResults);
+      }
+    });
+    menu.getItems().add(menuItem);
 
     // File: Import vacations
     menuItem = componentFactory.createMenuItem("Import vacations");
@@ -781,32 +790,38 @@ public class VacationsWindow extends JfxStage {
     vacationTreeEditableMenuItem = new CheckMenuItem("Edit vacations");
     vacationTreeEditableMenuItem.setSelected(false);
     
-    vacationTreeEditableMenuItem.setOnAction(new EventHandler<ActionEvent>() {
-      public void handle(ActionEvent e) {
+    vacationTreeEditableMenuItem.setOnAction(event -> {
         treeView.setEditMode(vacationTreeEditableMenuItem.isSelected());
         mapRelatedItemsLayer.setEditMode(vacationTreeEditableMenuItem.isSelected());
-      }
     });
     menu.getItems().add(vacationTreeEditableMenuItem);
     
     menuBar.getMenus().add(menu);
     
+    // Settings menu
+    menu = new Menu("Settings");
+    
+    CheckMenuItem showCoordinatesInDocumentMenuItem = new CheckMenuItem("Show coordinates in Document");
+    showCoordinatesInDocumentMenuItem.setSelected(VacationsRegistry.showCoordinatesInDocument);
+    
+    showCoordinatesInDocumentMenuItem.setOnAction(event -> {
+        VacationsRegistry.showCoordinatesInDocument = showCoordinatesInDocumentMenuItem.isSelected();
+        updateDocumentView(treeView.getSelectedObject());
+    });
+    menu.getItems().add(showCoordinatesInDocumentMenuItem);
+    
+    menuBar.getMenus().add(menu);
+    
+    
+    
     // Checklist menu
     menu = new Menu("Checklist");
 
     // Checklist: Vacation checklist
-    MenuUtil.addMenuItem(menu, "Vacation checklist", new EventHandler<ActionEvent>()  {
-      public void handle(ActionEvent e) {
-        new VacationChecklistWindow(customization, vacationChecklistResource);
-      }
-    });
+    MenuUtil.addMenuItem(menu, "Vacation checklist", event ->  new VacationChecklistWindow(customization, vacationChecklistResource));
 
     // Checklist: Edit vacation Checklist
-    MenuUtil.addMenuItem(menu, "Edit vacation Checklist", new EventHandler<ActionEvent>()  {
-      public void handle(ActionEvent e) {
-        new VacationChecklistEditor(customization, vacationChecklistResource);
-      }
-    });
+    MenuUtil.addMenuItem(menu, "Edit vacation Checklist", event -> new VacationChecklistEditor(customization, vacationChecklistResource));
     
     menuBar.getMenus().add(menu);
     
@@ -814,11 +829,7 @@ public class VacationsWindow extends JfxStage {
     menu = new Menu("Tools");
 
     // Tools: Check vacations
-    MenuUtil.addMenuItem(menu, "Check vacations", new EventHandler<ActionEvent>()  {
-      public void handle(ActionEvent e) {
-        new CheckVacationsWindow(customization, vacations);
-      }
-    });
+    MenuUtil.addMenuItem(menu, "Check vacations", event -> new CheckVacationsWindow(customization, vacations));
     
     menuBar.getMenus().add(menu);
 
@@ -826,11 +837,7 @@ public class VacationsWindow extends JfxStage {
     menu = new Menu("Help");
 
     // Help: About
-    MenuUtil.addMenuItem(menu, "About", new EventHandler<ActionEvent>()  {
-      public void handle(ActionEvent e) {
-        showHelpAboutDialog();
-      }
-    });
+    MenuUtil.addMenuItem(menu, "About", event -> showHelpAboutDialog());
 
     menuBar.getMenus().add(menu);
 
@@ -884,7 +891,7 @@ public class VacationsWindow extends JfxStage {
    * 
    * @param treeItem the newly selected item in the <code>treeView</code>.
    */
-  private void handleNewTreeItemSelected(TreeItem<EObjectTreeItemContent> treeItem) {
+  private void handleNewTreeItemSelected(Object source, TreeItem<EObjectTreeItemContent> treeItem) {
     updateDocumentView(treeItem);
     updateVacationsLayer(treeItem);
   }
@@ -1030,7 +1037,7 @@ public class VacationsWindow extends JfxStage {
           GpxType gpxType = documentRoot.getGpx();
           WGS84BoundingBox boundingBox = GpxUtil.calculateBoundingBox(gpxType);
           WGS84Coordinates center = boundingBox.getCenter();
-          LOGGER.severe("center: " + center.toString());
+          LOGGER.info("center: " + center.toString());
           mapCenter = new MapPoint(center.getLatitude(), center.getLongitude());
           zoomLevel = VACATION_ZOOM_LEVEL;
         } catch (FileNotFoundException e) {
@@ -1729,7 +1736,7 @@ public class VacationsWindow extends JfxStage {
         object -> {
           Location location = (Location) object;
           POICategoryId poiCategoryId = location.getLocationType();
-          return poiIcons.getIcon(poiCategoryId);
+          return poiIcons.getIcon(poiCategoryId, 16, 16);
         });
     
     // Location.label
@@ -2024,21 +2031,46 @@ public class VacationsWindow extends JfxStage {
     nodeOperationDescriptors.add(new NodeOperationDescriptor(TableRowOperation.DELETE_OBJECT, "Element verwijderen"));
     EObjectTreeItemClassDescriptor eObjectTreeItemClassDescriptor = new EObjectTreeItemClassDescriptor(eClass,
         eObject -> {
-            Picture picture = (Picture) eObject;
-            if (picture.isSetPictureReference()) {
-              FileReference bestandReferentie = picture.getPictureReference();
-              String text = bestandReferentie.getTitle();
-              if (text == null  ||  text.isEmpty()) {
-                text = bestandReferentie.getFile();
+          Picture picture = (Picture) eObject;
+          String text = "...";  // default value
+          File file = null;
+          if (picture.isSetPictureReference()) {
+            FileReference bestandReferentie = picture.getPictureReference();
+            text = bestandReferentie.getTitle();  // first preference; the title set in the FileReference
+            
+            if (text == null  ||  text.isEmpty()) {
+              String fileName = bestandReferentie.getFile();
+              if (fileName != null) {
+                try {
+                  file = new File(fileName);
+                  PhotoFileMetaDataHandler photoFileMetaDataHandler = new PhotoFileMetaDataHandler(file);
+                  text = photoFileMetaDataHandler.getTitle();   // second preference; title set in the photo
+                } catch (ImageReadException | IOException e) {
+                  e.printStackTrace();
+                }
               }
+              
               if (text == null  ||  text.isEmpty()) {
-                text = "...";
+                if (file != null) {
+                  text = file.getName();
+                }
               }
               return text;
-            } else {
-              return "Picture";
             }
-          }, false, nodeOperationDescriptors);
+          } else {
+            return "Picture";
+          }
+          
+          return text;
+        }, false, nodeOperationDescriptors, (object) -> {
+            if (object instanceof Picture picture) {
+            Image image = new Image("file:" + picture.getPictureReference().getFile(), 150, 150, true, true);
+            return image;
+            } else {
+              return Resources.getCameraBlackIcon();
+              
+            }
+          });
     
     // VacationElementPicture.pictureReference
     nodeOperationDescriptors = new ArrayList<>();
@@ -2268,277 +2300,6 @@ public class VacationsWindow extends JfxStage {
       // Write Error Message
       statusLabel.setText("Could not create a printer job.");
     }
-  }
-  
-  /**
-   * Import photos to the vacation related to the currently selected tree item.
-   */
-  private void importPhotos() {
-//    SpatialContextFactory spatialContextFactory = new SpatialContextFactory();
-//    SpatialContext spatialContext = spatialContextFactory.newSpatialContext();
-//    ShapeFactory shapeFactory = spatialContext.getShapeFactory();
-    
-    EObjectTreeItem treeItem = treeView.getSelectedObject();
-    Vacation vacation = getVacationForTreeItem(treeItem);  
-
-    // Create a set of all locations of this vacation.
-    List<VacationElement> vacationLocations = getElementsWithBoundingBox(vacation);
-    for (VacationElement vacationElement: vacationLocations) {
-      if (vacationElement instanceof Location) {
-        Location location = (Location) vacationElement;
-        LOGGER.severe("VacationElement:Location: " + location.getName());
-      } else if (vacationElement instanceof GPXTrack) {
-        GPXTrack gpxTrack = (GPXTrack) vacationElement;
-        LOGGER.severe("VacationElement:GPXTrack: " + gpxTrack.getTrackReference().getFile());
-      }
-    }
-        
-    List<Path> vacationPhotoFolderPaths = getVactionPhotosSubFoldersPaths(vacation);
-          
-    for (Path photosPath: vacationPhotoFolderPaths)  {
-      LOGGER.severe("Photo folder: " + photosPath.toString());
-      
-      try (DirectoryStream<Path> stream = Files.newDirectoryStream(photosPath)) {
-
-        for (Path checkFile: stream) {
-          if (!Files.isDirectory(checkFile)) {
-            String fileExtension = FileUtils.getFileExtension(checkFile);
-            LOGGER.severe("checking: " + checkFile);
-            if (fileExtension.equals(".jpg")) {
-              File file = new File(checkFile.toAbsolutePath().toString());
-              try {
-                PhotoFileMetaDataHandler photoFileMetaDataHandler = new PhotoFileMetaDataHandler(file);
-                WGS84Coordinates coordinates = photoFileMetaDataHandler.getGeoLocation();
-                if (coordinates != null) {
-                  LOGGER.info("Coordinates: " + coordinates.getLatitude() + ", " + coordinates.getLongitude());
-                  for (VacationElement vacationElement: vacationLocations) {
-                    S2LatLng lo = null;
-                    S2LatLng hi = null;
-                    String name = null;
-                    if (vacationElement instanceof Location) {
-                      Location location = (Location) vacationElement;
-                      LOGGER.severe("VacationElement:Location: " + location.getName());
-                      name = location.getName();
-                      if (location.isSetBoundingbox()) {
-                        BoundingBox boundingBox = location.getBoundingbox();
-                        if (boundingBox.isValid()) {
-                          LOGGER.severe("using bounding box");
-                          lo = S2LatLng.fromDegrees(boundingBox.getSouth(), boundingBox.getWest());
-                          hi = S2LatLng.fromDegrees(boundingBox.getNorth(), boundingBox.getEast());
-                        }
-                      }
-                      
-                      if (lo == null) {
-                        if (location.isSetLatitude()  &&  location.isSetLongitude()) {
-                          lo = S2LatLng.fromDegrees(location.getLatitude() - 0.0003, location.getLongitude() - 0.0003);
-                          hi = S2LatLng.fromDegrees(location.getLatitude() + 0.0003, location.getLongitude() + 0.0003);
-                        }
-                      }
-                    } else if (vacationElement instanceof GPXTrack) {
-                      GPXTrack gpxTrack = (GPXTrack) vacationElement;
-                      LOGGER.severe("VacationElement:GPXTrack: " + gpxTrack.getTrackReference().getFile());
-                      name = gpxTrack.getTrackReference().getFile();
-                      
-                      EMFResource<DocumentRoot> gpxResource = new EMFResource<>(GPXPackage.eINSTANCE, () -> GPXFactory.eINSTANCE.createDocumentRoot(), false);
-                      gpxResource.addResourceFactoryForFileExtension("gpx", new GPXResourceFactoryImpl());
-                      try {
-                        gpxResource.load(name);
-                        DocumentRoot documentRoot = gpxResource.getEObject();
-                        GpxType gpxType = documentRoot.getGpx();
-                        WGS84BoundingBox boundingBox = GpxUtil.calculateBoundingBox(gpxType);
-                        lo = S2LatLng.fromDegrees(boundingBox.getSouth(), boundingBox.getWest());
-                        hi = S2LatLng.fromDegrees(boundingBox.getNorth(), boundingBox.getEast());
-                      } catch (FileNotFoundException e) {
-                        e.printStackTrace();
-                      }
-                      
-//                      File gpxTrackFile = new File(gpxTrack.getTrackReference().getFile());
-//                      GPXFile gpxFile = new GPXFile(gpxTrackFile);
-//                      GPX gpx = gpxFile.getGPX();
-//                      WGS84BoundingBox boundingBox = gpx.getBoundingBox();
-//                      lo = S2LatLng.fromDegrees(boundingBox.getSouth(), boundingBox.getWest());
-//                      hi = S2LatLng.fromDegrees(boundingBox.getNorth(), boundingBox.getEast());
-                    }
-                    
-                    S2LatLngRect locationBoundingBox = new S2LatLngRect(lo, hi);
-                    LOGGER.severe("locationBoundingBox: " + locationBoundingBox.toString());
-                    S2LatLng photoLatLng = S2LatLng.fromDegrees(coordinates.getLatitude(), coordinates.getLongitude());
-                    LOGGER.severe("photoLatLng: " + photoLatLng.toString());
-                    S1Angle distanceAngle = locationBoundingBox.getDistance(photoLatLng);
-                    double degrees = distanceAngle.degrees();
-                    double distanceInKm = DistanceUtils.degrees2Dist(degrees, DistanceUtils.EARTH_EQUATORIAL_RADIUS_KM);
-                    LOGGER.severe("Calculated distance: " + distanceInKm);
-                    
-//                    Point photoPoint = shapeFactory.pointLatLon(coordinates.getLatitude(), coordinates.getLongitude());
-//                    Point locationPoint = shapeFactory.pointLatLon(location.getLatitude(), location.getLongitude());
-//                    double distance = spatialContext.calcDistance(photoPoint, locationPoint);
-//                    double distanceInKm2 = DistanceUtils.degrees2Dist(distance, DistanceUtils.EARTH_EQUATORIAL_RADIUS_KM);
-//                    LOGGER.severe("Calculated distance: " + distanceInKm2);
-                   
-                    if (distanceInKm < 0.100) {
-                      LOGGER.severe("Found a match");
-                      Picture vacationElementPicture = VACATIONS_FACTORY.createPicture();
-                      FileReference pictureReference = TYPES_FACTORY.createFileReference();
-                      pictureReference.setFile(file.getAbsolutePath());
-                      pictureReference.setTitle(name);
-                      vacationElementPicture.setPictureReference(pictureReference);
-                      vacationElement.getChildren().add(vacationElementPicture);
-                      break;
-                    } else {
-                      LOGGER.severe("No match");
-                    }
-                  }
-                } else {
-                  LOGGER.severe("No Coordinates");
-                }
-              } catch (ImageReadException | IOException e) {
-                e.printStackTrace();
-              }
-            }
-          }
-        }
-      } catch (IOException | DirectoryIteratorException x) {
-        LOGGER.severe("Problem in finding photos folder: " + x.getMessage());
-      }
-    }
-  }
-  
-  /**
-   * Get all photo folders for a vacation.
-   * @return
-   */
-  private static List<Path> getVactionPhotosSubFoldersPaths(Vacation vacation) {
-    List<Path> vacationPhotoFolderPaths = new ArrayList<>();
-    
-    Path vacationPhotosFolderPath = getVacationPhotosFolderPath(vacation);
-
-    if (vacationPhotosFolderPath == null) {
-      return vacationPhotoFolderPaths;
-    }
-    
-    try {
-      Files.walkFileTree(vacationPhotosFolderPath, new FileVisitor<Path>() {
-        boolean containsPhoto = false;
-
-        @Override
-        public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
-          LOGGER.severe("preVisitDirectory");
-          containsPhoto = false;
-          return FileVisitResult.CONTINUE;
-        }
-
-        @Override
-        public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
-          LOGGER.severe("visitFile: " + file.toString());
-          if (!containsPhoto) {
-            if (FileUtils.isPictureFile(file.getFileName().toString())) {
-              containsPhoto = true;
-            }
-          }
-          return FileVisitResult.CONTINUE;
-        }
-
-        @Override
-        public FileVisitResult visitFileFailed(Path file, IOException exc) throws IOException {
-          exc.printStackTrace();
-          return FileVisitResult.CONTINUE;
-        }
-
-        @Override
-        public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
-          if (containsPhoto) {
-            LOGGER.severe("postVisitDirectory: adding " + dir.toString());
-            vacationPhotoFolderPaths.add(dir);
-          }
-          return FileVisitResult.CONTINUE;
-        }
-      });
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
-    
-    for (Path path: vacationPhotoFolderPaths) {
-      LOGGER.severe("path: " + path.toString());
-    }
-    
-    return vacationPhotoFolderPaths;
-  }
-  
-  /**
-   * Get a Path for the folder with photos for a specific vacation.
-   * <p>
-   * This folder is expected to be a folder with the name equal to the Id of the vacation, and being a sub folder of the
-   * folder with all photos of all vacations.
-   * 
-   * @param vacation the vacation for which to get a Path to its photos folder.
-   * @return a Path to the folder with photos for <code>vacation</code>, or null if this cannot be determined.
-   */
-  private static Path getVacationPhotosFolderPath(Vacation vacation) {
-    Path vacationsPhotosFolderPath = getVacationsPhotosFolderPath();
-    
-    if (vacationsPhotosFolderPath == null) {
-      return null;
-    }
-    
-    String vacationId = vacation.getId();
-    
-    Path vacationPhotosFolderPath = vacationsPhotosFolderPath.resolve(vacationId);
-    if (Files.exists(vacationPhotosFolderPath)  &&  Files.isDirectory(vacationPhotosFolderPath)) {
-      LOGGER.severe("<= " + vacationPhotosFolderPath);
-      return vacationPhotosFolderPath;
-    } else {
-      LOGGER.severe("<= " + null);
-      return null;
-    }
-  }
-  
-  /**
-   * Get a Path for the folder with photos for all vacations.
-   * <p>
-   * The name of this folder is specified by VacationsRegistry.vacationPicturesFolderName.
-   * 
-   * @return a Path to the folder with photos for all vacations, or null if this cannot be determined.
-   */
-  private static Path getVacationsPhotosFolderPath() {
-    String vacationsPhotosFolderName = VacationsRegistry.vacationPicturesFolderName;
-    Path vacationsPhotosFolderPath = Paths.get(vacationsPhotosFolderName);
-    if (Files.exists(vacationsPhotosFolderPath)  &&  Files.isDirectory(vacationsPhotosFolderPath)) {
-      LOGGER.severe("<= " + vacationsPhotosFolderPath);
-      return vacationsPhotosFolderPath;
-    } else {
-      LOGGER.severe("<= " + null);
-      return null;
-    }
-  }
-  
-  /**
-   * Get a list of all children of a vacation, which may have a bounding box (location?).
-   * <p>
-   * Currently these are all Locations and all GPXTracks, with the file reference set.
-   * 
-   * @param vacation
-   * @return
-   */
-  private List<VacationElement> getElementsWithBoundingBox(Vacation vacation) {
-    List<VacationElement> locations = new ArrayList<>();
-    
-    TreeIterator<EObject> vacationIterator = vacation.eAllContents();
-    
-    while (vacationIterator.hasNext()) {
-      EObject eObject = vacationIterator.next();
-      
-      if (eObject instanceof Location ) {
-        locations.add((VacationElement) eObject);
-      } else if (eObject instanceof GPXTrack) {
-        GPXTrack gpxTrack = (GPXTrack) eObject;
-        FileReference fileReference = gpxTrack.getTrackReference();
-        if (fileReference != null) {
-          locations.add(gpxTrack);
-        }
-      }
-    }
-    
-    return locations;
   }
   
   private void importVacations() {

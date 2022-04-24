@@ -302,7 +302,7 @@ public class EListPane<T extends Object> extends JScrollPane implements ObjectSe
   /**
    * @see goedegep.util.objectselector.ObjectSelectionListener#objectSelected(java.lang.Object)
    */
-  public void objectSelected(EList<T> eList) {
+  public void objectSelected(Object source, EList<T> eList) {
     this.eList = eList;
     
     refillListModel(null);
@@ -323,7 +323,7 @@ public class EListPane<T extends Object> extends JScrollPane implements ObjectSe
     T selectedObject = getSelectedObject();
     
     for (ObjectSelectionListener<T> objectSelectionListener: objectSelectionListeners) {
-      objectSelectionListener.objectSelected(selectedObject);
+      objectSelectionListener.objectSelected(this, selectedObject);
     }
   }
   

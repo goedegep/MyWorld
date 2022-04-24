@@ -21,7 +21,6 @@ import org.apache.commons.cli.UnrecognizedOptionException;
 
 import goedegep.app.finan.guifx.FinanMenuWindow;
 import goedegep.app.finan.registry.FinanRegistry;
-import goedegep.appgen.EMFResource;
 import goedegep.appgen.swing.Customizations;
 import goedegep.finan.Finan;
 import goedegep.invandprop.app.InvoicesAndPropertiesRegistry;
@@ -46,6 +45,7 @@ import goedegep.rolodex.model.RolodexFactory;
 import goedegep.rolodex.model.RolodexPackage;
 import goedegep.unitconverter.app.UnitConverterRegistry;
 import goedegep.unitconverter.app.guifx.UnitConverterWindow;
+import goedegep.util.emf.EMFResource;
 import goedegep.util.fixedpointvalue.FixedPointValue;
 import goedegep.util.money.PgCurrency;
 import goedegep.vacations.app.guifx.VacationsWindow;

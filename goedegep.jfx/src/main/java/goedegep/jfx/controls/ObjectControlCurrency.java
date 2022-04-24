@@ -116,7 +116,7 @@ public class ObjectControlCurrency extends TextFieldObjectInput<PgCurrency> {
       try {
         currency = CF.parse(valueAsString);
       } catch (ParseException e) {
-        LOGGER.severe("ParseException on value: " + valueAsString);
+        LOGGER.info("ParseException on value: " + valueAsString);
       }
     }
     

@@ -505,7 +505,7 @@ public class EObjectTreeItem extends TreeItem<EObjectTreeItemContent> {
         if (eReference.isMany()) {
           return new EObjectTreeItem(childObject, EObjectTreeItemType.OBJECT_LIST, eReference, eObjectTreeItemClassListReferenceDescriptor, eObjectTreeView);
         } else {
-          throw new RuntimeException("Descriptor doesn't match with reference. Descriptor=" + eReference.toString());
+          throw new RuntimeException("Descriptor doesn't match with reference (descriptor is for many, but reference isn't). Descriptor=" + eObjectTreeItemClassListReferenceDescriptor.toString());
         }
       } else {
         return null;

@@ -1,7 +1,7 @@
 package goedegep.vacations.app.logic;
 
-import goedegep.appgen.EMFResource;
 import goedegep.properties.model.PropertyDescriptorGroup;
+import goedegep.util.emf.EMFResource;
 
 /**
  * This registry class provides information to be shared within the complete Vacations application.
@@ -71,4 +71,9 @@ public class VacationsRegistry {
    * List of known files in the vacations folder.
    */
   public static String knownFiles = null;
+  
+  /**
+   * If true coordinates shall be shown in the document
+   */
+  public static boolean showCoordinatesInDocument = true;
 }

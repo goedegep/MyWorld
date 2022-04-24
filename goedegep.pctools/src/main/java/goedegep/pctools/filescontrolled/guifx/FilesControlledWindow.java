@@ -10,7 +10,6 @@ import java.util.logging.Logger;
 
 import org.eclipse.emf.ecore.EClass;
 
-import goedegep.appgen.EMFResource;
 import goedegep.appgen.TableRowOperation;
 import goedegep.jfx.ComponentFactoryFx;
 import goedegep.jfx.CustomizationFx;
@@ -40,6 +39,7 @@ import goedegep.pctools.filescontrolled.types.FileInfoMap;
 //import goedegep.pctools.filescontrolled.model.PCToolsFactory;
 //import goedegep.pctools.filescontrolled.model.PCToolsPackage;
 import goedegep.util.Tuplet;
+import goedegep.util.emf.EMFResource;
 import goedegep.util.emf.EmfPackageHelper;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;

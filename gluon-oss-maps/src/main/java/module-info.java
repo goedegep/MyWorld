@@ -36,6 +36,9 @@ module com.gluonhq.maps {
     requires javafx.base;
     requires transitive goedegep.geo;
     requires java.desktop;
+    requires transitive goedegep.gpx.model;
+    requires goedegep.appgenfx;
+    requires goedegep.resources;
 
     uses com.gluonhq.maps.tile.TileRetriever;
 

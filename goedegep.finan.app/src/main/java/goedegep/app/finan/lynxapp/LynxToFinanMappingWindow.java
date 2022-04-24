@@ -23,7 +23,6 @@ import javax.swing.JMenuBar;
 import org.eclipse.emf.ecore.EClass;
 
 import goedegep.app.finan.registry.FinanRegistry;
-import goedegep.appgen.EMFResource;
 import goedegep.appgen.TableRowOperation;
 import goedegep.appgen.TableRowOperationDescriptor;
 import goedegep.appgen.eobjecttable.EObjectTableDescriptor;
@@ -36,6 +35,7 @@ import goedegep.finan.lynx2finan.model.LynxToFinanFactory;
 import goedegep.finan.lynx2finan.model.LynxToFinanPackage;
 import goedegep.finan.lynx2finan.model.LynxToFinanShareIdList;
 import goedegep.finan.lynx2finan.model.LynxToFinanShareIdListEntry;
+import goedegep.util.emf.EMFResource;
 import goedegep.util.file.FileUtils;
 import net.sf.ofx4j.domain.data.ResponseEnvelope;
 import net.sf.ofx4j.io.AggregateUnmarshaller;

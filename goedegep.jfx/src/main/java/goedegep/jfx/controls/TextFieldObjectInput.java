@@ -139,7 +139,7 @@ public class TextFieldObjectInput<T> extends TextField implements ObjectControl<
   }
   
   private void handleFocusChanged(ObservableValue<? extends Boolean> observableValue, Boolean oldValue, Boolean newValue) {
-    LOGGER.severe("=> newValue=" + newValue);
+    LOGGER.info("=> newValue=" + newValue);
     if (!newValue) {
       T objectValue = stringToObject(getText());
       if (objectValue != null) {

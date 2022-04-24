@@ -8,4 +8,5 @@ module goedegep.gpx {
   requires java.logging;
   requires transitive goedegep.util;
   requires transitive goedegep.gpx.model;
+  requires javafx.base;
 }

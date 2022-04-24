@@ -45,4 +45,5 @@ module goedegep.vacations.app {
   requires jdk.jsobject;
   requires transitive goedegep.vacations.checklist.model;
 requires goedegep.gpx.model;
+requires goedegep.resources;
 }

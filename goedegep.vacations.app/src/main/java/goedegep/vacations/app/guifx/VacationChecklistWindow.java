@@ -6,10 +6,10 @@ import java.util.logging.Logger;
 
 import org.eclipse.emf.common.notify.Notification;
 
-import goedegep.appgen.EMFResource;
 import goedegep.jfx.ComponentFactoryFx;
 import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.JfxStage;
+import goedegep.util.emf.EMFResource;
 import goedegep.util.emf.EmfUtil;
 import goedegep.vacations.checklist.model.CurrentVacation;
 import goedegep.vacations.checklist.model.ItemStatus;

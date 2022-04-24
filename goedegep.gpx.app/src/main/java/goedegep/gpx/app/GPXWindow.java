@@ -10,7 +10,12 @@ import java.util.logging.Logger;
 import org.eclipse.emf.common.util.WrappedException;
 import org.eclipse.emf.ecore.EPackage;
 
-import goedegep.appgen.EMFResource;
+import com.gluonhq.maps.GPXLayer;
+import com.gluonhq.maps.MapPoint;
+import com.gluonhq.maps.MapView;
+
+import goedegep.geo.dbl.WGS84BoundingBox;
+import goedegep.geo.dbl.WGS84Coordinates;
 import goedegep.gpx.model.DocumentRoot;
 import goedegep.gpx.model.GPXFactory;
 import goedegep.gpx.model.GPXPackage;
@@ -21,9 +26,11 @@ import goedegep.jfx.ComponentFactoryFx;
 import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.JfxStage;
 import goedegep.jfx.eobjecttreeview.EObjectTreeView;
+import goedegep.util.emf.EMFResource;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.geometry.Orientation;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
@@ -31,6 +38,7 @@ import javafx.scene.control.CheckMenuItem;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.SplitPane;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
@@ -42,21 +50,28 @@ public class GPXWindow extends JfxStage {
   private static final Logger LOGGER = Logger.getLogger(GPXWindow.class.getName());
   private static final String WINDOW_TITLE = "GPX Editor";
 
+  private CustomizationFx customization;
   private ComponentFactoryFx componentFactory;
   private EMFResource<DocumentRoot> gpxResource = null;
   private EObjectTreeView gpxTreeView;
+  private MapView mapView;
+  private GPXLayer gpxLayer;
   private DocumentRoot documentRoot = null;
   // This menu item defines the 'edit status'.
   private CheckMenuItem gpxTreeEditableMenuItem;
 
+  /**
+   * Constructor.
+   * 
+   * @param customization the GUI customization.
+   */
   public GPXWindow(CustomizationFx customization) {
     super(null, customization);
 
+    this.customization = customization;
     componentFactory = customization.getComponentFactoryFx();
     
-    gpxTreeView = new EObjectTreeView(null, false);
     createGUI();
-    
     
     EPackage.Registry.INSTANCE.put(GPXPackage.eNS_URI, GPXPackage.eINSTANCE);
     gpxResource = new EMFResource<>(GPXPackage.eINSTANCE, () -> GPXFactory.eINSTANCE.createDocumentRoot(), false);
@@ -68,13 +83,31 @@ public class GPXWindow extends JfxStage {
     show();
   }
   
+  /**
+   * Create the GUI.
+   */
   private void createGUI() {
     VBox vBox = new VBox();
     
     // Menu bar
     vBox.getChildren().add(createMenuBar());
     
-    vBox.getChildren().add(gpxTreeView);
+    // Splitpane: left is treeView, right is map
+    SplitPane centerPane = new SplitPane();
+    centerPane.setOrientation(Orientation.HORIZONTAL);
+    centerPane.setDividerPositions(0.3);
+    
+    // TreeView
+    gpxTreeView = new GPXTreeView(customization, null);
+    centerPane.getItems().add(gpxTreeView);
+    
+    // MapView
+    mapView = new MapView();
+    gpxLayer = new GPXLayer();
+    mapView.addLayer(gpxLayer);
+    centerPane.getItems().add(mapView);
+    
+    vBox.getChildren().add(centerPane);
     
 
     setScene(new Scene(vBox, 1700, 900));
@@ -264,6 +297,20 @@ public class GPXWindow extends JfxStage {
     List<TrkType> tracks = gpx.getTrk();
     for (TrkType track: tracks) {
     	LOGGER.severe("Track length: " + track.getLength());
+    }
+    
+    WGS84BoundingBox gpxBoundingBox = gpxLayer.addGpx(null, gpxResource.getFileName(), gpx);
+    Double zoomLevel = MapView.getZoomLevel(gpxBoundingBox);
+    if (zoomLevel != null) {
+      mapView.setZoom(zoomLevel);
+    }
+    
+    WGS84Coordinates center = gpxBoundingBox.getCenter();
+    LOGGER.severe("center: " + center.toString());
+    MapPoint mapCenter = new MapPoint(center.getLatitude(), center.getLongitude());
+    
+    if (mapCenter != null) {
+      mapView.flyTo(0.0, mapCenter, 2);
     }
   }
 

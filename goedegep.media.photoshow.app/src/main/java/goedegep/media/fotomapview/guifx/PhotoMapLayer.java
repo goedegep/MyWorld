@@ -3,6 +3,7 @@ package goedegep.media.fotomapview.guifx;
 import java.awt.Dimension;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -12,25 +13,22 @@ import com.gluonhq.maps.MapView;
 
 import goedegep.geo.dbl.WGS84BoundingBox;
 import goedegep.geo.dbl.WGS84Coordinates;
-import goedegep.jfx.ComponentFactoryFx;
 import goedegep.jfx.CustomizationFx;
-import goedegep.media.app.base.MediaAppResourcesFx;
 import goedegep.media.fotoshow.app.guifx.PhotoInfo;
-import goedegep.media.fotoshow.app.logic.GatherPhotoInfoTask;
+import goedegep.resources.Resources;
 import goedegep.util.img.ImageUtils;
+import goedegep.util.objectselector.ObjectSelectionListener;
+import goedegep.util.objectselector.ObjectSelector;
 import javafx.collections.FXCollections;
 import javafx.collections.MapChangeListener;
 import javafx.collections.ObservableList;
 import javafx.collections.ObservableMap;
 import javafx.collections.ObservableSet;
-import javafx.event.ActionEvent;
 import javafx.geometry.Point2D;
 import javafx.scene.Cursor;
 import javafx.scene.Node;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.control.ContextMenu;
-import javafx.scene.control.MenuItem;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.Dragboard;
@@ -44,7 +42,7 @@ import javafx.scene.text.Font;
  * <p>
  * In the photo information, the photo pathname is shown relative to the <code>rootFolderName</code>, which is passed to the constructor.
  */
-public class PhotoMapLayer extends MapLayer {
+public class PhotoMapLayer extends MapLayer implements ObjectSelector<PhotoInfo> {
   private static final Logger LOGGER = Logger.getLogger(PhotoMapView.class.getName());
   
   private static double MAX_IMAGE_WIDTH = 900;
@@ -58,10 +56,6 @@ public class PhotoMapLayer extends MapLayer {
    */
   private ObservableMap<String, List<PhotoInfo>> photoInfosPerFolder;
   
-  private ComponentFactoryFx componentFactory;
-  
-  private boolean contextMenuActive = false;
-  
   /**
    * A small window to show image information and thumbnail.
    */
@@ -69,15 +63,14 @@ public class PhotoMapLayer extends MapLayer {
   
   private PhotoInfo relocatingPhoto = null;
   
-  private MediaAppResourcesFx appResources;
-  
-  private PhotoMapView photoMapView = null;
-  
   /**
    * Photos shown on this layer.
    */
   private final ObservableList<PhotoData> photos  = FXCollections.observableArrayList();
+  private PhotoData selectedPhoto = null;
   private PhotoData currentPhoto = null;
+  
+  private List<ObjectSelectionListener<PhotoInfo>> objectSelectionListeners = new ArrayList<>();
 
 
   /**
@@ -91,14 +84,9 @@ public class PhotoMapLayer extends MapLayer {
    */
   public PhotoMapLayer(CustomizationFx customization, PhotoMapView photoMapView, MapView mapView, ObservableMap<String, List<PhotoInfo>> photoInfosPerFolder, ObservableSet<PhotoInfo> modifiedPhotos, String rootFolderName) {
     this.customization = customization;
-    this.photoMapView = photoMapView;
     this.mapView = mapView;
     this.photoInfosPerFolder = photoInfosPerFolder;
-    
-    componentFactory = customization.getComponentFactoryFx();
-    
-    appResources = (MediaAppResourcesFx) customization.getResources();
-    
+   
     MapChangeListener<String, List<PhotoInfo>> ml = new MapChangeListener<>() {
 
       @Override
@@ -190,13 +178,49 @@ public class PhotoMapLayer extends MapLayer {
     
     Image photoImage;
     if (photoInfo.isApproximateGPScoordinates()) {
-      photoImage = appResources.getPhotoGrayIcon();
+      photoImage = Resources.getCameraGrayIcon();
     } else {
-      photoImage = appResources.getPhotoIcon();
+      photoImage = Resources.getCameraBlackIcon();
     }
     ImageView photoIcon = new ImageView(photoImage);
-    photoIcon.setOnMouseClicked(e -> handleMouseEventOnPhotoIcon(e, photoInfo));
+    installMouseHandlingOnPhotoIcon(photoIcon, photoInfo);
+//    photoIcon.setOnMouseClicked(e -> handleMouseEventOnPhotoIcon(e, photoInfo));
+//    
+//    photoIcon.setOnMouseDragged(event -> {
+//      LOGGER.info("Mouse Dragged");
+//      LOGGER.info("SceneX: " + event.getSceneX() + ", SceneY: " + event.getSceneY());
+//      if (relocatingPhoto != null) {
+//        Point2D point2D = mapView.sceneToLocal(event.getSceneX(), event.getSceneY());
+//        LOGGER.info("point2D: " + point2D.getX() + ", " + point2D.getY());
+//        MapPoint mapPoint = mapView.getMapPosition(point2D.getX(), point2D.getY());
+//        WGS84Coordinates coordinates = new WGS84Coordinates(mapPoint.getLatitude(), mapPoint.getLongitude());
+//        photoInfo.setCoordinates(coordinates);
+//        markDirty();
+//      } else {
+//        getScene().setCursor(Cursor.CROSSHAIR);
+//        relocatingPhoto = photoInfo;
+//      }
+//      event.consume();
+//    });
+//    
+//    photoIcon.setOnMouseReleased(event -> {
+//      LOGGER.info("Mouse Released");
+//      getScene().setCursor(Cursor.DEFAULT);
+//      relocatingPhoto = null;
+//      event.consume();
+//    });
+    
+    PhotoData photoData = new PhotoData(photoInfo, photoIcon);
     getChildren().add(photoIcon);
+    photos.add(photoData);
+
+    WGS84Coordinates coordinates = photoInfo.getCoordinates();
+    WGS84BoundingBox wgs84BoundingBox = new WGS84BoundingBox(coordinates.getLongitude(), coordinates.getLatitude());
+    return wgs84BoundingBox;
+  }
+  
+  private void installMouseHandlingOnPhotoIcon(ImageView photoIcon, PhotoInfo photoInfo) {
+    photoIcon.setOnMouseClicked(e -> handleMouseEventOnPhotoIcon(e, photoInfo));
     
     photoIcon.setOnMouseDragged(event -> {
       LOGGER.info("Mouse Dragged");
@@ -222,12 +246,59 @@ public class PhotoMapLayer extends MapLayer {
       event.consume();
     });
     
-    PhotoData photoData = new PhotoData(photoInfo, photoIcon);
-    photos.add(photoData);
+  }
 
-    WGS84Coordinates coordinates = photoInfo.getCoordinates();
-    WGS84BoundingBox wgs84BoundingBox = new WGS84BoundingBox(coordinates.getLongitude(), coordinates.getLatitude());
-    return wgs84BoundingBox;
+  /**
+   * Set the selected photo.
+   * 
+   * @param photoInfo The photo to be selected (may be null).
+   */
+  public void setSelectedPhoto(Object caller, PhotoInfo photoInfo) {
+    if (selectedPhoto != null) {
+      Node node = selectedPhoto.node();
+      getChildren().remove(node);
+      
+      Image photoImage;
+      if (photoInfo.isApproximateGPScoordinates()) {
+        photoImage = Resources.getCameraGrayIcon();
+      } else {
+        photoImage = Resources.getCameraBlackIcon();
+      }
+      ImageView photoIcon = new ImageView(photoImage);
+      installMouseHandlingOnPhotoIcon(photoIcon, selectedPhoto.photoInfo());
+      getChildren().add(photoIcon);
+      photos.remove(selectedPhoto);
+      PhotoData newPhotoData = new PhotoData(selectedPhoto.photoInfo(), photoIcon);
+      photos.add(newPhotoData);
+      selectedPhoto = null;
+    }
+    
+    PhotoData currentPhotoData = null;
+    if (photoInfo != null) {
+      for (PhotoData photoData: photos) {
+        if (photoInfo.equals(photoData.photoInfo())) {
+          currentPhotoData = photoData;
+          break;
+        }
+      }
+    }
+    
+    if (currentPhotoData != null) {
+      Node node = currentPhotoData.node();
+      getChildren().remove(node);
+      
+      Image photoImage = Resources.getCameraBlueIcon();
+      ImageView photoIcon = new ImageView(photoImage);
+      installMouseHandlingOnPhotoIcon(photoIcon, photoInfo);
+      getChildren().add(photoIcon);
+      photos.remove(currentPhotoData);
+      PhotoData newPhotoData = new PhotoData(photoInfo, photoIcon);
+      photos.add(newPhotoData);
+      selectedPhoto = newPhotoData;
+    }
+    
+    markDirty();
+    notifyObjectSelectionListeners(caller);
   }
   
   private boolean photoAlreadyOnMap(PhotoInfo photoInfo) {
@@ -265,6 +336,8 @@ public class PhotoMapLayer extends MapLayer {
       
       imageInfoStage = new PhotoMetaDataEditor(customization, photoInfo);
     } else {
+      setSelectedPhoto(this, photoInfo);
+      
       if (imageInfoStage != null) {
         imageInfoStage.close();
         imageInfoStage = null;
@@ -350,150 +423,52 @@ public class PhotoMapLayer extends MapLayer {
       
     }
 
-//    this.getChildren().clear();
-//    for (List<PhotoInfo> photoInfos: photoInfosPerFolder.values()) {
-//      for (PhotoInfo photoInfo: photoInfos) {
-//        WGS84Coordinates coordinates = photoInfo.getCoordinates();
-//        if (coordinates == null) {
-//          LOGGER.info("Skipping photo without coordinates");
-//          continue;
-//        }
-//
-//        Color color = null;
-//        if (photoInfo.isApproximateGPScoordinates()) {
-//          color = Color.PINK;
-//        } else {
-//          color = Color.LIGHTGOLDENRODYELLOW;
-//        }
-//        final Circle icon = new Circle(4.0, color);
-//        icon.setVisible(true);
-//        icon.setStroke(Color.RED);
-//        icon.setStrokeWidth(1);
-//
-//        final Point2D mapPoint = baseMap.getMapPoint(coordinates.getLatitude(), coordinates.getLongitude());
-//        icon.setTranslateX(mapPoint.getX());
-//        icon.setTranslateY(mapPoint.getY());
-//
-////        EventHandler<MouseEvent> mouseClickedHandler = new EventHandler<>() {
-////
-////          @Override
-////          public void handle(MouseEvent mouseEvent) {
-////
-////            if (mouseEvent.getButton() == MouseButton.SECONDARY) {
-////              ContextMenu contextMenu = createContextMenu(photoInfo);
-////              LOGGER.severe("mouseEvent: x=" + mouseEvent.getScreenX() + ", y=" + mouseEvent.getScreenY());
-////              contextMenuActive = true;
-////              imageInfoStage.hide();
-////              contextMenu.show(icon, mouseEvent.getScreenX() + 10, mouseEvent.getScreenY());
-////              contextMenu.setOnHidden(e -> {
-////                LOGGER.severe("Context menu hidden");
-////                contextMenuActive = false;
-////              });
-////            }
-////
-////            mouseEvent.consume();
-////          }
-////
-////        };
-////
-////
-////        icon.setOnMouseClicked(mouseClickedHandler);
-//        icon.setOnMouseClicked(mouseEvent -> {
-//          if (mouseEvent.getButton() == MouseButton.SECONDARY) {
-//            ContextMenu contextMenu = createContextMenu(photoInfo);
-//            LOGGER.severe("mouseEvent: x=" + mouseEvent.getScreenX() + ", y=" + mouseEvent.getScreenY());
-//            contextMenuActive = true;
-//            imageInfoStage.hide();
-//            contextMenu.show(icon, mouseEvent.getScreenX() + 10, mouseEvent.getScreenY());
-//            contextMenu.setOnHidden(e -> {
-//              LOGGER.severe("Context menu hidden");
-//              contextMenuActive = false;
-//            });
-//          }
-//
-//          mouseEvent.consume();
-//        });
-//
-//        icon.hoverProperty().addListener((obs, oldVal, newValue) -> {
-//          if (newValue) {
-//            if (!contextMenuActive) {
-//              LOGGER.severe("mapPoint:" + mapPoint.getX() + ", " + mapPoint.getY());
-////              LOGGER.severe("mapView.getLayout:" + mapView.getLayoutX() + ", " + mapView.getLayoutY());
-////              LOGGER.severe("mapView.getTranslate:" + mapView.getTranslateX() + ", " + mapView.getTranslateY());
-//              imageInfoStage.setImageInfo(photoInfo);
-//              imageInfoStage.setX(getXForImageInfo(mapPoint));
-//              imageInfoStage.setY(getYForImageInfo(mapPoint));
-//              imageInfoStage.show();
-//            }
-//          } else {
-//            imageInfoStage.hide();
-//          }
-//        });        
-//
-//        this.getChildren().add(icon);
-//
-//
-//      }
-//    }
-
     LOGGER.info("<=");
   }
-  
-  private double getXForImageInfo(Point2D mapPoint) {
-//    Parent parent = mapView.getParent();
-//    BorderPane borderPane = (BorderPane) parent;
-//    Point2D p = borderPane.localToScreen(mapPoint);
-//    LOGGER.severe("p: x=" + p.getX() + ", y=" + p.getY());
-    
-    double mapWidth = mapView.getWidth();
-    double centerX = mapWidth / 2;
-    LOGGER.severe("mapWidth: " + mapWidth + ", centerX: " + centerX);
 
-    double x;
-    if (mapPoint.getX() > centerX) {
-      x = mapPoint.getX() - 120;
-      LOGGER.severe("On right, so move left: " + x);
+  /*
+   * ObjectSelector implementation
+   */
+  
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public void addObjectSelectionListener(ObjectSelectionListener<PhotoInfo> objectSelectionListener) {
+    objectSelectionListeners.add(objectSelectionListener);    
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public void removeObjectSelectionListener(ObjectSelectionListener<PhotoInfo> objectSelectionListener) {
+    objectSelectionListeners.remove(objectSelectionListener);
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public PhotoInfo getSelectedObject() {
+    if (selectedPhoto != null) {
+      return selectedPhoto.photoInfo();
     } else {
-      x = mapPoint.getX() + 490;
-      LOGGER.severe("On left, so move right: " + x);
+      return null;
     }
-    
-    double stageWidth =  imageInfoStage.getWidth();
-    LOGGER.severe("stageWidth: " + stageWidth);
-    
-    return x;
   }
   
-  private double getYForImageInfo(Point2D mapPoint) {
-    
-    double mapHeight = mapView.getHeight();
-    LOGGER.severe("mapHeight: " + mapHeight);
-
-    double y = mapPoint.getY();
-    
-    if (y < 275) {
-      y = 275;
-    } else if (y > (mapHeight - 275)) {
-      y = mapHeight - 275;
+  private void notifyObjectSelectionListeners(Object source) {
+    PhotoInfo photoInfo = null;
+    if (selectedPhoto != null) {
+      photoInfo = selectedPhoto.photoInfo();
     }
     
-    return y;
-  }
-  
-  private ContextMenu createContextMenu(PhotoInfo photoInfo) {
-    ContextMenu contextMenu = componentFactory.createContextMenu();
-    MenuItem menuItem;
-    
-    menuItem = componentFactory.createMenuItem("Relocate");
-    menuItem.setOnAction((ActionEvent event) -> {
-      relocatingPhoto = photoInfo;
-    });
-    contextMenu.getItems().add(menuItem);
-    
-    return contextMenu;
+    for (ObjectSelectionListener<PhotoInfo> objectSelectionListener: objectSelectionListeners) {
+      objectSelectionListener.objectSelected(source, photoInfo);
+    }
   }
 }
-
 
 /**
  * Information for a photo.

@@ -1085,7 +1085,7 @@ public class EObjectTable<T extends EObject> extends TableView<T> implements Obj
     
     for (ObjectSelectionListener<T> objectSelectionListener: objectSelectionListeners) {
       LOGGER.info("Calling: " + objectSelectionListener);
-      objectSelectionListener.objectSelected(selectedObject);
+      objectSelectionListener.objectSelected(this, selectedObject);
     }
   }
 

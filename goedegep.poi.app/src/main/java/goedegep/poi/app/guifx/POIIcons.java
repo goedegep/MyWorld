@@ -8,12 +8,12 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
 
-import goedegep.appgen.EMFResource;
 import goedegep.poi.model.POICategoryId;
 import goedegep.poi.model.POIFactory;
 import goedegep.poi.model.POIIconResourceDescriptor;
 import goedegep.poi.model.POIIconResourceInfo;
 import goedegep.poi.model.POIPackage;
+import goedegep.util.emf.EMFResource;
 import javafx.scene.image.Image;
 
 /**
@@ -65,6 +65,16 @@ public class POIIcons {
     }
     
     return icon;
+  }
+  
+  public Image getIcon(POICategoryId poiCategoryId, double requestedWitdh, double requestedHeight) {
+    String iconFileName = iconFileNameMap.get(poiCategoryId);
+    InputStream iconInputStream = POIIcons.class.getResourceAsStream(iconFileName);
+    if (iconInputStream == null) {
+      LOGGER.severe("Icon file doesn't seem to exist: " + iconFileName + " (category is " + poiCategoryId.getLiteral() + ")");
+      return getIcon(POICategoryId.DEFAULT_POI);        
+    }
+    return new Image(iconInputStream, requestedWitdh, requestedHeight, true, true);
   }
   
   public URL getIconUrl(POICategoryId poiCategoryId) {

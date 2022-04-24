@@ -1,6 +1,7 @@
 package goedegep.util.emf;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -10,6 +11,9 @@ import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EClassifier;
 import org.eclipse.emf.ecore.EEnum;
 import org.eclipse.emf.ecore.EPackage;
+import org.eclipse.emf.ecore.EReference;
+import org.eclipse.emf.ecore.impl.EDataTypeImpl;
+import org.eclipse.emf.ecore.impl.EEnumImpl;
 
 import goedegep.util.tree.TreeNode;
 import goedegep.util.tree.TreeUtil;
@@ -20,9 +24,15 @@ public class EmfPackageHelper {
   private EPackage ePackage;
 
   /**
-   * The map from qualified name to EClassifier for all EClassifiers
+   * The map from qualified name to EClass for all EClasses in the package.
    */
-  private Map<String, EClassifier> eNameToEClassifierMap = null;
+  private Map<String, EClass> eNameToEClasMap = null;
+
+  /**
+   * The map from qualified name to EEnum for all ENums in the package.
+   */
+  private Map<String, EEnum> eNameToEEnumMap = null;
+  
   /**
    * A tree representing the class hierarchy of all classes in the package
    */
@@ -68,7 +78,7 @@ public class EmfPackageHelper {
   }
   
   /**
-   * Get the EClassifier for a qualified name.
+   * Get the EClass for a qualified name.
    * <p>
    * There is an EPackage.getEClassifier(String name), but this uses only the simple name. This is not safe.
    * There can be qualifiers with the same simple name. That implementation will return the first one.
@@ -78,44 +88,45 @@ public class EmfPackageHelper {
    * @param qualifiedName the qualified name of the EClassifier to be returned.
    * @return the EClassifier for the given <b>name</b>, or null if such qualifier doesn't exist.
    */
-  public EClassifier getEClassifier(String qualifiedName)
-  {
-    if (eNameToEClassifierMap == null)
-    {
+  public EClass getEClass(String qualifiedName) {
+    if (eNameToEClasMap == null) {
       LOGGER.info("Initializing eNameToEClassifierMap");
       List<EClassifier> eClassifiers = ePackage.getEClassifiers();
-      Map<String, EClassifier> result = new HashMap<String, EClassifier>(eClassifiers.size());
-      for (EClassifier eClassifier : eClassifiers)
-      {
-        String key = eClassifier.getInstanceTypeName();
-        LOGGER.info("Going to add entry for key=" + key);
-        EClassifier duplicate = result.put(key, eClassifier);
-        if (duplicate != null)
-        {
-          throw new RuntimeException("More than one EClassifier with the qualified name: " + qualifiedName);
-//          result.put(key, duplicate);
+      Map<String, EClass> result = new HashMap<>(eClassifiers.size());
+      for (EClassifier eClassifier : eClassifiers) {
+        if (eClassifier instanceof EClass eClass) {
+          String key = eClass.getInstanceTypeName();
+          LOGGER.info("Going to add entry for key=" + key);
+          EClass duplicate = result.put(key, eClass);
+          if (duplicate != null)
+          {
+            LOGGER.severe("eClass: " + eClass.toString());
+            LOGGER.severe("duplicate: " + duplicate.toString());
+            throw new RuntimeException("More than one EClass with the qualified name: " + key);
+          }
         }
       }
-      eNameToEClassifierMap = result;
+      
+//      List<EClass> currentEntries = new ArrayList<>();
+//      currentEntries.addAll(result.values());
+//      for (EClass eClass: currentEntries) {
+//        LOGGER.severe("Handling eClass=" + eClass.getName());
+//        for (EReference eReference: eClass.getEAllReferences()) {
+//          EClass referredClass = eReference.getEReferenceType();
+//          String key = referredClass.getInstanceTypeName();
+//          LOGGER.severe("Handling key=" + key);
+//          if (result.get(key) == null) {
+//            result.put(key, referredClass);
+//          }
+//        }
+//      }
+      
+      eNameToEClasMap = result;
     }
 
-    return eNameToEClassifierMap.get(qualifiedName);
+    return eNameToEClasMap.get(qualifiedName);
   }
   
-  /**
-   * Get the EClass for a qualified name.
-   * 
-   * @param qualifiedName the qualified name of the EClass to be returned.
-   * @return the EClass for the given <b>name</b>, or null if such class doesn't exist.
-   */
-  public EClass getEClass(String qualifiedName) {
-    EClassifier eClassifier = getEClassifier(qualifiedName);
-    if (eClassifier != null  && eClassifier instanceof EClass) {
-      return (EClass) eClassifier;
-    } else {
-      return null;
-    }
-  }
   
   /**
    * Get the EEnum for a qualified name.
@@ -124,12 +135,28 @@ public class EmfPackageHelper {
    * @return the EEnum for the given <b>qualifiedName</b>, or null if such enum doesn't exist.
    */
   public EEnum getEEnum(String qualifiedName) {
-    EClassifier eClassifier = getEClassifier(qualifiedName);
-    if (eClassifier != null  && eClassifier instanceof EEnum) {
-      return (EEnum) eClassifier;
-    } else {
-      return null;
+    if (eNameToEEnumMap == null) {
+      LOGGER.info("Initializing eNameToEEnumMap");
+      List<EClassifier> eClassifiers = ePackage.getEClassifiers();
+      Map<String, EEnum> result = new HashMap<>(eClassifiers.size());
+      for (EClassifier eClassifier : eClassifiers) {
+        if (eClassifier instanceof EEnum eEnum) {
+          String key = eEnum.getInstanceTypeName();
+          LOGGER.info("Going to add entry for key=" + key);
+          EEnum duplicate = result.put(key, eEnum);
+          if (duplicate != null)
+          {
+            LOGGER.severe("eEnum: " + eEnum.toString());
+            LOGGER.severe("duplicate: " + duplicate.toString());
+            throw new RuntimeException("More than one EEnum with the qualified name: " + key);
+          }
+        }
+      }
+      
+      eNameToEEnumMap = result;
     }
+
+    return eNameToEEnumMap.get(qualifiedName);
   }
   
   /**

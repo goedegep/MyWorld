@@ -15,7 +15,6 @@ import java.util.logging.Logger;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import goedegep.appgen.EMFResource;
 import goedegep.jfx.jfxjunitrunner.JfxJUnitRunner;
 import goedegep.pctools.filescontrolled.logic.ControlledSetBuildingTask;
 import goedegep.pctools.filescontrolled.model.DiscStructureSpecification;
@@ -26,6 +25,7 @@ import goedegep.pctools.filescontrolled.types.FileInfo;
 import goedegep.pctools.filescontrolled.types.FileInfoMap;
 import goedegep.pctools.filescontrolled.model.PCToolsFactory;
 import goedegep.util.Tuplet;
+import goedegep.util.emf.EMFResource;
 import javafx.concurrent.WorkerStateEvent;
 import javafx.event.EventHandler;
 

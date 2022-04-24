@@ -24,4 +24,5 @@ module goedegep.pctools {
   requires org.hamcrest;
   requires tim.prune;
   requires goedegep.gpx.app;
+  requires goedegep.resources;
 }

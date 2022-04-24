@@ -2,6 +2,7 @@ package goedegep.jfx.eobjecttreeview;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Logger;
 
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EEnum;
@@ -14,6 +15,7 @@ import goedegep.util.text.Indent;
  * The descriptor consists of EObjectTreeItemClassDescriptor's for the classes within an EObject hierarchy.
  */
 public class EObjectTreeDescriptor {
+  private static final Logger LOGGER = Logger.getLogger(EObjectTreeDescriptor.class.getName());
   private static final String NEWLINE = System.getProperty("line.separator");
 
   /**
@@ -59,6 +61,12 @@ public class EObjectTreeDescriptor {
     eEnumToEEnumEditorDescriptorMap.put(eEnum, eEnumEditorDescriptor);
   }
   
+  /**
+   * Get the descriptor for a specific <code>EEnum</code>.
+   * 
+   * @param eEnum the <code>EEnum</code> to get the descriptor for.
+   * @return the <code>EEnumEditorDescriptor</code> for <code>eEnum</code>, or null if it is not set.
+   */
   public EEnumEditorDescriptor<?> getEEnumEditorDescriptorForEEnum(EEnum eEnum) {
     return eEnumToEEnumEditorDescriptorMap.get(eEnum);
   }

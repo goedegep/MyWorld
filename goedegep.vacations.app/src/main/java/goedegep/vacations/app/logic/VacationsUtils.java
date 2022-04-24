@@ -3,20 +3,25 @@ package goedegep.vacations.app.logic;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.nio.file.FileVisitResult;
+import java.nio.file.FileVisitor;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
 
 import org.apache.commons.imaging.ImageReadException;
 import org.eclipse.emf.common.util.TreeIterator;
 import org.eclipse.emf.ecore.EObject;
 
-import goedegep.appgen.EMFResource;
 import goedegep.geo.dbl.WGS84Coordinates;
+import goedegep.gpx.GpxUtil;
 import goedegep.gpx.model.DocumentRoot;
 import goedegep.gpx.model.GPXFactory;
 import goedegep.gpx.model.GPXPackage;
@@ -26,9 +31,14 @@ import goedegep.gpx.model.TrksegType;
 import goedegep.gpx.model.WptType;
 import goedegep.gpx.model.util.GPXResourceFactoryImpl;
 import goedegep.types.model.FileReference;
+import goedegep.util.Triplet;
 import goedegep.util.datetime.FlexDate;
+import goedegep.util.emf.EMFResource;
+import goedegep.util.file.FileUtils;
 import goedegep.util.img.PhotoFileMetaDataHandler;
 import goedegep.vacations.model.ActivityLabel;
+import goedegep.vacations.model.Boundary;
+import goedegep.vacations.model.BoundingBox;
 import goedegep.vacations.model.Day;
 import goedegep.vacations.model.GPXTrack;
 import goedegep.vacations.model.Location;
@@ -36,6 +46,7 @@ import goedegep.vacations.model.Picture;
 import goedegep.vacations.model.Vacation;
 import goedegep.vacations.model.VacationElement;
 import goedegep.vacations.model.VacationsPackage;
+import javafx.util.Pair;
 
 /**
  * This class provides utility methods for the Vacations application.
@@ -64,6 +75,15 @@ public class VacationsUtils {
     return geoLocations;
   }
   
+  /**
+   * Get the number of days of a vacation.
+   * <p>
+   * If the (start) date and end date are set, and both are complete dates, then these dates are used to calculate the duration.
+   * Otherwise the number of days is the sum of all days of all Day elements of the vacation (calculated by calling {@link #countNumberOfDays}.
+   * 
+   * @param vacation a <code>Vacation</code>
+   * @return the number of days of the vacation.
+   */
   public static int getNumberOfDays(Vacation vacation) {
     int numberOfDays = 0;
     
@@ -98,6 +118,15 @@ public class VacationsUtils {
     return numberOfDays;
   }
   
+  /**
+   * Count the number of days of a vacation.
+   * <p>
+   * The number of days is the sum of all days of all Day elements of the vacation.
+   * This method only gives the correct value if Day elements are consistently used for the vacation.
+   * 
+   * @param vacation a <code>Vacation</code>
+   * @return the number of days of the <code>vacation</code>
+   */
   public static int countNumberOfDays(Vacation vacation) {
     int numberOfDays = 0;
     
@@ -105,8 +134,7 @@ public class VacationsUtils {
     
     while (iterator.hasNext()) {
       EObject eObject = iterator.next();
-      if (eObject instanceof Day) {
-        Day day = (Day) eObject;
+      if (eObject instanceof Day day) {
         if (day.isSetDays()) {
           numberOfDays += day.getDays();
         } else {
@@ -118,12 +146,67 @@ public class VacationsUtils {
     LOGGER.info("counted number of days: " + numberOfDays);
     return numberOfDays;
   }
+  
+  /**
+   * Get a list of all the <code>Day</code> elements of a vacation.
+   * 
+   * @param vacation a <code>Vacation</code>
+   * @return a list of all the <code>Day</code> elements of a vacation.
+   */
+  public static List<Day> getVacationDays(Vacation vacation) {
+    List<Day> days = new ArrayList<>();
+    
+    TreeIterator<EObject> iterator = vacation.eAllContents();
+    
+    while (iterator.hasNext()) {
+      EObject eObject = iterator.next();
+      if (eObject instanceof Day day) {
+        days.add(day);
+      }
+    }
+    
+    return days;
+  }
+  
+  /**
+   * Get a mapping of VacationElements to their geo locations.
+   * <p>
+   * Only VacationElements which have at least one type of location information are added to the mapping.<br/>
+   * The location information is provided in a Triplet, where:
+   * <ul>
+   * <li>the first object contains the coordinates, or null if these aren't available.</li>
+   * <li>the second object contains the bounding box, or null if this isn't available.</li>
+   * <li>the third object contains the boundaries, or null if these aren't available.</li>
+   * </ul>
+   * 
+   * @param vacation a <code>Vacation</code>
+   * @return a mapping of VacationElements to their geo locations.
+   */
+  public static Map<VacationElement, Triplet<WGS84Coordinates, BoundingBox, List<Boundary>>> getVacationGeoLocations(Vacation vacation) {
+    Map<VacationElement, Triplet<WGS84Coordinates, BoundingBox, List<Boundary>>> geoLocations = new HashMap<>();
+    
+    TreeIterator<EObject> iterator = vacation.eAllContents();
+    
+    while (iterator.hasNext()) {
+      EObject eObject = iterator.next();
+      if (eObject instanceof VacationElement vacationElement) {
+        LOGGER.severe("Handling vacation element: " + vacationElement.toString());
+        Triplet<WGS84Coordinates, BoundingBox, List<Boundary>> elementGeoLocations = getGeoLocation(vacationElement);
+        if (elementGeoLocations != null) {
+          geoLocations.put(vacationElement, elementGeoLocations);
+        }
+      }
+    }
+    
+    return geoLocations;
+  }
 
   /**
    * Add the geo-locations of a <code>VacationElement</code> and all its children to a list of geo-locations.
    * 
    * @param geoLocations the list to which the locations are added.
    * @param element the <code>VacationElement</code> for which the locations will be added.
+   * @param stayedAtLocations optional array of stayed at locations
    */
   private static void addGeoLocationsForVacationElement(List<WGS84Coordinates> geoLocations, VacationElement element, WGS84Coordinates[] stayedAtLocations) {
     
@@ -167,6 +250,18 @@ public class VacationsUtils {
     }
   }
 
+  /**
+   * Add the geo-location of a <code>Location</code> to a list of geo-locations or to an array of stayed at locations.
+   * <p>
+   * The location can only be added if both latitude and longitude of the <code>Location</code> are set.<br/>
+   * If the location is a 'stayed at' location, it is added to the stayed at locations for the corresponding days.
+   * Otherwise it is added to the geoLocations.
+   * 
+   * @param geoLocations a list of coordinates to which the coordinates of the <code>location</code> are added if this <code>location</code> isn't a 'stayed at' location.
+   * @param location a <code>Location</code>
+   * @param stayedAtLocations optional array of 'stayed at' locations. If the <code>location</code> is a 'stayed at' location, the coordinates of the <code>location</code> are set
+   *        in the elements corresponding to the days you stayed at this location.
+   */
   private static void addGeoLocationForVacationElementLocation(List<WGS84Coordinates> geoLocations, Location location, WGS84Coordinates[] stayedAtLocations) {
     
     if (location.isSetLatitude()  &&  location.isSetLongitude()) {
@@ -197,6 +292,14 @@ public class VacationsUtils {
     
   }
 
+  /**
+   * Add the geo-location of a picture to a list of geo-locations.
+   * <p>
+   * The coordinates can only be added if the picture element has a valid reference to a picture file which has coordinates set.
+   * 
+   * @param geoLocations a list of coordinates to which the coordinates of the <code>picture</code> are added.
+   * @param picture a <code>Picture</code> element.
+   */
   private static void addGeoLocationForVacationElementPicture(List<WGS84Coordinates> geoLocations, Picture picture) {
     WGS84Coordinates coordinates = null;
     FileReference pictureReference = picture.getPictureReference();
@@ -306,5 +409,285 @@ public class VacationsUtils {
     } else {
       return null;
     }
+  }
+    
+  /**
+   * Get a Path for the folder with photos for a specific vacation.
+   * <p>
+   * This folder is expected to be a folder with the name equal to the Id of the vacation, and being a sub folder of the
+   * folder with all photos of all vacations.
+   * 
+   * @param vacation the vacation for which to get a Path to its photos folder.
+   * @return a Path to the folder with photos for <code>vacation</code>, or null if this cannot be determined.
+   */
+  public static Path getVacationPhotosFolderPath(Vacation vacation) {
+    Path vacationsPhotosFolderPath = getVacationsPhotosFolderPath();
+    
+    if (vacationsPhotosFolderPath == null) {
+      return null;
+    }
+    
+    String vacationId = vacation.getId();
+    
+    Path vacationPhotosFolderPath = vacationsPhotosFolderPath.resolve(vacationId);
+    if (Files.exists(vacationPhotosFolderPath)  &&  Files.isDirectory(vacationPhotosFolderPath)) {
+      LOGGER.severe("<= " + vacationPhotosFolderPath);
+      return vacationPhotosFolderPath;
+    } else {
+      LOGGER.severe("<= " + null);
+      return null;
+    }
+  }
+  
+  /**
+   * Get a Path for the folder with photos for all vacations.
+   * <p>
+   * The name of this folder is specified by VacationsRegistry.vacationPicturesFolderName.
+   * 
+   * @return a Path to the folder with photos for all vacations, or null if this cannot be determined.
+   */
+  public static Path getVacationsPhotosFolderPath() {
+    String vacationsPhotosFolderName = VacationsRegistry.vacationPicturesFolderName;
+    Path vacationsPhotosFolderPath = Paths.get(vacationsPhotosFolderName);
+    if (Files.exists(vacationsPhotosFolderPath)  &&  Files.isDirectory(vacationsPhotosFolderPath)) {
+      LOGGER.severe("<= " + vacationsPhotosFolderPath);
+      return vacationsPhotosFolderPath;
+    } else {
+      LOGGER.severe("<= " + null);
+      return null;
+    }
+  }
+  
+  /**
+   * Get all photo folders for a vacation.
+   * <p>
+   * See {@link #getVacationPhotosFolderPath} for determining the Path to the main photo folder for the vacation.<br/>
+   * Below this folder all folders are scanned to see if they contain pictures. If so the folder is added to the result list.
+   * 
+   * @return a list of all paths of all folders, under the vacation's photo folder, which contain photos.
+   */
+  public static List<Path> getVactionPhotosSubFoldersPaths(Vacation vacation) {
+    List<Path> vacationPhotoFolderPaths = new ArrayList<>();
+    
+    Path vacationPhotosFolderPath = getVacationPhotosFolderPath(vacation);
+
+    if (vacationPhotosFolderPath == null) {
+      return vacationPhotoFolderPaths;
+    }
+    
+    try {
+      Files.walkFileTree(vacationPhotosFolderPath, new FileVisitor<Path>() {
+        boolean containsPhoto = false;
+
+        @Override
+        public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
+          LOGGER.info("preVisitDirectory");
+          containsPhoto = false;
+          return FileVisitResult.CONTINUE;
+        }
+
+        @Override
+        public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+          LOGGER.info("visitFile: " + file.toString());
+          if (!containsPhoto) {
+            if (FileUtils.isPictureFile(file.getFileName().toString())) {
+              containsPhoto = true;
+            }
+          }
+          return FileVisitResult.CONTINUE;
+        }
+
+        @Override
+        public FileVisitResult visitFileFailed(Path file, IOException exc) throws IOException {
+          exc.printStackTrace();
+          return FileVisitResult.CONTINUE;
+        }
+
+        @Override
+        public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
+          if (containsPhoto) {
+            LOGGER.info("postVisitDirectory: adding " + dir.toString());
+            vacationPhotoFolderPaths.add(dir);
+          }
+          return FileVisitResult.CONTINUE;
+        }
+      });
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+    
+    for (Path path: vacationPhotoFolderPaths) {
+      LOGGER.severe("path: " + path.toString());
+    }
+    
+    return vacationPhotoFolderPaths;
+  }
+  
+  /**
+   * Get the geo location (coordinates) of a vacation element.
+   * <p>
+   * A value is returned for:
+   * <ul>
+   * <li>A <code>Location</code> with both latitude and longitude set.
+   * </li>
+   * </ul>
+   * In all other cases <code>null</code> will be returned.
+   * 
+   * @param vacationElement a <code>VacationElement</code>
+   * @return the geo location (coordinates) of <code>vacationElement</code>, or null if the <code>vacationElement</code> can't have a location or doesn't have its location set.
+   */
+  public static Triplet<WGS84Coordinates, BoundingBox, List<Boundary>> getGeoLocation(VacationElement vacationElement) {
+    LOGGER.info("=> vacationElement=" + vacationElement.toString());
+    
+    switch(vacationElement.eClass().getClassifierID()) {
+    case VacationsPackage.DAY:
+      // A day has no location.
+      LOGGER.info("<= null");
+      return null;
+      
+    case VacationsPackage.LOCATION:
+      LOGGER.info("<= getGeoLocation(<Location>)");
+      return getGeoLocation((Location) vacationElement);
+      
+    case VacationsPackage.TEXT:
+      // No action; a Text has no location.
+      LOGGER.info("<= null");
+      return null;
+      
+    case VacationsPackage.PICTURE:
+      LOGGER.info("<= getGeoLocation(<Picture>)");
+      return getGeoLocation((Picture) vacationElement);
+      
+    case VacationsPackage.GPX_TRACK:
+      LOGGER.info("<= getGeoLocation(<GPXTrack>)");
+      return getGeoLocation((GPXTrack) vacationElement);
+    }
+    
+    return null;
+  }
+  
+  /**
+   * Get the geo location (coordinates) of a <code>Location</code> element.
+   * 
+   * @param location a <code>Location</code>
+   * @return the geo location (coordinates) of the <code>location</code>, or null if not both latitude and longitude are set.
+   */
+  public static Triplet<WGS84Coordinates, BoundingBox, List<Boundary>> getGeoLocation(Location location) {
+    LOGGER.info("=> vacationElement=" + location.toString());
+    
+    WGS84Coordinates coordinates = null;
+    
+    if (location.isSetLatitude()  &&  location.isSetLongitude()) {
+      coordinates = new WGS84Coordinates(location.getLatitude(), location.getLongitude());
+    }
+    
+    BoundingBox boundingBox = location.getBoundingbox();
+
+    List<Boundary> boundaries = location.getBoundaries();
+    if (boundaries != null) {
+      if (boundaries.isEmpty()) {
+        boundaries = null;
+      }
+    }
+    
+    if ((coordinates != null)  ||  (boundingBox != null)  ||  (boundaries != null)) {
+      return new Triplet<WGS84Coordinates, BoundingBox, List<Boundary>>(coordinates, boundingBox, boundaries);
+    } else {
+      return null;
+    }
+  }
+  
+  /**
+   * Get the geo location (coordinates) of a <code>Picture</code> element.
+   * 
+   * @param picture a <code>Picture</code>
+   * @return the geo location (coordinates) of the <code>picture</code>, or null if the file reference isn't set,
+   *         or the file name in the file reference isn't set, or if the picture doesn't have a location set.
+   */
+  public static Triplet<WGS84Coordinates, BoundingBox, List<Boundary>> getGeoLocation(Picture picture) {
+    FileReference pictureReference = picture.getPictureReference();
+    if (pictureReference == null) {
+      return null;
+    }
+    String fileName = pictureReference.getFile();
+    if (fileName == null) {
+      return null;
+    }
+    
+    return new Triplet<WGS84Coordinates, BoundingBox, List<Boundary>>(PhotoFileMetaDataHandler.getGeoLocation(fileName), null, null);
+  }
+  
+  /**
+   * Get the geo location (coordinates) of a <code>GPXTrack</code> element.
+   * 
+   * @param gpxTrack a <code>GPXTrack</code>
+   * @return the coordinates of the the location of the first point of the first segment of the first track, or null if this isn't available.
+   */
+  public static Triplet<WGS84Coordinates, BoundingBox, List<Boundary>> getGeoLocation(GPXTrack gpxTrack) {
+    FileReference trackReference = gpxTrack.getTrackReference();
+    if (trackReference == null) {
+      return null;
+    }
+    
+    String fileName = trackReference.getFile();
+    if ((fileName == null)  ||  fileName.isEmpty()) {
+      return null;
+    }
+
+    return new Triplet<WGS84Coordinates, BoundingBox, List<Boundary>>(GpxUtil.getStartLocation(fileName), null, null);    
+  }
+  
+  public static Day getDay(VacationElement vacationElement) {
+    if (vacationElement == null) {
+      return null;
+    }
+    
+    EObject container = vacationElement.eContainer();
+
+    while ((container != null) && !(container instanceof Day)) {
+      container = container.eContainer();
+    }
+
+    return (Day) container;
+  }
+  
+  /**
+   * Get the text to show for a picture.
+   * <p>
+   * If the title is set in the file reference, this is the text to show.<br/>
+   * Else, if the title is set in the picture file, this is the text to show.
+   * 
+   * @param picture a <code>Picture</code>
+   * @return the text to show for the <code>picture</code>.
+   */
+  public static String getPictureCaption(Picture picture) {
+    String text = null;
+    File file = null;
+    
+    if (picture.isSetPictureReference()) {
+      FileReference fileReference = picture.getPictureReference();
+      text = fileReference.getTitle();  // first preference; the title set in the FileReference
+      
+      if (text == null  ||  text.isEmpty()) {
+        String fileName = fileReference.getFile();
+        if (fileName != null) {
+          try {
+            file = new File(fileName);
+            PhotoFileMetaDataHandler photoFileMetaDataHandler = new PhotoFileMetaDataHandler(file);
+            text = photoFileMetaDataHandler.getTitle();   // second preference; title set in the photo
+          } catch (ImageReadException | IOException e) {
+            e.printStackTrace();
+          }
+        }
+        
+//        if (text == null  ||  text.isEmpty()) {
+//          if (file != null) {
+//            text = file.getName();
+//          }
+//        }
+      }
+    }
+    
+    return text;
   }
 }
