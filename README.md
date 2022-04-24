@@ -3,6 +3,9 @@ A Java application to support the things I do on a PC; vacations, media, invoice
 
 This project is under construction.
 
+## Documentation
+Documentation about this application can be found on [MyDigitalLife](https://petersdigitallife.nl/).
+
 ## Imported libraries
 I've added external library projects to my project for a number of reasons:
 - To make some modifications
