@@ -7,6 +7,7 @@ import java.io.OutputStream;
 import java.nio.file.FileSystem;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.logging.Logger;
 
 import org.apache.pdfbox.pdmodel.PDDocument;
@@ -66,6 +67,17 @@ public class PrintWindow extends JfxStage {
   private ImageView pageView;
   private PrinterJob printerJob;
 
+  static {
+    // Create an in-memory file system
+    FileSystem imfs = Jimfs.newFileSystem(Configuration.unix());
+    tmpPdfDirPath = imfs.getPath("/tmpPdf");
+    try {
+      Files.createDirectory(tmpPdfDirPath);
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+  }
+
   /**
    * Constructor
    * 
@@ -73,14 +85,14 @@ public class PrintWindow extends JfxStage {
    * @param vacation the <code>Vacation</code> to be printed
    * @throws Exception if something goes wrong
    */
-  public PrintWindow(CustomizationFx customization, Vacation vacation) throws Exception {
+  public PrintWindow(CustomizationFx customization, VacationsWindow vacationsWindow, Vacation vacation) throws Exception {
     super(WINDOW_TITLE, customization);
     
     this.customization = customization;
     
     // Generate HTML for the vacation.
     poiIcons = new POIIcons("POIIconResourceInfo.xmi");
-    vacationToHtmlConverter = new VacationToHtmlConverter(poiIcons);
+    vacationToHtmlConverter = new VacationToHtmlConverter(poiIcons, vacationsWindow);
     String htmlText = vacationToHtmlConverter.vacationToHtml(vacation);
     LOGGER.severe(htmlText);
         
@@ -97,17 +109,6 @@ public class PrintWindow extends JfxStage {
     createGui();
     
     show();
-  }
-  
-  static {
-    // Create an in-memory file system
-    FileSystem imfs = Jimfs.newFileSystem(Configuration.unix());
-    tmpPdfDirPath = imfs.getPath("/tmpPdf");
-    try {
-      Files.createDirectory(tmpPdfDirPath);
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
   }
   
   /**
@@ -205,7 +206,7 @@ public class PrintWindow extends JfxStage {
     PrinterJob printerJob = getPrinterJob();    
 
     try {
-      for (int index = 0; index < document.getNumberOfPages(); index++) {
+      for (int index = 0; index < document.getNumberOfPages()  && index < 1; index++) {
         BufferedImage pageImage = renderer.renderImage(index);
         Image image = SwingFXUtils.toFXImage(pageImage, null);
         ImageView imageView = new ImageView(image);

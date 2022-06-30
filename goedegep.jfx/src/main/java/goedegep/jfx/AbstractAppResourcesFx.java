@@ -350,12 +350,7 @@ public abstract class AbstractAppResourcesFx implements AppResourcesFx {
       }
     }
     
-    if ((image.getWidth() == width) &&
-        (image.getHeight() == height)) {
-      return image;
-    } else {
-      return image;
-    }
+    return image;
   }
   
   /*

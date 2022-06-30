@@ -979,7 +979,7 @@ public class PhotoShowBuilder extends JfxStage {
    */
   private void closeWindowEvent(WindowEvent event) {
     if(emfResource.isDirty()) {
-      Alert alert = componentFactory.createOkCancelConfirmationDialog("Quit application?", null, "The current Photo Show Specification hasn't been saved.", "Close without saving?");
+      Alert alert = componentFactory.createOkCancelConfirmationDialog("Quit application?", "The current Photo Show Specification hasn't been saved.", "Close without saving?");
       alert.getButtonTypes().remove(ButtonType.OK);
 //      alert.getButtonTypes().add(ButtonType.CANCEL);
       alert.getButtonTypes().add(ButtonType.YES);
@@ -1001,7 +1001,7 @@ public class PhotoShowBuilder extends JfxStage {
    */
   private void handleNewPhotoShowSpecificationRequest() {
     if(emfResource.isDirty()) {
-      Alert alert = componentFactory.createOkCancelConfirmationDialog("New Photo Show Specification?", null, "The current Photo Show Specification hasn't been saved.", "Continue without saving?");
+      Alert alert = componentFactory.createOkCancelConfirmationDialog("New Photo Show Specification?", "The current Photo Show Specification hasn't been saved.", "Continue without saving?");
       alert.getButtonTypes().remove(ButtonType.OK);
       alert.getButtonTypes().add(ButtonType.CANCEL);
       alert.getButtonTypes().add(ButtonType.YES);
@@ -1027,7 +1027,7 @@ public class PhotoShowBuilder extends JfxStage {
   private void handleOpenPhotoShowSpecificationRequest() {
     // If there are unsaved changes, only continue after user confirmation.
     if(emfResource.isDirty()) {
-      Alert alert = componentFactory.createOkCancelConfirmationDialog("Open Photo Show Specification?", null, "The current Photo Show Specification hasn't been saved.", "Continue without saving?");
+      Alert alert = componentFactory.createOkCancelConfirmationDialog("Open Photo Show Specification?", "The current Photo Show Specification hasn't been saved.", "Continue without saving?");
       alert.getButtonTypes().remove(ButtonType.OK);
 //      alert.getButtonTypes().add(ButtonType.CANCEL);
       alert.getButtonTypes().add(ButtonType.YES);      
@@ -1074,7 +1074,7 @@ public class PhotoShowBuilder extends JfxStage {
         handleNewPhotoFolderInSpecification(photoFolderName);
       }
       
-      componentFactory.createInformationDialog(null, null,
+      componentFactory.createInformationDialog(null,
           "Photoshow specification " + photoShowSpecificationFile.getAbsolutePath() + " is being opened.",
           "Note that photos, which were added to a folder after the specification was created, " +
           "are added as 'not selected for the show'." + NEWLINE +

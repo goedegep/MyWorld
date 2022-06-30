@@ -533,7 +533,7 @@ public class RolodexMenuWindow extends JfxStage {
    * Show the dialog with information about this application.
    */
   private void showHelpAboutDialog() {
-    componentFactory.createInformationDialog(
+    componentFactory.createApplicationInformationDialog(
         "About the Rolodex application",
         appResources.getApplicationImage(ImageSize.SIZE_3),
         null, 
@@ -560,7 +560,7 @@ public class RolodexMenuWindow extends JfxStage {
     LOGGER.info("Window close request ...");
 
     if(RolodexRegistry.rolodexResource.isDirty()) {
-      Alert alert = componentFactory.createOkCancelConfirmationDialog("Close Rolodex?", null, null, "There are unsaved changes in the Rolodex. Do you want to save changes before closing?");
+      Alert alert = componentFactory.createOkCancelConfirmationDialog("Close Rolodex?", null, "There are unsaved changes in the Rolodex. Do you want to save changes before closing?");
       alert.getButtonTypes().remove(ButtonType.OK);
       alert.getButtonTypes().add(ButtonType.YES);
       alert.getButtonTypes().add(ButtonType.NO);

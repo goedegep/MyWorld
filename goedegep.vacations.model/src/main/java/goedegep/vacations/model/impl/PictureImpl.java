@@ -250,5 +250,23 @@ public class PictureImpl extends VacationElementImpl implements Picture {
     }
     return super.eIsSet(featureID);
   }
+  
+  /**
+   * generated NOT
+   */
+  public String toString() {
+    String text = "(null)";
+    FileReference fileReference = getPictureReference();
+    
+    if (fileReference != null) {
+      if (fileReference.getTitle() != null) {
+        text = fileReference.getTitle();
+      } else if (fileReference.getFile() != null) {
+        text = fileReference.getFile();
+      }
+    }
+    
+    return text;
+  }
 
 } //VacationElementPictureImpl

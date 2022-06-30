@@ -70,8 +70,8 @@ public class EObjectTreeCellHelperForObject extends EObjectTreeCellHelperAbstrac
           Image iconImage = nodeIconFunction.apply(eObjectTreeItemContent.getObject());
           if (iconImage != null) {
             iconImageView = new ImageView(iconImage);
-//            iconImageView.setPreserveRatio(true);
-//            iconImageView.setFitHeight(16);
+            iconImageView.setFitHeight(24);
+            iconImageView.setPreserveRatio(true);
           }
         }
       }
@@ -393,7 +393,7 @@ public class EObjectTreeCellHelperForObject extends EObjectTreeCellHelperAbstrac
       
       CustomizationFx customization = DefaultCustomizationFx.getInstance();
       ComponentFactoryFx componentFactory = customization.getComponentFactoryFx();
-      Alert alert = componentFactory.createOkCancelConfirmationDialog("How to continue?", null, buf.toString(), "What do you want?");
+      Alert alert = componentFactory.createOkCancelConfirmationDialog("How to continue?", buf.toString(), "What do you want?");
 
       ButtonType buttonContinue = new ButtonType("Continue");
       alert.getButtonTypes().remove(ButtonType.OK);

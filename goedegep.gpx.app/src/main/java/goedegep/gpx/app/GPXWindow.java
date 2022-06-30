@@ -196,7 +196,7 @@ public class GPXWindow extends JfxStage {
    */
   private void handleNewGpxFileRequest() {
     if(gpxResource.isDirty()) {
-      Alert alert = componentFactory.createOkCancelConfirmationDialog("New GPX file?", null, "The current GPX file hasn't been saved.", "Continue without saving?");
+      Alert alert = componentFactory.createOkCancelConfirmationDialog("New GPX file?", "The current GPX file hasn't been saved.", "Continue without saving?");
       alert.getButtonTypes().remove(ButtonType.OK);
       alert.getButtonTypes().add(ButtonType.CANCEL);
       alert.getButtonTypes().add(ButtonType.YES);
@@ -222,7 +222,7 @@ public class GPXWindow extends JfxStage {
   private void handleOpenGpxFileRequest() {
     // If there are unsaved changes, only continue after user confirmation.
     if(gpxResource.isDirty()) {
-      Alert alert = componentFactory.createOkCancelConfirmationDialog("Open GPX file?", null, "The current GPX file hasn't been saved.", "Continue without saving?");
+      Alert alert = componentFactory.createOkCancelConfirmationDialog("Open GPX file?", "The current GPX file hasn't been saved.", "Continue without saving?");
       alert.getButtonTypes().remove(ButtonType.OK);
       alert.getButtonTypes().add(ButtonType.YES);
       

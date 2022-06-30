@@ -96,7 +96,6 @@ public class InvestmentInsurancesOverviewWindow extends JfxStage {
       
       Alert alert = componentFactory.createYesNoConfirmationDialog(
           "Vacations file not found",
-          null,
           "The file with investment insurances '" + investmentInsurancesFile.getAbsolutePath() + "' doesn't exist yet.",
           "Do you want to create this file now?" + NEWLINE +
           "If you choose \"No\" you can't do anything in this screen.");

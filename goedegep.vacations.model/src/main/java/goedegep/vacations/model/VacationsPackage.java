@@ -501,13 +501,22 @@ public interface VacationsPackage extends EPackage {
   int LOCATION__BOUNDARIES = VACATION_ELEMENT_FEATURE_COUNT + 15;
 
   /**
+   * The feature id for the '<em><b>Reference Only</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int LOCATION__REFERENCE_ONLY = VACATION_ELEMENT_FEATURE_COUNT + 16;
+
+  /**
    * The number of structural features of the '<em>Location</em>' class.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int LOCATION_FEATURE_COUNT = VACATION_ELEMENT_FEATURE_COUNT + 16;
+  int LOCATION_FEATURE_COUNT = VACATION_ELEMENT_FEATURE_COUNT + 17;
 
   /**
    * The operation id for the '<em>Get Day Nr</em>' operation.
@@ -940,13 +949,67 @@ public interface VacationsPackage extends EPackage {
   int MAP_IMAGE__CHILDREN = VACATION_ELEMENT__CHILDREN;
 
   /**
-   * The feature id for the '<em><b>Image Reference</b></em>' containment reference.
+   * The feature id for the '<em><b>Title</b></em>' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int MAP_IMAGE__IMAGE_REFERENCE = VACATION_ELEMENT_FEATURE_COUNT + 0;
+  int MAP_IMAGE__TITLE = VACATION_ELEMENT_FEATURE_COUNT + 0;
+
+  /**
+   * The feature id for the '<em><b>Image Width</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int MAP_IMAGE__IMAGE_WIDTH = VACATION_ELEMENT_FEATURE_COUNT + 1;
+
+  /**
+   * The feature id for the '<em><b>Image Height</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int MAP_IMAGE__IMAGE_HEIGHT = VACATION_ELEMENT_FEATURE_COUNT + 2;
+
+  /**
+   * The feature id for the '<em><b>Zoom</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int MAP_IMAGE__ZOOM = VACATION_ELEMENT_FEATURE_COUNT + 3;
+
+  /**
+   * The feature id for the '<em><b>Center Latitude</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int MAP_IMAGE__CENTER_LATITUDE = VACATION_ELEMENT_FEATURE_COUNT + 4;
+
+  /**
+   * The feature id for the '<em><b>Center Longitude</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int MAP_IMAGE__CENTER_LONGITUDE = VACATION_ELEMENT_FEATURE_COUNT + 5;
+
+  /**
+   * The feature id for the '<em><b>File Name</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int MAP_IMAGE__FILE_NAME = VACATION_ELEMENT_FEATURE_COUNT + 6;
 
   /**
    * The number of structural features of the '<em>Map Image</em>' class.
@@ -955,7 +1018,7 @@ public interface VacationsPackage extends EPackage {
    * @generated
    * @ordered
    */
-  int MAP_IMAGE_FEATURE_COUNT = VACATION_ELEMENT_FEATURE_COUNT + 1;
+  int MAP_IMAGE_FEATURE_COUNT = VACATION_ELEMENT_FEATURE_COUNT + 7;
 
   /**
    * The operation id for the '<em>Get Day Nr</em>' operation.
@@ -1369,6 +1432,17 @@ public interface VacationsPackage extends EPackage {
   EReference getLocation_Boundaries();
 
   /**
+   * Returns the meta object for the attribute '{@link goedegep.vacations.model.Location#isReferenceOnly <em>Reference Only</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Reference Only</em>'.
+   * @see goedegep.vacations.model.Location#isReferenceOnly()
+   * @see #getLocation()
+   * @generated
+   */
+  EAttribute getLocation_ReferenceOnly();
+
+  /**
    * Returns the meta object for class '{@link goedegep.vacations.model.VacationElement <em>Vacation Element</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -1610,15 +1684,81 @@ public interface VacationsPackage extends EPackage {
   EClass getMapImage();
 
   /**
-   * Returns the meta object for the containment reference '{@link goedegep.vacations.model.MapImage#getImageReference <em>Image Reference</em>}'.
+   * Returns the meta object for the attribute '{@link goedegep.vacations.model.MapImage#getTitle <em>Title</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return the meta object for the containment reference '<em>Image Reference</em>'.
-   * @see goedegep.vacations.model.MapImage#getImageReference()
+   * @return the meta object for the attribute '<em>Title</em>'.
+   * @see goedegep.vacations.model.MapImage#getTitle()
    * @see #getMapImage()
    * @generated
    */
-  EReference getMapImage_ImageReference();
+  EAttribute getMapImage_Title();
+
+  /**
+   * Returns the meta object for the attribute '{@link goedegep.vacations.model.MapImage#getImageWidth <em>Image Width</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Image Width</em>'.
+   * @see goedegep.vacations.model.MapImage#getImageWidth()
+   * @see #getMapImage()
+   * @generated
+   */
+  EAttribute getMapImage_ImageWidth();
+
+  /**
+   * Returns the meta object for the attribute '{@link goedegep.vacations.model.MapImage#getImageHeight <em>Image Height</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Image Height</em>'.
+   * @see goedegep.vacations.model.MapImage#getImageHeight()
+   * @see #getMapImage()
+   * @generated
+   */
+  EAttribute getMapImage_ImageHeight();
+
+  /**
+   * Returns the meta object for the attribute '{@link goedegep.vacations.model.MapImage#getZoom <em>Zoom</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Zoom</em>'.
+   * @see goedegep.vacations.model.MapImage#getZoom()
+   * @see #getMapImage()
+   * @generated
+   */
+  EAttribute getMapImage_Zoom();
+
+  /**
+   * Returns the meta object for the attribute '{@link goedegep.vacations.model.MapImage#getCenterLatitude <em>Center Latitude</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Center Latitude</em>'.
+   * @see goedegep.vacations.model.MapImage#getCenterLatitude()
+   * @see #getMapImage()
+   * @generated
+   */
+  EAttribute getMapImage_CenterLatitude();
+
+  /**
+   * Returns the meta object for the attribute '{@link goedegep.vacations.model.MapImage#getCenterLongitude <em>Center Longitude</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Center Longitude</em>'.
+   * @see goedegep.vacations.model.MapImage#getCenterLongitude()
+   * @see #getMapImage()
+   * @generated
+   */
+  EAttribute getMapImage_CenterLongitude();
+
+  /**
+   * Returns the meta object for the attribute '{@link goedegep.vacations.model.MapImage#getFileName <em>File Name</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>File Name</em>'.
+   * @see goedegep.vacations.model.MapImage#getFileName()
+   * @see #getMapImage()
+   * @generated
+   */
+  EAttribute getMapImage_FileName();
 
   /**
    * Returns the meta object for enum '{@link goedegep.vacations.model.ActivityLabel <em>Activity Label</em>}'.
@@ -1940,6 +2080,14 @@ public interface VacationsPackage extends EPackage {
     EReference LOCATION__BOUNDARIES = eINSTANCE.getLocation_Boundaries();
 
     /**
+    	 * The meta object literal for the '<em><b>Reference Only</b></em>' attribute feature.
+    	 * <!-- begin-user-doc -->
+    	 * <!-- end-user-doc -->
+    	 * @generated
+    	 */
+    EAttribute LOCATION__REFERENCE_ONLY = eINSTANCE.getLocation_ReferenceOnly();
+
+    /**
     	 * The meta object literal for the '{@link goedegep.vacations.model.impl.VacationElementImpl <em>Vacation Element</em>}' class.
     	 * <!-- begin-user-doc -->
     	 * <!-- end-user-doc -->
@@ -2140,12 +2288,60 @@ public interface VacationsPackage extends EPackage {
     EClass MAP_IMAGE = eINSTANCE.getMapImage();
 
     /**
-    	 * The meta object literal for the '<em><b>Image Reference</b></em>' containment reference feature.
+    	 * The meta object literal for the '<em><b>Title</b></em>' attribute feature.
     	 * <!-- begin-user-doc -->
     	 * <!-- end-user-doc -->
     	 * @generated
     	 */
-    EReference MAP_IMAGE__IMAGE_REFERENCE = eINSTANCE.getMapImage_ImageReference();
+    EAttribute MAP_IMAGE__TITLE = eINSTANCE.getMapImage_Title();
+
+    /**
+    	 * The meta object literal for the '<em><b>Image Width</b></em>' attribute feature.
+    	 * <!-- begin-user-doc -->
+    	 * <!-- end-user-doc -->
+    	 * @generated
+    	 */
+    EAttribute MAP_IMAGE__IMAGE_WIDTH = eINSTANCE.getMapImage_ImageWidth();
+
+    /**
+    	 * The meta object literal for the '<em><b>Image Height</b></em>' attribute feature.
+    	 * <!-- begin-user-doc -->
+    	 * <!-- end-user-doc -->
+    	 * @generated
+    	 */
+    EAttribute MAP_IMAGE__IMAGE_HEIGHT = eINSTANCE.getMapImage_ImageHeight();
+
+    /**
+    	 * The meta object literal for the '<em><b>Zoom</b></em>' attribute feature.
+    	 * <!-- begin-user-doc -->
+    	 * <!-- end-user-doc -->
+    	 * @generated
+    	 */
+    EAttribute MAP_IMAGE__ZOOM = eINSTANCE.getMapImage_Zoom();
+
+    /**
+    	 * The meta object literal for the '<em><b>Center Latitude</b></em>' attribute feature.
+    	 * <!-- begin-user-doc -->
+    	 * <!-- end-user-doc -->
+    	 * @generated
+    	 */
+    EAttribute MAP_IMAGE__CENTER_LATITUDE = eINSTANCE.getMapImage_CenterLatitude();
+
+    /**
+    	 * The meta object literal for the '<em><b>Center Longitude</b></em>' attribute feature.
+    	 * <!-- begin-user-doc -->
+    	 * <!-- end-user-doc -->
+    	 * @generated
+    	 */
+    EAttribute MAP_IMAGE__CENTER_LONGITUDE = eINSTANCE.getMapImage_CenterLongitude();
+
+    /**
+    	 * The meta object literal for the '<em><b>File Name</b></em>' attribute feature.
+    	 * <!-- begin-user-doc -->
+    	 * <!-- end-user-doc -->
+    	 * @generated
+    	 */
+    EAttribute MAP_IMAGE__FILE_NAME = eINSTANCE.getMapImage_FileName();
 
     /**
     	 * The meta object literal for the '{@link goedegep.vacations.model.ActivityLabel <em>Activity Label</em>}' enum.

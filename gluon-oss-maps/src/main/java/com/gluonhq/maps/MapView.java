@@ -268,11 +268,12 @@ public class MapView extends Region {
 
         if (dirty) {
             for (MapLayer layer : layers) {
+                LOGGER.severe("Laying out layer");
                 layer.layoutLayer();
             }
         }
-        super.layoutChildren();
         dirty = false;
+        super.layoutChildren();
 
         // we need to get these values or we won't be notified on new changes
         baseMap.centerLon().get();

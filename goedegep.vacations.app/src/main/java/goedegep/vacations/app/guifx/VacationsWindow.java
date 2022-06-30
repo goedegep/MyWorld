@@ -5,13 +5,11 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.io.PrintWriter;
-import java.nio.file.FileVisitResult;
-import java.nio.file.FileVisitor;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.attribute.BasicFileAttributes;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -28,17 +26,15 @@ import org.apache.commons.imaging.ImageReadException;
 import org.commonmark.parser.Parser;
 import org.commonmark.renderer.html.HtmlRenderer;
 import org.eclipse.emf.common.notify.Notification;
-import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EEnum;
 import org.eclipse.emf.ecore.EObject;
-import org.eclipse.emf.ecore.EReference;
-import org.eclipse.emf.ecore.EStructuralFeature;
 
 import com.atlis.location.nominatim.NominatimAPI;
 import com.gluonhq.maps.GPXLayer;
 import com.gluonhq.maps.MapPoint;
 import com.gluonhq.maps.MapView;
+import com.openhtmltopdf.pdfboxout.PdfRendererBuilder;
 
 import goedegep.appgen.ImageSize;
 import goedegep.appgen.TableRowOperation;
@@ -76,13 +72,11 @@ import goedegep.poi.model.POIPackage;
 import goedegep.properties.app.guifx.PropertiesEditor;
 import goedegep.resources.Resources;
 import goedegep.types.model.FileReference;
-import goedegep.types.model.TypesFactory;
 import goedegep.types.model.TypesPackage;
 import goedegep.util.Tuplet;
 import goedegep.util.datetime.FlexDateFormat;
 import goedegep.util.emf.EMFResource;
 import goedegep.util.emf.EmfPackageHelper;
-import goedegep.util.emf.EmfUtil;
 import goedegep.util.file.FileUtils;
 import goedegep.util.i18n.TranslationFormatter;
 import goedegep.util.img.PhotoFileMetaDataHandler;
@@ -114,6 +108,7 @@ import goedegep.vacations.model.VacationElement;
 import goedegep.vacations.model.Vacations;
 import goedegep.vacations.model.VacationsFactory;
 import goedegep.vacations.model.VacationsPackage;
+import goedegep.vacations.model.util.VacationElementReferenceException;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -121,6 +116,7 @@ import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Orientation;
+import javafx.geometry.Point2D;
 import javafx.print.PrinterJob;
 import javafx.print.PrinterJob.JobStatus;
 import javafx.scene.Node;
@@ -167,9 +163,7 @@ public class VacationsWindow extends JfxStage {
   private static final String NEWLINE = System.getProperty("line.separator");
   private static final ResourceBundle TRANSLATIONS = getBundle(VacationsWindow.class, "VacationsResource");
   private static final VacationsPackage VACATIONS_PACKAGE = VacationsPackage.eINSTANCE;
-  private static final VacationsFactory VACATIONS_FACTORY = VacationsFactory.eINSTANCE;
   private static final POIPackage POI_PACKAGE = POIPackage.eINSTANCE; 
-  private static TypesFactory TYPES_FACTORY = TypesFactory.eINSTANCE;
   private static final SimpleDateFormat DF = new SimpleDateFormat("dd-MM-yyyy");
   private static final FlexDateFormat FDF = new FlexDateFormat();
   
@@ -179,6 +173,7 @@ public class VacationsWindow extends JfxStage {
   private static final double HOME_ZOOM_LEVEL = 8.0;         // The zoom level for showing the home location.
   
   private CustomizationFx customization = null;
+  private static CustomizationFx staticCustomization = null;
   private ComponentFactoryFx componentFactory = null;
   private VacationsAppResourcesFx appResources;
   private TranslationFormatter translationFormatter = new TranslationFormatter(TRANSLATIONS);
@@ -190,9 +185,10 @@ public class VacationsWindow extends JfxStage {
   
   private VacationToHtmlConverter vacationToHtmlConverter;
   private POIIcons poiIcons;
-  private MapView mapView;
-  private MapRelatedItemsLayer mapRelatedItemsLayer;
-  private GPXLayer trackLayer;
+  private MapViewStructure mapViewStructure;
+//  private MapView mapView;
+//  private MapRelatedItemsLayer mapRelatedItemsLayer;
+//  private GPXLayer trackLayer;
   private SearchResultLayer searchResultLayer;
   private LocationSearchWindow locationSearchWindow = null;
   
@@ -253,13 +249,14 @@ public class VacationsWindow extends JfxStage {
     }
     
     this.customization = customization;
+    staticCustomization = customization;
     
     poiIcons = new POIIcons("POIIconResourceInfo.xmi");
     LocationDescriptionDialog.setPoiIcons(poiIcons);
     
     createGUI();
     
-    vacationToHtmlConverter = new VacationToHtmlConverter(poiIcons);
+    vacationToHtmlConverter = new VacationToHtmlConverter(poiIcons, this);
     
     vacationsResource = new EMFResource<>(
         VacationsPackage.eINSTANCE, 
@@ -271,7 +268,6 @@ public class VacationsWindow extends JfxStage {
     } catch (FileNotFoundException e) {
       LOGGER.severe("File not found: " + e.getMessage());
       Alert alert = componentFactory.createYesNoConfirmationDialog(
-          null,
           null,
           translationFormatter.formatText("VacationsWindow.alertVacationsFileNotFound.header", VacationsRegistry.vacationsFileName),
           TRANSLATIONS.getString("VacationsWindow.alertVacationsFileNotFound.content"));
@@ -301,7 +297,6 @@ public class VacationsWindow extends JfxStage {
     } catch (FileNotFoundException e) {
       LOGGER.severe("File not found: " + e.getMessage());
       Alert alert = componentFactory.createYesNoConfirmationDialog(
-          null,
           null,
           translationFormatter.formatText("VacationsWindow.alertVacationChecklistFileNotFound.header", VacationsRegistry.vacationChecklistFileName),
           TRANSLATIONS.getString("VacationsWindow.alertVacationChecklistFileNotFound.content"));
@@ -366,7 +361,8 @@ public class VacationsWindow extends JfxStage {
   }
   
   public MapView getMapView() {
-    return mapView;
+    return mapViewStructure.mapView();
+//    return mapView;
   }
   
   private void handleChangesInTheVacationsData(Notification notification) {
@@ -458,15 +454,16 @@ public class VacationsWindow extends JfxStage {
     centerPane.getItems().add(treeView);
 
     // MapView
-    mapView = new MapView();
-    mapRelatedItemsLayer = new MapRelatedItemsLayer(customization, poiIcons, this);
+    MapView mapView = new MapView();
+    MapRelatedItemsLayer mapRelatedItemsLayer = new MapRelatedItemsLayer(customization, poiIcons, this);
     mapView.addLayer(mapRelatedItemsLayer);
-    trackLayer = new GPXLayer();
+    GPXLayer trackLayer = new GPXLayer();
     mapView.addLayer(trackLayer);
-    searchResultLayer = new SearchResultLayer();
+    SearchResultLayer searchResultLayer = new SearchResultLayer();
     mapView.addLayer(searchResultLayer);
     ControlsLayer controlsLayer = new ControlsLayer(customization, this, getNominatimAPI(), searchResultLayer);
     mapView.addLayer(controlsLayer);
+    mapViewStructure = new MapViewStructure(mapView, mapRelatedItemsLayer, trackLayer, searchResultLayer, controlsLayer);
     mapView.setOnMouseClicked(new EventHandler<MouseEvent>() {
 
       @Override
@@ -491,14 +488,6 @@ public class VacationsWindow extends JfxStage {
           });
           contextMenu.getItems().add(menuItem);
           
-          // Add MapImage
-          menuItem = componentFactory.createMenuItem("Add map image");
-          menuItem.setOnAction((ActionEvent event) -> {
-            createAndAddMapImage((EObjectTreeItem) treeItem);
-          });
-          contextMenu.getItems().add(menuItem);
-
-          
           contextMenu.setAutoHide(true);
           
           mapView.setOnContextMenuRequested(new EventHandler<ContextMenuEvent>() {
@@ -516,7 +505,7 @@ public class VacationsWindow extends JfxStage {
     
     TabPane tabPane = new TabPane();
     Tab tab = new Tab();
-    tab.setText("Kaart");
+    tab.setText("Map");
     tab.setContent(mapView);
     tabPane.getTabs().add(tab);
     
@@ -574,50 +563,8 @@ public class VacationsWindow extends JfxStage {
         
     LOGGER.severe("<=");
   }
-  
-  /**
-   * Create an image (.jpg) file for the current map view and add that image as MapImage to the selected tree item.
-   * <p>
-   * The image is stored in the folder related to the vacation.
-   * 
-   * @param treeItem The TreeItem to which the new <code>MapImage</code> is to be added.
-   */
-  private void createAndAddMapImage(EObjectTreeItem treeItem) {
-    LOGGER.severe("=>");
 
-    if (treeItem == null) {
-      LOGGER.severe("treeItem is null, no action");
-      return;
-    }
-
-    // Create the image
-    SnapshotParameters snapShotParameters = new SnapshotParameters();
-    WritableImage writebleImage = new WritableImage((int) mapView.getWidth(), (int) mapView.getHeight());
-    mapView.snapshot(snapShotParameters, writebleImage);
-
-    // Save the image to the vacation folder
-    Vacation vacation = getVacationForTreeItem(treeItem);
-    if (vacation == null) {
-      LOGGER.severe("No vacation found for treeItem, no action");
-    }
-    LOGGER.severe("Vacation: " + vacation.getTitle());
-    String vacationFolderName = VacationsUtils.getVacationFolder(vacation);
-    if (vacationFolderName == null) {
-      LOGGER.severe("No vacation folder found");
-    }
-    String fileName = FileUtils.createBackupFileName("MapImage.jpg");
-    File file = new File(vacationFolderName, fileName);
-    saveImageAsJpeg(writebleImage, file);
-    
-    // Create a MapImage and add it to the treeItem
-    MapImage mapImage = VACATIONS_FACTORY.createMapImage();
-    FileReference imageFileReference = TYPES_FACTORY.createFileReference();
-    imageFileReference.setFile(file.getAbsolutePath());
-    mapImage.setImageReference(imageFileReference);
-    addVacationElement(treeItem, mapImage);
-  }
-
-  public void saveImageAsJpeg(Image image, File file) {
+  public static void saveImageAsJpeg(Image image, File file) {
     BufferedImage bufferedImage = SwingFXUtils.fromFXImage(image, null);
     BufferedImage imageRGB = new BufferedImage(
         bufferedImage.getWidth(), bufferedImage.getHeight(), BufferedImage.OPAQUE);
@@ -628,65 +575,6 @@ public class VacationsWindow extends JfxStage {
     } catch (IOException e) {
       e.printStackTrace();
     }
-  }
-  
-  /**
-   * Add the location, as specified in this panel, to the tree.
-   * <p>
-   * If the selected tree item is a list of (a supertype of) Locations, it is added as last child of this list.<br/>
-   * If the selected tree item is an item in a list of (a supertype of) Locations, it is added to this list before or after the selected item.
-   * The value of the <code>beforeOrAfterComboBox</code> determines whether it is added before or after the selected item.<br/>
-   * If the <code>useReverseGeocodeSearchCoordinates</code> checkbox is checked, the coordinates are not taken from this panel,
-   * but from the <code>ReverseGeocodePanel</code> (if available).
-   */
-  private void addVacationElement(EObjectTreeItem treeItem, VacationElement vacationElement) {
-    
-    EObjectTreeItemContent eObjectTreeItemContent = treeItem.getValue();
-    
-    // If the selected tree item is a list of (a supertype of) Locations, it is added as last child of this list.
-    EStructuralFeature eStructuralFeature = eObjectTreeItemContent.getEStructuralFeature();
-    if (eStructuralFeature instanceof EReference) {
-      EReference eReference = (EReference) eStructuralFeature;
-      EClass listType = eReference.getEReferenceType();
-      EClass locationEClass = VacationsPackage.eINSTANCE.getLocation();
-      if (EmfUtil.isInstanceof(locationEClass, listType)  && eReference.isMany()) {
-        LOGGER.severe("match");
-        @SuppressWarnings("unchecked")
-        EList<EObject> eObjectList = (EList<EObject>) eObjectTreeItemContent.getObject();
-
-        eObjectList.add(vacationElement);
-        treeItem.rebuildChildren();
-        
-        return;
-      }
-    }
-    
-    // If the selected tree item is an item in a list of (a supertype of) Locations, it is added to this list before or after the selected item.
-    // In this case the parent item of the selected item shall be a list of (a supertype of) Locations.
-    EObjectTreeItem parentTreeItem = (EObjectTreeItem) treeItem.getParent();
-    EObjectTreeItemContent eObjectTreeItemContentParentTreeItem = parentTreeItem.getValue();
-    EStructuralFeature eStructuralFeatureParentTreeItem = eObjectTreeItemContentParentTreeItem.getEStructuralFeature();
-    if (eStructuralFeatureParentTreeItem instanceof EReference) {
-      EReference eReference = (EReference) eStructuralFeatureParentTreeItem;
-      EClass listType = eReference.getEReferenceType();
-      EClass locationEClass = VacationsPackage.eINSTANCE.getLocation();
-      if (EmfUtil.isInstanceof(locationEClass, listType)  && eReference.isMany()) {
-        LOGGER.severe("parent match");
-        @SuppressWarnings("unchecked")
-        EList<EObject> eObjectList = (EList<EObject>) eObjectTreeItemContentParentTreeItem.getObject();
-        
-        Object object = eObjectTreeItemContent.getObject();
-        
-        int index = eObjectList.indexOf(object);
-        LOGGER.info("index=" + index);
-        eObjectList.add(index, vacationElement);
-
-        parentTreeItem.rebuildChildren();
-        
-        return;
-      }
-    }
-    
   }
   
   /**
@@ -714,6 +602,11 @@ public class VacationsWindow extends JfxStage {
     menuItem.setOnAction(event -> printVacation());
     menu.getItems().add(menuItem);
 
+    // File: Export selected vacation as PDF
+    menuItem = componentFactory.createMenuItem("Export selected vacation as PDF");
+    menuItem.setOnAction(event -> exportVacationToPdf());
+    menu.getItems().add(menuItem);
+
     // File: Export selected vacation as HTML
     menuItem = componentFactory.createMenuItem("Export selected vacation as HTML");
     menuItem.setOnAction(event -> exportVacationToHtml());
@@ -721,7 +614,7 @@ public class VacationsWindow extends JfxStage {
 
     // File: Print current map
     menuItem = componentFactory.createMenuItem("Print current map");
-    menuItem.setOnAction(event -> print(mapView));
+    menuItem.setOnAction(event -> print(mapViewStructure.mapView()));
     menu.getItems().add(menuItem);
     
     // File: Import photos
@@ -748,8 +641,8 @@ public class VacationsWindow extends JfxStage {
     menu.getItems().add(menuItem);
     
     // File: Create a kml file
-    menuItem = componentFactory.createMenuItem("Create a kml file");
-    menuItem.setOnAction(event -> createVacationsKml());
+    menuItem = componentFactory.createMenuItem("Export selected vacation to KML file");
+    menuItem.setOnAction(event -> exportVacationToKml());
     menu.getItems().add(menuItem);
     
     // File: Import locations from kml/kmz file
@@ -792,7 +685,7 @@ public class VacationsWindow extends JfxStage {
     
     vacationTreeEditableMenuItem.setOnAction(event -> {
         treeView.setEditMode(vacationTreeEditableMenuItem.isSelected());
-        mapRelatedItemsLayer.setEditMode(vacationTreeEditableMenuItem.isSelected());
+        mapViewStructure.mapRelatedItemsLayer().setEditMode(vacationTreeEditableMenuItem.isSelected());
     });
     menu.getItems().add(vacationTreeEditableMenuItem);
     
@@ -856,9 +749,9 @@ public class VacationsWindow extends JfxStage {
   private void flyHome() {
     LOGGER.info("=>");
     
-    mapRelatedItemsLayer.clear();
+    mapViewStructure.mapRelatedItemsLayer().clear();
     
-    mapView.setZoom(8);
+    mapViewStructure.mapView().setZoom(8);
     
     MapPoint mapCenter = null;
     Location homeLocation = vacations.getHome();
@@ -867,7 +760,7 @@ public class VacationsWindow extends JfxStage {
     }
         
     if (mapCenter != null) {
-      mapView.setZoom(HOME_ZOOM_LEVEL);
+      mapViewStructure.mapView().setZoom(HOME_ZOOM_LEVEL);
       flyToIfEnabled(0.1, mapCenter, 3.0);
     }
     
@@ -880,7 +773,7 @@ public class VacationsWindow extends JfxStage {
   private void showWorldMap() {
     MapPoint mapCenter = new MapPoint(0.0, 0.0);
     
-    mapView.setZoom(FULL_MAP_ZOOM_LEVEL);
+    mapViewStructure.mapView().setZoom(FULL_MAP_ZOOM_LEVEL);
     flyToIfEnabled(0.1, mapCenter, 3.0);
   }
     
@@ -891,9 +784,20 @@ public class VacationsWindow extends JfxStage {
    * 
    * @param treeItem the newly selected item in the <code>treeView</code>.
    */
-  private void handleNewTreeItemSelected(Object source, TreeItem<EObjectTreeItemContent> treeItem) {
+  private void handleNewTreeItemSelected(Object source, TreeItem<EObjectTreeItemContent> treeItem) {    
+    if (treeItem != null) {
+      EObjectTreeItemContent value = treeItem.getValue();
+      if (value != null) {
+        Object object = value.getObject();
+        if (object instanceof MapImage mapImage) {
+          createMapImageView(mapImage, poiIcons, true);
+          //          createMapImageFile(mapImage, poiIcons);
+        }
+      }
+    }
+
     updateDocumentView(treeItem);
-    updateVacationsLayer(treeItem);
+    updateMapForTreeItem(mapViewStructure, treeItem);
   }
   
   /**
@@ -949,7 +853,7 @@ public class VacationsWindow extends JfxStage {
   }
 
   /**
-   * Update the information shown in the vacations layer.
+   * Update the information shown on the map.
    * <p>
    * The <b>home</b> location of the <b>Vacations</b> is always shown.<br/>
    * Any other information shown, is related to the specified {@code TreeItem}:
@@ -961,39 +865,44 @@ public class VacationsWindow extends JfxStage {
    * Else, if the <code>treeItem</code> is related to a <b>Picture</b>, and the location of the picture can be determined,
    * this picture is shown at that location. The location of the picture can either come from the picture itself, or from any parent Location element.
    * The map center is changed such that the picture will be visible. The zoomlevel is set such that the picture is visible and fills most of the screen.  
-   * Besides this, all locations/tracks of the related vacation are shown.
+   * Besides this, all elements with a location of the related vacation are shown. 
    * </li>
    * <li>
-   * Else, if the <code>treeItem</code> is a <code>Location</code> related to a <b>Vacation</b>, the locations/tracks of that vacation are shown.
-   * The map center is changed to this location and the zoom level is set to show most of the items of the vacation.
+   * Else, if the <code>treeItem</code> is a <code>Location</code> related to a <b>Vacation</b>, the elements with a location of that vacation are shown.
+   * The map center is changed to this location and the zoom level is set to show the elements of the vacation.
    * </li>
    * <li>
-   * Else, if the <code>treeItem</code> is a GPX track related to a <b>Vacation</b>, the locations/tracks of that vacation are shown.
-   * The map center is changed to the center of the track and the zoom level is set to show most of the items of the vacation.
+   * Else, if the <code>treeItem</code> is a GPX track related to a <b>Vacation</b>, the elements with a location of that vacation are shown.
+   * The map center is changed to the center of the track and the zoom level is set to show the items of the vacation.
    * </li>
    * <li>
-   * Else, if the <code>treeItem</code> is a <b>Vacation</b> node, or any of its attributes or children, the locations/tracks of that vacation are shown.
-   * The map center is changed to the center of the locations/tracks and the zoom level is set to show most of the items of the vacation.
+   * Else, if the <code>treeItem</code> is a <b>Vacation</b> node, or any of its attributes or children, the elements with a location of that vacation are shown.
+   * The map center is changed to the center of the shown elements and the zoom level is set to show the elements of the vacation.
    * </li>
    * <li>
    * Else, if the <code>treeItem</code> is the <b>vacations</b> attribute of <b>Vacations</b>, 
-   * the locations/tracks of all vacations are shown.<br/>
+   * the stayed at locations of all vacations are shown.<br/>
    * The world map is shown.
    * </li>
    * <li>
    * Finally, if the <code>treeItem</code> is the <b>Vacations</b> node,
-   * the home location and the locations/tracks of all vacations are shown.<br/>
+   * the home location and the stayed at locations of all vacations are shown.<br/>
    * The world map is shown.
    * </li>
    * </ul>
+   * @param mapViewStructure represents the map on which the information is to be drawn.
    * @param treeItem the <code>TreeItem</code> for which information is to be shown.
    */
-  private void updateVacationsLayer(TreeItem<EObjectTreeItemContent> treeItem) {
+  private void updateMapForTreeItem(MapViewStructure mapViewStructure, TreeItem<EObjectTreeItemContent> treeItem) {
     LOGGER.info("=> treeItem=" + (treeItem != null ? treeItem.toString() : "(null)"));
     
+    MapRelatedItemsLayer mapRelatedItemsLayer = mapViewStructure.mapRelatedItemsLayer();
+    
+    // Remove any existing information.
     mapRelatedItemsLayer.clear();
-    trackLayer.clear();
-    addHomeLocationToVacationsLayer();
+    mapViewStructure.gpxLayer().clear();
+    
+    addHomeLocationToVacationsLayer(mapViewStructure);
     
     if (treeItem == null) {
       return;
@@ -1012,7 +921,7 @@ public class VacationsWindow extends JfxStage {
     if ((pictureDataTuplet = getPictureDataForTreeItem(treeItem)) != null) {                // Picture
       Picture vacationElementPicture = pictureDataTuplet.getObject1();
       vacation = vacationElementPicture.getVacation();
-      addVacationToMapView(vacation, false);
+      addVacationToMapView(mapViewStructure, vacation, false);
       mapRelatedItemsLayer.showCurrentPhoto(vacationElementPicture.getPictureReference().getFile());
       WGS84Coordinates coordinates = pictureDataTuplet.getObject2();
       mapCenter = new MapPoint(coordinates.getLatitude() - 0.05, coordinates.getLongitude() + 0.1);
@@ -1020,13 +929,13 @@ public class VacationsWindow extends JfxStage {
     } else if ((locationDataTuplet = getLocationDataForTreeItem(treeItem)) != null) {       // Location
       Location location = locationDataTuplet.getObject1();
       vacation = locationDataTuplet.getObject2();
-      addVacationToMapView(vacation, false);
+      addVacationToMapView(mapViewStructure, vacation, false);
       mapCenter = new MapPoint(location.getLatitude(), location.getLongitude());
       zoomLevel = VACATION_ZOOM_LEVEL;
     } else if ((trackDataTuplet = getTrackDataForTreeItem(treeItem)) != null) {             // Track
       GPXTrack track = trackDataTuplet.getObject1();
       vacation = trackDataTuplet.getObject2();
-      addVacationToMapView(vacation, false);
+      addVacationToMapView(mapViewStructure, vacation, false);
       FileReference fileReference = track.getTrackReference();
       if ((fileReference != null)  &&  (fileReference.getFile() != null)) {
         EMFResource<DocumentRoot> gpxResource = new EMFResource<>(GPXPackage.eINSTANCE, () -> GPXFactory.eINSTANCE.createDocumentRoot(), false);
@@ -1045,7 +954,7 @@ public class VacationsWindow extends JfxStage {
         }    	  
       }
     } else if ((vacation = getVacationForTreeItem(treeItem)) != null) {                      // vacation
-      WGS84BoundingBox vacationsLayerBoundingBox = addVacationToMapView(vacation, false);
+      WGS84BoundingBox vacationsLayerBoundingBox = addVacationToMapView(mapViewStructure, vacation, false);
       if (vacationsLayerBoundingBox != null) {
         WGS84Coordinates center = vacationsLayerBoundingBox.getCenter();
         mapCenter = new MapPoint(center.getLatitude(), center.getLongitude());
@@ -1091,20 +1000,38 @@ public class VacationsWindow extends JfxStage {
   private Tuplet<Picture, WGS84Coordinates> getPictureDataForTreeItem(TreeItem<EObjectTreeItemContent> treeItem) {
     LOGGER.info("=>");
     Picture vacationElementPicture = getRelatedPictureForTreeItem(treeItem);
-    
+
     if (vacationElementPicture == null) {
       return null;
     }
-    
-    WGS84Coordinates pictureCoordinates = getPictureCoordinates(vacationElementPicture);
-    
-    if (pictureCoordinates == null) {
-      LOGGER.severe("<= (null)");
-      return null;
+
+    try {
+      WGS84Coordinates pictureCoordinates = getPictureCoordinates(vacationElementPicture);
+
+      if (pictureCoordinates == null) {
+        LOGGER.severe("<= (null)");
+        return null;
+      }
+
+      LOGGER.info("<=");
+      return new Tuplet<>(vacationElementPicture, pictureCoordinates);
+    } catch (VacationElementReferenceException vacationElementReferenceException) {
+      LOGGER.severe("VacationElementReferenceException");
+      VacationElement vacationElement = vacationElementReferenceException.getVacationElement();
+      String fileName = null;
+      String elementType = "Unknown";
+      if (vacationElement instanceof Picture picture) {
+        FileReference fileReference = picture.getPictureReference();
+        if (fileReference != null) {
+          fileName = fileReference.getFile();
+        }
+        elementType = "Picture";
+      }
+      String message = String.format("Reference not found!\nThe file \'%s\', referred to by the %s \'%s\', doesn't exist", fileName, elementType, vacationElement.toString());
+      componentFactory.createExceptionDialog(message, vacationElementReferenceException).showAndWait();
     }
     
-    LOGGER.info("<=");
-    return new Tuplet<>(vacationElementPicture, pictureCoordinates);
+    return null;
   }
   
   /**
@@ -1163,8 +1090,13 @@ public class VacationsWindow extends JfxStage {
    * Else if there is a parent location, the coordinates of this location are used.
    * 
    * @return the coordinates for the photo, or null is no coordinates are available.
+   * @throws VacationElementReferenceException if the file, specified in the picture reference, doesn't exist.
    */
-  private WGS84Coordinates getPictureCoordinates(Picture vacationElementPicture) {
+  private static WGS84Coordinates getPictureCoordinates(Picture vacationElementPicture) throws VacationElementReferenceException {
+    String fileName = vacationElementPicture.getPictureReference().getFile();
+    if (!new File(fileName).exists()) {
+      throw new VacationElementReferenceException(vacationElementPicture);
+    }
     WGS84Coordinates coordinates = PhotoFileMetaDataHandler.getGeoLocation(vacationElementPicture.getPictureReference().getFile());
     
     if (coordinates == null) {
@@ -1186,7 +1118,7 @@ public class VacationsWindow extends JfxStage {
    * @param vacationElementPicture for which the related location is to be found.
    * @return The <code>Location</code> to which the picture is related.
    */
-  private Location getRelatedLocation(Picture vacationElementPicture) {
+  private static Location getRelatedLocation(Picture vacationElementPicture) {
     if (vacationElementPicture == null) {
       return null;
     }
@@ -1383,6 +1315,44 @@ public class VacationsWindow extends JfxStage {
   }
   
   /**
+   * For a given treeItem, try to find the related Day.
+   * <p>
+   * If the item is a <code>Day</code>, this is the related Day. Otherwise the parent relations are followed until
+   * either a <code>Day</code> is found, or that the top of the hierarchy is encountered.
+   * If a <code>Day</code> is found, that will be the related Day, otherwise there is no related Day.<br/>
+   * 
+   * @param treeItem the <code>TreeItem</code> for which the related Day is to be found.
+   * @return the related Day, or null if this doesn't exist.
+   */
+  private static Day getDayForTreeItem(TreeItem<EObjectTreeItemContent> treeItem) {
+    LOGGER.info("=> treeItem=" + (treeItem != null ? treeItem.toString() : "(null)"));
+    
+    if (treeItem == null) {
+      return null;
+    }
+    
+    EObjectTreeItemContent eObjectTreeItemContent = treeItem.getValue();
+    Object treeItemObject = eObjectTreeItemContent.getObject();
+    
+    while (treeItem != null  &&  !(treeItemObject instanceof Day)) {
+      treeItem = treeItem.getParent();
+      LOGGER.info("after getParent() treeItem=" + (treeItem != null ? treeItem.toString() : "(null)"));
+      if (treeItem != null) {
+        eObjectTreeItemContent = treeItem.getValue();
+        treeItemObject = eObjectTreeItemContent.getObject();
+      }
+    }
+    
+    if (treeItemObject instanceof Day day) {
+      LOGGER.info("<= day=" + day.toString());
+      return day;
+    }
+
+    LOGGER.info("<= null");
+    return null;
+  }
+  
+  /**
    * For a given treeItem, check whether it is the vacations attribute of a Vacations object. If so, return the vacations list, else return null.
    * 
    * @param treeItem the <code>TreeItem</code> to check.
@@ -1440,7 +1410,7 @@ public class VacationsWindow extends JfxStage {
    */
   private void addVacationsToVacationsLayer(List<Vacation> vacations) {
     for (Vacation vacation: vacations) {
-      addVacationToVacationsLayer(vacation, true);
+      addVacationToVacationsLayer(mapViewStructure, vacation, true);
     }
   }
   
@@ -1449,13 +1419,13 @@ public class VacationsWindow extends JfxStage {
    * 
    * @return a <code>MapPoint</code> with the coordinates of the home location, or null if there is no home location.
    */
-  private void addHomeLocationToVacationsLayer() {
+  private void addHomeLocationToVacationsLayer(MapViewStructure mapViewStructure) {
     LOGGER.info("=>");
         
     if ((vacations != null)  &&  vacations.isSetHome()) {
       Location homeLocation = vacations.getHome();
       if (homeLocation.isSetLatitude()  &&  homeLocation.isSetLongitude()) {
-        mapRelatedItemsLayer.addLocation(homeLocation, "Home");
+        mapViewStructure.mapRelatedItemsLayer().addLocation(homeLocation, "Home");
       }
     }
         
@@ -1463,19 +1433,17 @@ public class VacationsWindow extends JfxStage {
   }
   
   /**
-   * Add all relevant information of a vacation to the map view.
+   * Add all relevant information of a vacation to a map view.
    * 
    * @param vacation the <code>Vacation</code> of which the <code>Location</code>s are to be added.
    * @param stayedAtOnly if <code>true</code> only the 'stayed at' locations are added.
    * @return a {@code WGS84BoundingBox} around all items added to the map view.
    */
-  private WGS84BoundingBox addVacationToMapView(Vacation vacation, boolean stayedAtOnly) {
-    WGS84BoundingBox boundingBox = addVacationToVacationsLayer(vacation, false);
-//    WGS84BoundingBox tracksBoundingBox = addVacationToTracksLayer(vacation);
-//    boundingBox = WGS84BoundingBox.extend(boundingBox, tracksBoundingBox);
-    if (vacationTreeEditableMenuItem.isSelected()  &&  (boundingBox != null)) {
-      mapRelatedItemsLayer.addBoundingBox(boundingBox);
-    }
+  private WGS84BoundingBox addVacationToMapView(MapViewStructure mapViewStructure, Vacation vacation, boolean stayedAtOnly) {
+    WGS84BoundingBox boundingBox = addVacationToVacationsLayer(mapViewStructure, vacation, false);
+//    if (vacationTreeEditableMenuItem.isSelected()  &&  (boundingBox != null)) {
+//      mapViewStructure.mapRelatedItemsLayer().addBoundingBox(boundingBox);
+//    }
 
     return boundingBox;
   }
@@ -1486,19 +1454,67 @@ public class VacationsWindow extends JfxStage {
    * @param vacation the <code>Vacation</code> of which the <code>Location</code>s are to be added.
    * @param stayedAtOnly if <code>true</code> only the 'stayed at' locations are added.
    */
-  private WGS84BoundingBox addVacationToVacationsLayer(Vacation vacation, boolean stayedAtOnly) {
+  private WGS84BoundingBox addVacationToVacationsLayer(MapViewStructure mapViewStructure, Vacation vacation, boolean stayedAtOnly) {
     LOGGER.info("=> vacation=" + vacation.toString());
     WGS84BoundingBox totalWGS84BoundingBox = null;
         
     LOGGER.info("Going to handle new vacation elements");
     for (VacationElement vacationElement: vacation.getElements()) {
-      WGS84BoundingBox wgs84BoundingBox = handleVacationElementForMapDisplay(vacationElement, stayedAtOnly, null);
+      WGS84BoundingBox wgs84BoundingBox = handleVacationElementForMapDisplay(mapViewStructure, vacationElement, stayedAtOnly, null);
+      totalWGS84BoundingBox = WGS84BoundingBox.extend(totalWGS84BoundingBox, wgs84BoundingBox);
+    }
+    
+    try {
+      List<WGS84Coordinates> lineNodes = VacationsUtils.getGeoLocations(vacation);
+      if (lineNodes.size() > 1) {
+        mapViewStructure.mapRelatedItemsLayer().addLocationsVisitedPolyLine(FXCollections.observableList(lineNodes));
+      }
+    } catch (FileNotFoundException e) {
+      LOGGER.severe("File not found");
+      componentFactory.createErrorDialog("File not found", e.getMessage()).showAndWait();
+    }
+    
+    LOGGER.info("<=");
+    return totalWGS84BoundingBox;
+  }
+  
+  /**
+   * Add all relevant information of a day to a map view.
+   * 
+   * @param vacation the <code>Vacation</code> of which the <code>Location</code>s are to be added.
+   * @param stayedAtOnly if <code>true</code> only the 'stayed at' locations are added.
+   * @return a {@code WGS84BoundingBox} around all items added to the map view.
+   */
+  private WGS84BoundingBox addDayToMapView(MapViewStructure mapViewStructure, Day day, boolean stayedAtOnly) {
+    WGS84BoundingBox boundingBox = addDayToVacationsLayer(mapViewStructure, day, false);
+
+    return boundingBox;
+  }
+
+  /**
+   * Add the <code>Location</code>s of a <code>Vacation</code> to the vacations layer.
+   * 
+   * @param vacation the <code>Vacation</code> of which the <code>Location</code>s are to be added.
+   * @param stayedAtOnly if <code>true</code> only the 'stayed at' locations are added.
+   */
+  private WGS84BoundingBox addDayToVacationsLayer(MapViewStructure mapViewStructure, Day day, boolean stayedAtOnly) {
+    LOGGER.info("=> day=" + day.toString());
+    WGS84BoundingBox totalWGS84BoundingBox = null;
+        
+    LOGGER.info("Going to handle new day elements");
+    for (VacationElement vacationElement: day.getChildren()) {
+      WGS84BoundingBox wgs84BoundingBox = handleVacationElementForMapDisplay(mapViewStructure, vacationElement, stayedAtOnly, null);
       totalWGS84BoundingBox = WGS84BoundingBox.extend(totalWGS84BoundingBox, wgs84BoundingBox);
     }
         
-    List<WGS84Coordinates> lineNodes = VacationsUtils.getGeoLocations(vacation);
+    try {
+    List<WGS84Coordinates> lineNodes = VacationsUtils.getGeoLocations(day);
     if (lineNodes.size() > 1) {
-      mapRelatedItemsLayer.addLocationsVisitedPolyLine(FXCollections.observableList(lineNodes));
+      mapViewStructure.mapRelatedItemsLayer().addLocationsVisitedPolyLine(FXCollections.observableList(lineNodes));
+    }
+    } catch (FileNotFoundException e) {
+      LOGGER.severe("File not found");
+      componentFactory.createErrorDialog("File not found", e.getMessage()).showAndWait();
     }
     
     LOGGER.info("<=");
@@ -1513,7 +1529,7 @@ public class VacationsWindow extends JfxStage {
    * @param vacationElement the element to be added.
    * @param stayedAtOnly if true, only 'stayed at' locations are added.
    */
-  private WGS84BoundingBox handleVacationElementForMapDisplay(VacationElement vacationElement, boolean stayedAtOnly, WGS84BoundingBox totalWGS84BoundingBox) {
+  private WGS84BoundingBox handleVacationElementForMapDisplay(MapViewStructure mapViewStructure, VacationElement vacationElement, boolean stayedAtOnly, WGS84BoundingBox totalWGS84BoundingBox) {
     LOGGER.info("=> totalWGS84BoundingBox: " + (totalWGS84BoundingBox != null ? totalWGS84BoundingBox.toString() : "(null)"));
     
     if (vacationElement instanceof Location location) {
@@ -1526,27 +1542,43 @@ public class VacationsWindow extends JfxStage {
       if (text == null) {
         text = location.getCity();
       }
-      WGS84BoundingBox wgs84BoundingBox = mapRelatedItemsLayer.addLocation(location, text);
+      WGS84BoundingBox wgs84BoundingBox = mapViewStructure.mapRelatedItemsLayer().addLocation(location, text);
       totalWGS84BoundingBox = WGS84BoundingBox.extend(totalWGS84BoundingBox, wgs84BoundingBox);
     } else if (vacationElement instanceof Picture picture) {
       if (stayedAtOnly) {
         return totalWGS84BoundingBox;
       }
       
-      FileReference fileReference = picture.getPictureReference();
-      if (fileReference != null) {
-        String fileName = fileReference.getFile();
-        if ((fileName != null)  &&  !fileName.isEmpty()) {
-          WGS84Coordinates coordinates = getPictureCoordinates(picture);
-          if (coordinates != null) {
-            String text = fileReference.getTitle();
-            if ((text == null)  ||  text.isEmpty()) {
-              text = fileName;
+      try {
+        FileReference fileReference = picture.getPictureReference();
+        if (fileReference != null) {
+          String fileName = fileReference.getFile();
+          if ((fileName != null)  &&  !fileName.isEmpty()) {
+            WGS84Coordinates coordinates = getPictureCoordinates(picture);
+            if (coordinates != null) {
+              String text = fileReference.getTitle();
+              if ((text == null)  ||  text.isEmpty()) {
+                text = fileName;
+              }
+              WGS84BoundingBox wgs84BoundingBox = mapViewStructure.mapRelatedItemsLayer().addPhoto(coordinates, text, fileName);
+              totalWGS84BoundingBox = WGS84BoundingBox.extend(totalWGS84BoundingBox, wgs84BoundingBox);
             }
-            WGS84BoundingBox wgs84BoundingBox = mapRelatedItemsLayer.addPhoto(coordinates, text, fileName);
-            totalWGS84BoundingBox = WGS84BoundingBox.extend(totalWGS84BoundingBox, wgs84BoundingBox);
           }
         }
+      } catch (VacationElementReferenceException vacationElementReferenceException) {
+        LOGGER.severe("VacationElementReferenceException");
+        VacationElement element = vacationElementReferenceException.getVacationElement();
+        String fileName = null;
+        String elementType = "Unknown";
+        if (element instanceof Picture elementPicture) {
+          FileReference fileReference = elementPicture.getPictureReference();
+          if (fileReference != null) {
+            fileName = fileReference.getFile();
+          }
+          elementType = "Picture";
+        }
+        String message = String.format("Reference not found!\nThe file \'%s\', referred to by the %s \'%s\', doesn't exist", fileName, elementType, element.toString());
+        componentFactory.createExceptionDialog(message, vacationElementReferenceException).showAndWait();
       }
       
     } else if (vacationElement instanceof GPXTrack track) {
@@ -1560,7 +1592,7 @@ public class VacationsWindow extends JfxStage {
           gpxResource.load(bestandReferentie.getFile());
           DocumentRoot documentRoot = gpxResource.getEObject();
           GpxType gpxType = documentRoot.getGpx();
-          WGS84BoundingBox wgs84BoundingBox = trackLayer.addGpx(bestandReferentie.getTitle(), bestandReferentie.getFile(), gpxType);
+          WGS84BoundingBox wgs84BoundingBox = mapViewStructure.gpxLayer().addGpx(bestandReferentie.getTitle(), bestandReferentie.getFile(), gpxType);
           totalWGS84BoundingBox = WGS84BoundingBox.extend(totalWGS84BoundingBox, wgs84BoundingBox);
         } catch (FileNotFoundException e) {
           e.printStackTrace();
@@ -1569,7 +1601,7 @@ public class VacationsWindow extends JfxStage {
     }
     
     for (VacationElement childElement: vacationElement.getChildren()) {
-      totalWGS84BoundingBox = handleVacationElementForMapDisplay(childElement, stayedAtOnly, totalWGS84BoundingBox);
+      totalWGS84BoundingBox = handleVacationElementForMapDisplay(mapViewStructure, childElement, stayedAtOnly, totalWGS84BoundingBox);
     }
     
     LOGGER.info("<= totalWGS84BoundingBox: " + (totalWGS84BoundingBox != null ? totalWGS84BoundingBox.toString() : "(null)"));
@@ -1766,6 +1798,8 @@ public class VacationsWindow extends JfxStage {
     nodeOperationDescriptors = new ArrayList<>();
     nodeOperationDescriptors.add(new NodeOperationDescriptor(TableRowOperation.OPEN, "Open document"));
     eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(new EObjectTreeItemAttributeDescriptor(VACATIONS_PACKAGE.getLocation_WebSite(), "Website", nodeOperationDescriptors));
+    // Location.referenceOnly
+    eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(new EObjectTreeItemAttributeDescriptor(VACATIONS_PACKAGE.getLocation_ReferenceOnly(), "Reference only", null));
     // Location.latitude
     eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(new EObjectTreeItemAttributeDescriptor(VACATIONS_PACKAGE.getLocation_Latitude(), "Latitude", null));
     // Location.longitude
@@ -1777,9 +1811,9 @@ public class VacationsWindow extends JfxStage {
     nodeOperationDescriptors.add(new ExtendedNodeOperationDescriptor("Obtain bounding box", null, new BoundingBoxObtainer()));
     eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(new EObjectTreeItemClassReferenceDescriptor(VACATIONS_PACKAGE.getLocation_Boundingbox(), vakantiesPackageHelper.getEClass("goedegep.vacations.model.BoundingBox"), (eObject) -> "Bounding box", true, nodeOperationDescriptors));
 
-    // VacationElement.children
+    // Location.children
     nodeOperationDescriptors = new ArrayList<>();
-    nodeOperationDescriptors.add(new NodeOperationDescriptor(TableRowOperation.NEW_OBJECT, "Nieuw element"));
+    nodeOperationDescriptors.add(new NodeOperationDescriptor(TableRowOperation.NEW_OBJECT, "Nieuw element", this::fillMapImage));
     eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(new EObjectTreeItemClassListReferenceDescriptor(VACATIONS_PACKAGE.getVacationElement_Children(), "Elements", true, nodeOperationDescriptors, object -> EObjectTreeView.getListIcon()));
     
     eObjectTreeDescriptor.addEClassDescriptor(eClass, eObjectTreeItemClassDescriptor);
@@ -1834,7 +1868,7 @@ public class VacationsWindow extends JfxStage {
 
     // Vacation.elements
     nodeOperationDescriptors = new ArrayList<>();
-    nodeOperationDescriptors.add(new NodeOperationDescriptor(TableRowOperation.NEW_OBJECT, "New element"));
+    nodeOperationDescriptors.add(new NodeOperationDescriptor(TableRowOperation.NEW_OBJECT, "New element", this::fillMapImage));
     eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(new EObjectTreeItemClassListReferenceDescriptor(VACATIONS_PACKAGE.getVacation_Elements(), "Elements", true, nodeOperationDescriptors, object -> EObjectTreeView.getListIcon()));
     
     eObjectTreeDescriptor.addEClassDescriptor(eClass, eObjectTreeItemClassDescriptor);
@@ -1965,7 +1999,7 @@ public class VacationsWindow extends JfxStage {
 
     // Day.children
     nodeOperationDescriptors = new ArrayList<>();
-    nodeOperationDescriptors.add(new NodeOperationDescriptor(TableRowOperation.NEW_OBJECT, "New element"));
+    nodeOperationDescriptors.add(new NodeOperationDescriptor(TableRowOperation.NEW_OBJECT, "New element", this::fillMapImage));
     eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(new EObjectTreeItemClassListReferenceDescriptor(VACATIONS_PACKAGE.getVacationElement_Children(), "Elements", true, nodeOperationDescriptors, object -> EObjectTreeView.getListIcon()));
     
     eObjectTreeDescriptor.addEClassDescriptor(eClass, eObjectTreeItemClassDescriptor);
@@ -2007,7 +2041,7 @@ public class VacationsWindow extends JfxStage {
 
     // VacationElementText.children
     nodeOperationDescriptors = new ArrayList<>();
-    nodeOperationDescriptors.add(new NodeOperationDescriptor(TableRowOperation.NEW_OBJECT, "New element"));
+    nodeOperationDescriptors.add(new NodeOperationDescriptor(TableRowOperation.NEW_OBJECT, "New element", this::fillMapImage));
     eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(new EObjectTreeItemClassListReferenceDescriptor(VACATIONS_PACKAGE.getVacationElement_Children(), "Elements", true, nodeOperationDescriptors, object -> EObjectTreeView.getListIcon()));
     
     eObjectTreeDescriptor.addEClassDescriptor(eClass, eObjectTreeItemClassDescriptor);
@@ -2082,7 +2116,7 @@ public class VacationsWindow extends JfxStage {
     
     // VacationElementText.children
     nodeOperationDescriptors = new ArrayList<>();
-    nodeOperationDescriptors.add(new NodeOperationDescriptor(TableRowOperation.NEW_OBJECT, "New element"));
+    nodeOperationDescriptors.add(new NodeOperationDescriptor(TableRowOperation.NEW_OBJECT, "New element", this::fillMapImage));
     eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(new EObjectTreeItemClassListReferenceDescriptor(VACATIONS_PACKAGE.getVacationElement_Children(), "Elements", true, nodeOperationDescriptors, object -> EObjectTreeView.getListIcon()));
     
     eObjectTreeDescriptor.addEClassDescriptor(eClass, eObjectTreeItemClassDescriptor);
@@ -2132,7 +2166,7 @@ public class VacationsWindow extends JfxStage {
     
     // VacationElementGPX.children
     nodeOperationDescriptors = new ArrayList<>();
-    nodeOperationDescriptors.add(new NodeOperationDescriptor(TableRowOperation.NEW_OBJECT, "New element"));
+    nodeOperationDescriptors.add(new NodeOperationDescriptor(TableRowOperation.NEW_OBJECT, "New element", this::fillMapImage));
     eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(new EObjectTreeItemClassListReferenceDescriptor(VACATIONS_PACKAGE.getVacationElement_Children(), "Elements", true, nodeOperationDescriptors, object -> EObjectTreeView.getListIcon()));
     
     eObjectTreeDescriptor.addEClassDescriptor(eClass, eObjectTreeItemClassDescriptor);
@@ -2157,32 +2191,38 @@ public class VacationsWindow extends JfxStage {
     EObjectTreeItemClassDescriptor eObjectTreeItemClassDescriptor = new EObjectTreeItemClassDescriptor(eClass,
         eObject -> {
             MapImage picture = (MapImage) eObject;
-            if (picture.getImageReference() != null) {
-              FileReference bestandReferentie = picture.getImageReference();
-              String text = bestandReferentie.getTitle();
-              if (text == null  ||  text.isEmpty()) {
-                text = bestandReferentie.getFile();
-              }
-              if (text == null  ||  text.isEmpty()) {
-                text = "...";
-              }
-              return text;
+            String title = picture.getTitle();
+            if (title != null  &&  !title.isEmpty()) {
+              return title;
             } else {
               return "MapImage";
             }
           }, false, nodeOperationDescriptors, object -> appResources.getMapIcon());
-    
-    // MapImage.imageReference
-    nodeOperationDescriptors = new ArrayList<>();
-    nodeOperationDescriptors.add(new NodeOperationDescriptor(TableRowOperation.NEW_OBJECT, "Create MapImage reference"));
-    nodeOperationDescriptors.add(new NodeOperationDescriptor(TableRowOperation.DELETE_OBJECT, "Delete MapImage reference"));
-    TypesPackage typesPackage = TypesPackage.eINSTANCE;
-    EmfPackageHelper typesPackageHelper = new EmfPackageHelper(typesPackage);
-    eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(new EObjectTreeItemClassReferenceDescriptor(VACATIONS_PACKAGE.getMapImage_ImageReference(), typesPackageHelper.getEClass("goedegep.types.model.FileReference"), (eObject) -> "MapImage reference", true, nodeOperationDescriptors));
+
+    // MapImage.title
+    eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(new EObjectTreeItemAttributeDescriptor(VACATIONS_PACKAGE.getMapImage_Title(), "Title", null));
+
+    // MapImage.imageWidth
+    eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(new EObjectTreeItemAttributeDescriptor(VACATIONS_PACKAGE.getMapImage_ImageWidth(), "Image width", null));
+
+    // MapImage.imageHeight
+    eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(new EObjectTreeItemAttributeDescriptor(VACATIONS_PACKAGE.getMapImage_ImageHeight(), "Image height", null));
+
+    // MapImage.zoom
+    eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(new EObjectTreeItemAttributeDescriptor(VACATIONS_PACKAGE.getMapImage_Zoom(), "Zoom level", null));
+
+    // MapImage.centerLatitude
+    eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(new EObjectTreeItemAttributeDescriptor(VACATIONS_PACKAGE.getMapImage_CenterLatitude(), "Center latitude", null));
+
+    // MapImage.centerLongitude
+    eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(new EObjectTreeItemAttributeDescriptor(VACATIONS_PACKAGE.getMapImage_CenterLongitude(), "Center longitude", null));
+
+    // MapImage.fileName
+    eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(new EObjectTreeItemAttributeDescriptor(VACATIONS_PACKAGE.getMapImage_FileName(), "Filename", null));
     
     // MapImage.children
     nodeOperationDescriptors = new ArrayList<>();
-    nodeOperationDescriptors.add(new NodeOperationDescriptor(TableRowOperation.NEW_OBJECT, "New element"));
+    nodeOperationDescriptors.add(new NodeOperationDescriptor(TableRowOperation.NEW_OBJECT, "New element", this::fillMapImage));
     eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(new EObjectTreeItemClassListReferenceDescriptor(VACATIONS_PACKAGE.getVacationElement_Children(), "Elements", true, nodeOperationDescriptors, object -> EObjectTreeView.getListIcon()));
     
     eObjectTreeDescriptor.addEClassDescriptor(eClass, eObjectTreeItemClassDescriptor);
@@ -2228,7 +2268,7 @@ public class VacationsWindow extends JfxStage {
         statusLabel.setText("No vacation selected");
         return;
       }
-      new PrintWindow(customization, vacation);
+      new PrintWindow(customization, this, vacation);
     } catch (FileNotFoundException e) {
       e.printStackTrace();
     } catch (IOException e) {
@@ -2238,6 +2278,54 @@ public class VacationsWindow extends JfxStage {
     }
   }
   
+  /**
+   * Export the currently selected vacation to a PDF file.
+   * <p>
+   * The setting of the Settings menu are taken into account.
+   */
+  private void exportVacationToPdf() {
+    EObjectTreeItem treeItem = treeView.getSelectedObject();
+    Vacation vacation = getVacationForTreeItem(treeItem);
+    if (vacation == null) {
+      statusLabel.setText("No vacation selected");
+      return;
+    }
+    
+    // Generate HTML for the vacation.
+    String htmlText = vacationToHtmlConverter.vacationToHtml(vacation);
+        
+    // Generate a PDF file for the HTML String
+    String vacationsFolder = VacationsUtils.getVacationFolder(vacation);
+    if (vacationsFolder == null) {
+      statusLabel.setText("No vacation folder found");
+      return;
+    }
+    String vacationId = vacation.getId();
+    if (vacationId == null  ||  vacationId.isEmpty()) {
+      statusLabel.setText("No vacation Id");
+      return;
+    }
+    Path pdfFilePath = Paths.get(vacationsFolder, vacationId + ".pdf");
+    try(OutputStream os = Files.newOutputStream(pdfFilePath)) {
+      PdfRendererBuilder builder = new PdfRendererBuilder();
+      builder.useFastMode();
+      builder.withHtmlContent(htmlText, null);
+      builder.toStream(os);
+      builder.run();
+      os.close();
+      statusLabel.setText("Vacation exported to " + pdfFilePath.toString());
+    } catch (IOException e) {
+      e.printStackTrace();
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+  }
+  
+  /**
+   * Export the currently selected vacation to an HTML file.
+   * <p>
+   * The setting of the Settings menu are taken into account.
+   */
   private void exportVacationToHtml() {
     EObjectTreeItem treeItem = treeView.getSelectedObject();
     Vacation vacation = getVacationForTreeItem(treeItem);
@@ -2252,12 +2340,17 @@ public class VacationsWindow extends JfxStage {
       statusLabel.setText("No vacation folder found");
       return;
     }
-    File file = new File(vacationsFolder, vacation.getTitle() + ".html");
+    String vacationId = vacation.getId();
+    if (vacationId == null  ||  vacationId.isEmpty()) {
+      statusLabel.setText("No vacation Id");
+      return;
+    }
+    File file = new File(vacationsFolder, vacationId + ".html");
     
-    try {
-      PrintWriter out = new PrintWriter(file);
+    try(PrintWriter out = new PrintWriter(file)) {
       out.println(vacationHtmlDocument);
       out.close();
+      statusLabel.setText("Vacation exported to " + file);
     } catch (FileNotFoundException e) {
       e.printStackTrace();
     }
@@ -2266,7 +2359,7 @@ public class VacationsWindow extends JfxStage {
   /**
    * Print a <code>Node</code>.
    * 
-   * @param node
+   * @param node A <code>Node</code>, typically the <code>mapView</code>.
    */
   private void print(Node node) {
     statusLabel.setText("Creating a printer job...");
@@ -2302,16 +2395,19 @@ public class VacationsWindow extends JfxStage {
     }
   }
   
+  /**
+   * Import vacations
+   */
   private void importVacations() {
     VacationsImporter vacationsImporter = new VacationsImporter(customization, vacations);
     vacationsImporter.importVacations(VacationsRegistry.vacationsFolderName, VacationsRegistry.vacationPicturesFolderName);
-    treeView.setEObject(vacations);
+    treeView.setEObject(vacations);  // trick to update the treeView
   }
   
   /**
    * Generate a KML file from the vacations.
    */
-  private void createVacationsKml() {
+  private void exportVacationToKml() {
     // Let user select a file to save to.
     FileChooser fileChooser = new FileChooser();
     fileChooser.setTitle("Kml file");
@@ -2321,10 +2417,17 @@ public class VacationsWindow extends JfxStage {
     File file = fileChooser.showSaveDialog(this);
     LOGGER.severe("Creating kml file: " + file.getAbsolutePath());
     
+    EObjectTreeItem treeItem = treeView.getSelectedObject();
+    Vacation vacation = getVacationForTreeItem(treeItem);
+    if (vacation == null) {
+      statusLabel.setText("No vacation selected");
+      return;
+    }
+    
     // Generate the file using the VacationsKmlConverter
     VacationsKmlConverter vacationsKmlConverter = new VacationsKmlConverter(poiIcons);
     try {
-      vacationsKmlConverter.createKmlForVacations(vacations, file);
+      vacationsKmlConverter.createKmlForVacation(vacation, file);
       statusLabel.setText("KML file " + file.getAbsolutePath() + " created");
     } catch (FileNotFoundException e) {
       statusLabel.setText("Failed to write to file: " + file.getAbsolutePath());
@@ -2416,14 +2519,15 @@ public class VacationsWindow extends JfxStage {
   }
   
   private void showPropertiesEditor() {
-    new PropertiesEditor("Vacation properties", customization, VacationsRegistry.propertyDescriptorsResource, VacationsRegistry.customPropertiesFile);
+    new PropertiesEditor("Vacation properties", customization, getBundle(VacationsWindow.class, "VacationsPropertyDescriptorsResource"),
+        VacationsRegistry.propertyDescriptorsResource, VacationsRegistry.customPropertiesFile);
   }
 
   /**
    * Show a dialog with information about this application.
    */
   private void showHelpAboutDialog() {
-    componentFactory.createInformationDialog(
+    componentFactory.createApplicationInformationDialog(
         "About Vacations",
         appResources.getApplicationImage(ImageSize.SIZE_3),
         null, 
@@ -2437,7 +2541,7 @@ public class VacationsWindow extends JfxStage {
   private void showMapSnapshotPopup() {
     SnapshotParameters snapShotParameters = new SnapshotParameters();
     WritableImage writebleImage = new WritableImage(500, 500);
-    mapView.snapshot(snapShotParameters, writebleImage);
+    mapViewStructure.mapView().snapshot(snapShotParameters, writebleImage);
     
     Stage stage = new Stage();
     ImageView imageView = new ImageView();
@@ -2457,7 +2561,6 @@ public class VacationsWindow extends JfxStage {
     } catch (FileNotFoundException e) {
       LOGGER.severe("File not found: " + e.getMessage());
       Alert alert = componentFactory.createYesNoConfirmationDialog(
-          null,
           null,
           translationFormatter.formatText("VacationsWindow.alertVacationsFileNotFound.header", "../../../goedegep.vacations.app/src/main/resources/goedegep/vacations/VacationsDemo.xmi"),
           TRANSLATIONS.getString("VacationsWindow.alertVacationsFileNotFound.content"));
@@ -2496,14 +2599,15 @@ public class VacationsWindow extends JfxStage {
   private void flyToIfEnabled(double waitTime, MapPoint mapPoint, double seconds) {
     
     if (!vacationTreeEditableMenuItem.isSelected()) {
-      mapView.flyTo(waitTime, mapPoint, seconds);
+//      mapViewStructure.mapView().flyTo(waitTime, mapPoint, seconds);
+      mapViewStructure.mapView().setCenter(mapPoint);
     }
     
   }
   
   private void setZoomIfEnabled(Double zoomLevel) {
     if (!vacationTreeEditableMenuItem.isSelected()) {
-      mapView.setZoom(zoomLevel);
+      mapViewStructure.mapView().setZoom(zoomLevel);
     }
   }
 
@@ -2550,8 +2654,131 @@ public class VacationsWindow extends JfxStage {
     
     Location location = (Location) object;
     
-    new ReduceBoundarySizesWindow(DefaultCustomizationFx.getInstance(), location, mapView);
+    new ReduceBoundarySizesWindow(DefaultCustomizationFx.getInstance(), location, mapViewStructure.mapView());
 
+  }
+  
+  /**
+   * Fill a newly created EObject with available information.
+   * 
+   * @param eObject the newly created EObject
+   * @param treeItem the <code>EObjectTreeItem</code> to which the <code>eObject</code> is added.
+   */
+  private void fillMapImage(EObject eObject, EObjectTreeItem treeItem) {
+    LOGGER.severe("=> eObject=" + eObject + ", treeItem=" + treeItem);
+    
+    if (eObject instanceof MapImage mapImage) {
+      // No default value for 'title'.
+      
+      MapView mapView = mapViewStructure.mapView();
+      double imageHeight = mapView.getHeight();
+      mapImage.setImageHeight(imageHeight);
+      double imageWidth = mapView.getWidth();
+      mapImage.setImageWidth(imageWidth);
+      mapImage.setCenterLatitude(mapView.getBaseMap().centerLat().get());
+      mapImage.setCenterLongitude(mapView.getBaseMap().centerLon().get());
+      double zoom = mapView.getBaseMap().zoom().get();
+      mapImage.setZoom(zoom);
+      
+      Object contentObject = getDayForTreeItem(treeItem);
+      if (contentObject == null) {
+        contentObject = getVacationForTreeItem(treeItem);
+      }
+      
+      Vacation vacation = getVacationForTreeItem(treeItem);
+      if (vacation == null) {
+        LOGGER.severe("No vacation found for treeItem");
+      }
+      LOGGER.severe("Vacation: " + vacation.getTitle());
+      String vacationFolderName = VacationsUtils.getVacationFolder(vacation);
+      if (vacationFolderName == null) {
+        LOGGER.severe("No vacation folder found");
+      }
+      String fileName = FileUtils.createBackupFileName("MapImage.jpg");  // add to model
+      File file = new File(vacationFolderName, fileName);      
+      mapImage.setFileName(file.getAbsolutePath());
+    }
+  }
+  
+  public MapView createMapImageView(MapImage mapImage, POIIcons poiIcons, boolean show) {
+    String title = mapImage.getTitle();
+    if (title == null) {
+      title = "MapImage";
+    }
+    JfxStage jfxStage = new JfxStage(title, staticCustomization);
+    MapView mapImageView = new MapView();
+
+    double height = mapImage.getImageHeight();
+    mapImageView.setPrefHeight(height);
+    double width = mapImage.getImageWidth();
+    mapImageView.setPrefWidth(width);
+
+    MapRelatedItemsLayer mapRelatedItemsLayer = new MapRelatedItemsLayer(staticCustomization, poiIcons, jfxStage);
+    mapImageView.addLayer(mapRelatedItemsLayer);
+    GPXLayer trackLayer = new GPXLayer();
+    mapImageView.addLayer(trackLayer);
+    MapViewStructure mapImageViewStructure = new MapViewStructure(mapImageView, mapRelatedItemsLayer, trackLayer, null, null);
+    
+    jfxStage.setOnCloseRequest(e -> {
+      System.out.println("Closing");
+      
+//      SnapshotParameters snapShotParameters = new SnapshotParameters();
+//      WritableImage writebleImage = new WritableImage((int) mapImageView.getWidth(), (int) mapImageView.getHeight());
+//      mapImageView.snapshot(snapShotParameters, writebleImage);
+//
+//      // Save the image
+//      File file = new File(mapImage.getFileName());
+//      saveImageAsJpeg(writebleImage, file);
+    });
+    
+    Scene scene = new Scene(mapImageView);
+    jfxStage.setScene(scene);
+    jfxStage.show();
+    if (!show) {
+      jfxStage.hide();
+    }
+
+    mapImageView.setZoom(mapImage.getZoom());
+
+    Point2D center = new Point2D(mapImage.getCenterLatitude(), mapImage.getCenterLongitude());
+    mapImageView.getBaseMap().setCenter(center);
+    
+    Object contentObject = null;
+    EObject container = mapImage.eContainer();
+    while (container != null) {
+      if (container instanceof Day  ||  container instanceof Vacation) {
+        contentObject = container;
+        break;
+      }
+      
+      container = container.eContainer();
+    }
+    
+    if (contentObject instanceof Day day) {
+      addDayToMapView(mapImageViewStructure, day, false);
+    } else if (contentObject instanceof Vacation vacation) {
+      addVacationToMapView(mapImageViewStructure, vacation, false);
+    }
+
+    return mapImageView;
+  }
+  
+  public void createMapImageFile(MapImage mapImage, POIIcons poiIcons) {
+    
+    MapView mapImageView = createMapImageView(mapImage, poiIcons, false);
+
+    // Create the image
+    if (mapImageView == null) {
+      return;
+    }
+    
+    SnapshotParameters snapShotParameters = new SnapshotParameters();
+    WritableImage writebleImage = new WritableImage((int) mapImageView.getWidth(), (int) mapImageView.getHeight());
+    mapImageView.snapshot(snapShotParameters, writebleImage);
+
+    // Save the image
+    File file = new File(mapImage.getFileName());
+    saveImageAsJpeg(writebleImage, file);
   }
   
 }
@@ -2599,4 +2826,10 @@ class BoundingBoxObtainer implements Consumer<EObjectTreeItem> {
     LOGGER.severe("<=");
   }
   
+}
+
+/**
+ * Structure of a MapView. Used to handle different MapViews.
+ */
+record MapViewStructure(MapView mapView, MapRelatedItemsLayer mapRelatedItemsLayer, GPXLayer gpxLayer, SearchResultLayer searchResultLayer, ControlsLayer controlsLayer) { 
 }

@@ -31,6 +31,7 @@ import org.eclipse.emf.common.util.EList;
  *   <li>{@link goedegep.vacations.model.Location#getEndDate <em>End Date</em>}</li>
  *   <li>{@link goedegep.vacations.model.Location#getBoundingbox <em>Boundingbox</em>}</li>
  *   <li>{@link goedegep.vacations.model.Location#getBoundaries <em>Boundaries</em>}</li>
+ *   <li>{@link goedegep.vacations.model.Location#isReferenceOnly <em>Reference Only</em>}</li>
  * </ul>
  *
  * @see goedegep.vacations.model.VacationsPackage#getLocation()
@@ -848,5 +849,27 @@ public interface Location extends VacationElement {
    * @generated
    */
   EList<Boundary> getBoundaries();
+
+  /**
+   * Returns the value of the '<em><b>Reference Only</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the value of the '<em>Reference Only</em>' attribute.
+   * @see #setReferenceOnly(boolean)
+   * @see goedegep.vacations.model.VacationsPackage#getLocation_ReferenceOnly()
+   * @model
+   * @generated
+   */
+  boolean isReferenceOnly();
+
+  /**
+   * Sets the value of the '{@link goedegep.vacations.model.Location#isReferenceOnly <em>Reference Only</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @param value the new value of the '<em>Reference Only</em>' attribute.
+   * @see #isReferenceOnly()
+   * @generated
+   */
+  void setReferenceOnly(boolean value);
 
 } // Locatie

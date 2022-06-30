@@ -29,7 +29,7 @@ public class LocationDescriptionDialog extends Dialog<ButtonType> {
   
   public static void setPoiIcons(POIIcons poiIcons) {
     LocationDescriptionDialog.poiIcons = poiIcons;
-    vacationToHtmlConverter = new VacationToHtmlConverter(poiIcons);
+    vacationToHtmlConverter = new VacationToHtmlConverter(poiIcons, null);
   }
 
   /**

@@ -516,7 +516,7 @@ public class MediaDbWindow extends JfxStage {
    * Show the dialog with information about this application.
    */
   private void showHelpAboutDialog() {
-    componentFactory.createInformationDialog(
+    componentFactory.createApplicationInformationDialog(
         "About MediaDb",
         appResources.getApplicationImage(ImageSize.SIZE_3),
         null,

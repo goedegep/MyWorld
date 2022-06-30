@@ -239,7 +239,7 @@ public class MediaMenuWindow extends JfxStage {
    * Show a dialog with information about this application.
    */
   private void showHelpAboutDialog() {
-    componentFactory.createInformationDialog(
+    componentFactory.createApplicationInformationDialog(
         "About Vacations",
         appResources.getApplicationImage(ImageSize.SIZE_3),
         null, 

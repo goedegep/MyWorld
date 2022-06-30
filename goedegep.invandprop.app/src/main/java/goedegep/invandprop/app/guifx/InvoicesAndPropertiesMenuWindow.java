@@ -271,7 +271,6 @@ public class InvoicesAndPropertiesMenuWindow extends JfxStage {
       LOGGER.severe("File not found: " + e.getMessage());
       Alert alert = componentFactory.createYesNoConfirmationDialog(
           null,
-          null,
           "The file with invoices and properties (" + InvoicesAndPropertiesRegistry.invoicesAndPropertiesFile + ") doesn't exist yet.",
           "Do you want to create this file now?" + NEWLINE +
           "If you choose \"No\" you can't do anything in this screen.");
@@ -448,7 +447,7 @@ public class InvoicesAndPropertiesMenuWindow extends JfxStage {
    * Show the dialog with information about this application.
    */
   private void showHelpAboutDialog() {
-    componentFactory.createInformationDialog(
+    componentFactory.createApplicationInformationDialog(
         "About Invoices and Properties",
         appResources.getApplicationImage(ImageSize.SIZE_3),
         null, 

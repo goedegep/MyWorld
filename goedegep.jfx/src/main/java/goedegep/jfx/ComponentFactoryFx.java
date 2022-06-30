@@ -1201,10 +1201,10 @@ public class ComponentFactoryFx {
    * @return the created error Alert
    */
   public Alert createErrorDialog(String headerText, String contentText) {
-    Alert errorDialog = new Alert(AlertType.ERROR, contentText);
+    Alert alert = new Alert(AlertType.ERROR, contentText);
     
     // Set the icon in the title bar.
-    Stage stage = (Stage) errorDialog.getDialogPane().getScene().getWindow();
+    Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
     if (stage == null) {
       LOGGER.severe("stage is null for errorDialog");
     }
@@ -1232,9 +1232,10 @@ public class ComponentFactoryFx {
 //      }
 //    }
     
-    errorDialog.setHeaderText(headerText);
+    alert.setHeaderText(headerText);
+    alert.setResizable(true);
     
-    return errorDialog;
+    return alert;
   }
 
   /**
@@ -1277,6 +1278,7 @@ public class ComponentFactoryFx {
     alert.getDialogPane().setExpanded(true);
     
     alert.setHeight(1200);
+    alert.setResizable(true);
     
     return alert;
   }
@@ -1285,25 +1287,49 @@ public class ComponentFactoryFx {
    * Create a warning dialog. This is a customized {@link Alert} of type AlertType.WARNING.
    * 
    * @param title the title
-   * @param image an optional Image, which will be set as the graphic
    * @param headerText the header text
    * @param contentText the content text
    * @return the created warning Alert
    */
   public Alert createWarningDialog(String headerText, String contentText) {
-    Alert warningDialog = new Alert(AlertType.WARNING, contentText);
+    Alert alert = new Alert(AlertType.WARNING, contentText);
     
     // Set the icon in the title bar.
-    Stage stage = (Stage) warningDialog.getDialogPane().getScene().getWindow();
+    Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
     stage.getIcons().add(appResources.getApplicationImage(ImageSize.SIZE_0));
         
-    warningDialog.setHeaderText(headerText);
+    alert.setHeaderText(headerText);
+    alert.setResizable(true);
     
-    return warningDialog;
+    return alert;
   }
 
   /**
    * Create an information/message dialog. This is a customized {@link Alert} of type AlertType.INFORMATION.
+   * 
+   * @param title the title
+   * @param headerText the header text
+   * @param contentText the content text
+   * @return the created information/message Alert
+   */
+  public Alert createInformationDialog(String title, String headerText, String contentText) {
+    Alert alert = new Alert(AlertType.INFORMATION, contentText);
+    
+    // Set the icon in the title bar.
+    Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
+    stage.getIcons().add(appResources.getApplicationImage(ImageSize.SIZE_0));
+        
+    if (title != null) {
+      alert.setTitle(title);
+    }
+    alert.setHeaderText(headerText);
+    alert.setResizable(true);
+    
+    return alert;
+  }
+
+  /**
+   * Create an application information/message dialog. This is a customized {@link Alert} of type AlertType.INFORMATION.
    * 
    * @param title the title
    * @param image an optional Image, which will be set as the graphic
@@ -1311,66 +1337,64 @@ public class ComponentFactoryFx {
    * @param contentText the content text
    * @return the created information/message Alert
    */
-  public Alert createInformationDialog(String title, Image image, String headerText, String contentText) {
-    Alert informationDialog = new Alert(AlertType.INFORMATION, contentText);
+  public Alert createApplicationInformationDialog(String title, Image image, String headerText, String contentText) {
+    Alert alert = new Alert(AlertType.INFORMATION, contentText);
     
     // Set the icon in the title bar.
-    Stage stage = (Stage) informationDialog.getDialogPane().getScene().getWindow();
+    Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
     stage.getIcons().add(appResources.getApplicationImage(ImageSize.SIZE_0));
         
     if (title != null) {
-      informationDialog.setTitle(title);
+      alert.setTitle(title);
     }
     if (image != null) {
-      informationDialog.setGraphic(new ImageView(image));
+      alert.setGraphic(new ImageView(image));
     }
-    informationDialog.setHeaderText(headerText);
+    alert.setHeaderText(headerText);
+    alert.setResizable(true);
     
-    return informationDialog;
+    return alert;
   }
 
   /**
    * Create a confirmation dialog with 'OK' and 'Cancel' buttons. This is a customized {@link Alert} of type AlertType.CONFIRMATION.
    * 
    * @param title the title
-   * @param image an optional Image, which will be set as the graphic
    * @param headerText the header text
    * @param contentText the content text
    * @return the created confirmation Alert
    */
-  public Alert createOkCancelConfirmationDialog(String title, Image image, String headerText, String contentText) {
-    Alert confirmationDialog = new Alert(AlertType.CONFIRMATION, contentText);
+  public Alert createOkCancelConfirmationDialog(String title, String headerText, String contentText) {
+    Alert alert = new Alert(AlertType.CONFIRMATION, contentText);
     
     // Set the icon in the title bar.
-    Stage stage = (Stage) confirmationDialog.getDialogPane().getScene().getWindow();
+    Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
     stage.getIcons().add(appResources.getApplicationImage(ImageSize.SIZE_0));
         
     if (title != null) {
-      confirmationDialog.setTitle(title);
+      alert.setTitle(title);
     }
-    if (image != null) {
-      confirmationDialog.setGraphic(new ImageView(image));
-    }
-    confirmationDialog.setHeaderText(headerText);
+    alert.setHeaderText(headerText);
+    alert.setResizable(true);
     
-    return confirmationDialog;
+    return alert;
   }
 
   /**
    * Create a confirmation dialog with 'Yes' and 'No' buttons. This is a customized {@link Alert} of type AlertType.CONFIRMATION.
    * 
    * @param title the title
-   * @param image an optional Image, which will be set as the graphic
    * @param headerText the header text
    * @param contentText the content text
    * @return the created confirmation Alert
    */
-  public Alert createYesNoConfirmationDialog(String title, Image image, String headerText, String contentText) {
-    Alert confirmationDialog = createOkCancelConfirmationDialog(title, image, headerText, contentText);
+  public Alert createYesNoConfirmationDialog(String title, String headerText, String contentText) {
+    Alert alert = createOkCancelConfirmationDialog(title, headerText, contentText);
     
-    confirmationDialog.getButtonTypes().setAll(ButtonType.YES, ButtonType.NO);
+    alert.getButtonTypes().setAll(ButtonType.YES, ButtonType.NO);
+    alert.setResizable(true);
     
-    return confirmationDialog;
+    return alert;
   }
   
   /**
@@ -1378,14 +1402,13 @@ public class ComponentFactoryFx {
    * 
    * @param <T> the type of the items to chose from
    * @param title the title
-   * @param image an optional Image, which will be set as the graphic
    * @param headerText the header text
    * @param contentText the content text
    * @param defaultChoice initially selected item
    * @param choices items to chose from
    * @return the created ChoiceDialog
    */
-  public <T> ChoiceDialog<T> createChoiceDialog(String title, Image image, String headerText, String contentText, T defaultChoice, @SuppressWarnings("unchecked") T... choices) {
+  public <T> ChoiceDialog<T> createChoiceDialog(String title, String headerText, String contentText, T defaultChoice, @SuppressWarnings("unchecked") T... choices) {
     ChoiceDialog<T> choiceDialog = new ChoiceDialog<>(defaultChoice, choices);
     
     // Set the icon in the title bar.
@@ -1395,11 +1418,9 @@ public class ComponentFactoryFx {
     if (title != null) {
       choiceDialog.setTitle(title);
     }
-    if (image != null) {
-      choiceDialog.setGraphic(new ImageView(image));
-    }
     choiceDialog.setHeaderText(headerText);
     choiceDialog.setContentText(contentText);
+    choiceDialog.setResizable(true);
     
     return choiceDialog;
   }
@@ -1443,6 +1464,7 @@ public class ComponentFactoryFx {
     WebEngine webEngine = webView.getEngine();
     webEngine.loadContent(contentText);
     alert.getDialogPane().setContent(webView);
+    alert.setResizable(true);
         
     return alert;
   }
@@ -1483,6 +1505,7 @@ public class ComponentFactoryFx {
     WebEngine webEngine = webView.getEngine();
     webEngine.loadContent(contentText);
     alert.getDialogPane().setContent(webView);
+    alert.setResizable(true);
         
     return alert;
   }

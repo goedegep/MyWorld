@@ -23,6 +23,8 @@ import goedegep.rolodex.model.Country;
 import goedegep.rolodex.model.Family;
 import goedegep.rolodex.model.Institution;
 import goedegep.rolodex.model.Person;
+import goedegep.rolodex.model.PhoneNumber;
+import goedegep.rolodex.model.PhoneNumberHolder;
 import goedegep.rolodex.model.Rolodex;
 import goedegep.rolodex.model.RolodexPackage;
 import javafx.beans.value.ChangeListener;
@@ -33,6 +35,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.CheckMenuItem;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.TableCell;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -108,7 +111,19 @@ public class AddressBookWindowFx extends JfxStage {
 
   private MenuBar createMenuBar() {
     MenuBar menuBar = componentFactory.createMenuBar();
+    MenuItem menuItem;
     Menu menu;
+    
+    // Print menu
+    menu = componentFactory.createMenu("Print");
+    
+    // Print: Print address list
+    menuItem = new MenuItem("Print address list");
+    menuItem.setOnAction(e -> printAddressList());
+    menu.getItems().add(menuItem);
+    
+    menuBar.getMenus().add(menu);
+    
 
     // Show menu
     menu = componentFactory.createMenu("Show");
@@ -127,6 +142,63 @@ public class AddressBookWindowFx extends JfxStage {
     return menuBar;
   }
   
+  private Object printAddressList() {
+    addressesHolders = new BasicEList<>();
+    addressesHolders.addAll(rolodex.getFamilyList().getFamilies());
+    addressesHolders.addAll(rolodex.getPersonList().getPersons());
+    addressesHolders.addAll(rolodex.getInstitutionList().getInstitutions());
+    
+    for (AddressHolder addressHolder: addressesHolders) {
+      if (addressHolder.getAddress() == null) {
+        continue;
+      }
+      
+      if (addressHolder instanceof Person person) {
+        if (person.isArchived()) {
+          continue;
+        }
+        System.out.print(person.getName());
+      } else if (addressHolder instanceof Family family) {
+        if (family.isArchived()) {
+          continue;
+        }
+        System.out.print(family.getFamilyTitle() + " " + family.getFamilyName());
+      } else if (addressHolder instanceof Institution institution) {
+        System.out.print(institution.getName());
+      }
+      
+      printAddress(addressHolder.getAddress());
+      
+      if (addressHolder instanceof PhoneNumberHolder phoneNumberHolder) {
+        List<PhoneNumber> phoneNumbers = phoneNumberHolder.getPhoneNumbers();
+        if (phoneNumbers != null  &&  !phoneNumbers.isEmpty()) {
+          printPhoneNumber(phoneNumbers.get(0));
+        }
+      }
+      
+      System.out.println();
+    }
+    return null;
+  }
+  
+  private void printAddress(Address address) {
+    if (address == null) {
+      System.out.println();
+      return;
+    }
+    
+    System.out.print(", " + address.getStreetName() + " " + address.getHouseNumber());
+    if (address.getHouseNumberExtension() != null) {
+      System.out.print(address.getHouseNumberExtension());
+    }
+    System.out.print(", " + address.getPostalCode() + "  " + address.getCity().getCityName());
+    
+  }
+  
+  private void printPhoneNumber(PhoneNumber phoneNumber) {
+    System.out.print(", tel.: " + phoneNumber.getPhoneNumber());
+  }
+
   private void updateShowArchivedItems() {
     LOGGER.info("Show archived items: " + showArchivedItems.isSelected());
     if (showArchivedItems.isSelected()) {

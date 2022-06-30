@@ -99,6 +99,7 @@
         unsettable="true" containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="boundaries" upperBound="-1"
         eType="#//Boundary" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="referenceOnly" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="VacationElement" abstract="true">
     <eOperations name="getDayNr" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EIntegerObject">
@@ -159,7 +160,18 @@
         eType="ecore:EDataType ../../goedegep.types.model/model/types.ecore#//EWGS84Coordinates"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="MapImage" eSuperTypes="#//VacationElement">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="imageReference" eType="ecore:EClass ../../goedegep.types.model/model/types.ecore#//FileReference"
-        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="title" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
+        unsettable="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="imageWidth" lowerBound="1"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDoubleObject"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="imageHeight" lowerBound="1"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDoubleObject"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="zoom" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDoubleObject"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="centerLatitude" lowerBound="1"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDoubleObject"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="centerLongitude" lowerBound="1"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDoubleObject"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="fileName" lowerBound="1"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
   </eClassifiers>
 </ecore:EPackage>

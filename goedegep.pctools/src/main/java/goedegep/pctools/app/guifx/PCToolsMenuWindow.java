@@ -215,7 +215,7 @@ public class PCToolsMenuWindow extends JfxStage {
    * Show the Help - About dialog.
    */
   private void showHelpAboutDialog() {
-    componentFactory.createInformationDialog(
+    componentFactory.createApplicationInformationDialog(
         "About " + WINDOW_TITLE,
         appResources.getApplicationImage(ImageSize.SIZE_3),
         null, 

@@ -8,6 +8,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.ParseException;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.logging.Logger;
 
@@ -43,14 +44,12 @@ public class VacationsImporter {
   /**
    * Constructor
    * 
+   * @param customization the GUI customization.
    * @param vacations the vacation information to which the imported data will be added. This value may not be null.
    */
   public VacationsImporter(CustomizationFx customization, Vacations vacations) {
-    if (vacations == null) {
-      throw new IllegalArgumentException("argument vacations may not be null");
-    }
-   
-    this.vacations = vacations;
+    Objects.requireNonNull(customization, "argument ‘customization’ must not be null");
+    this.vacations = Objects.requireNonNull(vacations, "argument ‘vacations’ must not be null");
     
     componentFactory = customization.getComponentFactoryFx();
   }
@@ -65,9 +64,7 @@ public class VacationsImporter {
    * @param vacationPicturesFolder the folder that contains all folders with vacation pictures. This parameter is optional, so it can be null.
    */
   public void importVacations(String vacationsFolder, String vacationPicturesFolder) {
-    if (vacationsFolder == null) {
-      throw new IllegalArgumentException("argument vacationsFolder may not be null");
-    }
+    Objects.requireNonNull(vacationsFolder, "argument ‘vacationsFolder’ must not be null");
     LOGGER.severe("   vacationsFolder=" + vacationsFolder + ", vacationPicturesFolder=" + (vacationPicturesFolder != null ? vacationPicturesFolder : "(null"));
 
     abort = false;
@@ -140,7 +137,6 @@ public class VacationsImporter {
 
           ChoiceDialog<UnknownVacationKnownDateChoice> choiceDialog = componentFactory.createChoiceDialog(
               "How to continue?",
-              null,
               buf.toString(),
               "What do you want?",
               UnknownVacationKnownDateChoice.ADD_VACATION,
@@ -181,7 +177,6 @@ public class VacationsImporter {
 
           ChoiceDialog<UnknownVacationChoice> choiceDialog = componentFactory.createChoiceDialog(
               "How to continue?",
-              null,
               buf.toString(),
               "What do you want?",
               UnknownVacationChoice.ADD_VACATION,
