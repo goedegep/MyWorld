@@ -2,6 +2,7 @@ package goedegep.properties.app.guifx;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ResourceBundle;
 import java.util.logging.Logger;
 
 import org.eclipse.emf.common.notify.Notification;
@@ -74,6 +75,7 @@ public class PropertiesEditor extends JfxStage {
   private EObject editableProperties;
 
   private String windowTitle = null;
+  private ResourceBundle resourceBundle;
   private EMFResource<PropertyDescriptorGroup> propertyDescriptorsResource;
   private EMFResource<PropertyGroup> propertiesResource;
   private String propertiesFileName;
@@ -87,6 +89,7 @@ public class PropertiesEditor extends JfxStage {
   static {
     createEditablePropertyClasses();
   }
+  
 
   /**
    * Constructor
@@ -100,6 +103,22 @@ public class PropertiesEditor extends JfxStage {
    */
   public PropertiesEditor(String windowTitle, CustomizationFx customization,
       EMFResource<PropertyDescriptorGroup> propertyDescriptorsResource, String propertiesFileName) {
+    this(windowTitle, customization, null, propertyDescriptorsResource, propertiesFileName);
+  }
+
+  /**
+   * Constructor
+   * <p>
+   * This constructor creates and shows the editor.
+   * 
+   * @param windowTitle the window title
+   * @param customization the GUI customization
+   * @param resourceBundle translations
+   * @param propertyDescriptorsResource an EMFResource for a PropertyDescriptorGroup.
+   * @param propertiesFileName name of the Properties file to be edited.
+   */
+  public PropertiesEditor(String windowTitle, CustomizationFx customization, ResourceBundle resourceBundle,
+      EMFResource<PropertyDescriptorGroup> propertyDescriptorsResource, String propertiesFileName) {
     super(null, customization);
     
     if (propertyDescriptorsResource == null) {
@@ -111,6 +130,7 @@ public class PropertiesEditor extends JfxStage {
     }
     
     this.windowTitle = windowTitle;
+    this.resourceBundle = resourceBundle;
     this.propertyDescriptorsResource = propertyDescriptorsResource;
     this.propertiesFileName = propertiesFileName;
     
@@ -334,7 +354,14 @@ public class PropertiesEditor extends JfxStage {
         EObject ep = editablePropertiesFactory.create(editableProperty);
         ep.eSet(editableProperty_name, propertyDescriptor.getName());
         ep.eSet(editableProperty_displayName, propertyDescriptor.getDisplayName());
-        ep.eSet(editableProperty_description, propertyDescriptor.getDescription());
+        String description = null;
+        if (resourceBundle != null) {
+          description = resourceBundle.getString(getQualifiedGroupName(propertyDescriptorGroup) + "." + propertyDescriptor.getName() + ".description");
+        }
+        if (description == null) {
+          description = propertyDescriptor.getDescription();
+        }
+        ep.eSet(editableProperty_description, description);
         ep.eSet(editableProperty_defaultValue, propertyDescriptor.getInitialValue());
         //      private static EAttribute editableProperty_value = null;
         editableProperties.add(ep);
@@ -344,6 +371,17 @@ public class PropertiesEditor extends JfxStage {
     fillEditablePropertiesFromPropertiesFile(eObject);
     
     return eObject;
+  }
+  
+  private static String getQualifiedGroupName(PropertyDescriptorGroup propertyDescriptorGroup) {
+    String qualifiedGroupName = propertyDescriptorGroup.getName();
+    
+    while (propertyDescriptorGroup.eContainer() != null) {
+      propertyDescriptorGroup = (PropertyDescriptorGroup) propertyDescriptorGroup.eContainer();
+      qualifiedGroupName = propertyDescriptorGroup.getName() + "." + qualifiedGroupName;
+    }
+    
+    return qualifiedGroupName;
   }
   
   private void fillEditablePropertiesFromPropertiesFile(EObject editablePropertyGroup) {
@@ -364,7 +402,6 @@ public class PropertiesEditor extends JfxStage {
       LOGGER.severe("Custom properties file doesn't exist yet");
       componentFactory.createInformationDialog(
           "Custom properties file doesn't exist yet",
-          null,
           "The file with the custom properties (" + propertiesFileName + ") doesn't exist yet",
           "When you save changes it will be created").showAndWait();
     }

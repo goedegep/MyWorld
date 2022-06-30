@@ -315,10 +315,10 @@ public class DayImpl extends VacationElementImpl implements Day {
   @Override
   public String toString() {
     StringBuilder buf = new StringBuilder();
-    
+
     buf.append("Title: ").append(getTitle() != null ? getTitle().toString() : "(null)");
     buf.append(", Nr. of days: ").append(getDays() != null ? getDays().toString() : "(null)");
-    
+
     return buf.toString();
   }
 

@@ -370,7 +370,7 @@ public class MyWorldMenuWindowFx extends JfxStage {
    * Show the dialog with information about this application.
    */
   private void showHelpAboutDialog() {
-    componentFactory.createInformationDialog(
+    componentFactory.createApplicationInformationDialog(
         "About MyWorld" + " running on " + getComputerName(),
         appResources.getApplicationImage(ImageSize.SIZE_3),
         null, 

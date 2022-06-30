@@ -62,7 +62,7 @@ import goedegep.vacations.model.VacationsPackage;
 public class VacationsKmlConverter extends VacationToTextConverterAbstract {
   private static final Logger LOGGER = Logger.getLogger(VacationsKmlConverter.class.getName());
   private static final String NEWLINE = System.getProperty("line.separator");
-  private static final String ICON_DIRECTORY = "C:/EclipseWorkspace/goedegep.poi.app/src/main/resources/goedegep/poi/app/guifx";
+  private static final String ICON_DIRECTORY = "C:/MyWorld/goedegep.poi.app/src/main/resources/goedegep/poi/app/guifx";
   private static final FlexDateFormat FDF = new FlexDateFormat(true, false);
 //  private static final FlexDateFormat FDF_REV = new FlexDateFormat(true, true);
   private static final SimpleDateFormat DF = new SimpleDateFormat("dd-MM-yyyy");
@@ -98,7 +98,7 @@ public class VacationsKmlConverter extends VacationToTextConverterAbstract {
    * @param file The file to be created.
    * @throws FileNotFoundException if the file cannot be written.
    */
-  public void createKmlForVacations(Vacations vacations, File file) throws FileNotFoundException {
+  public void createKmlForVacation(Vacation vacation, File file) throws FileNotFoundException {
     if (!Files.isWritable(file.getParentFile().toPath())) {
       LOGGER.severe("Geen schrijfrechten in " + file.getParentFile().toString());
       throw new RuntimeException("Geen schrijfrechten in " + file.getParentFile().toString());
@@ -106,13 +106,13 @@ public class VacationsKmlConverter extends VacationToTextConverterAbstract {
     
     kmlDocument = kml.createAndSetDocument().withOpen(true);
     
-    createAndAddKmlForHome(vacations);
+//    createAndAddKmlForHome(vacations);
     
     Folder vacationsFolder = kmlDocument.createAndAddFolder().withName("Vakanties").withOpen(true);
     
-    for (Vacation vacation: vacations.getVacations()) {
+//    for (Vacation vacation: vacations.getVacations()) {
       createKmlForVacation(vacation, vacationsFolder);
-    }
+//    }
     
     saveToFile(file);
   }
@@ -202,9 +202,13 @@ public class VacationsKmlConverter extends VacationToTextConverterAbstract {
       createKmlForVacationElement(element, vacationFolder);
     }
     
-    List<WGS84Coordinates> lineNodes = VacationsUtils.getGeoLocations(vacation);
-    if (lineNodes.size() > 1) {
-      addPath(vacationFolder, lineNodes);
+    try {
+      List<WGS84Coordinates> lineNodes = VacationsUtils.getGeoLocations(vacation);
+      if (lineNodes.size() > 1) {
+        addPath(vacationFolder, lineNodes);
+      }
+    } catch (FileNotFoundException e) {
+      LOGGER.severe("File not found");
     }
   }
 
@@ -243,7 +247,8 @@ public class VacationsKmlConverter extends VacationToTextConverterAbstract {
       if (feature != null  &&  feature instanceof Folder) {
         createKmlForVacationElement(childElement, (Folder) feature);
       } else {
-        throw new RuntimeException("Cannot add child " + childElement.toString() + "as node is null or not a Folder");
+        createKmlForVacationElement(childElement, parentFolder);
+//        throw new RuntimeException("Cannot add child " + childElement.toString() + "as node is null or not a Folder");
       }
     }
   }
@@ -384,7 +389,13 @@ public class VacationsKmlConverter extends VacationToTextConverterAbstract {
     }
     
     // Placemark/Folder name
-    String name = HtmlUtil.encodeHTML(pictureReference.getTitle());
+    String name = pictureReference.getTitle();
+    if (name != null) {
+      name = HtmlUtil.encodeHTML(name);
+    } else {
+      File file = new File(pictureReference.getFile());
+      name = file.getName();
+    }
     
     Placemark placemark = KmlFactory.createPlacemark()
         .withName(name)
@@ -397,7 +408,7 @@ public class VacationsKmlConverter extends VacationToTextConverterAbstract {
     
     
     buf.append("<p><p><img src='file:///");
-    buf.append(picture.getPictureReference().getFile());
+    buf.append(pictureReference.getFile());
     buf.append("' width='1000' height='562'></p></p><h2>");
     buf.append(name);
     buf.append("</h2>");

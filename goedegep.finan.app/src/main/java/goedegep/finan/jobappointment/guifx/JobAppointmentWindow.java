@@ -80,7 +80,6 @@ public class JobAppointmentWindow extends JfxStage {
       LOGGER.severe("File not found: " + e.getMessage());
       Alert alert = componentFactory.createYesNoConfirmationDialog(
           null,
-          null,
           "The file with the job appointment (" + jobAppointmentFileName + ") doesn't exist yet.",
           "Do you want to create this file now?" + NEWLINE +
           "If you choose \"No\" you can't do anything in this screen.");

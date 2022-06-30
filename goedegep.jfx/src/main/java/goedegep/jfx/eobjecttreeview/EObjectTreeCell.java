@@ -13,6 +13,7 @@ import org.eclipse.emf.ecore.EStructuralFeature;
 import goedegep.util.emf.EObjectPath;
 import javafx.event.EventHandler;
 import javafx.scene.control.TreeCell;
+import javafx.scene.control.TreeItem;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.DataFormat;
@@ -377,6 +378,19 @@ public class EObjectTreeCell extends TreeCell<EObjectTreeItemContent> {
   @Override
   public void updateItem(EObjectTreeItemContent eObjectTreeItemContent, boolean empty) {
     LOGGER.info("=> item=" + (eObjectTreeItemContent != null ? eObjectTreeItemContent.toString() : "(null)") + ", empty=" + empty);
+    
+//    // TEMP
+//    TreeItem<EObjectTreeItemContent> treeItem = getTreeItem();
+//    if (treeItem != null) {
+//      EObjectTreeItemContent content = treeItem.getValue();
+//      Object value = content.getObject();
+//      if (!"goedegep.vacations.model.impl.VacationsImpl".equals(value.getClass().getName())) {
+//        TreeItem<EObjectTreeItemContent> parentTreeItem = treeItem.getParent();
+//        if (parentTreeItem == null) {
+//          LOGGER.severe("parent is null for: " + treeItem.toString());
+//        }
+//      }
+//    }
 
     super.updateItem(eObjectTreeItemContent, empty);
     

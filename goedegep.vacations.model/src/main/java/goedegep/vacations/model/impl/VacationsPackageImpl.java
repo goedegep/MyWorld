@@ -545,6 +545,16 @@ public class VacationsPackageImpl extends EPackageImpl implements VacationsPacka
    * @generated
    */
   @Override
+  public EAttribute getLocation_ReferenceOnly() {
+    return (EAttribute) locationEClass.getEStructuralFeatures().get(16);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
   public EClass getVacationElement() {
     return vacationElementEClass;
   }
@@ -775,8 +785,68 @@ public class VacationsPackageImpl extends EPackageImpl implements VacationsPacka
    * @generated
    */
   @Override
-  public EReference getMapImage_ImageReference() {
-    return (EReference) mapImageEClass.getEStructuralFeatures().get(0);
+  public EAttribute getMapImage_Title() {
+    return (EAttribute) mapImageEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public EAttribute getMapImage_ImageWidth() {
+    return (EAttribute) mapImageEClass.getEStructuralFeatures().get(1);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public EAttribute getMapImage_ImageHeight() {
+    return (EAttribute) mapImageEClass.getEStructuralFeatures().get(2);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public EAttribute getMapImage_Zoom() {
+    return (EAttribute) mapImageEClass.getEStructuralFeatures().get(3);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public EAttribute getMapImage_CenterLatitude() {
+    return (EAttribute) mapImageEClass.getEStructuralFeatures().get(4);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public EAttribute getMapImage_CenterLongitude() {
+    return (EAttribute) mapImageEClass.getEStructuralFeatures().get(5);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public EAttribute getMapImage_FileName() {
+    return (EAttribute) mapImageEClass.getEStructuralFeatures().get(6);
   }
 
   /**
@@ -856,6 +926,7 @@ public class VacationsPackageImpl extends EPackageImpl implements VacationsPacka
     createEAttribute(locationEClass, LOCATION__END_DATE);
     createEReference(locationEClass, LOCATION__BOUNDINGBOX);
     createEReference(locationEClass, LOCATION__BOUNDARIES);
+    createEAttribute(locationEClass, LOCATION__REFERENCE_ONLY);
 
     vacationElementEClass = createEClass(VACATION_ELEMENT);
     createEReference(vacationElementEClass, VACATION_ELEMENT__CHILDREN);
@@ -887,7 +958,13 @@ public class VacationsPackageImpl extends EPackageImpl implements VacationsPacka
     createEAttribute(boundaryEClass, BOUNDARY__POINTS);
 
     mapImageEClass = createEClass(MAP_IMAGE);
-    createEReference(mapImageEClass, MAP_IMAGE__IMAGE_REFERENCE);
+    createEAttribute(mapImageEClass, MAP_IMAGE__TITLE);
+    createEAttribute(mapImageEClass, MAP_IMAGE__IMAGE_WIDTH);
+    createEAttribute(mapImageEClass, MAP_IMAGE__IMAGE_HEIGHT);
+    createEAttribute(mapImageEClass, MAP_IMAGE__ZOOM);
+    createEAttribute(mapImageEClass, MAP_IMAGE__CENTER_LATITUDE);
+    createEAttribute(mapImageEClass, MAP_IMAGE__CENTER_LONGITUDE);
+    createEAttribute(mapImageEClass, MAP_IMAGE__FILE_NAME);
 
     // Create enums
     activityLabelEEnum = createEEnum(ACTIVITY_LABEL);
@@ -1024,6 +1101,8 @@ public class VacationsPackageImpl extends EPackageImpl implements VacationsPacka
     initEReference(getLocation_Boundaries(), this.getBoundary(), null, "boundaries", null, 0, -1, Location.class,
         !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE,
         !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getLocation_ReferenceOnly(), ecorePackage.getEBoolean(), "referenceOnly", null, 0, 1, Location.class,
+        !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(vacationElementEClass, VacationElement.class, "VacationElement", IS_ABSTRACT, !IS_INTERFACE,
         IS_GENERATED_INSTANCE_CLASS);
@@ -1076,9 +1155,23 @@ public class VacationsPackageImpl extends EPackageImpl implements VacationsPacka
         !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(mapImageEClass, MapImage.class, "MapImage", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-    initEReference(getMapImage_ImageReference(), theTypesPackage.getFileReference(), null, "imageReference", null, 0, 1,
-        MapImage.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE,
-        IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getMapImage_Title(), ecorePackage.getEString(), "title", null, 0, 1, MapImage.class, !IS_TRANSIENT,
+        !IS_VOLATILE, IS_CHANGEABLE, IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getMapImage_ImageWidth(), ecorePackage.getEDoubleObject(), "imageWidth", null, 1, 1, MapImage.class,
+        !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getMapImage_ImageHeight(), ecorePackage.getEDoubleObject(), "imageHeight", null, 1, 1,
+        MapImage.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED,
+        IS_ORDERED);
+    initEAttribute(getMapImage_Zoom(), ecorePackage.getEDoubleObject(), "zoom", null, 1, 1, MapImage.class,
+        !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getMapImage_CenterLatitude(), ecorePackage.getEDoubleObject(), "centerLatitude", null, 1, 1,
+        MapImage.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED,
+        IS_ORDERED);
+    initEAttribute(getMapImage_CenterLongitude(), ecorePackage.getEDoubleObject(), "centerLongitude", null, 1, 1,
+        MapImage.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED,
+        IS_ORDERED);
+    initEAttribute(getMapImage_FileName(), ecorePackage.getEString(), "fileName", null, 1, 1, MapImage.class,
+        !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     // Initialize enums and add enum literals
     initEEnum(activityLabelEEnum, ActivityLabel.class, "ActivityLabel");

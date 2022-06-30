@@ -120,7 +120,6 @@ public class MortgagesWindow extends JfxStage implements EMFNotificationListener
       
       Alert alert = componentFactory.createYesNoConfirmationDialog(
           TRANSLATIONS.getString("MortgagesWindow.alertMortgagesFileNotFound.title"),
-          null,
           translationFormatter.formatText("MortgagesWindow.alertMortgagesFileNotFound.header", mortgagesFileName),
           TRANSLATIONS.getString("MortgagesWindow.alertMortgagesFileNotFound.content"));
       alert.showAndWait().filter(response -> response == ButtonType.YES).ifPresent(response -> {

@@ -958,7 +958,7 @@ public class EObjectTable<T extends EObject> extends TableView<T> implements Obj
         buf.append(NEW_LINE);
       }
       
-      Alert alert = componentFactory.createOkCancelConfirmationDialog("How to continue?", null, buf.toString(), "What do you want?");
+      Alert alert = componentFactory.createOkCancelConfirmationDialog("How to continue?", buf.toString(), "What do you want?");
 
       ButtonType buttonContinue = new ButtonType("Continue");
       alert.getButtonTypes().remove(ButtonType.OK);

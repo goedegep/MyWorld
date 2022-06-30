@@ -45,6 +45,7 @@ import java.util.Collection;
  *   <li>{@link goedegep.vacations.model.impl.LocationImpl#getEndDate <em>End Date</em>}</li>
  *   <li>{@link goedegep.vacations.model.impl.LocationImpl#getBoundingbox <em>Boundingbox</em>}</li>
  *   <li>{@link goedegep.vacations.model.impl.LocationImpl#getBoundaries <em>Boundaries</em>}</li>
+ *   <li>{@link goedegep.vacations.model.impl.LocationImpl#isReferenceOnly <em>Reference Only</em>}</li>
  * </ul>
  *
  * @generated
@@ -484,6 +485,26 @@ public class LocationImpl extends VacationElementImpl implements Location {
    * @ordered
    */
   protected EList<Boundary> boundaries;
+
+  /**
+   * The default value of the '{@link #isReferenceOnly() <em>Reference Only</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #isReferenceOnly()
+   * @generated
+   * @ordered
+   */
+  protected static final boolean REFERENCE_ONLY_EDEFAULT = false;
+
+  /**
+   * The cached value of the '{@link #isReferenceOnly() <em>Reference Only</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #isReferenceOnly()
+   * @generated
+   * @ordered
+   */
+  protected boolean referenceOnly = REFERENCE_ONLY_EDEFAULT;
 
   /**
    * <!-- begin-user-doc -->
@@ -1363,6 +1384,30 @@ public class LocationImpl extends VacationElementImpl implements Location {
    * @generated
    */
   @Override
+  public boolean isReferenceOnly() {
+    return referenceOnly;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public void setReferenceOnly(boolean newReferenceOnly) {
+    boolean oldReferenceOnly = referenceOnly;
+    referenceOnly = newReferenceOnly;
+    if (eNotificationRequired())
+      eNotify(new ENotificationImpl(this, Notification.SET, VacationsPackage.LOCATION__REFERENCE_ONLY, oldReferenceOnly,
+          referenceOnly));
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
   public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
     switch (featureID) {
     case VacationsPackage.LOCATION__BOUNDINGBOX:
@@ -1413,6 +1458,8 @@ public class LocationImpl extends VacationElementImpl implements Location {
       return getBoundingbox();
     case VacationsPackage.LOCATION__BOUNDARIES:
       return getBoundaries();
+    case VacationsPackage.LOCATION__REFERENCE_ONLY:
+      return isReferenceOnly();
     }
     return super.eGet(featureID, resolve, coreType);
   }
@@ -1475,6 +1522,9 @@ public class LocationImpl extends VacationElementImpl implements Location {
       getBoundaries().clear();
       getBoundaries().addAll((Collection<? extends Boundary>) newValue);
       return;
+    case VacationsPackage.LOCATION__REFERENCE_ONLY:
+      setReferenceOnly((Boolean) newValue);
+      return;
     }
     super.eSet(featureID, newValue);
   }
@@ -1535,6 +1585,9 @@ public class LocationImpl extends VacationElementImpl implements Location {
     case VacationsPackage.LOCATION__BOUNDARIES:
       getBoundaries().clear();
       return;
+    case VacationsPackage.LOCATION__REFERENCE_ONLY:
+      setReferenceOnly(REFERENCE_ONLY_EDEFAULT);
+      return;
     }
     super.eUnset(featureID);
   }
@@ -1579,6 +1632,8 @@ public class LocationImpl extends VacationElementImpl implements Location {
       return isSetBoundingbox();
     case VacationsPackage.LOCATION__BOUNDARIES:
       return boundaries != null && !boundaries.isEmpty();
+    case VacationsPackage.LOCATION__REFERENCE_ONLY:
+      return referenceOnly != REFERENCE_ONLY_EDEFAULT;
     }
     return super.eIsSet(featureID);
   }
@@ -1591,11 +1646,11 @@ public class LocationImpl extends VacationElementImpl implements Location {
   @Override
   public String toString() {
     StringBuilder buf = new StringBuilder();
-    
+
     buf.append("LocationType: ").append(getLocationType() != null ? getLocationType().getLiteral() : "(null)");
     buf.append(", Name: ").append(getName() != null ? getName().toString() : "(null)");
     buf.append(", City: ").append(getCity() != null ? getCity().toString() : "(null)");
-    
+
     return buf.toString();
   }
 

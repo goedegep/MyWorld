@@ -429,7 +429,6 @@ class AddressEditPanel {
       String countryName = countryTextField.getText();
       Alert alert = componentFactory.createYesNoConfirmationDialog(
           "Unknown country",
-          null,
           "The country \'" + countryName + "\' doesn't exist in the Rolodex yet.",
           "Do you want to add it? (if you select no, also the city isn't added to the Rolodex)");
      alert.showAndWait().filter(response -> response == ButtonType.YES).ifPresent(response -> {
@@ -461,7 +460,6 @@ class AddressEditPanel {
       String cityName = cityTextField.getText();
       Alert alert = componentFactory.createYesNoConfirmationDialog(
           "Unknown city",
-          null,
           "The city \'" + cityName + "\' doesn't exist in the Rolodex yet.",
           "Do you want to add it? (if you select no, also the address isn't added to the Rolodex)");
       alert.showAndWait().filter(response -> response == ButtonType.YES).ifPresent(response -> {
@@ -486,7 +484,6 @@ class AddressEditPanel {
         String cityName = cityTextField.getText();
         Alert alert = componentFactory.createYesNoConfirmationDialog(
             "Unknown city",
-            null,
             "The city \'" + cityName + "\' in country \'" + country.getCountryName() + "\' doesn't exist in the Rolodex yet.",
             "Do you want to add it? (if you select no, also the address isn't added to the Rolodex)");
         alert.showAndWait().filter(response -> response == ButtonType.YES).ifPresent(response -> {

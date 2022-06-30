@@ -487,7 +487,7 @@ public class PhotoMapView extends JfxStage {
       createPhotoIndex(photoFolders);
       
 
-      componentFactory.createInformationDialog(null, null,
+      componentFactory.createInformationDialog(null,
           "Photo folder " + photoFolder + " is being opened.",
           "").showAndWait();
     }
@@ -517,7 +517,7 @@ public class PhotoMapView extends JfxStage {
       }
       createPhotoIndex(photoFolders);
 
-      componentFactory.createInformationDialog(null, null,
+      componentFactory.createInformationDialog(null,
           "Photoshow specification " + photoShowSpecificationFile.getAbsolutePath() + " is being opened.",
           "").showAndWait();
 

@@ -110,7 +110,7 @@ public class EObjectTreeItem extends TreeItem<EObjectTreeItemContent> {
     super.getChildren().clear();
     ObservableList<TreeItem<EObjectTreeItemContent>> children = buildChildren();
     if (children != null) {
-      super.getChildren().setAll(children);
+      super.getChildren().addAll(children);
     }
   }
   
@@ -533,7 +533,8 @@ public class EObjectTreeItem extends TreeItem<EObjectTreeItemContent> {
       if (childPresentationDescriptorNode == null) {
         throw new RuntimeException("No presentation descriptor found for class: " + listEObject.eClass().getName());
       }
-      children.add(new EObjectTreeItem(listEObject, EObjectTreeItemType.OBJECT, null, childPresentationDescriptorNode, eObjectTreeView));
+      EObjectTreeItem child = new EObjectTreeItem(listEObject, EObjectTreeItemType.OBJECT, null, childPresentationDescriptorNode, eObjectTreeView);
+      children.add(child);
     }
     
     LOGGER.info("<=");

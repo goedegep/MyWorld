@@ -46,7 +46,6 @@ import goedegep.vacations.model.Picture;
 import goedegep.vacations.model.Vacation;
 import goedegep.vacations.model.VacationElement;
 import goedegep.vacations.model.VacationsPackage;
-import javafx.util.Pair;
 
 /**
  * This class provides utility methods for the Vacations application.
@@ -59,8 +58,9 @@ public class VacationsUtils {
    * 
    * @param vacation the <code>Vacation</code> for which the locations are to be collected.
    * @return a list of coordinates of all locations of <code>vacation</code>.
+   * @throws FileNotFoundException if a file, referenced by an element, doesn't exist.
    */
-  public static List<WGS84Coordinates> getGeoLocations(Vacation vacation) {
+  public static List<WGS84Coordinates> getGeoLocations(Vacation vacation) throws FileNotFoundException {
     List<WGS84Coordinates> geoLocations = new ArrayList<>();
     int numberOfDays = getNumberOfDays(vacation);
     WGS84Coordinates[] stayedAtLocations = null;
@@ -69,6 +69,32 @@ public class VacationsUtils {
     }
     
     for (VacationElement element: vacation.getElements()) {
+      addGeoLocationsForVacationElement(geoLocations, element, stayedAtLocations);
+    }
+    
+    return geoLocations;
+  }
+  
+  /**
+   * Get all geo-locations of a day.
+   * 
+   * @param day the <code>Day</code> for which the locations are to be collected.
+   * @return a list of coordinates of all locations of <code>day</code>.
+   * @throws FileNotFoundException In case a file, which is referenced by an element, doesn't exist
+   */
+  public static List<WGS84Coordinates> getGeoLocations(Day day) throws FileNotFoundException {
+    List<WGS84Coordinates> geoLocations = new ArrayList<>();
+    int numberOfDays = 0;
+    Vacation vacation = day.getVacation();
+    if (vacation != null) {
+      numberOfDays = getNumberOfDays(vacation);
+    }
+    WGS84Coordinates[] stayedAtLocations = null;
+    if (numberOfDays != 0) {
+      stayedAtLocations = new WGS84Coordinates[numberOfDays];
+    }
+    
+    for (VacationElement element: day.getChildren()) {
       addGeoLocationsForVacationElement(geoLocations, element, stayedAtLocations);
     }
     
@@ -207,8 +233,9 @@ public class VacationsUtils {
    * @param geoLocations the list to which the locations are added.
    * @param element the <code>VacationElement</code> for which the locations will be added.
    * @param stayedAtLocations optional array of stayed at locations
+   * @throws FileNotFoundException in case the file specified by the pictureReference of a Picture element doesn't exist.
    */
-  private static void addGeoLocationsForVacationElement(List<WGS84Coordinates> geoLocations, VacationElement element, WGS84Coordinates[] stayedAtLocations) {
+  private static void addGeoLocationsForVacationElement(List<WGS84Coordinates> geoLocations, VacationElement element, WGS84Coordinates[] stayedAtLocations) throws FileNotFoundException {
     
     switch(element.eClass().getClassifierID()) {
     case VacationsPackage.DAY:
@@ -264,7 +291,7 @@ public class VacationsUtils {
    */
   private static void addGeoLocationForVacationElementLocation(List<WGS84Coordinates> geoLocations, Location location, WGS84Coordinates[] stayedAtLocations) {
     
-    if (location.isSetLatitude()  &&  location.isSetLongitude()) {
+    if (!location.isReferenceOnly()  &&  location.isSetLatitude()  &&  location.isSetLongitude()) {
       WGS84Coordinates coordinates = new WGS84Coordinates(location.getLatitude(), location.getLongitude());
       /*
        * If it is a stayed at location, add the location to the stayedAtLocations for the day numbers we stayed there.
@@ -299,8 +326,9 @@ public class VacationsUtils {
    * 
    * @param geoLocations a list of coordinates to which the coordinates of the <code>picture</code> are added.
    * @param picture a <code>Picture</code> element.
+   * @throws FileNotFoundException in case the file specified by the pictureReference doesn't exist.
    */
-  private static void addGeoLocationForVacationElementPicture(List<WGS84Coordinates> geoLocations, Picture picture) {
+  private static void addGeoLocationForVacationElementPicture(List<WGS84Coordinates> geoLocations, Picture picture) throws FileNotFoundException {
     WGS84Coordinates coordinates = null;
     FileReference pictureReference = picture.getPictureReference();
     if (pictureReference == null) {
@@ -309,6 +337,11 @@ public class VacationsUtils {
     String fileName = pictureReference.getFile();
     if (fileName == null) {
       return;
+    }
+    
+    File file = new File(fileName);
+    if (!file.exists()) {
+      throw new FileNotFoundException("fileName");
     }
     
     coordinates = PhotoFileMetaDataHandler.getGeoLocation(fileName);
@@ -414,13 +447,20 @@ public class VacationsUtils {
   /**
    * Get a Path for the folder with photos for a specific vacation.
    * <p>
-   * This folder is expected to be a folder with the name equal to the Id of the vacation, and being a sub folder of the
+   * If the 'Pictures' attribute is set on the vacation, then this is the photos folder.
+   * Otherwise, the folder is expected to be a folder with the name equal to the Id of the vacation, and being a sub folder of the
    * folder with all photos of all vacations.
    * 
    * @param vacation the vacation for which to get a Path to its photos folder.
    * @return a Path to the folder with photos for <code>vacation</code>, or null if this cannot be determined.
    */
   public static Path getVacationPhotosFolderPath(Vacation vacation) {
+    String vacationPhotosFolder = vacation.getPictures().trim();
+    
+    if ((vacationPhotosFolder != null)  &&  !vacationPhotosFolder.isEmpty()) {
+      return Paths.get(vacationPhotosFolder);
+    }
+    
     Path vacationsPhotosFolderPath = getVacationsPhotosFolderPath();
     
     if (vacationsPhotosFolderPath == null) {

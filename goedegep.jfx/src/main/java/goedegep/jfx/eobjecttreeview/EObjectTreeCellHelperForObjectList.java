@@ -2,6 +2,7 @@ package goedegep.jfx.eobjecttreeview;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.logging.Logger;
 
@@ -22,6 +23,7 @@ import javafx.scene.Node;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.TreeItem;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
@@ -118,50 +120,43 @@ public class EObjectTreeCellHelperForObjectList extends EObjectTreeCellHelperAbs
 
       if ((nodeOperationDescriptor.getOperation() == TableRowOperation.NEW_OBJECT)  &&
           (subTypes != null)  &&  (subTypes.size() > 1)) {
-        menu = createSubClassesMenu(nodeOperationDescriptor.getMenuText(), subTypes, true);
+        menu = createSubClassesMenu(nodeOperationDescriptor.getMenuText(), subTypes, true, nodeOperationDescriptor.getBiConsumer());
         contextMenu.getItems().add(menu);
       } else {
 
         switch (operation) {
         case NEW_OBJECT:
-          // This operation is only there if there are no children yet.
-          // Otherwise you add items before or after a specific item in the list.
-          if (eObjectTreeItem.getChildren().size() != 9) {
-
-
-
-            menuItem = new MenuItem(nodeOperationDescriptor.getMenuText());
-            contextMenu.getItems().add(menuItem);
-            menuItem.setOnAction(new EventHandler<ActionEvent>() {
-              public void handle(ActionEvent t) {
-                createAndAddObject(null);
-              }
-            });
-            
-            if (!eReference.isContainment()) {
-              LOGGER.info("Not containment: " + eReference.getName());
-              // Find all items in the EObject hierarchy which are of the correct type, later add all subtypes.
-              EObject root = (EObject) eObjectTreeCell.getTreeView().getRoot().getValue().getObject();
-              List<EObject> candidates = EmfUtil.findObjectsOfType(root, eReference.getEReferenceType());
-              
-              // Make sub menu with all these objects
-              Menu subMenu = new Menu(nodeOperationDescriptor.getMenuText());
-              for (EObject candidate: candidates) {
-                LOGGER.info("candidate: " + candidate);
-                EObjectTreeItemClassDescriptor eObjectTreeItemClassDescriptor = ((EObjectTreeView) eObjectTreeCell.getTreeView()).getEObjectTreeDescriptor().getDescriptorForEClass(candidate.eClass());
-                MenuItem subMenuItem = new MenuItem(eObjectTreeItemClassDescriptor.getBuildText().apply(candidate));
-                subMenuItem.setOnAction(new EventHandler<ActionEvent>() {
-                  public void handle(ActionEvent t) {
-                    ((EObjectResolvingEList) eObjectTreeItemContent.getObject()).add(candidate);
-                  }
-                });
-                
-                subMenu.getItems().add(subMenuItem);
-              }
-              contextMenu.getItems().add(subMenu);
-              
-              // On selection, add the selected object
+          menuItem = new MenuItem(nodeOperationDescriptor.getMenuText());
+          contextMenu.getItems().add(menuItem);
+          menuItem.setOnAction(new EventHandler<ActionEvent>() {
+            public void handle(ActionEvent t) {
+              createAndAddObject(null, nodeOperationDescriptor.getBiConsumer());
             }
+          });
+
+          if (!eReference.isContainment()) {
+            LOGGER.info("Not containment: " + eReference.getName());
+            // Find all items in the EObject hierarchy which are of the correct type, later add all subtypes.
+            EObject root = (EObject) eObjectTreeCell.getTreeView().getRoot().getValue().getObject();
+            List<EObject> candidates = EmfUtil.findObjectsOfType(root, eReference.getEReferenceType());
+
+            // Make sub menu with all these objects
+            Menu subMenu = new Menu(nodeOperationDescriptor.getMenuText());
+            for (EObject candidate: candidates) {
+              LOGGER.info("candidate: " + candidate);
+              EObjectTreeItemClassDescriptor eObjectTreeItemClassDescriptor = ((EObjectTreeView) eObjectTreeCell.getTreeView()).getEObjectTreeDescriptor().getDescriptorForEClass(candidate.eClass());
+              MenuItem subMenuItem = new MenuItem(eObjectTreeItemClassDescriptor.getBuildText().apply(candidate));
+              subMenuItem.setOnAction(new EventHandler<ActionEvent>() {
+                public void handle(ActionEvent t) {
+                  ((EObjectResolvingEList) eObjectTreeItemContent.getObject()).add(candidate);
+                }
+              });
+
+              subMenu.getItems().add(subMenuItem);
+            }
+            contextMenu.getItems().add(subMenu);
+
+            // On selection, add the selected object
           }
           break;
 
@@ -185,7 +180,7 @@ public class EObjectTreeCellHelperForObjectList extends EObjectTreeCellHelperAbs
     }
   }
   
-  private Menu createSubClassesMenu(String menuText, List<EClass> classes, boolean before) {
+  private Menu createSubClassesMenu(String menuText, List<EClass> classes, boolean before, BiConsumer<EObject, EObjectTreeItem> biConsumer) {
     Menu menu = new Menu(menuText);
     MenuItem menuItem;
     
@@ -196,7 +191,7 @@ public class EObjectTreeCellHelperForObjectList extends EObjectTreeCellHelperAbs
 
         @Override
         public void handle(ActionEvent event) {
-          createAndAddObject(eClass);
+          createAndAddObject(eClass, biConsumer);
         }
         
       });
@@ -212,7 +207,7 @@ public class EObjectTreeCellHelperForObjectList extends EObjectTreeCellHelperAbs
     LOGGER.severe("=>");
   }
   
-  private void createAndAddObject(EClass eClass) {
+  private void createAndAddObject(EClass eClass, BiConsumer<EObject, EObjectTreeItem> biConsumer) {
     LOGGER.info("=>");
     
     EObjectTreeItem eObjectTreeItem = (EObjectTreeItem) eObjectTreeCell.getTreeItem();
@@ -230,6 +225,10 @@ public class EObjectTreeCellHelperForObjectList extends EObjectTreeCellHelperAbs
     LOGGER.info("eClass=" + eClass.getName());
     EFactory eFactory = eClass.getEPackage().getEFactoryInstance();
     EObject eObject = eFactory.create(eClass);
+    
+    if (biConsumer != null) {
+      biConsumer.accept(eObject, eObjectTreeItem);
+    }
     
     eObjectList.add(eObject);
     

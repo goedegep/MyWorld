@@ -288,16 +288,17 @@ public class PhotosImporter {
             photoImportResults.add(new PhotoImportResult(filename, PhotoImportResultType.EXISTING_PHOTO_SKIPPED, currentVacationElement, filename, newVacationElement));
           } else {
 
-            LOGGER.severe("Going to add photo to: " + bestMatchVacationElement.toString());
             Picture vacationElementPicture = VACATIONS_FACTORY.createPicture();
             FileReference pictureReference = TYPES_FACTORY.createFileReference();
             pictureReference.setFile(file.getAbsolutePath());
             vacationElementPicture.setPictureReference(pictureReference);
 
             if (bestMatchVacationElement != null) {
+              LOGGER.severe("Going to add photo to: " + bestMatchVacationElement.toString());
               bestMatchVacationElement.getChildren().add(vacationElementPicture);
               photoImportResults.add(new PhotoImportResult(filename, photoImportResultType, bestMatchVacationElement, null));
             } else {
+              LOGGER.severe("Going to add photo at vacation level");
               vacation.getElements().add(vacationElementPicture);
               photoImportResults.add(new PhotoImportResult(filename, PhotoImportResultType.ADDED_TO_VACATION, null, null));
             }

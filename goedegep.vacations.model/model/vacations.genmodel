@@ -71,6 +71,7 @@
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute vacations.ecore#//Location/endDate"/>
       <genFeatures children="true" createChild="true" propertySortChoices="true" ecoreFeature="ecore:EReference vacations.ecore#//Location/boundingbox"/>
       <genFeatures children="true" createChild="true" propertySortChoices="true" ecoreFeature="ecore:EReference vacations.ecore#//Location/boundaries"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute vacations.ecore#//Location/referenceOnly"/>
     </genClasses>
     <genClasses ecoreClass="vacations.ecore#//VacationElement">
       <genFeatures children="true" createChild="true" propertySortChoices="true" ecoreFeature="ecore:EReference vacations.ecore#//VacationElement/children"/>
@@ -102,7 +103,13 @@
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute vacations.ecore#//Boundary/points"/>
     </genClasses>
     <genClasses ecoreClass="vacations.ecore#//MapImage">
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference vacations.ecore#//MapImage/imageReference"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute vacations.ecore#//MapImage/title"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute vacations.ecore#//MapImage/imageWidth"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute vacations.ecore#//MapImage/imageHeight"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute vacations.ecore#//MapImage/zoom"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute vacations.ecore#//MapImage/centerLatitude"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute vacations.ecore#//MapImage/centerLongitude"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute vacations.ecore#//MapImage/fileName"/>
     </genClasses>
   </genPackages>
 </genmodel:GenModel>

@@ -11,17 +11,26 @@ import org.commonmark.node.Node;
 import org.commonmark.parser.Parser;
 import org.commonmark.renderer.html.HtmlRenderer;
 
+import com.gluonhq.maps.GPXLayer;
+import com.gluonhq.maps.MapView;
 
+import goedegep.appgen.swing.DefaultCustomization;
 import goedegep.gluonmaps.gpx.GPXFile;
 import goedegep.gluonmaps.gpx.GPXMeasurable;
 import goedegep.gpx.parser.model.GPX;
 import goedegep.gpx.parser.model.Metadata;
+import goedegep.jfx.CustomizationFx;
+import goedegep.jfx.DefaultCustomizationFx;
+import goedegep.jfx.JfxStage;
 import goedegep.poi.app.guifx.POIIcons;
 import goedegep.poi.model.POICategoryId;
 import goedegep.types.model.FileReference;
+import goedegep.util.file.FileUtils;
 import goedegep.util.html.HtmlUtil;
 import goedegep.util.text.Indent;
 import goedegep.vacations.app.guifx.ActivityIcons;
+import goedegep.vacations.app.guifx.MapRelatedItemsLayer;
+import goedegep.vacations.app.guifx.VacationsWindow;
 import goedegep.vacations.model.ActivityLabel;
 import goedegep.vacations.model.Day;
 import goedegep.vacations.model.GPXTrack;
@@ -31,6 +40,10 @@ import goedegep.vacations.model.Picture;
 import goedegep.vacations.model.Vacation;
 import goedegep.vacations.model.VacationElement;
 import goedegep.vacations.model.VacationsPackage;
+import javafx.geometry.Point2D;
+import javafx.scene.Scene;
+import javafx.scene.SnapshotParameters;
+import javafx.scene.image.WritableImage;
 
 /**
  * This class generates an HTML document for a Vacation.
@@ -40,6 +53,7 @@ public class VacationToHtmlConverter extends VacationToTextConverterAbstract {
   private static final SimpleDateFormat DF = new SimpleDateFormat("dd-MM-yyyy");
   
   private POIIcons poiIcons;
+  private VacationsWindow vacationsWindow;
   private ActivityIcons activityIcons = new ActivityIcons();
   private StringBuilder buf = new StringBuilder();
   private Parser parser = Parser.builder().build();
@@ -64,8 +78,9 @@ public class VacationToHtmlConverter extends VacationToTextConverterAbstract {
    * 
    * @param poiIcons the object to provide POI icons.
    */
-  public VacationToHtmlConverter(POIIcons poiIcons) {
+  public VacationToHtmlConverter(POIIcons poiIcons, VacationsWindow vacationsWindow) {
     this.poiIcons = poiIcons;
+    this.vacationsWindow = vacationsWindow;
   }
   
   /**
@@ -409,6 +424,8 @@ public class VacationToHtmlConverter extends VacationToTextConverterAbstract {
    */
   private void vacationElementGPXToHtml(GPXTrack gpxTrack) {
     if (gpxTrack.isSetTrackReference()) {
+      buf.append("<p/>");
+
       FileReference trackReference = gpxTrack.getTrackReference();
       if ((trackReference != null)  &&  (trackReference.getFile() != null)  &&  !trackReference.getFile().isEmpty()) {
         File file = new File(trackReference.getFile());
@@ -470,31 +487,25 @@ public class VacationToHtmlConverter extends VacationToTextConverterAbstract {
    * @param picture the <code>Picture</code> element for which HTML text is to be generated.
    */
   private void vacationElementMapImageToHtml(MapImage mapImage) {
-    if (mapImage.getImageReference() != null) {
-      FileReference pictureReference = mapImage.getImageReference();
-      String pictureFileName = pictureReference.getFile();
-      if ((pictureFileName == null)  ||  pictureFileName.isEmpty()) {
-        return;
-      }
-      Path picturePath = Paths.get(pictureFileName);
-      buf.append("<a href=\"");
-      buf.append(HtmlUtil.encodeHTML(picturePath.toUri().toString()));
-      buf.append("\">");
-      buf.append("<figure>");
-      buf.append("<img src=\"");
-      buf.append(HtmlUtil.encodeHTML(picturePath.toUri().toString()));
-      buf.append("\" height=\"400\" >");
-      if (pictureReference.getTitle() != null) {
-        buf.append("<figcaption>");
-        buf.append(HtmlUtil.encodeHTML(pictureReference.getTitle()));
-        buf.append("</figcaption>");
-      }
-      buf.append("</img>");
-      buf.append("</figure>");   
-      buf.append("</a>");
+    vacationsWindow.createMapImageFile(mapImage, poiIcons);
+    Path picturePath = Paths.get(mapImage.getFileName());
+    buf.append("<a href=\"");
+    buf.append(HtmlUtil.encodeHTML(picturePath.toUri().toString()));
+    buf.append("\">");
+    buf.append("<figure>");
+    buf.append("<img src=\"");
+    buf.append(HtmlUtil.encodeHTML(picturePath.toUri().toString()));
+    buf.append("\" >");
+    if (mapImage.getTitle() != null) {
+      buf.append("<figcaption>");
+      buf.append(HtmlUtil.encodeHTML(mapImage.getTitle()));
+      buf.append("</figcaption>");
     }
+    buf.append("</img>");
+    buf.append("</figure>");   
+    buf.append("</a>");
   }
-  
+
   /**
    * Handle table tags before a <code>Day</code> element.
    * <p>
