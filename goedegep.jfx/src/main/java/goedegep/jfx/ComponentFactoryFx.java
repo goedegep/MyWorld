@@ -13,6 +13,7 @@ import org.eclipse.emf.ecore.EEnum;
 
 import goedegep.appgen.ImageSize;
 import goedegep.configuration.model.Look;
+import goedegep.jfx.controls.AutoCompleteTextFieldObjectInput;
 import goedegep.jfx.controls.FileSelecter;
 import goedegep.jfx.controls.FolderSelecter;
 import goedegep.jfx.controls.ObjectControlBoolean;
@@ -22,6 +23,7 @@ import goedegep.jfx.controls.ObjectControlFixedPointValue;
 import goedegep.jfx.controls.ObjectControlFlexDate;
 import goedegep.jfx.controls.ObjectControlInteger;
 import goedegep.jfx.controls.ObjectControlLocalDate;
+import goedegep.jfx.controls.ObjectControlMultiLineString;
 import goedegep.jfx.controls.ObjectControlString;
 import goedegep.jfx.controls.TextFieldObjectInput;
 import goedegep.jfx.stringconverters.StringConverterAndChecker;
@@ -1004,6 +1006,24 @@ public class ComponentFactoryFx {
   }
 
   /**
+   * Create a Multi Line String Object Input.
+   * 
+   * @param text The initial value.
+   * @param width the width of the TextArea.
+   * @param isOptional if true, the value provided by this control is optional.
+   * @param toolTipText an optional tooltip text.
+   * @return the newly created ObjectControlMultiLineString.
+   */
+  public ObjectControlMultiLineString createObjectInputMultiLineString(String text, double width, boolean isOptional, String toolTipText, String id) {
+    ObjectControlMultiLineString objectInputString = new ObjectControlMultiLineString(text, width, isOptional, toolTipText, id);
+
+    customizeTextInputControl(objectInputString);
+    objectInputString.setId(id);
+
+    return objectInputString;
+  }
+
+  /**
    * Create a PgCurrency Object Input.
    * 
    * @param pgCurrency The initial value.
@@ -1170,6 +1190,10 @@ public class ComponentFactoryFx {
    */
   public <T extends Enumerator>ObjectControlEEnumComboBox<T> createObjectInputEEnumComboBox(EEnum eEnum, boolean isOptional, String toolTipText) {
     return new ObjectControlEEnumComboBox<T>(eEnum, isOptional, toolTipText);
+  }
+  
+  public <T> AutoCompleteTextFieldObjectInput<T> createObjectControlAutoCompleteTextField(StringConverterAndChecker<T> stringConverter, T initialValue, double width, boolean isOptional, String toolTipText) {
+    return new AutoCompleteTextFieldObjectInput<T>(stringConverter, initialValue, width, isOptional, toolTipText);
   }
     
   public String addHtmlContext(String text) {

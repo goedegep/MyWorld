@@ -1,6 +1,5 @@
 module goedegep.finan.jobappointment.model {
   exports goedegep.finan.jobappointment.model;
-//  exports goedegep.finan.jobappointment.model.impl;
   exports goedegep.finan.jobappointment.model.util;
 
   requires transitive goedegep.types.model;

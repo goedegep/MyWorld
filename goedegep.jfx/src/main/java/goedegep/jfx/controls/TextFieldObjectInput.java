@@ -197,11 +197,11 @@ public class TextFieldObjectInput<T> extends TextField implements ObjectControl<
 
   @Override
   public T getObjectValue() {
-    if (getText() == null) {
+    if (getText() == null  ||  getText().isEmpty()) {
       return null;
     }
     
-    return (T) stringToObject(getText());
+    return (T) stringToObject(getText().trim());
   }
   
   public String getObjectValueAsFormattedText()  {

@@ -66,6 +66,7 @@
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference mediadb.ecore#//MediaDb/albums"/>
       <genFeatures children="true" createChild="true" propertySortChoices="true" ecoreFeature="ecore:EReference mediadb.ecore#//MediaDb/tracks"/>
       <genFeatures children="true" createChild="true" propertySortChoices="true" ecoreFeature="ecore:EReference mediadb.ecore#//MediaDb/trackcollections"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference mediadb.ecore#//MediaDb/videos"/>
       <genOperations ecoreOperation="mediadb.ecore#//MediaDb/getArtist">
         <genParameters ecoreParameter="mediadb.ecore#//MediaDb/getArtist/artistName"/>
       </genOperations>
@@ -94,7 +95,7 @@
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference mediadb.ecore#//Album/artist"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute mediadb.ecore#//Album/imagesFront"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute mediadb.ecore#//Album/id"/>
-      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference mediadb.ecore#//Album/players"/>
+      <genFeatures children="true" createChild="true" propertySortChoices="true" ecoreFeature="ecore:EReference mediadb.ecore#//Album/players"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute mediadb.ecore#//Album/imagesFrontInside"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute mediadb.ecore#//Album/imagesBack"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute mediadb.ecore#//Album/imagesLabel"/>
@@ -102,7 +103,7 @@
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute mediadb.ecore#//Album/description"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute mediadb.ecore#//Album/issuedOnMediums"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute mediadb.ecore#//Album/compilation"/>
-      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference mediadb.ecore#//Album/myInfo"/>
+      <genFeatures children="true" createChild="true" propertySortChoices="true" ecoreFeature="ecore:EReference mediadb.ecore#//Album/myInfo"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute mediadb.ecore#//Album/soundtrack"/>
       <genOperations ecoreOperation="mediadb.ecore#//Album/getTrackReference">
         <genParameters ecoreParameter="mediadb.ecore#//Album/getTrackReference/discNr"/>
@@ -139,7 +140,6 @@
     <genClasses ecoreClass="mediadb.ecore#//MyInfo">
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference mediadb.ecore#//MyInfo/albumReferences"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute mediadb.ecore#//MyInfo/myComments"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute mediadb.ecore#//MyInfo/inlayDocument"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute mediadb.ecore#//MyInfo/iveHadOnLP"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute mediadb.ecore#//MyInfo/iWant"/>
       <genFeatures children="true" createChild="true" propertySortChoices="true" ecoreFeature="ecore:EReference mediadb.ecore#//MyInfo/iHaveOn"/>
@@ -164,6 +164,17 @@
     <genClasses ecoreClass="mediadb.ecore#//TrackCollection">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute mediadb.ecore#//TrackCollection/collection"/>
       <genFeatures children="true" createChild="true" propertySortChoices="true" ecoreFeature="ecore:EReference mediadb.ecore#//TrackCollection/trackReferences"/>
+    </genClasses>
+    <genClasses ecoreClass="mediadb.ecore#//Video">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute mediadb.ecore#//Video/title"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute mediadb.ecore#//Video/date"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute mediadb.ecore#//Video/image"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference mediadb.ecore#//Video/subjects"/>
+    </genClasses>
+    <genClasses ecoreClass="mediadb.ecore#//Subject">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute mediadb.ecore#//Subject/title"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute mediadb.ecore#//Subject/tags"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute mediadb.ecore#//Subject/date"/>
     </genClasses>
   </genPackages>
 </genmodel:GenModel>

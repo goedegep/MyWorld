@@ -311,7 +311,7 @@ public interface Album extends EObject {
   boolean isSetId();
 
   /**
-   * Returns the value of the '<em><b>Players</b></em>' reference list.
+   * Returns the value of the '<em><b>Players</b></em>' containment reference list.
    * The list contents are of type {@link goedegep.media.mediadb.model.Player}.
    * <!-- begin-user-doc -->
    * <p>
@@ -319,17 +319,17 @@ public interface Album extends EObject {
    * there really should be more of a description here...
    * </p>
    * <!-- end-user-doc -->
-   * @return the value of the '<em>Players</em>' reference list.
+   * @return the value of the '<em>Players</em>' containment reference list.
    * @see #isSetPlayers()
    * @see #unsetPlayers()
    * @see goedegep.media.mediadb.model.MediadbPackage#getAlbum_Players()
-   * @model unsettable="true"
+   * @model containment="true" unsettable="true"
    * @generated
    */
   EList<Player> getPlayers();
 
   /**
-   * Unsets the value of the '{@link goedegep.media.mediadb.model.Album#getPlayers <em>Players</em>}' reference list.
+   * Unsets the value of the '{@link goedegep.media.mediadb.model.Album#getPlayers <em>Players</em>}' containment reference list.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @see #isSetPlayers()
@@ -339,10 +339,10 @@ public interface Album extends EObject {
   void unsetPlayers();
 
   /**
-   * Returns whether the value of the '{@link goedegep.media.mediadb.model.Album#getPlayers <em>Players</em>}' reference list is set.
+   * Returns whether the value of the '{@link goedegep.media.mediadb.model.Album#getPlayers <em>Players</em>}' containment reference list is set.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return whether the value of the '<em>Players</em>' reference list is set.
+   * @return whether the value of the '<em>Players</em>' containment reference list is set.
    * @see #unsetPlayers()
    * @see #getPlayers()
    * @generated
@@ -641,28 +641,28 @@ public interface Album extends EObject {
   void setCompilation(boolean value);
 
   /**
-   * Returns the value of the '<em><b>My Info</b></em>' reference.
+   * Returns the value of the '<em><b>My Info</b></em>' containment reference.
    * <!-- begin-user-doc -->
    * <p>
    * If the meaning of the '<em>My Info</em>' reference isn't clear,
    * there really should be more of a description here...
    * </p>
    * <!-- end-user-doc -->
-   * @return the value of the '<em>My Info</em>' reference.
+   * @return the value of the '<em>My Info</em>' containment reference.
    * @see #isSetMyInfo()
    * @see #unsetMyInfo()
    * @see #setMyInfo(MyInfo)
    * @see goedegep.media.mediadb.model.MediadbPackage#getAlbum_MyInfo()
-   * @model unsettable="true"
+   * @model containment="true" unsettable="true"
    * @generated
    */
   MyInfo getMyInfo();
 
   /**
-   * Sets the value of the '{@link goedegep.media.mediadb.model.Album#getMyInfo <em>My Info</em>}' reference.
+   * Sets the value of the '{@link goedegep.media.mediadb.model.Album#getMyInfo <em>My Info</em>}' containment reference.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @param value the new value of the '<em>My Info</em>' reference.
+   * @param value the new value of the '<em>My Info</em>' containment reference.
    * @see #isSetMyInfo()
    * @see #unsetMyInfo()
    * @see #getMyInfo()
@@ -671,7 +671,7 @@ public interface Album extends EObject {
   void setMyInfo(MyInfo value);
 
   /**
-   * Unsets the value of the '{@link goedegep.media.mediadb.model.Album#getMyInfo <em>My Info</em>}' reference.
+   * Unsets the value of the '{@link goedegep.media.mediadb.model.Album#getMyInfo <em>My Info</em>}' containment reference.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @see #isSetMyInfo()
@@ -682,10 +682,10 @@ public interface Album extends EObject {
   void unsetMyInfo();
 
   /**
-   * Returns whether the value of the '{@link goedegep.media.mediadb.model.Album#getMyInfo <em>My Info</em>}' reference is set.
+   * Returns whether the value of the '{@link goedegep.media.mediadb.model.Album#getMyInfo <em>My Info</em>}' containment reference is set.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return whether the value of the '<em>My Info</em>' reference is set.
+   * @return whether the value of the '<em>My Info</em>' containment reference is set.
    * @see #unsetMyInfo()
    * @see #getMyInfo()
    * @see #setMyInfo(MyInfo)

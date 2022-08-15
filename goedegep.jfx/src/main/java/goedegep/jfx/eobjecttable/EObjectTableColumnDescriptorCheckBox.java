@@ -5,7 +5,9 @@ import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.ETypedElement;
 
 /**
- * This class describes one column of an EObjectTable.
+ * This class describes a column of an EObjectTable, which is a column for a boolean that is shown as a CheckBox.
+ * <p>
+ * This class doesn't have any extra attributes.
  */
 public class EObjectTableColumnDescriptorCheckBox<T extends EObject> extends EObjectTableColumnDescriptorBase<T> {
   

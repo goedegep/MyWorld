@@ -83,6 +83,7 @@ public interface TrackReference extends EObject {
 
   /**
    * Returns the value of the '<em><b>Bonus Track</b></em>' attribute.
+   * The default value is <code>""</code>.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @return the value of the '<em>Bonus Track</em>' attribute.
@@ -90,7 +91,7 @@ public interface TrackReference extends EObject {
    * @see #unsetBonusTrack()
    * @see #setBonusTrack(String)
    * @see goedegep.media.mediadb.model.MediadbPackage#getTrackReference_BonusTrack()
-   * @model unsettable="true"
+   * @model default="" unsettable="true"
    * @generated
    */
   String getBonusTrack();

@@ -68,7 +68,7 @@ public class AlbumInfoFilesReader {
         if (!Files.isDirectory(file)  &&
             ((fileName.startsWith("Artist ")  &&  fileName.endsWith(".xml")) ||
                 fileName.equals("Soundtracks.xml"))) {
-          LOGGER.fine("Reading file: " + file.getFileName().toString());
+          LOGGER.severe("Reading file: " + file.getFileName().toString());
           try {
             List<AlbumInfoErrorInfo> albumInfoErrors = albumInfoHandler.read(file.toFile().getAbsolutePath());
             errors.addAll(albumInfoErrors);

@@ -2,6 +2,9 @@
  */
 package goedegep.media.mediadb.model.impl;
 
+import java.util.List;
+import java.util.logging.Logger;
+
 import org.eclipse.emf.common.notify.Notification;
 
 import org.eclipse.emf.common.notify.NotificationChain;
@@ -20,6 +23,7 @@ import goedegep.media.mediadb.model.MediadbPackage;
 import goedegep.media.mediadb.model.MediumInfo;
 import goedegep.media.mediadb.model.MyTrackInfo;
 import goedegep.media.mediadb.model.TrackReference;
+import goedegep.util.PgUtilities;
 
 /**
  * <!-- begin-user-doc -->
@@ -38,6 +42,7 @@ import goedegep.media.mediadb.model.TrackReference;
  * @generated
  */
 public class MyTrackInfoImpl extends MinimalEObjectImpl.Container implements MyTrackInfo {
+  private static final Logger LOGGER = Logger.getLogger(MyTrackInfoImpl.class.getName());
   private static final String NEWLINE = System.getProperty("line.separator");
 
   /**
@@ -482,5 +487,58 @@ public class MyTrackInfoImpl extends MinimalEObjectImpl.Container implements MyT
 
     return buf.toString();
   }
+  
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated NOT
+   */
+  @Override
+  public boolean equals(Object myTrackInfoObject) {
+    if (myTrackInfoObject instanceof MyTrackInfo myTrackInfo) {
+      
+      if (!PgUtilities.equals(myTrackInfo.getCollection(), getCollection())) {
+        LOGGER.info("Collection differs, this=" + this + ", myTrackInfo=" + myTrackInfo);
+        return false;
+      } else if (!PgUtilities.equals(myTrackInfo.getCompilationTrackReference(), getCompilationTrackReference())) {
+        LOGGER.severe("CompilationTrackReference differs, this=" + this + ", myTrackInfo=" + myTrackInfo);
+        return false;
+      } else if (!iHaveOnEquals(myTrackInfo.getIHaveOn(), getIHaveOn())) {
+        LOGGER.severe("IHaveOn differs, this=" + this + ", myTrackInfo=" + myTrackInfo);
+        return false;
+      } else if (!PgUtilities.equals(myTrackInfo.getIWant(), getIWant())) {
+        LOGGER.severe("IWant differs, this=" + this + ", myTrackInfo=" + myTrackInfo);
+        return false;
+      } else {
+        return true;
+      }
+    }
+    
+    return false;
+  }
+  
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated NOT
+   */
+  public boolean iHaveOnEquals(List<MediumInfo> mediumInfos1, List<MediumInfo> mediumInfos2) {
+    if (mediumInfos1.size() != mediumInfos2.size()) {
+      return false;
+    }
+    
+    for (int i = 0; i < mediumInfos1.size(); i++) {
+      MediumInfo mediumInfo1 = mediumInfos1.get(i);
+      MediumInfo mediomInfo2 = mediumInfos2.get(i);
+      if (!mediumInfo1.equals(mediomInfo2)) {
+        LOGGER.severe("Medium info differs: mediumInfo1=" + mediumInfo1 + ", mediomInfo2=" + mediomInfo2);
+        return false;
+      }
+    }
+    
+    return true;
+  }
+  
+  
 
 } //MyTrackInfoImpl

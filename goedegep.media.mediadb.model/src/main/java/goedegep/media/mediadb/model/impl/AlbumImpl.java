@@ -14,7 +14,6 @@ import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
 import org.eclipse.emf.ecore.util.EDataTypeUniqueEList;
 import org.eclipse.emf.ecore.util.EObjectContainmentEList;
-import org.eclipse.emf.ecore.util.EObjectResolvingEList;
 import org.eclipse.emf.ecore.util.InternalEList;
 
 import goedegep.media.mediadb.model.Album;
@@ -186,7 +185,7 @@ public class AlbumImpl extends MinimalEObjectImpl.Container implements Album {
    */
   protected boolean idESet;
   /**
-   * The cached value of the '{@link #getPlayers() <em>Players</em>}' reference list.
+   * The cached value of the '{@link #getPlayers() <em>Players</em>}' containment reference list.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @see #getPlayers()
@@ -301,7 +300,7 @@ public class AlbumImpl extends MinimalEObjectImpl.Container implements Album {
    */
   protected boolean compilation = COMPILATION_EDEFAULT;
   /**
-   * The cached value of the '{@link #getMyInfo() <em>My Info</em>}' reference.
+   * The cached value of the '{@link #getMyInfo() <em>My Info</em>}' containment reference.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @see #getMyInfo()
@@ -310,7 +309,7 @@ public class AlbumImpl extends MinimalEObjectImpl.Container implements Album {
    */
   protected MyInfo myInfo;
   /**
-   * This is true if the My Info reference has been set.
+   * This is true if the My Info containment reference has been set.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
@@ -634,7 +633,7 @@ public class AlbumImpl extends MinimalEObjectImpl.Container implements Album {
   @Override
   public EList<Player> getPlayers() {
     if (players == null) {
-      players = new EObjectResolvingEList.Unsettable<Player>(Player.class, this, MediadbPackage.ALBUM__PLAYERS);
+      players = new EObjectContainmentEList.Unsettable<Player>(Player.class, this, MediadbPackage.ALBUM__PLAYERS);
     }
     return players;
   }
@@ -933,14 +932,6 @@ public class AlbumImpl extends MinimalEObjectImpl.Container implements Album {
    */
   @Override
   public MyInfo getMyInfo() {
-    if (myInfo != null && myInfo.eIsProxy()) {
-      InternalEObject oldMyInfo = (InternalEObject) myInfo;
-      myInfo = (MyInfo) eResolveProxy(oldMyInfo);
-      if (myInfo != oldMyInfo) {
-        if (eNotificationRequired())
-          eNotify(new ENotificationImpl(this, Notification.RESOLVE, MediadbPackage.ALBUM__MY_INFO, oldMyInfo, myInfo));
-      }
-    }
     return myInfo;
   }
 
@@ -949,8 +940,20 @@ public class AlbumImpl extends MinimalEObjectImpl.Container implements Album {
    * <!-- end-user-doc -->
    * @generated
    */
-  public MyInfo basicGetMyInfo() {
-    return myInfo;
+  public NotificationChain basicSetMyInfo(MyInfo newMyInfo, NotificationChain msgs) {
+    MyInfo oldMyInfo = myInfo;
+    myInfo = newMyInfo;
+    boolean oldMyInfoESet = myInfoESet;
+    myInfoESet = true;
+    if (eNotificationRequired()) {
+      ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, MediadbPackage.ALBUM__MY_INFO,
+          oldMyInfo, newMyInfo, !oldMyInfoESet);
+      if (msgs == null)
+        msgs = notification;
+      else
+        msgs.add(notification);
+    }
+    return msgs;
   }
 
   /**
@@ -960,13 +963,45 @@ public class AlbumImpl extends MinimalEObjectImpl.Container implements Album {
    */
   @Override
   public void setMyInfo(MyInfo newMyInfo) {
+    if (newMyInfo != myInfo) {
+      NotificationChain msgs = null;
+      if (myInfo != null)
+        msgs = ((InternalEObject) myInfo).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - MediadbPackage.ALBUM__MY_INFO,
+            null, msgs);
+      if (newMyInfo != null)
+        msgs = ((InternalEObject) newMyInfo).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - MediadbPackage.ALBUM__MY_INFO,
+            null, msgs);
+      msgs = basicSetMyInfo(newMyInfo, msgs);
+      if (msgs != null)
+        msgs.dispatch();
+    } else {
+      boolean oldMyInfoESet = myInfoESet;
+      myInfoESet = true;
+      if (eNotificationRequired())
+        eNotify(new ENotificationImpl(this, Notification.SET, MediadbPackage.ALBUM__MY_INFO, newMyInfo, newMyInfo,
+            !oldMyInfoESet));
+    }
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public NotificationChain basicUnsetMyInfo(NotificationChain msgs) {
     MyInfo oldMyInfo = myInfo;
-    myInfo = newMyInfo;
+    myInfo = null;
     boolean oldMyInfoESet = myInfoESet;
-    myInfoESet = true;
-    if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, MediadbPackage.ALBUM__MY_INFO, oldMyInfo, myInfo,
-          !oldMyInfoESet));
+    myInfoESet = false;
+    if (eNotificationRequired()) {
+      ENotificationImpl notification = new ENotificationImpl(this, Notification.UNSET, MediadbPackage.ALBUM__MY_INFO,
+          oldMyInfo, null, oldMyInfoESet);
+      if (msgs == null)
+        msgs = notification;
+      else
+        msgs.add(notification);
+    }
+    return msgs;
   }
 
   /**
@@ -976,13 +1011,20 @@ public class AlbumImpl extends MinimalEObjectImpl.Container implements Album {
    */
   @Override
   public void unsetMyInfo() {
-    MyInfo oldMyInfo = myInfo;
-    boolean oldMyInfoESet = myInfoESet;
-    myInfo = null;
-    myInfoESet = false;
-    if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.UNSET, MediadbPackage.ALBUM__MY_INFO, oldMyInfo, null,
-          oldMyInfoESet));
+    if (myInfo != null) {
+      NotificationChain msgs = null;
+      msgs = ((InternalEObject) myInfo).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - MediadbPackage.ALBUM__MY_INFO,
+          null, msgs);
+      msgs = basicUnsetMyInfo(msgs);
+      if (msgs != null)
+        msgs.dispatch();
+    } else {
+      boolean oldMyInfoESet = myInfoESet;
+      myInfoESet = false;
+      if (eNotificationRequired())
+        eNotify(
+            new ENotificationImpl(this, Notification.UNSET, MediadbPackage.ALBUM__MY_INFO, null, null, oldMyInfoESet));
+    }
   }
 
   /**
@@ -1113,6 +1155,10 @@ public class AlbumImpl extends MinimalEObjectImpl.Container implements Album {
     switch (featureID) {
     case MediadbPackage.ALBUM__DISCS:
       return ((InternalEList<?>) getDiscs()).basicRemove(otherEnd, msgs);
+    case MediadbPackage.ALBUM__PLAYERS:
+      return ((InternalEList<?>) getPlayers()).basicRemove(otherEnd, msgs);
+    case MediadbPackage.ALBUM__MY_INFO:
+      return basicUnsetMyInfo(msgs);
     }
     return super.eInverseRemove(otherEnd, featureID, msgs);
   }
@@ -1156,9 +1202,7 @@ public class AlbumImpl extends MinimalEObjectImpl.Container implements Album {
     case MediadbPackage.ALBUM__COMPILATION:
       return isCompilation();
     case MediadbPackage.ALBUM__MY_INFO:
-      if (resolve)
-        return getMyInfo();
-      return basicGetMyInfo();
+      return getMyInfo();
     case MediadbPackage.ALBUM__SOUNDTRACK:
       return isSoundtrack();
     }
@@ -1410,7 +1454,7 @@ public class AlbumImpl extends MinimalEObjectImpl.Container implements Album {
     buf.append("Soundtrack: ").append(isSoundtrack() ? "yes" : "no").append(NEWLINE);
 
     buf.append("My info: ");
-    if (isSetMyInfo()) {
+    if (getMyInfo() != null) {
       buf.append(NEWLINE).append(getMyInfo().toString());
     } else {
       buf.append("<my-info-not-set>");

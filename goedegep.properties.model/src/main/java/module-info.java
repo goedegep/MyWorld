@@ -1,6 +1,5 @@
 module goedegep.model.properties {
   exports goedegep.properties.model.util;
-  exports goedegep.properties.model.impl;
   exports goedegep.properties.model;
 
   requires java.logging;

@@ -268,7 +268,6 @@ public class MapView extends Region {
 
         if (dirty) {
             for (MapLayer layer : layers) {
-                LOGGER.severe("Laying out layer");
                 layer.layoutLayer();
             }
         }

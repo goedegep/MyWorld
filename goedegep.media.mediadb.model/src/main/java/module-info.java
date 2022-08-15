@@ -1,6 +1,6 @@
-module goedegep.media.model.mediadb {
-  exports goedegep.media.mediadb.model.impl;
+module goedegep.media.mediadb.model {
   exports goedegep.media.mediadb.model;
+  exports goedegep.media.mediadb.model.impl;
   exports goedegep.media.mediadb.model.util;
 
   requires goedegep.types.model;

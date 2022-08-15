@@ -9,7 +9,12 @@ import goedegep.gpx.model.TrksegType;
 import goedegep.gpx.model.WptType;
 
 import java.lang.reflect.InvocationTargetException;
+import java.math.BigDecimal;
 import java.util.Collection;
+
+import java.util.Date;
+
+import javax.xml.datatype.XMLGregorianCalendar;
 
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
@@ -40,6 +45,9 @@ import org.eclipse.emf.ecore.util.InternalEList;
  * @generated
  */
 public class TrksegTypeImpl extends MinimalEObjectImpl.Container implements TrksegType {
+  private Double myCumulativeAscent = null;
+  private Double myCumulativeDescent = null;
+  
   /**
    * The cached value of the '{@link #getTrkpt() <em>Trkpt</em>}' containment reference list.
    * <!-- begin-user-doc -->
@@ -162,6 +170,156 @@ public class TrksegTypeImpl extends MinimalEObjectImpl.Container implements Trks
 		/**
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
+   * @generated NOT
+   */
+  public Double getCumulativeAscent() {
+    if (myCumulativeAscent != null) {
+      return myCumulativeAscent;
+    }
+    double ascent = 0.0;
+
+    if (getTrkpt().size() <= 1) {
+      return 0.0;
+    }
+
+    for (int i = 0; i < getTrkpt().size(); i++) {
+      if (i > 0 && getTrkpt().get(i - 1).getEle().doubleValue() < getTrkpt().get(i).getEle().doubleValue()) {
+        ascent += getTrkpt().get(i).getEle().doubleValue() - getTrkpt().get(i - 1).getEle().doubleValue();
+      }
+    }
+
+    myCumulativeAscent = ascent;
+    return ascent;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated NOT
+   */
+  public Double getCumulativeDescent() {
+    if (myCumulativeDescent != null) {
+      return myCumulativeDescent;
+    }
+    double descent = 0.0;
+
+    if (getTrkpt().size() <= 1) {
+      return 0.0;
+    }
+
+    for (int i = 0; i < getTrkpt().size(); i++) {
+      if (i > 0 && getTrkpt().get(i - 1).getEle().doubleValue() > getTrkpt().get(i).getEle().doubleValue()) {
+        descent += getTrkpt().get(i - 1).getEle().doubleValue() - getTrkpt().get(i).getEle().doubleValue();
+      }
+    }
+
+    myCumulativeDescent = descent;
+    return descent;
+  }
+
+    /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated NOT
+   */
+  public Long getDuration() {
+    Date startTime = getStartTime();
+    Date endTime = getEndTime();
+    
+    if ((startTime != null)  &&  (endTime != null)) {
+      return endTime.getTime() - startTime.getTime();
+    }
+    
+    return null;
+  }
+
+    /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated NOT
+   */
+  public Date getStartTime() {
+    int numberOfWaypoints = getTrkpt().size();
+    if (numberOfWaypoints == 0) {
+      return null;
+    }
+    
+    WptType firstWaypoint = getTrkpt().get(0);
+    
+    XMLGregorianCalendar startTime = firstWaypoint.getTime();
+    if (startTime != null) {
+      return new Date(startTime.getMillisecond());
+    } else {
+      return null;
+    }
+  }
+
+    /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated NOT
+   */
+  public Date getEndTime() {
+    int numberOfWaypoints = getTrkpt().size();
+    if (numberOfWaypoints == 0) {
+      return null;
+    }
+        
+    WptType lastWaypoint = getTrkpt().get(numberOfWaypoints - 1);
+    
+    XMLGregorianCalendar endTime = lastWaypoint.getTime();
+    if (endTime != null) {
+      return new Date(endTime.getMillisecond());
+    } else {
+      return null;
+    }
+  }
+
+    /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated NOT
+   */
+  public Double getStartElevation() {
+    int numberOfWaypoints = getTrkpt().size();
+    if (numberOfWaypoints == 0) {
+      return null;
+    }
+    
+    WptType firstWaypoint = getTrkpt().get(0);
+    
+    BigDecimal elevation = firstWaypoint.getEle();
+    if (elevation != null) {
+      return elevation.doubleValue();
+    } else {
+      return null;
+    }
+  }
+
+    /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated NOT
+   */
+  public Double getEndElevation() {
+    int numberOfWaypoints = getTrkpt().size();
+    if (numberOfWaypoints == 0) {
+      return null;
+    }
+        
+    WptType lastWaypoint = getTrkpt().get(numberOfWaypoints - 1);
+    
+    BigDecimal elevation = lastWaypoint.getEle();
+    if (elevation != null) {
+      return elevation.doubleValue();
+    } else {
+      return null;
+    }
+  }
+
+    /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
    * @generated
    */
   @Override
@@ -255,6 +413,20 @@ public class TrksegTypeImpl extends MinimalEObjectImpl.Container implements Trks
     switch (operationID) {
       case GPXPackage.TRKSEG_TYPE___GET_LENGTH:
         return getLength();
+      case GPXPackage.TRKSEG_TYPE___GET_CUMULATIVE_ASCENT:
+        return getCumulativeAscent();
+      case GPXPackage.TRKSEG_TYPE___GET_DURATION:
+        return getDuration();
+      case GPXPackage.TRKSEG_TYPE___GET_START_TIME:
+        return getStartTime();
+      case GPXPackage.TRKSEG_TYPE___GET_END_TIME:
+        return getEndTime();
+      case GPXPackage.TRKSEG_TYPE___GET_CUMULATIVE_DESCENT:
+        return getCumulativeDescent();
+      case GPXPackage.TRKSEG_TYPE___GET_START_ELEVATION:
+        return getStartElevation();
+      case GPXPackage.TRKSEG_TYPE___GET_END_ELEVATION:
+        return getEndElevation();
     }
     return super.eInvoke(operationID, arguments);
   }

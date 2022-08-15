@@ -2,6 +2,21 @@ package goedegep.jfx.eobjecttable;
 
 import org.eclipse.emf.ecore.EObject;
 
+/**
+ * This class is the parent for all column descriptor classes.
+ * <p>
+ * This class defines the following properties.
+ * <ul>
+ * <li>columnName<br/>
+ * The text (title or name) of the column.
+ * </li>
+ * <li>id<br/>
+ * An identification of the column. This can e.g. be used to get a specific TableColumn from the Table.
+ * </li>
+ * </ul>
+ *
+ * @param <T> The type of the items listed in the table.
+ */
 public class EObjectTableColumnDescriptorAbstract<T extends EObject> {
   
   /**

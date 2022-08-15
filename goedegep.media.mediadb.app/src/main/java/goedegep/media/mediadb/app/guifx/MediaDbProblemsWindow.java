@@ -55,15 +55,15 @@ import javafx.scene.layout.VBox;
 * This class provides a window which lists the problems in media information.
 * 
 */
-public class MediaDbProblemsWindowFx extends JfxStage {
-private static final Logger LOGGER = Logger.getLogger(MediaDbProblemsWindowFx.class.getName());
+public class MediaDbProblemsWindow extends JfxStage {
+private static final Logger LOGGER = Logger.getLogger(MediaDbProblemsWindow.class.getName());
 
 private static final String WINDOW_TITLE = "Media Database problems";
 private static final String NEWLINE = System.getProperty("line.separator");
 private static final FlexDateFormat FDF = new FlexDateFormat(true, true);
 
 private static final Pattern ALBUM_FOLDER_NAME_PATTERN_MISSING_HYPHEN_AFTER_DATE = Pattern.compile("^(\\d{4})(-\\d{2})?(-\\d{2})? (.*) - (.*)");  // Album date Artist - Album title  TODO add disc nr e.g. [cd 1]
-private static final int MAX_ERRORS_SHOWN = 7;
+private static final int MAX_ERRORS_SHOWN = 18;
 
 /**
  * The media database, used to propose solutions for problems.
@@ -80,7 +80,7 @@ private ComponentFactoryFx componentFactory;
    * @param mediaDb media database, used to propose solutions for problems
    * @param errors the problems to be listed
    */
-  public MediaDbProblemsWindowFx(CustomizationFx customization, MediaDb mediaDb, List<Object> errors) {
+  public MediaDbProblemsWindow(CustomizationFx customization, MediaDb mediaDb, List<Object> errors) {
     super(WINDOW_TITLE, customization);
 
     this.mediaDb = mediaDb;
@@ -929,6 +929,14 @@ private ComponentFactoryFx componentFactory;
     }
   }
   
+  /**
+   * Fill an error panel for 'an album track not found on disc' error.
+   * <p>
+   * In the <code>mediaDbAppErrorInfo</code> either <code>trackReference</code> of <code>track</code> shall be set.
+   * 
+   * @param errorPanel The error panel to be filled.
+   * @param mediaDbAppErrorInfo the error information.
+   */
   private void fillMediaDbAppErrorInfoPanelForOfAnAlbumTrackNotFoundOnDisc(ErrorPanel errorPanel, MediaDbAppErrorInfo mediaDbAppErrorInfo) {
     TrackReference trackReference = mediaDbAppErrorInfo.getTrackReference();
     Track track = mediaDbAppErrorInfo.getTrack();
@@ -936,9 +944,11 @@ private ComponentFactoryFx componentFactory;
     if ((trackReference != null)  &&  (track != null)) {
       LOGGER.severe("Both trackReference and track are set in MediaDbAppErrorInfo: mediaDbAppErrorInfo=" + mediaDbAppErrorInfo.toString()) ;
     }
-     if (trackReference != null) {
+    
+    if (trackReference != null) {
       track = trackReference.getTrack();
     }
+    
     StringBuilder buf = new StringBuilder();
     Album album = mediaDbAppErrorInfo.getAlbum();
     buf.append("Track of an album not found on disc:");

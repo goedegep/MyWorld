@@ -370,8 +370,7 @@ public class VacationsUtils {
       return;
     }    
 
-    EMFResource<DocumentRoot> gpxResource = new EMFResource<>(GPXPackage.eINSTANCE, () -> GPXFactory.eINSTANCE.createDocumentRoot(), false);
-    gpxResource.addResourceFactoryForFileExtension("gpx", new GPXResourceFactoryImpl());
+    EMFResource<DocumentRoot> gpxResource = GpxUtil.createEMFResource();
     try {
       gpxResource.load(fileName);
       DocumentRoot documentRoot = gpxResource.getEObject();
@@ -455,7 +454,13 @@ public class VacationsUtils {
    * @return a Path to the folder with photos for <code>vacation</code>, or null if this cannot be determined.
    */
   public static Path getVacationPhotosFolderPath(Vacation vacation) {
-    String vacationPhotosFolder = vacation.getPictures().trim();
+    String vacationPhotosFolder = vacation.getPictures();
+    
+    if (vacationPhotosFolder == null) {
+      return null;
+    }
+    
+    vacationPhotosFolder = vacationPhotosFolder.trim();
     
     if ((vacationPhotosFolder != null)  &&  !vacationPhotosFolder.isEmpty()) {
       return Paths.get(vacationPhotosFolder);

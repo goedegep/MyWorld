@@ -17,7 +17,6 @@ import org.eclipse.emf.ecore.EObject;
  * <ul>
  *   <li>{@link goedegep.media.mediadb.model.MyInfo#getAlbumReferences <em>Album References</em>}</li>
  *   <li>{@link goedegep.media.mediadb.model.MyInfo#getMyComments <em>My Comments</em>}</li>
- *   <li>{@link goedegep.media.mediadb.model.MyInfo#getInlayDocument <em>Inlay Document</em>}</li>
  *   <li>{@link goedegep.media.mediadb.model.MyInfo#isIveHadOnLP <em>Ive Had On LP</em>}</li>
  *   <li>{@link goedegep.media.mediadb.model.MyInfo#getIWant <em>IWant</em>}</li>
  *   <li>{@link goedegep.media.mediadb.model.MyInfo#getIHaveOn <em>IHave On</em>}</li>
@@ -183,59 +182,6 @@ public interface MyInfo extends EObject {
    * @generated
    */
   boolean isSetMyComments();
-
-  /**
-   * Returns the value of the '<em><b>Inlay Document</b></em>' attribute.
-   * <!-- begin-user-doc -->
-   * <p>
-   * If the meaning of the '<em>Inlay Document</em>' attribute isn't clear,
-   * there really should be more of a description here...
-   * </p>
-   * <!-- end-user-doc -->
-   * @return the value of the '<em>Inlay Document</em>' attribute.
-   * @see #isSetInlayDocument()
-   * @see #unsetInlayDocument()
-   * @see #setInlayDocument(String)
-   * @see goedegep.media.mediadb.model.MediadbPackage#getMyInfo_InlayDocument()
-   * @model unsettable="true"
-   * @generated
-   */
-  String getInlayDocument();
-
-  /**
-   * Sets the value of the '{@link goedegep.media.mediadb.model.MyInfo#getInlayDocument <em>Inlay Document</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @param value the new value of the '<em>Inlay Document</em>' attribute.
-   * @see #isSetInlayDocument()
-   * @see #unsetInlayDocument()
-   * @see #getInlayDocument()
-   * @generated
-   */
-  void setInlayDocument(String value);
-
-  /**
-   * Unsets the value of the '{@link goedegep.media.mediadb.model.MyInfo#getInlayDocument <em>Inlay Document</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #isSetInlayDocument()
-   * @see #getInlayDocument()
-   * @see #setInlayDocument(String)
-   * @generated
-   */
-  void unsetInlayDocument();
-
-  /**
-   * Returns whether the value of the '{@link goedegep.media.mediadb.model.MyInfo#getInlayDocument <em>Inlay Document</em>}' attribute is set.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return whether the value of the '<em>Inlay Document</em>' attribute is set.
-   * @see #unsetInlayDocument()
-   * @see #getInlayDocument()
-   * @see #setInlayDocument(String)
-   * @generated
-   */
-  boolean isSetInlayDocument();
 
   /**
    * Returns the value of the '<em><b>Ive Had On LP</b></em>' attribute.

@@ -137,6 +137,16 @@ public class MediadbAdapterFactory extends AdapterFactoryImpl {
     }
 
     @Override
+    public Adapter caseVideo(Video object) {
+      return createVideoAdapter();
+    }
+
+    @Override
+    public Adapter caseSubject(Subject object) {
+      return createSubjectAdapter();
+    }
+
+    @Override
     public Adapter defaultCase(EObject object) {
       return createEObjectAdapter();
     }
@@ -348,6 +358,34 @@ public class MediadbAdapterFactory extends AdapterFactoryImpl {
    * @generated
    */
   public Adapter createTrackCollectionAdapter() {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link goedegep.media.mediadb.model.Video <em>Video</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see goedegep.media.mediadb.model.Video
+   * @generated
+   */
+  public Adapter createVideoAdapter() {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link goedegep.media.mediadb.model.Subject <em>Subject</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see goedegep.media.mediadb.model.Subject
+   * @generated
+   */
+  public Adapter createSubjectAdapter() {
     return null;
   }
 

@@ -80,7 +80,6 @@ public class AlbumInfoHandler extends AbstractValidatingHandler<AlbumInfoHandler
   private static final String I_HAVE_TRACKS_TAG = "IHaveTracks";
   private static final String I_WANT_TAG = "IWant";
   private static final String I_WANT_TRACKS_TAG = "IWantTracks";
-  private static final String INLAY_TAG = "Inlay";
   private static final String ISSUE_DATE_TAG = "IssueDate";
   private static final String ISSUED_ON_MEDIUM_TAG = "IssuedOnMedium";
   private static final String ITALICS_TAG = "Italics";
@@ -453,8 +452,6 @@ public class AlbumInfoHandler extends AbstractValidatingHandler<AlbumInfoHandler
         // no action
       } else if (tag.compareTo(ALBUM_REFERENCE_TAG) == 0) {
         // no action
-      } else if (tag.compareTo(INLAY_TAG) == 0) {
-        // no action
       } else if (tag.compareTo(COLLECTION_NAME_TAG) == 0) {
         // no action
       } else if (tag.compareTo(IVE_HAD_ON_LP_TAG) == 0) {
@@ -788,8 +785,6 @@ public class AlbumInfoHandler extends AbstractValidatingHandler<AlbumInfoHandler
         AlbumReferenceInfo albumReferenceInfo = new AlbumReferenceInfo(albumsFileName, locator.getLineNumber(), locator.getColumnNumber(),
             album, data.trim());
         albumReferences.add(albumReferenceInfo);
-      } else if (tag.compareTo(INLAY_TAG) == 0) {
-        myInfo.setInlayDocument(data.trim());
       } else {
         LOGGER.severe("Illegal end element: " + tag + " in state: " + state);
         throw new ParseException(albumsFileName, locator.getLineNumber(),
@@ -876,7 +871,14 @@ public class AlbumInfoHandler extends AbstractValidatingHandler<AlbumInfoHandler
       } else if (tag.compareTo(TRACK_REFERENCE_DISCNR_TAG) == 0) {
         trackReferenceInfo.setReferencedDiscNr(Integer.valueOf(data));
       } else if (tag.compareTo(TRACK_REFERENCE_TRACKNR_TAG) == 0) {
-        trackReferenceInfo.setReferencedTrackNr(Integer.valueOf(data));
+        // the value is either a track number, or a disc number and a tracknumber separated by a '.'.
+        String [] referenceTrackNrParts = data.split("\\.");
+        if (referenceTrackNrParts.length == 1) {
+          trackReferenceInfo.setReferencedTrackNr(Integer.valueOf(referenceTrackNrParts[0]));
+        } else {
+          trackReferenceInfo.setReferencedDiscNr(Integer.valueOf(referenceTrackNrParts[0]));
+          trackReferenceInfo.setReferencedTrackNr(Integer.valueOf(referenceTrackNrParts[1]));
+        }
       }
       break;
       

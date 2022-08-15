@@ -46,22 +46,22 @@ public enum MediumType implements Enumerator {
    */
   CDR_AUDIO(2, "CDR_AUDIO", "CDR_AUDIO"),
   /**
-  * The '<em><b>CDRW AUDIO</b></em>' literal object.
-  * <!-- begin-user-doc -->
+   * The '<em><b>CDRW AUDIO</b></em>' literal object.
+   * <!-- begin-user-doc -->
   * <!-- end-user-doc -->
-  * @see #CDRW_AUDIO_VALUE
-  * @generated
-  * @ordered
-  */
+   * @see #CDRW_AUDIO_VALUE
+   * @generated
+   * @ordered
+   */
   CDRW_AUDIO(3, "CDRW_AUDIO", "CDRW_AUDIO"),
   /**
-  * The '<em><b>LP</b></em>' literal object.
-  * <!-- begin-user-doc -->
+   * The '<em><b>LP</b></em>' literal object.
+   * <!-- begin-user-doc -->
   * <!-- end-user-doc -->
-  * @see #LP_VALUE
-  * @generated
-  * @ordered
-  */
+   * @see #LP_VALUE
+   * @generated
+   * @ordered
+   */
   LP(4, "LP", "lp"),
   /**
    * The '<em><b>SINGLE</b></em>' literal object.

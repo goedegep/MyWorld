@@ -17,8 +17,10 @@ import goedegep.media.mediadb.model.MediadbPackage;
 import goedegep.media.mediadb.model.MyTrackInfo;
 import goedegep.media.mediadb.model.Track;
 import goedegep.media.mediadb.model.TrackReference;
+import goedegep.util.PgUtilities;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.logging.Logger;
 
 /**
  * <!-- begin-user-doc -->
@@ -37,6 +39,7 @@ import java.lang.reflect.InvocationTargetException;
  * @generated
  */
 public class TrackReferenceImpl extends MinimalEObjectImpl.Container implements TrackReference {
+  private static final Logger LOGGER = Logger.getLogger(TrackReferenceImpl.class.getName());
   private static final String NEWLINE = System.getProperty("line.separator");
 
   /**
@@ -66,7 +69,7 @@ public class TrackReferenceImpl extends MinimalEObjectImpl.Container implements 
    * @generated
    * @ordered
    */
-  protected static final String BONUS_TRACK_EDEFAULT = null;
+  protected static final String BONUS_TRACK_EDEFAULT = "";
 
   /**
    * The cached value of the '{@link #getBonusTrack() <em>Bonus Track</em>}' attribute.
@@ -627,6 +630,34 @@ public class TrackReferenceImpl extends MinimalEObjectImpl.Container implements 
     }
 
     return buf.toString();
+  }
+  
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated NOT
+   */
+  @Override
+  public boolean equals(Object trackReferenceObject) {
+    if (trackReferenceObject instanceof TrackReference trackReference) {
+      if (!PgUtilities.equals(trackReference.getTrack(), getTrack())) {
+        LOGGER.info("Track differs, this=" + this + ", trackReference" + trackReference);
+        return false;
+      } else if (!PgUtilities.equals(trackReference.getBonusTrack(), getBonusTrack())) {
+        LOGGER.info("BonusTrack differs, this=" + this + ", trackReference" + trackReference);
+        return false;
+      } else if (!PgUtilities.equals(trackReference.getOriginalAlbumTrackReference(), getOriginalAlbumTrackReference())) {
+        LOGGER.info("OriginalAlbumTrackReference differs, this=" + this + ", trackReference" + trackReference);
+        return false;
+      } else if (!PgUtilities.equals(trackReference.getMyTrackInfo(), getMyTrackInfo())) {
+        LOGGER.info("MyTrackInfo differs, this=" + this + ", trackReference" + trackReference);
+        return false;
+      } else {
+        return true;
+      }
+    }
+    
+    return false;
   }
 
 } //TrackReferenceImpl

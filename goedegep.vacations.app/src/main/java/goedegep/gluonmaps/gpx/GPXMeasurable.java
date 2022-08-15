@@ -153,15 +153,15 @@ public abstract class GPXMeasurable extends GPXLineItem {
         return result;
     }
 
-    /**
-     * @return the duration
-     */
-    @Override
-    public long getDuration() {
-        if (getEndTime() != null && getStartTime() != null) {
-            return getEndTime().getTime() - getStartTime().getTime();
-        } else {
-            return 0;
-        }
-    }
+//    /**
+//     * @return the duration
+//     */
+//    @Override
+//    public long getDuration() {
+//        if (getEndTime() != null && getStartTime() != null) {
+//            return getEndTime().getTime() - getStartTime().getTime();
+//        } else {
+//            return 0;
+//        }
+//    }
 }

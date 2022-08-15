@@ -1,6 +1,7 @@
 package goedegep.vacations.app.logic;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
@@ -17,6 +18,10 @@ import com.gluonhq.maps.MapView;
 import goedegep.appgen.swing.DefaultCustomization;
 import goedegep.gluonmaps.gpx.GPXFile;
 import goedegep.gluonmaps.gpx.GPXMeasurable;
+import goedegep.gpx.GpxUtil;
+import goedegep.gpx.model.DocumentRoot;
+import goedegep.gpx.model.GpxType;
+import goedegep.gpx.model.MetadataType;
 import goedegep.gpx.parser.model.GPX;
 import goedegep.gpx.parser.model.Metadata;
 import goedegep.jfx.CustomizationFx;
@@ -25,6 +30,7 @@ import goedegep.jfx.JfxStage;
 import goedegep.poi.app.guifx.POIIcons;
 import goedegep.poi.model.POICategoryId;
 import goedegep.types.model.FileReference;
+import goedegep.util.emf.EMFResource;
 import goedegep.util.file.FileUtils;
 import goedegep.util.html.HtmlUtil;
 import goedegep.util.text.Indent;
@@ -428,12 +434,13 @@ public class VacationToHtmlConverter extends VacationToTextConverterAbstract {
 
       FileReference trackReference = gpxTrack.getTrackReference();
       if ((trackReference != null)  &&  (trackReference.getFile() != null)  &&  !trackReference.getFile().isEmpty()) {
-        File file = new File(trackReference.getFile());
-        GPXFile gpxFile = new GPXFile(file);
-        GPX gpx = gpxFile.getGPX();
-        Metadata metaData = gpx.getMetadata();
-        if (metaData != null) {
-          String keywords = metaData.getKeywords();
+        EMFResource<DocumentRoot> gpxResource = GpxUtil.createEMFResource();
+        try {
+          gpxResource.load(trackReference.getFile());
+          DocumentRoot documentRoot = gpxResource.getEObject();
+          GpxType gpxType = documentRoot.getGpx();
+          MetadataType metadataType = gpxType.getMetadata();
+          String keywords = metadataType.getKeywords();
           ActivityLabel activityLabel = null;
           if ((keywords != null)  &&  !keywords.isEmpty()) {
             for (String keyword: keywords.split(",")) {
@@ -454,16 +461,12 @@ public class VacationToHtmlConverter extends VacationToTextConverterAbstract {
             buf.append(HtmlUtil.encodeHTML(activityIcons.getIconUrl(activityLabel).toString()));
             buf.append("\" height=\"16\" width=\"16\"/> ");
           }
-          String name = metaData.getName();
+          String name = metadataType.getName();
           if (name != null) {
             buf.append(HtmlUtil.encodeHTML(name));
           }
-          double length = 0.0;
-          double cumulativeAscent = 0.0;
-          for (GPXMeasurable measurable: gpxFile.getGPXMeasurables()) {
-            length += measurable.getLength();
-            cumulativeAscent += measurable.getCumulativeAscent();
-          }
+          double length = gpxType.getLength();
+          double cumulativeAscent = gpxType.getCumulativeAscent();
           if (length > 0.01) {
             buf.append(", lengte ");
             buf.append(String.format("%1$.1f", length/1000d));
@@ -474,6 +477,8 @@ public class VacationToHtmlConverter extends VacationToTextConverterAbstract {
             buf.append(String.format("%1$.0f", cumulativeAscent));
             buf.append("m");
           }
+        } catch (FileNotFoundException e) {
+          e.printStackTrace();
         }
       }      
     }
@@ -487,7 +492,7 @@ public class VacationToHtmlConverter extends VacationToTextConverterAbstract {
    * @param picture the <code>Picture</code> element for which HTML text is to be generated.
    */
   private void vacationElementMapImageToHtml(MapImage mapImage) {
-    vacationsWindow.createMapImageFile(mapImage, poiIcons);
+//    vacationsWindow.createMapImageFile(mapImage, poiIcons);
     Path picturePath = Paths.get(mapImage.getFileName());
     buf.append("<a href=\"");
     buf.append(HtmlUtil.encodeHTML(picturePath.toUri().toString()));

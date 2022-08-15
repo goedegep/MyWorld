@@ -46,6 +46,10 @@ public class StringUtil {
    * @return a String consisting of all values of <code>strings</code>, separated by the <code>separator</code>.
    */
   public static String stringCollectionToSeparatorSeparatedStrings(Collection<String> strings, String separator) {
+    if (strings == null) {
+      return null;
+    }
+    
     StringBuilder buf = new StringBuilder();
     
     boolean first = true;

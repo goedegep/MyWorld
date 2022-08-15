@@ -22,6 +22,5 @@ module goedegep.rolodex.app {
   requires junit;
   requires org.eclipse.emf.common;
   requires org.eclipse.emf.ecore;
-  requires org.controlsfx.controls;
   requires ljv;
 }

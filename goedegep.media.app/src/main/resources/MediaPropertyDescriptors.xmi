@@ -52,6 +52,15 @@
     <fileExtensions>xmi</fileExtensions>
   </propertyDescriptors>
   <propertyDescriptors
+      xsi:type="properties:FilePropertyDescriptor"
+      type="FILE"
+      name="mediaDbFile"
+      description="Name of the file with media information."
+      displayName="Media database filename"
+      initialValue="D:\Database\MyWorld\MediaDb.xmi"
+      installInitialValue="true">
+    <fileExtensions>xmi</fileExtensions>
+  </propertyDescriptors>  <propertyDescriptors
       type="DIRECTORY"
       name="albumInfoDirectory"
       description="Folder with the AlbumInfo files (Artist *.xml)."

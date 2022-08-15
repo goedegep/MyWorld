@@ -424,13 +424,76 @@ public interface GPXPackage extends EPackage {
   int GPX_TYPE___GET_LENGTH = 0;
 
   /**
+   * The operation id for the '<em>Get Cumulative Ascent</em>' operation.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int GPX_TYPE___GET_CUMULATIVE_ASCENT = 1;
+
+  /**
+   * The operation id for the '<em>Get Duration</em>' operation.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int GPX_TYPE___GET_DURATION = 2;
+
+  /**
+   * The operation id for the '<em>Get Start Time</em>' operation.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int GPX_TYPE___GET_START_TIME = 3;
+
+  /**
+   * The operation id for the '<em>Get End Time</em>' operation.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int GPX_TYPE___GET_END_TIME = 4;
+
+  /**
+   * The operation id for the '<em>Get Cumulative Descent</em>' operation.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int GPX_TYPE___GET_CUMULATIVE_DESCENT = 5;
+
+  /**
+   * The operation id for the '<em>Get Start Elevation</em>' operation.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int GPX_TYPE___GET_START_ELEVATION = 6;
+
+  /**
+   * The operation id for the '<em>Get End Elevation</em>' operation.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int GPX_TYPE___GET_END_ELEVATION = 7;
+
+  /**
    * The number of operations of the '<em>Gpx Type</em>' class.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int GPX_TYPE_OPERATION_COUNT = 1;
+  int GPX_TYPE_OPERATION_COUNT = 8;
 
   /**
    * The meta object id for the '{@link goedegep.gpx.model.impl.LinkTypeImpl <em>Link Type</em>}' class.
@@ -908,13 +971,76 @@ public interface GPXPackage extends EPackage {
 	int TRKSEG_TYPE___GET_LENGTH = 0;
 
 		/**
+   * The operation id for the '<em>Get Cumulative Ascent</em>' operation.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int TRKSEG_TYPE___GET_CUMULATIVE_ASCENT = 1;
+
+    /**
+   * The operation id for the '<em>Get Duration</em>' operation.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int TRKSEG_TYPE___GET_DURATION = 2;
+
+    /**
+   * The operation id for the '<em>Get Start Time</em>' operation.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int TRKSEG_TYPE___GET_START_TIME = 3;
+
+    /**
+   * The operation id for the '<em>Get End Time</em>' operation.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int TRKSEG_TYPE___GET_END_TIME = 4;
+
+    /**
+   * The operation id for the '<em>Get Cumulative Descent</em>' operation.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int TRKSEG_TYPE___GET_CUMULATIVE_DESCENT = 5;
+
+    /**
+   * The operation id for the '<em>Get Start Elevation</em>' operation.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int TRKSEG_TYPE___GET_START_ELEVATION = 6;
+
+    /**
+   * The operation id for the '<em>Get End Elevation</em>' operation.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int TRKSEG_TYPE___GET_END_ELEVATION = 7;
+
+    /**
    * The number of operations of the '<em>Trkseg Type</em>' class.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int TRKSEG_TYPE_OPERATION_COUNT = 1;
+  int TRKSEG_TYPE_OPERATION_COUNT = 8;
 
   /**
    * The meta object id for the '{@link goedegep.gpx.model.impl.TrkTypeImpl <em>Trk Type</em>}' class.
@@ -1026,13 +1152,76 @@ public interface GPXPackage extends EPackage {
 	int TRK_TYPE___GET_LENGTH = 0;
 
 		/**
+   * The operation id for the '<em>Get Cumulative Ascent</em>' operation.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int TRK_TYPE___GET_CUMULATIVE_ASCENT = 1;
+
+    /**
+   * The operation id for the '<em>Get Duration</em>' operation.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int TRK_TYPE___GET_DURATION = 2;
+
+    /**
+   * The operation id for the '<em>Get Start Time</em>' operation.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int TRK_TYPE___GET_START_TIME = 3;
+
+    /**
+   * The operation id for the '<em>Get End Time</em>' operation.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int TRK_TYPE___GET_END_TIME = 4;
+
+    /**
+   * The operation id for the '<em>Get Cumulative Descent</em>' operation.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int TRK_TYPE___GET_CUMULATIVE_DESCENT = 5;
+
+    /**
+   * The operation id for the '<em>Get Start Elevation</em>' operation.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int TRK_TYPE___GET_START_ELEVATION = 6;
+
+    /**
+   * The operation id for the '<em>Get End Elevation</em>' operation.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int TRK_TYPE___GET_END_ELEVATION = 7;
+
+    /**
    * The number of operations of the '<em>Trk Type</em>' class.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int TRK_TYPE_OPERATION_COUNT = 1;
+  int TRK_TYPE_OPERATION_COUNT = 8;
 
   /**
    * The meta object id for the '{@link goedegep.gpx.model.impl.WptTypeImpl <em>Wpt Type</em>}' class.
@@ -1614,6 +1803,76 @@ public interface GPXPackage extends EPackage {
   EOperation getGpxType__GetLength();
 
   /**
+   * Returns the meta object for the '{@link goedegep.gpx.model.GpxType#getCumulativeAscent() <em>Get Cumulative Ascent</em>}' operation.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the '<em>Get Cumulative Ascent</em>' operation.
+   * @see goedegep.gpx.model.GpxType#getCumulativeAscent()
+   * @generated
+   */
+  EOperation getGpxType__GetCumulativeAscent();
+
+  /**
+   * Returns the meta object for the '{@link goedegep.gpx.model.GpxType#getDuration() <em>Get Duration</em>}' operation.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the '<em>Get Duration</em>' operation.
+   * @see goedegep.gpx.model.GpxType#getDuration()
+   * @generated
+   */
+  EOperation getGpxType__GetDuration();
+
+  /**
+   * Returns the meta object for the '{@link goedegep.gpx.model.GpxType#getStartTime() <em>Get Start Time</em>}' operation.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the '<em>Get Start Time</em>' operation.
+   * @see goedegep.gpx.model.GpxType#getStartTime()
+   * @generated
+   */
+  EOperation getGpxType__GetStartTime();
+
+  /**
+   * Returns the meta object for the '{@link goedegep.gpx.model.GpxType#getEndTime() <em>Get End Time</em>}' operation.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the '<em>Get End Time</em>' operation.
+   * @see goedegep.gpx.model.GpxType#getEndTime()
+   * @generated
+   */
+  EOperation getGpxType__GetEndTime();
+
+  /**
+   * Returns the meta object for the '{@link goedegep.gpx.model.GpxType#getCumulativeDescent() <em>Get Cumulative Descent</em>}' operation.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the '<em>Get Cumulative Descent</em>' operation.
+   * @see goedegep.gpx.model.GpxType#getCumulativeDescent()
+   * @generated
+   */
+  EOperation getGpxType__GetCumulativeDescent();
+
+  /**
+   * Returns the meta object for the '{@link goedegep.gpx.model.GpxType#getStartElevation() <em>Get Start Elevation</em>}' operation.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the '<em>Get Start Elevation</em>' operation.
+   * @see goedegep.gpx.model.GpxType#getStartElevation()
+   * @generated
+   */
+  EOperation getGpxType__GetStartElevation();
+
+  /**
+   * Returns the meta object for the '{@link goedegep.gpx.model.GpxType#getEndElevation() <em>Get End Elevation</em>}' operation.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the '<em>Get End Elevation</em>' operation.
+   * @see goedegep.gpx.model.GpxType#getEndElevation()
+   * @generated
+   */
+  EOperation getGpxType__GetEndElevation();
+
+  /**
    * Returns the meta object for class '{@link goedegep.gpx.model.LinkType <em>Link Type</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -2035,6 +2294,76 @@ public interface GPXPackage extends EPackage {
 	EOperation getTrksegType__GetLength();
 
 		/**
+   * Returns the meta object for the '{@link goedegep.gpx.model.TrksegType#getCumulativeAscent() <em>Get Cumulative Ascent</em>}' operation.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the '<em>Get Cumulative Ascent</em>' operation.
+   * @see goedegep.gpx.model.TrksegType#getCumulativeAscent()
+   * @generated
+   */
+  EOperation getTrksegType__GetCumulativeAscent();
+
+    /**
+   * Returns the meta object for the '{@link goedegep.gpx.model.TrksegType#getDuration() <em>Get Duration</em>}' operation.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the '<em>Get Duration</em>' operation.
+   * @see goedegep.gpx.model.TrksegType#getDuration()
+   * @generated
+   */
+  EOperation getTrksegType__GetDuration();
+
+    /**
+   * Returns the meta object for the '{@link goedegep.gpx.model.TrksegType#getStartTime() <em>Get Start Time</em>}' operation.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the '<em>Get Start Time</em>' operation.
+   * @see goedegep.gpx.model.TrksegType#getStartTime()
+   * @generated
+   */
+  EOperation getTrksegType__GetStartTime();
+
+    /**
+   * Returns the meta object for the '{@link goedegep.gpx.model.TrksegType#getEndTime() <em>Get End Time</em>}' operation.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the '<em>Get End Time</em>' operation.
+   * @see goedegep.gpx.model.TrksegType#getEndTime()
+   * @generated
+   */
+  EOperation getTrksegType__GetEndTime();
+
+    /**
+   * Returns the meta object for the '{@link goedegep.gpx.model.TrksegType#getCumulativeDescent() <em>Get Cumulative Descent</em>}' operation.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the '<em>Get Cumulative Descent</em>' operation.
+   * @see goedegep.gpx.model.TrksegType#getCumulativeDescent()
+   * @generated
+   */
+  EOperation getTrksegType__GetCumulativeDescent();
+
+    /**
+   * Returns the meta object for the '{@link goedegep.gpx.model.TrksegType#getStartElevation() <em>Get Start Elevation</em>}' operation.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the '<em>Get Start Elevation</em>' operation.
+   * @see goedegep.gpx.model.TrksegType#getStartElevation()
+   * @generated
+   */
+  EOperation getTrksegType__GetStartElevation();
+
+    /**
+   * Returns the meta object for the '{@link goedegep.gpx.model.TrksegType#getEndElevation() <em>Get End Elevation</em>}' operation.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the '<em>Get End Elevation</em>' operation.
+   * @see goedegep.gpx.model.TrksegType#getEndElevation()
+   * @generated
+   */
+  EOperation getTrksegType__GetEndElevation();
+
+    /**
    * Returns the meta object for class '{@link goedegep.gpx.model.TrkType <em>Trk Type</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -2154,6 +2483,76 @@ public interface GPXPackage extends EPackage {
 	EOperation getTrkType__GetLength();
 
 		/**
+   * Returns the meta object for the '{@link goedegep.gpx.model.TrkType#getCumulativeAscent() <em>Get Cumulative Ascent</em>}' operation.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the '<em>Get Cumulative Ascent</em>' operation.
+   * @see goedegep.gpx.model.TrkType#getCumulativeAscent()
+   * @generated
+   */
+  EOperation getTrkType__GetCumulativeAscent();
+
+    /**
+   * Returns the meta object for the '{@link goedegep.gpx.model.TrkType#getDuration() <em>Get Duration</em>}' operation.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the '<em>Get Duration</em>' operation.
+   * @see goedegep.gpx.model.TrkType#getDuration()
+   * @generated
+   */
+  EOperation getTrkType__GetDuration();
+
+    /**
+   * Returns the meta object for the '{@link goedegep.gpx.model.TrkType#getStartTime() <em>Get Start Time</em>}' operation.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the '<em>Get Start Time</em>' operation.
+   * @see goedegep.gpx.model.TrkType#getStartTime()
+   * @generated
+   */
+  EOperation getTrkType__GetStartTime();
+
+    /**
+   * Returns the meta object for the '{@link goedegep.gpx.model.TrkType#getEndTime() <em>Get End Time</em>}' operation.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the '<em>Get End Time</em>' operation.
+   * @see goedegep.gpx.model.TrkType#getEndTime()
+   * @generated
+   */
+  EOperation getTrkType__GetEndTime();
+
+    /**
+   * Returns the meta object for the '{@link goedegep.gpx.model.TrkType#getCumulativeDescent() <em>Get Cumulative Descent</em>}' operation.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the '<em>Get Cumulative Descent</em>' operation.
+   * @see goedegep.gpx.model.TrkType#getCumulativeDescent()
+   * @generated
+   */
+  EOperation getTrkType__GetCumulativeDescent();
+
+    /**
+   * Returns the meta object for the '{@link goedegep.gpx.model.TrkType#getStartElevation() <em>Get Start Elevation</em>}' operation.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the '<em>Get Start Elevation</em>' operation.
+   * @see goedegep.gpx.model.TrkType#getStartElevation()
+   * @generated
+   */
+  EOperation getTrkType__GetStartElevation();
+
+    /**
+   * Returns the meta object for the '{@link goedegep.gpx.model.TrkType#getEndElevation() <em>Get End Elevation</em>}' operation.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the '<em>Get End Elevation</em>' operation.
+   * @see goedegep.gpx.model.TrkType#getEndElevation()
+   * @generated
+   */
+  EOperation getTrkType__GetEndElevation();
+
+    /**
    * Returns the meta object for class '{@link goedegep.gpx.model.WptType <em>Wpt Type</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -2744,6 +3143,62 @@ public interface GPXPackage extends EPackage {
     EOperation GPX_TYPE___GET_LENGTH = eINSTANCE.getGpxType__GetLength();
 
     /**
+     * The meta object literal for the '<em><b>Get Cumulative Ascent</b></em>' operation.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EOperation GPX_TYPE___GET_CUMULATIVE_ASCENT = eINSTANCE.getGpxType__GetCumulativeAscent();
+
+    /**
+     * The meta object literal for the '<em><b>Get Duration</b></em>' operation.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EOperation GPX_TYPE___GET_DURATION = eINSTANCE.getGpxType__GetDuration();
+
+    /**
+     * The meta object literal for the '<em><b>Get Start Time</b></em>' operation.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EOperation GPX_TYPE___GET_START_TIME = eINSTANCE.getGpxType__GetStartTime();
+
+    /**
+     * The meta object literal for the '<em><b>Get End Time</b></em>' operation.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EOperation GPX_TYPE___GET_END_TIME = eINSTANCE.getGpxType__GetEndTime();
+
+    /**
+     * The meta object literal for the '<em><b>Get Cumulative Descent</b></em>' operation.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EOperation GPX_TYPE___GET_CUMULATIVE_DESCENT = eINSTANCE.getGpxType__GetCumulativeDescent();
+
+    /**
+     * The meta object literal for the '<em><b>Get Start Elevation</b></em>' operation.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EOperation GPX_TYPE___GET_START_ELEVATION = eINSTANCE.getGpxType__GetStartElevation();
+
+    /**
+     * The meta object literal for the '<em><b>Get End Elevation</b></em>' operation.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EOperation GPX_TYPE___GET_END_ELEVATION = eINSTANCE.getGpxType__GetEndElevation();
+
+    /**
      * The meta object literal for the '{@link goedegep.gpx.model.impl.LinkTypeImpl <em>Link Type</em>}' class.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -3070,6 +3525,62 @@ public interface GPXPackage extends EPackage {
 		EOperation TRKSEG_TYPE___GET_LENGTH = eINSTANCE.getTrksegType__GetLength();
 
 				/**
+     * The meta object literal for the '<em><b>Get Cumulative Ascent</b></em>' operation.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EOperation TRKSEG_TYPE___GET_CUMULATIVE_ASCENT = eINSTANCE.getTrksegType__GetCumulativeAscent();
+
+        /**
+     * The meta object literal for the '<em><b>Get Duration</b></em>' operation.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EOperation TRKSEG_TYPE___GET_DURATION = eINSTANCE.getTrksegType__GetDuration();
+
+        /**
+     * The meta object literal for the '<em><b>Get Start Time</b></em>' operation.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EOperation TRKSEG_TYPE___GET_START_TIME = eINSTANCE.getTrksegType__GetStartTime();
+
+        /**
+     * The meta object literal for the '<em><b>Get End Time</b></em>' operation.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EOperation TRKSEG_TYPE___GET_END_TIME = eINSTANCE.getTrksegType__GetEndTime();
+
+        /**
+     * The meta object literal for the '<em><b>Get Cumulative Descent</b></em>' operation.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EOperation TRKSEG_TYPE___GET_CUMULATIVE_DESCENT = eINSTANCE.getTrksegType__GetCumulativeDescent();
+
+        /**
+     * The meta object literal for the '<em><b>Get Start Elevation</b></em>' operation.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EOperation TRKSEG_TYPE___GET_START_ELEVATION = eINSTANCE.getTrksegType__GetStartElevation();
+
+        /**
+     * The meta object literal for the '<em><b>Get End Elevation</b></em>' operation.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EOperation TRKSEG_TYPE___GET_END_ELEVATION = eINSTANCE.getTrksegType__GetEndElevation();
+
+        /**
      * The meta object literal for the '{@link goedegep.gpx.model.impl.TrkTypeImpl <em>Trk Type</em>}' class.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -3160,6 +3671,62 @@ public interface GPXPackage extends EPackage {
 		EOperation TRK_TYPE___GET_LENGTH = eINSTANCE.getTrkType__GetLength();
 
 				/**
+     * The meta object literal for the '<em><b>Get Cumulative Ascent</b></em>' operation.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EOperation TRK_TYPE___GET_CUMULATIVE_ASCENT = eINSTANCE.getTrkType__GetCumulativeAscent();
+
+        /**
+     * The meta object literal for the '<em><b>Get Duration</b></em>' operation.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EOperation TRK_TYPE___GET_DURATION = eINSTANCE.getTrkType__GetDuration();
+
+        /**
+     * The meta object literal for the '<em><b>Get Start Time</b></em>' operation.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EOperation TRK_TYPE___GET_START_TIME = eINSTANCE.getTrkType__GetStartTime();
+
+        /**
+     * The meta object literal for the '<em><b>Get End Time</b></em>' operation.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EOperation TRK_TYPE___GET_END_TIME = eINSTANCE.getTrkType__GetEndTime();
+
+        /**
+     * The meta object literal for the '<em><b>Get Cumulative Descent</b></em>' operation.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EOperation TRK_TYPE___GET_CUMULATIVE_DESCENT = eINSTANCE.getTrkType__GetCumulativeDescent();
+
+        /**
+     * The meta object literal for the '<em><b>Get Start Elevation</b></em>' operation.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EOperation TRK_TYPE___GET_START_ELEVATION = eINSTANCE.getTrkType__GetStartElevation();
+
+        /**
+     * The meta object literal for the '<em><b>Get End Elevation</b></em>' operation.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EOperation TRK_TYPE___GET_END_ELEVATION = eINSTANCE.getTrkType__GetEndElevation();
+
+        /**
      * The meta object literal for the '{@link goedegep.gpx.model.impl.WptTypeImpl <em>Wpt Type</em>}' class.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->

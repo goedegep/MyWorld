@@ -2,6 +2,20 @@
  */
 package goedegep.gpx.model.impl;
 
+import java.lang.reflect.InvocationTargetException;
+import java.util.Collection;
+import java.util.Date;
+
+import org.eclipse.emf.common.notify.Notification;
+import org.eclipse.emf.common.notify.NotificationChain;
+import org.eclipse.emf.common.util.EList;
+import org.eclipse.emf.ecore.EClass;
+import org.eclipse.emf.ecore.InternalEObject;
+import org.eclipse.emf.ecore.impl.ENotificationImpl;
+import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
+import org.eclipse.emf.ecore.util.EObjectContainmentEList;
+import org.eclipse.emf.ecore.util.InternalEList;
+
 import goedegep.gpx.model.ExtensionsType;
 import goedegep.gpx.model.GPXPackage;
 import goedegep.gpx.model.GpxType;
@@ -9,23 +23,6 @@ import goedegep.gpx.model.MetadataType;
 import goedegep.gpx.model.RteType;
 import goedegep.gpx.model.TrkType;
 import goedegep.gpx.model.WptType;
-
-import java.lang.reflect.InvocationTargetException;
-import java.util.Collection;
-
-import org.eclipse.emf.common.notify.Notification;
-import org.eclipse.emf.common.notify.NotificationChain;
-
-import org.eclipse.emf.common.util.EList;
-
-import org.eclipse.emf.ecore.EClass;
-import org.eclipse.emf.ecore.InternalEObject;
-
-import org.eclipse.emf.ecore.impl.ENotificationImpl;
-import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
-
-import org.eclipse.emf.ecore.util.EObjectContainmentEList;
-import org.eclipse.emf.ecore.util.InternalEList;
 
 /**
  * <!-- begin-user-doc -->
@@ -372,6 +369,120 @@ public class GpxTypeImpl extends MinimalEObjectImpl.Container implements GpxType
   /**
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
+   * @generated NOT
+   */
+  public double getCumulativeAscent() {
+    double cumulativeAscent = 0d;
+    
+    for (TrkType track: getTrk()) {
+      cumulativeAscent += track.getCumulativeAscent();
+    }
+    
+    return cumulativeAscent;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated NOT
+   */
+  public Double getCumulativeDescent() {
+    double cumulativeDescent = 0d;
+    
+    for (TrkType track: getTrk()) {
+      cumulativeDescent += track.getCumulativeDescent();
+    }
+    
+    return cumulativeDescent;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated NOT
+   */
+  public Long getDuration() {
+    Long duration = null;
+    
+    for (TrkType track: getTrk()) {
+      Long trackDuration = track.getDuration();
+      if (trackDuration != null) {
+        if (duration == null) {
+          duration = trackDuration;
+        } else {
+          duration += trackDuration;
+        }
+      } else {
+        return null;
+      }
+    }
+    
+    return duration;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated NOT
+   */
+  public Date getStartTime() {
+    int numberOfTracks = getTrk().size();
+    if (numberOfTracks == 0) {
+      return null;
+    }
+    
+    TrkType firstTrack = getTrk().get(0);
+    return firstTrack.getStartTime();
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated NOT
+   */
+  public Date getEndTime() {
+    int numberOfTracks = getTrk().size();
+    if (numberOfTracks == 0) {
+      return null;
+    }
+    
+    TrkType lastTrack = getTrk().get(numberOfTracks - 1);
+    return lastTrack.getEndTime();
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated NOT
+   */
+  public Double getStartElevation() {
+    int numberOfTracks = getTrk().size();
+    if (numberOfTracks == 0) {
+      return null;
+    }
+    
+    TrkType firstTrack = getTrk().get(0);
+    return firstTrack.getStartElevation();
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated NOT
+   */
+  public Double getEndElevation() {
+    int numberOfTracks = getTrk().size();
+    if (numberOfTracks == 0) {
+      return null;
+    }
+    
+    TrkType lastTrack = getTrk().get(numberOfTracks - 1);
+    return lastTrack.getEndElevation();
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
    * @generated
    */
   @Override
@@ -523,6 +634,20 @@ public class GpxTypeImpl extends MinimalEObjectImpl.Container implements GpxType
     switch (operationID) {
       case GPXPackage.GPX_TYPE___GET_LENGTH:
         return getLength();
+      case GPXPackage.GPX_TYPE___GET_CUMULATIVE_ASCENT:
+        return getCumulativeAscent();
+      case GPXPackage.GPX_TYPE___GET_DURATION:
+        return getDuration();
+      case GPXPackage.GPX_TYPE___GET_START_TIME:
+        return getStartTime();
+      case GPXPackage.GPX_TYPE___GET_END_TIME:
+        return getEndTime();
+      case GPXPackage.GPX_TYPE___GET_CUMULATIVE_DESCENT:
+        return getCumulativeDescent();
+      case GPXPackage.GPX_TYPE___GET_START_ELEVATION:
+        return getStartElevation();
+      case GPXPackage.GPX_TYPE___GET_END_ELEVATION:
+        return getEndElevation();
     }
     return super.eInvoke(operationID, arguments);
   }

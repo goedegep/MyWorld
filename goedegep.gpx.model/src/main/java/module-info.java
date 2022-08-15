@@ -1,6 +1,5 @@
 module goedegep.gpx.model {
   exports goedegep.gpx.model.util;
-  exports goedegep.gpx.model.impl;
   exports goedegep.gpx.model;
 
   requires java.xml;

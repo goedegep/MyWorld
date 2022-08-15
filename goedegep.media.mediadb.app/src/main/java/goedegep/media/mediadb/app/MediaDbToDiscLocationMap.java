@@ -199,9 +199,6 @@ public class MediaDbToDiscLocationMap {
     for (Album album: mediaDb.getAlbums()) {
 
       LOGGER.info("Handling album: " + (album.isSetArtist() ? album.getArtist().getName() : "<no artist>") + " - " + album.getTitle());
-      if ("Hoodoo".equals(album.getTitle())) {
-        LOGGER.severe("Hoodoo");
-      }
 
       List<DiscAndTrackNrs> discAndTrackNrs = null;
       if (MediaDbUtil.haveAlbumPartlyOnDisc(album)) {
@@ -475,13 +472,19 @@ public class MediaDbToDiscLocationMap {
         LOGGER.severe("Track artist not set for various artist track: " + track.getTitle());
       }
     }
+    
+    if ("Horror Movie".equals(track.getTitle())) {
+      LOGGER.severe("Handling: " + track.getTitle());
+    }
     String trackFileNameByConvention = TrackFile.generateTrackFileName(artistName, track.getTitle());
     String trackFileNameByConvention2 =  TrackFile.generateTrackFileNameIncludingAlbumInfoForTracksFolder(artistName, album.getReleaseDate(), album.getTitle(), trackNr, track.getTitle());
     for (TrackOnDiscInfo trackOnDiscInfo: tracksOnDiscInfo) {
       // first only check on filename, if a match, check the folder.
       String trackFileNameOnDisc = trackOnDiscInfo.getTrackPath().getFileName().toString();
       String trackFileNameOnDiscWithoutExtension = FileUtils.getFileNameWithoutExtension(trackFileNameOnDisc);
-      LOGGER.info("Checking against: trackFileNameOnDiscWithoutExtension=" + trackFileNameOnDiscWithoutExtension);
+      if ("New York Dolls".equals(album.getTitle())) {
+        LOGGER.info("Checking against: trackFileNameOnDiscWithoutExtension=" + trackFileNameOnDiscWithoutExtension);
+      }
       if (trackFileNameOnDiscWithoutExtension.equals(trackFileNameByConvention)  ||
           trackFileNameOnDiscWithoutExtension.equals(trackFileNameByConvention2)) {
         String trackFolder = trackOnDiscInfo.getTrackPath().getParent().getFileName().toString();
@@ -489,7 +492,7 @@ public class MediaDbToDiscLocationMap {
         Collection collection = myTrackInfo.getCollection();
         String collectionFolder = MediaDbAppUtil.getCollectionFolderName(collection);
         if (collection.equals(Collection.NOT_SET)) {
-          LOGGER.severe("Collection not set for track: album=" + album.getTitle() + ", discNr=" + discNr + ", trackNr=" + trackNr);
+          LOGGER.severe("Collection not set for track: album=" + album.getArtistAndTitle() + ", discNr=" + discNr + ", trackNr=" + trackNr);
         } else if (!trackFolder.equals(collectionFolder)) {
           LOGGER.severe("Track in wrong collection: album=" + album.getTitle() + ", discNr=" + discNr + ", trackNr=" + trackNr + ", collection=" + collection.getLiteral());
         }

@@ -46,187 +46,183 @@ import goedegep.gpx.parser.model.Track;
  *
  * @author Thomas
  */
-public class GPXFile extends GPXMeasurable {
+public abstract class GPXFile extends GPXMeasurable {
     private String myGPXFilePath;
     private String myGPXFileName;
     private GPX myGPX;
     private List<GPXTrack> myGPXTracks = new ArrayList<>();
     
-//    private GPXFile() {
+    private GPXFile(final File gpxFile) {
 //        super();
+//        
+//        myGPXFileName = gpxFile.getName();
+//        myGPXFilePath = gpxFile.getParent() + "\\";
+//        final GPXParser parser = new GPXParser();
+//        try {
+//            myGPX = parser.parseGPX(new FileInputStream(gpxFile.getPath()));
+//        } catch (Exception ex) {
+//            Logger.getLogger(GPXFile.class.getName()).log(Level.SEVERE, null, ex);
+//        }
+//
+//        for (Track track : myGPX.getTracks()) {
+//            myGPXTracks.add(new GPXTrack(this, track));
+//        }
+//        assert (myGPXTracks.size() == myGPX.getTracks().size());
+//
+//        // TF, 20170606: add gpx track acording to number in case its set
+//        Collections.sort(myGPXTracks, myGPXTracks.get(0).getComparator());
+    }
+    
+//    @Override
+//    public String getName() {
+//        return myGPXFileName;
+//    }
+//
+//    @Override
+//    public void setName(final String name) {
+//        this.myGPXFileName = name;
+//        setHasUnsavedChanges();
+//    }
+//
+//    public String getPath() {
+//        return myGPXFilePath;
+//    }
+//
+//    public void setPath(final String path) {
+//        this.myGPXFilePath = path;
+//        setHasUnsavedChanges();
 //    }
 
-    public GPXFile(final File gpxFile) {
-        super();
-        
-        myGPXFileName = gpxFile.getName();
-        myGPXFilePath = gpxFile.getParent() + "\\";
-        final GPXParser parser = new GPXParser();
-        try {
-            myGPX = parser.parseGPX(new FileInputStream(gpxFile.getPath()));
-        } catch (Exception ex) {
-            Logger.getLogger(GPXFile.class.getName()).log(Level.SEVERE, null, ex);
-        }
+//    public GPX getGPX() {
+//        return myGPX;
+//    }
+//
+//    @Override
+//    public GPXLineItem getParent() {
+//        // GPXFiles don't have a parent.
+//        return null;
+//    }
+//
+//    @Override
+//    public void setParent(GPXLineItem parent) {
+//        // GPXFiles don't have a parent.
+//    }
 
-        for (Track track : myGPX.getTracks()) {
-            myGPXTracks.add(new GPXTrack(this, track));
-        }
-        assert (myGPXTracks.size() == myGPX.getTracks().size());
+//    @Override
+//    public List<GPXLineItem> getChildren() {
+//        return new ArrayList<>(myGPXTracks);
+//    }
+//    
+//    @Override
+//    public void setChildren(final List<GPXLineItem> children) {
+//        setGPXTracks(castChildren(GPXTrack.class, children));
+//    }
+//    
+//    public void setGPXTracks(final List<GPXTrack> gpxTracks) {
+//        myGPXTracks = gpxTracks;
+//        
+//        // TF, 20170627: fill number attribute for gpx track
+//        AtomicInteger counter = new AtomicInteger(0);
+//        final Set<Track> tracks = gpxTracks.stream().
+//                map((GPXTrack child) -> {
+//                    child.setNumber(counter.getAndIncrement());
+//                    return child.getTrack();
+//                }).collect(Collectors.toSet());
+//        myGPX.setTracks(new HashSet<>(tracks));
+//
+//        setHasUnsavedChanges();
+//    }
 
-        // TF, 20170606: add gpx track acording to number in case its set
-        Collections.sort(myGPXTracks, myGPXTracks.get(0).getComparator());
-    }
+//    @Override
+//    public GPXLineItemType getType() {
+//        return GPXLineItemType.GPXFile;
+//    }
+//    
+//    @Override
+//    public List<GPXMeasurable> getGPXMeasurables() {
+//        return new ArrayList<>(myGPXTracks);
+//    }
+//
+//    @Override
+//    public String getData(final GPXLineItemData gpxLineItemData) {
+//        switch (gpxLineItemData) {
+//            case Type:
+//                return "File";
+//            case Name:
+//                return myGPXFileName;
+//            case Start:
+//                // format dd.mm.yyyy hh:mm:ss
+//                return DATE_FORMAT.format(getStartTime());
+//            case Duration:
+//                return getDurationAsString();
+//            case Length:
+//                return String.format("%1$.3f", getLength()/1000d);
+//            case Speed:
+//                return String.format("%1$.3f", getLength()/getDuration()*1000d*3.6d);
+//            case CumAscent:
+//                return String.format("%1$.2f", getCumulativeAscent());
+//            case CumDescent:
+//                return String.format("-%1$.2f", getCumulativeDescent());
+//            case NoItems:
+//                return String.format("%1$d", getGPXTracks().size());
+//            default:
+//                return "";
+//        }
+//    }
     
-    @Override
-    public String getName() {
-        return myGPXFileName;
-    }
-
-    @Override
-    public void setName(final String name) {
-        this.myGPXFileName = name;
-        setHasUnsavedChanges();
-    }
-
-    public String getPath() {
-        return myGPXFilePath;
-    }
-
-    public void setPath(final String path) {
-        this.myGPXFilePath = path;
-        setHasUnsavedChanges();
-    }
-
-    public GPX getGPX() {
-        return myGPX;
-    }
-
-    @Override
-    public GPXLineItem getParent() {
-        // GPXFiles don't have a parent.
-        return null;
-    }
-
-    @Override
-    public void setParent(GPXLineItem parent) {
-        // GPXFiles don't have a parent.
-    }
-
-    @Override
-    public List<GPXLineItem> getChildren() {
-        return new ArrayList<>(myGPXTracks);
-    }
+//    @Override
+//    public Date getDate() {
+//        return getStartTime();
+//    }
+//    
+//    @Override
+//    public GPXFile getGPXFile() {
+//        return this;
+//    }
+//
+//    @Override
+//    public List<GPXTrack> getGPXTracks() {
+//        // return copy of list
+//        return myGPXTracks.stream().collect(Collectors.toList());
+//    }
+//
+//    @Override
+//    public List<GPXTrackSegment> getGPXTrackSegments() {
+//        // iterate over my segments
+//        List<GPXTrackSegment> result = new ArrayList<>();
+//        for (GPXTrack track : myGPXTracks) {
+//            result.addAll(track.getGPXTrackSegments());
+//        }
+//        return result;
+//    }
+//
+//    @Override
+//    public List<GPXWaypoint> getGPXWaypoints() {
+//        // iterate over my segments
+//        List<GPXWaypoint> result = new ArrayList<>();
+//        for (GPXTrack track : myGPXTracks) {
+//            result.addAll(track.getGPXWaypoints());
+//        }
+//        return result;
+//    }
+//
+//    /**
+//     * @return the duration
+//     */
+//    @Override
+//    public long getDuration() {
+//        long result = 0;
+//
+//        // duration isn't end-start for a complet file BUT the sum of its track durations...
+//        for (int i = 0; i < myGPXTracks.size(); i++) {
+//            result += myGPXTracks.get(i).getDuration();
+//        }
+//
+//        return result;
+//    }
     
-    @Override
-    public void setChildren(final List<GPXLineItem> children) {
-        setGPXTracks(castChildren(GPXTrack.class, children));
-    }
-    
-    public void setGPXTracks(final List<GPXTrack> gpxTracks) {
-        myGPXTracks = gpxTracks;
-        
-        // TF, 20170627: fill number attribute for gpx track
-        AtomicInteger counter = new AtomicInteger(0);
-        final Set<Track> tracks = gpxTracks.stream().
-                map((GPXTrack child) -> {
-                    child.setNumber(counter.getAndIncrement());
-                    return child.getTrack();
-                }).collect(Collectors.toSet());
-        myGPX.setTracks(new HashSet<>(tracks));
-
-        setHasUnsavedChanges();
-    }
-
-    @Override
-    public GPXLineItemType getType() {
-        return GPXLineItemType.GPXFile;
-    }
-    
-    @Override
-    public List<GPXMeasurable> getGPXMeasurables() {
-        return new ArrayList<>(myGPXTracks);
-    }
-
-    @Override
-    public String getData(final GPXLineItemData gpxLineItemData) {
-        switch (gpxLineItemData) {
-            case Type:
-                return "File";
-            case Name:
-                return myGPXFileName;
-            case Start:
-                // format dd.mm.yyyy hh:mm:ss
-                return DATE_FORMAT.format(getStartTime());
-            case Duration:
-                return getDurationAsString();
-            case Length:
-                return String.format("%1$.3f", getLength()/1000d);
-            case Speed:
-                return String.format("%1$.3f", getLength()/getDuration()*1000d*3.6d);
-            case CumAscent:
-                return String.format("%1$.2f", getCumulativeAscent());
-            case CumDescent:
-                return String.format("-%1$.2f", getCumulativeDescent());
-            case NoItems:
-                return String.format("%1$d", getGPXTracks().size());
-            default:
-                return "";
-        }
-    }
-    
-    @Override
-    public Date getDate() {
-        return getStartTime();
-    }
-    
-    @Override
-    public GPXFile getGPXFile() {
-        return this;
-    }
-
-    @Override
-    public List<GPXTrack> getGPXTracks() {
-        // return copy of list
-        return myGPXTracks.stream().collect(Collectors.toList());
-    }
-
-    @Override
-    public List<GPXTrackSegment> getGPXTrackSegments() {
-        // iterate over my segments
-        List<GPXTrackSegment> result = new ArrayList<>();
-        for (GPXTrack track : myGPXTracks) {
-            result.addAll(track.getGPXTrackSegments());
-        }
-        return result;
-    }
-
-    @Override
-    public List<GPXWaypoint> getGPXWaypoints() {
-        // iterate over my segments
-        List<GPXWaypoint> result = new ArrayList<>();
-        for (GPXTrack track : myGPXTracks) {
-            result.addAll(track.getGPXWaypoints());
-        }
-        return result;
-    }
-
-    /**
-     * @return the duration
-     */
-    @Override
-    public long getDuration() {
-        long result = 0;
-
-        // duration isn't end-start for a complet file BUT the sum of its track durations...
-        for (int i = 0; i < myGPXTracks.size(); i++) {
-            result += myGPXTracks.get(i).getDuration();
-        }
-
-        return result;
-    }
-    
-    @Override
-    protected void visitMe(final IGPXLineItemVisitor visitor) {
-        visitor.visitGPXFile(this);
-    }
+//    @Override
+//    protected void visitMe(final IGPXLineItemVisitor visitor) {
+//        visitor.visitGPXFile(this);
+//    }
 }

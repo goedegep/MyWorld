@@ -70,12 +70,12 @@ public class MediaDbUtil {
    * @return true if the album needs attention, false otherwise.
    */
   public static boolean albumNeedsAttention(Album album) {
-    if (album.isSetMyInfo()) {
-      MyInfo myInfo = album.getMyInfo();
-      if (myInfo.getIWant() == IWant.DONT_KNOW) {
-        return true;
-      }
+
+    MyInfo myInfo = album.getMyInfo();
+    if (myInfo.getIWant() == IWant.DONT_KNOW) {
+      return true;
     }
+
     return false;
   }
 
@@ -116,6 +116,7 @@ public class MediaDbUtil {
       if (originalDisc != null) {
         track.setOriginalDisc(originalDisc);
       }
+      mediaDb.getTracks().add(track);
     }
     
     return track;
@@ -212,28 +213,26 @@ public class MediaDbUtil {
       
     int trackNr = 1;
     for (TrackReference trackReference: disc.getTrackReferences()) {
-      if (trackReference.isSetMyTrackInfo()) {
-        MyTrackInfo myTrackInfo = trackReference.getMyTrackInfo();
-        if (myTrackInfo != null) {
-          List<MediumInfo> mediumInfos = myTrackInfo.getIHaveOn();
-          for (MediumInfo mediumInfo: mediumInfos) {
-            MediumType mediumType = mediumInfo.getMediumType();
-            if (mediumType != null  &&  mediumType != MediumType.NOT_SET  &&
-                ((onDisc == false)  ||  (mediumInfo.getMediumType() == MediumType.HARDDISK))) {
-              // I have this track 
-              if (discAndTrackNrs == null) {
-                discAndTrackNrs = MEDIA_DB_FACTORY.createDiscAndTrackNrs();
-                if (discNr != -1) {
-                  discAndTrackNrs.setDiscNr(discNr);
-                }
+      MyTrackInfo myTrackInfo = trackReference.getMyTrackInfo();
+      if (myTrackInfo != null) {
+        List<MediumInfo> mediumInfos = myTrackInfo.getIHaveOn();
+        for (MediumInfo mediumInfo: mediumInfos) {
+          MediumType mediumType = mediumInfo.getMediumType();
+          if (mediumType != null  &&  mediumType != MediumType.NOT_SET  &&
+              ((onDisc == false)  ||  (mediumInfo.getMediumType() == MediumType.HARDDISK))) {
+            // I have this track 
+            if (discAndTrackNrs == null) {
+              discAndTrackNrs = MEDIA_DB_FACTORY.createDiscAndTrackNrs();
+              if (discNr != -1) {
+                discAndTrackNrs.setDiscNr(discNr);
               }
-              discAndTrackNrs.getTrackNrs().add(trackNr);
-              break;
             }
-          }        
-        }
+            discAndTrackNrs.getTrackNrs().add(trackNr);
+            break;
+          }
+        }        
       }
-      
+
       trackNr++;
     }
     
@@ -280,21 +279,17 @@ public class MediaDbUtil {
       
     int trackNr = 1;
     for (TrackReference trackReference: disc.getTrackReferences()) {
-      if (trackReference.isSetMyTrackInfo()) {
-        MyTrackInfo myTrackInfo = trackReference.getMyTrackInfo();
-        if (myTrackInfo != null) {
-          if (myTrackInfo.isSetIWant()) {
-            IWant iWant = myTrackInfo.getIWant();
-            if (iWant.equals(IWant.YES)) {
-              if (discAndTrackNrs == null) {
-                discAndTrackNrs = MEDIA_DB_FACTORY.createDiscAndTrackNrs();
-                if (discNr != -1) {
-                  discAndTrackNrs.setDiscNr(discNr);
-                }
-              }
-              discAndTrackNrs.getTrackNrs().add(trackNr);
+      MyTrackInfo myTrackInfo = trackReference.getMyTrackInfo();
+      if (myTrackInfo != null) {
+        IWant iWant = myTrackInfo.getIWant();
+        if (iWant.equals(IWant.YES)) {
+          if (discAndTrackNrs == null) {
+            discAndTrackNrs = MEDIA_DB_FACTORY.createDiscAndTrackNrs();
+            if (discNr != -1) {
+              discAndTrackNrs.setDiscNr(discNr);
             }
           }
+          discAndTrackNrs.getTrackNrs().add(trackNr);
         }
       }
 
@@ -421,7 +416,7 @@ public class MediaDbUtil {
       if (myInfo != null) {
         List<MediumInfo> mediumInfos = myInfo.getIHaveOn();
         for (MediumInfo mediumInfo: mediumInfos) {
-          if (mediumInfo.isSetMediumType()  &&  mediumInfo.getMediumType().equals(mediumType)) {
+          if (mediumType.equals(mediumInfo.getMediumType())) {
             return true;
           }
         }
@@ -436,27 +431,25 @@ public class MediaDbUtil {
         }
 
         for (TrackReference trackReference: disc.getTrackReferences()) {
-          if (!trackReference.isSetTrack()) {
-            return false;
-          }
           Track track = trackReference.getTrack();
-          if (!track.isSetOriginalDisc()) {
+          if (track == null) {
             return false;
           }
-          if (!track.getOriginalDisc().equals(disc)) {
-            return false;
-          }
-          if (!trackReference.isSetMyTrackInfo()) {
+          if (!disc.equals(track.getOriginalDisc())) {
             return false;
           }
           MyTrackInfo myTrackInfo = trackReference.getMyTrackInfo();
+          if (myTrackInfo == null) {
+            return false;
+          }
           if (!myTrackInfo.isSetIHaveOn()) {
             return false;
           }
           List<MediumInfo> mediumInfos = myTrackInfo.getIHaveOn();
+          
           boolean mediumTypeFound = false;
           for (MediumInfo mediumInfo: mediumInfos) {
-            if (mediumInfo.isSetMediumType()  &&  mediumInfo.getMediumType().equals(mediumType)) {
+            if (mediumType.equals(mediumInfo.getMediumType())) {
               mediumTypeFound = true;
             }
           }
@@ -501,19 +494,14 @@ public class MediaDbUtil {
       }
       
       for (TrackReference trackReference: disc.getTrackReferences()) {
-        if (!trackReference.isSetTrack()) {
+        if (trackReference.getTrack() == null) {
           // This shouldn't happen, but we return an empty list to be safe.
-          mediumInfos.clear();
-          return mediumInfos;
-        }
-        // If this is not set, I shouldn't have it.
-        if (!trackReference.isSetMyTrackInfo()) {
           mediumInfos.clear();
           return mediumInfos;
         }
         MyTrackInfo myTrackInfo = trackReference.getMyTrackInfo();
         // If this is not set, I shouldn't have it.
-        if (!myTrackInfo.isSetIHaveOn()) {
+        if (myTrackInfo == null) {
           mediumInfos.clear();
           return mediumInfos;
         }
@@ -557,24 +545,18 @@ public class MediaDbUtil {
   }
   
   private static boolean mediumInfosAreEqual(MediumInfo mediumInfo1, MediumInfo mediumInfo2) {
-    if (mediumInfo1.isSetMediumType()  &&  !mediumInfo2.isSetMediumType()) {
+    if (mediumInfo1.getMediumType() != null  &&  mediumInfo2.getMediumType() != null) {
       return false;
     }
-    if (mediumInfo2.isSetMediumType()  &&  !mediumInfo1.isSetMediumType()) {
+    if (mediumInfo2.getMediumType() != null  &&  mediumInfo1.getMediumType() == null) {
       return false;
     }
-    if (mediumInfo1.isSetMediumType()  &&  mediumInfo2.isSetMediumType()) {
+    if (mediumInfo1.getMediumType() != null  &&  mediumInfo2.getMediumType() != null) {
       if (!mediumInfo1.getMediumType().equals(mediumInfo2.getMediumType())) {
         return false;
       }
     }
     
-    if (mediumInfo1.isSetSourceTypes()  &&  !mediumInfo2.isSetSourceTypes()) {
-      return false;
-    }
-    if (mediumInfo2.isSetSourceTypes()  &&  !mediumInfo1.isSetSourceTypes()) {
-      return false;
-    }
     if (mediumInfo1.isSetSourceTypes()  &&  mediumInfo2.isSetSourceTypes()) {
       List<InformationType> sourceTypes1 = mediumInfo1.getSourceTypes();
       List<InformationType> sourceTypes2 = mediumInfo2.getSourceTypes();
@@ -651,22 +633,16 @@ public class MediaDbUtil {
     if (iWant == null) {
       return;
     }
-    
+
     // If the album tracks are not available, set it at album level, otherwise set it per track.
-    
+
     if (!areAllTracksAvailableForAlbum(album)) {
-      MyInfo myInfo;
-      if (!album.isSetMyInfo()) {
+      MyInfo myInfo = album.getMyInfo();
+      if (myInfo == null) {
         myInfo = MEDIA_DB_FACTORY.createMyInfo();
         album.setMyInfo(myInfo);
-      } else {
-        myInfo = album.getMyInfo();
       }
-      if (iWant != IWant.NOT_SET) {
-        myInfo.setIWant(iWant);
-      } else {
-        myInfo.unsetIWant();
-      }
+      myInfo.setIWant(iWant);
     } else {
       for (Disc disc: album.getDiscs()) {
         for (TrackReference trackReference: disc.getTrackReferences()) {
@@ -677,11 +653,7 @@ public class MediaDbUtil {
             myTrackInfo = MEDIA_DB_FACTORY.createMyTrackInfo();
             trackReference.setMyTrackInfo(myTrackInfo);
           }
-          if (iWant != IWant.NOT_SET) {
-            myTrackInfo.setIWant(iWant);
-          } else {
-            myTrackInfo.unsetIWant();
-          }
+          myTrackInfo.setIWant(iWant);
         }
       }
     }
@@ -728,11 +700,9 @@ public class MediaDbUtil {
     
     // If the album tracks are not available, get it from album level, otherwise get it per track.
     if (album.getDiscs().isEmpty()) {
-      if (album.isSetMyInfo()) {
-        MyInfo myInfo = album.getMyInfo();
-        if (myInfo.isSetIWant()) {
-          iWant = myInfo.getIWant();
-        }
+      MyInfo myInfo = album.getMyInfo();
+      if (myInfo != null) {
+        iWant = myInfo.getIWant();
       }
     } else {
       for (Disc disc: album.getDiscs()) {
@@ -742,8 +712,8 @@ public class MediaDbUtil {
             LOGGER.severe("track is null");
             LOGGER.severe("STOP");
           }
-          if (trackReference.isSetMyTrackInfo()) {
-            MyTrackInfo myTrackInfo = trackReference.getMyTrackInfo();
+          MyTrackInfo myTrackInfo = trackReference.getMyTrackInfo();
+          if (myTrackInfo != null) {
             if (myTrackInfo.isSetIWant()) {
               IWant trackIWant = myTrackInfo.getIWant();
               if (trackIWant == IWant.NOT_SET) {
@@ -830,12 +800,13 @@ public class MediaDbUtil {
   public static Disc createDiscCopy(Disc disc) {
     Disc discCopy = MEDIA_DB_FACTORY.createDisc();
     
-    if (disc.isSetTitle()) {
-      discCopy.setTitle(new String(disc.getTitle()));
+    String title = disc.getTitle();
+    if (title != null) {
+      discCopy.setTitle(new String(title));
     }
     
     for (TrackReference trackReference: disc.getTrackReferences()) {
-      discCopy.getTrackReferences().add(createTrackReferenceCopy(trackReference));       
+      discCopy.getTrackReferences().add(createTrackReferenceCopy(trackReference));
     }
     
     return discCopy;
@@ -850,60 +821,21 @@ public class MediaDbUtil {
   public static TrackReference createTrackReferenceCopy(TrackReference trackReference) {
     TrackReference trackReferenceCopy = MEDIA_DB_FACTORY.createTrackReference();
     
+    String bonusTrack = trackReference.getBonusTrack();
+    if (bonusTrack != null) {
+      trackReferenceCopy.setBonusTrack(new String(bonusTrack));
+    }
     trackReferenceCopy.setTrack(trackReference.getTrack());
     trackReferenceCopy.setOriginalAlbumTrackReference(trackReference.getOriginalAlbumTrackReference());
     
-//    MyTrackReferenceInfo myTrackReferenceInfo = trackReference.getMyTrackReferenceInfo();
-//    if (myTrackReferenceInfo != null) {
-//      trackReferenceCopy.setMyTrackReferenceInfo(createMyTrackReferenceInfoCopy(myTrackReferenceInfo));
-//    }
-
-//    trackReferenceCopy.getMyTrackReferenceInfo();
-    trackReferenceCopy.getTrack();
+    MyTrackInfo myTrackInfo = trackReference.getMyTrackInfo();
+    if (myTrackInfo != null) {
+      trackReferenceCopy.setMyTrackInfo(createMyTrackInfoCopy(myTrackInfo));
+    }
     
     return trackReferenceCopy;
   }
-  
-//  /**
-//   * Create a copy of a Track.
-//   * 
-//   * @param track the Track to be copied.
-//   * @return a Track, being a copy of the specified <code>track</code>.
-//   */
-//  public static Track createTrackCopy(Track track) {
-//    Track trackCopy = MEDIA_DB_FACTORY.createTrack();
-//    
-//    if (track.isSetTitle()) {
-//      trackCopy.setTitle(new String(track.getTitle()));
-//    }
-//    
-//    if (track.isSetArtist()) {
-//      trackCopy.setArtist(track.getArtist());
-//    }
-//    
-//    trackCopy.getAuthors().addAll(track.getAuthors());
-//    
-//    if (track.isSetDuration()) {
-//      trackCopy.setDuration(Integer.valueOf(track.getDuration()));
-//    }
-//    
-//    trackCopy.getPlayers().addAll(track.getPlayers());
-//    
-//    if (track.isSetMyTrackInfo()) {
-//      trackCopy.setMyTrackInfo(createMyTrackInfoCopy(track.getMyTrackInfo()));
-//    }
-//    
-//    if (track.isSetSong()) {
-//      trackCopy.setSong(track.getSong());
-//    }
-//    
-//    for (TrackPart trackPart: track.getParts()) {
-//      trackCopy.getParts().add(createTrackPartCopy(trackPart));
-//    }
-//    
-//    return trackCopy;
-//  }
-  
+    
   /**
    * Create a copy of a TrackPart.
    * 
@@ -913,10 +845,8 @@ public class MediaDbUtil {
   public static TrackPart createTrackPartCopy(TrackPart trackPart) {
     TrackPart trackPartCopy = MEDIA_DB_FACTORY.createTrackPart();
     
-    if (trackPart.isSetTitle()) {
-      trackPartCopy.setTitle(new String(trackPart.getTitle()));
-    }
-        
+    trackPartCopy.setTitle(new String(trackPart.getTitle()));
+         
     return trackPartCopy;
   }
   
@@ -929,9 +859,7 @@ public class MediaDbUtil {
   public static MediumInfo createMediumInfoCopy(MediumInfo mediumInfo) {
     MediumInfo mediumInfoCopy = MEDIA_DB_FACTORY.createMediumInfo();
     
-    if (mediumInfo.isSetMediumType()) {
-      mediumInfoCopy.setMediumType(mediumInfo.getMediumType());
-    }
+    mediumInfoCopy.setMediumType(mediumInfo.getMediumType());
     
     if (mediumInfo.isSetSourceBitRate()) {
       mediumInfoCopy.setSourceBitRate(mediumInfo.getSourceBitRate());
@@ -971,13 +899,7 @@ public class MediaDbUtil {
     
     myInfoCopy.getAlbumReferences().addAll(myInfo.getAlbumReferences());
     
-    if (myInfo.isSetInlayDocument()) {
-      myInfoCopy.setInlayDocument(new String(myInfo.getInlayDocument()));
-    }
-    
-    if (myInfo.isSetMyComments()) {
-      myInfoCopy.setMyComments(new String(myInfo.getMyComments()));
-    }
+    myInfoCopy.setMyComments(myInfo.getMyComments());
     
     return myInfoCopy;
   }
@@ -991,30 +913,19 @@ public class MediaDbUtil {
   public static MyTrackInfo createMyTrackInfoCopy(MyTrackInfo myTrackInfo) {
     MyTrackInfo myTrackInfoCopy = MEDIA_DB_FACTORY.createMyTrackInfo();
     
-    if (myTrackInfo.isSetCollection()) {
-      myTrackInfoCopy.setCollection(myTrackInfo.getCollection());
+    myTrackInfoCopy.setCollection(myTrackInfo.getCollection());
+    
+    myTrackInfoCopy.setIWant(myTrackInfo.getIWant());
+    
+    for (MediumInfo mediumInfo: myTrackInfo.getIHaveOn()) {
+      myTrackInfoCopy.getIHaveOn().add(createMediumInfoCopy(mediumInfo));
+    }
+    
+    if (myTrackInfo.getCompilationTrackReference() != null) {
+      myTrackInfoCopy.setCompilationTrackReference(createTrackReferenceCopy(myTrackInfo.getCompilationTrackReference()));
     }
     
     return myTrackInfoCopy;
   }
   
-//  /**
-//   * Create a copy of a MyTrackReferenceInfo.
-//   * 
-//   * @param myTrackReferenceInfo the MyTrackReferenceInfo to be copied.
-//   * @return a MyTrackReferenceInfo, being a copy of the specified <code>myTrackReferenceInfo</code>.
-//   */
-//  public static MyTrackReferenceInfo createMyTrackReferenceInfoCopy(MyTrackReferenceInfo myTrackReferenceInfo) {
-//    MyTrackReferenceInfo myTrackReferenceInfoCopy = MEDIA_DB_FACTORY.createMyTrackReferenceInfo();
-//    
-//    if (myTrackReferenceInfo.isSetCompilationTrackReference()) {
-//      myTrackReferenceInfoCopy.setCompilationTrackReference(myTrackReferenceInfo.getCompilationTrackReference());
-//    }
-//    
-////    if (myTrackReferenceInfo.isSetOriginalAlbumTrackReference()) {
-////      myTrackReferenceInfoCopy.setOriginalAlbumTrackReference(myTrackReferenceInfo.getOriginalAlbumTrackReference());
-////    }
-//    
-//    return myTrackReferenceInfoCopy;
-//  }
 }

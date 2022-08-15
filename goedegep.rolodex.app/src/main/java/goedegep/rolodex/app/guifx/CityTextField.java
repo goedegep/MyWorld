@@ -3,10 +3,8 @@ package goedegep.rolodex.app.guifx;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.controlsfx.control.textfield.TextFields;
-
 import goedegep.jfx.CustomizationFx;
-import goedegep.jfx.controls.TextFieldObjectInput;
+import goedegep.jfx.controls.AutoCompleteTextFieldObjectInput;
 import goedegep.rolodex.model.City;
 import goedegep.rolodex.model.Country;
 import goedegep.rolodex.model.Rolodex;
@@ -14,7 +12,7 @@ import goedegep.rolodex.model.Rolodex;
 /**
  * This class is a TextField, with autocompletion, for a city name
  */
-public class CityTextField extends TextFieldObjectInput<String> {
+public class CityTextField extends AutoCompleteTextFieldObjectInput<String> {
   private Rolodex rolodex;
   
   /**
@@ -26,7 +24,7 @@ public class CityTextField extends TextFieldObjectInput<String> {
     this.rolodex = rolodex;
     
     customization.getComponentFactoryFx().customizeTextInputControl(this);
-    TextFields.bindAutoCompletion(this, citiesToString(rolodex.getCityList().getCities()));
+    getEntries().addAll(citiesToString(rolodex.getCityList().getCities()));
   }
   
   @Override

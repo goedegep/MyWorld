@@ -8,7 +8,9 @@ import javafx.scene.control.TableColumn;
 import javafx.util.Callback;
 
 /**
- * This class describes one column of an EObjectTable.
+ * This class describes a custom column of an EObjectTable.
+ * <p>
+ * One attribute is added to the EObjectTableColumnDescriptorBase; a cellFactory.
  */
 public class EObjectTableColumnDescriptorCustom<T extends EObject> extends EObjectTableColumnDescriptorBase<T> {
   

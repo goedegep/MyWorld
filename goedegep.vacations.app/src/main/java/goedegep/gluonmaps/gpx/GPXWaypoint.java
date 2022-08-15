@@ -111,53 +111,53 @@ public class GPXWaypoint extends GPXLineItem {
         return GPXLineItemType.GPXWaypoint;
     }
     
-    @Override
-    public String getData(final GPXLineItemData gpxLineItemData) {
-        switch (gpxLineItemData) {
-            case Type:
-                return "Waypt";
-            case Name:
-                return myWaypoint.getName();
-            case Position:
-                return EarthGeometry.latToString(this) + " " + EarthGeometry.lonToString(this);
-            case Date:
-                return DATE_FORMAT.format(myWaypoint.getTime());
-            case Duration:
-                if (myPrevGPXWaypoint != null) {
-                    return getDurationAsString();
-                } else {
-                    return "---";
-                }
-            case DistToPrev:
-                if (myPrevGPXWaypoint != null) {
-                    return String.format("%1$.2f", EarthGeometry.distanceGPXWaypoints(this, myPrevGPXWaypoint));
-                } else {
-                    return "---";
-                }
-            case Speed:
-                if (myPrevGPXWaypoint != null) {
-                    return String.format("%1$.2f", getSpeed());
-                } else {
-                    return "---";
-                }
-            case Elevation:
-                return String.format("%1$.2f", myWaypoint.getElevation());
-            case ElevationDiffToPrev:
-                if (myPrevGPXWaypoint != null) {
-                    return String.format("%1$.2f", getElevationDiff());
-                } else {
-                    return "---";
-                }
-            case Slope:
-                if (myPrevGPXWaypoint != null) {
-                    return String.format("%1$.1f", getSlope());
-                } else {
-                    return "---";
-                }
-            default:
-                return "";
-        }
-    }
+//    @Override
+//    public String getData(final GPXLineItemData gpxLineItemData) {
+//        switch (gpxLineItemData) {
+//            case Type:
+//                return "Waypt";
+//            case Name:
+//                return myWaypoint.getName();
+//            case Position:
+//                return EarthGeometry.latToString(this) + " " + EarthGeometry.lonToString(this);
+//            case Date:
+//                return DATE_FORMAT.format(myWaypoint.getTime());
+//            case Duration:
+//                if (myPrevGPXWaypoint != null) {
+//                    return getDurationAsString();
+//                } else {
+//                    return "---";
+//                }
+//            case DistToPrev:
+//                if (myPrevGPXWaypoint != null) {
+//                    return String.format("%1$.2f", EarthGeometry.distanceGPXWaypoints(this, myPrevGPXWaypoint));
+//                } else {
+//                    return "---";
+//                }
+//            case Speed:
+//                if (myPrevGPXWaypoint != null) {
+//                    return String.format("%1$.2f", getSpeed());
+//                } else {
+//                    return "---";
+//                }
+//            case Elevation:
+//                return String.format("%1$.2f", myWaypoint.getElevation());
+//            case ElevationDiffToPrev:
+//                if (myPrevGPXWaypoint != null) {
+//                    return String.format("%1$.2f", getElevationDiff());
+//                } else {
+//                    return "---";
+//                }
+//            case Slope:
+//                if (myPrevGPXWaypoint != null) {
+//                    return String.format("%1$.1f", getSlope());
+//                } else {
+//                    return "---";
+//                }
+//            default:
+//                return "";
+//        }
+//    }
     
     @Override
     public Date getDate() {
@@ -188,26 +188,26 @@ public class GPXWaypoint extends GPXLineItem {
         return result;
     }
 
-    @Override
-    public long getDuration() {
-        return EarthGeometry.duration(this, myPrevGPXWaypoint);
-    }
-    
-    public double getSpeed() {
-        return EarthGeometry.speed(this, myPrevGPXWaypoint);
-    }
+//    @Override
+//    public long getDuration() {
+//        return EarthGeometry.duration(this, myPrevGPXWaypoint);
+//    }
+//    
+//    public double getSpeed() {
+//        return EarthGeometry.speed(this, myPrevGPXWaypoint);
+//    }
     
     public double getDistance() {
         return EarthGeometry.distanceGPXWaypoints(this, myPrevGPXWaypoint);
     }
     
-    public double getElevationDiff() {
-        return EarthGeometry.elevationDiff(this, myPrevGPXWaypoint);
-    }
+//    public double getElevationDiff() {
+//        return EarthGeometry.elevationDiff(this, myPrevGPXWaypoint);
+//    }
     
-    public double getSlope() {
-        return EarthGeometry.slope(this, myPrevGPXWaypoint);
-    }
+//    public double getSlope() {
+//        return EarthGeometry.slope(this, myPrevGPXWaypoint);
+//    }
     
     @Override
     protected void visitMe(final IGPXLineItemVisitor visitor) {

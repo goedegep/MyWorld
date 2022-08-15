@@ -18,6 +18,10 @@
     </dependency>
     <dependency>
       <groupId>goedegep.gpx</groupId>
+      <artifactId>goedegep-gpx</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>goedegep.gpx</groupId>
       <artifactId>goedegep-gpx-model</artifactId>
     </dependency>
     <dependency>

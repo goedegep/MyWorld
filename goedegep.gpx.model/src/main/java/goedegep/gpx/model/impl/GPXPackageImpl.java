@@ -523,6 +523,69 @@ public class GPXPackageImpl extends EPackageImpl implements GPXPackage {
    * <!-- end-user-doc -->
    * @generated
    */
+  public EOperation getGpxType__GetCumulativeAscent() {
+    return gpxTypeEClass.getEOperations().get(1);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EOperation getGpxType__GetDuration() {
+    return gpxTypeEClass.getEOperations().get(2);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EOperation getGpxType__GetStartTime() {
+    return gpxTypeEClass.getEOperations().get(3);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EOperation getGpxType__GetEndTime() {
+    return gpxTypeEClass.getEOperations().get(4);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EOperation getGpxType__GetCumulativeDescent() {
+    return gpxTypeEClass.getEOperations().get(5);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EOperation getGpxType__GetStartElevation() {
+    return gpxTypeEClass.getEOperations().get(6);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EOperation getGpxType__GetEndElevation() {
+    return gpxTypeEClass.getEOperations().get(7);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   public EClass getLinkType() {
     return linkTypeEClass;
   }
@@ -874,6 +937,69 @@ public class GPXPackageImpl extends EPackageImpl implements GPXPackage {
    * <!-- end-user-doc -->
    * @generated
    */
+  public EOperation getTrksegType__GetCumulativeAscent() {
+    return trksegTypeEClass.getEOperations().get(1);
+  }
+
+    /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EOperation getTrksegType__GetDuration() {
+    return trksegTypeEClass.getEOperations().get(2);
+  }
+
+    /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EOperation getTrksegType__GetStartTime() {
+    return trksegTypeEClass.getEOperations().get(3);
+  }
+
+    /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EOperation getTrksegType__GetEndTime() {
+    return trksegTypeEClass.getEOperations().get(4);
+  }
+
+    /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EOperation getTrksegType__GetCumulativeDescent() {
+    return trksegTypeEClass.getEOperations().get(5);
+  }
+
+    /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EOperation getTrksegType__GetStartElevation() {
+    return trksegTypeEClass.getEOperations().get(6);
+  }
+
+    /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EOperation getTrksegType__GetEndElevation() {
+    return trksegTypeEClass.getEOperations().get(7);
+  }
+
+    /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   public EClass getTrkType() {
     return trkTypeEClass;
   }
@@ -969,6 +1095,69 @@ public class GPXPackageImpl extends EPackageImpl implements GPXPackage {
   }
 
 		/**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EOperation getTrkType__GetCumulativeAscent() {
+    return trkTypeEClass.getEOperations().get(1);
+  }
+
+    /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EOperation getTrkType__GetDuration() {
+    return trkTypeEClass.getEOperations().get(2);
+  }
+
+    /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EOperation getTrkType__GetStartTime() {
+    return trkTypeEClass.getEOperations().get(3);
+  }
+
+    /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EOperation getTrkType__GetEndTime() {
+    return trkTypeEClass.getEOperations().get(4);
+  }
+
+    /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EOperation getTrkType__GetCumulativeDescent() {
+    return trkTypeEClass.getEOperations().get(5);
+  }
+
+    /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EOperation getTrkType__GetStartElevation() {
+    return trkTypeEClass.getEOperations().get(6);
+  }
+
+    /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EOperation getTrkType__GetEndElevation() {
+    return trkTypeEClass.getEOperations().get(7);
+  }
+
+    /**
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
@@ -1281,6 +1470,13 @@ public class GPXPackageImpl extends EPackageImpl implements GPXPackage {
     createEAttribute(gpxTypeEClass, GPX_TYPE__VERSION);
     createEAttribute(gpxTypeEClass, GPX_TYPE__CREATOR);
     createEOperation(gpxTypeEClass, GPX_TYPE___GET_LENGTH);
+    createEOperation(gpxTypeEClass, GPX_TYPE___GET_CUMULATIVE_ASCENT);
+    createEOperation(gpxTypeEClass, GPX_TYPE___GET_DURATION);
+    createEOperation(gpxTypeEClass, GPX_TYPE___GET_START_TIME);
+    createEOperation(gpxTypeEClass, GPX_TYPE___GET_END_TIME);
+    createEOperation(gpxTypeEClass, GPX_TYPE___GET_CUMULATIVE_DESCENT);
+    createEOperation(gpxTypeEClass, GPX_TYPE___GET_START_ELEVATION);
+    createEOperation(gpxTypeEClass, GPX_TYPE___GET_END_ELEVATION);
 
     linkTypeEClass = createEClass(LINK_TYPE);
     createEAttribute(linkTypeEClass, LINK_TYPE__TEXT);
@@ -1327,6 +1523,13 @@ public class GPXPackageImpl extends EPackageImpl implements GPXPackage {
     createEReference(trksegTypeEClass, TRKSEG_TYPE__TRKPT);
     createEReference(trksegTypeEClass, TRKSEG_TYPE__EXTENSIONS);
     createEOperation(trksegTypeEClass, TRKSEG_TYPE___GET_LENGTH);
+    createEOperation(trksegTypeEClass, TRKSEG_TYPE___GET_CUMULATIVE_ASCENT);
+    createEOperation(trksegTypeEClass, TRKSEG_TYPE___GET_DURATION);
+    createEOperation(trksegTypeEClass, TRKSEG_TYPE___GET_START_TIME);
+    createEOperation(trksegTypeEClass, TRKSEG_TYPE___GET_END_TIME);
+    createEOperation(trksegTypeEClass, TRKSEG_TYPE___GET_CUMULATIVE_DESCENT);
+    createEOperation(trksegTypeEClass, TRKSEG_TYPE___GET_START_ELEVATION);
+    createEOperation(trksegTypeEClass, TRKSEG_TYPE___GET_END_ELEVATION);
 
     trkTypeEClass = createEClass(TRK_TYPE);
     createEAttribute(trkTypeEClass, TRK_TYPE__NAME);
@@ -1339,6 +1542,13 @@ public class GPXPackageImpl extends EPackageImpl implements GPXPackage {
     createEReference(trkTypeEClass, TRK_TYPE__EXTENSIONS);
     createEReference(trkTypeEClass, TRK_TYPE__TRKSEG);
     createEOperation(trkTypeEClass, TRK_TYPE___GET_LENGTH);
+    createEOperation(trkTypeEClass, TRK_TYPE___GET_CUMULATIVE_ASCENT);
+    createEOperation(trkTypeEClass, TRK_TYPE___GET_DURATION);
+    createEOperation(trkTypeEClass, TRK_TYPE___GET_START_TIME);
+    createEOperation(trkTypeEClass, TRK_TYPE___GET_END_TIME);
+    createEOperation(trkTypeEClass, TRK_TYPE___GET_CUMULATIVE_DESCENT);
+    createEOperation(trkTypeEClass, TRK_TYPE___GET_START_ELEVATION);
+    createEOperation(trkTypeEClass, TRK_TYPE___GET_END_ELEVATION);
 
     wptTypeEClass = createEClass(WPT_TYPE);
     createEAttribute(wptTypeEClass, WPT_TYPE__ELE);
@@ -1442,6 +1652,20 @@ public class GPXPackageImpl extends EPackageImpl implements GPXPackage {
 
     initEOperation(getGpxType__GetLength(), ecorePackage.getEDouble(), "getLength", 0, 1, IS_UNIQUE, IS_ORDERED);
 
+    initEOperation(getGpxType__GetCumulativeAscent(), ecorePackage.getEDouble(), "getCumulativeAscent", 0, 1, IS_UNIQUE, IS_ORDERED);
+
+    initEOperation(getGpxType__GetDuration(), ecorePackage.getELongObject(), "getDuration", 0, 1, IS_UNIQUE, IS_ORDERED);
+
+    initEOperation(getGpxType__GetStartTime(), ecorePackage.getEDate(), "getStartTime", 0, 1, IS_UNIQUE, IS_ORDERED);
+
+    initEOperation(getGpxType__GetEndTime(), ecorePackage.getEDate(), "getEndTime", 0, 1, IS_UNIQUE, IS_ORDERED);
+
+    initEOperation(getGpxType__GetCumulativeDescent(), ecorePackage.getEDoubleObject(), "getCumulativeDescent", 0, 1, IS_UNIQUE, IS_ORDERED);
+
+    initEOperation(getGpxType__GetStartElevation(), ecorePackage.getEDoubleObject(), "getStartElevation", 0, 1, IS_UNIQUE, IS_ORDERED);
+
+    initEOperation(getGpxType__GetEndElevation(), ecorePackage.getEDoubleObject(), "getEndElevation", 0, 1, IS_UNIQUE, IS_ORDERED);
+
     initEClass(linkTypeEClass, LinkType.class, "LinkType", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getLinkType_Text(), theXMLTypePackage.getString(), "text", null, 0, 1, LinkType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getLinkType_Type(), theXMLTypePackage.getString(), "type", null, 0, 1, LinkType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -1489,6 +1713,20 @@ public class GPXPackageImpl extends EPackageImpl implements GPXPackage {
 
     initEOperation(getTrksegType__GetLength(), ecorePackage.getEDouble(), "getLength", 0, 1, IS_UNIQUE, IS_ORDERED);
 
+    initEOperation(getTrksegType__GetCumulativeAscent(), ecorePackage.getEDoubleObject(), "getCumulativeAscent", 0, 1, IS_UNIQUE, IS_ORDERED);
+
+    initEOperation(getTrksegType__GetDuration(), ecorePackage.getELongObject(), "getDuration", 0, 1, IS_UNIQUE, IS_ORDERED);
+
+    initEOperation(getTrksegType__GetStartTime(), ecorePackage.getEDate(), "getStartTime", 0, 1, IS_UNIQUE, IS_ORDERED);
+
+    initEOperation(getTrksegType__GetEndTime(), ecorePackage.getEDate(), "getEndTime", 0, 1, IS_UNIQUE, IS_ORDERED);
+
+    initEOperation(getTrksegType__GetCumulativeDescent(), ecorePackage.getEDoubleObject(), "getCumulativeDescent", 0, 1, IS_UNIQUE, IS_ORDERED);
+
+    initEOperation(getTrksegType__GetStartElevation(), ecorePackage.getEDoubleObject(), "getStartElevation", 0, 1, IS_UNIQUE, IS_ORDERED);
+
+    initEOperation(getTrksegType__GetEndElevation(), ecorePackage.getEDoubleObject(), "getEndElevation", 0, 1, IS_UNIQUE, IS_ORDERED);
+
     initEClass(trkTypeEClass, TrkType.class, "TrkType", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getTrkType_Name(), theXMLTypePackage.getString(), "name", null, 0, 1, TrkType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getTrkType_Cmt(), theXMLTypePackage.getString(), "cmt", null, 0, 1, TrkType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -1501,6 +1739,20 @@ public class GPXPackageImpl extends EPackageImpl implements GPXPackage {
     initEReference(getTrkType_Trkseg(), this.getTrksegType(), null, "trkseg", null, 0, -1, TrkType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEOperation(getTrkType__GetLength(), ecorePackage.getEDouble(), "getLength", 0, 1, IS_UNIQUE, IS_ORDERED);
+
+    initEOperation(getTrkType__GetCumulativeAscent(), ecorePackage.getEDouble(), "getCumulativeAscent", 0, 1, IS_UNIQUE, IS_ORDERED);
+
+    initEOperation(getTrkType__GetDuration(), ecorePackage.getELongObject(), "getDuration", 0, 1, IS_UNIQUE, IS_ORDERED);
+
+    initEOperation(getTrkType__GetStartTime(), ecorePackage.getEDate(), "getStartTime", 0, 1, IS_UNIQUE, IS_ORDERED);
+
+    initEOperation(getTrkType__GetEndTime(), ecorePackage.getEDate(), "getEndTime", 0, 1, IS_UNIQUE, IS_ORDERED);
+
+    initEOperation(getTrkType__GetCumulativeDescent(), ecorePackage.getEDoubleObject(), "getCumulativeDescent", 0, 1, IS_UNIQUE, IS_ORDERED);
+
+    initEOperation(getTrkType__GetStartElevation(), ecorePackage.getEDoubleObject(), "getStartElevation", 0, 1, IS_UNIQUE, IS_ORDERED);
+
+    initEOperation(getTrkType__GetEndElevation(), ecorePackage.getEDoubleObject(), "getEndElevation", 0, 1, IS_UNIQUE, IS_ORDERED);
 
     initEClass(wptTypeEClass, WptType.class, "WptType", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getWptType_Ele(), theXMLTypePackage.getDecimal(), "ele", null, 0, 1, WptType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);

@@ -205,13 +205,22 @@ public interface MediadbPackage extends EPackage {
   int MEDIA_DB__TRACKCOLLECTIONS = 3;
 
   /**
+   * The feature id for the '<em><b>Videos</b></em>' containment reference list.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int MEDIA_DB__VIDEOS = 4;
+
+  /**
    * The number of structural features of the '<em>Media Db</em>' class.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int MEDIA_DB_FEATURE_COUNT = 4;
+  int MEDIA_DB_FEATURE_COUNT = 5;
 
   /**
    * The operation id for the '<em>Get Artist</em>' operation.
@@ -369,7 +378,7 @@ public interface MediadbPackage extends EPackage {
   int ALBUM__ID = 5;
 
   /**
-   * The feature id for the '<em><b>Players</b></em>' reference list.
+   * The feature id for the '<em><b>Players</b></em>' containment reference list.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
@@ -441,7 +450,7 @@ public interface MediadbPackage extends EPackage {
   int ALBUM__COMPILATION = 13;
 
   /**
-   * The feature id for the '<em><b>My Info</b></em>' reference.
+   * The feature id for the '<em><b>My Info</b></em>' containment reference.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
@@ -586,7 +595,7 @@ public interface MediadbPackage extends EPackage {
   int MY_COMPILATION__ID = ALBUM__ID;
 
   /**
-   * The feature id for the '<em><b>Players</b></em>' reference list.
+   * The feature id for the '<em><b>Players</b></em>' containment reference list.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
@@ -658,7 +667,7 @@ public interface MediadbPackage extends EPackage {
   int MY_COMPILATION__COMPILATION = ALBUM__COMPILATION;
 
   /**
-   * The feature id for the '<em><b>My Info</b></em>' reference.
+   * The feature id for the '<em><b>My Info</b></em>' containment reference.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
@@ -977,22 +986,13 @@ public interface MediadbPackage extends EPackage {
   int MY_INFO__MY_COMMENTS = 1;
 
   /**
-   * The feature id for the '<em><b>Inlay Document</b></em>' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int MY_INFO__INLAY_DOCUMENT = 2;
-
-  /**
    * The feature id for the '<em><b>Ive Had On LP</b></em>' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int MY_INFO__IVE_HAD_ON_LP = 3;
+  int MY_INFO__IVE_HAD_ON_LP = 2;
 
   /**
    * The feature id for the '<em><b>IWant</b></em>' attribute.
@@ -1001,7 +1001,7 @@ public interface MediadbPackage extends EPackage {
    * @generated
    * @ordered
    */
-  int MY_INFO__IWANT = 4;
+  int MY_INFO__IWANT = 3;
 
   /**
    * The feature id for the '<em><b>IHave On</b></em>' containment reference list.
@@ -1010,7 +1010,7 @@ public interface MediadbPackage extends EPackage {
    * @generated
    * @ordered
    */
-  int MY_INFO__IHAVE_ON = 5;
+  int MY_INFO__IHAVE_ON = 4;
 
   /**
    * The number of structural features of the '<em>My Info</em>' class.
@@ -1019,7 +1019,7 @@ public interface MediadbPackage extends EPackage {
    * @generated
    * @ordered
    */
-  int MY_INFO_FEATURE_COUNT = 6;
+  int MY_INFO_FEATURE_COUNT = 5;
 
   /**
    * The number of operations of the '<em>My Info</em>' class.
@@ -1270,6 +1270,125 @@ public interface MediadbPackage extends EPackage {
   int TRACK_COLLECTION_OPERATION_COUNT = 0;
 
   /**
+   * The meta object id for the '{@link goedegep.media.mediadb.model.impl.VideoImpl <em>Video</em>}' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see goedegep.media.mediadb.model.impl.VideoImpl
+   * @see goedegep.media.mediadb.model.impl.MediadbPackageImpl#getVideo()
+   * @generated
+   */
+  int VIDEO = 14;
+
+  /**
+   * The feature id for the '<em><b>Title</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int VIDEO__TITLE = 0;
+
+  /**
+   * The feature id for the '<em><b>Date</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int VIDEO__DATE = 1;
+
+  /**
+   * The feature id for the '<em><b>Image</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int VIDEO__IMAGE = 2;
+
+  /**
+   * The feature id for the '<em><b>Subjects</b></em>' containment reference list.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int VIDEO__SUBJECTS = 3;
+
+  /**
+   * The number of structural features of the '<em>Video</em>' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int VIDEO_FEATURE_COUNT = 4;
+
+  /**
+   * The number of operations of the '<em>Video</em>' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int VIDEO_OPERATION_COUNT = 0;
+
+  /**
+   * The meta object id for the '{@link goedegep.media.mediadb.model.impl.SubjectImpl <em>Subject</em>}' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see goedegep.media.mediadb.model.impl.SubjectImpl
+   * @see goedegep.media.mediadb.model.impl.MediadbPackageImpl#getSubject()
+   * @generated
+   */
+  int SUBJECT = 15;
+
+  /**
+   * The feature id for the '<em><b>Title</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int SUBJECT__TITLE = 0;
+
+  /**
+   * The feature id for the '<em><b>Tags</b></em>' attribute list.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int SUBJECT__TAGS = 1;
+
+  /**
+   * The feature id for the '<em><b>Date</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int SUBJECT__DATE = 2;
+
+  /**
+   * The number of structural features of the '<em>Subject</em>' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int SUBJECT_FEATURE_COUNT = 3;
+
+  /**
+   * The number of operations of the '<em>Subject</em>' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int SUBJECT_OPERATION_COUNT = 0;
+
+  /**
    * The meta object id for the '{@link goedegep.media.mediadb.model.MediumType <em>Medium Type</em>}' enum.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -1277,7 +1396,7 @@ public interface MediadbPackage extends EPackage {
    * @see goedegep.media.mediadb.model.impl.MediadbPackageImpl#getMediumType()
    * @generated
    */
-  int MEDIUM_TYPE = 14;
+  int MEDIUM_TYPE = 16;
 
   /**
    * The meta object id for the '{@link goedegep.media.mediadb.model.IWant <em>IWant</em>}' enum.
@@ -1287,7 +1406,7 @@ public interface MediadbPackage extends EPackage {
    * @see goedegep.media.mediadb.model.impl.MediadbPackageImpl#getIWant()
    * @generated
    */
-  int IWANT = 15;
+  int IWANT = 17;
 
   /**
    * The meta object id for the '{@link goedegep.media.mediadb.model.InformationType <em>Information Type</em>}' enum.
@@ -1297,7 +1416,7 @@ public interface MediadbPackage extends EPackage {
    * @see goedegep.media.mediadb.model.impl.MediadbPackageImpl#getInformationType()
    * @generated
    */
-  int INFORMATION_TYPE = 16;
+  int INFORMATION_TYPE = 18;
 
   /**
    * The meta object id for the '{@link goedegep.media.mediadb.model.Collection <em>Collection</em>}' enum.
@@ -1307,7 +1426,7 @@ public interface MediadbPackage extends EPackage {
    * @see goedegep.media.mediadb.model.impl.MediadbPackageImpl#getCollection()
    * @generated
    */
-  int COLLECTION = 17;
+  int COLLECTION = 19;
 
   /**
    * Returns the meta object for class '{@link goedegep.media.mediadb.model.Track <em>Track</em>}'.
@@ -1462,6 +1581,17 @@ public interface MediadbPackage extends EPackage {
   EReference getMediaDb_Trackcollections();
 
   /**
+   * Returns the meta object for the containment reference list '{@link goedegep.media.mediadb.model.MediaDb#getVideos <em>Videos</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the containment reference list '<em>Videos</em>'.
+   * @see goedegep.media.mediadb.model.MediaDb#getVideos()
+   * @see #getMediaDb()
+   * @generated
+   */
+  EReference getMediaDb_Videos();
+
+  /**
    * Returns the meta object for the '{@link goedegep.media.mediadb.model.MediaDb#getArtist(java.lang.String) <em>Get Artist</em>}' operation.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -1610,10 +1740,10 @@ public interface MediadbPackage extends EPackage {
   EAttribute getAlbum_Id();
 
   /**
-   * Returns the meta object for the reference list '{@link goedegep.media.mediadb.model.Album#getPlayers <em>Players</em>}'.
+   * Returns the meta object for the containment reference list '{@link goedegep.media.mediadb.model.Album#getPlayers <em>Players</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return the meta object for the reference list '<em>Players</em>'.
+   * @return the meta object for the containment reference list '<em>Players</em>'.
    * @see goedegep.media.mediadb.model.Album#getPlayers()
    * @see #getAlbum()
    * @generated
@@ -1698,10 +1828,10 @@ public interface MediadbPackage extends EPackage {
   EAttribute getAlbum_Compilation();
 
   /**
-   * Returns the meta object for the reference '{@link goedegep.media.mediadb.model.Album#getMyInfo <em>My Info</em>}'.
+   * Returns the meta object for the containment reference '{@link goedegep.media.mediadb.model.Album#getMyInfo <em>My Info</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return the meta object for the reference '<em>My Info</em>'.
+   * @return the meta object for the containment reference '<em>My Info</em>'.
    * @see goedegep.media.mediadb.model.Album#getMyInfo()
    * @see #getAlbum()
    * @generated
@@ -1992,17 +2122,6 @@ public interface MediadbPackage extends EPackage {
   EAttribute getMyInfo_MyComments();
 
   /**
-   * Returns the meta object for the attribute '{@link goedegep.media.mediadb.model.MyInfo#getInlayDocument <em>Inlay Document</em>}'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the meta object for the attribute '<em>Inlay Document</em>'.
-   * @see goedegep.media.mediadb.model.MyInfo#getInlayDocument()
-   * @see #getMyInfo()
-   * @generated
-   */
-  EAttribute getMyInfo_InlayDocument();
-
-  /**
    * Returns the meta object for the attribute '{@link goedegep.media.mediadb.model.MyInfo#isIveHadOnLP <em>Ive Had On LP</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -2207,6 +2326,103 @@ public interface MediadbPackage extends EPackage {
   EReference getTrackCollection_TrackReferences();
 
   /**
+   * Returns the meta object for class '{@link goedegep.media.mediadb.model.Video <em>Video</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for class '<em>Video</em>'.
+   * @see goedegep.media.mediadb.model.Video
+   * @generated
+   */
+  EClass getVideo();
+
+  /**
+   * Returns the meta object for the attribute '{@link goedegep.media.mediadb.model.Video#getTitle <em>Title</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Title</em>'.
+   * @see goedegep.media.mediadb.model.Video#getTitle()
+   * @see #getVideo()
+   * @generated
+   */
+  EAttribute getVideo_Title();
+
+  /**
+   * Returns the meta object for the attribute '{@link goedegep.media.mediadb.model.Video#getDate <em>Date</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Date</em>'.
+   * @see goedegep.media.mediadb.model.Video#getDate()
+   * @see #getVideo()
+   * @generated
+   */
+  EAttribute getVideo_Date();
+
+  /**
+   * Returns the meta object for the attribute '{@link goedegep.media.mediadb.model.Video#getImage <em>Image</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Image</em>'.
+   * @see goedegep.media.mediadb.model.Video#getImage()
+   * @see #getVideo()
+   * @generated
+   */
+  EAttribute getVideo_Image();
+
+  /**
+   * Returns the meta object for the containment reference list '{@link goedegep.media.mediadb.model.Video#getSubjects <em>Subjects</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the containment reference list '<em>Subjects</em>'.
+   * @see goedegep.media.mediadb.model.Video#getSubjects()
+   * @see #getVideo()
+   * @generated
+   */
+  EReference getVideo_Subjects();
+
+  /**
+   * Returns the meta object for class '{@link goedegep.media.mediadb.model.Subject <em>Subject</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for class '<em>Subject</em>'.
+   * @see goedegep.media.mediadb.model.Subject
+   * @generated
+   */
+  EClass getSubject();
+
+  /**
+   * Returns the meta object for the attribute '{@link goedegep.media.mediadb.model.Subject#getTitle <em>Title</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Title</em>'.
+   * @see goedegep.media.mediadb.model.Subject#getTitle()
+   * @see #getSubject()
+   * @generated
+   */
+  EAttribute getSubject_Title();
+
+  /**
+   * Returns the meta object for the attribute list '{@link goedegep.media.mediadb.model.Subject#getTags <em>Tags</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute list '<em>Tags</em>'.
+   * @see goedegep.media.mediadb.model.Subject#getTags()
+   * @see #getSubject()
+   * @generated
+   */
+  EAttribute getSubject_Tags();
+
+  /**
+   * Returns the meta object for the attribute '{@link goedegep.media.mediadb.model.Subject#getDate <em>Date</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Date</em>'.
+   * @see goedegep.media.mediadb.model.Subject#getDate()
+   * @see #getSubject()
+   * @generated
+   */
+  EAttribute getSubject_Date();
+
+  /**
    * Returns the meta object for enum '{@link goedegep.media.mediadb.model.MediumType <em>Medium Type</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -2386,6 +2602,14 @@ public interface MediadbPackage extends EPackage {
     EReference MEDIA_DB__TRACKCOLLECTIONS = eINSTANCE.getMediaDb_Trackcollections();
 
     /**
+    	 * The meta object literal for the '<em><b>Videos</b></em>' containment reference list feature.
+    	 * <!-- begin-user-doc -->
+    	 * <!-- end-user-doc -->
+    	 * @generated
+    	 */
+    EReference MEDIA_DB__VIDEOS = eINSTANCE.getMediaDb_Videos();
+
+    /**
     	 * The meta object literal for the '<em><b>Get Artist</b></em>' operation.
     	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -2503,7 +2727,7 @@ public interface MediadbPackage extends EPackage {
     EAttribute ALBUM__ID = eINSTANCE.getAlbum_Id();
 
     /**
-    	 * The meta object literal for the '<em><b>Players</b></em>' reference list feature.
+    	 * The meta object literal for the '<em><b>Players</b></em>' containment reference list feature.
     	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
     	 * @generated
@@ -2567,7 +2791,7 @@ public interface MediadbPackage extends EPackage {
     EAttribute ALBUM__COMPILATION = eINSTANCE.getAlbum_Compilation();
 
     /**
-    	 * The meta object literal for the '<em><b>My Info</b></em>' reference feature.
+    	 * The meta object literal for the '<em><b>My Info</b></em>' containment reference feature.
     	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
     	 * @generated
@@ -2802,14 +3026,6 @@ public interface MediadbPackage extends EPackage {
     EAttribute MY_INFO__MY_COMMENTS = eINSTANCE.getMyInfo_MyComments();
 
     /**
-    	 * The meta object literal for the '<em><b>Inlay Document</b></em>' attribute feature.
-    	 * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-    	 * @generated
-    	 */
-    EAttribute MY_INFO__INLAY_DOCUMENT = eINSTANCE.getMyInfo_InlayDocument();
-
-    /**
     	 * The meta object literal for the '<em><b>Ive Had On LP</b></em>' attribute feature.
     	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -2970,6 +3186,82 @@ public interface MediadbPackage extends EPackage {
     	 * @generated
     	 */
     EReference TRACK_COLLECTION__TRACK_REFERENCES = eINSTANCE.getTrackCollection_TrackReferences();
+
+    /**
+    	 * The meta object literal for the '{@link goedegep.media.mediadb.model.impl.VideoImpl <em>Video</em>}' class.
+    	 * <!-- begin-user-doc -->
+    	 * <!-- end-user-doc -->
+    	 * @see goedegep.media.mediadb.model.impl.VideoImpl
+    	 * @see goedegep.media.mediadb.model.impl.MediadbPackageImpl#getVideo()
+    	 * @generated
+    	 */
+    EClass VIDEO = eINSTANCE.getVideo();
+
+    /**
+    	 * The meta object literal for the '<em><b>Title</b></em>' attribute feature.
+    	 * <!-- begin-user-doc -->
+    	 * <!-- end-user-doc -->
+    	 * @generated
+    	 */
+    EAttribute VIDEO__TITLE = eINSTANCE.getVideo_Title();
+
+    /**
+    	 * The meta object literal for the '<em><b>Date</b></em>' attribute feature.
+    	 * <!-- begin-user-doc -->
+    	 * <!-- end-user-doc -->
+    	 * @generated
+    	 */
+    EAttribute VIDEO__DATE = eINSTANCE.getVideo_Date();
+
+    /**
+    	 * The meta object literal for the '<em><b>Image</b></em>' attribute feature.
+    	 * <!-- begin-user-doc -->
+    	 * <!-- end-user-doc -->
+    	 * @generated
+    	 */
+    EAttribute VIDEO__IMAGE = eINSTANCE.getVideo_Image();
+
+    /**
+    	 * The meta object literal for the '<em><b>Subjects</b></em>' containment reference list feature.
+    	 * <!-- begin-user-doc -->
+    	 * <!-- end-user-doc -->
+    	 * @generated
+    	 */
+    EReference VIDEO__SUBJECTS = eINSTANCE.getVideo_Subjects();
+
+    /**
+    	 * The meta object literal for the '{@link goedegep.media.mediadb.model.impl.SubjectImpl <em>Subject</em>}' class.
+    	 * <!-- begin-user-doc -->
+    	 * <!-- end-user-doc -->
+    	 * @see goedegep.media.mediadb.model.impl.SubjectImpl
+    	 * @see goedegep.media.mediadb.model.impl.MediadbPackageImpl#getSubject()
+    	 * @generated
+    	 */
+    EClass SUBJECT = eINSTANCE.getSubject();
+
+    /**
+    	 * The meta object literal for the '<em><b>Title</b></em>' attribute feature.
+    	 * <!-- begin-user-doc -->
+    	 * <!-- end-user-doc -->
+    	 * @generated
+    	 */
+    EAttribute SUBJECT__TITLE = eINSTANCE.getSubject_Title();
+
+    /**
+    	 * The meta object literal for the '<em><b>Tags</b></em>' attribute list feature.
+    	 * <!-- begin-user-doc -->
+    	 * <!-- end-user-doc -->
+    	 * @generated
+    	 */
+    EAttribute SUBJECT__TAGS = eINSTANCE.getSubject_Tags();
+
+    /**
+    	 * The meta object literal for the '<em><b>Date</b></em>' attribute feature.
+    	 * <!-- begin-user-doc -->
+    	 * <!-- end-user-doc -->
+    	 * @generated
+    	 */
+    EAttribute SUBJECT__DATE = eINSTANCE.getSubject_Date();
 
     /**
     	 * The meta object literal for the '{@link goedegep.media.mediadb.model.MediumType <em>Medium Type</em>}' enum.

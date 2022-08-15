@@ -8,7 +8,6 @@ import java.util.Optional;
 import java.util.logging.Logger;
 
 import org.eclipse.emf.common.util.WrappedException;
-import org.eclipse.emf.ecore.EPackage;
 
 import com.gluonhq.maps.GPXLayer;
 import com.gluonhq.maps.MapPoint;
@@ -16,12 +15,10 @@ import com.gluonhq.maps.MapView;
 
 import goedegep.geo.dbl.WGS84BoundingBox;
 import goedegep.geo.dbl.WGS84Coordinates;
+import goedegep.gpx.GpxUtil;
 import goedegep.gpx.model.DocumentRoot;
-import goedegep.gpx.model.GPXFactory;
-import goedegep.gpx.model.GPXPackage;
 import goedegep.gpx.model.GpxType;
 import goedegep.gpx.model.TrkType;
-import goedegep.gpx.model.util.GPXResourceFactoryImpl;
 import goedegep.jfx.ComponentFactoryFx;
 import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.JfxStage;
@@ -73,9 +70,8 @@ public class GPXWindow extends JfxStage {
     
     createGUI();
     
-    EPackage.Registry.INSTANCE.put(GPXPackage.eNS_URI, GPXPackage.eINSTANCE);
-    gpxResource = new EMFResource<>(GPXPackage.eINSTANCE, () -> GPXFactory.eINSTANCE.createDocumentRoot(), false);
-    gpxResource.addResourceFactoryForFileExtension("gpx", new GPXResourceFactoryImpl());
+//    EPackage.Registry.INSTANCE.put(GPXPackage.eNS_URI, GPXPackage.eINSTANCE);
+    gpxResource = GpxUtil.createEMFResource();
     gpxResource.dirtyProperty().addListener((observable, oldValue, newValue) -> updateTitle());
     
     updateTitle();
