@@ -17,6 +17,7 @@ import org.eclipse.emf.ecore.util.InternalEList;
 
 import goedegep.media.mediadb.model.Album;
 import goedegep.media.mediadb.model.Artist;
+import goedegep.media.mediadb.model.Video;
 import goedegep.media.mediadb.model.MediaDb;
 import goedegep.media.mediadb.model.MediadbFactory;
 import goedegep.media.mediadb.model.MediadbPackage;
@@ -38,6 +39,7 @@ import goedegep.util.text.FuzzyStringCompare;
  *   <li>{@link goedegep.media.mediadb.model.impl.MediaDbImpl#getAlbums <em>Albums</em>}</li>
  *   <li>{@link goedegep.media.mediadb.model.impl.MediaDbImpl#getTracks <em>Tracks</em>}</li>
  *   <li>{@link goedegep.media.mediadb.model.impl.MediaDbImpl#getTrackcollections <em>Trackcollections</em>}</li>
+ *   <li>{@link goedegep.media.mediadb.model.impl.MediaDbImpl#getVideos <em>Videos</em>}</li>
  * </ul>
  *
  * @generated
@@ -86,6 +88,16 @@ public class MediaDbImpl extends MinimalEObjectImpl.Container implements MediaDb
    * @ordered
    */
   protected EList<TrackCollection> trackcollections;
+
+  /**
+   * The cached value of the '{@link #getVideos() <em>Videos</em>}' containment reference list.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getVideos()
+   * @generated
+   * @ordered
+   */
+  protected EList<Video> videos;
 
   /**
    * <!-- begin-user-doc -->
@@ -157,6 +169,19 @@ public class MediaDbImpl extends MinimalEObjectImpl.Container implements MediaDb
           MediadbPackage.MEDIA_DB__TRACKCOLLECTIONS);
     }
     return trackcollections;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public EList<Video> getVideos() {
+    if (videos == null) {
+      videos = new EObjectContainmentEList<Video>(Video.class, this, MediadbPackage.MEDIA_DB__VIDEOS);
+    }
+    return videos;
   }
 
   /**
@@ -349,6 +374,8 @@ public class MediaDbImpl extends MinimalEObjectImpl.Container implements MediaDb
       return ((InternalEList<?>) getTracks()).basicRemove(otherEnd, msgs);
     case MediadbPackage.MEDIA_DB__TRACKCOLLECTIONS:
       return ((InternalEList<?>) getTrackcollections()).basicRemove(otherEnd, msgs);
+    case MediadbPackage.MEDIA_DB__VIDEOS:
+      return ((InternalEList<?>) getVideos()).basicRemove(otherEnd, msgs);
     }
     return super.eInverseRemove(otherEnd, featureID, msgs);
   }
@@ -369,6 +396,8 @@ public class MediaDbImpl extends MinimalEObjectImpl.Container implements MediaDb
       return getTracks();
     case MediadbPackage.MEDIA_DB__TRACKCOLLECTIONS:
       return getTrackcollections();
+    case MediadbPackage.MEDIA_DB__VIDEOS:
+      return getVideos();
     }
     return super.eGet(featureID, resolve, coreType);
   }
@@ -398,6 +427,10 @@ public class MediaDbImpl extends MinimalEObjectImpl.Container implements MediaDb
       getTrackcollections().clear();
       getTrackcollections().addAll((Collection<? extends TrackCollection>) newValue);
       return;
+    case MediadbPackage.MEDIA_DB__VIDEOS:
+      getVideos().clear();
+      getVideos().addAll((Collection<? extends Video>) newValue);
+      return;
     }
     super.eSet(featureID, newValue);
   }
@@ -422,6 +455,9 @@ public class MediaDbImpl extends MinimalEObjectImpl.Container implements MediaDb
     case MediadbPackage.MEDIA_DB__TRACKCOLLECTIONS:
       getTrackcollections().clear();
       return;
+    case MediadbPackage.MEDIA_DB__VIDEOS:
+      getVideos().clear();
+      return;
     }
     super.eUnset(featureID);
   }
@@ -442,6 +478,8 @@ public class MediaDbImpl extends MinimalEObjectImpl.Container implements MediaDb
       return tracks != null && !tracks.isEmpty();
     case MediadbPackage.MEDIA_DB__TRACKCOLLECTIONS:
       return trackcollections != null && !trackcollections.isEmpty();
+    case MediadbPackage.MEDIA_DB__VIDEOS:
+      return videos != null && !videos.isEmpty();
     }
     return super.eIsSet(featureID);
   }

@@ -54,6 +54,8 @@ class MapTile extends Region {
 
     private static final Logger LOGGER = Logger.getLogger(MapTile.class.getName());
     private static final TileRetriever TILE_RETRIEVER = TileRetrieverProvider.getInstance().load();
+    
+    public boolean ready = false;
 
     final int myZoom;
     final long i, j;
@@ -102,20 +104,13 @@ class MapTile extends Region {
         debug("load image [" + myZoom + "], i = " + i + ", j = " + j);
 
         
-//        TILE_RETRIEVER.loadTile(myZoom, i, j, this::handleTileAvailable);
-        Image image = TILE_RETRIEVER.loadTile(myZoom, i, j);
-        handleTileAvailable2(image);
+        TILE_RETRIEVER.loadTile(myZoom, i, j, this::handleTileAvailable);
         baseMap.zoom().addListener(new WeakInvalidationListener(invalidationListener));
         baseMap.translateXProperty().addListener(new WeakInvalidationListener(invalidationListener));
         baseMap.translateYProperty().addListener(new WeakInvalidationListener(invalidationListener));
         calculatePosition();
 //        this.setMouseTransparent(true);  PG removed.
     }
-    
-    protected void layoutChildren() {
-      LOGGER.severe("zoom=" + myZoom + ", i=" + i + ", j=" + j);
-      super.layoutChildren();
-  }
      
     /**
      * Handle the fact that the tile image is available.
@@ -145,6 +140,8 @@ class MapTile extends Region {
       
       getChildren().add(imageView);
       setNeedsLayout(true);
+      
+      ready = true;
     }
 
     boolean loading() {

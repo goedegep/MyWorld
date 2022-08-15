@@ -8,4 +8,5 @@ module goedegep.gpx.app {
   requires com.gluonhq.maps;
   requires goedegep.geo;
   requires goedegep.resources;
+  requires goedegep.gpx;
 }

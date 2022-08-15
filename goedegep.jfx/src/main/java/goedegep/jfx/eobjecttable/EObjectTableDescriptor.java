@@ -13,8 +13,30 @@ import goedegep.appgen.TableRowOperationDescriptor;
 
 /**
  * This class provides a descriptor to customize an <code>EObjectTable</code>
+ * <p>
+ * The following properties of the table can be specified:
+ * <ul>
+ * <li>placeHolderText<br/>
+ *     The text shown by the <b>placeholder</b> property of the TableView.
+ * </li>
+ * <li>comparator<br/>
+ *     The comparator property of the TableView.
+ * </li>
+ * <li>filterPredicate<br/>
+ *     A filter to apply on the rows of the table.
+ * </li>
+ * <li>columnDescriptors<br/>
+ *     A specification for each column of the table.
+ * </li>
+ * <li>rowOperations<br/>
+ *     Operations that can be performed on the rows of the table. These operations are available via a context menu.
+ * </li>
+ * <li>subClassDescriptors<br/>
+ *     TODO.
+ * </li>
+ * </ul>
  *
- * @param <T>
+ * @param <T> The type of the items listed in the table.
  */
 public class EObjectTableDescriptor<T extends EObject> {
   /**
@@ -28,7 +50,7 @@ public class EObjectTableDescriptor<T extends EObject> {
   private Comparator<T> comparator;
   
   /**
-   * A fixed filter to apply on the rows of the table.
+   * A filter to apply on the rows of the table.
    */
   private Predicate<T> filterPredicate;
   

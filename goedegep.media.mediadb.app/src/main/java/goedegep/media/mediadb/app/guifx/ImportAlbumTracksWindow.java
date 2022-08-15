@@ -36,8 +36,8 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
-public class ImportAlbumTracksWindowFx extends JfxStage {
-  private static final Logger LOGGER = Logger.getLogger(ImportAlbumTracksWindowFx.class.getName());
+public class ImportAlbumTracksWindow extends JfxStage {
+  private static final Logger LOGGER = Logger.getLogger(ImportAlbumTracksWindow.class.getName());
   private static final String NEW_LINE = System.getProperty("line.separator");
   private String SOURCE_FOLDER = "D:\\SoulSeek\\Complete";
   
@@ -53,7 +53,7 @@ public class ImportAlbumTracksWindowFx extends JfxStage {
   private Button importButton;
 //  private String sourceFolderName;
   
-  public ImportAlbumTracksWindowFx(CustomizationFx customization, MediaDb mediaDb, Album album) {
+  public ImportAlbumTracksWindow(CustomizationFx customization, MediaDb mediaDb, Album album) {
     super(createWindowTitle(album), customization);
     
     this.mediaDb = mediaDb;

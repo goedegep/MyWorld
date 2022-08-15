@@ -13,6 +13,7 @@ import java.math.BigInteger;
 
 import java.util.Collection;
 
+import java.util.Date;
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
 
@@ -429,6 +430,120 @@ public class TrkTypeImpl extends MinimalEObjectImpl.Container implements TrkType
 		/**
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
+   * @generated NOT
+   */
+  public double getCumulativeAscent() {
+    double cumulativeAscent = 0.0;
+    
+    for (TrksegType trackSegment: getTrkseg()) {
+      cumulativeAscent += trackSegment.getCumulativeAscent();
+    }
+    
+    return cumulativeAscent;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated NOT
+   */
+  public Double getCumulativeDescent() {
+    double cumulativeDescent = 0.0;
+    
+    for (TrksegType trackSegment: getTrkseg()) {
+      cumulativeDescent += trackSegment.getCumulativeDescent();
+    }
+    
+    return cumulativeDescent;
+  }
+
+    /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated NOT
+   */
+  public Long getDuration() {
+    Long duration = null;
+    
+    for (TrksegType trackSegment: getTrkseg()) {
+      Long trackSegmentDuration = trackSegment.getDuration();
+      if (trackSegmentDuration != null) {
+        if (duration == null) {
+          duration = trackSegmentDuration;
+        } else {
+          duration += trackSegmentDuration;
+        }
+      } else {
+        return null;
+      }
+    }
+    
+    return duration;
+  }
+
+    /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated NOT
+   */
+  public Date getStartTime() {
+    int numberOfSegments = getTrkseg().size();
+    if (numberOfSegments == 0) {
+      return null;
+    }
+    
+    TrksegType firstSegment = getTrkseg().get(0);
+    return firstSegment.getStartTime();
+  }
+
+    /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public Date getEndTime() {
+    int numberOfSegments = getTrkseg().size();
+    if (numberOfSegments == 0) {
+      return null;
+    }
+    
+    TrksegType lastSegment = getTrkseg().get(numberOfSegments - 1);
+    return lastSegment.getEndTime();
+  }
+
+    /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated NOT
+   */
+  public Double getStartElevation() {
+    int numberOfSegments = getTrkseg().size();
+    if (numberOfSegments == 0) {
+      return null;
+    }
+    
+    TrksegType firstSegment = getTrkseg().get(0);
+    return firstSegment.getStartElevation();
+  }
+
+    /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated NOT
+   */
+  public Double getEndElevation() {
+    int numberOfSegments = getTrkseg().size();
+    if (numberOfSegments == 0) {
+      return null;
+    }
+    
+    TrksegType lastSegment = getTrkseg().get(numberOfSegments - 1);
+    return lastSegment.getEndElevation();
+  }
+
+    /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
    * @generated
    */
   @Override
@@ -595,6 +710,20 @@ public class TrkTypeImpl extends MinimalEObjectImpl.Container implements TrkType
     switch (operationID) {
       case GPXPackage.TRK_TYPE___GET_LENGTH:
         return getLength();
+      case GPXPackage.TRK_TYPE___GET_CUMULATIVE_ASCENT:
+        return getCumulativeAscent();
+      case GPXPackage.TRK_TYPE___GET_DURATION:
+        return getDuration();
+      case GPXPackage.TRK_TYPE___GET_START_TIME:
+        return getStartTime();
+      case GPXPackage.TRK_TYPE___GET_END_TIME:
+        return getEndTime();
+      case GPXPackage.TRK_TYPE___GET_CUMULATIVE_DESCENT:
+        return getCumulativeDescent();
+      case GPXPackage.TRK_TYPE___GET_START_ELEVATION:
+        return getStartElevation();
+      case GPXPackage.TRK_TYPE___GET_END_ELEVATION:
+        return getEndElevation();
     }
     return super.eInvoke(operationID, arguments);
   }

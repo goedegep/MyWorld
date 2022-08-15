@@ -12,7 +12,7 @@
       displayName="ShortProductInformation" initialValue="MyWorld - My world on the computer"
       installInitialValue="true"/>
   <propertyDescriptors name="version" description="Software version information."
-      displayName="Version" initialValue="1.0 - 18-04-2022 11:27" installInitialValue="true"/>
+      displayName="Version" initialValue="1.0 - 12-07-2022 23:12" installInitialValue="true"/>
   <propertyDescriptors name="copyrightMessage" description="Copyright informatie."
       displayName="Copyright Text" initialValue="Copyright (c) 2001-2020" installInitialValue="true"/>
   <propertyDescriptors name="author" description="Author of this applicaton." displayName="Author"

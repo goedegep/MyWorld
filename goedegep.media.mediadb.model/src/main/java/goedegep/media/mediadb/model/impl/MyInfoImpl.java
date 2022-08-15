@@ -32,7 +32,6 @@ import goedegep.media.mediadb.model.MyInfo;
  * <ul>
  *   <li>{@link goedegep.media.mediadb.model.impl.MyInfoImpl#getAlbumReferences <em>Album References</em>}</li>
  *   <li>{@link goedegep.media.mediadb.model.impl.MyInfoImpl#getMyComments <em>My Comments</em>}</li>
- *   <li>{@link goedegep.media.mediadb.model.impl.MyInfoImpl#getInlayDocument <em>Inlay Document</em>}</li>
  *   <li>{@link goedegep.media.mediadb.model.impl.MyInfoImpl#isIveHadOnLP <em>Ive Had On LP</em>}</li>
  *   <li>{@link goedegep.media.mediadb.model.impl.MyInfoImpl#getIWant <em>IWant</em>}</li>
  *   <li>{@link goedegep.media.mediadb.model.impl.MyInfoImpl#getIHaveOn <em>IHave On</em>}</li>
@@ -82,33 +81,6 @@ public class MyInfoImpl extends MinimalEObjectImpl.Container implements MyInfo {
    * @ordered
    */
   protected boolean myCommentsESet;
-
-  /**
-   * The default value of the '{@link #getInlayDocument() <em>Inlay Document</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getInlayDocument()
-   * @generated
-   * @ordered
-   */
-  protected static final String INLAY_DOCUMENT_EDEFAULT = null;
-  /**
-   * The cached value of the '{@link #getInlayDocument() <em>Inlay Document</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getInlayDocument()
-   * @generated
-   * @ordered
-   */
-  protected String inlayDocument = INLAY_DOCUMENT_EDEFAULT;
-  /**
-   * This is true if the Inlay Document attribute has been set.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  protected boolean inlayDocumentESet;
 
   /**
    * The default value of the '{@link #isIveHadOnLP() <em>Ive Had On LP</em>}' attribute.
@@ -356,58 +328,6 @@ public class MyInfoImpl extends MinimalEObjectImpl.Container implements MyInfo {
    * @generated
    */
   @Override
-  public String getInlayDocument() {
-    return inlayDocument;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public void setInlayDocument(String newInlayDocument) {
-    String oldInlayDocument = inlayDocument;
-    inlayDocument = newInlayDocument;
-    boolean oldInlayDocumentESet = inlayDocumentESet;
-    inlayDocumentESet = true;
-    if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, MediadbPackage.MY_INFO__INLAY_DOCUMENT, oldInlayDocument,
-          inlayDocument, !oldInlayDocumentESet));
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public void unsetInlayDocument() {
-    String oldInlayDocument = inlayDocument;
-    boolean oldInlayDocumentESet = inlayDocumentESet;
-    inlayDocument = INLAY_DOCUMENT_EDEFAULT;
-    inlayDocumentESet = false;
-    if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.UNSET, MediadbPackage.MY_INFO__INLAY_DOCUMENT, oldInlayDocument,
-          INLAY_DOCUMENT_EDEFAULT, oldInlayDocumentESet));
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public boolean isSetInlayDocument() {
-    return inlayDocumentESet;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
   public boolean isIveHadOnLP() {
     return iveHadOnLP;
   }
@@ -438,8 +358,6 @@ public class MyInfoImpl extends MinimalEObjectImpl.Container implements MyInfo {
       return getAlbumReferences();
     case MediadbPackage.MY_INFO__MY_COMMENTS:
       return getMyComments();
-    case MediadbPackage.MY_INFO__INLAY_DOCUMENT:
-      return getInlayDocument();
     case MediadbPackage.MY_INFO__IVE_HAD_ON_LP:
       return isIveHadOnLP();
     case MediadbPackage.MY_INFO__IWANT:
@@ -465,9 +383,6 @@ public class MyInfoImpl extends MinimalEObjectImpl.Container implements MyInfo {
       return;
     case MediadbPackage.MY_INFO__MY_COMMENTS:
       setMyComments((String) newValue);
-      return;
-    case MediadbPackage.MY_INFO__INLAY_DOCUMENT:
-      setInlayDocument((String) newValue);
       return;
     case MediadbPackage.MY_INFO__IVE_HAD_ON_LP:
       setIveHadOnLP((Boolean) newValue);
@@ -497,9 +412,6 @@ public class MyInfoImpl extends MinimalEObjectImpl.Container implements MyInfo {
     case MediadbPackage.MY_INFO__MY_COMMENTS:
       unsetMyComments();
       return;
-    case MediadbPackage.MY_INFO__INLAY_DOCUMENT:
-      unsetInlayDocument();
-      return;
     case MediadbPackage.MY_INFO__IVE_HAD_ON_LP:
       setIveHadOnLP(IVE_HAD_ON_LP_EDEFAULT);
       return;
@@ -525,8 +437,6 @@ public class MyInfoImpl extends MinimalEObjectImpl.Container implements MyInfo {
       return isSetAlbumReferences();
     case MediadbPackage.MY_INFO__MY_COMMENTS:
       return isSetMyComments();
-    case MediadbPackage.MY_INFO__INLAY_DOCUMENT:
-      return isSetInlayDocument();
     case MediadbPackage.MY_INFO__IVE_HAD_ON_LP:
       return iveHadOnLP != IVE_HAD_ON_LP_EDEFAULT;
     case MediadbPackage.MY_INFO__IWANT:
@@ -607,7 +517,6 @@ public class MyInfoImpl extends MinimalEObjectImpl.Container implements MyInfo {
     buf.append(iveHadOnLP ? "yes" : "no").append(NEWLINE);
 
     buf.append("inlayDocument: ");
-    buf.append(isSetInlayDocument() ? getInlayDocument() : "<no-inlay-document>").append(NEWLINE);
 
     return buf.toString();
   }

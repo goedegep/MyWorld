@@ -4,6 +4,7 @@ package goedegep.gpx.model;
 
 import java.math.BigInteger;
 
+import java.util.Date;
 import org.eclipse.emf.common.util.EList;
 
 import org.eclipse.emf.ecore.EObject;
@@ -274,9 +275,123 @@ public interface TrkType extends EObject {
 		/**
    * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
+   * <!-- begin-model-doc -->
+   * Calculate the length of the track in meters.
+   * <p>
+   * The length is defined as the sum of the lengths of the track segments.
+   * 
+   * @return the length of the track in meters.
+   * <!-- end-model-doc -->
    * @model kind="operation"
    * @generated
    */
 	double getLength();
+
+    /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * <!-- begin-model-doc -->
+   * Calculate the total ascent in the track.
+   * <p>
+   * The total ascent of the track is the sum of the cumulative ascents of the segments of the track.
+   * 
+   * @return the track's total ascent in meters, or null if this can't be calculated (e.g. if the cumulative ascent of one of the segments can't be calculated).
+   * 
+   * <!-- end-model-doc -->
+   * @model kind="operation"
+   * @generated
+   */
+  double getCumulativeAscent();
+
+    /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * <!-- begin-model-doc -->
+   * Calculate the duration of the track in milliseconds..
+   * <p>
+   * The duration is defined as the sum of the durations of the track segments.
+   * 
+   * <return> the duration of the track in milliseconds..
+   * <!-- end-model-doc -->
+   * @model kind="operation"
+   * @generated
+   */
+  Long getDuration();
+
+    /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * <!-- begin-model-doc -->
+   * Get the start time of the track.
+   * <p>
+   * The start time is the start time of the first segment.
+   * 
+   * @return the start time of the track.
+   * <!-- end-model-doc -->
+   * @model kind="operation"
+   * @generated
+   */
+  Date getStartTime();
+
+    /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * <!-- begin-model-doc -->
+   * Get the end time of the track.
+   * <p>
+   * The end time is the end time of the last segment.
+   * 
+   * @return the end time of the track.
+   * <!-- end-model-doc -->
+   * @model kind="operation"
+   * @generated
+   */
+  Date getEndTime();
+
+    /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * <!-- begin-model-doc -->
+   * Calculate the total descent in the track.
+   * <p>
+   * The total descent of the track is the sum of the cumulative descent of the segments of the track.
+   * 
+   * @return the track's total descent in meters, or null if this can't be calculated (e.g. if the cumulative descent of one of the segments can't be calculated).
+   * 
+   * <!-- end-model-doc -->
+   * @model kind="operation"
+   * @generated
+   */
+  Double getCumulativeDescent();
+
+    /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * <!-- begin-model-doc -->
+   * Get the start elevation of the track.
+   * <p>
+   * The start elevation is the start elevation of the first segment.
+   * 
+   * @return the start elevation of the track, or null if this isn't available.
+   * <!-- end-model-doc -->
+   * @model kind="operation"
+   * @generated
+   */
+  Double getStartElevation();
+
+    /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * <!-- begin-model-doc -->
+   * Get the end elevation of the track.
+   * <p>
+   * The end elevation is the end elevation of the last segment.
+   * 
+   * @return the end elevation of the track, or null if this isn't available.
+   * <!-- end-model-doc -->
+   * @model kind="operation"
+   * @generated
+   */
+  Double getEndElevation();
 
 } // TrkType

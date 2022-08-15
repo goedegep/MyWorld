@@ -55,6 +55,13 @@
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute GPX.ecore#//GpxType/version"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute GPX.ecore#//GpxType/creator"/>
       <genOperations ecoreOperation="GPX.ecore#//GpxType/getLength"/>
+      <genOperations ecoreOperation="GPX.ecore#//GpxType/getCumulativeAscent"/>
+      <genOperations ecoreOperation="GPX.ecore#//GpxType/getDuration"/>
+      <genOperations ecoreOperation="GPX.ecore#//GpxType/getStartTime"/>
+      <genOperations ecoreOperation="GPX.ecore#//GpxType/getEndTime"/>
+      <genOperations ecoreOperation="GPX.ecore#//GpxType/getCumulativeDescent"/>
+      <genOperations ecoreOperation="GPX.ecore#//GpxType/getStartElevation"/>
+      <genOperations ecoreOperation="GPX.ecore#//GpxType/getEndElevation"/>
     </genClasses>
     <genClasses ecoreClass="GPX.ecore#//LinkType">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute GPX.ecore#//LinkType/text"/>
@@ -101,6 +108,13 @@
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference GPX.ecore#//TrksegType/trkpt"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference GPX.ecore#//TrksegType/extensions"/>
       <genOperations ecoreOperation="GPX.ecore#//TrksegType/getLength"/>
+      <genOperations ecoreOperation="GPX.ecore#//TrksegType/getCumulativeAscent"/>
+      <genOperations ecoreOperation="GPX.ecore#//TrksegType/getDuration"/>
+      <genOperations ecoreOperation="GPX.ecore#//TrksegType/getStartTime"/>
+      <genOperations ecoreOperation="GPX.ecore#//TrksegType/getEndTime"/>
+      <genOperations ecoreOperation="GPX.ecore#//TrksegType/getCumulativeDescent"/>
+      <genOperations ecoreOperation="GPX.ecore#//TrksegType/getStartElevation"/>
+      <genOperations ecoreOperation="GPX.ecore#//TrksegType/getEndElevation"/>
     </genClasses>
     <genClasses ecoreClass="GPX.ecore#//TrkType">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute GPX.ecore#//TrkType/name"/>
@@ -113,6 +127,13 @@
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference GPX.ecore#//TrkType/extensions"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference GPX.ecore#//TrkType/trkseg"/>
       <genOperations ecoreOperation="GPX.ecore#//TrkType/getLength"/>
+      <genOperations ecoreOperation="GPX.ecore#//TrkType/getCumulativeAscent"/>
+      <genOperations ecoreOperation="GPX.ecore#//TrkType/getDuration"/>
+      <genOperations ecoreOperation="GPX.ecore#//TrkType/getStartTime"/>
+      <genOperations ecoreOperation="GPX.ecore#//TrkType/getEndTime"/>
+      <genOperations ecoreOperation="GPX.ecore#//TrkType/getCumulativeDescent"/>
+      <genOperations ecoreOperation="GPX.ecore#//TrkType/getStartElevation"/>
+      <genOperations ecoreOperation="GPX.ecore#//TrkType/getEndElevation"/>
     </genClasses>
     <genClasses ecoreClass="GPX.ecore#//WptType">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute GPX.ecore#//WptType/ele"/>

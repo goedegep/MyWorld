@@ -14,6 +14,8 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EStructuralFeature;
 
+import goedegep.util.PgUtilities;
+
 /**
  * This is a utility class, with EMF utility methods.
  *
@@ -258,12 +260,20 @@ public final class EmfUtil {
     
     String featureType = "Unknown";
     Object feature = notification.getFeature();
-    if (feature instanceof EReference) {
+    String featureName = "<unknown>";
+    if (feature instanceof EReference eReference) {
       featureType = "EReference";
-    } else if (feature instanceof EAttribute) {
+      featureName = eReference.getName();
+    } else if (feature instanceof EAttribute eAttribute) {
       featureType = "EAttribute";
+      featureName = eAttribute.getName();
+    } else if (feature == null) {
+      featureType = "(null)";
+      featureName = "(null)";
+    } else {
+      buf.append("TODO");
     }
-    buf.append("    Feature type: ").append(featureType).append(NEWLINE);
+    buf.append("    Feature type: ").append(featureType).append(", Feature name: ").append(featureName).append(NEWLINE);
 
     
 //    EClass eClass = null;
@@ -394,5 +404,50 @@ public final class EmfUtil {
     buf.append(notification.wasSet()).append(NEWLINE);
     
     return buf.toString();
+  }
+  
+  /**
+   * Check whether all items that are referred to are contained in a hierarchy of EObjects.
+   * 
+   * @param eObject the root of the structure to check
+   */
+  public static void checkCompleteContainment(EObject rootEObject) {
+    TreeIterator<EObject> iterator = rootEObject.eAllContents();
+    while (iterator.hasNext()) {
+      EObject eObject = iterator.next();
+      if (!isContainedUnderEObject(eObject, rootEObject)) {
+        LOGGER.severe("EObject not contained: " + eObject.toString());
+      }
+    }
+  }
+
+  /**
+   * Check whether an EObject is contained by a rootEObject, or by any child of the rootEObject.
+   * 
+   * @param eObject the EObject to check
+   * @param rootEObject the root EObject that shall contain the eObject.
+   * @return true if eObject is contained by rootEObject, false otherwise.
+   */
+  public static boolean isContainedUnderEObject(EObject eObject, EObject rootEObject) {
+//    LOGGER.severe("=> eObject=" + eObject.getClass().getName());
+    String found = eObject.getClass().getName();
+    EObject container = eObject.eContainer();
+    found = container.getClass().getName() + "." + found;
+    while (container != null) {
+//      LOGGER.severe(container.getClass().getName());
+      if (container == rootEObject) {
+        return true;
+      }
+      container = container.eContainer();
+      found = container.getClass().getName() + "." + found;
+//      LOGGER.severe(found);
+    }
+    return false;
+  }
+  
+  public static <T> void setFeatureValue(EObject eObject, EStructuralFeature feature, T value) {
+    if (!PgUtilities.equals(value, eObject.eGet(feature))) {
+      eObject.eSet(feature, value);
+    }    
   }
 }

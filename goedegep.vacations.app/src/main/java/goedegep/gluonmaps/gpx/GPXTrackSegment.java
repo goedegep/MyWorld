@@ -162,32 +162,32 @@ public class GPXTrackSegment extends GPXMeasurable {
         return new ArrayList<>();
     }
     
-    @Override
-    public String getData(final GPXLineItemData gpxLineItemData) {
-        switch (gpxLineItemData) {
-            case Type:
-                return "Sgmnt";
-            case Name:
-                return "";
-            case Start:
-                // format dd.mm.yyyy hh:mm:ss
-                return DATE_FORMAT.format(getStartTime());
-            case Duration:
-                return getDurationAsString();
-            case Length:
-                return String.format("%1$.3f", getLength()/1000d);
-            case Speed:
-                return String.format("%1$.3f", getLength()/getDuration()*1000d*3.6d);
-            case CumAscent:
-                return String.format("%1$.2f", getCumulativeAscent());
-            case CumDescent:
-                return String.format("-%1$.2f", getCumulativeDescent());
-            case NoItems:
-                return String.format("%1$d", getGPXWaypoints().size());
-            default:
-                return "";
-        }
-    }
+//    @Override
+//    public String getData(final GPXLineItemData gpxLineItemData) {
+//        switch (gpxLineItemData) {
+//            case Type:
+//                return "Sgmnt";
+//            case Name:
+//                return "";
+//            case Start:
+//                // format dd.mm.yyyy hh:mm:ss
+//                return DATE_FORMAT.format(getStartTime());
+//            case Duration:
+//                return getDurationAsString();
+//            case Length:
+//                return String.format("%1$.3f", getLength()/1000d);
+//            case Speed:
+//                return String.format("%1$.3f", getLength()/getDuration()*1000d*3.6d);
+//            case CumAscent:
+//                return String.format("%1$.2f", getCumulativeAscent());
+//            case CumDescent:
+//                return String.format("-%1$.2f", getCumulativeDescent());
+//            case NoItems:
+//                return String.format("%1$d", getGPXWaypoints().size());
+//            default:
+//                return "";
+//        }
+//    }
     
     @Override
     public Date getDate() {

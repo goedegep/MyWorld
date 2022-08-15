@@ -292,7 +292,6 @@ public class CachedOsmTileRetriever implements TileRetriever {
         try {
           TileReference tileReference = deque.pollFirst(10, TimeUnit.SECONDS);
           if (tileReference != null) {
-            LOGGER.severe("CacheThread handling tile request: " + tileReference.toString());
             doCache(tileReference);
           }
         } catch (InterruptedException e) {

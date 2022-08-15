@@ -208,4 +208,218 @@ public class GpxUtil {
     return new WGS84Coordinates(firstTrackPoint.getLat().doubleValue(), firstTrackPoint.getLon().doubleValue());
   }
 
+  /**
+   * Remove points which deviate too much from the rest.
+   * <p>
+   * A point is too far away when:<ol>
+   * <li>further away from previous than maxDistance AND</li>
+   * <li>previous and next closer than maxDistance.
+   * </ol>
+   * This way a gap in waypoints isn't counted as one point too far away.
+   * Note: this method hasn't been used/tested yet.
+   * 
+   * @param waypointList The list too filter
+   * @param maxDistance the maximum distance a point may deviate
+   * @return 
+   */
+  public static boolean[] removeSingleTooFarAway(List<WptType> waypointList, double maxDistance) {
+    final boolean[] keep = new boolean[waypointList.size()];
+
+    if (waypointList.isEmpty()) {
+      // nothing to do
+      return keep;
+    } else if (waypointList.size() < 3) {
+      // need at least 3 points for algorithm to work
+      for (int index = 0; index < waypointList.size(); index++) {
+        keep[index] = true;
+      }            
+      return keep;
+    }
+
+    WptType checkPt;
+    WGS84Coordinates checkPtCoordinates;
+    
+    WptType prevPt;
+    WGS84Coordinates prevPtCoordinates;
+    
+    WptType prevPrevPt;
+    WGS84Coordinates prevPrevPtCoordinates;
+
+    WptType nextPt;
+    WGS84Coordinates nextPtCoordinates;
+    
+    WptType nextNextPt;
+    WGS84Coordinates nextNextPtCoordinates;
+    
+    double distance1;
+    double distance2;
+
+    int startIndex = 0;
+    int endIndex = waypointList.size() - 1;
+
+    // first point is tricky, since we don't have a prev point, so use next and next-next in that case
+    // so go forward from start till we have a valid point
+    while(startIndex < endIndex - 2) {
+      checkPt = waypointList.get(startIndex);
+      checkPtCoordinates = waypointLatLonToWGS84Coordinates(checkPt);
+      
+      nextPt = waypointList.get(startIndex+1);
+      nextPtCoordinates = waypointLatLonToWGS84Coordinates(nextPt);
+      
+      nextNextPt = waypointList.get(startIndex+2);
+      nextNextPtCoordinates = waypointLatLonToWGS84Coordinates(nextNextPt);
+      
+      distance1 = checkPtCoordinates.getDistance(nextPtCoordinates);
+      distance2 = nextPtCoordinates.getDistance(nextNextPtCoordinates);
+      if ((distance1 > maxDistance) && (distance2 <= maxDistance)) {
+        // startIndex point is garbage, take next one
+        keep[startIndex] = false;
+        startIndex++;
+      } else {
+        keep[startIndex] = true;
+        break;
+      }
+    }
+
+    // last point is tricky, since we don't have a next point, so use prev and prev-prev in that case
+    // so go backward from end til we have a valid point
+    while(endIndex > startIndex+2) {
+      checkPt = waypointList.get(endIndex);
+      checkPtCoordinates = waypointLatLonToWGS84Coordinates(checkPt);
+
+      prevPt = waypointList.get(endIndex-1);
+      prevPtCoordinates = waypointLatLonToWGS84Coordinates(prevPt);
+
+      prevPrevPt = waypointList.get(endIndex-2);
+      prevPrevPtCoordinates = waypointLatLonToWGS84Coordinates(prevPrevPt);
+
+      distance1 = checkPtCoordinates.getDistance(prevPtCoordinates);
+      distance2 = prevPtCoordinates.getDistance(prevPrevPtCoordinates);
+      if ((distance1 > maxDistance) && (distance2 <= maxDistance)) {
+        // endIndex point is garbage, take prev one
+        keep[endIndex] = false;
+        endIndex--;
+      } else {
+        keep[endIndex] = true;
+        break;
+      }
+    }
+
+    // anything left todo? we need 3 remaining points!
+    if (startIndex > endIndex - 2) {
+      for (int index = startIndex + 1; index < endIndex; index++) {
+        keep[index] = true;
+      }
+      return keep;
+    }
+
+    for (int index = startIndex+1; index < endIndex; index++) {
+      checkPt = waypointList.get(index);
+      checkPtCoordinates = waypointLatLonToWGS84Coordinates(checkPt);
+      
+      prevPt = waypointList.get(index-1);
+      prevPtCoordinates = waypointLatLonToWGS84Coordinates(prevPt);
+
+      nextPt = waypointList.get(index+1);
+      nextPtCoordinates = waypointLatLonToWGS84Coordinates(nextPt);
+
+      distance1 = checkPtCoordinates.getDistance(prevPtCoordinates);
+      distance2 = prevPtCoordinates.getDistance(nextPtCoordinates);
+      if ((distance1 > maxDistance) && (distance2 <= maxDistance)) {
+        // this point is garbage
+        keep[index] = false;
+        // TODO: also not a valid prev point
+      } else {
+        keep[index] = true;
+      }
+    }
+
+    return keep;
+  }
+  
+  /**
+   * Create WGS84Coordinates for the lat/lon of a WptType.
+   * 
+   * @param waypoint a <code>WptType</code>
+   * @return WGS84Coordinates for the lat/lon of the <code>waypoint</code>.
+   */
+  public static WGS84Coordinates waypointLatLonToWGS84Coordinates(WptType waypoint) {
+    return new WGS84Coordinates(waypoint.getLat().doubleValue(), waypoint.getLon().doubleValue(), waypoint.getEle().doubleValue());
+  }
+  
+  
+  /**
+   * Get the difference in elevation between two waypoints.
+   * 
+   * @param waypoint1 a waypoint
+   * @param waypoint2 another waypoint
+   * @return the difference in elevation between <code>waypoint1</code> and <code>waypoint2</code>, or null if at least one of the waypoints has no elevation.
+   *         If <code>waypoint2</code> is higher than <code>waypoint1</code> the difference is positive.
+   */
+  public static Double elevationDiff(final WptType waypoint1, final WptType waypoint2) {
+    WGS84Coordinates coordinates1 = waypointLatLonToWGS84Coordinates(waypoint1);
+    WGS84Coordinates coordinates2 = waypointLatLonToWGS84Coordinates(waypoint2);
+    
+    return coordinates1.elevationDiff(coordinates2);
+  }
+  
+  /**
+   * Get the slope percentage between two waypoints.
+   * 
+   * @param waypoint1 a waypoint
+   * @param waypoint2 another waypoint
+   * @return the slope between <code>waypoint1</code> and <code>waypoint2</code>, or null if at least one of the waypoints has no elevation.
+   *         If <code>waypoint2</code> is higher than <code>waypoint1</code> the slope is positive.
+   */
+  public static double slope(final WptType waypoint1, final WptType waypoint2) {
+    WGS84Coordinates coordinates1 = waypointLatLonToWGS84Coordinates(waypoint1);
+    WGS84Coordinates coordinates2 = waypointLatLonToWGS84Coordinates(waypoint2);
+    
+    return coordinates1.slope(coordinates2);
+  }
+  
+  /**
+   * Get the distance between two waypoints.
+   * 
+   * @param waypoint1 a waypoint
+   * @param waypoint2 another waypoint
+   * @return the distance between <code>waypoint1</code> and <code>waypoint2</code>.
+   */
+  public static double distance(final WptType waypoint1, final WptType waypoint2) {
+    WGS84Coordinates coordinates1 = waypointLatLonToWGS84Coordinates(waypoint1);
+    WGS84Coordinates coordinates2 = waypointLatLonToWGS84Coordinates(waypoint2);
+    
+    return coordinates1.getDistance(coordinates2);
+  }
+  
+  /**
+   * Get the duration between two waypoints.
+   * 
+   * @param waypoint1 a waypoint
+   * @param waypoint2 another waypoint
+   * @return the time between <code>waypoint1</code> and <code>waypoint2</code>, or null if at least one of the waypoints has no time.
+   */
+  public static Integer duration(final WptType waypoint1, final WptType waypoint2) {
+
+    if (waypoint1.getTime() != null && waypoint2.getTime() != null) {
+      return waypoint1.getTime().getMillisecond() - waypoint2.getTime().getMillisecond();
+    } else {
+      return null;
+    }
+  }
+  
+  /**
+   * Get the speed (in km/h) between two waypoints.
+   * 
+   * @param waypoint1 a waypoint
+   * @param waypoint2 another waypoint
+   * @return the speed between <code>waypoint1</code> and <code>waypoint2</code>, or null if at least one of the waypoints has no time.
+   */
+  public static double speed(final WptType waypoint1, final WptType waypoint2) {
+    final Integer diffMilliSeconds = duration(waypoint1, waypoint2);
+    final double diffMeters = distance(waypoint1, waypoint2);
+    
+    return diffMeters / diffMilliSeconds * 3600;
+  }
+  
 }

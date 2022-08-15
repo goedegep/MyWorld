@@ -138,36 +138,6 @@ public class EObjectTable<T extends EObject> extends TableView<T> implements Obj
   
   private ComponentFactoryFx componentFactory;
 
-
-  /**
-   * Constructor.
-   * <p>
-   * The properties of the table will be as follows:
-   * <ul>
-   * <li>
-   * columns<br>
-   * The columns can be specified by the <code>columnDescriptors</code> in the <code>objectTableDescriptor</code>. In this case the table will have the specified columns, in the given order.
-   * If the <code>columnName</code> isn't specified, it is set to the name of the <code>structuralFeature</code>.<br>
-   * By default there will be a column for each structural feature of the <code>eClass</code>, where:
-   *         <ul>
-   *         <li>
-   *         the column name is the name of the <code>structuralFeature</code>
-   *         </li>
-   *         <li>
-   *         each column is editable.
-   *         </li>
-   *         </ul>
-
-   * </li>
-   * </ul>
-   * 
-   * @param eClass the {@link EClass} of the objects listed in the table (mandatory).
-   * @param objectTableDescriptor full specification of the table. If <code>null</code>, default values are used, where most information is derived from the <b>eClass</b>.
-   * @param objects the objects to be listed in the table.
-   */
-//  public EObjectTable(EClass eClass, EObjectTableDescriptor<T> objectTableDescriptor, EObject containingObject, List<T> objects) {
-//    this(null, eClass, objectTableDescriptor, containingObject, objects);
-//  }
   
   /**
    * Constructor.
@@ -194,6 +164,7 @@ public class EObjectTable<T extends EObject> extends TableView<T> implements Obj
    * @param customization the GUI customization.
    * @param eClass the {@link EClass} of the objects listed in the table (mandatory).
    * @param objectTableDescriptor full specification of the table. If <code>null</code>, default values are used, where most information is derived from the <b>eClass</b>.
+   * @param containingObject the object containing the <code>objects</code.
    * @param objects the objects to be listed in the table.
    */
   public EObjectTable(CustomizationFx customization, EClass eClass, EObjectTableDescriptor<T> objectTableDescriptor, EObject containingObject, List<T> objects) {
@@ -238,7 +209,7 @@ public class EObjectTable<T extends EObject> extends TableView<T> implements Obj
     
     setObjects(containingObject, objects);
     
-    initObjectSelectionListening();    
+    initObjectSelectionListening();
   }
   
  
@@ -399,6 +370,26 @@ public class EObjectTable<T extends EObject> extends TableView<T> implements Obj
       if (eObjectTableColumnDescriptorCustom.getCellFactory() != null) {
         tableColumn.setCellFactory(eObjectTableColumnDescriptorCustom.getCellFactory());
       }
+      
+      
+//      if (columnDescriptor.getColumnName().equals("Play")) {
+//        tableColumn.setCellFactory(tc -> {
+//          TableCell<T, Object> cell = new TableCell<>() {
+//            @Override
+//            protected void updateItem(Object item, boolean empty) {
+//              super.updateItem(item, empty) ;
+//              setText(empty ? null : item.toString());
+//            }
+//          };
+//          cell.setOnMouseClicked(e -> {
+//            System.out.println("Mouse clicked");
+//            if (! cell.isEmpty()) {
+//              Object userId = cell.getItem();
+//            }
+//          });
+//          return cell ;
+//        });
+//      }
     }
     
     if (columnDescriptor.isEditable()) {
@@ -484,12 +475,12 @@ public class EObjectTable<T extends EObject> extends TableView<T> implements Obj
         final Object value = event.getNewValue() != null ? event.getNewValue() : event.getOldValue();
         T t = event.getTableView().getItems().get(event.getTablePosition().getRow());
         EObject eObjectToSet = t;
-        LOGGER.severe("eObjectToSet=" + eObjectToSet.toString());
+        LOGGER.info("eObjectToSet=" + eObjectToSet.toString());
         for (int i = 0; i < eTypedElements.size() - 1; i++) {
           EStructuralFeature eStructuralFeature = (EStructuralFeature) eTypedElements.get(i);
           LOGGER.severe("eStructuralFeature=" + eStructuralFeature.getName());
           EObject nextEObjectToSet = (EObject) eObjectToSet.eGet(eStructuralFeature);
-          LOGGER.severe("in loop nextEObjectToSet=" + nextEObjectToSet);
+          LOGGER.info("in loop nextEObjectToSet=" + nextEObjectToSet);
           
           if (nextEObjectToSet == null) {
             EClass eClass = eObjectToSet.eClass();
@@ -508,7 +499,7 @@ public class EObjectTable<T extends EObject> extends TableView<T> implements Obj
             eObjectToSet = nextEObjectToSet;
           }
         }
-        LOGGER.severe("after loop eObjectToSet=" + eObjectToSet.toString());
+        LOGGER.info("after loop eObjectToSet=" + eObjectToSet.toString());
         eObjectToSet.eSet((EStructuralFeature) eTypedElements.get(eTypedElements.size() - 1), value);
         refresh();
       });
@@ -693,6 +684,22 @@ public class EObjectTable<T extends EObject> extends TableView<T> implements Obj
 
     setItems(tableSortedList);
   }
+  
+  private void handleMouseClickedEvent(TableColumn column, MouseEvent mouseEvent) {
+    LOGGER.severe("column: " + column + ", mouseEvent: " + mouseEvent);
+
+//    if (mouseEvent.getButton() == MouseButton.PRIMARY) {
+//      //T rowData = row.getItem();
+//      LOGGER.severe("row=" + row.toString());
+//
+//      handleRowClicked(row.getItem());
+//    } else if (mouseEvent.getButton() == MouseButton.SECONDARY) {
+//      ContextMenu contextMenu = createContextMenu(row);
+//      if (contextMenu != null) {
+//        contextMenu.show(row, mouseEvent.getScreenX(), mouseEvent.getScreenY());
+//      }
+//    }
+  }
         
   private void handleMouseClickedEvent(TableRow<T> row, MouseEvent mouseEvent) {
     if (row.isEmpty()) {
@@ -700,14 +707,21 @@ public class EObjectTable<T extends EObject> extends TableView<T> implements Obj
     }
 
     if (mouseEvent.getButton() == MouseButton.PRIMARY) {
-      T rowData = row.getItem();
-      handleRowClicked(rowData);
+//      T rowData = row.getItem();
+//      LOGGER.severe("row=" + row.toString());
+//      
+//      handleRowClicked(row.getItem());
     } else if (mouseEvent.getButton() == MouseButton.SECONDARY) {
       ContextMenu contextMenu = createContextMenu(row);
       if (contextMenu != null) {
         contextMenu.show(row, mouseEvent.getScreenX(), mouseEvent.getScreenY());
       }
+      mouseEvent.consume();
     }
+  }
+  
+  private String rowToString(TableRow<T> row) {
+   return null;
   }
 
   private void handleMouseDoubleClickedEvent(TableRow<T> row, MouseEvent mouseEvent) {
@@ -813,7 +827,7 @@ public class EObjectTable<T extends EObject> extends TableView<T> implements Obj
         final BiConsumer<List<T>, T> consumer = tableRowOperationDescriptor.getConsumer();
         menuItem.setOnAction((ActionEvent event) -> {
           LOGGER.severe("Extended operation");
-          LOGGER.severe("objects" + objects);
+          LOGGER.severe("objects class" + objects.getClass().getName());
           consumer.accept(objects, row.getItem());
           this.setObjects(containingObject, objects);
         });
@@ -866,7 +880,9 @@ public class EObjectTable<T extends EObject> extends TableView<T> implements Obj
     return menu;
   }
 
-  protected void handleRowClicked(T rowData) {
+  protected void handleRowClicked(T row) {
+    LOGGER.severe("=> row=" + row);
+//    this.edit(row.getIndex(), row.getco);
   }
 
   protected void handleRowDoubleClicked(T rowData) {
@@ -1091,13 +1107,35 @@ public class EObjectTable<T extends EObject> extends TableView<T> implements Obj
 
   /**
    * Create the default table descriptor.
+   * <p>
+   * The created descriptor has the following properties:
+   * <ul>
+   * <li>placeHolderText - not set</li>
+   * <li>comparator - not set</li>
+   * <li>columnDescriptors<br/>
+   * One descriptor (of type {@link EObjectTableColumnDescriptorBasic}) for each structural feature (obtained via <code>eClass.getEAllStructuralFeatures()</code>), with the following properties:
+   *         <ul>
+   *         <li>
+   *         eStructuralFeature the <code>EStructuralFeature</code>
+   *         </li>
+   *         <li>
+   *         <code>columnName</code> the name of the <code>structuralFeature</code> (obtained by <code>getName()</code>).
+   *         </li>
+   *         <li>
+   *         <code>isEditable</code> set to <code>true</code>.
+   *         </li>
+   *         <li>
+   *         <code>isVisible</code> set to <code>true</code>.
+   *         </li>
+   *         </ul>
+   * </li>
+   * <li>rowOperations - none</li>
+   * </ul>
    * 
    * @return the newly created table descriptor.
    */
   private EObjectTableDescriptor<T> createDefaultObjectTableDescriptor() {
     EObjectTableDescriptor<T> eObjectTableDescriptor = new EObjectTableDescriptor<T>(null, null, createDefaultColumnDescriptors(), null);
-    
-    eObjectTableDescriptor.setColumnDescriptors(createDefaultColumnDescriptors());
     
     return eObjectTableDescriptor;
   }
@@ -1105,7 +1143,7 @@ public class EObjectTable<T extends EObject> extends TableView<T> implements Obj
   /**
    * Create default column descriptors.
    * <p/>
-   * A column descriptor is created for each structural feature (obtained via <code>eClass.getEAllStructuralFeatures()</code>.</br>
+   * A column descriptor is created for each structural feature (obtained via <code>eClass.getEAllStructuralFeatures()</code>).</br>
    * 
    * @return an array of {@link EObjectTableColumnDescriptorBasic}, where for each column descriptor the following information is filled in:
    *         <ul>
@@ -1366,6 +1404,10 @@ class CheckBoxCellHelper<T extends EObject> implements Callback<Integer, SimpleB
   @Override
   public SimpleBooleanProperty call(final Integer param) {
     T t = (T) tableView.getItems().get(param);
+    Object o = t.eGet((EStructuralFeature) eTypedElement);
+    if (o instanceof org.eclipse.emf.ecore.util.EObjectWithInverseResolvingEList.ManyInverse manyInverse) {
+      LOGGER.severe("ManyInverse: " + o.toString());
+    }
     Boolean value = (Boolean) t.eGet((EStructuralFeature) eTypedElement);
     SimpleBooleanProperty booleanProperty = new SimpleBooleanProperty(value);
     booleanProperty.addListener(new ChangeListener<Boolean>() {

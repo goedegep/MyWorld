@@ -3,17 +3,15 @@ package goedegep.rolodex.app.guifx;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.controlsfx.control.textfield.TextFields;
-
 import goedegep.jfx.CustomizationFx;
-import goedegep.jfx.controls.TextFieldObjectInput;
+import goedegep.jfx.controls.AutoCompleteTextFieldObjectInput;
 import goedegep.rolodex.model.PhoneNumber;
 import goedegep.rolodex.model.Rolodex;
 
 /**
  * This class is a TextField, with autocompletion, for a phone number
  */
-public class PhoneNumberTextField extends TextFieldObjectInput<String> {
+public class PhoneNumberTextField extends AutoCompleteTextFieldObjectInput<String> {
   private Rolodex rolodex;
   
   /**
@@ -25,7 +23,7 @@ public class PhoneNumberTextField extends TextFieldObjectInput<String> {
     this.rolodex = rolodex;
     
     customization.getComponentFactoryFx().customizeTextInputControl(this);
-    TextFields.bindAutoCompletion(this, phoneNumberToString(rolodex.getPhoneNumberList().getPhoneNumbers()));
+    getEntries().addAll(phoneNumberToString(rolodex.getPhoneNumberList().getPhoneNumbers()));
   }
   
   @Override

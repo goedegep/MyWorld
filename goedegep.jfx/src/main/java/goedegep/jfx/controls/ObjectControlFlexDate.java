@@ -45,10 +45,12 @@ public class ObjectControlFlexDate extends TextFieldObjectInput<FlexDate> {
   protected FlexDate stringToObject(String valueAsString) {
     FlexDate flexDate = null;
     
-    try {
-      flexDate = FDF.parse(valueAsString);
-    } catch (ParseException e) {
-      LOGGER.info("ParseException on value: " + valueAsString);
+    if (valueAsString != null) {
+      try {
+        flexDate = FDF.parse(valueAsString);
+      } catch (ParseException e) {
+        LOGGER.info("ParseException on value: " + valueAsString);
+      }
     }
     
     return flexDate;

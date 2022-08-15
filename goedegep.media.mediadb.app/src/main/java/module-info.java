@@ -8,7 +8,7 @@ module goedegep.media.mediadb.app {
   requires goedegep.appgen;
   requires transitive goedegep.appgenfx;
   requires goedegep.media.app;
-  requires transitive goedegep.media.model.mediadb;
+  requires transitive goedegep.media.mediadb.model;
   requires goedegep.model.configuration;
   requires goedegep.model.properties;
   requires goedegep.properties.app;

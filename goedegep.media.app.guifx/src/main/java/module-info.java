@@ -6,7 +6,7 @@ module goedegep.media.app.guifx {
   requires goedegep.media.app;
   requires goedegep.media.fotoshow.app;
   requires goedegep.media.mediadb.app;
-  requires goedegep.media.model.mediadb;
+  requires goedegep.media.mediadb.model;
   requires goedegep.util;
   requires java.desktop;
   requires java.logging;

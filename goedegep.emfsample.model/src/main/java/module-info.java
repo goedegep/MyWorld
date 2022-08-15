@@ -1,6 +1,5 @@
 module goedegep.emfsample.model {
   exports goedegep.emfsample.model.util;
-  exports goedegep.emfsample.model.impl;
   exports goedegep.emfsample.model;
 
   requires transitive org.eclipse.emf.common;

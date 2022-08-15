@@ -148,6 +148,24 @@ public interface MediadbFactory extends EFactory {
   TrackCollection createTrackCollection();
 
   /**
+   * Returns a new object of class '<em>Video</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Video</em>'.
+   * @generated
+   */
+  Video createVideo();
+
+  /**
+   * Returns a new object of class '<em>Subject</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Subject</em>'.
+   * @generated
+   */
+  Subject createSubject();
+
+  /**
    * Returns the package supported by this factory.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->

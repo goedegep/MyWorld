@@ -44,6 +44,8 @@
         eType="#//Track" containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="trackcollections" upperBound="-1"
         eType="#//TrackCollection" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="videos" upperBound="-1"
+        eType="#//Video" containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Artist">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
@@ -94,7 +96,7 @@
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="id" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
         unsettable="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="players" upperBound="-1"
-        eType="#//Player" unsettable="true"/>
+        eType="#//Player" unsettable="true" containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="imagesFrontInside" upperBound="-1"
         eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString" unsettable="true"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="imagesBack" upperBound="-1"
@@ -110,7 +112,7 @@
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="compilation" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"
         defaultValueLiteral="false"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="myInfo" eType="#//MyInfo"
-        unsettable="true"/>
+        unsettable="true" containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="soundtrack" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="MyCompilation" eSuperTypes="#//Album">
@@ -127,7 +129,7 @@
     <eStructuralFeatures xsi:type="ecore:EReference" name="track" lowerBound="1" eType="#//Track"
         unsettable="true"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="bonusTrack" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
-        unsettable="true"/>
+        defaultValueLiteral="" unsettable="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="myTrackInfo" eType="#//MyTrackInfo"
         unsettable="true" containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="originalAlbumTrackReference"
@@ -168,8 +170,6 @@
     <eStructuralFeatures xsi:type="ecore:EReference" name="albumReferences" upperBound="-1"
         eType="#//Album" unsettable="true"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="myComments" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
-        unsettable="true"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="inlayDocument" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
         unsettable="true"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="iveHadOnLP" lowerBound="1"
         eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
@@ -244,5 +244,22 @@
         defaultValueLiteral="&lt;not-set>" unsettable="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="trackReferences" upperBound="-1"
         eType="#//TrackReference" containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Video">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="title" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
+        unsettable="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="date" eType="ecore:EDataType ../../goedegep.types.model/model/types.ecore#//EFlexDate"
+        unsettable="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="image" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
+        unsettable="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="subjects" upperBound="-1"
+        eType="#//Subject" containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Subject">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="title" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
+        unsettable="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="tags" upperBound="-1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="date" eType="ecore:EDataType ../../goedegep.types.model/model/types.ecore#//EFlexDate"
+        unsettable="true"/>
   </eClassifiers>
 </ecore:EPackage>

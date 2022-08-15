@@ -3,6 +3,7 @@ package goedegep.media.mediadb.app.guifx;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
@@ -13,10 +14,12 @@ import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.eobjecttable.EObjectTable;
 import goedegep.jfx.eobjecttable.EObjectTableColumnDescriptorAbstract;
 import goedegep.jfx.eobjecttable.EObjectTableColumnDescriptorBasic;
+import goedegep.jfx.eobjecttable.EObjectTableColumnDescriptorChoiceBox;
 import goedegep.jfx.eobjecttable.EObjectTableColumnDescriptorCustom;
 import goedegep.jfx.eobjecttable.EObjectTableDescriptor;
 import goedegep.media.app.MediaRegistry;
 import goedegep.media.mediadb.model.Artist;
+import goedegep.media.mediadb.model.Collection;
 import goedegep.media.mediadb.model.MediadbPackage;
 import goedegep.media.mediadb.model.MediumInfo;
 import goedegep.media.mediadb.model.MyTrackInfo;
@@ -25,6 +28,7 @@ import goedegep.media.mediadb.model.Track;
 import goedegep.media.mediadb.model.TrackReference;
 import goedegep.util.datetime.ClockTime;
 import goedegep.util.datetime.ClockTimeFormat;
+import javafx.collections.FXCollections;
 import javafx.scene.control.TableCell;
 
 /**
@@ -52,6 +56,7 @@ public class DiscTracksTable extends EObjectTable<TrackReference> {
    */
   public DiscTracksTable(CustomizationFx customization, EList<TrackReference> trackReferences, Map<Track, Path> trackDiscLocationMap) {
     super(customization, MediadbPackage.eINSTANCE.getTrackReference(), new DiscTracksTableDescriptor(), null, trackReferences);
+    this.setEditable(true);
     
     this.trackDiscLocationMap = trackDiscLocationMap;
   }
@@ -117,7 +122,7 @@ class DiscTracksTableDescriptor extends EObjectTableDescriptor<TrackReference> {
   private static final MediadbPackage MEDIA_DB_PACKAGE = MediadbPackage.eINSTANCE;
 
   private static List<EObjectTableColumnDescriptorAbstract<TrackReference>> columnDescriptors = List.<EObjectTableColumnDescriptorAbstract<TrackReference>>of(
-      new EObjectTableColumnDescriptorBasic<TrackReference>(MEDIA_DB_PACKAGE.getTrackReference__GetTrackNr(), "Nr.", true, true),
+      new EObjectTableColumnDescriptorBasic<TrackReference>(MEDIA_DB_PACKAGE.getTrackReference__GetTrackNr(), "Nr.", false, true),
       new EObjectTableColumnDescriptorCustom<TrackReference>(null, "Title", null, true, true, column -> {
         TableCell<TrackReference, Object> cell = new TableCell<>() {
 
@@ -242,31 +247,35 @@ class DiscTracksTableDescriptor extends EObjectTableDescriptor<TrackReference> {
 
         return cell;
       }),
-      new EObjectTableColumnDescriptorCustom<TrackReference>(null, "Collection", null, true, true, column -> {
-        TableCell<TrackReference, Object> cell = new TableCell<>() {
-
-          @Override
-          protected void updateItem(Object item, boolean empty) {            
-            super.updateItem(item, empty);
-            if(empty || (item == null)) {
-              setText(null);
-            }
-            else {
-              setText(null);
-              TrackReference trackReference = (TrackReference) item;
-              if (trackReference.isSetMyTrackInfo()) {
-                MyTrackInfo myTrackInfo = trackReference.getMyTrackInfo();
-                
-                if (myTrackInfo.isSetCollection()) {
-                  setText(myTrackInfo.getCollection().getLiteral());
-                }
-              }
-            }
-          }
-        };
-
-        return cell;
-      }),
+//      new EObjectTableColumnDescriptorCustom<TrackReference>(null, "Collection", null, true, true, column -> {
+//        TableCell<TrackReference, Object> cell = new TableCell<>() {
+//
+//          @Override
+//          protected void updateItem(Object item, boolean empty) {            
+//            super.updateItem(item, empty);
+//            if(empty || (item == null)) {
+//              setText(null);
+//            }
+//            else {
+//              setText(null);
+//              TrackReference trackReference = (TrackReference) item;
+//              if (trackReference.isSetMyTrackInfo()) {
+//                MyTrackInfo myTrackInfo = trackReference.getMyTrackInfo();
+//                
+//                Collection collection = myTrackInfo.getCollection();
+//                if (collection != Collection.NOT_SET) {
+//                  setText(collection.getLiteral());
+//                }
+//              }
+//            }
+//          }
+//        };
+//
+//        return cell;
+//      }),
+      new EObjectTableColumnDescriptorChoiceBox<TrackReference>(
+          Arrays.asList(MEDIA_DB_PACKAGE.getTrackReference_MyTrackInfo(), MEDIA_DB_PACKAGE.getMyTrackInfo_Collection()),
+          "Collection", 300, true, true, FXCollections.observableList(Arrays.asList((Object[]) Collection.values())), null),
       new EObjectTableColumnDescriptorCustom<TrackReference>(null, "Bonus track", null, true, true, column -> {
         TableCell<TrackReference, Object> cell = new TableCell<>() {
 
@@ -278,15 +287,8 @@ class DiscTracksTableDescriptor extends EObjectTableDescriptor<TrackReference> {
             }
             else {
               TrackReference trackReference = (TrackReference) item;
-              if (trackReference.isSetBonusTrack()) {
-                String text = trackReference.getBonusTrack();
-                if (text == null) {
-                  text = "bonus track";
-                }
-                setText(text);
-              } else {
-                setText(null);
-              }
+              String text = trackReference.getBonusTrack();
+              setText(text);
             }
           }
         };

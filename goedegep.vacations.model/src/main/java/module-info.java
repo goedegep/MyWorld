@@ -1,6 +1,5 @@
 module goedegep.model.vacations {
   exports goedegep.vacations.model;
-  exports goedegep.vacations.model.impl;
   exports goedegep.vacations.model.util;
 
   requires transitive goedegep.types.model;

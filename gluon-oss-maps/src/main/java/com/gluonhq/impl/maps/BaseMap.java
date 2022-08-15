@@ -131,6 +131,22 @@ public class BaseMap extends Group {
         this.sceneProperty().addListener(sceneListener);
     }
     
+    public boolean allTilesAvailable() {
+      // at zoom level z, there are 2^z tiles in each direction.
+      int nearestZoom = (Math.min((int) floor(zoom.get() + TIPPING), MAX_ZOOM - 1));
+      for (Long key: tiles[nearestZoom].keySet()) {
+        SoftReference<MapTile> ref = tiles[nearestZoom].get(key);
+        MapTile mapTile = ref.get();
+        
+        if (!mapTile.ready) {
+          logger.severe("<= false - not ready: " + key);
+          return false;
+        }
+      }
+
+      return true;
+    }
+    
     /**
      * Move the center of this map to the specified coordinates
      * @param lat the latitude of the new center
@@ -155,7 +171,6 @@ public class BaseMap extends Group {
         this.lon = lon;
         if (getScene() == null) {
             abortedTileLoad = true;
-            logger.severe("Scene is null!!!");
             return;
         }
         double activeZoom = zoom.get();
@@ -336,7 +351,6 @@ public class BaseMap extends Group {
         int nearestZoom = (Math.min((int) floor(zoom.get() + TIPPING), MAX_ZOOM - 1));
         double activeZoom = zoom.get();
         double deltaZ = nearestZoom - activeZoom;
-        logger.severe("zoom=" + activeZoom + ", nearestZoom=" + nearestZoom + ", deltaZoom=" + deltaZ);
         // at zoom level z, there are 2^z tiles in each direction.
         long i_max = 1 << nearestZoom;
         long j_max = 1 << nearestZoom;
@@ -344,60 +358,38 @@ public class BaseMap extends Group {
         double ty = getTranslateY();
         double width = getMyWidth();
         double height = getMyHeight();
-        logger.severe("width=" + width + ", height=" + height);
         long imin = Math.max(0, (long) (-tx * Math.pow(2, deltaZ) / TILE_SIZE) - 1);
         long jmin = Math.max(0, (long) (-ty * Math.pow(2, deltaZ) / TILE_SIZE));
         long imax = Math.min(i_max, imin + (long) (width * Math.pow(2, deltaZ) / TILE_SIZE) + 3);
         long jmax = Math.min(j_max, jmin + (long) (height * Math.pow(2, deltaZ) / TILE_SIZE) + 3);
-        logger.severe("Zoom = " + nearestZoom + ", active = " + activeZoom + ", tx = " + tx + ", loadtiles, check i-range: " + imin + ", " + imax + " and j-range: " + jmin + ", " + jmax);
+        logger.info("Zoom = " + nearestZoom + ", active = " + activeZoom + ", tx = " + tx + ", loadtiles, check i-range: " + imin + ", " + imax + " and j-range: " + jmin + ", " + jmax);
         for (long i = imin; i < imax; i++) {
             for (long j = jmin; j < jmax; j++) {
                 Long key = i * i_max + j;
+                logger.info("loading tile: " + key);
                 SoftReference<MapTile> ref = tiles[nearestZoom].get(key);
                 MapTile mapTile;
                 if ((ref == null) || (ref.get() == null)) {
                     if (ref != null) {
-                        logger.severe("RECLAIMED: z=" + nearestZoom + ",i=" + i + ",j=" + j);
+                        logger.fine("RECLAIMED: z=" + nearestZoom + ",i=" + i + ",j=" + j);
                     }
                     mapTile = new MapTile(this, nearestZoom, i, j);
                     tiles[nearestZoom].put(key, new SoftReference<>(mapTile));
-//                    MapTile covering = getCoveringTile(mapTile);
-//                    if (covering != null) {
-//                        covering.addCovering(mapTile);
-//                        if (!getChildren().contains(covering)) {
-//                            getChildren().add(covering);
-//                        }
-//                    }
-//
-//                    getChildren().add(tile);
+                    MapTile covering = getCoveringTile(mapTile);
+                    if (covering != null) {
+                        covering.addCovering(mapTile);
+                        if (!getChildren().contains(covering)) {
+                            getChildren().add(covering);
+                        }
+                    }
+
+                    getChildren().add(mapTile);
                 } else {
                     mapTile = ref.get();
                 }
                 if (!getChildren().contains(mapTile)) {
                   getChildren().add(mapTile);
                 }
-//                SoftReference<MapTile> ref = tiles[nearestZoom].get(key);
-//                if ((ref == null) || (ref.get() == null)) {
-//                    if (ref != null) {
-//                        logger.severe("RECLAIMED: z=" + nearestZoom + ",i=" + i + ",j=" + j);
-//                    }
-//                    MapTile tile = new MapTile(this, nearestZoom, i, j);
-//                    tiles[nearestZoom].put(key, new SoftReference<>(tile));
-//                    MapTile covering = getCoveringTile(tile);
-//                    if (covering != null) {
-//                        covering.addCovering(tile);
-//                        if (!getChildren().contains(covering)) {
-//                            getChildren().add(covering);
-//                        }
-//                    }
-//
-//                    getChildren().add(tile);
-//                } else {
-//                    MapTile tile = ref.get();
-//                    if (!getChildren().contains(tile)) {
-//                        getChildren().add(tile);
-//                    }
-//                }
             }
         }
         //   calculateCenterCoords();

@@ -230,7 +230,46 @@
       <details key="name" value="gpxType"/>
       <details key="kind" value="elementOnly"/>
     </eAnnotations>
-    <eOperations name="getLength" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+    <eOperations name="getLength" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Calculate the length of the GPX track.&#xD;&#xA;&lt;p>&#xD;&#xA;The length is defined as the sum of the lengths of the tracks.&#xD;&#xA;&#xD;&#xA;@return the length of the GPX track in meters."/>
+      </eAnnotations>
+    </eOperations>
+    <eOperations name="getCumulativeAscent" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Calculate the total ascent in the GPX track.&#xD;&#xA;&lt;p>&#xD;&#xA;The total ascent of the GPX track is the sum of the cumulative ascents of the tracks.&#xD;&#xA;&#xD;&#xA;@return the GPX track's total ascent in meters, or null if this can't be calculated (e.g. if the cumulative ascent of one of the tracks can't be calculated).&#xD;&#xA;"/>
+      </eAnnotations>
+    </eOperations>
+    <eOperations name="getDuration" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//ELongObject">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Calculate the duration of the GPX track in milliseconds..&#xD;&#xA;&lt;p>&#xD;&#xA;The duration is defined as the sum of the durations of the tracks.&#xD;&#xA;&#xD;&#xA;&lt;return> the duration of the GPX track in milliseconds.."/>
+      </eAnnotations>
+    </eOperations>
+    <eOperations name="getStartTime" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDate">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Get the start time of the GPX track.&#xD;&#xA;&lt;p>&#xD;&#xA;The start time is the start time of the first track.&#xD;&#xA;&#xD;&#xA;@return the start time of the GPX track."/>
+      </eAnnotations>
+    </eOperations>
+    <eOperations name="getEndTime" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDate">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Get the end time of the GPX track.&#xD;&#xA;&lt;p>&#xD;&#xA;The end time is the end time of the last track.&#xD;&#xA;&#xD;&#xA;@return the end time of the GPX track."/>
+      </eAnnotations>
+    </eOperations>
+    <eOperations name="getCumulativeDescent" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDoubleObject">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Calculate the total descent in the GPX track.&#xD;&#xA;&lt;p>&#xD;&#xA;The total descent of the GPX track is the sum of the cumulative descent of the tracks.&#xD;&#xA;&#xD;&#xA;@return the GPX track's total descent in meters, or null if this can't be calculated (e.g. if the cumulative descent of one of the tracks can't be calculated).&#xD;&#xA;"/>
+      </eAnnotations>
+    </eOperations>
+    <eOperations name="getStartElevation" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDoubleObject">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Get the start elevation of the GPX track.&#xD;&#xA;&lt;p>&#xD;&#xA;The start elevation is the start elevation of the first track.&#xD;&#xA;&#xD;&#xA;@return the start elevation of the GPX track, or null if this isn't available."/>
+      </eAnnotations>
+    </eOperations>
+    <eOperations name="getEndElevation" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDoubleObject">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Get the end elevation of the GPX track.&#xD;&#xA;&lt;p>&#xD;&#xA;The end elevation is the end elevation of the last track.&#xD;&#xA;&#xD;&#xA;@return the end elevation of the GPX track, or null if this isn't available."/>
+      </eAnnotations>
+    </eOperations>
     <eStructuralFeatures xsi:type="ecore:EReference" name="metadata" eType="#//MetadataType"
         containment="true" resolveProxies="false">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
@@ -690,7 +729,46 @@
       <details key="name" value="trksegType"/>
       <details key="kind" value="elementOnly"/>
     </eAnnotations>
-    <eOperations name="getLength" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+    <eOperations name="getLength" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Calculate the length of the track segment in meters.&#xD;&#xA;&lt;p>&#xD;&#xA;The length is defined as the sum of the distances between all consecutive points.&#xD;&#xA;&#xD;&#xA;@return the length of the track segment in meters."/>
+      </eAnnotations>
+    </eOperations>
+    <eOperations name="getCumulativeAscent" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDoubleObject">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Calculate the total ascent in the track segment.&#xD;&#xA;&lt;p>&#xD;&#xA;The total ascent of the segment is calculated by comparing each of the segment's waypoints with their predecessors. If the&#xD;&#xA;elevation of a waypoint is higher than the elevation of the predecessor, the total ascent is increased accordingly.&#xD;&#xA;&#xD;&#xA;@return the segment's total ascent in meters, or null if this can't be calculated (e.g. if no elevation is available in the waypoints)&#xD;&#xA;"/>
+      </eAnnotations>
+    </eOperations>
+    <eOperations name="getDuration" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//ELongObject">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Calculate the duration of the track segment in milliseconds.&#xD;&#xA;&lt;p>&#xD;&#xA;The duration is defined as the difference between the startTime and endTime.&#xD;&#xA;&#xD;&#xA;&lt;return> the duration of the track segment in milliseconds.."/>
+      </eAnnotations>
+    </eOperations>
+    <eOperations name="getStartTime" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDate">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Get the start time of the track segment.&#xD;&#xA;&lt;p>&#xD;&#xA;The start time is the time of the first waypoint.&#xD;&#xA;&#xD;&#xA;@return the start time of the track segment."/>
+      </eAnnotations>
+    </eOperations>
+    <eOperations name="getEndTime" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDate">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Get the end time of the track segment.&#xD;&#xA;&lt;p>&#xD;&#xA;The end time is the time of the last waypoint.&#xD;&#xA;&#xD;&#xA;@return the end time of the track segment."/>
+      </eAnnotations>
+    </eOperations>
+    <eOperations name="getCumulativeDescent" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDoubleObject">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Calculate the total descent in the segment.&#xD;&#xA;&lt;p>&#xD;&#xA;The total descent of the segment is calculated by comparing each of the segment's waypoints with their predecessors. If the&#xD;&#xA;elevation of a waypoint is lower than the elevation of the predecessor, the total descent is increased accordingly.&#xD;&#xA;@return the segment's total descent in meters, or null if this can't be calculated (e.g. if no elevation is available in the waypoints).&#xD;&#xA;"/>
+      </eAnnotations>
+    </eOperations>
+    <eOperations name="getStartElevation" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDoubleObject">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Get the start elevation of the track segment.&#xD;&#xA;&lt;p>&#xD;&#xA;The start elevation is the elevation of the first waypoint.&#xD;&#xA;&#xD;&#xA;@return the start elevation of the track segment, or null if this isn't available."/>
+      </eAnnotations>
+    </eOperations>
+    <eOperations name="getEndElevation" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDoubleObject">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Get the end elevation of the track segment.&#xD;&#xA;&lt;p>&#xD;&#xA;The end elevation is the elevation of the last waypoint.&#xD;&#xA;&#xD;&#xA;@return the end elevation of the track segment, or null if this isn't available."/>
+      </eAnnotations>
+    </eOperations>
     <eStructuralFeatures xsi:type="ecore:EReference" name="trkpt" upperBound="-1"
         eType="#//WptType" containment="true" resolveProxies="false">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
@@ -722,7 +800,46 @@
       <details key="name" value="trkType"/>
       <details key="kind" value="elementOnly"/>
     </eAnnotations>
-    <eOperations name="getLength" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+    <eOperations name="getLength" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Calculate the length of the track in meters.&#xD;&#xA;&lt;p>&#xD;&#xA;The length is defined as the sum of the lengths of the track segments.&#xD;&#xA;&#xD;&#xA;@return the length of the track in meters."/>
+      </eAnnotations>
+    </eOperations>
+    <eOperations name="getCumulativeAscent" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Calculate the total ascent in the track.&#xD;&#xA;&lt;p>&#xD;&#xA;The total ascent of the track is the sum of the cumulative ascents of the segments of the track.&#xD;&#xA;&#xD;&#xA;@return the track's total ascent in meters, or null if this can't be calculated (e.g. if the cumulative ascent of one of the segments can't be calculated).&#xD;&#xA;"/>
+      </eAnnotations>
+    </eOperations>
+    <eOperations name="getDuration" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//ELongObject">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Calculate the duration of the track in milliseconds..&#xD;&#xA;&lt;p>&#xD;&#xA;The duration is defined as the sum of the durations of the track segments.&#xD;&#xA;&#xD;&#xA;&lt;return> the duration of the track in milliseconds.."/>
+      </eAnnotations>
+    </eOperations>
+    <eOperations name="getStartTime" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDate">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Get the start time of the track.&#xD;&#xA;&lt;p>&#xD;&#xA;The start time is the start time of the first segment.&#xD;&#xA;&#xD;&#xA;@return the start time of the track."/>
+      </eAnnotations>
+    </eOperations>
+    <eOperations name="getEndTime" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDate">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Get the end time of the track.&#xD;&#xA;&lt;p>&#xD;&#xA;The end time is the end time of the last segment.&#xD;&#xA;&#xD;&#xA;@return the end time of the track."/>
+      </eAnnotations>
+    </eOperations>
+    <eOperations name="getCumulativeDescent" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDoubleObject">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Calculate the total descent in the track.&#xD;&#xA;&lt;p>&#xD;&#xA;The total descent of the track is the sum of the cumulative descent of the segments of the track.&#xD;&#xA;&#xD;&#xA;@return the track's total descent in meters, or null if this can't be calculated (e.g. if the cumulative descent of one of the segments can't be calculated).&#xD;&#xA;"/>
+      </eAnnotations>
+    </eOperations>
+    <eOperations name="getStartElevation" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDoubleObject">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Get the start elevation of the track.&#xD;&#xA;&lt;p>&#xD;&#xA;The start elevation is the start elevation of the first segment.&#xD;&#xA;&#xD;&#xA;@return the start elevation of the track, or null if this isn't available."/>
+      </eAnnotations>
+    </eOperations>
+    <eOperations name="getEndElevation" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDoubleObject">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Get the end elevation of the track.&#xD;&#xA;&lt;p>&#xD;&#xA;The end elevation is the end elevation of the last segment.&#xD;&#xA;&#xD;&#xA;@return the end elevation of the track, or null if this isn't available."/>
+      </eAnnotations>
+    </eOperations>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2003/XMLType#//String">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
         <details key="documentation" value="&#xA;&#x9;&#x9;&#x9;GPS name of track.&#xA;&#x9;&#x9;  "/>

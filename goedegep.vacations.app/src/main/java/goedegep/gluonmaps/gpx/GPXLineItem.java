@@ -120,7 +120,7 @@ public abstract class GPXLineItem {
     public abstract GPXLineItemType getType();
     public abstract String getName();
     public abstract void setName(final String name);
-    public abstract String getData(final GPXLineItem.GPXLineItemData gpxLineItemData);
+//    public abstract String getData(final GPXLineItem.GPXLineItemData gpxLineItemData);
     public abstract Date getDate();
     
     // get associated GPXLineItemType - could be children or parents
@@ -146,17 +146,17 @@ public abstract class GPXLineItem {
         return gpxChildren;
     }
     
-    protected abstract long getDuration();
+//    protected abstract long getDuration();
     
-    protected String getDurationAsString() {
-        // http://stackoverflow.com/questions/17940200/how-to-find-the-duration-of-difference-between-two-dates-in-java
-        final long diff = getDuration();
-        // TFE, 20170716: negative differences are only shown for hours
-        final long diffSeconds = Math.abs(diff / 1000 % 60);
-        final long diffMinutes = Math.abs(diff / (60 * 1000) % 60);
-        final long diffHours = diff / (60 * 60 * 1000);
-        return String.format(DURATION_FORMAT, diffHours, diffMinutes, diffSeconds);
-    }
+//    protected String getDurationAsString() {
+//        // http://stackoverflow.com/questions/17940200/how-to-find-the-duration-of-difference-between-two-dates-in-java
+//        final long diff = getDuration();
+//        // TFE, 20170716: negative differences are only shown for hours
+//        final long diffSeconds = Math.abs(diff / 1000 % 60);
+//        final long diffMinutes = Math.abs(diff / (60 * 1000) % 60);
+//        final long diffHours = diff / (60 * 60 * 1000);
+//        return String.format(DURATION_FORMAT, diffHours, diffMinutes, diffSeconds);
+//    }
     
     public void acceptVisitor(final IGPXLineItemVisitor visitor) {
         if (visitor.deepthFirst()) {

@@ -85,6 +85,10 @@ public class MediadbFactoryImpl extends EFactoryImpl implements MediadbFactory {
       return createDiscAndTrackNrs();
     case MediadbPackage.TRACK_COLLECTION:
       return createTrackCollection();
+    case MediadbPackage.VIDEO:
+      return createVideo();
+    case MediadbPackage.SUBJECT:
+      return createSubject();
     default:
       throw new IllegalArgumentException("The class '" + eClass.getName() + "' is not a valid classifier");
     }
@@ -284,6 +288,28 @@ public class MediadbFactoryImpl extends EFactoryImpl implements MediadbFactory {
   public TrackCollection createTrackCollection() {
     TrackCollectionImpl trackCollection = new TrackCollectionImpl();
     return trackCollection;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public Video createVideo() {
+    VideoImpl video = new VideoImpl();
+    return video;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public Subject createSubject() {
+    SubjectImpl subject = new SubjectImpl();
+    return subject;
   }
 
   /**

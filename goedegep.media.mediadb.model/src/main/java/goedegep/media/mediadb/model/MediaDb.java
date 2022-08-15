@@ -20,6 +20,7 @@ import org.eclipse.emf.ecore.EObject;
  *   <li>{@link goedegep.media.mediadb.model.MediaDb#getAlbums <em>Albums</em>}</li>
  *   <li>{@link goedegep.media.mediadb.model.MediaDb#getTracks <em>Tracks</em>}</li>
  *   <li>{@link goedegep.media.mediadb.model.MediaDb#getTrackcollections <em>Trackcollections</em>}</li>
+ *   <li>{@link goedegep.media.mediadb.model.MediaDb#getVideos <em>Videos</em>}</li>
  * </ul>
  *
  * @see goedegep.media.mediadb.model.MediadbPackage#getMediaDb()
@@ -82,6 +83,18 @@ public interface MediaDb extends EObject {
    * @generated
    */
   EList<TrackCollection> getTrackcollections();
+
+  /**
+   * Returns the value of the '<em><b>Videos</b></em>' containment reference list.
+   * The list contents are of type {@link goedegep.media.mediadb.model.Video}.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the value of the '<em>Videos</em>' containment reference list.
+   * @see goedegep.media.mediadb.model.MediadbPackage#getMediaDb_Videos()
+   * @model containment="true"
+   * @generated
+   */
+  EList<Video> getVideos();
 
   /**
    * <!-- begin-user-doc -->

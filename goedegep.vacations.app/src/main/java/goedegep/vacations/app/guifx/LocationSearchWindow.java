@@ -1378,11 +1378,11 @@ class LocationPanel extends VBox implements ObjectSelectionListener<TreeItem<EOb
    * but from the <code>ReverseGeocodePanel</code> (if available).
    */
   private void addLocation() {
-    // Always directly deselect, in order to prevent next 'add' or 'set' uses this unintentionally.
-    useReverseGeocodeSearchCoordinates.setSelected(false);
-    
     Location location = getLocation();
     
+    // Always deselect, in order to prevent next 'add' or 'set' uses this unintentionally.
+    useReverseGeocodeSearchCoordinates.setSelected(false);
+        
     EObjectTreeItemContent eObjectTreeItemContent = selectedTreeItem.getValue();
     
     // If the selected tree item is a list of (a supertype of) Locations, it is added as last child of this list.

@@ -1,5 +1,4 @@
 module goedegep.finan.lynx2finan.model {
-  exports goedegep.finan.lynx2finan.model.impl;
   exports goedegep.finan.lynx2finan.model;
   exports goedegep.finan.lynx2finan.model.util;
 

@@ -111,6 +111,35 @@ public class WGS84Coordinates {
                 * Math.sin(lon21/2.0) * Math.sin(lon21/2.0);
         return 2.0 * Math.atan2(Math.sqrt(a), Math.sqrt(1.0-a)) * (EARTH_AVERAGE_RADIUS + (getElevation() + point.getElevation())/2.0);
     }
+	
+	/**
+	 * Get the difference in elevation between this point and another point.
+	 * 
+	 * @param point the point in relation to which the elevation difference is to be determined.
+	 * @return the difference in elevation between this point and the specified <code>point</code>.
+	 */
+    public Double elevationDiff(final WGS84Coordinates point) {
+      if ((elevation == null)  ||  (point.elevation == null)) {
+        return null;
+      }
+      
+      return point.elevation - elevation;
+    }
+    
+    /**
+     * Get the slope percentage between this point and another point.
+     * 
+     * @param point the point in relation to which the slope is to be determined.
+     * @return the slope between this point and the specified <code>point</code>.
+     */
+    public Double slope(final WGS84Coordinates point) {
+      Double elevationDiff = elevationDiff(point);
+      if (elevationDiff == null) {
+        return null;
+      }
+
+      return elevationDiff / getDistance(point) * 100.0;
+    }
     
     @Override
     public String toString() {
@@ -125,5 +154,14 @@ public class WGS84Coordinates {
       }
       
       return buf.toString();
+    }
+    
+    /**
+     * Get a textual representation of the coordinates, using degress, minutes and seconds notation.
+     * 
+     * @return a textual representation of the coordinates, using degress, minutes and seconds notation.
+     */
+    public String toDegreesMinutesSecondsString() {
+      return GeoUtil.latToDegreesMinutesSecondsString(latitude) + " " + GeoUtil.lonToDegreesMinutesSecondsString(longitude);      
     }
 }

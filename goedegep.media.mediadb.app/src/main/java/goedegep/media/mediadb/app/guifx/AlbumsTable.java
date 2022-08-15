@@ -10,6 +10,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.BiConsumer;
 import java.util.logging.Logger;
 
 import goedegep.appgen.ImageSize;
@@ -19,6 +20,7 @@ import goedegep.jfx.AppResourcesFx;
 import goedegep.jfx.ComponentFactoryFx;
 import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.DefaultAppResourcesFx;
+import goedegep.jfx.DoubleClickEventDispatcher;
 import goedegep.jfx.eobjecttable.EObjectTable;
 import goedegep.jfx.eobjecttable.EObjectTableColumnDescriptorAbstract;
 import goedegep.jfx.eobjecttable.EObjectTableColumnDescriptorBasic;
@@ -33,13 +35,13 @@ import goedegep.media.mediadb.model.Album;
 import goedegep.media.mediadb.model.Disc;
 import goedegep.media.mediadb.model.DiscAndTrackNrs;
 import goedegep.media.mediadb.model.IWant;
+import goedegep.media.mediadb.model.InformationType;
 import goedegep.media.mediadb.model.MediaDb;
 import goedegep.media.mediadb.model.MediadbPackage;
 import goedegep.media.mediadb.model.MediumInfo;
 import goedegep.media.mediadb.model.MyCompilation;
 import goedegep.media.mediadb.model.MyInfo;
 import goedegep.media.mediadb.model.MyTrackInfo;
-import goedegep.media.mediadb.model.InformationType;
 import goedegep.media.mediadb.model.Track;
 import goedegep.media.mediadb.model.TrackReference;
 import goedegep.media.mediadb.model.util.MediaDbUtil;
@@ -116,7 +118,7 @@ public class AlbumsTable extends EObjectTable<Album> {
    */
   public AlbumsTable(CustomizationFx customization, MediaDbWindow mediaDbWindow, MediaDb mediaDb,
       Map<Album, AlbumDiscLocationInfo> albumToMusicFolderLocationMap, Map<Disc, AlbumDiscLocationInfo> albumDiscToMusicFolderLocationMap, Map<Track, Path> trackDiscLocationMap) {
-    super(customization, MediadbPackage.eINSTANCE.getAlbum(), new AlbumsTableDescriptor(customization), mediaDb, mediaDb.getAlbums());
+    super(customization, MediadbPackage.eINSTANCE.getAlbum(), new AlbumsTableDescriptor(customization, mediaDb, trackDiscLocationMap), mediaDb, mediaDb.getAlbums());
     
     this.customization = customization;
     this.mediaDb = mediaDb;
@@ -329,7 +331,7 @@ public class AlbumsTable extends EObjectTable<Album> {
   protected void importTracks(Album album) {
     
     LOGGER.severe("Importing album: " + album.getTitle());
-    ImportAlbumTracksWindowFx importAlbumTracksWindow = new ImportAlbumTracksWindowFx(customization, mediaDb, album);
+    ImportAlbumTracksWindow importAlbumTracksWindow = new ImportAlbumTracksWindow(customization, mediaDb, album);
     importAlbumTracksWindow.show();
   }
 }
@@ -345,12 +347,12 @@ class AlbumsTableDescriptor extends EObjectTableDescriptor<Album> {
   /*
    * Column descriptors which have to be adapted in the constructor.
    */
-  private EObjectTableColumnDescriptorCustom<Album> playColumnDescriptor = new EObjectTableColumnDescriptorCustom<Album>(null, "Play", null, true, true, null);
-  private EObjectTableColumnDescriptorCustom<Album> frontImagesColumnDescriptor = new EObjectTableColumnDescriptorCustom<Album>(MEDIA_DB_PACKAGE.getAlbum_ImagesFront(), "Front", null, true, true, null);
-  private EObjectTableColumnDescriptorCustom<Album> insideImagesColumnDescriptor = new EObjectTableColumnDescriptorCustom<Album>(MEDIA_DB_PACKAGE.getAlbum_ImagesFrontInside(), "Inside", null, true, true, null);
-  private EObjectTableColumnDescriptorCustom<Album> backImagesColumnDescriptor = new EObjectTableColumnDescriptorCustom<Album>(MEDIA_DB_PACKAGE.getAlbum_ImagesBack(), "Back", null, true, true, null);
-  private EObjectTableColumnDescriptorCustom<Album> labelImagesColumnDescriptor = new EObjectTableColumnDescriptorCustom<Album>(MEDIA_DB_PACKAGE.getAlbum_ImagesLabel(), "Label", null, true, true, null);
-  private EObjectTableColumnDescriptorCustom<Album> albumReferenceColumnDescriptor = new EObjectTableColumnDescriptorCustom<Album>(MEDIA_DB_PACKAGE.getAlbum_MyInfo(), "Reference", null, true, true, null);
+  private EObjectTableColumnDescriptorCustom<Album> playColumnDescriptor = new EObjectTableColumnDescriptorCustom<Album>(null, "Play", null, false, true, null);
+  private EObjectTableColumnDescriptorCustom<Album> frontImagesColumnDescriptor = new EObjectTableColumnDescriptorCustom<Album>(MEDIA_DB_PACKAGE.getAlbum_ImagesFront(), "Front", null, false, true, null);
+  private EObjectTableColumnDescriptorCustom<Album> insideImagesColumnDescriptor = new EObjectTableColumnDescriptorCustom<Album>(MEDIA_DB_PACKAGE.getAlbum_ImagesFrontInside(), "Inside", null, false, true, null);
+  private EObjectTableColumnDescriptorCustom<Album> backImagesColumnDescriptor = new EObjectTableColumnDescriptorCustom<Album>(MEDIA_DB_PACKAGE.getAlbum_ImagesBack(), "Back", null, false, true, null);
+  private EObjectTableColumnDescriptorCustom<Album> labelImagesColumnDescriptor = new EObjectTableColumnDescriptorCustom<Album>(MEDIA_DB_PACKAGE.getAlbum_ImagesLabel(), "Label", null, false, true, null);
+  private EObjectTableColumnDescriptorCustom<Album> albumReferenceColumnDescriptor = new EObjectTableColumnDescriptorCustom<Album>(MEDIA_DB_PACKAGE.getAlbum_MyInfo(), "Reference", null, false, true, null);
 
   
   /*
@@ -358,17 +360,17 @@ class AlbumsTableDescriptor extends EObjectTableDescriptor<Album> {
    */
   private List<EObjectTableColumnDescriptorAbstract<Album>> columnDescriptors = List.<EObjectTableColumnDescriptorAbstract<Album>>of(
       playColumnDescriptor,
-      new EObjectTableColumnDescriptorBasic<Album>(MEDIA_DB_PACKAGE.getAlbum_Artist(), "Artist", true, true),
-      new EObjectTableColumnDescriptorBasic<Album>(MEDIA_DB_PACKAGE.getAlbum_Title(), "Title", true, true),
-      new EObjectTableColumnDescriptorBasic<Album>(MEDIA_DB_PACKAGE.getAlbum_ReleaseDate(), "Release date", true, true),
+      new EObjectTableColumnDescriptorBasic<Album>(MEDIA_DB_PACKAGE.getAlbum_Artist(), "Artist", false, true),
+      new EObjectTableColumnDescriptorBasic<Album>(MEDIA_DB_PACKAGE.getAlbum_Title(), "Title", false, true),
+      new EObjectTableColumnDescriptorBasic<Album>(MEDIA_DB_PACKAGE.getAlbum_ReleaseDate(), "Release date", false, true),
       frontImagesColumnDescriptor,
       insideImagesColumnDescriptor,
       backImagesColumnDescriptor,
       labelImagesColumnDescriptor,
-      new EObjectTableColumnDescriptorCheckBox<Album>(MEDIA_DB_PACKAGE.getAlbum_Compilation(), "Compilation album", true, true),
-      new EObjectTableColumnDescriptorCheckBox<Album>(MEDIA_DB_PACKAGE.getAlbum_Soundtrack(), "Soundtrack", true, true),
+      new EObjectTableColumnDescriptorCheckBox<Album>(MEDIA_DB_PACKAGE.getAlbum_Compilation(), "Compilation album", false, true),
+      new EObjectTableColumnDescriptorCheckBox<Album>(MEDIA_DB_PACKAGE.getAlbum_Soundtrack(), "Soundtrack", false, true),
       albumReferenceColumnDescriptor,
-      new EObjectTableColumnDescriptorCustom<>(null, "Source", 300, true, true, column -> {
+      new EObjectTableColumnDescriptorCustom<>(null, "Source", 300, false, true, column -> {
             TableCell<Album, Object> cell = new TableCell<>() {
 
               @Override
@@ -431,25 +433,27 @@ class AlbumsTableDescriptor extends EObjectTableDescriptor<Album> {
   @SuppressWarnings("serial")
   private static Map<TableRowOperation, TableRowOperationDescriptor<Album>> rowOperations = new HashMap<>() {
     {
-      put(TableRowOperation.OPEN, new TableRowOperationDescriptor<>("Afspelen"));
-      put(TableRowOperation.NEW_OBJECT, new TableRowOperationDescriptor<>("Nieuw album"));
-      put(TableRowOperation.NEW_OBJECT_BEFORE, new TableRowOperationDescriptor<>("Nieuw album hiervoor"));
-      put(TableRowOperation.NEW_OBJECT_AFTER, new TableRowOperationDescriptor<>("Nieuw album hierna"));
-      put(TableRowOperation.DELETE_OBJECT, new TableRowOperationDescriptor<>("Album verwijderen"));
-      put(TableRowOperation.MOVE_OBJECT_UP, new TableRowOperationDescriptor<>("Album omhoog verplaatsen"));
-      put(TableRowOperation.MOVE_OBJECT_DOWN, new TableRowOperationDescriptor<>("Album omlaag verplaatsen"));
+      put(TableRowOperation.OPEN, new TableRowOperationDescriptor<>("Play"));
+      put(TableRowOperation.DELETE_OBJECT, new TableRowOperationDescriptor<>("Delete album"));
     }
   };
-  
+
+  private CustomizationFx customization;
+  private MediaDb mediaDb;
+  private Map<Track, Path>  trackDiscLocationMap;
   private AlbumReferenceCellFactory albumReferenceCellFactory;
+
   
   /**
    * Constructor.
    * 
    * @param customization the GUI customization.
    */
-  AlbumsTableDescriptor(CustomizationFx customization) {
+  AlbumsTableDescriptor(CustomizationFx customization, MediaDb mediaDb, Map<Track, Path> trackDiscLocationMap) {
     super();
+    this.customization = customization;
+    this.mediaDb = mediaDb;
+    this.trackDiscLocationMap = trackDiscLocationMap;
     
     MyInfoPlayCellFactory myInfoPlayCellFactory = new MyInfoPlayCellFactory(customization, IMAGE_HEIGHT);
     playColumnDescriptor.setCellFactory(myInfoPlayCellFactory);
@@ -465,11 +469,17 @@ class AlbumsTableDescriptor extends EObjectTableDescriptor<Album> {
     
     setComparator(new AlbumComparator());
     setColumnDescriptors(columnDescriptors);
+    
+    rowOperations.put(TableRowOperation.EXTENDED_OPERATION, new TableRowOperationDescriptor<>("Edit album", (BiConsumer<List<Album>, Album>) this::editAlbum));
     setRowOperations(rowOperations);
   }
   
   public void setAlbumsTable(AlbumsTable albumsTable) {
     albumReferenceCellFactory.setAlbumsTable(albumsTable);
+  }
+  
+  private void editAlbum(List<Album> albums, Album album) {
+    new AlbumDetailsEditor(customization, mediaDb, trackDiscLocationMap, album);
   }
 }
 
@@ -559,6 +569,25 @@ class MyInfoPlayCell extends TableCell<Album, Object> {
     imageView.setPreserveRatio(true);
     imageView.setImage(i);
     setGraphic(imageView);
+    
+    addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
+      MyInfoPlayCell cell = (MyInfoPlayCell) e.getSource();
+      Album album = (Album) cell.getItem();
+      LOGGER.severe("Mouse clicked on: " + album.toString());
+      ((EObjectTable<Album>) getTableView()).openObject(album);
+      e.consume();
+    });
+    
+    addEventHandler(DoubleClickEventDispatcher.MOUSE_DOUBLE_CLICKED, e -> {
+      e.consume();
+    });
+
+//    setOnMouseClicked(e -> {
+//      MyInfoPlayCell cell = (MyInfoPlayCell) e.getSource();
+//      Album album = (Album) cell.getItem();
+//      LOGGER.severe("Mouse clicked on: " + album.toString());
+//      ((EObjectTable<Album>) getTableView()).openObject(album);
+//    });
   }
   
   @Override

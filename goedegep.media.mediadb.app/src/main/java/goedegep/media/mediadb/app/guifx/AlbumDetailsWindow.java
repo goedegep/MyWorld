@@ -1,6 +1,7 @@
 package goedegep.media.mediadb.app.guifx;
 
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -41,8 +42,8 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
 // TODO handle collection per track
-public class AlbumDetailsWindowFx extends AlbumDetailsAbstract {
-  private static final Logger LOGGER = Logger.getLogger(AlbumDetailsWindowFx.class.getName());
+public class AlbumDetailsWindow extends AlbumDetailsAbstract {
+  private static final Logger LOGGER = Logger.getLogger(AlbumDetailsWindow.class.getName());
   private static final FlexDateFormat FDF = new FlexDateFormat();
   
   private CustomizationFx customization;
@@ -65,6 +66,11 @@ public class AlbumDetailsWindowFx extends AlbumDetailsAbstract {
    * Shows the album artist name.
    */
   private TextField albumIssueDateTextField;
+  
+  /**
+   * Shows the album id.
+   */
+  private TextField albumIdTextField;
   
   /**
    * Shows the album front, front inlay, back and label pictures
@@ -112,7 +118,7 @@ public class AlbumDetailsWindowFx extends AlbumDetailsAbstract {
    * 
    * @param customization the GUI customization.
    */
-  public AlbumDetailsWindowFx(CustomizationFx customization, MediaDb mediaDb, Map<Track, Path> trackDiscLocationMap, AlbumsTable albumsTable) {
+  public AlbumDetailsWindow(CustomizationFx customization, MediaDb mediaDb, Map<Track, Path> trackDiscLocationMap, AlbumsTable albumsTable) {
     super("Album details", customization);
     
     this.customization = customization;
@@ -131,6 +137,7 @@ public class AlbumDetailsWindowFx extends AlbumDetailsAbstract {
    */
   public void setAlbum(Album album) {
     this.album = album;
+    
     updateAlbumDetails();
   }
   
@@ -158,12 +165,12 @@ public class AlbumDetailsWindowFx extends AlbumDetailsAbstract {
     gridPane.add(label, 0, 0);
     
     albumTitleTextField = componentFactory.createTextField(600, null);
+    albumTitleTextField.setEditable(false);
     gridPane.add(albumTitleTextField, 1, 0);
     
     Button editButton = componentFactory.createButton("Open in Album Editor", "Open edit window");
     editButton.setOnAction((e) -> {
-      AlbumDetailsEditorFx albumDetailsEditor = new AlbumDetailsEditorFx(getCustomization(), mediaDb, trackDiscLocationMap);
-      albumDetailsEditor.setAlbum(album);
+      new AlbumDetailsEditor(getCustomization(), mediaDb, trackDiscLocationMap, album);
     });
     gridPane.add(editButton, 3, 0);
     
@@ -178,6 +185,7 @@ public class AlbumDetailsWindowFx extends AlbumDetailsAbstract {
     gridPane.add(label, 0, 1);
     
     albumArtistTextField = componentFactory.createTextField(600, null);
+    albumArtistTextField.setEditable(false);
     gridPane.add(albumArtistTextField, 1, 1);
     
     // Third row: 'Issue date: <album-issue-date>'
@@ -185,7 +193,16 @@ public class AlbumDetailsWindowFx extends AlbumDetailsAbstract {
     gridPane.add(label, 0, 2);
     
     albumIssueDateTextField = componentFactory.createTextField(600, null);
+    albumIssueDateTextField.setEditable(false);
     gridPane.add(albumIssueDateTextField, 1, 2);
+    
+    // Fourth row: 'Album id: <album-id>'
+    label = componentFactory.createLabel("Album id:");
+    gridPane.add(label, 0, 3);
+    
+    albumIdTextField = componentFactory.createTextField(600, null);
+    albumIdTextField.setEditable(false);
+    gridPane.add(albumIdTextField, 1, 3);
     
     centerPane.getChildren().add(gridPane);
     
@@ -298,10 +315,17 @@ public class AlbumDetailsWindowFx extends AlbumDetailsAbstract {
         albumIssueDateTextField.setText("");
       }
       
+      if (album.isSetId()) {
+        albumIdTextField.setText(album.getId());
+      } else {
+        albumIdTextField.setText("");
+      }
+      
     } else {
       albumTitleTextField.setText("");
       albumArtistTextField.setText("");
       albumIssueDateTextField.setText("");
+      albumIdTextField.setText("");
     }
   }
   
@@ -315,7 +339,8 @@ public class AlbumDetailsWindowFx extends AlbumDetailsAbstract {
     picturesHBox.getChildren().clear();
     
     if (album != null) {
-      List<String> imageFileNames = album.getImagesFront();
+      List<String> imageFileNames = new ArrayList<>();
+      imageFileNames.addAll(album.getImagesFront());
       imageFileNames.addAll(album.getImagesFrontInside());
       imageFileNames.addAll(album.getImagesBack());
       imageFileNames.addAll(album.getImagesLabel());
@@ -509,11 +534,6 @@ public class AlbumDetailsWindowFx extends AlbumDetailsAbstract {
         if (myInfo.isSetMyComments()) {
           buf.append("Opmerkingen: ");
           buf.append(myInfo.getMyComments());
-          buf.append("<br/>");
-        }
-        if (myInfo.isSetInlayDocument()) {
-          buf.append("Document voor het hoesje: ");
-          buf.append(myInfo.getInlayDocument());
           buf.append("<br/>");
         }
         if (myInfo.isIveHadOnLP()) {

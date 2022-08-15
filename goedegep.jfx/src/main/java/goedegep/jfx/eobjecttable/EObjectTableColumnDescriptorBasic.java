@@ -8,8 +8,11 @@ import org.eclipse.emf.ecore.ETypedElement;
 
 import javafx.util.StringConverter;
 
+
 /**
- * This class describes one column of an EObjectTable.
+ * This class describes a basic column of an EObjectTable, which is a column for a type that is shown as text in a table cell.
+ * <p>
+ * One attribute is added to the EObjectTableColumnDescriptorBase; a StringConverter for the object type of the column.
  */
 public class EObjectTableColumnDescriptorBasic<T extends EObject> extends EObjectTableColumnDescriptorBase<T> {
   

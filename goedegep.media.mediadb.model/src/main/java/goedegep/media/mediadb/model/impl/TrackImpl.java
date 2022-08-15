@@ -721,12 +721,14 @@ public class TrackImpl extends MinimalEObjectImpl.Container implements Track {
     if (isSetOriginalDisc()) {
       Disc originalDisc = getOriginalDisc();
       Album originalAlbum = originalDisc.getAlbum();
-      buf.append(originalAlbum.getTitle()).append(" - ");
+      buf.append(originalAlbum != null ? originalAlbum.getTitle() : "<no title>").append(" - ");
       if (originalDisc.isSetTitle()) {
         buf.append(originalDisc.getTitle());
       } else {
-        int discNr = originalDisc.getAlbum().getDiscs().indexOf(originalDisc);
-        buf.append(discNr);
+        if (originalAlbum != null) {
+          int discNr = originalAlbum.getDiscs().indexOf(originalDisc);
+          buf.append(discNr);
+        }
       }
     } else {
       buf.append("<no-original-disc>");
@@ -742,8 +744,12 @@ public class TrackImpl extends MinimalEObjectImpl.Container implements Track {
         buf.append(", ");
       }
       Disc disc = trackReference.getDisc();
-      Album album = disc.getAlbum();
-      buf.append(album.getTitle()).append(":").append(trackReference.getTrackNr());
+      if (disc != null) {
+        Album album = disc.getAlbum();
+        if (album != null) {
+          buf.append(album.getTitle()).append(":").append(trackReference.getTrackNr());
+        }
+      }
     }
     buf.append(NEWLINE);
 

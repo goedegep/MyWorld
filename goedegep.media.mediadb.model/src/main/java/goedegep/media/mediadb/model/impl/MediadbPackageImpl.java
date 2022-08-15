@@ -7,6 +7,7 @@ import goedegep.media.mediadb.model.Artist;
 import goedegep.media.mediadb.model.Collection;
 import goedegep.media.mediadb.model.Disc;
 import goedegep.media.mediadb.model.DiscAndTrackNrs;
+import goedegep.media.mediadb.model.Video;
 import goedegep.media.mediadb.model.IWant;
 import goedegep.media.mediadb.model.MediaDb;
 import goedegep.media.mediadb.model.MediadbFactory;
@@ -17,6 +18,7 @@ import goedegep.media.mediadb.model.MyCompilation;
 import goedegep.media.mediadb.model.MyInfo;
 import goedegep.media.mediadb.model.MyTrackInfo;
 import goedegep.media.mediadb.model.Player;
+import goedegep.media.mediadb.model.Subject;
 import goedegep.media.mediadb.model.InformationType;
 import goedegep.media.mediadb.model.Track;
 import goedegep.media.mediadb.model.TrackCollection;
@@ -137,6 +139,20 @@ public class MediadbPackageImpl extends EPackageImpl implements MediadbPackage {
    * @generated
    */
   private EClass trackCollectionEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass videoEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass subjectEClass = null;
 
   /**
    * <!-- begin-user-doc -->
@@ -371,6 +387,16 @@ public class MediadbPackageImpl extends EPackageImpl implements MediadbPackage {
   @Override
   public EReference getMediaDb_Trackcollections() {
     return (EReference) mediaDbEClass.getEStructuralFeatures().get(3);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public EReference getMediaDb_Videos() {
+    return (EReference) mediaDbEClass.getEStructuralFeatures().get(4);
   }
 
   /**
@@ -879,7 +905,7 @@ public class MediadbPackageImpl extends EPackageImpl implements MediadbPackage {
    * @generated
    */
   @Override
-  public EAttribute getMyInfo_InlayDocument() {
+  public EAttribute getMyInfo_IveHadOnLP() {
     return (EAttribute) myInfoEClass.getEStructuralFeatures().get(2);
   }
 
@@ -889,7 +915,7 @@ public class MediadbPackageImpl extends EPackageImpl implements MediadbPackage {
    * @generated
    */
   @Override
-  public EAttribute getMyInfo_IveHadOnLP() {
+  public EAttribute getMyInfo_IWant() {
     return (EAttribute) myInfoEClass.getEStructuralFeatures().get(3);
   }
 
@@ -899,18 +925,8 @@ public class MediadbPackageImpl extends EPackageImpl implements MediadbPackage {
    * @generated
    */
   @Override
-  public EAttribute getMyInfo_IWant() {
-    return (EAttribute) myInfoEClass.getEStructuralFeatures().get(4);
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
   public EReference getMyInfo_IHaveOn() {
-    return (EReference) myInfoEClass.getEStructuralFeatures().get(5);
+    return (EReference) myInfoEClass.getEStructuralFeatures().get(4);
   }
 
   /**
@@ -1079,6 +1095,96 @@ public class MediadbPackageImpl extends EPackageImpl implements MediadbPackage {
    * @generated
    */
   @Override
+  public EClass getVideo() {
+    return videoEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public EAttribute getVideo_Title() {
+    return (EAttribute) videoEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public EAttribute getVideo_Date() {
+    return (EAttribute) videoEClass.getEStructuralFeatures().get(1);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public EAttribute getVideo_Image() {
+    return (EAttribute) videoEClass.getEStructuralFeatures().get(2);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public EReference getVideo_Subjects() {
+    return (EReference) videoEClass.getEStructuralFeatures().get(3);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public EClass getSubject() {
+    return subjectEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public EAttribute getSubject_Title() {
+    return (EAttribute) subjectEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public EAttribute getSubject_Tags() {
+    return (EAttribute) subjectEClass.getEStructuralFeatures().get(1);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public EAttribute getSubject_Date() {
+    return (EAttribute) subjectEClass.getEStructuralFeatures().get(2);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
   public EEnum getMediumType() {
     return mediumTypeEEnum;
   }
@@ -1158,6 +1264,7 @@ public class MediadbPackageImpl extends EPackageImpl implements MediadbPackage {
     createEReference(mediaDbEClass, MEDIA_DB__ALBUMS);
     createEReference(mediaDbEClass, MEDIA_DB__TRACKS);
     createEReference(mediaDbEClass, MEDIA_DB__TRACKCOLLECTIONS);
+    createEReference(mediaDbEClass, MEDIA_DB__VIDEOS);
     createEOperation(mediaDbEClass, MEDIA_DB___GET_ARTIST__STRING);
     createEOperation(mediaDbEClass, MEDIA_DB___GET_ALBUM__FLEXDATE_ARTIST_STRING);
     createEOperation(mediaDbEClass, MEDIA_DB___GET_ALBUMS__FLEXDATE_ARTIST_STRING);
@@ -1215,7 +1322,6 @@ public class MediadbPackageImpl extends EPackageImpl implements MediadbPackage {
     myInfoEClass = createEClass(MY_INFO);
     createEReference(myInfoEClass, MY_INFO__ALBUM_REFERENCES);
     createEAttribute(myInfoEClass, MY_INFO__MY_COMMENTS);
-    createEAttribute(myInfoEClass, MY_INFO__INLAY_DOCUMENT);
     createEAttribute(myInfoEClass, MY_INFO__IVE_HAD_ON_LP);
     createEAttribute(myInfoEClass, MY_INFO__IWANT);
     createEReference(myInfoEClass, MY_INFO__IHAVE_ON);
@@ -1240,6 +1346,17 @@ public class MediadbPackageImpl extends EPackageImpl implements MediadbPackage {
     trackCollectionEClass = createEClass(TRACK_COLLECTION);
     createEAttribute(trackCollectionEClass, TRACK_COLLECTION__COLLECTION);
     createEReference(trackCollectionEClass, TRACK_COLLECTION__TRACK_REFERENCES);
+
+    videoEClass = createEClass(VIDEO);
+    createEAttribute(videoEClass, VIDEO__TITLE);
+    createEAttribute(videoEClass, VIDEO__DATE);
+    createEAttribute(videoEClass, VIDEO__IMAGE);
+    createEReference(videoEClass, VIDEO__SUBJECTS);
+
+    subjectEClass = createEClass(SUBJECT);
+    createEAttribute(subjectEClass, SUBJECT__TITLE);
+    createEAttribute(subjectEClass, SUBJECT__TAGS);
+    createEAttribute(subjectEClass, SUBJECT__DATE);
 
     // Create enums
     mediumTypeEEnum = createEEnum(MEDIUM_TYPE);
@@ -1320,6 +1437,9 @@ public class MediadbPackageImpl extends EPackageImpl implements MediadbPackage {
     initEReference(getMediaDb_Trackcollections(), this.getTrackCollection(), null, "trackcollections", null, 0, -1,
         MediaDb.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE,
         IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEReference(getMediaDb_Videos(), this.getVideo(), null, "videos", null, 0, -1, MediaDb.class, !IS_TRANSIENT,
+        !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED,
+        IS_ORDERED);
 
     EOperation op = initEOperation(getMediaDb__GetArtist__String(), this.getArtist(), "getArtist", 0, 1, IS_UNIQUE,
         IS_ORDERED);
@@ -1364,7 +1484,7 @@ public class MediadbPackageImpl extends EPackageImpl implements MediadbPackage {
     initEAttribute(getAlbum_Id(), ecorePackage.getEString(), "id", null, 0, 1, Album.class, !IS_TRANSIENT, !IS_VOLATILE,
         IS_CHANGEABLE, IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEReference(getAlbum_Players(), this.getPlayer(), null, "players", null, 0, -1, Album.class, !IS_TRANSIENT,
-        !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED,
+        !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED,
         IS_ORDERED);
     initEAttribute(getAlbum_ImagesFrontInside(), ecorePackage.getEString(), "imagesFrontInside", null, 0, -1,
         Album.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED,
@@ -1382,7 +1502,7 @@ public class MediadbPackageImpl extends EPackageImpl implements MediadbPackage {
     initEAttribute(getAlbum_Compilation(), ecorePackage.getEBoolean(), "compilation", "false", 0, 1, Album.class,
         !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEReference(getAlbum_MyInfo(), this.getMyInfo(), null, "myInfo", null, 0, 1, Album.class, !IS_TRANSIENT,
-        !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED,
+        !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED,
         IS_ORDERED);
     initEAttribute(getAlbum_Soundtrack(), ecorePackage.getEBoolean(), "soundtrack", null, 0, 1, Album.class,
         !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -1411,7 +1531,7 @@ public class MediadbPackageImpl extends EPackageImpl implements MediadbPackage {
     initEReference(getTrackReference_Track(), this.getTrack(), null, "track", null, 1, 1, TrackReference.class,
         !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, IS_UNSETTABLE, IS_UNIQUE,
         !IS_DERIVED, IS_ORDERED);
-    initEAttribute(getTrackReference_BonusTrack(), ecorePackage.getEString(), "bonusTrack", null, 0, 1,
+    initEAttribute(getTrackReference_BonusTrack(), ecorePackage.getEString(), "bonusTrack", "", 0, 1,
         TrackReference.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED,
         IS_ORDERED);
     initEReference(getTrackReference_MyTrackInfo(), this.getMyTrackInfo(), null, "myTrackInfo", null, 0, 1,
@@ -1453,8 +1573,6 @@ public class MediadbPackageImpl extends EPackageImpl implements MediadbPackage {
         !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, IS_UNSETTABLE, IS_UNIQUE,
         !IS_DERIVED, IS_ORDERED);
     initEAttribute(getMyInfo_MyComments(), ecorePackage.getEString(), "myComments", null, 0, 1, MyInfo.class,
-        !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEAttribute(getMyInfo_InlayDocument(), ecorePackage.getEString(), "inlayDocument", null, 0, 1, MyInfo.class,
         !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getMyInfo_IveHadOnLP(), ecorePackage.getEBoolean(), "iveHadOnLP", null, 1, 1, MyInfo.class,
         !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -1505,6 +1623,25 @@ public class MediadbPackageImpl extends EPackageImpl implements MediadbPackage {
     initEReference(getTrackCollection_TrackReferences(), this.getTrackReference(), null, "trackReferences", null, 0, -1,
         TrackCollection.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES,
         !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+    initEClass(videoEClass, Video.class, "Video", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getVideo_Title(), ecorePackage.getEString(), "title", null, 0, 1, Video.class, !IS_TRANSIENT,
+        !IS_VOLATILE, IS_CHANGEABLE, IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getVideo_Date(), theTypesPackage.getEFlexDate(), "date", null, 0, 1, Video.class, !IS_TRANSIENT,
+        !IS_VOLATILE, IS_CHANGEABLE, IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getVideo_Image(), ecorePackage.getEString(), "image", null, 0, 1, Video.class, !IS_TRANSIENT,
+        !IS_VOLATILE, IS_CHANGEABLE, IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEReference(getVideo_Subjects(), this.getSubject(), null, "subjects", null, 0, -1, Video.class, !IS_TRANSIENT,
+        !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED,
+        IS_ORDERED);
+
+    initEClass(subjectEClass, Subject.class, "Subject", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getSubject_Title(), ecorePackage.getEString(), "title", null, 0, 1, Subject.class, !IS_TRANSIENT,
+        !IS_VOLATILE, IS_CHANGEABLE, IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getSubject_Tags(), ecorePackage.getEString(), "tags", null, 0, -1, Subject.class, !IS_TRANSIENT,
+        !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getSubject_Date(), theTypesPackage.getEFlexDate(), "date", null, 0, 1, Subject.class, !IS_TRANSIENT,
+        !IS_VOLATILE, IS_CHANGEABLE, IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     // Initialize enums and add enum literals
     initEEnum(mediumTypeEEnum, MediumType.class, "MediumType");

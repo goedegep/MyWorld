@@ -60,7 +60,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
 /**
- * This class provides the main window for the media database (currently music only)
+ * This class provides the main window for the music database
  * <p>
  * Currently the media database (type MediaDb) isn't saved as an EMF resource yet. Instead:
  * <ul>
@@ -88,7 +88,7 @@ public class MediaDbWindow extends JfxStage {
   private static final Logger LOGGER = Logger.getLogger(MediaDbWindow.class.getName());
   private static final String NEWLINE = System.getProperty("line.separator");
 
-  private static final String WINDOW_TITLE = "Media Database";
+  private static final String WINDOW_TITLE = "Music Database";
   private static final MediadbFactory FACTORY = MediadbFactory.eINSTANCE;
   private static final MediadbPackage MEDIA_DB_PACKAGE = MediadbPackage.eINSTANCE;
 
@@ -148,28 +148,29 @@ public class MediaDbWindow extends JfxStage {
    * 
    * @param customization the GUI customization.
    */
-  public MediaDbWindow(CustomizationFx customization) {
+  public MediaDbWindow(CustomizationFx customization, MediaDb mediaDb) {
     super(WINDOW_TITLE, customization);
 
     this.customization = customization;
+    this.mediaDb = mediaDb;
     componentFactory = customization.getComponentFactoryFx();
     appResources = customization.getResources();
 
-    // Start with an empty media database
-    mediaDb = FACTORY.createMediaDb();
-
+//    // Start with an empty media database
+//    mediaDb = FACTORY.createMediaDb();
+//
     allErrors = new ArrayList<>();
-
-    // Add album information from the Album Info files.
-    new AlbumInfoFilesReader(mediaDb).readAlbumInfoFiles(allErrors, MediaRegistry.albumInfoDirectory);
-    
-    // Add track information from the Tracks.xml file
-    String tracksInfoFileName = MediaRegistry.albumInfoDirectory + "\\..\\Tracks\\Tracks.xml";
-    List<TrackInfoErrorInfo> trackInfoErrors = new TrackInfoHandler().setMediaDb(mediaDb).read(tracksInfoFileName);
-    allErrors.addAll(trackInfoErrors);
-
-    // Check the media database
-    MediaDbAppUtil.checkMediaDb(mediaDb, allErrors);
+//
+//    // Add album information from the Album Info files.
+//    new AlbumInfoFilesReader(mediaDb).readAlbumInfoFiles(allErrors, MediaRegistry.albumInfoDirectory);
+//    
+//    // Add track information from the Tracks.xml file
+//    String tracksInfoFileName = MediaRegistry.albumInfoDirectory + "\\..\\Tracks\\Tracks.xml";
+//    List<TrackInfoErrorInfo> trackInfoErrors = new TrackInfoHandler().setMediaDb(mediaDb).read(tracksInfoFileName);
+//    allErrors.addAll(trackInfoErrors);
+//
+//    // Check the media database
+//    MediaDbAppUtil.checkMediaDb(mediaDb, allErrors);
 
     // Scan the Music Folder: The Main Index folders, the soundtrack folder and the tracks folders.
     MusicFolderContent musicFolderContent = new MusicFolderContent(MediaRegistry.musicDirectory);
@@ -430,7 +431,7 @@ public class MediaDbWindow extends JfxStage {
 
     Button openProblemsWindowButton = componentFactory.createButton("Open problem solving screen", "opens the problem solving screen");
     openProblemsWindowButton.setOnAction((e) -> {
-      new MediaDbProblemsWindowFx(customization, mediaDb, allErrors);
+      new MediaDbProblemsWindow(customization, mediaDb, allErrors);
     });
     controlPanel.getChildren().add(openProblemsWindowButton);
 
@@ -537,7 +538,7 @@ public class MediaDbWindow extends JfxStage {
   }
   
   void openAlbumDetailsWindow() {
-    AlbumDetailsWindowFx albumDetailsWindow = new AlbumDetailsWindowFx(customization, mediaDb, trackDiscLocationMap, albumsTable);
+    AlbumDetailsWindow albumDetailsWindow = new AlbumDetailsWindow(customization, mediaDb, trackDiscLocationMap, albumsTable);
     
     
     albumDetailsWindow.setAlbum((Album) albumsTable.getSelectedObject());
@@ -549,7 +550,7 @@ public class MediaDbWindow extends JfxStage {
    * Open the AlbumDetailsEditor to enter a new album.
    */
   void openAlbumDetailsEditor() {
-    new AlbumDetailsEditorFx(customization, mediaDb, trackDiscLocationMap);
+    new AlbumDetailsEditor(customization, mediaDb, trackDiscLocationMap);
 //    AlbumDetailsEditorFx albumDetailsEditor = new AlbumDetailsEditorFx(customization, mediaDb);
   }
   /**

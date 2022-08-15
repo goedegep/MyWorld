@@ -52,13 +52,5 @@
      <groupId>org.eclipse.emf</groupId>
 	  <artifactId>org.eclipse.emf.ecore.xmi</artifactId>
     </dependency>
-    <dependency>
-      <groupId>org.controlsfx</groupId>
-      <artifactId>controlsfx</artifactId>
-    <version>11.0.2</version>
-</dependency><!--     <dependency> -->
-<!--       <groupId>org.springframework</groupId> -->
-<!--       <artifactId>spring</artifactId> -->
-<!--     </dependency> -->
   </dependencies>
 </project>
