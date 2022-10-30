@@ -16,7 +16,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.border.EmptyBorder;
 
-import goedegep.appgen.ImageSize;
+import goedegep.resources.ImageSize;
 
 @SuppressWarnings("serial")
 public class OptionDialog extends AppDialog implements ActionListener {

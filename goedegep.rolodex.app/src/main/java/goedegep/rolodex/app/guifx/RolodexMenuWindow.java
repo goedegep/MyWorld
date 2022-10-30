@@ -6,7 +6,6 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.logging.Logger;
 
-import goedegep.appgen.ImageSize;
 import goedegep.jfx.ComponentFactoryFx;
 import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.JfxStage;
@@ -14,6 +13,7 @@ import goedegep.jfx.JfxUtil;
 import goedegep.jfx.MenuUtil;
 import goedegep.jfx.PropertyDescriptorsEditorFx;
 import goedegep.properties.app.guifx.PropertiesEditor;
+import goedegep.resources.ImageSize;
 import goedegep.rolodex.app.RolodexRegistry;
 import goedegep.rolodex.model.Employee;
 import goedegep.rolodex.model.Family;

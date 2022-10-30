@@ -16,6 +16,7 @@ import goedegep.geo.dbl.WGS84Coordinates;
 import goedegep.jfx.CustomizationFx;
 import goedegep.poi.app.guifx.POIIcons;
 import goedegep.poi.model.POICategoryId;
+import goedegep.resources.ImageResource;
 import goedegep.util.img.ImageUtils;
 import goedegep.vacations.app.LocationDescriptionDialog;
 import goedegep.vacations.model.Boundary;
@@ -202,7 +203,7 @@ public class MapRelatedItemsLayer extends MapLayer {
    */
   public WGS84BoundingBox addPhoto(WGS84Coordinates coordinates, String text, String fileName) {
     LOGGER.info("=> coordinates: " + coordinates.toString());
-    Image photoImage = appResources.getPhotoIcon();
+    Image photoImage = ImageResource.CAMERA_BLACK.getImage(12, 12);
     ImageView photoIcon = new ImageView(photoImage);
     photoIcon.setOnMouseClicked(e -> showCurrentPhoto(coordinates, text, fileName));
     getChildren().add(photoIcon);
@@ -427,6 +428,22 @@ public class MapRelatedItemsLayer extends MapLayer {
       polylinePoints.add(point2D.getX());
       polylinePoints.add(point2D.getY());
     }
+  }
+
+  public boolean selectObject(Object object) {
+    if (object == null) {
+      return false;
+    }
+    
+    if (object instanceof Location location) {
+      for (LocationData locationData: locations) {
+        if (location.equals(locationData.location())) {
+          LOGGER.severe("Going to select: " + location);
+          locationData.labeledIcon().setSelected(true);
+        }
+      }
+    }
+    return false;
   }
 }
 

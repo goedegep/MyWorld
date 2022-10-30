@@ -5,12 +5,12 @@ import java.text.ParseException;
 import java.util.Locale;
 import java.util.logging.Logger;
 
-import goedegep.appgen.ImageSize;
 import goedegep.jfx.ComponentFactoryFx;
 import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.JfxStage;
 import goedegep.jfx.MenuUtil;
 import goedegep.jfx.PropertyDescriptorsEditorFx;
+import goedegep.resources.ImageSize;
 import goedegep.unitconverter.app.UnitConverterRegistry;
 import goedegep.util.datetime.ClockTime;
 import goedegep.util.datetime.ClockTimeFormat;
@@ -1129,6 +1129,7 @@ public class UnitConverterWindow extends JfxStage {
       snelheidInKmhTextField.setStyle(OK_TEXT_STYLE);
       
       if (snelheidInKmh != null) {
+        LOGGER.severe("Snelheid: " + snelheidInKmh);
         snelheidInKmhTextField.setText(NF.format(snelheidInKmh));
       } else {
         snelheidInKmhTextField.setText("");

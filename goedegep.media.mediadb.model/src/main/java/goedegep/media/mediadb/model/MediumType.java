@@ -35,7 +35,7 @@ public enum MediumType implements Enumerator {
    * @generated
    * @ordered
    */
-  CD_AUDIO(1, "CD_AUDIO", "CD"),
+  CD_AUDIO(1, "CD_AUDIO", "CD audio"),
   /**
    * The '<em><b>CDR AUDIO</b></em>' literal object.
    * <!-- begin-user-doc -->
@@ -44,7 +44,7 @@ public enum MediumType implements Enumerator {
    * @generated
    * @ordered
    */
-  CDR_AUDIO(2, "CDR_AUDIO", "CDR_AUDIO"),
+  CDR_AUDIO(2, "CDR_AUDIO", "CDR audio"),
   /**
    * The '<em><b>CDRW AUDIO</b></em>' literal object.
    * <!-- begin-user-doc -->
@@ -53,7 +53,7 @@ public enum MediumType implements Enumerator {
    * @generated
    * @ordered
    */
-  CDRW_AUDIO(3, "CDRW_AUDIO", "CDRW_AUDIO"),
+  CDRW_AUDIO(3, "CDRW_AUDIO", "CDRW audio"),
   /**
    * The '<em><b>LP</b></em>' literal object.
    * <!-- begin-user-doc -->
@@ -89,7 +89,7 @@ public enum MediumType implements Enumerator {
    * @generated
    * @ordered
    */
-  DVD_VIDEO(7, "DVD_VIDEO", "DVD"),
+  DVD_VIDEO(7, "DVD_VIDEO", "DVD video"),
   /**
    * The '<em><b>CD ROM</b></em>' literal object.
    * <!-- begin-user-doc -->
@@ -116,7 +116,7 @@ public enum MediumType implements Enumerator {
    * @generated
    * @ordered
    */
-  HARDDISK(10, "HARDDISK", "HARDDISK");
+  HARDDISK(10, "HARDDISK", "harddisk");
 
   /**
    * The '<em><b>NOT SET</b></em>' literal value.
@@ -142,7 +142,7 @@ public enum MediumType implements Enumerator {
    * </p>
    * <!-- end-user-doc -->
    * @see #CD_AUDIO
-   * @model literal="CD"
+   * @model literal="CD audio"
    * @generated
    * @ordered
    */
@@ -153,7 +153,7 @@ public enum MediumType implements Enumerator {
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @see #CDR_AUDIO
-   * @model
+   * @model literal="CDR audio"
    * @generated
    * @ordered
    */
@@ -164,7 +164,7 @@ public enum MediumType implements Enumerator {
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @see #CDRW_AUDIO
-   * @model
+   * @model literal="CDRW audio"
    * @generated
    * @ordered
    */
@@ -224,7 +224,7 @@ public enum MediumType implements Enumerator {
    * </p>
    * <!-- end-user-doc -->
    * @see #DVD_VIDEO
-   * @model literal="DVD"
+   * @model literal="DVD video"
    * @generated
    * @ordered
    */
@@ -265,7 +265,7 @@ public enum MediumType implements Enumerator {
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @see #HARDDISK
-   * @model
+   * @model literal="harddisk"
    * @generated
    * @ordered
    */

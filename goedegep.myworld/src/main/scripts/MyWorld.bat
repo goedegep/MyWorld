@@ -1,10 +1,6 @@
 rem Batch file to launch the MyWorld application
+rem If this batch file is started by clicking on a file (Window 'file open' command) the working directory is the directory of that file.
+rem So change the directory to the location of this batch file.
+chdir /d %~dp0
 
-echo off
-set args=--module-path . --add-modules goedegep.myworld --add-exports=javafx.base/com.sun.javafx.event=org.controlsfx.controls goedegep.myworld.MyWorld
-
-if "%1"=="" (
-  java.exe %args%
-) else (
-  java.exe %args% -a %1
-)
+start /min java.exe --module-path . --add-modules goedegep.myworld --add-exports=javafx.base/com.sun.javafx.event=org.controlsfx.controls -splash:MyWorldSplash.jpg goedegep.myworld.MyWorld %*

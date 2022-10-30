@@ -1,5 +1,6 @@
 h2. ToDo list - Refactoring
 
+
 * Add a development mode for vacations. To create a demo vacaction.
 * In all editors: when a control looses focus, the value shall be formatted.
 * InvoiceAndPropertiesEditor: enable update button only if there are changes. 

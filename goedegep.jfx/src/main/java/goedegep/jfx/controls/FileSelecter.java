@@ -1,12 +1,11 @@
 package goedegep.jfx.controls;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Logger;
 
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.scene.control.Button;
-import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
@@ -35,6 +34,8 @@ public class FileSelecter extends FileOrFolderSelecterAbstract {
   
   private Button fileChooserButton;
   private boolean isSaveDialog = false;  // open dialog is the default
+  private List<ExtensionFilter> extensionFilters = new ArrayList<>();
+  private ExtensionFilter selectedExtensionFilter = null;
   
   /**
    * Constructor.
@@ -48,12 +49,12 @@ public class FileSelecter extends FileOrFolderSelecterAbstract {
    * @param fileChooserTitle title for the FileChooser (may not be null)
    */
   public FileSelecter(String initiallySelectedFile, int textFieldWidth, String textFiedlToolTipText,
-      String fileChooserButtonText, String fileChooserButtonToolTipText, String fileChooserTitle, String fileTypeExtension, String fileTypeDescription) {
+      String fileChooserButtonText, String fileChooserButtonToolTipText, String fileChooserTitle) {
     super(textFieldWidth, textFiedlToolTipText);
     
     getPathTextField().textProperty().addListener((observable, oldValue, newValue) -> {
       if (newValue != null) {
-        File file = new File(newValue);
+        File file = new File(addPrefixIfSet(newValue));
         if (isSaveDialog) {
           // For saving a file, the folder shall exist
           File folder = file.getParentFile();
@@ -92,19 +93,27 @@ public class FileSelecter extends FileOrFolderSelecterAbstract {
       fileChooserButton.setTooltip(new Tooltip(fileChooserButtonToolTipText));
     }
     
-    fileChooserButton.setOnAction(new EventHandler<ActionEvent>() {
-      @Override
-      public void handle(ActionEvent event) {
+    fileChooserButton.setOnAction(actionEvent -> {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle(fileChooserTitle);
-        if (fileTypeExtension != null  &&  fileTypeDescription != null) {
-          ExtensionFilter extensionFilter = new ExtensionFilter(fileTypeDescription, "*" + fileTypeExtension);
-          fileChooser.getExtensionFilters().add(extensionFilter);
-          fileChooser.setSelectedExtensionFilter(extensionFilter);
+        
+        if (!extensionFilters.isEmpty()) {
+          fileChooser.getExtensionFilters().addAll(extensionFilters);
+        }
+        if (selectedExtensionFilter != null) {
+          fileChooser.setSelectedExtensionFilter(selectedExtensionFilter);
         }
         
-        File file = new File (getPathTextField().textProperty().get());
-        if (!file.isDirectory()) {
+        File file = null;
+        String filename = objectValue().get();
+        if (filename != null) {
+          if (getPrefix() != null) {
+            file = new File (getPrefix(), getPathTextField().textProperty().get());
+          } else {
+            file = new File (getPathTextField().textProperty().get());
+          }
+        }
+        if ((file != null)  &&  !file.isDirectory()) {
           file = file.getParentFile();
         }
         if ((file != null)  &&  file.isDirectory()) {
@@ -119,9 +128,10 @@ public class FileSelecter extends FileOrFolderSelecterAbstract {
         
         if (selectedFile != null) {
           // The selected folder is written to the text field, which automatically leads an update of the selectionValidProperty.
-          getPathTextField().setText(selectedFile.getAbsolutePath());
+          String newFilename = selectedFile.getAbsolutePath();
+          newFilename = removePrefixIfSet(newFilename);
+          getPathTextField().setText(newFilename);
         }
-      }
     });
     
     // Do this at the end, so it automatically leads an update of the selectionValidProperty.
@@ -138,30 +148,17 @@ public class FileSelecter extends FileOrFolderSelecterAbstract {
   public void setOpenOrSaveDialog(boolean isSaveDialog) {
     this.isSaveDialog = isSaveDialog;
   }
-
+  
   /**
-   * Get the TextField.
-   * <p>
-   * This TextField:
-   * <ul>
-   * <li>
-   * Shows the current value.
-   * </li>
-   * <li>
-   * Can be used to enter a value.
-   * </li>
-   * <li>
-   * Indicates (to the user) whether the value is valid (red text indicates an invalid value).
-   * </li>
-   * <li>
-   * Provides the current value, if the selectionValidProperty is <code>true</code>.
-   * </li>
-   * </ul>
-   * 
-   * @return the TextField
+   * Add a file type, being a file extension with a related description.
    */
-  public TextField getFilePathTextField() {
-    return getPathTextField();
+  public void addFileType(String fileTypeExtension, String fileTypeDescription, boolean setAsSelected) {
+    ExtensionFilter extensionFilter = new ExtensionFilter(fileTypeDescription, "*" + fileTypeExtension);
+    extensionFilters.add(extensionFilter);
+    
+    if (setAsSelected) {
+      selectedExtensionFilter = extensionFilter;
+    }
   }
 
   /**

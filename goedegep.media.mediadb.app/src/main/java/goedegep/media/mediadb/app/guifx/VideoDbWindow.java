@@ -11,7 +11,6 @@ import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.util.EContentAdapter;
 
-import goedegep.appgen.ImageSize;
 import goedegep.jfx.AppResourcesFx;
 import goedegep.jfx.ComponentFactoryFx;
 import goedegep.jfx.CustomizationFx;
@@ -44,6 +43,7 @@ import goedegep.media.mediadb.trackinfo.TrackInfoErrorInfo;
 import goedegep.media.mediadb.trackinfo.TrackInfoHandler;
 import goedegep.media.musicfolder.MusicFolderContent;
 import goedegep.properties.app.guifx.PropertiesEditor;
+import goedegep.resources.ImageSize;
 import goedegep.util.datetime.FlexDate;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;

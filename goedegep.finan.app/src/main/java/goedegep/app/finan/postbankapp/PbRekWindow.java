@@ -27,13 +27,13 @@ import javax.swing.SwingConstants;
 import goedegep.app.finan.gen.BankAccountsOverviewPanel;
 import goedegep.app.finan.gen.FinanBank;
 import goedegep.appgen.swing.Customization;
-import goedegep.appgen.ImageSize;
 import goedegep.appgen.WindowUtil;
 import goedegep.appgen.swing.AppFrame;
 import goedegep.appgen.swing.ComponentFactory;
 import goedegep.appgen.swing.MenuFactory;
 import goedegep.finan.postbank.pbrek.PbRek;
 import goedegep.finan.postbank.pbsprek.PbSpRek;
+import goedegep.resources.ImageSize;
 
 @SuppressWarnings("serial")
 public class PbRekWindow extends AppFrame {

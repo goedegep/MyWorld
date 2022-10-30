@@ -8,6 +8,7 @@ import java.util.Optional;
 import java.util.logging.Logger;
 
 import org.eclipse.emf.common.util.WrappedException;
+import org.eclipse.emf.ecore.util.EcoreUtil;
 
 import com.gluonhq.maps.GPXLayer;
 import com.gluonhq.maps.MapPoint;
@@ -17,8 +18,10 @@ import goedegep.geo.dbl.WGS84BoundingBox;
 import goedegep.geo.dbl.WGS84Coordinates;
 import goedegep.gpx.GpxUtil;
 import goedegep.gpx.model.DocumentRoot;
+import goedegep.gpx.model.GPXFactory;
 import goedegep.gpx.model.GpxType;
 import goedegep.gpx.model.TrkType;
+import goedegep.gpx.model.TrksegType;
 import goedegep.jfx.ComponentFactoryFx;
 import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.JfxStage;
@@ -62,7 +65,7 @@ public class GPXWindow extends JfxStage {
    * 
    * @param customization the GUI customization.
    */
-  public GPXWindow(CustomizationFx customization) {
+  public GPXWindow(CustomizationFx customization, String fileToOpen) {
     super(null, customization);
 
     this.customization = customization;
@@ -77,6 +80,10 @@ public class GPXWindow extends JfxStage {
     updateTitle();
     
     show();
+    
+    if (fileToOpen != null) {
+      openGpxFile(new File(fileToOpen));
+    }
   }
   
   /**
@@ -165,6 +172,19 @@ public class GPXWindow extends JfxStage {
     
     menuBar.getMenus().add(menu);
     
+    // Tools menu
+    menu = componentFactory.createMenu("Tools");
+    
+    menuItem = componentFactory.createMenuItem("Import tracks segments");
+    menuItem.setOnAction(new EventHandler<ActionEvent>() {
+      public void handle(ActionEvent e) {
+        importTrackSegments();
+      }
+    });
+    menu.getItems().add(menuItem);
+    
+    menuBar.getMenus().add(menu);
+    
     
     // Edit menu
     menu = new Menu("Edit");
@@ -234,16 +254,20 @@ public class GPXWindow extends JfxStage {
     fileChooser.getExtensionFilters().add(extensionFilter);
     File gpxFile = fileChooser.showOpenDialog(this);
     if (gpxFile != null) {
-    	LOGGER.info("Opening: " + gpxFile.getAbsolutePath());
+      openGpxFile(gpxFile);
+    }
+  }
+  
+  private void openGpxFile(File gpxFile) {
+    LOGGER.info("Opening: " + gpxFile.getAbsolutePath());
 
-    	try {
-    		documentRoot = gpxResource.load(gpxFile.getAbsolutePath());
-    		handleNewGpxFile();
-    	} catch (FileNotFoundException e) {
-    		e.printStackTrace();
-    	} catch (WrappedException wrappedException) {
-    		componentFactory.createExceptionDialog("An exception occurred while reading the file: '" + gpxFile.getAbsolutePath() + "'.", wrappedException).show();
-    	}
+    try {
+        documentRoot = gpxResource.load(gpxFile.getAbsolutePath());
+        handleNewGpxFile();
+    } catch (FileNotFoundException e) {
+        e.printStackTrace();
+    } catch (WrappedException wrappedException) {
+        componentFactory.createExceptionDialog("An exception occurred while reading the file: '" + gpxFile.getAbsolutePath() + "'.", wrappedException).show();
     }
   }
   
@@ -310,6 +334,74 @@ public class GPXWindow extends JfxStage {
     }
   }
 
+  private void importTrackSegments() {
+    if (documentRoot == null) {
+      LOGGER.severe("documentRoot is null");
+      return;
+    }
+    
+    GpxType gpxType = documentRoot.getGpx();
+    if (gpxType == null) {
+      LOGGER.severe("documentRoot has no GpxType");
+      return;
+    }
+    
+    List<TrkType> tracks = gpxType.getTrk();
+    TrkType track;
+    if (tracks == null  ||  tracks.isEmpty()) {
+      LOGGER.severe("GpxType has no tracks");
+      track = GPXFactory.eINSTANCE.createTrkType();
+      tracks.add(track);
+    } else {
+      track = tracks.get(0);
+    }
+   
+   FileChooser fileChooser = componentFactory.createFileChooser("Select GPX files to import track segments from");
+   List<File> gpxFiles = fileChooser.showOpenMultipleDialog(this);
+   
+   EMFResource<DocumentRoot> gpxFileResource = GpxUtil.createEMFResource();
+   for (File gpxFile: gpxFiles) {
+     LOGGER.severe("Handling file: " + gpxFile.getAbsolutePath());
+     
+     try {
+      DocumentRoot fileDocumentRoot = gpxFileResource.load(gpxFile.getAbsolutePath());
+      
+      if (fileDocumentRoot == null) {
+        LOGGER.severe("file documentRoot is null");
+        continue;
+      }
+      
+      GpxType fileGpxType = fileDocumentRoot.getGpx();
+      if (fileGpxType == null) {
+        LOGGER.severe("file documentRoot has no GpxType");
+        continue;
+      }
+      
+      List<TrkType> fileTracks = fileGpxType.getTrk();
+      if (fileTracks == null  ||  fileTracks.isEmpty()) {
+        LOGGER.severe("GpxType has no tracks");
+        continue;
+      }
+      
+     for (TrkType fileTrack: fileTracks) {
+       for (TrksegType trackSegment: fileTrack.getTrkseg()) {
+         LOGGER.severe("Adding segment");
+         TrksegType trackSegmentCopy = EcoreUtil.copy(trackSegment);
+         track.getTrkseg().add(trackSegmentCopy);
+       }
+     }
+      
+    } catch (FileNotFoundException e) {
+      LOGGER.severe("Error reading GPX file: " + gpxFile.getAbsolutePath());
+      e.printStackTrace();
+    }
+
+   }
+   
+   gpxLayer.clear();
+   handleNewGpxFile();
+  }
+
 
   /**
    * Update the window title.
@@ -330,7 +422,7 @@ public class GPXWindow extends JfxStage {
       buf.append("*");
     }
     String fileName = gpxResource.getFileName();
-    if (fileName.equals("")) {
+    if (fileName == null) {
       fileName = "<NoName>";
     }
     buf.append(fileName);

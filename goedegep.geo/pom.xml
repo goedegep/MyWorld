@@ -9,7 +9,7 @@
     <groupId>goedegep.toplevelpom</groupId>
     <artifactId>goedegep-toplevelpom</artifactId>
     <version>1.0-SNAPSHOT</version>
-    <relativePath>../../EclipseWorkspace/goedegep.toplevelpom</relativePath>
+    <relativePath>../goedegep.toplevelpom</relativePath>
   </parent>
   <dependencies>
   </dependencies>

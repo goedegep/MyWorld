@@ -1,6 +1,8 @@
 package goedegep.jfx.eobjecttable;
 
+import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
@@ -105,7 +107,13 @@ public class EObjectTableDescriptor<T extends EObject> {
     this.placeHolderText = placeHolderText;
     this.comparator = comparator;
     this.columnDescriptors = columnDescriptors;
+    if (this.columnDescriptors == null) {
+      this.columnDescriptors = new ArrayList<>();
+    }
     this.rowOperations = rowOperations;
+    if (this.rowOperations == null) {
+      this.rowOperations = new HashMap<>();
+    }
   }
 
   /**

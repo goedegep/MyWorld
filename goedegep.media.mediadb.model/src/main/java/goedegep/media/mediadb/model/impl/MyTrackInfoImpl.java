@@ -23,7 +23,6 @@ import goedegep.media.mediadb.model.MediadbPackage;
 import goedegep.media.mediadb.model.MediumInfo;
 import goedegep.media.mediadb.model.MyTrackInfo;
 import goedegep.media.mediadb.model.TrackReference;
-import goedegep.util.PgUtilities;
 
 /**
  * <!-- begin-user-doc -->
@@ -487,36 +486,7 @@ public class MyTrackInfoImpl extends MinimalEObjectImpl.Container implements MyT
 
     return buf.toString();
   }
-  
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated NOT
-   */
-  @Override
-  public boolean equals(Object myTrackInfoObject) {
-    if (myTrackInfoObject instanceof MyTrackInfo myTrackInfo) {
-      
-      if (!PgUtilities.equals(myTrackInfo.getCollection(), getCollection())) {
-        LOGGER.info("Collection differs, this=" + this + ", myTrackInfo=" + myTrackInfo);
-        return false;
-      } else if (!PgUtilities.equals(myTrackInfo.getCompilationTrackReference(), getCompilationTrackReference())) {
-        LOGGER.severe("CompilationTrackReference differs, this=" + this + ", myTrackInfo=" + myTrackInfo);
-        return false;
-      } else if (!iHaveOnEquals(myTrackInfo.getIHaveOn(), getIHaveOn())) {
-        LOGGER.severe("IHaveOn differs, this=" + this + ", myTrackInfo=" + myTrackInfo);
-        return false;
-      } else if (!PgUtilities.equals(myTrackInfo.getIWant(), getIWant())) {
-        LOGGER.severe("IWant differs, this=" + this + ", myTrackInfo=" + myTrackInfo);
-        return false;
-      } else {
-        return true;
-      }
-    }
-    
-    return false;
-  }
-  
+
   /**
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -526,7 +496,7 @@ public class MyTrackInfoImpl extends MinimalEObjectImpl.Container implements MyT
     if (mediumInfos1.size() != mediumInfos2.size()) {
       return false;
     }
-    
+
     for (int i = 0; i < mediumInfos1.size(); i++) {
       MediumInfo mediumInfo1 = mediumInfos1.get(i);
       MediumInfo mediomInfo2 = mediumInfos2.get(i);
@@ -535,10 +505,8 @@ public class MyTrackInfoImpl extends MinimalEObjectImpl.Container implements MyT
         return false;
       }
     }
-    
+
     return true;
   }
-  
-  
 
 } //MyTrackInfoImpl

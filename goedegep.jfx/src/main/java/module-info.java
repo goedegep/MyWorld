@@ -32,6 +32,7 @@ module goedegep.appgenfx {
   requires transitive goedegep.types.model;
   requires javafx.swing;
   requires goedegep.geo;
+  requires goedegep.resources;
   
   opens goedegep.jfx.eobjecttable;
 }

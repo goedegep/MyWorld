@@ -13,6 +13,7 @@ import goedegep.jfx.ComponentFactoryFx;
 import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.JfxStage;
 import goedegep.jfx.controls.ObjectControl;
+import goedegep.jfx.controls.ObjectControlBoolean;
 import goedegep.jfx.controls.ObjectControlString;
 import goedegep.jfx.eobjecttable.EObjectTable;
 import goedegep.jfx.eobjecttable.EObjectTableColumnDescriptorAbstract;
@@ -22,6 +23,7 @@ import goedegep.jfx.eobjecttable.EObjectTableControlPanel;
 import goedegep.jfx.eobjecttable.EObjectTableDescriptor;
 import goedegep.rolodex.app.logic.PhoneNumberListStringConverter;
 import goedegep.rolodex.model.Address;
+import goedegep.rolodex.model.AddressForPeriod;
 import goedegep.rolodex.model.Family;
 import goedegep.rolodex.model.PhoneNumber;
 import goedegep.rolodex.model.Rolodex;
@@ -157,6 +159,7 @@ class FamilyEditPanel {
   private ObjectControlString familyTitleTextField;
   private ObjectControlString familyNameTextField;
   private AddressTextField addressTextField;
+  private ObjectControlBoolean moveToAddress;
   private PhoneNumberTextField phoneNumberTextFields[];
   private SimpleObjectProperty<Family> familyProperty = new SimpleObjectProperty<>();
   
@@ -175,6 +178,7 @@ class FamilyEditPanel {
     familyTitleTextField = componentFactory.createObjectInputString(null, 300, true, "Enter the family title");
     familyNameTextField = componentFactory.createObjectInputString(null, 100, true, "Enter the family name");
     addressTextField = new AddressTextField(customization, rolodex);
+    moveToAddress = new ObjectControlBoolean("Move to", false, true, "Select for moving to this address. In this case the existing address is moved to the 'previous addresses'.");
     phoneNumberTextFields = new PhoneNumberTextField[4];
     for (int i = 0; i < phoneNumberTextFields.length; i++) {
       phoneNumberTextFields[i] = new PhoneNumberTextField(customization, rolodex);
@@ -239,6 +243,8 @@ class FamilyEditPanel {
     gridPane.add(label, 0, row);
 
     gridPane.add(addressTextField, 1, row);
+    
+    gridPane.add(moveToAddress, 2, row);
     
     row++;
     
@@ -320,6 +326,7 @@ class FamilyEditPanel {
     familyNameTextField.setText(null);
 
     addressTextField.setText(null);
+    moveToAddress.setSelected(false);
     for (int i = 0; i < phoneNumberTextFields.length; i++) {
       phoneNumberTextFields[i].setText(null);
     }
@@ -366,6 +373,14 @@ class FamilyEditPanel {
       }
                   
       Address address = addressTextField.getMatchingAddress();
+      if (moveToAddress.isSelected()) {
+        Address currentAddress = family.getAddress();
+        if (currentAddress != null) {
+          AddressForPeriod addressForPeriod = ROLODEX_FACTORY.createAddressForPeriod();
+          addressForPeriod.setAddress(currentAddress);
+          family.getPreviousAddresses().add(addressForPeriod);
+        }
+      }
       if (!PgUtilities.equals(family.getAddress(), address)) {
         family.setAddress(address);
       }

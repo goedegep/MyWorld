@@ -14,9 +14,10 @@
   <genPackages prefix="Properties" basePackage="goedegep.properties" disposableProviderFactory="true"
       ecorePackage="properties.ecore#/">
     <genEnums typeSafeEnumCompatible="false" ecoreEnum="properties.ecore#//PropertyType">
-      <genEnumLiterals ecoreEnumLiteral="properties.ecore#//PropertyType/DIRECTORY"/>
-      <genEnumLiterals ecoreEnumLiteral="properties.ecore#//PropertyType/FILE"/>
-      <genEnumLiterals ecoreEnumLiteral="properties.ecore#//PropertyType/STRING"/>
+      <genEnumLiterals ecoreEnumLiteral="properties.ecore#//PropertyType/Directory"/>
+      <genEnumLiterals ecoreEnumLiteral="properties.ecore#//PropertyType/File"/>
+      <genEnumLiterals ecoreEnumLiteral="properties.ecore#//PropertyType/String"/>
+      <genEnumLiterals ecoreEnumLiteral="properties.ecore#//PropertyType/Boolean"/>
     </genEnums>
     <genClasses ecoreClass="properties.ecore#//PropertyDescriptorGroup">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference properties.ecore#//PropertyDescriptorGroup/propertyDescriptors"/>

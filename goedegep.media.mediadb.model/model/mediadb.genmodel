@@ -60,6 +60,7 @@
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference mediadb.ecore#//Track/authors"/>
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference mediadb.ecore#//Track/referredBy"/>
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference mediadb.ecore#//Track/originalDisc"/>
+      <genOperations ecoreOperation="mediadb.ecore#//Track/getOriginalDiscTrackReference"/>
     </genClasses>
     <genClasses ecoreClass="mediadb.ecore#//MediaDb">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference mediadb.ecore#//MediaDb/artists"/>

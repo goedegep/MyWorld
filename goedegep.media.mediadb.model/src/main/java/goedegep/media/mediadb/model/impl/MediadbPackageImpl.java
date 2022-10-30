@@ -345,6 +345,16 @@ public class MediadbPackageImpl extends EPackageImpl implements MediadbPackage {
    * @generated
    */
   @Override
+  public EOperation getTrack__GetOriginalDiscTrackReference() {
+    return trackEClass.getEOperations().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
   public EClass getMediaDb() {
     return mediaDbEClass;
   }
@@ -1258,6 +1268,7 @@ public class MediadbPackageImpl extends EPackageImpl implements MediadbPackage {
     createEReference(trackEClass, TRACK__AUTHORS);
     createEReference(trackEClass, TRACK__REFERRED_BY);
     createEReference(trackEClass, TRACK__ORIGINAL_DISC);
+    createEOperation(trackEClass, TRACK___GET_ORIGINAL_DISC_TRACK_REFERENCE);
 
     mediaDbEClass = createEClass(MEDIA_DB);
     createEReference(mediaDbEClass, MEDIA_DB__ARTISTS);
@@ -1417,12 +1428,15 @@ public class MediadbPackageImpl extends EPackageImpl implements MediadbPackage {
     initEReference(getTrack_Authors(), this.getArtist(), null, "authors", null, 0, -1, Track.class, !IS_TRANSIENT,
         !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED,
         IS_ORDERED);
-    initEReference(getTrack_ReferredBy(), this.getTrackReference(), null, "referredBy", null, 0, -1, Track.class,
-        !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE,
-        !IS_DERIVED, IS_ORDERED);
+    initEReference(getTrack_ReferredBy(), this.getTrackReference(), this.getTrackReference_Track(), "referredBy", null,
+        0, -1, Track.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES,
+        !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEReference(getTrack_OriginalDisc(), this.getDisc(), null, "originalDisc", null, 0, 1, Track.class,
         !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, IS_UNSETTABLE, IS_UNIQUE,
         !IS_DERIVED, IS_ORDERED);
+
+    initEOperation(getTrack__GetOriginalDiscTrackReference(), this.getTrackReference(), "getOriginalDiscTrackReference",
+        0, 1, IS_UNIQUE, IS_ORDERED);
 
     initEClass(mediaDbEClass, MediaDb.class, "MediaDb", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEReference(getMediaDb_Artists(), this.getArtist(), null, "artists", null, 0, -1, MediaDb.class, !IS_TRANSIENT,
@@ -1528,10 +1542,10 @@ public class MediadbPackageImpl extends EPackageImpl implements MediadbPackage {
 
     initEClass(trackReferenceEClass, TrackReference.class, "TrackReference", !IS_ABSTRACT, !IS_INTERFACE,
         IS_GENERATED_INSTANCE_CLASS);
-    initEReference(getTrackReference_Track(), this.getTrack(), null, "track", null, 1, 1, TrackReference.class,
-        !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, IS_UNSETTABLE, IS_UNIQUE,
-        !IS_DERIVED, IS_ORDERED);
-    initEAttribute(getTrackReference_BonusTrack(), ecorePackage.getEString(), "bonusTrack", "", 0, 1,
+    initEReference(getTrackReference_Track(), this.getTrack(), this.getTrack_ReferredBy(), "track", null, 1, 1,
+        TrackReference.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES,
+        IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getTrackReference_BonusTrack(), ecorePackage.getEString(), "bonusTrack", null, 0, 1,
         TrackReference.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED,
         IS_ORDERED);
     initEReference(getTrackReference_MyTrackInfo(), this.getMyTrackInfo(), null, "myTrackInfo", null, 0, 1,

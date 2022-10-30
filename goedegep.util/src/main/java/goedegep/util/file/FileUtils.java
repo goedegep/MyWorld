@@ -124,7 +124,7 @@ public class FileUtils {
   }
 
   /**
-   * Get the extension of a filename (including extension).
+   * Get the extension of a filename (including the '.').
    * 
    * @param fileName the filename to derive the information from.
    * @return the extension of the filename, or null if no extension could be detected.
@@ -461,11 +461,11 @@ public class FileUtils {
    * @return the path of <code>folder</code> relative to <code>referenceFolder</code>.
    */
   public static String getPathRelativeToFolder(String referenceFolder, String folder) {
-    LOGGER.severe("=> referenceFolder=" + referenceFolder + ", folder" + folder);
+    LOGGER.info("=> referenceFolder=" + referenceFolder + ", folder" + folder);
     
     if (folder.startsWith(referenceFolder + "\\")) {
       String strippedName = folder.substring(referenceFolder.length() + 1);
-      LOGGER.severe("<= " + strippedName);
+      LOGGER.info("<= " + strippedName);
       return strippedName;
     } else {
       LOGGER.severe("<= (folder)");

@@ -2,23 +2,30 @@ package com.gluonhq.maps;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Logger;
 
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.util.EContentAdapter;
+import org.eclipse.emf.ecore.util.FeatureMap;
+import org.eclipse.emf.ecore.util.FeatureMap.Entry;
+import org.eclipse.emf.ecore.xml.type.AnyType;
 
 import com.gluonhq.maps.MapLayer.BoundingBoxData;
 
 import goedegep.geo.dbl.WGS84BoundingBox;
 import goedegep.geo.dbl.WGS84Coordinates;
+import goedegep.gpx.model.ExtensionsType;
 import goedegep.gpx.model.GpxType;
 import goedegep.gpx.model.RteType;
 import goedegep.gpx.model.TrkType;
 import goedegep.gpx.model.TrksegType;
 import goedegep.gpx.model.WptType;
 import goedegep.jfx.stringconverters.WGS84CoordinatesStringConverter;
-import goedegep.resources.Resources;
+import goedegep.poi.app.guifx.POIIcons;
+import goedegep.poi.model.POICategoryId;
+import goedegep.resources.ImageResource;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.ObservableMap;
@@ -201,7 +208,11 @@ public class GPXLayer extends MapLayer {
   private ObservableList<WaypointData> createWaypoints(String title, String fileName, EList<WptType> waypoints) {
     ObservableList<WaypointData> waypointDataList = FXCollections.observableArrayList();
     for (WptType gpxWaypoint : waypoints) {
-            final ImageView icon = new ImageView(getWaypointFlagImage());
+            Image waypointImage = getImageForWaypoint(gpxWaypoint);
+            if (waypointImage == null) {
+              waypointImage = getWaypointFlagImage();
+            }
+            final ImageView icon = new ImageView(waypointImage);
             icon.setPreserveRatio(true);
             icon.setFitHeight(16);
             icon.setX(-WAYPOINT_ICON_SIZE/2);
@@ -221,6 +232,56 @@ public class GPXLayer extends MapLayer {
     return waypointDataList;
   }
   
+  private Image getImageForWaypoint(WptType gpxWaypoint) {
+    ExtensionsType extensionsType = gpxWaypoint.getExtensions();
+    if (extensionsType == null) {
+      return null;
+    }
+    
+    FeatureMap featureMap = extensionsType.getAny();
+
+    Iterator<Entry> entryIterator = featureMap.iterator();
+    while (entryIterator.hasNext()) {
+      Entry entry = entryIterator.next();
+      LOGGER.info("entry: " + entry.toString());
+      LOGGER.info("value: " + entry.getValue());
+      LOGGER.info("structural feature: " + entry.getEStructuralFeature().getName());
+      AnyType anyType = (AnyType) entry.getValue();
+      if (!entry.getEStructuralFeature().getName().equals("icon")) {
+        continue;
+      }
+      
+      FeatureMap anyTypeFeatureMap = anyType.getMixed();
+      Iterator<Entry> anyEntryIterator = anyTypeFeatureMap.iterator();
+      while (anyEntryIterator.hasNext()) {
+        Entry anyEntry = anyEntryIterator.next();
+        LOGGER.info("any entry: " + anyEntry.toString());
+        LOGGER.info("any value: " + anyEntry.getValue());
+        LOGGER.info("any structural feature: " + anyEntry.getEStructuralFeature().getName());
+        String anyAnyType = (String) anyEntry.getValue();
+        return getIconForOsmAndValue(anyAnyType);
+      }
+    }
+    
+    return null;
+  }
+
+  private Image getIconForOsmAndValue(String anyAnyType) {
+    POIIcons poiIcons = new POIIcons("POIIconResourceInfo.xmi");
+
+    switch (anyAnyType) {
+    case "amenity_restaurant":
+      return poiIcons.getIcon(POICategoryId.RESTAURANT);
+      
+    case "tourism_camp_site":
+      return poiIcons.getIcon(POICategoryId.CAMPING);
+      
+    default:
+      LOGGER.severe("UNKNOWN ICON: " + anyAnyType);
+    }
+    return null;
+  }
+
   /**
    * Remove a list of waypoints from the map.
    * This means removing the icon nodes from the map.
@@ -670,7 +731,7 @@ public class GPXLayer extends MapLayer {
    */
   private Image getWaypointFlagImage() {
     if (waypointFlagImage == null) {
-      waypointFlagImage = Resources.getYellowLocationFlagImage();
+      waypointFlagImage = ImageResource.LOCATION_FLAG_YELLOW.getImage();
     }
     
     return waypointFlagImage;
@@ -683,7 +744,7 @@ public class GPXLayer extends MapLayer {
    */
   private Image getRoutePointFlagImage() {
     if (routePointFlagImage == null) {
-      routePointFlagImage = Resources.getBlueLocationFlagImage();
+      routePointFlagImage = ImageResource.LOCATION_FLAG_BLUE.getImage();
     }
     
     return routePointFlagImage;

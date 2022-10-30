@@ -20,5 +20,9 @@
         <groupId>goedegep.media</groupId>
         <artifactId>goedegep-media-mediadb-model</artifactId>
     </dependency>
+    <dependency>
+      <groupId>goedegep.resources</groupId>
+      <artifactId>goedegep-resources</artifactId>
+    </dependency>
   </dependencies>
 </project>

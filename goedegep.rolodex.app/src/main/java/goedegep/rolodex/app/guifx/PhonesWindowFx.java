@@ -13,7 +13,7 @@ import goedegep.jfx.ComponentFactoryFx;
 import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.JfxStage;
 import goedegep.jfx.controls.ObjectControl;
-import goedegep.jfx.controls.ObjectControlEEnumComboBox;
+import goedegep.jfx.controls.ObjectControlEnumComboBox;
 import goedegep.jfx.controls.ObjectControlString;
 import goedegep.jfx.eobjecttable.EObjectTable;
 import goedegep.jfx.eobjecttable.EObjectTableColumnDescriptorAbstract;
@@ -349,7 +349,7 @@ class PhoneAddressBookEntryEditPanel {
   
   // Controls
   private ObjectControlString entryNameTextField;
-  private ObjectControlEEnumComboBox<PhoneAddressBookEntryType> phoneAddressBookEntryTypeField;
+  private ObjectControlEnumComboBox<PhoneAddressBookEntryType> phoneAddressBookEntryTypeField;
   private PhoneNumberTextField phoneNumberTextField;
   
   private PhoneAddressBook phoneAddressBook;
@@ -367,7 +367,7 @@ class PhoneAddressBookEntryEditPanel {
     
     // Create the controls.
     entryNameTextField = componentFactory.createObjectInputString(null, 300, true, "Enter the entry name");
-    phoneAddressBookEntryTypeField =componentFactory.createObjectInputEEnumComboBox(ROLODEX_PACKAGE.getPhoneAddressBookEntryType(), true, "Enter the type of entry");
+    phoneAddressBookEntryTypeField =componentFactory.createObjectInputEEnumComboBox(PhoneAddressBookEntryType.NAME_AND_PHONE_NUMBER_ENTRY, null, true, "Enter the type of entry");
     phoneNumberTextField = new PhoneNumberTextField(customization, rolodex);
     
     createGUI();

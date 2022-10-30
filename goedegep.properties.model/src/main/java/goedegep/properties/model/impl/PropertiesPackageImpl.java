@@ -599,6 +599,7 @@ public class PropertiesPackageImpl extends EPackageImpl implements PropertiesPac
     addEEnumLiteral(propertyTypeEEnum, PropertyType.DIRECTORY);
     addEEnumLiteral(propertyTypeEEnum, PropertyType.FILE);
     addEEnumLiteral(propertyTypeEEnum, PropertyType.STRING);
+    addEEnumLiteral(propertyTypeEEnum, PropertyType.BOOLEAN);
 
     // Create resource
     createResource(eNS_URI);

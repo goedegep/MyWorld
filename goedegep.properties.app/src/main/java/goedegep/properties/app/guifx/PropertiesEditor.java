@@ -1,5 +1,6 @@
 package goedegep.properties.app.guifx;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ResourceBundle;
@@ -56,15 +57,24 @@ public class PropertiesEditor extends JfxStage {
    */
   private static final Logger         LOGGER = Logger.getLogger(PropertiesEditor.class.getName());
   
+  /**
+   * The PropertyDescriptorGroup describing the properties to be edited.
+   */
   private PropertyDescriptorGroup propertyDescriptorGroup;
   private EObjectTreeView editablePropertiesTreeView = null;
   
+  /*
+   * The created EditablePropertiesGroup items.
+   */
   private static EPackage editablePropertiesPackage = null;
   private static EClass editablePropertyGroup = null;
   private static EAttribute editablePropertyGroup_name = null;
   private static EReference editablePropertyGroup_editablePropertyGroups = null;
   private static EReference editablePropertyGroup_editableProperties = null;
   
+  /*
+   * The created EditableProperty items
+   */
   private static EClass editableProperty = null;
   private static EAttribute editableProperty_name = null;
   private static EAttribute editableProperty_displayName = null;
@@ -132,7 +142,6 @@ public class PropertiesEditor extends JfxStage {
     this.windowTitle = windowTitle;
     this.resourceBundle = resourceBundle;
     this.propertyDescriptorsResource = propertyDescriptorsResource;
-    this.propertiesFileName = propertiesFileName;
     
     propertyDescriptorGroup = propertyDescriptorsResource.getEObject();
     componentFactory = getComponentFactory();
@@ -140,6 +149,19 @@ public class PropertiesEditor extends JfxStage {
     propertiesResource = new EMFResource<PropertyGroup>(PropertiesPackage.eINSTANCE, () -> PropertiesFactory.eINSTANCE.createPropertyGroup());
     
     editableProperties = createEditableProperties();
+    
+    File propertiesFile = new File(propertiesFileName);
+    this.propertiesFileName = propertiesFile.getAbsolutePath();
+    
+    if (propertiesFile.exists()) {
+      System.out.println("File exists");
+      fillEditablePropertiesFromPropertiesFile(editableProperties);
+    } else {
+      componentFactory.createInformationDialog(
+          "User Settings file doesn't exist yet",
+          "The file with the User Settings (" + propertiesFileName + ") doesn't exist yet",
+          "When you save changes it will be created").showAndWait();
+    }
     
     // Setup for indicating in the window title that something is changed.
     eContentAdapter = new EContentAdapter() {
@@ -344,11 +366,11 @@ public class PropertiesEditor extends JfxStage {
   private EObject createEditableProperties() {
     EFactory editablePropertiesFactory = editablePropertiesPackage.getEFactoryInstance();
     
-    EObject eObject = editablePropertiesFactory.create(editablePropertyGroup);
-    eObject.eSet(editablePropertyGroup_name, propertyDescriptorGroup.getName());
+    EObject editablePropertyGroupEObject = editablePropertiesFactory.create(editablePropertyGroup);
+    editablePropertyGroupEObject.eSet(editablePropertyGroup_name, propertyDescriptorGroup.getName());
     
     @SuppressWarnings("unchecked")
-    EList<EObject> editableProperties = (EList<EObject>) eObject.eGet(editablePropertyGroup_editableProperties);
+    EList<EObject> editableProperties = (EList<EObject>) editablePropertyGroupEObject.eGet(editablePropertyGroup_editableProperties);
     for (PropertyDescriptor propertyDescriptor: propertyDescriptorGroup.getPropertyDescriptors()) {
       if (propertyDescriptor.isUserSettable()) {
         EObject ep = editablePropertiesFactory.create(editableProperty);
@@ -368,9 +390,7 @@ public class PropertiesEditor extends JfxStage {
       }
     }
     
-    fillEditablePropertiesFromPropertiesFile(eObject);
-    
-    return eObject;
+    return editablePropertyGroupEObject;
   }
   
   private static String getQualifiedGroupName(PropertyDescriptorGroup propertyDescriptorGroup) {
@@ -399,11 +419,8 @@ public class PropertiesEditor extends JfxStage {
       fillEditablePropertiesGroupFromPropertyGroup(editablePropertyGroup, propertyGroup);
 
     } catch (FileNotFoundException e) {
-      LOGGER.severe("Custom properties file doesn't exist yet");
-      componentFactory.createInformationDialog(
-          "Custom properties file doesn't exist yet",
-          "The file with the custom properties (" + propertiesFileName + ") doesn't exist yet",
-          "When you save changes it will be created").showAndWait();
+      LOGGER.severe("FileNotFoundException");
+      e.printStackTrace();
     }
   }
   
@@ -462,23 +479,38 @@ public class PropertiesEditor extends JfxStage {
    * Save the current editor values to the Properties file.
    */
   private void savePropertiesFile() {
+    System.out.println("=>");
+    
     // Copies all user values from the editable properties structure to the properties of the resource
     copyEditablePropertyValuesToPropertiesResource();
     
     // save changes
     try {
+      System.out.println("trying");
+
       if (propertiesResource.getFileName() != null) {
+        System.out.println("saving to file: " + propertiesResource.getFileName());
+
         propertiesResource.save();
+        
+        System.out.println("saved");
+
       } else {
+        System.out.println("saving2");
         propertiesResource.save(propertiesFileName);
+        System.out.println("saved2");
       }
     } catch (IOException e) {
       e.printStackTrace();
+      System.out.println("IOException: " + e.getMessage());
     }
     
     // notify that there aren't any changes
     isDirty = false;
+    System.out.println("updateTitle");
     updateTitle();
+
+    System.out.println("=>");
   }
   
   /**
@@ -487,7 +519,11 @@ public class PropertiesEditor extends JfxStage {
   private void copyEditablePropertyValuesToPropertiesResource() {
     LOGGER.severe("=>");
     
-    copyEditablePropertyGroupValuesToCustomProperties(editableProperties, propertiesResource.getEObject());
+    PropertyGroup propertyGroup = propertiesResource.getEObject();
+    if (propertyGroup == null) {
+      propertyGroup = propertiesResource.newEObject();
+    }
+    copyEditablePropertyGroupValuesToCustomProperties(editableProperties, propertyGroup);
     
     LOGGER.severe("<=");
   }

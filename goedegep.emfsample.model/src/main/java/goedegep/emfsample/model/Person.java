@@ -2,6 +2,7 @@
  */
 package goedegep.emfsample.model;
 
+import java.util.Date;
 import org.eclipse.emf.ecore.EObject;
 
 /**
@@ -17,6 +18,8 @@ import org.eclipse.emf.ecore.EObject;
  *   <li>{@link goedegep.emfsample.model.Person#getSurname <em>Surname</em>}</li>
  *   <li>{@link goedegep.emfsample.model.Person#getGender <em>Gender</em>}</li>
  *   <li>{@link goedegep.emfsample.model.Person#getBirthday <em>Birthday</em>}</li>
+ *   <li>{@link goedegep.emfsample.model.Person#getRetirementDate <em>Retirement Date</em>}</li>
+ *   <li>{@link goedegep.emfsample.model.Person#isHasChildren <em>Has Children</em>}</li>
  * </ul>
  *
  * @see goedegep.emfsample.model.EmfSamplePackage#getPerson()
@@ -195,5 +198,103 @@ public interface Person extends EObject {
    * @generated
    */
   void setBirthday(Birthday value);
+
+  /**
+   * Returns the value of the '<em><b>Retirement Date</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the value of the '<em>Retirement Date</em>' attribute.
+   * @see #isSetRetirementDate()
+   * @see #unsetRetirementDate()
+   * @see #setRetirementDate(Date)
+   * @see goedegep.emfsample.model.EmfSamplePackage#getPerson_RetirementDate()
+   * @model unsettable="true"
+   * @generated
+   */
+  Date getRetirementDate();
+
+  /**
+   * Sets the value of the '{@link goedegep.emfsample.model.Person#getRetirementDate <em>Retirement Date</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @param value the new value of the '<em>Retirement Date</em>' attribute.
+   * @see #isSetRetirementDate()
+   * @see #unsetRetirementDate()
+   * @see #getRetirementDate()
+   * @generated
+   */
+  void setRetirementDate(Date value);
+
+  /**
+   * Unsets the value of the '{@link goedegep.emfsample.model.Person#getRetirementDate <em>Retirement Date</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #isSetRetirementDate()
+   * @see #getRetirementDate()
+   * @see #setRetirementDate(Date)
+   * @generated
+   */
+  void unsetRetirementDate();
+
+  /**
+   * Returns whether the value of the '{@link goedegep.emfsample.model.Person#getRetirementDate <em>Retirement Date</em>}' attribute is set.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return whether the value of the '<em>Retirement Date</em>' attribute is set.
+   * @see #unsetRetirementDate()
+   * @see #getRetirementDate()
+   * @see #setRetirementDate(Date)
+   * @generated
+   */
+  boolean isSetRetirementDate();
+
+  /**
+   * Returns the value of the '<em><b>Has Children</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the value of the '<em>Has Children</em>' attribute.
+   * @see #isSetHasChildren()
+   * @see #unsetHasChildren()
+   * @see #setHasChildren(boolean)
+   * @see goedegep.emfsample.model.EmfSamplePackage#getPerson_HasChildren()
+   * @model unsettable="true"
+   * @generated
+   */
+  boolean isHasChildren();
+
+  /**
+   * Sets the value of the '{@link goedegep.emfsample.model.Person#isHasChildren <em>Has Children</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @param value the new value of the '<em>Has Children</em>' attribute.
+   * @see #isSetHasChildren()
+   * @see #unsetHasChildren()
+   * @see #isHasChildren()
+   * @generated
+   */
+  void setHasChildren(boolean value);
+
+  /**
+   * Unsets the value of the '{@link goedegep.emfsample.model.Person#isHasChildren <em>Has Children</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #isSetHasChildren()
+   * @see #isHasChildren()
+   * @see #setHasChildren(boolean)
+   * @generated
+   */
+  void unsetHasChildren();
+
+  /**
+   * Returns whether the value of the '{@link goedegep.emfsample.model.Person#isHasChildren <em>Has Children</em>}' attribute is set.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return whether the value of the '<em>Has Children</em>' attribute is set.
+   * @see #unsetHasChildren()
+   * @see #isHasChildren()
+   * @see #setHasChildren(boolean)
+   * @generated
+   */
+  boolean isSetHasChildren();
 
 } // Person

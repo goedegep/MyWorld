@@ -13,11 +13,11 @@ import goedegep.jfx.JfxStage;
 import goedegep.jfx.controls.FileSelecter;
 import goedegep.util.datetime.DateUtil;
 import javafx.beans.property.BooleanProperty;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 
 public class YearlyReportOptionsWindow extends JfxStage {
@@ -30,7 +30,7 @@ public class YearlyReportOptionsWindow extends JfxStage {
 
   private BooleanProperty selectionValidProperty;
   private ComboBox<Integer> yearComboBox;
-  private TextField fileNameTextField;
+  private FileSelecter fileSelecter;
   private Button okButton;
   
   public YearlyReportOptionsWindow(CustomizationFx customization, MortgageCalculator mortgageCalculator) {
@@ -78,11 +78,11 @@ public class YearlyReportOptionsWindow extends JfxStage {
     label = componentFactory.createLabel("File: ");
     optionsPane.add(label, 0, 1);
     
-    FileSelecter fileSelecter = new FileSelecter(null, 400, "File to save the report to", "Choose file", "Open a file chooser", "Report file selection", ".pdf", "Portable Data Format");
+    fileSelecter = componentFactory.createFileSelecter(null, 400, "File to save the report to", "Choose file", "Open a file chooser", "Report file selection");
+    fileSelecter.addFileType(".pdf", "Portable Data Format", true);
     fileSelecter.setOpenOrSaveDialog(true);
-    fileNameTextField = fileSelecter.getFilePathTextField();
-    componentFactory.customizeTextInputControl(fileNameTextField);
-    fileNameTextField.textProperty().addListener((observable, oldValue, newValue) -> {
+    Node fileNameTextField = fileSelecter.getPathTextField();
+    fileSelecter.objectValue().addListener((observable, oldValue, newValue) -> {
       LOGGER.severe("In textProperty Listener");
       checkOptions();      
     });
@@ -118,9 +118,9 @@ public class YearlyReportOptionsWindow extends JfxStage {
   }
   
   private void generateYearlyReport() {
-    LOGGER.severe("=>" + fileNameTextField.getText());
+    LOGGER.severe("=>" + fileSelecter.getObjectValue());
     int year = (int) yearComboBox.getValue();
-    File file = new File(fileNameTextField.getText());
+    File file = new File(fileSelecter.getObjectValue());
     MortgageReportsGenerator.generateYearlyPdfReport(mortgageCalculator, year, file);
     LOGGER.severe("Yearly report for " + year + " generated to:  " + file.getAbsolutePath());    
   }

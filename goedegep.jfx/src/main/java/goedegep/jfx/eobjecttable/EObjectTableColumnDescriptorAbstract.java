@@ -63,7 +63,7 @@ public class EObjectTableColumnDescriptorAbstract<T extends EObject> {
    * 
    * @param columnName the new value for the <code>columnName</code>.
    */
-  public void setColumnName(String columnName) {
+  public void setColumnNameAbstract(String columnName) {
     this.columnName = columnName;
   }
 

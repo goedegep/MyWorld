@@ -15,4 +15,5 @@ module goedegep.media.app.guifx {
   requires javafx.graphics;
   requires goedegep.properties.app;
   requires goedegep.media.photoshow.model;
+  requires goedegep.resources;
 }

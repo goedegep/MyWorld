@@ -19,14 +19,15 @@ public class MyWorldRegistry {
   public static String dataDirectory = null;          // Directory where all data files are stored.
   public static String shortProductInfo = null;       // Short description of this application.
   public static String version = null;                // Current software version.
-  public static String finanPropertyDescriptorFileName = null;   // Naam van het bestand met property descriptors voor de module Finan.
-  public static String mediaPropertyDescriptorFileName = null;   // Naam van het bestand met property descriptors voor de module MediaDb.
-  public static String rolodexPropertyDescriptorFileName = null;   // Naam van het bestand met property descriptors voor de module Rolodex.
-  public static String invoicesAndPropertiesPropertyDescriptorFileName = null;   // Naam van het bestand met property descriptors voor de module NotasEnEigendommen.
-  public static String unitConverterPropertyDescriptorFileName = null;   // Naam van het bestand met property descriptors voor de module UnitConverter.
-  public static String pctoolsPropertyDescriptorsFileName = null;   // Naam van het bestand met property descriptors voor de module PCTools.
-  public static String vacationsPropertyDescriptorsFileName = null;   // Naam van het bestand met property descriptors voor de module Vakanties.
-  public static boolean developmentMode = false;      // Voor extra functies tijdens ontwikkeling
+  public static String eventsPropertyDescriptorFileName = null;  // Name of the file with property descriptors for the module Events
+  public static String finanPropertyDescriptorFileName = null;   // Name of the file with property descriptors for the module Finan.
+  public static String mediaPropertyDescriptorFileName = null;   // Name of the file with property descriptors for the module MediaDb.
+  public static String rolodexPropertyDescriptorFileName = null;   // Name of the file with property descriptors for the module Rolodex.
+  public static String invoicesAndPropertiesPropertyDescriptorFileName = null;   // Name of the file with property descriptors for the module InvoicesAndProperties.
+  public static String unitConverterPropertyDescriptorFileName = null;   // Name of the file with property descriptors for the module UnitConverter.
+  public static String pctoolsPropertyDescriptorsFileName = null;   // Name of the file with property descriptors for the module PCTools.
+  public static String vacationsPropertyDescriptorsFileName = null;   // Name of the file with property descriptors for the module Vacations.
+  public static boolean developmentMode = false;      // For extra functionality during development.
   public static EMFResource<PropertyDescriptorGroup> propertyDescriptorsResource = null;
   
 }

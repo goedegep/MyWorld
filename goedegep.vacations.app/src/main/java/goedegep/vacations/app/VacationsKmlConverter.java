@@ -296,9 +296,9 @@ public class VacationsKmlConverter extends VacationToTextConverterAbstract {
     // Folder/Placemark description
     buf.setLength(0);
     
-    if (location.isSetLabel()) {
+    if (location.isStayedAtThisLocation()) {
       buf.append("<b><i>");
-      buf.append(HtmlUtil.encodeHTML(location.getLabel().getLiteral()));
+      buf.append(HtmlUtil.encodeHTML("Verblijf"));
       buf.append("</i></b><br/>");
     }
     

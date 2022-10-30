@@ -150,13 +150,22 @@ public interface MediadbPackage extends EPackage {
   int TRACK_FEATURE_COUNT = 8;
 
   /**
+   * The operation id for the '<em>Get Original Disc Track Reference</em>' operation.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int TRACK___GET_ORIGINAL_DISC_TRACK_REFERENCE = 0;
+
+  /**
    * The number of operations of the '<em>Track</em>' class.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int TRACK_OPERATION_COUNT = 0;
+  int TRACK_OPERATION_COUNT = 1;
 
   /**
    * The meta object id for the '{@link goedegep.media.mediadb.model.impl.MediaDbImpl <em>Media Db</em>}' class.
@@ -1527,6 +1536,16 @@ public interface MediadbPackage extends EPackage {
   EReference getTrack_OriginalDisc();
 
   /**
+   * Returns the meta object for the '{@link goedegep.media.mediadb.model.Track#getOriginalDiscTrackReference() <em>Get Original Disc Track Reference</em>}' operation.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the '<em>Get Original Disc Track Reference</em>' operation.
+   * @see goedegep.media.mediadb.model.Track#getOriginalDiscTrackReference()
+   * @generated
+   */
+  EOperation getTrack__GetOriginalDiscTrackReference();
+
+  /**
    * Returns the meta object for class '{@link goedegep.media.mediadb.model.MediaDb <em>Media Db</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -2558,6 +2577,14 @@ public interface MediadbPackage extends EPackage {
     	 * @generated
     	 */
     EReference TRACK__ORIGINAL_DISC = eINSTANCE.getTrack_OriginalDisc();
+
+    /**
+    	 * The meta object literal for the '<em><b>Get Original Disc Track Reference</b></em>' operation.
+    	 * <!-- begin-user-doc -->
+    	 * <!-- end-user-doc -->
+    	 * @generated
+    	 */
+    EOperation TRACK___GET_ORIGINAL_DISC_TRACK_REFERENCE = eINSTANCE.getTrack__GetOriginalDiscTrackReference();
 
     /**
     	 * The meta object literal for the '{@link goedegep.media.mediadb.model.impl.MediaDbImpl <em>Media Db</em>}' class.

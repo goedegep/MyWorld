@@ -18,7 +18,6 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -36,7 +35,7 @@ public class CreateAlbumFromAlbumTracksWindow extends JfxStage {
   private String SOURCE_FOLDER = "D:\\SoulSeek\\Complete";
   
   private ComponentFactoryFx componentFactory;
-  private TextField sourceFolderTextField;
+  private FolderSelecter sourceFolderSelector;
   private TextArea statusPanel;
   private Button actionButton; // To perform preview or import
   private String sourceFolderName;
@@ -49,7 +48,7 @@ public class CreateAlbumFromAlbumTracksWindow extends JfxStage {
         
     createGUI();
     
-    sourceFolderName = sourceFolderTextField.getText();
+    sourceFolderName = sourceFolderSelector.getObjectValue();
     
     show();
   }
@@ -70,9 +69,9 @@ public class CreateAlbumFromAlbumTracksWindow extends JfxStage {
     Label label = componentFactory.createLabel("Source folder:");
     gridPane.add(label, 0, 0);
     
-    FolderSelecter sourceFolderSelector = new FolderSelecter(SOURCE_FOLDER, 400, "Enter the name of the folder with the tracks of the album that has to be imported", "Choose source folder", "Click to start folder chooser", "Select the folder with the tracks of the album that has to be imported");
-    sourceFolderTextField = sourceFolderSelector.getFolderPathTextField();
-    sourceFolderTextField.textProperty().addListener((observable, oldValue, newValue) -> handleNewSourceFolder(newValue));
+    sourceFolderSelector = new FolderSelecter(SOURCE_FOLDER, 400, "Enter the name of the folder with the tracks of the album that has to be imported", "Choose source folder", "Click to start folder chooser", "Select the folder with the tracks of the album that has to be imported");
+    Node sourceFolderTextField = sourceFolderSelector.getPathTextField();
+    sourceFolderSelector.objectValue().addListener((observable, oldValue, newValue) -> handleNewSourceFolder(newValue));
     gridPane.add(sourceFolderTextField, 1, 0);
     
     Button sourceFolderChooserButton = sourceFolderSelector.getFolderChooserButton();

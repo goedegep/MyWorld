@@ -1,13 +1,16 @@
 package goedegep.jfx.controls;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import goedegep.util.file.FileUtils;
 import javafx.beans.InvalidationListener;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.scene.Node;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
 
@@ -15,6 +18,7 @@ import javafx.scene.control.Tooltip;
  * This class provides the common functionality for the FileSelecter and FolderSelecter.
  */
 public abstract class FileOrFolderSelecterAbstract implements ObjectControl<String> {
+  
   /**
    * Field to handle {@code isOptional()} in {@code ObjectControl}.
    */
@@ -37,6 +41,8 @@ public abstract class FileOrFolderSelecterAbstract implements ObjectControl<Stri
   
   /**
    * Property to realize {@code objectValue()} in {@code ObjectControl}.
+   * Note: it is not possible to use the textProperty of the pathTextField, as this is a StringProperty instead of ObjectProperty<String>.
+   * So this property only reflects the value of the textProperty of the pathTextField.
    */
   private ObjectProperty<String> objectValue = new SimpleObjectProperty<>();
   
@@ -44,6 +50,11 @@ public abstract class FileOrFolderSelecterAbstract implements ObjectControl<Stri
    * List of InvalidationListeners.
    */
   private List<InvalidationListener> invalidationListeners = new ArrayList<>();
+  
+  /**
+   * Prefix - The first part of the file or folder path.
+   */
+  private String prefix = null;
   
   /**
    * Constructor
@@ -63,13 +74,27 @@ public abstract class FileOrFolderSelecterAbstract implements ObjectControl<Stri
       pathTextField.setTooltip(new Tooltip(textFieldToolTipText));
     }
     
-    objectValue.bind(getPathTextField().textProperty());
+//    getPathTextField().textProperty().bind(objectValue);
+    objectValue.bind(pathTextField.textProperty());
     
     isValid.set(false);
  }
 
   /**
    * Get the TextField to show and edit the currently selected file or folder.
+   * <p>
+   * This TextField:
+   * <ul>
+   * <li>
+   * Shows the current value.
+   * </li>
+   * <li>
+   * Can be used to enter a value.
+   * </li>
+   * <li>
+   * Indicates (to the user) whether the value is valid (red text indicates an invalid value).
+   * </li>
+   * </ul>
    * 
    * @return the TextField to show and edit the currently selected file or folder.
    */
@@ -122,7 +147,7 @@ public abstract class FileOrFolderSelecterAbstract implements ObjectControl<Stri
    */
   @Override
   public boolean getIsFilledIn() {
-    return !pathTextField.getText().isEmpty();
+    return (objectValue.get() != null) && !objectValue.get().isEmpty();
   }
 
   /**
@@ -130,7 +155,7 @@ public abstract class FileOrFolderSelecterAbstract implements ObjectControl<Stri
    */
   @Override
   public String getObjectValue() {
-    return pathTextField.getText();
+    return objectValue.get();
   }
 
   /**
@@ -138,7 +163,8 @@ public abstract class FileOrFolderSelecterAbstract implements ObjectControl<Stri
    */
   @Override
   public void setObjectValue(String filePathText) {
-    pathTextField.setText(filePathText);
+    
+    pathTextField.textProperty().set(filePathText);
   }
   
   /**
@@ -154,6 +180,31 @@ public abstract class FileOrFolderSelecterAbstract implements ObjectControl<Stri
    */
   public void setId(String id) {
     pathTextField.setId(id);
+  }  
+
+  public String getPrefix() {
+    return prefix;
+  }
+
+  public void setPrefix(String prefix) {
+    this.prefix = prefix;
+  }
+  
+  protected String addPrefixIfSet(String path) {
+    if (prefix != null) {
+      File file = new File (getPrefix(), pathTextField.textProperty().get());
+      return file.getAbsolutePath();
+    } else {
+      return path;
+    }
+  }
+  
+  protected String removePrefixIfSet(String path) {
+    if (prefix != null) {
+      return FileUtils.getPathRelativeToFolder(prefix, path);
+    } else {
+      return path;
+    }
   }
 
   /**

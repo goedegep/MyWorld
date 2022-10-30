@@ -20,6 +20,7 @@ public class ObjectControlString extends TextField implements ObjectControl<Stri
       
   public ObjectControlString(String text, double width, boolean isOptional, String toolTipText) {
     this.isOptional = isOptional;
+    setText(text);
 
     textProperty().addListener((observableValue, oldValue, newValue) -> handleChanges(newValue));
     

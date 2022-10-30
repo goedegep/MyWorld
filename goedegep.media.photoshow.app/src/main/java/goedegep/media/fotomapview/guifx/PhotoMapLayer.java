@@ -15,7 +15,8 @@ import goedegep.geo.dbl.WGS84BoundingBox;
 import goedegep.geo.dbl.WGS84Coordinates;
 import goedegep.jfx.CustomizationFx;
 import goedegep.media.fotoshow.app.guifx.PhotoInfo;
-import goedegep.resources.Resources;
+import goedegep.resources.ImageResource;
+import goedegep.resources.ImageSize;
 import goedegep.util.img.ImageUtils;
 import goedegep.util.objectselector.ObjectSelectionListener;
 import goedegep.util.objectselector.ObjectSelector;
@@ -178,9 +179,10 @@ public class PhotoMapLayer extends MapLayer implements ObjectSelector<PhotoInfo>
     
     Image photoImage;
     if (photoInfo.isApproximateGPScoordinates()) {
-      photoImage = Resources.getCameraGrayIcon();
+      photoImage = ImageResource.CAMERA_GRAY.getImage(ImageSize.SIZE_0);
     } else {
-      photoImage = Resources.getCameraBlackIcon();
+      photoImage = ImageResource.CAMERA_BLACK.getImage(ImageSize.SIZE_0);
+//      photoImage = Resources.getCameraBlackIcon();
     }
     ImageView photoIcon = new ImageView(photoImage);
     installMouseHandlingOnPhotoIcon(photoIcon, photoInfo);
@@ -260,9 +262,10 @@ public class PhotoMapLayer extends MapLayer implements ObjectSelector<PhotoInfo>
       
       Image photoImage;
       if (photoInfo.isApproximateGPScoordinates()) {
-        photoImage = Resources.getCameraGrayIcon();
+        photoImage = ImageResource.CAMERA_GRAY.getImage(ImageSize.SIZE_0);
       } else {
-        photoImage = Resources.getCameraBlackIcon();
+//        photoImage = Resources.getCameraBlackIcon();
+        photoImage = ImageResource.CAMERA_BLACK.getImage(ImageSize.SIZE_0);
       }
       ImageView photoIcon = new ImageView(photoImage);
       installMouseHandlingOnPhotoIcon(photoIcon, selectedPhoto.photoInfo());
@@ -287,7 +290,7 @@ public class PhotoMapLayer extends MapLayer implements ObjectSelector<PhotoInfo>
       Node node = currentPhotoData.node();
       getChildren().remove(node);
       
-      Image photoImage = Resources.getCameraBlueIcon();
+      Image photoImage = ImageResource.CAMERA_BLUE.getImage(ImageSize.SIZE_0);
       ImageView photoIcon = new ImageView(photoImage);
       installMouseHandlingOnPhotoIcon(photoIcon, photoInfo);
       getChildren().add(photoIcon);

@@ -72,4 +72,5 @@ module goedegep.app.finan {
   requires transitive goedegep.finan.lynx2finan.model;
   requires transitive goedegep.finan.jobappointment.model;
   requires junit;
+  requires goedegep.resources;
 }

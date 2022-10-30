@@ -92,9 +92,10 @@
     </eStructuralFeatures>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EEnum" name="PropertyType">
-    <eLiterals name="DIRECTORY"/>
-    <eLiterals name="FILE" value="1"/>
-    <eLiterals name="STRING" value="2"/>
+    <eLiterals name="Directory" literal="DIRECTORY"/>
+    <eLiterals name="File" value="1" literal="FILE"/>
+    <eLiterals name="String" value="2" literal="STRING"/>
+    <eLiterals name="Boolean" value="3" literal="BOOLEAN"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="FilePropertyDescriptor" eSuperTypes="#//PropertyDescriptor">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="fileExtensions" upperBound="-1"

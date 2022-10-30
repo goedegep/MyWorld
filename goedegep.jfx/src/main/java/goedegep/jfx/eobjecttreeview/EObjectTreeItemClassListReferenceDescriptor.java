@@ -52,7 +52,7 @@ public class EObjectTreeItemClassListReferenceDescriptor extends EObjectTreeItem
    */
   public EObjectTreeItemClassListReferenceDescriptor(EReference eReference, String labelText, boolean expandOnCreation,
       List<NodeOperationDescriptor> nodeOperationDescriptors, Function<Object, Image> nodeIconFunction) {
-    super(EObjectTreeItemDescriptorType.CLASS_LIST, expandOnCreation, nodeOperationDescriptors, nodeIconFunction);
+    super(EObjectTreeItemDescriptorType.CLASS_LIST, expandOnCreation, nodeOperationDescriptors, null, nodeIconFunction);
     this.eReference = eReference;
     this.labelText = labelText;
   }

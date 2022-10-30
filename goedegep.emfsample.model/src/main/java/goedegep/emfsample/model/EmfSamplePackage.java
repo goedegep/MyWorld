@@ -104,13 +104,31 @@ public interface EmfSamplePackage extends EPackage {
   int PERSON__BIRTHDAY = 3;
 
   /**
+   * The feature id for the '<em><b>Retirement Date</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int PERSON__RETIREMENT_DATE = 4;
+
+  /**
+   * The feature id for the '<em><b>Has Children</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int PERSON__HAS_CHILDREN = 5;
+
+  /**
    * The number of structural features of the '<em>Person</em>' class.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int PERSON_FEATURE_COUNT = 4;
+  int PERSON_FEATURE_COUNT = 6;
 
   /**
    * The number of operations of the '<em>Person</em>' class.
@@ -177,6 +195,43 @@ public interface EmfSamplePackage extends EPackage {
   int BIRTHDAY_OPERATION_COUNT = 0;
 
   /**
+   * The meta object id for the '{@link goedegep.emfsample.model.impl.CompanyImpl <em>Company</em>}' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see goedegep.emfsample.model.impl.CompanyImpl
+   * @see goedegep.emfsample.model.impl.EmfSamplePackageImpl#getCompany()
+   * @generated
+   */
+  int COMPANY = 2;
+
+  /**
+   * The feature id for the '<em><b>Employees</b></em>' containment reference list.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int COMPANY__EMPLOYEES = 0;
+
+  /**
+   * The number of structural features of the '<em>Company</em>' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int COMPANY_FEATURE_COUNT = 1;
+
+  /**
+   * The number of operations of the '<em>Company</em>' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int COMPANY_OPERATION_COUNT = 0;
+
+  /**
    * The meta object id for the '{@link goedegep.emfsample.model.Gender <em>Gender</em>}' enum.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -184,7 +239,7 @@ public interface EmfSamplePackage extends EPackage {
    * @see goedegep.emfsample.model.impl.EmfSamplePackageImpl#getGender()
    * @generated
    */
-  int GENDER = 2;
+  int GENDER = 3;
 
 
   /**
@@ -242,6 +297,28 @@ public interface EmfSamplePackage extends EPackage {
   EReference getPerson_Birthday();
 
   /**
+   * Returns the meta object for the attribute '{@link goedegep.emfsample.model.Person#getRetirementDate <em>Retirement Date</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Retirement Date</em>'.
+   * @see goedegep.emfsample.model.Person#getRetirementDate()
+   * @see #getPerson()
+   * @generated
+   */
+  EAttribute getPerson_RetirementDate();
+
+  /**
+   * Returns the meta object for the attribute '{@link goedegep.emfsample.model.Person#isHasChildren <em>Has Children</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Has Children</em>'.
+   * @see goedegep.emfsample.model.Person#isHasChildren()
+   * @see #getPerson()
+   * @generated
+   */
+  EAttribute getPerson_HasChildren();
+
+  /**
    * Returns the meta object for class '{@link goedegep.emfsample.model.Birthday <em>Birthday</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -283,6 +360,27 @@ public interface EmfSamplePackage extends EPackage {
    * @generated
    */
   EAttribute getBirthday_Year();
+
+  /**
+   * Returns the meta object for class '{@link goedegep.emfsample.model.Company <em>Company</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for class '<em>Company</em>'.
+   * @see goedegep.emfsample.model.Company
+   * @generated
+   */
+  EClass getCompany();
+
+  /**
+   * Returns the meta object for the containment reference list '{@link goedegep.emfsample.model.Company#getEmployees <em>Employees</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the containment reference list '<em>Employees</em>'.
+   * @see goedegep.emfsample.model.Company#getEmployees()
+   * @see #getCompany()
+   * @generated
+   */
+  EReference getCompany_Employees();
 
   /**
    * Returns the meta object for enum '{@link goedegep.emfsample.model.Gender <em>Gender</em>}'.
@@ -360,6 +458,22 @@ public interface EmfSamplePackage extends EPackage {
     EReference PERSON__BIRTHDAY = eINSTANCE.getPerson_Birthday();
 
     /**
+     * The meta object literal for the '<em><b>Retirement Date</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute PERSON__RETIREMENT_DATE = eINSTANCE.getPerson_RetirementDate();
+
+    /**
+     * The meta object literal for the '<em><b>Has Children</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute PERSON__HAS_CHILDREN = eINSTANCE.getPerson_HasChildren();
+
+    /**
      * The meta object literal for the '{@link goedegep.emfsample.model.impl.BirthdayImpl <em>Birthday</em>}' class.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -392,6 +506,24 @@ public interface EmfSamplePackage extends EPackage {
      * @generated
      */
     EAttribute BIRTHDAY__YEAR = eINSTANCE.getBirthday_Year();
+
+    /**
+     * The meta object literal for the '{@link goedegep.emfsample.model.impl.CompanyImpl <em>Company</em>}' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see goedegep.emfsample.model.impl.CompanyImpl
+     * @see goedegep.emfsample.model.impl.EmfSamplePackageImpl#getCompany()
+     * @generated
+     */
+    EClass COMPANY = eINSTANCE.getCompany();
+
+    /**
+     * The meta object literal for the '<em><b>Employees</b></em>' containment reference list feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EReference COMPANY__EMPLOYEES = eINSTANCE.getCompany_Employees();
 
     /**
      * The meta object literal for the '{@link goedegep.emfsample.model.Gender <em>Gender</em>}' enum.

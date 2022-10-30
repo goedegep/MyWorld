@@ -13,6 +13,7 @@ import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
 import org.eclipse.emf.ecore.util.EObjectContainmentEList;
 import org.eclipse.emf.ecore.util.EObjectResolvingEList;
+import org.eclipse.emf.ecore.util.EObjectWithInverseResolvingEList;
 import org.eclipse.emf.ecore.util.InternalEList;
 
 import goedegep.media.mediadb.model.Album;
@@ -24,6 +25,7 @@ import goedegep.media.mediadb.model.Track;
 import goedegep.media.mediadb.model.TrackPart;
 import goedegep.media.mediadb.model.TrackReference;
 import goedegep.util.string.StringUtil;
+import java.lang.reflect.InvocationTargetException;
 
 /**
  * <!-- begin-user-doc -->
@@ -465,8 +467,8 @@ public class TrackImpl extends MinimalEObjectImpl.Container implements Track {
   @Override
   public EList<TrackReference> getReferredBy() {
     if (referredBy == null) {
-      referredBy = new EObjectResolvingEList<TrackReference>(TrackReference.class, this,
-          MediadbPackage.TRACK__REFERRED_BY);
+      referredBy = new EObjectWithInverseResolvingEList<TrackReference>(TrackReference.class, this,
+          MediadbPackage.TRACK__REFERRED_BY, MediadbPackage.TRACK_REFERENCE__TRACK);
     }
     return referredBy;
   }
@@ -544,6 +546,37 @@ public class TrackImpl extends MinimalEObjectImpl.Container implements Track {
   /**
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
+   * @generated NOT
+   */
+  @Override
+  public TrackReference getOriginalDiscTrackReference() {
+    for (TrackReference trackReference: getReferredBy()) {
+      if (trackReference.getOriginalAlbumTrackReference() == null) {
+        return trackReference;
+      }
+    }
+    
+    return null;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @SuppressWarnings("unchecked")
+  @Override
+  public NotificationChain eInverseAdd(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
+    switch (featureID) {
+    case MediadbPackage.TRACK__REFERRED_BY:
+      return ((InternalEList<InternalEObject>) (InternalEList<?>) getReferredBy()).basicAdd(otherEnd, msgs);
+    }
+    return super.eInverseAdd(otherEnd, featureID, msgs);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
    * @generated
    */
   @Override
@@ -551,6 +584,8 @@ public class TrackImpl extends MinimalEObjectImpl.Container implements Track {
     switch (featureID) {
     case MediadbPackage.TRACK__PARTS:
       return ((InternalEList<?>) getParts()).basicRemove(otherEnd, msgs);
+    case MediadbPackage.TRACK__REFERRED_BY:
+      return ((InternalEList<?>) getReferredBy()).basicRemove(otherEnd, msgs);
     }
     return super.eInverseRemove(otherEnd, featureID, msgs);
   }
@@ -690,6 +725,20 @@ public class TrackImpl extends MinimalEObjectImpl.Container implements Track {
       return isSetOriginalDisc();
     }
     return super.eIsSet(featureID);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public Object eInvoke(int operationID, EList<?> arguments) throws InvocationTargetException {
+    switch (operationID) {
+    case MediadbPackage.TRACK___GET_ORIGINAL_DISC_TRACK_REFERENCE:
+      return getOriginalDiscTrackReference();
+    }
+    return super.eInvoke(operationID, arguments);
   }
 
   /**

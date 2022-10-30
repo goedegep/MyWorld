@@ -130,12 +130,18 @@ public class PhotosImporter {
     // get a list of all filenames of the photos which are already part of the vacation.
     Map<String, VacationElement> photoFileNameToParentElementMap = getPhotoFileNameToParentElementMap(vacation);
     Set<String> existingPhotosFileNames = photoFileNameToParentElementMap.keySet();
+    for (String photoFilename: existingPhotosFileNames) {
+      LOGGER.severe("Existing photo filename: " + photoFilename);
+    }
     
     // get a list of all days (for the third option, and to create the map from days to elements with location information)
     List<Day> vacationDays = VacationsUtils.getVacationDays(vacation);
     
     // create the list of all elements with location information  (for the second option)
     geoLocations = VacationsUtils.getVacationGeoLocations(vacation);
+    for (VacationElement element: geoLocations.keySet()) {
+      LOGGER.severe("Element with location information: " + element);
+    }
     
     // create a map from days to elements with location information (for the first option)
     Map<Day, List<VacationElement>> dayElementsMap = new HashMap<>();
@@ -153,6 +159,9 @@ public class PhotosImporter {
     
     // Get all photo folders to handle
     List<Path> vacationPhotoFolderPaths = VacationsUtils.getVactionPhotosSubFoldersPaths(vacation);
+    for (Path path: vacationPhotoFolderPaths) {
+      LOGGER.severe("Vacation folder path: " + path);
+    }
           
     // List of folders to skip
     List<String> skipFoldernames = StringUtil.commaSeparatedValuesToListOfValues("weg,Originals");
@@ -172,10 +181,6 @@ public class PhotosImporter {
       try (DirectoryStream<Path> stream = Files.newDirectoryStream(photosPath)) {
         for (Path checkFile: stream) {
           LOGGER.severe("Handling file/folder: " + checkFile);
-          
-//          if (!((new File(checkFile.toAbsolutePath().toString())).getName().equals("20220311_161627.jpg"))) {
-//            continue;
-//          }
           
           PhotoImportResultType photoImportResultType = null;
           
@@ -437,7 +442,7 @@ public class PhotosImporter {
     
     S2LatLng coordinatesS2LatLng = S2LatLng.fromDegrees(coordinates.getLatitude(), coordinates.getLongitude());
     Double distance = photoS2LatLng.getEarthDistance(coordinatesS2LatLng);
-    LOGGER.severe("Distance to coordinates = " + distance);
+    LOGGER.info("Distance to coordinates = " + distance);
     if (distance < 80.0) {
       return handleNewDistanceMatch(distance);
     }

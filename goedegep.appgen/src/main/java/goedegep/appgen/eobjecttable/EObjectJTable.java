@@ -50,7 +50,6 @@ import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 
 import goedegep.appgen.EEnumEditorDescriptor;
-import goedegep.appgen.ImageSize;
 import goedegep.appgen.TableRowOperation;
 import goedegep.appgen.TableRowOperationDescriptor;
 import goedegep.appgen.TextBasedCellRenderer;
@@ -59,6 +58,7 @@ import goedegep.appgen.swing.AppFrame;
 import goedegep.appgen.swing.AppGenAbstractTable;
 import goedegep.appgen.swing.MenuFactory;
 import goedegep.appgen.swing.OptionDialog;
+import goedegep.resources.ImageSize;
 import goedegep.util.objectselector.ObjectSelectionListener;
 import goedegep.util.objectselector.ObjectSelector;
 

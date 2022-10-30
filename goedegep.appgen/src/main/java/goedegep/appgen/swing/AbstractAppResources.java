@@ -10,7 +10,7 @@ import javax.imageio.ImageIO;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 
-import goedegep.appgen.ImageSize;
+import goedegep.resources.ImageSize;
 import goedegep.util.img.ImageUtils;
 
 /**

@@ -2,6 +2,7 @@
  */
 package goedegep.vacations.model.impl;
 
+import goedegep.vacations.model.DayTrip;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
 import org.eclipse.emf.common.notify.NotificationChain;
@@ -108,6 +109,22 @@ public abstract class VacationElementImpl extends MinimalEObjectImpl.Container i
   /**
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
+   * @generated NOT
+   */
+  @Override
+  public DayTrip getDayTrip() {
+    EObject container = eContainer();
+
+    while ((container != null) && !(container instanceof DayTrip)) {
+      container = container.eContainer();
+    }
+
+    return (DayTrip) container;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
    * @generated
    */
   @Override
@@ -191,6 +208,8 @@ public abstract class VacationElementImpl extends MinimalEObjectImpl.Container i
       return getDayNr();
     case VacationsPackage.VACATION_ELEMENT___GET_VACATION:
       return getVacation();
+    case VacationsPackage.VACATION_ELEMENT___GET_DAY_TRIP:
+      return getDayTrip();
     }
     return super.eInvoke(operationID, arguments);
   }

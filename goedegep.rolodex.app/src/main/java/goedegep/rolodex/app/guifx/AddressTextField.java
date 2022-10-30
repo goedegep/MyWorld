@@ -55,6 +55,7 @@ public class AddressTextField extends AutoCompleteTextFieldObjectInput<String> {
     List<String> addressesTexts = new ArrayList<>();
     
     for (Address address: addresses) {
+      LOGGER.severe("adding address: " + address);
       addressesTexts.add(address.toString());
     }
     

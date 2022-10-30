@@ -14,7 +14,7 @@ module goedegep.vacations.app {
   requires transitive goedegep.geo;
   requires transitive goedegep.model.properties;
   requires transitive goedegep.types.model;
-  requires transitive goedegep.model.vacations;
+  requires transitive goedegep.vacations.model;
   requires goedegep.ov2;
   requires transitive goedegep.poi.app;
   requires transitive goedegep.poi.model;
@@ -44,6 +44,7 @@ module goedegep.vacations.app {
   requires javafx.media;
   requires jdk.jsobject;
   requires transitive goedegep.vacations.checklist.model;
-requires goedegep.gpx.model;
-requires goedegep.resources;
+  requires goedegep.gpx.model;
+  requires goedegep.resources;
+  requires transitive goedegep.gpx.app;
 }

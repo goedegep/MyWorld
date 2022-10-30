@@ -97,34 +97,34 @@ public class FolderSelecter extends FileOrFolderSelecterAbstract {
     
     // Do this at the end, so it automatically leads an update of the selectionValidProperty.
     if (initiallySelecterFolder != null) {
-      getPathTextField().setText(initiallySelecterFolder);
+      setObjectValue(initiallySelecterFolder);
     }
   }
 
-  /**
-   * Get the TextField.
-   * <p>
-   * This TextField:
-   * <ul>
-   * <li>
-   * Shows the current value.
-   * </li>
-   * <li>
-   * Can be used to enter a value.
-   * </li>
-   * <li>
-   * Indicates (to the user) whether the value is valid (red text indicates an invalid value).
-   * </li>
-   * <li>
-   * Provides the current value, if the selectionValidProperty is <code>true</code>.
-   * </li>
-   * </ul>
-   * 
-   * @return the TextField
-   */
-  public TextField getFolderPathTextField() {
-    return getPathTextField();
-  }
+//  /**
+//   * Get the TextField.
+//   * <p>
+//   * This TextField:
+//   * <ul>
+//   * <li>
+//   * Shows the current value.
+//   * </li>
+//   * <li>
+//   * Can be used to enter a value.
+//   * </li>
+//   * <li>
+//   * Indicates (to the user) whether the value is valid (red text indicates an invalid value).
+//   * </li>
+//   * <li>
+//   * Provides the current value, if the selectionValidProperty is <code>true</code>.
+//   * </li>
+//   * </ul>
+//   * 
+//   * @return the TextField
+//   */
+//  public TextField getFolderPathTextField() {
+//    return getPathTextField();
+//  }
 
   /**
    * Get the Button for calling up a FolderChooser.

@@ -27,4 +27,5 @@ module goedegep.media.mediadb.app {
   requires ealvatag;
   requires javaFlacEncoder;
   requires org.apache.commons.text;
+  requires goedegep.resources;
 }

@@ -12,4 +12,5 @@ module goedegep.unitconverter.app {
   requires javafx.graphics;
   requires org.eclipse.emf.common;
   requires org.eclipse.emf.ecore;
+  requires goedegep.resources;
 }

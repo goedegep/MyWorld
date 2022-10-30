@@ -214,4 +214,10 @@ public class VacationsTreeView extends EObjectTreeView {
     
     return picture;
   }
+
+
+  public void selectTreeItem(Object object) {
+    // TODO Auto-generated method stub
+    
+  }
 }

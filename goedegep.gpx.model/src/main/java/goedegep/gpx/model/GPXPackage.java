@@ -315,13 +315,22 @@ public interface GPXPackage extends EPackage {
   int EXTENSIONS_TYPE__ANY = 0;
 
   /**
+   * The feature id for the '<em><b>Speed</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int EXTENSIONS_TYPE__SPEED = 1;
+
+  /**
    * The number of structural features of the '<em>Extensions Type</em>' class.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int EXTENSIONS_TYPE_FEATURE_COUNT = 1;
+  int EXTENSIONS_TYPE_FEATURE_COUNT = 2;
 
   /**
    * The number of operations of the '<em>Extensions Type</em>' class.
@@ -1706,6 +1715,17 @@ public interface GPXPackage extends EPackage {
   EAttribute getExtensionsType_Any();
 
   /**
+   * Returns the meta object for the attribute '{@link goedegep.gpx.model.ExtensionsType#getSpeed <em>Speed</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Speed</em>'.
+   * @see goedegep.gpx.model.ExtensionsType#getSpeed()
+   * @see #getExtensionsType()
+   * @generated
+   */
+  EAttribute getExtensionsType_Speed();
+
+  /**
    * Returns the meta object for class '{@link goedegep.gpx.model.GpxType <em>Gpx Type</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -3067,6 +3087,14 @@ public interface GPXPackage extends EPackage {
      * @generated
      */
     EAttribute EXTENSIONS_TYPE__ANY = eINSTANCE.getExtensionsType_Any();
+
+    /**
+     * The meta object literal for the '<em><b>Speed</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute EXTENSIONS_TYPE__SPEED = eINSTANCE.getExtensionsType_Speed();
 
     /**
      * The meta object literal for the '{@link goedegep.gpx.model.impl.GpxTypeImpl <em>Gpx Type</em>}' class.

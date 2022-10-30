@@ -21,5 +21,7 @@ module goedegep.myworld {
   requires javafx.controls;
   requires transitive javafx.graphics;
   requires goedegep.media.app.guifx;
-  requires java.desktop; 
+  requires java.desktop;
+  requires goedegep.resources;
+  requires goedegep.events.app; 
 }

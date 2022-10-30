@@ -15,7 +15,7 @@ public class VacationsResource extends ListResourceBundle {
       /*
        *  VacationsWindow
        */
-      {"VacationsWindow.windowTitle", "Vacations"},
+      {"VacationsWindow.windowTitle", "Travels"},
       
       {"VacationsWindow.noVacationSelectedMsg", "No vacation selected"},
       

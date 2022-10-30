@@ -11,7 +11,6 @@ import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.util.WrappedException;
 import org.eclipse.emf.ecore.EObject;
 
-import goedegep.appgen.ImageSize;
 import goedegep.jfx.ComponentFactoryFx;
 import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.JfxStage;
@@ -24,6 +23,7 @@ import goedegep.media.fotomapview.guifx.PhotoMapView;
 import goedegep.media.fotoshow.app.guifx.FullScreenViewer;
 import goedegep.media.fotoshow.app.guifx.PhotoShowBuilder;
 import goedegep.media.mediadb.albuminfo.AlbumInfoFilesReader;
+import goedegep.media.mediadb.app.MediaDbChecker;
 import goedegep.media.mediadb.app.guifx.DuneWindow;
 import goedegep.media.mediadb.app.guifx.MediaDbWindow;
 import goedegep.media.mediadb.app.guifx.MusicFolderWindow;
@@ -40,6 +40,7 @@ import goedegep.media.photoshow.model.PhotoShowFactory;
 import goedegep.media.photoshow.model.PhotoShowPackage;
 import goedegep.media.photoshow.model.PhotoShowSpecification;
 import goedegep.properties.app.guifx.PropertiesEditor;
+import goedegep.resources.ImageSize;
 import goedegep.util.emf.EMFNotificationListener;
 import goedegep.util.emf.EMFResource;
 import goedegep.util.emf.EmfUtil;
@@ -148,7 +149,7 @@ public class MediaMenuWindow extends JfxStage {
         
     mediaDbResource.dirtyProperty().addListener((observable, oldValue, newValue) -> updateTitle());
     
-    mediaDbResource.addNotificationListener(n -> LOGGER.severe(EmfUtil.printNotification(n)));
+//    mediaDbResource.addNotificationListener(n -> LOGGER.severe(EmfUtil.printNotification(n)));
   }
   
   /**
@@ -280,7 +281,7 @@ public class MediaMenuWindow extends JfxStage {
     // File: Save media information
     MenuUtil.addMenuItem(menu, "Save media information", new EventHandler<ActionEvent>()  {
       public void handle(ActionEvent e) {
-        saveMediaDb();
+        checkAndSaveMediaDb();
       }
     });
     
@@ -425,6 +426,11 @@ public class MediaMenuWindow extends JfxStage {
       }
     }
   }
+  
+  private void checkAndSaveMediaDb() {
+    MediaDbChecker.checkMediaDb(mediaDb, true);
+    saveMediaDb();
+  }
 
   /**
    * Save the media information to the related file.
@@ -449,7 +455,7 @@ public class MediaMenuWindow extends JfxStage {
     
     if (mediaDbResource != null) {
       try {
-        mediaDbResource.save();
+        mediaDbResource.save(MediaRegistry.mediaDbFile + "T");
       } catch (IOException e) {        
         componentFactory.createErrorDialog(
             "Saving the media information has failed.",

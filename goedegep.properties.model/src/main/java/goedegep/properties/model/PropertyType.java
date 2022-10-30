@@ -23,37 +23,46 @@ import org.eclipse.emf.common.util.Enumerator;
  */
 public enum PropertyType implements Enumerator {
   /**
-   * The '<em><b>DIRECTORY</b></em>' literal object.
+   * The '<em><b>Directory</b></em>' literal object.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @see #DIRECTORY_VALUE
    * @generated
    * @ordered
    */
-  DIRECTORY(0, "DIRECTORY", "DIRECTORY"),
+  DIRECTORY(0, "Directory", "DIRECTORY"),
 
   /**
-   * The '<em><b>FILE</b></em>' literal object.
+   * The '<em><b>File</b></em>' literal object.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @see #FILE_VALUE
    * @generated
    * @ordered
    */
-  FILE(1, "FILE", "FILE"),
+  FILE(1, "File", "FILE"),
 
   /**
-   * The '<em><b>STRING</b></em>' literal object.
+   * The '<em><b>String</b></em>' literal object.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @see #STRING_VALUE
    * @generated
    * @ordered
    */
-  STRING(2, "STRING", "STRING");
+  STRING(2, "String", "STRING"),
+  /**
+   * The '<em><b>Boolean</b></em>' literal object.
+   * <!-- begin-user-doc -->
+  * <!-- end-user-doc -->
+   * @see #BOOLEAN_VALUE
+   * @generated
+   * @ordered
+   */
+  BOOLEAN(3, "Boolean", "BOOLEAN");
 
   /**
-   * The '<em><b>DIRECTORY</b></em>' literal value.
+   * The '<em><b>Directory</b></em>' literal value.
    * <!-- begin-user-doc -->
    * <p>
    * If the meaning of '<em><b>DIRECTORY</b></em>' literal object isn't clear,
@@ -61,14 +70,14 @@ public enum PropertyType implements Enumerator {
    * </p>
    * <!-- end-user-doc -->
    * @see #DIRECTORY
-   * @model
+   * @model name="Directory" literal="DIRECTORY"
    * @generated
    * @ordered
    */
   public static final int DIRECTORY_VALUE = 0;
 
   /**
-   * The '<em><b>FILE</b></em>' literal value.
+   * The '<em><b>File</b></em>' literal value.
    * <!-- begin-user-doc -->
    * <p>
    * If the meaning of '<em><b>FILE</b></em>' literal object isn't clear,
@@ -76,14 +85,14 @@ public enum PropertyType implements Enumerator {
    * </p>
    * <!-- end-user-doc -->
    * @see #FILE
-   * @model
+   * @model name="File" literal="FILE"
    * @generated
    * @ordered
    */
   public static final int FILE_VALUE = 1;
 
   /**
-   * The '<em><b>STRING</b></em>' literal value.
+   * The '<em><b>String</b></em>' literal value.
    * <!-- begin-user-doc -->
    * <p>
    * If the meaning of '<em><b>STRING</b></em>' literal object isn't clear,
@@ -91,11 +100,22 @@ public enum PropertyType implements Enumerator {
    * </p>
    * <!-- end-user-doc -->
    * @see #STRING
-   * @model
+   * @model name="String" literal="STRING"
    * @generated
    * @ordered
    */
   public static final int STRING_VALUE = 2;
+
+  /**
+   * The '<em><b>Boolean</b></em>' literal value.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #BOOLEAN
+   * @model name="Boolean" literal="BOOLEAN"
+   * @generated
+   * @ordered
+   */
+  public static final int BOOLEAN_VALUE = 3;
 
   /**
    * An array of all the '<em><b>Property Type</b></em>' enumerators.
@@ -103,7 +123,7 @@ public enum PropertyType implements Enumerator {
    * <!-- end-user-doc -->
    * @generated
    */
-  private static final PropertyType[] VALUES_ARRAY = new PropertyType[] { DIRECTORY, FILE, STRING, };
+  private static final PropertyType[] VALUES_ARRAY = new PropertyType[] { DIRECTORY, FILE, STRING, BOOLEAN, };
 
   /**
    * A public read-only list of all the '<em><b>Property Type</b></em>' enumerators.
@@ -165,6 +185,8 @@ public enum PropertyType implements Enumerator {
       return FILE;
     case STRING_VALUE:
       return STRING;
+    case BOOLEAN_VALUE:
+      return BOOLEAN;
     }
     return null;
   }

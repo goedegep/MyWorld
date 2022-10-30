@@ -5,7 +5,7 @@ import java.awt.Image;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 
-import goedegep.appgen.ImageSize;
+import goedegep.resources.ImageSize;
 
 /**
  * Interface to obtain application specific resources.

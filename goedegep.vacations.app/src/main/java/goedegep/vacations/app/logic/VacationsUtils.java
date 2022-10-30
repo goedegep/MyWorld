@@ -23,20 +23,16 @@ import org.eclipse.emf.ecore.EObject;
 import goedegep.geo.dbl.WGS84Coordinates;
 import goedegep.gpx.GpxUtil;
 import goedegep.gpx.model.DocumentRoot;
-import goedegep.gpx.model.GPXFactory;
-import goedegep.gpx.model.GPXPackage;
 import goedegep.gpx.model.GpxType;
 import goedegep.gpx.model.TrkType;
 import goedegep.gpx.model.TrksegType;
 import goedegep.gpx.model.WptType;
-import goedegep.gpx.model.util.GPXResourceFactoryImpl;
 import goedegep.types.model.FileReference;
 import goedegep.util.Triplet;
 import goedegep.util.datetime.FlexDate;
 import goedegep.util.emf.EMFResource;
 import goedegep.util.file.FileUtils;
 import goedegep.util.img.PhotoFileMetaDataHandler;
-import goedegep.vacations.model.ActivityLabel;
 import goedegep.vacations.model.Boundary;
 import goedegep.vacations.model.BoundingBox;
 import goedegep.vacations.model.Day;
@@ -216,7 +212,7 @@ public class VacationsUtils {
     while (iterator.hasNext()) {
       EObject eObject = iterator.next();
       if (eObject instanceof VacationElement vacationElement) {
-        LOGGER.severe("Handling vacation element: " + vacationElement.toString());
+        LOGGER.info("Handling vacation element: " + vacationElement.toString());
         Triplet<WGS84Coordinates, BoundingBox, List<Boundary>> elementGeoLocations = getGeoLocation(vacationElement);
         if (elementGeoLocations != null) {
           geoLocations.put(vacationElement, elementGeoLocations);
@@ -296,7 +292,7 @@ public class VacationsUtils {
       /*
        * If it is a stayed at location, add the location to the stayedAtLocations for the day numbers we stayed there.
        */
-      if (stayedAtLocations != null  &&  location.isSetLabel()  &&  location.getLabel().equals(ActivityLabel.VERBLIJF)) {
+      if (stayedAtLocations != null  &&  location.isStayedAtThisLocation()) {
         LOGGER.info("Stayed at: " + location.getName());
         Integer dayNr = location.getDayNr();
         if (dayNr == 0) {

@@ -17,9 +17,8 @@ import goedegep.jfx.eobjecttreeview.EObjectTreeItemClassListReferenceDescriptor;
 import goedegep.jfx.eobjecttreeview.EObjectTreeItemClassReferenceDescriptor;
 import goedegep.jfx.eobjecttreeview.EObjectTreeView;
 import goedegep.jfx.eobjecttreeview.PresentationType;
-import goedegep.resources.Resources;
+import goedegep.resources.ImageResource;
 import goedegep.util.emf.EmfPackageHelper;
-import javafx.scene.image.Image;
 
 public class GPXTreeView extends EObjectTreeView {
   @SuppressWarnings("unused")
@@ -101,7 +100,7 @@ class GPXTreeViewDescriptor extends EObjectTreeDescriptor {
         
     // GpxType
     EObjectTreeItemClassDescriptor eObjectTreeItemClassDescriptor = new EObjectTreeItemClassDescriptor(eClass, (eObject) -> "GPX (gpx)", false, null, eObject -> {
-      return Resources.getGpxIcon();
+      return ImageResource.GPX.getImage();
     });
     
     // GpxType.metadata
@@ -139,7 +138,7 @@ class GPXTreeViewDescriptor extends EObjectTreeDescriptor {
         
     // WptType
     EObjectTreeItemClassDescriptor eObjectTreeItemClassDescriptor = new EObjectTreeItemClassDescriptor(eClass, (eObject) -> "Waypoint", false, null, eObject -> {
-      return Resources.getYellowLocationFlagImage();
+      return ImageResource.LOCATION_FLAG_YELLOW.getImage();
     });
 
     // WptType.name

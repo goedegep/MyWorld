@@ -12,7 +12,7 @@
       displayName="ShortProductInformation" initialValue="MyWorld - My world on the computer"
       installInitialValue="true"/>
   <propertyDescriptors name="version" description="Software version information."
-      displayName="Version" initialValue="1.0 - 12-07-2022 23:12" installInitialValue="true"/>
+      displayName="Version" initialValue="1.0 - 23-10-2022 19:46" installInitialValue="true"/>
   <propertyDescriptors name="copyrightMessage" description="Copyright informatie."
       displayName="Copyright Text" initialValue="Copyright (c) 2001-2020" installInitialValue="true"/>
   <propertyDescriptors name="author" description="Author of this applicaton." displayName="Author"
@@ -21,6 +21,12 @@
       description="Name of the file with user settings." displayName="MyWorld User Settings file name"
       registryName="customPropertiesFile" initialValue="MyWorldUserSettings.xmi" userSettable="true"
       installInitialValue="true"/>
+  <propertyDescriptors xsi:type="properties:FilePropertyDescriptor" type="FILE" name="eventsPropertyDescriptorFileName"
+      description="Name of the file with property descriptors for the module Events."
+      displayName="Events property descriptor file name" initialValue="EventsPropertyDescriptors.xmi"
+      installInitialValue="true">
+    <fileExtensions>xmi</fileExtensions>
+  </propertyDescriptors>
   <propertyDescriptors xsi:type="properties:FilePropertyDescriptor" type="FILE" name="finanPropertyDescriptorFileName"
       description="Name of the file with property descriptors for the module Finan."
       displayName="Finan property descriptor file name" initialValue="FinanPropertyDescriptors.xmi"

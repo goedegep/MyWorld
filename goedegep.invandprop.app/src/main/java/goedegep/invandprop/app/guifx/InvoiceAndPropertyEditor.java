@@ -1823,7 +1823,7 @@ class FileReferencePanel extends TitledPane {
   
   public String getFile() {
     if (fileSelecter.getIsValid(null)) {
-      return fileSelecter.getFilePathTextField().getText();
+      return fileSelecter.getObjectValue();
     } else {
       return null;
     }
@@ -1833,7 +1833,7 @@ class FileReferencePanel extends TitledPane {
     String propertyFilesFolder = null;
     
     for (FileReferencePanel documentReferencePanel: documentReferencePanels) {
-      File file = new File(documentReferencePanel.fileSelecter.getFilePathTextField().getText());
+      File file = new File(documentReferencePanel.fileSelecter.getObjectValue());
       propertyFilesFolder = file.getParent();
       if (propertyFilesFolder != null) {
         return propertyFilesFolder;
@@ -1863,7 +1863,7 @@ class FileReferencePanel extends TitledPane {
     Label fileNameLabel = componentFactory.createLabel("File:");
     gridPane.add(fileNameLabel, 0, 0);
         
-    gridPane.add(fileSelecter.getFilePathTextField(), 1, 0);
+    gridPane.add(fileSelecter.getPathTextField(), 1, 0);
     
     Button fileChooserButton = fileSelecter.getFileChooserButton();
     gridPane.add(fileChooserButton, 2, 0);
@@ -1969,25 +1969,3 @@ class FileReferencePanel extends TitledPane {
     setText(buf.toString());
   }
 }
-
-
-///**
-// * Define what we are editing; an invoice, a property, or an invoice with related property.
-// */
-//enum EditType {
-//  NONE("Invoice and Property"),
-//  INVOICE("Invoice"),
-//  PROPERTY("Property"),
-//  INVOICE_AND_PROPERTY("Invoice and Property");
-//  
-//  private String buttonText;
-//  
-//  EditType(String buttonText) {
-//    this.buttonText = buttonText;
-//  }
-//
-//  public String getButtonText() {
-//    return buttonText;
-//  }
-//  
-//}

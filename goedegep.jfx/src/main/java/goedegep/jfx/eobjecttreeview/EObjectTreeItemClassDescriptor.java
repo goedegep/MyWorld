@@ -19,7 +19,7 @@ public class EObjectTreeItemClassDescriptor extends EObjectTreeItemDescriptor {
   private static final String NEWLINE = System.getProperty("line.separator");
   
   private EClass eClass;                       // The actual eClass
-  private Function<EObject, String> buildText; // Function to generate the class text from the class content.
+//  private Function<EObject, String> buildText; // Function to generate the class text from the class content.
   private List<EObjectTreeItemDescriptor> structuralFeatureDescriptors = new ArrayList<>();
 
 
@@ -30,14 +30,14 @@ public class EObjectTreeItemClassDescriptor extends EObjectTreeItemDescriptor {
 
   public EObjectTreeItemClassDescriptor(EClass eClass, Function<EObject, String> buildText, boolean expandOnCreation,
       List<NodeOperationDescriptor> nodeOperationDescriptors, Function<Object, Image> nodeIconFunction) {
-    super(EObjectTreeItemDescriptorType.CLASS, expandOnCreation, nodeOperationDescriptors, nodeIconFunction);
+    super(EObjectTreeItemDescriptorType.CLASS, expandOnCreation, nodeOperationDescriptors, buildText, nodeIconFunction);
     
     if (eClass == null) {
       throw new IllegalArgumentException("Argument eClass cannot be null");
     }
     
     this.eClass = eClass;
-    this.buildText = buildText;
+//    this.buildText = buildText;
   }
 
   public EObjectTreeItemClassDescriptor(EClass eClass) {
@@ -57,9 +57,9 @@ public class EObjectTreeItemClassDescriptor extends EObjectTreeItemDescriptor {
     return eClass;
   }
 
-  public Function<EObject, String> getBuildText() {
-    return buildText;
-  }
+//  public Function<EObject, String> getBuildText() {
+//    return buildText;
+//  }
   
   @Override
   public String toString(Indent indent) {
@@ -68,7 +68,7 @@ public class EObjectTreeItemClassDescriptor extends EObjectTreeItemDescriptor {
     buf.append(indent.toString()).append(getClass().getSimpleName());
     buf.append(": className=");
     buf.append(eClass.getName());
-    if (buildText != null) {
+    if (getBuildText() != null) {
       buf.append(", buildText specified");
     } else {
       buf.append(", buildText not specified");

@@ -11,6 +11,7 @@ import java.util.logging.Logger;
 import org.eclipse.emf.common.notify.Adapter;
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.util.EContentAdapter;
 import org.eclipse.emf.ecore.util.EObjectContainmentEList;
 
@@ -29,7 +30,14 @@ public class ObservableEList<T> implements ObservableList<T> {
   private ListListenerHelper<T> listenerHelper;
   private ObservableEList<T> thisList;
   private List<T> presentationList;
+  private List<InvalidationListener> tableRefreshNeededListeners = new ArrayList<>();
   
+  /**
+   * Constructor
+   * 
+   * @param containingObject
+   * @param list
+   */
   public ObservableEList(EObject containingObject, EObjectContainmentEList<T> list) {
     this.eObjectContainmentEList = list;
     thisList = this;
@@ -38,8 +46,11 @@ public class ObservableEList<T> implements ObservableList<T> {
     LOGGER.info("EObjectTable: Installing adapter");
     Adapter adapter = new EContentAdapter() {
       public void notifyChanged(Notification notification) {
-        if (!notification.getNotifier().equals(eObjectContainmentEList)) {
-          LOGGER.info("NO ACTION: change not in this list");
+        LOGGER.severe("Notification received: " + notification.toString());
+        EObject listEObject = eObjectContainmentEList.getEObject();
+        EObject container = listEObject.eContainer();
+        if (!notification.getNotifier().equals(eObjectContainmentEList)  && !notification.getNotifier().equals(eObjectContainmentEList.getEObject())) {
+          LOGGER.severe("NO ACTION: change not in this list");
           return;
         }
         ObservableEListChange<T> change = null;
@@ -49,7 +60,7 @@ public class ObservableEList<T> implements ObservableList<T> {
           if (!notification.isTouch()) {
             LOGGER.info("Added item");
             LOGGER.severe(EmfUtil.printNotification(notification));
-            change = new ObservableEListChange<T>(notification.getPosition(), notification.getPosition() + 1, new ArrayList<T>(), EMPTY_PERM, false, thisList);
+            change = new ObservableEListChange<T>(notification.getPosition(), notification.getPosition(), new ArrayList<T>(), EMPTY_PERM, false, thisList);
             ListListenerHelper.fireValueChangedEvent(listenerHelper, change);
           } else {
             LOGGER.severe("Notification is touch");
@@ -62,7 +73,7 @@ public class ObservableEList<T> implements ObservableList<T> {
             LOGGER.info("Changed item");
             // An ObservableList only supports changes in the list, not changes in an item in the list.
             // To keep any table based on this list, we fire an update event on the first row.
-            ListListenerHelper.fireValueChangedEvent(listenerHelper, new ObservableEListChange<T>(0, 1, new ArrayList<T>(), EMPTY_PERM, true, thisList));
+            ListListenerHelper.fireValueChangedEvent(listenerHelper, new ObservableEListChange<T>(0, list.size() - 1, new ArrayList<T>(), EMPTY_PERM, true, thisList));
           } else {
             LOGGER.severe("Notification is touch");
           }
@@ -100,6 +111,104 @@ public class ObservableEList<T> implements ObservableList<T> {
     containingObject.eAdapters().add(adapter);
     
   }
+  
+  
+  /**
+   * Constructor
+   * 
+   * @param containingObject
+   * @param list
+   */
+  public ObservableEList(boolean dummy, EObject containingObject, EReference eReference) {
+    
+    eObjectContainmentEList = (EObjectContainmentEList<T>) containingObject.eGet(eReference);
+    thisList = this;
+    presentationList = eObjectContainmentEList;
+    
+    LOGGER.info("EObjectTable: Installing adapter");
+    Adapter adapter = new EContentAdapter() {
+      public void notifyChanged(Notification notification) {
+        LOGGER.severe("Notification received: " + notification.toString());
+        super.notifyChanged(notification);
+//        if (!notification.getNotifier().equals(containingObject)  && !notification.getFeature().equals(eReference)) {
+//          LOGGER.severe("NO ACTION: change not in this list");
+//          return;
+//        }
+        ObservableEListChange<T> change = null;
+        
+        switch (notification.getEventType()) {
+        case Notification.ADD:
+          if (!notification.isTouch()) {
+            LOGGER.info("Added item");
+            LOGGER.severe(EmfUtil.printNotification(notification));
+            change = new ObservableEListChange<T>(notification.getPosition(), notification.getPosition() + 1, new ArrayList<T>(), EMPTY_PERM, false, thisList);
+            ListListenerHelper.fireValueChangedEvent(listenerHelper, change);
+          } else {
+            LOGGER.severe("Notification is touch");
+          }
+          break;
+        
+        case Notification.SET:
+        case Notification.UNSET:
+          if (!notification.isTouch()) {
+            LOGGER.severe("Changed item");
+            // An ObservableList only supports changes in the list, not changes in an item in the list.
+            // To keep any table based on this list, we fire an update event on the first row.
+            ListListenerHelper.fireValueChangedEvent(listenerHelper, new ObservableEListChange<T>(0, thisList.size() - 1, new ArrayList<T>(), EMPTY_PERM, true, thisList));
+            notifyTableRefreshNeededListeners();
+          } else {
+            LOGGER.severe("Notification is touch");
+          }
+          break;
+          
+        case Notification.REMOVE:
+          if (!notification.isTouch()) {
+            LOGGER.severe("Removed item");
+            @SuppressWarnings("unchecked")
+            T removedObject = (T) notification.getOldValue();
+            LOGGER.severe("Removed object: " + removedObject.toString());
+            List<T> removedList = List.of(removedObject);
+            int presentationIndex = presentationList.indexOf(removedObject);
+            ListListenerHelper.fireValueChangedEvent(listenerHelper, new ObservableEListChange<T>(presentationIndex, presentationIndex, removedList, EMPTY_PERM, true, thisList));
+          } else {
+            LOGGER.severe("Notification is touch");
+          }
+          break;
+          
+        case Notification.REMOVING_ADAPTER:
+          // This is no change in the data, so no action.
+          break;
+          
+        case Notification.REMOVE_MANY:
+          notifyTableRefreshNeededListeners();
+//          LOGGER.severe(EmfUtil.printNotification(notification));
+          break;
+        
+        default:
+          throw new RuntimeException ("Event type " + notification.getEventType() + " not supported");
+        }
+        if (!notification.isTouch()) {
+          LOGGER.info("Updating data");
+        }
+      }
+
+
+    };
+    containingObject.eAdapters().add(adapter);
+    
+  }
+
+  private void notifyTableRefreshNeededListeners() {
+    for (InvalidationListener listener: tableRefreshNeededListeners) {
+      listener.invalidated(thisList);
+    }
+    
+  }
+  
+  public void addTableRefreshNeededListener(InvalidationListener listener) {
+    tableRefreshNeededListeners.add(listener);
+  }
+  
   
   public void setPresentationList(List<T> presentationList) {
     this.presentationList = presentationList;

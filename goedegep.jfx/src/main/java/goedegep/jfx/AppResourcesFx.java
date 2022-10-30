@@ -1,7 +1,7 @@
 package goedegep.jfx;
 
 
-import goedegep.appgen.ImageSize;
+import goedegep.resources.ImageSize;
 import javafx.scene.image.Image;
 
 /**

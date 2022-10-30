@@ -1,5 +1,6 @@
 package goedegep.myworld.installer;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.DirectoryIteratorException;
@@ -79,10 +80,9 @@ import javafx.stage.Stage;
 public class MyWorldInstaller extends JfxApplication {
   private static final Logger LOGGER = Logger.getLogger(MyWorldInstaller.class.getName());
 
-  private static final String JAVAW_EXECUTABLE = "java.exe";  // TODO change back to javaw.exe for real installations.
-  private static final String JAVA_MAIN_FOLDER = "C:\\Program Files\\Java";
   private static final String MAVEN_REPOSITORY_HOME = "C:\\Users\\Peter\\.m2\\repository";
   private static final String MY_WORLD_SHORTCUT_PATH = "target\\classes\\MyWorld.lnk";
+  private static final String EVENTS_SHORTCUT_PATH = "target\\classes\\Events.lnk";
   private static final String FINAN_SHORTCUT_PATH = "target\\classes\\Finan.lnk";
   private static final String MEDIA_SHORTCUT_PATH = "target\\classes\\Media.lnk";
   private static final String INVOICES_AND_PROPERTIES_SHORTCUT_PATH = "target\\classes\\InvoicesAndProperties.lnk";
@@ -110,6 +110,7 @@ public class MyWorldInstaller extends JfxApplication {
   // Resources, scripts and shortcuts to install.
   private static String[] resourceList = {
       MY_WORLD_SHORTCUT_PATH,
+      EVENTS_SHORTCUT_PATH,
       FINAN_SHORTCUT_PATH,
       MEDIA_SHORTCUT_PATH,
       INVOICES_AND_PROPERTIES_SHORTCUT_PATH,
@@ -118,7 +119,9 @@ public class MyWorldInstaller extends JfxApplication {
       PC_TOOLS_SHORTCUT_PATH,
       VACATIONS_SHORTCUT_PATH,
       "..\\goedegep.myworld\\src\\main\\resources\\goedegep\\myworld\\app\\guifx\\MyWorld_32x32.ico",
+      "..\\goedegep.myworld\\src\\main\\resources\\goedegep\\myworld\\app\\guifx\\MyWorldSplash.jpg",
       "..\\goedegep.myworld\\src\\main\\scripts\\MyWorld.bat",
+      "..\\goedegep.events.app\\src\\main\\resources\\goedegep\\events\\app\\guifx\\event - 272x187.ico",
       "..\\goedegep.finan.app\\src\\nsis\\FinanLogo.ico",
       "..\\goedegep.media.app\\src\\main\\resources\\goedegep\\media\\app\\Media.ico",
       "..\\goedegep.invandprop.app\\src\\main\\resources\\goedegep\\invandprop\\app\\guifx\\InvoicesAndProperties.ico",
@@ -128,6 +131,8 @@ public class MyWorldInstaller extends JfxApplication {
       "..\\goedegep.vacations.app\\src\\main\\resources\\goedegep\\vacations\\app\\guifx\\Vacations.ico",
       MY_WORLD_PROPERTY_DESCRIPTORS_FILE,
       "..\\goedegep.myworld\\src\\main\\resources\\MyWorldConfiguration.xmi",
+      "..\\goedegep.events.app\\src\\main\\resources\\EventsPropertyDescriptors.xmi",
+      "..\\goedegep.events.app\\src\\main\\resources\\EventsConfiguration.xmi",
       "..\\goedegep.finan.app\\src\\main\\resources\\FinanPropertyDescriptors.xmi",
       "..\\goedegep.finan.app\\src\\main\\resources\\FinanConfiguration.xmi",
       "..\\goedegep.media.app\\src\\main\\resources\\MediaPropertyDescriptors.xmi",
@@ -149,12 +154,12 @@ public class MyWorldInstaller extends JfxApplication {
   private static String[] jarFiles = {
       "co\\kaleidok\\javaFlacEncoder\\0.3.2-SNAPSHOT\\javaFlacEncoder-0.3.2-SNAPSHOT.jar",
       "com\\atlassian\\commonmark\\commonmark\\0.12.1\\commonmark-0.12.1.jar",
-      "com\\drewnoakes\\metadata-extractor\\2.11.0\\metadata-extractor-2.11.0.jar",
+//      "com\\drewnoakes\\metadata-extractor\\2.11.0\\metadata-extractor-2.11.0.jar",
       "com\\ealva\\ealvatag\\0.4.3\\ealvatag-0.4.3.jar",
       "com\\google\\code\\findbugs\\jsr305\\3.0.2\\jsr305-3.0.2.jar",
-      "com\\google\\code\\gson\\gson\\2.8.6\\gson-2.8.6.jar",
+      "com\\google\\code\\gson\\gson\\2.8.9\\gson-2.8.9.jar",
       "com\\google\\common\\geometry\\com.google.common.geometry\\1.0-SNAPSHOT\\com.google.common.geometry-1.0-SNAPSHOT.jar",
-      "com\\google\\guava\\guava\\28.1-jre\\guava-28.1-jre.jar",
+      "com\\google\\guava\\guava\\30.1.1-jre\\guava-30.1.1-jre.jar",
       "com\\google\\jimfs\\jimfs\\1.1\\jimfs-1.1.jar",
       "com\\itextpdf\\itextpdf\\5.5.3\\itextpdf-5.5.3.jar",
       "com\\itextpdf\\tool\\xmlworker\\5.5.3\\xmlworker-5.5.3.jar",
@@ -163,12 +168,14 @@ public class MyWorldInstaller extends JfxApplication {
       "com\\openhtmltopdf\\openhtmltopdf-pdfbox\\1.0.0\\openhtmltopdf-pdfbox-1.0.0.jar",
       "com\\sun\\xml\\bind\\jaxb-impl\\2.2\\jaxb-impl-2.2.jar",
       "commons-cli\\commons-cli\\1.4\\commons-cli-1.4.jar",
-      "commons-io\\commons-io\\2.6\\commons-io-2.6.jar",
+      "commons-io\\commons-io\\2.7\\commons-io-2.7.jar",
       "commons-logging\\commons-logging\\1.2\\commons-logging-1.2.jar",
       "de\\micromata\\jak\\JavaAPIforKml\\2.2.1-SNAPSHOT\\JavaAPIforKml-2.2.1-SNAPSHOT.jar",
       "gluon-oss-maps\\gluon-oss-maps\\1.0-SNAPSHOT\\gluon-oss-maps-1.0-SNAPSHOT.jar",
       "goedegep\\appgen\\goedegep-appgen\\1.0-SNAPSHOT\\goedegep-appgen-1.0-SNAPSHOT.jar",
       "goedegep\\configuration\\goedegep-configuration-model\\1.0-SNAPSHOT\\goedegep-configuration-model-1.0-SNAPSHOT.jar",
+      "goedegep\\events\\goedegep-events-app\\1.0-SNAPSHOT\\goedegep-events-app-1.0-SNAPSHOT.jar",
+      "goedegep\\events\\goedegep-events-model\\1.0-SNAPSHOT\\goedegep-events-model-1.0-SNAPSHOT.jar",
       "goedegep\\finan\\goedegep-finan-app\\1.0-SNAPSHOT\\goedegep-finan-app-1.0-SNAPSHOT.jar",
       "goedegep\\finan\\goedegep-finan-investmentinsurance-model\\1.0-SNAPSHOT\\goedegep-finan-investmentinsurance-model-1.0-SNAPSHOT.jar",
       "goedegep\\finan\\goedegep-finan-jobappointment-model\\1.0-SNAPSHOT\\goedegep-finan-jobappointment-model-1.0-SNAPSHOT.jar",
@@ -214,17 +221,17 @@ public class MyWorldInstaller extends JfxApplication {
       "log4j\\log4j\\1.2.17\\log4j-1.2.17.jar",
       "me\\atlis\\atlis-location-base\\1.0.0\\atlis-location-base-1.0.0.jar",
       "me\\atlis\\nominatim-api\\1.0.1-SNAPSHOT\\nominatim-api-1.0.1-SNAPSHOT.jar",
-      "net\\java\\dev\\jna\\jna\\4.2.0\\jna-4.2.0.jar",
-      "net\\java\\dev\\jna\\jna-platform\\4.2.0\\jna-platform-4.2.0.jar",
+//      "net\\java\\dev\\jna\\jna\\4.2.0\\jna-4.2.0.jar",
+//      "net\\java\\dev\\jna\\jna-platform\\4.2.0\\jna-platform-4.2.0.jar",
       "net\\sf\\ofx4j\\ofx4j\\1.6-RC1\\ofx4j-1.6-RC1.jar",
       "org\\apache\\commons\\commons-exec\\1.1\\commons-exec-1.1.jar",
       "org\\apache\\commons\\commons-imaging\\1.0-goedegep\\commons-imaging-1.0-goedegep.jar",
       "org\\apache\\commons\\commons-lang3\\3.9\\commons-lang3-3.9.jar",
-      "org\\apache\\commons\\commons-text\\1.3\\commons-text-1.3.jar",
+      "org\\apache\\commons\\commons-text\\1.9\\commons-text-1.9.jar",
       "org\\apache\\pdfbox\\pdfbox\\2.0.16\\pdfbox-2.0.16.jar",
       "org\\apiguardian\\apiguardian-api\\1.1.0\\apiguardian-api-1.1.0.jar",
       "org\\atp-fivt\\ljv\\1.02\\ljv-1.02.jar",
-      "org\\controlsfx\\controlsfx\\11.0.2\\controlsfx-11.0.2.jar",
+//      "org\\controlsfx\\controlsfx\\11.0.2\\controlsfx-11.0.2.jar",
       "org\\eclipse\\emf\\org.eclipse.emf.ecore\\2.10.0-v20140514-1158\\org.eclipse.emf.ecore-2.10.0-v20140514-1158.jar",
       "org\\eclipse\\emf\\org.eclipse.emf.ecore.xmi\\2.10.0-v20140514-1158\\org.eclipse.emf.ecore.xmi-2.10.0-v20140514-1158.jar",
       "org\\eclipse\\emf\\org.eclipse.emf.common\\2.10.0-v20140514-1158\\org.eclipse.emf.common-2.10.0-v20140514-1158.jar",
@@ -234,15 +241,15 @@ public class MyWorldInstaller extends JfxApplication {
       "org\\junit\\jupiter\\junit-jupiter-params\\5.6.2\\junit-jupiter-params-5.6.2.jar",
       "org\\junit\\platform\\junit-platform-commons\\1.6.2\\junit-platform-commons-1.6.2.jar",
       "org\\locationtech\\spatial4j\\spatial4j\\0.7\\spatial4j-0.7.jar",
-      "org\\openjfx\\javafx-base\\11\\javafx-base-11-win.jar",
+      "org\\openjfx\\javafx-base\\12-ea+6\\javafx-base-12-ea+6-win.jar",
       "org\\openjfx\\javafx-controls\\11\\javafx-controls-11-win.jar",
       "org\\openjfx\\javafx-media\\11\\javafx-media-11-win.jar",
-      "org\\openjfx\\javafx-graphics\\11\\javafx-graphics-11-win.jar",
+      "org\\openjfx\\javafx-graphics\\15-ea+1\\javafx-graphics-15-ea+1-win.jar",
       "org\\openjfx\\javafx-swing\\11\\javafx-swing-11-win.jar",
       "org\\openjfx\\javafx-web\\11\\javafx-web-11-win.jar",
       "org\\opentest4j\\opentest4j\\1.2.0\\opentest4j-1.2.0.jar",
       "org\\springframework\\spring\\2.0.2\\spring-2.0.2.jar",
-      "se\\trixon\\almond\\almond-util\\1.0-SNAPSHOT\\almond-util-1.0-SNAPSHOT.jar",
+//      "se\\trixon\\almond\\almond-util\\1.0-SNAPSHOT\\almond-util-1.0-SNAPSHOT.jar",
       "tim\\prune\\tim.prune.gpsprune\\1.0-SNAPSHOT\\tim.prune.gpsprune-1.0-SNAPSHOT.jar"
   };
 
@@ -273,7 +280,7 @@ public class MyWorldInstaller extends JfxApplication {
           statusLabel.setText("Specified installFolder '" + installFolderName + "' can't be created. System message: " + e.getMessage());
         }
       }
-      installationFolder.getFolderPathTextField().setText(installFolderName);
+      installationFolder.setObjectValue(installFolderName);
     }
     
     // If a second argument is present, set it as User Data directory
@@ -286,7 +293,7 @@ public class MyWorldInstaller extends JfxApplication {
           statusLabel.setText("Specified User Data folder '" + userDataFolderName + "' can't be created. System message: " + e.getMessage());
         }
       }
-      userDataFolder.getFolderPathTextField().setText(userDataFolderName);
+      userDataFolder.setObjectValue(userDataFolderName);
     }
     
 //    if (!runButton.isDisabled()) {
@@ -441,7 +448,7 @@ public class MyWorldInstaller extends JfxApplication {
       
     });
     
-    controlsPanel.add(installationFolder.getFolderPathTextField(), 1, 0);
+    controlsPanel.add(installationFolder.getPathTextField(), 1, 0);
     controlsPanel.add(installationFolder.getFolderChooserButton(), 2, 0);
    
     // User data folder
@@ -449,7 +456,7 @@ public class MyWorldInstaller extends JfxApplication {
     controlsPanel.add(label, 0, 1);
     userDataFolder = new FolderSelecter("D:\\Database\\MyWorld", 200, null, "User Data directory", null, "User Data directory");
     userDataFolderValidProperty = userDataFolder.isValid();
-    controlsPanel.add(userDataFolder.getFolderPathTextField(), 1, 1);
+    controlsPanel.add(userDataFolder.getPathTextField(), 1, 1);
     controlsPanel.add(userDataFolder.getFolderChooserButton(), 2, 1);
     
     runButton = new Button("Perform installation");
@@ -501,19 +508,9 @@ public class MyWorldInstaller extends JfxApplication {
     statusLabel.setText("");
     appendOutputTextLine("Starting installation process ...");
     
-    String javawPath = getJavawPath();
-    if (javawPath == null) {
-      appendOutputTextLine("No installation of javaw.exe was found, so the application cannot be installed. Javaw.exe is expected to be located under C:\\Program Files\\Java\\<java-version>\\bin.");
-      appendOutputTextLine("Installation aborted");
-      statusLabel.setText("Installation failed, because no installation of javaw.exe was found");
-      
-      return;
-    }
-    appendOutputTextLine("javaw.exe path is: " + javawPath);
-   
-       
+    String binInstallationFolder = installationFolder.getObjectValue() + "\\bin";
     try {
-      createMyWorldShortCut(javawPath, installationFolder.getFolderPathTextField().getText(), userDataFolder.getFolderPathTextField().getText(), MY_WORLD_SHORTCUT_PATH);
+      createMyWorldShortCut(binInstallationFolder, userDataFolder.getObjectValue(), MY_WORLD_SHORTCUT_PATH);
     } catch (IOException e) {
       appendOutputTextLine("MyWorld shortcut couldn't be created. System message: " + e.getMessage());
       appendOutputTextLine("Installation aborted");
@@ -524,7 +521,18 @@ public class MyWorldInstaller extends JfxApplication {
     appendOutputTextLine("MyWorld shortcut created: " + MY_WORLD_SHORTCUT_PATH);
     
     try {
-      createFinanShortCut(javawPath, installationFolder.getFolderPathTextField().getText(), userDataFolder.getFolderPathTextField().getText(), FINAN_SHORTCUT_PATH);
+      createEventsShortCut(binInstallationFolder, EVENTS_SHORTCUT_PATH);
+    } catch (IOException e) {
+      appendOutputTextLine("Events shortcut couldn't be created. System message: " + e.getMessage());
+      appendOutputTextLine("Installation aborted");
+      statusLabel.setText("Installation failed, because Events shortcut couldn't be created.");
+      
+      return;
+    }
+    appendOutputTextLine("Events shortcut created: " + EVENTS_SHORTCUT_PATH);
+        
+    try {
+      createFinanShortCut(binInstallationFolder, userDataFolder.getObjectValue(), FINAN_SHORTCUT_PATH);
     } catch (IOException e) {
       appendOutputTextLine("Finan shortcut couldn't be created. System message: " + e.getMessage());
       appendOutputTextLine("Installation aborted");
@@ -535,7 +543,7 @@ public class MyWorldInstaller extends JfxApplication {
     appendOutputTextLine("MyWorld shortcut created: " + FINAN_SHORTCUT_PATH);
     
     try {
-      createMediaShortCut(javawPath, installationFolder.getFolderPathTextField().getText(), userDataFolder.getFolderPathTextField().getText(), MEDIA_SHORTCUT_PATH);
+      createMediaShortCut(binInstallationFolder, userDataFolder.getObjectValue(), MEDIA_SHORTCUT_PATH);
     } catch (IOException e) {
       appendOutputTextLine("Media shortcut couldn't be created. System message: " + e.getMessage());
       appendOutputTextLine("Installation aborted");
@@ -546,7 +554,7 @@ public class MyWorldInstaller extends JfxApplication {
     appendOutputTextLine("Media shortcut created: " + MEDIA_SHORTCUT_PATH);
     
     try {
-      createInvoicesAndPropertiesShortCut(javawPath, installationFolder.getFolderPathTextField().getText(), userDataFolder.getFolderPathTextField().getText(), INVOICES_AND_PROPERTIES_SHORTCUT_PATH);
+      createInvoicesAndPropertiesShortCut(binInstallationFolder, userDataFolder.getObjectValue(), INVOICES_AND_PROPERTIES_SHORTCUT_PATH);
     } catch (IOException e) {
       appendOutputTextLine("InvoicesAndProperties shortcut couldn't be created. System message: " + e.getMessage());
       appendOutputTextLine("Installation aborted");
@@ -557,7 +565,7 @@ public class MyWorldInstaller extends JfxApplication {
     appendOutputTextLine("InvoicesAndProperties shortcut created: " + INVOICES_AND_PROPERTIES_SHORTCUT_PATH);
     
     try {
-      createRolodexShortCut(javawPath, installationFolder.getFolderPathTextField().getText(), userDataFolder.getFolderPathTextField().getText(), ROLODEX_SHORTCUT_PATH);
+      createRolodexShortCut(binInstallationFolder, userDataFolder.getObjectValue(), ROLODEX_SHORTCUT_PATH);
     } catch (IOException e) {
       appendOutputTextLine("Rolodex shortcut couldn't be created. System message: " + e.getMessage());
       appendOutputTextLine("Installation aborted");
@@ -568,7 +576,7 @@ public class MyWorldInstaller extends JfxApplication {
     appendOutputTextLine("Rolodex shortcut created: " + ROLODEX_SHORTCUT_PATH);
     
     try {
-      createUnitConverterShortCut(javawPath, installationFolder.getFolderPathTextField().getText(), userDataFolder.getFolderPathTextField().getText(), UNIT_CONVERTER_SHORTCUT_PATH);
+      createUnitConverterShortCut(binInstallationFolder, userDataFolder.getObjectValue(), UNIT_CONVERTER_SHORTCUT_PATH);
     } catch (IOException e) {
       appendOutputTextLine("UnitConverter shortcut couldn't be created. System message: " + e.getMessage());
       appendOutputTextLine("Installation aborted");
@@ -579,7 +587,7 @@ public class MyWorldInstaller extends JfxApplication {
     appendOutputTextLine("UnitConverter shortcut created: " + UNIT_CONVERTER_SHORTCUT_PATH);
     
     try {
-      createPCToolsShortCut(javawPath, installationFolder.getFolderPathTextField().getText(), userDataFolder.getFolderPathTextField().getText(), PC_TOOLS_SHORTCUT_PATH);
+      createPCToolsShortCut(binInstallationFolder, userDataFolder.getObjectValue(), PC_TOOLS_SHORTCUT_PATH);
     } catch (IOException e) {
       appendOutputTextLine("PCTools shortcut couldn't be created. System message: " + e.getMessage());
       appendOutputTextLine("Installation aborted");
@@ -590,7 +598,7 @@ public class MyWorldInstaller extends JfxApplication {
     appendOutputTextLine("PCTools shortcut created: " + PC_TOOLS_SHORTCUT_PATH);
     
     try {
-      createVacationsShortCut(javawPath, installationFolder.getFolderPathTextField().getText(), userDataFolder.getFolderPathTextField().getText(), VACATIONS_SHORTCUT_PATH);
+      createVacationsShortCut(binInstallationFolder, userDataFolder.getObjectValue(), VACATIONS_SHORTCUT_PATH);
     } catch (IOException e) {
       appendOutputTextLine("Vacations shortcut couldn't be created. System message: " + e.getMessage());
       appendOutputTextLine("Installation aborted");
@@ -627,32 +635,16 @@ public class MyWorldInstaller extends JfxApplication {
       return;
     }
     
+    try {
+      installOutsideProgramFiles();
+    } catch (IOException e) {
+      appendOutputTextLine("Installing files failed. System message: " + e.getMessage());
+      appendOutputTextLine("Installation aborted");
+      statusLabel.setText("Installation failed.");
 
-    /*
-     * To install in the 'Program Files' directory, administrator rights are needed, so in that case a script is generated which has
-     * to be run as administrator.<br/>
-     * Otherwise the files are just copied to the installation directory.<br/>
-     * The 'Program Files' directory is assumed if the first two parts of installationPath are 'C:' and 'Program Files' or 'Program Files (x86)'.
-     */
-    String[] directoryParts = installationFolder.getFolderPathTextField().getText().split("\\\\");
-    if ((directoryParts.length >= 2)  &&
-        directoryParts[0].equalsIgnoreCase("C:")  &&
-        (directoryParts[1].equals("Program Files")  ||  directoryParts[1].equals("Program Files (x86)"))) {
-      appendOutputTextLine("Installation under Windows Program Files");
-      //      installInProgramFiles(installationDirectory);
-    } else {
-      appendOutputTextLine("Installation NOT under Windows Program Files");
-      try {
-        installOutsideProgramFiles();
-      } catch (IOException e) {
-        appendOutputTextLine("Installing files failed. System message: " + e.getMessage());
-        appendOutputTextLine("Installation aborted");
-        statusLabel.setText("Installation failed.");
-        
-        return;
-      }
+      return;
     }
-
+ 
     appendOutputTextLine("Installation complete");
     statusLabel.setText("Installation complete");
   }
@@ -682,36 +674,6 @@ public class MyWorldInstaller extends JfxApplication {
     
     return missingFiles;
   }
-
-  /**
-   * Get the absolute path to javaw.exe.
-   * <p>
-   * The executable is expected to exist under C:\Program Files\Java\<java-version>\\bin.
-   * 
-   * @return the absolute path to javaw.exe, or null if it couldn't be found
-   */
-  private static String getJavawPath() {
-    Path searchStartPath = Paths.get(JAVA_MAIN_FOLDER);
-    
-    try (DirectoryStream<Path> stream = Files.newDirectoryStream(searchStartPath)) {
-
-      for (Path checkDirectory: stream) {
-        if (Files.isDirectory(checkDirectory)) {
-          String folderName = checkDirectory.getFileName().toString();
-          LOGGER.info("checking: " + folderName);
-          Path javawPath = checkDirectory.resolve("bin").resolve(JAVAW_EXECUTABLE);
-          if (Files.exists(javawPath)) {
-            LOGGER.info("Found javaw.exe: " + javawPath.toString());
-            return javawPath.toString();
-          }
-        }
-      }
-    } catch (IOException | DirectoryIteratorException x) {
-      LOGGER.severe("Problem in finding javaw.exe: " + x.getMessage());
-    }
-    
-    return null;
-  }
   
   /**
    * Create a shortcut to start the main window of the application.
@@ -726,18 +688,40 @@ public class MyWorldInstaller extends JfxApplication {
    * @param shortcutPath relative path for the shortcut to be created.
    * @throws IOException if the shortcut file cannot be created.
    */
-  private static void createMyWorldShortCut(String javawPath, String installationDirectory, String userDataDirectory, String shortcutPath) throws IOException {
-//    ShellLink shellLink = ShellLink.createLink(javawPath)
-    ShellLink shellLink = ShellLink.createLink("C:\\Applic\\MyWorld\\MyWorld.bat")
+  private static void createMyWorldShortCut(String installationDirectory, String userDataDirectory, String shortcutPath) throws IOException {
+    ShellLink shellLink = ShellLink.createLink(installationDirectory + "\\MyWorld.bat")
         .setWorkingDir(installationDirectory)
         .setIconLocation(installationDirectory + "\\MyWorld_32x32.ico");
-//        .setCMDArgs("--module-path . --add-modules goedegep.myworld goedegep.myworld.MyWorld --add-opens \"java.base/java.lang=jaxb.impl\" --add-opens \"java.xml/javax.xml.namespace=com.google.gson\" --add-opens=\"javafx.base/com.sun.javafx.event=org.controlsfx.controls\" -d \"" + userDataDirectory + "\"");
     try {
       shellLink.getHeader().setShowCommand(ShellLinkHeader.SW_SHOWMINNOACTIVE);
     } catch (ShellLinkException e) {
       // We know we use a valid value, so no action
     }
     shellLink.saveTo(shortcutPath);
+  }
+
+  /**
+   * Create a shortcut to start the Events component.
+   * <p>
+   * The shortcut, named 'Events.lnk', starts java with the right .jar file in the specified Installation Directory.
+   * The icon of the shortcut is 'Events.ico'.
+   * The second argument is '-a Events' to start the Events component.
+   * 
+   * @param installationDirectory the directory where the application will be installed.
+   * @param shortcutPath relative path for the shortcut to be created.
+   * @throws IOException if the shortcut file cannot be created.
+   */
+  private static void createEventsShortCut(String installationDirectory, String shortcutPath) throws IOException {
+    ShellLink shellLink = ShellLink.createLink(installationDirectory + "\\MyWorld.bat")
+        .setWorkingDir(installationDirectory)
+        .setIconLocation(installationDirectory + "\\event - 272x187.ico")
+        .setCMDArgs("-a Events");
+    try {
+      shellLink.getHeader().setShowCommand(ShellLinkHeader.SW_SHOWMINNOACTIVE);
+    } catch (ShellLinkException e) {
+      // We know we use a valid value, so no action
+    }
+    shellLink.saveTo(shortcutPath);    
   }
 
   /**
@@ -754,12 +738,11 @@ public class MyWorldInstaller extends JfxApplication {
    * @param shortcutPath relative path for the shortcut to be created.
    * @throws IOException if the shortcut file cannot be created.
    */
-  private static void createFinanShortCut(String javawPath, String installationDirectory, String userDataDirectory, String shortcutPath) throws IOException {
-    ShellLink shellLink = ShellLink.createLink("C:\\Applic\\MyWorld\\MyWorld.bat")
+  private static void createFinanShortCut(String installationDirectory, String userDataDirectory, String shortcutPath) throws IOException {
+    ShellLink shellLink = ShellLink.createLink(installationDirectory + "\\MyWorld.bat")
         .setWorkingDir(installationDirectory)
         .setIconLocation(installationDirectory + "\\FinanLogo.ico")
-//        .setCMDArgs("--module-path . --add-modules goedegep.myworld goedegep.myworld.MyWorld --add-opens \"java.base/java.lang=jaxb.impl\" --add-opens \"java.xml/javax.xml.namespace=com.google.gson\" --add-opens=\"javafx.base/com.sun.javafx.event=org.controlsfx.controls\" -d \"" + userDataDirectory + "\" -a Finan");
-        .setCMDArgs("Finan");
+        .setCMDArgs("-a Finan");
     try {
       shellLink.getHeader().setShowCommand(ShellLinkHeader.SW_SHOWMINNOACTIVE);
     } catch (ShellLinkException e) {
@@ -782,11 +765,11 @@ public class MyWorldInstaller extends JfxApplication {
    * @param shortcutPath relative path for the shortcut to be created.
    * @throws IOException if the shortcut file cannot be created.
    */
-  private static void createMediaShortCut(String javawPath, String installationDirectory, String userDataDirectory, String shortcutPath) throws IOException {
-    ShellLink shellLink = ShellLink.createLink("C:\\Applic\\MyWorld\\MyWorld.bat")
+  private static void createMediaShortCut(String installationDirectory, String userDataDirectory, String shortcutPath) throws IOException {
+    ShellLink shellLink = ShellLink.createLink(installationDirectory + "\\MyWorld.bat")
         .setWorkingDir(installationDirectory)
         .setIconLocation(installationDirectory + "\\Media.ico")
-        .setCMDArgs("Media");
+        .setCMDArgs("-a Media");
     try {
       shellLink.getHeader().setShowCommand(ShellLinkHeader.SW_SHOWMINNOACTIVE);
     } catch (ShellLinkException e) {
@@ -809,11 +792,11 @@ public class MyWorldInstaller extends JfxApplication {
    * @param shortcutPath relative path for the shortcut to be created.
    * @throws IOException if the shortcut file cannot be created.
    */
-  private static void createInvoicesAndPropertiesShortCut(String javawPath, String installationDirectory, String userDataDirectory, String shortcutPath) throws IOException {
-    ShellLink shellLink = ShellLink.createLink("C:\\Applic\\MyWorld\\MyWorld.bat")
+  private static void createInvoicesAndPropertiesShortCut(String installationDirectory, String userDataDirectory, String shortcutPath) throws IOException {
+    ShellLink shellLink = ShellLink.createLink(installationDirectory + "\\MyWorld.bat")
         .setWorkingDir(installationDirectory)
         .setIconLocation(installationDirectory + "\\InvoicesAndProperties.ico")
-        .setCMDArgs("InvoicesAndProperties");
+        .setCMDArgs("-a InvoicesAndProperties");
     try {
       shellLink.getHeader().setShowCommand(ShellLinkHeader.SW_SHOWMINNOACTIVE);
     } catch (ShellLinkException e) {
@@ -836,11 +819,11 @@ public class MyWorldInstaller extends JfxApplication {
    * @param shortcutPath relative path for the shortcut to be created.
    * @throws IOException if the shortcut file cannot be created.
    */
-  private static void createRolodexShortCut(String javawPath, String installationDirectory, String userDataDirectory, String shortcutPath) throws IOException {
-    ShellLink shellLink = ShellLink.createLink("C:\\Applic\\MyWorld\\MyWorld.bat")
+  private static void createRolodexShortCut(String installationDirectory, String userDataDirectory, String shortcutPath) throws IOException {
+    ShellLink shellLink = ShellLink.createLink(installationDirectory + "\\MyWorld.bat")
         .setWorkingDir(installationDirectory)
         .setIconLocation(installationDirectory + "\\Rolodex.ico")
-        .setCMDArgs("Rolodex");
+        .setCMDArgs("-a Rolodex");
     try {
       shellLink.getHeader().setShowCommand(ShellLinkHeader.SW_SHOWMINNOACTIVE);
     } catch (ShellLinkException e) {
@@ -863,11 +846,11 @@ public class MyWorldInstaller extends JfxApplication {
    * @param shortcutPath relative path for the shortcut to be created.
    * @throws IOException if the shortcut file cannot be created.
    */
-  private static void createUnitConverterShortCut(String javawPath, String installationDirectory, String userDataDirectory, String shortcutPath) throws IOException {
-    ShellLink shellLink = ShellLink.createLink("C:\\Applic\\MyWorld\\MyWorld.bat")
+  private static void createUnitConverterShortCut(String installationDirectory, String userDataDirectory, String shortcutPath) throws IOException {
+    ShellLink shellLink = ShellLink.createLink(installationDirectory + "\\MyWorld.bat")
         .setWorkingDir(installationDirectory)
         .setIconLocation(installationDirectory + "\\UnitConverter.ico")
-        .setCMDArgs("UnitConverter");
+        .setCMDArgs("-a UnitConverter");
     try {
       shellLink.getHeader().setShowCommand(ShellLinkHeader.SW_SHOWMINNOACTIVE);
     } catch (ShellLinkException e) {
@@ -890,11 +873,11 @@ public class MyWorldInstaller extends JfxApplication {
    * @param shortcutPath relative path for the shortcut to be created.
    * @throws IOException if the shortcut file cannot be created.
    */
-  private static void createPCToolsShortCut(String javawPath, String installationDirectory, String userDataDirectory, String shortcutPath) throws IOException {
-    ShellLink shellLink = ShellLink.createLink("C:\\Applic\\MyWorld\\MyWorld.bat")
+  private static void createPCToolsShortCut(String installationDirectory, String userDataDirectory, String shortcutPath) throws IOException {
+    ShellLink shellLink = ShellLink.createLink(installationDirectory + "\\MyWorld.bat")
         .setWorkingDir(installationDirectory)
         .setIconLocation(installationDirectory + "\\PCTools.ico")
-        .setCMDArgs("PCTools");
+        .setCMDArgs("-a PCTools");
     try {
       shellLink.getHeader().setShowCommand(ShellLinkHeader.SW_SHOWMINNOACTIVE);
     } catch (ShellLinkException e) {
@@ -917,11 +900,11 @@ public class MyWorldInstaller extends JfxApplication {
    * @param shortcutPath relative path for the shortcut to be created.
    * @throws IOException if the shortcut file cannot be created.
    */
-  private static void createVacationsShortCut(String javawPath, String installationDirectory, String userDataDirectory, String shortcutPath) throws IOException {
-    ShellLink shellLink = ShellLink.createLink("C:\\Applic\\MyWorld\\MyWorld.bat")
+  private static void createVacationsShortCut(String installationDirectory, String userDataDirectory, String shortcutPath) throws IOException {
+    ShellLink shellLink = ShellLink.createLink(installationDirectory + "\\MyWorld.bat")
         .setWorkingDir(installationDirectory)
         .setIconLocation(installationDirectory + "\\Vacations.ico")
-        .setCMDArgs("Vacations");
+        .setCMDArgs("-a Vacations");
     try {
       shellLink.getHeader().setShowCommand(ShellLinkHeader.SW_SHOWMINNOACTIVE);
     } catch (ShellLinkException e) {
@@ -988,9 +971,9 @@ public class MyWorldInstaller extends JfxApplication {
   private void installOutsideProgramFiles() throws IOException {
     LOGGER.info("=>");
     
-    String installationDirectoryPrev = installationFolder.getFolderPathTextField().getText() + "Prev";
+    String installationDirectoryPrev = installationFolder.getObjectValue() + "Prev";
     Path installationPathPrev = Paths.get(installationDirectoryPrev);
-    Path destinationPath = Paths.get(installationFolder.getFolderPathTextField().getText());
+    Path destinationPath = Paths.get(installationFolder.getObjectValue());
 
     if (Files.exists(installationPathPrev)) {
       appendOutputTextLine("There already exists a previous version, which will now be removed.");
@@ -1000,16 +983,18 @@ public class MyWorldInstaller extends JfxApplication {
     if (Files.exists(destinationPath)) {
       appendOutputTextLine("A current version exists, this is renamed to \"" + installationDirectoryPrev + "\".");
       Files.move(destinationPath, installationPathPrev);
-      
-      Files.createDirectory(destinationPath);
     }
+    
+    Files.createDirectory(destinationPath);
+    Path destinationBinPath = destinationPath.resolve("bin");
+    Files.createDirectory(destinationBinPath);
     
     // Install the resource files.
     appendOutputTextLine("Installing the resource files ...");
     for (String fileInfo: resourceList) {
       Path sourcePath = Paths.get(fileInfo);
       String fileName = sourcePath.getFileName().toString();
-      Path destinationFilePath = Paths.get(installationFolder.getFolderPathTextField().getText(), fileName);
+      Path destinationFilePath = destinationBinPath.resolve(fileName);
       appendOutputTextLine("    Copying file from: " + sourcePath.toString() + ", to: " + destinationFilePath.toString());
       Files.copy(sourcePath, destinationFilePath);
     }
@@ -1019,10 +1004,27 @@ public class MyWorldInstaller extends JfxApplication {
     for(String jarFilePath: jarFiles) {
       Path sourcePath = Paths.get(MAVEN_REPOSITORY_HOME, jarFilePath);
       String fileName = sourcePath.getFileName().toString();
-      Path destinationFilePath = Paths.get(installationFolder.getFolderPathTextField().getText(), fileName);
+      Path destinationFilePath = destinationBinPath.resolve(fileName);
       appendOutputTextLine("    Copying file from: " + sourcePath.toString() + ", to: " + destinationFilePath.toString());
       Files.copy(sourcePath, destinationFilePath);
     }
+    
+    // Restore any user preferences files
+    if (Files.exists(installationPathPrev)) {
+      appendOutputTextLine("Restoring user preferences files form previous installation.");
+      try (DirectoryStream<Path> stream = Files.newDirectoryStream(installationPathPrev)) {
+        for (Path path: stream) {
+          if (!Files.isDirectory(path)) {
+            String filename = path.getFileName().toString();
+            Path restorePath = destinationPath.resolve(filename);
+            Files.copy(path, restorePath);
+          }
+        }
+      } catch (IOException | DirectoryIteratorException x) {
+        System.err.println(x);
+      }
+    }
+    
 
     LOGGER.info("<=");
   }

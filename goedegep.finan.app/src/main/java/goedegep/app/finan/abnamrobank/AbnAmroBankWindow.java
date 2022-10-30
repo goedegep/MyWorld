@@ -3,12 +3,12 @@ package goedegep.app.finan.abnamrobank;
 import goedegep.app.finan.gen.BankAccountsOverviewPanel;
 import goedegep.app.finan.gen.FinanBank;
 import goedegep.appgen.swing.Customization;
-import goedegep.appgen.ImageSize;
 import goedegep.appgen.WindowUtil;
 import goedegep.appgen.swing.AppFrame;
 import goedegep.appgen.swing.ComponentFactory;
 import goedegep.appgen.swing.MenuFactory;
 import goedegep.finan.abnamrobank.AbnAmroBank;
+import goedegep.resources.ImageSize;
 
 import java.awt.AWTEvent;
 import java.awt.BorderLayout;

@@ -33,6 +33,10 @@
       <artifactId>goedegep-properties-app</artifactId>
     </dependency>
     <dependency>
+      <groupId>goedegep.resources</groupId>
+      <artifactId>goedegep-resources</artifactId>
+    </dependency>
+    <dependency>
       <groupId>goedegep.util</groupId>
       <artifactId>goedegep-util</artifactId>
     </dependency>
@@ -91,10 +95,6 @@
     <dependency>
         <groupId>org.springframework</groupId>
         <artifactId>spring</artifactId>
-    </dependency>
-    <dependency>
-        <groupId>com.itextpdf</groupId>
-        <artifactId>itextpdf</artifactId>
     </dependency>
     <dependency>
       <groupId>com.itextpdf.tool</groupId>

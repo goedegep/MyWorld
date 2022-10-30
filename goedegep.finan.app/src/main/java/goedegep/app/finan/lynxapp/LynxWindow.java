@@ -20,7 +20,6 @@ import goedegep.app.finan.gen.BankAccountsOverviewPanel;
 import goedegep.app.finan.gen.FinanBank;
 import goedegep.app.finan.registry.FinanRegistry;
 import goedegep.appgen.swing.Customization;
-import goedegep.appgen.ImageSize;
 import goedegep.appgen.WindowUtil;
 import goedegep.appgen.swing.AppFrame;
 import goedegep.appgen.swing.ComponentFactory;
@@ -29,6 +28,7 @@ import goedegep.finan.lynx.Lynx;
 import goedegep.finan.lynx2finan.model.LynxToFinanPackage;
 import goedegep.finan.lynx2finan.model.LynxToFinanFactory;
 import goedegep.finan.lynx2finan.model.LynxToFinanShareIdList;
+import goedegep.resources.ImageSize;
 import goedegep.util.emf.EMFResource;
 
 @SuppressWarnings("serial")

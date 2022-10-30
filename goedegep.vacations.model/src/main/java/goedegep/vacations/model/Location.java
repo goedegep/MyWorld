@@ -25,13 +25,13 @@ import org.eclipse.emf.common.util.EList;
  *   <li>{@link goedegep.vacations.model.Location#getName <em>Name</em>}</li>
  *   <li>{@link goedegep.vacations.model.Location#getWebSite <em>Web Site</em>}</li>
  *   <li>{@link goedegep.vacations.model.Location#getDescription <em>Description</em>}</li>
- *   <li>{@link goedegep.vacations.model.Location#getLabel <em>Label</em>}</li>
  *   <li>{@link goedegep.vacations.model.Location#getDuration <em>Duration</em>}</li>
  *   <li>{@link goedegep.vacations.model.Location#getStartDate <em>Start Date</em>}</li>
  *   <li>{@link goedegep.vacations.model.Location#getEndDate <em>End Date</em>}</li>
  *   <li>{@link goedegep.vacations.model.Location#getBoundingbox <em>Boundingbox</em>}</li>
  *   <li>{@link goedegep.vacations.model.Location#getBoundaries <em>Boundaries</em>}</li>
  *   <li>{@link goedegep.vacations.model.Location#isReferenceOnly <em>Reference Only</em>}</li>
+ *   <li>{@link goedegep.vacations.model.Location#isStayedAtThisLocation <em>Stayed At This Location</em>}</li>
  * </ul>
  *
  * @see goedegep.vacations.model.VacationsPackage#getLocation()
@@ -574,63 +574,6 @@ public interface Location extends VacationElement {
   boolean isSetDescription();
 
   /**
-   * Returns the value of the '<em><b>Label</b></em>' attribute.
-   * The default value is <code>"UNSPECIFIED"</code>.
-   * The literals are from the enumeration {@link goedegep.vacations.model.ActivityLabel}.
-   * <!-- begin-user-doc -->
-   * <p>
-   * If the meaning of the '<em>Label</em>' attribute isn't clear,
-   * there really should be more of a description here...
-   * </p>
-   * <!-- end-user-doc -->
-   * @return the value of the '<em>Label</em>' attribute.
-   * @see goedegep.vacations.model.ActivityLabel
-   * @see #isSetLabel()
-   * @see #unsetLabel()
-   * @see #setLabel(ActivityLabel)
-   * @see goedegep.vacations.model.VacationsPackage#getLocation_Label()
-   * @model default="UNSPECIFIED" unsettable="true"
-   * @generated
-   */
-  ActivityLabel getLabel();
-
-  /**
-   * Sets the value of the '{@link goedegep.vacations.model.Location#getLabel <em>Label</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @param value the new value of the '<em>Label</em>' attribute.
-   * @see goedegep.vacations.model.ActivityLabel
-   * @see #isSetLabel()
-   * @see #unsetLabel()
-   * @see #getLabel()
-   * @generated
-   */
-  void setLabel(ActivityLabel value);
-
-  /**
-   * Unsets the value of the '{@link goedegep.vacations.model.Location#getLabel <em>Label</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #isSetLabel()
-   * @see #getLabel()
-   * @see #setLabel(ActivityLabel)
-   * @generated
-   */
-  void unsetLabel();
-
-  /**
-   * Returns whether the value of the '{@link goedegep.vacations.model.Location#getLabel <em>Label</em>}' attribute is set.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return whether the value of the '<em>Label</em>' attribute is set.
-   * @see #unsetLabel()
-   * @see #getLabel()
-   * @see #setLabel(ActivityLabel)
-   * @generated
-   */
-  boolean isSetLabel();
-
-  /**
    * Returns the value of the '<em><b>Duration</b></em>' attribute.
    * <!-- begin-user-doc -->
    * <p>
@@ -871,5 +814,28 @@ public interface Location extends VacationElement {
    * @generated
    */
   void setReferenceOnly(boolean value);
+
+  /**
+   * Returns the value of the '<em><b>Stayed At This Location</b></em>' attribute.
+   * The default value is <code>"false"</code>.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the value of the '<em>Stayed At This Location</em>' attribute.
+   * @see #setStayedAtThisLocation(boolean)
+   * @see goedegep.vacations.model.VacationsPackage#getLocation_StayedAtThisLocation()
+   * @model default="false" dataType="org.eclipse.emf.ecore.xml.type.Boolean"
+   * @generated
+   */
+  boolean isStayedAtThisLocation();
+
+  /**
+   * Sets the value of the '{@link goedegep.vacations.model.Location#isStayedAtThisLocation <em>Stayed At This Location</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @param value the new value of the '<em>Stayed At This Location</em>' attribute.
+   * @see #isStayedAtThisLocation()
+   * @generated
+   */
+  void setStayedAtThisLocation(boolean value);
 
 } // Locatie

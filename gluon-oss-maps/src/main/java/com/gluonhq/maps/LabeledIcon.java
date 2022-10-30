@@ -4,8 +4,10 @@ import java.util.logging.Logger;
 
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.PixelWriter;
 import javafx.scene.image.WritableImage;
@@ -81,6 +83,18 @@ public class LabeledIcon extends VBox {
       setLayoutY(shiftDown);
     }
     
+  }
+  
+  public void setSelected(boolean selected) {
+    for (Node node: getChildren()) {
+      if (node instanceof Canvas canvas) {
+        DropShadow ds1 = new DropShadow();
+        ds1.setOffsetY(4.0f);
+        ds1.setOffsetX(4.0f);
+        ds1.setColor(Color.CORAL);
+        canvas.setEffect(ds1);
+      }
+    }
   }
   
   public void mySetOnMouseClicked(EventHandler<? super MouseEvent> eventHandler) {

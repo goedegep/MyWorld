@@ -14,12 +14,12 @@ import javafx.beans.value.ObservableValue;
 import javafx.concurrent.WorkerStateEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.ProgressBar;
-import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -90,7 +90,7 @@ public class FileFinderWindow extends JfxStage {
     FolderSelecter folderSelecter = componentFactory.createFolderSelecter(null, 400, "Currently selected folder",
         "Choose folder", "Select search folder via a file chooser", "Select the search folder");
     
-    TextField folderNameTextField = folderSelecter.getFolderPathTextField();
+    Node folderNameTextField = folderSelecter.getPathTextField();
     controlsPane.getChildren().add(folderNameTextField);
     
     Button folderChooserButton = folderSelecter.getFolderChooserButton();
@@ -107,7 +107,7 @@ public class FileFinderWindow extends JfxStage {
     });
     
     searchFrameMakerFilesButton = componentFactory.createButton("FrameMaker files", "zoek FrameMaker files");
-    searchFrameMakerFilesButton.setOnAction(e -> searchFrameMakerFiles(folderNameTextField.getText()));
+    searchFrameMakerFilesButton.setOnAction(e -> searchFrameMakerFiles(folderSelecter.getObjectValue()));
     controlsPane.getChildren().add(searchFrameMakerFilesButton);
     
     rootPane.getChildren().add(controlsPane);

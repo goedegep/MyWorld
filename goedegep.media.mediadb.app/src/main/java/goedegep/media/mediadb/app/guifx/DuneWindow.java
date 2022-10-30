@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
-import goedegep.appgen.ImageSize;
 import goedegep.jfx.ComponentFactoryFx;
 import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.JfxStage;
@@ -15,10 +14,12 @@ import goedegep.media.mediadb.albuminfo.AlbumInfoFilesReader;
 import goedegep.media.mediadb.model.MediaDb;
 import goedegep.media.mediadb.model.MediadbFactory;
 import goedegep.media.musicfolder.MusicFolderDescription;
+import goedegep.resources.ImageSize;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
@@ -119,7 +120,7 @@ public class DuneWindow extends JfxStage {
     
     FolderSelecter musicFolderSelecter = componentFactory.createFolderSelecter(currentMusicFolder, 200, "Currently selected folder",
         "Choose folder", "Select music folder via a file chooser", "Select the folder with all music");
-    TextField folderName = musicFolderSelecter.getFolderPathTextField();
+    Node folderName = musicFolderSelecter.getPathTextField();
     grid.add(folderName, 2, 0);
     
     button = musicFolderSelecter.getFolderChooserButton();
@@ -139,9 +140,9 @@ public class DuneWindow extends JfxStage {
     
     duneMusicFolderSelecter = componentFactory.createFolderSelecter(currentDuneMusicFolderPath, 200, "Currently selected Dune music folder path",
         "Choose folder", "Select  Dune music folder path via a file chooser", "Select the music folder on the Dune");
-    TextField duneFolderPathTextField = duneMusicFolderSelecter.getFolderPathTextField();
+    Node duneFolderPathTextField = duneMusicFolderSelecter.getPathTextField();
     duneMusicFolderSelecter.addListener(e -> {
-      currentDuneMusicFolderPath = duneFolderPathTextField.textProperty().getValue();
+      currentDuneMusicFolderPath = duneMusicFolderSelecter.getObjectValue();
       handleChanges();
       });
     grid.add(duneFolderPathTextField, 2, 1);
@@ -159,9 +160,9 @@ public class DuneWindow extends JfxStage {
     
     playListFolderPathSelecter = componentFactory.createFolderSelecter(currentDunePlaylistsFolderPath, 200, "Currently selected Dune playlists folder path",
         "Choose folder", "Select Dune playlists folder path via a file chooser", "Select the playlists folder on the Dune");
-    TextField playListFolderPathTextField = playListFolderPathSelecter.getFolderPathTextField();
+    Node playListFolderPathTextField = playListFolderPathSelecter.getPathTextField();
     playListFolderPathSelecter.addListener(e -> {
-      currentDunePlaylistsFolderPath = playListFolderPathTextField.textProperty().getValue();
+      currentDunePlaylistsFolderPath = playListFolderPathSelecter.getObjectValue();
       handleChanges();
       });
     grid.add(playListFolderPathTextField, 2, 2);
@@ -177,7 +178,7 @@ public class DuneWindow extends JfxStage {
 
       @Override
       public void handle(ActionEvent event) {
-        handleSynchronizationActions(folderName.getText(), currentDuneMusicFolderPath, currentDunePlaylistsFolderPath);
+        handleSynchronizationActions(musicFolderSelecter.getObjectValue(), currentDuneMusicFolderPath, currentDunePlaylistsFolderPath);
       }
       
     });

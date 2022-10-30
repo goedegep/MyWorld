@@ -4,11 +4,6 @@ import goedegep.jfx.AbstractAppResourcesFx;
 import javafx.scene.image.Image;
 
 public class VacationsAppResourcesFx extends AbstractAppResourcesFx {
-  private Image dayImage = null;
-  private Image mapImage = null;
-  private Image textImage = null;
-  private Image photoImage = null;
-
 
   @Override
   protected void readResources() {
@@ -23,10 +18,6 @@ public class VacationsAppResourcesFx extends AbstractAppResourcesFx {
       applicationImages[5] = new Image(getClass().getResourceAsStream("Snow mountain 256x256.png"));
       applicationImages[6] = new Image(getClass().getResourceAsStream("Snow mountain 512x512.png"));
 
-      dayImage = new Image(getClass().getResourceAsStream("Sunrise.png"), 16, 16, true, true);
-      mapImage = new Image(getClass().getResourceAsStream("Map.png"));
-      textImage = new Image(getClass().getResourceAsStream("Text.png"), 16, 16, true, true);
-      photoImage = new Image(getClass().getResourceAsStream("Photo.png"), 12, 12, true, true);
     } catch (RuntimeException e) {
       e.printStackTrace();
     }
@@ -34,19 +25,4 @@ public class VacationsAppResourcesFx extends AbstractAppResourcesFx {
     setRawImages(null, null, null, applicationImages);
   }
   
-  public Image getDayIcon() {
-    return dayImage;
-  }
-  
-  public Image getMapIcon() {
-    return mapImage;
-  }
-  
-  public Image getTextIcon() {
-    return textImage;
-  }
-  
-  public Image getPhotoIcon() {
-    return photoImage;
-  }
 }

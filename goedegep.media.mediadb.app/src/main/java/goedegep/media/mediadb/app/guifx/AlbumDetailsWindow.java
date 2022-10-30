@@ -597,6 +597,7 @@ public class AlbumDetailsWindow extends AlbumDetailsAbstract {
       List<Disc> discs = album.getDiscs();
       for (Disc disc: discs) {
         DiscTracksTable discTracksTable = new DiscTracksTable(customization, disc.getTrackReferences(), trackDiscLocationMap);
+        discTracksTable.setEditable(false);
         discTracksVBox.getChildren().add(discTracksTable);
       }
     }

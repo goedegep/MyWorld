@@ -32,6 +32,7 @@ import goedegep.rolodex.app.logic.PhoneNumberListStringConverter;
 import goedegep.rolodex.model.Address;
 import goedegep.rolodex.model.AddressForPeriod;
 import goedegep.rolodex.model.Birthday;
+import goedegep.rolodex.model.Family;
 import goedegep.rolodex.model.Gender;
 import goedegep.rolodex.model.Person;
 import goedegep.rolodex.model.PhoneNumber;
@@ -257,6 +258,7 @@ class PersonEditPanel {
   private ObjectControlInteger birthdayYearTextField;
   private ComboBox<Gender> genderComboBox;
   private AddressTextField addressTextField;
+  private Label addressForFamilyAdviceLabel;
   private ObjectControlBoolean moveToAddress;
   private PhoneNumberTextField phoneNumberTextFields[];
   private SimpleObjectProperty<Person> personProperty = new SimpleObjectProperty<>();
@@ -283,6 +285,7 @@ class PersonEditPanel {
     genderComboBox = new ComboBox<Gender>();
     genderComboBox.setItems(FXCollections.observableList(Arrays.asList(Gender.values())));
     addressTextField = new AddressTextField(customization, rolodex);
+    addressForFamilyAdviceLabel = componentFactory.createLabel(null);
     moveToAddress = new ObjectControlBoolean("Move to", false, true, "Select for moving to this address. In this case the existing address is moved to the 'previous addresses'.");
     phoneNumberTextFields = new PhoneNumberTextField[4];
     for (int i = 0; i < phoneNumberTextFields.length; i++) {
@@ -390,6 +393,8 @@ class PersonEditPanel {
     
     gridPane.add(moveToAddress, 2, row);
     
+    gridPane.add(addressForFamilyAdviceLabel, 3, row, 4, 1);
+    
     row++;
     
     label = componentFactory.createLabel("Phone numbers");
@@ -467,6 +472,15 @@ class PersonEditPanel {
       addressTextField.setText(address.toString());
     }
     
+    Family personsFamily = person.getFamily();
+    if (personsFamily != null) {
+      if (personsFamily.getAddress() != null) {
+        addressForFamilyAdviceLabel.setText("This person is part of a family for which an address is set, so it is advised not to set an address for this person.");
+      } else {
+        addressForFamilyAdviceLabel.setText("This person is part of a family for which no address is set. It is advised to set an address for the family and for this person.");
+      }
+    }
+    
     List<PhoneNumber> phoneNumbers = person.getPhoneNumbers();
     for (int i = 0; i < phoneNumberTextFields.length; i++) {
       if (phoneNumbers.size() > i) {
@@ -491,6 +505,7 @@ class PersonEditPanel {
     birthdayYearTextField.setObjectValue(null);
 
     addressTextField.setText(null);
+    addressForFamilyAdviceLabel.setText(null);
     moveToAddress.setSelected(false);
     for (int i = 0; i < phoneNumberTextFields.length; i++) {
       phoneNumberTextFields[i].setText(null);

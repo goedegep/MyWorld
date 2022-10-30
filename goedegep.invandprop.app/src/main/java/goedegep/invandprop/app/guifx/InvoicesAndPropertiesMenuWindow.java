@@ -13,7 +13,6 @@ import java.util.logging.Logger;
 
 import javax.swing.JDialog;
 
-import goedegep.appgen.ImageSize;
 import goedegep.appgen.MessageDialogType;
 import goedegep.appgen.swing.MessageDialog;
 import goedegep.invandprop.app.InvoicesAndPropertiesRegistry;
@@ -29,6 +28,7 @@ import goedegep.jfx.MenuUtil;
 import goedegep.jfx.PropertyDescriptorsEditorFx;
 import goedegep.jfx.collage.CollageImage;
 import goedegep.properties.app.guifx.PropertiesEditor;
+import goedegep.resources.ImageSize;
 import goedegep.types.model.FileReference;
 import goedegep.util.emf.EMFResource;
 import goedegep.util.file.FileUtils;
@@ -82,6 +82,9 @@ public class InvoicesAndPropertiesMenuWindow extends JfxStage {
   private InvoicesAndProperties invoicesAndProperties;
   private Label statusBar = null;       // Statusbar
   private File dataDumpFile = null;     // File to which data has been dumped.
+  
+  private InvoicesWindow invoicesWindow;
+  private PropertiesWindow propertiesWindow;
 
   /**
    * Constructor.
@@ -176,15 +179,13 @@ public class InvoicesAndPropertiesMenuWindow extends JfxStage {
 
     applicationButton = componentFactory.createToolButton("Invoices", appResources.getApplicationImage(ImageSize.SIZE_0), "Open the invoices window");
     applicationButton.setOnAction(e -> {
-//      WindowUtil.showFrameCenteredOnScreen(new NotasWindow(DefaultCustomization.getInstance(), notasEnEigendommenResource.getNotas(), notasEnEigendommenResource.getEigendommenLijst(), false), -200, -100);
-      new InvoicesWindow(customization, invoicesAndPropertiesResource.getEObject());
-      });
+      getInvoicesWindow().show();
+    });
     grid.add(applicationButton, 0, 0);
 
     applicationButton = componentFactory.createToolButton("Properties", appResources.getApplicationImage(ImageSize.SIZE_0), "Open the properties window");
     applicationButton.setOnAction(e -> {
-//      WindowUtil.showFrameCenteredOnScreen(new EigendommenWindow(DefaultCustomization.getInstance(), notasEnEigendommenResource.getEigendommenLijst(), notasEnEigendommenResource.getNotas(), false), 200, 100);
-      new PropertiesWindow(customization, invoicesAndPropertiesResource.getEObject());  // TODO HIER VERDER
+      getPropertiesWindow().show();
     });
     grid.add(applicationButton, 1, 0);
     
@@ -204,6 +205,22 @@ public class InvoicesAndPropertiesMenuWindow extends JfxStage {
     rootLayout.setBottom(statusBar);
 
     setScene(new Scene(rootLayout));
+  }
+  
+  public InvoicesWindow getInvoicesWindow() {
+    if (invoicesWindow == null) {
+      invoicesWindow = new InvoicesWindow(customization, invoicesAndPropertiesResource.getEObject(), this);
+    }
+    
+    return invoicesWindow;
+  }
+  
+  public PropertiesWindow getPropertiesWindow() {
+    if (propertiesWindow == null) {
+      propertiesWindow = new PropertiesWindow(customization, invoicesAndPropertiesResource.getEObject(), this);
+    }
+    
+    return propertiesWindow;
   }
 
   /**
