@@ -59,6 +59,7 @@ public class EmfSampleFactoryImpl extends EFactoryImpl implements EmfSampleFacto
     switch (eClass.getClassifierID()) {
       case EmfSamplePackage.PERSON: return createPerson();
       case EmfSamplePackage.BIRTHDAY: return createBirthday();
+      case EmfSamplePackage.COMPANY: return createCompany();
       default:
         throw new IllegalArgumentException("The class '" + eClass.getName() + "' is not a valid classifier");
     }
@@ -114,6 +115,17 @@ public class EmfSampleFactoryImpl extends EFactoryImpl implements EmfSampleFacto
   public Birthday createBirthday() {
     BirthdayImpl birthday = new BirthdayImpl();
     return birthday;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public Company createCompany() {
+    CompanyImpl company = new CompanyImpl();
+    return company;
   }
 
   /**

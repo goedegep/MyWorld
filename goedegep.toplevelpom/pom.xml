@@ -57,11 +57,6 @@
         <version>30.1.1-jre</version>
       </dependency>
       <dependency>
-        <groupId>com.itextpdf</groupId>
-        <artifactId>itextpdf</artifactId>
-        <version>5.5.3</version>
-      </dependency>
-      <dependency>
         <groupId>com.mpatric</groupId>
         <artifactId>mp3agic</artifactId>
         <version>0.9.1</version>
@@ -79,7 +74,7 @@
       <dependency>
         <groupId>commons-io</groupId>
         <artifactId>commons-io</artifactId>
-        <version>2.7-SNAPSHOT</version>
+        <version>2.7</version>
       </dependency>
       <dependency>
         <groupId>cx.ath.matthew</groupId>
@@ -112,13 +107,18 @@
         <version>1.0-SNAPSHOT</version>
       </dependency>
       <dependency>
-        <groupId>goedegep.docgen</groupId>
-        <artifactId>goedegep-docgen</artifactId>
+        <groupId>goedegep.emfsample</groupId>
+        <artifactId>goedegep-emfsample-model</artifactId>
         <version>1.0-SNAPSHOT</version>
       </dependency>
       <dependency>
-        <groupId>goedegep.emfsample</groupId>
-        <artifactId>goedegep-emfsample-model</artifactId>
+        <groupId>goedegep.events</groupId>
+        <artifactId>goedegep-events-app</artifactId>
+        <version>1.0-SNAPSHOT</version>
+      </dependency>
+      <dependency>
+        <groupId>goedegep.events</groupId>
+        <artifactId>goedegep-events-model</artifactId>
         <version>1.0-SNAPSHOT</version>
       </dependency>
       <dependency>
@@ -547,7 +547,6 @@
     <module>../goedegep.gpx</module>
     <module>../goedegep.ov2</module>
     <module>../goedegep.types.model</module>
-    <module>../goedegep.docgen</module>
     <module>../goedegep.icons.iconset.model</module>
     <module>../goedegep.configuration.model</module>
     <module>../goedegep.properties.model</module>
@@ -563,6 +562,7 @@
     <module>../goedegep.poi.model</module>
     <module>../goedegep.poi.app</module>
     <module>../goedegep.rolodex.model</module>
+    <module>../goedegep.events.model</module>
     <module>../goedegep.media.mediadb.model</module>
     <module>../goedegep.invandprop.model</module>
     <module>../goedegep.finan.investmentinsurance.model</module>
@@ -574,6 +574,7 @@
     <module>../goedegep.pctools.model</module>
     <module>../goedegep.unitconverter.app</module>
     <module>../goedegep.rolodex.app</module>
+    <module>../goedegep.events.app</module>
     <module>../goedegep.media.app</module>
     <module>../goedegep.media.photoshow.model</module>
     <module>../goedegep.media.photoshow.app</module>

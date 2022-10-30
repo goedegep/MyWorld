@@ -2,6 +2,7 @@
 <ecore:EPackage xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" name="model" nsURI="http://goedegep.media/mediadb/model" nsPrefix="mediadb">
   <eClassifiers xsi:type="ecore:EClass" name="Track">
+    <eOperations name="getOriginalDiscTrackReference" eType="#//TrackReference"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="title" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
         unsettable="true"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="duration" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EIntegerObject"
@@ -15,7 +16,7 @@
     <eStructuralFeatures xsi:type="ecore:EReference" name="authors" upperBound="-1"
         eType="#//Artist" unsettable="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="referredBy" upperBound="-1"
-        eType="#//TrackReference"/>
+        eType="#//TrackReference" eOpposite="#//TrackReference/track"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="originalDisc" eType="#//Disc"
         unsettable="true"/>
   </eClassifiers>
@@ -127,9 +128,9 @@
     <eOperations name="getTrackNr" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
     <eOperations name="getDisc" eType="#//Disc"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="track" lowerBound="1" eType="#//Track"
-        unsettable="true"/>
+        unsettable="true" eOpposite="#//Track/referredBy"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="bonusTrack" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
-        defaultValueLiteral="" unsettable="true"/>
+        unsettable="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="myTrackInfo" eType="#//MyTrackInfo"
         unsettable="true" containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="originalAlbumTrackReference"
@@ -145,16 +146,16 @@
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EEnum" name="MediumType">
     <eLiterals name="NOT_SET" value="-1" literal="&lt;not-set>"/>
-    <eLiterals name="CD_AUDIO" value="1" literal="CD"/>
-    <eLiterals name="CDR_AUDIO" value="2"/>
-    <eLiterals name="CDRW_AUDIO" value="3"/>
+    <eLiterals name="CD_AUDIO" value="1" literal="CD audio"/>
+    <eLiterals name="CDR_AUDIO" value="2" literal="CDR audio"/>
+    <eLiterals name="CDRW_AUDIO" value="3" literal="CDRW audio"/>
     <eLiterals name="LP" value="4" literal="lp"/>
     <eLiterals name="SINGLE" value="5" literal="single"/>
     <eLiterals name="SACD" value="6"/>
-    <eLiterals name="DVD_VIDEO" value="7" literal="DVD"/>
+    <eLiterals name="DVD_VIDEO" value="7" literal="DVD video"/>
     <eLiterals name="CD_ROM" value="8" literal="CD ROM"/>
     <eLiterals name="DVD_ROM" value="9" literal="DVD ROM"/>
-    <eLiterals name="HARDDISK" value="10" literal="HARDDISK"/>
+    <eLiterals name="HARDDISK" value="10" literal="harddisk"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="MediumInfo">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="mediumType" eType="#//MediumType"

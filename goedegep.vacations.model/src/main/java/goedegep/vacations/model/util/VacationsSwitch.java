@@ -158,6 +158,15 @@ public class VacationsSwitch<T> extends Switch<T> {
         result = defaultCase(theEObject);
       return result;
     }
+    case VacationsPackage.DAY_TRIP: {
+      DayTrip dayTrip = (DayTrip) theEObject;
+      T result = caseDayTrip(dayTrip);
+      if (result == null)
+        result = caseEvent(dayTrip);
+      if (result == null)
+        result = defaultCase(theEObject);
+      return result;
+    }
     default:
       return defaultCase(theEObject);
     }
@@ -325,6 +334,21 @@ public class VacationsSwitch<T> extends Switch<T> {
    * @generated
    */
   public T caseMapImage(MapImage object) {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>Day Trip</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Day Trip</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseDayTrip(DayTrip object) {
     return null;
   }
 

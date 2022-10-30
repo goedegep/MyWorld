@@ -7,6 +7,7 @@ import goedegep.emfsample.model.EmfSamplePackage;
 import goedegep.emfsample.model.Gender;
 import goedegep.emfsample.model.Person;
 
+import java.util.Date;
 import org.eclipse.emf.common.notify.Notification;
 
 import org.eclipse.emf.ecore.EClass;
@@ -27,6 +28,8 @@ import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
  *   <li>{@link goedegep.emfsample.model.impl.PersonImpl#getSurname <em>Surname</em>}</li>
  *   <li>{@link goedegep.emfsample.model.impl.PersonImpl#getGender <em>Gender</em>}</li>
  *   <li>{@link goedegep.emfsample.model.impl.PersonImpl#getBirthday <em>Birthday</em>}</li>
+ *   <li>{@link goedegep.emfsample.model.impl.PersonImpl#getRetirementDate <em>Retirement Date</em>}</li>
+ *   <li>{@link goedegep.emfsample.model.impl.PersonImpl#isHasChildren <em>Has Children</em>}</li>
  * </ul>
  *
  * @generated
@@ -128,6 +131,64 @@ public class PersonImpl extends MinimalEObjectImpl.Container implements Person {
    * @ordered
    */
   protected Birthday birthday;
+
+  /**
+   * The default value of the '{@link #getRetirementDate() <em>Retirement Date</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getRetirementDate()
+   * @generated
+   * @ordered
+   */
+  protected static final Date RETIREMENT_DATE_EDEFAULT = null;
+
+  /**
+   * The cached value of the '{@link #getRetirementDate() <em>Retirement Date</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getRetirementDate()
+   * @generated
+   * @ordered
+   */
+  protected Date retirementDate = RETIREMENT_DATE_EDEFAULT;
+
+  /**
+   * This is true if the Retirement Date attribute has been set.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  protected boolean retirementDateESet;
+
+  /**
+   * The default value of the '{@link #isHasChildren() <em>Has Children</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #isHasChildren()
+   * @generated
+   * @ordered
+   */
+  protected static final boolean HAS_CHILDREN_EDEFAULT = false;
+
+  /**
+   * The cached value of the '{@link #isHasChildren() <em>Has Children</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #isHasChildren()
+   * @generated
+   * @ordered
+   */
+  protected boolean hasChildren = HAS_CHILDREN_EDEFAULT;
+
+  /**
+   * This is true if the Has Children attribute has been set.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  protected boolean hasChildrenESet;
 
   /**
    * <!-- begin-user-doc -->
@@ -344,6 +405,106 @@ public class PersonImpl extends MinimalEObjectImpl.Container implements Person {
    * @generated
    */
   @Override
+  public Date getRetirementDate() {
+    return retirementDate;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public void setRetirementDate(Date newRetirementDate) {
+    Date oldRetirementDate = retirementDate;
+    retirementDate = newRetirementDate;
+    boolean oldRetirementDateESet = retirementDateESet;
+    retirementDateESet = true;
+    if (eNotificationRequired())
+      eNotify(new ENotificationImpl(this, Notification.SET, EmfSamplePackage.PERSON__RETIREMENT_DATE, oldRetirementDate, retirementDate, !oldRetirementDateESet));
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public void unsetRetirementDate() {
+    Date oldRetirementDate = retirementDate;
+    boolean oldRetirementDateESet = retirementDateESet;
+    retirementDate = RETIREMENT_DATE_EDEFAULT;
+    retirementDateESet = false;
+    if (eNotificationRequired())
+      eNotify(new ENotificationImpl(this, Notification.UNSET, EmfSamplePackage.PERSON__RETIREMENT_DATE, oldRetirementDate, RETIREMENT_DATE_EDEFAULT, oldRetirementDateESet));
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public boolean isSetRetirementDate() {
+    return retirementDateESet;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public boolean isHasChildren() {
+    return hasChildren;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public void setHasChildren(boolean newHasChildren) {
+    boolean oldHasChildren = hasChildren;
+    hasChildren = newHasChildren;
+    boolean oldHasChildrenESet = hasChildrenESet;
+    hasChildrenESet = true;
+    if (eNotificationRequired())
+      eNotify(new ENotificationImpl(this, Notification.SET, EmfSamplePackage.PERSON__HAS_CHILDREN, oldHasChildren, hasChildren, !oldHasChildrenESet));
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public void unsetHasChildren() {
+    boolean oldHasChildren = hasChildren;
+    boolean oldHasChildrenESet = hasChildrenESet;
+    hasChildren = HAS_CHILDREN_EDEFAULT;
+    hasChildrenESet = false;
+    if (eNotificationRequired())
+      eNotify(new ENotificationImpl(this, Notification.UNSET, EmfSamplePackage.PERSON__HAS_CHILDREN, oldHasChildren, HAS_CHILDREN_EDEFAULT, oldHasChildrenESet));
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public boolean isSetHasChildren() {
+    return hasChildrenESet;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
   public Object eGet(int featureID, boolean resolve, boolean coreType) {
     switch (featureID) {
       case EmfSamplePackage.PERSON__FIRSTNAME:
@@ -355,6 +516,10 @@ public class PersonImpl extends MinimalEObjectImpl.Container implements Person {
       case EmfSamplePackage.PERSON__BIRTHDAY:
         if (resolve) return getBirthday();
         return basicGetBirthday();
+      case EmfSamplePackage.PERSON__RETIREMENT_DATE:
+        return getRetirementDate();
+      case EmfSamplePackage.PERSON__HAS_CHILDREN:
+        return isHasChildren();
     }
     return super.eGet(featureID, resolve, coreType);
   }
@@ -378,6 +543,12 @@ public class PersonImpl extends MinimalEObjectImpl.Container implements Person {
         return;
       case EmfSamplePackage.PERSON__BIRTHDAY:
         setBirthday((Birthday)newValue);
+        return;
+      case EmfSamplePackage.PERSON__RETIREMENT_DATE:
+        setRetirementDate((Date)newValue);
+        return;
+      case EmfSamplePackage.PERSON__HAS_CHILDREN:
+        setHasChildren((Boolean)newValue);
         return;
     }
     super.eSet(featureID, newValue);
@@ -403,6 +574,12 @@ public class PersonImpl extends MinimalEObjectImpl.Container implements Person {
       case EmfSamplePackage.PERSON__BIRTHDAY:
         setBirthday((Birthday)null);
         return;
+      case EmfSamplePackage.PERSON__RETIREMENT_DATE:
+        unsetRetirementDate();
+        return;
+      case EmfSamplePackage.PERSON__HAS_CHILDREN:
+        unsetHasChildren();
+        return;
     }
     super.eUnset(featureID);
   }
@@ -423,6 +600,10 @@ public class PersonImpl extends MinimalEObjectImpl.Container implements Person {
         return isSetGender();
       case EmfSamplePackage.PERSON__BIRTHDAY:
         return birthday != null;
+      case EmfSamplePackage.PERSON__RETIREMENT_DATE:
+        return isSetRetirementDate();
+      case EmfSamplePackage.PERSON__HAS_CHILDREN:
+        return isSetHasChildren();
     }
     return super.eIsSet(featureID);
   }
@@ -443,6 +624,10 @@ public class PersonImpl extends MinimalEObjectImpl.Container implements Person {
     if (surnameESet) result.append(surname); else result.append("<unset>");
     result.append(", gender: ");
     if (genderESet) result.append(gender); else result.append("<unset>");
+    result.append(", retirementDate: ");
+    if (retirementDateESet) result.append(retirementDate); else result.append("<unset>");
+    result.append(", hasChildren: ");
+    if (hasChildrenESet) result.append(hasChildren); else result.append("<unset>");
     result.append(')');
     return result.toString();
   }

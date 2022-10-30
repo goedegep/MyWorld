@@ -169,7 +169,7 @@ public class VideoDetailsEditor extends JfxStage {
     gridPane.add(label, 0, 2);
     
     videoImageFileSelecter = componentFactory.createFileSelecter("D:\\Photo", 300, "Select an image file", "Open file selecter", "Select this image file", "Select image");
-    gridPane.add(videoImageFileSelecter.getFilePathTextField(), 1, 2);
+    gridPane.add(videoImageFileSelecter.getPathTextField(), 1, 2);
     gridPane.add(videoImageFileSelecter.getFileChooserButton(), 2, 2);
     
     centerPane.getChildren().add(gridPane);
@@ -230,9 +230,9 @@ public class VideoDetailsEditor extends JfxStage {
       }
       
       if (video.isSetImage()) {
-        videoImageFileSelecter.getFilePathTextField().setText(video.getImage());
+        videoImageFileSelecter.setObjectValue(video.getImage());
       } else {
-        videoImageFileSelecter.getFilePathTextField().setText("");
+        videoImageFileSelecter.setObjectValue(null);
       }
       
       videoImagePanel.getChildren().clear();
@@ -248,7 +248,7 @@ public class VideoDetailsEditor extends JfxStage {
     } else {
       videoTitleTextField.setText("");
       videoDateTextField.setText("");
-      videoImageFileSelecter.getFilePathTextField().setText("");
+      videoImageFileSelecter.setObjectValue(null);
     }
   }
   
@@ -359,7 +359,7 @@ public class VideoDetailsEditor extends JfxStage {
     }
     
     // Video image
-    String imageText = videoImageFileSelecter.getFilePathTextField().getText().trim();
+    String imageText = videoImageFileSelecter.getObjectValue().trim();
     if (!imageText.isEmpty()) {
       video.setImage(imageText);
     }

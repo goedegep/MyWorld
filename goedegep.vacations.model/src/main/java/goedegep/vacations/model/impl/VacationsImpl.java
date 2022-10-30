@@ -3,6 +3,7 @@
 package goedegep.vacations.model.impl;
 
 import goedegep.util.datetime.FlexDate;
+import goedegep.vacations.model.DayTrip;
 import goedegep.vacations.model.Location;
 import goedegep.vacations.model.Vacation;
 import goedegep.vacations.model.Vacations;
@@ -34,6 +35,7 @@ import org.eclipse.emf.ecore.util.InternalEList;
  *   <li>{@link goedegep.vacations.model.impl.VacationsImpl#getVacations <em>Vacations</em>}</li>
  *   <li>{@link goedegep.vacations.model.impl.VacationsImpl#getHome <em>Home</em>}</li>
  *   <li>{@link goedegep.vacations.model.impl.VacationsImpl#getTips <em>Tips</em>}</li>
+ *   <li>{@link goedegep.vacations.model.impl.VacationsImpl#getDayTrips <em>Day Trips</em>}</li>
  * </ul>
  *
  * @generated
@@ -86,6 +88,16 @@ public class VacationsImpl extends MinimalEObjectImpl.Container implements Vacat
    * @ordered
    */
   protected String tips = TIPS_EDEFAULT;
+
+  /**
+   * The cached value of the '{@link #getDayTrips() <em>Day Trips</em>}' containment reference list.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getDayTrips()
+   * @generated
+   * @ordered
+   */
+  protected EList<DayTrip> dayTrips;
 
   /**
    * <!-- begin-user-doc -->
@@ -279,6 +291,19 @@ public class VacationsImpl extends MinimalEObjectImpl.Container implements Vacat
   /**
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public EList<DayTrip> getDayTrips() {
+    if (dayTrips == null) {
+      dayTrips = new EObjectContainmentEList<DayTrip>(DayTrip.class, this, VacationsPackage.VACATIONS__DAY_TRIPS);
+    }
+    return dayTrips;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
    * @generated NOT
    */
   public Vacation findVacation(FlexDate date) {
@@ -345,6 +370,8 @@ public class VacationsImpl extends MinimalEObjectImpl.Container implements Vacat
       return ((InternalEList<?>) getVacations()).basicRemove(otherEnd, msgs);
     case VacationsPackage.VACATIONS__HOME:
       return basicUnsetHome(msgs);
+    case VacationsPackage.VACATIONS__DAY_TRIPS:
+      return ((InternalEList<?>) getDayTrips()).basicRemove(otherEnd, msgs);
     }
     return super.eInverseRemove(otherEnd, featureID, msgs);
   }
@@ -363,6 +390,8 @@ public class VacationsImpl extends MinimalEObjectImpl.Container implements Vacat
       return getHome();
     case VacationsPackage.VACATIONS__TIPS:
       return getTips();
+    case VacationsPackage.VACATIONS__DAY_TRIPS:
+      return getDayTrips();
     }
     return super.eGet(featureID, resolve, coreType);
   }
@@ -386,6 +415,10 @@ public class VacationsImpl extends MinimalEObjectImpl.Container implements Vacat
     case VacationsPackage.VACATIONS__TIPS:
       setTips((String) newValue);
       return;
+    case VacationsPackage.VACATIONS__DAY_TRIPS:
+      getDayTrips().clear();
+      getDayTrips().addAll((Collection<? extends DayTrip>) newValue);
+      return;
     }
     super.eSet(featureID, newValue);
   }
@@ -407,6 +440,9 @@ public class VacationsImpl extends MinimalEObjectImpl.Container implements Vacat
     case VacationsPackage.VACATIONS__TIPS:
       setTips(TIPS_EDEFAULT);
       return;
+    case VacationsPackage.VACATIONS__DAY_TRIPS:
+      getDayTrips().clear();
+      return;
     }
     super.eUnset(featureID);
   }
@@ -425,6 +461,8 @@ public class VacationsImpl extends MinimalEObjectImpl.Container implements Vacat
       return isSetHome();
     case VacationsPackage.VACATIONS__TIPS:
       return TIPS_EDEFAULT == null ? tips != null : !TIPS_EDEFAULT.equals(tips);
+    case VacationsPackage.VACATIONS__DAY_TRIPS:
+      return dayTrips != null && !dayTrips.isEmpty();
     }
     return super.eIsSet(featureID);
   }

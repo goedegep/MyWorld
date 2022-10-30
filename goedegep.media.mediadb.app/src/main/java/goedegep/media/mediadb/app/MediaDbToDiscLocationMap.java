@@ -473,9 +473,6 @@ public class MediaDbToDiscLocationMap {
       }
     }
     
-    if ("Horror Movie".equals(track.getTitle())) {
-      LOGGER.severe("Handling: " + track.getTitle());
-    }
     String trackFileNameByConvention = TrackFile.generateTrackFileName(artistName, track.getTitle());
     String trackFileNameByConvention2 =  TrackFile.generateTrackFileNameIncludingAlbumInfoForTracksFolder(artistName, album.getReleaseDate(), album.getTitle(), trackNr, track.getTitle());
     for (TrackOnDiscInfo trackOnDiscInfo: tracksOnDiscInfo) {

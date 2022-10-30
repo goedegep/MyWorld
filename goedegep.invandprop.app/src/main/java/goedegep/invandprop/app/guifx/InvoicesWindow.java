@@ -12,6 +12,7 @@ import goedegep.invandprop.model.InvAndPropPackage;
 import goedegep.invandprop.model.Invoice;
 import goedegep.invandprop.model.InvoiceItem;
 import goedegep.invandprop.model.InvoicesAndProperties;
+import goedegep.invandprop.model.Property;
 import goedegep.jfx.ComponentFactoryFx;
 import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.JfxStage;
@@ -30,11 +31,14 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.SplitPane;
 import javafx.scene.control.TableCell;
+import javafx.scene.control.TableColumn;
 import javafx.scene.control.TextField;
+import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
+import javafx.util.Callback;
 
 /**
  * This class is a window to show information on the invoices which are part of an InvoicesAndProperties data structure.
@@ -48,6 +52,7 @@ public class InvoicesWindow extends JfxStage {
   
   private CustomizationFx customization = null;
   private InvoicesAndProperties invoicesAndProperties = null;
+  private InvoicesAndPropertiesMenuWindow invoicesAndPropertiesMenuWindow;
   private ComponentFactoryFx componentFactory = null;
   
   private EObjectTableControlPanel eObjectTableControlPanel;
@@ -59,12 +64,14 @@ public class InvoicesWindow extends JfxStage {
    * 
    * @param customization GUI customization.
    * @param invoicesAndProperties the invoices and properties from which the invoices are shown.
+   * @param invoicesAndPropertiesMenuWindow 
    */
-  public InvoicesWindow(CustomizationFx customization, InvoicesAndProperties invoicesAndProperties) {
+  public InvoicesWindow(CustomizationFx customization, InvoicesAndProperties invoicesAndProperties, InvoicesAndPropertiesMenuWindow invoicesAndPropertiesMenuWindow) {
     super(WINDOW_TITLE, customization);
     
     this.customization = customization;
     this.invoicesAndProperties = invoicesAndProperties;
+    this.invoicesAndPropertiesMenuWindow = invoicesAndPropertiesMenuWindow;
     
     componentFactory = customization.getComponentFactoryFx();
     
@@ -81,6 +88,11 @@ public class InvoicesWindow extends JfxStage {
     });
     
     show();
+  }
+
+  public void selectAndShow(Invoice invoice) {
+    invoicesTable.getSelectionModel().select(invoice);
+    invoicesTable.scrollTo(invoice);
   }
   
   /**
@@ -148,7 +160,7 @@ public class InvoicesWindow extends JfxStage {
    * @return the created familiesTable
    */
   private EObjectTable<Invoice> createInvoicesTable() {
-    invoicesTable = new EObjectTable<Invoice>(customization, INVOICES_AND_PROPERTIES_PACKAGE.getInvoice(), new InvoicesTableDescriptor(), invoicesAndProperties.getInvoices(), invoicesAndProperties.getInvoices().getInvoices());
+    invoicesTable = new EObjectTable<Invoice>(customization, INVOICES_AND_PROPERTIES_PACKAGE.getInvoice(), new InvoicesTableDescriptor(invoicesAndPropertiesMenuWindow), invoicesAndProperties.getInvoices(), invoicesAndProperties.getInvoices().getInvoices());
         
     return invoicesTable;
   }
@@ -172,6 +184,9 @@ public class InvoicesWindow extends JfxStage {
 class InvoicesTableDescriptor extends EObjectTableDescriptor<Invoice> {
   private static final Logger LOGGER = Logger.getLogger(InvoicesTableDescriptor.class.getName());
   private static InvAndPropPackage INVOICES_AND_PROPERTIES_PACKAGE = InvAndPropPackage.eINSTANCE;
+  
+  private static EObjectTableColumnDescriptorCustom<Invoice> purchaseColumn = new EObjectTableColumnDescriptorCustom<>(INVOICES_AND_PROPERTIES_PACKAGE.getExpenditure_Purchase(), "Purchase", 300, false, true, null);
+
   
   private static List<EObjectTableColumnDescriptorAbstract<Invoice>> columnDescriptors = List.<EObjectTableColumnDescriptorAbstract<Invoice>>of(
       new EObjectTableColumnDescriptorBasic<Invoice>(INVOICES_AND_PROPERTIES_PACKAGE.getInvoice_Date(), "Date", true, true),
@@ -256,7 +271,7 @@ class InvoicesTableDescriptor extends EObjectTableDescriptor<Invoice> {
             return cell;
           }),
       new EObjectTableColumnDescriptorBasic<Invoice>(INVOICES_AND_PROPERTIES_PACKAGE.getExpenditure_Remarks(), "Remarks", true, true),
-      new EObjectTableColumnDescriptorBasic<Invoice>(INVOICES_AND_PROPERTIES_PACKAGE.getExpenditure_Purchase(), "Purchase", 300, true, true, new PropertyStringConverter())
+      purchaseColumn
       );
   
   @SuppressWarnings("serial")
@@ -266,10 +281,56 @@ class InvoicesTableDescriptor extends EObjectTableDescriptor<Invoice> {
     }
   };
   
-  public InvoicesTableDescriptor() {
+  public InvoicesTableDescriptor(InvoicesAndPropertiesMenuWindow invoicesAndPropertiesMenuWindow) {
+    
     super("There are no invoices to show", null, columnDescriptors, rowOperations);
+    purchaseColumn.setCellFactory(new PurchaseCellFactory(invoicesAndPropertiesMenuWindow));
   }
   
+}
+
+class PurchaseCellFactory implements Callback<TableColumn<Invoice, Object>, TableCell<Invoice, Object>>  {
+  private InvoicesAndPropertiesMenuWindow invoicesAndPropertiesMenuWindow;
+  
+  public PurchaseCellFactory(InvoicesAndPropertiesMenuWindow invoicesAndPropertiesMenuWindow) {
+    this.invoicesAndPropertiesMenuWindow = invoicesAndPropertiesMenuWindow;
+  }
+
+  @Override
+  public TableCell<Invoice, Object> call(TableColumn<Invoice, Object> param) {
+    return new PurchaseCell(invoicesAndPropertiesMenuWindow);
+  }
+  
+}
+
+class PurchaseCell extends TextFieldTableCell<Invoice, Object> {
+  private static final Logger LOGGER = Logger.getLogger(PurchaseCell.class.getName());
+  
+  private PropertyStringConverter stringConverter = new PropertyStringConverter();
+  private Property property;
+
+  public PurchaseCell(InvoicesAndPropertiesMenuWindow invoicesAndPropertiesMenuWindow) {
+    setOnMouseClicked(e -> {
+      LOGGER.severe("Property: " + property.toString());
+      PropertiesWindow propertiesWindow = invoicesAndPropertiesMenuWindow.getPropertiesWindow();
+      propertiesWindow.selectAndShow(property);
+      propertiesWindow.show();
+    });
+  }
+
+  @Override
+  public void updateItem(Object item, boolean empty) {
+    setText(null);
+
+    if (item != null) {
+      property = (Property) item;
+      setText(stringConverter.toString(property));
+    } else {
+      property = null;
+    }
+    
+  }
+
 }
 
 

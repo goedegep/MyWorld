@@ -202,6 +202,8 @@
         <details key="processing" value="lax"/>
       </eAnnotations>
     </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="speed" eType="ecore:EDataType http://www.eclipse.org/emf/2003/XMLType#//Decimal"
+        unsettable="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EEnum" name="FixType">
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">

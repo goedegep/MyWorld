@@ -76,6 +76,10 @@ public class EmfSampleAdapterFactory extends AdapterFactoryImpl {
         return createBirthdayAdapter();
       }
       @Override
+      public Adapter caseCompany(Company object) {
+        return createCompanyAdapter();
+      }
+      @Override
       public Adapter defaultCase(EObject object) {
         return createEObjectAdapter();
       }
@@ -120,6 +124,20 @@ public class EmfSampleAdapterFactory extends AdapterFactoryImpl {
    * @generated
    */
   public Adapter createBirthdayAdapter() {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link goedegep.emfsample.model.Company <em>Company</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see goedegep.emfsample.model.Company
+   * @generated
+   */
+  public Adapter createCompanyAdapter() {
     return null;
   }
 

@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
-import goedegep.appgen.ImageSize;
 import goedegep.jfx.ComponentFactoryFx;
 import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.JfxStage;
@@ -17,15 +16,16 @@ import goedegep.media.mediadb.model.MediadbFactory;
 import goedegep.media.musicfolder.MusicFolder;
 import goedegep.media.musicfolder.MusicFolderDescription;
 import goedegep.media.musicfolder.MusicFolderStructureErrorInfo;
+import goedegep.resources.ImageSize;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
@@ -113,7 +113,7 @@ public class MusicFolderWindow extends JfxStage {
     
     FolderSelecter musicFolderSelecter = componentFactory.createFolderSelecter(currentMusicFolder, 200, "Currently selected folder",
         "Choose folder", "Select music folder via a file chooser", "Select the folder with all music");
-    TextField folderName = musicFolderSelecter.getFolderPathTextField();
+    Node folderName = musicFolderSelecter.getPathTextField();
     grid.add(folderName, 2, 0);
     
     button = musicFolderSelecter.getFolderChooserButton();
@@ -143,7 +143,7 @@ public class MusicFolderWindow extends JfxStage {
 
       @Override
       public void handle(ActionEvent event) {
-        handleMusicFoldersAction(folderName.getText());
+        handleMusicFoldersAction(musicFolderSelecter.getObjectValue());
       }
       
     });

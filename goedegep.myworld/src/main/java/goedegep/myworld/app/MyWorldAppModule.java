@@ -12,6 +12,7 @@ import java.util.List;
  * A module also has a list of modules on which it depends.
  */
 public enum MyWorldAppModule {
+  EVENTS("Events"),
   INVOICES_AND_PROPERTIES("InvoicesAndProperties"),
   ROLODEX("Rolodex"),
   FINAN("Finan", ROLODEX),
@@ -27,7 +28,7 @@ public enum MyWorldAppModule {
   PCTOOLS("PCTools"),
   UNIT_CONVERTER("UnitConverter"),
   VACATIONS("Vacations"),
-  MY_WORLD("MyWorld", FINAN, MEDIA, INVOICES_AND_PROPERTIES, PCTOOLS, ROLODEX, UNIT_CONVERTER, VACATIONS);
+  MY_WORLD("MyWorld", EVENTS, FINAN, MEDIA, INVOICES_AND_PROPERTIES, PCTOOLS, ROLODEX, UNIT_CONVERTER, VACATIONS);
   
   private String moduleName;
   private List<MyWorldAppModule> dependsOnModules = new ArrayList<>();

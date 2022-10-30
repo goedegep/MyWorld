@@ -13,7 +13,7 @@ public class VacationsResource_nl extends ListResourceBundle {
     return new Object[][] {
       
       // VacationsWindow
-      {"VacationsWindow.windowTitle", "Vakanties"},
+      {"VacationsWindow.windowTitle", "Reizen"},
       {"VacationsWindow.noVacationSelectedMsg", "Geen vakantie geselecteerd"},
       
       {"VacationsWindow.statusLabel.noVacationsFileNameMsg", "Geen vakanties bestandnaam geconfigureerd, configureer de bestandsnaam en start de applicatie opnieuw op"},

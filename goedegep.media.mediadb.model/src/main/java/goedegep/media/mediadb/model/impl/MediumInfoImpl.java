@@ -17,7 +17,6 @@ import goedegep.media.mediadb.model.InformationType;
 import goedegep.media.mediadb.model.MediadbPackage;
 import goedegep.media.mediadb.model.MediumInfo;
 import goedegep.media.mediadb.model.MediumType;
-import goedegep.util.PgUtilities;
 
 /**
  * <!-- begin-user-doc -->
@@ -457,35 +456,6 @@ public class MediumInfoImpl extends MinimalEObjectImpl.Container implements Medi
     }
 
     return result.toString();
-  }
-  
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated NOT
-   */
-  @Override
-  public boolean equals(Object mediumInfoObject) {
-    if (mediumInfoObject instanceof MediumInfo mediumInfo) {
-      
-      if (!PgUtilities.equals(mediumInfo.getInformationType(), getInformationType())) {
-        LOGGER.severe("InformationType differs, this: " + this + ", " + mediumInfo);
-        return false;        
-      } else if (!PgUtilities.equals(mediumInfo.getMediumType(), getMediumType())) {
-        LOGGER.severe("MediumType differs, this: " + this + ", " + mediumInfo);
-        return false;
-      } else if (!PgUtilities.equals(mediumInfo.getSourceBitRate(), getSourceBitRate())) {
-        LOGGER.severe("SourceBitRate differs, this: " + this + ", " + mediumInfo);
-        return false;
-      } else if (!PgUtilities.equals(mediumInfo.getSourceTypes(), getSourceTypes())) {
-        LOGGER.severe("SourceTypes differs, this: " + this + ", " + mediumInfo);
-        return false;
-      } else {
-        return true;
-      }
-    }
-    
-    return false;
   }
 
 } //MediumInfoImpl

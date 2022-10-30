@@ -502,13 +502,9 @@ public class TrkTypeImpl extends MinimalEObjectImpl.Container implements TrkType
    * @generated
    */
   public Date getEndTime() {
-    int numberOfSegments = getTrkseg().size();
-    if (numberOfSegments == 0) {
-      return null;
-    }
-    
-    TrksegType lastSegment = getTrkseg().get(numberOfSegments - 1);
-    return lastSegment.getEndTime();
+    // TODO: implement this method
+    // Ensure that you remove @generated or mark it @generated NOT
+    throw new UnsupportedOperationException();
   }
 
     /**

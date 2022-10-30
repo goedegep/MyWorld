@@ -47,6 +47,9 @@ public class EObjectTreeCellHelperForObjectList extends EObjectTreeCellHelperAbs
 
     // This cell type cannot be edited, so we don't have to check on isEditing()
     eObjectTreeCell.setText(getText(eObjectTreeItemContent));
+    if (itemDescriptor.isStrongText()) {
+      eObjectTreeCell.setStyle("-fx-font-weight: bold;");
+    }
     
     
     ImageView iconImageView = null;

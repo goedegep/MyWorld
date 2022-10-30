@@ -29,6 +29,10 @@
       <artifactId>goedegep-properties-app</artifactId>
     </dependency>
     <dependency>
+      <groupId>goedegep.resources</groupId>
+      <artifactId>goedegep-resources</artifactId>
+    </dependency>
+    <dependency>
       <groupId>goedegep.rolodex</groupId>
       <artifactId>goedegep-rolodex-model</artifactId>
     </dependency>

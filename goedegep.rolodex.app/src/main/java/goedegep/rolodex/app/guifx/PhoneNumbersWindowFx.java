@@ -13,7 +13,7 @@ import goedegep.jfx.ComponentFactoryFx;
 import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.JfxStage;
 import goedegep.jfx.controls.ObjectControl;
-import goedegep.jfx.controls.ObjectControlEEnumComboBox;
+import goedegep.jfx.controls.ObjectControlEnumComboBox;
 import goedegep.jfx.controls.ObjectControlString;
 import goedegep.jfx.eobjecttable.EObjectTable;
 import goedegep.jfx.eobjecttable.EObjectTableColumnDescriptorAbstract;
@@ -145,7 +145,7 @@ class PhoneNumberEditPanel {
   
   // Controls
   private ObjectControlString phoneNumberTextField;
-  private ObjectControlEEnumComboBox<ConnectionType> connectionTypeTextField;
+  private ObjectControlEnumComboBox<ConnectionType> connectionTypeTextField;
 //  private ObjectInputConnectionType connectionTypeTextField;
   private ObjectControlString descriptionTextField;
   private SimpleObjectProperty<PhoneNumber> phoneNumberProperty = new SimpleObjectProperty<>();
@@ -163,7 +163,7 @@ class PhoneNumberEditPanel {
     
     // Create the controls.
     phoneNumberTextField = componentFactory.createObjectInputString(null, 300, true, "Enter the phone number");
-    connectionTypeTextField =componentFactory.createObjectInputEEnumComboBox(ROLODEX_PACKAGE.getConnectionType(), true, "Enter the kind of connection");
+    connectionTypeTextField =componentFactory.createObjectInputEEnumComboBox(ConnectionType.VAST, null, true, "Enter the kind of connection");
 //    connectionTypeTextField = new ObjectInputConnectionType(ROLODEX_PACKAGE.getConnectionType(), true, "Enter the kind of connection");
     descriptionTextField = componentFactory.createObjectInputString(null, 300, true, "Enter a description");
     

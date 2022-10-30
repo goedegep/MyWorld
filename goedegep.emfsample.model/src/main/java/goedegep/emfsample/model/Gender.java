@@ -26,7 +26,7 @@ public enum Gender implements Enumerator {
    * @generated
    * @ordered
    */
-  FEMALE(0, "FEMALE", "FEMALE"),
+  FEMALE(0, "FEMALE", "Female"),
 
   /**
    * The '<em><b>MALE</b></em>' literal object.
@@ -36,14 +36,14 @@ public enum Gender implements Enumerator {
    * @generated
    * @ordered
    */
-  MALE(1, "MALE", "MALE");
+  MALE(1, "MALE", "Male");
 
   /**
    * The '<em><b>FEMALE</b></em>' literal value.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @see #FEMALE
-   * @model
+   * @model literal="Female"
    * @generated
    * @ordered
    */
@@ -54,7 +54,7 @@ public enum Gender implements Enumerator {
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @see #MALE
-   * @model
+   * @model literal="Male"
    * @generated
    * @ordered
    */

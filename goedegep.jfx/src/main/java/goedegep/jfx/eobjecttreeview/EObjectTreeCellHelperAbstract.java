@@ -32,6 +32,7 @@ public abstract class EObjectTreeCellHelperAbstract<D extends EObjectTreeItemDes
     LOGGER.info("=> item=" + (eObjectTreeItemContent != null ? eObjectTreeItemContent.toString() : "(null)"));
 
     updateItemDescriptor(eObjectTreeItemContent);
+    eObjectTreeCell.setStyle(null);
     
     LOGGER.info("<=");
   }

@@ -16,9 +16,9 @@ import java.util.logging.Logger;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 
-import goedegep.appgen.ImageSize;
 import goedegep.appgen.MessageDialogType;
 import goedegep.appgen.WindowUtil;
+import goedegep.resources.ImageSize;
 
 @SuppressWarnings("serial")
 public class AppFrame extends JFrame implements Pageable, Printable {

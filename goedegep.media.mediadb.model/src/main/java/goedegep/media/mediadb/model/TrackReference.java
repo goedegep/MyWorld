@@ -30,6 +30,7 @@ import org.eclipse.emf.ecore.EObject;
 public interface TrackReference extends EObject {
   /**
    * Returns the value of the '<em><b>Track</b></em>' reference.
+   * It is bidirectional and its opposite is '{@link goedegep.media.mediadb.model.Track#getReferredBy <em>Referred By</em>}'.
    * <!-- begin-user-doc -->
    * <p>
    * If the meaning of the '<em>Track</em>' reference isn't clear,
@@ -41,7 +42,8 @@ public interface TrackReference extends EObject {
    * @see #unsetTrack()
    * @see #setTrack(Track)
    * @see goedegep.media.mediadb.model.MediadbPackage#getTrackReference_Track()
-   * @model unsettable="true" required="true"
+   * @see goedegep.media.mediadb.model.Track#getReferredBy
+   * @model opposite="referredBy" unsettable="true" required="true"
    * @generated
    */
   Track getTrack();
@@ -83,7 +85,6 @@ public interface TrackReference extends EObject {
 
   /**
    * Returns the value of the '<em><b>Bonus Track</b></em>' attribute.
-   * The default value is <code>""</code>.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @return the value of the '<em>Bonus Track</em>' attribute.
@@ -91,7 +92,7 @@ public interface TrackReference extends EObject {
    * @see #unsetBonusTrack()
    * @see #setBonusTrack(String)
    * @see goedegep.media.mediadb.model.MediadbPackage#getTrackReference_BonusTrack()
-   * @model default="" unsettable="true"
+   * @model unsettable="true"
    * @generated
    */
   String getBonusTrack();

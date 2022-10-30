@@ -5,12 +5,12 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.logging.Logger;
 
-import goedegep.appgen.ImageSize;
 import goedegep.geo.dbl.WGS84Coordinates;
 import goedegep.jfx.ComponentFactoryFx;
 import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.JfxStage;
 import goedegep.media.fotoshow.app.guifx.PhotoInfo;
+import goedegep.resources.ImageSize;
 import javafx.collections.ObservableSet;
 import javafx.geometry.Insets;
 import javafx.scene.Node;

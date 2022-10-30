@@ -112,7 +112,7 @@ public class ObjectControlCurrency extends TextFieldObjectInput<PgCurrency> {
   protected PgCurrency stringToObject(String valueAsString) {
     PgCurrency currency = null;
     
-    if (!valueAsString.isEmpty()) {
+    if (!(valueAsString == null)  &&  !valueAsString.isEmpty()) {
       try {
         currency = CF.parse(valueAsString);
       } catch (ParseException e) {

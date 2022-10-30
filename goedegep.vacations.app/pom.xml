@@ -25,10 +25,6 @@
       <groupId>com.google.common.geometry</groupId>
       <artifactId>com.google.common.geometry</artifactId>
     </dependency>
-    <dependency>
-        <groupId>com.itextpdf</groupId>
-        <artifactId>itextpdf</artifactId>
-    </dependency>
   	<dependency>
   	  <!-- ALWAYS required. -->
   	  <groupId>com.openhtmltopdf</groupId>
@@ -70,6 +66,10 @@
     <dependency>
       <groupId>goedegep.gpx</groupId>
       <artifactId>goedegep-gpx</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>goedegep.gpx</groupId>
+      <artifactId>goedegep-gpx-app</artifactId>
     </dependency>
     <dependency>
       <groupId>goedegep.gpx</groupId>

@@ -281,11 +281,13 @@ public interface Track extends EObject {
   /**
    * Returns the value of the '<em><b>Referred By</b></em>' reference list.
    * The list contents are of type {@link goedegep.media.mediadb.model.TrackReference}.
+   * It is bidirectional and its opposite is '{@link goedegep.media.mediadb.model.TrackReference#getTrack <em>Track</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @return the value of the '<em>Referred By</em>' reference list.
    * @see goedegep.media.mediadb.model.MediadbPackage#getTrack_ReferredBy()
-   * @model
+   * @see goedegep.media.mediadb.model.TrackReference#getTrack
+   * @model opposite="track"
    * @generated
    */
   EList<TrackReference> getReferredBy();
@@ -338,5 +340,13 @@ public interface Track extends EObject {
    * @generated
    */
   boolean isSetOriginalDisc();
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @model kind="operation"
+   * @generated
+   */
+  TrackReference getOriginalDiscTrackReference();
 
 } // Track

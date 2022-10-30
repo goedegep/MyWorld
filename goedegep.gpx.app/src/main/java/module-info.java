@@ -7,6 +7,6 @@ module goedegep.gpx.app {
   requires javafx.graphics;
   requires com.gluonhq.maps;
   requires goedegep.geo;
-  requires goedegep.resources;
-  requires goedegep.gpx;
+  requires transitive goedegep.resources;
+  requires transitive goedegep.gpx;
 }

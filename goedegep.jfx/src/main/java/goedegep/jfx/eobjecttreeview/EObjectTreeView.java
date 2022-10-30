@@ -102,6 +102,9 @@ public class EObjectTreeView extends TreeView<EObjectTreeItemContent> implements
    */
   private EClass eClass = null;
   
+  
+  private EContentAdapter eContentAdapter = null;
+  
   /**
    * TODO
    */
@@ -212,6 +215,9 @@ public class EObjectTreeView extends TreeView<EObjectTreeItemContent> implements
    * @param eObject the eObject to be shown in the tree view. If null, the tree view will be cleared.
    */
   public void setEObject(EObject eObject) {
+    if (this.eObject != null  &&  eContentAdapter != null) {
+      this.eObject.eAdapters().remove(eContentAdapter);
+    }
     this.eObject = eObject;
     
     if (eObject == null) {
@@ -389,7 +395,7 @@ public class EObjectTreeView extends TreeView<EObjectTreeItemContent> implements
    * Install the handling of changes within the eObject.
    */
   private void installHandlingOfEObjectChanges() {
-    EContentAdapter eContentAdapter = new EContentAdapter() {
+    eContentAdapter = new EContentAdapter() {
 
       /**
        * {@inheritDoc}

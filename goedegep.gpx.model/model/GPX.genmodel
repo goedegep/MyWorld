@@ -45,6 +45,7 @@
     </genClasses>
     <genClasses ecoreClass="GPX.ecore#//ExtensionsType">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EAttribute GPX.ecore#//ExtensionsType/any"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute GPX.ecore#//ExtensionsType/speed"/>
     </genClasses>
     <genClasses ecoreClass="GPX.ecore#//GpxType">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference GPX.ecore#//GpxType/metadata"/>

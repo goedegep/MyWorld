@@ -17,8 +17,6 @@ import goedegep.media.mediadb.model.MediadbPackage;
 import goedegep.media.mediadb.model.MyTrackInfo;
 import goedegep.media.mediadb.model.Track;
 import goedegep.media.mediadb.model.TrackReference;
-import goedegep.util.PgUtilities;
-
 import java.lang.reflect.InvocationTargetException;
 import java.util.logging.Logger;
 
@@ -69,7 +67,7 @@ public class TrackReferenceImpl extends MinimalEObjectImpl.Container implements 
    * @generated
    * @ordered
    */
-  protected static final String BONUS_TRACK_EDEFAULT = "";
+  protected static final String BONUS_TRACK_EDEFAULT = null;
 
   /**
    * The cached value of the '{@link #getBonusTrack() <em>Bonus Track</em>}' attribute.
@@ -180,15 +178,66 @@ public class TrackReferenceImpl extends MinimalEObjectImpl.Container implements 
    * <!-- end-user-doc -->
    * @generated
    */
-  @Override
-  public void setTrack(Track newTrack) {
+  public NotificationChain basicSetTrack(Track newTrack, NotificationChain msgs) {
     Track oldTrack = track;
     track = newTrack;
     boolean oldTrackESet = trackESet;
     trackESet = true;
-    if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, MediadbPackage.TRACK_REFERENCE__TRACK, oldTrack, track,
-          !oldTrackESet));
+    if (eNotificationRequired()) {
+      ENotificationImpl notification = new ENotificationImpl(this, Notification.SET,
+          MediadbPackage.TRACK_REFERENCE__TRACK, oldTrack, newTrack, !oldTrackESet);
+      if (msgs == null)
+        msgs = notification;
+      else
+        msgs.add(notification);
+    }
+    return msgs;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public void setTrack(Track newTrack) {
+    if (newTrack != track) {
+      NotificationChain msgs = null;
+      if (track != null)
+        msgs = ((InternalEObject) track).eInverseRemove(this, MediadbPackage.TRACK__REFERRED_BY, Track.class, msgs);
+      if (newTrack != null)
+        msgs = ((InternalEObject) newTrack).eInverseAdd(this, MediadbPackage.TRACK__REFERRED_BY, Track.class, msgs);
+      msgs = basicSetTrack(newTrack, msgs);
+      if (msgs != null)
+        msgs.dispatch();
+    } else {
+      boolean oldTrackESet = trackESet;
+      trackESet = true;
+      if (eNotificationRequired())
+        eNotify(new ENotificationImpl(this, Notification.SET, MediadbPackage.TRACK_REFERENCE__TRACK, newTrack, newTrack,
+            !oldTrackESet));
+    }
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public NotificationChain basicUnsetTrack(NotificationChain msgs) {
+    Track oldTrack = track;
+    track = null;
+    boolean oldTrackESet = trackESet;
+    trackESet = false;
+    if (eNotificationRequired()) {
+      ENotificationImpl notification = new ENotificationImpl(this, Notification.UNSET,
+          MediadbPackage.TRACK_REFERENCE__TRACK, oldTrack, null, oldTrackESet);
+      if (msgs == null)
+        msgs = notification;
+      else
+        msgs.add(notification);
+    }
+    return msgs;
   }
 
   /**
@@ -198,13 +247,19 @@ public class TrackReferenceImpl extends MinimalEObjectImpl.Container implements 
    */
   @Override
   public void unsetTrack() {
-    Track oldTrack = track;
-    boolean oldTrackESet = trackESet;
-    track = null;
-    trackESet = false;
-    if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.UNSET, MediadbPackage.TRACK_REFERENCE__TRACK, oldTrack, null,
-          oldTrackESet));
+    if (track != null) {
+      NotificationChain msgs = null;
+      msgs = ((InternalEObject) track).eInverseRemove(this, MediadbPackage.TRACK__REFERRED_BY, Track.class, msgs);
+      msgs = basicUnsetTrack(msgs);
+      if (msgs != null)
+        msgs.dispatch();
+    } else {
+      boolean oldTrackESet = trackESet;
+      trackESet = false;
+      if (eNotificationRequired())
+        eNotify(new ENotificationImpl(this, Notification.UNSET, MediadbPackage.TRACK_REFERENCE__TRACK, null, null,
+            oldTrackESet));
+    }
   }
 
   /**
@@ -484,8 +539,26 @@ public class TrackReferenceImpl extends MinimalEObjectImpl.Container implements 
    * @generated
    */
   @Override
+  public NotificationChain eInverseAdd(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
+    switch (featureID) {
+    case MediadbPackage.TRACK_REFERENCE__TRACK:
+      if (track != null)
+        msgs = ((InternalEObject) track).eInverseRemove(this, MediadbPackage.TRACK__REFERRED_BY, Track.class, msgs);
+      return basicSetTrack((Track) otherEnd, msgs);
+    }
+    return super.eInverseAdd(otherEnd, featureID, msgs);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
   public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
     switch (featureID) {
+    case MediadbPackage.TRACK_REFERENCE__TRACK:
+      return basicUnsetTrack(msgs);
     case MediadbPackage.TRACK_REFERENCE__MY_TRACK_INFO:
       return basicUnsetMyTrackInfo(msgs);
     }
@@ -630,34 +703,6 @@ public class TrackReferenceImpl extends MinimalEObjectImpl.Container implements 
     }
 
     return buf.toString();
-  }
-  
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated NOT
-   */
-  @Override
-  public boolean equals(Object trackReferenceObject) {
-    if (trackReferenceObject instanceof TrackReference trackReference) {
-      if (!PgUtilities.equals(trackReference.getTrack(), getTrack())) {
-        LOGGER.info("Track differs, this=" + this + ", trackReference" + trackReference);
-        return false;
-      } else if (!PgUtilities.equals(trackReference.getBonusTrack(), getBonusTrack())) {
-        LOGGER.info("BonusTrack differs, this=" + this + ", trackReference" + trackReference);
-        return false;
-      } else if (!PgUtilities.equals(trackReference.getOriginalAlbumTrackReference(), getOriginalAlbumTrackReference())) {
-        LOGGER.info("OriginalAlbumTrackReference differs, this=" + this + ", trackReference" + trackReference);
-        return false;
-      } else if (!PgUtilities.equals(trackReference.getMyTrackInfo(), getMyTrackInfo())) {
-        LOGGER.info("MyTrackInfo differs, this=" + this + ", trackReference" + trackReference);
-        return false;
-      } else {
-        return true;
-      }
-    }
-    
-    return false;
   }
 
 } //TrackReferenceImpl

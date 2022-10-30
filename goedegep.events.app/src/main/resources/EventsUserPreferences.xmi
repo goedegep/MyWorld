@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<properties:PropertyGroup xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:properties="http://goedegep.properties/model"
+    name="Events">
+  <properties name="eventsFileName" value="D:\Database\Gebeurtenissen\Gebeurtenissen.xmi"/>
+  <properties name="eventsFolderName" value="D:\Database\Gebeurtenissen"/>
+</properties:PropertyGroup>

@@ -8,6 +8,7 @@ import goedegep.jfx.controls.FolderSelecter;
 import javafx.beans.property.BooleanProperty;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Dialog;
@@ -33,7 +34,7 @@ public class PhotoFoldersSettingsDialog extends Dialog<ButtonType> {
   private ComponentFactoryFx componentFactory;
 
   // GUI components
-  private TextField folderName;
+  private FolderSelecter folderSelecter;
   private Button okButton;    // this will only be enabled if photoFolders is not empty.
   
   // State information;
@@ -72,7 +73,7 @@ public class PhotoFoldersSettingsDialog extends Dialog<ButtonType> {
    */
   public String getSelectedFolder() {
     if (selectionValidProperty.get()) {
-      return folderName.getText();
+      return folderSelecter.getObjectValue();
     } else {
       return null;
     }
@@ -99,13 +100,13 @@ public class PhotoFoldersSettingsDialog extends Dialog<ButtonType> {
     Label folderNameLabel = componentFactory.createLabel("Photo folder:");
     contentPanel.add(folderNameLabel, 0, 0);
     
-    FolderSelecter folderSelecter = componentFactory.createFolderSelecter(initiallySelectedFolder, 400, "Currently selected folder",
+    folderSelecter = componentFactory.createFolderSelecter(initiallySelectedFolder, 400, "Currently selected folder",
         "Choose folder", "Select photo folder via a file chooser", "Select the folder with photos");
     
-    folderName = folderSelecter.getFolderPathTextField();
-    folderName.textProperty().addListener((observable, oldValue, newValue) -> {
+    Node folderName = folderSelecter.getPathTextField();
+    folderSelecter.objectValue().addListener((observable, oldValue, newValue) -> {
       LOGGER.severe("In textProperty Listener");
-      handleNewPhotoFolderSelected(selectionValidProperty.get(), folderName.getText());      
+      handleNewPhotoFolderSelected(selectionValidProperty.get(), folderSelecter.getObjectValue());      
     });
     contentPanel.add(folderName, 1, 0);
     
@@ -136,7 +137,7 @@ public class PhotoFoldersSettingsDialog extends Dialog<ButtonType> {
     
     okButton = (Button) getDialogPane().lookupButton(ButtonType.OK);
     
-    handleNewPhotoFolderSelected(selectionValidProperty.get(), folderName.getText());
+    handleNewPhotoFolderSelected(selectionValidProperty.get(), folderSelecter.getObjectValue());
   }
   
   /**

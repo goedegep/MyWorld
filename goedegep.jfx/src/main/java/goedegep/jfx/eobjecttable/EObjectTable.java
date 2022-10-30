@@ -15,6 +15,7 @@ import java.util.logging.Logger;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
+import org.eclipse.emf.ecore.EClassifier;
 import org.eclipse.emf.ecore.EFactory;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EOperation;
@@ -22,6 +23,7 @@ import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.ETypedElement;
+import org.eclipse.emf.ecore.EcorePackage;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.util.EObjectContainmentEList;
@@ -44,6 +46,7 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
@@ -392,31 +395,33 @@ public class EObjectTable<T extends EObject> extends TableView<T> implements Obj
 //      }
     }
     
+    
+    StringConverter<Object> stringConverter = null;
+    if (columnDescriptor instanceof EObjectTableColumnDescriptorBasic) {
+      stringConverter = (StringConverter<Object>) ((EObjectTableColumnDescriptorBasic<T>) columnDescriptor).getStringConverter();
+    } else if (columnDescriptor instanceof EObjectTableColumnDescriptorChoiceBox) {
+      stringConverter = (StringConverter<Object>) ((EObjectTableColumnDescriptorChoiceBox<T>) columnDescriptor).getStringConverter();
+    }
+    if (stringConverter == null) {
+      String columnClassName = columnClass.getName();
+      switch (columnClassName) {
+      case "java.lang.Integer":
+        stringConverter = new IntegerObjectStringConverter();
+        break;
+        
+      case "java.util.Date":
+        stringConverter = new DateObjectStringConverter();
+        break;
+        
+      default:
+        stringConverter = new AnyTypeStringConverter<Object>();
+        break;
+      }
+    }
+    final StringConverter<Object> finalStringConverter = stringConverter;
+    
     if (columnDescriptor.isEditable()) {
       
-      StringConverter<Object> stringConverter = null;
-      if (columnDescriptor instanceof EObjectTableColumnDescriptorBasic) {
-        stringConverter = (StringConverter<Object>) ((EObjectTableColumnDescriptorBasic<T>) columnDescriptor).getStringConverter();
-      } else if (columnDescriptor instanceof EObjectTableColumnDescriptorChoiceBox) {
-        stringConverter = (StringConverter<Object>) ((EObjectTableColumnDescriptorChoiceBox<T>) columnDescriptor).getStringConverter();
-      }
-      if (stringConverter == null) {
-        String columnClassName = columnClass.getName();
-        switch (columnClassName) {
-        case "java.lang.Integer":
-          stringConverter = new IntegerObjectStringConverter();
-          break;
-          
-        case "java.util.Date":
-          stringConverter = new DateObjectStringConverter();
-          break;
-          
-        default:
-          stringConverter = new AnyTypeStringConverter<Object>();
-          break;
-        }
-      }
-      final StringConverter<Object> finalStringConverter = stringConverter;
       
       if (columnDescriptor instanceof EObjectTableColumnDescriptorBasic) {
         
@@ -466,7 +471,18 @@ public class EObjectTable<T extends EObject> extends TableView<T> implements Obj
         refresh();
       });
     } else {
-      // use the default label cell
+      if (columnDescriptor instanceof EObjectTableColumnDescriptorBasic) {
+
+        tableColumn.setCellFactory(new Callback<TableColumn<T, Object>, TableCell<T, Object>>() {
+          @Override
+          public TableCell<T, Object> call(TableColumn<T, Object> tableColumn) {
+            TextFieldTableCell<T, Object> tableCell = new TextFieldTableCell<>(finalStringConverter);
+            tableCell.setEditable(false);
+            return tableCell;
+          }
+        });
+
+      }
     }
 
     if (columnDescriptor.isEditable()) {
@@ -683,23 +699,86 @@ public class EObjectTable<T extends EObject> extends TableView<T> implements Obj
     }
 
     setItems(tableSortedList);
+    ListChangeListener<T> l = new ListChangeListener<>() {
+
+      @Override
+      public void onChanged(Change<? extends T> arg0) {
+        LOGGER.severe("=>");
+        refresh();
+        
+      }
+
+      
+    };
+    LOGGER.severe("adding listener");
+    tableSortedList.addListener(l);
   }
   
-  private void handleMouseClickedEvent(TableColumn column, MouseEvent mouseEvent) {
-    LOGGER.severe("column: " + column + ", mouseEvent: " + mouseEvent);
-
-//    if (mouseEvent.getButton() == MouseButton.PRIMARY) {
-//      //T rowData = row.getItem();
-//      LOGGER.severe("row=" + row.toString());
-//
-//      handleRowClicked(row.getItem());
-//    } else if (mouseEvent.getButton() == MouseButton.SECONDARY) {
-//      ContextMenu contextMenu = createContextMenu(row);
-//      if (contextMenu != null) {
-//        contextMenu.show(row, mouseEvent.getScreenX(), mouseEvent.getScreenY());
-//      }
+  /**
+   * Set the list of EObjects to be shown in the table.
+   * 
+   * @param objects object (items) to be shown in the table.
+   */
+  public void setObjects(boolean dummy, EObject containingObject, EReference eReference) {
+    
+    this.containingObject = containingObject;
+//    this.objects = objects;
+    
+//    if (objects == null) {
+//      setItems(null);
+//      return;
 //    }
+        
+    // For the sorting and filtering to work, we need to wrap an ObservableList in a FilteredList and then in a SortedList.
+    // And bind the SortedList comparator to the TableView comparator.
+    // In order to support default sorting, based on the specified comparator, a second SortedList between the FilteredList and the SortedList is needed.
+    
+    observableObjects = new ObservableEList<>(false, containingObject, eReference);
+            
+    filteredObjects = new FilteredList<>(observableObjects);
+    if (tableDescriptor.getFilterPredicate() != null) {
+      filteredObjects.setPredicate(tableDescriptor.getFilterPredicate());
+    }
+    Comparator<T> comparator = tableDescriptor.getComparator();
+    SortedList<T> comparatorBasedSortedList  = new SortedList<>(filteredObjects, comparator);
+    tableSortedList = new SortedList<>(comparatorBasedSortedList);
+    tableSortedList.comparatorProperty().bind(comparatorProperty());
+    
+    if (observableObjects instanceof ObservableEList) {
+      ((ObservableEList<T>) observableObjects).setPresentationList(tableSortedList);
+    }
+
+    setItems(tableSortedList);
+    ListChangeListener<T> l = new ListChangeListener<>() {
+
+      @Override
+      public void onChanged(Change<? extends T> arg0) {
+        LOGGER.severe("=>");
+        refresh();
+        
+      }
+
+      
+    };
+    LOGGER.severe("adding listener");
+    ((ObservableEList<T>) observableObjects).addTableRefreshNeededListener(o -> refresh());
   }
+  
+//  private void handleMouseClickedEvent(TableColumn column, MouseEvent mouseEvent) {
+//    LOGGER.severe("column: " + column + ", mouseEvent: " + mouseEvent);
+//
+////    if (mouseEvent.getButton() == MouseButton.PRIMARY) {
+////      //T rowData = row.getItem();
+////      LOGGER.severe("row=" + row.toString());
+////
+////      handleRowClicked(row.getItem());
+////    } else if (mouseEvent.getButton() == MouseButton.SECONDARY) {
+////      ContextMenu contextMenu = createContextMenu(row);
+////      if (contextMenu != null) {
+////        contextMenu.show(row, mouseEvent.getScreenX(), mouseEvent.getScreenY());
+////      }
+////    }
+//  }
         
   private void handleMouseClickedEvent(TableRow<T> row, MouseEvent mouseEvent) {
     if (row.isEmpty()) {
@@ -826,8 +905,8 @@ public class EObjectTable<T extends EObject> extends TableView<T> implements Obj
         menuItem = componentFactory.createMenuItem(tableRowOperationDescriptor.getMenuText());
         final BiConsumer<List<T>, T> consumer = tableRowOperationDescriptor.getConsumer();
         menuItem.setOnAction((ActionEvent event) -> {
-          LOGGER.severe("Extended operation");
-          LOGGER.severe("objects class" + objects.getClass().getName());
+          LOGGER.info("Extended operation");
+          LOGGER.info("objects class" + objects.getClass().getName());
           consumer.accept(objects, row.getItem());
           this.setObjects(containingObject, objects);
         });
@@ -1001,13 +1080,13 @@ public class EObjectTable<T extends EObject> extends TableView<T> implements Obj
       }
     }
         
-    int removeIndex = objects.indexOf(objectToRemove);
+    int removeIndex = observableObjects.indexOf(objectToRemove);
     int indexToScrollTo = removeIndex - 1;
     if (indexToScrollTo < 0) {
       indexToScrollTo = 0;
     }
     
-    boolean removed = objects.remove(objectToRemove);
+    boolean removed = observableObjects.remove(objectToRemove);
     LOGGER.severe("Object removed=" + removed);
     EList<EReference> references = objectToRemove.eClass().getEAllReferences();
     for (EReference reference: references) {
@@ -1022,10 +1101,10 @@ public class EObjectTable<T extends EObject> extends TableView<T> implements Obj
       objectToRemove.eUnset(reference);
     }
     
-    T objectToScrollTo = objects.get(indexToScrollTo);
+    T objectToScrollTo = observableObjects.get(indexToScrollTo);
     
     
-    setObjects(containingObject, objects);
+//    setObjects(containingObject, observableObjects);
     
     findObject(objectToScrollTo);
   }
@@ -1168,9 +1247,16 @@ public class EObjectTable<T extends EObject> extends TableView<T> implements Obj
     List<EObjectTableColumnDescriptorAbstract<T>> columnDescriptors = new ArrayList<>();
     
     for (EStructuralFeature structuralFeature: allStructuralFeatures) {
-      EObjectTableColumnDescriptorBasic<T> columnDescriptor = new EObjectTableColumnDescriptorBasic<T>(structuralFeature, structuralFeature.getName(), true, true);
-      LOGGER.info("Adding column descriptor: " + columnDescriptor.toString());
-      columnDescriptors.add(columnDescriptor);
+      EClassifier eType = structuralFeature.getEType();
+      if (eType.getClassifierID() == EcorePackage.EBOOLEAN) {
+        EObjectTableColumnDescriptorCheckBox<T> columnDescriptor = new EObjectTableColumnDescriptorCheckBox<>(structuralFeature, structuralFeature.getName(), true, true);
+        LOGGER.info("Adding column descriptor: " + columnDescriptor.toString());
+        columnDescriptors.add(columnDescriptor);
+      } else {
+        EObjectTableColumnDescriptorBasic<T> columnDescriptor = new EObjectTableColumnDescriptorBasic<T>(structuralFeature, structuralFeature.getName(), true, true);
+        LOGGER.info("Adding column descriptor: " + columnDescriptor.toString());
+        columnDescriptors.add(columnDescriptor);
+      }
     }
     
     LOGGER.info("<=");
@@ -1192,7 +1278,7 @@ public class EObjectTable<T extends EObject> extends TableView<T> implements Obj
       for (EObjectTableColumnDescriptorAbstract<T> columnDescriptorAbstract: tableDescriptor.getColumnDescriptors()) {
         if ((columnDescriptorAbstract instanceof EObjectTableColumnDescriptorBasic) && (columnDescriptorAbstract.getColumnName() == null)) {
           EObjectTableColumnDescriptorBasic<T> eObjectTableColumnDescriptor = (EObjectTableColumnDescriptorBasic<T>) columnDescriptorAbstract;
-          eObjectTableColumnDescriptor.setColumnName(eObjectTableColumnDescriptor.getETypedElements().get(0).getName());
+          eObjectTableColumnDescriptor.setColumnNameAbstract(eObjectTableColumnDescriptor.getETypedElements().get(0).getName());
           LOGGER.severe("Default name filled in for column: " + eObjectTableColumnDescriptor.getColumnName());
         }
       }

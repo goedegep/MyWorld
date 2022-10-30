@@ -85,7 +85,7 @@ public class FamilyMembersPanel extends VBox {
 
   public void setFamily(Family family) {
     this.family = family;
-    basicPersonsTable.setObjects(family, family.getMembers());
+    basicPersonsTable.setObjects(family, family != null ? family.getMembers() : null);
   }
   
   protected static void removePersonFromFamily(List<Person> familyMembers, Person member) {

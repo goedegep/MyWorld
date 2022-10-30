@@ -105,9 +105,9 @@
       xsi:type="properties:FilePropertyDescriptor"
       type="FILE"
       name="mediaPlayerClassicExecutable"
-      description="Full path to the MPC-HC media player."
-      displayName="Media Player Classic (MPC-HC) file"
-      initialValue="C:\Program Files\MPC-HC\mpc-hc64.exe"
+      description="Full path to the MPC-BE media player."
+      displayName="Media Player Classic (MPC-BE) file"
+      initialValue="C:\Program Files\MPC-BE x64\mpc-be64.exe"
       installInitialValue="true">
     <fileExtensions>xmi</fileExtensions>
   </propertyDescriptors>

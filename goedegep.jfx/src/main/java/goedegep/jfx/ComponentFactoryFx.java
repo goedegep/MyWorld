@@ -4,21 +4,20 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.time.LocalDate;
 import java.util.Collection;
+import java.util.Map;
 import java.util.logging.Logger;
 
 import org.commonmark.parser.Parser;
 import org.commonmark.renderer.html.HtmlRenderer;
-import org.eclipse.emf.common.util.Enumerator;
 import org.eclipse.emf.ecore.EEnum;
 
-import goedegep.appgen.ImageSize;
 import goedegep.configuration.model.Look;
 import goedegep.jfx.controls.AutoCompleteTextFieldObjectInput;
 import goedegep.jfx.controls.FileSelecter;
 import goedegep.jfx.controls.FolderSelecter;
 import goedegep.jfx.controls.ObjectControlBoolean;
 import goedegep.jfx.controls.ObjectControlCurrency;
-import goedegep.jfx.controls.ObjectControlEEnumComboBox;
+import goedegep.jfx.controls.ObjectControlEnumComboBox;
 import goedegep.jfx.controls.ObjectControlFixedPointValue;
 import goedegep.jfx.controls.ObjectControlFlexDate;
 import goedegep.jfx.controls.ObjectControlInteger;
@@ -27,6 +26,7 @@ import goedegep.jfx.controls.ObjectControlMultiLineString;
 import goedegep.jfx.controls.ObjectControlString;
 import goedegep.jfx.controls.TextFieldObjectInput;
 import goedegep.jfx.stringconverters.StringConverterAndChecker;
+import goedegep.resources.ImageSize;
 import goedegep.util.fixedpointvalue.FixedPointValue;
 import goedegep.util.money.PgCurrency;
 import javafx.animation.Interpolator;
@@ -822,9 +822,9 @@ public class ComponentFactoryFx {
   public FileSelecter createFileSelecter(String initiallySelecterFolder, int textFieldWidth, String textFieldToolTipText,
       String folderChooserButtonText, String folderChooserButtonToolTipText, String directoryChooserTitle) {
     FileSelecter fileSelecter = new FileSelecter(initiallySelecterFolder, textFieldWidth, textFieldToolTipText,
-        folderChooserButtonText, folderChooserButtonToolTipText, directoryChooserTitle, null, null);
+        folderChooserButtonText, folderChooserButtonToolTipText, directoryChooserTitle);
     
-    customizeTextInputControl(fileSelecter.getFilePathTextField());
+    customizeTextInputControl(fileSelecter.getPathTextField());
     customizeButton(fileSelecter.getFileChooserButton());
     
     return fileSelecter;
@@ -847,7 +847,7 @@ public class ComponentFactoryFx {
     FolderSelecter folderSelecter = new FolderSelecter(initiallySelecterFolder, textFieldWidth, textFieldToolTipText,
         folderChooserButtonText, folderChooserButtonToolTipText, directoryChooserTitle);
     
-    customizeTextInputControl(folderSelecter.getFolderPathTextField());
+    customizeTextInputControl(folderSelecter.getPathTextField());
     customizeButton(folderSelecter.getFolderChooserButton());
     
     return folderSelecter;
@@ -1178,18 +1178,47 @@ public class ComponentFactoryFx {
   }
   
   /**
-   * Create a ComboBox ObjectInput for an EEnum.
+   * Create a ComboBox ObjectInput for an Enum. The texts for the enum constants are the names of the constants.
    * 
    * @param <T> The enum type
-   * @param stringConverter A StringConverter for type T.
-   * @param initialValue the initial value
-   * @param width the width of the TextField. 
-   * @param isOptional if true, the value provided by this control is optional.
-   * @param toolTipText an optional tooltip text.
-   * @return
+   * @param enumConstant A single enum constant of the enum.
+   * @param notSetValue The 'not set' value.
+   * @param isOptional indicates whether the value is optional or not
+   * @param toolTipText an optional tooltip text
+   * @return an ObjectControlEnumComboBox for the specified type.
    */
-  public <T extends Enumerator>ObjectControlEEnumComboBox<T> createObjectInputEEnumComboBox(EEnum eEnum, boolean isOptional, String toolTipText) {
-    return new ObjectControlEEnumComboBox<T>(eEnum, isOptional, toolTipText);
+  public <T extends Enum<T>>ObjectControlEnumComboBox<T> createObjectInputEEnumComboBox(T enumConstant, T notSetValue, boolean isOptional, String toolTipText) {
+    return new ObjectControlEnumComboBox<T>(enumConstant, notSetValue, isOptional, toolTipText);
+  }
+  
+  /**
+   * Create a ComboBox ObjectInput for an Enum. The texts for the enum constants are the literals of the <code>eEnum</code> parameter.
+   * 
+   * @param <T> The enum type
+   * @param enumConstant A single enum constant of the enum.
+   * @param notSetValue The 'not set' value.
+   * @param eEnum an EEnum providing the literal values for the texts for the constants.
+   * @param isOptional indicates whether the value is optional or not
+   * @param toolTipText an optional tooltip text
+   * @return an ObjectControlEnumComboBox for the specified type.
+   */
+  public <T extends Enum<T>>ObjectControlEnumComboBox<T> createObjectInputEEnumComboBox(T enumConstant, T notSetValue, EEnum eEnum, boolean isOptional, String toolTipText) {
+    return new ObjectControlEnumComboBox<T>(enumConstant, notSetValue, eEnum, isOptional, toolTipText);
+  }
+  
+  /**
+   * Create a ComboBox ObjectInput for an Enum. The texts for the enum constants are the texts provided by the  <code>enumToStringMap</code>.
+   * 
+   * @param <T> The enum type
+   * @param enumConstant A single enum constant of the enum.
+   * @param notSetValue The 'not set' value.
+   * @param enumToStringMap provides the names for the enum constants.
+   * @param isOptional indicates whether the value is optional or not
+   * @param toolTipText an optional tooltip text
+   * @return an ObjectControlEnumComboBox for the specified type.
+   */
+  public <T extends Enum<T>>ObjectControlEnumComboBox<T> createObjectInputEEnumComboBox(T enumConstant, T notSetValue, Map<T, String> enumToStringMap, boolean isOptional, String toolTipText) {
+    return new ObjectControlEnumComboBox<T>(enumConstant, notSetValue, enumToStringMap, isOptional, toolTipText);
   }
   
   public <T> AutoCompleteTextFieldObjectInput<T> createObjectControlAutoCompleteTextField(StringConverterAndChecker<T> stringConverter, T initialValue, double width, boolean isOptional, String toolTipText) {

@@ -408,7 +408,7 @@ public class EMFResource<E extends EObject> {
   }
   
   private void updateFileNameProperty() {
-    String newFileName = "";
+    String newFileName = null;
     
     if (resource != null) {
       URI uri = resource.getURI();
@@ -417,10 +417,12 @@ public class EMFResource<E extends EObject> {
       }
     }
     
-    String currentFileName = fileNameProperty.get();
-    if ((currentFileName == null)  ||  !currentFileName.equals(newFileName)) {
+//    String currentFileName = fileNameProperty.get();
+//    if ((currentFileName == null) && (newFileName != null)  ||
+//        (currentFileName != null) && (newFileName == null)  ||
+//        ((currentFileName != null) && (newFileName != null) && !currentFileName.equals(newFileName))) {
       fileNameProperty.set(newFileName);
-    }
+//    }
   }
   
   /**

@@ -2,8 +2,8 @@ package goedegep.jfx;
 
 import java.util.logging.Logger;
 
-import goedegep.appgen.ImageSize;
 import goedegep.configuration.model.Look;
+import goedegep.resources.ImageSize;
 import javafx.stage.Stage;
 
 /**

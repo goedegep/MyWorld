@@ -153,6 +153,28 @@ public class EObjectTableColumnDescriptorBasic<T extends EObject> extends EObjec
     super(eTypedElements, id, columnName, minimumWidth, isEditable, isVisible);
     this.stringConverter = stringConverter;
   }
+  
+  /**
+   * Create a descriptor for the specified feature.
+   * 
+   * @param <U> the type of the items in the table.
+   * @param eStructuralFeature the feature that is shown in the column
+   * @return a descriptor for the specified feature.
+   */
+  public static <U extends EObject> EObjectTableColumnDescriptorBasic<U> createForFeature(EStructuralFeature eStructuralFeature) {
+    return new EObjectTableColumnDescriptorBasic<U>(eStructuralFeature);
+  }
+  
+  /**
+   * Set the column name.
+   * 
+   * @param columnName the column name.
+   * @return this
+   */
+  public EObjectTableColumnDescriptorBasic<T> setColumnName(String columnName) {
+    super.setColumnNameAbstract(columnName);
+    return this;
+  }
 
   public StringConverter<? extends Object> getStringConverter() {
     return stringConverter;

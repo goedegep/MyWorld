@@ -3,6 +3,8 @@ package goedegep.jfx.eobjecttreeview;
 import java.util.List;
 import java.util.function.Function;
 
+import org.eclipse.emf.ecore.EObject;
+
 import goedegep.util.text.Indent;
 import javafx.scene.image.Image;
 
@@ -27,18 +29,21 @@ import javafx.scene.image.Image;
 public abstract class EObjectTreeItemDescriptor {
   private EObjectTreeItemDescriptorType descriptorType;
   private boolean expandOnCreation = false;                          // Expand the node upon creation of the tree.
+  private boolean strongText = false;                                // If true, the text is in a strong font (bold).
   private List<NodeOperationDescriptor> nodeOperationDescriptors;    // Defines the available operations for the node.
+  private Function<EObject, String> buildText;                       // Function to provide the node text.
   private Function<Object, Image> nodeIconFunction;                  // A function to provide the node icon.
 
   public EObjectTreeItemDescriptor(EObjectTreeItemDescriptorType descriptorType, boolean expandOnCreation, List<NodeOperationDescriptor> nodeOperationDescriptors) {
-    this(descriptorType, expandOnCreation, nodeOperationDescriptors, null);
+    this(descriptorType, expandOnCreation, nodeOperationDescriptors, null, null);
   }
 
   public EObjectTreeItemDescriptor(EObjectTreeItemDescriptorType descriptorType, boolean expandOnCreation, List<NodeOperationDescriptor> nodeOperationDescriptors,
-      Function<Object, Image> nodeIconFunction) {
+      Function<EObject, String> buildText, Function<Object, Image> nodeIconFunction) {
     this.descriptorType = descriptorType;
     this.expandOnCreation = expandOnCreation;
     this.nodeOperationDescriptors = nodeOperationDescriptors;
+    this.buildText = buildText;
     this.nodeIconFunction = nodeIconFunction;
   }
 
@@ -54,8 +59,20 @@ public abstract class EObjectTreeItemDescriptor {
     return expandOnCreation;
   }
 
+  public boolean isStrongText() {
+    return strongText;
+  }
+
+  public void setStrongText(boolean strongText) {
+    this.strongText = strongText;
+  }
+
   public List<NodeOperationDescriptor> getNodeOperationDescriptors() {
     return nodeOperationDescriptors;
+  }
+
+  public Function<EObject, String> getBuildText() {
+    return buildText;
   }
 
   public java.util.function.Function<Object, Image> getNodeIconFunction() {

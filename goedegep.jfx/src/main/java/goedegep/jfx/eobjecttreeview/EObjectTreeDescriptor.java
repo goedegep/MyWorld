@@ -15,6 +15,7 @@ import goedegep.util.text.Indent;
  * The descriptor consists of EObjectTreeItemClassDescriptor's for the classes within an EObject hierarchy.
  */
 public class EObjectTreeDescriptor {
+  @SuppressWarnings("unused")
   private static final Logger LOGGER = Logger.getLogger(EObjectTreeDescriptor.class.getName());
   private static final String NEWLINE = System.getProperty("line.separator");
 

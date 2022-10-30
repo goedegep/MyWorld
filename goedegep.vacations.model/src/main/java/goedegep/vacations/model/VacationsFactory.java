@@ -112,6 +112,15 @@ public interface VacationsFactory extends EFactory {
   MapImage createMapImage();
 
   /**
+   * Returns a new object of class '<em>Day Trip</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Day Trip</em>'.
+   * @generated
+   */
+  DayTrip createDayTrip();
+
+  /**
    * Returns the package supported by this factory.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->

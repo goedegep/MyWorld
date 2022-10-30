@@ -39,6 +39,7 @@ module com.gluonhq.maps {
     requires transitive goedegep.gpx.model;
     requires goedegep.appgenfx;
     requires goedegep.resources;
+    requires goedegep.poi.app;
 
     uses com.gluonhq.maps.tile.TileRetriever;
 

@@ -1,7 +1,7 @@
 package goedegep.vacations.app.logic;
 
-import java.io.File;
 import java.io.FileNotFoundException;
+import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
@@ -12,32 +12,19 @@ import org.commonmark.node.Node;
 import org.commonmark.parser.Parser;
 import org.commonmark.renderer.html.HtmlRenderer;
 
-import com.gluonhq.maps.GPXLayer;
-import com.gluonhq.maps.MapView;
-
-import goedegep.appgen.swing.DefaultCustomization;
-import goedegep.gluonmaps.gpx.GPXFile;
-import goedegep.gluonmaps.gpx.GPXMeasurable;
 import goedegep.gpx.GpxUtil;
+import goedegep.gpx.app.Activity;
+import goedegep.gpx.app.GpxAppUtil;
 import goedegep.gpx.model.DocumentRoot;
 import goedegep.gpx.model.GpxType;
 import goedegep.gpx.model.MetadataType;
-import goedegep.gpx.parser.model.GPX;
-import goedegep.gpx.parser.model.Metadata;
-import goedegep.jfx.CustomizationFx;
-import goedegep.jfx.DefaultCustomizationFx;
-import goedegep.jfx.JfxStage;
 import goedegep.poi.app.guifx.POIIcons;
 import goedegep.poi.model.POICategoryId;
+import goedegep.resources.ImageSize;
 import goedegep.types.model.FileReference;
 import goedegep.util.emf.EMFResource;
-import goedegep.util.file.FileUtils;
 import goedegep.util.html.HtmlUtil;
 import goedegep.util.text.Indent;
-import goedegep.vacations.app.guifx.ActivityIcons;
-import goedegep.vacations.app.guifx.MapRelatedItemsLayer;
-import goedegep.vacations.app.guifx.VacationsWindow;
-import goedegep.vacations.model.ActivityLabel;
 import goedegep.vacations.model.Day;
 import goedegep.vacations.model.GPXTrack;
 import goedegep.vacations.model.Location;
@@ -46,10 +33,6 @@ import goedegep.vacations.model.Picture;
 import goedegep.vacations.model.Vacation;
 import goedegep.vacations.model.VacationElement;
 import goedegep.vacations.model.VacationsPackage;
-import javafx.geometry.Point2D;
-import javafx.scene.Scene;
-import javafx.scene.SnapshotParameters;
-import javafx.scene.image.WritableImage;
 
 /**
  * This class generates an HTML document for a Vacation.
@@ -59,8 +42,6 @@ public class VacationToHtmlConverter extends VacationToTextConverterAbstract {
   private static final SimpleDateFormat DF = new SimpleDateFormat("dd-MM-yyyy");
   
   private POIIcons poiIcons;
-  private VacationsWindow vacationsWindow;
-  private ActivityIcons activityIcons = new ActivityIcons();
   private StringBuilder buf = new StringBuilder();
   private Parser parser = Parser.builder().build();
   private HtmlRenderer renderer = HtmlRenderer.builder().build();
@@ -84,9 +65,8 @@ public class VacationToHtmlConverter extends VacationToTextConverterAbstract {
    * 
    * @param poiIcons the object to provide POI icons.
    */
-  public VacationToHtmlConverter(POIIcons poiIcons, VacationsWindow vacationsWindow) {
+  public VacationToHtmlConverter(POIIcons poiIcons) {
     this.poiIcons = poiIcons;
-    this.vacationsWindow = vacationsWindow;
   }
   
   /**
@@ -268,9 +248,9 @@ public class VacationToHtmlConverter extends VacationToTextConverterAbstract {
     
     buf.append("<p/>");
     
-    if (location.isSetLabel()) {
+    if (location.isStayedAtThisLocation()) {
       buf.append("<b><i>");
-      buf.append(HtmlUtil.encodeHTML(location.getLabel().getLiteral()));
+      buf.append(HtmlUtil.encodeHTML("Verblijf"));
       buf.append("</i></b><nbsp/>");
     }
     
@@ -439,34 +419,37 @@ public class VacationToHtmlConverter extends VacationToTextConverterAbstract {
           gpxResource.load(trackReference.getFile());
           DocumentRoot documentRoot = gpxResource.getEObject();
           GpxType gpxType = documentRoot.getGpx();
+          Activity activity = GpxAppUtil.getActivity(gpxType);
+          if (activity != null) {
+            buf.append("<img src=\"");
+            activity.getIconUrl(ImageSize.SIZE_0);
+            URL url = activity.getIconUrl(ImageSize.SIZE_0);
+            if (url == null) {
+              LOGGER.severe("Stop here");
+              url = activity.getIconUrl(ImageSize.SIZE_0);
+            }
+            buf.append(HtmlUtil.encodeHTML(activity.getIconUrl(ImageSize.SIZE_0).toString()));
+            buf.append("\" height=\"16\" width=\"16\"/> ");
+          }
+          String name = null;
           MetadataType metadataType = gpxType.getMetadata();
-          String keywords = metadataType.getKeywords();
-          ActivityLabel activityLabel = null;
-          if ((keywords != null)  &&  !keywords.isEmpty()) {
-            for (String keyword: keywords.split(",")) {
-              keyword = keyword.trim().toLowerCase();
-              switch (keyword) {
-              case "wandeling":
-                activityLabel = ActivityLabel.WANDELING;
-                break;
-
-              case "autorit":
-                activityLabel = ActivityLabel.AUTORIT;
-                break;
+          if (metadataType != null) {
+            name = metadataType.getName();
+          }
+          if (name != null) {
+            buf.append(HtmlUtil.encodeHTML(name));
+          } else {
+            FileReference fileReference = gpxTrack.getTrackReference();
+            if (fileReference != null) {
+              String title = fileReference.getTitle();
+              if (title != null) {
+                buf.append(HtmlUtil.encodeHTML(title));
               }
             }
           }
-          if (activityLabel != null) {
-            buf.append("<img src=\"");
-            buf.append(HtmlUtil.encodeHTML(activityIcons.getIconUrl(activityLabel).toString()));
-            buf.append("\" height=\"16\" width=\"16\"/> ");
-          }
-          String name = metadataType.getName();
-          if (name != null) {
-            buf.append(HtmlUtil.encodeHTML(name));
-          }
           double length = gpxType.getLength();
           double cumulativeAscent = gpxType.getCumulativeAscent();
+          double cumulativeDescent = gpxType.getCumulativeDescent();
           if (length > 0.01) {
             buf.append(", lengte ");
             buf.append(String.format("%1$.1f", length/1000d));
@@ -477,6 +460,12 @@ public class VacationToHtmlConverter extends VacationToTextConverterAbstract {
             buf.append(String.format("%1$.0f", cumulativeAscent));
             buf.append("m");
           }
+          if (cumulativeDescent > 20) {
+            buf.append(", totale daling ");
+            buf.append(String.format("%1$.0f", cumulativeDescent));
+            buf.append("m");
+          }
+          
         } catch (FileNotFoundException e) {
           e.printStackTrace();
         }

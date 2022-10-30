@@ -2,7 +2,7 @@ package goedegep.jfx;
 
 import java.util.logging.Logger;
 
-import goedegep.appgen.ImageSize;
+import goedegep.resources.ImageSize;
 //import goedegep.util.img.ImageUtil;
 import javafx.scene.image.Image;
 

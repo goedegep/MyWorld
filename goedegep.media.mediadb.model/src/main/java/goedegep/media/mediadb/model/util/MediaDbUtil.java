@@ -593,7 +593,7 @@ public class MediaDbUtil {
    * @return true if I should have the Track on disc, false otherwise.
    */
   public static boolean haveTrackOnDisc(TrackReference trackReference) {
-    LOGGER.info("=> track=" + trackReference.getTrack().getTitle());
+    LOGGER.info("=> track=" + (trackReference.getTrack() != null ? trackReference.getTrack().getTitle() : "no track"));
 
     MyTrackInfo myTrackInfo = trackReference.getMyTrackInfo();
     if (myTrackInfo == null) {

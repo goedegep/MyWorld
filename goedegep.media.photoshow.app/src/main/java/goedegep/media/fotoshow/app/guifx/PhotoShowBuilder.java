@@ -1510,7 +1510,7 @@ public class PhotoShowBuilder extends JfxStage {
      buf.append("*");
    }
    String fileName = emfResource.getFileName();
-   if (fileName.equals("")) {
+   if (fileName == null) {
      fileName = "<NoName>";
    }
    buf.append(fileName);

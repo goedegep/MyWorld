@@ -2,33 +2,29 @@
  */
 package goedegep.gpx.model.impl;
 
-import goedegep.geo.dbl.WGS84Coordinates;
-import goedegep.gpx.model.ExtensionsType;
-import goedegep.gpx.model.GPXPackage;
-import goedegep.gpx.model.TrksegType;
-import goedegep.gpx.model.WptType;
-
 import java.lang.reflect.InvocationTargetException;
 import java.math.BigDecimal;
 import java.util.Collection;
-
 import java.util.Date;
+import java.util.logging.Logger;
 
 import javax.xml.datatype.XMLGregorianCalendar;
 
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
-
 import org.eclipse.emf.common.util.EList;
-
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.InternalEObject;
-
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
-
 import org.eclipse.emf.ecore.util.EObjectContainmentEList;
 import org.eclipse.emf.ecore.util.InternalEList;
+
+import goedegep.geo.dbl.WGS84Coordinates;
+import goedegep.gpx.model.ExtensionsType;
+import goedegep.gpx.model.GPXPackage;
+import goedegep.gpx.model.TrksegType;
+import goedegep.gpx.model.WptType;
 
 /**
  * <!-- begin-user-doc -->
@@ -45,6 +41,8 @@ import org.eclipse.emf.ecore.util.InternalEList;
  * @generated
  */
 public class TrksegTypeImpl extends MinimalEObjectImpl.Container implements TrksegType {
+  private static final Logger LOGGER = Logger.getLogger(TrksegTypeImpl.class.getName());
+
   private Double myCumulativeAscent = null;
   private Double myCumulativeDescent = null;
   
@@ -176,20 +174,32 @@ public class TrksegTypeImpl extends MinimalEObjectImpl.Container implements Trks
     if (myCumulativeAscent != null) {
       return myCumulativeAscent;
     }
-    double ascent = 0.0;
+    
+    BigDecimal previousElevation = null;
+    BigDecimal totalElevation = BigDecimal.ZERO;
+    int pointsUsed = 0;
+    int pointsSkipped = 0;
 
-    if (getTrkpt().size() <= 1) {
-      return 0.0;
-    }
-
-    for (int i = 0; i < getTrkpt().size(); i++) {
-      if (i > 0 && getTrkpt().get(i - 1).getEle().doubleValue() < getTrkpt().get(i).getEle().doubleValue()) {
-        ascent += getTrkpt().get(i).getEle().doubleValue() - getTrkpt().get(i - 1).getEle().doubleValue();
+    for ( WptType segmentPoint: getTrkpt()) {
+      BigDecimal elevation = segmentPoint.getEle();
+      if (elevation != null) {
+        if (previousElevation != null) {
+          BigDecimal deltaAscent = elevation.subtract(previousElevation);
+          if (deltaAscent.compareTo(BigDecimal.ZERO) == 1) {
+            totalElevation = totalElevation.add(deltaAscent);
+          }
+        }
+        
+        previousElevation = elevation;
+        pointsUsed++;
+      } else {
+        pointsSkipped++;
       }
     }
+    LOGGER.info("New: " + totalElevation.doubleValue() + ", used: " + pointsUsed + ", skipped: " + pointsSkipped);
 
-    myCumulativeAscent = ascent;
-    return ascent;
+    myCumulativeAscent = totalElevation.doubleValue();
+    return myCumulativeAscent;
   }
 
   /**
@@ -201,20 +211,31 @@ public class TrksegTypeImpl extends MinimalEObjectImpl.Container implements Trks
     if (myCumulativeDescent != null) {
       return myCumulativeDescent;
     }
-    double descent = 0.0;
+    
+    BigDecimal previousElevation = null;
+    BigDecimal totalElevation = BigDecimal.ZERO;
+    int pointsUsed = 0;
+    int pointsSkipped = 0;
 
-    if (getTrkpt().size() <= 1) {
-      return 0.0;
-    }
-
-    for (int i = 0; i < getTrkpt().size(); i++) {
-      if (i > 0 && getTrkpt().get(i - 1).getEle().doubleValue() > getTrkpt().get(i).getEle().doubleValue()) {
-        descent += getTrkpt().get(i - 1).getEle().doubleValue() - getTrkpt().get(i).getEle().doubleValue();
+    for (WptType segmentPoint: getTrkpt()) {
+      BigDecimal elevation = segmentPoint.getEle();
+      if (elevation != null) {
+        if (previousElevation != null) {
+          BigDecimal deltaAscent = elevation.subtract(previousElevation);
+          if (deltaAscent.compareTo(BigDecimal.ZERO) == -1) {
+            totalElevation = totalElevation.add(deltaAscent);
+          }
+        }
+        
+        previousElevation = elevation;
+        pointsUsed++;
+      } else {
+        pointsSkipped++;
       }
     }
+    myCumulativeDescent = totalElevation.negate().doubleValue();
 
-    myCumulativeDescent = descent;
-    return descent;
+    return myCumulativeDescent;
   }
 
     /**

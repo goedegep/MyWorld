@@ -2,12 +2,12 @@ package goedegep.app.finan.direktbankapp;
 
 import goedegep.app.finan.gen.BankAccountsOverviewPanel;
 import goedegep.appgen.swing.Customization;
-import goedegep.appgen.ImageSize;
 import goedegep.appgen.WindowUtil;
 import goedegep.appgen.swing.AppFrame;
 import goedegep.appgen.swing.ComponentFactory;
 import goedegep.appgen.swing.MenuFactory;
 import goedegep.finan.direktbank.Direktbank;
+import goedegep.resources.ImageSize;
 
 import java.awt.AWTEvent;
 import java.awt.BorderLayout;

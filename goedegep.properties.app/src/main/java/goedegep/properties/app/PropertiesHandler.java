@@ -5,12 +5,17 @@ import java.io.FileNotFoundException;
 import java.lang.reflect.Field;
 import java.util.logging.Logger;
 
+import org.eclipse.emf.ecore.EPackage;
+import org.eclipse.emf.ecore.EcorePackage;
+
 import goedegep.properties.model.PropertiesFactory;
 import goedegep.properties.model.PropertiesPackage;
 import goedegep.properties.model.Property;
 import goedegep.properties.model.PropertyDescriptor;
 import goedegep.properties.model.PropertyDescriptorGroup;
 import goedegep.properties.model.PropertyGroup;
+import goedegep.properties.model.PropertyType;
+import goedegep.util.clazz.ClassUtil;
 import goedegep.util.emf.EMFResource;
 
 /**
@@ -54,12 +59,13 @@ public class PropertiesHandler {
     EMFResource<PropertyDescriptorGroup> emfResource = new EMFResource<>(
         PropertiesPackage.eINSTANCE,
         () -> PropertiesFactory.eINSTANCE.createPropertyDescriptorGroup());
+    
     try {
-      resourceFileName = createResourcePath(runningInEclipse, projectPath, propertyDescriptorsFileName);
+      resourceFileName = createResourcePath(runningInEclipse, projectPath, propertyDescriptorsFileName, false);
       PropertyDescriptorGroup propertyDescriptorGroup = emfResource.load(resourceFileName);
       LOGGER.info("propertyDescriptorGroup: " + propertyDescriptorGroup.toString());
       Class<?> registryClass = fillRegistryGroup(propertyDescriptorGroup);
-//      LOGGER.info(ClassUtil.staticFieldsToString(registryClass));
+      LOGGER.info(ClassUtil.staticFieldsToString(registryClass));
       
       try {
         Field propertyDescriptorsResourceField = registryClass.getField(PROPERTY_DESCRIPTORS_RESOURCE_FIELDNAME);
@@ -71,16 +77,18 @@ public class PropertiesHandler {
       } catch (SecurityException | IllegalArgumentException | IllegalAccessException e) {
         e.printStackTrace();
       }
-//      LOGGER.info(ClassUtil.staticFieldsToString(registryClass));
+      LOGGER.info(ClassUtil.staticFieldsToString(registryClass));
       
       try {
         Field customPropertiesFileField = registryClass.getField(CUSTOM_PROPERTIES_FILE_FIELDNAME);
         String customPropertiesFileName = (String) customPropertiesFileField.get(null);
+        LOGGER.severe("customPropertiesFileName: " + customPropertiesFileName);
         if (customPropertiesFileName != null) {
           EMFResource<PropertyGroup> propertiesResource = new EMFResource<PropertyGroup>(
               PropertiesPackage.eINSTANCE,
               () -> PropertiesFactory.eINSTANCE.createPropertyGroup());
-          resourceFileName = createResourcePath(runningInEclipse, projectPath, customPropertiesFileName);
+          resourceFileName = createResourcePath(runningInEclipse, projectPath, customPropertiesFileName, true);
+          LOGGER.severe("resourceFileName: " + resourceFileName);
           customPropertiesFileField.set(customPropertiesFileField, resourceFileName);
           try {
             PropertyGroup propertyGroup = propertiesResource.load(resourceFileName);
@@ -117,14 +125,22 @@ public class PropertiesHandler {
    * @param fileName filename of the resource.
    * @return a path to the resource
    */
-  private static String createResourcePath(boolean runningInEclipse, String projectPath, String fileName) {
-    if (runningInEclipse  &&  (projectPath != null)) {
-      File file = new File(projectPath, fileName);
-      LOGGER.info("Resource path = " + file.getAbsolutePath());
-      return file.getAbsolutePath();
+  private static String createResourcePath(boolean runningInEclipse, String projectPath, String fileName, boolean isUserFile) {
+    if (runningInEclipse) {
+      if (projectPath != null) {
+        File file = new File(projectPath, fileName);
+        LOGGER.info("Resource path = " + file.getAbsolutePath());
+        return file.getAbsolutePath();
+      } else {
+        return fileName;
+      }
     } else {
-      LOGGER.info("Resource path = " + fileName);
-      return fileName;
+      if (isUserFile) {
+        LOGGER.info("Resource path = " + fileName);
+        return "..\\" + fileName;
+      } else {
+        return fileName;
+      }
     }
   }
   
@@ -173,7 +189,12 @@ public class PropertiesHandler {
 //          }
 
           Field field = registryClass.getField(registryName);
-          field.set(null, propertyDescriptor.getInitialValue());
+          if (propertyDescriptor.getType() == PropertyType.BOOLEAN) {
+            Boolean booleanValue = Boolean.parseBoolean(propertyDescriptor.getInitialValue());
+            field.set(null, booleanValue);
+          } else {
+            field.set(null, propertyDescriptor.getInitialValue());
+          }
           LOGGER.info("Registry entry set for property " + propertyName +
               ". Registry entry name = " + registryName + ", value = " + propertyDescriptor.getInitialValue());
         } else {

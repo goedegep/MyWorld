@@ -11,7 +11,10 @@ import java.util.logging.Logger;
 import goedegep.appgen.TableRowOperation;
 import goedegep.appgen.TableRowOperationDescriptor;
 import goedegep.invandprop.app.InvoicesAndPropertiesRegistry;
+import goedegep.invandprop.model.Expenditure;
 import goedegep.invandprop.model.InvAndPropPackage;
+import goedegep.invandprop.model.Invoice;
+import goedegep.invandprop.model.InvoiceItem;
 import goedegep.invandprop.model.InvoicesAndProperties;
 import goedegep.invandprop.model.Property;
 import goedegep.jfx.ComponentFactoryFx;
@@ -20,6 +23,7 @@ import goedegep.jfx.JfxStage;
 import goedegep.jfx.eobjecttable.EObjectTable;
 import goedegep.jfx.eobjecttable.EObjectTableColumnDescriptorAbstract;
 import goedegep.jfx.eobjecttable.EObjectTableColumnDescriptorBasic;
+import goedegep.jfx.eobjecttable.EObjectTableColumnDescriptorCustom;
 import goedegep.jfx.eobjecttable.EObjectTableControlPanel;
 import goedegep.jfx.eobjecttable.EObjectTableDescriptor;
 import goedegep.types.model.FileReference;
@@ -34,15 +38,18 @@ import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.SplitPane;
+import javafx.scene.control.TableCell;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
+import javafx.util.Callback;
 
 public class PropertiesWindow extends JfxStage {
-  @SuppressWarnings("unused")
   private static final Logger     LOGGER = Logger.getLogger(PropertiesWindow.class.getName());
   private static final String     WINDOW_TITLE = "Properties";
 
@@ -51,6 +58,7 @@ public class PropertiesWindow extends JfxStage {
   
   private CustomizationFx customization;
   private InvoicesAndProperties invoicesAndProperties = null;
+  private InvoicesAndPropertiesMenuWindow invoicesAndPropertiesMenuWindow;
   
   private ComponentFactoryFx componentFactory;
   
@@ -67,11 +75,12 @@ public class PropertiesWindow extends JfxStage {
    * @param customization GUI customization.
    * @param invoicesAndProperties the invoices and properties from which the properties are shown.
    */
-  public PropertiesWindow(CustomizationFx customization, InvoicesAndProperties invoicesAndProperties) {
+  public PropertiesWindow(CustomizationFx customization, InvoicesAndProperties invoicesAndProperties, InvoicesAndPropertiesMenuWindow invoicesAndPropertiesMenuWindow) {
     super(WINDOW_TITLE, customization);
     
     this.customization = customization;
     this.invoicesAndProperties = invoicesAndProperties;
+    this.invoicesAndPropertiesMenuWindow = invoicesAndPropertiesMenuWindow;
     
     componentFactory = customization.getComponentFactoryFx();
     
@@ -222,9 +231,14 @@ public class PropertiesWindow extends JfxStage {
    * @return the created propertiesTable.
    */
   private EObjectTable<Property> createPropertiesTable() {
-    propertiesTable = new EObjectTable<Property>(customization, INVOICES_AND_PROPERTIES_PACKAGE.getInvoice(), new PropertiesTableDescriptor(), invoicesAndProperties.getProperties(), invoicesAndProperties.getProperties().getProperties());
+    propertiesTable = new EObjectTable<Property>(customization, INVOICES_AND_PROPERTIES_PACKAGE.getInvoice(), new PropertiesTableDescriptor(invoicesAndPropertiesMenuWindow), invoicesAndProperties.getProperties(), invoicesAndProperties.getProperties().getProperties());
         
     return propertiesTable;
+  }
+
+  public void selectAndShow(Property property) {
+    propertiesTable.getSelectionModel().select(property);
+    propertiesTable.scrollTo(property);
   }
 }
 
@@ -235,6 +249,8 @@ public class PropertiesWindow extends JfxStage {
 class PropertiesTableDescriptor extends EObjectTableDescriptor<Property> {
   private static InvAndPropPackage INVOICES_AND_PROPERTIES_PACKAGE = InvAndPropPackage.eINSTANCE;
   
+  private static EObjectTableColumnDescriptorCustom<Property> expenditureColumn = new EObjectTableColumnDescriptorCustom<>(INVOICES_AND_PROPERTIES_PACKAGE.getProperty_Expenditure(), "Expenditure", 300, false, true, null);
+  
   private static List<EObjectTableColumnDescriptorAbstract<Property>> columnDescriptors = List.<EObjectTableColumnDescriptorAbstract<Property>>of(
       new EObjectTableColumnDescriptorBasic<Property>(INVOICES_AND_PROPERTIES_PACKAGE.getProperty_Description(), "Description", true, true),
       new EObjectTableColumnDescriptorBasic<Property>(INVOICES_AND_PROPERTIES_PACKAGE.getProperty_Brand(), "Brand", true, true),
@@ -244,7 +260,7 @@ class PropertiesTableDescriptor extends EObjectTableDescriptor<Property> {
       new EObjectTableColumnDescriptorBasic<Property>(INVOICES_AND_PROPERTIES_PACKAGE.getProperty_FromDate(), "From date", true, true),
       new EObjectTableColumnDescriptorBasic<Property>(INVOICES_AND_PROPERTIES_PACKAGE.getProperty_UntilDate(), "Until date", true, true),
       new EObjectTableColumnDescriptorBasic<Property>(INVOICES_AND_PROPERTIES_PACKAGE.getProperty_Archive(), "Archived", true, true),
-      new EObjectTableColumnDescriptorBasic<Property>(INVOICES_AND_PROPERTIES_PACKAGE.getProperty_Expenditure(), "Expenditure", 300, true, true, new ExpenditureStringConverter())
+      expenditureColumn
       );
   
   @SuppressWarnings("serial")
@@ -254,10 +270,60 @@ class PropertiesTableDescriptor extends EObjectTableDescriptor<Property> {
     }
   };
   
-  public PropertiesTableDescriptor() {
+  public PropertiesTableDescriptor(InvoicesAndPropertiesMenuWindow invoicesAndPropertiesMenuWindow) {
     super("There are no properties to show", null, columnDescriptors, rowOperations);
+    
+    expenditureColumn.setCellFactory(new ExpenditureCellFactory(invoicesAndPropertiesMenuWindow));
   }
   
+}
+
+
+class ExpenditureCellFactory implements Callback<TableColumn<Property, Object>, TableCell<Property, Object>>  {
+  private InvoicesAndPropertiesMenuWindow invoicesAndPropertiesMenuWindow;
+  
+  public ExpenditureCellFactory(InvoicesAndPropertiesMenuWindow invoicesAndPropertiesMenuWindow) {
+    this.invoicesAndPropertiesMenuWindow = invoicesAndPropertiesMenuWindow;
+  }
+
+  @Override
+  public TableCell<Property, Object> call(TableColumn<Property, Object> param) {
+    return new ExpenditureCell(invoicesAndPropertiesMenuWindow);
+  }
+  
+}
+
+class ExpenditureCell extends TextFieldTableCell<Property, Object> {
+  private static final Logger LOGGER = Logger.getLogger(PurchaseCell.class.getName());
+  
+  private ExpenditureStringConverter stringConverter = new ExpenditureStringConverter();
+  private Invoice invoice;
+
+  public ExpenditureCell(InvoicesAndPropertiesMenuWindow invoicesAndPropertiesMenuWindow) {
+    setOnMouseClicked(e -> {
+      LOGGER.severe("Invoice: " + invoice.toString());
+      InvoicesWindow invoicesWindow = invoicesAndPropertiesMenuWindow.getInvoicesWindow();
+      invoicesWindow.selectAndShow(invoice);
+      invoicesWindow.show();
+    });
+  }
+
+  @Override
+  public void updateItem(Object item, boolean empty) {
+    setText(null);
+
+    if (item != null) {
+      if (item instanceof Expenditure expenditure) {
+        setText(stringConverter.toString(expenditure));
+      } else {
+        setText("Unknow item");
+      }
+    } else {
+      invoice = null;
+    }
+    
+  }
+
 }
 
 class ListCellWithContextMenu extends ListCell<FileReference> {

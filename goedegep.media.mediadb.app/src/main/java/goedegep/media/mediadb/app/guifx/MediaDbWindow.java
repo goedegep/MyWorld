@@ -11,7 +11,6 @@ import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.util.EContentAdapter;
 
-import goedegep.appgen.ImageSize;
 import goedegep.jfx.AppResourcesFx;
 import goedegep.jfx.ComponentFactoryFx;
 import goedegep.jfx.CustomizationFx;
@@ -42,6 +41,7 @@ import goedegep.media.mediadb.trackinfo.TrackInfoErrorInfo;
 import goedegep.media.mediadb.trackinfo.TrackInfoHandler;
 import goedegep.media.musicfolder.MusicFolderContent;
 import goedegep.properties.app.guifx.PropertiesEditor;
+import goedegep.resources.ImageSize;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -330,19 +330,19 @@ public class MediaDbWindow extends JfxStage {
     menu = new Menu("File");
     
     
-    // File: Save AlbumInfo files
-    MenuUtil.addMenuItem(menu, "Save AlbumInfo files", new EventHandler<ActionEvent>()  {
-      public void handle(ActionEvent e) {
-        saveMediaDbToAlbumInfoFiles();
-      }
-    });
-    
-    // File: Save AlbumInfo file ...
-    MenuUtil.addMenuItem(menu, "Save AlbumInfo file ...", new EventHandler<ActionEvent>()  {
-      public void handle(ActionEvent e) {
-        saveMediaDbArtistAlbumsToAlbumInfoFile();
-      }
-    });
+//    // File: Save AlbumInfo files
+//    MenuUtil.addMenuItem(menu, "Save AlbumInfo files", new EventHandler<ActionEvent>()  {
+//      public void handle(ActionEvent e) {
+//        saveMediaDbToAlbumInfoFiles();
+//      }
+//    });
+//    
+//    // File: Save AlbumInfo file ...
+//    MenuUtil.addMenuItem(menu, "Save AlbumInfo file ...", new EventHandler<ActionEvent>()  {
+//      public void handle(ActionEvent e) {
+//        saveMediaDbArtistAlbumsToAlbumInfoFile();
+//      }
+//    });
 
     // File: Edit Property Descriptors
     if (MediaRegistry.developmentMode) {

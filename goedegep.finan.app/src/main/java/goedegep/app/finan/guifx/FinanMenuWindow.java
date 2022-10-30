@@ -6,7 +6,6 @@ import goedegep.app.finan.finanapp.FinanMainWindow;
 import goedegep.app.finan.finanapp.guifx.FinanResourcesFx;
 import goedegep.app.finan.gen.AppModules;
 import goedegep.app.finan.registry.FinanRegistry;
-import goedegep.appgen.ImageSize;
 import goedegep.appgen.swing.Customizations;
 import goedegep.finan.Finan;
 import goedegep.finan.investmentinsurances.app.guifx.InvestmentInsurancesOverviewWindow;
@@ -20,6 +19,7 @@ import goedegep.jfx.JfxStage;
 import goedegep.jfx.MenuUtil;
 import goedegep.jfx.PropertyDescriptorsEditorFx;
 import goedegep.properties.app.guifx.PropertiesEditor;
+import goedegep.resources.ImageSize;
 import goedegep.rolodex.app.RolodexRegistry;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -155,14 +155,13 @@ public class FinanMenuWindow extends JfxStage {
           showPropertyDescriptorsEditor();
         }
       });
-      
-      MenuUtil.addMenuItem(menu, "Edit Properties", new EventHandler<ActionEvent>()  {
-        public void handle(ActionEvent e) {
-          showPropertiesEditor();
-        }
-      });
-      
     }
+      
+    MenuUtil.addMenuItem(menu, "Edit Properties", new EventHandler<ActionEvent>()  {
+      public void handle(ActionEvent e) {
+        showPropertiesEditor();
+      }
+    });
     
     menuBar.getMenus().add(menu);
     
@@ -174,6 +173,6 @@ public class FinanMenuWindow extends JfxStage {
   }
   
   private void showPropertiesEditor() {
-    new PropertiesEditor("Vacation properties", customization, FinanRegistry.propertyDescriptorsResource, FinanRegistry.customPropertiesFile);
+    new PropertiesEditor("Finan properties", customization, FinanRegistry.propertyDescriptorsResource, FinanRegistry.customPropertiesFile);
   }
 }

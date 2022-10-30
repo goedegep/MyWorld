@@ -13,7 +13,6 @@ import org.eclipse.emf.ecore.util.InternalEList;
 
 import goedegep.poi.model.POICategoryId;
 import goedegep.util.datetime.FlexDate;
-import goedegep.vacations.model.ActivityLabel;
 import goedegep.vacations.model.Boundary;
 import goedegep.vacations.model.BoundingBox;
 import goedegep.vacations.model.Location;
@@ -39,13 +38,13 @@ import java.util.Collection;
  *   <li>{@link goedegep.vacations.model.impl.LocationImpl#getName <em>Name</em>}</li>
  *   <li>{@link goedegep.vacations.model.impl.LocationImpl#getWebSite <em>Web Site</em>}</li>
  *   <li>{@link goedegep.vacations.model.impl.LocationImpl#getDescription <em>Description</em>}</li>
- *   <li>{@link goedegep.vacations.model.impl.LocationImpl#getLabel <em>Label</em>}</li>
  *   <li>{@link goedegep.vacations.model.impl.LocationImpl#getDuration <em>Duration</em>}</li>
  *   <li>{@link goedegep.vacations.model.impl.LocationImpl#getStartDate <em>Start Date</em>}</li>
  *   <li>{@link goedegep.vacations.model.impl.LocationImpl#getEndDate <em>End Date</em>}</li>
  *   <li>{@link goedegep.vacations.model.impl.LocationImpl#getBoundingbox <em>Boundingbox</em>}</li>
  *   <li>{@link goedegep.vacations.model.impl.LocationImpl#getBoundaries <em>Boundaries</em>}</li>
  *   <li>{@link goedegep.vacations.model.impl.LocationImpl#isReferenceOnly <em>Reference Only</em>}</li>
+ *   <li>{@link goedegep.vacations.model.impl.LocationImpl#isStayedAtThisLocation <em>Stayed At This Location</em>}</li>
  * </ul>
  *
  * @generated
@@ -342,35 +341,6 @@ public class LocationImpl extends VacationElementImpl implements Location {
   protected boolean descriptionESet;
 
   /**
-   * The default value of the '{@link #getLabel() <em>Label</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getLabel()
-   * @generated
-   * @ordered
-   */
-  protected static final ActivityLabel LABEL_EDEFAULT = ActivityLabel.UNSPECIFIED;
-
-  /**
-   * The cached value of the '{@link #getLabel() <em>Label</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getLabel()
-   * @generated
-   * @ordered
-   */
-  protected ActivityLabel label = LABEL_EDEFAULT;
-
-  /**
-   * This is true if the Label attribute has been set.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  protected boolean labelESet;
-
-  /**
    * The default value of the '{@link #getDuration() <em>Duration</em>}' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -505,6 +475,26 @@ public class LocationImpl extends VacationElementImpl implements Location {
    * @ordered
    */
   protected boolean referenceOnly = REFERENCE_ONLY_EDEFAULT;
+
+  /**
+   * The default value of the '{@link #isStayedAtThisLocation() <em>Stayed At This Location</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #isStayedAtThisLocation()
+   * @generated
+   * @ordered
+   */
+  protected static final boolean STAYED_AT_THIS_LOCATION_EDEFAULT = false;
+
+  /**
+   * The cached value of the '{@link #isStayedAtThisLocation() <em>Stayed At This Location</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #isStayedAtThisLocation()
+   * @generated
+   * @ordered
+   */
+  protected boolean stayedAtThisLocation = STAYED_AT_THIS_LOCATION_EDEFAULT;
 
   /**
    * <!-- begin-user-doc -->
@@ -1051,58 +1041,6 @@ public class LocationImpl extends VacationElementImpl implements Location {
    * @generated
    */
   @Override
-  public ActivityLabel getLabel() {
-    return label;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public void setLabel(ActivityLabel newLabel) {
-    ActivityLabel oldLabel = label;
-    label = newLabel == null ? LABEL_EDEFAULT : newLabel;
-    boolean oldLabelESet = labelESet;
-    labelESet = true;
-    if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, VacationsPackage.LOCATION__LABEL, oldLabel, label,
-          !oldLabelESet));
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public void unsetLabel() {
-    ActivityLabel oldLabel = label;
-    boolean oldLabelESet = labelESet;
-    label = LABEL_EDEFAULT;
-    labelESet = false;
-    if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.UNSET, VacationsPackage.LOCATION__LABEL, oldLabel,
-          LABEL_EDEFAULT, oldLabelESet));
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public boolean isSetLabel() {
-    return labelESet;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
   public Integer getDuration() {
     return duration;
   }
@@ -1408,6 +1346,30 @@ public class LocationImpl extends VacationElementImpl implements Location {
    * @generated
    */
   @Override
+  public boolean isStayedAtThisLocation() {
+    return stayedAtThisLocation;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public void setStayedAtThisLocation(boolean newStayedAtThisLocation) {
+    boolean oldStayedAtThisLocation = stayedAtThisLocation;
+    stayedAtThisLocation = newStayedAtThisLocation;
+    if (eNotificationRequired())
+      eNotify(new ENotificationImpl(this, Notification.SET, VacationsPackage.LOCATION__STAYED_AT_THIS_LOCATION,
+          oldStayedAtThisLocation, stayedAtThisLocation));
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
   public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
     switch (featureID) {
     case VacationsPackage.LOCATION__BOUNDINGBOX:
@@ -1446,8 +1408,6 @@ public class LocationImpl extends VacationElementImpl implements Location {
       return getWebSite();
     case VacationsPackage.LOCATION__DESCRIPTION:
       return getDescription();
-    case VacationsPackage.LOCATION__LABEL:
-      return getLabel();
     case VacationsPackage.LOCATION__DURATION:
       return getDuration();
     case VacationsPackage.LOCATION__START_DATE:
@@ -1460,6 +1420,8 @@ public class LocationImpl extends VacationElementImpl implements Location {
       return getBoundaries();
     case VacationsPackage.LOCATION__REFERENCE_ONLY:
       return isReferenceOnly();
+    case VacationsPackage.LOCATION__STAYED_AT_THIS_LOCATION:
+      return isStayedAtThisLocation();
     }
     return super.eGet(featureID, resolve, coreType);
   }
@@ -1503,9 +1465,6 @@ public class LocationImpl extends VacationElementImpl implements Location {
     case VacationsPackage.LOCATION__DESCRIPTION:
       setDescription((String) newValue);
       return;
-    case VacationsPackage.LOCATION__LABEL:
-      setLabel((ActivityLabel) newValue);
-      return;
     case VacationsPackage.LOCATION__DURATION:
       setDuration((Integer) newValue);
       return;
@@ -1524,6 +1483,9 @@ public class LocationImpl extends VacationElementImpl implements Location {
       return;
     case VacationsPackage.LOCATION__REFERENCE_ONLY:
       setReferenceOnly((Boolean) newValue);
+      return;
+    case VacationsPackage.LOCATION__STAYED_AT_THIS_LOCATION:
+      setStayedAtThisLocation((Boolean) newValue);
       return;
     }
     super.eSet(featureID, newValue);
@@ -1567,9 +1529,6 @@ public class LocationImpl extends VacationElementImpl implements Location {
     case VacationsPackage.LOCATION__DESCRIPTION:
       unsetDescription();
       return;
-    case VacationsPackage.LOCATION__LABEL:
-      unsetLabel();
-      return;
     case VacationsPackage.LOCATION__DURATION:
       unsetDuration();
       return;
@@ -1587,6 +1546,9 @@ public class LocationImpl extends VacationElementImpl implements Location {
       return;
     case VacationsPackage.LOCATION__REFERENCE_ONLY:
       setReferenceOnly(REFERENCE_ONLY_EDEFAULT);
+      return;
+    case VacationsPackage.LOCATION__STAYED_AT_THIS_LOCATION:
+      setStayedAtThisLocation(STAYED_AT_THIS_LOCATION_EDEFAULT);
       return;
     }
     super.eUnset(featureID);
@@ -1620,8 +1582,6 @@ public class LocationImpl extends VacationElementImpl implements Location {
       return isSetWebSite();
     case VacationsPackage.LOCATION__DESCRIPTION:
       return isSetDescription();
-    case VacationsPackage.LOCATION__LABEL:
-      return isSetLabel();
     case VacationsPackage.LOCATION__DURATION:
       return isSetDuration();
     case VacationsPackage.LOCATION__START_DATE:
@@ -1634,6 +1594,8 @@ public class LocationImpl extends VacationElementImpl implements Location {
       return boundaries != null && !boundaries.isEmpty();
     case VacationsPackage.LOCATION__REFERENCE_ONLY:
       return referenceOnly != REFERENCE_ONLY_EDEFAULT;
+    case VacationsPackage.LOCATION__STAYED_AT_THIS_LOCATION:
+      return stayedAtThisLocation != STAYED_AT_THIS_LOCATION_EDEFAULT;
     }
     return super.eIsSet(featureID);
   }

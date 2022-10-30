@@ -13,7 +13,6 @@ import java.util.Set;
 import java.util.function.BiConsumer;
 import java.util.logging.Logger;
 
-import goedegep.appgen.ImageSize;
 import goedegep.appgen.TableRowOperation;
 import goedegep.appgen.TableRowOperationDescriptor;
 import goedegep.jfx.AppResourcesFx;
@@ -45,6 +44,7 @@ import goedegep.media.mediadb.model.MyTrackInfo;
 import goedegep.media.mediadb.model.Track;
 import goedegep.media.mediadb.model.TrackReference;
 import goedegep.media.mediadb.model.util.MediaDbUtil;
+import goedegep.resources.ImageSize;
 import goedegep.util.datetime.FlexDate;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;

@@ -3,6 +3,7 @@
 package goedegep.emfsample.model.impl;
 
 import goedegep.emfsample.model.Birthday;
+import goedegep.emfsample.model.Company;
 import goedegep.emfsample.model.EmfSampleFactory;
 import goedegep.emfsample.model.EmfSamplePackage;
 import goedegep.emfsample.model.Gender;
@@ -36,6 +37,13 @@ public class EmfSamplePackageImpl extends EPackageImpl implements EmfSamplePacka
    * @generated
    */
   private EClass birthdayEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass companyEClass = null;
 
   /**
    * <!-- begin-user-doc -->
@@ -161,6 +169,26 @@ public class EmfSamplePackageImpl extends EPackageImpl implements EmfSamplePacka
    * @generated
    */
   @Override
+  public EAttribute getPerson_RetirementDate() {
+    return (EAttribute)personEClass.getEStructuralFeatures().get(4);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public EAttribute getPerson_HasChildren() {
+    return (EAttribute)personEClass.getEStructuralFeatures().get(5);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
   public EClass getBirthday() {
     return birthdayEClass;
   }
@@ -193,6 +221,26 @@ public class EmfSamplePackageImpl extends EPackageImpl implements EmfSamplePacka
   @Override
   public EAttribute getBirthday_Year() {
     return (EAttribute)birthdayEClass.getEStructuralFeatures().get(2);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public EClass getCompany() {
+    return companyEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public EReference getCompany_Employees() {
+    return (EReference)companyEClass.getEStructuralFeatures().get(0);
   }
 
   /**
@@ -239,11 +287,16 @@ public class EmfSamplePackageImpl extends EPackageImpl implements EmfSamplePacka
     createEAttribute(personEClass, PERSON__SURNAME);
     createEAttribute(personEClass, PERSON__GENDER);
     createEReference(personEClass, PERSON__BIRTHDAY);
+    createEAttribute(personEClass, PERSON__RETIREMENT_DATE);
+    createEAttribute(personEClass, PERSON__HAS_CHILDREN);
 
     birthdayEClass = createEClass(BIRTHDAY);
     createEAttribute(birthdayEClass, BIRTHDAY__DAY);
     createEAttribute(birthdayEClass, BIRTHDAY__MONTH);
     createEAttribute(birthdayEClass, BIRTHDAY__YEAR);
+
+    companyEClass = createEClass(COMPANY);
+    createEReference(companyEClass, COMPANY__EMPLOYEES);
 
     // Create enums
     genderEEnum = createEEnum(GENDER);
@@ -284,11 +337,16 @@ public class EmfSamplePackageImpl extends EPackageImpl implements EmfSamplePacka
     initEAttribute(getPerson_Surname(), ecorePackage.getEString(), "surname", null, 0, 1, Person.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getPerson_Gender(), this.getGender(), "gender", null, 0, 1, Person.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEReference(getPerson_Birthday(), this.getBirthday(), null, "birthday", null, 0, 1, Person.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getPerson_RetirementDate(), ecorePackage.getEDate(), "retirementDate", null, 0, 1, Person.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getPerson_HasChildren(), ecorePackage.getEBoolean(), "hasChildren", null, 0, 1, Person.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(birthdayEClass, Birthday.class, "Birthday", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getBirthday_Day(), ecorePackage.getEInt(), "day", null, 0, 1, Birthday.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getBirthday_Month(), ecorePackage.getEInt(), "month", null, 0, 1, Birthday.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getBirthday_Year(), ecorePackage.getEInt(), "year", null, 0, 1, Birthday.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+    initEClass(companyEClass, Company.class, "Company", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEReference(getCompany_Employees(), this.getPerson(), null, "employees", null, 0, -1, Company.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     // Initialize enums and add enum literals
     initEEnum(genderEEnum, Gender.class, "Gender");

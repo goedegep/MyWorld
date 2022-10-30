@@ -1,5 +1,6 @@
 package goedegep.myworld;
 
+import java.awt.SplashScreen;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
@@ -22,6 +23,8 @@ import org.apache.commons.cli.UnrecognizedOptionException;
 import goedegep.app.finan.guifx.FinanMenuWindow;
 import goedegep.app.finan.registry.FinanRegistry;
 import goedegep.appgen.swing.Customizations;
+import goedegep.events.app.EventsRegistry;
+import goedegep.events.app.guifx.EventsLauncher;
 import goedegep.finan.Finan;
 import goedegep.invandprop.app.InvoicesAndPropertiesRegistry;
 import goedegep.invandprop.app.guifx.InvoicesAndPropertiesMenuWindow;
@@ -46,10 +49,12 @@ import goedegep.rolodex.model.RolodexPackage;
 import goedegep.unitconverter.app.UnitConverterRegistry;
 import goedegep.unitconverter.app.guifx.UnitConverterWindow;
 import goedegep.util.emf.EMFResource;
+import goedegep.util.file.FileUtils;
 import goedegep.util.fixedpointvalue.FixedPointValue;
 import goedegep.util.money.PgCurrency;
-import goedegep.vacations.app.guifx.VacationsWindow;
+import goedegep.vacations.app.guifx.VacationsLauncher;
 import goedegep.vacations.app.logic.VacationsRegistry;
+import javafx.application.Platform;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.stage.Stage;
@@ -64,6 +69,7 @@ public class MyWorld extends JfxApplication {
   private static final String         PROGRAM_NAME = "MyWorld";
   private static final String         PROGRAM_DESCRIPTION =
                                              PROGRAM_NAME + " is my world on the computer. It consists of the following modules:" + NEWLINE +
+                                             "Events                  - Information about events" + NEWLINE +
                                              "Finan                   - Financial related stuff" + NEWLINE +
                                              "Invoices and Properties - Information about expenses and properties we own" + NEWLINE +
                                              "Media                   - Music and photos (and later movies)" + NEWLINE +
@@ -76,6 +82,7 @@ public class MyWorld extends JfxApplication {
 private static final String         MY_WORLD_PROPERTY_DESCRIPTORS_FILE = "MyWorldPropertyDescriptors.xmi";
 
 // When running in Eclipse, files are read from the related project folder.
+private static final String         EVENTS_PROJECT_PATH = "../../../goedegep.events.app/target/classes";
 private static final String         FINAN_PROJECT_PATH = "../../../goedegep.finan.app/target/classes";
 private static final String         MEDIA_PROJECT_PATH = "../../../goedegep.media.app/target/classes";
 private static final String         INVOICES_AND_PROPERTIES_PROJECT_PATH = "../../../goedegep.invandprop.app/target/classes";
@@ -113,29 +120,53 @@ private static final String         VACATIONS_PROJECT_PATH = "../../../goedegep.
    * </li>
    * </ul>
    */
+  @SuppressWarnings("deprecation")
   @Override
   public void start(Stage primaryStage) {
     LOGGER.info("=>");
     
 //    HttpUtil.setupFiddlerMonitoring();
+    Runtime.Version version = Runtime.version();
+    if (version.major() < 16) {
+      Alert alert = new Alert(AlertType.ERROR);
+      alert.setTitle("Foutmelding");
+      StringBuilder buf = new StringBuilder();
+      buf.append("Java version too old.\n");
+      buf.append("You need at least version 16, but you have ").append(version);
+      alert.setHeaderText(buf.toString());
+      alert.showAndWait();
+
+      Platform.exit();
+    }
     
     // Define command line arguments.
     Options options = new Options();
     Option applicationOption = Option.builder("a").hasArg().argName("application").
         desc("the application within MyWorld that has to be directly started (optional). Possible values are: " +
-            "\"Finan\", \"MediaDb\", \"Invoices and Properties\", \"Rolodex\", \"Unit Converter\", \"PCTools\", \\\"Vacations\\\"").build();
+            "\"Events\", \"Finan\", \"MediaDb\", \"Invoices and Properties\", \"Rolodex\", \"Unit Converter\", \"PCTools\", \\\"Vacations\\\"").build();
     options.addOption(applicationOption);
     
     boolean optionsOK = true;
+    String fileToOpen = null;
     MyWorldAppModule appModule = null;
     List<String> errorTexts = new ArrayList<>();
 
-    // Parse command line arguments.
+    // Parse/handle command line arguments.
     CommandLineParser parser = new DefaultParser();
     List<String> argsList = getParameters().getUnnamed();
     String[] args = argsList.toArray(new String[argsList.size()]);
     try {
       CommandLine cmd = parser.parse(options, args);
+      String[] arguments = cmd.getArgs();
+      
+      // Accept a single filename argument.
+      if (arguments.length > 1) {
+        errorTexts.add("At most one filename may be specified.");
+        optionsOK = false;
+      } else if (arguments.length == 1) {
+        fileToOpen = arguments[0];
+      }
+      
       if(cmd.hasOption("a")) {
         String applicationName = cmd.getOptionValue("a");
         appModule = MyWorldAppModule.getAppModuleForName(applicationName);
@@ -172,10 +203,22 @@ private static final String         VACATIONS_PROJECT_PATH = "../../../goedegep.
       }
       optionsOK = false;
     }
+    
+    if (fileToOpen != null  &&  appModule != null) {
+      errorTexts.add("You cannot specify an application and also provide a filename.");
+      optionsOK = false;
+    }
 
     if (!optionsOK) {
       LOGGER.severe("!optionsOK");
       showUsageInfoDialogAndExit(PROGRAM_NAME, options, PROGRAM_DESCRIPTION, errorTexts, args);
+    }
+    
+    if (fileToOpen != null) {
+      String fileToOpenExtension = FileUtils.getFileExtension(fileToOpen);
+      if (".gpx".equals(fileToOpenExtension)) {
+        appModule = MyWorldAppModule.PCTOOLS;
+      }
     }
 
     // Every module has its own registry.
@@ -198,6 +241,9 @@ private static final String         VACATIONS_PROJECT_PATH = "../../../goedegep.
     // For now DevelopmentMode is active when 'Running in eclipse'.
     if (runningInEclipse) {
       MyWorldRegistry.developmentMode = true;
+      if (modulesToInitialize.contains(MyWorldAppModule.EVENTS)) {
+        EventsRegistry.developmentMode = true;
+      }
       if (modulesToInitialize.contains(MyWorldAppModule.FINAN)) {
         FinanRegistry.developmentMode = true;
       }
@@ -233,7 +279,12 @@ private static final String         VACATIONS_PROJECT_PATH = "../../../goedegep.
     EObjectTable.addDefaultStringConverter(PgCurrency.class, new PgCurrencyObjectStringConverter());
     EObjectTable.addDefaultStringConverter(FixedPointValue.class, new FixedPointValueObjectStringConverter());
 
-    createAndShowApplicationWindow(appModule);
+    createAndShowApplicationWindow(appModule, fileToOpen);
+    
+    SplashScreen splashScreen = SplashScreen.getSplashScreen();
+    if (splashScreen != null) {
+      splashScreen.close();
+    }
     
     LOGGER.fine("<=");
   }
@@ -251,6 +302,7 @@ private static final String         VACATIONS_PROJECT_PATH = "../../../goedegep.
       PropertiesHandler.handleProperties(runningInEclipse, null, MY_WORLD_PROPERTY_DESCRIPTORS_FILE);
             
       PropertiesMetaInfo[] propertiesMetaInfos = {
+          new PropertiesMetaInfo(MyWorldAppModule.EVENTS, EVENTS_PROJECT_PATH, MyWorldRegistry.eventsPropertyDescriptorFileName),
           new PropertiesMetaInfo(MyWorldAppModule.FINAN, FINAN_PROJECT_PATH, MyWorldRegistry.finanPropertyDescriptorFileName),
           new PropertiesMetaInfo(MyWorldAppModule.MEDIA, MEDIA_PROJECT_PATH, MyWorldRegistry.mediaPropertyDescriptorFileName),
           new PropertiesMetaInfo(MyWorldAppModule.ROLODEX, ROLODEX_PROJECT_PATH, MyWorldRegistry.rolodexPropertyDescriptorFileName),
@@ -296,6 +348,9 @@ private static final String         VACATIONS_PROJECT_PATH = "../../../goedegep.
     // If I make them editable there will be a copy of the configuration files in the dataDirectory.
     if (modulesToInitialize.contains(MyWorldAppModule.MY_WORLD)) {
       CustomizationsFx.addCustomizations(new File(createResourcePath(runningInEclipse, null, MyWorldRegistry.configurationFile)));
+    }
+    if (modulesToInitialize.contains(MyWorldAppModule.EVENTS)) {
+      CustomizationsFx.addCustomizations(new File(createResourcePath(runningInEclipse, EVENTS_PROJECT_PATH, EventsRegistry.configurationFile)));
     }
     if (modulesToInitialize.contains(MyWorldAppModule.FINAN)) {
       CustomizationsFx.addCustomizations(new File(createResourcePath(runningInEclipse, FINAN_PROJECT_PATH, FinanRegistry.configurationFile)));
@@ -369,13 +424,17 @@ private static final String         VACATIONS_PROJECT_PATH = "../../../goedegep.
    * <p>
    * Which application window is started is determined by the <code>appModule</code> field.
    */
-  private void createAndShowApplicationWindow(MyWorldAppModule appModule) {
+  private void createAndShowApplicationWindow(MyWorldAppModule appModule, String fileToOpen) {
     Stage stage = null;
     if ((appModule == null)  ||  (appModule.equals(MyWorldAppModule.MY_WORLD))) {
       getRolodexResource();
       stage = new MyWorldMenuWindowFx(CustomizationsFx.getCustomization(MyWorldAppModule.MY_WORLD.name()));
     } else {
       switch (appModule) {
+      case EVENTS:
+        EventsLauncher.launchEventsWindow(CustomizationsFx.getCustomization(MyWorldAppModule.EVENTS.name()));
+        break;
+        
       case FINAN:
         Finan finan = new Finan(getRolodexResource().getEObject());
         stage = new FinanMenuWindow(CustomizationsFx.getCustomization(MyWorldAppModule.FINAN.name()), finan);
@@ -403,19 +462,22 @@ private static final String         VACATIONS_PROJECT_PATH = "../../../goedegep.
         break;
         
       case PCTOOLS:
-        stage = new PCToolsMenuWindow(CustomizationsFx.getCustomization(MyWorldAppModule.PCTOOLS.name()));
+        stage = new PCToolsMenuWindow(CustomizationsFx.getCustomization(MyWorldAppModule.PCTOOLS.name()), fileToOpen);
         break;
         
       case VACATIONS:
-        stage = new VacationsWindow(CustomizationsFx.getCustomization(MyWorldAppModule.VACATIONS.name()));
+        VacationsLauncher.launchVacationsWindow(CustomizationsFx.getCustomization(MyWorldAppModule.VACATIONS.name()));
         break;
         
       default:
         throw new RuntimeException("Starting module: " + appModule.getModuleName() + " stand alone isn't implemented yet.");
       }
     }
-    stage.centerOnScreen();
-    stage.show();
+    
+    if (stage != null) {
+      stage.centerOnScreen();
+      stage.show();      
+    }
   }
   
   /**

@@ -250,14 +250,14 @@ public class PictureImpl extends VacationElementImpl implements Picture {
     }
     return super.eIsSet(featureID);
   }
-  
+
   /**
    * generated NOT
    */
   public String toString() {
     String text = "(null)";
     FileReference fileReference = getPictureReference();
-    
+
     if (fileReference != null) {
       if (fileReference.getTitle() != null) {
         text = fileReference.getTitle();
@@ -265,7 +265,7 @@ public class PictureImpl extends VacationElementImpl implements Picture {
         text = fileReference.getFile();
       }
     }
-    
+
     return text;
   }
 

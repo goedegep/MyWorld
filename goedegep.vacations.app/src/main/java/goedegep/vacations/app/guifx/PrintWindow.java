@@ -92,7 +92,7 @@ public class PrintWindow extends JfxStage {
     
     // Generate HTML for the vacation.
     poiIcons = new POIIcons("POIIconResourceInfo.xmi");
-    vacationToHtmlConverter = new VacationToHtmlConverter(poiIcons, vacationsWindow);
+    vacationToHtmlConverter = new VacationToHtmlConverter(poiIcons);
     String htmlText = vacationToHtmlConverter.vacationToHtml(vacation);
     LOGGER.severe(htmlText);
         

@@ -442,6 +442,15 @@ public class GPXPackageImpl extends EPackageImpl implements GPXPackage {
    * <!-- end-user-doc -->
    * @generated
    */
+  public EAttribute getExtensionsType_Speed() {
+    return (EAttribute)extensionsTypeEClass.getEStructuralFeatures().get(1);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   public EClass getGpxType() {
     return gpxTypeEClass;
   }
@@ -1460,6 +1469,7 @@ public class GPXPackageImpl extends EPackageImpl implements GPXPackage {
 
     extensionsTypeEClass = createEClass(EXTENSIONS_TYPE);
     createEAttribute(extensionsTypeEClass, EXTENSIONS_TYPE__ANY);
+    createEAttribute(extensionsTypeEClass, EXTENSIONS_TYPE__SPEED);
 
     gpxTypeEClass = createEClass(GPX_TYPE);
     createEReference(gpxTypeEClass, GPX_TYPE__METADATA);
@@ -1640,6 +1650,7 @@ public class GPXPackageImpl extends EPackageImpl implements GPXPackage {
 
     initEClass(extensionsTypeEClass, ExtensionsType.class, "ExtensionsType", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getExtensionsType_Any(), ecorePackage.getEFeatureMapEntry(), "any", null, 0, -1, ExtensionsType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getExtensionsType_Speed(), theXMLTypePackage.getDecimal(), "speed", null, 0, 1, ExtensionsType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(gpxTypeEClass, GpxType.class, "GpxType", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEReference(getGpxType_Metadata(), this.getMetadataType(), null, "metadata", null, 0, 1, GpxType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);

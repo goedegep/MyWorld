@@ -59,7 +59,7 @@ public class UnitUtils {
    * @return the speed corresponding to the {@code tempo}
    */
   public static double tempoToSpeed(ClockTime tempo) {
-    return 3600 / tempo.getTimeInSeconds();
+    return 3600.0 / (double) tempo.getTimeInSeconds();
   }
 
 }
