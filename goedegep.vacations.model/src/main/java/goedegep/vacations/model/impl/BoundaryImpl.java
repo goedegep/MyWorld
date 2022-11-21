@@ -2,7 +2,7 @@
  */
 package goedegep.vacations.model.impl;
 
-import goedegep.geo.dbl.WGS84Coordinates;
+import goedegep.geo.WGS84Coordinates;
 import goedegep.vacations.model.Boundary;
 import goedegep.vacations.model.VacationsPackage;
 

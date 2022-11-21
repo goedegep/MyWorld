@@ -1,5 +1,8 @@
 package goedegep.resources;
 
+/**
+ * This enum provides constants for some often used image sizes.
+ */
 public enum ImageSize {
   /**
    * The image size is a bounding box of 16 x 16.

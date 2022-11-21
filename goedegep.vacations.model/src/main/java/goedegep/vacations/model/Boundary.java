@@ -2,11 +2,11 @@
  */
 package goedegep.vacations.model;
 
-import goedegep.geo.dbl.WGS84Coordinates;
-
 import org.eclipse.emf.common.util.EList;
 
 import org.eclipse.emf.ecore.EObject;
+
+import goedegep.geo.WGS84Coordinates;
 
 /**
  * <!-- begin-user-doc -->
@@ -27,7 +27,7 @@ import org.eclipse.emf.ecore.EObject;
 public interface Boundary extends EObject {
   /**
    * Returns the value of the '<em><b>Points</b></em>' attribute list.
-   * The list contents are of type {@link goedegep.geo.dbl.WGS84Coordinates}.
+   * The list contents are of type {@link goedegep.geo.WGS84Coordinates}.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @return the value of the '<em>Points</em>' attribute list.

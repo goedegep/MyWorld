@@ -12,5 +12,9 @@
     <relativePath>../goedegep.toplevelpom</relativePath>
   </parent>
   <dependencies>
+    <dependency>
+      <groupId>com.google.common.geometry</groupId>
+      <artifactId>com.google.common.geometry</artifactId>
+    </dependency>
   </dependencies>
 </project>

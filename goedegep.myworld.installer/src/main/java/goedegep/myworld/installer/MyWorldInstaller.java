@@ -1,6 +1,5 @@
 package goedegep.myworld.installer;
 
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.DirectoryIteratorException;
@@ -154,7 +153,6 @@ public class MyWorldInstaller extends JfxApplication {
   private static String[] jarFiles = {
       "co\\kaleidok\\javaFlacEncoder\\0.3.2-SNAPSHOT\\javaFlacEncoder-0.3.2-SNAPSHOT.jar",
       "com\\atlassian\\commonmark\\commonmark\\0.12.1\\commonmark-0.12.1.jar",
-//      "com\\drewnoakes\\metadata-extractor\\2.11.0\\metadata-extractor-2.11.0.jar",
       "com\\ealva\\ealvatag\\0.4.3\\ealvatag-0.4.3.jar",
       "com\\google\\code\\findbugs\\jsr305\\3.0.2\\jsr305-3.0.2.jar",
       "com\\google\\code\\gson\\gson\\2.8.9\\gson-2.8.9.jar",

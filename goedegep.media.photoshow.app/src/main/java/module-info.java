@@ -1,8 +1,8 @@
 module goedegep.media.fotoshow.app {
   exports goedegep.media.fotomapview.guifx;
-  exports goedegep.media.fotoshow.app.logic;
   exports goedegep.media.fotoshow.app;
   exports goedegep.media.fotoshow.app.guifx;
+  exports goedegep.media.photo;
 
   requires goedegep.appgen;
   requires transitive goedegep.appgenfx;
@@ -23,4 +23,6 @@ module goedegep.media.fotoshow.app {
   requires org.eclipse.emf.ecore;
   requires transitive com.gluonhq.maps;
   requires goedegep.resources;
+  requires transitive com.google.common.geometry;
+  requires goedegep.mapview;
 }

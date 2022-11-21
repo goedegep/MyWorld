@@ -9,7 +9,7 @@ import java.util.logging.Logger;
 import com.gluonhq.maps.MapLayer;
 import com.gluonhq.maps.MapPoint;
 
-import goedegep.geo.dbl.WGS84Coordinates;
+import goedegep.geo.WGS84Coordinates;
 import javafx.collections.ObservableList;
 import javafx.geometry.Point2D;
 import javafx.scene.Node;

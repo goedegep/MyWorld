@@ -4,8 +4,8 @@ import java.io.FileNotFoundException;
 import java.util.List;
 import java.util.logging.Logger;
 
-import goedegep.geo.dbl.WGS84BoundingBox;
-import goedegep.geo.dbl.WGS84Coordinates;
+import goedegep.geo.WGS84BoundingBox;
+import goedegep.geo.WGS84Coordinates;
 import goedegep.gpx.model.DocumentRoot;
 import goedegep.gpx.model.GPXFactory;
 import goedegep.gpx.model.GPXPackage;
@@ -205,7 +205,7 @@ public class GpxUtil {
       return null;
     }
     
-    return new WGS84Coordinates(firstTrackPoint.getLat().doubleValue(), firstTrackPoint.getLon().doubleValue());
+    return new WGS84Coordinates(firstTrackPoint.getLat().doubleValue(), firstTrackPoint.getLon().doubleValue(), firstTrackPoint.getEle().doubleValue());
   }
 
   /**
@@ -269,8 +269,8 @@ public class GpxUtil {
       nextNextPt = waypointList.get(startIndex+2);
       nextNextPtCoordinates = waypointLatLonToWGS84Coordinates(nextNextPt);
       
-      distance1 = checkPtCoordinates.getDistance(nextPtCoordinates);
-      distance2 = nextPtCoordinates.getDistance(nextNextPtCoordinates);
+      distance1 = checkPtCoordinates.getDistanceMeters(nextPtCoordinates);
+      distance2 = nextPtCoordinates.getDistanceMeters(nextNextPtCoordinates);
       if ((distance1 > maxDistance) && (distance2 <= maxDistance)) {
         // startIndex point is garbage, take next one
         keep[startIndex] = false;
@@ -293,8 +293,8 @@ public class GpxUtil {
       prevPrevPt = waypointList.get(endIndex-2);
       prevPrevPtCoordinates = waypointLatLonToWGS84Coordinates(prevPrevPt);
 
-      distance1 = checkPtCoordinates.getDistance(prevPtCoordinates);
-      distance2 = prevPtCoordinates.getDistance(prevPrevPtCoordinates);
+      distance1 = checkPtCoordinates.getDistanceMeters(prevPtCoordinates);
+      distance2 = prevPtCoordinates.getDistanceMeters(prevPrevPtCoordinates);
       if ((distance1 > maxDistance) && (distance2 <= maxDistance)) {
         // endIndex point is garbage, take prev one
         keep[endIndex] = false;
@@ -323,8 +323,8 @@ public class GpxUtil {
       nextPt = waypointList.get(index+1);
       nextPtCoordinates = waypointLatLonToWGS84Coordinates(nextPt);
 
-      distance1 = checkPtCoordinates.getDistance(prevPtCoordinates);
-      distance2 = prevPtCoordinates.getDistance(nextPtCoordinates);
+      distance1 = checkPtCoordinates.getDistanceMeters(prevPtCoordinates);
+      distance2 = prevPtCoordinates.getDistanceMeters(nextPtCoordinates);
       if ((distance1 > maxDistance) && (distance2 <= maxDistance)) {
         // this point is garbage
         keep[index] = false;
@@ -360,7 +360,7 @@ public class GpxUtil {
     WGS84Coordinates coordinates1 = waypointLatLonToWGS84Coordinates(waypoint1);
     WGS84Coordinates coordinates2 = waypointLatLonToWGS84Coordinates(waypoint2);
     
-    return coordinates1.elevationDiff(coordinates2);
+    return coordinates1.elevationDifference(coordinates2);
   }
   
   /**
@@ -389,7 +389,7 @@ public class GpxUtil {
     WGS84Coordinates coordinates1 = waypointLatLonToWGS84Coordinates(waypoint1);
     WGS84Coordinates coordinates2 = waypointLatLonToWGS84Coordinates(waypoint2);
     
-    return coordinates1.getDistance(coordinates2);
+    return coordinates1.getDistanceMeters(coordinates2);
   }
   
   /**

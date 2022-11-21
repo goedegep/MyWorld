@@ -3,7 +3,7 @@ package goedegep.util.douglaspeuckerreducer;
 import java.util.ArrayList;
 import java.util.List;
 
-import goedegep.geo.dbl.WGS84Coordinates;
+import goedegep.geo.WGS84Coordinates;
 
 /**
  * This class is based on

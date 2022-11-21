@@ -2,8 +2,8 @@
  */
 package goedegep.types.model.impl;
 
-import goedegep.geo.dbl.WGS84Coordinates;
 import goedegep.types.model.FileReference;
+import goedegep.geo.WGS84Coordinates;
 import goedegep.types.model.DateRateTuplet;
 import goedegep.types.model.Event;
 import goedegep.types.model.TypesFactory;

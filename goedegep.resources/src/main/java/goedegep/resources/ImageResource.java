@@ -8,7 +8,32 @@ import java.util.logging.Logger;
 import javafx.scene.image.Image;
 
 /**
- * This enum defines the available images.
+ * This enum defines and provides available images.
+ * <p>
+ * An image is defined as follows
+ * <ul>
+ * <li>information on the picture files<br/>
+ * Often an image is provided in more than one size, therefore this is a list with information per file:
+ * <ul>
+ * <li>the file name</li>
+ * <li>the width of the image in pixels</li>
+ * <li>the height of the image in pixels</li>
+ * </ul>
+ * </li>
+ * <li>description</br>
+ * A short description of the image, e.g. 'a person canoeing'.
+ * </li>
+ * <li>credits<br/>
+ * Information about the source of the picture.
+ * </li>
+ * </ul>
+ *
+ * There are methods to get the largest image available, or to get an images of a specific size. In the latter case the best fitting image is resized to the requested size.
+ * The requested size can be specified as width and height, or via one of the constants defined by the {@link ImageSize} enum.<br/>
+ * <br/>
+ * There are also methods to get the filename or URL for an image of a specific size. This can e.g. be used if you generate an HTML file which contains images.<br/>
+ * <br/>
+ * The images are loaded when first requested and are kept in memory from then on. * Images are loaded when first requested and are kept in memory from then on.
  */
 public enum ImageResource {
   BACKPACK(new ImageFileInfo[] {

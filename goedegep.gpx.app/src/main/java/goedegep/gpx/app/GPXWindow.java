@@ -14,8 +14,8 @@ import com.gluonhq.maps.GPXLayer;
 import com.gluonhq.maps.MapPoint;
 import com.gluonhq.maps.MapView;
 
-import goedegep.geo.dbl.WGS84BoundingBox;
-import goedegep.geo.dbl.WGS84Coordinates;
+import goedegep.geo.WGS84BoundingBox;
+import goedegep.geo.WGS84Coordinates;
 import goedegep.gpx.GpxUtil;
 import goedegep.gpx.model.DocumentRoot;
 import goedegep.gpx.model.GPXFactory;

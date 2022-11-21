@@ -10,11 +10,15 @@ import java.util.logging.Logger;
 import com.gluonhq.maps.MapLayer;
 import com.gluonhq.maps.MapPoint;
 import com.gluonhq.maps.MapView;
+import com.google.common.geometry.S2Iterator;
+import com.google.common.geometry.S2PointIndex;
 
-import goedegep.geo.dbl.WGS84BoundingBox;
-import goedegep.geo.dbl.WGS84Coordinates;
+import goedegep.geo.WGS84BoundingBox;
+import goedegep.geo.WGS84Coordinates;
 import goedegep.jfx.CustomizationFx;
-import goedegep.media.fotoshow.app.guifx.PhotoInfo;
+import goedegep.mapview.MapViewUtil;
+import goedegep.media.photo.PhotoMetaData;
+import goedegep.media.photo.PhotoMetaDataWithImage;
 import goedegep.resources.ImageResource;
 import goedegep.resources.ImageSize;
 import goedegep.util.img.ImageUtils;
@@ -33,45 +37,102 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.Dragboard;
+import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.TransferMode;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Polygon;
 import javafx.scene.text.Font;
 
 /**
  * This class is a {@link MapLayer} which shows the locations of photos on the map.
  * <p>
- * In the photo information, the photo pathname is shown relative to the <code>rootFolderName</code>, which is passed to the constructor.
+ * <b>index</b><br/>
+ * An point index (type S2PointIndex<PhotoMetaData>) can be set via method setPhotoIndex. If this index is set, it will be used to determine whether a photo has to be drawn or not.
+ * So it will improve the performance.<br/>
+ * Don't use this index if you are using this layer to add coordinates to a photo, because then of course this photo isn't in the index yet.<br/>
+ * 
+ * <b>photos being shown</b><br/>
+ * if <code>showPhotoIndexOnMap</code> is true, only all photos of the index are shown on the map. Otherwise the photos set via ... are shown.
+ * 
+ * <b>photo icon</b>
+ * Photos are represented by a small camera icon.<br/>
+ * If the photo has approximate coordinates the icon is gray, otherwise it is black.
+ * 
+ * <b>dropping files</b><br/>
+ * Photo files can be dropped on this layer. If the photo already has coordinates, these are not changed. Otherwise the coordinates are set to the location where the photo(s) is/are dropped.
+ * 
+ * In the photo information, the photo pathname is shown relative to the <code>rootFolderName</code>, which is passed to the constructor.<br/>
+ * This map layer add itself as layer to the specified mapView.
  */
-public class PhotoMapLayer extends MapLayer implements ObjectSelector<PhotoInfo> {
+public class PhotoMapLayer extends MapLayer implements ObjectSelector<PhotoMetaDataWithImage> {
   private static final Logger LOGGER = Logger.getLogger(PhotoMapView.class.getName());
   
+  /**
+   * Dimensions for showing a photo
+   */
   private static double MAX_IMAGE_WIDTH = 900;
   private static double MAX_IMAGE_HEIGHT = 500;
   
+  /**
+   * The GUI customization
+   */
   private CustomizationFx customization;
+  
+  /**
+   * the {@link MapView} on which this layer is shown.
+   */
   private MapView mapView;
   
   /**
    * Information of the photos shown, per folder.
    */
-  private ObservableMap<String, List<PhotoInfo>> photoInfosPerFolder;
+  private ObservableMap<String, List<PhotoMetaDataWithImage>> photoInfosPerFolder;
   
   /**
-   * A small window to show image information and thumbnail.
+   * A small window to show image information and thumbnail and to edit image information.
    */
   PhotoMetaDataEditor imageInfoStage;
   
-  private PhotoInfo relocatingPhoto = null;
+  /**
+   * The photo that is currently being relocated.
+   */
+  private PhotoMetaDataWithImage relocatingPhoto = null;
   
   /**
    * Photos shown on this layer.
    */
   private final ObservableList<PhotoData> photos  = FXCollections.observableArrayList();
+  
+  /**
+   * The photo that is currently selected.
+   */
   private PhotoData selectedPhoto = null;
+  
+  /**
+   * The photo that is currently shown.
+   */
   private PhotoData currentPhoto = null;
   
-  private List<ObjectSelectionListener<PhotoInfo>> objectSelectionListeners = new ArrayList<>();
+  /**
+   * Photo index
+   */
+  private S2PointIndex<PhotoMetaData> index;
+  
+  /**
+   * If true, only all photos of the index are shown on the map.
+   * Otherwise the photos set via ... are shown.
+   */
+  private boolean showPhotoIndexOnMap = false;
+  
+  /**
+   * Listeners to the selected photo, used for the implementation of ObjectSelector.
+   */
+  private List<ObjectSelectionListener<PhotoMetaDataWithImage>> objectSelectionListeners = new ArrayList<>();
+  
+  // TEMP
+  private Polygon polygon = new Polygon();
+
 
 
   /**
@@ -83,20 +144,12 @@ public class PhotoMapLayer extends MapLayer implements ObjectSelector<PhotoInfo>
    * @param modifiedPhotos a list of modified photos
    * @param rootFolderName the root folder name.
    */
-  public PhotoMapLayer(CustomizationFx customization, PhotoMapView photoMapView, MapView mapView, ObservableMap<String, List<PhotoInfo>> photoInfosPerFolder, ObservableSet<PhotoInfo> modifiedPhotos, String rootFolderName) {
+  public PhotoMapLayer(CustomizationFx customization, PhotoMapView photoMapView, MapView mapView, ObservableMap<String, List<PhotoMetaDataWithImage>> photoInfosPerFolder, ObservableSet<PhotoMetaDataWithImage> modifiedPhotos, String rootFolderName) {
     this.customization = customization;
     this.mapView = mapView;
     this.photoInfosPerFolder = photoInfosPerFolder;
    
-    MapChangeListener<String, List<PhotoInfo>> ml = new MapChangeListener<>() {
-
-      @Override
-      public void onChanged(Change<? extends String, ? extends List<PhotoInfo>> change) {
-        markDirty();        
-      }
-
-      
-    };
+    MapChangeListener<String, List<PhotoMetaDataWithImage>> ml = (change) -> markDirty();
     photoInfosPerFolder.addListener(ml);
     
     mapView.addLayer(this);
@@ -110,29 +163,10 @@ public class PhotoMapLayer extends MapLayer implements ObjectSelector<PhotoInfo>
         WGS84Coordinates coordinates = new WGS84Coordinates(mapPoint.getLatitude(), mapPoint.getLongitude());
         photoMapView.addPhotos(dragboard.getFiles(), coordinates);
         
-//          for (File file: dragboard.getFiles()) {
-//            LOGGER.info(file.getAbsolutePath());
-//            PhotoInfo photoInfo = GatherPhotoInfoTask.createPhotoInfo(file.getAbsolutePath(), -1);
-//            if (photoInfo.getCoordinates() == null) {
-//              MapPoint mapPoint = mapView.getMapPosition(dragEvent.getX(), dragEvent.getY());
-//              WGS84Coordinates coordinates = new WGS84Coordinates(mapPoint.getLatitude(), mapPoint.getLongitude());
-//              photoInfo.setCoordinates(coordinates);
-//              markDirty();
-//              addPhoto(photoInfo);
-//              modifiedPhotos.add(photoInfo);
-//            } else {
-//              LOGGER.info("Coordinates already set");
-//              addPhoto(photoInfo);
-//              markDirty();
-//            }
-//            
-//          }
-          success = true;
+        success = true;
       }
-      /* let the source know whether the string was successfully 
-       * transferred and used */
+      
       dragEvent.setDropCompleted(success);
-
       dragEvent.consume();
     });
         
@@ -145,11 +179,13 @@ public class PhotoMapLayer extends MapLayer implements ObjectSelector<PhotoInfo>
       dragEvent.consume();
     });
     
+    getChildren().add(polygon);
+    
     markDirty();
   }
   
   /**
-   * Clear the layer.
+   * Clear the photos shown on the layer. The index is not cleared.
    */
   public void clear() {
     if (currentPhoto != null) {
@@ -162,17 +198,18 @@ public class PhotoMapLayer extends MapLayer implements ObjectSelector<PhotoInfo>
     }
     
     photos.clear();
-    getChildren().clear();
+    
+    if (!showPhotoIndexOnMap) {
+      getChildren().clear();
+    }
   }
 
   /**
    * Add a photo to the layer.
    * 
-   * @param coordinates The {@code WGS84Coordinates} at which the photo will be shown.
-   * @param text An optional title for the photo.
-   * @param fileName the photo filename.
+   * @param photoInfo information on the photo.
    */
-  public WGS84BoundingBox addPhoto(PhotoInfo photoInfo) {
+  public WGS84BoundingBox addPhoto(PhotoMetaDataWithImage photoInfo) {
     if (photoAlreadyOnMap(photoInfo)) {
       return null;
     }
@@ -182,35 +219,9 @@ public class PhotoMapLayer extends MapLayer implements ObjectSelector<PhotoInfo>
       photoImage = ImageResource.CAMERA_GRAY.getImage(ImageSize.SIZE_0);
     } else {
       photoImage = ImageResource.CAMERA_BLACK.getImage(ImageSize.SIZE_0);
-//      photoImage = Resources.getCameraBlackIcon();
     }
     ImageView photoIcon = new ImageView(photoImage);
     installMouseHandlingOnPhotoIcon(photoIcon, photoInfo);
-//    photoIcon.setOnMouseClicked(e -> handleMouseEventOnPhotoIcon(e, photoInfo));
-//    
-//    photoIcon.setOnMouseDragged(event -> {
-//      LOGGER.info("Mouse Dragged");
-//      LOGGER.info("SceneX: " + event.getSceneX() + ", SceneY: " + event.getSceneY());
-//      if (relocatingPhoto != null) {
-//        Point2D point2D = mapView.sceneToLocal(event.getSceneX(), event.getSceneY());
-//        LOGGER.info("point2D: " + point2D.getX() + ", " + point2D.getY());
-//        MapPoint mapPoint = mapView.getMapPosition(point2D.getX(), point2D.getY());
-//        WGS84Coordinates coordinates = new WGS84Coordinates(mapPoint.getLatitude(), mapPoint.getLongitude());
-//        photoInfo.setCoordinates(coordinates);
-//        markDirty();
-//      } else {
-//        getScene().setCursor(Cursor.CROSSHAIR);
-//        relocatingPhoto = photoInfo;
-//      }
-//      event.consume();
-//    });
-//    
-//    photoIcon.setOnMouseReleased(event -> {
-//      LOGGER.info("Mouse Released");
-//      getScene().setCursor(Cursor.DEFAULT);
-//      relocatingPhoto = null;
-//      event.consume();
-//    });
     
     PhotoData photoData = new PhotoData(photoInfo, photoIcon);
     getChildren().add(photoIcon);
@@ -221,8 +232,46 @@ public class PhotoMapLayer extends MapLayer implements ObjectSelector<PhotoInfo>
     return wgs84BoundingBox;
   }
   
-  private void installMouseHandlingOnPhotoIcon(ImageView photoIcon, PhotoInfo photoInfo) {
-    photoIcon.setOnMouseClicked(e -> handleMouseEventOnPhotoIcon(e, photoInfo));
+  /**
+   * Set the photo index.
+   * 
+   * @param index an <code>S2PointIndex<PhotoMetaData></code> which will be used to determine whether a photo has to be drawn or not. A null values removes the index.
+   * @param showOnMap if true, all photos of this index will be shown, else the photos added via .... are shown.
+   */
+  public void setPhotoIndex(S2PointIndex<PhotoMetaData> index) {
+    LOGGER.severe("Index set");
+    this.index = index;
+    markDirty();
+  }
+  
+  /**
+   * Show all photos in the index, or the photos added via ...
+   * 
+   * @param showPhotoIndexOnMap if true, all photos of the index will be shown, else the photos added via .... are shown.
+   */
+  public void showPhotoIndexOnMap(boolean showPhotoIndexOnMap) {
+    LOGGER.severe("showPhotoIndexOnMap: " + showPhotoIndexOnMap);
+    this.showPhotoIndexOnMap = showPhotoIndexOnMap;
+    markDirty();
+  }
+  
+  /**
+   * Install mouse handling on a photo icon.
+   * <p>
+   * See {@link #handleMouseEventOnPhotoIcon} for the action on clicking on the photo icon.<br/>
+   * On a new drag event, the cursor is changed to a crosshair and the <code>relocatingPhoto</code> is set to photo.
+   * On the following drag events the coordinates of the <code>relocatingPhoto</code> are set to the location of the cursor.<br/>
+   * On a mouse released event the cursor is set back to the default cursor en the <code>relocatingPhoto</code> is set to null.
+   * 
+   * @param photoIcon the icon on which to install mouse handling
+   * @param photoMetaDataWithImage the PhotoMetaDataWithImage related to the <code>photoIcon</code>
+   */
+  private void installMouseHandlingOnPhotoIcon(ImageView photoIcon, PhotoMetaDataWithImage photoMetaDataWithImage) {
+//    photoIcon.setEventDispatcher(new DoubleClickEventDispatcher(getEventDispatcher()));
+//    photoIcon.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> handleMouseEventOnPhotoIcon(1, photoInfo));
+//    photoIcon.addEventHandler(DoubleClickEventDispatcher.MOUSE_DOUBLE_CLICKED, e -> handleMouseEventOnPhotoIcon(2, photoInfo));
+    
+    photoIcon.setOnMouseClicked(e -> handleMouseEventOnPhotoIcon(e, photoMetaDataWithImage));
     
     photoIcon.setOnMouseDragged(event -> {
       LOGGER.info("Mouse Dragged");
@@ -232,11 +281,11 @@ public class PhotoMapLayer extends MapLayer implements ObjectSelector<PhotoInfo>
         LOGGER.info("point2D: " + point2D.getX() + ", " + point2D.getY());
         MapPoint mapPoint = mapView.getMapPosition(point2D.getX(), point2D.getY());
         WGS84Coordinates coordinates = new WGS84Coordinates(mapPoint.getLatitude(), mapPoint.getLongitude());
-        photoInfo.setCoordinates(coordinates);
+        photoMetaDataWithImage.getPhotoMetaData().setCoordinates(coordinates);
         markDirty();
       } else {
         getScene().setCursor(Cursor.CROSSHAIR);
-        relocatingPhoto = photoInfo;
+        relocatingPhoto = photoMetaDataWithImage;
       }
       event.consume();
     });
@@ -255,7 +304,7 @@ public class PhotoMapLayer extends MapLayer implements ObjectSelector<PhotoInfo>
    * 
    * @param photoInfo The photo to be selected (may be null).
    */
-  public void setSelectedPhoto(Object caller, PhotoInfo photoInfo) {
+  public void setSelectedPhoto(Object caller, PhotoMetaDataWithImage photoInfo) {
     if (selectedPhoto != null) {
       Node node = selectedPhoto.node();
       getChildren().remove(node);
@@ -304,7 +353,13 @@ public class PhotoMapLayer extends MapLayer implements ObjectSelector<PhotoInfo>
     notifyObjectSelectionListeners(caller);
   }
   
-  private boolean photoAlreadyOnMap(PhotoInfo photoInfo) {
+  /**
+   * Check whether a photo is already shown.
+   * 
+   * @param photoInfo information on the photo to be checked.
+   * @return true if the photo is already on the map, false otherwise.
+   */
+  private boolean photoAlreadyOnMap(PhotoMetaDataWithImage photoInfo) {
     for (PhotoData photoData: photos) {
       if (photoData.photoInfo().getFileName().equals(photoInfo.getFileName())) {
         return true;
@@ -325,8 +380,9 @@ public class PhotoMapLayer extends MapLayer implements ObjectSelector<PhotoInfo>
    * @param text An optional title for the photo. 
    * @param fileName the file name of the photo to be shown.
    */
-  private void handleMouseEventOnPhotoIcon(MouseEvent mouseEvent, PhotoInfo photoInfo) {
-    if (mouseEvent.getClickCount() > 1) {
+  private void handleMouseEventOnPhotoIcon(MouseEvent mouseEvent, PhotoMetaDataWithImage photoInfo) {
+    LOGGER.severe("=>");
+    if (mouseEvent.getButton() == MouseButton.SECONDARY) {
       if (currentPhoto != null) {
         removeCurrentPhoto();
       }
@@ -397,11 +453,11 @@ public class PhotoMapLayer extends MapLayer implements ObjectSelector<PhotoInfo>
   }
   
   
-  public PhotoInfo getPhotoInfo(File file) {
+  public PhotoMetaDataWithImage getPhotoInfo(File file) {
     String fileName = file.getAbsolutePath();
-    List<PhotoInfo> photoInfos = photoInfosPerFolder.get(file.getParent());
+    List<PhotoMetaDataWithImage> photoInfos = photoInfosPerFolder.get(file.getParent());
     if (photoInfos != null) {
-      for (PhotoInfo photoInfo: photoInfos) {
+      for (PhotoMetaDataWithImage photoInfo: photoInfos) {
         if (fileName.equals(photoInfo.getFileName())) {
           return photoInfo;
         }
@@ -413,7 +469,55 @@ public class PhotoMapLayer extends MapLayer implements ObjectSelector<PhotoInfo>
 
   @Override
   protected void layoutLayer() {
-    LOGGER.info("=>");
+    LOGGER.severe("=>");
+    
+    // show the photos from the index if applicable
+    if (showPhotoIndexOnMap  && index != null) {
+      getChildren().clear();
+      WGS84BoundingBox mapBoundingBox = MapViewUtil.getVisibleMapCoordinates(mapView);
+      
+      LOGGER.severe("Number of photos to show: " + index.numPoints());
+      S2Iterator<S2PointIndex.Entry<PhotoMetaData>> iterator = index.iterator();
+      
+      while (!iterator.done()) {
+        PhotoMetaData photoMetaData = iterator.entry().data();
+        WGS84Coordinates coordinates = photoMetaData.getCoordinates();
+        
+        Image photoImage = ImageResource.CAMERA_BLACK.getImage(ImageSize.SIZE_0);
+        ImageView photoIcon = new ImageView(photoImage);
+        final Point2D mapPoint = baseMap.getMapPoint(coordinates.getLatitude(), coordinates.getLongitude());
+        
+        photoIcon.setTranslateX(mapPoint.getX());
+        photoIcon.setTranslateY(mapPoint.getY());
+//        photoIcon.setVisible(false);
+        
+        getChildren().add(photoIcon);
+        
+        iterator.next();
+      }
+      
+      return;
+    }
+
+//    polygon.setStroke(Color.YELLOW);
+//    polygon.setStrokeWidth(2);
+//    polygon.setFill(Color.TRANSPARENT);
+//    polygon.setVisible(true);
+//    ObservableList<Double> points = polygon.getPoints();
+//    points.clear();
+//    Point2D northWest = baseMap.getMapPoint(mapBoundingBox.getNorth(), mapBoundingBox.getWest());
+//    points.add(northWest.getX());
+//    points.add(northWest.getY());
+//    Point2D northEast = baseMap.getMapPoint(mapBoundingBox.getNorth(), mapBoundingBox.getEast());
+//    points.add(northEast.getX());
+//    points.add(northEast.getY());
+//    Point2D southEast = baseMap.getMapPoint(mapBoundingBox.getSouth(), mapBoundingBox.getEast());
+//    points.add(southEast.getX());
+//    points.add(southEast.getY());
+//    Point2D southWest = baseMap.getMapPoint(mapBoundingBox.getSouth(), mapBoundingBox.getWest());
+//    points.add(southWest.getX());
+//    points.add(southWest.getY());
+    
     
     // photos
     for (PhotoData photoData: photos) {
@@ -426,7 +530,7 @@ public class PhotoMapLayer extends MapLayer implements ObjectSelector<PhotoInfo>
       
     }
 
-    LOGGER.info("<=");
+    LOGGER.severe("<=");
   }
 
   /*
@@ -437,7 +541,7 @@ public class PhotoMapLayer extends MapLayer implements ObjectSelector<PhotoInfo>
    * {@inheritDoc}
    */
   @Override
-  public void addObjectSelectionListener(ObjectSelectionListener<PhotoInfo> objectSelectionListener) {
+  public void addObjectSelectionListener(ObjectSelectionListener<PhotoMetaDataWithImage> objectSelectionListener) {
     objectSelectionListeners.add(objectSelectionListener);    
   }
 
@@ -445,7 +549,7 @@ public class PhotoMapLayer extends MapLayer implements ObjectSelector<PhotoInfo>
    * {@inheritDoc}
    */
   @Override
-  public void removeObjectSelectionListener(ObjectSelectionListener<PhotoInfo> objectSelectionListener) {
+  public void removeObjectSelectionListener(ObjectSelectionListener<PhotoMetaDataWithImage> objectSelectionListener) {
     objectSelectionListeners.remove(objectSelectionListener);
   }
 
@@ -453,7 +557,7 @@ public class PhotoMapLayer extends MapLayer implements ObjectSelector<PhotoInfo>
    * {@inheritDoc}
    */
   @Override
-  public PhotoInfo getSelectedObject() {
+  public PhotoMetaDataWithImage getSelectedObject() {
     if (selectedPhoto != null) {
       return selectedPhoto.photoInfo();
     } else {
@@ -462,12 +566,12 @@ public class PhotoMapLayer extends MapLayer implements ObjectSelector<PhotoInfo>
   }
   
   private void notifyObjectSelectionListeners(Object source) {
-    PhotoInfo photoInfo = null;
+    PhotoMetaDataWithImage photoInfo = null;
     if (selectedPhoto != null) {
       photoInfo = selectedPhoto.photoInfo();
     }
     
-    for (ObjectSelectionListener<PhotoInfo> objectSelectionListener: objectSelectionListeners) {
+    for (ObjectSelectionListener<PhotoMetaDataWithImage> objectSelectionListener: objectSelectionListeners) {
       objectSelectionListener.objectSelected(source, photoInfo);
     }
   }
@@ -482,6 +586,6 @@ public class PhotoMapLayer extends MapLayer implements ObjectSelector<PhotoInfo>
  * @param node the {@code Node}.
  *
  */
-record PhotoData(PhotoInfo photoInfo, Node node) {
+record PhotoData(PhotoMetaDataWithImage photoInfo, Node node) {
 }
 

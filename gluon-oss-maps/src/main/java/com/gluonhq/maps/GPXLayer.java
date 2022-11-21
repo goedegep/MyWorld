@@ -14,8 +14,8 @@ import org.eclipse.emf.ecore.xml.type.AnyType;
 
 import com.gluonhq.maps.MapLayer.BoundingBoxData;
 
-import goedegep.geo.dbl.WGS84BoundingBox;
-import goedegep.geo.dbl.WGS84Coordinates;
+import goedegep.geo.WGS84BoundingBox;
+import goedegep.geo.WGS84Coordinates;
 import goedegep.gpx.model.ExtensionsType;
 import goedegep.gpx.model.GpxType;
 import goedegep.gpx.model.RteType;
@@ -714,12 +714,14 @@ public class GPXLayer extends MapLayer {
     
     double latitude = gpxWaypoint.getLat().doubleValue();
     double longitude = gpxWaypoint.getLon().doubleValue();
+    Double altitude = null;
     buf.append("lat: ").append(latitude).append("\n");
     buf.append("lon: ").append(longitude).append("\n");
     if (gpxWaypoint.getEle() != null) {
       buf.append("ele: ").append(gpxWaypoint.getEle()).append("\n");
+      altitude = gpxWaypoint.getEle().doubleValue();
     }
-    buf.append("coordinates: ").append(wgs84CoordinatesStringConverter.toString(new WGS84Coordinates(latitude, longitude))).append("\n");
+    buf.append("coordinates: ").append(wgs84CoordinatesStringConverter.toString(new WGS84Coordinates(latitude, longitude, altitude))).append("\n");
     
     return buf.toString();
   }

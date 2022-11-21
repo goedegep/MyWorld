@@ -14,7 +14,6 @@ import goedegep.invandprop.app.InvoicesAndPropertiesRegistry;
 import goedegep.invandprop.model.Expenditure;
 import goedegep.invandprop.model.InvAndPropPackage;
 import goedegep.invandprop.model.Invoice;
-import goedegep.invandprop.model.InvoiceItem;
 import goedegep.invandprop.model.InvoicesAndProperties;
 import goedegep.invandprop.model.Property;
 import goedegep.jfx.ComponentFactoryFx;

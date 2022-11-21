@@ -30,7 +30,7 @@ package com.gluonhq.maps;
 import com.gluonhq.impl.maps.BaseMap;
 import com.gluonhq.maps.MapLayer.BoundingBoxData;
 
-import goedegep.geo.dbl.WGS84BoundingBox;
+import goedegep.geo.WGS84BoundingBox;
 import javafx.collections.ObservableList;
 import javafx.geometry.Point2D;
 import javafx.scene.Parent;

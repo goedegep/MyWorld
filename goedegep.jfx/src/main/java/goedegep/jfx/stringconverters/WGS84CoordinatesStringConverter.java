@@ -1,6 +1,6 @@
 package goedegep.jfx.stringconverters;
 
-import goedegep.geo.dbl.WGS84Coordinates;
+import goedegep.geo.WGS84Coordinates;
 
 /**
  * This class is a {@link StringConverterAndChecker} for {@link WGS84Coordinates}.

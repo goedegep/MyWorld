@@ -34,7 +34,9 @@ import org.apache.commons.imaging.formats.tiff.constants.TiffTagConstants;
 import org.apache.commons.imaging.formats.tiff.write.TiffOutputDirectory;
 import org.apache.commons.imaging.formats.tiff.write.TiffOutputSet;
 
-import goedegep.geo.dbl.WGS84Coordinates;
+import com.google.common.geometry.S2LatLng;
+
+import goedegep.geo.WGS84Coordinates;
 import goedegep.util.file.FileUtils;
 import goedegep.util.string.StringUtil;
 

@@ -7,9 +7,8 @@ import java.util.logging.Logger;
 
 import goedegep.jfx.CustomizationFx;
 import goedegep.media.app.base.MediaAppResourcesFx;
-import goedegep.media.fotoshow.app.guifx.PhotoInfo;
+import goedegep.media.photo.PhotoMetaDataWithImage;
 import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.geometry.Insets;
 import javafx.scene.control.ListCell;
 import javafx.scene.image.Image;
@@ -24,16 +23,21 @@ import javafx.scene.layout.StackPane;
 /**
  * This class provides a {@link ListCell} which shows a photo thumbnail with indicators for whether the title and coordinates are set.
  */
-public class PhotoListCell extends ListCell<PhotoInfo> {
+public class PhotoListCell extends ListCell<PhotoMetaDataWithImage> {
   @SuppressWarnings("unused")
   private static final Logger LOGGER = Logger.getLogger(PhotoListCell.class.getName());
 
   private static CustomizationFx customization;
   private static MediaAppResourcesFx mediaAppResourcesFx;
   
-  private PhotoInfo previousPhotoInfo = null;
-  private ChangeListener<? super PhotoInfo> changeListener;
+  private PhotoMetaDataWithImage previousPhotoInfo = null;
+  private ChangeListener<? super PhotoMetaDataWithImage> changeListener;
   
+  /**
+   * Set the GUI customization for these cells.
+   * 
+   * @param customization the GUI customization.
+   */
   public static void setCustomization(CustomizationFx customization) {
     PhotoListCell.customization = customization;
     PhotoListCell.mediaAppResourcesFx = (MediaAppResourcesFx) customization.getResources();
@@ -43,8 +47,8 @@ public class PhotoListCell extends ListCell<PhotoInfo> {
    * {@inheritDoc}
    */
   @Override
-  public void updateItem(final PhotoInfo photoInfo, final boolean empty) {
-    super.updateItem(photoInfo, empty);
+  public void updateItem(final PhotoMetaDataWithImage photoMetaDataWithImage, final boolean empty) {
+    super.updateItem(photoMetaDataWithImage, empty);
     
     if (previousPhotoInfo != null) {
       previousPhotoInfo.removeListener(changeListener);
@@ -54,14 +58,14 @@ public class PhotoListCell extends ListCell<PhotoInfo> {
       setText(null);
       setGraphic(null);
     } else {
-      updateGraphicAndText(photoInfo);
+      updateGraphicAndText(photoMetaDataWithImage);
       
       setOnDragDetected((event) -> {
         Dragboard dragboard = startDragAndDrop(TransferMode.COPY);
 
         ClipboardContent content = new ClipboardContent();
         List<File> files = new ArrayList<>();
-        File aFile = new File(photoInfo.getFileName());
+        File aFile = new File(photoMetaDataWithImage.getFileName());
         files.add(aFile);
         content.putFiles(files);
         dragboard.setContent(content);
@@ -69,23 +73,16 @@ public class PhotoListCell extends ListCell<PhotoInfo> {
         event.consume();
       });
       
-      setOnMouseClicked(e -> handleMouseEventOnPhotoIcon(e, photoInfo));
+      setOnMouseClicked(e -> handleMouseEventOnPhotoIcon(e, photoMetaDataWithImage));
       
-      changeListener = new ChangeListener<>() {
-
-        @Override
-        public void changed(ObservableValue<? extends PhotoInfo> observable, PhotoInfo oldValue, PhotoInfo newValue) {
-          updateGraphicAndText(newValue);
+      changeListener = (observable, oldValue, newValue) -> updateGraphicAndText(newValue);
           
-        }
-        
-      };
-      photoInfo.addListener(changeListener);
-      previousPhotoInfo = photoInfo;
+      photoMetaDataWithImage.addListener(changeListener);
+      previousPhotoInfo = photoMetaDataWithImage;
     }
   }
   
-  private void updateGraphicAndText(final PhotoInfo photoInfo) {
+  private void updateGraphicAndText(final PhotoMetaDataWithImage photoMetaDataWithImage) {
     
     /*
      * The Graphic is a StackPane: the photo, with on top icons for title and coordinates.
@@ -96,11 +93,11 @@ public class PhotoListCell extends ListCell<PhotoInfo> {
     imageView.setFitHeight(150);
     
     imageView.setPreserveRatio(true);
-    imageView.setImage(photoInfo.getImage());
+    imageView.setImage(photoMetaDataWithImage.getImage());
     stackPane.getChildren().add(imageView);
 
-    boolean hasTitle = (photoInfo.getTitle() != null);
-    boolean hasCoordinates = (photoInfo.getCoordinates() != null);
+    boolean hasTitle = (photoMetaDataWithImage.getTitle() != null);
+    boolean hasCoordinates = (photoMetaDataWithImage.getCoordinates() != null);
 
     if (hasTitle  ||  hasCoordinates) {
       HBox hBox = new HBox();
@@ -124,7 +121,7 @@ public class PhotoListCell extends ListCell<PhotoInfo> {
     setGraphic(stackPane);
 
     // Get the photo file name from the full path name
-    File aFile = new File(photoInfo.getFileName());
+    File aFile = new File(photoMetaDataWithImage.getFileName());
     setText(aFile.getName());
   }
   
@@ -140,7 +137,7 @@ public class PhotoListCell extends ListCell<PhotoInfo> {
    * @param text An optional title for the photo. 
    * @param fileName the file name of the photo to be shown.
    */
-  private void handleMouseEventOnPhotoIcon(MouseEvent mouseEvent, PhotoInfo photoInfo) {
+  private void handleMouseEventOnPhotoIcon(MouseEvent mouseEvent, PhotoMetaDataWithImage photoInfo) {
     if (mouseEvent.getClickCount() > 1) {
       new PhotoMetaDataEditor(customization, photoInfo);
     } else {

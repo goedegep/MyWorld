@@ -20,12 +20,13 @@ import org.eclipse.emf.common.util.TreeIterator;
 import org.eclipse.emf.ecore.EObject;
 
 import com.google.common.geometry.S1Angle;
+import com.google.common.geometry.S2Earth;
 import com.google.common.geometry.S2LatLng;
 import com.google.common.geometry.S2LatLngRect;
 import com.google.common.geometry.S2Loop;
 import com.google.common.geometry.S2Point;
 
-import goedegep.geo.dbl.WGS84Coordinates;
+import goedegep.geo.WGS84Coordinates;
 import goedegep.types.model.FileReference;
 import goedegep.types.model.TypesFactory;
 import goedegep.util.Triplet;
@@ -441,7 +442,8 @@ public class PhotosImporter {
     }
     
     S2LatLng coordinatesS2LatLng = S2LatLng.fromDegrees(coordinates.getLatitude(), coordinates.getLongitude());
-    Double distance = photoS2LatLng.getEarthDistance(coordinatesS2LatLng);
+//    Double distance = photoS2LatLng.getEarthDistance(coordinatesS2LatLng);
+    Double distance = S2Earth.getDistanceMeters(photoS2LatLng, coordinatesS2LatLng);
     LOGGER.info("Distance to coordinates = " + distance);
     if (distance < 80.0) {
       return handleNewDistanceMatch(distance);

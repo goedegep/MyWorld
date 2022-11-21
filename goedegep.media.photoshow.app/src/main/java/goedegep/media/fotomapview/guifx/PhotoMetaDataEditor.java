@@ -5,11 +5,12 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.logging.Logger;
 
-import goedegep.geo.dbl.WGS84Coordinates;
+import goedegep.geo.WGS84Coordinates;
 import goedegep.jfx.ComponentFactoryFx;
 import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.JfxStage;
 import goedegep.media.fotoshow.app.guifx.PhotoInfo;
+import goedegep.media.photo.PhotoMetaDataWithImage;
 import goedegep.resources.ImageSize;
 import javafx.collections.ObservableSet;
 import javafx.geometry.Insets;
@@ -37,20 +38,24 @@ public class PhotoMetaDataEditor extends JfxStage {
   private static final String NEWLINE = System.getProperty("line.separator");
   private static final DateTimeFormatter DTF = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
   
-  private static ObservableSet<PhotoInfo> modifiedPhotos;
+  /**
+   * A set of modified photos.
+   * Whenever anything on a photo is modified it is added to this set.
+   */
+  private static ObservableSet<PhotoMetaDataWithImage> modifiedPhotos;
   
   private CustomizationFx customization;
-  private PhotoInfo photoInfo;
+  private PhotoMetaDataWithImage photoMetaDataWithImage;
   private ComponentFactoryFx componentFactory;
   
   private TextField titleTextField;
   private CheckBox approximateGPScoordinatesCheckBox;
 
-  public PhotoMetaDataEditor(CustomizationFx customization, PhotoInfo photoInfo) {
-    super("Details for " + photoInfo.getFileName() , customization);
+  public PhotoMetaDataEditor(CustomizationFx customization, PhotoMetaDataWithImage photoMetaDataWithImage) {
+    super("Details for " + photoMetaDataWithImage.getFileName() , customization);
     
     this.customization = customization;
-    this.photoInfo = photoInfo;
+    this.photoMetaDataWithImage = photoMetaDataWithImage;
     componentFactory = customization.getComponentFactoryFx();
     
     createGUI();
@@ -58,7 +63,12 @@ public class PhotoMetaDataEditor extends JfxStage {
     show();
   }
   
-  public static void setModifiesPhotos(ObservableSet<PhotoInfo> modifiedPhotos) {
+  /**
+   * Set the set of modified photos.
+   * 
+   * @param modifiedPhotos the set of modified photos.
+   */
+  public static void setModifiedPhotos(ObservableSet<PhotoMetaDataWithImage> modifiedPhotos) {
     PhotoMetaDataEditor.modifiedPhotos = modifiedPhotos;
   }
   
@@ -76,7 +86,6 @@ public class PhotoMetaDataEditor extends JfxStage {
     mainLayout.getChildren().add(createImagePanel());
     mainLayout.getChildren().add(createButtonsPanel());
 
-//    setScene(new Scene(mainLayout, 1700, 900));
     setScene(new Scene(mainLayout));
     titleTextField.requestFocus();
   }
@@ -96,7 +105,7 @@ public class PhotoMetaDataEditor extends JfxStage {
     int row = 0;
     
     // row: Folder: 'folder-name'
-    File file = new File(photoInfo.getFileName());
+    File file = new File(photoMetaDataWithImage.getFileName());
     String folder = file.getParent();
     label = componentFactory.createLabel("Folder:");
     gridPane.add(label, 0, row);
@@ -120,8 +129,8 @@ public class PhotoMetaDataEditor extends JfxStage {
     label = componentFactory.createLabel("Title:");
     gridPane.add(label, 0, row);
     titleTextField = componentFactory.createTextField(300, null);
-    if (photoInfo.getTitle() != null) {
-      titleTextField.setText(photoInfo.getTitle());
+    if (photoMetaDataWithImage.getTitle() != null) {
+      titleTextField.setText(photoMetaDataWithImage.getTitle());
     }
     gridPane.add(titleTextField, 1, row);
     
@@ -132,7 +141,7 @@ public class PhotoMetaDataEditor extends JfxStage {
     gridPane.add(label, 0, row);
     textField = componentFactory.createTextField(300, null);
     textField.setEditable(false);
-    WGS84Coordinates coordinates = photoInfo.getCoordinates();
+    WGS84Coordinates coordinates = photoMetaDataWithImage.getCoordinates();
     if (coordinates != null) {
       textField.setText(coordinates.getLatitude() + ", " + coordinates.getLongitude());
     }
@@ -144,7 +153,7 @@ public class PhotoMetaDataEditor extends JfxStage {
     label = componentFactory.createLabel("Approximate coordinates:");
     gridPane.add(label, 0, row);
     approximateGPScoordinatesCheckBox = componentFactory.createCheckBox(null, false);
-    if (photoInfo.isApproximateGPScoordinates()) {
+    if (photoMetaDataWithImage.isApproximateGPScoordinates()) {
       approximateGPScoordinatesCheckBox.setSelected(true);
     }
     gridPane.add(approximateGPScoordinatesCheckBox, 1, row);
@@ -161,7 +170,7 @@ public class PhotoMetaDataEditor extends JfxStage {
     gridPane.add(label, 0, row);
     textField = componentFactory.createTextField(300, null);
     textField.setEditable(false);
-    LocalDateTime sortingDateTime = photoInfo.getSortingDateTime();
+    LocalDateTime sortingDateTime = ((PhotoInfo) photoMetaDataWithImage).getSortingDateTime();
     if (sortingDateTime != null) {
       textField.setText(DTF.format(sortingDateTime));
     }
@@ -177,7 +186,7 @@ public class PhotoMetaDataEditor extends JfxStage {
   }
 
   private Node createImagePanel() {
-    Image image = new Image("file:" + photoInfo.getFileName());
+    Image image = new Image("file:" + photoMetaDataWithImage.getFileName());
     ImageView imageView = new ImageView(image);
     imageView.setFitWidth(600);
     imageView.setFitHeight(400);
@@ -208,11 +217,11 @@ public class PhotoMetaDataEditor extends JfxStage {
       title = null;
     }
     
-    photoInfo.setTitle(title);
+    photoMetaDataWithImage.getPhotoMetaData().setTitle(title);
     
-    photoInfo.setApproximateGPScoordinates(approximateGPScoordinatesCheckBox.isSelected());
+    photoMetaDataWithImage.getPhotoMetaData().setApproximateGPScoordinates(approximateGPScoordinatesCheckBox.isSelected());
     
-    modifiedPhotos.add(photoInfo);
+    modifiedPhotos.add(photoMetaDataWithImage);
     
     cleanupAndClose();
   }

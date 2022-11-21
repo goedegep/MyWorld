@@ -34,7 +34,7 @@ import java.util.logging.Logger;
 //import com.gluonhq.attach.util.Platform;
 import com.gluonhq.impl.maps.BaseMap;
 
-import goedegep.geo.dbl.WGS84BoundingBox;
+import goedegep.geo.WGS84BoundingBox;
 import javafx.animation.Animation.Status;
 import javafx.animation.Interpolator;
 import javafx.animation.KeyFrame;
