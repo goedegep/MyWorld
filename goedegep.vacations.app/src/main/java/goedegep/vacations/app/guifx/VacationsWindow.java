@@ -38,8 +38,8 @@ import com.gluonhq.maps.MapView;
 import com.openhtmltopdf.pdfboxout.PdfRendererBuilder;
 
 import goedegep.appgen.TableRowOperation;
-import goedegep.geo.dbl.WGS84BoundingBox;
-import goedegep.geo.dbl.WGS84Coordinates;
+import goedegep.geo.WGS84BoundingBox;
+import goedegep.geo.WGS84Coordinates;
 import goedegep.gpx.GpxUtil;
 import goedegep.gpx.app.Activity;
 import goedegep.gpx.app.GpxAppUtil;
@@ -746,7 +746,7 @@ public class VacationsWindow extends JfxStage {
     // Settings menu
     menu = new Menu("Settings");
     
-    CheckMenuItem showCoordinatesInDocumentMenuItem = new CheckMenuItem("Show coordinates in Document");
+    CheckMenuItem showCoordinatesInDocumentMenuItem = componentFactory.createCheckMenuItem("Show coordinates in Document");
     showCoordinatesInDocumentMenuItem.setSelected(VacationsRegistry.showCoordinatesInDocument);
     
     showCoordinatesInDocumentMenuItem.setOnAction(event -> {

@@ -15,6 +15,7 @@ import org.apache.commons.imaging.ImageReadException;
 
 import goedegep.jfx.ComponentFactoryFx;
 import goedegep.jfx.CustomizationFx;
+import goedegep.media.photo.PhotoMetaDataWithImage;
 import goedegep.media.photoshow.model.FolderTimeOffsetSpecification;
 import goedegep.media.photoshow.model.PhotoShowFactory;
 import goedegep.media.photoshow.model.PhotoShowSpecification;
@@ -60,10 +61,10 @@ public class DeviceFolderTimeSyncWizard extends Dialog<ButtonType> {
   
   private Stage ownerWindow;
   private PhotoShowSpecification photoShowSpecification;
-  private Map<String, List<PhotoInfo>> photoInfoListsMap;
+  private Map<String, List<PhotoMetaDataWithImage>> photoInfoListsMap;
   private ComponentFactoryFx componentFactory;
-  private ListView<PhotoInfo> timeReferencePhotoList;
-  private ListView<PhotoInfo> timeToBeAdjustedPhotoList;
+  private ListView<PhotoMetaDataWithImage> timeReferencePhotoList;
+  private ListView<PhotoMetaDataWithImage> timeToBeAdjustedPhotoList;
   private String timeToBeAdjustedFolderName;
   private Duration timeOffset = null;
 
@@ -74,7 +75,7 @@ public class DeviceFolderTimeSyncWizard extends Dialog<ButtonType> {
    * @param ownerWindow The window owning this dialog.
    * @param photoInfoListsMap information on the photos per folder.
    */
-  public DeviceFolderTimeSyncWizard(CustomizationFx customization, Stage ownerWindow, PhotoShowSpecification photoShowSpecification, Map<String, List<PhotoInfo>> photoInfoListsMap) {
+  public DeviceFolderTimeSyncWizard(CustomizationFx customization, Stage ownerWindow, PhotoShowSpecification photoShowSpecification, Map<String, List<PhotoMetaDataWithImage>> photoInfoListsMap) {
     
     setTitle(WINDOW_TITLE);
     this.ownerWindow = ownerWindow;
@@ -220,25 +221,25 @@ public class DeviceFolderTimeSyncWizard extends Dialog<ButtonType> {
    * @param addBeforeTime
    * @return
    */
-  private ListView<PhotoInfo> addPictureList(String photoFolderName, VBox photoListPanel, boolean addBeforeTime) {
+  private ListView<PhotoMetaDataWithImage> addPictureList(String photoFolderName, VBox photoListPanel, boolean addBeforeTime) {
     photoListPanel.getChildren().clear();
     
     // Photo folder name on top
     Label folderNameLabel = new Label(photoFolderName);
     photoListPanel.getChildren().add(folderNameLabel);
     
-    List<PhotoInfo> photoInfoList = photoInfoListsMap.get(photoFolderName);
+    List<PhotoMetaDataWithImage> photoInfoList = photoInfoListsMap.get(photoFolderName);
 
-    ObservableList<PhotoInfo> photos = FXCollections.observableArrayList(photoInfoList);
+    ObservableList<PhotoMetaDataWithImage> photos = FXCollections.observableArrayList(photoInfoList);
 
-    ListView<PhotoInfo> listView = new ListView<>();
+    ListView<PhotoMetaDataWithImage> listView = new ListView<>();
     listView.setItems(photos);
-    listView.setCellFactory(param -> new ListCell<PhotoInfo>() {
+    listView.setCellFactory(param -> new ListCell<PhotoMetaDataWithImage>() {
       private ImageView imageView = new ImageView();
       private StackPane stackPane = new StackPane();
 
       @Override
-      public void updateItem(PhotoInfo photoInfo, boolean empty) {
+      public void updateItem(PhotoMetaDataWithImage photoInfo, boolean empty) {
         super.updateItem(photoInfo, empty);
         if (empty) {
           setText(null);
@@ -302,7 +303,7 @@ public class DeviceFolderTimeSyncWizard extends Dialog<ButtonType> {
    * 
    * @param timeReferencePhoto
    */
-  private void correctFolderTimes(PhotoInfo timeReferencePhoto) {
+  private void correctFolderTimes(PhotoMetaDataWithImage timeReferencePhoto) {
     LOGGER.severe("photo: " + timeReferencePhoto.getFileName());
     
     LocalDateTime timeReferencePhotoCreationDate = timeReferencePhoto.getDeviceSpecificPhotoTakenTime();
@@ -314,8 +315,8 @@ public class DeviceFolderTimeSyncWizard extends Dialog<ButtonType> {
   }
   
   private void syncFolderTimes(boolean addBeforeTime) {
-    PhotoInfo timeReferencePhoto = timeReferencePhotoList.getSelectionModel().getSelectedItem();
-    PhotoInfo timeToBeAdjustedPhoto = timeToBeAdjustedPhotoList.getSelectionModel().getSelectedItem();
+    PhotoMetaDataWithImage timeReferencePhoto = timeReferencePhotoList.getSelectionModel().getSelectedItem();
+    PhotoMetaDataWithImage timeToBeAdjustedPhoto = timeToBeAdjustedPhotoList.getSelectionModel().getSelectedItem();
     
     if (timeReferencePhoto == null) {
       LOGGER.severe("No time reference photo selected");
@@ -462,12 +463,12 @@ class CorrectTimeDetailsDialog extends Dialog<ButtonType> {
   private Button okButton;    // this will only be enabled if the before time is valid (text can be parsed and isn't 0).
   
   private PhotoShowSpecification photoShowSpecification;
-  private PhotoInfo timeReferencePhoto;
+  private PhotoMetaDataWithImage timeReferencePhoto;
   private LocalDateTime correctedPhotoCreationDate;
   private TextField actualDateTimeTextField;
   private List<InfoPerFolder> folderInfos = new ArrayList<>();
   
-  public CorrectTimeDetailsDialog(Stage ownerWindow, PhotoShowSpecification photoShowSpecification, PhotoInfo timeReferencePhoto) {
+  public CorrectTimeDetailsDialog(Stage ownerWindow, PhotoShowSpecification photoShowSpecification, PhotoMetaDataWithImage timeReferencePhoto) {
     this.photoShowSpecification = photoShowSpecification;
     this.timeReferencePhoto = timeReferencePhoto;
     
@@ -610,12 +611,12 @@ class CorrectTimeDetailsDialog extends Dialog<ButtonType> {
   }
   
   /**
-   * Get the folder name for a photo's {@code PhotoInfo}.
+   * Get the folder name for a photo's {@code PhotoMetaDataWithImage}.
    * 
-   * @param photoInfo the {@code PhotoInfo} of the photo.
+   * @param photoInfo the {@code PhotoMetaDataWithImage} of the photo.
    * @return The folder name of the folder in which the photo is located.
    */
-  private String getPhotoFolder(PhotoInfo photoInfo) {
+  private String getPhotoFolder(PhotoMetaDataWithImage photoInfo) {
     File file = new File(photoInfo.getFileName());
     return file.getParent();
   }

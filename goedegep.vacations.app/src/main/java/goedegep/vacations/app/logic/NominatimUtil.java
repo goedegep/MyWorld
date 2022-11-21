@@ -20,7 +20,7 @@ import de.micromata.opengis.kml.v_2_2_0.LinearRing;
 import de.micromata.opengis.kml.v_2_2_0.MultiGeometry;
 import de.micromata.opengis.kml.v_2_2_0.Placemark;
 import de.micromata.opengis.kml.v_2_2_0.Polygon;
-import goedegep.geo.dbl.WGS84Coordinates;
+import goedegep.geo.WGS84Coordinates;
 import goedegep.poi.model.POICategoryId;
 import goedegep.vacations.model.BoundingBox;
 import goedegep.vacations.model.Location;
@@ -319,7 +319,11 @@ public class NominatimUtil {
           goedegep.vacations.model.Boundary locationBoundary = VACATIONS_FACTORY.createBoundary();
           List<WGS84Coordinates> points = locationBoundary.getPoints();
           for (Coordinate coordinate: coordinates) {
-            WGS84Coordinates wgs84Coordinates = new WGS84Coordinates(coordinate.getLatitude(), coordinate.getLongitude());
+            Double altitude = null;
+            if (coordinate.getAltitude() != 0) {
+              altitude = coordinate.getAltitude();
+            }
+            WGS84Coordinates wgs84Coordinates = new WGS84Coordinates(coordinate.getLatitude(), coordinate.getLongitude(), altitude);
             points.add(wgs84Coordinates);
           }
           boundaries.add(locationBoundary);
@@ -337,7 +341,11 @@ public class NominatimUtil {
               goedegep.vacations.model.Boundary locationBoundary = VACATIONS_FACTORY.createBoundary();
               List<WGS84Coordinates> points = locationBoundary.getPoints();
               for (Coordinate coordinate: coordinates) {
-                WGS84Coordinates wgs84Coordinates = new WGS84Coordinates(coordinate.getLatitude(), coordinate.getLongitude());
+                Double altitude = null;
+                if (coordinate.getAltitude() != 0) {
+                  altitude = coordinate.getAltitude();
+                }
+                WGS84Coordinates wgs84Coordinates = new WGS84Coordinates(coordinate.getLatitude(), coordinate.getLongitude(), altitude);
                 points.add(wgs84Coordinates);
               }
               boundaries.add(locationBoundary);

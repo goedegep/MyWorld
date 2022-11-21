@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.logging.Logger;
 
-import goedegep.geo.dbl.WGS84BoundingBox;
+import goedegep.geo.WGS84BoundingBox;
 import goedegep.util.text.Indent;
 
 public class Track extends Extension {

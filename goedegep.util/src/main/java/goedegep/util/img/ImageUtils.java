@@ -18,7 +18,7 @@ import javax.imageio.stream.ImageInputStream;
 
 import org.apache.commons.imaging.ImageReadException;
 
-import goedegep.geo.dbl.WGS84Coordinates;
+import goedegep.geo.WGS84Coordinates;
 
 /**
  * This is a utility class with methods which operate on images (Image).

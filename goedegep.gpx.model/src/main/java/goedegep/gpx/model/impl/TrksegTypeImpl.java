@@ -20,7 +20,7 @@ import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
 import org.eclipse.emf.ecore.util.EObjectContainmentEList;
 import org.eclipse.emf.ecore.util.InternalEList;
 
-import goedegep.geo.dbl.WGS84Coordinates;
+import goedegep.geo.WGS84Coordinates;
 import goedegep.gpx.model.ExtensionsType;
 import goedegep.gpx.model.GPXPackage;
 import goedegep.gpx.model.TrksegType;
@@ -156,7 +156,7 @@ public class TrksegTypeImpl extends MinimalEObjectImpl.Container implements Trks
             double elevation = currentWaypoint.getEle() != null ? currentWaypoint.getEle().doubleValue() : 0.0;
             currentPoint = new WGS84Coordinates(currentWaypoint.getLat().doubleValue(), currentWaypoint.getLon().doubleValue(), elevation);
         	if (previousWaypoint != null) {
-        		length += currentPoint.getDistance(previousPoint);
+        		length += currentPoint.getDistanceMeters(previousPoint);
         	}
             previousWaypoint = currentWaypoint;
             previousPoint = currentPoint;

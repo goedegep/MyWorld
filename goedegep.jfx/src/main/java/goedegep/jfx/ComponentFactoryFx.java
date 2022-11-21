@@ -41,6 +41,7 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.CheckBox;
+import javafx.scene.control.CheckMenuItem;
 import javafx.scene.control.ChoiceDialog;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.ContentDisplay;
@@ -51,6 +52,7 @@ import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.ProgressBar;
+import javafx.scene.control.RadioMenuItem;
 import javafx.scene.control.Slider;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
@@ -247,6 +249,30 @@ public class ComponentFactoryFx {
    */
   public MenuItem createMenuItem(String text) {
     MenuItem menuItem = new MenuItem(text);
+    
+    return menuItem;
+  }
+  
+  /**
+   * Create a CheckMenuItem.
+   * 
+   * @param text the menu item text.
+   * @return the created CheckMenuItem.
+   */
+  public CheckMenuItem createCheckMenuItem(String text) {
+    CheckMenuItem menuItem = new CheckMenuItem(text);
+    
+    return menuItem;
+  }
+  
+  /**
+   * Create a RadioMenuItem.
+   * 
+   * @param text the menu item text.
+   * @return the created RadioMenuItem.
+   */
+  public RadioMenuItem createRadioMenuItem(String text) {
+    RadioMenuItem menuItem = new RadioMenuItem(text);
     
     return menuItem;
   }

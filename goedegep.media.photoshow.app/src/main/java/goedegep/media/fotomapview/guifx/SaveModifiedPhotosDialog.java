@@ -9,7 +9,7 @@ import java.util.logging.Logger;
 
 import goedegep.jfx.ComponentFactoryFx;
 import goedegep.jfx.CustomizationFx;
-import goedegep.media.fotoshow.app.guifx.PhotoInfo;
+import goedegep.media.photo.PhotoMetaDataWithImage;
 import javafx.collections.ObservableSet;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.CheckBox;
@@ -28,8 +28,8 @@ public class SaveModifiedPhotosDialog extends Dialog<ButtonType> {
   
   private ComponentFactoryFx componentFactory;
 
-  private ObservableSet<PhotoInfo> photoInfos;
-  private Map<PhotoInfo, CheckBox> selectionCheckBoxes = new HashMap<>();
+  private ObservableSet<PhotoMetaDataWithImage> photoInfos;
+  private Map<PhotoMetaDataWithImage, CheckBox> selectionCheckBoxes = new HashMap<>();
 
   /**
    * Constructor.
@@ -39,7 +39,7 @@ public class SaveModifiedPhotosDialog extends Dialog<ButtonType> {
    * @param initiallySelectedFolder the initially selected main photo folder
    * @param initialIgnoreFolders the initial, comma separated, list of folders to be ignored
    */
-  public SaveModifiedPhotosDialog(CustomizationFx customization, Stage ownerWindow, ObservableSet<PhotoInfo> photoInfos) {
+  public SaveModifiedPhotosDialog(CustomizationFx customization, Stage ownerWindow, ObservableSet<PhotoMetaDataWithImage> photoInfos) {
     this.photoInfos = photoInfos;
     
     setTitle(WINDOW_TITLE);
@@ -57,10 +57,10 @@ public class SaveModifiedPhotosDialog extends Dialog<ButtonType> {
    * 
    * @return the photos to be saved.
    */
-  public List<PhotoInfo> getSelectedPhotos() {
-    List<PhotoInfo> selectedPhotos = new ArrayList<>();
+  public List<PhotoMetaDataWithImage> getSelectedPhotos() {
+    List<PhotoMetaDataWithImage> selectedPhotos = new ArrayList<>();
     
-    for (PhotoInfo photoInfo: photoInfos) {
+    for (PhotoMetaDataWithImage photoInfo: photoInfos) {
       CheckBox checkBox = selectionCheckBoxes.get(photoInfo);
       if (checkBox.isSelected()) {
         selectedPhotos.add(photoInfo);
@@ -82,7 +82,7 @@ public class SaveModifiedPhotosDialog extends Dialog<ButtonType> {
     allOrNothingCheckBox.setOnAction(e -> selectAllOrNothing(allOrNothingCheckBox.isSelected()));
     vBox.getChildren().add(allOrNothingCheckBox);
     
-    for (PhotoInfo photoInfo: photoInfos) {
+    for (PhotoMetaDataWithImage photoInfo: photoInfos) {
       File file = new File(photoInfo.getFileName());
       String buttonName = file.getName();
       CheckBox checkBox = componentFactory.createCheckBox(buttonName, true);

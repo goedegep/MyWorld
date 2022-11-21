@@ -4,8 +4,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.logging.Logger;
 
-import goedegep.geo.dbl.WGS84BoundingBox;
-import goedegep.geo.dbl.WGS84Coordinates;
+import goedegep.geo.WGS84BoundingBox;
+import goedegep.geo.WGS84Coordinates;
 import goedegep.util.text.Indent;
 
 /**

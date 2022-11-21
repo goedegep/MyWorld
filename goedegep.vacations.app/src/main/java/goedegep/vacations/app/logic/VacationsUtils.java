@@ -16,11 +16,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
+import com.google.common.geometry.S2LatLng;
 import org.apache.commons.imaging.ImageReadException;
 import org.eclipse.emf.common.util.TreeIterator;
 import org.eclipse.emf.ecore.EObject;
 
-import goedegep.geo.dbl.WGS84Coordinates;
+import goedegep.geo.WGS84Coordinates;
 import goedegep.gpx.GpxUtil;
 import goedegep.gpx.model.DocumentRoot;
 import goedegep.gpx.model.GpxType;

@@ -29,7 +29,7 @@ import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.util.EContentAdapter;
 
 import goedegep.appgen.TableRowOperation;
-import goedegep.geo.dbl.WGS84Coordinates;
+import goedegep.geo.WGS84Coordinates;
 import goedegep.jfx.ComponentFactoryFx;
 import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.JfxStage;
@@ -43,7 +43,9 @@ import goedegep.jfx.eobjecttreeview.EObjectTreeView;
 import goedegep.jfx.eobjecttreeview.NodeOperationDescriptor;
 import goedegep.media.app.MediaRegistry;
 import goedegep.media.fotoshow.app.OrderedNameGenerator;
-import goedegep.media.fotoshow.app.logic.GatherPhotoInfoTask;
+import goedegep.media.photo.GatherPhotoInfoTask;
+import goedegep.media.photo.PhotoMetaData;
+import goedegep.media.photo.PhotoMetaDataWithImage;
 import goedegep.media.photoshow.model.FolderTimeOffsetSpecification;
 import goedegep.media.photoshow.model.PhotoShowFactory;
 import goedegep.media.photoshow.model.PhotoShowPackage;
@@ -133,7 +135,7 @@ public class PhotoShowBuilder extends JfxStage {
    */
   private String currentlySelectedFolder = null;
   private String ignoreFolders = null;                 // Stored to set as initial value in the folder selection wizard. Default is taken from the Registry.
-  private ObservableMap<String, List<PhotoInfo>> photoInfoListsMap = FXCollections.observableHashMap();  // Photo info of all photos per folder
+  private ObservableMap<String, List<PhotoMetaDataWithImage>> photoInfoListsMap = FXCollections.observableHashMap();  // Photo info of all photos per folder
   
   /**
    * The current photo show list (including photos not selected for the show).
@@ -179,10 +181,16 @@ public class PhotoShowBuilder extends JfxStage {
      *  For a new entry, the photos have to be added to the photoShowList.
      *  For a deleted entry, the photos have to be removed from this list.
      */
-    photoInfoListsMap.addListener(new MapChangeListener<String, List<PhotoInfo>>() {
+    photoInfoListsMap.addListener(new MapChangeListener<String, List<PhotoMetaDataWithImage>>() {
+
+//      @Override
+//      public void onChanged(Change<? extends String, ? extends List<PhotoMetaDataWithImage>> change) {
+//        // TODO Auto-generated method stub
+//        
+//      }
 
       @Override
-      public void onChanged(Change<? extends String, ? extends List<PhotoInfo>> change) {
+      public void onChanged(Change<? extends String, ? extends List<PhotoMetaDataWithImage>> change) {
         LOGGER.fine("=> change=" + change.toString());
         if (change.wasAdded()) {
           change.getKey();
@@ -252,11 +260,11 @@ public class PhotoShowBuilder extends JfxStage {
     GatherPhotoInfoTask gatherPhotoInfoTask = new GatherPhotoInfoTask(photoFoldersToHandle, SUPPORTED_FILE_TYPES, 150);
     
     // Handle results - new information for a folder is added to the photoInfoListsMap.
-    gatherPhotoInfoTask.valueProperty().addListener(new ChangeListener<Tuplet<String, List<PhotoInfo>>>() {
+    gatherPhotoInfoTask.valueProperty().addListener(new ChangeListener<Tuplet<String, List<PhotoMetaDataWithImage>>>() {
 
       @Override
-      public void changed(ObservableValue<? extends Tuplet<String, List<PhotoInfo>>> observable,
-          Tuplet<String, List<PhotoInfo>> oldValue, Tuplet<String, List<PhotoInfo>> newValue) {
+      public void changed(ObservableValue<? extends Tuplet<String, List<PhotoMetaDataWithImage>>> observable,
+          Tuplet<String, List<PhotoMetaDataWithImage>> oldValue, Tuplet<String, List<PhotoMetaDataWithImage>> newValue) {
         photoInfoListsMap.put(newValue.getObject1(), newValue.getObject2());
       }
 
@@ -1302,25 +1310,25 @@ public class PhotoShowBuilder extends JfxStage {
    * @param photoFolderName name of the added photo folder
    * @param photoInfoList information on all the photos in this folder
    */
-  private void handlePhotoFolderAddedToPhotoInfoListsMap(String photoFolderName, List<PhotoInfo> photoInfoList) {
+  private void handlePhotoFolderAddedToPhotoInfoListsMap(String photoFolderName, List<PhotoMetaDataWithImage> photoInfoList) {
     LOGGER.info("=>");
     
     updatePhotoInfoSortingTimesForOneFolder(photoFolderName);
     
     List<PhotoInfo> photosToAddToPhotoShowList = new ArrayList<>();
     
-    for (PhotoInfo photoInfo: photoInfoList) {
+    for (PhotoMetaDataWithImage photoInfo: photoInfoList) {
       if (openSpecificationNumberOfFoldersToHandle != 0) {
         boolean openSpecificationPhotosToShowContainsPhoto = openSpecificationPhotosToShow.contains(photoInfo.getFileName());
-        photoInfo.setSelectedForTheShow(openSpecificationPhotosToShowContainsPhoto);
+        ((PhotoInfo) photoInfo).setSelectedForTheShow(openSpecificationPhotosToShowContainsPhoto);
         if (openSpecificationPhotosToShowContainsPhoto) {
           openSpecificationPhotosToShow.remove(photoInfo.getFileName());
         }
       } else {
-        photoInfo.setSelectedForTheShow(true);
+        ((PhotoInfo) photoInfo).setSelectedForTheShow(true);
       }
-      photosToAddToPhotoShowList.add(photoInfo);
-      photoInfo.selectedForTheShowProperty().addListener(new ChangeListener<Boolean>() {
+      photosToAddToPhotoShowList.add(((PhotoInfo) photoInfo));
+      ((PhotoInfo) photoInfo).selectedForTheShowProperty().addListener(new ChangeListener<Boolean>() {
 
         @Override
         public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
@@ -1400,11 +1408,11 @@ public class PhotoShowBuilder extends JfxStage {
    * @param folderName The name of the folder for which the Sorting Times are to be updated.
    */
   private void updatePhotoInfoSortingTimesForOneFolder(String folderName) {
-    List<PhotoInfo> photoInfoList = photoInfoListsMap.get(folderName);
+    List<PhotoMetaDataWithImage> photoInfoList = photoInfoListsMap.get(folderName);
 
     // clear the sorting time for all photos in this folder
-    for (PhotoInfo photoInfo: photoInfoList) {
-      photoInfo.setSortingDateTime(null);
+    for (PhotoMetaDataWithImage photoInfo: photoInfoList) {
+      ((PhotoInfo) photoInfo).setSortingDateTime(null);
     }
     
     // Check all 'folder time offset specifications'. If it is for this folder, apply the offset to all photos of this folder.
@@ -1415,11 +1423,11 @@ public class PhotoShowBuilder extends JfxStage {
         LOGGER.fine("time offset text: " + folderTimeOffsetSpecification.getTimeOffset());
         LOGGER.fine("timeOffset: " + timeOffset.toString());
         
-        for (PhotoInfo photoInfo: photoInfoList) {
-          photoInfo.setSortingDateTime(photoInfo.getDeviceSpecificPhotoTakenTime().plus(timeOffset));
+        for (PhotoMetaDataWithImage photoInfo: photoInfoList) {
+          ((PhotoInfo) photoInfo).setSortingDateTime(photoInfo.getDeviceSpecificPhotoTakenTime().plus(timeOffset));
           LOGGER.fine("file: " + photoInfo.getFileName() + 
               ", taken at: " + photoInfo.getDeviceSpecificPhotoTakenTime() +
-              ", sorting time: " + photoInfo.getSortingDateTime());
+              ", sorting time: " + ((PhotoInfo) photoInfo).getSortingDateTime());
         }
       }
     }

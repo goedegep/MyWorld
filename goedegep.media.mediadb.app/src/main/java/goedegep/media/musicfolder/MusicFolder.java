@@ -1,6 +1,5 @@
 package goedegep.media.musicfolder;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.DirectoryIteratorException;
 import java.nio.file.DirectoryStream;
@@ -12,8 +11,6 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import goedegep.util.file.FileUtils;
-import javaFlacEncoder.FLAC_FileEncoder;
-import javaFlacEncoder.FLAC_FileEncoder.Status;
 
 /**
  * This class contains the top level information about the music folder.

@@ -18,7 +18,7 @@ import com.atlis.location.nominatim.OSMLocationInfo;
 import com.gluonhq.maps.MapPoint;
 import com.gluonhq.maps.MapView;
 
-import goedegep.geo.dbl.WGS84Coordinates;
+import goedegep.geo.WGS84Coordinates;
 import goedegep.jfx.ComponentFactoryFx;
 import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.JfxStage;

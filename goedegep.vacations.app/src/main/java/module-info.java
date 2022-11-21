@@ -1,7 +1,6 @@
 module goedegep.vacations.app {
   exports goedegep.vacations.app;
   exports goedegep.vacations.app.logic;
-  exports goedegep.gluonmaps.gpx;
   exports goedegep.vacations.app.guifx;
 
   requires atlis.location.base;

@@ -11,8 +11,8 @@ import com.gluonhq.maps.LabeledIcon;
 import com.gluonhq.maps.MapLayer;
 import com.gluonhq.maps.MapLayer.BoundingBoxData;
 
-import goedegep.geo.dbl.WGS84BoundingBox;
-import goedegep.geo.dbl.WGS84Coordinates;
+import goedegep.geo.WGS84BoundingBox;
+import goedegep.geo.WGS84Coordinates;
 import goedegep.jfx.CustomizationFx;
 import goedegep.poi.app.guifx.POIIcons;
 import goedegep.poi.model.POICategoryId;

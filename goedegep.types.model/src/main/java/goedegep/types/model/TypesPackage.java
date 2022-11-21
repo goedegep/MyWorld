@@ -276,7 +276,7 @@ public interface TypesPackage extends EPackage {
    * The meta object id for the '<em>EWGS84 Coordinates</em>' data type.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see goedegep.geo.dbl.WGS84Coordinates
+   * @see goedegep.geo.WGS84Coordinates
    * @see goedegep.types.model.impl.TypesPackageImpl#getEWGS84Coordinates()
    * @generated
    */
@@ -455,11 +455,11 @@ public interface TypesPackage extends EPackage {
   EDataType getELocalDate();
 
   /**
-   * Returns the meta object for data type '{@link goedegep.geo.dbl.WGS84Coordinates <em>EWGS84 Coordinates</em>}'.
+   * Returns the meta object for data type '{@link goedegep.geo.WGS84Coordinates <em>EWGS84 Coordinates</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @return the meta object for data type '<em>EWGS84 Coordinates</em>'.
-   * @see goedegep.geo.dbl.WGS84Coordinates
+   * @see goedegep.geo.WGS84Coordinates
    * @model instanceClass="goedegep.geo.dbl.WGS84Coordinates"
    * @generated
    */
@@ -641,7 +641,7 @@ public interface TypesPackage extends EPackage {
     	 * The meta object literal for the '<em>EWGS84 Coordinates</em>' data type.
     	 * <!-- begin-user-doc -->
     	 * <!-- end-user-doc -->
-    	 * @see goedegep.geo.dbl.WGS84Coordinates
+    	 * @see goedegep.geo.WGS84Coordinates
     	 * @see goedegep.types.model.impl.TypesPackageImpl#getEWGS84Coordinates()
     	 * @generated
     	 */
