@@ -7,8 +7,12 @@ import java.util.logging.Logger;
 
 import goedegep.jfx.CustomizationFx;
 import goedegep.media.app.base.MediaAppResourcesFx;
+import goedegep.media.photo.IPhotoMetaData;
+import goedegep.media.photo.IPhotoMetaDataWithImage;
+import goedegep.media.photo.PhotoMetaData;
 import goedegep.media.photo.PhotoMetaDataWithImage;
 import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.geometry.Insets;
 import javafx.scene.control.ListCell;
 import javafx.scene.image.Image;
@@ -23,15 +27,15 @@ import javafx.scene.layout.StackPane;
 /**
  * This class provides a {@link ListCell} which shows a photo thumbnail with indicators for whether the title and coordinates are set.
  */
-public class PhotoListCell extends ListCell<PhotoMetaDataWithImage> {
+public class PhotoListCell extends ListCell<IPhotoMetaData> {
   @SuppressWarnings("unused")
   private static final Logger LOGGER = Logger.getLogger(PhotoListCell.class.getName());
 
   private static CustomizationFx customization;
   private static MediaAppResourcesFx mediaAppResourcesFx;
   
-  private PhotoMetaDataWithImage previousPhotoInfo = null;
-  private ChangeListener<? super PhotoMetaDataWithImage> changeListener;
+  private IPhotoMetaData previousPhotoMetaData = null;
+  private ChangeListener<IPhotoMetaData> changeListener;
   
   /**
    * Set the GUI customization for these cells.
@@ -47,25 +51,25 @@ public class PhotoListCell extends ListCell<PhotoMetaDataWithImage> {
    * {@inheritDoc}
    */
   @Override
-  public void updateItem(final PhotoMetaDataWithImage photoMetaDataWithImage, final boolean empty) {
-    super.updateItem(photoMetaDataWithImage, empty);
+  public void updateItem(final IPhotoMetaData photoMetaData, final boolean empty) {
+    super.updateItem(photoMetaData, empty);
     
-    if (previousPhotoInfo != null) {
-      previousPhotoInfo.removeListener(changeListener);
+    if (previousPhotoMetaData != null) {
+      previousPhotoMetaData.removeListener(changeListener);
     }
     
     if (empty) {
       setText(null);
       setGraphic(null);
     } else {
-      updateGraphicAndText(photoMetaDataWithImage);
+      updateGraphicAndText(photoMetaData);
       
       setOnDragDetected((event) -> {
         Dragboard dragboard = startDragAndDrop(TransferMode.COPY);
 
         ClipboardContent content = new ClipboardContent();
         List<File> files = new ArrayList<>();
-        File aFile = new File(photoMetaDataWithImage.getFileName());
+        File aFile = new File(photoMetaData.getFileName());
         files.add(aFile);
         content.putFiles(files);
         dragboard.setContent(content);
@@ -73,31 +77,33 @@ public class PhotoListCell extends ListCell<PhotoMetaDataWithImage> {
         event.consume();
       });
       
-      setOnMouseClicked(e -> handleMouseEventOnPhotoIcon(e, photoMetaDataWithImage));
+      setOnMouseClicked(e -> handleMouseEventOnPhotoIcon(e, photoMetaData));
       
       changeListener = (observable, oldValue, newValue) -> updateGraphicAndText(newValue);
           
-      photoMetaDataWithImage.addListener(changeListener);
-      previousPhotoInfo = photoMetaDataWithImage;
+      photoMetaData.addListener(changeListener);
+      previousPhotoMetaData = photoMetaData;
     }
   }
   
-  private void updateGraphicAndText(final PhotoMetaDataWithImage photoMetaDataWithImage) {
+  private void updateGraphicAndText(final IPhotoMetaData photoMetaData) {
     
     /*
      * The Graphic is a StackPane: the photo, with on top icons for title and coordinates.
      */          
     StackPane stackPane = new StackPane();
-
-    ImageView imageView = new ImageView();
-    imageView.setFitHeight(150);
     
-    imageView.setPreserveRatio(true);
-    imageView.setImage(photoMetaDataWithImage.getImage());
-    stackPane.getChildren().add(imageView);
+    if (photoMetaData instanceof IPhotoMetaDataWithImage photoMetaDataWithImage) {
 
-    boolean hasTitle = (photoMetaDataWithImage.getTitle() != null);
-    boolean hasCoordinates = (photoMetaDataWithImage.getCoordinates() != null);
+      ImageView imageView = new ImageView();
+      imageView.setFitHeight(150);
+      imageView.setPreserveRatio(true);
+      imageView.setImage(photoMetaDataWithImage.getImage());
+      stackPane.getChildren().add(imageView);
+    }
+
+    boolean hasTitle = (photoMetaData.getTitle() != null);
+    boolean hasCoordinates = (photoMetaData.getCoordinates() != null);
 
     if (hasTitle  ||  hasCoordinates) {
       HBox hBox = new HBox();
@@ -121,7 +127,7 @@ public class PhotoListCell extends ListCell<PhotoMetaDataWithImage> {
     setGraphic(stackPane);
 
     // Get the photo file name from the full path name
-    File aFile = new File(photoMetaDataWithImage.getFileName());
+    File aFile = new File(photoMetaData.getFileName());
     setText(aFile.getName());
   }
   
@@ -137,7 +143,7 @@ public class PhotoListCell extends ListCell<PhotoMetaDataWithImage> {
    * @param text An optional title for the photo. 
    * @param fileName the file name of the photo to be shown.
    */
-  private void handleMouseEventOnPhotoIcon(MouseEvent mouseEvent, PhotoMetaDataWithImage photoInfo) {
+  private void handleMouseEventOnPhotoIcon(MouseEvent mouseEvent, IPhotoMetaData photoInfo) {
     if (mouseEvent.getClickCount() > 1) {
       new PhotoMetaDataEditor(customization, photoInfo);
     } else {

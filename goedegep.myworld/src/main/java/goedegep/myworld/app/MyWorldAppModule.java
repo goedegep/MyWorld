@@ -12,6 +12,7 @@ import java.util.List;
  * A module also has a list of modules on which it depends.
  */
 public enum MyWorldAppModule {
+  DEMO("Demo"),
   EVENTS("Events"),
   INVOICES_AND_PROPERTIES("InvoicesAndProperties"),
   ROLODEX("Rolodex"),

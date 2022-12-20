@@ -221,7 +221,7 @@ public class GatherPhotoMetaDataTask extends Task<Tuplet<String, List<PhotoMetaD
       photoMetaData.setTitle(photoFileMetaDataHandler.getTitle());
       photoMetaData.setDeviceSpecificPhotoTakenTime(photoFileMetaDataHandler.getCreationDateTime());
       photoMetaData.setCoordinates(photoFileMetaDataHandler.getGeoLocation());
-      photoMetaData.setApproximateGPScoordinates(photoFileMetaDataHandler.metadataHasApproximateCoordinatesIndication());
+      photoMetaData.setApproximateGPScoordinates(photoFileMetaDataHandler.hasApproximateCoordinates());
     } catch (ImageReadException e) {
       LOGGER.severe("ImageReadException while reading file " + fileName + ", message: " + e.getMessage());
 //      e.printStackTrace();

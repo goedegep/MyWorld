@@ -4,6 +4,8 @@ import java.io.File;
 import java.util.List;
 import java.util.logging.Logger;
 
+import org.eclipse.emf.ecore.EObject;
+
 import goedegep.jfx.ComponentFactoryFx;
 import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.JfxStage;
@@ -91,7 +93,7 @@ public class PhotoImportResultWindow extends JfxStage {
       @Override
       public void changed(ObservableValue<? extends PhotoImportResult> observable, PhotoImportResult oldValue, PhotoImportResult newValue) {
         if (newValue != null) {
-          VacationElement vacationElement = newValue.getVacationElement();
+          EObject vacationElement = newValue.getVacationElement();
           if (vacationElement != null) {
             vacationsTreeView.getSelectionModel().select(null);
             EObjectTreeItem treeItem = vacationsTreeView.findTreeItem(vacationElement);
@@ -125,13 +127,13 @@ public class PhotoImportResultWindow extends JfxStage {
     }
     
     StringBuilder buf = new StringBuilder();
-    VacationElement vacationElement = photoImportResult.getVacationElement();
+    EObject vacationElement = photoImportResult.getVacationElement();
     VacationElement newVacationElement = photoImportResult.getVacationNewElement();
-    Day day;
+    Day day = null;
     if (vacationElement instanceof Day) {
       day = (Day) vacationElement;
-    } else {
-      day = VacationsUtils.getDay(vacationElement);
+    } else if (vacationElement instanceof VacationElement e){
+      day = VacationsUtils.getDay(e);
     }
     
     switch(photoImportResult.getPhotoImportResultType()) {
@@ -185,39 +187,43 @@ public class PhotoImportResultWindow extends JfxStage {
     return hBox;
   }
   
-  private String getElementText(VacationElement vacationElement) {
+  private String getElementText(EObject eObject) {
     StringBuilder buf = new StringBuilder();
     
-    switch(vacationElement.eClass().getClassifierID()) {
-    case VacationsPackage.DAY:
-      // A day has no location, so the photo can't be added here, so no text needed.
-      break;
-      
-    case VacationsPackage.LOCATION:
-      Location location = (Location) vacationElement;
-      buf.append(location.getLocationType().getLiteral()).append(" - ");
-      if (location.getLocationType().equals(POICategoryId.CITY)) {
-        buf.append(location.getCity());
-      } else {
-        buf.append(location.getName());
+    if (eObject instanceof VacationElement vacationElement) {
+      switch(vacationElement.eClass().getClassifierID()) {
+      case VacationsPackage.DAY:
+        // A day has no location, so the photo can't be added here, so no text needed.
+        break;
+
+      case VacationsPackage.LOCATION:
+        Location location = (Location) vacationElement;
+        buf.append(location.getLocationType().getLiteral()).append(" - ");
+        if (location.getLocationType().equals(POICategoryId.CITY)) {
+          buf.append(location.getCity());
+        } else {
+          buf.append(location.getName());
+        }
+        break;
+
+      case VacationsPackage.TEXT:
+        // A text has no location, so the photo can't be added here, so no text needed.
+        break;
+
+      case VacationsPackage.PICTURE:
+        Picture picture = (Picture) vacationElement;
+        FileReference fileReference = picture.getPictureReference();
+        buf.append("Photo: ").append(fileReference.getFile());
+        break;
+
+      case VacationsPackage.GPX_TRACK:
+        GPXTrack gpxTrack = (GPXTrack) vacationElement;
+        FileReference gpxFileReference = gpxTrack.getTrackReference();
+        buf.append("GPX track: ").append(gpxFileReference.getFile());
+        break;
       }
-      break;
-      
-    case VacationsPackage.TEXT:
-      // A text has no location, so the photo can't be added here, so no text needed.
-      break;
-      
-    case VacationsPackage.PICTURE:
-      Picture picture = (Picture) vacationElement;
-      FileReference fileReference = picture.getPictureReference();
-      buf.append("Photo: ").append(fileReference.getFile());
-      break;
-      
-    case VacationsPackage.GPX_TRACK:
-      GPXTrack gpxTrack = (GPXTrack) vacationElement;
-      FileReference gpxFileReference = gpxTrack.getTrackReference();
-      buf.append("GPX track: ").append(gpxFileReference.getFile());
-      break;
+    } else {
+      throw new RuntimeException("Type not supported: " + eObject);  
     }
     
     return buf.toString();

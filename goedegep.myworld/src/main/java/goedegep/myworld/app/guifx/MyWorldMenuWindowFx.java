@@ -9,6 +9,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import goedegep.app.finan.guifx.FinanMenuWindow;
+import goedegep.demo.guifx.DemoMenuWindow;
 import goedegep.events.app.guifx.EventsLauncher;
 import goedegep.finan.Finan;
 import goedegep.invandprop.app.guifx.InvoicesAndPropertiesMenuWindow;
@@ -26,6 +27,7 @@ import goedegep.pctools.app.guifx.PCToolsMenuWindow;
 import goedegep.properties.app.guifx.PropertiesEditor;
 import goedegep.properties.model.PropertyDescriptor;
 import goedegep.properties.model.PropertyDescriptorGroup;
+import goedegep.resources.ImageResource;
 import goedegep.resources.ImageSize;
 import goedegep.rolodex.app.RolodexRegistry;
 import goedegep.rolodex.app.guifx.RolodexMenuWindow;
@@ -241,6 +243,22 @@ public class MyWorldMenuWindowFx extends JfxStage {
       
     });
     grid.add(applicationButton, 2, 2);
+    
+    // Demo
+    applicationButton = createModuleButton(
+        MyWorldAppModule.DEMO.getModuleName(),
+        ImageResource.DEMO.getImage(ImageSize.SIZE_3));
+    applicationButton.setOnAction(new EventHandler<ActionEvent>() {
+
+      @Override
+      public void handle(ActionEvent event) {
+        Stage stage = new DemoMenuWindow(CustomizationsFx.getCustomization(MyWorldAppModule.PCTOOLS.name()));
+        stage.centerOnScreen();
+        stage.show();
+      }
+      
+    });
+    grid.add(applicationButton, 3, 2);
    
     mainLayout.getChildren().add(grid);
     
@@ -402,15 +420,13 @@ public class MyWorldMenuWindowFx extends JfxStage {
   private void showMyWorldOnlineManual() {
     if (Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE)) {
       try {
-        Desktop.getDesktop().browse(new URI("http://mydigitallife.rf.gd/myworld-user-manual/myworld-overview/"));
+        Desktop.getDesktop().browse(new URI("https://petersdigitallife.nl/myworld-user-manual/myworld-overview/"));
       } catch (IOException e) {
         e.printStackTrace();
       } catch (URISyntaxException e) {
         e.printStackTrace();
       }
     }
-    
-//    new BrowserWindow("MyWorld manual", customization, "http://mydigitallife.rf.gd/myworld-user-manual/myworld-overview/");
   }
 
   private String getComputerName()

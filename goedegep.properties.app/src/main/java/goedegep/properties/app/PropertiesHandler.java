@@ -82,13 +82,13 @@ public class PropertiesHandler {
       try {
         Field customPropertiesFileField = registryClass.getField(CUSTOM_PROPERTIES_FILE_FIELDNAME);
         String customPropertiesFileName = (String) customPropertiesFileField.get(null);
-        LOGGER.severe("customPropertiesFileName: " + customPropertiesFileName);
+        LOGGER.info("customPropertiesFileName: " + customPropertiesFileName);
         if (customPropertiesFileName != null) {
           EMFResource<PropertyGroup> propertiesResource = new EMFResource<PropertyGroup>(
               PropertiesPackage.eINSTANCE,
               () -> PropertiesFactory.eINSTANCE.createPropertyGroup());
           resourceFileName = createResourcePath(runningInEclipse, projectPath, customPropertiesFileName, true);
-          LOGGER.severe("resourceFileName: " + resourceFileName);
+          LOGGER.info("resourceFileName: " + resourceFileName);
           customPropertiesFileField.set(customPropertiesFileField, resourceFileName);
           try {
             PropertyGroup propertyGroup = propertiesResource.load(resourceFileName);

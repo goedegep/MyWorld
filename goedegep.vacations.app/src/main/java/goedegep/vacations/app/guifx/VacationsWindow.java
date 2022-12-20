@@ -84,6 +84,7 @@ import goedegep.util.emf.EMFResource;
 import goedegep.util.emf.EmfPackageHelper;
 import goedegep.util.file.FileUtils;
 import goedegep.util.i18n.TranslationFormatter;
+import goedegep.util.img.ImageUtils;
 import goedegep.util.img.PhotoFileMetaDataHandler;
 import goedegep.vacations.app.LocationDescriptionDialog;
 import goedegep.vacations.app.VacationsKmlConverter;
@@ -390,7 +391,7 @@ public class VacationsWindow extends JfxStage {
       }
     }
     File userPropertiesFile = new File(VacationsRegistry.customPropertiesFile);
-    LOGGER.severe("userPropertiesFile: " + userPropertiesFile.getAbsolutePath());
+    LOGGER.info("userPropertiesFile: " + userPropertiesFile.getAbsolutePath());
     if (!userPropertiesFile.exists()) {
       EMFResource<PropertyGroup> propertiesResource = new EMFResource<>(PropertiesPackage.eINSTANCE, () -> PropertiesFactory.eINSTANCE.createPropertyGroup());
       PropertyGroup propertyGroup = propertiesResource.newEObject();
@@ -420,11 +421,11 @@ public class VacationsWindow extends JfxStage {
   }
   
   private void handleChangesInTheVacationsData(Notification notification) {
-    LOGGER.severe("=>");
+    LOGGER.info("=>");
     
     updateTipsPane();
     
-    LOGGER.severe("<=");
+    LOGGER.info("<=");
   }
 
   /**
@@ -837,7 +838,7 @@ public class VacationsWindow extends JfxStage {
    * @param treeItem the newly selected item in the <code>treeView</code>.
    */
   private void handleNewTreeItemSelected(Object source, TreeItem<EObjectTreeItemContent> treeItem) {
-    LOGGER.severe("=>");
+    LOGGER.info("=>");
     
 //    if (treeItem != null) {
 //      EObjectTreeItemContent value = treeItem.getValue();
@@ -851,10 +852,10 @@ public class VacationsWindow extends JfxStage {
 //    }
 
     updateDocumentView(treeItem);
-    LOGGER.severe("Before updateMapForTreeItem");
+    LOGGER.info("Before updateMapForTreeItem");
     updateMapForTreeItem(travelMapView, treeItem);
     
-    LOGGER.severe("<=");
+    LOGGER.info("<=");
   }
   
   /**
@@ -1015,9 +1016,9 @@ public class VacationsWindow extends JfxStage {
         }    	  
       }
     } else if ((vacation = getVacationForTreeItem(treeItem)) != null) {                      // vacation
-      LOGGER.severe("before addVacationToMapView");
+      LOGGER.info("before addVacationToMapView");
       WGS84BoundingBox vacationsLayerBoundingBox = addVacationToMapView(travelMapView, vacation, false);
-      LOGGER.severe("after addVacationToMapView");
+      LOGGER.info("after addVacationToMapView");
       if (vacationsLayerBoundingBox != null) {
         WGS84Coordinates center = vacationsLayerBoundingBox.getCenter();
         mapCenter = new MapPoint(center.getLatitude(), center.getLongitude());
@@ -1070,11 +1071,11 @@ public class VacationsWindow extends JfxStage {
    * @return a <code>Tuplet</code> with the related picture and location, or null if one of these doesn't exist.
    */
   private Tuplet<Picture, WGS84Coordinates> getPictureDataForTreeItem(TreeItem<EObjectTreeItemContent> treeItem) {
-    LOGGER.severe("=>");
+    LOGGER.info("=>");
     Picture vacationElementPicture = getRelatedPictureForTreeItem(treeItem);
 
     if (vacationElementPicture == null) {
-      LOGGER.severe("<= (null)");
+      LOGGER.info("<= (null)");
       return null;
     }
 
@@ -1121,7 +1122,7 @@ public class VacationsWindow extends JfxStage {
    * @return the <code>Picture</code> related to <code>treeItem</code>, or null if there is no related <code>Picture</code>.
    */
   private Picture getRelatedPictureForTreeItem(TreeItem<EObjectTreeItemContent> treeItem) {
-    LOGGER.severe("=> treeItem=" + (treeItem != null ? treeItem.toString() : "(null)"));
+    LOGGER.info("=> treeItem=" + (treeItem != null ? treeItem.toString() : "(null)"));
     
     if (treeItem == null) {
       LOGGER.severe("<= (null)");
@@ -1154,7 +1155,7 @@ public class VacationsWindow extends JfxStage {
       }
     }
 
-    LOGGER.severe("<= vacationElementPicture=" + (vacationElementPicture != null ? vacationElementPicture.toString() : "(null)"));
+    LOGGER.info("<= vacationElementPicture=" + (vacationElementPicture != null ? vacationElementPicture.toString() : "(null)"));
     return vacationElementPicture;
   }
   
@@ -1173,7 +1174,7 @@ public class VacationsWindow extends JfxStage {
       throw new VacationElementReferenceException(vacationElementPicture);
     }
     LOGGER.info("before getting geo location");
-    WGS84Coordinates coordinates = PhotoFileMetaDataHandler.getGeoLocation(vacationElementPicture.getPictureReference().getFile());
+    WGS84Coordinates coordinates = ImageUtils.getGeoLocation(vacationElementPicture.getPictureReference().getFile());
     LOGGER.info("after getting geo location");
     
     if (coordinates == null) {
@@ -1221,23 +1222,23 @@ public class VacationsWindow extends JfxStage {
    * @return a <code>Tuplet</code> with the related Location and Vacation, or null if one of these doesn't exist.
    */
   private Tuplet<Location, Vacation> getLocationDataForTreeItem(TreeItem<EObjectTreeItemContent> treeItem) {
-    LOGGER.severe("=>");
+    LOGGER.info("=>");
     
     Location location = getRelatedLocationForTreeItem(treeItem);
     
     if (location == null) {
-      LOGGER.severe("<= (null)");
+      LOGGER.info("<= (null)");
       return null;
     }
     
     Vacation vacation = location.getVacation();
     
     if (vacation == null) {
-      LOGGER.severe("<= (null)");
+      LOGGER.info("<= (null)");
       return null;
     }
     
-    LOGGER.severe("<= <location>");
+    LOGGER.info("<= <location>");
     return new Tuplet<>(location, vacation);
   }
   
@@ -1298,23 +1299,23 @@ public class VacationsWindow extends JfxStage {
    */
   private Tuplet<GPXTrack, Vacation> getTrackDataForTreeItem(TreeItem<EObjectTreeItemContent> treeItem) {
 //    LOGGER.severe("=> treeItem=" + (treeItem != null ? treeItem.toString() : "(null)"));
-    LOGGER.severe("=>");
+    LOGGER.info("=>");
     
     GPXTrack track = getRelatedTrackForTreeItem(treeItem);
     
     if (track == null) {
-      LOGGER.severe("<= (null) (no track)");
+      LOGGER.info("<= (null) (no track)");
       return null;
     }
     
     Vacation vacation = track.getVacation();
     
     if (vacation == null) {
-      LOGGER.severe("<= (null) (no vacation for track)");
+      LOGGER.info("<= (null) (no vacation for track)");
       return null;
     }
     
-    LOGGER.severe("<= track=" + (track != null ? track.toString() : "(null)") + ", vacation=" + (vacation != null ? vacation.toString() : "(null)"));
+    LOGGER.info("<= track=" + (track != null ? track.toString() : "(null)") + ", vacation=" + (vacation != null ? vacation.toString() : "(null)"));
     
     return new Tuplet<>(track, vacation);
   }
@@ -1371,7 +1372,7 @@ public class VacationsWindow extends JfxStage {
    */
   private static Vacation getVacationForTreeItem(TreeItem<EObjectTreeItemContent> treeItem) {
     LOGGER.info("=> treeItem=" + (treeItem != null ? treeItem.toString() : "(null)"));
-    LOGGER.severe("=>");
+    LOGGER.info("=>");
     
     if (treeItem == null) {
       LOGGER.info("<= (null)");
@@ -1395,7 +1396,7 @@ public class VacationsWindow extends JfxStage {
       vacation = (Vacation) treeItemObject;
     }
 
-    LOGGER.severe("<= vacation=" + (vacation != null ? vacation.toString() : "(null)"));
+    LOGGER.info("<= vacation=" + (vacation != null ? vacation.toString() : "(null)"));
     return vacation;
   }
   

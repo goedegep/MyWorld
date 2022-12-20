@@ -59,7 +59,7 @@ import javafx.scene.image.Image;
  * </li>
  * </ul>
  */
-public class GatherPhotoInfoTask extends Task<Tuplet<String, List<PhotoMetaDataWithImage>>> {
+public class GatherPhotoInfoTask extends Task<Tuplet<String, List<IPhotoMetaDataWithImage>>> {
   private final static Logger LOGGER = Logger.getLogger(GatherPhotoInfoTask.class.getName());
   
   private BlockingQueue<String> photoFoldersToHandle;     // the request queue
@@ -85,7 +85,7 @@ public class GatherPhotoInfoTask extends Task<Tuplet<String, List<PhotoMetaDataW
    * Handle requests from the request queue.
    */
   @Override
-  protected Tuplet<String, List<PhotoMetaDataWithImage>> call() throws Exception {
+  protected Tuplet<String, List<IPhotoMetaDataWithImage>> call() throws Exception {
     LOGGER.info("=>");
     
     while (true) {
@@ -102,10 +102,10 @@ public class GatherPhotoInfoTask extends Task<Tuplet<String, List<PhotoMetaDataW
 
       
       // Get information about all photos in the folders
-      List<PhotoMetaDataWithImage> photoInfoList = getInfoOfPhotosInAFolder(photoFolder);
+      List<IPhotoMetaDataWithImage> photoInfoList = getInfoOfPhotosInAFolder(photoFolder);
       
       // Report the information back to the application.
-      Tuplet<String, List<PhotoMetaDataWithImage>> photoFolderInfo = new Tuplet<>(photoFolderName, photoInfoList);
+      Tuplet<String, List<IPhotoMetaDataWithImage>> photoFolderInfo = new Tuplet<>(photoFolderName, photoInfoList);
       updateMessage("Information gathered for " + totalNumberOfPhotos + " photos from folder " + photoFolderName);
       updateValue(photoFolderInfo);
       LOGGER.info("Finished handling folder: " + photoFolderName + ", photos found: " + totalNumberOfPhotos + ", photosWithoutCoordinates: " + photosWithoutCoordinates);
@@ -152,8 +152,8 @@ public class GatherPhotoInfoTask extends Task<Tuplet<String, List<PhotoMetaDataW
    * @param photoFolder the folder to handle
    * @return a list of PhotoMetaDataWithImage, the information about the photos in the {@code photoFolder}.
    */
-  private List<PhotoMetaDataWithImage> getInfoOfPhotosInAFolder(Path photoFolder) {
-    List<PhotoMetaDataWithImage> photoInfoList = new ArrayList<>();
+  private List<IPhotoMetaDataWithImage> getInfoOfPhotosInAFolder(Path photoFolder) {
+    List<IPhotoMetaDataWithImage> photoInfoList = new ArrayList<>();
     numberOfPhotosHandled = 0;
     photosWithoutCoordinates = 0;
     updateProgress(0, totalNumberOfPhotos);
@@ -166,7 +166,7 @@ public class GatherPhotoInfoTask extends Task<Tuplet<String, List<PhotoMetaDataW
           LOGGER.fine("extensie: " + fileExtension);
           if (supportedFileTypes.contains(fileExtension.toLowerCase())) {
             // it is a supported picture file.
-            PhotoMetaDataWithImage photoInfo = gatherPhotoMetaDataWithImage(checkDirectory.toAbsolutePath().toString(), imageSize);
+            IPhotoMetaDataWithImage photoInfo = gatherPhotoMetaDataWithImage(checkDirectory.toAbsolutePath().toString(), imageSize);
             if (photoInfo.getCoordinates() == null) {
               photosWithoutCoordinates++;
             }
@@ -195,12 +195,12 @@ public class GatherPhotoInfoTask extends Task<Tuplet<String, List<PhotoMetaDataW
    * @param fileName the file name of the photo
    * @return all needed information about the photo
    */
-  public static PhotoMetaDataWithImage gatherPhotoMetaDataWithImage(String fileName, int imageSize) {
+  public static IPhotoMetaDataWithImage gatherPhotoMetaDataWithImage(String fileName, int imageSize) {
     LOGGER.info("=> fileName=" + fileName);
     
-    PhotoMetaDataWithImage photoMetaDataWithImage = new PhotoMetaDataWithImage();
+    IPhotoMetaDataWithImage photoMetaDataWithImage = new PhotoMetaDataWithImage();
 
-    photoMetaDataWithImage.getPhotoMetaData().setFileName(fileName);
+    photoMetaDataWithImage.setFileName(fileName);
 
     if (imageSize != -1) {
       Image image = new Image("file:" + fileName, imageSize, imageSize, true, true);
@@ -209,10 +209,10 @@ public class GatherPhotoInfoTask extends Task<Tuplet<String, List<PhotoMetaDataW
 
     try {
       PhotoFileMetaDataHandler photoFileMetaDataHandler = new PhotoFileMetaDataHandler(new File(fileName));
-      photoMetaDataWithImage.getPhotoMetaData().setTitle(photoFileMetaDataHandler.getTitle());
-      photoMetaDataWithImage.getPhotoMetaData().setDeviceSpecificPhotoTakenTime(photoFileMetaDataHandler.getCreationDateTime());
-      photoMetaDataWithImage.getPhotoMetaData().setCoordinates(photoFileMetaDataHandler.getGeoLocation());
-      photoMetaDataWithImage.getPhotoMetaData().setApproximateGPScoordinates(photoFileMetaDataHandler.metadataHasApproximateCoordinatesIndication());
+      photoMetaDataWithImage.setTitle(photoFileMetaDataHandler.getTitle());
+      photoMetaDataWithImage.setDeviceSpecificPhotoTakenTime(photoFileMetaDataHandler.getCreationDateTime());
+      photoMetaDataWithImage.setCoordinates(photoFileMetaDataHandler.getGeoLocation());
+      photoMetaDataWithImage.setApproximateGPScoordinates(photoFileMetaDataHandler.hasApproximateCoordinates());
     } catch (ImageReadException e) {
       LOGGER.severe("ImageReadException while reading file " + fileName + ", message: " + e.getMessage());
 //      e.printStackTrace();
@@ -220,7 +220,7 @@ public class GatherPhotoInfoTask extends Task<Tuplet<String, List<PhotoMetaDataW
       LOGGER.severe("IOException while reading file " + fileName + ", message: " + e.getMessage());
 //      e.printStackTrace();
     }
-    photoMetaDataWithImage.getPhotoMetaData().setModificationDateTime(FileUtils.getLastModificationDate(new File(fileName)));
+    photoMetaDataWithImage.setModificationDateTime(FileUtils.getLastModificationDate(new File(fileName)));
 
     LOGGER.info("<=");
     return photoMetaDataWithImage;

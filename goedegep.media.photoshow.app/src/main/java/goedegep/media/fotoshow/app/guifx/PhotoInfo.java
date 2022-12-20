@@ -3,23 +3,122 @@ package goedegep.media.fotoshow.app.guifx;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Comparator;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Logger;
 
+import goedegep.geo.WGS84Coordinates;
+import goedegep.media.photo.IPhotoMetaData;
+import goedegep.media.photo.IPhotoMetaDataWithImage;
 import goedegep.media.photo.PhotoMetaDataWithImage;
+import javafx.beans.InvalidationListener;
+import javafx.beans.Observable;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.scene.image.Image;
+import javafx.util.Callback;
 
-public class PhotoInfo extends PhotoMetaDataWithImage implements Serializable {
+public class PhotoInfo implements Serializable, IPhotoInfo {
   private static final long serialVersionUID = 8042429357758147556L;
   private final static Logger LOGGER = Logger.getLogger(PhotoInfo.class.getName());
   private static final String NEWLINE = System.getProperty("line.separator");
   private static final DateTimeFormatter DTF = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
 
-//  private List<ChangeListener<? super PhotoInfo>> changeListeners = new ArrayList<>();
+  private List<ChangeListener<? super IPhotoMetaData>> changeListeners = new ArrayList<>();
   
+  private IPhotoMetaDataWithImage photoMetaDataWithImage;
   private LocalDateTime sortingDateTime;
   private BooleanProperty selectedForTheShow = new SimpleBooleanProperty(false);
+
+  public Image getImage() {
+    return photoMetaDataWithImage != null ? photoMetaDataWithImage.getImage() : null;
+  }
+
+  public void setImage(Image image) {
+    if (photoMetaDataWithImage == null) {
+      photoMetaDataWithImage = new PhotoMetaDataWithImage();
+    }
+    
+    photoMetaDataWithImage.setImage(image);
+  }
+  
+  public String getTitle() {
+    return photoMetaDataWithImage != null ? photoMetaDataWithImage.getTitle() : null;
+  }
+
+  @Override
+  public void setTitle(String title) {
+    if (photoMetaDataWithImage == null) {
+      photoMetaDataWithImage = new PhotoMetaDataWithImage();
+    }
+    
+    photoMetaDataWithImage.setTitle(title);
+  }
+
+  public String getFileName() {
+    return photoMetaDataWithImage != null ? photoMetaDataWithImage.getFileName() : null;
+  }
+
+  public void setFileName(String filename) {
+    if (photoMetaDataWithImage == null) {
+      photoMetaDataWithImage = new PhotoMetaDataWithImage();
+    }
+    
+    photoMetaDataWithImage.setFileName(filename);
+  }
+
+  public WGS84Coordinates getCoordinates() {
+    return photoMetaDataWithImage != null ? photoMetaDataWithImage.getCoordinates() : null;
+  }
+
+  @Override
+  public void setCoordinates(WGS84Coordinates coordinates) {
+    if (photoMetaDataWithImage == null) {
+      photoMetaDataWithImage = new PhotoMetaDataWithImage();
+    }
+    
+    photoMetaDataWithImage.setCoordinates(coordinates);
+  }
+
+  public LocalDateTime getDeviceSpecificPhotoTakenTime() {
+    return photoMetaDataWithImage != null ? photoMetaDataWithImage.getDeviceSpecificPhotoTakenTime() : null;
+  }
+  
+
+  public void setDeviceSpecificPhotoTakenTime(LocalDateTime deviceSpecificPhotoTakenTime) {
+    if (photoMetaDataWithImage == null) {
+      photoMetaDataWithImage = new PhotoMetaDataWithImage();
+    }
+    
+    photoMetaDataWithImage.setDeviceSpecificPhotoTakenTime(deviceSpecificPhotoTakenTime);
+  }
+ 
+  public boolean isApproximateGPScoordinates() {
+    return photoMetaDataWithImage != null ? photoMetaDataWithImage.isApproximateGPScoordinates() : null;
+  }
+
+  @Override
+  public void setApproximateGPScoordinates(boolean approximateGPScoordinates) {
+    if (photoMetaDataWithImage == null) {
+      photoMetaDataWithImage = new PhotoMetaDataWithImage();
+    }
+    
+    photoMetaDataWithImage.setApproximateGPScoordinates(approximateGPScoordinates);
+  }
+
+  public LocalDateTime getModificationDateTime() {
+    return photoMetaDataWithImage != null ? photoMetaDataWithImage.getModificationDateTime() : null;
+  }
+
+  public void setModificationDateTime(LocalDateTime modificationDateTime) {
+    if (photoMetaDataWithImage == null) {
+      photoMetaDataWithImage = new PhotoMetaDataWithImage();
+    }
+    
+    photoMetaDataWithImage.setModificationDateTime(modificationDateTime);
+  }
+
   
 //  public String getFileName() {
 //    return fileName;
@@ -149,6 +248,10 @@ public class PhotoInfo extends PhotoMetaDataWithImage implements Serializable {
     return selectedForTheShow;
   }
   
+  public static Callback<PhotoInfo, Observable[]> extractor() {
+    return (PhotoInfo p) -> new Observable[]{p.selectedForTheShowProperty()};
+  }
+  
   @Override
   public String toString() {
     StringBuilder buf = new StringBuilder();
@@ -179,58 +282,72 @@ public class PhotoInfo extends PhotoMetaDataWithImage implements Serializable {
     return buf.toString();
   }
   
-  public static Comparator<PhotoMetaDataWithImage> getSortingDateTimeComparator() {
-    return new SortingDateTimeComparator();
+//  public static Comparator<PhotoMetaDataWithImage> getSortingDateTimeComparator() {
+//    return new SortingDateTimeComparator();
+//  }
+
+  /*
+   * Partial implementation of ObservableValue (only ChangeListeners are supported).
+   */
+
+  @Override
+  public void addListener(InvalidationListener listener) {
+    throw new UnsupportedOperationException("Only change listeners are supported");
   }
 
-//  /*
-//   * Partial implementation of ObservableValue (only ChangeListeners are supported).
-//   */
-//  
-//  @Override
-//  public void addListener(InvalidationListener listener) {
-//    throw new UnsupportedOperationException("Only change listeners are supported");
-//  }
-//
-//  @Override
-//  public void removeListener(InvalidationListener listener) {
-//    throw new UnsupportedOperationException("Only change listeners are supported");
-//  }
-//
-//  @Override
-//  public void addListener(ChangeListener<? super PhotoInfo> changeListener) {
-//    changeListeners.add(changeListener);
-//  }
-//
-//  @Override
-//  public void removeListener(ChangeListener<? super PhotoInfo> changeListener) {
-//    changeListeners.remove(changeListener);
-//  }
-//
-//  private void notifyChangeListeners() {
-//    for (ChangeListener<? super PhotoInfo> changeListener: changeListeners) {
-//      changeListener.changed(this, null, this);
-//    }
-//  }
+  @Override
+  public void removeListener(InvalidationListener listener) {
+    throw new UnsupportedOperationException("Only change listeners are supported");
+  }
+
+  @Override
+  public void addListener(ChangeListener<? super IPhotoMetaData> changeListener) {
+    changeListeners.add(changeListener);
+  }
+
+  @Override
+  public void removeListener(ChangeListener<? super IPhotoMetaData> changeListener) {
+    changeListeners.remove(changeListener);
+  }
+
+  private void notifyChangeListeners() {
+    for (ChangeListener<? super IPhotoMetaData> changeListener: changeListeners) {
+      changeListener.changed(this, null, this);
+    }
+  }
 
   @Override
   public PhotoInfo getValue() {
     return this;
   }
-}
 
-
-class SortingDateTimeComparator implements Comparator<PhotoMetaDataWithImage> {
-
-  @Override
-  public int compare(PhotoMetaDataWithImage photoInfo1, PhotoMetaDataWithImage photoInfo2) {
-    LocalDateTime localDateTime1 = ((PhotoInfo) photoInfo1).getSortingDateTime();
-    LocalDateTime localDateTime2 = ((PhotoInfo) photoInfo2).getSortingDateTime();
-    if ((localDateTime1 == null)  ||  (localDateTime2 == null)) {
-      return 0;
-    } else {
-      return ((PhotoInfo) photoInfo1).getSortingDateTime().compareTo(((PhotoInfo) photoInfo2).getSortingDateTime());
-    }
+  public static PhotoInfo fromIPhotoMetaDataWithImage(IPhotoMetaDataWithImage photoMetaDataWithImage) {
+    PhotoInfo photoInfo = new PhotoInfo();
+    
+    photoInfo.setFileName(photoMetaDataWithImage.getFileName());
+    photoInfo.setTitle(photoMetaDataWithImage.getTitle());
+    photoInfo.setCoordinates(photoMetaDataWithImage.getCoordinates());
+    photoInfo.setApproximateGPScoordinates(photoMetaDataWithImage.isApproximateGPScoordinates());
+    photoInfo.setDeviceSpecificPhotoTakenTime(photoMetaDataWithImage.getDeviceSpecificPhotoTakenTime());
+    photoInfo.setModificationDateTime(photoMetaDataWithImage.getModificationDateTime());
+    photoInfo.setImage(photoMetaDataWithImage.getImage());
+    
+    return photoInfo;
   }
 }
+
+
+//class SortingDateTimeComparator implements Comparator<PhotoMetaDataWithImage> {
+//
+//  @Override
+//  public int compare(PhotoMetaDataWithImage photoInfo1, PhotoMetaDataWithImage photoInfo2) {
+//    LocalDateTime localDateTime1 = ((PhotoInfo) photoInfo1).getSortingDateTime();
+//    LocalDateTime localDateTime2 = ((PhotoInfo) photoInfo2).getSortingDateTime();
+//    if ((localDateTime1 == null)  ||  (localDateTime2 == null)) {
+//      return 0;
+//    } else {
+//      return ((PhotoInfo) photoInfo1).getSortingDateTime().compareTo(((PhotoInfo) photoInfo2).getSortingDateTime());
+//    }
+//  }
+//}
 

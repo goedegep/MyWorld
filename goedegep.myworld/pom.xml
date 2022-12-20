@@ -20,6 +20,10 @@
       <artifactId>goedegep-appgen</artifactId>
     </dependency>
     <dependency>
+      <groupId>goedegep.demo</groupId>
+      <artifactId>goedegep-demo</artifactId>
+    </dependency>
+    <dependency>
       <groupId>goedegep.events</groupId>
       <artifactId>goedegep-events-app</artifactId>
     </dependency>

@@ -3,18 +3,18 @@ package goedegep.media.photo;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 import goedegep.geo.WGS84Coordinates;
 import javafx.beans.InvalidationListener;
 import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.scene.image.Image;
 
-public class PhotoMetaDataWithImage implements Serializable, ObservableValue<PhotoMetaDataWithImage> {
+public class PhotoMetaDataWithImage implements Serializable, IPhotoMetaDataWithImage {
   private static final long serialVersionUID = -4467398989079454134L;
   
-  private PhotoMetaData photoMetaData = new PhotoMetaData();
+  private IPhotoMetaData photoMetaData = new PhotoMetaData();
   private Image image;
   
   /**
@@ -22,15 +22,15 @@ public class PhotoMetaDataWithImage implements Serializable, ObservableValue<Pho
    * This is created when the first listener is added to this object.
    * And from then on it is added to the photoMetaData.
    */
-  private ChangeListener<PhotoMetaData> metaDataChangeListener = null;
+  private ChangeListener<IPhotoMetaData> metaDataChangeListener = null;
 
-  private List<ChangeListener<? super PhotoMetaDataWithImage>> changeListeners = new ArrayList<>();
+  private List<ChangeListener<? super IPhotoMetaData>> changeListeners = new ArrayList<>();
 
-  public PhotoMetaData getPhotoMetaData() {
+  public IPhotoMetaData getPhotoMetaData() {
     return photoMetaData;
   }
 
-  public void setPhotoMetaData(PhotoMetaData photoMetaData) {
+  public void setPhotoMetaData(IPhotoMetaData photoMetaData) {
     if (this.photoMetaData != null) {
       this.photoMetaData.removeListener(metaDataChangeListener);
     }
@@ -51,32 +51,92 @@ public class PhotoMetaDataWithImage implements Serializable, ObservableValue<Pho
     notifyChangeListeners();
   }
 
-  /*
-   * Convenience methods for accessing photoMetaData
-   */
   
   public String getTitle() {
     return photoMetaData != null ? photoMetaData.getTitle() : null;
+  }
+
+  @Override
+  public void setTitle(String title) {
+    if (photoMetaData == null) {
+      photoMetaData = new PhotoMetaData();
+    }
+    
+    photoMetaData.setTitle(title);
   }
 
   public String getFileName() {
     return photoMetaData != null ? photoMetaData.getFileName() : null;
   }
 
+  public void setFileName(String filename) {
+    if (photoMetaData == null) {
+      photoMetaData = new PhotoMetaData();
+    }
+    
+    photoMetaData.setFileName(filename);
+  }
+
   public WGS84Coordinates getCoordinates() {
     return photoMetaData != null ? photoMetaData.getCoordinates() : null;
+  }
+
+  @Override
+  public void setCoordinates(WGS84Coordinates coordinates) {
+    if (photoMetaData == null) {
+      photoMetaData = new PhotoMetaData();
+    }
+    
+    photoMetaData.setCoordinates(coordinates);
   }
 
   public LocalDateTime getDeviceSpecificPhotoTakenTime() {
     return photoMetaData != null ? photoMetaData.getDeviceSpecificPhotoTakenTime() : null;
   }
+  
 
+  public void setDeviceSpecificPhotoTakenTime(LocalDateTime deviceSpecificPhotoTakenTime) {
+    if (photoMetaData == null) {
+      photoMetaData = new PhotoMetaData();
+    }
+    
+    photoMetaData.setDeviceSpecificPhotoTakenTime(deviceSpecificPhotoTakenTime);
+  }
+ 
   public boolean isApproximateGPScoordinates() {
     return photoMetaData != null ? photoMetaData.isApproximateGPScoordinates() : null;
   }
 
+  @Override
+  public void setApproximateGPScoordinates(boolean approximateGPScoordinates) {
+    if (photoMetaData == null) {
+      photoMetaData = new PhotoMetaData();
+    }
+    
+    photoMetaData.setApproximateGPScoordinates(approximateGPScoordinates);
+  }
+
   public LocalDateTime getModificationDateTime() {
     return photoMetaData != null ? photoMetaData.getModificationDateTime() : null;
+  }
+
+  public void setModificationDateTime(LocalDateTime modificationDateTime) {
+    if (photoMetaData == null) {
+      photoMetaData = new PhotoMetaData();
+    }
+    
+    photoMetaData.setModificationDateTime(modificationDateTime);
+  }
+
+  /**
+   * Get the data/time to be used for sorting.
+   * <p>
+   * In the future this may be extended with e.g. an offset, or use the modification date/time if the device time isn't available.
+   * 
+   * @return the date/time to be used for sorting, or null if this isn't available.
+   */
+  public LocalDateTime getSortingDateTime() {
+    return photoMetaData != null ? photoMetaData.getSortingDateTime() : null;
   }
 
   /*
@@ -94,8 +154,8 @@ public class PhotoMetaDataWithImage implements Serializable, ObservableValue<Pho
   }
 
   @Override
-  public void addListener(ChangeListener<? super PhotoMetaDataWithImage> changeListener) {
-    if (changeListener == null) {
+  public void addListener(ChangeListener<? super IPhotoMetaData> changeListener) {
+    if (metaDataChangeListener == null) {
       metaDataChangeListener = (observable, oldValue, newValue) -> notifyChangeListeners();
     }
     
@@ -108,7 +168,7 @@ public class PhotoMetaDataWithImage implements Serializable, ObservableValue<Pho
   }
 
   @Override
-  public void removeListener(ChangeListener<? super PhotoMetaDataWithImage> changeListener) {
+  public void removeListener(ChangeListener<? super IPhotoMetaData> changeListener) {
     changeListeners.remove(changeListener);
     if (changeListeners.isEmpty() && photoMetaData != null) {
       photoMetaData.removeListener(metaDataChangeListener);
@@ -116,7 +176,7 @@ public class PhotoMetaDataWithImage implements Serializable, ObservableValue<Pho
   }
 
   protected void notifyChangeListeners() {
-    for (ChangeListener<? super PhotoMetaDataWithImage> changeListener: changeListeners) {
+    for (ChangeListener<? super IPhotoMetaData> changeListener: changeListeners) {
       changeListener.changed(this, null, this);
     }
   }
@@ -125,4 +185,23 @@ public class PhotoMetaDataWithImage implements Serializable, ObservableValue<Pho
   public PhotoMetaDataWithImage getValue() {
     return this;
   }
+
+  public static Comparator<IPhotoMetaDataWithImage> getSortingDateTimeComparator() {
+    return new SortingDateTimeComparator();
+  }
 }
+
+class SortingDateTimeComparator implements Comparator<IPhotoMetaDataWithImage> {
+
+  @Override
+  public int compare(IPhotoMetaDataWithImage photoMetaDataWithImage1, IPhotoMetaDataWithImage photoMetaDataWithImage2) {
+    LocalDateTime localDateTime1 = photoMetaDataWithImage1.getSortingDateTime();
+    LocalDateTime localDateTime2 = photoMetaDataWithImage2.getSortingDateTime();
+    if ((localDateTime1 == null)  ||  (localDateTime2 == null)) {
+      return 0;
+    } else {
+      return photoMetaDataWithImage1.getSortingDateTime().compareTo(photoMetaDataWithImage2.getSortingDateTime());
+    }
+  }
+}
+

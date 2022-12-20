@@ -23,5 +23,6 @@ module goedegep.myworld {
   requires goedegep.media.app.guifx;
   requires java.desktop;
   requires goedegep.resources;
-  requires goedegep.events.app; 
+  requires goedegep.events.app;
+  requires goedegep.demo; 
 }

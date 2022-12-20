@@ -33,7 +33,7 @@ import javafx.scene.image.Image;
  * <br/>
  * There are also methods to get the filename or URL for an image of a specific size. This can e.g. be used if you generate an HTML file which contains images.<br/>
  * <br/>
- * The images are loaded when first requested and are kept in memory from then on. * Images are loaded when first requested and are kept in memory from then on.
+ * The images are loaded when first requested and are kept in memory from then on.
  */
 public enum ImageResource {
   BACKPACK(new ImageFileInfo[] {
@@ -56,15 +56,16 @@ public enum ImageResource {
       }, "a car", "downloaded from https://icons8.com/, as Creative Commons Attribution-NoDerivs 3.0."),
   CANOEING(new ImageFileInfo[] {new ImageFileInfo("Canoeing - 512x512.png", 512, 512)}, "a person canoeing", null),
   CYCLING(new ImageFileInfo[] {new ImageFileInfo("RegularBiking.png", 128, 128)}, "regular biking", "from https://findicons.com/"),
+  DEMO(new ImageFileInfo[] {new ImageFileInfo("Demo - 512x512.png", 128, 128)}, "computer screen with demo as text", "<a href=\"https://www.flaticon.com/free-icons/demo\" title=\"demo icons\">Demo icons created by Freepik - Flaticon</a>"),
   LOCATION_FLAG_BLUE(new ImageFileInfo[] {new ImageFileInfo("LocationFlagBlue.png", 121, 126)}, "a blue location flag", null),
   LOCATION_FLAG_YELLOW(new ImageFileInfo[] {new ImageFileInfo("LocationFlagYellow.png", 121, 126)}, "a yellow location flag", null),
   GPX(new ImageFileInfo[] {new ImageFileInfo("Gpx.png", 359, 329)}, "a map with a track and a location", null),
-  MAGNIFYING_GLASS(new ImageFileInfo[] {new ImageFileInfo("MagnifyingGlass - 256x256.png", 256, 256)}, "a map", null),
+  MAGNIFYING_GLASS(new ImageFileInfo[] {new ImageFileInfo("MagnifyingGlass - 256x256.png", 256, 256)}, "a magnifying glass", null),
   MAP(new ImageFileInfo[] {new ImageFileInfo("Map - 487x487.png", 487, 487)}, "a map", null),
   ROAD_TO_HORIZON(new ImageFileInfo[] {new ImageFileInfo("RoadToHorizon - 57x32.png", 57, 32), new ImageFileInfo("RoadToHorizon - 114x64.png", 114, 64)}, "a road to the horizon", null),
   SKIÏNG(new ImageFileInfo[] {new ImageFileInfo("Skiïng.png", 34, 39)}, "a skiër", null),
-  SNOW_MOUNTAINS(new ImageFileInfo[] {new ImageFileInfo("SnowMountains - 64x30.png", 64, 30)}, "a skiër", null),
-  SUNRISE(new ImageFileInfo[] {new ImageFileInfo("Sunrise - 256x189.png", 256, 189)}, "a skiër", null),
+  SNOW_MOUNTAINS(new ImageFileInfo[] {new ImageFileInfo("SnowMountains - 64x30.png", 64, 30)}, "snow capped mountains", null),
+  SUNRISE(new ImageFileInfo[] {new ImageFileInfo("Sunrise - 256x189.png", 256, 189)}, "sunrise (or sunset)", null),
   TEXT(new ImageFileInfo[] {new ImageFileInfo("Text - 512x512.png", 512, 512)}, "a letter T for Text", null),
   WALKING(new ImageFileInfo[] {new ImageFileInfo("Walking - 512x512.png", 512, 512)}, "a person walking with stick and backpack", null);
   
@@ -106,7 +107,14 @@ public enum ImageResource {
     this.description = description;
     this.credits = credits;
   }
-
+  
+  /**
+   * Get information on the image files
+   */
+  public ImageFileInfo[] getImageFilesInfo() {
+    return imageFilesInfo;
+  }
+ 
   /**
    * Get the description of the image.
    * 
@@ -320,16 +328,7 @@ public enum ImageResource {
 }
 
 
-/**
- * This record provides information on a single image file.
- * 
- * @param filename Filename of the image (without any directory path)
- * @param width the width of the image
- * @param height the height of the image
- */
-record ImageFileInfo(String filename, int width, int height) {
 
-}
 
 
 /**

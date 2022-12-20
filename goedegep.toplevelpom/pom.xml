@@ -112,6 +112,11 @@
         <version>1.0-SNAPSHOT</version>
       </dependency>
       <dependency>
+        <groupId>goedegep.demo</groupId>
+        <artifactId>goedegep-demo</artifactId>
+        <version>1.0-SNAPSHOT</version>
+      </dependency>
+      <dependency>
         <groupId>goedegep.emfsample</groupId>
         <artifactId>goedegep-emfsample-model</artifactId>
         <version>1.0-SNAPSHOT</version>
@@ -596,6 +601,7 @@
     <module>../goedegep.gpx.app</module>
     <module>../goedegep.pctools</module>
     <module>../goedegep.vacations.app</module>
+    <module>../goedegep.demo</module>
     <module>../goedegep.myworld</module>
 
   </modules>

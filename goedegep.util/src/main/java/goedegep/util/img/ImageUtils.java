@@ -11,12 +11,19 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.Iterator;
+import java.util.logging.Logger;
 
 import javax.imageio.ImageIO;
 import javax.imageio.ImageReader;
 import javax.imageio.stream.ImageInputStream;
 
+import javafx.scene.canvas.Canvas;
+import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.image.ImageView;
+
 import org.apache.commons.imaging.ImageReadException;
+import org.apache.commons.imaging.formats.tiff.constants.TiffDirectoryConstants;
+import org.apache.commons.imaging.formats.tiff.constants.TiffTagConstants;
 
 import goedegep.geo.WGS84Coordinates;
 
@@ -25,12 +32,36 @@ import goedegep.geo.WGS84Coordinates;
  *
  */
 public class ImageUtils {
+  private static final Logger LOGGER = Logger.getLogger(ImageUtils.class.getName());
   
   /**
    * Private constructor, so this class cannot be instantiated.
    */
   private ImageUtils() {
     
+  }
+  
+  /**
+   * Get the <code>WGS84DoubleCoordinates</code> from an image file.
+   * 
+   * @return the coordinates of the photo file, or null if these aren't available.
+   */
+  public static WGS84Coordinates getGeoLocation(String imageFileName) {
+    WGS84Coordinates coordinates = null;
+    
+    if (imageFileName == null) {
+      return coordinates;
+    }
+    File file = new File(imageFileName);
+
+    try {
+      PhotoFileMetaDataHandler photoFileMetaDataHandler = new PhotoFileMetaDataHandler(file);
+      coordinates = photoFileMetaDataHandler.getGeoLocation();
+    } catch (ImageReadException | IOException e) {
+      e.printStackTrace();
+    }
+    
+    return coordinates;
   }
   
   /**
@@ -138,26 +169,155 @@ public class ImageUtils {
    * @throws IOException if a something goes wrong.
    */
   public static Dimension getImageDimensions(File imageFile) throws IOException {
-    ImageInputStream inputStream = ImageIO.createImageInputStream(imageFile);
-
-    try {
-      final Iterator<ImageReader> imageReaders = ImageIO.getImageReaders(inputStream);
-      while (imageReaders.hasNext()) {
-        ImageReader imageReader = imageReaders.next();
-        try {
-          imageReader.setInput(inputStream);
-          return new Dimension(imageReader.getWidth(0), imageReader.getHeight(0));
-        } finally {
-          imageReader.dispose();
-        }
-      }
-    } finally {
-      if (inputStream != null) {
-        inputStream.close();
-      }
+    Dimension dimension = null;
+    
+    if (imageFile == null) {
+      return dimension;
     }
 
-    return null;
+    try {
+      PhotoFileMetaDataHandler photoFileMetaDataHandler = new PhotoFileMetaDataHandler(imageFile);
+      Integer width = photoFileMetaDataHandler.getWidth();
+      Integer height = photoFileMetaDataHandler.getHeight();
+      if (width != null  &&  height != null) {
+        dimension = new Dimension(width, height);
+      }
+    } catch (ImageReadException | IOException e) {
+      e.printStackTrace();
+    }
+    
+    return dimension;
+    
+    
+//    ImageInputStream inputStream = ImageIO.createImageInputStream(imageFile);
+//
+//    try {
+//      final Iterator<ImageReader> imageReaders = ImageIO.getImageReaders(inputStream);
+//      while (imageReaders.hasNext()) {
+//        ImageReader imageReader = imageReaders.next();
+//        try {
+//          imageReader.setInput(inputStream);
+//          return new Dimension(imageReader.getWidth(0), imageReader.getHeight(0));
+//        } finally {
+//          imageReader.dispose();
+//        }
+//      }
+//    } finally {
+//      if (inputStream != null) {
+//        inputStream.close();
+//      }
+//    }
+//
+//    return null;
+  }
+  
+  public static Canvas createImageOnCanvas(String imageFilename, Integer maxWidth, Integer maxHeight) {
+    Integer width = null;
+    Integer height = null;
+    int orientation = TiffTagConstants.ORIENTATION_VALUE_HORIZONTAL_NORMAL; // default orientation, used if there is no 'Orientation' in the meta data.
+    
+    try {
+      PhotoFileMetaDataHandler photoFileMetaDataHandler = new PhotoFileMetaDataHandler(new File(imageFilename));
+      width = photoFileMetaDataHandler.getWidth();
+      height = photoFileMetaDataHandler.getHeight();
+      String orientationText = photoFileMetaDataHandler.getTiffItemValue(TiffDirectoryConstants.DIRECTORY_TYPE_ROOT, "Orientation");
+      if (orientationText != null) {
+        orientation = Integer.valueOf(orientationText);
+      }
+    } catch (ImageReadException e) {
+      e.printStackTrace();
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+    
+    javafx.scene.image.Image image = null;
+    if ((width != null  &&  width > maxWidth)  ||  (height != null  &&  height > maxHeight)) {
+      image = new javafx.scene.image.Image("file:" + imageFilename, maxWidth, maxHeight, true, true);
+    } else {
+      image = new javafx.scene.image.Image("file:" + imageFilename);
+    }
+    
+    Canvas canvas = new Canvas(image.getWidth(), image.getHeight());
+    GraphicsContext gc = canvas.getGraphicsContext2D();
+    
+    // Rotate image based on the 'Orientation'.
+    double degrees = 0;
+    switch (orientation) {
+    case TiffTagConstants.ORIENTATION_VALUE_HORIZONTAL_NORMAL:
+    case TiffTagConstants.ORIENTATION_VALUE_MIRROR_HORIZONTAL:
+      degrees = 0;
+      break;
+      
+    case TiffTagConstants.ORIENTATION_VALUE_ROTATE_90_CW:
+    case TiffTagConstants.ORIENTATION_VALUE_MIRROR_HORIZONTAL_AND_ROTATE_90_CW:
+      degrees = 90;
+      break;      
+      
+    case TiffTagConstants.ORIENTATION_VALUE_ROTATE_180:
+    case TiffTagConstants.ORIENTATION_VALUE_MIRROR_VERTICAL:
+      degrees = 180;
+      break;
+      
+    case TiffTagConstants.ORIENTATION_VALUE_MIRROR_HORIZONTAL_AND_ROTATE_270_CW:
+    case TiffTagConstants.ORIENTATION_VALUE_ROTATE_270_CW:
+      degrees = 270;
+      break;
+    }
+    
+    if (degrees != 0) {
+      gc.save();
+      gc.rotate(degrees);
+      gc.drawImage(image, 0, 0);
+      gc.restore();
+    } else {
+      gc.drawImage(image, 0, 0);
+    }
+    
+    return canvas;
+  }
+  
+  public static ImageView createImageViewFromFile(String filename) {
+    javafx.scene.image.Image image = new javafx.scene.image.Image("file:" + filename);
+    ImageView imageView = new ImageView(image);
+    
+    int orientation = TiffTagConstants.ORIENTATION_VALUE_HORIZONTAL_NORMAL; // default orientation, used if there is no 'Orientation' in the meta data.
+    
+    try {
+      PhotoFileMetaDataHandler photoFileMetaDataHandler = new PhotoFileMetaDataHandler(new File(filename));
+      String orientationText = photoFileMetaDataHandler.getTiffItemValue(TiffDirectoryConstants.DIRECTORY_TYPE_ROOT, "Orientation");
+      if (orientationText != null) {
+        orientation = Integer.valueOf(orientationText);
+      }
+    } catch (ImageReadException e) {
+      e.printStackTrace();
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+    
+    // Rotate image based on the 'Orientation'.
+    switch (orientation) {
+    case TiffTagConstants.ORIENTATION_VALUE_HORIZONTAL_NORMAL:
+    case TiffTagConstants.ORIENTATION_VALUE_MIRROR_HORIZONTAL:
+      imageView.setRotate(0);
+      break;
+      
+    case TiffTagConstants.ORIENTATION_VALUE_ROTATE_90_CW:
+    case TiffTagConstants.ORIENTATION_VALUE_MIRROR_HORIZONTAL_AND_ROTATE_90_CW:
+      imageView.setRotate(90);
+      break;      
+      
+    case TiffTagConstants.ORIENTATION_VALUE_ROTATE_180:
+    case TiffTagConstants.ORIENTATION_VALUE_MIRROR_VERTICAL:
+      imageView.setRotate(180);
+      break;
+      
+    case TiffTagConstants.ORIENTATION_VALUE_MIRROR_HORIZONTAL_AND_ROTATE_270_CW:
+    case TiffTagConstants.ORIENTATION_VALUE_ROTATE_270_CW:
+      imageView.setRotate(270);
+      break;
+    }
+    
+    return imageView;
   }
   
   public static void main(String[] args) {// scaleImageToMaxHeightWithBorderAdded

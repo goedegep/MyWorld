@@ -129,7 +129,7 @@ public class PhotosImporter {
     List<PhotoImportResult> photoImportResults = new ArrayList<>();
     
     // get a list of all filenames of the photos which are already part of the vacation.
-    Map<String, VacationElement> photoFileNameToParentElementMap = getPhotoFileNameToParentElementMap(vacation);
+    Map<String, EObject> photoFileNameToParentElementMap = getPhotoFileNameToParentElementMap(vacation);
     Set<String> existingPhotosFileNames = photoFileNameToParentElementMap.keySet();
     for (String photoFilename: existingPhotosFileNames) {
       LOGGER.severe("Existing photo filename: " + photoFilename);
@@ -286,7 +286,7 @@ public class PhotosImporter {
           }
           
           if (photoAlreadyPartOfVacation) {
-            VacationElement currentVacationElement = photoFileNameToParentElementMap.get(filename);
+            EObject currentVacationElement = photoFileNameToParentElementMap.get(filename);
             VacationElement newVacationElement = null;
             if (!currentVacationElement.equals(bestMatchVacationElement)) {
               newVacationElement = bestMatchVacationElement;
@@ -546,8 +546,8 @@ public class PhotosImporter {
    * @param vacation a <code>Vacation</code>
    * @return the generated photo filename to parent element map.
    */
-  public static Map<String, VacationElement> getPhotoFileNameToParentElementMap(Vacation vacation) {
-    Map<String, VacationElement> photoFileNameToParentElementMap = new HashMap<>();
+  public static Map<String, EObject> getPhotoFileNameToParentElementMap(Vacation vacation) {
+    Map<String, EObject> photoFileNameToParentElementMap = new HashMap<>();
     
     TreeIterator<EObject> iterator = vacation.eAllContents();
     
@@ -558,7 +558,7 @@ public class PhotosImporter {
         if (fileReference != null) {
           String filename = fileReference.getFile();
           if (filename != null) {
-            photoFileNameToParentElementMap.put(filename, (VacationElement) picture.eContainer());
+            photoFileNameToParentElementMap.put(filename, picture.eContainer());
           }
         }
       }

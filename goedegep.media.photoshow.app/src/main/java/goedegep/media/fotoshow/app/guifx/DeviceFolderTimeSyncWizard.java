@@ -15,7 +15,7 @@ import org.apache.commons.imaging.ImageReadException;
 
 import goedegep.jfx.ComponentFactoryFx;
 import goedegep.jfx.CustomizationFx;
-import goedegep.media.photo.PhotoMetaDataWithImage;
+import goedegep.media.photo.IPhotoMetaDataWithImage;
 import goedegep.media.photoshow.model.FolderTimeOffsetSpecification;
 import goedegep.media.photoshow.model.PhotoShowFactory;
 import goedegep.media.photoshow.model.PhotoShowSpecification;
@@ -61,10 +61,10 @@ public class DeviceFolderTimeSyncWizard extends Dialog<ButtonType> {
   
   private Stage ownerWindow;
   private PhotoShowSpecification photoShowSpecification;
-  private Map<String, List<PhotoMetaDataWithImage>> photoInfoListsMap;
+  private Map<String, List<IPhotoInfo>> photoInfoListsMap;
   private ComponentFactoryFx componentFactory;
-  private ListView<PhotoMetaDataWithImage> timeReferencePhotoList;
-  private ListView<PhotoMetaDataWithImage> timeToBeAdjustedPhotoList;
+  private ListView<IPhotoMetaDataWithImage> timeReferencePhotoList;
+  private ListView<IPhotoMetaDataWithImage> timeToBeAdjustedPhotoList;
   private String timeToBeAdjustedFolderName;
   private Duration timeOffset = null;
 
@@ -75,13 +75,13 @@ public class DeviceFolderTimeSyncWizard extends Dialog<ButtonType> {
    * @param ownerWindow The window owning this dialog.
    * @param photoInfoListsMap information on the photos per folder.
    */
-  public DeviceFolderTimeSyncWizard(CustomizationFx customization, Stage ownerWindow, PhotoShowSpecification photoShowSpecification, Map<String, List<PhotoMetaDataWithImage>> photoInfoListsMap) {
+  public DeviceFolderTimeSyncWizard(CustomizationFx customization, Stage ownerWindow, PhotoShowSpecification photoShowSpecification, Map<String, List<IPhotoInfo>> photoInfoListsMap) {
     
     setTitle(WINDOW_TITLE);
     this.ownerWindow = ownerWindow;
     this.photoShowSpecification = photoShowSpecification;
     this.photoInfoListsMap = photoInfoListsMap;
-    
+        
     componentFactory = customization.getComponentFactoryFx();
     
     initOwner(ownerWindow);
@@ -221,25 +221,25 @@ public class DeviceFolderTimeSyncWizard extends Dialog<ButtonType> {
    * @param addBeforeTime
    * @return
    */
-  private ListView<PhotoMetaDataWithImage> addPictureList(String photoFolderName, VBox photoListPanel, boolean addBeforeTime) {
+  private ListView<IPhotoMetaDataWithImage> addPictureList(String photoFolderName, VBox photoListPanel, boolean addBeforeTime) {
     photoListPanel.getChildren().clear();
     
     // Photo folder name on top
     Label folderNameLabel = new Label(photoFolderName);
     photoListPanel.getChildren().add(folderNameLabel);
     
-    List<PhotoMetaDataWithImage> photoInfoList = photoInfoListsMap.get(photoFolderName);
+    List<IPhotoInfo> photoInfoList = photoInfoListsMap.get(photoFolderName);
 
-    ObservableList<PhotoMetaDataWithImage> photos = FXCollections.observableArrayList(photoInfoList);
+    ObservableList<IPhotoMetaDataWithImage> photos = FXCollections.observableArrayList(photoInfoList);
 
-    ListView<PhotoMetaDataWithImage> listView = new ListView<>();
+    ListView<IPhotoMetaDataWithImage> listView = new ListView<>();
     listView.setItems(photos);
-    listView.setCellFactory(param -> new ListCell<PhotoMetaDataWithImage>() {
+    listView.setCellFactory(param -> new ListCell<IPhotoMetaDataWithImage>() {
       private ImageView imageView = new ImageView();
       private StackPane stackPane = new StackPane();
 
       @Override
-      public void updateItem(PhotoMetaDataWithImage photoInfo, boolean empty) {
+      public void updateItem(IPhotoMetaDataWithImage photoInfo, boolean empty) {
         super.updateItem(photoInfo, empty);
         if (empty) {
           setText(null);
@@ -303,7 +303,7 @@ public class DeviceFolderTimeSyncWizard extends Dialog<ButtonType> {
    * 
    * @param timeReferencePhoto
    */
-  private void correctFolderTimes(PhotoMetaDataWithImage timeReferencePhoto) {
+  private void correctFolderTimes(IPhotoMetaDataWithImage timeReferencePhoto) {
     LOGGER.severe("photo: " + timeReferencePhoto.getFileName());
     
     LocalDateTime timeReferencePhotoCreationDate = timeReferencePhoto.getDeviceSpecificPhotoTakenTime();
@@ -315,8 +315,8 @@ public class DeviceFolderTimeSyncWizard extends Dialog<ButtonType> {
   }
   
   private void syncFolderTimes(boolean addBeforeTime) {
-    PhotoMetaDataWithImage timeReferencePhoto = timeReferencePhotoList.getSelectionModel().getSelectedItem();
-    PhotoMetaDataWithImage timeToBeAdjustedPhoto = timeToBeAdjustedPhotoList.getSelectionModel().getSelectedItem();
+    IPhotoMetaDataWithImage timeReferencePhoto = timeReferencePhotoList.getSelectionModel().getSelectedItem();
+    IPhotoMetaDataWithImage timeToBeAdjustedPhoto = timeToBeAdjustedPhotoList.getSelectionModel().getSelectedItem();
     
     if (timeReferencePhoto == null) {
       LOGGER.severe("No time reference photo selected");
@@ -463,12 +463,12 @@ class CorrectTimeDetailsDialog extends Dialog<ButtonType> {
   private Button okButton;    // this will only be enabled if the before time is valid (text can be parsed and isn't 0).
   
   private PhotoShowSpecification photoShowSpecification;
-  private PhotoMetaDataWithImage timeReferencePhoto;
+  private IPhotoMetaDataWithImage timeReferencePhoto;
   private LocalDateTime correctedPhotoCreationDate;
   private TextField actualDateTimeTextField;
   private List<InfoPerFolder> folderInfos = new ArrayList<>();
   
-  public CorrectTimeDetailsDialog(Stage ownerWindow, PhotoShowSpecification photoShowSpecification, PhotoMetaDataWithImage timeReferencePhoto) {
+  public CorrectTimeDetailsDialog(Stage ownerWindow, PhotoShowSpecification photoShowSpecification, IPhotoMetaDataWithImage timeReferencePhoto) {
     this.photoShowSpecification = photoShowSpecification;
     this.timeReferencePhoto = timeReferencePhoto;
     
@@ -616,7 +616,7 @@ class CorrectTimeDetailsDialog extends Dialog<ButtonType> {
    * @param photoInfo the {@code PhotoMetaDataWithImage} of the photo.
    * @return The folder name of the folder in which the photo is located.
    */
-  private String getPhotoFolder(PhotoMetaDataWithImage photoInfo) {
+  private String getPhotoFolder(IPhotoMetaDataWithImage photoInfo) {
     File file = new File(photoInfo.getFileName());
     return file.getParent();
   }
