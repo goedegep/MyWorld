@@ -50,7 +50,7 @@ public class FullScreenViewer extends Stage {
   /**
    * List of pictures, with PhotoInfo, to view.
    */
-  private ObservableList<PhotoInfo> picturesToView = null;
+  private ObservableList<IPhotoInfo> picturesToView = null;
   
   /**
    * List of picture files to view.
@@ -65,7 +65,7 @@ public class FullScreenViewer extends Stage {
   /**
    * Information on the current picture.
    */
-  private PhotoInfo currentPictureInfo;
+  private IPhotoInfo currentPictureInfo;
   
   private boolean cursorOn;
   private Cursor noCursor;
@@ -93,7 +93,7 @@ public class FullScreenViewer extends Stage {
   private double zoomLevel = 0;
   
   
-  public FullScreenViewer(ObservableList<PhotoInfo> picturesToView) {
+  public FullScreenViewer(ObservableList<IPhotoInfo> picturesToView) {
     Objects.requireNonNull(picturesToView, "picturesToView may not be null");
     if (picturesToView.isEmpty()) {
       throw new IllegalArgumentException("picturesToView may not be empty");
@@ -534,11 +534,10 @@ public class FullScreenViewer extends Stage {
     } else {
       fileName = pictureFilesToView.get(pictureIndex);
     }
-    int orientation = 1; // default orientation, used if there is no 'Orientation' in the meta data.
+    int orientation = TiffTagConstants.ORIENTATION_VALUE_HORIZONTAL_NORMAL; // default orientation, used if there is no 'Orientation' in the meta data.
     
-    PhotoFileMetaDataHandler photoFileMetaDataHandler;
     try {
-      photoFileMetaDataHandler = new PhotoFileMetaDataHandler(new File(fileName));
+      PhotoFileMetaDataHandler photoFileMetaDataHandler = new PhotoFileMetaDataHandler(new File(fileName));
       String orientationText = photoFileMetaDataHandler.getTiffItemValue(TiffDirectoryConstants.DIRECTORY_TYPE_ROOT, "Orientation");
       if (orientationText != null) {
         orientation = Integer.valueOf(orientationText);

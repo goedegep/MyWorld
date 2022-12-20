@@ -34,36 +34,55 @@ import org.apache.commons.imaging.formats.tiff.constants.TiffTagConstants;
 import org.apache.commons.imaging.formats.tiff.write.TiffOutputDirectory;
 import org.apache.commons.imaging.formats.tiff.write.TiffOutputSet;
 
-import com.google.common.geometry.S2LatLng;
-
 import goedegep.geo.WGS84Coordinates;
 import goedegep.util.file.FileUtils;
 import goedegep.util.string.StringUtil;
 
 /**
- * This class provides meta information about photo files.
+ * This class provides meta information about photo files (i.e. jpeg or tiff files).
+ * <p>
+ * When creating an instance of this class, the meta data is read from the file.
+ * After this the different get methods provide access to the following:
+ * <ul>
+ * <li>title - see {@link #getTitle()}.</li>
+ * <li>the creation date/time from a photo file (i.e. the date/time the photo was taken) - see {@link #getCreationDateTime()}</li>
+ * <li>the creation date/time of a photo file (i.e. the date/time the photo was taken), from the item 'DateTimeOriginal' from the meta data - see {@link #getDateTimeOriginalFromMetaData()}</li>
+ * <li>the creation date/time of a photo file (i.e. the date/time the photo was taken), from the filename - see {@link #getCreationDateTimeFromFileName()}</li>
+ * <li>the last edit date/time of a photo file - see {@link #getEditDateTime()</li>
+ * <li>the <code>WGS84Coordinates</code> from the photo file - see {@link #getGeoLocation()}</li>
+ * <li>a single Tiff item from the meta data - see {@link #getTiffItemValue(int, String)}</li>
+ * </ul>
+ * 
+ * If you only need one piece of meta data, you can use any of the following static methods:
+ * <ul>
+ * <li>the <code>WGS84Coordinates</code> from the photo file - see getGeoLocation(String)</li>
+ * </ul>
+ * 
+ * The coordinates and meta data of a photo file can be updated via the method {@link #writeGeoLocationAndTitle()}.<br/>
+ * The 'Orientation' of a photo in a photo file can be updated via the method {@link #writeOrientation(File, int) THIS METHOD ISN'T TESTED.
+ * 
  * <p>
  * General information about creation date/time.
-   * <ul>
-   *   <li>Exif: DateTimeOriginal<br/>
-   *   Seems to be the right value so far, but may not always be available. 
-   *   </li>
-   *   <li>Exif: DateTimeDigitized<br/>
-   *   Also seems to be the right value so far, but may not always be available. 
-   *   </li>
-   *   <li>File name<br/>
-   *   Often the filename includes the time the phote was taken. 
-   *   </li>
-   *   <li>Gps: GPSDateStamp + GPSTimeStamp<br/>
-   *   Not sure about this. Might be the right time, but GMT time. 
-   *   </li>
-   *   <li>Root: DateTime<br/>
-   *   This is NOT the right value, it is the date/time the file was created. This is not useful if the file was edited.
-   *   </li>
-   *   <li>The date/time of the file<br/>
-   *   This is the date/time the file was created. This is not useful if the file was edited.
-   *   </li>
-   * </ul>
+ * <ul>
+ *   <li>Exif: DateTimeOriginal<br/>
+ *   Seems to be the right value so far, but may not always be available. 
+ *   </li>
+ *   <li>Exif: DateTimeDigitized<br/>
+ *   Also seems to be the right value so far, but may not always be available. 
+ *   </li>
+ *   <li>File name<br/>
+ *   Often the filename includes the time the phote was taken. 
+ *   </li>
+ *   <li>Gps: GPSDateStamp + GPSTimeStamp<br/>
+ *   Not sure about this. Might be the right time, but GMT time. 
+ *   </li>
+ *   <li>Root: DateTime<br/>
+ *   This is NOT the right value, it is the date/time the file was created. This is not useful if the file was edited.
+ *   </li>
+ *   <li>The date/time of the file<br/>
+ *   This is the date/time the file was created. This is not useful if the file was edited.
+ *   </li>
+ * </ul>
  *
  */
 public final class PhotoFileMetaDataHandler {
@@ -99,6 +118,9 @@ public final class PhotoFileMetaDataHandler {
 
   /**
    * Get the title of the photo.
+   * <p>
+   * This is the title as shown by a Windows properties window,
+   * which is the value of the 'XPTitle' attribute in the EXIF info.
    * 
    * @return the title of the photo, or null if there is no title.
    */
@@ -194,7 +216,7 @@ public final class PhotoFileMetaDataHandler {
    */
   public LocalDateTime getCreationDateTimeFromFileName() {
     String fileName = FileUtils.getFileNameWithoutExtension(file);
-    return PhotoFileMetaDataHandler.parseYyyyMmDd_HhMmSs(fileName);
+    return FileUtils.parseYyyyMmDd_HhMmSs(fileName);
   }
 
   /**
@@ -233,7 +255,59 @@ public final class PhotoFileMetaDataHandler {
   }
   
   /**
-   * Get the <code>WGS84DoubleCoordinates</code> from an image file.
+   * Get the width of the image.
+   * 
+   * @return the width of the image, or null if this cannot be determined.
+   */
+  public Integer getWidth() {
+    Integer width = null;
+    
+    if (jpegMetadata != null) {
+
+      final TiffField field = jpegMetadata.findEXIFValueWithExactMatch(TiffTagConstants.TIFF_TAG_IMAGE_WIDTH);
+      if (field == null) {
+        LOGGER.severe("Width not found for photo: " + file.getName());
+      } else {
+        try {
+          width = field.getIntValue();
+        } catch (ImageReadException e) {
+          e.printStackTrace();
+        }
+        LOGGER.fine("Width: "  + width);
+      }
+    }
+    
+    return width;
+  }
+  
+  /**
+   * Get the height of the image.
+   * 
+   * @return the height of the image, or null if this cannot be determined.
+   */
+  public Integer getHeight() {
+    Integer height = null;
+    
+    if (jpegMetadata != null) {
+
+      final TiffField field = jpegMetadata.findEXIFValueWithExactMatch(TiffTagConstants.TIFF_TAG_IMAGE_LENGTH);
+      if (field == null) {
+        LOGGER.severe("Length not found for photo: " + file.getName());
+      } else {
+        try {
+          height = field.getIntValue();
+        } catch (ImageReadException e) {
+          e.printStackTrace();
+        }
+        LOGGER.fine("Height: "  + height);
+      }
+    }
+    
+    return height;
+  }
+  
+  /**
+   * Get the <code>WGS84Coordinates</code> from the photo file.
    * 
    * @return the coordinates of the photo file, or null if these aren't available.
    * @throws ImageReadException
@@ -261,10 +335,39 @@ public final class PhotoFileMetaDataHandler {
   }
   
   /**
-   * Write a geo location to a photo file.
+   * Check whether a photo has approximate coordinates.
+   * <p>
+   * I use the value GPS_PROCESSING_METHOD_MANUAL for the TIFF item GPS_TAG_GPS_PROCESSING_METHOD.name to indicate approximate coordinates.
+   * 
+   * @return true if the photo has approximate coordinates.
+   * @throws ImageReadException
+   */
+  public boolean hasApproximateCoordinates() throws ImageReadException {
+    LOGGER.info("=>");
+    
+    return metadataHasApproximateCoordinatesIndication(jpegMetadata);
+  }  
+  
+  /**
+   * Get a single Tiff item from the meta data.
+   * 
+   * @param directoryType the Tiff directory type (see {@link TiffDirectoryConstants} for known values.
+   * @param itemName the name of the item to be obtained.
+   * @return the value of requested item, or null if not available.
+   */
+  public String getTiffItemValue(int directoryType, String itemName) {
+    return getTiffItemValue(jpegMetadata, directoryType, itemName);
+  }
+  
+  
+  
+  /**
+   * Write a geo location and title to a photo file.
    *
-   * @param jpegImageFile A source photo file.
-   * @param destinationFile The output file.
+   * @param jpegImageFile the photo file for which the information is to be updated.
+   * @param geoLocation the coordinates of where the photo was taken.
+   * @param approximateGPScoordinates if true, this indicates that the <code>geoLocation</code> isn't accurate.
+   * @param the title of the photo.
    * @throws IOException
    * @throws ImageReadException
    * @throws ImageWriteException
@@ -310,11 +413,11 @@ public final class PhotoFileMetaDataHandler {
         outputSet = new TiffOutputSet();
       }
       
-      if (approximateGPScoordinates  &&  !metadataHasApproximateCoordinatesIndication(jpegMetadata, backupFile)) {
+      if (approximateGPScoordinates  &&  !metadataHasApproximateCoordinatesIndication(jpegMetadata)) {
         final TiffOutputDirectory gpsDir = outputSet.getOrCreateGPSDirectory();
         gpsDir.removeField(GpsTagConstants.GPS_TAG_GPS_PROCESSING_METHOD);
         gpsDir.add(GpsTagConstants.GPS_TAG_GPS_PROCESSING_METHOD, "MANUAL");
-      } else if (!approximateGPScoordinates  &&  metadataHasApproximateCoordinatesIndication(jpegMetadata, backupFile)) {
+      } else if (!approximateGPScoordinates  &&  metadataHasApproximateCoordinatesIndication(jpegMetadata)) {
         final TiffOutputDirectory gpsDir = outputSet.getOrCreateGPSDirectory();
         gpsDir.removeField(GpsTagConstants.GPS_TAG_GPS_PROCESSING_METHOD);
       }
@@ -333,36 +436,25 @@ public final class PhotoFileMetaDataHandler {
       Files.delete(backupPath);
     }
   }
-
-  /**
-   * Get the <code>WGS84DoubleCoordinates</code> from an image file.
-   * 
-   * @return the coordinates of the photo file, or null if these aren't available.
-   */
-  public static WGS84Coordinates getGeoLocation(String imageFileName) {
-    WGS84Coordinates coordinates = null;
-    
-    if (imageFileName == null) {
-      return coordinates;
-    }
-    File file = new File(imageFileName);
-
-    try {
-      PhotoFileMetaDataHandler photoFileMetaDataHandler = new PhotoFileMetaDataHandler(file);
-      coordinates = photoFileMetaDataHandler.getGeoLocation();
-    } catch (ImageReadException | IOException e) {
-      e.printStackTrace();
-    }
-    
-    return coordinates;
-  }
   
   
   /**
    * Write the 'Orientation' to a photo file.
+   * <p>
+   * THIS METHOD ISN'T TESTED
    *
    * @param jpegImageFile A source photo file.
-   * @param orientation the new 'Root.Orientation'.
+   * @param orientation the new 'Root.Orientation'. Where <code>orientation</code> shall have on of the following values:
+   * <ul>
+   * <li>ORIENTATION_VALUE_HORIZONTAL_NORMAL = 1 (normal horizontal orientation)</li>
+   * <li>ORIENTATION_VALUE_MIRROR_HORIZONTAL = 2 (mirrorred horizontal orientation)</li>
+   * <li>ORIENTATION_VALUE_ROTATE_180 = 3 (rotated 180 degrees)</li>
+   * <li>ORIENTATION_VALUE_MIRROR_VERTICAL = 4 (mirrorred vertically)</li>
+   * <li>ORIENTATION_VALUE_MIRROR_HORIZONTAL_AND_ROTATE_270_CW = 5 (mirrorred horizontally and rotated 270 degrees)</li>
+   * <li>ORIENTATION_VALUE_ROTATE_90_CW = 6 (rotated 90 degrees)</li>
+   * <li>ORIENTATION_VALUE_MIRROR_HORIZONTAL_AND_ROTATE_90_CW = 7 (mirrorred horizontally and rotated 90 degrees)</li>
+   * <li>ORIENTATION_VALUE_ROTATE_270_CW = 8 (rotated 270 degrees)</li>
+   * </ul>
    * @throws IOException
    * @throws ImageReadException
    * @throws ImageWriteException
@@ -409,7 +501,7 @@ public final class PhotoFileMetaDataHandler {
       
       final TiffOutputDirectory rootDir = outputSet.getOrCreateRootDirectory();
       rootDir.removeField(TiffTagConstants.TIFF_TAG_ORIENTATION);
-      rootDir.add(TiffTagConstants.TIFF_TAG_ORIENTATION, (short) TiffTagConstants.ORIENTATION_VALUE_HORIZONTAL_NORMAL);
+      rootDir.add(TiffTagConstants.TIFF_TAG_ORIENTATION, (short) orientation);
 
       new ExifRewriter().updateExifMetadataLossless(backupFile, os, outputSet);
       
@@ -419,31 +511,14 @@ public final class PhotoFileMetaDataHandler {
   }
   
   /**
-   * Parse a filename of the format 'yyyyMMdd_HHmmss' to a LocalDateTime.
+   * Check whether the approximate coordinates indication is set in <code>JpegImageMetadata</code>.
+   * <p>
+   * I use the value GPS_PROCESSING_METHOD_MANUAL for the TIFF item GPS_TAG_GPS_PROCESSING_METHOD.name to indicate approximate coordinates.
    * 
-   * @param fileName the fileName to be parsed.
-   * @return the LocalDateTime, parsed from <code>fileName</code>, or null if the parsing failed.
+   * @param jpegMetadata the <code>JpegImageMetadata</code> to check.
+   * @return true if approximate coordinates is set, false otherwise.
    */
-  public static LocalDateTime parseYyyyMmDd_HhMmSs(String fileName) {
-    DateTimeFormatter fileNameDateTimeFormat = DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss");
-    
-    LocalDateTime dateTime = null;
-    
-    try {
-    dateTime = LocalDateTime.parse(fileName, fileNameDateTimeFormat);
-    } catch (DateTimeParseException e) {
-      // No action.
-    }
-    return dateTime;
-  }  
-  
-  public boolean metadataHasApproximateCoordinatesIndication() throws ImageReadException {
-    LOGGER.info("=>");
-    
-    return metadataHasApproximateCoordinatesIndication(jpegMetadata, file);
-  }
-  
-  private static boolean metadataHasApproximateCoordinatesIndication(JpegImageMetadata jpegMetadata, File file) {
+  private static boolean metadataHasApproximateCoordinatesIndication(JpegImageMetadata jpegMetadata) {
     String gpsProcessingMethodText = getTiffItemValue(jpegMetadata, TiffDirectoryConstants.DIRECTORY_TYPE_GPS, GpsTagConstants.GPS_TAG_GPS_PROCESSING_METHOD.name);
     gpsProcessingMethodText = StringUtil.removeQuotes(gpsProcessingMethodText);
     if (gpsProcessingMethodText != null) {
@@ -464,18 +539,7 @@ public final class PhotoFileMetaDataHandler {
    * @param itemName the name of the item to be obtained.
    * @return the value of requested item, or null if not available.
    */
-  public String getTiffItemValue(int directoryType, String itemName) {
-    return getTiffItemValue(jpegMetadata, directoryType, itemName);
-  }
-  
-  /**
-   * Get a single Tiff item from the meta data.
-   * 
-   * @param directoryType the Tiff directory type (see {@link TiffDirectoryConstants} for known values.
-   * @param itemName the name of the item to be obtained.
-   * @return the value of requested item, or null if not available.
-   */
-  public static String getTiffItemValue(JpegImageMetadata jpegMetadata, int directoryType, String itemName) {
+  private static String getTiffItemValue(JpegImageMetadata jpegMetadata, int directoryType, String itemName) {
     LOGGER.info("=> directoryType= " + directoryType + "(" + TiffDirectory.description(directoryType) + "), itemName=" + itemName);
     if (jpegMetadata != null) {
       TiffImageMetadata exif = jpegMetadata.getExif();

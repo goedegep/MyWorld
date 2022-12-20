@@ -10,7 +10,6 @@ import java.util.logging.Logger;
 import org.eclipse.emf.common.util.WrappedException;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 
-import com.gluonhq.maps.GPXLayer;
 import com.gluonhq.maps.MapPoint;
 import com.gluonhq.maps.MapView;
 

@@ -7,17 +7,22 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
+import org.apache.commons.imaging.ImageReadException;
+import org.apache.commons.imaging.formats.tiff.constants.TiffDirectoryConstants;
+import org.apache.commons.imaging.formats.tiff.constants.TiffTagConstants;
+
 import com.gluonhq.maps.LabeledIcon;
 import com.gluonhq.maps.MapLayer;
-import com.gluonhq.maps.MapLayer.BoundingBoxData;
 
 import goedegep.geo.WGS84BoundingBox;
 import goedegep.geo.WGS84Coordinates;
 import goedegep.jfx.CustomizationFx;
+import goedegep.mapview.MapViewUtil;
 import goedegep.poi.app.guifx.POIIcons;
 import goedegep.poi.model.POICategoryId;
 import goedegep.resources.ImageResource;
 import goedegep.util.img.ImageUtils;
+import goedegep.util.img.PhotoFileMetaDataHandler;
 import goedegep.vacations.app.LocationDescriptionDialog;
 import goedegep.vacations.model.Boundary;
 import goedegep.vacations.model.BoundingBox;
@@ -32,6 +37,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Polygon;
 import javafx.scene.shape.Polyline;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
@@ -50,8 +56,8 @@ import javafx.stage.Stage;
  */
 public class MapRelatedItemsLayer extends MapLayer {
   private static final Logger         LOGGER = Logger.getLogger(MapRelatedItemsLayer.class.getName());
-  private static double MAX_IMAGE_WIDTH = 900;
-  private static double MAX_IMAGE_HEIGHT = 500;
+  private static int MAX_IMAGE_WIDTH = 900;
+  private static int MAX_IMAGE_HEIGHT = 500;
 
   /**
    * GUI customization.
@@ -177,10 +183,17 @@ public class MapRelatedItemsLayer extends MapLayer {
     BoundingBoxData boundingBoxData = null;
     if ((boundariesDataList.isEmpty() || editMode)  &&  (location != null)  &&  location.isSetBoundingbox()) {
       BoundingBox boundingBox = location.getBoundingbox();
-      
+
       if ((boundingBox != null)  &&  boundingBox.isValid()) {
         WGS84BoundingBox locationBoundingBox = new WGS84BoundingBox(boundingBox.getWest(), boundingBox.getNorth(), boundingBox.getEast(), boundingBox.getSouth());
-        boundingBoxData = createBoundingBoxData(locationBoundingBox);
+        Polygon polygon = new Polygon();
+        polygon.setStroke(Color.YELLOW);
+        polygon.setFill(Color.TRANSPARENT);
+        polygon.setVisible(true);
+        getChildren().add(polygon);
+
+        boundingBoxData = new BoundingBoxData(locationBoundingBox, polygon);
+        //        boundingBoxData = createBoundingBoxData(locationBoundingBox);
         wgs84BoundingBox = WGS84BoundingBox.extend(wgs84BoundingBox, locationBoundingBox);
       }
     }
@@ -244,27 +257,14 @@ public class MapRelatedItemsLayer extends MapLayer {
     if (currentPhoto != null) {
       getChildren().remove(currentPhoto.node());
     }
-    
-    Dimension dimension = null;
-    try {
-      dimension = ImageUtils.getImageDimensions(new File(fileName));
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
-    Image image;
-    if (dimension == null  ||  dimension.width > MAX_IMAGE_WIDTH  ||  dimension.height > MAX_IMAGE_HEIGHT) {
-      image = new Image("file:" + fileName, MAX_IMAGE_WIDTH, MAX_IMAGE_HEIGHT, true, true);
-    } else {
-      image = new Image("file:" + fileName);
-    }
-    
-    Canvas canvas = new Canvas(image.getWidth(), image.getHeight());
+        
+    Canvas canvas = ImageUtils.createImageOnCanvas(fileName, MAX_IMAGE_WIDTH, MAX_IMAGE_HEIGHT);
     GraphicsContext gc = canvas.getGraphicsContext2D();
-    gc.drawImage(image, 0, 0);
+    
     Font font = new Font(18);
     gc.setFont(font);
     gc.setFill(Color.WHITE);
-    gc.fillText(text, 20, image.getHeight() - 15);
+    gc.fillText(text, 20, canvas.getHeight() - 15);
 
     getChildren().add(canvas);
     currentPhoto = new PhotoData(coordinates, fileName, text, canvas);
@@ -288,7 +288,14 @@ public class MapRelatedItemsLayer extends MapLayer {
   public void addBoundingBox(WGS84BoundingBox wgs84BoundingBox) {
     LOGGER.info("=> wgs84BoundingBox=" + wgs84BoundingBox);
     
-    BoundingBoxData boundingBoxData = createBoundingBoxData(wgs84BoundingBox);
+    Polygon polygon = new Polygon();
+    polygon.setStroke(Color.YELLOW);
+    polygon.setFill(Color.TRANSPARENT);
+    polygon.setVisible(true);
+    getChildren().add(polygon);
+
+    BoundingBoxData boundingBoxData = new BoundingBoxData(wgs84BoundingBox, polygon);
+//    BoundingBoxData boundingBoxData = createBoundingBoxData(wgs84BoundingBox);
     boundingBoxes.add(boundingBoxData);
   }
   
@@ -365,7 +372,8 @@ public class MapRelatedItemsLayer extends MapLayer {
     
     // boundingBoxes
     for (BoundingBoxData boundingBoxData: boundingBoxes) {
-      layoutBoundingBox(boundingBoxData);
+      MapViewUtil.updateBoundingBoxPolygon(boundingBoxData.polygon(), boundingBoxData.boundingBox(), baseMap);
+//      layoutBoundingBox(boundingBoxData);
     }
             
     // currentPhoto
@@ -409,7 +417,8 @@ public class MapRelatedItemsLayer extends MapLayer {
     // Bounding box
     BoundingBoxData boundingBoxData = locationData.boundingBoxData();
     if (boundingBoxData != null) {
-      layoutBoundingBox(boundingBoxData);
+      MapViewUtil.updateBoundingBoxPolygon(boundingBoxData.polygon(), boundingBoxData.boundingBox(), baseMap);
+//      layoutBoundingBox(boundingBoxData);
     }
   }
 
@@ -438,13 +447,19 @@ public class MapRelatedItemsLayer extends MapLayer {
     if (object instanceof Location location) {
       for (LocationData locationData: locations) {
         if (location.equals(locationData.location())) {
-          LOGGER.severe("Going to select: " + location);
+          LOGGER.info("Going to select: " + location);
           locationData.labeledIcon().setSelected(true);
         }
       }
     }
     return false;
   }
+}
+
+/**
+ * Bounding box data, combines a WGS84BoundingBox with a polygon node.
+ */
+record BoundingBoxData(WGS84BoundingBox boundingBox, Polygon polygon) {
 }
 
 /**

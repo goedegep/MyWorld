@@ -9,4 +9,7 @@ module goedegep.gpx.app {
   requires goedegep.geo;
   requires transitive goedegep.resources;
   requires transitive goedegep.gpx;
+  requires goedegep.poi.model;
+  requires goedegep.poi.app;
+  requires goedegep.mapview;
 }

@@ -44,8 +44,7 @@ import goedegep.jfx.eobjecttreeview.NodeOperationDescriptor;
 import goedegep.media.app.MediaRegistry;
 import goedegep.media.fotoshow.app.OrderedNameGenerator;
 import goedegep.media.photo.GatherPhotoInfoTask;
-import goedegep.media.photo.PhotoMetaData;
-import goedegep.media.photo.PhotoMetaDataWithImage;
+import goedegep.media.photo.IPhotoMetaDataWithImage;
 import goedegep.media.photoshow.model.FolderTimeOffsetSpecification;
 import goedegep.media.photoshow.model.PhotoShowFactory;
 import goedegep.media.photoshow.model.PhotoShowPackage;
@@ -122,7 +121,7 @@ public class PhotoShowBuilder extends JfxStage {
   
   // GUI objects
   EObjectTreeView photoShowSpecificationView = null;   // a tree view, in the top left corner, with the complete specification for the show.
-  private VBox photoShowPanel;                         // shows the show lists beside each other.
+  private Label photoShowLabel;                        // label on top of the Photo Show panel
   private GatherPhotoInfoStatusPanel statusPanel;                     // shows status information.
   private List<Node> guiNodesToBeDisabled = new ArrayList<>();  // a list of GUI nodes which are disabled when certain computations take place.
   
@@ -135,13 +134,13 @@ public class PhotoShowBuilder extends JfxStage {
    */
   private String currentlySelectedFolder = null;
   private String ignoreFolders = null;                 // Stored to set as initial value in the folder selection wizard. Default is taken from the Registry.
-  private ObservableMap<String, List<PhotoMetaDataWithImage>> photoInfoListsMap = FXCollections.observableHashMap();  // Photo info of all photos per folder
+  private ObservableMap<String, List<IPhotoInfo>> photoInfoListsMap = FXCollections.observableHashMap();  // Photo info of all photos per folder
   
   /**
    * The current photo show list (including photos not selected for the show).
    */
-  private ObservableList<PhotoInfo> photoShowList = FXCollections.observableArrayList();
-  private ListView<PhotoInfo> listView;                                                    // Displays the photoShowList
+  private ObservableList<IPhotoInfo> photoShowList = FXCollections.observableArrayList(IPhotoInfo.extractor());
+  private ListView<IPhotoInfo> listView;                                                    // Displays the photoShowList
   private EMFResource<PhotoShowSpecification> emfResource = null;                          // For loading and storing to a file
   private PhotoShowSpecification photoShowSpecification = null;                            // Specification of the show
   private Thread gatherPhotoInfoThread = null;
@@ -160,12 +159,12 @@ public class PhotoShowBuilder extends JfxStage {
     componentFactory = customization.getComponentFactoryFx();
         
     // react to changes in the photoShowList.
-    photoShowList.addListener(new ListChangeListener<PhotoInfo>() {
+    photoShowList.addListener(new ListChangeListener<IPhotoInfo>() {
       boolean handlingChange = false;
 
       @Override
-      public void onChanged(Change<? extends PhotoInfo> change) {
-        LOGGER.fine("photoShowList changed: " + change.toString());
+      public void onChanged(Change<? extends IPhotoInfo> change) {
+        LOGGER.severe("photoShowList changed: " + change.toString());
         if (!handlingChange) {
           handlingChange = true;
           handleChangedPhotoShowList();
@@ -181,7 +180,7 @@ public class PhotoShowBuilder extends JfxStage {
      *  For a new entry, the photos have to be added to the photoShowList.
      *  For a deleted entry, the photos have to be removed from this list.
      */
-    photoInfoListsMap.addListener(new MapChangeListener<String, List<PhotoMetaDataWithImage>>() {
+    photoInfoListsMap.addListener(new MapChangeListener<String, List<IPhotoInfo>>() {
 
 //      @Override
 //      public void onChanged(Change<? extends String, ? extends List<PhotoMetaDataWithImage>> change) {
@@ -190,7 +189,7 @@ public class PhotoShowBuilder extends JfxStage {
 //      }
 
       @Override
-      public void onChanged(Change<? extends String, ? extends List<PhotoMetaDataWithImage>> change) {
+      public void onChanged(Change<? extends String, ? extends List<IPhotoInfo>> change) {
         LOGGER.fine("=> change=" + change.toString());
         if (change.wasAdded()) {
           change.getKey();
@@ -219,6 +218,7 @@ public class PhotoShowBuilder extends JfxStage {
     createGUI();
     
     updateWindowTitle();
+    updatePhotoShowLabel();
     statusPanel.updateText("Nothing to report for now");
     
     getScene().getWindow().addEventFilter(WindowEvent.WINDOW_CLOSE_REQUEST, this::closeWindowEvent);
@@ -260,12 +260,17 @@ public class PhotoShowBuilder extends JfxStage {
     GatherPhotoInfoTask gatherPhotoInfoTask = new GatherPhotoInfoTask(photoFoldersToHandle, SUPPORTED_FILE_TYPES, 150);
     
     // Handle results - new information for a folder is added to the photoInfoListsMap.
-    gatherPhotoInfoTask.valueProperty().addListener(new ChangeListener<Tuplet<String, List<PhotoMetaDataWithImage>>>() {
+    gatherPhotoInfoTask.valueProperty().addListener(new ChangeListener<Tuplet<String, List<IPhotoMetaDataWithImage>>>() {
 
       @Override
-      public void changed(ObservableValue<? extends Tuplet<String, List<PhotoMetaDataWithImage>>> observable,
-          Tuplet<String, List<PhotoMetaDataWithImage>> oldValue, Tuplet<String, List<PhotoMetaDataWithImage>> newValue) {
-        photoInfoListsMap.put(newValue.getObject1(), newValue.getObject2());
+      public void changed(ObservableValue<? extends Tuplet<String, List<IPhotoMetaDataWithImage>>> observable,
+          Tuplet<String, List<IPhotoMetaDataWithImage>> oldValue, Tuplet<String, List<IPhotoMetaDataWithImage>> newValue) {
+        List<IPhotoInfo> photoInfos = new ArrayList<>();
+        for (IPhotoMetaDataWithImage photoMetaDataWithImage: newValue.getObject2()) {
+          PhotoInfo photoInfo = PhotoInfo.fromIPhotoMetaDataWithImage(photoMetaDataWithImage);
+          photoInfos.add(photoInfo);
+        }
+        photoInfoListsMap.put(newValue.getObject1(), photoInfos);
       }
 
 
@@ -326,9 +331,9 @@ public class PhotoShowBuilder extends JfxStage {
     specificationAndWizardsPanel.getChildren().addAll(photoShowSpecificationView, wizardsPanel);
    
     // Photo show
-    photoShowPanel = componentFactory.createVBox();
-    Label titleLabel = componentFactory.createLabel("Photo Show");
-    photoShowPanel.getChildren().add(titleLabel);
+    VBox photoShowPanel = componentFactory.createVBox();
+    photoShowLabel = componentFactory.createLabel(null);
+    photoShowPanel.getChildren().add(photoShowLabel);
     createPhotoShowView();
     photoShowPanel.getChildren().add(listView);
         
@@ -358,15 +363,15 @@ public class PhotoShowBuilder extends JfxStage {
     listView = new ListView<>();
     listView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
     
-    listView.setCellFactory(new Callback<ListView<PhotoInfo>, ListCell<PhotoInfo>>() {
+    listView.setCellFactory(new Callback<ListView<IPhotoInfo>, ListCell<IPhotoInfo>>() {
 
       @Override
-      public ListCell<PhotoInfo> call(ListView<PhotoInfo> listView) {
+      public ListCell<IPhotoInfo> call(ListView<IPhotoInfo> listView) {
         
-        ListCell<PhotoInfo> listCell = new ListCell<PhotoInfo>() {
+        ListCell<IPhotoInfo> listCell = new ListCell<IPhotoInfo>() {
  
           @Override
-          public void updateItem(PhotoInfo photoInfo, boolean empty) {
+          public void updateItem(IPhotoInfo photoInfo, boolean empty) {
             super.updateItem(photoInfo, empty);
             if (empty) {
               setText(null);
@@ -374,7 +379,7 @@ public class PhotoShowBuilder extends JfxStage {
             } else {
               /*
                * The Graphic is a StackPane: the photo, with on top (in case of mouse over) buttons
-               */          
+               */
               StackPane stackPane = new StackPane();
 
               ImageView imageView = new ImageView();
@@ -401,6 +406,7 @@ public class PhotoShowBuilder extends JfxStage {
                 @Override
                 public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
                   listView.refresh();
+//                  updatePhotoShowLabel();
                 }
 
               });
@@ -856,7 +862,7 @@ public class PhotoShowBuilder extends JfxStage {
       fileOutputStream = new FileOutputStream(playlistFile);
       BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(fileOutputStream));
 
-      for (PhotoInfo photoInfo: photoShowList) {
+      for (IPhotoInfo photoInfo: photoShowList) {
         if (photoInfo.isSelectedForTheShow()) {
           bufferedWriter.write(photoInfo.getFileName());
           bufferedWriter.newLine();
@@ -906,7 +912,7 @@ public class PhotoShowBuilder extends JfxStage {
   private void writeShowFolder(File showFolder) {    
     OrderedNameGenerator orderedNameGenerator = new OrderedNameGenerator();
     
-    for (PhotoInfo photoInfo: photoShowList) {
+    for (IPhotoInfo photoInfo: photoShowList) {
       if (photoInfo.isSelectedForTheShow()) {
         Path source = Paths.get(photoInfo.getFileName());      
 
@@ -1281,10 +1287,10 @@ public class PhotoShowBuilder extends JfxStage {
    */
   private void handleChangedPhotoShowList() {
     // sort the list
-    Collections.sort(photoShowList, new Comparator<PhotoInfo>() {
+    Collections.sort(photoShowList, new Comparator<IPhotoInfo>() {
 
       @Override
-      public int compare(PhotoInfo photoInfo1, PhotoInfo photoInfo2) {
+      public int compare(IPhotoInfo photoInfo1, IPhotoInfo photoInfo2) {
         return photoInfo1.getSortingDateTime().compareTo(photoInfo2.getSortingDateTime());
       }
       
@@ -1295,6 +1301,8 @@ public class PhotoShowBuilder extends JfxStage {
     
     // update photosToShow in the specification
     syncPhotosToShowInSpecificationToPhotoShowList();
+    
+    updatePhotoShowLabel();
   }
     
   private boolean pathListContainsPath(List<Path> pathList, Path path) {
@@ -1310,14 +1318,14 @@ public class PhotoShowBuilder extends JfxStage {
    * @param photoFolderName name of the added photo folder
    * @param photoInfoList information on all the photos in this folder
    */
-  private void handlePhotoFolderAddedToPhotoInfoListsMap(String photoFolderName, List<PhotoMetaDataWithImage> photoInfoList) {
+  private void handlePhotoFolderAddedToPhotoInfoListsMap(String photoFolderName, List<IPhotoInfo> photoInfoList) {
     LOGGER.info("=>");
     
     updatePhotoInfoSortingTimesForOneFolder(photoFolderName);
     
     List<PhotoInfo> photosToAddToPhotoShowList = new ArrayList<>();
     
-    for (PhotoMetaDataWithImage photoInfo: photoInfoList) {
+    for (IPhotoMetaDataWithImage photoInfo: photoInfoList) {
       if (openSpecificationNumberOfFoldersToHandle != 0) {
         boolean openSpecificationPhotosToShowContainsPhoto = openSpecificationPhotosToShow.contains(photoInfo.getFileName());
         ((PhotoInfo) photoInfo).setSelectedForTheShow(openSpecificationPhotosToShowContainsPhoto);
@@ -1371,7 +1379,7 @@ public class PhotoShowBuilder extends JfxStage {
     }
     
     List<String> newPhotosToShow = new ArrayList<>();
-    for (PhotoInfo photoInfo: photoShowList) {
+    for (IPhotoInfo photoInfo: photoShowList) {
       if (photoInfo.isSelectedForTheShow()) {
         newPhotosToShow.add(photoInfo.getFileName());
       }
@@ -1408,11 +1416,11 @@ public class PhotoShowBuilder extends JfxStage {
    * @param folderName The name of the folder for which the Sorting Times are to be updated.
    */
   private void updatePhotoInfoSortingTimesForOneFolder(String folderName) {
-    List<PhotoMetaDataWithImage> photoInfoList = photoInfoListsMap.get(folderName);
+    List<IPhotoInfo> photoInfoList = photoInfoListsMap.get(folderName);
 
     // clear the sorting time for all photos in this folder
-    for (PhotoMetaDataWithImage photoInfo: photoInfoList) {
-      ((PhotoInfo) photoInfo).setSortingDateTime(null);
+    for (IPhotoInfo photoMetaDataWithImage: photoInfoList) {
+      photoMetaDataWithImage.setSortingDateTime(null);
     }
     
     // Check all 'folder time offset specifications'. If it is for this folder, apply the offset to all photos of this folder.
@@ -1423,7 +1431,7 @@ public class PhotoShowBuilder extends JfxStage {
         LOGGER.fine("time offset text: " + folderTimeOffsetSpecification.getTimeOffset());
         LOGGER.fine("timeOffset: " + timeOffset.toString());
         
-        for (PhotoMetaDataWithImage photoInfo: photoInfoList) {
+        for (IPhotoMetaDataWithImage photoInfo: photoInfoList) {
           ((PhotoInfo) photoInfo).setSortingDateTime(photoInfo.getDeviceSpecificPhotoTakenTime().plus(timeOffset));
           LOGGER.fine("file: " + photoInfo.getFileName() + 
               ", taken at: " + photoInfo.getDeviceSpecificPhotoTakenTime() +
@@ -1439,7 +1447,7 @@ public class PhotoShowBuilder extends JfxStage {
   }
     
   
-  private void showDetailsPopup(Window owner, PhotoInfo photoInfo) {
+  private void showDetailsPopup(Window owner, IPhotoInfo photoInfo) {
     LocalDateTime creationDate =  photoInfo.getDeviceSpecificPhotoTakenTime();
     LocalDateTime modificationDate = photoInfo.getModificationDateTime();
     LocalDateTime sortingDate = photoInfo.getSortingDateTime();
@@ -1483,9 +1491,9 @@ public class PhotoShowBuilder extends JfxStage {
   }
   
   private void playShow() {
-    ObservableList<PhotoInfo> showList = FXCollections.observableArrayList();
+    ObservableList<IPhotoInfo> showList = FXCollections.observableArrayList();
     
-    for (PhotoInfo photoInfo: photoShowList) {
+    for (IPhotoInfo photoInfo: photoShowList) {
       if (photoInfo.isSelectedForTheShow()) {
         showList.add(photoInfo);
       }
@@ -1502,6 +1510,31 @@ public class PhotoShowBuilder extends JfxStage {
    */
  EMFResource<PhotoShowSpecification> createEMFResource() {
    return new EMFResource<PhotoShowSpecification>(PhotoShowPackage.eINSTANCE, () -> PhotoShowFactory.eINSTANCE.createPhotoShowSpecification());   
+ }
+ 
+ /**
+  * Update the 'Photo Show' label.
+  * <p>
+  */
+ private void updatePhotoShowLabel() {
+   StringBuilder buf = new StringBuilder();
+   
+   buf.append("Photo Show");
+   
+   if (photoShowList != null) {
+     buf.append(" - total number of photos: ");
+     buf.append(photoShowList.size());
+     buf.append(", number of photos selected for the show: ");
+     int numberOfPhotosSelectedForTheShow = 0;
+     for (IPhotoInfo photoInfo: photoShowList) {
+       if (photoInfo.isSelectedForTheShow()) {
+         numberOfPhotosSelectedForTheShow++;
+       }
+     }
+     buf.append(numberOfPhotosSelectedForTheShow);
+   }
+   
+   photoShowLabel.setText(buf.toString());
  }
  
  /**

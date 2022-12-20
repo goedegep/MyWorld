@@ -1,7 +1,10 @@
 package goedegep.jfx.eobjecttreeview;
 
+import org.eclipse.emf.ecore.EObject;
+
 import javafx.scene.control.TreeCell;
 import javafx.scene.control.TreeItem;
+import javafx.scene.input.DragEvent;
 
 
 /**
@@ -54,4 +57,26 @@ public interface EObjectTreeCellHelper {
    * @return an, as good as possible, textual representation of the cell.
    */
   public String getText();
+  
+  /**
+   * Check whether a move drop of a source EObject is possible on this cell.
+   * 
+   * @param sourceEObject the EObject that is to be moved.
+   * @return true if the <code>sourceEObject</code> can be moved to this cell, false otherwise.
+   */
+  public default boolean isDropPossible(EObject sourceEObject, EObjectTreeItem thisEObjectTreeItem) {
+    System.out.println("Drop possible not supported for: " + getClass().getName());
+    return false;
+  }
+  
+  /**
+   * Handle a move drop of a source EObject to this cell.
+   * 
+   * @param dragEvent the related DragEvent.
+   * @param sourceEObject the EObject that is to be moved.
+   * @param thisEObjectTreeItem this EObjectTreeItem.
+   */
+  public default void handleDragDropped(DragEvent dragEvent, EObject sourceEObject, EObjectTreeItem thisEObjectTreeItem) {
+    System.out.println("Drag drop not supported for: " + getClass().getName());
+  }
 }

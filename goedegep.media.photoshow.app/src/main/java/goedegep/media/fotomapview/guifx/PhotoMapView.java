@@ -44,6 +44,8 @@ import goedegep.media.fotoshow.app.guifx.GatherPhotoInfoStatusPanel;
 import goedegep.media.fotoshow.app.guifx.PhotoInfo;
 import goedegep.media.photo.GatherPhotoInfoTask;
 import goedegep.media.photo.GatherPhotoMetaDataTask;
+import goedegep.media.photo.IPhotoMetaData;
+import goedegep.media.photo.IPhotoMetaDataWithImage;
 import goedegep.media.photo.PhotoMetaData;
 import goedegep.media.photo.PhotoMetaDataWithImage;
 import goedegep.media.photoshow.model.FolderTimeOffsetSpecification;
@@ -92,11 +94,6 @@ public class PhotoMapView extends JfxStage {
   private final static List<String> SUPPORTED_FILE_TYPES = Arrays.asList(".jpg", ".gif", ".bmp");
   
   /**
-   * Filename for the file in which the meta data of all photos is stored.
-   */
-  private final static String PHOTO_INFO_FILE = "photoInfo.pho";
-  
-  /**
    * Filename for the photo index file.
    */
   private final static String PHOTO_INDEX_FILE = "photoIndex.idx";
@@ -119,7 +116,7 @@ public class PhotoMapView extends JfxStage {
    * This folder and all its sub folders will be scanned for photos. Folders mentioned in the <code>ignoreFolderNames</code> are skipped.
    * It is assumed that the photosFolder is set in the MediaRegistry, as it has an initial value in the property descriptors file.
    */
-  private String photosFolder;
+  private String mainPhotosFolder;
   
   /**
    * A list of folder names, separated by a semicolon, which shall be skipped while gathering photo information.
@@ -132,34 +129,41 @@ public class PhotoMapView extends JfxStage {
   private BlockingQueue<String> photoFoldersToScan = new ArrayBlockingQueue<>(MAX_NUMBER_OF_PHOTO_FOLDERS);
   
   /**
-   * The thread for the {@code GatherPhotoInfoTask} for gathering the photo information.
+   * The thread for the {@link GatherPhotoInfoTask} for gathering the photo information.
    */
   private Thread gatherPhotoInfoThread = null;
   
   /**
    * A map from photo folders to the information of the photos in that folder.
    */
-  private ObservableMap<String, List<PhotoMetaDataWithImage>> photoInfosPerFolder = FXCollections.observableHashMap();
+  private ObservableMap<String, List<IPhotoMetaDataWithImage>> photoMetaDatasWithImagesPerFolder = FXCollections.observableHashMap();
   
   /**
    * A map from photo folders to the list of meta data of the photos in that folder.
+   * <p>
+   * This map is only used to handle the <code>index</code>.
    */
   private Map<String, List<PhotoMetaData>> photoMetaDatasPerFolder = new HashMap<>();
   
   /**
-   * A set of modified photos.
+   * Point index for all photo in the <code>mainPhotosFolder</code>.
    */
-  private ObservableSet<PhotoMetaDataWithImage> modifiedPhotos = FXCollections.observableSet();
+  private S2PointIndex<PhotoMetaData> index;
+  
+  /**
+   * The set of modified photos.
+   */
+  private ObservableSet<IPhotoMetaData> modifiedPhotos = FXCollections.observableSet();
   
   /**
    * Sorted list of all photos being handled.
    */
-  private ObservableList<PhotoMetaDataWithImage> photoList = FXCollections.observableArrayList();
+  private ObservableList<IPhotoMetaDataWithImage> photoList = FXCollections.observableArrayList();
   
   /**
-   * A {@code ListView} showing the photos in the {@code photoShowList}.
+   * A {@code ListView} showing the photos in the {@code photoList}.
    */
-  private ListView<PhotoMetaDataWithImage> listView;
+  private ListView<IPhotoMetaData> listView;
   
   /**
    * The map view on which the photos are shown.
@@ -204,11 +208,6 @@ public class PhotoMapView extends JfxStage {
   private int openSpecificationNumberOfFoldersToHandle = 0;
   
   /**
-   * Point index.
-   */
-  private S2PointIndex<PhotoMetaData> index;
-  
-  /**
    * Edit mode menu item.
    * <p>
    * In edit mode, no index is used on the map layer.
@@ -232,7 +231,7 @@ public class PhotoMapView extends JfxStage {
     PhotoMetaDataEditor.setModifiedPhotos(modifiedPhotos);
     
 //    photosFolder = MediaRegistry.photosFolder + "\\Vakanties\\2022-10-24 Hotel Koener - Clervaux";
-    photosFolder = MediaRegistry.photosFolder;
+    mainPhotosFolder = MediaRegistry.photosFolder;
     ignoreFolderNames = MediaRegistry.ignoreFolderNames;
     
     createGUI();
@@ -250,14 +249,14 @@ public class PhotoMapView extends JfxStage {
     statusPanel.updateText("Nothing to report for now");
     
     // Update the dirty indication in the window title when photos are changed.
-    modifiedPhotos.addListener((javafx.collections.SetChangeListener.Change<? extends PhotoMetaDataWithImage> change) -> updateWindowTitle());
+    modifiedPhotos.addListener((javafx.collections.SetChangeListener.Change<? extends IPhotoMetaData> change) -> updateWindowTitle());
     
     /*
      *  React to changes in the photoInfosPerFolder map
      *  For a new entry, the photos have to be added to the photoList and, if it has coordinates, also to the map view.
      *  For a deleted entry, the photos have to be removed from this list and the map.
      */
-    photoInfosPerFolder.addListener((javafx.collections.MapChangeListener.Change<? extends String, ? extends List<PhotoMetaDataWithImage>> change) -> {
+    photoMetaDatasWithImagesPerFolder.addListener((javafx.collections.MapChangeListener.Change<? extends String, ? extends List<IPhotoMetaDataWithImage>> change) -> {
       if (change.wasAdded()) {
         handlePhotoFolderAddedToPhotoInfoListsMap(change.getKey(), change.getValueAdded());
       } else if (change.wasRemoved()) {
@@ -268,12 +267,12 @@ public class PhotoMapView extends JfxStage {
     });
     
     // react to changes in the photoList.
-    photoList.addListener(new ListChangeListener<PhotoMetaDataWithImage>() {
+    photoList.addListener(new ListChangeListener<IPhotoMetaData>() {
       boolean handlingChange = false;
 
       @Override
-      public void onChanged(Change<? extends PhotoMetaDataWithImage> change) {
-        LOGGER.info("photoShowList changed");
+      public void onChanged(Change<? extends IPhotoMetaData> change) {
+        LOGGER.info("photoList changed");
         if (!handlingChange) {
           handlingChange = true;
           handleChangedPhotoList();
@@ -365,7 +364,7 @@ public class PhotoMapView extends JfxStage {
    * @return the filename of the photo index file.
    */
   private String getPhotoIndexFilename() {
-    File photoIndexFile = new File(photosFolder, PHOTO_INDEX_FILE);
+    File photoIndexFile = new File(mainPhotosFolder, PHOTO_INDEX_FILE);
     return photoIndexFile.getAbsolutePath();
   }
   
@@ -395,48 +394,50 @@ public class PhotoMapView extends JfxStage {
    * In this case the photo will automatically be added to the list view and the map view.
    */
   public void addPhotos(List<File> photoFiles, WGS84Coordinates coordinates) {
-    ObservableMap<String, List<PhotoMetaDataWithImage>> newPhotoInfosPerFolder = FXCollections.observableHashMap();
+    ObservableMap<String, List<IPhotoMetaDataWithImage>> newPhotoInfosPerFolder = FXCollections.observableHashMap();
 
     for (File file: photoFiles) {
       LOGGER.info(file.getAbsolutePath());
-      PhotoMetaDataWithImage photoInfo = getPhotoInfoForFile(file);
-      if (photoInfo != null) {
-        if (photoInfo.getCoordinates() == null) {
-          photoInfo.getPhotoMetaData().setCoordinates(coordinates);
+      IPhotoMetaDataWithImage photoMetaDataWithImage = getPhotoMetaDataWithImageForFile(file);
+      if (photoMetaDataWithImage != null) {
+        if (photoMetaDataWithImage.getCoordinates() == null) {
+          photoMetaDataWithImage.setCoordinates(coordinates);
         }
-        photoMapLayer.addPhoto(photoInfo);
+        photoMapLayer.addPhoto(photoMetaDataWithImage);
       } else {
 
-        photoInfo = GatherPhotoInfoTask.gatherPhotoMetaDataWithImage(file.getAbsolutePath(), 150);
-        if (photoInfo.getCoordinates() == null) {
-          photoInfo.getPhotoMetaData().setCoordinates(coordinates);
-          modifiedPhotos.add(photoInfo);
+        photoMetaDataWithImage = GatherPhotoInfoTask.gatherPhotoMetaDataWithImage(file.getAbsolutePath(), 150);
+        if (photoMetaDataWithImage.getCoordinates() == null) {
+          photoMetaDataWithImage.setCoordinates(coordinates);
+          modifiedPhotos.add(photoMetaDataWithImage);
         } else {
           LOGGER.info("Coordinates already set");
         }
 
         String folder = file.getParent();
-        List<PhotoMetaDataWithImage> photoInfos = newPhotoInfosPerFolder.get(folder);
+        List<IPhotoMetaDataWithImage> photoInfos = newPhotoInfosPerFolder.get(folder);
         if (photoInfos == null) {
           photoInfos = new ArrayList<>();
           newPhotoInfosPerFolder.put(folder, photoInfos);
         }
 
-        photoInfos.add(photoInfo);
+        photoInfos.add(photoMetaDataWithImage);
       }
     }
     
     for (String folder: newPhotoInfosPerFolder.keySet()) {
-      List<PhotoMetaDataWithImage> newPhotoInfos = newPhotoInfosPerFolder.get(folder);
+      List<IPhotoMetaDataWithImage> newPhotoInfos = newPhotoInfosPerFolder.get(folder);
       
-      List<PhotoMetaDataWithImage> photoInfos = photoInfosPerFolder.get(folder);
+      List<IPhotoMetaDataWithImage> photoInfos = photoMetaDatasWithImagesPerFolder.get(folder);
       if (photoInfos != null) {
         photoInfos.addAll(newPhotoInfos);
         photoList.addAll(newPhotoInfos);
       } else {
-        photoInfosPerFolder.put(folder, newPhotoInfos);
+        photoMetaDatasWithImagesPerFolder.put(folder, newPhotoInfos);
       }
     }
+    
+    // TODO make sure the new photos are visible. Create a bounding box around the new photos and make sure that bounding box is visible.
   }
   
 
@@ -446,14 +447,14 @@ public class PhotoMapView extends JfxStage {
    * @param file a {@code File}
    * @return the {@code PhotoMetaDataWithImage} for {@code file}, or null if the information is not available.
    */
-  private PhotoMetaDataWithImage getPhotoInfoForFile(File file) {
+  private IPhotoMetaDataWithImage getPhotoMetaDataWithImageForFile(File file) {
     String folder = file.getParent();
     String filename = file.getAbsolutePath();
-    List<PhotoMetaDataWithImage> photoInfos = photoInfosPerFolder.get(folder);
-    if (photoInfos != null) {
-      for (PhotoMetaDataWithImage photoInfo: photoInfos) {
-        if (filename.equals(photoInfo.getFileName())) {
-          return photoInfo;
+    List<IPhotoMetaDataWithImage> photoMetaDatasWithImages = photoMetaDatasWithImagesPerFolder.get(folder);
+    if (photoMetaDatasWithImages != null) {
+      for (IPhotoMetaDataWithImage photoMetaDataWithImage: photoMetaDatasWithImages) {
+        if (filename.equals(photoMetaDataWithImage.getFileName())) {
+          return photoMetaDataWithImage;
         }
       }
     }
@@ -493,7 +494,7 @@ public class PhotoMapView extends JfxStage {
     mapView.prefWidthProperty().bind(mainPane.widthProperty());
     mapView.prefHeightProperty().bind(mainPane.heightProperty());
     
-    photoMapLayer = new PhotoMapLayer(customization, this, mapView, photoInfosPerFolder, modifiedPhotos, photosFolder);
+    photoMapLayer = new PhotoMapLayer(customization, this, mapView, photoMetaDatasWithImagesPerFolder, modifiedPhotos, mainPhotosFolder);
     centerPane.getItems().add(mapView);
    
     mainPane.setCenter(centerPane);
@@ -512,7 +513,7 @@ public class PhotoMapView extends JfxStage {
     /*
      * Create a GatherPhotoMetaDataTask and handle information provided by this task.
      */
-    GatherPhotoMetaDataTask gatherPhotoMetaDataTask = new GatherPhotoMetaDataTask(photosFolder, StringUtil.semicolonSeparatedValuesToListOfValues(ignoreFolderNames), SUPPORTED_FILE_TYPES);
+    GatherPhotoMetaDataTask gatherPhotoMetaDataTask = new GatherPhotoMetaDataTask(mainPhotosFolder, StringUtil.semicolonSeparatedValuesToListOfValues(ignoreFolderNames), SUPPORTED_FILE_TYPES);
 
     // Handle results - new information for a folder is added to the ....
     gatherPhotoMetaDataTask.valueProperty().addListener(
@@ -575,10 +576,10 @@ public class PhotoMapView extends JfxStage {
     
     // Handle results - new information for a folder is added to the photoInfosPerFolder map.
     gatherPhotoInfoTask.valueProperty().addListener(
-        (ObservableValue<? extends Tuplet<String, List<PhotoMetaDataWithImage>>> observable,
-        Tuplet<String, List<PhotoMetaDataWithImage>> oldValue, Tuplet<String, List<PhotoMetaDataWithImage>> newValue) -> {
+        (ObservableValue<? extends Tuplet<String, List<IPhotoMetaDataWithImage>>> observable,
+        Tuplet<String, List<IPhotoMetaDataWithImage>> oldValue, Tuplet<String, List<IPhotoMetaDataWithImage>> newValue) -> {
       LOGGER.info("Info obtained for folder: " + newValue.getObject1());
-      photoInfosPerFolder.put(newValue.getObject1(), newValue.getObject2());
+      photoMetaDatasWithImagesPerFolder.put(newValue.getObject1(), newValue.getObject2());
     });
     
     // Handle messages - messages are shown in the message part of the statusPanel
@@ -618,7 +619,7 @@ public class PhotoMapView extends JfxStage {
   private void handleChangedPhotoList() {
     
     // sort the list
-    Collections.sort(photoList, PhotoInfo.getSortingDateTimeComparator());
+    Collections.sort(photoList, PhotoMetaDataWithImage.getSortingDateTimeComparator());
     
     listView.getItems().clear();
     listView.getItems().addAll(photoList);
@@ -626,7 +627,7 @@ public class PhotoMapView extends JfxStage {
     photoMapLayer.clear();
 //    S2PointIndex<PhotoMetaDataWithImage> index = new S2PointIndex<>();
 
-    for (PhotoMetaDataWithImage photoInfo: photoList) {
+    for (IPhotoMetaDataWithImage photoInfo: photoList) {
       if (photoInfo.getCoordinates() != null) {
         photoMapLayer.addPhoto(photoInfo);
 //        
@@ -737,7 +738,7 @@ public class PhotoMapView extends JfxStage {
    */
   private void handleOpenFolderRequest() {
     DirectoryChooser directoryChooser = componentFactory.createDirectoryChooser("Open Photo folder");
-    directoryChooser.setInitialDirectory(new File(photosFolder));
+    directoryChooser.setInitialDirectory(new File(mainPhotosFolder));
     
     File photoFolder = directoryChooser.showDialog(this);
     LOGGER.info("Opening: " + (photoFolder != null ? photoFolder.getAbsolutePath() : "null"));
@@ -759,7 +760,7 @@ public class PhotoMapView extends JfxStage {
    */
   private void handleOpenPhotoShowSpecificationRequest() {
     FileChooser fileChooser = componentFactory.createFileChooser("Open Photo Show Specification");
-    fileChooser.setInitialDirectory(new File(photosFolder));
+    fileChooser.setInitialDirectory(new File(mainPhotosFolder));
     File photoShowSpecificationFile = fileChooser.showOpenDialog(this);
     LOGGER.info("Opening: " + (photoShowSpecificationFile != null ? photoShowSpecificationFile.getAbsolutePath() : "null"));
 
@@ -800,7 +801,7 @@ public class PhotoMapView extends JfxStage {
 
     openSpecificationNumberOfFoldersToHandle =  photoFolders.size();
     
-    photoInfosPerFolder.clear();
+    photoMetaDatasWithImagesPerFolder.clear();
     createGatherPhotoInfoTaskIfNotYetDone();
     
     List<String> ignoreFolders = StringUtil.semicolonSeparatedValuesToListOfValues(ignoreFolderNames);
@@ -896,12 +897,12 @@ public class PhotoMapView extends JfxStage {
    * <p>
    * This is called when photo information for a new folder is added to the {@code photoInfosPerFolder} map.
    * The sorting times are updated, based on information in the specification.
-   * All the photos are added to the photoShowList.
+   * All the photos are added to the photoList.
    * 
    * @param photoFolderName name of the added photo folder
    * @param photoInfoList information on all the photos in this folder
    */
-  private void handlePhotoFolderAddedToPhotoInfoListsMap(String photoFolderName, List<PhotoMetaDataWithImage> photoInfoList) {
+  private void handlePhotoFolderAddedToPhotoInfoListsMap(String photoFolderName, List<IPhotoMetaDataWithImage> photoInfoList) {
     LOGGER.info("=> photoFolderName=" + photoFolderName + ", number of photos=" + photoInfoList.size());
 
     if (photoShowSpecification != null) {
@@ -928,10 +929,10 @@ public class PhotoMapView extends JfxStage {
    * @param folderName The name of the folder for which the Sorting Times are to be updated.
    */
   private void updatePhotoInfoSortingTimesForOneFolder(String folderName) {
-    List<PhotoMetaDataWithImage> photoInfoList = photoInfosPerFolder.get(folderName);
+    List<IPhotoMetaDataWithImage> photoInfoList = photoMetaDatasWithImagesPerFolder.get(folderName);
 
     // clear the sorting times for all photos in this folder
-    for (PhotoMetaDataWithImage photoInfo: photoInfoList) {
+    for (IPhotoMetaDataWithImage photoInfo: photoInfoList) {
       ((PhotoInfo) photoInfo).setSortingDateTime(null);
     }
 
@@ -942,7 +943,7 @@ public class PhotoMapView extends JfxStage {
         Duration timeOffset = DurationUtil.durationFromString(folderTimeOffsetSpecification.getTimeOffset());
         LOGGER.fine("timeOffset: " + timeOffset.toString());
         
-        for (PhotoMetaDataWithImage photoInfo: photoInfoList) {
+        for (IPhotoMetaDataWithImage photoInfo: photoInfoList) {
           ((PhotoInfo) photoInfo).setSortingDateTime(photoInfo.getDeviceSpecificPhotoTakenTime().plus(timeOffset));
           LOGGER.fine("file: " + photoInfo.getFileName() + 
               ", taken at: " + photoInfo.getDeviceSpecificPhotoTakenTime() +
@@ -959,9 +960,9 @@ public class PhotoMapView extends JfxStage {
     SaveModifiedPhotosDialog saveModifiedPhotosDialog = new SaveModifiedPhotosDialog(customization, this, modifiedPhotos);
     Optional<ButtonType> result = saveModifiedPhotosDialog.showAndWait();
     if (result.isPresent()  &&  result.get() == ButtonType.OK) {
-      List<PhotoMetaDataWithImage> photosToSave = saveModifiedPhotosDialog.getSelectedPhotos();
+      List<IPhotoMetaData> photosToSave = saveModifiedPhotosDialog.getSelectedPhotos();
       try {
-        for (PhotoMetaDataWithImage photoInfo: photosToSave) {
+        for (IPhotoMetaData photoInfo: photosToSave) {
           LOGGER.info("Saving: " + photoInfo.getFileName());
           PhotoFileMetaDataHandler.writeGeoLocationAndTitle(new File(photoInfo.getFileName()), photoInfo.getCoordinates(), photoInfo.isApproximateGPScoordinates(), photoInfo.getTitle());
           modifiedPhotos.remove(photoInfo);
@@ -978,16 +979,16 @@ public class PhotoMapView extends JfxStage {
    * Handle the fact that a new photo is selected on the map view.
    * 
    * @param source the object responsible for the change.
-   * @param photoInfo the new selected photo.
+   * @param photoMetaData the new selected photo.
    */
-  private void handleNewPhotoSelected(Object source, PhotoMetaDataWithImage photoInfo) {
+  private void handleNewPhotoSelected(Object source, IPhotoMetaData photoMetaData) {
     if (this.equals(source)) {
       // no action if we caused the change.
       return;
     }
     
-    listView.getSelectionModel().select(photoInfo);
-    listView.scrollTo(photoInfo);
+    listView.getSelectionModel().select(photoMetaData);
+    listView.scrollTo(photoMetaData);
   }
 
   /**

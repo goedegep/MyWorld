@@ -4,23 +4,39 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import goedegep.geo.WGS84Coordinates;
 import javafx.beans.InvalidationListener;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 
-public class PhotoMetaData implements Serializable, ObservableValue<PhotoMetaData> {
+/**
+ * This class stores meta data for a photo.
+ * <p>
+ * The meta data consists of:
+ * <ul>
+ * <li>
+ * {@link #fileName}
+ * </li>
+ * </ul>
+ */
+public class PhotoMetaData implements Serializable, IPhotoMetaData {
   private static final long serialVersionUID = 3907695290202971996L;
   
+  /**
+   * The full pathname of the photo file
+   */
   private String fileName;
+  
+  
   private String title;
   private WGS84Coordinates coordinates;
   private boolean approximateGPScoordinates;
   private LocalDateTime deviceSpecificPhotoTakenTime;
   private LocalDateTime modificationDateTime;
   
-  private List<ChangeListener<? super PhotoMetaData>> changeListeners = new ArrayList<>();
+  private List<ChangeListener<? super IPhotoMetaData>> changeListeners = new ArrayList<>();
   
   public PhotoMetaData() {
     this(null, null, null);
@@ -87,6 +103,17 @@ public class PhotoMetaData implements Serializable, ObservableValue<PhotoMetaDat
     notifyChangeListeners();
   }
 
+  /**
+   * Get the data/time to be used for sorting.
+   * <p>
+   * In the future this may be extended with e.g. an offset, or use the modification date/time if the device time isn't available.
+   * 
+   * @return the date/time to be used for sorting, or null if this isn't available.
+   */
+  public LocalDateTime getSortingDateTime() {
+    return getDeviceSpecificPhotoTakenTime();
+  }
+
   public static long getSerialversionuid() {
     return serialVersionUID;
   }
@@ -115,17 +142,18 @@ public class PhotoMetaData implements Serializable, ObservableValue<PhotoMetaDat
   }
 
   @Override
-  public void addListener(ChangeListener<? super PhotoMetaData> changeListener) {
+  public void addListener(ChangeListener<? super IPhotoMetaData> changeListener) {
+    Objects.requireNonNull(changeListener, "changeListener may not be null");
     changeListeners.add(changeListener);
   }
 
   @Override
-  public void removeListener(ChangeListener<? super PhotoMetaData> changeListener) {
+  public void removeListener(ChangeListener<? super IPhotoMetaData> changeListener) {
     changeListeners.remove(changeListener);
   }
 
   protected void notifyChangeListeners() {
-    for (ChangeListener<? super PhotoMetaData> changeListener: changeListeners) {
+    for (ChangeListener<? super IPhotoMetaData> changeListener: changeListeners) {
       changeListener.changed(this, null, this);
     }
   }

@@ -16,6 +16,8 @@ import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -515,5 +517,26 @@ public class FileUtils {
     Collections.sort(audioFileNames);
     
     return audioFileNames;
+  }
+  
+  /**
+   * Parse a filename of the format 'yyyyMMdd_HHmmss' to a LocalDateTime.
+   * <p>
+   * Some applications (like cameras) generate filenames in this format, so the time that the file was originally created can be derived from the filename.
+   * 
+   * @param fileName the fileName to be parsed.
+   * @return the LocalDateTime, parsed from <code>fileName</code>, or null if the parsing failed.
+   */
+  public static LocalDateTime parseYyyyMmDd_HhMmSs(String fileName) {
+    DateTimeFormatter fileNameDateTimeFormat = DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss");
+    
+    LocalDateTime dateTime = null;
+    
+    try {
+    dateTime = LocalDateTime.parse(fileName, fileNameDateTimeFormat);
+    } catch (DateTimeParseException e) {
+      // No action.
+    }
+    return dateTime;
   }
 }

@@ -1,4 +1,4 @@
-package com.gluonhq.maps;
+package goedegep.gpx.app;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -12,7 +12,7 @@ import org.eclipse.emf.ecore.util.FeatureMap;
 import org.eclipse.emf.ecore.util.FeatureMap.Entry;
 import org.eclipse.emf.ecore.xml.type.AnyType;
 
-import com.gluonhq.maps.MapLayer.BoundingBoxData;
+import com.gluonhq.maps.MapLayer;
 
 import goedegep.geo.WGS84BoundingBox;
 import goedegep.geo.WGS84Coordinates;
@@ -23,6 +23,7 @@ import goedegep.gpx.model.TrkType;
 import goedegep.gpx.model.TrksegType;
 import goedegep.gpx.model.WptType;
 import goedegep.jfx.stringconverters.WGS84CoordinatesStringConverter;
+import goedegep.mapview.MapViewUtil;
 import goedegep.poi.app.guifx.POIIcons;
 import goedegep.poi.model.POICategoryId;
 import goedegep.resources.ImageResource;
@@ -39,6 +40,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
+import javafx.scene.shape.Polygon;
 import javafx.util.Duration;
 
 /**
@@ -163,7 +165,7 @@ public class GPXLayer extends MapLayer {
     removeWaypoints(gpxFileData.gpx().waypointsDataList());
     removeRoutes(gpxFileData.gpx().routeDataList());
     removeTracks(gpxFileData.gpx().trackDataList());
-    removeBoundingBox(gpxFileData.gpx().boundingBox());
+    getChildren().remove(gpxFileData.gpx().boundingBox().polygon());
     removeLabel(gpxFileData.label());
     
     fileBoundingBox = null;
@@ -189,7 +191,15 @@ public class GPXLayer extends MapLayer {
     ObservableList<WaypointData> waypointDataList = createWaypoints(title, fileName, gpxType.getWpt());
     ObservableList<RouteData> routeDataList = createRoutes(title, fileName, gpxType.getRte());
     ObservableList<TrackData> trackDataList = addTracks(title, fileName, gpxType.getTrk());
-    BoundingBoxData boundingBoxData = createBoundingBoxData(fileBoundingBox);
+    
+    Polygon polygon = new Polygon();
+    polygon.setStroke(Color.YELLOW);
+    polygon.setFill(Color.TRANSPARENT);
+    polygon.setVisible(true);
+    getChildren().add(polygon);
+    BoundingBoxData boundingBoxData = new BoundingBoxData(fileBoundingBox, polygon);
+
+//    BoundingBoxData boundingBoxData = createBoundingBoxData(fileBoundingBox);
     Canvas label = createLabel(title, fileName, gpxType);
     GpxData gpxData = new GpxData(waypointDataList, routeDataList, trackDataList, boundingBoxData);
     
@@ -670,7 +680,8 @@ public class GPXLayer extends MapLayer {
       // Bounding box
       BoundingBoxData boundingBoxData = gpxData.boundingBox();
       if (boundingBoxData != null) {
-        layoutBoundingBox(boundingBoxData);
+        MapViewUtil.updateBoundingBoxPolygon(boundingBoxData.polygon(), boundingBoxData.boundingBox(), baseMap);
+//        layoutBoundingBox(boundingBoxData);
       }
       
       // Label
@@ -757,6 +768,12 @@ public class GPXLayer extends MapLayer {
  *  All information needed for a GPX track file.
  */
 record GpxFileData(String title, String fileName, GpxData gpx, Canvas label) {
+}
+
+/**
+ * Bounding box data, combines a WGS84BoundingBox with a polygon node.
+ */
+record BoundingBoxData(WGS84BoundingBox boundingBox, Polygon polygon) {
 }
 
 /**

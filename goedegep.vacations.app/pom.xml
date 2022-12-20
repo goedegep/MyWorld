@@ -76,6 +76,10 @@
       <artifactId>goedegep-jfx</artifactId>
     </dependency>
     <dependency>
+      <groupId>goedegep.mapview</groupId>
+      <artifactId>goedegep-mapview</artifactId>
+    </dependency>
+    <dependency>
       <groupId>goedegep.resources</groupId>
       <artifactId>goedegep-resources</artifactId>
     </dependency>

@@ -65,4 +65,5 @@ module goedegep.util {
   requires transitive javafx.base;
   requires org.eclipse.emf.ecore.xmi;
   requires transitive com.google.common.geometry;
+  requires transitive javafx.graphics;
 }

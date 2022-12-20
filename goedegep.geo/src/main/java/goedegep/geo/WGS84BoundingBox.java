@@ -103,6 +103,13 @@ private static final Logger LOGGER = Logger.getLogger(WGS84BoundingBox.class.get
     return extendedBoundingBox;
   }
   
+  public boolean containsPoint(WGS84Coordinates point) {
+    double latitude = point.getLatitude();
+    double longitude = point.getLongitude();
+    
+    return (latitude >= north)  &&  (latitude <= south)  &&  (longitude >= west)  &&  (longitude <= east);
+  }
+  
   public String toString() {
     return String.valueOf(west) + ", " + String.valueOf(north) + ", " + String.valueOf(east) + ", " + String.valueOf(south);
   }

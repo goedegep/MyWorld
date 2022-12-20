@@ -33,6 +33,7 @@ import goedegep.util.Triplet;
 import goedegep.util.datetime.FlexDate;
 import goedegep.util.emf.EMFResource;
 import goedegep.util.file.FileUtils;
+import goedegep.util.img.ImageUtils;
 import goedegep.util.img.PhotoFileMetaDataHandler;
 import goedegep.vacations.model.Boundary;
 import goedegep.vacations.model.BoundingBox;
@@ -341,7 +342,7 @@ public class VacationsUtils {
       throw new FileNotFoundException("fileName");
     }
     
-    coordinates = PhotoFileMetaDataHandler.getGeoLocation(fileName);
+    coordinates = ImageUtils.getGeoLocation(fileName);
 
     if (coordinates != null) {      
       geoLocations.add(coordinates);
@@ -656,7 +657,7 @@ public class VacationsUtils {
       return null;
     }
     
-    return new Triplet<WGS84Coordinates, BoundingBox, List<Boundary>>(PhotoFileMetaDataHandler.getGeoLocation(fileName), null, null);
+    return new Triplet<WGS84Coordinates, BoundingBox, List<Boundary>>(ImageUtils.getGeoLocation(fileName), null, null);
   }
   
   /**

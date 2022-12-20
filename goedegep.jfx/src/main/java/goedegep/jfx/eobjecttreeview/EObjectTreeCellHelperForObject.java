@@ -34,6 +34,7 @@ import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.DragEvent;
 
 public class EObjectTreeCellHelperForObject extends EObjectTreeCellHelperAbstract<EObjectTreeItemClassDescriptor>  {
   private static final Logger LOGGER = Logger.getLogger(EObjectTreeCellHelperForObject.class.getName());
@@ -477,5 +478,88 @@ public class EObjectTreeCellHelperForObject extends EObjectTreeCellHelperAbstrac
   @Override
   public String getText() {
     return eObjectTreeCell.getText();
+  }
+  
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public boolean isDropPossible(EObject sourceEObject, EObjectTreeItem thisEObjectTreeItem) {
+    LOGGER.info("=>");
+    
+    // parent will be a reference.
+    EObjectTreeItem eObjectParentTreeItem = (EObjectTreeItem)  thisEObjectTreeItem.getParent();
+    EObjectTreeItemContent eObjectParentTreeItemContent = eObjectParentTreeItem.getValue();
+    EStructuralFeature parentStructuralFeature = eObjectParentTreeItemContent.getEStructuralFeature();
+    if (parentStructuralFeature != null) {
+      LOGGER.info("parentStructuralFeature=" + parentStructuralFeature.toString());
+      if (parentStructuralFeature instanceof EReference parentEReference) {
+        EClass contentReferenceType = parentEReference.getEReferenceType();
+        if (contentReferenceType.isSuperTypeOf(sourceEObject.eClass())) {
+          return true;
+        }
+      }
+    }
+    
+    return false;
+  }
+  
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public void handleDragDropped(DragEvent dragEvent, EObject sourceEObject, EObjectTreeItem thisEObjectTreeItem) {
+    LOGGER.info("=>");
+    
+    if (!isDropPossible(sourceEObject, thisEObjectTreeItem)) {
+      return;
+    }
+    
+    // parent will be a reference.
+    // If it is a 'many' reference, insert before this item.
+    // If it isn't a 'many' reference, replace this item.
+    EObjectTreeItem eObjectParentTreeItem = (EObjectTreeItem)  thisEObjectTreeItem.getParent();
+    EObjectTreeItemContent eObjectParentTreeItemContent = eObjectParentTreeItem.getValue();
+    EStructuralFeature parentStructuralFeature = eObjectParentTreeItemContent.getEStructuralFeature();
+    if (parentStructuralFeature != null) {
+      LOGGER.severe("parentStructuralFeature=" + parentStructuralFeature.toString());
+      if (parentStructuralFeature instanceof EReference parentEReference) {
+        EClass contentReferenceType = parentEReference.getEReferenceType();
+        if (contentReferenceType.isSuperTypeOf(sourceEObject.eClass())) {
+
+          if (parentEReference.isMany()) {
+
+            // It is a list, so insert before this item.
+            LOGGER.info("Item is part of a list; insert before");
+            @SuppressWarnings("unchecked")
+            EList<Object> contentEList = (EList<Object>) eObjectParentTreeItemContent.getObject();
+            LOGGER.info("contentEList=" + contentEList.toString());
+            EObjectTreeItemContent thisEObjectTreeItemContent = thisEObjectTreeItem.getValue();
+            Object thisObject = thisEObjectTreeItemContent.getObject();
+            LOGGER.info("contentObject=" + thisObject.toString());
+            
+            // cut the source object
+            contentEList.remove(sourceEObject);
+            
+            // rebuild the children of the parent of the source, if it is not our parent.
+            EObjectTreeCell sourceParentCell = (EObjectTreeCell) dragEvent.getSource();
+            EObjectTreeItem sourceParent = (EObjectTreeItem) sourceParentCell.getTreeItem();
+            if (sourceParent != eObjectParentTreeItem) {
+              sourceParent.rebuildChildren();
+            }
+            
+            int contentObjectIndex = contentEList.indexOf(thisObject);
+            LOGGER.info("contentObjectIndex=" + contentObjectIndex);
+            if (contentObjectIndex != -1) {
+              contentEList.add(contentEList.indexOf(thisObject), sourceEObject);
+              eObjectParentTreeItem.rebuildChildren();
+            }
+          } else {
+            // It is a single value, which will be replaced.
+            LOGGER.severe("Single item; replace");
+          }
+        }
+      }
+    }
   }
 }

@@ -9,7 +9,9 @@ import java.util.logging.Logger;
 import com.gluonhq.maps.MapLayer;
 import com.gluonhq.maps.MapPoint;
 
+import goedegep.geo.WGS84BoundingBox;
 import goedegep.geo.WGS84Coordinates;
+import goedegep.mapview.MapViewUtil;
 import javafx.collections.ObservableList;
 import javafx.geometry.Point2D;
 import javafx.scene.Node;
@@ -24,7 +26,7 @@ public class SearchResultLayer extends MapLayer {
   private static final Logger         LOGGER = Logger.getLogger(SearchResultLayer.class.getName());
   
   private Integer locationId = 0;
-  private Map<Integer, Pair<Double[], Polygon>> boundingBoxesMap = new HashMap<>();
+  private Map<Integer, Pair<WGS84BoundingBox, Polygon>> boundingBoxesMap = new HashMap<>();
   private Map<Integer, Pair<MapPoint, Node>> locationsMap = new HashMap<>();
   private Map<Integer, List<Pair<List<WGS84Coordinates>, Polyline>>> polylinesMap = new HashMap<>();
   
@@ -33,7 +35,7 @@ public class SearchResultLayer extends MapLayer {
       super();
   }
   
-  public Integer addLocation(Double lat, Double lon, Double[] boundingBox, List<List<WGS84Coordinates>> polylines) {
+  public Integer addLocation(Double lat, Double lon, WGS84BoundingBox boundingBox, List<List<WGS84Coordinates>> polylines) {
     LOGGER.severe("polylines: " + (polylines != null ? polylines.size() : "<null>"));
     locationId++;
     
@@ -69,11 +71,6 @@ public class SearchResultLayer extends MapLayer {
     }
     
     if (!polylineDrawn  &&  boundingBox != null) {
-      if (boundingBox.length != 4) {
-        throw new IllegalArgumentException("A bounding box shall have 4 values, parameter has: " + boundingBox.length);
-      }
-      
-      
       Polygon boxPolygon = new Polygon();
       boxPolygon.setVisible(true);
       boxPolygon.setStrokeWidth(2);
@@ -81,7 +78,7 @@ public class SearchResultLayer extends MapLayer {
       Paint fillPaint = Color.rgb(100, 100, 220, 0.1);
       boxPolygon.setFill(fillPaint);
       
-      Pair<Double[], Polygon> boundingBoxPair = new Pair<Double[], Polygon>(boundingBox, boxPolygon);
+      Pair<WGS84BoundingBox, Polygon> boundingBoxPair = new Pair<>(boundingBox, boxPolygon);
       boundingBoxesMap.put(locationId, boundingBoxPair);
       this.getChildren().add(boxPolygon);
     }
@@ -95,7 +92,7 @@ public class SearchResultLayer extends MapLayer {
     Pair<MapPoint, Node> locationPair = locationsMap.remove(locationId);
     this.getChildren().remove(locationPair.getValue());
     
-    Pair<Double[], Polygon> boundingBoxPair = boundingBoxesMap.remove(locationId);
+    Pair<WGS84BoundingBox, Polygon> boundingBoxPair = boundingBoxesMap.remove(locationId);
     if (boundingBoxPair != null) {
       this.getChildren().remove(boundingBoxPair.getValue());
     }
@@ -121,25 +118,11 @@ public class SearchResultLayer extends MapLayer {
   
   @Override
   protected void layoutLayer() {
-    for (Pair<Double[], Polygon> boundingBoxPair: boundingBoxesMap.values()) {
-      Double[] boundingBoxCoords = boundingBoxPair.getKey();
+    for (Pair<WGS84BoundingBox, Polygon> boundingBoxPair: boundingBoxesMap.values()) {
+      WGS84BoundingBox boundingBoxCoords = boundingBoxPair.getKey();
       Polygon boxPolygon = boundingBoxPair.getValue();
       
-      ObservableList<Double> points = boxPolygon.getPoints();
-      points.clear();
-      Point2D mapPoint;
-      mapPoint = baseMap.getMapPoint(boundingBoxCoords[0], boundingBoxCoords[2]);
-      points.add(mapPoint.getX());
-      points.add(mapPoint.getY());
-      mapPoint = baseMap.getMapPoint(boundingBoxCoords[0], boundingBoxCoords[3]);
-      points.add(mapPoint.getX());
-      points.add(mapPoint.getY());
-      mapPoint = baseMap.getMapPoint(boundingBoxCoords[1], boundingBoxCoords[3]);
-      points.add(mapPoint.getX());
-      points.add(mapPoint.getY());
-      mapPoint = baseMap.getMapPoint(boundingBoxCoords[1], boundingBoxCoords[2]);
-      points.add(mapPoint.getX());
-      points.add(mapPoint.getY());
+      MapViewUtil.updateBoundingBoxPolygon(boxPolygon, boundingBoxCoords, baseMap);
     }
     
     for (Pair<MapPoint, Node> locationPair: locationsMap.values()) {

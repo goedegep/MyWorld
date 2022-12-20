@@ -18,6 +18,7 @@ import com.atlis.location.nominatim.OSMLocationInfo;
 import com.gluonhq.maps.MapPoint;
 import com.gluonhq.maps.MapView;
 
+import goedegep.geo.WGS84BoundingBox;
 import goedegep.geo.WGS84Coordinates;
 import goedegep.jfx.ComponentFactoryFx;
 import goedegep.jfx.CustomizationFx;
@@ -896,7 +897,8 @@ class LocationInfosPanel extends VBox {
           }
         }
         
-        idOfLocationShownOnMap = searchResultLayer.addLocation(osmLocationInfo.getLat(), osmLocationInfo.getLon(), bb, polylines);
+        WGS84BoundingBox boundingBox = new WGS84BoundingBox(bb[2], bb[0], bb[3], bb[1]);
+        idOfLocationShownOnMap = searchResultLayer.addLocation(osmLocationInfo.getLat(), osmLocationInfo.getLon(), boundingBox, polylines);
       }
     } else {
       osmTypeTextField.setText(null);

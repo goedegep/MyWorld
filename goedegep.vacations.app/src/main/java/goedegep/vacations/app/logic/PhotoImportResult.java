@@ -1,11 +1,13 @@
 package goedegep.vacations.app.logic;
 
+import org.eclipse.emf.ecore.EObject;
+
 import goedegep.vacations.model.VacationElement;
 
 public class PhotoImportResult {
   private String photoFilename;
   private PhotoImportResultType photoImportResultType;
-  private VacationElement vacationElement;
+  private EObject vacationElement;
   private String text;
   private VacationElement newVacationElement;
   
@@ -22,7 +24,7 @@ public class PhotoImportResult {
     this.text = text;
   }
   
-  public PhotoImportResult(String photoFilename, PhotoImportResultType photoImportResultType, VacationElement vacationElement, String text, VacationElement newVacationElement) {
+  public PhotoImportResult(String photoFilename, PhotoImportResultType photoImportResultType, EObject vacationElement, String text, VacationElement newVacationElement) {
     this.photoFilename = photoFilename;
     this.photoImportResultType = photoImportResultType;
     this.vacationElement = vacationElement;
@@ -38,7 +40,7 @@ public class PhotoImportResult {
     return photoImportResultType;
   }
 
-  public VacationElement getVacationElement() {
+  public EObject getVacationElement() {
     return vacationElement;
   }
 

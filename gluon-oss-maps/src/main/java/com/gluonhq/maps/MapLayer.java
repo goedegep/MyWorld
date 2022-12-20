@@ -28,14 +28,9 @@
 package com.gluonhq.maps;
 
 import com.gluonhq.impl.maps.BaseMap;
-import com.gluonhq.maps.MapLayer.BoundingBoxData;
 
-import goedegep.geo.WGS84BoundingBox;
-import javafx.collections.ObservableList;
 import javafx.geometry.Point2D;
 import javafx.scene.Parent;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Polygon;
 
 /**
  * A MapLayer can be added on top a BaseMap (which provides the map tiles).
@@ -120,63 +115,6 @@ public class MapLayer extends Parent {
      */
     protected final Point2D getMapPoint(double lat, double lon) {
         return baseMap.getMapPoint(lat, lon);
-    }
-
-    /**
-     * Create the {@code BoundingBoxData} for a bounding {@code WGS84BoundingBox}.
-     * 
-     * @param wgs84BoundingBox a {@code WGS84BoundingBox}.
-     * @return the created bounding box data.
-     */
-    protected BoundingBoxData createBoundingBoxData(WGS84BoundingBox wgs84BoundingBox) {
-      if (wgs84BoundingBox == null) {
-        return null;
-      }
-      
-      Polygon polygon = new Polygon();
-      polygon.setStroke(Color.YELLOW);
-      polygon.setFill(Color.TRANSPARENT);
-      polygon.setVisible(true);
-      getChildren().add(polygon);
-      
-      BoundingBoxData boundingBoxData = new BoundingBoxData(wgs84BoundingBox, polygon);
-      return boundingBoxData;
-    }
-    
-    protected void removeBoundingBox(BoundingBoxData boundingBoxData) {
-      if (boundingBoxData != null) {
-        getChildren().remove(boundingBoxData.polygon());
-      }
-    }
-    
-    /**
-     * Layout a bounding box.
-     * 
-     * @param boundingBoxData the bounding box data.
-     */
-    protected void layoutBoundingBox(BoundingBoxData boundingBoxData) {
-      Polygon polygon = boundingBoxData.polygon();
-      WGS84BoundingBox boundingBox = boundingBoxData.boundingBox();
-      ObservableList<Double> points = polygon.getPoints();
-      points.clear();
-      Point2D northWest = baseMap.getMapPoint(boundingBox.getNorth(), boundingBox.getWest());
-      points.add(northWest.getX());
-      points.add(northWest.getY());
-      Point2D northEast = baseMap.getMapPoint(boundingBox.getNorth(), boundingBox.getEast());
-      points.add(northEast.getX());
-      points.add(northEast.getY());
-      Point2D southEast = baseMap.getMapPoint(boundingBox.getSouth(), boundingBox.getEast());
-      points.add(southEast.getX());
-      points.add(southEast.getY());
-      Point2D southWest = baseMap.getMapPoint(boundingBox.getSouth(), boundingBox.getWest());
-      points.add(southWest.getX());
-      points.add(southWest.getY());
-    }
-
-    /**
-     * Bounding box data, combines a WGS84BoundingBox with a polygon node.
-     */
-    public record BoundingBoxData(WGS84BoundingBox boundingBox, Polygon polygon) {
     }
 
 }

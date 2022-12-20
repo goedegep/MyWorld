@@ -5,9 +5,9 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import com.atlis.location.nominatim.NominatimAPI;
-import com.gluonhq.maps.GPXLayer;
 import com.gluonhq.maps.MapView;
 
+import goedegep.gpx.app.GPXLayer;
 import goedegep.jfx.CustomizationFx;
 import goedegep.poi.app.guifx.POIIcons;
 import goedegep.util.objectselector.ObjectSelectionListener;
