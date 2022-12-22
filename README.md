@@ -6,6 +6,12 @@ This project is under construction.
 ## Documentation
 Documentation about this application can be found on [MyDigitalLife](https://petersdigitallife.nl/).
 
+## Overview of the functionality of the application
+
+## Overview of the projects/libraries which may be useful for others
+### goedegep.resources
+Pictures may be used by different components of the application. Therefore they are available via a separate project. See [goedegep.resources](https://petersdigitallife.nl/goedegep-resources/).
+
 ## Imported libraries
 I've added external library projects to my project for a number of reasons:
 - To make some modifications

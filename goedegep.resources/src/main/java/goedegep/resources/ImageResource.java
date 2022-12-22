@@ -203,6 +203,55 @@ public enum ImageResource {
   }
   
   /**
+   * Get the image for a specific filename.
+   * 
+   * @param imageFilename the filename of the Image
+   * @return the Image for <code>imageFilename</code>
+   */
+  public Image getImage(String imageFilename) {
+    if (cachedImages == null) {
+      cachedImages = new ArrayList<>();
+    }
+    
+    // get information on the file.
+    ImageFileInfo imageFileInfo = null;
+    for (ImageFileInfo ifo: imageFilesInfo) {
+      if (ifo.filename().equals(imageFilename)) {
+        imageFileInfo = ifo;
+      }
+    }
+    
+    // check whether this image is available
+    ImageWithRequestedSize imageWithSize = getImageWithImageSize(cachedImages, imageFileInfo.width(), imageFileInfo.height());
+    
+    Image image = null;
+    if (imageWithSize == null) {
+      image = new Image(ImageResource.class.getResourceAsStream(imageFilename));
+      imageWithSize = new ImageWithRequestedSize(image, imageFileInfo.width(), imageFileInfo.height());
+      cachedImages.add(imageWithSize);
+    } else {
+      image = imageWithSize.image();
+    }
+    
+    return image;
+  }
+  
+  /**
+   * Get a URL for an image. This may e.g. be used in an HTML file.
+   * 
+   * @return a URL for the image.
+   */
+  public URL getImageUrl() {
+    
+    // get information on the largest image, which is the last one in the images info.
+    ImageFileInfo imageInfo = imageFilesInfo[imageFilesInfo.length - 1];
+    
+    URL iconURL = ImageResource.class.getResource(imageInfo.filename());
+    
+    return iconURL;
+  }
+  
+  /**
    * Get a URL for an image. This may e.g. be used in an HTML file.
    * 
    * @param imageSize the requested image size.

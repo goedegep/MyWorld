@@ -174,6 +174,7 @@ public class MyWorldInstaller extends JfxApplication {
       "gluon-oss-maps\\gluon-oss-maps\\1.0-SNAPSHOT\\gluon-oss-maps-1.0-SNAPSHOT.jar",
       "goedegep\\appgen\\goedegep-appgen\\1.0-SNAPSHOT\\goedegep-appgen-1.0-SNAPSHOT.jar",
       "goedegep\\configuration\\goedegep-configuration-model\\1.0-SNAPSHOT\\goedegep-configuration-model-1.0-SNAPSHOT.jar",
+      "goedegep\\demo\\goedegep-demo\\1.0-SNAPSHOT\\goedegep-demo-1.0-SNAPSHOT.jar",
       "goedegep\\events\\goedegep-events-app\\1.0-SNAPSHOT\\goedegep-events-app-1.0-SNAPSHOT.jar",
       "goedegep\\events\\goedegep-events-model\\1.0-SNAPSHOT\\goedegep-events-model-1.0-SNAPSHOT.jar",
       "goedegep\\finan\\goedegep-finan-app\\1.0-SNAPSHOT\\goedegep-finan-app-1.0-SNAPSHOT.jar",
