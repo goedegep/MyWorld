@@ -24,11 +24,13 @@ public class DemoMenuWindow extends JfxStage {
   
   private final static String WINDOW_TITLE = "Demo";
   
+  private CustomizationFx customization;
   private ComponentFactoryFx componentFactory;
   
   public DemoMenuWindow(CustomizationFx customization) {
     super(WINDOW_TITLE, customization);
     
+    this.customization = customization;
     componentFactory = customization.getComponentFactoryFx();
     
     createGUI();
@@ -65,10 +67,10 @@ public class DemoMenuWindow extends JfxStage {
     MenuItem menuItem;
 
     // resources
-    menu = componentFactory.createMenu("resources");
+    menu = componentFactory.createMenu("Resources");
     
     menuItem = componentFactory.createMenuItem("ImageResource");
-    menuItem.setOnAction((e) -> new ImageResourceDemo());
+    menuItem.setOnAction((e) -> new ImageResourceDemo(customization));
     menu.getItems().add(menuItem);
     
     menuBar.getMenus().add(menu);

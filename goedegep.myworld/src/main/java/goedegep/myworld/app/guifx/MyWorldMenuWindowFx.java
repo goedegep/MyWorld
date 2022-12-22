@@ -9,6 +9,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import goedegep.app.finan.guifx.FinanMenuWindow;
+import goedegep.demo.guifx.DemoCustomization;
 import goedegep.demo.guifx.DemoMenuWindow;
 import goedegep.events.app.guifx.EventsLauncher;
 import goedegep.finan.Finan;
@@ -247,12 +248,12 @@ public class MyWorldMenuWindowFx extends JfxStage {
     // Demo
     applicationButton = createModuleButton(
         MyWorldAppModule.DEMO.getModuleName(),
-        ImageResource.DEMO.getImage(ImageSize.SIZE_3));
+        DemoCustomization.getInstance().getResources().getApplicationImage(ImageSize.SIZE_3));
     applicationButton.setOnAction(new EventHandler<ActionEvent>() {
 
       @Override
       public void handle(ActionEvent event) {
-        Stage stage = new DemoMenuWindow(CustomizationsFx.getCustomization(MyWorldAppModule.PCTOOLS.name()));
+        Stage stage = new DemoMenuWindow(DemoCustomization.getInstance());
         stage.centerOnScreen();
         stage.show();
       }
