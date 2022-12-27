@@ -9,6 +9,14 @@ Documentation about this application can be found on [MyDigitalLife](https://pet
 ## Overview of the functionality of the application
 
 ## Overview of the projects/libraries which may be useful for others
+This project contains several general purpose libraries, which may be useful for others.
+
+### goedegep.emfsample.model
+This project provides a simple EMF (Eclipse Modeling Framework) data model. This model is meant to be used for testing and demo functionality. See [goedegep.emfsample.model](https://petersdigitallife.nl/goedegep-emfsample-mode/).
+
+### goedegep.geo
+This project defines geo-coordinates and the related calculations. See [goedegep.geo](https://petersdigitallife.nl/goedegep-geo/).
+
 ### goedegep.resources
 Pictures may be used by different components of the application. Therefore they are available via a separate project. See [goedegep.resources](https://petersdigitallife.nl/goedegep-resources/).
 

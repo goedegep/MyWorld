@@ -285,11 +285,30 @@ public abstract class DefaultMutableXTreeNode implements MutableXTreeNode {
   }
   
   /**
-   * Add a node as the last child of this node.
-   * 
-   * @param newNode the node to be added as a child of this node.
-   * @return newNode
+   * {@inheritDoc}
    */
+  @Override
+  public void clearChildren() {
+    DefaultMutableXTreeNode child = firstChild;
+    
+    while (child != null) {
+      DefaultMutableXTreeNode sibling = child.nextSibling;
+      
+      // clear the node
+      child.nextSibling = null;
+      child.parent = null;
+      child.clearChildren();
+      
+      child = sibling;
+    }
+    
+    firstChild = null;
+  }
+  
+  /**
+   * {@inheritDoc}
+   */
+  @Override
   public DefaultMutableXTreeNode addChild(DefaultMutableXTreeNode newNode) {
     if (!hasChild()) {
       // No child yet, so add as first child.

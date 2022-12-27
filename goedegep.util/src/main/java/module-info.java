@@ -1,6 +1,5 @@
 module goedegep.util {
   exports goedegep.util;
-  exports goedegep.util.asyncapi;
   exports goedegep.util.bitset;
   exports goedegep.util.bitsequence;
   exports goedegep.util.bytesequence;
@@ -42,7 +41,6 @@ module goedegep.util {
   exports goedegep.util.url;
   exports goedegep.util.xml;
   exports goedegep.util.xtree;
-  exports goedegep.util.xtree.demo;
   exports goedegep.util.xtree.impl;
   exports goedegep.util.xtree.impl.ascii;
   exports goedegep.util.xtree.impl.binary;

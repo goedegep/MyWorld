@@ -6,4 +6,5 @@ module goedegep.demo {
   requires javafx.controls;
   requires javafx.base;
   requires javafx.web;
+  requires goedegep.util;
 }

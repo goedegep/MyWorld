@@ -12,7 +12,14 @@ import com.google.common.geometry.S2LatLng;
  * (of the equator). There's also an optional elevation.
  * 
  * A 3D coordinate is an extension of a 2D coordinate. So ideally these 3D coordinates would extend {@link S2LatLng},
- * but this isn't possible as S2LatLng is final. Therefore this class uses a reference to S2LatLng for the 2D part and adds an elevation.
+ * but this isn't possible as S2LatLng is final. Therefore this class uses a reference to S2LatLng for the 2D part and adds an elevation.<br/>
+ * Where possible the functionality is built on top of com.google.common.geometry.
+ * 
+ * There are methods to:
+ * <ul>
+ * <li>get the distance to another point</li>
+ * <li>get the slope between a point and another point</li>
+ * </ul>
  */
 public class WGS84Coordinates implements Serializable {
   private static final long serialVersionUID = 2270291021135307162L;
@@ -88,22 +95,9 @@ public class WGS84Coordinates implements Serializable {
 	 * @param point the point to which the distance is to be calculated (mandatory).
 	 * @return the distance from here to the {@code point}.
 	 */
-	public double getDistanceMeters(WGS84Coordinates point) {
-	  double s2distance = S2Earth.getDistanceMeters(this.s2LatLng, point.s2LatLng);
-//        final double lat1 = Math.toRadians(getLatitude());
-//        final double lat2 = Math.toRadians(point.getLatitude());
-//        final double lon1 = Math.toRadians(getLongitude());
-//        final double lon2 = Math.toRadians(point.getLongitude());
-//        
-//        final double lat21 = lat2 - lat1;
-//        final double lon21 = lon2 - lon1;
-//        final double a =
-//                Math.sin(lat21/2.0) * Math.sin(lat21/2.0)
-//                + Math.cos(lat1) * Math.cos(lat2)
-//                * Math.sin(lon21/2.0) * Math.sin(lon21/2.0);
-//        double distance = 2.0 * Math.atan2(Math.sqrt(a), Math.sqrt(1.0-a)) * (EARTH_AVERAGE_RADIUS + (getElevation() + point.getElevation())/2.0);
-//        LOGGER.severe("S2 distance: " + s2distance + ", distance: " + distance);
-        return s2distance;
+    public double getDistanceMeters(WGS84Coordinates point) {
+      double s2distance = S2Earth.getDistanceMeters(this.s2LatLng, point.s2LatLng);
+      return s2distance;
     }
 	
 	/**

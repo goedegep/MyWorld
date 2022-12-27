@@ -565,12 +565,12 @@ public class DefaultMutableXTree extends XTreeAbstract implements MutableXTree {
   @Override
   public void print(MutableXTreeNode startNode,
       boolean printChildren,boolean printSiblings, OutputStream outputStream) {
-    LOGGER.info("=>");
+    LOGGER.severe("=>");
     
     XTreeNodeVisitorForPrinting visitor = new XTreeNodeVisitorForPrinting(outputStream);
     traverse(startNode, printChildren, printSiblings, visitor);
     
-    LOGGER.info("<=");
+    LOGGER.severe("<=");
   }
   
   @Override

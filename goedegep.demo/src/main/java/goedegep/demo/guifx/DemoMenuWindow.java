@@ -3,6 +3,7 @@ package goedegep.demo.guifx;
 import java.util.logging.Logger;
 
 import goedegep.demo.resources.guifx.ImageResourceDemo;
+import goedegep.demo.xtree.guifx.XTreeDemo;
 import goedegep.jfx.ComponentFactoryFx;
 import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.JfxStage;
@@ -66,11 +67,20 @@ public class DemoMenuWindow extends JfxStage {
     Menu menu;
     MenuItem menuItem;
 
-    // resources
+    // Resources
     menu = componentFactory.createMenu("Resources");
     
     menuItem = componentFactory.createMenuItem("ImageResource");
     menuItem.setOnAction((e) -> new ImageResourceDemo(customization));
+    menu.getItems().add(menuItem);
+    
+    menuBar.getMenus().add(menu);
+
+    // Util
+    menu = componentFactory.createMenu("Util");
+    
+    menuItem = componentFactory.createMenuItem("XTree");
+    menuItem.setOnAction((e) -> new XTreeDemo(customization));
     menu.getItems().add(menuItem);
     
     menuBar.getMenus().add(menu);

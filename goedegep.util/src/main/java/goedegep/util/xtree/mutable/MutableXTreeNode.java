@@ -3,6 +3,7 @@ package goedegep.util.xtree.mutable;
 import goedegep.util.xtree.XNodeDataType;
 import goedegep.util.xtree.XTree;
 import goedegep.util.xtree.XTreeTag;
+import goedegep.util.xtree.impl.defaultmutable.DefaultMutableXTreeNode;
 
 /**
  * This interface represents a node in an {@link XTree}.
@@ -18,7 +19,7 @@ import goedegep.util.xtree.XTreeTag;
  * </ul>
  *
  */
-public interface MutableXTreeNode {  
+public interface MutableXTreeNode {
   
   /**
    * Test whether a node has a parent. Only the top-level nodes have no parent.
@@ -212,6 +213,19 @@ public interface MutableXTreeNode {
   /*
    * Adding nodes and changing node values.
    */
+  
+  /**
+   * Remove all children from the node.
+   */
+  public void clearChildren();
+  
+  /**
+   * Add a node as the last child of this node.
+   * 
+   * @param newNode the node to be added as a child of this node.
+   * @return newNode
+   */
+  public DefaultMutableXTreeNode addChild(DefaultMutableXTreeNode newNode);
 
   /**
    * Set the value of a node of type TAG.

@@ -1,54 +1,48 @@
-package goedegep.util.xtree.demo;
+package goedegep.demo.xtree.guifx;
 
-import java.awt.Point;
-import java.util.logging.Handler;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import goedegep.util.logging.MyLoggingFormatter;
+import goedegep.jfx.CustomizationFx;
+import goedegep.jfx.JfxStage;
+import goedegep.jfx.xtreetreeview.XTreeTreeView;
 import goedegep.util.xtree.XTreeTag;
 import goedegep.util.xtree.impl.defaultmutable.DefaultMutableXTree;
 import goedegep.util.xtree.impl.defaultmutable.DefaultMutableXTreeIntegerNode;
 import goedegep.util.xtree.impl.defaultmutable.DefaultMutableXTreeNode;
 import goedegep.util.xtree.mutable.MutableXTree;
-import goedegep.util.xtree.mutable.MutableXTreeNode;
+import javafx.scene.Node;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.control.TextArea;
+import javafx.scene.layout.FlowPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 
-public class XTreeDemo {
-  private static final Logger LOGGER = Logger.getLogger(XTreeDemo.class.getName());
+public class XTreeDemo extends JfxStage {
+  @SuppressWarnings("unused")
+  private final static Logger LOGGER = Logger.getLogger(XTreeDemo.class.getName());
   
-  private final static Level logLevel = Level.INFO;
+  private final static String WINDOW_TITLE = "XTree demo";
+  
+  private MutableXTree tree = null;
+  private XTreeTreeView treeView = null;
+  private HBox resultHBox = null;
 
   /**
-   * @param args
+   * Constructor
+   * 
+   * @param customization the GUI customization.
    */
-  public static void main(String[] args) {
-    logSetup();
+  public XTreeDemo(CustomizationFx customization) {
+    super(WINDOW_TITLE, customization);
     
     // Create a tree and show it.
-    MutableXTree tree = createSimpleTree();
-    showXTree("Intial Tree", tree);
+    tree = createSimpleTree();
     
-    // Show how to use operations for walking through a tree.
-    walkThroughTheSimpleTree(tree);
+    createGUI();
     
-    // Create a copy of the tree and show it.
-    LOGGER.info("Going to create a copy of a tree");
-    MutableXTree treeCopy = new DefaultMutableXTree(tree);
-    showXTree("Tree Copy", treeCopy);
-    
-    // Create a subtree starting with the first child of the root node.
-//    XTree subTree = tree.extractTree(tree.getFirstChildForNode(tree.getRoot()), false);
-    MutableXTree subTree = new DefaultMutableXTree(tree, tree.getRoot().getFirstChild(), false);
-    showXTree("SubTree", subTree);
-    
-    //    node = subTree.getRoot();
-    //    assertEquals("Wrong value obtained", 5, subTree.getIntegerNodeData(node));
-    //    assertNull("Unexpected sibling", subTree.getNextSiblingForNode(node));
-    //    node = subTree.getFirstChildForNode(node);
-    //    assertEquals("Wrong value obtained", 6, subTree.getIntegerNodeData(node));
-    //    node = subTree.getLastSiblingOfNode(node);
-    //    assertEquals("Wrong value obtained", 100000, subTree.getIntegerNodeData(node));
-
+    treeView.setRootNode(tree.getRoot());
+        
     //    XTreeInterface tree = XTreeFactory.createXTree();
     //    byte[]         rawData = {0x01, 0x02, 0x03, 0x04};
     //    
@@ -78,7 +72,7 @@ public class XTreeDemo {
     //    byte[] serializedTree = tree.serializeToBinary();
     //    System.out.println("Binary serialized tree:");
     //    for (int i = 0; i < serializedTree.length; i++) {
-    //    	System.out.print(" " + serializedTree[i]);
+    //      System.out.print(" " + serializedTree[i]);
     //    }
     //    System.out.println();
     //    XTreeInterface newTree = tree.treeReconstructFromBinary(serializedTree);
@@ -108,9 +102,9 @@ public class XTreeDemo {
     node = root;
     int level = 0;
     while (tree.doesNodeHaveChild(node)) {
-    	System.out.println("Node has child, going down.");
-    	node = tree.getFirstChildForNode(node);
-    	level++;
+        System.out.println("Node has child, going down.");
+        node = tree.getFirstChildForNode(node);
+        level++;
     }
 
     System.out.println("Level = " + level + ", node value is: " + tree.getIntegerNodeData(node));
@@ -122,8 +116,8 @@ public class XTreeDemo {
     // Go to left most leave and first print the last node and then all nodes.
     node = root;
     while (tree.doesNodeHaveChild(node)) {
-    	System.out.println("Node has child, going down.");
-    	node = tree.getFirstChildForNode(node);
+        System.out.println("Node has child, going down.");
+        node = tree.getFirstChildForNode(node);
     }
 
     node = tree.getParentForNode(node);
@@ -167,10 +161,10 @@ public class XTreeDemo {
     byte[] buf = tree.getBlobNodeData(node);
     System.out.print("Tag node value = ");
     for (int i = 0; i < buf.length; i++) {
-    	if (i != 0) {
-        	System.out.print(", ");
-    	}
-    	System.out.print(String.valueOf(buf[i]));
+        if (i != 0) {
+            System.out.print(", ");
+        }
+        System.out.print(String.valueOf(buf[i]));
     }
     System.out.println("");
 
@@ -184,17 +178,105 @@ public class XTreeDemo {
     // and .....
     // tree.changeTreeType(XTreeInterface.TREE_TYPE_SERIALIZED_TREE);
      */
+    
+    show();
   }
 
-  private static void showXTree(String windowTitle, MutableXTree tree) {
-    Point swLocation = new Point(100, 100);
-
-    XTreeDialog dlg = new XTreeDialog(windowTitle, tree);
-    dlg.setLocation(swLocation);
-    dlg.pack();
-    dlg.setVisible(true);
+  /**
+   * Create the GUI
+   * <p>
+   * Top
+   *   Left: Sample tree
+   *   Right: Test result
+   * Bottom
+   *   Action buttons
+   */
+  private void createGUI() {
+    VBox mainPanel = new VBox();
+    
+    HBox hBox = new HBox();
+    
+    treeView = new XTreeTreeView();
+    hBox.getChildren().add(treeView);
+    
+    resultHBox = new HBox();
+    hBox.getChildren().add(resultHBox);
+    mainPanel.getChildren().add(hBox);
+    
+    mainPanel.getChildren().add(createButtonsPanel());
+    
+    
+    Scene scene = new Scene(mainPanel, 1500, 1200);
+    setScene(scene);
+  }
+  
+  private Node createButtonsPanel() {
+    FlowPane flowPane = new FlowPane();
+    flowPane.setHgap(12.0);
+    
+    Button button = new Button("print");
+    button.setOnAction((e) -> runPrintDemo());
+    flowPane.getChildren().add(button);
+    
+    button = new Button("copy");
+    button.setOnAction((e) -> runCopyDemo());
+    flowPane.getChildren().add(button);
+    
+    button = new Button("SubtreeCopy");
+    button.setOnAction((e) -> runSubtreeCopyDemo());
+    flowPane.getChildren().add(button);
+    
+    return flowPane;
+  }
+  
+  private void runPrintDemo() {
+    resultHBox.getChildren().clear();
+    
+    TextArea printPanel = new TextArea(tree.print(null, true, true));
+    resultHBox.getChildren().add(printPanel);
+  }
+  
+  private void runCopyDemo() {
+    resultHBox.getChildren().clear();
+    
+    MutableXTree treeCopy = new DefaultMutableXTree(tree);
+    XTreeTreeView treeCopyView = new XTreeTreeView();
+    treeCopyView.setRootNode(treeCopy.getRoot());
+    resultHBox.getChildren().add(treeCopyView);
+  }
+  
+  private void runSubtreeCopyDemo() {
+    resultHBox.getChildren().clear();
+    
+    // Create a subtree starting with the first child of the root node.
+    MutableXTree subTree = new DefaultMutableXTree(tree, tree.getRoot().getFirstChild(), false);
+    XTreeTreeView subTreeCopyView = new XTreeTreeView();
+    subTreeCopyView.setRootNode(subTree.getRoot());
+    resultHBox.getChildren().add(subTreeCopyView);
   }
 
+  /**
+   * Create a simple MutableXTree.
+   * <p>
+   * This method creates a tree with nodes of all supported types, with several levels
+   * and some levels with siblings.
+   * <pre>
+   * I: 4
+   *   I: 5
+   *     I: 6
+   *     I: 1000
+   *     I: 10000
+   *     I: 100000
+   *   G: TAG_QUERY_INDEX
+   *   B: true
+   *   S: "XTree string node test"
+   *   D: 0x01 0x02 0x03 0x04
+   * S: "Second Top Level Node"
+   * S: "Third Top Level Node"
+   * </pre>
+   * 
+   * @return the newly created simple MutableXTree
+   */
   private static MutableXTree createSimpleTree() {
     byte[]         rawData = {0x01, 0x02, 0x03, 0x04};
 
@@ -233,27 +315,5 @@ public class XTreeDemo {
     node.appendStringSibling("Third Top Level Node");
 
     return tree;
-  }
-
-  private static void walkThroughTheSimpleTree(MutableXTree tree) {
-    // get the root of the tree
-    MutableXTreeNode root = tree.getRoot();
-    LOGGER.info(tree.print(root, false, false));
-  }
-  
-  private static void logSetup() {
-    // Create Logger
-    Logger logger = Logger.getLogger("");
-    logger.setLevel(logLevel);
-    
-    Handler consoleHandler = null;
-    for (Handler handler: logger.getHandlers()) {
-      if (handler.getClass().getName().equals("java.util.logging.ConsoleHandler")) {
-        consoleHandler = handler;
-        break;
-      }
-    }
-    consoleHandler.setFormatter(new MyLoggingFormatter());
-    consoleHandler.setLevel(Level.INFO);
   }
 }
