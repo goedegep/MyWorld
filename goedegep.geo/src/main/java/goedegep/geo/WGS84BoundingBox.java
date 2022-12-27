@@ -2,6 +2,17 @@ package goedegep.geo;
 
 import java.util.logging.Logger;
 
+/**
+ * This class represents a bounding box, defined by the nort and south latitudes, and the east and west longitudes.
+ * <p>
+ * A WGS84BoundingBox is unmodifiable object.<br/>
+ * There are methods to:
+ * <ul>
+ * <li>get the center of the bounding box</li>
+ * <li>obtain an extended bounding box</li>
+ * <li>check whether a point is inside a bounding box</li>
+ * </ul>
+ */
 public class WGS84BoundingBox {
   @SuppressWarnings("unused")
 private static final Logger LOGGER = Logger.getLogger(WGS84BoundingBox.class.getName());

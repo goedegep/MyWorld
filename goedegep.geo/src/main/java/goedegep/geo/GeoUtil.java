@@ -1,5 +1,14 @@
 package goedegep.geo;
 
+/**
+ * This class provides utility methods for geo coordinates.
+ * <p>
+ * There are methods to:
+ * <ul>
+ * <li>Convert a double latitude or longitude to a degrees/minutes/seconds.</li>
+ * </ul>
+ *
+ */
 public class GeoUtil {
   
   /**
