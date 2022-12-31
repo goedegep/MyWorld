@@ -2,7 +2,7 @@ package goedegep.util.xtree.impl.defaultmutable;
 
 import goedegep.util.xtree.XNodeDataType;
 import goedegep.util.xtree.XTreeTag;
-import goedegep.util.xtree.mutable.MutableXTree;
+import goedegep.util.xtree.impl.XTreeNodeAbstract;
 import goedegep.util.xtree.mutable.MutableXTreeNode;
 
 /**
@@ -10,10 +10,10 @@ import goedegep.util.xtree.mutable.MutableXTreeNode;
  * <p>
  * For each supported data type, there is a sub-type of this class.
  */
-public abstract class DefaultMutableXTreeNode implements MutableXTreeNode {
-  private DefaultMutableXTreeNode parent      = null;
-  private DefaultMutableXTreeNode firstChild  = null;
-  private DefaultMutableXTreeNode nextSibling = null;
+public abstract class DefaultMutableXTreeNode extends XTreeNodeAbstract implements MutableXTreeNode {
+  private MutableXTreeNode parent      = null;
+  private MutableXTreeNode firstChild  = null;
+  private MutableXTreeNode nextSibling = null;
 
   /**
    * Constructor
@@ -21,97 +21,117 @@ public abstract class DefaultMutableXTreeNode implements MutableXTreeNode {
   public DefaultMutableXTreeNode() {    
   }
   
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public boolean hasParent() {
     return parent != null;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
-  public DefaultMutableXTreeNode getParent() {
+  public MutableXTreeNode getParent() {
     return parent;
   }
   
   /**
-   * Set the parent node of this node.
-   * 
-   * @param parent the new value for the parent node, which may be null.
+   * {@inheritDoc}
    */
-  public void setParent(DefaultMutableXTreeNode parent) {
+  @Override
+  public void setParent(MutableXTreeNode parent) {
     this.parent = parent;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public boolean hasChild() {
     return firstChild != null;
   }
   
+  /**
+   * {@inheritDoc}
+   */
   @Override
-  public DefaultMutableXTreeNode getFirstChild() {
+  public MutableXTreeNode getFirstChild() {
     return firstChild;
   }
   
   /**
-   * Set the first child node of this node.
-   * 
-   * @param firstChild the new value for the first child, which may be null.
+   * {@inheritDoc}
    */
-  public void setFirstChild(DefaultMutableXTreeNode firstChild) {
+  @Override
+  public void setFirstChild(MutableXTreeNode firstChild) {
     this.firstChild = firstChild;
   }
   
-  @Override
-  public DefaultMutableXTreeNode getLastChild() {
-    DefaultMutableXTreeNode node = getFirstChild();
+//  @Override
+//  public DefaultMutableXTreeNode getLastChild() {
+//    DefaultMutableXTreeNode node = getFirstChild();
+//
+//    if (node == null) {
+//      return null;
+//    }
+//
+//    while (node.hasSibling()) {
+//      node = node.getNextSibling();
+//    }
+//
+//    return node;
+//  }
 
-    if (node == null) {
-      return null;
-    }
-
-    while (node.hasSibling()) {
-      node = node.getNextSibling();
-    }
-
-    return node;
-  }
-
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public boolean hasSibling() {
     return nextSibling != null;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
-  public DefaultMutableXTreeNode getNextSibling() {
+  public MutableXTreeNode getNextSibling() {
     return nextSibling;
   }
   
   /**
-   * Set the next sibling node of this node.
-   * 
-   * @param nextSibling the new value for the next sibling, which may be null.
+   * {@inheritDoc}
    */
-  public void setNextSibling(DefaultMutableXTreeNode nextSibling) {
-    this.nextSibling = nextSibling;
-  }
-
   @Override
-  public DefaultMutableXTreeNode getLastSibling() {
-    if (!hasSibling()) {
-      return null;
-    }
-    
-    DefaultMutableXTreeNode node = this;
-    while (node.hasSibling()) {
-      node = node.getNextSibling();
-    }
-
-    return node;
+  public void setNextSibling(MutableXTreeNode nextSibling) {
+    this.nextSibling = (DefaultMutableXTreeNode) nextSibling;
   }
+
+//  public DefaultMutableXTreeNode getLastSibling() {
+//    if (!hasSibling()) {
+//      return null;
+//    }
+//    
+//    DefaultMutableXTreeNode node = this;
+//    while (node.hasSibling()) {
+//      node = node.getNextSibling();
+//    }
+//
+//    return node;
+//  }
   
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public int getDataSize() {
     throw new UnsupportedOperationException();
   }
   
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Object getData() {
     switch (getDataType()) {
@@ -135,76 +155,106 @@ public abstract class DefaultMutableXTreeNode implements MutableXTreeNode {
     }
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public XTreeTag getTagData() {
     throw new UnsupportedOperationException();
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public boolean getBooleanData() {
     throw new UnsupportedOperationException();
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public int getIntegerData() {
     throw new UnsupportedOperationException();
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public String getStringData() {
     throw new UnsupportedOperationException();
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public byte[] getBlobData() {
     throw new UnsupportedOperationException();
   }
   
-  @Override
-  public XTreeTag getTagChildData() {
-    return getFirstChild().getTagData();
-  }
+//  @Override
+//  public XTreeTag getTagChildData() {
+//    return getFirstChild().getTagData();
+//  }
+//
+//  @Override
+//  public boolean getBooleanChildData() {
+//    return getFirstChild().getBooleanData();
+//  }
+//
+//  @Override
+//  public int getIntegerChildData() {
+//    return getFirstChild().getIntegerData();
+//  }
+//
+//  @Override
+//  public String getStringChildData() {
+//    return getFirstChild().getStringData();
+//  }
+//
+//  @Override
+//  public byte[] getBlobChildData() {
+//    return getFirstChild().getBlobData();
+//  }
 
-  @Override
-  public boolean getBooleanChildData() {
-    return getFirstChild().getBooleanData();
-  }
-
-  @Override
-  public int getIntegerChildData() {
-    return getFirstChild().getIntegerData();
-  }
-
-  @Override
-  public String getStringChildData() {
-    return getFirstChild().getStringData();
-  }
-
-  @Override
-  public byte[] getBlobChildData() {
-    return getFirstChild().getBlobData();
-  }
-
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void setTagData(XTreeTag tagValue) {
     throw new UnsupportedOperationException();
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void setBooleanData(boolean booleanValue) {
     throw new UnsupportedOperationException();
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void setIntegerData(int integerValue) {
     throw new UnsupportedOperationException();
   }
   
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void setStringData(String stringValue) {
     throw new UnsupportedOperationException();
   }
   
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void setBlobData(byte[] blob) {
     throw new UnsupportedOperationException();
@@ -243,288 +293,223 @@ public abstract class DefaultMutableXTreeNode implements MutableXTreeNode {
     }
   }
   
-  /**
-   * Create a DefaultMutableXTreeNode with the same data content as a given XNode.
-   * <p>
-   * Based on the data type of the given XNode an instance of the corresponding subtype of a DefaultMutableXTreeNode
-   * is created. The value of the node is set to the value of the given XNode.
-   * 
-   * @param xTree the XTree of which xNode is a node.
-   * @param xNode the node for which a DefaultMutableXTreeNode is to be created.
-   * @return a DefaultMutableXTreeNode with the same data content as the xNode.
-   */
-  public static DefaultMutableXTreeNode createFromXNode(MutableXTree xTree, MutableXTreeNode xNode) {
-    DefaultMutableXTreeNode defaultMutableXTreeNode;
-    
-    switch (xNode.getDataType()) {
-    case TAG:
-      defaultMutableXTreeNode = new DefaultMutableXTreeTagNode(xNode.getTagData());
-      break;
-      
-    case BOOLEAN:
-      defaultMutableXTreeNode = new DefaultMutableXTreeBooleanNode(xNode.getBooleanData());
-      break;
-      
-    case INTEGER:
-      defaultMutableXTreeNode = new DefaultMutableXTreeIntegerNode(xNode.getIntegerData());
-      break;
-      
-    case STRING:
-      defaultMutableXTreeNode = new DefaultMutableXTreeStringNode(xNode.getStringData());
-      break;
-      
-    case BLOB:
-      defaultMutableXTreeNode = new DefaultMutableXTreeBlobNode(xNode.getBlobData());
-      break;
-      
-    default:
-      throw new IllegalArgumentException("Data type "+ xNode.getDataType().name() + " of xNode is not supported.");
-    }
-    
-    return defaultMutableXTreeNode;
-  }
+//  /** SEE CLONE
+//   * Create a DefaultMutableXTreeNode with the same data content as a given XNode.
+//   * <p>
+//   * Based on the data type of the given XNode an instance of the corresponding subtype of a DefaultMutableXTreeNode
+//   * is created. The value of the node is set to the value of the given XNode.
+//   * 
+//   * @param xTree the XTree of which xNode is a node.
+//   * @param xNode the node for which a DefaultMutableXTreeNode is to be created.
+//   * @return a DefaultMutableXTreeNode with the same data content as the xNode.
+//   */
+//  public static DefaultMutableXTreeNode createFromXNode(MutableXTree xTree, MutableXTreeNode xNode) {
+//    DefaultMutableXTreeNode defaultMutableXTreeNode;
+//    
+//    switch (xNode.getDataType()) {
+//    case TAG:
+//      defaultMutableXTreeNode = new DefaultMutableXTreeTagNode(xNode.getTagData());
+//      break;
+//      
+//    case BOOLEAN:
+//      defaultMutableXTreeNode = new DefaultMutableXTreeBooleanNode(xNode.getBooleanData());
+//      break;
+//      
+//    case INTEGER:
+//      defaultMutableXTreeNode = new DefaultMutableXTreeIntegerNode(xNode.getIntegerData());
+//      break;
+//      
+//    case STRING:
+//      defaultMutableXTreeNode = new DefaultMutableXTreeStringNode(xNode.getStringData());
+//      break;
+//      
+//    case BLOB:
+//      defaultMutableXTreeNode = new DefaultMutableXTreeBlobNode(xNode.getBlobData());
+//      break;
+//      
+//    default:
+//      throw new IllegalArgumentException("Data type "+ xNode.getDataType().name() + " of xNode is not supported.");
+//    }
+//    
+//    return defaultMutableXTreeNode;
+//  }
+  
+//  /**
+//   * {@inheritDoc}
+//   */
+//  @Override
+//  public void clearChildren() {
+//    DefaultMutableXTreeNode child = firstChild;
+//    
+//    while (child != null) {
+//      DefaultMutableXTreeNode sibling = child.nextSibling;
+//      
+//      // clear the node
+//      child.nextSibling = null;
+//      child.parent = null;
+//      child.clearChildren();
+//      
+//      child = sibling;
+//    }
+//    
+//    firstChild = null;
+//  }
+  
+//  /**
+//   * {@inheritDoc}
+//   */
+//  @Override
+//  public DefaultMutableXTreeNode addChild(DefaultMutableXTreeNode newNode) {
+//    if (!hasChild()) {
+//      // No child yet, so add as first child.
+//      setFirstChild(newNode);
+//    } else {
+//      // Find last child and add node as sibling of that node.
+//      DefaultMutableXTreeNode lastChild = (DefaultMutableXTreeNode) getLastChild();
+//      lastChild.setNextSibling(newNode);
+//    }
+//    newNode.setParent(this);
+//
+//    return newNode;
+//  }
   
   /**
    * {@inheritDoc}
    */
   @Override
-  public void clearChildren() {
-    DefaultMutableXTreeNode child = firstChild;
-    
-    while (child != null) {
-      DefaultMutableXTreeNode sibling = child.nextSibling;
-      
-      // clear the node
-      child.nextSibling = null;
-      child.parent = null;
-      child.clearChildren();
-      
-      child = sibling;
-    }
-    
-    firstChild = null;
-  }
-  
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public DefaultMutableXTreeNode addChild(DefaultMutableXTreeNode newNode) {
-    if (!hasChild()) {
-      // No child yet, so add as first child.
-      setFirstChild(newNode);
-    } else {
-      // Find last child and add node as sibling of that node.
-      DefaultMutableXTreeNode lastChild = getLastChild();
-      lastChild.setNextSibling(newNode);
-    }
-    newNode.setParent(this);
-
-    return newNode;
-  }
-  
-  /**
-   * Create a node of type 'TAG' and add this node as a child of this node.
-   * If this node doesn't have children yet, the new node will be the
-   * first child, else the new node will be the last child of this node.
-   *
-   * @param data
-   *      The content of the new node.
-   *
-   * @return The new node, or null if this could not be created.
-   */
-  public DefaultMutableXTreeNode addTagChild(XTreeTag data) {
+  public MutableXTreeNode addTagChild(XTreeTag data) {
     return addChild(new DefaultMutableXTreeTagNode(data));
   }
   
   /**
-   * Create a node of type 'BOOLEAN' and add this node to the tree as a child of a this node.
-   * If this node doesn't have children yet, the new node will be the
-   * first child, else the new node will be the last child of this node.
-   *
-   * @param data
-   *      The content of the new node.
-   *
-   * @return The new node, or null if this could not be created.
+   * {@inheritDoc}
    */
-  public DefaultMutableXTreeNode addBooleanChild(boolean data) {
+  @Override
+  public MutableXTreeNode addBooleanChild(boolean data) {
     return addChild(new DefaultMutableXTreeBooleanNode(data));
   }
     
   /**
-   * Create a node of type 'INTEGER' and add this node to the tree as a child of this node.
-   * If this node doesn't have children yet, the new node will be the
-   * first child, else the new node will be the last child of this node.
-   *
-   * @param data
-   *      The content of the new node.
-   *
-   * @return The new node, or null if this could not be created.
+   * {@inheritDoc}
    */
-  public DefaultMutableXTreeNode addIntegerChild(int data) {
+  @Override
+  public MutableXTreeNode addIntegerChild(int data) {
     return addChild(new DefaultMutableXTreeIntegerNode(data));
   }
   
   /**
-   * Create a node of type 'STRING' and add this node to the tree as a child of this node.
-   * If this node doesn't have children yet, the new node will be the
-   * first child, else the new node will be the last child of this node.
-   *
-   * @param data
-   *      The content of the new node.
-   *
-   * @return The new node, or null if this could not be created.
+   * {@inheritDoc}
    */
-  public DefaultMutableXTreeNode addStringChild(String data) {
+  @Override
+  public MutableXTreeNode addStringChild(String data) {
     return addChild(new DefaultMutableXTreeStringNode(data));
   }
 
   /**
-   * Create a node of type 'BLOB' and add this node to the tree as a child of this node.
-   * If the referenceNode doesn't have children yet, the new node will be the
-   * first child, else the new node will be the last child of this node.
-   *
-   * @param data
-   *      The content of the new node.
-   *
-   * @return The new node, or null if this could not be created.
+   * {@inheritDoc}
    */
-  public DefaultMutableXTreeNode addBlobChild(byte[] data) {
+  @Override
+  public MutableXTreeNode addBlobChild(byte[] data) {
     return addChild(new DefaultMutableXTreeBlobNode(data));
   }
-
-  /**
-   * Add a node as the next sibling of this node.
-   * 
-   * @param newNode the node to be added as a next sibling of referenceNode.
-   * @return newNode
-   */
-  public DefaultMutableXTreeNode appendSibling(DefaultMutableXTreeNode newNode) {
-    
-    newNode.setParent(this.getParent());
-    newNode.setNextSibling(this.getNextSibling());
-    setNextSibling(newNode);
-    
-    return newNode;
-  }
+//
+//  /**
+//   * Add a node as the next sibling of this node.
+//   * 
+//   * @param newNode the node to be added as a next sibling of referenceNode.
+//   * @return newNode
+//   */
+//  public DefaultMutableXTreeNode appendSibling(DefaultMutableXTreeNode newNode) {
+//    
+//    newNode.setParent(this.getParent());
+//    newNode.setNextSibling(this.getNextSibling());
+//    setNextSibling(newNode);
+//    
+//    return newNode;
+//  }
   
   /**
-   * Create a node of type 'TAG' and add this node to the tree as a sibling of this node.
-   * The node is added AFTER this node.
-   *
-   * @param data
-   *      The content of the new node.
-   *
-   * @return The new node, or null if this could not be created.
+   * {@inheritDoc}
    */
-  public DefaultMutableXTreeNode appendTagSibling(XTreeTag data) {
+  @Override
+  public MutableXTreeNode appendTagSibling(XTreeTag data) {
     return appendSibling(new DefaultMutableXTreeTagNode(data));
   }
   
   /**
-   * Create a node of type 'BOOLEAN' and add this node to the tree as a sibling of this node.
-   * The node is added AFTER this node.
-   *
-   * @param data
-   *      The content of the new node.
-   *
-   * @return The new node, or null if this could not be created.
+   * {@inheritDoc}
    */
-  public DefaultMutableXTreeNode appendBooleanSibling(boolean data) {
+  @Override
+  public MutableXTreeNode appendBooleanSibling(boolean data) {
     return appendSibling(new DefaultMutableXTreeBooleanNode(data));
   }
   
   /**
-   * Create a node of type 'INTEGER' and add this node to the tree as a sibling of this node.
-   * The node is added AFTER this node.
-   *
-   * @param data
-   *      The content of the new node.
-   *
-   * @return The new node, or null if this could not be created.
+   * {@inheritDoc}
    */
-  public DefaultMutableXTreeNode appendIntegerSibling(int data) {
+  @Override
+  public MutableXTreeNode appendIntegerSibling(int data) {
     return appendSibling(new DefaultMutableXTreeIntegerNode(data));
   }
   
   /**
-   * Create a node of type 'STRING' and add this node to the tree as a sibling of this node.
-   * The node is added AFTER this node.
-   *
-   * @param data
-   *      The content of the new node.
-   *
-   * @return The new node, or null if this could not be created.
+   * {@inheritDoc}
    */
-  public DefaultMutableXTreeNode appendStringSibling(String data) {
+  @Override
+  public MutableXTreeNode appendStringSibling(String data) {
     return appendSibling(new DefaultMutableXTreeStringNode(data));
   }
   
   /**
-   * Create a node of type 'BLOB' and add this node to the tree as a sibling of this node.
-   * The node is added AFTER this node.
-   *
-   * @param data
-   *      The content of the new node.
-   *
-   * @return The new node, or null if this could not be created.
+   * {@inheritDoc}
    */
-  public DefaultMutableXTreeNode appendBlobSibling(byte[] data) {
+  @Override
+  public MutableXTreeNode appendBlobSibling(byte[] data) {
     return appendSibling(new DefaultMutableXTreeBlobNode(data));
   }
   
   
-  
   /**
-   * Get a clone of this node.
-   * <p>
-   * Only the data of the node is cloned. The references (parent, firstChild and nextSibling) are all set to null.
-   * 
-   * @return a clone of this node.
+   * {@inheritDoc}
    */
-  public abstract DefaultMutableXTreeNode cloneNode();
+  @Override
+  public abstract MutableXTreeNode cloneNode();
 
   
-  /**
-   * Get a String representation of the value of this node.
-   * 
-   * @return a String representation of the value of this node.
-   */
-  public abstract String nodeToString();
+//  /** Use toString()
+//   * Get a String representation of the value of this node.
+//   * 
+//   * @return a String representation of the value of this node.
+//   */
+//  public abstract String nodeToString();
   
-  /**
-   * Get a String representation of the references (parent, firstChild and nextSibling) of this node.
-   * 
-   * @return a String representation of the references (parent, firstChild and nextSibling) of this node.
-   */
-  public String nodeStructureToString() {
-    StringBuilder buf = new StringBuilder();
-    buf.append("(");
-    if (parent != null) {
-      buf.append(parent.toString());      
-    } else {
-      buf.append("null");
-    }
-    buf.append(", ");
-    if (firstChild != null) {
-      buf.append(firstChild.toString());      
-    } else {
-      buf.append("null");
-    }
-    buf.append(", ");
-    if (nextSibling != null) {
-      buf.append(nextSibling.toString());      
-    } else {
-      buf.append("null");
-    }
-    buf.append(")");
-    return buf.toString();
-  }
+//  /**
+//   * Get a String representation of the references (parent, firstChild and nextSibling) of this node.
+//   * 
+//   * @return a String representation of the references (parent, firstChild and nextSibling) of this node.
+//   */
+//  public String nodeStructureToString() {
+//    StringBuilder buf = new StringBuilder();
+//    buf.append("(");
+//    if (parent != null) {
+//      buf.append(parent.toString());      
+//    } else {
+//      buf.append("null");
+//    }
+//    buf.append(", ");
+//    if (firstChild != null) {
+//      buf.append(firstChild.toString());      
+//    } else {
+//      buf.append("null");
+//    }
+//    buf.append(", ");
+//    if (nextSibling != null) {
+//      buf.append(nextSibling.toString());      
+//    } else {
+//      buf.append("null");
+//    }
+//    buf.append(")");
+//    return buf.toString();
+//  }
   
-
-  public static void main(String[] args) {
-    DefaultMutableXTreeNode node = new DefaultMutableXTreeTagNode(XTreeTag.QUERY_INDEX);
-    System.out.println(node.getTagData().getName());
-    System.out.println(node.nodeStructureToString());    
-  }
 }

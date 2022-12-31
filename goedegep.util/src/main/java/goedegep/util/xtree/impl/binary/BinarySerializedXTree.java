@@ -4,12 +4,15 @@ import java.util.logging.Logger;
 
 import goedegep.util.bitsequence.BitSequence;
 import goedegep.util.multibyteinteger.MultiByteIntegerUtil;
+import goedegep.util.text.Indent;
 import goedegep.util.xtree.XNodeDataType;
 import goedegep.util.xtree.XTree;
+import goedegep.util.xtree.XTreeNode;
 import goedegep.util.xtree.XTreeNodeVisitResult;
 import goedegep.util.xtree.XTreeNodeVisitor;
 import goedegep.util.xtree.XTreeTag;
 import goedegep.util.xtree.impl.XTreeAbstract;
+import goedegep.util.xtree.impl.defaultmutable.DefaultMutableXTreeNode;
 import goedegep.util.xtree.serialized.SerializedXTree;
 
 /**
@@ -17,8 +20,12 @@ import goedegep.util.xtree.serialized.SerializedXTree;
  */
 public class BinarySerializedXTree extends XTreeAbstract implements SerializedXTree {
   private static final Logger LOGGER = Logger.getLogger(BinarySerializedXTree.class.getName());
+  private static final String NEW_LINE = System.getProperty("line.separator");
+
 
   private BitSequence bitSequence;
+  
+  private BinarySerializedXTreeNode supportTreeRoot = null;
 
   /**
    * Constructor, where the content is provided as an XTree in Binary serialized form.
@@ -79,7 +86,249 @@ public class BinarySerializedXTree extends XTreeAbstract implements SerializedXT
    * Implementation of the XTree interface
    * 
    */
+
+  @Override
+  public BinarySerializedXTreeNode getRoot() {
+    if (supportTreeRoot == null) {
+      createSupportTree();
+    }
+    
+    return supportTreeRoot;
+//    BinarySerializedXTreeNode binarySerializedXTreeNode = new BinarySerializedXTreeNode(bitSequence, 0);
+//    
+//    return binarySerializedXTreeNode;
+  }
   
+  private void createSupportTree() {
+    LOGGER.severe("=>");
+    
+    LOGGER.info("bitSequence=" + bitSequence.toString());
+    
+    // visitor info
+    BinarySerializedXTreeNode visitorNode = null;
+    int visitorUpcount = 0;
+    boolean visitorFirstChild = true;
+
+    int myBitsequenceIndex;  // save and restore our index upon calling external methods, as they may change the index in the bitSequence.
+    boolean ready = false;
+    boolean first = true;
+    BinaryDirection binaryDirection;
+    bitSequence.setIndex(0);
+
+    while (!ready) {
+      // Read the direction indication.
+      binaryDirection = BinaryDirection.readFromBitSequence(bitSequence);
+      LOGGER.info("Direction: " + binaryDirection.name());
+      
+      if (binaryDirection.equals(BinaryDirection.UP)) {
+        int upcount = MultiByteIntegerUtil.parseMultiByteInteger(() -> (byte) bitSequence.readFixedSizeInteger(8));
+        while (upcount-- > 0) {
+          LOGGER.info("Going up ");
+          visitorUpcount++;
+//          xTreeNodeVisitor.postVisitChildren();
+        }
+        binaryDirection = BinaryDirection.SIBLING;
+      } else if (binaryDirection.equals(BinaryDirection.END)) {
+        ready = true;
+      }
+      
+      int bitSequenceIndex;
+      if (!ready) {
+        bitSequenceIndex = bitSequence.getIndex();
+        // Read a node. First its type and if applicable its value.
+        BinaryTypeIndication binaryTypeIndication = BinaryTypeIndication.readFromBitSequence(bitSequence);
+        LOGGER.info("binaryTypeIndication=" + binaryTypeIndication.name());
+        if (binaryDirection == BinaryDirection.CHILD) {
+          if (!first) {
+            visitorFirstChild = true;
+//            xTreeNodeVisitor.preVisitChildren();
+          } else {
+            first = false;
+          }
+        }
+
+        switch (binaryTypeIndication) {
+        case BOOLEAN_TRUE:
+//          xTreeNodeVisitor.visitTreeItem(XNodeDataType.BOOLEAN, true);
+          break;
+
+        case BOOLEAN_FALSE:
+//          xTreeNodeVisitor.visitTreeItem(XNodeDataType.BOOLEAN, false);
+          break;
+
+        case TAG:
+          short tagValue = (short) MultiByteIntegerUtil.parseMultiByteInteger(() -> (byte) bitSequence.readFixedSizeInteger(8));
+//          XTreeTag tag = XTreeTag.getXTreeTagForValue(tagValue);
+//          xTreeNodeVisitor.visitTreeItem(XNodeDataType.TAG, tag);
+          break;
+
+        case POSITIVE_INTEGER:
+          int value = MultiByteIntegerUtil.parseMultiByteInteger(() -> (byte) bitSequence.readFixedSizeInteger(8));
+//          xTreeNodeVisitor.visitTreeItem(XNodeDataType.INTEGER, value);
+          break;
+
+        case NEGATIVE_INTEGER:
+          value = -MultiByteIntegerUtil.parseMultiByteInteger(() -> (byte) bitSequence.readFixedSizeInteger(8));
+//          xTreeNodeVisitor.visitTreeItem(XNodeDataType.INTEGER, value);
+          break;
+
+        case INTEGER_ZERO:
+//          xTreeNodeVisitor.visitTreeItem(XNodeDataType.INTEGER, 0);
+          break;
+
+        case INTEGER_ONE:
+//          xTreeNodeVisitor.visitTreeItem(XNodeDataType.INTEGER, 1);
+          break;
+
+        case STRING:
+          value = MultiByteIntegerUtil.parseMultiByteInteger(() -> (byte) bitSequence.readFixedSizeInteger(8));
+          char[] charBuf = new char[value];
+          for (int i = 0; i < value; i++) {
+            charBuf[i] = (char) bitSequence.readFixedSizeInteger(8);
+          }
+//          String s = String.copyValueOf(charBuf);
+//          if (xTreeNodeVisitor.visitTreeItem(XNodeDataType.STRING, s) ==  XTreeNodeVisitResult.TERMINATE) {
+//            ready = true;
+//          }
+          break;
+
+        case BLOB:
+          int count = MultiByteIntegerUtil.parseMultiByteInteger(() -> (byte) bitSequence.readFixedSizeInteger(8));
+          byte[] data = new byte[count];
+          for (int i = 0; i < count; i++) {
+            data[i] = (byte) bitSequence.readFixedSizeInteger(8);
+          }
+//          xTreeNodeVisitor.visitTreeItem(XNodeDataType.BLOB, data);
+          break;
+
+        case INTEGER_TWO:
+//          xTreeNodeVisitor.visitTreeItem(XNodeDataType.INTEGER, 2);
+         break;
+
+        case INTEGER_THREE:
+//          xTreeNodeVisitor.visitTreeItem(XNodeDataType.INTEGER, 3);
+          break;
+
+        case INTEGER_FOUR:
+//          xTreeNodeVisitor.visitTreeItem(XNodeDataType.INTEGER, 4);
+          break;
+
+        case INTEGER_MINUS_ONE:
+//          xTreeNodeVisitor.visitTreeItem(XNodeDataType.INTEGER, -1);
+          break;
+
+        }
+        
+        if (visitorUpcount != 0) {
+          while (visitorUpcount != 0) {
+            myBitsequenceIndex = bitSequence.getIndex();
+            visitorNode = (BinarySerializedXTreeNode) visitorNode.getParent();
+            bitSequence.setIndex(myBitsequenceIndex);
+            if (visitorNode == null) {
+              throw new RuntimeException("Illegal value for upcount.");
+            }
+            visitorUpcount--;
+          }
+        }
+        
+        myBitsequenceIndex = bitSequence.getIndex();
+        BinarySerializedXTreeNode newNode = BinarySerializedXTreeNode.create(bitSequence, bitSequenceIndex);
+        LOGGER.severe("New node: " + newNode.toString());
+        if (supportTreeRoot == null) {
+          supportTreeRoot = newNode;
+          visitorNode = supportTreeRoot;
+        } else if (visitorFirstChild) {
+          visitorNode = visitorNode.addChild(newNode);
+          visitorFirstChild = false;
+        } else {
+          visitorNode = visitorNode.appendSibling(newNode);
+        }
+        LOGGER.severe(printSupportTree());
+        bitSequence.setIndex(myBitsequenceIndex);
+      }
+    }
+
+    LOGGER.info("<=");
+    
+    
+    
+    
+    
+    
+//    
+//    this.traverse(new XTreeNodeVisitor() {
+//      BinarySerializedXTreeNode node = null;
+//      boolean firstChild = true;
+//      int upcount = 0;
+//
+//      @Override
+//      public XTreeNodeVisitResult preVisitChildren() {
+//        firstChild = true;
+//        return XTreeNodeVisitResult.CONTINUE;
+//      }
+//
+//      @Override
+//      public XTreeNodeVisitResult visitTreeItem(XNodeDataType dataType, Object value) {
+//        if (upcount != 0) {
+//          while (upcount != 0) {
+//            node = node.getParent();
+//            if (node == null) {
+//              throw new RuntimeException("Illegal value for upcount.");
+//            }
+//            upcount--;
+//          }
+//        }
+//        
+//        BinarySerializedXTreeNode newNode = BinarySerializedXTreeNode.create();
+//        if (supportTreeRoot == null) {
+//          supportTreeRoot = newNode;
+//          node = supportTreeRoot;
+//        } else if (firstChild) {
+//          node = node.addChild(newNode);
+//          firstChild = false;
+//        } else {
+//          node = node.appendSibling(newNode);
+//        }
+//        return XTreeNodeVisitResult.CONTINUE;
+//      }
+//
+//      @Override
+//      public XTreeNodeVisitResult postVisitChildren() {
+//        upcount++;
+//        return XTreeNodeVisitResult.CONTINUE;
+//      }
+//      
+//    });
+    
+  }
+  
+  private String printSupportTree() {
+    StringBuilder buf = new StringBuilder();
+    Indent indent = new Indent(4);
+    
+    buf.append(NEW_LINE);
+    printSupportTreeNode(buf, indent, supportTreeRoot);
+    
+    return buf.toString();
+  }
+
+
+  private void printSupportTreeNode(StringBuilder buf, Indent indent, BinarySerializedXTreeNode node) {
+    buf.append(indent).append(node.toString()).append(NEW_LINE);
+    
+    if (node.hasChild()) {
+      indent.increment();
+      printSupportTreeNode(buf, indent, node.getFirstChild());
+      indent.decrement();
+    }
+    
+    while (node.hasSibling()) {
+      node = node.getNextSibling();
+      buf.append(indent).append(node.toString()).append(NEW_LINE);
+    }
+  }
+
+
   public void traverse(XTreeNodeVisitor xTreeNodeVisitor) {
     LOGGER.info("=>");
     
@@ -220,7 +469,8 @@ public class BinarySerializedXTree extends XTreeAbstract implements SerializedXT
     case TAG:
       typeIndication = BinaryTypeIndication.TAG;
       bitSequence.addBitSequence(typeIndication.getBitSequence());
-      bitSequence.addByteArray(MultiByteIntegerUtil.integerToMultiByteInteger((int) value));
+      XTreeTag xTreeTag = (XTreeTag) value;
+      bitSequence.addByteArray(MultiByteIntegerUtil.integerToMultiByteInteger(xTreeTag.getValue()));
       break;
       
     case BOOLEAN:

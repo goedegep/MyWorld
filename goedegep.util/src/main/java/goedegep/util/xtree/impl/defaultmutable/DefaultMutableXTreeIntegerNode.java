@@ -37,7 +37,7 @@ public class DefaultMutableXTreeIntegerNode extends DefaultMutableXTreeNode {
   }
   
   @Override
-  public String nodeToString(){
+  public String toString(){
 	  return String.valueOf(intData);
   }
 

@@ -1,15 +1,14 @@
-package goedegep.jfx.xtreetreeview;
+package goedegep.jfx.xtreeview;
 
 import java.util.logging.Logger;
 
-import goedegep.util.xtree.XTree;
-import goedegep.util.xtree.mutable.MutableXTreeNode;
+import goedegep.util.xtree.XTreeNode;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.TreeItem;
 
-public class XTreeTreeItem extends TreeItem<MutableXTreeNode> {
-  private static final Logger LOGGER = Logger.getLogger(XTreeTreeItem.class.getName());
+public class XTreeItem extends TreeItem<XTreeNode> {
+  private static final Logger LOGGER = Logger.getLogger(XTreeItem.class.getName());
   
   /**
    * If true, the children of this item still have to be created.
@@ -21,7 +20,7 @@ public class XTreeTreeItem extends TreeItem<MutableXTreeNode> {
    * 
    * @param xTreeNode
    */
-  public XTreeTreeItem(MutableXTreeNode xTreeNode) {
+  public XTreeItem(XTreeNode xTreeNode) {
     super(xTreeNode);
   }
 
@@ -30,9 +29,10 @@ public class XTreeTreeItem extends TreeItem<MutableXTreeNode> {
    */
   @Override
   public boolean isLeaf() {
-    LOGGER.severe("=> MutableXTreeNode=" + XTree.nodeToString(getValue().getDataType(), getValue().getData()));
+    LOGGER.severe("=> XTreeNode=" + getValue().toString());
+//    LOGGER.severe("=> XTreeNode=" + XTree.nodeToString(getValue().getDataType(), getValue().getData()));
     
-    MutableXTreeNode xTreeNode = getValue();
+    XTreeNode xTreeNode = getValue();
     boolean result = !xTreeNode.hasChild();
         
     LOGGER.severe("<= " + result);
@@ -44,12 +44,17 @@ public class XTreeTreeItem extends TreeItem<MutableXTreeNode> {
    * @inheritDoc
    */
   @Override
-  public ObservableList<TreeItem<MutableXTreeNode>> getChildren() {
+  public ObservableList<TreeItem<XTreeNode>> getChildren() {
     LOGGER.severe("=>");
     
     if (isFirstTimeChildren) {
       isFirstTimeChildren = false;
-      ObservableList<TreeItem<MutableXTreeNode>> children = buildChildren();
+      ObservableList<TreeItem<XTreeNode>> children = null;
+      if (getParent() == null) {
+        children = buildRootChildren();
+      } else {
+        children = buildChildren();
+      }
       if (children != null) {
         super.getChildren().setAll(children);
       }
@@ -66,7 +71,7 @@ public class XTreeTreeItem extends TreeItem<MutableXTreeNode> {
    */
   public void rebuildChildren() {
     super.getChildren().clear();
-    ObservableList<TreeItem<MutableXTreeNode>> children = buildChildren();
+    ObservableList<TreeItem<XTreeNode>> children = buildChildren();
     if (children != null) {
       super.getChildren().addAll(children);
     }
@@ -163,33 +168,16 @@ public class XTreeTreeItem extends TreeItem<MutableXTreeNode> {
    * @param eObjectTreeItem the EObjectTreeItem for which the children are to be created.
    * @return the list of children for eObjectTreeItem, or null if there are no children.
    */
-  private ObservableList<TreeItem<MutableXTreeNode>> buildChildren() {
+  private ObservableList<TreeItem<XTreeNode>> buildChildren() {
     LOGGER.severe("=> MutableXTreeNode=" + toString());
     
-    ObservableList<TreeItem<MutableXTreeNode>> children = FXCollections.observableArrayList();;
+    ObservableList<TreeItem<XTreeNode>> children = FXCollections.observableArrayList();;
     
-    MutableXTreeNode xTreeNode = getValue();
-    MutableXTreeNode childXTreeNode = xTreeNode.getFirstChild();
+    XTreeNode xTreeNode = getValue();
+    XTreeNode childXTreeNode = xTreeNode.getFirstChild();
     while (childXTreeNode != null) {
       // create and add node
-      children.add(new XTreeTreeItem(childXTreeNode));
-//      switch (childXTreeNode.getDataType()) {
-//      case BLOB:
-//        
-//        break;
-//        
-//      case BOOLEAN:
-//        break;
-//        
-//      case INTEGER:
-//        break;
-//        
-//      case STRING:
-//        break;
-//        
-//      case TAG:
-//        break;
-//      }
+      children.add(new XTreeItem(childXTreeNode));
       
       childXTreeNode = childXTreeNode.getNextSibling();
     }
@@ -197,4 +185,22 @@ public class XTreeTreeItem extends TreeItem<MutableXTreeNode> {
     LOGGER.severe("<=");
     return children;
   }
+  
+  private ObservableList<TreeItem<XTreeNode>> buildRootChildren() {
+    LOGGER.severe("=> MutableXTreeNode=" + toString());
+    
+    ObservableList<TreeItem<XTreeNode>> children = FXCollections.observableArrayList();;
+    
+    XTreeNode xTreeNode = getValue();
+    while (xTreeNode != null) {
+      // create and add node
+      children.add(new XTreeItem(xTreeNode));
+      
+      xTreeNode = xTreeNode.getNextSibling();
+    }
+        
+    LOGGER.severe("<=");
+    return children;
+  }
+  
 }

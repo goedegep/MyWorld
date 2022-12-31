@@ -3,8 +3,14 @@ package goedegep.util.xtree.mutable;
 import java.io.OutputStream;
 
 import goedegep.util.xtree.XTree;
+import goedegep.util.xtree.XTreeNode;
 import goedegep.util.xtree.XTreeNodeVisitor;
 import goedegep.util.xtree.XTreeTag;
+import goedegep.util.xtree.impl.defaultmutable.DefaultMutableXTreeBlobNode;
+import goedegep.util.xtree.impl.defaultmutable.DefaultMutableXTreeBooleanNode;
+import goedegep.util.xtree.impl.defaultmutable.DefaultMutableXTreeIntegerNode;
+import goedegep.util.xtree.impl.defaultmutable.DefaultMutableXTreeStringNode;
+import goedegep.util.xtree.impl.defaultmutable.DefaultMutableXTreeTagNode;
 
 public interface MutableXTree extends XTree {
   /*
@@ -17,6 +23,13 @@ public interface MutableXTree extends XTree {
    * @return The root node of the tree.
    */
   public MutableXTreeNode getRoot();
+
+  /**
+   * Set the root node of a tree.
+   * 
+   * @return The root node of the tree.
+   */
+  public MutableXTreeNode setRoot(MutableXTreeNode rootNode);
   
   /**
    * Walk through a part of the tree, depth first, calling the specified XTreeNodeVisitor for each node.
@@ -57,6 +70,84 @@ public interface MutableXTree extends XTree {
    */
   public int getChildIndex(MutableXTreeNode child);
   
+
+  /**
+   * Create a node of type 'TAG' and add this node to the tree as a sibling of a specific node.
+   * The node is added BEFORE the specified node.
+   * <p>
+   * Note that this method operates on the tree and node on a node, so the node doesn't need to have
+   * a reference to 
+   *
+   * @param referenceNode
+   *      The node before which the new node shall be inserted.
+   * @param data
+   *      The content of the new node.
+   *
+   * @return The new node, or null if this could not be created.
+   */
+  public MutableXTreeNode insertTagSibling(MutableXTreeNode referenceNode, XTreeTag data);
+  
+  /**
+   * Create a node of type 'BOOLEAN' and add this node to the tree as a sibling of a specific node.
+   * The node is added BEFORE the specified node.
+   *
+   * @param referenceNode
+   *      The node before which the new node shall be inserted.
+   * @param data
+   *      The content of the new node.
+   *
+   * @return The new node, or null if this could not be created.
+   */
+  public MutableXTreeNode insertBooleanSibling(MutableXTreeNode referenceNode, boolean data);
+  
+  /**
+   * Create a node of type 'INTEGER' and add this node to the tree as a sibling of a specific node.
+   * The node is added BEFORE the specified node.
+   *
+   * @param referenceNode
+   *      The node before which the new node shall be inserted.
+   * @param data
+   *      The content of the new node.
+   *
+   * @return The new node, or null if this could not be created.
+   */
+  public MutableXTreeNode insertIntegerSibling(MutableXTreeNode referenceNode, int data);
+
+  /**
+   * Create a node of type 'STRING' and add this node to the tree as a sibling of a specific node.
+   * The node is added BEFORE the specified node.
+   *
+   * @param referenceNode
+   *      The node before which the new node shall be inserted.
+   * @param data
+   *      The content of the new node.
+   *
+   * @return The new node, or null if this could not be created.
+   */
+  public MutableXTreeNode insertStringSibling(MutableXTreeNode referenceNode, String data);
+  
+  /**
+   * Create a node of type 'BLOB' and add this node to the tree as a sibling of a specific node.
+   * The node is added BEFORE the specified node.
+   *
+   * @param referenceNode
+   *      The node before which the new node shall be inserted.
+   * @param data
+   *      The content of the new node.
+   *
+   * @return The new node, or null if this could not be created.
+   */
+  public MutableXTreeNode insertBlobSibling(MutableXTreeNode referenceNode, byte[] data);
+  
+  /**
+   * Add a node as the previous sibling of a node.
+   * 
+   * @param referenceNode the node to which newNode has to be added as a previous sibling. If this node is null, the newNode will become the root node.
+   * @param newNode the node to be added as a previous sibling of referenceNode.
+   * @return newNode
+   */
+  public MutableXTreeNode insertSibling(MutableXTreeNode referenceNode, MutableXTreeNode newNode);
+  
   /**
    * Compare a part of this tree to a part of another tree.
    * 
@@ -67,9 +158,7 @@ public interface MutableXTree extends XTree {
    *        the children of the startNodes are taken into account.
    * @return true if the sub trees are identical, false otherwise.
    */
-  public boolean compareSubtrees(MutableXTreeNode thisStartNode,
-      MutableXTree toTree, MutableXTreeNode toStartNode,
-      boolean includeSiblings);
+  public boolean compareSubtrees(XTreeNode thisStartNode, XTree toTree, XTreeNode toStartNode, boolean includeSiblings);
   
   
   /**
@@ -108,8 +197,7 @@ public interface MutableXTree extends XTree {
    *     true if the nodes have equal contents.<br>
    *     false otherwise.
    */
-  public boolean compareNodes(MutableXTreeNode referenceNode,
-      MutableXTree secondTree, MutableXTreeNode secondNode);
+  public boolean compareNodes(XTreeNode referenceNode, XTree secondTree, XTreeNode secondNode);
 
   /**
    * Find a child of a node of type TAG and which has a specific value.
@@ -270,7 +358,60 @@ public interface MutableXTree extends XTree {
    *              this function returns a child rather then any sibling.
    */
   public MutableXTreeNode findNode(MutableXTreeNode node, byte[] value);
+  
+  /**
+   * Add a copy of a (sub)tree to this tree.
+   * The (sub)tree is added as a child of the dstParentNode and as sibling of the
+   * dstSiblingNode. If insert is TRUE, it is inserted before the dstSiblingNode,
+   * else it is appended after it.<br>
+   * The dstSiblingNode may be null. In this case the (sub)tree is added as
+   * first child of dstParentNode if insert is TRUE, or as last child otherwise.<br>
+   * If the dstSiblingNode is not null, parameter dstParentNode is ignored.<br>
+   * If both dstParentNode and dstSiblingNode are NULL, the (sub)tree will be
+   * added as root.<br>
+   * If srcReferenceNode is null, the root of the srcTree is used as
+   * srcReferenceNode. This implies that the complete srcTree can be added by setting
+   * srcReferenceNode to null and includeSiblings to TRUE.<br>
+   * The function recursively copies the nodes, starting at srcReferenceNode,
+   * from srcTree to this tree.
+   * 
+   * @param dstParentNode
+   *      Node below which the subtree of srcTree will be added.
+   * @param dstSiblingNode
+   *      Node before or after which the subtree of srcTree will be added.
+   * @param insert
+   *      Indicates whether the subtree of srcTree is added before (if TRUE) or
+   *      after (if FALSE) dstSiblingNode.
+   * @param srcTree
+   *      The tree of which a subtree is to be added.
+   * @param srcReferenceNode
+   *      Starting point of the subtree in srcTree.
+   * @param includeSiblings
+   *      The new tree will always contain 'srcReferenceNode' and all its
+   *      decendents.  If this value is true, the new tree also contains the
+   *      siblings of 'srcReferenceNode' and all their decendents.
+   */
+  public void addSubtreeCopy(MutableXTreeNode dstParentNode, MutableXTreeNode dstSiblingNode,
+      boolean insert, MutableXTree srcTree, MutableXTreeNode srcReferenceNode,
+      boolean includeSiblings);
 
+  /**
+   * Add a tree as a subtree to another tree. After adding it, the srcTree
+   * may no longer be used (it's not a valid tree anymore).
+   * The srcTree is added as a child of the parentNode and as sibling of the
+   * siblingNode.<br>
+   * The siblingNode may be NULL. In this case the srcTree is added as
+   * first child of parentNode.<br>
+   * If the siblingNode is not NULL, parentNode may be NULL.
+   *
+   * @param parentNode
+   *      Node in tree below which the srcTree will be added.
+   * @param siblingNode
+   *      Node in tree before or after which the srcTree will be added.
+   * @param[in] srcTree
+   *      The tree to be added to this tree.
+   */
+  public void mergeSubtree(MutableXTreeNode parentNode, MutableXTreeNode siblingNode, MutableXTree srcTree);
 
   /*
    * Debug support.
@@ -325,5 +466,5 @@ public interface MutableXTree extends XTree {
    * @return A string representation of the node.
    */
   public String nodeToString(MutableXTreeNode node);
-  
+
 }

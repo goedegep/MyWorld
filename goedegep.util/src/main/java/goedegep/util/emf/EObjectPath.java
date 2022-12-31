@@ -27,8 +27,9 @@ import goedegep.util.xtree.XNodeDataType;
 import goedegep.util.xtree.XTreeNodeVisitResult;
 import goedegep.util.xtree.XTreeNodeVisitor;
 import goedegep.util.xtree.impl.binary.BinarySerializedXTree;
-import goedegep.util.xtree.impl.defaultmutable.DefaultMutableXTree;
-import goedegep.util.xtree.impl.defaultmutable.DefaultMutableXTreeNode;
+import goedegep.util.xtree.mutable.MutableXTree;
+import goedegep.util.xtree.mutable.MutableXTreeFactory;
+import goedegep.util.xtree.mutable.MutableXTreeNode;
 import goedegep.util.xtree.serialized.SerializedXTree;
 
 public class EObjectPath {
@@ -46,8 +47,8 @@ public class EObjectPath {
   public EObjectPath(EObject eObject) {
     LOGGER.info("=> eObject=" + eObject.toString());
     
-    DefaultMutableXTree xtree = new DefaultMutableXTree();
-    DefaultMutableXTreeNode node = null;
+    MutableXTree xtree = MutableXTreeFactory.createMutableXTree();
+    MutableXTreeNode node = null;
     
     EObject currentEObject = eObject;
     
@@ -68,8 +69,8 @@ public class EObjectPath {
     }
             
     pathXTree = new BinarySerializedXTree(xtree);
-    LOGGER.fine("EOBJECT PATH TREE: " + xtree.print());
-    LOGGER.fine("EOBJECT BINARY SERIALIZED PATH TREE: " + pathXTree.print());
+    LOGGER.fine("EOBJECT PATH TREE: " + xtree.toString());
+    LOGGER.fine("EOBJECT BINARY SERIALIZED PATH TREE: " + pathXTree.toString());
     
     LOGGER.info("<=");
   }
@@ -82,7 +83,7 @@ public class EObjectPath {
    */
   public EObject resolveEObjectPath(final EObject rootEObject) {
     LOGGER.info("=>");
-    LOGGER.info("pathXTree=" + pathXTree.print());
+    LOGGER.info("pathXTree=" + pathXTree.toString());
     
     EObjectResolverVisitor eObjectResolverVisitor = new EObjectResolverVisitor(rootEObject);
     pathXTree.traverse(eObjectResolverVisitor);
@@ -115,12 +116,12 @@ public class EObjectPath {
   public EObjectPath(ByteBuffer binaryTree) {
     pathXTree = new BinarySerializedXTree(binaryTree.array());
     
-    LOGGER.info("DESERIALIZED TREE: " + pathXTree.print());
+    LOGGER.info("DESERIALIZED TREE: " + pathXTree.toString());
   }
   
   @Override
   public String toString() {
-    return pathXTree.print();
+    return pathXTree.toString();
   }
   
   public static void main(String[] args) {

@@ -13,7 +13,7 @@ module goedegep.appgenfx {
   exports goedegep.jfx.stringconverters;
   exports goedegep.jfx.treeview;
   exports goedegep.jfx.workerstategui;
-  exports goedegep.jfx.xtreetreeview;
+  exports goedegep.jfx.xtreeview;
 
   requires commons.cli;
   requires transitive goedegep.appgen;

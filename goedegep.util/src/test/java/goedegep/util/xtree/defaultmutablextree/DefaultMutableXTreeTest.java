@@ -18,13 +18,10 @@ import goedegep.util.bytearray.ByteArrayUtils;
 import goedegep.util.logging.MyLoggingFormatter;
 import goedegep.util.xtree.XTree;
 import goedegep.util.xtree.XTreeTag;
-import goedegep.util.xtree.impl.defaultmutable.DefaultMutableXTree;
-import goedegep.util.xtree.impl.defaultmutable.DefaultMutableXTreeIntegerNode;
-import goedegep.util.xtree.impl.defaultmutable.DefaultMutableXTreeNode;
-import goedegep.util.xtree.impl.defaultmutable.DefaultMutableXTreeTagNode;
 import goedegep.util.xtree.XNodeDataType;
 import goedegep.util.xtree.mutable.MutableXTree;
 import goedegep.util.xtree.mutable.MutableXTreeNode;
+import goedegep.util.xtree.mutable.MutableXTreeFactory;
 
 public class DefaultMutableXTreeTest {
   private static final String NEWLINE = System.getProperty("line.separator");
@@ -57,7 +54,7 @@ public class DefaultMutableXTreeTest {
    */
   public void testCreateSimpleTree() {
     XTree tree = createSimpleTree();
-    assertEquals("Problem in createSimpleTree", SIMPLE_TREE_TEXT, tree.print());
+    assertEquals("Problem in createSimpleTree", SIMPLE_TREE_TEXT, tree.toString());
   }
   
   /**
@@ -68,9 +65,9 @@ public class DefaultMutableXTreeTest {
    */
   @Test
   public void testEmptyTree() {
-    MutableXTree tree = new DefaultMutableXTree();
+    MutableXTree tree = MutableXTreeFactory.createMutableXTree();
     assertNull("Root not null", tree.getRoot());
-    assertEquals("Print output not empty", "", tree.print());
+    assertEquals("Print output not empty", "", tree.toString());
     assertEquals("Wrong number of top level nodes", 0, tree.getNumberOfChildren(null));
   }
 
@@ -91,8 +88,8 @@ public class DefaultMutableXTreeTest {
         "  BOOLEAN: TRUE" + NEWLINE +
         "  STRING: XTree string node test" + NEWLINE +
         "  BLOB: 1, 2, 3, 4" + NEWLINE;
-    DefaultMutableXTreeNode node;      
-    DefaultMutableXTreeNode node2;
+    MutableXTreeNode node;      
+    MutableXTreeNode node2;
     
     /*
      *Create a tree and fill it with nodes of all supported types, with several levels
@@ -109,8 +106,8 @@ public class DefaultMutableXTreeTest {
      *   D: 0x01 0x02 0x03 0x04
      */
     
-    DefaultMutableXTree tree = new DefaultMutableXTree();
-    node = new DefaultMutableXTreeIntegerNode(4);
+    MutableXTree tree = MutableXTreeFactory.createMutableXTree();
+    node = MutableXTreeFactory.createIntegerMutableXTreeNode(4);
     node = tree.setRoot(node);
     node = node.addIntegerChild(5);
     node2 = node.appendTagSibling(XTreeTag.QUERY_INDEX);
@@ -135,25 +132,25 @@ public class DefaultMutableXTreeTest {
     assertEquals("Wrong number of remaining siblings", 0, tree.getNumberOfRemainingSiblings(node));
     assertEquals("Wrong child index", 0, tree.getChildIndex(node));
     
-    node = node.getFirstChild();  // node = I: 5
+    node = (MutableXTreeNode) node.getFirstChild();  // node = I: 5
     assertNotNull("Wrong structure, missing child", node);
     assertEquals("Wrong node type", XNodeDataType.INTEGER, node.getDataType());
     assertEquals("Wrong node value", 5, node.getIntegerData());
     assertEquals("Wrong number of remaining siblings", 4, tree.getNumberOfRemainingSiblings(node));
 
-    node2 = node.getNextSibling();  // node = G: TAG_QUERY_INDEX
+    node2 = (MutableXTreeNode) node.getNextSibling();  // node = G: TAG_QUERY_INDEX
     assertNotNull("Wrong structure, missing sibling", node2);
     assertEquals("Wrong node type", XNodeDataType.TAG, node2.getDataType());
     assertEquals("Wrong node value", XTreeTag.QUERY_INDEX, node2.getTagData());
     assertFalse("Wrong structure; unexpected child", node2.hasChild());
 
-    node2 = node2.getNextSibling();  // node = B: true
+    node2 = (MutableXTreeNode) node2.getNextSibling();  // node = B: true
     assertNotNull("Wrong structure, missing sibling", node2);
     assertEquals("Wrong node type", XNodeDataType.BOOLEAN, node2.getDataType());
     assertEquals("Wrong node value", true, node2.getBooleanData());
     assertFalse("Wrong structure; unexpected child", node2.hasChild());
 
-    node2 = node2.getNextSibling();  // node = S: "XTree string node test"
+    node2 = (MutableXTreeNode) node2.getNextSibling();  // node = S: "XTree string node test"
     assertNotNull("Wrong structure, missing sibling", node2);
     assertEquals("Wrong node type", XNodeDataType.STRING, node2.getDataType());
     assertEquals("Wrong node value", "XTree string node test", node2.getStringData());
@@ -161,7 +158,7 @@ public class DefaultMutableXTreeTest {
     assertEquals("Wrong number of remaining siblings", 1, tree.getNumberOfRemainingSiblings(node2));
     assertEquals("Wrong child index", 3, tree.getChildIndex(node2));
 
-    node2 = node2.getNextSibling();
+    node2 = (MutableXTreeNode) node2.getNextSibling();
     assertNotNull("Wrong structure, missing sibling", node2);
     assertEquals("Wrong node type", XNodeDataType.BLOB, node2.getDataType());
     assertEquals("Wrong node value", rawData, node2.getBlobData());
@@ -169,22 +166,22 @@ public class DefaultMutableXTreeTest {
     assertFalse("Wrong structure; unexpected child", node2.hasChild());
     assertFalse("Wrong structure; unexpected sibling", node2.hasSibling());
 
-    node = node.getFirstChild();
+    node = (MutableXTreeNode) node.getFirstChild();
     assertNotNull("Wrong structure, missing child", node);
     assertEquals("Wrong node type", XNodeDataType.INTEGER, node.getDataType());
     assertEquals("Wrong node value", 6, node.getIntegerData());
     assertFalse("Wrong structure; unexpected child", node.hasChild());
-    node = node.getNextSibling();
+    node = (MutableXTreeNode) node.getNextSibling();
     assertNotNull("Wrong structure, missing sibling", node);
     assertEquals("Wrong node type", XNodeDataType.INTEGER, node.getDataType());
     assertEquals("Wrong node value", 1000, node.getIntegerData());
     assertFalse("Wrong structure; unexpected child", node.hasChild());
-    node = node.getNextSibling();
+    node = (MutableXTreeNode) node.getNextSibling();
     assertNotNull("Wrong structure, missing sibling", node);
     assertEquals("Wrong node type", XNodeDataType.INTEGER, node.getDataType());
     assertEquals("Wrong node value", 10000, node.getIntegerData());
     assertFalse("Wrong structure; unexpected child", node.hasChild());
-    node = node.getNextSibling();
+    node = (MutableXTreeNode) node.getNextSibling();
     assertNotNull("Wrong structure, missing sibling", node);
     assertEquals("Wrong node type", XNodeDataType.INTEGER, node.getDataType());
     assertEquals("Wrong node value", 100000, node.getIntegerData());
@@ -196,20 +193,20 @@ public class DefaultMutableXTreeTest {
     
     // walk back up.
     assertTrue("Wrong structure; missing parent", node.hasParent());
-    node = node.getParent();
+    node = (MutableXTreeNode) node.getParent();
     assertNotNull("Wrong structure; missing parent", node);
     assertEquals("Wrong node type", XNodeDataType.INTEGER, node.getDataType());
     assertEquals("Wrong node value", 5, node.getIntegerData());
-    node2 = node.getLastChild();
+    node2 = (MutableXTreeNode) node.getLastChild();
     assertNotNull("Wrong structure; missing (last) child", node2);
     assertEquals("Wrong node type", XNodeDataType.INTEGER, node2.getDataType());
     assertEquals("Wrong node value", 100000, node2.getIntegerData());
-    node = node.getFirstChild();
-    node = node.getLastSibling();
+    node = (MutableXTreeNode) node.getFirstChild();
+    node = (MutableXTreeNode) node.getLastSibling();
     assertNotNull("Wrong structure; missing (last) sibling", node2);
     assertEquals("Wrong node type", XNodeDataType.INTEGER, node.getDataType());
     assertEquals("Wrong node value", 100000, node.getIntegerData());
-    node = node.getLastSibling();
+    node = (MutableXTreeNode) node.getLastSibling();
     assertNull("Unexpected 'last sibling'", node);
   }
   
@@ -239,9 +236,9 @@ public class DefaultMutableXTreeTest {
      * I: 5
      *   D: 0x01 0x02 0x03 0x04
      */
-    DefaultMutableXTree tree = new DefaultMutableXTree();
-    DefaultMutableXTreeNode node;
-    node = new DefaultMutableXTreeIntegerNode(1);
+    MutableXTree tree = MutableXTreeFactory.createMutableXTree();
+    MutableXTreeNode node;
+    node = MutableXTreeFactory.createIntegerMutableXTreeNode(1);
     node = tree.setRoot(node);
     node.addIntegerChild(98765);
     node = node.appendIntegerSibling(2);
@@ -256,13 +253,13 @@ public class DefaultMutableXTreeTest {
     // Test all the get<Type>ChildNodeData methods.
     node = tree.getRoot();
     assertEquals("Wrong value obtained", 98765, node.getIntegerChildData());
-    node = node.getNextSibling();
+    node = (MutableXTreeNode) node.getNextSibling();
     assertEquals("Wrong value obtained", XTreeTag.QUERY_INDEX, node.getTagChildData());
-    node = node.getNextSibling();
+    node = (MutableXTreeNode) node.getNextSibling();
     assertEquals("Wrong value obtained", false, node.getBooleanChildData());
-    node = node.getNextSibling();
+    node = (MutableXTreeNode) node.getNextSibling();
     assertEquals("Wrong value obtained", "XTree string node test", node.getStringChildData());
-    node = node.getNextSibling();
+    node = (MutableXTreeNode) node.getNextSibling();
     assertEquals("Wrong value obtained", rawData, node.getBlobChildData());
   }
   
@@ -288,9 +285,9 @@ public class DefaultMutableXTreeTest {
      * S: "XTree string node test"
      * D: 0x01 0x02 0x03 0x04
      */
-    DefaultMutableXTree tree = new DefaultMutableXTree();
-    DefaultMutableXTreeNode node;
-    node = new DefaultMutableXTreeIntegerNode(98765);
+    MutableXTree tree = MutableXTreeFactory.createMutableXTree();
+    MutableXTreeNode node;
+    node = MutableXTreeFactory.createIntegerMutableXTreeNode(98765);
     node = tree.setRoot(node);
     node = node.appendTagSibling(XTreeTag.QUERY_INDEX);
     node = node.appendBooleanSibling(false);
@@ -305,27 +302,27 @@ public class DefaultMutableXTreeTest {
      * S: "The new string value"
      * D: 0x05 0x06 0x07 0x08 0x09
      */
-    node = (DefaultMutableXTreeNode) tree.getRoot();
+    node = (MutableXTreeNode) tree.getRoot();
     node.setIntegerData(2);
-    node = node.getNextSibling();
+    node = (MutableXTreeNode) node.getNextSibling();
     node.setTagData(XTreeTag.QUERY_WHERE);
-    node = node.getNextSibling();
+    node = (MutableXTreeNode) node.getNextSibling();
     node.setBooleanData(true);
-    node = node.getNextSibling();
+    node = (MutableXTreeNode) node.getNextSibling();
     node.setStringData("The new string value");
-    node = node.getNextSibling();
+    node = (MutableXTreeNode) node.getNextSibling();
     node.setBlobData(rawDataNew);
     
     // Check the values.
-    node = (DefaultMutableXTreeNode) tree.getRoot();
+    node = (MutableXTreeNode) tree.getRoot();
     assertEquals("Wrong value obtained", 2, node.getIntegerData());
-    node = node.getNextSibling();
+    node = (MutableXTreeNode) node.getNextSibling();
     assertEquals("Wrong value obtained", XTreeTag.QUERY_WHERE, node.getTagData());
-    node = node.getNextSibling();
+    node =(MutableXTreeNode) node.getNextSibling();
     assertEquals("Wrong value obtained", true, node.getBooleanData());
-    node = node.getNextSibling();
+    node = (MutableXTreeNode) node.getNextSibling();
     assertEquals("Wrong value obtained", "The new string value", node.getStringData());
-    node = node.getNextSibling();
+    node = (MutableXTreeNode) node.getNextSibling();
     assertEquals("Wrong value obtained", rawDataNew, node.getBlobData());
   }
   
@@ -338,8 +335,8 @@ public class DefaultMutableXTreeTest {
     byte[]         rawData1 = {0x01, 0x02, 0x03, 0x04};
     byte[]         rawData2 = {0x05, 0x06, 0x07, 0x08, 0x09};
     
-    DefaultMutableXTree tree = new DefaultMutableXTree();
-    DefaultMutableXTreeNode node;
+    MutableXTree tree = MutableXTreeFactory.createMutableXTree();
+    MutableXTreeNode node;
     
     // Test inserting as root.
     node = tree.insertTagSibling(null, XTreeTag.QUERY_WHERE);
@@ -361,67 +358,67 @@ public class DefaultMutableXTreeTest {
     
     // Now try the same one level lower (below the last node).
     node.addTagChild(XTreeTag.QUERY_RANGE);
-    tree.insertTagSibling(node.getFirstChild(), XTreeTag.QUERY_WHERE);
-    node.getLastChild().appendTagSibling(XTreeTag.QUERY_INDEX);
+    tree.insertTagSibling((MutableXTreeNode) node.getFirstChild(), XTreeTag.QUERY_WHERE);
+    ((MutableXTreeNode) node.getLastChild()).appendTagSibling(XTreeTag.QUERY_INDEX);
     
-    tree.insertBooleanSibling(node.getFirstChild(), true);
-    node.getLastChild().appendBooleanSibling(false);
+    tree.insertBooleanSibling((MutableXTreeNode) node.getFirstChild(), true);
+    ((MutableXTreeNode) node.getLastChild()).appendBooleanSibling(false);
     
-    tree.insertIntegerSibling(node.getFirstChild(), 444);
-    node.getLastChild().appendIntegerSibling(8642);
+    tree.insertIntegerSibling((MutableXTreeNode) node.getFirstChild(), 444);
+    ((MutableXTreeNode) node.getLastChild()).appendIntegerSibling(8642);
     
-    tree.insertStringSibling(node.getFirstChild(), "Lower First");
-    node.getLastChild().appendStringSibling("Lower Last");
+    tree.insertStringSibling((MutableXTreeNode) node.getFirstChild(), "Lower First");
+    ((MutableXTreeNode) node.getLastChild()).appendStringSibling("Lower Last");
     
-    tree.insertBlobSibling(node.getFirstChild(), rawData2);
-    node.getLastChild().appendBlobSibling(rawData1);
+    tree.insertBlobSibling((MutableXTreeNode) node.getFirstChild(), rawData2);
+    ((MutableXTreeNode) node.getLastChild()).appendBlobSibling(rawData1);
      
     // Check at top level.
     node = tree.getRoot();
     assertEquals("Wrong value obtained", rawData1, node.getBlobData());
-    node = node.getNextSibling();
+    node = (MutableXTreeNode) node.getNextSibling();
     assertEquals("Wrong value obtained", "First", node.getStringData());
-    node = node.getNextSibling();
+    node = (MutableXTreeNode) node.getNextSibling();
     assertEquals("Wrong value obtained", 555, node.getIntegerData());
-    node = node.getNextSibling();
+    node = (MutableXTreeNode) node.getNextSibling();
     assertEquals("Wrong value obtained", false, node.getBooleanData());
-    node = node.getNextSibling();
+    node = (MutableXTreeNode) node.getNextSibling();
     assertEquals("Wrong value obtained", XTreeTag.QUERY_INDEX, node.getTagData());
-    node = node.getNextSibling();
+    node = (MutableXTreeNode) node.getNextSibling();
     assertEquals("Wrong value obtained", XTreeTag.QUERY_WHERE, node.getTagData());
-    node = node.getNextSibling();
+    node = (MutableXTreeNode) node.getNextSibling();
     assertEquals("Wrong value obtained", XTreeTag.QUERY_RESULT_ROOT, node.getTagData());
-    node = node.getNextSibling();
+    node = (MutableXTreeNode) node.getNextSibling();
     assertEquals("Wrong value obtained", true, node.getBooleanData());
-    node = node.getNextSibling();
+    node = (MutableXTreeNode) node.getNextSibling();
     assertEquals("Wrong value obtained", 9753, node.getIntegerData());
-    node = node.getNextSibling();
+    node = (MutableXTreeNode) node.getNextSibling();
     assertEquals("Wrong value obtained", "Last", node.getStringData());
-    node = node.getNextSibling();
+    node = (MutableXTreeNode) node.getNextSibling();
     assertEquals("Wrong value obtained", rawData2, node.getBlobData());
     
     // Check at lower level.
-    node = node.getFirstChild();
+    node = (MutableXTreeNode) node.getFirstChild();
     assertEquals("Wrong value obtained", rawData2, node.getBlobData());
-    node = node.getNextSibling();
+    node = (MutableXTreeNode) node.getNextSibling();
     assertEquals("Wrong value obtained", "Lower First", node.getStringData());
-    node = node.getNextSibling();
+    node = (MutableXTreeNode) node.getNextSibling();
     assertEquals("Wrong value obtained", 444, node.getIntegerData());
-    node = node.getNextSibling();
+    node = (MutableXTreeNode) node.getNextSibling();
     assertEquals("Wrong value obtained", true, node.getBooleanData());
-    node = node.getNextSibling();
+    node = (MutableXTreeNode) node.getNextSibling();
     assertEquals("Wrong value obtained", XTreeTag.QUERY_WHERE, node.getTagData());
-    node = node.getNextSibling();
+    node = (MutableXTreeNode) node.getNextSibling();
     assertEquals("Wrong value obtained", XTreeTag.QUERY_RANGE, node.getTagData());
-    node = node.getNextSibling();
+    node = (MutableXTreeNode) node.getNextSibling();
     assertEquals("Wrong value obtained", XTreeTag.QUERY_INDEX, node.getTagData());
-    node = node.getNextSibling();
+    node = (MutableXTreeNode) node.getNextSibling();
     assertEquals("Wrong value obtained", false, node.getBooleanData());
-    node = node.getNextSibling();
+    node = (MutableXTreeNode) node.getNextSibling();
     assertEquals("Wrong value obtained", 8642, node.getIntegerData());
-    node = node.getNextSibling();
+    node = (MutableXTreeNode) node.getNextSibling();
     assertEquals("Wrong value obtained", "Lower Last", node.getStringData());
-    node = node.getNextSibling();
+    node = (MutableXTreeNode) node.getNextSibling();
     assertEquals("Wrong value obtained", rawData1, node.getBlobData());
   }
   
@@ -436,8 +433,8 @@ public class DefaultMutableXTreeTest {
     MutableXTreeNode node;
     
     node = tree.getRoot();
-    node = node.getFirstChild();
-    node = node.getFirstChild();
+    node = (MutableXTreeNode) node.getFirstChild();
+    node = (MutableXTreeNode) node.getFirstChild();
     tree.removeNode(node);
 
     /*
@@ -456,8 +453,8 @@ public class DefaultMutableXTreeTest {
      */
     
     node = tree.getRoot();
-    node = node.getFirstChild();
-    node = node.getFirstChild();
+    node = (MutableXTreeNode) node.getFirstChild();
+    node = (MutableXTreeNode) node.getFirstChild();
     assertEquals("Wrong value obtained", 1000, node.getIntegerData());
   }
   
@@ -472,13 +469,13 @@ public class DefaultMutableXTreeTest {
     MutableXTreeNode node;
     
     node = tree.getRoot();
-    node = node.getFirstChild();
-    node = node.getLastChild();
+    node = (MutableXTreeNode) node.getFirstChild();
+    node = (MutableXTreeNode) node.getLastChild();
     tree.removeNode(node);
     
     node = tree.getRoot();
-    node = node.getFirstChild();
-    node = node.getLastChild();
+    node = (MutableXTreeNode) node.getFirstChild();
+    node = (MutableXTreeNode) node.getLastChild();
     assertEquals("Wrong value obtained", 10000, node.getIntegerData());
   }
   
@@ -494,16 +491,16 @@ public class DefaultMutableXTreeTest {
     MutableXTreeNode node;
     
     node = tree.getRoot();
-    node = node.getFirstChild();
-    node = node.getFirstChild();
-    node = node.getNextSibling();
+    node = (MutableXTreeNode) node.getFirstChild();
+    node = (MutableXTreeNode) node.getFirstChild();
+    node = (MutableXTreeNode) node.getNextSibling();
     tree.removeNode(node);
     
     node = tree.getRoot();
-    node = node.getFirstChild();
-    node = node.getFirstChild();
+    node = (MutableXTreeNode) node.getFirstChild();
+    node = (MutableXTreeNode) node.getFirstChild();
     assertEquals("Wrong value obtained", 6, node.getIntegerData());
-    node = node.getNextSibling();
+    node = (MutableXTreeNode) node.getNextSibling();
     assertEquals("Wrong value obtained", 10000, node.getIntegerData());
   }
   
@@ -519,11 +516,11 @@ public class DefaultMutableXTreeTest {
     MutableXTreeNode node;
     
     node = tree.getRoot();
-    node = node.getFirstChild();
+    node = (MutableXTreeNode) node.getFirstChild();
     tree.removeNode(node);
     
     node = tree.getRoot();
-    node = node.getFirstChild();
+    node = (MutableXTreeNode) node.getFirstChild();
     assertEquals("Wrong value obtained", XTreeTag.QUERY_INDEX, node.getTagData());
   }
   
@@ -555,11 +552,11 @@ public class DefaultMutableXTreeTest {
     MutableXTreeNode node;
     
     node = tree.getRoot();
-    node = node.getLastSibling();
+    node = (MutableXTreeNode) node.getLastSibling();
     tree.removeNode(node);
     
     node = tree.getRoot();
-    node = node.getLastSibling();
+    node = (MutableXTreeNode) node.getLastSibling();
     assertEquals("Wrong value obtained", "Second Top Level Node", node.getStringData());
   }
   
@@ -575,19 +572,19 @@ public class DefaultMutableXTreeTest {
     MutableXTreeNode node;
     
     node = tree.getRoot();
-    node = node.getNextSibling();
+    node = (MutableXTreeNode) node.getNextSibling();
     tree.removeNode(node);
     
     node = tree.getRoot();
     assertEquals("Wrong value obtained", 4, node.getIntegerData());
-    node = node.getNextSibling();
+    node = (MutableXTreeNode) node.getNextSibling();
     assertEquals("Wrong value obtained", "Third Top Level Node", node.getStringData());
   }
   
 
   /**
    * Test creating a copy of a tree:
-   * DefaultMutableXTree() - constructor, called with the tree to be copied.
+   * MutableXTree() - constructor, called with the tree to be copied.
    * equals()
    * 
    */
@@ -595,36 +592,36 @@ public class DefaultMutableXTreeTest {
   public void testTreeCopying() {
     // Create a tree.
     MutableXTree tree = createSimpleTree();
-    XTree treeCopy = new DefaultMutableXTree(tree);
+    XTree treeCopy = MutableXTreeFactory.createMutableXTree(tree);
     
     assertTrue("Diffences in cloned tree", tree.equals(treeCopy));
   }
   
   /**
    * Test extracting a part of a tree, without siblings.
-   * DefaultMutableXTree() - constructor, called with the tree to be copied, and a starting node (without siblings).
+   * MutableXTree() - constructor, called with the tree to be copied, and a starting node (without siblings).
    */
   @Test
   public void testExtractTreeWithoutSiblings() {
     // Create a tree.
     MutableXTree tree = createSimpleTree();
     MutableXTreeNode node = tree.getRoot();
-    node = node.getFirstChild();
+    node = (MutableXTreeNode) node.getFirstChild();
 
-    MutableXTree subTree = new DefaultMutableXTree(tree, node, false);
+    MutableXTree subTree = MutableXTreeFactory.createMutableXTree(tree, node, false);
 
     node = subTree.getRoot();
     assertEquals("Wrong value obtained", 5, node.getIntegerData());
     assertNull("Unexpected sibling", node.getNextSibling());
-    node = node.getFirstChild();
+    node = (MutableXTreeNode) node.getFirstChild();
     assertEquals("Wrong value obtained", 6, node.getIntegerData());
-    node = node.getLastSibling();
+    node = (MutableXTreeNode) node.getLastSibling();
     assertEquals("Wrong value obtained", 100000, node.getIntegerData());
   }
  
   /**
    * Test extracting a part of a tree, with siblings.
-   * DefaultMutableXTree() - constructor, called with the tree to be copied, and a starting node (with siblings).
+   * MutableXTree() - constructor, called with the tree to be copied, and a starting node (with siblings).
    */
   @Test
   public void testExtractTreeWithSiblings() {
@@ -633,14 +630,14 @@ public class DefaultMutableXTreeTest {
     // Create a tree.
     MutableXTree tree = createSimpleTree();
     MutableXTreeNode node = tree.getRoot();
-    node = node.getFirstChild();
-    node = node.getNextSibling();
+    node = (MutableXTreeNode) node.getFirstChild();
+    node = (MutableXTreeNode) node.getNextSibling();
 
-    MutableXTree subTree = new DefaultMutableXTree(tree, node, true);
+    MutableXTree subTree = MutableXTreeFactory.createMutableXTree(tree, node, true);
 
     node = subTree.getRoot();
     assertEquals("Wrong value obtained", XTreeTag.QUERY_INDEX, node.getTagData());
-    node = node.getLastSibling();
+    node = (MutableXTreeNode) node.getLastSibling();
     assertTrue("Wrong value obtained expected" + ByteArrayUtils.toHex(rawData) +
         " but was " + ByteArrayUtils.toHex(node.getBlobData()),
         Arrays.equals(rawData, node.getBlobData()));
@@ -680,11 +677,11 @@ public class DefaultMutableXTreeTest {
         "STRING: Third Top Level Node" + NEWLINE;
     
     // Create two equal trees.
-    DefaultMutableXTree treeOne = createSimpleTree();
-    DefaultMutableXTreeNode node = (DefaultMutableXTreeNode) treeOne.getRoot().getFirstChild();
-    node = node.getNextSibling();
+    MutableXTree treeOne = createSimpleTree();
+    MutableXTreeNode node = (MutableXTreeNode) treeOne.getRoot().getFirstChild();
+    node = (MutableXTreeNode) node.getNextSibling();
 
-    DefaultMutableXTree treeTwo = createSimpleTree();
+    MutableXTree treeTwo = createSimpleTree();
     
     treeOne.mergeSubtree(null, node, treeTwo);
     assertEquals("Wrong contents of merge tree", printedTree, treeOne.print(null, true, true));
@@ -711,32 +708,32 @@ public class DefaultMutableXTreeTest {
     // Create two equal trees.
     MutableXTree treeOne = createSimpleTree();
     MutableXTree treeTwo;
-    DefaultMutableXTreeNode node;
+    MutableXTreeNode node;
     
     // In one tree change a node value.
     treeTwo = createSimpleTree();
-    node = (DefaultMutableXTreeNode) treeTwo.getRoot();
-    node = node.getNextSibling();
+    node = (MutableXTreeNode) treeTwo.getRoot();
+    node = (MutableXTreeNode) node.getNextSibling();
     node.setStringData("Changed value");
     assertFalse("Equals returned wrong value", treeOne.equals(treeTwo));
     assertFalse("Equals returned wrong value", treeTwo.equals(treeOne));
     
     // In one tree add a node.
     treeTwo = createSimpleTree();
-    ((DefaultMutableXTreeNode) treeTwo.getRoot().getLastSibling()).appendIntegerSibling(24);
+    ((MutableXTreeNode) treeTwo.getRoot().getLastSibling()).appendIntegerSibling(24);
     assertFalse("Equals returned wrong value", treeOne.equals(treeTwo));
     assertFalse("Equals returned wrong value", treeTwo.equals(treeOne));
     
     // In one tree remove a node.
     treeTwo = createSimpleTree();
-    node = (DefaultMutableXTreeNode) treeTwo.getRoot().getFirstChild();
-    node = node.getLastChild();
+    node = (MutableXTreeNode) treeTwo.getRoot().getFirstChild();
+    node = (MutableXTreeNode) node.getLastChild();
     treeTwo.removeNode(node);
     assertFalse("Equals returned wrong value", treeOne.equals(treeTwo));
     assertFalse("Equals returned wrong value", treeTwo.equals(treeOne));
     
     // Let one of the tree be empty.
-    treeTwo = new DefaultMutableXTree();
+    treeTwo = MutableXTreeFactory.createMutableXTree();
     assertFalse("Equals returned wrong value", treeOne.equals(treeTwo));
     assertFalse("Equals returned wrong value", treeTwo.equals(treeOne));
   }
@@ -747,16 +744,16 @@ public class DefaultMutableXTreeTest {
    */
   @Test
   public void testFilterTree() {
-    DefaultMutableXTree tree = createSimpleTree();
+    MutableXTree tree = createSimpleTree();
     
     // define a simple filter that will return the complete tree.
-    DefaultMutableXTree filterTree = new DefaultMutableXTree();
-    DefaultMutableXTreeNode node = filterTree.setRoot(new DefaultMutableXTreeTagNode(XTreeTag.QUERY_RESULT_ROOT));
+    MutableXTree filterTree = MutableXTreeFactory.createMutableXTree();
+    MutableXTreeNode node = filterTree.setRoot(MutableXTreeFactory.createTagMutableXTreeNode(XTreeTag.QUERY_RESULT_ROOT));
     node.appendTagSibling(XTreeTag.QUERY_SUBTREE);
     
     // apply the filter and check result.
     XTree filteredTree = tree.filterTree(filterTree);
-    assertEquals("Wrong filter result", SIMPLE_TREE_TEXT, filteredTree.print());
+    assertEquals("Wrong filter result", SIMPLE_TREE_TEXT, filteredTree.toString());
   }
   
   /**
@@ -765,11 +762,11 @@ public class DefaultMutableXTreeTest {
    */
   @Test
   public void testFilterTree2() {
-    DefaultMutableXTree tree = createSimpleTree();
+    MutableXTree tree = createSimpleTree();
     
     // define a simple filter that will return the complete tree.
-    DefaultMutableXTree filterTree = new DefaultMutableXTree();
-    DefaultMutableXTreeNode node = filterTree.setRoot(new DefaultMutableXTreeIntegerNode(4));
+    MutableXTree filterTree = MutableXTreeFactory.createMutableXTree();
+    MutableXTreeNode node = filterTree.setRoot(MutableXTreeFactory.createIntegerMutableXTreeNode(4));
     node = node.addTagChild(XTreeTag.QUERY_RESULT_ROOT);
     node.appendTagSibling(XTreeTag.QUERY_SUBTREE);
     System.out.println(filterTree.print(null, true, true));
@@ -800,7 +797,7 @@ public class DefaultMutableXTreeTest {
    * S: "Third Top Level Node"
    * </pre>
    */
-  private DefaultMutableXTree createSimpleTree() {
+  private MutableXTree createSimpleTree() {
     byte[]         rawData = {0x01, 0x02, 0x03, 0x04};
     
     /*
@@ -819,10 +816,10 @@ public class DefaultMutableXTreeTest {
      * S: "Second Top Level Node"
      * S: "Third Top Level Node"
      */
-    DefaultMutableXTree tree = new DefaultMutableXTree();
-    DefaultMutableXTreeNode node;      
-    DefaultMutableXTreeNode node2;     
-    node = tree.setRoot(new DefaultMutableXTreeIntegerNode(4));
+    MutableXTree tree = MutableXTreeFactory.createMutableXTree();
+    MutableXTreeNode node;      
+    MutableXTreeNode node2;     
+    node = tree.setRoot(MutableXTreeFactory.createIntegerMutableXTreeNode(4));
     node = node.addIntegerChild(5);
     node2 = node.appendTagSibling(XTreeTag.QUERY_INDEX);
     node2 = node2.appendBooleanSibling(true);

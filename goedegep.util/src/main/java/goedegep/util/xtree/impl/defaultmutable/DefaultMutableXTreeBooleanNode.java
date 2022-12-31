@@ -35,7 +35,7 @@ public class DefaultMutableXTreeBooleanNode extends DefaultMutableXTreeNode {
   }
   
   @Override
-  public String nodeToString(){
+  public String toString(){
 	  return booleanData ? "True" : "False";
   }
 

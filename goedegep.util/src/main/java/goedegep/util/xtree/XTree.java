@@ -16,12 +16,16 @@ package goedegep.util.xtree;
  * optimized for storing/transferring the tree (see {@link goedegep.util.xtree.serialized.SerializedXTree}).
  * </li>
  * </ul>
- * But all representations share this interface, which provides a treeWalker method. This treeWalker method
+ * But all representations share this interface, which provides a {@link #traverse} method. This treeWalker method
  * makes it possible to do things with a tree in serialized form, without first converting it into a 'real'
  * tree (a MutableXTree).
  */
 public interface XTree {
-  static final int MAX_BLOB_BYTES_SHOWN = 15;  // Just for testing.
+  /**
+   * Maximum number of BLOB bytes show by the {@link #nodeToString} method.
+   */
+  static final int MAX_BLOB_BYTES_SHOWN = 15;
+  
   
   /**
    * Walk through the tree, depth first, calling the specified XTreeNodeVisitor for each node.
@@ -29,67 +33,72 @@ public interface XTree {
    * @param xTreeNodeVisitor the <b>XTreeNodeVisitor</b> called for each node.
    */
   public void traverse(XTreeNodeVisitor xTreeNodeVisitor);
+
+  /**
+   * Get the root node of a tree.
+   * <p>
+   * This method doesn't have to be implemented by implementations that only support walking through the tree
+   * via the {@link #traverse} method.
+   * 
+   * @return The root node of the tree.
+   */
+  public default XTreeNode getRoot() {
+    throw new UnsupportedOperationException("This XTree implementation doesn't support nodes");
+  }
   
   /*
    * Debug support.
    */
   
   /**
-   * Print the contents of a tree to a String (for debugging purposes only).
-   *
-   * @return a String representation of the tree.
-   */
-  public String print();
-  
-  /**
    * Get a textual representation of the content of a node (for debugging purposes only).
+   * <p>
+   * The returned text has the format: <data-type>: <value><br/>
+   * For BLOB nodes only the first {@link #MAX_BLOB_BYTES_SHOWN} are shown.
    * 
    * @param dataType the data type of the node value
    * @param value the node value
    * @return a textual representation of the content of the node, specified by the {@code dataType} and {@code value}.
    */
   public static String nodeToString(XNodeDataType dataType, Object value) {
-    String text = "dummy";
+    StringBuilder buf = new StringBuilder();
 
     switch (dataType) {
     case TAG:
       XTreeTag tagValue = (XTreeTag) value;
-      text = "TAG: " + tagValue.getName() + " (" + tagValue.getValue() + ")";
+      buf.append("TAG: ").append(tagValue.getName()).append(" (").append(tagValue.getValue()).append(")");
       break;
       
     case BOOLEAN:
       boolean booleanValue = (boolean) value;
-      String valueText = booleanValue ? "TRUE" : "FALSE";
-      text = "BOOLEAN: " + valueText;
+      buf.append("BOOLEAN: ").append(booleanValue ? "TRUE" : "FALSE");
       break;
 
     case INTEGER:
       int integerValue = (int) value;
-      text = "INTEGER: " + String.valueOf(integerValue);
+      buf.append("INTEGER: ").append(String.valueOf(integerValue));
       break;
 
     case STRING:
-      text = "STRING: " + ((String) value);
+      buf.append("STRING: ").append((String) value);
       break;
 
     case BLOB:
       byte[] blobValue = (byte[]) value;
-      StringBuffer sb = new StringBuffer();
-      sb.append("BLOB: ");
+      buf.append("BLOB: ");
       for (int i = 0; i < blobValue.length  && i < MAX_BLOB_BYTES_SHOWN; i++) {
         if (i != 0) {
-            sb.append(", ");
+            buf.append(", ");
         }
-        sb.append(String.valueOf(blobValue[i]));          
+        buf.append(String.valueOf(blobValue[i]));          
       }
       if (blobValue.length >= MAX_BLOB_BYTES_SHOWN) {
-          sb.append(", ...");
+          buf.append(", ...");
       }
-      text = sb.toString();
       break;
     }
 
-    return text;
+    return buf.toString();
   }
 
 }

@@ -4,7 +4,6 @@ import java.io.ByteArrayOutputStream;
 import java.util.logging.Logger;
 
 import goedegep.util.xtree.XTree;
-import goedegep.util.xtree.XTreeNodeVisitorForPrinting;
 
 /**
  * Tree that contains tagged data.
@@ -13,7 +12,7 @@ public abstract class XTreeAbstract implements XTree {
   private static final Logger LOGGER = Logger.getLogger(XTreeAbstract.class.getName());
   
   @Override
-  public String print() {
+  public String toString() {
     LOGGER.info("=>");
     
     ByteArrayOutputStream stream = new ByteArrayOutputStream();
