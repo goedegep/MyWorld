@@ -10,10 +10,13 @@ import org.junit.Test;
 import goedegep.util.bytearray.ByteArrayUtils;
 import goedegep.util.xtree.XTree;
 import goedegep.util.xtree.impl.binary.BinarySerializedXTree;
-import goedegep.util.xtree.impl.defaultmutable.DefaultMutableXTree;
-import goedegep.util.xtree.impl.defaultmutable.DefaultMutableXTreeIntegerNode;
-import goedegep.util.xtree.impl.defaultmutable.DefaultMutableXTreeNode;
-import goedegep.util.xtree.impl.defaultmutable.DefaultMutableXTreeStringNode;
+import goedegep.util.xtree.mutable.MutableXTree;
+import goedegep.util.xtree.mutable.MutableXTreeFactory;
+import goedegep.util.xtree.mutable.MutableXTreeNode;
+//import goedegep.util.xtree.impl.defaultmutable.DefaultMutableXTree;
+//import goedegep.util.xtree.impl.defaultmutable.DefaultMutableXTreeIntegerNode;
+//import goedegep.util.xtree.impl.defaultmutable.DefaultMutableXTreeNode;
+//import goedegep.util.xtree.impl.defaultmutable.DefaultMutableXTreeStringNode;
 
 public class BinarySerializedXTreeTest {
   private static String NEW_LINE = System.getProperty("line.separator");
@@ -35,8 +38,8 @@ public class BinarySerializedXTreeTest {
    */
   @Test
   public void  testConstructingSerializedTreeWithSingleIntegerNode() {
-    DefaultMutableXTree tree = new DefaultMutableXTree();
-    tree.setRoot(new DefaultMutableXTreeIntegerNode(INTEGER_NODE_VALUE));
+    MutableXTree tree = MutableXTreeFactory.createMutableXTree();
+    tree.setRoot(MutableXTreeFactory.createIntegerMutableXTreeNode(INTEGER_NODE_VALUE));
     BinarySerializedXTree binarySerializedXTree = new BinarySerializedXTree(tree);
     byte[] serializedTree = binarySerializedXTree.getSerializedTreeData();
     assertTrue("Wrong serialized data, expected:" + NEW_LINE +
@@ -52,7 +55,7 @@ public class BinarySerializedXTreeTest {
   @Test
   public void testDeserializingTreeWithIntegerNode() {
     XTree tree = new BinarySerializedXTree(SERIALIZED_TREE_WITH_INTEGER_NODE);
-    String printedTree = tree.print();
+    String printedTree = tree.toString();
     assertEquals("Wrong result tree", PRINTED_TREE_WITH_INTEGER_NODE, printedTree);
   }
   
@@ -72,10 +75,10 @@ public class BinarySerializedXTreeTest {
      * S: "name level 3"
      *   I: 3
      */
-    DefaultMutableXTree tree = new DefaultMutableXTree();
-    DefaultMutableXTreeNode node;
+    MutableXTree tree = MutableXTreeFactory.createMutableXTree();
+    MutableXTreeNode node;
     
-    node = new DefaultMutableXTreeStringNode("name level 1");
+    node = MutableXTreeFactory.createStringMutableXTreeNode("name level 1");
     tree.setRoot(node);
     
     node.addIntegerChild(1);
@@ -85,8 +88,8 @@ public class BinarySerializedXTreeTest {
     node.addIntegerChild(3);
 
     BinarySerializedXTree binarySerializedXTree = new BinarySerializedXTree(tree);
-    String printedMutableTree = tree.print();
-    String printedBinaryTree = binarySerializedXTree.print();
+    String printedMutableTree = tree.toString();
+    String printedBinaryTree = binarySerializedXTree.toString();
     
     assertEquals("Wrong result tree", printedMutableTree, printedBinaryTree);
   }

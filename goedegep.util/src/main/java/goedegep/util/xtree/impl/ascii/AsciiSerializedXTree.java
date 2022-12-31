@@ -5,6 +5,7 @@ import java.util.logging.Logger;
 import goedegep.util.bytesequence.ByteSequence;
 import goedegep.util.xtree.XNodeDataType;
 import goedegep.util.xtree.XTree;
+import goedegep.util.xtree.XTreeNode;
 import goedegep.util.xtree.XTreeNodeVisitResult;
 import goedegep.util.xtree.XTreeNodeVisitor;
 import goedegep.util.xtree.XTreeTag;
@@ -78,6 +79,12 @@ public class AsciiSerializedXTree extends XTreeAbstract implements SerializedXTr
    * Implementation of the XTree interface
    * 
    */
+
+  @Override
+  public XTreeNode getRoot() {
+    throw new UnsupportedOperationException("getRoot is supported for AsciiSerializedXTree");
+  }
+  
   
   public void traverse(XTreeNodeVisitor xTreeNodeVisitor) {
     LOGGER.info("=>");

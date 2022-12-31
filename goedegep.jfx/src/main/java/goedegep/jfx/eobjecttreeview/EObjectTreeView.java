@@ -543,7 +543,7 @@ public class EObjectTreeView extends TreeView<EObjectTreeItemContent> implements
   }
 
   public EObjectTreeItem findTreeItem(EObjectPath eObjectPath) {
-    LOGGER.info("=> eObjectPath=" + NEWLINE + eObjectPath.getPathXTree().print());
+    LOGGER.info("=> eObjectPath=" + NEWLINE + eObjectPath.getPathXTree().toString());
     
     EObjectTreeItemResolverVisitor eObjectResolverVisitor = new EObjectTreeItemResolverVisitor((EObjectTreeItem) getRoot());
     eObjectPath.getPathXTree().traverse(eObjectResolverVisitor);

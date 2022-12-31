@@ -4,12 +4,16 @@ import java.util.logging.Logger;
 
 import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.JfxStage;
-import goedegep.jfx.xtreetreeview.XTreeTreeView;
+import goedegep.jfx.xtreeview.XTreeView;
+import goedegep.util.xtree.XTree;
 import goedegep.util.xtree.XTreeTag;
-import goedegep.util.xtree.impl.defaultmutable.DefaultMutableXTree;
-import goedegep.util.xtree.impl.defaultmutable.DefaultMutableXTreeIntegerNode;
-import goedegep.util.xtree.impl.defaultmutable.DefaultMutableXTreeNode;
+import goedegep.util.xtree.impl.binary.BinarySerializedXTree;
+//import goedegep.util.xtree.impl.defaultmutable.DefaultMutableXTree;
+//import goedegep.util.xtree.impl.defaultmutable.DefaultMutableXTreeIntegerNode;
+//import goedegep.util.xtree.impl.defaultmutable.DefaultMutableXTreeNode;
 import goedegep.util.xtree.mutable.MutableXTree;
+import goedegep.util.xtree.mutable.MutableXTreeFactory;
+import goedegep.util.xtree.mutable.MutableXTreeNode;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -25,7 +29,7 @@ public class XTreeDemo extends JfxStage {
   private final static String WINDOW_TITLE = "XTree demo";
   
   private MutableXTree tree = null;
-  private XTreeTreeView treeView = null;
+  private XTreeView treeView = null;
   private HBox resultHBox = null;
 
   /**
@@ -196,7 +200,7 @@ public class XTreeDemo extends JfxStage {
     
     HBox hBox = new HBox();
     
-    treeView = new XTreeTreeView();
+    treeView = new XTreeView();
     hBox.getChildren().add(treeView);
     
     resultHBox = new HBox();
@@ -226,6 +230,10 @@ public class XTreeDemo extends JfxStage {
     button.setOnAction((e) -> runSubtreeCopyDemo());
     flowPane.getChildren().add(button);
     
+    button = new Button("Binary tree");
+    button.setOnAction((e) -> runBinaryTreeDemo());
+    flowPane.getChildren().add(button);
+    
     return flowPane;
   }
   
@@ -239,8 +247,8 @@ public class XTreeDemo extends JfxStage {
   private void runCopyDemo() {
     resultHBox.getChildren().clear();
     
-    MutableXTree treeCopy = new DefaultMutableXTree(tree);
-    XTreeTreeView treeCopyView = new XTreeTreeView();
+    MutableXTree treeCopy = MutableXTreeFactory.createMutableXTree(tree);
+    XTreeView treeCopyView = new XTreeView();
     treeCopyView.setRootNode(treeCopy.getRoot());
     resultHBox.getChildren().add(treeCopyView);
   }
@@ -249,10 +257,20 @@ public class XTreeDemo extends JfxStage {
     resultHBox.getChildren().clear();
     
     // Create a subtree starting with the first child of the root node.
-    MutableXTree subTree = new DefaultMutableXTree(tree, tree.getRoot().getFirstChild(), false);
-    XTreeTreeView subTreeCopyView = new XTreeTreeView();
+    MutableXTree subTree = MutableXTreeFactory.createMutableXTree(tree, (MutableXTreeNode) tree.getRoot().getFirstChild(), false);
+    XTreeView subTreeCopyView = new XTreeView();
     subTreeCopyView.setRootNode(subTree.getRoot());
     resultHBox.getChildren().add(subTreeCopyView);
+  }
+  
+  private void runBinaryTreeDemo() {
+    resultHBox.getChildren().clear();
+    
+    XTree binaryTree = new BinarySerializedXTree(tree);
+    LOGGER.severe(binaryTree.toString());
+    XTreeView binaryTreeView = new XTreeView();
+    binaryTreeView.setRootNode(binaryTree.getRoot());
+    resultHBox.getChildren().add(binaryTreeView);
   }
 
   /**
@@ -296,10 +314,10 @@ public class XTreeDemo extends JfxStage {
      * S: "Second Top Level Node"
      * S: "Third Top Level Node"
      */
-    DefaultMutableXTree tree = new DefaultMutableXTree();
-    DefaultMutableXTreeNode node;      
-    DefaultMutableXTreeNode node2;
-    node = tree.setRoot(new DefaultMutableXTreeIntegerNode(4));
+    MutableXTree tree = MutableXTreeFactory.createMutableXTree();
+    MutableXTreeNode node;      
+    MutableXTreeNode node2;
+    node = tree.setRoot(MutableXTreeFactory.createIntegerMutableXTreeNode(4));
     node = node.addIntegerChild(5);
     node2 = node.appendTagSibling(XTreeTag.QUERY_INDEX);
     node2 = node2.appendBooleanSibling(true);

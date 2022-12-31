@@ -1,6 +1,8 @@
 package goedegep.util.xtree;
 
-
+/**
+ * This enum defines the return values for the methods of the {@link XTreeNodeVisitor} interface.
+ */
 public enum XTreeNodeVisitResult {
   /**
    * Continue. When returned from a {@link FileVisitor#preVisitDirectory

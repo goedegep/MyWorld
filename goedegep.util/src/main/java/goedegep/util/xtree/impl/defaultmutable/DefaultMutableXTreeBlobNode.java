@@ -49,7 +49,7 @@ public class DefaultMutableXTreeBlobNode extends DefaultMutableXTreeNode {
   }
 
   @Override
-  public String nodeToString(){
+  public String toString(){
 	  return "Binary data";
   }
 

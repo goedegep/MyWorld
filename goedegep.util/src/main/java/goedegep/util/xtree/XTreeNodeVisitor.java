@@ -2,7 +2,10 @@ package goedegep.util.xtree;
 
 import java.nio.file.FileVisitResult;
 
-
+/**
+ * An implementation of this interface is to be passed as a parameter to {@link XTree#traverse(XTreeNodeVisitor)}.<br/>
+ * This interface defines the methods which are called at specific situations encountered by the {@code traverse} method.
+ */
 public interface XTreeNodeVisitor {
 
   /**

@@ -44,7 +44,7 @@ public class DefaultMutableXTreeStringNode extends DefaultMutableXTreeNode {
   }
   
   @Override
-  public String nodeToString(){
+  public String toString(){
 	  return stringData;
   }
 
