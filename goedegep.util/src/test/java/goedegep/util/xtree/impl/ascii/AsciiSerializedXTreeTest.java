@@ -1,10 +1,11 @@
 package goedegep.util.xtree.impl.ascii;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Arrays;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import goedegep.util.bytearray.ByteArrayUtils;
 import goedegep.util.xtree.impl.defaultmutable.DefaultMutableXTree;
@@ -36,11 +37,11 @@ public class AsciiSerializedXTreeTest {
     tree.setRoot(new DefaultMutableXTreeIntegerNode(INTEGER_NODE_VALUE));
     AsciiSerializedXTree binarySerializedXTree = new AsciiSerializedXTree(tree);
     byte[] serializedTree = binarySerializedXTree.getSerializedTreeData();
-    assertTrue("Wrong serialized data, expected:" + NEW_LINE +
+    assertTrue(Arrays.equals(SERIALIZED_TREE_WITH_INTEGER_NODE, serializedTree), "Wrong serialized data, expected:" + NEW_LINE +
         ByteArrayUtils.toChars(SERIALIZED_TREE_WITH_INTEGER_NODE) + NEW_LINE +
         "was:" + NEW_LINE +
-        ByteArrayUtils.toChars(serializedTree),
-        Arrays.equals(SERIALIZED_TREE_WITH_INTEGER_NODE, serializedTree));
+        ByteArrayUtils.toChars(serializedTree)
+        );
   }
 
 }

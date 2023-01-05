@@ -1,68 +1,18 @@
 package goedegep.util.xtree.mutable;
 
-import goedegep.util.xtree.XNodeDataType;
-import goedegep.util.xtree.XTree;
-import goedegep.util.xtree.XTreeNode;
 import goedegep.util.xtree.XTreeTag;
-import goedegep.util.xtree.impl.defaultmutable.DefaultMutableXTreeBlobNode;
-import goedegep.util.xtree.impl.defaultmutable.DefaultMutableXTreeBooleanNode;
-import goedegep.util.xtree.impl.defaultmutable.DefaultMutableXTreeIntegerNode;
-import goedegep.util.xtree.impl.defaultmutable.DefaultMutableXTreeNode;
-import goedegep.util.xtree.impl.defaultmutable.DefaultMutableXTreeStringNode;
-import goedegep.util.xtree.impl.defaultmutable.DefaultMutableXTreeTagNode;
+import goedegep.util.xtree.nodebased.XTreeNode;
 
 /**
  * This interface represents a node in an {@link MutableXTree}.
- * <p>
- * This interface doesn't define any method. This interface is only used as return value of methods and
- * for input parameters of methods in the XTree interface.<br/>
- * This interface does define constants for:
- * <ul>
- * <li>
- * Tags<br/>
- * Tags define the meaning of a node.
- * </li>
- * </ul>
- *
  */
 public interface MutableXTreeNode extends XTreeNode {
   
-//  /**
-//   * Test whether a node has a parent. Only the top-level nodes have no parent.
-//   * 
-//   * @return
-//   *    true if the node has a parent.<br>
-//   *    false otherwise.
-//   */
-//  public boolean hasParent();
-
-//  /**
-//   * Get the parent of a node.
-//   * 
-//   * @return
-//   *    null if the node has no parent. <br>
-//   *    The parent of the node otherwise.
-//   */
-//  public MutableXTreeNode getParent();
-//
-//  /**
-//   * Test whether a node has one or more children.
-//   * 
-//   * @return
-//   *    ture if the node has a child. <br>
-//   *    false otherwise.
-//   */
-//  public boolean hasChild();
-//
-//  /**
-//   * Get the first child of a node.
-//   * 
-//   * @param node - The node.
-//   * @return
-//   *  null if the node has no child.<br>
-//   *  The first child of the node otherwise.
-//   */
-//  public MutableXTreeNode getFirstChild();
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public MutableXTreeNode getParent();
   
   /**
    * Set the parent node of this node.
@@ -70,6 +20,18 @@ public interface MutableXTreeNode extends XTreeNode {
    * @param parent the new value for the parent node, which may be null.
    */
   public void setParent(MutableXTreeNode parent);
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public MutableXTreeNode getFirstChild();
+  
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public MutableXTreeNode getLastChild();
   
   
   /**
@@ -79,41 +41,18 @@ public interface MutableXTreeNode extends XTreeNode {
    */
   public void setFirstChild(MutableXTreeNode firstChild);
 
-//  /**
-//   * Get the last child of a node.
-//   * 
-//   * @return
-//   *  null if the node has no child.<br>
-//   *  The last child of the node otherwise.
-//   */
-//  public MutableXTreeNode getLastChild();
 
-//  /**
-//   * Test whether a node has a sibling.
-//   * 
-//   * @return
-//   *  TRUE if the node has a sibling. <br>
-//   *  FALSE otherwise.
-//   */
-//  public boolean hasSibling();
-//
-//  /**
-//   * Get the next sibling of a node.
-//   * 
-//   * @return
-//   *    null if the node has no sibling. <br>
-//   *    The next sibling of the node otherwise.
-//   */
-//  public MutableXTreeNode getNextSibling();
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public MutableXTreeNode getNextSibling();
 
-//  /**
-//   * Get the last sibling of a node.
-//   * 
-//   * @return
-//   *    null if the node has no sibling. <br>
-//   *    The last sibling of the node otherwise.
-//   */
-//  public MutableXTreeNode getLastSibling();
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public MutableXTreeNode getLastSibling();
   
   /**
    * Set the next sibling node of this node.

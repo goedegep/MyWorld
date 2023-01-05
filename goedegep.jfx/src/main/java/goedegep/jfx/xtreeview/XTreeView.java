@@ -4,7 +4,7 @@ import java.util.logging.Logger;
 
 import goedegep.util.xtree.impl.defaultmutable.DefaultMutableXTreeStringNode;
 import goedegep.util.xtree.mutable.MutableXTreeNode;
-import goedegep.util.xtree.XTreeNode;
+import goedegep.util.xtree.nodebased.XTreeNode;
 import goedegep.util.xtree.impl.defaultmutable.DefaultMutableXTreeNode;
 import javafx.scene.control.TreeView;
 

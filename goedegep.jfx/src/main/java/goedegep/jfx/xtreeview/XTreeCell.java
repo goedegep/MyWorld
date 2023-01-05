@@ -2,7 +2,7 @@ package goedegep.jfx.xtreeview;
 
 import java.util.logging.Logger;
 
-import goedegep.util.xtree.XTreeNode;
+import goedegep.util.xtree.nodebased.XTreeNode;
 import javafx.scene.control.TreeCell;
 
 public class XTreeCell extends TreeCell<XTreeNode> {

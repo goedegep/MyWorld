@@ -2,6 +2,9 @@ package goedegep.util.xtree;
 
 import java.util.HashMap;
 
+/**
+ * Pre-defined Tag values for nodes of type {@link XNodeDataType#TAG}.
+ */
 public enum XTreeTag {
   QUERY_SUBTREE(1),
   QUERY_INDEX(2),

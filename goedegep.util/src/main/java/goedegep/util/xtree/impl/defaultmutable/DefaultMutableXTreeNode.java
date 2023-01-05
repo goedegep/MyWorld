@@ -2,7 +2,7 @@ package goedegep.util.xtree.impl.defaultmutable;
 
 import goedegep.util.xtree.XNodeDataType;
 import goedegep.util.xtree.XTreeTag;
-import goedegep.util.xtree.impl.XTreeNodeAbstract;
+import goedegep.util.xtree.impl.nodebased.XTreeNodeAbstract;
 import goedegep.util.xtree.mutable.MutableXTreeNode;
 
 /**
@@ -11,9 +11,6 @@ import goedegep.util.xtree.mutable.MutableXTreeNode;
  * For each supported data type, there is a sub-type of this class.
  */
 public abstract class DefaultMutableXTreeNode extends XTreeNodeAbstract implements MutableXTreeNode {
-  private MutableXTreeNode parent      = null;
-  private MutableXTreeNode firstChild  = null;
-  private MutableXTreeNode nextSibling = null;
 
   /**
    * Constructor
@@ -25,16 +22,8 @@ public abstract class DefaultMutableXTreeNode extends XTreeNodeAbstract implemen
    * {@inheritDoc}
    */
   @Override
-  public boolean hasParent() {
-    return parent != null;
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
   public MutableXTreeNode getParent() {
-    return parent;
+    return (MutableXTreeNode) super.getParent();
   }
   
   /**
@@ -49,16 +38,16 @@ public abstract class DefaultMutableXTreeNode extends XTreeNodeAbstract implemen
    * {@inheritDoc}
    */
   @Override
-  public boolean hasChild() {
-    return firstChild != null;
+  public MutableXTreeNode getFirstChild() {
+    return (MutableXTreeNode) super.getFirstChild();
   }
   
   /**
    * {@inheritDoc}
    */
   @Override
-  public MutableXTreeNode getFirstChild() {
-    return firstChild;
+  public MutableXTreeNode getLastChild() {
+    return (MutableXTreeNode) super.getLastChild();
   }
   
   /**
@@ -69,35 +58,21 @@ public abstract class DefaultMutableXTreeNode extends XTreeNodeAbstract implemen
     this.firstChild = firstChild;
   }
   
-//  @Override
-//  public DefaultMutableXTreeNode getLastChild() {
-//    DefaultMutableXTreeNode node = getFirstChild();
-//
-//    if (node == null) {
-//      return null;
-//    }
-//
-//    while (node.hasSibling()) {
-//      node = node.getNextSibling();
-//    }
-//
-//    return node;
-//  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public boolean hasSibling() {
-    return nextSibling != null;
-  }
 
   /**
    * {@inheritDoc}
    */
   @Override
   public MutableXTreeNode getNextSibling() {
-    return nextSibling;
+    return (MutableXTreeNode) super.getNextSibling();
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public DefaultMutableXTreeNode getLastSibling() {
+    return (DefaultMutableXTreeNode) super.getLastSibling();
   }
   
   /**
@@ -105,21 +80,8 @@ public abstract class DefaultMutableXTreeNode extends XTreeNodeAbstract implemen
    */
   @Override
   public void setNextSibling(MutableXTreeNode nextSibling) {
-    this.nextSibling = (DefaultMutableXTreeNode) nextSibling;
+    this.nextSibling = nextSibling;
   }
-
-//  public DefaultMutableXTreeNode getLastSibling() {
-//    if (!hasSibling()) {
-//      return null;
-//    }
-//    
-//    DefaultMutableXTreeNode node = this;
-//    while (node.hasSibling()) {
-//      node = node.getNextSibling();
-//    }
-//
-//    return node;
-//  }
   
   /**
    * {@inheritDoc}
@@ -467,7 +429,7 @@ public abstract class DefaultMutableXTreeNode extends XTreeNodeAbstract implemen
   public MutableXTreeNode appendBlobSibling(byte[] data) {
     return appendSibling(new DefaultMutableXTreeBlobNode(data));
   }
-  
+    
   
   /**
    * {@inheritDoc}

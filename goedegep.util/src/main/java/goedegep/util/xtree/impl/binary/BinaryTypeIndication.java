@@ -5,6 +5,9 @@ import java.util.logging.Logger;
 
 import goedegep.util.bitsequence.BitSequence;
 
+/**
+ * This enum defines the values for the data types in a binary serialized XTree.
+ */
 public enum BinaryTypeIndication {
   BOOLEAN_TRUE(1, 0),
   BOOLEAN_FALSE(1, 1),

@@ -1,22 +1,17 @@
-package goedegep.util.xtree.binaryserializedxtree;
+package goedegep.util.xtree.impl.binary;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Arrays;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import goedegep.util.bytearray.ByteArrayUtils;
 import goedegep.util.xtree.XTree;
-import goedegep.util.xtree.impl.binary.BinarySerializedXTree;
 import goedegep.util.xtree.mutable.MutableXTree;
 import goedegep.util.xtree.mutable.MutableXTreeFactory;
 import goedegep.util.xtree.mutable.MutableXTreeNode;
-//import goedegep.util.xtree.impl.defaultmutable.DefaultMutableXTree;
-//import goedegep.util.xtree.impl.defaultmutable.DefaultMutableXTreeIntegerNode;
-//import goedegep.util.xtree.impl.defaultmutable.DefaultMutableXTreeNode;
-//import goedegep.util.xtree.impl.defaultmutable.DefaultMutableXTreeStringNode;
 
 public class BinarySerializedXTreeTest {
   private static String NEW_LINE = System.getProperty("line.separator");
@@ -42,11 +37,11 @@ public class BinarySerializedXTreeTest {
     tree.setRoot(MutableXTreeFactory.createIntegerMutableXTreeNode(INTEGER_NODE_VALUE));
     BinarySerializedXTree binarySerializedXTree = new BinarySerializedXTree(tree);
     byte[] serializedTree = binarySerializedXTree.getSerializedTreeData();
-    assertTrue("Wrong serialized data, expected:" + NEW_LINE +
+    assertTrue(Arrays.equals(SERIALIZED_TREE_WITH_INTEGER_NODE, serializedTree), "Wrong serialized data, expected:" + NEW_LINE +
         ByteArrayUtils.arrayToBinaryString(SERIALIZED_TREE_WITH_INTEGER_NODE) + NEW_LINE +
         "was:" + NEW_LINE +
-        ByteArrayUtils.arrayToBinaryString(serializedTree),
-        Arrays.equals(SERIALIZED_TREE_WITH_INTEGER_NODE, serializedTree));
+        ByteArrayUtils.arrayToBinaryString(serializedTree)
+        );
   }
   
   /**
@@ -56,7 +51,7 @@ public class BinarySerializedXTreeTest {
   public void testDeserializingTreeWithIntegerNode() {
     XTree tree = new BinarySerializedXTree(SERIALIZED_TREE_WITH_INTEGER_NODE);
     String printedTree = tree.toString();
-    assertEquals("Wrong result tree", PRINTED_TREE_WITH_INTEGER_NODE, printedTree);
+    assertEquals(PRINTED_TREE_WITH_INTEGER_NODE, printedTree, "Wrong result tree");
   }
   
   
@@ -91,6 +86,6 @@ public class BinarySerializedXTreeTest {
     String printedMutableTree = tree.toString();
     String printedBinaryTree = binarySerializedXTree.toString();
     
-    assertEquals("Wrong result tree", printedMutableTree, printedBinaryTree);
+    assertEquals(printedMutableTree, printedBinaryTree, "Wrong result tree");
   }
 }

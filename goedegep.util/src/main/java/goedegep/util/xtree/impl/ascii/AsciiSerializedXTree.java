@@ -5,17 +5,18 @@ import java.util.logging.Logger;
 import goedegep.util.bytesequence.ByteSequence;
 import goedegep.util.xtree.XNodeDataType;
 import goedegep.util.xtree.XTree;
-import goedegep.util.xtree.XTreeNode;
 import goedegep.util.xtree.XTreeNodeVisitResult;
 import goedegep.util.xtree.XTreeNodeVisitor;
 import goedegep.util.xtree.XTreeTag;
-import goedegep.util.xtree.impl.XTreeAbstract;
+import goedegep.util.xtree.impl.nodebased.NodeBasedXTreeAbstract;
+import goedegep.util.xtree.nodebased.NodeBasedXTree;
+import goedegep.util.xtree.nodebased.XTreeNode;
 import goedegep.util.xtree.serialized.SerializedXTree;
 
 /**
  * This class provides an XTree, or more specific a SerializedXTree, in ASCII Serialized Form.
  */
-public class AsciiSerializedXTree extends XTreeAbstract implements SerializedXTree {
+public class AsciiSerializedXTree extends NodeBasedXTreeAbstract implements NodeBasedXTree, SerializedXTree {
   private static final Logger LOGGER = Logger.getLogger(AsciiSerializedXTree.class.getName());
   
   private ByteSequence treeData;
@@ -82,7 +83,7 @@ public class AsciiSerializedXTree extends XTreeAbstract implements SerializedXTr
 
   @Override
   public XTreeNode getRoot() {
-    throw new UnsupportedOperationException("getRoot is supported for AsciiSerializedXTree");
+    throw new UnsupportedOperationException("getRoot is not supported for AsciiSerializedXTree");
   }
   
   
