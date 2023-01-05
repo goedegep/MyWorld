@@ -5,70 +5,68 @@ import java.util.logging.Logger;
 import goedegep.util.bitsequence.BitSequence;
 import goedegep.util.multibyteinteger.MultiByteIntegerUtil;
 import goedegep.util.xtree.XNodeDataType;
-import goedegep.util.xtree.XTreeNode;
 import goedegep.util.xtree.XTreeTag;
-import goedegep.util.xtree.impl.XTreeNodeAbstract;
+import goedegep.util.xtree.impl.nodebased.XTreeNodeAbstract;
+import goedegep.util.xtree.nodebased.XTreeNode;
 
+/**
+ * This class represents a node in a binary serialized tree.
+ */
 public class BinarySerializedXTreeNode extends XTreeNodeAbstract implements XTreeNode {
   private static final Logger LOGGER = Logger.getLogger(BinarySerializedXTreeNode.class.getName());
 
   private BitSequence bitSequence = null;
   private int index;
-  private BinarySerializedXTreeNode parent = null;
-  private BinarySerializedXTreeNode firstChild = null;
-  private BinarySerializedXTreeNode nextSibling = null;
   
   public BinarySerializedXTreeNode(BitSequence bitSequence, int index) {
     this.bitSequence = bitSequence;
     this.index = index;
   }
   
-  public boolean hasParent() {
-    return parent != null;
-  }
   
-  public XTreeNode getParent() {
-    return parent;
-  }
-  
-  public void setParent(BinarySerializedXTreeNode parent) {
-    this.parent = parent;
-  }
-  
-  public static BinarySerializedXTreeNode create(BitSequence bitSequence, int index) {
+  static BinarySerializedXTreeNode create(BitSequence bitSequence, int index) {
 
     return new BinarySerializedXTreeNode(bitSequence, index);
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
-  public boolean hasChild() {
-    return firstChild != null;
-//    LOGGER.severe("=> " + toString());
-//    bitSequence.setIndex(index);
-//    BinaryDirection binaryDirection = BinaryDirection.readFromBitSequence(bitSequence);
-//    if (binaryDirection == BinaryDirection.CHILD) {
-//      LOGGER.severe("<= true");
-//      return true;
-//    } else {
-//      LOGGER.severe("<= false");
-//      return false;
-//    }
+  public BinarySerializedXTreeNode getParent() {
+    return (BinarySerializedXTreeNode) super.getParent();
+  }
+  
+  /**
+   * Set the parent node of this node.
+   * 
+   * @param parent the new value for the parent node, which may be null.
+   */
+  public void setParent(BinarySerializedXTreeNode parent) {
+    this.parent = parent;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public BinarySerializedXTreeNode getFirstChild() {
-    return firstChild;
-//    LOGGER.severe("=> " + toString());
-//    bitSequence.setIndex(index);
-//    BinaryDirection binaryDirection = BinaryDirection.readFromBitSequence(bitSequence);
-//    if (binaryDirection == BinaryDirection.CHILD) {
-//      getData();  // to let the index skip this node
-//      return new BinarySerializedXTreeNode(bitSequence, bitSequence.getIndex());
-//    } else {
-//      LOGGER.severe("<= null");
-//      return null;
-//    }
+    return (BinarySerializedXTreeNode) super.getFirstChild();
   }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public BinarySerializedXTreeNode getLastChild() {
+    return (BinarySerializedXTreeNode) super.getLastChild();
+  }
+  
+  /**
+   * Set the first child node of this node.
+   * 
+   * @param firstChild the new value for the first child, which may be null.
+   */
   public void setFirstChild(BinarySerializedXTreeNode firstChild) {
     this.firstChild = firstChild;
   }
@@ -86,47 +84,24 @@ public class BinarySerializedXTreeNode extends XTreeNodeAbstract implements XTre
 
     return newNode;
   }
-  
-  public BinarySerializedXTreeNode getLastChild() {
-    BinarySerializedXTreeNode node = getFirstChild();
-
-    if (node == null) {
-      return null;
-    }
-
-    while (node.hasSibling()) {
-      node = node.getNextSibling();
-    }
-
-    return node;
-  }
-  
-  public boolean hasSibling() {
-    return nextSibling != null;
-  }  
-  
-  public void setNextSibling(BinarySerializedXTreeNode nextSibling) {
-    this.nextSibling = nextSibling;
-  }
 
   @Override
   public BinarySerializedXTreeNode getNextSibling() {
-    return nextSibling;
-//    LOGGER.severe("=> " + toString());
-//    bitSequence.setIndex(index);
-//    BinaryDirection binaryDirection = BinaryDirection.readFromBitSequence(bitSequence);
-//    if (binaryDirection == BinaryDirection.SIBLING) {
-//      getData();  // to let the index skip this node
-//      return new BinarySerializedXTreeNode(bitSequence, bitSequence.getIndex());
-//    } else {
-//      LOGGER.severe("<= null");
-//      return null;
-//    }
+    return (BinarySerializedXTreeNode) nextSibling;
+  }
+  
+  /**
+   * Set the next sibling node of this node.
+   * 
+   * @param nextSibling the new value for the next sibling, which may be null.
+   */
+  public void setNextSibling(BinarySerializedXTreeNode nextSibling) {
+    this.nextSibling = nextSibling;
   }
   
   public BinarySerializedXTreeNode appendSibling(BinarySerializedXTreeNode newNode) {
     
-    newNode.setParent((BinarySerializedXTreeNode) this.getParent());
+    newNode.setParent(this.getParent());
     newNode.setNextSibling(this.getNextSibling());
     setNextSibling(newNode);
     
@@ -288,7 +263,6 @@ public class BinarySerializedXTreeNode extends XTreeNodeAbstract implements XTre
       break;
 
     }
-    
     
     LOGGER.severe("<=");
     return result;

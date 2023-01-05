@@ -1,5 +1,8 @@
 package goedegep.util.xtree.impl.ascii;
 
+/**
+ * This enum defines the chars for the data types in an ASCII serialized XTree.
+ */
 public enum AsciiTypeIndication {
   BOOLEAN_TRUE('T'),
   BOOLEAN_FALSE('F'),

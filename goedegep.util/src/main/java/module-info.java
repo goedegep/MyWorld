@@ -46,8 +46,9 @@ module goedegep.util {
   exports goedegep.util.xtree.impl.binary;
   exports goedegep.util.xtree.impl.defaultmutable;
   exports goedegep.util.xtree.mutable;
+  exports goedegep.util.xtree.nodebased;
   exports goedegep.util.xtree.serialized;
-
+  
   requires commons.exec;
   requires transitive goedegep.geo;
   requires transitive java.desktop;
@@ -55,13 +56,16 @@ module goedegep.util {
   requires java.prefs;
   requires java.sql;
   requires java.xml;
-  requires junit;
+//  requires junit;
   requires transitive org.apache.commons.imaging;
   requires transitive org.eclipse.emf.common;
   requires transitive org.eclipse.emf.ecore;
-  requires org.hamcrest;
+//  requires org.hamcrest;
   requires transitive javafx.base;
   requires org.eclipse.emf.ecore.xmi;
   requires transitive com.google.common.geometry;
   requires transitive javafx.graphics;
+  
+  requires org.junit.jupiter.api;
+  requires org.junit.jupiter.params;
 }

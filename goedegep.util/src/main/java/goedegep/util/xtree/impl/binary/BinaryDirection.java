@@ -3,7 +3,7 @@ package goedegep.util.xtree.impl.binary;
 import goedegep.util.bitsequence.BitSequence;
 
 /**
- * Direction indication, used in serialized XTree formats.
+ * Direction indication, used in the binary serialized XTree format.
  *
  */
 public enum BinaryDirection {

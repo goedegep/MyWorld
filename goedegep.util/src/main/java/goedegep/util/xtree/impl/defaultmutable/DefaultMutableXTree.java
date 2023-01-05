@@ -3,25 +3,23 @@ package goedegep.util.xtree.impl.defaultmutable;
 
 import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
-import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import goedegep.util.xtree.XNodeDataType;
 import goedegep.util.xtree.XTree;
-import goedegep.util.xtree.XTreeNode;
 import goedegep.util.xtree.XTreeNodeVisitResult;
 import goedegep.util.xtree.XTreeNodeVisitor;
 import goedegep.util.xtree.XTreeTag;
-import goedegep.util.xtree.impl.XTreeAbstract;
 import goedegep.util.xtree.impl.XTreeNodeVisitorForPrinting;
+import goedegep.util.xtree.impl.nodebased.NodeBasedXTreeAbstract;
 import goedegep.util.xtree.mutable.MutableXTree;
 import goedegep.util.xtree.mutable.MutableXTreeNode;
 
 /**
  * This class provides an implementation of a {@code MutableXTree}.
  */
-public class DefaultMutableXTree extends XTreeAbstract implements MutableXTree {
+public class DefaultMutableXTree extends NodeBasedXTreeAbstract implements MutableXTree {
   private static final Logger LOGGER = Logger.getLogger(DefaultMutableXTree.class.getName());
 
   private MutableXTreeNode root = null;
@@ -60,7 +58,7 @@ public class DefaultMutableXTree extends XTreeAbstract implements MutableXTree {
       public XTreeNodeVisitResult visitTreeItem(XNodeDataType dataType, Object value) {
         if (upcount != 0) {
           while (upcount != 0) {
-            node = (MutableXTreeNode) node.getParent();
+            node = node.getParent();
             if (node == null) {
               throw new RuntimeException("Illegal value for upcount.");
             }
@@ -110,47 +108,7 @@ public class DefaultMutableXTree extends XTreeAbstract implements MutableXTree {
   }
   
   /*
-   * Implementation of the XTree interface
-   */
-
-  @Override
-  public void traverse(XTreeNodeVisitor xTreeNodeVisitor) {
-    
-    MutableXTreeNode node = getRoot();
-    
-    int level = 0;
-    while (node != null) {
-      xTreeNodeVisitor.visitTreeItem(node.getDataType(), node.getData());
-      
-      if (node.hasChild()) {
-        node = (MutableXTreeNode) node.getFirstChild();
-        level++;
-        xTreeNodeVisitor.preVisitChildren();
-      } else if (node.hasSibling()) {
-        node = (MutableXTreeNode) node.getNextSibling();
-      } else {
-        while ((level > 0) && (node.getParent().getNextSibling() == null)) {
-          node = (DefaultMutableXTreeNode) node.getParent();
-          level--;
-          xTreeNodeVisitor.postVisitChildren();
-        }
-        if ((level > 0)  &&  node.hasParent()) {
-          node = (MutableXTreeNode) node.getParent().getNextSibling();
-          level--;
-          xTreeNodeVisitor.postVisitChildren();
-        } else {
-          node = null;
-        }
-      }
-    }
-  }
-  
-  /*
-   * End of implementation of the XTree interface
-   */
-    
-  /*
-   * Implementation of the MutableXTree interface
+   * Implementation of the NodeBasedXTree interface
    */
   
   @Override
@@ -160,87 +118,128 @@ public class DefaultMutableXTree extends XTreeAbstract implements MutableXTree {
     return root;
   }
   
+  /*
+   * End of implementation of the NodeBasedXTree interface
+   */
+    
+  /*
+   * Implementation of the MutableXTree interface
+   */
+  
+  /**
+   * {@inheritDoc}
+   */
   @Override
-  public int getNumberOfChildren(MutableXTreeNode node) {
-    MutableXTreeNode currentNode;
+  public MutableXTreeNode setRoot(MutableXTreeNode rootNode) {
+    LOGGER.info("=> rootNode=" + rootNode);
+    root = rootNode;
+    LOGGER.info("<= " + root);
+    return root;
+  }
+  
 
-    if (node == null) {
-      currentNode = getRoot();
+  /*
+   * Adding nodes to the tree
+   */
+  
+  
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public MutableXTreeNode insertSibling(MutableXTreeNode referenceNode, MutableXTreeNode newNode) {
+    MutableXTreeNode realReferenceNode = (MutableXTreeNode) referenceNode;
+
+    if (realReferenceNode == null) {
+      // Insert as (new) root.
+      newNode.setNextSibling(root);
+      root = newNode;
     } else {
-      currentNode = (MutableXTreeNode) node.getFirstChild();
+      newNode.setParent(realReferenceNode.getParent());
+
+      // Find the sibling before the referenceNode.
+      MutableXTreeNode prevSibling;
+      if (!realReferenceNode.hasParent()) {
+        prevSibling = getRoot();
+      } else {
+        prevSibling = realReferenceNode.getParent().getFirstChild();
+      }
+      
+      if (prevSibling == realReferenceNode) {
+        // Insert as first node as this level.
+        if (!realReferenceNode.hasParent()) {
+          root = newNode;
+        } else {
+          realReferenceNode.getParent().setFirstChild(newNode);
+        }
+      } else {
+        while (prevSibling.getNextSibling() != realReferenceNode) {
+          prevSibling = (MutableXTreeNode) prevSibling.getNextSibling();
+        }
+
+        prevSibling.setNextSibling(newNode);
+      }
+      newNode.setNextSibling(realReferenceNode);
     }
 
-    if (currentNode == null) {
-      return 0;
-    }
-
-    int count = 1;
-    while (currentNode.hasSibling()) {
-      currentNode = (MutableXTreeNode) currentNode.getNextSibling();
-      count++;
-    }
-
-    return count;
+    return newNode;
+  }
+  
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public MutableXTreeNode insertTagSibling(MutableXTreeNode referenceNode, XTreeTag data) {
+    return insertSibling(referenceNode, new DefaultMutableXTreeTagNode(data));    
+  }
+  
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public MutableXTreeNode insertBooleanSibling(MutableXTreeNode referenceNode, boolean data) {
+    return insertSibling(referenceNode, new DefaultMutableXTreeBooleanNode(data));    
+  }
+  
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public MutableXTreeNode insertIntegerSibling(MutableXTreeNode referenceNode, int data) {
+    return insertSibling(referenceNode, new DefaultMutableXTreeIntegerNode(data));    
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
-  public int getNumberOfRemainingSiblings(MutableXTreeNode node) {
-    if (node == null) {
-      throw new IllegalArgumentException("Argument node may not be null");
-    }
-    
-    MutableXTreeNode currentNode = (MutableXTreeNode) node.getNextSibling();
-
-    if (currentNode == null) {
-      return 0;
-    }
-
-    int count = 1;
-    while (currentNode.hasSibling()) {
-      currentNode = (MutableXTreeNode) currentNode.getNextSibling();
-      count++;
-    }
-
-    return count;
+  public MutableXTreeNode insertStringSibling(MutableXTreeNode referenceNode, String data) {
+    return insertSibling(referenceNode, new DefaultMutableXTreeStringNode(data));    
   }
-
+  
+  /**
+   * {@inheritDoc}
+   */
   @Override
-  public int getChildIndex(MutableXTreeNode child) {
-    if (child == null) {
-      throw new IllegalArgumentException("Argument child may not be null");
-    }
-    
-    MutableXTreeNode parentNode = (MutableXTreeNode) child.getParent();
-    
-    MutableXTreeNode currentNode;
-    int index = 0;
-    
-    if (parentNode == null) {
-      currentNode = getRoot();
-    } else {
-      currentNode = (MutableXTreeNode) parentNode.getFirstChild();
-    }
-    
-    while (!currentNode.equals(child)) {
-      currentNode = (MutableXTreeNode) currentNode.getNextSibling();
-      index++;
-    }
-
-    return index;
+  public MutableXTreeNode insertBlobSibling(MutableXTreeNode referenceNode, byte[] data) {
+    return insertSibling(referenceNode, new DefaultMutableXTreeBlobNode(data));    
   }
  
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void removeNode(MutableXTreeNode xNode) {
     MutableXTreeNode defaultMutableXTreeNode = xNode;
     LOGGER.info("=> xNode=" + defaultMutableXTreeNode.toString());
 
     MutableXTreeNode currentNode;
-    MutableXTreeNode parent = (MutableXTreeNode) defaultMutableXTreeNode.getParent();
+    MutableXTreeNode parent = defaultMutableXTreeNode.getParent();
 
     if (parent == null) {
       currentNode = getRoot();
     } else {
-      currentNode = (MutableXTreeNode) parent.getFirstChild();
+      currentNode = parent.getFirstChild();
     }
 
     if (currentNode.equals(xNode)) {
@@ -260,12 +259,10 @@ public class DefaultMutableXTree extends XTreeAbstract implements MutableXTree {
     
     LOGGER.info("<=");
   }
-  
-  @Override
-  public boolean compareSubtrees(XTreeNode thisStartNode, XTree toTree, XTreeNode toStartNode, boolean includeSiblings) {
-    return compareSubtrees(thisStartNode, toTree, toStartNode, includeSiblings, false);
-  }
-  
+
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public MutableXTree filterTree(MutableXTree filter) {
     LOGGER.info("=>");
@@ -275,299 +272,22 @@ public class DefaultMutableXTree extends XTreeAbstract implements MutableXTree {
     DefaultMutableXTreeNode resultNode = null;
     String    indent = "";
 
-    filterSubTree(filter, filterNode,
-                        sourceNode,
-                        resultTree, resultNode,
-                        false, false, indent);
+    filterSubTree(filter, filterNode, sourceNode,
+        resultTree, resultNode, false, false, indent);
     
     LOGGER.info("<=");
     return resultTree;
   }
-  
-  @Override
-  public boolean compareNodes(XTreeNode referenceNode,
-      XTree secondTree, XTreeNode secondNode) {
-    if (referenceNode.getDataType() != secondNode.getDataType()) {
-      return false;
-    }
-    
-    switch (referenceNode.getDataType()) {
-    case TAG:
-      return referenceNode.getTagData() == secondNode.getTagData();
-      
-    case BOOLEAN:
-      return referenceNode.getBooleanData() == secondNode.getBooleanData();
-
-    case INTEGER:
-      return referenceNode.getIntegerData() == secondNode.getIntegerData();
-
-    case STRING:
-      return ((referenceNode.getStringData()).compareTo(secondNode.getStringData()) == 0);
-
-    case BLOB:
-      return Arrays.equals(referenceNode.getBlobData(), secondNode.getBlobData());
-    }
-
-    return false;
-  }
-
-  @Override
-  public MutableXTreeNode findChild(MutableXTreeNode referenceNode, XTreeTag nodeValue) {
-    MutableXTreeNode child;
-    
-    if (referenceNode != null) {
-      child = (MutableXTreeNode) referenceNode.getFirstChild();
-    } else {
-      child = getRoot();
-    }
-    
-    while (child != null) {
-      if (doesNodeContainValue(child, nodeValue)) {
-        break;
-      }
-      child = (MutableXTreeNode) child.getNextSibling();
-    }
-
-    return (child);
-  }
-  
-  @Override
-  public MutableXTreeNode findChild(MutableXTreeNode referenceNode, boolean nodeValue) {
-    MutableXTreeNode child;
-    
-    if (referenceNode != null) {
-      child = (MutableXTreeNode) referenceNode.getFirstChild();
-    } else {
-      child = getRoot();
-    }
-    
-    while (child != null) {
-      if (doesNodeContainValue(child, nodeValue)) {
-        break;
-      }
-      child = (MutableXTreeNode) child.getNextSibling();
-    }
-
-    return (child);
-  }
-  
-  @Override
-  public MutableXTreeNode findChild(MutableXTreeNode referenceNode, int nodeValue) {
-    MutableXTreeNode child;
-    
-    if (referenceNode != null) {
-      child = (MutableXTreeNode) referenceNode.getFirstChild();
-    } else {
-      child = getRoot();
-    }
-    
-    while (child != null) {
-      if (doesNodeContainValue(child, nodeValue)) {
-        break;
-      }
-      child = (MutableXTreeNode) child.getNextSibling();
-    }
-
-    return (child);
-  }
-
-
-  @Override
-  public MutableXTreeNode findChild(MutableXTreeNode referenceNode, String nodeValue) {
-    MutableXTreeNode child;
-    
-    if (referenceNode != null) {
-      child = (MutableXTreeNode) referenceNode.getFirstChild();
-    } else {
-      child = getRoot();
-    }
-    
-    while (child != null) {
-      if (doesNodeContainValue(child, nodeValue)) {
-        break;
-      }
-      child = (MutableXTreeNode) child.getNextSibling();
-    }
-    return (child);
-  }
-
-  @Override
-  public MutableXTreeNode findChild(MutableXTreeNode referenceNode, byte[] nodeValue) {
-    MutableXTreeNode child;
-    
-    if (referenceNode != null) {
-      child = (MutableXTreeNode) referenceNode.getFirstChild();
-    } else {
-      child = getRoot();
-    }
-    
-    while (child != null) {
-      if (doesNodeContainValue(child, nodeValue)) {
-        break;
-      }
-      child = (MutableXTreeNode) child.getNextSibling();
-    }
-
-    return (child);
-  }
-
-  @Override
-  public MutableXTreeNode findNode(MutableXTreeNode node, short value) {
-    MutableXTreeNode child = null;
-    MutableXTreeNode grandchild = null;
-
-    if (node != null) {
-      child = (MutableXTreeNode) node.getFirstChild();
-    } else {
-      child = getRoot();
-    }
-    
-    while (child != null && !doesNodeContainValue(child, value)) {
-      if ((grandchild = findNode(child, value)) != null) {
-        return (grandchild);
-      }
-      child = (MutableXTreeNode) child.getNextSibling();
-    }
-    
-    return (child);
-  }
-
-  @Override
-  public MutableXTreeNode findNode(MutableXTreeNode node, boolean value) {
-    MutableXTreeNode child = null;
-    MutableXTreeNode grandchild = null;
-
-    if (node != null) {
-      child = (MutableXTreeNode) node.getFirstChild();
-    } else {
-      child = getRoot();
-    }
-    
-    while (child != null && !doesNodeContainValue(child, value)) {
-      if ((grandchild = findNode(child, value)) != null) {
-        return (grandchild);
-      }
-      child = (MutableXTreeNode) child.getNextSibling();
-    }
-    
-    return (child);
-  }
-
-  @Override
-  public MutableXTreeNode findNode(MutableXTreeNode node, int value) {
-    MutableXTreeNode child = null;
-    MutableXTreeNode grandchild = null;
-
-    if (node != null) {
-      child = (MutableXTreeNode) node.getFirstChild();
-    } else {
-      child = getRoot();
-    }
-    
-    while (child != null && !doesNodeContainValue(child, value)) {
-      if ((grandchild = findNode(child, value)) != null) {
-        return (grandchild);
-      }
-      child = (MutableXTreeNode) child.getNextSibling();
-    }
-    
-    return (child);
-  }
-
-  @Override
-  public MutableXTreeNode findNode(MutableXTreeNode node, String value) {
-    MutableXTreeNode child = null;
-    MutableXTreeNode grandchild = null;
-
-    if (node != null) {
-      child = (MutableXTreeNode) node.getFirstChild();
-    } else {
-      child = getRoot();
-    }
-    
-    while (child != null && !doesNodeContainValue(child, value)) {
-      if ((grandchild = findNode(child, value)) != null) {
-        return (grandchild);
-      }
-      child = (MutableXTreeNode) child.getNextSibling();
-    }
-    
-    return (child);
-  }
-
-  @Override
-  public MutableXTreeNode findNode(MutableXTreeNode node, byte[] value) {
-    MutableXTreeNode child = null;
-    MutableXTreeNode grandchild = null;
-
-    if (node != null) {
-      child = (MutableXTreeNode) node.getFirstChild();
-    } else {
-      child = getRoot();
-    }
-    
-    while (child != null && !doesNodeContainValue(child, value)) {
-      if ((grandchild = findNode(child, value)) != null) {
-        return (grandchild);
-      }
-      child = (MutableXTreeNode) child.getNextSibling();
-    }
-    
-    return (child);
-  }
-  
-  @Override
-  public void traverse(MutableXTreeNode startNode,
-      boolean visitChildren, boolean visitStartNodeSiblings, XTreeNodeVisitor xTreeNodeVisitor) {
-    
-    MutableXTreeNode node;
-    if (startNode != null) {
-      node = startNode;
-    } else {
-      node = getRoot();
-    }
-    
-    int level = 0;
-    while (node != null) {
-      xTreeNodeVisitor.visitTreeItem(node.getDataType(), node.getData());
-      
-      if (node.hasChild()) {
-        if (visitChildren) {
-          node = (MutableXTreeNode) node.getFirstChild();
-          level++;
-          xTreeNodeVisitor.preVisitChildren();
-        }
-      } else if (node.hasSibling()) {
-        if (visitStartNodeSiblings  ||  (level > 0)) {
-          node = (MutableXTreeNode) node.getNextSibling();
-        }
-      } else {
-        while ((level > 0) && (node.getParent().getNextSibling() == null)) {
-          node = (MutableXTreeNode) node.getParent();
-          level--;
-          xTreeNodeVisitor.postVisitChildren();
-        }
-        if ((level > 0)  &&  (visitStartNodeSiblings || (level > 1))) {
-          node = (MutableXTreeNode) node.getParent().getNextSibling();
-          level--;
-          xTreeNodeVisitor.postVisitChildren();
-        } else {
-          node = null;
-        }
-      }
-    }
-  }
-  
 
   @Override
   public void print(MutableXTreeNode startNode,
       boolean printChildren,boolean printSiblings, OutputStream outputStream) {
-    LOGGER.severe("=>");
+    LOGGER.info("=>");
     
     XTreeNodeVisitorForPrinting visitor = new XTreeNodeVisitorForPrinting(outputStream);
     traverse(startNode, printChildren, printSiblings, visitor);
     
-    LOGGER.severe("<=");
+    LOGGER.info("<=");
   }
   
   @Override
@@ -614,7 +334,7 @@ public class DefaultMutableXTree extends XTreeAbstract implements MutableXTree {
 
       // give the top level nodes the right parent.
       for (MutableXTreeNode node = (MutableXTreeNode) srcTree.getRoot(); node != null; node = (MutableXTreeNode) node.getNextSibling()) {
-        node.setParent((MutableXTreeNode) siblingNode.getParent());
+        node.setParent(siblingNode.getParent());
       }
 
       MutableXTreeNode srcTreeLastTopLevelNode = (MutableXTreeNode) srcTree.getRoot().getLastSibling();
@@ -629,7 +349,7 @@ public class DefaultMutableXTree extends XTreeAbstract implements MutableXTree {
       // - the first child of parentNode will be the root of the srcTree
       // - if parentNode had children, its first child will become the next sibling of the last top level node of the srcTree.
       
-      MutableXTreeNode parentsFirstChild = (MutableXTreeNode) parentNode.getFirstChild();
+      MutableXTreeNode parentsFirstChild = parentNode.getFirstChild();
 
       // give the nodes the right parent.
       for (MutableXTreeNode node = (MutableXTreeNode) srcTree.getRoot(); node != null; node = (MutableXTreeNode) node.getNextSibling()) {
@@ -662,119 +382,6 @@ public class DefaultMutableXTree extends XTreeAbstract implements MutableXTree {
   }
 
   
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public MutableXTreeNode insertTagSibling(MutableXTreeNode referenceNode, XTreeTag data) {
-    return insertSibling(referenceNode, new DefaultMutableXTreeTagNode(data));    
-  }
-  
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public MutableXTreeNode insertBooleanSibling(MutableXTreeNode referenceNode, boolean data) {
-    return insertSibling(referenceNode, new DefaultMutableXTreeBooleanNode(data));    
-  }
-  
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public MutableXTreeNode insertIntegerSibling(MutableXTreeNode referenceNode, int data) {
-    return insertSibling(referenceNode, new DefaultMutableXTreeIntegerNode(data));    
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public MutableXTreeNode insertStringSibling(MutableXTreeNode referenceNode, String data) {
-    return insertSibling(referenceNode, new DefaultMutableXTreeStringNode(data));    
-  }
-  
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public MutableXTreeNode insertBlobSibling(MutableXTreeNode referenceNode, byte[] data) {
-    return insertSibling(referenceNode, new DefaultMutableXTreeBlobNode(data));    
-  }
-  
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public MutableXTreeNode insertSibling(MutableXTreeNode referenceNode, MutableXTreeNode newNode) {
-    MutableXTreeNode realReferenceNode = (MutableXTreeNode) referenceNode;
-
-    if (realReferenceNode == null) {
-      // Insert as (new) root.
-      newNode.setNextSibling(root);
-      root = newNode;
-    } else {
-      newNode.setParent((MutableXTreeNode) realReferenceNode.getParent());
-
-      // Find the sibling before the referenceNode.
-      MutableXTreeNode prevSibling;
-      if (!realReferenceNode.hasParent()) {
-        prevSibling = getRoot();
-      } else {
-        prevSibling = (MutableXTreeNode) realReferenceNode.getParent().getFirstChild();
-      }
-      
-      if (prevSibling == realReferenceNode) {
-        // Insert as first node as this level.
-        if (!realReferenceNode.hasParent()) {
-          root = newNode;
-        } else {
-          ((MutableXTreeNode) realReferenceNode.getParent()).setFirstChild(newNode);
-        }
-      } else {
-        while (prevSibling.getNextSibling() != realReferenceNode) {
-          prevSibling = (MutableXTreeNode) prevSibling.getNextSibling();
-        }
-
-        prevSibling.setNextSibling(newNode);
-      }
-      newNode.setNextSibling(realReferenceNode);
-    }
-
-    return newNode;
-  }
-  
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public MutableXTreeNode setRoot(MutableXTreeNode rootNode) {
-    LOGGER.info("=> rootNode=" + rootNode);
-    root = rootNode;
-    LOGGER.info("<= " + root);
-    return root;
-  }
-  
-
-  @Override
-  public boolean equals(Object obj) {
-    if (obj == null) {
-      return false;
-    }
-
-    if (this == obj) {
-      return true;
-    }
-
-    if (getClass() != obj.getClass()) {
-      return false;
-    }
-    
-    MutableXTree tree = (MutableXTree) obj;
-    return compareSubtrees(getRoot(), tree, tree.getRoot(), true);
-  }
-  
   /*
    * End of extra methods for DefaultMutableXTree.
    */
@@ -784,32 +391,23 @@ public class DefaultMutableXTree extends XTreeAbstract implements MutableXTree {
    * Internal methods from here.
    */
 
-  private boolean compareSubtrees(XTreeNode thisStartNode, XTree toTree, XTreeNode toStartNode, boolean includeSiblings, boolean handlingSiblings) {
-    if (!compareNodesStructureAndContent(thisStartNode, toTree, toStartNode)) {
-      return false;
-    }
-
-    if (thisStartNode.hasChild()) {
-      if (!compareSubtrees(thisStartNode.getFirstChild(),
-          toTree, toStartNode.getFirstChild(), true, false)) {
-        return false;
-      }
-    }
-
-    if (includeSiblings  &&  !handlingSiblings) {
-      while (thisStartNode.hasSibling()) {
-        thisStartNode = thisStartNode.getNextSibling();
-        toStartNode = toStartNode.getNextSibling();
-        if (!compareSubtrees(thisStartNode,
-            toTree, toStartNode, includeSiblings, true)) {
-          return false;
-        }
-      }
-    }
-
-    return true;
-  }
-
+  /**
+   * Add a copy of a subtree to a tree.
+   * <p>
+   * Used to implement {@link #addSubtreeCopy(MutableXTreeNode, MutableXTreeNode, boolean, MutableXTree, MutableXTreeNode, boolean)}.
+   * 
+   * @param dstParentNode Node below which the subtree of srcTree will be added.
+   * @param dstSiblingNode Node before or after which the subtree of srcTree will be added.
+   * @param insert Indicates whether the subtree of srcTree is added before (if TRUE) or
+   *               after (if FALSE) dstSiblingNode.
+   * @param srcTree The tree of which a subtree is to be added.
+   * @param srcReferenceNode Starting point of the subtree in srcTree.
+   * @param includeSiblings
+   *      The new tree will always contain 'srcReferenceNode' and all its
+   *      decendents.  If this value is true, the new tree also contains the
+   *      siblings of 'srcReferenceNode' and all their decendents.
+   * @param addingSiblings shall be set to true if siblings are being handle (recursively).
+   */
   private void addSubtreeCopy(MutableXTreeNode dstParentNode, MutableXTreeNode dstSiblingNode,
       boolean insert, MutableXTree srcTree, MutableXTreeNode srcReferenceNode,
       boolean includeSiblings, boolean addingSiblings) {
@@ -837,7 +435,7 @@ public class DefaultMutableXTree extends XTreeAbstract implements MutableXTree {
 
     if (srcReferenceNode.hasChild()) {
       addSubtreeCopy(node, (MutableXTreeNode) null,
-                     insert, srcTree, (MutableXTreeNode) srcReferenceNode.getFirstChild(), true, false);
+                     insert, srcTree, srcReferenceNode.getFirstChild(), true, false);
     }
     if (includeSiblings  &&  !addingSiblings) {
       while (srcReferenceNode.hasSibling()) {
@@ -851,18 +449,19 @@ public class DefaultMutableXTree extends XTreeAbstract implements MutableXTree {
     LOGGER.info("<=");
   }
   
+  
   /**
    * Filter a tree.
    * 
-   * @param filterTree
-   * @param filterNode
-   * @param sourceNode
-   * @param resultTree
-   * @param resultParentNode
-   * @param copy
-   * @param handlingSiblings
-   * @param indent
-   * @return
+   * @param filterTree the filter
+   * @param filterNode current node in the {@code filterTree}
+   * @param sourceNode current node in this tree
+   * @param resultTree the result tree
+   * @param resultParentNode parent node of ...
+   * @param copy ...
+   * @param handlingSiblings set to true if siblings are being handled.
+   * @param indent indentation for pretty debug printing.
+   * @return The filtered tree.
    */
   private boolean filterSubTree(MutableXTree filterTree, MutableXTreeNode filterNode,
                                 MutableXTreeNode sourceNode,
@@ -920,7 +519,7 @@ public class DefaultMutableXTree extends XTreeAbstract implements MutableXTree {
         // find occurrences i through j equal to s under sourceParentNode, copy these nodes into
         // the resultTree and recursively call filterSubTree.
         indexRange = true;
-        node = (MutableXTreeNode) filterNode.getFirstChild();
+        node = filterNode.getFirstChild();
         indexStart = node.getIntegerData();
 
         if (tag == XTreeTag.QUERY_INDEX) {
@@ -934,7 +533,7 @@ public class DefaultMutableXTree extends XTreeAbstract implements MutableXTree {
         break;
 
       case QUERY_WHERE:
-        treeFilterNode = (MutableXTreeNode) filterNode.getFirstChild();
+        treeFilterNode = filterNode.getFirstChild();
         filterNode = (MutableXTreeNode) filterNode.getNextSibling();
         onlySameTrees = true;
         break;
@@ -954,7 +553,7 @@ public class DefaultMutableXTree extends XTreeAbstract implements MutableXTree {
            node != null;
            node = (MutableXTreeNode) node.getNextSibling()) {
         // check if a tree UNDER node equals the treeFilterNode-based tree
-        for (node2 = (MutableXTreeNode) node.getFirstChild();
+        for (node2 = node.getFirstChild();
              node2 != null;
              node2 = (MutableXTreeNode) node2.getNextSibling()) {
           if (((DefaultMutableXTree) filterTree).isSubTree(treeFilterNode, this, node2, "")) {
@@ -967,8 +566,8 @@ public class DefaultMutableXTree extends XTreeAbstract implements MutableXTree {
             // if filterNode has a child, handle it by recursively calling filterSubTree
             // for this child.
             if (filterNode.hasChild()) {
-              filterSubTree(filterTree, (MutableXTreeNode) filterNode.getFirstChild(),
-                  (MutableXTreeNode) node.getFirstChild(),
+              filterSubTree(filterTree, filterNode.getFirstChild(),
+                  node.getFirstChild(),
                   resultTree, newNode,
                   copy, false, indent + "  ");
             }
@@ -985,7 +584,7 @@ public class DefaultMutableXTree extends XTreeAbstract implements MutableXTree {
            node = (MutableXTreeNode) node.getNextSibling()) {
         if (!indexRange  ||
             (index >= indexStart  &&  index <= indexEnd)) {
-          if (filterTree.compareNodes(filterNode, this, node)) {
+          if (filterNode.equals(node)) {
             DefaultMutableXTreeNode newNode = null;
             if (copy) {
 //              newNode = (POIDataTreeRealNode) resultTree.addCopyOfNode(resultParentNode, addAss, sourceTree, node);
@@ -994,8 +593,8 @@ public class DefaultMutableXTree extends XTreeAbstract implements MutableXTree {
             // if filterNode has a child, handle it by recursively calling filterSubTree
             // for this child.
             if (filterNode.hasChild()) {
-              filterSubTree(filterTree, (MutableXTreeNode) filterNode.getFirstChild(),
-                  (MutableXTreeNode) node.getFirstChild(),
+              filterSubTree(filterTree, filterNode.getFirstChild(),
+                  node.getFirstChild(),
                   resultTree, newNode,
                   copy, false, indent + "  ");
             }
@@ -1021,69 +620,6 @@ public class DefaultMutableXTree extends XTreeAbstract implements MutableXTree {
 
     return copy;
   }
-  
-  private boolean compareNodesStructureAndContent(XTreeNode referenceNode, XTree secondTree, XTreeNode secondNode) {
-    if (((referenceNode == null) && (secondNode != null))  ||
-        ((referenceNode != null) && (secondNode == null))  ||
-        (referenceNode.hasChild()  &&  !secondNode.hasChild())  ||
-        (!referenceNode.hasChild()  &&  secondNode.hasChild())  ||
-        (referenceNode.hasSibling()  &&  !secondNode.hasSibling())  ||
-        (!referenceNode.hasSibling()  &&  secondNode.hasSibling())
-        ) {
-//      System.out.println(indent + "   Nodes not equal as structure differs.");
-      return false;
-    } else {
-      return compareNodes(referenceNode, secondTree, secondNode);
-    }
-  }
-
-
-  
-  /**
-   * Internal methods from here.
-   */
-  
-  private boolean doesNodeContainValue(MutableXTreeNode node, XTreeTag value) {
-    return (node.getDataType() == XNodeDataType.TAG &&
-        node.getTagChildData() == value);  
-  }
-  
-  private boolean doesNodeContainValue(MutableXTreeNode node, boolean value) {
-    return (node.getDataType() == XNodeDataType.BOOLEAN &&
-        node.getBooleanData() == value);    
-  }
-  
-  private boolean doesNodeContainValue(MutableXTreeNode node, int value) {
-    return (node.getDataType() == XNodeDataType.INTEGER &&
-        node.getIntegerData() == value);   
-  }
-  
-  private boolean doesNodeContainValue(MutableXTreeNode node, String value) {
-    return (node.getDataType() == XNodeDataType.STRING &&
-        node.getStringData().compareTo(value) == 0);
-  }
-  
-  private boolean doesNodeContainValue(MutableXTreeNode node, byte[] value) { 
-    // Not OK if type is not BLOB.
-    if (node.getDataType() != XNodeDataType.BLOB) {
-      return false;
-    }
-      
-    // Not OK if lengths differ.
-    byte[] nodeValue = node.getBlobData();
-    if (nodeValue.length == value.length) {
-      return false;
-    }
-    
-    // Not OK if a byte differs.
-    for (int i = 0; i < nodeValue.length; i++) {
-      if (nodeValue[i] != value[i]) {
-        return false;
-      }
-    }
-    
-    return false;
-  }
 
 
   /**
@@ -1092,24 +628,22 @@ public class DefaultMutableXTree extends XTreeAbstract implements MutableXTree {
   private boolean isSubTree(MutableXTreeNode firstTreeNode,
       MutableXTree secondTree, MutableXTreeNode secondTreeNode,
                             String indent) {
-//    System.out.println(indent + "                                                        => isSubTree" +
-//                       nodeToString(firstTreeNode) + " vs. " + secondTree.nodeToString(secondTreeNode));
 
-    boolean noDifferenceFound = compareNodes(firstTreeNode, secondTree, secondTreeNode);
+    boolean noDifferenceFound = firstTreeNode.equals(secondTreeNode);
     if (noDifferenceFound) {
-      int     firstTreeCurrNodeNrChildren  = getNumberOfChildren(firstTreeNode);
-      int     secondTreeCurrNodeNrChildren = secondTree.getNumberOfChildren(secondTreeNode);
-      int     firstTreeCurrNodeNrSiblingsRemaining  = getNumberOfRemainingSiblings(firstTreeNode);
-      int     secondTreeCurrNodeNrSiblingsRemaining = secondTree.getNumberOfRemainingSiblings(secondTreeNode);
+      int     firstTreeCurrNodeNrChildren  = firstTreeNode.getNumberOfChildren();
+      int     secondTreeCurrNodeNrChildren = secondTreeNode.getNumberOfChildren();
+      int     firstTreeCurrNodeNrSiblingsRemaining  = firstTreeNode.getNumberOfRemainingSiblings();
+      int     secondTreeCurrNodeNrSiblingsRemaining = secondTreeNode.getNumberOfRemainingSiblings();
 
       if ((firstTreeCurrNodeNrSiblingsRemaining <= secondTreeCurrNodeNrSiblingsRemaining) &&
           (firstTreeCurrNodeNrChildren <= secondTreeCurrNodeNrChildren)) {
         if (firstTreeCurrNodeNrChildren > 0) {
           boolean    foundSameTree = false;
-          MutableXTreeNode firstTreeNextChild = (MutableXTreeNode) firstTreeNode.getFirstChild();
+          MutableXTreeNode firstTreeNextChild = firstTreeNode.getFirstChild();
           for (int i = 0; (i < firstTreeCurrNodeNrChildren) && noDifferenceFound; i++) {
             foundSameTree = false;
-            MutableXTreeNode secondTreeNextChild = (MutableXTreeNode) secondTreeNode.getFirstChild();
+            MutableXTreeNode secondTreeNextChild = secondTreeNode.getFirstChild();
             for (int j = 0; (j < secondTreeCurrNodeNrChildren) && !foundSameTree; j++) {
               if (isSubTree(firstTreeNextChild,
                             secondTree, secondTreeNextChild, indent + "  ")) {
@@ -1140,8 +674,6 @@ public class DefaultMutableXTree extends XTreeAbstract implements MutableXTree {
         }
       }
     }
-//    System.out.println(indent + "                                                        <= isSubTree " + noDifferenceFound +
-//                       (noDifferenceFound ? "" : "FALSE"));
     return noDifferenceFound;
   }
   

@@ -14,6 +14,7 @@ import goedegep.util.xtree.impl.binary.BinarySerializedXTree;
 import goedegep.util.xtree.mutable.MutableXTree;
 import goedegep.util.xtree.mutable.MutableXTreeFactory;
 import goedegep.util.xtree.mutable.MutableXTreeNode;
+import goedegep.util.xtree.nodebased.NodeBasedXTree;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -266,7 +267,7 @@ public class XTreeDemo extends JfxStage {
   private void runBinaryTreeDemo() {
     resultHBox.getChildren().clear();
     
-    XTree binaryTree = new BinarySerializedXTree(tree);
+    NodeBasedXTree binaryTree = new BinarySerializedXTree(tree);
     LOGGER.severe(binaryTree.toString());
     XTreeView binaryTreeView = new XTreeView();
     binaryTreeView.setRootNode(binaryTree.getRoot());

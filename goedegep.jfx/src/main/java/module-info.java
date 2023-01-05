@@ -34,6 +34,7 @@ module goedegep.appgenfx {
   requires javafx.swing;
   requires goedegep.geo;
   requires goedegep.resources;
+  requires junit;
   
   opens goedegep.jfx.eobjecttable;
 }

@@ -1,12 +1,22 @@
-package goedegep.util.xtree;
+package goedegep.util.xtree.nodebased;
+
+import java.util.Arrays;
+
+import goedegep.util.xtree.XNodeDataType;
+import goedegep.util.xtree.XTree;
+import goedegep.util.xtree.XTreeTag;
 
 /**
- * This interface represents a node in an {@link XTree}, it defines the functionality of an XTree node.
+ * This interface represents a node in an {@link NodeBasedXTree}, it defines the functionality of an XTree node.
  * <p>
  * An implementation only has to be provided by XTree implementations that support access via nodes, i.e. implementations that provide an implementation of {@link XTree#getRoot()}.
  *
  */
 public interface XTreeNode {
+  
+  /*
+   * Basic methods to walk through the tree
+   */
   
   /**
    * Test whether a node has a parent. Only the top-level nodes have no parent.
@@ -29,7 +39,7 @@ public interface XTreeNode {
    * Test whether a node has one or more children.
    * 
    * @return
-   *    ture if the node has a child, false otherwise.
+   *    true if the node has a child, false otherwise.
    */
   public boolean hasChild();
 
@@ -46,19 +56,19 @@ public interface XTreeNode {
    * 
    * @return The last child of the node, or null if the node doesn't have any children.
    */
-  public default XTreeNode getLastChild() {
-    XTreeNode node = getFirstChild();
+  public XTreeNode getLastChild();
 
-    if (node == null) {
-      return null;
-    }
-
-    while (node.hasSibling()) {
-      node = node.getNextSibling();
-    }
-
-    return node;
-  }
+  /**
+   * Get the number of children of a node.
+   */
+  public int getNumberOfChildren();
+  
+  /**
+   * Get the child index of a node.
+   * 
+   * @return the index of this node in the list of children of its parent, or -1 if the node has no parent.
+   */
+  public int getChildIndex();
 
   /**
    * Test whether a node has a sibling.
@@ -79,18 +89,12 @@ public interface XTreeNode {
    * 
    * @return The last sibling of the node, or null if there isn't any next sibling.
    */
-  public default XTreeNode getLastSibling() {
-    if (!hasSibling()) {
-      return null;
-    }
-    
-    XTreeNode node = getNextSibling();
-    while (node.hasSibling()) {
-      node = node.getNextSibling();
-    }
+  public XTreeNode getLastSibling();
 
-    return node;
-  }
+  /**
+   * Get the number of siblings following a node.
+   */
+  public int getNumberOfRemainingSiblings();
   
   /*
    * Getting data from a node.
@@ -236,7 +240,105 @@ public interface XTreeNode {
   public default byte[] getBlobChildData() {
     return getFirstChild().getBlobData();
   }
+  
+  /**
+   * Comparing nodes and checking on specific values
+   */
+  
+  /**
+   * Compare two nodes.
+   * <p>
+   * The nodes are considered equal if:
+   * <ul>
+   * <li> both nodes are null, or not null AND</li>
+   * <li> both nodes have a child, or don't have a child. AND</li>
+   * <li> both nodes have a sibling, or don't have a sibling. AND</li>
+   * <li> the nodes have the same contents</li> 
+   * </ul>
+   * The method is meant to be used for comparing nodes in different trees, therefore the child and sibling references will always be different.
+   * 
+   * @param firstNode
+   * @param secondNode
+   * @return true is the nodes are 'equal', false otherwise.
+   */
+  public static boolean compareNodesStructureAndContent(XTreeNode firstNode, XTreeNode secondNode) {
+    if (((firstNode == null) && (secondNode != null))  ||
+        ((firstNode != null) && (secondNode == null))  ||
+        (firstNode.hasChild()  &&  !secondNode.hasChild())  ||
+        (!firstNode.hasChild()  &&  secondNode.hasChild())  ||
+        (firstNode.hasSibling()  &&  !secondNode.hasSibling())  ||
+        (!firstNode.hasSibling()  &&  secondNode.hasSibling())
+        ) {
+      return false;
+    } else {
+      return firstNode.equals(secondNode);
+    }
+  }
+  
+  /**
+   * Check whether the node contains a specific XTreeTag value.
+   * 
+   * @param value the value to check against
+   * @return true if the node contains {@code value}, false otherwise.
+   */
+  public default boolean contains(XTreeTag value) {
+    return (getDataType() == XNodeDataType.TAG &&
+        getTagChildData() == value);  
+  }
+  
+  /**
+   * Check whether the node contains a specific boolean value.
+   * 
+   * @param value the value to check against
+   * @return true if the node contains {@code value}, false otherwise.
+   */
+  public default boolean contains(boolean value) {
+    return (getDataType() == XNodeDataType.BOOLEAN &&
+        getBooleanData() == value);    
+  }
+  
+  /**
+   * Check whether the node contains a specific int value.
+   * 
+   * @param value the value to check against
+   * @return true if the node contains {@code value}, false otherwise.
+   */
+  public default boolean contains(int value) {
+    return (getDataType() == XNodeDataType.INTEGER &&
+        getIntegerData() == value);   
+  }
+  
+  /**
+   * Check whether the node contains a specific String value.
+   * 
+   * @param value the value to check against
+   * @return true if the node contains {@code value}, false otherwise.
+   */
+  public default boolean contains(String value) {
+    return (getDataType() == XNodeDataType.STRING &&
+        getStringData().compareTo(value) == 0);
+  }
+  
+  /**
+   * Check whether the node contains a specific BLOB value.
+   * 
+   * @param value the value to check against
+   * @return true if the node contains {@code value}, false otherwise.
+   */
+  public default boolean contains(byte[] value) { 
+    // Not OK if type is not BLOB.
+    if (getDataType() != XNodeDataType.BLOB) {
+      return false;
+    }
+     
+    return Arrays.equals(getBlobData(), value);
+  }
 
+  
+  /*
+   * Debug funcionality
+   */
+  
   /**
    * Get a String representation of the references (parent, firstChild and nextSibling) of this node.
    * 

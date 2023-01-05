@@ -1,5 +1,8 @@
 package goedegep.util.xtree.impl.ascii;
 
+/**
+ * Direction indication, used in the ASCII serialized XTree format.
+ */
 public enum AsciiDirection {
   CHILD('-'),
   SIBLING('*'),

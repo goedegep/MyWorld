@@ -34,17 +34,6 @@ public interface XTree {
    */
   public void traverse(XTreeNodeVisitor xTreeNodeVisitor);
 
-  /**
-   * Get the root node of a tree.
-   * <p>
-   * This method doesn't have to be implemented by implementations that only support walking through the tree
-   * via the {@link #traverse} method.
-   * 
-   * @return The root node of the tree.
-   */
-  public default XTreeNode getRoot() {
-    throw new UnsupportedOperationException("This XTree implementation doesn't support nodes");
-  }
   
   /*
    * Debug support.
