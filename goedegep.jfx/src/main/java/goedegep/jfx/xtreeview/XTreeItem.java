@@ -29,13 +29,12 @@ public class XTreeItem extends TreeItem<XTreeNode> {
    */
   @Override
   public boolean isLeaf() {
-    LOGGER.severe("=> XTreeNode=" + getValue().toString());
-//    LOGGER.severe("=> XTreeNode=" + XTree.nodeToString(getValue().getDataType(), getValue().getData()));
+    LOGGER.info("=> XTreeNode=" + getValue().toString());
     
     XTreeNode xTreeNode = getValue();
     boolean result = !xTreeNode.hasChild();
         
-    LOGGER.severe("<= " + result);
+    LOGGER.info("<= " + result);
     return result;
   }
 
@@ -45,7 +44,7 @@ public class XTreeItem extends TreeItem<XTreeNode> {
    */
   @Override
   public ObservableList<TreeItem<XTreeNode>> getChildren() {
-    LOGGER.severe("=>");
+    LOGGER.info("=>");
     
     if (isFirstTimeChildren) {
       isFirstTimeChildren = false;
@@ -169,7 +168,7 @@ public class XTreeItem extends TreeItem<XTreeNode> {
    * @return the list of children for eObjectTreeItem, or null if there are no children.
    */
   private ObservableList<TreeItem<XTreeNode>> buildChildren() {
-    LOGGER.severe("=> MutableXTreeNode=" + toString());
+    LOGGER.info("=> MutableXTreeNode=" + toString());
     
     ObservableList<TreeItem<XTreeNode>> children = FXCollections.observableArrayList();;
     
@@ -182,12 +181,12 @@ public class XTreeItem extends TreeItem<XTreeNode> {
       childXTreeNode = childXTreeNode.getNextSibling();
     }
         
-    LOGGER.severe("<=");
+    LOGGER.info("<=");
     return children;
   }
   
   private ObservableList<TreeItem<XTreeNode>> buildRootChildren() {
-    LOGGER.severe("=> MutableXTreeNode=" + toString());
+    LOGGER.info("=> MutableXTreeNode=" + toString());
     
     ObservableList<TreeItem<XTreeNode>> children = FXCollections.observableArrayList();;
     
@@ -199,7 +198,7 @@ public class XTreeItem extends TreeItem<XTreeNode> {
       xTreeNode = xTreeNode.getNextSibling();
     }
         
-    LOGGER.severe("<=");
+    LOGGER.info("<=");
     return children;
   }
   

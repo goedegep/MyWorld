@@ -5,7 +5,8 @@ import java.util.logging.Logger;
 import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.JfxStage;
 import goedegep.jfx.xtreeview.XTreeView;
-import goedegep.util.xtree.XTree;
+import goedegep.util.text.Indent;
+import goedegep.util.xtree.XNodeDataType;
 import goedegep.util.xtree.XTreeTag;
 import goedegep.util.xtree.impl.binary.BinarySerializedXTree;
 //import goedegep.util.xtree.impl.defaultmutable.DefaultMutableXTree;
@@ -22,10 +23,13 @@ import javafx.scene.control.TextArea;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.web.WebEngine;
+import javafx.scene.web.WebView;
 
 public class XTreeDemo extends JfxStage {
   @SuppressWarnings("unused")
   private final static Logger LOGGER = Logger.getLogger(XTreeDemo.class.getName());
+  private final static String NEW_LINE = System.lineSeparator();
   
   private final static String WINDOW_TITLE = "XTree demo";
   
@@ -48,141 +52,6 @@ public class XTreeDemo extends JfxStage {
     
     treeView.setRootNode(tree.getRoot());
         
-    //    XTreeInterface tree = XTreeFactory.createXTree();
-    //    byte[]         rawData = {0x01, 0x02, 0x03, 0x04};
-    //    
-    //    // Get and print the tree type.
-    //    short treeType = tree.getTreeType();
-    //    System.out.println("Tree type is: " + treeType);
-    //    
-    //    // Create a simple tree.
-    //    XTreeNodeInterface node;
-    //    XTreeNodeInterface node2;
-    //    
-    //    node = tree.addIntegerChild(null, 4);
-    //    node = tree.addIntegerChild(node, 5);
-    //    node2 = tree.appendTagSibling(node, XTreeNodeInterface.TAG_QUERY_INDEX);
-    //    node2 = tree.appendBooleanSibling(node2, true);
-    //    node2 = tree.appendStringSibling(node2, "Peter was here.");
-    //    node2 = tree.appendBlobSibling(node2, rawData);
-    //    node = tree.addIntegerChild(node, 6);
-    //    node = tree.appendIntegerSibling(node, 1000);
-    //    node = tree.appendIntegerSibling(node, 10000);
-    //    node = tree.appendIntegerSibling(node, 100000);
-    //    
-    //    // Show the tree.
-    //    showXTree("Intial Tree", tree);
-    //    
-    //    // Serialize to binary format and deserialize. Show result.
-    //    byte[] serializedTree = tree.serializeToBinary();
-    //    System.out.println("Binary serialized tree:");
-    //    for (int i = 0; i < serializedTree.length; i++) {
-    //      System.out.print(" " + serializedTree[i]);
-    //    }
-    //    System.out.println();
-    //    XTreeInterface newTree = tree.treeReconstructFromBinary(serializedTree);
-    //    showXTree("Tree reconstructed from binary data", newTree);
-
-    // Get byte stream and reconstruct from byte stream.
-    //    serializedTree = tree.serializeToAscii();
-    //    for (int x = 0; x < serializedTree.length; x++) {
-    //      char cc = (char) serializedTree[x];
-    //      System.out.print(cc);
-    //    }
-    //    System.out.println();
-    //   
-    //    newTree = tree.treeReconstructFromAscii(serializedTree);
-    //    showXTree("Reconstructed Tree", newTree);
-
-    /*
-    // Get and print the root of the tree.
-    XTreeNodeInterface root = tree.getRoot();
-    System.out.println("Root node value is: " + tree.getIntegerNodeData(root));  // normally you shouldn't assume this is an Integer node.
-
-    // Get and print the first child of the root.
-    node = tree.getFirstChildForNode(root);
-    System.out.println("First node value is: " + tree.getIntegerNodeData(node));
-
-    // Go to left most leave and go back up, printing the nodes.
-    node = root;
-    int level = 0;
-    while (tree.doesNodeHaveChild(node)) {
-        System.out.println("Node has child, going down.");
-        node = tree.getFirstChildForNode(node);
-        level++;
-    }
-
-    System.out.println("Level = " + level + ", node value is: " + tree.getIntegerNodeData(node));
-    while (tree.doesNodeHaveParent(node)) {
-      node = tree.getParentForNode(node);
-      System.out.println("Level = " + --level + ", node value is: " + tree.getIntegerNodeData(node));
-    }
-
-    // Go to left most leave and first print the last node and then all nodes.
-    node = root;
-    while (tree.doesNodeHaveChild(node)) {
-        System.out.println("Node has child, going down.");
-        node = tree.getFirstChildForNode(node);
-    }
-
-    node = tree.getParentForNode(node);
-    node = tree.getLastChildForNode(node);
-    System.out.println("Via getLastChildForNode(), node value is: " + tree.getIntegerNodeData(node));
-
-    node = tree.getParentForNode(node);
-    node = tree.getFirstChildForNode(node);
-    int childIndex = 0;
-    System.out.println("Index = " + childIndex + ", node value is: " + tree.getIntegerNodeData(node));
-    while (tree.doesNodeHaveSibling(node)) {
-      node = tree.getNextSiblingForNode(node);
-      System.out.println("Index = " + ++childIndex + ", node value is: " + tree.getIntegerNodeData(node));
-    }
-
-    // Show usage of getLastSiblingForNode().
-    node = tree.getParentForNode(node);
-    node = tree.getFirstChildForNode(node);
-    node = tree.getLastSiblingOfNode(node);    
-    System.out.println("Via getLastSiblingForNode(), node value is: " + tree.getIntegerNodeData(node));
-
-
-    // Show the node data type and size.
-    short nodeDataType;
-    nodeDataType = tree.getNodeDataType(node);
-    System.out.println("nodeDataType = " + nodeDataType);
-    //short dataSize;
-    //dataSize = tree.getNodeDataSize(node);
-    //System.out.println("nodeDataSize = " + dataSize);
-
-    // Show usage of get data nodes.
-    node = tree.getFirstChildForNode(root);  // is node with '5'.
-    System.out.println("Tag node value = " + tree.getIntegerNodeData(node));
-    node = tree.getNextSiblingForNode(node); // is node with TAG_QUERY_INDEX.
-    System.out.println("Tag node value = " + tree.getTagNodeData(node));
-    node = tree.getNextSiblingForNode(node); // is node with 'true'.
-    System.out.println("Tag node value = " + tree.getBooleanNodeData(node));
-    node = tree.getNextSiblingForNode(node); // is node with 'Peter was here.'.
-    System.out.println("Tag node value = " + tree.getStringNodeData(node));
-    node = tree.getNextSiblingForNode(node); // is node with rawData.
-    byte[] buf = tree.getBlobNodeData(node);
-    System.out.print("Tag node value = ");
-    for (int i = 0; i < buf.length; i++) {
-        if (i != 0) {
-            System.out.print(", ");
-        }
-        System.out.print(String.valueOf(buf[i]));
-    }
-    System.out.println("");
-
-    // Remove the Show the tree.
-    node = tree.getFirstChildForNode(root);  // is node with '5'.
-    node = tree.getFirstChildForNode(node);  // is node with '6'.
-    tree.removeNode(node);                   // remove this node.
-    showXTree("Tree after removing node", tree);
-
-    // Change the type of the tree to SERIALIZED.
-    // and .....
-    // tree.changeTreeType(XTreeInterface.TREE_TYPE_SERIALIZED_TREE);
-     */
     
     show();
   }
@@ -235,6 +104,10 @@ public class XTreeDemo extends JfxStage {
     button.setOnAction((e) -> runBinaryTreeDemo());
     flowPane.getChildren().add(button);
     
+    button = new Button("Walk tree");
+    button.setOnAction((e) -> runWalkTreeDemo());
+    flowPane.getChildren().add(button);
+    
     return flowPane;
   }
   
@@ -268,10 +141,49 @@ public class XTreeDemo extends JfxStage {
     resultHBox.getChildren().clear();
     
     NodeBasedXTree binaryTree = new BinarySerializedXTree(tree);
-    LOGGER.severe(binaryTree.toString());
     XTreeView binaryTreeView = new XTreeView();
     binaryTreeView.setRootNode(binaryTree.getRoot());
     resultHBox.getChildren().add(binaryTreeView);
+  }
+  
+  private void runWalkTreeDemo() {
+    resultHBox.getChildren().clear();
+    StringBuilder buf = new StringBuilder();
+    buf.append("<html><head></head><body><pre>");
+    
+    // Get and print the root of the tree.
+    buf.append("<i>").append("Get the root of the tree via tree.getRoot()").append("</i><br/>");
+    MutableXTreeNode root = tree.getRoot();
+    buf.append("<i>").append("Check the data type, which shall be integer, by comparing root.getDataType() to XNodeDataType.INTEGER").append("</i><br/>");
+    if (root.getDataType() == XNodeDataType.INTEGER) {
+      buf.append("<i>").append("Obtain the value by calling root.getIntegerData()").append("</i><br/>");
+      buf.append("     ").append("<b>").append(root.getIntegerData()).append("</b>").append(NEW_LINE);
+    }
+
+    // Go to left most leave and go back up, printing the nodes.
+    buf.append("<i>").append("Go to left most leave using node.hasChild() and node.getFirstChild().").append("</i><br/>");
+    MutableXTreeNode node = root;
+    Indent indent = new Indent(4);
+    while (node.hasChild()) {
+      buf.append(indent).append("<b>").append("Node has child, going down.").append("</b><br/>");
+      indent.increment();
+      node = node.getFirstChild();
+    }
+    buf.append(indent).append("<b>").append("Reached the bottom.").append("</b><br/>");
+
+    buf.append("<i>").append("Go back to the root using node.hasParent() and node.getParent().").append("</i><br/>");
+    buf.append(indent).append("<b>").append(node).append("</b><br/>");
+    while (node.hasParent()) {
+      node = node.getParent();
+      indent.decrement();
+      buf.append(indent).append("<b>").append(node).append("</b><br/>");
+    }
+    
+    buf.append("<pre></body></html>");
+    WebView webView = new WebView();
+    WebEngine webEngine = webView.getEngine();
+    webEngine.loadContent(buf.toString());
+    resultHBox.getChildren().add(webView);
   }
 
   /**
