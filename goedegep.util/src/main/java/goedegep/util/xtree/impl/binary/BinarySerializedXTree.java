@@ -96,7 +96,7 @@ public class BinarySerializedXTree extends NodeBasedXTreeAbstract implements Nod
   }
   
   private void createSupportTree() {
-    LOGGER.severe("=>");
+    LOGGER.info("=>");
     
     LOGGER.info("bitSequence=" + bitSequence.toString());
     
@@ -109,7 +109,7 @@ public class BinarySerializedXTree extends NodeBasedXTreeAbstract implements Nod
     boolean ready = false;
     boolean first = true;
     BinaryDirection binaryDirection;
-    bitSequence.setIndex(0);
+    bitSequence.setPosition(0);
 
     while (!ready) {
       // Read the direction indication.
@@ -129,7 +129,7 @@ public class BinarySerializedXTree extends NodeBasedXTreeAbstract implements Nod
       
       int bitSequenceIndex;
       if (!ready) {
-        bitSequenceIndex = bitSequence.getIndex();
+        bitSequenceIndex = bitSequence.getPosition();
         // Read a node. First its type and if applicable its value.
         BinaryTypeIndication binaryTypeIndication = BinaryTypeIndication.readFromBitSequence(bitSequence);
         LOGGER.info("binaryTypeIndication=" + binaryTypeIndication.name());
@@ -197,9 +197,9 @@ public class BinarySerializedXTree extends NodeBasedXTreeAbstract implements Nod
         
         if (visitorUpcount != 0) {
           while (visitorUpcount != 0) {
-            myBitsequenceIndex = bitSequence.getIndex();
+            myBitsequenceIndex = bitSequence.getPosition();
             visitorNode = (BinarySerializedXTreeNode) visitorNode.getParent();
-            bitSequence.setIndex(myBitsequenceIndex);
+            bitSequence.setPosition(myBitsequenceIndex);
             if (visitorNode == null) {
               throw new RuntimeException("Illegal value for upcount.");
             }
@@ -207,9 +207,9 @@ public class BinarySerializedXTree extends NodeBasedXTreeAbstract implements Nod
           }
         }
         
-        myBitsequenceIndex = bitSequence.getIndex();
+        myBitsequenceIndex = bitSequence.getPosition();
         BinarySerializedXTreeNode newNode = BinarySerializedXTreeNode.create(bitSequence, bitSequenceIndex);
-        LOGGER.severe("New node: " + newNode.toString());
+        LOGGER.info("New node: " + newNode.toString());
         if (supportTreeRoot == null) {
           supportTreeRoot = newNode;
           visitorNode = supportTreeRoot;
@@ -219,14 +219,14 @@ public class BinarySerializedXTree extends NodeBasedXTreeAbstract implements Nod
         } else {
           visitorNode = visitorNode.appendSibling(newNode);
         }
-        LOGGER.severe(printSupportTree());
-        bitSequence.setIndex(myBitsequenceIndex);
+        bitSequence.setPosition(myBitsequenceIndex);
       }
     }
 
     LOGGER.info("<=");    
   }
   
+  @SuppressWarnings("unused")
   private String printSupportTree() {
     StringBuilder buf = new StringBuilder();
     Indent indent = new Indent(4);
@@ -262,7 +262,7 @@ public class BinarySerializedXTree extends NodeBasedXTreeAbstract implements Nod
     boolean ready = false;
     boolean first = true;
     BinaryDirection binaryDirection;
-    bitSequence.setIndex(0);
+    bitSequence.setPosition(0);
 
     while (!ready) {
       // Read the direction indication.

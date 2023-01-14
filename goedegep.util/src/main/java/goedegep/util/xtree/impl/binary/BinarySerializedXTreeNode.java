@@ -112,11 +112,11 @@ public class BinarySerializedXTreeNode extends XTreeNodeAbstract implements XTre
   public XNodeDataType getDataType() {    
 //    // skip the direction bits
 //    bitSequence.setIndex(index + BinaryDirection.getNrOfBitsBinaryIndicationDirection());
-    bitSequence.setIndex(index);
+    bitSequence.setPosition(index);
 
     // read the data type
     BinaryTypeIndication binaryTypeIndication = BinaryTypeIndication.readFromBitSequence(bitSequence);
-    LOGGER.severe("binaryTypeIndication=" + binaryTypeIndication.name());
+    LOGGER.info("binaryTypeIndication=" + binaryTypeIndication.name());
     
 
     XNodeDataType xNodeDataType = null;
@@ -180,18 +180,15 @@ public class BinarySerializedXTreeNode extends XTreeNodeAbstract implements XTre
 
   @Override
   public Object getData() {
-    LOGGER.severe("=>");
+    LOGGER.info("=>");
     
     Object result = null;
     
-//    // skip the direction bits
-//    bitSequence.setIndex(index + BinaryDirection.getNrOfBitsBinaryIndicationDirection());
-    
-    bitSequence.setIndex(index);
+    bitSequence.setPosition(index);
 
     // read the data type
     BinaryTypeIndication binaryTypeIndication = BinaryTypeIndication.readFromBitSequence(bitSequence);
-    LOGGER.severe("binaryTypeIndication=" + binaryTypeIndication.name());
+    LOGGER.info("binaryTypeIndication=" + binaryTypeIndication.name());
     
 
     switch (binaryTypeIndication) {
@@ -264,7 +261,7 @@ public class BinarySerializedXTreeNode extends XTreeNodeAbstract implements XTre
 
     }
     
-    LOGGER.severe("<=");
+    LOGGER.info("<=");
     return result;
   }
 

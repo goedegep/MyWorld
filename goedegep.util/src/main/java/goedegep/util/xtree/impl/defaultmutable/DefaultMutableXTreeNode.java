@@ -157,30 +157,6 @@ public abstract class DefaultMutableXTreeNode extends XTreeNodeAbstract implemen
     throw new UnsupportedOperationException();
   }
   
-//  @Override
-//  public XTreeTag getTagChildData() {
-//    return getFirstChild().getTagData();
-//  }
-//
-//  @Override
-//  public boolean getBooleanChildData() {
-//    return getFirstChild().getBooleanData();
-//  }
-//
-//  @Override
-//  public int getIntegerChildData() {
-//    return getFirstChild().getIntegerData();
-//  }
-//
-//  @Override
-//  public String getStringChildData() {
-//    return getFirstChild().getStringData();
-//  }
-//
-//  @Override
-//  public byte[] getBlobChildData() {
-//    return getFirstChild().getBlobData();
-//  }
 
   /**
    * {@inheritDoc}
@@ -255,85 +231,6 @@ public abstract class DefaultMutableXTreeNode extends XTreeNodeAbstract implemen
     }
   }
   
-//  /** SEE CLONE
-//   * Create a DefaultMutableXTreeNode with the same data content as a given XNode.
-//   * <p>
-//   * Based on the data type of the given XNode an instance of the corresponding subtype of a DefaultMutableXTreeNode
-//   * is created. The value of the node is set to the value of the given XNode.
-//   * 
-//   * @param xTree the XTree of which xNode is a node.
-//   * @param xNode the node for which a DefaultMutableXTreeNode is to be created.
-//   * @return a DefaultMutableXTreeNode with the same data content as the xNode.
-//   */
-//  public static DefaultMutableXTreeNode createFromXNode(MutableXTree xTree, MutableXTreeNode xNode) {
-//    DefaultMutableXTreeNode defaultMutableXTreeNode;
-//    
-//    switch (xNode.getDataType()) {
-//    case TAG:
-//      defaultMutableXTreeNode = new DefaultMutableXTreeTagNode(xNode.getTagData());
-//      break;
-//      
-//    case BOOLEAN:
-//      defaultMutableXTreeNode = new DefaultMutableXTreeBooleanNode(xNode.getBooleanData());
-//      break;
-//      
-//    case INTEGER:
-//      defaultMutableXTreeNode = new DefaultMutableXTreeIntegerNode(xNode.getIntegerData());
-//      break;
-//      
-//    case STRING:
-//      defaultMutableXTreeNode = new DefaultMutableXTreeStringNode(xNode.getStringData());
-//      break;
-//      
-//    case BLOB:
-//      defaultMutableXTreeNode = new DefaultMutableXTreeBlobNode(xNode.getBlobData());
-//      break;
-//      
-//    default:
-//      throw new IllegalArgumentException("Data type "+ xNode.getDataType().name() + " of xNode is not supported.");
-//    }
-//    
-//    return defaultMutableXTreeNode;
-//  }
-  
-//  /**
-//   * {@inheritDoc}
-//   */
-//  @Override
-//  public void clearChildren() {
-//    DefaultMutableXTreeNode child = firstChild;
-//    
-//    while (child != null) {
-//      DefaultMutableXTreeNode sibling = child.nextSibling;
-//      
-//      // clear the node
-//      child.nextSibling = null;
-//      child.parent = null;
-//      child.clearChildren();
-//      
-//      child = sibling;
-//    }
-//    
-//    firstChild = null;
-//  }
-  
-//  /**
-//   * {@inheritDoc}
-//   */
-//  @Override
-//  public DefaultMutableXTreeNode addChild(DefaultMutableXTreeNode newNode) {
-//    if (!hasChild()) {
-//      // No child yet, so add as first child.
-//      setFirstChild(newNode);
-//    } else {
-//      // Find last child and add node as sibling of that node.
-//      DefaultMutableXTreeNode lastChild = (DefaultMutableXTreeNode) getLastChild();
-//      lastChild.setNextSibling(newNode);
-//    }
-//    newNode.setParent(this);
-//
-//    return newNode;
-//  }
   
   /**
    * {@inheritDoc}
@@ -374,21 +271,6 @@ public abstract class DefaultMutableXTreeNode extends XTreeNodeAbstract implemen
   public MutableXTreeNode addBlobChild(byte[] data) {
     return addChild(new DefaultMutableXTreeBlobNode(data));
   }
-//
-//  /**
-//   * Add a node as the next sibling of this node.
-//   * 
-//   * @param newNode the node to be added as a next sibling of referenceNode.
-//   * @return newNode
-//   */
-//  public DefaultMutableXTreeNode appendSibling(DefaultMutableXTreeNode newNode) {
-//    
-//    newNode.setParent(this.getParent());
-//    newNode.setNextSibling(this.getNextSibling());
-//    setNextSibling(newNode);
-//    
-//    return newNode;
-//  }
   
   /**
    * {@inheritDoc}
