@@ -1,5 +1,8 @@
 package goedegep.events.app.guifx;
 
+import java.awt.Desktop;
+import java.io.File;
+import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
@@ -20,8 +23,11 @@ import goedegep.jfx.eobjecttable.EObjectTable;
 import goedegep.jfx.eobjecttable.EObjectTableColumnDescriptorBasic;
 import goedegep.jfx.eobjecttable.EObjectTableColumnDescriptorCustom;
 import goedegep.jfx.eobjecttable.EObjectTableDescriptor;
+import goedegep.jfx.img.ImageStage;
+import goedegep.resources.ImageResource;
 import goedegep.types.model.FileReference;
 import goedegep.types.model.TypesPackage;
+import goedegep.util.file.FileUtils;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableCell;
@@ -88,11 +94,11 @@ class EventsTableDescriptorFactory {
     
     // Picture
     ImageCellFactory imageCellFactory = new ImageCellFactory(customization, 120, EventsRegistry.eventsFolderName);
-    descriptor.getColumnDescriptors().add(
-        EObjectTableColumnDescriptorCustom.<EventInfo>createForFeature(EVENTS_PACKAGE.getEventInfo_Picture()).
+    EObjectTableColumnDescriptorCustom<EventInfo> columnDescriptor = EObjectTableColumnDescriptorCustom.<EventInfo>createForFeature(EVENTS_PACKAGE.getEventInfo_Picture()).
         setColumnName("Picture").
-        setCellFactory(imageCellFactory)
-        );
+        setCellFactory(imageCellFactory);
+    columnDescriptor.setMinimumWidth(250);
+    descriptor.getColumnDescriptors().add(columnDescriptor);
     
     // Attachments
     AttachmentsCellFactory attachmentsCellFactory = new AttachmentsCellFactory(customization, 120, EventsRegistry.eventsFolderName);
@@ -157,10 +163,6 @@ class ImageCell extends TableCell<EventInfo, Object> {
     LOGGER.info("<=>");
     this.imageHeight = imageHeight;
     this.eventsDirectory = eventsDirectory;
-//    Background background = customization.getComponentFactoryFx().getPanelBackground();
-//    if (background != null) {
-//      setBackground(background);
-//    }
   }
   
   @Override
@@ -177,15 +179,9 @@ class ImageCell extends TableCell<EventInfo, Object> {
       }
       String  imageFileName = (String) item;
       
-//      Path imagePath = Paths.get(eventsDirectory, imageFileName);
-//      Image image = new Image("file:" + imagePath.toAbsolutePath().toString(), -1, imageHeight,  true, true);      D:\Database\Gebeurtenissen\
       Path imagePath = Paths.get(eventsDirectory, imageFileName);
       Image image;
-      if (getTableRow() != null  &&  getTableRow().isSelected()) {
-        image = new Image("file:" + imagePath.toAbsolutePath().toString(), -1, 3 * imageHeight,  true, true);
-      } else {
-        image = new Image("file:" + imagePath.toAbsolutePath().toString(), -1, imageHeight,  true, true);
-      }
+      image = new Image("file:" + imagePath.toAbsolutePath().toString(), -1, imageHeight,  true, true);
 
       ImageView imageView = new ImageView(image);
             
@@ -225,6 +221,7 @@ class AttachmentsCellFactory implements Callback<TableColumn<EventInfo, Object>,
 class AttachmentsCell extends TableCell<EventInfo, Object> {
   private static final Logger LOGGER = Logger.getLogger(AttachmentsCell.class.getName());
   
+  private CustomizationFx customization = null;
   private ComponentFactoryFx componentFactory = null;
   
   private int imageHeight;
@@ -232,6 +229,7 @@ class AttachmentsCell extends TableCell<EventInfo, Object> {
 
   public AttachmentsCell(CustomizationFx customization, int imageHeight, String eventsDirectory) {
     LOGGER.info("<=> eventsDirectory=" + eventsDirectory);
+    this.customization = customization;
     this.imageHeight = imageHeight;
     this.eventsDirectory = eventsDirectory;
     componentFactory = customization.getComponentFactoryFx();
@@ -257,24 +255,164 @@ class AttachmentsCell extends TableCell<EventInfo, Object> {
         VBox vBox = componentFactory.createVBox(12.0, 4.0);
         vBox.setAlignment(Pos.CENTER);
         
-        String  imageFileName = fileReference.getFile();
-        LOGGER.info("imageFileName: " + imageFileName);
+        String  attachmentFileName = fileReference.getFile();
+        LOGGER.info("imageFileName: " + attachmentFileName);
+        
+        if (fileReference.getTags() != null  &&  fileReference.getTags().equals(AttachmentType.PHOTO_FOLDER.getTag())) {
+          Image image = ImageResource.PHOTO_FOLDER.getImage();
+          ImageView imageView = new ImageView(image);
+          imageView.setFitHeight(imageHeight);
+          imageView.setPreserveRatio(true);
+          vBox.getChildren().add(imageView);
 
-        Path imagePath = Paths.get(eventsDirectory, imageFileName);
-        Image image;
-        if (getTableRow() != null  &&  getTableRow().isSelected()) {
-          image = new Image("file:" + imagePath.toAbsolutePath().toString(), 2 * imageHeight, 2 * imageHeight,  true, true);
-        } else {
+          String labelText = fileReference.getTitle();
+          if (labelText == null  &&  fileReference.getFile() != null) {
+            File file = new File(fileReference.getFile());
+            labelText = file.getName();
+          }
+          Label label = componentFactory.createLabel(labelText);          
+          vBox.getChildren().add(label);
+
+          vBox.setOnMouseClicked((e) -> {
+            try {
+              Desktop.getDesktop().open(new File(fileReference.getFile()));
+            } catch (IOException e1) {
+              e1.printStackTrace();
+            }
+          });
+
+          hBox.getChildren().add(vBox);
+        } else if (fileReference.getTags() != null  &&  fileReference.getTags().equals(AttachmentType.VIDEO_TAKES.getTag())) {
+          Image image = ImageResource.VIDEO_FOLDER.getImage();
+          ImageView imageView = new ImageView(image);
+          imageView.setFitHeight(imageHeight);
+          imageView.setPreserveRatio(true);
+          vBox.getChildren().add(imageView);
+
+          String labelText = fileReference.getTitle();
+          if (labelText == null  &&  fileReference.getFile() != null) {
+            File file = new File(fileReference.getFile());
+            labelText = file.getName();
+          }
+          Label label = componentFactory.createLabel(labelText);          
+          vBox.getChildren().add(label);
+
+          vBox.setOnMouseClicked((e) -> {
+            try {
+              Desktop.getDesktop().open(new File(fileReference.getFile()));
+            } catch (IOException e1) {
+              e1.printStackTrace();
+            }
+          });
+
+          hBox.getChildren().add(vBox);
+        } else if (FileUtils.isPictureFile(attachmentFileName)) {
+
+          Path imagePath = Paths.get(eventsDirectory, attachmentFileName);
+          Image image;
           image = new Image("file:" + imagePath.toAbsolutePath().toString(), imageHeight, imageHeight,  true, true);
-        }
 
-        ImageView imageView = new ImageView(image);
-        vBox.getChildren().add(imageView);
-        
-        Label label = componentFactory.createLabel(imagePath.getFileName().toString());
-        vBox.getChildren().add(label);
-        
-        hBox.getChildren().add(vBox);
+          ImageView imageView = new ImageView(image);
+          vBox.getChildren().add(imageView);
+
+          String labelText = fileReference.getTitle();
+          if (labelText == null) {
+            labelText = imagePath.getFileName().toString();
+          }
+          Label label = componentFactory.createLabel(labelText);          
+          vBox.getChildren().add(label);
+
+          vBox.setOnMouseClicked((e) -> new ImageStage(customization, imagePath.toString()));
+
+          hBox.getChildren().add(vBox);
+        } else if (FileUtils.isPDFFile(attachmentFileName)) {
+          Image image = ImageResource.PDF.getImage();
+          ImageView imageView = new ImageView(image);
+          imageView.setFitHeight(imageHeight);
+          imageView.setPreserveRatio(true);
+          vBox.getChildren().add(imageView);
+          
+          String labelText = fileReference.getTitle();
+          if (labelText == null  &&  fileReference.getFile() != null) {
+            File file = new File(fileReference.getFile());
+            labelText = file.getName();
+          }
+          Label label = componentFactory.createLabel(labelText);          
+          vBox.getChildren().add(label);
+
+          vBox.setOnMouseClicked((e) -> {
+            try {
+              Desktop.getDesktop().open(new File(eventsDirectory, fileReference.getFile()));
+            } catch (IOException e1) {
+              e1.printStackTrace();
+            }
+          });
+
+          hBox.getChildren().add(vBox);
+        } else if (FileUtils.isTextFile(attachmentFileName)) {
+          Image image = ImageResource.TEXT_FILE.getImage();
+          ImageView imageView = new ImageView(image);
+          imageView.setFitHeight(imageHeight);
+          imageView.setPreserveRatio(true);
+          vBox.getChildren().add(imageView);
+          
+          String labelText = fileReference.getTitle();
+          if (labelText == null  &&  fileReference.getFile() != null) {
+            File file = new File(fileReference.getFile());
+            labelText = file.getName();
+          }
+          Label label = componentFactory.createLabel(labelText);          
+          vBox.getChildren().add(label);
+
+          vBox.setOnMouseClicked((e) -> {
+            try {
+              Desktop.getDesktop().open(new File(eventsDirectory, fileReference.getFile()));
+            } catch (IOException e1) {
+              e1.printStackTrace();
+            }
+          });
+
+          hBox.getChildren().add(vBox);
+        } else if (FileUtils.isMSWordFile(attachmentFileName)) {
+          Image image = ImageResource.MS_WORD.getImage();
+          ImageView imageView = new ImageView(image);
+          imageView.setFitHeight(imageHeight);
+          imageView.setPreserveRatio(true);
+          vBox.getChildren().add(imageView);
+          
+          String labelText = fileReference.getTitle();
+          if (labelText == null  &&  fileReference.getFile() != null) {
+            File file = new File(fileReference.getFile());
+            labelText = file.getName();
+          }
+          Label label = componentFactory.createLabel(labelText);          
+          vBox.getChildren().add(label);
+
+          vBox.setOnMouseClicked((e) -> {
+            try {
+              Desktop.getDesktop().open(new File(eventsDirectory, fileReference.getFile()));
+            } catch (IOException e1) {
+              e1.printStackTrace();
+            }
+          });
+
+          hBox.getChildren().add(vBox);
+        } else {
+          String labelText = fileReference.getTitle();
+          if (labelText == null  &&  fileReference.getFile() != null) {
+            File file = new File(fileReference.getFile());
+            labelText = file.getName();
+          }
+          Label label = componentFactory.createLabel(labelText);
+          label.setOnMouseClicked((e) -> {
+            try {
+              Desktop.getDesktop().open(new File(eventsDirectory, fileReference.getFile()));
+            } catch (IOException e1) {
+              e1.printStackTrace();
+            }
+          });
+          hBox.getChildren().add(label);
+        }
       }
             
       setGraphic(hBox);
@@ -332,33 +470,17 @@ class NotesCell extends TableCell<EventInfo, Object> {
       if (!(item instanceof String)) {
         throw new IllegalArgumentException("item shall be a String, but is of type '" + item.getClass().getName() + "'");
       }
-      String markDownText = (String) item;
+      String text = (String) item;
       WebView webView = new WebView();
       webView.setPrefHeight(imageHeight);
       webView.setPrefWidth(300);
       WebEngine webEngine = webView.getEngine();
-      org.commonmark.node.Node document = parser.parse(markDownText);
-      String text = renderer.render(document);
-      text = addHtmlContext(text);
-
       webEngine.loadContent(text);
             
       setGraphic(webView);
       setText(null);
     }
     LOGGER.info("<=");
-  }
-
-  public String addHtmlContext(String text) {
-    StringBuilder buf = new StringBuilder();
-    buf.append("<html>");
-
-    buf.append(text);
-
-    buf.append("</html>");
-
-
-    return buf.toString();
   }
 }
 

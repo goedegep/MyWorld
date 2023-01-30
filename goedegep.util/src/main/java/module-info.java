@@ -1,8 +1,8 @@
 module goedegep.util {
   exports goedegep.util;
-  exports goedegep.util.bitset;
   exports goedegep.util.bitsequence;
   exports goedegep.util.bytesequence;
+  exports goedegep.util.bytearray;
   exports goedegep.util.collections;
   exports goedegep.util.csvfileaccess;
   exports goedegep.util.datetime;
@@ -56,11 +56,9 @@ module goedegep.util {
   requires java.prefs;
   requires java.sql;
   requires java.xml;
-//  requires junit;
   requires transitive org.apache.commons.imaging;
   requires transitive org.eclipse.emf.common;
   requires transitive org.eclipse.emf.ecore;
-//  requires org.hamcrest;
   requires transitive javafx.base;
   requires org.eclipse.emf.ecore.xmi;
   requires transitive com.google.common.geometry;

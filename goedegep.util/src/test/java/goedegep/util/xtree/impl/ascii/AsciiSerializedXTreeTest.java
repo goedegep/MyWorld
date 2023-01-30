@@ -38,9 +38,9 @@ public class AsciiSerializedXTreeTest {
     AsciiSerializedXTree binarySerializedXTree = new AsciiSerializedXTree(tree);
     byte[] serializedTree = binarySerializedXTree.getSerializedTreeData();
     assertTrue(Arrays.equals(SERIALIZED_TREE_WITH_INTEGER_NODE, serializedTree), "Wrong serialized data, expected:" + NEW_LINE +
-        ByteArrayUtils.toChars(SERIALIZED_TREE_WITH_INTEGER_NODE) + NEW_LINE +
+        ByteArrayUtils.toCharString(SERIALIZED_TREE_WITH_INTEGER_NODE) + NEW_LINE +
         "was:" + NEW_LINE +
-        ByteArrayUtils.toChars(serializedTree)
+        ByteArrayUtils.toCharString(serializedTree)
         );
   }
 

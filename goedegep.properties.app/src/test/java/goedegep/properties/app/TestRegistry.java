@@ -1,4 +1,4 @@
-package goedegep.app.configuration.testregistry;
+package goedegep.properties.app;
 
 import goedegep.properties.model.PropertyDescriptorGroup;
 import goedegep.util.emf.EMFResource;

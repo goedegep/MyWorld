@@ -1,8 +1,17 @@
 package goedegep.util.bitsequence;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
+
+import java.io.IOException;
+import java.nio.file.FileSystem;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 import org.junit.jupiter.api.Test;
+
+import com.google.common.jimfs.Configuration;
+import com.google.common.jimfs.Jimfs;
 
 /**
  * This class contains tests for the {@link BitSequence} class.
@@ -181,6 +190,35 @@ public class BitSequenceTest {
     String expectedResult =
         "10000000.10000000.10000000.10000000.10000000.10000000.10000000.10100000.01000001.10001010.00010100.11011111.11110000.00111110.000";
     assertEquals(expectedResult, bitSequence.toString(), "BitSequence not correctly constructed");
+  }
+  
+  /**
+   * Read/write file test
+   */
+  @Test
+  public void writeReadTest() {
+    FileSystem imfs = Jimfs.newFileSystem(Configuration.unix());
+    Path tmpDirPath = imfs.getPath("/BitSequenceTest");
+    try {
+      Files.createDirectory(tmpDirPath);
+      
+      byte[] bitSequenceBytes = {
+          0b01000000, 0b00110000, 0b00001010, 0b01100101, (byte) 0b11111111, (byte) 0b10000001, 0b00001111, (byte) 0b10101010, 0b01010101};
+      BitSequence bitSequence = new BitSequence(bitSequenceBytes);
+      Path filePath = tmpDirPath.resolve("bitSequence.bin");      
+      bitSequence.write(filePath);
+      
+      bitSequence = BitSequence.read(filePath);
+      String expectedResult =
+          "00000010.00001100.01010000.10100110.11111111.10000001.11110000.01010101.10101010";
+      assertEquals(72, bitSequence.getLength(), "BitSequence has the wrong length");
+      assertEquals(expectedResult, bitSequence.toString(), "BitSequence not correctly written or read");
+      
+      
+    } catch (IOException e) {
+      fail("unexpected IOException: " + e.getMessage());
+    }
+    
   }
 }
 

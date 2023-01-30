@@ -20,6 +20,7 @@ import goedegep.jfx.controls.ObjectControlCurrency;
 import goedegep.jfx.controls.ObjectControlEnumComboBox;
 import goedegep.jfx.controls.ObjectControlFixedPointValue;
 import goedegep.jfx.controls.ObjectControlFlexDate;
+import goedegep.jfx.controls.ObjectControlHTMLString;
 import goedegep.jfx.controls.ObjectControlInteger;
 import goedegep.jfx.controls.ObjectControlLocalDate;
 import goedegep.jfx.controls.ObjectControlMultiLineString;
@@ -1044,6 +1045,23 @@ public class ComponentFactoryFx {
     ObjectControlMultiLineString objectInputString = new ObjectControlMultiLineString(text, width, isOptional, toolTipText, id);
 
     customizeTextInputControl(objectInputString);
+    objectInputString.setId(id);
+
+    return objectInputString;
+  }
+
+  /**
+   * Create an HTML String Object Input.
+   * 
+   * @param text The initial value.
+   * @param width the width of the TextArea.
+   * @param isOptional if true, the value provided by this control is optional.
+   * @param toolTipText an optional tooltip text.
+   * @return the newly created ObjectControlHTMLString.
+   */
+  public ObjectControlHTMLString createObjectControlHTMLString(String text, double width, boolean isOptional, String toolTipText, String id) {
+    ObjectControlHTMLString objectInputString = new ObjectControlHTMLString(text, width, isOptional, toolTipText, id);
+
     objectInputString.setId(id);
 
     return objectInputString;

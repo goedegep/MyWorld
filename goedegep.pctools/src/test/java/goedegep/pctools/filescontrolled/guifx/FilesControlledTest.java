@@ -1,4 +1,4 @@
-package goedegep.pctools.filescontrolled;
+package goedegep.pctools.filescontrolled.guifx;
 
 //import static org.junit.Assert.assertEquals;
 import static org.hamcrest.CoreMatchers.is;

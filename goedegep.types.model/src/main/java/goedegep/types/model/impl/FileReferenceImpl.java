@@ -22,6 +22,7 @@ import goedegep.types.model.TypesPackage;
  * <ul>
  *   <li>{@link goedegep.types.model.impl.FileReferenceImpl#getFile <em>File</em>}</li>
  *   <li>{@link goedegep.types.model.impl.FileReferenceImpl#getTitle <em>Title</em>}</li>
+ *   <li>{@link goedegep.types.model.impl.FileReferenceImpl#getTags <em>Tags</em>}</li>
  * </ul>
  *
  * @generated
@@ -84,6 +85,35 @@ public class FileReferenceImpl extends MinimalEObjectImpl.Container implements F
    * @ordered
    */
   protected boolean titleESet;
+
+  /**
+   * The default value of the '{@link #getTags() <em>Tags</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getTags()
+   * @generated
+   * @ordered
+   */
+  protected static final String TAGS_EDEFAULT = null;
+
+  /**
+   * The cached value of the '{@link #getTags() <em>Tags</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getTags()
+   * @generated
+   * @ordered
+   */
+  protected String tags = TAGS_EDEFAULT;
+
+  /**
+   * This is true if the Tags attribute has been set.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  protected boolean tagsESet;
 
   /**
    * <!-- begin-user-doc -->
@@ -214,12 +244,66 @@ public class FileReferenceImpl extends MinimalEObjectImpl.Container implements F
    * @generated
    */
   @Override
+  public String getTags() {
+    return tags;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public void setTags(String newTags) {
+    String oldTags = tags;
+    tags = newTags;
+    boolean oldTagsESet = tagsESet;
+    tagsESet = true;
+    if (eNotificationRequired())
+      eNotify(new ENotificationImpl(this, Notification.SET, TypesPackage.FILE_REFERENCE__TAGS, oldTags, tags,
+          !oldTagsESet));
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public void unsetTags() {
+    String oldTags = tags;
+    boolean oldTagsESet = tagsESet;
+    tags = TAGS_EDEFAULT;
+    tagsESet = false;
+    if (eNotificationRequired())
+      eNotify(new ENotificationImpl(this, Notification.UNSET, TypesPackage.FILE_REFERENCE__TAGS, oldTags, TAGS_EDEFAULT,
+          oldTagsESet));
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public boolean isSetTags() {
+    return tagsESet;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
   public Object eGet(int featureID, boolean resolve, boolean coreType) {
     switch (featureID) {
     case TypesPackage.FILE_REFERENCE__FILE:
       return getFile();
     case TypesPackage.FILE_REFERENCE__TITLE:
       return getTitle();
+    case TypesPackage.FILE_REFERENCE__TAGS:
+      return getTags();
     }
     return super.eGet(featureID, resolve, coreType);
   }
@@ -237,6 +321,9 @@ public class FileReferenceImpl extends MinimalEObjectImpl.Container implements F
       return;
     case TypesPackage.FILE_REFERENCE__TITLE:
       setTitle((String) newValue);
+      return;
+    case TypesPackage.FILE_REFERENCE__TAGS:
+      setTags((String) newValue);
       return;
     }
     super.eSet(featureID, newValue);
@@ -256,6 +343,9 @@ public class FileReferenceImpl extends MinimalEObjectImpl.Container implements F
     case TypesPackage.FILE_REFERENCE__TITLE:
       unsetTitle();
       return;
+    case TypesPackage.FILE_REFERENCE__TAGS:
+      unsetTags();
+      return;
     }
     super.eUnset(featureID);
   }
@@ -272,6 +362,8 @@ public class FileReferenceImpl extends MinimalEObjectImpl.Container implements F
       return isSetFile();
     case TypesPackage.FILE_REFERENCE__TITLE:
       return isSetTitle();
+    case TypesPackage.FILE_REFERENCE__TAGS:
+      return isSetTags();
     }
     return super.eIsSet(featureID);
   }
@@ -295,6 +387,11 @@ public class FileReferenceImpl extends MinimalEObjectImpl.Container implements F
     result.append(", title: ");
     if (titleESet)
       result.append(title);
+    else
+      result.append("<unset>");
+    result.append(", tags: ");
+    if (tagsESet)
+      result.append(tags);
     else
       result.append("<unset>");
     result.append(')');

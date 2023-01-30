@@ -8,9 +8,11 @@ import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleObjectProperty;
-import javafx.scene.control.TextField;
+import javafx.event.EventHandler;
+import javafx.scene.input.InputEvent;
+import javafx.scene.web.HTMLEditor;
 
-public class ObjectControlString extends TextField implements ObjectControl<String> {
+public class ObjectControlHTMLString extends HTMLEditor implements ObjectControl<String> {
   
   private BooleanProperty isValidProperty = new SimpleBooleanProperty(true);
   private BooleanProperty isFilledInProperty = new SimpleBooleanProperty(false);
@@ -18,14 +20,21 @@ public class ObjectControlString extends TextField implements ObjectControl<Stri
   private boolean isOptional;
   private List<InvalidationListener> invalidationListeners = new ArrayList<>();
       
-  public ObjectControlString(String text, double width, boolean isOptional, String toolTipText) {
+  public ObjectControlHTMLString(String text, double width, boolean isOptional, String toolTipText, String id) {
     this.isOptional = isOptional;
-    setText(text);
-    setMinWidth(width);
+    if (id != null) {
+      setId(id);
+    }
 
-    textProperty().addListener((observableValue, oldValue, newValue) -> handleChanges(newValue));
+    addEventHandler(InputEvent.ANY, new EventHandler<InputEvent>() {
+
+      @Override
+      public void handle(InputEvent event) {
+        handleChanges(getHtmlText());
+      }
+    });
     
-    handleChanges(textProperty().get());
+    handleChanges(getHtmlText());
   }
   
   private void handleChanges(final String newValue) {
@@ -58,7 +67,7 @@ public class ObjectControlString extends TextField implements ObjectControl<Stri
 
   @Override
   public boolean getIsFilledIn() {
-    String text = getText();
+    String text = getHtmlText();
     
     return (text != null)  &&  !text.isEmpty();
   }
@@ -70,7 +79,7 @@ public class ObjectControlString extends TextField implements ObjectControl<Stri
 
   @Override
   public String getObjectValue() {
-    String text = getText();
+    String text = getHtmlText();
     
     if (text != null) {
       text = text.trim();
@@ -81,7 +90,7 @@ public class ObjectControlString extends TextField implements ObjectControl<Stri
 
   @Override
   public void setObjectValue(String objectValue) {
-    setText(objectValue);    
+    setHtmlText(objectValue);    
   }
 
   @Override
@@ -109,21 +118,5 @@ public class ObjectControlString extends TextField implements ObjectControl<Stri
     invalidationListeners.remove(listener);    
   }
 
-//  @Override
-//  public void addListener(ChangeListener<? super String> listener) {
-//    // TODO Auto-generated method stub
-//    
-//  }
-//
-//  @Override
-//  public void removeListener(ChangeListener<? super String> listener) {
-//    // TODO Auto-generated method stub
-//    
-//  }
-//
-//  @Override
-//  public String getValue() {
-//    // TODO Auto-generated method stub
-//    return null;
-//  }
+
 }
