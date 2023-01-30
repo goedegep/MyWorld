@@ -6,6 +6,8 @@
         unsettable="true"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="title" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
         unsettable="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="tags" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
+        unsettable="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EDataType" name="EMoney" instanceClassName="goedegep.util.money.PgCurrency"/>
   <eClassifiers xsi:type="ecore:EDataType" name="EFlexDate" instanceClassName="goedegep.util.datetime.FlexDate"/>
@@ -28,6 +30,6 @@
         unsettable="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EDataType" name="ELocalDate" instanceClassName="java.time.LocalDate"/>
-  <eClassifiers xsi:type="ecore:EDataType" name="EWGS84Coordinates" instanceClassName="goedegep.geo.dbl.WGS84Coordinates"/>
+  <eClassifiers xsi:type="ecore:EDataType" name="EWGS84Coordinates" instanceClassName="goedegep.geo.WGS84Coordinates"/>
   <eClassifiers xsi:type="ecore:EDataType" name="EYearMonth" instanceClassName="java.time.YearMonth"/>
 </ecore:EPackage>

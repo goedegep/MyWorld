@@ -1,14 +1,13 @@
-package goedegep.appgenfx;
+package goedegep.jfx;
 
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import goedegep.jfx.JfxUtil;
 import javafx.scene.paint.Color;
 
-public class JavaFxUtilTest {
+public class JfxUtilTest {
 
   @Test
   public void testColorToCssString() {

@@ -1,10 +1,13 @@
 package goedegep.util.bitsequence;
 
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.logging.Logger;
 
@@ -23,8 +26,6 @@ public class BitSequence {
    * The choice of word size is determined purely by performance concerns.
    */
   private static final int ADDRESS_BITS_PER_WORD = 6;
-//  private final static int BITS_PER_BYTE = 1 << ADDRESS_BITS_PER_BYTE;
-//  private final static int HEIGHEST_BIT_INDEX_IN_BYTE = BITS_PER_BYTE - 1;
 
 
   /**
@@ -50,6 +51,8 @@ public class BitSequence {
   
   /**
    * Constructor to create an empty BitSequence.
+   * <p>
+   * Both {@code length} and {@position} are 0.
    */
   public BitSequence() {
     words = new long[50];
@@ -57,6 +60,9 @@ public class BitSequence {
 
   /**
    * Constructor to create a BitSequence from a byte array (typically representing a BitSequence).
+   * <p>
+   * The {@code length} is 8 times the length of the provided byte array.</br>
+   * The {@position} is 0.
    * 
    * @param bytes Initial content of the BitSequence.
    */
@@ -69,7 +75,9 @@ public class BitSequence {
    * between its position and limit.
    * <p>
    * The byte buffer is not modified by this method, and no
-   * reference to the buffer is retained by the BitSequence.
+   * reference to the buffer is retained by the BitSequence.</br>
+   * The {@code length} is 8 times the number of remaining bytes in the provided ByteBuffer.</br>
+   * The {@position} is 0.
    *
    * @param bb a byte buffer containing a little-endian representation
    *        of a sequence of bits between its position and limit, to be
@@ -108,12 +116,20 @@ public class BitSequence {
     this.position = position;
   }
   
+  /**
+   * Get the logical length of the bit sequence.
+   * 
+   * @return the logical length of the bit sequence.
+   */
   public int getLength() {
     return length;
   }
 
   /**
    * Set the bit at the specified index to {@code true}.
+   * <p>
+   * If the bit set is after the currently last bit, the {@code length} increases, i.e. it is set to bitIndex + 1.<br/>
+   * The {@position} is not changed.
    *
    * @param  bitIndex a bit index
    * @throws IndexOutOfBoundsException if the specified index is negative
@@ -137,6 +153,9 @@ public class BitSequence {
 
   /**
    * Sets the bit specified by the index to {@code false}.
+   * <p>
+   * If the bit cleared is after the currently last bit, the {@code length} increases, i.e. it is set to bitIndex + 1.<br/>
+   * The {@position} is not changed.
    *
    * @param  bitIndex the index of the bit to be cleared
    * @throws IndexOutOfBoundsException if the specified index is negative
@@ -157,6 +176,9 @@ public class BitSequence {
 
   /**
    * Sets the bit at the specified index to the specified value.
+   * <p>
+   * If the bit set is after the currently last bit, the {@code length} increases, i.e. it is set to bitIndex + 1.<br/>
+   * The {@position} is not changed.
    *
    * @param  bitIndex a bit index
    * @param  value a boolean value to set
@@ -171,6 +193,9 @@ public class BitSequence {
 
   /**
    * Sets the bit at the specified index to the specified value.
+   * <p>
+   * If the bit set is after the currently last bit, the {@code length} increases, i.e. it is set to bitIndex + 1.<br/>
+   * The {@position} is not changed.
    *
    * @param  bitIndex a bit index
    * @param  value an integer value to set
@@ -187,10 +212,12 @@ public class BitSequence {
   }
 
   /**
-   * Returns the value of the bit with the specified index. The value
-   * is {@code true} if the bit with the index {@code bitIndex}
-   * is currently set in this {@code BitSet}; otherwise, the result
-   * is {@code false}.
+   * Returns the value of the bit with the specified index.
+   * <p>
+   * The value is {@code true} if the bit with the index {@code bitIndex}
+   * is currently set in this {@code BitSequence}; otherwise, the result
+   * is {@code false}.<br/>
+   * Both {@code length} and {@code position} are not affected.
    *
    * @param  bitIndex the bit index
    * @return the value of the bit with the specified index
@@ -209,64 +236,20 @@ public class BitSequence {
   }
   
   /**
-   * Read the value of the bit at {@code index}.
+   * Read the value of the bit at {@code position}.
+   * <p>
+   * The {@code position} is increased by one. The {@code length} is not affected.
    * 
    * @return 1 is the bit is set, 0 otherwise.
    */
   public int getBitAsInt() {
     return get(position++) ? 1 : 0;
   }
-  
-  /**
-   * Add the values of an array of bytes to the BitSequence.
-   * <p>
-   * Writing starts at {@code position} and the position is increased with the number of bits written.
-   * 
-   * @param bytes the bytes to be added.
-   */
-  public void addByteArray(byte[] bytes) {
-    LOGGER.fine("Before adding byte array: length =" + length);
-    for (byte byteValue: bytes) {
-      addByte(byteValue);
-    }
-    LOGGER.fine("After adding byte array: length =" + length);
-  }
-  
-  /**
-   * Add the bits of a byte to the BitSequence.
-   * Writing starts at {@code position} and the {@code position} is increased with the number of bits written.
-   * 
-   * @param byteValue the value to be added.
-   */
-  public void addByte(byte byteValue) {
-    int intValue = byteValue;
-    for (int mask = 0x80; mask > 0; mask >>= 1) {
-      set(position++, (intValue & mask) != 0);
-    }
-  }
-
-  /**
-   * Add the bits from one BitSequence to the BitSequence.
-   * Writing starts at {@code index} and the index is increased with the number of bits written.
-   * 
-   * @param bitSequence the BitSequence from which the bits have to be added.
-   */
-  public void addBitSequence(BitSequence bitSequence) {
-    LOGGER.fine("=> bitSequence=" + bitSequence.toString());
-
-    for (int i = 0; i < bitSequence.length; i++) {
-      set(position++, bitSequence.get(i));
-    }
-    if (position > length) {
-      length = position;
-    }
-
-    LOGGER.fine("<= length=" + length);
-  }
 
   /**
    * Add a fixed size integer value.
-   * Writing starts at {@code index} and the index is increased with the number of bits written.
+   * Writing starts at {@code position} and the {@code position} is increased with the number of bits written.
+   * The {@code length} is updated if the sequence grows.
    * 
    * @param value the value to be added.
    * @param nrOfBits the number of bits to be used to store the value.
@@ -293,7 +276,8 @@ public class BitSequence {
   
   /**
    * Read a fixed size integer value.
-   * Reading starts at {@code index} and the index is increased with the number of bits read.
+   * Reading starts at {@code position} and the {@code position} is increased with the number of bits read.
+   * The {@code length} is not affected.
    * 
    * @param nrOfBits the number of bits to read.
    * @return the integer value read.
@@ -313,7 +297,59 @@ public class BitSequence {
   }
 
   /**
+   * Add the bits from one BitSequence to the BitSequence.
+   * Writing starts at {@code position} and the {@code position} is increased with the number of bits written.
+   * The {@code length} is updated if the sequence grows.
+   * 
+   * @param bitSequence the BitSequence from which the bits have to be added.
+   */
+  public void addBitSequence(BitSequence bitSequence) {
+    LOGGER.fine("=> bitSequence=" + bitSequence.toString());
+
+    for (int i = 0; i < bitSequence.length; i++) {
+      set(position++, bitSequence.get(i));
+    }
+    if (position > length) {
+      length = position;
+    }
+
+    LOGGER.fine("<= length=" + length);
+  }
+  
+  /**
+   * Add the values of an array of bytes to the BitSequence.
+   * <p>
+   * Writing starts at {@code position} and the position is increased with the number of bits written.
+   * The {@code length} is updated if the sequence grows.
+   * 
+   * @param bytes the bytes to be added.
+   */
+  public void addByteArray(byte[] bytes) {
+    LOGGER.fine("Before adding byte array: length =" + length);
+    for (byte byteValue: bytes) {
+      addByte(byteValue);
+    }
+    LOGGER.fine("After adding byte array: length =" + length);
+  }
+  
+  /**
+   * Add the bits of a byte to the BitSequence.
+   * Writing starts at {@code position} and the {@code position} is increased with the number of bits written.
+   * The {@code length} is updated if the sequence grows.
+   * 
+   * @param byteValue the value to be added.
+   */
+  public void addByte(byte byteValue) {
+    int intValue = byteValue;
+    for (int mask = 0x80; mask > 0; mask >>= 1) {
+      set(position++, (intValue & mask) != 0);
+    }
+  }
+
+  /**
    * Get the BitSequence as a byte array.
+   * <p>
+   * Both {@code length} and {@code position} are not affected.
    * 
    * @return the BitSequence as a byte array.
    */
@@ -338,15 +374,35 @@ public class BitSequence {
    * Write the BitSequence to a file.
    * <p>
    * The bytes representing the BitSequence (as can be obtained via {@link #toByteArray()} are written the
-   * file with the specified name.
+   * file with the specified name.<br/>
+   * Both {@code length} and {@code position} are not affected.
    * 
-   * @param filename Name of the file to which the information is written.
+   * @param filePath Path for the file to which the information is written.
    * @throws FileNotFoundException
    * @throws IOException
    */
-  public void write(String filename) throws FileNotFoundException, IOException {
-    try (FileOutputStream os = new FileOutputStream(filename)) {
+  public void write(Path filePath) throws FileNotFoundException, IOException {
+    try (OutputStream os = Files.newOutputStream(filePath)) {
       os.write(toByteArray());
+    }
+  }
+  
+  /**
+   * Read a BitSequence from a file.
+   * <p>
+   * All bytes are read from a file to an array of bytes. This array is then used to
+   * construct a BitSequence.
+   * The {@code length} is 8 times the number of bytes read from the file.</br>
+   * The {@position} is 0.
+   * 
+   * @param filePath Path for the file from which the information is read.
+   * @throws IOException 
+   * @throws FileNotFoundException 
+   */
+  public static BitSequence read(Path filePath) throws FileNotFoundException, IOException {
+    try (InputStream is = Files.newInputStream(filePath)) {
+      byte[] bytes = is.readAllBytes();
+      return new BitSequence(bytes);
     }
   }
 

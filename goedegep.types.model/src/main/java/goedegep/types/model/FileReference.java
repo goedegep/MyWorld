@@ -15,6 +15,7 @@ import org.eclipse.emf.ecore.EObject;
  * <ul>
  *   <li>{@link goedegep.types.model.FileReference#getFile <em>File</em>}</li>
  *   <li>{@link goedegep.types.model.FileReference#getTitle <em>Title</em>}</li>
+ *   <li>{@link goedegep.types.model.FileReference#getTags <em>Tags</em>}</li>
  * </ul>
  *
  * @see goedegep.types.model.TypesPackage#getFileReference()
@@ -127,5 +128,54 @@ public interface FileReference extends EObject {
    * @generated
    */
   boolean isSetTitle();
+
+  /**
+   * Returns the value of the '<em><b>Tags</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the value of the '<em>Tags</em>' attribute.
+   * @see #isSetTags()
+   * @see #unsetTags()
+   * @see #setTags(String)
+   * @see goedegep.types.model.TypesPackage#getFileReference_Tags()
+   * @model unsettable="true"
+   * @generated
+   */
+  String getTags();
+
+  /**
+   * Sets the value of the '{@link goedegep.types.model.FileReference#getTags <em>Tags</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @param value the new value of the '<em>Tags</em>' attribute.
+   * @see #isSetTags()
+   * @see #unsetTags()
+   * @see #getTags()
+   * @generated
+   */
+  void setTags(String value);
+
+  /**
+   * Unsets the value of the '{@link goedegep.types.model.FileReference#getTags <em>Tags</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #isSetTags()
+   * @see #getTags()
+   * @see #setTags(String)
+   * @generated
+   */
+  void unsetTags();
+
+  /**
+   * Returns whether the value of the '{@link goedegep.types.model.FileReference#getTags <em>Tags</em>}' attribute is set.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return whether the value of the '<em>Tags</em>' attribute is set.
+   * @see #unsetTags()
+   * @see #getTags()
+   * @see #setTags(String)
+   * @generated
+   */
+  boolean isSetTags();
 
 } // BestandReferentie

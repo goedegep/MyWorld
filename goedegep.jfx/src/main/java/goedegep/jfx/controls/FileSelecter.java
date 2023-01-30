@@ -31,16 +31,18 @@ import javafx.stage.FileChooser.ExtensionFilter;
 public class FileSelecter extends FileOrFolderSelecterAbstract {
   @SuppressWarnings("unused")
   private static final Logger LOGGER = Logger.getLogger(FileSelecter.class.getName());
-  
+
   private Button fileChooserButton;
   private boolean isSaveDialog = false;  // open dialog is the default
   private List<ExtensionFilter> extensionFilters = new ArrayList<>();
   private ExtensionFilter selectedExtensionFilter = null;
-  
+  private String initiallySelectedFolder = null;
+  private FileChooser fileChooser = null;
+
   /**
    * Constructor.
    * 
-   * @param initiallySelectedFile The initially selected file. If not null, this is filled-in in the text field,
+   * @param initiallySelectedFilename The initially selected file. If not null, this is filled-in in the text field,
    *                                and it is used as initial value for the FileChooser.
    * @param textFieldWidth Width of the TextField (in pixels). If this value is -1, the default width is used.
    * @param textFiedlToolTipText if not null, this text will be used as Tooltip for the TextField
@@ -48,10 +50,10 @@ public class FileSelecter extends FileOrFolderSelecterAbstract {
    * @param fileChooserButtonToolTipText if not null, this text will be used as Tooltip for the button to call up a FileChooser.
    * @param fileChooserTitle title for the FileChooser (may not be null)
    */
-  public FileSelecter(String initiallySelectedFile, int textFieldWidth, String textFiedlToolTipText,
+  public FileSelecter(String initiallySelectedFilename, int textFieldWidth, String textFiedlToolTipText,
       String fileChooserButtonText, String fileChooserButtonToolTipText, String fileChooserTitle) {
     super(textFieldWidth, textFiedlToolTipText);
-    
+
     getPathTextField().textProperty().addListener((observable, oldValue, newValue) -> {
       if (newValue != null) {
         File file = new File(addPrefixIfSet(newValue));
@@ -76,70 +78,88 @@ public class FileSelecter extends FileOrFolderSelecterAbstract {
         isValid().set(false);
         isFilledIn().set(false);
       }
-      
+
       if (!isValid().get()) {
         getPathTextField().setStyle("-fx-text-inner-color: red;");
       } else {
         getPathTextField().setStyle("-fx-text-inner-color: black;");
       }
-      
+
       notifyListeners();
     });
 
-    
+
     fileChooserButton = new Button(fileChooserButtonText);
-    
+
     if (fileChooserButtonToolTipText != null) {
       fileChooserButton.setTooltip(new Tooltip(fileChooserButtonToolTipText));
     }
-    
+
     fileChooserButton.setOnAction(actionEvent -> {
-        FileChooser fileChooser = new FileChooser();
+      if (fileChooser == null) {
+        fileChooser = new FileChooser();
         fileChooser.setTitle(fileChooserTitle);
-        
+
         if (!extensionFilters.isEmpty()) {
           fileChooser.getExtensionFilters().addAll(extensionFilters);
         }
         if (selectedExtensionFilter != null) {
           fileChooser.setSelectedExtensionFilter(selectedExtensionFilter);
         }
-        
-        File file = null;
-        String filename = objectValue().get();
-        if (filename != null) {
+
+        //        File file = null;
+        //        String filename = objectValue().get();
+        //        if (filename != null) {
+        //          if (getPrefix() != null) {
+        //            file = new File (getPrefix(), getPathTextField().textProperty().get());
+        //          } else {
+        //            file = new File (getPathTextField().textProperty().get());
+        //          }
+        //        }
+        //        if ((file != null)  &&  !file.isDirectory()) {
+        //          file = file.getParentFile();
+        //        }
+        //        if ((file != null)  &&  file.isDirectory()) {
+        if (initiallySelectedFolder != null) {
+          File file;
           if (getPrefix() != null) {
-            file = new File (getPrefix(), getPathTextField().textProperty().get());
+            file = new File(getPrefix(), initiallySelectedFolder);
           } else {
-            file = new File (getPathTextField().textProperty().get());
+            file = new File (initiallySelectedFolder);
+          }
+          if (!file.exists()) {
+            file = file.getParentFile();
+          }
+          if (file.exists()) {
+            fileChooser.setInitialDirectory(file);
           }
         }
-        if ((file != null)  &&  !file.isDirectory()) {
-          file = file.getParentFile();
-        }
-        if ((file != null)  &&  file.isDirectory()) {
-          fileChooser.setInitialDirectory(file);
-        }
-        File selectedFile;
-        if (isSaveDialog) {
-          selectedFile = fileChooser.showSaveDialog(null);
-        } else {
-          selectedFile = fileChooser.showOpenDialog(null);
-        }
-        
-        if (selectedFile != null) {
-          // The selected folder is written to the text field, which automatically leads an update of the selectionValidProperty.
-          String newFilename = selectedFile.getAbsolutePath();
-          newFilename = removePrefixIfSet(newFilename);
-          getPathTextField().setText(newFilename);
-        }
+        //        }
+      }
+      File selectedFile;
+      if (isSaveDialog) {
+        selectedFile = fileChooser.showSaveDialog(null);
+      } else {
+        selectedFile = fileChooser.showOpenDialog(null);
+      }
+
+      if (selectedFile != null) {
+        // The selected folder is written to the text field, which automatically leads an update of the selectionValidProperty.
+        String newFilename = selectedFile.getAbsolutePath();
+        newFilename = removePrefixIfSet(newFilename);
+        getPathTextField().setText(newFilename);
+      }
     });
-    
+
     // Do this at the end, so it automatically leads an update of the selectionValidProperty.
-    if (initiallySelectedFile != null) {
-      getPathTextField().setText(initiallySelectedFile);
+    if (initiallySelectedFilename != null) {
+      File initiallySelectedFile = new File(initiallySelectedFilename);
+      initiallySelectedFolder = initiallySelectedFile.getParent();
+
+      getPathTextField().setText(initiallySelectedFilename);
     }
   }
-  
+
   /**
    * Specify whether this is a 'file open' or 'save as ..' dialog.
    * 
@@ -148,14 +168,14 @@ public class FileSelecter extends FileOrFolderSelecterAbstract {
   public void setOpenOrSaveDialog(boolean isSaveDialog) {
     this.isSaveDialog = isSaveDialog;
   }
-  
+
   /**
    * Add a file type, being a file extension with a related description.
    */
   public void addFileType(String fileTypeExtension, String fileTypeDescription, boolean setAsSelected) {
     ExtensionFilter extensionFilter = new ExtensionFilter(fileTypeDescription, "*" + fileTypeExtension);
     extensionFilters.add(extensionFilter);
-    
+
     if (setAsSelected) {
       selectedExtensionFilter = extensionFilter;
     }
@@ -170,4 +190,7 @@ public class FileSelecter extends FileOrFolderSelecterAbstract {
     return fileChooserButton;
   }
 
+  public void setInitiallySelectedFolder(String initiallySelectedFolder) {
+    this.initiallySelectedFolder = initiallySelectedFolder;
+  }
 }

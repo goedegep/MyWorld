@@ -4,6 +4,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Arrays;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.junit.jupiter.api.Test;
 
@@ -19,14 +21,18 @@ public class BinarySerializedXTreeTest {
   private static final int INTEGER_NODE_VALUE = 0xa987; // = 43399
   
   private static final byte[] SERIALIZED_TREE_WITH_INTEGER_NODE = {
-    (byte) 0x1C,   // 00011100: BinaryDirection.CHILD = 00......, BinaryTypeIndication.POSITIVE_INTEGER = ..011...
-    (byte) 0x3E,   // 00111110:  0xa987 = 43399 = T0000111 T1010011 F0000010 = .....100 00111110 10011000 00010...
-    (byte) 0x98,   // 10011000:
-    (byte) 0x16    // 00010110: BinaryDirection.END = .....11., remaining zero bit = .......0
+    (byte) 0b00111000,   // 00011100: BinaryDirection.CHILD = ......00, BinaryTypeIndication.POSITIVE_INTEGER = ...110..
+    (byte) 0b01111100,   // 00111110:  0xa987 = 43399 = T0000111 T1010011 F0000010 = .....001 01111100 00011001 ...01000
+    (byte) 0b00011001,   // 10011000:
+    (byte) 0b01101000    // 00010110: BinaryDirection.END = .11....., remaining zero bit = 0.......
   };
   
   private static final String PRINTED_TREE_WITH_INTEGER_NODE = "INTEGER: 43399" + NEW_LINE;
-
+  
+  static {
+    Logger.getLogger("").setLevel(Level.SEVERE);
+  }
+ 
     
   /**
    * Test construncting a BinarySerializedTree from an XTree with a single Integer node.
@@ -38,9 +44,9 @@ public class BinarySerializedXTreeTest {
     BinarySerializedXTree binarySerializedXTree = new BinarySerializedXTree(tree);
     byte[] serializedTree = binarySerializedXTree.getSerializedTreeData();
     assertTrue(Arrays.equals(SERIALIZED_TREE_WITH_INTEGER_NODE, serializedTree), "Wrong serialized data, expected:" + NEW_LINE +
-        ByteArrayUtils.arrayToBinaryString(SERIALIZED_TREE_WITH_INTEGER_NODE) + NEW_LINE +
+        ByteArrayUtils.toBinaryString(SERIALIZED_TREE_WITH_INTEGER_NODE) + NEW_LINE +
         "was:" + NEW_LINE +
-        ByteArrayUtils.arrayToBinaryString(serializedTree)
+        ByteArrayUtils.toBinaryString(serializedTree)
         );
   }
   

@@ -381,9 +381,9 @@ public final class EmfUtil {
       
     case "Object":
       Object value = notification.getOldValue();
-      buf.append("    Old(Object)Value: type=").append(value != null ? value.getClass().getName() : "-").append(", value=").append(value != null ? value.toString() : "null").append(NEWLINE);
+      buf.append("    Old(Object)Value: type=").append(value != null ? value.getClass().getName() : "-").append(", value=").append(valueToString(value)).append(NEWLINE);
       value = notification.getNewValue();
-      buf.append("    New(Object)Value: type=").append(value != null ? value.getClass().getName() : "-").append(", value=").append(value != null ? value.toString() : "null").append(NEWLINE);
+      buf.append("    New(Object)Value: type=").append(value != null ? value.getClass().getName() : "-").append(", value=").append(value != null ? valueToString(value) : "null").append(NEWLINE);
       break;
       
     default:
@@ -402,6 +402,46 @@ public final class EmfUtil {
     
     buf.append("    wasSet: ");
     buf.append(notification.wasSet()).append(NEWLINE);
+    
+    return buf.toString();
+  }
+  
+  public static String valueToString(Object value) {
+    if (value == null) {
+      return "<null>";
+    }
+    
+    StringBuilder buf = new StringBuilder();
+    if (value instanceof List<?> list) {
+      buf.append(NEWLINE);
+      for (Object listItem: list) {
+        buf.append(valueToString(listItem)).append(NEWLINE);
+      }
+    } else if (value instanceof EObject eObject) {
+      buf.append(eObjectToString(eObject));
+    } else if (value instanceof int[] intArray) {
+      boolean first = true;
+      for (int i: intArray) {
+        if (first) {
+          first = false;
+        } else {
+          buf.append(", ");
+        }
+        buf.append(i);
+      }
+    } else {
+      buf.append("value of unknown type: ").append(value.getClass().getName());
+    }
+    return buf.toString();
+  }
+  
+  public static String eObjectToString(EObject eObject) {
+    StringBuilder buf = new StringBuilder();
+    
+    buf.append("    Features: ").append(NEWLINE);
+    for (EStructuralFeature feature: eObject.eClass().getEAllStructuralFeatures()) {
+      buf.append("      ").append(feature.getName()).append(" ").append(eObject.eGet(feature)).append(NEWLINE);
+    }
     
     return buf.toString();
   }

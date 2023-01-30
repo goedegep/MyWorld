@@ -2,8 +2,8 @@
  */
 package goedegep.types.model.impl;
 
-import goedegep.types.model.FileReference;
 import goedegep.geo.WGS84Coordinates;
+import goedegep.types.model.FileReference;
 import goedegep.types.model.DateRateTuplet;
 import goedegep.types.model.Event;
 import goedegep.types.model.TypesFactory;
@@ -207,6 +207,16 @@ public class TypesPackageImpl extends EPackageImpl implements TypesPackage {
    * @generated
    */
   @Override
+  public EAttribute getFileReference_Tags() {
+    return (EAttribute) fileReferenceEClass.getEStructuralFeatures().get(2);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
   public EClass getComparable() {
     return comparableEClass;
   }
@@ -374,6 +384,7 @@ public class TypesPackageImpl extends EPackageImpl implements TypesPackage {
     fileReferenceEClass = createEClass(FILE_REFERENCE);
     createEAttribute(fileReferenceEClass, FILE_REFERENCE__FILE);
     createEAttribute(fileReferenceEClass, FILE_REFERENCE__TITLE);
+    createEAttribute(fileReferenceEClass, FILE_REFERENCE__TAGS);
 
     comparableEClass = createEClass(COMPARABLE);
 
@@ -432,6 +443,8 @@ public class TypesPackageImpl extends EPackageImpl implements TypesPackage {
     initEAttribute(getFileReference_File(), ecorePackage.getEString(), "file", null, 1, 1, FileReference.class,
         !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getFileReference_Title(), ecorePackage.getEString(), "title", null, 0, 1, FileReference.class,
+        !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getFileReference_Tags(), ecorePackage.getEString(), "tags", null, 0, 1, FileReference.class,
         !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(comparableEClass, Comparable.class, "Comparable", IS_ABSTRACT, IS_INTERFACE,

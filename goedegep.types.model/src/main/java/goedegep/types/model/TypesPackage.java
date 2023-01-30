@@ -85,13 +85,22 @@ public interface TypesPackage extends EPackage {
   int FILE_REFERENCE__TITLE = 1;
 
   /**
+   * The feature id for the '<em><b>Tags</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int FILE_REFERENCE__TAGS = 2;
+
+  /**
    * The number of structural features of the '<em>File Reference</em>' class.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int FILE_REFERENCE_FEATURE_COUNT = 2;
+  int FILE_REFERENCE_FEATURE_COUNT = 3;
 
   /**
    * The number of operations of the '<em>File Reference</em>' class.
@@ -325,6 +334,17 @@ public interface TypesPackage extends EPackage {
   EAttribute getFileReference_Title();
 
   /**
+   * Returns the meta object for the attribute '{@link goedegep.types.model.FileReference#getTags <em>Tags</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Tags</em>'.
+   * @see goedegep.types.model.FileReference#getTags()
+   * @see #getFileReference()
+   * @generated
+   */
+  EAttribute getFileReference_Tags();
+
+  /**
    * Returns the meta object for class '{@link java.lang.Comparable <em>Comparable</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -460,7 +480,7 @@ public interface TypesPackage extends EPackage {
    * <!-- end-user-doc -->
    * @return the meta object for data type '<em>EWGS84 Coordinates</em>'.
    * @see goedegep.geo.WGS84Coordinates
-   * @model instanceClass="goedegep.geo.dbl.WGS84Coordinates"
+   * @model instanceClass="goedegep.geo.WGS84Coordinates"
    * @generated
    */
   EDataType getEWGS84Coordinates();
@@ -524,6 +544,14 @@ public interface TypesPackage extends EPackage {
     	 * @generated
     	 */
     EAttribute FILE_REFERENCE__TITLE = eINSTANCE.getFileReference_Title();
+
+    /**
+    	 * The meta object literal for the '<em><b>Tags</b></em>' attribute feature.
+    	 * <!-- begin-user-doc -->
+    	 * <!-- end-user-doc -->
+    	 * @generated
+    	 */
+    EAttribute FILE_REFERENCE__TAGS = eINSTANCE.getFileReference_Tags();
 
     /**
     	 * The meta object literal for the '{@link java.lang.Comparable <em>Comparable</em>}' class.

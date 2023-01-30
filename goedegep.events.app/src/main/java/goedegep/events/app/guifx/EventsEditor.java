@@ -3,11 +3,9 @@ package goedegep.events.app.guifx;
 import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Logger;
-
-import org.commonmark.parser.Parser;
-import org.commonmark.renderer.html.HtmlRenderer;
 
 import goedegep.events.app.EventsRegistry;
 import goedegep.events.model.EventInfo;
@@ -17,23 +15,26 @@ import goedegep.events.model.EventsPackage;
 import goedegep.jfx.ComponentFactoryFx;
 import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.FileReferencePanel;
+import goedegep.jfx.FileReferenceTypeInfo;
 import goedegep.jfx.JfxStage;
 import goedegep.jfx.controls.FileSelecter;
+import goedegep.jfx.controls.ObjectControlBoolean;
 import goedegep.jfx.controls.ObjectControlFlexDate;
 import goedegep.jfx.controls.ObjectControlGroup;
-import goedegep.jfx.controls.ObjectControlMultiLineString;
+import goedegep.jfx.controls.ObjectControlHTMLString;
 import goedegep.jfx.controls.ObjectControlString;
 import goedegep.types.model.FileReference;
 import goedegep.types.model.TypesFactory;
 import goedegep.types.model.TypesPackage;
+import goedegep.util.PgUtilities;
 import goedegep.util.datetime.FlexDate;
+import goedegep.util.datetime.FlexDateFormat;
 import goedegep.util.emf.EmfUtil;
 import goedegep.util.file.FileUtils;
 import javafx.beans.Observable;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
-import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -45,8 +46,6 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
-import javafx.scene.web.WebEngine;
-import javafx.scene.web.WebView;
 
 /**
  * This class provides a panel to show and edit EventInfo.
@@ -58,6 +57,7 @@ import javafx.scene.web.WebView;
 public class EventsEditor extends JfxStage {
   private static final Logger LOGGER = Logger.getLogger(EventsEditor.class.getName());
   private static final String WINDOW_TITLE = "Event editor";
+  private static final FlexDateFormat FDF =  new FlexDateFormat(true, true);
   
   /**
    * The GUI customization
@@ -75,6 +75,11 @@ public class EventsEditor extends JfxStage {
   private EventInfo event = null;
   
   /**
+   * The folder where attachments of {@code event} are located.
+   */
+  private File eventFolder = null;
+  
+  /**
    * Factory used to create all GUI elements
    */
   private ComponentFactoryFx componentFactory;
@@ -83,10 +88,12 @@ public class EventsEditor extends JfxStage {
   
   private ObjectControlFlexDate eventDateControl;
   private ObjectControlString eventTitleControl;
+  private ObjectControlString eventFolderControl;
+  private ObjectControlBoolean eventFolderExistsControl;
+  private Button createEventsFolderButton;
   private FileSelecter pictureFileSelecter;
-  private ObjectControlMultiLineString notesControl;
+  private ObjectControlHTMLString notesControl;
   private ImageView pictureImageView;
-  private MarkDownPreviewPanel markDownPreviewPanel;
   
   /**
    * List of panels, one for each element.
@@ -125,13 +132,16 @@ public class EventsEditor extends JfxStage {
     // Create object controls
     eventDateControl = componentFactory.createObjectInputFlexDate(null, 300, false, "Date of the event", null);
     eventTitleControl = componentFactory.createObjectInputString(null, 300, false, "Title of the event");
+    eventFolderControl = componentFactory.createObjectInputString(null, 300, false, "Folder where event attachments are stored");
+    eventFolderControl.setDisable(true);
+    eventFolderExistsControl = componentFactory.createObjectInputBoolean(null, false, true, "Checked indicates that the event folder exists");
+    createEventsFolderButton = componentFactory.createButton("create", "Click to create the event folder as shown on the left");
     pictureFileSelecter = componentFactory.createFileSelecter(null, 300, "file name of a picture", "file chooser", "Start a file chooser", "Select picture file");
     if (EventsRegistry.eventsFolderName != null) {
       pictureFileSelecter.setPrefix(EventsRegistry.eventsFolderName);
     }
-    notesControl = componentFactory.createObjectInputMultiLineString(null, 400, true, "Enter the notes in MarkDown format", null);
+    notesControl = componentFactory.createObjectControlHTMLString(null, 400, true, "Enter the notes in HTML format", null);
     notesControl.setPrefHeight(100);
-    markDownPreviewPanel = new MarkDownPreviewPanel();
     pictureImageView = new ImageView();
     pictureImageView.setFitWidth(400);
     pictureImageView.setFitHeight(400);
@@ -158,11 +168,6 @@ public class EventsEditor extends JfxStage {
       } else {
         pictureImageView.setImage(null);
       }
-    });
-    
-    notesControl.addListener((o) -> {
-      String text = notesControl.getText();
-      markDownPreviewPanel.setText(text);
     });
     
     handleChanges(null);
@@ -204,11 +209,21 @@ public class EventsEditor extends JfxStage {
     
     gridPane.add(eventDateControl, 1, 0);
     
-    // Title
+    // Title + Event folder
     label = componentFactory.createLabel("Title:");
     gridPane.add(label, 0, 1);
     
     gridPane.add(eventTitleControl, 1, 1);
+    
+    HBox eventFolderControlsBox = componentFactory.createHBox(12.0);    
+    label = componentFactory.createLabel("Event folder:");
+    eventFolderControlsBox.getChildren().add(label);
+    
+    eventFolderControlsBox.getChildren().add(eventFolderControl);
+    eventFolderControlsBox.getChildren().add(eventFolderExistsControl);
+    eventFolderControlsBox.getChildren().add(createEventsFolderButton);
+
+    gridPane.add(eventFolderControlsBox, 2, 1);
     
     // Picture
     label = componentFactory.createLabel("Picture:");
@@ -223,7 +238,6 @@ public class EventsEditor extends JfxStage {
     gridPane.add(label, 0, 3);
     
     gridPane.add(notesControl, 1, 3);
-    gridPane.add(markDownPreviewPanel, 2, 3);
     
     rootPane.getChildren().add(gridPane);
     
@@ -272,9 +286,9 @@ public class EventsEditor extends JfxStage {
 
     documentsMainVBox.getChildren().add(attachmentsVBox);
     
-    Button newDocumentButton = componentFactory.createButton("+ Add attachment", "Add an attachment");
-    newDocumentButton.setOnAction(e -> createNewAttachmentPanel(true));
-    documentsMainVBox.getChildren().add(newDocumentButton);
+    Button newAttachmentButton = componentFactory.createButton("+ Add attachment", "Add an attachment");
+    newAttachmentButton.setOnAction(e -> createNewAttachmentPanel(true));
+    documentsMainVBox.getChildren().add(newAttachmentButton);
     
     return documentsMainVBox;
   }
@@ -285,7 +299,10 @@ public class EventsEditor extends JfxStage {
   }
   
   private FileReferencePanel createNewAttachmentPanel(boolean expand) {
-    FileReferencePanel attachmentPanel = new FileReferencePanel(customization, attachmentPanels, expand);
+    FileReferencePanel attachmentPanel = new FileReferencePanel(customization, attachmentPanels, expand, Arrays.asList(AttachmentType.values()));
+    if (eventFolder != null) {
+      attachmentPanel.getFileSelecter().setInitiallySelectedFolder(eventFolder.getAbsolutePath());
+    }
     
     attachmentPanels.add(attachmentPanel);
     
@@ -376,7 +393,8 @@ public class EventsEditor extends JfxStage {
     EmfUtil.setFeatureValue(event, TypesPackage.eINSTANCE.getEvent_Date(), eventDateControl.getObjectValue());
     EmfUtil.setFeatureValue(event, EventsPackage.eINSTANCE.getEventInfo_Title(), eventTitleControl.getObjectValue());
     EmfUtil.setFeatureValue(event, EventsPackage.eINSTANCE.getEventInfo_Picture(), pictureFileSelecter.getObjectValue());
-    EmfUtil.setFeatureValue(event, TypesPackage.eINSTANCE.getEvent_Notes(), notesControl.getText());
+//    EmfUtil.setFeatureValue(event, TypesPackage.eINSTANCE.getEvent_Notes(), notesControl.getText());
+    EmfUtil.setFeatureValue(event, TypesPackage.eINSTANCE.getEvent_Notes(), notesControl.getObjectValue());
     
     fillAttachmentsFromAttachmentPanels(event);
   }
@@ -393,8 +411,12 @@ public class EventsEditor extends JfxStage {
       int index = 0;
       for (FileReference attachment: event.getAttachments()) {
         FileReferencePanel fileReferencePanel = attachmentPanels.get(index++);
-        if ((!attachment.getFile().equals(fileReferencePanel.getFile()))  ||
-            (!attachment.getTitle().equals(fileReferencePanel.titleTextField().getObjectValue()))) {
+        FileReferenceTypeInfo fileReferencePanelReferenceType = fileReferencePanel.getReferenceType();
+        String fileReferencePanelReferenceTypeTag = (fileReferencePanelReferenceType != null ? fileReferencePanelReferenceType.getTag() : null);
+        String fileReferencePanelFile = FileUtils.getPathRelativeToFolder(EventsRegistry.eventsFolderName, fileReferencePanel.getFile());
+        if (!PgUtilities.equals(attachment.getTags(), fileReferencePanelReferenceTypeTag)  ||
+            !attachment.getFile().equals(fileReferencePanelFile)  ||
+            !PgUtilities.equals(attachment.getTitle(), fileReferencePanel.titleTextField().getObjectValue())) {
           changes = true;
           break;
         }
@@ -414,11 +436,20 @@ public class EventsEditor extends JfxStage {
   }
 
   private void updateFileReferenceFromFileReferencePanel(FileReference fileReference, FileReferencePanel fileReferencePanel) {
+    FileReferenceTypeInfo fileReferencePanelReferenceType = fileReferencePanel.getReferenceType();
+    if (fileReferencePanelReferenceType != null) {
+      fileReference.setTags(fileReferencePanelReferenceType.getTag());
+    }
+    
+    
     if (fileReferencePanel.getFile() != null) {
       String filename = fileReferencePanel.getFile();
-      LOGGER.severe("filename=" + filename);
-      filename = FileUtils.getPathRelativeToFolder(EventsRegistry.eventsFolderName, filename);
-      LOGGER.severe("filename=" + filename);
+      
+      if (fileReferencePanelReferenceType == null  ||  fileReferencePanelReferenceType.getTag() != AttachmentType.PHOTO_FOLDER.getTag()) {
+        LOGGER.info("filename=" + filename);
+        filename = FileUtils.getPathRelativeToFolder(EventsRegistry.eventsFolderName, filename);
+        LOGGER.info("filename=" + filename);
+      }
       fileReference.setFile(stripBaseDirFromFilename(filename));
     }
 
@@ -476,6 +507,42 @@ public class EventsEditor extends JfxStage {
     }
   }
   
+  /**
+   * Update information related to the event folder.
+   */
+  private void updateEventFolderInfo() {
+    String eventFolderName = createEventFolderName();
+    eventFolderControl.setObjectValue(eventFolderName);
+    
+    if (eventFolderName != null) {
+      pictureFileSelecter.setInitiallySelectedFolder(eventFolderName);
+    }
+    
+    if (eventFolderName != null) {
+      eventFolder = new File(EventsRegistry.eventsFolderName, eventFolderName);
+      eventFolderExistsControl.setSelected(eventFolder.exists());
+    } else {
+      eventFolderExistsControl.setSelected(false);
+    }
+    
+    createEventsFolderButton.setDisable((eventFolderName == null)  ||  eventFolderExistsControl.isSelected());
+  }
+  
+  private String createEventFolderName() {
+    FlexDate eventDate = eventDateControl.getObjectValue();
+    if (eventDate == null) {
+      return null;
+    }
+    String eventDateText = FDF.format(eventDate);
+    
+    String title = eventTitleControl.getObjectValue();
+    if (title == null) {
+      return null;
+    }
+    
+    return eventDateText + " " + title;
+  }
+  
   private void fillControlsFromEvent(EventInfo eventInfo) {
     if (eventInfo == null) {
       clearControls();
@@ -508,6 +575,7 @@ public class EventsEditor extends JfxStage {
    * @param observable
    */
   private void handleChanges(Observable observable) {
+    updateEventFolderInfo();
     updateButtons();
   }
 }
@@ -516,49 +584,4 @@ enum Mode {
   VIEW_MODE,
   NEW_MODE,
   EDIT_MODE;
-}
-
-class MarkDownPreviewPanel extends Group {
-  static Parser parser = Parser.builder().build();
-  static HtmlRenderer renderer = HtmlRenderer.builder().build();
-  private WebView webView;
-  private WebEngine webEngine;
-
-  MarkDownPreviewPanel() {
-    webView = new WebView();
-    webView.setPrefHeight(200);
-    webView.setPrefWidth(300);
-    webEngine = webView.getEngine();
-    getChildren().add(webView);
-  }
-
-  void setText(String markDownText) {
-    if (markDownText != null) {
-      org.commonmark.node.Node document = parser.parse(markDownText);
-      String text = renderer.render(document);
-      text = addHtmlContext(text);
-
-      webEngine.loadContent(text);
-    } else {
-      webEngine.loadContent("");
-    }
-
-  }
-
-  public String addHtmlContext(String text) {
-    StringBuilder buf = new StringBuilder();
-    buf.append("<html>");
-    //  if (panelBackgroundHexColorValue != null) {
-    //    buf.append("<body bgcolor='");
-    //    buf.append(panelBackgroundHexColorValue);
-    //    buf.append("'>");
-    //  }
-
-    buf.append(text);
-
-    buf.append("</html>");
-
-
-    return buf.toString();
-  }
 }

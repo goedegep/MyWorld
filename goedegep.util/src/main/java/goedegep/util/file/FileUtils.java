@@ -53,7 +53,7 @@ public class FileUtils {
   /**
    * File name extensions of known pictures files.
    */
-  private static Set<String> pictureFileExtensions = new HashSet<>(Arrays.asList(".jpg", ".png"));
+  private static Set<String> pictureFileExtensions = new HashSet<>(Arrays.asList(".jpg", ".jpeg", ".png"));
   
   
   /**
@@ -446,6 +446,51 @@ public class FileUtils {
     String fileExtension = getFileExtension(fileName);
     if (fileExtension != null) {
       return pictureFileExtensions.contains(fileExtension.toLowerCase());
+    } else {
+      return false;
+    }
+  }
+
+  /**
+   * Check whether a file is a PDF file (based on its extension).
+   * 
+   * @param fileName a filename. This value may not be null.
+   * @return true is the file is a PDF file, false otherwise.
+   */
+  public static boolean isPDFFile(String fileName) {
+    String fileExtension = getFileExtension(fileName);
+    if (fileExtension != null) {
+      return fileExtension.equalsIgnoreCase(".pdf");
+    } else {
+      return false;
+    }
+  }
+
+  /**
+   * Check whether a file is a text file (based on its extension).
+   * 
+   * @param fileName a filename. This value may not be null.
+   * @return true is the file is a text file, false otherwise.
+   */
+  public static boolean isTextFile(String fileName) {
+    String fileExtension = getFileExtension(fileName);
+    if (fileExtension != null) {
+      return fileExtension.equalsIgnoreCase(".txt");
+    } else {
+      return false;
+    }
+  }
+
+  /**
+   * Check whether a file is a Microsoft Word file (based on its extension).
+   * 
+   * @param fileName a filename. This value may not be null.
+   * @return true is the file is a Microsoft Word file, false otherwise.
+   */
+  public static boolean isMSWordFile(String fileName) {
+    String fileExtension = getFileExtension(fileName);
+    if (fileExtension != null) {
+      return fileExtension.equalsIgnoreCase(".doc")  ||  fileExtension.equalsIgnoreCase(".docx");
     } else {
       return false;
     }

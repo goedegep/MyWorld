@@ -1,4 +1,4 @@
-package goedegep.util.xtree.defaultmutablextree;
+package goedegep.util.xtree.impl.defaultmutable;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -636,8 +636,8 @@ public class DefaultMutableXTreeTest {
     node = subTree.getRoot();
     assertEquals(XTreeTag.QUERY_INDEX, node.getTagData(), "Wrong value obtained");
     node = (MutableXTreeNode) node.getLastSibling();
-    assertTrue(Arrays.equals(rawData, node.getBlobData()), "Wrong value obtained expected" + ByteArrayUtils.toHex(rawData) +
-        " but was " + ByteArrayUtils.toHex(node.getBlobData()));
+    assertTrue(Arrays.equals(rawData, node.getBlobData()), "Wrong value obtained expected" + ByteArrayUtils.toHexString(rawData) +
+        " but was " + ByteArrayUtils.toHexString(node.getBlobData()));
   }
   
   

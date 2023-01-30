@@ -62,11 +62,16 @@ public enum ImageResource {
   GPX(new ImageFileInfo[] {new ImageFileInfo("Gpx.png", 359, 329)}, "a map with a track and a location", null),
   MAGNIFYING_GLASS(new ImageFileInfo[] {new ImageFileInfo("MagnifyingGlass - 256x256.png", 256, 256)}, "a magnifying glass", null),
   MAP(new ImageFileInfo[] {new ImageFileInfo("Map - 487x487.png", 487, 487)}, "a map", null),
+  MS_WORD(new ImageFileInfo[] {new ImageFileInfo("MSWord - 1047x1024.png", 1047, 1024)}, "Microsoft Word document icon", "User:Airhogs777"),
+  PDF(new ImageFileInfo[] {new ImageFileInfo("PDF - 417x512.png", 417, 512)}, "PDF file logo", null),
+  PHOTO_FOLDER(new ImageFileInfo[] {new ImageFileInfo("PhotoFolder - 199x217.png", 417, 512)}, "Photo folder icon", "https://icon-library.com/icon/microsoft-folder-icon-24.html.html>Microsoft Folder Icon # 392312"),
   ROAD_TO_HORIZON(new ImageFileInfo[] {new ImageFileInfo("RoadToHorizon - 57x32.png", 57, 32), new ImageFileInfo("RoadToHorizon - 114x64.png", 114, 64)}, "a road to the horizon", null),
   SKIÏNG(new ImageFileInfo[] {new ImageFileInfo("Skiïng.png", 34, 39)}, "a skiër", null),
   SNOW_MOUNTAINS(new ImageFileInfo[] {new ImageFileInfo("SnowMountains - 64x30.png", 64, 30)}, "snow capped mountains", null),
   SUNRISE(new ImageFileInfo[] {new ImageFileInfo("Sunrise - 256x189.png", 256, 189)}, "sunrise (or sunset)", null),
   TEXT(new ImageFileInfo[] {new ImageFileInfo("Text - 512x512.png", 512, 512)}, "a letter T for Text", null),
+  TEXT_FILE(new ImageFileInfo[] {new ImageFileInfo("TextIcon - 512x512.png", 512, 512)}, "Text file icon", "<a href=\"https://www.flaticon.com/free-icons/text-file\" title=\"text file icons\">Text file icons created by Freepik - Flaticon</a>"),
+  VIDEO_FOLDER(new ImageFileInfo[] {new ImageFileInfo("VideoFolder - 936x936.png", 936, 936)}, "Video folder icon", null),
   WALKING(new ImageFileInfo[] {new ImageFileInfo("Walking - 512x512.png", 512, 512)}, "a person walking with stick and backpack", null);
   
   @SuppressWarnings("unused")

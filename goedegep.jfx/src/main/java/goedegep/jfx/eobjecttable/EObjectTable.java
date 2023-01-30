@@ -674,13 +674,23 @@ public class EObjectTable<T extends EObject> extends TableView<T> implements Obj
       setItems(null);
       return;
     }
+    
+    EReference objectsEReference = null;
+    for (EReference eReference: containingObject.eClass().getEAllReferences()) {
+      if (containingObject.eGet(eReference) == objects) {
+        LOGGER.severe("Found reference: " + eReference.getName());
+        objectsEReference = eReference;
+        break;
+      }
+    }
         
     // For the sorting and filtering to work, we need to wrap an ObservableList in a FilteredList and then in a SortedList.
     // And bind the SortedList comparator to the TableView comparator.
     // In order to support default sorting, based on the specified comparator, a second SortedList between the FilteredList and the SortedList is needed.
     
     if ((objects instanceof EObjectContainmentEList)  &&  (containingObject != null)) {
-      observableObjects = new ObservableEList<>(containingObject, (EObjectContainmentEList<T>) objects);
+//      observableObjects = new ObservableEList<>(containingObject, (EObjectContainmentEList<T>) objects);
+      observableObjects = new ObservableEList<>(false, containingObject, objectsEReference);
     } else {
       observableObjects = FXCollections.observableList(objects);
     }
@@ -694,9 +704,9 @@ public class EObjectTable<T extends EObject> extends TableView<T> implements Obj
     tableSortedList = new SortedList<>(comparatorBasedSortedList);
     tableSortedList.comparatorProperty().bind(comparatorProperty());
     
-    if (observableObjects instanceof ObservableEList) {
-      ((ObservableEList<T>) observableObjects).setPresentationList(tableSortedList);
-    }
+//    if (observableObjects instanceof ObservableEList) {
+//      ((ObservableEList<T>) observableObjects).setPresentationList(tableSortedList);
+//    }
 
     setItems(tableSortedList);
     ListChangeListener<T> l = new ListChangeListener<>() {
@@ -744,9 +754,9 @@ public class EObjectTable<T extends EObject> extends TableView<T> implements Obj
     tableSortedList = new SortedList<>(comparatorBasedSortedList);
     tableSortedList.comparatorProperty().bind(comparatorProperty());
     
-    if (observableObjects instanceof ObservableEList) {
-      ((ObservableEList<T>) observableObjects).setPresentationList(tableSortedList);
-    }
+//    if (observableObjects instanceof ObservableEList) {
+//      ((ObservableEList<T>) observableObjects).setPresentationList(tableSortedList);
+//    }
 
     setItems(tableSortedList);
     ListChangeListener<T> l = new ListChangeListener<>() {
@@ -760,7 +770,6 @@ public class EObjectTable<T extends EObject> extends TableView<T> implements Obj
 
       
     };
-    LOGGER.severe("adding listener");
     ((ObservableEList<T>) observableObjects).addTableRefreshNeededListener(o -> refresh());
   }
   
