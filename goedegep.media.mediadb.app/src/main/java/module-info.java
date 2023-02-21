@@ -28,4 +28,5 @@ module goedegep.media.mediadb.app {
   requires javaFlacEncoder;
   requires org.apache.commons.text;
   requires goedegep.resources;
+  requires org.apache.commons.io;
 }

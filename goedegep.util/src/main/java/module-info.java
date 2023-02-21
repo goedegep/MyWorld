@@ -1,7 +1,6 @@
 module goedegep.util {
   exports goedegep.util;
   exports goedegep.util.bitsequence;
-  exports goedegep.util.bytesequence;
   exports goedegep.util.bytearray;
   exports goedegep.util.collections;
   exports goedegep.util.csvfileaccess;

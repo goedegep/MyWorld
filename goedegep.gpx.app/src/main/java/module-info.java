@@ -12,4 +12,6 @@ module goedegep.gpx.app {
   requires goedegep.poi.model;
   requires goedegep.poi.app;
   requires goedegep.mapview;
+  requires javafx.controls;
+  requires goedegep.util;
 }

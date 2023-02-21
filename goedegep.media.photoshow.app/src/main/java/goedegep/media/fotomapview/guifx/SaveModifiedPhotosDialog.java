@@ -9,6 +9,7 @@ import java.util.logging.Logger;
 
 import goedegep.jfx.ComponentFactoryFx;
 import goedegep.jfx.CustomizationFx;
+import goedegep.media.fotoshow.app.guifx.IPhotoInfo;
 import goedegep.media.photo.IPhotoMetaData;
 import javafx.collections.ObservableSet;
 import javafx.scene.control.ButtonType;
@@ -28,7 +29,7 @@ public class SaveModifiedPhotosDialog extends Dialog<ButtonType> {
   
   private ComponentFactoryFx componentFactory;
 
-  private ObservableSet<IPhotoMetaData> photoInfos;
+  private ObservableSet<IPhotoInfo> photoInfos;
   private Map<IPhotoMetaData, CheckBox> selectionCheckBoxes = new HashMap<>();
 
   /**
@@ -39,7 +40,7 @@ public class SaveModifiedPhotosDialog extends Dialog<ButtonType> {
    * @param initiallySelectedFolder the initially selected main photo folder
    * @param initialIgnoreFolders the initial, comma separated, list of folders to be ignored
    */
-  public SaveModifiedPhotosDialog(CustomizationFx customization, Stage ownerWindow, ObservableSet<IPhotoMetaData> photoInfos) {
+  public SaveModifiedPhotosDialog(CustomizationFx customization, Stage ownerWindow, ObservableSet<IPhotoInfo> photoInfos) {
     this.photoInfos = photoInfos;
     
     setTitle(WINDOW_TITLE);
@@ -60,7 +61,7 @@ public class SaveModifiedPhotosDialog extends Dialog<ButtonType> {
   public List<IPhotoMetaData> getSelectedPhotos() {
     List<IPhotoMetaData> selectedPhotos = new ArrayList<>();
     
-    for (IPhotoMetaData photoInfo: photoInfos) {
+    for (IPhotoInfo photoInfo: photoInfos) {
       CheckBox checkBox = selectionCheckBoxes.get(photoInfo);
       if (checkBox.isSelected()) {
         selectedPhotos.add(photoInfo);

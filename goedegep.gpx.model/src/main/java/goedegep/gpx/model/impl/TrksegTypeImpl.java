@@ -43,7 +43,6 @@ import goedegep.gpx.model.WptType;
 public class TrksegTypeImpl extends MinimalEObjectImpl.Container implements TrksegType {
   private static final Logger LOGGER = Logger.getLogger(TrksegTypeImpl.class.getName());
 
-  private Double myCumulativeAscent = null;
   private Double myCumulativeDescent = null;
   
   /**
@@ -170,11 +169,7 @@ public class TrksegTypeImpl extends MinimalEObjectImpl.Container implements Trks
    * <!-- end-user-doc -->
    * @generated NOT
    */
-  public Double getCumulativeAscent() {
-    if (myCumulativeAscent != null) {
-      return myCumulativeAscent;
-    }
-    
+  public Double getCumulativeAscent() {    
     BigDecimal previousElevation = null;
     BigDecimal totalElevation = BigDecimal.ZERO;
     int pointsUsed = 0;
@@ -198,8 +193,7 @@ public class TrksegTypeImpl extends MinimalEObjectImpl.Container implements Trks
     }
     LOGGER.info("New: " + totalElevation.doubleValue() + ", used: " + pointsUsed + ", skipped: " + pointsSkipped);
 
-    myCumulativeAscent = totalElevation.doubleValue();
-    return myCumulativeAscent;
+    return totalElevation.doubleValue();
   }
 
   /**

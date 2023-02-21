@@ -3,7 +3,6 @@ package goedegep.media.photo;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 
 import goedegep.geo.WGS84Coordinates;
@@ -31,14 +30,22 @@ public class PhotoMetaDataWithImage implements Serializable, IPhotoMetaDataWithI
   }
 
   public void setPhotoMetaData(IPhotoMetaData photoMetaData) {
-    if (this.photoMetaData != null) {
+    if (metaDataChangeListener != null  &&  this.photoMetaData != null) {
       this.photoMetaData.removeListener(metaDataChangeListener);
     }
     
     this.photoMetaData = photoMetaData;
     
-    photoMetaData.addListener(metaDataChangeListener);
+    if (metaDataChangeListener != null) {
+      photoMetaData.addListener(metaDataChangeListener);
+    }
   }
+  
+  @Override
+  public IPhotoMetaData getIPhotoMetaData() {
+    return photoMetaData;
+  }
+
 
   public Image getImage() {
     return image;
@@ -103,8 +110,8 @@ public class PhotoMetaDataWithImage implements Serializable, IPhotoMetaDataWithI
     photoMetaData.setDeviceSpecificPhotoTakenTime(deviceSpecificPhotoTakenTime);
   }
  
-  public boolean isApproximateGPScoordinates() {
-    return photoMetaData != null ? photoMetaData.isApproximateGPScoordinates() : null;
+  public boolean hasApproximateGPScoordinates() {
+    return photoMetaData != null ? photoMetaData.hasApproximateGPScoordinates() : null;
   }
 
   @Override
@@ -114,6 +121,26 @@ public class PhotoMetaDataWithImage implements Serializable, IPhotoMetaDataWithI
     }
     
     photoMetaData.setApproximateGPScoordinates(approximateGPScoordinates);
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public Integer getRotationAngle() {
+    return photoMetaData != null ? photoMetaData.getRotationAngle() : null;
+  }
+  
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public void setRotationAngle(Integer rotationAngle) {
+    if (photoMetaData == null) {
+      photoMetaData = new PhotoMetaData();
+    }
+    
+    photoMetaData.setRotationAngle(rotationAngle);
   }
 
   public LocalDateTime getModificationDateTime() {
@@ -128,16 +155,16 @@ public class PhotoMetaDataWithImage implements Serializable, IPhotoMetaDataWithI
     photoMetaData.setModificationDateTime(modificationDateTime);
   }
 
-  /**
-   * Get the data/time to be used for sorting.
-   * <p>
-   * In the future this may be extended with e.g. an offset, or use the modification date/time if the device time isn't available.
-   * 
-   * @return the date/time to be used for sorting, or null if this isn't available.
-   */
-  public LocalDateTime getSortingDateTime() {
-    return photoMetaData != null ? photoMetaData.getSortingDateTime() : null;
-  }
+//  /**
+//   * Get the data/time to be used for sorting.
+//   * <p>
+//   * In the future this may be extended with e.g. an offset, or use the modification date/time if the device time isn't available.
+//   * 
+//   * @return the date/time to be used for sorting, or null if this isn't available.
+//   */
+//  public LocalDateTime getSortingDateTime() {
+//    return photoMetaData != null ? photoMetaData.getSortingDateTime() : null;
+//  }
 
   /*
    * Partial implementation of ObservableValue (only ChangeListeners are supported).
@@ -186,22 +213,28 @@ public class PhotoMetaDataWithImage implements Serializable, IPhotoMetaDataWithI
     return this;
   }
 
-  public static Comparator<IPhotoMetaDataWithImage> getSortingDateTimeComparator() {
-    return new SortingDateTimeComparator();
-  }
+//  public static Comparator<IPhotoMetaDataWithImage> getSortingDateTimeComparator() {
+//    return new SortingDateTimeComparator();
+//  }
+
+//  @Override
+//  public void setPhotoMetaData(IPhotoMetaData photoMetaData) {
+//    this.photoMetaData = photoMetaData;
+//    
+//  }
 }
 
-class SortingDateTimeComparator implements Comparator<IPhotoMetaDataWithImage> {
-
-  @Override
-  public int compare(IPhotoMetaDataWithImage photoMetaDataWithImage1, IPhotoMetaDataWithImage photoMetaDataWithImage2) {
-    LocalDateTime localDateTime1 = photoMetaDataWithImage1.getSortingDateTime();
-    LocalDateTime localDateTime2 = photoMetaDataWithImage2.getSortingDateTime();
-    if ((localDateTime1 == null)  ||  (localDateTime2 == null)) {
-      return 0;
-    } else {
-      return photoMetaDataWithImage1.getSortingDateTime().compareTo(photoMetaDataWithImage2.getSortingDateTime());
-    }
-  }
-}
-
+//class SortingDateTimeComparator implements Comparator<IPhotoMetaDataWithImage> {
+//
+//  @Override
+//  public int compare(IPhotoMetaDataWithImage photoMetaDataWithImage1, IPhotoMetaDataWithImage photoMetaDataWithImage2) {
+//    LocalDateTime localDateTime1 = photoMetaDataWithImage1.getSortingDateTime();
+//    LocalDateTime localDateTime2 = photoMetaDataWithImage2.getSortingDateTime();
+//    if ((localDateTime1 == null)  ||  (localDateTime2 == null)) {
+//      return 0;
+//    } else {
+//      return photoMetaDataWithImage1.getSortingDateTime().compareTo(photoMetaDataWithImage2.getSortingDateTime());
+//    }
+//  }
+//}
+//

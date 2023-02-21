@@ -8,9 +8,21 @@ import javafx.beans.property.BooleanProperty;
 import javafx.util.Callback;
 
 public interface IPhotoInfo extends IPhotoMetaDataWithImage {
-
-  void setSortingDateTime(LocalDateTime sortingDateTime);
   
+  public void setPhotoMetaDataWithImage(IPhotoMetaDataWithImage iPhotoMetaDataWithImage);
+  
+  public IPhotoMetaDataWithImage getPhotoMetaDataWithImage();
+
+  public void setSortingDateTime(LocalDateTime sortingDateTime);
+  
+  /**
+   * Get the data/time to be used for sorting.
+   * <p>
+   * In the future this may be extended with e.g. an offset, or use the modification date/time if the device time isn't available.
+   * 
+   * @return the date/time to be used for sorting, or null if this isn't available.
+   */
+  public LocalDateTime getSortingDateTime();
 
   public boolean isSelectedForTheShow();
   public BooleanProperty selectedForTheShowProperty();

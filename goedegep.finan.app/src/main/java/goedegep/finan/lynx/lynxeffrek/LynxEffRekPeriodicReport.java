@@ -2,7 +2,7 @@ package goedegep.finan.lynx.lynxeffrek;
 
 import java.io.File;
 
-import goedegep.util.datetime.PeriodicReport;
+import goedegep.app.finan.gen.PeriodicReport;
 
 public class LynxEffRekPeriodicReport<T extends Comparable<T>> extends PeriodicReport<T>  {
   File file;

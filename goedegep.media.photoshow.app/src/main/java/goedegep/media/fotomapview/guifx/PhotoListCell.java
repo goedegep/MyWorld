@@ -7,12 +7,10 @@ import java.util.logging.Logger;
 
 import goedegep.jfx.CustomizationFx;
 import goedegep.media.app.base.MediaAppResourcesFx;
+import goedegep.media.fotoshow.app.guifx.IPhotoInfo;
 import goedegep.media.photo.IPhotoMetaData;
 import goedegep.media.photo.IPhotoMetaDataWithImage;
-import goedegep.media.photo.PhotoMetaData;
-import goedegep.media.photo.PhotoMetaDataWithImage;
 import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.geometry.Insets;
 import javafx.scene.control.ListCell;
 import javafx.scene.image.Image;
@@ -27,7 +25,7 @@ import javafx.scene.layout.StackPane;
 /**
  * This class provides a {@link ListCell} which shows a photo thumbnail with indicators for whether the title and coordinates are set.
  */
-public class PhotoListCell extends ListCell<IPhotoMetaData> {
+public class PhotoListCell extends ListCell<IPhotoInfo> {
   @SuppressWarnings("unused")
   private static final Logger LOGGER = Logger.getLogger(PhotoListCell.class.getName());
 
@@ -51,7 +49,7 @@ public class PhotoListCell extends ListCell<IPhotoMetaData> {
    * {@inheritDoc}
    */
   @Override
-  public void updateItem(final IPhotoMetaData photoMetaData, final boolean empty) {
+  public void updateItem(final IPhotoInfo photoMetaData, final boolean empty) {
     super.updateItem(photoMetaData, empty);
     
     if (previousPhotoMetaData != null) {
@@ -99,6 +97,9 @@ public class PhotoListCell extends ListCell<IPhotoMetaData> {
       imageView.setFitHeight(150);
       imageView.setPreserveRatio(true);
       imageView.setImage(photoMetaDataWithImage.getImage());
+      if (photoMetaDataWithImage.getRotationAngle() != null) {
+        imageView.setRotate(photoMetaDataWithImage.getRotationAngle());
+      }
       stackPane.getChildren().add(imageView);
     }
 
@@ -143,7 +144,7 @@ public class PhotoListCell extends ListCell<IPhotoMetaData> {
    * @param text An optional title for the photo. 
    * @param fileName the file name of the photo to be shown.
    */
-  private void handleMouseEventOnPhotoIcon(MouseEvent mouseEvent, IPhotoMetaData photoInfo) {
+  private void handleMouseEventOnPhotoIcon(MouseEvent mouseEvent, IPhotoInfo photoInfo) {
     if (mouseEvent.getClickCount() > 1) {
       new PhotoMetaDataEditor(customization, photoInfo);
     } else {

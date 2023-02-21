@@ -1,16 +1,11 @@
 package goedegep.util.dir;
 
-import static java.nio.file.FileVisitResult.CONTINUE;
-
 import java.io.IOException;
 import java.nio.file.DirectoryIteratorException;
 import java.nio.file.DirectoryStream;
-import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.SimpleFileVisitor;
-import java.nio.file.attribute.BasicFileAttributes;
 import java.util.logging.Logger;
 
 /**
@@ -26,38 +21,6 @@ public final class DirectoryUtils {
   }
 
   
-  /**
-   * Recursively delete a directory
-   * <p>
-   * Everything in and below the directory is deleted, plus the directory itself.
-   * 
-   * @param path a Path to the directory to be deleted.
-   * @throws IOException in case something goes wrong
-   */
-  public static void recursivelyDeleteDirectory(Path path) throws IOException  {
-    Files.walkFileTree(path, new SimpleFileVisitor<Path>() {
-
-      @Override
-      public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
-        LOGGER.info("Deleting file: " + file);
-        Files.delete(file);
-        return CONTINUE;
-      }
-
-      @Override
-      public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
-        LOGGER.info("Deleting dir: " + dir);
-        if (exc == null) {
-          Files.delete(dir);
-          return CONTINUE;
-        } else {
-          throw exc;
-        }
-      }
-
-    });
-  }
-
   /**
    * Check that the files in one directory also exist in some other directory.
    * 
@@ -140,7 +103,7 @@ public final class DirectoryUtils {
     Path otherDirectoryPath = Paths.get(otherDirectoryName);
 
     return checkThatFilesInOneDirectoryAlsoExistInOtherDirectory(oneDirectoryPath, otherDirectoryPath, directoryCheckOptions);
-  }  
+  }
 
   /**
    * Check whether a file exists in a directory or in any of its sub-directories.

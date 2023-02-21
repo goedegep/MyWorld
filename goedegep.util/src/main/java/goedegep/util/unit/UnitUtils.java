@@ -1,6 +1,6 @@
 package goedegep.util.unit;
 
-import goedegep.util.datetime.ClockTime;
+import java.time.Duration;
 
 /**
  * This class provides utility methods and constants related to units.
@@ -46,8 +46,8 @@ public class UnitUtils {
    * @param speed the speed to be converted
    * @return the tempo corresponding to the {@code speed}
    */
-  public static ClockTime speedToTempo(double speed) {
-    return new ClockTime((long) (3600 / speed + 0.5));
+  public static Duration speedToTempo(double speed) {
+    return Duration.ofSeconds((long) (3600 / speed + 0.5));
   }
   
   /**
@@ -58,8 +58,8 @@ public class UnitUtils {
    * @param tempo the tempo to be converted
    * @return the speed corresponding to the {@code tempo}
    */
-  public static double tempoToSpeed(ClockTime tempo) {
-    return 3600.0 / (double) tempo.getTimeInSeconds();
+  public static double tempoToSpeed(Duration tempo) {
+    return 3600.0 / (double) tempo.getSeconds();
   }
 
 }

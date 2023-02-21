@@ -25,4 +25,5 @@ module goedegep.pctools {
   requires tim.prune;
   requires goedegep.gpx.app;
   requires goedegep.resources;
+  requires org.commonmark;
 }

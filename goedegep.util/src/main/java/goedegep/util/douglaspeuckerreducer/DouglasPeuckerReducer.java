@@ -4,22 +4,26 @@ import java.util.ArrayList;
 import java.util.List;
 
 import goedegep.geo.WGS84Coordinates;
+import javafx.util.Callback;
 
 /**
- * This class is based on
+ * This class provides a method to reduce the number of points in a shape using the Douglas-Peucker algorithm.
+ * It is based on
  * https://github.com/spyhunter99/kml-reducer/blob/master/src/main/java/org/miloss/kmlreducer/Main.java
  */
 public class DouglasPeuckerReducer {
   
   /**
-   * Reduce the number of points in a shape using the Douglas-Peucker algorithm
+   * Reduce the number of points in a shape using the Douglas-Peucker algorithm.
    *
    * @param shape     The shape to reduce
    * @param tolerance The tolerance to decide whether or not to keep a point, in
    *                  the coordinate system of the points (micro-degrees here)
+   * @param           coordinateExtractor method to obtain WGS84Coordinates from each object in the shape.
+   *                  If this is <code>null</code> it is assumed that the items in the shape are of type <code>WGS84Coordinates</code> (i.e. type <code>T</code> is <code>WGS84Coordinates</code>).
    * @return the reduced shape
    */
-  public static List<WGS84Coordinates> reduceWithTolerance(List<WGS84Coordinates> shape, double tolerance) {
+  public static <T extends Object> List<T> reduceWithTolerance(List<T> shape, double tolerance, Callback<Object, WGS84Coordinates> coordinateExtractor) {
     int n = shape.size();
     // if a shape has 2 or less points it cannot be reduced
     if (tolerance <= 0 || n < 3) {
@@ -39,17 +43,30 @@ public class DouglasPeuckerReducer {
         marked, // reduced shape
         tolerance, // tolerance
         0, // index of first point
-        n - 1 // index of last point
+        n - 1, // index of last point
+        coordinateExtractor
     );
 
     // all done, return the reduced shape
-    ArrayList<WGS84Coordinates> newShape = new ArrayList<WGS84Coordinates>(n); // the new shape to return
+    ArrayList<T> newShape = new ArrayList<>(n); // the new shape to return
     for (int i = 0; i < n; i++) {
       if (marked[i]) {
         newShape.add(shape.get(i));
       }
     }
     return newShape;
+  }
+
+  /**
+   * Reduce the number of points in a shape using the Douglas-Peucker algorithm
+   *
+   * @param shape     The shape to reduce
+   * @param tolerance The tolerance to decide whether or not to keep a point, in
+   *                  the coordinate system of the points (micro-degrees here)
+   * @return the reduced shape
+   */
+  public static List<WGS84Coordinates> reduceWithTolerance(List<WGS84Coordinates> shape, double tolerance) {
+    return reduceWithTolerance(shape, tolerance, null);
   }
 
   /**
@@ -64,8 +81,8 @@ public class DouglasPeuckerReducer {
    * @param lastIdx   The index in original shape's point of the ending point for
    *                  this line segment
    */
-  private static void douglasPeuckerReduction(List<WGS84Coordinates> shape, boolean[] marked, double tolerance, int firstIdx,
-      int lastIdx) {
+  private static void douglasPeuckerReduction(List<? extends Object> shape, boolean[] marked, double tolerance, int firstIdx,
+      int lastIdx, Callback<Object, WGS84Coordinates> coordinateExtractor) {
     if (lastIdx <= firstIdx + 1) {
       // overlapping indexes, just return
       return;
@@ -76,11 +93,11 @@ public class DouglasPeuckerReducer {
     double maxDistance = 0.0;
     int indexFarthest = 0;
 
-    WGS84Coordinates firstPoint = shape.get(firstIdx);
-    WGS84Coordinates lastPoint = shape.get(lastIdx);
+    WGS84Coordinates firstPoint = coordinateExtractor != null ? coordinateExtractor.call(shape.get(firstIdx)) : (WGS84Coordinates) shape.get(firstIdx);
+    WGS84Coordinates lastPoint = coordinateExtractor != null ? coordinateExtractor.call(shape.get(lastIdx)) : (WGS84Coordinates) shape.get(lastIdx);
 
     for (int idx = firstIdx + 1; idx < lastIdx; idx++) {
-      WGS84Coordinates point = shape.get(idx);
+      WGS84Coordinates point = coordinateExtractor.call(shape.get(idx));
 
       double distance = orthogonalDistance(point, firstPoint, lastPoint);
 
@@ -97,10 +114,10 @@ public class DouglasPeuckerReducer {
       marked[indexFarthest] = true;
 
       // reduce the shape between the starting point to newly found point
-      douglasPeuckerReduction(shape, marked, tolerance, firstIdx, indexFarthest);
+      douglasPeuckerReduction(shape, marked, tolerance, firstIdx, indexFarthest, coordinateExtractor);
 
       // reduce the shape between the newly found point and the finishing point
-      douglasPeuckerReduction(shape, marked, tolerance, indexFarthest, lastIdx);
+      douglasPeuckerReduction(shape, marked, tolerance, indexFarthest, lastIdx, coordinateExtractor);
     }
     // else: the farthest point is within the tolerance, the whole segment is
     // discarded.

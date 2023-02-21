@@ -30,6 +30,10 @@
       <artifactId>mp3agic</artifactId>
     </dependency>
     <dependency>
+      <groupId>commons-io</groupId>
+      <artifactId>commons-io</artifactId>
+    </dependency>
+    <dependency>
       <groupId>goedegep.appgen</groupId>
       <artifactId>goedegep-appgen</artifactId>
     </dependency>

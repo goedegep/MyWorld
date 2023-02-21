@@ -6,11 +6,28 @@ import java.text.ParseException;
 import java.text.ParsePosition;
 
 
+/**
+ * This class is a {@link Format} for a {@link FlexDate}.
+ * <p>
+ * Properties:
+ * <ul>
+ * <li>alwaysPrint2DigitDayAndMonth<br/>
+ * If true the day and month are always printed with 2 digits.
+ * </li>
+ * <li>reversedDate<br/>
+ * If true the date is printed in reversed order.
+ * </li>
+ * </ul>
+ * 
+ */
 @SuppressWarnings("serial")
 public class FlexDateFormat extends Format {
   private boolean alwaysPrint2DigitDayAndMonth = true;
   private boolean reversedDate = false;
   
+  /**
+   * Constructor where <code>alwaysPrint2DigitDayAndMonth</code> is set to true and <code>reversedDate</code> is set to false.
+   */
   public FlexDateFormat() {
     this(true);
   }

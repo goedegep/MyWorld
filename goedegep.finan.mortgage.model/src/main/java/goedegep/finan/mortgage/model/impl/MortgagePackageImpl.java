@@ -15,6 +15,7 @@ import goedegep.finan.mortgage.model.MortgagePackage;
 
 import goedegep.finan.mortgage.model.MortgageType;
 import goedegep.finan.mortgage.model.MortgageYearlyOverview;
+import goedegep.finan.mortgage.model.MortgageYearlyOverviews;
 import goedegep.finan.mortgage.model.Mortgages;
 import goedegep.finan.mortgage.model.NewInterestRate;
 import goedegep.finan.mortgage.model.NewInterestRateWithCompensation;
@@ -151,6 +152,13 @@ public class MortgagePackageImpl extends EPackageImpl implements MortgagePackage
    * @generated
    */
   private EClass rateEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass mortgageYearlyOverviewsEClass = null;
 
   /**
    * <!-- begin-user-doc -->
@@ -1020,6 +1028,26 @@ public class MortgagePackageImpl extends EPackageImpl implements MortgagePackage
    * @generated
    */
   @Override
+  public EClass getMortgageYearlyOverviews() {
+    return mortgageYearlyOverviewsEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public EReference getMortgageYearlyOverviews_YearlyOverviews() {
+    return (EReference)mortgageYearlyOverviewsEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
   public EEnum getMortgageType() {
     return mortgageTypeEEnum;
   }
@@ -1147,6 +1175,9 @@ public class MortgagePackageImpl extends EPackageImpl implements MortgagePackage
     rateEClass = createEClass(RATE);
     createEAttribute(rateEClass, RATE__DATE);
     createEAttribute(rateEClass, RATE__RATE);
+
+    mortgageYearlyOverviewsEClass = createEClass(MORTGAGE_YEARLY_OVERVIEWS);
+    createEReference(mortgageYearlyOverviewsEClass, MORTGAGE_YEARLY_OVERVIEWS__YEARLY_OVERVIEWS);
 
     // Create enums
     mortgageTypeEEnum = createEEnum(MORTGAGE_TYPE);
@@ -1298,6 +1329,9 @@ public class MortgagePackageImpl extends EPackageImpl implements MortgagePackage
     initEClass(rateEClass, Rate.class, "Rate", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getRate_Date(), ecorePackage.getEDate(), "date", null, 0, 1, Rate.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getRate_Rate(), theTypesPackage.getEFixedPointValue(), "rate", null, 0, 1, Rate.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+    initEClass(mortgageYearlyOverviewsEClass, MortgageYearlyOverviews.class, "MortgageYearlyOverviews", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEReference(getMortgageYearlyOverviews_YearlyOverviews(), this.getMortgageYearlyOverview(), null, "yearlyOverviews", null, 0, -1, MortgageYearlyOverviews.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     // Initialize enums and add enum literals
     initEEnum(mortgageTypeEEnum, MortgageType.class, "MortgageType");

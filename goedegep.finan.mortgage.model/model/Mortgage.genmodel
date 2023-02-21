@@ -114,5 +114,8 @@
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Mortgage.ecore#//Rate/date"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Mortgage.ecore#//Rate/rate"/>
     </genClasses>
+    <genClasses ecoreClass="Mortgage.ecore#//MortgageYearlyOverviews">
+      <genFeatures children="true" createChild="true" propertySortChoices="true" ecoreFeature="ecore:EReference Mortgage.ecore#//MortgageYearlyOverviews/yearlyOverviews"/>
+    </genClasses>
   </genPackages>
 </genmodel:GenModel>

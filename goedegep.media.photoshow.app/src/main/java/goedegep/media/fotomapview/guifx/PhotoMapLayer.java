@@ -17,9 +17,10 @@ import goedegep.geo.WGS84BoundingBox;
 import goedegep.geo.WGS84Coordinates;
 import goedegep.jfx.CustomizationFx;
 import goedegep.mapview.MapViewUtil;
+import goedegep.media.fotoshow.app.guifx.IPhotoInfo;
+import goedegep.media.fotoshow.app.guifx.PhotoInfo;
 import goedegep.media.photo.IPhotoMetaData;
 import goedegep.media.photo.IPhotoMetaDataWithImage;
-import goedegep.media.photo.PhotoMetaData;
 import goedegep.resources.ImageResource;
 import goedegep.resources.ImageSize;
 import goedegep.util.img.ImageUtils;
@@ -64,7 +65,7 @@ import javafx.scene.text.Font;
  * In the photo information, the photo pathname is shown relative to the <code>rootFolderName</code>, which is passed to the constructor.<br/>
  * This map layer add itself as layer to the specified mapView.
  */
-public class PhotoMapLayer extends MapLayer implements ObjectSelector<IPhotoMetaData> {
+public class PhotoMapLayer extends MapLayer implements ObjectSelector<IPhotoInfo> {
   private static final Logger LOGGER = Logger.getLogger(PhotoMapView.class.getName());
   
   /**
@@ -82,6 +83,8 @@ public class PhotoMapLayer extends MapLayer implements ObjectSelector<IPhotoMeta
 //   * Information of the photos shown, per folder.
 //   */
 //  private ObservableMap<String, List<IPhotoMetaDataWithImage>> photoInfosPerFolder;
+  
+  private ObservableSet<IPhotoInfo> modifiedPhotos;
   
   /**
    * A small window to show image information and thumbnail and to edit image information.
@@ -112,7 +115,7 @@ public class PhotoMapLayer extends MapLayer implements ObjectSelector<IPhotoMeta
   /**
    * Photo index
    */
-  private S2PointIndex<PhotoMetaData> index;
+  private S2PointIndex<IPhotoMetaData> index;
   
   /**
    * If true, only all photos of the index are shown on the map.
@@ -123,7 +126,7 @@ public class PhotoMapLayer extends MapLayer implements ObjectSelector<IPhotoMeta
   /**
    * Listeners to the selected photo, used for the implementation of {@link ObjectSelector}.
    */
-  private List<ObjectSelectionListener<IPhotoMetaData>> objectSelectionListeners = new ArrayList<>();
+  private List<ObjectSelectionListener<IPhotoInfo>> objectSelectionListeners = new ArrayList<>();
 
   /**
    * MapView
@@ -146,12 +149,13 @@ public class PhotoMapLayer extends MapLayer implements ObjectSelector<IPhotoMeta
    * @param modifiedPhotos a list of modified photos
    * @param rootFolderName the root folder name.
    */
-  public PhotoMapLayer(CustomizationFx customization, PhotoMapView photoMapView, MapView mapView, ObservableMap<String, List<IPhotoMetaDataWithImage>> photoInfosPerFolder, ObservableSet<IPhotoMetaData> modifiedPhotos, String rootFolderName) {
+  public PhotoMapLayer(CustomizationFx customization, PhotoMapView photoMapView, MapView mapView, ObservableMap<String, List<IPhotoInfo>> photoInfosPerFolder, ObservableSet<IPhotoInfo> modifiedPhotos, String rootFolderName) {
     this.customization = customization;
 //    this.photoInfosPerFolder = photoInfosPerFolder;
     this.mapView = mapView;
+    this.modifiedPhotos = modifiedPhotos;
    
-    MapChangeListener<String, List<IPhotoMetaDataWithImage>> ml = (change) -> markDirty();
+    MapChangeListener<String, List<IPhotoInfo>> ml = (change) -> markDirty();
     photoInfosPerFolder.addListener(ml);
     
     mapView.addLayer(this);
@@ -253,7 +257,7 @@ public class PhotoMapLayer extends MapLayer implements ObjectSelector<IPhotoMeta
    * @param photoMetaDataWithImage information on the photo.
    * @return a single point WGS84BoundingBox for the coordinates of the photo.
    */
-  public WGS84BoundingBox addPhoto(IPhotoMetaDataWithImage photoMetaDataWithImage) {
+  public WGS84BoundingBox addPhoto(IPhotoInfo photoMetaDataWithImage) {
     if (photoAlreadyOnMap(photoMetaDataWithImage)) {
       return null;
     }
@@ -282,7 +286,7 @@ public class PhotoMapLayer extends MapLayer implements ObjectSelector<IPhotoMeta
    */
   private ImageView getImageViewForPhoto(IPhotoMetaData photoMetaData) {
     Image photoImage;
-    if (photoMetaData.isApproximateGPScoordinates()) {
+    if (photoMetaData.hasApproximateGPScoordinates()) {
       photoImage = ImageResource.CAMERA_GRAY.getImage(ImageSize.SIZE_0);
     } else {
       photoImage = ImageResource.CAMERA_BLACK.getImage(ImageSize.SIZE_0);
@@ -297,7 +301,7 @@ public class PhotoMapLayer extends MapLayer implements ObjectSelector<IPhotoMeta
    * @param index an <code>S2PointIndex<PhotoMetaData></code> which will be used to determine whether a photo has to be drawn or not. A null values removes the index.
    * @param showOnMap if true, all photos of this index will be shown, else the photos added via .... are shown.
    */
-  public void setPhotoIndex(S2PointIndex<PhotoMetaData> index) {
+  public void setPhotoIndex(S2PointIndex<IPhotoMetaData> index) {
     LOGGER.severe("Index set");
     this.index = index;
     markDirty();
@@ -318,8 +322,8 @@ public class PhotoMapLayer extends MapLayer implements ObjectSelector<IPhotoMeta
       }
       
       this.showPhotoIndexOnMap = showPhotoIndexOnMap;
+      markDirty();
     }
-    markDirty();
   }
   
   private void switchToShowPhotoIndexOnMap() {
@@ -329,21 +333,22 @@ public class PhotoMapLayer extends MapLayer implements ObjectSelector<IPhotoMeta
 //      WGS84BoundingBox mapBoundingBox = MapViewUtil.getVisibleMapCoordinates(baseMap);
 
       LOGGER.info("Number of photos to show: " + index.numPoints());
-      S2Iterator<S2PointIndex.Entry<PhotoMetaData>> iterator = index.iterator();
+      S2Iterator<S2PointIndex.Entry<IPhotoMetaData>> iterator = index.iterator();
 
       while (!iterator.done()) {
-        PhotoMetaData photoMetaData = iterator.entry().data();
-//        WGS84Coordinates coordinates = photoMetaData.getCoordinates();
+        IPhotoMetaData photoMetaData = iterator.entry().data();
+        IPhotoInfo photoInfo = new PhotoInfo();
+        photoInfo.setPhotoMetaData(photoMetaData);
 
         ImageView photoIcon = getImageViewForPhoto(photoMetaData);
 //        final Point2D mapPoint = baseMap.getMapPoint(coordinates.getLatitude(), coordinates.getLongitude());
 //
 //        photoIcon.setTranslateX(mapPoint.getX());
 //        photoIcon.setTranslateY(mapPoint.getY());
-        photoIcon.setOnMouseClicked(e -> handleMouseEventOnPhotoIcon(e, photoMetaData));
+        photoIcon.setOnMouseClicked(e -> handleMouseEventOnPhotoIcon(e, photoInfo));
 
         getChildren().add(photoIcon);
-        PhotoData photoData = new PhotoData(photoMetaData, photoIcon);
+        PhotoData photoData = new PhotoData(photoInfo, photoIcon);
         photos.add(photoData);
 
         iterator.next();
@@ -353,7 +358,7 @@ public class PhotoMapLayer extends MapLayer implements ObjectSelector<IPhotoMeta
   }
   
   private void switchToShowSpecifiedPhotosOnMap() {
-    
+    clear();
   }
   
   /**
@@ -365,10 +370,10 @@ public class PhotoMapLayer extends MapLayer implements ObjectSelector<IPhotoMeta
    * On a mouse released event the cursor is set back to the default cursor en the <code>relocatingPhoto</code> is set to null.
    * 
    * @param photoIcon the icon on which to install mouse handling
-   * @param photoMetaData the PhotoMetaDataWithImage related to the <code>photoIcon</code>
+   * @param photoInfo the PhotoMetaDataWithImage related to the <code>photoIcon</code>
    */
-  private void installMouseHandlingOnPhotoIcon(ImageView photoIcon, IPhotoMetaData photoMetaData) {
-    photoIcon.setOnMouseClicked(e -> handleMouseEventOnPhotoIcon(e, photoMetaData));
+  private void installMouseHandlingOnPhotoIcon(ImageView photoIcon, IPhotoInfo photoInfo) {
+    photoIcon.setOnMouseClicked(e -> handleMouseEventOnPhotoIcon(e, photoInfo));
     
     photoIcon.setOnMouseDragged(event -> {
       LOGGER.info("Mouse Dragged");
@@ -378,11 +383,11 @@ public class PhotoMapLayer extends MapLayer implements ObjectSelector<IPhotoMeta
         LOGGER.info("point2D: " + point2D.getX() + ", " + point2D.getY());
         MapPoint mapPoint = baseMap.getMapPosition(point2D.getX(), point2D.getY());
         WGS84Coordinates coordinates = new WGS84Coordinates(mapPoint.getLatitude(), mapPoint.getLongitude());
-        photoMetaData.setCoordinates(coordinates);
+        photoInfo.setCoordinates(coordinates);
         markDirty();
       } else {
         getScene().setCursor(Cursor.CROSSHAIR);
-        relocatingPhoto = photoMetaData;
+        relocatingPhoto = photoInfo;
       }
       event.consume();
     });
@@ -390,6 +395,7 @@ public class PhotoMapLayer extends MapLayer implements ObjectSelector<IPhotoMeta
     photoIcon.setOnMouseReleased(event -> {
       LOGGER.info("Mouse Released");
       getScene().setCursor(Cursor.DEFAULT);
+      modifiedPhotos.add(photoInfo);
       relocatingPhoto = null;
       event.consume();
     });
@@ -401,7 +407,7 @@ public class PhotoMapLayer extends MapLayer implements ObjectSelector<IPhotoMeta
    * 
    * @param photoMetaData The photo to be selected (may be null).
    */
-  public void setSelectedPhoto(Object caller, IPhotoMetaData photoMetaData) {
+  public void setSelectedPhoto(Object caller, IPhotoInfo photoMetaData) {
     // if there currently is a selected photo, deselect it.
     if (selectedPhoto != null) {
       Node node = selectedPhoto.node();
@@ -471,7 +477,7 @@ public class PhotoMapLayer extends MapLayer implements ObjectSelector<IPhotoMeta
    * @param text An optional title for the photo. 
    * @param fileName the file name of the photo to be shown.
    */
-  private void handleMouseEventOnPhotoIcon(MouseEvent mouseEvent, IPhotoMetaData photoMetaData) {
+  private void handleMouseEventOnPhotoIcon(MouseEvent mouseEvent, IPhotoInfo photoMetaData) {
     LOGGER.severe("=>");
     if (mouseEvent.getButton() == MouseButton.SECONDARY) {
       // right mouse, show PhotoMetaDataEditor
@@ -638,7 +644,7 @@ public class PhotoMapLayer extends MapLayer implements ObjectSelector<IPhotoMeta
    * {@inheritDoc}
    */
   @Override
-  public void addObjectSelectionListener(ObjectSelectionListener<IPhotoMetaData> objectSelectionListener) {
+  public void addObjectSelectionListener(ObjectSelectionListener<IPhotoInfo> objectSelectionListener) {
     objectSelectionListeners.add(objectSelectionListener);    
   }
 
@@ -646,7 +652,7 @@ public class PhotoMapLayer extends MapLayer implements ObjectSelector<IPhotoMeta
    * {@inheritDoc}
    */
   @Override
-  public void removeObjectSelectionListener(ObjectSelectionListener<IPhotoMetaData> objectSelectionListener) {
+  public void removeObjectSelectionListener(ObjectSelectionListener<IPhotoInfo> objectSelectionListener) {
     objectSelectionListeners.remove(objectSelectionListener);
   }
 
@@ -654,7 +660,7 @@ public class PhotoMapLayer extends MapLayer implements ObjectSelector<IPhotoMeta
    * {@inheritDoc}
    */
   @Override
-  public IPhotoMetaData getSelectedObject() {
+  public IPhotoInfo getSelectedObject() {
     if (selectedPhoto != null) {
       return selectedPhoto.photoMetaData();
     } else {
@@ -663,12 +669,12 @@ public class PhotoMapLayer extends MapLayer implements ObjectSelector<IPhotoMeta
   }
   
   private void notifyObjectSelectionListeners(Object source) {
-    IPhotoMetaData photoInfo = null;
+    IPhotoInfo photoInfo = null;
     if (selectedPhoto != null) {
       photoInfo = selectedPhoto.photoMetaData();
     }
     
-    for (ObjectSelectionListener<IPhotoMetaData> objectSelectionListener: objectSelectionListeners) {
+    for (ObjectSelectionListener<IPhotoInfo> objectSelectionListener: objectSelectionListeners) {
       objectSelectionListener.objectSelected(source, photoInfo);
     }
   }
@@ -683,7 +689,7 @@ public class PhotoMapLayer extends MapLayer implements ObjectSelector<IPhotoMeta
  * @param node the {@code Node}.
  *
  */
-record PhotoData(IPhotoMetaData photoMetaData, Node node) {
+record PhotoData(IPhotoInfo photoMetaData, Node node) {
 }
 
 /**

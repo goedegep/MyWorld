@@ -19,7 +19,7 @@ import goedegep.media.photo.IPhotoMetaDataWithImage;
 import goedegep.media.photoshow.model.FolderTimeOffsetSpecification;
 import goedegep.media.photoshow.model.PhotoShowFactory;
 import goedegep.media.photoshow.model.PhotoShowSpecification;
-import goedegep.util.datetime.DurationUtil;
+import goedegep.util.datetime.DurationFormat;
 import goedegep.util.img.PhotoFileMetaDataHandler;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -169,11 +169,12 @@ public class DeviceFolderTimeSyncWizard extends Dialog<ButtonType> {
       
       if (referenceFolderSelectionBox.getItems().size() > 1) {
         int referenceFolderIndex = referenceFolderSelectionBox.getSelectionModel().getSelectedIndex();
-        int toBeCorrectedFolderIndex;
-        if (referenceFolderIndex == 0) {
-          toBeCorrectedFolderIndex = 1;
-        } else {
-          toBeCorrectedFolderIndex = 0;
+        int toBeCorrectedFolderIndex = toBeCorrectedFolderSelectionBox.getSelectionModel().getSelectedIndex();
+        if (toBeCorrectedFolderIndex == referenceFolderIndex) {
+          toBeCorrectedFolderIndex = referenceFolderIndex + 1;
+          if (toBeCorrectedFolderIndex == toBeCorrectedFolderSelectionBox.getItems().size()) {
+            toBeCorrectedFolderIndex = 0;
+          }
         }
         toBeCorrectedFolderSelectionBox.getSelectionModel().select(toBeCorrectedFolderIndex);
       }
@@ -189,11 +190,12 @@ public class DeviceFolderTimeSyncWizard extends Dialog<ButtonType> {
 
       if (referenceFolderSelectionBox.getItems().size() > 1) {
         int toBeCorrectedFolderIndex = toBeCorrectedFolderSelectionBox.getSelectionModel().getSelectedIndex();
-        int referenceFolderIndex;
-        if (toBeCorrectedFolderIndex == 0) {
-          referenceFolderIndex = 1;
-        } else {
-          referenceFolderIndex = 0;
+        int referenceFolderIndex = referenceFolderSelectionBox.getSelectionModel().getSelectedIndex();
+        if (referenceFolderIndex == toBeCorrectedFolderIndex) {
+          referenceFolderIndex = toBeCorrectedFolderIndex + 1;
+          if (referenceFolderIndex == referenceFolderSelectionBox.getItems().size()) {
+            referenceFolderIndex = 0;
+          }
         }
         referenceFolderSelectionBox.getSelectionModel().select(referenceFolderIndex);
       }
@@ -248,6 +250,9 @@ public class DeviceFolderTimeSyncWizard extends Dialog<ButtonType> {
           imageView.setFitHeight(150);
           imageView.setPreserveRatio(true);
           imageView.setImage(photoInfo.getImage());
+          if (photoInfo.getRotationAngle() != null) {
+            imageView.setRotate(photoInfo.getRotationAngle());
+          }
           File aFile = new File(photoInfo.getFileName());
           stackPane.getChildren().clear();
           stackPane.getChildren().add(imageView);
@@ -366,6 +371,7 @@ public class DeviceFolderTimeSyncWizard extends Dialog<ButtonType> {
 class SyncDetailsDialog extends Dialog<ButtonType> {
   private final static String WINDOW_TITLE = "Time synchronization details";
   public static DateTimeFormatter DTF = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+  private final static DurationFormat DF = new DurationFormat();
   
   private TextField beforeText;
   private Button okButton;    // this will only be enabled if the before time is valid (text can be parsed and isn't 0).
@@ -411,13 +417,13 @@ class SyncDetailsDialog extends Dialog<ButtonType> {
     
     label = new Label("Time difference:");
     detailsPane.add(label, 0, 2);
-    text = new Text(DurationUtil.durationToString(timeOffset, true));
+    text = new Text(DF.format(timeOffset));
     detailsPane.add(text, 1, 2);
     
     label = new Label("How long before?:");
     detailsPane.add(label, 0, 3);
     beforeText = new TextField();
-    beforeText.setText(DurationUtil.durationToString(beforeTime, false));
+    beforeText.setText(DF.format(beforeTime));
     beforeText.textProperty().addListener(new ChangeListener<String>() {
 
       @Override
@@ -441,7 +447,7 @@ class SyncDetailsDialog extends Dialog<ButtonType> {
     boolean beforeTimeValid = false;
     
     try {
-      beforeTime = DurationUtil.durationFromString(beforeText.getText());
+      beforeTime = DF.parse(beforeText.getText());
       beforeTimeValid = (beforeTime != null)  && !beforeTime.isZero();
     } catch ( java.lang.NumberFormatException e) {
       // no action
@@ -459,6 +465,7 @@ class CorrectTimeDetailsDialog extends Dialog<ButtonType> {
   private final static Logger LOGGER = Logger.getLogger(CorrectTimeDetailsDialog.class.getName());
   private final static String WINDOW_TITLE = "Time correction details";
   public static DateTimeFormatter DTF = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+  private final static DurationFormat DF = new DurationFormat();
   
   private Button okButton;    // this will only be enabled if the before time is valid (text can be parsed and isn't 0).
   
@@ -510,7 +517,7 @@ class CorrectTimeDetailsDialog extends Dialog<ButtonType> {
       
       TextField currentOffsetTextField = new TextField();
       if (timeOffset != null) {
-        currentOffsetTextField.setText(DurationUtil.durationToString(timeOffset, true));
+        currentOffsetTextField.setText(DF.format(timeOffset));
       }
       currentOffsetTextField.setEditable(false);
       
@@ -603,7 +610,7 @@ class CorrectTimeDetailsDialog extends Dialog<ButtonType> {
     for (FolderTimeOffsetSpecification folderTimeOffsetSpecification: photoShowSpecification.getFolderTimeOffsetSpecifications()) {
       if (folderTimeOffsetSpecification.getFolderName().equals(folder)) {
         String timeOffsetText = folderTimeOffsetSpecification.getTimeOffset();
-        return DurationUtil.durationFromString(timeOffsetText);
+        return DF.parse(timeOffsetText);
       }
     }
     
@@ -678,7 +685,7 @@ class CorrectTimeDetailsDialog extends Dialog<ButtonType> {
         duration = folderInfo.currentOffset();
       }
       if (duration != null) {
-        newOffsetTextField.setText(DurationUtil.durationToString(duration, true));
+        newOffsetTextField.setText(DF.format(duration));
       } else {
         newOffsetTextField.setText(null);
       }
@@ -703,7 +710,7 @@ class CorrectTimeDetailsDialog extends Dialog<ButtonType> {
         }
         FolderTimeOffsetSpecification folderTimeOffsetSpecification = photoShowFactory.createFolderTimeOffsetSpecification();
         folderTimeOffsetSpecification.setFolderName(folderInfo.folder());
-        folderTimeOffsetSpecification.setTimeOffset(DurationUtil.durationToString(duration, true));
+        folderTimeOffsetSpecification.setTimeOffset(DF.format(duration));
         folderTimeOffsetSpecifications.add(folderTimeOffsetSpecification);
       }
     }

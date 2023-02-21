@@ -1525,6 +1525,43 @@ public interface MortgagePackage extends EPackage {
   int RATE_OPERATION_COUNT = 0;
 
   /**
+   * The meta object id for the '{@link goedegep.finan.mortgage.model.impl.MortgageYearlyOverviewsImpl <em>Yearly Overviews</em>}' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see goedegep.finan.mortgage.model.impl.MortgageYearlyOverviewsImpl
+   * @see goedegep.finan.mortgage.model.impl.MortgagePackageImpl#getMortgageYearlyOverviews()
+   * @generated
+   */
+  int MORTGAGE_YEARLY_OVERVIEWS = 16;
+
+  /**
+   * The feature id for the '<em><b>Yearly Overviews</b></em>' containment reference list.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int MORTGAGE_YEARLY_OVERVIEWS__YEARLY_OVERVIEWS = 0;
+
+  /**
+   * The number of structural features of the '<em>Yearly Overviews</em>' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int MORTGAGE_YEARLY_OVERVIEWS_FEATURE_COUNT = 1;
+
+  /**
+   * The number of operations of the '<em>Yearly Overviews</em>' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int MORTGAGE_YEARLY_OVERVIEWS_OPERATION_COUNT = 0;
+
+  /**
    * The meta object id for the '{@link goedegep.finan.mortgage.model.MortgageType <em>Type</em>}' enum.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -1532,7 +1569,7 @@ public interface MortgagePackage extends EPackage {
    * @see goedegep.finan.mortgage.model.impl.MortgagePackageImpl#getMortgageType()
    * @generated
    */
-  int MORTGAGE_TYPE = 16;
+  int MORTGAGE_TYPE = 17;
 
 
   /**
@@ -2385,6 +2422,27 @@ public interface MortgagePackage extends EPackage {
   EAttribute getRate_Rate();
 
   /**
+   * Returns the meta object for class '{@link goedegep.finan.mortgage.model.MortgageYearlyOverviews <em>Yearly Overviews</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for class '<em>Yearly Overviews</em>'.
+   * @see goedegep.finan.mortgage.model.MortgageYearlyOverviews
+   * @generated
+   */
+  EClass getMortgageYearlyOverviews();
+
+  /**
+   * Returns the meta object for the containment reference list '{@link goedegep.finan.mortgage.model.MortgageYearlyOverviews#getYearlyOverviews <em>Yearly Overviews</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the containment reference list '<em>Yearly Overviews</em>'.
+   * @see goedegep.finan.mortgage.model.MortgageYearlyOverviews#getYearlyOverviews()
+   * @see #getMortgageYearlyOverviews()
+   * @generated
+   */
+  EReference getMortgageYearlyOverviews_YearlyOverviews();
+
+  /**
    * Returns the meta object for enum '{@link goedegep.finan.mortgage.model.MortgageType <em>Type</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -3002,6 +3060,22 @@ public interface MortgagePackage extends EPackage {
      * @generated
      */
     EAttribute RATE__RATE = eINSTANCE.getRate_Rate();
+    /**
+     * The meta object literal for the '{@link goedegep.finan.mortgage.model.impl.MortgageYearlyOverviewsImpl <em>Yearly Overviews</em>}' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see goedegep.finan.mortgage.model.impl.MortgageYearlyOverviewsImpl
+     * @see goedegep.finan.mortgage.model.impl.MortgagePackageImpl#getMortgageYearlyOverviews()
+     * @generated
+     */
+    EClass MORTGAGE_YEARLY_OVERVIEWS = eINSTANCE.getMortgageYearlyOverviews();
+    /**
+     * The meta object literal for the '<em><b>Yearly Overviews</b></em>' containment reference list feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EReference MORTGAGE_YEARLY_OVERVIEWS__YEARLY_OVERVIEWS = eINSTANCE.getMortgageYearlyOverviews_YearlyOverviews();
     /**
      * The meta object literal for the '{@link goedegep.finan.mortgage.model.MortgageType <em>Type</em>}' enum.
      * <!-- begin-user-doc -->

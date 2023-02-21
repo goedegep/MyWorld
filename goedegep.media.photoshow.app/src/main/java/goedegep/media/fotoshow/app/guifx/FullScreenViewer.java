@@ -526,7 +526,7 @@ public class FullScreenViewer extends Stage {
    * The zoomLevel is reset to the INITIAL_ZOOM_LEVEL.
    */
   private void updateImage() {
-    LOGGER.severe("=>");
+    LOGGER.info("=>");
     String fileName;
     if (picturesToView != null) {
       currentPictureInfo = picturesToView.get(pictureIndex);
@@ -542,7 +542,6 @@ public class FullScreenViewer extends Stage {
       if (orientationText != null) {
         orientation = Integer.valueOf(orientationText);
       }
-      LOGGER.severe("orientation: " + orientation);
     } catch (ImageReadException e) {
       e.printStackTrace();
     } catch (IOException e) {
@@ -590,7 +589,7 @@ public class FullScreenViewer extends Stage {
     
     Dimension2D viewportDimensions = calculateViewportDimensions(imageView);
     Rectangle2D viewportRectangle = new Rectangle2D(0.0, 0.0, viewportDimensions.getWidth(), viewportDimensions.getHeight());
-    LOGGER.severe("viewport: " + viewportRectangle.getMinX() + ", " + viewportRectangle.getMinY() + ", " + viewportRectangle.getWidth() + ", " + viewportRectangle.getHeight());
+    LOGGER.info("viewport: " + viewportRectangle.getMinX() + ", " + viewportRectangle.getMinY() + ", " + viewportRectangle.getWidth() + ", " + viewportRectangle.getHeight());
     imageView.setViewport(viewportRectangle);
     
     if (currentPictureInfo != null) {

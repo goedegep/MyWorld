@@ -216,7 +216,7 @@ private static final String         VACATIONS_PROJECT_PATH = "../../../goedegep.
     
     if (fileToOpen != null) {
       String fileToOpenExtension = FileUtils.getFileExtension(fileToOpen);
-      if (".gpx".equals(fileToOpenExtension)) {
+      if (".gpx".equals(fileToOpenExtension)  ||  ".md".equals(fileToOpenExtension)) {
         appModule = MyWorldAppModule.PCTOOLS;
       }
     }

@@ -4,6 +4,7 @@ import java.util.List;
 
 import goedegep.finan.mortgage.model.MortgagePackage;
 import goedegep.finan.mortgage.model.MortgageYearlyOverview;
+import goedegep.finan.mortgage.model.MortgageYearlyOverviews;
 import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.eobjecttable.EObjectTable;
 import goedegep.jfx.eobjecttable.EObjectTableColumnDescriptorAbstract;
@@ -13,8 +14,8 @@ import goedegep.jfx.eobjecttable.EObjectTableDescriptor;
 public class MortgageYearlyOverviewsTable extends EObjectTable<MortgageYearlyOverview> {
 
   
-  public MortgageYearlyOverviewsTable(CustomizationFx customization, List<MortgageYearlyOverview> mortgageYearlyOverviews) {
-    super(customization, MortgagePackage.eINSTANCE.getMortgageYearlyOverview(), new MortgageYearlyOverviewsTableDescriptor(), null, mortgageYearlyOverviews);
+  public MortgageYearlyOverviewsTable(CustomizationFx customization, MortgageYearlyOverviews mortgageYearlyOverviews, List<MortgageYearlyOverview> yearlyOverviews) {
+    super(customization, MortgagePackage.eINSTANCE.getMortgageYearlyOverview(), new MortgageYearlyOverviewsTableDescriptor(), mortgageYearlyOverviews, yearlyOverviews);
   }
   
 }

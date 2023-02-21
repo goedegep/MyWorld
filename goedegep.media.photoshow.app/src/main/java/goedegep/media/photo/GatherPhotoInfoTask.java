@@ -13,6 +13,8 @@ import java.util.concurrent.BlockingQueue;
 import java.util.logging.Logger;
 
 import org.apache.commons.imaging.ImageReadException;
+import org.apache.commons.imaging.formats.tiff.constants.TiffDirectoryConstants;
+import org.apache.commons.imaging.formats.tiff.constants.TiffTagConstants;
 
 import goedegep.util.Tuplet;
 import goedegep.util.file.FileUtils;
@@ -213,6 +215,33 @@ public class GatherPhotoInfoTask extends Task<Tuplet<String, List<IPhotoMetaData
       photoMetaDataWithImage.setDeviceSpecificPhotoTakenTime(photoFileMetaDataHandler.getCreationDateTime());
       photoMetaDataWithImage.setCoordinates(photoFileMetaDataHandler.getGeoLocation());
       photoMetaDataWithImage.setApproximateGPScoordinates(photoFileMetaDataHandler.hasApproximateCoordinates());
+      
+      String orientationText = photoFileMetaDataHandler.getTiffItemValue(TiffDirectoryConstants.DIRECTORY_TYPE_ROOT, "Orientation");
+      if (orientationText != null) {
+        Integer orientation = Integer.valueOf(orientationText);
+        
+        switch (orientation) {
+        case TiffTagConstants.ORIENTATION_VALUE_HORIZONTAL_NORMAL:
+        case TiffTagConstants.ORIENTATION_VALUE_MIRROR_HORIZONTAL:
+          // no action for 0 degrees
+          break;
+          
+        case TiffTagConstants.ORIENTATION_VALUE_ROTATE_90_CW:
+        case TiffTagConstants.ORIENTATION_VALUE_MIRROR_HORIZONTAL_AND_ROTATE_90_CW:
+          photoMetaDataWithImage.setRotationAngle(90);
+          break;      
+          
+        case TiffTagConstants.ORIENTATION_VALUE_ROTATE_180:
+        case TiffTagConstants.ORIENTATION_VALUE_MIRROR_VERTICAL:
+          photoMetaDataWithImage.setRotationAngle(180);
+          break;
+          
+        case TiffTagConstants.ORIENTATION_VALUE_MIRROR_HORIZONTAL_AND_ROTATE_270_CW:
+        case TiffTagConstants.ORIENTATION_VALUE_ROTATE_270_CW:
+          photoMetaDataWithImage.setRotationAngle(270);
+          break;
+        }
+      }
     } catch (ImageReadException e) {
       LOGGER.severe("ImageReadException while reading file " + fileName + ", message: " + e.getMessage());
 //      e.printStackTrace();

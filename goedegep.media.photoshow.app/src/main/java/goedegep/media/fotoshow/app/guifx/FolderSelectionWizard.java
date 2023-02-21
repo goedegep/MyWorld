@@ -130,7 +130,6 @@ public class FolderSelectionWizard extends Dialog<ButtonType> {
     
     Node folderName = folderSelecter.getPathTextField();
     folderSelecter.objectValue().addListener((observable, oldValue, newValue) -> {
-      LOGGER.severe("In textProperty Listener");
       handleNewPhotoFolderSelected(selectionValidProperty.get(), folderSelecter.getObjectValue());      
     });
     wizardPanel.add(folderName, 1, 0);

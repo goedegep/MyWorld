@@ -1,8 +1,10 @@
 package goedegep.util.xtree.impl.ascii;
 
+import java.nio.ByteBuffer;
+import java.util.Arrays;
 import java.util.logging.Logger;
 
-import goedegep.util.bytesequence.ByteSequence;
+//import goedegep.util.bytesequence.ByteSequence;
 import goedegep.util.xtree.XNodeDataType;
 import goedegep.util.xtree.XTree;
 import goedegep.util.xtree.XTreeNodeVisitResult;
@@ -19,7 +21,9 @@ import goedegep.util.xtree.serialized.SerializedXTree;
 public class AsciiSerializedXTree extends NodeBasedXTreeAbstract implements NodeBasedXTree, SerializedXTree {
   private static final Logger LOGGER = Logger.getLogger(AsciiSerializedXTree.class.getName());
   
-  private ByteSequence treeData;
+  private ByteBuffer treeData;
+  
+  private int length;
 
   /**
    * Constructor, where the content is provided as an XTree in ASCII serialized form.
@@ -27,7 +31,7 @@ public class AsciiSerializedXTree extends NodeBasedXTreeAbstract implements Node
    * @param treeData a binary serialized tree
    */
   public AsciiSerializedXTree(byte[] treeData) {
-    this.treeData = new ByteSequence(treeData);
+    this.treeData = ByteBuffer.wrap(treeData);
   }
   
   /**
@@ -36,7 +40,7 @@ public class AsciiSerializedXTree extends NodeBasedXTreeAbstract implements Node
    * @param xtree an XTree with the content for this ASCII Serialized XTree.
    */
   public AsciiSerializedXTree(XTree xtree) {
-    treeData = new ByteSequence();
+    treeData = ByteBuffer.allocate(100);
     
     xtree.traverse(new XTreeNodeVisitor() {
       boolean firstChild = true;
@@ -51,14 +55,14 @@ public class AsciiSerializedXTree extends NodeBasedXTreeAbstract implements Node
       @Override
       public XTreeNodeVisitResult visitTreeItem(XNodeDataType dataType, Object value) {
         if (upcount != 0) {
-          treeData.addByte(AsciiDirection.UP.getValue());
+          treeData.put(AsciiDirection.UP.getValue());
           serializeIntegerToAscii(treeData, upcount);
           upcount = 0;
         } else if (firstChild) {
-          treeData.addByte(AsciiDirection.CHILD.getValue());
+          treeData.put(AsciiDirection.CHILD.getValue());
           firstChild = false;
         } else {
-          treeData.addByte(AsciiDirection.SIBLING.getValue());
+          treeData.put(AsciiDirection.SIBLING.getValue());
         }
         serializeNodeToAscii(dataType, value, treeData);
         return XTreeNodeVisitResult.CONTINUE;
@@ -72,7 +76,8 @@ public class AsciiSerializedXTree extends NodeBasedXTreeAbstract implements Node
       
     });
     
-    treeData.addByte(AsciiDirection.END.getValue());
+    treeData.put(AsciiDirection.END.getValue());
+    length = treeData.position();
   }
   
   
@@ -95,11 +100,11 @@ public class AsciiSerializedXTree extends NodeBasedXTreeAbstract implements Node
     boolean ready = false;
     boolean first = true;
     AsciiDirection asciiDirection;
-    treeData.setIndex(0);
+    treeData.position(0);
 
     while (!ready) {
       // Read the direction indication.
-      asciiDirection = AsciiDirection.getAsciiDirectionForValue(treeData.getNextByte());
+      asciiDirection = AsciiDirection.getAsciiDirectionForValue(treeData.get());
       LOGGER.info("Direction: " + asciiDirection.name());
 
       if (asciiDirection.equals(AsciiDirection.UP)) {
@@ -116,7 +121,7 @@ public class AsciiSerializedXTree extends NodeBasedXTreeAbstract implements Node
 
       if (!ready) {
         // Read a node. First its type and if applicable its value.
-        AsciiTypeIndication asciiTypeIndication = AsciiTypeIndication.getAsciiTypeIndicationForValue(treeData.getNextByte());
+        AsciiTypeIndication asciiTypeIndication = AsciiTypeIndication.getAsciiTypeIndicationForValue(treeData.get());
         LOGGER.info("asciiTypeIndication=" + asciiTypeIndication.name());
         if (asciiDirection == AsciiDirection.CHILD) {
           if (!first) {
@@ -150,7 +155,7 @@ public class AsciiSerializedXTree extends NodeBasedXTreeAbstract implements Node
           int stringLength = deserializeIntegerFromAscii(treeData);
           char[] charBuf = new char[stringLength];
           for (int i = 0; i < stringLength; i++) {
-            charBuf[i] = (char) treeData.getNextByte();
+            charBuf[i] = (char) treeData.get();
           }
           String s = String.copyValueOf(charBuf);
           xTreeNodeVisitor.visitTreeItem(XNodeDataType.STRING, s);
@@ -160,7 +165,7 @@ public class AsciiSerializedXTree extends NodeBasedXTreeAbstract implements Node
           int count = deserializeIntegerFromAscii(treeData);
           byte[] data = new byte[count];
           for (int i = 0; i < count; i++) {
-            data[i] = treeData.getNextByte();
+            data[i] = treeData.get();
           }
           xTreeNodeVisitor.visitTreeItem(XNodeDataType.BLOB, data);
           break;
@@ -177,42 +182,42 @@ public class AsciiSerializedXTree extends NodeBasedXTreeAbstract implements Node
    */
 
   
-  private void serializeNodeToAscii(XNodeDataType dataType, Object value, ByteSequence treeData) {
+  private void serializeNodeToAscii(XNodeDataType dataType, Object value, ByteBuffer treeData) {
     switch (dataType) {
     case TAG:
-      treeData.addByte(AsciiTypeIndication.TAG.getValue());
+      treeData.put(AsciiTypeIndication.TAG.getValue());
       serializeIntegerToAscii(treeData, (int) value);
       break;
       
     case BOOLEAN:
       boolean booleanValue = (boolean) value;
       if (booleanValue) {
-        treeData.addByte(AsciiTypeIndication.BOOLEAN_TRUE.getValue());
+        treeData.put(AsciiTypeIndication.BOOLEAN_TRUE.getValue());
       } else {
-        treeData.addByte(AsciiTypeIndication.BOOLEAN_FALSE.getValue());
+        treeData.put(AsciiTypeIndication.BOOLEAN_FALSE.getValue());
       }
       break;
       
     case INTEGER:
-      treeData.addByte(AsciiTypeIndication.INTEGER.getValue());
+      treeData.put(AsciiTypeIndication.INTEGER.getValue());
       serializeIntegerToAscii(treeData, (int) value);
       break;
       
     case STRING:
-      treeData.addByte(AsciiTypeIndication.STRING.getValue());
+      treeData.put(AsciiTypeIndication.STRING.getValue());
       String s = (String) value;
       serializeIntegerToAscii(treeData, s.length());
       for (int i = 0; i < s.length(); i++) {
-        treeData.addByte((byte) s.charAt(i));
+        treeData.put((byte) s.charAt(i));
       }
       break;
       
     case BLOB:
-      treeData.addByte(AsciiTypeIndication.BLOB.getValue());
+      treeData.put(AsciiTypeIndication.BLOB.getValue());
       byte[] blob = (byte[]) value;
       serializeIntegerToAscii(treeData, blob.length);
       for (int i = 0; i < blob.length; i++) {
-        treeData.addByte(blob[i]);
+        treeData.put(blob[i]);
       }
       break;
       
@@ -229,11 +234,11 @@ public class AsciiSerializedXTree extends NodeBasedXTreeAbstract implements Node
    * @param startIndex
    * @return
    */
-  private void serializeIntegerToAscii(ByteSequence byteSequence, int value) {
+  private void serializeIntegerToAscii(ByteBuffer byteSequence, int value) {
     byte[]    numberBuf = new byte[10];   // long enough for max C long = 2147483647.
     if (value < 0)
     {
-      byteSequence.addByte((byte) '-');    /* negative value */
+      byteSequence.put((byte) '-');    /* negative value */
       value = -value;
     }
     
@@ -246,7 +251,7 @@ public class AsciiSerializedXTree extends NodeBasedXTreeAbstract implements Node
 
     while (--charCount >= 0)
     {
-      byteSequence.addByte((numberBuf[charCount]));    /* the digits. */
+      byteSequence.put((numberBuf[charCount]));    /* the digits. */
     }      
   }
 
@@ -256,24 +261,25 @@ public class AsciiSerializedXTree extends NodeBasedXTreeAbstract implements Node
    * @param byteSequence the ByteSequence from which an integer value will be read.
    * @return the integer value read from {@code byteSequence}.
    */
-  private int deserializeIntegerFromAscii(ByteSequence byteSequence) {
+  private int deserializeIntegerFromAscii(ByteBuffer byteSequence) {
     int value = 0;
     int sign = 1;
     int byteValue;
 
-    byteValue = byteSequence.peekNextByte();
+    byteValue = byteSequence.get();  
     if (byteValue == '-')
     {
         sign = -sign;
-        byteSequence.advance();
+    } else {
+      byteSequence.position(byteSequence.position() - 1);
     }
     
-    while ( (byteValue = byteSequence.peekNextByte()) >= '0'  &&  byteValue <= '9')
+    while ( (byteValue = byteSequence.get()) >= '0'  &&  byteValue <= '9')
     {
         value *= 10;
         value += byteValue - '0';
-        byteSequence.advance();
     }
+    byteSequence.position(byteSequence.position() - 1);
     
     value = sign * value;
     
@@ -287,7 +293,14 @@ public class AsciiSerializedXTree extends NodeBasedXTreeAbstract implements Node
   
   @Override
   public byte[] getSerializedTreeData() {
-    return treeData.toByteArray();
+    if (length == 0) {
+      return new byte[0];
+    }
+    
+    byte[] result = Arrays.copyOf(treeData.array(), length);
+        
+    LOGGER.fine("<= result.length=" + result.length);
+    return result;
   }
 
 }

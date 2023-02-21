@@ -578,7 +578,7 @@ public class FileUtils {
     LocalDateTime dateTime = null;
     
     try {
-    dateTime = LocalDateTime.parse(fileName, fileNameDateTimeFormat);
+      dateTime = LocalDateTime.parse(fileName, fileNameDateTimeFormat);
     } catch (DateTimeParseException e) {
       // No action.
     }
