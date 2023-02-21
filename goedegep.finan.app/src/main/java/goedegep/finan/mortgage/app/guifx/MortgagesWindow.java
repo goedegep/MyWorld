@@ -24,6 +24,7 @@ import goedegep.finan.mortgage.model.Mortgage;
 import goedegep.finan.mortgage.model.MortgageFactory;
 import goedegep.finan.mortgage.model.MortgagePackage;
 import goedegep.finan.mortgage.model.MortgageYearlyOverview;
+import goedegep.finan.mortgage.model.MortgageYearlyOverviews;
 import goedegep.finan.mortgage.model.Mortgages;
 import goedegep.finan.mortgage.model.util.InterestCompensationMortgageUtil;
 import goedegep.finan.mortgage.model.util.MortgageUtil;
@@ -418,13 +419,13 @@ public class MortgagesWindow extends JfxStage implements EMFNotificationListener
         mortgageYearlyOverviewsTable.setObjects(null, yearlyOverviews);
       }
     } else {
-      List<MortgageYearlyOverview> yearlyOverviews = getYearlyOverviews();
+      MortgageYearlyOverviews yearlyOverviews = getYearlyOverviews();
       if ((mortgageYearlyOverviewsTable == null)  ||  mortgageYearlyOverviewsTable instanceof InterestCompensationMortgageYearlyOverviewsTable) {
-        mortgageYearlyOverviewsTable = new MortgageYearlyOverviewsTable(customization, yearlyOverviews);
+        mortgageYearlyOverviewsTable = new MortgageYearlyOverviewsTable(customization, yearlyOverviews, yearlyOverviews.getYearlyOverviews());
         mortgageYearlyOverviewsTableBox.getChildren().clear();
         mortgageYearlyOverviewsTableBox.getChildren().add(mortgageYearlyOverviewsTable);
       } else {
-        mortgageYearlyOverviewsTable.setObjects(null, yearlyOverviews);
+        mortgageYearlyOverviewsTable.setObjects(yearlyOverviews, yearlyOverviews.getYearlyOverviews());
       }
     }
     
@@ -441,8 +442,9 @@ public class MortgagesWindow extends JfxStage implements EMFNotificationListener
     }
   }
   
-  private List<MortgageYearlyOverview> getYearlyOverviews() {
-    List<MortgageYearlyOverview> yearlyOverviews = new ArrayList<>();
+  private MortgageYearlyOverviews getYearlyOverviews() {
+    MortgageYearlyOverviews mortgageYearlyOverviews = MortgageFactory.eINSTANCE.createMortgageYearlyOverviews();
+    List<MortgageYearlyOverview> yearlyOverviews = mortgageYearlyOverviews.getYearlyOverviews();
     
     int startYear = mortgageCalculator.getStartYear();
     int endYear = mortgageCalculator.getEndYear();
@@ -453,7 +455,7 @@ public class MortgagesWindow extends JfxStage implements EMFNotificationListener
       }
     }
     
-    return yearlyOverviews;
+    return mortgageYearlyOverviews;
   }
   
   private List<InterestCompensationMortgageYearlyOverview> getInterestCompensationYearlyOverviews() {

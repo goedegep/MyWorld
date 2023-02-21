@@ -37,23 +37,12 @@ public final class EmfUtil {
   private EmfUtil() {
   }
   
-//  /**
-//   * Check whether a specific object is present in a list.
-//   * 
-//   * @param list
-//   * @param object
-//   * @return
-//   */
-//  public static boolean listContains(List<?> list, Object object) {
-//    for (Object listObject: list) {
-//      if (listObject.equals(object)) {
-//        return true;
-//      }
-//    }
-//    
-//    return false;
-//  }
-  
+  /**
+   * Get the EMF super type of an <code>EClass</code>.
+   * 
+   * @param eClass the <code>EClass</code> of which the super type is to be obtained.
+   * @return the super type of <code>eClass</code>, or null if there is no super type.
+   */
   public static EClass getSuperType(EClass eClass) {
     LOGGER.info("=> eClass=" + eClass.getInstanceTypeName());
     
@@ -105,7 +94,7 @@ public final class EmfUtil {
   /**
    * Get the name of the implementation class for an interface class.
    * <p>
-   * With the EMF there is a fixed relation between an interface name and the implementing class name.
+   * With EMF there is a fixed relation between an interface name and the implementing class name.
    * The implementing class name is in a sub-package with the name 'impl' and the class name is the name of the
    * interface, extended with 'Impl'.<br/>
    * Interface is: mypackage.subpackage.SomeType<br/>
@@ -129,12 +118,19 @@ public final class EmfUtil {
     return implementationClassName;
   }
   
+  /**
+   * Find all objects of a specific <code>EClass</code> that are dependents of an <code>EObject</code>.
+   * 
+   * @param root the <code>EObject</code> within which the objects have to be found.
+   * @param eClass the <code>EClass</code> of the objects to be found.
+   * @return all objects within <code>eClass</code> that are of type <code>eClass</code>. The returned list may be empty, but it is never null.
+   */
   public static List<EObject> findObjectsOfType(EObject root, EClass eClass) {
     List<EObject> objects = new ArrayList<>();
     
-    TreeIterator<EObject> vacationChecklistIterator = root.eAllContents();
-    while (vacationChecklistIterator.hasNext()) {
-      EObject eObject = vacationChecklistIterator.next();
+    TreeIterator<EObject> iterator = root.eAllContents();
+    while (iterator.hasNext()) {
+      EObject eObject = iterator.next();
       EClass eObjectEClass = eObject.eClass();
       
       if (eObjectEClass == eClass) {
@@ -146,6 +142,12 @@ public final class EmfUtil {
     return objects;
   }
   
+  /**
+   * Get the root object of an <code>EObject</code>.
+   * 
+   * @param eObject the <code>EObject</code> of which the root is to be returned.
+   * @return the root object of <code>eObject</code>, or null if <code>eObject</code> is a root object.
+   */
   public static EObject getRoot(EObject eObject) {
     EObject root = eObject;
     
@@ -276,10 +278,8 @@ public final class EmfUtil {
     buf.append("    Feature type: ").append(featureType).append(", Feature name: ").append(featureName).append(NEWLINE);
 
     
-//    EClass eClass = null;
     EObject eObject = null;
     if (notifier instanceof EClass) {
-//      eClass = (EClass) notifier;
       throw new RuntimeException("notifier of type EClass is not supported.");
     } else if (notifier instanceof EObject) {
       eObject = (EObject) notifier;
@@ -406,6 +406,12 @@ public final class EmfUtil {
     return buf.toString();
   }
   
+  /**
+   * Provide a String for an object value.
+   * 
+   * @param value the value to be represented as a String.
+   * @return a String for {@code value}.
+   */
   public static String valueToString(Object value) {
     if (value == null) {
       return "<null>";
@@ -435,6 +441,12 @@ public final class EmfUtil {
     return buf.toString();
   }
   
+  /**
+   * Provide a String for an EObject.
+   * 
+   * @param eObject the value to be represented as a String.
+   * @return a String for {@code eObject}.
+   */
   public static String eObjectToString(EObject eObject) {
     StringBuilder buf = new StringBuilder();
     
@@ -469,22 +481,27 @@ public final class EmfUtil {
    * @return true if eObject is contained by rootEObject, false otherwise.
    */
   public static boolean isContainedUnderEObject(EObject eObject, EObject rootEObject) {
-//    LOGGER.severe("=> eObject=" + eObject.getClass().getName());
     String found = eObject.getClass().getName();
     EObject container = eObject.eContainer();
     found = container.getClass().getName() + "." + found;
     while (container != null) {
-//      LOGGER.severe(container.getClass().getName());
       if (container == rootEObject) {
         return true;
       }
       container = container.eContainer();
       found = container.getClass().getName() + "." + found;
-//      LOGGER.severe(found);
     }
     return false;
   }
   
+  /**
+   * Set a feature value, but only if the new value differs from the current value.
+   * 
+   * @param <T> the type of the value
+   * @param eObject the {@code EObject} of which the feature is to be set.
+   * @param feature the {@code EStructuralFeature} to set
+   * @param value the value to set.
+   */
   public static <T> void setFeatureValue(EObject eObject, EStructuralFeature feature, T value) {
     if (!PgUtilities.equals(value, eObject.eGet(feature))) {
       eObject.eSet(feature, value);

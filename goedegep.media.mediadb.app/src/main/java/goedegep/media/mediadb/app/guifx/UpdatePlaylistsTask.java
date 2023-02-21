@@ -76,7 +76,7 @@ public class UpdatePlaylistsTask extends Task<Void> {
     }
     
     if (!onlyAddNewLists) {
-      DirectoryUtils.recursivelyDeleteDirectory(playListFolder);
+      org.apache.commons.io.FileUtils.deleteDirectory(playListFolder.toFile());
       Files.createDirectory(playListFolder);
     }
     

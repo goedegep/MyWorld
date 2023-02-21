@@ -114,8 +114,8 @@ public class SynchronizeToDuneTask extends Task<Void> {
       
       if (sourcePath == null  ||  !equalPaths(sourcePath, destinationPath)) {
         LOGGER.info("Removing obsolete item: " + destinationPath.getParent().toString() + MusicFolder.PATH_SEPARATOR + destinationPath.getFileName().toString());
-          DirectoryUtils.recursivelyDeleteDirectory(destinationPath);
-          deletedDestinationPaths.add(destinationName);
+        org.apache.commons.io.FileUtils.deleteDirectory(destinationPath.toFile());
+        deletedDestinationPaths.add(destinationName);
       } else {
         LOGGER.info("Still valid item: " + destinationPath.getParent().toString() + MusicFolder.PATH_SEPARATOR + destinationPath.getFileName().toString());
       }

@@ -148,6 +148,15 @@ public interface MortgageFactory extends EFactory {
   Rate createRate();
 
   /**
+   * Returns a new object of class '<em>Yearly Overviews</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Yearly Overviews</em>'.
+   * @generated
+   */
+  MortgageYearlyOverviews createMortgageYearlyOverviews();
+
+  /**
    * Returns the package supported by this factory.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->

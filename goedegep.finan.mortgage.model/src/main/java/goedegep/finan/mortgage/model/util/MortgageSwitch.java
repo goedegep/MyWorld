@@ -173,6 +173,12 @@ public class MortgageSwitch<T> extends Switch<T> {
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
+      case MortgagePackage.MORTGAGE_YEARLY_OVERVIEWS: {
+        MortgageYearlyOverviews mortgageYearlyOverviews = (MortgageYearlyOverviews)theEObject;
+        T result = caseMortgageYearlyOverviews(mortgageYearlyOverviews);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
       default: return defaultCase(theEObject);
     }
   }
@@ -414,6 +420,21 @@ public class MortgageSwitch<T> extends Switch<T> {
    * @generated
    */
   public T caseRate(Rate object) {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>Yearly Overviews</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Yearly Overviews</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseMortgageYearlyOverviews(MortgageYearlyOverviews object) {
     return null;
   }
 

@@ -11,4 +11,5 @@ module goedegep.myworld.installer {
   requires javafx.web;
   requires javafx.base;
   requires org.eclipse.emf.ecore;
+  requires org.apache.commons.io;
 }

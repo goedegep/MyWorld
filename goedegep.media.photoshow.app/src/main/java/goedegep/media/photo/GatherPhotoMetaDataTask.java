@@ -12,6 +12,8 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import org.apache.commons.imaging.ImageReadException;
+import org.apache.commons.imaging.formats.tiff.constants.TiffDirectoryConstants;
+import org.apache.commons.imaging.formats.tiff.constants.TiffTagConstants;
 
 import goedegep.util.Tuplet;
 import goedegep.util.file.FileUtils;
@@ -210,7 +212,7 @@ public class GatherPhotoMetaDataTask extends Task<Tuplet<String, List<PhotoMetaD
    * @return all needed information about the photo
    */
   public static PhotoMetaData createPhotoMetaData(String fileName) {
-    LOGGER.info("=> fileName=" + fileName);
+    LOGGER.severe("=> fileName=" + fileName);
     
     PhotoMetaData photoMetaData = new PhotoMetaData();
 

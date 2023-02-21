@@ -1,7 +1,7 @@
 package goedegep.finan.stocks;
 
+import goedegep.app.finan.gen.PeriodicReport;
 import goedegep.finan.basic.PgTransaction;
-import goedegep.util.datetime.PeriodicReport;
 import goedegep.util.fixedpointvalue.FixedPointValue;
 
 import java.util.ArrayList;

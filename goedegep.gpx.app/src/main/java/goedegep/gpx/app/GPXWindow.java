@@ -3,12 +3,22 @@ package goedegep.gpx.app;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.logging.Logger;
 
+import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.common.util.WrappedException;
+import org.eclipse.emf.ecore.resource.Resource;
+import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.util.EcoreUtil;
+import org.eclipse.emf.ecore.xmi.XMLResource;
 
 import com.gluonhq.maps.MapPoint;
 import com.gluonhq.maps.MapView;
@@ -21,11 +31,16 @@ import goedegep.gpx.model.GPXFactory;
 import goedegep.gpx.model.GpxType;
 import goedegep.gpx.model.TrkType;
 import goedegep.gpx.model.TrksegType;
+import goedegep.gpx.model.WptType;
 import goedegep.jfx.ComponentFactoryFx;
 import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.JfxStage;
+import goedegep.jfx.eobjecttreeview.EObjectTreeItemContent;
 import goedegep.jfx.eobjecttreeview.EObjectTreeView;
+import goedegep.util.douglaspeuckerreducer.DouglasPeuckerReducer;
 import goedegep.util.emf.EMFResource;
+import goedegep.util.emf.EMFResourceSet;
+import goedegep.util.objectselector.ObjectSelectionListener;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -38,6 +53,7 @@ import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.SplitPane;
+import javafx.scene.control.TreeItem;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
@@ -58,6 +74,9 @@ public class GPXWindow extends JfxStage {
   private DocumentRoot documentRoot = null;
   // This menu item defines the 'edit status'.
   private CheckMenuItem gpxTreeEditableMenuItem;
+  
+  private ObjectSelectionListener<TreeItem<EObjectTreeItemContent>> gpxTreeViewSelectionListener;
+  private ReduceTrackPointsWindow reduceTrackPointsWindow;
 
   /**
    * Constructor.
@@ -198,8 +217,40 @@ public class GPXWindow extends JfxStage {
       }
     });
     menu.getItems().add(gpxTreeEditableMenuItem);
+
+    // Edit: Trim end of track
+    menuItem = componentFactory.createMenuItem("Trim end of track");
+    menuItem.setOnAction(new EventHandler<ActionEvent>() {
+      public void handle(ActionEvent e) {
+        trimEndOfTrack();
+      }
+    });
+    menu.getItems().add(menuItem);
+    
+    menuItem = componentFactory.createMenuItem("Reduce track points");
+    menuItem.setOnAction(new EventHandler<ActionEvent>() {
+      public void handle(ActionEvent e) {
+        reduceTrackPoints();
+      }
+    });
+    menu.getItems().add(menuItem);
     
     menuBar.getMenus().add(menu);
+    
+    // View menu
+    menu = new Menu("View");
+
+    // View: Details
+    menuItem = componentFactory.createMenuItem("Details");
+    menuItem.setOnAction(new EventHandler<ActionEvent>() {
+      public void handle(ActionEvent e) {
+        viewDetails();
+      }
+    });
+    menu.getItems().add(menuItem);
+    
+    menuBar.getMenus().add(menu);
+        
 
     return menuBar;
   }
@@ -315,7 +366,7 @@ public class GPXWindow extends JfxStage {
     GpxType gpx = documentRoot.getGpx();
     List<TrkType> tracks = gpx.getTrk();
     for (TrkType track: tracks) {
-    	LOGGER.severe("Track length: " + track.getLength());
+    	LOGGER.info("Track length: " + track.getLength());
     }
     
     WGS84BoundingBox gpxBoundingBox = gpxLayer.addGpx(null, gpxResource.getFileName(), gpx);
@@ -325,7 +376,7 @@ public class GPXWindow extends JfxStage {
     }
     
     WGS84Coordinates center = gpxBoundingBox.getCenter();
-    LOGGER.severe("center: " + center.toString());
+    LOGGER.info("center: " + center.toString());
     MapPoint mapCenter = new MapPoint(center.getLatitude(), center.getLongitude());
     
     if (mapCenter != null) {
@@ -400,7 +451,126 @@ public class GPXWindow extends JfxStage {
    gpxLayer.clear();
    handleNewGpxFile();
   }
+  
+  private void trimEndOfTrack() {
+//    ResourceSet resourceSet = EMFResourceSet.getResourceSet();
+//
+//    // disable DTD resolution
+//    Map<String, Boolean> parserFeatures = new HashMap<>();
+//    parserFeatures.put("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
+//    resourceSet.getLoadOptions().put(XMLResource.OPTION_PARSER_FEATURES, parserFeatures);
+//    
+//    Path resourceFilePath = Paths.get("C:/Users/Peter/Downloads/2023-02-07_14-33_Tue.gpx").toAbsolutePath().normalize();
+//    LOGGER.severe("path=" + resourceFilePath.toString());
+//    if (!Files.exists(resourceFilePath)) {
+//      LOGGER.severe("file not found");
+//      return;
+//    }
+//    
+//    URI fileURI = URI.createFileURI(resourceFilePath.toString());
+//    Resource resource = resourceSet.getResource(fileURI, true);
+//    DocumentRoot root = (DocumentRoot) resource.getContents().get(0);
 
+    
+    // Get the track TODO get selected track from Tree
+    GpxType gpxType = documentRoot.getGpx();
+    List<TrkType> tracks = gpxType.getTrk();
+    if (tracks.isEmpty()) {
+      return;
+    }
+    TrkType track = tracks.get(0);
+    List<TrksegType> segments = track.getTrkseg();
+    if (segments.isEmpty()) {
+      return;
+    }
+    TrksegType segment = segments.get(0);
+    List<WptType> wayPoints = segment.getTrkpt();
+//    List<WptType> wayPoints = new ArrayList<>(wayPointsOrig);
+    if (wayPoints.size() <  3) {
+      return;
+    }
+    
+    // Get the start of the track
+    WptType startingPoint = wayPoints.get(0);
+//    WGS84Coordinates startCoordinates = new WGS84Coordinates(startingPoint.getLat().doubleValue(), startingPoint.getLon().doubleValue(), startingPoint.getEle().doubleValue());
+    LOGGER.severe("Starting location: " + startingPoint.getLat().doubleValue() + ", " + startingPoint.getLon().doubleValue());
+    
+    // Remove from end of track, until start is encountered
+    boolean startFound = false;
+    List<WptType> pointsToRemove = new ArrayList<>();
+    int index = wayPoints.size() - 1;
+    while (!startFound) {
+      WptType lastPoint = wayPoints.get(index--);
+      if ((startingPoint.getLat().doubleValue() - lastPoint.getLat().doubleValue() < 0.0001)  &&
+          (startingPoint.getLon().doubleValue() - lastPoint.getLon().doubleValue() < 0.0001)) {
+        startFound = true;
+        LOGGER.severe("Start found");
+      } else {
+//        wayPoints.remove(wayPoints.size() - 1);
+        pointsToRemove.add(lastPoint);
+        LOGGER.severe("index: " + index);
+      }
+    }
+    wayPoints.removeAll(pointsToRemove);
+    
+//    gpxLayer.removeGpx(gpxType);
+   
+//    wayPointsOrig.clear();
+//    wayPointsOrig.addAll(wayPoints);
+  }
+
+  private void viewDetails() {
+    new DetailsView(customization, documentRoot);
+  }
+  
+  private void reduceTrackPoints() {
+    reduceTrackPointsWindow = new ReduceTrackPointsWindow(customization, documentRoot != null ? documentRoot.getGpx() : null);
+    reduceTrackPointsWindow.setOnHidden((e) -> {
+      reduceTrackPointsWindow = null;
+      gpxTreeView.removeObjectSelectionListener(gpxTreeViewSelectionListener);
+    });
+      
+    gpxTreeViewSelectionListener = (source, treeItem) -> {
+      if (treeItem == null) {
+        reduceTrackPointsWindow.objectSelected(null, null);
+        return;
+      }
+
+      EObjectTreeItemContent eObjectTreeItemContent = treeItem.getValue();
+      Object object = eObjectTreeItemContent.getObject();
+      if (object != null  &&
+          (object instanceof GpxType  ||  object instanceof TrkType  ||  object instanceof TrksegType)) {
+        reduceTrackPointsWindow.objectSelected(null, object);
+      } else {
+        reduceTrackPointsWindow.objectSelected(null, null);
+      }
+    };
+  
+    gpxTreeView.addObjectSelectionListener(gpxTreeViewSelectionListener);
+    
+//    // Get the track TODO get selected track from Tree
+//    GpxType gpxType = documentRoot.getGpx();
+//    List<TrkType> tracks = gpxType.getTrk();
+//    if (tracks.isEmpty()) {
+//      return;
+//    }
+//    TrkType track = tracks.get(0);
+//    List<TrksegType> segments = track.getTrkseg();
+//    if (segments.isEmpty()) {
+//      return;
+//    }
+//    TrksegType segment = segments.get(0);
+//    List<WptType> wayPoints = segment.getTrkpt();
+//    
+//    List<WptType> reducedWaypoints = DouglasPeuckerReducer.reduceWithTolerance(wayPoints, 40.0, GPXWindow::coordinateExtractor);
+//    LOGGER.severe("Original number of waypoints: " + wayPoints.size() + ", new number of waypoints: " + reducedWaypoints.size());
+//    wayPoints.clear();
+//    wayPoints.addAll(reducedWaypoints);
+  }
+  
+  public static WGS84Coordinates coordinateExtractor(Object object) {
+    return GpxUtil.waypointLatLonToWGS84Coordinates((WptType) object);
+  }
 
   /**
    * Update the window title.

@@ -62,6 +62,7 @@ public enum ImageResource {
   GPX(new ImageFileInfo[] {new ImageFileInfo("Gpx.png", 359, 329)}, "a map with a track and a location", null),
   MAGNIFYING_GLASS(new ImageFileInfo[] {new ImageFileInfo("MagnifyingGlass - 256x256.png", 256, 256)}, "a magnifying glass", null),
   MAP(new ImageFileInfo[] {new ImageFileInfo("Map - 487x487.png", 487, 487)}, "a map", null),
+  MARKDOWN(new ImageFileInfo[] {new ImageFileInfo("Markdown logo - 1600x1600.png", 487, 487)}, "Markdown logo", "https://imgbin.com/"),
   MS_WORD(new ImageFileInfo[] {new ImageFileInfo("MSWord - 1047x1024.png", 1047, 1024)}, "Microsoft Word document icon", "User:Airhogs777"),
   PDF(new ImageFileInfo[] {new ImageFileInfo("PDF - 417x512.png", 417, 512)}, "PDF file logo", null),
   PHOTO_FOLDER(new ImageFileInfo[] {new ImageFileInfo("PhotoFolder - 199x217.png", 417, 512)}, "Photo folder icon", "https://icon-library.com/icon/microsoft-folder-icon-24.html.html>Microsoft Folder Icon # 392312"),

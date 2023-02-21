@@ -11,9 +11,11 @@ import goedegep.jfx.PropertyDescriptorsEditorFx;
 import goedegep.pctools.app.logic.PCToolsRegistry;
 import goedegep.pctools.filefinder.guifx.FileFinderWindow;
 import goedegep.pctools.filescontrolled.guifx.FilesControlledWindow;
+import goedegep.pctools.markdown.guifx.MarkdownViewer;
 import goedegep.properties.app.guifx.PropertiesEditor;
 import goedegep.resources.ImageResource;
 import goedegep.resources.ImageSize;
+import goedegep.util.file.FileUtils;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -41,20 +43,29 @@ public class PCToolsMenuWindow extends JfxStage {
   private ComponentFactoryFx componentFactory;
   private PCToolsAppResourcesFx appResources;
 
-  public PCToolsMenuWindow(CustomizationFx customization, String gpxFileToOpen) {
+  public PCToolsMenuWindow(CustomizationFx customization, String fileToOpen) {
     super(WINDOW_TITLE, customization);
         
     this.customization = customization;
-    this.gpxFileToOpen = gpxFileToOpen;
+    this.gpxFileToOpen = fileToOpen;
     componentFactory = getComponentFactory();
     appResources = (PCToolsAppResourcesFx) getResources();
     
     createGUI();
     
     setOnShown(e -> {
-      if (gpxFileToOpen != null) {
-        showGPXWindow(gpxFileToOpen);
+      if (fileToOpen != null) {
+        String fileToOpenExtension = FileUtils.getFileExtension(fileToOpen);
+        if (".gpx".equals(fileToOpenExtension)) {
+          showGPXWindow(fileToOpen);
+        } else if (".md".equals(fileToOpenExtension)) {
+          new MarkdownViewer(customization, fileToOpen);
+        }
       }
+      
+//      if (fileToOpen != null) {
+//        showGPXWindow(fileToOpen);
+//      }
     });
     
     show();
@@ -137,6 +148,17 @@ public class PCToolsMenuWindow extends JfxStage {
       
     });
     gridPane.add(toolButton, 3, 0);
+    
+    toolButton = componentFactory.createToolButton("Markdown Viewer", ImageResource.MARKDOWN.getImage(), "View the content of a Markdown file");
+    toolButton.setOnAction(new EventHandler<ActionEvent>() {
+
+      @Override
+      public void handle(ActionEvent event) {
+        new MarkdownViewer(customization, null);
+      }
+      
+    });
+    gridPane.add(toolButton, 0, 1);
    
     mainLayout.getChildren().add(gridPane);
         

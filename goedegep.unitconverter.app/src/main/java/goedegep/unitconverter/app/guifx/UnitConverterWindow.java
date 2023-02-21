@@ -2,6 +2,7 @@ package goedegep.unitconverter.app.guifx;
 
 import java.text.NumberFormat;
 import java.text.ParseException;
+import java.time.Duration;
 import java.util.Locale;
 import java.util.logging.Logger;
 
@@ -12,8 +13,8 @@ import goedegep.jfx.MenuUtil;
 import goedegep.jfx.PropertyDescriptorsEditorFx;
 import goedegep.resources.ImageSize;
 import goedegep.unitconverter.app.UnitConverterRegistry;
-import goedegep.util.datetime.ClockTime;
-import goedegep.util.datetime.ClockTimeFormat;
+//import goedegep.util.datetime.ClockTime;
+import goedegep.util.datetime.DurationFormat;
 import goedegep.util.unit.UnitUtils;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -57,7 +58,6 @@ import javafx.scene.layout.VBox;
  * </ul>
  */
 public class UnitConverterWindow extends JfxStage {
-  @SuppressWarnings("unused")
   private static final Logger LOGGER = Logger.getLogger(UnitConverterWindow.class.getName());
   private final static String NEWLINE = System.getProperty("line.separator");
   private static final String WINDOW_TITLE   = "Eenheden calculator";
@@ -96,7 +96,7 @@ public class UnitConverterWindow extends JfxStage {
   private TextField tijdSecondenTextField;
   private String tijdSecondenTextFieldLastValue = "";
   private Integer seconden = null;
-  private ClockTime tijd = null;
+  private Duration duration = null;
   private CheckBox snelheidInKmhInputCheckBox;
   private TextField snelheidInKmhTextField;
   private String snelheidInKmhTextFieldLastValue = "";
@@ -117,10 +117,10 @@ public class UnitConverterWindow extends JfxStage {
   private String tempoInMinPerMijlSecondenTextFieldLastValue = "";
   private Integer tempoInMinPerKmMinuten = null;
   private Integer tempoInMinPerKmSeconden = null;
-  private ClockTime tempoInMinPerKm = null;
+  private Duration tempoInMinPerKm = null;
   private Integer tempoInMinPerMijlMinuten = null;
   private Integer tempoInMinPerMijlSeconden = null;
-  private ClockTime tempoInMinPerMijl = null;
+  private Duration tempoInMinPerMijl = null;
   
   private InputType laatstIngevoerd = null;
   private InputType voorLaatstIngevoerd = null;
@@ -1014,7 +1014,7 @@ public class UnitConverterWindow extends JfxStage {
         number = NF.parse(splitTime.getDistance());
         double distance = number.doubleValue();
         
-        ClockTime clockTime = new ClockTime((long) (distance / snelheidInKmh * 3600 + 0.5));
+        Duration clockTime = Duration.ofSeconds((long) (distance / snelheidInKmh * 3600 + 0.5));
         splitTime.setSplitTime(clockTime);
       } catch (ParseException e) {
         e.printStackTrace();
@@ -1033,32 +1033,33 @@ public class UnitConverterWindow extends JfxStage {
 
       if (laatstIngevoerd != InputType.AFSTAND  &&  voorLaatstIngevoerd != InputType.AFSTAND) {
         // bereken afstand waardes.
-        if (snelheidInKmh != null  &&  snelheidInMijlh != null  &&  tijd != null) {
-          afstandInKm = (snelheidInKmh * tijd.getTimeInSeconds()) / 3600;
-          afstandInMijl = (snelheidInMijlh * tijd.getTimeInSeconds()) / 3600;
+        if (snelheidInKmh != null  &&  snelheidInMijlh != null  &&  duration != null) {
+          afstandInKm = (snelheidInKmh * duration.getSeconds()) / 3600;
+          afstandInMijl = (snelheidInMijlh * duration.getSeconds()) / 3600;
         }
       } else if (laatstIngevoerd != InputType.TIJD  &&  voorLaatstIngevoerd != InputType.TIJD) {
         // bereken tijd.
         if (afstandInKm != null  &&  snelheidInKmh != null) {
-          tijd = new ClockTime((long) (afstandInKm / snelheidInKmh * 3600 + 0.5));
-          uren = tijd.getHours();
-          minuten = tijd.getMinutes();
-          seconden = tijd.getSeconds();
+          duration = Duration.ofSeconds((long) (afstandInKm / snelheidInKmh * 3600 + 0.5));
+//          tijd = new ClockTime((long) (afstandInKm / snelheidInKmh * 3600 + 0.5));
+          uren = (int) duration.toHours();
+          minuten = duration.toMinutesPart();
+          seconden = duration.toSecondsPart();
         }
       } else {
         // bereken snelheid
-        if (afstandInKm != null  &&  tijd != null) {
-          snelheidInKmh = 3600 * afstandInKm / tijd.getTimeInSeconds();
+        if (afstandInKm != null  &&  duration != null) {
+          snelheidInKmh = 3600 * afstandInKm / duration.getSeconds();
 
           snelheidInMijlh = UnitUtils.kmToMiles(snelheidInKmh);
 
           tempoInMinPerKm = UnitUtils.speedToTempo(snelheidInKmh);
-          tempoInMinPerKmMinuten = tempoInMinPerKm.getMinutes();
-          tempoInMinPerKmSeconden = tempoInMinPerKm.getSeconds();
+          tempoInMinPerKmMinuten = tempoInMinPerKm.toMinutesPart();
+          tempoInMinPerKmSeconden = tempoInMinPerKm.toSecondsPart();
 
           tempoInMinPerMijl = UnitUtils.speedToTempo(UnitUtils.kmToMiles(snelheidInKmh));
-          tempoInMinPerMijlMinuten = tempoInMinPerMijl.getMinutes();
-          tempoInMinPerMijlSeconden = tempoInMinPerMijl.getSeconds();
+          tempoInMinPerMijlMinuten = tempoInMinPerMijl.toMinutesPart();
+          tempoInMinPerMijlSeconden = tempoInMinPerMijl.toSecondsPart();
         }
       }
     }
@@ -1129,7 +1130,7 @@ public class UnitConverterWindow extends JfxStage {
       snelheidInKmhTextField.setStyle(OK_TEXT_STYLE);
       
       if (snelheidInKmh != null) {
-        LOGGER.severe("Snelheid: " + snelheidInKmh);
+        LOGGER.info("Snelheid: " + snelheidInKmh);
         snelheidInKmhTextField.setText(NF.format(snelheidInKmh));
       } else {
         snelheidInKmhTextField.setText("");
@@ -1229,10 +1230,10 @@ public class UnitConverterWindow extends JfxStage {
     } else if (snelheidInMijlhInputCheckBox.isSelected()) {
       tempoInMinPerKm = UnitUtils.speedToTempo(UnitUtils.milesToKm(snelheidInMijlh));
     } else if (tempoInMinPerMijlInputCheckBox.isSelected()) {
-      tempoInMinPerKm = new ClockTime((long) (tempoInMinPerMijl.getTimeInSeconds() / UnitUtils.KM_TO_MILES_FACTOR + 0.5));
+      tempoInMinPerKm = Duration.ofSeconds((long) (tempoInMinPerMijl.getSeconds() / UnitUtils.KM_TO_MILES_FACTOR + 0.5));
     }
-    tempoInMinPerKmMinuten = tempoInMinPerKm.getMinutes();
-    tempoInMinPerKmSeconden = tempoInMinPerKm.getSeconds();
+    tempoInMinPerKmMinuten = tempoInMinPerKm.toMinutesPart();
+    tempoInMinPerKmSeconden = tempoInMinPerKm.toSecondsPart();
   }
 
   /**
@@ -1244,10 +1245,10 @@ public class UnitConverterWindow extends JfxStage {
     } else if (snelheidInMijlhInputCheckBox.isSelected()) {
       tempoInMinPerMijl = UnitUtils.speedToTempo(snelheidInMijlh);
     } else if (tempoInMinPerKmInputCheckBox.isSelected()) {
-      tempoInMinPerMijl = new ClockTime((long) (tempoInMinPerKm.getTimeInSeconds() * UnitUtils.KM_TO_MILES_FACTOR + 0.5));
+      tempoInMinPerMijl = Duration.ofSeconds((long) (tempoInMinPerKm.getSeconds() * UnitUtils.KM_TO_MILES_FACTOR + 0.5));
     }
-    tempoInMinPerMijlMinuten = tempoInMinPerMijl.getMinutes();
-    tempoInMinPerMijlSeconden = tempoInMinPerMijl.getSeconds();
+    tempoInMinPerMijlMinuten = tempoInMinPerMijl.toMinutesPart();
+    tempoInMinPerMijlSeconden = tempoInMinPerMijl.toSecondsPart();
   }
 
   /**
@@ -1285,10 +1286,10 @@ public class UnitConverterWindow extends JfxStage {
     if (seconden == null) {
       seconden = 0;
     }
-    tijd = new ClockTime(uren, minuten, seconden);
-    uren = tijd.getHours();
-    minuten = tijd.getMinutes();
-    seconden = tijd.getSeconds();
+    duration = Duration.ofSeconds(uren * 3600 + minuten * 60 + seconden);
+    uren = (int) duration.toHours();
+    minuten = duration.toMinutesPart();
+    seconden = duration.toSecondsPart();
   }
  
   /**
@@ -1301,9 +1302,9 @@ public class UnitConverterWindow extends JfxStage {
     if (tempoInMinPerKmSeconden == null) {
       tempoInMinPerKmSeconden = 0;
     }
-    tempoInMinPerKm = new ClockTime(0, tempoInMinPerKmMinuten, tempoInMinPerKmSeconden);
-    tempoInMinPerKmMinuten = tempoInMinPerKm.getMinutes();
-    tempoInMinPerKmSeconden = tempoInMinPerKm.getSeconds();
+    tempoInMinPerKm = Duration.ofSeconds(tempoInMinPerKmMinuten * 60 + tempoInMinPerKmSeconden);
+    tempoInMinPerKmMinuten = tempoInMinPerKm.toMinutesPart();
+    tempoInMinPerKmSeconden = tempoInMinPerKm.toSecondsPart();
   }
   
   /**
@@ -1316,9 +1317,9 @@ public class UnitConverterWindow extends JfxStage {
     if (tempoInMinPerMijlSeconden == null) {
       tempoInMinPerMijlSeconden = 0;
     }
-    tempoInMinPerMijl = new ClockTime(0, tempoInMinPerMijlMinuten, tempoInMinPerMijlSeconden);
-    tempoInMinPerMijlMinuten = tempoInMinPerMijl.getMinutes();
-    tempoInMinPerMijlSeconden = tempoInMinPerMijl.getSeconds();
+    tempoInMinPerMijl = Duration.ofSeconds(tempoInMinPerMijlMinuten * 60 + tempoInMinPerMijlSeconden);
+    tempoInMinPerMijlMinuten = tempoInMinPerMijl.toMinutesPart();
+    tempoInMinPerMijlSeconden = tempoInMinPerMijl.toSecondsPart();
   }
 
 
@@ -1328,7 +1329,7 @@ public class UnitConverterWindow extends JfxStage {
   public static class SplitTime {
     public static double[] DISTANCES = {5, 10, 15, 20, 21.1, 25, 30, 35, 40, 42.2};
 
-    private static ClockTimeFormat CTF = new ClockTimeFormat(true, true);
+    private static DurationFormat CTF = new DurationFormat(true);
 
     private SimpleStringProperty distance;
     private SimpleStringProperty splitTime = new SimpleStringProperty(String.valueOf("--:--:--"));
@@ -1341,7 +1342,7 @@ public class UnitConverterWindow extends JfxStage {
       return splitTime.get();
     }
 
-    public void setSplitTime(ClockTime splitTime) {
+    public void setSplitTime(Duration splitTime) {
       this.splitTime.set(CTF.format(splitTime));
     }
 

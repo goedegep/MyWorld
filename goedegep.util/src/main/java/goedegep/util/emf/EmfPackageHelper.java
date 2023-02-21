@@ -1,7 +1,6 @@
 package goedegep.util.emf;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -11,13 +10,19 @@ import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EClassifier;
 import org.eclipse.emf.ecore.EEnum;
 import org.eclipse.emf.ecore.EPackage;
-import org.eclipse.emf.ecore.EReference;
-import org.eclipse.emf.ecore.impl.EDataTypeImpl;
-import org.eclipse.emf.ecore.impl.EEnumImpl;
 
 import goedegep.util.tree.TreeNode;
 import goedegep.util.tree.TreeUtil;
 
+/**
+ * This class provides some useful functionality for an EMF package.
+ * <ul>
+ * <li>Get all subtypes of an EClass within the package</li>
+ * <li>Get the EClass for a qualified name</li>
+ * <li>Get the EEnum for a qualified name</li>
+ * </ul>
+ *
+ */
 public class EmfPackageHelper {
   private static final Logger         LOGGER = Logger.getLogger(EmfPackageHelper.class.getName());
   
@@ -42,7 +47,7 @@ public class EmfPackageHelper {
   /**
    * Constructor
    * 
-   * @param ePackage the EPackage for which this instance will be the helper.
+   * @param ePackage the <code>EPackage</code> for which this instance will be the helper.
    */
   public EmfPackageHelper(EPackage ePackage) {
     this.ePackage = ePackage;
@@ -51,7 +56,7 @@ public class EmfPackageHelper {
   /**
    * Get all sub types (decendents) of an EClass.
    * <p>
-   * The method returns all types which extend (directly or indirectly) the given type.
+   * The method returns all types which extend (directly or indirectly and within the package) the given type.
    * 
    * @param aClass the EClass for which the sub types are requested.
    * @return All sub types of aClass.
@@ -106,20 +111,6 @@ public class EmfPackageHelper {
           }
         }
       }
-      
-//      List<EClass> currentEntries = new ArrayList<>();
-//      currentEntries.addAll(result.values());
-//      for (EClass eClass: currentEntries) {
-//        LOGGER.severe("Handling eClass=" + eClass.getName());
-//        for (EReference eReference: eClass.getEAllReferences()) {
-//          EClass referredClass = eReference.getEReferenceType();
-//          String key = referredClass.getInstanceTypeName();
-//          LOGGER.severe("Handling key=" + key);
-//          if (result.get(key) == null) {
-//            result.put(key, referredClass);
-//          }
-//        }
-//      }
       
       eNameToEClasMap = result;
     }
@@ -196,7 +187,6 @@ public class EmfPackageHelper {
       for (EClass eClass: toDoList) {
         LOGGER.fine("In inner loop, eClass: " + eClass.getInstanceTypeName());
         List<EClass> allSuperTypes = eClass.getESuperTypes();
-//        EClass superType = EmfUtil.getSuperType(eClass);
         
         // Ignore superTypes which aren't in this package
         List<EClass> superTypes = new ArrayList<>();
@@ -205,11 +195,6 @@ public class EmfPackageHelper {
             superTypes.add(superType);
           }
         }
-//        if (superType != null) {
-//          if (!allClassesInPackage.contains(superType)) {
-//            superType = null;
-//          }
-//        }
         
         if (superTypes.isEmpty()) {
           LOGGER.fine("No super type, eClass is added as child of the root.");

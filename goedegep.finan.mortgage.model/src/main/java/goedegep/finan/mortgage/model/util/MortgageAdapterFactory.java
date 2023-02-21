@@ -134,6 +134,10 @@ public class MortgageAdapterFactory extends AdapterFactoryImpl {
         return createRateAdapter();
       }
       @Override
+      public Adapter caseMortgageYearlyOverviews(MortgageYearlyOverviews object) {
+        return createMortgageYearlyOverviewsAdapter();
+      }
+      @Override
       public Adapter defaultCase(EObject object) {
         return createEObjectAdapter();
       }
@@ -374,6 +378,20 @@ public class MortgageAdapterFactory extends AdapterFactoryImpl {
    * @generated
    */
   public Adapter createRateAdapter() {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link goedegep.finan.mortgage.model.MortgageYearlyOverviews <em>Yearly Overviews</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see goedegep.finan.mortgage.model.MortgageYearlyOverviews
+   * @generated
+   */
+  public Adapter createMortgageYearlyOverviewsAdapter() {
     return null;
   }
 

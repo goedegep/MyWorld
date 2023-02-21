@@ -4,12 +4,14 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.logging.Logger;
 
 import goedegep.geo.WGS84Coordinates;
 import goedegep.media.photo.IPhotoMetaData;
 import goedegep.media.photo.IPhotoMetaDataWithImage;
+import goedegep.media.photo.PhotoMetaData;
 import goedegep.media.photo.PhotoMetaDataWithImage;
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
@@ -81,6 +83,26 @@ public class PhotoInfo implements Serializable, IPhotoInfo {
     photoMetaDataWithImage.setCoordinates(coordinates);
   }
 
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public Integer getRotationAngle() {
+    return photoMetaDataWithImage != null ? photoMetaDataWithImage.getRotationAngle() : null;
+  }
+  
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public void setRotationAngle(Integer rotationAngle) {
+    if (photoMetaDataWithImage == null) {
+      photoMetaDataWithImage = new PhotoMetaDataWithImage();
+    }
+    
+    photoMetaDataWithImage.setRotationAngle(rotationAngle);
+  }
+
   public LocalDateTime getDeviceSpecificPhotoTakenTime() {
     return photoMetaDataWithImage != null ? photoMetaDataWithImage.getDeviceSpecificPhotoTakenTime() : null;
   }
@@ -94,8 +116,8 @@ public class PhotoInfo implements Serializable, IPhotoInfo {
     photoMetaDataWithImage.setDeviceSpecificPhotoTakenTime(deviceSpecificPhotoTakenTime);
   }
  
-  public boolean isApproximateGPScoordinates() {
-    return photoMetaDataWithImage != null ? photoMetaDataWithImage.isApproximateGPScoordinates() : null;
+  public boolean hasApproximateGPScoordinates() {
+    return photoMetaDataWithImage != null ? photoMetaDataWithImage.hasApproximateGPScoordinates() : null;
   }
 
   @Override
@@ -276,7 +298,7 @@ public class PhotoInfo implements Serializable, IPhotoInfo {
     }
     buf.append("set").append(NEWLINE);
     
-    buf.append("approximateGPScoordinates: ").append(isApproximateGPScoordinates()).append(NEWLINE);
+    buf.append("approximateGPScoordinates: ").append(hasApproximateGPScoordinates()).append(NEWLINE);
     buf.append("selectedForTheShow: ").append(selectedForTheShow.getValue()).append(NEWLINE);
     
     return buf.toString();
@@ -323,31 +345,56 @@ public class PhotoInfo implements Serializable, IPhotoInfo {
 
   public static PhotoInfo fromIPhotoMetaDataWithImage(IPhotoMetaDataWithImage photoMetaDataWithImage) {
     PhotoInfo photoInfo = new PhotoInfo();
+    photoInfo.setPhotoMetaDataWithImage(photoMetaDataWithImage);
     
-    photoInfo.setFileName(photoMetaDataWithImage.getFileName());
-    photoInfo.setTitle(photoMetaDataWithImage.getTitle());
-    photoInfo.setCoordinates(photoMetaDataWithImage.getCoordinates());
-    photoInfo.setApproximateGPScoordinates(photoMetaDataWithImage.isApproximateGPScoordinates());
-    photoInfo.setDeviceSpecificPhotoTakenTime(photoMetaDataWithImage.getDeviceSpecificPhotoTakenTime());
-    photoInfo.setModificationDateTime(photoMetaDataWithImage.getModificationDateTime());
-    photoInfo.setImage(photoMetaDataWithImage.getImage());
+//    photoInfo.setFileName(photoMetaDataWithImage.getFileName());
+//    photoInfo.setTitle(photoMetaDataWithImage.getTitle());
+//    photoInfo.setCoordinates(photoMetaDataWithImage.getCoordinates());
+//    photoInfo.setApproximateGPScoordinates(photoMetaDataWithImage.hasApproximateGPScoordinates());
+//    photoInfo.setDeviceSpecificPhotoTakenTime(photoMetaDataWithImage.getDeviceSpecificPhotoTakenTime());
+//    photoInfo.setModificationDateTime(photoMetaDataWithImage.getModificationDateTime());
+//    photoInfo.setImage(photoMetaDataWithImage.getImage());
     
     return photoInfo;
+  }
+
+  @Override
+  public void setPhotoMetaDataWithImage(IPhotoMetaDataWithImage photoMetaDataWithImage) {
+    this.photoMetaDataWithImage = photoMetaDataWithImage;
+  }
+  
+  @Override
+  public IPhotoMetaDataWithImage getPhotoMetaDataWithImage() {
+    return photoMetaDataWithImage;
+  }
+
+  @Override
+  public IPhotoMetaData getIPhotoMetaData() {
+    return photoMetaDataWithImage.getIPhotoMetaData();
+  }
+
+  @Override
+  public void setPhotoMetaData(IPhotoMetaData photoMetaData) {
+    if (photoMetaDataWithImage == null) {
+      photoMetaDataWithImage = new PhotoMetaDataWithImage();
+    }
+    
+    photoMetaDataWithImage.setPhotoMetaData(photoMetaData);
   }
 }
 
 
-//class SortingDateTimeComparator implements Comparator<PhotoMetaDataWithImage> {
-//
-//  @Override
-//  public int compare(PhotoMetaDataWithImage photoInfo1, PhotoMetaDataWithImage photoInfo2) {
-//    LocalDateTime localDateTime1 = ((PhotoInfo) photoInfo1).getSortingDateTime();
-//    LocalDateTime localDateTime2 = ((PhotoInfo) photoInfo2).getSortingDateTime();
-//    if ((localDateTime1 == null)  ||  (localDateTime2 == null)) {
-//      return 0;
-//    } else {
-//      return ((PhotoInfo) photoInfo1).getSortingDateTime().compareTo(((PhotoInfo) photoInfo2).getSortingDateTime());
-//    }
-//  }
-//}
+class SortingDateTimeComparator implements Comparator<IPhotoInfo> {
+
+  @Override
+  public int compare(IPhotoInfo photoInfo1, IPhotoInfo photoInfo2) {
+    LocalDateTime localDateTime1 = photoInfo1.getSortingDateTime();
+    LocalDateTime localDateTime2 = photoInfo2.getSortingDateTime();
+    if ((localDateTime1 == null)  ||  (localDateTime2 == null)) {
+      return 0;
+    } else {
+      return localDateTime1.compareTo(localDateTime2);
+    }
+  }
+}
 

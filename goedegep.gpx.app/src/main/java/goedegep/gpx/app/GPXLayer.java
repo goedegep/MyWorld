@@ -6,6 +6,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Logger;
 
+import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.util.EContentAdapter;
 import org.eclipse.emf.ecore.util.FeatureMap;
@@ -27,6 +28,7 @@ import goedegep.mapview.MapViewUtil;
 import goedegep.poi.app.guifx.POIIcons;
 import goedegep.poi.model.POICategoryId;
 import goedegep.resources.ImageResource;
+import goedegep.util.emf.EmfUtil;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.ObservableMap;
@@ -139,15 +141,24 @@ public class GPXLayer extends MapLayer {
     gpxType.eAdapters().add(new EContentAdapter() {
 
       @Override
-      public void notifyChanged(org.eclipse.emf.common.notify.Notification notification) {
+      public void notifyChanged(Notification notification) {
         super.notifyChanged(notification);
-        updateGpx(gpxType);
+        LOGGER.info("Notification: " + notification.getEventType());
+        if (!notification.isTouch()  &&  notification.getEventType() != Notification.REMOVING_ADAPTER) {
+          updateGpx(gpxType);
+        }
       }
 
     });
 
     this.markDirty();
     return fileBoundingBox;
+  }
+  
+  public void removeGpx(final GpxType gpxType) {
+    gpxType.eAdapters().clear();
+    gpxFileDataMap.remove(gpxType);
+    this.markDirty();
   }
   
   /**

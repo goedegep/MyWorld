@@ -50,7 +50,7 @@ import goedegep.media.photoshow.model.PhotoShowFactory;
 import goedegep.media.photoshow.model.PhotoShowPackage;
 import goedegep.media.photoshow.model.PhotoShowSpecification;
 import goedegep.util.Tuplet;
-import goedegep.util.datetime.DurationUtil;
+import goedegep.util.datetime.DurationFormat;
 import goedegep.util.emf.EMFResource;
 import goedegep.util.emf.EmfPackageHelper;
 import goedegep.util.file.FileUtils;
@@ -108,6 +108,7 @@ import javafx.util.Callback;
 public class PhotoShowBuilder extends JfxStage {
   private final static Logger LOGGER = Logger.getLogger(PhotoShowBuilder.class.getName());
   private final static String NEWLINE = System.getProperty("line.separator");
+  private final static DurationFormat DF = new DurationFormat();
   
   private final static String WINDOW_TITLE = "Photo Show Builder";
   
@@ -164,7 +165,6 @@ public class PhotoShowBuilder extends JfxStage {
 
       @Override
       public void onChanged(Change<? extends IPhotoInfo> change) {
-        LOGGER.severe("photoShowList changed: " + change.toString());
         if (!handlingChange) {
           handlingChange = true;
           handleChangedPhotoShowList();
@@ -181,12 +181,6 @@ public class PhotoShowBuilder extends JfxStage {
      *  For a deleted entry, the photos have to be removed from this list.
      */
     photoInfoListsMap.addListener(new MapChangeListener<String, List<IPhotoInfo>>() {
-
-//      @Override
-//      public void onChanged(Change<? extends String, ? extends List<PhotoMetaDataWithImage>> change) {
-//        // TODO Auto-generated method stub
-//        
-//      }
 
       @Override
       public void onChanged(Change<? extends String, ? extends List<IPhotoInfo>> change) {
@@ -393,6 +387,9 @@ public class PhotoShowBuilder extends JfxStage {
               }
               imageView.setPreserveRatio(true);
               imageView.setImage(photoInfo.getImage());
+              if (photoInfo.getRotationAngle() != null) {
+                imageView.setRotate(photoInfo.getRotationAngle());
+              }
               stackPane.getChildren().add(imageView);
               setGraphic(stackPane);
 
@@ -750,7 +747,7 @@ public class PhotoShowBuilder extends JfxStage {
    * The 'ignore folders' are set to the new value.
    * </li>
    * <li>
-   * The photo folders are set in the specification (leading to an update of the show).
+   * The photo folders are handled by calling {@link #handleNewPhotoFoldersRequest}.
    * </li>
    * </ul>
    */
@@ -795,7 +792,7 @@ public class PhotoShowBuilder extends JfxStage {
       if (timeToBeAdjustedFolderName != null  &&  timeOffset != null) {
         FolderTimeOffsetSpecification folderTimeOffsetSpecification = PHOTO_SHOW_FACTORY.createFolderTimeOffsetSpecification();
         folderTimeOffsetSpecification.setFolderName(timeToBeAdjustedFolderName);
-        folderTimeOffsetSpecification.setTimeOffset(DurationUtil.durationToString(timeOffset, true));
+        folderTimeOffsetSpecification.setTimeOffset(DF.format(timeOffset));
         LOGGER.severe("timeOffset set to: " + folderTimeOffsetSpecification.getTimeOffset());
         photoShowSpecification.getFolderTimeOffsetSpecifications().add(folderTimeOffsetSpecification);
       }
@@ -1291,6 +1288,14 @@ public class PhotoShowBuilder extends JfxStage {
 
       @Override
       public int compare(IPhotoInfo photoInfo1, IPhotoInfo photoInfo2) {
+        LocalDateTime photoDateTime1 = photoInfo1.getSortingDateTime();
+        LocalDateTime photoDateTime2 = photoInfo2.getSortingDateTime();
+        if (photoDateTime1 == null) {
+          LOGGER.severe("No sorting time for photoInfo1: " + photoInfo1);
+        }
+        if (photoDateTime2 == null) {
+          LOGGER.severe("No sorting time for photoInfo2: " + photoInfo2);
+        }
         return photoInfo1.getSortingDateTime().compareTo(photoInfo2.getSortingDateTime());
       }
       
@@ -1427,7 +1432,7 @@ public class PhotoShowBuilder extends JfxStage {
     for (FolderTimeOffsetSpecification folderTimeOffsetSpecification: photoShowSpecification.getFolderTimeOffsetSpecifications()) {
       String timeOffsetFolderName = folderTimeOffsetSpecification.getFolderName();
       if (timeOffsetFolderName.equals(folderName)) {
-        Duration timeOffset = DurationUtil.durationFromString(folderTimeOffsetSpecification.getTimeOffset());
+        Duration timeOffset = DF.parse(folderTimeOffsetSpecification.getTimeOffset());
         LOGGER.fine("time offset text: " + folderTimeOffsetSpecification.getTimeOffset());
         LOGGER.fine("timeOffset: " + timeOffset.toString());
         

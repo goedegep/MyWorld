@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
+import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EPackage;
@@ -21,10 +22,6 @@ import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.util.EContentAdapter;
 import org.eclipse.emf.ecore.xmi.XMLResource;
 
-//import goedegep.appgen.eobjectsexamplemodel.Nota;
-//import goedegep.appgen.eobjectsexamplemodel.NotaFactory;
-//import goedegep.appgen.eobjectsexamplemodel.NotaPackage;
-//import goedegep.appgen.eobjectsexamplemodel.Notas;
 import goedegep.util.file.FileUtils;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -32,7 +29,7 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
 /**
- * This class handles an EMF Resource {@link Resource}.
+ * This class handles an EMF {@link Resource}.
  * <p>
  * The class uses the ResourceSet singleton provided by {@link EMFResourceSet#getResourceSet}.
  * <p>
@@ -90,6 +87,7 @@ import javafx.beans.property.StringProperty;
  * The application has to determine a file name, typically via a FileChooser, and then call {@link #save(String resourceFileName)}.
  * </li>
  * </ul>
+ * If an application has to react to changes in the object, it can register an EMFNotificationListener (instead of creating its own Adapter and adding that to the object).
  * <p>
  * The following Properties are provided:
  * <ul>
@@ -167,7 +165,7 @@ public class EMFResource<E extends EObject> {
        * {@inheritDoc}
        */
       @Override
-      public void notifyChanged(org.eclipse.emf.common.notify.Notification notification) {
+      public void notifyChanged(Notification notification) {
         LOGGER.info(EmfUtil.printNotification(notification));
         
         super.notifyChanged(notification);
@@ -357,14 +355,28 @@ public class EMFResource<E extends EObject> {
     LOGGER.info("<=");
   }
   
+  /**
+   * Check whether there are unsaved changes in the object.
+   * 
+   * @return true if there are unsaved changes in the object, false otherwise.
+   */
   public boolean isDirty() {
     return dirty.get();
   }
   
+  /**
+   * Get the 'dirty' property.
+   * 
+   * @return the 'dirty' property.
+   */
   public BooleanProperty dirtyProperty() {
     return dirty;
   }
   
+  /**
+   * Get the 'fileName' property
+   * @return
+   */
   public StringProperty fileNameProperty() {
     return fileNameProperty;
   }
@@ -393,74 +405,51 @@ public class EMFResource<E extends EObject> {
     }
   }
   
+  /**
+   * Add a Notification listener.
+   * 
+   * @param emfNotificationListener the <code>EMFNotificationListener</code> to be added.
+   */
   public void addNotificationListener(EMFNotificationListener emfNotificationListener) {
     emfNotificationListeners.add(emfNotificationListener);
   }
   
+  /**
+   * Remove a Notification listener.
+   * 
+   * @param emfNotificationListener the <code>EMFNotificationListener</code> to be removed.
+   */
   public void removeNotificationListener(EMFNotificationListener emfNotificationListener) {
     emfNotificationListeners.remove(emfNotificationListener);
   }
   
-  private void notifyNotificationListeners(org.eclipse.emf.common.notify.Notification notification) {
+  /**
+   * Notify the Notification listeners.
+   * 
+   * @param notification the <code>Notification</code>
+   */
+  private void notifyNotificationListeners(Notification notification) {
     for (EMFNotificationListener emfNotificationListener: emfNotificationListeners) {
       emfNotificationListener.notifyChanged(notification);
     }
   }
   
+  /**
+   * Update the 'fileName' property.
+   * <p>
+   * The filename is obtained from the URI known to the resource.
+   */
   private void updateFileNameProperty() {
     String newFileName = null;
-    
+
     if (resource != null) {
       URI uri = resource.getURI();
       if (uri != null) {
         newFileName = uri.toFileString();
       }
     }
-    
-//    String currentFileName = fileNameProperty.get();
-//    if ((currentFileName == null) && (newFileName != null)  ||
-//        (currentFileName != null) && (newFileName == null)  ||
-//        ((currentFileName != null) && (newFileName != null) && !currentFileName.equals(newFileName))) {
-      fileNameProperty.set(newFileName);
-//    }
+
+    fileNameProperty.set(newFileName);
   }
   
-  /**
-   * Demonstrate the usage of this class.
-   * 
-   * @param args
-   * @throws IOException 
-   */
-  public static void main(String[] args) throws IOException {
-//    // create the resource for a specific package.
-//    EMFResource<Notas> emfResource = new EMFResource<>(
-//        NotaPackage.eINSTANCE,
-//        () -> NotaFactory.eINSTANCE.createNotas());
-//    Notas notas = emfResource.load("notas2.xmi");
-//    
-//    // create some data to store
-//    NotaFactory factory = NotaFactory.eINSTANCE;
-//    notas = emfResource.newEObject();
-//    Nota nota = factory.createNota();
-//    nota.setBedrijf("A Company");
-//    notas.getNotas().add(nota);
-//    
-//    // create the initial file
-//    emfResource.save("notas.xmi");
-//    
-//    // simulate shutdown and restart
-//    
-//    emfResource.unload();
-//    
-//    notas = emfResource.load("notas2.xmi");
-//    
-//    // add a new nota and save
-//    nota = factory.createNota();
-//    nota.setBedrijf("Other Company");
-//    notas.getNotas().add(nota);
-//    emfResource.save();
-//    
-//    // save also under a different name
-//    emfResource.save("notas new.emfresource");
-  }
 }

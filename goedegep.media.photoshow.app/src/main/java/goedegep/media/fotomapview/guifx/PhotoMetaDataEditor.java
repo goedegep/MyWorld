@@ -9,6 +9,7 @@ import goedegep.geo.WGS84Coordinates;
 import goedegep.jfx.ComponentFactoryFx;
 import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.JfxStage;
+import goedegep.media.fotoshow.app.guifx.IPhotoInfo;
 import goedegep.media.photo.IPhotoMetaData;
 import goedegep.resources.ImageSize;
 import javafx.collections.ObservableSet;
@@ -41,16 +42,16 @@ public class PhotoMetaDataEditor extends JfxStage {
    * A set of modified photos.
    * Whenever anything on a photo is modified it is added to this set.
    */
-  private static ObservableSet<IPhotoMetaData> modifiedPhotos;
+  private static ObservableSet<IPhotoInfo> modifiedPhotos;
   
   private CustomizationFx customization;
-  private IPhotoMetaData photoMetaData;
+  private IPhotoInfo photoMetaData;
   private ComponentFactoryFx componentFactory;
   
   private TextField titleTextField;
   private CheckBox approximateGPScoordinatesCheckBox;
 
-  public PhotoMetaDataEditor(CustomizationFx customization, IPhotoMetaData photoMetaData) {
+  public PhotoMetaDataEditor(CustomizationFx customization, IPhotoInfo photoMetaData) {
     super("Details for " + photoMetaData.getFileName() , customization);
     
     this.customization = customization;
@@ -67,7 +68,7 @@ public class PhotoMetaDataEditor extends JfxStage {
    * 
    * @param modifiedPhotos the set of modified photos.
    */
-  public static void setModifiedPhotos(ObservableSet<IPhotoMetaData> modifiedPhotos) {
+  public static void setModifiedPhotos(ObservableSet<IPhotoInfo> modifiedPhotos) {
     PhotoMetaDataEditor.modifiedPhotos = modifiedPhotos;
   }
   
@@ -152,7 +153,7 @@ public class PhotoMetaDataEditor extends JfxStage {
     label = componentFactory.createLabel("Approximate coordinates:");
     gridPane.add(label, 0, row);
     approximateGPScoordinatesCheckBox = componentFactory.createCheckBox(null, false);
-    if (photoMetaData.isApproximateGPScoordinates()) {
+    if (photoMetaData.hasApproximateGPScoordinates()) {
       approximateGPScoordinatesCheckBox.setSelected(true);
     }
     gridPane.add(approximateGPScoordinatesCheckBox, 1, row);
@@ -169,7 +170,8 @@ public class PhotoMetaDataEditor extends JfxStage {
     gridPane.add(label, 0, row);
     textField = componentFactory.createTextField(300, null);
     textField.setEditable(false);
-    LocalDateTime sortingDateTime = photoMetaData.getSortingDateTime();
+    LocalDateTime sortingDateTime = null;
+    sortingDateTime = photoMetaData.getSortingDateTime();
     if (sortingDateTime != null) {
       textField.setText(DTF.format(sortingDateTime));
     }

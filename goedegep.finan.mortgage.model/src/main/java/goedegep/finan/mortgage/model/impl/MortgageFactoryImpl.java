@@ -74,6 +74,7 @@ public class MortgageFactoryImpl extends EFactoryImpl implements MortgageFactory
       case MortgagePackage.INTEREST_COMPENSATION_MORTGAGE_YEARLY_OVERVIEW: return createInterestCompensationMortgageYearlyOverview();
       case MortgagePackage.INTEREST_RATE_SET: return createInterestRateSet();
       case MortgagePackage.RATE: return createRate();
+      case MortgagePackage.MORTGAGE_YEARLY_OVERVIEWS: return createMortgageYearlyOverviews();
       default:
         throw new IllegalArgumentException("The class '" + eClass.getName() + "' is not a valid classifier");
     }
@@ -271,6 +272,17 @@ public class MortgageFactoryImpl extends EFactoryImpl implements MortgageFactory
   public Rate createRate() {
     RateImpl rate = new RateImpl();
     return rate;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public MortgageYearlyOverviews createMortgageYearlyOverviews() {
+    MortgageYearlyOverviewsImpl mortgageYearlyOverviews = new MortgageYearlyOverviewsImpl();
+    return mortgageYearlyOverviews;
   }
 
   /**

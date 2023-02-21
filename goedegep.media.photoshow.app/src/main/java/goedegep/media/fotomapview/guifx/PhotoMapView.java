@@ -13,9 +13,11 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -35,25 +37,26 @@ import com.google.common.geometry.S2LatLng;
 import com.google.common.geometry.S2Point;
 import com.google.common.geometry.S2PointIndex;
 
+import goedegep.geo.WGS84BoundingBox;
 import goedegep.geo.WGS84Coordinates;
 import goedegep.jfx.ComponentFactoryFx;
 import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.JfxStage;
 import goedegep.media.app.MediaRegistry;
 import goedegep.media.fotoshow.app.guifx.GatherPhotoInfoStatusPanel;
+import goedegep.media.fotoshow.app.guifx.IPhotoInfo;
 import goedegep.media.fotoshow.app.guifx.PhotoInfo;
 import goedegep.media.photo.GatherPhotoInfoTask;
 import goedegep.media.photo.GatherPhotoMetaDataTask;
 import goedegep.media.photo.IPhotoMetaData;
 import goedegep.media.photo.IPhotoMetaDataWithImage;
 import goedegep.media.photo.PhotoMetaData;
-import goedegep.media.photo.PhotoMetaDataWithImage;
 import goedegep.media.photoshow.model.FolderTimeOffsetSpecification;
 import goedegep.media.photoshow.model.PhotoShowFactory;
 import goedegep.media.photoshow.model.PhotoShowPackage;
 import goedegep.media.photoshow.model.PhotoShowSpecification;
 import goedegep.util.Tuplet;
-import goedegep.util.datetime.DurationUtil;
+import goedegep.util.datetime.DurationFormat;
 import goedegep.util.emf.EMFResource;
 import goedegep.util.img.PhotoFileMetaDataHandler;
 import goedegep.util.string.StringUtil;
@@ -74,6 +77,7 @@ import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.RadioMenuItem;
 import javafx.scene.control.SelectionMode;
+import javafx.scene.control.SeparatorMenuItem;
 import javafx.scene.control.SplitPane;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.BorderPane;
@@ -83,6 +87,21 @@ import javafx.stage.FileChooser;
 /**
  * This class shows photos on a map.
  * <p>
+ * Apart from showing the photos on a map, with this application you can edit the following meta data of the photo:
+ * <ul>
+ * <li>The title of the photo</li>
+ * <li>The coordinates of the photo</li>
+ * </ul>
+ * On the left, the photos are shown in a list.
+ * The right hand is a map display on which the photos are shown.
+ * 
+ * Opening photos:<br/>
+ * Via the file menu you can:
+ * <ul>
+ * <li>Select a folder to add all photos in that folder</li>
+ * <li>Select a 
+ * <li></li>
+ * </ul>
  * Photo meta data is read from a photos folder.<br/>
  * Photos, with GPS coordinates, are shown as small cameras on a map.<br/>
  * Photos, without GPS coordinates, can be dropped on their location on the map.<br/>
@@ -91,6 +110,7 @@ import javafx.stage.FileChooser;
 public class PhotoMapView extends JfxStage {
   private static final Logger LOGGER = Logger.getLogger(PhotoMapView.class.getName());
   private final static String WINDOW_TITLE = "Photo Map View";
+  private final static DurationFormat DF = new DurationFormat();
   private final static List<String> SUPPORTED_FILE_TYPES = Arrays.asList(".jpg", ".gif", ".bmp");
   
   /**
@@ -135,35 +155,36 @@ public class PhotoMapView extends JfxStage {
   
   /**
    * A map from photo folders to the information of the photos in that folder.
+   * The type of the information is IPhotoInfo because the photos in the list are shown in chronological order, which requires the SortingDateTime.
    */
-  private ObservableMap<String, List<IPhotoMetaDataWithImage>> photoMetaDatasWithImagesPerFolder = FXCollections.observableHashMap();
+  private ObservableMap<String, List<IPhotoInfo>> photoMetaDatasWithImagesPerFolder = FXCollections.observableHashMap();
   
   /**
    * A map from photo folders to the list of meta data of the photos in that folder.
    * <p>
    * This map is only used to handle the <code>index</code>.
    */
-  private Map<String, List<PhotoMetaData>> photoMetaDatasPerFolder = new HashMap<>();
+  private Map<String, List<IPhotoInfo>> photoMetaDatasPerFolder = new HashMap<>();
   
   /**
    * Point index for all photo in the <code>mainPhotosFolder</code>.
    */
-  private S2PointIndex<PhotoMetaData> index;
+  private S2PointIndex<IPhotoMetaData> index;
   
   /**
    * The set of modified photos.
    */
-  private ObservableSet<IPhotoMetaData> modifiedPhotos = FXCollections.observableSet();
+  private ObservableSet<IPhotoInfo> modifiedPhotos = FXCollections.observableSet();
   
   /**
    * Sorted list of all photos being handled.
    */
-  private ObservableList<IPhotoMetaDataWithImage> photoList = FXCollections.observableArrayList();
+  private ObservableList<IPhotoInfo> photoList = FXCollections.observableArrayList();
   
   /**
    * A {@code ListView} showing the photos in the {@code photoList}.
    */
-  private ListView<IPhotoMetaData> listView;
+  private ListView<IPhotoInfo> listView;
   
   /**
    * The map view on which the photos are shown.
@@ -256,7 +277,7 @@ public class PhotoMapView extends JfxStage {
      *  For a new entry, the photos have to be added to the photoList and, if it has coordinates, also to the map view.
      *  For a deleted entry, the photos have to be removed from this list and the map.
      */
-    photoMetaDatasWithImagesPerFolder.addListener((javafx.collections.MapChangeListener.Change<? extends String, ? extends List<IPhotoMetaDataWithImage>> change) -> {
+    photoMetaDatasWithImagesPerFolder.addListener((javafx.collections.MapChangeListener.Change<? extends String, ? extends List<IPhotoInfo>> change) -> {
       if (change.wasAdded()) {
         handlePhotoFolderAddedToPhotoInfoListsMap(change.getKey(), change.getValueAdded());
       } else if (change.wasRemoved()) {
@@ -307,7 +328,20 @@ public class PhotoMapView extends JfxStage {
   @SuppressWarnings("unchecked")
   private void readIndex() {
     try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(getPhotoIndexFilename()))) {
-      photoMetaDatasPerFolder  = (Map<String, List<PhotoMetaData>>) ois.readObject();
+      Map<String, List<IPhotoMetaData>> indexData =  (Map<String, List<IPhotoMetaData>>) ois.readObject();
+//      photoMetaDatasPerFolder  = (Map<String, List<IPhotoInfo>>) ois.readObject();
+      photoMetaDatasPerFolder = new HashMap<String, List<IPhotoInfo>>();
+      
+      for (String folder: indexData.keySet()) {
+        List<IPhotoInfo> photoInfos = new ArrayList<>();
+        for (IPhotoMetaData photoMetaData: indexData.get(folder)) {
+          IPhotoInfo photoInfo = new PhotoInfo();
+          photoInfo.setPhotoMetaData(photoMetaData);
+          photoInfos.add(photoInfo);
+        }
+        photoMetaDatasPerFolder.put(folder, photoInfos);
+      }
+      
       createIndexFromMetaData();
       handleNewIndex();
     } catch (FileNotFoundException e) {
@@ -330,7 +364,16 @@ public class PhotoMapView extends JfxStage {
    */
   private void writeIndex() {
     try (ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(getPhotoIndexFilename()))) {
-      out.writeObject(photoMetaDatasPerFolder);
+      Map<String, List<IPhotoMetaData>> indexData = new HashMap<>();
+      for (String folderName: photoMetaDatasPerFolder.keySet()) {
+        List<IPhotoInfo> photoInfoList = photoMetaDatasPerFolder.get(folderName);
+        List<IPhotoMetaData> photoMetaDataList = new ArrayList<>();
+        for (IPhotoInfo photoInfo: photoInfoList) {
+          photoMetaDataList.add(photoInfo.getIPhotoMetaData());
+        }
+        indexData.put(folderName, photoMetaDataList);
+      }
+      out.writeObject(indexData);
    } catch (FileNotFoundException e) {
      e.printStackTrace();
    } catch (IOException e) {
@@ -346,7 +389,7 @@ public class PhotoMapView extends JfxStage {
     index = new S2PointIndex<>();
 
     for (String folder: photoMetaDatasPerFolder.keySet()) {
-      for (PhotoMetaData photoMetaData: photoMetaDatasPerFolder.get(folder)) {
+      for (IPhotoInfo photoMetaData: photoMetaDatasPerFolder.get(folder)) {
         if (photoMetaData.getCoordinates() != null) {
           WGS84Coordinates coordinates = photoMetaData.getCoordinates();
           S2LatLng latLng = coordinates.getS2LatLng();
@@ -392,43 +435,53 @@ public class PhotoMapView extends JfxStage {
    * In the first case, it just has to be added to the map view.
    * In the second case, the {@code PhotoMetaDataWithImage} has to be gathered, and the photo has to be added to the {@code photoInfosPerFolder}.
    * In this case the photo will automatically be added to the list view and the map view.
+   * 
+   * @param photoFiles A list of filenames for the photo files to add.
+   * @param coordinates Coordinates of the location where the {@code photoFiles} are dropped on the map.
    */
   public void addPhotos(List<File> photoFiles, WGS84Coordinates coordinates) {
-    ObservableMap<String, List<IPhotoMetaDataWithImage>> newPhotoInfosPerFolder = FXCollections.observableHashMap();
+    ObservableMap<String, List<IPhotoInfo>> newPhotoInfosPerFolder = FXCollections.observableHashMap();
+    WGS84BoundingBox boundingBox = null;
 
     for (File file: photoFiles) {
       LOGGER.info(file.getAbsolutePath());
-      IPhotoMetaDataWithImage photoMetaDataWithImage = getPhotoMetaDataWithImageForFile(file);
-      if (photoMetaDataWithImage != null) {
-        if (photoMetaDataWithImage.getCoordinates() == null) {
-          photoMetaDataWithImage.setCoordinates(coordinates);
+      IPhotoInfo iPhotoMetaDataWithImage = getPhotoMetaDataWithImageForFile(file);
+      if (iPhotoMetaDataWithImage != null) {
+        if (iPhotoMetaDataWithImage.getCoordinates() == null) {
+          iPhotoMetaDataWithImage.setCoordinates(coordinates);
         }
-        photoMapLayer.addPhoto(photoMetaDataWithImage);
+        photoMapLayer.addPhoto(iPhotoMetaDataWithImage);
       } else {
-
-        photoMetaDataWithImage = GatherPhotoInfoTask.gatherPhotoMetaDataWithImage(file.getAbsolutePath(), 150);
-        if (photoMetaDataWithImage.getCoordinates() == null) {
-          photoMetaDataWithImage.setCoordinates(coordinates);
-          modifiedPhotos.add(photoMetaDataWithImage);
+        IPhotoMetaDataWithImage t = GatherPhotoInfoTask.gatherPhotoMetaDataWithImage(file.getAbsolutePath(), 150);
+        IPhotoInfo photoInfo = new PhotoInfo();
+        photoInfo.setPhotoMetaDataWithImage(t);
+        if (photoInfo.getCoordinates() == null) {
+          photoInfo.setCoordinates(coordinates);
+          modifiedPhotos.add(photoInfo);
         } else {
           LOGGER.info("Coordinates already set");
         }
 
         String folder = file.getParent();
-        List<IPhotoMetaDataWithImage> photoInfos = newPhotoInfosPerFolder.get(folder);
+        List<IPhotoInfo> photoInfos = newPhotoInfosPerFolder.get(folder);
         if (photoInfos == null) {
           photoInfos = new ArrayList<>();
           newPhotoInfosPerFolder.put(folder, photoInfos);
         }
 
-        photoInfos.add(photoMetaDataWithImage);
+        photoInfos.add(photoInfo);
+        if (boundingBox == null) {
+          boundingBox = new WGS84BoundingBox(photoInfo.getCoordinates().getLongitude(), photoInfo.getCoordinates().getLatitude());
+        } else {
+          boundingBox = boundingBox.extend(photoInfo.getCoordinates().getLongitude(), photoInfo.getCoordinates().getLatitude());
+        }
       }
     }
     
     for (String folder: newPhotoInfosPerFolder.keySet()) {
-      List<IPhotoMetaDataWithImage> newPhotoInfos = newPhotoInfosPerFolder.get(folder);
+      List<IPhotoInfo> newPhotoInfos = newPhotoInfosPerFolder.get(folder);
       
-      List<IPhotoMetaDataWithImage> photoInfos = photoMetaDatasWithImagesPerFolder.get(folder);
+      List<IPhotoInfo> photoInfos = photoMetaDatasWithImagesPerFolder.get(folder);
       if (photoInfos != null) {
         photoInfos.addAll(newPhotoInfos);
         photoList.addAll(newPhotoInfos);
@@ -437,7 +490,15 @@ public class PhotoMapView extends JfxStage {
       }
     }
     
-    // TODO make sure the new photos are visible. Create a bounding box around the new photos and make sure that bounding box is visible.
+    WGS84Coordinates centerCoordinates = boundingBox.getCenter();
+    LOGGER.severe("center: " + centerCoordinates.toString());
+    MapPoint mapCenter = new MapPoint(centerCoordinates.getLatitude(), centerCoordinates.getLongitude());
+    mapView.flyTo(0, mapCenter, 1.0);
+    
+    Double zoomLevel = MapView.getZoomLevel(boundingBox);
+    zoomLevel = 0.85 * zoomLevel;
+    LOGGER.severe("zoomLevel: " + zoomLevel);
+    mapView.setZoom(zoomLevel);
   }
   
 
@@ -447,12 +508,12 @@ public class PhotoMapView extends JfxStage {
    * @param file a {@code File}
    * @return the {@code PhotoMetaDataWithImage} for {@code file}, or null if the information is not available.
    */
-  private IPhotoMetaDataWithImage getPhotoMetaDataWithImageForFile(File file) {
+  private IPhotoInfo getPhotoMetaDataWithImageForFile(File file) {
     String folder = file.getParent();
     String filename = file.getAbsolutePath();
-    List<IPhotoMetaDataWithImage> photoMetaDatasWithImages = photoMetaDatasWithImagesPerFolder.get(folder);
+    List<IPhotoInfo> photoMetaDatasWithImages = photoMetaDatasWithImagesPerFolder.get(folder);
     if (photoMetaDatasWithImages != null) {
-      for (IPhotoMetaDataWithImage photoMetaDataWithImage: photoMetaDatasWithImages) {
+      for (IPhotoInfo photoMetaDataWithImage: photoMetaDatasWithImages) {
         if (filename.equals(photoMetaDataWithImage.getFileName())) {
           return photoMetaDataWithImage;
         }
@@ -521,7 +582,13 @@ public class PhotoMapView extends JfxStage {
             Tuplet<String, List<PhotoMetaData>> oldValue, Tuplet<String, List<PhotoMetaData>> newValue) -> {
               if (newValue != null) {
                 LOGGER.info("Info obtained for folder: " + newValue);
-                photoMetaDatasPerFolder.put(newValue.getObject1(), newValue.getObject2());
+                List<IPhotoInfo> photoInfos = new ArrayList<>();
+                for (PhotoMetaData photoMetaData: newValue.getObject2()) {
+                  PhotoInfo photoInfo = new PhotoInfo();
+                  photoInfo.setPhotoMetaData(photoMetaData);
+                  photoInfos.add(photoInfo);
+                }
+                photoMetaDatasPerFolder.put(newValue.getObject1(), photoInfos);
               } else {
                 // gathering data has finished
                 handleMetaDataAvailable();
@@ -579,7 +646,14 @@ public class PhotoMapView extends JfxStage {
         (ObservableValue<? extends Tuplet<String, List<IPhotoMetaDataWithImage>>> observable,
         Tuplet<String, List<IPhotoMetaDataWithImage>> oldValue, Tuplet<String, List<IPhotoMetaDataWithImage>> newValue) -> {
       LOGGER.info("Info obtained for folder: " + newValue.getObject1());
-      photoMetaDatasWithImagesPerFolder.put(newValue.getObject1(), newValue.getObject2());
+      List<IPhotoInfo> photoInfos = new ArrayList<>();
+      for (IPhotoMetaDataWithImage iPhotoMetaDataWithImage: newValue.getObject2()) {
+        IPhotoInfo photoInfo = new PhotoInfo();
+        photoInfo.setPhotoMetaDataWithImage(iPhotoMetaDataWithImage);
+        photoInfos.add(photoInfo);
+      }
+      photoMetaDatasWithImagesPerFolder.put(newValue.getObject1(), photoInfos);
+      zoomInOn(newValue.getObject2());
     });
     
     // Handle messages - messages are shown in the message part of the statusPanel
@@ -593,6 +667,33 @@ public class PhotoMapView extends JfxStage {
     gatherPhotoInfoThread.start();
   }
   
+  private void zoomInOn(List<IPhotoMetaDataWithImage> photoMetaDatasWithImages) {
+    WGS84BoundingBox boundingBox = null;
+    
+    for (IPhotoMetaDataWithImage photoMetaDataWithImage: photoMetaDatasWithImages) {
+      WGS84Coordinates coordinates = photoMetaDataWithImage.getCoordinates();
+      if (coordinates == null) {
+        continue;
+      }
+      
+      if (boundingBox == null) {
+        boundingBox = new WGS84BoundingBox(coordinates.getLongitude(), coordinates.getLatitude());
+      } else {
+        boundingBox = boundingBox.extend(coordinates.getLongitude(), coordinates.getLatitude());
+      }
+    }
+    
+    if (boundingBox != null) {
+      WGS84Coordinates centerCoordinates = boundingBox.getCenter();
+      MapPoint mapCenter = new MapPoint(centerCoordinates.getLatitude(), centerCoordinates.getLongitude());
+      mapView.flyTo(0, mapCenter, 1.0);
+
+      Double zoomLevel = MapView.getZoomLevel(boundingBox);
+      zoomLevel = 0.85 * zoomLevel;
+      mapView.setZoom(zoomLevel);
+    }
+  }
+
   /**
    * Create the panel in which the photo thumbnails are shown
    * 
@@ -619,7 +720,36 @@ public class PhotoMapView extends JfxStage {
   private void handleChangedPhotoList() {
     
     // sort the list
-    Collections.sort(photoList, PhotoMetaDataWithImage.getSortingDateTimeComparator());
+//    Collections.sort(photoList, PhotoMetaDataWithImage.getSortingDateTimeComparator());
+    Collections.sort(photoList, new Comparator<IPhotoMetaDataWithImage>() {
+
+      @Override
+      public int compare(IPhotoMetaDataWithImage photoMetaDataWithImage1, IPhotoMetaDataWithImage photoMetaDataWithImage2) {
+        LocalDateTime localDateTime1 = null;
+        LocalDateTime localDateTime2 = null;
+        
+        if (photoMetaDataWithImage1 instanceof IPhotoInfo photoInfo1) {
+          localDateTime1 = photoInfo1.getSortingDateTime();
+        }
+        if (localDateTime1 == null) {
+          localDateTime1 = photoMetaDataWithImage1.getDeviceSpecificPhotoTakenTime();
+        }
+        
+        if (photoMetaDataWithImage2 instanceof IPhotoInfo photoInfo2) {
+          localDateTime2 = photoInfo2.getSortingDateTime();
+        }
+        if (localDateTime2 == null) {
+          localDateTime2 = photoMetaDataWithImage2.getDeviceSpecificPhotoTakenTime();
+        }
+        
+        if ((localDateTime1 == null)  ||  (localDateTime2 == null)) {
+          return 0;
+        } else {
+          return localDateTime1.compareTo(localDateTime2);
+        }
+      }
+
+    });
     
     listView.getItems().clear();
     listView.getItems().addAll(photoList);
@@ -627,7 +757,7 @@ public class PhotoMapView extends JfxStage {
     photoMapLayer.clear();
 //    S2PointIndex<PhotoMetaDataWithImage> index = new S2PointIndex<>();
 
-    for (IPhotoMetaDataWithImage photoInfo: photoList) {
+    for (IPhotoInfo photoInfo: photoList) {
       if (photoInfo.getCoordinates() != null) {
         photoMapLayer.addPhoto(photoInfo);
 //        
@@ -694,7 +824,7 @@ public class PhotoMapView extends JfxStage {
         
     menuBar.getMenus().add(menu);
     
-    // Settings menu
+    // Show menu
     menu = componentFactory.createMenu("Show");
     
     // Settings: Edit mode
@@ -704,11 +834,16 @@ public class PhotoMapView extends JfxStage {
     editModeMenuItem.setOnAction(event -> handleNewEditMode());
     menu.getItems().add(editModeMenuItem);
     
+    // Separator
+    SeparatorMenuItem separator = new SeparatorMenuItem();
+    menu.getItems().add(separator);
+    
     
     // Settings: Show selected photos / Show all photos in the index
     ToggleGroup toggleGroup = new ToggleGroup();
     radioMenuItem = componentFactory.createRadioMenuItem("Show selected photos");
     radioMenuItem.setOnAction(event -> showIndexPhotos(false));
+    radioMenuItem.setSelected(true);
     radioMenuItem.setToggleGroup(toggleGroup);
     menu.getItems().add(radioMenuItem);
     radioMenuItem = componentFactory.createRadioMenuItem("Show all photos in the index");
@@ -757,12 +892,21 @@ public class PhotoMapView extends JfxStage {
   
   /**
    * Open a {@code PhotoShowSpecification}
+   * <p>
+   * A FileChooser is shown to let the user select a PhotoShowSpecification.
+   * The PhotoShowSpecification is read using an EMFResource.
+   * Photo information is gathered for all folders in the PhotoShowSpecification.
+   * A dialog is shown that the information is gathered, as this may take quite some time.
    */
   private void handleOpenPhotoShowSpecificationRequest() {
     FileChooser fileChooser = componentFactory.createFileChooser("Open Photo Show Specification");
     fileChooser.setInitialDirectory(new File(mainPhotosFolder));
     File photoShowSpecificationFile = fileChooser.showOpenDialog(this);
     LOGGER.info("Opening: " + (photoShowSpecificationFile != null ? photoShowSpecificationFile.getAbsolutePath() : "null"));
+    
+    if (photoShowSpecificationFile == null) {
+      return;
+    }
 
     EMFResource<PhotoShowSpecification> emfResource = new EMFResource<PhotoShowSpecification>(
         PhotoShowPackage.eINSTANCE,
@@ -801,8 +945,8 @@ public class PhotoMapView extends JfxStage {
 
     openSpecificationNumberOfFoldersToHandle =  photoFolders.size();
     
-    photoMetaDatasWithImagesPerFolder.clear();
-    createGatherPhotoInfoTaskIfNotYetDone();
+//    photoMetaDatasWithImagesPerFolder.clear();
+//    createGatherPhotoInfoTaskIfNotYetDone();
     
     List<String> ignoreFolders = StringUtil.semicolonSeparatedValuesToListOfValues(ignoreFolderNames);
 
@@ -847,11 +991,7 @@ public class PhotoMapView extends JfxStage {
     
     String directoryName = photosFolder.getFileName().toString();
     if (!ignoreFolders.contains(directoryName)) {
-      try {
-        photoFoldersToScan.put(photosFolder.toAbsolutePath().toString());
-      } catch (InterruptedException e) {
-        e.printStackTrace();
-      }
+      addFolderForGatheringPhotoInfo(photosFolder.toAbsolutePath().toString());
     } else {
       LOGGER.info("Skipping: " + photosFolder.toAbsolutePath().toString());
     }
@@ -868,6 +1008,17 @@ public class PhotoMapView extends JfxStage {
     } catch (IOException | DirectoryIteratorException x) {
       System.err.println(x);
     }
+  }
+  
+  private void addFolderForGatheringPhotoInfo(String folderName) {
+    createGatherPhotoInfoTaskIfNotYetDone();
+    
+    try {
+      photoFoldersToScan.put(folderName);
+    } catch (InterruptedException e) {
+      e.printStackTrace();
+    }
+    
   }
   
   /**
@@ -902,7 +1053,7 @@ public class PhotoMapView extends JfxStage {
    * @param photoFolderName name of the added photo folder
    * @param photoInfoList information on all the photos in this folder
    */
-  private void handlePhotoFolderAddedToPhotoInfoListsMap(String photoFolderName, List<IPhotoMetaDataWithImage> photoInfoList) {
+  private void handlePhotoFolderAddedToPhotoInfoListsMap(String photoFolderName, List<IPhotoInfo> photoInfoList) {
     LOGGER.info("=> photoFolderName=" + photoFolderName + ", number of photos=" + photoInfoList.size());
 
     if (photoShowSpecification != null) {
@@ -929,21 +1080,22 @@ public class PhotoMapView extends JfxStage {
    * @param folderName The name of the folder for which the Sorting Times are to be updated.
    */
   private void updatePhotoInfoSortingTimesForOneFolder(String folderName) {
-    List<IPhotoMetaDataWithImage> photoInfoList = photoMetaDatasWithImagesPerFolder.get(folderName);
+    List<IPhotoInfo> photoMetaDatasWithImages = photoMetaDatasWithImagesPerFolder.get(folderName);
 
     // clear the sorting times for all photos in this folder
-    for (IPhotoMetaDataWithImage photoInfo: photoInfoList) {
-      ((PhotoInfo) photoInfo).setSortingDateTime(null);
+    for (IPhotoMetaDataWithImage photoMetaDataWithImage: photoMetaDatasWithImages) {
+      if (photoMetaDataWithImage instanceof PhotoInfo photoInfo)
+        photoInfo.setSortingDateTime(null);
     }
 
     // Check all 'folder time offset specifications'. If it is for this folder, apply the offset to all photos of this folder.
     for (FolderTimeOffsetSpecification folderTimeOffsetSpecification: photoShowSpecification.getFolderTimeOffsetSpecifications()) {
       String timeOffsetFolderName = folderTimeOffsetSpecification.getFolderName();
       if (timeOffsetFolderName.equals(folderName)) {
-        Duration timeOffset = DurationUtil.durationFromString(folderTimeOffsetSpecification.getTimeOffset());
+        Duration timeOffset = DF.parse(folderTimeOffsetSpecification.getTimeOffset());
         LOGGER.fine("timeOffset: " + timeOffset.toString());
-        
-        for (IPhotoMetaDataWithImage photoInfo: photoInfoList) {
+
+        for (IPhotoMetaDataWithImage photoInfo: photoMetaDatasWithImages) {
           ((PhotoInfo) photoInfo).setSortingDateTime(photoInfo.getDeviceSpecificPhotoTakenTime().plus(timeOffset));
           LOGGER.fine("file: " + photoInfo.getFileName() + 
               ", taken at: " + photoInfo.getDeviceSpecificPhotoTakenTime() +
@@ -964,7 +1116,7 @@ public class PhotoMapView extends JfxStage {
       try {
         for (IPhotoMetaData photoInfo: photosToSave) {
           LOGGER.info("Saving: " + photoInfo.getFileName());
-          PhotoFileMetaDataHandler.writeGeoLocationAndTitle(new File(photoInfo.getFileName()), photoInfo.getCoordinates(), photoInfo.isApproximateGPScoordinates(), photoInfo.getTitle());
+          PhotoFileMetaDataHandler.writeGeoLocationAndTitle(new File(photoInfo.getFileName()), photoInfo.getCoordinates(), photoInfo.hasApproximateGPScoordinates(), photoInfo.getTitle());
           modifiedPhotos.remove(photoInfo);
         }
       } catch (ImageReadException | ImageWriteException | IOException e) {
@@ -981,7 +1133,7 @@ public class PhotoMapView extends JfxStage {
    * @param source the object responsible for the change.
    * @param photoMetaData the new selected photo.
    */
-  private void handleNewPhotoSelected(Object source, IPhotoMetaData photoMetaData) {
+  private void handleNewPhotoSelected(Object source, IPhotoInfo photoMetaData) {
     if (this.equals(source)) {
       // no action if we caused the change.
       return;

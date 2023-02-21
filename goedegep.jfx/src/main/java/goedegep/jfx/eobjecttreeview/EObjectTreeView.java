@@ -444,7 +444,7 @@ public class EObjectTreeView extends TreeView<EObjectTreeItemContent> implements
       }
 
     };
-    eObject.eAdapters().add(eContentAdapter);    
+//    eObject.eAdapters().add(eContentAdapter);    
   }
   
   public EObjectTreeItem findTreeItem(Object object) {

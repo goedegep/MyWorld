@@ -2,6 +2,7 @@ package goedegep.media.mediadb.app.guifx;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -26,8 +27,7 @@ import goedegep.media.mediadb.model.MyTrackInfo;
 import goedegep.media.mediadb.model.Player;
 import goedegep.media.mediadb.model.Track;
 import goedegep.media.mediadb.model.TrackReference;
-import goedegep.util.datetime.ClockTime;
-import goedegep.util.datetime.ClockTimeFormat;
+import goedegep.util.datetime.DurationFormat;
 import javafx.collections.FXCollections;
 import javafx.scene.control.TableCell;
 
@@ -144,7 +144,7 @@ class DiscTracksTableDescriptor extends EObjectTableDescriptor<TrackReference> {
       }),
       new EObjectTableColumnDescriptorCustom<TrackReference>(null, "Duration", null, true, true, column -> {
         TableCell<TrackReference, Object> cell = new TableCell<>() {
-          private ClockTimeFormat format = new ClockTimeFormat();
+          private DurationFormat format = new DurationFormat();
 
           @Override
           protected void updateItem(Object item, boolean empty) {
@@ -160,7 +160,7 @@ class DiscTracksTableDescriptor extends EObjectTableDescriptor<TrackReference> {
                 setText(null);
               } else {
                 if (track.isSetDuration()) {
-                  ClockTime clockTime = new ClockTime(track.getDuration());
+                  Duration clockTime = Duration.ofSeconds(track.getDuration());
                   setText(format.format(clockTime));
                 } else {
                   setText(null);

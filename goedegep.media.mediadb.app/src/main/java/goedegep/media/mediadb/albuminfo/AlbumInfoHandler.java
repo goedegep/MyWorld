@@ -5,6 +5,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
@@ -31,8 +32,7 @@ import goedegep.media.mediadb.model.Track;
 import goedegep.media.mediadb.model.TrackPart;
 import goedegep.media.mediadb.model.TrackReference;
 import goedegep.media.mediadb.model.util.MediaDbUtil;
-import goedegep.util.datetime.ClockTime;
-import goedegep.util.datetime.ClockTimeFormat;
+import goedegep.util.datetime.DurationFormat;
 import goedegep.util.datetime.FlexDate;
 import goedegep.util.datetime.FlexDateFormat;
 import goedegep.util.file.FileUtils;
@@ -56,7 +56,7 @@ public class AlbumInfoHandler extends AbstractValidatingHandler<AlbumInfoHandler
   private static MediadbFactory FACTORY = MediadbFactory.eINSTANCE;
   // Formatters/parsers
   private static final FlexDateFormat  FDF = new FlexDateFormat();
-  private static final ClockTimeFormat CTF = new ClockTimeFormat(true, true);
+  private static final DurationFormat DF = new DurationFormat(true);
 
   private static final String ALBUMS_TAG = "Albums";
   private static final String ALBUM_TAG = "Album";
@@ -1094,8 +1094,8 @@ public class AlbumInfoHandler extends AbstractValidatingHandler<AlbumInfoHandler
    * @return The clockTimeString translated to seconds.
    */
   private int getDurationInSeconds(String clockTimeString) {
-    ClockTime clockTime = (ClockTime) CTF.parse(clockTimeString);
-    return (int) clockTime.getTimeInSeconds();
+    Duration clockTime = (Duration) DF.parse(clockTimeString);
+    return (int) clockTime.getSeconds();
   }
   
   /**
@@ -1737,8 +1737,8 @@ public class AlbumInfoHandler extends AbstractValidatingHandler<AlbumInfoHandler
     // Duration
     if (track.isSetDuration()) {
       int durationInSeconds = track.getDuration();
-      ClockTime duration = new ClockTime(durationInSeconds);
-      String durationText = CTF.format(duration);
+      Duration duration = Duration.ofSeconds(durationInSeconds);
+      String durationText = DF.format(duration);
       output.append(SgmlUtil.createElement(indent, getXmlNameSpaceName(), TRACK_DURATION_TAG, durationText)).append(NEWLINE);
     }
     

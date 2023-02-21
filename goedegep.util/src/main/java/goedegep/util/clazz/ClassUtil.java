@@ -19,6 +19,7 @@ public class ClassUtil {
   
   /**
    * A static version of toString. It lists the values of all fields.
+   * 
    * @return The values of all fields as a String.
    */
   public static String staticFieldsToString(Class<?> aClass) {

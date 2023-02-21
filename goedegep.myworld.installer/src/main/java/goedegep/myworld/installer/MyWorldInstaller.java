@@ -979,7 +979,7 @@ public class MyWorldInstaller extends JfxApplication {
 
     if (Files.exists(installationPathPrev)) {
       appendOutputTextLine("There already exists a previous version, which will now be removed.");
-      DirectoryUtils.recursivelyDeleteDirectory(installationPathPrev);
+      org.apache.commons.io.FileUtils.deleteDirectory(installationPathPrev.toFile());
     }
 
     if (Files.exists(destinationPath)) {

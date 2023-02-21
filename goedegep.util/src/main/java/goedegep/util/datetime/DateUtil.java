@@ -7,13 +7,15 @@ import java.util.GregorianCalendar;
 import java.util.logging.Logger;
 
 /**
- * This is a utility class with date (Date, LocalDate) related methods.
- * @author Peter
+ * This is a utility class with date (Date, LocalDate, FlexDate) related methods.
  *
  */
 public final class DateUtil {
   private static final Logger LOGGER = Logger.getLogger(DateUtil.class.getName());
   
+  /**
+   * A private constructor as this is a utility class.
+   */
   private DateUtil() {
   }
   
@@ -58,24 +60,44 @@ public final class DateUtil {
     return (new GregorianCalendar(year, month - 1, day)).getTime();
   }
   
+  /**
+   * Get the year value of a <code>Date</code>
+   * @param date the <code>Date</code>
+   * @return the year value of <code>date</code>
+   */
   public static int getDateYear(Date date) {
     Calendar calendar = Calendar.getInstance();
     calendar.setTime(date);
     return calendar.get(Calendar.YEAR);
   }
   
+  /**
+   * Get the month value of a <code>Date</code>
+   * @param date the <code>Date</code>
+   * @return the month value of <code>date</code>
+   */
   public static int getDateMonth(Date date) {
     Calendar calendar = Calendar.getInstance();
     calendar.setTime(date);
     return calendar.get(Calendar.MONTH) + 1;
   }
   
+  /**
+   * Get the day of the month value of a <code>Date</code>
+   * @param date the <code>Date</code>
+   * @return the day of the month value of <code>date</code>
+   */
   public static int getDayOfMonth(Date date) {
     Calendar calendar = Calendar.getInstance();
     calendar.setTime(date);
     return calendar.get(Calendar.DAY_OF_MONTH);
   }
   
+  /**
+   * Create a copy of a <code>Date</code>, but where the time on that date is zero.
+   * @param date the <code>Date</code> to make a 'copy' of .
+   * @returna a copy of <code>date</code>, but where the time on that date is zero.
+   */
   public static Date createDateWithoutTimeFromDate(Date date) {
     Calendar calendar = Calendar.getInstance();
     calendar.setTime(date);
@@ -83,10 +105,24 @@ public final class DateUtil {
     return createDate(calendar.get(Calendar.DAY_OF_MONTH), calendar.get(Calendar.MONTH) + 1, calendar.get(Calendar.YEAR));
   }
   
+  /**
+   * Get the number of full years in a specific period.
+   * 
+   * @param periodStart the first <code>Date</code> of the period.
+   * @param periodEnd the last <code>Date</code> of the period.
+   * @return the number of full years in the period from <code>periodStart</code> until (including) <code>periodEnd</code>.
+   */
   public static int fullYearsInPeriod(Date periodStart, Date periodEnd) {
     return fullYearsInPeriod(dateToLocalDate(periodStart), dateToLocalDate(periodEnd));
   }
   
+  /**
+   * Get the number of full years in a specific period.
+   * 
+   * @param periodStart the first <code>LocalDate</code> of the period.
+   * @param periodEnd the last <code>LocalDate</code> of the period.
+   * @return the number of full years in the period from <code>periodStart</code> until (including) <code>periodEnd</code>.
+   */
   public static int fullYearsInPeriod(LocalDate periodStart, LocalDate periodEnd) {
     int years = periodStart.getYear() - periodEnd.getYear();
     LOGGER.fine("years = " + years);
@@ -100,17 +136,12 @@ public final class DateUtil {
   }
 
   /**
+   * Get the year fraction of a specific period.
    * 
-   * @param periodStart
-   * @param periodEnd
-   * @return
-   * 
-   * @deprecated
+   * @param periodStart the first <code>LocalDate</code> of the period.
+   * @param periodEnd the last <code>LocalDate</code> of the period.
+   * @return the fraction of a year, as a value between 0 and 1, for the specified period.
    */
-  public static double getYearFraction(Date periodStart, Date periodEnd) {
-    return getYearFraction(dateToLocalDate(periodStart), dateToLocalDate(periodEnd));
-  }
-
   public static double getYearFraction(LocalDate periodStart, LocalDate periodEnd) {    
     double days;
     int startDay = periodStart.getDayOfYear();
@@ -119,14 +150,20 @@ public final class DateUtil {
     if (startDay <= endDay) {
       days = endDay - startDay;
     } else {
-      days = endDay + (360 - startDay);
+      days = endDay + (365 - startDay);
     }
     
-    double fraction = days / 360;
+    double fraction = days / 365;
     LOGGER.fine("fraction = " + fraction);
     return fraction;
   }
   
+  /**
+   * Get the remaining fraction of a month.
+   * 
+   * @param startDate the start date of the fraction.
+   * @return the fraction of the month, as a value between 0 and 1.
+   */
   public static double getRemainingMonthFraction(Date startDate) {
     Calendar calendar = Calendar.getInstance();
     calendar.setTime(startDate);

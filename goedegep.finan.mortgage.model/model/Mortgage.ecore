@@ -289,4 +289,8 @@
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="rate" eType="ecore:EDataType ../../goedegep.types.model/model/types.ecore#//EFixedPointValue"
         unsettable="true"/>
   </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="MortgageYearlyOverviews">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="yearlyOverviews" upperBound="-1"
+        eType="#//MortgageYearlyOverview" containment="true"/>
+  </eClassifiers>
 </ecore:EPackage>
