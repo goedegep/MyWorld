@@ -16,7 +16,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
-import com.google.common.geometry.S2LatLng;
 import org.apache.commons.imaging.ImageReadException;
 import org.eclipse.emf.common.util.TreeIterator;
 import org.eclipse.emf.ecore.EObject;
@@ -454,19 +453,31 @@ public class VacationsUtils {
   public static Path getVacationPhotosFolderPath(Vacation vacation) {
     String vacationPhotosFolder = vacation.getPictures();
     
-    if (vacationPhotosFolder == null) {
-      return null;
-    }
+    if (vacationPhotosFolder != null) {
+      vacationPhotosFolder = vacationPhotosFolder.trim();
+      if (!vacationPhotosFolder.isEmpty()) {
+        return Paths.get(vacationPhotosFolder);
+      }
+    }    
     
-    vacationPhotosFolder = vacationPhotosFolder.trim();
-    
-    if ((vacationPhotosFolder != null)  &&  !vacationPhotosFolder.isEmpty()) {
-      return Paths.get(vacationPhotosFolder);
-    }
-    
+    /*
+     *  'Pictures' attribute not set (at least not to a sensible value). Try to create the default folder name.
+     *  For this the following is needed:
+     *  - a valid Path to the main folder for vacation photos.
+     *  - a valid vacation date
+     *  - a valid vacation title
+     */
     Path vacationsPhotosFolderPath = getVacationsPhotosFolderPath();
     
     if (vacationsPhotosFolderPath == null) {
+      return null;
+    }
+    
+    if (vacation.getDate() == null) {
+      return null;
+    }
+    
+    if (vacation.getTitle() == null  ||  vacation.getTitle().isEmpty()) {
       return null;
     }
     

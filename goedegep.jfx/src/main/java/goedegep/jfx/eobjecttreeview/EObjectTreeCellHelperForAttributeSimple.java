@@ -248,7 +248,10 @@ public class EObjectTreeCellHelperForAttributeSimple extends EObjectTreeCellHelp
     case FOLDER:
       folderChooser = new DirectoryChooser();
       if (itemDescriptor.getInitialDirectoryNameFunction() != null) {
-        folderChooser.setInitialDirectory(new File(itemDescriptor.getInitialDirectoryNameFunction().apply(eObjectTreeCell)));
+        String initialDirectoryName = itemDescriptor.getInitialDirectoryNameFunction().apply(eObjectTreeCell);
+        if (initialDirectoryName != null) {
+          folderChooser.setInitialDirectory(new File(initialDirectoryName));
+        }
       }
       File folder = folderChooser.showDialog(null);
       if (folder != null) {

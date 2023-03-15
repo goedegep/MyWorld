@@ -78,7 +78,7 @@ public class TracksTable extends EObjectTable<Track> {
    * @param trackDiscLocationMap a map that relates tracks to their location on disc.
    */
   public TracksTable(CustomizationFx customization, MediaDbWindow mediaDbWindow, MediaDb mediaDb, Map<Track, Path> trackDiscLocationMap) {
-    super(customization, MediadbPackage.eINSTANCE.getTrack(), new TracksTableDescriptor(customization, trackDiscLocationMap), mediaDb, mediaDb.getTracks());
+    super(customization, MediadbPackage.eINSTANCE.getTrack(), new TracksTableDescriptor(customization, trackDiscLocationMap), mediaDb, MediadbPackage.eINSTANCE.getMediaDb_Tracks());
     
 //    this.mediaDbWindow = mediaDbWindow;
     this.trackDiscLocationMap = trackDiscLocationMap;

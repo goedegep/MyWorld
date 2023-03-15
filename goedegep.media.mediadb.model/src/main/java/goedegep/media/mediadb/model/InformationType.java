@@ -89,7 +89,16 @@ public enum InformationType implements Enumerator {
    * @generated
    * @ordered
    */
-  AIFF(8, "AIFF", "AIFF");
+  AIFF(8, "AIFF", "AIFF"),
+  /**
+  * The '<em><b>DSF</b></em>' literal object.
+  * <!-- begin-user-doc -->
+  * <!-- end-user-doc -->
+  * @see #DSF_VALUE
+  * @generated
+  * @ordered
+  */
+  DSF(8, "DSF", "DSF");
 
   /**
    * The '<em><b>NOT SET</b></em>' literal value.
@@ -192,13 +201,24 @@ public enum InformationType implements Enumerator {
   public static final int AIFF_VALUE = 8;
 
   /**
+   * The '<em><b>DSF</b></em>' literal value.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #DSF
+   * @model
+   * @generated
+   * @ordered
+   */
+  public static final int DSF_VALUE = 8;
+
+  /**
    * An array of all the '<em><b>Information Type</b></em>' enumerators.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    */
   private static final InformationType[] VALUES_ARRAY = new InformationType[] { NOT_SET, MP3, VINYL_ANALOG, M2TS, FLAC,
-      WAV, APE, AIFF, };
+      WAV, APE, AIFF, DSF, };
 
   /**
    * A public read-only list of all the '<em><b>Information Type</b></em>' enumerators.

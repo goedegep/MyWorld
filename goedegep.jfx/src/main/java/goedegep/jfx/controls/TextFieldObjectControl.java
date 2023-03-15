@@ -29,9 +29,9 @@ import javafx.scene.control.Tooltip;
  *
  * @param <T> The object type represented by this control.
  */
-public class TextFieldObjectInput<T> extends TextField implements ObjectControl<T> {
+public class TextFieldObjectControl<T> extends TextField implements ObjectControl<T> {
   @SuppressWarnings("unused")
-  private static final Logger         LOGGER = Logger.getLogger(TextFieldObjectInput.class.getName());
+  private static final Logger         LOGGER = Logger.getLogger(TextFieldObjectControl.class.getName());
   
   private StringConverterAndChecker<T> stringConverterAndChecker = null;
   
@@ -55,7 +55,7 @@ public class TextFieldObjectInput<T> extends TextField implements ObjectControl<
    * @param toolTipText An optional ToolTip text.
    * @param dummy a dummy parameter, to have a different signature than TextFieldObjectInput(String text, double width, boolean isOptional, String toolTipText). (I know it's bad)
    */
-  public TextFieldObjectInput(T initialValue, double width, boolean isOptional, String toolTipText, boolean dummy) {
+  public TextFieldObjectControl(T initialValue, double width, boolean isOptional, String toolTipText, boolean dummy) {
     this((StringConverterAndChecker<T>) null, (String) null, width, isOptional, toolTipText);
     
     setText(objectToString(initialValue));
@@ -69,7 +69,7 @@ public class TextFieldObjectInput<T> extends TextField implements ObjectControl<
    * @param isOptional Indicates whether the control is optional (if true) or mandatory.
    * @param toolTipText An optional ToolTip text.
    */
-  public TextFieldObjectInput(StringConverterAndChecker<T> stringConverter, T initialValue, double width, boolean isOptional, String toolTipText) {
+  public TextFieldObjectControl(StringConverterAndChecker<T> stringConverter, T initialValue, double width, boolean isOptional, String toolTipText) {
     this(stringConverter, (String) null, width, isOptional, toolTipText);
 
     setText(objectToString(initialValue));
@@ -84,7 +84,7 @@ public class TextFieldObjectInput<T> extends TextField implements ObjectControl<
    * @param isOptional Indicates whether the control is optional (if true) or mandatory.
    * @param toolTipText An optional ToolTip text.
    */
-  public TextFieldObjectInput(String text, double width, boolean isOptional, String toolTipText) {
+  public TextFieldObjectControl(String text, double width, boolean isOptional, String toolTipText) {
     this(null, text, width, isOptional, toolTipText);
   }
   
@@ -96,7 +96,7 @@ public class TextFieldObjectInput<T> extends TextField implements ObjectControl<
    * @param isOptional Indicates whether the control is optional (if true) or mandatory.
    * @param toolTipText An optional ToolTip text.
    */
-  public TextFieldObjectInput(StringConverterAndChecker<T> stringConverter, String text, double width, boolean isOptional, String toolTipText) {
+  public TextFieldObjectControl(StringConverterAndChecker<T> stringConverter, String text, double width, boolean isOptional, String toolTipText) {
     super(text);
     
     if (stringConverter != null) {
@@ -115,20 +115,7 @@ public class TextFieldObjectInput<T> extends TextField implements ObjectControl<
     
     textProperty().addListener(new ChangeListener<String>() {
       public void changed(final ObservableValue<? extends String> observableValue, final String oldValue, final String newValue) {
-        if (isEnteredDataValid(null)) {
-          isValidProperty.set(true);
-          setStyle("-fx-text-fill: black;");
-        } else {
-          if (isOptional()  &&  !getIsFilledIn()) {
-            isValidProperty.set(true);
-          } else {
-            isValidProperty.set(false);
-          }
-          setStyle("-fx-text-fill: red;");
-        }
-        
-        objectValueProperty.setValue(getObjectValue());
-        isFilledInProperty.setValue(getIsFilledIn());
+        updateForNewText();
         
         notifyListeners();
       }
@@ -136,6 +123,31 @@ public class TextFieldObjectInput<T> extends TextField implements ObjectControl<
     
     focusedProperty().addListener(this::handleFocusChanged);
 
+    updateForNewText();
+  }
+  
+  /**
+   * Handle a new text value.
+   */
+  private void updateForNewText() {
+    if (isEnteredDataValid(null)) {
+      if (getIsFilledIn()  ||  isOptional()) {
+        isValidProperty.set(true);
+      } else {
+        isValidProperty.set(false);
+      }
+      setStyle("-fx-text-fill: black;");
+    } else {
+      if (isOptional()  &&  !getIsFilledIn()) {
+        isValidProperty.set(true);
+      } else {
+        isValidProperty.set(false);
+        setStyle("-fx-text-fill: red;");
+      }
+    }
+    
+    objectValueProperty.setValue(getObjectValue());
+    isFilledInProperty.setValue(getIsFilledIn());
   }
   
   private void handleFocusChanged(ObservableValue<? extends Boolean> observableValue, Boolean oldValue, Boolean newValue) {

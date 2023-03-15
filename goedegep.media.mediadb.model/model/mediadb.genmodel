@@ -39,6 +39,7 @@
       <genEnumLiterals ecoreEnumLiteral="mediadb.ecore#//InformationType/WAV"/>
       <genEnumLiterals ecoreEnumLiteral="mediadb.ecore#//InformationType/APE"/>
       <genEnumLiterals ecoreEnumLiteral="mediadb.ecore#//InformationType/AIFF"/>
+      <genEnumLiterals ecoreEnumLiteral="mediadb.ecore#//InformationType/DSF"/>
     </genEnums>
     <genEnums typeSafeEnumCompatible="false" ecoreEnum="mediadb.ecore#//Collection">
       <genEnumLiterals ecoreEnumLiteral="mediadb.ecore#//Collection/EASY_LISTENING"/>

@@ -19,7 +19,7 @@ import javafx.scene.layout.Background;
 import javafx.util.StringConverter;
 
 /**
- * This class provides a table to list (music) Albums
+ * This class provides a table to list Subjects.
  */
 public class SubjectsTable extends EObjectTable<Subject> {
   @SuppressWarnings("unused")
@@ -32,8 +32,8 @@ public class SubjectsTable extends EObjectTable<Subject> {
    * @param filmDbWindow a reference to the film database window
    * @param mediaDb the media database from which the albums are listed
    */
-  public SubjectsTable(CustomizationFx customization, List<Subject> subjects) {
-    super(customization, MediadbPackage.eINSTANCE.getSubject(), new SubjectsTableDescriptor(customization), null, subjects);
+  public SubjectsTable(CustomizationFx customization) {
+    super(customization, MediadbPackage.eINSTANCE.getSubject(), new SubjectsTableDescriptor(customization), null);
         
     setTableMenuButtonVisible(true);
     Background background = customization.getComponentFactoryFx().getPanelBackground();

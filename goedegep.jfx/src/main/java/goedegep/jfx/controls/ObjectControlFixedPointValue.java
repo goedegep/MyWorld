@@ -12,7 +12,7 @@ import goedegep.util.fixedpointvalue.FixedPointValue;
  * A valid factor range can be set by specifying a minimum and maxim factor, see {@link #setValidFactorRange}.
  * By default both minimumFactor and maximumFactor are set to null, which means no restriction.
  */
-public class ObjectControlFixedPointValue extends TextFieldObjectInput<FixedPointValue> {
+public class ObjectControlFixedPointValue extends TextFieldObjectControl<FixedPointValue> {
   @SuppressWarnings("unused")
   private static final Logger         LOGGER = Logger.getLogger(ObjectControlFixedPointValue.class.getName());
 //  private static final FixedPointValueFormat FPVF = new FixedPointValueFormat();

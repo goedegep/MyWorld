@@ -230,7 +230,7 @@ public class PropertiesWindow extends JfxStage {
    * @return the created propertiesTable.
    */
   private EObjectTable<Property> createPropertiesTable() {
-    propertiesTable = new EObjectTable<Property>(customization, INVOICES_AND_PROPERTIES_PACKAGE.getInvoice(), new PropertiesTableDescriptor(invoicesAndPropertiesMenuWindow), invoicesAndProperties.getProperties(), invoicesAndProperties.getProperties().getProperties());
+    propertiesTable = new EObjectTable<Property>(customization, INVOICES_AND_PROPERTIES_PACKAGE.getInvoice(), new PropertiesTableDescriptor(invoicesAndPropertiesMenuWindow), invoicesAndProperties.getProperties(), INVOICES_AND_PROPERTIES_PACKAGE.getProperties_Properties());
         
     return propertiesTable;
   }

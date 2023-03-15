@@ -20,6 +20,7 @@ import goedegep.jfx.PropertyDescriptorsEditorFx;
 import goedegep.jfx.browser.BrowserWindow;
 import goedegep.jfx.eobjecttable.EObjectTable;
 import goedegep.media.app.MediaRegistry;
+import goedegep.media.mediadb.albumeditor.guifx.AlbumEditor;
 import goedegep.media.mediadb.albuminfo.AlbumInfoFilesReader;
 import goedegep.media.mediadb.app.AlbumDiscLocationInfo;
 import goedegep.media.mediadb.app.MediaDbAppUtil;
@@ -259,8 +260,8 @@ public class MediaDbWindow extends JfxStage {
         LOGGER.info("notifierEObject: " + notifierEObject.toString());
         Object feature = notification.getFeature();
           if (MEDIA_DB_PACKAGE.getMediaDb_Albums().equals(feature)) {
-            albumsTable.setObjects(mediaDb, mediaDb.getAlbums());
-            tracksTable.setObjects(mediaDb, mediaDb.getTracks());
+            albumsTable.setObjects(mediaDb, MediadbPackage.eINSTANCE.getMediaDb_Albums());
+            tracksTable.setObjects(mediaDb, MediadbPackage.eINSTANCE.getMediaDb_Tracks());
           }
       }
 
@@ -550,7 +551,7 @@ public class MediaDbWindow extends JfxStage {
    * Open the AlbumDetailsEditor to enter a new album.
    */
   void openAlbumDetailsEditor() {
-    new AlbumDetailsEditor(customization, mediaDb, trackDiscLocationMap);
+    new AlbumEditor(customization, mediaDb, trackDiscLocationMap);
 //    AlbumDetailsEditorFx albumDetailsEditor = new AlbumDetailsEditorFx(customization, mediaDb);
   }
   /**

@@ -75,7 +75,7 @@ public class VideosTable extends EObjectTable<Video> {
    * @param mediaDb the media database from which the albums are listed
    */
   public VideosTable(CustomizationFx customization, VideoDbWindow filmDbWindow, MediaDb mediaDb) {
-    super(customization, MediadbPackage.eINSTANCE.getVideo(), new VideosTableDescriptor(customization), mediaDb, mediaDb.getVideos());
+    super(customization, MediadbPackage.eINSTANCE.getVideo(), new VideosTableDescriptor(customization), mediaDb, MediadbPackage.eINSTANCE.getMediaDb_Videos());
     
     this.customization = customization;
     this.mediaDb = mediaDb;

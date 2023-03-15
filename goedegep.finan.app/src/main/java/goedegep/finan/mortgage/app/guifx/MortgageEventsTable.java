@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 
@@ -27,12 +26,12 @@ import javafx.scene.control.TableCell;
 
 public class MortgageEventsTable extends EObjectTable<MortgageEvent> {
   
-  public MortgageEventsTable(CustomizationFx customization, EObject containingObject, EList<MortgageEvent> mortgageEvents) {
-    super(customization, MortgagePackage.eINSTANCE.getMortgageEvent(), new MortgageEventsTableDescriptor(), containingObject, mortgageEvents);
+  public MortgageEventsTable(CustomizationFx customization) {
+    super(customization, MortgagePackage.eINSTANCE.getMortgageEvent(), new MortgageEventsTableDescriptor(), null);
   }
   
-  public void setMortgageEvents(EObject containingObject, List<MortgageEvent> mortgageEvents) {
-    this.setObjects(containingObject, mortgageEvents);
+  public void setMortgageEvents(List<MortgageEvent> mortgageEvents) {
+    this.setObjects(mortgageEvents);
   }
 }
 

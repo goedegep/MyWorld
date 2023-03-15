@@ -63,9 +63,6 @@ public class PCToolsMenuWindow extends JfxStage {
         }
       }
       
-//      if (fileToOpen != null) {
-//        showGPXWindow(fileToOpen);
-//      }
     });
     
     show();

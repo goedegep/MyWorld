@@ -99,7 +99,7 @@ public class EventsWindow extends JfxStage {
     setY(20);
         
     if (events != null) {
-      eventsTable.setObjects(false, events, EventsPackage.eINSTANCE.getEvents_Events());
+      eventsTable.setObjects(events, EventsPackage.eINSTANCE.getEvents_Events());
 //      eventsEditor.setEvents(events);
     }
     
@@ -134,7 +134,7 @@ public class EventsWindow extends JfxStage {
     
     VBox vBox = componentFactory.createVBox(12.0);
     // Events EObjectTable
-    eventsTable = new EventsTable(customization, null);
+    eventsTable = new EventsTable(customization);
 //    eventsTable.addObjectSelectionListener(this::handleNewTableItemSelected);
     vBox.getChildren().add(eventsTable);
     

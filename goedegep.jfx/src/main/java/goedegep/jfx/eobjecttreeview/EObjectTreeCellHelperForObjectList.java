@@ -235,7 +235,8 @@ public class EObjectTreeCellHelperForObjectList extends EObjectTreeCellHelperAbs
     
     eObjectList.add(eObject);
     
-    eObjectTreeItem.rebuildChildren();
+    ((EObjectTreeItem) eObjectTreeItem.getParent()).rebuildChildren();
+//    eObjectTreeItem.rebuildChildren();
     
     LOGGER.info("=>");
   }

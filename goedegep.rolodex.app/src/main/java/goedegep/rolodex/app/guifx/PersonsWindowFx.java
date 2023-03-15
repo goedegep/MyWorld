@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
-import org.eclipse.emf.common.util.EList;
+import org.eclipse.emf.ecore.EReference;
 
 import goedegep.appgen.TableRowOperation;
 import goedegep.appgen.TableRowOperationDescriptor;
@@ -83,8 +83,6 @@ public class PersonsWindowFx extends JfxStage {
   private CheckMenuItem  showArchivedItems;
   private CheckMenuItem  showPersonIdColumn;
   
-  private EList<Person> persons;
-  
   /**
    * Constructor
    * 
@@ -114,7 +112,7 @@ public class PersonsWindowFx extends JfxStage {
     
     personsTable.addObjectSelectionListener((source, person) -> {
         if (person != null) {
-          previousAddressesTable.setObjects(person, person.getPreviousAddresses());
+          previousAddressesTable.setObjects(person, RolodexPackage.eINSTANCE.getAddressHolder_PreviousAddresses());
         } else {
           previousAddressesTable.setObjects(null, null);
         }
@@ -215,8 +213,7 @@ public class PersonsWindowFx extends JfxStage {
    * @return the created personsTable
    */
   private EObjectTable<Person> createPersonsTable() {
-    persons = rolodex.getPersonList().getPersons();
-    personsTable = new EObjectTable<Person>(customization, ROLODEX_PACKAGE.getPerson(), new PersonsTableDescriptor(rolodex), rolodex.getPersonList(), persons);
+    personsTable = new EObjectTable<Person>(customization, ROLODEX_PACKAGE.getPerson(), new PersonsTableDescriptor(rolodex), rolodex.getPersonList(), RolodexPackage.eINSTANCE.getPersonList_Persons());
                 
     return personsTable;
   }
@@ -227,7 +224,7 @@ public class PersonsWindowFx extends JfxStage {
    * @return the created previousAddressesTable
    */
   private EObjectTable<AddressForPeriod> createPreviousAddressesTable() {
-    previousAddressesTable = new EObjectTable<AddressForPeriod>(customization, ROLODEX_PACKAGE.getAddressForPeriod(), new AddressForPeriodTableDescriptor(), null, null);
+    previousAddressesTable = new EObjectTable<AddressForPeriod>(customization, ROLODEX_PACKAGE.getAddressForPeriod(), new AddressForPeriodTableDescriptor(), null, (EReference) null);
                 
     return previousAddressesTable;
   }

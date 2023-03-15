@@ -9,7 +9,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
-import org.eclipse.emf.common.util.EList;
+import org.eclipse.emf.ecore.EAttribute;
+import org.eclipse.emf.ecore.EStructuralFeature;
 
 import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.eobjecttable.EObjectTable;
@@ -21,6 +22,7 @@ import goedegep.jfx.eobjecttable.EObjectTableDescriptor;
 import goedegep.media.app.MediaRegistry;
 import goedegep.media.mediadb.model.Artist;
 import goedegep.media.mediadb.model.Collection;
+import goedegep.media.mediadb.model.Disc;
 import goedegep.media.mediadb.model.MediadbPackage;
 import goedegep.media.mediadb.model.MediumInfo;
 import goedegep.media.mediadb.model.MyTrackInfo;
@@ -30,6 +32,8 @@ import goedegep.media.mediadb.model.TrackReference;
 import goedegep.util.datetime.DurationFormat;
 import javafx.collections.FXCollections;
 import javafx.scene.control.TableCell;
+import javafx.scene.control.TableColumn;
+import javafx.util.StringConverter;
 
 /**
  * This class provides a table which lists the tracks of a single disc of an album.
@@ -54,11 +58,117 @@ public class DiscTracksTable extends EObjectTable<TrackReference> {
    * 
    * @param trackReferences the items to be shown in the table.
    */
-  public DiscTracksTable(CustomizationFx customization, EList<TrackReference> trackReferences, Map<Track, Path> trackDiscLocationMap) {
-    super(customization, MediadbPackage.eINSTANCE.getTrackReference(), new DiscTracksTableDescriptor(), null, trackReferences);
+  public DiscTracksTable(CustomizationFx customization, Disc disc, Map<Track, Path> trackDiscLocationMap) {
+    super(customization, MediadbPackage.eINSTANCE.getTrackReference(), new DiscTracksTableDescriptor(), disc, MediadbPackage.eINSTANCE.getDisc_TrackReferences());
+    for (TableColumn<TrackReference, ?> column: getColumns()) {
+      boolean hide = false;
+      switch (column.getText()) {
+      case "Artist":
+        hide = allItemsNullOrEmpty(MediadbPackage.eINSTANCE.getTrack_Artist());
+        break;
+        
+      case "Duration":
+        hide = allItemsNullOrEmpty(MediadbPackage.eINSTANCE.getTrack_Duration());
+        break;
+        
+      case "Players":
+        hide = allItemsNullOrEmpty(MediadbPackage.eINSTANCE.getTrack_Players());
+        break;
+        
+      case "Author":
+        hide = allItemsNullOrEmpty(MediadbPackage.eINSTANCE.getTrack_Authors());
+        break;
+        
+      case "Collection":
+        hide = hideCollection();
+        break;
+        
+      case "Bonus track":
+        hide = hideBonusTrack();
+        break;
+        
+      case "Original track reference":
+        hide = hideOriginalTrackReference();
+        break;
+      }
+      if (hide) {
+        column.setVisible(false);
+      }
+    }
+
     this.setEditable(true);
     
     this.trackDiscLocationMap = trackDiscLocationMap;
+  }
+  
+  /**
+   * Check whether the Collection column shall be hidden?
+   * <p>
+   * This is the fact if all values are NOT_SET, or if all values are the same.
+   * 
+   * @return true if the Artist column shall be hidden, false otherwise.
+   */
+  private boolean hideCollection() {
+    for (TrackReference trackReference: getItems()) {
+      MyTrackInfo myTrackInfo = trackReference.getMyTrackInfo();
+      if (myTrackInfo.getCollection() != null  &&  myTrackInfo.getCollection() != Collection.NOT_SET) {
+        return false;
+      }
+    }
+    
+    return true;
+  }
+  
+  /**
+   * Check whether the Bonus track column shall be hidden?
+   * <p>
+   * This is the fact if all values are null, or if all values are the same.
+   * 
+   * @return true if the Artist column shall be hidden, false otherwise.
+   */
+  private boolean hideBonusTrack() {
+    for (TrackReference trackReference: getItems()) {
+      if (trackReference.getBonusTrack() != null) {
+        return false;
+      }
+    }
+    
+    return true;
+  }
+  
+  /**
+   * Check whether the Original track reference column shall be hidden?
+   * <p>
+   * This is the fact if all values are null, or if all values are the same.
+   * 
+   * @return true if the Artist column shall be hidden, false otherwise.
+   */
+  private boolean hideOriginalTrackReference() {
+    for (TrackReference trackReference: getItems()) {
+      if (trackReference.getOriginalAlbumTrackReference() != null) {
+        return false;
+      }
+    }
+    
+    return true;
+  }
+  
+  private boolean allItemsNullOrEmpty(EStructuralFeature attribute) {
+    for (TrackReference trackReference: getItems()) {
+      Track track = trackReference.getTrack();
+      Object value = track.eGet(attribute);
+      if (value != null) {
+        if (value instanceof List<?> list) {
+          if (!list.isEmpty()) {
+            return false;
+          }
+        } else {
+          return false;
+        }
+      }
+    }
+    
+    return true;
   }
 
   @Override
@@ -136,6 +246,29 @@ class DiscTracksTableDescriptor extends EObjectTableDescriptor<TrackReference> {
               TrackReference trackReference = (TrackReference) item;
               Track track = trackReference.getTrack();
               setText(track.getTitle());
+            }
+          }
+        };
+
+        return cell;
+      }),
+      new EObjectTableColumnDescriptorCustom<TrackReference>(null, "Artist", null, true, true, column -> {
+        TableCell<TrackReference, Object> cell = new TableCell<>() {
+
+          @Override
+          protected void updateItem(Object item, boolean empty) {
+            super.updateItem(item, empty);
+            if(empty || (item == null)) {
+              setText(null);
+            }
+            else {
+              setText(null);
+              TrackReference trackReference = (TrackReference) item;
+              Track track = trackReference.getTrack();
+              Artist trackArtist = track.getArtist();
+              if (trackArtist != null) {
+                setText(trackArtist.getName());
+              }
             }
           }
         };
@@ -247,35 +380,24 @@ class DiscTracksTableDescriptor extends EObjectTableDescriptor<TrackReference> {
 
         return cell;
       }),
-//      new EObjectTableColumnDescriptorCustom<TrackReference>(null, "Collection", null, true, true, column -> {
-//        TableCell<TrackReference, Object> cell = new TableCell<>() {
-//
-//          @Override
-//          protected void updateItem(Object item, boolean empty) {            
-//            super.updateItem(item, empty);
-//            if(empty || (item == null)) {
-//              setText(null);
-//            }
-//            else {
-//              setText(null);
-//              TrackReference trackReference = (TrackReference) item;
-//              if (trackReference.isSetMyTrackInfo()) {
-//                MyTrackInfo myTrackInfo = trackReference.getMyTrackInfo();
-//                
-//                Collection collection = myTrackInfo.getCollection();
-//                if (collection != Collection.NOT_SET) {
-//                  setText(collection.getLiteral());
-//                }
-//              }
-//            }
-//          }
-//        };
-//
-//        return cell;
-//      }),
       new EObjectTableColumnDescriptorChoiceBox<TrackReference>(
           Arrays.asList(MEDIA_DB_PACKAGE.getTrackReference_MyTrackInfo(), MEDIA_DB_PACKAGE.getMyTrackInfo_Collection()),
-          "Collection", 300, true, true, FXCollections.observableList(Arrays.asList((Object[]) Collection.values())), null),
+          "Collection", 300, true, true, FXCollections.observableList(Arrays.asList((Object[]) Collection.values())), new StringConverter<Object>() {
+
+            @Override
+            public String toString(Object object) {
+              if (object instanceof Collection collection) {
+                if (!collection.equals(Collection.NOT_SET)) {
+                  return collection.getLiteral();
+                }
+              }
+              return null;
+            }
+
+            @Override
+            public Object fromString(String string) {
+              return null;
+            }}),
       new EObjectTableColumnDescriptorCustom<TrackReference>(null, "Bonus track", null, true, true, column -> {
         TableCell<TrackReference, Object> cell = new TableCell<>() {
 

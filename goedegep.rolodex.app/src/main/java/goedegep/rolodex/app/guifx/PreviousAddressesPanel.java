@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.eclipse.emf.ecore.EReference;
+
 import goedegep.appgen.TableRowOperation;
 import goedegep.appgen.TableRowOperationDescriptor;
 import goedegep.jfx.ComponentFactoryFx;
@@ -43,7 +45,7 @@ public class PreviousAddressesPanel extends VBox {
 
     componentFactory = customization.getComponentFactoryFx();
 
-    previousAddressesTable = new EObjectTable<AddressForPeriod>(customization, ROLODEX_PACKAGE.getAddressForPeriod(), new PreviousAddressesTableDescriptor(), null, null);
+    previousAddressesTable = new EObjectTable<AddressForPeriod>(customization, ROLODEX_PACKAGE.getAddressForPeriod(), new PreviousAddressesTableDescriptor(), null, (EReference) null);
 
     createGUI();
   }
@@ -87,7 +89,7 @@ public class PreviousAddressesPanel extends VBox {
 
   public void setAddressHolder(AddressHolder addressHolder) {
     this.addressHolder = addressHolder;
-    previousAddressesTable.setObjects(addressHolder, addressHolder.getPreviousAddresses());
+    previousAddressesTable.setObjects(addressHolder,RolodexPackage.eINSTANCE.getAddressHolder_PreviousAddresses());
   }
 }
 

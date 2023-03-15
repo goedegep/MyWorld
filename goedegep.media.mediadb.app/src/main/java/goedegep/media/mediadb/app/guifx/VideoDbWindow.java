@@ -122,14 +122,14 @@ public class VideoDbWindow extends JfxStage {
         LOGGER.info("notifierEObject: " + notifierEObject.toString());
         Object feature = notification.getFeature();
           if (MEDIA_DB_PACKAGE.getMediaDb_Videos().equals(feature)) {
-            videosTable.setObjects(mediaDb, mediaDb.getVideos());
+            videosTable.setObjects(mediaDb, MediadbPackage.eINSTANCE.getMediaDb_Videos());
           }
       }
 
     };
     mediaDb.eAdapters().add(eContentAdapter);
     
-    videosTable.setObjects(mediaDb, mediaDb.getVideos());
+    videosTable.setObjects(mediaDb, MediadbPackage.eINSTANCE.getMediaDb_Videos());
 
 //    init();
   }

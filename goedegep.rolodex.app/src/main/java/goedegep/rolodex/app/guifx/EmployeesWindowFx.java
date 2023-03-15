@@ -5,8 +5,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
-import org.eclipse.emf.common.util.EList;
-
 import goedegep.appgen.TableRowOperation;
 import goedegep.appgen.TableRowOperationDescriptor;
 import goedegep.jfx.ComponentFactoryFx;
@@ -62,8 +60,6 @@ public class EmployeesWindowFx extends JfxStage {
   private EObjectTable<Employee> employeesTable;
   private ReferredByPanel referredByPanel;
   private EmployeeEditPanel employeeEditPanel;
-  
-  private EList<Employee> employees;
   
   /**
    * Constructor
@@ -128,8 +124,7 @@ public class EmployeesWindowFx extends JfxStage {
    * @return the created employeesTable
    */
   private EObjectTable<Employee> createEmployeesTable() {
-    employees = rolodex.getEmployeeList().getEmployees();
-    employeesTable = new EObjectTable<Employee>(customization, ROLODEX_PACKAGE.getEmployee(), new EmployeesTableDescriptor(rolodex), rolodex.getEmployeeList(), employees);
+    employeesTable = new EObjectTable<Employee>(customization, ROLODEX_PACKAGE.getEmployee(), new EmployeesTableDescriptor(rolodex), rolodex.getEmployeeList(), RolodexPackage.eINSTANCE.getEmployeeList_Employees());
         
     return employeesTable;
   }

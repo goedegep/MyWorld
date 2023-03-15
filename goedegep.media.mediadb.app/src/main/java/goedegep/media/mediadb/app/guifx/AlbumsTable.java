@@ -28,6 +28,7 @@ import goedegep.jfx.eobjecttable.EObjectTableColumnDescriptorCustom;
 import goedegep.jfx.eobjecttable.EObjectTableDescriptor;
 import goedegep.media.app.MediaRegistry;
 import goedegep.media.app.base.MediaAppResourcesFx;
+import goedegep.media.mediadb.albumeditor.guifx.AlbumEditor;
 import goedegep.media.mediadb.app.AlbumDiscLocationInfo;
 import goedegep.media.mediadb.app.MediaDbAppUtil;
 import goedegep.media.mediadb.model.Album;
@@ -118,7 +119,7 @@ public class AlbumsTable extends EObjectTable<Album> {
    */
   public AlbumsTable(CustomizationFx customization, MediaDbWindow mediaDbWindow, MediaDb mediaDb,
       Map<Album, AlbumDiscLocationInfo> albumToMusicFolderLocationMap, Map<Disc, AlbumDiscLocationInfo> albumDiscToMusicFolderLocationMap, Map<Track, Path> trackDiscLocationMap) {
-    super(customization, MediadbPackage.eINSTANCE.getAlbum(), new AlbumsTableDescriptor(customization, mediaDb, trackDiscLocationMap), mediaDb, mediaDb.getAlbums());
+    super(customization, MediadbPackage.eINSTANCE.getAlbum(), new AlbumsTableDescriptor(customization, mediaDb, trackDiscLocationMap), mediaDb, MediadbPackage.eINSTANCE.getMediaDb_Albums());
     
     this.customization = customization;
     this.mediaDb = mediaDb;
@@ -479,7 +480,7 @@ class AlbumsTableDescriptor extends EObjectTableDescriptor<Album> {
   }
   
   private void editAlbum(List<Album> albums, Album album) {
-    new AlbumDetailsEditor(customization, mediaDb, trackDiscLocationMap, album);
+    new AlbumEditor(customization, mediaDb, trackDiscLocationMap, album);
   }
 }
 

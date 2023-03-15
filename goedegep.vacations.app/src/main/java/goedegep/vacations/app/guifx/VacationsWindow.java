@@ -1039,8 +1039,8 @@ public class VacationsWindow extends JfxStage {
         zoomLevel = MapView.getZoomLevel(vacationsLayerBoundingBox);
       }
     } else if ((vacations = getVacationsForTreeItem(treeItem)) != null) {
-      addVacationsToVacationsLayer(vacations.getVacations());
-      showWorldMap();
+//      addVacationsToVacationsLayer(vacations.getVacations());
+//      showWorldMap();
     } else {
       Object treeItemObject = treeItem.getValue().getObject();
       LOGGER.severe("Don't know what to show for selected treeItem, treeItemObject=" + (treeItemObject != null ? treeItemObject.toString() : "null"));
@@ -1411,7 +1411,7 @@ public class VacationsWindow extends JfxStage {
    * @return the related DayTrip, or null if this doesn't exist.
    */
   private static DayTrip getDayTripForTreeItem(TreeItem<EObjectTreeItemContent> treeItem) {
-    LOGGER.severe("=> treeItem=" + (treeItem != null ? treeItem.toString() : "(null)"));
+    LOGGER.info("=> treeItem=" + (treeItem != null ? treeItem.toString() : "(null)"));
     
     if (treeItem == null) {
       LOGGER.info("<= (null)");
@@ -2023,6 +2023,7 @@ public class VacationsWindow extends JfxStage {
     nodeOperationDescriptors = new ArrayList<>();
     nodeOperationDescriptors.add(new NodeOperationDescriptor(TableRowOperation.OPEN, "Open photos folder"));
     EObjectTreeItemAttributeDescriptor eObjectTreeItemAttributeDescriptor = new EObjectTreeItemAttributeDescriptor(VACATIONS_PACKAGE.getVacation_Pictures(), "Photos", PresentationType.FOLDER, nodeOperationDescriptors);
+    eObjectTreeItemAttributeDescriptor.setInitialDirectoryNameFunction(VacationsWindow::getInitialPhotoFolderName);
     eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(eObjectTreeItemAttributeDescriptor);
 
     // Vacation.elements
@@ -2031,6 +2032,37 @@ public class VacationsWindow extends JfxStage {
     eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(new EObjectTreeItemClassListReferenceDescriptor(VACATIONS_PACKAGE.getVacation_Elements(), "Elements", true, nodeOperationDescriptors, object -> EObjectTreeView.getListIcon()));
     
     eObjectTreeDescriptor.addEClassDescriptor(eClass, eObjectTreeItemClassDescriptor);
+  }
+  
+  /**
+   * Determine the 'initial directory' to use in the FolderChooser for choosing the Pictures folder.
+   * <p>
+   * If the 'Pictures' attribute already has a valid value, this is returned.
+   * Otherwise the folder is constructed from: the main vacation photos folder and the vacation Id.
+   * If any of the required values (main vacation photos folder, vacation date and vacation title) isn't available, null is returned.
+   * 
+   * @param eObjectTreeCell the {@code EObjectTreeCell} for the 'Pictures' attribute of a Vacation.
+   * @return the 'initial directory' to use in the FolderChooser for choosing the Pictures folder, or null if this folder cannot be determined.
+   */
+  private static String getInitialPhotoFolderName(EObjectTreeCell eObjectTreeCell) {
+    if (eObjectTreeCell == null) {
+      LOGGER.severe("eObjectTreeCell is null");
+      return null;
+    }
+    
+    EObjectTreeItemContent eObjectTreeItemContent = eObjectTreeCell.getItem();
+    
+    LOGGER.severe("eObjectTreeItemContent=" + eObjectTreeItemContent);
+    
+    Vacation vacation = getVacationForTreeItem(eObjectTreeCell.getTreeItem());
+    LOGGER.severe("vacation=" + vacation.getId());
+    Path vacationFolderPath = VacationsUtils.getVacationPhotosFolderPath(vacation);
+    if (vacationFolderPath != null) {
+      LOGGER.severe("vacationFolderPath=" + vacationFolderPath.toString());
+      return vacationFolderPath.toString();
+    }
+    
+    return null;
   }
 
   /**

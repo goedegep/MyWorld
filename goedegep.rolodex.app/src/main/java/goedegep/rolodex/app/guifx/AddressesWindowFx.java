@@ -124,7 +124,7 @@ public class AddressesWindowFx extends JfxStage {
    * @return the created citiesTable
    */
   private EObjectTable<Address> createAddressesTable() {
-    addressesTable = new EObjectTable<Address>(customization, ROLODEX_PACKAGE.getCity(), new AddressesTableDescriptor(rolodex), rolodex.getAddressList(), rolodex.getAddressList().getAddresses());
+    addressesTable = new EObjectTable<Address>(customization, ROLODEX_PACKAGE.getCity(), new AddressesTableDescriptor(rolodex), rolodex.getAddressList(), RolodexPackage.eINSTANCE.getAddressList_Addresses());
         
     return addressesTable;
   }

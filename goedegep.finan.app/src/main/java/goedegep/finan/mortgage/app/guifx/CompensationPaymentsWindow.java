@@ -83,7 +83,7 @@ public class CompensationPaymentsWindow extends JfxStage {
     mainPane.getChildren().add(optionsPane);
     
     // Second part: compensation payments table
-    compensationPaymentsTable = new CompensationPaymentsTable(customization, null, null);
+    compensationPaymentsTable = new CompensationPaymentsTable(customization);
     mainPane.getChildren().add(compensationPaymentsTable);
     
     setScene(new Scene(mainPane));
@@ -92,6 +92,6 @@ public class CompensationPaymentsWindow extends JfxStage {
   private void updateCompensationPaymentsTable() {
     LOGGER.severe("=>");
     int year = (int) yearComboBox.getValue();
-    compensationPaymentsTable.setObjects(null, compensationPaymentsPerYear.get((Integer) year));
+    compensationPaymentsTable.setObjects(compensationPaymentsPerYear.get((Integer) year));
   }
 }

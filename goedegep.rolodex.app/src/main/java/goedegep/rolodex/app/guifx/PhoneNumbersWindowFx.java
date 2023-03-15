@@ -5,8 +5,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
-import org.eclipse.emf.common.util.EList;
-
 import goedegep.appgen.TableRowOperation;
 import goedegep.appgen.TableRowOperationDescriptor;
 import goedegep.jfx.ComponentFactoryFx;
@@ -57,8 +55,6 @@ public class PhoneNumbersWindowFx extends JfxStage {
   private EObjectTable<PhoneNumber> phoneNumbersTable;
   private ReferredByPanel referredByPanel;
   private PhoneNumberEditPanel phoneNumberEditPanel;
-  
-  private EList<PhoneNumber> phoneNumbers;
   
   /**
    * Constructor
@@ -123,8 +119,7 @@ public class PhoneNumbersWindowFx extends JfxStage {
    * @return the created phoneNumbersTable
    */
   private EObjectTable<PhoneNumber> createPhoneNumbersTable() {
-    phoneNumbers = rolodex.getPhoneNumberList().getPhoneNumbers();
-    phoneNumbersTable = new EObjectTable<PhoneNumber>(customization, ROLODEX_PACKAGE.getPhoneNumber(), new PhoneNumbersTableDescriptor(), rolodex.getPhoneNumberList(), phoneNumbers);
+    phoneNumbersTable = new EObjectTable<PhoneNumber>(customization, ROLODEX_PACKAGE.getPhoneNumber(), new PhoneNumbersTableDescriptor(), rolodex.getPhoneNumberList(), RolodexPackage.eINSTANCE.getPhoneNumberList_PhoneNumbers());
         
     return phoneNumbersTable;
   }
@@ -137,7 +132,6 @@ public class PhoneNumbersWindowFx extends JfxStage {
  */
 class PhoneNumberEditPanel {
   private static RolodexFactory ROLODEX_FACTORY = RolodexFactory.eINSTANCE;
-  private static RolodexPackage ROLODEX_PACKAGE = RolodexPackage.eINSTANCE;
   
   private Rolodex rolodex;
   private ComponentFactoryFx componentFactory;

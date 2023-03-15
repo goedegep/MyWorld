@@ -122,7 +122,7 @@ public class CitiesWindowFx extends JfxStage {
    * @return the created citiesTable
    */
   private EObjectTable<City> createCitiesTable() {
-    citiesTable = new EObjectTable<City>(customization, ROLODEX_PACKAGE.getCity(), new CitiesTableDescriptor(rolodex), rolodex.getCityList(), rolodex.getCityList().getCities());
+    citiesTable = new EObjectTable<City>(customization, ROLODEX_PACKAGE.getCity(), new CitiesTableDescriptor(rolodex), rolodex.getCityList(), RolodexPackage.eINSTANCE.getCityList_Cities());
             
     return citiesTable;
   }

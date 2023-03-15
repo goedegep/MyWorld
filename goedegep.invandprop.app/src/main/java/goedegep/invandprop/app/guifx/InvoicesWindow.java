@@ -81,7 +81,7 @@ public class InvoicesWindow extends JfxStage {
     
     invoicesTable.addObjectSelectionListener((source, invoice) -> {
         if (invoice != null) {
-          invoiceItemsTable.setObjects(invoice, invoice.getInvoiceItems());
+          invoiceItemsTable.setObjects(invoice, INVOICES_AND_PROPERTIES_PACKAGE.getInvoice_InvoiceItems());
         } else {
           invoiceItemsTable.setObjects(null, null);
         }
@@ -160,7 +160,7 @@ public class InvoicesWindow extends JfxStage {
    * @return the created familiesTable
    */
   private EObjectTable<Invoice> createInvoicesTable() {
-    invoicesTable = new EObjectTable<Invoice>(customization, INVOICES_AND_PROPERTIES_PACKAGE.getInvoice(), new InvoicesTableDescriptor(invoicesAndPropertiesMenuWindow), invoicesAndProperties.getInvoices(), invoicesAndProperties.getInvoices().getInvoices());
+    invoicesTable = new EObjectTable<Invoice>(customization, INVOICES_AND_PROPERTIES_PACKAGE.getInvoice(), new InvoicesTableDescriptor(invoicesAndPropertiesMenuWindow), invoicesAndProperties.getInvoices(),INVOICES_AND_PROPERTIES_PACKAGE.getInvoices_Invoices());
         
     return invoicesTable;
   }
@@ -171,7 +171,7 @@ public class InvoicesWindow extends JfxStage {
    * @return the created familiesTable
    */
   private EObjectTable<InvoiceItem> createInvoiceItemsTable() {
-    invoiceItemsTable = new EObjectTable<InvoiceItem>(customization, INVOICES_AND_PROPERTIES_PACKAGE.getInvoiceItem(), new InvoiceItemsTableDescriptor(), null, null);
+    invoiceItemsTable = new EObjectTable<InvoiceItem>(customization, INVOICES_AND_PROPERTIES_PACKAGE.getInvoiceItem(), new InvoiceItemsTableDescriptor(), null);
         
     return invoiceItemsTable;
   }

@@ -25,7 +25,7 @@ import goedegep.jfx.controls.ObjectControlInteger;
 import goedegep.jfx.controls.ObjectControlLocalDate;
 import goedegep.jfx.controls.ObjectControlMultiLineString;
 import goedegep.jfx.controls.ObjectControlString;
-import goedegep.jfx.controls.TextFieldObjectInput;
+import goedegep.jfx.controls.TextFieldObjectControl;
 import goedegep.jfx.stringconverters.StringConverterAndChecker;
 import goedegep.resources.ImageSize;
 import goedegep.util.fixedpointvalue.FixedPointValue;
@@ -1213,8 +1213,8 @@ public class ComponentFactoryFx {
    * @param toolTipText an optional tooltip text.
    * @return
    */
-  public <T>TextFieldObjectInput<T> createTextFieldObjectInput(StringConverterAndChecker<T> stringConverter, T initialValue, double width, boolean isOptional, String toolTipText) {
-    TextFieldObjectInput<T> textFieldObjectInput = new TextFieldObjectInput<>(stringConverter, initialValue, width, isOptional, toolTipText);
+  public <T>TextFieldObjectControl<T> createTextFieldObjectInput(StringConverterAndChecker<T> stringConverter, T initialValue, double width, boolean isOptional, String toolTipText) {
+    TextFieldObjectControl<T> textFieldObjectInput = new TextFieldObjectControl<>(stringConverter, initialValue, width, isOptional, toolTipText);
 
     customizeTextInputControl(textFieldObjectInput);
 

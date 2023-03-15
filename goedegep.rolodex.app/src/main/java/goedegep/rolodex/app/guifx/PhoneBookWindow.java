@@ -135,7 +135,7 @@ public class PhoneBookWindow extends JfxStage {
       }
     }
     
-    phoneNumbersTable = new EObjectTable<PhoneNumberHolder>(customization, ROLODEX_PACKAGE.getPhoneNumber(), new PhoneBookTableDescriptor(), null, phoneNumberHolders);
+    phoneNumbersTable = new EObjectTable<PhoneNumberHolder>(customization, ROLODEX_PACKAGE.getPhoneNumber(), new PhoneBookTableDescriptor(), phoneNumberHolders);
         
     return phoneNumbersTable;
   }

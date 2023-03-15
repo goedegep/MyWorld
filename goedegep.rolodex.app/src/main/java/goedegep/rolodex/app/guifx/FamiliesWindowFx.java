@@ -5,8 +5,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
-import org.eclipse.emf.common.util.EList;
-
 import goedegep.appgen.TableRowOperation;
 import goedegep.appgen.TableRowOperationDescriptor;
 import goedegep.jfx.ComponentFactoryFx;
@@ -63,8 +61,6 @@ public class FamiliesWindowFx extends JfxStage {
   private PreviousAddressesPanel previousAddressesPanel;
   private ReferredByPanel referredByPanel;
   private FamilyEditPanel familyEditPanel;
-  
-  private EList<Family> families;
   
   /**
    * Constructor
@@ -137,8 +133,7 @@ public class FamiliesWindowFx extends JfxStage {
    * @return the created familiesTable
    */
   private EObjectTable<Family> createFamiliesTable() {
-    families = rolodex.getFamilyList().getFamilies();
-    familiesTable = new EObjectTable<Family>(customization, ROLODEX_PACKAGE.getFamily(), new FamiliesTableDescriptor(), rolodex.getFamilyList(), families);
+    familiesTable = new EObjectTable<Family>(customization, ROLODEX_PACKAGE.getFamily(), new FamiliesTableDescriptor(), rolodex.getFamilyList(), RolodexPackage.eINSTANCE.getFamilyList_Families());
         
     return familiesTable;
   }

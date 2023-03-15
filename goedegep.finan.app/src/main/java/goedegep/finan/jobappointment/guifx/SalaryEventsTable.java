@@ -4,6 +4,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.EReference;
+
 import goedegep.appgen.TableRowOperation;
 import goedegep.appgen.TableRowOperationDescriptor;
 import goedegep.finan.jobappointment.JobAppointmentUtil;
@@ -24,8 +27,8 @@ public class SalaryEventsTable extends EObjectTable<SalaryEvent> {
   /**
    * Constructor.
    */
-  public SalaryEventsTable(CustomizationFx customization, List<SalaryEvent> salaryEvents) {
-    super(customization, JobAppointmentPackage.eINSTANCE.getSalaryEvent(), new SalaryEventsTableDescriptor(), null, salaryEvents);
+  public SalaryEventsTable(CustomizationFx customization, EObject containingObject, EReference salaryEventsReference) {
+    super(customization, JobAppointmentPackage.eINSTANCE.getSalaryEvent(), new SalaryEventsTableDescriptor(), containingObject, salaryEventsReference);
   }
 }
 
