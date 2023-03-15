@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import goedegep.jfx.CustomizationFx;
-import goedegep.jfx.controls.AutoCompleteTextFieldObjectInput;
+import goedegep.jfx.objectcontrols.ObjectControlAutoCompleteTextField;
 import goedegep.rolodex.model.City;
 import goedegep.rolodex.model.Country;
 import goedegep.rolodex.model.Rolodex;
@@ -12,7 +12,7 @@ import goedegep.rolodex.model.Rolodex;
 /**
  * This class is a TextField, with autocompletion, for a city name
  */
-public class CityTextField extends AutoCompleteTextFieldObjectInput<String> {
+public class CityTextField extends ObjectControlAutoCompleteTextField<String> {
   private Rolodex rolodex;
   
   /**

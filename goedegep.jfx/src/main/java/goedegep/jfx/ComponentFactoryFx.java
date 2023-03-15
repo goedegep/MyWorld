@@ -12,20 +12,20 @@ import org.commonmark.renderer.html.HtmlRenderer;
 import org.eclipse.emf.ecore.EEnum;
 
 import goedegep.configuration.model.Look;
-import goedegep.jfx.controls.AutoCompleteTextFieldObjectInput;
-import goedegep.jfx.controls.FileSelecter;
-import goedegep.jfx.controls.FolderSelecter;
-import goedegep.jfx.controls.ObjectControlBoolean;
-import goedegep.jfx.controls.ObjectControlCurrency;
-import goedegep.jfx.controls.ObjectControlEnumComboBox;
-import goedegep.jfx.controls.ObjectControlFixedPointValue;
-import goedegep.jfx.controls.ObjectControlFlexDate;
-import goedegep.jfx.controls.ObjectControlHTMLString;
-import goedegep.jfx.controls.ObjectControlInteger;
-import goedegep.jfx.controls.ObjectControlLocalDate;
-import goedegep.jfx.controls.ObjectControlMultiLineString;
-import goedegep.jfx.controls.ObjectControlString;
-import goedegep.jfx.controls.TextFieldObjectControl;
+import goedegep.jfx.objectcontrols.ObjectControlAutoCompleteTextField;
+import goedegep.jfx.objectcontrols.ObjectControlBoolean;
+import goedegep.jfx.objectcontrols.ObjectControlCurrency;
+import goedegep.jfx.objectcontrols.ObjectControlEnumComboBox;
+import goedegep.jfx.objectcontrols.ObjectControlFileSelecter;
+import goedegep.jfx.objectcontrols.ObjectControlFixedPointValue;
+import goedegep.jfx.objectcontrols.ObjectControlFlexDate;
+import goedegep.jfx.objectcontrols.ObjectControlFolderSelecter;
+import goedegep.jfx.objectcontrols.ObjectControlHTMLString;
+import goedegep.jfx.objectcontrols.ObjectControlInteger;
+import goedegep.jfx.objectcontrols.ObjectControlLocalDate;
+import goedegep.jfx.objectcontrols.ObjectControlMultiLineString;
+import goedegep.jfx.objectcontrols.ObjectControlString;
+import goedegep.jfx.objectcontrols.ObjectControlTextField;
 import goedegep.jfx.stringconverters.StringConverterAndChecker;
 import goedegep.resources.ImageSize;
 import goedegep.util.fixedpointvalue.FixedPointValue;
@@ -835,7 +835,7 @@ public class ComponentFactoryFx {
   }
   
   /**
-   * Create a {@link FileSelecter}.
+   * Create a {@link ObjectControlFileSelecter}.
    * 
    * @param initiallySelecterFolder The initially selected folder. If not null, this is filled-in in the text field,
    *                                and it is used as initial value for the DirectoryChooser.
@@ -846,9 +846,9 @@ public class ComponentFactoryFx {
    * @param directoryChooserTitle title for the DirectoryChooser (may not be null)
    * @return the newly created FolderSelecter
    */
-  public FileSelecter createFileSelecter(String initiallySelecterFolder, int textFieldWidth, String textFieldToolTipText,
+  public ObjectControlFileSelecter createFileSelecter(String initiallySelecterFolder, int textFieldWidth, String textFieldToolTipText,
       String folderChooserButtonText, String folderChooserButtonToolTipText, String directoryChooserTitle) {
-    FileSelecter fileSelecter = new FileSelecter(initiallySelecterFolder, textFieldWidth, textFieldToolTipText,
+    ObjectControlFileSelecter fileSelecter = new ObjectControlFileSelecter(initiallySelecterFolder, textFieldWidth, textFieldToolTipText,
         folderChooserButtonText, folderChooserButtonToolTipText, directoryChooserTitle);
     
     customizeTextInputControl(fileSelecter.getPathTextField());
@@ -858,7 +858,7 @@ public class ComponentFactoryFx {
   }
   
   /**
-   * Create a {@link FolderSelecter}.
+   * Create a {@link ObjectControlFolderSelecter}.
    * 
    * @param initiallySelecterFolder The initially selected folder. If not null, this is filled-in in the text field,
    *                                and it is used as initial value for the DirectoryChooser.
@@ -869,9 +869,9 @@ public class ComponentFactoryFx {
    * @param directoryChooserTitle title for the DirectoryChooser (may not be null)
    * @return the newly created FolderSelecter
    */
-  public FolderSelecter createFolderSelecter(String initiallySelecterFolder, int textFieldWidth, String textFieldToolTipText,
+  public ObjectControlFolderSelecter createFolderSelecter(String initiallySelecterFolder, int textFieldWidth, String textFieldToolTipText,
       String folderChooserButtonText, String folderChooserButtonToolTipText, String directoryChooserTitle) {
-    FolderSelecter folderSelecter = new FolderSelecter(initiallySelecterFolder, textFieldWidth, textFieldToolTipText,
+    ObjectControlFolderSelecter folderSelecter = new ObjectControlFolderSelecter(initiallySelecterFolder, textFieldWidth, textFieldToolTipText,
         folderChooserButtonText, folderChooserButtonToolTipText, directoryChooserTitle);
     
     customizeTextInputControl(folderSelecter.getPathTextField());
@@ -1213,8 +1213,8 @@ public class ComponentFactoryFx {
    * @param toolTipText an optional tooltip text.
    * @return
    */
-  public <T>TextFieldObjectControl<T> createTextFieldObjectInput(StringConverterAndChecker<T> stringConverter, T initialValue, double width, boolean isOptional, String toolTipText) {
-    TextFieldObjectControl<T> textFieldObjectInput = new TextFieldObjectControl<>(stringConverter, initialValue, width, isOptional, toolTipText);
+  public <T>ObjectControlTextField<T> createTextFieldObjectInput(StringConverterAndChecker<T> stringConverter, T initialValue, double width, boolean isOptional, String toolTipText) {
+    ObjectControlTextField<T> textFieldObjectInput = new ObjectControlTextField<>(stringConverter, initialValue, width, isOptional, toolTipText);
 
     customizeTextInputControl(textFieldObjectInput);
 
@@ -1265,8 +1265,8 @@ public class ComponentFactoryFx {
     return new ObjectControlEnumComboBox<T>(enumConstant, notSetValue, enumToStringMap, isOptional, toolTipText);
   }
   
-  public <T> AutoCompleteTextFieldObjectInput<T> createObjectControlAutoCompleteTextField(StringConverterAndChecker<T> stringConverter, T initialValue, double width, boolean isOptional, String toolTipText) {
-    return new AutoCompleteTextFieldObjectInput<T>(stringConverter, initialValue, width, isOptional, toolTipText);
+  public <T> ObjectControlAutoCompleteTextField<T> createObjectControlAutoCompleteTextField(StringConverterAndChecker<T> stringConverter, T initialValue, double width, boolean isOptional, String toolTipText) {
+    return new ObjectControlAutoCompleteTextField<T>(stringConverter, initialValue, width, isOptional, toolTipText);
   }
     
   public String addHtmlContext(String text) {

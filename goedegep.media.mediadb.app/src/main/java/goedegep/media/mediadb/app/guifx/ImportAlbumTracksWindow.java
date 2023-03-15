@@ -11,7 +11,7 @@ import java.util.logging.Logger;
 import goedegep.jfx.ComponentFactoryFx;
 import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.JfxStage;
-import goedegep.jfx.controls.FolderSelecter;
+import goedegep.jfx.objectcontrols.ObjectControlFolderSelecter;
 import goedegep.media.mediadb.app.DiscTracksImportInfo;
 import goedegep.media.mediadb.app.MediaDbAppErrorInfo;
 import goedegep.media.mediadb.app.MediaDbAppUtil;
@@ -46,7 +46,7 @@ public class ImportAlbumTracksWindow extends JfxStage {
   DiscTracksImportInfo albumTracksImportInfo;
   private ComponentFactoryFx componentFactory;
   private ComboBox<DiscWrapper> discComboBox = null;
-  private FolderSelecter sourceFolderSelector;
+  private ObjectControlFolderSelecter sourceFolderSelector;
   private TextField albumFolderTextField;
   private TableView<TrackImportInfo> trackPreviewTable;
   private TextArea statusPanel;
@@ -117,7 +117,7 @@ public class ImportAlbumTracksWindow extends JfxStage {
     label = componentFactory.createLabel("Source folder:");
     gridPane.add(label, 0, row);
     
-    sourceFolderSelector = new FolderSelecter(SOURCE_FOLDER, 400, "Enter the name of the folder with the tracks of the album that has to be imported", "Choose source folder", "Click to start folder chooser", "Select the folder with the tracks of the album that has to be imported");
+    sourceFolderSelector = new ObjectControlFolderSelecter(SOURCE_FOLDER, 400, "Enter the name of the folder with the tracks of the album that has to be imported", "Choose source folder", "Click to start folder chooser", "Select the folder with the tracks of the album that has to be imported");
     Node sourceFolderTextField = sourceFolderSelector.getPathTextField();
     sourceFolderSelector.objectValue().addListener((observable, oldValue, newValue) -> handleNewSourceFolder());
     gridPane.add(sourceFolderTextField, 1, row);

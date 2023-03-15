@@ -1,4 +1,4 @@
-package goedegep.jfx.controls;
+package goedegep.jfx.objectcontrols;
 
 import java.text.ParseException;
 
@@ -48,6 +48,8 @@ import javafx.scene.control.Label;
  * </ul>
  * The {@link #isValid} method can be used to check on this.<br/><br/>
  * 
+ * For clarity, all method names start with an 'oc' prefix.
+ * 
  */
 public interface ObjectControl<T extends Object> extends Observable {
   
@@ -55,7 +57,19 @@ public interface ObjectControl<T extends Object> extends Observable {
   public static final String NOK_INDICATOR = "!";
   
   /**
+   * Property that indicates whether the Object provided by this component is optional or not.
+   * <p>
+   * This value of this property is usually set by the application upon creation of the control and then never changed.
+   * The default value is false.
+   * 
+   * @return a Property that indicates whether the Object provided by this component is optional or not.
+   */
+  public BooleanProperty ocOptionalProperty();
+  
+  /**
    * Indication of whether the Object provided by this component is optional or not.
+   * <p>
+   * This method is identical to ocOptionalProperty().get().
    * 
    * @return true if the Object provided by this component is optional, false if the Object is mandatory.
    */

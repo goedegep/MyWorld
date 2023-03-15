@@ -8,6 +8,7 @@ module goedegep.appgenfx {
   exports goedegep.jfx.eobjecttable;
   exports goedegep.jfx.eobjecttable.objectstringconverters;
   exports goedegep.jfx.eobjecttreeview;
+  exports goedegep.jfx.objectcontrols;
   exports goedegep.jfx.objecteditor;
   exports goedegep.jfx.observableelist;
   exports goedegep.jfx.img;

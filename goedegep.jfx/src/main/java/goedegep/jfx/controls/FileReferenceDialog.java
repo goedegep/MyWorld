@@ -4,6 +4,7 @@ import java.util.logging.Logger;
 
 import goedegep.jfx.ComponentFactoryFx;
 import goedegep.jfx.CustomizationFx;
+import goedegep.jfx.objectcontrols.ObjectControlFileSelecter;
 import goedegep.types.model.FileReference;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
@@ -65,7 +66,7 @@ public class FileReferenceDialog extends Dialog<ButtonType> {
     Label fileNameLabel = componentFactory.createLabel("File:");
     wizardPanel.add(fileNameLabel, 0, 0);
     
-    FileSelecter fileSelecter = componentFactory.createFileSelecter(initiallySelectedFolder, 400, "Currently selected folder",
+    ObjectControlFileSelecter fileSelecter = componentFactory.createFileSelecter(initiallySelectedFolder, 400, "Currently selected folder",
         "Choose file", "Select a file via a file chooser", "Select the file");
     
     fileName = fileSelecter.getPathTextField();

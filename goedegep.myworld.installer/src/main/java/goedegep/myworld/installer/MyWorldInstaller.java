@@ -15,7 +15,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import goedegep.jfx.JfxApplication;
-import goedegep.jfx.controls.FolderSelecter;
+import goedegep.jfx.objectcontrols.ObjectControlFolderSelecter;
 import goedegep.properties.model.PropertiesFactory;
 import goedegep.properties.model.PropertiesPackage;
 import goedegep.properties.model.PropertyDescriptor;
@@ -95,9 +95,9 @@ public class MyWorldInstaller extends JfxApplication {
   
   private static final SimpleDateFormat DF = new SimpleDateFormat("dd-MM-yyyy HH:mm");
   
-  private FolderSelecter installationFolder;
+  private ObjectControlFolderSelecter installationFolder;
   private BooleanProperty installationFolderValidProperty;
-  private FolderSelecter userDataFolder;
+  private ObjectControlFolderSelecter userDataFolder;
   private BooleanProperty userDataFolderValidProperty;
   private TextArea outputTextArea;
   private StringBuilder outputTextBuffer;
@@ -439,7 +439,7 @@ public class MyWorldInstaller extends JfxApplication {
     label = new Label("Installation directory");
     controlsPanel.add(label, 0, 0);
     
-    installationFolder = new FolderSelecter(null, 200, null, "Select installation directory", null, "Installation directory");
+    installationFolder = new ObjectControlFolderSelecter(null, 200, null, "Select installation directory", null, "Installation directory");
     installationFolderValidProperty = installationFolder.isValid();
     installationFolderValidProperty.addListener(new ChangeListener<Boolean>() {
 
@@ -456,7 +456,7 @@ public class MyWorldInstaller extends JfxApplication {
     // User data folder
     label = new Label("User Data directory");
     controlsPanel.add(label, 0, 1);
-    userDataFolder = new FolderSelecter("D:\\Database\\MyWorld", 200, null, "User Data directory", null, "User Data directory");
+    userDataFolder = new ObjectControlFolderSelecter("D:\\Database\\MyWorld", 200, null, "User Data directory", null, "User Data directory");
     userDataFolderValidProperty = userDataFolder.isValid();
     controlsPanel.add(userDataFolder.getPathTextField(), 1, 1);
     controlsPanel.add(userDataFolder.getFolderChooserButton(), 2, 1);

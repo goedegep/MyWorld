@@ -39,15 +39,15 @@ import ealvatag.tag.Tag;
 import ealvatag.tag.TagException;
 import goedegep.jfx.ComponentFactoryFx;
 import goedegep.jfx.CustomizationFx;
-import goedegep.jfx.controls.AutoCompleteTextFieldObjectInput;
-import goedegep.jfx.controls.FolderSelecter;
-import goedegep.jfx.controls.ObjectControlEnumComboBox;
-import goedegep.jfx.controls.ObjectControlFlexDate;
-import goedegep.jfx.controls.ObjectControlGroup;
-import goedegep.jfx.controls.ObjectControlImageFile;
-import goedegep.jfx.controls.ObjectControlMultiLineString;
-import goedegep.jfx.controls.ObjectControlString;
-import goedegep.jfx.controls.TextFieldObjectControl;
+import goedegep.jfx.objectcontrols.ObjectControlAutoCompleteTextField;
+import goedegep.jfx.objectcontrols.ObjectControlEnumComboBox;
+import goedegep.jfx.objectcontrols.ObjectControlFlexDate;
+import goedegep.jfx.objectcontrols.ObjectControlFolderSelecter;
+import goedegep.jfx.objectcontrols.ObjectControlGroup;
+import goedegep.jfx.objectcontrols.ObjectControlImageFile;
+import goedegep.jfx.objectcontrols.ObjectControlMultiLineString;
+import goedegep.jfx.objectcontrols.ObjectControlString;
+import goedegep.jfx.objectcontrols.ObjectControlTextField;
 import goedegep.jfx.objecteditor.EditMode;
 import goedegep.jfx.objecteditor.ObjectEditorAbstract;
 import goedegep.media.app.MediaRegistry;
@@ -143,12 +143,12 @@ public class AlbumEditor extends ObjectEditorAbstract {
    * Control for the album title.
    * The title is plain text.
    */
-  private TextFieldObjectControl<String> albumTitleTextFieldObjectControl;
+  private ObjectControlTextField<String> albumTitleTextFieldObjectControl;
   
   /**
    * Control for the album artist name.
    */
-  private AutoCompleteTextFieldObjectInput<Artist> albumArtistObjectControl;
+  private ObjectControlAutoCompleteTextField<Artist> albumArtistObjectControl;
   
   /**
    * Control for the album release date.
@@ -160,12 +160,12 @@ public class AlbumEditor extends ObjectEditorAbstract {
    * Control for the album Id.
    * The album Id is plain text.
    */
-  private TextFieldObjectControl<String> albumIdTextField;
+  private ObjectControlTextField<String> albumIdTextField;
   
   /**
    * Control for the Description Title (which is plain text).
    */
-  private TextFieldObjectControl<String> descriptionTitleTextField;
+  private ObjectControlTextField<String> descriptionTitleTextField;
   
   /**
    * Control for the Description (which is plain MarkDown text).
@@ -812,15 +812,15 @@ public class AlbumEditor extends ObjectEditorAbstract {
    * @param instruments Initial value for the instruments, shown in the TextField.
    * @return the newly created tuplet.
    */
-  private Tuplet<AutoCompleteTextFieldObjectInput<Artist>, TextField> createPlayerTuplet(Artist artist, List<String> instruments) {
-    AutoCompleteTextFieldObjectInput<Artist> artistObjectControl = componentFactory.createObjectControlAutoCompleteTextField(artistStringConverterAndChecker, null, 300, false, "Enter a player");
+  private Tuplet<ObjectControlAutoCompleteTextField<Artist>, TextField> createPlayerTuplet(Artist artist, List<String> instruments) {
+    ObjectControlAutoCompleteTextField<Artist> artistObjectControl = componentFactory.createObjectControlAutoCompleteTextField(artistStringConverterAndChecker, null, 300, false, "Enter a player");
     artistObjectControl.setObjectValue(artist);
     artistObjectControl.setOptions(mediaDb.getArtists());
 
     TextField playerInstrumentTextField = componentFactory.createTextField(300, "A comma separated list of instruments");
     playerInstrumentTextField.setText(StringUtil.stringCollectionToCommaSeparatedStrings(instruments));
 
-    Tuplet<AutoCompleteTextFieldObjectInput<Artist>, TextField> tuplet = new Tuplet<>(artistObjectControl, playerInstrumentTextField);
+    Tuplet<ObjectControlAutoCompleteTextField<Artist>, TextField> tuplet = new Tuplet<>(artistObjectControl, playerInstrumentTextField);
     
     return tuplet;
   }
@@ -1061,7 +1061,7 @@ public class AlbumEditor extends ObjectEditorAbstract {
     hBox.setBorder(componentFactory.getRectangularBorder());
    
     // Import folder selection: Label, textField, Chooser button, import button
-    FolderSelecter folderSelecter = componentFactory.createFolderSelecter("D:\\SoulSeek\\complete", 600, "Folder to import album information from", "Select source folder", "Open source folder chooser", "Source folder");
+    ObjectControlFolderSelecter folderSelecter = componentFactory.createFolderSelecter("D:\\SoulSeek\\complete", 600, "Folder to import album information from", "Select source folder", "Open source folder chooser", "Source folder");
 
     Label label = componentFactory.createLabel("Derive album details from:");
     hBox.getChildren().add(label);

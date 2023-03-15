@@ -10,8 +10,8 @@ import org.eclipse.emf.ecore.util.EcoreUtil;
 import goedegep.jfx.ComponentFactoryFx;
 import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.JfxStage;
-import goedegep.jfx.controls.FileSelecter;
 import goedegep.jfx.eobjecttable.EObjectTable;
+import goedegep.jfx.objectcontrols.ObjectControlFileSelecter;
 import goedegep.media.mediadb.app.AlbumDetailsException;
 import goedegep.media.mediadb.model.MediaDb;
 import goedegep.media.mediadb.model.MediadbFactory;
@@ -79,7 +79,7 @@ public class VideoDetailsEditor extends JfxStage {
    * Control for the video image.
    * The video image is plain text; an absolute filename.
    */
-  private FileSelecter videoImageFileSelecter;
+  private ObjectControlFileSelecter videoImageFileSelecter;
   
   /**
    * Shows the video image, which is stored in the <code>videoImageTextField</code>.

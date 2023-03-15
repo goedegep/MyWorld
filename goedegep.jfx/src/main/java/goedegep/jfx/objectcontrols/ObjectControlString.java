@@ -1,4 +1,4 @@
-package goedegep.jfx.controls;
+package goedegep.jfx.objectcontrols;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -8,33 +8,40 @@ import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleObjectProperty;
-import javafx.event.EventHandler;
-import javafx.scene.input.InputEvent;
-import javafx.scene.web.HTMLEditor;
+import javafx.scene.control.TextField;
 
-public class ObjectControlHTMLString extends HTMLEditor implements ObjectControl<String> {
+public class ObjectControlString extends TextField implements ObjectControl<String> {
   
+  /**
+   * Indicates whether the control is optional (if true) or mandatory.
+   */
+  private BooleanProperty optionalProperty = new SimpleBooleanProperty(false);
   private BooleanProperty isValidProperty = new SimpleBooleanProperty(true);
   private BooleanProperty isFilledInProperty = new SimpleBooleanProperty(false);
   private ObjectProperty<String> objectValueProperty = new SimpleObjectProperty<>();
-  private boolean isOptional;
   private List<InvalidationListener> invalidationListeners = new ArrayList<>();
       
-  public ObjectControlHTMLString(String text, double width, boolean isOptional, String toolTipText, String id) {
-    this.isOptional = isOptional;
-    if (id != null) {
-      setId(id);
-    }
+  public ObjectControlString(String text, double width, boolean isOptional, String toolTipText) {
+    optionalProperty.set(isOptional);
+    setText(text);
+    setMinWidth(width);
 
-    addEventHandler(InputEvent.ANY, new EventHandler<InputEvent>() {
-
-      @Override
-      public void handle(InputEvent event) {
-        handleChanges(getHtmlText());
-      }
-    });
+    textProperty().addListener((observableValue, oldValue, newValue) -> handleChanges(newValue));
     
-    handleChanges(getHtmlText());
+    handleChanges(textProperty().get());
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public BooleanProperty ocOptionalProperty() {
+    return optionalProperty;
+  }
+
+  @Override
+  public boolean isOptional() {
+    return optionalProperty.get();
   }
   
   private void handleChanges(final String newValue) {
@@ -61,13 +68,8 @@ public class ObjectControlHTMLString extends HTMLEditor implements ObjectControl
   }
 
   @Override
-  public boolean isOptional() {
-    return isOptional;
-  }
-
-  @Override
   public boolean getIsFilledIn() {
-    String text = getHtmlText();
+    String text = getText();
     
     return (text != null)  &&  !text.isEmpty();
   }
@@ -79,7 +81,7 @@ public class ObjectControlHTMLString extends HTMLEditor implements ObjectControl
 
   @Override
   public String getObjectValue() {
-    String text = getHtmlText();
+    String text = getText();
     
     if (text != null) {
       text = text.trim();
@@ -90,7 +92,7 @@ public class ObjectControlHTMLString extends HTMLEditor implements ObjectControl
 
   @Override
   public void setObjectValue(String objectValue) {
-    setHtmlText(objectValue);    
+    setText(objectValue);    
   }
 
   @Override
@@ -118,5 +120,21 @@ public class ObjectControlHTMLString extends HTMLEditor implements ObjectControl
     invalidationListeners.remove(listener);    
   }
 
-
+//  @Override
+//  public void addListener(ChangeListener<? super String> listener) {
+//    // TODO Auto-generated method stub
+//    
+//  }
+//
+//  @Override
+//  public void removeListener(ChangeListener<? super String> listener) {
+//    // TODO Auto-generated method stub
+//    
+//  }
+//
+//  @Override
+//  public String getValue() {
+//    // TODO Auto-generated method stub
+//    return null;
+//  }
 }

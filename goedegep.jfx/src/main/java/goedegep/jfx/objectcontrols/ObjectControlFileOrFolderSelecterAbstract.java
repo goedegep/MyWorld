@@ -1,4 +1,4 @@
-package goedegep.jfx.controls;
+package goedegep.jfx.objectcontrols;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -16,12 +16,12 @@ import javafx.scene.control.Tooltip;
 /**
  * This class provides the common functionality for the FileSelecter and FolderSelecter.
  */
-public abstract class FileOrFolderSelecterAbstract implements ObjectControl<String> {
+public abstract class ObjectControlFileOrFolderSelecterAbstract implements ObjectControl<String> {
   
   /**
-   * Field to handle {@code isOptional()} in {@code ObjectControl}.
+   * Indicates whether the control is optional (if true) or mandatory.
    */
-  private boolean isOptional = false;
+  private BooleanProperty optionalProperty = new SimpleBooleanProperty(false);
   
   /**
    * TextField to show and edit the currently selected file or folder.
@@ -61,7 +61,7 @@ public abstract class FileOrFolderSelecterAbstract implements ObjectControl<Stri
    * @param textFieldWidth Value for the width of the TextField. If this value is -1, the default width is used.
    * @param textFieldToolTipText an optional tooltip text for the TextField.
    */
-  protected FileOrFolderSelecterAbstract(int textFieldWidth, String textFieldToolTipText) {
+  protected ObjectControlFileOrFolderSelecterAbstract(int textFieldWidth, String textFieldToolTipText) {
     
     pathTextField = new TextField();
     
@@ -100,13 +100,21 @@ public abstract class FileOrFolderSelecterAbstract implements ObjectControl<Stri
   public TextField getPathTextField() {
     return pathTextField;
   }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public BooleanProperty ocOptionalProperty() {
+    return optionalProperty;
+  }
   
   /**
-   * @InheritDoc
+   * {@InheritDoc}
    */
   @Override
   public boolean isOptional() {
-    return isOptional;
+    return optionalProperty.get();
   }
 
   /**

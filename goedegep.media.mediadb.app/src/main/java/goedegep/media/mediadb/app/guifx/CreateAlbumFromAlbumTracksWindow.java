@@ -9,7 +9,7 @@ import java.util.logging.Logger;
 import goedegep.jfx.ComponentFactoryFx;
 import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.JfxStage;
-import goedegep.jfx.controls.FolderSelecter;
+import goedegep.jfx.objectcontrols.ObjectControlFolderSelecter;
 import goedegep.media.musicfolder.TrackFile;
 import goedegep.util.file.FileUtils;
 import javafx.geometry.Insets;
@@ -35,7 +35,7 @@ public class CreateAlbumFromAlbumTracksWindow extends JfxStage {
   private String SOURCE_FOLDER = "D:\\SoulSeek\\Complete";
   
   private ComponentFactoryFx componentFactory;
-  private FolderSelecter sourceFolderSelector;
+  private ObjectControlFolderSelecter sourceFolderSelector;
   private TextArea statusPanel;
   private Button actionButton; // To perform preview or import
   private String sourceFolderName;
@@ -69,7 +69,7 @@ public class CreateAlbumFromAlbumTracksWindow extends JfxStage {
     Label label = componentFactory.createLabel("Source folder:");
     gridPane.add(label, 0, 0);
     
-    sourceFolderSelector = new FolderSelecter(SOURCE_FOLDER, 400, "Enter the name of the folder with the tracks of the album that has to be imported", "Choose source folder", "Click to start folder chooser", "Select the folder with the tracks of the album that has to be imported");
+    sourceFolderSelector = new ObjectControlFolderSelecter(SOURCE_FOLDER, 400, "Enter the name of the folder with the tracks of the album that has to be imported", "Choose source folder", "Click to start folder chooser", "Select the folder with the tracks of the album that has to be imported");
     Node sourceFolderTextField = sourceFolderSelector.getPathTextField();
     sourceFolderSelector.objectValue().addListener((observable, oldValue, newValue) -> handleNewSourceFolder(newValue));
     gridPane.add(sourceFolderTextField, 1, 0);

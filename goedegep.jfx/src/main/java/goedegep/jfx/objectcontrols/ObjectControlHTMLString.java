@@ -1,4 +1,4 @@
-package goedegep.jfx.controls;
+package goedegep.jfx.objectcontrols;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -8,25 +8,58 @@ import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleObjectProperty;
-import javafx.scene.control.TextArea;
+import javafx.event.EventHandler;
+import javafx.scene.input.InputEvent;
+import javafx.scene.web.HTMLEditor;
 
-public class ObjectControlMultiLineString extends TextArea implements ObjectControl<String> {
+public class ObjectControlHTMLString extends HTMLEditor implements ObjectControl<String> {
   
+  /**
+   * Indicates whether the control is optional (if true) or mandatory.
+   */
+  private BooleanProperty optionalProperty = new SimpleBooleanProperty(false);
   private BooleanProperty isValidProperty = new SimpleBooleanProperty(true);
   private BooleanProperty isFilledInProperty = new SimpleBooleanProperty(false);
   private ObjectProperty<String> objectValueProperty = new SimpleObjectProperty<>();
-  private boolean isOptional;
   private List<InvalidationListener> invalidationListeners = new ArrayList<>();
       
-  public ObjectControlMultiLineString(String text, double width, boolean isOptional, String toolTipText, String id) {
-    this.isOptional = isOptional;
+  /**
+   * Constructor.
+   * 
+   * @param text
+   * @param width
+   * @param isOptional
+   * @param toolTipText
+   * @param id
+   */
+  public ObjectControlHTMLString(String text, double width, boolean isOptional, String toolTipText, String id) {
+    optionalProperty.set(isOptional);
     if (id != null) {
       setId(id);
     }
 
-    textProperty().addListener((observableValue, oldValue, newValue) -> handleChanges(newValue));
+    addEventHandler(InputEvent.ANY, new EventHandler<InputEvent>() {
+
+      @Override
+      public void handle(InputEvent event) {
+        handleChanges(getHtmlText());
+      }
+    });
     
-    handleChanges(textProperty().get());
+    handleChanges(getHtmlText());
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public BooleanProperty ocOptionalProperty() {
+    return optionalProperty;
+  }
+
+  @Override
+  public boolean isOptional() {
+    return optionalProperty.get();
   }
   
   private void handleChanges(final String newValue) {
@@ -53,13 +86,8 @@ public class ObjectControlMultiLineString extends TextArea implements ObjectCont
   }
 
   @Override
-  public boolean isOptional() {
-    return isOptional;
-  }
-
-  @Override
   public boolean getIsFilledIn() {
-    String text = getText();
+    String text = getHtmlText();
     
     return (text != null)  &&  !text.isEmpty();
   }
@@ -71,7 +99,7 @@ public class ObjectControlMultiLineString extends TextArea implements ObjectCont
 
   @Override
   public String getObjectValue() {
-    String text = getText();
+    String text = getHtmlText();
     
     if (text != null) {
       text = text.trim();
@@ -82,7 +110,7 @@ public class ObjectControlMultiLineString extends TextArea implements ObjectCont
 
   @Override
   public void setObjectValue(String objectValue) {
-    setText(objectValue);    
+    setHtmlText(objectValue);    
   }
 
   @Override
@@ -109,5 +137,6 @@ public class ObjectControlMultiLineString extends TextArea implements ObjectCont
   public void removeListener(InvalidationListener listener) {
     invalidationListeners.remove(listener);    
   }
+
 
 }

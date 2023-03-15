@@ -1,4 +1,4 @@
-package goedegep.jfx.controls;
+package goedegep.jfx.objectcontrols;
 
 import java.util.ArrayList;
 import java.util.HashMap;

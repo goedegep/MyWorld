@@ -1,4 +1,4 @@
-package goedegep.jfx.controls;
+package goedegep.jfx.objectcontrols;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -8,24 +8,41 @@ import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleObjectProperty;
-import javafx.scene.control.TextField;
+import javafx.scene.control.TextArea;
 
-public class ObjectControlString extends TextField implements ObjectControl<String> {
+public class ObjectControlMultiLineString extends TextArea implements ObjectControl<String> {
   
+  /**
+   * Indicates whether the control is optional (if true) or mandatory.
+   */
+  private BooleanProperty optionalProperty = new SimpleBooleanProperty(false);
   private BooleanProperty isValidProperty = new SimpleBooleanProperty(true);
   private BooleanProperty isFilledInProperty = new SimpleBooleanProperty(false);
   private ObjectProperty<String> objectValueProperty = new SimpleObjectProperty<>();
-  private boolean isOptional;
   private List<InvalidationListener> invalidationListeners = new ArrayList<>();
       
-  public ObjectControlString(String text, double width, boolean isOptional, String toolTipText) {
-    this.isOptional = isOptional;
-    setText(text);
-    setMinWidth(width);
+  public ObjectControlMultiLineString(String text, double width, boolean isOptional, String toolTipText, String id) {
+    optionalProperty.set(isOptional);
+    if (id != null) {
+      setId(id);
+    }
 
     textProperty().addListener((observableValue, oldValue, newValue) -> handleChanges(newValue));
     
     handleChanges(textProperty().get());
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public BooleanProperty ocOptionalProperty() {
+    return optionalProperty;
+  }
+
+  @Override
+  public boolean isOptional() {
+    return optionalProperty.get();
   }
   
   private void handleChanges(final String newValue) {
@@ -49,11 +66,6 @@ public class ObjectControlString extends TextField implements ObjectControl<Stri
     for (InvalidationListener invalidationListener: invalidationListeners) {
       invalidationListener.invalidated(this);
     }
-  }
-
-  @Override
-  public boolean isOptional() {
-    return isOptional;
   }
 
   @Override
@@ -109,21 +121,4 @@ public class ObjectControlString extends TextField implements ObjectControl<Stri
     invalidationListeners.remove(listener);    
   }
 
-//  @Override
-//  public void addListener(ChangeListener<? super String> listener) {
-//    // TODO Auto-generated method stub
-//    
-//  }
-//
-//  @Override
-//  public void removeListener(ChangeListener<? super String> listener) {
-//    // TODO Auto-generated method stub
-//    
-//  }
-//
-//  @Override
-//  public String getValue() {
-//    // TODO Auto-generated method stub
-//    return null;
-//  }
 }

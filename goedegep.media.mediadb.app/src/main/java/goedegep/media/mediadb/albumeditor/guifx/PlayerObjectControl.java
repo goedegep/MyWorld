@@ -7,9 +7,9 @@ import java.util.logging.Logger;
 
 import goedegep.jfx.ComponentFactoryFx;
 import goedegep.jfx.CustomizationFx;
-import goedegep.jfx.controls.AutoCompleteTextFieldObjectInput;
-import goedegep.jfx.controls.ObjectControl;
-import goedegep.jfx.controls.TextFieldObjectControl;
+import goedegep.jfx.objectcontrols.ObjectControl;
+import goedegep.jfx.objectcontrols.ObjectControlAutoCompleteTextField;
+import goedegep.jfx.objectcontrols.ObjectControlTextField;
 import goedegep.media.mediadb.app.ArtistStringConverterAndChecker;
 import goedegep.media.mediadb.model.Artist;
 import goedegep.media.mediadb.model.MediaDb;
@@ -27,10 +27,17 @@ public class PlayerObjectControl implements ObjectControl<Player> {
   private BooleanProperty isFilledInProperty = new SimpleBooleanProperty(true);
   private ArtistStringConverterAndChecker artistStringConverterAndChecker;
   
-  private AutoCompleteTextFieldObjectInput<Artist> artistObjectControl;
-  private TextFieldObjectControl<String> playerInstrumentTextField;
+  private ObjectControlAutoCompleteTextField<Artist> artistObjectControl;
+  private ObjectControlTextField<String> playerInstrumentTextField;
+  
+  /**
+   * Indicates whether the control is optional (if true) or mandatory.
+   * If there is a control for a Player, the player has to be filled in. So this control is never optional.
+   */
+  private BooleanProperty optionalProperty = new SimpleBooleanProperty(false);
 
   public PlayerObjectControl(CustomizationFx customization, MediaDb mediaDb) {
+    optionalProperty.set(false);
     ComponentFactoryFx componentFactory = customization.getComponentFactoryFx();
     artistStringConverterAndChecker = new ArtistStringConverterAndChecker(mediaDb);
     
@@ -41,17 +48,18 @@ public class PlayerObjectControl implements ObjectControl<Player> {
     artistObjectControl.addListener((e) -> notifyListeners());
     playerInstrumentTextField.addListener((e) -> notifyListeners());
   }
-  
+
   /**
    * {@inheritDoc}
-   * 
-   * If there is a control for a Player, the player has to be filled in. So this method always returns false.
-   * 
-   * @return false
    */
   @Override
+  public BooleanProperty ocOptionalProperty() {
+    return optionalProperty;
+  }
+
+  @Override
   public boolean isOptional() {
-    return false;
+    return optionalProperty.get();
   }
 
   /**
@@ -107,11 +115,11 @@ public class PlayerObjectControl implements ObjectControl<Player> {
     playerInstrumentTextField.setText(StringUtil.stringCollectionToCommaSeparatedStrings(player.getInstruments()));
   }
 
-  public AutoCompleteTextFieldObjectInput<Artist> getArtistObjectControl() {
+  public ObjectControlAutoCompleteTextField<Artist> getArtistObjectControl() {
     return artistObjectControl;
   }
 
-  public TextFieldObjectControl<String> getPlayerInstrumentTextField() {
+  public ObjectControlTextField<String> getPlayerInstrumentTextField() {
     return playerInstrumentTextField;
   }
 

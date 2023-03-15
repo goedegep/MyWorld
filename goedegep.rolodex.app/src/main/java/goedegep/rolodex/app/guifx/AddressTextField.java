@@ -5,14 +5,14 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import goedegep.jfx.CustomizationFx;
-import goedegep.jfx.controls.AutoCompleteTextFieldObjectInput;
+import goedegep.jfx.objectcontrols.ObjectControlAutoCompleteTextField;
 import goedegep.rolodex.model.Address;
 import goedegep.rolodex.model.Rolodex;
 
 /**
  * This class is a TextField, with autocompletion, for an address
  */
-public class AddressTextField extends AutoCompleteTextFieldObjectInput<String> {
+public class AddressTextField extends ObjectControlAutoCompleteTextField<String> {
   @SuppressWarnings("unused")
   private static final Logger         LOGGER = Logger.getLogger(AddressTextField.class.getName());
   private Rolodex rolodex;

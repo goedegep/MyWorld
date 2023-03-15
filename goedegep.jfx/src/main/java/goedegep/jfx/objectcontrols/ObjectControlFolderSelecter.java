@@ -1,4 +1,4 @@
-package goedegep.jfx.controls;
+package goedegep.jfx.objectcontrols;
 
 import java.io.File;
 import java.util.logging.Logger;
@@ -28,9 +28,9 @@ import javafx.stage.DirectoryChooser;
  * By providing separate controls (instead of e.g. a Node containing the controls) there is complete freedom in using the
  * controls in a GUI.
  */
-public class FolderSelecter extends FileOrFolderSelecterAbstract {
+public class ObjectControlFolderSelecter extends ObjectControlFileOrFolderSelecterAbstract {
   @SuppressWarnings("unused")
-  private static final Logger LOGGER = Logger.getLogger(FolderSelecter.class.getName());
+  private static final Logger LOGGER = Logger.getLogger(ObjectControlFolderSelecter.class.getName());
   
   private Button folderChooserButton;
   
@@ -45,7 +45,7 @@ public class FolderSelecter extends FileOrFolderSelecterAbstract {
    * @param folderChooserButtonToolTipText if not null, this text will be used as Tooltip for the button to call up a DirectoryChooser.
    * @param directoryChooserTitle title for the DirectoryChooser (may not be null)
    */
-  public FolderSelecter(String initiallySelecterFolder, int textFieldWidth, String textFieldToolTipText,
+  public ObjectControlFolderSelecter(String initiallySelecterFolder, int textFieldWidth, String textFieldToolTipText,
       String folderChooserButtonText, String folderChooserButtonToolTipText, String directoryChooserTitle) {
     super(textFieldWidth, textFieldToolTipText);
     

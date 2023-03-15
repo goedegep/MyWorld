@@ -4,14 +4,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import goedegep.jfx.CustomizationFx;
-import goedegep.jfx.controls.AutoCompleteTextFieldObjectInput;
+import goedegep.jfx.objectcontrols.ObjectControlAutoCompleteTextField;
 import goedegep.rolodex.model.Institution;
 import goedegep.rolodex.model.Rolodex;
 
 /**
  * This class is a TextField, with autocompletion, for an Institution
  */
-public class InstitutionTextField extends AutoCompleteTextFieldObjectInput<String> {
+public class InstitutionTextField extends ObjectControlAutoCompleteTextField<String> {
   private Rolodex rolodex;
   
   /**
