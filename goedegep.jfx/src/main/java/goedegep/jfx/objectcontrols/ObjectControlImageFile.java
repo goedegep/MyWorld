@@ -1,4 +1,4 @@
-package goedegep.jfx.controls;
+package goedegep.jfx.objectcontrols;
 
 import java.io.File;
 import java.text.ParseException;
@@ -11,10 +11,10 @@ import goedegep.jfx.CustomizationFx;
 import javafx.beans.InvalidationListener;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.geometry.Rectangle2D;
-import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -44,8 +44,14 @@ public class ObjectControlImageFile implements ObjectControl<String> {
   private ImageView imageView;
   private Label label;
   private Stage largePictureStage = null;
+  
+  /**
+   * Indicates whether the control is optional (if true) or mandatory.
+   */
+  private BooleanProperty optionalProperty = new SimpleBooleanProperty(false);
 
   public ObjectControlImageFile(CustomizationFx customization) {
+    optionalProperty.set(false);
     componentFactory = customization.getComponentFactoryFx();
     
     stackPane = new StackPane();
@@ -73,6 +79,19 @@ public class ObjectControlImageFile implements ObjectControl<String> {
     StackPane.setAlignment(label, Pos.BOTTOM_CENTER);
     
 //    node.getChildren().remove(changeButton);
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public BooleanProperty ocOptionalProperty() {
+    return optionalProperty;
+  }
+
+  @Override
+  public boolean isOptional() {
+    return optionalProperty.get();
   }
 
   public void setInitialDirectory(File initialDirectory) {
@@ -135,12 +154,6 @@ public class ObjectControlImageFile implements ObjectControl<String> {
     pane.setCenter(largePicture);
     largePictureStage.setScene(new Scene(pane));
     largePictureStage.show();
-  }
-
-  @Override
-  public boolean isOptional() {
-    // TODO Auto-generated method stub
-    return false;
   }
 
   @Override

@@ -1,8 +1,7 @@
-package goedegep.jfx.controls;
+package goedegep.jfx.objectcontrols;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.SortedSet;
 import java.util.logging.Logger;
 
 import goedegep.jfx.stringconverters.AnyTypeStringConverter;
@@ -14,22 +13,36 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
 
-public class AutoCompleteTextFieldObjectInput<T> extends AutoCompleteTextField implements ObjectControl<T> {
-  private static final Logger         LOGGER = Logger.getLogger(AutoCompleteTextFieldObjectInput.class.getName());
+/**
+ * This class forms the basis for classes implementing the {@link ObjectControl} interface, using a TextField control.
+ * <p>
+ * Information about extending this class:
+ * <ul>
+ * <li>
+ * <b>Object to String conversion</b><br/>
+ * To convert an object to String and vice versa the methods {@link #objectToString} and {@link #stringToObject} have to be overwritten (this is mandatory).
+ * </li>
+ * </ul>
+ *
+ * @param <T> The object type represented by this control.
+ */
+public class ObjectControlTextField<T> extends TextField implements ObjectControl<T> {
+  @SuppressWarnings("unused")
+  private static final Logger         LOGGER = Logger.getLogger(ObjectControlTextField.class.getName());
   
   private StringConverterAndChecker<T> stringConverterAndChecker = null;
-  
-  private BooleanProperty isValidProperty = new SimpleBooleanProperty(true);
-  private BooleanProperty isFilledInProperty = new SimpleBooleanProperty(true);
-  private ObjectProperty<T> objectValueProperty = new SimpleObjectProperty<>();
-  private List<InvalidationListener> invalidationListeners = new ArrayList<>();
   
   /**
    * Indicates whether the control is optional (if true) or mandatory.
    */
-  private boolean isOptional;
+  private BooleanProperty optionalProperty = new SimpleBooleanProperty(false);
+  private BooleanProperty isValidProperty = new SimpleBooleanProperty(true);
+  private BooleanProperty isFilledInProperty = new SimpleBooleanProperty(true);
+  private ObjectProperty<T> objectValueProperty = new SimpleObjectProperty<>();
+  private List<InvalidationListener> invalidationListeners = new ArrayList<>();
   
     
   /**
@@ -41,7 +54,7 @@ public class AutoCompleteTextFieldObjectInput<T> extends AutoCompleteTextField i
    * @param toolTipText An optional ToolTip text.
    * @param dummy a dummy parameter, to have a different signature than TextFieldObjectInput(String text, double width, boolean isOptional, String toolTipText). (I know it's bad)
    */
-  public AutoCompleteTextFieldObjectInput(T initialValue, double width, boolean isOptional, String toolTipText, boolean dummy) {
+  public ObjectControlTextField(T initialValue, double width, boolean isOptional, String toolTipText, boolean dummy) {
     this((StringConverterAndChecker<T>) null, (String) null, width, isOptional, toolTipText);
     
     setText(objectToString(initialValue));
@@ -55,7 +68,7 @@ public class AutoCompleteTextFieldObjectInput<T> extends AutoCompleteTextField i
    * @param isOptional Indicates whether the control is optional (if true) or mandatory.
    * @param toolTipText An optional ToolTip text.
    */
-  public AutoCompleteTextFieldObjectInput(StringConverterAndChecker<T> stringConverter, T initialValue, double width, boolean isOptional, String toolTipText) {
+  public ObjectControlTextField(StringConverterAndChecker<T> stringConverter, T initialValue, double width, boolean isOptional, String toolTipText) {
     this(stringConverter, (String) null, width, isOptional, toolTipText);
 
     setText(objectToString(initialValue));
@@ -70,7 +83,7 @@ public class AutoCompleteTextFieldObjectInput<T> extends AutoCompleteTextField i
    * @param isOptional Indicates whether the control is optional (if true) or mandatory.
    * @param toolTipText An optional ToolTip text.
    */
-  public AutoCompleteTextFieldObjectInput(String text, double width, boolean isOptional, String toolTipText) {
+  public ObjectControlTextField(String text, double width, boolean isOptional, String toolTipText) {
     this(null, text, width, isOptional, toolTipText);
   }
   
@@ -82,9 +95,8 @@ public class AutoCompleteTextFieldObjectInput<T> extends AutoCompleteTextField i
    * @param isOptional Indicates whether the control is optional (if true) or mandatory.
    * @param toolTipText An optional ToolTip text.
    */
-  public AutoCompleteTextFieldObjectInput(StringConverterAndChecker<T> stringConverter, String text, double width, boolean isOptional, String toolTipText) {
-    super();
-    setText(text);
+  public ObjectControlTextField(StringConverterAndChecker<T> stringConverter, String text, double width, boolean isOptional, String toolTipText) {
+    super(text);
     
     if (stringConverter != null) {
       this.stringConverterAndChecker = stringConverter;
@@ -94,7 +106,7 @@ public class AutoCompleteTextFieldObjectInput<T> extends AutoCompleteTextField i
     
     setMinWidth(width);
     
-    this.isOptional = isOptional;
+    optionalProperty.set(isOptional);
     
     if (toolTipText != null) {
       setTooltip(new Tooltip(toolTipText));
@@ -102,37 +114,52 @@ public class AutoCompleteTextFieldObjectInput<T> extends AutoCompleteTextField i
     
     textProperty().addListener(new ChangeListener<String>() {
       public void changed(final ObservableValue<? extends String> observableValue, final String oldValue, final String newValue) {
-        handleNewInput();
+        updateForNewText();
+        
+        notifyListeners();
       }
     });
     
     focusedProperty().addListener(this::handleFocusChanged);
-    handleNewInput();
+
+    updateForNewText();
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public BooleanProperty ocOptionalProperty() {
+    return optionalProperty;
+  }
+
+  @Override
+  public boolean isOptional() {
+    return optionalProperty.get();
   }
   
-  private void handleNewInput() {
-    LOGGER.severe("=>");
+  /**
+   * Handle a new text value.
+   */
+  private void updateForNewText() {
     if (isEnteredDataValid(null)) {
-      LOGGER.severe("Data is valid");
-      isValidProperty.set(true);
-      setStyle("-fx-text-fill: black;");
-    } else {
-      LOGGER.severe("Data NOT valid");
-      if (isOptional()  &&  !getIsFilledIn()) {
-        LOGGER.severe("Optional and not filled in");
+      if (getIsFilledIn()  ||  isOptional()) {
         isValidProperty.set(true);
       } else {
         isValidProperty.set(false);
       }
-      setStyle("-fx-text-fill: red;");
+      setStyle("-fx-text-fill: black;");
+    } else {
+      if (isOptional()  &&  !getIsFilledIn()) {
+        isValidProperty.set(true);
+      } else {
+        isValidProperty.set(false);
+        setStyle("-fx-text-fill: red;");
+      }
     }
     
     objectValueProperty.setValue(getObjectValue());
-    LOGGER.severe("objectValueProperty: " + objectValueProperty);
     isFilledInProperty.setValue(getIsFilledIn());
-    LOGGER.severe("isFilledInProperty: " + isFilledInProperty);
-    
-    notifyListeners();
   }
   
   private void handleFocusChanged(ObservableValue<? extends Boolean> observableValue, Boolean oldValue, Boolean newValue) {
@@ -143,11 +170,6 @@ public class AutoCompleteTextFieldObjectInput<T> extends AutoCompleteTextField i
         setText(objectToString(objectValue));
       }
     }
-  }
-
-  @Override
-  public boolean isOptional() {
-    return isOptional;
   }
 
   @Override
@@ -183,7 +205,8 @@ public class AutoCompleteTextFieldObjectInput<T> extends AutoCompleteTextField i
     boolean valid = false;
     
     try {
-      return stringConverterAndChecker.fromString(getText()) != null;
+      stringConverterAndChecker.fromString(getText());
+      valid = true;
     } catch (Exception e) {
       // Seems text is not valid
     }
@@ -193,12 +216,11 @@ public class AutoCompleteTextFieldObjectInput<T> extends AutoCompleteTextField i
 
   @Override
   public T getObjectValue() {
-    if (getText() == null) {
+    if (getText() == null  ||  getText().isEmpty()) {
       return null;
     }
     
-    T object = (T) stringToObject(getText());
-    return object;
+    return (T) stringToObject(getText().trim());
   }
   
   public String getObjectValueAsFormattedText()  {
@@ -241,9 +263,6 @@ public class AutoCompleteTextFieldObjectInput<T> extends AutoCompleteTextField i
     return stringConverterAndChecker.toString(value);
   }
   
-  /**
-   * {@inheritDoc}
-   */
   @Override
   public BooleanProperty isValid() {
     return isValidProperty;
@@ -264,24 +283,30 @@ public class AutoCompleteTextFieldObjectInput<T> extends AutoCompleteTextField i
     invalidationListeners.remove(listener);    
   }
   
-  public void setOptions(List<T> options) {
-    SortedSet<String> entries = getEntries();
-    
-    entries.clear();
-    for (T option: options) {
-      entries.add(objectToString(option));
-    }
-  }
-  
   /**
    * Notify the <code>invalidationListeners</code> that something has changed.
    */
   private void notifyListeners() {
-    LOGGER.severe("=>");
     for (InvalidationListener invalidationListener: invalidationListeners) {
-      LOGGER.severe("Notifying listener: " + invalidationListener);
       invalidationListener.invalidated(this);
     }
   }
 
+//  @Override
+//  public void addListener(ChangeListener<? super T> listener) {
+//    // TODO Auto-generated method stub
+//    
+//  }
+//
+//  @Override
+//  public void removeListener(ChangeListener<? super T> listener) {
+//    // TODO Auto-generated method stub
+//    
+//  }
+//
+//  @Override
+//  public T getValue() {
+//    // TODO Auto-generated method stub
+//    return null;
+//  }
 }

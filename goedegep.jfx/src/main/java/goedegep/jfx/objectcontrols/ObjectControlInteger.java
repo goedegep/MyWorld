@@ -1,4 +1,4 @@
-package goedegep.jfx.controls;
+package goedegep.jfx.objectcontrols;
 
 import java.util.logging.Logger;
 
@@ -13,7 +13,7 @@ import goedegep.util.money.PgCurrency;
  * Therefore a valid factor range can be set by specifying a minimum and maximum factor, see {@link #setValidValueRange}.
  * By default both minimumFactor and maximumFactor are set to 100.
  */
-public class ObjectControlInteger extends TextFieldObjectControl<Integer> {
+public class ObjectControlInteger extends ObjectControlTextField<Integer> {
   @SuppressWarnings("unused")
   private static final Logger         LOGGER = Logger.getLogger(ObjectControlInteger.class.getName());
     

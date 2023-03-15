@@ -7,7 +7,7 @@ import java.util.logging.Logger;
 import goedegep.jfx.ComponentFactoryFx;
 import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.JfxStage;
-import goedegep.jfx.controls.FolderSelecter;
+import goedegep.jfx.objectcontrols.ObjectControlFolderSelecter;
 import goedegep.media.app.MediaRegistry;
 import goedegep.media.app.base.MediaAppResourcesFx;
 import goedegep.media.mediadb.albuminfo.AlbumInfoFilesReader;
@@ -55,9 +55,9 @@ public class DuneWindow extends JfxStage {
   private String currentDunePlaylistsFolderPath = null;
 
   private CheckBox synchronizeToDuneCheckBox = null;
-  private FolderSelecter duneMusicFolderSelecter;
+  private ObjectControlFolderSelecter duneMusicFolderSelecter;
   private CheckBox updatePlayListsCheckBox = null;
-  private FolderSelecter playListFolderPathSelecter;
+  private ObjectControlFolderSelecter playListFolderPathSelecter;
   private Button runButton = null;
   private Button abortButton = null;
   private TextArea statusTextArea = null;
@@ -118,7 +118,7 @@ public class DuneWindow extends JfxStage {
     label = componentFactory.createLabel("Music folder:");
     grid.add(label, 1, 0);
     
-    FolderSelecter musicFolderSelecter = componentFactory.createFolderSelecter(currentMusicFolder, 200, "Currently selected folder",
+    ObjectControlFolderSelecter musicFolderSelecter = componentFactory.createFolderSelecter(currentMusicFolder, 200, "Currently selected folder",
         "Choose folder", "Select music folder via a file chooser", "Select the folder with all music");
     Node folderName = musicFolderSelecter.getPathTextField();
     grid.add(folderName, 2, 0);

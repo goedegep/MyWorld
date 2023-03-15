@@ -6,7 +6,7 @@ import java.util.logging.Logger;
 import goedegep.jfx.ComponentFactoryFx;
 import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.JfxStage;
-import goedegep.jfx.controls.FolderSelecter;
+import goedegep.jfx.objectcontrols.ObjectControlFolderSelecter;
 import goedegep.pctools.filefinder.logic.FileFinderTask;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.value.ChangeListener;
@@ -87,7 +87,7 @@ public class FileFinderWindow extends JfxStage {
     Label folderNameLabel = componentFactory.createLabel("Search folder:");
     controlsPane.getChildren().add(folderNameLabel);
     
-    FolderSelecter folderSelecter = componentFactory.createFolderSelecter(null, 400, "Currently selected folder",
+    ObjectControlFolderSelecter folderSelecter = componentFactory.createFolderSelecter(null, 400, "Currently selected folder",
         "Choose folder", "Select search folder via a file chooser", "Select the search folder");
     
     Node folderNameTextField = folderSelecter.getPathTextField();

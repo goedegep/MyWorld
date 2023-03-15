@@ -4,14 +4,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import goedegep.jfx.CustomizationFx;
-import goedegep.jfx.controls.AutoCompleteTextFieldObjectInput;
+import goedegep.jfx.objectcontrols.ObjectControlAutoCompleteTextField;
 import goedegep.rolodex.model.PhoneNumber;
 import goedegep.rolodex.model.Rolodex;
 
 /**
  * This class is a TextField, with autocompletion, for a phone number
  */
-public class PhoneNumberTextField extends AutoCompleteTextFieldObjectInput<String> {
+public class PhoneNumberTextField extends ObjectControlAutoCompleteTextField<String> {
   private Rolodex rolodex;
   
   /**

@@ -1,4 +1,4 @@
-package goedegep.jfx.controls;
+package goedegep.jfx.objectcontrols;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,11 +19,13 @@ public class ObjectControlBoolean extends CheckBox implements ObjectControl<Bool
   @SuppressWarnings("unused")
   private static final Logger         LOGGER = Logger.getLogger(ObjectControlBoolean.class.getName());
   
+  /**
+   * Indicates whether the control is optional (if true) or mandatory.
+   */
+  private BooleanProperty optionalProperty = new SimpleBooleanProperty(false);
   private BooleanProperty isValidProperty = new SimpleBooleanProperty(true);
   private BooleanProperty isFilledInProperty = new SimpleBooleanProperty(true);
   private ObjectProperty<Boolean> objectValueProperty = new SimpleObjectProperty<>(false);
-  private boolean isOptional;
-//  private List<ChangeListener<? super Boolean>> changeListeners = new ArrayList<>();
   private List<InvalidationListener> invalidationListeners = new ArrayList<>();
   
   public ObjectControlBoolean(String text, boolean selected, boolean isOptional, String toolTipText) {
@@ -32,7 +34,7 @@ public class ObjectControlBoolean extends CheckBox implements ObjectControl<Bool
     setSelected(selected);
     objectValueProperty.set(selected);
     
-    this.isOptional = isOptional;
+    optionalProperty.set(isOptional);
     
     selectedProperty().addListener(new ChangeListener<Boolean>() {
       
@@ -49,10 +51,18 @@ public class ObjectControlBoolean extends CheckBox implements ObjectControl<Bool
     }
     //this.onInputMethodTextChangedProperty()
   }
-  
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public BooleanProperty ocOptionalProperty() {
+    return optionalProperty;
+  }
+
   @Override
   public boolean isOptional() {
-    return isOptional;
+    return optionalProperty.get();
   }
 
   @Override
@@ -90,16 +100,6 @@ public class ObjectControlBoolean extends CheckBox implements ObjectControl<Bool
     return isFilledInProperty;
   }
 
-//  @Override
-//  public void addListener(ChangeListener<? super Boolean> listener) {
-//    changeListeners.add(listener);    
-//  }
-//
-//  @Override
-//  public void removeListener(ChangeListener<? super Boolean> listener) {
-//    changeListeners.remove(listener);    
-//  }
-
   @Override
   public void addListener(InvalidationListener listener) {
     invalidationListeners.add(listener);    
@@ -119,21 +119,4 @@ public class ObjectControlBoolean extends CheckBox implements ObjectControl<Bool
     }
   }
 
-//  @Override
-//  public void addListener(ChangeListener<? super Boolean> listener) {
-//    // TODO Auto-generated method stub
-//    
-//  }
-//
-//  @Override
-//  public void removeListener(ChangeListener<? super Boolean> listener) {
-//    // TODO Auto-generated method stub
-//    
-//  }
-//
-//  @Override
-//  public Boolean getValue() {
-//    // TODO Auto-generated method stub
-//    return null;
-//  }
 }

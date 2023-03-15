@@ -10,7 +10,7 @@ import goedegep.finan.mortgage.MortgageReportsGenerator;
 import goedegep.jfx.ComponentFactoryFx;
 import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.JfxStage;
-import goedegep.jfx.controls.FileSelecter;
+import goedegep.jfx.objectcontrols.ObjectControlFileSelecter;
 import goedegep.util.datetime.DateUtil;
 import javafx.beans.property.BooleanProperty;
 import javafx.scene.Node;
@@ -30,7 +30,7 @@ public class YearlyReportOptionsWindow extends JfxStage {
 
   private BooleanProperty selectionValidProperty;
   private ComboBox<Integer> yearComboBox;
-  private FileSelecter fileSelecter;
+  private ObjectControlFileSelecter fileSelecter;
   private Button okButton;
   
   public YearlyReportOptionsWindow(CustomizationFx customization, MortgageCalculator mortgageCalculator) {

@@ -17,12 +17,12 @@ import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.FileReferencePanel;
 import goedegep.jfx.FileReferenceTypeInfo;
 import goedegep.jfx.JfxStage;
-import goedegep.jfx.controls.FileSelecter;
-import goedegep.jfx.controls.ObjectControlBoolean;
-import goedegep.jfx.controls.ObjectControlFlexDate;
-import goedegep.jfx.controls.ObjectControlGroup;
-import goedegep.jfx.controls.ObjectControlHTMLString;
-import goedegep.jfx.controls.ObjectControlString;
+import goedegep.jfx.objectcontrols.ObjectControlBoolean;
+import goedegep.jfx.objectcontrols.ObjectControlFileSelecter;
+import goedegep.jfx.objectcontrols.ObjectControlFlexDate;
+import goedegep.jfx.objectcontrols.ObjectControlGroup;
+import goedegep.jfx.objectcontrols.ObjectControlHTMLString;
+import goedegep.jfx.objectcontrols.ObjectControlString;
 import goedegep.types.model.FileReference;
 import goedegep.types.model.TypesFactory;
 import goedegep.types.model.TypesPackage;
@@ -91,7 +91,7 @@ public class EventsEditor extends JfxStage {
   private ObjectControlString eventFolderControl;
   private ObjectControlBoolean eventFolderExistsControl;
   private Button createEventsFolderButton;
-  private FileSelecter pictureFileSelecter;
+  private ObjectControlFileSelecter pictureFileSelecter;
   private ObjectControlHTMLString notesControl;
   private ImageView pictureImageView;
   

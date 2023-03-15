@@ -6,8 +6,8 @@ import java.util.logging.Logger;
 
 import goedegep.jfx.ComponentFactoryFx;
 import goedegep.jfx.CustomizationFx;
-import goedegep.jfx.controls.ObjectControlEnumComboBox;
-import goedegep.jfx.controls.TextFieldObjectControl;
+import goedegep.jfx.objectcontrols.ObjectControlEnumComboBox;
+import goedegep.jfx.objectcontrols.ObjectControlTextField;
 import goedegep.media.mediadb.model.Album;
 import goedegep.media.mediadb.model.Artist;
 import goedegep.media.mediadb.model.Disc;
@@ -73,7 +73,7 @@ class TrackReferenceAndMyTrackInfoControls {
    */
   private Track track;
   
-  private TextFieldObjectControl<String> bonusTrack;
+  private ObjectControlTextField<String> bonusTrack;
   private ObjectControlEnumComboBox<goedegep.media.mediadb.model.Collection> collectionComboBox;
   private ObjectControlEnumComboBox<IWant> iWantComboBox;
   private List<MediumInfoControls> iHaveOnMediumInfoControlsList = new ArrayList<>();
@@ -277,7 +277,7 @@ class TrackReferenceAndMyTrackInfoControls {
         compilationTrackReferenceAlbumId = compilationTrackReferenceAlbumId + " - " + compilationTrackReferenceDiscId;
       }
     }
-    TextFieldObjectControl<String> compilationTrackReferenceDiscControl = componentFactory.createTextFieldObjectInput(null, compilationTrackReferenceAlbumId, 300, true, null);
+    ObjectControlTextField<String> compilationTrackReferenceDiscControl = componentFactory.createTextFieldObjectInput(null, compilationTrackReferenceAlbumId, 300, true, null);
     gridPane.add(compilationTrackReferenceDiscControl, column++, row);
     
     // Identification of the track of the track reference of the Compilation Track Reference (not Yet editable)
@@ -288,7 +288,7 @@ class TrackReferenceAndMyTrackInfoControls {
         compilationTrackReferenceTrackTitle = compilationTrackReferenceTrack.getTitle();
       }
     }
-    TextFieldObjectControl<String> compilationTrackReferenceTrackControl = componentFactory.createTextFieldObjectInput(null, compilationTrackReferenceTrackTitle, 300, true, null);
+    ObjectControlTextField<String> compilationTrackReferenceTrackControl = componentFactory.createTextFieldObjectInput(null, compilationTrackReferenceTrackTitle, 300, true, null);
     gridPane.add(compilationTrackReferenceTrackControl, column++, row);
     
     // MyTrackInfo:Collection

@@ -1,9 +1,11 @@
-package goedegep.jfx.controls;
+package goedegep.jfx.objectcontrols;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.SortedSet;
 import java.util.logging.Logger;
 
+import goedegep.jfx.controls.AutoCompleteTextField;
 import goedegep.jfx.stringconverters.AnyTypeStringConverter;
 import goedegep.jfx.stringconverters.StringConverterAndChecker;
 import javafx.beans.InvalidationListener;
@@ -13,37 +15,21 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
 
-/**
- * This class forms the basis for classes implementing the {@link ObjectControl} interface, using a TextField control.
- * <p>
- * Information about extending this class:
- * <ul>
- * <li>
- * <b>Object to String conversion</b><br/>
- * To convert an object to String and vice versa the methods {@link #objectToString} and {@link #stringToObject} have to be overwritten (this is mandatory).
- * </li>
- * </ul>
- *
- * @param <T> The object type represented by this control.
- */
-public class TextFieldObjectControl<T> extends TextField implements ObjectControl<T> {
-  @SuppressWarnings("unused")
-  private static final Logger         LOGGER = Logger.getLogger(TextFieldObjectControl.class.getName());
+public class ObjectControlAutoCompleteTextField<T> extends AutoCompleteTextField implements ObjectControl<T> {
+  private static final Logger         LOGGER = Logger.getLogger(ObjectControlAutoCompleteTextField.class.getName());
   
   private StringConverterAndChecker<T> stringConverterAndChecker = null;
-  
-  private BooleanProperty isValidProperty = new SimpleBooleanProperty(true);
-  private BooleanProperty isFilledInProperty = new SimpleBooleanProperty(true);
-  private ObjectProperty<T> objectValueProperty = new SimpleObjectProperty<>();
-  private List<InvalidationListener> invalidationListeners = new ArrayList<>();
   
   /**
    * Indicates whether the control is optional (if true) or mandatory.
    */
-  private boolean isOptional;
+  private BooleanProperty optionalProperty = new SimpleBooleanProperty(false);
+  private BooleanProperty isValidProperty = new SimpleBooleanProperty(true);
+  private BooleanProperty isFilledInProperty = new SimpleBooleanProperty(true);
+  private ObjectProperty<T> objectValueProperty = new SimpleObjectProperty<>();
+  private List<InvalidationListener> invalidationListeners = new ArrayList<>();
   
     
   /**
@@ -55,7 +41,7 @@ public class TextFieldObjectControl<T> extends TextField implements ObjectContro
    * @param toolTipText An optional ToolTip text.
    * @param dummy a dummy parameter, to have a different signature than TextFieldObjectInput(String text, double width, boolean isOptional, String toolTipText). (I know it's bad)
    */
-  public TextFieldObjectControl(T initialValue, double width, boolean isOptional, String toolTipText, boolean dummy) {
+  public ObjectControlAutoCompleteTextField(T initialValue, double width, boolean isOptional, String toolTipText, boolean dummy) {
     this((StringConverterAndChecker<T>) null, (String) null, width, isOptional, toolTipText);
     
     setText(objectToString(initialValue));
@@ -69,7 +55,7 @@ public class TextFieldObjectControl<T> extends TextField implements ObjectContro
    * @param isOptional Indicates whether the control is optional (if true) or mandatory.
    * @param toolTipText An optional ToolTip text.
    */
-  public TextFieldObjectControl(StringConverterAndChecker<T> stringConverter, T initialValue, double width, boolean isOptional, String toolTipText) {
+  public ObjectControlAutoCompleteTextField(StringConverterAndChecker<T> stringConverter, T initialValue, double width, boolean isOptional, String toolTipText) {
     this(stringConverter, (String) null, width, isOptional, toolTipText);
 
     setText(objectToString(initialValue));
@@ -84,7 +70,7 @@ public class TextFieldObjectControl<T> extends TextField implements ObjectContro
    * @param isOptional Indicates whether the control is optional (if true) or mandatory.
    * @param toolTipText An optional ToolTip text.
    */
-  public TextFieldObjectControl(String text, double width, boolean isOptional, String toolTipText) {
+  public ObjectControlAutoCompleteTextField(String text, double width, boolean isOptional, String toolTipText) {
     this(null, text, width, isOptional, toolTipText);
   }
   
@@ -96,8 +82,9 @@ public class TextFieldObjectControl<T> extends TextField implements ObjectContro
    * @param isOptional Indicates whether the control is optional (if true) or mandatory.
    * @param toolTipText An optional ToolTip text.
    */
-  public TextFieldObjectControl(StringConverterAndChecker<T> stringConverter, String text, double width, boolean isOptional, String toolTipText) {
-    super(text);
+  public ObjectControlAutoCompleteTextField(StringConverterAndChecker<T> stringConverter, String text, double width, boolean isOptional, String toolTipText) {
+    super();
+    setText(text);
     
     if (stringConverter != null) {
       this.stringConverterAndChecker = stringConverter;
@@ -107,7 +94,7 @@ public class TextFieldObjectControl<T> extends TextField implements ObjectContro
     
     setMinWidth(width);
     
-    this.isOptional = isOptional;
+    optionalProperty.set(isOptional);
     
     if (toolTipText != null) {
       setTooltip(new Tooltip(toolTipText));
@@ -115,39 +102,50 @@ public class TextFieldObjectControl<T> extends TextField implements ObjectContro
     
     textProperty().addListener(new ChangeListener<String>() {
       public void changed(final ObservableValue<? extends String> observableValue, final String oldValue, final String newValue) {
-        updateForNewText();
-        
-        notifyListeners();
+        handleNewInput();
       }
     });
     
     focusedProperty().addListener(this::handleFocusChanged);
+    handleNewInput();
+  }
 
-    updateForNewText();
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public BooleanProperty ocOptionalProperty() {
+    return optionalProperty;
+  }
+
+  @Override
+  public boolean isOptional() {
+    return optionalProperty.get();
   }
   
-  /**
-   * Handle a new text value.
-   */
-  private void updateForNewText() {
+  private void handleNewInput() {
+    LOGGER.severe("=>");
     if (isEnteredDataValid(null)) {
-      if (getIsFilledIn()  ||  isOptional()) {
-        isValidProperty.set(true);
-      } else {
-        isValidProperty.set(false);
-      }
+      LOGGER.severe("Data is valid");
+      isValidProperty.set(true);
       setStyle("-fx-text-fill: black;");
     } else {
+      LOGGER.severe("Data NOT valid");
       if (isOptional()  &&  !getIsFilledIn()) {
+        LOGGER.severe("Optional and not filled in");
         isValidProperty.set(true);
       } else {
         isValidProperty.set(false);
-        setStyle("-fx-text-fill: red;");
       }
+      setStyle("-fx-text-fill: red;");
     }
     
     objectValueProperty.setValue(getObjectValue());
+    LOGGER.severe("objectValueProperty: " + objectValueProperty);
     isFilledInProperty.setValue(getIsFilledIn());
+    LOGGER.severe("isFilledInProperty: " + isFilledInProperty);
+    
+    notifyListeners();
   }
   
   private void handleFocusChanged(ObservableValue<? extends Boolean> observableValue, Boolean oldValue, Boolean newValue) {
@@ -158,11 +156,6 @@ public class TextFieldObjectControl<T> extends TextField implements ObjectContro
         setText(objectToString(objectValue));
       }
     }
-  }
-
-  @Override
-  public boolean isOptional() {
-    return isOptional;
   }
 
   @Override
@@ -198,8 +191,7 @@ public class TextFieldObjectControl<T> extends TextField implements ObjectContro
     boolean valid = false;
     
     try {
-      stringConverterAndChecker.fromString(getText());
-      valid = true;
+      return stringConverterAndChecker.fromString(getText()) != null;
     } catch (Exception e) {
       // Seems text is not valid
     }
@@ -209,11 +201,12 @@ public class TextFieldObjectControl<T> extends TextField implements ObjectContro
 
   @Override
   public T getObjectValue() {
-    if (getText() == null  ||  getText().isEmpty()) {
+    if (getText() == null) {
       return null;
     }
     
-    return (T) stringToObject(getText().trim());
+    T object = (T) stringToObject(getText());
+    return object;
   }
   
   public String getObjectValueAsFormattedText()  {
@@ -256,6 +249,9 @@ public class TextFieldObjectControl<T> extends TextField implements ObjectContro
     return stringConverterAndChecker.toString(value);
   }
   
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public BooleanProperty isValid() {
     return isValidProperty;
@@ -276,30 +272,24 @@ public class TextFieldObjectControl<T> extends TextField implements ObjectContro
     invalidationListeners.remove(listener);    
   }
   
+  public void setOptions(List<T> options) {
+    SortedSet<String> entries = getEntries();
+    
+    entries.clear();
+    for (T option: options) {
+      entries.add(objectToString(option));
+    }
+  }
+  
   /**
    * Notify the <code>invalidationListeners</code> that something has changed.
    */
   private void notifyListeners() {
+    LOGGER.severe("=>");
     for (InvalidationListener invalidationListener: invalidationListeners) {
+      LOGGER.severe("Notifying listener: " + invalidationListener);
       invalidationListener.invalidated(this);
     }
   }
 
-//  @Override
-//  public void addListener(ChangeListener<? super T> listener) {
-//    // TODO Auto-generated method stub
-//    
-//  }
-//
-//  @Override
-//  public void removeListener(ChangeListener<? super T> listener) {
-//    // TODO Auto-generated method stub
-//    
-//  }
-//
-//  @Override
-//  public T getValue() {
-//    // TODO Auto-generated method stub
-//    return null;
-//  }
 }

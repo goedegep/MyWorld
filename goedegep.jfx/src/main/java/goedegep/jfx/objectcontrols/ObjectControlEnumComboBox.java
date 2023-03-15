@@ -1,4 +1,4 @@
-package goedegep.jfx.controls;
+package goedegep.jfx.objectcontrols;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -7,7 +7,6 @@ import java.util.logging.Logger;
 
 import org.eclipse.emf.ecore.EEnum;
 
-import goedegep.media.mediadb.albumeditor.guifx.AlbumType;
 import goedegep.util.emf.EnumTextConverter;
 import javafx.beans.InvalidationListener;
 import javafx.beans.property.BooleanProperty;
@@ -48,9 +47,12 @@ public class ObjectControlEnumComboBox<T extends Enum<T>> extends ComboBox<Strin
    */
   private EnumTextConverter<T> enumTextConverter;
   
+  /**
+   * Indicates whether the control is optional (if true) or mandatory.
+   */
+  private BooleanProperty optionalProperty = new SimpleBooleanProperty(false);
   private BooleanProperty isValidProperty = new SimpleBooleanProperty(true);
   private BooleanProperty isFilledInProperty = new SimpleBooleanProperty(true);
-  private boolean isOptional;
   private List<InvalidationListener> invalidationListeners = new ArrayList<>();
   
   /**
@@ -102,6 +104,19 @@ public class ObjectControlEnumComboBox<T extends Enum<T>> extends ComboBox<Strin
     
     init(isOptional, toolTipText);
   }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public BooleanProperty ocOptionalProperty() {
+    return optionalProperty;
+  }
+
+  @Override
+  public boolean isOptional() {
+    return optionalProperty.get();
+  }
   
   /**
    * Handle initialization.
@@ -110,7 +125,7 @@ public class ObjectControlEnumComboBox<T extends Enum<T>> extends ComboBox<Strin
    * @param toolTipText an optional tooltip text
    */
   private void init(boolean isOptional, String toolTipText) {
-    this.isOptional = isOptional;
+    optionalProperty.set(isOptional);
     
     getItems().addAll(enumTextConverter.getStringValues());
     
@@ -144,11 +159,6 @@ public class ObjectControlEnumComboBox<T extends Enum<T>> extends ComboBox<Strin
     isValidProperty.set(isValid);
     
     isFilledInProperty.set(getIsFilledIn());
-  }
-
-  @Override
-  public boolean isOptional() {
-    return isOptional;
   }
 
   @Override

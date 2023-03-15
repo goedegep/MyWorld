@@ -8,11 +8,11 @@ import java.net.URISyntaxException;
 import java.util.List;
 import java.util.logging.Logger;
 
-import goedegep.jfx.controls.FileSelecter;
-import goedegep.jfx.controls.FolderSelecter;
-import goedegep.jfx.controls.ObjectControlGroup;
-import goedegep.jfx.controls.ObjectControlString;
 import goedegep.jfx.eobjecteditor.EObjectEditor;
+import goedegep.jfx.objectcontrols.ObjectControlFileSelecter;
+import goedegep.jfx.objectcontrols.ObjectControlFolderSelecter;
+import goedegep.jfx.objectcontrols.ObjectControlGroup;
+import goedegep.jfx.objectcontrols.ObjectControlString;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
@@ -72,8 +72,8 @@ public class FileReferencePanel extends TitledPane {
   
   // The ObjectInputs
   private ComboBox<String> typeComboBox;
-  private FileSelecter fileSelecter = null;
-  private FolderSelecter folderSelecter = null;
+  private ObjectControlFileSelecter fileSelecter = null;
+  private ObjectControlFolderSelecter folderSelecter = null;
   private ObjectControlString titleTextField;
 
   private GridPane gridPane;
@@ -201,7 +201,7 @@ public class FileReferencePanel extends TitledPane {
    * 
    * @return the fileSelecter.
    */
-  public FileSelecter getFileSelecter() {
+  public ObjectControlFileSelecter getFileSelecter() {
     if (fileSelecter == null) {
       fileSelecter = componentFactory.createFileSelecter(null, 400, "Currently selected file",
           "Choose file", "Select a file via a file chooser", "Select the file");
@@ -217,7 +217,7 @@ public class FileReferencePanel extends TitledPane {
    * 
    * @return the folderSelecter.
    */
-  public FolderSelecter getFolderSelecter() {
+  public ObjectControlFolderSelecter getFolderSelecter() {
     if (folderSelecter == null) {
       folderSelecter = componentFactory.createFolderSelecter(null, 400, "Currently selected folder",
           "Choose folder", "Select a folder via a folder chooser", "Select the folder");

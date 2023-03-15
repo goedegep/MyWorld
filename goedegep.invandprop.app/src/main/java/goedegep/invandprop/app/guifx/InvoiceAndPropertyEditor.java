@@ -23,16 +23,16 @@ import goedegep.invandprop.model.Property;
 import goedegep.jfx.ComponentFactoryFx;
 import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.JfxStage;
-import goedegep.jfx.controls.FileSelecter;
-import goedegep.jfx.controls.ObjectControl;
-import goedegep.jfx.controls.ObjectControlBoolean;
-import goedegep.jfx.controls.ObjectControlGroup;
-import goedegep.jfx.controls.ObjectControlCurrency;
-import goedegep.jfx.controls.ObjectControlFlexDate;
-import goedegep.jfx.controls.ObjectControlString;
 import goedegep.jfx.eobjecteditor.EObjectAttributeEditDescriptor;
 import goedegep.jfx.eobjecteditor.EObjectEditor;
 import goedegep.jfx.eobjecteditor.EObjectEditorDescriptor;
+import goedegep.jfx.objectcontrols.ObjectControl;
+import goedegep.jfx.objectcontrols.ObjectControlBoolean;
+import goedegep.jfx.objectcontrols.ObjectControlCurrency;
+import goedegep.jfx.objectcontrols.ObjectControlFileSelecter;
+import goedegep.jfx.objectcontrols.ObjectControlFlexDate;
+import goedegep.jfx.objectcontrols.ObjectControlGroup;
+import goedegep.jfx.objectcontrols.ObjectControlString;
 import goedegep.jfx.objecteditor.ObjectEditorAbstract;
 import goedegep.types.model.FileReference;
 import goedegep.types.model.TypesFactory;
@@ -1695,7 +1695,7 @@ class FileReferencePanel extends TitledPane {
   private FileReferencePanel thisDocumentReferencePanel;
   
   // The ObjectInputs
-  private FileSelecter fileSelecter;
+  private ObjectControlFileSelecter fileSelecter;
   private ObjectControlString titleTextField;
 
   private Desktop  desktop = null;
@@ -1814,7 +1814,7 @@ class FileReferencePanel extends TitledPane {
     updateTitle();
   }
   
-  public FileSelecter getFileSelecter() {
+  public ObjectControlFileSelecter getFileSelecter() {
     return fileSelecter;
   }
   

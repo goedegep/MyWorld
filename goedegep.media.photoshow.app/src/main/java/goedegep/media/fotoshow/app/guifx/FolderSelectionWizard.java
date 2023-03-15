@@ -12,7 +12,7 @@ import java.util.logging.Logger;
 
 import goedegep.jfx.ComponentFactoryFx;
 import goedegep.jfx.CustomizationFx;
-import goedegep.jfx.controls.FolderSelecter;
+import goedegep.jfx.objectcontrols.ObjectControlFolderSelecter;
 import goedegep.util.file.FileUtils;
 import goedegep.util.string.StringUtil;
 import javafx.beans.property.BooleanProperty;
@@ -44,7 +44,7 @@ public class FolderSelectionWizard extends Dialog<ButtonType> {
   private ComponentFactoryFx componentFactory;
 
   // GUI components
-  private FolderSelecter folderSelecter;
+  private ObjectControlFolderSelecter folderSelecter;
   private TextArea photoFoldersArea;
   private Button okButton;    // this will only be enabled if photoFolders is not empty.
   

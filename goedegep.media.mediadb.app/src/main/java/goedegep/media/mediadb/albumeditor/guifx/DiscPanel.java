@@ -5,7 +5,7 @@ import java.util.List;
 
 import goedegep.jfx.ComponentFactoryFx;
 import goedegep.jfx.CustomizationFx;
-import goedegep.jfx.controls.TextFieldObjectControl;
+import goedegep.jfx.objectcontrols.ObjectControlTextField;
 import goedegep.media.mediadb.model.Disc;
 import goedegep.media.mediadb.model.MediaDb;
 import goedegep.media.mediadb.model.MyTrackInfo;
@@ -37,7 +37,7 @@ class DiscPanel extends Group {
   /**
    * The ObjectInput for the Disc.title.
    */
-  private TextFieldObjectControl<String> titleControl;
+  private ObjectControlTextField<String> titleControl;
   
   /**
    * One panel per track reference, for editing all track details.

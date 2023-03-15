@@ -1,4 +1,4 @@
-package goedegep.jfx.controls;
+package goedegep.jfx.objectcontrols;
 
 import java.text.ParseException;
 import java.util.logging.Logger;
@@ -9,7 +9,7 @@ import goedegep.util.datetime.FlexDateFormat;
 /**
  * This class provides a TextField to be used to edit a {@link FlexDate}.
  */
-public class ObjectControlFlexDate extends TextFieldObjectControl<FlexDate> {
+public class ObjectControlFlexDate extends ObjectControlTextField<FlexDate> {
   private static final Logger         LOGGER = Logger.getLogger(ObjectControlFlexDate.class.getName());
   private static final FlexDateFormat FDF = new FlexDateFormat();
   

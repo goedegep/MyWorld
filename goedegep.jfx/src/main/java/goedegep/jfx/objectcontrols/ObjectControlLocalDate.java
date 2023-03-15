@@ -1,4 +1,4 @@
-package goedegep.jfx.controls;
+package goedegep.jfx.objectcontrols;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -8,7 +8,7 @@ import java.util.logging.Logger;
 /**
  * This class provides a TextField to be used to edit a {@link LocalDate}.
  */
-public class ObjectControlLocalDate extends TextFieldObjectControl<LocalDate> {
+public class ObjectControlLocalDate extends ObjectControlTextField<LocalDate> {
   @SuppressWarnings("unused")
   private static final Logger         LOGGER = Logger.getLogger(ObjectControlLocalDate.class.getName());
   private static final DateTimeFormatter DTF = DateTimeFormatter.ofPattern("dd-MM-yyyy");

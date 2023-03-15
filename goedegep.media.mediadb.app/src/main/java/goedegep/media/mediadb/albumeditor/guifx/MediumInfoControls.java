@@ -2,8 +2,8 @@ package goedegep.media.mediadb.albumeditor.guifx;
 
 import goedegep.jfx.ComponentFactoryFx;
 import goedegep.jfx.CustomizationFx;
-import goedegep.jfx.controls.ObjectControlEnumComboBox;
-import goedegep.jfx.controls.ObjectControlInteger;
+import goedegep.jfx.objectcontrols.ObjectControlEnumComboBox;
+import goedegep.jfx.objectcontrols.ObjectControlInteger;
 import goedegep.media.mediadb.model.InformationType;
 import goedegep.media.mediadb.model.MediadbPackage;
 import goedegep.media.mediadb.model.MediumInfo;

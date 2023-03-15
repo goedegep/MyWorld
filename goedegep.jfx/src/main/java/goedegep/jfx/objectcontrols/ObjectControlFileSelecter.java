@@ -1,4 +1,4 @@
-package goedegep.jfx.controls;
+package goedegep.jfx.objectcontrols;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -28,9 +28,9 @@ import javafx.stage.FileChooser.ExtensionFilter;
  * By providing separate controls (instead of e.g. a Node containing the controls) there is complete freedom in using the
  * controls in a GUI.
  */
-public class FileSelecter extends FileOrFolderSelecterAbstract {
+public class ObjectControlFileSelecter extends ObjectControlFileOrFolderSelecterAbstract {
   @SuppressWarnings("unused")
-  private static final Logger LOGGER = Logger.getLogger(FileSelecter.class.getName());
+  private static final Logger LOGGER = Logger.getLogger(ObjectControlFileSelecter.class.getName());
 
   private Button fileChooserButton;
   private boolean isSaveDialog = false;  // open dialog is the default
@@ -50,7 +50,7 @@ public class FileSelecter extends FileOrFolderSelecterAbstract {
    * @param fileChooserButtonToolTipText if not null, this text will be used as Tooltip for the button to call up a FileChooser.
    * @param fileChooserTitle title for the FileChooser (may not be null)
    */
-  public FileSelecter(String initiallySelectedFilename, int textFieldWidth, String textFiedlToolTipText,
+  public ObjectControlFileSelecter(String initiallySelectedFilename, int textFieldWidth, String textFiedlToolTipText,
       String fileChooserButtonText, String fileChooserButtonToolTipText, String fileChooserTitle) {
     super(textFieldWidth, textFiedlToolTipText);
 
