@@ -112,6 +112,7 @@ public class EObjectTreeItem extends TreeItem<EObjectTreeItemContent> {
     if (children != null) {
       super.getChildren().addAll(children);
     }
+    
   }
   
   /**

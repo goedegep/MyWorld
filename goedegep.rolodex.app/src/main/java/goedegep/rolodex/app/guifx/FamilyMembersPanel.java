@@ -43,7 +43,7 @@ public class FamilyMembersPanel extends VBox {
 
     componentFactory = customization.getComponentFactoryFx();
 
-    basicPersonsTable = new EObjectTable<Person>(customization, ROLODEX_PACKAGE.getPerson(), new BasicPersonsTableDescriptor(), null, null);
+    basicPersonsTable = new EObjectTable<Person>(customization, ROLODEX_PACKAGE.getPerson(), new BasicPersonsTableDescriptor(), null);
 
     createGUI();
   }
@@ -85,7 +85,7 @@ public class FamilyMembersPanel extends VBox {
 
   public void setFamily(Family family) {
     this.family = family;
-    basicPersonsTable.setObjects(family, family != null ? family.getMembers() : null);
+    basicPersonsTable.setObjects(family, RolodexPackage.eINSTANCE.getFamily_Members());
   }
   
   protected static void removePersonFromFamily(List<Person> familyMembers, Person member) {

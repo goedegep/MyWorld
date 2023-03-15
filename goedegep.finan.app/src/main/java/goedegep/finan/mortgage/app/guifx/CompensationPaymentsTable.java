@@ -2,8 +2,6 @@ package goedegep.finan.mortgage.app.guifx;
 
 import java.util.List;
 
-import org.eclipse.emf.ecore.EObject;
-
 import goedegep.finan.mortgage.model.CompensationPayment;
 import goedegep.finan.mortgage.model.MortgagePackage;
 import goedegep.jfx.CustomizationFx;
@@ -14,8 +12,8 @@ import goedegep.jfx.eobjecttable.EObjectTableDescriptor;
 
 public class CompensationPaymentsTable extends EObjectTable<CompensationPayment> {
 
-  public CompensationPaymentsTable(CustomizationFx customization, EObject containingObject, List<CompensationPayment> compensationPayments) {
-    super(customization, MortgagePackage.eINSTANCE.getCompensationPayment(), new CompensationPaymentsTableDescriptor(), containingObject, compensationPayments);
+  public CompensationPaymentsTable(CustomizationFx customization) {
+    super(customization, MortgagePackage.eINSTANCE.getCompensationPayment(), new CompensationPaymentsTableDescriptor(), null, null);
   }
 
 }

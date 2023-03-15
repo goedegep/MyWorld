@@ -5,8 +5,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
-import org.eclipse.emf.common.util.EList;
-
 import goedegep.appgen.TableRowOperation;
 import goedegep.appgen.TableRowOperationDescriptor;
 import goedegep.jfx.ComponentFactoryFx;
@@ -58,8 +56,6 @@ public class InstitutionsWindowFx extends JfxStage {
   private EObjectTable<Institution> institutionsTable;
   private ReferredByPanel referredByPanel;
   private InstitutionEditPanel institutionEditPanel;
-  
-  private EList<Institution> institutions;
   
   /**
    * Constructor
@@ -123,8 +119,7 @@ public class InstitutionsWindowFx extends JfxStage {
    * @return the created personsTable
    */
   private EObjectTable<Institution> createInstitutionsTable() {
-    institutions = rolodex.getInstitutionList().getInstitutions();
-    institutionsTable = new EObjectTable<Institution>(customization, ROLODEX_PACKAGE.getInstitution(), new InstitutionsTableDescriptor(), rolodex.getInstitutionList(), institutions);
+    institutionsTable = new EObjectTable<Institution>(customization, ROLODEX_PACKAGE.getInstitution(), new InstitutionsTableDescriptor(), rolodex.getInstitutionList(),RolodexPackage.eINSTANCE.getInstitutionList_Institutions());
         
     return institutionsTable;
   }

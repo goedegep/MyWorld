@@ -37,7 +37,7 @@ public class ObjectControlGroup implements Iterable<ObjectControl<? extends Obje
    * @param objectControl The ObjectInput to check.
    */
   public void addObjectControl(ObjectControl<?> objectControl) {
-    LOGGER.info("=> " + objectControl.getId());
+    LOGGER.info("=> " + (objectControl.getId() != null ? objectControl.getId() : "<null>"));
     
     InvalidationListener invalidationListener = (observable) -> handleChanges(observable);
     objectControl.addListener(invalidationListener);

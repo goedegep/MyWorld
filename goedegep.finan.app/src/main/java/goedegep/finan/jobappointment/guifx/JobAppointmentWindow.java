@@ -175,6 +175,6 @@ public class JobAppointmentWindow extends JfxStage {
    * Show the window with salary changes.
    */
   protected void showSalaryEventsWindow() {
-    new SalaryEventsWindow(customization, jobAppointment.getSalaryevents());
+    new SalaryEventsWindow(customization, jobAppointment);
   }
 }

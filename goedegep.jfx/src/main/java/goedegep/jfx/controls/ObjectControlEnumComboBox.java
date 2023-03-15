@@ -7,6 +7,7 @@ import java.util.logging.Logger;
 
 import org.eclipse.emf.ecore.EEnum;
 
+import goedegep.media.mediadb.albumeditor.guifx.AlbumType;
 import goedegep.util.emf.EnumTextConverter;
 import javafx.beans.InvalidationListener;
 import javafx.beans.property.BooleanProperty;
@@ -206,6 +207,11 @@ public class ObjectControlEnumComboBox<T extends Enum<T>> extends ComboBox<Strin
     for (InvalidationListener invalidationListener: invalidationListeners) {
       invalidationListener.invalidated(this);
     }
+  }
+
+  public void select(Enum<T> normal) {
+    // TODO Auto-generated method stub
+    
   }
 
 }

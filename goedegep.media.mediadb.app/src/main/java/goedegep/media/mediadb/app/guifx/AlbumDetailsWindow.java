@@ -9,7 +9,10 @@ import java.util.logging.Logger;
 
 import goedegep.jfx.ComponentFactoryFx;
 import goedegep.jfx.CustomizationFx;
+import goedegep.jfx.JfxStage;
+import goedegep.jfx.objecteditor.ObjectEditorAbstract;
 import goedegep.media.app.MediaRegistry;
+import goedegep.media.mediadb.albumeditor.guifx.AlbumEditor;
 import goedegep.media.mediadb.model.Album;
 import goedegep.media.mediadb.model.Artist;
 import goedegep.media.mediadb.model.Disc;
@@ -26,6 +29,7 @@ import goedegep.media.mediadb.model.util.MediaDbUtil;
 import goedegep.util.datetime.FlexDateFormat;
 import goedegep.util.objectselector.ObjectSelectionListener;
 import javafx.geometry.Insets;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
@@ -33,16 +37,18 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.web.WebView;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
 // TODO handle collection per track
-public class AlbumDetailsWindow extends AlbumDetailsAbstract {
+public class AlbumDetailsWindow extends JfxStage {
   private static final Logger LOGGER = Logger.getLogger(AlbumDetailsWindow.class.getName());
   private static final FlexDateFormat FDF = new FlexDateFormat();
   
@@ -170,7 +176,7 @@ public class AlbumDetailsWindow extends AlbumDetailsAbstract {
     
     Button editButton = componentFactory.createButton("Open in Album Editor", "Open edit window");
     editButton.setOnAction((e) -> {
-      new AlbumDetailsEditor(getCustomization(), mediaDb, trackDiscLocationMap, album);
+      new AlbumEditor(getCustomization(), mediaDb, trackDiscLocationMap, album);
     });
     gridPane.add(editButton, 3, 0);
     
@@ -217,6 +223,7 @@ public class AlbumDetailsWindow extends AlbumDetailsAbstract {
      */
     HBox hBox = componentFactory.createHBox();
     hBox.setPadding(new Insets(10.0));
+    hBox.setMaxHeight(200);
     webView = new WebView();
     hBox.getChildren().add(webView);
     centerPane.getChildren().add(hBox);
@@ -230,6 +237,7 @@ public class AlbumDetailsWindow extends AlbumDetailsAbstract {
     gridPane.add(label, 0, 0);
     
     issuedOnMediaTextField = componentFactory.createTextField(600, null);
+    issuedOnMediaTextField.setEditable(false);
     gridPane.add(issuedOnMediaTextField, 1, 0);
     
     centerPane.getChildren().add(gridPane);
@@ -239,8 +247,14 @@ public class AlbumDetailsWindow extends AlbumDetailsAbstract {
      */
     hBox = componentFactory.createHBox(10.0, 10.0);
     isCompilationAlbumCheckBox = componentFactory.createCheckBox("compilation album", false);
+    isCompilationAlbumCheckBox.setDisable(true);
+    isCompilationAlbumCheckBox.setStyle("-fx-opacity: 1");
     isOwnCompilationCheckBox = componentFactory.createCheckBox("own compilation", false);
+    isOwnCompilationCheckBox.setDisable(true);
+    isOwnCompilationCheckBox.setStyle("-fx-opacity: 1");
     isSoundTrackCheckBox = componentFactory.createCheckBox("soundtrack", false);
+    isSoundTrackCheckBox.setDisable(true);
+    isSoundTrackCheckBox.setStyle("-fx-opacity: 1");
     hBox.getChildren().addAll(isCompilationAlbumCheckBox, isOwnCompilationCheckBox, isSoundTrackCheckBox);
     
     centerPane.getChildren().add(hBox);
@@ -350,7 +364,7 @@ public class AlbumDetailsWindow extends AlbumDetailsAbstract {
         LOGGER.info("Going to read image from file: " + imagePathName);
         Image image = new Image("file:" + imagePathName, 0.0, 200.0, true, true);
         ImageView imageView = new ImageView(image);
-        imageView.setOnMouseEntered(e -> showLargePicture("file:" + imagePathName));
+        imageView.setOnMouseEntered(e -> showLargePicture(e, "file:" + imagePathName));
         imageView.setOnMouseExited(e -> {
           if (currentLargePictureStage != null) {
             currentLargePictureStage.close();
@@ -405,7 +419,7 @@ public class AlbumDetailsWindow extends AlbumDetailsAbstract {
         }
       }
 
-      buf.append("<h2>Mijn informatie:</h2>");
+      buf.append("<h2>My Information</h2>");
 
       // IWant
       switch (MediaDbUtil.getIWant(album)) {
@@ -441,7 +455,7 @@ public class AlbumDetailsWindow extends AlbumDetailsAbstract {
           }
           buf.append(GuiUtils.createMediumText(iHaveOnMedium.getMediumType()));
           if (iHaveOnMedium.isSetSourceTypes()) {
-            buf.append(" (van ");
+            buf.append(" (from ");
             boolean firstSourceType = true;
             for (InformationType sourceType: iHaveOnMedium.getSourceTypes()) {
               if (firstSourceType) {
@@ -469,7 +483,7 @@ public class AlbumDetailsWindow extends AlbumDetailsAbstract {
       if (iHaveOnMedia.isEmpty()) {
         List<DiscAndTrackNrs> discAndTrackNrsList = MediaDbUtil.getAlbumTracksIWant(album);
         if (!discAndTrackNrsList.isEmpty()) {
-          buf.append("Nummers/discs die ik wil hebben: ");
+          buf.append("Tracks/discs I want to have: ");
           boolean first = true;
           for (DiscAndTrackNrs discAndTrackNrs: discAndTrackNrsList) {
             Integer discNr = null;
@@ -494,7 +508,7 @@ public class AlbumDetailsWindow extends AlbumDetailsAbstract {
 
         discAndTrackNrsList = MediaDbUtil.getAlbumTracksIHave(album, false);
         if (!discAndTrackNrsList.isEmpty()) {
-          buf.append("Nummers/discs die ik heb: ");
+          buf.append("Track/discs I have: ");
           boolean first = true;
           for (DiscAndTrackNrs discAndTrackNrs: discAndTrackNrsList) {
             Integer discNr = null;
@@ -532,12 +546,12 @@ public class AlbumDetailsWindow extends AlbumDetailsAbstract {
 
         MyInfo myInfo = album.getMyInfo();
         if (myInfo.isSetMyComments()) {
-          buf.append("Opmerkingen: ");
+          buf.append("Remarks: ");
           buf.append(myInfo.getMyComments());
           buf.append("<br/>");
         }
         if (myInfo.isIveHadOnLP()) {
-          buf.append("Ik heb de lp gehad.");
+          buf.append("I've had the LP.");
           buf.append("<br/>");
         }
       }
@@ -596,7 +610,7 @@ public class AlbumDetailsWindow extends AlbumDetailsAbstract {
     if (album != null) {
       List<Disc> discs = album.getDiscs();
       for (Disc disc: discs) {
-        DiscTracksTable discTracksTable = new DiscTracksTable(customization, disc.getTrackReferences(), trackDiscLocationMap);
+        DiscTracksTable discTracksTable = new DiscTracksTable(customization, disc, trackDiscLocationMap);
         discTracksTable.setEditable(false);
         discTracksVBox.getChildren().add(discTracksTable);
       }
@@ -606,9 +620,23 @@ public class AlbumDetailsWindow extends AlbumDetailsAbstract {
   /**
    * Show a picture, full size, in a separate <code>Stage</code> (without any header or border).
    * 
+   * @param e the mouseEvent leading to showing the large size picture being shown
    * @param fileName file name of the picture to be shown.
    */
-  private void showLargePicture(String fileName) {
+  private void showLargePicture(MouseEvent e, String fileName) {
+    // determine where to show the picture: not where the mouse is now, but to the right or left, wherever there's the most space.
+    double mouseX = e.getScreenX();
+    
+    Rectangle2D screenBounds = Screen.getPrimary().getBounds();
+    double screenWidth = screenBounds.getWidth();
+    
+    double largePictureStageX;
+    if (mouseX < screenWidth / 2) {
+      largePictureStageX = screenWidth / 2 + 20;
+    } else {
+      largePictureStageX = 20;
+    }
+    
     Image image = new Image(fileName);
     ImageView currentLargePicture = new ImageView(image);
     
@@ -617,6 +645,7 @@ public class AlbumDetailsWindow extends AlbumDetailsAbstract {
     BorderPane pane = new BorderPane();
     pane.setCenter(currentLargePicture);
     currentLargePictureStage.setScene(new Scene(pane));
+    currentLargePictureStage.setX(largePictureStageX);
     currentLargePictureStage.show();
   }
 }

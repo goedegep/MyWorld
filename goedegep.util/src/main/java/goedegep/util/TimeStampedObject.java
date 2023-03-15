@@ -58,13 +58,15 @@ public class TimeStampedObject<T> {
    * @return a comparator for sorting on the time-stamp.
    */
   public static <U> Comparator<TimeStampedObject<U>> getTimeStampComparator() {
-    return new Comparator<TimeStampedObject<U>>() {
-
-      @Override
-      public int compare(TimeStampedObject<U> o1, TimeStampedObject<U> o2) {
-        return o1.getTimeStamp().compareTo(o2.getTimeStamp());
-      }
-      
-    };
+    return Comparator.comparing(TimeStampedObject<U>::getTimeStamp);
+    
+//    return new Comparator<TimeStampedObject<U>>() {
+//
+//      @Override
+//      public int compare(TimeStampedObject<U> o1, TimeStampedObject<U> o2) {
+//        return o1.getTimeStamp().compareTo(o2.getTimeStamp());
+//      }
+//      
+//    };
   }
 }

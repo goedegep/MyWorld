@@ -71,13 +71,15 @@ public class ObservableEList<T> implements ObservableList<T> {
           // for ADD isTouch() is always false
           LOGGER.info("Added item");
           LOGGER.info(EmfUtil.printNotification(notification));
-          // if the notification is from this object, than a normal add. Else it comes from a child, which means the element is updated.
+          // if the notification is from this object, than a normal add. Else it can come from a child, which means the element is updated. Or from outside our list.
           if (notification.getFeature().equals(eReference)) {
             change = new ObservableEListChange<T>(notification.getPosition(), notification.getPosition() + 1, new ArrayList<T>(), EMPTY_PERM, false, thisList);
             ListListenerHelper.fireValueChangedEvent(listenerHelper, change);
           } else {
             int index = getDecendentIndex(notification);
-            ListListenerHelper.fireValueChangedEvent(listenerHelper, new ObservableEListChange<T>(index, index + 1, new ArrayList<T>(), EMPTY_PERM, true, thisList));
+            if (index != -1) {
+              ListListenerHelper.fireValueChangedEvent(listenerHelper, new ObservableEListChange<T>(index, index + 1, new ArrayList<T>(), EMPTY_PERM, true, thisList));
+            }
           }
           break;
           
@@ -195,11 +197,14 @@ public class ObservableEList<T> implements ObservableList<T> {
     Object notifier = notification.getNotifier();
     if (notifier instanceof EObject eObject) {
       EObject container = eObject.eContainer();
-      while (container != containingObject) {
+      while (container != containingObject  &&  container != null) {
         eObject = container;
         container = eObject.eContainer();
       }
-      int index = eList.indexOf(eObject);
+      int index = -1;
+      if (container != null) {
+        index = eList.indexOf(eObject);
+      }
       return index;
     } else {
       throw new RuntimeException("notifier isn't an EObject");

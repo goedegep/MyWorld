@@ -1686,6 +1686,7 @@ public class MediadbPackageImpl extends EPackageImpl implements MediadbPackage {
     addEEnumLiteral(informationTypeEEnum, InformationType.WAV);
     addEEnumLiteral(informationTypeEEnum, InformationType.APE);
     addEEnumLiteral(informationTypeEEnum, InformationType.AIFF);
+    addEEnumLiteral(informationTypeEEnum, InformationType.DSF);
 
     initEEnum(collectionEEnum, Collection.class, "Collection");
     addEEnumLiteral(collectionEEnum, Collection.EASY_LISTENING);

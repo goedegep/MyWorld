@@ -115,7 +115,7 @@ public class PhoneMemoriesWindow extends JfxStage {
     createMemoryEntriesModel();
     List<Phone> phonesWithMemory = getPhonesWithMemory();
     List<EObject> items = fillData(phonesWithMemory);
-    phoneMemoriesTable = new EObjectTable<EObject>(customization, ROLODEX_PACKAGE.getAddressHolder(), new PhoneMemoriesTableDescriptor(customization, phonesWithMemory, entriesAttribute), null, items);
+    phoneMemoriesTable = new EObjectTable<EObject>(customization, ROLODEX_PACKAGE.getAddressHolder(), new PhoneMemoriesTableDescriptor(customization, phonesWithMemory, entriesAttribute), items);
         
     return phoneMemoriesTable;
   }

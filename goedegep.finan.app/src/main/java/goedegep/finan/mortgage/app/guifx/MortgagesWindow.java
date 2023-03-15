@@ -213,7 +213,7 @@ public class MortgagesWindow extends JfxStage implements EMFNotificationListener
     vBox.getChildren().add(hBox);
     
     // Mortgage Events
-    mortgageEventsTable = new MortgageEventsTable(customization, null, null);
+    mortgageEventsTable = new MortgageEventsTable(customization);
     vBox.getChildren().add(mortgageEventsTable);
     
     // Mortgage yearly info
@@ -407,7 +407,7 @@ public class MortgagesWindow extends JfxStage implements EMFNotificationListener
   @SuppressWarnings("unchecked")
   private void handleNewHypotheekSelected() {
     hypotheekInfoPanel.setHypotheek(mortgageCalculator);
-    mortgageEventsTable.setMortgageEvents(null, mortgageCalculator.getCalculatedMortgageEvents());
+    mortgageEventsTable.setMortgageEvents(mortgageCalculator.getCalculatedMortgageEvents());
     
     if (mortgage instanceof InterestCompensationMortgage) {
       List<InterestCompensationMortgageYearlyOverview> yearlyOverviews = getInterestCompensationYearlyOverviews();
@@ -416,16 +416,16 @@ public class MortgagesWindow extends JfxStage implements EMFNotificationListener
         mortgageYearlyOverviewsTableBox.getChildren().clear();
         mortgageYearlyOverviewsTableBox.getChildren().add(mortgageYearlyOverviewsTable);
       } else {
-        mortgageYearlyOverviewsTable.setObjects(null, yearlyOverviews);
+        mortgageYearlyOverviewsTable.setObjects(yearlyOverviews);
       }
     } else {
       MortgageYearlyOverviews yearlyOverviews = getYearlyOverviews();
       if ((mortgageYearlyOverviewsTable == null)  ||  mortgageYearlyOverviewsTable instanceof InterestCompensationMortgageYearlyOverviewsTable) {
-        mortgageYearlyOverviewsTable = new MortgageYearlyOverviewsTable(customization, yearlyOverviews, yearlyOverviews.getYearlyOverviews());
+        mortgageYearlyOverviewsTable = new MortgageYearlyOverviewsTable(customization, yearlyOverviews);
         mortgageYearlyOverviewsTableBox.getChildren().clear();
         mortgageYearlyOverviewsTableBox.getChildren().add(mortgageYearlyOverviewsTable);
       } else {
-        mortgageYearlyOverviewsTable.setObjects(yearlyOverviews, yearlyOverviews.getYearlyOverviews());
+        mortgageYearlyOverviewsTable.setObjects(yearlyOverviews, MortgagePackage.eINSTANCE.getMortgageYearlyOverviews_YearlyOverviews());
       }
     }
     
@@ -565,12 +565,12 @@ public class MortgagesWindow extends JfxStage implements EMFNotificationListener
   
   private void showFixedEvents() {
     LOGGER.severe("=>");
-    mortgageEventsTable.setMortgageEvents(null, mortgage.getMortgageEvents());
+    mortgageEventsTable.setMortgageEvents(mortgage.getMortgageEvents());
   }
   
   private void showAllEvents() {
     LOGGER.severe("=>");
-    mortgageEventsTable.setMortgageEvents(null, mortgageCalculator.getCalculatedMortgageEvents());
+    mortgageEventsTable.setMortgageEvents(mortgageCalculator.getCalculatedMortgageEvents());
   }
   
   /**

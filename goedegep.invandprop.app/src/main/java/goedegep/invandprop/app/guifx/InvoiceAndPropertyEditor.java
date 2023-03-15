@@ -33,6 +33,7 @@ import goedegep.jfx.controls.ObjectControlString;
 import goedegep.jfx.eobjecteditor.EObjectAttributeEditDescriptor;
 import goedegep.jfx.eobjecteditor.EObjectEditor;
 import goedegep.jfx.eobjecteditor.EObjectEditorDescriptor;
+import goedegep.jfx.objecteditor.ObjectEditorAbstract;
 import goedegep.types.model.FileReference;
 import goedegep.types.model.TypesFactory;
 import goedegep.util.PgUtilities;
@@ -67,7 +68,7 @@ import javafx.scene.layout.VBox;
 /**
  * This class provides an editor for an invoice and the related property.
  */
-public class InvoiceAndPropertyEditor extends JfxStage {
+public class InvoiceAndPropertyEditor extends ObjectEditorAbstract {
   private static final Logger  LOGGER = Logger.getLogger(InvoiceItemPanel.class.getName());
   private static final String WINDOW_TITLE = "New invoice and property";
   private static final InvAndPropFactory INVOICES_AND_PROPERTIES_FACTORY = InvAndPropFactory.eINSTANCE;
@@ -229,7 +230,7 @@ public class InvoiceAndPropertyEditor extends JfxStage {
    * @param property A property to edit
    */
   private InvoiceAndPropertyEditor(CustomizationFx customization, InvoicesAndProperties invoicesAndProperties, Invoice invoice, Property property) {
-    super(WINDOW_TITLE, customization);
+    super(customization, WINDOW_TITLE);
             
     this.customization = customization;
     this.invoicesAndProperties = invoicesAndProperties;
@@ -822,7 +823,7 @@ public class InvoiceAndPropertyEditor extends JfxStage {
    * Left is invoice: top is invoice details, below that invoice items.
    * Right is property: top is property details and picture, below that documents and pictures.
    */
-  private void createGUI() {
+  protected void createGUI() {
     VBox rootPane = componentFactory.createVBox();
     
     HBox invoiceAndPropertyHBox = componentFactory.createHBox(3.0, 3.0);

@@ -118,7 +118,7 @@ public class CountriesWindowFx extends JfxStage {
    */
   private EObjectTable<Country> createCountriesTable() {
     
-    countriesTable = new EObjectTable<Country>(customization, ROLODEX_PACKAGE.getCountry(), new CountriesTableDescriptor(rolodex), rolodex.getCountryList(), rolodex.getCountryList().getCountries());
+    countriesTable = new EObjectTable<Country>(customization, ROLODEX_PACKAGE.getCountry(), new CountriesTableDescriptor(rolodex), rolodex.getCountryList(), RolodexPackage.eINSTANCE.getCountryList_Countries());
         
     return countriesTable;
   }

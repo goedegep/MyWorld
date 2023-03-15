@@ -17,7 +17,6 @@ import javafx.beans.value.ObservableValue;
 import javafx.scene.control.Tooltip;
 
 public class AutoCompleteTextFieldObjectInput<T> extends AutoCompleteTextField implements ObjectControl<T> {
-  @SuppressWarnings("unused")
   private static final Logger         LOGGER = Logger.getLogger(AutoCompleteTextFieldObjectInput.class.getName());
   
   private StringConverterAndChecker<T> stringConverterAndChecker = null;
@@ -103,27 +102,37 @@ public class AutoCompleteTextFieldObjectInput<T> extends AutoCompleteTextField i
     
     textProperty().addListener(new ChangeListener<String>() {
       public void changed(final ObservableValue<? extends String> observableValue, final String oldValue, final String newValue) {
-        if (isEnteredDataValid(null)) {
-          isValidProperty.set(true);
-          setStyle("-fx-text-fill: black;");
-        } else {
-          if (isOptional()  &&  !getIsFilledIn()) {
-            isValidProperty.set(true);
-          } else {
-            isValidProperty.set(false);
-          }
-          setStyle("-fx-text-fill: red;");
-        }
-        
-        objectValueProperty.setValue(getObjectValue());
-        isFilledInProperty.setValue(getIsFilledIn());
-        
-        notifyListeners();
+        handleNewInput();
       }
     });
     
     focusedProperty().addListener(this::handleFocusChanged);
-
+    handleNewInput();
+  }
+  
+  private void handleNewInput() {
+    LOGGER.severe("=>");
+    if (isEnteredDataValid(null)) {
+      LOGGER.severe("Data is valid");
+      isValidProperty.set(true);
+      setStyle("-fx-text-fill: black;");
+    } else {
+      LOGGER.severe("Data NOT valid");
+      if (isOptional()  &&  !getIsFilledIn()) {
+        LOGGER.severe("Optional and not filled in");
+        isValidProperty.set(true);
+      } else {
+        isValidProperty.set(false);
+      }
+      setStyle("-fx-text-fill: red;");
+    }
+    
+    objectValueProperty.setValue(getObjectValue());
+    LOGGER.severe("objectValueProperty: " + objectValueProperty);
+    isFilledInProperty.setValue(getIsFilledIn());
+    LOGGER.severe("isFilledInProperty: " + isFilledInProperty);
+    
+    notifyListeners();
   }
   
   private void handleFocusChanged(ObservableValue<? extends Boolean> observableValue, Boolean oldValue, Boolean newValue) {
@@ -174,8 +183,7 @@ public class AutoCompleteTextFieldObjectInput<T> extends AutoCompleteTextField i
     boolean valid = false;
     
     try {
-      stringConverterAndChecker.fromString(getText());
-      valid = true;
+      return stringConverterAndChecker.fromString(getText()) != null;
     } catch (Exception e) {
       // Seems text is not valid
     }
@@ -189,7 +197,8 @@ public class AutoCompleteTextFieldObjectInput<T> extends AutoCompleteTextField i
       return null;
     }
     
-    return (T) stringToObject(getText());
+    T object = (T) stringToObject(getText());
+    return object;
   }
   
   public String getObjectValueAsFormattedText()  {
@@ -232,6 +241,9 @@ public class AutoCompleteTextFieldObjectInput<T> extends AutoCompleteTextField i
     return stringConverterAndChecker.toString(value);
   }
   
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public BooleanProperty isValid() {
     return isValidProperty;
@@ -265,27 +277,11 @@ public class AutoCompleteTextFieldObjectInput<T> extends AutoCompleteTextField i
    * Notify the <code>invalidationListeners</code> that something has changed.
    */
   private void notifyListeners() {
+    LOGGER.severe("=>");
     for (InvalidationListener invalidationListener: invalidationListeners) {
+      LOGGER.severe("Notifying listener: " + invalidationListener);
       invalidationListener.invalidated(this);
     }
   }
-
-//  @Override
-//  public void addListener(ChangeListener<? super T> listener) {
-//    // TODO Auto-generated method stub
-//    
-//  }
-//
-//  @Override
-//  public void removeListener(ChangeListener<? super T> listener) {
-//    // TODO Auto-generated method stub
-//    
-//  }
-//
-//  @Override
-//  public T getValue() {
-//    // TODO Auto-generated method stub
-//    return null;
-//  }
 
 }

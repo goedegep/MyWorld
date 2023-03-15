@@ -15,7 +15,6 @@ import goedegep.appgen.TableRowOperation;
 import goedegep.appgen.TableRowOperationDescriptor;
 import goedegep.events.app.EventsRegistry;
 import goedegep.events.model.EventInfo;
-import goedegep.events.model.Events;
 import goedegep.events.model.EventsPackage;
 import goedegep.jfx.ComponentFactoryFx;
 import goedegep.jfx.CustomizationFx;
@@ -48,8 +47,8 @@ public class EventsTable extends EObjectTable<EventInfo> {
    * 
    * @param customization the GUI customization.
    */
-  public EventsTable(CustomizationFx customization, Events events) {
-    super(customization, EventsPackage.eINSTANCE.getEventInfo(), EventsTableDescriptorFactory.createDescriptor(customization), events, null);
+  public EventsTable(CustomizationFx customization) {
+    super(customization, EventsPackage.eINSTANCE.getEventInfo(), EventsTableDescriptorFactory.createDescriptor(customization), null);
     
     this.customization = customization;
 //    setMinHeight(300);

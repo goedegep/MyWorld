@@ -3,6 +3,8 @@ package goedegep.finan.jobappointment.guifx;
 import java.util.List;
 import java.util.logging.Logger;
 
+import goedegep.finan.jobappointment.model.JobAppointment;
+import goedegep.finan.jobappointment.model.JobAppointmentPackage;
 import goedegep.finan.jobappointment.model.SalaryEvent;
 import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.JfxStage;
@@ -19,7 +21,7 @@ public class SalaryEventsWindow extends JfxStage {
   private static final String WINDOW_TITLE   = "Job Appointment";
   
   private CustomizationFx customization;
-  private List<SalaryEvent> salaryEvents;
+  private JobAppointment jobAppointment;
   private EObjectTableControlPanel eObjectTableControlPanel;
   private SalaryEventsTable salaryEventsTable;
 
@@ -29,11 +31,11 @@ public class SalaryEventsWindow extends JfxStage {
    * @param customization the GUI customization.
    * @param salaryEvents the salary events to show.
    */
-  public SalaryEventsWindow(CustomizationFx customization, List<SalaryEvent> salaryEvents) {
+  public SalaryEventsWindow(CustomizationFx customization, JobAppointment jobAppointment) {
     super(WINDOW_TITLE, customization);
     
     this.customization = customization;
-    this.salaryEvents = salaryEvents;
+    this.jobAppointment = jobAppointment;
 
     createGUI();
     
@@ -67,7 +69,7 @@ public class SalaryEventsWindow extends JfxStage {
     mainPane.setTop(eObjectTableControlPanel);
     
     // Center: salary events table
-    salaryEventsTable = new SalaryEventsTable(customization, salaryEvents);
+    salaryEventsTable = new SalaryEventsTable(customization, jobAppointment, JobAppointmentPackage.eINSTANCE.getJobAppointment_Salaryevents());
     mainPane.setCenter(salaryEventsTable);
     
     setScene(new Scene(mainPane));

@@ -550,12 +550,12 @@ public class TrackImpl extends MinimalEObjectImpl.Container implements Track {
    */
   @Override
   public TrackReference getOriginalDiscTrackReference() {
-    for (TrackReference trackReference: getReferredBy()) {
+    for (TrackReference trackReference : getReferredBy()) {
       if (trackReference.getOriginalAlbumTrackReference() == null) {
         return trackReference;
       }
     }
-    
+
     return null;
   }
 

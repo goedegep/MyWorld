@@ -221,7 +221,7 @@ public class AddressBookWindowFx extends JfxStage {
     addressesHolders.addAll(rolodex.getFamilyList().getFamilies());
     addressesHolders.addAll(rolodex.getPersonList().getPersons());
     addressesHolders.addAll(rolodex.getInstitutionList().getInstitutions());
-    addressHoldersTable = new EObjectTable<AddressHolder>(customization, ROLODEX_PACKAGE.getAddressHolder(), new AddressesBookTableDescriptor(customization), null, addressesHolders);
+    addressHoldersTable = new EObjectTable<AddressHolder>(customization, ROLODEX_PACKAGE.getAddressHolder(), new AddressesBookTableDescriptor(customization), addressesHolders);
         
     return addressHoldersTable;
   }

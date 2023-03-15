@@ -5,8 +5,6 @@ import java.util.List;
 import java.util.function.Predicate;
 import java.util.logging.Logger;
 
-import org.eclipse.emf.common.util.EList;
-
 import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.JfxStage;
 import goedegep.jfx.eobjecttable.EObjectTable;
@@ -40,8 +38,6 @@ public class BirthdaysWindow extends JfxStage {
   private Rolodex rolodex;
   private EObjectTableControlPanel eObjectTableControlPanel;
   private EObjectTable<Person> birthdaysTable;
-  
-  private EList<Person> persons;
   
   /**
    * Constructor
@@ -94,9 +90,7 @@ public class BirthdaysWindow extends JfxStage {
    * @return the created birthdaysTable
    */
   private EObjectTable<Person> createBirthdaysTable() {
-    persons = rolodex.getPersonList().getPersons();
-    
-    birthdaysTable = new EObjectTable<Person>(customization, ROLODEX_PACKAGE.getPerson(), new BirthdaysTableDescriptor(), rolodex.getPersonList(), persons);
+    birthdaysTable = new EObjectTable<Person>(customization, ROLODEX_PACKAGE.getPerson(), new BirthdaysTableDescriptor(), rolodex.getPersonList(), RolodexPackage.eINSTANCE.getPersonList_Persons());
         
     return birthdaysTable;
   }

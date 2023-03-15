@@ -198,6 +198,7 @@
     <eLiterals name="WAV" value="6"/>
     <eLiterals name="APE" value="7"/>
     <eLiterals name="AIFF" value="8"/>
+    <eLiterals name="DSF" value="8"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Player">
     <eStructuralFeatures xsi:type="ecore:EReference" name="artist" eType="#//Artist"

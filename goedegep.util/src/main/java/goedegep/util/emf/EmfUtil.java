@@ -245,11 +245,24 @@ public final class EmfUtil {
   
   /**
    * Provide a textual representation of an org.eclipse.emf.common.notify.Notification.
+   * <p>
+   * The notifier value is printed.
    * 
    * @param notification the <code>Notification</code> to print.
    * @return a textual representation of the <code>notification</code>
    */
   public static String printNotification(Notification notification) {
+    return printNotification(notification, true);
+  }
+  
+  /**
+   * Provide a textual representation of an org.eclipse.emf.common.notify.Notification.
+   * 
+   * @param notification the <code>Notification</code> to print.
+   * @param printNotifierValue only if this is set to true, the value of the notifier (which may be a large text) is printed.
+   * @return a textual representation of the <code>notification</code>
+   */
+  public static String printNotification(Notification notification, boolean printNotifierValue) {
     StringBuilder buf = new StringBuilder();
     
     buf.append(NEWLINE);
@@ -258,7 +271,11 @@ public final class EmfUtil {
     buf.append(NOTIFICATION_EVENT_TYPES[notification.getEventType()]).append(NEWLINE);
     
     Object notifier = notification.getNotifier();
-    buf.append("    Notifier: type=").append(notifier.getClass().getName()).append(", value=").append(notifier.toString()).append(NEWLINE);
+    buf.append("    Notifier: type=").append(notifier.getClass().getName());
+    if (printNotifierValue) {
+      buf.append(", value=").append(notifier.toString());
+    }
+    buf.append(NEWLINE);
     
     String featureType = "Unknown";
     Object feature = notification.getFeature();

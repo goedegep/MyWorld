@@ -23,6 +23,7 @@ import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.ETypedElement;
+import org.eclipse.emf.ecore.EcoreFactory;
 import org.eclipse.emf.ecore.EcorePackage;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
@@ -141,6 +142,27 @@ public class EObjectTable<T extends EObject> extends TableView<T> implements Obj
   
   private ComponentFactoryFx componentFactory;
 
+//  public EObjectTable(CustomizationFx customization, EClass eClass, EObjectTableDescriptor<T> objectTableDescriptor, EObject containingObject, EReference reference) {
+//    this(customization, eClass, objectTableDescriptor, containingObject, getReferenceForObjects(containingObject, objects));
+//  }
+
+  //
+//private static EReference getReferenceForObjects(EObject containingObject, List objects) {
+//  EReference objectsEReference = null;
+//  for (EReference eReference: containingObject.eClass().getEAllReferences()) {
+//    if (containingObject.eGet(eReference) == objects) {
+//      LOGGER.severe("Found reference: " + eReference.getName());
+//      objectsEReference = eReference;
+//      break;
+//    }
+//  }
+//  
+//  if (objectsEReference == null) {
+//    throw new IllegalArgumentException("'objects' is not part of 'containingObject'.");
+//  }
+//  
+//  return objectsEReference;
+//}
   
   /**
    * Constructor.
@@ -167,10 +189,23 @@ public class EObjectTable<T extends EObject> extends TableView<T> implements Obj
    * @param customization the GUI customization.
    * @param eClass the {@link EClass} of the objects listed in the table (mandatory).
    * @param objectTableDescriptor full specification of the table. If <code>null</code>, default values are used, where most information is derived from the <b>eClass</b>.
-   * @param containingObject the object containing the <code>objects</code.
-   * @param objects the objects to be listed in the table.
+   * @param containingObject the object containing the list of objects.
+   * @param objectsEReference the reference, in the containingObject, to the list of objects.
    */
-  public EObjectTable(CustomizationFx customization, EClass eClass, EObjectTableDescriptor<T> objectTableDescriptor, EObject containingObject, List<T> objects) {
+  public EObjectTable(CustomizationFx customization, EClass eClass, EObjectTableDescriptor<T> objectTableDescriptor, EObject containingObject, EReference objectsEReference) {
+    this(customization, eClass, objectTableDescriptor);
+    
+    setObjects(containingObject, objectsEReference);
+  }
+  
+  
+  public EObjectTable(CustomizationFx customization, EClass eClass, EObjectTableDescriptor<T> objectTableDescriptor, List<T> objects) {
+    this(customization, eClass, objectTableDescriptor);
+    
+    setObjects(objects);
+  }
+  
+  public EObjectTable(CustomizationFx customization, EClass eClass, EObjectTableDescriptor<T> objectTableDescriptor) {
     super();
 
     this.eClass = eClass;
@@ -178,18 +213,18 @@ public class EObjectTable<T extends EObject> extends TableView<T> implements Obj
     componentFactory = customization.getComponentFactoryFx();
     EPackage ePackage = eClass.getEPackage();
     eFactory = ePackage.getEFactoryInstance();
-    
+
     if (this.tableDescriptor == null) {
       this.tableDescriptor = createDefaultObjectTableDescriptor();
     }
-    
+
     completeColumnDescriptors(); // add missing column information
 
     // Create the table columns.
     for (EObjectTableColumnDescriptorAbstract<T> columnDescriptorAbstract: tableDescriptor.getColumnDescriptors()) {
       createTableColumnAbstract(columnDescriptorAbstract, false);
     }
-    
+
     // Set the placeholder if specified
     if (objectTableDescriptor != null) {
       String placeHolderText = objectTableDescriptor.getPlaceHolderText();
@@ -197,25 +232,21 @@ public class EObjectTable<T extends EObject> extends TableView<T> implements Obj
         setPlaceholder(new Label(placeHolderText));
       }
     }
-    
+
     // SETTING CUSTOM EVENT DISPATCHER TO SCENE
     setEventDispatcher(new DoubleClickEventDispatcher(getEventDispatcher()));
-    
+
     setRowFactory(tv -> {
       TableRow<T> row = new TableRow<>();
       row.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> handleMouseClickedEvent(row, e));
       row.addEventHandler(DoubleClickEventDispatcher.MOUSE_DOUBLE_CLICKED, e -> handleMouseDoubleClickedEvent(row, e));
       return row ;
     });
-    
+
     setEditable(shallTableBeEditable());
-    
-    setObjects(containingObject, objects);
-    
+
     initObjectSelectionListening();
   }
-  
- 
 
   public static void addDefaultStringConverter(Class<? extends Object> clazz, StringConverter<Object> stringConverter) {
     defaultStringConverters.put(clazz, stringConverter);
@@ -665,63 +696,87 @@ public class EObjectTable<T extends EObject> extends TableView<T> implements Obj
    * 
    * @param objects object (items) to be shown in the table.
    */
-  public void setObjects(EObject containingObject, List<T> objects) {
-    
-    this.containingObject = containingObject;
-    this.objects = objects;
-    
+  public void setObjects(List<T> objects) {
     if (objects == null) {
-      setItems(null);
-      return;
-    }
-    
-    EReference objectsEReference = null;
-    for (EReference eReference: containingObject.eClass().getEAllReferences()) {
-      if (containingObject.eGet(eReference) == objects) {
-        LOGGER.severe("Found reference: " + eReference.getName());
-        objectsEReference = eReference;
-        break;
-      }
-    }
-        
-    // For the sorting and filtering to work, we need to wrap an ObservableList in a FilteredList and then in a SortedList.
-    // And bind the SortedList comparator to the TableView comparator.
-    // In order to support default sorting, based on the specified comparator, a second SortedList between the FilteredList and the SortedList is needed.
-    
-    if ((objects instanceof EObjectContainmentEList)  &&  (containingObject != null)) {
-//      observableObjects = new ObservableEList<>(containingObject, (EObjectContainmentEList<T>) objects);
-      observableObjects = new ObservableEList<>(false, containingObject, objectsEReference);
+      setObjects(null, null);
     } else {
-      observableObjects = FXCollections.observableList(objects);
+      // Create the EPackage
+      EPackage ePackage = EcoreFactory.eINSTANCE.createEPackage();
+
+      EClass listContainerClass = EcoreFactory.eINSTANCE.createEClass();
+      listContainerClass.setName("ListContainer");
+      EList<EStructuralFeature> structuralFeatures = listContainerClass.getEStructuralFeatures();
+
+      EReference reference = EcoreFactory.eINSTANCE.createEReference();
+      reference.setName("reference");
+      reference.setEType(EcorePackage.eINSTANCE.getEEList());
+      structuralFeatures.add(reference);
+
+      ePackage.getEClassifiers().add(listContainerClass);
+
+      EFactory factory = ePackage.getEFactoryInstance();
+      EObject listContainer = factory.create(listContainerClass);
+      listContainer.eSet(reference, objects);
+
+      setObjects(listContainer, reference);
     }
-            
-    filteredObjects = new FilteredList<>(observableObjects);
-    if (tableDescriptor.getFilterPredicate() != null) {
-      filteredObjects.setPredicate(tableDescriptor.getFilterPredicate());
-    }
-    Comparator<T> comparator = tableDescriptor.getComparator();
-    SortedList<T> comparatorBasedSortedList  = new SortedList<>(filteredObjects, comparator);
-    tableSortedList = new SortedList<>(comparatorBasedSortedList);
-    tableSortedList.comparatorProperty().bind(comparatorProperty());
     
-//    if (observableObjects instanceof ObservableEList) {
-//      ((ObservableEList<T>) observableObjects).setPresentationList(tableSortedList);
+//    
+//    this.containingObject = containingObject;
+//    this.objects = objects;
+//    
+//    if (objects == null) {
+//      setItems(null);
+//      return;
 //    }
-
-    setItems(tableSortedList);
-    ListChangeListener<T> l = new ListChangeListener<>() {
-
-      @Override
-      public void onChanged(Change<? extends T> arg0) {
-        LOGGER.severe("=>");
-        refresh();
-        
-      }
-
-      
-    };
-    LOGGER.severe("adding listener");
-    tableSortedList.addListener(l);
+//    
+//    EReference objectsEReference = null;
+//    for (EReference eReference: containingObject.eClass().getEAllReferences()) {
+//      if (containingObject.eGet(eReference) == objects) {
+//        LOGGER.severe("Found reference: " + eReference.getName());
+//        objectsEReference = eReference;
+//        break;
+//      }
+//    }
+//        
+//    // For the sorting and filtering to work, we need to wrap an ObservableList in a FilteredList and then in a SortedList.
+//    // And bind the SortedList comparator to the TableView comparator.
+//    // In order to support default sorting, based on the specified comparator, a second SortedList between the FilteredList and the SortedList is needed.
+//    
+//    if ((objects instanceof EObjectContainmentEList)  &&  (containingObject != null)) {
+////      observableObjects = new ObservableEList<>(containingObject, (EObjectContainmentEList<T>) objects);
+//      observableObjects = new ObservableEList<>(false, containingObject, objectsEReference);
+//    } else {
+//      observableObjects = FXCollections.observableList(objects);
+//    }
+//            
+//    filteredObjects = new FilteredList<>(observableObjects);
+//    if (tableDescriptor.getFilterPredicate() != null) {
+//      filteredObjects.setPredicate(tableDescriptor.getFilterPredicate());
+//    }
+//    Comparator<T> comparator = tableDescriptor.getComparator();
+//    SortedList<T> comparatorBasedSortedList  = new SortedList<>(filteredObjects, comparator);
+//    tableSortedList = new SortedList<>(comparatorBasedSortedList);
+//    tableSortedList.comparatorProperty().bind(comparatorProperty());
+//    
+////    if (observableObjects instanceof ObservableEList) {
+////      ((ObservableEList<T>) observableObjects).setPresentationList(tableSortedList);
+////    }
+//
+//    setItems(tableSortedList);
+//    ListChangeListener<T> l = new ListChangeListener<>() {
+//
+//      @Override
+//      public void onChanged(Change<? extends T> arg0) {
+//        LOGGER.severe("=>");
+//        refresh();
+//        
+//      }
+//
+//      
+//    };
+//    LOGGER.severe("adding listener");
+//    tableSortedList.addListener(l);
   }
   
   /**
@@ -729,15 +784,15 @@ public class EObjectTable<T extends EObject> extends TableView<T> implements Obj
    * 
    * @param objects object (items) to be shown in the table.
    */
-  public void setObjects(boolean dummy, EObject containingObject, EReference eReference) {
+  public void setObjects(EObject containingObject, EReference eReference) {
     
     this.containingObject = containingObject;
 //    this.objects = objects;
     
-//    if (objects == null) {
-//      setItems(null);
-//      return;
-//    }
+    if (eReference == null) {
+      setItems(null);
+      return;
+    }
         
     // For the sorting and filtering to work, we need to wrap an ObservableList in a FilteredList and then in a SortedList.
     // And bind the SortedList comparator to the TableView comparator.
@@ -759,17 +814,17 @@ public class EObjectTable<T extends EObject> extends TableView<T> implements Obj
 //    }
 
     setItems(tableSortedList);
-    ListChangeListener<T> l = new ListChangeListener<>() {
-
-      @Override
-      public void onChanged(Change<? extends T> arg0) {
-        LOGGER.severe("=>");
-        refresh();
-        
-      }
-
-      
-    };
+//    ListChangeListener<T> l = new ListChangeListener<>() {
+//
+//      @Override
+//      public void onChanged(Change<? extends T> arg0) {
+//        LOGGER.severe("=>");
+//        refresh();
+//        
+//      }
+//
+//      
+//    };
     ((ObservableEList<T>) observableObjects).addTableRefreshNeededListener(o -> refresh());
   }
   
@@ -915,9 +970,9 @@ public class EObjectTable<T extends EObject> extends TableView<T> implements Obj
         final BiConsumer<List<T>, T> consumer = tableRowOperationDescriptor.getConsumer();
         menuItem.setOnAction((ActionEvent event) -> {
           LOGGER.info("Extended operation");
-          LOGGER.info("objects class" + objects.getClass().getName());
+          LOGGER.info("objects class" + (objects != null ? objects.getClass().getName() : "<null>"));
           consumer.accept(objects, row.getItem());
-          this.setObjects(containingObject, objects);
+//          this.setObjects(containingObject, objects);
         });
         contextMenu.getItems().add(menuItem);
       }

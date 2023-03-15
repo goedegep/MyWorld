@@ -14,7 +14,7 @@ import goedegep.util.money.PgCurrencyFormat;
  * Therefore a valid factor range can be set by specifying a minimum and maximum factor, see {@link #setValidFactorRange}.
  * By default both minimumFactor and maximumFactor are set to 100.
  */
-public class ObjectControlCurrency extends TextFieldObjectInput<PgCurrency> {
+public class ObjectControlCurrency extends TextFieldObjectControl<PgCurrency> {
   private static final Logger         LOGGER = Logger.getLogger(ObjectControlCurrency.class.getName());
   private static final PgCurrencyFormat  CF = new PgCurrencyFormat();
     

@@ -5,6 +5,10 @@ import java.text.ParseException;
 import javafx.beans.Observable;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ObjectProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+import javafx.scene.Node;
+import javafx.scene.control.Label;
 
 /**
  * This interface defines a set of methods for GUI controls to show and enter object values.
@@ -46,6 +50,9 @@ import javafx.beans.property.ObjectProperty;
  * 
  */
 public interface ObjectControl<T extends Object> extends Observable {
+  
+  public static final String OK_INDICATOR = "✓";
+  public static final String NOK_INDICATOR = "!";
   
   /**
    * Indication of whether the Object provided by this component is optional or not.
@@ -120,6 +127,7 @@ public interface ObjectControl<T extends Object> extends Observable {
    * @param objectInputs the controls to be checked.
    * @return true, if all controls have valid values, false otherwise.
    */
+  @Deprecated
   public static boolean areControlsValid(ObjectControl<?>... objectInputs) {
     for (ObjectControl<?> objectInput: objectInputs) {
       if (!objectInput.getIsValid(null)) {
@@ -127,6 +135,26 @@ public interface ObjectControl<T extends Object> extends Observable {
       }
     }
     return true;
+  }
+  
+  public default Node getValidIndicator() {
+    Label validIndicationLabel = new Label(isValid().getValue() ? OK_INDICATOR : NOK_INDICATOR);
+    isValid().addListener(new ChangeListener<>() {
+
+      @Override
+      public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+        if (newValue) {
+          validIndicationLabel.setText(OK_INDICATOR);
+        } else {
+          validIndicationLabel.setText(NOK_INDICATOR);
+        }
+      }
+        
+    });
+    
+    
+    
+    return validIndicationLabel;
   }
   
   public String getId();

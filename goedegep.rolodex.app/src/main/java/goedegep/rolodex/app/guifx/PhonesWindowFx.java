@@ -5,8 +5,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
-import org.eclipse.emf.common.util.EList;
-
 import goedegep.appgen.TableRowOperation;
 import goedegep.appgen.TableRowOperationDescriptor;
 import goedegep.jfx.ComponentFactoryFx;
@@ -61,8 +59,6 @@ public class PhonesWindowFx extends JfxStage {
   private PhoneEditPanel phoneEditPanel;
   private PhoneAddressBookEntryEditPanel phoneAddressBookEntryEditPanel;
   
-  private EList<Phone> phones;
-  
   /**
    * Constructor
    * 
@@ -86,7 +82,7 @@ public class PhonesWindowFx extends JfxStage {
         referredByPanel.setObject(phone);
         phoneEditPanel.setPhone(phone);
         if (phone != null) {
-          phoneAddressBookTable.setObjects(phone.getPhoneAddressBook(), phone.getPhoneAddressBook().getEntries());
+          phoneAddressBookTable.setObjects(phone.getPhoneAddressBook(), RolodexPackage.eINSTANCE.getPhoneAddressBook_Entries());
           phoneAddressBookEntryEditPanel.setPhoneAddressBook(phone.getPhoneAddressBook());
         } else {
           phoneAddressBookTable.setObjects(null, null);
@@ -129,8 +125,7 @@ public class PhonesWindowFx extends JfxStage {
    * @return the created phonesTable
    */
   private EObjectTable<Phone> createPhonesTable() {
-    phones = rolodex.getPhoneList().getPhones();
-    phonesTable = new EObjectTable<Phone>(customization, ROLODEX_PACKAGE.getPhone(), new PhonesTableDescriptor(), rolodex.getPhoneList(), phones);
+    phonesTable = new EObjectTable<Phone>(customization, ROLODEX_PACKAGE.getPhone(), new PhonesTableDescriptor(), rolodex.getPhoneList(), RolodexPackage.eINSTANCE.getPhoneList_Phones());
         
     return phonesTable;
   }
@@ -142,7 +137,7 @@ public class PhonesWindowFx extends JfxStage {
    * @return the created phoneAddressBookTable
    */
   private EObjectTable<PhoneAddressBookEntry> createPhoneAddressBookTable() {
-    phoneAddressBookTable = new EObjectTable<PhoneAddressBookEntry>(customization, ROLODEX_PACKAGE.getPhone(), new PhoneAddressBookTableDescriptor(), null, null);
+    phoneAddressBookTable = new EObjectTable<PhoneAddressBookEntry>(customization, ROLODEX_PACKAGE.getPhone(), new PhoneAddressBookTableDescriptor(), null);
         
     return phoneAddressBookTable;
   }

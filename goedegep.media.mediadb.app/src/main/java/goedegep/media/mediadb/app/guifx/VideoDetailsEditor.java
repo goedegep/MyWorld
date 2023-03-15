@@ -12,6 +12,7 @@ import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.JfxStage;
 import goedegep.jfx.controls.FileSelecter;
 import goedegep.jfx.eobjecttable.EObjectTable;
+import goedegep.media.mediadb.app.AlbumDetailsException;
 import goedegep.media.mediadb.model.MediaDb;
 import goedegep.media.mediadb.model.MediadbFactory;
 import goedegep.media.mediadb.model.MediadbPackage;
@@ -187,7 +188,7 @@ public class VideoDetailsEditor extends JfxStage {
     subjectsVBox = componentFactory.createVBox(10.0, 10.0);
     label = componentFactory.createStrongLabel("Subjects:");
     subjectsVBox.getChildren().add(label);
-    subjectsTable = new SubjectsTable(customization, null);
+    subjectsTable = new SubjectsTable(customization);
     subjectsVBox.getChildren().add(subjectsTable);
     
     centerPane.getChildren().add(subjectsVBox);
@@ -244,7 +245,7 @@ public class VideoDetailsEditor extends JfxStage {
       }
           
       subjects = (List<Subject>) EcoreUtil.copyAll(video.getSubjects());
-      subjectsTable.setObjects(video, subjects);
+      subjectsTable.setObjects(video, MediadbPackage.eINSTANCE.getVideo_Subjects());
     } else {
       videoTitleTextField.setText("");
       videoDateTextField.setText("");
