@@ -34,22 +34,6 @@ public class ObjectControlCurrency extends ObjectControlTextField<PgCurrency> {
     setDefaultValidFactorRange();
   }
   
-  public ObjectControlCurrency(String text, double width, boolean isOptional, String toolTipText) {
-    super(text, width, isOptional, toolTipText);
-    
-    setDefaultValidFactorRange();
-  }
-
-//  @Override
-//  public PgCurrency getValue() {
-//    try {
-//      return CF.parse(getText());
-//    } catch (ParseException | NullPointerException n) {
-//      LOGGER.severe("Geldbedrag PARSE EXCEPTION ");
-//      return null;
-//    }
-//  }
-  
   @Override
   protected boolean isEnteredDataValid(StringBuilder errorMessageBuffer) {
     if (getText() == null) {

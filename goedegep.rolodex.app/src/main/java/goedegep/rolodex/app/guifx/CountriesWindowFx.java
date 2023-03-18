@@ -150,7 +150,7 @@ class CountryEditPanel {
     this.rolodex = rolodex;
     
     // Create the controls.
-    countryTextField = componentFactory.createObjectInputString(null, 300, false, "Enter the name of a country to be added to the Rolodex");
+    countryTextField = componentFactory.createObjectControlString(null, 300, false, "Enter the name of a country to be added to the Rolodex");
     
     createGUI();
   }

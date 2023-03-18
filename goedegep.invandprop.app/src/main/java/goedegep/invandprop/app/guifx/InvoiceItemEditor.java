@@ -34,10 +34,10 @@ class InvoiceItemEditorDescriptor extends EObjectEditorDescriptor {
     ComponentFactoryFx componentFactory = customization.getComponentFactoryFx();
         
     EObjectAttributeEditDescriptor[] eObjectAttributeEditDescriptors = {
-        new EObjectAttributeEditDescriptor(NUMBER_OF_ITEMS_ID, componentFactory.createObjectInputInteger(1, 150.0, true, "the number of items"), INVOICES_AND_PROPERTIES_PACKAGE.getInvoiceItem_NumberOfItems()),
-        new EObjectAttributeEditDescriptor(DESCRIPTION_ID, componentFactory.createObjectInputString(null, 200, false, "typically the product"), INVOICES_AND_PROPERTIES_PACKAGE.getExpenditure_Description()),
-        new EObjectAttributeEditDescriptor(AMOUNT_ID, componentFactory.createObjectInputCurrency("", 150, false, "the amount of money paid"), INVOICES_AND_PROPERTIES_PACKAGE.getExpenditure_Amount()),
-        new EObjectAttributeEditDescriptor(REMARKS_ID, componentFactory.createObjectInputString(null, 150.0, true, "any comments on this invoice"), INVOICES_AND_PROPERTIES_PACKAGE.getExpenditure_Remarks())
+        new EObjectAttributeEditDescriptor(NUMBER_OF_ITEMS_ID, componentFactory.createObjectControlInteger(1, 150.0, true, "the number of items"), INVOICES_AND_PROPERTIES_PACKAGE.getInvoiceItem_NumberOfItems()),
+        new EObjectAttributeEditDescriptor(DESCRIPTION_ID, componentFactory.createObjectControlString(null, 200, false, "typically the product"), INVOICES_AND_PROPERTIES_PACKAGE.getExpenditure_Description()),
+        new EObjectAttributeEditDescriptor(AMOUNT_ID, componentFactory.createObjectControlCurrency(null, 150, false, "the amount of money paid"), INVOICES_AND_PROPERTIES_PACKAGE.getExpenditure_Amount()),
+        new EObjectAttributeEditDescriptor(REMARKS_ID, componentFactory.createObjectControlString(null, 150.0, true, "any comments on this invoice"), INVOICES_AND_PROPERTIES_PACKAGE.getExpenditure_Remarks())
     };
     
     getEObjectAttributeEditDescriptors().addAll(Arrays.asList(eObjectAttributeEditDescriptors));

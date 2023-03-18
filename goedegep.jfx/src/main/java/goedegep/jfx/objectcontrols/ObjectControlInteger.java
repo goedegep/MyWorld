@@ -33,12 +33,6 @@ public class ObjectControlInteger extends ObjectControlTextField<Integer> {
     setDefaultValidValueRange();
   }
   
-  public ObjectControlInteger(String text, double width, boolean isOptional, String toolTipText) {
-    super(new IntegerObjectStringConverter(), text, width, isOptional, toolTipText);
-    
-    setDefaultValidValueRange();
-  }
-  
   @Override
   protected boolean isEnteredDataValid(StringBuilder errorMessageBuffer) {
     if (getText() == null) {

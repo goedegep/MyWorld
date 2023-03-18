@@ -50,6 +50,8 @@ import javafx.scene.control.Label;
  * 
  * For clarity, all method names start with an 'oc' prefix.
  * 
+ * Each ObjectControl is a node, so it also supports methods like: setId().
+ * 
  */
 public interface ObjectControl<T extends Object> extends Observable {
   

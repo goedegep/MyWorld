@@ -24,18 +24,6 @@ public class ObjectControlFlexDate extends ObjectControlTextField<FlexDate> {
   public ObjectControlFlexDate(FlexDate flexDate, double width, boolean isOptional, String toolTipText) {
     super(flexDate, width, isOptional, toolTipText, false);
   }
-  
-  /**
-   * Constructor.
-   * 
-   * @param text Textual representation for the initial date to be filled in in the TextField.
-   * @param width Width of the TextField.
-   * @param isOptional Indication of whether the value is an optional values.
-   * @param toolTipText An optional Tooltip text.
-   */
-  public ObjectControlFlexDate(String text, double width, boolean isOptional, String toolTipText) {
-    super(text, width, isOptional, toolTipText);
-  }
     
   /**
    * {@inheritDoc}

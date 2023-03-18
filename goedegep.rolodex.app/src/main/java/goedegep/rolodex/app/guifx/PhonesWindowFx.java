@@ -171,8 +171,8 @@ class PhoneEditPanel {
     componentFactory = customization.getComponentFactoryFx();
     
     // Create the controls.
-    phoneDescriptionTextField = componentFactory.createObjectInputString(null, 300, true, "Enter a description for the phone, e.g. the owner");
-    phoneTypeTextField = componentFactory.createObjectInputString(null, 300, true, "Enter the phone model and/or type");
+    phoneDescriptionTextField = componentFactory.createObjectControlString(null, 300, true, "Enter a description for the phone, e.g. the owner");
+    phoneTypeTextField = componentFactory.createObjectControlString(null, 300, true, "Enter the phone model and/or type");
     
     createGUI();
   }
@@ -361,8 +361,8 @@ class PhoneAddressBookEntryEditPanel {
     componentFactory = customization.getComponentFactoryFx();
     
     // Create the controls.
-    entryNameTextField = componentFactory.createObjectInputString(null, 300, true, "Enter the entry name");
-    phoneAddressBookEntryTypeField =componentFactory.createObjectInputEEnumComboBox(PhoneAddressBookEntryType.NAME_AND_PHONE_NUMBER_ENTRY, null, true, "Enter the type of entry");
+    entryNameTextField = componentFactory.createObjectControlString(null, 300, true, "Enter the entry name");
+    phoneAddressBookEntryTypeField =componentFactory.createObjectControlEnumComboBox(PhoneAddressBookEntryType.NAME_AND_PHONE_NUMBER_ENTRY, null, true, "Enter the type of entry");
     phoneNumberTextField = new PhoneNumberTextField(customization, rolodex);
     
     createGUI();

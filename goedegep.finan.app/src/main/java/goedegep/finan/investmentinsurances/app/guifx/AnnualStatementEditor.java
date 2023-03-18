@@ -146,32 +146,32 @@ public class AnnualStatementEditor extends JfxStage {
     // Separator
     
     // Annual Statement date
-    annualStatementDateTextField = componentFactory.createObjectInputFlexDate(null, 100, false, "Datering van de jaaropgave", null);
+    annualStatementDateTextField = componentFactory.createObjectControlFlexDate(null, 100, false, "Datering van de jaaropgave");
     
     // Period
-    periodFromTextField = componentFactory.createObjectInputLocalDate((LocalDate) null, 100, false, "Begindatum van de periode waarover dit overzicht van toepassing is");
-    periodUntilTextField = componentFactory.createObjectInputLocalDate((LocalDate) null, 100, false, "Einddatum van de periode waarover dit overzicht van toepassing is");
+    periodFromTextField = componentFactory.createObjectControlLocalDate((LocalDate) null, 100, false, "Begindatum van de periode waarover dit overzicht van toepassing is");
+    periodUntilTextField = componentFactory.createObjectControlLocalDate((LocalDate) null, 100, false, "Einddatum van de periode waarover dit overzicht van toepassing is");
     
     // Premium death risk coverage
-    premiumDeathRiskCoverageTextField = componentFactory.createObjectInputCurrency((PgCurrency) null, 100, true, "Betaalde premie voor de dekking van overlijdensrisico");
+    premiumDeathRiskCoverageTextField = componentFactory.createObjectControlCurrency((PgCurrency) null, 100, true, "Betaalde premie voor de dekking van overlijdensrisico");
     premiumDeathRiskCoverageTextField.setValidFactorRange(100, 100);
     
     // Continuing Costs Insurance Company
-    continuingCostsInsuranceCompanyTextField = componentFactory.createObjectInputCurrency((PgCurrency) null, 100, true, "Betaalde premie voor de dekking van overlijdensrisico");
+    continuingCostsInsuranceCompanyTextField = componentFactory.createObjectControlCurrency((PgCurrency) null, 100, true, "Betaalde premie voor de dekking van overlijdensrisico");
     continuingCostsInsuranceCompanyTextField.setValidFactorRange(100, 100);
     
     // Management Costs
-    managementCostsTextField = componentFactory.createObjectInputCurrency((PgCurrency) null, 100, true, "Management costs:");
+    managementCostsTextField = componentFactory.createObjectControlCurrency((PgCurrency) null, 100, true, "Management costs:");
     managementCostsTextField.setValidFactorRange(100, 100);
     
     // Earned on the participations
-    earnedOnTheParticipationsTextField = componentFactory.createObjectInputCurrency((PgCurrency) null, 100, true, "Verdiend op de participaties");
+    earnedOnTheParticipationsTextField = componentFactory.createObjectControlCurrency((PgCurrency) null, 100, true, "Verdiend op de participaties");
     
     // Costs restitution
-    costsRestitutionTextField = componentFactory.createObjectInputCurrency((PgCurrency) null, 100, true, "Teruggave te veel betaalde kosten");
+    costsRestitutionTextField = componentFactory.createObjectControlCurrency((PgCurrency) null, 100, true, "Teruggave te veel betaalde kosten");
     
     // expectedYearlyCostsIncrease
-    expectedYearlyCostsIncreaseTextField = componentFactory.createObjectInputFixedPointValue((String) null, 100, true, "Wordt gebruikt in eigen berekening");
+    expectedYearlyCostsIncreaseTextField = componentFactory.createObjectControlFixedPointValue(null, 100, true, "Wordt gebruikt in eigen berekening");
     expectedYearlyCostsIncreaseTextField.setValidFactorRange(100, 100);
     
     participationsControls = new ArrayList<>();
@@ -184,7 +184,7 @@ public class AnnualStatementEditor extends JfxStage {
     //
     
     // Example end capital date
-    exampleCapitalOnEndDateTextField = componentFactory.createObjectInputLocalDate((LocalDate) null, 100, true, "Datum waarvoor de voorbeeld kapitalen berekend zijn");
+    exampleCapitalOnEndDateTextField = componentFactory.createObjectControlLocalDate((LocalDate) null, 100, true, "Datum waarvoor de voorbeeld kapitalen berekend zijn");
 
     //
     // Example capitals
@@ -860,7 +860,7 @@ public class AnnualStatementEditor extends JfxStage {
     participationControls.participation = participation;
     
     // Participations at the end of the period; no use setting this value, as it changes every year
-    participationControls.numberOfParticipationsEndControl = componentFactory.createObjectInputFixedPointValue((String) null, 100, true, "number of participations at the end of the period");
+    participationControls.numberOfParticipationsEndControl = componentFactory.createObjectControlFixedPointValue(null, 100, true, "number of participations at the end of the period");
     
     // Stock price at the end of the period.
     PgCurrency stockPriceEnd = null;
@@ -873,14 +873,14 @@ public class AnnualStatementEditor extends JfxStage {
         LOGGER.fine("Stockprice for " + periodUntil + " is " + stockPriceEnd);
       }
     }
-    participationControls.stockPriceEndControl = componentFactory.createObjectInputCurrency(stockPriceEnd, 100, true, "stock price at the end of the period");
+    participationControls.stockPriceEndControl = componentFactory.createObjectControlCurrency(stockPriceEnd, 100, true, "stock price at the end of the period");
     
     // Distribution percentage: doesn't change, so copy from last year.
     FixedPointValue distributionPercentage = null;
     if (participation.isSetDistributionPercentage()) {
       distributionPercentage = participation.getDistributionPercentage();
     }
-    participationControls.distributionPercentageControl = componentFactory.createObjectInputFixedPointValue(distributionPercentage, 100, true, "relative size of the participation");
+    participationControls.distributionPercentageControl = componentFactory.createObjectControlFixedPointValue(distributionPercentage, 100, true, "relative size of the participation");
     
   
     //
@@ -888,37 +888,37 @@ public class AnnualStatementEditor extends JfxStage {
     //
 
     // Participations bought: no use setting this value, as it changes every year
-    participationControls.numberOfParticipationsBoughtControl = componentFactory.createObjectInputFixedPointValue((String) null, 100, true, "Participaties bij (aangekochte participaties)");
+    participationControls.numberOfParticipationsBoughtControl = componentFactory.createObjectControlFixedPointValue(null, 100, true, "Participaties bij (aangekochte participaties)");
 
     // Participations sold: no use setting this value, as it changes every year
-    participationControls.numberOfParticipationsSoldControl = componentFactory.createObjectInputFixedPointValue((String) null, 100, true, "Participaties af (verkochte participaties)");
+    participationControls.numberOfParticipationsSoldControl = componentFactory.createObjectControlFixedPointValue(null, 100, true, "Participaties af (verkochte participaties)");
 
     // Participation mutations complete: for safety 'false' by default
-    participationControls.participationMutationsCompleteControl = componentFactory.createObjectInputBoolean("Participatiemutaties volledig", false, false,
+    participationControls.participationMutationsCompleteControl = componentFactory.createObjectControlBoolean("Participatiemutaties volledig", false, false,
         "Als dit aangevinkt is, geeft dat aan dat het overzicht van aangekochte en verkochte participaties volledig is.");
     
     //
     // Example capitals; no proposals for any of these
     //
-    participationControls.exampleReturnOnInvestmentNetHistoricControl = componentFactory.createObjectInputFixedPointValue((String) null, 100, true, "TODO)");
-    participationControls.exampleCapitalNetHistoricControl = componentFactory.createObjectInputCurrency((PgCurrency) null, 100, true, "TODO");
+    participationControls.exampleReturnOnInvestmentNetHistoricControl = componentFactory.createObjectControlFixedPointValue(null, 100, true, "TODO)");
+    participationControls.exampleCapitalNetHistoricControl = componentFactory.createObjectControlCurrency((PgCurrency) null, 100, true, "TODO");
     
-    participationControls.exampleReturnOnInvestmentGrossControl = componentFactory.createObjectInputFixedPointValue((String) null, 100, true, "TODO");
-    participationControls.exampleCapitalGrossControl = componentFactory.createObjectInputCurrency((PgCurrency) null, 100, true, "TODO");
+    participationControls.exampleReturnOnInvestmentGrossControl = componentFactory.createObjectControlFixedPointValue(null, 100, true, "TODO");
+    participationControls.exampleCapitalGrossControl = componentFactory.createObjectControlCurrency((PgCurrency) null, 100, true, "TODO");
     
-    participationControls.exampleReturnOnInvestmentPessimisticControl = componentFactory.createObjectInputFixedPointValue((String) null, 100, true, "TODO");
-    participationControls.exampleCapitalPessimisticControl = componentFactory.createObjectInputCurrency((PgCurrency) null, 100, true, "TODO");
+    participationControls.exampleReturnOnInvestmentPessimisticControl = componentFactory.createObjectControlFixedPointValue(null, 100, true, "TODO");
+    participationControls.exampleCapitalPessimisticControl = componentFactory.createObjectControlCurrency((PgCurrency) null, 100, true, "TODO");
     
-    participationControls.exampleReturnOnInvestmentGrossCompanyOwnControl = componentFactory.createObjectInputFixedPointValue((String) null, 100, true, "TODO");
-    participationControls.exampleCapitalGrossCompanyOwnControl = componentFactory.createObjectInputCurrency((PgCurrency) null, 100, true, "TODO");
+    participationControls.exampleReturnOnInvestmentGrossCompanyOwnControl = componentFactory.createObjectControlFixedPointValue(null, 100, true, "TODO");
+    participationControls.exampleCapitalGrossCompanyOwnControl = componentFactory.createObjectControlCurrency((PgCurrency) null, 100, true, "TODO");
     
-    participationControls.returnOnInvestmentReductionNetHistoricControl = componentFactory.createObjectInputFixedPointValue((String) null, 100, true, "TODO");
-    participationControls.exampleCapitalAfterReductionControl = componentFactory.createObjectInputCurrency((PgCurrency) null, 100, true, "TODO");
+    participationControls.returnOnInvestmentReductionNetHistoricControl = componentFactory.createObjectControlFixedPointValue(null, 100, true, "TODO");
+    participationControls.exampleCapitalAfterReductionControl = componentFactory.createObjectControlCurrency((PgCurrency) null, 100, true, "TODO");
     
     //
     // Total expense ratios; don't change every year, so copy from last year
     //
-    participationControls.totalExpenseRatioControl = componentFactory.createObjectInputFixedPointValue(participation.getTotalExpenseRatio(), 100, true, "Total Expense Ratio (TER)");
+    participationControls.totalExpenseRatioControl = componentFactory.createObjectControlFixedPointValue(participation.getTotalExpenseRatio(), 100, true, "Total Expense Ratio (TER)");
     
     return participationControls;
   }
@@ -934,7 +934,7 @@ public class AnnualStatementEditor extends JfxStage {
     if (participation.isSetNumberOfParticipationsEnd()) {
       numberOfParticipationsEnd = participation.getNumberOfParticipationsEnd();
     }
-    participationControls.numberOfParticipationsEndControl = componentFactory.createObjectInputFixedPointValue(numberOfParticipationsEnd, 100, true, "number of participations at the end of the period");
+    participationControls.numberOfParticipationsEndControl = componentFactory.createObjectControlFixedPointValue(numberOfParticipationsEnd, 100, true, "number of participations at the end of the period");
     
     // Stock price at the end of the period.
     PgCurrency stockPriceEnd = null;
@@ -945,14 +945,14 @@ public class AnnualStatementEditor extends JfxStage {
         stockPriceEnd = investmentFund.getStockPrice(periodUntil);
       }
     }
-    participationControls.stockPriceEndControl = componentFactory.createObjectInputCurrency(stockPriceEnd, 100, true, "stock price at the end of the period");
+    participationControls.stockPriceEndControl = componentFactory.createObjectControlCurrency(stockPriceEnd, 100, true, "stock price at the end of the period");
     
     // Distribution percentage
     FixedPointValue distributionPercentage = null;
     if (participation.isSetDistributionPercentage()) {
       distributionPercentage = participation.getDistributionPercentage();
     }
-    participationControls.distributionPercentageControl = componentFactory.createObjectInputFixedPointValue(distributionPercentage, 100, true, "relative size of the participation");
+    participationControls.distributionPercentageControl = componentFactory.createObjectControlFixedPointValue(distributionPercentage, 100, true, "relative size of the participation");
   
     //
     // Participation mutations
@@ -960,48 +960,48 @@ public class AnnualStatementEditor extends JfxStage {
 
     // Participations bought.
     FixedPointValue participationsBought = participation.numberOfParticipationsBought();
-    participationControls.numberOfParticipationsBoughtControl = componentFactory.createObjectInputFixedPointValue(participationsBought, 100, true, "Participaties bij (aangekochte participaties)");
+    participationControls.numberOfParticipationsBoughtControl = componentFactory.createObjectControlFixedPointValue(participationsBought, 100, true, "Participaties bij (aangekochte participaties)");
 
     // Participations sold.
     FixedPointValue participationsSold = participation.numberOfParticipationsSold();
-    participationControls.numberOfParticipationsSoldControl = componentFactory.createObjectInputFixedPointValue(participationsSold, 100, true, "Participaties af (verkochte participaties)");
+    participationControls.numberOfParticipationsSoldControl = componentFactory.createObjectControlFixedPointValue(participationsSold, 100, true, "Participaties af (verkochte participaties)");
 
     // Participation mutations complete.
-    participationControls.participationMutationsCompleteControl = componentFactory.createObjectInputBoolean("Participatiemutaties volledig", participation.isParticipationMutationsComplete(), false,
+    participationControls.participationMutationsCompleteControl = componentFactory.createObjectControlBoolean("Participatiemutaties volledig", participation.isParticipationMutationsComplete(), false,
         "Als dit aangevinkt is, geeft dat aan dat het overzicht van aangekochte en verkochte participaties volledig is.");
     
     //
     // Example capitals
     //
     FixedPointValue exampleReturnOnInvestmentNetHistoric = participation.getExampleReturnOnInvestmentNetHistoric();
-    participationControls.exampleReturnOnInvestmentNetHistoricControl = componentFactory.createObjectInputFixedPointValue(exampleReturnOnInvestmentNetHistoric, 100, true, "TODO)");
+    participationControls.exampleReturnOnInvestmentNetHistoricControl = componentFactory.createObjectControlFixedPointValue(exampleReturnOnInvestmentNetHistoric, 100, true, "TODO)");
     PgCurrency exampleCapitalNetHistoric = participation.getExampleCapitalNetHistoric();
-    participationControls.exampleCapitalNetHistoricControl = componentFactory.createObjectInputCurrency(exampleCapitalNetHistoric, 100, true, "TODO");
+    participationControls.exampleCapitalNetHistoricControl = componentFactory.createObjectControlCurrency(exampleCapitalNetHistoric, 100, true, "TODO");
     
     FixedPointValue exampleReturnOnInvestmentGross = participation.getExampleReturnOnInvestmentGross();
-    participationControls.exampleReturnOnInvestmentGrossControl = componentFactory.createObjectInputFixedPointValue(exampleReturnOnInvestmentGross, 100, true, "TODO");
+    participationControls.exampleReturnOnInvestmentGrossControl = componentFactory.createObjectControlFixedPointValue(exampleReturnOnInvestmentGross, 100, true, "TODO");
     PgCurrency exampleCapitalGross = participation.getExampleCapitalGross();
-    participationControls.exampleCapitalGrossControl = componentFactory.createObjectInputCurrency(exampleCapitalGross, 100, true, "TODO");
+    participationControls.exampleCapitalGrossControl = componentFactory.createObjectControlCurrency(exampleCapitalGross, 100, true, "TODO");
     
     FixedPointValue exampleReturnOnInvestmentPessimistic = participation.getExampleReturnOnInvestmentPessimistic();
-    participationControls.exampleReturnOnInvestmentPessimisticControl = componentFactory.createObjectInputFixedPointValue(exampleReturnOnInvestmentPessimistic, 100, true, "TODO");
+    participationControls.exampleReturnOnInvestmentPessimisticControl = componentFactory.createObjectControlFixedPointValue(exampleReturnOnInvestmentPessimistic, 100, true, "TODO");
     PgCurrency exampleCapitalPessimistic = participation.getExampleCapitalPessimistic();
-    participationControls.exampleCapitalPessimisticControl = componentFactory.createObjectInputCurrency(exampleCapitalPessimistic, 100, true, "TODO");
+    participationControls.exampleCapitalPessimisticControl = componentFactory.createObjectControlCurrency(exampleCapitalPessimistic, 100, true, "TODO");
     
     FixedPointValue exampleReturnOnInvestmentGrossCompanyOwn = participation.getExampleReturnOnInvestmentGrossCompanyOwn();
-    participationControls.exampleReturnOnInvestmentGrossCompanyOwnControl = componentFactory.createObjectInputFixedPointValue(exampleReturnOnInvestmentGrossCompanyOwn, 100, true, "TODO");
+    participationControls.exampleReturnOnInvestmentGrossCompanyOwnControl = componentFactory.createObjectControlFixedPointValue(exampleReturnOnInvestmentGrossCompanyOwn, 100, true, "TODO");
     PgCurrency exampleCapitalGrossCompanyOwn = participation.getExampleCapitalGrossCompanyOwn();
-    participationControls.exampleCapitalGrossCompanyOwnControl = componentFactory.createObjectInputCurrency(exampleCapitalGrossCompanyOwn, 100, true, "TODO");
+    participationControls.exampleCapitalGrossCompanyOwnControl = componentFactory.createObjectControlCurrency(exampleCapitalGrossCompanyOwn, 100, true, "TODO");
     
     FixedPointValue returnOnInvestmentReductionNetHistoric = participation.getReturnOnInvestmentReductionNetHistoric();
-    participationControls.returnOnInvestmentReductionNetHistoricControl = componentFactory.createObjectInputFixedPointValue(returnOnInvestmentReductionNetHistoric, 100, true, "TODO");
+    participationControls.returnOnInvestmentReductionNetHistoricControl = componentFactory.createObjectControlFixedPointValue(returnOnInvestmentReductionNetHistoric, 100, true, "TODO");
     PgCurrency exampleCapitalAfterReduction = participation.getExampleCapitalAfterReduction();
-    participationControls.exampleCapitalAfterReductionControl = componentFactory.createObjectInputCurrency(exampleCapitalAfterReduction, 100, true, "TODO");
+    participationControls.exampleCapitalAfterReductionControl = componentFactory.createObjectControlCurrency(exampleCapitalAfterReduction, 100, true, "TODO");
     
     //
     // Total expense ratios.
     //
-    participationControls.totalExpenseRatioControl = componentFactory.createObjectInputFixedPointValue(participation.getTotalExpenseRatio(), 100, true, "Total Expense Ratio (TER)");
+    participationControls.totalExpenseRatioControl = componentFactory.createObjectControlFixedPointValue(participation.getTotalExpenseRatio(), 100, true, "Total Expense Ratio (TER)");
     
     return participationControls;
   }

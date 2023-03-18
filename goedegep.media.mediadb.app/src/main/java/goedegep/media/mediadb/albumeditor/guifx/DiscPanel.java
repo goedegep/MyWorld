@@ -54,7 +54,7 @@ class DiscPanel extends Group {
     HBox titleBox = componentFactory.createHBox(12.0, 12.0);
     Label label = new Label("Title:");
     titleBox.getChildren().add(label);
-    titleControl = componentFactory.createTextFieldObjectInput(null, disc != null ? disc.getTitle() : null, 300, true, null);
+    titleControl = componentFactory.createObjectControlTextField(null, disc != null ? disc.getTitle() : null, 300, true, null);
     titleBox.getChildren().add(titleControl);
     discVBox.getChildren().add(titleBox);
     

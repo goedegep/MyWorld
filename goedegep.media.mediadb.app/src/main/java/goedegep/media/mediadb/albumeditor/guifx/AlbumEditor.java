@@ -75,6 +75,8 @@ import goedegep.util.datetime.FlexDate;
 import goedegep.util.emf.EmfUtil;
 import goedegep.util.file.FileUtils;
 import goedegep.util.string.StringUtil;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
@@ -285,6 +287,7 @@ public class AlbumEditor extends ObjectEditorAbstract {
   /**
    * Album type
    */
+//  EnumComboBox<AlbumType> albumTypeObjectControlEnumComboBox;
   ObjectControlEnumComboBox<AlbumType> albumTypeObjectControlEnumComboBox;
 
   /**
@@ -375,10 +378,10 @@ public class AlbumEditor extends ObjectEditorAbstract {
   
   @Override
   protected void createControls() {
-    albumTitleTextFieldObjectControl = componentFactory.createTextFieldObjectInput(null, null, 600, false, "The album title is a mandatory field");
+    albumTitleTextFieldObjectControl = componentFactory.createObjectControlTextField(null, null, 600, false, "The album title is a mandatory field");
     albumArtistObjectControl = componentFactory.createObjectControlAutoCompleteTextField(artistStringConverterAndChecker, null, 300, false, "Enter the album artist");
-    albumIssueDateTextField = componentFactory.createObjectInputFlexDate(null, 600, true, "Optional first issue date of the album", null);
-    albumIdTextField = componentFactory.createTextFieldObjectInput(null, null, 600, true, "Enter the optional Id of the album");
+    albumIssueDateTextField = componentFactory.createObjectControlFlexDate(null, 600, true, "Optional first issue date of the album");
+    albumIdTextField = componentFactory.createObjectControlTextField(null, null, 600, true, "Enter the optional Id of the album");
     
     playerObjectControls = new ArrayList<>();
     frontImageControls = new ArrayList<>();
@@ -386,10 +389,10 @@ public class AlbumEditor extends ObjectEditorAbstract {
     backImageControls = new ArrayList<>();
     labelImageControls = new ArrayList<>();
 
-    descriptionTitleTextField = componentFactory.createTextFieldObjectInput(null, null, 600, true, "Enter the optional titel of the description");
-    descriptionTextArea = componentFactory.createObjectInputMultiLineString(null, 400, true, "Enter an optional description of the album", null);
+    descriptionTitleTextField = componentFactory.createObjectControlTextField(null, null, 600, true, "Enter the optional titel of the description");
+    descriptionTextArea = componentFactory.createObjectControlMultiLineString(null, 400, true, "Enter an optional description of the album");
     
-    mediaComboBox = componentFactory.createObjectInputEEnumComboBox(MediumType.CD_AUDIO, MediumType.NOT_SET, MEDIA_DB_PACKAGE.getMediumType(), false, "Select a medium on which the album is issued");
+    mediaComboBox = componentFactory.createObjectControlEnumComboBox(MediumType.CD_AUDIO, MediumType.NOT_SET, MEDIA_DB_PACKAGE.getMediumType(), false, "Select a medium on which the album is issued");
     
     addMediumTypeButton = componentFactory.createButton("Add medium", "Add this medium type");
     addMediumTypeButton.setOnAction((e) -> {
@@ -407,9 +410,9 @@ public class AlbumEditor extends ObjectEditorAbstract {
     isSoundTrackCheckBox = componentFactory.createCheckBox("soundtrack", false);
     iveHadOnLpCheckBox = componentFactory.createCheckBox("I've had on lp", false);
 
-    iWantComboBox = componentFactory.createObjectInputEEnumComboBox(IWant.NOT_SET, IWant.NOT_SET, MEDIA_DB_PACKAGE.getIWant(), true, "Select whether you want this album or not");
+    iWantComboBox = componentFactory.createObjectControlEnumComboBox(IWant.NOT_SET, IWant.NOT_SET, MEDIA_DB_PACKAGE.getIWant(), true, "Select whether you want this album or not");
     
-    myCommentsTextArea = componentFactory.createObjectInputMultiLineString(null, 400, true, "Enter an optional personal comment about the album", null);
+    myCommentsTextArea = componentFactory.createObjectControlMultiLineString(null, 400, true, "Enter an optional personal comment about the album");
     
     discPanels = new ArrayList<>();
     
@@ -645,8 +648,19 @@ public class AlbumEditor extends ObjectEditorAbstract {
      */
     HBox albumTypeHBox = componentFactory.createHBox(10.0, 10.0);
     label = componentFactory.createLabel("Album type:");
-    albumTypeObjectControlEnumComboBox = componentFactory.createObjectInputEEnumComboBox(AlbumType.NORMAL, null, true, "Select the type of album. This value determines how the discs/tracks are to be filled in");
-    albumTypeObjectControlEnumComboBox.select(AlbumType.NORMAL);
+    albumTypeObjectControlEnumComboBox = componentFactory.createObjectControlEnumComboBox(AlbumType.NORMAL, null, true, "Select the type of album. This value determines how the discs/tracks are to be filled in");
+//    albumTypeObjectControlEnumComboBox = new EnumComboBox<AlbumType>(AlbumType.NORMAL);
+    ChangeListener<AlbumType> cl = new ChangeListener<>() {
+
+      @Override
+      public void changed(ObservableValue<? extends AlbumType> observable, AlbumType oldValue, AlbumType newValue) {
+        LOGGER.severe("AlbumType: " + newValue);
+        
+      }
+      
+    };
+    albumTypeObjectControlEnumComboBox.getSelectionModel().selectedItemProperty().addListener(cl);
+//    albumTypeObjectControlEnumComboBox.select(AlbumType.NORMAL);
     albumTypeHBox.getChildren().addAll(label, albumTypeObjectControlEnumComboBox);
     centerPane.getChildren().add(albumTypeHBox);
     
@@ -1006,7 +1020,7 @@ public class AlbumEditor extends ObjectEditorAbstract {
             albumReferencesVBox.getChildren().add(label);
             first = false;
           }
-          ObjectControlString albumReference = componentFactory.createObjectInputString(referredAlbum.getArtistAndTitle(), 600, false, "Reference to album");
+          ObjectControlString albumReference = componentFactory.createObjectControlString(referredAlbum.getArtistAndTitle(), 600, false, "Reference to album");
           albumReferencesVBox.getChildren().add(albumReference);
         }
       }
@@ -1032,7 +1046,8 @@ public class AlbumEditor extends ObjectEditorAbstract {
   }
   
   private void addNewDiscPanel(Disc disc) {
-    DiscPanel discPanel = new DiscPanel(customization, disc, albumTypeObjectControlEnumComboBox.valueProperty(), mediaDb);
+//    DiscPanel discPanel = new DiscPanel(customization, disc, albumTypeObjectControlEnumComboBox.valueProperty(), mediaDb);
+    DiscPanel discPanel = new DiscPanel(customization, disc, null, mediaDb);
     discPanels.add(discPanel);
     discsVBox.getChildren().add(discPanel);
   }

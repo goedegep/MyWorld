@@ -32,11 +32,8 @@ public class ObjectControlHTMLString extends HTMLEditor implements ObjectControl
    * @param toolTipText
    * @param id
    */
-  public ObjectControlHTMLString(String text, double width, boolean isOptional, String toolTipText, String id) {
+  public ObjectControlHTMLString(String text, double width, boolean isOptional, String toolTipText) {
     optionalProperty.set(isOptional);
-    if (id != null) {
-      setId(id);
-    }
 
     addEventHandler(InputEvent.ANY, new EventHandler<InputEvent>() {
 
