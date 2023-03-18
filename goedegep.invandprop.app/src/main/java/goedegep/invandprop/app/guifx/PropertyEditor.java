@@ -11,6 +11,9 @@ import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.eobjecteditor.EObjectAttributeEditDescriptor;
 import goedegep.jfx.eobjecteditor.EObjectEditor;
 import goedegep.jfx.eobjecteditor.EObjectEditorDescriptor;
+import goedegep.jfx.objectcontrols.ObjectControlBoolean;
+import goedegep.jfx.objectcontrols.ObjectControlFlexDate;
+import goedegep.jfx.objectcontrols.ObjectControlString;
 
 public class PropertyEditor extends EObjectEditor<Property> {
     
@@ -36,16 +39,32 @@ class PropertyEditorDescriptor extends EObjectEditorDescriptor {
     setWindowTitle("property");
     
     ComponentFactoryFx componentFactory = customization.getComponentFactoryFx();
+    ObjectControlString descriptionObjectControl = componentFactory.createObjectControlString(null, 150.0, false, "the property description");
+    descriptionObjectControl.setId(INVOICES_AND_PROPERTIES_PACKAGE.getProperty_Description().getName());
+    ObjectControlString brandObjectControl = componentFactory.createObjectControlString(null, 150.0, true, "the brand of the property");
+    brandObjectControl.setId(INVOICES_AND_PROPERTIES_PACKAGE.getProperty_Brand().getName());
+    ObjectControlString typeObjectControl = componentFactory.createObjectControlString(null, 150.0, true, "the property type");
+    typeObjectControl.setId(INVOICES_AND_PROPERTIES_PACKAGE.getProperty_Type().getName());
+    ObjectControlString serialNumberObjectControl = componentFactory.createObjectControlString(null, 150.0, true, "the serial number of the property");
+    serialNumberObjectControl.setId(INVOICES_AND_PROPERTIES_PACKAGE.getProperty_SerialNumber().getName());
+    ObjectControlString remarksObjectControl = componentFactory.createObjectControlString(null, 150.0, true, "any comments on this property");
+    remarksObjectControl.setId(INVOICES_AND_PROPERTIES_PACKAGE.getProperty_Remarks().getName());
+    ObjectControlFlexDate fromDateObjectControl = componentFactory.createObjectControlFlexDate(null, 150.0, true, "date from when you own(ed) the property");
+    fromDateObjectControl.setId(INVOICES_AND_PROPERTIES_PACKAGE.getProperty_FromDate().getName());
+    ObjectControlFlexDate untilDateObjectControl = componentFactory.createObjectControlFlexDate(null, 150.0, true, "date until when you owned the property");
+    untilDateObjectControl.setId(INVOICES_AND_PROPERTIES_PACKAGE.getProperty_UntilDate().getName());
+    ObjectControlBoolean archiveObjectControl = componentFactory.createObjectControlBoolean(null, false, true, "select if you don't own the property anymore");
+    archiveObjectControl.setId(INVOICES_AND_PROPERTIES_PACKAGE.getProperty_Archive().getName());
         
     EObjectAttributeEditDescriptor[] eObjectAttributeEditDescriptors = {
-        new EObjectAttributeEditDescriptor(DESCRIPTION_ID, componentFactory.createObjectInputString(null, 150.0, false, "the property description", INVOICES_AND_PROPERTIES_PACKAGE.getProperty_Description().getName()), INVOICES_AND_PROPERTIES_PACKAGE.getProperty_Description()),
-        new EObjectAttributeEditDescriptor(BRAND_ID, componentFactory.createObjectInputString(null, 150.0, true, "the brand of the property", INVOICES_AND_PROPERTIES_PACKAGE.getProperty_Brand().getName()), INVOICES_AND_PROPERTIES_PACKAGE.getProperty_Brand()),
-        new EObjectAttributeEditDescriptor(TYPE_ID, componentFactory.createObjectInputString(null, 150.0, true, "the property type", INVOICES_AND_PROPERTIES_PACKAGE.getProperty_Type().getName()), INVOICES_AND_PROPERTIES_PACKAGE.getProperty_Type()),
-        new EObjectAttributeEditDescriptor(SERIAL_NUMBER_ID, componentFactory.createObjectInputString(null, 150.0, true, "the serial number of the property", INVOICES_AND_PROPERTIES_PACKAGE.getProperty_SerialNumber().getName()), INVOICES_AND_PROPERTIES_PACKAGE.getProperty_SerialNumber()),
-        new EObjectAttributeEditDescriptor(REMARKS_ID, componentFactory.createObjectInputString(null, 150.0, true, "any comments on this property", INVOICES_AND_PROPERTIES_PACKAGE.getProperty_Remarks().getName()), INVOICES_AND_PROPERTIES_PACKAGE.getProperty_Remarks()),
-        new EObjectAttributeEditDescriptor(FROM_DATE_ID, componentFactory.createObjectInputFlexDate(null, 150.0, true, "date from when you own(ed) the property", INVOICES_AND_PROPERTIES_PACKAGE.getProperty_FromDate().getName()), INVOICES_AND_PROPERTIES_PACKAGE.getProperty_FromDate()),
-        new EObjectAttributeEditDescriptor(UNTIL_DATE_ID, componentFactory.createObjectInputFlexDate(null, 150.0, true, "date until when you owned the property", INVOICES_AND_PROPERTIES_PACKAGE.getProperty_UntilDate().getName()), INVOICES_AND_PROPERTIES_PACKAGE.getProperty_UntilDate()),
-        new EObjectAttributeEditDescriptor(ARCHIVE_ID, componentFactory.createObjectInputBoolean(null, false, true, "select if you don't own the property anymore", INVOICES_AND_PROPERTIES_PACKAGE.getProperty_Archive().getName()), INVOICES_AND_PROPERTIES_PACKAGE.getProperty_Archive())
+        new EObjectAttributeEditDescriptor(DESCRIPTION_ID, descriptionObjectControl, INVOICES_AND_PROPERTIES_PACKAGE.getProperty_Description()),
+        new EObjectAttributeEditDescriptor(BRAND_ID, brandObjectControl, INVOICES_AND_PROPERTIES_PACKAGE.getProperty_Brand()),
+        new EObjectAttributeEditDescriptor(TYPE_ID, typeObjectControl, INVOICES_AND_PROPERTIES_PACKAGE.getProperty_Type()),
+        new EObjectAttributeEditDescriptor(SERIAL_NUMBER_ID, serialNumberObjectControl, INVOICES_AND_PROPERTIES_PACKAGE.getProperty_SerialNumber()),
+        new EObjectAttributeEditDescriptor(REMARKS_ID, remarksObjectControl, INVOICES_AND_PROPERTIES_PACKAGE.getProperty_Remarks()),
+        new EObjectAttributeEditDescriptor(FROM_DATE_ID, fromDateObjectControl, INVOICES_AND_PROPERTIES_PACKAGE.getProperty_FromDate()),
+        new EObjectAttributeEditDescriptor(UNTIL_DATE_ID, untilDateObjectControl, INVOICES_AND_PROPERTIES_PACKAGE.getProperty_UntilDate()),
+        new EObjectAttributeEditDescriptor(ARCHIVE_ID, archiveObjectControl, INVOICES_AND_PROPERTIES_PACKAGE.getProperty_Archive())
     };
     
     getEObjectAttributeEditDescriptors().addAll(Arrays.asList(eObjectAttributeEditDescriptors));

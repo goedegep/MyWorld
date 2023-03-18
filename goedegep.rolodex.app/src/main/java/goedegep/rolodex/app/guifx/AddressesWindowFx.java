@@ -168,11 +168,11 @@ class AddressEditPanel {
     componentFactory = customization.getComponentFactoryFx();
     
     // Create the controls.
-    streetTextField = componentFactory.createObjectInputString(null, 300, true, "Enter the name of the street");
-    houseNumberTextField = componentFactory.createObjectInputInteger((Integer) null, 300, true, "Enter the house number");
-    houseNumberExtensionTextField = componentFactory.createObjectInputString(null, 300, true, "Enter the house number extension");
-    poBoxTextField = componentFactory.createObjectInputString(null, 300, true, "Enter a PO box number");
-    postalCodeTextField = componentFactory.createObjectInputString(null, 300, true, "Enter the postal code");
+    streetTextField = componentFactory.createObjectControlString(null, 300, true, "Enter the name of the street");
+    houseNumberTextField = componentFactory.createObjectControlInteger((Integer) null, 300, true, "Enter the house number");
+    houseNumberExtensionTextField = componentFactory.createObjectControlString(null, 300, true, "Enter the house number extension");
+    poBoxTextField = componentFactory.createObjectControlString(null, 300, true, "Enter a PO box number");
+    postalCodeTextField = componentFactory.createObjectControlString(null, 300, true, "Enter the postal code");
     cityTextField = new CityTextField(customization, rolodex);
     countryTextField = new CountryTextField(customization, rolodex);
     cityTextField.textProperty().addListener(new ChangeListener<String>() {

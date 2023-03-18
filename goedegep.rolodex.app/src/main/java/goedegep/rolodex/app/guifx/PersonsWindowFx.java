@@ -272,13 +272,13 @@ class PersonEditPanel {
     componentFactory = customization.getComponentFactoryFx();
     
     // Create the controls.
-    firstNameTextField = componentFactory.createObjectInputString(null, 300, true, "Enter the persons firstname");
-    infixTextField = componentFactory.createObjectInputString(null, 100, true, "Enter the infix of the persons name");
-    surNameTextField = componentFactory.createObjectInputString(null, 300, true, "Enter the persons surname (lastname)");
-    initialsTextField = componentFactory.createObjectInputString(null, 300, true, "Enter the persons initials");
-    birthdayDayTextField = componentFactory.createObjectInputInteger((Integer) null, 25, true, "Enter the day in the month of the persons birthday");
-    birthdayMonthTextField = componentFactory.createObjectInputInteger((Integer) null, 25, true, "Enter the month of the persons birthday");
-    birthdayYearTextField = componentFactory.createObjectInputInteger((Integer) null, 40, true, "Enter the year of the persons birthday");
+    firstNameTextField = componentFactory.createObjectControlString(null, 300, true, "Enter the persons firstname");
+    infixTextField = componentFactory.createObjectControlString(null, 100, true, "Enter the infix of the persons name");
+    surNameTextField = componentFactory.createObjectControlString(null, 300, true, "Enter the persons surname (lastname)");
+    initialsTextField = componentFactory.createObjectControlString(null, 300, true, "Enter the persons initials");
+    birthdayDayTextField = componentFactory.createObjectControlInteger((Integer) null, 25, true, "Enter the day in the month of the persons birthday");
+    birthdayMonthTextField = componentFactory.createObjectControlInteger((Integer) null, 25, true, "Enter the month of the persons birthday");
+    birthdayYearTextField = componentFactory.createObjectControlInteger((Integer) null, 40, true, "Enter the year of the persons birthday");
     genderComboBox = new ComboBox<Gender>();
     genderComboBox.setItems(FXCollections.observableList(Arrays.asList(Gender.values())));
     addressTextField = new AddressTextField(customization, rolodex);

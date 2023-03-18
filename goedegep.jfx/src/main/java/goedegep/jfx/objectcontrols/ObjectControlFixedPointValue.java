@@ -31,10 +31,6 @@ public class ObjectControlFixedPointValue extends ObjectControlTextField<FixedPo
     super(new FixedPointValueStringConverter(), objectValue, width, isOptional, toolTipText);
   }
   
-  public ObjectControlFixedPointValue(String text, double width, boolean isOptional, String toolTipText) {
-    super(new FixedPointValueStringConverter(), text, width, isOptional, toolTipText);
-  }
-  
   /**
    * Set the valid factor range for fixed point values.
    * 

@@ -240,7 +240,7 @@ class TrackReferenceAndMyTrackInfoControls {
     if (trackReference != null) {
       bonusTrackText = trackReference.getBonusTrack();
     }
-    bonusTrack = componentFactory.createTextFieldObjectInput(null, bonusTrackText, 300, true, null);
+    bonusTrack = componentFactory.createObjectControlTextField(null, bonusTrackText, 300, true, null);
     gridPane.add(bonusTrack, column++, row);
     
     /*
@@ -277,7 +277,7 @@ class TrackReferenceAndMyTrackInfoControls {
         compilationTrackReferenceAlbumId = compilationTrackReferenceAlbumId + " - " + compilationTrackReferenceDiscId;
       }
     }
-    ObjectControlTextField<String> compilationTrackReferenceDiscControl = componentFactory.createTextFieldObjectInput(null, compilationTrackReferenceAlbumId, 300, true, null);
+    ObjectControlTextField<String> compilationTrackReferenceDiscControl = componentFactory.createObjectControlTextField(null, compilationTrackReferenceAlbumId, 300, true, null);
     gridPane.add(compilationTrackReferenceDiscControl, column++, row);
     
     // Identification of the track of the track reference of the Compilation Track Reference (not Yet editable)
@@ -288,11 +288,11 @@ class TrackReferenceAndMyTrackInfoControls {
         compilationTrackReferenceTrackTitle = compilationTrackReferenceTrack.getTitle();
       }
     }
-    ObjectControlTextField<String> compilationTrackReferenceTrackControl = componentFactory.createTextFieldObjectInput(null, compilationTrackReferenceTrackTitle, 300, true, null);
+    ObjectControlTextField<String> compilationTrackReferenceTrackControl = componentFactory.createObjectControlTextField(null, compilationTrackReferenceTrackTitle, 300, true, null);
     gridPane.add(compilationTrackReferenceTrackControl, column++, row);
     
     // MyTrackInfo:Collection
-    collectionComboBox = componentFactory.createObjectInputEEnumComboBox(goedegep.media.mediadb.model.Collection.NOT_SET, goedegep.media.mediadb.model.Collection.NOT_SET, MediadbPackage.eINSTANCE.getCollection(), true, "If applicable, select the collection in which this track resides");
+    collectionComboBox = componentFactory.createObjectControlEnumComboBox(goedegep.media.mediadb.model.Collection.NOT_SET, goedegep.media.mediadb.model.Collection.NOT_SET, MediadbPackage.eINSTANCE.getCollection(), true, "If applicable, select the collection in which this track resides");
     goedegep.media.mediadb.model.Collection collection = null;
     if (myTrackInfo != null) {
       collection = myTrackInfo.getCollection();
@@ -301,7 +301,7 @@ class TrackReferenceAndMyTrackInfoControls {
     gridPane.add(collectionComboBox, column++, row);
     
     // MyTrackInfo:IWant
-    iWantComboBox = componentFactory.createObjectInputEEnumComboBox(IWant.NOT_SET, IWant.NOT_SET, MediadbPackage.eINSTANCE.getIWant(), true, "Select whether you want this track or not");
+    iWantComboBox = componentFactory.createObjectControlEnumComboBox(IWant.NOT_SET, IWant.NOT_SET, MediadbPackage.eINSTANCE.getIWant(), true, "Select whether you want this track or not");
     IWant iWant = null;
     if (myTrackInfo != null) {
       iWant = myTrackInfo.getIWant();

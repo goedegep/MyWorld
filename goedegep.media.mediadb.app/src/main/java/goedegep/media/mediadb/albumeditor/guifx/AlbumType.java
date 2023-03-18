@@ -17,5 +17,7 @@ public enum AlbumType {
     return displayName;
   }
   
-  
+  public String toString() {
+    return displayName;
+  }
 }

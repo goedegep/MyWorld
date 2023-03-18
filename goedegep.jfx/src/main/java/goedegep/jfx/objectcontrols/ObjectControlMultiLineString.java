@@ -21,11 +21,8 @@ public class ObjectControlMultiLineString extends TextArea implements ObjectCont
   private ObjectProperty<String> objectValueProperty = new SimpleObjectProperty<>();
   private List<InvalidationListener> invalidationListeners = new ArrayList<>();
       
-  public ObjectControlMultiLineString(String text, double width, boolean isOptional, String toolTipText, String id) {
+  public ObjectControlMultiLineString(String text, double width, boolean isOptional, String toolTipText) {
     optionalProperty.set(isOptional);
-    if (id != null) {
-      setId(id);
-    }
 
     textProperty().addListener((observableValue, oldValue, newValue) -> handleChanges(newValue));
     

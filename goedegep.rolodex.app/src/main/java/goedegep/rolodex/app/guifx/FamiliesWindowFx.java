@@ -170,8 +170,8 @@ class FamilyEditPanel {
     componentFactory = customization.getComponentFactoryFx();
     
     // Create the controls.
-    familyTitleTextField = componentFactory.createObjectInputString(null, 300, true, "Enter the family title");
-    familyNameTextField = componentFactory.createObjectInputString(null, 100, true, "Enter the family name");
+    familyTitleTextField = componentFactory.createObjectControlString(null, 300, true, "Enter the family title");
+    familyNameTextField = componentFactory.createObjectControlString(null, 100, true, "Enter the family name");
     addressTextField = new AddressTextField(customization, rolodex);
     moveToAddress = new ObjectControlBoolean("Move to", false, true, "Select for moving to this address. In this case the existing address is moved to the 'previous addresses'.");
     phoneNumberTextFields = new PhoneNumberTextField[4];

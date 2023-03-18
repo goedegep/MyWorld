@@ -1716,7 +1716,8 @@ class FileReferencePanel extends TitledPane {
       }
         
     });
-    titleTextField = componentFactory.createObjectInputString(null, 200, true, "a title for the file", "title");
+    titleTextField = componentFactory.createObjectControlString(null, 200, true, "a title for the file");
+    titleTextField.setId("title");
     titleTextField.objectValue().addListener(new ChangeListener<>() {
 
       @Override

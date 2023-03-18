@@ -156,10 +156,10 @@ class PhoneNumberEditPanel {
     componentFactory = customization.getComponentFactoryFx();
     
     // Create the controls.
-    phoneNumberTextField = componentFactory.createObjectInputString(null, 300, true, "Enter the phone number");
-    connectionTypeTextField =componentFactory.createObjectInputEEnumComboBox(ConnectionType.VAST, null, true, "Enter the kind of connection");
+    phoneNumberTextField = componentFactory.createObjectControlString(null, 300, true, "Enter the phone number");
+    connectionTypeTextField =componentFactory.createObjectControlEnumComboBox(ConnectionType.VAST, null, true, "Enter the kind of connection");
 //    connectionTypeTextField = new ObjectInputConnectionType(ROLODEX_PACKAGE.getConnectionType(), true, "Enter the kind of connection");
-    descriptionTextField = componentFactory.createObjectInputString(null, 300, true, "Enter a description");
+    descriptionTextField = componentFactory.createObjectControlString(null, 300, true, "Enter a description");
     
     createGUI();
   }

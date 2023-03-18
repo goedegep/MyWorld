@@ -81,7 +81,7 @@ public class InvestmentInsuranceWindow extends JfxStage {
     label = componentFactory.createLabel("Ingangsdatum:");
     gridPane.add(label, 0, row);
 
-    startingDateTextField = componentFactory.createObjectInputLocalDate((LocalDate) null, 100, false, "Ingangsdatum van de verzekering");
+    startingDateTextField = componentFactory.createObjectControlLocalDate((LocalDate) null, 100, false, "Ingangsdatum van de verzekering");
     gridPane.add(startingDateTextField, 1, row);
     
     row++;
@@ -99,9 +99,9 @@ public class InvestmentInsuranceWindow extends JfxStage {
     label = componentFactory.createLabel("Verzekerde uitkering A:");
     gridPane.add(label, 0, row);
 
-    insuredBenefitOnDeathTextField = componentFactory.createObjectInputCurrency((PgCurrency) null, 100, true, "Verzekerde uitkering bij overlijden (in oorspronkelijke munteenheid)");
+    insuredBenefitOnDeathTextField = componentFactory.createObjectControlCurrency((PgCurrency) null, 100, true, "Verzekerde uitkering bij overlijden (in oorspronkelijke munteenheid)");
     gridPane.add(insuredBenefitOnDeathTextField, 1, row);
-    insuredBenefitOnDeathInEurosTextField = componentFactory.createObjectInputCurrency((PgCurrency) null, 100, true, "Verzekerde uitkering bij overlijden (in euros)");
+    insuredBenefitOnDeathInEurosTextField = componentFactory.createObjectControlCurrency((PgCurrency) null, 100, true, "Verzekerde uitkering bij overlijden (in euros)");
     gridPane.add(insuredBenefitOnDeathInEurosTextField, 2, row);
     row++;
     TextArea insuredBenefitOnDeathInfoTextField = componentFactory.createTextArea(
@@ -118,9 +118,9 @@ public class InvestmentInsuranceWindow extends JfxStage {
     label = componentFactory.createLabel("Premie:");
     gridPane.add(label, 0, row);
 
-    premiumTextField = componentFactory.createObjectInputCurrency((PgCurrency) null, 100, true, "Betaalde premie (in oorspronkelijke munteenheid))");
+    premiumTextField = componentFactory.createObjectControlCurrency((PgCurrency) null, 100, true, "Betaalde premie (in oorspronkelijke munteenheid))");
     gridPane.add(premiumTextField, 1, row);
-    premiumInEurosTextField = componentFactory.createObjectInputCurrency((PgCurrency) null, 100, true, "Betaalde premie (in euros))");
+    premiumInEurosTextField = componentFactory.createObjectControlCurrency((PgCurrency) null, 100, true, "Betaalde premie (in euros))");
     gridPane.add(premiumInEurosTextField, 2, row);
     
     

@@ -28,6 +28,7 @@ import goedegep.jfx.objectcontrols.ObjectControlString;
 import goedegep.jfx.objectcontrols.ObjectControlTextField;
 import goedegep.jfx.stringconverters.StringConverterAndChecker;
 import goedegep.resources.ImageSize;
+import goedegep.util.datetime.FlexDate;
 import goedegep.util.fixedpointvalue.FixedPointValue;
 import goedegep.util.money.PgCurrency;
 import javafx.animation.Interpolator;
@@ -931,279 +932,164 @@ public class ComponentFactoryFx {
   }
   
   /*
-   * Object Inputs
+   * ObjectControls
    */
 
   /**
-   * Create a Boolean Object Input
+   * Create a Boolean ObjectControl
    * 
    * @param text The text shown beside the CheckBox.
    * @param selected the initial selection status for the CheckBox.
    * @param isOptional if true, the value provided by this control is optional.
    * @param toolTipText an optional tooltip text.
-   * @return
+   * @return the newly created {@code ObjectControlBoolean}.
    */
-  public ObjectControlBoolean createObjectInputBoolean(String text, boolean selected, boolean isOptional, String toolTipText) {
-    return createObjectInputBoolean(text, selected, isOptional, toolTipText, null);
-  }
-
-  /**
-   * Create a Boolean Object Input
-   * 
-   * @param text The text shown beside the CheckBox.
-   * @param selected the initial selection status for the CheckBox.
-   * @param isOptional if true, the value provided by this control is optional.
-   * @param toolTipText an optional tooltip text.
-   * @return
-   */
-  public ObjectControlBoolean createObjectInputBoolean(String text, boolean selected, boolean isOptional, String toolTipText, String id) {
-    ObjectControlBoolean objectInputBoolean = new ObjectControlBoolean(text, selected, isOptional, toolTipText);
+  public ObjectControlBoolean createObjectControlBoolean(String text, boolean selected, boolean isOptional, String toolTipText) {
+    ObjectControlBoolean objectControlBoolean = new ObjectControlBoolean(text, selected, isOptional, toolTipText);
 
     if (panelBackgroundHexColorValue != null) {
-      objectInputBoolean.setStyle("-fx-background-color: " + panelBackgroundHexColorValue);
+      objectControlBoolean.setStyle("-fx-background-color: " + panelBackgroundHexColorValue);
     }
-    objectInputBoolean.setId(id);
 
-    return objectInputBoolean;
+    return objectControlBoolean;
   }
 
   /**
-   * Create an Integer Object Input, with the initial value specified as text.
-   * 
-   * @param text A textual representation of the initial value.
-   * @param width the width of the TextField.
-   * @param isOptional if true, the value provided by this control is optional.
-   * @param toolTipText an optional tooltip text.
-   * @return
-   */
-  public ObjectControlInteger createObjectInputInteger(String text, double width, boolean isOptional, String toolTipText) {
-    ObjectControlInteger objectInputInteger = new ObjectControlInteger(text, width, isOptional, toolTipText);
-
-    customizeTextInputControl(objectInputInteger);
-
-    return objectInputInteger;
-  }
-
-  /**
-   * Create an Integer Object Input, with the initial value specified as object.
+   * Create an Integer ObjectControl.
    * 
    * @param integer The initial value.
    * @param width the width of the TextField.
    * @param isOptional if true, the value provided by this control is optional.
    * @param toolTipText an optional tooltip text.
-   * @return
+   * @return the newly created {@code ObjectControlInteger}.
    */
-  public ObjectControlInteger createObjectInputInteger(Integer integer, double width, boolean isOptional, String toolTipText) {
-    ObjectControlInteger objectInputInteger = new ObjectControlInteger(integer, width, isOptional, toolTipText);
+  public ObjectControlInteger createObjectControlInteger(Integer integer, double width, boolean isOptional, String toolTipText) {
+    ObjectControlInteger objectControlInteger = new ObjectControlInteger(integer, width, isOptional, toolTipText);
 
-    customizeTextInputControl(objectInputInteger);
+    customizeTextInputControl(objectControlInteger);
 
-    return objectInputInteger;
+    return objectControlInteger;
   }
 
   /**
-   * Create a String Object Input.
+   * Create a String ObjectControl.
    * 
    * @param text The initial value.
    * @param width the width of the TextField.
    * @param isOptional if true, the value provided by this control is optional.
    * @param toolTipText an optional tooltip text.
-   * @return
+   * @return the newly created {@code ObjectControlString}.
    */
-  public ObjectControlString createObjectInputString(String text, double width, boolean isOptional, String toolTipText) {
-    return createObjectInputString(text, width, isOptional, toolTipText, null);
+  public ObjectControlString createObjectControlString(String text, double width, boolean isOptional, String toolTipText) {
+    ObjectControlString objectControlString = new ObjectControlString(text, width, isOptional, toolTipText);
+
+    customizeTextInputControl(objectControlString);
+
+    return objectControlString;
   }
 
   /**
-   * Create a String Object Input.
-   * 
-   * @param text The initial value.
-   * @param width the width of the TextField.
-   * @param isOptional if true, the value provided by this control is optional.
-   * @param toolTipText an optional tooltip text.
-   * @return
-   */
-  public ObjectControlString createObjectInputString(String text, double width, boolean isOptional, String toolTipText, String id) {
-    ObjectControlString objectInputString = new ObjectControlString(text, width, isOptional, toolTipText);
-
-    customizeTextInputControl(objectInputString);
-    objectInputString.setId(id);
-
-    return objectInputString;
-  }
-
-  /**
-   * Create a Multi Line String Object Input.
+   * Create a Multi Line String ObjectControl.
    * 
    * @param text The initial value.
    * @param width the width of the TextArea.
    * @param isOptional if true, the value provided by this control is optional.
    * @param toolTipText an optional tooltip text.
-   * @return the newly created ObjectControlMultiLineString.
+   * @return the newly created {@code ObjectControlMultiLineString}.
    */
-  public ObjectControlMultiLineString createObjectInputMultiLineString(String text, double width, boolean isOptional, String toolTipText, String id) {
-    ObjectControlMultiLineString objectInputString = new ObjectControlMultiLineString(text, width, isOptional, toolTipText, id);
+  public ObjectControlMultiLineString createObjectControlMultiLineString(String text, double width, boolean isOptional, String toolTipText) {
+    ObjectControlMultiLineString objectControlMultiLineString = new ObjectControlMultiLineString(text, width, isOptional, toolTipText);
 
-    customizeTextInputControl(objectInputString);
-    objectInputString.setId(id);
+    customizeTextInputControl(objectControlMultiLineString);
 
-    return objectInputString;
+    return objectControlMultiLineString;
   }
 
   /**
-   * Create an HTML String Object Input.
+   * Create an HTML String ObjectControl.
    * 
    * @param text The initial value.
    * @param width the width of the TextArea.
    * @param isOptional if true, the value provided by this control is optional.
    * @param toolTipText an optional tooltip text.
-   * @return the newly created ObjectControlHTMLString.
+   * @return the newly created {@code ObjectControlHTMLString}.
    */
-  public ObjectControlHTMLString createObjectControlHTMLString(String text, double width, boolean isOptional, String toolTipText, String id) {
-    ObjectControlHTMLString objectInputString = new ObjectControlHTMLString(text, width, isOptional, toolTipText, id);
+  public ObjectControlHTMLString createObjectControlHTMLString(String text, double width, boolean isOptional, String toolTipText) {
+    ObjectControlHTMLString objectControlHTMLString = new ObjectControlHTMLString(text, width, isOptional, toolTipText);
 
-    objectInputString.setId(id);
-
-    return objectInputString;
+    return objectControlHTMLString;
   }
 
   /**
-   * Create a PgCurrency Object Input.
+   * Create a PgCurrency ObjectControl.
    * 
    * @param pgCurrency The initial value.
    * @param width the width of the TextField.
    * @param isOptional if true, the value provided by this control is optional.
    * @param toolTipText an optional tooltip text.
-   * @return
+   * @return the newly created {@code ObjectControlCurrency}.
    */
-  public ObjectControlCurrency createObjectInputCurrency(PgCurrency pgCurrency, double width, boolean isOptional, String toolTipText) {
-    ObjectControlCurrency objectInputCurrency = new ObjectControlCurrency(pgCurrency, width, isOptional, toolTipText);
+  public ObjectControlCurrency createObjectControlCurrency(PgCurrency pgCurrency, double width, boolean isOptional, String toolTipText) {
+    ObjectControlCurrency objectControlCurrency = new ObjectControlCurrency(pgCurrency, width, isOptional, toolTipText);
 
-    customizeTextInputControl(objectInputCurrency);
+    customizeTextInputControl(objectControlCurrency);
 
-    return objectInputCurrency;
+    return objectControlCurrency;
   }
 
   /**
-   * Create a PgCurrency Object Input with a textual representation of the initial value.
-   * 
-   * @param text a textual representation of the initial value.
-   * @param width the width of the TextField.
-   * @param isOptional if true, the value provided by this control is optional.
-   * @param toolTipText an optional tooltip text.
-   * @return
-   */
-  public ObjectControlCurrency createObjectInputCurrency(String text, double width, boolean isOptional, String toolTipText) {
-    return createObjectInputCurrency(text, width, isOptional, toolTipText, null);
-  }
-
-  /**
-   * Create a PgCurrency Object Input with a textual representation of the initial value.
-   * 
-   * @param text a textual representation of the initial value.
-   * @param width the width of the TextField.
-   * @param isOptional if true, the value provided by this control is optional.
-   * @param toolTipText an optional tooltip text.
-   * @return
-   */
-  public ObjectControlCurrency createObjectInputCurrency(String text, double width, boolean isOptional, String toolTipText, String id) {
-    ObjectControlCurrency objectInputCurrency = new ObjectControlCurrency(text, width, isOptional, toolTipText);
-
-    customizeTextInputControl(objectInputCurrency);
-    objectInputCurrency.setId(id);
-
-    return objectInputCurrency;
-  }
-
-  /**
-   * Create a FixedPointValue Object Input.
+   * Create a FixedPointValue ObjectControl.
    * 
    * @param objectValue The initial value.
    * @param width the width of the TextField.
    * @param isOptional if true, the value provided by this control is optional.
    * @param toolTipText an optional tooltip text.
-   * @return
+   * @return the newly created {@code ObjectControlFixedPointValue}.
    */
-  public ObjectControlFixedPointValue createObjectInputFixedPointValue(FixedPointValue objectValue, double width, boolean isOptional, String toolTipText) {
-    ObjectControlFixedPointValue objectInputFixedPointValue = new ObjectControlFixedPointValue(objectValue, width, isOptional, toolTipText);
+  public ObjectControlFixedPointValue createObjectControlFixedPointValue(FixedPointValue objectValue, double width, boolean isOptional, String toolTipText) {
+    ObjectControlFixedPointValue objectControlFixedPointValue = new ObjectControlFixedPointValue(objectValue, width, isOptional, toolTipText);
 
-    customizeTextInputControl(objectInputFixedPointValue);
+    customizeTextInputControl(objectControlFixedPointValue);
 
-    return objectInputFixedPointValue;
+    return objectControlFixedPointValue;
   }
 
   /**
-   * Create a FixedPointValue Object Input with a textual representation of the initial value.
+   * Create a FlexDate ObjectControl.
    * 
-   * @param text a textual representation of the initial value.
+   * @param flexDate the initial value.
    * @param width the width of the TextField.
    * @param isOptional if true, the value provided by this control is optional.
    * @param toolTipText an optional tooltip text.
-   * @return
+   * @return the newly created {@code ObjectControlFlexDate}.
    */
-  public ObjectControlFixedPointValue createObjectInputFixedPointValue(String text, double width, boolean isOptional, String toolTipText) {
-    ObjectControlFixedPointValue objectInputFixedPointValue = new ObjectControlFixedPointValue(text, width, isOptional, toolTipText);
+  public ObjectControlFlexDate createObjectControlFlexDate(FlexDate flexDate, double width, boolean isOptional, String toolTipText) {
+    ObjectControlFlexDate objectControlFlexDate = new ObjectControlFlexDate(flexDate, width, isOptional, toolTipText);
 
-    customizeTextInputControl(objectInputFixedPointValue);
+    customizeTextInputControl(objectControlFlexDate);
 
-    return objectInputFixedPointValue;
+    return objectControlFlexDate;
   }
 
   /**
-   * Create a FlexDate Object Input with a textual representation of the initial value.
-   * 
-   * @param text a textual representation of the initial value.
-   * @param width the width of the TextField.
-   * @param isOptional if true, the value provided by this control is optional.
-   * @param toolTipText an optional tooltip text.
-   * @return
-   */
-  public ObjectControlFlexDate createObjectInputFlexDate(String text, double width, boolean isOptional, String toolTipText, String id) {
-    ObjectControlFlexDate objectInputFlexDate = new ObjectControlFlexDate(text, width, isOptional, toolTipText);
-    objectInputFlexDate.setId(id);
-
-    customizeTextInputControl(objectInputFlexDate);
-
-    return objectInputFlexDate;
-  }
-
-  /**
-   * Create a LocalDate Object Input.
+   * Create a LocalDate ObjectControl.
    * 
    * @param localDate the initial value.
    * @param width the width of the TextField.
    * @param isOptional if true, the value provided by this control is optional.
    * @param toolTipText an optional tooltip text.
-   * @return
+   * @return the newly created {@code ObjectControlLocalDate}.
    */
-  public ObjectControlLocalDate createObjectInputLocalDate(LocalDate localDate, double width, boolean isOptional, String toolTipText) {
-    ObjectControlLocalDate objectInputLocalDate = new ObjectControlLocalDate(localDate, width, isOptional, toolTipText);
+  public ObjectControlLocalDate createObjectControlLocalDate(LocalDate localDate, double width, boolean isOptional, String toolTipText) {
+    ObjectControlLocalDate objectControlLocalDate = new ObjectControlLocalDate(localDate, width, isOptional, toolTipText);
 
-    customizeTextInputControl(objectInputLocalDate);
+    customizeTextInputControl(objectControlLocalDate);
 
-    return objectInputLocalDate;
+    return objectControlLocalDate;
   }
 
   /**
-   * Create a LocalDate Object Input with a textual representation of the initial value.
-   * 
-   * @param text a textual representation of the initial value.
-   * @param width the width of the TextField.
-   * @param isOptional if true, the value provided by this control is optional.
-   * @param toolTipText an optional tooltip text.
-   * @return
-   */
-  public ObjectControlLocalDate createObjectInputLocalDate(String text, double width, boolean isOptional, String toolTipText) {
-    ObjectControlLocalDate objectInputLocalDate = new ObjectControlLocalDate(text, width, isOptional, toolTipText);
-
-    customizeTextInputControl(objectInputLocalDate);
-
-    return objectInputLocalDate;
-  }
-
-
-  /**
-   * Create a TextField ObjectInput for a specific type, with its related StringConverter.
+   * Create a TextField ObjectControl for a specific type, with its related StringConverter.
    * 
    * @param <T> The object type
    * @param stringConverter A StringConverter for type T.
@@ -1211,32 +1097,32 @@ public class ComponentFactoryFx {
    * @param width the width of the TextField. 
    * @param isOptional if true, the value provided by this control is optional.
    * @param toolTipText an optional tooltip text.
-   * @return
+   * @return the newly created {@code ObjectControlTextField}.
    */
-  public <T>ObjectControlTextField<T> createTextFieldObjectInput(StringConverterAndChecker<T> stringConverter, T initialValue, double width, boolean isOptional, String toolTipText) {
-    ObjectControlTextField<T> textFieldObjectInput = new ObjectControlTextField<>(stringConverter, initialValue, width, isOptional, toolTipText);
+  public <T>ObjectControlTextField<T> createObjectControlTextField(StringConverterAndChecker<T> stringConverter, T initialValue, double width, boolean isOptional, String toolTipText) {
+    ObjectControlTextField<T> objectControlTextField = new ObjectControlTextField<>(stringConverter, initialValue, width, isOptional, toolTipText);
 
-    customizeTextInputControl(textFieldObjectInput);
+    customizeTextInputControl(objectControlTextField);
 
-    return textFieldObjectInput;
+    return objectControlTextField;
   }
   
   /**
-   * Create a ComboBox ObjectInput for an Enum. The texts for the enum constants are the names of the constants.
+   * Create a ComboBox ObjectControl for an Enum. The texts for the enum constants are the names of the constants.
    * 
    * @param <T> The enum type
    * @param enumConstant A single enum constant of the enum.
    * @param notSetValue The 'not set' value.
    * @param isOptional indicates whether the value is optional or not
    * @param toolTipText an optional tooltip text
-   * @return an ObjectControlEnumComboBox for the specified type.
+   * @return the newly created {@code ObjectControlEnumComboBox}.
    */
-  public <T extends Enum<T>>ObjectControlEnumComboBox<T> createObjectInputEEnumComboBox(T enumConstant, T notSetValue, boolean isOptional, String toolTipText) {
+  public <T extends Enum<T>>ObjectControlEnumComboBox<T> createObjectControlEnumComboBox(T enumConstant, T notSetValue, boolean isOptional, String toolTipText) {
     return new ObjectControlEnumComboBox<T>(enumConstant, notSetValue, isOptional, toolTipText);
   }
   
   /**
-   * Create a ComboBox ObjectInput for an Enum. The texts for the enum constants are the literals of the <code>eEnum</code> parameter.
+   * Create a ComboBox ObjectControl for an Enum. The texts for the enum constants are the literals of the <code>eEnum</code> parameter.
    * 
    * @param <T> The enum type
    * @param enumConstant A single enum constant of the enum.
@@ -1244,14 +1130,14 @@ public class ComponentFactoryFx {
    * @param eEnum an EEnum providing the literal values for the texts for the constants.
    * @param isOptional indicates whether the value is optional or not
    * @param toolTipText an optional tooltip text
-   * @return an ObjectControlEnumComboBox for the specified type.
+   * @return the newly created {@code ObjectControlEnumComboBox}.
    */
-  public <T extends Enum<T>>ObjectControlEnumComboBox<T> createObjectInputEEnumComboBox(T enumConstant, T notSetValue, EEnum eEnum, boolean isOptional, String toolTipText) {
+  public <T extends Enum<T>>ObjectControlEnumComboBox<T> createObjectControlEnumComboBox(T enumConstant, T notSetValue, EEnum eEnum, boolean isOptional, String toolTipText) {
     return new ObjectControlEnumComboBox<T>(enumConstant, notSetValue, eEnum, isOptional, toolTipText);
   }
   
   /**
-   * Create a ComboBox ObjectInput for an Enum. The texts for the enum constants are the texts provided by the  <code>enumToStringMap</code>.
+   * Create a ComboBox ObjectControl for an Enum. The texts for the enum constants are the texts provided by the {@code enumToStringMap}.
    * 
    * @param <T> The enum type
    * @param enumConstant A single enum constant of the enum.
@@ -1259,12 +1145,23 @@ public class ComponentFactoryFx {
    * @param enumToStringMap provides the names for the enum constants.
    * @param isOptional indicates whether the value is optional or not
    * @param toolTipText an optional tooltip text
-   * @return an ObjectControlEnumComboBox for the specified type.
+   * @return the newly created {@code ObjectControlEnumComboBox}.
    */
-  public <T extends Enum<T>>ObjectControlEnumComboBox<T> createObjectInputEEnumComboBox(T enumConstant, T notSetValue, Map<T, String> enumToStringMap, boolean isOptional, String toolTipText) {
+  public <T extends Enum<T>>ObjectControlEnumComboBox<T> createObjectControlEnumComboBox(T enumConstant, T notSetValue, Map<T, String> enumToStringMap, boolean isOptional, String toolTipText) {
     return new ObjectControlEnumComboBox<T>(enumConstant, notSetValue, enumToStringMap, isOptional, toolTipText);
   }
   
+  /**
+   * Create an auto complete TextField ObjectControl.
+   * 
+   * @param <T> the data type
+   * @param stringConverter a StringConverter for type T
+   * @param initialValue the initial value
+   * @param width the width of the TextField.
+   * @param isOptional indicates whether the value is optional or not
+   * @param toolTipText an optional tooltip text
+   * @return the newly created {@code ObjectControlAutoCompleteTextField}.
+   */
   public <T> ObjectControlAutoCompleteTextField<T> createObjectControlAutoCompleteTextField(StringConverterAndChecker<T> stringConverter, T initialValue, double width, boolean isOptional, String toolTipText) {
     return new ObjectControlAutoCompleteTextField<T>(stringConverter, initialValue, width, isOptional, toolTipText);
   }

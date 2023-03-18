@@ -130,17 +130,17 @@ public class EventsEditor extends JfxStage {
     componentFactory = customization.getComponentFactoryFx();
     
     // Create object controls
-    eventDateControl = componentFactory.createObjectInputFlexDate(null, 300, false, "Date of the event", null);
-    eventTitleControl = componentFactory.createObjectInputString(null, 300, false, "Title of the event");
-    eventFolderControl = componentFactory.createObjectInputString(null, 300, false, "Folder where event attachments are stored");
+    eventDateControl = componentFactory.createObjectControlFlexDate(null, 300, false, "Date of the event");
+    eventTitleControl = componentFactory.createObjectControlString(null, 300, false, "Title of the event");
+    eventFolderControl = componentFactory.createObjectControlString(null, 300, false, "Folder where event attachments are stored");
     eventFolderControl.setDisable(true);
-    eventFolderExistsControl = componentFactory.createObjectInputBoolean(null, false, true, "Checked indicates that the event folder exists");
+    eventFolderExistsControl = componentFactory.createObjectControlBoolean(null, false, true, "Checked indicates that the event folder exists");
     createEventsFolderButton = componentFactory.createButton("create", "Click to create the event folder as shown on the left");
     pictureFileSelecter = componentFactory.createFileSelecter(null, 300, "file name of a picture", "file chooser", "Start a file chooser", "Select picture file");
     if (EventsRegistry.eventsFolderName != null) {
       pictureFileSelecter.setPrefix(EventsRegistry.eventsFolderName);
     }
-    notesControl = componentFactory.createObjectControlHTMLString(null, 400, true, "Enter the notes in HTML format", null);
+    notesControl = componentFactory.createObjectControlHTMLString(null, 400, true, "Enter the notes in HTML format");
     notesControl.setPrefHeight(100);
     pictureImageView = new ImageView();
     pictureImageView.setFitWidth(400);

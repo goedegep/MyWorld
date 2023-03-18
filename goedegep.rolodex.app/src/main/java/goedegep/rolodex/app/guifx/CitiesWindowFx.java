@@ -165,7 +165,7 @@ class CityEditPanel {
     componentFactory = customization.getComponentFactoryFx();
     
     // Create the controls.
-    cityTextField = componentFactory.createObjectInputString(null, 300, false, "Enter the name of a city");
+    cityTextField = componentFactory.createObjectControlString(null, 300, false, "Enter the name of a city");
     countryTextField = new CountryTextField(customization, rolodex);
     
     createGUI();

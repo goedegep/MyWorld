@@ -43,7 +43,7 @@ public class PlayerObjectControl implements ObjectControl<Player> {
     
     artistObjectControl = componentFactory.createObjectControlAutoCompleteTextField(artistStringConverterAndChecker, null, 300, false, "Enter a player");
     artistObjectControl.setOptions(mediaDb.getArtists());
-    playerInstrumentTextField = componentFactory.createTextFieldObjectInput(null, null, 300, true, "A comma separated list of instruments");
+    playerInstrumentTextField = componentFactory.createObjectControlTextField(null, null, 300, true, "A comma separated list of instruments");
     
     artistObjectControl.addListener((e) -> notifyListeners());
     playerInstrumentTextField.addListener((e) -> notifyListeners());

@@ -17,10 +17,6 @@ public class ObjectControlLocalDate extends ObjectControlTextField<LocalDate> {
   public ObjectControlLocalDate(LocalDate localDate, double width, boolean isOptional, String toolTipText) {
     super(localDate, width, isOptional, toolTipText, false);
   }
-  
-  public ObjectControlLocalDate(String text, double width, boolean isOptional, String toolTipText) {
-    super(text, width, isOptional, toolTipText);
-  }
     
   @Override
   protected boolean isEnteredDataValid(StringBuilder buf) {

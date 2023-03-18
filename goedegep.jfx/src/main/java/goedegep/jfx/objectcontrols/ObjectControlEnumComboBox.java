@@ -16,17 +16,19 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Tooltip;
+import javafx.util.StringConverter;
 
 
 /**
  * This class provides a ComboBox ObjectControl for an Enum.
  * <p>
- * It is possible to specify a 'not set value', for which a null String will be used. Enums often have a 'not set value' like e.g. NOT_SET (with in case of en EMF EEnum a literal '<not-set>').
- * The '<not-set>' doesn't look nice in the values of the ComboBox.
+ * It is possible to specify a 'not set value', for which a null String will be used. Enums often have a 'not set value' like e.g. NOT_SET (with in case of en EMF EEnum a literal '&lt;not-set&gt;').
+ * The '&lt;not-set&gt;' doesn't look nice in the values of the ComboBox.
  * <p>
  * What kind of texts are shown in the ComboBox depends on the constructor used:
  * <ul>
  * <li>
+ * If nothing is specified, the ComboBox uses toString() to get a text for an enum constant. So you can use this if you are happy with the enum constant, or if your enum overrides toString().
  * If nothing is specified, the text for an enum constant is its name.
  * </li>
  * <li>
@@ -39,7 +41,7 @@ import javafx.scene.control.Tooltip;
  * 
  * @param <T> The Enum type.
  */
-public class ObjectControlEnumComboBox<T extends Enum<T>> extends ComboBox<String> implements ObjectControl<T> {
+public class ObjectControlEnumComboBox<T extends Enum<T>> extends ComboBox<T> implements ObjectControl<T> {
   private static final Logger         LOGGER = Logger.getLogger(ObjectControlEnumComboBox.class.getName());
   
   /**
@@ -66,9 +68,28 @@ public class ObjectControlEnumComboBox<T extends Enum<T>> extends ComboBox<Strin
    * @param toolTipText an optional tooltip text
    */
   public ObjectControlEnumComboBox(T enumConstant, T notSetValue, boolean isOptional, String toolTipText) {
-    enumTextConverter = new EnumTextConverter<T>(enumConstant, notSetValue);
+    StringConverter stringConverter = new StringConverter<T>() {
+
+      @Override
+      public String toString(T enumConstant) {
+        return (enumConstant != null ? enumConstant.toString() : "<null>");
+      }
+
+      @Override
+      public T fromString(String string) {
+        LOGGER.severe("=> " + string);
+        for (T constant: enumConstant.getDeclaringClass().getEnumConstants()) {
+          if (constant.toString().equals(string)) {
+            return constant;
+          }
+        }
+        return null;
+      }
+      
+    };
+//    enumTextConverter = new EnumTextConverter<T>(enumConstant, notSetValue);
     
-    init(isOptional, toolTipText);
+    init(enumConstant, isOptional, toolTipText);
   }
   
   /**
@@ -85,7 +106,7 @@ public class ObjectControlEnumComboBox<T extends Enum<T>> extends ComboBox<Strin
   public ObjectControlEnumComboBox(T enumConstant, T notSetValue, EEnum eEnum, boolean isOptional, String toolTipText) {
     enumTextConverter = new EnumTextConverter<T>(enumConstant, notSetValue, eEnum);
     
-    init(isOptional, toolTipText);
+    init(enumConstant, isOptional, toolTipText);
   }
   
   /**
@@ -102,7 +123,7 @@ public class ObjectControlEnumComboBox<T extends Enum<T>> extends ComboBox<Strin
   public ObjectControlEnumComboBox(T enumConstant, T notSetValue, Map<T, String> enumToStringMap, boolean isOptional, String toolTipText) {
     enumTextConverter = new EnumTextConverter<T>(enumConstant, notSetValue, enumToStringMap);
     
-    init(isOptional, toolTipText);
+    init(enumConstant, isOptional, toolTipText);
   }
 
   /**
@@ -124,15 +145,18 @@ public class ObjectControlEnumComboBox<T extends Enum<T>> extends ComboBox<Strin
    * @param isOptional indicates whether the value is optional or not
    * @param toolTipText an optional tooltip text
    */
-  private void init(boolean isOptional, String toolTipText) {
+  private void init(T enumConstant, boolean isOptional, String toolTipText) {
     optionalProperty.set(isOptional);
     
-    getItems().addAll(enumTextConverter.getStringValues());
+//    getItems().addAll(enumTextConverter.getStringValues());
+    for (T constant: enumConstant.getDeclaringClass().getEnumConstants()) {
+      getItems().add(constant);
+    }
     
-    valueProperty().addListener(new ChangeListener<String>() {
+    valueProperty().addListener(new ChangeListener<T>() {
 
       @Override
-      public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+      public void changed(ObservableValue<? extends T> observable, T oldValue, T newValue) {
        LOGGER.info(newValue != null ? newValue.toString() : "null");
         
        notifyListeners();
@@ -145,6 +169,7 @@ public class ObjectControlEnumComboBox<T extends Enum<T>> extends ComboBox<Strin
     }
     
     this.setOnAction(event -> checkOnValid());
+    getSelectionModel().select(0);
   }
 
   private void checkOnValid() {
@@ -183,14 +208,14 @@ public class ObjectControlEnumComboBox<T extends Enum<T>> extends ComboBox<Strin
 
   @Override
   public T getObjectValue() {
-    String stringValue = getValue();
-    T enumValue = enumTextConverter.getEnumForString(stringValue);
-    return enumValue;
+//    String stringValue = getValue();
+//    T enumValue = enumTextConverter.getEnumForString(stringValue);
+    return getValue();
   }
   
   @Override
   public void setObjectValue(T objectValue) {
-    setValue(enumTextConverter.getStringValue(objectValue));
+    setValue(objectValue);
   }
   
   @Override

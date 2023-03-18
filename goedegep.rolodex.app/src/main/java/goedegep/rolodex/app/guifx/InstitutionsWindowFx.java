@@ -158,7 +158,7 @@ class InstitutionEditPanel {
     componentFactory = customization.getComponentFactoryFx();
     
     // Create the controls.
-    institutionNameTextField = componentFactory.createObjectInputString(null, 100, true, "Enter the family name");
+    institutionNameTextField = componentFactory.createObjectControlString(null, 100, true, "Enter the family name");
     addressTextField = new AddressTextField(customization, rolodex);
     mailingAddressTextField = new AddressTextField(customization, rolodex);
     objectControlGroup.addObjectControls(institutionNameTextField, addressTextField, mailingAddressTextField);
