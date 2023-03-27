@@ -17,33 +17,38 @@ import javafx.scene.control.Tooltip;
  * This class provides the common functionality for the FileSelecter and FolderSelecter.
  */
 public abstract class ObjectControlFileOrFolderSelecterAbstract implements ObjectControl<String> {
-  
+	
+
   /**
-   * Indicates whether the control is optional (if true) or mandatory.
+   * Indication of whether the control is optional (if true) or mandatory.
    */
-  private BooleanProperty optionalProperty = new SimpleBooleanProperty(false);
+//  private BooleanProperty ocOptionalProperty = new SimpleBooleanProperty(false);
+
+  /**
+   * Indication of whether the control is filled-in or not.
+   */
+  protected boolean filledIn;
+//  private BooleanProperty ocFilledInProperty = new SimpleBooleanProperty(true);
+
+  /**
+   * Indication of whether the control has a valid value or not.
+   */
+//  private BooleanProperty ocValidProperty = new SimpleBooleanProperty(true);
+  protected boolean valid;
+
+  /**
+   * The current value.
+   * Note: it is not possible to use the textProperty of the pathTextField, as this is a StringProperty instead of ObjectProperty<String>.
+   * So this property only reflects the value of the textProperty of the pathTextField.
+   */
+  private ObjectProperty<String> ocValueProperty = new SimpleObjectProperty<>();
+
   
   /**
    * TextField to show and edit the currently selected file or folder.
    */
   private TextField pathTextField;
   
-  /**
-   * Property to realize {@code isFilledIn()} in {@code ObjectControl}.
-   */
-  private BooleanProperty isFilledIn = new SimpleBooleanProperty();
-  
-  /**
-   * Property to realize {@code isValid()} in {@code ObjectControl}.
-   */
-  private BooleanProperty isValid = new SimpleBooleanProperty();
-  
-  /**
-   * Property to realize {@code objectValue()} in {@code ObjectControl}.
-   * Note: it is not possible to use the textProperty of the pathTextField, as this is a StringProperty instead of ObjectProperty<String>.
-   * So this property only reflects the value of the textProperty of the pathTextField.
-   */
-  private ObjectProperty<String> objectValue = new SimpleObjectProperty<>();
   
   /**
    * List of InvalidationListeners.
@@ -73,10 +78,10 @@ public abstract class ObjectControlFileOrFolderSelecterAbstract implements Objec
       pathTextField.setTooltip(new Tooltip(textFieldToolTipText));
     }
     
-//    getPathTextField().textProperty().bind(objectValue);
-    objectValue.bind(pathTextField.textProperty());
+    ocValueProperty.bind(pathTextField.textProperty());
     
-    isValid.set(false);
+    valid = false;
+//    ocValidProperty.set(false);
  }
 
   /**
@@ -101,77 +106,85 @@ public abstract class ObjectControlFileOrFolderSelecterAbstract implements Objec
     return pathTextField;
   }
 
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public BooleanProperty ocOptionalProperty() {
-    return optionalProperty;
-  }
-  
-  /**
-   * {@InheritDoc}
-   */
-  @Override
-  public boolean isOptional() {
-    return optionalProperty.get();
-  }
+//  /**
+//   * {@inheritDoc}
+//   */
+//  @Override
+//  public BooleanProperty ocOptionalProperty() {
+//    return ocOptionalProperty;
+//  }
+//
+//  /**
+//   * @InheritDoc
+//   */
+//  @Override
+//  public ObjectProperty<String> ocValueProperty() {
+//    return ocValueProperty;
+//  }
+//
+//  /**
+//   * @InheritDoc
+//   */
+//  @Override
+//  public BooleanProperty ocValidProperty() {
+//    return ocValidProperty;
+//  }
+//
+//  /**
+//   * @InheritDoc
+//   */
+//  @Override
+//  public BooleanProperty ocFilledInProperty() {
+//    return ocFilledInProperty;
+//  }  
 
   /**
    * @InheritDoc
    */
   @Override
-  public ObjectProperty<String> objectValue() {
-    return objectValue;
-  }
-
-  /**
-   * @InheritDoc
-   */
-  @Override
-  public boolean getIsValid(StringBuilder errorMessageBuffer) {
-    return isValid.getValue();
-  }
-
-  /**
-   * @InheritDoc
-   */
-  @Override
-  public BooleanProperty isValid() {
-    return isValid;
-  }
-
-  /**
-   * @InheritDoc
-   */
-  @Override
-  public BooleanProperty isFilledIn() {
-    return isFilledIn;
-  }  
-
-  /**
-   * @InheritDoc
-   */
-  @Override
-  public boolean getIsFilledIn() {
-    return (objectValue.get() != null) && !objectValue.get().isEmpty();
-  }
-
-  /**
-   * @InheritDoc
-   */
-  @Override
-  public String getObjectValue() {
-    return objectValue.get();
-  }
-
-  /**
-   * @InheritDoc
-   */
-  @Override
-  public void setObjectValue(String filePathText) {
-    
+  public void ocSetValue(String filePathText) {
     pathTextField.textProperty().set(filePathText);
+  }
+
+  /**
+   * @InheritDoc
+   */
+  @Override
+  public boolean ociDetermineFilledIn() {
+    return pathTextField.textProperty().get() != null  &&  !pathTextField.textProperty().get().isEmpty();
+  }
+
+  /**
+   * @InheritDoc
+   */
+  @Override
+  public String ociDetermineValue() {
+    return pathTextField.textProperty().get();
+  }
+
+  /**
+   * @InheritDoc
+   * For now no action. For 'open' this could be based on whether the file exists.
+   */
+  @Override
+  public void ociSetErrorFeedback(boolean valid) {
+  }
+
+  /**
+   * @InheritDoc
+   * For now no action. Could change to showing absolute path, or path relative to prefix (if set).
+   */
+  @Override
+  public void ociRedrawValue() {
+  }
+
+  /**
+   * @InheritDoc
+   * For now just return the 'value'.
+   */
+  @Override
+  public String ocGetObjectValueAsFormattedText() {
+    return pathTextField.textProperty().get();
   }
   
   /**
@@ -213,29 +226,54 @@ public abstract class ObjectControlFileOrFolderSelecterAbstract implements Objec
       return path;
     }
   }
-
-  /**
-   * @InheritDoc
-   */
-  @Override
-  public void addListener(InvalidationListener listener) {
-    invalidationListeners.add(listener);    
-  }
-
-  /**
-   * @InheritDoc
-   */
-  @Override
-  public void removeListener(InvalidationListener listener) {
-    invalidationListeners.remove(listener);    
-  }
   
   /**
-   * Notify the <code>invalidationListeners</code> that something has changed.
+   * {@inheritDoc}
    */
-  protected void notifyListeners() {
-    for (InvalidationListener invalidationListener: invalidationListeners) {
-      invalidationListener.invalidated(this);
-    }
+  @Override
+  public List<InvalidationListener> ociGetInvalidationListeners() {
+    return invalidationListeners;
+  }
+
+  @Override
+  public boolean ocIsOptional() {
+    // TODO Auto-generated method stub
+    return false;
+  }
+
+  @Override
+  public boolean ocIsFilledIn() {
+    // TODO Auto-generated method stub
+    return false;
+  }
+
+  @Override
+  public boolean ocIsValid() {
+    // TODO Auto-generated method stub
+    return false;
+  }
+
+  @Override
+  public String ocGetValue() {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  @Override
+  public void ociSetValue(String value) {
+    // TODO Auto-generated method stub
+    
+  }
+
+  @Override
+  public void ociSetValid(boolean valid) {
+    // TODO Auto-generated method stub
+    
+  }
+
+  @Override
+  public void ociSetFilledIn(boolean filledIn) {
+    // TODO Auto-generated method stub
+    
   }
 }

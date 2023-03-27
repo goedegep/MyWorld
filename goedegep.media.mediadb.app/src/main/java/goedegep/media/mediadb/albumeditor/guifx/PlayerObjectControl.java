@@ -21,10 +21,11 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 
 public class PlayerObjectControl implements ObjectControl<Player> {
+  @SuppressWarnings("unused")
   private static final Logger LOGGER = Logger.getLogger(PlayerObjectControl.class.getName());
 
   private List<InvalidationListener> invalidationListeners = new ArrayList<>();
-  private BooleanProperty isFilledInProperty = new SimpleBooleanProperty(true);
+//  private BooleanProperty ocFilledInProperty = new SimpleBooleanProperty(true);
   private ArtistStringConverterAndChecker artistStringConverterAndChecker;
   
   private ObjectControlAutoCompleteTextField<Artist> artistObjectControl;
@@ -34,10 +35,12 @@ public class PlayerObjectControl implements ObjectControl<Player> {
    * Indicates whether the control is optional (if true) or mandatory.
    * If there is a control for a Player, the player has to be filled in. So this control is never optional.
    */
-  private BooleanProperty optionalProperty = new SimpleBooleanProperty(false);
+  boolean optional;
+//  private BooleanProperty optionalProperty = new SimpleBooleanProperty(false);
 
   public PlayerObjectControl(CustomizationFx customization, MediaDb mediaDb) {
-    optionalProperty.set(false);
+    optional = false;
+//    optionalProperty.set(false);
     ComponentFactoryFx componentFactory = customization.getComponentFactoryFx();
     artistStringConverterAndChecker = new ArtistStringConverterAndChecker(mediaDb);
     
@@ -45,60 +48,39 @@ public class PlayerObjectControl implements ObjectControl<Player> {
     artistObjectControl.setOptions(mediaDb.getArtists());
     playerInstrumentTextField = componentFactory.createObjectControlTextField(null, null, 300, true, "A comma separated list of instruments");
     
-    artistObjectControl.addListener((e) -> notifyListeners());
-    playerInstrumentTextField.addListener((e) -> notifyListeners());
+    artistObjectControl.addListener((e) -> ociNotifyListeners());
+    playerInstrumentTextField.addListener((e) -> ociNotifyListeners());
   }
+
+//  /**
+//   * {@inheritDoc}
+//   */
+//  @Override
+//  public BooleanProperty ocOptionalProperty() {
+//    return optionalProperty;
+//  }
+
+//  /**
+//   * {@inheritDoc}
+//   */
+//  @Override
+//  public BooleanProperty ocFilledInProperty() {
+//    return ocFilledInProperty;
+//  }
+
+//  /**
+//   * {@inheritDoc}
+//   */
+//  @Override
+//  public BooleanProperty ocValidProperty() {
+//    return artistObjectControl.ocValidProperty();
+//  }
 
   /**
    * {@inheritDoc}
    */
   @Override
-  public BooleanProperty ocOptionalProperty() {
-    return optionalProperty;
-  }
-
-  @Override
-  public boolean isOptional() {
-    return optionalProperty.get();
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public BooleanProperty isFilledIn() {
-    return isFilledInProperty;
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public boolean getIsFilledIn() {
-    return isFilledInProperty.getValue();
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public BooleanProperty isValid() {
-    return artistObjectControl.isValid();
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public boolean getIsValid(StringBuilder errorMessageBuffer) {
-    return artistObjectControl.getIsValid(errorMessageBuffer);
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public Player getObjectValue() throws ParseException {
+  public Player ocGetValue() {
     throw new UnsupportedOperationException();
   }
 
@@ -106,12 +88,12 @@ public class PlayerObjectControl implements ObjectControl<Player> {
    * {@inheritDoc}
    */
   @Override
-  public void setObjectValue(Player objectValue) {
+  public void ocSetValue(Player objectValue) {
     throw new UnsupportedOperationException();
   }
   
   public void fillFromPlayer(Player player) {
-    artistObjectControl.setObjectValue(player.getArtist());
+    artistObjectControl.ocSetValue(player.getArtist());
     playerInstrumentTextField.setText(StringUtil.stringCollectionToCommaSeparatedStrings(player.getInstruments()));
   }
 
@@ -123,13 +105,13 @@ public class PlayerObjectControl implements ObjectControl<Player> {
     return playerInstrumentTextField;
   }
 
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public ObjectProperty<Player> objectValue() {
-    throw new UnsupportedOperationException();
-  }
+//  /**
+//   * {@inheritDoc}
+//   */
+//  @Override
+//  public ObjectProperty<Player> ocValueProperty() {
+//    throw new UnsupportedOperationException();
+//  }
 
   /**
    * {@inheritDoc}
@@ -137,28 +119,80 @@ public class PlayerObjectControl implements ObjectControl<Player> {
   @Override
   public String getId() {
     return artistObjectControl.getId();
-  }
-
-
-  @Override
-  public void addListener(InvalidationListener listener) {
-    invalidationListeners.add(listener);    
-  }
-
-  @Override
-  public void removeListener(InvalidationListener listener) {
-    invalidationListeners.remove(listener);    
-  }
+  }  
   
   /**
-   * Notify the <code>invalidationListeners</code> that something has changed.
+   * {@inheritDoc}
    */
-  private void notifyListeners() {
-    LOGGER.severe("=>");
-    for (InvalidationListener invalidationListener: invalidationListeners) {
-      LOGGER.severe("Notifying: " + invalidationListener);
-      invalidationListener.invalidated(this);
-    }
+  @Override
+  public List<InvalidationListener> ociGetInvalidationListeners() {
+    return invalidationListeners;
+  }
+
+  @Override
+  public boolean ociDetermineFilledIn() {
+    // TODO Auto-generated method stub
+    return false;
+  }
+
+  @Override
+  public Player ociDetermineValue() {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  @Override
+  public void ociSetErrorFeedback(boolean valid) {
+    // TODO Auto-generated method stub
+    
+  }
+
+  @Override
+  public void ociRedrawValue() {
+    // TODO Auto-generated method stub
+    
+  }
+
+  @Override
+  public String ocGetObjectValueAsFormattedText() {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  @Override
+  public boolean ocIsOptional() {
+    // TODO Auto-generated method stub
+    return false;
+  }
+
+  @Override
+  public boolean ocIsFilledIn() {
+    // TODO Auto-generated method stub
+    return false;
+  }
+
+  @Override
+  public boolean ocIsValid() {
+    // TODO Auto-generated method stub
+    return false;
+  }
+
+  @Override
+  public void ociSetValue(Player value) {
+    // TODO Auto-generated method stub
+    
+  }
+
+  @Override
+  public void ociSetValid(boolean valid) {
+    // TODO Auto-generated method stub
+    
+  }
+
+  @Override
+  public void ociSetFilledIn(boolean filledIn) {
+    // TODO Auto-generated method stub
+    
   }
 
 }

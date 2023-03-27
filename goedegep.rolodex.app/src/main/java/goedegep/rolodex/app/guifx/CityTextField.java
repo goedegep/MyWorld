@@ -27,18 +27,13 @@ public class CityTextField extends ObjectControlAutoCompleteTextField<String> {
     getEntries().addAll(citiesToString(rolodex.getCityList().getCities()));
   }
   
-  @Override
-  public boolean getIsValid(StringBuilder buf) {
-    
-    if (isOptional()  &&  !getIsFilledIn()) {
-      return true;
-    }
-        
-    return (!getMatchingCities().isEmpty());
-  }
+//  @Override
+//  public boolean isDataValid() {
+//    return (!getMatchingCities().isEmpty());
+//  }
   
   public boolean isNonExistingCityName() {
-    if (getIsFilledIn() && (getMatchingCities().isEmpty())) {
+    if (ocIsFilledIn() && (getMatchingCities().isEmpty())) {
       return true;
     } else {
       return false;

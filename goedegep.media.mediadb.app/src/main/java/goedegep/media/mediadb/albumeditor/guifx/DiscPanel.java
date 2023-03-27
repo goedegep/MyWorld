@@ -100,7 +100,7 @@ class DiscPanel extends Group {
   }
 
   public String getDiscTitle() {
-    return titleControl.getObjectValue();
+    return titleControl.ocGetValue();
   }
 
   public Disc getDisc() {

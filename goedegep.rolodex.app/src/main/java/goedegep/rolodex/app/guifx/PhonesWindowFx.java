@@ -14,8 +14,8 @@ import goedegep.jfx.eobjecttable.EObjectTable;
 import goedegep.jfx.eobjecttable.EObjectTableColumnDescriptorAbstract;
 import goedegep.jfx.eobjecttable.EObjectTableColumnDescriptorBasic;
 import goedegep.jfx.eobjecttable.EObjectTableDescriptor;
-import goedegep.jfx.objectcontrols.ObjectControl;
 import goedegep.jfx.objectcontrols.ObjectControlEnumComboBox;
+import goedegep.jfx.objectcontrols.ObjectControlGroup;
 import goedegep.jfx.objectcontrols.ObjectControlString;
 import goedegep.rolodex.model.Phone;
 import goedegep.rolodex.model.PhoneAddressBook;
@@ -158,6 +158,7 @@ class PhoneEditPanel {
   private ObjectControlString phoneDescriptionTextField;
   private ObjectControlString phoneTypeTextField;
   private SimpleObjectProperty<Phone> phoneProperty = new SimpleObjectProperty<>();
+  private ObjectControlGroup objectControlGroup;
   
   /**
    * Constructor
@@ -173,6 +174,8 @@ class PhoneEditPanel {
     // Create the controls.
     phoneDescriptionTextField = componentFactory.createObjectControlString(null, 300, true, "Enter a description for the phone, e.g. the owner");
     phoneTypeTextField = componentFactory.createObjectControlString(null, 300, true, "Enter the phone model and/or type");
+    objectControlGroup = new ObjectControlGroup();
+    objectControlGroup.addObjectControls(phoneDescriptionTextField, phoneTypeTextField);
     
     createGUI();
   }
@@ -256,7 +259,7 @@ class PhoneEditPanel {
   private void updatePhoneIfControlsAreValid() {
     
     // Only update if all controls have valid values.
-    if (!ObjectControl.areControlsValid(phoneDescriptionTextField, phoneTypeTextField)) {
+    if (!objectControlGroup.getIsValid()) {
       return;
     }
         
@@ -294,7 +297,7 @@ class PhoneEditPanel {
   private Phone createPhoneFromFields() {
     
     // Only create if all controls have valid values.
-    if (!ObjectControl.areControlsValid(phoneDescriptionTextField, phoneTypeTextField)) {
+    if (!objectControlGroup.getIsValid()) {
       return null;
     }
     
@@ -313,12 +316,12 @@ class PhoneEditPanel {
    * @param phone The Phone object to be updated.
    */
   public boolean updatePhoneFromFields(Phone phone) {
-    String phoneDescription = phoneDescriptionTextField.getObjectValue();
+    String phoneDescription = phoneDescriptionTextField.ocGetValue();
     if (!PgUtilities.equals(phone.getDescription(), phoneDescription)) {
       phone.setDescription(phoneDescription);
     }      
         
-    String phoneType = phoneTypeTextField.getObjectValue();
+    String phoneType = phoneTypeTextField.ocGetValue();
     if (!PgUtilities.equals(phone.getPhoneType(), phoneType)) {
       phone.setPhoneType(phoneType);
     }      
@@ -337,7 +340,6 @@ class PhoneAddressBookEntryEditPanel {
   private static final Logger LOGGER = Logger.getLogger(PhoneAddressBookEntryEditPanel.class.getName());
 
   private static RolodexFactory ROLODEX_FACTORY = RolodexFactory.eINSTANCE;
-  private static RolodexPackage ROLODEX_PACKAGE = RolodexPackage.eINSTANCE;
   
   private ComponentFactoryFx componentFactory;
   private GridPane gridPane;
@@ -346,6 +348,7 @@ class PhoneAddressBookEntryEditPanel {
   private ObjectControlString entryNameTextField;
   private ObjectControlEnumComboBox<PhoneAddressBookEntryType> phoneAddressBookEntryTypeField;
   private PhoneNumberTextField phoneNumberTextField;
+  private ObjectControlGroup objectControlGroup;
   
   private PhoneAddressBook phoneAddressBook;
   private SimpleObjectProperty<PhoneAddressBookEntry> phoneAddressBookEntryProperty = new SimpleObjectProperty<>();
@@ -364,6 +367,8 @@ class PhoneAddressBookEntryEditPanel {
     entryNameTextField = componentFactory.createObjectControlString(null, 300, true, "Enter the entry name");
     phoneAddressBookEntryTypeField =componentFactory.createObjectControlEnumComboBox(PhoneAddressBookEntryType.NAME_AND_PHONE_NUMBER_ENTRY, null, true, "Enter the type of entry");
     phoneNumberTextField = new PhoneNumberTextField(customization, rolodex);
+    objectControlGroup = new ObjectControlGroup();
+    objectControlGroup.addObjectControls(entryNameTextField, phoneAddressBookEntryTypeField, phoneNumberTextField);
     
     createGUI();
   }
@@ -470,7 +475,7 @@ class PhoneAddressBookEntryEditPanel {
   private void updatePhoneAddressBookEntryIfControlsAreValid() {
     
     // Only update if all controls have valid values.
-    if (!ObjectControl.areControlsValid(entryNameTextField, phoneAddressBookEntryTypeField, phoneNumberTextField)) {
+    if (!objectControlGroup.getIsValid()) {
       return;
     }
         
@@ -490,13 +495,13 @@ class PhoneAddressBookEntryEditPanel {
     }
     
     entryNameTextField.setText(phoneAddressBookEntry.getEntryName());
-    phoneAddressBookEntryTypeField.setObjectValue(phoneAddressBookEntry.getEntryType());
-    phoneNumberTextField.setObjectValue(phoneAddressBookEntry.getPhoneNumber().toString());
+    phoneAddressBookEntryTypeField.ocSetValue(phoneAddressBookEntry.getEntryType());
+    phoneNumberTextField.ocSetValue(phoneAddressBookEntry.getPhoneNumber().toString());
   }
   
   private void clearFields() {
     entryNameTextField.setText(null);
-    phoneAddressBookEntryTypeField.setObjectValue(null);
+    phoneAddressBookEntryTypeField.ocSetValue(null);
     phoneNumberTextField.setText(null);
   }
   
@@ -510,7 +515,7 @@ class PhoneAddressBookEntryEditPanel {
   private PhoneAddressBookEntry createPhoneAddressBookEntryFromFields() {
     
     // Only create if all controls have valid values.
-    if (!ObjectControl.areControlsValid(entryNameTextField, phoneAddressBookEntryTypeField, phoneNumberTextField)) {
+    if (!objectControlGroup.getIsValid()) {
       return null;
     }
     
@@ -529,12 +534,12 @@ class PhoneAddressBookEntryEditPanel {
    * @param phoneAddressBookEntry The PhoneNumber object to be updated.
    */
   public boolean updatePhoneAddressBookEntryFromFields(PhoneAddressBookEntry phoneAddressBookEntry) {
-    String entryName = entryNameTextField.getObjectValue();
+    String entryName = entryNameTextField.ocGetValue();
     if (!PgUtilities.equals(phoneAddressBookEntry.getEntryName(), entryName)) {
       phoneAddressBookEntry.setEntryName(entryName);
     }      
         
-    PhoneAddressBookEntryType entryType = (PhoneAddressBookEntryType) phoneAddressBookEntryTypeField.getObjectValue();
+    PhoneAddressBookEntryType entryType = (PhoneAddressBookEntryType) phoneAddressBookEntryTypeField.ocGetValue();
     if (!PgUtilities.equals(phoneAddressBookEntry.getEntryType(), entryType)) {
       phoneAddressBookEntry.setEntryType(entryType);
     } 

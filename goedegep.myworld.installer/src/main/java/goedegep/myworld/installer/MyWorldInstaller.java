@@ -25,6 +25,8 @@ import goedegep.util.emf.EMFResource;
 import goedegep.util.mslinks.ShellLink;
 import goedegep.util.mslinks.ShellLinkException;
 import goedegep.util.mslinks.ShellLinkHeader;
+import javafx.beans.InvalidationListener;
+import javafx.beans.Observable;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -96,9 +98,9 @@ public class MyWorldInstaller extends JfxApplication {
   private static final SimpleDateFormat DF = new SimpleDateFormat("dd-MM-yyyy HH:mm");
   
   private ObjectControlFolderSelecter installationFolder;
-  private BooleanProperty installationFolderValidProperty;
+//  private BooleanProperty installationFolderValidProperty;
   private ObjectControlFolderSelecter userDataFolder;
-  private BooleanProperty userDataFolderValidProperty;
+//  private BooleanProperty userDataFolderValidProperty;
   private TextArea outputTextArea;
   private StringBuilder outputTextBuffer;
   private Button runButton;
@@ -282,7 +284,7 @@ public class MyWorldInstaller extends JfxApplication {
           statusLabel.setText("Specified installFolder '" + installFolderName + "' can't be created. System message: " + e.getMessage());
         }
       }
-      installationFolder.setObjectValue(installFolderName);
+      installationFolder.ocSetValue(installFolderName);
     }
     
     // If a second argument is present, set it as User Data directory
@@ -295,7 +297,7 @@ public class MyWorldInstaller extends JfxApplication {
           statusLabel.setText("Specified User Data folder '" + userDataFolderName + "' can't be created. System message: " + e.getMessage());
         }
       }
-      userDataFolder.setObjectValue(userDataFolderName);
+      userDataFolder.ocSetValue(userDataFolderName);
     }
     
 //    if (!runButton.isDisabled()) {
@@ -440,11 +442,11 @@ public class MyWorldInstaller extends JfxApplication {
     controlsPanel.add(label, 0, 0);
     
     installationFolder = new ObjectControlFolderSelecter(null, 200, null, "Select installation directory", null, "Installation directory");
-    installationFolderValidProperty = installationFolder.isValid();
-    installationFolderValidProperty.addListener(new ChangeListener<Boolean>() {
+//    installationFolderValidProperty = installationFolder.ocValidProperty();
+    installationFolder.addListener(new InvalidationListener() {
 
       @Override
-      public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+      public void invalidated(Observable observable) {
         updateRunButtonStatus();
       }
       
@@ -457,7 +459,7 @@ public class MyWorldInstaller extends JfxApplication {
     label = new Label("User Data directory");
     controlsPanel.add(label, 0, 1);
     userDataFolder = new ObjectControlFolderSelecter("D:\\Database\\MyWorld", 200, null, "User Data directory", null, "User Data directory");
-    userDataFolderValidProperty = userDataFolder.isValid();
+//    userDataFolderValidProperty = userDataFolder.ocValidProperty();
     controlsPanel.add(userDataFolder.getPathTextField(), 1, 1);
     controlsPanel.add(userDataFolder.getFolderChooserButton(), 2, 1);
     
@@ -480,7 +482,7 @@ public class MyWorldInstaller extends JfxApplication {
    * Otherwise it is disabled.
    */
   private void updateRunButtonStatus() {
-    if (!installationRunning  &&  installationFolderValidProperty.get()  &&  userDataFolderValidProperty.get()) {
+    if (!installationRunning  &&  installationFolder.ocIsValid()  &&  userDataFolder.ocIsValid()) {
       runButton.setDisable(false);
     } else {
       runButton.setDisable(true);
@@ -510,9 +512,9 @@ public class MyWorldInstaller extends JfxApplication {
     statusLabel.setText("");
     appendOutputTextLine("Starting installation process ...");
     
-    String binInstallationFolder = installationFolder.getObjectValue() + "\\bin";
+    String binInstallationFolder = installationFolder.ocGetValue() + "\\bin";
     try {
-      createMyWorldShortCut(binInstallationFolder, userDataFolder.getObjectValue(), MY_WORLD_SHORTCUT_PATH);
+      createMyWorldShortCut(binInstallationFolder, userDataFolder.ocGetValue(), MY_WORLD_SHORTCUT_PATH);
     } catch (IOException e) {
       appendOutputTextLine("MyWorld shortcut couldn't be created. System message: " + e.getMessage());
       appendOutputTextLine("Installation aborted");
@@ -534,7 +536,7 @@ public class MyWorldInstaller extends JfxApplication {
     appendOutputTextLine("Events shortcut created: " + EVENTS_SHORTCUT_PATH);
         
     try {
-      createFinanShortCut(binInstallationFolder, userDataFolder.getObjectValue(), FINAN_SHORTCUT_PATH);
+      createFinanShortCut(binInstallationFolder, userDataFolder.ocGetValue(), FINAN_SHORTCUT_PATH);
     } catch (IOException e) {
       appendOutputTextLine("Finan shortcut couldn't be created. System message: " + e.getMessage());
       appendOutputTextLine("Installation aborted");
@@ -545,7 +547,7 @@ public class MyWorldInstaller extends JfxApplication {
     appendOutputTextLine("MyWorld shortcut created: " + FINAN_SHORTCUT_PATH);
     
     try {
-      createMediaShortCut(binInstallationFolder, userDataFolder.getObjectValue(), MEDIA_SHORTCUT_PATH);
+      createMediaShortCut(binInstallationFolder, userDataFolder.ocGetValue(), MEDIA_SHORTCUT_PATH);
     } catch (IOException e) {
       appendOutputTextLine("Media shortcut couldn't be created. System message: " + e.getMessage());
       appendOutputTextLine("Installation aborted");
@@ -556,7 +558,7 @@ public class MyWorldInstaller extends JfxApplication {
     appendOutputTextLine("Media shortcut created: " + MEDIA_SHORTCUT_PATH);
     
     try {
-      createInvoicesAndPropertiesShortCut(binInstallationFolder, userDataFolder.getObjectValue(), INVOICES_AND_PROPERTIES_SHORTCUT_PATH);
+      createInvoicesAndPropertiesShortCut(binInstallationFolder, userDataFolder.ocGetValue(), INVOICES_AND_PROPERTIES_SHORTCUT_PATH);
     } catch (IOException e) {
       appendOutputTextLine("InvoicesAndProperties shortcut couldn't be created. System message: " + e.getMessage());
       appendOutputTextLine("Installation aborted");
@@ -567,7 +569,7 @@ public class MyWorldInstaller extends JfxApplication {
     appendOutputTextLine("InvoicesAndProperties shortcut created: " + INVOICES_AND_PROPERTIES_SHORTCUT_PATH);
     
     try {
-      createRolodexShortCut(binInstallationFolder, userDataFolder.getObjectValue(), ROLODEX_SHORTCUT_PATH);
+      createRolodexShortCut(binInstallationFolder, userDataFolder.ocGetValue(), ROLODEX_SHORTCUT_PATH);
     } catch (IOException e) {
       appendOutputTextLine("Rolodex shortcut couldn't be created. System message: " + e.getMessage());
       appendOutputTextLine("Installation aborted");
@@ -578,7 +580,7 @@ public class MyWorldInstaller extends JfxApplication {
     appendOutputTextLine("Rolodex shortcut created: " + ROLODEX_SHORTCUT_PATH);
     
     try {
-      createUnitConverterShortCut(binInstallationFolder, userDataFolder.getObjectValue(), UNIT_CONVERTER_SHORTCUT_PATH);
+      createUnitConverterShortCut(binInstallationFolder, userDataFolder.ocGetValue(), UNIT_CONVERTER_SHORTCUT_PATH);
     } catch (IOException e) {
       appendOutputTextLine("UnitConverter shortcut couldn't be created. System message: " + e.getMessage());
       appendOutputTextLine("Installation aborted");
@@ -589,7 +591,7 @@ public class MyWorldInstaller extends JfxApplication {
     appendOutputTextLine("UnitConverter shortcut created: " + UNIT_CONVERTER_SHORTCUT_PATH);
     
     try {
-      createPCToolsShortCut(binInstallationFolder, userDataFolder.getObjectValue(), PC_TOOLS_SHORTCUT_PATH);
+      createPCToolsShortCut(binInstallationFolder, userDataFolder.ocGetValue(), PC_TOOLS_SHORTCUT_PATH);
     } catch (IOException e) {
       appendOutputTextLine("PCTools shortcut couldn't be created. System message: " + e.getMessage());
       appendOutputTextLine("Installation aborted");
@@ -600,7 +602,7 @@ public class MyWorldInstaller extends JfxApplication {
     appendOutputTextLine("PCTools shortcut created: " + PC_TOOLS_SHORTCUT_PATH);
     
     try {
-      createVacationsShortCut(binInstallationFolder, userDataFolder.getObjectValue(), VACATIONS_SHORTCUT_PATH);
+      createVacationsShortCut(binInstallationFolder, userDataFolder.ocGetValue(), VACATIONS_SHORTCUT_PATH);
     } catch (IOException e) {
       appendOutputTextLine("Vacations shortcut couldn't be created. System message: " + e.getMessage());
       appendOutputTextLine("Installation aborted");
@@ -973,9 +975,9 @@ public class MyWorldInstaller extends JfxApplication {
   private void installOutsideProgramFiles() throws IOException {
     LOGGER.info("=>");
     
-    String installationDirectoryPrev = installationFolder.getObjectValue() + "Prev";
+    String installationDirectoryPrev = installationFolder.ocGetValue() + "Prev";
     Path installationPathPrev = Paths.get(installationDirectoryPrev);
-    Path destinationPath = Paths.get(installationFolder.getObjectValue());
+    Path destinationPath = Paths.get(installationFolder.ocGetValue());
 
     if (Files.exists(installationPathPrev)) {
       appendOutputTextLine("There already exists a previous version, which will now be removed.");

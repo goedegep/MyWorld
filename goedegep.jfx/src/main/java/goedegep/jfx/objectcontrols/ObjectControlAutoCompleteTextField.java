@@ -22,13 +22,36 @@ public class ObjectControlAutoCompleteTextField<T> extends AutoCompleteTextField
   
   private StringConverterAndChecker<T> stringConverterAndChecker = null;
   
-  /**
-   * Indicates whether the control is optional (if true) or mandatory.
-   */
-  private BooleanProperty optionalProperty = new SimpleBooleanProperty(false);
-  private BooleanProperty isValidProperty = new SimpleBooleanProperty(true);
-  private BooleanProperty isFilledInProperty = new SimpleBooleanProperty(true);
-  private ObjectProperty<T> objectValueProperty = new SimpleObjectProperty<>();
+  
+  
+//  /**
+//   * Indication of whether the control is optional (if true) or mandatory.
+//   */
+//  private BooleanProperty ocOptionalProperty = new SimpleBooleanProperty(false);
+  
+  private boolean optional;
+  
+//  /**
+//   * Indication of whether the control is filled-in or not.
+//   */
+//  private BooleanProperty ocFilledInProperty = new SimpleBooleanProperty(true);
+  
+  private boolean filledIn;
+  
+//  /**
+//   * Indication of whether the control has a valid value or not.
+//   */
+//  private BooleanProperty ocValidProperty = new SimpleBooleanProperty(true);
+  
+  private boolean valid;
+  
+//  /**
+//   * The current value.
+//   */
+//  private ObjectProperty<T> ocValueProperty = new SimpleObjectProperty<>();
+  
+  private T value;
+  
   private List<InvalidationListener> invalidationListeners = new ArrayList<>();
   
     
@@ -94,7 +117,8 @@ public class ObjectControlAutoCompleteTextField<T> extends AutoCompleteTextField
     
     setMinWidth(width);
     
-    optionalProperty.set(isOptional);
+    this.optional = isOptional;
+//    ocOptionalProperty.set(isOptional);
     
     if (toolTipText != null) {
       setTooltip(new Tooltip(toolTipText));
@@ -102,51 +126,46 @@ public class ObjectControlAutoCompleteTextField<T> extends AutoCompleteTextField
     
     textProperty().addListener(new ChangeListener<String>() {
       public void changed(final ObservableValue<? extends String> observableValue, final String oldValue, final String newValue) {
-        handleNewInput();
+        ociHandleNewUserInput();
       }
     });
     
     focusedProperty().addListener(this::handleFocusChanged);
-    handleNewInput();
+    ociHandleNewUserInput();
   }
 
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public BooleanProperty ocOptionalProperty() {
-    return optionalProperty;
-  }
-
-  @Override
-  public boolean isOptional() {
-    return optionalProperty.get();
-  }
+//  /**
+//   * {@inheritDoc}
+//   */
+//  @Override
+//  public BooleanProperty ocOptionalProperty() {
+//    return ocOptionalProperty;
+//  }
   
-  private void handleNewInput() {
-    LOGGER.severe("=>");
-    if (isEnteredDataValid(null)) {
-      LOGGER.severe("Data is valid");
-      isValidProperty.set(true);
-      setStyle("-fx-text-fill: black;");
-    } else {
-      LOGGER.severe("Data NOT valid");
-      if (isOptional()  &&  !getIsFilledIn()) {
-        LOGGER.severe("Optional and not filled in");
-        isValidProperty.set(true);
-      } else {
-        isValidProperty.set(false);
-      }
-      setStyle("-fx-text-fill: red;");
-    }
-    
-    objectValueProperty.setValue(getObjectValue());
-    LOGGER.severe("objectValueProperty: " + objectValueProperty);
-    isFilledInProperty.setValue(getIsFilledIn());
-    LOGGER.severe("isFilledInProperty: " + isFilledInProperty);
-    
-    notifyListeners();
-  }
+//  private void handleNewInput() {
+//    LOGGER.severe("=>");
+//    if (isEnteredDataValid(null)) {
+//      LOGGER.severe("Data is valid");
+//      ocValidProperty.set(true);
+//      setStyle("-fx-text-fill: black;");
+//    } else {
+//      LOGGER.severe("Data NOT valid");
+//      if (ocIsOptional()  &&  !ocIsFilledIn()) {
+//        LOGGER.severe("Optional and not filled in");
+//        ocValidProperty.set(true);
+//      } else {
+//        ocValidProperty.set(false);
+//      }
+//      setStyle("-fx-text-fill: red;");
+//    }
+//    
+//    ocValueProperty.setValue(determineValue());
+//    LOGGER.severe("objectValueProperty: " + ocValueProperty);
+//    ocFilledInProperty.setValue(isFilledIn());
+//    LOGGER.severe("isFilledInProperty: " + ocFilledInProperty);
+//    
+//    notifyListeners();
+//  }
   
   private void handleFocusChanged(ObservableValue<? extends Boolean> observableValue, Boolean oldValue, Boolean newValue) {
     LOGGER.info("=> newValue=" + newValue);
@@ -159,23 +178,12 @@ public class ObjectControlAutoCompleteTextField<T> extends AutoCompleteTextField
   }
 
   @Override
-  public boolean getIsFilledIn() {
+  public boolean ociDetermineFilledIn() {
     if (getText() == null  ||  getText().isEmpty()) {
       return false;
     } else {
-      return (getText().length() != 0);
+      return true;
     }
-  }
-
-  @Override
-  public boolean getIsValid(StringBuilder buf) {
-    return isValidProperty.get();
-    
-//    if (isOptional()  &&  !isFilledIn()) {
-//      return true;
-//    }
-//        
-//    return isEnteredDataValid(buf);
   }
   
   /**
@@ -200,7 +208,7 @@ public class ObjectControlAutoCompleteTextField<T> extends AutoCompleteTextField
   }
 
   @Override
-  public T getObjectValue() {
+  public T ociDetermineValue() {
     if (getText() == null) {
       return null;
     }
@@ -209,19 +217,20 @@ public class ObjectControlAutoCompleteTextField<T> extends AutoCompleteTextField
     return object;
   }
   
-  public String getObjectValueAsFormattedText()  {
-    return objectToString(getObjectValue());
+  @Override
+  public String ocGetObjectValueAsFormattedText()  {
+    return objectToString(ocGetValue());
   }
 
   @Override
-  public void setObjectValue(T objectValue) {
+  public void ocSetValue(T objectValue) {
     setText(objectToString(objectValue));
   }
 
-  @Override
-  public ObjectProperty<T> objectValue() {
-    return objectValueProperty;
-  }
+//  @Override
+//  public ObjectProperty<T> ocValueProperty() {
+//    return ocValueProperty;
+//  }
   
   /**
    * Create an object based on its String representation.
@@ -249,28 +258,18 @@ public class ObjectControlAutoCompleteTextField<T> extends AutoCompleteTextField
     return stringConverterAndChecker.toString(value);
   }
   
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public BooleanProperty isValid() {
-    return isValidProperty;
-  }
+//  /**
+//   * {@inheritDoc}
+//   */
+//  @Override
+//  public BooleanProperty ocValidProperty() {
+//    return ocValidProperty;
+//  }
   
-  @Override
-  public BooleanProperty isFilledIn() {
-    return isFilledInProperty;
-  }
-
-  @Override
-  public void addListener(InvalidationListener listener) {
-    invalidationListeners.add(listener);    
-  }
-
-  @Override
-  public void removeListener(InvalidationListener listener) {
-    invalidationListeners.remove(listener);    
-  }
+//  @Override
+//  public BooleanProperty ocFilledInProperty() {
+//    return ocFilledInProperty;
+//  }
   
   public void setOptions(List<T> options) {
     SortedSet<String> entries = getEntries();
@@ -281,15 +280,67 @@ public class ObjectControlAutoCompleteTextField<T> extends AutoCompleteTextField
     }
   }
   
+  
   /**
-   * Notify the <code>invalidationListeners</code> that something has changed.
+   * {@inheritDoc}
    */
-  private void notifyListeners() {
-    LOGGER.severe("=>");
-    for (InvalidationListener invalidationListener: invalidationListeners) {
-      LOGGER.severe("Notifying listener: " + invalidationListener);
-      invalidationListener.invalidated(this);
-    }
+  @Override
+  public List<InvalidationListener> ociGetInvalidationListeners() {
+    return invalidationListeners;
+  }
+
+  @Override
+  public void ociSetErrorFeedback(boolean valid) {
+    // TODO Auto-generated method stub
+    
+  }
+
+  @Override
+  public void ociRedrawValue() {
+    // TODO Auto-generated method stub
+    
+  }
+
+  @Override
+  public void ociSetValue(T value) {
+    // TODO Auto-generated method stub
+    
+  }
+
+  @Override
+  public void ociSetValid(boolean valid) {
+    // TODO Auto-generated method stub
+    
+  }
+
+  @Override
+  public void ociSetFilledIn(boolean filledIn) {
+    // TODO Auto-generated method stub
+    
+  }
+
+  @Override
+  public boolean ocIsOptional() {
+    // TODO Auto-generated method stub
+    return false;
+  }
+
+  @Override
+  public boolean ocIsFilledIn() {
+    // TODO Auto-generated method stub
+    return false;
+  }
+
+  @Override
+  public boolean ocIsValid() {
+    // TODO Auto-generated method stub
+    return false;
+  }
+
+  @Override
+  public T ocGetValue() {
+    // TODO Auto-generated method stub
+    return null;
   }
 
 }

@@ -61,31 +61,38 @@ public class ObjectControlFileSelecter extends ObjectControlFileOrFolderSelecter
           // For saving a file, the folder shall exist
           File folder = file.getParentFile();
           if (folder != null &&  folder.exists()  &&  folder.isDirectory()) {
-            isValid().set(true);
+            //        	  ocValidProperty().set(true);
+            valid = true;
           } else {
-            isValid().set(false);
+            //        	  ocValidProperty().set(false);
+            valid = false;
           }
         } else {
           // For opening the file shall exist
           if (file.exists()  &&  file.isFile()) {
-            isValid().set(true);
+            //        	  ocValidProperty().set(true);
+            valid = true;
           } else {
-            isValid().set(false);
+            //        	  ocValidProperty().set(false);
+            valid = false;
           }
         }
-        isFilledIn().set(!newValue.isEmpty());
+        filledIn = !newValue.isEmpty();
+//        ocFilledInProperty().set(!newValue.isEmpty());
       } else {
-        isValid().set(false);
-        isFilledIn().set(false);
+//        ocValidProperty().set(false);
+        valid = false;
+//        ocFilledInProperty().set(false);
+        filledIn = false;
       }
 
-      if (!isValid().get()) {
+      if (!ocIsValid()) {
         getPathTextField().setStyle("-fx-text-inner-color: red;");
       } else {
         getPathTextField().setStyle("-fx-text-inner-color: black;");
       }
 
-      notifyListeners();
+      ociNotifyListeners();
     });
 
 

@@ -16,8 +16,8 @@ import goedegep.jfx.eobjecttable.EObjectTableColumnDescriptorBasic;
 import goedegep.jfx.eobjecttable.EObjectTableColumnDescriptorCheckBox;
 import goedegep.jfx.eobjecttable.EObjectTableControlPanel;
 import goedegep.jfx.eobjecttable.EObjectTableDescriptor;
-import goedegep.jfx.objectcontrols.ObjectControl;
 import goedegep.jfx.objectcontrols.ObjectControlBoolean;
+import goedegep.jfx.objectcontrols.ObjectControlGroup;
 import goedegep.jfx.objectcontrols.ObjectControlString;
 import goedegep.rolodex.app.logic.PhoneNumberListStringConverter;
 import goedegep.rolodex.model.Address;
@@ -157,6 +157,7 @@ class FamilyEditPanel {
   private ObjectControlBoolean moveToAddress;
   private PhoneNumberTextField phoneNumberTextFields[];
   private SimpleObjectProperty<Family> familyProperty = new SimpleObjectProperty<>();
+  private ObjectControlGroup objectControlGroup;
   
   /**
    * Constructor
@@ -178,6 +179,9 @@ class FamilyEditPanel {
     for (int i = 0; i < phoneNumberTextFields.length; i++) {
       phoneNumberTextFields[i] = new PhoneNumberTextField(customization, rolodex);
     }
+    objectControlGroup = new ObjectControlGroup();
+    objectControlGroup.addObjectControls(familyTitleTextField, familyNameTextField, addressTextField,
+        phoneNumberTextFields[0], phoneNumberTextFields[1], phoneNumberTextFields[2], phoneNumberTextFields[3]);
     
     createGUI();
   }
@@ -277,8 +281,7 @@ class FamilyEditPanel {
   private void updateFamilyIfControlsAreValid() {
     
     // Only update if all controls have valid values.
-    if (!ObjectControl.areControlsValid(familyTitleTextField, familyNameTextField, addressTextField,
-        phoneNumberTextFields[0], phoneNumberTextFields[1], phoneNumberTextFields[2], phoneNumberTextFields[3])) {
+    if (!objectControlGroup.getIsValid()) {
       return;
     }
         
@@ -337,8 +340,7 @@ class FamilyEditPanel {
   private Family createFamilyFromFields() {
     
     // Only create if all controls have valid values.
-    if (!ObjectControl.areControlsValid(familyTitleTextField, familyNameTextField, addressTextField,
-        phoneNumberTextFields[0], phoneNumberTextFields[1], phoneNumberTextFields[2], phoneNumberTextFields[3])) {
+    if (!objectControlGroup.getIsValid()) {
       return null;
     }
     
@@ -357,12 +359,12 @@ class FamilyEditPanel {
    * @param family The Family object to be updated.
    */
   public boolean updateFamilyFromFields(Family family) {
-      String familyTitle = familyTitleTextField.getObjectValue();
+      String familyTitle = familyTitleTextField.ocGetValue();
       if (!PgUtilities.equals(family.getFamilyTitle(), familyTitle)) {
         family.setFamilyTitle(familyTitle);
       }
       
-      String familyName = familyNameTextField.getObjectValue();
+      String familyName = familyNameTextField.ocGetValue();
       if (!PgUtilities.equals(family.getFamilyName(), familyName)) {
         family.setFamilyName(familyName);
       }

@@ -231,9 +231,9 @@ public class VideoDetailsEditor extends JfxStage {
       }
       
       if (video.isSetImage()) {
-        videoImageFileSelecter.setObjectValue(video.getImage());
+        videoImageFileSelecter.ocSetValue(video.getImage());
       } else {
-        videoImageFileSelecter.setObjectValue(null);
+        videoImageFileSelecter.ocSetValue(null);
       }
       
       videoImagePanel.getChildren().clear();
@@ -249,7 +249,7 @@ public class VideoDetailsEditor extends JfxStage {
     } else {
       videoTitleTextField.setText("");
       videoDateTextField.setText("");
-      videoImageFileSelecter.setObjectValue(null);
+      videoImageFileSelecter.ocSetValue(null);
     }
   }
   
@@ -360,7 +360,7 @@ public class VideoDetailsEditor extends JfxStage {
     }
     
     // Video image
-    String imageText = videoImageFileSelecter.getObjectValue().trim();
+    String imageText = videoImageFileSelecter.ocGetValue().trim();
     if (!imageText.isEmpty()) {
       video.setImage(imageText);
     }

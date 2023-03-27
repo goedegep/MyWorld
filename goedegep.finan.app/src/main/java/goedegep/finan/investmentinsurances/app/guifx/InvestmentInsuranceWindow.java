@@ -158,19 +158,19 @@ public class InvestmentInsuranceWindow extends JfxStage {
 
     // Starting date
     if (investmentInsurance.isSetStartingDate()) {
-      startingDateTextField.setObjectValue(investmentInsurance.getStartingDate());
+      startingDateTextField.ocSetValue(investmentInsurance.getStartingDate());
     }
 
     // Insured benefit on death
     if (investmentInsurance.isSetInsuredBenefitOnDeath()) {
-      insuredBenefitOnDeathTextField.setObjectValue(investmentInsurance.getInsuredBenefitOnDeath());
-      insuredBenefitOnDeathInEurosTextField.setObjectValue(investmentInsurance.getInsuredBenefitOnDeath().certifyCurrency(PgCurrency.EURO));
+      insuredBenefitOnDeathTextField.ocSetValue(investmentInsurance.getInsuredBenefitOnDeath());
+      insuredBenefitOnDeathInEurosTextField.ocSetValue(investmentInsurance.getInsuredBenefitOnDeath().certifyCurrency(PgCurrency.EURO));
     }
 
     // Premium
     if (investmentInsurance.isSetPremium()) {
-      premiumTextField.setObjectValue(investmentInsurance.getPremium());
-      premiumInEurosTextField.setObjectValue(investmentInsurance.getPremium().certifyCurrency(PgCurrency.EURO));
+      premiumTextField.ocSetValue(investmentInsurance.getPremium());
+      premiumInEurosTextField.ocSetValue(investmentInsurance.getPremium().certifyCurrency(PgCurrency.EURO));
     }
 
     // Policyholder

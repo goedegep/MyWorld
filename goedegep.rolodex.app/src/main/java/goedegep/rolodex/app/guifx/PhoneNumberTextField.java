@@ -26,15 +26,13 @@ public class PhoneNumberTextField extends ObjectControlAutoCompleteTextField<Str
     getEntries().addAll(phoneNumberToString(rolodex.getPhoneNumberList().getPhoneNumbers()));
   }
   
-  @Override
-  public boolean getIsValid(StringBuilder buf) {
-    
-    if (isOptional()  &&  !getIsFilledIn()) {
-      return true;
-    }
-        
-    return (getMatchingPhoneNumber() != null);
-  }
+//  /**
+//   * {@inheritDoc}
+//   */
+//  @Override
+//  public boolean isDataValid() {
+//    return (getMatchingPhoneNumber() != null);
+//  }
   
   public PhoneNumber getMatchingPhoneNumber() {
     String phoneNumberText = getText();

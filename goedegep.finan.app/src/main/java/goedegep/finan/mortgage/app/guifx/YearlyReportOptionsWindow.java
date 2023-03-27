@@ -28,7 +28,7 @@ public class YearlyReportOptionsWindow extends JfxStage {
   private CustomizationFx customization;
   private MortgageCalculator mortgageCalculator;
 
-  private BooleanProperty selectionValidProperty;
+//  private BooleanProperty selectionValidProperty;
   private ComboBox<Integer> yearComboBox;
   private ObjectControlFileSelecter fileSelecter;
   private Button okButton;
@@ -82,7 +82,7 @@ public class YearlyReportOptionsWindow extends JfxStage {
     fileSelecter.addFileType(".pdf", "Portable Data Format", true);
     fileSelecter.setOpenOrSaveDialog(true);
     Node fileNameTextField = fileSelecter.getPathTextField();
-    fileSelecter.objectValue().addListener((observable, oldValue, newValue) -> {
+    fileSelecter.addListener((observable) -> {
       LOGGER.severe("In textProperty Listener");
       checkOptions();      
     });
@@ -91,7 +91,7 @@ public class YearlyReportOptionsWindow extends JfxStage {
     Button button = fileSelecter.getFileChooserButton();
     optionsPane.add(button, 2, 1);
     
-    selectionValidProperty = fileSelecter.isValid();
+//    selectionValidProperty = fileSelecter.ocValidProperty();
 
     // Third row: OK and cancel buttons
     button = componentFactory.createButton("Cancel", "Exit window without generating report");
@@ -110,7 +110,7 @@ public class YearlyReportOptionsWindow extends JfxStage {
     boolean selectionIsValid = false;
     
     if ((yearComboBox.getValue() != null)  &&
-        selectionValidProperty.get()) {
+        fileSelecter.ocIsValid()) {
       selectionIsValid = true;
     }
     
@@ -118,9 +118,9 @@ public class YearlyReportOptionsWindow extends JfxStage {
   }
   
   private void generateYearlyReport() {
-    LOGGER.severe("=>" + fileSelecter.getObjectValue());
+    LOGGER.severe("=>" + fileSelecter.ocGetValue());
     int year = (int) yearComboBox.getValue();
-    File file = new File(fileSelecter.getObjectValue());
+    File file = new File(fileSelecter.ocGetValue());
     MortgageReportsGenerator.generateYearlyPdfReport(mortgageCalculator, year, file);
     LOGGER.severe("Yearly report for " + year + " generated to:  " + file.getAbsolutePath());    
   }

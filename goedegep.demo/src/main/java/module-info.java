@@ -1,5 +1,6 @@
 module goedegep.demo {
   exports goedegep.demo.guifx;
+  
   requires transitive goedegep.appgenfx;
   requires goedegep.resources;
   requires javafx.graphics;

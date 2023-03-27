@@ -28,44 +28,46 @@ public class ObjectControlCurrency extends ObjectControlTextField<PgCurrency> {
    */
   protected Integer maximumFactor = null;
   
+  /**
+   * Constructor
+   * 
+   * @param pgCurrency the initial value
+   * @param width width of the TextField
+   * @param isOptional indicates whether the value is optional or not
+   * @param toolTipText an optional tooltip text.
+   */
   public ObjectControlCurrency(PgCurrency pgCurrency, double width, boolean isOptional, String toolTipText) {
-    super(pgCurrency, width, isOptional, toolTipText, false);
+    super(pgCurrency, width, isOptional, toolTipText);
     
     setDefaultValidFactorRange();
   }
   
-  @Override
-  protected boolean isEnteredDataValid(StringBuilder errorMessageBuffer) {
-    if (getText() == null) {
-      return false;
-    }
-    
-    boolean valueIsValid = true;
-    
-    try {
-      PgCurrency currency = CF.parse(getText());
-      if ((minimumFactor != null)  &&
-          (currency.getFactor() < minimumFactor)) {
-        valueIsValid = false;
-        if (errorMessageBuffer != null) {
-          errorMessageBuffer.append("not enough digits after the comma");
-        }
-      } else if ((maximumFactor != null)  &&
-                 (currency.getFactor() > maximumFactor)) {
-        valueIsValid = false;
-        if (errorMessageBuffer != null) {
-          errorMessageBuffer.append("too much digits after the comma");
-        }
-      }
-    } catch (ParseException e) {
-      valueIsValid = false;
-      if (errorMessageBuffer != null) {
-        errorMessageBuffer.append(e.getMessage());
-      }
-    }
-
-    return valueIsValid;
-  }
+//  @Override
+//  public boolean determineEnteredDataValid() {
+//    if (getText() == null) {
+//      return false;
+//    }
+//    
+//    boolean valueIsValid = true;
+//    
+//    try {
+//      PgCurrency currency = CF.parse(getText());
+//      if ((minimumFactor != null)  &&
+//          (currency.getFactor() < minimumFactor)) {
+//        valueIsValid = false;
+//          errorText = "not enough digits after the comma";
+//      } else if ((maximumFactor != null)  &&
+//                 (currency.getFactor() > maximumFactor)) {
+//        valueIsValid = false;
+//        errorText = "too much digits after the comma";
+//      }
+//    } catch (ParseException e) {
+//      valueIsValid = false;
+//      errorText = e.getMessage();
+//    }
+//
+//    return valueIsValid;
+//  }
 
   /**
    * Set the valid factor range for fixed point values.

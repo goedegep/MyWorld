@@ -12,6 +12,7 @@ import javafx.beans.InvalidationListener;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.control.ComboBox;
@@ -49,12 +50,31 @@ public class ObjectControlEnumComboBox<T extends Enum<T>> extends ComboBox<T> im
    */
   private EnumTextConverter<T> enumTextConverter;
   
+  
   /**
-   * Indicates whether the control is optional (if true) or mandatory.
+   * Indication of whether the control is optional (if true) or mandatory.
    */
-  private BooleanProperty optionalProperty = new SimpleBooleanProperty(false);
-  private BooleanProperty isValidProperty = new SimpleBooleanProperty(true);
-  private BooleanProperty isFilledInProperty = new SimpleBooleanProperty(true);
+  private boolean optional;
+//  private BooleanProperty ocOptionalProperty = new SimpleBooleanProperty(false);
+//  
+//  /**
+//   * Indication of whether the control is filled-in or not.
+//   */
+//  private BooleanProperty ocFilledInProperty = new SimpleBooleanProperty(true);
+//  
+//  /**
+//   * Indication of whether the control has a valid value or not.
+//   */
+//  private BooleanProperty ocValidProperty = new SimpleBooleanProperty(true);
+//  
+//  /**
+//   * The current value.
+//   */
+//  private ObjectProperty<Boolean> ocValueProperty = new SimpleObjectProperty<>(false);
+  
+  
+
+  
   private List<InvalidationListener> invalidationListeners = new ArrayList<>();
   
   /**
@@ -126,18 +146,13 @@ public class ObjectControlEnumComboBox<T extends Enum<T>> extends ComboBox<T> im
     init(enumConstant, isOptional, toolTipText);
   }
 
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public BooleanProperty ocOptionalProperty() {
-    return optionalProperty;
-  }
-
-  @Override
-  public boolean isOptional() {
-    return optionalProperty.get();
-  }
+//  /**
+//   * {@inheritDoc}
+//   */
+//  @Override
+//  public BooleanProperty ocOptionalProperty() {
+//    return ocOptionalProperty;
+//  }
   
   /**
    * Handle initialization.
@@ -146,7 +161,8 @@ public class ObjectControlEnumComboBox<T extends Enum<T>> extends ComboBox<T> im
    * @param toolTipText an optional tooltip text
    */
   private void init(T enumConstant, boolean isOptional, String toolTipText) {
-    optionalProperty.set(isOptional);
+    optional = isOptional;
+//	  ocOptionalProperty.set(isOptional);
     
 //    getItems().addAll(enumTextConverter.getStringValues());
     for (T constant: enumConstant.getDeclaringClass().getEnumConstants()) {
@@ -159,7 +175,7 @@ public class ObjectControlEnumComboBox<T extends Enum<T>> extends ComboBox<T> im
       public void changed(ObservableValue<? extends T> observable, T oldValue, T newValue) {
        LOGGER.info(newValue != null ? newValue.toString() : "null");
         
-       notifyListeners();
+       ociNotifyListeners();
       }
       
     });
@@ -168,83 +184,137 @@ public class ObjectControlEnumComboBox<T extends Enum<T>> extends ComboBox<T> im
       setTooltip(new Tooltip(toolTipText));
     }
     
-    this.setOnAction(event -> checkOnValid());
+    this.setOnAction(event -> ociHandleNewUserInput());
     getSelectionModel().select(0);
   }
 
-  private void checkOnValid() {
-    boolean isValid;
-    
-    if (isOptional()  &&  !getIsFilledIn()) {
-      isValid = true;
-    } else {
-      isValid = getIsFilledIn();
-    }
-    
-    isValidProperty.set(isValid);
-    
-    isFilledInProperty.set(getIsFilledIn());
-  }
+//  private void checkOnValid() {
+//    boolean isValid;
+//    
+//    if (ocIsOptional()  &&  !ocIsFilledIn()) {
+//      isValid = true;
+//    } else {
+//      isValid = ocIsFilledIn();
+//    }
+//    
+//    ocValidProperty.set(isValid);
+//    
+//    ocFilledInProperty.set(isFilledIn());
+//  }
 
-  @Override
-  public boolean getIsFilledIn() {
+  private boolean isFilledIn() {
     return super.getValue() != null;
   }
 
-  @Override
-  public boolean getIsValid(StringBuilder buf) {
-    return isValidProperty.get();
-  }
-
-  @Override
-  public BooleanProperty isValid() {
-    return isValidProperty;
-  }
-
-  @Override
-  public BooleanProperty isFilledIn() {
-    return isFilledInProperty;
-  }
-
-  @Override
-  public T getObjectValue() {
-//    String stringValue = getValue();
-//    T enumValue = enumTextConverter.getEnumForString(stringValue);
-    return getValue();
-  }
+//  @Override
+//  public BooleanProperty ocValidProperty() {
+//    return ocValidProperty;
+//  }
+//
+//  @Override
+//  public BooleanProperty ocFilledInProperty() {
+//    return ocFilledInProperty;
+//  }
+//  
+//  @Override
+//  public void ocSetValue(T objectValue) {
+//    setValue(objectValue);
+//  }
+//  
+//  @Override
+//  public ObjectProperty<T> ocValueProperty() {
+////    return valueProperty();
+//    
+//    return null;
+//  }
   
+  /**
+   * {@inheritDoc}
+   */
   @Override
-  public void setObjectValue(T objectValue) {
-    setValue(objectValue);
+  public List<InvalidationListener> ociGetInvalidationListeners() {
+    return invalidationListeners;
   }
-  
-  @Override
-  public ObjectProperty<T> objectValue() {
-//    return valueProperty();
+
+  public void select(Enum<T> normal) {
+    // TODO Auto-generated method stub
     
+  }
+
+  @Override
+  public boolean ociDetermineFilledIn() {
+    // TODO Auto-generated method stub
+    return false;
+  }
+
+  @Override
+  public T ociDetermineValue() {
+    // TODO Auto-generated method stub
     return null;
   }
 
   @Override
-  public void addListener(InvalidationListener listener) {
-    invalidationListeners.add(listener);    
+  public void ociSetErrorFeedback(boolean valid) {
+    // TODO Auto-generated method stub
+    
   }
 
   @Override
-  public void removeListener(InvalidationListener listener) {
-    invalidationListeners.remove(listener);    
-  }
-  
-  /**
-   * Notify the <code>invalidationListeners</code> that something has changed.
-   */
-  private void notifyListeners() {
-    for (InvalidationListener invalidationListener: invalidationListeners) {
-      invalidationListener.invalidated(this);
-    }
+  public void ociRedrawValue() {
+    // TODO Auto-generated method stub
+    
   }
 
-  public void select(Enum<T> normal) {
+  @Override
+  public String ocGetObjectValueAsFormattedText() {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  @Override
+  public boolean ocIsOptional() {
+    // TODO Auto-generated method stub
+    return false;
+  }
+
+  @Override
+  public boolean ocIsFilledIn() {
+    // TODO Auto-generated method stub
+    return false;
+  }
+
+  @Override
+  public boolean ocIsValid() {
+    // TODO Auto-generated method stub
+    return false;
+  }
+
+  @Override
+  public T ocGetValue() {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  @Override
+  public void ocSetValue(T objectValue) {
+    // TODO Auto-generated method stub
+    
+  }
+
+  @Override
+  public void ociSetValue(T value) {
+    // TODO Auto-generated method stub
+    
+  }
+
+  @Override
+  public void ociSetValid(boolean valid) {
+    // TODO Auto-generated method stub
+    
+  }
+
+  @Override
+  public void ociSetFilledIn(boolean filledIn) {
     // TODO Auto-generated method stub
     
   }

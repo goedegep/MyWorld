@@ -53,24 +53,29 @@ public class ObjectControlFolderSelecter extends ObjectControlFileOrFolderSelect
       if (newValue != null) {
         File folder = new File(newValue);
         if (folder.exists()  &&  folder.isDirectory()) {
-          isValid().set(true);
+//        	ocValidProperty().set(true);
+        	valid = true;
         } else {
-          isValid().set(false);
+//        	ocValidProperty().set(false);
+        	valid = false;
         }
-        isFilledIn().set(!newValue.isEmpty());
+//        ocFilledInProperty().set(!newValue.isEmpty());
+        filledIn = !newValue.isEmpty();
       } else {
-        isValid().set(false);
-        isFilledIn().set(false);
+//    	  ocValidProperty().set(false);
+          valid = false;
+//        ocFilledInProperty().set(false);
+        filledIn = false;
       }
       
-      if (!isValid().get()) {
+      if (!ocIsValid()) {
         getPathTextField().setStyle("-fx-text-inner-color: red;");
       } else {
         
         getPathTextField().setStyle("-fx-text-inner-color: black;");
       }
       
-      notifyListeners();
+      ociNotifyListeners();
     });
     
     folderChooserButton = new Button(folderChooserButtonText);
@@ -84,7 +89,7 @@ public class ObjectControlFolderSelecter extends ObjectControlFileOrFolderSelect
       public void handle(ActionEvent event) {
         DirectoryChooser directoryChooser = new DirectoryChooser();
         directoryChooser.setTitle(directoryChooserTitle);
-        if (isValid().get()) {
+        if (ocIsValid()) {
           directoryChooser.setInitialDirectory(new File(getPathTextField().getText()));
         }
         File selectedFolder = directoryChooser.showDialog(null);
@@ -97,34 +102,9 @@ public class ObjectControlFolderSelecter extends ObjectControlFileOrFolderSelect
     
     // Do this at the end, so it automatically leads an update of the selectionValidProperty.
     if (initiallySelecterFolder != null) {
-      setObjectValue(initiallySelecterFolder);
+      ocSetValue(initiallySelecterFolder);
     }
   }
-
-//  /**
-//   * Get the TextField.
-//   * <p>
-//   * This TextField:
-//   * <ul>
-//   * <li>
-//   * Shows the current value.
-//   * </li>
-//   * <li>
-//   * Can be used to enter a value.
-//   * </li>
-//   * <li>
-//   * Indicates (to the user) whether the value is valid (red text indicates an invalid value).
-//   * </li>
-//   * <li>
-//   * Provides the current value, if the selectionValidProperty is <code>true</code>.
-//   * </li>
-//   * </ul>
-//   * 
-//   * @return the TextField
-//   */
-//  public TextField getFolderPathTextField() {
-//    return getPathTextField();
-//  }
 
   /**
    * Get the Button for calling up a FolderChooser.

@@ -142,7 +142,7 @@ public class DuneWindow extends JfxStage {
         "Choose folder", "Select  Dune music folder path via a file chooser", "Select the music folder on the Dune");
     Node duneFolderPathTextField = duneMusicFolderSelecter.getPathTextField();
     duneMusicFolderSelecter.addListener(e -> {
-      currentDuneMusicFolderPath = duneMusicFolderSelecter.getObjectValue();
+      currentDuneMusicFolderPath = duneMusicFolderSelecter.ocGetValue();
       handleChanges();
       });
     grid.add(duneFolderPathTextField, 2, 1);
@@ -162,7 +162,7 @@ public class DuneWindow extends JfxStage {
         "Choose folder", "Select Dune playlists folder path via a file chooser", "Select the playlists folder on the Dune");
     Node playListFolderPathTextField = playListFolderPathSelecter.getPathTextField();
     playListFolderPathSelecter.addListener(e -> {
-      currentDunePlaylistsFolderPath = playListFolderPathSelecter.getObjectValue();
+      currentDunePlaylistsFolderPath = playListFolderPathSelecter.ocGetValue();
       handleChanges();
       });
     grid.add(playListFolderPathTextField, 2, 2);
@@ -178,7 +178,7 @@ public class DuneWindow extends JfxStage {
 
       @Override
       public void handle(ActionEvent event) {
-        handleSynchronizationActions(musicFolderSelecter.getObjectValue(), currentDuneMusicFolderPath, currentDunePlaylistsFolderPath);
+        handleSynchronizationActions(musicFolderSelecter.ocGetValue(), currentDuneMusicFolderPath, currentDunePlaylistsFolderPath);
       }
       
     });
@@ -223,14 +223,14 @@ public class DuneWindow extends JfxStage {
     
     // To synchronize to the Dune, the Dune music folder shall be valid.
     if (synchronizeToDuneCheckBox.isSelected()) {
-      if (!duneMusicFolderSelecter.isValid().get()) {
+      if (!duneMusicFolderSelecter.ocIsValid()) {
         inputsValid = false;
       }
     }
     
     // To update playlists on the Dune, the Dune playlists folder shall be valid.
     if (updatePlayListsCheckBox.isSelected()) {
-      if (!playListFolderPathSelecter.isValid().get()) {
+      if (!playListFolderPathSelecter.ocIsValid()) {
         inputsValid = false;
       }
     }

@@ -13,7 +13,6 @@ import goedegep.rolodex.model.Rolodex;
  * This class is a TextField, with autocompletion, for an address
  */
 public class AddressTextField extends ObjectControlAutoCompleteTextField<String> {
-  @SuppressWarnings("unused")
   private static final Logger         LOGGER = Logger.getLogger(AddressTextField.class.getName());
   private Rolodex rolodex;
   
@@ -29,15 +28,13 @@ public class AddressTextField extends ObjectControlAutoCompleteTextField<String>
     getEntries().addAll(addressesToString(rolodex.getAddressList().getAddresses()));
    }
   
-  @Override
-  public boolean getIsValid(StringBuilder buf) {
-    
-    if (isOptional()  &&  !getIsFilledIn()) {
-      return true;
-    }
-        
-    return (getMatchingAddress() != null);
-  }
+//  /**
+//   * {@inheritDoc}
+//   */
+//  @Override
+//  public boolean isDataValid() {    
+//    return (getMatchingAddress() != null);
+//  }
   
   public Address getMatchingAddress() {
     String addressText = getText();

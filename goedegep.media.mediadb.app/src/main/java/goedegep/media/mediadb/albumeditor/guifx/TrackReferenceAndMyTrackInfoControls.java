@@ -297,7 +297,7 @@ class TrackReferenceAndMyTrackInfoControls {
     if (myTrackInfo != null) {
       collection = myTrackInfo.getCollection();
     }
-    collectionComboBox.setObjectValue(collection);
+    collectionComboBox.ocSetValue(collection);
     gridPane.add(collectionComboBox, column++, row);
     
     // MyTrackInfo:IWant
@@ -306,7 +306,7 @@ class TrackReferenceAndMyTrackInfoControls {
     if (myTrackInfo != null) {
       iWant = myTrackInfo.getIWant();
     }
-    iWantComboBox.setObjectValue(iWant);
+    iWantComboBox.ocSetValue(iWant);
     gridPane.add(iWantComboBox, column++, row);
     
     // IHaveOn
@@ -427,7 +427,7 @@ class TrackReferenceAndMyTrackInfoControls {
   }
   
   public String getBonusTrack() {
-    return bonusTrack.getObjectValue();
+    return bonusTrack.ocGetValue();
   }
   
   public Track getReference() {
@@ -439,7 +439,7 @@ class TrackReferenceAndMyTrackInfoControls {
    * @return
    */
   public goedegep.media.mediadb.model.Collection getCollection() {
-    goedegep.media.mediadb.model.Collection collection = collectionComboBox.getObjectValue();
+    goedegep.media.mediadb.model.Collection collection = collectionComboBox.ocGetValue();
     if (collection == null) {
       collection = goedegep.media.mediadb.model.Collection.NOT_SET;
     }
@@ -448,7 +448,7 @@ class TrackReferenceAndMyTrackInfoControls {
   }
   
   public IWant getIWant() {
-    IWant iWant = iWantComboBox.getObjectValue();
+    IWant iWant = iWantComboBox.ocGetValue();
     if (iWant == null) {
       iWant = IWant.NOT_SET;
     }

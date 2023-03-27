@@ -2,6 +2,7 @@ package goedegep.demo.guifx;
 
 import java.util.logging.Logger;
 
+import goedegep.demo.jfx.objectcontrols.guifx.ObjectControlsDemo;
 import goedegep.demo.resources.guifx.ImageResourceDemo;
 import goedegep.demo.xtree.guifx.XTreeDemo;
 import goedegep.jfx.ComponentFactoryFx;
@@ -81,6 +82,15 @@ public class DemoMenuWindow extends JfxStage {
     
     menuItem = componentFactory.createMenuItem("XTree");
     menuItem.setOnAction((e) -> new XTreeDemo(customization));
+    menu.getItems().add(menuItem);
+    
+    menuBar.getMenus().add(menu);
+    
+    // Jfx
+    menu = componentFactory.createMenu("Jfx");
+    
+    menuItem = componentFactory.createMenuItem("ObjectControls");
+    menuItem.setOnAction((e) -> new ObjectControlsDemo(customization));
     menu.getItems().add(menuItem);
     
     menuBar.getMenus().add(menu);

@@ -182,7 +182,7 @@ public class ObjectControlGroup implements Iterable<ObjectControl<? extends Obje
     boolean isValidValue = true;
     
     for (ObjectControl<?> objectInput: this) {
-      if (!objectInput.getIsValid(null)) {
+      if (!objectInput.ocIsValid()) {
         isValidValue = false;
         break;
       }
@@ -204,7 +204,7 @@ public class ObjectControlGroup implements Iterable<ObjectControl<? extends Obje
 
     for (ObjectControl<?> objectInput: this) {
       LOGGER.info("objectInput: " + objectInput.getId());
-      if (objectInput.getIsFilledIn()) {
+      if (objectInput.ocIsFilledIn()) {
         isFilledIn = true;
         LOGGER.info("Is filled");
         break;
@@ -234,7 +234,7 @@ public class ObjectControlGroup implements Iterable<ObjectControl<? extends Obje
     
     while (iterator.hasNext()) {
       ObjectControl<?> objectInput = iterator.next();
-      if (objectInput.getIsFilledIn()) {
+      if (objectInput.ocIsFilledIn()) {
         return true;
       }
     }

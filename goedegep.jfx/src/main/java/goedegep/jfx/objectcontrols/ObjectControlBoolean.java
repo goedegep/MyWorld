@@ -20,31 +20,41 @@ public class ObjectControlBoolean extends CheckBox implements ObjectControl<Bool
   private static final Logger         LOGGER = Logger.getLogger(ObjectControlBoolean.class.getName());
   
   /**
-   * Indicates whether the control is optional (if true) or mandatory.
+   * Indication of whether the control is optional (if true) or mandatory.
    */
-  private BooleanProperty optionalProperty = new SimpleBooleanProperty(false);
-  private BooleanProperty isValidProperty = new SimpleBooleanProperty(true);
-  private BooleanProperty isFilledInProperty = new SimpleBooleanProperty(true);
-  private ObjectProperty<Boolean> objectValueProperty = new SimpleObjectProperty<>(false);
+  private boolean optional;
+//  private BooleanProperty ocOptionalProperty = new SimpleBooleanProperty(false);
+//  
+//  /**
+//   * Indication of whether the control is filled-in or not.
+//   */
+//  private BooleanProperty ocFilledInProperty = new SimpleBooleanProperty(true);
+//  
+//  /**
+//   * Indication of whether the control has a valid value or not.
+//   */
+//  private BooleanProperty ocValidProperty = new SimpleBooleanProperty(true);
+//  
+//  /**
+//   * The current value.
+//   */
+//  private ObjectProperty<Boolean> ocValueProperty = new SimpleObjectProperty<>(false);
+  
+  /**
+   * The invalidation listeners
+   */
   private List<InvalidationListener> invalidationListeners = new ArrayList<>();
   
   public ObjectControlBoolean(String text, boolean selected, boolean isOptional, String toolTipText) {
     super(text);
     
     setSelected(selected);
-    objectValueProperty.set(selected);
+//    ocValueProperty.set(selected);
     
-    optionalProperty.set(isOptional);
+    optional = isOptional;
+//    ocOptionalProperty.set(isOptional);
     
-    selectedProperty().addListener(new ChangeListener<Boolean>() {
-      
-      @Override
-      public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
-        objectValueProperty.set(newValue);
-        notifyListeners();
-      }
-      
-    });
+    selectedProperty().addListener((o)-> ociHandleNewUserInput());
     
     if (toolTipText != null) {
       setTooltip(new Tooltip(toolTipText));
@@ -55,68 +65,127 @@ public class ObjectControlBoolean extends CheckBox implements ObjectControl<Bool
   /**
    * {@inheritDoc}
    */
+//  @Override
+//  public BooleanProperty ocOptionalProperty() {
+//    return ocOptionalProperty;
+//  }
+//
+//  @Override
+//  public void ocSetValue(Boolean objectValue) {
+//    setSelected(objectValue);    
+//  }
+//  
+//  @Override
+//  public ObjectProperty<Boolean> ocValueProperty() {
+//    return ocValueProperty;
+//  }
+//
+//  @Override
+//  public BooleanProperty ocValidProperty() {
+//    return ocValidProperty;
+//  }
+//
+//  @Override
+//  public BooleanProperty ocFilledInProperty() {
+//    return ocFilledInProperty;
+//  }
+  
+  /**
+   * {@inheritDoc}
+   */
   @Override
-  public BooleanProperty ocOptionalProperty() {
-    return optionalProperty;
+  public List<InvalidationListener> ociGetInvalidationListeners() {
+    return invalidationListeners;
   }
 
+  /**
+   * {@inheritDoc}
+   * A checkbox is always filled in.
+   */
   @Override
-  public boolean isOptional() {
-    return optionalProperty.get();
-  }
-
-  @Override
-  public boolean getIsFilledIn() {
+  public boolean ociDetermineFilledIn() {
     return true;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
-  public boolean getIsValid(StringBuilder buf) {
-    return isValidProperty.get();
-  }
-
-  @Override
-  public Boolean getObjectValue() {
+  public Boolean ociDetermineValue() {
     return isSelected();
   }
 
-  @Override
-  public void setObjectValue(Boolean objectValue) {
-    setSelected(objectValue);    
-  }
-  
-  @Override
-  public ObjectProperty<Boolean> objectValue() {
-    return objectValueProperty;
-  }
-
-  @Override
-  public BooleanProperty isValid() {
-    return isValidProperty;
-  }
-
-  @Override
-  public BooleanProperty isFilledIn() {
-    return isFilledInProperty;
-  }
-
-  @Override
-  public void addListener(InvalidationListener listener) {
-    invalidationListeners.add(listener);    
-  }
-
-  @Override
-  public void removeListener(InvalidationListener listener) {
-    invalidationListeners.remove(listener);    
-  }
-  
   /**
-   * Notify the <code>invalidationListeners</code> that something has changed.
+   * {@inheritDoc}
+   * No action, as there can't be an error.
    */
-  private void notifyListeners() {
-    for (InvalidationListener invalidationListener: invalidationListeners) {
-      invalidationListener.invalidated(this);
-    }
+  @Override
+  public void ociSetErrorFeedback(boolean valid) {
+  }
+
+  /**
+   * {@inheritDoc}
+   * No need to redraw, so no action.
+   */
+  @Override
+  public void ociRedrawValue() {
+  }
+
+  /**
+   * {@inheritDoc}
+   * Not very useful for a boolean, but we just return 'true' or 'false'.
+   */
+  @Override
+  public String ocGetObjectValueAsFormattedText() {
+    return isSelected() ? "true" : "false";
+  }
+
+  @Override
+  public boolean ocIsOptional() {
+    // TODO Auto-generated method stub
+    return false;
+  }
+
+  @Override
+  public boolean ocIsFilledIn() {
+    // TODO Auto-generated method stub
+    return false;
+  }
+
+  @Override
+  public boolean ocIsValid() {
+    // TODO Auto-generated method stub
+    return false;
+  }
+
+  @Override
+  public Boolean ocGetValue() {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  @Override
+  public void ocSetValue(Boolean objectValue) {
+    // TODO Auto-generated method stub
+    
+  }
+
+  @Override
+  public void ociSetValue(Boolean value) {
+    // TODO Auto-generated method stub
+    
+  }
+
+  @Override
+  public void ociSetValid(boolean valid) {
+    // TODO Auto-generated method stub
+    
+  }
+
+  @Override
+  public void ociSetFilledIn(boolean filledIn) {
+    // TODO Auto-generated method stub
+    
   }
 
 }

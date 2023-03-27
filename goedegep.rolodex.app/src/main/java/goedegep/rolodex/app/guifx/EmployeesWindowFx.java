@@ -17,6 +17,7 @@ import goedegep.jfx.eobjecttable.EObjectTableColumnDescriptorChoiceBox;
 import goedegep.jfx.eobjecttable.EObjectTableControlPanel;
 import goedegep.jfx.eobjecttable.EObjectTableDescriptor;
 import goedegep.jfx.objectcontrols.ObjectControl;
+import goedegep.jfx.objectcontrols.ObjectControlGroup;
 import goedegep.rolodex.app.logic.InstitutionStringConverter;
 import goedegep.rolodex.app.logic.PersonStringConverter;
 import goedegep.rolodex.app.logic.PhoneNumberListStringConverter;
@@ -148,6 +149,7 @@ class EmployeeEditPanel {
   private InstitutionTextField institutionTextField;
   private PhoneNumberTextField phoneNumberTextFields[];
   private SimpleObjectProperty<Employee> employeeProperty = new SimpleObjectProperty<>();
+  private ObjectControlGroup objectControlGroup;
   
   /**
    * Constructor
@@ -167,6 +169,9 @@ class EmployeeEditPanel {
     for (int i = 0; i < phoneNumberTextFields.length; i++) {
       phoneNumberTextFields[i] = new PhoneNumberTextField(customization, rolodex);
     }
+    objectControlGroup = new ObjectControlGroup();
+    objectControlGroup.addObjectControls(personTextField, institutionTextField,
+        phoneNumberTextFields[0], phoneNumberTextFields[1], phoneNumberTextFields[2], phoneNumberTextFields[3]);
     
     createGUI();
   }
@@ -259,8 +264,7 @@ class EmployeeEditPanel {
   private void updateEmployeeIfControlsAreValid() {
     
     // Only update if all controls have valid values.
-    if (!ObjectControl.areControlsValid(personTextField, institutionTextField,
-        phoneNumberTextFields[0], phoneNumberTextFields[1], phoneNumberTextFields[2], phoneNumberTextFields[3])) {
+    if (!objectControlGroup.getIsValid()) {
       return;
     }
         
@@ -311,8 +315,7 @@ class EmployeeEditPanel {
   private Employee createEmployeeFromFields() {
     
     // Only create if all controls have valid values.
-    if (!ObjectControl.areControlsValid(personTextField, institutionTextField,
-        phoneNumberTextFields[0], phoneNumberTextFields[1], phoneNumberTextFields[2], phoneNumberTextFields[3])) {
+    if (!objectControlGroup.getIsValid()) {
       return null;
     }
     

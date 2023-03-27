@@ -143,7 +143,7 @@ public class MusicFolderWindow extends JfxStage {
 
       @Override
       public void handle(ActionEvent event) {
-        handleMusicFoldersAction(musicFolderSelecter.getObjectValue());
+        handleMusicFoldersAction(musicFolderSelecter.ocGetValue());
       }
       
     });

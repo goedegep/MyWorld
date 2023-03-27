@@ -17,7 +17,7 @@ import goedegep.jfx.eobjecttable.EObjectTableColumnDescriptorChoiceBox;
 import goedegep.jfx.eobjecttable.EObjectTableColumnDescriptorCustom;
 import goedegep.jfx.eobjecttable.EObjectTableControlPanel;
 import goedegep.jfx.eobjecttable.EObjectTableDescriptor;
-import goedegep.jfx.objectcontrols.ObjectControl;
+import goedegep.jfx.objectcontrols.ObjectControlGroup;
 import goedegep.jfx.objectcontrols.ObjectControlInteger;
 import goedegep.jfx.objectcontrols.ObjectControlString;
 import goedegep.rolodex.app.logic.AddressesComparator;
@@ -154,6 +154,7 @@ class AddressEditPanel {
   private int cityTextFieldRow;
   private int countryTextFieldRow;
   private SimpleObjectProperty<Address> addressProperty = new SimpleObjectProperty<>();
+  private ObjectControlGroup objectControlGroup;
   
   /**
    * Constructor
@@ -175,6 +176,9 @@ class AddressEditPanel {
     postalCodeTextField = componentFactory.createObjectControlString(null, 300, true, "Enter the postal code");
     cityTextField = new CityTextField(customization, rolodex);
     countryTextField = new CountryTextField(customization, rolodex);
+    objectControlGroup = new ObjectControlGroup();
+    objectControlGroup.addObjectControls(streetTextField, houseNumberTextField, houseNumberExtensionTextField, poBoxTextField, postalCodeTextField, cityTextField, countryTextField);
+    
     cityTextField.textProperty().addListener(new ChangeListener<String>() {
 
       @Override
@@ -304,7 +308,7 @@ class AddressEditPanel {
     }
     
     // Only update if all controls have valid values.
-    if (!ObjectControl.areControlsValid(streetTextField, houseNumberTextField, houseNumberExtensionTextField, poBoxTextField, postalCodeTextField, cityTextField, countryTextField)) {
+    if (!objectControlGroup.getIsValid()) {
       return;
     }
     
@@ -327,7 +331,7 @@ class AddressEditPanel {
    */
   private void fillFieldsFromAddress(Address address) {
     streetTextField.setText(address.getStreetName());
-    houseNumberTextField.setObjectValue(address.getHouseNumber());
+    houseNumberTextField.ocSetValue(address.getHouseNumber());
     houseNumberExtensionTextField.setText(address.getHouseNumberExtension());
     poBoxTextField.setText(address.getPOBox());
     postalCodeTextField.setText(address.getPostalCode());
@@ -356,7 +360,7 @@ class AddressEditPanel {
     }
     
     // Only update if all controls have valid values.
-    if (!ObjectControl.areControlsValid(streetTextField, houseNumberTextField, houseNumberExtensionTextField, poBoxTextField, postalCodeTextField, cityTextField, countryTextField)) {
+    if (!objectControlGroup.getIsValid()) {
       return null;
     }
     
@@ -384,27 +388,27 @@ class AddressEditPanel {
    * @param address The Address object to be updated.
    */
   public boolean updateAddressFromFields(Address address) {
-      String streetName = streetTextField.getObjectValue();
+      String streetName = streetTextField.ocGetValue();
       if (!PgUtilities.equals(address.getStreetName(), streetName)) {
         address.setStreetName(streetName);
       }
       
-      Integer houseNumber = houseNumberTextField.getObjectValue();
+      Integer houseNumber = houseNumberTextField.ocGetValue();
       if (!PgUtilities.equals(address.getHouseNumber(), houseNumber)) {
         address.setHouseNumber(houseNumber);
       }
       
-      String houseNumberExtension = houseNumberExtensionTextField.getObjectValue();
+      String houseNumberExtension = houseNumberExtensionTextField.ocGetValue();
       if (!PgUtilities.equals(address.getHouseNumberExtension(), houseNumberExtension)) {
         address.setHouseNumberExtension(houseNumberExtension);
       }
       
-      String poBox = poBoxTextField.getObjectValue();
+      String poBox = poBoxTextField.ocGetValue();
       if (!PgUtilities.equals(address.getPOBox(), poBox)) {
         address.setPOBox(poBox);
       }
       
-      String postalCode = postalCodeTextField.getObjectValue();
+      String postalCode = postalCodeTextField.ocGetValue();
       if (!PgUtilities.equals(address.getPostalCode(), postalCode)) {
         address.setPostalCode(postalCode);
       }

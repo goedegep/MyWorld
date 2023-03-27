@@ -15,7 +15,6 @@ import goedegep.jfx.eobjecttable.EObjectTableColumnDescriptorAbstract;
 import goedegep.jfx.eobjecttable.EObjectTableColumnDescriptorBasic;
 import goedegep.jfx.eobjecttable.EObjectTableControlPanel;
 import goedegep.jfx.eobjecttable.EObjectTableDescriptor;
-import goedegep.jfx.objectcontrols.ObjectControl;
 import goedegep.jfx.objectcontrols.ObjectControlString;
 import goedegep.rolodex.app.logic.CountriesComparator;
 import goedegep.rolodex.model.Country;
@@ -223,7 +222,7 @@ class CountryEditPanel {
    */
   private void updateCountryIfControlsAreValid() {
     // Only update if all controls have valid values.
-    if (!ObjectControl.areControlsValid(countryTextField)) {
+    if (!countryTextField.ocIsValid()) {
       return;
     }
     
@@ -248,7 +247,7 @@ class CountryEditPanel {
    */
   private Country createCountryFromFields() {
     // Only update if all controls have valid values.
-    if (!ObjectControl.areControlsValid(countryTextField)) {
+    if (!countryTextField.ocIsValid()) {
       return null;
     }
     
@@ -267,7 +266,7 @@ class CountryEditPanel {
    * @param country The Country object to be updated.
    */
   public boolean updateCountryFromFields(Country country) {
-    String countryName = countryTextField.getObjectValue();
+    String countryName = countryTextField.ocGetValue();
     if (!PgUtilities.equals(country.getCountryName(), countryName)) {
       country.setCountryName(countryName);
     }
