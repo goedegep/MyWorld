@@ -25,13 +25,13 @@ class MediumInfoControls {
     // Medium type
     mediumTypeComboBox = componentFactory.createObjectControlEnumComboBox(MediumType.NOT_SET, MediumType.NOT_SET, MediadbPackage.eINSTANCE.getMediumType(), true, "Select the medium type");
     MediumType mediumType = mediumInfo.getMediumType();
-    mediumTypeComboBox.setObjectValue(mediumType);
+    mediumTypeComboBox.ocSetValue(mediumType);
     gridPane.add(mediumTypeComboBox, column++, row);
     
     // Information type
     informationTypeComboBox = componentFactory.createObjectControlEnumComboBox(InformationType.NOT_SET, InformationType.NOT_SET, MediadbPackage.eINSTANCE.getInformationType(), true, "Select the information type");
     InformationType informationType = mediumInfo.getInformationType();
-    informationTypeComboBox.setObjectValue(informationType);
+    informationTypeComboBox.ocSetValue(informationType);
     gridPane.add(informationTypeComboBox, column++, row);
 
     // Source type
@@ -40,7 +40,7 @@ class MediumInfoControls {
     if (!mediumInfo.getSourceTypes().isEmpty()) {
       sourceType = mediumInfo.getSourceTypes().get(0);
     }
-    sourceTypeComboBox.setObjectValue(sourceType);
+    sourceTypeComboBox.ocSetValue(sourceType);
     gridPane.add(sourceTypeComboBox, column++, row);
 
     // Source bit rate

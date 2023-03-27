@@ -26,18 +26,16 @@ public class CountryTextField extends ObjectControlAutoCompleteTextField<String>
     getEntries().addAll(countriesToString(rolodex.getCountryList().getCountries()));
   }
   
-  @Override
-  public boolean getIsValid(StringBuilder buf) {
-    
-    if (isOptional()  &&  !getIsFilledIn()) {
-      return true;
-    }
-        
-    return (getCountry() != null);
-  }
+//  /**
+//   * {@inheritDoc}
+//   */
+//  @Override
+//  public boolean isDataValid() {
+//    return (getCountry() != null);
+//  }
   
   public boolean isNonExistingCountyName() {
-    if (getIsFilledIn() && (getCountry() == null)) {
+    if (ocIsFilledIn() && (getCountry() == null)) {
       return true;
     } else {
       return false;

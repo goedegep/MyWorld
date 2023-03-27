@@ -28,18 +28,16 @@ public class PersonTextField extends ObjectControlAutoCompleteTextField<String> 
     getEntries().addAll(personsToString(rolodex.getPersonList().getPersons()));
   }
   
-  @Override
-  public boolean getIsValid(StringBuilder buf) {
-    
-    if (isOptional()  &&  !getIsFilledIn()) {
-      return true;
-    }
-        
-    return (!getMatchingPersons().isEmpty());
-  }
+//  /**
+//   * {@inheritDoc}
+//   */
+//  @Override
+//  public boolean isDataValid() {
+//    return (!getMatchingPersons().isEmpty());
+//  }
   
   public boolean isNonExistingPersonName() {
-    if (getIsFilledIn() && (getMatchingPersons().isEmpty())) {
+    if (ocIsFilledIn() && (getMatchingPersons().isEmpty())) {
       return true;
     } else {
       return false;

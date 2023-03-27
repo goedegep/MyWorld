@@ -5,16 +5,10 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import goedegep.jfx.stringconverters.AnyTypeStringConverter;
-import goedegep.jfx.stringconverters.StringConverterAndChecker;
 import javafx.beans.InvalidationListener;
-import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.property.SimpleObjectProperty;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
+import javafx.util.StringConverter;
 
 /**
  * This class forms the basis for classes implementing the {@link ObjectControl} interface, using a TextField control.
@@ -23,7 +17,16 @@ import javafx.scene.control.Tooltip;
  * <ul>
  * <li>
  * <b>Object to String conversion</b><br/>
- * To convert an object to String and vice versa the methods {@link #objectToString} and {@link #stringToObject} have to be overwritten (this is mandatory).
+ * To convert an object to String and vice versa there are the following options:
+ * <ul>
+ * <li>
+ * Provide a StringConverter via the constructor.
+ * </li>
+ * <li>
+ * Overwrite the methods {@link #objectToString} and {@link #stringToObject}.</br>
+ * In this case any StringConverter is ignored.
+ * </li>
+ * </ul>
  * </li>
  * </ul>
  *
@@ -33,17 +36,36 @@ public class ObjectControlTextField<T> extends TextField implements ObjectContro
   @SuppressWarnings("unused")
   private static final Logger         LOGGER = Logger.getLogger(ObjectControlTextField.class.getName());
   
-  private StringConverterAndChecker<T> stringConverterAndChecker = null;
   
   /**
-   * Indicates whether the control is optional (if true) or mandatory.
+   * Indication of whether the control is optional (if true) or mandatory.
    */
-  private BooleanProperty optionalProperty = new SimpleBooleanProperty(false);
-  private BooleanProperty isValidProperty = new SimpleBooleanProperty(true);
-  private BooleanProperty isFilledInProperty = new SimpleBooleanProperty(true);
-  private ObjectProperty<T> objectValueProperty = new SimpleObjectProperty<>();
+  private boolean optional;
+  
+  /**
+   * Indication of whether the control is filled-in or not.
+   */
+  private boolean filledIn;
+  
+  /**
+   * Indication of whether the control has a valid value or not.
+   */
+  private boolean valid = true;
+  
+  /**
+   * The current value.
+   */
+  private T value;
+  
+  private StringConverter<T> stringConverter = null;
+  
   private List<InvalidationListener> invalidationListeners = new ArrayList<>();
   
+  /**
+   * Error information text
+   */
+  protected String errorText = null;
+  
     
   /**
    * Constructor for using an object as initial value.
@@ -52,189 +74,142 @@ public class ObjectControlTextField<T> extends TextField implements ObjectContro
    * @param width The width of the TextField
    * @param isOptional Indicates whether the control is optional (if true) or mandatory.
    * @param toolTipText An optional ToolTip text.
-   * @param dummy a dummy parameter, to have a different signature than TextFieldObjectInput(String text, double width, boolean isOptional, String toolTipText). (I know it's bad)
    */
-  public ObjectControlTextField(T initialValue, double width, boolean isOptional, String toolTipText, boolean dummy) {
-    this((StringConverterAndChecker<T>) null, (String) null, width, isOptional, toolTipText);
-    
-    setText(objectToString(initialValue));
+  public ObjectControlTextField(T initialValue, double width, boolean isOptional, String toolTipText) {
+    this(null, initialValue, width, isOptional, toolTipText);
   }
   
   /**
    * Constructor for using an object as initial value.
    * 
+   * @param stringConverter a StringConverterAndChecker for conversion between object of type T and String.
    * @param initialValue Initial value to set the text to (may be null).
    * @param width The width of the TextField
    * @param isOptional Indicates whether the control is optional (if true) or mandatory.
    * @param toolTipText An optional ToolTip text.
    */
-  public ObjectControlTextField(StringConverterAndChecker<T> stringConverter, T initialValue, double width, boolean isOptional, String toolTipText) {
-    this(stringConverter, (String) null, width, isOptional, toolTipText);
-
-    setText(objectToString(initialValue));
-  }
-
-  
-  /**
-   * Constructor for using a text (representing an object value) as initial value.
-   * 
-   * @param initialValue Initial value to set the text to (may be null).
-   * @param width The width of the TextField
-   * @param isOptional Indicates whether the control is optional (if true) or mandatory.
-   * @param toolTipText An optional ToolTip text.
-   */
-  public ObjectControlTextField(String text, double width, boolean isOptional, String toolTipText) {
-    this(null, text, width, isOptional, toolTipText);
-  }
-  
-  /**
-   * Constructor for using a text (representing an object value) as initial value.
-   * 
-   * @param initialValue Initial value to set the text to (may be null).
-   * @param width The width of the TextField
-   * @param isOptional Indicates whether the control is optional (if true) or mandatory.
-   * @param toolTipText An optional ToolTip text.
-   */
-  public ObjectControlTextField(StringConverterAndChecker<T> stringConverter, String text, double width, boolean isOptional, String toolTipText) {
-    super(text);
-    
+  public ObjectControlTextField(StringConverter<T> stringConverter, T initialValue, double width, boolean isOptional, String toolTipText) {
     if (stringConverter != null) {
-      this.stringConverterAndChecker = stringConverter;
+      this.stringConverter = stringConverter;
     } else {
-      this.stringConverterAndChecker = new AnyTypeStringConverter<T>();
+      this.stringConverter = new AnyTypeStringConverter<T>();
     }
     
     setMinWidth(width);
     
-    optionalProperty.set(isOptional);
+    optional = isOptional;
     
     if (toolTipText != null) {
       setTooltip(new Tooltip(toolTipText));
     }
     
-    textProperty().addListener(new ChangeListener<String>() {
-      public void changed(final ObservableValue<? extends String> observableValue, final String oldValue, final String newValue) {
-        updateForNewText();
-        
-        notifyListeners();
-      }
-    });
+    textProperty().addListener((observableValue, oldValue, newValue) -> ociHandleNewUserInput());
     
-    focusedProperty().addListener(this::handleFocusChanged);
+    focusedProperty().addListener((observableValue, oldValue, newValue) -> {
+      if (newValue)
+        ociRedrawValue();
+    });
 
-    updateForNewText();
+    setText(objectToString(initialValue));
   }
 
   /**
    * {@inheritDoc}
    */
   @Override
-  public BooleanProperty ocOptionalProperty() {
-    return optionalProperty;
-  }
-
-  @Override
-  public boolean isOptional() {
-    return optionalProperty.get();
+  public void ocSetValue(T objectValue) {
+    String text = objectToString(objectValue);
+    setText(text);
   }
   
   /**
-   * Handle a new text value.
+   * {@inheritDoc}
    */
-  private void updateForNewText() {
-    if (isEnteredDataValid(null)) {
-      if (getIsFilledIn()  ||  isOptional()) {
-        isValidProperty.set(true);
-      } else {
-        isValidProperty.set(false);
-      }
+  @Override
+  public boolean ociDetermineFilledIn() {
+    return getText() != null  &&  !getText().isEmpty();
+  }
+  
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public T ociDetermineValue() {
+    T value = stringToObject(getText().trim());
+    
+    return value;
+  }
+  
+  /**
+   * {@inheritDoc}
+   * If a non valid value is entered, set the text to red, else black.
+   */
+  @Override
+  public void ociSetErrorFeedback(boolean valid) {
+    if (valid) {
       setStyle("-fx-text-fill: black;");
     } else {
-      if (isOptional()  &&  !getIsFilledIn()) {
-        isValidProperty.set(true);
-      } else {
-        isValidProperty.set(false);
-        setStyle("-fx-text-fill: red;");
-      }
+      setStyle("-fx-text-fill: red;");
     }
-    
-    objectValueProperty.setValue(getObjectValue());
-    isFilledInProperty.setValue(getIsFilledIn());
-  }
-  
-  private void handleFocusChanged(ObservableValue<? extends Boolean> observableValue, Boolean oldValue, Boolean newValue) {
-    LOGGER.info("=> newValue=" + newValue);
-    if (!newValue) {
-      T objectValue = stringToObject(getText());
-      if (objectValue != null) {
-        setText(objectToString(objectValue));
-      }
-    }
-  }
-
-  @Override
-  public boolean getIsFilledIn() {
-    if (getText() == null  ||  getText().isEmpty()) {
-      return false;
-    } else {
-      return (getText().length() != 0);
-    }
-  }
-
-  @Override
-  public boolean getIsValid(StringBuilder buf) {
-    return isValidProperty.get();
-    
-//    if (isOptional()  &&  !isFilledIn()) {
-//      return true;
-//    }
-//        
-//    return isEnteredDataValid(buf);
   }
   
   /**
-   * Check that entered data is valid.
-   * <p>
-   * This method shall return true if the entered text represents a valid object, false otherwise.
-   * This implementation always returns true. So this method has to be overwritten if this is not always the case.
-   * 
-   * @param buf A StringBuilder to append error message to.
-   * @return true if the entered data is valid, false otherwise.
+   * {@inheritDoc}
    */
-  protected boolean isEnteredDataValid(StringBuilder buf) {
-    boolean valid = false;
-    
-    try {
-      stringConverterAndChecker.fromString(getText());
-      valid = true;
-    } catch (Exception e) {
-      // Seems text is not valid
-    }
-    
-    return valid;
-  }
-
   @Override
-  public T getObjectValue() {
-    if (getText() == null  ||  getText().isEmpty()) {
-      return null;
+  public void ociRedrawValue() {
+//    T value = ocValueProperty.get();
+    if (value != null) {
+      setText(objectToString(value));
+    } else {
+      setText(null);
     }
-    
-    return (T) stringToObject(getText().trim());
   }
   
-  public String getObjectValueAsFormattedText()  {
-    return objectToString(getObjectValue());
-  }
-
+//  /**
+//   * Check that entered data is valid.
+//   * <p>
+//   * This method shall return true if the entered text represents a valid object, false otherwise.
+//   * This implementation always returns true. So this method has to be overwritten if this is not always the case.
+//   * 
+//   * @return true if the entered data is valid, false otherwise.
+//   */
+//  protected boolean isEnteredDataValid() {
+//    boolean valid = false;
+//    
+//    try {
+//      stringConverterAndChecker.fromString(getText());
+//      valid = true;
+//    } catch (Exception e) {
+//      // Seems text is not valid
+//    }
+//    
+//    return valid;
+//  }
+  
+  /**
+   * {@inheritDoc}
+   */
   @Override
-  public void setObjectValue(T objectValue) {
-    setText(objectToString(objectValue));
+  public String ocGetObjectValueAsFormattedText()  {
+    String text = objectToString(ocGetValue());
+    return text;
   }
-
+  
+  /**
+   * {@inheritDoc}
+   */
   @Override
-  public ObjectProperty<T> objectValue() {
-    return objectValueProperty;
+  public List<InvalidationListener> ociGetInvalidationListeners() {
+    return invalidationListeners;
+  }
+  
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public String ocGetErrorText() {
+      return errorText;
   }
   
   /**
@@ -245,11 +220,11 @@ public class ObjectControlTextField<T> extends TextField implements ObjectContro
    * @param valueAsString The String representation of an object.
    */
   protected T stringToObject(String valueAsString) {
-    if (stringConverterAndChecker.isValid(valueAsString)) {
-      return (T) stringConverterAndChecker.fromString(valueAsString);
-    } else {
-      return null;
-    }
+//    if (stringConverterAndChecker.isValid(valueAsString)) {
+      return (T) stringConverter.fromString(valueAsString);
+//    } else {
+//      return null;
+//    }
   }
   
   /**
@@ -260,53 +235,60 @@ public class ObjectControlTextField<T> extends TextField implements ObjectContro
    * @param value The object to be converted to its String representation.
    */
   protected String objectToString(T value) {
-    return stringConverterAndChecker.toString(value);
-  }
-  
-  @Override
-  public BooleanProperty isValid() {
-    return isValidProperty;
-  }
-  
-  @Override
-  public BooleanProperty isFilledIn() {
-    return isFilledInProperty;
+    return stringConverter.toString(value);
   }
 
   @Override
-  public void addListener(InvalidationListener listener) {
-    invalidationListeners.add(listener);    
+  public boolean ocIsOptional() {
+    return optional;
   }
 
-  @Override
-  public void removeListener(InvalidationListener listener) {
-    invalidationListeners.remove(listener);    
-  }
-  
   /**
-   * Notify the <code>invalidationListeners</code> that something has changed.
+   * {@inheritDoc}
    */
-  private void notifyListeners() {
-    for (InvalidationListener invalidationListener: invalidationListeners) {
-      invalidationListener.invalidated(this);
-    }
+  @Override
+  public boolean ocIsFilledIn() {
+    return filledIn;
   }
 
-//  @Override
-//  public void addListener(ChangeListener<? super T> listener) {
-//    // TODO Auto-generated method stub
-//    
-//  }
-//
-//  @Override
-//  public void removeListener(ChangeListener<? super T> listener) {
-//    // TODO Auto-generated method stub
-//    
-//  }
-//
-//  @Override
-//  public T getValue() {
-//    // TODO Auto-generated method stub
-//    return null;
-//  }
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public boolean ocIsValid() {
+    return valid;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public T ocGetValue() {
+    return value;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public void ociSetValue(T value) {
+    setText(objectToString(value));
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public void ociSetValid(boolean valid) {
+    this.valid = valid;    
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public void ociSetFilledIn(boolean filledIn) {
+    this.filledIn = filledIn;
+    
+  }
 }

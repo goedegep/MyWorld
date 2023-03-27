@@ -27,37 +27,58 @@ public class ObjectControlInteger extends ObjectControlTextField<Integer> {
    */
   protected Integer maximumValue = null;
   
+  /**
+   * Constructor.
+   * 
+   * @param integer initial value.
+   * @param width The width of the TextField
+   * @param isOptional Indicates whether the control is optional (if true) or mandatory.
+   * @param toolTipText An optional ToolTip text.
+   */
   public ObjectControlInteger(Integer integer, double width, boolean isOptional, String toolTipText) {
     super(new IntegerObjectStringConverter(), integer, width, isOptional, toolTipText);
     
     setDefaultValidValueRange();
   }
   
+  /**
+   * {@inheritDoc}
+   */
   @Override
-  protected boolean isEnteredDataValid(StringBuilder errorMessageBuffer) {
-    if (getText() == null) {
-      return false;
+  public Integer ociDetermineValue() {
+//    if (getText() == null  ||  getText().isEmpty()) {
+//      return null;
+//    }
+    Integer value = stringToObject(getText().trim());
+    
+    if (value == null) {
+      return null;
     }
     
+    if (isDataValid(value)) {
+      return value;
+    } else {
+      return null;
+    }
+  }
+  
+  /**
+   * Check whether value is within range (if set).
+   * 
+   * @param value the value to check.
+   * @return true if the value is valid.
+   */
+  public boolean isDataValid(Integer value) {
     boolean valueIsValid = true;
 
-    try {
-    Integer value = getObjectValue();
     if ((minimumValue != null)  &&
         (value < minimumValue)) {
       valueIsValid = false;
-      if (errorMessageBuffer != null) {
-        errorMessageBuffer.append("value too low");
-      }
+      errorText = "value too low";
     } else if ((maximumValue != null)  &&
         (value > maximumValue)) {
       valueIsValid = false;
-      if (errorMessageBuffer != null) {
-        errorMessageBuffer.append("value too high");
-      }
-    }
-    } catch (NumberFormatException e) {
-      valueIsValid = false;
+      errorText = "value too high";
     }
 
     return valueIsValid;

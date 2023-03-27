@@ -1,5 +1,7 @@
 package goedegep.jfx.stringconverters;
 
+import java.util.logging.Logger;
+
 import javafx.util.StringConverter;
 
 /**
@@ -9,16 +11,22 @@ import javafx.util.StringConverter;
  * The fromString method just return null. So actually it is only half a StringConverter.
  */
 public class AnyTypeStringConverter<T extends Object> extends StringConverterAndChecker<T> {
+  private static final Logger         LOGGER = Logger.getLogger(AnyTypeStringConverter.class.getName());
 
   @Override
   public String toString(T object) {
     if (object != null) {
-      return object.toString();
+      String result = object.toString();
+      LOGGER.severe("<= " + result);
+      return result;
     } else {
       return null;
     }
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @SuppressWarnings("unchecked")
   @Override
   public T fromString(String string) {
@@ -29,6 +37,9 @@ public class AnyTypeStringConverter<T extends Object> extends StringConverterAnd
     }
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public boolean isValid(String string) {
     return true;

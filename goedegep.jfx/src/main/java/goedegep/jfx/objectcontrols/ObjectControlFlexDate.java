@@ -22,31 +22,29 @@ public class ObjectControlFlexDate extends ObjectControlTextField<FlexDate> {
    * @param toolTipText An optional Tooltip text.
    */
   public ObjectControlFlexDate(FlexDate flexDate, double width, boolean isOptional, String toolTipText) {
-    super(flexDate, width, isOptional, toolTipText, false);
+    super(flexDate, width, isOptional, toolTipText);
   }
     
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  protected boolean isEnteredDataValid(StringBuilder buf) {
-    if (getText() == null) {
-      return false;
-    }
-    
-    boolean valueIsValid = true;
-    
-    try {
-      FDF.parse(getText());
-    } catch (ParseException e) {
-      valueIsValid = false;
-      if (buf != null) {
-        buf.append(e.getMessage());
-      }
-    }
-
-    return valueIsValid;
-  }
+//  /**
+//   * {@inheritDoc}
+//   */
+//  @Override
+//  public boolean isDataValid() {
+//    if (getText() == null) {
+//      return false;
+//    }
+//    
+//    boolean valueIsValid = true;
+//    
+//    try {
+//      FDF.parse(getText());
+//    } catch (ParseException e) {
+//      valueIsValid = false;
+//      errorText = e.getMessage();
+//    }
+//
+//    return valueIsValid;
+//  }
 
   /**
    * {@inheritDoc}
@@ -55,13 +53,13 @@ public class ObjectControlFlexDate extends ObjectControlTextField<FlexDate> {
   protected FlexDate stringToObject(String valueAsString) {
     FlexDate flexDate = null;
     
-    if (valueAsString != null) {
+//    if (valueAsString != null) {
       try {
         flexDate = FDF.parse(valueAsString);
       } catch (ParseException e) {
         LOGGER.info("ParseException on value: " + valueAsString);
       }
-    }
+//    }
     
     return flexDate;
   }

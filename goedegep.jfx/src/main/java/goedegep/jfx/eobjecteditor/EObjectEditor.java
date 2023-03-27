@@ -154,7 +154,7 @@ public class EObjectEditor<E extends EObject> extends JfxStage {
     // Label
     StringBuilder buf = new StringBuilder();
     buf.append(eObjectAttributeEditDescriptor.getLabelText());
-    if (!((ObjectControl<?>) eObjectAttributeEditDescriptor.getNode()).isOptional()) {
+    if (!((ObjectControl<?>) eObjectAttributeEditDescriptor.getNode()).ocIsOptional()) {
       buf.append(" *");
     }
     buf.append(":");
@@ -168,16 +168,8 @@ public class EObjectEditor<E extends EObject> extends JfxStage {
     // Ok/Not OK label
     Label statusLabel = componentFactory.createLabel(null);
     ObjectControl<?> objectInput = (ObjectControl<?>) node;
-    objectInput.isValid().addListener(new ChangeListener<>() {
-
-      @Override
-      public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
-        updateStatusLabel(statusLabel, newValue);   
-      }
-
-        
-    });
-    updateStatusLabel(statusLabel, objectInput.getIsValid(null));
+    objectInput.addListener((o) -> updateStatusLabel(statusLabel, objectInput.ocIsValid()));   
+    updateStatusLabel(statusLabel, objectInput.ocIsValid());
     gridPane.add(statusLabel, 2, rowIndex);
   }
   
@@ -200,15 +192,10 @@ public class EObjectEditor<E extends EObject> extends JfxStage {
     
     for (EObjectAttributeEditDescriptor eObjectAttributeEditDescriptor: eObjectEditorDescriptor.getEObjectAttributeEditDescriptors()) {
       ObjectControl<?> objectInput = (ObjectControl<?>) eObjectAttributeEditDescriptor.getNode();
-      if (objectInput.getIsFilledIn()) {
+      if (objectInput.ocIsFilledIn()) {
         Object value;
-        try {
-          value = objectInput.getObjectValue();
-          eObject.eSet(eObjectAttributeEditDescriptor.getStructuralFeature(), value);
-        } catch (ParseException e) {
-          // TODO Auto-generated catch block
-          e.printStackTrace();
-        }
+        value = objectInput.ocGetValue();
+        eObject.eSet(eObjectAttributeEditDescriptor.getStructuralFeature(), value);
       }
     }
     

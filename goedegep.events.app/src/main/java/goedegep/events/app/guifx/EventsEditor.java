@@ -155,7 +155,7 @@ public class EventsEditor extends JfxStage {
     
     objectControlGroup.addListener(observable -> handleChanges(observable));
     pictureFileSelecter.addListener((e) -> {
-      String filename = pictureFileSelecter.getObjectValue();
+      String filename = pictureFileSelecter.ocGetValue();
       if (filename != null) {
         File file;
         if (EventsRegistry.eventsFolderName != null) {
@@ -390,11 +390,11 @@ public class EventsEditor extends JfxStage {
   }
   
   private void fillEventFromControls(EventInfo event) {
-    EmfUtil.setFeatureValue(event, TypesPackage.eINSTANCE.getEvent_Date(), eventDateControl.getObjectValue());
-    EmfUtil.setFeatureValue(event, EventsPackage.eINSTANCE.getEventInfo_Title(), eventTitleControl.getObjectValue());
-    EmfUtil.setFeatureValue(event, EventsPackage.eINSTANCE.getEventInfo_Picture(), pictureFileSelecter.getObjectValue());
+    EmfUtil.setFeatureValue(event, TypesPackage.eINSTANCE.getEvent_Date(), eventDateControl.ocGetValue());
+    EmfUtil.setFeatureValue(event, EventsPackage.eINSTANCE.getEventInfo_Title(), eventTitleControl.ocGetValue());
+    EmfUtil.setFeatureValue(event, EventsPackage.eINSTANCE.getEventInfo_Picture(), pictureFileSelecter.ocGetValue());
 //    EmfUtil.setFeatureValue(event, TypesPackage.eINSTANCE.getEvent_Notes(), notesControl.getText());
-    EmfUtil.setFeatureValue(event, TypesPackage.eINSTANCE.getEvent_Notes(), notesControl.getObjectValue());
+    EmfUtil.setFeatureValue(event, TypesPackage.eINSTANCE.getEvent_Notes(), notesControl.ocGetValue());
     
     fillAttachmentsFromAttachmentPanels(event);
   }
@@ -416,7 +416,7 @@ public class EventsEditor extends JfxStage {
         String fileReferencePanelFile = FileUtils.getPathRelativeToFolder(EventsRegistry.eventsFolderName, fileReferencePanel.getFile());
         if (!PgUtilities.equals(attachment.getTags(), fileReferencePanelReferenceTypeTag)  ||
             !attachment.getFile().equals(fileReferencePanelFile)  ||
-            !PgUtilities.equals(attachment.getTitle(), fileReferencePanel.titleTextField().getObjectValue())) {
+            !PgUtilities.equals(attachment.getTitle(), fileReferencePanel.titleTextField().ocGetValue())) {
           changes = true;
           break;
         }
@@ -453,8 +453,8 @@ public class EventsEditor extends JfxStage {
       fileReference.setFile(stripBaseDirFromFilename(filename));
     }
 
-    if (fileReferencePanel.titleTextField().getIsFilledIn()) {
-      fileReference.setTitle(fileReferencePanel.titleTextField().getObjectValue());
+    if (fileReferencePanel.titleTextField().ocIsFilledIn()) {
+      fileReference.setTitle(fileReferencePanel.titleTextField().ocGetValue());
     }    
   }
   
@@ -471,9 +471,9 @@ public class EventsEditor extends JfxStage {
   }
 
   private void clearControls() {
-    eventDateControl.setObjectValue(null);
-    eventTitleControl.setObjectValue(null);
-    pictureFileSelecter.setObjectValue(null);
+    eventDateControl.ocSetValue(null);
+    eventTitleControl.ocSetValue(null);
+    pictureFileSelecter.ocSetValue(null);
   }
   
   private void updateButtons() {
@@ -512,7 +512,7 @@ public class EventsEditor extends JfxStage {
    */
   private void updateEventFolderInfo() {
     String eventFolderName = createEventFolderName();
-    eventFolderControl.setObjectValue(eventFolderName);
+    eventFolderControl.ocSetValue(eventFolderName);
     
     if (eventFolderName != null) {
       pictureFileSelecter.setInitiallySelectedFolder(eventFolderName);
@@ -529,13 +529,13 @@ public class EventsEditor extends JfxStage {
   }
   
   private String createEventFolderName() {
-    FlexDate eventDate = eventDateControl.getObjectValue();
+    FlexDate eventDate = eventDateControl.ocGetValue();
     if (eventDate == null) {
       return null;
     }
     String eventDateText = FDF.format(eventDate);
     
-    String title = eventTitleControl.getObjectValue();
+    String title = eventTitleControl.ocGetValue();
     if (title == null) {
       return null;
     }
@@ -548,10 +548,10 @@ public class EventsEditor extends JfxStage {
       clearControls();
       return;
     }
-    eventDateControl.setObjectValue(eventInfo.getDate());
-    eventTitleControl.setObjectValue(eventInfo.getTitle());
-    pictureFileSelecter.setObjectValue(eventInfo.getPicture());
-    notesControl.setObjectValue(eventInfo.getNotes());
+    eventDateControl.ocSetValue(eventInfo.getDate());
+    eventTitleControl.ocSetValue(eventInfo.getTitle());
+    pictureFileSelecter.ocSetValue(eventInfo.getPicture());
+    notesControl.ocSetValue(eventInfo.getNotes());
     attachmentPanels.clear();
     for (FileReference attachment: eventInfo.getAttachments()) {
       FileReferencePanel fileReferencePanel = new FileReferencePanel(customization, attachmentPanels, false);
@@ -565,7 +565,7 @@ public class EventsEditor extends JfxStage {
 
     Path filePath = Paths.get(EventsRegistry.eventsFolderName, filename);    
     fileReferencePanel.setFile(filePath.toAbsolutePath().toString());
-    fileReferencePanel.titleTextField().setObjectValue(attachment.getTitle());
+    fileReferencePanel.titleTextField().ocSetValue(attachment.getTitle());
   }
   
   

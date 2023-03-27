@@ -12,6 +12,7 @@ import javafx.beans.InvalidationListener;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.geometry.Rectangle2D;
@@ -32,7 +33,12 @@ import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
+/**
+ * This class provides an ObjectControl for selecting an image file.
+ *
+ */
 public class ObjectControlImageFile implements ObjectControl<String> {
+  @SuppressWarnings("unused")
   private static final Logger         LOGGER = Logger.getLogger(ObjectControlImageFile.class.getName());
     
   private ComponentFactoryFx componentFactory;
@@ -45,13 +51,38 @@ public class ObjectControlImageFile implements ObjectControl<String> {
   private Label label;
   private Stage largePictureStage = null;
   
+  
   /**
-   * Indicates whether the control is optional (if true) or mandatory.
+   * Indication of whether the control is optional (if true) or mandatory.
    */
-  private BooleanProperty optionalProperty = new SimpleBooleanProperty(false);
+  private boolean optional;
+//  private BooleanProperty ocOptionalProperty = new SimpleBooleanProperty(false);
+//  
+//  /**
+//   * Indication of whether the control is filled-in or not.
+//   */
+//  private BooleanProperty ocFilledInProperty = new SimpleBooleanProperty(true);
+//  
+//  /**
+//   * Indication of whether the control has a valid value or not.
+//   */
+//  private BooleanProperty ocValidProperty = new SimpleBooleanProperty(true);
+//  
+//  /**
+//   * The current value.
+//   */
+//  private ObjectProperty<String> ocValueProperty = new SimpleObjectProperty<>();
+  
+  
 
+  /**
+   * Constructor
+   * @param customization the GUI customization.
+   */
   public ObjectControlImageFile(CustomizationFx customization) {
-    optionalProperty.set(false);
+    optional = false;
+//    ocOptionalProperty.set(false);  // If this control is used, it's never optional.
+    
     componentFactory = customization.getComponentFactoryFx();
     
     stackPane = new StackPane();
@@ -68,9 +99,7 @@ public class ObjectControlImageFile implements ObjectControl<String> {
     stackPane.getChildren().add(imageView);
     
     Button changeButton = new Button("Change");
-    changeButton.setOnAction(actionEvent -> {
-      changeFile();
-    });
+    changeButton.setOnAction(actionEvent -> selectNewFile());
     stackPane.getChildren().add(changeButton);              
     StackPane.setAlignment(changeButton, Pos.TOP_LEFT);
     
@@ -81,40 +110,43 @@ public class ObjectControlImageFile implements ObjectControl<String> {
 //    node.getChildren().remove(changeButton);
   }
 
+//  /**
+//   * {@inheritDoc}
+//   */
+//  @Override
+//  public BooleanProperty ocOptionalProperty() {
+//    return ocOptionalProperty;
+//  }
+//
+//  /**
+//   * {@inheritDoc}
+//   */
+//  @Override
+//  public BooleanProperty ocValidProperty() {
+//    return ocValidProperty;
+//  }
+//
+//  /**
+//   * {@inheritDoc}
+//   */
+//  @Override
+//  public BooleanProperty ocFilledInProperty() {
+//    return ocFilledInProperty;
+//  }
+//
+//  /**
+//   * {@inheritDoc}
+//   */
+//  @Override
+//  public ObjectProperty<String> ocValueProperty() {
+//    return ocValueProperty;
+//  }
+
   /**
    * {@inheritDoc}
    */
   @Override
-  public BooleanProperty ocOptionalProperty() {
-    return optionalProperty;
-  }
-
-  @Override
-  public boolean isOptional() {
-    return optionalProperty.get();
-  }
-
-  public void setInitialDirectory(File initialDirectory) {
-    this.initialDirectory = initialDirectory;
-  }
-  
-  public void changeFile() {
-    FileChooser fileChooser = componentFactory.createFileChooser("Select front image");
-    if (initialDirectory != null) {
-      fileChooser.setInitialDirectory(initialDirectory);
-    }
-    File file = fileChooser.showOpenDialog(null);
-    if (file != null) {
-      filename = file.getAbsolutePath();
-      setFilename(filename);
-    }
-  }
-
-  public String getFilename() {
-    return filename;
-  }
-
-  public void setFilename(String filename) {
+  public void ocSetValue(String filename) {
     this.filename = filename;
     
     Image image = new Image("file:" + filename, 0.0, 200.0, true, true);
@@ -125,6 +157,76 @@ public class ObjectControlImageFile implements ObjectControl<String> {
     Color color = Color.color(1.0, 1.0, 1.0);
     label.setBackground(new Background(new BackgroundFill(color, new CornerRadii(3), new Insets(0))));
   }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public boolean ociDetermineFilledIn() {
+    // There is either a filename or not.
+    return filename != null;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public String ociDetermineValue() {
+    return filename;
+  }
+
+  /**
+   * {@inheritDoc}
+   * As the filename is always selected via a FileChooser, it's always valid. So, no action.
+   */
+  @Override
+  public void ociSetErrorFeedback(boolean valid) {
+  }
+
+  /**
+   * {@inheritDoc}
+   * There is no formatting, so no action.
+   */
+  @Override
+  public void ociRedrawValue() {
+  }
+
+  /**
+   * {@inheritDoc}
+   * There is no formatting, so just return the filename.
+   */
+  @Override
+  public String ocGetObjectValueAsFormattedText() {
+    return filename;
+  }
+
+  /**
+   * Set the initial directory to be used by the FileChooser.
+   * 
+   * @param initialDirectory the initial directory to be used by the FileChooser.
+   */
+  public void setInitialDirectory(File initialDirectory) {
+    this.initialDirectory = initialDirectory;
+  }
+  
+  /**
+   * Launch a FileChooser to let the user select a file.
+   */
+  public void selectNewFile() {
+    FileChooser fileChooser = componentFactory.createFileChooser("Select front image");
+    if (initialDirectory != null) {
+      fileChooser.setInitialDirectory(initialDirectory);
+    }
+    File file = fileChooser.showOpenDialog(null);
+    if (file != null) {
+      filename = file.getAbsolutePath();
+      ocSetValue(filename);
+    }
+  }
+
+//  public String getFilename() {
+//    return filename;
+//  }
   
 
   /**
@@ -157,76 +259,61 @@ public class ObjectControlImageFile implements ObjectControl<String> {
   }
 
   @Override
-  public BooleanProperty isFilledIn() {
-    // TODO Auto-generated method stub
-    return null;
+  public String getId() {
+    return stackPane.getId();
+  }
+  
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public List<InvalidationListener> ociGetInvalidationListeners() {
+    return invalidationListeners;
+  }
+
+  public StackPane getStackPane() {
+    return stackPane;
   }
 
   @Override
-  public boolean getIsFilledIn() {
+  public boolean ocIsOptional() {
     // TODO Auto-generated method stub
     return false;
   }
 
   @Override
-  public BooleanProperty isValid() {
-    // TODO Auto-generated method stub
-    return null;
-  }
-
-  @Override
-  public boolean getIsValid(StringBuilder errorMessageBuffer) {
+  public boolean ocIsFilledIn() {
     // TODO Auto-generated method stub
     return false;
   }
 
   @Override
-  public String getObjectValue() throws ParseException {
+  public boolean ocIsValid() {
+    // TODO Auto-generated method stub
+    return false;
+  }
+
+  @Override
+  public String ocGetValue() {
     // TODO Auto-generated method stub
     return null;
   }
 
   @Override
-  public void setObjectValue(String objectValue) {
+  public void ociSetValue(String value) {
     // TODO Auto-generated method stub
     
   }
 
   @Override
-  public ObjectProperty<String> objectValue() {
+  public void ociSetValid(boolean valid) {
     // TODO Auto-generated method stub
-    return null;
+    
   }
 
   @Override
-  public String getId() {
+  public void ociSetFilledIn(boolean filledIn) {
     // TODO Auto-generated method stub
-    return null;
-  }
-
-  @Override
-  public void addListener(InvalidationListener listener) {
-    invalidationListeners.add(listener);    
-  }
-
-  @Override
-  public void removeListener(InvalidationListener listener) {
-    invalidationListeners.remove(listener);    
-  }
-
-  
-  /**
-   * Notify the <code>invalidationListeners</code> that something has changed.
-   */
-  private void notifyListeners() {
-    LOGGER.severe("=>");
-    for (InvalidationListener invalidationListener: invalidationListeners) {
-      LOGGER.severe("Notifying listener: " + invalidationListener);
-      invalidationListener.invalidated(this);
-    }
-  }
-
-  public StackPane getStackPane() {
-    return stackPane;
+    
   }
 }

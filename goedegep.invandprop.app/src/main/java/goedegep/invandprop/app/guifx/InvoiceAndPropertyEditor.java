@@ -5,7 +5,6 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.text.ParseException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -22,7 +21,6 @@ import goedegep.invandprop.model.InvoicesAndProperties;
 import goedegep.invandprop.model.Property;
 import goedegep.jfx.ComponentFactoryFx;
 import goedegep.jfx.CustomizationFx;
-import goedegep.jfx.JfxStage;
 import goedegep.jfx.eobjecteditor.EObjectAttributeEditDescriptor;
 import goedegep.jfx.eobjecteditor.EObjectEditor;
 import goedegep.jfx.eobjecteditor.EObjectEditorDescriptor;
@@ -38,6 +36,7 @@ import goedegep.types.model.FileReference;
 import goedegep.types.model.TypesFactory;
 import goedegep.util.PgUtilities;
 import goedegep.util.money.PgCurrency;
+import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -143,7 +142,7 @@ public class InvoiceAndPropertyEditor extends ObjectEditorAbstract {
   private ObjectControlBoolean propertyArchiveObjectInput;
   
   private Map<InvoiceItemPanel, ObjectControlCurrency> amountObjectInputs = new HashMap<>();
-  private Map<ObjectControlCurrency, ChangeListener<PgCurrency>> amountObjectInputListeners = new HashMap<>();
+  private Map<ObjectControlCurrency, InvalidationListener> amountObjectInputListeners = new HashMap<>();
   
   private VBox documentReferencesVBox;
   
@@ -449,11 +448,11 @@ public class InvoiceAndPropertyEditor extends ObjectEditorAbstract {
   private boolean isAnyInvoiceFieldFilledIn() {
     boolean anyInvoiceFieldFilledIn = false;
     
-    if (invoiceDateObjectInput.getIsFilledIn()  ||
-        invoiceCompanyObjectInput.getIsFilledIn()  ||
-        invoiceDescriptionObjectInput.getIsFilledIn()  ||
-        invoiceAmountObjectInput.getIsFilledIn()  ||
-        invoiceRemarksObjectInput.getIsFilledIn()) {
+    if (invoiceDateObjectInput.ocIsFilledIn()  ||
+        invoiceCompanyObjectInput.ocIsFilledIn()  ||
+        invoiceDescriptionObjectInput.ocIsFilledIn()  ||
+        invoiceAmountObjectInput.ocIsFilledIn()  ||
+        invoiceRemarksObjectInput.ocIsFilledIn()) {
       anyInvoiceFieldFilledIn = true;
     }
     
@@ -464,13 +463,13 @@ public class InvoiceAndPropertyEditor extends ObjectEditorAbstract {
   private boolean isAnyPropertyFieldFilledIn() {
     boolean anyPropertyFieldFilledIn = false;
     
-    if (propertyDescriptionObjectInput.getIsFilledIn()  ||
-        propertyBrandObjectInput.getIsFilledIn()  ||
-        propertyTypeObjectInput.getIsFilledIn()  ||
-        propertySerialNumberObjectInput.getIsFilledIn()  ||
-        propertyRemarksObjectInput.getIsFilledIn()  ||
-        propertyFromDateObjectInput.getIsFilledIn()  ||
-        propertyUntilDateObjectInput.getIsFilledIn()) {
+    if (propertyDescriptionObjectInput.ocIsFilledIn()  ||
+        propertyBrandObjectInput.ocIsFilledIn()  ||
+        propertyTypeObjectInput.ocIsFilledIn()  ||
+        propertySerialNumberObjectInput.ocIsFilledIn()  ||
+        propertyRemarksObjectInput.ocIsFilledIn()  ||
+        propertyFromDateObjectInput.ocIsFilledIn()  ||
+        propertyUntilDateObjectInput.ocIsFilledIn()) {
       anyPropertyFieldFilledIn = true;
     }
     
@@ -487,26 +486,26 @@ public class InvoiceAndPropertyEditor extends ObjectEditorAbstract {
     LOGGER.info("=> invoice=" + invoice);
     
     if (invoice.isSetDate()) {
-      invoiceDateObjectInput.setObjectValue(invoice.getDate());
+      invoiceDateObjectInput.ocSetValue(invoice.getDate());
     }
     
     if (invoice.isSetCompany()) {
-      invoiceCompanyObjectInput.setObjectValue(invoice.getCompany());
+      invoiceCompanyObjectInput.ocSetValue(invoice.getCompany());
     }
     
     if (!invoice.isDescriptionFromProperty()) {
-      invoiceDescriptionObjectInput.setObjectValue(invoice.getDescription());
+      invoiceDescriptionObjectInput.ocSetValue(invoice.getDescription());
     }
     
     if (invoice.isSetAmount()) {
-      invoiceAmountObjectInput.setObjectValue(invoice.getAmount());
+      invoiceAmountObjectInput.ocSetValue(invoice.getAmount());
     }
     
     if (invoice.isSetRemarks()) {
-      invoiceRemarksObjectInput.setObjectValue(invoice.getRemarks());
+      invoiceRemarksObjectInput.ocSetValue(invoice.getRemarks());
     }
     
-    invoiceDescriptionFromPropertyObjectInput.setObjectValue(invoice.isDescriptionFromProperty());
+    invoiceDescriptionFromPropertyObjectInput.ocSetValue(invoice.isDescriptionFromProperty());
     
     createInvoiceItemPanelsFromInvoice(invoice);
     
@@ -516,18 +515,18 @@ public class InvoiceAndPropertyEditor extends ObjectEditorAbstract {
     for (InvoiceItem invoiceItem: invoice.getInvoiceItems()) {
       InvoiceItemPanel invoiceItemPanel = createNewInvoiceItemPanel(false);
       
-      invoiceItemPanel.getNumberOfItemsObjectInput().setObjectValue(invoiceItem.getNumberOfItems());
+      invoiceItemPanel.getNumberOfItemsObjectInput().ocSetValue(invoiceItem.getNumberOfItems());
       
       if (invoiceItem.isSetDescription()) {
-        invoiceItemPanel.getDescriptionObjectInput().setObjectValue(invoiceItem.getDescription());
+        invoiceItemPanel.getDescriptionObjectInput().ocSetValue(invoiceItem.getDescription());
       }
       
       if (invoiceItem.isSetAmount()) {
-        invoiceItemPanel.getAmountObjectInput().setObjectValue(invoiceItem.getAmount());
+        invoiceItemPanel.getAmountObjectInput().ocSetValue(invoiceItem.getAmount());
       }
       
 //      if (invoiceItem.isSetRemarks()) {
-        invoiceItemPanel.getRemarksObjectInput().setObjectValue(invoiceItem.getRemarks());
+        invoiceItemPanel.getRemarksObjectInput().ocSetValue(invoiceItem.getRemarks());
 //      }
       
     }
@@ -538,14 +537,10 @@ public class InvoiceAndPropertyEditor extends ObjectEditorAbstract {
 
     for (EObjectAttributeEditDescriptor eObjectAttributeEditDescriptor: invoiceEditorDescriptor.getEObjectAttributeEditDescriptors()) {
       ObjectControl<?> objectInput = (ObjectControl<?>) eObjectAttributeEditDescriptor.getNode();
-      if (objectInput.getIsFilledIn()) {
+      if (objectInput.ocIsFilledIn()) {
         Object value;
-        try {
-          value = objectInput.getObjectValue();
-          invoice.eSet(eObjectAttributeEditDescriptor.getStructuralFeature(), value);
-        } catch (ParseException e) {
-          e.printStackTrace();
-        }
+        value = objectInput.ocGetValue();
+        invoice.eSet(eObjectAttributeEditDescriptor.getStructuralFeature(), value);
       }
     }
 
@@ -564,20 +559,15 @@ public class InvoiceAndPropertyEditor extends ObjectEditorAbstract {
       int index = 0;
       for (InvoiceItem invoiceItem: invoice.getInvoiceItems()) {
         InvoiceItemPanel invoiceItemPanel = invoiceItemPanels.get(index++);
-        try {
-          if (!PgUtilities.equals((Integer) invoiceItem.getNumberOfItems(), invoiceItemPanel.getNumberOfItemsObjectInput().getObjectValue())  ||
-              !PgUtilities.equals(invoiceItem.getDescription(), invoiceItemPanel.getDescriptionObjectInput().getObjectValue())  ||
-              !PgUtilities.equals(invoiceItem.getAmount(), invoiceItemPanel.getAmountObjectInput().getObjectValue())  ||
-              !PgUtilities.equals(invoiceItem.getRemarks(), invoiceItemPanel.getRemarksObjectInput().getObjectValue())) {
-            changes = true;
-            LOGGER.severe("NumberOfItems: " + invoiceItem.getNumberOfItems() + ", " + invoiceItemPanel.getNumberOfItemsObjectInput().getObjectValue());
-            LOGGER.severe("Description: " + invoiceItem.getDescription() + ", " + invoiceItemPanel.getDescriptionObjectInput().getObjectValue());
-            LOGGER.severe("Amount: " + invoiceItem.getAmount() + ", " + invoiceItemPanel.getAmountObjectInput().getObjectValue());
-            LOGGER.severe("Remarks: " + invoiceItem.getRemarks() + ", " + invoiceItemPanel.getRemarksObjectInput().getObjectValue());
-            break;
-          }
-        } catch (ParseException e) {
+        if (!PgUtilities.equals((Integer) invoiceItem.getNumberOfItems(), invoiceItemPanel.getNumberOfItemsObjectInput().ocGetValue())  ||
+            !PgUtilities.equals(invoiceItem.getDescription(), invoiceItemPanel.getDescriptionObjectInput().ocGetValue())  ||
+            !PgUtilities.equals(invoiceItem.getAmount(), invoiceItemPanel.getAmountObjectInput().ocGetValue())  ||
+            !PgUtilities.equals(invoiceItem.getRemarks(), invoiceItemPanel.getRemarksObjectInput().ocGetValue())) {
           changes = true;
+          LOGGER.severe("NumberOfItems: " + invoiceItem.getNumberOfItems() + ", " + invoiceItemPanel.getNumberOfItemsObjectInput().ocGetValue());
+          LOGGER.severe("Description: " + invoiceItem.getDescription() + ", " + invoiceItemPanel.getDescriptionObjectInput().ocGetValue());
+          LOGGER.severe("Amount: " + invoiceItem.getAmount() + ", " + invoiceItemPanel.getAmountObjectInput().ocGetValue());
+          LOGGER.severe("Remarks: " + invoiceItem.getRemarks() + ", " + invoiceItemPanel.getRemarksObjectInput().ocGetValue());
           break;
         }
       }
@@ -596,24 +586,20 @@ public class InvoiceAndPropertyEditor extends ObjectEditorAbstract {
   }
 
   private void updateInvoiceItemFromInvoiceItemPanel(InvoiceItem invoiceItem, InvoiceItemPanel invoiceItemPanel) {
-    if (invoiceItemPanel.getNumberOfItemsObjectInput().getIsFilledIn()) {
-      try {
-        invoiceItem.setNumberOfItems(invoiceItemPanel.getNumberOfItemsObjectInput().getObjectValue());
-      } catch (ParseException e) {
-        e.printStackTrace();
-      }
+    if (invoiceItemPanel.getNumberOfItemsObjectInput().ocIsFilledIn()) {
+      invoiceItem.setNumberOfItems(invoiceItemPanel.getNumberOfItemsObjectInput().ocGetValue());
     }
     
-    if (invoiceItemPanel.getDescriptionObjectInput().getIsFilledIn()) {
-      invoiceItem.setDescription(invoiceItemPanel.getDescriptionObjectInput().getObjectValue());
+    if (invoiceItemPanel.getDescriptionObjectInput().ocIsFilledIn()) {
+      invoiceItem.setDescription(invoiceItemPanel.getDescriptionObjectInput().ocGetValue());
     }
     
-    if (invoiceItemPanel.getAmountObjectInput().getIsFilledIn()) {
-      invoiceItem.setAmount(invoiceItemPanel.getAmountObjectInput().getObjectValue());
+    if (invoiceItemPanel.getAmountObjectInput().ocIsFilledIn()) {
+      invoiceItem.setAmount(invoiceItemPanel.getAmountObjectInput().ocGetValue());
     }
     
-    if (invoiceItemPanel.getRemarksObjectInput().getIsFilledIn()) {
-      invoiceItem.setRemarks(invoiceItemPanel.getRemarksObjectInput().getObjectValue());
+    if (invoiceItemPanel.getRemarksObjectInput().ocIsFilledIn()) {
+      invoiceItem.setRemarks(invoiceItemPanel.getRemarksObjectInput().ocGetValue());
     }
 
   }
@@ -622,14 +608,10 @@ public class InvoiceAndPropertyEditor extends ObjectEditorAbstract {
     
     for (EObjectAttributeEditDescriptor eObjectAttributeEditDescriptor: propertyEditorDescriptor.getEObjectAttributeEditDescriptors()) {
       ObjectControl<?> objectInput = (ObjectControl<?>) eObjectAttributeEditDescriptor.getNode();
-      if (objectInput.getIsFilledIn()) {
+      if (objectInput.ocIsFilledIn()) {
         Object value;
-        try {
-          value = objectInput.getObjectValue();
-          property.eSet(eObjectAttributeEditDescriptor.getStructuralFeature(), value);
-        } catch (ParseException e) {
-          e.printStackTrace();
-        }
+        value = objectInput.ocGetValue();
+        property.eSet(eObjectAttributeEditDescriptor.getStructuralFeature(), value);
       }
     }
     
@@ -650,7 +632,7 @@ public class InvoiceAndPropertyEditor extends ObjectEditorAbstract {
       for (FileReference fileReference: property.getDocuments()) {
         FileReferencePanel fileReferencePanel = documentReferencePanels.get(index++);
         if ((!fileReference.getFile().equals(fileReferencePanel.getFile()))  ||
-            (!fileReference.getTitle().equals(fileReferencePanel.titleTextField().getObjectValue()))) {
+            (!fileReference.getTitle().equals(fileReferencePanel.titleTextField().ocGetValue()))) {
           changes = true;
           break;
         }
@@ -682,7 +664,7 @@ public class InvoiceAndPropertyEditor extends ObjectEditorAbstract {
       for (FileReference fileReference: property.getPictures()) {
         FileReferencePanel fileReferencePanel = pictureReferencePanels.get(index++);
         if ((!fileReference.getFile().equals(fileReferencePanel.getFile()))  ||
-            (!fileReference.getTitle().equals(fileReferencePanel.titleTextField().getObjectValue()))) {
+            (!fileReference.getTitle().equals(fileReferencePanel.titleTextField().ocGetValue()))) {
           changes = true;
           break;
         }
@@ -706,8 +688,8 @@ public class InvoiceAndPropertyEditor extends ObjectEditorAbstract {
       fileReference.setFile(stripBaseDirFromFilename(fileReferencePanel.getFile()));
     }
 
-    if (fileReferencePanel.titleTextField().getIsFilledIn()) {
-      fileReference.setTitle(fileReferencePanel.titleTextField().getObjectValue());
+    if (fileReferencePanel.titleTextField().ocIsFilledIn()) {
+      fileReference.setTitle(fileReferencePanel.titleTextField().ocGetValue());
     }    
   }
 
@@ -718,34 +700,34 @@ public class InvoiceAndPropertyEditor extends ObjectEditorAbstract {
    */
   private void fillControlsFromProperty(Property property) {
     if (property.isSetDescription()) {
-      propertyDescriptionObjectInput.setObjectValue(property.getDescription());
+      propertyDescriptionObjectInput.ocSetValue(property.getDescription());
     }
     
     if (property.isSetBrand()) {
-      propertyBrandObjectInput.setObjectValue(property.getBrand());
+      propertyBrandObjectInput.ocSetValue(property.getBrand());
     }
     
     if (property.isSetType()) {
-      propertyTypeObjectInput.setObjectValue(property.getType());
+      propertyTypeObjectInput.ocSetValue(property.getType());
     }
     
     if (property.isSetSerialNumber()) {
-      propertySerialNumberObjectInput.setObjectValue(property.getSerialNumber());
+      propertySerialNumberObjectInput.ocSetValue(property.getSerialNumber());
     }
     
     if (property.isSetRemarks()) {
-      propertyRemarksObjectInput.setObjectValue(property.getRemarks());
+      propertyRemarksObjectInput.ocSetValue(property.getRemarks());
     }
     
     if (property.isSetFromDate()) {
-      propertyFromDateObjectInput.setObjectValue(property.getFromDate());
+      propertyFromDateObjectInput.ocSetValue(property.getFromDate());
     }
     
     if (property.isSetUntilDate()) {
-      propertyUntilDateObjectInput.setObjectValue(property.getUntilDate());
+      propertyUntilDateObjectInput.ocSetValue(property.getUntilDate());
     }
     
-    propertyArchiveObjectInput.setObjectValue(property.isArchive());
+    propertyArchiveObjectInput.ocSetValue(property.isArchive());
     
     createDocumentsPanelsFromProperty(property);
     createPicturesPanelsFromProperty(property);
@@ -764,11 +746,11 @@ public class InvoiceAndPropertyEditor extends ObjectEditorAbstract {
       FileReferencePanel fileReferencePanel = createNewDocumentReferencePanel(false);
       
       if (fileReference.isSetFile()) {
-        fileReferencePanel.getFileSelecter().setObjectValue(prependBaseDirToFilename(fileReference.getFile()));
+        fileReferencePanel.getFileSelecter().ocSetValue(prependBaseDirToFilename(fileReference.getFile()));
       }
       
       if (fileReference.isSetTitle()) {
-        fileReferencePanel.titleTextField().setObjectValue(fileReference.getTitle());
+        fileReferencePanel.titleTextField().ocSetValue(fileReference.getTitle());
       }
       
     }
@@ -788,11 +770,11 @@ public class InvoiceAndPropertyEditor extends ObjectEditorAbstract {
       FileReferencePanel fileReferencePanel = createNewPictureReferencePanel(false);
       
       if (fileReference.isSetFile()) {
-        fileReferencePanel.getFileSelecter().setObjectValue(prependBaseDirToFilename(fileReference.getFile()));
+        fileReferencePanel.getFileSelecter().ocSetValue(prependBaseDirToFilename(fileReference.getFile()));
       }
       
       if (fileReference.isSetTitle()) {
-        fileReferencePanel.titleTextField().setObjectValue(fileReference.getTitle());
+        fileReferencePanel.titleTextField().ocSetValue(fileReference.getTitle());
       }
       
     }
@@ -871,7 +853,7 @@ public class InvoiceAndPropertyEditor extends ObjectEditorAbstract {
    */
   private void handleInvoiceDescriptionType() {
     LOGGER.info("=>");
-    if (invoiceDescriptionFromPropertyObjectInput.getObjectValue()) {
+    if (invoiceDescriptionFromPropertyObjectInput.ocGetValue()) {
       // Invoice description is derived from property.
       // Disable the description control and set is to the value derived from the property.
       invoiceDescriptionObjectInput.setDisable(true);
@@ -889,11 +871,11 @@ public class InvoiceAndPropertyEditor extends ObjectEditorAbstract {
    * The description is a concatenation of the description, the brand and the type of the property.
    */
   private void updateInvoiceDescription() {
-    if (invoiceDescriptionFromPropertyObjectInput.getObjectValue()) {
+    if (invoiceDescriptionFromPropertyObjectInput.ocGetValue()) {
       StringBuilder buf = new StringBuilder();
       boolean spaceNeeded = false;
       
-      String value = propertyDescriptionObjectInput.getObjectValue();
+      String value = propertyDescriptionObjectInput.ocGetValue();
       if (value !=  null) {
         value = value.trim();
         if (!value.isEmpty()) {
@@ -902,19 +884,7 @@ public class InvoiceAndPropertyEditor extends ObjectEditorAbstract {
         }
       }
       
-      value = propertyBrandObjectInput.getObjectValue();
-      if (value !=  null) {
-        value = value.trim();
-        if (!value.isEmpty()) {
-          if (spaceNeeded) {
-            buf.append(" ");
-          }
-          buf.append(value);
-          spaceNeeded = true;
-        }
-      }
-      
-      value = propertyTypeObjectInput.getObjectValue();
+      value = propertyBrandObjectInput.ocGetValue();
       if (value !=  null) {
         value = value.trim();
         if (!value.isEmpty()) {
@@ -926,7 +896,19 @@ public class InvoiceAndPropertyEditor extends ObjectEditorAbstract {
         }
       }
       
-      invoiceDescriptionObjectInput.setObjectValue(buf.toString());
+      value = propertyTypeObjectInput.ocGetValue();
+      if (value !=  null) {
+        value = value.trim();
+        if (!value.isEmpty()) {
+          if (spaceNeeded) {
+            buf.append(" ");
+          }
+          buf.append(value);
+          spaceNeeded = true;
+        }
+      }
+      
+      invoiceDescriptionObjectInput.ocSetValue(buf.toString());
     }
   }
 
@@ -962,22 +944,21 @@ public class InvoiceAndPropertyEditor extends ObjectEditorAbstract {
             for (InvoiceItemPanel invoiceItemPanel: c.getRemoved()) {
               invoiceObjectControlGroup.removeObjectControlGroup(invoiceItemPanel.getObjectInputContainer());
               ObjectControlCurrency invoiceItemAmountObjectInput = amountObjectInputs.get(invoiceItemPanel);
-              ChangeListener<PgCurrency> changeListener = amountObjectInputListeners.remove(invoiceItemAmountObjectInput);
-              invoiceItemAmountObjectInput.objectValue().removeListener(changeListener);
+              InvalidationListener invalidationListener = amountObjectInputListeners.remove(invoiceItemAmountObjectInput);
+              invoiceItemAmountObjectInput.removeListener(invalidationListener);
               amountObjectInputs.remove(invoiceItemPanel);
             }
             for (InvoiceItemPanel invoiceItemPanel: c.getAddedSubList()) {
               invoiceObjectControlGroup.addObjectControlGroup(invoiceItemPanel.getObjectInputContainer());
               ObjectControlCurrency invoiceItemAmountObjectInput = invoiceItemPanel.getAmountObjectInput();
-              ChangeListener<PgCurrency> changeListener = new ChangeListener<>()  {
-
+              InvalidationListener invalidationListener = new InvalidationListener()  {
                 @Override
-                public void changed(ObservableValue<? extends PgCurrency> observable, PgCurrency oldValue, PgCurrency newValue) {
+                public void invalidated(Observable observable) {
                   updateAmountObjectInput();
                 }
               };
-              invoiceItemAmountObjectInput.objectValue().addListener(changeListener);
-              amountObjectInputListeners.put(invoiceItemAmountObjectInput, changeListener);
+              invoiceItemAmountObjectInput.addListener(invalidationListener);
+              amountObjectInputListeners.put(invoiceItemAmountObjectInput, invalidationListener);
               amountObjectInputs.put(invoiceItemPanel, invoiceItemAmountObjectInput);
             }
           }
@@ -1026,26 +1007,22 @@ public class InvoiceAndPropertyEditor extends ObjectEditorAbstract {
     
     for (ObjectControl<PgCurrency> itemAmountObjectInput: amountObjectInputs.values())  {
       PgCurrency itemAmount;
-      try {
-        itemAmount = itemAmountObjectInput.getObjectValue();
-        if (itemAmount != null) {
-          if (sumOfInvoiceItems == null) {
-            sumOfInvoiceItems = itemAmount;
-          } else {
-            sumOfInvoiceItems = sumOfInvoiceItems.add(itemAmount);
-          }
+      itemAmount = itemAmountObjectInput.ocGetValue();
+      if (itemAmount != null) {
+        if (sumOfInvoiceItems == null) {
+          sumOfInvoiceItems = itemAmount;
+        } else {
+          sumOfInvoiceItems = sumOfInvoiceItems.add(itemAmount);
         }
-      } catch (ParseException e) {
-        // no action
       }
     }
-    
+
     ObjectControlCurrency amountControl = (ObjectControlCurrency) invoiceAmountObjectInput;
     if (sumOfInvoiceItems == null) {
       amountControl.setDisable(false);
     } else {
       amountControl.setDisable(true);
-      amountControl.setObjectValue(sumOfInvoiceItems);
+      amountControl.ocSetValue(sumOfInvoiceItems);
     }
   }
   
@@ -1279,7 +1256,7 @@ public class InvoiceAndPropertyEditor extends ObjectEditorAbstract {
     // Label
     StringBuilder buf = new StringBuilder();
     buf.append(eObjectAttributeEditDescriptor.getLabelText());
-    if (!((ObjectControl<?>) eObjectAttributeEditDescriptor.getNode()).isOptional()) {
+    if (!((ObjectControl<?>) eObjectAttributeEditDescriptor.getNode()).ocIsOptional()) {
       buf.append(" *");
     }
     buf.append(":");
@@ -1293,15 +1270,8 @@ public class InvoiceAndPropertyEditor extends ObjectEditorAbstract {
     // Ok/Not OK label
     Label statusLabel = componentFactory.createLabel(null);
     ObjectControl<?> objectInput = (ObjectControl<?>) node;
-    objectInput.isValid().addListener(new ChangeListener<>() {
-
-      @Override
-      public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
-        EObjectEditor.updateStatusLabel(statusLabel, newValue);   
-      }
-        
-    });
-    EObjectEditor.updateStatusLabel(statusLabel, objectInput.getIsValid(null));
+    objectInput.addListener((o) -> EObjectEditor.updateStatusLabel(statusLabel, objectInput.ocIsValid()));
+     EObjectEditor.updateStatusLabel(statusLabel, objectInput.ocIsValid());
     gridPane.add(statusLabel, 2, rowIndex);
   }
 
@@ -1429,30 +1399,30 @@ class InvoiceItemPanel extends TitledPane {
         
     });
     
-    numberOfItemsObjectInput.objectValue().addListener(new ChangeListener<Integer>() {
+    numberOfItemsObjectInput.addListener(new InvalidationListener() {
 
       @Override
-      public void changed(ObservableValue<? extends Integer> observable, Integer oldValue, Integer newValue) {
+      public void invalidated(Observable observable) {
         updateTitle();
       }
 
         
     });
     
-    descriptionObjectInput.objectValue().addListener(new ChangeListener<String>() {
+    descriptionObjectInput.addListener(new InvalidationListener() {
 
       @Override
-      public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+      public void invalidated(Observable observable) {
         updateTitle();
       }
 
         
     });
     
-    amountObjectInput.objectValue().addListener(new ChangeListener<PgCurrency>() {
+    amountObjectInput.addListener(new InvalidationListener() {
 
       @Override
-      public void changed(ObservableValue<? extends PgCurrency> observable, PgCurrency oldValue, PgCurrency newValue) {
+      public void invalidated(Observable observable) {
         updateTitle();
       }
 
@@ -1588,7 +1558,7 @@ class InvoiceItemPanel extends TitledPane {
     // Label
     StringBuilder buf = new StringBuilder();
     buf.append(eObjectAttributeEditDescriptor.getLabelText());
-    if (!((ObjectControl<?>) eObjectAttributeEditDescriptor.getNode()).isOptional()) {
+    if (!((ObjectControl<?>) eObjectAttributeEditDescriptor.getNode()).ocIsOptional()) {
       buf.append(" *");
     }
     buf.append(":");
@@ -1602,15 +1572,8 @@ class InvoiceItemPanel extends TitledPane {
     // Ok/Not OK label
     Label statusLabel = componentFactory.createLabel(null);
     ObjectControl<?> objectInput = (ObjectControl<?>) node;
-    objectInput.isValid().addListener(new ChangeListener<>() {
-
-      @Override
-      public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
-        EObjectEditor.updateStatusLabel(statusLabel, newValue);   
-      }
-        
-    });
-    EObjectEditor.updateStatusLabel(statusLabel, objectInput.getIsValid(null));
+    objectInput.addListener((o) -> EObjectEditor.updateStatusLabel(statusLabel, objectInput.ocIsValid()));   
+    EObjectEditor.updateStatusLabel(statusLabel, objectInput.ocIsValid());
     gridPane.add(statusLabel, 2, rowIndex);
   }
 
@@ -1639,12 +1602,8 @@ class InvoiceItemPanel extends TitledPane {
     
     // Add number of items if available
     Integer numberOfItems = null;
-    if (numberOfItemsObjectInput.getIsValid(null) && numberOfItemsObjectInput.getIsFilledIn()) {
-      try {
-        numberOfItems = numberOfItemsObjectInput.getObjectValue();
-      } catch (ParseException e) {
-        // no action
-      }
+    if (numberOfItemsObjectInput.ocIsValid() && numberOfItemsObjectInput.ocIsFilledIn()) {
+      numberOfItems = numberOfItemsObjectInput.ocGetValue();
     }
     if (numberOfItems != null  &&  numberOfItems != 0) {
       buf.append(numberOfItems).append("x ");
@@ -1652,7 +1611,7 @@ class InvoiceItemPanel extends TitledPane {
     
     // Add description if available
     String description = null;
-    description = descriptionObjectInput.getObjectValue();
+    description = descriptionObjectInput.ocGetValue();
      if (description == null  ||  description.isEmpty()) {
       description = DEFAULT_TITLE;
     }
@@ -1660,11 +1619,11 @@ class InvoiceItemPanel extends TitledPane {
     
     // Add amount if available
     PgCurrency amount = null;
-    if (amountObjectInput.getIsValid(null) && amountObjectInput.getIsFilledIn()) {
-      amount = amountObjectInput.getObjectValue();
+    if (amountObjectInput.ocIsValid() && amountObjectInput.ocIsFilledIn()) {
+      amount = amountObjectInput.ocGetValue();
     }
     if (amount != null) {
-      buf.append(amountObjectInput.getObjectValueAsFormattedText()).append(" ");
+      buf.append(amountObjectInput.ocGetObjectValueAsFormattedText()).append(" ");
     }
     
     // Add (in)valid indication
@@ -1708,20 +1667,20 @@ class FileReferencePanel extends TitledPane {
     fileSelecter = componentFactory.createFileSelecter(getPropertyFilesFolder(), 400, "Currently selected folder",
         "Choose file", "Select a file via a file chooser", "Select the file");
     fileSelecter.setId("fileSelecter");
-    fileSelecter.objectValue().addListener(new ChangeListener<>() {
+    fileSelecter.addListener(new InvalidationListener() {
 
       @Override
-      public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+      public void invalidated(Observable observable) {
         updateTitle();        
       }
         
     });
     titleTextField = componentFactory.createObjectControlString(null, 200, true, "a title for the file");
     titleTextField.setId("title");
-    titleTextField.objectValue().addListener(new ChangeListener<>() {
+    titleTextField.addListener(new InvalidationListener() {
 
       @Override
-      public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+      public void invalidated(Observable observable) {
         updateTitle();        
       }
         
@@ -1824,8 +1783,8 @@ class FileReferencePanel extends TitledPane {
   }
   
   public String getFile() {
-    if (fileSelecter.getIsValid(null)) {
-      return fileSelecter.getObjectValue();
+    if (fileSelecter.ocIsValid()) {
+      return fileSelecter.ocGetValue();
     } else {
       return null;
     }
@@ -1835,7 +1794,7 @@ class FileReferencePanel extends TitledPane {
     String propertyFilesFolder = null;
     
     for (FileReferencePanel documentReferencePanel: documentReferencePanels) {
-      File file = new File(documentReferencePanel.fileSelecter.getObjectValue());
+      File file = new File(documentReferencePanel.fileSelecter.ocGetValue());
       propertyFilesFolder = file.getParent();
       if (propertyFilesFolder != null) {
         return propertyFilesFolder;
@@ -1911,14 +1870,14 @@ class FileReferencePanel extends TitledPane {
     }
     
     try {
-      URI uri = new URI(fileSelecter.getObjectValue());
+      URI uri = new URI(fileSelecter.ocGetValue());
       try {
         desktop.browse(uri);
       } catch (IOException e) {
         componentFactory.createErrorDialog("Unable to open URL", e.getMessage());
       }
     } catch (URISyntaxException e1) {
-      File file = new File(fileSelecter.getObjectValue());
+      File file = new File(fileSelecter.ocGetValue());
       
       try {
         desktop.open(file);
@@ -1948,11 +1907,11 @@ class FileReferencePanel extends TitledPane {
   private void updateTitle() {
     StringBuilder buf = new  StringBuilder();
     
-    String string = titleTextField.getObjectValue();
+    String string = titleTextField.ocGetValue();
     if ((string == null)  ||  string.isEmpty()) {
 
-      if (fileSelecter.getObjectValue() != null) {
-        File file = new File(fileSelecter.getObjectValue());
+      if (fileSelecter.ocGetValue() != null) {
+        File file = new File(fileSelecter.ocGetValue());
         string = file.getName();
       } else {
         string = DEFAULT_TITLE;

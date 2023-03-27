@@ -49,7 +49,7 @@ public class FolderSelectionWizard extends Dialog<ButtonType> {
   private Button okButton;    // this will only be enabled if photoFolders is not empty.
   
   // State information;
-  private BooleanProperty selectionValidProperty;
+//  private BooleanProperty selectionValidProperty;
   private String ignoreFolders = null;
   private List<Path> photoFolders = null;
 
@@ -84,8 +84,8 @@ public class FolderSelectionWizard extends Dialog<ButtonType> {
    * @return the selected main folder.
    */
   public String getSelectedFolder() {
-    if (selectionValidProperty.get()) {
-      return folderSelecter.getObjectValue();
+    if (folderSelecter.ocIsValid()) {
+      return folderSelecter.ocGetValue();
     } else {
       return null;
     }
@@ -129,15 +129,15 @@ public class FolderSelectionWizard extends Dialog<ButtonType> {
         "Choose folder", "Select photo folder via a file chooser", "Select the folder with photos");
     
     Node folderName = folderSelecter.getPathTextField();
-    folderSelecter.objectValue().addListener((observable, oldValue, newValue) -> {
-      handleNewPhotoFolderSelected(selectionValidProperty.get(), folderSelecter.getObjectValue());      
+    folderSelecter.addListener((observable) -> {
+      handleNewPhotoFolderSelected(folderSelecter.ocIsValid(), folderSelecter.ocGetValue());      
     });
     wizardPanel.add(folderName, 1, 0);
     
     Button folderChooserButton = folderSelecter.getFolderChooserButton();
     wizardPanel.add(folderChooserButton, 2, 0);
     
-    selectionValidProperty = folderSelecter.isValid();
+//    selectionValidProperty = folderSelecter.ocValidProperty();
     
     // Row 1: folders to be ignored; label, textfield
     Label ignoreFoldersLabel = componentFactory.createLabel("Sub-folders to be ignored:");
@@ -169,7 +169,7 @@ public class FolderSelectionWizard extends Dialog<ButtonType> {
     
     okButton = (Button) getDialogPane().lookupButton(ButtonType.OK);
     
-    handleNewPhotoFolderSelected(selectionValidProperty.get(), folderSelecter.getObjectValue());
+    handleNewPhotoFolderSelected(folderSelecter.ocIsValid(), folderSelecter.ocGetValue());
   }
   
   /**

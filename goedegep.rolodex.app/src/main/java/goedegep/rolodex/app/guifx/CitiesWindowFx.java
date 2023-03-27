@@ -16,7 +16,7 @@ import goedegep.jfx.eobjecttable.EObjectTableColumnDescriptorBasic;
 import goedegep.jfx.eobjecttable.EObjectTableColumnDescriptorChoiceBox;
 import goedegep.jfx.eobjecttable.EObjectTableControlPanel;
 import goedegep.jfx.eobjecttable.EObjectTableDescriptor;
-import goedegep.jfx.objectcontrols.ObjectControl;
+import goedegep.jfx.objectcontrols.ObjectControlGroup;
 import goedegep.jfx.objectcontrols.ObjectControlString;
 import goedegep.rolodex.app.logic.CitiesComparator;
 import goedegep.rolodex.app.logic.CountryStringConverter;
@@ -151,6 +151,7 @@ class CityEditPanel {
   private CountryTextField countryTextField;
   private int countryTextFieldRow;
   private SimpleObjectProperty<City> cityProperty = new SimpleObjectProperty<>();
+  private ObjectControlGroup objectControlGroup;
   
   /**
    * Constructor
@@ -167,6 +168,8 @@ class CityEditPanel {
     // Create the controls.
     cityTextField = componentFactory.createObjectControlString(null, 300, false, "Enter the name of a city");
     countryTextField = new CountryTextField(customization, rolodex);
+    objectControlGroup = new ObjectControlGroup();
+    objectControlGroup.addObjectControls(cityTextField, countryTextField);
     
     createGUI();
   }
@@ -250,7 +253,7 @@ class CityEditPanel {
     handleNewCountryName();
     
     // Only update if all controls have valid values.
-    if (!ObjectControl.areControlsValid(cityTextField, countryTextField)) {
+    if (!objectControlGroup.getIsValid()) {
       return;
     }
     
@@ -278,7 +281,7 @@ class CityEditPanel {
     handleNewCountryName();
     
     // Only update if all controls have valid values.
-    if (!ObjectControl.areControlsValid(cityTextField, countryTextField)) {
+    if (!objectControlGroup.getIsValid()) {
       return null;
     }
     
@@ -297,7 +300,7 @@ class CityEditPanel {
    * @param city The City object to be updated.
    */
   public boolean updateCityFromFields(City city) {
-      String cityName = cityTextField.getObjectValue();
+      String cityName = cityTextField.ocGetValue();
       if (!PgUtilities.equals(city.getCityName(), cityName)) {
         city.setCityName(cityName);
       }

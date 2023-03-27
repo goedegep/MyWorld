@@ -15,8 +15,8 @@ import goedegep.jfx.eobjecttable.EObjectTableColumnDescriptorAbstract;
 import goedegep.jfx.eobjecttable.EObjectTableColumnDescriptorBasic;
 import goedegep.jfx.eobjecttable.EObjectTableControlPanel;
 import goedegep.jfx.eobjecttable.EObjectTableDescriptor;
-import goedegep.jfx.objectcontrols.ObjectControl;
 import goedegep.jfx.objectcontrols.ObjectControlEnumComboBox;
+import goedegep.jfx.objectcontrols.ObjectControlGroup;
 import goedegep.jfx.objectcontrols.ObjectControlString;
 import goedegep.rolodex.model.ConnectionType;
 import goedegep.rolodex.model.PhoneNumber;
@@ -140,9 +140,9 @@ class PhoneNumberEditPanel {
   // Controls
   private ObjectControlString phoneNumberTextField;
   private ObjectControlEnumComboBox<ConnectionType> connectionTypeTextField;
-//  private ObjectInputConnectionType connectionTypeTextField;
   private ObjectControlString descriptionTextField;
   private SimpleObjectProperty<PhoneNumber> phoneNumberProperty = new SimpleObjectProperty<>();
+  private ObjectControlGroup objectControlGroup;
   
   /**
    * Constructor
@@ -160,6 +160,8 @@ class PhoneNumberEditPanel {
     connectionTypeTextField =componentFactory.createObjectControlEnumComboBox(ConnectionType.VAST, null, true, "Enter the kind of connection");
 //    connectionTypeTextField = new ObjectInputConnectionType(ROLODEX_PACKAGE.getConnectionType(), true, "Enter the kind of connection");
     descriptionTextField = componentFactory.createObjectControlString(null, 300, true, "Enter a description");
+    objectControlGroup = new ObjectControlGroup();
+    objectControlGroup.addObjectControls(phoneNumberTextField, connectionTypeTextField, descriptionTextField);
     
     createGUI();
   }
@@ -248,7 +250,7 @@ class PhoneNumberEditPanel {
   private void updatePhoneNumberIfControlsAreValid() {
     
     // Only update if all controls have valid values.
-    if (!ObjectControl.areControlsValid(phoneNumberTextField, connectionTypeTextField, descriptionTextField)) {
+    if (!objectControlGroup.getIsValid()) {
       return;
     }
         
@@ -268,13 +270,13 @@ class PhoneNumberEditPanel {
     }
     
     phoneNumberTextField.setText(phoneNumber.getPhoneNumber());
-    connectionTypeTextField.setObjectValue(phoneNumber.getConnectionType());
+    connectionTypeTextField.ocSetValue(phoneNumber.getConnectionType());
     descriptionTextField.setText(phoneNumber.getDescription());    
   }
   
   private void clearFields() {
     phoneNumberTextField.setText(null);
-    connectionTypeTextField.setObjectValue(null);
+    connectionTypeTextField.ocSetValue(null);
     descriptionTextField.setText(null);
   }
   
@@ -288,7 +290,7 @@ class PhoneNumberEditPanel {
   private PhoneNumber createPhoneNumberFromFields() {
     
     // Only create if all controls have valid values.
-    if (!ObjectControl.areControlsValid(phoneNumberTextField, connectionTypeTextField, descriptionTextField)) {
+    if (!objectControlGroup.getIsValid()) {
       return null;
     }
     
@@ -307,18 +309,18 @@ class PhoneNumberEditPanel {
    * @param phoneNumber The PhoneNumber object to be updated.
    */
   public boolean updatePhoneNumberFromFields(PhoneNumber phoneNumber) {
-    String phoneNumberText = phoneNumberTextField.getObjectValue();
+    String phoneNumberText = phoneNumberTextField.ocGetValue();
     if (!PgUtilities.equals(phoneNumber.getPhoneNumber(), phoneNumberText)) {
       phoneNumber.setPhoneNumber(phoneNumberText);
     }      
         
-    ConnectionType connectionType = (ConnectionType) connectionTypeTextField.getObjectValue();
+    ConnectionType connectionType = connectionTypeTextField.ocGetValue();
 //    ConnectionType connectionType = ConnectionType.getByName(connectionTypeText);
     if (!PgUtilities.equals(phoneNumber.getConnectionType(), connectionType)) {
       phoneNumber.setConnectionType(connectionType);
     } 
     
-    String description = descriptionTextField.getObjectValue();
+    String description = descriptionTextField.ocGetValue();
     if (!PgUtilities.equals(phoneNumber.getDescription(), description)) {
       phoneNumber.setDescription(description);
     }      

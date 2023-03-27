@@ -26,18 +26,16 @@ public class InstitutionTextField extends ObjectControlAutoCompleteTextField<Str
     getEntries().addAll(institutionsToString(rolodex.getInstitutionList().getInstitutions()));
   }
   
-  @Override
-  public boolean getIsValid(StringBuilder buf) {
-    
-    if (isOptional()  &&  !getIsFilledIn()) {
-      return true;
-    }
-        
-    return (!getMatchingInstitutions().isEmpty());
-  }
+//  /**
+//   * {@inheritDoc}
+//   */
+//  @Override
+//  public boolean isDataValid() {
+//    return (!getMatchingInstitutions().isEmpty());
+//  }
   
   public boolean isNonExistingInstitutionName() {
-    if (getIsFilledIn() && (getMatchingInstitutions().isEmpty())) {
+    if (ocIsFilledIn() && (getMatchingInstitutions().isEmpty())) {
       return true;
     } else {
       return false;

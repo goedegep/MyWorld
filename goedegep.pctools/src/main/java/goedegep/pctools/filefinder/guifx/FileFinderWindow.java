@@ -8,6 +8,8 @@ import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.JfxStage;
 import goedegep.jfx.objectcontrols.ObjectControlFolderSelecter;
 import goedegep.pctools.filefinder.logic.FileFinderTask;
+import javafx.beans.InvalidationListener;
+import javafx.beans.Observable;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -52,9 +54,10 @@ public class FileFinderWindow extends JfxStage {
   private ComponentFactoryFx componentFactory;
 
 //  private String currentlySelectedFolder = null;
-  private BooleanProperty folderValidProperty = null;
+//  private BooleanProperty folderValidProperty = null;
   private FileFinderTask fileFinderTask = null;
   
+  private ObjectControlFolderSelecter folderSelecter;
   private HBox filesFoundBox;
   private Button searchFrameMakerFilesButton;          // Button is only enabled if a folder is specified.
   private StatusPanel statusPanel;                     // shows status information.
@@ -96,18 +99,18 @@ public class FileFinderWindow extends JfxStage {
     Button folderChooserButton = folderSelecter.getFolderChooserButton();
     controlsPane.getChildren().add(folderChooserButton);
     
-    folderValidProperty = folderSelecter.isValid();
-    folderValidProperty.addListener(new ChangeListener<Boolean>() {
+//    folderValidProperty = folderSelecter.ocValidProperty();
+    folderSelecter.addListener(new InvalidationListener() {
 
       @Override
-      public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+      public void invalidated(Observable observable) {
         updateSearchFrameMakerFilesButton();
       }
       
     });
     
     searchFrameMakerFilesButton = componentFactory.createButton("FrameMaker files", "zoek FrameMaker files");
-    searchFrameMakerFilesButton.setOnAction(e -> searchFrameMakerFiles(folderSelecter.getObjectValue()));
+    searchFrameMakerFilesButton.setOnAction(e -> searchFrameMakerFiles(folderSelecter.ocGetValue()));
     controlsPane.getChildren().add(searchFrameMakerFilesButton);
     
     rootPane.getChildren().add(controlsPane);
@@ -152,7 +155,7 @@ public class FileFinderWindow extends JfxStage {
     } else {
       searchFrameMakerFilesButton.setText(SEARCH_FRAMEMAKER_FILES_BUTTON_TEXT);
       searchFrameMakerFilesButton.setTooltip(new Tooltip(SEARCH_FRAMEMAKER_FILES_BUTTON_TOOLTIP));
-      searchFrameMakerFilesButton.setDisable(!folderValidProperty.get());
+      searchFrameMakerFilesButton.setDisable(!folderSelecter.ocIsValid());
     }
   }
   

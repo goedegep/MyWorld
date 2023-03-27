@@ -22,8 +22,8 @@ import goedegep.jfx.eobjecttable.EObjectTableColumnGroupDescriptor;
 import goedegep.jfx.eobjecttable.EObjectTableControlPanel;
 import goedegep.jfx.eobjecttable.EObjectTableDescriptor;
 import goedegep.jfx.eobjecttable.TableFilterBooleanPredicate;
-import goedegep.jfx.objectcontrols.ObjectControl;
 import goedegep.jfx.objectcontrols.ObjectControlBoolean;
+import goedegep.jfx.objectcontrols.ObjectControlGroup;
 import goedegep.jfx.objectcontrols.ObjectControlInteger;
 import goedegep.jfx.objectcontrols.ObjectControlString;
 import goedegep.rolodex.app.logic.FamilyStringConverter;
@@ -259,6 +259,7 @@ class PersonEditPanel {
   private ObjectControlBoolean moveToAddress;
   private PhoneNumberTextField phoneNumberTextFields[];
   private SimpleObjectProperty<Person> personProperty = new SimpleObjectProperty<>();
+  private ObjectControlGroup objectControlGroup;
   
   /**
    * Constructor
@@ -288,6 +289,9 @@ class PersonEditPanel {
     for (int i = 0; i < phoneNumberTextFields.length; i++) {
       phoneNumberTextFields[i] = new PhoneNumberTextField(customization, rolodex);
     }
+    objectControlGroup = new ObjectControlGroup();
+    objectControlGroup.addObjectControls(firstNameTextField, infixTextField, surNameTextField, initialsTextField, birthdayDayTextField, birthdayMonthTextField, birthdayYearTextField, addressTextField,
+        phoneNumberTextFields[0], phoneNumberTextFields[1], phoneNumberTextFields[2], phoneNumberTextFields[3]);
     
     createGUI();
   }
@@ -428,8 +432,7 @@ class PersonEditPanel {
   private void updatePersonIfControlsAreValid() {
     
     // Only update if all controls have valid values.
-    if (!ObjectControl.areControlsValid(firstNameTextField, infixTextField, surNameTextField, initialsTextField, birthdayDayTextField, birthdayMonthTextField, birthdayYearTextField, addressTextField,
-        phoneNumberTextFields[0], phoneNumberTextFields[1], phoneNumberTextFields[2], phoneNumberTextFields[3])) {
+    if (!objectControlGroup.getIsValid()) {
       return;
     }
         
@@ -458,9 +461,9 @@ class PersonEditPanel {
     birthdayYearTextField.setText(null);
     Birthday birthday = person.getBirthday();
     if (birthday != null) {
-      birthdayDayTextField.setObjectValue(birthday.getDay());
-      birthdayMonthTextField.setObjectValue(birthday.getMonth());
-      birthdayYearTextField.setObjectValue(birthday.getYear());
+      birthdayDayTextField.ocSetValue(birthday.getDay());
+      birthdayMonthTextField.ocSetValue(birthday.getMonth());
+      birthdayYearTextField.ocSetValue(birthday.getYear());
     }
     
     addressTextField.setText(null);
@@ -497,9 +500,9 @@ class PersonEditPanel {
     birthdayDayTextField.setText(null);
     birthdayMonthTextField.setText(null);
     birthdayYearTextField.setText(null);
-    birthdayDayTextField.setObjectValue(null);
-    birthdayMonthTextField.setObjectValue(null);
-    birthdayYearTextField.setObjectValue(null);
+    birthdayDayTextField.ocSetValue(null);
+    birthdayMonthTextField.ocSetValue(null);
+    birthdayYearTextField.ocSetValue(null);
 
     addressTextField.setText(null);
     addressForFamilyAdviceLabel.setText(null);
@@ -519,8 +522,7 @@ class PersonEditPanel {
   private Person createPersonFromFields() {
     
     // Only create if all controls have valid values.
-    if (!ObjectControl.areControlsValid(firstNameTextField, infixTextField, surNameTextField, initialsTextField, birthdayDayTextField, birthdayMonthTextField, birthdayYearTextField, addressTextField,
-        phoneNumberTextFields[0], phoneNumberTextFields[1], phoneNumberTextFields[2], phoneNumberTextFields[3])) {
+    if (!objectControlGroup.getIsValid()) {
       return null;
     }
     
@@ -539,22 +541,22 @@ class PersonEditPanel {
    * @param person The Person object to be updated.
    */
   public boolean updatePersonFromFields(Person person) {
-      String firstName = firstNameTextField.getObjectValue();
+      String firstName = firstNameTextField.ocGetValue();
       if (!PgUtilities.equals(person.getFirstname(), firstName)) {
         person.setFirstname(firstName);
       }
       
-      String infix = infixTextField.getObjectValue();
+      String infix = infixTextField.ocGetValue();
       if (!PgUtilities.equals(person.getInfix(), infix)) {
         person.setInfix(infix);
       }
       
-      String surName = surNameTextField.getObjectValue();
+      String surName = surNameTextField.ocGetValue();
       if (!PgUtilities.equals(person.getSurname(), surName)) {
         person.setSurname(surName);
       }
       
-      String initials = initialsTextField.getObjectValue();
+      String initials = initialsTextField.ocGetValue();
       if (!PgUtilities.equals(person.getInitials(), initials)) {
         person.setInitials(initials);
       }
@@ -565,23 +567,23 @@ class PersonEditPanel {
       }
       
       // For now, no check on changes in birtday
-      if (birthdayDayTextField.getIsFilledIn()  || birthdayMonthTextField.getIsFilledIn() ||  birthdayYearTextField.getIsFilledIn()) {
+      if (birthdayDayTextField.ocIsFilledIn()  || birthdayMonthTextField.ocIsFilledIn() ||  birthdayYearTextField.ocIsFilledIn()) {
         Birthday birthday = person.getBirthday();
         
         if (birthday == null) {
           birthday = ROLODEX_FACTORY.createBirthday();
         }
         
-        if (birthdayDayTextField.getIsFilledIn()) {
-          birthday.setDay(birthdayDayTextField.getObjectValue());
+        if (birthdayDayTextField.ocIsFilledIn()) {
+          birthday.setDay(birthdayDayTextField.ocGetValue());
         }
         
-        if (birthdayMonthTextField.getIsFilledIn()) {
-          birthday.setMonth(birthdayMonthTextField.getObjectValue());
+        if (birthdayMonthTextField.ocIsFilledIn()) {
+          birthday.setMonth(birthdayMonthTextField.ocGetValue());
         }
         
-        if (birthdayYearTextField.getIsFilledIn()) {
-          birthday.setYear(birthdayYearTextField.getObjectValue());
+        if (birthdayYearTextField.ocIsFilledIn()) {
+          birthday.setYear(birthdayYearTextField.ocGetValue());
         }
         
         if (!person.isSetBirthday()) {

@@ -8,94 +8,117 @@ import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleObjectProperty;
-import javafx.event.EventHandler;
 import javafx.scene.input.InputEvent;
 import javafx.scene.web.HTMLEditor;
 
 public class ObjectControlHTMLString extends HTMLEditor implements ObjectControl<String> {
   
+  
   /**
-   * Indicates whether the control is optional (if true) or mandatory.
+   * Indication of whether the control is optional (if true) or mandatory.
    */
-  private BooleanProperty optionalProperty = new SimpleBooleanProperty(false);
-  private BooleanProperty isValidProperty = new SimpleBooleanProperty(true);
-  private BooleanProperty isFilledInProperty = new SimpleBooleanProperty(false);
-  private ObjectProperty<String> objectValueProperty = new SimpleObjectProperty<>();
+  private BooleanProperty ocOptionalProperty = new SimpleBooleanProperty(false);
+  
+  /**
+   * Indication of whether the control is filled-in or not.
+   */
+  private BooleanProperty ocFilledInProperty = new SimpleBooleanProperty(true);
+  
+  /**
+   * Indication of whether the control has a valid value or not.
+   */
+  private BooleanProperty ocValidProperty = new SimpleBooleanProperty(true);
+  
+  /**
+   * The current value.
+   */
+  private ObjectProperty<String> ocValueProperty = new SimpleObjectProperty<>();
+  
   private List<InvalidationListener> invalidationListeners = new ArrayList<>();
       
   /**
    * Constructor.
    * 
-   * @param text
-   * @param width
-   * @param isOptional
-   * @param toolTipText
-   * @param id
+   * @param text Initial value to set the text to (may be null).
+   * @param width The width of the HTMLEditor
+   * @param isOptional Indicates whether the control is optional (if true) or mandatory.
+   * @param toolTipText An optional ToolTip text.
    */
   public ObjectControlHTMLString(String text, double width, boolean isOptional, String toolTipText) {
-    optionalProperty.set(isOptional);
+    ocOptionalProperty.set(isOptional);
 
-    addEventHandler(InputEvent.ANY, new EventHandler<InputEvent>() {
-
-      @Override
-      public void handle(InputEvent event) {
-        handleChanges(getHtmlText());
-      }
-    });
+    addEventHandler(InputEvent.ANY, (e) -> ociHandleNewUserInput());
     
-    handleChanges(getHtmlText());
+    setHtmlText(text);
+  }
+
+//  /**
+//   * {@inheritDoc}
+//   */
+//  @Override
+//  public BooleanProperty ocOptionalProperty() {
+//    return ocOptionalProperty;
+//  }
+//
+//  /**
+//   * {@inheritDoc}
+//   */
+//  @Override
+//  public BooleanProperty ocValidProperty() {
+//    return ocValidProperty;
+//  }
+//
+//  /**
+//   * {@inheritDoc}
+//   */
+//  @Override
+//  public BooleanProperty ocFilledInProperty() {
+//    return ocFilledInProperty;
+//  }
+//
+//  /**
+//   * {@inheritDoc}
+//   */
+//  @Override
+//  public ObjectProperty<String> ocValueProperty() {
+//    return ocValueProperty;
+//  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public void ocSetValue(String objectValue) {
+    setHtmlText(objectValue);    
+  }
+  
+//  private void handleChanges(final String newValue) {
+//    ocValueProperty.set(newValue);
+//    
+//    if (!ocIsOptional()  &&  !isFilledIn()) {
+//      ocValidProperty.set(false);
+//    } else {
+//      ocValidProperty.set(true);
+//    }
+//    
+//    ocFilledInProperty.set(isFilledIn());
+//    
+//    notifyListeners();
+//  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public boolean ociDetermineFilledIn() {
+    return (getHtmlText() != null)  &&  !getHtmlText().isEmpty();
   }
 
   /**
    * {@inheritDoc}
    */
   @Override
-  public BooleanProperty ocOptionalProperty() {
-    return optionalProperty;
-  }
-
-  @Override
-  public boolean isOptional() {
-    return optionalProperty.get();
-  }
-  
-  private void handleChanges(final String newValue) {
-    objectValueProperty.setValue(newValue);
-    
-    if (!isOptional()  &&  !getIsFilledIn()) {
-      isValidProperty.set(false);
-    } else {
-      isValidProperty.set(true);
-    }
-    
-    isFilledInProperty.set(getIsFilledIn());
-    
-    notifyListeners();
-  }
-  
-  /**
-   * Notify the <code>invalidationListeners</code> that something has changed.
-   */
-  private void notifyListeners() {
-    for (InvalidationListener invalidationListener: invalidationListeners) {
-      invalidationListener.invalidated(this);
-    }
-  }
-
-  @Override
-  public boolean getIsFilledIn() {
-    String text = getHtmlText();
-    
-    return (text != null)  &&  !text.isEmpty();
-  }
-
-  @Override
-  public boolean getIsValid(StringBuilder errorMessageBuffer) {
-    return isValidProperty.get();
-  }
-
-  @Override
-  public String getObjectValue() {
+  public String ociDetermineValue() {
     String text = getHtmlText();
     
     if (text != null) {
@@ -104,36 +127,80 @@ public class ObjectControlHTMLString extends HTMLEditor implements ObjectControl
     
     return text;
   }
-
+  
+  /**
+   * {@inheritDoc}
+   * For now no action.
+   */
   @Override
-  public void setObjectValue(String objectValue) {
-    setHtmlText(objectValue);    
+  public void ociSetErrorFeedback(boolean valid) {
+  }
+  
+  /**
+   * {@inheritDoc}
+   * No action needed.
+   */
+  @Override
+  public void ociRedrawValue() {
+  }
+  
+  /**
+   * {@inheritDoc}
+   * In this case the formatted text can only be shown in a browser, so just return the HTML text.
+   */
+  @Override
+  public String ocGetObjectValueAsFormattedText()  {
+    return getHtmlText();
+  }
+  
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public List<InvalidationListener> ociGetInvalidationListeners() {
+    return invalidationListeners;
   }
 
   @Override
-  public ObjectProperty<String> objectValue() {
-    return objectValueProperty;
+  public boolean ocIsOptional() {
+    // TODO Auto-generated method stub
+    return false;
   }
 
   @Override
-  public BooleanProperty isValid() {
-    return isValidProperty;
+  public boolean ocIsFilledIn() {
+    // TODO Auto-generated method stub
+    return false;
   }
 
   @Override
-  public BooleanProperty isFilledIn() {
-    return isFilledInProperty;
+  public boolean ocIsValid() {
+    // TODO Auto-generated method stub
+    return false;
   }
 
   @Override
-  public void addListener(InvalidationListener listener) {
-    invalidationListeners.add(listener);    
+  public String ocGetValue() {
+    // TODO Auto-generated method stub
+    return null;
   }
 
   @Override
-  public void removeListener(InvalidationListener listener) {
-    invalidationListeners.remove(listener);    
+  public void ociSetValue(String value) {
+    // TODO Auto-generated method stub
+    
   }
 
+  @Override
+  public void ociSetValid(boolean valid) {
+    // TODO Auto-generated method stub
+    
+  }
+
+  @Override
+  public void ociSetFilledIn(boolean filledIn) {
+    // TODO Auto-generated method stub
+    
+  }
 
 }

@@ -41,55 +41,47 @@ public class ObjectControlFixedPointValue extends ObjectControlTextField<FixedPo
     this.minimumFactor = minimumFactor;
     this.maximumFactor = maximumFactor;
   }
-    
+  
+  /**
+   * {@inheritDoc}
+   */
   @Override
-  protected boolean isEnteredDataValid(StringBuilder buf) {
+  public FixedPointValue ociDetermineValue() {
+//    if (getText() == null  ||  getText().isEmpty()) {
+//      return null;
+//    }
+    FixedPointValue value = stringToObject(getText().trim());
+    
+    if (value == null) {
+      return null;
+    }
+    
+    if (isDataValid(value)) {
+      return value;
+    } else {
+      return null;
+    }
+  }
+    
+  /**
+   * Check whether value satisfies the constraints.
+   * 
+   * @param fixedPointValue the fixedPointValue to check.
+   * @return true if the {@code fixedPointValue} satisfies the constraints.
+   */
+  public boolean isDataValid(FixedPointValue fixedPointValue) {
     boolean valueIsValid = true;
 
     try {
-    FixedPointValue fixedPointValue = getObjectValue();
     if ((minimumFactor != null)  &&
         (fixedPointValue.getFactor() < minimumFactor)) {
       valueIsValid = false;
-      if (buf != null) {
-        buf.append("not enough digits after the comma");
-      }
+      errorText = "not enough digits after the comma";
     } else if ((maximumFactor != null)  &&
                (fixedPointValue.getFactor() > maximumFactor)) {
       valueIsValid = false;
-      if (buf != null) {
-        buf.append("too much digits after the comma");
-      }
+      errorText = "too much digits after the comma";
     }
-
-    
-//    if (getText() == null) {
-//      return false;
-//    }
-//    
-//    boolean valueIsValid = true;
-//    
-//    try {
-//      FixedPointValue fixedPointValue = FPVF.parse(getText());
-//      if ((minimumFactor != null)  &&
-//          (fixedPointValue.getFactor() < minimumFactor)) {
-//        valueIsValid = false;
-//        if (buf != null) {
-//          buf.append("not enough digits after the comma");
-//        }
-//      } else if ((maximumFactor != null)  &&
-//                 (fixedPointValue.getFactor() > maximumFactor)) {
-//        valueIsValid = false;
-//        if (buf != null) {
-//          buf.append("too much digits after the comma");
-//        }
-//      }
-//    } catch (ParseException e) {
-//      valueIsValid = false;
-//      if (buf != null) {
-//        buf.append(e.getMessage());
-//      }
-//    }
 
     return valueIsValid;
     } catch (RuntimeException e) {

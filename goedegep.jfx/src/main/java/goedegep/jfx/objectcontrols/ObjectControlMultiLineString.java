@@ -12,73 +12,113 @@ import javafx.scene.control.TextArea;
 
 public class ObjectControlMultiLineString extends TextArea implements ObjectControl<String> {
   
+  
   /**
-   * Indicates whether the control is optional (if true) or mandatory.
+   * Indication of whether the control is optional (if true) or mandatory.
    */
-  private BooleanProperty optionalProperty = new SimpleBooleanProperty(false);
-  private BooleanProperty isValidProperty = new SimpleBooleanProperty(true);
-  private BooleanProperty isFilledInProperty = new SimpleBooleanProperty(false);
-  private ObjectProperty<String> objectValueProperty = new SimpleObjectProperty<>();
+  private BooleanProperty ocOptionalProperty = new SimpleBooleanProperty(false);
+  
+  /**
+   * Indication of whether the control is filled-in or not.
+   */
+  private BooleanProperty ocFilledInProperty = new SimpleBooleanProperty(true);
+  
+  /**
+   * Indication of whether the control has a valid value or not.
+   */
+  private BooleanProperty ocValidProperty = new SimpleBooleanProperty(true);
+  
+  /**
+   * The current value.
+   */
+  private ObjectProperty<String> ocValueProperty = new SimpleObjectProperty<>();
+  
   private List<InvalidationListener> invalidationListeners = new ArrayList<>();
-      
+  
+  
+  /**
+   * Constructor.
+   * 
+   * @param text Initial value to set the text to (may be null).
+   * @param width The width of the TextField
+   * @param isOptional Indicates whether the control is optional (if true) or mandatory.
+   * @param toolTipText An optional ToolTip text.
+   */
   public ObjectControlMultiLineString(String text, double width, boolean isOptional, String toolTipText) {
-    optionalProperty.set(isOptional);
+    ocOptionalProperty.set(isOptional);
 
-    textProperty().addListener((observableValue, oldValue, newValue) -> handleChanges(newValue));
-    
-    handleChanges(textProperty().get());
+    textProperty().addListener((observableValue, oldValue, newValue) -> ociHandleNewUserInput());
+
+    setText(text);
+  }
+
+//  /**
+//   * {@inheritDoc}
+//   */
+//  @Override
+//  public BooleanProperty ocOptionalProperty() {
+//    return ocOptionalProperty;
+//  }
+//  
+//  /**
+//   * {@inheritDoc}
+//   */
+//  @Override
+//  public BooleanProperty ocValidProperty() {
+//    return ocValidProperty;
+//  }
+//  
+//  /**
+//   * {@inheritDoc}
+//   */
+//  @Override
+//  public BooleanProperty ocFilledInProperty() {
+//    return ocFilledInProperty;
+//  }
+//
+//  /**
+//   * {@inheritDoc}
+//   */
+//  @Override
+//  public ObjectProperty<String> ocValueProperty() {
+//    return ocValueProperty;
+//  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public void ocSetValue(String objectValue) {
+    setText(objectValue);    
+  }
+  
+//  private void handleChanges(final String newValue) {
+//    ocValueProperty.set(newValue);
+//    
+//    if (!ocIsOptional()  &&  !isFilledIn()) {
+//      ocValidProperty.set(false);
+//    } else {
+//      ocValidProperty.set(true);
+//    }
+//    
+//    ocFilledInProperty.set(isFilledIn());
+//    
+//    notifyListeners();
+//  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public boolean ociDetermineFilledIn() {
+    return getText() != null  &&  !getText().isEmpty();
   }
 
   /**
    * {@inheritDoc}
    */
   @Override
-  public BooleanProperty ocOptionalProperty() {
-    return optionalProperty;
-  }
-
-  @Override
-  public boolean isOptional() {
-    return optionalProperty.get();
-  }
-  
-  private void handleChanges(final String newValue) {
-    objectValueProperty.setValue(newValue);
-    
-    if (!isOptional()  &&  !getIsFilledIn()) {
-      isValidProperty.set(false);
-    } else {
-      isValidProperty.set(true);
-    }
-    
-    isFilledInProperty.set(getIsFilledIn());
-    
-    notifyListeners();
-  }
-  
-  /**
-   * Notify the <code>invalidationListeners</code> that something has changed.
-   */
-  private void notifyListeners() {
-    for (InvalidationListener invalidationListener: invalidationListeners) {
-      invalidationListener.invalidated(this);
-    }
-  }
-
-  @Override
-  public boolean getIsFilledIn() {
-    String text = getText();
-    
-    return (text != null)  &&  !text.isEmpty();
-  }
-
-  @Override
-  public boolean getIsValid(StringBuilder errorMessageBuffer) {
-    return isValidProperty.get();
-  }
-
-  @Override
-  public String getObjectValue() {
+  public String ociDetermineValue() {
     String text = getText();
     
     if (text != null) {
@@ -87,35 +127,80 @@ public class ObjectControlMultiLineString extends TextArea implements ObjectCont
     
     return text;
   }
-
+  
+  /**
+   * {@inheritDoc}
+   * The text is always valid, so no action.
+   */
   @Override
-  public void setObjectValue(String objectValue) {
-    setText(objectValue);    
+  public void ociSetErrorFeedback(boolean valid) {
+  }
+  
+  /**
+   * {@inheritDoc}
+   * There is no formatting, so no action.
+   */
+  @Override
+  public void ociRedrawValue() {
+  }
+  
+  /**
+   * {@inheritDoc}
+   * There is no formatting, so just return the value.
+   */
+  @Override
+  public String ocGetObjectValueAsFormattedText()  {
+    return ocValueProperty.get();
+  }
+  
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public List<InvalidationListener> ociGetInvalidationListeners() {
+    return invalidationListeners;
   }
 
   @Override
-  public ObjectProperty<String> objectValue() {
-    return objectValueProperty;
+  public boolean ocIsOptional() {
+    // TODO Auto-generated method stub
+    return false;
   }
 
   @Override
-  public BooleanProperty isValid() {
-    return isValidProperty;
+  public boolean ocIsFilledIn() {
+    // TODO Auto-generated method stub
+    return false;
   }
 
   @Override
-  public BooleanProperty isFilledIn() {
-    return isFilledInProperty;
+  public boolean ocIsValid() {
+    // TODO Auto-generated method stub
+    return false;
   }
 
   @Override
-  public void addListener(InvalidationListener listener) {
-    invalidationListeners.add(listener);    
+  public String ocGetValue() {
+    // TODO Auto-generated method stub
+    return null;
   }
 
   @Override
-  public void removeListener(InvalidationListener listener) {
-    invalidationListeners.remove(listener);    
+  public void ociSetValue(String value) {
+    // TODO Auto-generated method stub
+    
+  }
+
+  @Override
+  public void ociSetValid(boolean valid) {
+    // TODO Auto-generated method stub
+    
+  }
+
+  @Override
+  public void ociSetFilledIn(boolean filledIn) {
+    // TODO Auto-generated method stub
+    
   }
 
 }

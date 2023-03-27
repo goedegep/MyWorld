@@ -104,7 +104,7 @@ public class FileReferencePanel extends TitledPane {
     
     titleTextField = componentFactory.createObjectControlString(null, 200, true, "a title for the file");
     titleTextField.setId("title");
-    titleTextField.objectValue().addListener((observable, oldValue, newValue) -> updatePaneTitle());
+    titleTextField.addListener((observable) -> updatePaneTitle());
     
     createObjectInputControlGroup();
 
@@ -207,7 +207,7 @@ public class FileReferencePanel extends TitledPane {
       fileSelecter = componentFactory.createFileSelecter(null, 400, "Currently selected file",
           "Choose file", "Select a file via a file chooser", "Select the file");
       fileSelecter.setId("fileSelecter");
-      fileSelecter.objectValue().addListener((observable, oldValue, newValue) -> updatePaneTitle());
+      fileSelecter.addListener((observable) -> updatePaneTitle());
     }
     
     return fileSelecter;
@@ -223,7 +223,7 @@ public class FileReferencePanel extends TitledPane {
       folderSelecter = componentFactory.createFolderSelecter(null, 400, "Currently selected folder",
           "Choose folder", "Select a folder via a folder chooser", "Select the folder");
       folderSelecter.setId("folderSelecter");
-      folderSelecter.objectValue().addListener((observable, oldValue, newValue) -> updatePaneTitle());
+      folderSelecter.addListener((observable) -> updatePaneTitle());
     }
     
     return folderSelecter;
@@ -239,19 +239,19 @@ public class FileReferencePanel extends TitledPane {
   }
   
   public void setFile(String file) {
-    getFileSelecter().setObjectValue(file);
+    getFileSelecter().ocSetValue(file);
   }
   
   public String getFile() {
     if (handlingFileReference) {
-      if (getFileSelecter().getIsValid(null)) {
-        return getFileSelecter().getObjectValue();
+      if (getFileSelecter().ocIsValid()) {
+        return getFileSelecter().ocGetValue();
       } else {
         return null;
       }
     } else {
-      if (getFolderSelecter().getIsValid(null)) {
-        return getFolderSelecter().getObjectValue();
+      if (getFolderSelecter().ocIsValid()) {
+        return getFolderSelecter().ocGetValue();
       } else {
         return null;
       }
@@ -405,9 +405,9 @@ public class FileReferencePanel extends TitledPane {
     
     String fileOrFolderPath = null;
     if (handlingFileReference) {
-      fileOrFolderPath = getFileSelecter().getObjectValue();
+      fileOrFolderPath = getFileSelecter().ocGetValue();
     } else {
-      fileOrFolderPath = getFolderSelecter().getObjectValue();
+      fileOrFolderPath = getFolderSelecter().ocGetValue();
     }
     
     try {
@@ -454,11 +454,11 @@ public class FileReferencePanel extends TitledPane {
   private void updatePaneTitle() {
     StringBuilder buf = new  StringBuilder();
     
-    String string = titleTextField.getObjectValue();
+    String string = titleTextField.ocGetValue();
     if ((string == null)  ||  string.isEmpty()) {
 
-      if (getFileSelecter().getObjectValue() != null) {
-        File file = new File(getFileSelecter().getObjectValue());
+      if (getFileSelecter().ocGetValue() != null) {
+        File file = new File(getFileSelecter().ocGetValue());
         string = file.getName();
       } else {
         string = DEFAULT_TITLE;

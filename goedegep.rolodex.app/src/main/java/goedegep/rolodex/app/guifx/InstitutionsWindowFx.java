@@ -327,8 +327,7 @@ class InstitutionEditPanel {
   private Institution createInstitutionFromFields() {
     
     // Only create if all controls have valid values.
-    if (!ObjectControl.areControlsValid(institutionNameTextField, addressTextField, mailingAddressTextField,
-        phoneNumberTextFields[0], phoneNumberTextFields[1], phoneNumberTextFields[2], phoneNumberTextFields[3])) {
+    if (!objectControlGroup.getIsValid()) {
       return null;
     }
     
@@ -347,7 +346,7 @@ class InstitutionEditPanel {
    * @param institution The Institution object to be updated.
    */
   public boolean updateInstitutionFromFields(Institution institution) {
-      String institutionName = institutionNameTextField.getObjectValue();
+      String institutionName = institutionNameTextField.ocGetValue();
       if (!PgUtilities.equals(institution.getName(), institutionName)) {
         institution.setName(institutionName);
       }
