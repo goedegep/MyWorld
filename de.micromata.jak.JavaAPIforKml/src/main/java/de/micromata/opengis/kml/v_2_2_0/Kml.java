@@ -19,25 +19,25 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipOutputStream;
 import javax.xml.XMLConstants;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBElement;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
-import javax.xml.bind.Unmarshaller;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlElementRef;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlSchemaType;
-import javax.xml.bind.annotation.XmlType;
+import jakarta.xml.bind.JAXBContext;
+import jakarta.xml.bind.JAXBElement;
+import jakarta.xml.bind.JAXBException;
+import jakarta.xml.bind.Marshaller;
+import jakarta.xml.bind.Unmarshaller;
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlAttribute;
+import jakarta.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlElementRef;
+import jakarta.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.XmlSchemaType;
+import jakarta.xml.bind.annotation.XmlType;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.sax.SAXSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 import com.sun.istack.NotNull;
-import com.sun.xml.bind.marshaller.NamespacePrefixMapper;
+import org.glassfish.jaxb.runtime.marshaller.NamespacePrefixMapper;
 import de.micromata.opengis.kml.v_2_2_0.gx.Tour;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.InputSource;
@@ -639,7 +639,7 @@ public class Kml implements Cloneable
         if (m == null) {
             m = this.getJaxbContext().createMarshaller();
             m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-            m.setProperty("com.sun.xml.bind.namespacePrefixMapper", new Kml.NameSpaceBeautyfier());
+            m.setProperty("org.glassfish.jaxb.namespacePrefixMapper", new Kml.NameSpaceBeautyfier());
         }
         return m;
     }
@@ -765,7 +765,7 @@ public class Kml implements Cloneable
         throws IOException
     {
         ZipOutputStream out = new ZipOutputStream(new FileOutputStream(name));
-        out.setComment("KMZ-file created with Java API for KML. Visit us: http://code.google.com/p/javaapiforkml/");
+        out.setComment("KMZ-file created with Java API for KML. Visit us: https://github.com/micromata/javaapiforkml");
         this.addKmzFile(this, out, true);
         for (Kml kml: additionalFiles) {
             this.addKmzFile(kml, out, false);
@@ -900,7 +900,6 @@ public class Kml implements Cloneable
         ZipFile zip = new ZipFile(file);
         Enumeration<? extends ZipEntry> entries = zip.entries();
         if (!file.exists()) {
-            zip.close();
             return EMPTY_KML_ARRAY;
         }
         ArrayList<Kml> kmlfiles = new ArrayList<Kml>();

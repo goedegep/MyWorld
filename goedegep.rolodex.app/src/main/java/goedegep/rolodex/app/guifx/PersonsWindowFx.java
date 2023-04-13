@@ -284,7 +284,7 @@ class PersonEditPanel {
     genderComboBox.setItems(FXCollections.observableList(Arrays.asList(Gender.values())));
     addressTextField = new AddressTextField(customization, rolodex);
     addressForFamilyAdviceLabel = componentFactory.createLabel(null);
-    moveToAddress = new ObjectControlBoolean("Move to", false, true, "Select for moving to this address. In this case the existing address is moved to the 'previous addresses'.");
+    moveToAddress = componentFactory.createObjectControlBoolean("Move to", false, true, "Select for moving to this address. In this case the existing address is moved to the 'previous addresses'.");
     phoneNumberTextFields = new PhoneNumberTextField[4];
     for (int i = 0; i < phoneNumberTextFields.length; i++) {
       phoneNumberTextFields[i] = new PhoneNumberTextField(customization, rolodex);
@@ -339,24 +339,24 @@ class PersonEditPanel {
     label = componentFactory.createLabel("Firstname:");
     gridPane.add(label, 0, row);
 
-    gridPane.add(firstNameTextField, 1, row);
+    gridPane.add(firstNameTextField.ocGetControl(), 1, row);
     
     label = componentFactory.createLabel("Infix:");
     gridPane.add(label, 2, row);
 
-    gridPane.add(infixTextField, 3, row);
+    gridPane.add(infixTextField.ocGetControl(), 3, row);
     
     label = componentFactory.createLabel("Surname:");
     gridPane.add(label, 4, row);
 
-    gridPane.add(surNameTextField, 5, row);
+    gridPane.add(surNameTextField.ocGetControl(), 5, row);
     
     row++;
     
     label = componentFactory.createLabel("Initials:");
     gridPane.add(label, 0, row);
 
-    gridPane.add(initialsTextField, 1, row);
+    gridPane.add(initialsTextField.ocGetControl(), 1, row);
     
     label = componentFactory.createLabel("Gender:");
     gridPane.add(label, 2, row);
@@ -372,17 +372,17 @@ class PersonEditPanel {
     label = componentFactory.createLabel("Day:");
     birthdayBox.getChildren().add(label);
     
-    birthdayBox.getChildren().add(birthdayDayTextField);
+    birthdayBox.getChildren().add(birthdayDayTextField.ocGetControl());
     
     label = componentFactory.createLabel("Month:");
     birthdayBox.getChildren().add(label);
     
-    birthdayBox.getChildren().add(birthdayMonthTextField);
+    birthdayBox.getChildren().add(birthdayMonthTextField.ocGetControl());
     
     label = componentFactory.createLabel("Year:");
     birthdayBox.getChildren().add(label);
     
-    birthdayBox.getChildren().add(birthdayYearTextField);
+    birthdayBox.getChildren().add(birthdayYearTextField.ocGetControl());
     gridPane.add(birthdayBox, 1, row, 3, 1);
     
     row++;
@@ -390,9 +390,9 @@ class PersonEditPanel {
     label = componentFactory.createLabel("Address:");
     gridPane.add(label, 0, row);
 
-    gridPane.add(addressTextField, 1, row);
+    gridPane.add(addressTextField.ocGetControl(), 1, row);
     
-    gridPane.add(moveToAddress, 2, row);
+    gridPane.add(moveToAddress.ocGetControl(), 2, row);
     
     gridPane.add(addressForFamilyAdviceLabel, 3, row, 4, 1);
     
@@ -402,7 +402,7 @@ class PersonEditPanel {
     gridPane.add(label,  0, row);
     
     for (int i = 0; i < phoneNumberTextFields.length; i++) {
-      gridPane.add(phoneNumberTextFields[i], 1 + i, row);
+      gridPane.add(phoneNumberTextFields[i].ocGetControl(), 1 + i, row);
     }
     
   }
@@ -451,14 +451,14 @@ class PersonEditPanel {
       return;
     }
     
-    firstNameTextField.setText(person.getFirstname());
-    infixTextField.setText(person.getInfix());
-    surNameTextField.setText(person.getSurname());
-    initialsTextField.setText(person.getInitials());
+    firstNameTextField.ocSetValue(person.getFirstname());
+    infixTextField.ocSetValue(person.getInfix());
+    surNameTextField.ocSetValue(person.getSurname());
+    initialsTextField.ocSetValue(person.getInitials());
     genderComboBox.setValue(person.getGender());
-    birthdayDayTextField.setText(null);
-    birthdayMonthTextField.setText(null);
-    birthdayYearTextField.setText(null);
+    birthdayDayTextField.ocSetValue(null);
+    birthdayMonthTextField.ocSetValue(null);
+    birthdayYearTextField.ocSetValue(null);
     Birthday birthday = person.getBirthday();
     if (birthday != null) {
       birthdayDayTextField.ocSetValue(birthday.getDay());
@@ -466,10 +466,10 @@ class PersonEditPanel {
       birthdayYearTextField.ocSetValue(birthday.getYear());
     }
     
-    addressTextField.setText(null);
+    addressTextField.ocSetValue(null);
     Address address = person.getAddress();
     if (address != null) {
-      addressTextField.setText(address.toString());
+      addressTextField.ocSetValue(address.toString());
     }
     
     Family personsFamily = person.getFamily();
@@ -484,31 +484,31 @@ class PersonEditPanel {
     List<PhoneNumber> phoneNumbers = person.getPhoneNumbers();
     for (int i = 0; i < phoneNumberTextFields.length; i++) {
       if (phoneNumbers.size() > i) {
-        phoneNumberTextFields[i].setText(phoneNumbers.get(i).toString());
+        phoneNumberTextFields[i].ocSetValue(phoneNumbers.get(i).toString());
       } else {
-        phoneNumberTextFields[i].setText(null);
+        phoneNumberTextFields[i].ocSetValue(null);
       }
     }
   }
   
   private void clearFields() {
-    firstNameTextField.setText(null);
-    infixTextField.setText(null);
-    surNameTextField.setText(null);
-    initialsTextField.setText(null);
+    firstNameTextField.ocSetValue(null);
+    infixTextField.ocSetValue(null);
+    surNameTextField.ocSetValue(null);
+    initialsTextField.ocSetValue(null);
     genderComboBox.setValue(null);
-    birthdayDayTextField.setText(null);
-    birthdayMonthTextField.setText(null);
-    birthdayYearTextField.setText(null);
+    birthdayDayTextField.ocSetValue(null);
+    birthdayMonthTextField.ocSetValue(null);
+    birthdayYearTextField.ocSetValue(null);
     birthdayDayTextField.ocSetValue(null);
     birthdayMonthTextField.ocSetValue(null);
     birthdayYearTextField.ocSetValue(null);
 
-    addressTextField.setText(null);
+    addressTextField.ocSetValue(null);
     addressForFamilyAdviceLabel.setText(null);
-    moveToAddress.setSelected(false);
+    moveToAddress.ocSetValue(false);
     for (int i = 0; i < phoneNumberTextFields.length; i++) {
-      phoneNumberTextFields[i].setText(null);
+      phoneNumberTextFields[i].ocSetValue(null);
     }
   }
   
@@ -594,7 +594,7 @@ class PersonEditPanel {
       }
             
       Address address = addressTextField.getMatchingAddress();
-      if (moveToAddress.isSelected()) {
+      if (moveToAddress.ocGetValue()) {
         Address currentAddress = person.getAddress();
         if (currentAddress != null) {
           AddressForPeriod addressForPeriod = ROLODEX_FACTORY.createAddressForPeriod();

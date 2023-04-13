@@ -223,14 +223,14 @@ class PhoneEditPanel {
     label = componentFactory.createLabel("Phone description:");
     gridPane.add(label, 0, row);
 
-    gridPane.add(phoneDescriptionTextField, 1, row);
+    gridPane.add(phoneDescriptionTextField.ocGetControl(), 1, row);
         
     row++;
     
     label = componentFactory.createLabel("Phone type:");
     gridPane.add(label, 0, row);
 
-    gridPane.add(phoneTypeTextField, 1, row);
+    gridPane.add(phoneTypeTextField.ocGetControl(), 1, row);
     
   }
   
@@ -278,13 +278,13 @@ class PhoneEditPanel {
       return;
     }
     
-    phoneDescriptionTextField.setText(phone.getDescription());
-    phoneTypeTextField.setText(phone.getPhoneType());
+    phoneDescriptionTextField.ocSetValue(phone.getDescription());
+    phoneTypeTextField.ocSetValue(phone.getPhoneType());
   }
   
   private void clearFields() {
-    phoneDescriptionTextField.setText(null);
-    phoneTypeTextField.setText(null);
+    phoneDescriptionTextField.ocSetValue(null);
+    phoneTypeTextField.ocSetValue(null);
   }
   
   /**
@@ -424,19 +424,19 @@ class PhoneAddressBookEntryEditPanel {
     label = componentFactory.createLabel("Entry name:");
     gridPane.add(label, 0, row);
 
-    gridPane.add(entryNameTextField, 1, row);
+    gridPane.add(entryNameTextField.ocGetControl(), 1, row);
     
     label = componentFactory.createLabel("Entry type:");
     gridPane.add(label, 2, row);
 
-    gridPane.add(phoneAddressBookEntryTypeField, 3, row);
+    gridPane.add(phoneAddressBookEntryTypeField.ocGetControl(), 3, row);
     
     row++;
     
     label = componentFactory.createLabel("Phone number:");
     gridPane.add(label, 0, row);
 
-    gridPane.add(phoneNumberTextField, 1, row);
+    gridPane.add(phoneNumberTextField.ocGetControl(), 1, row);
     
   }
   
@@ -494,15 +494,15 @@ class PhoneAddressBookEntryEditPanel {
       return;
     }
     
-    entryNameTextField.setText(phoneAddressBookEntry.getEntryName());
+    entryNameTextField.ocSetValue(phoneAddressBookEntry.getEntryName());
     phoneAddressBookEntryTypeField.ocSetValue(phoneAddressBookEntry.getEntryType());
     phoneNumberTextField.ocSetValue(phoneAddressBookEntry.getPhoneNumber().toString());
   }
   
   private void clearFields() {
-    entryNameTextField.setText(null);
+    entryNameTextField.ocSetValue(null);
     phoneAddressBookEntryTypeField.ocSetValue(null);
-    phoneNumberTextField.setText(null);
+    phoneNumberTextField.ocSetValue(null);
   }
   
   /**

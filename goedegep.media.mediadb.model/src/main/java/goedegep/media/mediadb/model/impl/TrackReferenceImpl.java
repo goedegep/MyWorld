@@ -37,6 +37,7 @@ import java.util.logging.Logger;
  * @generated
  */
 public class TrackReferenceImpl extends MinimalEObjectImpl.Container implements TrackReference {
+  @SuppressWarnings("unused")
   private static final Logger LOGGER = Logger.getLogger(TrackReferenceImpl.class.getName());
   private static final String NEWLINE = System.getProperty("line.separator");
 

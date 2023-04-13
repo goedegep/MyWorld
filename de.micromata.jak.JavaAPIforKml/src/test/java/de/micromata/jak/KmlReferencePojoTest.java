@@ -468,7 +468,7 @@ public final class KmlReferencePojoTest implements IKMLReference {
 		folder.setName("...");
 
 		final Author author = new Author();
-		// TODO:
+		// FIXME:
 		// author.setName("...");
 		author.getNameOrUriOrEmail().add("...");
 		folder.setAtomAuthor(author);

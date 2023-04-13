@@ -174,7 +174,7 @@ class FamilyEditPanel {
     familyTitleTextField = componentFactory.createObjectControlString(null, 300, true, "Enter the family title");
     familyNameTextField = componentFactory.createObjectControlString(null, 100, true, "Enter the family name");
     addressTextField = new AddressTextField(customization, rolodex);
-    moveToAddress = new ObjectControlBoolean("Move to", false, true, "Select for moving to this address. In this case the existing address is moved to the 'previous addresses'.");
+    moveToAddress = componentFactory.createObjectControlBoolean("Move to", false, true, "Select for moving to this address. In this case the existing address is moved to the 'previous addresses'.");
     phoneNumberTextFields = new PhoneNumberTextField[4];
     for (int i = 0; i < phoneNumberTextFields.length; i++) {
       phoneNumberTextFields[i] = new PhoneNumberTextField(customization, rolodex);
@@ -229,21 +229,21 @@ class FamilyEditPanel {
     label = componentFactory.createLabel("Family title:");
     gridPane.add(label, 0, row);
 
-    gridPane.add(familyTitleTextField, 1, row);
+    gridPane.add(familyTitleTextField.ocGetControl(), 1, row);
     
     label = componentFactory.createLabel("Family name:");
     gridPane.add(label, 2, row);
 
-    gridPane.add(familyNameTextField, 3, row);
+    gridPane.add(familyNameTextField.ocGetControl(), 3, row);
     
     row++;
     
     label = componentFactory.createLabel("Address:");
     gridPane.add(label, 0, row);
 
-    gridPane.add(addressTextField, 1, row);
+    gridPane.add(addressTextField.ocGetControl(), 1, row);
     
-    gridPane.add(moveToAddress, 2, row);
+    gridPane.add(moveToAddress.ocGetControl(), 2, row);
     
     row++;
     
@@ -251,7 +251,7 @@ class FamilyEditPanel {
     gridPane.add(label,  0, row);
     
     for (int i = 0; i < phoneNumberTextFields.length; i++) {
-      gridPane.add(phoneNumberTextFields[i], 1 + i, row);
+      gridPane.add(phoneNumberTextFields[i].ocGetControl(), 1 + i, row);
     }
     
   }
@@ -300,33 +300,33 @@ class FamilyEditPanel {
       return;
     }
     
-    familyTitleTextField.setText(family.getFamilyTitle());
-    familyNameTextField.setText(family.getFamilyName());
+    familyTitleTextField.ocSetValue(family.getFamilyTitle());
+    familyNameTextField.ocSetValue(family.getFamilyName());
     
-    addressTextField.setText(null);
+    addressTextField.ocGetControl().setText(null);
     Address address = family.getAddress();
     if (address != null) {
-      addressTextField.setText(address.toString());
+      addressTextField.ocGetControl().setText(address.toString());
     }
     
     List<PhoneNumber> phoneNumbers = family.getPhoneNumbers();
     for (int i = 0; i < phoneNumberTextFields.length; i++) {
       if (phoneNumbers.size() > i) {
-        phoneNumberTextFields[i].setText(phoneNumbers.get(i).toString());
+        phoneNumberTextFields[i].ocGetControl().setText(phoneNumbers.get(i).toString());
       } else {
-        phoneNumberTextFields[i].setText(null);
+        phoneNumberTextFields[i].ocGetControl().setText(null);
       }
     }
   }
   
   private void clearFields() {
-    familyTitleTextField.setText(null);
-    familyNameTextField.setText(null);
+    familyTitleTextField.ocSetValue(null);
+    familyNameTextField.ocSetValue(null);
 
-    addressTextField.setText(null);
-    moveToAddress.setSelected(false);
+    addressTextField.ocGetControl().setText(null);
+    moveToAddress.ocSetValue(false);
     for (int i = 0; i < phoneNumberTextFields.length; i++) {
-      phoneNumberTextFields[i].setText(null);
+      phoneNumberTextFields[i].ocGetControl().setText(null);
     }
   }
   
@@ -370,7 +370,7 @@ class FamilyEditPanel {
       }
                   
       Address address = addressTextField.getMatchingAddress();
-      if (moveToAddress.isSelected()) {
+      if (moveToAddress.ocGetValue()) {
         Address currentAddress = family.getAddress();
         if (currentAddress != null) {
           AddressForPeriod addressForPeriod = ROLODEX_FACTORY.createAddressForPeriod();

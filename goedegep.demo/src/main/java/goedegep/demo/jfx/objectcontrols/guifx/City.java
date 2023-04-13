@@ -26,13 +26,13 @@ public class City {
     this.name = name;
   }
 
-  public List<City> getCities() {
+  public static List<City> getCities() {
     return CITIES;
   }
 
   public static City getCityForName(String cityName) {
     for (City city: CITIES) {
-      if (city.name.equals(cityName)) {
+      if (city.name.equalsIgnoreCase(cityName)) {
         return city;
       }
     }

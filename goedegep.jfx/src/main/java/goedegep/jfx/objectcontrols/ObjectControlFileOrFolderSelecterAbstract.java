@@ -1,59 +1,24 @@
 package goedegep.jfx.objectcontrols;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
+import goedegep.jfx.CustomizationFx;
+import goedegep.util.PgUtilities;
 import goedegep.util.file.FileUtils;
-import javafx.beans.InvalidationListener;
-import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.property.SimpleObjectProperty;
 import javafx.scene.control.TextField;
-import javafx.scene.control.Tooltip;
 
 /**
  * This class provides the common functionality for the FileSelecter and FolderSelecter.
  */
-public abstract class ObjectControlFileOrFolderSelecterAbstract implements ObjectControl<String> {
+public abstract class ObjectControlFileOrFolderSelecterAbstract extends ObjectControlAbstract<File> {
 	
-
-  /**
-   * Indication of whether the control is optional (if true) or mandatory.
-   */
-//  private BooleanProperty ocOptionalProperty = new SimpleBooleanProperty(false);
-
-  /**
-   * Indication of whether the control is filled-in or not.
-   */
-  protected boolean filledIn;
-//  private BooleanProperty ocFilledInProperty = new SimpleBooleanProperty(true);
-
-  /**
-   * Indication of whether the control has a valid value or not.
-   */
-//  private BooleanProperty ocValidProperty = new SimpleBooleanProperty(true);
-  protected boolean valid;
-
-  /**
-   * The current value.
-   * Note: it is not possible to use the textProperty of the pathTextField, as this is a StringProperty instead of ObjectProperty<String>.
-   * So this property only reflects the value of the textProperty of the pathTextField.
-   */
-  private ObjectProperty<String> ocValueProperty = new SimpleObjectProperty<>();
-
   
   /**
    * TextField to show and edit the currently selected file or folder.
    */
-  private TextField pathTextField;
-  
-  
-  /**
-   * List of InvalidationListeners.
-   */
-  private List<InvalidationListener> invalidationListeners = new ArrayList<>();
+  private TextField pathTextField = null;
   
   /**
    * Prefix - The first part of the file or folder path.
@@ -66,22 +31,17 @@ public abstract class ObjectControlFileOrFolderSelecterAbstract implements Objec
    * @param textFieldWidth Value for the width of the TextField. If this value is -1, the default width is used.
    * @param textFieldToolTipText an optional tooltip text for the TextField.
    */
-  protected ObjectControlFileOrFolderSelecterAbstract(int textFieldWidth, String textFieldToolTipText) {
+  protected ObjectControlFileOrFolderSelecterAbstract(CustomizationFx customization, int textFieldWidth, String textFieldToolTipText) {
+    super(false);
     
-    pathTextField = new TextField();
+    pathTextField = customization.getComponentFactoryFx().createTextField(textFieldWidth, textFieldToolTipText);
     
-    if (textFieldWidth != -1) {
-      pathTextField.setPrefWidth(textFieldWidth);
-    }
+    pathTextField.textProperty().addListener((o) -> ociHandleNewUserInput());
+    pathTextField.focusedProperty().addListener((observableValue, oldValue, newValue) -> {
+      if (!newValue)
+        ociRedrawValue();
+    });
     
-    if (textFieldToolTipText != null) {
-      pathTextField.setTooltip(new Tooltip(textFieldToolTipText));
-    }
-    
-    ocValueProperty.bind(pathTextField.textProperty());
-    
-    valid = false;
-//    ocValidProperty.set(false);
  }
 
   /**
@@ -102,48 +62,26 @@ public abstract class ObjectControlFileOrFolderSelecterAbstract implements Objec
    * 
    * @return the TextField to show and edit the currently selected file or folder.
    */
-  public TextField getPathTextField() {
+  @Override
+  public TextField ocGetControl() {
     return pathTextField;
   }
-
-//  /**
-//   * {@inheritDoc}
-//   */
-//  @Override
-//  public BooleanProperty ocOptionalProperty() {
-//    return ocOptionalProperty;
-//  }
-//
-//  /**
-//   * @InheritDoc
-//   */
-//  @Override
-//  public ObjectProperty<String> ocValueProperty() {
-//    return ocValueProperty;
-//  }
-//
-//  /**
-//   * @InheritDoc
-//   */
-//  @Override
-//  public BooleanProperty ocValidProperty() {
-//    return ocValidProperty;
-//  }
-//
-//  /**
-//   * @InheritDoc
-//   */
-//  @Override
-//  public BooleanProperty ocFilledInProperty() {
-//    return ocFilledInProperty;
-//  }  
 
   /**
    * @InheritDoc
    */
   @Override
-  public void ocSetValue(String filePathText) {
-    pathTextField.textProperty().set(filePathText);
+  public void ocSetValue(File file) {
+    ocSetFilename(file != null ? file.getAbsolutePath() : null);
+  }
+  
+  public void ocSetFilename(String filename) {
+    if (filename != null) {
+      referenceValue = new File(filename);
+    } else {
+      referenceValue = null;
+    }
+    pathTextField.textProperty().set(filename);
   }
 
   /**
@@ -158,8 +96,9 @@ public abstract class ObjectControlFileOrFolderSelecterAbstract implements Objec
    * @InheritDoc
    */
   @Override
-  public String ociDetermineValue() {
-    return pathTextField.textProperty().get();
+  public File ociDetermineValue() {
+    File file = new File(pathTextField.textProperty().get());
+    return file;
   }
 
   /**
@@ -168,6 +107,11 @@ public abstract class ObjectControlFileOrFolderSelecterAbstract implements Objec
    */
   @Override
   public void ociSetErrorFeedback(boolean valid) {
+    if (!ocIsValid()) {
+      ocGetControl().setStyle("-fx-text-inner-color: red;");
+    } else {
+      ocGetControl().setStyle("-fx-text-inner-color: black;");
+    }
   }
 
   /**
@@ -176,6 +120,8 @@ public abstract class ObjectControlFileOrFolderSelecterAbstract implements Objec
    */
   @Override
   public void ociRedrawValue() {
+    String filePathText = value != null ? value.getAbsolutePath() : null;
+    pathTextField.textProperty().set(filePathText);
   }
 
   /**
@@ -184,24 +130,9 @@ public abstract class ObjectControlFileOrFolderSelecterAbstract implements Objec
    */
   @Override
   public String ocGetObjectValueAsFormattedText() {
-    return pathTextField.textProperty().get();
+    return value.getAbsolutePath();
   }
   
-  /**
-   * @InheritDoc
-   */
-  @Override
-  public String getId() {
-    return pathTextField.getId();
-  }
-  
-  /**
-   * @InheritDoc
-   */
-  public void setId(String id) {
-    pathTextField.setId(id);
-  }  
-
   public String getPrefix() {
     return prefix;
   }
@@ -228,52 +159,32 @@ public abstract class ObjectControlFileOrFolderSelecterAbstract implements Objec
   }
   
   /**
+   * Get the current value as a Path.
+   * 
+   * @return the current value as a Path.
+   */
+  public Path ocGetValueAsPath() {
+    return value != null ? Paths.get(value.getAbsolutePath()) : null;
+  }
+  
+  /**
+   * Get the absolute path for the current value.
+   * 
+   * @return the absolute path for the current value.
+   */
+  public String ocGetAbsolutePath() {
+    if (value != null) {
+      return value.getAbsolutePath();
+    } else {
+      return null;
+    }
+  }
+  
+  /**
    * {@inheritDoc}
    */
   @Override
-  public List<InvalidationListener> ociGetInvalidationListeners() {
-    return invalidationListeners;
-  }
-
-  @Override
-  public boolean ocIsOptional() {
-    // TODO Auto-generated method stub
-    return false;
-  }
-
-  @Override
-  public boolean ocIsFilledIn() {
-    // TODO Auto-generated method stub
-    return false;
-  }
-
-  @Override
-  public boolean ocIsValid() {
-    // TODO Auto-generated method stub
-    return false;
-  }
-
-  @Override
-  public String ocGetValue() {
-    // TODO Auto-generated method stub
-    return null;
-  }
-
-  @Override
-  public void ociSetValue(String value) {
-    // TODO Auto-generated method stub
-    
-  }
-
-  @Override
-  public void ociSetValid(boolean valid) {
-    // TODO Auto-generated method stub
-    
-  }
-
-  @Override
-  public void ociSetFilledIn(boolean filledIn) {
-    // TODO Auto-generated method stub
-    
+  public boolean ocIsChanged() {
+    return !PgUtilities.equals(ocGetAbsolutePath(), referenceValue != null ? referenceValue.getAbsolutePath() : "null");
   }
 }

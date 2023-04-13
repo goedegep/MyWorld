@@ -5,9 +5,6 @@ import java.io.FileNotFoundException;
 import java.lang.reflect.Field;
 import java.util.logging.Logger;
 
-import org.eclipse.emf.ecore.EPackage;
-import org.eclipse.emf.ecore.EcorePackage;
-
 import goedegep.properties.model.PropertiesFactory;
 import goedegep.properties.model.PropertiesPackage;
 import goedegep.properties.model.Property;

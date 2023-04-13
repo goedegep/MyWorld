@@ -10,28 +10,25 @@ import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.util.Iterator;
 import java.util.logging.Logger;
 
 import javax.imageio.ImageIO;
-import javax.imageio.ImageReader;
-import javax.imageio.stream.ImageInputStream;
-
-import javafx.scene.canvas.Canvas;
-import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.image.ImageView;
 
 import org.apache.commons.imaging.ImageReadException;
 import org.apache.commons.imaging.formats.tiff.constants.TiffDirectoryConstants;
 import org.apache.commons.imaging.formats.tiff.constants.TiffTagConstants;
 
 import goedegep.geo.WGS84Coordinates;
+import javafx.scene.canvas.Canvas;
+import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.image.ImageView;
 
 /**
  * This is a utility class with methods which operate on images (Image).
  *
  */
 public class ImageUtils {
+  @SuppressWarnings("unused")
   private static final Logger LOGGER = Logger.getLogger(ImageUtils.class.getName());
   
   /**

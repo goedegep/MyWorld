@@ -37,7 +37,7 @@ public class ObjectControlGroup implements Iterable<ObjectControl<? extends Obje
    * @param objectControl The ObjectInput to check.
    */
   public void addObjectControl(ObjectControl<?> objectControl) {
-    LOGGER.info("=> " + (objectControl.getId() != null ? objectControl.getId() : "<null>"));
+    LOGGER.info("=> " + (objectControl.ocGetId() != null ? objectControl.ocGetId() : "<null>"));
     
     InvalidationListener invalidationListener = (observable) -> handleChanges(observable);
     objectControl.addListener(invalidationListener);
@@ -203,7 +203,7 @@ public class ObjectControlGroup implements Iterable<ObjectControl<? extends Obje
     boolean isFilledIn = false;
 
     for (ObjectControl<?> objectInput: this) {
-      LOGGER.info("objectInput: " + objectInput.getId());
+      LOGGER.info("objectInput: " + objectInput.ocGetId());
       if (objectInput.ocIsFilledIn()) {
         isFilledIn = true;
         LOGGER.info("Is filled");
@@ -235,6 +235,19 @@ public class ObjectControlGroup implements Iterable<ObjectControl<? extends Obje
     while (iterator.hasNext()) {
       ObjectControl<?> objectInput = iterator.next();
       if (objectInput.ocIsFilledIn()) {
+        return true;
+      }
+    }
+    
+    return false;
+  }
+
+  public boolean isAnyObjectControlChanged() {
+    Iterator<ObjectControl<?>> iterator = iterator();
+    
+    while (iterator.hasNext()) {
+      ObjectControl<?> objectInput = iterator.next();
+      if (objectInput.ocIsChanged()) {
         return true;
       }
     }

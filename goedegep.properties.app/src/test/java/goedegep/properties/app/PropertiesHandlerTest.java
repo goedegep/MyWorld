@@ -1,14 +1,8 @@
 package goedegep.properties.app;
 
-import static org.junit.Assert.assertEquals;
-
 import java.io.File;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import org.junit.Test;
 
 public class PropertiesHandlerTest {
   
@@ -75,6 +69,7 @@ public class PropertiesHandlerTest {
    * @param fileName filename of the resource.
    * @return a path to the resource
    */
+  @SuppressWarnings("unused")
   private static String createResourcePath(boolean runningInEclipse, String projectPath, String fileName) {
     if (runningInEclipse  &&  (projectPath != null)) {
       File file = new File(projectPath, fileName);

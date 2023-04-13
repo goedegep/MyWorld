@@ -28,7 +28,6 @@ import goedegep.mapview.MapViewUtil;
 import goedegep.poi.app.guifx.POIIcons;
 import goedegep.poi.model.POICategoryId;
 import goedegep.resources.ImageResource;
-import goedegep.util.emf.EmfUtil;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.ObservableMap;

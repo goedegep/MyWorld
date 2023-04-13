@@ -35,6 +35,7 @@ import goedegep.media.mediadb.model.MediumType;
  * @generated
  */
 public class MediumInfoImpl extends MinimalEObjectImpl.Container implements MediumInfo {
+  @SuppressWarnings("unused")
   private static final Logger LOGGER = Logger.getLogger(MediumInfoImpl.class.getName());
 
   /**

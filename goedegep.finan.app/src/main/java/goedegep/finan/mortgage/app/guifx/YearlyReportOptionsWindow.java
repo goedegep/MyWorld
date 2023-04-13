@@ -12,7 +12,6 @@ import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.JfxStage;
 import goedegep.jfx.objectcontrols.ObjectControlFileSelecter;
 import goedegep.util.datetime.DateUtil;
-import javafx.beans.property.BooleanProperty;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -81,7 +80,7 @@ public class YearlyReportOptionsWindow extends JfxStage {
     fileSelecter = componentFactory.createFileSelecter(null, 400, "File to save the report to", "Choose file", "Open a file chooser", "Report file selection");
     fileSelecter.addFileType(".pdf", "Portable Data Format", true);
     fileSelecter.setOpenOrSaveDialog(true);
-    Node fileNameTextField = fileSelecter.getPathTextField();
+    Node fileNameTextField = fileSelecter.ocGetControl();
     fileSelecter.addListener((observable) -> {
       LOGGER.severe("In textProperty Listener");
       checkOptions();      
@@ -120,7 +119,7 @@ public class YearlyReportOptionsWindow extends JfxStage {
   private void generateYearlyReport() {
     LOGGER.severe("=>" + fileSelecter.ocGetValue());
     int year = (int) yearComboBox.getValue();
-    File file = new File(fileSelecter.ocGetValue());
+    File file = fileSelecter.ocGetValue();
     MortgageReportsGenerator.generateYearlyPdfReport(mortgageCalculator, year, file);
     LOGGER.severe("Yearly report for " + year + " generated to:  " + file.getAbsolutePath());    
   }

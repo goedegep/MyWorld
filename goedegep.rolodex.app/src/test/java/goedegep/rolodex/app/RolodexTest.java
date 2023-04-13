@@ -13,7 +13,6 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import goedegep.rolodex.app.RolodexRegistry;
 import goedegep.rolodex.model.Address;
 import goedegep.rolodex.model.Gender;
 import goedegep.rolodex.model.Person;

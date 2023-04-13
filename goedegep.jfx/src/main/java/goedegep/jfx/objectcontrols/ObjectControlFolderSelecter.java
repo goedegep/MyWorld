@@ -3,10 +3,10 @@ package goedegep.jfx.objectcontrols;
 import java.io.File;
 import java.util.logging.Logger;
 
+import goedegep.jfx.CustomizationFx;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.Button;
-import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
 import javafx.stage.DirectoryChooser;
 
@@ -33,6 +33,7 @@ public class ObjectControlFolderSelecter extends ObjectControlFileOrFolderSelect
   private static final Logger LOGGER = Logger.getLogger(ObjectControlFolderSelecter.class.getName());
   
   private Button folderChooserButton;
+  private DirectoryChooser directoryChooser = null;
   
   /**
    * Constructor.
@@ -45,38 +46,9 @@ public class ObjectControlFolderSelecter extends ObjectControlFileOrFolderSelect
    * @param folderChooserButtonToolTipText if not null, this text will be used as Tooltip for the button to call up a DirectoryChooser.
    * @param directoryChooserTitle title for the DirectoryChooser (may not be null)
    */
-  public ObjectControlFolderSelecter(String initiallySelecterFolder, int textFieldWidth, String textFieldToolTipText,
+  public ObjectControlFolderSelecter(CustomizationFx customization, String initiallySelecterFolder, int textFieldWidth, String textFieldToolTipText,
       String folderChooserButtonText, String folderChooserButtonToolTipText, String directoryChooserTitle) {
-    super(textFieldWidth, textFieldToolTipText);
-    
-    getPathTextField().textProperty().addListener((observable, oldValue, newValue) -> {
-      if (newValue != null) {
-        File folder = new File(newValue);
-        if (folder.exists()  &&  folder.isDirectory()) {
-//        	ocValidProperty().set(true);
-        	valid = true;
-        } else {
-//        	ocValidProperty().set(false);
-        	valid = false;
-        }
-//        ocFilledInProperty().set(!newValue.isEmpty());
-        filledIn = !newValue.isEmpty();
-      } else {
-//    	  ocValidProperty().set(false);
-          valid = false;
-//        ocFilledInProperty().set(false);
-        filledIn = false;
-      }
-      
-      if (!ocIsValid()) {
-        getPathTextField().setStyle("-fx-text-inner-color: red;");
-      } else {
-        
-        getPathTextField().setStyle("-fx-text-inner-color: black;");
-      }
-      
-      ociNotifyListeners();
-    });
+    super(customization, textFieldWidth, textFieldToolTipText);
     
     folderChooserButton = new Button(folderChooserButtonText);
     
@@ -87,22 +59,32 @@ public class ObjectControlFolderSelecter extends ObjectControlFileOrFolderSelect
     folderChooserButton.setOnAction(new EventHandler<ActionEvent>() {
       @Override
       public void handle(ActionEvent event) {
-        DirectoryChooser directoryChooser = new DirectoryChooser();
-        directoryChooser.setTitle(directoryChooserTitle);
+        if (directoryChooser == null) {
+          directoryChooser = new DirectoryChooser();
+          directoryChooser.setTitle(directoryChooserTitle);
+        }
         if (ocIsValid()) {
-          directoryChooser.setInitialDirectory(new File(getPathTextField().getText()));
+          directoryChooser.setInitialDirectory(new File(ocGetControl().getText()));
         }
         File selectedFolder = directoryChooser.showDialog(null);
         if (selectedFolder != null) {
           // The selected folder is written to the text field, which automatically leads an update of the selectionValidProperty.
-          getPathTextField().setText(selectedFolder.getAbsolutePath());
+          ocGetControl().setText(selectedFolder.getAbsolutePath());
         }
       }
     });
     
     // Do this at the end, so it automatically leads an update of the selectionValidProperty.
     if (initiallySelecterFolder != null) {
-      ocSetValue(initiallySelecterFolder);
+      ocSetValue(new File(initiallySelecterFolder));
+    }
+  }
+  
+  public String ocGetAbsolutePath() {
+    if (value != null) {
+      return value.getAbsolutePath();
+    } else {
+      return null;
     }
   }
 
@@ -115,4 +97,11 @@ public class ObjectControlFolderSelecter extends ObjectControlFileOrFolderSelect
     return folderChooserButton;
   }
 
+  @Override
+  public void ociSetValue(File value) {
+    this.value = value;
+    if (directoryChooser != null) {
+      directoryChooser.setInitialDirectory(value);
+    }
+  }
 }

@@ -19,12 +19,12 @@ public class CityTextField extends ObjectControlAutoCompleteTextField<String> {
    * Constructor.
    */
   public CityTextField(CustomizationFx customization, Rolodex rolodex) {
-    super(null, 300, false, "Enter the name of a city");
+    super(customization, null, 300, false, "Enter the name of a city");
     
     this.rolodex = rolodex;
     
-    customization.getComponentFactoryFx().customizeTextInputControl(this);
-    getEntries().addAll(citiesToString(rolodex.getCityList().getCities()));
+    customization.getComponentFactoryFx().customizeTextInputControl(this.ocGetControl());
+    ocGetControl().getEntries().addAll(citiesToString(rolodex.getCityList().getCities()));
   }
   
 //  @Override
@@ -41,11 +41,11 @@ public class CityTextField extends ObjectControlAutoCompleteTextField<String> {
   }
   
   public List<City> getMatchingCities() {
-    return rolodex.getCityList().getCity(getText());
+    return rolodex.getCityList().getCity(ocGetControl().getText());
   }
   
   public City getCity(Country country) {
-    return rolodex.getCityList().getCity(getText(), country);
+    return rolodex.getCityList().getCity(ocGetControl().getText(), country);
   }
   
   private static List<String> citiesToString(List<City> cities) {

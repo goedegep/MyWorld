@@ -28,7 +28,6 @@ import goedegep.pctools.app.guifx.PCToolsMenuWindow;
 import goedegep.properties.app.guifx.PropertiesEditor;
 import goedegep.properties.model.PropertyDescriptor;
 import goedegep.properties.model.PropertyDescriptorGroup;
-import goedegep.resources.ImageResource;
 import goedegep.resources.ImageSize;
 import goedegep.rolodex.app.RolodexRegistry;
 import goedegep.rolodex.app.guifx.RolodexMenuWindow;

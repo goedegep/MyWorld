@@ -19,7 +19,15 @@ public class IntegerObjectStringConverter extends StringConverterAndChecker<Inte
 
   @Override
   public Integer fromString(String string) {
-    return integerStringConverter.fromString(string);
+    Integer value = null;
+    
+    try {
+    value = integerStringConverter.fromString(string);
+    } catch (NumberFormatException e) {
+      // no action.
+    }
+    
+    return value;
   }
 
   @Override

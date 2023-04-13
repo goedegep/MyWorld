@@ -1,15 +1,8 @@
 package goedegep.vacations.app.guifx;
 
-import java.awt.Dimension;
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
-
-import org.apache.commons.imaging.ImageReadException;
-import org.apache.commons.imaging.formats.tiff.constants.TiffDirectoryConstants;
-import org.apache.commons.imaging.formats.tiff.constants.TiffTagConstants;
 
 import com.gluonhq.maps.LabeledIcon;
 import com.gluonhq.maps.MapLayer;
@@ -22,7 +15,6 @@ import goedegep.poi.app.guifx.POIIcons;
 import goedegep.poi.model.POICategoryId;
 import goedegep.resources.ImageResource;
 import goedegep.util.img.ImageUtils;
-import goedegep.util.img.PhotoFileMetaDataHandler;
 import goedegep.vacations.app.LocationDescriptionDialog;
 import goedegep.vacations.model.Boundary;
 import goedegep.vacations.model.BoundingBox;

@@ -38,8 +38,6 @@ import goedegep.media.mediadb.model.MyTrackInfo;
 import goedegep.media.mediadb.model.Track;
 import goedegep.media.mediadb.model.TrackReference;
 import goedegep.media.mediadb.model.util.MediaDbUtil;
-import goedegep.media.mediadb.trackinfo.TrackInfoErrorInfo;
-import goedegep.media.mediadb.trackinfo.TrackInfoHandler;
 import goedegep.media.musicfolder.MusicFolderContent;
 import goedegep.properties.app.guifx.PropertiesEditor;
 import goedegep.resources.ImageSize;

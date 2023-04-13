@@ -170,7 +170,7 @@ class CountryEditPanel {
     label = componentFactory.createLabel("Country name:");
     gridPane.add(label, 0, row);
     
-    gridPane.add(countryTextField, 1, row);
+    gridPane.add(countryTextField.ocGetControl(), 1, row);
     
     Button addButton = componentFactory.createButton("Add", "Add the country to the Rolodex");
     addButton.setOnAction((e) -> {
@@ -235,7 +235,7 @@ class CountryEditPanel {
    * @param country the Country who's values will be applied to the controls.
    */
   private void fillFieldsFromCountry(Country country) {
-    countryTextField.setText(country != null ? country.getCountryName() : null);
+    countryTextField.ocSetValue(country != null ? country.getCountryName() : null);
   }
   
   /**

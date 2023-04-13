@@ -18,12 +18,12 @@ public class InstitutionTextField extends ObjectControlAutoCompleteTextField<Str
    * Constructor.
    */
   public InstitutionTextField(CustomizationFx customization, Rolodex rolodex) {
-    super(null, 300, false, "Enter the name of an institution");
+    super(customization, null, 300, false, "Enter the name of an institution");
     
     this.rolodex = rolodex;
     
-    customization.getComponentFactoryFx().customizeTextInputControl(this);
-    getEntries().addAll(institutionsToString(rolodex.getInstitutionList().getInstitutions()));
+    customization.getComponentFactoryFx().customizeTextInputControl(this.ocGetControl());
+    ocGetControl().getEntries().addAll(institutionsToString(rolodex.getInstitutionList().getInstitutions()));
   }
   
 //  /**
@@ -46,7 +46,7 @@ public class InstitutionTextField extends ObjectControlAutoCompleteTextField<Str
     List<Institution> matchingInstitutions = new ArrayList<>();
     
     for (Institution institution: rolodex.getInstitutionList().getInstitutions()) {
-      if (institution.getName().equals(getText())) {
+      if (institution.getName().equals(ocGetValue())) {
         matchingInstitutions.add(institution);
       }
     }

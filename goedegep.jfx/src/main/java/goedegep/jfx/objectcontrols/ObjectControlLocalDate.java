@@ -2,9 +2,10 @@ package goedegep.jfx.objectcontrols;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.logging.Logger;
 
-import goedegep.jfx.stringconverters.FormatBasedStringConverterAndChecker;
+import goedegep.jfx.CustomizationFx;
 
 
 /**
@@ -13,7 +14,8 @@ import goedegep.jfx.stringconverters.FormatBasedStringConverterAndChecker;
 public class ObjectControlLocalDate extends ObjectControlTextField<LocalDate> {
   @SuppressWarnings("unused")
   private static final Logger         LOGGER = Logger.getLogger(ObjectControlLocalDate.class.getName());
-  private static final DateTimeFormatter DTF = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+  private static final DateTimeFormatter DTF = DateTimeFormatter.ofPattern("d-M-yyyy");
+  private static final DateTimeFormatter DTF2 = DateTimeFormatter.ofPattern("dd-MM-yyyy");
   
   /**
    * Constructor.
@@ -23,31 +25,21 @@ public class ObjectControlLocalDate extends ObjectControlTextField<LocalDate> {
    * @param isOptional Indicates whether the control is optional (if true) or mandatory.
    * @param toolTipText An optional ToolTip text.
    */
-  public ObjectControlLocalDate(LocalDate localDate, double width, boolean isOptional, String toolTipText) {
-    super(localDate, width, isOptional, toolTipText);
+  public ObjectControlLocalDate(CustomizationFx customization, LocalDate localDate, double width, boolean isOptional, String toolTipText) {
+    super(customization, localDate, width, isOptional, toolTipText);
   }
     
-//  /**
-//   * {@inheritDoc}
-//   */
-//  @Override
-//  public boolean isDataValid() {
-//    if (getText() == null) {
-//      return true;
-//    }
-//    
-//    try {
-//      @SuppressWarnings("unused")
-//      LocalDate localDate = LocalDate.parse(getText(), DTF);
-//      return true;
-//    } catch (Exception e) {
-//      return false;
-//    }
-//  }
-
   @Override
   protected LocalDate stringToObject(String valueAsString) {
-    return LocalDate.parse(valueAsString, DTF);
+    LocalDate localDate = null;
+    
+    try {
+      localDate = LocalDate.parse(valueAsString, DTF);
+    } catch (DateTimeParseException e) {
+      // No action
+    }
+    
+    return localDate;
   }
   
   @Override
@@ -55,7 +47,7 @@ public class ObjectControlLocalDate extends ObjectControlTextField<LocalDate> {
     if (value == null) {
       return null;
     } else {
-      return DTF.format(value);
+      return DTF2.format(value);
     }
   }
 }

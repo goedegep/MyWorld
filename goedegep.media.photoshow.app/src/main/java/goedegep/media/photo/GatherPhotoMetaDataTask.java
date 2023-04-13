@@ -12,8 +12,6 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import org.apache.commons.imaging.ImageReadException;
-import org.apache.commons.imaging.formats.tiff.constants.TiffDirectoryConstants;
-import org.apache.commons.imaging.formats.tiff.constants.TiffTagConstants;
 
 import goedegep.util.Tuplet;
 import goedegep.util.file.FileUtils;

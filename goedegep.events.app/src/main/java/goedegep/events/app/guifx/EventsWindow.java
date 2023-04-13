@@ -48,7 +48,6 @@ public class EventsWindow extends JfxStage {
   private EMFResource<Events> eventsResource = null;
   private Events events = null;
   private EObjectTable<EventInfo> eventsTable = null;
-  private EventsEditor eventsEditor = null;
   private Label statusLabel = new Label("Nothing to report for now");
 
   /**
@@ -100,7 +99,6 @@ public class EventsWindow extends JfxStage {
         
     if (events != null) {
       eventsTable.setObjects(events, EventsPackage.eINSTANCE.getEvents_Events());
-//      eventsEditor.setEvents(events);
     }
     
     updateTitle();
@@ -108,8 +106,6 @@ public class EventsWindow extends JfxStage {
     eventsResource.dirtyProperty().addListener((observable, oldValue, newValue) -> updateTitle());
         
     eventsResource.addNotificationListener(this::handleChangesInTheEventsData);
-    
-//    handleNewTableItemSelected(null, null);
     
     show();
     
@@ -135,11 +131,7 @@ public class EventsWindow extends JfxStage {
     VBox vBox = componentFactory.createVBox(12.0);
     // Events EObjectTable
     eventsTable = new EventsTable(customization);
-//    eventsTable.addObjectSelectionListener(this::handleNewTableItemSelected);
     vBox.getChildren().add(eventsTable);
-    
-//    eventsEditor = new EventsEditor(customization);
-//    vBox.getChildren().add(eventsEditor);
     
     VBox.setVgrow(vBox, Priority.ALWAYS);
     mainPane.setCenter(eventsTable);
@@ -239,19 +231,6 @@ public class EventsWindow extends JfxStage {
     LOGGER.info("=>");
     
   }
-  
-//  /**
-//   * Handle the fact that a new item is selected in the {@link #eventsTable}.
-//   * <p>
-//   * This is handled by ...
-//   * 
-//   * @param source the source of the new selection
-//   * @param eventInfo the newly selected event.
-//   */
-//  private void handleNewTableItemSelected(Object source, EventInfo eventInfo) {
-//    eventsEditor.setEvent(eventInfo);
-//  }
-
   
   private void showPropertyDescriptorsEditor() {
     new PropertyDescriptorsEditorFx(customization, EventsRegistry.propertyDescriptorsResource);

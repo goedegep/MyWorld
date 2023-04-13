@@ -69,10 +69,6 @@
       <artifactId>junit</artifactId>
     </dependency>
     <dependency>
-        <groupId>junit</groupId>
-        <artifactId>junit</artifactId>
-    </dependency>
-    <dependency>
       <groupId>net.sf.ofx4j</groupId>
       <artifactId>ofx4j</artifactId>
     </dependency>

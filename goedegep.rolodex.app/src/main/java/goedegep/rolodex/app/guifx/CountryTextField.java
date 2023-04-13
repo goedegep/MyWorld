@@ -18,12 +18,12 @@ public class CountryTextField extends ObjectControlAutoCompleteTextField<String>
    * Constructor.
    */
   public CountryTextField(CustomizationFx customization, Rolodex rolodex) {
-    super(null, 300, false, "Enter the name of the country in which the city is located");
+    super(customization, null, 300, false, "Enter the name of the country in which the city is located");
     
     this.rolodex = rolodex;
     
-    customization.getComponentFactoryFx().customizeTextInputControl(this);
-    getEntries().addAll(countriesToString(rolodex.getCountryList().getCountries()));
+    customization.getComponentFactoryFx().customizeTextInputControl(this.ocGetControl());
+    ocGetControl().getEntries().addAll(countriesToString(rolodex.getCountryList().getCountries()));
   }
   
 //  /**
@@ -43,7 +43,7 @@ public class CountryTextField extends ObjectControlAutoCompleteTextField<String>
   }
   
   public Country getCountry() {
-    return rolodex.getCountryList().getCountry(getText());    
+    return rolodex.getCountryList().getCountry(ocGetControl().getText());    
   }
   
   private static List<String> countriesToString(List<Country> countries) {

@@ -165,7 +165,18 @@ public class PhotoMapLayer extends MapLayer implements ObjectSelector<IPhotoInfo
       Dragboard dragboard = dragEvent.getDragboard();
       boolean success = false;
       if (dragboard.hasFiles()) {
-        MapPoint mapPoint = baseMap.getMapPosition(dragEvent.getX(), dragEvent.getY());
+        javafx.scene.robot.Robot robot = new javafx.scene.robot.Robot();
+        double robotX = robot.getMouseX();
+        double robotY = robot.getMouseY();
+        Point2D point = this.screenToLocal(robot.getMousePosition());
+        LOGGER.severe("robotX, robotY = " + robotX + ", " + robotY);
+        LOGGER.severe("screenX, screenY = " + point.getX() + ", " + point.getY());
+        
+        double x = dragEvent.getX();
+        double y = dragEvent.getY();
+        LOGGER.severe("x, y = " + x + ", " + y);
+//        MapPoint mapPoint = baseMap.getMapPosition(dragEvent.getX(), dragEvent.getY());
+        MapPoint mapPoint = baseMap.getMapPosition(point.getX(), point.getY());
         WGS84Coordinates coordinates = new WGS84Coordinates(mapPoint.getLatitude(), mapPoint.getLongitude());
         photoMapView.addPhotos(dragboard.getFiles(), coordinates);
         

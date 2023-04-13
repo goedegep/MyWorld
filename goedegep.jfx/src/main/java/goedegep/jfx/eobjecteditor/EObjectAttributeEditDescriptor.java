@@ -2,21 +2,21 @@ package goedegep.jfx.eobjecteditor;
 
 import org.eclipse.emf.ecore.EStructuralFeature;
 
-import javafx.scene.Node;
+import goedegep.jfx.objectcontrols.ObjectControl;
 
 public class EObjectAttributeEditDescriptor  {
   private String labelText;
-  private Node node;
+  private ObjectControl<?> objectControl;
   private EStructuralFeature structuralFeature;
   private String  id;
   
-  public EObjectAttributeEditDescriptor(String labelText, Node node,EStructuralFeature structuralFeature) {
-    this(labelText, node, structuralFeature, null);
+  public EObjectAttributeEditDescriptor(String labelText, ObjectControl<?> objectControl, EStructuralFeature structuralFeature) {
+    this(labelText, objectControl, structuralFeature, null);
   }
   
-  public EObjectAttributeEditDescriptor(String labelText, Node node,EStructuralFeature structuralFeature, String id) {
+  public EObjectAttributeEditDescriptor(String labelText, ObjectControl<?> objectControl,EStructuralFeature structuralFeature, String id) {
     this.labelText = labelText;
-    this.node = node;
+    this.objectControl = objectControl;
     this.structuralFeature = structuralFeature;
     if (id != null) {
       this.id = id;
@@ -29,8 +29,8 @@ public class EObjectAttributeEditDescriptor  {
     return labelText;
   }
 
-  public Node getNode() {
-    return node;
+  public ObjectControl<?> getObjectControl() {
+    return objectControl;
   }
 
   public EStructuralFeature getStructuralFeature() {

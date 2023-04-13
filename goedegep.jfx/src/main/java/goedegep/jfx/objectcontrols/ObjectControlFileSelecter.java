@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
+import goedegep.jfx.CustomizationFx;
 import javafx.scene.control.Button;
 import javafx.scene.control.Tooltip;
 import javafx.stage.FileChooser;
@@ -32,11 +33,11 @@ public class ObjectControlFileSelecter extends ObjectControlFileOrFolderSelecter
   @SuppressWarnings("unused")
   private static final Logger LOGGER = Logger.getLogger(ObjectControlFileSelecter.class.getName());
 
-  private Button fileChooserButton;
   private boolean isSaveDialog = false;  // open dialog is the default
   private List<ExtensionFilter> extensionFilters = new ArrayList<>();
   private ExtensionFilter selectedExtensionFilter = null;
   private String initiallySelectedFolder = null;
+  private Button fileChooserButton;
   private FileChooser fileChooser = null;
 
   /**
@@ -50,51 +51,9 @@ public class ObjectControlFileSelecter extends ObjectControlFileOrFolderSelecter
    * @param fileChooserButtonToolTipText if not null, this text will be used as Tooltip for the button to call up a FileChooser.
    * @param fileChooserTitle title for the FileChooser (may not be null)
    */
-  public ObjectControlFileSelecter(String initiallySelectedFilename, int textFieldWidth, String textFiedlToolTipText,
+  public ObjectControlFileSelecter(CustomizationFx customization, String initiallySelectedFilename, int textFieldWidth, String textFiedlToolTipText,
       String fileChooserButtonText, String fileChooserButtonToolTipText, String fileChooserTitle) {
-    super(textFieldWidth, textFiedlToolTipText);
-
-    getPathTextField().textProperty().addListener((observable, oldValue, newValue) -> {
-      if (newValue != null) {
-        File file = new File(addPrefixIfSet(newValue));
-        if (isSaveDialog) {
-          // For saving a file, the folder shall exist
-          File folder = file.getParentFile();
-          if (folder != null &&  folder.exists()  &&  folder.isDirectory()) {
-            //        	  ocValidProperty().set(true);
-            valid = true;
-          } else {
-            //        	  ocValidProperty().set(false);
-            valid = false;
-          }
-        } else {
-          // For opening the file shall exist
-          if (file.exists()  &&  file.isFile()) {
-            //        	  ocValidProperty().set(true);
-            valid = true;
-          } else {
-            //        	  ocValidProperty().set(false);
-            valid = false;
-          }
-        }
-        filledIn = !newValue.isEmpty();
-//        ocFilledInProperty().set(!newValue.isEmpty());
-      } else {
-//        ocValidProperty().set(false);
-        valid = false;
-//        ocFilledInProperty().set(false);
-        filledIn = false;
-      }
-
-      if (!ocIsValid()) {
-        getPathTextField().setStyle("-fx-text-inner-color: red;");
-      } else {
-        getPathTextField().setStyle("-fx-text-inner-color: black;");
-      }
-
-      ociNotifyListeners();
-    });
-
+    super(customization, textFieldWidth, textFiedlToolTipText);
 
     fileChooserButton = new Button(fileChooserButtonText);
 
@@ -114,19 +73,6 @@ public class ObjectControlFileSelecter extends ObjectControlFileOrFolderSelecter
           fileChooser.setSelectedExtensionFilter(selectedExtensionFilter);
         }
 
-        //        File file = null;
-        //        String filename = objectValue().get();
-        //        if (filename != null) {
-        //          if (getPrefix() != null) {
-        //            file = new File (getPrefix(), getPathTextField().textProperty().get());
-        //          } else {
-        //            file = new File (getPathTextField().textProperty().get());
-        //          }
-        //        }
-        //        if ((file != null)  &&  !file.isDirectory()) {
-        //          file = file.getParentFile();
-        //        }
-        //        if ((file != null)  &&  file.isDirectory()) {
         if (initiallySelectedFolder != null) {
           File file;
           if (getPrefix() != null) {
@@ -141,7 +87,6 @@ public class ObjectControlFileSelecter extends ObjectControlFileOrFolderSelecter
             fileChooser.setInitialDirectory(file);
           }
         }
-        //        }
       }
       File selectedFile;
       if (isSaveDialog) {
@@ -154,7 +99,7 @@ public class ObjectControlFileSelecter extends ObjectControlFileOrFolderSelecter
         // The selected folder is written to the text field, which automatically leads an update of the selectionValidProperty.
         String newFilename = selectedFile.getAbsolutePath();
         newFilename = removePrefixIfSet(newFilename);
-        getPathTextField().setText(newFilename);
+        ocGetControl().setText(newFilename);
       }
     });
 
@@ -163,7 +108,7 @@ public class ObjectControlFileSelecter extends ObjectControlFileOrFolderSelecter
       File initiallySelectedFile = new File(initiallySelectedFilename);
       initiallySelectedFolder = initiallySelectedFile.getParent();
 
-      getPathTextField().setText(initiallySelectedFilename);
+      ocSetFilename(initiallySelectedFilename);
     }
   }
 
@@ -199,5 +144,13 @@ public class ObjectControlFileSelecter extends ObjectControlFileOrFolderSelecter
 
   public void setInitiallySelectedFolder(String initiallySelectedFolder) {
     this.initiallySelectedFolder = initiallySelectedFolder;
+  }
+
+  @Override
+  public void ociSetValue(File value) {
+    this.value = value;
+    if (fileChooser != null  &&  value != null) {
+      fileChooser.setInitialFileName(value.getAbsolutePath());
+    }
   }
 }

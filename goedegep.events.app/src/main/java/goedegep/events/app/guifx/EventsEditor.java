@@ -133,7 +133,7 @@ public class EventsEditor extends JfxStage {
     eventDateControl = componentFactory.createObjectControlFlexDate(null, 300, false, "Date of the event");
     eventTitleControl = componentFactory.createObjectControlString(null, 300, false, "Title of the event");
     eventFolderControl = componentFactory.createObjectControlString(null, 300, false, "Folder where event attachments are stored");
-    eventFolderControl.setDisable(true);
+    eventFolderControl.ocGetControl().setDisable(true);
     eventFolderExistsControl = componentFactory.createObjectControlBoolean(null, false, true, "Checked indicates that the event folder exists");
     createEventsFolderButton = componentFactory.createButton("create", "Click to create the event folder as shown on the left");
     pictureFileSelecter = componentFactory.createFileSelecter(null, 300, "file name of a picture", "file chooser", "Start a file chooser", "Select picture file");
@@ -141,7 +141,7 @@ public class EventsEditor extends JfxStage {
       pictureFileSelecter.setPrefix(EventsRegistry.eventsFolderName);
     }
     notesControl = componentFactory.createObjectControlHTMLString(null, 400, true, "Enter the notes in HTML format");
-    notesControl.setPrefHeight(100);
+    notesControl.ocGetControl().setPrefHeight(100);
     pictureImageView = new ImageView();
     pictureImageView.setFitWidth(400);
     pictureImageView.setFitHeight(400);
@@ -155,14 +155,8 @@ public class EventsEditor extends JfxStage {
     
     objectControlGroup.addListener(observable -> handleChanges(observable));
     pictureFileSelecter.addListener((e) -> {
-      String filename = pictureFileSelecter.ocGetValue();
-      if (filename != null) {
-        File file;
-        if (EventsRegistry.eventsFolderName != null) {
-          file = new File(EventsRegistry.eventsFolderName, filename);
-        } else {
-          file = new File(filename);
-        }
+      File file = pictureFileSelecter.ocGetValue();
+      if (file != null) {
         Image picture = new Image("file:" + file.getAbsolutePath());
         pictureImageView.setImage(picture);
       } else {
@@ -207,20 +201,20 @@ public class EventsEditor extends JfxStage {
     label = componentFactory.createLabel("Date:");
     gridPane.add(label, 0, 0);
     
-    gridPane.add(eventDateControl, 1, 0);
+    gridPane.add(eventDateControl.ocGetControl(), 1, 0);
     
     // Title + Event folder
     label = componentFactory.createLabel("Title:");
     gridPane.add(label, 0, 1);
     
-    gridPane.add(eventTitleControl, 1, 1);
+    gridPane.add(eventTitleControl.ocGetControl(), 1, 1);
     
     HBox eventFolderControlsBox = componentFactory.createHBox(12.0);    
     label = componentFactory.createLabel("Event folder:");
     eventFolderControlsBox.getChildren().add(label);
     
-    eventFolderControlsBox.getChildren().add(eventFolderControl);
-    eventFolderControlsBox.getChildren().add(eventFolderExistsControl);
+    eventFolderControlsBox.getChildren().add(eventFolderControl.ocGetControl());
+    eventFolderControlsBox.getChildren().add(eventFolderExistsControl.ocGetControl());
     eventFolderControlsBox.getChildren().add(createEventsFolderButton);
 
     gridPane.add(eventFolderControlsBox, 2, 1);
@@ -229,7 +223,7 @@ public class EventsEditor extends JfxStage {
     label = componentFactory.createLabel("Picture:");
     gridPane.add(label, 0, 2);
 
-    gridPane.add(pictureFileSelecter.getPathTextField(), 1, 2);
+    gridPane.add(pictureFileSelecter.ocGetControl(), 1, 2);
     gridPane.add(pictureFileSelecter.getFileChooserButton(), 2, 2);
     gridPane.add(pictureImageView, 4, 0, 1, 4);
         
@@ -237,7 +231,7 @@ public class EventsEditor extends JfxStage {
     label = componentFactory.createLabel("Notes:");
     gridPane.add(label, 0, 3);
     
-    gridPane.add(notesControl, 1, 3);
+    gridPane.add(notesControl.ocGetControl(), 1, 3);
     
     rootPane.getChildren().add(gridPane);
     
@@ -351,9 +345,9 @@ public class EventsEditor extends JfxStage {
   }
   
   private void switchToEditMode() {
-    eventDateControl.setDisable(false);
-    eventTitleControl.setDisable(false);
-    pictureFileSelecter.getPathTextField().setDisable(false);
+    eventDateControl.ocGetControl().setDisable(false);
+    eventTitleControl.ocGetControl().setDisable(false);
+    pictureFileSelecter.ocGetControl().setDisable(false);
     pictureFileSelecter.getFileChooserButton().setDisable(false);
     
     mode = Mode.EDIT_MODE;
@@ -520,12 +514,12 @@ public class EventsEditor extends JfxStage {
     
     if (eventFolderName != null) {
       eventFolder = new File(EventsRegistry.eventsFolderName, eventFolderName);
-      eventFolderExistsControl.setSelected(eventFolder.exists());
+      eventFolderExistsControl.ocSetValue(eventFolder.exists());
     } else {
-      eventFolderExistsControl.setSelected(false);
+      eventFolderExistsControl.ocSetValue(false);
     }
     
-    createEventsFolderButton.setDisable((eventFolderName == null)  ||  eventFolderExistsControl.isSelected());
+    createEventsFolderButton.setDisable((eventFolderName == null)  ||  eventFolderExistsControl.ocGetValue());
   }
   
   private String createEventFolderName() {
@@ -550,7 +544,7 @@ public class EventsEditor extends JfxStage {
     }
     eventDateControl.ocSetValue(eventInfo.getDate());
     eventTitleControl.ocSetValue(eventInfo.getTitle());
-    pictureFileSelecter.ocSetValue(eventInfo.getPicture());
+    pictureFileSelecter.ocSetValue(eventInfo.getPicture() != null ? new File(eventInfo.getPicture()) : null);
     notesControl.ocSetValue(eventInfo.getNotes());
     attachmentPanels.clear();
     for (FileReference attachment: eventInfo.getAttachments()) {

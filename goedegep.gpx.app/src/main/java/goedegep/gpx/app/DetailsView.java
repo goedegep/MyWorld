@@ -13,14 +13,12 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 
 public class DetailsView extends JfxStage  {
-  private DocumentRoot documentRoot;
   private ComponentFactoryFx componentFactory;
   
   public DetailsView(CustomizationFx customization, DocumentRoot documentRoot) {
     super("GPX File Details", customization);
     
     componentFactory = customization.getComponentFactoryFx();
-    this.documentRoot = documentRoot;
     
     createGUI(documentRoot);
     

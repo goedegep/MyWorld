@@ -20,12 +20,12 @@ public class PersonTextField extends ObjectControlAutoCompleteTextField<String> 
    * Constructor.
    */
   public PersonTextField(CustomizationFx customization, Rolodex rolodex) {
-    super(null, 300, false, "Enter the name of a person");
+    super(customization, null, 300, false, "Enter the name of a person");
     
     this.rolodex = rolodex;
     
-    customization.getComponentFactoryFx().customizeTextInputControl(this);
-    getEntries().addAll(personsToString(rolodex.getPersonList().getPersons()));
+    customization.getComponentFactoryFx().customizeTextInputControl(ocGetControl());
+    ocGetControl().getEntries().addAll(personsToString(rolodex.getPersonList().getPersons()));
   }
   
 //  /**
@@ -48,7 +48,7 @@ public class PersonTextField extends ObjectControlAutoCompleteTextField<String> 
     List<Person> matchingPersons = new ArrayList<>();
     
     for (Person person: rolodex.getPersonList().getPersons()) {
-      if (person.getName().equals(getText())) {
+      if (person.getName().equals(ocGetValue())) {
         matchingPersons.add(person);
       }
     }
@@ -57,7 +57,7 @@ public class PersonTextField extends ObjectControlAutoCompleteTextField<String> 
   }
   
   public City getCity(Country country) {
-    return rolodex.getCityList().getCity(getText(), country);
+    return rolodex.getCityList().getCity(ocGetValue(), country);
   }
   
   private static List<String> personsToString(List<Person> persons) {

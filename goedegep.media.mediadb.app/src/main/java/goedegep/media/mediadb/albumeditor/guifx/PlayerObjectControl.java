@@ -1,46 +1,41 @@
 package goedegep.media.mediadb.albumeditor.guifx;
 
-import java.text.ParseException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
 import goedegep.jfx.ComponentFactoryFx;
 import goedegep.jfx.CustomizationFx;
-import goedegep.jfx.objectcontrols.ObjectControl;
+import goedegep.jfx.controls.AutoCompleteTextField;
+import goedegep.jfx.objectcontrols.ObjectControlAbstract;
 import goedegep.jfx.objectcontrols.ObjectControlAutoCompleteTextField;
 import goedegep.jfx.objectcontrols.ObjectControlTextField;
 import goedegep.media.mediadb.app.ArtistStringConverterAndChecker;
 import goedegep.media.mediadb.model.Artist;
 import goedegep.media.mediadb.model.MediaDb;
+import goedegep.media.mediadb.model.MediadbFactory;
 import goedegep.media.mediadb.model.Player;
 import goedegep.util.string.StringUtil;
-import javafx.beans.InvalidationListener;
-import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleBooleanProperty;
 
-public class PlayerObjectControl implements ObjectControl<Player> {
+/**
+ * This {@ObjectControl} can be used to create/edit a {@link Player}.
+ * <p>
+ * This ObjectControl has two controls; an autocomplete textfield for the Artist and a textfield for the instruments played by that artist.
+ *
+ */
+public class PlayerObjectControl extends ObjectControlAbstract<Player> {
   @SuppressWarnings("unused")
   private static final Logger LOGGER = Logger.getLogger(PlayerObjectControl.class.getName());
 
-  private List<InvalidationListener> invalidationListeners = new ArrayList<>();
-//  private BooleanProperty ocFilledInProperty = new SimpleBooleanProperty(true);
   private ArtistStringConverterAndChecker artistStringConverterAndChecker;
   
   private ObjectControlAutoCompleteTextField<Artist> artistObjectControl;
   private ObjectControlTextField<String> playerInstrumentTextField;
   
-  /**
-   * Indicates whether the control is optional (if true) or mandatory.
-   * If there is a control for a Player, the player has to be filled in. So this control is never optional.
-   */
-  boolean optional;
-//  private BooleanProperty optionalProperty = new SimpleBooleanProperty(false);
 
   public PlayerObjectControl(CustomizationFx customization, MediaDb mediaDb) {
-    optional = false;
-//    optionalProperty.set(false);
+    super(false);  // If there is a control for a Player, the player has to be filled in. So this control is never optional.
+    LOGGER.severe("=>");
+    
     ComponentFactoryFx componentFactory = customization.getComponentFactoryFx();
     artistStringConverterAndChecker = new ArtistStringConverterAndChecker(mediaDb);
     
@@ -48,62 +43,55 @@ public class PlayerObjectControl implements ObjectControl<Player> {
     artistObjectControl.setOptions(mediaDb.getArtists());
     playerInstrumentTextField = componentFactory.createObjectControlTextField(null, null, 300, true, "A comma separated list of instruments");
     
-    artistObjectControl.addListener((e) -> ociNotifyListeners());
-    playerInstrumentTextField.addListener((e) -> ociNotifyListeners());
-  }
-
-//  /**
-//   * {@inheritDoc}
-//   */
-//  @Override
-//  public BooleanProperty ocOptionalProperty() {
-//    return optionalProperty;
-//  }
-
-//  /**
-//   * {@inheritDoc}
-//   */
-//  @Override
-//  public BooleanProperty ocFilledInProperty() {
-//    return ocFilledInProperty;
-//  }
-
-//  /**
-//   * {@inheritDoc}
-//   */
-//  @Override
-//  public BooleanProperty ocValidProperty() {
-//    return artistObjectControl.ocValidProperty();
-//  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public Player ocGetValue() {
-    throw new UnsupportedOperationException();
+    artistObjectControl.addListener((e) -> ociHandleNewUserInput());
+    playerInstrumentTextField.addListener((e) -> ociHandleNewUserInput());
   }
 
   /**
    * {@inheritDoc}
+   * The Artist control is the primary control.
    */
   @Override
-  public void ocSetValue(Player objectValue) {
-    throw new UnsupportedOperationException();
-  }
-  
-  public void fillFromPlayer(Player player) {
-    artistObjectControl.ocSetValue(player.getArtist());
-    playerInstrumentTextField.setText(StringUtil.stringCollectionToCommaSeparatedStrings(player.getInstruments()));
+  public AutoCompleteTextField ocGetControl() {
+    return artistObjectControl.ocGetControl();
   }
 
+  // TODO should not be needed -> artistObjectControl.ocGetControl()
   public ObjectControlAutoCompleteTextField<Artist> getArtistObjectControl() {
     return artistObjectControl;
   }
 
+  // TODO should not be needed -> playerInstrumentTextField.ocGetControl()
   public ObjectControlTextField<String> getPlayerInstrumentTextField() {
     return playerInstrumentTextField;
   }
+
+//  /**
+//   * {@inheritDoc}
+//   */
+//  @Override
+//  public Player ocGetValue() {
+//    throw new UnsupportedOperationException();
+//  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public void ocSetValue(final Player player) {
+    if (player != null) {
+      artistObjectControl.ocSetValue(player.getArtist());
+      playerInstrumentTextField.ocSetValue(StringUtil.stringCollectionToCommaSeparatedStrings(player.getInstruments()));
+    } else {
+      artistObjectControl.ocSetValue(null);
+      playerInstrumentTextField.ocSetValue(null);
+    }
+  }
+  
+//  public void fillFromPlayer(Player player) {
+//    artistObjectControl.ocSetValue(player.getArtist());
+//    playerInstrumentTextField.ocSetValue(StringUtil.stringCollectionToCommaSeparatedStrings(player.getInstruments()));
+//  }
 
 //  /**
 //   * {@inheritDoc}
@@ -113,86 +101,58 @@ public class PlayerObjectControl implements ObjectControl<Player> {
 //    throw new UnsupportedOperationException();
 //  }
 
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public String getId() {
-    return artistObjectControl.getId();
-  }  
-  
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public List<InvalidationListener> ociGetInvalidationListeners() {
-    return invalidationListeners;
-  }
+//  /**
+//   * {@inheritDoc}
+//   */
+//  @Override
+//  public String ocGetId() {
+//    return artistObjectControl.ocGetId();
+//  }
 
+//  /**
+//   * {@inheritDoc}
+//   */
+//  public List<InvalidationListener> ociGetInvalidationListeners() {
+//    return invalidationListeners;
+//  }
+
+  /**
+   * {@inheritDoc}
+   * This ObjectControl is filled in if at least the Artist is filled in.
+   */
   @Override
   public boolean ociDetermineFilledIn() {
-    // TODO Auto-generated method stub
-    return false;
+    return artistObjectControl.ocIsFilledIn();
   }
 
   @Override
   public Player ociDetermineValue() {
-    // TODO Auto-generated method stub
-    return null;
+    Player player = MediadbFactory.eINSTANCE.createPlayer();
+    
+    Artist artist = artistObjectControl.ocGetValue();
+    player.setArtist(artist);
+    
+    List<String> instruments = StringUtil.commaSeparatedValuesToListOfValues(playerInstrumentTextField.ocGetValue());
+    player.getInstruments().addAll(instruments);
+    
+    return player;
   }
 
   @Override
   public void ociSetErrorFeedback(boolean valid) {
-    // TODO Auto-generated method stub
-    
+    artistObjectControl.ociSetErrorFeedback(valid);
+    playerInstrumentTextField.ociSetErrorFeedback(valid);
   }
 
   @Override
   public void ociRedrawValue() {
-    // TODO Auto-generated method stub
-    
+    artistObjectControl.ociRedrawValue();
+    playerInstrumentTextField.ociRedrawValue();
   }
 
   @Override
   public String ocGetObjectValueAsFormattedText() {
-    // TODO Auto-generated method stub
-    return null;
-  }
-
-  @Override
-  public boolean ocIsOptional() {
-    // TODO Auto-generated method stub
-    return false;
-  }
-
-  @Override
-  public boolean ocIsFilledIn() {
-    // TODO Auto-generated method stub
-    return false;
-  }
-
-  @Override
-  public boolean ocIsValid() {
-    // TODO Auto-generated method stub
-    return false;
-  }
-
-  @Override
-  public void ociSetValue(Player value) {
-    // TODO Auto-generated method stub
-    
-  }
-
-  @Override
-  public void ociSetValid(boolean valid) {
-    // TODO Auto-generated method stub
-    
-  }
-
-  @Override
-  public void ociSetFilledIn(boolean filledIn) {
-    // TODO Auto-generated method stub
-    
+    return ocGetValue().toString();
   }
 
 }

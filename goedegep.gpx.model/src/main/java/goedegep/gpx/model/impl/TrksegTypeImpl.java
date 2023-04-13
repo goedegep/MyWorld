@@ -208,8 +208,6 @@ public class TrksegTypeImpl extends MinimalEObjectImpl.Container implements Trks
     
     BigDecimal previousElevation = null;
     BigDecimal totalElevation = BigDecimal.ZERO;
-    int pointsUsed = 0;
-    int pointsSkipped = 0;
 
     for (WptType segmentPoint: getTrkpt()) {
       BigDecimal elevation = segmentPoint.getEle();
@@ -222,9 +220,6 @@ public class TrksegTypeImpl extends MinimalEObjectImpl.Container implements Trks
         }
         
         previousElevation = elevation;
-        pointsUsed++;
-      } else {
-        pointsSkipped++;
       }
     }
     myCumulativeDescent = totalElevation.negate().doubleValue();

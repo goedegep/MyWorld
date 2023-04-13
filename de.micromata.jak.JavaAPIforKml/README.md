@@ -1,12 +1,15 @@
-[![No Maintenance Intended](http://unmaintained.tech/badge.svg)](http://unmaintained.tech/)
-
 # Java API for KML
 
 > The objective of the Java API for KML is to provide Java interfaces for easy access to KML (Keyhole Markup Language) data.
 
-# Unmaintained for now
+# Now under Maintenance
 
-See https://github.com/micromata/javaapiforkml/issues/18
+Thank you to Michael at Micromata for adding me [urbancamo](mailto:mark@wickensonline.co.uk) as a maintainer.
+The project is now open to pull requests for bugs and enhancements.
+Thank you to those who previously submitted pull requests - the majority of these
+have now been squashed and merged.
+
+I intend to release a new version in the near future with support for Java 11+.
 
 ---
 
@@ -18,7 +21,7 @@ In order to ensure convenient and easy use of KML in existing Java-systems, an o
 
 This API provides easy out-of-the-box access to KML for the user (resp. the developer). This project created, a Java API for KML (short: JAK) in order to enable this.
 
-A high level documentation can be found at: http://labs.micromata.de/projects/jak.html
+A high level documentation can be found at: https://web.archive.org/web/20170316194859/http://labs.micromata.de/projects/jak.html
 
 The current JARs can be obtained via Maven or at the Download page:
 

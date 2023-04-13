@@ -15,7 +15,6 @@ import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.objectcontrols.ObjectControlFolderSelecter;
 import goedegep.util.file.FileUtils;
 import goedegep.util.string.StringUtil;
-import javafx.beans.property.BooleanProperty;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Node;
@@ -85,7 +84,7 @@ public class FolderSelectionWizard extends Dialog<ButtonType> {
    */
   public String getSelectedFolder() {
     if (folderSelecter.ocIsValid()) {
-      return folderSelecter.ocGetValue();
+      return folderSelecter.ocGetAbsolutePath();
     } else {
       return null;
     }
@@ -128,9 +127,9 @@ public class FolderSelectionWizard extends Dialog<ButtonType> {
     folderSelecter = componentFactory.createFolderSelecter(initiallySelectedFolder, 400, "Currently selected folder",
         "Choose folder", "Select photo folder via a file chooser", "Select the folder with photos");
     
-    Node folderName = folderSelecter.getPathTextField();
+    Node folderName = folderSelecter.ocGetControl();
     folderSelecter.addListener((observable) -> {
-      handleNewPhotoFolderSelected(folderSelecter.ocIsValid(), folderSelecter.ocGetValue());      
+      handleNewPhotoFolderSelected(folderSelecter.ocIsValid(), folderSelecter.ocGetAbsolutePath());      
     });
     wizardPanel.add(folderName, 1, 0);
     
@@ -169,7 +168,7 @@ public class FolderSelectionWizard extends Dialog<ButtonType> {
     
     okButton = (Button) getDialogPane().lookupButton(ButtonType.OK);
     
-    handleNewPhotoFolderSelected(folderSelecter.ocIsValid(), folderSelecter.ocGetValue());
+    handleNewPhotoFolderSelected(folderSelecter.ocIsValid(), folderSelecter.ocGetAbsolutePath());
   }
   
   /**

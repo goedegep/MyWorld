@@ -1,23 +1,13 @@
 package goedegep.jfx.objectcontrols;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
 import org.eclipse.emf.ecore.EEnum;
 
-import goedegep.util.emf.EnumTextConverter;
-import javafx.beans.InvalidationListener;
-import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.property.SimpleObjectProperty;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
+import goedegep.jfx.CustomizationFx;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Tooltip;
-import javafx.util.StringConverter;
 
 
 /**
@@ -30,7 +20,6 @@ import javafx.util.StringConverter;
  * <ul>
  * <li>
  * If nothing is specified, the ComboBox uses toString() to get a text for an enum constant. So you can use this if you are happy with the enum constant, or if your enum overrides toString().
- * If nothing is specified, the text for an enum constant is its name.
  * </li>
  * <li>
  * When you specify an EEnum in the constructor, the literals of the enum constants are used.
@@ -42,74 +31,27 @@ import javafx.util.StringConverter;
  * 
  * @param <T> The Enum type.
  */
-public class ObjectControlEnumComboBox<T extends Enum<T>> extends ComboBox<T> implements ObjectControl<T> {
+public class ObjectControlEnumComboBox<T extends Enum<T>> extends ObjectControlAbstract<T> {
+  @SuppressWarnings("unused")
   private static final Logger         LOGGER = Logger.getLogger(ObjectControlEnumComboBox.class.getName());
   
-  /**
-   * Provides the set of text values for the enum constants and provides converstion from enum constant to text and vice versa.
-   */
-  private EnumTextConverter<T> enumTextConverter;
   
-  
-  /**
-   * Indication of whether the control is optional (if true) or mandatory.
-   */
-  private boolean optional;
-//  private BooleanProperty ocOptionalProperty = new SimpleBooleanProperty(false);
-//  
-//  /**
-//   * Indication of whether the control is filled-in or not.
-//   */
-//  private BooleanProperty ocFilledInProperty = new SimpleBooleanProperty(true);
-//  
-//  /**
-//   * Indication of whether the control has a valid value or not.
-//   */
-//  private BooleanProperty ocValidProperty = new SimpleBooleanProperty(true);
-//  
-//  /**
-//   * The current value.
-//   */
-//  private ObjectProperty<Boolean> ocValueProperty = new SimpleObjectProperty<>(false);
-  
-  
-
-  
-  private List<InvalidationListener> invalidationListeners = new ArrayList<>();
+  private ComboBox<T> comboBox = null;
   
   /**
    * Constructor
    * <p>
-   * With this constructor the text for an enum constant is its name.
+   * With this constructor the text for an enum constant is created by calling toString() on the constant.
+   * So it is whatever you return by overwriting toString(), or it is the name of the constant if you don't overwrite toString().
    * 
    * @param enumConstant A single enum constant of the enum.
    * @param notSetValue The 'not set' value.
    * @param isOptional indicates whether the value is optional or not
    * @param toolTipText an optional tooltip text
    */
-  public ObjectControlEnumComboBox(T enumConstant, T notSetValue, boolean isOptional, String toolTipText) {
-    StringConverter stringConverter = new StringConverter<T>() {
-
-      @Override
-      public String toString(T enumConstant) {
-        return (enumConstant != null ? enumConstant.toString() : "<null>");
-      }
-
-      @Override
-      public T fromString(String string) {
-        LOGGER.severe("=> " + string);
-        for (T constant: enumConstant.getDeclaringClass().getEnumConstants()) {
-          if (constant.toString().equals(string)) {
-            return constant;
-          }
-        }
-        return null;
-      }
-      
-    };
-//    enumTextConverter = new EnumTextConverter<T>(enumConstant, notSetValue);
-    
-    init(enumConstant, isOptional, toolTipText);
+  public ObjectControlEnumComboBox(CustomizationFx customization, T enumConstant, T notSetValue, boolean isOptional, String toolTipText) {
+    super(isOptional);
+    init(customization, enumConstant, toolTipText);
   }
   
   /**
@@ -123,10 +65,11 @@ public class ObjectControlEnumComboBox<T extends Enum<T>> extends ComboBox<T> im
    * @param isOptional indicates whether the value is optional or not
    * @param toolTipText an optional tooltip text
    */
-  public ObjectControlEnumComboBox(T enumConstant, T notSetValue, EEnum eEnum, boolean isOptional, String toolTipText) {
-    enumTextConverter = new EnumTextConverter<T>(enumConstant, notSetValue, eEnum);
+  public ObjectControlEnumComboBox(CustomizationFx customization, T enumConstant, T notSetValue, EEnum eEnum, boolean isOptional, String toolTipText) {
+    super(isOptional);
+//    enumTextConverter = new EnumTextConverter<T>(enumConstant, notSetValue, eEnum);
     
-    init(enumConstant, isOptional, toolTipText);
+    init(customization, enumConstant, toolTipText);
   }
   
   /**
@@ -140,183 +83,92 @@ public class ObjectControlEnumComboBox<T extends Enum<T>> extends ComboBox<T> im
    * @param isOptional indicates whether the value is optional or not
    * @param toolTipText an optional tooltip text
    */
-  public ObjectControlEnumComboBox(T enumConstant, T notSetValue, Map<T, String> enumToStringMap, boolean isOptional, String toolTipText) {
-    enumTextConverter = new EnumTextConverter<T>(enumConstant, notSetValue, enumToStringMap);
+  public ObjectControlEnumComboBox(CustomizationFx customization, T enumConstant, T notSetValue, Map<T, String> enumToStringMap, boolean isOptional, String toolTipText) {
+    super(isOptional);
+//    enumTextConverter = new EnumTextConverter<T>(enumConstant, notSetValue, enumToStringMap);
     
-    init(enumConstant, isOptional, toolTipText);
+    init(customization, enumConstant, toolTipText);
+  }
+  
+  public ComboBox<T> ocGetControl() {
+    return comboBox;
   }
 
-//  /**
-//   * {@inheritDoc}
-//   */
-//  @Override
-//  public BooleanProperty ocOptionalProperty() {
-//    return ocOptionalProperty;
-//  }
-  
   /**
    * Handle initialization.
    * 
    * @param isOptional indicates whether the value is optional or not
    * @param toolTipText an optional tooltip text
    */
-  private void init(T enumConstant, boolean isOptional, String toolTipText) {
-    optional = isOptional;
-//	  ocOptionalProperty.set(isOptional);
+  private void init(CustomizationFx customization, T enumConstant, String toolTipText) {
+    comboBox = customization.getComponentFactoryFx().createComboBox(null);
     
-//    getItems().addAll(enumTextConverter.getStringValues());
+    comboBox.getItems().clear();
     for (T constant: enumConstant.getDeclaringClass().getEnumConstants()) {
-      getItems().add(constant);
+      comboBox.getItems().add(constant);
     }
     
-    valueProperty().addListener(new ChangeListener<T>() {
-
-      @Override
-      public void changed(ObservableValue<? extends T> observable, T oldValue, T newValue) {
-       LOGGER.info(newValue != null ? newValue.toString() : "null");
-        
-       ociNotifyListeners();
-      }
-      
-    });
+    
+    comboBox.valueProperty().addListener((o) -> ociHandleNewUserInput());
             
     if (toolTipText != null) {
-      setTooltip(new Tooltip(toolTipText));
+      comboBox.setTooltip(new Tooltip(toolTipText));
     }
     
-    this.setOnAction(event -> ociHandleNewUserInput());
-    getSelectionModel().select(0);
+    comboBox.setOnAction(event -> ociHandleNewUserInput());
   }
 
-//  private void checkOnValid() {
-//    boolean isValid;
-//    
-//    if (ocIsOptional()  &&  !ocIsFilledIn()) {
-//      isValid = true;
-//    } else {
-//      isValid = ocIsFilledIn();
-//    }
-//    
-//    ocValidProperty.set(isValid);
-//    
-//    ocFilledInProperty.set(isFilledIn());
-//  }
-
-  private boolean isFilledIn() {
-    return super.getValue() != null;
-  }
-
-//  @Override
-//  public BooleanProperty ocValidProperty() {
-//    return ocValidProperty;
-//  }
-//
-//  @Override
-//  public BooleanProperty ocFilledInProperty() {
-//    return ocFilledInProperty;
-//  }
-//  
-//  @Override
-//  public void ocSetValue(T objectValue) {
-//    setValue(objectValue);
-//  }
-//  
-//  @Override
-//  public ObjectProperty<T> ocValueProperty() {
-////    return valueProperty();
-//    
-//    return null;
-//  }
-  
   /**
    * {@inheritDoc}
    */
   @Override
-  public List<InvalidationListener> ociGetInvalidationListeners() {
-    return invalidationListeners;
-  }
-
-  public void select(Enum<T> normal) {
-    // TODO Auto-generated method stub
-    
-  }
-
-  @Override
   public boolean ociDetermineFilledIn() {
-    // TODO Auto-generated method stub
-    return false;
+    return comboBox.getSelectionModel().getSelectedItem() != null;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public T ociDetermineValue() {
-    // TODO Auto-generated method stub
-    return null;
+    return comboBox.getSelectionModel().getSelectedItem();
   }
 
+  /**
+   * {@inheritDoc}
+   * Input is always valid, so no action needed.
+   */
   @Override
   public void ociSetErrorFeedback(boolean valid) {
-    // TODO Auto-generated method stub
-    
   }
 
+  /**
+   * {@inheritDoc}
+   * No action needed.
+   */
   @Override
   public void ociRedrawValue() {
-    // TODO Auto-generated method stub
-    
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public String ocGetObjectValueAsFormattedText() {
-    // TODO Auto-generated method stub
-    return null;
+    if (value != null) {
+      return comboBox.getConverter().toString(value);
+    } else {
+      return null;
+    }
   }
 
-  @Override
-  public boolean ocIsOptional() {
-    // TODO Auto-generated method stub
-    return false;
-  }
-
-  @Override
-  public boolean ocIsFilledIn() {
-    // TODO Auto-generated method stub
-    return false;
-  }
-
-  @Override
-  public boolean ocIsValid() {
-    // TODO Auto-generated method stub
-    return false;
-  }
-
-  @Override
-  public T ocGetValue() {
-    // TODO Auto-generated method stub
-    return null;
-  }
-
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void ocSetValue(T objectValue) {
-    // TODO Auto-generated method stub
-    
-  }
-
-  @Override
-  public void ociSetValue(T value) {
-    // TODO Auto-generated method stub
-    
-  }
-
-  @Override
-  public void ociSetValid(boolean valid) {
-    // TODO Auto-generated method stub
-    
-  }
-
-  @Override
-  public void ociSetFilledIn(boolean filledIn) {
-    // TODO Auto-generated method stub
-    
+    referenceValue = objectValue;
+    comboBox.getSelectionModel().select(objectValue);
   }
 
 }

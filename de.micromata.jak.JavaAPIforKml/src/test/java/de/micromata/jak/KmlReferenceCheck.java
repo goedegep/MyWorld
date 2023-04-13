@@ -602,6 +602,7 @@ public final class KmlReferenceCheck {
 		Assert.assertEquals(1.0, model.getScale().getZ(), 0.0001);
 
 		Assert.assertEquals("house.dae", model.getLink().getHref());
+		// FIXME: TODO <refreshMode>once</refreshMode>
 		Assert.assertEquals(RefreshMode.ON_CHANGE, model.getLink().getRefreshMode());
 
 		Assert.assertEquals("../files/CU-Macky---Center-StairsnoCulling.jpg", model.getResourceMap().getAlias().get(0).getTargetHref());

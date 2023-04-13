@@ -120,19 +120,4 @@ public class MarkdownViewer extends JfxStage {
     webEngine.loadContent(buf.toString());
   }
   
-  
-  private void test() {
-    StringBuilder buf = new StringBuilder();
-
-    buf.append("<html>");
-    buf.append("<header>");
-    buf.append("</header>");
-    buf.append("<body>");
-    buf.append("Hello world");
-    buf.append("</body>");
-    buf.append("</html>");
-
-    webEngine.loadContent(buf.toString());
-//    webEngine.loadContent("<html><head></head><body>HELLO WORLD</body></html>");
-  }
 }
