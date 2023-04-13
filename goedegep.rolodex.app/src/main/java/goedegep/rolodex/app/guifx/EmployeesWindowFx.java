@@ -16,7 +16,6 @@ import goedegep.jfx.eobjecttable.EObjectTableColumnDescriptorBasic;
 import goedegep.jfx.eobjecttable.EObjectTableColumnDescriptorChoiceBox;
 import goedegep.jfx.eobjecttable.EObjectTableControlPanel;
 import goedegep.jfx.eobjecttable.EObjectTableDescriptor;
-import goedegep.jfx.objectcontrols.ObjectControl;
 import goedegep.jfx.objectcontrols.ObjectControlGroup;
 import goedegep.rolodex.app.logic.InstitutionStringConverter;
 import goedegep.rolodex.app.logic.PersonStringConverter;
@@ -219,14 +218,14 @@ class EmployeeEditPanel {
     label = componentFactory.createLabel("Person:");
     gridPane.add(label, 0, row);
 
-    gridPane.add(personTextField, 1, row);
+    gridPane.add(personTextField.ocGetControl(), 1, row);
     
     row++;
     
     label = componentFactory.createLabel("Institution:");
     gridPane.add(label, 0, row);
 
-    gridPane.add(institutionTextField, 1, row);
+    gridPane.add(institutionTextField.ocGetControl(), 1, row);
     
     row++;
     
@@ -234,7 +233,7 @@ class EmployeeEditPanel {
     gridPane.add(label,  0, row);
     
     for (int i = 0; i < phoneNumberTextFields.length; i++) {
-      gridPane.add(phoneNumberTextFields[i], 1 + i, row);
+      gridPane.add(phoneNumberTextFields[i].ocGetControl(), 1 + i, row);
     }
     
   }
@@ -283,25 +282,25 @@ class EmployeeEditPanel {
       return;
     }
     
-    personTextField.setText(employee.getPerson().getName());
-    institutionTextField.setText(employee.getInstitution().getName());
+    personTextField.ocSetValue(employee.getPerson().getName());
+    institutionTextField.ocSetValue(employee.getInstitution().getName());
     
     List<PhoneNumber> phoneNumbers = employee.getPhoneNumbers();
     for (int i = 0; i < phoneNumberTextFields.length; i++) {
       if (phoneNumbers.size() > i) {
-        phoneNumberTextFields[i].setText(phoneNumbers.get(i).toString());
+        phoneNumberTextFields[i].ocSetValue(phoneNumbers.get(i).toString());
       } else {
-        phoneNumberTextFields[i].setText(null);
+        phoneNumberTextFields[i].ocSetValue(null);
       }
     }
   }
   
   private void clearFields() {
-    personTextField.setText(null);
-    institutionTextField.setText(null);
+    personTextField.ocSetValue(null);
+    institutionTextField.ocSetValue(null);
 
     for (int i = 0; i < phoneNumberTextFields.length; i++) {
-      phoneNumberTextFields[i].setText(null);
+      phoneNumberTextFields[i].ocSetValue(null);
     }
   }
   

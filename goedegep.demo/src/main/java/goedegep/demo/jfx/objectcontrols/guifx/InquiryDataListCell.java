@@ -50,6 +50,8 @@ public class InquiryDataListCell extends ListCell<InquiryData>{
     vBox.getChildren().add(label);
     label = componentFactory.createLabel("birthplace: " + (inquiryData.getBirthPlace() != null ? inquiryData.getBirthPlace().getName() : null));
     vBox.getChildren().add(label);
+    label = componentFactory.createLabel("gender: " + (inquiryData.getGender() != null ? inquiryData.getGender().getLiteral() : null));
+    vBox.getChildren().add(label);
     label = componentFactory.createLabel("age: " + inquiryData.getAge());
     vBox.getChildren().add(label);
     label = componentFactory.createLabel("traveler type: " + (inquiryData.getTravelerType() != null ? inquiryData.getTravelerType().toString() : null));
@@ -58,7 +60,7 @@ public class InquiryDataListCell extends ListCell<InquiryData>{
     vBox.getChildren().add(label);
     label = componentFactory.createLabel("last travel date: " + (inquiryData.getLastTravelDate() != null ? DTF.format(inquiryData.getLastTravelDate()) : null));
     vBox.getChildren().add(label);
-    label = componentFactory.createLabel("travel report filename: " + inquiryData.getTravelReportFilename());
+    label = componentFactory.createLabel("travel report filename: " + inquiryData.getTravelReportFile());
     vBox.getChildren().add(label);
     label = componentFactory.createLabel("next travel date: " + (inquiryData.getNextTravelDate() != null ? FDF.format(inquiryData.getNextTravelDate()) : null));
     vBox.getChildren().add(label);

@@ -1,101 +1,51 @@
 package goedegep.jfx.objectcontrols;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.logging.Logger;
 
-import javafx.beans.InvalidationListener;
-import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.property.SimpleObjectProperty;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
+import goedegep.jfx.ComponentFactoryFx;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Tooltip;
 
 
-public class ObjectControlBoolean extends CheckBox implements ObjectControl<Boolean> {
+public class ObjectControlBoolean extends ObjectControlAbstract<Boolean> {
   @SuppressWarnings("unused")
   private static final Logger         LOGGER = Logger.getLogger(ObjectControlBoolean.class.getName());
   
   /**
-   * Indication of whether the control is optional (if true) or mandatory.
+   * The Control
    */
-  private boolean optional;
-//  private BooleanProperty ocOptionalProperty = new SimpleBooleanProperty(false);
-//  
-//  /**
-//   * Indication of whether the control is filled-in or not.
-//   */
-//  private BooleanProperty ocFilledInProperty = new SimpleBooleanProperty(true);
-//  
-//  /**
-//   * Indication of whether the control has a valid value or not.
-//   */
-//  private BooleanProperty ocValidProperty = new SimpleBooleanProperty(true);
-//  
-//  /**
-//   * The current value.
-//   */
-//  private ObjectProperty<Boolean> ocValueProperty = new SimpleObjectProperty<>(false);
+  CheckBox checkBox = null;
+
   
   /**
-   * The invalidation listeners
+   * Constructor.
+   * 
+   * @param text Text to display with the CheckBox.
+   * 
+   * @param selected Initial selection value.
+   * @param isOptional Indication of whether the control is optional (if true) or mandatory.
+   * @param toolTipText An optional ToolTip text.
    */
-  private List<InvalidationListener> invalidationListeners = new ArrayList<>();
-  
-  public ObjectControlBoolean(String text, boolean selected, boolean isOptional, String toolTipText) {
-    super(text);
+  public ObjectControlBoolean(ComponentFactoryFx componentFactory, String text, boolean selected, boolean isOptional, String toolTipText) {
+    super(isOptional);
     
-    setSelected(selected);
-//    ocValueProperty.set(selected);
+    checkBox = componentFactory.createCheckBox(toolTipText, selected);  // TODO check that ocSetValue leads to calling ociHandleNewUserInput()
     
-    optional = isOptional;
-//    ocOptionalProperty.set(isOptional);
-    
-    selectedProperty().addListener((o)-> ociHandleNewUserInput());
+    checkBox.selectedProperty().addListener((o)-> ociHandleNewUserInput());
     
     if (toolTipText != null) {
-      setTooltip(new Tooltip(toolTipText));
+      checkBox.setTooltip(new Tooltip(toolTipText));
     }
-    //this.onInputMethodTextChangedProperty()
-  }
 
-  /**
-   * {@inheritDoc}
-   */
-//  @Override
-//  public BooleanProperty ocOptionalProperty() {
-//    return ocOptionalProperty;
-//  }
-//
-//  @Override
-//  public void ocSetValue(Boolean objectValue) {
-//    setSelected(objectValue);    
-//  }
-//  
-//  @Override
-//  public ObjectProperty<Boolean> ocValueProperty() {
-//    return ocValueProperty;
-//  }
-//
-//  @Override
-//  public BooleanProperty ocValidProperty() {
-//    return ocValidProperty;
-//  }
-//
-//  @Override
-//  public BooleanProperty ocFilledInProperty() {
-//    return ocFilledInProperty;
-//  }
+    ocSetValue(selected);
+  }
   
   /**
    * {@inheritDoc}
    */
   @Override
-  public List<InvalidationListener> ociGetInvalidationListeners() {
-    return invalidationListeners;
+  public CheckBox ocGetControl() {
+    return checkBox;
   }
 
   /**
@@ -112,7 +62,7 @@ public class ObjectControlBoolean extends CheckBox implements ObjectControl<Bool
    */
   @Override
   public Boolean ociDetermineValue() {
-    return isSelected();
+    return checkBox.isSelected();
   }
 
   /**
@@ -137,55 +87,16 @@ public class ObjectControlBoolean extends CheckBox implements ObjectControl<Bool
    */
   @Override
   public String ocGetObjectValueAsFormattedText() {
-    return isSelected() ? "true" : "false";
+    return value ? "true" : "false";
   }
 
-  @Override
-  public boolean ocIsOptional() {
-    // TODO Auto-generated method stub
-    return false;
-  }
-
-  @Override
-  public boolean ocIsFilledIn() {
-    // TODO Auto-generated method stub
-    return false;
-  }
-
-  @Override
-  public boolean ocIsValid() {
-    // TODO Auto-generated method stub
-    return false;
-  }
-
-  @Override
-  public Boolean ocGetValue() {
-    // TODO Auto-generated method stub
-    return null;
-  }
-
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void ocSetValue(Boolean objectValue) {
-    // TODO Auto-generated method stub
-    
-  }
-
-  @Override
-  public void ociSetValue(Boolean value) {
-    // TODO Auto-generated method stub
-    
-  }
-
-  @Override
-  public void ociSetValid(boolean valid) {
-    // TODO Auto-generated method stub
-    
-  }
-
-  @Override
-  public void ociSetFilledIn(boolean filledIn) {
-    // TODO Auto-generated method stub
-    
+    referenceValue = objectValue;
+    checkBox.setSelected(objectValue);
   }
 
 }

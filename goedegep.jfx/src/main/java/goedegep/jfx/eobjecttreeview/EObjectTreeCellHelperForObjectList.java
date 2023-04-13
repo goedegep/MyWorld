@@ -23,7 +23,6 @@ import javafx.scene.Node;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
-import javafx.scene.control.TreeItem;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
@@ -150,8 +149,9 @@ public class EObjectTreeCellHelperForObjectList extends EObjectTreeCellHelperAbs
               EObjectTreeItemClassDescriptor eObjectTreeItemClassDescriptor = ((EObjectTreeView) eObjectTreeCell.getTreeView()).getEObjectTreeDescriptor().getDescriptorForEClass(candidate.eClass());
               MenuItem subMenuItem = new MenuItem(eObjectTreeItemClassDescriptor.getBuildText().apply(candidate));
               subMenuItem.setOnAction(new EventHandler<ActionEvent>() {
+                @SuppressWarnings("unchecked")
                 public void handle(ActionEvent t) {
-                  ((EObjectResolvingEList) eObjectTreeItemContent.getObject()).add(candidate);
+                  ((EObjectResolvingEList<Object>) eObjectTreeItemContent.getObject()).add(candidate);
                 }
               });
 

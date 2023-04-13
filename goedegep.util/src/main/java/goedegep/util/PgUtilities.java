@@ -36,6 +36,7 @@ public class PgUtilities {
   public static boolean equals(Object object1, Object object2) {
     if ((object1 == null)  &&  (object2 != null)  ||
         (object1 != null)  &&  (object2 == null)) {
+      LOGGER.info("<= false, object1=" + object1 + ", object2=" + object2);
       return false;
     }
     
@@ -43,7 +44,12 @@ public class PgUtilities {
       return true;
     }
     
+    boolean result = object1.equals(object2);
+    java.util.Objects.compare(null, null, null);
+    if (!result) {
+      LOGGER.info("<= false, object1=" + object1 + ", object2=" + object2);
+    }
     return object1.equals(object2);
   }
-
+  
 }

@@ -3,6 +3,7 @@ package goedegep.jfx.objectcontrols;
 import java.text.ParseException;
 import java.util.logging.Logger;
 
+import goedegep.jfx.CustomizationFx;
 import goedegep.util.datetime.FlexDate;
 import goedegep.util.datetime.FlexDateFormat;
 
@@ -21,30 +22,9 @@ public class ObjectControlFlexDate extends ObjectControlTextField<FlexDate> {
    * @param isOptional Indication of whether the value is an optional values.
    * @param toolTipText An optional Tooltip text.
    */
-  public ObjectControlFlexDate(FlexDate flexDate, double width, boolean isOptional, String toolTipText) {
-    super(flexDate, width, isOptional, toolTipText);
+  public ObjectControlFlexDate(CustomizationFx customization, FlexDate flexDate, double width, boolean isOptional, String toolTipText) {
+    super(customization, flexDate, width, isOptional, toolTipText);
   }
-    
-//  /**
-//   * {@inheritDoc}
-//   */
-//  @Override
-//  public boolean isDataValid() {
-//    if (getText() == null) {
-//      return false;
-//    }
-//    
-//    boolean valueIsValid = true;
-//    
-//    try {
-//      FDF.parse(getText());
-//    } catch (ParseException e) {
-//      valueIsValid = false;
-//      errorText = e.getMessage();
-//    }
-//
-//    return valueIsValid;
-//  }
 
   /**
    * {@inheritDoc}
@@ -53,13 +33,11 @@ public class ObjectControlFlexDate extends ObjectControlTextField<FlexDate> {
   protected FlexDate stringToObject(String valueAsString) {
     FlexDate flexDate = null;
     
-//    if (valueAsString != null) {
       try {
         flexDate = FDF.parse(valueAsString);
       } catch (ParseException e) {
         LOGGER.info("ParseException on value: " + valueAsString);
       }
-//    }
     
     return flexDate;
   }

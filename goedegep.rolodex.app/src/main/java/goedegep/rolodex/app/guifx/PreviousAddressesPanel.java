@@ -63,7 +63,7 @@ public class PreviousAddressesPanel extends VBox {
     label = componentFactory.createLabel("Add a previous address:");
     addAddressHBox.getChildren().add(label);
     AddressTextField addressTextField = new AddressTextField(customization, rolodex);
-    addAddressHBox.getChildren().add(addressTextField);
+    addAddressHBox.getChildren().add(addressTextField.ocGetControl());
     Button addAddressButton = componentFactory.createButton("Add address", "Add the selected address as a previous address");
     addAddressButton.setOnAction(new EventHandler<ActionEvent>() {
 

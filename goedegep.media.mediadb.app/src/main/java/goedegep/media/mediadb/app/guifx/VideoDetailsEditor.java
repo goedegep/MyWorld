@@ -170,7 +170,7 @@ public class VideoDetailsEditor extends JfxStage {
     gridPane.add(label, 0, 2);
     
     videoImageFileSelecter = componentFactory.createFileSelecter("D:\\Photo", 300, "Select an image file", "Open file selecter", "Select this image file", "Select image");
-    gridPane.add(videoImageFileSelecter.getPathTextField(), 1, 2);
+    gridPane.add(videoImageFileSelecter.ocGetControl(), 1, 2);
     gridPane.add(videoImageFileSelecter.getFileChooserButton(), 2, 2);
     
     centerPane.getChildren().add(gridPane);
@@ -231,7 +231,7 @@ public class VideoDetailsEditor extends JfxStage {
       }
       
       if (video.isSetImage()) {
-        videoImageFileSelecter.ocSetValue(video.getImage());
+        videoImageFileSelecter.ocSetFilename(video.getImage());
       } else {
         videoImageFileSelecter.ocSetValue(null);
       }
@@ -360,7 +360,7 @@ public class VideoDetailsEditor extends JfxStage {
     }
     
     // Video image
-    String imageText = videoImageFileSelecter.ocGetValue().trim();
+    String imageText = videoImageFileSelecter.ocGetAbsolutePath().trim();
     if (!imageText.isEmpty()) {
       video.setImage(imageText);
     }

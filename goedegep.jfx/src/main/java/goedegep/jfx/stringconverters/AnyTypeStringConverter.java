@@ -17,7 +17,7 @@ public class AnyTypeStringConverter<T extends Object> extends StringConverterAnd
   public String toString(T object) {
     if (object != null) {
       String result = object.toString();
-      LOGGER.severe("<= " + result);
+      LOGGER.info("<= " + result);
       return result;
     } else {
       return null;

@@ -1,6 +1,5 @@
 package goedegep.jfx.eobjecteditor;
 
-import java.text.ParseException;
 import java.util.logging.Logger;
 
 import org.eclipse.emf.common.util.EList;
@@ -70,7 +69,7 @@ public class EObjectEditor<E extends EObject> extends JfxStage {
   private void createObjectInputContainer() {
     objectInputContainer = new ObjectControlGroup();
     for (EObjectAttributeEditDescriptor eObjectAttributeEditDescriptor: eObjectEditorDescriptor.getEObjectAttributeEditDescriptors()) {
-      objectInputContainer.addObjectControl((ObjectControl<?>) eObjectAttributeEditDescriptor.getNode());
+      objectInputContainer.addObjectControl((ObjectControl<?>) eObjectAttributeEditDescriptor.getObjectControl());
     }
     
   }
@@ -154,7 +153,7 @@ public class EObjectEditor<E extends EObject> extends JfxStage {
     // Label
     StringBuilder buf = new StringBuilder();
     buf.append(eObjectAttributeEditDescriptor.getLabelText());
-    if (!((ObjectControl<?>) eObjectAttributeEditDescriptor.getNode()).ocIsOptional()) {
+    if (!eObjectAttributeEditDescriptor.getObjectControl().ocIsOptional()) {
       buf.append(" *");
     }
     buf.append(":");
@@ -162,7 +161,7 @@ public class EObjectEditor<E extends EObject> extends JfxStage {
     gridPane.add(label, 0, rowIndex);
     
     // ObjectInput control
-    Node node = eObjectAttributeEditDescriptor.getNode();
+    Node node = eObjectAttributeEditDescriptor.getObjectControl().ocGetControl();
     gridPane.add(node, 1, rowIndex); 
     
     // Ok/Not OK label
@@ -191,7 +190,7 @@ public class EObjectEditor<E extends EObject> extends JfxStage {
     E eObject = (E) eFactory.create(eClass);
     
     for (EObjectAttributeEditDescriptor eObjectAttributeEditDescriptor: eObjectEditorDescriptor.getEObjectAttributeEditDescriptors()) {
-      ObjectControl<?> objectInput = (ObjectControl<?>) eObjectAttributeEditDescriptor.getNode();
+      ObjectControl<?> objectInput = eObjectAttributeEditDescriptor.getObjectControl();
       if (objectInput.ocIsFilledIn()) {
         Object value;
         value = objectInput.ocGetValue();

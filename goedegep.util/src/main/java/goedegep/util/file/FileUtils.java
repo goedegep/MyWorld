@@ -21,6 +21,7 @@ import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -583,5 +584,28 @@ public class FileUtils {
       // No action.
     }
     return dateTime;
+  }
+  
+  public static Comparator<File> getComparator() {
+    return new Comparator<>() {
+
+      @Override
+      public int compare(File o1, File o2) {
+        if (o1 == null) {
+          if (o2 == null) {
+            return -1;
+          } else {
+            return 0;
+          }
+        }
+        
+        if (o2 == null) {
+          return 1;
+        }
+        
+        return o1.getAbsolutePath().compareTo(o2.getAbsolutePath());
+      }
+      
+    };
   }
 }

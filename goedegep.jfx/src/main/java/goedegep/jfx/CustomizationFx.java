@@ -1,5 +1,6 @@
 package goedegep.jfx;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.logging.Logger;
 
 import goedegep.appgen.swing.AppResources;
@@ -27,7 +28,7 @@ public class CustomizationFx {
   private AppResourcesFx appResources;
   
   // Factory to create components in the right look.
-  private ComponentFactoryFx componentFactoryFx;
+  private ComponentFactoryFx componentFactoryFx = null;
 
   /**
    * Create a Customization, where both the Look and the AppResources are specified.
@@ -37,7 +38,6 @@ public class CustomizationFx {
    */
   public CustomizationFx(Look look, AppResourcesFx appResources) {
     this.look = look;
-    componentFactoryFx = new ComponentFactoryFx(look, appResources);
     this.appResources = appResources;
   }
 
@@ -74,6 +74,9 @@ public class CustomizationFx {
    * @return the ComponentFactoryFx for this Customization. This value can never be null.
    */
   public ComponentFactoryFx getComponentFactoryFx() {
+    if (componentFactoryFx == null) {
+      componentFactoryFx = new ComponentFactoryFx(this);
+    }
     return componentFactoryFx;
   }
   
@@ -102,17 +105,10 @@ public class CustomizationFx {
     try {
       resourceClass = Class.forName(resourcesClassName);
       LOGGER.info("resourceClass: " + resourceClass.getName());
-      AppResourcesFx appResources = (AppResourcesFx) resourceClass.newInstance();
+      AppResourcesFx appResources = (AppResourcesFx) resourceClass.getDeclaredConstructor().newInstance();
       customization = new CustomizationFx(look, appResources);
-    } catch (ClassNotFoundException e) {
-      e.printStackTrace();
-    } catch (InstantiationException e) {
-      e.printStackTrace();
-    } catch (IllegalAccessException e) {
-      e.printStackTrace();
-    } catch (SecurityException e) {
-      e.printStackTrace();
-    } catch (IllegalArgumentException e) {
+    } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | SecurityException |
+        IllegalArgumentException | InvocationTargetException | NoSuchMethodException  e) {
       e.printStackTrace();
     }
     

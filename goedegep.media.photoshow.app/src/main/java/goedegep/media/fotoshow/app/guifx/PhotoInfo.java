@@ -11,7 +11,6 @@ import java.util.logging.Logger;
 import goedegep.geo.WGS84Coordinates;
 import goedegep.media.photo.IPhotoMetaData;
 import goedegep.media.photo.IPhotoMetaDataWithImage;
-import goedegep.media.photo.PhotoMetaData;
 import goedegep.media.photo.PhotoMetaDataWithImage;
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;

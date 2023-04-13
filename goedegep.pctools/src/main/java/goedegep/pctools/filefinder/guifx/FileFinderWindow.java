@@ -10,7 +10,6 @@ import goedegep.jfx.objectcontrols.ObjectControlFolderSelecter;
 import goedegep.pctools.filefinder.logic.FileFinderTask;
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
-import javafx.beans.property.BooleanProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.concurrent.WorkerStateEvent;
@@ -93,7 +92,7 @@ public class FileFinderWindow extends JfxStage {
     ObjectControlFolderSelecter folderSelecter = componentFactory.createFolderSelecter(null, 400, "Currently selected folder",
         "Choose folder", "Select search folder via a file chooser", "Select the search folder");
     
-    Node folderNameTextField = folderSelecter.getPathTextField();
+    Node folderNameTextField = folderSelecter.ocGetControl();
     controlsPane.getChildren().add(folderNameTextField);
     
     Button folderChooserButton = folderSelecter.getFolderChooserButton();
@@ -110,7 +109,7 @@ public class FileFinderWindow extends JfxStage {
     });
     
     searchFrameMakerFilesButton = componentFactory.createButton("FrameMaker files", "zoek FrameMaker files");
-    searchFrameMakerFilesButton.setOnAction(e -> searchFrameMakerFiles(folderSelecter.ocGetValue()));
+    searchFrameMakerFilesButton.setOnAction(e -> searchFrameMakerFiles(folderSelecter.ocGetAbsolutePath()));
     controlsPane.getChildren().add(searchFrameMakerFilesButton);
     
     rootPane.getChildren().add(controlsPane);

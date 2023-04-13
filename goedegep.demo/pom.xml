@@ -13,6 +13,10 @@
   </parent>
   <dependencies>
     <dependency>
+      <groupId>goedegep.emfsample</groupId>
+      <artifactId>goedegep-emfsample-model</artifactId>
+    </dependency>
+    <dependency>
       <groupId>goedegep.events</groupId>
       <artifactId>goedegep-events-model</artifactId>
     </dependency>

@@ -3,8 +3,8 @@ module goedegep.events.model {
   exports goedegep.events.model.util;
   exports goedegep.events.model.impl;
 
-  requires goedegep.types.model;
+  requires transitive goedegep.types.model;
   requires goedegep.util;
-  requires org.eclipse.emf.common;
+  requires transitive org.eclipse.emf.common;
   requires org.eclipse.emf.ecore;
 }

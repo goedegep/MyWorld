@@ -2,6 +2,7 @@ package goedegep.jfx.objectcontrols;
 
 import java.util.logging.Logger;
 
+import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.stringconverters.FixedPointValueStringConverter;
 import goedegep.util.fixedpointvalue.FixedPointValue;
 
@@ -15,7 +16,6 @@ import goedegep.util.fixedpointvalue.FixedPointValue;
 public class ObjectControlFixedPointValue extends ObjectControlTextField<FixedPointValue> {
   @SuppressWarnings("unused")
   private static final Logger         LOGGER = Logger.getLogger(ObjectControlFixedPointValue.class.getName());
-//  private static final FixedPointValueFormat FPVF = new FixedPointValueFormat();
   
   /**
    * Minimum factor for the FixedPointValue.
@@ -27,8 +27,8 @@ public class ObjectControlFixedPointValue extends ObjectControlTextField<FixedPo
    */
   protected Integer maximumFactor = null;
   
-  public ObjectControlFixedPointValue(FixedPointValue objectValue, double width, boolean isOptional, String toolTipText) {
-    super(new FixedPointValueStringConverter(), objectValue, width, isOptional, toolTipText);
+  public ObjectControlFixedPointValue(CustomizationFx customization, FixedPointValue objectValue, double width, boolean isOptional, String toolTipText) {
+    super(customization, new FixedPointValueStringConverter(), objectValue, width, isOptional, toolTipText);
   }
   
   /**
@@ -47,10 +47,7 @@ public class ObjectControlFixedPointValue extends ObjectControlTextField<FixedPo
    */
   @Override
   public FixedPointValue ociDetermineValue() {
-//    if (getText() == null  ||  getText().isEmpty()) {
-//      return null;
-//    }
-    FixedPointValue value = stringToObject(getText().trim());
+    FixedPointValue value = stringToObject(ocGetControl().getText().trim());
     
     if (value == null) {
       return null;
@@ -69,7 +66,7 @@ public class ObjectControlFixedPointValue extends ObjectControlTextField<FixedPo
    * @param fixedPointValue the fixedPointValue to check.
    * @return true if the {@code fixedPointValue} satisfies the constraints.
    */
-  public boolean isDataValid(FixedPointValue fixedPointValue) {
+  private boolean isDataValid(FixedPointValue fixedPointValue) {
     boolean valueIsValid = true;
 
     try {
@@ -89,21 +86,4 @@ public class ObjectControlFixedPointValue extends ObjectControlTextField<FixedPo
     }
   }
 
-//  @Override
-//  protected FixedPointValue stringToObject(String valueAsString) {
-//    FixedPointValue fixedPointValue = null;
-//    
-//    try {
-//      fixedPointValue = FPVF.parse(valueAsString);
-//    } catch (ParseException e) {
-//      LOGGER.severe("ParseException on value: " + valueAsString);
-//    }
-//    
-//    return fixedPointValue;
-//  }
-//  
-//  @Override
-//  protected String objectToString(FixedPointValue value) {
-//    return FPVF.format(value);
-//  }
 }

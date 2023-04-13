@@ -27,7 +27,6 @@ import org.eclipse.emf.ecore.EcoreFactory;
 import org.eclipse.emf.ecore.EcorePackage;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
-import org.eclipse.emf.ecore.util.EObjectContainmentEList;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 
 import goedegep.appgen.TableRowOperation;
@@ -46,8 +45,6 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.collections.FXCollections;
-import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
@@ -135,34 +132,11 @@ public class EObjectTable<T extends EObject> extends TableView<T> implements Obj
    */
   private EFactory eFactory;
   
-  private EObject containingObject;
-  
   private Predicate<T> tableFilterPredicate;
   private List<Predicate<T>> predicates = new ArrayList<>();
   
   private ComponentFactoryFx componentFactory;
 
-//  public EObjectTable(CustomizationFx customization, EClass eClass, EObjectTableDescriptor<T> objectTableDescriptor, EObject containingObject, EReference reference) {
-//    this(customization, eClass, objectTableDescriptor, containingObject, getReferenceForObjects(containingObject, objects));
-//  }
-
-  //
-//private static EReference getReferenceForObjects(EObject containingObject, List objects) {
-//  EReference objectsEReference = null;
-//  for (EReference eReference: containingObject.eClass().getEAllReferences()) {
-//    if (containingObject.eGet(eReference) == objects) {
-//      LOGGER.severe("Found reference: " + eReference.getName());
-//      objectsEReference = eReference;
-//      break;
-//    }
-//  }
-//  
-//  if (objectsEReference == null) {
-//    throw new IllegalArgumentException("'objects' is not part of 'containingObject'.");
-//  }
-//  
-//  return objectsEReference;
-//}
   
   /**
    * Constructor.
@@ -786,9 +760,6 @@ public class EObjectTable<T extends EObject> extends TableView<T> implements Obj
    */
   public void setObjects(EObject containingObject, EReference eReference) {
     
-    this.containingObject = containingObject;
-//    this.objects = objects;
-    
     if (eReference == null) {
       setItems(null);
       return;
@@ -809,22 +780,7 @@ public class EObjectTable<T extends EObject> extends TableView<T> implements Obj
     tableSortedList = new SortedList<>(comparatorBasedSortedList);
     tableSortedList.comparatorProperty().bind(comparatorProperty());
     
-//    if (observableObjects instanceof ObservableEList) {
-//      ((ObservableEList<T>) observableObjects).setPresentationList(tableSortedList);
-//    }
-
     setItems(tableSortedList);
-//    ListChangeListener<T> l = new ListChangeListener<>() {
-//
-//      @Override
-//      public void onChanged(Change<? extends T> arg0) {
-//        LOGGER.severe("=>");
-//        refresh();
-//        
-//      }
-//
-//      
-//    };
     ((ObservableEList<T>) observableObjects).addTableRefreshNeededListener(o -> refresh());
   }
   
@@ -863,6 +819,7 @@ public class EObjectTable<T extends EObject> extends TableView<T> implements Obj
     }
   }
   
+  @SuppressWarnings("unused")
   private String rowToString(TableRow<T> row) {
    return null;
   }
@@ -1553,9 +1510,9 @@ class CheckBoxCellHelper<T extends EObject> implements Callback<Integer, SimpleB
   
   @Override
   public SimpleBooleanProperty call(final Integer param) {
-    T t = (T) tableView.getItems().get(param);
+    T t = tableView.getItems().get(param);
     Object o = t.eGet((EStructuralFeature) eTypedElement);
-    if (o instanceof org.eclipse.emf.ecore.util.EObjectWithInverseResolvingEList.ManyInverse manyInverse) {
+    if (o instanceof org.eclipse.emf.ecore.util.EObjectWithInverseResolvingEList.ManyInverse<?> manyInverse) {
       LOGGER.severe("ManyInverse: " + o.toString());
     }
     Boolean value = (Boolean) t.eGet((EStructuralFeature) eTypedElement);
@@ -1564,7 +1521,7 @@ class CheckBoxCellHelper<T extends EObject> implements Callback<Integer, SimpleB
 
       @Override
       public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
-        T t = (T) tableView.getItems().get(param);
+        T t = tableView.getItems().get(param);
         t.eSet((EStructuralFeature) eTypedElement, newValue);
       }
       

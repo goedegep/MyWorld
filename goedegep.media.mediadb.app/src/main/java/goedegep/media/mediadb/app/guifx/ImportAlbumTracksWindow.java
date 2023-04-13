@@ -117,8 +117,8 @@ public class ImportAlbumTracksWindow extends JfxStage {
     label = componentFactory.createLabel("Source folder:");
     gridPane.add(label, 0, row);
     
-    sourceFolderSelector = new ObjectControlFolderSelecter(SOURCE_FOLDER, 400, "Enter the name of the folder with the tracks of the album that has to be imported", "Choose source folder", "Click to start folder chooser", "Select the folder with the tracks of the album that has to be imported");
-    Node sourceFolderTextField = sourceFolderSelector.getPathTextField();
+    sourceFolderSelector = componentFactory.createFolderSelecter(SOURCE_FOLDER, 400, "Enter the name of the folder with the tracks of the album that has to be imported", "Choose source folder", "Click to start folder chooser", "Select the folder with the tracks of the album that has to be imported");
+    Node sourceFolderTextField = sourceFolderSelector.ocGetControl();
     sourceFolderSelector.addListener((observable) -> handleNewSourceFolder());
     gridPane.add(sourceFolderTextField, 1, row);
     
@@ -210,7 +210,7 @@ public class ImportAlbumTracksWindow extends JfxStage {
 
     albumTracksImportInfo = null;
     albumFolderTextField.setText("");
-    String sourceFolderName = sourceFolderSelector.ocGetValue();
+    String sourceFolderName = sourceFolderSelector.ocGetAbsolutePath();
     
     Disc disc = null;
     if (discComboBox != null) {

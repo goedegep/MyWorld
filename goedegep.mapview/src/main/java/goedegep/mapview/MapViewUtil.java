@@ -4,7 +4,6 @@ import java.util.logging.Logger;
 
 import com.gluonhq.impl.maps.BaseMap;
 import com.gluonhq.maps.MapPoint;
-import com.gluonhq.maps.MapView;
 
 import goedegep.geo.WGS84BoundingBox;
 import javafx.collections.ObservableList;

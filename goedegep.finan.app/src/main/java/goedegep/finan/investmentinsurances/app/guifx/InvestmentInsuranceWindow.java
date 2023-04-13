@@ -82,7 +82,7 @@ public class InvestmentInsuranceWindow extends JfxStage {
     gridPane.add(label, 0, row);
 
     startingDateTextField = componentFactory.createObjectControlLocalDate((LocalDate) null, 100, false, "Ingangsdatum van de verzekering");
-    gridPane.add(startingDateTextField, 1, row);
+    gridPane.add(startingDateTextField.ocGetControl(), 1, row);
     
     row++;
     
@@ -100,9 +100,9 @@ public class InvestmentInsuranceWindow extends JfxStage {
     gridPane.add(label, 0, row);
 
     insuredBenefitOnDeathTextField = componentFactory.createObjectControlCurrency((PgCurrency) null, 100, true, "Verzekerde uitkering bij overlijden (in oorspronkelijke munteenheid)");
-    gridPane.add(insuredBenefitOnDeathTextField, 1, row);
+    gridPane.add(insuredBenefitOnDeathTextField.ocGetControl(), 1, row);
     insuredBenefitOnDeathInEurosTextField = componentFactory.createObjectControlCurrency((PgCurrency) null, 100, true, "Verzekerde uitkering bij overlijden (in euros)");
-    gridPane.add(insuredBenefitOnDeathInEurosTextField, 2, row);
+    gridPane.add(insuredBenefitOnDeathInEurosTextField.ocGetControl(), 2, row);
     row++;
     TextArea insuredBenefitOnDeathInfoTextField = componentFactory.createTextArea(
         "De verzekerde uitkering is het uit te keren bedrag bij overlijden van de verzekerde en betaalbaar terstond na overlijden.\n" + 
@@ -119,9 +119,9 @@ public class InvestmentInsuranceWindow extends JfxStage {
     gridPane.add(label, 0, row);
 
     premiumTextField = componentFactory.createObjectControlCurrency((PgCurrency) null, 100, true, "Betaalde premie (in oorspronkelijke munteenheid))");
-    gridPane.add(premiumTextField, 1, row);
+    gridPane.add(premiumTextField.ocGetControl(), 1, row);
     premiumInEurosTextField = componentFactory.createObjectControlCurrency((PgCurrency) null, 100, true, "Betaalde premie (in euros))");
-    gridPane.add(premiumInEurosTextField, 2, row);
+    gridPane.add(premiumInEurosTextField.ocGetControl(), 2, row);
     
     
     
@@ -143,11 +143,11 @@ public class InvestmentInsuranceWindow extends JfxStage {
   }
 
   private void clearControls() {
-    startingDateTextField.setText(null);
-    insuredBenefitOnDeathTextField.setText(null);
-    insuredBenefitOnDeathInEurosTextField.setText(null);
-    premiumTextField.setText(null);
-    premiumInEurosTextField.setText(null);
+    startingDateTextField.ocSetValue(null);
+    insuredBenefitOnDeathTextField.ocSetValue(null);
+    insuredBenefitOnDeathInEurosTextField.ocSetValue(null);
+    premiumTextField.ocSetValue(null);
+    premiumInEurosTextField.ocSetValue(null);
     policyHolderTextField.setText(null);
   }
 

@@ -15,7 +15,6 @@ import java.util.Objects;
 import java.util.logging.Logger;
 
 import goedegep.media.musicfolder.MusicFolder;
-import goedegep.util.dir.DirectoryUtils;
 import goedegep.util.file.FileUtils;
 import javafx.concurrent.Task;
 

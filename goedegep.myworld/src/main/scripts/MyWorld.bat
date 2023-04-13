@@ -3,4 +3,4 @@ rem If this batch file is started by clicking on a file (Window 'file open' comm
 rem So change the directory to the location of this batch file.
 chdir /d %~dp0
 
-start /min java.exe --module-path . --add-modules goedegep.myworld --add-exports=javafx.base/com.sun.javafx.event=org.controlsfx.controls -splash:MyWorldSplash.jpg goedegep.myworld.MyWorld %*
+start /min java.exe --module-path . -splash:MyWorldSplash.jpg  -m goedegep.myworld/goedegep.myworld.MyWorld %*

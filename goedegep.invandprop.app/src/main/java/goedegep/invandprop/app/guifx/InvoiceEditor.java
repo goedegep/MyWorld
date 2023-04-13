@@ -40,17 +40,17 @@ class InvoiceEditorDescriptor extends EObjectEditorDescriptor {
     
     ComponentFactoryFx componentFactory = customization.getComponentFactoryFx();
     ObjectControlFlexDate dateObjectControl = componentFactory.createObjectControlFlexDate(null, 150.0, true, "the invoice date");
-    dateObjectControl.setId(INVOICES_AND_PROPERTIES_PACKAGE.getInvoice_Date().getName());
+    dateObjectControl.ocSetId(INVOICES_AND_PROPERTIES_PACKAGE.getInvoice_Date().getName());
     ObjectControlString companyObjectControl = componentFactory.createObjectControlString(null, 200, true, "the company you paid the invoice to");
-    companyObjectControl.setId(INVOICES_AND_PROPERTIES_PACKAGE.getInvoice_Company().getName());
+    companyObjectControl.ocSetId(INVOICES_AND_PROPERTIES_PACKAGE.getInvoice_Company().getName());
     ObjectControlString descriptionObjectControl = componentFactory.createObjectControlString(null, 200, false, "typically the product");
-    descriptionObjectControl.setId(INVOICES_AND_PROPERTIES_PACKAGE.getExpenditure_Description().getName());
+    descriptionObjectControl.ocSetId(INVOICES_AND_PROPERTIES_PACKAGE.getExpenditure_Description().getName());
     ObjectControlCurrency amountObjectControl = componentFactory.createObjectControlCurrency(null, 150, false, "the amount of money paid");
-    amountObjectControl.setId(INVOICES_AND_PROPERTIES_PACKAGE.getExpenditure_Amount().getName());
+    amountObjectControl.ocSetId(INVOICES_AND_PROPERTIES_PACKAGE.getExpenditure_Amount().getName());
     ObjectControlString remarksObjectControl = componentFactory.createObjectControlString(null, 150.0, true, "any comments on this invoice");
-    remarksObjectControl.setId(INVOICES_AND_PROPERTIES_PACKAGE.getExpenditure_Remarks().getName());
+    remarksObjectControl.ocSetId(INVOICES_AND_PROPERTIES_PACKAGE.getExpenditure_Remarks().getName());
     ObjectControlBoolean descriptionFromPropertyObjectControl = componentFactory.createObjectControlBoolean(null, false, true, "If set, the description will be derived from the related property");
-    descriptionFromPropertyObjectControl.setId(INVOICES_AND_PROPERTIES_PACKAGE.getExpenditure_DescriptionFromProperty().getName());
+    descriptionFromPropertyObjectControl.ocSetId(INVOICES_AND_PROPERTIES_PACKAGE.getExpenditure_DescriptionFromProperty().getName());
         
     EObjectAttributeEditDescriptor[] eObjectAttributeEditDescriptors = {
         new EObjectAttributeEditDescriptor(DATE_ID, dateObjectControl, INVOICES_AND_PROPERTIES_PACKAGE.getInvoice_Date()),

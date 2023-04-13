@@ -40,21 +40,21 @@ class PropertyEditorDescriptor extends EObjectEditorDescriptor {
     
     ComponentFactoryFx componentFactory = customization.getComponentFactoryFx();
     ObjectControlString descriptionObjectControl = componentFactory.createObjectControlString(null, 150.0, false, "the property description");
-    descriptionObjectControl.setId(INVOICES_AND_PROPERTIES_PACKAGE.getProperty_Description().getName());
+    descriptionObjectControl.ocSetId(INVOICES_AND_PROPERTIES_PACKAGE.getProperty_Description().getName());
     ObjectControlString brandObjectControl = componentFactory.createObjectControlString(null, 150.0, true, "the brand of the property");
-    brandObjectControl.setId(INVOICES_AND_PROPERTIES_PACKAGE.getProperty_Brand().getName());
+    brandObjectControl.ocSetId(INVOICES_AND_PROPERTIES_PACKAGE.getProperty_Brand().getName());
     ObjectControlString typeObjectControl = componentFactory.createObjectControlString(null, 150.0, true, "the property type");
-    typeObjectControl.setId(INVOICES_AND_PROPERTIES_PACKAGE.getProperty_Type().getName());
+    typeObjectControl.ocSetId(INVOICES_AND_PROPERTIES_PACKAGE.getProperty_Type().getName());
     ObjectControlString serialNumberObjectControl = componentFactory.createObjectControlString(null, 150.0, true, "the serial number of the property");
-    serialNumberObjectControl.setId(INVOICES_AND_PROPERTIES_PACKAGE.getProperty_SerialNumber().getName());
+    serialNumberObjectControl.ocSetId(INVOICES_AND_PROPERTIES_PACKAGE.getProperty_SerialNumber().getName());
     ObjectControlString remarksObjectControl = componentFactory.createObjectControlString(null, 150.0, true, "any comments on this property");
-    remarksObjectControl.setId(INVOICES_AND_PROPERTIES_PACKAGE.getProperty_Remarks().getName());
+    remarksObjectControl.ocSetId(INVOICES_AND_PROPERTIES_PACKAGE.getProperty_Remarks().getName());
     ObjectControlFlexDate fromDateObjectControl = componentFactory.createObjectControlFlexDate(null, 150.0, true, "date from when you own(ed) the property");
-    fromDateObjectControl.setId(INVOICES_AND_PROPERTIES_PACKAGE.getProperty_FromDate().getName());
+    fromDateObjectControl.ocSetId(INVOICES_AND_PROPERTIES_PACKAGE.getProperty_FromDate().getName());
     ObjectControlFlexDate untilDateObjectControl = componentFactory.createObjectControlFlexDate(null, 150.0, true, "date until when you owned the property");
-    untilDateObjectControl.setId(INVOICES_AND_PROPERTIES_PACKAGE.getProperty_UntilDate().getName());
+    untilDateObjectControl.ocSetId(INVOICES_AND_PROPERTIES_PACKAGE.getProperty_UntilDate().getName());
     ObjectControlBoolean archiveObjectControl = componentFactory.createObjectControlBoolean(null, false, true, "select if you don't own the property anymore");
-    archiveObjectControl.setId(INVOICES_AND_PROPERTIES_PACKAGE.getProperty_Archive().getName());
+    archiveObjectControl.ocSetId(INVOICES_AND_PROPERTIES_PACKAGE.getProperty_Archive().getName());
         
     EObjectAttributeEditDescriptor[] eObjectAttributeEditDescriptors = {
         new EObjectAttributeEditDescriptor(DESCRIPTION_ID, descriptionObjectControl, INVOICES_AND_PROPERTIES_PACKAGE.getProperty_Description()),

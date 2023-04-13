@@ -25,7 +25,6 @@ public class ObjectControlsDemo extends JfxStage {
   @SuppressWarnings("unused")
   private final static Logger LOGGER = Logger.getLogger(ObjectControlsDemo.class.getName());
   
-  private CustomizationFx customization;
   private ComponentFactoryFx componentFactory;
   
   private ObservableList<InquiryData> inquiryDataList;
@@ -36,16 +35,14 @@ public class ObjectControlsDemo extends JfxStage {
   public ObjectControlsDemo(CustomizationFx customization) {
     super("ObjectControls demo", customization);
     
-    this.customization = customization;
     componentFactory = customization.getComponentFactoryFx();
     
     inquiryDataPanel = new InquiryDataPanel(customization);
-    editorPanel = new EditorPanel(customization);
     inquiryDataList = InquiryData.getInquiryDataList();
+    editorPanel = new EditorPanel(customization, inquiryDataList);
     inquiryDataPanel.setItems(inquiryDataList);
     editButton = componentFactory.createButton("Edit InquiryData", "Edit the selected InquiryData");
     editButton.setOnAction((e) -> {
-      System.out.println("Action");
       editorPanel.setInquiryData(inquiryDataPanel.getSelectionModel().getSelectedItem());
     });
     

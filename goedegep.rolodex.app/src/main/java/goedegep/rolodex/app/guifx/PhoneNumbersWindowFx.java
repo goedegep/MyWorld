@@ -209,19 +209,19 @@ class PhoneNumberEditPanel {
     label = componentFactory.createLabel("Phone number:");
     gridPane.add(label, 0, row);
 
-    gridPane.add(phoneNumberTextField, 1, row);
+    gridPane.add(phoneNumberTextField.ocGetControl(), 1, row);
     
     label = componentFactory.createLabel("Connection type:");
     gridPane.add(label, 2, row);
 
-    gridPane.add(connectionTypeTextField, 3, row);
+    gridPane.add(connectionTypeTextField.ocGetControl(), 3, row);
     
     row++;
     
     label = componentFactory.createLabel("Description:");
     gridPane.add(label, 0, row);
 
-    gridPane.add(descriptionTextField, 1, row);
+    gridPane.add(descriptionTextField.ocGetControl(), 1, row);
     
   }
   
@@ -269,15 +269,15 @@ class PhoneNumberEditPanel {
       return;
     }
     
-    phoneNumberTextField.setText(phoneNumber.getPhoneNumber());
+    phoneNumberTextField.ocSetValue(phoneNumber.getPhoneNumber());
     connectionTypeTextField.ocSetValue(phoneNumber.getConnectionType());
-    descriptionTextField.setText(phoneNumber.getDescription());    
+    descriptionTextField.ocSetValue(phoneNumber.getDescription());    
   }
   
   private void clearFields() {
-    phoneNumberTextField.setText(null);
+    phoneNumberTextField.ocSetValue(null);
     connectionTypeTextField.ocSetValue(null);
-    descriptionTextField.setText(null);
+    descriptionTextField.ocSetValue(null);
   }
   
   /**

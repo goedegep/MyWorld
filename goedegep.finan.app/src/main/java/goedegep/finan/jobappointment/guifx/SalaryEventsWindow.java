@@ -1,11 +1,9 @@
 package goedegep.finan.jobappointment.guifx;
 
-import java.util.List;
 import java.util.logging.Logger;
 
 import goedegep.finan.jobappointment.model.JobAppointment;
 import goedegep.finan.jobappointment.model.JobAppointmentPackage;
-import goedegep.finan.jobappointment.model.SalaryEvent;
 import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.JfxStage;
 import goedegep.jfx.eobjecttable.EObjectTableControlPanel;

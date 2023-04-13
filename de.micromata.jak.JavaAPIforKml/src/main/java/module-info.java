@@ -10,9 +10,11 @@ module de.micromata.opengis.kml.v220 {
   opens de.micromata.opengis.kml.v_2_2_0.atom;
   opens de.micromata.opengis.kml.v_2_2_0.xal;
 
+  requires com.sun.istack.runtime;
+  requires jakarta.xml.bind;
   requires java.logging;
   requires java.xml;
-  requires jaxb.api;
-  requires jaxb.impl;
-//  requires stax.api;
+  requires org.glassfish.jaxb.runtime;
+  requires junit;
+  requires log4j;
 }

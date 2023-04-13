@@ -240,22 +240,22 @@ public class InvoiceAndPropertyEditor extends ObjectEditorAbstract {
     propertyEditorDescriptor = new PropertyEditorDescriptor(customization);
     
     // Get the references to the ObjectInputs for the invoice.
-    invoiceDateObjectInput = (ObjectControlFlexDate) invoiceEditorDescriptor.getEObjectAttributeEditDescriptor(INVOICES_AND_PROPERTIES_PACKAGE.getInvoice_Date().getName()).getNode();
-    invoiceCompanyObjectInput = (ObjectControlString) invoiceEditorDescriptor.getEObjectAttributeEditDescriptor(INVOICES_AND_PROPERTIES_PACKAGE.getInvoice_Company().getName()).getNode();
-    invoiceDescriptionObjectInput = (ObjectControlString) invoiceEditorDescriptor.getEObjectAttributeEditDescriptor(INVOICES_AND_PROPERTIES_PACKAGE.getExpenditure_Description().getName()).getNode();
-    invoiceAmountObjectInput = (ObjectControlCurrency) invoiceEditorDescriptor.getEObjectAttributeEditDescriptor(INVOICES_AND_PROPERTIES_PACKAGE.getExpenditure_Amount().getName()).getNode();
-    invoiceRemarksObjectInput = (ObjectControlString) invoiceEditorDescriptor.getEObjectAttributeEditDescriptor(INVOICES_AND_PROPERTIES_PACKAGE.getExpenditure_Remarks().getName()).getNode();
-    invoiceDescriptionFromPropertyObjectInput = (ObjectControlBoolean) invoiceEditorDescriptor.getEObjectAttributeEditDescriptor(INVOICES_AND_PROPERTIES_PACKAGE.getExpenditure_DescriptionFromProperty().getName()).getNode();
+    invoiceDateObjectInput = (ObjectControlFlexDate) invoiceEditorDescriptor.getEObjectAttributeEditDescriptor(INVOICES_AND_PROPERTIES_PACKAGE.getInvoice_Date().getName()).getObjectControl();
+    invoiceCompanyObjectInput = (ObjectControlString) invoiceEditorDescriptor.getEObjectAttributeEditDescriptor(INVOICES_AND_PROPERTIES_PACKAGE.getInvoice_Company().getName()).getObjectControl();
+    invoiceDescriptionObjectInput = (ObjectControlString) invoiceEditorDescriptor.getEObjectAttributeEditDescriptor(INVOICES_AND_PROPERTIES_PACKAGE.getExpenditure_Description().getName()).getObjectControl();
+    invoiceAmountObjectInput = (ObjectControlCurrency) invoiceEditorDescriptor.getEObjectAttributeEditDescriptor(INVOICES_AND_PROPERTIES_PACKAGE.getExpenditure_Amount().getName()).getObjectControl();
+    invoiceRemarksObjectInput = (ObjectControlString) invoiceEditorDescriptor.getEObjectAttributeEditDescriptor(INVOICES_AND_PROPERTIES_PACKAGE.getExpenditure_Remarks().getName()).getObjectControl();
+    invoiceDescriptionFromPropertyObjectInput = (ObjectControlBoolean) invoiceEditorDescriptor.getEObjectAttributeEditDescriptor(INVOICES_AND_PROPERTIES_PACKAGE.getExpenditure_DescriptionFromProperty().getName()).getObjectControl();
     
     // Get the references to the ObjectInputs for the property
-    propertyDescriptionObjectInput = (ObjectControlString) propertyEditorDescriptor.getEObjectAttributeEditDescriptor(INVOICES_AND_PROPERTIES_PACKAGE.getProperty_Description().getName()).getNode();
-    propertyBrandObjectInput = (ObjectControlString) propertyEditorDescriptor.getEObjectAttributeEditDescriptor(INVOICES_AND_PROPERTIES_PACKAGE.getProperty_Brand().getName()).getNode();
-    propertyTypeObjectInput = (ObjectControlString) propertyEditorDescriptor.getEObjectAttributeEditDescriptor(INVOICES_AND_PROPERTIES_PACKAGE.getProperty_Type().getName()).getNode();
-    propertySerialNumberObjectInput = (ObjectControlString) propertyEditorDescriptor.getEObjectAttributeEditDescriptor(INVOICES_AND_PROPERTIES_PACKAGE.getProperty_SerialNumber().getName()).getNode();
-    propertyRemarksObjectInput = (ObjectControlString) propertyEditorDescriptor.getEObjectAttributeEditDescriptor(INVOICES_AND_PROPERTIES_PACKAGE.getProperty_Remarks().getName()).getNode();
-    propertyFromDateObjectInput = (ObjectControlFlexDate) propertyEditorDescriptor.getEObjectAttributeEditDescriptor(INVOICES_AND_PROPERTIES_PACKAGE.getProperty_FromDate().getName()).getNode();
-    propertyUntilDateObjectInput = (ObjectControlFlexDate) propertyEditorDescriptor.getEObjectAttributeEditDescriptor(INVOICES_AND_PROPERTIES_PACKAGE.getProperty_UntilDate().getName()).getNode();
-    propertyArchiveObjectInput = (ObjectControlBoolean) propertyEditorDescriptor.getEObjectAttributeEditDescriptor(INVOICES_AND_PROPERTIES_PACKAGE.getProperty_Archive().getName()).getNode();    
+    propertyDescriptionObjectInput = (ObjectControlString) propertyEditorDescriptor.getEObjectAttributeEditDescriptor(INVOICES_AND_PROPERTIES_PACKAGE.getProperty_Description().getName()).getObjectControl();
+    propertyBrandObjectInput = (ObjectControlString) propertyEditorDescriptor.getEObjectAttributeEditDescriptor(INVOICES_AND_PROPERTIES_PACKAGE.getProperty_Brand().getName()).getObjectControl();
+    propertyTypeObjectInput = (ObjectControlString) propertyEditorDescriptor.getEObjectAttributeEditDescriptor(INVOICES_AND_PROPERTIES_PACKAGE.getProperty_Type().getName()).getObjectControl();
+    propertySerialNumberObjectInput = (ObjectControlString) propertyEditorDescriptor.getEObjectAttributeEditDescriptor(INVOICES_AND_PROPERTIES_PACKAGE.getProperty_SerialNumber().getName()).getObjectControl();
+    propertyRemarksObjectInput = (ObjectControlString) propertyEditorDescriptor.getEObjectAttributeEditDescriptor(INVOICES_AND_PROPERTIES_PACKAGE.getProperty_Remarks().getName()).getObjectControl();
+    propertyFromDateObjectInput = (ObjectControlFlexDate) propertyEditorDescriptor.getEObjectAttributeEditDescriptor(INVOICES_AND_PROPERTIES_PACKAGE.getProperty_FromDate().getName()).getObjectControl();
+    propertyUntilDateObjectInput = (ObjectControlFlexDate) propertyEditorDescriptor.getEObjectAttributeEditDescriptor(INVOICES_AND_PROPERTIES_PACKAGE.getProperty_UntilDate().getName()).getObjectControl();
+    propertyArchiveObjectInput = (ObjectControlBoolean) propertyEditorDescriptor.getEObjectAttributeEditDescriptor(INVOICES_AND_PROPERTIES_PACKAGE.getProperty_Archive().getName()).getObjectControl();    
     
     createObjectControlGroups();
 
@@ -536,7 +536,7 @@ public class InvoiceAndPropertyEditor extends ObjectEditorAbstract {
   private void updateInvoiceFromControls(Invoice invoice) {
 
     for (EObjectAttributeEditDescriptor eObjectAttributeEditDescriptor: invoiceEditorDescriptor.getEObjectAttributeEditDescriptors()) {
-      ObjectControl<?> objectInput = (ObjectControl<?>) eObjectAttributeEditDescriptor.getNode();
+      ObjectControl<?> objectInput = eObjectAttributeEditDescriptor.getObjectControl();
       if (objectInput.ocIsFilledIn()) {
         Object value;
         value = objectInput.ocGetValue();
@@ -607,7 +607,7 @@ public class InvoiceAndPropertyEditor extends ObjectEditorAbstract {
   private void updatePropertyFromControls(Property property) {
     
     for (EObjectAttributeEditDescriptor eObjectAttributeEditDescriptor: propertyEditorDescriptor.getEObjectAttributeEditDescriptors()) {
-      ObjectControl<?> objectInput = (ObjectControl<?>) eObjectAttributeEditDescriptor.getNode();
+      ObjectControl<?> objectInput = (ObjectControl<?>) eObjectAttributeEditDescriptor.getObjectControl();
       if (objectInput.ocIsFilledIn()) {
         Object value;
         value = objectInput.ocGetValue();
@@ -746,7 +746,7 @@ public class InvoiceAndPropertyEditor extends ObjectEditorAbstract {
       FileReferencePanel fileReferencePanel = createNewDocumentReferencePanel(false);
       
       if (fileReference.isSetFile()) {
-        fileReferencePanel.getFileSelecter().ocSetValue(prependBaseDirToFilename(fileReference.getFile()));
+        fileReferencePanel.getFileSelecter().ocSetFilename(prependBaseDirToFilename(fileReference.getFile()));
       }
       
       if (fileReference.isSetTitle()) {
@@ -770,7 +770,7 @@ public class InvoiceAndPropertyEditor extends ObjectEditorAbstract {
       FileReferencePanel fileReferencePanel = createNewPictureReferencePanel(false);
       
       if (fileReference.isSetFile()) {
-        fileReferencePanel.getFileSelecter().ocSetValue(prependBaseDirToFilename(fileReference.getFile()));
+        fileReferencePanel.getFileSelecter().ocSetFilename(prependBaseDirToFilename(fileReference.getFile()));
       }
       
       if (fileReference.isSetTitle()) {
@@ -789,13 +789,13 @@ public class InvoiceAndPropertyEditor extends ObjectEditorAbstract {
     invoiceObjectControlGroup = new ObjectControlGroup();
     
     for (EObjectAttributeEditDescriptor eObjectAttributeEditDescriptor: invoiceEditorDescriptor.getEObjectAttributeEditDescriptors()) {
-      invoiceObjectControlGroup.addObjectControl((ObjectControl<?>) eObjectAttributeEditDescriptor.getNode());
+      invoiceObjectControlGroup.addObjectControl((ObjectControl<?>) eObjectAttributeEditDescriptor.getObjectControl());
     }
     
     propertyObjectControlGroup = new ObjectControlGroup();
     
     for (EObjectAttributeEditDescriptor eObjectAttributeEditDescriptor: propertyEditorDescriptor.getEObjectAttributeEditDescriptors()) {
-      propertyObjectControlGroup.addObjectControl((ObjectControl<?>) eObjectAttributeEditDescriptor.getNode());
+      propertyObjectControlGroup.addObjectControl((ObjectControl<?>) eObjectAttributeEditDescriptor.getObjectControl());
     }
   }
 
@@ -856,11 +856,11 @@ public class InvoiceAndPropertyEditor extends ObjectEditorAbstract {
     if (invoiceDescriptionFromPropertyObjectInput.ocGetValue()) {
       // Invoice description is derived from property.
       // Disable the description control and set is to the value derived from the property.
-      invoiceDescriptionObjectInput.setDisable(true);
+      invoiceDescriptionObjectInput.ocGetControl().setDisable(true);
       updateInvoiceDescription();
     } else {
       // Enable the description control, don't change the value.
-      invoiceDescriptionObjectInput.setDisable(false);
+      invoiceDescriptionObjectInput.ocGetControl().setDisable(false);
     }
     
   }
@@ -1019,9 +1019,9 @@ public class InvoiceAndPropertyEditor extends ObjectEditorAbstract {
 
     ObjectControlCurrency amountControl = (ObjectControlCurrency) invoiceAmountObjectInput;
     if (sumOfInvoiceItems == null) {
-      amountControl.setDisable(false);
+      amountControl.ocGetControl().setDisable(false);
     } else {
-      amountControl.setDisable(true);
+      amountControl.ocGetControl().setDisable(true);
       amountControl.ocSetValue(sumOfInvoiceItems);
     }
   }
@@ -1256,7 +1256,7 @@ public class InvoiceAndPropertyEditor extends ObjectEditorAbstract {
     // Label
     StringBuilder buf = new StringBuilder();
     buf.append(eObjectAttributeEditDescriptor.getLabelText());
-    if (!((ObjectControl<?>) eObjectAttributeEditDescriptor.getNode()).ocIsOptional()) {
+    if (!eObjectAttributeEditDescriptor.getObjectControl().ocIsOptional()) {
       buf.append(" *");
     }
     buf.append(":");
@@ -1264,7 +1264,7 @@ public class InvoiceAndPropertyEditor extends ObjectEditorAbstract {
     gridPane.add(label, 0, rowIndex);
     
     // ObjectInput control
-    Node node = eObjectAttributeEditDescriptor.getNode();
+    Node node = eObjectAttributeEditDescriptor.getObjectControl().ocGetControl();
     gridPane.add(node, 1, rowIndex); 
     
     // Ok/Not OK label
@@ -1380,10 +1380,10 @@ class InvoiceItemPanel extends TitledPane {
     invoiceItemEditorDescriptor = new InvoiceItemEditorDescriptor(customization);
     
     // Get references to the ObjectInputs
-    numberOfItemsObjectInput = (ObjectControl<Integer>) invoiceItemEditorDescriptor.getEObjectAttributeEditDescriptor(INVOICES_AND_PROPERTIES_PACKAGE.getInvoiceItem_NumberOfItems().getName()).getNode();
-    descriptionObjectInput = (ObjectControlString) invoiceItemEditorDescriptor.getEObjectAttributeEditDescriptor(INVOICES_AND_PROPERTIES_PACKAGE.getExpenditure_Description().getName()).getNode();
-    amountObjectInput = (ObjectControlCurrency) invoiceItemEditorDescriptor.getEObjectAttributeEditDescriptor(INVOICES_AND_PROPERTIES_PACKAGE.getExpenditure_Amount().getName()).getNode();
-    remarksObjectInput = (ObjectControlString) invoiceItemEditorDescriptor.getEObjectAttributeEditDescriptor(INVOICES_AND_PROPERTIES_PACKAGE.getExpenditure_Remarks().getName()).getNode();
+    numberOfItemsObjectInput = (ObjectControl<Integer>) invoiceItemEditorDescriptor.getEObjectAttributeEditDescriptor(INVOICES_AND_PROPERTIES_PACKAGE.getInvoiceItem_NumberOfItems().getName()).getObjectControl();
+    descriptionObjectInput = (ObjectControlString) invoiceItemEditorDescriptor.getEObjectAttributeEditDescriptor(INVOICES_AND_PROPERTIES_PACKAGE.getExpenditure_Description().getName()).getObjectControl();
+    amountObjectInput = (ObjectControlCurrency) invoiceItemEditorDescriptor.getEObjectAttributeEditDescriptor(INVOICES_AND_PROPERTIES_PACKAGE.getExpenditure_Amount().getName()).getObjectControl();
+    remarksObjectInput = (ObjectControlString) invoiceItemEditorDescriptor.getEObjectAttributeEditDescriptor(INVOICES_AND_PROPERTIES_PACKAGE.getExpenditure_Remarks().getName()).getObjectControl();
     
     createObjectInputContainer();
 
@@ -1527,7 +1527,7 @@ class InvoiceItemPanel extends TitledPane {
     objectInputContainer = new ObjectControlGroup();
     
     for (EObjectAttributeEditDescriptor eObjectAttributeEditDescriptor: invoiceItemEditorDescriptor.getEObjectAttributeEditDescriptors()) {
-      objectInputContainer.addObjectControl((ObjectControl<?>) eObjectAttributeEditDescriptor.getNode());
+      objectInputContainer.addObjectControl((ObjectControl<?>) eObjectAttributeEditDescriptor.getObjectControl());
     }
   }
   
@@ -1558,7 +1558,7 @@ class InvoiceItemPanel extends TitledPane {
     // Label
     StringBuilder buf = new StringBuilder();
     buf.append(eObjectAttributeEditDescriptor.getLabelText());
-    if (!((ObjectControl<?>) eObjectAttributeEditDescriptor.getNode()).ocIsOptional()) {
+    if (!eObjectAttributeEditDescriptor.getObjectControl().ocIsOptional()) {
       buf.append(" *");
     }
     buf.append(":");
@@ -1566,7 +1566,7 @@ class InvoiceItemPanel extends TitledPane {
     gridPane.add(label, 0, rowIndex);
     
     // ObjectInput control
-    Node node = eObjectAttributeEditDescriptor.getNode();
+    Node node = eObjectAttributeEditDescriptor.getObjectControl().ocGetControl();
     gridPane.add(node, 1, rowIndex); 
     
     // Ok/Not OK label
@@ -1666,7 +1666,7 @@ class FileReferencePanel extends TitledPane {
     
     fileSelecter = componentFactory.createFileSelecter(getPropertyFilesFolder(), 400, "Currently selected folder",
         "Choose file", "Select a file via a file chooser", "Select the file");
-    fileSelecter.setId("fileSelecter");
+    fileSelecter.ocSetId("fileSelecter");
     fileSelecter.addListener(new InvalidationListener() {
 
       @Override
@@ -1676,7 +1676,7 @@ class FileReferencePanel extends TitledPane {
         
     });
     titleTextField = componentFactory.createObjectControlString(null, 200, true, "a title for the file");
-    titleTextField.setId("title");
+    titleTextField.ocSetId("title");
     titleTextField.addListener(new InvalidationListener() {
 
       @Override
@@ -1784,7 +1784,7 @@ class FileReferencePanel extends TitledPane {
   
   public String getFile() {
     if (fileSelecter.ocIsValid()) {
-      return fileSelecter.ocGetValue();
+      return fileSelecter.ocGetAbsolutePath();
     } else {
       return null;
     }
@@ -1794,7 +1794,7 @@ class FileReferencePanel extends TitledPane {
     String propertyFilesFolder = null;
     
     for (FileReferencePanel documentReferencePanel: documentReferencePanels) {
-      File file = new File(documentReferencePanel.fileSelecter.ocGetValue());
+      File file = documentReferencePanel.fileSelecter.ocGetValue();
       propertyFilesFolder = file.getParent();
       if (propertyFilesFolder != null) {
         return propertyFilesFolder;
@@ -1824,7 +1824,7 @@ class FileReferencePanel extends TitledPane {
     Label fileNameLabel = componentFactory.createLabel("File:");
     gridPane.add(fileNameLabel, 0, 0);
         
-    gridPane.add(fileSelecter.getPathTextField(), 1, 0);
+    gridPane.add(fileSelecter.ocGetControl(), 1, 0);
     
     Button fileChooserButton = fileSelecter.getFileChooserButton();
     gridPane.add(fileChooserButton, 2, 0);
@@ -1833,7 +1833,7 @@ class FileReferencePanel extends TitledPane {
     Label titleLabel = componentFactory.createLabel("Title:");
     gridPane.add(titleLabel, 0, 1);
     
-    gridPane.add(titleTextField, 1, 1);
+    gridPane.add(titleTextField.ocGetControl(), 1, 1);
     
     rootPane.getChildren().addAll(gridPane, createButtonsBox());
     
@@ -1870,14 +1870,14 @@ class FileReferencePanel extends TitledPane {
     }
     
     try {
-      URI uri = new URI(fileSelecter.ocGetValue());
+      URI uri = new URI(fileSelecter.ocGetAbsolutePath());
       try {
         desktop.browse(uri);
       } catch (IOException e) {
         componentFactory.createErrorDialog("Unable to open URL", e.getMessage());
       }
     } catch (URISyntaxException e1) {
-      File file = new File(fileSelecter.ocGetValue());
+      File file = fileSelecter.ocGetValue();
       
       try {
         desktop.open(file);
@@ -1911,7 +1911,7 @@ class FileReferencePanel extends TitledPane {
     if ((string == null)  ||  string.isEmpty()) {
 
       if (fileSelecter.ocGetValue() != null) {
-        File file = new File(fileSelecter.ocGetValue());
+        File file = fileSelecter.ocGetValue();
         string = file.getName();
       } else {
         string = DEFAULT_TITLE;

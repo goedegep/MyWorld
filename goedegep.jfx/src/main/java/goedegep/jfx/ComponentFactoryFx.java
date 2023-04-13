@@ -12,6 +12,7 @@ import org.commonmark.renderer.html.HtmlRenderer;
 import org.eclipse.emf.ecore.EEnum;
 
 import goedegep.configuration.model.Look;
+import goedegep.jfx.controls.AutoCompleteTextField;
 import goedegep.jfx.objectcontrols.ObjectControlAutoCompleteTextField;
 import goedegep.jfx.objectcontrols.ObjectControlBoolean;
 import goedegep.jfx.objectcontrols.ObjectControlCurrency;
@@ -81,6 +82,7 @@ import javafx.scene.paint.CycleMethod;
 import javafx.scene.paint.LinearGradient;
 import javafx.scene.paint.Stop;
 import javafx.scene.text.Text;
+import javafx.scene.web.HTMLEditor;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 import javafx.stage.DirectoryChooser;
@@ -94,6 +96,7 @@ public class ComponentFactoryFx {
   private static BorderStroke BLACK_RECTANGULAR_BORDER_STROKE = new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT);
   public static Border BLACK_RECTANGULAR_BORDER = new Border(BLACK_RECTANGULAR_BORDER_STROKE);
   
+  private CustomizationFx customization;
   private AppResourcesFx appResources;
   
 //  private Background boxBackground = null;
@@ -130,7 +133,11 @@ public class ComponentFactoryFx {
    * 
    * @param look the color definitions for this factory (may be null).
    */
-  public ComponentFactoryFx(Look look, AppResourcesFx appResources) {
+  public ComponentFactoryFx(CustomizationFx customization) {
+    this.customization = customization;
+    Look look = customization.getLook();
+    AppResourcesFx appResources = customization.getResources();
+    
     if (look != null) {
       panelBackgroundColor = look.getPanelBackgroundColor();
       borderColor = createColor(look.getButtonBackgroundColor(), 0.3);
@@ -539,9 +546,25 @@ public class ComponentFactoryFx {
     
     return listView;
   }
-
-  // Buttons
   
+  /**
+   * Create an {@link AutoCompleteTextField}.
+   */
+  public AutoCompleteTextField createAutoCompleteTextField() {
+    AutoCompleteTextField autoCompleteTextField = new AutoCompleteTextField();
+    
+    return autoCompleteTextField;
+  }
+  
+  /**
+   * Create an HTMLEditor.
+   */
+  public HTMLEditor createHTMLEditor() {
+    HTMLEditor htmlEditor = new HTMLEditor();
+    
+    return htmlEditor;
+  }
+    
   
   /**
    * Customize a button.
@@ -738,7 +761,7 @@ public class ComponentFactoryFx {
    * @param toolTipText The tooltip text for the TextField (which may be null).
    * @return the newly created TextField
    */
-  public TextField createTextField(int width, String toolTipText) {
+  public TextField createTextField(double width, String toolTipText) {
     return createTextField(null, width, toolTipText);
   }
 
@@ -750,7 +773,7 @@ public class ComponentFactoryFx {
    * @param toolTipText The tooltip text for the TextField (which may be null).
    * @return the newly created TextField
    */
-  public TextField createTextField(String text, int width, String toolTipText) {
+  public TextField createTextField(String text, double width, String toolTipText) {
     TextField textField = new TextField();
 
     if (text != null) {
@@ -849,10 +872,10 @@ public class ComponentFactoryFx {
    */
   public ObjectControlFileSelecter createFileSelecter(String initiallySelecterFolder, int textFieldWidth, String textFieldToolTipText,
       String folderChooserButtonText, String folderChooserButtonToolTipText, String directoryChooserTitle) {
-    ObjectControlFileSelecter fileSelecter = new ObjectControlFileSelecter(initiallySelecterFolder, textFieldWidth, textFieldToolTipText,
+    ObjectControlFileSelecter fileSelecter = new ObjectControlFileSelecter(customization, initiallySelecterFolder, textFieldWidth, textFieldToolTipText,
         folderChooserButtonText, folderChooserButtonToolTipText, directoryChooserTitle);
     
-    customizeTextInputControl(fileSelecter.getPathTextField());
+    customizeTextInputControl(fileSelecter.ocGetControl());
     customizeButton(fileSelecter.getFileChooserButton());
     
     return fileSelecter;
@@ -872,10 +895,10 @@ public class ComponentFactoryFx {
    */
   public ObjectControlFolderSelecter createFolderSelecter(String initiallySelecterFolder, int textFieldWidth, String textFieldToolTipText,
       String folderChooserButtonText, String folderChooserButtonToolTipText, String directoryChooserTitle) {
-    ObjectControlFolderSelecter folderSelecter = new ObjectControlFolderSelecter(initiallySelecterFolder, textFieldWidth, textFieldToolTipText,
+    ObjectControlFolderSelecter folderSelecter = new ObjectControlFolderSelecter(customization, initiallySelecterFolder, textFieldWidth, textFieldToolTipText,
         folderChooserButtonText, folderChooserButtonToolTipText, directoryChooserTitle);
     
-    customizeTextInputControl(folderSelecter.getPathTextField());
+    customizeTextInputControl(folderSelecter.ocGetControl());
     customizeButton(folderSelecter.getFolderChooserButton());
     
     return folderSelecter;
@@ -945,11 +968,11 @@ public class ComponentFactoryFx {
    * @return the newly created {@code ObjectControlBoolean}.
    */
   public ObjectControlBoolean createObjectControlBoolean(String text, boolean selected, boolean isOptional, String toolTipText) {
-    ObjectControlBoolean objectControlBoolean = new ObjectControlBoolean(text, selected, isOptional, toolTipText);
+    ObjectControlBoolean objectControlBoolean = new ObjectControlBoolean(this, text, selected, isOptional, toolTipText);
 
-    if (panelBackgroundHexColorValue != null) {
-      objectControlBoolean.setStyle("-fx-background-color: " + panelBackgroundHexColorValue);
-    }
+//    if (panelBackgroundHexColorValue != null) {
+//      objectControlBoolean.getControl().setStyle("-fx-background-color: " + panelBackgroundHexColorValue);
+//    }
 
     return objectControlBoolean;
   }
@@ -964,9 +987,9 @@ public class ComponentFactoryFx {
    * @return the newly created {@code ObjectControlInteger}.
    */
   public ObjectControlInteger createObjectControlInteger(Integer integer, double width, boolean isOptional, String toolTipText) {
-    ObjectControlInteger objectControlInteger = new ObjectControlInteger(integer, width, isOptional, toolTipText);
+    ObjectControlInteger objectControlInteger = new ObjectControlInteger(customization, integer, width, isOptional, toolTipText);
 
-    customizeTextInputControl(objectControlInteger);
+//    customizeTextInputControl(objectControlInteger);
 
     return objectControlInteger;
   }
@@ -981,9 +1004,9 @@ public class ComponentFactoryFx {
    * @return the newly created {@code ObjectControlString}.
    */
   public ObjectControlString createObjectControlString(String text, double width, boolean isOptional, String toolTipText) {
-    ObjectControlString objectControlString = new ObjectControlString(text, width, isOptional, toolTipText);
+    ObjectControlString objectControlString = new ObjectControlString(customization, text, width, isOptional, toolTipText);
 
-    customizeTextInputControl(objectControlString);
+//    customizeTextInputControl(objectControlString);
 
     return objectControlString;
   }
@@ -998,9 +1021,9 @@ public class ComponentFactoryFx {
    * @return the newly created {@code ObjectControlMultiLineString}.
    */
   public ObjectControlMultiLineString createObjectControlMultiLineString(String text, double width, boolean isOptional, String toolTipText) {
-    ObjectControlMultiLineString objectControlMultiLineString = new ObjectControlMultiLineString(text, width, isOptional, toolTipText);
-
-    customizeTextInputControl(objectControlMultiLineString);
+    ObjectControlMultiLineString objectControlMultiLineString = new ObjectControlMultiLineString(customization, text, width, isOptional, toolTipText);
+//
+//    customizeTextInputControl(objectControlMultiLineString);
 
     return objectControlMultiLineString;
   }
@@ -1015,11 +1038,11 @@ public class ComponentFactoryFx {
    * @return the newly created {@code ObjectControlHTMLString}.
    */
   public ObjectControlHTMLString createObjectControlHTMLString(String text, double width, boolean isOptional, String toolTipText) {
-    ObjectControlHTMLString objectControlHTMLString = new ObjectControlHTMLString(text, width, isOptional, toolTipText);
+    ObjectControlHTMLString objectControlHTMLString = new ObjectControlHTMLString(customization, text, width, isOptional, toolTipText);
 
     return objectControlHTMLString;
   }
-
+  
   /**
    * Create a PgCurrency ObjectControl.
    * 
@@ -1030,9 +1053,9 @@ public class ComponentFactoryFx {
    * @return the newly created {@code ObjectControlCurrency}.
    */
   public ObjectControlCurrency createObjectControlCurrency(PgCurrency pgCurrency, double width, boolean isOptional, String toolTipText) {
-    ObjectControlCurrency objectControlCurrency = new ObjectControlCurrency(pgCurrency, width, isOptional, toolTipText);
+    ObjectControlCurrency objectControlCurrency = new ObjectControlCurrency(customization, pgCurrency, width, isOptional, toolTipText);
 
-    customizeTextInputControl(objectControlCurrency);
+//    customizeTextInputControl(objectControlCurrency);
 
     return objectControlCurrency;
   }
@@ -1047,9 +1070,9 @@ public class ComponentFactoryFx {
    * @return the newly created {@code ObjectControlFixedPointValue}.
    */
   public ObjectControlFixedPointValue createObjectControlFixedPointValue(FixedPointValue objectValue, double width, boolean isOptional, String toolTipText) {
-    ObjectControlFixedPointValue objectControlFixedPointValue = new ObjectControlFixedPointValue(objectValue, width, isOptional, toolTipText);
+    ObjectControlFixedPointValue objectControlFixedPointValue = new ObjectControlFixedPointValue(customization, objectValue, width, isOptional, toolTipText);
 
-    customizeTextInputControl(objectControlFixedPointValue);
+//    customizeTextInputControl(objectControlFixedPointValue);
 
     return objectControlFixedPointValue;
   }
@@ -1064,9 +1087,9 @@ public class ComponentFactoryFx {
    * @return the newly created {@code ObjectControlFlexDate}.
    */
   public ObjectControlFlexDate createObjectControlFlexDate(FlexDate flexDate, double width, boolean isOptional, String toolTipText) {
-    ObjectControlFlexDate objectControlFlexDate = new ObjectControlFlexDate(flexDate, width, isOptional, toolTipText);
+    ObjectControlFlexDate objectControlFlexDate = new ObjectControlFlexDate(customization, flexDate, width, isOptional, toolTipText);
 
-    customizeTextInputControl(objectControlFlexDate);
+//    customizeTextInputControl(objectControlFlexDate);
 
     return objectControlFlexDate;
   }
@@ -1081,9 +1104,9 @@ public class ComponentFactoryFx {
    * @return the newly created {@code ObjectControlLocalDate}.
    */
   public ObjectControlLocalDate createObjectControlLocalDate(LocalDate localDate, double width, boolean isOptional, String toolTipText) {
-    ObjectControlLocalDate objectControlLocalDate = new ObjectControlLocalDate(localDate, width, isOptional, toolTipText);
+    ObjectControlLocalDate objectControlLocalDate = new ObjectControlLocalDate(customization, localDate, width, isOptional, toolTipText);
 
-    customizeTextInputControl(objectControlLocalDate);
+//    customizeTextInputControl(objectControlLocalDate);
 
     return objectControlLocalDate;
   }
@@ -1100,9 +1123,9 @@ public class ComponentFactoryFx {
    * @return the newly created {@code ObjectControlTextField}.
    */
   public <T>ObjectControlTextField<T> createObjectControlTextField(StringConverterAndChecker<T> stringConverter, T initialValue, double width, boolean isOptional, String toolTipText) {
-    ObjectControlTextField<T> objectControlTextField = new ObjectControlTextField<>(stringConverter, initialValue, width, isOptional, toolTipText);
+    ObjectControlTextField<T> objectControlTextField = new ObjectControlTextField<>(customization, stringConverter, initialValue, width, isOptional, toolTipText);
 
-    customizeTextInputControl(objectControlTextField);
+//    customizeTextInputControl(objectControlTextField);
 
     return objectControlTextField;
   }
@@ -1118,7 +1141,7 @@ public class ComponentFactoryFx {
    * @return the newly created {@code ObjectControlEnumComboBox}.
    */
   public <T extends Enum<T>>ObjectControlEnumComboBox<T> createObjectControlEnumComboBox(T enumConstant, T notSetValue, boolean isOptional, String toolTipText) {
-    return new ObjectControlEnumComboBox<T>(enumConstant, notSetValue, isOptional, toolTipText);
+    return new ObjectControlEnumComboBox<T>(customization, enumConstant, notSetValue, isOptional, toolTipText);
   }
   
   /**
@@ -1133,7 +1156,7 @@ public class ComponentFactoryFx {
    * @return the newly created {@code ObjectControlEnumComboBox}.
    */
   public <T extends Enum<T>>ObjectControlEnumComboBox<T> createObjectControlEnumComboBox(T enumConstant, T notSetValue, EEnum eEnum, boolean isOptional, String toolTipText) {
-    return new ObjectControlEnumComboBox<T>(enumConstant, notSetValue, eEnum, isOptional, toolTipText);
+    return new ObjectControlEnumComboBox<T>(customization, enumConstant, notSetValue, eEnum, isOptional, toolTipText);
   }
   
   /**
@@ -1148,7 +1171,7 @@ public class ComponentFactoryFx {
    * @return the newly created {@code ObjectControlEnumComboBox}.
    */
   public <T extends Enum<T>>ObjectControlEnumComboBox<T> createObjectControlEnumComboBox(T enumConstant, T notSetValue, Map<T, String> enumToStringMap, boolean isOptional, String toolTipText) {
-    return new ObjectControlEnumComboBox<T>(enumConstant, notSetValue, enumToStringMap, isOptional, toolTipText);
+    return new ObjectControlEnumComboBox<T>(customization, enumConstant, notSetValue, enumToStringMap, isOptional, toolTipText);
   }
   
   /**
@@ -1163,7 +1186,7 @@ public class ComponentFactoryFx {
    * @return the newly created {@code ObjectControlAutoCompleteTextField}.
    */
   public <T> ObjectControlAutoCompleteTextField<T> createObjectControlAutoCompleteTextField(StringConverterAndChecker<T> stringConverter, T initialValue, double width, boolean isOptional, String toolTipText) {
-    return new ObjectControlAutoCompleteTextField<T>(stringConverter, initialValue, width, isOptional, toolTipText);
+    return new ObjectControlAutoCompleteTextField<T>(customization, stringConverter, initialValue, width, isOptional, toolTipText);
   }
     
   public String addHtmlContext(String text) {

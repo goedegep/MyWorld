@@ -69,7 +69,7 @@ public class FileReferenceDialog extends Dialog<ButtonType> {
     ObjectControlFileSelecter fileSelecter = componentFactory.createFileSelecter(initiallySelectedFolder, 400, "Currently selected folder",
         "Choose file", "Select a file via a file chooser", "Select the file");
     
-    fileName = fileSelecter.getPathTextField();
+    fileName = fileSelecter.ocGetControl();
     wizardPanel.add(fileName, 1, 0);
     
     Button fileChooserButton = fileSelecter.getFileChooserButton();

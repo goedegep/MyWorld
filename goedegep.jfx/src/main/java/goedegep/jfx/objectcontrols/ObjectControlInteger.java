@@ -2,6 +2,7 @@ package goedegep.jfx.objectcontrols;
 
 import java.util.logging.Logger;
 
+import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.stringconverters.IntegerObjectStringConverter;
 import goedegep.util.money.PgCurrency;
 
@@ -35,8 +36,8 @@ public class ObjectControlInteger extends ObjectControlTextField<Integer> {
    * @param isOptional Indicates whether the control is optional (if true) or mandatory.
    * @param toolTipText An optional ToolTip text.
    */
-  public ObjectControlInteger(Integer integer, double width, boolean isOptional, String toolTipText) {
-    super(new IntegerObjectStringConverter(), integer, width, isOptional, toolTipText);
+  public ObjectControlInteger(CustomizationFx customization, Integer integer, double width, boolean isOptional, String toolTipText) {
+    super(customization, new IntegerObjectStringConverter(), integer, width, isOptional, toolTipText);
     
     setDefaultValidValueRange();
   }
@@ -46,10 +47,7 @@ public class ObjectControlInteger extends ObjectControlTextField<Integer> {
    */
   @Override
   public Integer ociDetermineValue() {
-//    if (getText() == null  ||  getText().isEmpty()) {
-//      return null;
-//    }
-    Integer value = stringToObject(getText().trim());
+    Integer value = stringToObject(ocGetControl().getText().trim());
     
     if (value == null) {
       return null;

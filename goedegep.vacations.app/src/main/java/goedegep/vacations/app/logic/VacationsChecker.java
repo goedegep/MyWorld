@@ -20,7 +20,6 @@ import org.eclipse.emf.ecore.EObject;
 
 import goedegep.types.model.FileReference;
 import goedegep.util.string.StringUtil;
-import goedegep.vacations.model.MapImage;
 import goedegep.vacations.model.Vacation;
 import goedegep.vacations.model.VacationElement;
 import goedegep.vacations.model.Vacations;

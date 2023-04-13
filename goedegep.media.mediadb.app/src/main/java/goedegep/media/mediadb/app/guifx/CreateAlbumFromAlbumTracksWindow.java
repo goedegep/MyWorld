@@ -48,7 +48,7 @@ public class CreateAlbumFromAlbumTracksWindow extends JfxStage {
         
     createGUI();
     
-    sourceFolderName = sourceFolderSelector.ocGetValue();
+    sourceFolderName = sourceFolderSelector.ocGetAbsolutePath();
     
     show();
   }
@@ -69,9 +69,9 @@ public class CreateAlbumFromAlbumTracksWindow extends JfxStage {
     Label label = componentFactory.createLabel("Source folder:");
     gridPane.add(label, 0, 0);
     
-    sourceFolderSelector = new ObjectControlFolderSelecter(SOURCE_FOLDER, 400, "Enter the name of the folder with the tracks of the album that has to be imported", "Choose source folder", "Click to start folder chooser", "Select the folder with the tracks of the album that has to be imported");
-    Node sourceFolderTextField = sourceFolderSelector.getPathTextField();
-    sourceFolderSelector.addListener((observable) -> handleNewSourceFolder(sourceFolderSelector.ocGetValue()));
+    sourceFolderSelector = componentFactory.createFolderSelecter(SOURCE_FOLDER, 400, "Enter the name of the folder with the tracks of the album that has to be imported", "Choose source folder", "Click to start folder chooser", "Select the folder with the tracks of the album that has to be imported");
+    Node sourceFolderTextField = sourceFolderSelector.ocGetControl();
+    sourceFolderSelector.addListener((observable) -> handleNewSourceFolder(sourceFolderSelector.ocGetAbsolutePath()));
     gridPane.add(sourceFolderTextField, 1, 0);
     
     Button sourceFolderChooserButton = sourceFolderSelector.getFolderChooserButton();

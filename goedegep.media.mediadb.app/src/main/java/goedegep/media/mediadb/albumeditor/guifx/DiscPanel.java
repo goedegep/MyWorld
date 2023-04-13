@@ -55,7 +55,7 @@ class DiscPanel extends Group {
     Label label = new Label("Title:");
     titleBox.getChildren().add(label);
     titleControl = componentFactory.createObjectControlTextField(null, disc != null ? disc.getTitle() : null, 300, true, null);
-    titleBox.getChildren().add(titleControl);
+    titleBox.getChildren().add(titleControl.ocGetControl());
     discVBox.getChildren().add(titleBox);
     
     GridPane gridPane = componentFactory.createGridPane(12.0, 12.0);

@@ -179,18 +179,13 @@ class AddressEditPanel {
     objectControlGroup = new ObjectControlGroup();
     objectControlGroup.addObjectControls(streetTextField, houseNumberTextField, houseNumberExtensionTextField, poBoxTextField, postalCodeTextField, cityTextField, countryTextField);
     
-    cityTextField.textProperty().addListener(new ChangeListener<String>() {
-
-      @Override
-      public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+    cityTextField.addListener((o) -> {
         List<City> cities = cityTextField.getMatchingCities();
         if (!cities.isEmpty()) {
           Country country = cities.get(0).getCountry();
-          countryTextField.setText(country.getCountryName());
+          countryTextField.ocSetValue(country.getCountryName());
         }
-      }
-      
-    });
+      });
     
     createGUI();
   }
@@ -211,36 +206,36 @@ class AddressEditPanel {
     label = componentFactory.createLabel("Street:");
     gridPane.add(label, 0, row);
 
-    gridPane.add(streetTextField, 1, row);
+    gridPane.add(streetTextField.ocGetControl(), 1, row);
     
     label = componentFactory.createLabel("House number:");
     gridPane.add(label, 2, row);
 
-    gridPane.add(houseNumberTextField, 3, row);
+    gridPane.add(houseNumberTextField.ocGetControl(), 3, row);
     
     label = componentFactory.createLabel("House number extension:");
     gridPane.add(label, 4, row);
 
-    gridPane.add(houseNumberExtensionTextField, 5, row);
+    gridPane.add(houseNumberExtensionTextField.ocGetControl(), 5, row);
     
     row++;
     
     label = componentFactory.createLabel("PO Box:");
     gridPane.add(label, 0, row);
 
-    gridPane.add(poBoxTextField, 1, row);
+    gridPane.add(poBoxTextField.ocGetControl(), 1, row);
     
     row++;
     
     label = componentFactory.createLabel("Postal code:");
     gridPane.add(label, 0, row);
 
-    gridPane.add(postalCodeTextField, 1, row);
+    gridPane.add(postalCodeTextField.ocGetControl(), 1, row);
         
     label = componentFactory.createLabel("City:");
     gridPane.add(label, 2, row);
     
-    gridPane.add(cityTextField, 3, row);
+    gridPane.add(cityTextField.ocGetControl(), 3, row);
     cityTextFieldRow = row;
     
     row++;
@@ -248,7 +243,7 @@ class AddressEditPanel {
     label = componentFactory.createLabel("Country:");
     gridPane.add(label, 0, row);
 
-    gridPane.add(countryTextField, 1, row);
+    gridPane.add(countryTextField.ocGetControl(), 1, row);
     countryTextFieldRow = row;
 
     Button addButton = componentFactory.createButton("Add", "Add the address to the Rolodex");
@@ -330,17 +325,17 @@ class AddressEditPanel {
    * @param address the Address who's values will be applied to the controls.
    */
   private void fillFieldsFromAddress(Address address) {
-    streetTextField.setText(address.getStreetName());
+    streetTextField.ocSetValue(address.getStreetName());
     houseNumberTextField.ocSetValue(address.getHouseNumber());
-    houseNumberExtensionTextField.setText(address.getHouseNumberExtension());
-    poBoxTextField.setText(address.getPOBox());
-    postalCodeTextField.setText(address.getPostalCode());
+    houseNumberExtensionTextField.ocSetValue(address.getHouseNumberExtension());
+    poBoxTextField.ocSetValue(address.getPOBox());
+    postalCodeTextField.ocSetValue(address.getPostalCode());
     City city = address.getCity();
     if (city != null) {
-      cityTextField.setText(city.getCityName());
+      cityTextField.ocSetValue(city.getCityName());
       Country country = city.getCountry();
       if (country != null) {
-        countryTextField.setText(country.getCountryName());
+        countryTextField.ocSetValue(country.getCountryName());
       }
     }
   }
@@ -430,7 +425,7 @@ class AddressEditPanel {
    */
   private void handleNewCountryName() {
     if (countryTextField.isNonExistingCountyName()) {
-      String countryName = countryTextField.getText();
+      String countryName = countryTextField.ocGetValue();
       Alert alert = componentFactory.createYesNoConfirmationDialog(
           "Unknown country",
           "The country \'" + countryName + "\' doesn't exist in the Rolodex yet.",
@@ -442,8 +437,8 @@ class AddressEditPanel {
 
         // The only way I found to update the autocompletion list is by recreating the textfield. 
         countryTextField = new CountryTextField(customization, rolodex);
-        countryTextField.setText(countryName);
-        gridPane.add(countryTextField, 1, countryTextFieldRow);
+        countryTextField.ocSetValue(countryName);
+        gridPane.add(countryTextField.ocGetControl(), 1, countryTextFieldRow);
       });
     }
   }
@@ -461,7 +456,7 @@ class AddressEditPanel {
   private void handleNewCityName() {
     // Handle non-existing city name
     if (cityTextField.isNonExistingCityName()) {
-      String cityName = cityTextField.getText();
+      String cityName = cityTextField.ocGetValue();
       Alert alert = componentFactory.createYesNoConfirmationDialog(
           "Unknown city",
           "The city \'" + cityName + "\' doesn't exist in the Rolodex yet.",
@@ -474,8 +469,8 @@ class AddressEditPanel {
 
         // The only way I found to update the autocompletion list is by recreating the textfield. 
         cityTextField = new CityTextField(customization, rolodex);
-        cityTextField.setText(cityName);
-        gridPane.add(cityTextField, 1, cityTextFieldRow);
+        cityTextField.ocSetValue(cityName);
+        gridPane.add(cityTextField.ocGetControl(), 1, cityTextFieldRow);
       });
     }
     
@@ -485,7 +480,7 @@ class AddressEditPanel {
     if (!cities.isEmpty()  &&  country != null) {
       City city = cityTextField.getCity(country);
       if (city == null) {
-        String cityName = cityTextField.getText();
+        String cityName = cityTextField.ocGetValue();
         Alert alert = componentFactory.createYesNoConfirmationDialog(
             "Unknown city",
             "The city \'" + cityName + "\' in country \'" + country.getCountryName() + "\' doesn't exist in the Rolodex yet.",
@@ -498,8 +493,8 @@ class AddressEditPanel {
 
           // The only way I found to update the autocompletion list is by recreating the textfield. 
           cityTextField = new CityTextField(customization, rolodex);
-          cityTextField.setText(cityName);
-          gridPane.add(cityTextField, 1, cityTextFieldRow);
+          cityTextField.ocSetValue(cityName);
+          gridPane.add(cityTextField.ocGetControl(), 1, cityTextFieldRow);
         });
       }
     }

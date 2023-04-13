@@ -15,7 +15,6 @@ import goedegep.jfx.eobjecttable.EObjectTableColumnDescriptorAbstract;
 import goedegep.jfx.eobjecttable.EObjectTableColumnDescriptorBasic;
 import goedegep.jfx.eobjecttable.EObjectTableControlPanel;
 import goedegep.jfx.eobjecttable.EObjectTableDescriptor;
-import goedegep.jfx.objectcontrols.ObjectControl;
 import goedegep.jfx.objectcontrols.ObjectControlGroup;
 import goedegep.jfx.objectcontrols.ObjectControlString;
 import goedegep.rolodex.app.logic.PhoneNumberListStringConverter;
@@ -216,19 +215,19 @@ class InstitutionEditPanel {
     label = componentFactory.createLabel("Institution name:");
     gridPane.add(label, 0, row);
 
-    gridPane.add(institutionNameTextField, 1, row);
+    gridPane.add(institutionNameTextField.ocGetControl(), 1, row);
     
     row++;
     
     label = componentFactory.createLabel("Address:");
     gridPane.add(label, 0, row);
 
-    gridPane.add(addressTextField, 1, row);
+    gridPane.add(addressTextField.ocGetControl(), 1, row);
     
     label = componentFactory.createLabel("Mailing address:");
     gridPane.add(label, 2, row);
 
-    gridPane.add(mailingAddressTextField, 3, row);
+    gridPane.add(mailingAddressTextField.ocGetControl(), 3, row);
     
     row++;
     
@@ -236,7 +235,7 @@ class InstitutionEditPanel {
     gridPane.add(label,  0, row);
     
     for (int i = 0; i < phoneNumberTextFields.length; i++) {
-      gridPane.add(phoneNumberTextFields[i], 1 + i, row);
+      gridPane.add(phoneNumberTextFields[i].ocGetControl(), 1 + i, row);
     }
     
   }
@@ -285,35 +284,35 @@ class InstitutionEditPanel {
       return;
     }
     
-    institutionNameTextField.setText(institution.getName());
+    institutionNameTextField.ocSetValue(institution.getName());
     
     Address address = institution.getAddress();
     if (address != null) {
-      addressTextField.setText(address.toString());
+      addressTextField.ocSetValue(address.toString());
     }
     
     Address mailingAddress = institution.getMailingAddress();
     if (mailingAddress != null) {
-      mailingAddressTextField.setText(mailingAddress.toString());
+      mailingAddressTextField.ocSetValue(mailingAddress.toString());
     }
     
     List<PhoneNumber> phoneNumbers = institution.getPhoneNumbers();
     for (int i = 0; i < phoneNumberTextFields.length; i++) {
       if (phoneNumbers.size() > i) {
-        phoneNumberTextFields[i].setText(phoneNumbers.get(i).toString());
+        phoneNumberTextFields[i].ocSetValue(phoneNumbers.get(i).toString());
       } else {
-        phoneNumberTextFields[i].setText(null);
+        phoneNumberTextFields[i].ocSetValue(null);
       }
     }
   }
   
   private void clearFields() {
-    institutionNameTextField.setText(null);
+    institutionNameTextField.ocSetValue(null);
 
-    addressTextField.setText(null);
-    mailingAddressTextField.setText(null);
+    addressTextField.ocSetValue(null);
+    mailingAddressTextField.ocSetValue(null);
     for (int i = 0; i < phoneNumberTextFields.length; i++) {
-      phoneNumberTextFields[i].setText(null);
+      phoneNumberTextFields[i].ocSetValue(null);
     }
   }
   

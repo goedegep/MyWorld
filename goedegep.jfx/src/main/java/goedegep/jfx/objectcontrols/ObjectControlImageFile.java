@@ -1,18 +1,10 @@
 package goedegep.jfx.objectcontrols;
 
 import java.io.File;
-import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.logging.Logger;
 
 import goedegep.jfx.ComponentFactoryFx;
 import goedegep.jfx.CustomizationFx;
-import javafx.beans.InvalidationListener;
-import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.property.SimpleObjectProperty;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.geometry.Rectangle2D;
@@ -37,42 +29,18 @@ import javafx.stage.StageStyle;
  * This class provides an ObjectControl for selecting an image file.
  *
  */
-public class ObjectControlImageFile implements ObjectControl<String> {
+public class ObjectControlImageFile extends ObjectControlAbstract<File> {
   @SuppressWarnings("unused")
   private static final Logger         LOGGER = Logger.getLogger(ObjectControlImageFile.class.getName());
     
   private ComponentFactoryFx componentFactory;
-  private List<InvalidationListener> invalidationListeners = new ArrayList<>();
   
-  private String filename;
+  private File file;
   private File initialDirectory;
   private StackPane stackPane;
   private ImageView imageView;
   private Label label;
-  private Stage largePictureStage = null;
-  
-  
-  /**
-   * Indication of whether the control is optional (if true) or mandatory.
-   */
-  private boolean optional;
-//  private BooleanProperty ocOptionalProperty = new SimpleBooleanProperty(false);
-//  
-//  /**
-//   * Indication of whether the control is filled-in or not.
-//   */
-//  private BooleanProperty ocFilledInProperty = new SimpleBooleanProperty(true);
-//  
-//  /**
-//   * Indication of whether the control has a valid value or not.
-//   */
-//  private BooleanProperty ocValidProperty = new SimpleBooleanProperty(true);
-//  
-//  /**
-//   * The current value.
-//   */
-//  private ObjectProperty<String> ocValueProperty = new SimpleObjectProperty<>();
-  
+  private Stage largePictureStage = null;    
   
 
   /**
@@ -80,8 +48,7 @@ public class ObjectControlImageFile implements ObjectControl<String> {
    * @param customization the GUI customization.
    */
   public ObjectControlImageFile(CustomizationFx customization) {
-    optional = false;
-//    ocOptionalProperty.set(false);  // If this control is used, it's never optional.
+    super(false);
     
     componentFactory = customization.getComponentFactoryFx();
     
@@ -104,58 +71,48 @@ public class ObjectControlImageFile implements ObjectControl<String> {
     StackPane.setAlignment(changeButton, Pos.TOP_LEFT);
     
     label = new Label();
+    Color backgroundColor = Color.color(1.0, 1.0, 1.0);
+    label.setBackground(new Background(new BackgroundFill(backgroundColor, new CornerRadii(3), new Insets(0))));
     stackPane.getChildren().add(label);
     StackPane.setAlignment(label, Pos.BOTTOM_CENTER);
     
-//    node.getChildren().remove(changeButton);
   }
-
-//  /**
-//   * {@inheritDoc}
-//   */
-//  @Override
-//  public BooleanProperty ocOptionalProperty() {
-//    return ocOptionalProperty;
-//  }
-//
-//  /**
-//   * {@inheritDoc}
-//   */
-//  @Override
-//  public BooleanProperty ocValidProperty() {
-//    return ocValidProperty;
-//  }
-//
-//  /**
-//   * {@inheritDoc}
-//   */
-//  @Override
-//  public BooleanProperty ocFilledInProperty() {
-//    return ocFilledInProperty;
-//  }
-//
-//  /**
-//   * {@inheritDoc}
-//   */
-//  @Override
-//  public ObjectProperty<String> ocValueProperty() {
-//    return ocValueProperty;
-//  }
 
   /**
    * {@inheritDoc}
    */
   @Override
-  public void ocSetValue(String filename) {
-    this.filename = filename;
+  public StackPane ocGetControl() {
+    return stackPane;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public void ocSetValue(File file) {
+    this.file = file;
+    referenceValue = file;
+    ociHandleNewUserInput();
+  }
+
+  @Override
+  public void ociSetValue(File value) {
+    this.value = value;   
     
-    Image image = new Image("file:" + filename, 0.0, 200.0, true, true);
-    imageView.setImage(image);
+    if (value != null) {
+      Image image = new Image("file:" + file.getAbsolutePath(), 0.0, 200.0, true, true);
+      imageView.setImage(image);
+    } else {
+      imageView.setImage(null);
+    }
     
-    File file = new File(filename);
-    label.setText(file.getName());
-    Color color = Color.color(1.0, 1.0, 1.0);
-    label.setBackground(new Background(new BackgroundFill(color, new CornerRadii(3), new Insets(0))));
+    
+    if (value != null) {
+      label.setText(value.getName());
+    } else {
+      label.setText(null);
+    }
   }
 
   /**
@@ -164,15 +121,15 @@ public class ObjectControlImageFile implements ObjectControl<String> {
   @Override
   public boolean ociDetermineFilledIn() {
     // There is either a filename or not.
-    return filename != null;
+    return file != null;
   }
 
   /**
    * {@inheritDoc}
    */
   @Override
-  public String ociDetermineValue() {
-    return filename;
+  public File ociDetermineValue() {
+    return file;
   }
 
   /**
@@ -197,7 +154,7 @@ public class ObjectControlImageFile implements ObjectControl<String> {
    */
   @Override
   public String ocGetObjectValueAsFormattedText() {
-    return filename;
+    return value.getAbsolutePath();
   }
 
   /**
@@ -217,16 +174,9 @@ public class ObjectControlImageFile implements ObjectControl<String> {
     if (initialDirectory != null) {
       fileChooser.setInitialDirectory(initialDirectory);
     }
-    File file = fileChooser.showOpenDialog(null);
-    if (file != null) {
-      filename = file.getAbsolutePath();
-      ocSetValue(filename);
-    }
+    file = fileChooser.showOpenDialog(null);
+    ociHandleNewUserInput();
   }
-
-//  public String getFilename() {
-//    return filename;
-//  }
   
 
   /**
@@ -246,7 +196,7 @@ public class ObjectControlImageFile implements ObjectControl<String> {
       largePictureStageX = 20;
     }
     
-    Image image = new Image("file:" + filename);
+    Image image = new Image("file:" + file);
     ImageView largePicture = new ImageView(image);
     
     largePictureStage = new Stage();
@@ -257,63 +207,13 @@ public class ObjectControlImageFile implements ObjectControl<String> {
     largePictureStage.setScene(new Scene(pane));
     largePictureStage.show();
   }
-
-  @Override
-  public String getId() {
-    return stackPane.getId();
-  }
   
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public List<InvalidationListener> ociGetInvalidationListeners() {
-    return invalidationListeners;
+  public String ocGetAbsolutePath() {
+    if (value != null) {
+      return value.getAbsolutePath();
+    } else {
+      return null;
+    }
   }
 
-  public StackPane getStackPane() {
-    return stackPane;
-  }
-
-  @Override
-  public boolean ocIsOptional() {
-    // TODO Auto-generated method stub
-    return false;
-  }
-
-  @Override
-  public boolean ocIsFilledIn() {
-    // TODO Auto-generated method stub
-    return false;
-  }
-
-  @Override
-  public boolean ocIsValid() {
-    // TODO Auto-generated method stub
-    return false;
-  }
-
-  @Override
-  public String ocGetValue() {
-    // TODO Auto-generated method stub
-    return null;
-  }
-
-  @Override
-  public void ociSetValue(String value) {
-    // TODO Auto-generated method stub
-    
-  }
-
-  @Override
-  public void ociSetValid(boolean valid) {
-    // TODO Auto-generated method stub
-    
-  }
-
-  @Override
-  public void ociSetFilledIn(boolean filledIn) {
-    // TODO Auto-generated method stub
-    
-  }
 }

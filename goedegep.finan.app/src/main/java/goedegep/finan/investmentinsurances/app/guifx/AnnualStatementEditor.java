@@ -244,7 +244,7 @@ public class AnnualStatementEditor extends JfxStage {
     label = componentFactory.createLabel("Datum jaaropgave:");
     gridPane.add(label, 0, row);
     
-    gridPane.add(annualStatementDateTextField, 1, row);
+    gridPane.add(annualStatementDateTextField.ocGetControl(), 1, row);
     
     row++;
     
@@ -252,12 +252,12 @@ public class AnnualStatementEditor extends JfxStage {
     label = componentFactory.createLabel("Periode:");
     gridPane.add(label, 0, row);
     
-    gridPane.add(periodFromTextField, 1, row);
+    gridPane.add(periodFromTextField.ocGetControl(), 1, row);
     
     label = componentFactory.createLabel("tot");
     gridPane.add(label, 2, row);
     
-    gridPane.add(periodUntilTextField, 3, row);
+    gridPane.add(periodUntilTextField.ocGetControl(), 3, row);
     
     row++;
     
@@ -265,7 +265,7 @@ public class AnnualStatementEditor extends JfxStage {
     label = componentFactory.createLabel("Premies overlijdensrisicodekking:");
     gridPane.add(label, 0, row);
     
-    gridPane.add(premiumDeathRiskCoverageTextField, 1, row);
+    gridPane.add(premiumDeathRiskCoverageTextField.ocGetControl(), 1, row);
     
     row++;
     
@@ -273,7 +273,7 @@ public class AnnualStatementEditor extends JfxStage {
     label = componentFactory.createLabel("Doorlopende kosten verzekeringsmaatschappij:");
     gridPane.add(label, 0, row);
     
-    gridPane.add(continuingCostsInsuranceCompanyTextField, 1, row);
+    gridPane.add(continuingCostsInsuranceCompanyTextField.ocGetControl(), 1, row);
     
     row++;
     
@@ -281,7 +281,7 @@ public class AnnualStatementEditor extends JfxStage {
     label = componentFactory.createLabel("Beheerskosten:");
     gridPane.add(label, 0, row);
     
-    gridPane.add(managementCostsTextField, 1, row);
+    gridPane.add(managementCostsTextField.ocGetControl(), 1, row);
     
     row++;
     
@@ -289,7 +289,7 @@ public class AnnualStatementEditor extends JfxStage {
     label = componentFactory.createLabel("Verdiend op de participaties:");
     gridPane.add(label, 0, row);
     
-    gridPane.add(earnedOnTheParticipationsTextField, 1, row);
+    gridPane.add(earnedOnTheParticipationsTextField.ocGetControl(), 1, row);
     
     row++;
     
@@ -297,7 +297,7 @@ public class AnnualStatementEditor extends JfxStage {
     label = componentFactory.createLabel("Teruggave kosten:");
     gridPane.add(label, 0, row);
     
-    gridPane.add(costsRestitutionTextField, 1, row);
+    gridPane.add(costsRestitutionTextField.ocGetControl(), 1, row);
     
     row++;
     
@@ -305,7 +305,7 @@ public class AnnualStatementEditor extends JfxStage {
     label = componentFactory.createLabel("Verwachtte kostenstijging per jaar:");
     gridPane.add(label, 0, row);
     
-    gridPane.add(expectedYearlyCostsIncreaseTextField, 1, row);
+    gridPane.add(expectedYearlyCostsIncreaseTextField.ocGetControl(), 1, row);
     
     row++;
     
@@ -337,11 +337,11 @@ public class AnnualStatementEditor extends JfxStage {
       label = componentFactory.createLabel(investmentFundName);
       gridPane.add(label, 0, row);
       
-      gridPane.add(participationControls.numberOfParticipationsEndControl, 1, row);
+      gridPane.add(participationControls.numberOfParticipationsEndControl.ocGetControl(), 1, row);
       
-      gridPane.add(participationControls.stockPriceEndControl, 2, row);
+      gridPane.add(participationControls.stockPriceEndControl.ocGetControl(), 2, row);
       
-      gridPane.add(participationControls.distributionPercentageControl, 3, row);
+      gridPane.add(participationControls.distributionPercentageControl.ocGetControl(), 3, row);
       
       row++;
     }
@@ -367,11 +367,11 @@ public class AnnualStatementEditor extends JfxStage {
       label = componentFactory.createLabel(participationControls.participation.getInvestmentFund().getName());
       gridPane.add(label, 0, row);
       
-      gridPane.add(participationControls.numberOfParticipationsBoughtControl, 1, row);
+      gridPane.add(participationControls.numberOfParticipationsBoughtControl.ocGetControl(), 1, row);
       
-      gridPane.add(participationControls.numberOfParticipationsSoldControl, 2, row);
+      gridPane.add(participationControls.numberOfParticipationsSoldControl.ocGetControl(), 2, row);
       
-      gridPane.add(participationControls.participationMutationsCompleteControl, 3, row);
+      gridPane.add(participationControls.participationMutationsCompleteControl.ocGetControl(), 3, row);
       
       row++;
     }
@@ -380,7 +380,7 @@ public class AnnualStatementEditor extends JfxStage {
     label = componentFactory.createLabel("Voorbeeld kapitalen voor:");
     gridPane.add(label, 0, row);
     
-    gridPane.add(exampleCapitalOnEndDateTextField, 1, row);
+    gridPane.add(exampleCapitalOnEndDateTextField.ocGetControl(), 1, row);
     
     row++;
 
@@ -406,13 +406,13 @@ public class AnnualStatementEditor extends JfxStage {
       label = componentFactory.createLabel(participationControls.participation.getInvestmentFund().getName());
       gridPane.add(label, 0, row);
       
-      gridPane.add(participationControls.exampleReturnOnInvestmentNetHistoricControl, 1, row);
+      gridPane.add(participationControls.exampleReturnOnInvestmentNetHistoricControl.ocGetControl(), 1, row);
       
-      gridPane.add(participationControls.exampleCapitalNetHistoricControl, 2, row);
+      gridPane.add(participationControls.exampleCapitalNetHistoricControl.ocGetControl(), 2, row);
       
-      gridPane.add(participationControls.exampleReturnOnInvestmentGrossControl, 3, row);
+      gridPane.add(participationControls.exampleReturnOnInvestmentGrossControl.ocGetControl(), 3, row);
       
-      gridPane.add(participationControls.exampleCapitalGrossControl, 4, row);
+      gridPane.add(participationControls.exampleCapitalGrossControl.ocGetControl(), 4, row);
       
       row++;
     }
@@ -436,14 +436,14 @@ public class AnnualStatementEditor extends JfxStage {
       label = componentFactory.createLabel(participationControls.participation.getInvestmentFund().getName());
       gridPane.add(label, 0, row);
       
-      gridPane.add(participationControls.exampleReturnOnInvestmentGrossCompanyOwnControl, 1, row);
+      gridPane.add(participationControls.exampleReturnOnInvestmentGrossCompanyOwnControl.ocGetControl(), 1, row);
       
-      gridPane.add(participationControls.exampleCapitalGrossCompanyOwnControl, 2, row);
+      gridPane.add(participationControls.exampleCapitalGrossCompanyOwnControl.ocGetControl(), 2, row);
       
       
-      gridPane.add(participationControls.exampleReturnOnInvestmentPessimisticControl, 3, row);
+      gridPane.add(participationControls.exampleReturnOnInvestmentPessimisticControl.ocGetControl(), 3, row);
       
-      gridPane.add(participationControls.exampleCapitalPessimisticControl, 4, row);
+      gridPane.add(participationControls.exampleCapitalPessimisticControl.ocGetControl(), 4, row);
       
       row++;
     }
@@ -469,7 +469,7 @@ public class AnnualStatementEditor extends JfxStage {
       label = componentFactory.createLabel(participationControls.participation.getInvestmentFund().getName());
       gridPane.add(label, 0, row);
       
-      gridPane.add(participationControls.totalExpenseRatioControl, 1, row);
+      gridPane.add(participationControls.totalExpenseRatioControl.ocGetControl(), 1, row);
             
       row++;
     }
@@ -749,29 +749,29 @@ public class AnnualStatementEditor extends JfxStage {
   private void clearControls() {
         
     // Annual Statement date
-    annualStatementDateTextField.setText(null);
+    annualStatementDateTextField.ocSetValue(null);
     
     // Period
-    periodFromTextField.setText(null);
-    periodUntilTextField.setText(null);
+    periodFromTextField.ocSetValue(null);
+    periodUntilTextField.ocSetValue(null);
     
     // Premium death risk coverage
-    premiumDeathRiskCoverageTextField.setText(null);
+    premiumDeathRiskCoverageTextField.ocSetValue(null);
     
     // Continuing Costs Insurance Company
-    continuingCostsInsuranceCompanyTextField.setText(null);
+    continuingCostsInsuranceCompanyTextField.ocSetValue(null);
     
     // Management Costs
-    managementCostsTextField.setText(null);
+    managementCostsTextField.ocSetValue(null);
     
     // Earned on the participations
-    earnedOnTheParticipationsTextField.setText(null);
+    earnedOnTheParticipationsTextField.ocSetValue(null);
     
     // Costs restitution
-    costsRestitutionTextField.setText(null);
+    costsRestitutionTextField.ocSetValue(null);
     
     // expectedYearlyCostsIncrease
-    expectedYearlyCostsIncreaseTextField.setText(null);
+    expectedYearlyCostsIncreaseTextField.ocSetValue(null);
     
     //
     // Participations at the end of the period
@@ -782,7 +782,7 @@ public class AnnualStatementEditor extends JfxStage {
     //
     
     // Example end capital date
-    exampleCapitalOnEndDateTextField.setText(null);
+    exampleCapitalOnEndDateTextField.ocSetValue(null);
 
     //
     // Example capitals

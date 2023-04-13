@@ -36,24 +36,26 @@ public class FormatBasedStringConverterAndChecker<T extends Object> extends Stri
   @SuppressWarnings("unchecked")
   @Override
   public T fromString(String string) {
+    // If the specified value is null or zero-length, return null
+    if (string == null) {
+      return (null);
+    }
+
+    string = string.trim();
+
+    if (string.isEmpty()) {
+      return (null);
+    }
+    
     try {
-      // If the specified value is null or zero-length, return null
-      if (string == null) {
-        return (null);
-      }
-
-      string = string.trim();
-
-      if (string.isEmpty()) {
-        return (null);
-      }
-
       // Perform the requested parsing
       return (T) format.parseObject(string);
     } catch (ParseException ex) {
-      throw new RuntimeException(ex);
+      // No action
+//      throw new RuntimeException(ex);
     }
 
+    return null;
   }
 
   @Override

@@ -28,7 +28,7 @@ module goedegep.appgenfx {
   requires javafx.base;
   requires transitive javafx.controls;
   requires javafx.graphics;
-  requires javafx.web;
+  requires transitive javafx.web;
   requires org.commonmark;
   requires org.eclipse.emf.common;
   requires transitive org.eclipse.emf.ecore;

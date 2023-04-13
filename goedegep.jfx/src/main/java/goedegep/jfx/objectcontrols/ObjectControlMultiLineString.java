@@ -1,39 +1,12 @@
 package goedegep.jfx.objectcontrols;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javafx.beans.InvalidationListener;
-import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.property.SimpleObjectProperty;
+import goedegep.jfx.CustomizationFx;
 import javafx.scene.control.TextArea;
 
-public class ObjectControlMultiLineString extends TextArea implements ObjectControl<String> {
+public class ObjectControlMultiLineString extends ObjectControlAbstract<String> {
   
-  
-  /**
-   * Indication of whether the control is optional (if true) or mandatory.
-   */
-  private BooleanProperty ocOptionalProperty = new SimpleBooleanProperty(false);
-  
-  /**
-   * Indication of whether the control is filled-in or not.
-   */
-  private BooleanProperty ocFilledInProperty = new SimpleBooleanProperty(true);
-  
-  /**
-   * Indication of whether the control has a valid value or not.
-   */
-  private BooleanProperty ocValidProperty = new SimpleBooleanProperty(true);
-  
-  /**
-   * The current value.
-   */
-  private ObjectProperty<String> ocValueProperty = new SimpleObjectProperty<>();
-  
-  private List<InvalidationListener> invalidationListeners = new ArrayList<>();
+    
+  private TextArea textArea = null;
   
   
   /**
@@ -44,74 +17,38 @@ public class ObjectControlMultiLineString extends TextArea implements ObjectCont
    * @param isOptional Indicates whether the control is optional (if true) or mandatory.
    * @param toolTipText An optional ToolTip text.
    */
-  public ObjectControlMultiLineString(String text, double width, boolean isOptional, String toolTipText) {
-    ocOptionalProperty.set(isOptional);
+  public ObjectControlMultiLineString(CustomizationFx customization, String text, double width, boolean isOptional, String toolTipText) {
+    super(isOptional);
 
-    textProperty().addListener((observableValue, oldValue, newValue) -> ociHandleNewUserInput());
+    textArea = customization.getComponentFactoryFx().createTextArea();
+    textArea.textProperty().addListener((observableValue, oldValue, newValue) -> ociHandleNewUserInput());
 
-    setText(text);
+    ocSetValue(text);
   }
-
-//  /**
-//   * {@inheritDoc}
-//   */
-//  @Override
-//  public BooleanProperty ocOptionalProperty() {
-//    return ocOptionalProperty;
-//  }
-//  
-//  /**
-//   * {@inheritDoc}
-//   */
-//  @Override
-//  public BooleanProperty ocValidProperty() {
-//    return ocValidProperty;
-//  }
-//  
-//  /**
-//   * {@inheritDoc}
-//   */
-//  @Override
-//  public BooleanProperty ocFilledInProperty() {
-//    return ocFilledInProperty;
-//  }
-//
-//  /**
-//   * {@inheritDoc}
-//   */
-//  @Override
-//  public ObjectProperty<String> ocValueProperty() {
-//    return ocValueProperty;
-//  }
+  
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public TextArea ocGetControl() {
+    return textArea;
+  }
 
   /**
    * {@inheritDoc}
    */
   @Override
   public void ocSetValue(String objectValue) {
-    setText(objectValue);    
+    referenceValue = objectValue;
+    textArea.setText(objectValue);    
   }
   
-//  private void handleChanges(final String newValue) {
-//    ocValueProperty.set(newValue);
-//    
-//    if (!ocIsOptional()  &&  !isFilledIn()) {
-//      ocValidProperty.set(false);
-//    } else {
-//      ocValidProperty.set(true);
-//    }
-//    
-//    ocFilledInProperty.set(isFilledIn());
-//    
-//    notifyListeners();
-//  }
-
   /**
    * {@inheritDoc}
    */
   @Override
   public boolean ociDetermineFilledIn() {
-    return getText() != null  &&  !getText().isEmpty();
+    return textArea.getText() != null  &&  !textArea.getText().isEmpty();
   }
 
   /**
@@ -119,7 +56,7 @@ public class ObjectControlMultiLineString extends TextArea implements ObjectCont
    */
   @Override
   public String ociDetermineValue() {
-    String text = getText();
+    String text = textArea.getText();
     
     if (text != null) {
       text = text.trim();
@@ -150,57 +87,7 @@ public class ObjectControlMultiLineString extends TextArea implements ObjectCont
    */
   @Override
   public String ocGetObjectValueAsFormattedText()  {
-    return ocValueProperty.get();
+    return value;
   }
   
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public List<InvalidationListener> ociGetInvalidationListeners() {
-    return invalidationListeners;
-  }
-
-  @Override
-  public boolean ocIsOptional() {
-    // TODO Auto-generated method stub
-    return false;
-  }
-
-  @Override
-  public boolean ocIsFilledIn() {
-    // TODO Auto-generated method stub
-    return false;
-  }
-
-  @Override
-  public boolean ocIsValid() {
-    // TODO Auto-generated method stub
-    return false;
-  }
-
-  @Override
-  public String ocGetValue() {
-    // TODO Auto-generated method stub
-    return null;
-  }
-
-  @Override
-  public void ociSetValue(String value) {
-    // TODO Auto-generated method stub
-    
-  }
-
-  @Override
-  public void ociSetValid(boolean valid) {
-    // TODO Auto-generated method stub
-    
-  }
-
-  @Override
-  public void ociSetFilledIn(boolean filledIn) {
-    // TODO Auto-generated method stub
-    
-  }
-
 }
