@@ -1,26 +1,36 @@
-h2. ToDo list - Refactoring
-
-
-* Add a development mode for vacations. To create a demo vacaction.
-* In all editors: when a control looses focus, the value shall be formatted.
-* InvoiceAndPropertiesEditor: enable update button only if there are changes. 
+h2. ToDo list
+* onder Database heb ik nu Dagtochten en Fietstochten. Gemixte informatie oplossen.
+* method installChangeListernerForArtists() in AlbumEditor has to check that the change is in the Artists list.
+* AlbumEditor: Overal status show have tooltip about which control has problem, maybe jump to that control
+* Functional: make it possible to add a new album to the database.
+Step by step: First only mandatory attributes, then add others one by one.
+Try to derive the album type for existing albums in the database.
+* Add .opus file type with source SACD
+* Support more than one IHaveOn
+* EmfUtil: method printNotification(Notification notification, boolean printNotifierValue) make changes to control the amount of output.
+* Documentation: Add a development or demo mode for vacations. To create a demo vacation (in development, or demo mode a demo database is used).
+* Documentation: Create a demo vacation for showing on the site.
+* Functional: InvoiceAndPropertiesEditor: enable update button only if there are changes. 
 * Cleanup Database/MijnWereld/Finan (first solve configuration files)
 * Check javadoc generation files under toplevelpom
-* Make filtering work in invoices table and properties table
 * The Vacations app and GpsPrune should share an OSM cache
+* Define extensions per application
+See page 445 of the book.
+For each application define an extension. Register that extension to the ResourceSet. Set this extension also to the FileChooser. Maybe get rid of the '*' registration in EMFResourceSet.
+
+h2. ToDo list - Refactoring
 
 Top Down
 
 * Remove all Swing code
-Top down
-* Make goedegep.util ready for publishing on GitHub
+
+Bottom up
 ** one
 * Add EClass descriptors to EObjectTable
 * Use EClass descriptors in VacationsWindow
 * Extend Vacations with VacationElement etc.
 * Change all component menus into JavaFxStage
 * In all component menu's, implement Edit user settings (where applicable).
-* Find a picture as background for 'Finan hoofdmenu'.
 * If a setting is missing, propose to open the relevant editor. In this editor focus on correct setting.
 It must be possible to search the property which sets the registry value.
 * As far as relevant change all JComboBox-es with LookAheadComboBox or LookAheadComboBoxWithSpinner.

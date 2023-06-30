@@ -338,7 +338,7 @@ public class VacationsUtils {
     
     File file = new File(fileName);
     if (!file.exists()) {
-      throw new FileNotFoundException("fileName");
+      throw new FileNotFoundException(fileName);
     }
     
     coordinates = ImageUtils.getGeoLocation(fileName);

@@ -910,7 +910,8 @@ public class PhotoMapView extends JfxStage {
 
     EMFResource<PhotoShowSpecification> emfResource = new EMFResource<PhotoShowSpecification>(
         PhotoShowPackage.eINSTANCE,
-        () -> PhotoShowFactory.eINSTANCE.createPhotoShowSpecification());
+        () -> PhotoShowFactory.eINSTANCE.createPhotoShowSpecification(),
+        ".xmi");
 
     try {
       photoShowSpecification = emfResource.load(photoShowSpecificationFile.getAbsolutePath());

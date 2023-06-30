@@ -79,7 +79,7 @@ public class Customizations {
     
     EMFResource<LookInfo> emfResource = new EMFResource<>(
         ConfigurationPackage.eINSTANCE,
-        () -> ConfigurationFactory.eINSTANCE.createLookInfo());
+        () -> ConfigurationFactory.eINSTANCE.createLookInfo(), ".xmi");
     LookInfo lookInfo;
     try {
       lookInfo = emfResource.load(configurationFile.getAbsolutePath());

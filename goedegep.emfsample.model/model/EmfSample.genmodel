@@ -15,7 +15,7 @@
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute EmfSample.ecore#//Person/firstname"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute EmfSample.ecore#//Person/surname"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute EmfSample.ecore#//Person/gender"/>
-      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference EmfSample.ecore#//Person/birthday"/>
+      <genFeatures children="true" createChild="true" propertySortChoices="true" ecoreFeature="ecore:EReference EmfSample.ecore#//Person/birthday"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute EmfSample.ecore#//Person/retirementDate"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute EmfSample.ecore#//Person/hasChildren"/>
     </genClasses>
@@ -26,6 +26,7 @@
     </genClasses>
     <genClasses ecoreClass="EmfSample.ecore#//Company">
       <genFeatures children="true" createChild="true" propertySortChoices="true" ecoreFeature="ecore:EReference EmfSample.ecore#//Company/employees"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference EmfSample.ecore#//Company/birthdays"/>
     </genClasses>
   </genPackages>
 </genmodel:GenModel>

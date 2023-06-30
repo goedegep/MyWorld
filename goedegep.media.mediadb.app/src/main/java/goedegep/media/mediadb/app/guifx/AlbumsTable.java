@@ -39,7 +39,6 @@ import goedegep.media.mediadb.model.InformationType;
 import goedegep.media.mediadb.model.MediaDb;
 import goedegep.media.mediadb.model.MediadbPackage;
 import goedegep.media.mediadb.model.MediumInfo;
-import goedegep.media.mediadb.model.MyCompilation;
 import goedegep.media.mediadb.model.MyInfo;
 import goedegep.media.mediadb.model.MyTrackInfo;
 import goedegep.media.mediadb.model.Track;
@@ -502,13 +501,13 @@ class AlbumComparator implements Comparator<Album> {
     }
     if (compareResult == 0) {
       FlexDate releaseDate1;
-      if (album1 instanceof MyCompilation) {
+      if (MediaDbUtil.isOwnCompilationAlbum(album1)) {
         releaseDate1 = new FlexDate(9999);
       } else {
         releaseDate1 = album1.getReleaseDate();
       }
       FlexDate releaseDate2;
-      if (album2 instanceof MyCompilation) {
+      if (MediaDbUtil.isOwnCompilationAlbum(album2)) {
         releaseDate2 = new FlexDate(9999);
       } else {
         releaseDate2 = album2.getReleaseDate();

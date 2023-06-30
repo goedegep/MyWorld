@@ -540,223 +540,6 @@ public interface MediadbPackage extends EPackage {
   int ALBUM_OPERATION_COUNT = 5;
 
   /**
-   * The meta object id for the '{@link goedegep.media.mediadb.model.impl.MyCompilationImpl <em>My Compilation</em>}' class.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see goedegep.media.mediadb.model.impl.MyCompilationImpl
-   * @see goedegep.media.mediadb.model.impl.MediadbPackageImpl#getMyCompilation()
-   * @generated
-   */
-  int MY_COMPILATION = 4;
-
-  /**
-   * The feature id for the '<em><b>Title</b></em>' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int MY_COMPILATION__TITLE = ALBUM__TITLE;
-
-  /**
-   * The feature id for the '<em><b>Release Date</b></em>' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int MY_COMPILATION__RELEASE_DATE = ALBUM__RELEASE_DATE;
-
-  /**
-   * The feature id for the '<em><b>Discs</b></em>' containment reference list.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int MY_COMPILATION__DISCS = ALBUM__DISCS;
-
-  /**
-   * The feature id for the '<em><b>Artist</b></em>' reference.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int MY_COMPILATION__ARTIST = ALBUM__ARTIST;
-
-  /**
-   * The feature id for the '<em><b>Images Front</b></em>' attribute list.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int MY_COMPILATION__IMAGES_FRONT = ALBUM__IMAGES_FRONT;
-
-  /**
-   * The feature id for the '<em><b>Id</b></em>' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int MY_COMPILATION__ID = ALBUM__ID;
-
-  /**
-   * The feature id for the '<em><b>Players</b></em>' containment reference list.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int MY_COMPILATION__PLAYERS = ALBUM__PLAYERS;
-
-  /**
-   * The feature id for the '<em><b>Images Front Inside</b></em>' attribute list.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int MY_COMPILATION__IMAGES_FRONT_INSIDE = ALBUM__IMAGES_FRONT_INSIDE;
-
-  /**
-   * The feature id for the '<em><b>Images Back</b></em>' attribute list.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int MY_COMPILATION__IMAGES_BACK = ALBUM__IMAGES_BACK;
-
-  /**
-   * The feature id for the '<em><b>Images Label</b></em>' attribute list.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int MY_COMPILATION__IMAGES_LABEL = ALBUM__IMAGES_LABEL;
-
-  /**
-   * The feature id for the '<em><b>Description Title</b></em>' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int MY_COMPILATION__DESCRIPTION_TITLE = ALBUM__DESCRIPTION_TITLE;
-
-  /**
-   * The feature id for the '<em><b>Description</b></em>' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int MY_COMPILATION__DESCRIPTION = ALBUM__DESCRIPTION;
-
-  /**
-   * The feature id for the '<em><b>Issued On Mediums</b></em>' attribute list.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int MY_COMPILATION__ISSUED_ON_MEDIUMS = ALBUM__ISSUED_ON_MEDIUMS;
-
-  /**
-   * The feature id for the '<em><b>Compilation</b></em>' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int MY_COMPILATION__COMPILATION = ALBUM__COMPILATION;
-
-  /**
-   * The feature id for the '<em><b>My Info</b></em>' containment reference.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int MY_COMPILATION__MY_INFO = ALBUM__MY_INFO;
-
-  /**
-   * The feature id for the '<em><b>Soundtrack</b></em>' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int MY_COMPILATION__SOUNDTRACK = ALBUM__SOUNDTRACK;
-
-  /**
-   * The number of structural features of the '<em>My Compilation</em>' class.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int MY_COMPILATION_FEATURE_COUNT = ALBUM_FEATURE_COUNT + 0;
-
-  /**
-   * The operation id for the '<em>Get Track Reference</em>' operation.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int MY_COMPILATION___GET_TRACK_REFERENCE__INTEGER_INT = ALBUM___GET_TRACK_REFERENCE__INTEGER_INT;
-
-  /**
-   * The operation id for the '<em>Get Player</em>' operation.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int MY_COMPILATION___GET_PLAYER__ARTIST = ALBUM___GET_PLAYER__ARTIST;
-
-  /**
-   * The operation id for the '<em>Get Artist And Title</em>' operation.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int MY_COMPILATION___GET_ARTIST_AND_TITLE = ALBUM___GET_ARTIST_AND_TITLE;
-
-  /**
-   * The operation id for the '<em>Is Multi Disc Album</em>' operation.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int MY_COMPILATION___IS_MULTI_DISC_ALBUM = ALBUM___IS_MULTI_DISC_ALBUM;
-
-  /**
-   * The operation id for the '<em>Get Disc</em>' operation.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int MY_COMPILATION___GET_DISC = ALBUM___GET_DISC;
-
-  /**
-   * The number of operations of the '<em>My Compilation</em>' class.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int MY_COMPILATION_OPERATION_COUNT = ALBUM_OPERATION_COUNT + 0;
-
-  /**
    * The meta object id for the '{@link goedegep.media.mediadb.model.impl.TrackReferenceImpl <em>Track Reference</em>}' class.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -764,7 +547,7 @@ public interface MediadbPackage extends EPackage {
    * @see goedegep.media.mediadb.model.impl.MediadbPackageImpl#getTrackReference()
    * @generated
    */
-  int TRACK_REFERENCE = 5;
+  int TRACK_REFERENCE = 4;
 
   /**
    * The feature id for the '<em><b>Track</b></em>' reference.
@@ -846,7 +629,7 @@ public interface MediadbPackage extends EPackage {
    * @see goedegep.media.mediadb.model.impl.MediadbPackageImpl#getDisc()
    * @generated
    */
-  int DISC = 6;
+  int DISC = 5;
 
   /**
    * The feature id for the '<em><b>Title</b></em>' attribute.
@@ -910,7 +693,7 @@ public interface MediadbPackage extends EPackage {
    * @see goedegep.media.mediadb.model.impl.MediadbPackageImpl#getMediumInfo()
    * @generated
    */
-  int MEDIUM_INFO = 7;
+  int MEDIUM_INFO = 6;
 
   /**
    * The feature id for the '<em><b>Medium Type</b></em>' attribute.
@@ -974,7 +757,7 @@ public interface MediadbPackage extends EPackage {
    * @see goedegep.media.mediadb.model.impl.MediadbPackageImpl#getMyInfo()
    * @generated
    */
-  int MY_INFO = 8;
+  int MY_INFO = 7;
 
   /**
    * The feature id for the '<em><b>Album References</b></em>' reference list.
@@ -1022,13 +805,22 @@ public interface MediadbPackage extends EPackage {
   int MY_INFO__IHAVE_ON = 4;
 
   /**
+   * The feature id for the '<em><b>Album Type</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int MY_INFO__ALBUM_TYPE = 5;
+
+  /**
    * The number of structural features of the '<em>My Info</em>' class.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int MY_INFO_FEATURE_COUNT = 5;
+  int MY_INFO_FEATURE_COUNT = 6;
 
   /**
    * The number of operations of the '<em>My Info</em>' class.
@@ -1047,7 +839,7 @@ public interface MediadbPackage extends EPackage {
    * @see goedegep.media.mediadb.model.impl.MediadbPackageImpl#getPlayer()
    * @generated
    */
-  int PLAYER = 9;
+  int PLAYER = 8;
 
   /**
    * The feature id for the '<em><b>Artist</b></em>' reference.
@@ -1093,7 +885,7 @@ public interface MediadbPackage extends EPackage {
    * @see goedegep.media.mediadb.model.impl.MediadbPackageImpl#getTrackPart()
    * @generated
    */
-  int TRACK_PART = 10;
+  int TRACK_PART = 9;
 
   /**
    * The feature id for the '<em><b>Title</b></em>' attribute.
@@ -1130,7 +922,7 @@ public interface MediadbPackage extends EPackage {
    * @see goedegep.media.mediadb.model.impl.MediadbPackageImpl#getMyTrackInfo()
    * @generated
    */
-  int MY_TRACK_INFO = 11;
+  int MY_TRACK_INFO = 10;
 
   /**
    * The feature id for the '<em><b>Collection</b></em>' attribute.
@@ -1194,7 +986,7 @@ public interface MediadbPackage extends EPackage {
    * @see goedegep.media.mediadb.model.impl.MediadbPackageImpl#getDiscAndTrackNrs()
    * @generated
    */
-  int DISC_AND_TRACK_NRS = 12;
+  int DISC_AND_TRACK_NRS = 11;
 
   /**
    * The feature id for the '<em><b>Disc Nr</b></em>' attribute.
@@ -1240,7 +1032,7 @@ public interface MediadbPackage extends EPackage {
    * @see goedegep.media.mediadb.model.impl.MediadbPackageImpl#getTrackCollection()
    * @generated
    */
-  int TRACK_COLLECTION = 13;
+  int TRACK_COLLECTION = 12;
 
   /**
    * The feature id for the '<em><b>Collection</b></em>' attribute.
@@ -1286,7 +1078,7 @@ public interface MediadbPackage extends EPackage {
    * @see goedegep.media.mediadb.model.impl.MediadbPackageImpl#getVideo()
    * @generated
    */
-  int VIDEO = 14;
+  int VIDEO = 13;
 
   /**
    * The feature id for the '<em><b>Title</b></em>' attribute.
@@ -1350,7 +1142,7 @@ public interface MediadbPackage extends EPackage {
    * @see goedegep.media.mediadb.model.impl.MediadbPackageImpl#getSubject()
    * @generated
    */
-  int SUBJECT = 15;
+  int SUBJECT = 14;
 
   /**
    * The feature id for the '<em><b>Title</b></em>' attribute.
@@ -1405,7 +1197,7 @@ public interface MediadbPackage extends EPackage {
    * @see goedegep.media.mediadb.model.impl.MediadbPackageImpl#getMediumType()
    * @generated
    */
-  int MEDIUM_TYPE = 16;
+  int MEDIUM_TYPE = 15;
 
   /**
    * The meta object id for the '{@link goedegep.media.mediadb.model.IWant <em>IWant</em>}' enum.
@@ -1415,7 +1207,7 @@ public interface MediadbPackage extends EPackage {
    * @see goedegep.media.mediadb.model.impl.MediadbPackageImpl#getIWant()
    * @generated
    */
-  int IWANT = 17;
+  int IWANT = 16;
 
   /**
    * The meta object id for the '{@link goedegep.media.mediadb.model.InformationType <em>Information Type</em>}' enum.
@@ -1425,7 +1217,7 @@ public interface MediadbPackage extends EPackage {
    * @see goedegep.media.mediadb.model.impl.MediadbPackageImpl#getInformationType()
    * @generated
    */
-  int INFORMATION_TYPE = 18;
+  int INFORMATION_TYPE = 17;
 
   /**
    * The meta object id for the '{@link goedegep.media.mediadb.model.Collection <em>Collection</em>}' enum.
@@ -1435,7 +1227,17 @@ public interface MediadbPackage extends EPackage {
    * @see goedegep.media.mediadb.model.impl.MediadbPackageImpl#getCollection()
    * @generated
    */
-  int COLLECTION = 19;
+  int COLLECTION = 18;
+
+  /**
+   * The meta object id for the '{@link goedegep.media.mediadb.model.AlbumType <em>Album Type</em>}' enum.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see goedegep.media.mediadb.model.AlbumType
+   * @see goedegep.media.mediadb.model.impl.MediadbPackageImpl#getAlbumType()
+   * @generated
+   */
+  int ALBUM_TYPE = 19;
 
   /**
    * Returns the meta object for class '{@link goedegep.media.mediadb.model.Track <em>Track</em>}'.
@@ -1919,16 +1721,6 @@ public interface MediadbPackage extends EPackage {
   EOperation getAlbum__GetDisc();
 
   /**
-   * Returns the meta object for class '{@link goedegep.media.mediadb.model.MyCompilation <em>My Compilation</em>}'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the meta object for class '<em>My Compilation</em>'.
-   * @see goedegep.media.mediadb.model.MyCompilation
-   * @generated
-   */
-  EClass getMyCompilation();
-
-  /**
    * Returns the meta object for class '{@link goedegep.media.mediadb.model.TrackReference <em>Track Reference</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -2172,6 +1964,17 @@ public interface MediadbPackage extends EPackage {
    * @generated
    */
   EReference getMyInfo_IHaveOn();
+
+  /**
+   * Returns the meta object for the attribute '{@link goedegep.media.mediadb.model.MyInfo#getAlbumType <em>Album Type</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Album Type</em>'.
+   * @see goedegep.media.mediadb.model.MyInfo#getAlbumType()
+   * @see #getMyInfo()
+   * @generated
+   */
+  EAttribute getMyInfo_AlbumType();
 
   /**
    * Returns the meta object for class '{@link goedegep.media.mediadb.model.Player <em>Player</em>}'.
@@ -2480,6 +2283,16 @@ public interface MediadbPackage extends EPackage {
    * @generated
    */
   EEnum getCollection();
+
+  /**
+   * Returns the meta object for enum '{@link goedegep.media.mediadb.model.AlbumType <em>Album Type</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for enum '<em>Album Type</em>'.
+   * @see goedegep.media.mediadb.model.AlbumType
+   * @generated
+   */
+  EEnum getAlbumType();
 
   /**
    * Returns the factory that creates the instances of the model.
@@ -2874,16 +2687,6 @@ public interface MediadbPackage extends EPackage {
     EOperation ALBUM___GET_DISC = eINSTANCE.getAlbum__GetDisc();
 
     /**
-    	 * The meta object literal for the '{@link goedegep.media.mediadb.model.impl.MyCompilationImpl <em>My Compilation</em>}' class.
-    	 * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-    	 * @see goedegep.media.mediadb.model.impl.MyCompilationImpl
-    	 * @see goedegep.media.mediadb.model.impl.MediadbPackageImpl#getMyCompilation()
-    	 * @generated
-    	 */
-    EClass MY_COMPILATION = eINSTANCE.getMyCompilation();
-
-    /**
     	 * The meta object literal for the '{@link goedegep.media.mediadb.model.impl.TrackReferenceImpl <em>Track Reference</em>}' class.
     	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -3075,6 +2878,14 @@ public interface MediadbPackage extends EPackage {
     	 * @generated
     	 */
     EReference MY_INFO__IHAVE_ON = eINSTANCE.getMyInfo_IHaveOn();
+
+    /**
+    	 * The meta object literal for the '<em><b>Album Type</b></em>' attribute feature.
+    	 * <!-- begin-user-doc -->
+    	 * <!-- end-user-doc -->
+    	 * @generated
+    	 */
+    EAttribute MY_INFO__ALBUM_TYPE = eINSTANCE.getMyInfo_AlbumType();
 
     /**
     	 * The meta object literal for the '{@link goedegep.media.mediadb.model.impl.PlayerImpl <em>Player</em>}' class.
@@ -3329,6 +3140,16 @@ public interface MediadbPackage extends EPackage {
     	 * @generated
     	 */
     EEnum COLLECTION = eINSTANCE.getCollection();
+
+    /**
+    	 * The meta object literal for the '{@link goedegep.media.mediadb.model.AlbumType <em>Album Type</em>}' enum.
+    	 * <!-- begin-user-doc -->
+    	 * <!-- end-user-doc -->
+    	 * @see goedegep.media.mediadb.model.AlbumType
+    	 * @see goedegep.media.mediadb.model.impl.MediadbPackageImpl#getAlbumType()
+    	 * @generated
+    	 */
+    EEnum ALBUM_TYPE = eINSTANCE.getAlbumType();
 
   }
 

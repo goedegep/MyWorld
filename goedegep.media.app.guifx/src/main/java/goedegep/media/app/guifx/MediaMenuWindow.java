@@ -3,6 +3,9 @@ package goedegep.media.app.guifx;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -16,10 +19,13 @@ import goedegep.jfx.PropertyDescriptorsEditorFx;
 import goedegep.media.app.MediaRegistry;
 import goedegep.media.app.base.MediaAppResourcesFx;
 import goedegep.media.app.base.MediaCollageCreator;
+import goedegep.media.fotomapview.guifx.PhotoEditor;
 import goedegep.media.fotomapview.guifx.PhotoMapView;
 import goedegep.media.fotoshow.app.guifx.FullScreenViewer;
 import goedegep.media.fotoshow.app.guifx.PhotoShowBuilder;
+import goedegep.media.mediadb.albumeditor.guifx.AlbumEditor;
 import goedegep.media.mediadb.app.MediaDbChecker;
+import goedegep.media.mediadb.app.derivealbuminfo.DeriveAlbumInfo;
 import goedegep.media.mediadb.app.guifx.DuneWindow;
 import goedegep.media.mediadb.app.guifx.MediaDbWindow;
 import goedegep.media.mediadb.app.guifx.MusicFolderWindow;
@@ -107,10 +113,11 @@ public class MediaMenuWindow extends JfxStage {
     mediaDbResource = new EMFResource<>(
         MediadbPackage.eINSTANCE, 
         () -> MediadbFactory.eINSTANCE.createMediaDb(),
+        ".xmiT",
         true);
     
     try {
-      mediaDb = mediaDbResource.load(MediaRegistry.mediaDbFile);
+      mediaDb = mediaDbResource.load(MediaRegistry.mediaDbFile + "T");
     } catch (FileNotFoundException e) {
       LOGGER.severe("File not found: " + e.getMessage());
       Alert alert = componentFactory.createYesNoConfirmationDialog(
@@ -143,7 +150,161 @@ public class MediaMenuWindow extends JfxStage {
     mediaDbResource.dirtyProperty().addListener((observable, oldValue, newValue) -> updateTitle());
     
 //    mediaDbResource.addNotificationListener(n -> LOGGER.severe(EmfUtil.printNotification(n)));
+//    tempForRemoveMyCompilation();
+    
+//    List<Path> flacFilePaths = new ArrayList<>();
+//    Path path = Paths.get("D:\\SoulSeek\\complete\\2021 - A Momentary Lapse Of Reason (Remixed & Updated) (Remastered)", "03 - The Dogs Of War.flac");
+//    flacFilePaths.add(path);
+//    DeriveAlbumInfo.deriveInfoFromFlacFiles(null, flacFilePaths, mediaDb);
   }
+  
+//  private void tempForRemoveMyCompilation() {
+//    for (int i = 0; i < mediaDb.getAlbums().size(); i++) {
+//      Album album = mediaDb.getAlbums().get(i);
+//      if (album instanceof MyCompilation myCompilation) {
+//        LOGGER.severe("MyCompilation found: " + album.getArtistAndTitle());
+//        Album convertedAlbum = convertMyCompilationToAlbum(myCompilation);
+//        updateReferences(myCompilation, convertedAlbum);
+//        mediaDb.getAlbums().add(i, convertedAlbum);
+//        myCompilation.setMyInfo(null);
+//        mediaDb.getAlbums().remove(myCompilation);
+//      }
+//    }
+//    
+//  }
+
+//  /**
+//   * Create a MyCompilation copy of an 'Album'.
+//   * 
+//   * @param album the Album to be 'copied' into a MyCompilation.
+//   * @return a MyCompilation copy of the 'album'.
+//   */
+//  private Album convertMyCompilationToAlbum(MyCompilation myCompilation) {
+//    myCompilation.eCrossReferences();
+//    
+//    MediadbFactory FACTORY = MediadbFactory.eINSTANCE;
+//    
+//    Album album = FACTORY.createAlbum();
+//    
+//    if (myCompilation.isSetArtist()) {
+//      album.setArtist(myCompilation.getArtist());
+//    }
+//    
+//    if (myCompilation.isSetDescription()) {
+//      album.setDescription(myCompilation.getDescription());
+//    }
+//    
+//    if (myCompilation.isSetDescriptionTitle()) {
+//      album.setDescriptionTitle(myCompilation.getDescriptionTitle());
+//    }
+//    
+//    if (myCompilation.isSetId()) {
+//      album.setId(myCompilation.getId());
+//    }
+//    
+//    for (String imageBack: myCompilation.getImagesBack()) {
+//      album.getImagesBack().add(imageBack);
+//    }
+//    
+//    for (String imageFront: myCompilation.getImagesFront()) {
+//      album.getImagesFront().add(imageFront);
+//    }
+//    
+//    for (String imageFrontInside: myCompilation.getImagesFrontInside()) {
+//      album.getImagesFrontInside().add(imageFrontInside);
+//    }
+//    
+//    for (String label: myCompilation.getImagesLabel()) {
+//      album.getImagesLabel().add(label);
+//    }
+//    
+//    for (MediumType mediumType: myCompilation.getIssuedOnMediums()) {
+//      album.getIssuedOnMediums().add(mediumType);
+//    }
+//    
+//    if (myCompilation.isSetMyInfo()) {
+//      album.setMyInfo(myCompilation.getMyInfo());
+//      album.getMyInfo().setAlbumType(AlbumType.OWN_COMPILATION_ALBUM);
+//    } else {
+//      throw new RuntimeException("No MyInfo set for album:" + myCompilation.getArtistAndTitle());
+//    }
+//    
+//    for (Player player: myCompilation.getPlayers()) {
+//      album.getPlayers().add(player);
+//    }
+//    
+//    if (myCompilation.isSetReleaseDate()) {
+//      album.setReleaseDate(myCompilation.getReleaseDate());
+//    }
+//    
+//    if (myCompilation.isSetTitle()) {
+//      album.setTitle(myCompilation.getTitle());
+//    }
+//    
+//    List<Disc> discs = new ArrayList<>();
+//    for (Disc disc: myCompilation.getDiscs()) {
+//      discs.add(disc);
+//    }
+//    myCompilation.getDiscs().clear();
+//    album.getDiscs().addAll(discs);
+//    
+//    return album;
+//  }
+  
+//  private void updateReferences(MyCompilation myCompilation, Album convertedAlbum) {
+//    LOGGER.severe("Object to remove=" + myCompilation.getArtistAndTitle());
+//    
+//    Resource resource = myCompilation.eResource();
+//    if (resource == null) {
+//      throw new RuntimeException("Object cannot be deleted as it is not part of a Resource: " + myCompilation.toString());
+//    }
+//    
+//    ResourceSet resourceSet = resource.getResourceSet();
+//    
+//    Collection<EStructuralFeature.Setting> settings = EcoreUtil.UsageCrossReferencer.find(myCompilation, resourceSet);
+//    if (settings.size() != 0) {
+//      StringBuffer buf = new StringBuffer();
+//      buf.append("There are ");
+//      buf.append(settings.size());
+//      buf.append(" references to this object.");
+//      buf.append(System.getProperty("line.separator"));
+//
+//      for (Object object: settings) {
+//        EStructuralFeature.Setting setting = (EStructuralFeature.Setting) object;
+//        EStructuralFeature feature = setting.getEStructuralFeature();
+//        String inOrAs = " as ";
+//        if (feature.isMany()) {
+//          inOrAs = " in ";
+//        }
+//        EObject referringObject = setting.getEObject();
+//        EObject container = referringObject.eContainer();
+//        if (container instanceof Album album) {
+//          buf.append("Album: ").append(album.getArtistAndTitle()).append(System.getProperty("line.separator"));
+//        }
+//        buf.append("In: ").append(referringObject.getClass().getName()).append(System.getProperty("line.separator"));
+//        buf.append("Feature: ").append(feature.getName()).append(System.getProperty("line.separator")).append(System.getProperty("line.separator"));
+//      }
+//      
+//      LOGGER.severe(buf.toString());
+//    }
+//    
+//    
+//    for (Object object: settings) {
+//      EStructuralFeature.Setting setting = (EStructuralFeature.Setting) object;
+//      EStructuralFeature feature = setting.getEStructuralFeature();
+//      EObject referringObject = setting.getEObject();
+//      
+//      if (feature.isMany()) {
+//        @SuppressWarnings("unchecked")
+//        List<Album> list = (List<Album>) referringObject.eGet(feature);
+//        list.remove(myCompilation);
+//        list.add(convertedAlbum);
+//      } else {
+//        referringObject.eUnset(feature);
+//      }
+//    }
+//    
+//  }
   
   /**
    * Create the GUI.
@@ -231,6 +392,17 @@ public class MediaMenuWindow extends JfxStage {
       
     });
     grid.add(applicationButton, 2, 1);
+    
+    applicationButton = componentFactory.createToolButton("Photo Editor", appResources.getApplicationImage(ImageSize.SIZE_0), "Open the Photo Editor");
+    applicationButton.setOnAction(new EventHandler<ActionEvent>() {
+
+      @Override
+      public void handle(ActionEvent event) {
+        new PhotoEditor(customization);
+      }
+      
+    });
+    grid.add(applicationButton, 3, 1);
     
     // Third row: Videos
     applicationButton = componentFactory.createToolButton("Video database", appResources.getApplicationImage(ImageSize.SIZE_0), "Open the video database window");
@@ -407,7 +579,8 @@ public class MediaMenuWindow extends JfxStage {
       try {
         EMFResource<PhotoShowSpecification> emfResource = new EMFResource<PhotoShowSpecification>(
             PhotoShowPackage.eINSTANCE,
-            () -> PhotoShowFactory.eINSTANCE.createPhotoShowSpecification());
+            () -> PhotoShowFactory.eINSTANCE.createPhotoShowSpecification(),
+            ".xmi");
         PhotoShowSpecification photoShowSpecification = emfResource.load(file.getAbsolutePath());
         List<String> photosToShow = photoShowSpecification.getPhotosToShow();
         new FullScreenViewer(photosToShow);

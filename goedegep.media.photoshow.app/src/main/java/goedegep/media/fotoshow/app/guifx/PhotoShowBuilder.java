@@ -206,7 +206,8 @@ public class PhotoShowBuilder extends JfxStage {
      */
     emfResource = new EMFResource<PhotoShowSpecification>(
         PhotoShowPackage.eINSTANCE,
-        () -> PhotoShowFactory.eINSTANCE.createPhotoShowSpecification());
+        () -> PhotoShowFactory.eINSTANCE.createPhotoShowSpecification(),
+        ".xmi");
     photoShowSpecification = emfResource.newEObject();
     
     createGUI();
@@ -1514,7 +1515,7 @@ public class PhotoShowBuilder extends JfxStage {
    * abstract E createEMFResource
    */
  EMFResource<PhotoShowSpecification> createEMFResource() {
-   return new EMFResource<PhotoShowSpecification>(PhotoShowPackage.eINSTANCE, () -> PhotoShowFactory.eINSTANCE.createPhotoShowSpecification());   
+   return new EMFResource<PhotoShowSpecification>(PhotoShowPackage.eINSTANCE, () -> PhotoShowFactory.eINSTANCE.createPhotoShowSpecification(), ".xmi");   
  }
  
  /**

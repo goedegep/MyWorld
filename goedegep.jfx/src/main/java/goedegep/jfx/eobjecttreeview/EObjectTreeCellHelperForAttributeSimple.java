@@ -32,6 +32,9 @@ import javafx.scene.layout.HBox;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 
+/**
+ * This class is a tree cell helper for a simple attribute.
+ */
 public class EObjectTreeCellHelperForAttributeSimple extends EObjectTreeCellHelperAbstract<EObjectTreeItemAttributeDescriptor>  {
   private static final Logger LOGGER = Logger.getLogger(EObjectTreeCellHelperForAttributeSimple.class.getName());
   

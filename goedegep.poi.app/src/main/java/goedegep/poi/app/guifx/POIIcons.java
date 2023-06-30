@@ -31,7 +31,8 @@ public class POIIcons {
   public POIIcons(String poiIconResourceInfoFileName) {
     EMFResource<POIIconResourceInfo> emfResource = new EMFResource<>(
         POIPackage.eINSTANCE,
-        () -> createPOIIconResourceInfo());
+        () -> createPOIIconResourceInfo(),
+        ".xmi");
     
     // TEMP
     emfResource.newEObject();

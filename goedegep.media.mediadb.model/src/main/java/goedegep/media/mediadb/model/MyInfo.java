@@ -20,6 +20,7 @@ import org.eclipse.emf.ecore.EObject;
  *   <li>{@link goedegep.media.mediadb.model.MyInfo#isIveHadOnLP <em>Ive Had On LP</em>}</li>
  *   <li>{@link goedegep.media.mediadb.model.MyInfo#getIWant <em>IWant</em>}</li>
  *   <li>{@link goedegep.media.mediadb.model.MyInfo#getIHaveOn <em>IHave On</em>}</li>
+ *   <li>{@link goedegep.media.mediadb.model.MyInfo#getAlbumType <em>Album Type</em>}</li>
  * </ul>
  *
  * @see goedegep.media.mediadb.model.MediadbPackage#getMyInfo()
@@ -129,6 +130,59 @@ public interface MyInfo extends EObject {
    * @generated
    */
   EList<MediumInfo> getIHaveOn();
+
+  /**
+   * Returns the value of the '<em><b>Album Type</b></em>' attribute.
+   * The default value is <code>"NORMAL_ALBUM"</code>.
+   * The literals are from the enumeration {@link goedegep.media.mediadb.model.AlbumType}.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the value of the '<em>Album Type</em>' attribute.
+   * @see goedegep.media.mediadb.model.AlbumType
+   * @see #isSetAlbumType()
+   * @see #unsetAlbumType()
+   * @see #setAlbumType(AlbumType)
+   * @see goedegep.media.mediadb.model.MediadbPackage#getMyInfo_AlbumType()
+   * @model default="NORMAL_ALBUM" unsettable="true"
+   * @generated
+   */
+  AlbumType getAlbumType();
+
+  /**
+   * Sets the value of the '{@link goedegep.media.mediadb.model.MyInfo#getAlbumType <em>Album Type</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @param value the new value of the '<em>Album Type</em>' attribute.
+   * @see goedegep.media.mediadb.model.AlbumType
+   * @see #isSetAlbumType()
+   * @see #unsetAlbumType()
+   * @see #getAlbumType()
+   * @generated
+   */
+  void setAlbumType(AlbumType value);
+
+  /**
+   * Unsets the value of the '{@link goedegep.media.mediadb.model.MyInfo#getAlbumType <em>Album Type</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #isSetAlbumType()
+   * @see #getAlbumType()
+   * @see #setAlbumType(AlbumType)
+   * @generated
+   */
+  void unsetAlbumType();
+
+  /**
+   * Returns whether the value of the '{@link goedegep.media.mediadb.model.MyInfo#getAlbumType <em>Album Type</em>}' attribute is set.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return whether the value of the '<em>Album Type</em>' attribute is set.
+   * @see #unsetAlbumType()
+   * @see #getAlbumType()
+   * @see #setAlbumType(AlbumType)
+   * @generated
+   */
+  boolean isSetAlbumType();
 
   /**
    * Returns the value of the '<em><b>My Comments</b></em>' attribute.

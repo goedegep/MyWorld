@@ -5,6 +5,9 @@ import java.util.List;
 
 import goedegep.util.text.Indent;
 
+/**
+ * This class is an {@link EObjectTreeItemDescriptor} for an item of type {@link EObjectTreeItemType.ATTRIBUTE_LIST_VALUE}.
+ */
 public class EObjectTreeItemAttributeListValueDescriptor extends EObjectTreeItemDescriptor {
   private boolean isMultiLineText;  // If true the text value can span multiple lines.
   private Format format;            // The formatter used to format and parse the object.

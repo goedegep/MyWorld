@@ -55,7 +55,7 @@ public class PropertiesHandler {
     
     EMFResource<PropertyDescriptorGroup> emfResource = new EMFResource<>(
         PropertiesPackage.eINSTANCE,
-        () -> PropertiesFactory.eINSTANCE.createPropertyDescriptorGroup());
+        () -> PropertiesFactory.eINSTANCE.createPropertyDescriptorGroup(), ".xmi");
     
     try {
       resourceFileName = createResourcePath(runningInEclipse, projectPath, propertyDescriptorsFileName, false);
@@ -83,7 +83,7 @@ public class PropertiesHandler {
         if (customPropertiesFileName != null) {
           EMFResource<PropertyGroup> propertiesResource = new EMFResource<PropertyGroup>(
               PropertiesPackage.eINSTANCE,
-              () -> PropertiesFactory.eINSTANCE.createPropertyGroup());
+              () -> PropertiesFactory.eINSTANCE.createPropertyGroup(), ".xmi");
           resourceFileName = createResourcePath(runningInEclipse, projectPath, customPropertiesFileName, true);
           LOGGER.info("resourceFileName: " + resourceFileName);
           customPropertiesFileField.set(customPropertiesFileField, resourceFileName);

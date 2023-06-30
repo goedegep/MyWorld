@@ -3,6 +3,7 @@
 package goedegep.media.mediadb.model.impl;
 
 import goedegep.media.mediadb.model.Album;
+import goedegep.media.mediadb.model.AlbumType;
 import goedegep.media.mediadb.model.Artist;
 import goedegep.media.mediadb.model.Collection;
 import goedegep.media.mediadb.model.Disc;
@@ -14,7 +15,6 @@ import goedegep.media.mediadb.model.MediadbFactory;
 import goedegep.media.mediadb.model.MediadbPackage;
 import goedegep.media.mediadb.model.MediumInfo;
 import goedegep.media.mediadb.model.MediumType;
-import goedegep.media.mediadb.model.MyCompilation;
 import goedegep.media.mediadb.model.MyInfo;
 import goedegep.media.mediadb.model.MyTrackInfo;
 import goedegep.media.mediadb.model.Player;
@@ -69,13 +69,6 @@ public class MediadbPackageImpl extends EPackageImpl implements MediadbPackage {
    * @generated
    */
   private EClass albumEClass = null;
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  private EClass myCompilationEClass = null;
 
   /**
    * <!-- begin-user-doc -->
@@ -181,6 +174,13 @@ public class MediadbPackageImpl extends EPackageImpl implements MediadbPackage {
    * @generated
    */
   private EEnum collectionEEnum = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EEnum albumTypeEEnum = null;
 
   /**
    * Creates an instance of the model <b>Package</b>, registered with
@@ -705,16 +705,6 @@ public class MediadbPackageImpl extends EPackageImpl implements MediadbPackage {
    * @generated
    */
   @Override
-  public EClass getMyCompilation() {
-    return myCompilationEClass;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
   public EClass getTrackReference() {
     return trackReferenceEClass;
   }
@@ -937,6 +927,16 @@ public class MediadbPackageImpl extends EPackageImpl implements MediadbPackage {
   @Override
   public EReference getMyInfo_IHaveOn() {
     return (EReference) myInfoEClass.getEStructuralFeatures().get(4);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public EAttribute getMyInfo_AlbumType() {
+    return (EAttribute) myInfoEClass.getEStructuralFeatures().get(5);
   }
 
   /**
@@ -1235,6 +1235,16 @@ public class MediadbPackageImpl extends EPackageImpl implements MediadbPackage {
    * @generated
    */
   @Override
+  public EEnum getAlbumType() {
+    return albumTypeEEnum;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
   public MediadbFactory getMediadbFactory() {
     return (MediadbFactory) getEFactoryInstance();
   }
@@ -1308,8 +1318,6 @@ public class MediadbPackageImpl extends EPackageImpl implements MediadbPackage {
     createEOperation(albumEClass, ALBUM___IS_MULTI_DISC_ALBUM);
     createEOperation(albumEClass, ALBUM___GET_DISC);
 
-    myCompilationEClass = createEClass(MY_COMPILATION);
-
     trackReferenceEClass = createEClass(TRACK_REFERENCE);
     createEReference(trackReferenceEClass, TRACK_REFERENCE__TRACK);
     createEAttribute(trackReferenceEClass, TRACK_REFERENCE__BONUS_TRACK);
@@ -1336,6 +1344,7 @@ public class MediadbPackageImpl extends EPackageImpl implements MediadbPackage {
     createEAttribute(myInfoEClass, MY_INFO__IVE_HAD_ON_LP);
     createEAttribute(myInfoEClass, MY_INFO__IWANT);
     createEReference(myInfoEClass, MY_INFO__IHAVE_ON);
+    createEAttribute(myInfoEClass, MY_INFO__ALBUM_TYPE);
 
     playerEClass = createEClass(PLAYER);
     createEReference(playerEClass, PLAYER__ARTIST);
@@ -1374,6 +1383,7 @@ public class MediadbPackageImpl extends EPackageImpl implements MediadbPackage {
     iWantEEnum = createEEnum(IWANT);
     informationTypeEEnum = createEEnum(INFORMATION_TYPE);
     collectionEEnum = createEEnum(COLLECTION);
+    albumTypeEEnum = createEEnum(ALBUM_TYPE);
   }
 
   /**
@@ -1408,7 +1418,6 @@ public class MediadbPackageImpl extends EPackageImpl implements MediadbPackage {
     // Set bounds for type parameters
 
     // Add supertypes to classes
-    myCompilationEClass.getESuperTypes().add(this.getAlbum());
 
     // Initialize classes, features, and operations; add parameters
     initEClass(trackEClass, Track.class, "Track", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
@@ -1537,9 +1546,6 @@ public class MediadbPackageImpl extends EPackageImpl implements MediadbPackage {
 
     initEOperation(getAlbum__GetDisc(), this.getDisc(), "getDisc", 0, 1, IS_UNIQUE, IS_ORDERED);
 
-    initEClass(myCompilationEClass, MyCompilation.class, "MyCompilation", !IS_ABSTRACT, !IS_INTERFACE,
-        IS_GENERATED_INSTANCE_CLASS);
-
     initEClass(trackReferenceEClass, TrackReference.class, "TrackReference", !IS_ABSTRACT, !IS_INTERFACE,
         IS_GENERATED_INSTANCE_CLASS);
     initEReference(getTrackReference_Track(), this.getTrack(), this.getTrack_ReferredBy(), "track", null, 1, 1,
@@ -1595,6 +1601,8 @@ public class MediadbPackageImpl extends EPackageImpl implements MediadbPackage {
     initEReference(getMyInfo_IHaveOn(), this.getMediumInfo(), null, "iHaveOn", null, 0, -1, MyInfo.class, !IS_TRANSIENT,
         !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED,
         IS_ORDERED);
+    initEAttribute(getMyInfo_AlbumType(), this.getAlbumType(), "albumType", "NORMAL_ALBUM", 0, 1, MyInfo.class,
+        !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(playerEClass, Player.class, "Player", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEReference(getPlayer_Artist(), this.getArtist(), null, "artist", null, 0, 1, Player.class, !IS_TRANSIENT,
@@ -1698,6 +1706,13 @@ public class MediadbPackageImpl extends EPackageImpl implements MediadbPackage {
     addEEnumLiteral(collectionEEnum, Collection.ROCK);
     addEEnumLiteral(collectionEEnum, Collection.NOT_SET);
     addEEnumLiteral(collectionEEnum, Collection.PUNK);
+
+    initEEnum(albumTypeEEnum, AlbumType.class, "AlbumType");
+    addEEnumLiteral(albumTypeEEnum, AlbumType.NORMAL_ALBUM);
+    addEEnumLiteral(albumTypeEEnum, AlbumType.COMPILATION_ALBUM);
+    addEEnumLiteral(albumTypeEEnum, AlbumType.VARIOUS_ARTISTS_ALBUM);
+    addEEnumLiteral(albumTypeEEnum, AlbumType.SOUNDTRACK_ALBUM);
+    addEEnumLiteral(albumTypeEEnum, AlbumType.OWN_COMPILATION_ALBUM);
 
     // Create resource
     createResource(eNS_URI);

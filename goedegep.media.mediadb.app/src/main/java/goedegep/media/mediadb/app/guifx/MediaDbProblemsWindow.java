@@ -28,7 +28,6 @@ import goedegep.media.mediadb.model.Disc;
 import goedegep.media.mediadb.model.MediaDb;
 import goedegep.media.mediadb.model.MediumInfo;
 import goedegep.media.mediadb.model.MediumType;
-import goedegep.media.mediadb.model.MyCompilation;
 import goedegep.media.mediadb.model.Track;
 import goedegep.media.mediadb.model.TrackReference;
 import goedegep.media.mediadb.model.util.MediaDbUtil;
@@ -993,7 +992,7 @@ private ComponentFactoryFx componentFactory;
       Path albumFolderPath = Paths.get(albumFolderName);
       String sourceTrackFileName = TrackFile.getTrackFileNameForTrackIndex(albumFolderPath, trackReference.getTrackNr());
       String trackFileNameWithoutExtension = null;
-      if (album instanceof MyCompilation) {
+      if (MediaDbUtil.isOwnCompilationAlbum(album)) {
         TrackReference originalAlbumTrackReference = trackReference.getOriginalAlbumTrackReference();
         if (originalAlbumTrackReference != null) {
           trackFileNameWithoutExtension = MediaDbAppUtil.generateTrackFileNameForMyCompilationAlbum(originalAlbumTrackReference, mediaDb);

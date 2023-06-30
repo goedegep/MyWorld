@@ -96,6 +96,7 @@ public class ObjectControlBoolean extends ObjectControlAbstract<Boolean> {
   @Override
   public void ocSetValue(Boolean objectValue) {
     referenceValue = objectValue;
+    ociSetValue(objectValue);
     checkBox.setSelected(objectValue);
   }
 

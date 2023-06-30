@@ -17,6 +17,7 @@ import org.eclipse.emf.ecore.util.EObjectResolvingEList;
 import org.eclipse.emf.ecore.util.InternalEList;
 
 import goedegep.media.mediadb.model.Album;
+import goedegep.media.mediadb.model.AlbumType;
 import goedegep.media.mediadb.model.IWant;
 import goedegep.media.mediadb.model.MediadbPackage;
 import goedegep.media.mediadb.model.MediumInfo;
@@ -35,6 +36,7 @@ import goedegep.media.mediadb.model.MyInfo;
  *   <li>{@link goedegep.media.mediadb.model.impl.MyInfoImpl#isIveHadOnLP <em>Ive Had On LP</em>}</li>
  *   <li>{@link goedegep.media.mediadb.model.impl.MyInfoImpl#getIWant <em>IWant</em>}</li>
  *   <li>{@link goedegep.media.mediadb.model.impl.MyInfoImpl#getIHaveOn <em>IHave On</em>}</li>
+ *   <li>{@link goedegep.media.mediadb.model.impl.MyInfoImpl#getAlbumType <em>Album Type</em>}</li>
  * </ul>
  *
  * @generated
@@ -136,6 +138,33 @@ public class MyInfoImpl extends MinimalEObjectImpl.Container implements MyInfo {
    * @ordered
    */
   protected EList<MediumInfo> iHaveOn;
+
+  /**
+   * The default value of the '{@link #getAlbumType() <em>Album Type</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getAlbumType()
+   * @generated
+   * @ordered
+   */
+  protected static final AlbumType ALBUM_TYPE_EDEFAULT = AlbumType.NORMAL_ALBUM;
+  /**
+   * The cached value of the '{@link #getAlbumType() <em>Album Type</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getAlbumType()
+   * @generated
+   * @ordered
+   */
+  protected AlbumType albumType = ALBUM_TYPE_EDEFAULT;
+  /**
+   * This is true if the Album Type attribute has been set.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  protected boolean albumTypeESet;
 
   /**
    * <!-- begin-user-doc -->
@@ -262,6 +291,58 @@ public class MyInfoImpl extends MinimalEObjectImpl.Container implements MyInfo {
    * @generated
    */
   @Override
+  public AlbumType getAlbumType() {
+    return albumType;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public void setAlbumType(AlbumType newAlbumType) {
+    AlbumType oldAlbumType = albumType;
+    albumType = newAlbumType == null ? ALBUM_TYPE_EDEFAULT : newAlbumType;
+    boolean oldAlbumTypeESet = albumTypeESet;
+    albumTypeESet = true;
+    if (eNotificationRequired())
+      eNotify(new ENotificationImpl(this, Notification.SET, MediadbPackage.MY_INFO__ALBUM_TYPE, oldAlbumType, albumType,
+          !oldAlbumTypeESet));
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public void unsetAlbumType() {
+    AlbumType oldAlbumType = albumType;
+    boolean oldAlbumTypeESet = albumTypeESet;
+    albumType = ALBUM_TYPE_EDEFAULT;
+    albumTypeESet = false;
+    if (eNotificationRequired())
+      eNotify(new ENotificationImpl(this, Notification.UNSET, MediadbPackage.MY_INFO__ALBUM_TYPE, oldAlbumType,
+          ALBUM_TYPE_EDEFAULT, oldAlbumTypeESet));
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public boolean isSetAlbumType() {
+    return albumTypeESet;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
   public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
     switch (featureID) {
     case MediadbPackage.MY_INFO__IHAVE_ON:
@@ -364,6 +445,8 @@ public class MyInfoImpl extends MinimalEObjectImpl.Container implements MyInfo {
       return getIWant();
     case MediadbPackage.MY_INFO__IHAVE_ON:
       return getIHaveOn();
+    case MediadbPackage.MY_INFO__ALBUM_TYPE:
+      return getAlbumType();
     }
     return super.eGet(featureID, resolve, coreType);
   }
@@ -394,6 +477,9 @@ public class MyInfoImpl extends MinimalEObjectImpl.Container implements MyInfo {
       getIHaveOn().clear();
       getIHaveOn().addAll((Collection<? extends MediumInfo>) newValue);
       return;
+    case MediadbPackage.MY_INFO__ALBUM_TYPE:
+      setAlbumType((AlbumType) newValue);
+      return;
     }
     super.eSet(featureID, newValue);
   }
@@ -421,6 +507,9 @@ public class MyInfoImpl extends MinimalEObjectImpl.Container implements MyInfo {
     case MediadbPackage.MY_INFO__IHAVE_ON:
       getIHaveOn().clear();
       return;
+    case MediadbPackage.MY_INFO__ALBUM_TYPE:
+      unsetAlbumType();
+      return;
     }
     super.eUnset(featureID);
   }
@@ -443,6 +532,8 @@ public class MyInfoImpl extends MinimalEObjectImpl.Container implements MyInfo {
       return isSetIWant();
     case MediadbPackage.MY_INFO__IHAVE_ON:
       return iHaveOn != null && !iHaveOn.isEmpty();
+    case MediadbPackage.MY_INFO__ALBUM_TYPE:
+      return isSetAlbumType();
     }
     return super.eIsSet(featureID);
   }

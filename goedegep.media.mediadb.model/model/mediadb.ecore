@@ -116,11 +116,6 @@
         unsettable="true" containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="soundtrack" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="MyCompilation" eSuperTypes="#//Album">
-    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-      <details key="documentation" value="To distinguish my own compilations from regular albums this class exists which extends Album."/>
-    </eAnnotations>
-  </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="TrackReference">
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
       <details key="documentation" value="This used for (my) compilation albums."/>
@@ -182,6 +177,8 @@
     </eStructuralFeatures>
     <eStructuralFeatures xsi:type="ecore:EReference" name="iHaveOn" upperBound="-1"
         eType="#//MediumInfo" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="albumType" eType="#//AlbumType"
+        defaultValueLiteral="NORMAL_ALBUM" unsettable="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EEnum" name="IWant">
     <eLiterals name="YES" literal="Yes"/>
@@ -263,5 +260,12 @@
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="tags" upperBound="-1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="date" eType="ecore:EDataType ../../goedegep.types.model/model/types.ecore#//EFlexDate"
         unsettable="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EEnum" name="AlbumType">
+    <eLiterals name="NORMAL_ALBUM" literal="Normal"/>
+    <eLiterals name="COMPILATION_ALBUM" value="1" literal="Compilation"/>
+    <eLiterals name="VARIOUS_ARTISTS_ALBUM" value="2" literal="Various Artists"/>
+    <eLiterals name="SOUNDTRACK_ALBUM" value="3" literal="Soundtrack"/>
+    <eLiterals name="OWN_COMPILATION_ALBUM" value="4" literal="Own Compilation"/>
   </eClassifiers>
 </ecore:EPackage>

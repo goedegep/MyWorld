@@ -1042,13 +1042,13 @@ public class EObjectTable<T extends EObject> extends TableView<T> implements Obj
   public void deleteObject(T objectToRemove) {
     LOGGER.severe("Object to remove=" + objectToRemove.toString());
     
-    ResourceSet resourceSet = null;
     Resource resource = objectToRemove.eResource();
-    if (resource != null) {
-      resourceSet = resource.getResourceSet();
+    if (resource == null) {
+      throw new RuntimeException("Object cannot be deleted as it is not part of a Resource: " + objectToRemove.toString());
     }
     
-    // TODO handle cross references when there is no resource set.
+    ResourceSet resourceSet = resource.getResourceSet();
+    
     Collection<EStructuralFeature.Setting> settings = EcoreUtil.UsageCrossReferencer.find(objectToRemove, resourceSet);
     if (settings.size() != 0) {
       StringBuffer buf = new StringBuffer();

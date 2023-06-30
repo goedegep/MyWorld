@@ -14,7 +14,6 @@ import goedegep.media.mediadb.model.Collection;
 import goedegep.media.mediadb.model.Disc;
 import goedegep.media.mediadb.model.DiscAndTrackNrs;
 import goedegep.media.mediadb.model.MediaDb;
-import goedegep.media.mediadb.model.MyCompilation;
 import goedegep.media.mediadb.model.MyInfo;
 import goedegep.media.mediadb.model.MyTrackInfo;
 import goedegep.media.mediadb.model.Track;
@@ -338,7 +337,7 @@ public class MediaDbToDiscLocationMap {
     Album album = disc.getAlbum();
 
     boolean myCompilation = false;
-    if (album instanceof MyCompilation) {
+    if (MediaDbUtil.isOwnCompilationAlbum(album)) {
       myCompilation = true;
     }
     

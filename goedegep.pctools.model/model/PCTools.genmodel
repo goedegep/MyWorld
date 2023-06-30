@@ -7,6 +7,12 @@
   <foreignModel>PCTools.ecore</foreignModel>
   <genPackages prefix="PCTools" basePackage="goedegep.pctools.filescontrolled" disposableProviderFactory="true"
       ecorePackage="PCTools.ecore#/">
+    <genEnums typeSafeEnumCompatible="false" ecoreEnum="PCTools.ecore#//EqualityType">
+      <genEnumLiterals ecoreEnumLiteral="PCTools.ecore#//EqualityType/SIZE"/>
+      <genEnumLiterals ecoreEnumLiteral="PCTools.ecore#//EqualityType/MD5"/>
+      <genEnumLiterals ecoreEnumLiteral="PCTools.ecore#//EqualityType/EQUAL"/>
+      <genEnumLiterals ecoreEnumLiteral="PCTools.ecore#//EqualityType/NOT_EQUAL"/>
+    </genEnums>
     <genClasses ecoreClass="PCTools.ecore#//DiscStructureSpecification">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute PCTools.ecore#//DiscStructureSpecification/name"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute PCTools.ecore#//DiscStructureSpecification/description"/>
@@ -25,6 +31,36 @@
     <genClasses ecoreClass="PCTools.ecore#//DescribedItem">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute PCTools.ecore#//DescribedItem/item"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute PCTools.ecore#//DescribedItem/description"/>
+    </genClasses>
+    <genClasses ecoreClass="PCTools.ecore#//Result">
+      <genFeatures children="true" createChild="true" propertySortChoices="true" ecoreFeature="ecore:EReference PCTools.ecore#//Result/controlledrootfolderinfos"/>
+      <genFeatures children="true" createChild="true" propertySortChoices="true" ecoreFeature="ecore:EReference PCTools.ecore#//Result/uncontrolledRootFolderInfos"/>
+    </genClasses>
+    <genClasses ecoreClass="PCTools.ecore#//UncontrolledFolderInfo">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute PCTools.ecore#//UncontrolledFolderInfo/allContentsHasCopies"/>
+      <genFeatures children="true" createChild="true" propertySortChoices="true" ecoreFeature="ecore:EReference PCTools.ecore#//UncontrolledFolderInfo/fileinfos"/>
+      <genFeatures children="true" createChild="true" propertySortChoices="true" ecoreFeature="ecore:EReference PCTools.ecore#//UncontrolledFolderInfo/subFoldersInfos"/>
+    </genClasses>
+    <genClasses ecoreClass="PCTools.ecore#//FileInfo">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute PCTools.ecore#//FileInfo/fileName"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference PCTools.ecore#//FileInfo/copyOf"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute PCTools.ecore#//FileInfo/equalityType"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute PCTools.ecore#//FileInfo/md5String"/>
+      <genOperations ecoreOperation="PCTools.ecore#//FileInfo/getFullPathname"/>
+    </genClasses>
+    <genClasses ecoreClass="PCTools.ecore#//ControlledRootFolderInfo">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute PCTools.ecore#//ControlledRootFolderInfo/folderBasePath"/>
+    </genClasses>
+    <genClasses ecoreClass="PCTools.ecore#//ControlledFolderInfo">
+      <genFeatures children="true" createChild="true" propertySortChoices="true" ecoreFeature="ecore:EReference PCTools.ecore#//ControlledFolderInfo/subFolderInfos"/>
+      <genFeatures children="true" createChild="true" propertySortChoices="true" ecoreFeature="ecore:EReference PCTools.ecore#//ControlledFolderInfo/fileinfos"/>
+    </genClasses>
+    <genClasses ecoreClass="PCTools.ecore#//FolderInfo">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute PCTools.ecore#//FolderInfo/folderName"/>
+      <genOperations ecoreOperation="PCTools.ecore#//FolderInfo/getFullPathname"/>
+    </genClasses>
+    <genClasses ecoreClass="PCTools.ecore#//UncontrolledRootFolderInfo">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute PCTools.ecore#//UncontrolledRootFolderInfo/folderBasePath"/>
     </genClasses>
   </genPackages>
 </genmodel:GenModel>

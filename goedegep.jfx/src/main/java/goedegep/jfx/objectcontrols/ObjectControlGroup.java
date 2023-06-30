@@ -181,9 +181,10 @@ public class ObjectControlGroup implements Iterable<ObjectControl<? extends Obje
 
     boolean isValidValue = true;
     
-    for (ObjectControl<?> objectInput: this) {
-      if (!objectInput.ocIsValid()) {
+    for (ObjectControl<?> objectControl: this) {
+      if (!objectControl.ocIsValid()) {
         isValidValue = false;
+        LOGGER.info("First invalid ObjectControl: " + objectControl.toString());
         break;
       }
     }

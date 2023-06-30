@@ -62,7 +62,7 @@ public class ObservableEList<T> implements ObservableList<T> {
     LOGGER.info("EObjectTable: Installing adapter");
     Adapter adapter = new EContentAdapter() {
       public void notifyChanged(Notification notification) {
-        LOGGER.info("Notification received: " + EmfUtil.printNotification(notification));
+//        LOGGER.info("Notification received: " + EmfUtil.printNotification(notification));
         super.notifyChanged(notification);
         ObservableEListChange<T> change = null;
         
@@ -70,7 +70,7 @@ public class ObservableEList<T> implements ObservableList<T> {
         case Notification.ADD:
           // for ADD isTouch() is always false
           LOGGER.info("Added item");
-          LOGGER.info(EmfUtil.printNotification(notification));
+//          LOGGER.info(EmfUtil.printNotification(notification));
           // if the notification is from this object, than a normal add. Else it can come from a child, which means the element is updated. Or from outside our list.
           if (notification.getFeature().equals(eReference)) {
             change = new ObservableEListChange<T>(notification.getPosition(), notification.getPosition() + 1, new ArrayList<T>(), EMPTY_PERM, false, thisList);

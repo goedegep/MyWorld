@@ -18,6 +18,7 @@ import goedegep.types.model.FileReference;
 import goedegep.types.model.TypesFactory;
 import goedegep.util.emf.EmfUtil;
 import goedegep.util.file.FileUtils;
+import goedegep.vacations.model.GPXTrack;
 import goedegep.vacations.model.Picture;
 import goedegep.vacations.model.VacationsFactory;
 import goedegep.vacations.model.VacationsPackage;
@@ -65,7 +66,7 @@ public class VacationsTreeView extends EObjectTreeView {
    * Check whether Dragboard information can be dropped on the specified tree item.
    * <p>
    * Dropping of EObjects is already part of the general EObjectTreeView functionality, so this isn't checked here.
-   * Here we check for photo files, which can be dropped on lists of VacationElement, or children of lists of VacationElement.
+   * Here we check for photo and GPX files, which can be dropped on lists of VacationElement, or children of lists of VacationElement.
    * 
    * @param eObjectTreeItem the tree item.
    * @param dragboard the {@code Dragboard} information.
@@ -74,6 +75,7 @@ public class VacationsTreeView extends EObjectTreeView {
   public boolean isDropPossible(EObjectTreeItem eObjectTreeItem, Dragboard dragboard) {    
     LOGGER.info("=>");
     
+    // If the dragboard has no files, there's nothing to drop.
     if (!dragboard.hasFiles()) {
       LOGGER.info("<= false (no files)");
       return false;
@@ -86,8 +88,9 @@ public class VacationsTreeView extends EObjectTreeView {
     }
     
     for (File file: files) {
-      if (!FileUtils.isPictureFile(file)) {
-        LOGGER.info("<= false (one of the files is not a picture file)");
+      String fileExtension = FileUtils.getFileExtension(file);
+      if (!FileUtils.isPictureFile(file)  &&  !".gpx".equalsIgnoreCase(fileExtension)) {
+        LOGGER.info("<= false (one of the files is not a picture or GPX file)");
         return false;
       }
     }
@@ -133,13 +136,16 @@ public class VacationsTreeView extends EObjectTreeView {
   
   /**
    * Handle the dropping of {@code Dragboard} information on a tree item.
+   * <p>
+   * For picture files, a Picture element is created.<br/>
+   * For GPX files, a 
    * 
    * @param eObjectTreeItem the tree item on which the information is dropped.
    * @param dragboard the {@code Dragboard} information.
-   * @return if the drop was successful, false otherwise.
+   * @return true if the drop was successful, false otherwise.
    */
   public boolean handleDrop(EObjectTreeItem eObjectTreeItem, Dragboard dragboard) {
-    LOGGER.info("=>");
+    LOGGER.severe("=>");
     
     if (!isDropPossible(eObjectTreeItem, dragboard)) {
       return false;
@@ -148,6 +154,8 @@ public class VacationsTreeView extends EObjectTreeView {
     }
     
     List<File> files = dragboard.getFiles();
+    
+    // Sort the files, so that they are added in the same way as they appear in an explorer window.
     Collections.sort(files);
 
     // Check whether the item is a list of VacationElement, if so add the picture to the end of the list
@@ -160,11 +168,15 @@ public class VacationsTreeView extends EObjectTreeView {
         EClass contentReferenceType = contentEReference.getEReferenceType();
         VacationsPackage vacationsPackage = VacationsPackage.eINSTANCE;
         if (contentEReference.isMany()  &&  contentReferenceType.equals(vacationsPackage.getVacationElement())) {
-          LOGGER.info("Yes it is a VacationElement reference");
+          LOGGER.severe("Yes it is a VacationElement reference");
           @SuppressWarnings("unchecked")
           EList<Object> list = (EList<Object>) object;
           for (File file: files) {
-            list.add(createPicture(file));
+            if (FileUtils.isPictureFile(file)) {
+              list.add(createPicture(file));
+            } else if (".gpx".equals(FileUtils.getFileExtension(file))) {
+              list.add(createGPXTrack(file));
+            }
           }
           return true;
         }
@@ -184,11 +196,15 @@ public class VacationsTreeView extends EObjectTreeView {
         LOGGER.info("contentReferenceType=" + contentReferenceType.toString());
         VacationsPackage vacationsPackage = VacationsPackage.eINSTANCE;
         if (contentEReference.isMany()  &&  contentReferenceType.equals(vacationsPackage.getVacationElement())) {
-          LOGGER.info("<= true (parent is a list of VacationElement reference)");
+          LOGGER.severe("<= true (parent is a list of VacationElement reference)");
           @SuppressWarnings("unchecked")
           EList<Object> list = (EList<Object>) parentEObjectTreeItemContent.getObject();
           for (File file: files) {
-            list.add(list.indexOf(object), createPicture(file));
+            if (FileUtils.isPictureFile(file)) {
+              list.add(list.indexOf(object), createPicture(file));
+            } else if (".gpx".equals(FileUtils.getFileExtension(file))) {
+              list.add(list.indexOf(object), createGPXTrack(file));
+            }
           }
           return true;
         }
@@ -213,6 +229,23 @@ public class VacationsTreeView extends EObjectTreeView {
     picture.setPictureReference(fileReference);
     
     return picture;
+  }
+  
+  /**
+   * Create a {@code GPXTrack} object for a specific file.
+   * 
+   * @param file the GPX {@code File}.
+   * @return a GPXTrack for the specified {@code file}.
+   */
+  private GPXTrack createGPXTrack(File file) {
+    VacationsFactory vacationsFactory = VacationsFactory.eINSTANCE;
+    GPXTrack gpxTrack = vacationsFactory.createGPXTrack();
+    TypesFactory typesFactory = TypesFactory.eINSTANCE;
+    FileReference fileReference = typesFactory.createFileReference();
+    fileReference.setFile(file.getAbsolutePath());
+    gpxTrack.setTrackReference(fileReference);
+    
+    return gpxTrack;
   }
 
 

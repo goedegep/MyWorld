@@ -79,7 +79,14 @@ public class ObjectControlTextField<T> extends ObjectControlAbstract<T> {
         ociRedrawValue();
     });
 
-    ocSetValue(initialValue);
+    // The initial value of the textField is null. Again setting it to null doesn't trigger the listener.
+    // So if the initial value isn't null, set the value (triggering the listener, leading to a call to ociHandleNewUserInput().
+    // Else, just call ociHandleNewUserInput().
+    if (initialValue != null) {
+      ocSetValue(initialValue);
+    } else {
+      ociHandleNewUserInput();
+    }
   }
   
   /**

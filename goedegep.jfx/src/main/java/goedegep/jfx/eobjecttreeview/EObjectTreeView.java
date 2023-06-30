@@ -43,7 +43,7 @@ import javafx.scene.input.Dragboard;
  * The EObjectTreeDescriptor is derived from the first eObject set, either via the constructor or via the method {@link #setEObject}.<br/><br/>
  * 
  * <b>Edit mode</b><br/>
- * The tree view is either in 'normal mode' or in 'edit mode'. In 'normal mode' attributes which have no value are not shown and the items cannot be changed,
+ * The tree view is either in 'view mode' or in 'edit mode'. In 'view mode' attributes which have no value are not shown and the items cannot be changed,
  * in 'edit mode' all attributes are shown (unless the Descriptor specifies that there aren't to be shown) and the items can be changed.<br/><br/>
  * 
  * <b>ObjectSelector</b><br/>
@@ -80,35 +80,20 @@ public class EObjectTreeView extends TreeView<EObjectTreeItemContent> implements
    * A TreeCell instance is also reused to render different items. Each time the TreeCell instance is assigned to an item, the method updateItem is called.
    * Therefore this method creates the right helper for the item type and then delegates the work to the helper by calling updateItem on the helper.<br/>
    * 
-   * How the tree is rendered is specified by a EObjectTreeDescriptor. How a cell is rendered is specified by a (sub-type of ) EObjectTreeItemDescriptor.
-   * Therefore the EObjectTreeDescriptor contains a tree with nodes of type TreeNode<EObjectTreeItemDescriptor>.
    */
   
   private static final Logger LOGGER = Logger.getLogger(EObjectTreeView.class.getName());
   protected static final String NEWLINE = System.getProperty("line.separator");
   
   /**
-   * The EObject presented by the tree.
-   */
-  private EObject eObject = null;
-  
-  /**
    * The description of what is shown in the tree and how.
    */
-  private EObjectTreeDescriptor eObjectTreeDescriptor;  // describes what is shown in the tree, and how.
+  private EObjectTreeDescriptor eObjectTreeDescriptor;
   
   /**
-   * The EClass related to the root EObject.
+   * Content adapter to react to changes in the root EObject hierarchy.
    */
-  private EClass eClass = null;
-  
-  
   private EContentAdapter eContentAdapter = null;
-  
-  /**
-   * TODO
-   */
-  private EmfPackageHelper emfPackageHelper = null;
   
   /**
    * ObjectSelector listeners to the selected object in the tree.
@@ -132,7 +117,7 @@ public class EObjectTreeView extends TreeView<EObjectTreeItemContent> implements
    * All information of the eObject is shown. Labels are derived from the related EClass.
    * 
    * @param eObject the EObject (hierarchy) to be shown in the tree. (optional)
-   * @param editMode if true, the tree is shown in 'edit mode', otherwise the tree is shown in 'normal mode'.
+   * @param editMode if true, the tree is shown in 'edit mode', otherwise the tree is shown in 'view mode'.
    */
   public EObjectTreeView(EObject eObject, boolean editMode) {
     this(eObject, null, editMode);
@@ -143,13 +128,11 @@ public class EObjectTreeView extends TreeView<EObjectTreeItemContent> implements
    * 
    * @param eObject the EObject (hierarchy) to be shown in the tree. (mandatory)
    * @param eObjectTreeDescriptor an optional descriptor for what is show and how.
-   * @param editMode if true, the tree is shown in 'edit mode', otherwise the tree is shown in 'normal mode'.
+   * @param editMode if true, the tree is shown in 'edit mode', otherwise the tree is shown in 'view mode'.
    */
   public EObjectTreeView(EObject eObject, EObjectTreeDescriptor eObjectTreeDescriptor, boolean editMode) {
     super();
     
-    this.eObject = eObject;
-
     this.eObjectTreeDescriptor = eObjectTreeDescriptor;
     
     setEditable(editMode);
@@ -174,68 +157,112 @@ public class EObjectTreeView extends TreeView<EObjectTreeItemContent> implements
 
     });
     
-    if (eObject != null) {
-      handleNewEObject(eObject);
-    }
+    eContentAdapter = createEContentAdapter();
+    
+    setEObject(eObject);
   }
   
+  /**
+   * Set the isDropPossible function.
+   * 
+   * @param isDropPossibleFunction the new isDropPossible function.
+   */
   public void setIsDropPossibleFunction(BiPredicate<EObjectTreeItem, Dragboard> isDropPossibleFunction) {
     this.isDropPossibleFunction = isDropPossibleFunction;
   }
   
+  /**
+   * Get the isDropPossible function.
+   * 
+   * @return the isDropPossible function.
+   */
   public BiPredicate<EObjectTreeItem, Dragboard> getIsDropPossibleFunction() {
     return isDropPossibleFunction;
   }
   
+  /**
+   * Set the handleDrop function.
+   * 
+   * @param handleDropFunction the new handleDrop function.
+   */
   public void setHandleDropFunction(BiPredicate<EObjectTreeItem, Dragboard> handleDropFunction) {
     this.handleDropFunction = handleDropFunction;
   }
   
+  /**
+   * Get the handleDrop function.
+   * 
+   * @return the handleDrop function.
+   */
   public BiPredicate<EObjectTreeItem, Dragboard> getHandleDropFunction() {
     return handleDropFunction;
   }
   
   /**
-   * Set the mode to 'normal mode' or 'edit mode'.
+   * Set the mode to 'view mode' or 'edit mode'.
    * 
-   * @param editMode if true, the mode is set to 'edit mode', else the mode is set to 'normal mode'.
+   * @param editMode if true, the mode is set to 'edit mode', else the mode is set to 'view mode'.
    */
   public void setEditMode(boolean editMode) {
+    LOGGER.severe("=> editMode=" + editMode);
     boolean currentEditable = isEditable();
     if (currentEditable != editMode) {
-      LOGGER.info("Changing mode");
+      LOGGER.severe("Changing mode");
+      // get selected item
+      EObjectPath eObjectPath = null;
+      TreeItem<EObjectTreeItemContent> selectedItem = getSelectedObject();
+      EObjectTreeItemContent selectedItemContent = null;
+      Object selectedObject = null;
+      EStructuralFeature structuralFeature = null;
+      if (selectedItem != null) {
+        selectedItemContent = selectedItem.getValue();
+        if (selectedItemContent != null) {
+          selectedObject = selectedItemContent.getObject();
+        }
+      }
+      if ((selectedItem != null)  &&  !(selectedObject instanceof EObject)) {
+        // Options: Attribute list (ToDo), Attribute list value (ToDo), simple attribute value (ToDo)
+        structuralFeature = selectedItemContent.getEStructuralFeature();
+        TreeItem<EObjectTreeItemContent> parentOfSelectedItem = selectedItem.getParent();
+        selectedObject = parentOfSelectedItem.getValue().getObject();
+      }
+      if (selectedObject instanceof EObject eObject) {
+        eObjectPath = new EObjectPath(eObject);
+        LOGGER.severe("eObjectPath=" + eObjectPath.toString());
+      }
+
       setEditable(editMode);
-      setEObject(eObject);
+      setEObject(getRootEObject());
+      // reselect selected item
+      if (eObjectPath != null) {
+        EObjectTreeItem treeItemToSelect = findTreeItem(eObjectPath);
+        if (structuralFeature != null) {
+          for (TreeItem<EObjectTreeItemContent> childItem : treeItemToSelect.getChildren()) {
+            if (childItem.getValue().getEStructuralFeature().equals(structuralFeature)) {
+              treeItemToSelect = (EObjectTreeItem) childItem;
+              break;
+            }
+          }
+        }
+        getSelectionModel().select(treeItemToSelect);
+      }
     }
   }
   
   /**
-   * Set the eObject to be shown in the tree view.
+   * Get the EObject of the root item.
    * 
-   * @param eObject the eObject to be shown in the tree view. If null, the tree view will be cleared.
+   * @return the EObject of the root item.
    */
-  public void setEObject(EObject eObject) {
-    if (this.eObject != null  &&  eContentAdapter != null) {
-      this.eObject.eAdapters().remove(eContentAdapter);
-    }
-    this.eObject = eObject;
+  private EObject getRootEObject() {
+    EObject rootEObject = null;
     
-    if (eObject == null) {
-      setRoot(null);
-    } else {
-      handleNewEObject(eObject);
+    TreeItem<EObjectTreeItemContent> rootItem = getRoot();
+    if (rootItem != null) {
+      rootEObject = (EObject) rootItem.getValue().getObject();
     }
-  }
-  
-  /**
-   * Get the EClass of the (first) eObject shown in the tree.
-   * <p>
-   * The EClass is derived from the first eObject set, either via the constructor or via the method {@link #setEObject}. 
-   * 
-   * @return the EClass of the (first) eObject shown in the tree.
-   */
-  public EClass getEClass() {
-    return eClass;
+    
+    return rootEObject;
   }
 
   /**
@@ -265,34 +292,36 @@ public class EObjectTreeView extends TreeView<EObjectTreeItemContent> implements
     return eObjectTreeDescriptor;
   }
   
-  public EmfPackageHelper getEMFPackageHelper() {
-    return emfPackageHelper;
-  }
-  
   public static Image getListIcon() {
     return new Image(EObjectTreeCellHelperForObjectList.class.getResourceAsStream("Three dots.png"), 36, 18, true, true);
   }
   
   /**
-   * Handle the fact that a new EObject is to be shown in the tree view.
+   * Set a new EObject to be shown in the tree view.
+   * <p>
+   * If there is no tree descriptor specified, the default descriptor is created.
    * 
-   * @param eObject the new EObject to be shown in the tree. (mandatory)
+   * @param eObject the new EObject to be shown in the tree. If null, the tree view will be cleared.
    */
-  private void handleNewEObject(EObject eObject) {
-    if (eObjectTreeDescriptor == null) {
+  public void setEObject(EObject eObject) {
+    // Create default descriptor if no descriptor is specified.
+    if (eObjectTreeDescriptor == null  &&  eObject != null) {
       eObjectTreeDescriptor = createDefaultEObjectTreeDescriptor(eObject);
     }
     
-    if (eClass == null) {
-      eClass = eObject.eClass();
-      emfPackageHelper = new EmfPackageHelper(eClass.getEPackage());
+    EObject currentRootEObject = getRootEObject();
+    if (currentRootEObject != null) {
+      currentRootEObject.eAdapters().remove(eContentAdapter);
     }
     
-    EObjectTreeItem rootItem;
-    rootItem = new EObjectTreeItem(eObject, EObjectTreeItemType.OBJECT, eObjectTreeDescriptor.getDescriptorForEClass(eClass), this);
+    if (eObject != null) {
+    EObjectTreeItem rootItem = new EObjectTreeItem(eObject, EObjectTreeItemType.OBJECT, eObjectTreeDescriptor.getDescriptorForEClass(eObject.eClass()), this);
     setRoot(rootItem);
+    eObject.eAdapters().add(eContentAdapter);;
+    } else {
+      setRoot(null);
+    }
     
-    installHandlingOfEObjectChanges();
   }
   
   /**
@@ -392,10 +421,10 @@ public class EObjectTreeView extends TreeView<EObjectTreeItemContent> implements
   }
     
   /**
-   * Install the handling of changes within the eObject.
+   * Create the content adapter for handling the changes within the eObject.
    */
-  private void installHandlingOfEObjectChanges() {
-    eContentAdapter = new EContentAdapter() {
+  private EContentAdapter createEContentAdapter() {
+    return new EContentAdapter() {
 
       /**
        * {@inheritDoc}
@@ -403,6 +432,11 @@ public class EObjectTreeView extends TreeView<EObjectTreeItemContent> implements
       @Override
       public void notifyChanged(org.eclipse.emf.common.notify.Notification notification) {
         super.notifyChanged(notification);
+        
+        if (notification.isTouch()) {
+          return;
+        }
+        
         LOGGER.info("TreeView change detected: " + notification.toString());
         
         if (notification.getEventType() == Notification.REMOVING_ADAPTER) {
@@ -444,7 +478,6 @@ public class EObjectTreeView extends TreeView<EObjectTreeItemContent> implements
       }
 
     };
-//    eObject.eAdapters().add(eContentAdapter);    
   }
   
   public EObjectTreeItem findTreeItem(Object object) {

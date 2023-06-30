@@ -87,11 +87,6 @@ public class MediadbAdapterFactory extends AdapterFactoryImpl {
     }
 
     @Override
-    public Adapter caseMyCompilation(MyCompilation object) {
-      return createMyCompilationAdapter();
-    }
-
-    @Override
     public Adapter caseTrackReference(TrackReference object) {
       return createTrackReferenceAdapter();
     }
@@ -218,20 +213,6 @@ public class MediadbAdapterFactory extends AdapterFactoryImpl {
    * @generated
    */
   public Adapter createAlbumAdapter() {
-    return null;
-  }
-
-  /**
-   * Creates a new adapter for an object of class '{@link goedegep.media.mediadb.model.MyCompilation <em>My Compilation</em>}'.
-   * <!-- begin-user-doc -->
-   * This default implementation returns null so that we can easily ignore cases;
-   * it's useful to ignore a case when inheritance will catch all the cases anyway.
-   * <!-- end-user-doc -->
-   * @return the new adapter.
-   * @see goedegep.media.mediadb.model.MyCompilation
-   * @generated
-   */
-  public Adapter createMyCompilationAdapter() {
     return null;
   }
 

@@ -1,14 +1,25 @@
 package goedegep.pctools.filescontrolled.guifx;
 
+import java.awt.Desktop;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.nio.file.DirectoryIteratorException;
+import java.nio.file.DirectoryStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.logging.Logger;
 
+import org.eclipse.emf.common.util.TreeIterator;
+import org.eclipse.emf.common.util.WrappedException;
 import org.eclipse.emf.ecore.EClass;
+import org.eclipse.emf.ecore.EObject;
 
 import goedegep.appgen.TableRowOperation;
 import goedegep.jfx.ComponentFactoryFx;
@@ -25,16 +36,20 @@ import goedegep.jfx.workerstategui.WorkerStateMonitorWindow;
 import goedegep.pctools.app.logic.PCToolsRegistry;
 import goedegep.pctools.filescontrolled.logic.CheckFilesTask;
 import goedegep.pctools.filescontrolled.logic.ControlledSetBuildingTask;
+import goedegep.pctools.filescontrolled.model.ControlledRootFolderInfo;
 import goedegep.pctools.filescontrolled.model.DescribedItem;
 import goedegep.pctools.filescontrolled.model.DirectorySpecification;
 import goedegep.pctools.filescontrolled.model.DiscStructureSpecification;
+import goedegep.pctools.filescontrolled.model.FileInfo;
 import goedegep.pctools.filescontrolled.model.PCToolsFactory;
 import goedegep.pctools.filescontrolled.model.PCToolsPackage;
+import goedegep.pctools.filescontrolled.model.Result;
+//import goedegep.pctools.filescontrolled.types.EqualityType;
 //import goedegep.pctools.filescontrolled.model.DescribedItem;
 //import goedegep.pctools.filescontrolled.model.DirectorySpecification;
 //import goedegep.pctools.filescontrolled.model.DiscStructureSpecification;
 import goedegep.pctools.filescontrolled.types.FileCopyInfo;
-import goedegep.pctools.filescontrolled.types.FileInfo;
+//import goedegep.pctools.filescontrolled.types.FileInfo;
 import goedegep.pctools.filescontrolled.types.FileInfoMap;
 //import goedegep.pctools.filescontrolled.model.PCToolsFactory;
 //import goedegep.pctools.filescontrolled.model.PCToolsPackage;
@@ -49,20 +64,25 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Node;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
+import javafx.scene.control.TextField;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.scene.web.WebView;
 import javafx.stage.FileChooser;
 
@@ -141,7 +161,8 @@ public class FilesControlledWindow extends JfxStage {
   private static final Logger LOGGER = Logger.getLogger(FilesControlledWindow.class.getName());
   private static final String WINDOW_TITLE = "Disc Structure Check";
   
-  private static final PCToolsPackage PC_TOOLS_PACKAGE = PCToolsPackage.eINSTANCE;
+  private static final PCToolsPackage PC_TOOLS_PACKAGE = PCToolsPackage.eINSTANCE;  
+  private static final PCToolsFactory PCTOOLS_FACTORY = PCToolsFactory.eINSTANCE;
   
   private ComponentFactoryFx componentFactory = null;
   private EMFResource<DiscStructureSpecification> emfResource = null;
@@ -169,47 +190,57 @@ public class FilesControlledWindow extends JfxStage {
     
     emfResource = new EMFResource<>(
         PCToolsPackage.eINSTANCE,
-        () -> PCToolsFactory.eINSTANCE.createDiscStructureSpecification());
+        () -> PCToolsFactory.eINSTANCE.createDiscStructureSpecification(), ".xmi");
+    emfResource.dirtyProperty().addListener((observable, oldValue, newValue) -> updateTitle());
+    
+    createControls();
+    createGUI();
 
     if (PCToolsRegistry.defaultDiscStructureSpecificationFile != null) {
-      try {
-        discStructureSpecification = emfResource.load(PCToolsRegistry.defaultDiscStructureSpecificationFile);
-      } catch (FileNotFoundException e) {
-      }
+      openDiscStructureSpecification(PCToolsRegistry.defaultDiscStructureSpecificationFile);
     } else {
-      discStructureSpecification = emfResource.newEObject();
+      newDiscStructureSpecification();
     }
+
+    show();
     
-    
-    setTitle(WINDOW_TITLE);
-    setX(10);
-    setY(20);
-    
-    /*
-     * Main pane is a BorderPane.
-     * North is the menu bar
-     * Center is an HBox with:
-     *   - first item (left) is a TreeView for the Disc Structure Specification.
-     *   - second item (right) is TabPane for the results:
-     *     - first tab is for the "Controlled files which have a copy under controlled files."
-     *     - second tab is for the "Files without a controlled copy."
-     *     - third tab is for the "Files with a controlled copy."
-     * Bottom is a status label
-     */
+    LOGGER.info("<=");
+  }
+  
+  /**
+   * Create the instance level GUI controls.
+   */
+  private void createControls() {
+    EObjectTreeDescriptor eObjectTreeDescriptor = createEObjectTreeDescriptor();
+    treeView = new EObjectTreeView(discStructureSpecification, eObjectTreeDescriptor, true);
+    treeView.setEditable(true);
+    treeView.setMinWidth(600);
+  }
+  
+  /**
+   * Create the GUI.
+   * <p>
+   * Main pane is a BorderPane.
+   * North is the menu bar
+   * Center is an HBox with:
+   *   - first item (left) is a TreeView for the Disc Structure Specification.
+   *   - second item (right) is TabPane for the results:
+   *     - first tab is for the "Controlled files which have a copy under controlled files."
+   *     - second tab is for the "Files without a controlled copy."
+   *     - third tab is for the "Files with a controlled copy."
+   * Bottom is a status label
+   */
+  private void createGUI() {
     BorderPane mainPane = new BorderPane();
     
     mainPane.setTop(createMenuBar(PCToolsRegistry.developmentMode));
     
     HBox centerLayout = new HBox();
-
-    EObjectTreeDescriptor eObjectTreeDescriptor = createEObjectTreeDescriptor();
-    treeView = new EObjectTreeView(discStructureSpecification, eObjectTreeDescriptor, true);
-    treeView.setEditable(true);
-    treeView.setMinWidth(600);
+    
     centerLayout.getChildren().add(treeView);
     
     TabPane resultTreesPane = new TabPane();
-    resultTreesPane.setMinWidth(1000);
+    resultTreesPane.setMinWidth(1400);
     
     Tab tab = new Tab();
     tab.setText("Copy");
@@ -244,24 +275,13 @@ public class FilesControlledWindow extends JfxStage {
     tab.setContent(tabLayoutControlledCopy);
     resultTreesPane.getTabs().add(tab);
     
-    tab = new Tab();
-    tab.setText("Help text");
-    BorderPane helpTextPane = new BorderPane();
-    helpTextPane.setTop(new Label("Label for helptext"));
-    helpTextPane.setCenter(createHelpText());
-    tab.setContent(helpTextPane);
-    resultTreesPane.getTabs().add(tab);
-    
     centerLayout.getChildren().add(resultTreesPane);
     mainPane.setCenter(centerLayout);
     
     mainPane.setBottom(statusLabel);
 
-    setScene(new Scene(mainPane, 1600, 600));
-
-    show();
+    setScene(new Scene(mainPane, 2000, 600));
     
-    LOGGER.info("<=");
   }
 
   /**
@@ -406,123 +426,90 @@ public class FilesControlledWindow extends JfxStage {
     Menu menu;
     MenuItem menuItem;
 
-    // Bestand menu
-    menu = componentFactory.createMenu("Bestand");
+    // File menu
+    menu = componentFactory.createMenu("File");
     
-    menuItem = componentFactory.createMenuItem("Nieuwe Disc Structuur Specificatie");
-    menuItem.setOnAction(new EventHandler<ActionEvent>() {
-      public void handle(ActionEvent e) {
-        newDiscStructureSpecification();
-      }
-    });
+    // File/New Disc Structure Specification
+    menuItem = componentFactory.createMenuItem("New Disc Structure Specification");
+    menuItem.setOnAction((e) -> newDiscStructureSpecification());
     menu.getItems().add(menuItem);
     
-    menuItem = componentFactory.createMenuItem("Disc Structuur Specificatie openen ...");
-    menuItem.setOnAction(new EventHandler<ActionEvent>() {
-      public void handle(ActionEvent e) {
-        openDiscStructureSpecification();
-      }
-    });
+    // File/Open Disc Structure Specification ...
+    menuItem = componentFactory.createMenuItem("Open Disc Structure Specification ...");
+    menuItem.setOnAction((e) -> openDiscStructureSpecification());
     menu.getItems().add(menuItem);
     
-    menuItem = componentFactory.createMenuItem("Disc Structuur Specificatie opslaan");
-    menuItem.setOnAction(new EventHandler<ActionEvent>() {
-      public void handle(ActionEvent e) {
-        saveDiscStructureSpecification();
-      }
-    });
+    // File/Save Disc Structure Specification
+    menuItem = componentFactory.createMenuItem("Save Disc Structure Specification");
+    menuItem.setOnAction((e) -> saveDiscStructureSpecification());
     menuItem.setAccelerator(new KeyCodeCombination(KeyCode.S, KeyCombination.CONTROL_DOWN));
     menu.getItems().add(menuItem);
     
-    menuItem = componentFactory.createMenuItem("Disc Structuur Specificatie opslaan als ...");
-    menuItem.setOnAction(new EventHandler<ActionEvent>() {
-      public void handle(ActionEvent e) {
-        saveDiscStructureSpecificationAs();
-      }
-    });
+    // File/Save Disc Structure Specification as ...
+    menuItem = componentFactory.createMenuItem("Save Disc Structure Specification as ...");
+    menuItem.setOnAction((e) -> saveDiscStructureSpecificationAs());
     menu.getItems().add(menuItem);
     
-    generateDiscStructureReportMenuItem = componentFactory.createMenuItem("Genereer disc structuur rapport");
-    generateDiscStructureReportMenuItem.setOnAction(new EventHandler<ActionEvent>() {
-      public void handle(ActionEvent e) {
-        if (generatingDiscStructureReport) {
-          // clean up
-          controlledSetBuildingTask.cancel();
-          generateDiscStructureReportMenuItem.setText("Genereer disc structuur rapport");
-          generatingDiscStructureReport = false;
-        } else {
-          generatingDiscStructureReport = true;
-          generateDiscStructureReportMenuItem.setText("Stop het disc structuur rapport genereren");
-          generateDiscStructureReportStep1(discStructureSpecification);
-        }
+    // File/Generate Disc Structure Report
+    // This menu item toggles between "Generate Disc Structure Report" (if generatingDiscStructureReport is false) and
+    // "Cancel Disc Structure Report generation" (if generatingDiscStructureReport is true).
+    generateDiscStructureReportMenuItem = componentFactory.createMenuItem("Generate Disc Structure Report");
+    generateDiscStructureReportMenuItem.setOnAction((e) -> {
+      if (generatingDiscStructureReport) {
+        // clean up
+        controlledSetBuildingTask.cancel();
+        generateDiscStructureReportMenuItem.setText("Generate Disc Structure Report");
+        generatingDiscStructureReport = false;
+      } else {
+        generatingDiscStructureReport = true;
+        generateDiscStructureReportMenuItem.setText("Cancel Disc Structure Report generation");
+        generateDiscStructureReportStep1(discStructureSpecification);
       }
     });
     menu.getItems().add(generateDiscStructureReportMenuItem);
     
+    // File/Print
     menuItem = componentFactory.createMenuItem("Print");
-    menuItem.setOnAction(new EventHandler<ActionEvent>() {
-
-      @Override
-      public void handle(ActionEvent event) {
-        System.out.println(treeView.toString());
-      }
-      
-    });
+    menuItem.setOnAction((e) -> System.out.println(treeView.toString()));
     menu.getItems().add(menuItem);
     
+    // File/Use Test Disc Structure Specification (Development only)
     if (developmentMode) {
       
-      menuItem = componentFactory.createMenuItem("Gebruik test disc structuur specificatie");
-      menuItem.setOnAction(new EventHandler<ActionEvent>() {
-        public void handle(ActionEvent e) {
-          createTestDiscStructureSpecification();
-          treeView.setEObject(discStructureSpecification);
-        }
+      menuItem = componentFactory.createMenuItem("Use Test Disc Structure Specification");
+      menuItem.setOnAction((e) -> {
+        createTestDiscStructureSpecification();
+        treeView.setEObject(discStructureSpecification);
       });
       menu.getItems().add(menuItem);
       
-      menuItem = componentFactory.createMenuItem("Gebruik hard-coded disc structuur specificatie");
-      menuItem.setOnAction(new EventHandler<ActionEvent>() {
-        public void handle(ActionEvent e) {
-          createDiscStructureSpecification();
-          treeView.setEObject(discStructureSpecification);
-        }
+      // File/Use hard-coded Disc Structure Specification (Development only)
+      menuItem = componentFactory.createMenuItem("Use hard-coded Disc Structure Specification");
+      menuItem.setOnAction((e) -> {
+        createDiscStructureSpecification();
+        treeView.setEObject(discStructureSpecification);
       });
       menu.getItems().add(menuItem);
     }
     
+    // File/Exit
     menuItem = componentFactory.createMenuItem("Exit");
-    menuItem.setOnAction(new EventHandler<ActionEvent>() {
-      public void handle(ActionEvent e) {
-        Platform.exit();
-      }
-    });
+    menuItem.setOnAction((e) -> Platform.exit());
     menu.getItems().add(menuItem);
     
     menuBar.getMenus().add(menu);
+    
+    // Help menu
+    menu = componentFactory.createMenu("Help");
+    
+    // Help/Help
+    menuItem = componentFactory.createMenuItem("Help");
+    menuItem.setOnAction((e) -> provideHelp());
+    menu.getItems().add(menuItem);
+    
+    menuBar.getMenus().add(menu); 
 
     return menuBar;
-  }
-  
-  private Node createHelpText() {
-    StringBuilder buf = new StringBuilder();
-    
-    buf.append("By describing how your disc structure is organized, this application can perform several checks");
-    buf.append("<h3>Controlled folders</h3>");
-    buf.append("For each directory you have to decide:");
-    buf.append("<ul>");
-    buf.append("<li>");
-    buf.append("Do I want to protect this information from getting lost");
-    buf.append("</li>");
-    buf.append("<li>");
-    buf.append("Do I want to share this information across my computers");
-    buf.append("</li>");
-    buf.append("</ul>");
-        
-    WebView helpTextArea = new WebView();
-    helpTextArea.getEngine().loadContent(buf.toString());
-    
-    return helpTextArea;
   }
   
   /**
@@ -615,7 +602,6 @@ public class FilesControlledWindow extends JfxStage {
     discStructureSpecification = emfResource.newEObject();
     DescribedItem describedItem = null;
         
-//    DiscStructureSpecification discStructureSpecification = pcToolsFactory.createDiscStructureSpecification();
     discStructureSpecification.setName("Test disc structure specification");
     discStructureSpecification.setDescription("Specification for a directory structure under 'src/test/resources' for testing this program");
     
@@ -632,25 +618,32 @@ public class FilesControlledWindow extends JfxStage {
     DirectorySpecification directorySpecification;
     
     directorySpecification = pcToolsFactory.createDirectorySpecification();
-    directorySpecification.setDirectoryPath("C:\\EclipseWorkspace\\goedegep.pctools\\target\\test-classes\\Test Directory Structure\\directory not to be checked\\controlled directory");
+    directorySpecification.setDirectoryPath("C:\\MyWorld\\goedegep.pctools\\target\\test-classes\\Test Directory Structure\\directory not to be checked\\controlled directory");
     directorySpecification.setDescription("Controlled directory");
     directorySpecification.setSynchronizationSpecification("Yes this is marked as synchronized");
     discStructureSpecification.getDirectorySpecifications().add(directorySpecification);
     
     directorySpecification = pcToolsFactory.createDirectorySpecification();
-    directorySpecification.setDirectoryPath("C:\\EclipseWorkspace\\goedegep.pctools\\target\\test-classes\\Test Directory Structure\\directory to be checked");
+    directorySpecification.setDirectoryPath("C:\\MyWorld\\goedegep.pctools\\target\\test-classes\\Test Directory Structure\\directory to be checked");
     directorySpecification.setDescription("Directory to be checked");
     directorySpecification.setToBeChecked(true);
     discStructureSpecification.getDirectorySpecifications().add(directorySpecification);
-
-//    return discStructureSpecification;
   }
   
+  /**
+   * Start with a new (empty) {@code DiscStructureSpecification}.
+   */
   private void newDiscStructureSpecification() {
     discStructureSpecification = emfResource.newEObject();
-    treeView.setEObject(discStructureSpecification);
+    handleNewDiscStructureSpecification();
   }
   
+  /**
+   * Open an existing {@code DiscStructureSpecification}.
+   * <p>
+   * The user can select the file via a FileChooser.
+   * 
+   */
   private void openDiscStructureSpecification() {
     FileChooser fileChooser = new FileChooser();
     fileChooser.setTitle("Open Disc Structure Specification");
@@ -659,14 +652,33 @@ public class FilesControlledWindow extends JfxStage {
       fileChooser.setInitialDirectory(dataDirectory);
     }
     File file = fileChooser.showOpenDialog(this);
-    LOGGER.severe("Opening: " + file.getAbsolutePath());
-    
+    openDiscStructureSpecification(file.getAbsolutePath());
+  }
+  
+  /**
+   * Open a specific {@code DiscStructureSpecification}.
+   * 
+   * @param discStructureSpecificationFile the file to open.
+   */
+  private void openDiscStructureSpecification(String discStructureSpecificationFile) {
+    LOGGER.info("Opening: " + discStructureSpecificationFile);
+
     try {
-      discStructureSpecification = emfResource.load(file.getAbsolutePath());
-      treeView.setEObject(discStructureSpecification);
+      discStructureSpecification = emfResource.load(discStructureSpecificationFile);
+      handleNewDiscStructureSpecification();
     } catch (FileNotFoundException e) {
       e.printStackTrace();
+    } catch (WrappedException wrappedException) {
+      componentFactory.createExceptionDialog("An exception occurred while reading the file: '" + discStructureSpecificationFile + "'.", wrappedException).show();
     }
+  }
+  
+  /**
+   * Handle a new {@code DiscStructureSpecification}.
+   */
+  private void handleNewDiscStructureSpecification() {
+    treeView.setEObject(discStructureSpecification);
+    updateTitle();
   }
   
   private void saveDiscStructureSpecification() {
@@ -693,6 +705,18 @@ public class FilesControlledWindow extends JfxStage {
     }
   }
   
+  private void provideHelp() {
+    if (Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE)) {
+      try {
+        Desktop.getDesktop().browse(new URI("https://petersdigitallife.nl/myworld-user-manual/pctools/files-maintenance/"));
+      } catch (IOException e) {
+        e.printStackTrace();
+      } catch (URISyntaxException e) {
+        e.printStackTrace();
+      }
+    }
+  }
+  
   /**
    * Perform the first step for generating a disc structure report.
    * <p>
@@ -704,203 +728,242 @@ public class FilesControlledWindow extends JfxStage {
    * @param discStructureSpecification the disc structure specification according to which the checking will be done.
    */
   private void generateDiscStructureReportStep1(DiscStructureSpecification discStructureSpecification) {
-    LOGGER.info("=>");
+    LOGGER.severe("=>");
+    
+    tabLayoutCopy.setCenter(null);
+    tabLayoutUncontrolled.setCenter(null);
+    tabLayoutControlledCopy.setCenter(null);
 
-    controlledSetBuildingTask = new ControlledSetBuildingTask(discStructureSpecification);
+    Result result = PCTOOLS_FACTORY.createResult();
+    controlledSetBuildingTask = new ControlledSetBuildingTask(discStructureSpecification, result);
     WorkerStateMonitorWindow<Tuplet<FileInfoMap, List<FileCopyInfo>>> workerMonitor = new WorkerStateMonitorWindow<>(getCustomization(), controlledSetBuildingTask);
+    workerMonitor.setTitle("Building Controlled Set progress");
     workerMonitor.show();
 
     // show messages in the statusLabel
-    controlledSetBuildingTask.messageProperty().addListener(new ChangeListener<String>() {
-
-      @Override
-      public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-        LOGGER.severe("Message: " + newValue);
-        statusLabel.setText(newValue);
-      }
-
+    controlledSetBuildingTask.messageProperty().addListener((observable, oldValue, newValue) -> {
+//      LOGGER.severe("Message: " + newValue);
+      statusLabel.setText(newValue);
     });
 
     // upon successful completion, call generateDiscStructureReportStep2()
-    controlledSetBuildingTask.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
-
-      @Override
-      public void handle(WorkerStateEvent event) {
-        LOGGER.severe("Succeeded: " + event);
-        workerMonitor.hide();
-        Tuplet<FileInfoMap, List<FileCopyInfo>> result = controlledSetBuildingTask.getValue();
-        generateDiscStructureReportStep2(result.getObject1(), result.getObject2());
-        statusLabel.setText("Step1 ready");
-      }
-
+    controlledSetBuildingTask.setOnSucceeded((event) -> {
+//      LOGGER.severe("Step 1 succeeded: " + event);
+      workerMonitor.close();
+//      Tuplet<FileInfoMap, List<FileCopyInfo>> resultOld = controlledSetBuildingTask.getValue();
+//      generateDiscStructureReportStep2(resultOld.getObject1(), resultOld.getObject2(), result);
+      generateDiscStructureReportStep2(result);
+      statusLabel.setText("Step1 ready");
     });
     
     // Report failure via statusLabel
-    controlledSetBuildingTask.setOnFailed(new EventHandler<WorkerStateEvent>() {
-
-      @Override
-      public void handle(WorkerStateEvent event) {
-        LOGGER.severe("Failed: " + event);
-        statusLabel.setText("Genereren mislukt: " + event.toString());
-      }
-
+    controlledSetBuildingTask.setOnFailed((event) -> {
+      LOGGER.severe("Failed: " + (event != null ? event.toString() : "null event"));
+      statusLabel.setText("Report generation failed: " + event.toString());
     });
     
     // Report cancelled via statusLabel
-    controlledSetBuildingTask.setOnCancelled(new EventHandler<WorkerStateEvent>() {
-
-      @Override
-      public void handle(WorkerStateEvent event) {
-        LOGGER.severe("Cancelled: " + event);
-        statusLabel.setText("Genereren afgebroken: " + event.toString());
-      }
-
+    controlledSetBuildingTask.setOnCancelled((event) -> {
+      LOGGER.severe("Cancelled: " + event);
+      statusLabel.setText("Report generation aborted: " + event.toString());
     });
 
     // report any intermediate suspicious file copies found.
-    controlledSetBuildingTask.valueProperty().addListener(new ChangeListener<Tuplet<FileInfoMap, List<FileCopyInfo>>>() {
-
-      @Override
-      public void changed(ObservableValue<? extends Tuplet<FileInfoMap, List<FileCopyInfo>>> observable,
-          Tuplet<FileInfoMap, List<FileCopyInfo>> oldValue,
-          Tuplet<FileInfoMap, List<FileCopyInfo>> newValue) {
-        reportSuspiciousCopies(newValue.getObject2());
-      }
-
-    });
+    controlledSetBuildingTask.valueProperty().addListener((observable, oldValue, newValue) -> reportSuspiciousCopies(result));
 
     Thread  buildControlledSetThread = new Thread(controlledSetBuildingTask);
     buildControlledSetThread.setDaemon(true);
     buildControlledSetThread.start();
 
-    LOGGER.info("<=");
+    LOGGER.severe("<=");
   }
   
-  private void generateDiscStructureReportStep2(FileInfoMap controlledFiles, List<FileCopyInfo> suspiciousFileCopyInfos) {
-    reportSuspiciousCopies(suspiciousFileCopyInfos);
+//  private void generateDiscStructureReportStep2(FileInfoMap controlledFiles, List<FileCopyInfo> suspiciousFileCopyInfos, Result result) {
+  private void generateDiscStructureReportStep2(Result result) {
+//    LOGGER.severe("-> number of controlled files: " + controlledFiles.keySet().size() +
+//        ", number of suspicious copies: " + suspiciousFileCopyInfos.size());
+//    reportSuspiciousCopies(suspiciousFileCopyInfos);
     
-    CheckFilesTask checkFilesTask = new CheckFilesTask(controlledFiles, discStructureSpecification);
-    WorkerStateMonitorWindow<Tuplet<List<FileCopyInfo>, List<FileInfo>>> workerMonitor = new WorkerStateMonitorWindow<>(getCustomization(), checkFilesTask);
+//    CheckFilesTask checkFilesTask = new CheckFilesTask(controlledFiles, discStructureSpecification, result);
+    CheckFilesTask checkFilesTask = new CheckFilesTask(discStructureSpecification, result);
+    WorkerStateMonitorWindow<Result> workerMonitor = new WorkerStateMonitorWindow<>(getCustomization(), checkFilesTask);
+    workerMonitor.setTitle("Checking Files progress");
     workerMonitor.show();
     
     // show messages in the statusLabel
-    checkFilesTask.messageProperty().addListener(new ChangeListener<String>() {
-
-      @Override
-      public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-        LOGGER.severe("Message: " + newValue);
-        statusLabel.setText(newValue);
-      }
-
+    checkFilesTask.messageProperty().addListener((observable, oldValue, newValue) -> {
+      LOGGER.info("Message: " + newValue);
+      statusLabel.setText(newValue);
     });
 
     // Show results when ready
-    checkFilesTask.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
-
-      @Override
-      public void handle(WorkerStateEvent event) {
-        LOGGER.severe("Succeeded: " + event);
-        Tuplet<List<FileCopyInfo>, List<FileInfo>> result = checkFilesTask.getValue();
-        reportprobablyRemovableFiles(result.getObject1());
-        reportUncontrolledFiles(result.getObject2());
-        workerMonitor.hide();
-        statusLabel.setText("Report ready");
-        generateDiscStructureReportMenuItem.setText("Genereer disc structuur rapport");
-      }
-
+    checkFilesTask.setOnSucceeded((event) -> {
+      LOGGER.severe("Step 2 succeeded: " + event);
+      Result resultNew = checkFilesTask.getValue();
+      reportSuspiciousCopies(result);
+      reportResult(resultNew);
+//      reportprobablyRemovableFiles(result.getObject1());
+//      reportUncontrolledFiles(result.getObject2());
+      workerMonitor.close();
+      statusLabel.setText("Report ready");
+      generateDiscStructureReportMenuItem.setText("Genereer disc structuur rapport");
+      generatingDiscStructureReport = false;
     });
     
-    checkFilesTask.setOnCancelled(new EventHandler<WorkerStateEvent>() {
-
-      @Override
-      public void handle(WorkerStateEvent event) {
-        LOGGER.severe("Cancelled: " + event);
-        statusLabel.setText("Genereren afgebroken: " + event.toString());
-      }
-
+    checkFilesTask.setOnCancelled((event) -> {
+      LOGGER.severe("Cancelled: " + event);
+      statusLabel.setText("Genereren afgebroken: " + event.toString());
     });
 
     // Show intermediate results
-    checkFilesTask.valueProperty().addListener(new ChangeListener<Tuplet<List<FileCopyInfo>, List<FileInfo>>>() {
-
-      @Override
-      public void changed(ObservableValue<? extends Tuplet<List<FileCopyInfo>, List<FileInfo>>> observable,
-          Tuplet<List<FileCopyInfo>, List<FileInfo>> oldValue,
-          Tuplet<List<FileCopyInfo>, List<FileInfo>> newValue) {
-        LOGGER.severe("Changed...");
-        reportprobablyRemovableFiles(newValue.getObject1());
-        reportUncontrolledFiles(newValue.getObject2());
-        statusLabel.setText("Results so far: " + newValue.getObject1().size() + " (possible) copies found," + newValue.getObject2().size() + " uncontrolled files found");
-      }
-
+    checkFilesTask.valueProperty().addListener((observable, oldValue, newValue) -> {
+      LOGGER.severe("Changed...");
+//      reportprobablyRemovableFiles(newValue.getObject1());
+//      reportUncontrolledFiles(newValue.getObject2());
+//      statusLabel.setText("Results so far: " + newValue.getObject1().size() + " (possible) copies found," + newValue.getObject2().size() + " uncontrolled files found");
+      generateDiscStructureReportMenuItem.setText("Genereer disc structuur rapport");
+      statusLabel.setText("Results so far: " + "TODO");
     });
 
     Thread  checkFilesThread = new Thread(checkFilesTask);
     checkFilesThread.setDaemon(true);
     checkFilesThread.start();
-
   }
   
-  private void reportSuspiciousCopies(List<FileCopyInfo> suspiciousFileCopyInfos) {
-    Collections.sort(suspiciousFileCopyInfos);
+  private void reportSuspiciousCopies(Result result) {
+    VBox vBox = componentFactory.createVBox(6.0, 12.0);
+    ScrollPane scrollPane = new ScrollPane(vBox);
+    Label label;
     
-    TreeItem<String> rootTreeItem = new TreeItem<>("Suspicious copies");
-    rootTreeItem.setExpanded(true);
+    label = componentFactory.createStrongLabel("Controlled files with copies");
+    vBox.getChildren().add(label);
     
-    for (FileCopyInfo fileCopyInfo: suspiciousFileCopyInfos) {
-      StringBuilder buf = new StringBuilder();
-      buf.append(fileCopyInfo.getFirstFileFoundInfo().getFile().toString());
-      buf.append(" ");
-      buf.append(fileCopyInfo.getEqualityType().toString());
-      TreeItem<String> fileTreeItem = new TreeItem<>(buf.toString());
-      TreeItem<String> treeItem = new TreeItem<>(fileCopyInfo.getFirstFileFoundInfo().getDirectory().toString());
-      fileTreeItem.getChildren().add(treeItem);
-      treeItem = new TreeItem<>(fileCopyInfo.getSecondFileFoundInfo().getDirectory().toString());
-      fileTreeItem.getChildren().add(treeItem);
-      rootTreeItem.getChildren().add(fileTreeItem);
+    for (ControlledRootFolderInfo rootFolder: result.getControlledrootfolderinfos()) {
+      TreeIterator<EObject> treeIterator = rootFolder.eAllContents();
+      while (treeIterator.hasNext()) {
+        EObject eObject = treeIterator.next();
+        if (eObject instanceof FileInfo controlledFileInfo) {
+          FileInfo copyFileInfo = controlledFileInfo.getCopyOf();
+          if (copyFileInfo != null) {
+            LOGGER.info("Copy found: " + copyFileInfo.toString() + ", " + controlledFileInfo.toString());
+            GridPane gridPane = componentFactory.createGridPane(12.0, 6.0, 4.0);
+            label = componentFactory.createLabel("File:");
+            gridPane.add(label, 0, 0);
+            TextField textField = componentFactory.createTextField(controlledFileInfo.getFileName(), 900.0, null);
+            textField.setEditable(false);
+            gridPane.add(textField, 1, 0);
+            label = componentFactory.createLabel("in:");
+            gridPane.add(label, 2, 0);
+            textField = componentFactory.createTextField(copyFileInfo.getFullPathname(), 1000.0, null);
+            gridPane.add(textField, 1, 1);
+            Button button = componentFactory.createButton("Delete", "Delete the file in this folder");
+            button.setOnAction((e) -> {
+              try {
+                Path path = Paths.get(copyFileInfo.getFullPathname());
+                LOGGER.severe("Going to delete: " + path.toString());
+                Files.delete(path);
+              } catch(IOException ioException) {
+                ioException.printStackTrace();
+              }
+            });
+            gridPane.add(button, 2, 1);
+            textField = componentFactory.createTextField(controlledFileInfo.getFullPathname(), 1000.0, null);
+            gridPane.add(textField, 1, 2);
+            button = componentFactory.createButton("Delete", "Delete the file in this folder");
+            button.setOnAction((e) -> {
+              try {
+                Path path = Paths.get(controlledFileInfo.getFullPathname());
+                LOGGER.severe("Going to delete: " + path.toString());
+                Files.delete(path);
+              } catch(IOException ioException) {
+                ioException.printStackTrace();
+              }
+            });
+            gridPane.add(button, 2, 2);
+            vBox.getChildren().add(gridPane);
+          }
+        }
+      }
     }
-    TreeView<String> treeView = new TreeView<> (rootTreeItem);
     
-    tabLayoutCopy.setCenter(treeView);
+    tabLayoutCopy.setCenter(scrollPane);
+
+    // controlled files with copies
+    // file: <file> in
+    //       <dir1> (right mouse to delete or delete button.)
+    //       <dir2> (right mouse to delete or delete button.)
+    
+    // uncontrolled files with copies
+    
+//    Collections.sort(suspiciousFileCopyInfos);
+
+//    TreeItem<String> rootTreeItem = new TreeItem<>("Suspicious copies");
+//    rootTreeItem.setExpanded(true);
+//
+//    for (FileCopyInfo fileCopyInfo: suspiciousFileCopyInfos) {
+//      StringBuilder buf = new StringBuilder();
+//      buf.append(fileCopyInfo.getFirstFileFoundInfo().getFileName());
+//      buf.append(" ");
+//      buf.append(fileCopyInfo.getEqualityType().toString());
+//      TreeItem<String> fileTreeItem = new TreeItem<>(buf.toString());
+//      TreeItem<String> treeItem = new TreeItem<>(fileCopyInfo.getFirstFileFoundInfo().getDirectoryName());
+//      fileTreeItem.getChildren().add(treeItem);
+//      treeItem = new TreeItem<>(fileCopyInfo.getSecondFileFoundInfo().getDirectoryName());
+//      fileTreeItem.getChildren().add(treeItem);
+//      rootTreeItem.getChildren().add(fileTreeItem);
+//    }
+//    TreeView<String> treeView = new TreeView<> (rootTreeItem);
+//
+//    tabLayoutCopy.setCenter(treeView);
   }
-
-  private void reportprobablyRemovableFiles(List<FileCopyInfo> probablyRemovableFileCopyInfos) {
-    TreeItem<String> rootTreeItem = new TreeItem<>("Probably removable files");
-    rootTreeItem.setExpanded(true);
-    
-    for (FileCopyInfo fileCopyInfo: probablyRemovableFileCopyInfos) {
-      StringBuilder buf = new StringBuilder();
-      buf.append(fileCopyInfo.getFirstFileFoundInfo().getFile().toString());
-      buf.append(" ");
-      buf.append(fileCopyInfo.getEqualityType().toString());
-      TreeItem<String> fileTreeItem = new TreeItem<>(buf.toString());
-
-      TreeItem<String> treeItem = new TreeItem<>(fileCopyInfo.getFirstFileFoundInfo().getDirectory().toString());
-      fileTreeItem.getChildren().add(treeItem);
-      treeItem = new TreeItem<>(fileCopyInfo.getSecondFileFoundInfo().getDirectory().toString());
-      fileTreeItem.getChildren().add(treeItem);
-      rootTreeItem.getChildren().add(fileTreeItem);
-    }
-    TreeView<String> treeView = new TreeView<> (rootTreeItem);
-    
+  
+  private void reportResult(Result result) {
+    EObjectTreeView treeView = new EObjectTreeView(result, false);
     tabLayoutControlledCopy.setCenter(treeView);
   }
 
-  private void reportUncontrolledFiles(List<FileInfo> uncontrolledFiles) {
-    ListView<String> uncontrolledFilesListView = new ListView<String>();
-    
-//    TreeItem<String> rootTreeItem = new TreeItem<>("Uncontolled files");
+//  /**
+//   * Report probable removable files.
+//   * 
+//   * @param probablyRemovableFileCopyInfos
+//   */
+//  private void reportprobablyRemovableFiles(List<FileCopyInfo> probablyRemovableFileCopyInfos) {
+//    TreeItem<String> rootTreeItem = new TreeItem<>("Probably removable files");
 //    rootTreeItem.setExpanded(true);
-    
-    for (FileInfo fileInfo: uncontrolledFiles) {
-      uncontrolledFilesListView.getItems().add(fileInfo.getDirectory().toString() + "/" + fileInfo.getFile().toString());
-    }
-    
+//    
+//    for (FileCopyInfo fileCopyInfo: probablyRemovableFileCopyInfos) {
+//      StringBuilder buf = new StringBuilder();
+//      buf.append(fileCopyInfo.getFirstFileFoundInfo().getFile().toString());
+//      buf.append(" ");
+//      buf.append(fileCopyInfo.getEqualityType().toString());
+//      TreeItem<String> fileTreeItem = new TreeItem<>(buf.toString());
+//
+//      TreeItem<String> treeItem = new TreeItem<>(fileCopyInfo.getFirstFileFoundInfo().getDirectory().toString());
+//      fileTreeItem.getChildren().add(treeItem);
+//      treeItem = new TreeItem<>(fileCopyInfo.getSecondFileFoundInfo().getDirectory().toString());
+//      fileTreeItem.getChildren().add(treeItem);
+//      rootTreeItem.getChildren().add(fileTreeItem);
+//    }
 //    TreeView<String> treeView = new TreeView<> (rootTreeItem);
-    
-    tabLayoutUncontrolled.setCenter(uncontrolledFilesListView);
-//    tabLayoutUncontrolled.setCenter(treeView);
-  }
+//    
+//    tabLayoutControlledCopy.setCenter(treeView);
+//  }
+
+//  private void reportUncontrolledFiles(List<FileInfo> uncontrolledFiles) {
+//    ListView<String> uncontrolledFilesListView = new ListView<String>();
+//    
+////    TreeItem<String> rootTreeItem = new TreeItem<>("Uncontolled files");
+////    rootTreeItem.setExpanded(true);
+//    
+//    for (FileInfo fileInfo: uncontrolledFiles) {
+//      uncontrolledFilesListView.getItems().add(fileInfo.getDirectory().toString() + "/" + fileInfo.getFile().toString());
+//    }
+//    
+////    TreeView<String> treeView = new TreeView<> (rootTreeItem);
+//    
+//    tabLayoutUncontrolled.setCenter(uncontrolledFilesListView);
+////    tabLayoutUncontrolled.setCenter(treeView);
+//  }
 
 //  private void addControlledFile(FileInfoMap controlledFiles, Path file, BasicFileAttributes attrs, List<FileCopyInfo> fileCopyInfos) throws IOException {
 //    LOGGER.fine("=>");
@@ -1215,4 +1278,32 @@ public class FilesControlledWindow extends JfxStage {
 //      }
 //    }
 //  }
+  
+
+  /**
+   * Update the window title.
+   * <p>
+   * The format of the title is: &lt;title&gt; - &lt;dirty&gt;&lt;file-name&gt;<br/>
+   * Where:<br/>
+   * &lt;title&gt; is the language specific window title<br/>
+   * &lt;dirty&gt; is a '*' symbol if the vacations file is dirty, empty otherwise<br/>
+   * &lt;file-name&gt; is the name of the vacations file.
+   * 
+   */
+  private void updateTitle() {
+    StringBuilder buf = new StringBuilder();
+    
+    buf.append(WINDOW_TITLE);
+    buf.append(" - ");
+    if (emfResource.isDirty()) {
+      buf.append("*");
+    }
+    String fileName = emfResource.getFileName();
+    if (fileName == null) {
+      fileName = "<NoName>";
+    }
+    buf.append(fileName);
+    
+    setTitle(buf.toString());
+  }
 }
