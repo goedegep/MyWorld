@@ -4,6 +4,7 @@ package goedegep.pctools.filescontrolled.model;
 
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
+import org.eclipse.emf.ecore.EEnum;
 import org.eclipse.emf.ecore.EOperation;
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.EReference;
@@ -282,6 +283,475 @@ public interface PCToolsPackage extends EPackage {
 
 
   /**
+   * The meta object id for the '{@link goedegep.pctools.filescontrolled.model.impl.ResultImpl <em>Result</em>}' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see goedegep.pctools.filescontrolled.model.impl.ResultImpl
+   * @see goedegep.pctools.filescontrolled.model.impl.PCToolsPackageImpl#getResult()
+   * @generated
+   */
+  int RESULT = 3;
+
+  /**
+   * The feature id for the '<em><b>Controlledrootfolderinfos</b></em>' containment reference list.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int RESULT__CONTROLLEDROOTFOLDERINFOS = 0;
+
+  /**
+   * The feature id for the '<em><b>Uncontrolled Root Folder Infos</b></em>' containment reference list.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int RESULT__UNCONTROLLED_ROOT_FOLDER_INFOS = 1;
+
+  /**
+   * The number of structural features of the '<em>Result</em>' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int RESULT_FEATURE_COUNT = 2;
+
+  /**
+   * The number of operations of the '<em>Result</em>' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int RESULT_OPERATION_COUNT = 0;
+
+  /**
+   * The meta object id for the '{@link goedegep.pctools.filescontrolled.model.impl.FolderInfoImpl <em>Folder Info</em>}' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see goedegep.pctools.filescontrolled.model.impl.FolderInfoImpl
+   * @see goedegep.pctools.filescontrolled.model.impl.PCToolsPackageImpl#getFolderInfo()
+   * @generated
+   */
+  int FOLDER_INFO = 8;
+
+  /**
+   * The feature id for the '<em><b>Folder Name</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int FOLDER_INFO__FOLDER_NAME = 0;
+
+  /**
+   * The number of structural features of the '<em>Folder Info</em>' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int FOLDER_INFO_FEATURE_COUNT = 1;
+
+  /**
+   * The operation id for the '<em>Get Full Pathname</em>' operation.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int FOLDER_INFO___GET_FULL_PATHNAME = 0;
+
+  /**
+   * The number of operations of the '<em>Folder Info</em>' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int FOLDER_INFO_OPERATION_COUNT = 1;
+
+  /**
+   * The meta object id for the '{@link goedegep.pctools.filescontrolled.model.impl.UncontrolledFolderInfoImpl <em>Uncontrolled Folder Info</em>}' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see goedegep.pctools.filescontrolled.model.impl.UncontrolledFolderInfoImpl
+   * @see goedegep.pctools.filescontrolled.model.impl.PCToolsPackageImpl#getUncontrolledFolderInfo()
+   * @generated
+   */
+  int UNCONTROLLED_FOLDER_INFO = 4;
+
+  /**
+   * The feature id for the '<em><b>Folder Name</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int UNCONTROLLED_FOLDER_INFO__FOLDER_NAME = FOLDER_INFO__FOLDER_NAME;
+
+  /**
+   * The feature id for the '<em><b>All Contents Has Copies</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int UNCONTROLLED_FOLDER_INFO__ALL_CONTENTS_HAS_COPIES = FOLDER_INFO_FEATURE_COUNT + 0;
+
+  /**
+   * The feature id for the '<em><b>Fileinfos</b></em>' containment reference list.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int UNCONTROLLED_FOLDER_INFO__FILEINFOS = FOLDER_INFO_FEATURE_COUNT + 1;
+
+  /**
+   * The feature id for the '<em><b>Sub Folders Infos</b></em>' containment reference list.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int UNCONTROLLED_FOLDER_INFO__SUB_FOLDERS_INFOS = FOLDER_INFO_FEATURE_COUNT + 2;
+
+  /**
+   * The number of structural features of the '<em>Uncontrolled Folder Info</em>' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int UNCONTROLLED_FOLDER_INFO_FEATURE_COUNT = FOLDER_INFO_FEATURE_COUNT + 3;
+
+  /**
+   * The operation id for the '<em>Get Full Pathname</em>' operation.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int UNCONTROLLED_FOLDER_INFO___GET_FULL_PATHNAME = FOLDER_INFO___GET_FULL_PATHNAME;
+
+  /**
+   * The number of operations of the '<em>Uncontrolled Folder Info</em>' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int UNCONTROLLED_FOLDER_INFO_OPERATION_COUNT = FOLDER_INFO_OPERATION_COUNT + 0;
+
+  /**
+   * The meta object id for the '{@link goedegep.pctools.filescontrolled.model.impl.FileInfoImpl <em>File Info</em>}' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see goedegep.pctools.filescontrolled.model.impl.FileInfoImpl
+   * @see goedegep.pctools.filescontrolled.model.impl.PCToolsPackageImpl#getFileInfo()
+   * @generated
+   */
+  int FILE_INFO = 5;
+
+  /**
+   * The feature id for the '<em><b>File Name</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int FILE_INFO__FILE_NAME = 0;
+
+  /**
+   * The feature id for the '<em><b>Copy Of</b></em>' reference.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int FILE_INFO__COPY_OF = 1;
+
+  /**
+   * The feature id for the '<em><b>Equality Type</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int FILE_INFO__EQUALITY_TYPE = 2;
+
+  /**
+   * The feature id for the '<em><b>Md5 String</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int FILE_INFO__MD5_STRING = 3;
+
+  /**
+   * The number of structural features of the '<em>File Info</em>' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int FILE_INFO_FEATURE_COUNT = 4;
+
+  /**
+   * The operation id for the '<em>Get Full Pathname</em>' operation.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int FILE_INFO___GET_FULL_PATHNAME = 0;
+
+  /**
+   * The number of operations of the '<em>File Info</em>' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int FILE_INFO_OPERATION_COUNT = 1;
+
+
+  /**
+   * The meta object id for the '{@link goedegep.pctools.filescontrolled.model.impl.ControlledFolderInfoImpl <em>Controlled Folder Info</em>}' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see goedegep.pctools.filescontrolled.model.impl.ControlledFolderInfoImpl
+   * @see goedegep.pctools.filescontrolled.model.impl.PCToolsPackageImpl#getControlledFolderInfo()
+   * @generated
+   */
+  int CONTROLLED_FOLDER_INFO = 7;
+
+  /**
+   * The feature id for the '<em><b>Folder Name</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int CONTROLLED_FOLDER_INFO__FOLDER_NAME = FOLDER_INFO__FOLDER_NAME;
+
+  /**
+   * The feature id for the '<em><b>Sub Folder Infos</b></em>' containment reference list.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int CONTROLLED_FOLDER_INFO__SUB_FOLDER_INFOS = FOLDER_INFO_FEATURE_COUNT + 0;
+
+  /**
+   * The feature id for the '<em><b>Fileinfos</b></em>' containment reference list.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int CONTROLLED_FOLDER_INFO__FILEINFOS = FOLDER_INFO_FEATURE_COUNT + 1;
+
+  /**
+   * The number of structural features of the '<em>Controlled Folder Info</em>' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int CONTROLLED_FOLDER_INFO_FEATURE_COUNT = FOLDER_INFO_FEATURE_COUNT + 2;
+
+  /**
+   * The operation id for the '<em>Get Full Pathname</em>' operation.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int CONTROLLED_FOLDER_INFO___GET_FULL_PATHNAME = FOLDER_INFO___GET_FULL_PATHNAME;
+
+  /**
+   * The number of operations of the '<em>Controlled Folder Info</em>' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int CONTROLLED_FOLDER_INFO_OPERATION_COUNT = FOLDER_INFO_OPERATION_COUNT + 0;
+
+  /**
+   * The meta object id for the '{@link goedegep.pctools.filescontrolled.model.impl.ControlledRootFolderInfoImpl <em>Controlled Root Folder Info</em>}' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see goedegep.pctools.filescontrolled.model.impl.ControlledRootFolderInfoImpl
+   * @see goedegep.pctools.filescontrolled.model.impl.PCToolsPackageImpl#getControlledRootFolderInfo()
+   * @generated
+   */
+  int CONTROLLED_ROOT_FOLDER_INFO = 6;
+
+  /**
+   * The feature id for the '<em><b>Folder Name</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int CONTROLLED_ROOT_FOLDER_INFO__FOLDER_NAME = CONTROLLED_FOLDER_INFO__FOLDER_NAME;
+
+  /**
+   * The feature id for the '<em><b>Sub Folder Infos</b></em>' containment reference list.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int CONTROLLED_ROOT_FOLDER_INFO__SUB_FOLDER_INFOS = CONTROLLED_FOLDER_INFO__SUB_FOLDER_INFOS;
+
+  /**
+   * The feature id for the '<em><b>Fileinfos</b></em>' containment reference list.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int CONTROLLED_ROOT_FOLDER_INFO__FILEINFOS = CONTROLLED_FOLDER_INFO__FILEINFOS;
+
+  /**
+   * The feature id for the '<em><b>Folder Base Path</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int CONTROLLED_ROOT_FOLDER_INFO__FOLDER_BASE_PATH = CONTROLLED_FOLDER_INFO_FEATURE_COUNT + 0;
+
+  /**
+   * The number of structural features of the '<em>Controlled Root Folder Info</em>' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int CONTROLLED_ROOT_FOLDER_INFO_FEATURE_COUNT = CONTROLLED_FOLDER_INFO_FEATURE_COUNT + 1;
+
+  /**
+   * The operation id for the '<em>Get Full Pathname</em>' operation.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int CONTROLLED_ROOT_FOLDER_INFO___GET_FULL_PATHNAME = CONTROLLED_FOLDER_INFO___GET_FULL_PATHNAME;
+
+  /**
+   * The number of operations of the '<em>Controlled Root Folder Info</em>' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int CONTROLLED_ROOT_FOLDER_INFO_OPERATION_COUNT = CONTROLLED_FOLDER_INFO_OPERATION_COUNT + 0;
+
+  /**
+   * The meta object id for the '{@link goedegep.pctools.filescontrolled.model.impl.UncontrolledRootFolderInfoImpl <em>Uncontrolled Root Folder Info</em>}' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see goedegep.pctools.filescontrolled.model.impl.UncontrolledRootFolderInfoImpl
+   * @see goedegep.pctools.filescontrolled.model.impl.PCToolsPackageImpl#getUncontrolledRootFolderInfo()
+   * @generated
+   */
+  int UNCONTROLLED_ROOT_FOLDER_INFO = 9;
+
+  /**
+   * The feature id for the '<em><b>Folder Name</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int UNCONTROLLED_ROOT_FOLDER_INFO__FOLDER_NAME = UNCONTROLLED_FOLDER_INFO__FOLDER_NAME;
+
+  /**
+   * The feature id for the '<em><b>All Contents Has Copies</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int UNCONTROLLED_ROOT_FOLDER_INFO__ALL_CONTENTS_HAS_COPIES = UNCONTROLLED_FOLDER_INFO__ALL_CONTENTS_HAS_COPIES;
+
+  /**
+   * The feature id for the '<em><b>Fileinfos</b></em>' containment reference list.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int UNCONTROLLED_ROOT_FOLDER_INFO__FILEINFOS = UNCONTROLLED_FOLDER_INFO__FILEINFOS;
+
+  /**
+   * The feature id for the '<em><b>Sub Folders Infos</b></em>' containment reference list.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int UNCONTROLLED_ROOT_FOLDER_INFO__SUB_FOLDERS_INFOS = UNCONTROLLED_FOLDER_INFO__SUB_FOLDERS_INFOS;
+
+  /**
+   * The feature id for the '<em><b>Folder Base Path</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int UNCONTROLLED_ROOT_FOLDER_INFO__FOLDER_BASE_PATH = UNCONTROLLED_FOLDER_INFO_FEATURE_COUNT + 0;
+
+  /**
+   * The number of structural features of the '<em>Uncontrolled Root Folder Info</em>' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int UNCONTROLLED_ROOT_FOLDER_INFO_FEATURE_COUNT = UNCONTROLLED_FOLDER_INFO_FEATURE_COUNT + 1;
+
+  /**
+   * The operation id for the '<em>Get Full Pathname</em>' operation.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int UNCONTROLLED_ROOT_FOLDER_INFO___GET_FULL_PATHNAME = UNCONTROLLED_FOLDER_INFO___GET_FULL_PATHNAME;
+
+  /**
+   * The number of operations of the '<em>Uncontrolled Root Folder Info</em>' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int UNCONTROLLED_ROOT_FOLDER_INFO_OPERATION_COUNT = UNCONTROLLED_FOLDER_INFO_OPERATION_COUNT + 0;
+
+  /**
+   * The meta object id for the '{@link goedegep.pctools.filescontrolled.model.EqualityType <em>Equality Type</em>}' enum.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see goedegep.pctools.filescontrolled.model.EqualityType
+   * @see goedegep.pctools.filescontrolled.model.impl.PCToolsPackageImpl#getEqualityType()
+   * @generated
+   */
+  int EQUALITY_TYPE = 10;
+
+
+  /**
    * Returns the meta object for class '{@link goedegep.pctools.filescontrolled.model.DiscStructureSpecification <em>Disc Structure Specification</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -454,6 +924,260 @@ public interface PCToolsPackage extends EPackage {
   EAttribute getDescribedItem_Description();
 
   /**
+   * Returns the meta object for class '{@link goedegep.pctools.filescontrolled.model.Result <em>Result</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for class '<em>Result</em>'.
+   * @see goedegep.pctools.filescontrolled.model.Result
+   * @generated
+   */
+  EClass getResult();
+
+  /**
+   * Returns the meta object for the containment reference list '{@link goedegep.pctools.filescontrolled.model.Result#getControlledrootfolderinfos <em>Controlledrootfolderinfos</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the containment reference list '<em>Controlledrootfolderinfos</em>'.
+   * @see goedegep.pctools.filescontrolled.model.Result#getControlledrootfolderinfos()
+   * @see #getResult()
+   * @generated
+   */
+  EReference getResult_Controlledrootfolderinfos();
+
+  /**
+   * Returns the meta object for the containment reference list '{@link goedegep.pctools.filescontrolled.model.Result#getUncontrolledRootFolderInfos <em>Uncontrolled Root Folder Infos</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the containment reference list '<em>Uncontrolled Root Folder Infos</em>'.
+   * @see goedegep.pctools.filescontrolled.model.Result#getUncontrolledRootFolderInfos()
+   * @see #getResult()
+   * @generated
+   */
+  EReference getResult_UncontrolledRootFolderInfos();
+
+  /**
+   * Returns the meta object for class '{@link goedegep.pctools.filescontrolled.model.UncontrolledFolderInfo <em>Uncontrolled Folder Info</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for class '<em>Uncontrolled Folder Info</em>'.
+   * @see goedegep.pctools.filescontrolled.model.UncontrolledFolderInfo
+   * @generated
+   */
+  EClass getUncontrolledFolderInfo();
+
+  /**
+   * Returns the meta object for the attribute '{@link goedegep.pctools.filescontrolled.model.UncontrolledFolderInfo#isAllContentsHasCopies <em>All Contents Has Copies</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>All Contents Has Copies</em>'.
+   * @see goedegep.pctools.filescontrolled.model.UncontrolledFolderInfo#isAllContentsHasCopies()
+   * @see #getUncontrolledFolderInfo()
+   * @generated
+   */
+  EAttribute getUncontrolledFolderInfo_AllContentsHasCopies();
+
+  /**
+   * Returns the meta object for the containment reference list '{@link goedegep.pctools.filescontrolled.model.UncontrolledFolderInfo#getFileinfos <em>Fileinfos</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the containment reference list '<em>Fileinfos</em>'.
+   * @see goedegep.pctools.filescontrolled.model.UncontrolledFolderInfo#getFileinfos()
+   * @see #getUncontrolledFolderInfo()
+   * @generated
+   */
+  EReference getUncontrolledFolderInfo_Fileinfos();
+
+  /**
+   * Returns the meta object for the containment reference list '{@link goedegep.pctools.filescontrolled.model.UncontrolledFolderInfo#getSubFoldersInfos <em>Sub Folders Infos</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the containment reference list '<em>Sub Folders Infos</em>'.
+   * @see goedegep.pctools.filescontrolled.model.UncontrolledFolderInfo#getSubFoldersInfos()
+   * @see #getUncontrolledFolderInfo()
+   * @generated
+   */
+  EReference getUncontrolledFolderInfo_SubFoldersInfos();
+
+  /**
+   * Returns the meta object for class '{@link goedegep.pctools.filescontrolled.model.FolderInfo <em>Folder Info</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for class '<em>Folder Info</em>'.
+   * @see goedegep.pctools.filescontrolled.model.FolderInfo
+   * @generated
+   */
+  EClass getFolderInfo();
+
+  /**
+   * Returns the meta object for the attribute '{@link goedegep.pctools.filescontrolled.model.FolderInfo#getFolderName <em>Folder Name</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Folder Name</em>'.
+   * @see goedegep.pctools.filescontrolled.model.FolderInfo#getFolderName()
+   * @see #getFolderInfo()
+   * @generated
+   */
+  EAttribute getFolderInfo_FolderName();
+
+  /**
+   * Returns the meta object for the '{@link goedegep.pctools.filescontrolled.model.FolderInfo#getFullPathname() <em>Get Full Pathname</em>}' operation.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the '<em>Get Full Pathname</em>' operation.
+   * @see goedegep.pctools.filescontrolled.model.FolderInfo#getFullPathname()
+   * @generated
+   */
+  EOperation getFolderInfo__GetFullPathname();
+
+  /**
+   * Returns the meta object for class '{@link goedegep.pctools.filescontrolled.model.UncontrolledRootFolderInfo <em>Uncontrolled Root Folder Info</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for class '<em>Uncontrolled Root Folder Info</em>'.
+   * @see goedegep.pctools.filescontrolled.model.UncontrolledRootFolderInfo
+   * @generated
+   */
+  EClass getUncontrolledRootFolderInfo();
+
+  /**
+   * Returns the meta object for the attribute '{@link goedegep.pctools.filescontrolled.model.UncontrolledRootFolderInfo#getFolderBasePath <em>Folder Base Path</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Folder Base Path</em>'.
+   * @see goedegep.pctools.filescontrolled.model.UncontrolledRootFolderInfo#getFolderBasePath()
+   * @see #getUncontrolledRootFolderInfo()
+   * @generated
+   */
+  EAttribute getUncontrolledRootFolderInfo_FolderBasePath();
+
+  /**
+   * Returns the meta object for class '{@link goedegep.pctools.filescontrolled.model.FileInfo <em>File Info</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for class '<em>File Info</em>'.
+   * @see goedegep.pctools.filescontrolled.model.FileInfo
+   * @generated
+   */
+  EClass getFileInfo();
+
+  /**
+   * Returns the meta object for the attribute '{@link goedegep.pctools.filescontrolled.model.FileInfo#getFileName <em>File Name</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>File Name</em>'.
+   * @see goedegep.pctools.filescontrolled.model.FileInfo#getFileName()
+   * @see #getFileInfo()
+   * @generated
+   */
+  EAttribute getFileInfo_FileName();
+
+  /**
+   * Returns the meta object for the reference '{@link goedegep.pctools.filescontrolled.model.FileInfo#getCopyOf <em>Copy Of</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the reference '<em>Copy Of</em>'.
+   * @see goedegep.pctools.filescontrolled.model.FileInfo#getCopyOf()
+   * @see #getFileInfo()
+   * @generated
+   */
+  EReference getFileInfo_CopyOf();
+
+  /**
+   * Returns the meta object for the attribute '{@link goedegep.pctools.filescontrolled.model.FileInfo#getEqualityType <em>Equality Type</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Equality Type</em>'.
+   * @see goedegep.pctools.filescontrolled.model.FileInfo#getEqualityType()
+   * @see #getFileInfo()
+   * @generated
+   */
+  EAttribute getFileInfo_EqualityType();
+
+  /**
+   * Returns the meta object for the attribute '{@link goedegep.pctools.filescontrolled.model.FileInfo#getMd5String <em>Md5 String</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Md5 String</em>'.
+   * @see goedegep.pctools.filescontrolled.model.FileInfo#getMd5String()
+   * @see #getFileInfo()
+   * @generated
+   */
+  EAttribute getFileInfo_Md5String();
+
+  /**
+   * Returns the meta object for the '{@link goedegep.pctools.filescontrolled.model.FileInfo#getFullPathname() <em>Get Full Pathname</em>}' operation.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the '<em>Get Full Pathname</em>' operation.
+   * @see goedegep.pctools.filescontrolled.model.FileInfo#getFullPathname()
+   * @generated
+   */
+  EOperation getFileInfo__GetFullPathname();
+
+  /**
+   * Returns the meta object for class '{@link goedegep.pctools.filescontrolled.model.ControlledRootFolderInfo <em>Controlled Root Folder Info</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for class '<em>Controlled Root Folder Info</em>'.
+   * @see goedegep.pctools.filescontrolled.model.ControlledRootFolderInfo
+   * @generated
+   */
+  EClass getControlledRootFolderInfo();
+
+  /**
+   * Returns the meta object for the attribute '{@link goedegep.pctools.filescontrolled.model.ControlledRootFolderInfo#getFolderBasePath <em>Folder Base Path</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Folder Base Path</em>'.
+   * @see goedegep.pctools.filescontrolled.model.ControlledRootFolderInfo#getFolderBasePath()
+   * @see #getControlledRootFolderInfo()
+   * @generated
+   */
+  EAttribute getControlledRootFolderInfo_FolderBasePath();
+
+  /**
+   * Returns the meta object for class '{@link goedegep.pctools.filescontrolled.model.ControlledFolderInfo <em>Controlled Folder Info</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for class '<em>Controlled Folder Info</em>'.
+   * @see goedegep.pctools.filescontrolled.model.ControlledFolderInfo
+   * @generated
+   */
+  EClass getControlledFolderInfo();
+
+  /**
+   * Returns the meta object for the containment reference list '{@link goedegep.pctools.filescontrolled.model.ControlledFolderInfo#getSubFolderInfos <em>Sub Folder Infos</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the containment reference list '<em>Sub Folder Infos</em>'.
+   * @see goedegep.pctools.filescontrolled.model.ControlledFolderInfo#getSubFolderInfos()
+   * @see #getControlledFolderInfo()
+   * @generated
+   */
+  EReference getControlledFolderInfo_SubFolderInfos();
+
+  /**
+   * Returns the meta object for the containment reference list '{@link goedegep.pctools.filescontrolled.model.ControlledFolderInfo#getFileinfos <em>Fileinfos</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the containment reference list '<em>Fileinfos</em>'.
+   * @see goedegep.pctools.filescontrolled.model.ControlledFolderInfo#getFileinfos()
+   * @see #getControlledFolderInfo()
+   * @generated
+   */
+  EReference getControlledFolderInfo_Fileinfos();
+
+  /**
+   * Returns the meta object for enum '{@link goedegep.pctools.filescontrolled.model.EqualityType <em>Equality Type</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for enum '<em>Equality Type</em>'.
+   * @see goedegep.pctools.filescontrolled.model.EqualityType
+   * @generated
+   */
+  EEnum getEqualityType();
+
+  /**
    * Returns the factory that creates the instances of the model.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -609,6 +1333,214 @@ public interface PCToolsPackage extends EPackage {
      * @generated
      */
     EAttribute DESCRIBED_ITEM__DESCRIPTION = eINSTANCE.getDescribedItem_Description();
+
+    /**
+     * The meta object literal for the '{@link goedegep.pctools.filescontrolled.model.impl.ResultImpl <em>Result</em>}' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see goedegep.pctools.filescontrolled.model.impl.ResultImpl
+     * @see goedegep.pctools.filescontrolled.model.impl.PCToolsPackageImpl#getResult()
+     * @generated
+     */
+    EClass RESULT = eINSTANCE.getResult();
+
+    /**
+     * The meta object literal for the '<em><b>Controlledrootfolderinfos</b></em>' containment reference list feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EReference RESULT__CONTROLLEDROOTFOLDERINFOS = eINSTANCE.getResult_Controlledrootfolderinfos();
+
+    /**
+     * The meta object literal for the '<em><b>Uncontrolled Root Folder Infos</b></em>' containment reference list feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EReference RESULT__UNCONTROLLED_ROOT_FOLDER_INFOS = eINSTANCE.getResult_UncontrolledRootFolderInfos();
+
+    /**
+     * The meta object literal for the '{@link goedegep.pctools.filescontrolled.model.impl.UncontrolledFolderInfoImpl <em>Uncontrolled Folder Info</em>}' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see goedegep.pctools.filescontrolled.model.impl.UncontrolledFolderInfoImpl
+     * @see goedegep.pctools.filescontrolled.model.impl.PCToolsPackageImpl#getUncontrolledFolderInfo()
+     * @generated
+     */
+    EClass UNCONTROLLED_FOLDER_INFO = eINSTANCE.getUncontrolledFolderInfo();
+
+    /**
+     * The meta object literal for the '<em><b>All Contents Has Copies</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute UNCONTROLLED_FOLDER_INFO__ALL_CONTENTS_HAS_COPIES = eINSTANCE.getUncontrolledFolderInfo_AllContentsHasCopies();
+
+    /**
+     * The meta object literal for the '<em><b>Fileinfos</b></em>' containment reference list feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EReference UNCONTROLLED_FOLDER_INFO__FILEINFOS = eINSTANCE.getUncontrolledFolderInfo_Fileinfos();
+
+    /**
+     * The meta object literal for the '<em><b>Sub Folders Infos</b></em>' containment reference list feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EReference UNCONTROLLED_FOLDER_INFO__SUB_FOLDERS_INFOS = eINSTANCE.getUncontrolledFolderInfo_SubFoldersInfos();
+
+    /**
+     * The meta object literal for the '{@link goedegep.pctools.filescontrolled.model.impl.FolderInfoImpl <em>Folder Info</em>}' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see goedegep.pctools.filescontrolled.model.impl.FolderInfoImpl
+     * @see goedegep.pctools.filescontrolled.model.impl.PCToolsPackageImpl#getFolderInfo()
+     * @generated
+     */
+    EClass FOLDER_INFO = eINSTANCE.getFolderInfo();
+
+    /**
+     * The meta object literal for the '<em><b>Folder Name</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute FOLDER_INFO__FOLDER_NAME = eINSTANCE.getFolderInfo_FolderName();
+
+    /**
+     * The meta object literal for the '<em><b>Get Full Pathname</b></em>' operation.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EOperation FOLDER_INFO___GET_FULL_PATHNAME = eINSTANCE.getFolderInfo__GetFullPathname();
+
+    /**
+     * The meta object literal for the '{@link goedegep.pctools.filescontrolled.model.impl.UncontrolledRootFolderInfoImpl <em>Uncontrolled Root Folder Info</em>}' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see goedegep.pctools.filescontrolled.model.impl.UncontrolledRootFolderInfoImpl
+     * @see goedegep.pctools.filescontrolled.model.impl.PCToolsPackageImpl#getUncontrolledRootFolderInfo()
+     * @generated
+     */
+    EClass UNCONTROLLED_ROOT_FOLDER_INFO = eINSTANCE.getUncontrolledRootFolderInfo();
+
+    /**
+     * The meta object literal for the '<em><b>Folder Base Path</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute UNCONTROLLED_ROOT_FOLDER_INFO__FOLDER_BASE_PATH = eINSTANCE.getUncontrolledRootFolderInfo_FolderBasePath();
+
+    /**
+     * The meta object literal for the '{@link goedegep.pctools.filescontrolled.model.impl.FileInfoImpl <em>File Info</em>}' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see goedegep.pctools.filescontrolled.model.impl.FileInfoImpl
+     * @see goedegep.pctools.filescontrolled.model.impl.PCToolsPackageImpl#getFileInfo()
+     * @generated
+     */
+    EClass FILE_INFO = eINSTANCE.getFileInfo();
+
+    /**
+     * The meta object literal for the '<em><b>File Name</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute FILE_INFO__FILE_NAME = eINSTANCE.getFileInfo_FileName();
+
+    /**
+     * The meta object literal for the '<em><b>Copy Of</b></em>' reference feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EReference FILE_INFO__COPY_OF = eINSTANCE.getFileInfo_CopyOf();
+
+    /**
+     * The meta object literal for the '<em><b>Equality Type</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute FILE_INFO__EQUALITY_TYPE = eINSTANCE.getFileInfo_EqualityType();
+
+    /**
+     * The meta object literal for the '<em><b>Md5 String</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute FILE_INFO__MD5_STRING = eINSTANCE.getFileInfo_Md5String();
+
+    /**
+     * The meta object literal for the '<em><b>Get Full Pathname</b></em>' operation.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EOperation FILE_INFO___GET_FULL_PATHNAME = eINSTANCE.getFileInfo__GetFullPathname();
+
+    /**
+     * The meta object literal for the '{@link goedegep.pctools.filescontrolled.model.impl.ControlledRootFolderInfoImpl <em>Controlled Root Folder Info</em>}' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see goedegep.pctools.filescontrolled.model.impl.ControlledRootFolderInfoImpl
+     * @see goedegep.pctools.filescontrolled.model.impl.PCToolsPackageImpl#getControlledRootFolderInfo()
+     * @generated
+     */
+    EClass CONTROLLED_ROOT_FOLDER_INFO = eINSTANCE.getControlledRootFolderInfo();
+
+    /**
+     * The meta object literal for the '<em><b>Folder Base Path</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute CONTROLLED_ROOT_FOLDER_INFO__FOLDER_BASE_PATH = eINSTANCE.getControlledRootFolderInfo_FolderBasePath();
+
+    /**
+     * The meta object literal for the '{@link goedegep.pctools.filescontrolled.model.impl.ControlledFolderInfoImpl <em>Controlled Folder Info</em>}' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see goedegep.pctools.filescontrolled.model.impl.ControlledFolderInfoImpl
+     * @see goedegep.pctools.filescontrolled.model.impl.PCToolsPackageImpl#getControlledFolderInfo()
+     * @generated
+     */
+    EClass CONTROLLED_FOLDER_INFO = eINSTANCE.getControlledFolderInfo();
+
+    /**
+     * The meta object literal for the '<em><b>Sub Folder Infos</b></em>' containment reference list feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EReference CONTROLLED_FOLDER_INFO__SUB_FOLDER_INFOS = eINSTANCE.getControlledFolderInfo_SubFolderInfos();
+
+    /**
+     * The meta object literal for the '<em><b>Fileinfos</b></em>' containment reference list feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EReference CONTROLLED_FOLDER_INFO__FILEINFOS = eINSTANCE.getControlledFolderInfo_Fileinfos();
+
+    /**
+     * The meta object literal for the '{@link goedegep.pctools.filescontrolled.model.EqualityType <em>Equality Type</em>}' enum.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see goedegep.pctools.filescontrolled.model.EqualityType
+     * @see goedegep.pctools.filescontrolled.model.impl.PCToolsPackageImpl#getEqualityType()
+     * @generated
+     */
+    EEnum EQUALITY_TYPE = eINSTANCE.getEqualityType();
 
   }
 

@@ -86,7 +86,7 @@ public class InvestmentInsurancesOverviewWindow extends JfxStage {
 
     investmentInsurancesResource = new EMFResource<>(
         InvestmentInsurancePackage.eINSTANCE, 
-        () -> InvestmentInsuranceFactory.eINSTANCE.createInvestmentInsurancesData());
+        () -> InvestmentInsuranceFactory.eINSTANCE.createInvestmentInsurancesData(), ".xmi");
 
     File investmentInsurancesFile = new File(FinanRegistry.dataDirectory, FinanRegistry.investmentInsurancesFileName);
     try {

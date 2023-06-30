@@ -684,7 +684,7 @@ public class TrackReferenceImpl extends MinimalEObjectImpl.Container implements 
     StringBuilder buf = new StringBuilder();
 
     buf.append("-> ");
-    buf.append(isSetTrack() ? getTrack().toString() : "<no-track>");
+    buf.append(getTrack() != null ? getTrack().toString() : "<no-track>");
 
     buf.append("originalTrackReference:");
     TrackReference trackReference = getOriginalAlbumTrackReference();

@@ -42,7 +42,7 @@ import javafx.scene.layout.VBox;
  */
 public class EditorPanel extends VBox {
   /*
-   * Editor controls
+   * Editor controls (all implementations of ObjectControl).
    */
   private ObjectControlTextField<String> nameObjectControlTextField;
   private ObjectControlBoolean happyObjectControlBoolean;
@@ -62,7 +62,6 @@ public class EditorPanel extends VBox {
   
   private ObjectControlGroup objectControlGroup;
   
-  private CustomizationFx customization;
   private ComponentFactoryFx componentFactory;
   
   /**
@@ -74,21 +73,16 @@ public class EditorPanel extends VBox {
    * Panel for the add/update and new buttons.
    */
   private HBox addUpdateAndNewButtonsPanel;
-  
-  /**
-   * Add or Update button (depends on editMode)
-   */
-  private Button addOrUpdateButton;
-  
+    
   /**
    * The list of InquiryData to which new items will be added.
    */
   private List<InquiryData> inquiryDataList;
   
   /**
-   * The InquiryData currently being edited.
+   * The InquiryData currently being edited. If null we're creating a new InquiryData.
    */
-  private InquiryData inquiryData;
+  private InquiryData inquiryData = null;
   
   /**
    * Constructor.
@@ -97,16 +91,16 @@ public class EditorPanel extends VBox {
    * @param inquiryDataList The list of InquiryData to which new items will be added.
    */
   public EditorPanel(CustomizationFx customization, List<InquiryData> inquiryDataList) {
-    this.customization = customization;
     this.inquiryDataList = inquiryDataList;
+    
     componentFactory = customization.getComponentFactoryFx();
     
     createControls();
     createGUI();
-    setInquiryData(null, false);
     
     objectControlGroup.addListener((observable) -> updateAddUpdateAndNewButtonsPanel());
-//    updateAddUpdateAndNewButtonsPanel();
+    
+    setInquiryData(null, false);
   }
   
   /**
@@ -115,6 +109,7 @@ public class EditorPanel extends VBox {
   private void createControls() {
     nameObjectControlTextField = componentFactory.createObjectControlTextField(null, null, 300.0, false, "Enter your name");
     happyObjectControlBoolean = componentFactory.createObjectControlBoolean(null, true, false, "Uncheck if you're not happy");
+    
     birthPlaceObjectControlAutoCompleteTextField = componentFactory.createObjectControlAutoCompleteTextField(new StringConverterAndChecker<City>() {
 
       @Override
@@ -139,17 +134,20 @@ public class EditorPanel extends VBox {
     }, 
     null, 300.0, false, "Select the city where you were born");
     birthPlaceObjectControlAutoCompleteTextField.setOptions(City.getCities());
+    
     genderObjectControlEnumComboBox = componentFactory.createObjectControlEnumComboBox(Gender.FEMALE, null, false, "What is your gender?");
     ageObjectControlInteger = componentFactory.createObjectControlInteger(null, 300.0, false, "Enter your age");
     priceLastHolidayObjectControlCurrency = componentFactory.createObjectControlCurrency(null, 300.0, false, "How much did your last travel cost");
     travelerTypeObjectControlEnumComboBox = componentFactory.createObjectControlEnumComboBox(TravelerType.REGULAR, null, false, "What kind of traveler are you?");
+    
     lastTravelRatingObjectControlFixedPointValue = componentFactory.createObjectControlFixedPointValue(null, 150.0, false, "How do you rate your last travel (scale 0 to 10, with 2 decimal digits)");
     lastTravelRatingObjectControlFixedPointValue.setValidFactorRange(100, 100);
+    
     lastTravelDateObjectControlLocalDate = componentFactory.createObjectControlLocalDate(null, 300.0, false, "When was your last travel?");
     travelReportFileObjectControlFileSelecter = componentFactory.createFileSelecter("C:\\Users\\Peter\\Downloads\\Gebouw 464 BIC.jpg", 300, "The file with you're travel report", "Select file", "Select travel report", "Select the file with your travel report");
     nextTravelDateObjectControlFlexDate = componentFactory.createObjectControlFlexDate(null, 300.0, false, "When do you expect to travel again?");
     picturesFolderObjectControlFolderSelecter = componentFactory.createFolderSelecter("C:\\Users", 300, "The folder with pictures", "Select folder", "Select pictures folder", "Select the folder with the pictures");
-    imageFileObjectControlImageFile = new ObjectControlImageFile(customization);
+    imageFileObjectControlImageFile = componentFactory.createObjectControlImageFile();
     notesObjectControlMultiLineString = componentFactory.createObjectControlMultiLineString(null, 300.0, false, "Enter your notes");
     detailsObjectControlHTMLString = componentFactory.createObjectControlHTMLString(null, 300.0, false, "Enter details of your travel");
     
@@ -306,24 +304,6 @@ public class EditorPanel extends VBox {
   }
   
   /**
-   * Reset the editor to start editing (creating) new InquiryData.
-   * <p>
-   * If there are any unsaved changes, show a dialog informing the user about this and ask for a confirmation.
-   * {@code inquiryData} is set to null.
-   * All the controls are cleared (and if applicable default values are filled in).
-   */
-  private void newInquiryData() {
-    if (!getUserConfirmationInCaseOfUnsavedChanges()) {
-      return;
-    }
-    
-    inquiryData = null;
-    setControlsToDefaultValues();
-    editMode = EditMode.NEW;
-    updateAddUpdateAndNewButtonsPanel();
-  }
-  
-  /**
    * If there are unsaved changes, show a dialog informing the user about this and ask for a confirmation.
    * 
    * @return true if there are no unsaved changes, or the user has confirmed to continue and discard the changes. False otherwise.
@@ -340,7 +320,16 @@ public class EditorPanel extends VBox {
     
     return true;
   }
-  
+    
+  /**
+   * Start editing an InquiryData object.
+   * <p>
+   * If there are any unsaved changes, show a dialog informing the user about this and ask for a confirmation.
+   * {@code inquiryData} is set to the specified value.
+   * All the controls are cleared then filled with the information from the {@code inquiryData}.
+   * 
+   * @param inquiryData the value to be edited.
+   */
   public void setInquiryData(InquiryData inquiryData) {
     setInquiryData(inquiryData, true);
   }
@@ -348,11 +337,12 @@ public class EditorPanel extends VBox {
   /**
    * Start editing an InquiryData object.
    * <p>
-   * If there are any unsaved changes, show a dialog informing the user about this and ask for a confirmation.
+   * If there are any unsaved changes while checkOnUnsavedChanges is set, show a dialog informing the user about this and ask for a confirmation.
    * {@code inquiryData} is set to the specified value.
    * All the controls are cleared then filled with the information from the {@code inquiryData}.
-  * 
+   * 
    * @param inquiryData the value to be edited.
+   * @param checkOnUnsavedChanges if true and if there are any unsaved changes, show a dialog informing the user about this and ask for a confirmation.
    */
   private void setInquiryData(InquiryData inquiryData, boolean checkOnUnsavedChanges) {
     if (checkOnUnsavedChanges  &&  !getUserConfirmationInCaseOfUnsavedChanges()) {
@@ -425,7 +415,7 @@ public class EditorPanel extends VBox {
   private void addInquiryData() {
     inquiryData = new InquiryData();
     
-    fillInquiryDataFromControls();
+    updateInquiryDataFromControls();
     
     inquiryDataList.add(inquiryData);
     
@@ -436,7 +426,7 @@ public class EditorPanel extends VBox {
    * Update {@code inquiryData} with the values of the controls.
    */
   private void updateInquiryData() {
-    fillInquiryDataFromControls();
+    updateInquiryDataFromControls();
     
     setInquiryData(inquiryData, false);
   }
@@ -444,7 +434,7 @@ public class EditorPanel extends VBox {
   /**
    * Fill (update) {@code inquiryData} with the values of the controls.
    */
-  private void fillInquiryDataFromControls() {
+  private void updateInquiryDataFromControls() {
     inquiryData.setName(nameObjectControlTextField.ocGetValue());
     inquiryData.setHappy(happyObjectControlBoolean.ocGetValue());
     inquiryData.setBirthPlace(birthPlaceObjectControlAutoCompleteTextField.ocGetValue());
@@ -482,6 +472,7 @@ public class EditorPanel extends VBox {
     }
     addUpdateAndNewButtonsPanel.getChildren().add(editStatusLabel);
     
+    Button addOrUpdateButton;
     if (editMode == EditMode.NEW) {
       addOrUpdateButton = componentFactory.createButton("Add InquiryData", "Add the InquiryData to the list");
       addOrUpdateButton.setOnAction(e -> addInquiryData());
@@ -498,7 +489,7 @@ public class EditorPanel extends VBox {
     addUpdateAndNewButtonsPanel.getChildren().add(addOrUpdateButton);
     
     button = componentFactory.createButton("New", "Clear controls to start creating new InquiryData");
-    button.setOnAction(e -> newInquiryData());
+    button.setOnAction(e -> setInquiryData(null, true));
     addUpdateAndNewButtonsPanel.getChildren().add(button);
   }
   
@@ -549,7 +540,6 @@ public class EditorPanel extends VBox {
           !PgUtilities.equals(nextTravelDateObjectControlFlexDate.ocGetValue(), inquiryData.getNextTravelDate())  ||
           !PgUtilities.equals(picturesFolderObjectControlFolderSelecter.ocGetValue(), inquiryData.getPicturesFolder())  ||
           Objects.compare(imageFileObjectControlImageFile.ocGetValue(), inquiryData.getImageFile(), FileUtils.getComparator()) != 0  ||
-//          !PgUtilities.equals(imageFileObjectControlImageFile.ocGetValue(), inquiryData.getImageFile())  ||
           !PgUtilities.equals(notesObjectControlMultiLineString.ocGetValue(), inquiryData.getNotes())  ||
           !PgUtilities.equals(detailsObjectControlHTMLString.ocGetValue(), inquiryData.getDetails())) {
         return true;

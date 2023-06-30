@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.function.Consumer;
@@ -269,6 +270,7 @@ public class VacationsWindow extends JfxStage {
     vacationsResource = new EMFResource<>(
         VacationsPackage.eINSTANCE, 
         () -> VacationsFactory.eINSTANCE.createVacations(),
+        ".xmi",
         true);
     
     try {
@@ -297,6 +299,7 @@ public class VacationsWindow extends JfxStage {
     vacationChecklistResource = new EMFResource<>(
         VacationChecklistPackage.eINSTANCE, 
         () -> VacationChecklistFactory.eINSTANCE.createVacationChecklist(),
+        ".xmi",
         true);
     
     try {
@@ -393,7 +396,7 @@ public class VacationsWindow extends JfxStage {
     File userPropertiesFile = new File(VacationsRegistry.customPropertiesFile);
     LOGGER.info("userPropertiesFile: " + userPropertiesFile.getAbsolutePath());
     if (!userPropertiesFile.exists()) {
-      EMFResource<PropertyGroup> propertiesResource = new EMFResource<>(PropertiesPackage.eINSTANCE, () -> PropertiesFactory.eINSTANCE.createPropertyGroup());
+      EMFResource<PropertyGroup> propertiesResource = new EMFResource<>(PropertiesPackage.eINSTANCE, () -> PropertiesFactory.eINSTANCE.createPropertyGroup(), ".xmi");
       PropertyGroup propertyGroup = propertiesResource.newEObject();
       propertyGroup.setName("Vacations");
       Property property = PropertiesFactory.eINSTANCE.createProperty();
@@ -1171,7 +1174,7 @@ public class VacationsWindow extends JfxStage {
   private static WGS84Coordinates getPictureCoordinates(Picture vacationElementPicture) throws VacationElementReferenceException {
     String fileName = vacationElementPicture.getPictureReference().getFile();
     if (!new File(fileName).exists()) {
-      throw new VacationElementReferenceException(vacationElementPicture);
+//      throw new VacationElementReferenceException(vacationElementPicture);
     }
     LOGGER.info("before getting geo location");
     WGS84Coordinates coordinates = ImageUtils.getGeoLocation(vacationElementPicture.getPictureReference().getFile());
@@ -1501,7 +1504,7 @@ public class VacationsWindow extends JfxStage {
       vacations = (List<Vacation>) treeItemContent.getObject();
     }
     
-    LOGGER.severe("<= vacations=" + (vacations != null ? vacations.toString() : "(null)"));
+    LOGGER.info("<= vacations=" + (vacations != null ? vacations.toString() : "(null)"));
     return vacations;
   }
   
@@ -1599,7 +1602,7 @@ public class VacationsWindow extends JfxStage {
       }
     } catch (FileNotFoundException e) {
       LOGGER.severe("File not found");
-      componentFactory.createErrorDialog("File not found", e.getMessage()).showAndWait();
+//      componentFactory.createErrorDialog("File not found", e.toString()).showAndWait();
     }
     
     LOGGER.info("<=");
@@ -1661,7 +1664,7 @@ public class VacationsWindow extends JfxStage {
     }
     } catch (FileNotFoundException e) {
       LOGGER.severe("File not found");
-      componentFactory.createErrorDialog("File not found", e.getMessage()).showAndWait();
+//      componentFactory.createErrorDialog("File not found", e.getMessage()).showAndWait();
     }
     
     LOGGER.info("<=");
@@ -1701,6 +1704,12 @@ public class VacationsWindow extends JfxStage {
         if (fileReference != null) {
           String fileName = fileReference.getFile();
           if ((fileName != null)  &&  !fileName.isEmpty()) {
+            // Note: The photo folder is not available on all computers of a user, so ignore references that don't exist.
+            File file = new File(fileName);
+            if (!file.exists()) {
+              return totalWGS84BoundingBox;
+            }
+            
             WGS84Coordinates coordinates = getPictureCoordinates(picture);
             if (coordinates != null) {
               String text = fileReference.getTitle();
@@ -2312,7 +2321,8 @@ public class VacationsWindow extends JfxStage {
                   PhotoFileMetaDataHandler photoFileMetaDataHandler = new PhotoFileMetaDataHandler(file);
                   text = photoFileMetaDataHandler.getTitle();   // second preference; title set in the photo
                 } catch (ImageReadException | IOException e) {
-                  e.printStackTrace();
+                  text = "NOT FOUND: " + fileName;
+//                  e.printStackTrace();
                 }
               }
               
@@ -2807,7 +2817,38 @@ public class VacationsWindow extends JfxStage {
     treeItem.rebuildChildren();
   }
   
+  /**
+   * Create an OsmAnd favourites file for a node in the Vacations database.
+   * <p>
+   * Typical use of this method is to first select a Vacation and then call this method.
+   * However this method works on any node in the Travels database. All locations below the selected node will
+   * be written to the favourites file.
+   * If the selected no isn't an EObject, the parent node is used (and so on until an EOBject node is encountered).
+   * If no node is selected, a popup is shown to inform the user about this and than this method directly returns.
+   */
   private void createOsmAndFavouritesFile() {
+    // Get selected node in vacations
+    EObject eObject = null;
+    TreeItem<EObjectTreeItemContent> treeItem = treeView.getSelectedObject();
+    if (treeItem != null) {
+      Object selectedObject = treeItem.getValue().getObject();
+      while (selectedObject != null  &&  !(selectedObject instanceof EObject)) {
+        treeItem = treeItem.getParent();  // Note: treeItem cannot be null, as the root is an EObject.
+        selectedObject = treeItem.getValue().getObject();
+      }
+      if (selectedObject instanceof EObject selectedEObject) {
+        eObject = selectedEObject;
+      }
+    }
+    
+    if (eObject == null) {
+      Alert alert = componentFactory.createInformationDialog("No item selected for which to generate a favourites file",
+          "You have to select a node in the Travels tree to create a favourites file.",
+          "Press OK, select a node and try again.");
+      alert.showAndWait();
+      return;
+    }
+    
     // Choose file to save to.
     FileChooser fileChooser = new FileChooser();
     fileChooser.setTitle("OsmAnd Favourites file");
@@ -2815,15 +2856,24 @@ public class VacationsWindow extends JfxStage {
     File file = fileChooser.showSaveDialog(this);
     LOGGER.severe("Creating OsmAnd Favourites file: " + file.getAbsolutePath());
     
-    // Get selected node in vacations
-    TreeItem<EObjectTreeItemContent> treeItem = treeView.getSelectedObject();
-    Object selectedObject = treeItem.getValue().getObject();
-    if (selectedObject instanceof EObject) {
-      EObject eObject = (EObject) selectedObject;
-      
-      // Generate file
-      OsmAndUtil.createFavouritesFiles(eObject, file);
+    // Generate file
+    String group = null;
+    if (eObject instanceof Vacation vacation) {
+      group = vacation.getTitle();
     }
+    Map<String, List<String>> categoryToNameMap = OsmAndUtil.createFavouritesFile(eObject, group, file);
+    StringBuilder buf = new StringBuilder();
+    for (String category: categoryToNameMap.keySet()) {
+      List<String> locationsForCategory = categoryToNameMap.get(category);
+      buf.append("Category: ").append(category).append(NEWLINE);
+      for (String location: locationsForCategory) {
+        buf.append("    ").append(location).append(NEWLINE);
+      }
+    }
+    Alert alert = componentFactory.createInformationDialog("Favourites file created",
+        buf.toString(),
+        "Press OK to continue.");
+    alert.showAndWait();
   }
   
   private void createTomTomOv2File() {

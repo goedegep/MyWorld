@@ -66,4 +66,68 @@
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="description" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
         unsettable="true"/>
   </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Result">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="controlledrootfolderinfos"
+        upperBound="-1" eType="#//ControlledRootFolderInfo" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="uncontrolledRootFolderInfos"
+        upperBound="-1" eType="#//UncontrolledRootFolderInfo" containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="UncontrolledFolderInfo" eSuperTypes="#//FolderInfo">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="allContentsHasCopies" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="fileinfos" upperBound="-1"
+        eType="#//FileInfo" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="subFoldersInfos" upperBound="-1"
+        eType="#//UncontrolledFolderInfo" containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="FileInfo">
+    <eOperations name="getFullPathname" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="fileName" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
+        unsettable="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="copyOf" eType="#//FileInfo"
+        unsettable="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="equalityType" eType="#//EqualityType"
+        defaultValueLiteral=""/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="md5String" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
+        unsettable="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EEnum" name="EqualityType">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="This enum defines levels of 'equality'.&#xD;&#xA; &lt;p>&#xD;&#xA; The following levels are defined:&#xD;&#xA; &lt;ul>&#xD;&#xA;   &lt;li>SIZE - files have the same size, but have a different MD5.&lt;/li>&#xD;&#xA;   &lt;li>MD5 - files have the same MD5 hash, but are not EQUAL (probably rare).&lt;/li>&#xD;&#xA;   &lt;li>EQUAL - Files are equal, based on byte by byte compare. So they have also same MD5 and same size.&lt;/li>&#xD;&#xA; &lt;/ul>&#xD;&#xA;"/>
+    </eAnnotations>
+    <eLiterals name="SIZE">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Files have the same size, but have a different MD5."/>
+      </eAnnotations>
+    </eLiterals>
+    <eLiterals name="MD5" value="1">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Files have the same MD5 hash, but are not EQUAL."/>
+      </eAnnotations>
+    </eLiterals>
+    <eLiterals name="EQUAL" value="2">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Files are equal, based on byte by byte compare. So they have also same MD5 and same size."/>
+      </eAnnotations>
+    </eLiterals>
+    <eLiterals name="NOT_EQUAL" value="3"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="ControlledRootFolderInfo" eSuperTypes="#//ControlledFolderInfo">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="folderBasePath" lowerBound="1"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString" unsettable="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="ControlledFolderInfo" eSuperTypes="#//FolderInfo">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="subFolderInfos" upperBound="-1"
+        eType="#//ControlledFolderInfo" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="fileinfos" upperBound="-1"
+        eType="#//FileInfo" containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="FolderInfo">
+    <eOperations name="getFullPathname" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="folderName" lowerBound="1"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString" unsettable="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="UncontrolledRootFolderInfo" eSuperTypes="#//UncontrolledFolderInfo">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="folderBasePath" lowerBound="1"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString" unsettable="true"/>
+  </eClassifiers>
 </ecore:EPackage>

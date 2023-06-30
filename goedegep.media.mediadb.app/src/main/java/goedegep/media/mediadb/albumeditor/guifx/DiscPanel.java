@@ -5,58 +5,35 @@ import java.util.List;
 
 import goedegep.jfx.ComponentFactoryFx;
 import goedegep.jfx.CustomizationFx;
-import goedegep.jfx.objectcontrols.ObjectControlTextField;
+import goedegep.media.mediadb.app.derivealbuminfo.TrackInfo;
+import goedegep.media.mediadb.model.AlbumType;
 import goedegep.media.mediadb.model.Disc;
 import goedegep.media.mediadb.model.MediaDb;
 import goedegep.media.mediadb.model.MyTrackInfo;
+import goedegep.media.mediadb.model.Track;
 import goedegep.media.mediadb.model.TrackReference;
 import javafx.beans.property.ObjectProperty;
-import javafx.scene.Group;
-import javafx.scene.control.Label;
-import javafx.scene.layout.Border;
-import javafx.scene.layout.BorderStroke;
-import javafx.scene.layout.BorderStrokeStyle;
-import javafx.scene.layout.BorderWidths;
-import javafx.scene.layout.CornerRadii;
+import javafx.scene.Node;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
 
 /**
  * This class provides a panel to edit Disc information.
  * <p>
  * First row: 'Title:' Disc.title
  */
-class DiscPanel extends Group {
-  /**
-   * The Disc being edited in this panel.
-   */
-  private Disc disc;
+class DiscPanel extends DiscPanelAbstract {
   
-  /**
-   * The ObjectInput for the Disc.title.
-   */
-  private ObjectControlTextField<String> titleControl;
   
   /**
    * One panel per track reference, for editing all track details.
    */
   private List<TrackReferenceAndMyTrackInfoControls> trackReferencePanels = new ArrayList<>();
+
   
   DiscPanel(CustomizationFx customization, Disc disc, ObjectProperty<String> albumTypeProperty, MediaDb mediaDb) {
+    super(customization, disc);
+    
     ComponentFactoryFx componentFactory = customization.getComponentFactoryFx();
-    
-    this.disc = disc;
-    
-    VBox discVBox = componentFactory.createVBox(12.0, 12.0);
-    discVBox.setBorder(new Border(new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT)));
-    HBox titleBox = componentFactory.createHBox(12.0, 12.0);
-    Label label = new Label("Title:");
-    titleBox.getChildren().add(label);
-    titleControl = componentFactory.createObjectControlTextField(null, disc != null ? disc.getTitle() : null, 300, true, null);
-    titleBox.getChildren().add(titleControl.ocGetControl());
-    discVBox.getChildren().add(titleBox);
     
     GridPane gridPane = componentFactory.createGridPane(12.0, 12.0);
     int row = 0;
@@ -87,27 +64,72 @@ class DiscPanel extends Group {
     row++;
     if (disc != null) {
       for (TrackReference trackReference: disc.getTrackReferences()) {
-        TrackReferenceAndMyTrackInfoControls trackReferencePanel = new TrackReferenceAndMyTrackInfoControls(customization, gridPane, row++, trackReference, AlbumType.NORMAL, mediaDb);
+        TrackReferenceAndMyTrackInfoControls trackReferencePanel = new TrackReferenceAndMyTrackInfoControls(customization, gridPane, row++, trackReferencePanels, trackReference, AlbumType.NORMAL_ALBUM, mediaDb);
         trackReferencePanels.add(trackReferencePanel);
       }
-    } else { // A disc has at least one track
-      TrackReferenceAndMyTrackInfoControls trackReferencePanel = new TrackReferenceAndMyTrackInfoControls(customization, gridPane, row++, null, AlbumType.NORMAL, mediaDb);
-      trackReferencePanels.add(trackReferencePanel);
     }
+//    } else { // A disc has at least one track
+//      TrackReferenceAndMyTrackInfoControls trackReferencePanel = new TrackReferenceAndMyTrackInfoControls(customization, gridPane, row++, (TrackInfo) null, AlbumType.NORMAL_ALBUM, mediaDb);
+//      trackReferencePanels.add(trackReferencePanel);
+//    }
     discVBox.getChildren().add(gridPane);
     
-    getChildren().add(discVBox);    
+    ocSetValue(disc);
+    
+//    getChildren().add(discVBox);    
   }
 
-  public String getDiscTitle() {
-    return titleControl.ocGetValue();
+  @Override
+  public void ocSetValue(Disc disc) {
+    this.disc = disc;
   }
 
-  public Disc getDisc() {
-    return disc;
+  @Override
+  public Node ocGetControl() {
+    return titledPane;
   }
 
-  public List<TrackReferenceAndMyTrackInfoControls> getTrackReferencePanels() {
-    return trackReferencePanels;
+  @Override
+  public String ocGetObjectValueAsFormattedText() {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  @Override
+  protected boolean ociDetermineFilledIn() {
+    // TODO Auto-generated method stub
+    return false;
+  }
+
+  @Override
+  protected Disc ociDetermineValue() {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  @Override
+  protected void ociSetErrorFeedback(boolean valid) {
+    // TODO Auto-generated method stub
+    
+  }
+
+  @Override
+  protected void ociRedrawValue() {
+    // TODO Auto-generated method stub
+    
+  }
+
+  @Override
+  public List<Track> getNewTracks() {
+    List<Track> newTracks = new ArrayList<>();
+    
+    for (TrackReferenceAndMyTrackInfoControls trackReferencePanel: trackReferencePanels) {
+      Track track = trackReferencePanel.getNewTrack();
+      if (track != null) {
+        newTracks.add(track);
+      }
+    }
+    
+    return newTracks;
   }
 }

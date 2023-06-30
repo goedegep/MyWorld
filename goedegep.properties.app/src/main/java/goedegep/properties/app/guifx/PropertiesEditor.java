@@ -146,7 +146,7 @@ public class PropertiesEditor extends JfxStage {
     propertyDescriptorGroup = propertyDescriptorsResource.getEObject();
     componentFactory = getComponentFactory();
     
-    propertiesResource = new EMFResource<PropertyGroup>(PropertiesPackage.eINSTANCE, () -> PropertiesFactory.eINSTANCE.createPropertyGroup());
+    propertiesResource = new EMFResource<PropertyGroup>(PropertiesPackage.eINSTANCE, () -> PropertiesFactory.eINSTANCE.createPropertyGroup(), ".xmi");
     
     editableProperties = createEditableProperties();
     

@@ -52,6 +52,13 @@
       <genEnumLiterals ecoreEnumLiteral="mediadb.ecore#//Collection/NOT_SET"/>
       <genEnumLiterals ecoreEnumLiteral="mediadb.ecore#//Collection/PUNK"/>
     </genEnums>
+    <genEnums typeSafeEnumCompatible="false" ecoreEnum="mediadb.ecore#//AlbumType">
+      <genEnumLiterals ecoreEnumLiteral="mediadb.ecore#//AlbumType/NORMAL_ALBUM"/>
+      <genEnumLiterals ecoreEnumLiteral="mediadb.ecore#//AlbumType/COMPILATION_ALBUM"/>
+      <genEnumLiterals ecoreEnumLiteral="mediadb.ecore#//AlbumType/VARIOUS_ARTISTS_ALBUM"/>
+      <genEnumLiterals ecoreEnumLiteral="mediadb.ecore#//AlbumType/SOUNDTRACK_ALBUM"/>
+      <genEnumLiterals ecoreEnumLiteral="mediadb.ecore#//AlbumType/OWN_COMPILATION_ALBUM"/>
+    </genEnums>
     <genClasses ecoreClass="mediadb.ecore#//Track">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute mediadb.ecore#//Track/title"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute mediadb.ecore#//Track/duration"/>
@@ -118,7 +125,6 @@
       <genOperations ecoreOperation="mediadb.ecore#//Album/isMultiDiscAlbum"/>
       <genOperations ecoreOperation="mediadb.ecore#//Album/getDisc"/>
     </genClasses>
-    <genClasses ecoreClass="mediadb.ecore#//MyCompilation"/>
     <genClasses ecoreClass="mediadb.ecore#//TrackReference">
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference mediadb.ecore#//TrackReference/track"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute mediadb.ecore#//TrackReference/bonusTrack"/>
@@ -145,6 +151,7 @@
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute mediadb.ecore#//MyInfo/iveHadOnLP"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute mediadb.ecore#//MyInfo/iWant"/>
       <genFeatures children="true" createChild="true" propertySortChoices="true" ecoreFeature="ecore:EReference mediadb.ecore#//MyInfo/iHaveOn"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute mediadb.ecore#//MyInfo/albumType"/>
     </genClasses>
     <genClasses ecoreClass="mediadb.ecore#//Player">
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference mediadb.ecore#//Player/artist"/>

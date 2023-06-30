@@ -36,7 +36,8 @@ public class RolodexTest {
     
     RolodexRegistry.rolodexResource = new EMFResource<>(
         RolodexPackage.eINSTANCE,
-        () -> RolodexFactory.eINSTANCE.createRolodex());
+        () -> RolodexFactory.eINSTANCE.createRolodex(),
+        ".xmi");
     File rolodexFile = new File(RolodexRegistry.rolodexFile);
     RolodexRegistry.rolodexResource.load(rolodexFile.getAbsolutePath());
 

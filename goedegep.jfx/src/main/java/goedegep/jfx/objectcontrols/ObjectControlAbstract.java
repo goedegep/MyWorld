@@ -277,4 +277,9 @@ public abstract class ObjectControlAbstract<T> implements ObjectControl<T> {
       invalidationListener.invalidated(this);
     }
   }
+  
+  @Override
+  public String toString() {
+    return ocGetId() + ":" + ocGetValue();
+  }
 }

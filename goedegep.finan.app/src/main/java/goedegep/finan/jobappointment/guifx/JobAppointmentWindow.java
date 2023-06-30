@@ -70,6 +70,7 @@ public class JobAppointmentWindow extends JfxStage {
     jobAppointmentResource = new EMFResource<>(
         JobAppointmentPackage.eINSTANCE, 
         () -> JobAppointmentFactory.eINSTANCE.createJobAppointment(),
+        ".xmi",
         true);
     
     File file = new File(FinanRegistry.dataDirectory, FinanRegistry.jobAppointmentFile);

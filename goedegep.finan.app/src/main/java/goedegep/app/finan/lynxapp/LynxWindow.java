@@ -55,7 +55,8 @@ public class LynxWindow extends AppFrame {
     try {
       lynxShareIdToFinanShareNameResource = new EMFResource<>(
           LynxToFinanPackage.eINSTANCE,
-          () -> LynxToFinanFactory.eINSTANCE.createLynxToFinanShareIdList());
+          () -> LynxToFinanFactory.eINSTANCE.createLynxToFinanShareIdList(),
+          ".xml");
       File lynxShareIdToFinanShareNamesFile = new File(FinanRegistry.dataDirectory, FinanRegistry.lynxShareIdToFinanShareNamesFile);
       lynxToFinanShareIdList = lynxShareIdToFinanShareNameResource.load(lynxShareIdToFinanShareNamesFile.getAbsolutePath());
       init();

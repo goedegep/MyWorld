@@ -142,7 +142,7 @@ public class FileUtils {
   }
 
   /**
-   * Get the extension of a <code>File</code>.
+   * Get the extension of a <code>File</code> (including the '.').
    * 
    * @param file the <code>File</code> to derive the information from.
    * @return the extension of the name of the <code>file</code>, or null if no extension could be detected.
@@ -152,13 +152,25 @@ public class FileUtils {
   }
 
   /**
-   * Get the extension of a <code>Path</code>.
+   * Get the extension of a <code>Path</code> (including the '.').
    * 
    * @param path the <code>Path</code> to derive the information from.
    * @return the extension of the name of the <code>Path</code>, or null if no extension could be detected.
    */
   public static String getFileExtension(Path path) {
     return getFileExtension(path.getFileName().toString());
+  }
+
+  /**
+   * Check whether two files have the same contents.
+   * 
+   * @param fileName1 Pathname of the first file.
+   * @param fileName2 Pathname of the second file.
+   * @return true, if the two files have the same contents, false otherwise.
+   * @throws IOException if reading the files failed.
+   */
+  public static boolean contentEquals(String fileName1, String fileName2) throws IOException {
+    return contentEquals(Paths.get(fileName1), Paths.get(fileName2));
   }
 
   /**
@@ -182,6 +194,7 @@ public class FileUtils {
    * @throws IOException if reading the files failed.
    */
   public static boolean contentEquals(Path file1, Path file2) throws IOException {
+    
     final long size = Files.size(file1);
     if (size != Files.size(file2))
       return false;
@@ -189,8 +202,10 @@ public class FileUtils {
     if (size < 4096)
       return Arrays.equals(Files.readAllBytes(file1), Files.readAllBytes(file2));
 
+    Long startTime = System.currentTimeMillis();
     try (InputStream is1 = Files.newInputStream(file1);
         InputStream is2 = Files.newInputStream(file2)) {
+      
       // Compare byte-by-byte.
       // Note that this can be sped up drastically by reading large chunks
       // (e.g. 16 KBs) but care must be taken as InputStream.read(byte[])
@@ -201,6 +216,9 @@ public class FileUtils {
           return false;
     }
 
+    Long endTime = System.currentTimeMillis();
+    Long duration = endTime - startTime;
+//    LOGGER.severe("Comparison (for equal files) took: " + duration + "ms");
     return true;
   }
   
@@ -516,7 +534,7 @@ public class FileUtils {
       LOGGER.info("<= " + strippedName);
       return strippedName;
     } else {
-      LOGGER.severe("<= (folder)");
+      LOGGER.info("<= (folder)");
       return folder;
     }
   }

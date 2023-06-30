@@ -110,6 +110,9 @@ public class DiscTracksTable extends EObjectTable<TrackReference> {
   private boolean hideCollection() {
     for (TrackReference trackReference: getItems()) {
       MyTrackInfo myTrackInfo = trackReference.getMyTrackInfo();
+      if (myTrackInfo == null) {
+        continue;
+      }
       if (myTrackInfo.getCollection() != null  &&  myTrackInfo.getCollection() != Collection.NOT_SET) {
         return false;
       }

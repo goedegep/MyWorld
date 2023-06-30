@@ -110,7 +110,8 @@ public class MortgagesWindow extends JfxStage implements EMFNotificationListener
     
     mortgagesResource = new EMFResource<>(
         MortgagePackage.eINSTANCE, 
-        () -> MortgageFactory.eINSTANCE.createMortgages());
+        () -> MortgageFactory.eINSTANCE.createMortgages(),
+        ".xmi");
     
     File mortgagesFile = new File(FinanRegistry.dataDirectory, FinanRegistry.mortgagesFileName);
     String mortgagesFileName = mortgagesFile.getAbsolutePath();

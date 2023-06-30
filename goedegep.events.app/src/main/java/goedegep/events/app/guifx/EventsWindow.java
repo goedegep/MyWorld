@@ -69,6 +69,7 @@ public class EventsWindow extends JfxStage {
     eventsResource = new EMFResource<>(
         EventsPackage.eINSTANCE, 
         () -> EventsFactory.eINSTANCE.createEvents(),
+        ".xmi",
         true);
     
     try {

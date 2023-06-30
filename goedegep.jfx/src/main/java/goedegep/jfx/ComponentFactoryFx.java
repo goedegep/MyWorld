@@ -22,6 +22,7 @@ import goedegep.jfx.objectcontrols.ObjectControlFixedPointValue;
 import goedegep.jfx.objectcontrols.ObjectControlFlexDate;
 import goedegep.jfx.objectcontrols.ObjectControlFolderSelecter;
 import goedegep.jfx.objectcontrols.ObjectControlHTMLString;
+import goedegep.jfx.objectcontrols.ObjectControlImageFile;
 import goedegep.jfx.objectcontrols.ObjectControlInteger;
 import goedegep.jfx.objectcontrols.ObjectControlLocalDate;
 import goedegep.jfx.objectcontrols.ObjectControlMultiLineString;
@@ -1187,6 +1188,16 @@ public class ComponentFactoryFx {
    */
   public <T> ObjectControlAutoCompleteTextField<T> createObjectControlAutoCompleteTextField(StringConverterAndChecker<T> stringConverter, T initialValue, double width, boolean isOptional, String toolTipText) {
     return new ObjectControlAutoCompleteTextField<T>(customization, stringConverter, initialValue, width, isOptional, toolTipText);
+  }
+
+  /**
+   * Create an ObjectControl for an image file selection.
+   * 
+   * @param customization 
+   * @return
+   */
+  public ObjectControlImageFile createObjectControlImageFile() {
+    return new ObjectControlImageFile(customization);
   }
     
   public String addHtmlContext(String text) {

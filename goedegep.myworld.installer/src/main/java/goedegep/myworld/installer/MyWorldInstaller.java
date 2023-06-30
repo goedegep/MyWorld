@@ -934,7 +934,8 @@ public class MyWorldInstaller extends JfxApplication {
 
     EMFResource<PropertyDescriptorGroup> propertyDescriptorsResource = new EMFResource<>(
         PropertiesPackage.eINSTANCE,
-        () -> PropertiesFactory.eINSTANCE.createPropertyDescriptorGroup());
+        () -> PropertiesFactory.eINSTANCE.createPropertyDescriptorGroup(),
+        ".xmi");
     propertyDescriptorsResource.load(MY_WORLD_PROPERTY_DESCRIPTORS_FILE);
     PropertyDescriptorGroup propertyDescriptorGroup = propertyDescriptorsResource.getEObject();
     PropertyDescriptor versionPropertyDescriptor = propertyDescriptorGroup.getPropertyDescriptor("version");

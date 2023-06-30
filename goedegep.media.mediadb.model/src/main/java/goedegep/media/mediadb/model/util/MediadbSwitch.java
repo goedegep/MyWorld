@@ -94,15 +94,6 @@ public class MediadbSwitch<T> extends Switch<T> {
         result = defaultCase(theEObject);
       return result;
     }
-    case MediadbPackage.MY_COMPILATION: {
-      MyCompilation myCompilation = (MyCompilation) theEObject;
-      T result = caseMyCompilation(myCompilation);
-      if (result == null)
-        result = caseAlbum(myCompilation);
-      if (result == null)
-        result = defaultCase(theEObject);
-      return result;
-    }
     case MediadbPackage.TRACK_REFERENCE: {
       TrackReference trackReference = (TrackReference) theEObject;
       T result = caseTrackReference(trackReference);
@@ -242,21 +233,6 @@ public class MediadbSwitch<T> extends Switch<T> {
    * @generated
    */
   public T caseAlbum(Album object) {
-    return null;
-  }
-
-  /**
-   * Returns the result of interpreting the object as an instance of '<em>My Compilation</em>'.
-   * <!-- begin-user-doc -->
-   * This implementation returns null;
-   * returning a non-null result will terminate the switch.
-   * <!-- end-user-doc -->
-   * @param object the target of the switch.
-   * @return the result of interpreting the object as an instance of '<em>My Compilation</em>'.
-   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
-   * @generated
-   */
-  public T caseMyCompilation(MyCompilation object) {
     return null;
   }
 

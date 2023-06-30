@@ -141,7 +141,8 @@ public class Customization {
   public static Customization createCustomization(String configurationFileName) {
     EMFResource<LookInfo> emfResource = new EMFResource<>(
         ConfigurationPackage.eINSTANCE,
-        () -> ConfigurationFactory.eINSTANCE.createLookInfo());
+        () -> ConfigurationFactory.eINSTANCE.createLookInfo(),
+        ".xmi");
     LookInfo lookInfo;
     try {
       lookInfo = emfResource.load(configurationFileName);

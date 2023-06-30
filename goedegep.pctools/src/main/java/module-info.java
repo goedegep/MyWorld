@@ -26,4 +26,5 @@ module goedegep.pctools {
   requires goedegep.gpx.app;
   requires goedegep.resources;
   requires org.commonmark;
+  requires jimfs;
 }

@@ -9,4 +9,5 @@ module goedegep.gpx {
   requires transitive goedegep.util;
   requires transitive goedegep.gpx.model;
   requires javafx.base;
+  requires org.eclipse.emf.ecore;
 }

@@ -43,6 +43,7 @@ public class EObjectTreeCell extends TreeCell<EObjectTreeItemContent> {
     
     EObjectTreeCell thisCell = this;
     
+    
     /*
      * Drag & Drop handling.
      * For now only moving (cut and paste) of EObjects is supported.
@@ -79,8 +80,10 @@ public class EObjectTreeCell extends TreeCell<EObjectTreeItemContent> {
     setOnDragDropped(this::handleDragDropped);
         
     LOGGER.info("<=");
-  }
-  
+  }  
+
+
+
   /**
    * Handle the starting of a drag event.
    * <p>
@@ -150,10 +153,12 @@ public class EObjectTreeCell extends TreeCell<EObjectTreeItemContent> {
    */
   private void handleDragOver(DragEvent dragEvent) {
     LOGGER.info("=>");
+    
     /* data is dragged over a (possible) target */
     /* accept it only if it is not dragged from the same node 
      * and if it has a supported data format. */
     TransferMode transferMode = isDropPossible(dragEvent);
+    
     if (transferMode != null) {      
       dragEvent.acceptTransferModes(transferMode);      
     }
@@ -355,12 +360,7 @@ public class EObjectTreeCell extends TreeCell<EObjectTreeItemContent> {
         return TransferMode.MOVE;        
       }
     }
-    
-//   if (dragboard.hasContent(EOBJECT_PATH)  &&
-//        isDropPossible((ByteBuffer) dragboard.getContent(EOBJECT_PATH))) {
-//      return TransferMode.MOVE;
-//    }
-    
+        
     BiPredicate<EObjectTreeItem, Dragboard> isDropPossibleFunction = ((EObjectTreeView) getTreeView()).getIsDropPossibleFunction();
     if (isDropPossibleFunction != null) {
       if (isDropPossibleFunction.test((EObjectTreeItem) getTreeItem(), dragboard)) {

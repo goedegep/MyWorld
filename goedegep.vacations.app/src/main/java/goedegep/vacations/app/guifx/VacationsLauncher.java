@@ -100,6 +100,7 @@ public class VacationsLauncher {
               EMFResource<Vacations> vacationsResource = new EMFResource<>(
                   VacationsPackage.eINSTANCE, 
                   () -> VacationsFactory.eINSTANCE.createVacations(),
+                  ".xmi",
                   true);
               vacationsResource.newEObject();
               try {
@@ -123,6 +124,7 @@ public class VacationsLauncher {
               EMFResource<VacationChecklist> vacationChecklistResource = new EMFResource<>(
                   VacationChecklistPackage.eINSTANCE, 
                   () -> VacationChecklistFactory.eINSTANCE.createVacationChecklist(),
+                  ".xmi",
                   true);
               VacationChecklist vacationChecklist = vacationChecklistResource.newEObject();
               VacationChecklistCategoriesList vacationChecklistCategoriesList = VacationChecklistFactory.eINSTANCE.createVacationChecklistCategoriesList();

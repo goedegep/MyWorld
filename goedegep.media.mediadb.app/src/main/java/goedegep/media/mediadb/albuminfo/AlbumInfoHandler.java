@@ -14,6 +14,7 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
 import goedegep.media.mediadb.model.Album;
+import goedegep.media.mediadb.model.AlbumType;
 import goedegep.media.mediadb.model.Artist;
 import goedegep.media.mediadb.model.Collection;
 import goedegep.media.mediadb.model.Disc;
@@ -24,7 +25,6 @@ import goedegep.media.mediadb.model.MediaDb;
 import goedegep.media.mediadb.model.MediadbFactory;
 import goedegep.media.mediadb.model.MediumInfo;
 import goedegep.media.mediadb.model.MediumType;
-import goedegep.media.mediadb.model.MyCompilation;
 import goedegep.media.mediadb.model.MyInfo;
 import goedegep.media.mediadb.model.MyTrackInfo;
 import goedegep.media.mediadb.model.Player;
@@ -675,6 +675,11 @@ public class AlbumInfoHandler extends AbstractValidatingHandler<AlbumInfoHandler
             }
           }
         }
+        
+        if (myAlbumInfo.albumType != null) {
+          MediaDbUtil.setAlbumType(album, myAlbumInfo.albumType);
+        }
+        
         mediaDb.getAlbums().add(album);
         albumsInCurrentInfoFile.add(album);
         popState();
@@ -748,7 +753,8 @@ public class AlbumInfoHandler extends AbstractValidatingHandler<AlbumInfoHandler
         album.setMyInfo(myInfo);
         popState();
       } else if (tag.compareTo(MY_COMPILATION_TAG) == 0) {
-        album = convertAlbumToMyCompilation(album);
+//        album = convertAlbumToMyCompilation(album);
+        myAlbumInfo.albumType = AlbumType.OWN_COMPILATION_ALBUM;
       } else if (tag.compareTo(I_WANT_TAG) == 0) {
         IWant iWant = getIWantFromText(data);
         if (iWant != null) {
@@ -1298,82 +1304,82 @@ public class AlbumInfoHandler extends AbstractValidatingHandler<AlbumInfoHandler
         locator.getColumnNumber(), "ongeldig tekst voor IWant: '" + data + "'.");
   }
 
-  /**
-   * Create a MyCompilation copy of an 'Album'.
-   * 
-   * @param album the Album to be 'copied' into a MyCompilation.
-   * @return a MyCompilation copy of the 'album'.
-   */
-  private MyCompilation convertAlbumToMyCompilation(Album album) {
-    MyCompilation myCompilation = FACTORY.createMyCompilation();
-    
-    if (album.isSetArtist()) {
-      myCompilation.setArtist(album.getArtist());
-    }
-    
-    if (album.isSetDescription()) {
-      myCompilation.setDescription(album.getDescription());
-    }
-    
-    if (album.isSetDescriptionTitle()) {
-      myCompilation.setDescriptionTitle(album.getDescriptionTitle());
-    }
-    
-    if (album.isSetId()) {
-      myCompilation.setId(album.getId());
-    }
-    
-    for (String imageBack: album.getImagesBack()) {
-      myCompilation.getImagesBack().add(imageBack);
-    }
-    
-    for (String imageFront: album.getImagesFront()) {
-      myCompilation.getImagesFront().add(imageFront);
-    }
-    
-    for (String imageFrontInside: album.getImagesFrontInside()) {
-      myCompilation.getImagesFrontInside().add(imageFrontInside);
-    }
-    
-    for (String label: album.getImagesLabel()) {
-      myCompilation.getImagesLabel().add(label);
-    }
-    
-    for (MediumType mediumType: album.getIssuedOnMediums()) {
-      myCompilation.getIssuedOnMediums().add(mediumType);
-    }
-    
-    if (album.isSetMyInfo()) {
-      myCompilation.setMyInfo(album.getMyInfo());
-    }
-    
-    for (Player player: album.getPlayers()) {
-      Player myCompilationPlayer = FACTORY.createPlayer();
-      
-      if (player.isSetArtist()) {
-        myCompilationPlayer.setArtist(player.getArtist());
-      }
-      
-      for (String instrument: player.getInstruments()) {
-        myCompilationPlayer.getInstruments().add(instrument);
-      }
-      myCompilation.getPlayers().add(myCompilationPlayer);
-    }
-    
-    if (album.isSetReleaseDate()) {
-      myCompilation.setReleaseDate(album.getReleaseDate());
-    }
-    
-    if (album.isSetTitle()) {
-      myCompilation.setTitle(album.getTitle());
-    }
-    
-    for (Disc disc: album.getDiscs()) {
-      myCompilation.getDiscs().add(disc);
-    }
-    
-    return myCompilation;
-  }
+//  /**
+//   * Create a MyCompilation copy of an 'Album'.
+//   * 
+//   * @param album the Album to be 'copied' into a MyCompilation.
+//   * @return a MyCompilation copy of the 'album'.
+//   */
+//  private MyCompilation convertAlbumToMyCompilation(Album album) {
+//    MyCompilation myCompilation = FACTORY.createMyCompilation();
+//    
+//    if (album.isSetArtist()) {
+//      myCompilation.setArtist(album.getArtist());
+//    }
+//    
+//    if (album.isSetDescription()) {
+//      myCompilation.setDescription(album.getDescription());
+//    }
+//    
+//    if (album.isSetDescriptionTitle()) {
+//      myCompilation.setDescriptionTitle(album.getDescriptionTitle());
+//    }
+//    
+//    if (album.isSetId()) {
+//      myCompilation.setId(album.getId());
+//    }
+//    
+//    for (String imageBack: album.getImagesBack()) {
+//      myCompilation.getImagesBack().add(imageBack);
+//    }
+//    
+//    for (String imageFront: album.getImagesFront()) {
+//      myCompilation.getImagesFront().add(imageFront);
+//    }
+//    
+//    for (String imageFrontInside: album.getImagesFrontInside()) {
+//      myCompilation.getImagesFrontInside().add(imageFrontInside);
+//    }
+//    
+//    for (String label: album.getImagesLabel()) {
+//      myCompilation.getImagesLabel().add(label);
+//    }
+//    
+//    for (MediumType mediumType: album.getIssuedOnMediums()) {
+//      myCompilation.getIssuedOnMediums().add(mediumType);
+//    }
+//    
+//    if (album.isSetMyInfo()) {
+//      myCompilation.setMyInfo(album.getMyInfo());
+//    }
+//    
+//    for (Player player: album.getPlayers()) {
+//      Player myCompilationPlayer = FACTORY.createPlayer();
+//      
+//      if (player.isSetArtist()) {
+//        myCompilationPlayer.setArtist(player.getArtist());
+//      }
+//      
+//      for (String instrument: player.getInstruments()) {
+//        myCompilationPlayer.getInstruments().add(instrument);
+//      }
+//      myCompilation.getPlayers().add(myCompilationPlayer);
+//    }
+//    
+//    if (album.isSetReleaseDate()) {
+//      myCompilation.setReleaseDate(album.getReleaseDate());
+//    }
+//    
+//    if (album.isSetTitle()) {
+//      myCompilation.setTitle(album.getTitle());
+//    }
+//    
+//    for (Disc disc: album.getDiscs()) {
+//      myCompilation.getDiscs().add(disc);
+//    }
+//    
+//    return myCompilation;
+//  }
 
   /**
    * Get an Artist object from the mediaDb. If no artist exists yet for the given name, the Artist is created and added to the mediaDb.
@@ -1502,7 +1508,7 @@ public class AlbumInfoHandler extends AbstractValidatingHandler<AlbumInfoHandler
     }
     
     // MyInfo
-    output.append(toXmlString(indent, nameSpace, album.getMyInfo(), album instanceof MyCompilation));
+    output.append(toXmlString(indent, nameSpace, album.getMyInfo(), MediaDbUtil.isOwnCompilationAlbum(album)));
     
     // Discs/Tracks
     if (album.getDiscs().size() == 1) {
@@ -1822,4 +1828,5 @@ class MyAlbumInfo {
   List<DiscAndTrackNrs> tracksIWant = new ArrayList<>();
   List<DiscAndTrackNrs> tracksIHave = new ArrayList<>();
   Collection collection = Collection.NOT_SET;
+  AlbumType albumType = null;
 }

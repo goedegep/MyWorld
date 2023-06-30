@@ -35,8 +35,7 @@ import javafx.scene.layout.HBox;
  *
  * @param <T> the value provided by the Worker.
  */
-public class WorkerStateMonitorWindow<T> extends JfxStage
-{
+public class WorkerStateMonitorWindow<T> extends JfxStage {
   private static final Logger LOGGER = Logger.getLogger(WorkerStateMonitorWindow.class.getName());
   private static final String WINDOW_TITLE = "Worker State Monitor";
 
@@ -117,8 +116,7 @@ public class WorkerStateMonitorWindow<T> extends JfxStage
    * 
    * @param worker the worker for which information is shown.
    */
-  public void bindToWorker(final Worker<T> worker)
-  {
+  public void bindToWorker(final Worker<T> worker) {
     LOGGER.info("=>");
     
     // Bind Labels to the properties of the worker

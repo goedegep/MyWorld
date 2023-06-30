@@ -178,22 +178,22 @@ public interface Person extends EObject {
   boolean isSetGender();
 
   /**
-   * Returns the value of the '<em><b>Birthday</b></em>' reference.
+   * Returns the value of the '<em><b>Birthday</b></em>' containment reference.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return the value of the '<em>Birthday</em>' reference.
+   * @return the value of the '<em>Birthday</em>' containment reference.
    * @see #setBirthday(Birthday)
    * @see goedegep.emfsample.model.EmfSamplePackage#getPerson_Birthday()
-   * @model
+   * @model containment="true"
    * @generated
    */
   Birthday getBirthday();
 
   /**
-   * Sets the value of the '{@link goedegep.emfsample.model.Person#getBirthday <em>Birthday</em>}' reference.
+   * Sets the value of the '{@link goedegep.emfsample.model.Person#getBirthday <em>Birthday</em>}' containment reference.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @param value the new value of the '<em>Birthday</em>' reference.
+   * @param value the new value of the '<em>Birthday</em>' containment reference.
    * @see #getBirthday()
    * @generated
    */

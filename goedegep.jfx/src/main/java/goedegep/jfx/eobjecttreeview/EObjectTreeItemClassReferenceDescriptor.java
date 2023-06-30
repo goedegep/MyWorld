@@ -9,6 +9,9 @@ import org.eclipse.emf.ecore.EReference;
 
 import goedegep.util.text.Indent;
 
+/**
+ * This class is an {@link EObjectTreeItemDescriptor} for an item of type {@link EObjectTreeItemType.CLASS_REFERENCE}.
+ */
 public class EObjectTreeItemClassReferenceDescriptor extends EObjectTreeItemClassDescriptor {
   private EReference eReference;    // Identifies the reference to which this descriptor applies
     

@@ -41,7 +41,7 @@ public class ArtistFolder {
             errors.add(error);
           }
         } else {
-          LOGGER.severe("Skipping suspected file: " + fileName);
+          LOGGER.severe("Skipping suspected file: " + artistFolder + "\\" + fileName);
           error = new MusicFolderStructureErrorInfo(MusicFolderStructureError.UNEXPECTED_FILE);
           error.setFile(path.getFileName().toString());
           error.setFolder(artistFolder);

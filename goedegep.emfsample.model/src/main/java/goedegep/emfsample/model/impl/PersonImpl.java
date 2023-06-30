@@ -10,6 +10,7 @@ import goedegep.emfsample.model.Person;
 import java.util.Date;
 import org.eclipse.emf.common.notify.Notification;
 
+import org.eclipse.emf.common.notify.NotificationChain;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.InternalEObject;
 
@@ -123,7 +124,7 @@ public class PersonImpl extends MinimalEObjectImpl.Container implements Person {
   protected boolean genderESet;
 
   /**
-   * The cached value of the '{@link #getBirthday() <em>Birthday</em>}' reference.
+   * The cached value of the '{@link #getBirthday() <em>Birthday</em>}' containment reference.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @see #getBirthday()
@@ -366,14 +367,6 @@ public class PersonImpl extends MinimalEObjectImpl.Container implements Person {
    */
   @Override
   public Birthday getBirthday() {
-    if (birthday != null && birthday.eIsProxy()) {
-      InternalEObject oldBirthday = (InternalEObject)birthday;
-      birthday = (Birthday)eResolveProxy(oldBirthday);
-      if (birthday != oldBirthday) {
-        if (eNotificationRequired())
-          eNotify(new ENotificationImpl(this, Notification.RESOLVE, EmfSamplePackage.PERSON__BIRTHDAY, oldBirthday, birthday));
-      }
-    }
     return birthday;
   }
 
@@ -382,8 +375,14 @@ public class PersonImpl extends MinimalEObjectImpl.Container implements Person {
    * <!-- end-user-doc -->
    * @generated
    */
-  public Birthday basicGetBirthday() {
-    return birthday;
+  public NotificationChain basicSetBirthday(Birthday newBirthday, NotificationChain msgs) {
+    Birthday oldBirthday = birthday;
+    birthday = newBirthday;
+    if (eNotificationRequired()) {
+      ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, EmfSamplePackage.PERSON__BIRTHDAY, oldBirthday, newBirthday);
+      if (msgs == null) msgs = notification; else msgs.add(notification);
+    }
+    return msgs;
   }
 
   /**
@@ -393,10 +392,17 @@ public class PersonImpl extends MinimalEObjectImpl.Container implements Person {
    */
   @Override
   public void setBirthday(Birthday newBirthday) {
-    Birthday oldBirthday = birthday;
-    birthday = newBirthday;
-    if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, EmfSamplePackage.PERSON__BIRTHDAY, oldBirthday, birthday));
+    if (newBirthday != birthday) {
+      NotificationChain msgs = null;
+      if (birthday != null)
+        msgs = ((InternalEObject)birthday).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - EmfSamplePackage.PERSON__BIRTHDAY, null, msgs);
+      if (newBirthday != null)
+        msgs = ((InternalEObject)newBirthday).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - EmfSamplePackage.PERSON__BIRTHDAY, null, msgs);
+      msgs = basicSetBirthday(newBirthday, msgs);
+      if (msgs != null) msgs.dispatch();
+    }
+    else if (eNotificationRequired())
+      eNotify(new ENotificationImpl(this, Notification.SET, EmfSamplePackage.PERSON__BIRTHDAY, newBirthday, newBirthday));
   }
 
   /**
@@ -505,6 +511,20 @@ public class PersonImpl extends MinimalEObjectImpl.Container implements Person {
    * @generated
    */
   @Override
+  public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
+    switch (featureID) {
+      case EmfSamplePackage.PERSON__BIRTHDAY:
+        return basicSetBirthday(null, msgs);
+    }
+    return super.eInverseRemove(otherEnd, featureID, msgs);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
   public Object eGet(int featureID, boolean resolve, boolean coreType) {
     switch (featureID) {
       case EmfSamplePackage.PERSON__FIRSTNAME:
@@ -514,8 +534,7 @@ public class PersonImpl extends MinimalEObjectImpl.Container implements Person {
       case EmfSamplePackage.PERSON__GENDER:
         return getGender();
       case EmfSamplePackage.PERSON__BIRTHDAY:
-        if (resolve) return getBirthday();
-        return basicGetBirthday();
+        return getBirthday();
       case EmfSamplePackage.PERSON__RETIREMENT_DATE:
         return getRetirementDate();
       case EmfSamplePackage.PERSON__HAS_CHILDREN:

@@ -16,6 +16,7 @@ import org.eclipse.emf.ecore.EObject;
  * </p>
  * <ul>
  *   <li>{@link goedegep.emfsample.model.Company#getEmployees <em>Employees</em>}</li>
+ *   <li>{@link goedegep.emfsample.model.Company#getBirthdays <em>Birthdays</em>}</li>
  * </ul>
  *
  * @see goedegep.emfsample.model.EmfSamplePackage#getCompany()
@@ -34,5 +35,17 @@ public interface Company extends EObject {
    * @generated
    */
   EList<Person> getEmployees();
+
+  /**
+   * Returns the value of the '<em><b>Birthdays</b></em>' reference list.
+   * The list contents are of type {@link goedegep.emfsample.model.Birthday}.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the value of the '<em>Birthdays</em>' reference list.
+   * @see goedegep.emfsample.model.EmfSamplePackage#getCompany_Birthdays()
+   * @model
+   * @generated
+   */
+  EList<Birthday> getBirthdays();
 
 } // Company

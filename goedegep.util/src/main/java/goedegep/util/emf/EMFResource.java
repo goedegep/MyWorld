@@ -102,13 +102,16 @@ import javafx.beans.property.StringProperty;
  * </ul>
  * 
  * Note: When an xml file is loaded using a model generated from the related xsd file, you first have to register the EPackage.
- * E.g. EPackage.Registry.INSTANCE.put(GPXPackage.eNS_URI, GPXPackage.eINSTANCE);
+ * E.g. EPackage.Registry.INSTANCE.put(GPXPackage.eNS_URI, GPXPackage.eINSTANCE);<br/>
+ * Note: Initially a Resource is created for a dummy URI. This way the EObject is always related to a Resource and ResourceSet, which makes it possible to find references
+ * by calling EcoreUtil.UsageCrossReferencer.find(eObject, resourceSet).
 
  * 
  * @param <E> The data type handled by this resource.
  */
 public class EMFResource<E extends EObject> {
   private static final Logger LOGGER = Logger.getLogger(EMFResource.class.getName());
+  private static final String DEFAULT_URI  = "http:/goedegep.emfsample/model/defaultfile";
   
   private EmfObjectCreator<E> emfObjectCreator;  // Used to create a new object of type E.
   private boolean createBackupFileOnSave;        // If true, the save() method makes a backup of the file before saving.
@@ -121,7 +124,7 @@ public class EMFResource<E extends EObject> {
    * separately in eObject. As soon as the resource is created, the object is added to it (and eObject is set to null).
    */
   private Resource resource = null;              // the current resource
-  private E eObject = null;                      // refers to the object if resource is null (otherwise it is null)
+  private URI defaultURI = null;
   
   private EContentAdapter eContentAdapter = null;  // to detect changes in the resource.
   private BooleanProperty dirty = new SimpleBooleanProperty();  // indicates whether there are unsaved changes.
@@ -138,8 +141,8 @@ public class EMFResource<E extends EObject> {
    * @param ePackage dummy parameter, just to make sure the EPackage is registered.
    * @param emfObjectCreator method (functional interface) to create a new instance of type E.
    */
-  public EMFResource(EPackage ePackage, EmfObjectCreator<E> emfObjectCreator) {
-    this(ePackage, emfObjectCreator, false);
+  public EMFResource(EPackage ePackage, EmfObjectCreator<E> emfObjectCreator, String fileExtension) {
+    this(ePackage, emfObjectCreator, fileExtension, false);
   }
 
   /**
@@ -151,7 +154,7 @@ public class EMFResource<E extends EObject> {
    * @param ePackage dummy parameter, just to make sure the EPackage is registered.
    * @param emfObjectCreator method (functional interface) to create a new instance of type E.
    */
-  public EMFResource(EPackage ePackage, EmfObjectCreator<E> emfObjectCreator, boolean createBackupFileOnSave) {
+  public EMFResource(EPackage ePackage, EmfObjectCreator<E> emfObjectCreator, String fileExtension, boolean createBackupFileOnSave) {
     LOGGER.info("=> ePackage="  + ePackage.getName());
     
     this.emfObjectCreator = emfObjectCreator;
@@ -166,7 +169,7 @@ public class EMFResource<E extends EObject> {
        */
       @Override
       public void notifyChanged(Notification notification) {
-        LOGGER.info(EmfUtil.printNotification(notification));
+//        LOGGER.info(EmfUtil.printNotification(notification));
         
         super.notifyChanged(notification);
         dirty.set(true);
@@ -176,6 +179,9 @@ public class EMFResource<E extends EObject> {
     };
     
     resourceSet = EMFResourceSet.getResourceSet();
+    
+    defaultURI = URI.createURI(DEFAULT_URI + fileExtension);
+    resource = resourceSet.createResource(defaultURI);
 
     // disable DTD resolution
     Map<String, Boolean> parserFeatures = new HashMap<>();
@@ -185,15 +191,16 @@ public class EMFResource<E extends EObject> {
     LOGGER.info("<=");
   }
   
-  /**
-   * Add a Resource.Factory for a file extension.
-   * 
-   * @param fileExtension the file extension (e.g. "gpx").
-   * @param resourceFactory the Resource.Factory for files with this extension.
-   */
-  public void addResourceFactoryForFileExtension(String fileExtension, Resource.Factory resourceFactory) {
-    resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap().put(fileExtension, resourceFactory);
-  }
+//  /**
+//   * Add a Resource.Factory for a file extension.
+//   * 
+//   * @param fileExtension the file extension (e.g. "gpx").
+//   * @param resourceFactory the Resource.Factory for files with this extension.
+//   */
+//  public void addResourceFactoryForFileExtension(String fileExtension, Resource.Factory resourceFactory) {
+//    resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap().put(fileExtension, resourceFactory);
+//    
+//  }
   
   /**
    * Create a new instance of type E.
@@ -203,12 +210,8 @@ public class EMFResource<E extends EObject> {
   public E newEObject() {
     E newEObject = emfObjectCreator.createEObject();
     
-    if (resource == null) {
-      eObject = newEObject;
-    } else {
-      resource.getContents().clear();
-      resource.getContents().add(newEObject);
-    }
+    resource.getContents().clear();
+    resource.getContents().add(newEObject);
     
     dirty.set(false);
     newEObject.eAdapters().add(eContentAdapter);
@@ -235,16 +238,12 @@ public class EMFResource<E extends EObject> {
     }
     
     URI fileURI = URI.createFileURI(resourceFilePath.toString());
-    if (resource == null) {
-      resource = resourceSet.getResource(fileURI, true);
-    } else {
-      resource.unload();
-      resource.setURI(fileURI);
-      try {
-        resource.load(null);
-      } catch (IOException e) {
-        e.printStackTrace();
-      }
+    resource.unload();
+    resource.setURI(fileURI);
+    try {
+      resource.load(null);
+    } catch (IOException e) {
+      e.printStackTrace();
     }
         
     if (resource.getContents().size() != 1) {
@@ -269,8 +268,8 @@ public class EMFResource<E extends EObject> {
   public void save() throws IOException {
     LOGGER.info("=>");
 
-    if (resource == null) {
-      throw new RuntimeException("No current 'resource'. This method can only be called if there is a current 'resource'.");
+    if (resource.getURI() == defaultURI) {
+      throw new RuntimeException("No current file name. This method can only be called if there is a current file name.");
     }
 
     if (createBackupFileOnSave) {
@@ -302,16 +301,7 @@ public class EMFResource<E extends EObject> {
     LOGGER.fine("path=" + resourceFilePath.toString());
         
     URI fileURI = URI.createFileURI(resourceFilePath.toString());
-    if (resource == null) {
-      if (eObject == null) {
-        throw new RuntimeException("No EObject. This method can only be called if there is an EObject.");
-      }
-      resource = resourceSet.createResource(fileURI);
-      resource.getContents().add(eObject);
-      eObject = null;
-    } else {
-      resource.setURI(fileURI);
-    }
+    resource.setURI(fileURI);
     
     try {
       resource.save(null);
@@ -346,7 +336,9 @@ public class EMFResource<E extends EObject> {
     
     try {
       resource.delete(null);
-      resource = null;
+      resourceSet.getResources().remove(resource);
+      resource = resourceSet.createResource(defaultURI);
+
       dirty.set(false);
     } catch (IOException e) {
       e.printStackTrace();
@@ -396,13 +388,9 @@ public class EMFResource<E extends EObject> {
    * @return the current EObject value, which may be null.
    */
   public E getEObject() {
-    if (resource != null) {
-      @SuppressWarnings("unchecked")
-      E retval = (E) resource.getContents().get(0);
-      return retval;
-    } else {
-      return eObject;
-    }
+    @SuppressWarnings("unchecked")
+    E retval = (E) resource.getContents().get(0);
+    return retval;
   }
   
   /**

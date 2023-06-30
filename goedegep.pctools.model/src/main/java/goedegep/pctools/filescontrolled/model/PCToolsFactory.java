@@ -49,6 +49,69 @@ public interface PCToolsFactory extends EFactory {
   DescribedItem createDescribedItem();
 
   /**
+   * Returns a new object of class '<em>Result</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Result</em>'.
+   * @generated
+   */
+  Result createResult();
+
+  /**
+   * Returns a new object of class '<em>Uncontrolled Folder Info</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Uncontrolled Folder Info</em>'.
+   * @generated
+   */
+  UncontrolledFolderInfo createUncontrolledFolderInfo();
+
+  /**
+   * Returns a new object of class '<em>Folder Info</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Folder Info</em>'.
+   * @generated
+   */
+  FolderInfo createFolderInfo();
+
+  /**
+   * Returns a new object of class '<em>Uncontrolled Root Folder Info</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Uncontrolled Root Folder Info</em>'.
+   * @generated
+   */
+  UncontrolledRootFolderInfo createUncontrolledRootFolderInfo();
+
+  /**
+   * Returns a new object of class '<em>File Info</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>File Info</em>'.
+   * @generated
+   */
+  FileInfo createFileInfo();
+
+  /**
+   * Returns a new object of class '<em>Controlled Root Folder Info</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Controlled Root Folder Info</em>'.
+   * @generated
+   */
+  ControlledRootFolderInfo createControlledRootFolderInfo();
+
+  /**
+   * Returns a new object of class '<em>Controlled Folder Info</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Controlled Folder Info</em>'.
+   * @generated
+   */
+  ControlledFolderInfo createControlledFolderInfo();
+
+  /**
    * Returns the package supported by this factory.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->

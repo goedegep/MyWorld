@@ -1,25 +1,37 @@
 package goedegep.pctools.filescontrolled.logic;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.DirectoryIteratorException;
 import java.nio.file.DirectoryStream;
+import java.nio.file.FileSystem;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.attribute.BasicFileAttributes;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.logging.Logger;
 
+import com.google.common.jimfs.Configuration;
+import com.google.common.jimfs.Jimfs;
+
+import goedegep.pctools.filescontrolled.model.ControlledRootFolderInfo;
 import goedegep.pctools.filescontrolled.model.DirectorySpecification;
 import goedegep.pctools.filescontrolled.model.DiscStructureSpecification;
-import goedegep.pctools.filescontrolled.types.EqualityType;
-import goedegep.pctools.filescontrolled.types.FileCopyInfo;
-import goedegep.pctools.filescontrolled.types.FileInfo;
+import goedegep.pctools.filescontrolled.model.EqualityType;
+import goedegep.pctools.filescontrolled.model.FileInfo;
+import goedegep.pctools.filescontrolled.model.FolderInfo;
+import goedegep.pctools.filescontrolled.model.PCToolsFactory;
+import goedegep.pctools.filescontrolled.model.Result;
+import goedegep.pctools.filescontrolled.model.UncontrolledFolderInfo;
+import goedegep.pctools.filescontrolled.model.UncontrolledRootFolderInfo;
+//import goedegep.pctools.filescontrolled.types.FileInfo;
 import goedegep.pctools.filescontrolled.types.FileInfoMap;
-import goedegep.util.Tuplet;
 import goedegep.util.file.FileUtils;
+import goedegep.util.tree.TreeNode;
 import javafx.concurrent.Task;
+
+import org.eclipse.emf.common.util.TreeIterator;
+import org.eclipse.emf.ecore.EObject;
 
 /**
  * A {@link Task} to check for uncontrolled files and probable copies of files.
@@ -27,40 +39,55 @@ import javafx.concurrent.Task;
  * A DiscStructureSpecification specified the directories to check.<br/>
  * A FileInfoMap provides a collection of controlled files to check against.
  */
-public class CheckFilesTask extends Task<Tuplet<List<FileCopyInfo>, List<FileInfo>>> {
+public class CheckFilesTask extends Task<Result> {
   private static final Logger LOGGER = Logger.getLogger(FilesControlled.class.getName());
-
-  /**
-   * The collection of controlled files to check against.
-   */
-  private FileInfoMap controlledFiles;
   
+  private static final PCToolsFactory PCTOOLS_FACTORY = PCToolsFactory.eINSTANCE;
+
   /**
    * The specification of the directories to check.
    */
   private final DiscStructureSpecification discStructureSpecification;
   
+  private static Path tmpFilesPath;
+  
+  /**
+   * Structure in which gathered information is stored.
+   */
+  private Result result;
+
+  static {
+    // Create an in-memory file system for faster file compare
+    FileSystem imfs = Jimfs.newFileSystem(Configuration.unix());
+    tmpFilesPath = imfs.getPath("/tmpPdf");
+    try {
+      Files.createDirectory(tmpFilesPath);
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+  }
+  
   /**
    * Constructor.
    * 
-   * @param controlledFiles a collection of controlled files to check against.
    * @param discStructureSpecification  Specification of the directories to check.
+   * @param result Structure in which the gathered information will be stored.
    */
-  public CheckFilesTask(FileInfoMap controlledFiles, final DiscStructureSpecification discStructureSpecification) {
-    this.controlledFiles = controlledFiles;
+  public CheckFilesTask(final DiscStructureSpecification discStructureSpecification, Result result) {
     this.discStructureSpecification = discStructureSpecification;
+    this.result = result;
   }
 
+  /**
+   * Run the files check.
+   */
   @Override
-  protected Tuplet<List<FileCopyInfo>, List<FileInfo>> call() throws Exception {
-    LOGGER.info("=>");
-    List<FileCopyInfo> probablyRemovableFileCopyInfos = new ArrayList<>();
-    List<FileInfo> uncontrolledFiles = new ArrayList<>();
-    Tuplet<List<FileCopyInfo>, List<FileInfo>> result = new Tuplet<>(probablyRemovableFileCopyInfos, uncontrolledFiles);
+  protected Result call() throws Exception {
+    LOGGER.severe("=>");
     
-    checkFiles(controlledFiles, discStructureSpecification, probablyRemovableFileCopyInfos, uncontrolledFiles);
+    checkFiles(discStructureSpecification, result);
           
-    LOGGER.info("<=");
+    LOGGER.severe("<=");
     return result;
   }
   
@@ -73,20 +100,30 @@ public class CheckFilesTask extends Task<Tuplet<List<FileCopyInfo>, List<FileInf
    * @param probablyRemovableFileCopyInfos the list to which probable copies will be added.
    * @param uncontrolledFiles the list to which uncontrolled files are added.
    */
-  private void checkFiles(FileInfoMap controlledFiles, DiscStructureSpecification discStructureSpecification, List<FileCopyInfo> probablyRemovableFileCopyInfos, List<FileInfo> uncontrolledFiles) {
-    LOGGER.fine("=>");
+//  private void checkFiles(FileInfoMap controlledFiles, DiscStructureSpecification discStructureSpecification, Result result) {
+  private void checkFiles(DiscStructureSpecification discStructureSpecification, Result result) {
+    LOGGER.severe("=>");
     
     for (DirectorySpecification directorySpecification: discStructureSpecification.getDirectorySpecifications()) {
       if (directorySpecification.isControlled()) {
-        LOGGER.fine("Skipping controlled directory: " + directorySpecification.getDirectoryPath());
+        LOGGER.severe("Skipping controlled directory: " + directorySpecification.getDirectoryPath());
         continue;
       }
       
-      Path directory = Paths.get(directorySpecification.getDirectoryPath());
-      checkFilesInDirectory(controlledFiles, directory, probablyRemovableFileCopyInfos, uncontrolledFiles);
+//      Path directory = Paths.get(directorySpecification.getDirectoryPath());
+//      FileInfoTreeNode fileInfoTreeNode = new FileInfoTreeNode();
+//      fileInfoTreeNode.setContent(directory);
+//      fileInfoTreeNode.setFolder(true);
+      UncontrolledRootFolderInfo uncontrolledRootFolderInfo = PCTOOLS_FACTORY.createUncontrolledRootFolderInfo();
+      result.getUncontrolledRootFolderInfos().add(uncontrolledRootFolderInfo);
+      uncontrolledRootFolderInfo.setFolderBasePath(directorySpecification.getDirectoryPath());
+      File folder = new File(directorySpecification.getDirectoryPath());
+      uncontrolledRootFolderInfo.setFolderName(folder.getName());
+      checkFilesInDirectory(uncontrolledRootFolderInfo);
+//      printInfo(fileInfoTreeNode);
     }
         
-    LOGGER.fine("<=");
+    LOGGER.severe("<=");
   }
 
   /**
@@ -99,49 +136,83 @@ public class CheckFilesTask extends Task<Tuplet<List<FileCopyInfo>, List<FileInf
    * @param probablyRemovableFileCopyInfos the list to which probable copies will be added.
    * @param uncontrolledFiles the list to which uncontrolled files are added.
    */
-  private void checkFilesInDirectory(FileInfoMap controlledFiles, Path directory,
-      List<FileCopyInfo> probablyRemovableFileCopyInfos, List<FileInfo> uncontrolledFiles) {
+  private void checkFilesInDirectory(UncontrolledFolderInfo uncontrolledFolderInfo) {
+    
     // Note: we cannot use Files.walkFileTree(), because we have to skip controlled directories and directories to ignore.
+    LOGGER.severe("=> directory=" + uncontrolledFolderInfo.getFullPathname());
+    boolean allContentsHasCopies = true;
+    Path directory = Paths.get(uncontrolledFolderInfo.getFullPathname());
     try (DirectoryStream<Path> stream = Files.newDirectoryStream(directory)) {
       for (Path file: stream) {
-        LOGGER.fine("Handling file/directory: " + file.getFileName().toString());
+        LOGGER.info("Handling file/directory: " + file.getFileName().toString());
         if (Files.isDirectory(file)) {
           // recursively call this method.
-          checkFilesInDirectory(controlledFiles, file, probablyRemovableFileCopyInfos, uncontrolledFiles);
+          UncontrolledFolderInfo childFolderInfo = PCTOOLS_FACTORY.createUncontrolledFolderInfo();
+          uncontrolledFolderInfo.getSubFoldersInfos().add(childFolderInfo);
+          childFolderInfo.setFolderName(file.getFileName().toString());
+          checkFilesInDirectory(childFolderInfo);
+          if (!childFolderInfo.isAllContentsHasCopies()) {
+            allContentsHasCopies = false;
+          }
         } else {
           // For each file in the directory: generate the fileId and create the FileInfo
           BasicFileAttributes attr = Files.readAttributes(file, BasicFileAttributes.class);
           String fileId = FilesControlled.generateFileId(file, attr);
-          FileInfo thisFileInfo = new FileInfo();
-          thisFileInfo.setDirectory(file.getParent());
-          thisFileInfo.setFile(file.getFileName());
+          FileInfo thisFileInfo = PCTOOLS_FACTORY.createFileInfo();
+          uncontrolledFolderInfo.getFileinfos().add(thisFileInfo);
+          thisFileInfo.setFileName(file.getFileName().toString());
+//          thisFileInfo.setDirectoryName(directory.toString());
           
-          // Check whether a file with the same id exists in the controlled files.
-          FileInfo fileInfo = controlledFiles.get(fileId);
-          if (fileInfo == null) {
-            // No, so we've found an uncontrolled file.
-            uncontrolledFiles.add(thisFileInfo);
-            LOGGER.fine("Uncontrolled file found: " + thisFileInfo.toString());
+//          // Check whether a file with the same id exists in the controlled files.
+//          FileInfo copyFileInfo = controlledFiles.get(fileId);
+//          if (copyFileInfo == null) {
+//            // No, so we've found an uncontrolled file.
+////            uncontrolledFiles.add(thisFileInfo);
+//            thisFileInfo.setUnControlled(true);
+//            LOGGER.severe("Uncontrolled file found: " + thisFileInfo.toString());
+//            allContentsHasCopies = false;
+//          } else {
+//            // names and sizes are the same but files still may differ. So add more information based on same MD5 or real equality.
+////            FileCopyInfo fileCopyInfo = new FileCopyInfo();
+////            fileCopyInfo.setFirstFileFoundInfo(fileInfo);
+//            thisFileInfo.setCopyOf(copyFileInfo);
+////            fileCopyInfo.setSecondFileFoundInfo(thisFileInfo);
+//            thisFileInfo.setEqualityType(EqualityType.SIZE);
+//            
+//            if (copyFileInfo.getMd5String().equals(thisFileInfo.getMd5String())) {
+//              thisFileInfo.setEqualityType(EqualityType.MD5);
+//              
+//              Path tmpFile1 = tmpFilesPath.resolve("file1");
+//              Path tmpFile2 = tmpFilesPath.resolve("file2");
+//              Files.copy(Paths.get(copyFileInfo.getFullPathname()), tmpFile1);
+//              Files.copy(Paths.get(thisFileInfo.getFullPathname()), tmpFile2);
+//              if (FileUtils.contentEquals(tmpFile1, tmpFile2)) {
+//                thisFileInfo.setEqualityType(EqualityType.EQUAL);
+//              }
+//              Files.delete(tmpFile1);
+//              Files.delete(tmpFile2);
+//            } else {
+//              LOGGER.severe("Different MD5 values: copy=" + copyFileInfo.getMd5String() + ", this=" + thisFileInfo.getMd5String());
+//            }
+//            
+////            probablyRemovableFileCopyInfos.add(fileCopyInfo);
+//            if (!(thisFileInfo.getEqualityType() == EqualityType.EQUAL)) {
+//              allContentsHasCopies = false;
+//            }
+//            LOGGER.severe("Copy of file found: " + thisFileInfo.toString());
+//          }
+          
+          FileInfo copyFileInfo = isFileACopy(thisFileInfo);
+          if (copyFileInfo != null) {
+            thisFileInfo.setEqualityType(EqualityType.EQUAL);
+            thisFileInfo.setCopyOf(copyFileInfo);
           } else {
-            // names and sizes are the same but files still may differ. So add more information based on same MD5 or real equality.
-            FileCopyInfo fileCopyInfo = new FileCopyInfo();
-            fileCopyInfo.setFirstFileFoundInfo(fileInfo);
-            fileCopyInfo.setSecondFileFoundInfo(thisFileInfo);
-            fileCopyInfo.setEqualityType(EqualityType.SIZE);
-            
-            if (fileInfo.getMd5String().equals(thisFileInfo.getMd5String())) {
-              fileCopyInfo.setEqualityType(EqualityType.MD5);
-              
-              if (FileUtils.contentEquals(fileInfo.getFullPath(), thisFileInfo.getFullPath())) {
-                fileCopyInfo.setEqualityType(EqualityType.EQUAL);
-              }
-            }
-            
-            probablyRemovableFileCopyInfos.add(fileCopyInfo);
-            LOGGER.fine("Copy of file found: " + fileInfo.toString());
+            allContentsHasCopies = false;
           }
+          
         }
       }
+      uncontrolledFolderInfo.setAllContentsHasCopies(allContentsHasCopies);
     } catch (IOException | DirectoryIteratorException x) {
       System.err.println(x);
     }
@@ -153,5 +224,33 @@ public class CheckFilesTask extends Task<Tuplet<List<FileCopyInfo>, List<FileInf
       e.printStackTrace();
     }
     
+    LOGGER.info("<=");
+    
+  }
+
+  /**
+   * Check whether a file is a copy of one of the controlled files.
+   * 
+   * @param fileInfo the file to check, typically not a controlled file.
+   * @return the FileInfo of the file of which {@code fileInfo} is a copy, or null if the file is not a copy.
+   */
+  private FileInfo isFileACopy(FileInfo fileInfo) {
+    String thisMd5String = fileInfo.getMd5String();
+    
+    for (ControlledRootFolderInfo rootFolder: result.getControlledrootfolderinfos()) {
+      TreeIterator<EObject> treeIterator = rootFolder.eAllContents();
+      while (treeIterator.hasNext()) {
+        EObject eObject = treeIterator.next();
+        if (eObject instanceof FileInfo controlledFileInfo) {
+          if (thisMd5String.equals(controlledFileInfo.getMd5String()) &&
+              fileInfo.getFileName().equals(controlledFileInfo.getFileName())) {
+            LOGGER.info("Copy found: " + fileInfo.toString() + ", " + controlledFileInfo.toString());
+            return controlledFileInfo;
+          }
+        }
+      }
+    }
+        
+    return null;
   }
 }

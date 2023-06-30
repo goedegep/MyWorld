@@ -6,9 +6,12 @@ import java.util.logging.Logger;
 
 import goedegep.jfx.ComponentFactoryFx;
 import goedegep.jfx.CustomizationFx;
+import goedegep.jfx.objectcontrols.ObjectControlAbstract;
 import goedegep.jfx.objectcontrols.ObjectControlEnumComboBox;
 import goedegep.jfx.objectcontrols.ObjectControlTextField;
+import goedegep.media.mediadb.app.derivealbuminfo.TrackInfo;
 import goedegep.media.mediadb.model.Album;
+import goedegep.media.mediadb.model.AlbumType;
 import goedegep.media.mediadb.model.Artist;
 import goedegep.media.mediadb.model.Disc;
 import goedegep.media.mediadb.model.IWant;
@@ -19,6 +22,7 @@ import goedegep.media.mediadb.model.MediumInfo;
 import goedegep.media.mediadb.model.MyTrackInfo;
 import goedegep.media.mediadb.model.Track;
 import goedegep.media.mediadb.model.TrackReference;
+import goedegep.util.emf.EmfUtil;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceDialog;
@@ -48,10 +52,23 @@ import javafx.scene.layout.GridPane;
  * @param customization The GUI customization.
  * @param trackReference The <code>TrackReference</code> to create a panel for.
  */
-class TrackReferenceAndMyTrackInfoControls {
+class TrackReferenceAndMyTrackInfoControls extends TrackReferenceControlsAbstract {
   private static final Logger LOGGER = Logger.getLogger(TrackReferenceAndMyTrackInfoControls.class.getName());
 
+  private static final MediadbPackage MEDIA_DB_PACKAGE = MediadbPackage.eINSTANCE;
+  private static final MediadbFactory MEDIA_DB_FACTORY = MediadbFactory.eINSTANCE;
+
+  /**
+   * The GUI customization.
+   */
+  private CustomizationFx customization;
+
   private ComponentFactoryFx componentFactory;
+  
+  /**
+   * The GridPane to which the controls are to be added.
+   */
+  private GridPane gridPane;
   
   /**
    * The {@code TrackReference} to which the controls apply
@@ -59,9 +76,24 @@ class TrackReferenceAndMyTrackInfoControls {
   private TrackReference trackReference;
   
   /**
+   * 
+   */
+  private AlbumType albumType;
+  
+  /**
    * The row in the {@code gridPane} at which the controls are added.
    */
   private int myRow;
+  
+  /**
+   * The list of TrackReferenceAndMyTrackInfoControls of which this control is part.
+   */
+  private List<TrackReferenceAndMyTrackInfoControls> trackReferenceControls;
+  
+  /**
+   * The media database.
+   */
+  private MediaDb mediaDb;
   
   /**
    * The current column in the {@code gridPane}.
@@ -73,6 +105,12 @@ class TrackReferenceAndMyTrackInfoControls {
    */
   private Track track;
   
+  /**
+   * The new Track if applicable
+   */
+  private Track newTrack;
+  
+  private TextField trackNameTextField;
   private ObjectControlTextField<String> bonusTrack;
   private ObjectControlEnumComboBox<goedegep.media.mediadb.model.Collection> collectionComboBox;
   private ObjectControlEnumComboBox<IWant> iWantComboBox;
@@ -85,11 +123,19 @@ class TrackReferenceAndMyTrackInfoControls {
    * @param gridPane The GridPane to which the controls are to be added.
    * @param row The row in the gridPane at which the controls are to be added.
    * @param trackReference the TrackReference to which the controls apply. This shall be part of a Disc, which shall be part of an Album
+   * @param albumType the type of album we're editing.
    * @param mediaDb the media database
    */
-  TrackReferenceAndMyTrackInfoControls(CustomizationFx customization, GridPane gridPane, int row, TrackReference trackReference, AlbumType albumType, MediaDb mediaDb) {
-    this.trackReference = trackReference;
+  TrackReferenceAndMyTrackInfoControls(CustomizationFx customization, GridPane gridPane, int row, List<TrackReferenceAndMyTrackInfoControls> trackReferenceControls, TrackReference trackReference, AlbumType albumType, MediaDb mediaDb) {
+    super(false);
+    
+    this.customization = customization;
+    this.gridPane = gridPane;
     myRow = row;
+    this.trackReferenceControls = trackReferenceControls;
+    this.trackReference = trackReference;
+    this.albumType = albumType;
+    this.mediaDb = mediaDb;
     
     componentFactory = customization.getComponentFactoryFx();
         
@@ -97,47 +143,464 @@ class TrackReferenceAndMyTrackInfoControls {
       track = trackReference.getTrack();
     }
     
-    /**
-     * The Disc to which the trackReference belongs.
-     */
-//    Disc disc = trackReference.getDisc();
-    
-    /**
-     * The Id of the disc.
-     */
-//    String discId = null;
-
-    /**
-     * The Album to which the disc (and so the trackReference) belongs.
-     */
-//    Album album = null;
-    
-//    if (disc != null) {
-//      album = disc.getAlbum();
-//      discId = disc.getTitle();
-//      if (discId == null) {
-//        discId = String.valueOf(disc.getDiscNr());
+//    /*
+//     * TrackReference fields 
+//     */
+//    
+//    // Track number not editable, for reference only
+//    String trackNrText = null;
+//    if (trackReference != null) {
+//      int trackNr = trackReference.getTrackNr();
+//      trackNrText = String.valueOf(trackNr);
+//    }
+//    Label label = componentFactory.createLabel(trackNrText, 30);
+//    gridPane.add(label, column++, row);
+//    
+//    // Track text/reference
+//    Node trackTextOrReferenceNode = null;
+//    if (albumType == AlbumType.NORMAL_ALBUM) {
+//      trackTextOrReferenceNode = createTrackNodeForNormalAlbum(trackReference);
+//    gridPane.add(trackTextOrReferenceNode, column++, row);
+//    } else {
+//      column++;
+//    }
+////    String trackText = createTrackText();
+////    Button referredTrackButton = componentFactory.createButton(trackText, "click to select the track (on the original album)");
+////    referredTrackButton.setOnAction(e -> {
+////      if (track != null) {
+////        List<TrackWrapper> options = new ArrayList<>();
+////        for (Track aTrack: mediaDb.getTracks()) {
+////          if (aTrack.getTitle() != null  &&  aTrack.getTitle().equals(track.getTitle())) {
+////            LOGGER.info("Adding track option: " + aTrack);
+////            options.add(new TrackWrapper(aTrack));
+////          }
+////        }
+////        TrackWrapper[] trackWrapperOptions = new TrackWrapper[options.size()];
+////        int i = 0;
+////        for (TrackWrapper trackWrapper: options) {
+////          trackWrapperOptions[i++] = trackWrapper;
+////        }
+////        TrackWrapper defaultTrack = options.get(0);
+////        ChoiceDialog<TrackWrapper> choiceDialog = componentFactory.createChoiceDialog("Track selection", "Select the original album track", "TODO", defaultTrack, trackWrapperOptions);
+////        choiceDialog.showAndWait();
+////        LOGGER.info("Selected track: " + choiceDialog.getSelectedItem());
+////        TrackWrapper selectedTrackWrapper = choiceDialog.getSelectedItem();
+////        Track selectedTrack = selectedTrackWrapper.getTrack();
+////        LOGGER.severe("Before referred by: " + track.getReferredBy().size());
+////        LOGGER.severe("Contains: " + track.getReferredBy().contains(trackReference));
+//////        track.getReferredBy().remove(trackReference);
+////        LOGGER.severe("After referred by: " + track.getReferredBy().size());
+//////        trackReference.setTrack(selectedTrack);
+////        track = selectedTrack;
+////        referredTrackButton.setText(createTrackText());
+//////        if (track.getReferredBy().isEmpty()) {   // TODO This may only be removed when the album is updated.
+//////          LOGGER.severe("Removing track: " + track);
+//////          mediaDb.getTracks().remove(track);
+//////        } else {
+//////          LOGGER.severe("Track still referred by: " + track.getReferredBy());
+//////        }
+////      }
+////    });
+////    gridPane.add(referredTrackButton, column++, row);
+//    
+//    // Identification of the disc of the track reference of the Original Track Reference (not Yet editable)
+//    Disc originalAlbumTrackReferenceDisc = null;
+//    Album originalAlbumTrackReferenceAlbum = null;
+//    String originalAlbumTrackReferenceAlbumId = null;
+//    String originalAlbumTrackReferenceDiscId = null;
+//    TrackReference originalTrackReference = null;
+//    if (trackReference != null) {
+//      originalTrackReference = trackReference.getOriginalAlbumTrackReference();
+//    }
+//    
+//    if (originalTrackReference != null) {
+//      originalAlbumTrackReferenceDisc = originalTrackReference.getDisc();
+//      originalAlbumTrackReferenceAlbum = originalAlbumTrackReferenceDisc.getAlbum();
+//      originalAlbumTrackReferenceDiscId = originalAlbumTrackReferenceDisc.getTitle();
+//      if (originalAlbumTrackReferenceDiscId == null) {
+//        originalAlbumTrackReferenceDiscId = String.valueOf(originalAlbumTrackReferenceDisc.getDiscNr());
 //      }
 //    }
+//
+//    if (originalAlbumTrackReferenceAlbum != null) {
+//      originalAlbumTrackReferenceAlbumId = originalAlbumTrackReferenceAlbum.getArtistAndTitle();
+//      if (originalAlbumTrackReferenceAlbum.isMultiDiscAlbum() &&  (originalAlbumTrackReferenceDiscId != null)) {
+//        originalAlbumTrackReferenceAlbumId = originalAlbumTrackReferenceAlbumId + " - " + originalAlbumTrackReferenceDiscId;
+//      }
+//    }
+////    TextFieldObjectInput<String> originalAlbumTrackReferenceDiscControl = componentFactory.createTextFieldObjectInput(null, originalAlbumTrackReferenceAlbumId, 300, true, null);
+////    gridPane.add(originalAlbumTrackReferenceDiscControl, column++, row);
+//    
+//    // Identification of the track of the track reference of the Original Track Reference (not Yet editable)
+//    String originalAlbumTrackReferenceTrackTitle = null;
+//    if (originalTrackReference != null) {
+//      Track originalAlbumTrackReferenceTrack = originalTrackReference.getTrack();
+//      if (originalAlbumTrackReferenceTrack != null) {
+//        originalAlbumTrackReferenceTrackTitle = originalAlbumTrackReferenceTrack.getTitle();
+//      }
+//    }
+////    TextFieldObjectInput<String> originalAlbumTrackReferenceTrackControl = componentFactory.createTextFieldObjectInput(null, originalAlbumTrackReferenceTrackTitle, 300, true, null);
+//    Button button = componentFactory.createButton(originalAlbumTrackReferenceAlbumId + ":" + originalAlbumTrackReferenceTrackTitle, "click to select the track on the original album");
+//    button.setOnAction(e -> {
+//      if (track != null) {
+//        List<Track> options = new ArrayList<>();
+//        for (Track aTrack: mediaDb.getTracks()) {
+//          if (aTrack.getTitle() != null  &&  aTrack.getTitle().equals(track.getTitle())) {
+//            LOGGER.severe("Adding track option: " + aTrack);
+//            options.add(aTrack);
+//          }
+//        }
+//        ChoiceDialog<Object> choiceDialog = componentFactory.createChoiceDialog("Track selection", "Select the original album track", "TODO", options.get(0), options);
+//        choiceDialog.showAndWait();
+//        LOGGER.severe("Selected track: " + choiceDialog.getSelectedItem().getClass().getName());
+//        LOGGER.severe("Selected track: " + choiceDialog.getSelectedItem());
+//      }
+//    });
+//    gridPane.add(button, column++, row);
+//    
+//    // Bonus track
+//    String bonusTrackText = null;
+//    if (trackReference != null) {
+//      bonusTrackText = trackReference.getBonusTrack();
+//    }
+//    bonusTrack = componentFactory.createObjectControlTextField(null, bonusTrackText, 300, true, null);
+//    gridPane.add(bonusTrack.ocGetControl(), column++, row);
+//    
+//    /*
+//     * MyTrackInfo
+//     */
+//    MyTrackInfo myTrackInfo = null;
+//    if (trackReference != null) {
+//      myTrackInfo = trackReference.getMyTrackInfo();
+//    }
+//    
+//    // Identification of the disc of the track reference of the Compilation Track Reference (not Yet editable)
+//    Disc compilationTrackReferenceDisc = null;
+//    Album compilationTrackReferenceAlbum = null;
+//    String compilationTrackReferenceAlbumId = null;
+//    String compilationTrackReferenceDiscId = null;
+//    TrackReference compilationTrackReference = null;
+//    
+//    if (myTrackInfo != null) {
+//      compilationTrackReference = myTrackInfo.getCompilationTrackReference();
+//    }
+//    
+//    if (compilationTrackReference != null) {
+//      compilationTrackReferenceDisc = compilationTrackReference.getDisc();
+//      compilationTrackReferenceAlbum = compilationTrackReferenceDisc.getAlbum();
+//      compilationTrackReferenceDiscId = compilationTrackReferenceDisc.getTitle();
+//      if (compilationTrackReferenceDiscId == null) {
+//        compilationTrackReferenceDiscId = String.valueOf(compilationTrackReferenceDisc.getDiscNr());
+//      }
+//    }
+//
+//    if (compilationTrackReferenceAlbum != null) {
+//      compilationTrackReferenceAlbumId = compilationTrackReferenceAlbum.getArtistAndTitle();
+//      if (compilationTrackReferenceAlbum.isMultiDiscAlbum() &&  (compilationTrackReferenceDiscId != null)) {
+//        compilationTrackReferenceAlbumId = compilationTrackReferenceAlbumId + " - " + compilationTrackReferenceDiscId;
+//      }
+//    }
+//    ObjectControlTextField<String> compilationTrackReferenceDiscControl = componentFactory.createObjectControlTextField(null, compilationTrackReferenceAlbumId, 300, true, null);
+//    gridPane.add(compilationTrackReferenceDiscControl.ocGetControl(), column++, row);
+//    
+//    // Identification of the track of the track reference of the Compilation Track Reference (not Yet editable)
+//    String compilationTrackReferenceTrackTitle = null;
+//    if (compilationTrackReference != null) {
+//      Track compilationTrackReferenceTrack = compilationTrackReference.getTrack();
+//      if (compilationTrackReferenceTrack != null) {
+//        compilationTrackReferenceTrackTitle = compilationTrackReferenceTrack.getTitle();
+//      }
+//    }
+//    ObjectControlTextField<String> compilationTrackReferenceTrackControl = componentFactory.createObjectControlTextField(null, compilationTrackReferenceTrackTitle, 300, true, null);
+//    gridPane.add(compilationTrackReferenceTrackControl.ocGetControl(), column++, row);
+//    
+//    // MyTrackInfo:Collection
+//    collectionComboBox = componentFactory.createObjectControlEnumComboBox(goedegep.media.mediadb.model.Collection.NOT_SET, goedegep.media.mediadb.model.Collection.NOT_SET, MediadbPackage.eINSTANCE.getCollection(), true, "If applicable, select the collection in which this track resides");
+//    goedegep.media.mediadb.model.Collection collection = null;
+//    if (myTrackInfo != null) {
+//      collection = myTrackInfo.getCollection();
+//    }
+//    collectionComboBox.ocSetValue(collection);
+//    gridPane.add(collectionComboBox.ocGetControl(), column++, row);
+//    
+//    // MyTrackInfo:IWant
+//    iWantComboBox = componentFactory.createObjectControlEnumComboBox(IWant.NOT_SET, IWant.NOT_SET, MediadbPackage.eINSTANCE.getIWant(), true, "Select whether you want this track or not");
+//    IWant iWant = null;
+//    if (myTrackInfo != null) {
+//      iWant = myTrackInfo.getIWant();
+//    }
+//    iWantComboBox.ocSetValue(iWant);
+//    gridPane.add(iWantComboBox.ocGetControl(), column++, row);
+//    
+//    // IHaveOn
+//    if (myTrackInfo != null) {
+//      for (MediumInfo iHaveOnMediumInfo: myTrackInfo.getIHaveOn()) {
+//        iHaveOnMediumInfoControlsList.add(new MediumInfoControls(customization, gridPane, row, column, iHaveOnMediumInfo));
+//        column += 4;
+//      }
+//    }
+//    
+//    // New 'I Have on button'
+//    Button newIHaveOnButton = componentFactory.createButton("+", "Add an extra 'I have on'");
+//    newIHaveOnButton.setOnAction(e -> {
+//      gridPane.getChildren().remove(newIHaveOnButton);
+//      iHaveOnMediumInfoControlsList.add(new MediumInfoControls(customization, gridPane, myRow, column, MediadbFactory.eINSTANCE.createMediumInfo()));
+//      column += 4;
+//      gridPane.add(newIHaveOnButton, column, row);
+//    });
+//    gridPane.add(newIHaveOnButton, column, row);
+    
+    fillControlsFromObject();
+  }
+  
+//  /**
+//   * Constructor
+//   * 
+//   * @param customization The GUI customization
+//   * @param gridPane The GridPane to which the controls are to be added.
+//   * @param row The row in the gridPane at which the controls are to be added.
+//   * @param trackReference the TrackReference to which the controls apply. This shall be part of a Disc, which shall be part of an Album
+//   * @param mediaDb the media database
+//   */
+//  TrackReferenceAndMyTrackInfoControls(CustomizationFx customization, GridPane gridPane, int row, TrackInfo trackInfo, AlbumType albumType, MediaDb mediaDb) {
+//    super(false);
+//    this.trackReference = null;
+//    myRow = row;
+//    
+//    componentFactory = customization.getComponentFactoryFx();
+//        
+////    if (trackInfo != null) {
+////      track = trackInfo.getTrack();
+////    }
+//    
+//
+//    
+//    /*
+//     * TrackReference fields 
+//     */
+//    
+//    // Track number not editable, for reference only
+//    String trackNrText = null;
+////    if (trackReference != null) {
+////      int trackNr = trackReference.getTrackNr();
+////      trackNrText = String.valueOf(trackNr);
+////    }
+//    Label label = componentFactory.createLabel(trackNrText, 30);
+//    gridPane.add(label, column++, row);
+//    
+//    // Track text/reference
+//    Node trackTextOrReferenceNode = null;
+//    if (albumType == AlbumType.NORMAL_ALBUM) {
+//      trackTextOrReferenceNode = createTrackNodeForNormalAlbum(trackInfo.trackTitle());
+//      gridPane.add(trackTextOrReferenceNode, column++, row);
+//    } else {
+//      column++;
+//    }
+////    String trackText = createTrackText();
+////    Button referredTrackButton = componentFactory.createButton(trackText, "click to select the track (on the original album)");
+////    referredTrackButton.setOnAction(e -> {
+////      if (track != null) {
+////        List<TrackWrapper> options = new ArrayList<>();
+////        for (Track aTrack: mediaDb.getTracks()) {
+////          if (aTrack.getTitle() != null  &&  aTrack.getTitle().equals(track.getTitle())) {
+////            LOGGER.info("Adding track option: " + aTrack);
+////            options.add(new TrackWrapper(aTrack));
+////          }
+////        }
+////        TrackWrapper[] trackWrapperOptions = new TrackWrapper[options.size()];
+////        int i = 0;
+////        for (TrackWrapper trackWrapper: options) {
+////          trackWrapperOptions[i++] = trackWrapper;
+////        }
+////        TrackWrapper defaultTrack = options.get(0);
+////        ChoiceDialog<TrackWrapper> choiceDialog = componentFactory.createChoiceDialog("Track selection", "Select the original album track", "TODO", defaultTrack, trackWrapperOptions);
+////        choiceDialog.showAndWait();
+////        LOGGER.info("Selected track: " + choiceDialog.getSelectedItem());
+////        TrackWrapper selectedTrackWrapper = choiceDialog.getSelectedItem();
+////        Track selectedTrack = selectedTrackWrapper.getTrack();
+////        LOGGER.severe("Before referred by: " + track.getReferredBy().size());
+////        LOGGER.severe("Contains: " + track.getReferredBy().contains(trackReference));
+//////        track.getReferredBy().remove(trackReference);
+////        LOGGER.severe("After referred by: " + track.getReferredBy().size());
+//////        trackReference.setTrack(selectedTrack);
+////        track = selectedTrack;
+////        referredTrackButton.setText(createTrackText());
+//////        if (track.getReferredBy().isEmpty()) {   // TODO This may only be removed when the album is updated.
+//////          LOGGER.severe("Removing track: " + track);
+//////          mediaDb.getTracks().remove(track);
+//////        } else {
+//////          LOGGER.severe("Track still referred by: " + track.getReferredBy());
+//////        }
+////      }
+////    });
+////    gridPane.add(referredTrackButton, column++, row);
+//    
+//    // Identification of the disc of the track reference of the Original Track Reference (not Yet editable)
+//    Disc originalAlbumTrackReferenceDisc = null;
+//    Album originalAlbumTrackReferenceAlbum = null;
+//    String originalAlbumTrackReferenceAlbumId = null;
+//    String originalAlbumTrackReferenceDiscId = null;
+//    TrackReference originalTrackReference = null;
+//    if (trackReference != null) {
+//      originalTrackReference = trackReference.getOriginalAlbumTrackReference();
+//    }
+//    
+//    if (originalTrackReference != null) {
+//      originalAlbumTrackReferenceDisc = originalTrackReference.getDisc();
+//      originalAlbumTrackReferenceAlbum = originalAlbumTrackReferenceDisc.getAlbum();
+//      originalAlbumTrackReferenceDiscId = originalAlbumTrackReferenceDisc.getTitle();
+//      if (originalAlbumTrackReferenceDiscId == null) {
+//        originalAlbumTrackReferenceDiscId = String.valueOf(originalAlbumTrackReferenceDisc.getDiscNr());
+//      }
+//    }
+//
+//    if (originalAlbumTrackReferenceAlbum != null) {
+//      originalAlbumTrackReferenceAlbumId = originalAlbumTrackReferenceAlbum.getArtistAndTitle();
+//      if (originalAlbumTrackReferenceAlbum.isMultiDiscAlbum() &&  (originalAlbumTrackReferenceDiscId != null)) {
+//        originalAlbumTrackReferenceAlbumId = originalAlbumTrackReferenceAlbumId + " - " + originalAlbumTrackReferenceDiscId;
+//      }
+//    }
+////    TextFieldObjectInput<String> originalAlbumTrackReferenceDiscControl = componentFactory.createTextFieldObjectInput(null, originalAlbumTrackReferenceAlbumId, 300, true, null);
+////    gridPane.add(originalAlbumTrackReferenceDiscControl, column++, row);
+//    
+//    // Identification of the track of the track reference of the Original Track Reference (not Yet editable)
+//    String originalAlbumTrackReferenceTrackTitle = null;
+//    if (originalTrackReference != null) {
+//      Track originalAlbumTrackReferenceTrack = originalTrackReference.getTrack();
+//      if (originalAlbumTrackReferenceTrack != null) {
+//        originalAlbumTrackReferenceTrackTitle = originalAlbumTrackReferenceTrack.getTitle();
+//      }
+//    }
+////    TextFieldObjectInput<String> originalAlbumTrackReferenceTrackControl = componentFactory.createTextFieldObjectInput(null, originalAlbumTrackReferenceTrackTitle, 300, true, null);
+//    Button button = componentFactory.createButton(originalAlbumTrackReferenceAlbumId + ":" + originalAlbumTrackReferenceTrackTitle, "click to select the track on the original album");
+//    button.setOnAction(e -> {
+//      if (track != null) {
+//        List<Track> options = new ArrayList<>();
+//        for (Track aTrack: mediaDb.getTracks()) {
+//          if (aTrack.getTitle() != null  &&  aTrack.getTitle().equals(track.getTitle())) {
+//            LOGGER.severe("Adding track option: " + aTrack);
+//            options.add(aTrack);
+//          }
+//        }
+//        ChoiceDialog<Object> choiceDialog = componentFactory.createChoiceDialog("Track selection", "Select the original album track", "TODO", options.get(0), options);
+//        choiceDialog.showAndWait();
+//        LOGGER.severe("Selected track: " + choiceDialog.getSelectedItem().getClass().getName());
+//        LOGGER.severe("Selected track: " + choiceDialog.getSelectedItem());
+//      }
+//    });
+//    gridPane.add(button, column++, row);
+//    
+//    // Bonus track
+//    String bonusTrackText = null;
+//    if (trackReference != null) {
+//      bonusTrackText = trackReference.getBonusTrack();
+//    }
+//    bonusTrack = componentFactory.createObjectControlTextField(null, bonusTrackText, 300, true, null);
+//    gridPane.add(bonusTrack.ocGetControl(), column++, row);
+//    
+//    /*
+//     * MyTrackInfo
+//     */
+//    MyTrackInfo myTrackInfo = null;
+//    if (trackReference != null) {
+//      myTrackInfo = trackReference.getMyTrackInfo();
+//    }
+//    
+//    // Identification of the disc of the track reference of the Compilation Track Reference (not Yet editable)
+//    Disc compilationTrackReferenceDisc = null;
+//    Album compilationTrackReferenceAlbum = null;
+//    String compilationTrackReferenceAlbumId = null;
+//    String compilationTrackReferenceDiscId = null;
+//    TrackReference compilationTrackReference = null;
+//    
+//    if (myTrackInfo != null) {
+//      compilationTrackReference = myTrackInfo.getCompilationTrackReference();
+//    }
+//    
+//    if (compilationTrackReference != null) {
+//      compilationTrackReferenceDisc = compilationTrackReference.getDisc();
+//      compilationTrackReferenceAlbum = compilationTrackReferenceDisc.getAlbum();
+//      compilationTrackReferenceDiscId = compilationTrackReferenceDisc.getTitle();
+//      if (compilationTrackReferenceDiscId == null) {
+//        compilationTrackReferenceDiscId = String.valueOf(compilationTrackReferenceDisc.getDiscNr());
+//      }
+//    }
+//
+//    if (compilationTrackReferenceAlbum != null) {
+//      compilationTrackReferenceAlbumId = compilationTrackReferenceAlbum.getArtistAndTitle();
+//      if (compilationTrackReferenceAlbum.isMultiDiscAlbum() &&  (compilationTrackReferenceDiscId != null)) {
+//        compilationTrackReferenceAlbumId = compilationTrackReferenceAlbumId + " - " + compilationTrackReferenceDiscId;
+//      }
+//    }
+//    ObjectControlTextField<String> compilationTrackReferenceDiscControl = componentFactory.createObjectControlTextField(null, compilationTrackReferenceAlbumId, 300, true, null);
+//    gridPane.add(compilationTrackReferenceDiscControl.ocGetControl(), column++, row);
+//    
+//    // Identification of the track of the track reference of the Compilation Track Reference (not Yet editable)
+//    String compilationTrackReferenceTrackTitle = null;
+//    if (compilationTrackReference != null) {
+//      Track compilationTrackReferenceTrack = compilationTrackReference.getTrack();
+//      if (compilationTrackReferenceTrack != null) {
+//        compilationTrackReferenceTrackTitle = compilationTrackReferenceTrack.getTitle();
+//      }
+//    }
+//    ObjectControlTextField<String> compilationTrackReferenceTrackControl = componentFactory.createObjectControlTextField(null, compilationTrackReferenceTrackTitle, 300, true, null);
+//    gridPane.add(compilationTrackReferenceTrackControl.ocGetControl(), column++, row);
+//    
+//    // MyTrackInfo:Collection
+//    collectionComboBox = componentFactory.createObjectControlEnumComboBox(goedegep.media.mediadb.model.Collection.NOT_SET, goedegep.media.mediadb.model.Collection.NOT_SET, MediadbPackage.eINSTANCE.getCollection(), true, "If applicable, select the collection in which this track resides");
+//    goedegep.media.mediadb.model.Collection collection = null;
+//    if (myTrackInfo != null) {
+//      collection = myTrackInfo.getCollection();
+//    }
+//    collectionComboBox.ocSetValue(collection);
+//    gridPane.add(collectionComboBox.ocGetControl(), column++, row);
+//    
+//    // MyTrackInfo:IWant
+//    iWantComboBox = componentFactory.createObjectControlEnumComboBox(IWant.NOT_SET, IWant.NOT_SET, MediadbPackage.eINSTANCE.getIWant(), true, "Select whether you want this track or not");
+//    IWant iWant = null;
+//    if (myTrackInfo != null) {
+//      iWant = myTrackInfo.getIWant();
+//    }
+//    iWantComboBox.ocSetValue(iWant);
+//    gridPane.add(iWantComboBox.ocGetControl(), column++, row);
+//    
+//    // IHaveOn
+//    if (myTrackInfo != null) {
+//      for (MediumInfo iHaveOnMediumInfo: myTrackInfo.getIHaveOn()) {
+//        iHaveOnMediumInfoControlsList.add(new MediumInfoControls(customization, gridPane, row, column, iHaveOnMediumInfo));
+//        column += 4;
+//      }
+//    }
+//    
+//    // New 'I Have on button'
+//    Button newIHaveOnButton = componentFactory.createButton("+", "Add an extra 'I have on'");
+//    newIHaveOnButton.setOnAction(e -> {
+//      gridPane.getChildren().remove(newIHaveOnButton);
+//      iHaveOnMediumInfoControlsList.add(new MediumInfoControls(customization, gridPane, myRow, column, MediadbFactory.eINSTANCE.createMediumInfo()));
+//      column += 4;
+//      gridPane.add(newIHaveOnButton, column, row);
+//    });
+//    gridPane.add(newIHaveOnButton, column, row);
+//  }
+  
+  private void fillControlsFromObject() {
+    setControlsToDefaultValues();
+    
+    gridPane.getChildren().removeIf(node -> GridPane.getRowIndex(node) == myRow);
+        
+    column = 0;
     
     /*
      * TrackReference fields 
      */
     
-    // Track number not editable, for reference only
-    String trackNrText = null;
-    if (trackReference != null) {
-      int trackNr = trackReference.getTrackNr();
-      trackNrText = String.valueOf(trackNr);
-    }
-    Label label = componentFactory.createLabel(trackNrText, 30);
-    gridPane.add(label, column++, row);
+    addTrackNrField();
     
     // Track text/reference
     Node trackTextOrReferenceNode = null;
-    if (albumType == AlbumType.NORMAL) {
+    if (albumType == AlbumType.NORMAL_ALBUM) {
       trackTextOrReferenceNode = createTrackNodeForNormalAlbum(trackReference);
-    gridPane.add(trackTextOrReferenceNode, column++, row);
+    gridPane.add(trackTextOrReferenceNode, column++, myRow);
     } else {
       column++;
     }
@@ -233,7 +696,7 @@ class TrackReferenceAndMyTrackInfoControls {
         LOGGER.severe("Selected track: " + choiceDialog.getSelectedItem());
       }
     });
-    gridPane.add(button, column++, row);
+    gridPane.add(button, column++, myRow);
     
     // Bonus track
     String bonusTrackText = null;
@@ -241,7 +704,7 @@ class TrackReferenceAndMyTrackInfoControls {
       bonusTrackText = trackReference.getBonusTrack();
     }
     bonusTrack = componentFactory.createObjectControlTextField(null, bonusTrackText, 300, true, null);
-    gridPane.add(bonusTrack.ocGetControl(), column++, row);
+    gridPane.add(bonusTrack.ocGetControl(), column++, myRow);
     
     /*
      * MyTrackInfo
@@ -278,7 +741,7 @@ class TrackReferenceAndMyTrackInfoControls {
       }
     }
     ObjectControlTextField<String> compilationTrackReferenceDiscControl = componentFactory.createObjectControlTextField(null, compilationTrackReferenceAlbumId, 300, true, null);
-    gridPane.add(compilationTrackReferenceDiscControl.ocGetControl(), column++, row);
+    gridPane.add(compilationTrackReferenceDiscControl.ocGetControl(), column++, myRow);
     
     // Identification of the track of the track reference of the Compilation Track Reference (not Yet editable)
     String compilationTrackReferenceTrackTitle = null;
@@ -289,7 +752,7 @@ class TrackReferenceAndMyTrackInfoControls {
       }
     }
     ObjectControlTextField<String> compilationTrackReferenceTrackControl = componentFactory.createObjectControlTextField(null, compilationTrackReferenceTrackTitle, 300, true, null);
-    gridPane.add(compilationTrackReferenceTrackControl.ocGetControl(), column++, row);
+    gridPane.add(compilationTrackReferenceTrackControl.ocGetControl(), column++, myRow);
     
     // MyTrackInfo:Collection
     collectionComboBox = componentFactory.createObjectControlEnumComboBox(goedegep.media.mediadb.model.Collection.NOT_SET, goedegep.media.mediadb.model.Collection.NOT_SET, MediadbPackage.eINSTANCE.getCollection(), true, "If applicable, select the collection in which this track resides");
@@ -298,7 +761,7 @@ class TrackReferenceAndMyTrackInfoControls {
       collection = myTrackInfo.getCollection();
     }
     collectionComboBox.ocSetValue(collection);
-    gridPane.add(collectionComboBox.ocGetControl(), column++, row);
+    gridPane.add(collectionComboBox.ocGetControl(), column++, myRow);
     
     // MyTrackInfo:IWant
     iWantComboBox = componentFactory.createObjectControlEnumComboBox(IWant.NOT_SET, IWant.NOT_SET, MediadbPackage.eINSTANCE.getIWant(), true, "Select whether you want this track or not");
@@ -307,12 +770,12 @@ class TrackReferenceAndMyTrackInfoControls {
       iWant = myTrackInfo.getIWant();
     }
     iWantComboBox.ocSetValue(iWant);
-    gridPane.add(iWantComboBox.ocGetControl(), column++, row);
+    gridPane.add(iWantComboBox.ocGetControl(), column++, myRow);
     
     // IHaveOn
     if (myTrackInfo != null) {
       for (MediumInfo iHaveOnMediumInfo: myTrackInfo.getIHaveOn()) {
-        iHaveOnMediumInfoControlsList.add(new MediumInfoControls(customization, gridPane, row, column, iHaveOnMediumInfo));
+        iHaveOnMediumInfoControlsList.add(new MediumInfoControls(customization, gridPane, myRow, column, iHaveOnMediumInfo));
         column += 4;
       }
     }
@@ -323,17 +786,250 @@ class TrackReferenceAndMyTrackInfoControls {
       gridPane.getChildren().remove(newIHaveOnButton);
       iHaveOnMediumInfoControlsList.add(new MediumInfoControls(customization, gridPane, myRow, column, MediadbFactory.eINSTANCE.createMediumInfo()));
       column += 4;
-      gridPane.add(newIHaveOnButton, column, row);
+      gridPane.add(newIHaveOnButton, column, myRow);
     });
-    gridPane.add(newIHaveOnButton, column, row);
+    gridPane.add(newIHaveOnButton, column, myRow);
+   
   }
   
+  public void fillControlsFromTrackInfo(TrackInfo trackInfo) {
+    gridPane.getChildren().removeIf(node -> GridPane.getRowIndex(node) == myRow);
+    
+    column = 0;
+    
+    /*
+     * TrackReference fields 
+     */
+    
+    addTrackNrField();
+    
+    // Track text/reference
+    if (albumType == AlbumType.NORMAL_ALBUM) {
+      // For a normal album the track title is shown.
+      trackNameTextField = createTrackNodeForNormalAlbum(trackInfo.trackTitle());
+      gridPane.add(trackNameTextField, column++, myRow);
+    } else {
+      column++;
+    }
+//    String trackText = createTrackText();
+//    Button referredTrackButton = componentFactory.createButton(trackText, "click to select the track (on the original album)");
+//    referredTrackButton.setOnAction(e -> {
+//      if (track != null) {
+//        List<TrackWrapper> options = new ArrayList<>();
+//        for (Track aTrack: mediaDb.getTracks()) {
+//          if (aTrack.getTitle() != null  &&  aTrack.getTitle().equals(track.getTitle())) {
+//            LOGGER.info("Adding track option: " + aTrack);
+//            options.add(new TrackWrapper(aTrack));
+//          }
+//        }
+//        TrackWrapper[] trackWrapperOptions = new TrackWrapper[options.size()];
+//        int i = 0;
+//        for (TrackWrapper trackWrapper: options) {
+//          trackWrapperOptions[i++] = trackWrapper;
+//        }
+//        TrackWrapper defaultTrack = options.get(0);
+//        ChoiceDialog<TrackWrapper> choiceDialog = componentFactory.createChoiceDialog("Track selection", "Select the original album track", "TODO", defaultTrack, trackWrapperOptions);
+//        choiceDialog.showAndWait();
+//        LOGGER.info("Selected track: " + choiceDialog.getSelectedItem());
+//        TrackWrapper selectedTrackWrapper = choiceDialog.getSelectedItem();
+//        Track selectedTrack = selectedTrackWrapper.getTrack();
+//        LOGGER.severe("Before referred by: " + track.getReferredBy().size());
+//        LOGGER.severe("Contains: " + track.getReferredBy().contains(trackReference));
+////        track.getReferredBy().remove(trackReference);
+//        LOGGER.severe("After referred by: " + track.getReferredBy().size());
+////        trackReference.setTrack(selectedTrack);
+//        track = selectedTrack;
+//        referredTrackButton.setText(createTrackText());
+////        if (track.getReferredBy().isEmpty()) {   // TODO This may only be removed when the album is updated.
+////          LOGGER.severe("Removing track: " + track);
+////          mediaDb.getTracks().remove(track);
+////        } else {
+////          LOGGER.severe("Track still referred by: " + track.getReferredBy());
+////        }
+//      }
+//    });
+//    gridPane.add(referredTrackButton, column++, row);
+    
+    // Identification of the disc of the track reference of the Original Track Reference (not Yet editable)
+    Disc originalAlbumTrackReferenceDisc = null;
+    Album originalAlbumTrackReferenceAlbum = null;
+    String originalAlbumTrackReferenceAlbumId = null;
+    String originalAlbumTrackReferenceDiscId = null;
+    TrackReference originalTrackReference = null;
+    if (trackReference != null) {
+      originalTrackReference = trackReference.getOriginalAlbumTrackReference();
+    }
+    
+    if (originalTrackReference != null) {
+      originalAlbumTrackReferenceDisc = originalTrackReference.getDisc();
+      originalAlbumTrackReferenceAlbum = originalAlbumTrackReferenceDisc.getAlbum();
+      originalAlbumTrackReferenceDiscId = originalAlbumTrackReferenceDisc.getTitle();
+      if (originalAlbumTrackReferenceDiscId == null) {
+        originalAlbumTrackReferenceDiscId = String.valueOf(originalAlbumTrackReferenceDisc.getDiscNr());
+      }
+    }
+
+    if (originalAlbumTrackReferenceAlbum != null) {
+      originalAlbumTrackReferenceAlbumId = originalAlbumTrackReferenceAlbum.getArtistAndTitle();
+      if (originalAlbumTrackReferenceAlbum.isMultiDiscAlbum() &&  (originalAlbumTrackReferenceDiscId != null)) {
+        originalAlbumTrackReferenceAlbumId = originalAlbumTrackReferenceAlbumId + " - " + originalAlbumTrackReferenceDiscId;
+      }
+    }
+//    TextFieldObjectInput<String> originalAlbumTrackReferenceDiscControl = componentFactory.createTextFieldObjectInput(null, originalAlbumTrackReferenceAlbumId, 300, true, null);
+//    gridPane.add(originalAlbumTrackReferenceDiscControl, column++, row);
+    
+    // Identification of the track of the track reference of the Original Track Reference (not Yet editable)
+    String originalAlbumTrackReferenceTrackTitle = null;
+    if (originalTrackReference != null) {
+      Track originalAlbumTrackReferenceTrack = originalTrackReference.getTrack();
+      if (originalAlbumTrackReferenceTrack != null) {
+        originalAlbumTrackReferenceTrackTitle = originalAlbumTrackReferenceTrack.getTitle();
+      }
+    }
+//    TextFieldObjectInput<String> originalAlbumTrackReferenceTrackControl = componentFactory.createTextFieldObjectInput(null, originalAlbumTrackReferenceTrackTitle, 300, true, null);
+    Button button = componentFactory.createButton(originalAlbumTrackReferenceAlbumId + ":" + originalAlbumTrackReferenceTrackTitle, "click to select the track on the original album");
+    button.setOnAction(e -> {
+      if (track != null) {
+        List<Track> options = new ArrayList<>();
+        for (Track aTrack: mediaDb.getTracks()) {
+          if (aTrack.getTitle() != null  &&  aTrack.getTitle().equals(track.getTitle())) {
+            LOGGER.severe("Adding track option: " + aTrack);
+            options.add(aTrack);
+          }
+        }
+        ChoiceDialog<Object> choiceDialog = componentFactory.createChoiceDialog("Track selection", "Select the original album track", "TODO", options.get(0), options);
+        choiceDialog.showAndWait();
+        LOGGER.severe("Selected track: " + choiceDialog.getSelectedItem().getClass().getName());
+        LOGGER.severe("Selected track: " + choiceDialog.getSelectedItem());
+      }
+    });
+    gridPane.add(button, column++, myRow);
+    
+    // Bonus track
+    String bonusTrackText = null;
+    if (trackReference != null) {
+      bonusTrackText = trackReference.getBonusTrack();
+    }
+    bonusTrack = componentFactory.createObjectControlTextField(null, bonusTrackText, 300, true, null);
+    gridPane.add(bonusTrack.ocGetControl(), column++, myRow);
+    
+    /*
+     * MyTrackInfo
+     */
+    MyTrackInfo myTrackInfo = null;
+    if (trackReference != null) {
+      myTrackInfo = trackReference.getMyTrackInfo();
+    }
+    
+    // Identification of the disc of the track reference of the Compilation Track Reference (not Yet editable)
+    Disc compilationTrackReferenceDisc = null;
+    Album compilationTrackReferenceAlbum = null;
+    String compilationTrackReferenceAlbumId = null;
+    String compilationTrackReferenceDiscId = null;
+    TrackReference compilationTrackReference = null;
+    
+    if (myTrackInfo != null) {
+      compilationTrackReference = myTrackInfo.getCompilationTrackReference();
+    }
+    
+    if (compilationTrackReference != null) {
+      compilationTrackReferenceDisc = compilationTrackReference.getDisc();
+      compilationTrackReferenceAlbum = compilationTrackReferenceDisc.getAlbum();
+      compilationTrackReferenceDiscId = compilationTrackReferenceDisc.getTitle();
+      if (compilationTrackReferenceDiscId == null) {
+        compilationTrackReferenceDiscId = String.valueOf(compilationTrackReferenceDisc.getDiscNr());
+      }
+    }
+
+    if (compilationTrackReferenceAlbum != null) {
+      compilationTrackReferenceAlbumId = compilationTrackReferenceAlbum.getArtistAndTitle();
+      if (compilationTrackReferenceAlbum.isMultiDiscAlbum() &&  (compilationTrackReferenceDiscId != null)) {
+        compilationTrackReferenceAlbumId = compilationTrackReferenceAlbumId + " - " + compilationTrackReferenceDiscId;
+      }
+    }
+    ObjectControlTextField<String> compilationTrackReferenceDiscControl = componentFactory.createObjectControlTextField(null, compilationTrackReferenceAlbumId, 300, true, null);
+    gridPane.add(compilationTrackReferenceDiscControl.ocGetControl(), column++, myRow);
+    
+    // Identification of the track of the track reference of the Compilation Track Reference (not Yet editable)
+    String compilationTrackReferenceTrackTitle = null;
+    if (compilationTrackReference != null) {
+      Track compilationTrackReferenceTrack = compilationTrackReference.getTrack();
+      if (compilationTrackReferenceTrack != null) {
+        compilationTrackReferenceTrackTitle = compilationTrackReferenceTrack.getTitle();
+      }
+    }
+    ObjectControlTextField<String> compilationTrackReferenceTrackControl = componentFactory.createObjectControlTextField(null, compilationTrackReferenceTrackTitle, 300, true, null);
+    gridPane.add(compilationTrackReferenceTrackControl.ocGetControl(), column++, myRow);
+    
+    // MyTrackInfo:Collection
+    collectionComboBox = componentFactory.createObjectControlEnumComboBox(goedegep.media.mediadb.model.Collection.NOT_SET, goedegep.media.mediadb.model.Collection.NOT_SET, MediadbPackage.eINSTANCE.getCollection(), true, "If applicable, select the collection in which this track resides");
+    goedegep.media.mediadb.model.Collection collection = null;
+    if (myTrackInfo != null) {
+      collection = myTrackInfo.getCollection();
+    }
+    collectionComboBox.ocSetValue(collection);
+    gridPane.add(collectionComboBox.ocGetControl(), column++, myRow);
+    
+    // MyTrackInfo:IWant
+    iWantComboBox = componentFactory.createObjectControlEnumComboBox(IWant.NOT_SET, IWant.NOT_SET, MediadbPackage.eINSTANCE.getIWant(), true, "Select whether you want this track or not");
+    IWant iWant = null;
+    if (myTrackInfo != null) {
+      iWant = myTrackInfo.getIWant();
+    }
+    iWantComboBox.ocSetValue(iWant);
+    gridPane.add(iWantComboBox.ocGetControl(), column++, myRow);
+    
+    // IHaveOn
+    if (myTrackInfo != null) {
+      for (MediumInfo iHaveOnMediumInfo: myTrackInfo.getIHaveOn()) {
+        iHaveOnMediumInfoControlsList.add(new MediumInfoControls(customization, gridPane, myRow, column, iHaveOnMediumInfo));
+        column += 4;
+      }
+    }
+    
+    // New 'I Have on button'
+    Button newIHaveOnButton = componentFactory.createButton("+", "Add an extra 'I have on'");
+    newIHaveOnButton.setOnAction(e -> {
+      gridPane.getChildren().remove(newIHaveOnButton);
+      iHaveOnMediumInfoControlsList.add(new MediumInfoControls(customization, gridPane, myRow, column, MediadbFactory.eINSTANCE.createMediumInfo()));
+      column += 4;
+      gridPane.add(newIHaveOnButton, column, myRow);
+    });
+    gridPane.add(newIHaveOnButton, column, myRow);
+  }
+  
+  /**
+   * Add the track number to the row.
+   * <p>
+   * The track number is not editable, it's for reference only.
+   */
+  private void addTrackNrField() {
+    int myTrackNr = trackReferenceControls.indexOf(this) + 1;
+    String trackNrText = String.valueOf(myTrackNr);
+    Label label = componentFactory.createLabel(trackNrText, 30);
+    gridPane.add(label, column++, myRow);
+  }
+  
+  private void setControlsToDefaultValues() {
+    // Currently no action as we are rebuilding the complete row.
+    
+  }
+
   private Node createTrackNodeForNormalAlbum(TrackReference trackReference) {
     TextField textField = componentFactory.createTextField(300, "Enter the track name");
     if (trackReference != null) {
       Track track = trackReference.getTrack();
-      textField.setText(track.getTitle());
+      if (track != null) {
+        textField.setText(track.getTitle());
+      }
     }
+    
+    return textField;
+  }
+  
+  private TextField createTrackNodeForNormalAlbum(String trackTitle) {
+    TextField textField = componentFactory.createTextField(300, "Enter the track name");
+    textField.setText(trackTitle);
     
     return textField;
   }
@@ -408,14 +1104,14 @@ class TrackReferenceAndMyTrackInfoControls {
 //    return null;
 //  }
 
-  /**
-   * Get the selected track (which may be the original track if not changed by the user).
-   * 
-   * @return the selected Track
-   */
-  public Object getTrack() {
-    return track;
-  }
+//  /**
+//   * Get the selected track (which may be the original track if not changed by the user).
+//   * 
+//   * @return the selected Track
+//   */
+//  public Object getTrack() {
+//    return track;
+//  }
 
   /**
    * Get the TrackReference to which this panel applies.
@@ -454,6 +1150,104 @@ class TrackReferenceAndMyTrackInfoControls {
     }
     
     return iWant;
+  }
+
+  @Override
+  public void ocSetValue(TrackReference objectValue) {
+    // TODO Auto-generated method stub
+    
+  }
+
+  @Override
+  public TrackReference ocGetValue() {
+//    Track tr = mediaDb.getTrack();
+    Track aTrack = getTrack();
+    if (aTrack == null) {
+      aTrack = MEDIA_DB_FACTORY.createTrack();
+      aTrack.setTitle(trackNameTextField.getText());
+      aTrack.setArtist(trackReference.getDisc().getAlbum().getArtist());
+      aTrack.setOriginalDisc(trackReference.getDisc());
+      mediaDb.getTracks().add(aTrack);
+    }
+    trackReference.setTrack(aTrack);
+    // If the Track has changed, the original Track that was referred to may become obsolete. If so we delete it.
+//    Track originalTrack = trackReference.getTrack();
+//    EmfUtil.setFeatureValue(trackReference, MEDIA_DB_PACKAGE.getTrackReference_Track(), trackReferencePanel.getTrack());
+//    if (originalTrack.getReferredBy().isEmpty()) {
+//      mediaDb.getTracks().remove(originalTrack);
+//    }
+    
+    EmfUtil.setFeatureValue(trackReference, MEDIA_DB_PACKAGE.getTrackReference_BonusTrack(), getBonusTrack());
+    
+    boolean isMyTrackInfoNeeded = isMyTrackInfoNeeded();
+    if (isMyTrackInfoNeeded) {
+      EmfUtil.setFeatureValue(trackReference.getMyTrackInfo(), MEDIA_DB_PACKAGE.getMyTrackInfo_Collection(), getCollection());
+      EmfUtil.setFeatureValue(trackReference.getMyTrackInfo(), MEDIA_DB_PACKAGE.getMyTrackInfo_IWant(), getIWant());
+    }
+    
+    return trackReference;
+  }
+  
+  public Track getTrack() {
+    for (Track track: mediaDb.getTracks()) {
+      if (track.getTitle() != null &&  track.getTitle().equals(trackNameTextField.getText()) && track.getArtist() != null  &&  track.getArtist().equals(trackReference.getDisc().getAlbum().getArtist())) {
+        return track;
+      }
+    }
+    
+    return null;
+  }
+
+  private boolean isMyTrackInfoNeeded() {
+    if (getCollection() != goedegep.media.mediadb.model.Collection.NOT_SET) {
+      return true;
+    }
+    
+    if (getIWant() != IWant.NOT_SET) {
+      return true;
+    }
+    
+    return false;
+  }
+  
+  @Override
+  public Node ocGetControl() {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  @Override
+  public String ocGetObjectValueAsFormattedText() {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  @Override
+  protected boolean ociDetermineFilledIn() {
+    // TODO Auto-generated method stub
+    return false;
+  }
+
+  @Override
+  protected TrackReference ociDetermineValue() {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  @Override
+  protected void ociSetErrorFeedback(boolean valid) {
+    // TODO Auto-generated method stub
+    
+  }
+
+  @Override
+  protected void ociRedrawValue() {
+    // TODO Auto-generated method stub
+    
+  }
+
+  public Track getNewTrack() {
+    return newTrack;
   }
   
 }

@@ -10,7 +10,7 @@ package goedegep.pctools.filescontrolled.types;
  * <li>EQUAL - Files are equal, based on byte by byte compare. So they have also same MD5 and same size.</li>
  * </ul>
  */
-public enum EqualityType {
+public enum EqualityTypeOld {
   /**
    * files have the same size, but have a different MD5.
    */

@@ -6,6 +6,9 @@ import org.eclipse.emf.ecore.EAttribute;
 
 import goedegep.util.text.Indent;
 
+/**
+ * This class is an {@link EObjectTreeItemDescriptor} for an item of type {@link EObjectTreeItemType.ATTRIBUTE_LIST}.
+ */
 public class EObjectTreeItemAttributeListDescriptor extends EObjectTreeItemDescriptor {
   private EAttribute eAttribute;    // identifies the attribute to which this descriptor applies
   private String labelText;         // Text to display instead of the attribute name.

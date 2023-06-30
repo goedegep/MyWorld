@@ -92,6 +92,7 @@ public class EventsLauncher {
               EMFResource<Events> eventsResource = new EMFResource<>(
                   EventsPackage.eINSTANCE, 
                   () -> EventsFactory.eINSTANCE.createEvents(),
+                  ".xmi",
                   true);
               eventsResource.newEObject();
               try {

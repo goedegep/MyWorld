@@ -84,6 +84,54 @@ public class PCToolsSwitch<T> extends Switch<T> {
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
+      case PCToolsPackage.RESULT: {
+        Result result = (Result)theEObject;
+        T theResult = caseResult(result);
+        if (theResult == null) theResult = defaultCase(theEObject);
+        return theResult;
+      }
+      case PCToolsPackage.UNCONTROLLED_FOLDER_INFO: {
+        UncontrolledFolderInfo uncontrolledFolderInfo = (UncontrolledFolderInfo)theEObject;
+        T result = caseUncontrolledFolderInfo(uncontrolledFolderInfo);
+        if (result == null) result = caseFolderInfo(uncontrolledFolderInfo);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case PCToolsPackage.FILE_INFO: {
+        FileInfo fileInfo = (FileInfo)theEObject;
+        T result = caseFileInfo(fileInfo);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case PCToolsPackage.CONTROLLED_ROOT_FOLDER_INFO: {
+        ControlledRootFolderInfo controlledRootFolderInfo = (ControlledRootFolderInfo)theEObject;
+        T result = caseControlledRootFolderInfo(controlledRootFolderInfo);
+        if (result == null) result = caseControlledFolderInfo(controlledRootFolderInfo);
+        if (result == null) result = caseFolderInfo(controlledRootFolderInfo);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case PCToolsPackage.CONTROLLED_FOLDER_INFO: {
+        ControlledFolderInfo controlledFolderInfo = (ControlledFolderInfo)theEObject;
+        T result = caseControlledFolderInfo(controlledFolderInfo);
+        if (result == null) result = caseFolderInfo(controlledFolderInfo);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case PCToolsPackage.FOLDER_INFO: {
+        FolderInfo folderInfo = (FolderInfo)theEObject;
+        T result = caseFolderInfo(folderInfo);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case PCToolsPackage.UNCONTROLLED_ROOT_FOLDER_INFO: {
+        UncontrolledRootFolderInfo uncontrolledRootFolderInfo = (UncontrolledRootFolderInfo)theEObject;
+        T result = caseUncontrolledRootFolderInfo(uncontrolledRootFolderInfo);
+        if (result == null) result = caseUncontrolledFolderInfo(uncontrolledRootFolderInfo);
+        if (result == null) result = caseFolderInfo(uncontrolledRootFolderInfo);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
       default: return defaultCase(theEObject);
     }
   }
@@ -130,6 +178,111 @@ public class PCToolsSwitch<T> extends Switch<T> {
    * @generated
    */
   public T caseDescribedItem(DescribedItem object) {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>Result</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Result</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseResult(Result object) {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>Uncontrolled Folder Info</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Uncontrolled Folder Info</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseUncontrolledFolderInfo(UncontrolledFolderInfo object) {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>Folder Info</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Folder Info</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseFolderInfo(FolderInfo object) {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>Uncontrolled Root Folder Info</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Uncontrolled Root Folder Info</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseUncontrolledRootFolderInfo(UncontrolledRootFolderInfo object) {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>File Info</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>File Info</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseFileInfo(FileInfo object) {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>Controlled Root Folder Info</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Controlled Root Folder Info</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseControlledRootFolderInfo(ControlledRootFolderInfo object) {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>Controlled Folder Info</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Controlled Folder Info</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseControlledFolderInfo(ControlledFolderInfo object) {
     return null;
   }
 

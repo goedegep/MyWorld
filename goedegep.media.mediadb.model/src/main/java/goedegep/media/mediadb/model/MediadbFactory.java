@@ -58,15 +58,6 @@ public interface MediadbFactory extends EFactory {
   Album createAlbum();
 
   /**
-   * Returns a new object of class '<em>My Compilation</em>'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return a new object of class '<em>My Compilation</em>'.
-   * @generated
-   */
-  MyCompilation createMyCompilation();
-
-  /**
    * Returns a new object of class '<em>Track Reference</em>'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->

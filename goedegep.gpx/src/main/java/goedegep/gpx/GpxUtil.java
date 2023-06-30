@@ -4,6 +4,8 @@ import java.io.FileNotFoundException;
 import java.util.List;
 import java.util.logging.Logger;
 
+import org.eclipse.emf.ecore.resource.ResourceSet;
+
 import goedegep.geo.WGS84BoundingBox;
 import goedegep.geo.WGS84Coordinates;
 import goedegep.gpx.model.DocumentRoot;
@@ -16,6 +18,7 @@ import goedegep.gpx.model.TrksegType;
 import goedegep.gpx.model.WptType;
 import goedegep.gpx.model.util.GPXResourceFactoryImpl;
 import goedegep.util.emf.EMFResource;
+import goedegep.util.emf.EMFResourceSet;
 
 /**
  * This class provides utility methods for GPX data.
@@ -34,8 +37,11 @@ public class GpxUtil {
    * @return an {@link EMFResource} for a GPX file.
    */
   public static EMFResource<DocumentRoot> createEMFResource() {
-    EMFResource<DocumentRoot> gpxResource = new EMFResource<>(GPXPackage.eINSTANCE, () -> GPXFactory.eINSTANCE.createDocumentRoot(), false);
-    gpxResource.addResourceFactoryForFileExtension("gpx", new GPXResourceFactoryImpl());
+    ResourceSet resourceSet = EMFResourceSet.getResourceSet();
+    resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap().put(
+        "gpx", new GPXResourceFactoryImpl());
+
+    EMFResource<DocumentRoot> gpxResource = new EMFResource<>(GPXPackage.eINSTANCE, () -> GPXFactory.eINSTANCE.createDocumentRoot(), ".gpx", false);
     
     return gpxResource;
   }

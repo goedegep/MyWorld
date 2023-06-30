@@ -492,7 +492,7 @@ private static final String         VACATIONS_PROJECT_PATH = "../../../goedegep.
       try {
         RolodexRegistry.rolodexResource = new EMFResource<>(
             RolodexPackage.eINSTANCE,
-            () -> RolodexFactory.eINSTANCE.createRolodex());
+            () -> RolodexFactory.eINSTANCE.createRolodex(), ".xmi");
 //        File rolodexFile = new File(RolodexRegistry.dataDirectory, RolodexRegistry.rolodexFile);
         File rolodexFile = new File(RolodexRegistry.rolodexFile);
         RolodexRegistry.rolodexResource.load(rolodexFile.getAbsolutePath());

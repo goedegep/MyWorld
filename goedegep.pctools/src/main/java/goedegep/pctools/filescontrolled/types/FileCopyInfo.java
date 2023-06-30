@@ -1,5 +1,8 @@
 package goedegep.pctools.filescontrolled.types;
 
+import goedegep.pctools.filescontrolled.model.EqualityType;
+import goedegep.pctools.filescontrolled.model.FileInfo;
+
 /**
  * This class stores information about probable files copies.
  * <p>
@@ -10,7 +13,8 @@ package goedegep.pctools.filescontrolled.types;
  * <li>the {@link EqualityType}.
  * </ul>
  */
-public class FileCopyInfo implements Comparable<FileCopyInfo> {
+//public class FileCopyInfo implements Comparable<FileCopyInfo> {
+public class FileCopyInfo {
   private static final String NEWLINE = System.getProperty("line.separator");
 
   /**
@@ -97,16 +101,17 @@ public class FileCopyInfo implements Comparable<FileCopyInfo> {
   
   @Override
   public boolean equals(Object object) {
-    return compareTo((FileCopyInfo) object) == 0;
+    throw new UnsupportedOperationException("equals is still to be implemented for FileCopyInfo");
+//    return compareTo((FileCopyInfo) object) == 0;
   }
 
-  @Override
-  public int compareTo(FileCopyInfo fileCopyInfo) {
-    int result = firstFileFoundInfo.compareTo(fileCopyInfo.getFirstFileFoundInfo());
-    if (result == 0) {
-      result = equalityType.compareTo(fileCopyInfo.getEqualityType());
-    }
-    
-    return result;
-  }
+//  @Override
+//  public int compareTo(FileCopyInfo fileCopyInfo) {
+//    int result = firstFileFoundInfo.compareTo(fileCopyInfo.getFirstFileFoundInfo());
+//    if (result == 0) {
+//      result = equalityType.compareTo(fileCopyInfo.getEqualityType());
+//    }
+//    
+//    return result;
+//  }
 }

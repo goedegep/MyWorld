@@ -66,21 +66,20 @@ public class GPXWindow extends JfxStage {
   
   private ObjectSelectionListener<TreeItem<EObjectTreeItemContent>> gpxTreeViewSelectionListener;
   private ReduceTrackPointsWindow reduceTrackPointsWindow;
-
+  
   /**
    * Constructor.
    * 
    * @param customization the GUI customization.
    */
   public GPXWindow(CustomizationFx customization, String fileToOpen) {
-    super(null, customization);
+    super(WINDOW_TITLE, customization);
 
     this.customization = customization;
     componentFactory = customization.getComponentFactoryFx();
     
     createGUI();
     
-//    EPackage.Registry.INSTANCE.put(GPXPackage.eNS_URI, GPXPackage.eINSTANCE);
     gpxResource = GpxUtil.createEMFResource();
     gpxResource.dirtyProperty().addListener((observable, oldValue, newValue) -> updateTitle());
     

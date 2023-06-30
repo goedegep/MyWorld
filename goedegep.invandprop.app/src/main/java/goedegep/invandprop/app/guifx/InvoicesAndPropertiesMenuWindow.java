@@ -279,7 +279,7 @@ public class InvoicesAndPropertiesMenuWindow extends JfxStage {
   private boolean getInvoicesAndPropertiesResource() {
     boolean returnValue = false;
     
-    invoicesAndPropertiesResource = new EMFResource<InvoicesAndProperties>(InvAndPropPackage.eINSTANCE, () -> InvAndPropFactory.eINSTANCE.createInvoicesAndProperties(), true);
+    invoicesAndPropertiesResource = new EMFResource<InvoicesAndProperties>(InvAndPropPackage.eINSTANCE, () -> InvAndPropFactory.eINSTANCE.createInvoicesAndProperties(), ".xmi", true);
     
     try {
       invoicesAndProperties = invoicesAndPropertiesResource.load(InvoicesAndPropertiesRegistry.invoicesAndPropertiesFile);

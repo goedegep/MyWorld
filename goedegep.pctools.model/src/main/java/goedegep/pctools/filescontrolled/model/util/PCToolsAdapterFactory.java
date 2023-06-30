@@ -80,6 +80,34 @@ public class PCToolsAdapterFactory extends AdapterFactoryImpl {
         return createDescribedItemAdapter();
       }
       @Override
+      public Adapter caseResult(Result object) {
+        return createResultAdapter();
+      }
+      @Override
+      public Adapter caseUncontrolledFolderInfo(UncontrolledFolderInfo object) {
+        return createUncontrolledFolderInfoAdapter();
+      }
+      @Override
+      public Adapter caseFileInfo(FileInfo object) {
+        return createFileInfoAdapter();
+      }
+      @Override
+      public Adapter caseControlledRootFolderInfo(ControlledRootFolderInfo object) {
+        return createControlledRootFolderInfoAdapter();
+      }
+      @Override
+      public Adapter caseControlledFolderInfo(ControlledFolderInfo object) {
+        return createControlledFolderInfoAdapter();
+      }
+      @Override
+      public Adapter caseFolderInfo(FolderInfo object) {
+        return createFolderInfoAdapter();
+      }
+      @Override
+      public Adapter caseUncontrolledRootFolderInfo(UncontrolledRootFolderInfo object) {
+        return createUncontrolledRootFolderInfoAdapter();
+      }
+      @Override
       public Adapter defaultCase(EObject object) {
         return createEObjectAdapter();
       }
@@ -138,6 +166,104 @@ public class PCToolsAdapterFactory extends AdapterFactoryImpl {
    * @generated
    */
   public Adapter createDescribedItemAdapter() {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link goedegep.pctools.filescontrolled.model.Result <em>Result</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see goedegep.pctools.filescontrolled.model.Result
+   * @generated
+   */
+  public Adapter createResultAdapter() {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link goedegep.pctools.filescontrolled.model.UncontrolledFolderInfo <em>Uncontrolled Folder Info</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see goedegep.pctools.filescontrolled.model.UncontrolledFolderInfo
+   * @generated
+   */
+  public Adapter createUncontrolledFolderInfoAdapter() {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link goedegep.pctools.filescontrolled.model.FolderInfo <em>Folder Info</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see goedegep.pctools.filescontrolled.model.FolderInfo
+   * @generated
+   */
+  public Adapter createFolderInfoAdapter() {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link goedegep.pctools.filescontrolled.model.UncontrolledRootFolderInfo <em>Uncontrolled Root Folder Info</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see goedegep.pctools.filescontrolled.model.UncontrolledRootFolderInfo
+   * @generated
+   */
+  public Adapter createUncontrolledRootFolderInfoAdapter() {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link goedegep.pctools.filescontrolled.model.FileInfo <em>File Info</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see goedegep.pctools.filescontrolled.model.FileInfo
+   * @generated
+   */
+  public Adapter createFileInfoAdapter() {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link goedegep.pctools.filescontrolled.model.ControlledRootFolderInfo <em>Controlled Root Folder Info</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see goedegep.pctools.filescontrolled.model.ControlledRootFolderInfo
+   * @generated
+   */
+  public Adapter createControlledRootFolderInfoAdapter() {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link goedegep.pctools.filescontrolled.model.ControlledFolderInfo <em>Controlled Folder Info</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see goedegep.pctools.filescontrolled.model.ControlledFolderInfo
+   * @generated
+   */
+  public Adapter createControlledFolderInfoAdapter() {
     return null;
   }
 

@@ -65,8 +65,6 @@ public class MediadbFactoryImpl extends EFactoryImpl implements MediadbFactory {
       return createArtist();
     case MediadbPackage.ALBUM:
       return createAlbum();
-    case MediadbPackage.MY_COMPILATION:
-      return createMyCompilation();
     case MediadbPackage.TRACK_REFERENCE:
       return createTrackReference();
     case MediadbPackage.DISC:
@@ -110,6 +108,8 @@ public class MediadbFactoryImpl extends EFactoryImpl implements MediadbFactory {
       return createInformationTypeFromString(eDataType, initialValue);
     case MediadbPackage.COLLECTION:
       return createCollectionFromString(eDataType, initialValue);
+    case MediadbPackage.ALBUM_TYPE:
+      return createAlbumTypeFromString(eDataType, initialValue);
     default:
       throw new IllegalArgumentException("The datatype '" + eDataType.getName() + "' is not a valid classifier");
     }
@@ -131,6 +131,8 @@ public class MediadbFactoryImpl extends EFactoryImpl implements MediadbFactory {
       return convertInformationTypeToString(eDataType, instanceValue);
     case MediadbPackage.COLLECTION:
       return convertCollectionToString(eDataType, instanceValue);
+    case MediadbPackage.ALBUM_TYPE:
+      return convertAlbumTypeToString(eDataType, instanceValue);
     default:
       throw new IllegalArgumentException("The datatype '" + eDataType.getName() + "' is not a valid classifier");
     }
@@ -178,17 +180,6 @@ public class MediadbFactoryImpl extends EFactoryImpl implements MediadbFactory {
   public Album createAlbum() {
     AlbumImpl album = new AlbumImpl();
     return album;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public MyCompilation createMyCompilation() {
-    MyCompilationImpl myCompilation = new MyCompilationImpl();
-    return myCompilation;
   }
 
   /**
@@ -397,6 +388,28 @@ public class MediadbFactoryImpl extends EFactoryImpl implements MediadbFactory {
    * @generated
    */
   public String convertCollectionToString(EDataType eDataType, Object instanceValue) {
+    return instanceValue == null ? null : instanceValue.toString();
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public AlbumType createAlbumTypeFromString(EDataType eDataType, String initialValue) {
+    AlbumType result = AlbumType.get(initialValue);
+    if (result == null)
+      throw new IllegalArgumentException(
+          "The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
+    return result;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public String convertAlbumTypeToString(EDataType eDataType, Object instanceValue) {
     return instanceValue == null ? null : instanceValue.toString();
   }
 

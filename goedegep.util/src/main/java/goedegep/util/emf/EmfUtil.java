@@ -455,7 +455,11 @@ public final class EmfUtil {
     } else {
       buf.append("value of unknown type: ").append(value.getClass().getName());
     }
-    return buf.toString();
+    String result = buf.toString();
+    if (result.length() > 50) {
+      result = result.substring(0, 50) + "....." + NEWLINE;
+    }
+    return result;
   }
   
   /**

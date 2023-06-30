@@ -20,7 +20,6 @@ import goedegep.media.mediadb.model.InformationType;
 import goedegep.media.mediadb.model.MediaDb;
 import goedegep.media.mediadb.model.MediumInfo;
 import goedegep.media.mediadb.model.MediumType;
-import goedegep.media.mediadb.model.MyCompilation;
 import goedegep.media.mediadb.model.MyInfo;
 import goedegep.media.mediadb.model.Player;
 import goedegep.media.mediadb.model.Track;
@@ -588,7 +587,7 @@ public class AlbumDetailsWindow extends JfxStage {
   private void updateCheckBoxes() {
     if (album != null) {      
       isCompilationAlbumCheckBox.setSelected(album.isCompilation());
-      isOwnCompilationCheckBox.setSelected(album instanceof MyCompilation);
+      isOwnCompilationCheckBox.setSelected(MediaDbUtil.isOwnCompilationAlbum(album));
       isSoundTrackCheckBox.setSelected(album.isSoundtrack());
 
     } else {

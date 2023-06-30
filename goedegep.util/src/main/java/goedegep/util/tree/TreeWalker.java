@@ -116,7 +116,7 @@ public class TreeWalker<T> implements Iterator<TreeNode<T>> {
             currentNode = currentNode.getParent();
             afterLastChildCount++;
             LOGGER.info("going to parent: currentNode=" + (currentNode != null ? currentNode.toString() : "(null)"));
-            if (currentNode.equals(lastNode)) {
+            if (currentNode != null  &&  currentNode.equals(lastNode)) {
               currentNode = null;
             }
           }

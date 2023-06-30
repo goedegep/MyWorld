@@ -10,6 +10,7 @@ import java.util.function.Predicate;
 import java.util.logging.Logger;
 
 import org.eclipse.emf.common.util.EList;
+import org.eclipse.emf.common.util.TreeIterator;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EFactory;
 import org.eclipse.emf.ecore.EObject;
@@ -23,6 +24,7 @@ import goedegep.appgen.TableRowOperation;
 import goedegep.jfx.ComponentFactoryFx;
 import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.DefaultCustomizationFx;
+import goedegep.util.emf.EMFResourceSet;
 import goedegep.util.emf.EmfPackageHelper;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -36,6 +38,9 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.DragEvent;
 
+/**
+ * This class is a tree cell helper for an object.
+ */
 public class EObjectTreeCellHelperForObject extends EObjectTreeCellHelperAbstract<EObjectTreeItemClassDescriptor>  {
   private static final Logger LOGGER = Logger.getLogger(EObjectTreeCellHelperForObject.class.getName());
   private static final String NEW_LINE = System.getProperty("line.separator");
@@ -361,6 +366,7 @@ public class EObjectTreeCellHelperForObject extends EObjectTreeCellHelperAbstrac
   private void deleteObject() {
     LOGGER.severe("=>");
     
+    // Get the object to be deleted.
     EObjectTreeItem eObjectTreeItem = (EObjectTreeItem) eObjectTreeCell.getTreeItem();
     EObjectTreeItemContent eObjectTreeItemContent = eObjectTreeItem.getValue();
     EObject eObject = (EObject) eObjectTreeItemContent.getObject();
@@ -369,32 +375,57 @@ public class EObjectTreeCellHelperForObject extends EObjectTreeCellHelperAbstrac
     Resource resource = eObject.eResource();
     if (resource != null) {
       resourceSet = resource.getResourceSet();
+    } else {
+      resourceSet = EMFResourceSet.getResourceSet();
     }
     
-    // TODO handle cross references when there is no resource set.
+    // If the object to be deleted is referenced by a containment reference, check whether there are other references to this object. Inform the user about this.
+    LOGGER.severe("eContainingFeature: " + eObject.eContainingFeature().getName());
+    LOGGER.severe("eContainingFeature: " + eObject.eContainmentFeature().getName());
+    EStructuralFeature itemFeature = eObjectTreeItemContent.getEStructuralFeature();
+    LOGGER.severe("itemFeature:" + (itemFeature != null ? itemFeature.getName() : "(null)"));
+    EObjectTreeItem parentEObjectTreeItem2 = (EObjectTreeItem) eObjectTreeItem.getParent();
+    EObjectTreeItemContent parentEObjectTreeItemContent = parentEObjectTreeItem2.getValue();
+    EStructuralFeature parentFeature = parentEObjectTreeItemContent.getEStructuralFeature();
+    LOGGER.severe("parentFeature:" + (parentFeature != null ? parentFeature.getName() : "(null)"));
+    
     Collection<EStructuralFeature.Setting> settings = EcoreUtil.UsageCrossReferencer.find(eObject, resourceSet);
     if (settings.size() != 0) {
       StringBuffer buf = new StringBuffer();
-      buf.append("There are ");
-      buf.append(settings.size());
-      buf.append(" references to this object.");
+      if (settings.size() == 1) {
+        buf.append("You are deleting a ");
+        buf.append("There is a reference to this object.");
+      } else {
+        buf.append("There are ");
+        buf.append(settings.size());
+        buf.append(" references to this object.");
+      }
       buf.append(NEW_LINE);
 
       for (EStructuralFeature.Setting setting: settings) {
         EStructuralFeature feature = setting.getEStructuralFeature();
-        String inOrAs = " as ";
-        if (feature.isMany()) {
-          inOrAs = " in ";
-        }
+//        String inOrAs = " as ";
+//        if (feature.isMany()) {
+//          inOrAs = " in ";
+//        }
         EObject referringObject = setting.getEObject();
-        EObject container = referringObject.eContainer();
-        buf.append(container.getClass().getName());
+        
+        buf.append(feature.getName());
         buf.append(" in ");
-        buf.append(referringObject.toString());
-        buf.append(inOrAs);
-        buf.append(setting.getEStructuralFeature().getName());
+        buf.append(referringObject.eClass().getName());
+//        EObject container = referringObject.eContainer();
+//        if (container != null) {
+//          buf.append(container.getClass().getName());
+//        } else {
+//          buf.append("<no container>");
+//        }
+//        buf.append(" in ");
+//        buf.append(referringObject.toString());
+//        buf.append(inOrAs);
+//        buf.append(setting.getEStructuralFeature().getName());
         buf.append(NEW_LINE);
       }
+      buf.append("If you continue, these references will be cleared!");
       
       CustomizationFx customization = DefaultCustomizationFx.getInstance();
       ComponentFactoryFx componentFactory = customization.getComponentFactoryFx();
@@ -468,7 +499,11 @@ public class EObjectTreeCellHelperForObject extends EObjectTreeCellHelperAbstrac
     if ((itemDescriptor != null)  &&  (itemDescriptor.getBuildText() != null)) {
       labelText = itemDescriptor.getBuildText().apply(eObject);
     } else if (eObject != null) {
-      labelText = eObject.getClass().getSimpleName() + ":";
+      String className = eObject.getClass().getSimpleName();
+      labelText = className.substring(0, className.length() - 4);
+//      labelText = eObject.getClass().getSimpleName() + ":";
+//      Class<?> interfaces[] = eObject.getClass().getInterfaces();
+//      labelText = interfaces[0].getSimpleName() + ":";
     }
         
     LOGGER.info("<= labelText=" + labelText);

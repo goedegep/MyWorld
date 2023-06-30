@@ -8,12 +8,12 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import goedegep.media.mediadb.model.Album;
+import goedegep.media.mediadb.model.AlbumType;
 import goedegep.media.mediadb.model.Artist;
 import goedegep.media.mediadb.model.Collection;
 import goedegep.media.mediadb.model.Disc;
 import goedegep.media.mediadb.model.IWant;
 import goedegep.media.mediadb.model.MediaDb;
-import goedegep.media.mediadb.model.MyCompilation;
 import goedegep.media.mediadb.model.MyInfo;
 import goedegep.media.mediadb.model.MyTrackInfo;
 import goedegep.media.mediadb.model.Track;
@@ -393,8 +393,8 @@ public class MediaDbAppUtil {
     
     FlexDate releaseDate = album.getReleaseDate();
     
-    if ((releaseDate == null)  &&  !(album instanceof MyCompilation)) {
-      LOGGER.severe("No release date specified for album");
+    if ((releaseDate == null)  &&  (album.getMyInfo() == null  ||  album.getMyInfo().getAlbumType() != AlbumType.OWN_COMPILATION_ALBUM)) {
+      LOGGER.severe("No release date specified for album: " + album.getArtistAndTitle());
       if (errors != null) {
         MediaDbAppErrorInfo errorInfo = new MediaDbAppErrorInfo(MediaDbAppError.NO_RELEASE_DATE_FOR_ALBUM);
         errorInfo.setAlbum(album);
@@ -404,7 +404,7 @@ public class MediaDbAppUtil {
     }
     
     boolean haveMoreThanOneAlbumOfContainerArtistInThisYearOnDisc;
-    if (album instanceof MyCompilation) {
+    if (MediaDbUtil.isOwnCompilationAlbum(album)) {
       haveMoreThanOneAlbumOfContainerArtistInThisYearOnDisc = false;
     } else {
       haveMoreThanOneAlbumOfContainerArtistInThisYearOnDisc = haveMoreThanOneAlbumOfContainerArtistInAYearOnDisc(mediaDb, artist, releaseDate.getYear());
@@ -412,12 +412,12 @@ public class MediaDbAppUtil {
     
     if (album.isMultiDiscAlbum()) {
       if (disc.isSetTitle()) {
-        return AlbumFolder.generateAlbumDiscFolderName(containerArtistName, album.getTitle(), artistName, releaseDate, disc.getTitle(), haveMoreThanOneAlbumOfContainerArtistInThisYearOnDisc, album instanceof MyCompilation, errors);
+        return AlbumFolder.generateAlbumDiscFolderName(containerArtistName, album.getTitle(), artistName, releaseDate, disc.getTitle(), haveMoreThanOneAlbumOfContainerArtistInThisYearOnDisc, MediaDbUtil.isOwnCompilationAlbum(album), errors);
       } else {
-        return AlbumFolder.generateAlbumDiscFolderName(containerArtistName, album.getTitle(), artistName, releaseDate, disc.getDiscNr(), haveMoreThanOneAlbumOfContainerArtistInThisYearOnDisc, album instanceof MyCompilation, errors);
+        return AlbumFolder.generateAlbumDiscFolderName(containerArtistName, album.getTitle(), artistName, releaseDate, disc.getDiscNr(), haveMoreThanOneAlbumOfContainerArtistInThisYearOnDisc, MediaDbUtil.isOwnCompilationAlbum(album), errors);
      }
     } else {    
-      return AlbumFolder.generateAlbumDiscFolderName(containerArtistName, album.getTitle(), artistName, releaseDate, haveMoreThanOneAlbumOfContainerArtistInThisYearOnDisc, album instanceof MyCompilation, errors);
+      return AlbumFolder.generateAlbumDiscFolderName(containerArtistName, album.getTitle(), artistName, releaseDate, haveMoreThanOneAlbumOfContainerArtistInThisYearOnDisc, MediaDbUtil.isOwnCompilationAlbum(album), errors);
     }
   }
   
@@ -438,7 +438,7 @@ public class MediaDbAppUtil {
     String artistName = artist != null ? artist.getName() : null;
     FlexDate releaseDate = album.getReleaseDate();
     
-    if ((releaseDate == null)  &&  !(album instanceof MyCompilation)) {
+    if ((releaseDate == null)  &&  !MediaDbUtil.isOwnCompilationAlbum(album)) {
       LOGGER.severe("No release date specified for album");
       if (errors != null) {
         MediaDbAppErrorInfo errorInfo = new MediaDbAppErrorInfo(MediaDbAppError.NO_RELEASE_DATE_FOR_ALBUM);
@@ -450,12 +450,12 @@ public class MediaDbAppUtil {
     
     if (album.isMultiDiscAlbum()) {
       if (disc.isSetTitle()) {
-        return AlbumFolder.generateSoundtrackAlbumDiscFolderName(album.getTitle(), artistName, album.getReleaseDate(), disc.getTitle(), album instanceof MyCompilation, errors);
+        return AlbumFolder.generateSoundtrackAlbumDiscFolderName(album.getTitle(), artistName, album.getReleaseDate(), disc.getTitle(), MediaDbUtil.isOwnCompilationAlbum(album), errors);
       } else {
-        return AlbumFolder.generateSoundtrackAlbumDiscFolderName(album.getTitle(), artistName, album.getReleaseDate(), disc.getDiscNr(), album instanceof MyCompilation, errors);
+        return AlbumFolder.generateSoundtrackAlbumDiscFolderName(album.getTitle(), artistName, album.getReleaseDate(), disc.getDiscNr(), MediaDbUtil.isOwnCompilationAlbum(album), errors);
       }
     } else {    
-      return AlbumFolder.generateSoundtrackAlbumDiscFolderName(album.getTitle(), artistName, album.getReleaseDate(), album instanceof MyCompilation, errors);
+      return AlbumFolder.generateSoundtrackAlbumDiscFolderName(album.getTitle(), artistName, album.getReleaseDate(), MediaDbUtil.isOwnCompilationAlbum(album), errors);
     }
   }
 

@@ -2,6 +2,7 @@
  */
 package goedegep.emfsample.model.impl;
 
+import goedegep.emfsample.model.Birthday;
 import goedegep.emfsample.model.Company;
 import goedegep.emfsample.model.EmfSamplePackage;
 import goedegep.emfsample.model.Person;
@@ -18,6 +19,7 @@ import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
 
 import org.eclipse.emf.ecore.util.EObjectContainmentEList;
+import org.eclipse.emf.ecore.util.EObjectResolvingEList;
 import org.eclipse.emf.ecore.util.InternalEList;
 
 /**
@@ -29,6 +31,7 @@ import org.eclipse.emf.ecore.util.InternalEList;
  * </p>
  * <ul>
  *   <li>{@link goedegep.emfsample.model.impl.CompanyImpl#getEmployees <em>Employees</em>}</li>
+ *   <li>{@link goedegep.emfsample.model.impl.CompanyImpl#getBirthdays <em>Birthdays</em>}</li>
  * </ul>
  *
  * @generated
@@ -43,6 +46,16 @@ public class CompanyImpl extends MinimalEObjectImpl.Container implements Company
    * @ordered
    */
   protected EList<Person> employees;
+
+  /**
+   * The cached value of the '{@link #getBirthdays() <em>Birthdays</em>}' reference list.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getBirthdays()
+   * @generated
+   * @ordered
+   */
+  protected EList<Birthday> birthdays;
 
   /**
    * <!-- begin-user-doc -->
@@ -82,6 +95,19 @@ public class CompanyImpl extends MinimalEObjectImpl.Container implements Company
    * @generated
    */
   @Override
+  public EList<Birthday> getBirthdays() {
+    if (birthdays == null) {
+      birthdays = new EObjectResolvingEList<Birthday>(Birthday.class, this, EmfSamplePackage.COMPANY__BIRTHDAYS);
+    }
+    return birthdays;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
   public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
     switch (featureID) {
       case EmfSamplePackage.COMPANY__EMPLOYEES:
@@ -100,6 +126,8 @@ public class CompanyImpl extends MinimalEObjectImpl.Container implements Company
     switch (featureID) {
       case EmfSamplePackage.COMPANY__EMPLOYEES:
         return getEmployees();
+      case EmfSamplePackage.COMPANY__BIRTHDAYS:
+        return getBirthdays();
     }
     return super.eGet(featureID, resolve, coreType);
   }
@@ -117,6 +145,10 @@ public class CompanyImpl extends MinimalEObjectImpl.Container implements Company
         getEmployees().clear();
         getEmployees().addAll((Collection<? extends Person>)newValue);
         return;
+      case EmfSamplePackage.COMPANY__BIRTHDAYS:
+        getBirthdays().clear();
+        getBirthdays().addAll((Collection<? extends Birthday>)newValue);
+        return;
     }
     super.eSet(featureID, newValue);
   }
@@ -132,6 +164,9 @@ public class CompanyImpl extends MinimalEObjectImpl.Container implements Company
       case EmfSamplePackage.COMPANY__EMPLOYEES:
         getEmployees().clear();
         return;
+      case EmfSamplePackage.COMPANY__BIRTHDAYS:
+        getBirthdays().clear();
+        return;
     }
     super.eUnset(featureID);
   }
@@ -146,6 +181,8 @@ public class CompanyImpl extends MinimalEObjectImpl.Container implements Company
     switch (featureID) {
       case EmfSamplePackage.COMPANY__EMPLOYEES:
         return employees != null && !employees.isEmpty();
+      case EmfSamplePackage.COMPANY__BIRTHDAYS:
+        return birthdays != null && !birthdays.isEmpty();
     }
     return super.eIsSet(featureID);
   }

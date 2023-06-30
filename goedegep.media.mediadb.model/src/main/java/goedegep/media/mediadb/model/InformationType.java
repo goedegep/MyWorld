@@ -91,13 +91,13 @@ public enum InformationType implements Enumerator {
    */
   AIFF(8, "AIFF", "AIFF"),
   /**
-  * The '<em><b>DSF</b></em>' literal object.
-  * <!-- begin-user-doc -->
+   * The '<em><b>DSF</b></em>' literal object.
+   * <!-- begin-user-doc -->
   * <!-- end-user-doc -->
-  * @see #DSF_VALUE
-  * @generated
-  * @ordered
-  */
+   * @see #DSF_VALUE
+   * @generated
+   * @ordered
+   */
   DSF(8, "DSF", "DSF");
 
   /**

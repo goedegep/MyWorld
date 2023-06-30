@@ -55,7 +55,7 @@ public class ImageUtils {
       PhotoFileMetaDataHandler photoFileMetaDataHandler = new PhotoFileMetaDataHandler(file);
       coordinates = photoFileMetaDataHandler.getGeoLocation();
     } catch (ImageReadException | IOException e) {
-      e.printStackTrace();
+//      e.printStackTrace();
     }
     
     return coordinates;

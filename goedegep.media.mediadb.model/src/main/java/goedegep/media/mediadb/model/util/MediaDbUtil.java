@@ -7,6 +7,7 @@ import java.util.Set;
 import java.util.logging.Logger;
 
 import goedegep.media.mediadb.model.Album;
+import goedegep.media.mediadb.model.AlbumType;
 import goedegep.media.mediadb.model.Artist;
 import goedegep.media.mediadb.model.Disc;
 import goedegep.media.mediadb.model.DiscAndTrackNrs;
@@ -299,8 +300,26 @@ public class MediaDbUtil {
     return discAndTrackNrs;
   }
   
+  /**
+   * Check whether an album is a single disc album.
+   * 
+   * @param album the Album to check
+   * @return true if the {@code album} has one disc, false otherwise.
+   */
   public static boolean isSingleDiscAlbum(Album album) {
     return album.getDiscs().size() == 1;
+  }
+  
+  /**
+   * Check whether an album is an Own Compilation album.
+   * <p>
+   * This is the case if the MyInfo exists and the AlbumType in the MyInfo is AlbumType.OWN_COMPILATION_ALBUM.
+   * 
+   * @param album the album to check
+   * @return true if {@code album} is an Own Compilation album, false otherwise.
+   */
+  public static boolean isOwnCompilationAlbum(Album album) {
+    return album.getMyInfo() != null  &&  album.getMyInfo().getAlbumType() == AlbumType.OWN_COMPILATION_ALBUM;
   }
 
   /**
@@ -789,6 +808,21 @@ public class MediaDbUtil {
         }
       }
     }
+  }
+
+  /**
+   * Set the AlbumType for an album.
+   * 
+   * @param album the Album
+   * @param albumType the AlbumType to set for the {@code album}.
+   */
+  public static void setAlbumType(Album album, AlbumType albumType) {
+    MyInfo myInfo = album.getMyInfo();
+    if (myInfo == null) {
+      myInfo = MEDIA_DB_FACTORY.createMyInfo();
+      album.setMyInfo(myInfo);
+    }
+    myInfo.setAlbumType(albumType);
   }
   
   /**

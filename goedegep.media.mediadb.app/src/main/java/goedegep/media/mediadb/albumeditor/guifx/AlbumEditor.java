@@ -2,15 +2,13 @@ package goedegep.media.mediadb.albumeditor.guifx;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.DirectoryIteratorException;
-import java.nio.file.DirectoryStream;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.logging.Logger;
 
 import org.eclipse.emf.common.notify.Adapter;
@@ -23,27 +21,17 @@ import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.util.EContentAdapter;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 
-import com.google.common.base.Optional;
 import com.mpatric.mp3agic.ID3v1;
 import com.mpatric.mp3agic.InvalidDataException;
 import com.mpatric.mp3agic.Mp3File;
 import com.mpatric.mp3agic.UnsupportedTagException;
 
-import ealvatag.audio.AudioFile;
-import ealvatag.audio.AudioFileIO;
-import ealvatag.audio.exceptions.CannotReadException;
-import ealvatag.audio.exceptions.InvalidAudioFrameException;
-import ealvatag.tag.FieldKey;
-import ealvatag.tag.NullTag;
-import ealvatag.tag.Tag;
-import ealvatag.tag.TagException;
 import goedegep.jfx.ComponentFactoryFx;
 import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.objectcontrols.ObjectControlAutoCompleteTextField;
 import goedegep.jfx.objectcontrols.ObjectControlEnumComboBox;
 import goedegep.jfx.objectcontrols.ObjectControlFlexDate;
 import goedegep.jfx.objectcontrols.ObjectControlFolderSelecter;
-import goedegep.jfx.objectcontrols.ObjectControlGroup;
 import goedegep.jfx.objectcontrols.ObjectControlImageFile;
 import goedegep.jfx.objectcontrols.ObjectControlMultiLineString;
 import goedegep.jfx.objectcontrols.ObjectControlString;
@@ -53,9 +41,12 @@ import goedegep.jfx.objecteditor.ObjectEditorAbstract;
 import goedegep.media.app.MediaRegistry;
 import goedegep.media.mediadb.app.AlbumDetailsException;
 import goedegep.media.mediadb.app.ArtistStringConverterAndChecker;
+import goedegep.media.mediadb.app.derivealbuminfo.AlbumInfo;
+import goedegep.media.mediadb.app.derivealbuminfo.DeriveAlbumInfo;
+import goedegep.media.mediadb.app.derivealbuminfo.DiscInfo;
 import goedegep.media.mediadb.app.guifx.ArtistDetailsEditor;
-import goedegep.media.mediadb.app.guifx.ImportAlbumPicturesWindow;
 import goedegep.media.mediadb.model.Album;
+import goedegep.media.mediadb.model.AlbumType;
 import goedegep.media.mediadb.model.Artist;
 import goedegep.media.mediadb.model.Disc;
 import goedegep.media.mediadb.model.IWant;
@@ -63,7 +54,6 @@ import goedegep.media.mediadb.model.MediaDb;
 import goedegep.media.mediadb.model.MediadbFactory;
 import goedegep.media.mediadb.model.MediadbPackage;
 import goedegep.media.mediadb.model.MediumType;
-import goedegep.media.mediadb.model.MyCompilation;
 import goedegep.media.mediadb.model.MyInfo;
 import goedegep.media.mediadb.model.Player;
 import goedegep.media.mediadb.model.Track;
@@ -81,6 +71,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
@@ -90,27 +81,32 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.Priority;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
-public class AlbumEditor extends ObjectEditorAbstract {
+/**
+ * This class is an {@link Album} editor.
+ * <p>
+ * It can be used to create an new Album, or to make changes to an existing Album.
+ * For creating a new Album it is possible to derive the information from the music files in a folder on disc.
+ *
+ */
+public class AlbumEditor extends ObjectEditorAbstract<Album> {
   
   /*
    * Strategy:
    * This editor can be used to edit album details, or to create a new album.
-   * If the field 'album' is null (by default), the editor is in the 'new album' mode. Otherwise it is in 'edit album' mode.
+   * If the field 'object' (Album) is null (by default), the editor is in the 'new album' mode. Otherwise it is in 'edit album' mode.
    * 
    * All information of an album is 'stored' in the GUI controls and a number of lists. Together these are referred to as the GUI controls.
    * When a new album is set (which may be null), the information from the album is stored in the controls. If the album is null,
-   * all information is cleared.
+   * all information is cleared or default values are used.
    * Any user changes, or 'imports' are only stored in the GUI controls.
-   * Upon 'add album' an album is created from the controls, 'album' is set to this value and the 'album' is added to the database.
-   * Upon 'update', the 'album' is cleared and filled from the controls.
+   * Upon 'add album' an album is created from the controls, 'object' is set to this value and the album is added to the database.
+   * Upon 'update', the 'album' is updated from the controls.
    */
   
   private static final Logger LOGGER = Logger.getLogger(AlbumEditor.class.getName());
@@ -139,6 +135,11 @@ public class AlbumEditor extends ObjectEditorAbstract {
    * Panel with the controls for importing information from a folder with album tracks.
    */
   private Node importControlsPanel;
+  
+  /**
+   * Album type control
+   */
+  ObjectControlEnumComboBox<AlbumType> albumTypeObjectControlEnumComboBox;
   
   /**
    * Control for the album title.
@@ -254,11 +255,6 @@ public class AlbumEditor extends ObjectEditorAbstract {
   private CheckBox isCompilationAlbumCheckBox;
   
   /**
-   * Shows whether the album is 'my own' compilation or not.
-   */
-  private CheckBox isOwnCompilationCheckBox;
-  
-  /**
    * Shows whether the album is a movie soundtrack or not.
    */
   private CheckBox isSoundTrackCheckBox;
@@ -282,12 +278,6 @@ public class AlbumEditor extends ObjectEditorAbstract {
    * Shows myInfo albumReferences
    */
   private VBox albumReferencesVBox;
-  
-  /**
-   * Album type
-   */
-//  EnumComboBox<AlbumType> albumTypeObjectControlEnumComboBox;
-  ObjectControlEnumComboBox<AlbumType> albumTypeObjectControlEnumComboBox;
 
   /**
    * Shows the tracks per disc in tables
@@ -297,29 +287,11 @@ public class AlbumEditor extends ObjectEditorAbstract {
   /**
    * List of DiscPanels
    */
-  private List<DiscPanel> discPanels;
-  
-  private ObjectControlGroup controlsGroup;
-  
-  /**
-   * Panel for the add/update and cancel buttons.
-   */
-  private HBox addUpdateAndCancelButtonsPanel;
-  
-  /**
-   * Add or Update button
-   */
-  private Button addOrUpdateButton;
+  private List<DiscPanelAbstract> discPanels;
+    
  
-  /**
-   * The Album which is currently being edited.
-   */
-  private Album album = null;
-  
   private Stage currentLargePictureStage;
   
-  private EditMode editMode = EditMode.NEW;
-
   /**
    * Constructor.
    * <p>
@@ -328,26 +300,7 @@ public class AlbumEditor extends ObjectEditorAbstract {
    * @param customization the GUI customization.
    */
   public AlbumEditor(CustomizationFx customization, MediaDb mediaDb, Map<Track, Path> trackDiscLocationMap) {
-    super(customization, null);
-    
-    this.customization = customization;
-    this.mediaDb = mediaDb;
-    this.trackDiscLocationMap = trackDiscLocationMap;
-    
-    componentFactory = customization.getComponentFactoryFx();
-    
-    artistStringConverterAndChecker = new ArtistStringConverterAndChecker(mediaDb);
-    
-    createControls();
-
-    createGUI();
-    
-    updateEditMode();
-    installChangeListernerForArtists();
-    updateContainerArtistComboBox();
-    controlsGroup.addListener((e) -> handleChanges());
-    
-    setAlbum(null);
+    this(customization, mediaDb, trackDiscLocationMap, null);    
   }
 
   /**
@@ -358,28 +311,38 @@ public class AlbumEditor extends ObjectEditorAbstract {
    * @param customization the GUI customization.
    */
   public AlbumEditor(CustomizationFx customization, MediaDb mediaDb, Map<Track, Path> trackDiscLocationMap, Album album) {
-    this(customization, mediaDb, trackDiscLocationMap);
+    super(customization, null);
     
-    setAlbum(album);
+    this.customization = customization;
+    this.mediaDb = mediaDb;
+    this.trackDiscLocationMap = trackDiscLocationMap;
+    
+    componentFactory = customization.getComponentFactoryFx();
+    
+    // Configure ObjectEditorAbstract
+    setAddObjectTexts("Add album", "Add the album to the media database");
+    setUpdateObjectTexts("Update album", "Update the current album");
+    setNewObjectTexts("New", "Clear the control to start entering new Album data");
+    
+    artistStringConverterAndChecker = new ArtistStringConverterAndChecker(mediaDb);
+    
+    createControls();
+    createGUI();
+    
+    installChangeListernerForArtists();
+    updateContainerArtistComboBox();
+    
+    objectControlsGroup.addListener((o) -> updateAddUpdateAndNewButtonsPanel());
+    
+    setObject(album);
   }
 
-  /**
-   * Change the <code>Album</code> for which the information is shown and which can be modified.
-   * 
-   * @param album the <code>Album</code> for which the information is shown in this window.
-   */
-  public void setAlbum(Album album) {
-    this.album = album;
-    fillControlsFromAlbum(album);
-    
-    updateEditMode();
-  }
-  
   @Override
   protected void createControls() {
+    albumTypeObjectControlEnumComboBox = componentFactory.createObjectControlEnumComboBox(AlbumType.NORMAL_ALBUM, null, true, "Select the type of album. This value determines how the discs/tracks are to be filled in");
     albumTitleTextFieldObjectControl = componentFactory.createObjectControlTextField(null, null, 600, false, "The album title is a mandatory field");
     albumArtistObjectControl = componentFactory.createObjectControlAutoCompleteTextField(artistStringConverterAndChecker, null, 300, false, "Enter the album artist");
-    albumIssueDateTextField = componentFactory.createObjectControlFlexDate(null, 600, true, "Optional first issue date of the album");
+    albumIssueDateTextField = componentFactory.createObjectControlFlexDate(null, 600, false, "Optional first issue date of the album");
     albumIdTextField = componentFactory.createObjectControlTextField(null, null, 600, true, "Enter the optional Id of the album");
     
     playerObjectControls = new ArrayList<>();
@@ -405,7 +368,6 @@ public class AlbumEditor extends ObjectEditorAbstract {
     issuedOnMediaLabels = new ArrayList<>();
     
     isCompilationAlbumCheckBox = componentFactory.createCheckBox("compilation album", false);
-    isOwnCompilationCheckBox = componentFactory.createCheckBox("own compilation", false);
     isSoundTrackCheckBox = componentFactory.createCheckBox("soundtrack", false);
     iveHadOnLpCheckBox = componentFactory.createCheckBox("I've had on lp", false);
 
@@ -415,8 +377,7 @@ public class AlbumEditor extends ObjectEditorAbstract {
     
     discPanels = new ArrayList<>();
     
-    controlsGroup = new ObjectControlGroup();
-    controlsGroup.addObjectControls(
+    objectControlsGroup.addObjectControls(
         albumTitleTextFieldObjectControl,
         albumArtistObjectControl,
         albumIssueDateTextField,
@@ -459,38 +420,54 @@ public class AlbumEditor extends ObjectEditorAbstract {
      */
     GridPane gridPane = componentFactory.createGridPane(10.0, 10.0, 10.0);
     
-    // First row: 'Album: <album-title>'
-    Label label = componentFactory.createLabel("Title:");
+    // First row: 'Album type: <album-type>'
+    Label label = componentFactory.createLabel("Album type:");
     gridPane.add(label, 0, 0);
-    gridPane.add(albumTitleTextFieldObjectControl.ocGetControl(), 1, 0);
-    gridPane.add(albumTitleTextFieldObjectControl.ocGetValidIndicator(), 2, 0);
+    ChangeListener<AlbumType> cl = new ChangeListener<>() {
 
-    // Second row: 'Artist: <artist>'   'New artist' button
-    label = componentFactory.createLabel("Artist:");
+      @Override
+      public void changed(ObservableValue<? extends AlbumType> observable, AlbumType oldValue, AlbumType newValue) {
+        LOGGER.severe("AlbumType: " + newValue);
+        
+      }
+      
+    };
+    albumTypeObjectControlEnumComboBox.ocGetControl().getSelectionModel().selectedItemProperty().addListener(cl);
+    gridPane.add(albumTypeObjectControlEnumComboBox.ocGetControl(), 1, 0);
+    gridPane.add(albumTypeObjectControlEnumComboBox.ocGetValidIndicator(), 2, 0);
+    
+    // Second row: 'Album: <album-title>'
+    label = componentFactory.createLabel("Title:");
     gridPane.add(label, 0, 1);
-    gridPane.add(albumArtistObjectControl.ocGetControl(), 1, 1);
-    gridPane.add(albumArtistObjectControl.ocGetValidIndicator(), 2, 1);
+    gridPane.add(albumTitleTextFieldObjectControl.ocGetControl(), 1, 1);
+    gridPane.add(albumTitleTextFieldObjectControl.ocGetValidIndicator(), 2, 1);
+
+    // Third row: 'Artist: <artist>'   'New artist' button
+    label = componentFactory.createLabel("Artist:");
+    gridPane.add(label, 0, 2);
+    gridPane.add(albumArtistObjectControl.ocGetControl(), 1, 2);
+    gridPane.add(albumArtistObjectControl.ocGetValidIndicator(), 2, 2);
     Button newArtistButton = componentFactory.createButton("New artist", "The artist of the album has to be selected from the list of known artists. With this button you can add a new artist to the database");
     newArtistButton.setOnAction(e -> (new ArtistDetailsEditor(getCustomization(), "New artist", mediaDb)).show());
-    gridPane.add(newArtistButton, 3, 1);
+    gridPane.add(newArtistButton, 3, 2);
    
-    // Third row: 'Issue date: <album-issue-date>'
+    // Fourth row: 'Issue date: <album-issue-date>'
     label = componentFactory.createLabel("Issued:");
-    gridPane.add(label, 0, 2);
-    gridPane.add(albumIssueDateTextField.ocGetControl(), 1, 2);
-    gridPane.add(albumIssueDateTextField.ocGetValidIndicator(), 2, 2);
-    
-    // Fourth row: 'Album Id: <album-id>'
-    label = componentFactory.createLabel("Album Id:");
     gridPane.add(label, 0, 3);
-    gridPane.add(albumIdTextField.ocGetControl(), 1, 3);
-    gridPane.add(albumIdTextField.ocGetValidIndicator(), 2, 3);
+    gridPane.add(albumIssueDateTextField.ocGetControl(), 1, 3);
+    gridPane.add(albumIssueDateTextField.ocGetValidIndicator(), 2, 3);
     
-    // Fifth row: 'Collaborating Artists:'
-    label = componentFactory.createLabel("Collaborating artists:");
+    // Fifth row: 'Album Id: <album-id>'
+    label = componentFactory.createLabel("Album Id:");
     gridPane.add(label, 0, 4);
+    gridPane.add(albumIdTextField.ocGetControl(), 1, 4);
+    gridPane.add(albumIdTextField.ocGetValidIndicator(), 2, 4);
+    
+    // Sixth row: 'Collaborating Artists:'
+    label = componentFactory.createLabel("Collaborating artists:");
+    gridPane.add(label, 0, 5);
     playersGridPane = componentFactory.createGridPane(10.0, 10.0);
-    gridPane.add(playersGridPane, 1, 4, 2, 4);
+    gridPane.add(playersGridPane, 1, 4, 2, 5);
     
     centerPane.getChildren().add(gridPane);
     
@@ -509,7 +486,7 @@ public class AlbumEditor extends ObjectEditorAbstract {
         objectControlImageFile.setInitialDirectory(new File(MediaRegistry.albumInfoDirectory + File.separator + "Pictures"));
       }
       frontImageControls.add(objectControlImageFile);
-      controlsGroup.addObjectControl(objectControlImageFile);
+      objectControlsGroup.addObjectControl(objectControlImageFile);
       objectControlImageFile.selectNewFile();
       redrawImagesPanel(frontImagesHBox, frontImageControls);
     });
@@ -533,7 +510,7 @@ public class AlbumEditor extends ObjectEditorAbstract {
         objectControlImageFile.setInitialDirectory(new File(MediaRegistry.albumInfoDirectory + File.separator + "Pictures"));
       }
       frontInsideImageControls.add(objectControlImageFile);
-      controlsGroup.addObjectControl(objectControlImageFile);
+      objectControlsGroup.addObjectControl(objectControlImageFile);
       objectControlImageFile.selectNewFile();
       redrawImagesPanel(frontInsideImagesHBox, frontInsideImageControls);
     });
@@ -557,7 +534,7 @@ public class AlbumEditor extends ObjectEditorAbstract {
         objectControlImageFile.setInitialDirectory(new File(MediaRegistry.albumInfoDirectory + File.separator + "Pictures"));
       }
       backImageControls.add(objectControlImageFile);
-      controlsGroup.addObjectControl(objectControlImageFile);
+      objectControlsGroup.addObjectControl(objectControlImageFile);
       objectControlImageFile.selectNewFile();
       redrawImagesPanel(backImagesHBox, backImageControls);
     });
@@ -581,7 +558,7 @@ public class AlbumEditor extends ObjectEditorAbstract {
         objectControlImageFile.setInitialDirectory(new File(MediaRegistry.albumInfoDirectory + File.separator + "Pictures"));
       }
       labelImageControls.add(objectControlImageFile);
-      controlsGroup.addObjectControl(objectControlImageFile);
+      objectControlsGroup.addObjectControl(objectControlImageFile);
       objectControlImageFile.selectNewFile();
       redrawImagesPanel(labelImagesHBox, labelImageControls);
     });
@@ -614,10 +591,10 @@ public class AlbumEditor extends ObjectEditorAbstract {
     centerPane.getChildren().add(gridPane);
     
     /*
-     * Checkboxes for 'compilation album', 'own compilation', 'soundtrack' and 'I've had on lp'.
+     * Checkboxes for 'compilation album', 'soundtrack' and 'I've had on lp'.
      */
     HBox hBox = componentFactory.createHBox(10.0, 10.0);
-    hBox.getChildren().addAll(isCompilationAlbumCheckBox, isOwnCompilationCheckBox, isSoundTrackCheckBox, iveHadOnLpCheckBox);
+    hBox.getChildren().addAll(isCompilationAlbumCheckBox, isSoundTrackCheckBox, iveHadOnLpCheckBox);
     
     centerPane.getChildren().add(hBox);
     
@@ -630,6 +607,7 @@ public class AlbumEditor extends ObjectEditorAbstract {
     label = componentFactory.createLabel("I want:");
     gridPane.add(label, 0, 0);
     gridPane.add(iWantComboBox.ocGetControl(), 1, 0);
+    gridPane.add(iWantComboBox.ocGetValidIndicator(), 2, 0);
     
     // Second row: 'MyComments: <my-comments>'
     label = componentFactory.createLabel("My comments:");
@@ -643,33 +621,12 @@ public class AlbumEditor extends ObjectEditorAbstract {
     centerPane.getChildren().add(albumReferencesVBox);
     
     /*
-     * Album type
-     */
-    HBox albumTypeHBox = componentFactory.createHBox(10.0, 10.0);
-    label = componentFactory.createLabel("Album type:");
-    albumTypeObjectControlEnumComboBox = componentFactory.createObjectControlEnumComboBox(AlbumType.NORMAL, null, true, "Select the type of album. This value determines how the discs/tracks are to be filled in");
-//    albumTypeObjectControlEnumComboBox = new EnumComboBox<AlbumType>(AlbumType.NORMAL);
-    ChangeListener<AlbumType> cl = new ChangeListener<>() {
-
-      @Override
-      public void changed(ObservableValue<? extends AlbumType> observable, AlbumType oldValue, AlbumType newValue) {
-        LOGGER.severe("AlbumType: " + newValue);
-        
-      }
-      
-    };
-    albumTypeObjectControlEnumComboBox.ocGetControl().getSelectionModel().selectedItemProperty().addListener(cl);
-//    albumTypeObjectControlEnumComboBox.select(AlbumType.NORMAL);
-    albumTypeHBox.getChildren().addAll(label, albumTypeObjectControlEnumComboBox.ocGetControl());
-    centerPane.getChildren().add(albumTypeHBox);
-    
-    /*
-     * Disc tracks tables.
+     * Discs
      */
     discsVBox = componentFactory.createVBox(10.0, 10.0);
     centerPane.getChildren().add(discsVBox);
     
-    Button newDiscButton = componentFactory.createButton("New disc", "click to add a disc to the album");
+    Button newDiscButton = componentFactory.createButton("Add disc", "click to add a disc to the album");
     newDiscButton.setOnAction((e) -> addNewDiscPanel(null));
     centerPane.getChildren().add(newDiscButton);
     
@@ -705,8 +662,7 @@ public class AlbumEditor extends ObjectEditorAbstract {
     /*
      * Control buttons panel on the bottom
      */
-    addUpdateAndCancelButtonsPanel = componentFactory.createHBox(10.0, 12.0);
-    mainPane.setBottom(addUpdateAndCancelButtonsPanel);
+    mainPane.setBottom(addUpdateAndNewButtonsPanel);
     
     ScrollPane scrollPane = new ScrollPane();
     scrollPane.setContent(mainPane);
@@ -716,18 +672,6 @@ public class AlbumEditor extends ObjectEditorAbstract {
     show();
   }
   
-  @Override
-  protected void handleChanges() {
-    LOGGER.severe("=>");
-    updateControls();
-    redrawImagesPanel(frontImagesHBox, frontImageControls);
-    updateTitle();
-  }
-  
-  private void updateControls() {
-    boolean disable = !controlsGroup.isValid().getValue()  ||  (editMode == EditMode.EDIT  &&  !dirty());
-    addOrUpdateButton.setDisable(disable);
-  }
   
   /**
    * React to changes in the list of Artists.
@@ -738,11 +682,15 @@ public class AlbumEditor extends ObjectEditorAbstract {
   private void installChangeListernerForArtists() {
     Adapter adapter = new EContentAdapter() {
       public void notifyChanged(Notification notification) {
-        LOGGER.info("Notification received: " + EmfUtil.printNotification(notification, false));
+//        LOGGER.info("Notification received: " + EmfUtil.printNotification(notification, false));
         super.notifyChanged(notification);
         
         if (notification.isTouch()  ||  notification.getEventType() == Notification.REMOVING_ADAPTER) {
           // no action
+          return;
+        }
+        
+        if (notification.getFeature() == null  ||  !notification.getFeature().equals(MediadbPackage.eINSTANCE.getMediaDb_Artists())) {
           return;
         }
         
@@ -756,6 +704,18 @@ public class AlbumEditor extends ObjectEditorAbstract {
     };
     
     mediaDb.eAdapters().add(adapter);
+  }
+  
+  private void newAlbumBasedOnTrackInFolder(String albumFolderName) {
+    if (albumFolderName == null) {
+      return;
+    }
+    
+    String imagesFolder = Paths.get(MediaRegistry.albumInfoDirectory, "Pictures").toString();
+    AlbumInfo albumInfo = DeriveAlbumInfo.deriveAlbumDetails(albumFolderName, imagesFolder);
+    if (albumInfo != null) {
+      fillControlsFromAlbumInfo(albumInfo);
+    }
   }
 
     
@@ -775,22 +735,57 @@ public class AlbumEditor extends ObjectEditorAbstract {
    * 
    * @param album the <code>Album</code> for which the GUI controls are updated. This value may be null, in which case all controls are cleared.
    */
-  private void fillControlsFromAlbum(Album album) {
+  @Override
+  protected void fillControlsFromObject() {
+    setControlsToDefaultValues();
+    
     // First update the lists
-    fillPlayersFromAlbum(album);
-    updatePicturesForAlbum(album);
+    fillPlayersFromAlbum(object);
+    updatePicturesForAlbum(object);
     
     // Then the controls
-    fillGeneralControlsFromAlbum(album);
+    fillGeneralControlsFromAlbum(object);
     redrawPlayersPane();
     updateIssuedOnMediaPane();
     redrawImagesPanel(frontImagesHBox, frontImageControls);
     redrawImagesPanel(frontInsideImagesHBox, frontInsideImageControls);
     redrawImagesPanel(backImagesHBox, backImageControls);
     redrawImagesPanel(labelImagesHBox, labelImageControls);
-    updateCheckBoxes(album);
-    updateAlbumReferences(album);
-    updateDiscsPanel(album);
+    updateCheckBoxes(object);
+    updateAlbumReferences(object);
+    updateDiscsPanel(object);
+  }
+  
+  private void fillControlsFromAlbumInfo(AlbumInfo albumInfo) {
+    setControlsToDefaultValues();
+    
+    // First update the lists
+    // albumInfo has no players, so no PlayerObjectControls have to be filled in.
+    // updatePicturesForAlbum(object);  TODO not implemented yet in deriveAlbumInfo
+    
+    // Then the controls
+    fillGeneralControlsFromAlbumInfo(albumInfo);
+    redrawPlayersPane();
+    updateIssuedOnMediaPane();
+    redrawImagesPanel(frontImagesHBox, frontImageControls);
+    redrawImagesPanel(frontInsideImagesHBox, frontInsideImageControls);
+    redrawImagesPanel(backImagesHBox, backImageControls);
+    redrawImagesPanel(labelImagesHBox, labelImageControls);
+    updateCheckBoxes(null);
+    updateAlbumReferences(null);
+    updateDiscsPanelFromAlbumInfo(albumInfo);
+  }
+
+  private void setControlsToDefaultValues() {
+    albumTypeObjectControlEnumComboBox.ocSetValue(AlbumType.NORMAL_ALBUM);
+    albumTitleTextFieldObjectControl.ocSetValue(null);
+    albumArtistObjectControl.ocSetValue(null);
+    albumIssueDateTextField.ocSetValue(null);
+    albumIdTextField.ocSetValue(null);
+    descriptionTitleTextField.ocSetValue(null);
+    descriptionTextArea.ocSetValue(null);
+    myCommentsTextArea.ocSetValue(null);
+    iWantComboBox.ociSetValue(IWant.DONT_KNOW);
   }
 
   /**
@@ -802,6 +797,9 @@ public class AlbumEditor extends ObjectEditorAbstract {
     issuedOnMediaLabels.clear();
 
     if (album != null) {
+      if (album.getMyInfo().getAlbumType() != null) {
+        albumTypeObjectControlEnumComboBox.ocSetValue(album.getMyInfo().getAlbumType());
+      }
       albumTitleTextFieldObjectControl.ocSetValue(album.getTitle());
 
       albumArtistObjectControl.ocSetValue(album.getArtist());
@@ -838,9 +836,29 @@ public class AlbumEditor extends ObjectEditorAbstract {
     }
   }
 
+  /**
+   * Fill the general controls from the <code>album</code>.
+   * 
+   * @param album the <code>Album</code> for which the controls are updated. This value may be null, in which case all controls are cleared.
+   */
+  private void fillGeneralControlsFromAlbumInfo(AlbumInfo albumInfo) {
+    issuedOnMediaLabels.clear();
+
+    albumTitleTextFieldObjectControl.ocSetValue(albumInfo.albumTitle());
+
+    Artist albumArtist = mediaDb.getArtist(albumInfo.albumArtist());
+    albumArtistObjectControl.ocSetValue(albumArtist);
+    albumIssueDateTextField.ocSetValue(albumInfo.albumDate());
+  }
+
+  /**
+   * Fill the PlayerObjectControls for the Players of an Album.
+   * 
+   * @param album for the Players of this {@code Album} controls will be filled.
+   */
   private void fillPlayersFromAlbum(Album album) {
     for (PlayerObjectControl playerObjectControl: playerObjectControls) {
-      controlsGroup.removeObjectInput(playerObjectControl);
+      objectControlsGroup.removeObjectInput(playerObjectControl);
     }
     
     playerObjectControls.clear();
@@ -856,7 +874,7 @@ public class AlbumEditor extends ObjectEditorAbstract {
 //        playerInstrumentTextField.setText(StringUtil.stringCollectionToCommaSeparatedStrings(player.getInstruments()));
 
 //        Tuplet<AutoCompleteTextFieldObjectInput<Artist>, TextField> tuplet = createPlayerTuplet(player.getArtist(), player.getInstruments());
-        controlsGroup.addObjectControl(playerObjectControl);
+        objectControlsGroup.addObjectControl(playerObjectControl);
         playerObjectControls.add(playerObjectControl);
       }
     }
@@ -949,7 +967,7 @@ public class AlbumEditor extends ObjectEditorAbstract {
     addPlayerButton.setOnAction((e) -> {
       PlayerObjectControl playerObjectControl = new PlayerObjectControl(customization, mediaDb);
       playerObjectControls.add(playerObjectControl);
-      controlsGroup.addObjectControl(playerObjectControl);
+      objectControlsGroup.addObjectControl(playerObjectControl);
 //      Tuplet<AutoCompleteTextFieldObjectInput<Artist>, TextField> tuplet = createPlayerTuplet(null, null);
 //      playerObjectControls.add(tuplet);
       redrawPlayersPane();
@@ -971,7 +989,7 @@ public class AlbumEditor extends ObjectEditorAbstract {
   }
   
   private void redrawImagesPanel(HBox imagesBox, List<ObjectControlImageFile> objectControlsImageFile) {
-    LOGGER.severe("=>");
+    LOGGER.info("=>");
     
     imagesBox.getChildren().clear();
     
@@ -983,7 +1001,7 @@ public class AlbumEditor extends ObjectEditorAbstract {
       stackPane.getChildren().add(deleteImageButton);
       deleteImageButton.setOnAction((e) -> {
         LOGGER.severe("Removing image");
-        controlsGroup.removeObjectInput(objectControlImageFile);
+        objectControlsGroup.removeObjectInput(objectControlImageFile);
         objectControlsImageFile.remove(objectControlImageFile);
       });
       imagesBox.getChildren().add(stackPane);
@@ -996,12 +1014,10 @@ public class AlbumEditor extends ObjectEditorAbstract {
   private void updateCheckBoxes(Album album) {
     if (album != null) {      
       isCompilationAlbumCheckBox.setSelected(album.isCompilation());
-      isOwnCompilationCheckBox.setSelected(album instanceof MyCompilation);
       isSoundTrackCheckBox.setSelected(album.isSoundtrack());
       iveHadOnLpCheckBox.setSelected(album.getMyInfo().isIveHadOnLP());
     } else {
       isCompilationAlbumCheckBox.setSelected(false);
-      isOwnCompilationCheckBox.setSelected(false);
       isSoundTrackCheckBox.setSelected(false);
       iveHadOnLpCheckBox.setSelected(false);
     }
@@ -1035,6 +1051,11 @@ public class AlbumEditor extends ObjectEditorAbstract {
    */
   private void updateDiscsPanel(Album album) {
     discsVBox.getChildren().clear();
+    
+    for (DiscPanelAbstract discPanel: discPanels) {
+      objectControlsGroup.removeObjectInput(discPanel);
+    }
+    
     discPanels.clear();
 
     if (album != null) {
@@ -1042,15 +1063,67 @@ public class AlbumEditor extends ObjectEditorAbstract {
         addNewDiscPanel(disc);
       }
     } else {
-      addNewDiscPanel(null);  // There shall always be at least one disc.
+//      addNewDiscPanel(null);  // There shall always be at least one disc, but this doesn't mean that the user is going to provide information about it.
     }
   }
   
   private void addNewDiscPanel(Disc disc) {
 //    DiscPanel discPanel = new DiscPanel(customization, disc, albumTypeObjectControlEnumComboBox.valueProperty(), mediaDb);
-    DiscPanel discPanel = new DiscPanel(customization, disc, null, mediaDb);
-    discPanels.add(discPanel);
-    discsVBox.getChildren().add(discPanel);
+    switch (albumTypeObjectControlEnumComboBox.ocGetValue()) {
+    case NORMAL_ALBUM:
+      NormalDiscPanel normalDiscPanel = new NormalDiscPanel(customization, disc, mediaDb);
+      discPanels.add(normalDiscPanel);
+      objectControlsGroup.addObjectControl(normalDiscPanel);
+      discsVBox.getChildren().add(normalDiscPanel.ocGetControl());
+      break;
+      
+    default:
+      DiscPanelAbstract discPanel = new DiscPanel(customization, disc, null, mediaDb);
+      discPanels.add(discPanel);
+      objectControlsGroup.addObjectControl(discPanel);
+      discsVBox.getChildren().add(discPanel.ocGetControl());
+      break;
+    }
+    
+  }
+  
+  /**
+   * Update the discs panel (<code>discTracksVBox</code>).
+   * <p>
+   * The panel is cleared and then for each disc (of the <code>AlbumInfo</code> a DiscPanel is added to the panel.
+   */
+  private void updateDiscsPanelFromAlbumInfo(AlbumInfo albumInfo) {
+    discsVBox.getChildren().clear();
+    
+    for (DiscPanelAbstract discPanel: discPanels) {
+      objectControlsGroup.removeObjectInput(discPanel);
+    }
+
+    discPanels.clear();
+
+      for (DiscInfo discInfo: albumInfo.discs()) {
+        addNewDiscPanelForDiscInfo(discInfo);
+      }
+  }
+  
+  private void addNewDiscPanelForDiscInfo(DiscInfo discInfo) {
+    switch (albumTypeObjectControlEnumComboBox.ocGetValue()) {
+    case NORMAL_ALBUM:
+      Disc disc = MEDIA_DB_FACTORY.createDisc();
+      NormalDiscPanel normalDiscPanel = new NormalDiscPanel(customization, disc, mediaDb);
+      normalDiscPanel.fillControlsFromDiscInfo(discInfo);
+      discPanels.add(normalDiscPanel);
+      objectControlsGroup.addObjectControl(normalDiscPanel);
+      discsVBox.getChildren().add(normalDiscPanel.ocGetControl());
+      break;
+      
+    default:
+//      DiscPanelAbstract discPanel = new DiscPanel(customization, disc, null, mediaDb);
+//      discPanels.add(discPanel);
+//      discsVBox.getChildren().add(discPanel.ocGetControl());
+      break;
+    }
+    
   }
   
 
@@ -1086,7 +1159,7 @@ public class AlbumEditor extends ObjectEditorAbstract {
     hBox.getChildren().add(folderSelecter.getFolderChooserButton());
     
     Button button = componentFactory.createButton("Derive album details", "Derive the album details from this folder");
-    button.setOnAction(e -> deriveAlbumDetails(folderSelecter.ocGetAbsolutePath()));
+    button.setOnAction(e -> newAlbumBasedOnTrackInFolder(folderSelecter.ocGetAbsolutePath()));
     hBox.getChildren().add(button);
     
     outerHBox.getChildren().add(hBox);
@@ -1094,300 +1167,111 @@ public class AlbumEditor extends ObjectEditorAbstract {
     return outerHBox;
   }
   
-  /**
-   * Update the panel with the Add/Update and Cancel buttons.
-   */
-  private void updateAddUpdateAndCancelButtonsPanel() {
-    addUpdateAndCancelButtonsPanel.getChildren().clear();
-
-    final Pane spacer = new Pane();
-    HBox.setHgrow(spacer, Priority.ALWAYS);
-    addUpdateAndCancelButtonsPanel.getChildren().add(spacer);
-    
-    Button button;
-    
-    if (editMode == EditMode.NEW) {
-      addOrUpdateButton = componentFactory.createButton("Add album", "Add the album to the media database");
-      addOrUpdateButton.setOnAction(e -> addAlbum());
-    } else {
-      addOrUpdateButton = componentFactory.createButton("Update album", "Update the album in the media database");
-      addOrUpdateButton.setOnAction(e -> updateAlbum());
-    }
-    addUpdateAndCancelButtonsPanel.getChildren().add(addOrUpdateButton);
-    
-    button = componentFactory.createButton("Cancel", "Exit window without saving");
-    button.setOnAction(e -> closeWindow());
-    addUpdateAndCancelButtonsPanel.getChildren().add(button);
-  }
-  
-  
-  /**
-   * Derive the information of an album from a folder (containing the tracks of an album).
-   * 
-   * @param sourceFolderName the folder from which the information is to be derived.
-   */
-  private void deriveAlbumDetails(String sourceFolderName) {
-    LOGGER.severe("=> sourceFolderName" + sourceFolderName);
-    
-    // Create the information in an Album structure, and then fill the control with this information. Don't set 'album'.
-    Album album = MEDIA_DB_FACTORY.createAlbum();
-    Disc disc = MEDIA_DB_FACTORY.createDisc();
-    album.getDiscs().add(disc);
-    
-    Path sourceFolder = Paths.get(sourceFolderName);
-
-    // Try to find picture files.
-    try (DirectoryStream<Path> stream = Files.newDirectoryStream(sourceFolder)) {
-      for (Path path: stream) {
-        String fileName = path.getFileName().toString();
-        LOGGER.severe("Handling path: " + fileName);
-        if (!Files.isDirectory(path)) {
-          String[] fileNameAndExtension = FileUtils.getFileNameAndExtension(path);
-          LOGGER.severe("filename: " + fileNameAndExtension[0] + ", extension: " + fileNameAndExtension[1]);
-          
-          switch (fileNameAndExtension[1]) {
-          case "jpg":
-            if (fileNameAndExtension[0].equalsIgnoreCase("front")) {
-              album.getImagesFront().add(path.toAbsolutePath().toString());
-            }
-            if (fileNameAndExtension[0].equalsIgnoreCase("back")) {
-              album.getImagesBack().add(path.toAbsolutePath().toString());
-            }
-            if (fileNameAndExtension[0].equalsIgnoreCase("inside")) {
-              album.getImagesFrontInside().add(path.toAbsolutePath().toString());
-            }
-            break;
-            
-          default:
-            break;
-          }
-          
-        } else {
-          LOGGER.severe("Skipping folder: " + fileName);
-        }
-      }
-    } catch (IOException | DirectoryIteratorException x) {
-      // IOException can never be thrown by the iteration.
-      System.err.println(x);
-    }
-    
-    // read all MP3 and FLAC files in the folder
-    try (DirectoryStream<Path> stream = Files.newDirectoryStream(sourceFolder)) {
-      List<Path> flacFiles = null;
-      
-      for (Path path: stream) {
-        String fileName = path.getFileName().toString();
-        LOGGER.severe("Handling path: " + fileName);
-        if (!Files.isDirectory(path)) {
-          String extension = FileUtils.getFileExtension(path);
-          LOGGER.severe("extension: " + extension);
-          
-          switch (extension) {
-          case ".mp3":
-            deriveInfoFromMp3File(album, path);
-            break;
-            
-          case ".flac":
-            if (flacFiles == null) {
-              flacFiles = new ArrayList<>();
-            }
-            flacFiles.add(path);
-            break;
-            
-          default:
-            break;
-          }
-          
-        } else {
-          LOGGER.severe("Skipping folder: " + fileName);
-        }
-      }
-      
-      if (flacFiles != null) {
-        deriveInfoFromFlacFiles(album, flacFiles);
-      }
-    } catch (IOException | DirectoryIteratorException x) {
-      // IOException can never be thrown by the iteration.
-      System.err.println(x);
-    }
-    
-    if (!album.getImagesFront().isEmpty()  ||  !album.getImagesFrontInside().isEmpty()  ||
-        !album.getImagesBack().isEmpty()  ||  !album.getImagesLabel().isEmpty()) {
-      ImportAlbumPicturesWindow importAlbumPicturesWindow = new ImportAlbumPicturesWindow(getCustomization(), album);
-      importAlbumPicturesWindow.showAndWait();
-    }
-    
-    Album existingAlbum = mediaDb.getAlbum(album.getReleaseDate(), album.getArtist(), album.getTitle());
-    if (existingAlbum != null) {
-      LOGGER.severe("Album already exists in the media database");
-    }
-    
-    fillControlsFromAlbum(album);
-  }
-  
-  /**
-   * Derive ...
-   * 
-   * @param album
-   * @param flacFilePaths
-   */
-  private void deriveInfoFromFlacFiles(Album album, List<Path> flacFilePaths) {
-    LOGGER.severe("=>");
-    
-    Disc disc = album.getDiscs().get(0);
-    
-    /*
-     *  Get the information from the tracks.
-     */
-    List<Tag> tags = new ArrayList<>();
-    for (Path flacFilePath: flacFilePaths) {
-      File inputFile = new File(flacFilePath.toString());
-      try {
-        AudioFile audioFile = AudioFileIO.read(inputFile);
-        Tag tag = audioFile.getTag().or(NullTag.INSTANCE);
-        tags.add(tag);
-        
-        // Debugging only. Print all FieldKey values, except the ones which aren't supported by the library.
-        for (FieldKey fieldKey: FieldKey.values()) {
-          if (fieldKey == FieldKey.COVER_ART  ||
-              fieldKey == FieldKey.ITUNES_GROUPING) {
-            continue;
-          }
-          
-          Optional<String> optionalTag = tag.getValue(fieldKey);
-          if (optionalTag.isPresent()) {
-            LOGGER.severe("fieldKey:" + fieldKey.name() + "=" + optionalTag.get());
-          }
-        }
-      } catch (CannotReadException | IOException | TagException | InvalidAudioFrameException e) {
-        e.printStackTrace();
-      }
-    }
-    
-    /*
-     *  Sort the tracks. This is based on TRACK. If there's at least one track for which this isn't set, get it from the filename.
-     */
-    
-    /*
-     *  Determine the album artist name.
-     *  This is the ALBUM_ARTIST. This shall be the same for all tracks., or, if this isn't available, the ARTIST (if this is the same for all tracks).
-     *  If the ALBUM_ARTIST isn't available, and the ARTIST is the same for all tracks, then this is the album artist name.
-     */
-    String albumArtistName = null;
-    for (Tag tag: tags) {
-      Optional<String> optionalTag = tag.getValue(FieldKey.ALBUM_ARTIST);
-      if (optionalTag.isPresent()) {
-        String currentAlbumArtistName = optionalTag.get();
-        if (albumArtistName == null) {
-          albumArtistName = currentAlbumArtistName;
-        } else {
-          if (!albumArtistName.equals(currentAlbumArtistName)) {
-            LOGGER.severe("Different album artist names detected.");
-          }
-        }
-      }
-    }
-    
-    if (albumArtistName == null) {
-      for (Tag tag: tags) {
-        Optional<String> optionalTag = tag.getValue(FieldKey.ARTIST);
-        if (optionalTag.isPresent()) {
-          String currentArtistName = optionalTag.get();
-          if (albumArtistName == null) {
-            albumArtistName = currentArtistName;
-          } else {
-            if (!albumArtistName.equals(currentArtistName)) {
-              LOGGER.severe("Different artist names detected.");
-            }
-          }
-        }
-      }
-    }
-    
-    /*
-     *  If the artist isn't known in de database, ask the user whether it should be added.
-     */
-    Artist artist = null;
-    if (albumArtistName != null) {
-      artist = mediaDb.getArtist(albumArtistName);
-      if (artist == null) {
-        ArtistDetailsEditor artistDetailsEditor = new ArtistDetailsEditor(getCustomization(), "New artist", mediaDb, "The artist doesn't exist in the database yet. Do you want to add it?", albumArtistName);
-//        artistDetailsEditor.initModality(Modality.APPLICATION_MODAL);
-        artistDetailsEditor.showAndWait();
-        // retry to get the artist, should succeed if it has been added.
-        artist = mediaDb.getArtist(albumArtistName);
-      }
-      if (artist != null) {
-        album.setArtist(artist);
-      }
-    }
-    
-    // Determine the album title. This is the ALBUM. This shall be the same for all tracks.
-    for (Tag tag: tags) {
-      Optional<String> optionalTag = tag.getValue(FieldKey.ALBUM);
-      if (optionalTag.isPresent()) {
-        String albumTitle = optionalTag.get();
-        if (!album.isSetTitle()) {
-          album.setTitle(albumTitle);
-        } else {
-          if (!album.getTitle().equals(albumTitle)) {
-            LOGGER.severe("Different album titles detected.");
-          }
-        }
-      }
-    }
-    
-    // Determine the year of issue. This is the YEAR. This shall be the same for all tracks.
-    Integer issueYear = null;
-    for (Tag tag: tags) {
-      Optional<String> optionalTag = tag.getValue(FieldKey.YEAR);
-      if (optionalTag.isPresent()) {
-        try {
-          Integer currentIssueYear = Integer.valueOf(optionalTag.get());
-          if (issueYear == null) {
-            issueYear = currentIssueYear;
-          } else {
-            if (!issueYear.equals(currentIssueYear)) {
-              LOGGER.severe("Different issue years detected.");
-            }
-          }
-        } catch (NumberFormatException e) {
-          // no action
-        }
-      }
-    }
-    if (issueYear != null) {
-      album.setReleaseDate(new FlexDate(issueYear));
-    }
-    
-    // Determine the track title. This is the TITLE. Create and add track with this title
-    for (Tag tag: tags) {
-//      Track track = MEDIA_DB_FACTORY.createTrack();
-      
-//      if (artist != null) {
-//        track.setArtist(artist);
+//  
+//  /**
+//   * Derive the information of an album from a folder (containing the tracks of an album).
+//   * 
+//   * @param sourceFolderName the folder from which the information is to be derived.
+//   */
+//  private void deriveAlbumDetails(String sourceFolderName) {
+//    LOGGER.severe("=> sourceFolderName" + sourceFolderName);
+//    
+//    // Create the information in an Album structure, and then fill the control with this information. Don't set 'album'.
+//    Album album = MEDIA_DB_FACTORY.createAlbum();
+//    Disc disc = MEDIA_DB_FACTORY.createDisc();
+//    album.getDiscs().add(disc);
+//    
+//    Path sourceFolder = Paths.get(sourceFolderName);
+//
+//    // Try to find picture files.
+//    try (DirectoryStream<Path> stream = Files.newDirectoryStream(sourceFolder)) {
+//      for (Path path: stream) {
+//        String fileName = path.getFileName().toString();
+//        LOGGER.severe("Handling path: " + fileName);
+//        if (!Files.isDirectory(path)) {
+//          String[] fileNameAndExtension = FileUtils.getFileNameAndExtension(path);
+//          LOGGER.severe("filename: " + fileNameAndExtension[0] + ", extension: " + fileNameAndExtension[1]);
+//          
+//          switch (fileNameAndExtension[1]) {
+//          case "jpg":
+//            if (fileNameAndExtension[0].equalsIgnoreCase("front")) {
+//              album.getImagesFront().add(path.toAbsolutePath().toString());
+//            }
+//            if (fileNameAndExtension[0].equalsIgnoreCase("back")) {
+//              album.getImagesBack().add(path.toAbsolutePath().toString());
+//            }
+//            if (fileNameAndExtension[0].equalsIgnoreCase("inside")) {
+//              album.getImagesFrontInside().add(path.toAbsolutePath().toString());
+//            }
+//            break;
+//            
+//          default:
+//            break;
+//          }
+//          
+//        } else {
+//          LOGGER.severe("Skipping folder: " + fileName);
+//        }
 //      }
-      
-      String trackTitle = null;
-      Optional<String> optionalTag = tag.getValue(FieldKey.TITLE);
-      if (optionalTag.isPresent()) {
-        trackTitle = optionalTag.get();
-      }
-      
-//      track.setOriginalAlbum(album);
-      
-//      mediaDb.getTracks().add(track);
-      Track track = MediaDbUtil.getOrAddTrack(mediaDb, artist, trackTitle, disc);
-      
-      TrackReference trackReference = MEDIA_DB_FACTORY.createTrackReference();
-      trackReference.setTrack(track);
-      
-      disc.getTrackReferences().add(trackReference);
-    }
-      
-    LOGGER.severe("<=");
-  }
-  
+//    } catch (IOException | DirectoryIteratorException x) {
+//      // IOException can never be thrown by the iteration.
+//      System.err.println(x);
+//    }
+//    
+//    // read all MP3 and FLAC files in the folder
+//    try (DirectoryStream<Path> stream = Files.newDirectoryStream(sourceFolder)) {
+//      List<Path> flacFiles = null;
+//      
+//      for (Path path: stream) {
+//        String fileName = path.getFileName().toString();
+//        LOGGER.severe("Handling path: " + fileName);
+//        if (!Files.isDirectory(path)) {
+//          String extension = FileUtils.getFileExtension(path);
+//          LOGGER.severe("extension: " + extension);
+//          
+//          switch (extension) {
+//          case ".mp3":
+//            deriveInfoFromMp3File(album, path);
+//            break;
+//            
+//          case ".flac":
+//            if (flacFiles == null) {
+//              flacFiles = new ArrayList<>();
+//            }
+//            flacFiles.add(path);
+//            break;
+//            
+//          default:
+//            break;
+//          }
+//          
+//        } else {
+//          LOGGER.severe("Skipping folder: " + fileName);
+//        }
+//      }
+//      
+//      if (flacFiles != null) {
+//        DeriveAlbumInfo.deriveInfoFromFlacFiles(album, flacFiles, mediaDb);
+//      }
+//    } catch (IOException | DirectoryIteratorException x) {
+//      // IOException can never be thrown by the iteration.
+//      System.err.println(x);
+//    }
+//    
+//    if (!album.getImagesFront().isEmpty()  ||  !album.getImagesFrontInside().isEmpty()  ||
+//        !album.getImagesBack().isEmpty()  ||  !album.getImagesLabel().isEmpty()) {
+//      ImportAlbumPicturesWindow importAlbumPicturesWindow = new ImportAlbumPicturesWindow(getCustomization(), album);
+//      importAlbumPicturesWindow.showAndWait();
+//    }
+//    
+//    Album existingAlbum = mediaDb.getAlbum(album.getReleaseDate(), album.getArtist(), album.getTitle());
+//    if (existingAlbum != null) {
+//      LOGGER.severe("Album already exists in the media database");
+//    }
+//    
+//    fillControlsFromObject();  // TODO
+//  }
+//  
   /**
    * Derive track and album information from an .mp3 file.
    * 
@@ -1458,18 +1342,31 @@ public class AlbumEditor extends ObjectEditorAbstract {
    * If the provided information is correct, the Album is created and added to the media database.
    * Otherwise, an Alert is shown with information about what is wrong.
    */
-  protected void addAlbum() {
+  protected void addObject() {
+    LOGGER.severe("=>");
+    
     try {
-      Album album;
+      object = MEDIA_DB_FACTORY.createAlbum();
       
-      if (isOwnCompilationCheckBox.isSelected()) {
-        album = MEDIA_DB_FACTORY.createMyCompilation();
-      } else {
-        album = MEDIA_DB_FACTORY.createAlbum();
+      updateObjectFromControls(object);
+      
+      List<Track> allNewTracks = new ArrayList<>();
+      for (DiscPanelAbstract discPanel: discPanels) {
+        List<Track> newTracks = discPanel.getNewTracks();
+        allNewTracks.addAll(newTracks);
+      }
+      if (!allNewTracks.isEmpty()) {
+        StringBuilder buf = new StringBuilder();
+        buf.append("If you create this new album, the following tracks will be added to the media database");
+        for (Track track: allNewTracks) {
+          buf.append(track.toString()).append(NEW_LINE);
+        }
+        Optional<ButtonType> choice = componentFactory.createOkCancelConfirmationDialog("Create new tracks", buf.toString(), "Create album and tracks?").showAndWait();
       }
       
-      updateAlbumFromControls(album);
-      mediaDb.getAlbums().add(album);
+      
+      mediaDb.getAlbums().add(object);
+      setObject(object, false);
     } catch (AlbumDetailsException e) {
       StringBuilder buf = new StringBuilder();
       for (String problem: e.getProblems()) {
@@ -1486,9 +1383,9 @@ public class AlbumEditor extends ObjectEditorAbstract {
    * If the provided information is correct, the Album is updated.
    * Otherwise, an Alert is shown with information about what is wrong.
    */
-  protected void updateAlbum() {
+  protected void updateObject() {
     try {
-      updateAlbumFromControls(album);
+      updateObjectFromControls(object);
     } catch (AlbumDetailsException e) {
       StringBuilder buf = new StringBuilder();
       for (String problem: e.getProblems()) {
@@ -1505,7 +1402,7 @@ public class AlbumEditor extends ObjectEditorAbstract {
    * @param album the Album to be updated
    * @throws AlbumDetailsException in case one or more controls has an illegal value.
    */
-  private void updateAlbumFromControls(Album album) throws AlbumDetailsException {
+  private void updateObjectFromControls(Album album) throws AlbumDetailsException {
     
     List<String> problems = new ArrayList<>();
     
@@ -1624,8 +1521,9 @@ public class AlbumEditor extends ObjectEditorAbstract {
       IWant iWant = iWantComboBox.ocGetValue();
       if (iWant == null) {
         iWant = IWant.NOT_SET;
+      } else {
+        EmfUtil.setFeatureValue(myInfoToFill, MEDIA_DB_PACKAGE.getMyInfo_IWant(), iWant);
       }
-      EmfUtil.setFeatureValue(myInfoToFill, MEDIA_DB_PACKAGE.getMyInfo_IWant(), iWant);
       
       EmfUtil.setFeatureValue(myInfoToFill, MEDIA_DB_PACKAGE.getMyInfo_IveHadOnLP(), iveHadOnLpCheckBox.isSelected());
       
@@ -1637,8 +1535,13 @@ public class AlbumEditor extends ObjectEditorAbstract {
       }
     }
     
-    for (DiscPanel discPanel: discPanels) {
-      updateDiscFromDiscPanel(discPanel);
+    for (DiscPanelAbstract discPanel: discPanels) {
+      Disc disc = discPanel.getDisc();
+      if (editMode == EditMode.NEW) {
+        album.getDiscs().add(disc);
+      }
+      discPanel.ocGetValue();
+//      updateDiscFromDiscPanel(discPanel);
     }
     
     if (problems.size() != 0) {
@@ -1646,56 +1549,59 @@ public class AlbumEditor extends ObjectEditorAbstract {
     }
   }
   
-  /**
-   * Update a Disc from the information in a DiscPanel.
-   * 
-   * @param discPanel the DiscPanel to update the disc from.
-   */
-  private void updateDiscFromDiscPanel(DiscPanel discPanel) {
-    Disc disc = discPanel.getDisc();
-    EmfUtil.setFeatureValue(disc, MEDIA_DB_PACKAGE.getDisc_Title(), discPanel.getDiscTitle());
-  
-    for (TrackReferenceAndMyTrackInfoControls trackReferencePanel: discPanel.getTrackReferencePanels()) {
-      updateTrackReferenceFromTrackReferencePanel(trackReferencePanel);
-    }
-    
-  }
+//  /**
+//   * Update a Disc from the information in a DiscPanel.
+//   * 
+//   * @param discPanel the DiscPanel to update the disc from.
+//   */
+//  private void updateDiscFromDiscPanel(DiscPanelAbstract discPanel) {
+//    Disc disc = discPanel.getDisc();
+//    if (disc == null) {
+//      disc = MEDIA_DB_FACTORY.createDisc();
+//    }
+//    EmfUtil.setFeatureValue(disc, MEDIA_DB_PACKAGE.getDisc_Title(), discPanel.getDiscTitle());
+//  
+//    for (TrackReferenceAndMyTrackInfoControls trackReferencePanel: discPanel.getTrackReferencePanels()) {
+//      updateTrackReferenceFromTrackReferencePanel(trackReferencePanel);
+//    }
+//    
+//  }
 
-  /**
-   * Update a TrackReference based on TrackReferenceAndMyTrackInfoControls
-   *  
-   * @param trackReferencePanel the TrackReferenceAndMyTrackInfoControls to handle.
-   */
-  private void updateTrackReferenceFromTrackReferencePanel(TrackReferenceAndMyTrackInfoControls trackReferencePanel) {
-    TrackReference trackReference = trackReferencePanel.getTrackReference();
-
-    // If the Track has changed, the original Track that was referred to may become obsolete. If so we delete it.
-    Track originalTrack = trackReference.getTrack();
-    EmfUtil.setFeatureValue(trackReference, MEDIA_DB_PACKAGE.getTrackReference_Track(), trackReferencePanel.getTrack());
-    if (originalTrack.getReferredBy().isEmpty()) {
-      mediaDb.getTracks().remove(originalTrack);
-    }
-    
-    EmfUtil.setFeatureValue(trackReference, MEDIA_DB_PACKAGE.getTrackReference_BonusTrack(), trackReferencePanel.getBonusTrack());
-    
-    boolean isMyTrackInfoNeeded = isMyTrackInfoNeeded(trackReferencePanel);
-    if (isMyTrackInfoNeeded) {
-      EmfUtil.setFeatureValue(trackReference.getMyTrackInfo(), MEDIA_DB_PACKAGE.getMyTrackInfo_Collection(), trackReferencePanel.getCollection());
-      EmfUtil.setFeatureValue(trackReference.getMyTrackInfo(), MEDIA_DB_PACKAGE.getMyTrackInfo_IWant(), trackReferencePanel.getIWant());
-    }
-  }
-
-  private boolean isMyTrackInfoNeeded(TrackReferenceAndMyTrackInfoControls trackReferencePanel) {
-    if (trackReferencePanel.getCollection() != goedegep.media.mediadb.model.Collection.NOT_SET) {
-      return true;
-    }
-    
-    if (trackReferencePanel.getIWant() != IWant.NOT_SET) {
-      return true;
-    }
-    
-    return false;
-  }
+//  /**
+//   * Update a TrackReference based on TrackReferenceAndMyTrackInfoControls
+//   *  
+//   * @param trackReferencePanel the TrackReferenceAndMyTrackInfoControls to handle.
+//   */
+//  private void updateTrackReferenceFromTrackReferencePanel(TrackReferenceAndMyTrackInfoControls trackReferencePanel) {
+//    TrackReference trackReference = trackReferencePanel.getTrackReference();
+//
+//    // If the Track has changed, the original Track that was referred to may become obsolete. If so we delete it.
+//    Track originalTrack = trackReference.getTrack();
+//    EmfUtil.setFeatureValue(trackReference, MEDIA_DB_PACKAGE.getTrackReference_Track(), trackReferencePanel.getTrack());
+//    if (originalTrack.getReferredBy().isEmpty()) {
+//      mediaDb.getTracks().remove(originalTrack);
+//    }
+//    
+//    EmfUtil.setFeatureValue(trackReference, MEDIA_DB_PACKAGE.getTrackReference_BonusTrack(), trackReferencePanel.getBonusTrack());
+//    
+//    boolean isMyTrackInfoNeeded = isMyTrackInfoNeeded(trackReferencePanel);
+//    if (isMyTrackInfoNeeded) {
+//      EmfUtil.setFeatureValue(trackReference.getMyTrackInfo(), MEDIA_DB_PACKAGE.getMyTrackInfo_Collection(), trackReferencePanel.getCollection());
+//      EmfUtil.setFeatureValue(trackReference.getMyTrackInfo(), MEDIA_DB_PACKAGE.getMyTrackInfo_IWant(), trackReferencePanel.getIWant());
+//    }
+//  }
+//
+//  private boolean isMyTrackInfoNeeded(TrackReferenceAndMyTrackInfoControls trackReferencePanel) {
+//    if (trackReferencePanel.getCollection() != goedegep.media.mediadb.model.Collection.NOT_SET) {
+//      return true;
+//    }
+//    
+//    if (trackReferencePanel.getIWant() != IWant.NOT_SET) {
+//      return true;
+//    }
+//    
+//    return false;
+//  }
 
 //  private void updateDiscFromControls(Disc albumDisc, Disc disc) {
 //    EmfUtil.setFeatureValue(albumDisc, MEDIA_DB_PACKAGE.getDisc_Title(), disc.getTitle());
@@ -1865,8 +1771,55 @@ public class AlbumEditor extends ObjectEditorAbstract {
    * 
    * @return true if any value of the controls differs from the album value, false otherwise.
    */
-  private boolean dirty() {
-    return !PgUtilities.equals(albumTitleTextFieldObjectControl.ocGetValue(), album.eGet(MediadbPackage.eINSTANCE.getAlbum_Title()));
+  @Override
+  protected boolean changesInInput() {
+//    
+//    playerObjectControls = new ArrayList<>();
+//    frontImageControls = new ArrayList<>();
+//    frontInsideImageControls = new ArrayList<>();
+//    backImageControls = new ArrayList<>();
+//    labelImageControls = new ArrayList<>();
+//
+//    descriptionTitleTextField = componentFactory.createObjectControlTextField(null, null, 600, true, "Enter the optional titel of the description");
+//    descriptionTextArea = componentFactory.createObjectControlMultiLineString(null, 400, true, "Enter an optional description of the album");
+//    
+//    mediaComboBox = componentFactory.createObjectControlEnumComboBox(MediumType.CD_AUDIO, MediumType.NOT_SET, MEDIA_DB_PACKAGE.getMediumType(), false, "Select a medium on which the album is issued");
+//    
+//    addMediumTypeButton = componentFactory.createButton("Add medium", "Add this medium type");
+//    addMediumTypeButton.setOnAction((e) -> {
+//      MediumType selectedMediumType = mediaComboBox.ocGetValue();
+//      if (selectedMediumType != null  &&  selectedMediumType != MediumType.NOT_SET) {
+//        Label label = componentFactory.createLabel(selectedMediumType.getLiteral());
+//        issuedOnMediaLabels.add(label);
+//        updateIssuedOnMediaPane();
+//      }
+//    });
+//    issuedOnMediaLabels = new ArrayList<>();
+//    
+//    isCompilationAlbumCheckBox = componentFactory.createCheckBox("compilation album", false);
+//    isOwnCompilationCheckBox = componentFactory.createCheckBox("own compilation", false);
+//    isSoundTrackCheckBox = componentFactory.createCheckBox("soundtrack", false);
+//    iveHadOnLpCheckBox = componentFactory.createCheckBox("I've had on lp", false);
+//
+//    iWantComboBox = componentFactory.createObjectControlEnumComboBox(IWant.NOT_SET, IWant.NOT_SET, MEDIA_DB_PACKAGE.getIWant(), true, "Select whether you want this album or not");
+//    
+//    myCommentsTextArea = componentFactory.createObjectControlMultiLineString(null, 400, true, "Enter an optional personal comment about the album");
+//    
+//    discPanels = new ArrayList<>();
+    
+    
+    if (editMode == EditMode.EDIT) {
+      if (!PgUtilities.equals(albumTitleTextFieldObjectControl.ocGetValue(), object.eGet(MediadbPackage.eINSTANCE.getAlbum_Title()))  ||
+          !PgUtilities.equals(albumArtistObjectControl.ocGetValue(), object.eGet(MediadbPackage.eINSTANCE.getAlbum_Artist())) ||
+          !PgUtilities.equals(albumIssueDateTextField.ocGetValue(), object.eGet(MediadbPackage.eINSTANCE.getAlbum_ReleaseDate())) ||
+          !PgUtilities.equals(albumIdTextField.ocGetValue(), object.eGet(MediadbPackage.eINSTANCE.getAlbum_Id()))  ) {
+        return true;
+      } else {
+        return false;
+      }
+    } else {  // editMode = NEW
+      return objectControlsGroup.isAnyObjectControlChanged();
+    }
   }
   
   /**
@@ -1890,34 +1843,17 @@ public class AlbumEditor extends ObjectEditorAbstract {
       buf.append(artistName).append(" - ").append(title);
 
     } else {
-      if (dirty()) {
+      if (changesInInput()) {
         buf.append("*");
       }
       
       buf.append("Edit album: ");
-      buf.append(album.getArtistAndTitle());
+      buf.append(object.getArtistAndTitle());
     }
     
     setTitle(buf.toString());
   }
   
-  /**
-   * Update the Edit mode.
-   * <p>
-   * This has to be called when the {@code album} value has changed.
-   */
-  private void updateEditMode() {
-    if (album != null) {
-      editMode = EditMode.EDIT;
-      mainPane.setTop(null);
-    } else {
-      editMode = EditMode.NEW;
-      mainPane.setTop(importControlsPanel);
-    }
-    updateAddUpdateAndCancelButtonsPanel();
-    updateControls();
-    updateTitle();
-  }
 }
 
 

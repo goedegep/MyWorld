@@ -31,14 +31,14 @@ public class ArtistStringConverterAndChecker extends StringConverterAndChecker<A
    */
   @Override
   public boolean isValid(String string) {
-    LOGGER.severe("=> " + string);
+    LOGGER.info("=> " + string);
     
     if (string == null) {
       return true;
     }
     
     boolean returnValue = fromString(string) != null;
-    LOGGER.severe("<= " + returnValue);
+    LOGGER.info("<= " + returnValue);
     return returnValue;
   }
 

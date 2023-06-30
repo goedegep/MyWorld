@@ -1264,12 +1264,11 @@ public class InvoiceAndPropertyEditor extends ObjectEditorAbstract {
     gridPane.add(label, 0, rowIndex);
     
     // ObjectInput control
-    Node node = eObjectAttributeEditDescriptor.getObjectControl().ocGetControl();
-    gridPane.add(node, 1, rowIndex); 
+    ObjectControl<?> objectInput = eObjectAttributeEditDescriptor.getObjectControl();
+    gridPane.add(objectInput.ocGetControl(), 1, rowIndex); 
     
     // Ok/Not OK label
     Label statusLabel = componentFactory.createLabel(null);
-    ObjectControl<?> objectInput = (ObjectControl<?>) node;
     objectInput.addListener((o) -> EObjectEditor.updateStatusLabel(statusLabel, objectInput.ocIsValid()));
      EObjectEditor.updateStatusLabel(statusLabel, objectInput.ocIsValid());
     gridPane.add(statusLabel, 2, rowIndex);
