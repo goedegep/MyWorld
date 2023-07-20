@@ -17,6 +17,7 @@ import goedegep.jfx.DefaultCustomizationFx;
 import goedegep.jfx.browser.BrowserWindow;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Control;
@@ -40,7 +41,8 @@ public class EObjectTreeCellHelperForAttributeSimple extends EObjectTreeCellHelp
   
   private HBox graphic = null;             // will contain labelLabel plus either valueLabel (not editing) or valueTextField (editing).
   private Label labelLabel = null;         // this label is always there and always part of the graphic
-  private Label valueLabel = null;         // this label is always there (as it is the normal situation), but only part of the graphic when not in editing mode.
+  private Label valueLabel = null;         // this label is always there, except for BOOLEAN (as it is the normal situation), but only part of the graphic when not in editing mode.
+  private CheckBox checkBox = null;        // used for BOOLEAN
   private TextInputControl textInputControl = null;
   private TextField valueTextField = null; // this text field is created and made part of the graphic when editing starts, and set back to null when editing ends.
   private TextArea valueTextArea = null;   // 
@@ -77,7 +79,17 @@ public class EObjectTreeCellHelperForAttributeSimple extends EObjectTreeCellHelp
         textInputControl.setText(getValueText(eObjectTreeItemContent));
       }
     } else {
-      valueLabel.setText(getValueText(eObjectTreeItemContent));
+      if (checkBox != null) {
+        checkBox.setSelected((boolean) eObjectTreeItemContent.getObject());
+        checkBox.setOnAction((e) -> {
+          EObjectTreeItem parentItem = (EObjectTreeItem) eObjectTreeCell.getTreeItem().getParent();
+          EObjectTreeItemContent parentValue = parentItem.getValue();
+          EObject eObject = (EObject) parentValue.getObject();
+          eObject.eSet(eObjectTreeItemContent.getEStructuralFeature(), checkBox.isSelected());
+        });
+      } else {
+        valueLabel.setText(getValueText(eObjectTreeItemContent));
+      }
     }
     
     LOGGER.info("<=");
@@ -102,7 +114,7 @@ public class EObjectTreeCellHelperForAttributeSimple extends EObjectTreeCellHelp
       LOGGER.info("Handling operation: " + nodeOperationDescriptor.getOperation().name());
       
       if (!nodeOperationDescriptor.getOperation().equals(TableRowOperation.OPEN)) {
-        throw new IllegalArgumentException("Only operation 'OPEN' is possible for simple attributes");
+//        throw new IllegalArgumentException("Only operation 'OPEN' is possible for simple attributes");
       }
       
       MenuItem menuItem = new MenuItem(nodeOperationDescriptor.getMenuText());
@@ -140,6 +152,10 @@ public class EObjectTreeCellHelperForAttributeSimple extends EObjectTreeCellHelp
     EObject eObject;
     
     switch(itemDescriptor.getPresentationType()) {
+    case BOOLEAN:
+      // no action
+      break;
+      
     case SINGLE_LINE_TEXT:
     case FORMAT:
       valueTextField = new TextField();
@@ -230,6 +246,7 @@ public class EObjectTreeCellHelperForAttributeSimple extends EObjectTreeCellHelp
     
     case FILE:
       fileChooser = new FileChooser();
+      fileChooser.setInitialDirectory(null);
       if (itemDescriptor.getInitialDirectoryNameFunction() != null) {
         String initialDirectoryName = itemDescriptor.getInitialDirectoryNameFunction().apply(eObjectTreeCell);
         if (initialDirectoryName != null) {
@@ -316,9 +333,10 @@ public class EObjectTreeCellHelperForAttributeSimple extends EObjectTreeCellHelp
         break;
         
       case "boolean":
-        if ((newValueString != null)  &&  !newValueString.isEmpty()) {
-          newValueObject = Boolean.parseBoolean(newValueString);
-        }
+        newValueObject = checkBox.isSelected();
+//        if ((newValueString != null)  &&  !newValueString.isEmpty()) {
+//          newValueObject = Boolean.parseBoolean(newValueString);
+//        }
         break;
         
         
@@ -326,8 +344,11 @@ public class EObjectTreeCellHelperForAttributeSimple extends EObjectTreeCellHelp
         newValueObject = newValue.getObject();
       }
     }
-    valueLabel.setText(getValueText(newValue));
-    graphic.getChildren().add(valueLabel);
+    
+    if (checkBox == null) {
+      valueLabel.setText(getValueText(newValue));
+      graphic.getChildren().add(valueLabel);
+    }
     
     EObjectTreeItem parentItem = (EObjectTreeItem) treeItem.getParent();
     EObjectTreeItemContent parentValue = parentItem.getValue();
@@ -363,9 +384,15 @@ public class EObjectTreeCellHelperForAttributeSimple extends EObjectTreeCellHelp
     labelLabel = new Label();
     labelLabel.setMinWidth(150d);
     graphic.getChildren().add(labelLabel);
-    valueLabel = new Label();
-    valueLabel.setMaxWidth(400);
-    graphic.getChildren().add(valueLabel);
+    
+    if (itemDescriptor.getPresentationType()  ==  PresentationType.BOOLEAN) {
+      checkBox = new CheckBox();
+      graphic.getChildren().add(checkBox);
+    } else {
+      valueLabel = new Label();
+      valueLabel.setMaxWidth(400);
+      graphic.getChildren().add(valueLabel);
+    }
     
     LOGGER.info("<=");
   }

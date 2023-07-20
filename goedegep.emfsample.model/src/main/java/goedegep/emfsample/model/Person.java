@@ -3,6 +3,7 @@
 package goedegep.emfsample.model;
 
 import java.util.Date;
+import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EObject;
 
 /**
@@ -14,7 +15,7 @@ import org.eclipse.emf.ecore.EObject;
  * The following features are supported:
  * </p>
  * <ul>
- *   <li>{@link goedegep.emfsample.model.Person#getFirstname <em>Firstname</em>}</li>
+ *   <li>{@link goedegep.emfsample.model.Person#getFirstnames <em>Firstnames</em>}</li>
  *   <li>{@link goedegep.emfsample.model.Person#getSurname <em>Surname</em>}</li>
  *   <li>{@link goedegep.emfsample.model.Person#getGender <em>Gender</em>}</li>
  *   <li>{@link goedegep.emfsample.model.Person#getBirthday <em>Birthday</em>}</li>
@@ -28,53 +29,39 @@ import org.eclipse.emf.ecore.EObject;
  */
 public interface Person extends EObject {
   /**
-   * Returns the value of the '<em><b>Firstname</b></em>' attribute.
+   * Returns the value of the '<em><b>Firstnames</b></em>' attribute list.
+   * The list contents are of type {@link java.lang.String}.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return the value of the '<em>Firstname</em>' attribute.
-   * @see #isSetFirstname()
-   * @see #unsetFirstname()
-   * @see #setFirstname(String)
-   * @see goedegep.emfsample.model.EmfSamplePackage#getPerson_Firstname()
+   * @return the value of the '<em>Firstnames</em>' attribute list.
+   * @see #isSetFirstnames()
+   * @see #unsetFirstnames()
+   * @see goedegep.emfsample.model.EmfSamplePackage#getPerson_Firstnames()
    * @model unsettable="true"
    * @generated
    */
-  String getFirstname();
+  EList<String> getFirstnames();
 
   /**
-   * Sets the value of the '{@link goedegep.emfsample.model.Person#getFirstname <em>Firstname</em>}' attribute.
+   * Unsets the value of the '{@link goedegep.emfsample.model.Person#getFirstnames <em>Firstnames</em>}' attribute list.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @param value the new value of the '<em>Firstname</em>' attribute.
-   * @see #isSetFirstname()
-   * @see #unsetFirstname()
-   * @see #getFirstname()
+   * @see #isSetFirstnames()
+   * @see #getFirstnames()
    * @generated
    */
-  void setFirstname(String value);
+  void unsetFirstnames();
 
   /**
-   * Unsets the value of the '{@link goedegep.emfsample.model.Person#getFirstname <em>Firstname</em>}' attribute.
+   * Returns whether the value of the '{@link goedegep.emfsample.model.Person#getFirstnames <em>Firstnames</em>}' attribute list is set.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see #isSetFirstname()
-   * @see #getFirstname()
-   * @see #setFirstname(String)
+   * @return whether the value of the '<em>Firstnames</em>' attribute list is set.
+   * @see #unsetFirstnames()
+   * @see #getFirstnames()
    * @generated
    */
-  void unsetFirstname();
-
-  /**
-   * Returns whether the value of the '{@link goedegep.emfsample.model.Person#getFirstname <em>Firstname</em>}' attribute is set.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return whether the value of the '<em>Firstname</em>' attribute is set.
-   * @see #unsetFirstname()
-   * @see #getFirstname()
-   * @see #setFirstname(String)
-   * @generated
-   */
-  boolean isSetFirstname();
+  boolean isSetFirstnames();
 
   /**
    * Returns the value of the '<em><b>Surname</b></em>' attribute.

@@ -7,15 +7,19 @@ import goedegep.emfsample.model.EmfSamplePackage;
 import goedegep.emfsample.model.Gender;
 import goedegep.emfsample.model.Person;
 
+import java.util.Collection;
 import java.util.Date;
 import org.eclipse.emf.common.notify.Notification;
 
 import org.eclipse.emf.common.notify.NotificationChain;
+import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.InternalEObject;
 
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
+import org.eclipse.emf.ecore.util.EDataTypeUniqueEList;
+import org.eclipse.emf.ecore.util.InternalEList;
 
 /**
  * <!-- begin-user-doc -->
@@ -25,7 +29,7 @@ import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
  * The following features are implemented:
  * </p>
  * <ul>
- *   <li>{@link goedegep.emfsample.model.impl.PersonImpl#getFirstname <em>Firstname</em>}</li>
+ *   <li>{@link goedegep.emfsample.model.impl.PersonImpl#getFirstnames <em>Firstnames</em>}</li>
  *   <li>{@link goedegep.emfsample.model.impl.PersonImpl#getSurname <em>Surname</em>}</li>
  *   <li>{@link goedegep.emfsample.model.impl.PersonImpl#getGender <em>Gender</em>}</li>
  *   <li>{@link goedegep.emfsample.model.impl.PersonImpl#getBirthday <em>Birthday</em>}</li>
@@ -37,33 +41,14 @@ import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
  */
 public class PersonImpl extends MinimalEObjectImpl.Container implements Person {
   /**
-   * The default value of the '{@link #getFirstname() <em>Firstname</em>}' attribute.
+   * The cached value of the '{@link #getFirstnames() <em>Firstnames</em>}' attribute list.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see #getFirstname()
+   * @see #getFirstnames()
    * @generated
    * @ordered
    */
-  protected static final String FIRSTNAME_EDEFAULT = null;
-
-  /**
-   * The cached value of the '{@link #getFirstname() <em>Firstname</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getFirstname()
-   * @generated
-   * @ordered
-   */
-  protected String firstname = FIRSTNAME_EDEFAULT;
-
-  /**
-   * This is true if the Firstname attribute has been set.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  protected boolean firstnameESet;
+  protected EList<String> firstnames;
 
   /**
    * The default value of the '{@link #getSurname() <em>Surname</em>}' attribute.
@@ -216,8 +201,11 @@ public class PersonImpl extends MinimalEObjectImpl.Container implements Person {
    * @generated
    */
   @Override
-  public String getFirstname() {
-    return firstname;
+  public EList<String> getFirstnames() {
+    if (firstnames == null) {
+      firstnames = new EDataTypeUniqueEList.Unsettable<String>(String.class, this, EmfSamplePackage.PERSON__FIRSTNAMES);
+    }
+    return firstnames;
   }
 
   /**
@@ -226,13 +214,8 @@ public class PersonImpl extends MinimalEObjectImpl.Container implements Person {
    * @generated
    */
   @Override
-  public void setFirstname(String newFirstname) {
-    String oldFirstname = firstname;
-    firstname = newFirstname;
-    boolean oldFirstnameESet = firstnameESet;
-    firstnameESet = true;
-    if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, EmfSamplePackage.PERSON__FIRSTNAME, oldFirstname, firstname, !oldFirstnameESet));
+  public void unsetFirstnames() {
+    if (firstnames != null) ((InternalEList.Unsettable<?>)firstnames).unset();
   }
 
   /**
@@ -241,23 +224,8 @@ public class PersonImpl extends MinimalEObjectImpl.Container implements Person {
    * @generated
    */
   @Override
-  public void unsetFirstname() {
-    String oldFirstname = firstname;
-    boolean oldFirstnameESet = firstnameESet;
-    firstname = FIRSTNAME_EDEFAULT;
-    firstnameESet = false;
-    if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.UNSET, EmfSamplePackage.PERSON__FIRSTNAME, oldFirstname, FIRSTNAME_EDEFAULT, oldFirstnameESet));
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public boolean isSetFirstname() {
-    return firstnameESet;
+  public boolean isSetFirstnames() {
+    return firstnames != null && ((InternalEList.Unsettable<?>)firstnames).isSet();
   }
 
   /**
@@ -527,8 +495,8 @@ public class PersonImpl extends MinimalEObjectImpl.Container implements Person {
   @Override
   public Object eGet(int featureID, boolean resolve, boolean coreType) {
     switch (featureID) {
-      case EmfSamplePackage.PERSON__FIRSTNAME:
-        return getFirstname();
+      case EmfSamplePackage.PERSON__FIRSTNAMES:
+        return getFirstnames();
       case EmfSamplePackage.PERSON__SURNAME:
         return getSurname();
       case EmfSamplePackage.PERSON__GENDER:
@@ -548,11 +516,13 @@ public class PersonImpl extends MinimalEObjectImpl.Container implements Person {
    * <!-- end-user-doc -->
    * @generated
    */
+  @SuppressWarnings("unchecked")
   @Override
   public void eSet(int featureID, Object newValue) {
     switch (featureID) {
-      case EmfSamplePackage.PERSON__FIRSTNAME:
-        setFirstname((String)newValue);
+      case EmfSamplePackage.PERSON__FIRSTNAMES:
+        getFirstnames().clear();
+        getFirstnames().addAll((Collection<? extends String>)newValue);
         return;
       case EmfSamplePackage.PERSON__SURNAME:
         setSurname((String)newValue);
@@ -581,8 +551,8 @@ public class PersonImpl extends MinimalEObjectImpl.Container implements Person {
   @Override
   public void eUnset(int featureID) {
     switch (featureID) {
-      case EmfSamplePackage.PERSON__FIRSTNAME:
-        unsetFirstname();
+      case EmfSamplePackage.PERSON__FIRSTNAMES:
+        unsetFirstnames();
         return;
       case EmfSamplePackage.PERSON__SURNAME:
         unsetSurname();
@@ -611,8 +581,8 @@ public class PersonImpl extends MinimalEObjectImpl.Container implements Person {
   @Override
   public boolean eIsSet(int featureID) {
     switch (featureID) {
-      case EmfSamplePackage.PERSON__FIRSTNAME:
-        return isSetFirstname();
+      case EmfSamplePackage.PERSON__FIRSTNAMES:
+        return isSetFirstnames();
       case EmfSamplePackage.PERSON__SURNAME:
         return isSetSurname();
       case EmfSamplePackage.PERSON__GENDER:
@@ -637,8 +607,8 @@ public class PersonImpl extends MinimalEObjectImpl.Container implements Person {
     if (eIsProxy()) return super.toString();
 
     StringBuilder result = new StringBuilder(super.toString());
-    result.append(" (firstname: ");
-    if (firstnameESet) result.append(firstname); else result.append("<unset>");
+    result.append(" (firstnames: ");
+    result.append(firstnames);
     result.append(", surname: ");
     if (surnameESet) result.append(surname); else result.append("<unset>");
     result.append(", gender: ");

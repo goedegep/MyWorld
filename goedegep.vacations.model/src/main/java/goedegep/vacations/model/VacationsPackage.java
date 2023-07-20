@@ -1192,6 +1192,79 @@ public interface VacationsPackage extends EPackage {
   int DAY_TRIP_OPERATION_COUNT = TypesPackage.EVENT_OPERATION_COUNT + 1;
 
   /**
+   * The meta object id for the '{@link goedegep.vacations.model.impl.DocumentImpl <em>Document</em>}' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see goedegep.vacations.model.impl.DocumentImpl
+   * @see goedegep.vacations.model.impl.VacationsPackageImpl#getDocument()
+   * @generated
+   */
+  int DOCUMENT = 12;
+
+  /**
+   * The feature id for the '<em><b>Children</b></em>' containment reference list.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int DOCUMENT__CHILDREN = VACATION_ELEMENT__CHILDREN;
+
+  /**
+   * The feature id for the '<em><b>Document Reference</b></em>' containment reference.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int DOCUMENT__DOCUMENT_REFERENCE = VACATION_ELEMENT_FEATURE_COUNT + 0;
+
+  /**
+   * The number of structural features of the '<em>Document</em>' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int DOCUMENT_FEATURE_COUNT = VACATION_ELEMENT_FEATURE_COUNT + 1;
+
+  /**
+   * The operation id for the '<em>Get Day Nr</em>' operation.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int DOCUMENT___GET_DAY_NR = VACATION_ELEMENT___GET_DAY_NR;
+
+  /**
+   * The operation id for the '<em>Get Vacation</em>' operation.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int DOCUMENT___GET_VACATION = VACATION_ELEMENT___GET_VACATION;
+
+  /**
+   * The operation id for the '<em>Get Day Trip</em>' operation.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int DOCUMENT___GET_DAY_TRIP = VACATION_ELEMENT___GET_DAY_TRIP;
+
+  /**
+   * The number of operations of the '<em>Document</em>' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int DOCUMENT_OPERATION_COUNT = VACATION_ELEMENT_OPERATION_COUNT + 0;
+
+  /**
    * Returns the meta object for class '{@link goedegep.vacations.model.Vacations <em>Vacations</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -1958,6 +2031,27 @@ public interface VacationsPackage extends EPackage {
   EOperation getDayTrip__GetId();
 
   /**
+   * Returns the meta object for class '{@link goedegep.vacations.model.Document <em>Document</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for class '<em>Document</em>'.
+   * @see goedegep.vacations.model.Document
+   * @generated
+   */
+  EClass getDocument();
+
+  /**
+   * Returns the meta object for the containment reference '{@link goedegep.vacations.model.Document#getDocumentReference <em>Document Reference</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the containment reference '<em>Document Reference</em>'.
+   * @see goedegep.vacations.model.Document#getDocumentReference()
+   * @see #getDocument()
+   * @generated
+   */
+  EReference getDocument_DocumentReference();
+
+  /**
    * Returns the factory that creates the instances of the model.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -2579,6 +2673,24 @@ public interface VacationsPackage extends EPackage {
     	 * @generated
     	 */
     EOperation DAY_TRIP___GET_ID = eINSTANCE.getDayTrip__GetId();
+
+    /**
+    	 * The meta object literal for the '{@link goedegep.vacations.model.impl.DocumentImpl <em>Document</em>}' class.
+    	 * <!-- begin-user-doc -->
+    	 * <!-- end-user-doc -->
+    	 * @see goedegep.vacations.model.impl.DocumentImpl
+    	 * @see goedegep.vacations.model.impl.VacationsPackageImpl#getDocument()
+    	 * @generated
+    	 */
+    EClass DOCUMENT = eINSTANCE.getDocument();
+
+    /**
+    	 * The meta object literal for the '<em><b>Document Reference</b></em>' containment reference feature.
+    	 * <!-- begin-user-doc -->
+    	 * <!-- end-user-doc -->
+    	 * @generated
+    	 */
+    EReference DOCUMENT__DOCUMENT_REFERENCE = eINSTANCE.getDocument_DocumentReference();
 
   }
 

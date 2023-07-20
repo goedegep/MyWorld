@@ -466,6 +466,16 @@ public class VacationToHtmlConverter extends VacationToTextConverterAbstract {
             buf.append("m");
           }
           
+          buf.append("<br/>");
+          
+          if (metadataType != null) {
+            String description = metadataType.getDesc();
+            if ((description != null)  &&  !description.isEmpty()) {
+              buf.append(description);
+              buf.append("<br/>");
+            }
+          }
+          
         } catch (FileNotFoundException e) {
           e.printStackTrace();
         }

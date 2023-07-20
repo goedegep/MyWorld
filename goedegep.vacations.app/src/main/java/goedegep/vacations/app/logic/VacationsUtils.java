@@ -425,20 +425,20 @@ public class VacationsUtils {
     return null;
   }
 
-  /**
-   * Guess the folder in which the pictures related to a vacation are stored.
-   * 
-   * @param vacation the Vacation to determine the folder for.
-   * @return the folder in which the pictures related to <code>vacation</code> are stored
-   */
-  public static String vacationPicturesFolder(Vacation vacation) {
-    Path vacationPicturesFolderPath = Paths.get(VacationsRegistry.vacationPicturesFolderName, vacation.getId());
-    if (Files.isDirectory(vacationPicturesFolderPath)) {
-      return vacationPicturesFolderPath.toAbsolutePath().toString();
-    } else {
-      return null;
-    }
-  }
+//  /**
+//   * Guess the folder in which the pictures related to a vacation are stored.
+//   * 
+//   * @param vacation the Vacation to determine the folder for.
+//   * @return the folder in which the pictures related to <code>vacation</code> are stored
+//   */
+//  public static String vacationPicturesFolder(Vacation vacation) {
+//    Path vacationPicturesFolderPath = Paths.get(VacationsRegistry.vacationPicturesFolderName, vacation.getId());
+//    if (Files.isDirectory(vacationPicturesFolderPath)) {
+//      return vacationPicturesFolderPath.toAbsolutePath().toString();
+//    } else {
+//      return null;
+//    }
+//  }
     
   /**
    * Get a Path for the folder with photos for a specific vacation.

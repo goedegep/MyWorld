@@ -108,5 +108,8 @@
       <genFeatures children="true" createChild="true" propertySortChoices="true" ecoreFeature="ecore:EReference vacations.ecore#//DayTrip/elements"/>
       <genOperations ecoreOperation="vacations.ecore#//DayTrip/getId"/>
     </genClasses>
+    <genClasses ecoreClass="vacations.ecore#//Document">
+      <genFeatures children="true" createChild="true" propertySortChoices="true" ecoreFeature="ecore:EReference vacations.ecore#//Document/documentReference"/>
+    </genClasses>
   </genPackages>
 </genmodel:GenModel>

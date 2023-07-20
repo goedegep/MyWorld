@@ -32,6 +32,7 @@ import org.eclipse.emf.ecore.util.InternalEList;
  * <ul>
  *   <li>{@link goedegep.emfsample.model.impl.CompanyImpl#getEmployees <em>Employees</em>}</li>
  *   <li>{@link goedegep.emfsample.model.impl.CompanyImpl#getBirthdays <em>Birthdays</em>}</li>
+ *   <li>{@link goedegep.emfsample.model.impl.CompanyImpl#getFormerEmployees <em>Former Employees</em>}</li>
  * </ul>
  *
  * @generated
@@ -56,6 +57,16 @@ public class CompanyImpl extends MinimalEObjectImpl.Container implements Company
    * @ordered
    */
   protected EList<Birthday> birthdays;
+
+  /**
+   * The cached value of the '{@link #getFormerEmployees() <em>Former Employees</em>}' containment reference list.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getFormerEmployees()
+   * @generated
+   * @ordered
+   */
+  protected EList<Person> formerEmployees;
 
   /**
    * <!-- begin-user-doc -->
@@ -108,10 +119,25 @@ public class CompanyImpl extends MinimalEObjectImpl.Container implements Company
    * @generated
    */
   @Override
+  public EList<Person> getFormerEmployees() {
+    if (formerEmployees == null) {
+      formerEmployees = new EObjectContainmentEList<Person>(Person.class, this, EmfSamplePackage.COMPANY__FORMER_EMPLOYEES);
+    }
+    return formerEmployees;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
   public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
     switch (featureID) {
       case EmfSamplePackage.COMPANY__EMPLOYEES:
         return ((InternalEList<?>)getEmployees()).basicRemove(otherEnd, msgs);
+      case EmfSamplePackage.COMPANY__FORMER_EMPLOYEES:
+        return ((InternalEList<?>)getFormerEmployees()).basicRemove(otherEnd, msgs);
     }
     return super.eInverseRemove(otherEnd, featureID, msgs);
   }
@@ -128,6 +154,8 @@ public class CompanyImpl extends MinimalEObjectImpl.Container implements Company
         return getEmployees();
       case EmfSamplePackage.COMPANY__BIRTHDAYS:
         return getBirthdays();
+      case EmfSamplePackage.COMPANY__FORMER_EMPLOYEES:
+        return getFormerEmployees();
     }
     return super.eGet(featureID, resolve, coreType);
   }
@@ -149,6 +177,10 @@ public class CompanyImpl extends MinimalEObjectImpl.Container implements Company
         getBirthdays().clear();
         getBirthdays().addAll((Collection<? extends Birthday>)newValue);
         return;
+      case EmfSamplePackage.COMPANY__FORMER_EMPLOYEES:
+        getFormerEmployees().clear();
+        getFormerEmployees().addAll((Collection<? extends Person>)newValue);
+        return;
     }
     super.eSet(featureID, newValue);
   }
@@ -167,6 +199,9 @@ public class CompanyImpl extends MinimalEObjectImpl.Container implements Company
       case EmfSamplePackage.COMPANY__BIRTHDAYS:
         getBirthdays().clear();
         return;
+      case EmfSamplePackage.COMPANY__FORMER_EMPLOYEES:
+        getFormerEmployees().clear();
+        return;
     }
     super.eUnset(featureID);
   }
@@ -183,6 +218,8 @@ public class CompanyImpl extends MinimalEObjectImpl.Container implements Company
         return employees != null && !employees.isEmpty();
       case EmfSamplePackage.COMPANY__BIRTHDAYS:
         return birthdays != null && !birthdays.isEmpty();
+      case EmfSamplePackage.COMPANY__FORMER_EMPLOYEES:
+        return formerEmployees != null && !formerEmployees.isEmpty();
     }
     return super.eIsSet(featureID);
   }

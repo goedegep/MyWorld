@@ -50,11 +50,35 @@ public class FileUtils {
   private final static Set<String> audioFileExtensions = new HashSet<>(Arrays.asList(
       ".flac", ".m2ts", ".m4a", ".mp3", ".wav", ".wma"
       ));
+
+  /**
+   * File name extensions for picture files.
+   */
+  private static final String DEFAULT_JPEG_EXTENSION = ".jpg";
+  private static final String ALT_JPEG_EXTENSION = ".jpeg";
+  private static final String PNG_EXTENSION = ".png";
+  private static final String WEBP_EXTENSION = ".webp";
+  
+  /**
+   * File name extensions for jpeg files.
+   */
+  private static final List<String> JPEG_EXTENSIONS = new ArrayList<>(Arrays.asList(DEFAULT_JPEG_EXTENSION, ALT_JPEG_EXTENSION));
   
   /**
    * File name extensions of known pictures files.
    */
-  private static Set<String> pictureFileExtensions = new HashSet<>(Arrays.asList(".jpg", ".jpeg", ".png"));
+  private static List<String> pictureFileExtensions = null;
+  
+  /**
+   * File name extension for GPX files.
+   */
+  private static final String GPX_EXTENSION = ".gpx";
+  
+  static {
+    pictureFileExtensions = new ArrayList<>(JPEG_EXTENSIONS);
+    pictureFileExtensions.add(PNG_EXTENSION);
+    pictureFileExtensions.add(WEBP_EXTENSION);
+  }
   
   
   /**
@@ -123,7 +147,7 @@ public class FileUtils {
    * @return the filename (without extension), or null if no extension could be detected.
    */
   public static String getFileNameWithoutExtension(File file) {
-    return getFileNameWithoutExtension(file.getName());
+    return getFileNameWithoutExtension(file.getAbsolutePath());
   }
 
   /**
@@ -202,7 +226,7 @@ public class FileUtils {
     if (size < 4096)
       return Arrays.equals(Files.readAllBytes(file1), Files.readAllBytes(file2));
 
-    Long startTime = System.currentTimeMillis();
+//    Long startTime = System.currentTimeMillis();
     try (InputStream is1 = Files.newInputStream(file1);
         InputStream is2 = Files.newInputStream(file2)) {
       
@@ -216,8 +240,8 @@ public class FileUtils {
           return false;
     }
 
-    Long endTime = System.currentTimeMillis();
-    Long duration = endTime - startTime;
+//    Long endTime = System.currentTimeMillis();
+//    Long duration = endTime - startTime;
 //    LOGGER.severe("Comparison (for equal files) took: " + duration + "ms");
     return true;
   }
@@ -464,10 +488,62 @@ public class FileUtils {
   public static boolean isPictureFile(String fileName) {
     String fileExtension = getFileExtension(fileName);
     if (fileExtension != null) {
-      return pictureFileExtensions.contains(fileExtension.toLowerCase());
+      return isPictureFileExtension(fileExtension);
     } else {
       return false;
     }
+  }
+
+  /**
+   * Check whether a file is a jpeg file (based on its extension).
+   * 
+   * @param file a File. This value may not be null.
+   * @return true is the file is a jpeg file, false otherwise.
+   */
+  public static boolean isJpegFile(File file) {
+    return isJpegFile(file.getAbsolutePath());
+  }
+  
+  /**
+   * Check whether a file is a jpeg file.
+   * 
+   * @param fileName a filename. This value may not be null.
+   * @return true is the file is a jpeg file, false otherwise.
+   */
+  public static boolean isJpegFile(String fileName) {
+    String fileExtension = getFileExtension(fileName);
+    return JPEG_EXTENSIONS.contains(fileExtension);
+  }
+
+  /**
+   * Check whether a file is a webp file (based on its extension).
+   * 
+   * @param file a File. This value may not be null.
+   * @return true is the file is a webp file, false otherwise.
+   */
+  public static boolean isWebpFile(File file) {
+    return isWebpFile(file.getAbsolutePath());
+  }
+  
+  /**
+   * Check whether a file is a webp file.
+   * 
+   * @param fileName a filename. This value may not be null.
+   * @return true is the file is a webp file, false otherwise.
+   */
+  public static boolean isWebpFile(String fileName) {
+    String fileExtension = getFileExtension(fileName);
+    return WEBP_EXTENSION .equals(fileExtension);
+  }
+  
+  /**
+   * Check whether a file is a PDF file (based on its extension).
+   * 
+   * @param file a File. This value may not be null.
+   * @return true is the file is a PDF file, false otherwise.
+   */
+  public static boolean isPDFFile(File file) {
+    return isPDFFile(file.getAbsolutePath());
   }
 
   /**
@@ -515,6 +591,27 @@ public class FileUtils {
     }
   }
   
+  /**
+   * Check whether a file is a GPX file (based on its extension).
+   * 
+   * @param file a File. This value may not be null.
+   * @return true is the file is a GPX file, false otherwise.
+   */
+  public static boolean isGpxFile(File file) {
+    return isGpxFile(file.getAbsolutePath());
+  }
+  
+  /**
+   * Check whether a file is a GPX file (based on its extension).
+   * 
+   * @param fileName a fileName. This value may not be null.
+   * @return true is the file is a GPX file, false otherwise.
+   */
+  private static boolean isGpxFile(String fileName) {
+    String fileExtension = getFileExtension(fileName);
+    return GPX_EXTENSION .equals(fileExtension);
+  }
+
   /**
    * Get the path (as String) of a folder relative to some base folder.<br/>
    * Example:<br/>
@@ -625,5 +722,50 @@ public class FileUtils {
       }
       
     };
+  }
+
+  /**
+   * Convert a webp file to a jpeg file.
+   * 
+   * @param file the file to be converted (may not be null)
+   */
+  public static File convertWebpFileToJpegFile(File file) throws IOException {
+    LOGGER.severe("Going to convert: " + file);
+    
+    // webp file are often namen name.jpg.webp
+    // In that case only the .webp extension is removed.
+    String convertedFileName = FileUtils.getFileNameWithoutExtension(file);
+    String extension = FileUtils.getFileExtension(convertedFileName);
+    if (!DEFAULT_JPEG_EXTENSION.equals(extension)) {
+      convertedFileName = convertedFileName + DEFAULT_JPEG_EXTENSION;
+    }
+    LOGGER.severe("To file: " + convertedFileName);
+    
+    List<String> commandArguments = new ArrayList<>();
+    String irfanviewExecutable = "C:\\Program Files\\IrfanView\\i_view64.exe";
+    commandArguments.add(irfanviewExecutable);
+    commandArguments.add("\"" + file.getAbsolutePath() + "\"");
+    File convertedFile = new File(convertedFileName);
+    commandArguments.add("/convert=" + "\"" + convertedFile.getName() + "\"");
+    LOGGER.severe("commandArguments: " + commandArguments.toString());
+    
+    try {
+      Process process = new ProcessBuilder(commandArguments).start();
+      
+      while (process.isAlive()) {
+        LOGGER.severe("Waiting for irfanView to end.");
+        Thread.sleep(100);
+      }
+      
+      if (convertedFile.exists()) {
+        file.delete();
+      }
+    } catch (IOException e1) {
+      e1.printStackTrace();
+    } catch (InterruptedException e) {
+      e.printStackTrace();
+    }
+    
+    return convertedFile;
   }
 }

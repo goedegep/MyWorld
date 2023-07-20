@@ -123,9 +123,10 @@ public class EObjectTreeItemContent {
    * @param object the new value for the object of this item.
    */
   public void setObject(Object object) {
-    if (object == null) {
-      throw new IllegalArgumentException("object cannot be null");
-    }
+    // Object is set to null when the object of a tree item is deleted.
+//    if (object == null) {
+//      throw new IllegalArgumentException("object cannot be null");
+//    }
     this.object = object;
   }
   

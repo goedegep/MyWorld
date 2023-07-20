@@ -129,7 +129,7 @@ public class EmfSamplePackageImpl extends EPackageImpl implements EmfSamplePacka
    * @generated
    */
   @Override
-  public EAttribute getPerson_Firstname() {
+  public EAttribute getPerson_Firstnames() {
     return (EAttribute)personEClass.getEStructuralFeatures().get(0);
   }
 
@@ -259,6 +259,16 @@ public class EmfSamplePackageImpl extends EPackageImpl implements EmfSamplePacka
    * @generated
    */
   @Override
+  public EReference getCompany_FormerEmployees() {
+    return (EReference)companyEClass.getEStructuralFeatures().get(2);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
   public EEnum getGender() {
     return genderEEnum;
   }
@@ -293,7 +303,7 @@ public class EmfSamplePackageImpl extends EPackageImpl implements EmfSamplePacka
 
     // Create classes and their features
     personEClass = createEClass(PERSON);
-    createEAttribute(personEClass, PERSON__FIRSTNAME);
+    createEAttribute(personEClass, PERSON__FIRSTNAMES);
     createEAttribute(personEClass, PERSON__SURNAME);
     createEAttribute(personEClass, PERSON__GENDER);
     createEReference(personEClass, PERSON__BIRTHDAY);
@@ -308,6 +318,7 @@ public class EmfSamplePackageImpl extends EPackageImpl implements EmfSamplePacka
     companyEClass = createEClass(COMPANY);
     createEReference(companyEClass, COMPANY__EMPLOYEES);
     createEReference(companyEClass, COMPANY__BIRTHDAYS);
+    createEReference(companyEClass, COMPANY__FORMER_EMPLOYEES);
 
     // Create enums
     genderEEnum = createEEnum(GENDER);
@@ -344,7 +355,7 @@ public class EmfSamplePackageImpl extends EPackageImpl implements EmfSamplePacka
 
     // Initialize classes, features, and operations; add parameters
     initEClass(personEClass, Person.class, "Person", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-    initEAttribute(getPerson_Firstname(), ecorePackage.getEString(), "firstname", null, 0, 1, Person.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getPerson_Firstnames(), ecorePackage.getEString(), "firstnames", null, 0, -1, Person.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getPerson_Surname(), ecorePackage.getEString(), "surname", null, 0, 1, Person.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getPerson_Gender(), this.getGender(), "gender", null, 0, 1, Person.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEReference(getPerson_Birthday(), this.getBirthday(), null, "birthday", null, 0, 1, Person.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -359,6 +370,7 @@ public class EmfSamplePackageImpl extends EPackageImpl implements EmfSamplePacka
     initEClass(companyEClass, Company.class, "Company", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEReference(getCompany_Employees(), this.getPerson(), null, "employees", null, 0, -1, Company.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEReference(getCompany_Birthdays(), this.getBirthday(), null, "birthdays", null, 0, -1, Company.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEReference(getCompany_FormerEmployees(), this.getPerson(), null, "formerEmployees", null, 0, -1, Company.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     // Initialize enums and add enum literals
     initEEnum(genderEEnum, Gender.class, "Gender");

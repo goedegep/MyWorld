@@ -12,7 +12,7 @@
       <genEnumLiterals ecoreEnumLiteral="EmfSample.ecore#//Gender/MALE"/>
     </genEnums>
     <genClasses ecoreClass="EmfSample.ecore#//Person">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute EmfSample.ecore#//Person/firstname"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute EmfSample.ecore#//Person/firstnames"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute EmfSample.ecore#//Person/surname"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute EmfSample.ecore#//Person/gender"/>
       <genFeatures children="true" createChild="true" propertySortChoices="true" ecoreFeature="ecore:EReference EmfSample.ecore#//Person/birthday"/>
@@ -27,6 +27,7 @@
     <genClasses ecoreClass="EmfSample.ecore#//Company">
       <genFeatures children="true" createChild="true" propertySortChoices="true" ecoreFeature="ecore:EReference EmfSample.ecore#//Company/employees"/>
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference EmfSample.ecore#//Company/birthdays"/>
+      <genFeatures children="true" createChild="true" propertySortChoices="true" ecoreFeature="ecore:EReference EmfSample.ecore#//Company/formerEmployees"/>
     </genClasses>
   </genPackages>
 </genmodel:GenModel>

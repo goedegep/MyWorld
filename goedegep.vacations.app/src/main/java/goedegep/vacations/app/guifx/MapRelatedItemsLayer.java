@@ -227,11 +227,19 @@ public class MapRelatedItemsLayer extends MapLayer {
    * 
    * @param fileName file name of the photo to be shown.
    */
-  public void showCurrentPhoto(String fileName) {
+  public void showCurrentPhoto(String fileName, WGS84Coordinates coordinates) {
+    boolean photoFoundInPhotos = false;
+    
     for (PhotoData photoData: photos) {
       if (fileName.equals(photoData.fileName())) {
+        photoFoundInPhotos = true;
         showCurrentPhoto(photoData.coordinates(), photoData.text(), photoData.fileName());
+        break;
       }
+    }
+    
+    if (!photoFoundInPhotos  &&  (coordinates != null)) {
+      showCurrentPhoto(coordinates, null, fileName);
     }
   }
   

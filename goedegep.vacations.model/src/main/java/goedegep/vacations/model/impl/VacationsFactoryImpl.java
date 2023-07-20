@@ -78,6 +78,8 @@ public class VacationsFactoryImpl extends EFactoryImpl implements VacationsFacto
       return createMapImage();
     case VacationsPackage.DAY_TRIP:
       return createDayTrip();
+    case VacationsPackage.DOCUMENT:
+      return createDocument();
     default:
       throw new IllegalArgumentException("The class '" + eClass.getName() + "' is not a valid classifier");
     }
@@ -202,6 +204,17 @@ public class VacationsFactoryImpl extends EFactoryImpl implements VacationsFacto
   public DayTrip createDayTrip() {
     DayTripImpl dayTrip = new DayTripImpl();
     return dayTrip;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public Document createDocument() {
+    DocumentImpl document = new DocumentImpl();
+    return document;
   }
 
   /**

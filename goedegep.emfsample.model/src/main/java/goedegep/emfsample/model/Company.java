@@ -17,6 +17,7 @@ import org.eclipse.emf.ecore.EObject;
  * <ul>
  *   <li>{@link goedegep.emfsample.model.Company#getEmployees <em>Employees</em>}</li>
  *   <li>{@link goedegep.emfsample.model.Company#getBirthdays <em>Birthdays</em>}</li>
+ *   <li>{@link goedegep.emfsample.model.Company#getFormerEmployees <em>Former Employees</em>}</li>
  * </ul>
  *
  * @see goedegep.emfsample.model.EmfSamplePackage#getCompany()
@@ -47,5 +48,17 @@ public interface Company extends EObject {
    * @generated
    */
   EList<Birthday> getBirthdays();
+
+  /**
+   * Returns the value of the '<em><b>Former Employees</b></em>' containment reference list.
+   * The list contents are of type {@link goedegep.emfsample.model.Person}.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the value of the '<em>Former Employees</em>' containment reference list.
+   * @see goedegep.emfsample.model.EmfSamplePackage#getCompany_FormerEmployees()
+   * @model containment="true"
+   * @generated
+   */
+  EList<Person> getFormerEmployees();
 
 } // Company
