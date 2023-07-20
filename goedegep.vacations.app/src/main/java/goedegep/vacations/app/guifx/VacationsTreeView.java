@@ -1,8 +1,10 @@
 package goedegep.vacations.app.guifx;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.logging.Logger;
 
 import org.eclipse.emf.common.util.EList;
@@ -10,6 +12,7 @@ import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EStructuralFeature;
 
+import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.eobjecttreeview.EObjectTreeDescriptor;
 import goedegep.jfx.eobjecttreeview.EObjectTreeItem;
 import goedegep.jfx.eobjecttreeview.EObjectTreeItemContent;
@@ -18,10 +21,13 @@ import goedegep.types.model.FileReference;
 import goedegep.types.model.TypesFactory;
 import goedegep.util.emf.EmfUtil;
 import goedegep.util.file.FileUtils;
+import goedegep.vacations.model.Document;
 import goedegep.vacations.model.GPXTrack;
 import goedegep.vacations.model.Picture;
 import goedegep.vacations.model.VacationsFactory;
 import goedegep.vacations.model.VacationsPackage;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.scene.input.Dragboard;
 
 /**
@@ -30,8 +36,11 @@ import javafx.scene.input.Dragboard;
 public class VacationsTreeView extends EObjectTreeView {
   private static final Logger LOGGER = Logger.getLogger(VacationsTreeView.class.getName());
   
-  public VacationsTreeView(EObjectTreeDescriptor eObjectTreeDescriptor, boolean editMode) {
+  private CustomizationFx customization;
+  
+  public VacationsTreeView(CustomizationFx customization, EObjectTreeDescriptor eObjectTreeDescriptor, boolean editMode) {
     super(null, eObjectTreeDescriptor, editMode);
+    this.customization = customization;
     setIsDropPossibleFunction(this::isDropPossible);
     setHandleDropFunction(this::handleDrop);
   }
@@ -66,7 +75,8 @@ public class VacationsTreeView extends EObjectTreeView {
    * Check whether Dragboard information can be dropped on the specified tree item.
    * <p>
    * Dropping of EObjects is already part of the general EObjectTreeView functionality, so this isn't checked here.
-   * Here we check for photo and GPX files, which can be dropped on lists of VacationElement, or children of lists of VacationElement.
+   * Here we check for photo and GPX files, which can be dropped on lists of VacationElement, or children of lists of VacationElement.<br/>
+   * A drop is not possible if any of the file specified in the dragboard cannot be dropped.
    * 
    * @param eObjectTreeItem the tree item.
    * @param dragboard the {@code Dragboard} information.
@@ -88,9 +98,8 @@ public class VacationsTreeView extends EObjectTreeView {
     }
     
     for (File file: files) {
-      String fileExtension = FileUtils.getFileExtension(file);
-      if (!FileUtils.isPictureFile(file)  &&  !".gpx".equalsIgnoreCase(fileExtension)) {
-        LOGGER.info("<= false (one of the files is not a picture or GPX file)");
+      if (!FileUtils.isPictureFile(file)  && !FileUtils.isGpxFile(file)  &&  !FileUtils.isPDFFile(file)) {
+        LOGGER.info("<= false (one of the files is not a picture, GPX or PDF file)");
         return false;
       }
     }
@@ -157,7 +166,7 @@ public class VacationsTreeView extends EObjectTreeView {
     
     // Sort the files, so that they are added in the same way as they appear in an explorer window.
     Collections.sort(files);
-
+    
     // Check whether the item is a list of VacationElement, if so add the picture to the end of the list
     EObjectTreeItemContent eObjectTreeItemContent = eObjectTreeItem.getValue();
     Object object = eObjectTreeItemContent.getObject();
@@ -173,9 +182,14 @@ public class VacationsTreeView extends EObjectTreeView {
           EList<Object> list = (EList<Object>) object;
           for (File file: files) {
             if (FileUtils.isPictureFile(file)) {
-              list.add(createPicture(file));
-            } else if (".gpx".equals(FileUtils.getFileExtension(file))) {
+              Picture picture = createPicture(file);
+              if (picture != null) {
+                list.add(picture);
+              }
+            } else if (FileUtils.isGpxFile(file)) {
               list.add(createGPXTrack(file));
+            } else if (FileUtils.isPDFFile(file)) {
+              list.add(createDocument(file));
             }
           }
           return true;
@@ -201,9 +215,14 @@ public class VacationsTreeView extends EObjectTreeView {
           EList<Object> list = (EList<Object>) parentEObjectTreeItemContent.getObject();
           for (File file: files) {
             if (FileUtils.isPictureFile(file)) {
-              list.add(list.indexOf(object), createPicture(file));
-            } else if (".gpx".equals(FileUtils.getFileExtension(file))) {
+              Picture picture = createPicture(file);
+              if (picture != null) {
+                list.add(list.indexOf(object), picture);
+              }
+            } else if (FileUtils.isGpxFile(file)) {
               list.add(list.indexOf(object), createGPXTrack(file));
+            } else if (FileUtils.isPDFFile(file)) {
+              list.add(list.indexOf(object), createDocument(file));
             }
           }
           return true;
@@ -221,6 +240,25 @@ public class VacationsTreeView extends EObjectTreeView {
    * @return
    */
   private Picture createPicture(File file) {
+    if (FileUtils.isWebpFile(file)) {
+      Alert alert = customization.getComponentFactoryFx().createYesNoConfirmationDialog(
+          "Webp files are not supported",
+          "You are trying to drop a webp file, but webp files are not supported.", "Do you want to convert the file to a jpeg file (which implies the webp file will be removed)");
+      Optional<ButtonType> result = alert.showAndWait();
+      if (result.isPresent() && result.get() == ButtonType.YES) {
+        LOGGER.severe("yes, convert file");
+        try {
+          file = FileUtils.convertWebpFileToJpegFile(file);
+        } catch (IOException e1) {
+          e1.printStackTrace();
+          return null;
+        }
+      } else {
+        LOGGER.severe("no, don't convert file");
+        return null;
+      }
+    }
+    
     VacationsFactory vacationsFactory = VacationsFactory.eINSTANCE;
     Picture picture = vacationsFactory.createPicture();
     TypesFactory typesFactory = TypesFactory.eINSTANCE;
@@ -247,7 +285,23 @@ public class VacationsTreeView extends EObjectTreeView {
     
     return gpxTrack;
   }
-
+  
+  /**
+   * Create a {@code Document} object for a specific file.
+   * 
+   * @param file the document {@code File}.
+   * @return a Document for the specified {@code file}.
+   */
+  private Document createDocument(File file) {
+    VacationsFactory vacationsFactory = VacationsFactory.eINSTANCE;
+    Document document = vacationsFactory.createDocument();
+    TypesFactory typesFactory = TypesFactory.eINSTANCE;
+    FileReference fileReference = typesFactory.createFileReference();
+    fileReference.setFile(file.getAbsolutePath());
+    document.setDocumentReference(fileReference);
+    
+    return document;
+  }
 
   public void selectTreeItem(Object object) {
     // TODO Auto-generated method stub

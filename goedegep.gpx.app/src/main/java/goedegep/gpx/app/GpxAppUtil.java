@@ -16,6 +16,11 @@ public class GpxAppUtil {
    */
   public static Activity getActivity(GpxType gpxType) {
     MetadataType metadataType = gpxType.getMetadata();
+    
+    if (metadataType == null) {
+      return null;
+    }
+    
     String keywords = metadataType.getKeywords();
 
     if ((keywords != null)  &&  !keywords.isEmpty()) {

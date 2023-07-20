@@ -10,7 +10,6 @@ import java.util.function.Predicate;
 import java.util.logging.Logger;
 
 import org.eclipse.emf.common.util.EList;
-import org.eclipse.emf.common.util.TreeIterator;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EFactory;
 import org.eclipse.emf.ecore.EObject;
@@ -26,6 +25,7 @@ import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.DefaultCustomizationFx;
 import goedegep.util.emf.EMFResourceSet;
 import goedegep.util.emf.EmfPackageHelper;
+import goedegep.util.emf.EmfUtil;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Node;
@@ -369,125 +369,230 @@ public class EObjectTreeCellHelperForObject extends EObjectTreeCellHelperAbstrac
     // Get the object to be deleted.
     EObjectTreeItem eObjectTreeItem = (EObjectTreeItem) eObjectTreeCell.getTreeItem();
     EObjectTreeItemContent eObjectTreeItemContent = eObjectTreeItem.getValue();
-    EObject eObject = (EObject) eObjectTreeItemContent.getObject();
-    
-    ResourceSet resourceSet = null;
-    Resource resource = eObject.eResource();
-    if (resource != null) {
-      resourceSet = resource.getResourceSet();
-    } else {
-      resourceSet = EMFResourceSet.getResourceSet();
-    }
+    EObject eObjectToBeDeleted = (EObject) eObjectTreeItemContent.getObject();  // By definition the object will be an EOBject
     
     // If the object to be deleted is referenced by a containment reference, check whether there are other references to this object. Inform the user about this.
-    LOGGER.severe("eContainingFeature: " + eObject.eContainingFeature().getName());
-    LOGGER.severe("eContainingFeature: " + eObject.eContainmentFeature().getName());
-    EStructuralFeature itemFeature = eObjectTreeItemContent.getEStructuralFeature();
-    LOGGER.severe("itemFeature:" + (itemFeature != null ? itemFeature.getName() : "(null)"));
-    EObjectTreeItem parentEObjectTreeItem2 = (EObjectTreeItem) eObjectTreeItem.getParent();
-    EObjectTreeItemContent parentEObjectTreeItemContent = parentEObjectTreeItem2.getValue();
-    EStructuralFeature parentFeature = parentEObjectTreeItemContent.getEStructuralFeature();
-    LOGGER.severe("parentFeature:" + (parentFeature != null ? parentFeature.getName() : "(null)"));
-    
-    Collection<EStructuralFeature.Setting> settings = EcoreUtil.UsageCrossReferencer.find(eObject, resourceSet);
-    if (settings.size() != 0) {
-      StringBuffer buf = new StringBuffer();
-      if (settings.size() == 1) {
-        buf.append("You are deleting a ");
-        buf.append("There is a reference to this object.");
-      } else {
-        buf.append("There are ");
-        buf.append(settings.size());
-        buf.append(" references to this object.");
-      }
-      buf.append(NEW_LINE);
-
-      for (EStructuralFeature.Setting setting: settings) {
-        EStructuralFeature feature = setting.getEStructuralFeature();
-//        String inOrAs = " as ";
-//        if (feature.isMany()) {
-//          inOrAs = " in ";
-//        }
-        EObject referringObject = setting.getEObject();
+    EReference eReferenceToObjectToBeDeleted = getEReferenceForOurObject();
+    if (eReferenceToObjectToBeDeleted.isContainment()) {
+      LOGGER.info("Containment");
+      ResourceSet resourceSet = eObjectToBeDeleted.eResource().getResourceSet();
+      Collection<EStructuralFeature.Setting> settings = EcoreUtil.UsageCrossReferencer.find(eObjectToBeDeleted, resourceSet);
+      
+      if (settings.size() != 0) {
+        if (!canWeDeleteCrossReferences(eObjectToBeDeleted, settings)) {
+          return;
+        }
         
-        buf.append(feature.getName());
-        buf.append(" in ");
-        buf.append(referringObject.eClass().getName());
-//        EObject container = referringObject.eContainer();
-//        if (container != null) {
-//          buf.append(container.getClass().getName());
-//        } else {
-//          buf.append("<no container>");
+        // Delete the references
+        for (EStructuralFeature.Setting setting: settings) {
+          EStructuralFeature feature = setting.getEStructuralFeature();
+          EObject referringObject = setting.getEObject();
+          LOGGER.severe("Deleting feature: " + feature.getName() + " from " + referringObject);
+          
+          if (feature.isMany()) {
+            List<?> list = (List<?>) referringObject.eGet(feature);
+            list.remove(eObjectToBeDeleted);
+          } else {
+            referringObject.eUnset(feature);
+          }
+        }
+        
+      }
+    }
+//    EObjectTreeItem parentEObjectTreeItem = (EObjectTreeItem) eObjectTreeItem.getParent();
+//    EObjectTreeItemContent parentEObjectTreeItemContent = parentEObjectTreeItem.getValue();
+//    LOGGER.severe("parentEObjectTreeItemContent: " + parentEObjectTreeItemContent.toString());
+//    EStructuralFeature parentFeature = parentEObjectTreeItemContent.getEStructuralFeature();
+//    LOGGER.severe("parentFeature:" + (parentFeature != null ? parentFeature.getName() : "(null)"));
+//    if (parentFeature != null) {
+//      if (parentFeature instanceof EReference reference) {
+//        if (reference.isContainment()) {
+//          // only now check
+//          ResourceSet resourceSet = null;
+//          Resource resource = eObjectToBeDeleted.eResource();
+//          if (resource != null) {
+//            resourceSet = resource.getResourceSet();
+//          } else {
+//            resourceSet = EMFResourceSet.getResourceSet();
+//          }
+//          
+//          Collection<EStructuralFeature.Setting> settings = EcoreUtil.UsageCrossReferencer.find(eObjectToBeDeleted, resourceSet);
+          
+//          if (settings.size() != 0) {
+//            StringBuffer buf = new StringBuffer();
+//            buf.append("You are deleting a ");
+//            buf.append(eObjectToBeDeleted.getClass().getName()).append(". ");
+//            if (settings.size() == 1) {
+//              buf.append("There is a reference to this object.");
+//            } else {
+//              buf.append("There are ");
+//              buf.append(settings.size());
+//              buf.append(" references to this object.");
+//            }
+//            buf.append(NEW_LINE);
+//
+//            for (EStructuralFeature.Setting setting: settings) {
+//              EStructuralFeature feature = setting.getEStructuralFeature();
+//              EObject referringObject = setting.getEObject();
+//              
+//              buf.append(feature.getName());
+//              buf.append(" in ");
+//              buf.append(referringObject.eClass().getName());
+//              buf.append(NEW_LINE);
+//            }
+//            buf.append("If you continue, these references will be cleared!");
+//            
+//            CustomizationFx customization = DefaultCustomizationFx.getInstance();
+//            ComponentFactoryFx componentFactory = customization.getComponentFactoryFx();
+//            Alert alert = componentFactory.createOkCancelConfirmationDialog("How to continue?", buf.toString(), "What do you want?");
+//
+//            ButtonType buttonContinue = new ButtonType("Continue");
+//            alert.getButtonTypes().remove(ButtonType.OK);
+//            alert.getButtonTypes().add(buttonContinue);
+//
+//            Optional<ButtonType> result = alert.showAndWait();
+//            
+//            if (result.get() == ButtonType.CANCEL) {
+//              return;
+//            }
+//          }
+          
+//          for (EStructuralFeature.Setting setting: settings) {
+//            EStructuralFeature feature = setting.getEStructuralFeature();
+//            EObject referringObject = setting.getEObject();
+//            
+//            if (feature.isMany()) {
+//              List<?> list = (List<?>) referringObject.eGet(feature);
+//              list.remove(eObjectToBeDeleted);
+//            } else {
+//              referringObject.eUnset(feature);
+//            }
+//          }
 //        }
-//        buf.append(" in ");
-//        buf.append(referringObject.toString());
-//        buf.append(inOrAs);
-//        buf.append(setting.getEStructuralFeature().getName());
-        buf.append(NEW_LINE);
-      }
-      buf.append("If you continue, these references will be cleared!");
-      
-      CustomizationFx customization = DefaultCustomizationFx.getInstance();
-      ComponentFactoryFx componentFactory = customization.getComponentFactoryFx();
-      Alert alert = componentFactory.createOkCancelConfirmationDialog("How to continue?", buf.toString(), "What do you want?");
-
-      ButtonType buttonContinue = new ButtonType("Continue");
-      alert.getButtonTypes().remove(ButtonType.OK);
-      alert.getButtonTypes().add(buttonContinue);
-
-      Optional<ButtonType> result = alert.showAndWait();
-      
-      if (result.get() == ButtonType.CANCEL) {
-        return;
-      }
-    }
-    
-    for (EStructuralFeature.Setting setting: settings) {
-      EStructuralFeature feature = setting.getEStructuralFeature();
-      EObject referringObject = setting.getEObject();
-      
-      if (feature.isMany()) {
-        List<?> list = (List<?>) referringObject.eGet(feature);
-        list.remove(eObject);
-      } else {
-        referringObject.eUnset(feature);
-      }
-    }
+//      }
+//    }
         
     EObjectTreeItem parentEObjectTreeItem = (EObjectTreeItem) eObjectTreeItem.getParent();
-    EObjectTreeItemContent eObjectParentTreeItemContent = parentEObjectTreeItem.getValue();
-    Object parentObject = eObjectParentTreeItemContent.getObject();
-    
+    EObjectTreeItemContent parentEObjectTreeItemContent = parentEObjectTreeItem.getValue();
+    Object parentObject = parentEObjectTreeItemContent.getObject();
+
     if (parentObject instanceof EList) {
       @SuppressWarnings("unchecked")
-      EList<EObject> eObjectList = (EList<EObject>) eObjectParentTreeItemContent.getObject();
-      boolean removed = eObjectList.remove(eObject);
-      LOGGER.info("Object removed=" + removed);
+      EList<EObject> eObjectList = (EList<EObject>) parentObject;
+      boolean removed = eObjectList.remove(eObjectToBeDeleted);
+      LOGGER.severe("Object removed=" + removed);
     } else if (parentObject instanceof EObject parentEObject) {
       for (EReference eReference: parentEObject.eClass().getEAllReferences()) {
-        if (parentEObject.eGet(eReference).equals(eObject)) {
-          LOGGER.severe("found reference");
+        if (parentEObject.eGet(eReference).equals(eObjectToBeDeleted)) {
+          LOGGER.info("found reference");
+          LOGGER.severe(EmfUtil.eObjectToString(parentEObject));
           parentEObject.eSet(eReference, null);
+          LOGGER.severe(EmfUtil.eObjectToString(parentEObject));
+          break;
         }
       }
     } else {
       throw new RuntimeException("Type of parent not supported: type=" + parentObject.getClass().getName());
     }
+
+//    EList<EReference> references = eObjectToBeDeleted.eClass().getEAllReferences();
+//    for (EReference reference: references) {
+//      Object object = eObjectToBeDeleted.eGet(reference);
+//      if (object instanceof List) {
+//        List<?> list = (List<?>) object;
+//        if (list.isEmpty()) {
+//          continue;
+//        }
+//      }
+//      LOGGER.severe("Reference = " + reference.getName());
+//      eObjectToBeDeleted.eUnset(reference);
+//    }
     
-    EList<EReference> references = eObject.eClass().getEAllReferences();
-    for (EReference reference: references) {
-      Object object = eObject.eGet(reference);
-      if (object instanceof List) {
-        List<?> list = (List<?>) object;
-        if (list.isEmpty()) {
-          continue;
-        }
-      }
-      LOGGER.severe("Reference = " + reference.getName());
-      eObject.eUnset(reference);
+//    parentEObjectTreeItem.rebuildChildren();
+  }
+  
+  /**
+   * Get the EReference referring to our object.
+   * 
+   * @return the EReference referring to our object.
+   */
+  private EReference getEReferenceForOurObject() {
+    EObjectTreeItem eObjectTreeItem = (EObjectTreeItem) eObjectTreeCell.getTreeItem();
+    EObjectTreeItemContent eObjectTreeItemContent = eObjectTreeItem.getValue();
+    EObjectTreeItemType eObjectTreeItemType = eObjectTreeItemContent.getEObjectTreeItemType();
+    
+    EReference eReference = null;
+    if (eObjectTreeItemType == EObjectTreeItemType.OBJECT) {
+      // the reference is in this object
+      eReference = (EReference) eObjectTreeItemContent.getEStructuralFeature();
+//    } else if (eObjectTreeItemType == EObjectTreeItemType.OBJECT_LIST) {
+//      // the reference is in the parent item
+//      EObjectTreeItem parentEObjectTreeItem = (EObjectTreeItem) eObjectTreeItem.getParent();
+//      EObjectTreeItemContent parentEObjectTreeItemContent = parentEObjectTreeItem.getValue();
+//      LOGGER.severe("parentEObjectTreeItemContent: " + parentEObjectTreeItemContent.toString());
+//      eReference = (EReference) parentEObjectTreeItemContent.getEStructuralFeature();
+    } else {
+      throw new RuntimeException("Illegal EObjectTreeItemType for tree item. Tree Item = " + eObjectTreeItem + ", EObjectTreeItemType = " + eObjectTreeItemType);
     }
     
-    parentEObjectTreeItem.rebuildChildren();
+    if (eReference == null) {
+      // the reference is in the parent item
+      EObjectTreeItem parentEObjectTreeItem = (EObjectTreeItem) eObjectTreeItem.getParent();
+      EObjectTreeItemContent parentEObjectTreeItemContent = parentEObjectTreeItem.getValue();
+      LOGGER.severe("parentEObjectTreeItemContent: " + parentEObjectTreeItemContent.toString());
+      eReference = (EReference) parentEObjectTreeItemContent.getEStructuralFeature();
+    }
+    
+    return eReference;
+  }
+  
+  /**
+   * Show a dialog to the user with information about the to be deleted references and wait for the users choice.
+   * 
+   * @param eObjectToBeDeleted the object to be deleted and for which the references will be shown.
+   * @param settings information about references to {@code eObjectToBeDeleted}.
+   * @return true if the user has excepted that the references will be deleted, false otherwise.
+   */
+  private boolean canWeDeleteCrossReferences(EObject eObjectToBeDeleted, Collection<EStructuralFeature.Setting> settings) {
+    StringBuffer buf = new StringBuffer();
+    buf.append("You are deleting a ");
+    buf.append(eObjectToBeDeleted.getClass().getName()).append(". ");
+    if (settings.size() == 1) {
+      buf.append("There is a reference to this object:");
+    } else {
+      buf.append("There are ");
+      buf.append(settings.size());
+      buf.append(" references to this object:");
+    }
+    buf.append(NEW_LINE);
+
+    for (EStructuralFeature.Setting setting: settings) {
+      EStructuralFeature feature = setting.getEStructuralFeature();
+      EObject referringObject = setting.getEObject();
+      
+      buf.append(feature.getName());
+      buf.append(" in ");
+      buf.append(referringObject.eClass().getName());
+      buf.append(NEW_LINE);
+    }
+    buf.append("If you continue, these references will be cleared!");
+    
+    CustomizationFx customization = DefaultCustomizationFx.getInstance();
+    ComponentFactoryFx componentFactory = customization.getComponentFactoryFx();
+    Alert alert = componentFactory.createOkCancelConfirmationDialog("How to continue?", buf.toString(), "What do you want?");
+
+    ButtonType buttonContinue = new ButtonType("Continue");
+    alert.getButtonTypes().remove(ButtonType.OK);
+    alert.getButtonTypes().add(buttonContinue);
+
+    Optional<ButtonType> result = alert.showAndWait();
+    
+    LOGGER.severe("Answer: " + result);
+    if (result.isPresent()  &&  "Continue".equals(result.get().getText())) {
+      return true;
+    } else {
+      return false;
+    }
   }
   
   private String getText(EObjectTreeItemContent eObjectTreeItemContent) {
@@ -501,9 +606,6 @@ public class EObjectTreeCellHelperForObject extends EObjectTreeCellHelperAbstrac
     } else if (eObject != null) {
       String className = eObject.getClass().getSimpleName();
       labelText = className.substring(0, className.length() - 4);
-//      labelText = eObject.getClass().getSimpleName() + ":";
-//      Class<?> interfaces[] = eObject.getClass().getInterfaces();
-//      labelText = interfaces[0].getSimpleName() + ":";
     }
         
     LOGGER.info("<= labelText=" + labelText);

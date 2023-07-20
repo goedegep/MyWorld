@@ -78,6 +78,7 @@ import goedegep.properties.model.PropertyGroup;
 import goedegep.resources.ImageResource;
 import goedegep.resources.ImageSize;
 import goedegep.types.model.FileReference;
+import goedegep.types.model.TypesFactory;
 import goedegep.types.model.TypesPackage;
 import goedegep.util.Tuplet;
 import goedegep.util.datetime.FlexDateFormat;
@@ -105,6 +106,7 @@ import goedegep.vacations.checklist.model.VacationChecklistPackage;
 import goedegep.vacations.model.BoundingBox;
 import goedegep.vacations.model.Day;
 import goedegep.vacations.model.DayTrip;
+import goedegep.vacations.model.Document;
 import goedegep.vacations.model.GPXTrack;
 import goedegep.vacations.model.Location;
 import goedegep.vacations.model.MapImage;
@@ -172,6 +174,7 @@ public class VacationsWindow extends JfxStage {
   private static final String NEWLINE = System.getProperty("line.separator");
   private static final ResourceBundle TRANSLATIONS = getBundle(VacationsWindow.class, "VacationsResource");
   private static final VacationsPackage VACATIONS_PACKAGE = VacationsPackage.eINSTANCE;
+  private static final TypesFactory TYPES_FACTORY = TypesFactory.eINSTANCE;
   private static final POIPackage POI_PACKAGE = POIPackage.eINSTANCE; 
   private static final SimpleDateFormat DF = new SimpleDateFormat("dd-MM-yyyy");
   private static final FlexDateFormat FDF = new FlexDateFormat();
@@ -484,7 +487,7 @@ public class VacationsWindow extends JfxStage {
     
     // Vacations TreeView - centerPane left
     EObjectTreeDescriptor eObjectTreeDescriptor = createEObjectTreeDescriptor();
-    treeView = new VacationsTreeView(eObjectTreeDescriptor, vacationTreeEditableMenuItem.isSelected());
+    treeView = new VacationsTreeView(customization, eObjectTreeDescriptor, vacationTreeEditableMenuItem.isSelected());
     treeView.setMinWidth(300);
     treeView.addObjectSelectionListener(this::handleNewTreeItemSelected);
     centerPane.getItems().add(treeView);
@@ -988,8 +991,8 @@ public class VacationsWindow extends JfxStage {
       if (dayTrip != null) {
         addDayTripToMapView(travelMapView, dayTrip);
       }
-      travelMapView.getMapRelatedItemsLayer().showCurrentPhoto(vacationElementPicture.getPictureReference().getFile());
       WGS84Coordinates coordinates = pictureDataTuplet.getObject2();
+      travelMapView.getMapRelatedItemsLayer().showCurrentPhoto(vacationElementPicture.getPictureReference().getFile(), coordinates);
       mapCenter = new MapPoint(coordinates.getLatitude() - 0.05, coordinates.getLongitude() + 0.1);
       zoomLevel = PICTURE_ZOOM_LEVEL;
     } else if ((locationDataTuplet = getLocationDataForTreeItem(treeItem)) != null) {       // Location
@@ -1176,6 +1179,7 @@ public class VacationsWindow extends JfxStage {
     if (!new File(fileName).exists()) {
 //      throw new VacationElementReferenceException(vacationElementPicture);
     }
+    
     LOGGER.info("before getting geo location");
     WGS84Coordinates coordinates = ImageUtils.getGeoLocation(vacationElementPicture.getPictureReference().getFile());
     LOGGER.info("after getting geo location");
@@ -1489,7 +1493,7 @@ public class VacationsWindow extends JfxStage {
   @SuppressWarnings("unchecked")
   private List<Vacation> getVacationsListForTreeItem(TreeItem<EObjectTreeItemContent> treeItem) {
 //    LOGGER.info("=> treeItem=" + (treeItem != null ? treeItem.toString() : "(null)"));
-    LOGGER.severe("=>");
+    LOGGER.info("=>");
     
     if (treeItem == null) {
       LOGGER.severe("<= (null)");
@@ -1595,14 +1599,16 @@ public class VacationsWindow extends JfxStage {
       totalWGS84BoundingBox = WGS84BoundingBox.extend(totalWGS84BoundingBox, wgs84BoundingBox);
     }
     
-    try {
-      List<WGS84Coordinates> lineNodes = VacationsUtils.getGeoLocations(vacation);
-      if (lineNodes.size() > 1) {
-        travelMapView.getMapRelatedItemsLayer().addLocationsVisitedPolyLine(FXCollections.observableList(lineNodes));
+    if (!stayedAtOnly) {
+      try {
+        List<WGS84Coordinates> lineNodes = VacationsUtils.getGeoLocations(vacation);
+        if (lineNodes.size() > 1) {
+          travelMapView.getMapRelatedItemsLayer().addLocationsVisitedPolyLine(FXCollections.observableList(lineNodes));
+        }
+      } catch (FileNotFoundException e) {
+        LOGGER.severe("File not found");
+        //      componentFactory.createErrorDialog("File not found", e.toString()).showAndWait();
       }
-    } catch (FileNotFoundException e) {
-      LOGGER.severe("File not found");
-//      componentFactory.createErrorDialog("File not found", e.toString()).showAndWait();
     }
     
     LOGGER.info("<=");
@@ -1683,74 +1689,73 @@ public class VacationsWindow extends JfxStage {
     LOGGER.info("=> totalWGS84BoundingBox: " + (totalWGS84BoundingBox != null ? totalWGS84BoundingBox.toString() : "(null)"));
     
     if (vacationElement instanceof Location location) {
-      if (stayedAtOnly && (!location.isStayedAtThisLocation())) {
-        return totalWGS84BoundingBox;
+      if (!stayedAtOnly  ||  location.isStayedAtThisLocation()) {
+
+        LOGGER.info("Going to add location to the map: location=" + location.toString());
+        String text = location.getName();
+        if (text == null) {
+          text = location.getCity();
+        }
+        WGS84BoundingBox wgs84BoundingBox = travelMapView.getMapRelatedItemsLayer().addLocation(location, text);
+        totalWGS84BoundingBox = WGS84BoundingBox.extend(totalWGS84BoundingBox, wgs84BoundingBox);
       }
-      
-      LOGGER.info("Going to add location to the map: location=" + location.toString());
-      String text = location.getName();
-      if (text == null) {
-        text = location.getCity();
-      }
-      WGS84BoundingBox wgs84BoundingBox = travelMapView.getMapRelatedItemsLayer().addLocation(location, text);
-      totalWGS84BoundingBox = WGS84BoundingBox.extend(totalWGS84BoundingBox, wgs84BoundingBox);
     } else if (vacationElement instanceof Picture picture) {
-      if (stayedAtOnly) {
-        return totalWGS84BoundingBox;
-      }
-      
-      try {
-        FileReference fileReference = picture.getPictureReference();
-        if (fileReference != null) {
-          String fileName = fileReference.getFile();
-          if ((fileName != null)  &&  !fileName.isEmpty()) {
-            // Note: The photo folder is not available on all computers of a user, so ignore references that don't exist.
-            File file = new File(fileName);
-            if (!file.exists()) {
-              return totalWGS84BoundingBox;
-            }
-            
-            WGS84Coordinates coordinates = getPictureCoordinates(picture);
-            if (coordinates != null) {
-              String text = fileReference.getTitle();
-              if ((text == null)  ||  text.isEmpty()) {
-                text = fileName;
-              }
-              WGS84BoundingBox wgs84BoundingBox = travelMapView.getMapRelatedItemsLayer().addPhoto(coordinates, text, fileName);
-              totalWGS84BoundingBox = WGS84BoundingBox.extend(totalWGS84BoundingBox, wgs84BoundingBox);
-            }
-          }
-        }
-      } catch (VacationElementReferenceException vacationElementReferenceException) {
-        LOGGER.severe("VacationElementReferenceException");
-        VacationElement element = vacationElementReferenceException.getVacationElement();
-        String fileName = null;
-        String elementType = "Unknown";
-        if (element instanceof Picture elementPicture) {
-          FileReference fileReference = elementPicture.getPictureReference();
-          if (fileReference != null) {
-            fileName = fileReference.getFile();
-          }
-          elementType = "Picture";
-        }
-        String message = String.format("Reference not found!\nThe file \'%s\', referred to by the %s \'%s\', doesn't exist", fileName, elementType, element.toString());
-        componentFactory.createExceptionDialog(message, vacationElementReferenceException).showAndWait();
-      }
-      
-    } else if (vacationElement instanceof GPXTrack track) {
-      LOGGER.info("Going to add GPX track to the map: track=" + track.toString());
-      
-      FileReference bestandReferentie = track.getTrackReference();
-      if ((bestandReferentie != null)  &&  (bestandReferentie.getFile() != null)  &&  !bestandReferentie.getFile().isEmpty()) {
-        EMFResource<DocumentRoot> gpxResource = GpxUtil.createEMFResource();
+      if (!stayedAtOnly) {
+
         try {
-          gpxResource.load(bestandReferentie.getFile());
-          DocumentRoot documentRoot = gpxResource.getEObject();
-          GpxType gpxType = documentRoot.getGpx();
-          WGS84BoundingBox wgs84BoundingBox = travelMapView.getGpxLayer().addGpx(bestandReferentie.getTitle(), bestandReferentie.getFile(), gpxType);
-          totalWGS84BoundingBox = WGS84BoundingBox.extend(totalWGS84BoundingBox, wgs84BoundingBox);
-        } catch (FileNotFoundException e) {
-          e.printStackTrace();
+          FileReference fileReference = picture.getPictureReference();
+          if (fileReference != null) {
+            String fileName = fileReference.getFile();
+            if ((fileName != null)  &&  !fileName.isEmpty()) {
+              // Note: The photo folder is not available on all computers of a user, so ignore references that don't exist.
+              File file = new File(fileName);
+              if (!file.exists()) {
+                return totalWGS84BoundingBox;
+              }
+
+              WGS84Coordinates coordinates = getPictureCoordinates(picture);
+              if (coordinates != null) {
+                String text = fileReference.getTitle();
+                if ((text == null)  ||  text.isEmpty()) {
+                  text = fileName;
+                }
+                WGS84BoundingBox wgs84BoundingBox = travelMapView.getMapRelatedItemsLayer().addPhoto(coordinates, text, fileName);
+                totalWGS84BoundingBox = WGS84BoundingBox.extend(totalWGS84BoundingBox, wgs84BoundingBox);
+              }
+            }
+          }
+        } catch (VacationElementReferenceException vacationElementReferenceException) {
+          LOGGER.severe("VacationElementReferenceException");
+          VacationElement element = vacationElementReferenceException.getVacationElement();
+          String fileName = null;
+          String elementType = "Unknown";
+          if (element instanceof Picture elementPicture) {
+            FileReference fileReference = elementPicture.getPictureReference();
+            if (fileReference != null) {
+              fileName = fileReference.getFile();
+            }
+            elementType = "Picture";
+          }
+          String message = String.format("Reference not found!\nThe file \'%s\', referred to by the %s \'%s\', doesn't exist", fileName, elementType, element.toString());
+          componentFactory.createExceptionDialog(message, vacationElementReferenceException).showAndWait();
+        }
+      }
+    } else if (vacationElement instanceof GPXTrack track) {
+      if (!stayedAtOnly) {
+        LOGGER.info("Going to add GPX track to the map: track=" + track.toString());
+
+        FileReference bestandReferentie = track.getTrackReference();
+        if ((bestandReferentie != null)  &&  (bestandReferentie.getFile() != null)  &&  !bestandReferentie.getFile().isEmpty()) {
+          EMFResource<DocumentRoot> gpxResource = GpxUtil.createEMFResource();
+          try {
+            gpxResource.load(bestandReferentie.getFile());
+            DocumentRoot documentRoot = gpxResource.getEObject();
+            GpxType gpxType = documentRoot.getGpx();
+            WGS84BoundingBox wgs84BoundingBox = travelMapView.getGpxLayer().addGpx(bestandReferentie.getTitle(), bestandReferentie.getFile(), gpxType);
+            totalWGS84BoundingBox = WGS84BoundingBox.extend(totalWGS84BoundingBox, wgs84BoundingBox);
+          } catch (FileNotFoundException e) {
+            e.printStackTrace();
+          }
         }
       }
     }
@@ -1783,6 +1788,7 @@ public class VacationsWindow extends JfxStage {
     createAndAddEObjectTreeDescriptorForDay(eObjectTreeDescriptor, vakantiesPackageHelper);
     createAndAddEObjectTreeDescriptorForText(eObjectTreeDescriptor, vakantiesPackageHelper);
     createAndAddEObjectTreeDescriptorForPicture(eObjectTreeDescriptor, vakantiesPackageHelper);
+    createAndAddEObjectTreeDescriptorForDocument(eObjectTreeDescriptor, vakantiesPackageHelper);
     createAndAddEObjectTreeDescriptorForGPXTrack(eObjectTreeDescriptor, vakantiesPackageHelper);
     createAndAddEObjectTreeDescriptorForMapImage(eObjectTreeDescriptor, vakantiesPackageHelper);
     
@@ -1939,7 +1945,7 @@ public class VacationsWindow extends JfxStage {
         });
     
     // Location.stayedAtThisLocation
-    eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(new EObjectTreeItemAttributeDescriptor(VACATIONS_PACKAGE.getLocation_StayedAtThisLocation(), "Is stayed at location", null));
+    eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(new EObjectTreeItemAttributeDescriptor(VACATIONS_PACKAGE.getLocation_StayedAtThisLocation(), "Is stayed at location", PresentationType.BOOLEAN, null));
     // VacationElement.startDate
     eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(new EObjectTreeItemAttributeDescriptor(VACATIONS_PACKAGE.getLocation_StartDate(), "From", FDF, null));
     // VacationElement.endDate
@@ -1966,7 +1972,7 @@ public class VacationsWindow extends JfxStage {
     nodeOperationDescriptors.add(new NodeOperationDescriptor(TableRowOperation.OPEN, "Open document"));
     eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(new EObjectTreeItemAttributeDescriptor(VACATIONS_PACKAGE.getLocation_WebSite(), "Website", nodeOperationDescriptors));
     // Location.referenceOnly
-    eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(new EObjectTreeItemAttributeDescriptor(VACATIONS_PACKAGE.getLocation_ReferenceOnly(), "Reference only", null));
+    eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(new EObjectTreeItemAttributeDescriptor(VACATIONS_PACKAGE.getLocation_ReferenceOnly(), "Reference only", PresentationType.BOOLEAN, null));
     // Location.latitude
     eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(new EObjectTreeItemAttributeDescriptor(VACATIONS_PACKAGE.getLocation_Latitude(), "Latitude", null));
     // Location.longitude
@@ -2144,32 +2150,54 @@ public class VacationsWindow extends JfxStage {
     // FileReference.file
     nodeOperationDescriptors = new ArrayList<>();
     nodeOperationDescriptors.add(new NodeOperationDescriptor(TableRowOperation.OPEN, "Open document"));
+    nodeOperationDescriptors.add(new NodeOperationDescriptor(TableRowOperation.EXTENDED_OPERATION, "Select from vacation folder"));
     EObjectTreeItemAttributeDescriptor eObjectTreeItemAttributeDescriptor = new EObjectTreeItemAttributeDescriptor(typesPackage.getFileReference_File(), "File", PresentationType.FILE, nodeOperationDescriptors);
-    eObjectTreeItemAttributeDescriptor.setInitialDirectoryNameFunction(VacationsWindow::getVacationFolder);
+    eObjectTreeItemAttributeDescriptor.setInitialDirectoryNameFunction(VacationsWindow::getReferredFilesFolder);
     eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(eObjectTreeItemAttributeDescriptor);
         
     eObjectTreeDescriptor.addEClassDescriptor(eClass, eObjectTreeItemClassDescriptor);
   }
   
-  private static String getVacationFolder(EObjectTreeCell eObjectTreeCell) {
-    Vacation vacation = getVacationForTreeItem(eObjectTreeCell.getTreeItem());
+  /**
+   * Get the best choice for the initial folder for a FolderChooser for selecting the file of a FileReference.
+   * <p>
+   * If the tree cell is the file of a FileReference of a Picture, the best choice is the pictures folder for the related vacation.
+   * Else the best choice is the vacation folder of the related vacation.
+   * 
+   * @param eObjectTreeCell the {@code EObjectTreeCell} for which the best initial folder is requested.
+   * @return the best initial folder, or null if this can't be determined.
+   */
+  private static String getReferredFilesFolder(EObjectTreeCell eObjectTreeCell) {
+    EObjectTreeItem treeItem = (EObjectTreeItem) eObjectTreeCell.getTreeItem();
+    Vacation vacation = getVacationForTreeItem(treeItem);
     
     if (vacation == null) {
+      LOGGER.severe("No vacation found for: " + treeItem.toString());
       return null;
+    } else {
+      LOGGER.severe("Vacation is: " + vacation.getTitle());
     }
     
-    EObjectTreeItem parentTreeItem = (EObjectTreeItem) eObjectTreeCell.getTreeItem().getParent();
+    // The parent is the FileReference, the grand parent is either a Picture, or any other element.
+    EObjectTreeItem parentTreeItem = (EObjectTreeItem) treeItem.getParent();
     if (parentTreeItem != null) {
+      Object parentContent = parentTreeItem.getValue().getObject();
+      LOGGER.severe("parent content: " + (parentContent != null ? parentContent.toString() : "<nul>"));
       EObjectTreeItem grandparentTreeItem = (EObjectTreeItem) parentTreeItem.getParent();
       if (grandparentTreeItem != null) {
         Object object = grandparentTreeItem.getValue().getObject();
-        LOGGER.info("Class=" + object.getClass().getName());
+        LOGGER.severe("Class=" + object.getClass().getName());
         if (object instanceof Picture) {
-          return VacationsUtils.vacationPicturesFolder(vacation);
+          Path path = VacationsUtils.getVacationPhotosFolderPath(vacation);
+          return path != null ? path.toAbsolutePath().toString() : null;
         } else {
           return VacationsUtils.getVacationFolder(vacation);      
         }
+      } else {
+        LOGGER.severe("grandparentTreeItem is null");
       }
+    } else {
+      LOGGER.severe("parentTreeItem is null");
     }
     
     return null;
@@ -2343,7 +2371,9 @@ public class VacationsWindow extends JfxStage {
             FileReference fileReference = picture.getPictureReference();
             Image image = null;
             if (fileReference != null) {
+              LOGGER.severe("Creating image for: " + picture.getPictureReference().getFile());
               image = new Image("file:" + picture.getPictureReference().getFile(), 150, 150, true, true);
+              LOGGER.severe("image = " + image);
             }
             return image;
           } else {
@@ -2360,6 +2390,74 @@ public class VacationsWindow extends JfxStage {
     eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(new EObjectTreeItemClassReferenceDescriptor(VACATIONS_PACKAGE.getPicture_PictureReference(), typesPackageHelper.getEClass("goedegep.types.model.FileReference"), (eObject) -> "Photo reference", true, nodeOperationDescriptors));
     
     // VacationElementText.children
+    nodeOperationDescriptors = new ArrayList<>();
+    nodeOperationDescriptors.add(new NodeOperationDescriptor(TableRowOperation.NEW_OBJECT, "New element", this::fillMapImage));
+    eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(new EObjectTreeItemClassListReferenceDescriptor(VACATIONS_PACKAGE.getVacationElement_Children(), "Elements", true, nodeOperationDescriptors, object -> EObjectTreeView.getListIcon()));
+    
+    eObjectTreeDescriptor.addEClassDescriptor(eClass, eObjectTreeItemClassDescriptor);
+  }
+
+  /**
+   * Create the descriptor for the EClass goedegep.model.vacations.Picture.
+   * 
+   * @param eObjectTreeDescriptor the tree descriptor to which the VacationElementPicture descriptor is to be added.
+   * @param vakantiesPackageHelper an <code>EmfPackageHelper</code> for the <code>VacationsPackage</code>
+   */
+  private void createAndAddEObjectTreeDescriptorForDocument(EObjectTreeDescriptor eObjectTreeDescriptor, EmfPackageHelper vakantiesPackageHelper) {
+    EClass eClass = vakantiesPackageHelper.getEClass("goedegep.vacations.model.Document");
+        
+    // Document (extends VacationElement)
+    List<NodeOperationDescriptor> nodeOperationDescriptors = new ArrayList<>();
+    nodeOperationDescriptors.add(new NodeOperationDescriptor(TableRowOperation.NEW_OBJECT_BEFORE, "New element before this one ..."));
+    nodeOperationDescriptors.add(new NodeOperationDescriptor(TableRowOperation.NEW_OBJECT_AFTER, "New element after this one ..."));
+    nodeOperationDescriptors.add(new NodeOperationDescriptor(TableRowOperation.MOVE_OBJECT_UP, "Move element up"));
+    nodeOperationDescriptors.add(new NodeOperationDescriptor(TableRowOperation.MOVE_OBJECT_DOWN, "Move element down"));
+    nodeOperationDescriptors.add(new NodeOperationDescriptor(TableRowOperation.DELETE_OBJECT, "Delete element"));
+    EObjectTreeItemClassDescriptor eObjectTreeItemClassDescriptor = new EObjectTreeItemClassDescriptor(eClass,
+        eObject -> {
+          Document document = (Document) eObject;
+          String text = "...";  // default value
+          File file = null;
+          if (document.isSetDocumentReference()) {
+            FileReference fileReference = document.getDocumentReference();
+            text = fileReference.getTitle();  // first preference; the title set in the FileReference
+            
+            if (text == null  ||  text.isEmpty()) {
+              String fileName = fileReference.getFile();
+              if (fileName != null) {
+                text = fileName;
+              }
+              
+            }
+          }
+          
+          return text;
+        }, false, nodeOperationDescriptors, (object) -> {
+          Image image = null;
+          if (object instanceof Document document) {
+            FileReference fileReference = document.getDocumentReference();
+            if (fileReference != null) {
+              String fileName = fileReference.getFile();
+              LOGGER.severe("Creating image for: " + fileName);
+              if (fileName != null  &&  FileUtils.isPDFFile(fileName)) {
+                image = ImageResource.PDF.getImage();
+              }
+              LOGGER.severe("image = " + image);
+            }
+          }
+
+          return image;
+        });
+
+    // Document.documentReference
+    nodeOperationDescriptors = new ArrayList<>();
+    nodeOperationDescriptors.add(new NodeOperationDescriptor(TableRowOperation.NEW_OBJECT, "Create document reference"));
+    nodeOperationDescriptors.add(new NodeOperationDescriptor(TableRowOperation.DELETE_OBJECT, "Delete document reference"));
+    TypesPackage typesPackage = TypesPackage.eINSTANCE;
+    EmfPackageHelper typesPackageHelper = new EmfPackageHelper(typesPackage);
+    eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(new EObjectTreeItemClassReferenceDescriptor(VACATIONS_PACKAGE.getDocument_DocumentReference(), typesPackageHelper.getEClass("goedegep.types.model.FileReference"), (eObject) -> "Document reference", true, nodeOperationDescriptors));
+    
+    //Document.children
     nodeOperationDescriptors = new ArrayList<>();
     nodeOperationDescriptors.add(new NodeOperationDescriptor(TableRowOperation.NEW_OBJECT, "New element", this::fillMapImage));
     eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(new EObjectTreeItemClassListReferenceDescriptor(VACATIONS_PACKAGE.getVacationElement_Children(), "Elements", true, nodeOperationDescriptors, object -> EObjectTreeView.getListIcon()));
@@ -3082,6 +3180,15 @@ public class VacationsWindow extends JfxStage {
       String fileName = FileUtils.createBackupFileName("MapImage.jpg");  // add to model
       File file = new File(vacationFolderName, fileName);      
       mapImage.setFileName(file.getAbsolutePath());
+    } else if (eObject instanceof Document document) {
+      FileReference fileReference = TYPES_FACTORY.createFileReference();
+      document.setDocumentReference(fileReference);
+    } else if (eObject instanceof Picture picture) {
+      FileReference fileReference = TYPES_FACTORY.createFileReference();
+      picture.setPictureReference(fileReference);
+    } else if (eObject instanceof GPXTrack GpxTrack) {
+      FileReference fileReference = TYPES_FACTORY.createFileReference();
+      GpxTrack.setTrackReference(fileReference);
     }
   }
   

@@ -13,6 +13,7 @@ import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EStructuralFeature;
+import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.util.EContentAdapter;
 
 import goedegep.appgen.TableRowOperation;
@@ -21,6 +22,7 @@ import goedegep.jfx.treeview.TreeItemVisitor;
 import goedegep.jfx.treeview.TreeViewWalker;
 import goedegep.util.emf.EObjectPath;
 import goedegep.util.emf.EmfPackageHelper;
+import goedegep.util.emf.EmfUtil;
 import goedegep.util.objectselector.ObjectSelectionListener;
 import goedegep.util.objectselector.ObjectSelector;
 import goedegep.util.text.Indent;
@@ -205,48 +207,10 @@ public class EObjectTreeView extends TreeView<EObjectTreeItemContent> implements
    */
   public void setEditMode(boolean editMode) {
     LOGGER.severe("=> editMode=" + editMode);
-    boolean currentEditable = isEditable();
-    if (currentEditable != editMode) {
-      LOGGER.severe("Changing mode");
-      // get selected item
-      EObjectPath eObjectPath = null;
-      TreeItem<EObjectTreeItemContent> selectedItem = getSelectedObject();
-      EObjectTreeItemContent selectedItemContent = null;
-      Object selectedObject = null;
-      EStructuralFeature structuralFeature = null;
-      if (selectedItem != null) {
-        selectedItemContent = selectedItem.getValue();
-        if (selectedItemContent != null) {
-          selectedObject = selectedItemContent.getObject();
-        }
-      }
-      if ((selectedItem != null)  &&  !(selectedObject instanceof EObject)) {
-        // Options: Attribute list (ToDo), Attribute list value (ToDo), simple attribute value (ToDo)
-        structuralFeature = selectedItemContent.getEStructuralFeature();
-        TreeItem<EObjectTreeItemContent> parentOfSelectedItem = selectedItem.getParent();
-        selectedObject = parentOfSelectedItem.getValue().getObject();
-      }
-      if (selectedObject instanceof EObject eObject) {
-        eObjectPath = new EObjectPath(eObject);
-        LOGGER.severe("eObjectPath=" + eObjectPath.toString());
-      }
-
-      setEditable(editMode);
-      setEObject(getRootEObject());
-      // reselect selected item
-      if (eObjectPath != null) {
-        EObjectTreeItem treeItemToSelect = findTreeItem(eObjectPath);
-        if (structuralFeature != null) {
-          for (TreeItem<EObjectTreeItemContent> childItem : treeItemToSelect.getChildren()) {
-            if (childItem.getValue().getEStructuralFeature().equals(structuralFeature)) {
-              treeItemToSelect = (EObjectTreeItem) childItem;
-              break;
-            }
-          }
-        }
-        getSelectionModel().select(treeItemToSelect);
-      }
-    }
+    
+    setEditable(editMode);
+    EObjectTreeItem root = (EObjectTreeItem) getRoot();
+    root.setEditMode(editMode);
   }
   
   /**
@@ -304,6 +268,11 @@ public class EObjectTreeView extends TreeView<EObjectTreeItemContent> implements
    * @param eObject the new EObject to be shown in the tree. If null, the tree view will be cleared.
    */
   public void setEObject(EObject eObject) {
+    Resource resource = eObject.eResource();
+    if (resource == null) {
+      throw new IllegalArgumentException("The EObject has to be part of a Resource");
+    }
+
     // Create default descriptor if no descriptor is specified.
     if (eObjectTreeDescriptor == null  &&  eObject != null) {
       eObjectTreeDescriptor = createDefaultEObjectTreeDescriptor(eObject);
@@ -349,7 +318,7 @@ public class EObjectTreeView extends TreeView<EObjectTreeItemContent> implements
   }
   
   /**
-   * Create an EObjectTreeItemClassDescriptor for an EClass and add it to the EObjectTreeDescriptor.
+   * Create an EObjectTreeItemClassDescriptor for an EClass (and all references EClasses) and add it to the EObjectTreeDescriptor.
    * 
    * @param eObjectTreeDescriptor the EObjectTreeDescriptor to which the new EObjectTreeItemClassDescriptor is to be added.
    * @param eClass the EClass for which a descriptor is to be created.
@@ -358,6 +327,7 @@ public class EObjectTreeView extends TreeView<EObjectTreeItemContent> implements
   private void addClassDescriptor(EObjectTreeDescriptor eObjectTreeDescriptor, EClass eClass, EmfPackageHelper emfPackageHelper) {
     LOGGER.info("=> eClass=" + eClass.getName());
     
+    // Simply return if a descriptor for this class already exists
     if (eObjectTreeDescriptor.getDescriptorForEClass(eClass) != null) {
       LOGGER.fine("<= existing class");
       return;
@@ -365,7 +335,7 @@ public class EObjectTreeView extends TreeView<EObjectTreeItemContent> implements
     
     List<NodeOperationDescriptor> nodeOperationDescriptors = new ArrayList<>();
     nodeOperationDescriptors.add(new NodeOperationDescriptor(TableRowOperation.DELETE_OBJECT, "Delete"));
-    EObjectTreeItemClassDescriptor eObjectTreeItemClassDescriptor = new EObjectTreeItemClassDescriptor(eClass, null, true, nodeOperationDescriptors);
+    EObjectTreeItemClassDescriptor eObjectTreeItemClassDescriptor = new EObjectTreeItemClassDescriptor(eClass, null, false, nodeOperationDescriptors);
     
     // Add information for the attributes and references
     for (EStructuralFeature structuralFeature: eClass.getEAllStructuralFeatures()) {
@@ -434,15 +404,22 @@ public class EObjectTreeView extends TreeView<EObjectTreeItemContent> implements
         super.notifyChanged(notification);
         
         if (notification.isTouch()) {
+          LOGGER.severe("Ignoring touch notification");
+          // no action needed
           return;
         }
         
-        LOGGER.info("TreeView change detected: " + notification.toString());
-        
         if (notification.getEventType() == Notification.REMOVING_ADAPTER) {
+          LOGGER.severe("Ignoring removing adapter");
           // for now no action
           return;
         }
+        
+        LOGGER.severe("TreeView change detected: " + EmfUtil.printNotification(notification, false));
+        
+        
+        // If something is added, we have to add a node for this.
+        // If something is removed, we have to remove the related nodes.
         
         /*
          * The reported change is on the EObject, so we first have to find the tree item with that object.
@@ -453,21 +430,36 @@ public class EObjectTreeView extends TreeView<EObjectTreeItemContent> implements
         Object feature = notification.getFeature();
         if (feature == null) {
           throw new RuntimeException("feature is null, this is not supported yet");
-        } else if (feature instanceof EStructuralFeature) {
-          EStructuralFeature eStructuralFeature = (EStructuralFeature) feature;
-          LOGGER.fine("eStructuralFeature: " + eStructuralFeature);
+        } else if (feature instanceof EStructuralFeature eStructuralFeature) {
+          LOGGER.severe("eStructuralFeature: " + eStructuralFeature);
           EObjectPath eObjectPath = new EObjectPath(notifierEObject);
           EObjectTreeItem rootItem = (EObjectTreeItem) getRoot();
           EObjectTreeItem changedContainingTreeItem = findTreeItem(eObjectPath);
-          changedContainingTreeItem.setExpanded(true);
-          changedContainingTreeItem.rebuildChildren();          
-          EObjectTreeItem changedTreeItem = rootItem.findChildTreeItem(changedContainingTreeItem, eStructuralFeature);
+          LOGGER.info("changedContainingTreeItem: " + changedContainingTreeItem);
+//          changedContainingTreeItem.setExpanded(true);
+//          changedContainingTreeItem.rebuildChildren();
+          
+          EObjectTreeItem changedTreeItem = EObjectTreeItem.findChildTreeItem(changedContainingTreeItem, eStructuralFeature);
+          LOGGER.severe("changedTreeItem: " + changedTreeItem);
+          
+          if (notification.getEventType() == Notification.ADD) {
+            // an element is added to a list of objects
+            changedTreeItem.addObjectListChild(notification.getPosition());
+          } else if (notification.getEventType() == Notification.REMOVE) {
+            // an element is removed from a list of objects
+            changedTreeItem.removeObjectListChild(notification.getPosition());
+          } else if (notification.getEventType() == Notification.SET) {
+            // the value of an attribute has changed
+            changedTreeItem.handleAttributeValueChanged(eStructuralFeature, notification.getNewValue());
+          }
+          
+          // TODO hier verder
           if (changedTreeItem != null) {
             if (notification.getEventType() == Notification.ADD) {
               changedTreeItem = (EObjectTreeItem) changedTreeItem.getChildren().get(notification.getPosition());
             }
             LOGGER.info("Going to SELECT node: " + changedTreeItem.toString());
-            changedTreeItem.setExpanded(true);
+//            changedTreeItem.setExpanded(true);
             getSelectionModel().select(changedTreeItem);
           } else {
             LOGGER.fine("Changed tree item not found: changedContainingTreeItem=" + changedContainingTreeItem.toString() + ", eStructuralFeature=" + eStructuralFeature);

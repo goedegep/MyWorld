@@ -239,14 +239,14 @@ public class EObjectTreeCellHelperForObjectList extends EObjectTreeCellHelperAbs
     
     eObjectList.add(eObject);
     
-    ((EObjectTreeItem) eObjectTreeItem.getParent()).rebuildChildren();
-//    eObjectTreeItem.rebuildChildren();
+    eObjectTreeItem.rebuildChildren();
     
     LOGGER.info("=>");
   }
 
   private String getText(EObjectTreeItemContent eObjectTreeItemContent) {
     LOGGER.info("=>");
+ 
     
     String labelText = itemDescriptor.getLabelText() + ":";
             
@@ -325,12 +325,7 @@ public class EObjectTreeCellHelperForObjectList extends EObjectTreeCellHelperAbs
             EList<Object> sourceContentEList = (EList<Object>) sourceParentTreeItemContent.getObject();
             sourceContentEList.remove(sourceEObject);
             
-            if (sourceParent != thisEObjectTreeItem) {
-              sourceParent.rebuildChildren();
-            }
-            
-              contentEList.add(sourceEObject);
-              thisEObjectTreeItem.rebuildChildren();
+            contentEList.add(sourceEObject);
           } else {
             // It is a single value, which will be replaced.
             LOGGER.severe("Single item; replace");

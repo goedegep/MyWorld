@@ -307,9 +307,16 @@ public final class EmfUtil {
     case "EReference":
       EReference eReference = (EReference) feature;
       EClass referenceType = eReference.getEReferenceType();
-      buf.append("    Referred value type: " + referenceType.getName()).append(NEWLINE);
+      String referenceTypeName = referenceType.getName();
+      if (eReference.isMany()) {
+        referenceTypeName = "List<" + referenceTypeName + ">";
+      }
+      buf.append("    Referred value type: ").append(referenceTypeName).append(NEWLINE);
       Object object1 = eObject.eGet(eReference);
-      buf.append("    Referred object: ").append(object1 != null ? object1.toString() : "(null)").append(NEWLINE);
+      
+      if (!eReference.isMany()) {
+        buf.append("    Referred object: ").append(object1 != null ? object1.toString() : "(null)").append(NEWLINE);
+      }
       valueType = "Object";
       break;
       

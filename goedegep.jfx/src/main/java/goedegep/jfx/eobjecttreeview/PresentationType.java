@@ -7,6 +7,7 @@ package goedegep.jfx.eobjecttreeview;
  * </ul>
  */
 public enum PresentationType {
+  BOOLEAN,           // displayed and edited via a checkbox
   SINGLE_LINE_TEXT,  // displayed and edited as single line text (TextField)
   MULTI_LINE_TEXT,   // displayed ... and edited via a TextArea
   ENUMERATION,       // displayed as single value, edited via a chooser

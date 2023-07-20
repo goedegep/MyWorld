@@ -6,8 +6,8 @@
     <eLiterals name="MALE" value="1" literal="Male"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Person">
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="firstname" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
-        unsettable="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="firstnames" upperBound="-1"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString" unsettable="true"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="surname" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
         unsettable="true"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="gender" eType="#//Gender"
@@ -32,5 +32,7 @@
         eType="#//Person" containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="birthdays" upperBound="-1"
         eType="#//Birthday"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="formerEmployees" upperBound="-1"
+        eType="#//Person" containment="true"/>
   </eClassifiers>
 </ecore:EPackage>

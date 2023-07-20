@@ -442,7 +442,12 @@ public class GPXLayer extends MapLayer {
     ObservableList<TrackPointData> trackPointsDataList = FXCollections.observableArrayList();
     
     List<WptType> trackPoints = trackSegment.getTrkpt();
-    final double ratio = MAX_DATAPOINTS / trackPoints.size();
+    double ratio = MAX_DATAPOINTS / trackPoints.size();
+    
+    double zoom = baseMap.getZoom();
+    if (ratio > 1.0) {
+      ratio = (zoom + 1) / 20;
+    }
     
     Node prevIcon = null;
 
@@ -456,9 +461,10 @@ public class GPXLayer extends MapLayer {
             icon.setStroke(Color.RED);
             icon.setStrokeWidth(1);
             
-            final Tooltip tooltip = new Tooltip(createTooltipText(title, fileName, trackPoint));
-            
-            Tooltip.install(icon, tooltip);
+            if (zoom > 15) {
+              final Tooltip tooltip = new Tooltip(createTooltipText(title, fileName, trackPoint));
+              Tooltip.install(icon, tooltip);
+            }
             
             this.getChildren().add(icon);
 

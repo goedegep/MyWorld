@@ -8,6 +8,7 @@ import goedegep.vacations.model.Boundary;
 import goedegep.vacations.model.BoundingBox;
 import goedegep.vacations.model.Day;
 import goedegep.vacations.model.DayTrip;
+import goedegep.vacations.model.Document;
 import goedegep.vacations.model.GPXTrack;
 import goedegep.vacations.model.Location;
 import goedegep.vacations.model.MapImage;
@@ -118,6 +119,13 @@ public class VacationsPackageImpl extends EPackageImpl implements VacationsPacka
    * @generated
    */
   private EClass dayTripEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass documentEClass = null;
 
   /**
    * Creates an instance of the model <b>Package</b>, registered with
@@ -914,6 +922,26 @@ public class VacationsPackageImpl extends EPackageImpl implements VacationsPacka
    * @generated
    */
   @Override
+  public EClass getDocument() {
+    return documentEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public EReference getDocument_DocumentReference() {
+    return (EReference) documentEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
   public VacationsFactory getVacationsFactory() {
     return (VacationsFactory) getEFactoryInstance();
   }
@@ -1021,6 +1049,9 @@ public class VacationsPackageImpl extends EPackageImpl implements VacationsPacka
     createEAttribute(dayTripEClass, DAY_TRIP__TITLE);
     createEReference(dayTripEClass, DAY_TRIP__ELEMENTS);
     createEOperation(dayTripEClass, DAY_TRIP___GET_ID);
+
+    documentEClass = createEClass(DOCUMENT);
+    createEReference(documentEClass, DOCUMENT__DOCUMENT_REFERENCE);
   }
 
   /**
@@ -1065,6 +1096,7 @@ public class VacationsPackageImpl extends EPackageImpl implements VacationsPacka
     gpxTrackEClass.getESuperTypes().add(this.getVacationElement());
     mapImageEClass.getESuperTypes().add(this.getVacationElement());
     dayTripEClass.getESuperTypes().add(theTypesPackage.getEvent());
+    documentEClass.getESuperTypes().add(this.getVacationElement());
 
     // Initialize classes, features, and operations; add parameters
     initEClass(vacationsEClass, Vacations.class, "Vacations", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
@@ -1241,6 +1273,11 @@ public class VacationsPackageImpl extends EPackageImpl implements VacationsPacka
         !IS_DERIVED, IS_ORDERED);
 
     initEOperation(getDayTrip__GetId(), ecorePackage.getEString(), "getId", 0, 1, IS_UNIQUE, IS_ORDERED);
+
+    initEClass(documentEClass, Document.class, "Document", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEReference(getDocument_DocumentReference(), theTypesPackage.getFileReference(), null, "documentReference", null,
+        0, 1, Document.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES,
+        IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     // Create resource
     createResource(eNS_URI);

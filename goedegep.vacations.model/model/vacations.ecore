@@ -174,4 +174,8 @@
     <eStructuralFeatures xsi:type="ecore:EReference" name="elements" upperBound="-1"
         eType="#//VacationElement" containment="true"/>
   </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Document" eSuperTypes="#//VacationElement">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="documentReference" eType="ecore:EClass ../../goedegep.types.model/model/types.ecore#//FileReference"
+        unsettable="true" containment="true"/>
+  </eClassifiers>
 </ecore:EPackage>

@@ -13,6 +13,7 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.util.List;
 import java.util.logging.Logger;
 
 import org.apache.commons.imaging.ImageReadException;
@@ -94,7 +95,7 @@ public final class PhotoFileMetaDataHandler {
   private static DateTimeFormatter DTF_WITH_SPACE = DateTimeFormatter.ofPattern("yyyy:MM:dd HH:mm: s");   // For parsing
   private static DateTimeFormatter DTFP = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");  // For printing
   
-  private File file;
+  private File file = null;
   private JpegImageMetadata jpegMetadata = null;
   
   /**
@@ -106,6 +107,11 @@ public final class PhotoFileMetaDataHandler {
    */
   public PhotoFileMetaDataHandler(final File file) throws ImageReadException, IOException {
     this.file = file;
+
+    if (FileUtils.isWebpFile(file)) {
+      return;
+    }
+    
     // get all metadata stored in EXIF format (ie. from JPEG or TIFF).
     ImageMetadata metadata = Imaging.getMetadata(file);
 
@@ -345,7 +351,7 @@ public final class PhotoFileMetaDataHandler {
   public boolean hasApproximateCoordinates() throws ImageReadException {
     LOGGER.info("=>");
     
-    return metadataHasApproximateCoordinatesIndication(jpegMetadata);
+    return jpegMetadata != null ? metadataHasApproximateCoordinatesIndication(jpegMetadata) : false;
   }  
   
   /**
@@ -356,7 +362,11 @@ public final class PhotoFileMetaDataHandler {
    * @return the value of requested item, or null if not available.
    */
   public String getTiffItemValue(int directoryType, String itemName) {
-    return getTiffItemValue(jpegMetadata, directoryType, itemName);
+    if (jpegMetadata != null) {
+      return getTiffItemValue(jpegMetadata, directoryType, itemName);
+    } else {
+      return null;
+    }
   }
   
   
@@ -374,6 +384,9 @@ public final class PhotoFileMetaDataHandler {
    */
   public static void writeGeoLocationAndTitle(final File jpegImageFile, WGS84Coordinates geoLocation, boolean approximateGPScoordinates, String title)
       throws IOException, ImageReadException, ImageWriteException {
+    if (!FileUtils.isJpegFile(jpegImageFile)) {
+      throw new IllegalArgumentException("File type is not supported: " + jpegImageFile);
+    }
     // move the original file to a temporary name: filename-<timestamp>.ext
     String backupFileName = FileUtils.createBackupFileName(jpegImageFile.getAbsolutePath());
     File backupFile = new File(backupFileName);
@@ -460,6 +473,10 @@ public final class PhotoFileMetaDataHandler {
    * @throws ImageWriteException
    */
   public static void writeOrientation(final File jpegImageFile, int orientation) throws IOException, ImageReadException, ImageWriteException {
+    if (!FileUtils.isJpegFile(jpegImageFile)) {
+      throw new IllegalArgumentException("File type is not supported: " + jpegImageFile);
+    }
+
     // move the original file to a temporary name: filename-<timestamp>.ext
     String backupFileName = FileUtils.createBackupFileName(jpegImageFile.getAbsolutePath());
     File backupFile = new File(backupFileName);
@@ -544,16 +561,18 @@ public final class PhotoFileMetaDataHandler {
     if (jpegMetadata != null) {
       TiffImageMetadata exif = jpegMetadata.getExif();
       if (exif != null) {
-        for (Directory directory: exif.getDirectories()) {
-          if (directory.type == directoryType) {
-            for (ImageMetadataItem item: directory.getItems()) {
-              TiffMetadataItem tiffMetadataItem = (TiffMetadataItem) item;
-              if (tiffMetadataItem.getKeyword().equals(itemName)) {
-                return tiffMetadataItem.getText();
-              }
-            }
-          }
-        }
+        List<ImageMetadataItem> dirs = (List<ImageMetadataItem>) exif.getDirectories();
+        LOGGER.severe("Value of getDirectories: " + dirs);
+//        for (Directory directory: exif.getDirectories()) {
+//          if (directory.type == directoryType) {
+//            for (ImageMetadataItem item: directory.getItems()) {
+//              TiffMetadataItem tiffMetadataItem = (TiffMetadataItem) item;
+//              if (tiffMetadataItem.getKeyword().equals(itemName)) {
+//                return tiffMetadataItem.getText();
+//              }
+//            }
+//          }
+//        }
       }
     }
 

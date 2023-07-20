@@ -36,14 +36,17 @@ import goedegep.jfx.workerstategui.WorkerStateMonitorWindow;
 import goedegep.pctools.app.logic.PCToolsRegistry;
 import goedegep.pctools.filescontrolled.logic.CheckFilesTask;
 import goedegep.pctools.filescontrolled.logic.ControlledSetBuildingTask;
+import goedegep.pctools.filescontrolled.model.ControlledFolderInfo;
 import goedegep.pctools.filescontrolled.model.ControlledRootFolderInfo;
 import goedegep.pctools.filescontrolled.model.DescribedItem;
 import goedegep.pctools.filescontrolled.model.DirectorySpecification;
 import goedegep.pctools.filescontrolled.model.DiscStructureSpecification;
 import goedegep.pctools.filescontrolled.model.FileInfo;
+import goedegep.pctools.filescontrolled.model.FolderInfo;
 import goedegep.pctools.filescontrolled.model.PCToolsFactory;
 import goedegep.pctools.filescontrolled.model.PCToolsPackage;
 import goedegep.pctools.filescontrolled.model.Result;
+import goedegep.pctools.filescontrolled.model.UncontrolledRootFolderInfo;
 //import goedegep.pctools.filescontrolled.types.EqualityType;
 //import goedegep.pctools.filescontrolled.model.DescribedItem;
 //import goedegep.pctools.filescontrolled.model.DirectorySpecification;
@@ -70,10 +73,12 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.RadioButton;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TextField;
+import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
 import javafx.scene.input.KeyCode;
@@ -169,7 +174,8 @@ public class FilesControlledWindow extends JfxStage {
   private DiscStructureSpecification discStructureSpecification = null;
   private EObjectTreeView treeView = null;
   private Label statusLabel = new Label("Nothing to report");
-  private BorderPane tabLayoutCopy = null;
+  private VBox resultSelectionBox = null;
+  private VBox resultBox = null;
   private BorderPane tabLayoutUncontrolled = null;
   private BorderPane tabLayoutControlledCopy = null;
   
@@ -239,19 +245,17 @@ public class FilesControlledWindow extends JfxStage {
     
     centerLayout.getChildren().add(treeView);
     
-    TabPane resultTreesPane = new TabPane();
-    resultTreesPane.setMinWidth(1400);
+    resultSelectionBox = componentFactory.createVBox(8.0, 12.0);
+    centerLayout.getChildren().add(resultSelectionBox);
     
-    Tab tab = new Tab();
-    tab.setText("Copy");
-    tabLayoutCopy = new BorderPane();
-    Label label = new Label("Controlled files which have a copy under controlled files.");
-    tabLayoutCopy.setTop(label);
-    label = new Label("no results available yet");
-    label.setStyle("-fx-text-fill: LightGray; -fx-font-size: 200%;");
-    tabLayoutCopy.setCenter(label);
-    tab.setContent(tabLayoutCopy);
-    resultTreesPane.getTabs().add(tab);
+    resultBox = componentFactory.createVBox(8.0, 12.0);
+    centerLayout.getChildren().add(resultBox);
+    
+    TabPane resultTreesPane = new TabPane();
+    resultTreesPane.setMinWidth(400);
+    
+    Tab tab;
+    Label label;
     
     tab = new Tab();
     tab.setText("Uncontrolled");
@@ -730,7 +734,6 @@ public class FilesControlledWindow extends JfxStage {
   private void generateDiscStructureReportStep1(DiscStructureSpecification discStructureSpecification) {
     LOGGER.severe("=>");
     
-    tabLayoutCopy.setCenter(null);
     tabLayoutUncontrolled.setCenter(null);
     tabLayoutControlledCopy.setCenter(null);
 
@@ -800,7 +803,9 @@ public class FilesControlledWindow extends JfxStage {
     checkFilesTask.setOnSucceeded((event) -> {
       LOGGER.severe("Step 2 succeeded: " + event);
       Result resultNew = checkFilesTask.getValue();
+      handleResult(resultNew);
       reportSuspiciousCopies(result);
+      reportEmptyFolders(result);
       reportResult(resultNew);
 //      reportprobablyRemovableFiles(result.getObject1());
 //      reportUncontrolledFiles(result.getObject2());
@@ -830,12 +835,37 @@ public class FilesControlledWindow extends JfxStage {
     checkFilesThread.start();
   }
   
+  private void handleResult(Result result) {
+    fillResultSelectionBox(result);
+  }
+  
+  private void fillResultSelectionBox(Result result) {
+    resultSelectionBox.getChildren().clear();  // TODO move to new
+    Label label = componentFactory.createStrongLabel("Show:");
+    resultSelectionBox.getChildren().add(label);
+    
+    ToggleGroup toggleGroup = new ToggleGroup();
+    RadioButton radioButton;
+    
+    radioButton = new RadioButton("Controlled copies");
+    radioButton.setToggleGroup(toggleGroup);
+    radioButton.setOnAction((e) -> reportSuspiciousCopies(result));
+    resultSelectionBox.getChildren().add(radioButton);
+    
+    radioButton = new RadioButton("Empty folders");
+    radioButton.setToggleGroup(toggleGroup);
+    radioButton.setOnAction((e) -> reportEmptyFolders(result));
+    resultSelectionBox.getChildren().add(radioButton);
+  }
+
   private void reportSuspiciousCopies(Result result) {
+    resultBox.getChildren().clear();
+    
     VBox vBox = componentFactory.createVBox(6.0, 12.0);
     ScrollPane scrollPane = new ScrollPane(vBox);
     Label label;
     
-    label = componentFactory.createStrongLabel("Controlled files with copies");
+    label = componentFactory.createStrongLabel("Controlled files which have a copy under controlled files.");
     vBox.getChildren().add(label);
     
     for (ControlledRootFolderInfo rootFolder: result.getControlledrootfolderinfos()) {
@@ -886,8 +916,8 @@ public class FilesControlledWindow extends JfxStage {
       }
     }
     
-    tabLayoutCopy.setCenter(scrollPane);
-
+    resultBox.getChildren().add(scrollPane);
+    
     // controlled files with copies
     // file: <file> in
     //       <dir1> (right mouse to delete or delete button.)
@@ -914,7 +944,49 @@ public class FilesControlledWindow extends JfxStage {
 //    }
 //    TreeView<String> treeView = new TreeView<> (rootTreeItem);
 //
-//    tabLayoutCopy.setCenter(treeView);
+  }
+  
+  private List<String> reportEmptyFolders(Result result) {
+    resultBox.getChildren().clear();
+    
+    List<String> allEmptyFolders = new ArrayList<>();
+    
+    for (ControlledRootFolderInfo rootFolder: result.getControlledrootfolderinfos()) {
+      List<String> emptyFolders = findEmptyFolders(rootFolder);
+      allEmptyFolders.addAll(emptyFolders);
+    }
+    
+    for (UncontrolledRootFolderInfo rootFolder: result.getUncontrolledRootFolderInfos()) {
+      List<String> emptyFolders = findEmptyFolders(rootFolder);
+      allEmptyFolders.addAll(emptyFolders);
+    }
+    
+    for (String emptyFolder: allEmptyFolders) {
+      LOGGER.severe("Empty folder: " + emptyFolder);
+      Label label = componentFactory.createLabel(emptyFolder);
+      resultBox.getChildren().add(label);
+    }
+    return allEmptyFolders;
+  }
+  
+  private List<String> findEmptyFolders(FolderInfo folderInfo) {
+    List<String> emptyFolders = new ArrayList<>();
+    
+    TreeIterator<EObject> treeIterator = folderInfo.eAllContents();
+    while (treeIterator.hasNext()) {
+      EObject eObject = treeIterator.next();
+      if (eObject instanceof FolderInfo) {
+        if (eObject instanceof ControlledFolderInfo subFolderInfo) {
+          if (subFolderInfo.getFileinfos().isEmpty()  && subFolderInfo.getSubFolderInfos().isEmpty()) {
+            String emptyFolder = subFolderInfo.getFullPathname();
+            LOGGER.severe("emptyFolder: " + emptyFolder);
+            emptyFolders.add(emptyFolder);
+          }
+        }
+      }
+    }
+    
+    return emptyFolders;
   }
   
   private void reportResult(Result result) {
