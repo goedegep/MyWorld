@@ -9,11 +9,11 @@ import java.util.logging.Logger;
  *
  * @param <D> the type of the EObjectTreeItemDescriptor
  */
-public abstract class EObjectTreeCellHelperAbstract<D extends EObjectTreeItemDescriptor> implements EObjectTreeCellHelper {
+public abstract class EObjectTreeCellHelperAbstract<I extends EObjectTreeItem> implements EObjectTreeCellHelper {
   private static final Logger LOGGER = Logger.getLogger(EObjectTreeCellHelperAbstract.class.getName());
   
   protected EObjectTreeCell eObjectTreeCell;     // the EObjectTreeCell to which this helper is attached
-  protected D itemDescriptor;                    // the, item type specific, EObjectTreeItemDescriptor
+  protected I treeItem;                          // the TreeItem of this cell
   
   /**
    * Constructor.
@@ -22,6 +22,7 @@ public abstract class EObjectTreeCellHelperAbstract<D extends EObjectTreeItemDes
    */
   public EObjectTreeCellHelperAbstract(EObjectTreeCell eObjectTreeCell) {
     this.eObjectTreeCell = eObjectTreeCell;
+    treeItem = (I) eObjectTreeCell.getTreeItem();
   }
 
   /**
@@ -31,25 +32,13 @@ public abstract class EObjectTreeCellHelperAbstract<D extends EObjectTreeItemDes
   public void updateItem(EObjectTreeItemContent eObjectTreeItemContent) {
     LOGGER.info("=> item=" + (eObjectTreeItemContent != null ? eObjectTreeItemContent.toString() : "(null)"));
 
-    updateItemDescriptor(eObjectTreeItemContent);
+//    updateItemDescriptor(eObjectTreeItemContent);
     eObjectTreeCell.setStyle(null);
     
     LOGGER.info("<=");
   }
-
-  /**
-   * Get the right EObjectTreeItemDescriptor for a specific item content.
-   * 
-   * @param eObjectTreeItemContent the item content that holds a reference to the item descriptor.
-   */
-  @SuppressWarnings("unchecked")
-  private void updateItemDescriptor(EObjectTreeItemContent eObjectTreeItemContent) {
-    itemDescriptor = (D) eObjectTreeItemContent.getPresentationDescriptor();
-    if (itemDescriptor != null) {
-      LOGGER.info("itemDescriptor=" + itemDescriptor.toString());
-    } else {
-//      throw new RuntimeException("No presentation descriptor for node: " + eObjectTreeItemContent.toString());
-    }
+  
+  public I getTreeItem() {
+    return treeItem;
   }
-
 }

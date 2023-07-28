@@ -36,14 +36,13 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
 /**
- * This class is a tree cell helper for an object.
+ * This class is a tree cell helper for an object which is part of a list (i.e. a many reference).
  */
-public class EObjectTreeCellHelperForObject extends EObjectTreeCellHelperAbstract<EObjectTreeItemForObject> {
+public class EObjectTreeCellHelperForObjectInList extends EObjectTreeCellHelperAbstract<EObjectTreeItemForObjectInList> {
   private static final Logger LOGGER = Logger.getLogger(EObjectTreeCellHelperForObject.class.getName());
   private static final String NEW_LINE = System.getProperty("line.separator");
   
-  private EObjectTreeItemClassDescriptor itemDescriptor;
-  
+  private EObjectTreeItemClassDescriptor itemDescriptor;  
   private final Node objectIcon = new ImageView(new Image(EObjectTreeCellHelperForObject.class.getResourceAsStream("Class no text.png"), 36, 16, true, true));
   
   /**
@@ -51,24 +50,17 @@ public class EObjectTreeCellHelperForObject extends EObjectTreeCellHelperAbstrac
    * 
    * @param eObjectTreeCell the {@code EObjectTreeCell} for which this is a helper.
    */
-  public EObjectTreeCellHelperForObject(EObjectTreeCell eObjectTreeCell) {
+  public EObjectTreeCellHelperForObjectInList(EObjectTreeCell eObjectTreeCell) {
     super(eObjectTreeCell);
   }
 
   @Override
   public void updateItem(EObjectTreeItemContent eObjectTreeItemContent) {
+    LOGGER.info("=> item=" + (eObjectTreeItemContent != null ? eObjectTreeItemContent.toString() : "(null)"));
+    
     super.updateItem(eObjectTreeItemContent);
     
-    LOGGER.info("=> treeItem=" + treeItem);
-    
     itemDescriptor = treeItem.getEObjectTreeItemClassDescriptor();
-    
-    if (itemDescriptor == null) {
-      EObjectTreeItemClassReferenceDescriptor eObjectTreeItemClassReferenceDescriptor = treeItem.getEObjectTreeItemClassReferenceDescriptor();
-      if (eObjectTreeItemClassReferenceDescriptor != null) {
-        itemDescriptor = treeItem.getEObjectTreeView().getEObjectTreeDescriptor().getDescriptorForEClass(eObjectTreeItemClassReferenceDescriptor.getEClass());
-      }
-    }
     
     ContextMenu contextMenu = createContextMenu(eObjectTreeItemContent);
     eObjectTreeCell.setContextMenu(contextMenu);
@@ -81,9 +73,14 @@ public class EObjectTreeCellHelperForObject extends EObjectTreeCellHelperAbstrac
 
     
     ImageView iconImageView = null;
+    EObjectTreeItemClassDescriptor ebjectTreeItemClassDescriptor = itemDescriptor;
+    if (itemDescriptor instanceof EObjectTreeItemClassReferenceDescriptor) {
+      EClass eClass = itemDescriptor.getEClass();
+      ebjectTreeItemClassDescriptor = ((EObjectTreeItem) eObjectTreeCell.getTreeItem()).getEObjectTreeView().getEObjectTreeDescriptor().getDescriptorForEClass(eClass);
+    }
     if (eObjectTreeItemContent != null) {
-      if (itemDescriptor != null) {        
-        Function<Object, Image> nodeIconFunction = itemDescriptor.getNodeIconFunction();
+      if (ebjectTreeItemClassDescriptor != null) {        
+        Function<Object, Image> nodeIconFunction = ebjectTreeItemClassDescriptor.getNodeIconFunction();
         if (nodeIconFunction != null) {
           Image iconImage = nodeIconFunction.apply(eObjectTreeItemContent.getObject());
           if (iconImage != null) {
@@ -144,16 +141,7 @@ public class EObjectTreeCellHelperForObject extends EObjectTreeCellHelperAbstrac
      * 
      * Note that the object of this item may be a sub type of the reference type. 
      */
-    EReference eReference = null;
-    if (itemDescriptor instanceof EObjectTreeItemClassReferenceDescriptor) {
-      EObjectTreeItemClassReferenceDescriptor eObjectTreeItemClassReferenceDescriptor = (EObjectTreeItemClassReferenceDescriptor) itemDescriptor;
-      eReference = eObjectTreeItemClassReferenceDescriptor.getEReference();
-    } else {
-      EObjectTreeItem parentEObjectTreeItem = (EObjectTreeItem) eObjectTreeItem.getParent();
-      if (parentEObjectTreeItem != null) {
-        eReference = treeItem.getEReference();
-      }
-    }
+    EReference eReference = getEReferenceForOurObject();
     
     if (eReference == null) {
       return null;
@@ -523,30 +511,11 @@ public class EObjectTreeCellHelperForObject extends EObjectTreeCellHelperAbstrac
    * @return the EReference referring to our object.
    */
   private EReference getEReferenceForOurObject() {
-    EObjectTreeItem eObjectTreeItem = (EObjectTreeItem) eObjectTreeCell.getTreeItem();
-    EObjectTreeItemType eObjectTreeItemType = eObjectTreeItem.getEObjectTreeItemType();
-    
-    EReference eReference = null;
-    if (eObjectTreeItemType == EObjectTreeItemType.OBJECT) {
-      // the reference is in this object
-      eReference = treeItem.getEReference();
-//    } else if (eObjectTreeItemType == EObjectTreeItemType.OBJECT_LIST) {
-//      // the reference is in the parent item
-//      EObjectTreeItem parentEObjectTreeItem = (EObjectTreeItem) eObjectTreeItem.getParent();
-//      EObjectTreeItemContent parentEObjectTreeItemContent = parentEObjectTreeItem.getValue();
-//      LOGGER.severe("parentEObjectTreeItemContent: " + parentEObjectTreeItemContent.toString());
-//      eReference = (EReference) parentEObjectTreeItemContent.getEStructuralFeature();
-    } else {
-      throw new RuntimeException("Illegal EObjectTreeItemType for tree item. Tree Item = " + eObjectTreeItem + ", EObjectTreeItemType = " + eObjectTreeItemType);
-    }
-    
-    if (eReference == null) {
+    EObjectTreeItemForObjectInList eObjectTreeItem = (EObjectTreeItemForObjectInList) eObjectTreeCell.getTreeItem();
+     
       // the reference is in the parent item
-      EObjectTreeItem parentEObjectTreeItem = (EObjectTreeItem) eObjectTreeItem.getParent();
-      LOGGER.severe("parentEObjectTreeItem: " + parentEObjectTreeItem.toString());
-      throw new RuntimeException("TODO handle reference from parent");
-//      eReference = (EReference) parentEObjectTreeItemContent.getEStructuralFeature();
-    }
+    EObjectTreeItemForObjectList parentEObjectTreeItem = (EObjectTreeItemForObjectList) eObjectTreeItem.getParent();
+    EReference eReference = parentEObjectTreeItem.getEReference();
     
     return eReference;
   }

@@ -1501,10 +1501,10 @@ public class VacationsWindow extends JfxStage {
     }
     
     List<Vacation> vacations = null;
-    EObjectTreeItemContent treeItemContent = treeItem.getValue();
+    EObjectTreeItemContent treeItemContent = treeItem.getValue();;
     
-    if ((treeItemContent.getEStructuralFeature() != null)  &&
-        treeItemContent.getEStructuralFeature().equals(VACATIONS_PACKAGE.getVacations_Vacations())) {
+    if ((EObjectTreeItem.getEStructuralFeature(treeItem) != null)  &&
+        EObjectTreeItem.getEStructuralFeature(treeItem).equals(VACATIONS_PACKAGE.getVacations_Vacations())) {
       vacations = (List<Vacation>) treeItemContent.getObject();
     }
     

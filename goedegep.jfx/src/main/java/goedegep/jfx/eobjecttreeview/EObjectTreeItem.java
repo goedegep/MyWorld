@@ -1,19 +1,25 @@
 package goedegep.jfx.eobjecttreeview;
 
+import java.nio.ByteBuffer;
 import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Logger;
 
-import org.eclipse.emf.common.util.EList;
-import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EStructuralFeature;
 
+import goedegep.util.emf.EObjectPath;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.scene.Node;
 import javafx.scene.control.TreeItem;
+import javafx.scene.input.ClipboardContent;
+import javafx.scene.input.DataFormat;
+import javafx.scene.input.DragEvent;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.input.TransferMode;
 
 /**
  * This class represents EObject tree items.
@@ -22,8 +28,10 @@ import javafx.scene.control.TreeItem;
  * This class add fields which are needed for handling the items in the tree. Information that is needed for the representation of an item (by TreeCell) is
  * part of the class {@link EObjectTreeItemContent}.
  */
-public class EObjectTreeItem extends TreeItem<EObjectTreeItemContent> {
+public abstract class EObjectTreeItem extends TreeItem<EObjectTreeItemContent> {
   private static final Logger LOGGER = Logger.getLogger(EObjectTreeItem.class.getName());
+  private static final String NEWLINE = System.getProperty("line.separator");
+  protected static final DataFormat EOBJECT_PATH = new DataFormat("EObjectPath");
   
   /**
    * Caches the result for method isLeaf().
@@ -39,18 +47,23 @@ public class EObjectTreeItem extends TreeItem<EObjectTreeItemContent> {
    * Reference to the tree view of which this item is part.
    */
   private EObjectTreeView eObjectTreeView = null;
-
+  
   /**
-   * Constructor for specifying the EObject, EObjectTreeItemType and presentationDescriptor (so no eStructuralFeature).
-   * 
-   * @param eObject the EObject for this tree item (mandatory)
-   * @param eObjectTreeItemType the EObjectTreeItemType for this tree item (mandatory)
-   * @param presentationDescriptor a TreeNode containing the specification for the representation of this item (mandatory)
+   * The type of information stored in the item. This value determines what is stored in the other fields.
    */
-  public EObjectTreeItem(EObject eObject, EObjectTreeItemType eObjectTreeItemType, EObjectTreeItemDescriptor presentationDescriptor,
-      EObjectTreeView eObjectTreeView) {
-    this(eObject, eObjectTreeItemType, null, presentationDescriptor, eObjectTreeView);
-  }
+  private EObjectTreeItemType eObjectTreeItemType = null;
+
+//  /**
+//   * Constructor for specifying the EObject, EObjectTreeItemType and presentationDescriptor (so no eStructuralFeature).
+//   * 
+//   * @param eObject the EObject for this tree item (mandatory)
+//   * @param eObjectTreeItemType the EObjectTreeItemType for this tree item (mandatory)
+//   * @param presentationDescriptor a TreeNode containing the specification for the representation of this item (mandatory)
+//   */
+//  public EObjectTreeItem(EObject eObject, EObjectTreeItemType eObjectTreeItemType, EObjectTreeItemDescriptor presentationDescriptor,
+//      EObjectTreeView eObjectTreeView) {
+//    this(eObject, eObjectTreeItemType, presentationDescriptor, eObjectTreeView);
+//  }
 
   /**
    * Constructor for specifying all information as content of this tree item.
@@ -60,15 +73,16 @@ public class EObjectTreeItem extends TreeItem<EObjectTreeItemContent> {
    * @param eStructuralFeature the EStructuralFeature for this tree item (only mandatory for the types ...)
    * @param presentationDescriptor a TreeNode containing the specification for the representation of this item (mandatory)
    */
-  public EObjectTreeItem(Object object, EObjectTreeItemType eObjectTreeItemType, EStructuralFeature eStructuralFeature,
-      EObjectTreeItemDescriptor presentationDescriptor, EObjectTreeView eObjectTreeView) {
-    super(new EObjectTreeItemContent(object, eObjectTreeItemType, eStructuralFeature, presentationDescriptor, eObjectTreeView));
+  public EObjectTreeItem(Object object, EObjectTreeItemType eObjectTreeItemType,
+      EObjectTreeView eObjectTreeView) {
+    super(new EObjectTreeItemContent(object));
     
+    this.eObjectTreeItemType = eObjectTreeItemType;
     this.eObjectTreeView = eObjectTreeView;
         
-    if (presentationDescriptor != null) {
-      setExpanded(presentationDescriptor.isExpandOnCreation());
-    }
+//    if (presentationDescriptor != null) {
+//      setExpanded(presentationDescriptor.isExpandOnCreation());
+//    }
         
     LOGGER.info("<=>");
   }
@@ -81,6 +95,16 @@ public class EObjectTreeItem extends TreeItem<EObjectTreeItemContent> {
   public EObjectTreeView getEObjectTreeView() {
     return eObjectTreeView;
   }
+  
+  
+  /**
+   * Get the EObjectTreeItemType of this item.
+   * 
+   * @return the EObjectTreeItemType of this item.
+   */
+  public EObjectTreeItemType getEObjectTreeItemType() {
+    return eObjectTreeItemType;
+  }
 
   /**
    * @inheritDoc
@@ -91,17 +115,30 @@ public class EObjectTreeItem extends TreeItem<EObjectTreeItemContent> {
     
     if (isLeaf == null) {
       EObjectTreeItemContent content = getValue();
-      EObjectTreeItemType type = content.getEObjectTreeItemType();
-      switch (type) {
+      switch (eObjectTreeItemType) {
       case ATTRIBUTE_LIST_VALUE:
       case ATTRIBUTE_SIMPLE:
         isLeaf = true;
         break;
         
       case OBJECT:
-        EObjectTreeItemClassDescriptor classDescriptor = getClassDescriptor();
+        EObjectTreeItemClassDescriptor classDescriptor = ((EObjectTreeItemForObject) this).getClassDescriptor();
         if (classDescriptor != null) {
           if (classDescriptor.getStructuralFeatureDescriptors().isEmpty()) {
+            isLeaf = true;
+          } else {
+            isLeaf = false;
+          }
+        } else {
+          LOGGER.severe("No classDescriptor for EObjectTreeItem: " + this.toString());
+          isLeaf = true;
+        }
+        break;
+        
+      case OBJECT_IN_LIST:
+        EObjectTreeItemClassDescriptor classInListDescriptor = ((EObjectTreeItemForObjectInList) this).getEObjectTreeItemClassDescriptor();
+        if (classInListDescriptor != null) {
+          if (classInListDescriptor.getStructuralFeatureDescriptors().isEmpty()) {
             isLeaf = true;
           } else {
             isLeaf = false;
@@ -123,9 +160,6 @@ public class EObjectTreeItem extends TreeItem<EObjectTreeItemContent> {
             }
           }
         }
-        if ("formerEmployees".equals(content.getEStructuralFeature().getName())) {
-          LOGGER.severe("<= " + isLeaf);          
-        }
         break;
       }
     }
@@ -139,7 +173,7 @@ public class EObjectTreeItem extends TreeItem<EObjectTreeItemContent> {
    */
   @Override
   public ObservableList<TreeItem<EObjectTreeItemContent>> getChildren() {
-    LOGGER.info("=>");
+    LOGGER.info("=> " + toString());
     
     if (isFirstTimeChildren) {
       isFirstTimeChildren = false;
@@ -264,11 +298,9 @@ public class EObjectTreeItem extends TreeItem<EObjectTreeItemContent> {
     
     ObservableList<TreeItem<EObjectTreeItemContent>> children = null;
 
-    EObjectTreeItemContent eObjectTreeItemContent = getValue();
-    EObjectTreeItemType eObjectTreeItemType = eObjectTreeItemContent.getEObjectTreeItemType();
-    
     switch (eObjectTreeItemType) {
     case OBJECT:
+    case OBJECT_IN_LIST:
       children = buildChildrenOfEObject();
       break;
       
@@ -277,7 +309,7 @@ public class EObjectTreeItem extends TreeItem<EObjectTreeItemContent> {
       break;
       
     case ATTRIBUTE_LIST:
-      children = buildChildrenOfAttributeList();
+      children = ((EObjectTreeItemForAttributeList) this).buildChildrenOfAttributeList();
       break;
       
     case ATTRIBUTE_LIST_VALUE:
@@ -323,7 +355,12 @@ public class EObjectTreeItem extends TreeItem<EObjectTreeItemContent> {
     
     ObservableList<TreeItem<EObjectTreeItemContent>> children = FXCollections.observableArrayList();
     
-    EObjectTreeItemClassDescriptor classDescriptor = getClassDescriptor();
+    EObjectTreeItemClassDescriptor classDescriptor;
+    if (this instanceof EObjectTreeItemForObject eObjectTreeItemForObject) {
+      classDescriptor = eObjectTreeItemForObject.getClassDescriptor();
+    } else {
+      classDescriptor = ((EObjectTreeItemForObjectInList) this).getEObjectTreeItemClassDescriptor();
+    }
 
     // Create the children as specified by the descriptor.
     for (EObjectTreeItemDescriptor descriptor: classDescriptor.getStructuralFeatureDescriptors()) {
@@ -333,14 +370,14 @@ public class EObjectTreeItem extends TreeItem<EObjectTreeItemContent> {
       EObjectTreeItem treeItem;
       switch (descriptor.getDescriptorType()) {
       case ATTRIBUTE:
-        treeItem = buildAttributeChild(eObjectTreeItemContent, (EObjectTreeItemAttributeDescriptor) descriptor);
+        treeItem = EObjectTreeItemForAttributeSimple.createEObjectTreeItemForAttributeSimple(eObjectTreeItemContent, (EObjectTreeItemAttributeDescriptor) descriptor, eObjectTreeView, isInEditMode());
         if (treeItem != null) {
           children.add(treeItem);
         }
         break;
         
       case ATTRIBUTE_LIST:
-        treeItem = buildAttributeListChild(eObjectTreeItemContent, (EObjectTreeItemAttributeListDescriptor) descriptor);
+        treeItem = EObjectTreeItemForAttributeList.createEObjectTreeItemForAttributeList(eObjectTreeItemContent, (EObjectTreeItemAttributeListDescriptor) descriptor, eObjectTreeView, isInEditMode());
         if (treeItem != null) {
           children.add(treeItem);
         }
@@ -350,14 +387,14 @@ public class EObjectTreeItem extends TreeItem<EObjectTreeItemContent> {
         throw new RuntimeException("Descriptor of type ATTRIBUTE_LIST_VALUE cannot occur as child of EObject. Descriptor is: " + descriptor.toString());
             
       case CLASS_REFERENCE:
-        treeItem = buildClassReferenceChild(eObjectTreeItemContent, (EObjectTreeItemClassReferenceDescriptor) descriptor);
+        treeItem = EObjectTreeItemForObject.createEObjectTreeItemForObject(eObjectTreeItemContent, (EObjectTreeItemClassReferenceDescriptor) descriptor, eObjectTreeView, isInEditMode());
         if (treeItem != null) {
           children.add(treeItem);
         }
         break;
         
       case CLASS_LIST:
-        treeItem = buildClassListReferenceChild(eObjectTreeItemContent, (EObjectTreeItemClassListReferenceDescriptor) descriptor);
+        treeItem = EObjectTreeItemForObjectList.createEObjectTreeItemForObjectList(eObjectTreeItemContent, (EObjectTreeItemClassListReferenceDescriptor) descriptor, eObjectTreeView, isInEditMode());
         if (treeItem != null) {
           children.add(treeItem);
         }
@@ -376,212 +413,6 @@ public class EObjectTreeItem extends TreeItem<EObjectTreeItemContent> {
     }
   }
   
-  /**
-   *  Determine which EObjectTreeItemClassDescriptor to use.
-   * If the presentation descriptor is for a reference, then a descriptor is searched for the class of this reference, or for the actual subtype of this class.
-   * if the presentation descriptor is for a class, then this is used.
-   */
-  private EObjectTreeItemClassDescriptor getClassDescriptor() {
-    EObjectTreeItemContent eObjectTreeItemContent = getValue();
-    EObjectTreeItemDescriptor presentationDescriptor = eObjectTreeItemContent.getPresentationDescriptor();
-//    EObjectTreeView eObjectTreeView = eObjectTreeItemContent.geteObjectTreeView();
-    EObjectTreeItemClassDescriptor classDescriptor = null;
-    if (presentationDescriptor instanceof EObjectTreeItemClassReferenceDescriptor eObjectTreeItemClassReferenceDescriptor) {
-      EObjectTreeDescriptor eObjectTreeDescriptor = eObjectTreeView.getEObjectTreeDescriptor();
-      EReference eReference = eObjectTreeItemClassReferenceDescriptor.getEReference();
-      EObjectTreeItemClassDescriptor eClassPresentationDescriptor = getBestClassDescriptor((EClass) eReference.getEType(), eObjectTreeDescriptor);
-      if (eClassPresentationDescriptor == null) {
-        throw new RuntimeException("No descriptor specified for class " + eReference.getEType().getName());
-      }
-      // Get the best possible descriptor: if there is a child object (which may be a subclass of the type of the reference) use this class,
-      // else use the type of the reference.
-      EObject eObject = (EObject) eObjectTreeItemContent.getObject();
-      if (eObject == null) {
-        return null;
-      }
-      EObjectTreeItemClassDescriptor objectSpecificDescriptor = getBestClassDescriptor(eObject.eClass(), eObjectTreeDescriptor);
-      if (objectSpecificDescriptor != null) {
-        eClassPresentationDescriptor = objectSpecificDescriptor;
-      }
-      classDescriptor = eClassPresentationDescriptor;
-    } else if (presentationDescriptor instanceof EObjectTreeItemClassDescriptor) {
-      classDescriptor = (EObjectTreeItemClassDescriptor) presentationDescriptor;
-    } else {
-      if (presentationDescriptor == null) {
-        throw new RuntimeException("No presentation descriptor for item: " + eObjectTreeItemContent.toString());
-      } else {
-        throw new RuntimeException("Illegal descriptor type: " + presentationDescriptor.toString());
-      }
-    }
-    
-    LOGGER.severe("<= " + classDescriptor);
-    return classDescriptor;
-  }
-  
-  /**
-   * Build a child for an EAttribute.
-   * <p>
-   * This applies only to 'single' attributes.<br/>
-   * An attribute which isn't set, is only added in 'edit mode'.
-   * 
-   * @param eObjectTreeItemContent the content of the item to which this will be a child.
-   * @param eObjectTreeItemAttributeDescriptor the descriptor for the child.
-   * @return the created child item, or null if it wasn't created.
-   */
-  private EObjectTreeItem buildAttributeChild(EObjectTreeItemContent eObjectTreeItemContent, EObjectTreeItemAttributeDescriptor eObjectTreeItemAttributeDescriptor) {
-    LOGGER.info("=> eObjectTreeItemContent" + eObjectTreeItemContent.toString());
-        
-    EObject eObject = (EObject) eObjectTreeItemContent.getObject();
-    if (eObject == null) {
-      LOGGER.severe("object is null in TreeItem");
-      LOGGER.severe("StructuralFeature=" +eObjectTreeItemContent.getEStructuralFeature().getName());
-    }
-    EAttribute eAttribute = eObjectTreeItemAttributeDescriptor.getEAttribute();
-    boolean editMode = eObjectTreeItemContent.isInEditMode();
-    EObjectTreeView eObjectTreeView = eObjectTreeItemContent.geteObjectTreeView();
-    EObjectTreeItemType childType;
-
-    EList<EAttribute> objectAttributes = eObject.eClass().getEAllAttributes();
-    if (objectAttributes.contains(eAttribute)) {
-      if (editMode  ||  eObject.eIsSet(eAttribute)) {
-        Object childObject = eObject.eGet(eAttribute);
-        if (eAttribute.isMany()) {
-           throw new RuntimeException("Descriptor doesn't match with reference, eAttribute=" + eAttribute.toString());
-        } else {
-          childType = EObjectTreeItemType.ATTRIBUTE_SIMPLE;
-        }
-        return new EObjectTreeItemForAttribute(childObject, childType, eAttribute, eObjectTreeItemAttributeDescriptor, eObjectTreeView);
-      } else {
-        return null;
-      }
-    } else {
-      throw new RuntimeException("EObjectTreeItemDescriptor for non-existing attribute: " + eAttribute.getName());
-    }
-  }
-  
-  /**
-   * Build a child for a list of EAttribute.
-   * <p>
-   * This applies to both 'many' and 'single' attributes.<br/>
-   * An attribute which isn't set, is only added in 'edit mode'.
-   * 
-   * @param eObjectTreeItemContent the content of the item to which this will be a child.
-   * @param eObjectTreeItemAttributeDescriptor the descriptor for the child.
-   * @return the created child item, or null if it wasn't created.
-   */
-  private EObjectTreeItem buildAttributeListChild(EObjectTreeItemContent eObjectTreeItemContent, EObjectTreeItemAttributeListDescriptor eObjectTreeItemAttributeListDescriptor) {
-    LOGGER.info("=>");
-    
-    EObject eObject = (EObject) eObjectTreeItemContent.getObject();
-    EAttribute eAttribute = eObjectTreeItemAttributeListDescriptor.getEAttribute();
-    boolean editMode = eObjectTreeItemContent.isInEditMode();
-    EObjectTreeView eObjectTreeView = eObjectTreeItemContent.geteObjectTreeView();
-    EObjectTreeItemType childType;
-
-    EList<EAttribute> objectAttributes = eObject.eClass().getEAllAttributes();
-    if (objectAttributes.contains(eAttribute)) {
-      if (editMode  ||  eObject.eIsSet(eAttribute)) {
-        Object childObject = eObject.eGet(eAttribute);
-        if (eAttribute.isMany()) {
-          // This tree item will only show the attribute name, child nodes will be created for each value.
-          // Therefore the value (a list) is stored in this node.
-          childType = EObjectTreeItemType.ATTRIBUTE_LIST;
-        } else {
-          throw new RuntimeException("Descriptor doesn't match with reference. eAttribute is " + eAttribute.toString());
-        }
-        return new EObjectTreeItem(childObject, childType, eAttribute, eObjectTreeItemAttributeListDescriptor, eObjectTreeView);
-      } else {
-        return null;
-      }
-    } else {
-      throw new RuntimeException("EObjectTreeItemDescriptor for non-existing attribute: " + eAttribute.getName());
-    }
-  }
-  
-  /**
-   * Build a child for a Class Reference.
-   * <p>
-   * A reference which isn't set, is only added in 'edit mode'.
-   * 
-   * @param eObjectTreeItemContent the content of the item to which this will be a child.
-   * @param eObjectTreeItemClassReferenceDescriptor the descriptor for the child.
-   * @return the created child item, or null if it wasn't created.
-   */
-  private EObjectTreeItem buildClassReferenceChild(EObjectTreeItemContent eObjectTreeItemContent, EObjectTreeItemClassReferenceDescriptor eObjectTreeItemClassReferenceDescriptor) {
-    LOGGER.info("=>");
-    
-    EObject eObject = (EObject) eObjectTreeItemContent.getObject();
-    EReference eReference = eObjectTreeItemClassReferenceDescriptor.getEReference();
-    boolean editMode = eObjectTreeItemContent.isInEditMode();
-    LOGGER.info("descriptorEReference=" + eReference.getName());
-    EObjectTreeView eObjectTreeView = eObjectTreeItemContent.geteObjectTreeView();
-    
-    EList<EReference> objectReferences = eObject.eClass().getEAllReferences();
-    if (objectReferences.contains(eReference)) {
-      if (editMode  ||  eObject.eIsSet(eReference)) {  // items are only added, if they are set, or if 'edit mode' is active.
-        if (!eReference.isMany()) {
-          EObject childObject = (EObject) eObject.eGet(eReference);
-          EObjectTreeDescriptor eObjectTreeDescriptor = eObjectTreeView.getEObjectTreeDescriptor();
-          EObjectTreeItemDescriptor eClassPresentationDescriptor = getBestClassDescriptor((EClass) eReference.getEType(), eObjectTreeDescriptor);
-          if (eClassPresentationDescriptor == null) {
-            throw new RuntimeException("No descriptor specified for class " + eReference.getEType().getName());
-          }
-          // Get the best possible descriptor: if there is a child object (which may be a subclass of the type of the reference) use this class,
-          // else use the type of the reference.
-          if (childObject != null) {
-            EObjectTreeItemDescriptor objectSpecificDescriptor = getBestClassDescriptor(childObject.eClass(), eObjectTreeDescriptor);
-            if (objectSpecificDescriptor != null) {
-              eClassPresentationDescriptor = objectSpecificDescriptor;
-            }
-          }
-//          return new EObjectTreeItem(childObject, EObjectTreeItemType.OBJECT, eReference, eClassPresentationDescriptor, eObjectTreeView);
-          return new EObjectTreeItem(childObject, EObjectTreeItemType.OBJECT, eReference, eObjectTreeItemClassReferenceDescriptor, eObjectTreeView);
-        } else {
-          throw new RuntimeException("Descriptor doesn't match with reference");
-        }
-      } else {
-        return null;
-      }
-    } else {
-      throw new RuntimeException("Non existing Class Reference in descriptor. Reference name is \'" + eReference.getName() +
-          "\', descriptor is: " + eObjectTreeItemClassReferenceDescriptor.toString());
-    }
-  }
-  
-  /**
-   * Build a child for a Class List Reference.
-   * <p>
-   * A reference which isn't set, is only added in 'edit mode'.
-   * 
-   * @param eObjectTreeItemContent the content of the item to which this will be a child.
-   * @param EObjectTreeItemClassListReferenceDescriptor the descriptor for the child.
-   * @return the created child item, or null if it wasn't created.
-   */
-  private EObjectTreeItem buildClassListReferenceChild(EObjectTreeItemContent eObjectTreeItemContent, EObjectTreeItemClassListReferenceDescriptor eObjectTreeItemClassListReferenceDescriptor) {
-    LOGGER.info("=>");
-    
-    EObject eObject = (EObject) eObjectTreeItemContent.getObject();
-    EReference eReference = eObjectTreeItemClassListReferenceDescriptor.getEReference();
-    boolean editMode = eObjectTreeItemContent.isInEditMode();
-    EObjectTreeView eObjectTreeView = eObjectTreeItemContent.geteObjectTreeView();
-    
-    EList<EReference> objectReferences = eObject.eClass().getEAllReferences();
-    if (objectReferences.contains(eReference)) {
-      if (editMode  ||  eObject.eIsSet(eReference)) {
-        Object childObject = eObject.eGet(eReference);
-        if (eReference.isMany()) {
-          return new EObjectTreeItem(childObject, EObjectTreeItemType.OBJECT_LIST, eReference, eObjectTreeItemClassListReferenceDescriptor, eObjectTreeView);
-        } else {
-          throw new RuntimeException("Descriptor doesn't match with reference (descriptor is for many, but reference isn't). Descriptor=" + eObjectTreeItemClassListReferenceDescriptor.toString());
-        }
-      } else {
-        return null;
-      }
-    } else {
-      throw new RuntimeException("EObjectTreeItemClassListReferenceDescriptor for non-existing reference: " + eReference.getName());
-    }
-  }
-  
   private ObservableList<TreeItem<EObjectTreeItemContent>> buildChildrenOfEObjectList() {
     LOGGER.info("=>eObjectTreeItem=" + toString());
     
@@ -589,47 +420,19 @@ public class EObjectTreeItem extends TreeItem<EObjectTreeItemContent> {
     
     EObjectTreeItemContent eObjectTreeItemContent = getValue();
     Object object = eObjectTreeItemContent.getObject();
-    EObjectTreeView eObjectTreeView = eObjectTreeItemContent.geteObjectTreeView();
     
     // The object is a list of EObjects, each of which will be a child OBJECT.
     @SuppressWarnings("unchecked")
     List<? extends EObject> eObjects = (List<? extends EObject>) object;
     for (EObject listEObject: eObjects) {
       EObjectTreeDescriptor eObjectTreeDescriptor = eObjectTreeView.getEObjectTreeDescriptor();
-      EObjectTreeItemDescriptor childPresentationDescriptorNode = getBestClassDescriptor(listEObject.eClass(), eObjectTreeDescriptor);
+      EObjectTreeItemClassDescriptor childPresentationDescriptorNode = getBestClassDescriptor(listEObject.eClass(), eObjectTreeDescriptor);
       if (childPresentationDescriptorNode == null) {
         throw new RuntimeException("No presentation descriptor found for class: " + listEObject.eClass().getName());
       }
-      EObjectTreeItem child = new EObjectTreeItem(listEObject, EObjectTreeItemType.OBJECT, null, childPresentationDescriptorNode, eObjectTreeView);
+      EObjectTreeItem child = new EObjectTreeItemForObjectInList(listEObject, childPresentationDescriptorNode, eObjectTreeView);
         child.setExpanded(childPresentationDescriptorNode.isExpandOnCreation());
       children.add(child);
-    }
-    
-    LOGGER.info("<=");
-    if (children.isEmpty()) {
-      return null;
-    } else {
-      return children;
-    }
-  }
-  
-  private ObservableList<TreeItem<EObjectTreeItemContent>> buildChildrenOfAttributeList() {
-    LOGGER.info("=>eObjectTreeItem=" + toString());
-    
-    ObservableList<TreeItem<EObjectTreeItemContent>> children = FXCollections.observableArrayList();
-    
-    EObjectTreeItemContent eObjectTreeItemContent = getValue();
-    Object object = eObjectTreeItemContent.getObject();
-    EObjectTreeView eObjectTreeView = eObjectTreeItemContent.geteObjectTreeView();
-    EObjectTreeItemAttributeListDescriptor eObjectTreeItemAttributeListDescriptor = (EObjectTreeItemAttributeListDescriptor) eObjectTreeItemContent.getPresentationDescriptor();
-    EObjectTreeItemAttributeListValueDescriptor eObjectTreeItemAttributeListValueDescriptor = eObjectTreeItemAttributeListDescriptor.geteObjectTreeItemAttributeListValueDescriptor();
-    
-    // The object is a List of Objects (values).
-    // Add a child for each value of the list of values of this attribute.
-    @SuppressWarnings("unchecked")
-    List<? extends Object> values = (List<? extends Object>) object;
-    for (Object listValue: values) {
-      children.add(new EObjectTreeItem(listValue, EObjectTreeItemType.ATTRIBUTE_LIST_VALUE, null, eObjectTreeItemAttributeListValueDescriptor, eObjectTreeView));
     }
     
     LOGGER.info("<=");
@@ -690,7 +493,7 @@ public class EObjectTreeItem extends TreeItem<EObjectTreeItemContent> {
 //    return descriptorNode;
 //  }
   
-  private EObjectTreeItemClassDescriptor getBestClassDescriptor(EClass eClass, EObjectTreeDescriptor eObjectTreeDescriptor) {
+  static EObjectTreeItemClassDescriptor getBestClassDescriptor(EClass eClass, EObjectTreeDescriptor eObjectTreeDescriptor) {
     EObjectTreeItemClassDescriptor eObjectTreeItemClassDescriptor = null;
     
     do {
@@ -707,7 +510,7 @@ public class EObjectTreeItem extends TreeItem<EObjectTreeItemContent> {
    * @param eClass the EClass for which the super type is requested.
    * @return 
    */
-  private EClass getSuperType(EClass eClass) {
+  static EClass getSuperType(EClass eClass) {
     LOGGER.info("=> eClass=" + eClass.getInstanceTypeName());
     LOGGER.fine("=> eClass=" + eClass.getInstanceClass().getName());
     EClass superType = null;
@@ -747,7 +550,13 @@ public class EObjectTreeItem extends TreeItem<EObjectTreeItemContent> {
    */
   @Override
   public String toString() {
-    return getValue().toString();
+    StringBuilder buf = new StringBuilder();
+    
+    buf.append(NEWLINE);
+    buf.append("value: ").append(getValue().toString()).append(NEWLINE);
+    buf.append("type: ").append(eObjectTreeItemType.name()).append(NEWLINE);
+    
+    return buf.toString();
   }
   
   /*
@@ -780,8 +589,7 @@ public class EObjectTreeItem extends TreeItem<EObjectTreeItemContent> {
     EObjectTreeItem result = null;
     
     for (TreeItem<EObjectTreeItemContent> child: eObjectTreeItem.getChildren()) {
-      EObjectTreeItemContent content = child.getValue();
-      EStructuralFeature contentEStructuralFeature = content.getEStructuralFeature();
+      EStructuralFeature contentEStructuralFeature = getEStructuralFeature(child);
       if ((contentEStructuralFeature != null)  &&  contentEStructuralFeature.equals(eStructuralFeature)) {
         result = (EObjectTreeItem) child;
         break;
@@ -789,6 +597,26 @@ public class EObjectTreeItem extends TreeItem<EObjectTreeItemContent> {
     }
 
     return result;
+  }
+  
+  public static EStructuralFeature getEStructuralFeature(TreeItem<EObjectTreeItemContent> treeItem) {
+    EStructuralFeature eStructuralFeature = null;
+    
+    if (treeItem instanceof EObjectTreeItemForAttributeList eObjectTreeItemForAttributeList) {
+      eStructuralFeature = eObjectTreeItemForAttributeList.getEAttribute();
+    } else if (treeItem instanceof EObjectTreeItemForAttributeListValue) {
+      // no action, this type has no structural feature
+    } else if (treeItem instanceof EObjectTreeItemForAttributeSimple eObjectTreeItemForAttributeSimple) {
+      eStructuralFeature = eObjectTreeItemForAttributeSimple.getEAttribute();
+    } else if (treeItem instanceof EObjectTreeItemForObject eObjectTreeItemForObject) {
+      eStructuralFeature = eObjectTreeItemForObject.getEReference();
+    } else if (treeItem instanceof EObjectTreeItemForObjectInList) {
+      // no action, this type has no structural feature
+    } else if (treeItem instanceof EObjectTreeItemForObjectList eObjectTreeItemForObjectList) {
+      eStructuralFeature = eObjectTreeItemForObjectList.getEReference();
+    }
+    
+    return eStructuralFeature;
   }
 
   /**
@@ -817,11 +645,9 @@ public class EObjectTreeItem extends TreeItem<EObjectTreeItemContent> {
   private void switchToEditMode() {
     LOGGER.info("=>");
 
-    EObjectTreeItemContent eObjectTreeItemContent = getValue();
-    EObjectTreeItemType eObjectTreeItemType = eObjectTreeItemContent.getEObjectTreeItemType();
-    
     switch (eObjectTreeItemType) {
     case OBJECT:
+    case OBJECT_IN_LIST:
       addEmptyChildrenOfEObject();
       break;
       
@@ -868,7 +694,7 @@ public class EObjectTreeItem extends TreeItem<EObjectTreeItemContent> {
     
     ObservableList<TreeItem<EObjectTreeItemContent>> children = getChildren();
     
-    EObjectTreeItemClassDescriptor classDescriptor = getClassDescriptor();
+    EObjectTreeItemClassDescriptor classDescriptor = ((EObjectTreeItemForObject) this).getClassDescriptor();
 
     int childIndex = 0;
     // Create the children as specified by the descriptor.
@@ -881,7 +707,7 @@ public class EObjectTreeItem extends TreeItem<EObjectTreeItemContent> {
       case ATTRIBUTE:
         EObjectTreeItemAttributeDescriptor eObjectTreeItemAttributeDescriptor = (EObjectTreeItemAttributeDescriptor) descriptor;
         if (!doChildrenContainItemForFeature(eObjectTreeItemAttributeDescriptor.getEAttribute())) {
-          treeItem = buildAttributeChild(eObjectTreeItemContent, eObjectTreeItemAttributeDescriptor);
+          treeItem = EObjectTreeItemForAttributeSimple.createEObjectTreeItemForAttributeSimple(eObjectTreeItemContent, eObjectTreeItemAttributeDescriptor, eObjectTreeView, isInEditMode());
         } else {
           childIndex++;
         }
@@ -890,7 +716,7 @@ public class EObjectTreeItem extends TreeItem<EObjectTreeItemContent> {
       case ATTRIBUTE_LIST:
         EObjectTreeItemAttributeListDescriptor eObjectTreeItemAttributeListDescriptor = (EObjectTreeItemAttributeListDescriptor) descriptor;
         if (!doChildrenContainItemForFeature(eObjectTreeItemAttributeListDescriptor.getEAttribute())) {        
-          treeItem = buildAttributeListChild(eObjectTreeItemContent, eObjectTreeItemAttributeListDescriptor);
+          treeItem = EObjectTreeItemForAttributeList.createEObjectTreeItemForAttributeList(eObjectTreeItemContent, eObjectTreeItemAttributeListDescriptor, eObjectTreeView, isInEditMode());
         } else {
           childIndex++;
         }
@@ -902,7 +728,7 @@ public class EObjectTreeItem extends TreeItem<EObjectTreeItemContent> {
       case CLASS_REFERENCE:
         EObjectTreeItemClassReferenceDescriptor eObjectTreeItemClassReferenceDescriptor = (EObjectTreeItemClassReferenceDescriptor) descriptor;
         if (!doChildrenContainItemForFeature(eObjectTreeItemClassReferenceDescriptor.getEReference())) {        
-          treeItem = buildClassReferenceChild(eObjectTreeItemContent, eObjectTreeItemClassReferenceDescriptor);
+          treeItem = EObjectTreeItemForObject.createEObjectTreeItemForObject(eObjectTreeItemContent, eObjectTreeItemClassReferenceDescriptor, eObjectTreeView, isInEditMode());
         } else {
           childIndex++;
         }
@@ -911,7 +737,7 @@ public class EObjectTreeItem extends TreeItem<EObjectTreeItemContent> {
       case CLASS_LIST:
         EObjectTreeItemClassListReferenceDescriptor eObjectTreeItemClassListReferenceDescriptor = (EObjectTreeItemClassListReferenceDescriptor) descriptor;
         if (!doChildrenContainItemForFeature(eObjectTreeItemClassListReferenceDescriptor.getEReference())) {        
-          treeItem = buildClassListReferenceChild(eObjectTreeItemContent, eObjectTreeItemClassListReferenceDescriptor);
+          treeItem = EObjectTreeItemForObjectList.createEObjectTreeItemForObjectList(eObjectTreeItemContent, eObjectTreeItemClassListReferenceDescriptor, eObjectTreeView, isInEditMode());
         } else {
           childIndex++;
         }
@@ -938,7 +764,7 @@ public class EObjectTreeItem extends TreeItem<EObjectTreeItemContent> {
    */
   private boolean doChildrenContainItemForFeature(EStructuralFeature feature) {
     for (TreeItem<EObjectTreeItemContent> item: getChildren()) {
-      if (feature.equals(item.getValue().getEStructuralFeature())) {
+      if (feature.equals(getEStructuralFeature(item))) {
         return true;
       }
     }
@@ -954,11 +780,9 @@ public class EObjectTreeItem extends TreeItem<EObjectTreeItemContent> {
   private void switchToViewMode() {
     LOGGER.severe("=>");
 
-    EObjectTreeItemContent eObjectTreeItemContent = getValue();
-    EObjectTreeItemType eObjectTreeItemType = eObjectTreeItemContent.getEObjectTreeItemType();
-    
     switch (eObjectTreeItemType) {
     case OBJECT:
+    case OBJECT_IN_LIST:
       removeChildrenOfEObject();
       break;
       
@@ -987,6 +811,15 @@ public class EObjectTreeItem extends TreeItem<EObjectTreeItemContent> {
     LOGGER.severe("<=");
     
   }
+  
+  /**
+   * Check whether this item is in edit mode or not.
+   * 
+   * @return true if the tree is in edit mode, false otherwise.
+   */
+  public boolean isInEditMode() {
+    return eObjectTreeView.isEditable();
+  }
 
   private void removeChildrenOfEObject() {
     EObjectTreeItemContent itemContent = getValue();
@@ -996,9 +829,34 @@ public class EObjectTreeItem extends TreeItem<EObjectTreeItemContent> {
     while (iterator.hasNext()) {
       TreeItem<EObjectTreeItemContent> item = iterator.next();
       EObjectTreeItem eObjectTreeItem = (EObjectTreeItem) item;
-      EObjectTreeItemContent childItemContent = eObjectTreeItem.getValue();
-      EStructuralFeature feature = childItemContent.getEStructuralFeature();
-      if (!eObject.eIsSet(feature)) {
+      EStructuralFeature eStructuralFeature = null;
+      // TODO this is same functionality as getEStructuralFeature() (apart from the exceptions thrown here), chose which one to use.
+      switch (eObjectTreeItem.getEObjectTreeItemType()) {
+      case OBJECT:
+        eStructuralFeature = ((EObjectTreeItemForObject) eObjectTreeItem).getEReference();
+        break;
+        
+      case OBJECT_IN_LIST:
+        // Shall not exist here.
+        throw new RuntimeException("Illegal OBJECT_IN_LIST child of tree item: " + toString());
+        
+      case OBJECT_LIST:
+        eStructuralFeature = ((EObjectTreeItemForObjectList) eObjectTreeItem).getEReference();
+        break;
+        
+      case ATTRIBUTE_LIST:
+        eStructuralFeature = ((EObjectTreeItemForAttributeList) eObjectTreeItem).getEAttribute();
+        break;
+        
+      case ATTRIBUTE_LIST_VALUE:
+        // Shall not exist here.
+        throw new RuntimeException("Illegal ATTRIBUTE_LIST_VALUE child of tree item: " + toString());
+        
+      case ATTRIBUTE_SIMPLE:
+        eStructuralFeature = ((EObjectTreeItemForAttributeSimple) eObjectTreeItem).getEAttribute();
+        break;
+      }
+      if (!eObject.eIsSet(eStructuralFeature)) {
         iterator.remove();
       }
     }
@@ -1026,18 +884,17 @@ public class EObjectTreeItem extends TreeItem<EObjectTreeItemContent> {
         
     EObjectTreeItemContent eObjectTreeItemContent = getValue();
     Object object = eObjectTreeItemContent.getObject();
-    EObjectTreeView eObjectTreeView = eObjectTreeItemContent.geteObjectTreeView();
     
     // The object is a list of EObjects, each of which will be a child OBJECT.
     @SuppressWarnings("unchecked")
     List<? extends EObject> eObjects = (List<? extends EObject>) object;
     EObject listEObject = eObjects.get(position);
     EObjectTreeDescriptor eObjectTreeDescriptor = eObjectTreeView.getEObjectTreeDescriptor();
-    EObjectTreeItemDescriptor childPresentationDescriptorNode = getBestClassDescriptor(listEObject.eClass(), eObjectTreeDescriptor);
+    EObjectTreeItemClassDescriptor childPresentationDescriptorNode = getBestClassDescriptor(listEObject.eClass(), eObjectTreeDescriptor);
     if (childPresentationDescriptorNode == null) {
       throw new RuntimeException("No presentation descriptor found for class: " + listEObject.eClass().getName());
     }
-    EObjectTreeItem child = new EObjectTreeItem(listEObject, EObjectTreeItemType.OBJECT, null, childPresentationDescriptorNode, eObjectTreeView);
+    EObjectTreeItem child = new EObjectTreeItemForObjectInList(listEObject, childPresentationDescriptorNode, eObjectTreeView);
     if (children.size() < position + 1) {
       children.add(child);
     } else {
@@ -1093,13 +950,87 @@ public class EObjectTreeItem extends TreeItem<EObjectTreeItemContent> {
     }
     
     for (TreeItem<EObjectTreeItemContent> child: parentTreeItem.getChildren()) {
-      if (eStructuralFeature.equals(child.getValue().getEStructuralFeature())) {
+      EObjectTreeItem childEObjectTreeItem = (EObjectTreeItem) child;
+      if (eStructuralFeature.equals(getEStructuralFeature(childEObjectTreeItem))) {
         LOGGER.severe("child found, going to rebuild children");
         setExpanded(true);  // hack. This way the TreeView seems to re-evaluate whether the item is a leaf.
-        ((EObjectTreeItem) child).rebuildChildren();
+        childEObjectTreeItem.rebuildChildren();
         break;
       }
     }
     
   }
+
+  /**
+   * Handle the starting of a drag event.
+   * <p>
+   * Only dragging of an EObject is supported.<br/>
+   * If the item is an EObject, an {@link EObjectPath} is created and serialized as bytes.
+   * {@code ClipboardContent} is created with this data, with type {@link EOBJECT_PATH}.
+   * A {@code Dragboard} is created for a MOVE and with the {@code ClipboardContent} as content.
+   * 
+   * @param event the {@code MouseEvent} which detected the drag start.
+   */
+  public void handleDragDetected(MouseEvent event, Node node) {
+    EObjectTreeItemContent eObjectTreeItemContent = getValue();
+    Object object = eObjectTreeItemContent.getObject();
+    if (object instanceof EObject eObject) {
+      EObjectPath eObjectPath = new EObjectPath(eObject);
+      ByteBuffer eObjectPathAsBytes = eObjectPath.getSerializedData();
+      
+      ClipboardContent clipboardContent = new ClipboardContent();
+      clipboardContent.put(EOBJECT_PATH, eObjectPathAsBytes);
+      
+      node.startDragAndDrop(TransferMode.MOVE).setContent(clipboardContent);
+    }
+
+    event.consume();
+  }
+
+  /**
+   * Check whether the information of the dragEvent can be dropped on this tree item and if so return the TransferMode.
+   * <p>
+   * If the dragboard content is an EOBJECT_PATH, the isDropPossible() of the helper is called. If this has a positive reply, the TransferMode is MOVE.</br>
+   * If the dragboard content isn't an EOBJECT_PATH, or a drop isn't possible, the isDropPossibleFunction (when set on the TreeView) is called.
+   * 
+   * @param dragEvent the Drag and Drop event.
+   * @return true if the {@code dragEvent} can be handled.
+   */
+  public TransferMode isDropPossible(DragEvent dragEvent) {
+
+//    Dragboard dragboard = dragEvent.getDragboard();
+//
+//    if (dragboard.hasContent(EOBJECT_PATH)) {
+//      EObject sourceEObject = getSourceObject(dragboard);
+//      if (sourceEObject != null  &&
+//          treeCellHelper.isDropPossible(sourceEObject, (EObjectTreeItem)  getTreeItem())) {
+//        return TransferMode.MOVE;        
+//      }
+//    }
+//        
+//    BiPredicate<EObjectTreeItem, Dragboard> isDropPossibleFunction = ((EObjectTreeView) getTreeView()).getIsDropPossibleFunction();
+//    if (isDropPossibleFunction != null) {
+//      if (isDropPossibleFunction.test((EObjectTreeItem) getTreeItem(), dragboard)) {
+//        return TransferMode.COPY;
+//      }
+//    }
+    
+    return null;
+  }
+
+  public void handleDragDropped(DragEvent dragEvent) {
+  }
+  
+  protected EReference getApplicableEReference(EObjectTreeItem eObjectTreeItem) {
+    if (eObjectTreeItem instanceof EObjectTreeItemForObject eObjectTreeItemForObject) {
+      return eObjectTreeItemForObject.getEReference();
+    } else if (eObjectTreeItem instanceof EObjectTreeItemForObjectInList eObjectTreeItemForObjectInList) {
+      // in this case the reference is in the parent, which is a EObjectTreeItemForObjectList
+      EObjectTreeItemForObjectList eObjectTreeItemForObjectList = (EObjectTreeItemForObjectList) eObjectTreeItemForObjectInList.getParent();
+      return eObjectTreeItemForObjectList.getEReference();
+    } else {
+      return null;
+    }
+  }
+
 }

@@ -5,12 +5,19 @@ package goedegep.jfx.eobjecttreeview;
  */
 public enum EObjectTreeItemType {
   /**
-   * The item is an EObject.<br/>
+   * The item is an EObject referred to by a single reference.<br/>
    * Show the class name, or the name specified via the descriptor. The children are the attributes and references of the EObject.<br/>
    * Currently EObjects without any attributes or references are not supported, so this type is not a leaf.<br/>
    * As it is not possible to add, remove or change the attributes or references, this type is not editable.
    */
   OBJECT(false, false),
+  /**
+   * The item is an EObject in a list of EObjects (referred to be a many reference).<br/>
+   * Show the class name, or the name specified via the descriptor. The children are the attributes and references of the EObject.<br/>
+   * Currently EObjects without any attributes or references are not supported, so this type is not a leaf.<br/>
+   * As it is not possible to add, remove or change the attributes or references, this type is not editable.
+   */
+  OBJECT_IN_LIST(false, false),
   /**
    *  The item is a list of EObjects (an 'isMany' Reference)<br/>
    *  Show the reference name, or the name specified via descriptor. The children are the objects in the list.<br/>
