@@ -29,6 +29,8 @@ import goedegep.jfx.eobjecttreeview.EObjectTreeItemClassDescriptor;
 import goedegep.jfx.eobjecttreeview.EObjectTreeItemClassListReferenceDescriptor;
 import goedegep.jfx.eobjecttreeview.EObjectTreeItemContent;
 import goedegep.jfx.eobjecttreeview.EObjectTreeItemDescriptor;
+import goedegep.jfx.eobjecttreeview.EObjectTreeItemForObject;
+import goedegep.jfx.eobjecttreeview.EObjectTreeItemForObjectList;
 import goedegep.jfx.eobjecttreeview.EObjectTreeView;
 import goedegep.poi.app.guifx.POIIcons;
 import goedegep.poi.model.POICategoryId;
@@ -1388,7 +1390,7 @@ class LocationPanel extends VBox implements ObjectSelectionListener<TreeItem<EOb
     EObjectTreeItemContent eObjectTreeItemContent = selectedTreeItem.getValue();
     
     // If the selected tree item is a list of (a supertype of) Locations, it is added as last child of this list.
-    EStructuralFeature eStructuralFeature = eObjectTreeItemContent.getEStructuralFeature();
+    EStructuralFeature eStructuralFeature = EObjectTreeItem.getEStructuralFeature(selectedTreeItem);
     if (eStructuralFeature instanceof EReference) {
       EReference eReference = (EReference) eStructuralFeature;
       EClass listType = eReference.getEReferenceType();
@@ -1409,7 +1411,7 @@ class LocationPanel extends VBox implements ObjectSelectionListener<TreeItem<EOb
     // In this case the parent item of the selected item shall be a list of (a supertype of) Locations.
     EObjectTreeItem parentTreeItem = (EObjectTreeItem) selectedTreeItem.getParent();
     EObjectTreeItemContent eObjectTreeItemContentParentTreeItem = parentTreeItem.getValue();
-    EStructuralFeature eStructuralFeatureParentTreeItem = eObjectTreeItemContentParentTreeItem.getEStructuralFeature();
+    EStructuralFeature eStructuralFeatureParentTreeItem = EObjectTreeItem.getEStructuralFeature(parentTreeItem);
     if (eStructuralFeatureParentTreeItem instanceof EReference) {
       EReference eReference = (EReference) eStructuralFeatureParentTreeItem;
       EClass listType = eReference.getEReferenceType();
@@ -1449,10 +1451,8 @@ class LocationPanel extends VBox implements ObjectSelectionListener<TreeItem<EOb
     
     Location location = getLocation();
     
-    EObjectTreeItemContent eObjectTreeItemContent = selectedTreeItem.getValue();
-    
     // If the selected tree item is a (a supertype of) Location, its value is updated.
-    EStructuralFeature eStructuralFeature = eObjectTreeItemContent.getEStructuralFeature();
+    EStructuralFeature eStructuralFeature = EObjectTreeItem.getEStructuralFeature(selectedTreeItem);
     if (eStructuralFeature instanceof EReference) {
       EReference eReference = (EReference) eStructuralFeature;
       EClass listType = eReference.getEReferenceType();
@@ -1568,13 +1568,12 @@ class LocationPanel extends VBox implements ObjectSelectionListener<TreeItem<EOb
     
     String itemText = "NO INFORMATION";
     EObjectTreeItemContent eObjectTreeItemContent = eObjectTreeItem.getValue();
-    EObjectTreeItemDescriptor eObjectTreeItemDescriptor = eObjectTreeItemContent.getPresentationDescriptor();
-    if (eObjectTreeItemDescriptor instanceof EObjectTreeItemClassListReferenceDescriptor) {
-      EObjectTreeItemClassListReferenceDescriptor eObjectTreeItemClassListReferenceDescriptor = (EObjectTreeItemClassListReferenceDescriptor) eObjectTreeItemDescriptor;
+    if (eObjectTreeItem instanceof EObjectTreeItemForObjectList eObjectTreeItemForObjectList) {
+      EObjectTreeItemClassListReferenceDescriptor eObjectTreeItemClassListReferenceDescriptor = eObjectTreeItemForObjectList.getEObjectTreeItemClassListReferenceDescriptor();
       
       itemText =  eObjectTreeItemClassListReferenceDescriptor.getLabelText();
-    } else if (eObjectTreeItemDescriptor instanceof EObjectTreeItemClassDescriptor) {
-      EObjectTreeItemClassDescriptor eObjectTreeItemClassDescriptor = (EObjectTreeItemClassDescriptor) eObjectTreeItemDescriptor;
+    } else if (eObjectTreeItem instanceof EObjectTreeItemForObject eObjectTreeItemForObject) {
+      EObjectTreeItemClassDescriptor eObjectTreeItemClassDescriptor = null;
       EObject eObject = (EObject) eObjectTreeItemContent.getObject();
       
       if (eObjectTreeItemClassDescriptor.getBuildText() != null) {
@@ -1583,7 +1582,7 @@ class LocationPanel extends VBox implements ObjectSelectionListener<TreeItem<EOb
         itemText = eObject.getClass().getSimpleName();
       }
     } else {
-      itemText = eObjectTreeItemDescriptor.getClass().getName();
+      LOGGER.severe("What to show for: " + eObjectTreeItem);;
     }
     
     if (parentsText != null) {
@@ -1627,8 +1626,7 @@ class LocationPanel extends VBox implements ObjectSelectionListener<TreeItem<EOb
     
     EClass locationEClass = VacationsPackage.eINSTANCE.getLocation();
 
-    EObjectTreeItemContent eObjectTreeItemContent = selectedTreeItem.getValue();
-    EStructuralFeature eStructuralFeature = eObjectTreeItemContent.getEStructuralFeature();
+    EStructuralFeature eStructuralFeature = EObjectTreeItem.getEStructuralFeature(selectedTreeItem);
     if (eStructuralFeature instanceof EReference) {
       EReference eReference = (EReference) eStructuralFeature;
       EClass listTypeEClass = eReference.getEReferenceType();

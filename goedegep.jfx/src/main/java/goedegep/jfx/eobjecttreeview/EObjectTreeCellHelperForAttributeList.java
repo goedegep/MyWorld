@@ -20,9 +20,10 @@ import javafx.scene.image.ImageView;
  * The representation consists of a 'list icon' followed by a label text provided by the item descriptor.<br/>
  * At the list level no editing is possible, so the related methods are not overridden by this class.
  */
-public class EObjectTreeCellHelperForAttributeList extends EObjectTreeCellHelperAbstract<EObjectTreeItemAttributeListDescriptor> {
+public class EObjectTreeCellHelperForAttributeList extends EObjectTreeCellHelperAbstract<EObjectTreeItemForAttributeList> {
   private static final Logger LOGGER = Logger.getLogger(EObjectTreeCellHelperForAttributeList.class.getName());
   
+  private EObjectTreeItemAttributeListDescriptor itemDescriptor;
   private final Node listIcon = new ImageView(new Image(EObjectTreeCellHelperForObjectList.class.getResourceAsStream("List 225x225.png"), 36, 18, true, true));
   
   /**
@@ -39,6 +40,8 @@ public class EObjectTreeCellHelperForAttributeList extends EObjectTreeCellHelper
     LOGGER.info("=> item=" + (eObjectTreeItemContent != null ? eObjectTreeItemContent.toString() : "(null)"));
 
     super.updateItem(eObjectTreeItemContent);
+    
+    itemDescriptor = getTreeItem().getEObjectTreeItemAttributeListDescriptor();
     
     ContextMenu contextMenu = createContextMenu();
     eObjectTreeCell.setContextMenu(contextMenu);

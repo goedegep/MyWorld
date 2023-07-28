@@ -13,7 +13,6 @@ import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EStructuralFeature;
-import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.util.EContentAdapter;
 
 import goedegep.appgen.TableRowOperation;
@@ -268,8 +267,7 @@ public class EObjectTreeView extends TreeView<EObjectTreeItemContent> implements
    * @param eObject the new EObject to be shown in the tree. If null, the tree view will be cleared.
    */
   public void setEObject(EObject eObject) {
-    Resource resource = eObject.eResource();
-    if (resource == null) {
+    if ((eObject != null)  &&  (eObject.eResource() == null)) {
       throw new IllegalArgumentException("The EObject has to be part of a Resource");
     }
 
@@ -284,9 +282,10 @@ public class EObjectTreeView extends TreeView<EObjectTreeItemContent> implements
     }
     
     if (eObject != null) {
-    EObjectTreeItem rootItem = new EObjectTreeItem(eObject, EObjectTreeItemType.OBJECT, eObjectTreeDescriptor.getDescriptorForEClass(eObject.eClass()), this);
-    setRoot(rootItem);
-    eObject.eAdapters().add(eContentAdapter);;
+      EObjectTreeItemClassDescriptor descriptor = null;
+      EObjectTreeItem rootItem = new EObjectTreeItemForObject(eObject, null, eObjectTreeDescriptor.getDescriptorForEClass(eObject.eClass()), this);
+      setRoot(rootItem);
+      eObject.eAdapters().add(eContentAdapter);;
     } else {
       setRoot(null);
     }
@@ -433,7 +432,6 @@ public class EObjectTreeView extends TreeView<EObjectTreeItemContent> implements
         } else if (feature instanceof EStructuralFeature eStructuralFeature) {
           LOGGER.severe("eStructuralFeature: " + eStructuralFeature);
           EObjectPath eObjectPath = new EObjectPath(notifierEObject);
-          EObjectTreeItem rootItem = (EObjectTreeItem) getRoot();
           EObjectTreeItem changedContainingTreeItem = findTreeItem(eObjectPath);
           LOGGER.info("changedContainingTreeItem: " + changedContainingTreeItem);
 //          changedContainingTreeItem.setExpanded(true);
@@ -631,7 +629,7 @@ class EObjectTreeItemResolverVisitor implements XTreeNodeVisitor {
       for (TreeItem<EObjectTreeItemContent> treeItem: eObjectTreeItem.getChildren()) {
         EObjectTreeItemContent content = treeItem.getValue();
         LOGGER.fine("content=" + content.toString());
-        EStructuralFeature eStructuralFeature = content.getEStructuralFeature();
+        EStructuralFeature eStructuralFeature = EObjectTreeItem.getEStructuralFeature((EObjectTreeItem)treeItem);
         if (eStructuralFeature.getName().equals(referenceName)) {
           reference = (EReference) eStructuralFeature;
           eObjectTreeItem = (EObjectTreeItem) treeItem;

@@ -6,7 +6,6 @@ import java.util.logging.Logger;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EDataType;
-import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.util.EDataTypeUniqueEList;
 
 import goedegep.appgen.TableRowOperation;
@@ -28,8 +27,10 @@ import javafx.scene.layout.HBox;
  * <p>
  * The representation consists of a single, editable value. Therefore there is no descriptor for this type of cell.
  */
-public class EObjectTreeCellHelperForAttributeListValue extends EObjectTreeCellHelperAbstract<EObjectTreeItemDescriptor>  {
+public class EObjectTreeCellHelperForAttributeListValue extends EObjectTreeCellHelperAbstract<EObjectTreeItemForAttributeListValue>  {
   private static final Logger LOGGER = Logger.getLogger(EObjectTreeCellHelperForAttributeListValue.class.getName());
+  
+  private EObjectTreeItemAttributeListValueDescriptor itemDescriptor;
   
   private HBox graphic = null;             // will contain either valueLabel (not editing) or valueTextField/valueChoiceBox (editing).
   private Label valueLabel = null;         // this label is always there (as it is the normal situation), but only part of the graphic when not in editing mode.
@@ -50,6 +51,8 @@ public class EObjectTreeCellHelperForAttributeListValue extends EObjectTreeCellH
     LOGGER.info("=> item=" + (eObjectTreeItemContent != null ? eObjectTreeItemContent.toString() : "(null)"));
     
     super.updateItem(eObjectTreeItemContent);
+    
+    itemDescriptor = treeItem.getEObjectTreeItemAttributeListValueDescriptor();
     
     ContextMenu contextMenu = createContextMenu();
     eObjectTreeCell.setContextMenu(contextMenu);
@@ -243,11 +246,8 @@ public class EObjectTreeCellHelperForAttributeListValue extends EObjectTreeCellH
 
   @Override
   public void startEdit(EObjectTreeCell eObjectTreeCell) {
-    EObjectTreeItem parentEObjectTreeItem = (EObjectTreeItem) eObjectTreeCell.getTreeItem().getParent();
-    EObjectTreeItemContent parentEObjectTreeItemContent = parentEObjectTreeItem.getValue();
-    EStructuralFeature eStructuralFeature = parentEObjectTreeItemContent.getEStructuralFeature();
-    LOGGER.severe("structural feature: " + eStructuralFeature.toString());
-    EAttribute eAttribute = (EAttribute) eStructuralFeature;
+    EObjectTreeItemForAttributeList parentEObjectTreeItem = (EObjectTreeItemForAttributeList) eObjectTreeCell.getTreeItem().getParent();
+    EAttribute eAttribute = parentEObjectTreeItem.getEAttribute();
     EDataType eDataType = eAttribute.getEAttributeType();
     LOGGER.severe("eDataType: " + eDataType.getName());
     Class<?> listElementClass = eDataType.getInstanceClass();

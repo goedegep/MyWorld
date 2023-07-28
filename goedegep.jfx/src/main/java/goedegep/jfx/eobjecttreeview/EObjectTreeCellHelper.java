@@ -58,16 +58,16 @@ public interface EObjectTreeCellHelper {
    */
   public String getText();
   
-  /**
-   * Check whether a move drop of a source EObject is possible on this cell.
-   * 
-   * @param sourceEObject the EObject that is to be moved.
-   * @return true if the <code>sourceEObject</code> can be moved to this cell, false otherwise.
-   */
-  public default boolean isDropPossible(EObject sourceEObject, EObjectTreeItem thisEObjectTreeItem) {
-    System.out.println("Drop possible not supported for: " + getClass().getName());
-    return false;
-  }
+//  /**
+//   * Check whether a move drop of a source EObject is possible on this cell.
+//   * 
+//   * @param sourceEObject the EObject that is to be moved.
+//   * @return true if the <code>sourceEObject</code> can be moved to this cell, false otherwise.
+//   */
+//  public default boolean isDropPossible(EObject sourceEObject, EObjectTreeItem thisEObjectTreeItem) {
+//    System.out.println("Drop possible not supported for: " + getClass().getName());
+//    return false;
+//  }
   
   /**
    * Handle a move drop of a source EObject to this cell.

@@ -11,7 +11,6 @@ import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EFactory;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EReference;
-import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.util.EObjectResolvingEList;
 
 import goedegep.appgen.TableRowOperation;
@@ -25,14 +24,15 @@ import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.DragEvent;
 
 /**
  * This class is a tree cell helper for a list of objects.
  */
-public class EObjectTreeCellHelperForObjectList extends EObjectTreeCellHelperAbstract<EObjectTreeItemClassListReferenceDescriptor> {
+public class EObjectTreeCellHelperForObjectList extends EObjectTreeCellHelperAbstract<EObjectTreeItemForObjectList> {
   private static final Logger LOGGER = Logger.getLogger(EObjectTreeCellHelperForObjectList.class.getName());
     
+  private EObjectTreeItemClassListReferenceDescriptor itemDescriptor;
+  
   private final Node listIcon = new ImageView(new Image(EObjectTreeCellHelperForObjectList.class.getResourceAsStream("List 225x225.png"), 36, 18, true, true));
   
   public EObjectTreeCellHelperForObjectList(EObjectTreeCell eObjectTreeCell) {
@@ -44,6 +44,8 @@ public class EObjectTreeCellHelperForObjectList extends EObjectTreeCellHelperAbs
     LOGGER.info("=> item=" + (eObjectTreeItemContent != null ? eObjectTreeItemContent.toString() : "(null)"));
     
     super.updateItem(eObjectTreeItemContent);
+    
+    itemDescriptor = treeItem.getEObjectTreeItemClassListReferenceDescriptor();
     
     ContextMenu contextMenu = createContextMenu();
     eObjectTreeCell.setContextMenu(contextMenu);
@@ -57,7 +59,6 @@ public class EObjectTreeCellHelperForObjectList extends EObjectTreeCellHelperAbs
     
     ImageView iconImageView = null;
     if (eObjectTreeItemContent != null) {
-      EObjectTreeItemDescriptor itemDescriptor = eObjectTreeItemContent.getPresentationDescriptor();
       if (itemDescriptor != null) {
         EObjectTreeItemClassListReferenceDescriptor descriptor = (EObjectTreeItemClassListReferenceDescriptor) itemDescriptor;
         Function<Object, Image> nodeIconFunction = descriptor.getNodeIconFunction();
@@ -93,12 +94,10 @@ public class EObjectTreeCellHelperForObjectList extends EObjectTreeCellHelperAbs
       return null;
     }
     
-    EObjectTreeItem eObjectTreeItem = (EObjectTreeItem) eObjectTreeCell.getTreeItem();
+    EObjectTreeItemForObjectList eObjectTreeItem = (EObjectTreeItemForObjectList) eObjectTreeCell.getTreeItem();
     
     EObjectTreeItemContent eObjectTreeItemContent = eObjectTreeItem.getValue();
-    EStructuralFeature eStructuralFeature = eObjectTreeItemContent.getEStructuralFeature();
-    LOGGER.info("structural feature: " + eStructuralFeature.toString());
-    EReference eReference = (EReference) eStructuralFeature;
+    EReference eReference = eObjectTreeItem.getEReference();
     EClass listType = eReference.getEReferenceType();
     LOGGER.info("Reference type=" + listType.getName());
     EmfPackageHelper emfPackageHelper = new EmfPackageHelper(listType.getEPackage());
@@ -217,16 +216,14 @@ public class EObjectTreeCellHelperForObjectList extends EObjectTreeCellHelperAbs
   private void createAndAddObject(EClass eClass, BiConsumer<EObject, EObjectTreeItem> biConsumer) {
     LOGGER.info("=>");
     
-    EObjectTreeItem eObjectTreeItem = (EObjectTreeItem) eObjectTreeCell.getTreeItem();
+    EObjectTreeItemForObjectList eObjectTreeItem = (EObjectTreeItemForObjectList) eObjectTreeCell.getTreeItem();
     EObjectTreeItemContent eObjectTreeItemContent = eObjectTreeItem.getValue();
     @SuppressWarnings("unchecked")
     EList<EObject> eObjectList = (EList<EObject>) eObjectTreeItemContent.getObject();    
     LOGGER.info("eObjectList:" + eObjectList.toString());
     
     if (eClass == null) {
-      EStructuralFeature eStructuralFeature = eObjectTreeItemContent.getEStructuralFeature();
-      LOGGER.info("structural feature: " + eStructuralFeature.toString());
-      EReference eReference = (EReference) eStructuralFeature;
+      EReference eReference = eObjectTreeItem.getEReference();
       eClass = eReference.getEReferenceType();
     }
     LOGGER.info("eClass=" + eClass.getName());
@@ -259,79 +256,79 @@ public class EObjectTreeCellHelperForObjectList extends EObjectTreeCellHelperAbs
     return eObjectTreeCell.getText();
   }
   
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public boolean isDropPossible(EObject sourceEObject, EObjectTreeItem thisEObjectTreeItem) {
-    LOGGER.severe("=>");
-    
-    EObjectTreeItemContent eObjectTreeItemContent = thisEObjectTreeItem.getValue();
-    EStructuralFeature structuralFeature = eObjectTreeItemContent.getEStructuralFeature();
-    if (structuralFeature != null) {
-      LOGGER.severe("structuralFeature=" + structuralFeature.toString());
-      if (structuralFeature instanceof EReference eReference) {
-        EClass contentReferenceType = eReference.getEReferenceType();
-        if (contentReferenceType.isSuperTypeOf(sourceEObject.eClass())) {
-          return true;
-        }
-      }
-    }
-    
-    return false;
-  }
+//  /**
+//   * {@inheritDoc}
+//   */
+//  @Override
+//  public boolean isDropPossible(EObject sourceEObject, EObjectTreeItem thisEObjectTreeItem) {
+//    LOGGER.severe("=>");
+//    
+//    EObjectTreeItemContent eObjectTreeItemContent = thisEObjectTreeItem.getValue();
+//    EStructuralFeature structuralFeature = eObjectTreeItemContent.getEStructuralFeature();
+//    if (structuralFeature != null) {
+//      LOGGER.severe("structuralFeature=" + structuralFeature.toString());
+//      if (structuralFeature instanceof EReference eReference) {
+//        EClass contentReferenceType = eReference.getEReferenceType();
+//        if (contentReferenceType.isSuperTypeOf(sourceEObject.eClass())) {
+//          return true;
+//        }
+//      }
+//    }
+//    
+//    return false;
+//  }
   
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public void handleDragDropped(DragEvent dragEvent, EObject sourceEObject, EObjectTreeItem thisEObjectTreeItem) {
-    LOGGER.info("=>");
-    
-    if (!isDropPossible(sourceEObject, thisEObjectTreeItem)) {
-      return;
-    }
-    
-    // parent will be a reference.
-    // If it is a 'many' reference, insert before this item.
-    // If it isn't a 'many' reference, replace this item.
-//    EObjectTreeItem eObjectParentTreeItem = (EObjectTreeItem)  thisEObjectTreeItem.getParent();
-    EObjectTreeItemContent eObjectTreeItemContent = thisEObjectTreeItem.getValue();
-    EStructuralFeature structuralFeature = eObjectTreeItemContent.getEStructuralFeature();
-    if (structuralFeature != null) {
-      LOGGER.severe("structuralFeature=" + structuralFeature.toString());
-      if (structuralFeature instanceof EReference eReference) {
-        EClass contentReferenceType = eReference.getEReferenceType();
-        if (contentReferenceType.isSuperTypeOf(sourceEObject.eClass())) {  // Isn't this already checked in isDropPossible
-
-          if (eReference.isMany()) {
-
-            // It is a list, so add to the end of the list.
-            @SuppressWarnings("unchecked")
-            EList<Object> contentEList = (EList<Object>) eObjectTreeItemContent.getObject();
-            LOGGER.info("contentEList=" + contentEList.toString());
-//            EObjectTreeItemContent thisEObjectTreeItemContent = thisEObjectTreeItem.getValue();
-            Object thisObject = eObjectTreeItemContent.getObject();
-            LOGGER.info("contentObject=" + thisObject.toString());
-            
-            // cut the source object TODO this seems only valid for moving under the same parent
-//            contentEList.remove(sourceEObject);
-            
-            // rebuild the children of the parent of the source, if it is not our parent.
-            EObjectTreeCell sourceParentCell = (EObjectTreeCell) dragEvent.getSource();
-            EObjectTreeItem sourceParent = (EObjectTreeItem) sourceParentCell.getTreeItem();
-            EObjectTreeItemContent sourceParentTreeItemContent = sourceParent.getValue();
-            @SuppressWarnings("unchecked")
-            EList<Object> sourceContentEList = (EList<Object>) sourceParentTreeItemContent.getObject();
-            sourceContentEList.remove(sourceEObject);
-            
-            contentEList.add(sourceEObject);
-          } else {
-            // It is a single value, which will be replaced.
-            LOGGER.severe("Single item; replace");
-          }
-        }
-      }
-    }
-  }
+//  /**
+//   * {@inheritDoc}
+//   */
+//  @Override
+//  public void handleDragDropped(DragEvent dragEvent, EObject sourceEObject, EObjectTreeItem thisEObjectTreeItem) {
+//    LOGGER.info("=>");
+//    
+//    if (!isDropPossible(sourceEObject, thisEObjectTreeItem)) {
+//      return;
+//    }
+//    
+//    // parent will be a reference.
+//    // If it is a 'many' reference, insert before this item.
+//    // If it isn't a 'many' reference, replace this item.
+////    EObjectTreeItem eObjectParentTreeItem = (EObjectTreeItem)  thisEObjectTreeItem.getParent();
+//    EObjectTreeItemContent eObjectTreeItemContent = thisEObjectTreeItem.getValue();
+//    EStructuralFeature structuralFeature = eObjectTreeItemContent.getEStructuralFeature();
+//    if (structuralFeature != null) {
+//      LOGGER.severe("structuralFeature=" + structuralFeature.toString());
+//      if (structuralFeature instanceof EReference eReference) {
+//        EClass contentReferenceType = eReference.getEReferenceType();
+//        if (contentReferenceType.isSuperTypeOf(sourceEObject.eClass())) {  // Isn't this already checked in isDropPossible
+//
+//          if (eReference.isMany()) {
+//
+//            // It is a list, so add to the end of the list.
+//            @SuppressWarnings("unchecked")
+//            EList<Object> contentEList = (EList<Object>) eObjectTreeItemContent.getObject();
+//            LOGGER.info("contentEList=" + contentEList.toString());
+////            EObjectTreeItemContent thisEObjectTreeItemContent = thisEObjectTreeItem.getValue();
+//            Object thisObject = eObjectTreeItemContent.getObject();
+//            LOGGER.info("contentObject=" + thisObject.toString());
+//            
+//            // cut the source object TODO this seems only valid for moving under the same parent
+////            contentEList.remove(sourceEObject);
+//            
+//            // rebuild the children of the parent of the source, if it is not our parent.
+//            EObjectTreeCell sourceParentCell = (EObjectTreeCell) dragEvent.getSource();
+//            EObjectTreeItem sourceParent = (EObjectTreeItem) sourceParentCell.getTreeItem();
+//            EObjectTreeItemContent sourceParentTreeItemContent = sourceParent.getValue();
+//            @SuppressWarnings("unchecked")
+//            EList<Object> sourceContentEList = (EList<Object>) sourceParentTreeItemContent.getObject();
+//            sourceContentEList.remove(sourceEObject);
+//            
+//            contentEList.add(sourceEObject);
+//          } else {
+//            // It is a single value, which will be replaced.
+//            LOGGER.severe("Single item; replace");
+//          }
+//        }
+//      }
+//    }
+//  }
 }
