@@ -84,11 +84,11 @@ public class EObjectTreeItemForObject extends EObjectTreeItem {
    * @param eObjectTreeItemClassReferenceDescriptor the descriptor for the child.
    * @return the created child item, or null if it wasn't created.
    */
-  static EObjectTreeItem createEObjectTreeItemForObject(EObjectTreeItemContent eObjectTreeItemContent, EObjectTreeItemClassReferenceDescriptor eObjectTreeItemClassReferenceDescriptor,
+  static EObjectTreeItem createEObjectTreeItemForObject(Object eObjectTreeItemContent, EObjectTreeItemClassReferenceDescriptor eObjectTreeItemClassReferenceDescriptor,
       EObjectTreeView eObjectTreeView, boolean editMode) {
     LOGGER.info("=>");
     
-    EObject eObject = (EObject) eObjectTreeItemContent.getObject();
+    EObject eObject = (EObject) eObjectTreeItemContent;
     EReference eReference = eObjectTreeItemClassReferenceDescriptor.getEReference();
     LOGGER.info("descriptorEReference=" + eReference.getName());
     
@@ -142,7 +142,7 @@ public class EObjectTreeItemForObject extends EObjectTreeItem {
    * if the presentation descriptor is for a class, then this is used.
    */
   EObjectTreeItemClassDescriptor getClassDescriptor() {
-    EObjectTreeItemContent eObjectTreeItemContent = getValue();
+    Object eObjectTreeItemContent = getValue();
     EObjectTreeItemClassDescriptor classDescriptor = null;
     if (eObjectTreeItemClassReferenceDescriptor != null) {
       EObjectTreeDescriptor eObjectTreeDescriptor = getEObjectTreeView().getEObjectTreeDescriptor();
@@ -153,7 +153,7 @@ public class EObjectTreeItemForObject extends EObjectTreeItem {
       }
       // Get the best possible descriptor: if there is a child object (which may be a subclass of the type of the reference) use this class,
       // else use the type of the reference.
-      EObject eObject = (EObject) eObjectTreeItemContent.getObject();
+      EObject eObject = (EObject) eObjectTreeItemContent;
       if (eObject == null) {
         return null;
       }
@@ -290,15 +290,20 @@ public class EObjectTreeItemForObject extends EObjectTreeItem {
       getParent();
     }
     
-  }
+  }  
 
+  /**
+   * {@inheritDoc}
+   */
+  @Override
   public String toString() {
     StringBuilder buf = new StringBuilder();
     
     buf.append(super.toString());
-    buf.append("eReference: ").append(eReference != null ? eReference.getName() : "<null>").append(NEWLINE);
-    
+    buf.append("eReference: ").append(eReference != null ? eReference : "<null>").append(NEWLINE);
+    buf.append("classDescriptor: ").append(eObjectTreeItemClassDescriptor != null ? eObjectTreeItemClassDescriptor : "<null>").append(NEWLINE);
+    buf.append("classReferenceDescriptor: ").append(eObjectTreeItemClassReferenceDescriptor != null ? eObjectTreeItemClassDescriptor : "<null>").append(NEWLINE);
+        
     return buf.toString();
   }
-  
 }

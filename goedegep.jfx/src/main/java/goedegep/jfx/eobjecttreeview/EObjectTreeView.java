@@ -52,7 +52,7 @@ import javafx.scene.input.Dragboard;
  * This also means that some context information is required. Therefore objectSelected() provides the selected tree item (instead of the value).
  * 
  */
-public class EObjectTreeView extends TreeView<EObjectTreeItemContent> implements ObjectSelector<TreeItem<EObjectTreeItemContent>> {
+public class EObjectTreeView extends TreeView<Object> implements ObjectSelector<TreeItem<Object>> {
   
   /*
    * A TreeView consists of items of type TreeItem.
@@ -99,7 +99,7 @@ public class EObjectTreeView extends TreeView<EObjectTreeItemContent> implements
   /**
    * ObjectSelector listeners to the selected object in the tree.
    */
-  private List<ObjectSelectionListener<TreeItem<EObjectTreeItemContent>>> objectSelectionListeners = new ArrayList<>();
+  private List<ObjectSelectionListener<TreeItem<Object>>> objectSelectionListeners = new ArrayList<>();
   
   /**
    * Function to check whether a drop is possible on an item.
@@ -147,8 +147,8 @@ public class EObjectTreeView extends TreeView<EObjectTreeItemContent> implements
       public void changed(ObservableValue<? extends Object> observable, Object oldValue, Object newValue) {
         if (newValue != null) {
           @SuppressWarnings("unchecked")
-          TreeItem<EObjectTreeItemContent> selectedItem = (TreeItem<EObjectTreeItemContent>) newValue;
-          LOGGER.info("Selected Node: " + selectedItem.getValue().getObject());
+          TreeItem<Object> selectedItem = (TreeItem<Object>) newValue;
+          LOGGER.info("Selected Node: " + selectedItem.getValue());
           notifySelectedObjectListeners(selectedItem);
         } else {
           LOGGER.info("Selected Node: (null)");
@@ -220,9 +220,9 @@ public class EObjectTreeView extends TreeView<EObjectTreeItemContent> implements
   private EObject getRootEObject() {
     EObject rootEObject = null;
     
-    TreeItem<EObjectTreeItemContent> rootItem = getRoot();
+    TreeItem<Object> rootItem = getRoot();
     if (rootItem != null) {
-      rootEObject = (EObject) rootItem.getValue().getObject();
+      rootEObject = (EObject) rootItem.getValue();
     }
     
     return rootEObject;
@@ -282,7 +282,6 @@ public class EObjectTreeView extends TreeView<EObjectTreeItemContent> implements
     }
     
     if (eObject != null) {
-      EObjectTreeItemClassDescriptor descriptor = null;
       EObjectTreeItem rootItem = new EObjectTreeItemForObject(eObject, null, eObjectTreeDescriptor.getDescriptorForEClass(eObject.eClass()), this);
       setRoot(rootItem);
       eObject.eAdapters().add(eContentAdapter);;
@@ -474,15 +473,14 @@ public class EObjectTreeView extends TreeView<EObjectTreeItemContent> implements
     return (EObjectTreeItem) findTreeItem(getRoot(), object);
   }
   
-  public TreeItem<EObjectTreeItemContent> findTreeItem(TreeItem<EObjectTreeItemContent> treeItem, Object object) {
-    EObjectTreeItemContent treeItemContent = treeItem.getValue();
-    Object treeItemContentObject = treeItemContent.getObject();
-    if (treeItemContentObject == object) {
+  public TreeItem<Object> findTreeItem(TreeItem<Object> treeItem, Object object) {
+    Object treeItemContent = treeItem.getValue();
+    if (treeItemContent == object) {
       return treeItem;
     }
     
-    for (TreeItem<EObjectTreeItemContent> child: treeItem.getChildren()) {
-      TreeItem<EObjectTreeItemContent> result = findTreeItem(child, object);
+    for (TreeItem<Object> child: treeItem.getChildren()) {
+      TreeItem<Object> result = findTreeItem(child, object);
       if (result != null) {
         return result;
       }
@@ -500,17 +498,17 @@ public class EObjectTreeView extends TreeView<EObjectTreeItemContent> implements
     Indent indent = new Indent(2);
     EObjectTreeCell eObjectTreeCell = new EObjectTreeCell();
     
-    TreeViewWalker.visit(this, new TreeItemVisitor<EObjectTreeItemContent>() {
+    TreeViewWalker.visit(this, new TreeItemVisitor<Object>() {
 
       @Override
-      public TreeItemVisitResult preVisitChildren(TreeItem<EObjectTreeItemContent> treeItem) {
+      public TreeItemVisitResult preVisitChildren(TreeItem<Object> treeItem) {
         indent.increment();
         
         return null;
       }
 
       @Override
-      public TreeItemVisitResult visitTreeItem(TreeItem<EObjectTreeItemContent> treeItem) {
+      public TreeItemVisitResult visitTreeItem(TreeItem<Object> treeItem) {
         buf.append(indent.toString());
         eObjectTreeCell.updateItem(treeItem.getValue(), false);
         buf.append(eObjectTreeCell.getCellText());
@@ -520,7 +518,7 @@ public class EObjectTreeView extends TreeView<EObjectTreeItemContent> implements
       }
 
       @Override
-      public FileVisitResult postVisitChildren(TreeItem<EObjectTreeItemContent> treeItem) {
+      public FileVisitResult postVisitChildren(TreeItem<Object> treeItem) {
         indent.decrement();
         
         return null;
@@ -533,12 +531,12 @@ public class EObjectTreeView extends TreeView<EObjectTreeItemContent> implements
   
   
   @Override
-  public void addObjectSelectionListener(ObjectSelectionListener<TreeItem<EObjectTreeItemContent>> objectSelectionListener) {
+  public void addObjectSelectionListener(ObjectSelectionListener<TreeItem<Object>> objectSelectionListener) {
     objectSelectionListeners.add(objectSelectionListener);
   }
 
   @Override
-  public void removeObjectSelectionListener(ObjectSelectionListener<TreeItem<EObjectTreeItemContent>> objectSelectionListener) {
+  public void removeObjectSelectionListener(ObjectSelectionListener<TreeItem<Object>> objectSelectionListener) {
     objectSelectionListeners.remove(objectSelectionListener);
   }
 
@@ -546,10 +544,10 @@ public class EObjectTreeView extends TreeView<EObjectTreeItemContent> implements
   public EObjectTreeItem getSelectedObject() {
     EObjectTreeItem selectedItem = (EObjectTreeItem) getSelectionModel().selectedItemProperty().get();
     if (selectedItem != null) {
-      EObjectTreeItemContent eObjectTreeItemContent = selectedItem.getValue();
+      Object eObjectTreeItemContent = selectedItem.getValue();
       
       if (eObjectTreeItemContent != null) {
-        LOGGER.info("Selected item content: " + eObjectTreeItemContent.getObject());
+        LOGGER.info("Selected item content: " + eObjectTreeItemContent);
       } else {
         LOGGER.severe("Selected item has no value");
       }
@@ -559,8 +557,8 @@ public class EObjectTreeView extends TreeView<EObjectTreeItemContent> implements
     return selectedItem;
   }
 
-  private void notifySelectedObjectListeners(TreeItem<EObjectTreeItemContent> selectedItem) {
-    for (ObjectSelectionListener<TreeItem<EObjectTreeItemContent>> objectSelectionListener: objectSelectionListeners) {
+  private void notifySelectedObjectListeners(TreeItem<Object> selectedItem) {
+    for (ObjectSelectionListener<TreeItem<Object>> objectSelectionListener: objectSelectionListeners) {
       objectSelectionListener.objectSelected(this, selectedItem);
     }
   }
@@ -626,8 +624,8 @@ class EObjectTreeItemResolverVisitor implements XTreeNodeVisitor {
       String referenceName = (String) value;
       LOGGER.fine("reference name: " + referenceName);
       
-      for (TreeItem<EObjectTreeItemContent> treeItem: eObjectTreeItem.getChildren()) {
-        EObjectTreeItemContent content = treeItem.getValue();
+      for (TreeItem<Object> treeItem: eObjectTreeItem.getChildren()) {
+        Object content = treeItem.getValue();
         LOGGER.fine("content=" + content.toString());
         EStructuralFeature eStructuralFeature = EObjectTreeItem.getEStructuralFeature((EObjectTreeItem)treeItem);
         if (eStructuralFeature.getName().equals(referenceName)) {
@@ -655,11 +653,11 @@ class EObjectTreeItemResolverVisitor implements XTreeNodeVisitor {
         throw new RuntimeException("Wrong dataType; type INTEGER expected (for reference name), but is " + dataType.name());
       }
 //      Object listObject = eObject.eGet(reference);
-      EObjectTreeItemContent content = eObjectTreeItem.getValue();
-      Object listObject = content.getObject(); 
+      Object content = eObjectTreeItem.getValue();
+//      Object listObject = content.getObject(); 
       
-      if (!(listObject instanceof EList)) {
-        throw new RuntimeException("Wrong object in hierarchy; EList expected, but is " + listObject);
+      if (!(content instanceof EList)) {
+        throw new RuntimeException("Wrong object in hierarchy; EList expected, but is " + content);
       }
       int index = (int) value;
       if (eObjectTreeItem.getChildren().size() < index + 1) {

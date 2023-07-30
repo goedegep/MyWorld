@@ -26,7 +26,6 @@ import goedegep.gpx.model.WptType;
 import goedegep.jfx.ComponentFactoryFx;
 import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.JfxStage;
-import goedegep.jfx.eobjecttreeview.EObjectTreeItemContent;
 import goedegep.jfx.eobjecttreeview.EObjectTreeView;
 import goedegep.util.emf.EMFResource;
 import goedegep.util.objectselector.ObjectSelectionListener;
@@ -64,7 +63,7 @@ public class GPXWindow extends JfxStage {
   // This menu item defines the 'edit status'.
   private CheckMenuItem gpxTreeEditableMenuItem;
   
-  private ObjectSelectionListener<TreeItem<EObjectTreeItemContent>> gpxTreeViewSelectionListener;
+  private ObjectSelectionListener<TreeItem<Object>> gpxTreeViewSelectionListener;
   private ReduceTrackPointsWindow reduceTrackPointsWindow;
   
   /**
@@ -524,8 +523,7 @@ public class GPXWindow extends JfxStage {
         return;
       }
 
-      EObjectTreeItemContent eObjectTreeItemContent = treeItem.getValue();
-      Object object = eObjectTreeItemContent.getObject();
+      Object object = treeItem.getValue();
       if (object != null  &&
           (object instanceof GpxType  ||  object instanceof TrkType  ||  object instanceof TrksegType)) {
         reduceTrackPointsWindow.objectSelected(null, object);

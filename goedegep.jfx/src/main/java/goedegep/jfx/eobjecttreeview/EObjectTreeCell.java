@@ -21,7 +21,7 @@ import javafx.scene.paint.Color;
  * Therefore this method creates the right helper for the item type and then delegates the work to the helper by calling updateItem on the helper.<br/>
  * 
  */
-public class EObjectTreeCell extends TreeCell<EObjectTreeItemContent> {
+public class EObjectTreeCell extends TreeCell<Object> {
   private static final Logger LOGGER = Logger.getLogger(EObjectTreeCell.class.getName());
 //  private static final DataFormat EOBJECT_PATH = new DataFormat("EObjectPath");
     
@@ -84,10 +84,10 @@ public class EObjectTreeCell extends TreeCell<EObjectTreeItemContent> {
   }  
   
   @Override
-  public void updateItem(EObjectTreeItemContent eObjectTreeItemContent, boolean empty) {
-    LOGGER.info("=> item=" + (eObjectTreeItemContent != null ? eObjectTreeItemContent.toString() : "(null)") + ", empty=" + empty);
+  public void updateItem(Object value, boolean empty) {
+    LOGGER.info("=> item=" + (value != null ? value : "(null)") + ", empty=" + empty);
     
-    super.updateItem(eObjectTreeItemContent, empty);
+    super.updateItem(value, empty);
     
     if (empty) {
       setText(null);
@@ -96,9 +96,9 @@ public class EObjectTreeCell extends TreeCell<EObjectTreeItemContent> {
       treeItemType = null;
       treeCellHelper = null;
     } else {
-      updateTreeCellHelper(eObjectTreeItemContent);
+      updateTreeCellHelper(value);
       
-      treeCellHelper.updateItem(eObjectTreeItemContent);
+      treeCellHelper.updateItem(value);
     }
         
     LOGGER.info("<=");
@@ -463,7 +463,7 @@ public class EObjectTreeCell extends TreeCell<EObjectTreeItemContent> {
    * 
    * @param eObjectTreeItemContent the content of the tree item to be rendered by a tree cell.
    */
-  private void updateTreeCellHelper(EObjectTreeItemContent eObjectTreeItemContent) {
+  private void updateTreeCellHelper(Object value) {
     LOGGER.info("=> EObjectTreeItemType=" + ((EObjectTreeItem) getTreeItem()).getEObjectTreeItemType());
     getTreeItem();
     
@@ -523,7 +523,7 @@ public class EObjectTreeCell extends TreeCell<EObjectTreeItemContent> {
   }
   
   @Override
-  public void commitEdit(EObjectTreeItemContent newValue) {
+  public void commitEdit(Object newValue) {
     treeCellHelper.commitEdit(getTreeItem(), newValue);
     
     super.commitEdit(newValue);

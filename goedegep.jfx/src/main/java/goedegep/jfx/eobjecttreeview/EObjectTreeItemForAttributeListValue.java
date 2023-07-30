@@ -11,6 +11,13 @@ public class EObjectTreeItemForAttributeListValue extends EObjectTreeItem {
   
   private EObjectTreeItemAttributeListValueDescriptor eObjectTreeItemAttributeListValueDescriptor;
 
+  /**
+   * Constructor.
+   * 
+   * @param object
+   * @param eObjectTreeItemAttributeListValueDescriptor
+   * @param eObjectTreeView
+   */
   public EObjectTreeItemForAttributeListValue(Object object, EObjectTreeItemAttributeListValueDescriptor eObjectTreeItemAttributeListValueDescriptor, EObjectTreeView eObjectTreeView) {
     
     super(object, EObjectTreeItemType.ATTRIBUTE_LIST_VALUE, eObjectTreeView);
@@ -24,4 +31,17 @@ public class EObjectTreeItemForAttributeListValue extends EObjectTreeItem {
     return eObjectTreeItemAttributeListValueDescriptor;
   }
   
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public String toString() {
+    StringBuilder buf = new StringBuilder();
+    
+    buf.append(super.toString());
+    buf.append("descriptor: ").append(eObjectTreeItemAttributeListValueDescriptor != null ? eObjectTreeItemAttributeListValueDescriptor : "<null>").append(NEWLINE);
+    
+    return buf.toString();    
+  }
 }

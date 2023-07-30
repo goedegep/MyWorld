@@ -40,7 +40,7 @@ public class EObjectTreeCellHelperForObjectList extends EObjectTreeCellHelperAbs
   }
 
   @Override
-  public void updateItem(EObjectTreeItemContent eObjectTreeItemContent) {
+  public void updateItem(Object eObjectTreeItemContent) {
     LOGGER.info("=> item=" + (eObjectTreeItemContent != null ? eObjectTreeItemContent.toString() : "(null)"));
     
     super.updateItem(eObjectTreeItemContent);
@@ -63,7 +63,7 @@ public class EObjectTreeCellHelperForObjectList extends EObjectTreeCellHelperAbs
         EObjectTreeItemClassListReferenceDescriptor descriptor = (EObjectTreeItemClassListReferenceDescriptor) itemDescriptor;
         Function<Object, Image> nodeIconFunction = descriptor.getNodeIconFunction();
         if (nodeIconFunction != null) {
-          Image iconImage = nodeIconFunction.apply(eObjectTreeItemContent.getObject());
+          Image iconImage = nodeIconFunction.apply(eObjectTreeItemContent);
           if (iconImage != null) {
             iconImageView = new ImageView(iconImage);
             iconImageView.setPreserveRatio(true);
@@ -96,7 +96,6 @@ public class EObjectTreeCellHelperForObjectList extends EObjectTreeCellHelperAbs
     
     EObjectTreeItemForObjectList eObjectTreeItem = (EObjectTreeItemForObjectList) eObjectTreeCell.getTreeItem();
     
-    EObjectTreeItemContent eObjectTreeItemContent = eObjectTreeItem.getValue();
     EReference eReference = eObjectTreeItem.getEReference();
     EClass listType = eReference.getEReferenceType();
     LOGGER.info("Reference type=" + listType.getName());
@@ -142,7 +141,7 @@ public class EObjectTreeCellHelperForObjectList extends EObjectTreeCellHelperAbs
           if (!eReference.isContainment()) {
             LOGGER.info("Not containment: " + eReference.getName());
             // Find all items in the EObject hierarchy which are of the correct type, later add all subtypes.
-            EObject root = (EObject) eObjectTreeCell.getTreeView().getRoot().getValue().getObject();
+            EObject root = (EObject) eObjectTreeCell.getTreeView().getRoot().getValue();
             List<EObject> candidates = EmfUtil.findObjectsOfType(root, eReference.getEReferenceType());
 
             // Make sub menu with all these objects
@@ -154,7 +153,7 @@ public class EObjectTreeCellHelperForObjectList extends EObjectTreeCellHelperAbs
               subMenuItem.setOnAction(new EventHandler<ActionEvent>() {
                 @SuppressWarnings("unchecked")
                 public void handle(ActionEvent t) {
-                  ((EObjectResolvingEList<Object>) eObjectTreeItemContent.getObject()).add(candidate);
+                  ((EObjectResolvingEList<Object>) eObjectTreeItem.getValue()).add(candidate);
                 }
               });
 
@@ -217,9 +216,8 @@ public class EObjectTreeCellHelperForObjectList extends EObjectTreeCellHelperAbs
     LOGGER.info("=>");
     
     EObjectTreeItemForObjectList eObjectTreeItem = (EObjectTreeItemForObjectList) eObjectTreeCell.getTreeItem();
-    EObjectTreeItemContent eObjectTreeItemContent = eObjectTreeItem.getValue();
     @SuppressWarnings("unchecked")
-    EList<EObject> eObjectList = (EList<EObject>) eObjectTreeItemContent.getObject();    
+    EList<EObject> eObjectList = (EList<EObject>) eObjectTreeItem.getValue();    
     LOGGER.info("eObjectList:" + eObjectList.toString());
     
     if (eClass == null) {
@@ -241,7 +239,7 @@ public class EObjectTreeCellHelperForObjectList extends EObjectTreeCellHelperAbs
     LOGGER.info("=>");
   }
 
-  private String getText(EObjectTreeItemContent eObjectTreeItemContent) {
+  private String getText(Object eObjectTreeItemContent) {
     LOGGER.info("=>");
  
     
