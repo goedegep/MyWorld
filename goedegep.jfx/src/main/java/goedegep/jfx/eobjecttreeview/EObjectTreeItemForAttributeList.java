@@ -53,17 +53,16 @@ public class EObjectTreeItemForAttributeList extends EObjectTreeItem {
    * @param eObjectTreeItemAttributeDescriptor the descriptor for the child.
    * @return the created child item, or null if it wasn't created.
    */
-  static EObjectTreeItem createEObjectTreeItemForAttributeList(EObjectTreeItemContent eObjectTreeItemContent, EObjectTreeItemAttributeListDescriptor eObjectTreeItemAttributeListDescriptor,
+  static EObjectTreeItem createEObjectTreeItemForAttributeList(EObject value, EObjectTreeItemAttributeListDescriptor eObjectTreeItemAttributeListDescriptor,
       EObjectTreeView eObjectTreeView, boolean editMode) {
     LOGGER.info("=>");
     
-    EObject eObject = (EObject) eObjectTreeItemContent.getObject();
     EAttribute eAttribute = eObjectTreeItemAttributeListDescriptor.getEAttribute();
 
-    EList<EAttribute> objectAttributes = eObject.eClass().getEAllAttributes();
+    EList<EAttribute> objectAttributes = value.eClass().getEAllAttributes();
     if (objectAttributes.contains(eAttribute)) {
-      if (editMode  ||  eObject.eIsSet(eAttribute)) {
-        Object childObject = eObject.eGet(eAttribute);
+      if (editMode  ||  value.eIsSet(eAttribute)) {
+        Object childObject = value.eGet(eAttribute);
         if (eAttribute.isMany()) {
           // This tree item will only show the attribute name, child nodes will be created for each value.
           // Therefore the value (a list) is stored in this node.
@@ -80,13 +79,12 @@ public class EObjectTreeItemForAttributeList extends EObjectTreeItem {
   }
   
   
-  ObservableList<TreeItem<EObjectTreeItemContent>> buildChildrenOfAttributeList() {
+  ObservableList<TreeItem<Object>> buildChildrenOfAttributeList() {
     LOGGER.info("=>eObjectTreeItem=" + toString());
     
-    ObservableList<TreeItem<EObjectTreeItemContent>> children = FXCollections.observableArrayList();
+    ObservableList<TreeItem<Object>> children = FXCollections.observableArrayList();
     
-    EObjectTreeItemContent eObjectTreeItemContent = getValue();
-    Object object = eObjectTreeItemContent.getObject();
+    Object object = getValue();
     EObjectTreeItemAttributeListValueDescriptor eObjectTreeItemAttributeListValueDescriptor = eObjectTreeItemAttributeListDescriptor.geteObjectTreeItemAttributeListValueDescriptor();
     
     // The object is a List of Objects (values).
@@ -113,5 +111,17 @@ public class EObjectTreeItemForAttributeList extends EObjectTreeItem {
     return eObjectTreeItemAttributeListDescriptor;
   }
 
-  
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public String toString() {
+    StringBuilder buf = new StringBuilder();
+    
+    buf.append(super.toString());
+    buf.append("eAttribute: ").append(eAttribute != null ? eAttribute : "<null>").append(NEWLINE);
+    buf.append("descriptor: ").append(eObjectTreeItemAttributeListDescriptor != null ? eObjectTreeItemAttributeListDescriptor : "<null>").append(NEWLINE);
+    
+    return buf.toString();
+  }
 }

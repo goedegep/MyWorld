@@ -36,7 +36,7 @@ public class EObjectTreeCellHelperForAttributeList extends EObjectTreeCellHelper
   }
 
   @Override
-  public void updateItem(EObjectTreeItemContent eObjectTreeItemContent) {
+  public void updateItem(Object eObjectTreeItemContent) {
     LOGGER.info("=> item=" + (eObjectTreeItemContent != null ? eObjectTreeItemContent.toString() : "(null)"));
 
     super.updateItem(eObjectTreeItemContent);
@@ -112,10 +112,9 @@ public class EObjectTreeCellHelperForAttributeList extends EObjectTreeCellHelper
     
     EObjectTreeItem eObjectTreeItem = (EObjectTreeItem) eObjectTreeCell.getTreeItem();
     LOGGER.severe("eObjectTreeItem=" + eObjectTreeItem.toString());
-    EObjectTreeItemContent eObjectTreeItemContent = eObjectTreeItem.getValue();
-    LOGGER.severe("eObjectTreeItemContent=" + eObjectTreeItemContent.toString());
+    LOGGER.severe("eObjectTreeItemContent=" + eObjectTreeItem.getValue().toString());
     @SuppressWarnings("unchecked")
-    EList<Object> eObjectList = (EList<Object>) eObjectTreeItemContent.getObject();
+    EList<Object> eObjectList = (EList<Object>) eObjectTreeItem.getValue();
     eObjectList.add(null);
     LOGGER.severe("eObjectList:" + eObjectList.toString());
     eObjectTreeItem.rebuildChildren();
@@ -131,7 +130,7 @@ public class EObjectTreeCellHelperForAttributeList extends EObjectTreeCellHelper
    * @param eObjectTreeItemContent the item content. This parameter is ignored.
    * @return the text to be shown for this cell.
    */
-  private String getText(EObjectTreeItemContent eObjectTreeItemContent) {
+  private String getText(Object eObjectTreeItemContent) {
     LOGGER.info("=> eObjectTreeItemContent=" + eObjectTreeItemContent.toString());
     String labelText = itemDescriptor.getLabelText() + ":";
         

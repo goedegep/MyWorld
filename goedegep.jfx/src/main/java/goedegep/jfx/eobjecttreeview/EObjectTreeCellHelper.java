@@ -18,7 +18,7 @@ public interface EObjectTreeCellHelper {
    * 
    * @param eObjectTreeItemContent the content of the tree item to which this helper is now assigned.
    */
-  public void updateItem(EObjectTreeItemContent eObjectTreeItemContent);
+  public void updateItem(Object value);
   
   /**
    * The implementation of this method shall perform the content specific work for {@link TreeCell.startEdit}.
@@ -38,7 +38,7 @@ public interface EObjectTreeCellHelper {
    * 
    * @param eObjectTreeCell the cell on which the editing is to be committed.
    */
-  public default void commitEdit(TreeItem<EObjectTreeItemContent> treeItem, EObjectTreeItemContent newValue) {
+  public default void commitEdit(TreeItem<Object> treeItem, Object newValue) {
   }
   
   /**

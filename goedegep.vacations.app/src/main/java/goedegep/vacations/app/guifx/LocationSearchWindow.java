@@ -27,7 +27,6 @@ import goedegep.jfx.eobjecttreeview.EEnumEditorDescriptor;
 import goedegep.jfx.eobjecttreeview.EObjectTreeItem;
 import goedegep.jfx.eobjecttreeview.EObjectTreeItemClassDescriptor;
 import goedegep.jfx.eobjecttreeview.EObjectTreeItemClassListReferenceDescriptor;
-import goedegep.jfx.eobjecttreeview.EObjectTreeItemContent;
 import goedegep.jfx.eobjecttreeview.EObjectTreeItemDescriptor;
 import goedegep.jfx.eobjecttreeview.EObjectTreeItemForObject;
 import goedegep.jfx.eobjecttreeview.EObjectTreeItemForObjectList;
@@ -972,7 +971,7 @@ class LocationInfosPanel extends VBox {
   }
 }
 
-class LocationPanel extends VBox implements ObjectSelectionListener<TreeItem<EObjectTreeItemContent>> {
+class LocationPanel extends VBox implements ObjectSelectionListener<TreeItem<Object>> {
   private static final Logger LOGGER = Logger.getLogger(LocationPanel.class.getName());
   private static VacationsFactory VACATIONS_FACTORY = VacationsFactory.eINSTANCE;
   private static final String BEFORE_TEXT = "before";
@@ -1387,7 +1386,7 @@ class LocationPanel extends VBox implements ObjectSelectionListener<TreeItem<EOb
     // Always deselect, in order to prevent next 'add' or 'set' uses this unintentionally.
     useReverseGeocodeSearchCoordinates.setSelected(false);
         
-    EObjectTreeItemContent eObjectTreeItemContent = selectedTreeItem.getValue();
+    Object eObjectTreeItemContent = selectedTreeItem.getValue();
     
     // If the selected tree item is a list of (a supertype of) Locations, it is added as last child of this list.
     EStructuralFeature eStructuralFeature = EObjectTreeItem.getEStructuralFeature(selectedTreeItem);
@@ -1398,7 +1397,7 @@ class LocationPanel extends VBox implements ObjectSelectionListener<TreeItem<EOb
       if (EmfUtil.isInstanceof(locationEClass, listType)  && eReference.isMany()) {
         LOGGER.severe("match");
         @SuppressWarnings("unchecked")
-        EList<EObject> eObjectList = (EList<EObject>) eObjectTreeItemContent.getObject();
+        EList<EObject> eObjectList = (EList<EObject>) eObjectTreeItemContent;
 
         eObjectList.add(location);
         selectedTreeItem.rebuildChildren();
@@ -1410,7 +1409,7 @@ class LocationPanel extends VBox implements ObjectSelectionListener<TreeItem<EOb
     // If the selected tree item is an item in a list of (a supertype of) Locations, it is added to this list before or after the selected item.
     // In this case the parent item of the selected item shall be a list of (a supertype of) Locations.
     EObjectTreeItem parentTreeItem = (EObjectTreeItem) selectedTreeItem.getParent();
-    EObjectTreeItemContent eObjectTreeItemContentParentTreeItem = parentTreeItem.getValue();
+    Object eObjectTreeItemContentParentTreeItem = parentTreeItem.getValue();
     EStructuralFeature eStructuralFeatureParentTreeItem = EObjectTreeItem.getEStructuralFeature(parentTreeItem);
     if (eStructuralFeatureParentTreeItem instanceof EReference) {
       EReference eReference = (EReference) eStructuralFeatureParentTreeItem;
@@ -1419,11 +1418,9 @@ class LocationPanel extends VBox implements ObjectSelectionListener<TreeItem<EOb
       if (EmfUtil.isInstanceof(locationEClass, listType)  && eReference.isMany()) {
         LOGGER.info("parent match");
         @SuppressWarnings("unchecked")
-        EList<EObject> eObjectList = (EList<EObject>) eObjectTreeItemContentParentTreeItem.getObject();
+        EList<EObject> eObjectList = (EList<EObject>) eObjectTreeItemContentParentTreeItem;
         
-        Object object = eObjectTreeItemContent.getObject();
-        
-        int index = eObjectList.indexOf(object);
+        int index = eObjectList.indexOf(eObjectTreeItemContent);
         boolean before = beforeOrAfterComboBox.getValue().equals(BEFORE_TEXT);
         if (!before) {
           index++;
@@ -1461,8 +1458,8 @@ class LocationPanel extends VBox implements ObjectSelectionListener<TreeItem<EOb
         LOGGER.severe("set match");
         // Set this attribute on the Object of the parent item.
         EObjectTreeItem parentTreeItem = (EObjectTreeItem) selectedTreeItem.getParent();
-        EObjectTreeItemContent eObjectTreeItemContentParentTreeItem = parentTreeItem.getValue();
-        EObject eObject = (EObject) eObjectTreeItemContentParentTreeItem.getObject();
+        Object eObjectTreeItemContentParentTreeItem = parentTreeItem.getValue();
+        EObject eObject = (EObject) eObjectTreeItemContentParentTreeItem;
         eObject.eSet(eStructuralFeature, location);
 
         selectedTreeItem.rebuildChildren();
@@ -1473,11 +1470,8 @@ class LocationPanel extends VBox implements ObjectSelectionListener<TreeItem<EOb
   }
   
   private void updateBoundary() {
-    EObjectTreeItemContent  eObjectTreeItemContent = selectedTreeItem.getValue();
-    Object object = eObjectTreeItemContent.getObject();
-    if (object instanceof Location) {
-      Location location = (Location) object;
-            
+    Object  eObjectTreeItemContent = selectedTreeItem.getValue();
+    if (eObjectTreeItemContent instanceof Location location) {            
       String value = getTextFieldText(boundingBoxTextField);
       if (value != null) {
         List<String> values = StringUtil.commaSeparatedValuesToListOfValues(value);
@@ -1503,7 +1497,7 @@ class LocationPanel extends VBox implements ObjectSelectionListener<TreeItem<EOb
   }
 
   @Override
-  public void objectSelected(Object source, TreeItem<EObjectTreeItemContent> object) {
+  public void objectSelected(Object source, TreeItem<Object> object) {
     LOGGER.info("=>");
     
     handleNewTreeItemSelected(object);
@@ -1518,7 +1512,7 @@ class LocationPanel extends VBox implements ObjectSelectionListener<TreeItem<EOb
    * 
    * @param selectedTreeItem the currently selected item in the tree view.
    */
-  private void handleNewTreeItemSelected(TreeItem<EObjectTreeItemContent> selectedTreeItem) {
+  private void handleNewTreeItemSelected(TreeItem<Object> selectedTreeItem) {
     LOGGER.info("=>");
     
     this.selectedTreeItem = (EObjectTreeItem) selectedTreeItem;
@@ -1567,14 +1561,14 @@ class LocationPanel extends VBox implements ObjectSelectionListener<TreeItem<EOb
     String parentsText = getTreeItemDescription((EObjectTreeItem) eObjectTreeItem.getParent());
     
     String itemText = "NO INFORMATION";
-    EObjectTreeItemContent eObjectTreeItemContent = eObjectTreeItem.getValue();
+    Object eObjectTreeItemContent = eObjectTreeItem.getValue();
     if (eObjectTreeItem instanceof EObjectTreeItemForObjectList eObjectTreeItemForObjectList) {
       EObjectTreeItemClassListReferenceDescriptor eObjectTreeItemClassListReferenceDescriptor = eObjectTreeItemForObjectList.getEObjectTreeItemClassListReferenceDescriptor();
       
       itemText =  eObjectTreeItemClassListReferenceDescriptor.getLabelText();
     } else if (eObjectTreeItem instanceof EObjectTreeItemForObject eObjectTreeItemForObject) {
       EObjectTreeItemClassDescriptor eObjectTreeItemClassDescriptor = null;
-      EObject eObject = (EObject) eObjectTreeItemContent.getObject();
+      EObject eObject = (EObject) eObjectTreeItemContent;
       
       if (eObjectTreeItemClassDescriptor.getBuildText() != null) {
         itemText = eObjectTreeItemClassDescriptor.getBuildText().apply(eObject);

@@ -47,7 +47,7 @@ public class EObjectTreeCellHelperForAttributeListValue extends EObjectTreeCellH
   }
 
   @Override
-  public void updateItem(EObjectTreeItemContent eObjectTreeItemContent) {
+  public void updateItem(Object eObjectTreeItemContent) {
     LOGGER.info("=> item=" + (eObjectTreeItemContent != null ? eObjectTreeItemContent.toString() : "(null)"));
     
     super.updateItem(eObjectTreeItemContent);
@@ -185,12 +185,9 @@ public class EObjectTreeCellHelperForAttributeListValue extends EObjectTreeCellH
     EObjectTreeItem eObjectTreeItem = (EObjectTreeItem) eObjectTreeCell.getTreeItem();
     EObjectTreeItem parentEObjectTreeItem = (EObjectTreeItem) eObjectTreeItem.getParent();
     
-    EObjectTreeItemContent eObjectTreeItemContent = eObjectTreeItem.getValue();
-    EObjectTreeItemContent eObjectParentTreeItemContent = parentEObjectTreeItem.getValue();
-    
-    Object object = eObjectTreeItemContent.getObject();
+    Object object = eObjectTreeItem.getValue();
     @SuppressWarnings("unchecked")
-    EList<Object> objectList = (EList<Object>) eObjectParentTreeItemContent.getObject();
+    EList<Object> objectList = (EList<Object>) parentEObjectTreeItem.getValue();
     
     objectList.remove(object);
     
@@ -202,12 +199,9 @@ public class EObjectTreeCellHelperForAttributeListValue extends EObjectTreeCellH
     EObjectTreeItem eObjectTreeItem = (EObjectTreeItem) eObjectTreeCell.getTreeItem();
     EObjectTreeItem parentEObjectTreeItem = (EObjectTreeItem) eObjectTreeItem.getParent();
     
-    EObjectTreeItemContent eObjectTreeItemContent = eObjectTreeItem.getValue();
-    EObjectTreeItemContent eObjectParentTreeItemContent = parentEObjectTreeItem.getValue();
-    
-    Object object = eObjectTreeItemContent.getObject();
+    Object object = eObjectTreeItem.getValue();
     @SuppressWarnings("unchecked")
-    EList<Object> objectList = (EList<Object>) eObjectParentTreeItemContent.getObject();
+    EList<Object> objectList = (EList<Object>) parentEObjectTreeItem.getValue();
         
     int index = objectList.indexOf(object);
     if (!before) {
@@ -225,12 +219,9 @@ public class EObjectTreeCellHelperForAttributeListValue extends EObjectTreeCellH
     EObjectTreeItem eObjectTreeItem = (EObjectTreeItem) eObjectTreeCell.getTreeItem();
     EObjectTreeItem parentEObjectTreeItem = (EObjectTreeItem) eObjectTreeItem.getParent();
     
-    EObjectTreeItemContent eObjectTreeItemContent = eObjectTreeItem.getValue();
-    EObjectTreeItemContent eObjectParentTreeItemContent = parentEObjectTreeItem.getValue();
-    
-    Object object = eObjectTreeItemContent.getObject();
+    Object object = eObjectTreeItem.getValue();
     @SuppressWarnings("unchecked")
-    EList<Object> objectList = (EList<Object>) eObjectParentTreeItemContent.getObject();
+    EList<Object> objectList = (EList<Object>) parentEObjectTreeItem.getValue();
     
     int currentIndex = objectList.indexOf(object);
     int newIndex;
@@ -253,7 +244,7 @@ public class EObjectTreeCellHelperForAttributeListValue extends EObjectTreeCellH
     Class<?> listElementClass = eDataType.getInstanceClass();
     LOGGER.severe("listElementClass: " + listElementClass.getName());
     
-    EObjectTreeItemContent eObjectTreeItemContent = eObjectTreeCell.getItem();
+//    EObjectTreeItemContent eObjectTreeItemContent = eObjectTreeCell.getItem();
         
     // replace the valueLabel with a newly created TextField. The value for the text field is obtained from the item of this cell.
     graphic.getChildren().clear();
@@ -268,8 +259,8 @@ public class EObjectTreeCellHelperForAttributeListValue extends EObjectTreeCellH
 
           @Override
           public void handle(ActionEvent event) {
-            eObjectTreeItemContent.setObject(valueChoiceBox.getValue());
-            eObjectTreeCell.commitEdit(eObjectTreeItemContent);
+            treeItem.setValue(valueChoiceBox.getValue());
+            eObjectTreeCell.commitEdit(eObjectTreeCell.getItem());
           }
           
         });
@@ -278,14 +269,14 @@ public class EObjectTreeCellHelperForAttributeListValue extends EObjectTreeCellH
     } else {
       // Text
       valueTextField = new TextField();
-      valueTextField.setText(getText(eObjectTreeItemContent));
+      valueTextField.setText(getText(eObjectTreeCell.getItem()));
       valueTextField.setOnKeyReleased(new EventHandler<KeyEvent>() {
 
         @Override
         public void handle(KeyEvent keyEvent) {
           if ((keyEvent.getCode() == KeyCode.ENTER)) {
-            eObjectTreeItemContent.setObject(valueTextField.getText());
-            eObjectTreeCell.commitEdit(eObjectTreeItemContent);
+            treeItem.setValue(valueChoiceBox.getValue());
+            eObjectTreeCell.commitEdit(eObjectTreeCell.getItem());
           } else if (keyEvent.getCode() == KeyCode.ESCAPE) {
             eObjectTreeCell.cancelEdit();
           }
@@ -296,7 +287,7 @@ public class EObjectTreeCellHelperForAttributeListValue extends EObjectTreeCellH
   }
     
   @Override
-  public void commitEdit(TreeItem<EObjectTreeItemContent> treeItem, EObjectTreeItemContent newValue) {
+  public void commitEdit(TreeItem<Object> treeItem, Object newValue) {
     LOGGER.info("=> newValue=" + newValue.toString());
     
     graphic.getChildren().clear();
@@ -306,13 +297,13 @@ public class EObjectTreeCellHelperForAttributeListValue extends EObjectTreeCellH
     graphic.getChildren().add(valueLabel);
     
     EObjectTreeItem parentItem = (EObjectTreeItem) treeItem.getParent();
-    EObjectTreeItemContent parentValue = parentItem.getValue();
+    Object parentValue = parentItem.getValue();
     @SuppressWarnings("unchecked")
-    EDataTypeUniqueEList<Object> list = (EDataTypeUniqueEList<Object>) parentValue.getObject();
+    EDataTypeUniqueEList<Object> list = (EDataTypeUniqueEList<Object>) parentValue;
     
     EObjectTreeItem eObjectTreeItem = (EObjectTreeItem) treeItem;
     int index = eObjectTreeItem.getChildIndex();
-    list.set(index, newValue.getObject());
+    list.set(index, newValue);
     
     LOGGER.info("<=");
   }
@@ -340,11 +331,10 @@ public class EObjectTreeCellHelperForAttributeListValue extends EObjectTreeCellH
     LOGGER.info("<=");
   }
 
-  private String getText(EObjectTreeItemContent eObjectTreeItemContent) {
+  private String getText(Object value) {
     LOGGER.info("=>");
     
-    Object object = eObjectTreeItemContent.getObject();
-    String itemText = object != null ? object.toString() : "";
+    String itemText = value != null ? value.toString() : "";
         
     LOGGER.info("<= itemText=" + itemText);
     return itemText;

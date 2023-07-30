@@ -51,16 +51,14 @@ public class EObjectTreeItemForAttributeSimple extends EObjectTreeItem {
    * @param eObjectTreeItemAttributeDescriptor the descriptor for the child.
    * @return the created child item, or null if it wasn't created.
    */
-  static EObjectTreeItem createEObjectTreeItemForAttributeSimple(EObjectTreeItemContent eObjectTreeItemContent, EObjectTreeItemAttributeDescriptor eObjectTreeItemAttributeDescriptor, EObjectTreeView eObjectTreeView, boolean editMode) {
+  static EObjectTreeItem createEObjectTreeItemForAttributeSimple(Object eObjectTreeItemContent, EObjectTreeItemAttributeDescriptor eObjectTreeItemAttributeDescriptor, EObjectTreeView eObjectTreeView, boolean editMode) {
     LOGGER.info("=> eObjectTreeItemContent" + eObjectTreeItemContent.toString());
         
-    EObject eObject = (EObject) eObjectTreeItemContent.getObject();
+    EObject eObject = (EObject) eObjectTreeItemContent;
     if (eObject == null) {
       LOGGER.severe("object is null in TreeItem");
-//      LOGGER.severe("StructuralFeature=" + eObjectTreeItemContent.getEStructuralFeature().getName());
     }
     EAttribute eAttribute = eObjectTreeItemAttributeDescriptor.getEAttribute();
-//    boolean editMode = isInEditMode();
 
     EList<EAttribute> objectAttributes = eObject.eClass().getEAllAttributes();
     if (objectAttributes.contains(eAttribute)) {
@@ -86,4 +84,18 @@ public class EObjectTreeItemForAttributeSimple extends EObjectTreeItem {
     return eObjectTreeItemAttributeDescriptor;
   }
 
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public String toString() {
+    StringBuilder buf = new StringBuilder();
+    
+    buf.append(super.toString());
+    buf.append("eAttribute: ").append(eAttribute != null ? eAttribute : "<null>").append(NEWLINE);
+    buf.append("descriptor: ").append(eObjectTreeItemAttributeDescriptor != null ? eObjectTreeItemAttributeDescriptor : "<null>").append(NEWLINE);
+    
+    return buf.toString();
+  }
 }

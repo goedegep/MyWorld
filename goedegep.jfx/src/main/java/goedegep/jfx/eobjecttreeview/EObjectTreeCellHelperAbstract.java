@@ -29,7 +29,7 @@ public abstract class EObjectTreeCellHelperAbstract<I extends EObjectTreeItem> i
    * The implementation of updateItem() of each class which extends this class, shall first call this method.
    */
   @Override
-  public void updateItem(EObjectTreeItemContent eObjectTreeItemContent) {
+  public void updateItem(Object eObjectTreeItemContent) {
     LOGGER.info("=> item=" + (eObjectTreeItemContent != null ? eObjectTreeItemContent.toString() : "(null)"));
 
 //    updateItemDescriptor(eObjectTreeItemContent);

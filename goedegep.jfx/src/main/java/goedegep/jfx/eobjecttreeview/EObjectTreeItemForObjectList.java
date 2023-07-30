@@ -58,11 +58,11 @@ public class EObjectTreeItemForObjectList extends EObjectTreeItem {
    * @param EObjectTreeItemClassListReferenceDescriptor the descriptor for the child.
    * @return the created child item, or null if it wasn't created.
    */
-  static EObjectTreeItem createEObjectTreeItemForObjectList(EObjectTreeItemContent eObjectTreeItemContent, EObjectTreeItemClassListReferenceDescriptor eObjectTreeItemClassListReferenceDescriptor,
+  static EObjectTreeItem createEObjectTreeItemForObjectList(Object eObjectTreeItemContent, EObjectTreeItemClassListReferenceDescriptor eObjectTreeItemClassListReferenceDescriptor,
       EObjectTreeView eObjectTreeView, boolean editMode) {
     LOGGER.info("=>");
     
-    EObject eObject = (EObject) eObjectTreeItemContent.getObject();
+    EObject eObject = (EObject) eObjectTreeItemContent;
     EReference eReference = eObjectTreeItemClassListReferenceDescriptor.getEReference();
     
     EList<EReference> objectReferences = eObject.eClass().getEAllReferences();
@@ -90,4 +90,17 @@ public class EObjectTreeItemForObjectList extends EObjectTreeItem {
     return eObjectTreeItemClassListReferenceDescriptor;
   }
   
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public String toString() {
+    StringBuilder buf = new StringBuilder();
+    
+    buf.append(super.toString());
+    buf.append("eReference: ").append(eReference != null ? eReference : "<null>").append(NEWLINE);
+    buf.append("dscriptor: ").append(eObjectTreeItemClassListReferenceDescriptor != null ? eObjectTreeItemClassListReferenceDescriptor : "<null>").append(NEWLINE);
+    
+    return buf.toString();
+  }
 }

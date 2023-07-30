@@ -62,7 +62,6 @@ import goedegep.jfx.eobjecttreeview.EObjectTreeItemAttributeDescriptor;
 import goedegep.jfx.eobjecttreeview.EObjectTreeItemClassDescriptor;
 import goedegep.jfx.eobjecttreeview.EObjectTreeItemClassListReferenceDescriptor;
 import goedegep.jfx.eobjecttreeview.EObjectTreeItemClassReferenceDescriptor;
-import goedegep.jfx.eobjecttreeview.EObjectTreeItemContent;
 import goedegep.jfx.eobjecttreeview.EObjectTreeView;
 import goedegep.jfx.eobjecttreeview.ExtendedNodeOperationDescriptor;
 import goedegep.jfx.eobjecttreeview.NodeOperationDescriptor;
@@ -511,7 +510,7 @@ public class VacationsWindow extends JfxStage {
           
           // Get location information
           menuItem = componentFactory.createMenuItem("Get location information");
-          TreeItem<EObjectTreeItemContent> treeItem = treeView.getSelectedObject();
+          TreeItem<Object> treeItem = treeView.getSelectedObject();
           
           menuItem.setOnAction((ActionEvent event) -> {
             openLocationSearchWindow((EObjectTreeItem) treeItem, newPoint);
@@ -536,10 +535,9 @@ public class VacationsWindow extends JfxStage {
     treeView.addObjectSelectionListener((source, treeItem) -> {
       //TreeItem<EObjectTreeItemContent> treeItem
       if (treeItem != null) {
-        EObjectTreeItemContent value = treeItem.getValue();
+        Object value = treeItem.getValue();
         if (value != null) {
-          Object object = value.getObject();
-          travelMapView.selectObject(object);
+          travelMapView.selectObject(value);
         }
       }
     });
@@ -843,7 +841,7 @@ public class VacationsWindow extends JfxStage {
    * 
    * @param treeItem the newly selected item in the <code>treeView</code>.
    */
-  private void handleNewTreeItemSelected(Object source, TreeItem<EObjectTreeItemContent> treeItem) {
+  private void handleNewTreeItemSelected(Object source, TreeItem<Object> treeItem) {
     LOGGER.info("=>");
     
 //    if (treeItem != null) {
@@ -876,7 +874,7 @@ public class VacationsWindow extends JfxStage {
    * 
    * @param treeItem the newly selected item in the <code>treeView</code>, which may be null.
    */
-  private void updateDocumentView(TreeItem<EObjectTreeItemContent> treeItem) {
+  private void updateDocumentView(TreeItem<Object> treeItem) {
     if (!browserTab.isSelected()) {
       return;
     }
@@ -957,7 +955,7 @@ public class VacationsWindow extends JfxStage {
    * @param mapViewStructure represents the map on which the information is to be drawn.
    * @param treeItem the <code>TreeItem</code> for which information is to be shown.
    */
-  private void updateMapForTreeItem(TravelMapView travelMapView, TreeItem<EObjectTreeItemContent> treeItem) {
+  private void updateMapForTreeItem(TravelMapView travelMapView, TreeItem<Object> treeItem) {
     LOGGER.info("=>");
     
     // Remove any existing information.
@@ -1048,7 +1046,7 @@ public class VacationsWindow extends JfxStage {
 //      addVacationsToVacationsLayer(vacations.getVacations());
 //      showWorldMap();
     } else {
-      Object treeItemObject = treeItem.getValue().getObject();
+      Object treeItemObject = treeItem.getValue();
       LOGGER.severe("Don't know what to show for selected treeItem, treeItemObject=" + (treeItemObject != null ? treeItemObject.toString() : "null"));
     }
     
@@ -1076,7 +1074,7 @@ public class VacationsWindow extends JfxStage {
    * @param treeItem the <code>TreeItem</code> for which the related picture and location are to be found.
    * @return a <code>Tuplet</code> with the related picture and location, or null if one of these doesn't exist.
    */
-  private Tuplet<Picture, WGS84Coordinates> getPictureDataForTreeItem(TreeItem<EObjectTreeItemContent> treeItem) {
+  private Tuplet<Picture, WGS84Coordinates> getPictureDataForTreeItem(TreeItem<Object> treeItem) {
     LOGGER.info("=>");
     Picture vacationElementPicture = getRelatedPictureForTreeItem(treeItem);
 
@@ -1127,7 +1125,7 @@ public class VacationsWindow extends JfxStage {
    * @param treeItem
    * @return the <code>Picture</code> related to <code>treeItem</code>, or null if there is no related <code>Picture</code>.
    */
-  private Picture getRelatedPictureForTreeItem(TreeItem<EObjectTreeItemContent> treeItem) {
+  private Picture getRelatedPictureForTreeItem(TreeItem<Object> treeItem) {
     LOGGER.info("=> treeItem=" + (treeItem != null ? treeItem.toString() : "(null)"));
     
     if (treeItem == null) {
@@ -1135,16 +1133,14 @@ public class VacationsWindow extends JfxStage {
       return null;
     }
     
-    EObjectTreeItemContent eObjectTreeItemContent = treeItem.getValue();
-    Object treeItemObject = eObjectTreeItemContent.getObject();
+    Object treeItemObject = treeItem.getValue();
     Picture vacationElementPicture = null;
     
     while (treeItem != null  &&  !(treeItemObject instanceof Picture)) {
       treeItem = treeItem.getParent();
       LOGGER.info("after getParent() treeItem=" + (treeItem != null ? treeItem.toString() : "(null)"));
       if (treeItem != null) {
-        eObjectTreeItemContent = treeItem.getValue();
-        treeItemObject = eObjectTreeItemContent.getObject();
+        treeItemObject = treeItem.getValue();
       }
     }
     
@@ -1228,7 +1224,7 @@ public class VacationsWindow extends JfxStage {
    * @param treeItem the <code>TreeItem</code> for which the related Location and Vacation are to be found.
    * @return a <code>Tuplet</code> with the related Location and Vacation, or null if one of these doesn't exist.
    */
-  private Tuplet<Location, Vacation> getLocationDataForTreeItem(TreeItem<EObjectTreeItemContent> treeItem) {
+  private Tuplet<Location, Vacation> getLocationDataForTreeItem(TreeItem<Object> treeItem) {
     LOGGER.info("=>");
     
     Location location = getRelatedLocationForTreeItem(treeItem);
@@ -1260,23 +1256,21 @@ public class VacationsWindow extends JfxStage {
    * @param treeItem the <code>TreeItem</code> for which the related location is to be found.
    * @return the <code>Location</code> related to the <code>treeItem</code>, or null if this doesn't exist.
    */
-  private Location getRelatedLocationForTreeItem(TreeItem<EObjectTreeItemContent> treeItem) {
+  private Location getRelatedLocationForTreeItem(TreeItem<Object> treeItem) {
     LOGGER.info("=> treeItem=" + (treeItem != null ? treeItem.toString() : "(null)"));
     
     if (treeItem == null) {
       return null;
     }
     
-    EObjectTreeItemContent eObjectTreeItemContent = treeItem.getValue();
-    Object treeItemObject = eObjectTreeItemContent.getObject();
+    Object treeItemObject = treeItem.getValue();
     Location location = null;
     
     while (treeItem != null  &&  !(treeItemObject instanceof Location)) {
       treeItem = treeItem.getParent();
       LOGGER.info("after getParent() treeItem=" + (treeItem != null ? treeItem.toString() : "(null)"));
       if (treeItem != null) {
-        eObjectTreeItemContent = treeItem.getValue();
-        treeItemObject = eObjectTreeItemContent.getObject();
+        treeItemObject = treeItem.getValue();
       }
     }
     
@@ -1304,7 +1298,7 @@ public class VacationsWindow extends JfxStage {
    * @param treeItem the <code>TreeItem</code> for which the related Track and Vacation are to be found.
    * @return a <code>Tuplet</code> with the related Track and Vacation, or null if one of these doesn't exist.
    */
-  private Tuplet<GPXTrack, Vacation> getTrackDataForTreeItem(TreeItem<EObjectTreeItemContent> treeItem) {
+  private Tuplet<GPXTrack, Vacation> getTrackDataForTreeItem(TreeItem<Object> treeItem) {
 //    LOGGER.severe("=> treeItem=" + (treeItem != null ? treeItem.toString() : "(null)"));
     LOGGER.info("=>");
     
@@ -1338,7 +1332,7 @@ public class VacationsWindow extends JfxStage {
    * @param treeItem the <code>TreeItem</code> for which the related Track is to be found.
    * @return the <code>VacationElementGPX</code> related to the <code>treeItem</code>, or null if this doesn't exist.
    */
-  private GPXTrack getRelatedTrackForTreeItem(TreeItem<EObjectTreeItemContent> treeItem) {
+  private GPXTrack getRelatedTrackForTreeItem(TreeItem<Object> treeItem) {
     LOGGER.info("=> treeItem=" + (treeItem != null ? treeItem.toString() : "(null)"));
     
     if (treeItem == null) {
@@ -1346,16 +1340,14 @@ public class VacationsWindow extends JfxStage {
       return null;
     }
     
-    EObjectTreeItemContent eObjectTreeItemContent = treeItem.getValue();
-    Object treeItemObject = eObjectTreeItemContent.getObject();
+    Object treeItemObject = treeItem.getValue();
     GPXTrack track = null;
     
     while (treeItem != null  &&  !(treeItemObject instanceof GPXTrack)) {
       treeItem = treeItem.getParent();
       LOGGER.info("after getParent() treeItem=" + (treeItem != null ? treeItem.toString() : "(null)"));
       if (treeItem != null) {
-        eObjectTreeItemContent = treeItem.getValue();
-        treeItemObject = eObjectTreeItemContent.getObject();
+        treeItemObject = treeItem.getValue();
       }
     }
     
@@ -1377,7 +1369,7 @@ public class VacationsWindow extends JfxStage {
    * @param treeItem the <code>TreeItem</code> for which the related Vacation is to be found.
    * @return the related Vacation, or null if this doesn't exist.
    */
-  private static Vacation getVacationForTreeItem(TreeItem<EObjectTreeItemContent> treeItem) {
+  private static Vacation getVacationForTreeItem(TreeItem<Object> treeItem) {
     LOGGER.info("=> treeItem=" + (treeItem != null ? treeItem.toString() : "(null)"));
     LOGGER.info("=>");
     
@@ -1386,16 +1378,14 @@ public class VacationsWindow extends JfxStage {
       return null;
     }
     
-    EObjectTreeItemContent eObjectTreeItemContent = treeItem.getValue();
-    Object treeItemObject = eObjectTreeItemContent.getObject();
+    Object treeItemObject = treeItem.getValue();
     Vacation vacation = null;
     
     while (treeItem != null  &&  !(treeItemObject instanceof Vacation)) {
       treeItem = treeItem.getParent();
       LOGGER.info("after getParent() treeItem=" + (treeItem != null ? treeItem.toString() : "(null)"));
       if (treeItem != null) {
-        eObjectTreeItemContent = treeItem.getValue();
-        treeItemObject = eObjectTreeItemContent.getObject();
+        treeItemObject = treeItem.getValue();
       }
     }
     
@@ -1417,7 +1407,7 @@ public class VacationsWindow extends JfxStage {
    * @param treeItem the <code>TreeItem</code> for which the related DayTrip is to be found.
    * @return the related DayTrip, or null if this doesn't exist.
    */
-  private static DayTrip getDayTripForTreeItem(TreeItem<EObjectTreeItemContent> treeItem) {
+  private static DayTrip getDayTripForTreeItem(TreeItem<Object> treeItem) {
     LOGGER.info("=> treeItem=" + (treeItem != null ? treeItem.toString() : "(null)"));
     
     if (treeItem == null) {
@@ -1425,16 +1415,14 @@ public class VacationsWindow extends JfxStage {
       return null;
     }
     
-    EObjectTreeItemContent eObjectTreeItemContent = treeItem.getValue();
-    Object treeItemObject = eObjectTreeItemContent.getObject();
+    Object treeItemObject = treeItem.getValue();
     DayTrip dayTrip = null;
     
     while (treeItem != null  &&  !(treeItemObject instanceof DayTrip)) {
       treeItem = treeItem.getParent();
       LOGGER.info("after getParent() treeItem=" + (treeItem != null ? treeItem.toString() : "(null)"));
       if (treeItem != null) {
-        eObjectTreeItemContent = treeItem.getValue();
-        treeItemObject = eObjectTreeItemContent.getObject();
+        treeItemObject = treeItem.getValue();
       }
     }
     
@@ -1456,22 +1444,20 @@ public class VacationsWindow extends JfxStage {
    * @param treeItem the <code>TreeItem</code> for which the related Day is to be found.
    * @return the related Day, or null if this doesn't exist.
    */
-  private static Day getDayForTreeItem(TreeItem<EObjectTreeItemContent> treeItem) {
+  private static Day getDayForTreeItem(TreeItem<Object> treeItem) {
     LOGGER.info("=> treeItem=" + (treeItem != null ? treeItem.toString() : "(null)"));
     
     if (treeItem == null) {
       return null;
     }
     
-    EObjectTreeItemContent eObjectTreeItemContent = treeItem.getValue();
-    Object treeItemObject = eObjectTreeItemContent.getObject();
+    Object treeItemObject = treeItem.getValue();
     
     while (treeItem != null  &&  !(treeItemObject instanceof Day)) {
       treeItem = treeItem.getParent();
       LOGGER.info("after getParent() treeItem=" + (treeItem != null ? treeItem.toString() : "(null)"));
       if (treeItem != null) {
-        eObjectTreeItemContent = treeItem.getValue();
-        treeItemObject = eObjectTreeItemContent.getObject();
+        treeItemObject = treeItem.getValue();
       }
     }
     
@@ -1491,7 +1477,7 @@ public class VacationsWindow extends JfxStage {
    * @return the vacations list, or null.
    */
   @SuppressWarnings("unchecked")
-  private List<Vacation> getVacationsListForTreeItem(TreeItem<EObjectTreeItemContent> treeItem) {
+  private List<Vacation> getVacationsListForTreeItem(TreeItem<Object> treeItem) {
 //    LOGGER.info("=> treeItem=" + (treeItem != null ? treeItem.toString() : "(null)"));
     LOGGER.info("=>");
     
@@ -1501,11 +1487,11 @@ public class VacationsWindow extends JfxStage {
     }
     
     List<Vacation> vacations = null;
-    EObjectTreeItemContent treeItemContent = treeItem.getValue();;
+    Object treeItemContent = treeItem.getValue();;
     
     if ((EObjectTreeItem.getEStructuralFeature(treeItem) != null)  &&
         EObjectTreeItem.getEStructuralFeature(treeItem).equals(VACATIONS_PACKAGE.getVacations_Vacations())) {
-      vacations = (List<Vacation>) treeItemContent.getObject();
+      vacations = (List<Vacation>) treeItemContent;
     }
     
     LOGGER.info("<= vacations=" + (vacations != null ? vacations.toString() : "(null)"));
@@ -1518,7 +1504,7 @@ public class VacationsWindow extends JfxStage {
    * @param treeItem the <code>TreeItem</code> to check.
    * @return the vacations list, or null.
    */
-  private Vacations getVacationsForTreeItem(TreeItem<EObjectTreeItemContent> treeItem) {
+  private Vacations getVacationsForTreeItem(TreeItem<Object> treeItem) {
     LOGGER.severe("=> treeItem=" + (treeItem != null ? treeItem.toString() : "(null)"));
     
     if (treeItem == null) {
@@ -1527,8 +1513,7 @@ public class VacationsWindow extends JfxStage {
     }
     
     Vacations vacations = null;
-    EObjectTreeItemContent treeItemContent = treeItem.getValue();
-    Object object = treeItemContent.getObject();
+    Object object = treeItem.getValue();
     
     if (object instanceof Vacations) {
       vacations = (Vacations) object;
@@ -2065,7 +2050,7 @@ public class VacationsWindow extends JfxStage {
       return null;
     }
     
-    EObjectTreeItemContent eObjectTreeItemContent = eObjectTreeCell.getItem();
+    Object eObjectTreeItemContent = eObjectTreeCell.getItem();
     
     LOGGER.severe("eObjectTreeItemContent=" + eObjectTreeItemContent);
     
@@ -2181,11 +2166,11 @@ public class VacationsWindow extends JfxStage {
     // The parent is the FileReference, the grand parent is either a Picture, or any other element.
     EObjectTreeItem parentTreeItem = (EObjectTreeItem) treeItem.getParent();
     if (parentTreeItem != null) {
-      Object parentContent = parentTreeItem.getValue().getObject();
+      Object parentContent = parentTreeItem.getValue();
       LOGGER.severe("parent content: " + (parentContent != null ? parentContent.toString() : "<nul>"));
       EObjectTreeItem grandparentTreeItem = (EObjectTreeItem) parentTreeItem.getParent();
       if (grandparentTreeItem != null) {
-        Object object = grandparentTreeItem.getValue().getObject();
+        Object object = grandparentTreeItem.getValue();
         LOGGER.severe("Class=" + object.getClass().getName());
         if (object instanceof Picture) {
           Path path = VacationsUtils.getVacationPhotosFolderPath(vacation);
@@ -2905,8 +2890,7 @@ public class VacationsWindow extends JfxStage {
     
     // Add the locations to the currently selected tree item.
     EObjectTreeItem treeItem = (EObjectTreeItem) treeView.getSelectedObject();
-    EObjectTreeItemContent eObjectTreeItemContent = treeItem.getValue();
-    Object object = eObjectTreeItemContent.getObject();
+    Object object = treeItem.getValue();
     @SuppressWarnings("unchecked")
     List<VacationElement> elements = (List<VacationElement>) object;
     for (Location location: locations) {
@@ -2927,12 +2911,12 @@ public class VacationsWindow extends JfxStage {
   private void createOsmAndFavouritesFile() {
     // Get selected node in vacations
     EObject eObject = null;
-    TreeItem<EObjectTreeItemContent> treeItem = treeView.getSelectedObject();
+    TreeItem<Object> treeItem = treeView.getSelectedObject();
     if (treeItem != null) {
-      Object selectedObject = treeItem.getValue().getObject();
+      Object selectedObject = treeItem.getValue();
       while (selectedObject != null  &&  !(selectedObject instanceof EObject)) {
         treeItem = treeItem.getParent();  // Note: treeItem cannot be null, as the root is an EObject.
-        selectedObject = treeItem.getValue().getObject();
+        selectedObject = treeItem.getValue();
       }
       if (selectedObject instanceof EObject selectedEObject) {
         eObject = selectedEObject;
@@ -2983,8 +2967,8 @@ public class VacationsWindow extends JfxStage {
     LOGGER.severe("Creating TomTom ov2 file: " + file.getAbsolutePath());
     
     // Get selected node in vacations
-    TreeItem<EObjectTreeItemContent> treeItem = treeView.getSelectedObject();
-    Object selectedObject = treeItem.getValue().getObject();
+    TreeItem<Object> treeItem = treeView.getSelectedObject();
+    Object selectedObject = treeItem.getValue();
     if (selectedObject instanceof EObject) {
       EObject eObject = (EObject) selectedObject;
       
@@ -3129,8 +3113,7 @@ public class VacationsWindow extends JfxStage {
   public void reduceBoundariesSizes(EObjectTreeItem eObjectTreeItem) {
     LOGGER.info("=> " + eObjectTreeItem);
     
-    EObjectTreeItemContent eObjectTreeItemContent = eObjectTreeItem.getValue();
-    Object object = eObjectTreeItemContent.getObject();
+    Object object = eObjectTreeItem.getValue();
     if (!(object instanceof Location)) {
       LOGGER.severe("EObjectTreeItem doesn't contain a Location");
       return;
@@ -3214,7 +3197,7 @@ public class VacationsWindow extends JfxStage {
   }
   
   private void updateMapImageFile(EObjectTreeItem eObjectTreeItem) {
-    Object object = eObjectTreeItem.getValue().getObject();
+    Object object = eObjectTreeItem.getValue();
     if (object instanceof MapImage mapImage) {
       createMapImageView(mapImage, poiIcons, false);
     }
@@ -3307,12 +3290,10 @@ class BoundingBoxObtainer implements Consumer<EObjectTreeItem> {
   @Override
   public void accept(EObjectTreeItem eObjectTreeItem) {
     LOGGER.severe("=> eObjectTreeItem=" + eObjectTreeItem.toString());
-    EObjectTreeItemContent eObjectTreeItemContent = eObjectTreeItem.getValue();
-    Object object = eObjectTreeItemContent.getObject();
+    Object object = eObjectTreeItem.getValue();
     BoundingBox boundingBox;
     EObjectTreeItem parentEObjectTreeItem = (EObjectTreeItem) eObjectTreeItem.getParent();      
-    EObjectTreeItemContent eObjectParentTreeItemContent = parentEObjectTreeItem.getValue();
-    Location location = (Location) eObjectParentTreeItemContent.getObject();
+    Location location = (Location) parentEObjectTreeItem.getValue();
     // Create BoundingBox object if it doesn't exist yet.
     if (object != null) {
       boundingBox = (BoundingBox) object;

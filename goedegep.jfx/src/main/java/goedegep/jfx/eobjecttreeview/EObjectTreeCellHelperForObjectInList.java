@@ -55,7 +55,7 @@ public class EObjectTreeCellHelperForObjectInList extends EObjectTreeCellHelperA
   }
 
   @Override
-  public void updateItem(EObjectTreeItemContent eObjectTreeItemContent) {
+  public void updateItem(Object eObjectTreeItemContent) {
     LOGGER.info("=> item=" + (eObjectTreeItemContent != null ? eObjectTreeItemContent.toString() : "(null)"));
     
     super.updateItem(eObjectTreeItemContent);
@@ -82,7 +82,7 @@ public class EObjectTreeCellHelperForObjectInList extends EObjectTreeCellHelperA
       if (ebjectTreeItemClassDescriptor != null) {        
         Function<Object, Image> nodeIconFunction = ebjectTreeItemClassDescriptor.getNodeIconFunction();
         if (nodeIconFunction != null) {
-          Image iconImage = nodeIconFunction.apply(eObjectTreeItemContent.getObject());
+          Image iconImage = nodeIconFunction.apply(eObjectTreeItemContent);
           if (iconImage != null) {
             iconImageView = new ImageView(iconImage);
             iconImageView.setFitHeight(24);
@@ -105,7 +105,7 @@ public class EObjectTreeCellHelperForObjectInList extends EObjectTreeCellHelperA
    * 
    * @return a context menu derived from the node operation descriptors, or null if no node operation descriptors are specified.
    */
-  private ContextMenu createContextMenu(EObjectTreeItemContent eObjectTreeItemContent) {
+  private ContextMenu createContextMenu(Object eObjectTreeItemContent) {
     LOGGER.info("=>");
     
     if (itemDescriptor == null) {
@@ -183,10 +183,10 @@ public class EObjectTreeCellHelperForObjectInList extends EObjectTreeCellHelperA
         contextMenu.getItems().add(menu);
       } else {
         menuItem = new MenuItem(nodeOperationDescriptor.getMenuText());
-        if ((eObjectTreeItemContent.getObject() != null)  &&  (nodeOperationDescriptor.getOperation() == TableRowOperation.NEW_OBJECT)) {
+        if ((eObjectTreeItemContent != null)  &&  (nodeOperationDescriptor.getOperation() == TableRowOperation.NEW_OBJECT)) {
           menuItem.setDisable(true);
         }
-        if ((eObjectTreeItemContent.getObject() == null)  &&  (nodeOperationDescriptor.getOperation() == TableRowOperation.DELETE_OBJECT)) {
+        if ((eObjectTreeItemContent == null)  &&  (nodeOperationDescriptor.getOperation() == TableRowOperation.DELETE_OBJECT)) {
           menuItem.setDisable(true);
         }
         
@@ -286,8 +286,6 @@ public class EObjectTreeCellHelperForObjectInList extends EObjectTreeCellHelperA
     EObjectTreeItem eObjectTreeItem = (EObjectTreeItem) eObjectTreeCell.getTreeItem();    
     EObjectTreeItem parentEObjectTreeItem = (EObjectTreeItem) eObjectTreeItem.getParent();
     
-    EObjectTreeItemContent eObjectParentTreeItemContent = parentEObjectTreeItem.getValue();
-    
     EObjectTreeItemClassReferenceDescriptor eObjectTreeItemClassReferenceDescriptor = (EObjectTreeItemClassReferenceDescriptor) itemDescriptor;
     EReference eReference = eObjectTreeItemClassReferenceDescriptor.getEReference();
     EClass eClass = (EClass) eReference.getEType();
@@ -296,7 +294,7 @@ public class EObjectTreeCellHelperForObjectInList extends EObjectTreeCellHelperA
     EFactory eFactory = eClass.getEPackage().getEFactoryInstance();
     EObject newEObject = eFactory.create(eClass);
     
-    EObject parentEObject = (EObject) eObjectParentTreeItemContent.getObject();
+    EObject parentEObject = (EObject) parentEObjectTreeItem.getValue();
     parentEObject.eSet(eReference, newEObject);
     
     parentEObjectTreeItem.rebuildChildren();
@@ -309,12 +307,9 @@ public class EObjectTreeCellHelperForObjectInList extends EObjectTreeCellHelperA
     EObjectTreeItem eObjectTreeItem = (EObjectTreeItem) eObjectTreeCell.getTreeItem();
     EObjectTreeItem parentEObjectTreeItem = (EObjectTreeItem) eObjectTreeItem.getParent();
     
-    EObjectTreeItemContent eObjectTreeItemContent = eObjectTreeItem.getValue();
-    EObjectTreeItemContent eObjectParentTreeItemContent = parentEObjectTreeItem.getValue();
-    
-    EObject eObject = (EObject) eObjectTreeItemContent.getObject();
+    EObject eObject = (EObject) treeItem.getValue();
     @SuppressWarnings("unchecked")
-    EList<EObject> eObjectList = (EList<EObject>) eObjectParentTreeItemContent.getObject();
+    EList<EObject> eObjectList = (EList<EObject>) parentEObjectTreeItem.getValue();
         
     EFactory eFactory = eClass.getEPackage().getEFactoryInstance();
     EObject newEObject = eFactory.create(eClass);
@@ -332,15 +327,11 @@ public class EObjectTreeCellHelperForObjectInList extends EObjectTreeCellHelperA
   }
   
   private void moveObject(boolean up) {
-    EObjectTreeItem eObjectTreeItem = (EObjectTreeItem) eObjectTreeCell.getTreeItem();
-    EObjectTreeItem parentEObjectTreeItem = (EObjectTreeItem) eObjectTreeItem.getParent();
+    EObjectTreeItem parentEObjectTreeItem = (EObjectTreeItem) treeItem.getParent();
     
-    EObjectTreeItemContent eObjectTreeItemContent = eObjectTreeItem.getValue();
-    EObjectTreeItemContent eObjectParentTreeItemContent = parentEObjectTreeItem.getValue();
-    
-    EObject eObject = (EObject) eObjectTreeItemContent.getObject();
+    EObject eObject = (EObject) treeItem.getValue();
     @SuppressWarnings("unchecked")
-    EList<EObject> eObjectList = (EList<EObject>) eObjectParentTreeItemContent.getObject();
+    EList<EObject> eObjectList = (EList<EObject>) parentEObjectTreeItem.getValue();
     
     int currentIndex = eObjectList.indexOf(eObject);
     int newIndex;
@@ -362,8 +353,7 @@ public class EObjectTreeCellHelperForObjectInList extends EObjectTreeCellHelperA
     
     // Get the object to be deleted.
     EObjectTreeItem eObjectTreeItem = (EObjectTreeItem) eObjectTreeCell.getTreeItem();
-    EObjectTreeItemContent eObjectTreeItemContent = eObjectTreeItem.getValue();
-    EObject eObjectToBeDeleted = (EObject) eObjectTreeItemContent.getObject();  // By definition the object will be an EOBject
+    EObject eObjectToBeDeleted = (EObject) treeItem.getValue();  // By definition the object will be an EOBject
     
     // If the object to be deleted is referenced by a containment reference, check whether there are other references to this object. Inform the user about this.
     EReference eReferenceToObjectToBeDeleted = getEReferenceForOurObject();
@@ -467,8 +457,8 @@ public class EObjectTreeCellHelperForObjectInList extends EObjectTreeCellHelperA
 //    }
         
     EObjectTreeItem parentEObjectTreeItem = (EObjectTreeItem) eObjectTreeItem.getParent();
-    EObjectTreeItemContent parentEObjectTreeItemContent = parentEObjectTreeItem.getValue();
-    Object parentObject = parentEObjectTreeItemContent.getObject();
+//    EObjectTreeItemContent parentEObjectTreeItemContent = parentEObjectTreeItem.getValue();
+    Object parentObject = parentEObjectTreeItem.getValue();
 
     if (parentObject instanceof EList) {
       @SuppressWarnings("unchecked")
@@ -569,11 +559,11 @@ public class EObjectTreeCellHelperForObjectInList extends EObjectTreeCellHelperA
     }
   }
   
-  private String getText(EObjectTreeItemContent eObjectTreeItemContent) {
+  private String getText(Object eObjectTreeItemContent) {
     LOGGER.info("=>");
     
     String labelText = null;
-    EObject eObject = (EObject) eObjectTreeItemContent.getObject();
+    EObject eObject = (EObject) eObjectTreeItemContent;
     
     if ((itemDescriptor != null)  &&  (itemDescriptor.getBuildText() != null)) {
       labelText = itemDescriptor.getBuildText().apply(eObject);

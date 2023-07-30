@@ -15,7 +15,6 @@ import org.eclipse.emf.ecore.EStructuralFeature;
 import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.eobjecttreeview.EObjectTreeDescriptor;
 import goedegep.jfx.eobjecttreeview.EObjectTreeItem;
-import goedegep.jfx.eobjecttreeview.EObjectTreeItemContent;
 import goedegep.jfx.eobjecttreeview.EObjectTreeView;
 import goedegep.types.model.FileReference;
 import goedegep.types.model.TypesFactory;
@@ -104,7 +103,6 @@ public class VacationsTreeView extends EObjectTreeView {
     }
     
     // Check whether the item is a list of VacationElement
-    EObjectTreeItemContent eObjectTreeItemContent = eObjectTreeItem.getValue();
     EStructuralFeature contentStructuralFeature = EObjectTreeItem.getEStructuralFeature(eObjectTreeItem);
     if (contentStructuralFeature != null) {
       LOGGER.info("contentStructuralFeature=" + contentStructuralFeature.toString());
@@ -166,8 +164,7 @@ public class VacationsTreeView extends EObjectTreeView {
     Collections.sort(files);
     
     // Check whether the item is a list of VacationElement, if so add the picture to the end of the list
-    EObjectTreeItemContent eObjectTreeItemContent = eObjectTreeItem.getValue();
-    Object object = eObjectTreeItemContent.getObject();
+    Object object = eObjectTreeItem.getValue();
     EStructuralFeature contentStructuralFeature = EObjectTreeItem.getEStructuralFeature(eObjectTreeItem);
     if (contentStructuralFeature != null) {
       LOGGER.info("contentStructuralFeature=" + contentStructuralFeature.toString());
@@ -198,7 +195,7 @@ public class VacationsTreeView extends EObjectTreeView {
     
     // Check whether the parent of the item is a list of VacationElement, if so add the picture before the item.
     EObjectTreeItem parentEObjectTreeItem = (EObjectTreeItem) eObjectTreeItem.getParent();
-    EObjectTreeItemContent parentEObjectTreeItemContent = parentEObjectTreeItem.getValue();
+    Object parentEObjectTreeItemContent = parentEObjectTreeItem.getValue();
     contentStructuralFeature = EObjectTreeItem.getEStructuralFeature(parentEObjectTreeItem);
     if (contentStructuralFeature != null) {
       LOGGER.info("contentStructuralFeature=" + contentStructuralFeature.toString());
@@ -210,7 +207,7 @@ public class VacationsTreeView extends EObjectTreeView {
         if (contentEReference.isMany()  &&  contentReferenceType.equals(vacationsPackage.getVacationElement())) {
           LOGGER.severe("<= true (parent is a list of VacationElement reference)");
           @SuppressWarnings("unchecked")
-          EList<Object> list = (EList<Object>) parentEObjectTreeItemContent.getObject();
+          EList<Object> list = (EList<Object>) parentEObjectTreeItemContent;
           for (File file: files) {
             if (FileUtils.isPictureFile(file)) {
               Picture picture = createPicture(file);
