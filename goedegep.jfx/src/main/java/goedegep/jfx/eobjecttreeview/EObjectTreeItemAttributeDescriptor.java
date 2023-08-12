@@ -12,6 +12,8 @@ import goedegep.util.text.Indent;
  * This class is an {@link EObjectTreeItemDescriptor} for an item of type {@link EObjectTreeItemType.ATTRIBUTE_SIMPLE}.
  */
 public class EObjectTreeItemAttributeDescriptor extends EObjectTreeItemDescriptor {
+  static final String NEWLINE = System.getProperty("line.separator");
+  
   private EAttribute eAttribute;              // identifies the attribute to which this descriptor applies
   private String labelText;                   // Text to display instead of the attribute name.
   private Format format;                      // The formatter used to format and parse the object.
@@ -111,23 +113,24 @@ public class EObjectTreeItemAttributeDescriptor extends EObjectTreeItemDescripto
   public void setInitialDirectoryNameFunction(Function<EObjectTreeCell, String> initialDirectoryNameFunction) {
     this.initialDirectoryNameFunction = initialDirectoryNameFunction;
   }
+  
+  @Override
+  public String toString() {
+    return toString(new Indent(2));
+  }
 
   @Override
   public String toString(Indent indent) {
     StringBuilder buf = new StringBuilder();
     
-    buf.append(indent.toString()).append(getClass().getSimpleName());
-    buf.append(": eAttribute=");
-    buf.append(eAttribute != null ? eAttribute.getName() : "<null>");
-    buf.append(", labelText=");
-    buf.append(labelText);
-    buf.append(", presentationType=");
-    if (presentationType != null) {
-      buf.append(presentationType);
-    } else {
-      buf.append("<null>");
-    }
-    
+    buf.append(indent.toString()).append("class: ").append(getClass().getSimpleName()).append(NEWLINE);
+    buf.append(super.toString(indent));
+    buf.append(indent.toString()).append("eAttribute: ").append(eAttribute != null ? eAttribute.getName() : "<null>");
+    buf.append(", labelText:").append(labelText);
+    buf.append(", presentationType:").append(presentationType != null ? presentationType : "<null>");
+    buf.append(", format:").append(format != null ? format.getClass().getSimpleName() : "<null>").append(NEWLINE);
+    buf.append(indent.toString()).append("initialDirectoryNameFunction: ").append(initialDirectoryNameFunction != null ? "Set" : "Not set").append(NEWLINE);
+
     return buf.toString();
   }
   

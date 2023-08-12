@@ -20,6 +20,7 @@ public abstract class EObjectTreeCellHelperAbstract<I extends EObjectTreeItem> i
    * 
    * @param eObjectTreeCell the EObjectTreeCell to which this helper is attached.
    */
+  @SuppressWarnings("unchecked")
   public EObjectTreeCellHelperAbstract(EObjectTreeCell eObjectTreeCell) {
     this.eObjectTreeCell = eObjectTreeCell;
     treeItem = (I) eObjectTreeCell.getTreeItem();
@@ -32,9 +33,9 @@ public abstract class EObjectTreeCellHelperAbstract<I extends EObjectTreeItem> i
   public void updateItem(Object eObjectTreeItemContent) {
     LOGGER.info("=> item=" + (eObjectTreeItemContent != null ? eObjectTreeItemContent.toString() : "(null)"));
 
-//    updateItemDescriptor(eObjectTreeItemContent);
+    treeItem = (I) eObjectTreeCell.getTreeItem();
     eObjectTreeCell.setStyle(null);
-    
+
     LOGGER.info("<=");
   }
   

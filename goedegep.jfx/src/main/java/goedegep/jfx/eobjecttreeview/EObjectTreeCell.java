@@ -39,7 +39,7 @@ public class EObjectTreeCell extends TreeCell<Object> {
    * Constructor.
    */
   public EObjectTreeCell() {
-    LOGGER.info("=>");
+    LOGGER.info("=> treeItem: " + (getTreeItem() != null ? getTreeItem().toString() : "<null>"));
     
     EObjectTreeCell thisCell = this;
     
@@ -372,6 +372,7 @@ public class EObjectTreeCell extends TreeCell<Object> {
     if (dragEvent.getGestureSource() == this) {
       return null;
     }
+    LOGGER.severe("=> dragEvent=" + EObjectTreeItem.dragEventToString(dragEvent));
     
     EObjectTreeItem eObjectTreeItem = (EObjectTreeItem) getTreeItem();
     if (eObjectTreeItem == null) {
@@ -381,70 +382,6 @@ public class EObjectTreeCell extends TreeCell<Object> {
     }
     
   }
-   
-  /**
-   * Check whether an EObject, represented by the binary representation of its EObjectPath, can be dropped on this tree item.
-   * 
-   * @param eObjectPathBytes binary representation of the EObjectPath of the dragged EObject.
-   * @return true if the object can be dropped on this cell, false otherwise.
-   */
-//  private boolean isDropPossible(ByteBuffer eObjectPathBytes) {
-//    LOGGER.info("=>");
-//    boolean returnValue = false;
-//    
-//    if (eObjectPathBytes != null) {
-//      LOGGER.info("EObjectPath received!!");
-//      EObjectPath eObjectPath = new EObjectPath(eObjectPathBytes);
-//      
-//      // Get the root EObject, which is needed (together with the eObjectPath) to get the source object.
-//      EObjectTreeItem eObjectTreeItem = (EObjectTreeItem)  getTreeItem();
-//      EObject rootEObject = eObjectTreeItem.getRootEObject();
-//      EObject sourceEObject = eObjectPath.resolveEObjectPath(rootEObject);
-//      LOGGER.info("Resolved source EObject=" + sourceEObject.toString());
-//     
-//      EObjectTreeItemContent eObjectTreeItemContent = eObjectTreeItem.getValue();
-//      EStructuralFeature contentStructuralFeature = eObjectTreeItemContent.getEStructuralFeature();
-//      if (contentStructuralFeature != null) {
-//        LOGGER.info("contentStructuralFeature=" + contentStructuralFeature.toString());
-//        if (contentStructuralFeature instanceof EReference) {
-//          EReference contentEReference = (EReference) contentStructuralFeature;
-//          EClass contentReferenceType = contentEReference.getEReferenceType();
-//          if (contentReferenceType.isSuperTypeOf(sourceEObject.eClass())) {
-//            LOGGER.info("Yes it is a supertype");
-//            returnValue = true;
-//          }
-//        }
-//      } else {
-//        Object object = eObjectTreeItemContent.getObject();
-//        if (sourceEObject.getClass().equals(object.getClass())) {
-//          // this item is either a single value, which can be overwritten, or it is part of a list, so the source can be inserted.
-//          LOGGER.info("Object has same type");
-//          returnValue = true;
-//        } else {
-//          // if the parent is a list, which can contain this type, it can be inserted.
-//          EObjectTreeItem parent = (EObjectTreeItem)  eObjectTreeItem.getParent();
-//          if (parent != null) {
-//            EObjectTreeItemContent parentEObjectTreeItemContent = parent.getValue();
-//            EStructuralFeature parentContentStructuralFeature = parentEObjectTreeItemContent.getEStructuralFeature();
-//            if (parentContentStructuralFeature != null) {
-//              LOGGER.severe("parentContentStructuralFeature=" + parentContentStructuralFeature.toString());
-//              if (parentContentStructuralFeature instanceof EReference) {
-//                EReference contentEReference = (EReference) parentContentStructuralFeature;
-//                EClass contentReferenceType = contentEReference.getEReferenceType();
-//                if (contentReferenceType.isSuperTypeOf(sourceEObject.eClass())) {
-//                  LOGGER.severe("Yes it is a supertype");
-//                  returnValue = true;
-//                }
-//              }
-//            }
-//          }
-//        }
-//      }
-//    }
-//    
-//    LOGGER.info("=> " + returnValue);
-//    return returnValue;
-//  }
 
   /**
    * Update the {@code treeCellHelper} for the current content.
@@ -465,18 +402,13 @@ public class EObjectTreeCell extends TreeCell<Object> {
    */
   private void updateTreeCellHelper(Object value) {
     LOGGER.info("=> EObjectTreeItemType=" + ((EObjectTreeItem) getTreeItem()).getEObjectTreeItemType());
-    getTreeItem();
     
     EObjectTreeItemType newTreeItemType = ((EObjectTreeItem) getTreeItem()).getEObjectTreeItemType();
     
     if (treeItemType == null  ||  treeItemType != newTreeItemType) {
-      switch (((EObjectTreeItem) getTreeItem()).getEObjectTreeItemType()) {
+      switch (newTreeItemType) {
       case OBJECT:
         treeCellHelper = new EObjectTreeCellHelperForObject(this);
-        break;
-
-      case OBJECT_IN_LIST:
-        treeCellHelper = new EObjectTreeCellHelperForObjectInList(this);
         break;
 
       case OBJECT_LIST:

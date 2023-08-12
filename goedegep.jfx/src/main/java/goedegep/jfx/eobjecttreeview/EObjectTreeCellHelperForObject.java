@@ -26,7 +26,6 @@ import goedegep.util.emf.EmfPackageHelper;
 import goedegep.util.emf.EmfUtil;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.scene.Node;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ContextMenu;
@@ -36,15 +35,26 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
 /**
- * This class is a tree cell helper for an object.
+ * This class is a tree cell helper for an object (showing the header for the object).
+ * <p>
+ * If the tree item contains a reference to this object, with any presentation information, this is used to render the header.
+ * Otherwise the presentation information from the related class is used.
  */
 public class EObjectTreeCellHelperForObject extends EObjectTreeCellHelperAbstract<EObjectTreeItemForObject> {
   private static final Logger LOGGER = Logger.getLogger(EObjectTreeCellHelperForObject.class.getName());
   private static final String NEW_LINE = System.getProperty("line.separator");
   
-  private EObjectTreeItemClassDescriptor itemDescriptor;
+  private static final Image DEFAULT_GRAPHIC_IMAGE = new Image(EObjectTreeCellHelperForObject.class.getResourceAsStream("Class no text.png"), 36, 16, true, true);
   
-  private final Node objectIcon = new ImageView(new Image(EObjectTreeCellHelperForObject.class.getResourceAsStream("Class no text.png"), 36, 16, true, true));
+  /**
+   * Class reference descriptor, obtained from the tree item. Used if set and if it has at least one presentation property set.
+   */
+  private EObjectTreeItemClassReferenceDescriptor classReferenceDescriptor;
+  
+  /**
+   * Class descriptor, obtained from the tree view and used, if there is no reference with presentation information.
+   */
+  private EObjectTreeItemClassDescriptor classDescriptor;
   
   /**
    * Constructor.
@@ -55,19 +65,20 @@ public class EObjectTreeCellHelperForObject extends EObjectTreeCellHelperAbstrac
     super(eObjectTreeCell);
   }
 
+  /**
+   * {@inheritDoc}
+   * 
+   */
   @Override
   public void updateItem(Object eObjectTreeItemContent) {
     super.updateItem(eObjectTreeItemContent);
     
     LOGGER.info("=> treeItem=" + treeItem);
     
-    itemDescriptor = treeItem.getEObjectTreeItemClassDescriptor();
+    classReferenceDescriptor = treeItem.getEObjectTreeItemClassReferenceDescriptor();
     
-    if (itemDescriptor == null) {
-      EObjectTreeItemClassReferenceDescriptor eObjectTreeItemClassReferenceDescriptor = treeItem.getEObjectTreeItemClassReferenceDescriptor();
-      if (eObjectTreeItemClassReferenceDescriptor != null) {
-        itemDescriptor = treeItem.getEObjectTreeView().getEObjectTreeDescriptor().getDescriptorForEClass(eObjectTreeItemClassReferenceDescriptor.getEClass());
-      }
+    if (!hasReferenceWithPresentationInfo()) {
+      classDescriptor = treeItem.getClassDescriptor();
     }
     
     ContextMenu contextMenu = createContextMenu(eObjectTreeItemContent);
@@ -75,30 +86,23 @@ public class EObjectTreeCellHelperForObject extends EObjectTreeCellHelperAbstrac
     
     // This cell type cannot be edited, so we don't have to check on isEditing()
     eObjectTreeCell.setText(getText(eObjectTreeItemContent));
-    if (itemDescriptor.isStrongText()) {
+    boolean isStrongText = hasReferenceWithPresentationInfo() ? classReferenceDescriptor.isStrongText() : classDescriptor.isStrongText();
+    if (isStrongText) {
       eObjectTreeCell.setStyle("-fx-font-weight: bold;");
     }
-
     
-    ImageView iconImageView = null;
-    if (eObjectTreeItemContent != null) {
-      if (itemDescriptor != null) {        
-        Function<Object, Image> nodeIconFunction = itemDescriptor.getNodeIconFunction();
-        if (nodeIconFunction != null) {
-          Image iconImage = nodeIconFunction.apply(eObjectTreeItemContent);
-          if (iconImage != null) {
-            iconImageView = new ImageView(iconImage);
-            iconImageView.setFitHeight(24);
-            iconImageView.setPreserveRatio(true);
-          }
-        }
-      }
+    
+    Image iconImage = null;
+    Function<Object, Image> nodeIconFunction = hasReferenceWithPresentationInfo() ? classReferenceDescriptor.getNodeIconFunction() : classDescriptor.getNodeIconFunction();
+    if (nodeIconFunction != null) {
+      iconImage = nodeIconFunction.apply(eObjectTreeItemContent);
     }
-    if (iconImageView != null) {
-      eObjectTreeCell.setGraphic(iconImageView);
-    } else {
-      eObjectTreeCell.setGraphic(objectIcon);
-    }
+    
+    ImageView iconImageView = new ImageView(iconImage != null ? iconImage : DEFAULT_GRAPHIC_IMAGE);
+    iconImageView.setFitHeight(24);
+    iconImageView.setPreserveRatio(true);
+    
+    eObjectTreeCell.setGraphic(iconImageView);
     
     LOGGER.info("<=");
   }
@@ -111,17 +115,13 @@ public class EObjectTreeCellHelperForObject extends EObjectTreeCellHelperAbstrac
   private ContextMenu createContextMenu(Object eObjectTreeItemContent) {
     LOGGER.info("=>");
     
-    if (itemDescriptor == null) {
-      return null;
-    }
-    
-    List<NodeOperationDescriptor> nodeOperationDescriptors = itemDescriptor.getNodeOperationDescriptors();
+    List<NodeOperationDescriptor> nodeOperationDescriptors = classReferenceDescriptor != null ? classReferenceDescriptor.getNodeOperationDescriptors() : classDescriptor.getNodeOperationDescriptors();
     if (nodeOperationDescriptors == null) {
       // node operation descriptors, so no context menu.
       return null;
     }
     
-    EObjectTreeItem eObjectTreeItem = (EObjectTreeItem) eObjectTreeCell.getTreeItem();
+    EObjectTreeItemForObject eObjectTreeItem = (EObjectTreeItemForObject) eObjectTreeCell.getTreeItem();
     
     // Check whether this is the first item in a list. An object can only be moved up, if it is not the first one.
     boolean first = false;
@@ -144,16 +144,16 @@ public class EObjectTreeCellHelperForObject extends EObjectTreeCellHelperAbstrac
      * 
      * Note that the object of this item may be a sub type of the reference type. 
      */
-    EReference eReference = null;
-    if (itemDescriptor instanceof EObjectTreeItemClassReferenceDescriptor) {
-      EObjectTreeItemClassReferenceDescriptor eObjectTreeItemClassReferenceDescriptor = (EObjectTreeItemClassReferenceDescriptor) itemDescriptor;
-      eReference = eObjectTreeItemClassReferenceDescriptor.getEReference();
-    } else {
-      EObjectTreeItem parentEObjectTreeItem = (EObjectTreeItem) eObjectTreeItem.getParent();
-      if (parentEObjectTreeItem != null) {
-        eReference = treeItem.getEReference();
-      }
-    }
+    EReference eReference = eObjectTreeItem.getApplicableEReference(eObjectTreeItem);
+//    if (itemDescriptor instanceof EObjectTreeItemClassReferenceDescriptor) {
+//      EObjectTreeItemClassReferenceDescriptor eObjectTreeItemClassReferenceDescriptor = (EObjectTreeItemClassReferenceDescriptor) itemDescriptor;
+//      eReference = eObjectTreeItemClassReferenceDescriptor.getEReference();
+//    } else {
+//      EObjectTreeItem parentEObjectTreeItem = (EObjectTreeItem) eObjectTreeItem.getParent();
+//      if (parentEObjectTreeItem != null) {
+//        eReference = (EReference) treeItem.getEStructuralFeature();
+//      }
+//    }
     
     if (eReference == null) {
       return null;
@@ -298,15 +298,17 @@ public class EObjectTreeCellHelperForObject extends EObjectTreeCellHelperAbstrac
     EObjectTreeItem eObjectTreeItem = (EObjectTreeItem) eObjectTreeCell.getTreeItem();    
     EObjectTreeItem parentEObjectTreeItem = (EObjectTreeItem) eObjectTreeItem.getParent();
     
-    EObjectTreeItemClassReferenceDescriptor eObjectTreeItemClassReferenceDescriptor = (EObjectTreeItemClassReferenceDescriptor) itemDescriptor;
-    EReference eReference = eObjectTreeItemClassReferenceDescriptor.getEReference();
-    EClass eClass = (EClass) eReference.getEType();
+//    EObjectTreeItemClassReferenceDescriptor eObjectTreeItemClassReferenceDescriptor = (EObjectTreeItemClassReferenceDescriptor) itemDescriptor;
+//    EReference eReference = eObjectTreeItemClassReferenceDescriptor.getEReference();
+    EClass eClass = classReferenceDescriptor.getEClass();
+//    EClass eClass = (EClass) eReference.getEType();
     
         
     EFactory eFactory = eClass.getEPackage().getEFactoryInstance();
     EObject newEObject = eFactory.create(eClass);
     
     EObject parentEObject = (EObject) parentEObjectTreeItem.getValue();
+    EReference eReference = (EReference) parentEObjectTreeItem.getEStructuralFeature();
     parentEObject.eSet(eReference, newEObject);
     
     parentEObjectTreeItem.rebuildChildren();
@@ -365,11 +367,11 @@ public class EObjectTreeCellHelperForObject extends EObjectTreeCellHelperAbstrac
     LOGGER.severe("=>");
     
     // Get the object to be deleted.
-    EObjectTreeItem eObjectTreeItem = (EObjectTreeItem) eObjectTreeCell.getTreeItem();
+    EObjectTreeItemForObject eObjectTreeItem = (EObjectTreeItemForObject) eObjectTreeCell.getTreeItem();
     EObject eObjectToBeDeleted = (EObject) eObjectTreeItem.getValue();  // By definition the object will be an EOBject
     
     // If the object to be deleted is referenced by a containment reference, check whether there are other references to this object. Inform the user about this.
-    EReference eReferenceToObjectToBeDeleted = getEReferenceForOurObject();
+    EReference eReferenceToObjectToBeDeleted = EObjectTreeItemForObject.getApplicableEReference(eObjectTreeItem);
     if (eReferenceToObjectToBeDeleted.isContainment()) {
       LOGGER.info("Containment");
       ResourceSet resourceSet = eObjectToBeDeleted.eResource().getResourceSet();
@@ -507,39 +509,39 @@ public class EObjectTreeCellHelperForObject extends EObjectTreeCellHelperAbstrac
 //    parentEObjectTreeItem.rebuildChildren();
   }
   
-  /**
-   * Get the EReference referring to our object.
-   * 
-   * @return the EReference referring to our object.
-   */
-  private EReference getEReferenceForOurObject() {
-    EObjectTreeItem eObjectTreeItem = (EObjectTreeItem) eObjectTreeCell.getTreeItem();
-    EObjectTreeItemType eObjectTreeItemType = eObjectTreeItem.getEObjectTreeItemType();
-    
-    EReference eReference = null;
-    if (eObjectTreeItemType == EObjectTreeItemType.OBJECT) {
-      // the reference is in this object
-      eReference = treeItem.getEReference();
-//    } else if (eObjectTreeItemType == EObjectTreeItemType.OBJECT_LIST) {
+//  /**
+//   * Get the EReference referring to our object.
+//   * 
+//   * @return the EReference referring to our object.
+//   */
+//  private EReference getEReferenceForOurObject() {
+//    EObjectTreeItem eObjectTreeItem = (EObjectTreeItem) eObjectTreeCell.getTreeItem();
+//    EObjectTreeItemType eObjectTreeItemType = eObjectTreeItem.getEObjectTreeItemType();
+//    
+//    EReference eReference = null;
+//    if (eObjectTreeItemType == EObjectTreeItemType.OBJECT) {
+//      // the reference is in this object
+//      eReference = (EReference) treeItem.getEStructuralFeature();
+////    } else if (eObjectTreeItemType == EObjectTreeItemType.OBJECT_LIST) {
+////      // the reference is in the parent item
+////      EObjectTreeItem parentEObjectTreeItem = (EObjectTreeItem) eObjectTreeItem.getParent();
+////      EObjectTreeItemContent parentEObjectTreeItemContent = parentEObjectTreeItem.getValue();
+////      LOGGER.severe("parentEObjectTreeItemContent: " + parentEObjectTreeItemContent.toString());
+////      eReference = (EReference) parentEObjectTreeItemContent.getEStructuralFeature();
+//    } else {
+//      throw new RuntimeException("Illegal EObjectTreeItemType for tree item. Tree Item = " + eObjectTreeItem + ", EObjectTreeItemType = " + eObjectTreeItemType);
+//    }
+//    
+//    if (eReference == null) {
 //      // the reference is in the parent item
 //      EObjectTreeItem parentEObjectTreeItem = (EObjectTreeItem) eObjectTreeItem.getParent();
-//      EObjectTreeItemContent parentEObjectTreeItemContent = parentEObjectTreeItem.getValue();
-//      LOGGER.severe("parentEObjectTreeItemContent: " + parentEObjectTreeItemContent.toString());
-//      eReference = (EReference) parentEObjectTreeItemContent.getEStructuralFeature();
-    } else {
-      throw new RuntimeException("Illegal EObjectTreeItemType for tree item. Tree Item = " + eObjectTreeItem + ", EObjectTreeItemType = " + eObjectTreeItemType);
-    }
-    
-    if (eReference == null) {
-      // the reference is in the parent item
-      EObjectTreeItem parentEObjectTreeItem = (EObjectTreeItem) eObjectTreeItem.getParent();
-      LOGGER.severe("parentEObjectTreeItem: " + parentEObjectTreeItem.toString());
-      throw new RuntimeException("TODO handle reference from parent");
-//      eReference = (EReference) parentEObjectTreeItemContent.getEStructuralFeature();
-    }
-    
-    return eReference;
-  }
+//      LOGGER.severe("parentEObjectTreeItem: " + parentEObjectTreeItem.toString());
+//      throw new RuntimeException("TODO handle reference from parent");
+////      eReference = (EReference) parentEObjectTreeItemContent.getEStructuralFeature();
+//    }
+//    
+//    return eReference;
+//  }
   
   /**
    * Show a dialog to the user with information about the to be deleted references and wait for the users choice.
@@ -596,9 +598,18 @@ public class EObjectTreeCellHelperForObject extends EObjectTreeCellHelperAbstrac
     String labelText = null;
     EObject eObject = (EObject) eObjectTreeItemContent;
     
-    if ((itemDescriptor != null)  &&  (itemDescriptor.getBuildText() != null)) {
-      labelText = itemDescriptor.getBuildText().apply(eObject);
-    } else if (eObject != null) {
+    if (hasReferenceWithPresentationInfo()) {
+      if (classReferenceDescriptor.getBuildText() != null) {
+        labelText = classReferenceDescriptor.getBuildText().apply(eObject);
+      }
+    } else {
+      if (classDescriptor.getBuildText() != null) {
+        labelText = classDescriptor.getBuildText().apply(eObject);
+      }
+    }
+    
+    if (labelText == null  &&  eObject != null) {
+      LOGGER.severe("Fall back to class name");
       String className = eObject.getClass().getSimpleName();
       labelText = className.substring(0, className.length() - 4);
     }
@@ -717,4 +728,19 @@ public class EObjectTreeCellHelperForObject extends EObjectTreeCellHelperAbstrac
 //    }
 //    
 //  }
+  
+  /**
+   * Check whether the object tree item has a reference with any presentation information.
+   * <p>
+   * An object tree item has a reference with any presentation information,if the {@code classReferenceDescriptor} in not null
+   * and this descriptor has any presentation value set (buildText, strongText, nodeIconFunction).
+   * 
+   * @return true if the object tree item has a reference with any presentation information, false otherwise.
+   */
+  boolean hasReferenceWithPresentationInfo() {
+    return classReferenceDescriptor != null &&
+      (classReferenceDescriptor.getBuildText() != null  ||
+       classReferenceDescriptor.isStrongText()  ||
+       classReferenceDescriptor.getNodeIconFunction() != null);
+  }
 }

@@ -4,6 +4,7 @@ import java.awt.Desktop;
 import java.io.File;
 import java.io.IOException;
 import java.text.ParseException;
+import java.util.Date;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -70,9 +71,9 @@ public class EObjectTreeCellHelperForAttributeSimple extends EObjectTreeCellHelp
       eObjectTreeCell.setContextMenu(contextMenu);
     }
         
-    if (graphic == null) {
+//    if (graphic == null) {
       createGraphic();
-    }
+//    }
     
     eObjectTreeCell.setText(null);
     eObjectTreeCell.setGraphic(graphic);
@@ -168,8 +169,9 @@ public class EObjectTreeCellHelperForAttributeSimple extends EObjectTreeCellHelp
         public void handle(KeyEvent keyEvent) {
           if ((keyEvent.getCode() == KeyCode.ENTER)  &&  
               ((valueTextField != null)  ||  keyEvent.isControlDown())) {
-            treeItem.setValue(textInputControl.getText());
-            eObjectTreeCell.commitEdit(eObjectTreeItemContent);
+//            treeItem.setValue(textInputControl.getText());
+//            eObjectTreeCell.commitEdit(eObjectTreeItemContent);
+            eObjectTreeCell.commitEdit(textInputControl.getText());
           } else if (keyEvent.getCode() == KeyCode.ESCAPE) {
             eObjectTreeCell.cancelEdit();
           }
@@ -293,6 +295,8 @@ public class EObjectTreeCellHelperForAttributeSimple extends EObjectTreeCellHelp
       throw new RuntimeException("treeItem has changed");
     }
     
+    ((EObjectTreeItem) eObjectTreeItem).getEObjectTreeView().ignoreNotification = true;
+    
     graphic.getChildren().remove(editControl);
     textInputControl = null;
     valueTextField = null;
@@ -345,6 +349,7 @@ public class EObjectTreeCellHelperForAttributeSimple extends EObjectTreeCellHelp
     
     if (checkBox == null) {
       valueLabel.setText(getValueText(newValue));
+      graphic.getChildren().remove(valueLabel);
       graphic.getChildren().add(valueLabel);
     }
     
@@ -352,6 +357,8 @@ public class EObjectTreeCellHelperForAttributeSimple extends EObjectTreeCellHelp
     Object parentValue = parentItem.getValue();
     EObject eObject = (EObject) parentValue;
     eObject.eSet(treeItem.getEAttribute(), newValueObject);
+
+    ((EObjectTreeItem) eObjectTreeItem).getEObjectTreeView().ignoreNotification = false;
     
     LOGGER.info("<=");
   }
@@ -419,8 +426,9 @@ public class EObjectTreeCellHelperForAttributeSimple extends EObjectTreeCellHelp
     if (value != null) {
       if (itemDescriptor.getFormat() != null) {
         itemText = itemDescriptor.getFormat().format(value);
+      } else {
+        itemText = value.toString();
       }
-      itemText = value.toString();
     } else {
       itemText = "(null)";
     }

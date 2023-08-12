@@ -58,7 +58,7 @@ public class VacationsTreeView extends EObjectTreeView {
     
     EClass locationEClass = VacationsPackage.eINSTANCE.getLocation();
 
-    EStructuralFeature eStructuralFeature = EObjectTreeItem.getEStructuralFeature(treeItem);
+    EStructuralFeature eStructuralFeature = treeItem.getEStructuralFeature();
     if (eStructuralFeature instanceof EReference) {
       EReference eReference = (EReference) eStructuralFeature;
       EClass listTypeEClass = eReference.getEReferenceType();
@@ -103,7 +103,7 @@ public class VacationsTreeView extends EObjectTreeView {
     }
     
     // Check whether the item is a list of VacationElement
-    EStructuralFeature contentStructuralFeature = EObjectTreeItem.getEStructuralFeature(eObjectTreeItem);
+    EStructuralFeature contentStructuralFeature = eObjectTreeItem.getEStructuralFeature();
     if (contentStructuralFeature != null) {
       LOGGER.info("contentStructuralFeature=" + contentStructuralFeature.toString());
       if (contentStructuralFeature instanceof EReference contentEReference) {
@@ -120,7 +120,7 @@ public class VacationsTreeView extends EObjectTreeView {
     
     // Check whether the parent of the item is a list of VacationElement
     EObjectTreeItem parentEObjectTreeItem = (EObjectTreeItem) eObjectTreeItem.getParent();
-    contentStructuralFeature = EObjectTreeItem.getEStructuralFeature(parentEObjectTreeItem);
+    contentStructuralFeature = parentEObjectTreeItem.getEStructuralFeature();
     if (contentStructuralFeature != null) {
       LOGGER.info("contentStructuralFeature=" + contentStructuralFeature.toString());
       if (contentStructuralFeature instanceof EReference contentEReference) {
@@ -165,7 +165,7 @@ public class VacationsTreeView extends EObjectTreeView {
     
     // Check whether the item is a list of VacationElement, if so add the picture to the end of the list
     Object object = eObjectTreeItem.getValue();
-    EStructuralFeature contentStructuralFeature = EObjectTreeItem.getEStructuralFeature(eObjectTreeItem);
+    EStructuralFeature contentStructuralFeature = eObjectTreeItem.getEStructuralFeature();
     if (contentStructuralFeature != null) {
       LOGGER.info("contentStructuralFeature=" + contentStructuralFeature.toString());
       if (contentStructuralFeature instanceof EReference contentEReference) {
@@ -196,7 +196,7 @@ public class VacationsTreeView extends EObjectTreeView {
     // Check whether the parent of the item is a list of VacationElement, if so add the picture before the item.
     EObjectTreeItem parentEObjectTreeItem = (EObjectTreeItem) eObjectTreeItem.getParent();
     Object parentEObjectTreeItemContent = parentEObjectTreeItem.getValue();
-    contentStructuralFeature = EObjectTreeItem.getEStructuralFeature(parentEObjectTreeItem);
+    contentStructuralFeature = parentEObjectTreeItem.getEStructuralFeature();
     if (contentStructuralFeature != null) {
       LOGGER.info("contentStructuralFeature=" + contentStructuralFeature.toString());
       if (contentStructuralFeature instanceof EReference contentEReference) {

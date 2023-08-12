@@ -27,6 +27,8 @@ import javafx.scene.image.Image;
  * The item descriptors for the different types of items have to extend this class.
  */
 public abstract class EObjectTreeItemDescriptor {
+  static final String NEWLINE = System.getProperty("line.separator");
+
   private EObjectTreeItemDescriptorType descriptorType;
   private boolean expandOnCreation = false;                          // Expand the node upon creation of the tree.
   private boolean strongText = false;                                // If true, the text is in a strong font (bold).
@@ -78,6 +80,10 @@ public abstract class EObjectTreeItemDescriptor {
   public java.util.function.Function<Object, Image> getNodeIconFunction() {
     return nodeIconFunction;
   }
+  
+  public void setNodeIconFunction(java.util.function.Function<Object, Image> nodeIconFunction) {
+    this.nodeIconFunction = nodeIconFunction;
+  }
 
 
   public enum EObjectTreeItemDescriptorType {
@@ -89,7 +95,25 @@ public abstract class EObjectTreeItemDescriptor {
     CLASS_REFERENCE
   }
 
-
-  protected abstract Object toString(Indent indent);
+  protected Object toString(Indent indent) {
+    StringBuilder buf = new StringBuilder();
+    
+    buf.append(indent.toString()).append("descriptorType: ").append(descriptorType).append(NEWLINE);
+    buf.append(indent.toString()).append("expandOnCreation: ").append(expandOnCreation).append(NEWLINE);
+    buf.append(indent.toString()).append("strongText: ").append(strongText).append(NEWLINE);
+    buf.append(indent.toString()).append("nodeOperationDescriptors: ");
+    if (nodeOperationDescriptors != null) {
+      for (NodeOperationDescriptor nodeOperationDescriptor: nodeOperationDescriptors) {
+        buf.append(nodeOperationDescriptor.getOperation().name());
+      }
+    } else {
+      buf.append("<not set>");
+    }
+    buf.append(NEWLINE);
+    buf.append(indent.toString()).append("buildText: ").append(buildText != null ? "Set" : "Not set").append(NEWLINE);
+    buf.append(indent.toString()).append("nodeIconFunction: ").append(nodeIconFunction != null ? "Set" : "Not set").append(NEWLINE);
+    
+    return buf.toString();
+  }
 }
 
