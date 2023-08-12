@@ -81,7 +81,7 @@ public class EObjectPath {
    * @param rootEObject the root of an EObject hierarchy.
    * @return the EObject within the EObject hierarchy which is identified by this EObjectPath.
    */
-  public EObject resolveEObjectPath(final EObject rootEObject) {
+  public EObject resolveToEObject(final EObject rootEObject) {
     LOGGER.info("=>");
     LOGGER.info("pathXTree=" + pathXTree.toString());
     
@@ -90,6 +90,57 @@ public class EObjectPath {
     
     LOGGER.info("<=");
     return eObjectResolverVisitor.getEObject();
+  }
+  
+  /**
+   * Get the ERerefence to the EObject in an EObject hierarchy, for this EObjectPath.
+   * 
+   * @param rootEObject the root of an EObject hierarchy.
+   * @return the EReference to the EObject within the EObject hierarchy which is identified by this EObjectPath.
+   */
+  public EReference resolveToEObjectReference(final EObject rootEObject) {
+    LOGGER.info("=>");
+    LOGGER.info("pathXTree=" + pathXTree.toString());
+    
+    EObjectResolverVisitor eObjectResolverVisitor = new EObjectResolverVisitor(rootEObject);
+    pathXTree.traverse(eObjectResolverVisitor);
+    
+    LOGGER.info("<=");
+    return eObjectResolverVisitor.getEReference();
+  }
+  
+  /**
+   * Get the ERerefence to the EObject in an EObject hierarchy, for this EObjectPath.
+   * 
+   * @param rootEObject the root of an EObject hierarchy.
+   * @return the EReference to the EObject within the EObject hierarchy which is identified by this EObjectPath.
+   */
+  public Integer resolveToEObjectReferenceIndex(final EObject rootEObject) {
+    LOGGER.info("=>");
+    LOGGER.info("pathXTree=" + pathXTree.toString());
+    
+    EObjectResolverVisitor eObjectResolverVisitor = new EObjectResolverVisitor(rootEObject);
+    pathXTree.traverse(eObjectResolverVisitor);
+    
+    LOGGER.info("<=");
+    return eObjectResolverVisitor.getIndex();
+  }
+  
+  /**
+   * Get the parent EObject of the EObject in an EObject hierarchy, for this EObjectPath.
+   * 
+   * @param rootEObject the root of an EObject hierarchy.
+   * @return the EReference to the EObject within the EObject hierarchy which is identified by this EObjectPath.
+   */
+  public EObject resolveToEObjectParent(final EObject rootEObject) {
+    LOGGER.info("=>");
+    LOGGER.info("pathXTree=" + pathXTree.toString());
+    
+    EObjectResolverVisitor eObjectResolverVisitor = new EObjectResolverVisitor(rootEObject);
+    pathXTree.traverse(eObjectResolverVisitor);
+    
+    LOGGER.info("<=");
+    return eObjectResolverVisitor.getParent();
   }
   
   public ByteBuffer getSerializedData() {
@@ -155,7 +206,7 @@ public class EObjectPath {
     EObjectPath reconstructedPath = new EObjectPath(serialized);
     
     // Retrieve the object
-    EObject retrievedObject = reconstructedPath.resolveEObjectPath(discStructureSpecification);
+    EObject retrievedObject = reconstructedPath.resolveToEObject(discStructureSpecification);
     System.out.println("retrievedObject: " + retrievedObject.toString());
     
     // Check that it is the original object.
@@ -247,6 +298,8 @@ class EObjectResolverVisitor implements XTreeNodeVisitor {
   boolean handlingReferenceName = true;  // false for handling index in list for reference of type many.
   EReference reference = null;
   EObject eObject = null;
+  EObject parentEObject = null;
+  Integer referenceIndex = null;
   
   public EObjectResolverVisitor(EObject rootObject) {
     eObject = rootObject;
@@ -254,6 +307,18 @@ class EObjectResolverVisitor implements XTreeNodeVisitor {
   
   public EObject getEObject() {
     return eObject;
+  }
+  
+  public EReference getEReference() {
+    return reference;
+  }
+  
+  public EObject getParent() {
+    return parentEObject;
+  }
+  
+  public Integer getIndex() {
+    return referenceIndex;
   }
 
   @Override
@@ -272,6 +337,7 @@ class EObjectResolverVisitor implements XTreeNodeVisitor {
       LOGGER.info("Handling reference");
       
       reference = null;
+      referenceIndex = null;
       
       // reference name expected
       if (dataType != XNodeDataType.STRING) {
@@ -299,6 +365,7 @@ class EObjectResolverVisitor implements XTreeNodeVisitor {
         handlingReferenceName = false;
       } else {
         LOGGER.info("is NOT many");
+        parentEObject = eObject;
         eObject = (EObject) eObject.eGet(reference);
       }
       LOGGER.info("eObject=" + eObject.toString());
@@ -321,7 +388,9 @@ class EObjectResolverVisitor implements XTreeNodeVisitor {
       if (index > list.size() - 1) {
         LOGGER.info("Wrong index, index=" + index + ", size=" + list.size());
       }
+      parentEObject = eObject;
       eObject = list.get(index);
+      referenceIndex = index;
       LOGGER.info("eObject obtained from list, eObject=" + eObject.toString());
       
       handlingReferenceName = true;

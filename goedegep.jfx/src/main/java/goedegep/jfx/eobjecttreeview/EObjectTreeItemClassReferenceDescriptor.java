@@ -12,31 +12,31 @@ import goedegep.util.text.Indent;
 /**
  * This class is an {@link EObjectTreeItemDescriptor} for an item of type {@link EObjectTreeItemType.CLASS_REFERENCE}.
  */
-public class EObjectTreeItemClassReferenceDescriptor extends EObjectTreeItemClassDescriptor {
+public class EObjectTreeItemClassReferenceDescriptor extends EObjectTreeItemDescriptor {
+  private EClass eClass;
   private EReference eReference;    // Identifies the reference to which this descriptor applies
     
   public EObjectTreeItemClassReferenceDescriptor(EReference eReference, EClass eClass, Function<EObject, String> buildText, boolean expandOnCreation,
       List<NodeOperationDescriptor> nodeOperationDescriptors) {
-    super(eClass, buildText, expandOnCreation, nodeOperationDescriptors);
-    setDescriptorType(EObjectTreeItemDescriptorType.CLASS_REFERENCE);
+    super(EObjectTreeItemDescriptorType.CLASS_REFERENCE, expandOnCreation, nodeOperationDescriptors, buildText, null);
+//    super(eClass, buildText, expandOnCreation, nodeOperationDescriptors);
+//    setDescriptorType(EObjectTreeItemDescriptorType.CLASS_REFERENCE);
     this.eReference = eReference;
+    this.eClass = eClass;
   }
 
   public EReference getEReference() {
     return eReference;
   }
   
-//  /**
-//   * Check whether the structural features of this class are defined as children of this node.
-//   * <p>
-//   * If the structural features of this class are not defined as children of this node, there shall
-//   * be a separate descriptor for each class which is referred to.
-//   * 
-//   * @return true if the structural features of this class are defined as children of this node, false otherwise.
-//   */
-//  public boolean areStructuralFeaturesDefinedAsChildren() {
-//    return structuralFeaturesDefinedAsChildren;
-//  }
+  public EClass getEClass() {
+    return eClass;
+  }
+  
+  @Override
+  public String toString() {
+    return toString(new Indent(2));
+  }
   
   @Override
   public String toString(Indent indent) {

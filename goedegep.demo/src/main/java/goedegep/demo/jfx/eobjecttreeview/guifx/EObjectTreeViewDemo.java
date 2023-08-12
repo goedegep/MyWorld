@@ -18,6 +18,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
 public class EObjectTreeViewDemo extends JfxStage {
@@ -61,8 +62,18 @@ public class EObjectTreeViewDemo extends JfxStage {
     
     vBox.getChildren().add(createMenuBar());
     
-    EObjectTreeView treeView = new EObjectTreeView(company, true);
-    vBox.getChildren().add(treeView);
+    HBox treesHBox = componentFactory.createHBox();
+//    EObjectTreeView defaultTreeView = new EObjectTreeView(company, true);
+//    defaultTreeView.setMinWidth(400);
+//    defaultTreeView.setMinHeight(700);
+//    treesHBox.getChildren().add(defaultTreeView);
+    
+    EObjectTreeView descriptorBasedTreeView = new EObjectTreeView(company, CompanyTreeViewDescriptorFactory.createDescriptor(), true);
+    descriptorBasedTreeView.setMinWidth(400);
+    descriptorBasedTreeView.setMinHeight(700);
+    treesHBox.getChildren().add(descriptorBasedTreeView);
+    
+    vBox.getChildren().add(treesHBox);
 
     setScene(new Scene(vBox));
   }
@@ -120,8 +131,10 @@ public class EObjectTreeViewDemo extends JfxStage {
    * Move an employee from the list of employees to the list of former employees.
    */
   private void employeeToFormerEmployees() {
-    Person person = company.getEmployees().remove(1);
-    company.getFormerEmployees().add(person);
+    if (company.getEmployees().size() >= 2) {
+      Person person = company.getEmployees().remove(1);
+      company.getFormerEmployees().add(person);
+    }
   }
 
   /**
@@ -153,11 +166,11 @@ public class EObjectTreeViewDemo extends JfxStage {
     company.getBirthdays().add(birthday);
     
     person = EMF_SAMPLE_FACTORY.createPerson();
-    birthday = EMF_SAMPLE_FACTORY.createBirthday();
-    birthday.setDay(23);
-    birthday.setMonth(8);
-    birthday.setYear(1966);
-    person.setBirthday(birthday);
+//    birthday = EMF_SAMPLE_FACTORY.createBirthday();
+//    birthday.setDay(23);
+//    birthday.setMonth(8);
+//    birthday.setYear(1966);
+//    person.setBirthday(birthday);
     person.getFirstnames().add("Eliza");
     person.getFirstnames().add("Marie");
     person.setSurname("Jones");

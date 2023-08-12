@@ -16,7 +16,9 @@ import com.gluonhq.maps.MapView;
 
 import goedegep.geo.WGS84BoundingBox;
 import goedegep.geo.WGS84Coordinates;
+import goedegep.gpx.Gpx10To11Converter;
 import goedegep.gpx.GpxUtil;
+import goedegep.gpx.GpxVersion;
 import goedegep.gpx.model.DocumentRoot;
 import goedegep.gpx.model.GPXFactory;
 import goedegep.gpx.model.GpxType;
@@ -27,6 +29,7 @@ import goedegep.jfx.ComponentFactoryFx;
 import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.JfxStage;
 import goedegep.jfx.eobjecttreeview.EObjectTreeView;
+import goedegep.util.douglaspeuckerreducer.DouglasPeuckerReducer;
 import goedegep.util.emf.EMFResource;
 import goedegep.util.objectselector.ObjectSelectionListener;
 import javafx.application.Platform;
@@ -297,15 +300,84 @@ public class GPXWindow extends JfxStage {
   
   private void openGpxFile(File gpxFile) {
     LOGGER.info("Opening: " + gpxFile.getAbsolutePath());
-
+    
+    GpxVersion gpxVersion = null;
     try {
+      gpxVersion = GpxUtil.getGPXFileVersion(gpxFile);
+    } catch (FileNotFoundException e) {
+      componentFactory.createErrorDialog(
+          "File not found",
+          "The file '" + gpxFile.getAbsolutePath() + "' does not exist.")
+      .showAndWait();
+    }
+    switch (gpxVersion) {
+    case VERSION_1_0:
+      informUserAboutConversion(gpxFile);
+      
+      // open 1.0 file
+      EMFResource<goedegep.gpx10.model.DocumentRoot> gpxResource10 = GpxUtil.createGPX10EMFResource();
+      try {
+        goedegep.gpx10.model.DocumentRoot documentRoot10 = gpxResource10.load(gpxFile.getAbsolutePath());
+        
+        
+        // convert file
+        documentRoot = Gpx10To11Converter.convertGpxVersion10To11(documentRoot10);
+        
+        // set info in gpxResource
+        gpxResource.setEObject(documentRoot);
+        gpxResource.setFileName(gpxFile.getAbsolutePath());
+        handleNewGpxFile();
+      } catch (FileNotFoundException e) {
+        e.printStackTrace();
+      } catch (WrappedException wrappedException) {
+        componentFactory.createExceptionDialog("An exception occurred while reading the file: '" + gpxFile.getAbsolutePath() + "'.", wrappedException).show();
+      }
+      break;
+      
+    case VERSION_1_1:
+      try {
         documentRoot = gpxResource.load(gpxFile.getAbsolutePath());
         handleNewGpxFile();
-    } catch (FileNotFoundException e) {
+      } catch (FileNotFoundException e) {
         e.printStackTrace();
-    } catch (WrappedException wrappedException) {
+      } catch (WrappedException wrappedException) {
         componentFactory.createExceptionDialog("An exception occurred while reading the file: '" + gpxFile.getAbsolutePath() + "'.", wrappedException).show();
+      }
+      break;
+      
+    case NO_GPX:
+    default:
+      // report not supported
+      informUserAboutUnsupportedFileType(gpxFile);
+      break;
     }
+
+  }
+  
+  /**
+   * Inform the user about the fact that a GPX version 1.0 file is being opened.
+   * Upon opening this file will be converted to a version 1.1 model and this is also how it will be saved.
+   * 
+   * @param gpxFile the GPX version 1.0 file to report about.
+   */
+  private void informUserAboutConversion(File gpxFile) {
+    componentFactory.createInformationDialog(
+        "Opening a GPX version 1.0 file",
+        "The GPX file you are opening is in an old format; GPX version 1.0",
+        "After opening the file it will be converted to the GPX version 1.1 data model and when you save the file it will be saved in this new format")
+    .showAndWait();
+  }
+  
+  /**
+   * Inform the user about the fact that the data format of the data in the file is not supported.
+   * 
+   * @param file the name of the file the user is trying to open.
+   */
+  private void informUserAboutUnsupportedFileType(File file) {
+    componentFactory.createErrorDialog(
+        "File is not a GPX file",
+        "The file you are trying to open is not in a supported GPX format.")
+    .showAndWait();
   }
   
   /**
@@ -357,17 +429,21 @@ public class GPXWindow extends JfxStage {
     }
     
     WGS84BoundingBox gpxBoundingBox = gpxLayer.addGpx(null, gpxResource.getFileName(), gpx);
-    Double zoomLevel = MapView.getZoomLevel(gpxBoundingBox);
-    if (zoomLevel != null) {
-      mapView.setZoom(zoomLevel);
+    if (gpxBoundingBox != null) {
+      Double zoomLevel = MapView.getZoomLevel(gpxBoundingBox);
+      if (zoomLevel != null) {
+        mapView.setZoom(zoomLevel);
+      }
     }
     
-    WGS84Coordinates center = gpxBoundingBox.getCenter();
-    LOGGER.info("center: " + center.toString());
-    MapPoint mapCenter = new MapPoint(center.getLatitude(), center.getLongitude());
-    
-    if (mapCenter != null) {
-      mapView.flyTo(0.0, mapCenter, 2);
+    if (gpxBoundingBox != null) {
+      WGS84Coordinates center = gpxBoundingBox.getCenter();
+      LOGGER.info("center: " + center.toString());
+      MapPoint mapCenter = new MapPoint(center.getLatitude(), center.getLongitude());
+
+      if (mapCenter != null) {
+        mapView.flyTo(0.0, mapCenter, 2);
+      }
     }
   }
 
@@ -440,25 +516,6 @@ public class GPXWindow extends JfxStage {
   }
   
   private void trimEndOfTrack() {
-//    ResourceSet resourceSet = EMFResourceSet.getResourceSet();
-//
-//    // disable DTD resolution
-//    Map<String, Boolean> parserFeatures = new HashMap<>();
-//    parserFeatures.put("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
-//    resourceSet.getLoadOptions().put(XMLResource.OPTION_PARSER_FEATURES, parserFeatures);
-//    
-//    Path resourceFilePath = Paths.get("C:/Users/Peter/Downloads/2023-02-07_14-33_Tue.gpx").toAbsolutePath().normalize();
-//    LOGGER.severe("path=" + resourceFilePath.toString());
-//    if (!Files.exists(resourceFilePath)) {
-//      LOGGER.severe("file not found");
-//      return;
-//    }
-//    
-//    URI fileURI = URI.createFileURI(resourceFilePath.toString());
-//    Resource resource = resourceSet.getResource(fileURI, true);
-//    DocumentRoot root = (DocumentRoot) resource.getContents().get(0);
-
-    
     // Get the track TODO get selected track from Tree
     GpxType gpxType = documentRoot.getGpx();
     List<TrkType> tracks = gpxType.getTrk();
@@ -472,14 +529,12 @@ public class GPXWindow extends JfxStage {
     }
     TrksegType segment = segments.get(0);
     List<WptType> wayPoints = segment.getTrkpt();
-//    List<WptType> wayPoints = new ArrayList<>(wayPointsOrig);
     if (wayPoints.size() <  3) {
       return;
     }
     
     // Get the start of the track
     WptType startingPoint = wayPoints.get(0);
-//    WGS84Coordinates startCoordinates = new WGS84Coordinates(startingPoint.getLat().doubleValue(), startingPoint.getLon().doubleValue(), startingPoint.getEle().doubleValue());
     LOGGER.severe("Starting location: " + startingPoint.getLat().doubleValue() + ", " + startingPoint.getLon().doubleValue());
     
     // Remove from end of track, until start is encountered
@@ -493,17 +548,11 @@ public class GPXWindow extends JfxStage {
         startFound = true;
         LOGGER.severe("Start found");
       } else {
-//        wayPoints.remove(wayPoints.size() - 1);
         pointsToRemove.add(lastPoint);
         LOGGER.severe("index: " + index);
       }
     }
     wayPoints.removeAll(pointsToRemove);
-    
-//    gpxLayer.removeGpx(gpxType);
-   
-//    wayPointsOrig.clear();
-//    wayPointsOrig.addAll(wayPoints);
   }
 
   private void viewDetails() {
@@ -534,24 +583,24 @@ public class GPXWindow extends JfxStage {
   
     gpxTreeView.addObjectSelectionListener(gpxTreeViewSelectionListener);
     
-//    // Get the track TODO get selected track from Tree
-//    GpxType gpxType = documentRoot.getGpx();
-//    List<TrkType> tracks = gpxType.getTrk();
-//    if (tracks.isEmpty()) {
-//      return;
-//    }
-//    TrkType track = tracks.get(0);
-//    List<TrksegType> segments = track.getTrkseg();
-//    if (segments.isEmpty()) {
-//      return;
-//    }
-//    TrksegType segment = segments.get(0);
-//    List<WptType> wayPoints = segment.getTrkpt();
-//    
-//    List<WptType> reducedWaypoints = DouglasPeuckerReducer.reduceWithTolerance(wayPoints, 40.0, GPXWindow::coordinateExtractor);
-//    LOGGER.severe("Original number of waypoints: " + wayPoints.size() + ", new number of waypoints: " + reducedWaypoints.size());
-//    wayPoints.clear();
-//    wayPoints.addAll(reducedWaypoints);
+    // Get the track TODO get selected track from Tree
+    GpxType gpxType = documentRoot.getGpx();
+    List<TrkType> tracks = gpxType.getTrk();
+    if (tracks.isEmpty()) {
+      return;
+    }
+    TrkType track = tracks.get(0);
+    List<TrksegType> segments = track.getTrkseg();
+    if (segments.isEmpty()) {
+      return;
+    }
+    TrksegType segment = segments.get(0);
+    List<WptType> wayPoints = segment.getTrkpt();
+    
+    List<WptType> reducedWaypoints = DouglasPeuckerReducer.reduceWithTolerance(wayPoints, 40.0, GPXWindow::coordinateExtractor);
+    LOGGER.severe("Original number of waypoints: " + wayPoints.size() + ", new number of waypoints: " + reducedWaypoints.size());
+    wayPoints.clear();
+    wayPoints.addAll(reducedWaypoints);
   }
   
   public static WGS84Coordinates coordinateExtractor(Object object) {

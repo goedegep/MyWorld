@@ -111,6 +111,11 @@ public class EObjectTreeView extends TreeView<Object> implements ObjectSelector<
    */
   private BiPredicate<EObjectTreeItem, Dragboard> handleDropFunction;
   
+  /**
+   * Indicates that a notification has to be ignored, because it change was done withing the tree view itself
+   */
+  boolean ignoreNotification = false;
+  
   
   /**
    * Constructor for a default tree view (no EObjectTreeDescriptor specified).
@@ -205,7 +210,7 @@ public class EObjectTreeView extends TreeView<Object> implements ObjectSelector<
    * @param editMode if true, the mode is set to 'edit mode', else the mode is set to 'view mode'.
    */
   public void setEditMode(boolean editMode) {
-    LOGGER.severe("=> editMode=" + editMode);
+    LOGGER.info("=> editMode=" + editMode);
     
     setEditable(editMode);
     EObjectTreeItem root = (EObjectTreeItem) getRoot();
@@ -255,6 +260,30 @@ public class EObjectTreeView extends TreeView<Object> implements ObjectSelector<
     return eObjectTreeDescriptor;
   }
   
+  /**
+   * Find the right presentation descriptor for an eObject.
+   * <p>
+   * A list of eObjects is of a specific EClass, but the elements may of course also be of a sub type of this EClass.
+   * If so, the sub type may have extra attributes to be shown. Therefore there may be several presentation descriptors for the EClass
+   * and its expected sub types.<br/>
+   * This method first looks for a presentation descriptor for the class of the <code>eObject</code>, if not found it tries to find one
+   * for the super type of this class. This continues until a descriptor is found, or until there's no more super type.
+   *  
+   * @param presentationDescriptorNode the TreeNode whose children contain the available presentation descriptors.
+   * @param eObject the EObject for which a presentation descriptor is to be found
+   * @return the best presentation descriptor for the <code>eObject</code>.
+   * @throw RuntimeException if an illegal descriptor type is encountered, or if no descriptor is found.
+   */  
+  EObjectTreeItemClassDescriptor getBestClassDescriptor(EClass eClass) {
+    EObjectTreeItemClassDescriptor eObjectTreeItemClassDescriptor = null;
+
+    do {
+      eObjectTreeItemClassDescriptor = eObjectTreeDescriptor.getDescriptorForEClass(eClass);
+    } while ((eObjectTreeItemClassDescriptor == null)  &&  ((eClass = EmfUtil.getSuperType(eClass)) != null));
+
+    return eObjectTreeItemClassDescriptor;
+  }
+  
   public static Image getListIcon() {
     return new Image(EObjectTreeCellHelperForObjectList.class.getResourceAsStream("Three dots.png"), 36, 18, true, true);
   }
@@ -282,7 +311,7 @@ public class EObjectTreeView extends TreeView<Object> implements ObjectSelector<
     }
     
     if (eObject != null) {
-      EObjectTreeItem rootItem = new EObjectTreeItemForObject(eObject, null, eObjectTreeDescriptor.getDescriptorForEClass(eObject.eClass()), this);
+      EObjectTreeItem rootItem = new EObjectTreeItemForObject(eObject, eObject.eClass(), null, this);
       setRoot(rootItem);
       eObject.eAdapters().add(eContentAdapter);;
     } else {
@@ -401,6 +430,10 @@ public class EObjectTreeView extends TreeView<Object> implements ObjectSelector<
       public void notifyChanged(org.eclipse.emf.common.notify.Notification notification) {
         super.notifyChanged(notification);
         
+        if (ignoreNotification) {
+          return;
+        }
+        
         if (notification.isTouch()) {
           LOGGER.severe("Ignoring touch notification");
           // no action needed
@@ -436,31 +469,31 @@ public class EObjectTreeView extends TreeView<Object> implements ObjectSelector<
 //          changedContainingTreeItem.setExpanded(true);
 //          changedContainingTreeItem.rebuildChildren();
           
-          EObjectTreeItem changedTreeItem = EObjectTreeItem.findChildTreeItem(changedContainingTreeItem, eStructuralFeature);
+          EObjectTreeItem changedTreeItem = (EObjectTreeItemForObjectList) changedContainingTreeItem.findChildTreeItem(eStructuralFeature);
           LOGGER.severe("changedTreeItem: " + changedTreeItem);
           
           if (notification.getEventType() == Notification.ADD) {
             // an element is added to a list of objects
-            changedTreeItem.addObjectListChild(notification.getPosition());
+            ((EObjectTreeItemForObjectList) changedTreeItem).addObjectListChild(notification.getPosition());
           } else if (notification.getEventType() == Notification.REMOVE) {
             // an element is removed from a list of objects
-            changedTreeItem.removeObjectListChild(notification.getPosition());
+            ((EObjectTreeItemForObjectList) changedTreeItem).removeObjectListChild(notification.getPosition());
           } else if (notification.getEventType() == Notification.SET) {
             // the value of an attribute has changed
-            changedTreeItem.handleAttributeValueChanged(eStructuralFeature, notification.getNewValue());
+            ((EObjectTreeItemForObject) changedTreeItem).handleAttributeValueChanged(eStructuralFeature, notification.getNewValue());
           }
           
           // TODO hier verder
-          if (changedTreeItem != null) {
-            if (notification.getEventType() == Notification.ADD) {
-              changedTreeItem = (EObjectTreeItem) changedTreeItem.getChildren().get(notification.getPosition());
-            }
-            LOGGER.info("Going to SELECT node: " + changedTreeItem.toString());
-//            changedTreeItem.setExpanded(true);
-            getSelectionModel().select(changedTreeItem);
-          } else {
-            LOGGER.fine("Changed tree item not found: changedContainingTreeItem=" + changedContainingTreeItem.toString() + ", eStructuralFeature=" + eStructuralFeature);
-          }
+//          if (changedTreeItem != null) {
+//            if (notification.getEventType() == Notification.ADD) {
+//              changedTreeItem = (EObjectTreeItemForObjectList) changedTreeItem.getChildren().get(notification.getPosition());
+//            }
+//            LOGGER.info("Going to SELECT node: " + changedTreeItem.toString());
+////            changedTreeItem.setExpanded(true);
+//            getSelectionModel().select(changedTreeItem);
+//          } else {
+//            LOGGER.fine("Changed tree item not found: changedContainingTreeItem=" + changedContainingTreeItem.toString() + ", eStructuralFeature=" + eStructuralFeature);
+//          }
         } else {
           throw new RuntimeException("feature not supported: " + feature.toString());
         }
@@ -626,8 +659,11 @@ class EObjectTreeItemResolverVisitor implements XTreeNodeVisitor {
       
       for (TreeItem<Object> treeItem: eObjectTreeItem.getChildren()) {
         Object content = treeItem.getValue();
-        LOGGER.fine("content=" + content.toString());
-        EStructuralFeature eStructuralFeature = EObjectTreeItem.getEStructuralFeature((EObjectTreeItem)treeItem);
+        LOGGER.fine("content=" + (content != null ? content.toString() : "<null>"));
+        EStructuralFeature eStructuralFeature = ((EObjectTreeItem)treeItem).getEStructuralFeature();
+        if (eStructuralFeature == null) {
+          throw new RuntimeException("eStructuralFeature is null for treeItem: " + treeItem.toString());
+        }
         if (eStructuralFeature.getName().equals(referenceName)) {
           reference = (EReference) eStructuralFeature;
           eObjectTreeItem = (EObjectTreeItem) treeItem;

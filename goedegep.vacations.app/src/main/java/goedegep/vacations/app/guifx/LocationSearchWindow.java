@@ -27,7 +27,6 @@ import goedegep.jfx.eobjecttreeview.EEnumEditorDescriptor;
 import goedegep.jfx.eobjecttreeview.EObjectTreeItem;
 import goedegep.jfx.eobjecttreeview.EObjectTreeItemClassDescriptor;
 import goedegep.jfx.eobjecttreeview.EObjectTreeItemClassListReferenceDescriptor;
-import goedegep.jfx.eobjecttreeview.EObjectTreeItemDescriptor;
 import goedegep.jfx.eobjecttreeview.EObjectTreeItemForObject;
 import goedegep.jfx.eobjecttreeview.EObjectTreeItemForObjectList;
 import goedegep.jfx.eobjecttreeview.EObjectTreeView;
@@ -1389,7 +1388,7 @@ class LocationPanel extends VBox implements ObjectSelectionListener<TreeItem<Obj
     Object eObjectTreeItemContent = selectedTreeItem.getValue();
     
     // If the selected tree item is a list of (a supertype of) Locations, it is added as last child of this list.
-    EStructuralFeature eStructuralFeature = EObjectTreeItem.getEStructuralFeature(selectedTreeItem);
+    EStructuralFeature eStructuralFeature = selectedTreeItem.getEStructuralFeature();
     if (eStructuralFeature instanceof EReference) {
       EReference eReference = (EReference) eStructuralFeature;
       EClass listType = eReference.getEReferenceType();
@@ -1410,7 +1409,7 @@ class LocationPanel extends VBox implements ObjectSelectionListener<TreeItem<Obj
     // In this case the parent item of the selected item shall be a list of (a supertype of) Locations.
     EObjectTreeItem parentTreeItem = (EObjectTreeItem) selectedTreeItem.getParent();
     Object eObjectTreeItemContentParentTreeItem = parentTreeItem.getValue();
-    EStructuralFeature eStructuralFeatureParentTreeItem = EObjectTreeItem.getEStructuralFeature(parentTreeItem);
+    EStructuralFeature eStructuralFeatureParentTreeItem = parentTreeItem.getEStructuralFeature();
     if (eStructuralFeatureParentTreeItem instanceof EReference) {
       EReference eReference = (EReference) eStructuralFeatureParentTreeItem;
       EClass listType = eReference.getEReferenceType();
@@ -1449,7 +1448,7 @@ class LocationPanel extends VBox implements ObjectSelectionListener<TreeItem<Obj
     Location location = getLocation();
     
     // If the selected tree item is a (a supertype of) Location, its value is updated.
-    EStructuralFeature eStructuralFeature = EObjectTreeItem.getEStructuralFeature(selectedTreeItem);
+    EStructuralFeature eStructuralFeature = selectedTreeItem.getEStructuralFeature();
     if (eStructuralFeature instanceof EReference) {
       EReference eReference = (EReference) eStructuralFeature;
       EClass listType = eReference.getEReferenceType();
@@ -1620,7 +1619,7 @@ class LocationPanel extends VBox implements ObjectSelectionListener<TreeItem<Obj
     
     EClass locationEClass = VacationsPackage.eINSTANCE.getLocation();
 
-    EStructuralFeature eStructuralFeature = EObjectTreeItem.getEStructuralFeature(selectedTreeItem);
+    EStructuralFeature eStructuralFeature = selectedTreeItem.getEStructuralFeature();
     if (eStructuralFeature instanceof EReference) {
       EReference eReference = (EReference) eStructuralFeature;
       EClass listTypeEClass = eReference.getEReferenceType();

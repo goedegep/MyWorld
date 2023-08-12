@@ -25,6 +25,10 @@
       <artifactId>goedegep-gpx-model</artifactId>
     </dependency>
     <dependency>
+      <groupId>goedegep.gpx</groupId>
+      <artifactId>goedegep-gpx10-model</artifactId>
+    </dependency>
+    <dependency>
       <groupId>goedegep.jfx</groupId>
       <artifactId>goedegep-jfx</artifactId>
     </dependency>

@@ -5,11 +5,33 @@ import java.util.logging.Logger;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.EStructuralFeature;
+
+import javafx.collections.ObservableList;
+import javafx.scene.control.TreeItem;
 
 /**
  * This class is a TreeItem for a simple attribute.
  * <p>
- * The item typically shows attribute name and value;
+ * The item typically shows attribute name and value;<br/>
+ * 
+ * Content:
+ * <ul>
+ *   <li>
+ *     eObjectTreeItemType: ATTRIBUTE_SIMPLE
+ *   </li>
+ *   <li>
+ *     vakye: the attribute value
+ *   </li>
+ *   <li>
+ *     eAttribute: the EAttribute for this attribute
+ *   </li>
+ *   <li>
+ *     descriptor: the corresponding descriptor of type EObjectTreeItemAttributeDescriptor
+ *   </li>
+ * </ul>
+ * This is a leaf node.
+ * 
  *
  */
 public class EObjectTreeItemForAttributeSimple extends EObjectTreeItem {
@@ -40,6 +62,24 @@ public class EObjectTreeItemForAttributeSimple extends EObjectTreeItem {
     this.eAttribute = eAttribute;
     this.eObjectTreeItemAttributeDescriptor = eObjectTreeItemAttributeDescriptor;
   }
+  
+  /**
+   * {@inheritDoc}
+   * A simple attribute is always a leaf.
+   */
+  @Override
+  boolean isItemALeafItem() {
+    return true;
+  }
+  
+  /**
+   * {@inheritDoc}
+   * This item is a leaf, it doesn't have any children.
+   */
+  @Override
+  ObservableList<TreeItem<Object>> buildChildren() {
+    return null;
+  }  
   
   /**
    * Build a child for an EAttribute.
@@ -76,14 +116,44 @@ public class EObjectTreeItemForAttributeSimple extends EObjectTreeItem {
     }
   }
 
+  /**
+   * Get the {@code EAttribute} of this item.
+   * 
+   * @return the {@code EAttribute} of this item.
+   */
   public EAttribute getEAttribute() {
     return eAttribute;
+  }
+
+  /**
+   * {@inheritDoc}
+   * 
+   * For a simple attribute this is the eAttribute.
+   */
+  @Override
+  public EStructuralFeature getEStructuralFeature() {
+    return getEAttribute();
   }
 
   public EObjectTreeItemAttributeDescriptor getEObjectTreeItemAttributeDescriptor() {
     return eObjectTreeItemAttributeDescriptor;
   }
 
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  void switchToEditMode() {
+    // No action, a simple attribute value has no children.
+  }
+  
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  void switchToViewMode() {
+    // No action, a simple attribute value has no children.
+  }
 
   /**
    * {@inheritDoc}

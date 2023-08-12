@@ -445,9 +445,9 @@ public class GPXLayer extends MapLayer {
     double ratio = MAX_DATAPOINTS / trackPoints.size();
     
     double zoom = baseMap.getZoom();
-    if (ratio > 1.0) {
-      ratio = (zoom + 1) / 20;
-    }
+//    if (ratio > 1.0) {
+//      ratio = (zoom + 1) / 20;
+//    }
     
     Node prevIcon = null;
 
@@ -703,11 +703,13 @@ public class GPXLayer extends MapLayer {
       // Label
       if (boundingBoxData != null) {
         WGS84BoundingBox boundingBox = boundingBoxData.boundingBox();
-        WGS84Coordinates center = boundingBox.getCenter();
-        Point2D mapPoint = baseMap.getMapPoint(center.getLatitude(), center.getLongitude());
-        Canvas label = gpxFileData.label();
-        label.setTranslateX(mapPoint.getX() - 30);
-        label.setTranslateY(mapPoint.getY());
+        if (boundingBox != null) {
+          WGS84Coordinates center = boundingBox.getCenter();
+          Point2D mapPoint = baseMap.getMapPoint(center.getLatitude(), center.getLongitude());
+          Canvas label = gpxFileData.label();
+          label.setTranslateX(mapPoint.getX() - 30);
+          label.setTranslateY(mapPoint.getY());
+        }
       }
     }
   }

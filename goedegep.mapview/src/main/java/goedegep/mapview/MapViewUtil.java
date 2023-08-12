@@ -54,17 +54,20 @@ public class MapViewUtil {
   public static void updateBoundingBoxPolygon(Polygon polygon, WGS84BoundingBox mapBoundingBox, BaseMap baseMap) {
     ObservableList<Double> points = polygon.getPoints();
     points.clear();
-    Point2D northWest = baseMap.getMapPoint(mapBoundingBox.getNorth(), mapBoundingBox.getWest());
-    points.add(northWest.getX());
-    points.add(northWest.getY());
-    Point2D northEast = baseMap.getMapPoint(mapBoundingBox.getNorth(), mapBoundingBox.getEast());
-    points.add(northEast.getX());
-    points.add(northEast.getY());
-    Point2D southEast = baseMap.getMapPoint(mapBoundingBox.getSouth(), mapBoundingBox.getEast());
-    points.add(southEast.getX());
-    points.add(southEast.getY());
-    Point2D southWest = baseMap.getMapPoint(mapBoundingBox.getSouth(), mapBoundingBox.getWest());
-    points.add(southWest.getX());
-    points.add(southWest.getY());
+
+    if (mapBoundingBox != null) {
+      Point2D northWest = baseMap.getMapPoint(mapBoundingBox.getNorth(), mapBoundingBox.getWest());
+      points.add(northWest.getX());
+      points.add(northWest.getY());
+      Point2D northEast = baseMap.getMapPoint(mapBoundingBox.getNorth(), mapBoundingBox.getEast());
+      points.add(northEast.getX());
+      points.add(northEast.getY());
+      Point2D southEast = baseMap.getMapPoint(mapBoundingBox.getSouth(), mapBoundingBox.getEast());
+      points.add(southEast.getX());
+      points.add(southEast.getY());
+      Point2D southWest = baseMap.getMapPoint(mapBoundingBox.getSouth(), mapBoundingBox.getWest());
+      points.add(southWest.getX());
+      points.add(southWest.getY());
+    }
   }
 }

@@ -82,6 +82,7 @@ public class EObjectTreeItemClassDescriptor extends EObjectTreeItemDescriptor {
     }
     indent.decrement();
     
+    LOGGER.severe(buf.toString());
     return buf.toString();
   }
 

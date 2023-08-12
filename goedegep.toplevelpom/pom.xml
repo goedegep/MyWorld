@@ -187,6 +187,11 @@
         <version>1.0-SNAPSHOT</version>
       </dependency>
       <dependency>
+        <groupId>goedegep.gpx</groupId>
+        <artifactId>goedegep-gpx10-model</artifactId>
+        <version>1.0-SNAPSHOT</version>
+      </dependency>
+      <dependency>
         <groupId>goedegep.mapview</groupId>
         <artifactId>goedegep-mapview</artifactId>
         <version>1.0-SNAPSHOT</version>
@@ -584,6 +589,7 @@
     <module>../goedegep.emfsample.model</module>
     <module>../goedegep.util</module>
     <module>../goedegep.gpx.model</module>
+    <module>../goedegep.gpx10.model</module>
     <module>../goedegep.gpx</module>
     <module>../goedegep.ov2</module>
     <module>../goedegep.types.model</module>

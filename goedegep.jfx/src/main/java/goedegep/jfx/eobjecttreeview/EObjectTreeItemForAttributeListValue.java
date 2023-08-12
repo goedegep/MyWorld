@@ -1,5 +1,10 @@
 package goedegep.jfx.eobjecttreeview;
 
+import org.eclipse.emf.ecore.EStructuralFeature;
+
+import javafx.collections.ObservableList;
+import javafx.scene.control.TreeItem;
+
 /**
  * This class is a TreeItem for single item of an attribute list.
  * <p>
@@ -27,10 +32,53 @@ public class EObjectTreeItemForAttributeListValue extends EObjectTreeItem {
     }
   }
 
+  /**
+   * {@inheritDoc}
+   * 
+   * An attribute list value has no structural feature.
+   */
+  @Override
+  public EStructuralFeature getEStructuralFeature() {
+    return null;
+  }
+  
+  /**
+   * {@inheritDoc}
+   * A list value is always a leaf.
+   */
+  @Override
+  boolean isItemALeafItem() {
+    return true;
+  }
+  
+  /**
+   * {@inheritDoc}
+   * This item is a leaf, it doesn't have any children.
+   */
+  @Override
+  ObservableList<TreeItem<Object>> buildChildren() {
+    return null;
+  }  
+
   public EObjectTreeItemAttributeListValueDescriptor getEObjectTreeItemAttributeListValueDescriptor() {
     return eObjectTreeItemAttributeListValueDescriptor;
   }
   
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  void switchToEditMode() {
+    // No action as this item is a leaf.
+  }
+  
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  void switchToViewMode() {
+    // No action as this item is a leaf.
+  }
 
   /**
    * {@inheritDoc}

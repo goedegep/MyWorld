@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<genmodel:GenModel xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore"
+    xmlns:genmodel="http://www.eclipse.org/emf/2002/GenModel" modelDirectory="/goedegep.gpx10.model/src/main/java" modelPluginID=""
+    modelName="GPX10" rootExtendsClass="org.eclipse.emf.ecore.impl.MinimalEObjectImpl$Container"
+    importerID="org.eclipse.xsd.ecore.importer" bundleManifest="false" complianceLevel="5.0"
+    copyrightFields="false" operationReflection="true" importOrganizing="true">
+  <genAnnotations source="http://www.eclipse.org/emf/2002/GenModel/importer/org.eclipse.xsd.ecore.importer">
+    <details key="sortAttributes" value="false"/>
+  </genAnnotations>
+  <foreignModel>http://www.topografix.com/GPX/1/0/gpx.xsd</foreignModel>
+  <genPackages prefix="GPX10" basePackage="goedegep.gpx10" resource="XML" disposableProviderFactory="true"
+      fileExtensions="gpx" ecorePackage="GPX10.ecore#/">
+    <genEnums typeSafeEnumCompatible="false" ecoreEnum="GPX10.ecore#//FixType">
+      <genEnumLiterals ecoreEnumLiteral="GPX10.ecore#//FixType/none"/>
+      <genEnumLiterals ecoreEnumLiteral="GPX10.ecore#//FixType/_2d"/>
+      <genEnumLiterals ecoreEnumLiteral="GPX10.ecore#//FixType/_3d"/>
+      <genEnumLiterals ecoreEnumLiteral="GPX10.ecore#//FixType/dgps"/>
+      <genEnumLiterals ecoreEnumLiteral="GPX10.ecore#//FixType/pps"/>
+    </genEnums>
+    <genDataTypes ecoreDataType="GPX10.ecore#//DegreesType"/>
+    <genDataTypes ecoreDataType="GPX10.ecore#//DgpsStationType"/>
+    <genDataTypes ecoreDataType="GPX10.ecore#//EmailType"/>
+    <genDataTypes ecoreDataType="GPX10.ecore#//FixTypeObject"/>
+    <genDataTypes ecoreDataType="GPX10.ecore#//LatitudeType"/>
+    <genDataTypes ecoreDataType="GPX10.ecore#//LongitudeType"/>
+    <genClasses ecoreClass="GPX10.ecore#//BoundsType">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute GPX10.ecore#//BoundsType/minlat"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute GPX10.ecore#//BoundsType/minlon"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute GPX10.ecore#//BoundsType/maxlat"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute GPX10.ecore#//BoundsType/maxlon"/>
+    </genClasses>
+    <genClasses ecoreClass="GPX10.ecore#//DocumentRoot">
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EAttribute GPX10.ecore#//DocumentRoot/mixed"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference GPX10.ecore#//DocumentRoot/xMLNSPrefixMap"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference GPX10.ecore#//DocumentRoot/xSISchemaLocation"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference GPX10.ecore#//DocumentRoot/gpx"/>
+    </genClasses>
+    <genClasses ecoreClass="GPX10.ecore#//GpxType">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute GPX10.ecore#//GpxType/name"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute GPX10.ecore#//GpxType/desc"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute GPX10.ecore#//GpxType/author"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute GPX10.ecore#//GpxType/email"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute GPX10.ecore#//GpxType/url"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute GPX10.ecore#//GpxType/urlname"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute GPX10.ecore#//GpxType/time"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute GPX10.ecore#//GpxType/keywords"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference GPX10.ecore#//GpxType/bounds"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference GPX10.ecore#//GpxType/wpt"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference GPX10.ecore#//GpxType/rte"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference GPX10.ecore#//GpxType/trk"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EAttribute GPX10.ecore#//GpxType/any"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute GPX10.ecore#//GpxType/version"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute GPX10.ecore#//GpxType/creator"/>
+    </genClasses>
+    <genClasses ecoreClass="GPX10.ecore#//RteptType">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute GPX10.ecore#//RteptType/ele"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute GPX10.ecore#//RteptType/time"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute GPX10.ecore#//RteptType/magvar"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute GPX10.ecore#//RteptType/geoidheight"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute GPX10.ecore#//RteptType/name"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute GPX10.ecore#//RteptType/cmt"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute GPX10.ecore#//RteptType/desc"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute GPX10.ecore#//RteptType/src"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute GPX10.ecore#//RteptType/url"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute GPX10.ecore#//RteptType/urlname"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute GPX10.ecore#//RteptType/sym"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute GPX10.ecore#//RteptType/type"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute GPX10.ecore#//RteptType/fix"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute GPX10.ecore#//RteptType/sat"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute GPX10.ecore#//RteptType/hdop"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute GPX10.ecore#//RteptType/vdop"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute GPX10.ecore#//RteptType/pdop"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute GPX10.ecore#//RteptType/ageofdgpsdata"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute GPX10.ecore#//RteptType/dgpsid"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EAttribute GPX10.ecore#//RteptType/any"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute GPX10.ecore#//RteptType/lat"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute GPX10.ecore#//RteptType/lon"/>
+    </genClasses>
+    <genClasses ecoreClass="GPX10.ecore#//RteType">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute GPX10.ecore#//RteType/name"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute GPX10.ecore#//RteType/cmt"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute GPX10.ecore#//RteType/desc"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute GPX10.ecore#//RteType/src"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute GPX10.ecore#//RteType/url"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute GPX10.ecore#//RteType/urlname"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute GPX10.ecore#//RteType/number"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EAttribute GPX10.ecore#//RteType/any"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference GPX10.ecore#//RteType/rtept"/>
+    </genClasses>
+    <genClasses ecoreClass="GPX10.ecore#//TrkptType">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute GPX10.ecore#//TrkptType/ele"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute GPX10.ecore#//TrkptType/time"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute GPX10.ecore#//TrkptType/course"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute GPX10.ecore#//TrkptType/speed"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute GPX10.ecore#//TrkptType/magvar"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute GPX10.ecore#//TrkptType/geoidheight"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute GPX10.ecore#//TrkptType/name"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute GPX10.ecore#//TrkptType/cmt"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute GPX10.ecore#//TrkptType/desc"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute GPX10.ecore#//TrkptType/src"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute GPX10.ecore#//TrkptType/url"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute GPX10.ecore#//TrkptType/urlname"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute GPX10.ecore#//TrkptType/sym"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute GPX10.ecore#//TrkptType/type"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute GPX10.ecore#//TrkptType/fix"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute GPX10.ecore#//TrkptType/sat"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute GPX10.ecore#//TrkptType/hdop"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute GPX10.ecore#//TrkptType/vdop"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute GPX10.ecore#//TrkptType/pdop"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute GPX10.ecore#//TrkptType/ageofdgpsdata"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute GPX10.ecore#//TrkptType/dgpsid"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EAttribute GPX10.ecore#//TrkptType/any"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute GPX10.ecore#//TrkptType/lat"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute GPX10.ecore#//TrkptType/lon"/>
+    </genClasses>
+    <genClasses ecoreClass="GPX10.ecore#//TrksegType">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference GPX10.ecore#//TrksegType/trkpt"/>
+    </genClasses>
+    <genClasses ecoreClass="GPX10.ecore#//TrkType">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute GPX10.ecore#//TrkType/name"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute GPX10.ecore#//TrkType/cmt"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute GPX10.ecore#//TrkType/desc"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute GPX10.ecore#//TrkType/src"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute GPX10.ecore#//TrkType/url"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute GPX10.ecore#//TrkType/urlname"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute GPX10.ecore#//TrkType/number"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EAttribute GPX10.ecore#//TrkType/any"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference GPX10.ecore#//TrkType/trkseg"/>
+    </genClasses>
+    <genClasses ecoreClass="GPX10.ecore#//WptType">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute GPX10.ecore#//WptType/ele"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute GPX10.ecore#//WptType/time"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute GPX10.ecore#//WptType/magvar"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute GPX10.ecore#//WptType/geoidheight"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute GPX10.ecore#//WptType/name"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute GPX10.ecore#//WptType/cmt"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute GPX10.ecore#//WptType/desc"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute GPX10.ecore#//WptType/src"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute GPX10.ecore#//WptType/url"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute GPX10.ecore#//WptType/urlname"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute GPX10.ecore#//WptType/sym"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute GPX10.ecore#//WptType/type"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute GPX10.ecore#//WptType/fix"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute GPX10.ecore#//WptType/sat"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute GPX10.ecore#//WptType/hdop"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute GPX10.ecore#//WptType/vdop"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute GPX10.ecore#//WptType/pdop"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute GPX10.ecore#//WptType/ageofdgpsdata"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute GPX10.ecore#//WptType/dgpsid"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EAttribute GPX10.ecore#//WptType/any"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute GPX10.ecore#//WptType/lat"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute GPX10.ecore#//WptType/lon"/>
+    </genClasses>
+  </genPackages>
+</genmodel:GenModel>

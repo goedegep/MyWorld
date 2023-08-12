@@ -383,6 +383,20 @@ public class EMFResource<E extends EObject> {
   }
   
   /**
+   * Set the absolute pathname of the resource file.
+   * 
+   * @return the absolute pathname of the resource file.
+   */
+  public void setFileName(String resourceFileName) {
+    Path resourceFilePath = Paths.get(resourceFileName).toAbsolutePath().normalize();
+    LOGGER.fine("path=" + resourceFilePath.toString());
+        
+    URI fileURI = URI.createFileURI(resourceFilePath.toString());
+    resource.setURI(fileURI);
+    updateFileNameProperty();
+  }
+  
+  /**
    * Get EObject value.
    * 
    * @return the current EObject value, which may be null.
@@ -391,6 +405,19 @@ public class EMFResource<E extends EObject> {
     @SuppressWarnings("unchecked")
     E retval = (E) resource.getContents().get(0);
     return retval;
+  }
+  
+  /**
+   * Set the EObject value.
+   * <p>
+   * Any current instance will be discarded.
+   */
+  public void setEObject(E eObject) {
+    resource.getContents().clear();
+    resource.getContents().add(eObject);
+    
+    dirty.set(false);
+    eObject.eAdapters().add(eContentAdapter);
   }
   
   /**

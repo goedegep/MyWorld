@@ -1,9 +1,14 @@
 package goedegep.gpx;
 
+import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.List;
 import java.util.logging.Logger;
 
+import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 
 import goedegep.geo.WGS84BoundingBox;
@@ -17,6 +22,8 @@ import goedegep.gpx.model.TrkType;
 import goedegep.gpx.model.TrksegType;
 import goedegep.gpx.model.WptType;
 import goedegep.gpx.model.util.GPXResourceFactoryImpl;
+import goedegep.gpx10.model.GPX10Factory;
+import goedegep.gpx10.model.GPX10Package;
 import goedegep.util.emf.EMFResource;
 import goedegep.util.emf.EMFResourceSet;
 
@@ -40,10 +47,25 @@ public class GpxUtil {
     ResourceSet resourceSet = EMFResourceSet.getResourceSet();
     resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap().put(
         "gpx", new GPXResourceFactoryImpl());
-
+    
     EMFResource<DocumentRoot> gpxResource = new EMFResource<>(GPXPackage.eINSTANCE, () -> GPXFactory.eINSTANCE.createDocumentRoot(), ".gpx", false);
     
     return gpxResource;
+  }
+
+  /**
+   * Create an {@link EMFResource} for a GPX file.
+   * 
+   * @return an {@link EMFResource} for a GPX file.
+   */
+  public static EMFResource<goedegep.gpx10.model.DocumentRoot> createGPX10EMFResource() {
+    ResourceSet resourceSet = EMFResourceSet.getResourceSet();
+    resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap().put(
+        "gpx", new GPXResourceFactoryImpl());
+    
+    EMFResource<goedegep.gpx10.model.DocumentRoot> gpx10Resource = new EMFResource<>(GPX10Package.eINSTANCE, () -> GPX10Factory.eINSTANCE.createDocumentRoot(), ".gpx", false);
+    
+    return gpx10Resource;
   }
   
   
@@ -428,4 +450,32 @@ public class GpxUtil {
     return diffMeters / diffMilliSeconds * 3600;
   }
   
+  /**
+   * Get the GPX version from a GPX file.
+   * <p>
+   * The versions recognized are 1.0 and 1.1. In all other cases {@code GpxVersion.NO_GPX} is returned.
+   * 
+   * @param filename the name of the file for which the GPX version is to be determined.
+   * @return the {@code GpxVersion} of the file identified by the {@code filename}.
+   */
+  public static GpxVersion getGPXFileVersion(File file) throws FileNotFoundException {
+    GpxVersion gpxVersion = null;
+
+    try (FileReader fileReader = new FileReader(file)) {
+      BufferedReader reader = new BufferedReader(fileReader);
+      String line = reader.readLine();
+      line = reader.readLine();
+      if (line.contains("version=\"1.0\"")) {
+        gpxVersion = GpxVersion.VERSION_1_0;
+      } else if (line.contains("version=\"1.1\"")) {
+        gpxVersion = GpxVersion.VERSION_1_1;
+      } else {
+        gpxVersion = GpxVersion.NO_GPX;
+      }
+    } catch (IOException e) {
+      throw new RuntimeException("IOException message is " + e.getLocalizedMessage());
+    }
+
+    return gpxVersion;
+  }
 }

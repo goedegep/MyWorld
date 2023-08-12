@@ -1489,8 +1489,8 @@ public class VacationsWindow extends JfxStage {
     List<Vacation> vacations = null;
     Object treeItemContent = treeItem.getValue();;
     
-    if ((EObjectTreeItem.getEStructuralFeature(treeItem) != null)  &&
-        EObjectTreeItem.getEStructuralFeature(treeItem).equals(VACATIONS_PACKAGE.getVacations_Vacations())) {
+    if ((((EObjectTreeItem) treeItem).getEStructuralFeature() != null)  &&
+        ((EObjectTreeItem) treeItem).getEStructuralFeature().equals(VACATIONS_PACKAGE.getVacations_Vacations())) {
       vacations = (List<Vacation>) treeItemContent;
     }
     
@@ -1997,11 +1997,14 @@ public class VacationsWindow extends JfxStage {
     nodeOperationDescriptors.add(new NodeOperationDescriptor(TableRowOperation.DELETE_OBJECT, "Delete vacation"));
     EObjectTreeItemClassDescriptor eObjectTreeItemClassDescriptor = new EObjectTreeItemClassDescriptor(eClass,
         eObject -> {
-            Vacation vacation = (Vacation) eObject;
-            return vacation.getId();
-          }, false, nodeOperationDescriptors,
+          if (!(eObject instanceof Vacation)) {
+            LOGGER.severe("Wrong type, Vacation expected, but is: " + eObject.getClass().getSimpleName());
+          }
+          Vacation vacation = (Vacation) eObject;
+          return vacation.getId();
+        }, false, nodeOperationDescriptors,
         eObject -> {
-            return customization.getResources().getApplicationImage(ImageSize.SIZE_0);
+          return customization.getResources().getApplicationImage(ImageSize.SIZE_0);
         });
     eObjectTreeItemClassDescriptor.setStrongText(true);
     
