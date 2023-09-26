@@ -381,25 +381,37 @@ public class EObjectTreeItemForObjectList extends EObjectTreeItem {
 
     // delete the source object from its reference
     Dragboard dragboard = dragEvent.getDragboard();
-    ByteBuffer eObjectPathBytes = (ByteBuffer) dragboard.getContent(EOBJECT_PATH);
-    LOGGER.info("EObjectPath received!!");
-    EObjectPath eObjectPath = new EObjectPath(eObjectPathBytes);
-    EObject sourceObject = eObjectPath.resolveToEObject((EObject) getEObjectTreeView().getRoot().getValue());
-    EReference eReference = eObjectPath.resolveToEObjectReference((EObject) getEObjectTreeView().getRoot().getValue());
-    EObject sourceParentEObject = eObjectPath.resolveToEObjectParent((EObject) getEObjectTreeView().getRoot().getValue());
-    if (eReference.isMany()) {
-      @SuppressWarnings("unchecked")
-      List<EObject> list = (List<EObject>) sourceParentEObject.eGet(eReference);
-      int index = eObjectPath.resolveToEObjectReferenceIndex((EObject) getEObjectTreeView().getRoot().getValue());
-      list.remove(index);
-    } else {
-      sourceParentEObject.eSet(eReference, null);
-    }
+    
+    if (dragboard.hasContent(EOBJECT_PATH)) {
+      LOGGER.info("EObjectPath received!!");
+      // Get the source object
+      ByteBuffer eObjectPathBytes = (ByteBuffer) dragboard.getContent(EOBJECT_PATH);
+      EObjectPath eObjectPath = new EObjectPath(eObjectPathBytes);
+      EObject sourceObject = eObjectPath.resolveToEObject((EObject) getEObjectTreeView().getRoot().getValue());
+      
+      // Get the reference and 'parent' to remove the source object from.
+      EReference eReference = eObjectPath.resolveToEObjectReference((EObject) getEObjectTreeView().getRoot().getValue());
+      EObject sourceParentEObject = eObjectPath.resolveToEObjectParent((EObject) getEObjectTreeView().getRoot().getValue());
+      if (eReference.isMany()) {
+        @SuppressWarnings("unchecked")
+        List<EObject> list = (List<EObject>) sourceParentEObject.eGet(eReference);
+        int index = eObjectPath.resolveToEObjectReferenceIndex((EObject) getEObjectTreeView().getRoot().getValue());
+        list.remove(index);
+      } else {
+        sourceParentEObject.eSet(eReference, null);
+      }
 
-    // add the source object to the end of this items list.
-    @SuppressWarnings("unchecked")
-    List<EObject> list = (List<EObject>) getValue();
-    list.add(sourceObject);
+      // add the source object to the end of this items list.
+      @SuppressWarnings("unchecked")
+      List<EObject> list = (List<EObject>) getValue();
+      list.add(sourceObject);
+    } else {
+      BiPredicate<EObjectTreeItem, Dragboard> handleDropFunction = getEObjectTreeView().getHandleDropFunction();
+      if (handleDropFunction != null) {
+        if (handleDropFunction.test(this, dragboard)) {
+        }
+      }
+    }
   }
   
   /*

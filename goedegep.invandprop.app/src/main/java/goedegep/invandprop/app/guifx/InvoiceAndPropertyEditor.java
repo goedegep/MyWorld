@@ -67,7 +67,7 @@ import javafx.scene.layout.VBox;
 /**
  * This class provides an editor for an invoice and the related property.
  */
-public class InvoiceAndPropertyEditor extends ObjectEditorAbstract {
+public class InvoiceAndPropertyEditor extends ObjectEditorAbstract<Invoice> {
   private static final Logger  LOGGER = Logger.getLogger(InvoiceItemPanel.class.getName());
   private static final String WINDOW_TITLE = "New invoice and property";
   private static final InvAndPropFactory INVOICES_AND_PROPERTIES_FACTORY = InvAndPropFactory.eINSTANCE;
@@ -986,7 +986,7 @@ public class InvoiceAndPropertyEditor extends ObjectEditorAbstract {
   private InvoiceItemPanel createNewInvoiceItemPanel(boolean expanded) {
     InvoiceItemPanel invoiceItemPanel = new InvoiceItemPanel(customization, invoiceItemPanels, expanded);
     
-    invoiceItemPanels.add(invoiceItemPanel);
+//    invoiceItemPanels.add(invoiceItemPanel);
     
     return invoiceItemPanel;
   }
@@ -1354,13 +1354,11 @@ public class InvoiceAndPropertyEditor extends ObjectEditorAbstract {
 class InvoiceItemPanel extends TitledPane {
   private static final Logger LOGGER = Logger.getLogger(InvoiceItemPanel.class.getName());
   private static String DEFAULT_TITLE = "New invoice item";
-  private static final InvAndPropPackage INVOICES_AND_PROPERTIES_PACKAGE = InvAndPropPackage.eINSTANCE;
   
   private List<InvoiceItemPanel> invoiceItemPanels;
   private ComponentFactoryFx componentFactory;
   
-  private EObjectEditorDescriptor invoiceItemEditorDescriptor;
-  private ObjectControlGroup objectInputContainer;
+  private ObjectControlGroup objectControlGroup;
   
   private static final DataFormat INVOICE_ITEM_PANEL = new DataFormat("InvoiceItemPanel");
   private InvoiceItemPanel thisInvoiceItemPanel;
@@ -1371,24 +1369,28 @@ class InvoiceItemPanel extends TitledPane {
   private ObjectControlCurrency amountObjectInput;
   private ObjectControlString remarksObjectInput;
 
-  @SuppressWarnings("unchecked")
+  /**
+   * Constructor
+   * 
+   * @param customization - the GUI customization
+   * @param invoiceItemPanels - the list of {@code InvoiceItemPanel}s of which this panel is part.
+   * @param expanded - if true the panel will initially be in the expanded state.
+   */
   public InvoiceItemPanel(CustomizationFx customization, List<InvoiceItemPanel> invoiceItemPanels, boolean expanded) {
     this.invoiceItemPanels = invoiceItemPanels;
     componentFactory = customization.getComponentFactoryFx();
     
-    invoiceItemEditorDescriptor = new InvoiceItemEditorDescriptor(customization);
+    // Create the ObjectInputs    
+    numberOfItemsObjectInput = componentFactory.createObjectControlInteger(1, 150.0, true, "the number of items");
+    descriptionObjectInput = componentFactory.createObjectControlString(null, 200, false, "typically the product");
+    amountObjectInput = componentFactory.createObjectControlCurrency(null, 150, false, "the amount of money paid");
+    remarksObjectInput = componentFactory.createObjectControlString(null, 150.0, true, "any comments on this invoice");
     
-    // Get references to the ObjectInputs
-    numberOfItemsObjectInput = (ObjectControl<Integer>) invoiceItemEditorDescriptor.getEObjectAttributeEditDescriptor(INVOICES_AND_PROPERTIES_PACKAGE.getInvoiceItem_NumberOfItems().getName()).getObjectControl();
-    descriptionObjectInput = (ObjectControlString) invoiceItemEditorDescriptor.getEObjectAttributeEditDescriptor(INVOICES_AND_PROPERTIES_PACKAGE.getExpenditure_Description().getName()).getObjectControl();
-    amountObjectInput = (ObjectControlCurrency) invoiceItemEditorDescriptor.getEObjectAttributeEditDescriptor(INVOICES_AND_PROPERTIES_PACKAGE.getExpenditure_Amount().getName()).getObjectControl();
-    remarksObjectInput = (ObjectControlString) invoiceItemEditorDescriptor.getEObjectAttributeEditDescriptor(INVOICES_AND_PROPERTIES_PACKAGE.getExpenditure_Remarks().getName()).getObjectControl();
-    
-    createObjectInputContainer();
+    createObjectControlGroup();
 
     createGUI();
     
-    objectInputContainer.isValid().addListener(new ChangeListener<>() {
+    objectControlGroup.isValid().addListener(new ChangeListener<>() {
 
       @Override
       public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
@@ -1499,6 +1501,8 @@ class InvoiceItemPanel extends TitledPane {
     });
     
     this.setExpanded(expanded);
+    invoiceItemPanels.add(this);
+    
     updateTitle();
   }
 
@@ -1519,17 +1523,28 @@ class InvoiceItemPanel extends TitledPane {
   }
 
   public ObjectControlGroup getObjectInputContainer() {
-    return objectInputContainer;
+    return objectControlGroup;
   }
 
-  private void createObjectInputContainer() {
-    objectInputContainer = new ObjectControlGroup();
+  /**
+   * Create the {@code objectControlGroup}.
+   * <p>
+   * The {@code objectControlGroup}is set to a new {@code ObjectControlGroup} to which all {@code ObjectControl}s of the {@code invoiceItemEditorDescriptor} are added.
+   */
+  private void createObjectControlGroup() {
+    objectControlGroup = new ObjectControlGroup();
     
-    for (EObjectAttributeEditDescriptor eObjectAttributeEditDescriptor: invoiceItemEditorDescriptor.getEObjectAttributeEditDescriptors()) {
-      objectInputContainer.addObjectControl((ObjectControl<?>) eObjectAttributeEditDescriptor.getObjectControl());
-    }
+    objectControlGroup.addObjectControl(numberOfItemsObjectInput);
+    objectControlGroup.addObjectControl(descriptionObjectInput);
+    objectControlGroup.addObjectControl(amountObjectInput);
+    objectControlGroup.addObjectControl(remarksObjectInput);
   }
   
+  /**
+   * Create the GUI
+   * <p>
+   * The GUI is a VBox, with a GridPane containing the ObjectControls and a buttons box.
+   */
   private void createGUI() {
     VBox rootPane = componentFactory.createVBox();
 
@@ -1537,9 +1552,10 @@ class InvoiceItemPanel extends TitledPane {
         
     int rowIndex = 1;
     
-    for (EObjectAttributeEditDescriptor eObjectAttributeEditDescriptor: invoiceItemEditorDescriptor.getEObjectAttributeEditDescriptors()) {
-      addAttributeEditControlsToGrid(gridPane, rowIndex++, eObjectAttributeEditDescriptor);
-    }
+    addAttributeEditControlsToGrid(gridPane, rowIndex++, numberOfItemsObjectInput, "Number of items");
+    addAttributeEditControlsToGrid(gridPane, rowIndex++, descriptionObjectInput, "Description");
+    addAttributeEditControlsToGrid(gridPane, rowIndex++, amountObjectInput, "Amount");
+    addAttributeEditControlsToGrid(gridPane, rowIndex++, remarksObjectInput, "Remarks");
     
     rootPane.getChildren().addAll(gridPane, createButtonsBox());
     
@@ -1553,11 +1569,11 @@ class InvoiceItemPanel extends TitledPane {
    * @param rowIndex Index for the row in the GridPane to which the controls are to be added.
    * @param eObjectAttributeEditDescriptor EObjectAttributeEditDescriptor for the attribute.
    */
-  private void addAttributeEditControlsToGrid(GridPane gridPane, int rowIndex, EObjectAttributeEditDescriptor eObjectAttributeEditDescriptor) {
+  private void addAttributeEditControlsToGrid(GridPane gridPane, int rowIndex, ObjectControl<?> objectControl, String labelText) {
     // Label
     StringBuilder buf = new StringBuilder();
-    buf.append(eObjectAttributeEditDescriptor.getLabelText());
-    if (!eObjectAttributeEditDescriptor.getObjectControl().ocIsOptional()) {
+    buf.append(labelText);
+    if (!objectControl.ocIsOptional()) {
       buf.append(" *");
     }
     buf.append(":");
@@ -1565,15 +1581,12 @@ class InvoiceItemPanel extends TitledPane {
     gridPane.add(label, 0, rowIndex);
     
     // ObjectInput control
-    Node node = eObjectAttributeEditDescriptor.getObjectControl().ocGetControl();
+    Node node = objectControl.ocGetControl();
     gridPane.add(node, 1, rowIndex); 
     
     // Ok/Not OK label
-    Label statusLabel = componentFactory.createLabel(null);
-    ObjectControl<?> objectInput = (ObjectControl<?>) node;
-    objectInput.addListener((o) -> EObjectEditor.updateStatusLabel(statusLabel, objectInput.ocIsValid()));   
-    EObjectEditor.updateStatusLabel(statusLabel, objectInput.ocIsValid());
-    gridPane.add(statusLabel, 2, rowIndex);
+    Node validIndicator = objectControl.ocGetValidIndicator();
+    gridPane.add(validIndicator, 2, rowIndex);
   }
 
   private Node createButtonsBox() {
@@ -1626,7 +1639,7 @@ class InvoiceItemPanel extends TitledPane {
     }
     
     // Add (in)valid indication
-    if (objectInputContainer.isValid().getValue()) {
+    if (objectControlGroup.isValid().getValue()) {
       buf.append(EObjectEditor.OK_INDICATOR);
     } else {
       buf.append(EObjectEditor.NOK_INDICATOR);

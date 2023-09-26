@@ -1,7 +1,5 @@
 module goedegep.gpx {
   exports goedegep.gpx;
-  exports goedegep.gpx.parser;
-  exports goedegep.gpx.parser.model;
   
   requires transitive java.xml;
   requires transitive goedegep.geo;

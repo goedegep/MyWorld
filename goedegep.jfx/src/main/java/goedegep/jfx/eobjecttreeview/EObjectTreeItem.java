@@ -297,8 +297,8 @@ public abstract class EObjectTreeItem extends TreeItem<Object> {
     }
     
     Object gestureSourceObject = dragEvent.getGestureSource();
-    buf.append("Gesture source class: ").append(gestureSourceObject.getClass().getSimpleName()).append(NEWLINE);
-    buf.append("Gesture source value: ").append(gestureSourceObject.toString()).append(NEWLINE);
+    buf.append("Gesture source class: ").append(gestureSourceObject != null ? gestureSourceObject.getClass().getSimpleName() : "<null>").append(NEWLINE);
+    buf.append("Gesture source value: ").append(gestureSourceObject != null ? gestureSourceObject.toString() : "<null>").append(NEWLINE);
     Object gestureTargetObject = dragEvent.getGestureTarget();
     buf.append("Gesture target class: ").append(gestureTargetObject != null ? gestureTargetObject.getClass().getSimpleName() : "<null>").append(NEWLINE);
     buf.append("Gesture target value: ").append(gestureTargetObject != null ? gestureTargetObject.toString() : "<null>").append(NEWLINE);

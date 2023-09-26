@@ -120,8 +120,8 @@ public class InvoicesWindow extends JfxStage {
     editInvoiceButton.setOnAction(e -> showInvoiceEditor());
     buttonsBox.getChildren().add(editInvoiceButton);
     
-    Button newInvoiceButton = componentFactory.createButton("New Invoice", "click to enter the details of a new invoice");
-    newInvoiceButton.setOnAction(e -> showNewInvoiceEditor());
+    Button newInvoiceButton = componentFactory.createButton("New Invoice and Property", "click to enter the details of a new invoice and property");
+    newInvoiceButton.setOnAction(e -> showNewInvoiceAndPropertyEditor());
     buttonsBox.getChildren().add(newInvoiceButton);
     controlsBox.getChildren().add(buttonsBox);
     
@@ -150,7 +150,7 @@ public class InvoicesWindow extends JfxStage {
   /**
    * Open de the invoice and property editor to create a new invoice.
    */
-  private void showNewInvoiceEditor() {
+  private void showNewInvoiceAndPropertyEditor() {
     new InvoiceAndPropertyEditor(customization, invoicesAndProperties);
   }
 

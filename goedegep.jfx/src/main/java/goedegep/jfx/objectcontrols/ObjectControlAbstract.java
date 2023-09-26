@@ -2,6 +2,7 @@ package goedegep.jfx.objectcontrols;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.logging.Logger;
 
 import goedegep.util.PgUtilities;
@@ -150,11 +151,17 @@ public abstract class ObjectControlAbstract<T> implements ObjectControl<T> {
     }
     ociSetErrorFeedback(dataValid);
     
-    ociSetValue(value);
+//    boolean changed = ociSetValue(value);
+    boolean changed = !PgUtilities.equals(value, ocGetValue());
+    if (changed) {
+      ociSetValue(value);
+    }
     ociSetValid(ociDetermineValidity(filledIn, dataValid));
     ociSetFilledIn(filledIn);
     
-    ociNotifyListeners();
+    if (changed) {
+      ociNotifyListeners();
+    }
   }
   
   /**
@@ -215,6 +222,13 @@ public abstract class ObjectControlAbstract<T> implements ObjectControl<T> {
   /**
    * Set the value.
    */
+//  public boolean ociSetValue(T value) {
+//    boolean changed = !PgUtilities.equals(value, this.value);
+//    
+//    this.value = value;
+//    
+//    return changed;
+//  }
   public void ociSetValue(T value) {
     this.value = value;
   }

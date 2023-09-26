@@ -445,9 +445,9 @@ public class GPXLayer extends MapLayer {
     double ratio = MAX_DATAPOINTS / trackPoints.size();
     
     double zoom = baseMap.getZoom();
-//    if (ratio > 1.0) {
-//      ratio = (zoom + 1) / 20;
-//    }
+    if (ratio > 1.0) {
+      ratio = (zoom + 1) / 20;
+    }
     
     Node prevIcon = null;
 

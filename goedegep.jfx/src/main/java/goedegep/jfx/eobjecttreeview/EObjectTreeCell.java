@@ -2,6 +2,10 @@ package goedegep.jfx.eobjecttreeview;
 
 import java.util.logging.Logger;
 
+import org.eclipse.emf.ecore.EAttribute;
+import org.eclipse.emf.ecore.EDataType;
+import org.eclipse.emf.ecore.EStructuralFeature;
+
 import goedegep.util.emf.EObjectPath;
 import javafx.event.EventHandler;
 import javafx.scene.control.TreeCell;
@@ -403,6 +407,7 @@ public class EObjectTreeCell extends TreeCell<Object> {
   private void updateTreeCellHelper(Object value) {
     LOGGER.info("=> EObjectTreeItemType=" + ((EObjectTreeItem) getTreeItem()).getEObjectTreeItemType());
     
+    
     EObjectTreeItemType newTreeItemType = ((EObjectTreeItem) getTreeItem()).getEObjectTreeItemType();
     
     if (treeItemType == null  ||  treeItemType != newTreeItemType) {
@@ -416,7 +421,22 @@ public class EObjectTreeCell extends TreeCell<Object> {
         break;
 
       case ATTRIBUTE_SIMPLE:
-        treeCellHelper = new EObjectTreeCellHelperForAttributeSimple(this);
+        EObjectTreeItem eObjectTreeItem = (EObjectTreeItem) getTreeItem();
+        EStructuralFeature eStructuralFeature = eObjectTreeItem.getEStructuralFeature();
+        if (eStructuralFeature instanceof EAttribute eAttribute) {
+          EDataType eDataType = eAttribute.getEAttributeType();
+          switch (eDataType.getName()) {
+          case "EBoolean":
+            treeCellHelper = new EObjectTreeCellHelperForAttributeBoolean(this);
+            break;
+            
+          default:
+            treeCellHelper = new EObjectTreeCellHelperForAttributeSimple(this);
+            break;
+          }
+        } else {
+          throw new RuntimeException("eStructuralFeature is not an eAttribute");
+        }
         break;
 
       case ATTRIBUTE_LIST:

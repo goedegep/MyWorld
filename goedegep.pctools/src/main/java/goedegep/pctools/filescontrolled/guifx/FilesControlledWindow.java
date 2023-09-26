@@ -990,6 +990,8 @@ public class FilesControlledWindow extends JfxStage {
   }
   
   private void reportResult(Result result) {
+    EMFResource<Result> resultResource = new EMFResource<>(PC_TOOLS_PACKAGE, null, null);
+    resultResource.setEObject(result);
     EObjectTreeView treeView = new EObjectTreeView(result, false);
     tabLayoutControlledCopy.setCenter(treeView);
   }

@@ -102,7 +102,7 @@ public class VacationsTreeView extends EObjectTreeView {
       }
     }
     
-    // Check whether the item is a list of VacationElement
+    // Check whether the item is a list of VacationElement, in which case all supported files can be dropped.
     EStructuralFeature contentStructuralFeature = eObjectTreeItem.getEStructuralFeature();
     if (contentStructuralFeature != null) {
       LOGGER.info("contentStructuralFeature=" + contentStructuralFeature.toString());
@@ -118,7 +118,7 @@ public class VacationsTreeView extends EObjectTreeView {
       }
     }
     
-    // Check whether the parent of the item is a list of VacationElement
+    // Check whether the parent of the item is a list of VacationElement, in which case all supported files can be dropped
     EObjectTreeItem parentEObjectTreeItem = (EObjectTreeItem) eObjectTreeItem.getParent();
     contentStructuralFeature = parentEObjectTreeItem.getEStructuralFeature();
     if (contentStructuralFeature != null) {
@@ -131,6 +131,52 @@ public class VacationsTreeView extends EObjectTreeView {
         if (contentEReference.isMany()  &&  contentReferenceType.equals(vacationsPackage.getVacationElement())) {
           LOGGER.info("<= true (parent is a list of VacationElement reference)");
           return true;
+        }
+      }
+    }
+    
+    
+    boolean allFilesAreDocuments = true;
+    for (File file: files) {
+      if (!FileUtils.isPDFFile(file)) {
+        LOGGER.info("<= false (one of the files is not a PDF file)");
+        allFilesAreDocuments = false;
+        break;
+      }
+    }
+
+    // Check whether the item is the list of Vacation/Documents, in which case only documents can be dropped.
+    if (allFilesAreDocuments) {
+      contentStructuralFeature = eObjectTreeItem.getEStructuralFeature();
+      if (contentStructuralFeature != null) {
+        LOGGER.severe("contentStructuralFeature=" + contentStructuralFeature.toString());
+        if (contentStructuralFeature instanceof EReference contentEReference) {
+          LOGGER.severe("contentEReference=" + contentEReference.toString());
+          EClass contentReferenceType = contentEReference.getEReferenceType();
+          LOGGER.severe("contentReferenceType=" + contentReferenceType.toString());
+          VacationsPackage vacationsPackage = VacationsPackage.eINSTANCE;
+          if (contentEReference.equals(vacationsPackage.getVacation_Documents())) {
+            LOGGER.severe("<= true (it is the list of Vacation/Documents)");
+            return true;
+          }
+        }
+      }
+    }
+    // Check whether the parent of the item is the list of Vacation/Documents, in which case only documents can be dropped.
+    if (allFilesAreDocuments) {
+      parentEObjectTreeItem = (EObjectTreeItem) eObjectTreeItem.getParent();
+      contentStructuralFeature = parentEObjectTreeItem.getEStructuralFeature();
+      if (contentStructuralFeature != null) {
+        LOGGER.severe("contentStructuralFeature=" + contentStructuralFeature.toString());
+        if (contentStructuralFeature instanceof EReference contentEReference) {
+          LOGGER.severe("contentEReference=" + contentEReference.toString());
+          EClass contentReferenceType = contentEReference.getEReferenceType();
+          LOGGER.severe("contentReferenceType=" + contentReferenceType.toString());
+          VacationsPackage vacationsPackage = VacationsPackage.eINSTANCE;
+          if (contentEReference.equals(vacationsPackage.getVacation_Documents())) {
+            LOGGER.severe("<= true (parent is the list of Vacation/Documents)");
+            return true;
+          }
         }
       }
     }
@@ -154,8 +200,6 @@ public class VacationsTreeView extends EObjectTreeView {
     
     if (!isDropPossible(eObjectTreeItem, dragboard)) {
       return false;
-//      event.setDropCompleted(success);
-//      event.consume();
     }
     
     List<File> files = dragboard.getFiles();
@@ -163,7 +207,7 @@ public class VacationsTreeView extends EObjectTreeView {
     // Sort the files, so that they are added in the same way as they appear in an explorer window.
     Collections.sort(files);
     
-    // Check whether the item is a list of VacationElement, if so add the picture to the end of the list
+    // Check whether the item is a list of VacationElement, if so add the new element to the end of the list
     Object object = eObjectTreeItem.getValue();
     EStructuralFeature contentStructuralFeature = eObjectTreeItem.getEStructuralFeature();
     if (contentStructuralFeature != null) {
@@ -193,7 +237,7 @@ public class VacationsTreeView extends EObjectTreeView {
     }
 
     
-    // Check whether the parent of the item is a list of VacationElement, if so add the picture before the item.
+    // Check whether the parent of the item is a list of VacationElement, if so add the new element before the item.
     EObjectTreeItem parentEObjectTreeItem = (EObjectTreeItem) eObjectTreeItem.getParent();
     Object parentEObjectTreeItemContent = parentEObjectTreeItem.getValue();
     contentStructuralFeature = parentEObjectTreeItem.getEStructuralFeature();
@@ -218,6 +262,57 @@ public class VacationsTreeView extends EObjectTreeView {
               list.add(list.indexOf(object), createGPXTrack(file));
             } else if (FileUtils.isPDFFile(file)) {
               list.add(list.indexOf(object), createDocument(file));
+            }
+          }
+          return true;
+        }
+      }
+    }
+    
+    // Check whether the item is the list of Vacation/Documents, if so add the document to the end of the list
+    object = eObjectTreeItem.getValue();
+    contentStructuralFeature = eObjectTreeItem.getEStructuralFeature();
+    if (contentStructuralFeature != null) {
+      LOGGER.info("contentStructuralFeature=" + contentStructuralFeature.toString());
+      if (contentStructuralFeature instanceof EReference contentEReference) {
+        EClass contentReferenceType = contentEReference.getEReferenceType();
+        VacationsPackage vacationsPackage = VacationsPackage.eINSTANCE;
+        if (contentEReference.equals(vacationsPackage.getVacation_Documents())) {
+          LOGGER.severe("Yes it is the list of Vacation/Documents");
+          @SuppressWarnings("unchecked")
+          EList<Object> list = (EList<Object>) object;
+          for (File file: files) {
+            if (FileUtils.isPDFFile(file)) {
+              FileReference fileReference = TypesFactory.eINSTANCE.createFileReference();
+              fileReference.setFile(file.getAbsolutePath());
+              list.add(fileReference);
+            }
+          }
+          return true;
+        }
+      }
+    }
+    
+    // Check whether the parent of the item is the list of Vacation/Documents, if so add the document before the item.
+    parentEObjectTreeItem = (EObjectTreeItem) eObjectTreeItem.getParent();
+    parentEObjectTreeItemContent = parentEObjectTreeItem.getValue();
+    contentStructuralFeature = parentEObjectTreeItem.getEStructuralFeature();
+    if (contentStructuralFeature != null) {
+      LOGGER.info("contentStructuralFeature=" + contentStructuralFeature.toString());
+      if (contentStructuralFeature instanceof EReference contentEReference) {
+        LOGGER.info("contentEReference=" + contentEReference.toString());
+        EClass contentReferenceType = contentEReference.getEReferenceType();
+        LOGGER.info("contentReferenceType=" + contentReferenceType.toString());
+        VacationsPackage vacationsPackage = VacationsPackage.eINSTANCE;
+        if (contentEReference.equals(vacationsPackage.getVacation_Documents())) {
+          LOGGER.severe("<= true (parent is the list of Vacation/Documents)");
+          @SuppressWarnings("unchecked")
+          EList<Object> list = (EList<Object>) parentEObjectTreeItemContent;
+          for (File file: files) {
+            if (FileUtils.isPDFFile(file)) {
+              FileReference fileReference = TypesFactory.eINSTANCE.createFileReference();
+              fileReference.setFile(file.getAbsolutePath());
+              list.add(list.indexOf(object), fileReference);
             }
           }
           return true;

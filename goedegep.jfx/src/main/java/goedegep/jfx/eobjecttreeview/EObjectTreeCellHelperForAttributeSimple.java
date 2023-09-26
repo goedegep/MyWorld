@@ -4,7 +4,6 @@ import java.awt.Desktop;
 import java.io.File;
 import java.io.IOException;
 import java.text.ParseException;
-import java.util.Date;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -40,12 +39,11 @@ import javafx.stage.FileChooser;
 public class EObjectTreeCellHelperForAttributeSimple extends EObjectTreeCellHelperAbstract<EObjectTreeItemForAttributeSimple>  {
   private static final Logger LOGGER = Logger.getLogger(EObjectTreeCellHelperForAttributeSimple.class.getName());
   
-  private EObjectTreeItemAttributeDescriptor itemDescriptor;
+  protected EObjectTreeItemAttributeDescriptor itemDescriptor;
   
-  private HBox graphic = null;             // will contain labelLabel plus either valueLabel (not editing) or valueTextField (editing).
-  private Label labelLabel = null;         // this label is always there and always part of the graphic
+  protected HBox graphic = null;             // will contain labelLabel plus either valueLabel (not editing) or valueTextField (editing).
+  protected Label labelLabel = null;         // this label is always there and always part of the graphic
   private Label valueLabel = null;         // this label is always there, except for BOOLEAN (as it is the normal situation), but only part of the graphic when not in editing mode.
-  private CheckBox checkBox = null;        // used for BOOLEAN
   private TextInputControl textInputControl = null;
   private TextField valueTextField = null; // this text field is created and made part of the graphic when editing starts, and set back to null when editing ends.
   private TextArea valueTextArea = null;   // 
@@ -54,6 +52,11 @@ public class EObjectTreeCellHelperForAttributeSimple extends EObjectTreeCellHelp
   private FileChooser fileChooser = null;
   private Control editControl = null;
   
+  /**
+   * Constructor
+   * 
+   * @param eObjectTreeCell the {@link EObjectTreeCell} for which this is a helper.
+   */
   public EObjectTreeCellHelperForAttributeSimple(EObjectTreeCell eObjectTreeCell) {
     super(eObjectTreeCell);
   }
@@ -71,9 +74,7 @@ public class EObjectTreeCellHelperForAttributeSimple extends EObjectTreeCellHelp
       eObjectTreeCell.setContextMenu(contextMenu);
     }
         
-//    if (graphic == null) {
-      createGraphic();
-//    }
+    createGraphic();
     
     eObjectTreeCell.setText(null);
     eObjectTreeCell.setGraphic(graphic);
@@ -84,16 +85,7 @@ public class EObjectTreeCellHelperForAttributeSimple extends EObjectTreeCellHelp
         textInputControl.setText(getValueText(eObjectTreeItemContent));
       }
     } else {
-      if (checkBox != null) {
-        checkBox.setSelected((boolean) eObjectTreeItemContent);
-        checkBox.setOnAction((e) -> {
-          EObjectTreeItem parentItem = (EObjectTreeItem) eObjectTreeCell.getTreeItem().getParent();
-          EObject parentValue = (EObject) parentItem.getValue();
-          parentValue.eSet(treeItem.getEAttribute(), checkBox.isSelected());
-        });
-      } else {
-        valueLabel.setText(getValueText(eObjectTreeItemContent));
-      }
+      valueLabel.setText(getValueText(eObjectTreeItemContent));
     }
     
     LOGGER.info("<=");
@@ -104,7 +96,7 @@ public class EObjectTreeCellHelperForAttributeSimple extends EObjectTreeCellHelp
    * 
    * @return a context menu derived from the node operation descriptors, or null if no node operation descriptors are specified.
    */
-  private ContextMenu createContextMenu() {
+  protected ContextMenu createContextMenu() {
     LOGGER.info("=>");
     
     List<NodeOperationDescriptor> nodeOperationDescriptors = itemDescriptor.getNodeOperationDescriptors();
@@ -193,8 +185,8 @@ public class EObjectTreeCellHelperForAttributeSimple extends EObjectTreeCellHelp
         public void handle(KeyEvent keyEvent) {
           if ((keyEvent.getCode() == KeyCode.ENTER)  &&  
               ((valueTextField != null)  ||  keyEvent.isControlDown())) {
-            treeItem.setValue(textInputControl.getText());
-            eObjectTreeCell.commitEdit(eObjectTreeItemContent);
+//            treeItem.setValue(textInputControl.getText());
+            eObjectTreeCell.commitEdit(textInputControl.getText());
           } else if (keyEvent.getCode() == KeyCode.ESCAPE) {
             eObjectTreeCell.cancelEdit();
           }
@@ -290,7 +282,7 @@ public class EObjectTreeCellHelperForAttributeSimple extends EObjectTreeCellHelp
     
   @Override
   public void commitEdit(TreeItem<Object> eObjectTreeItem, Object newValue) {
-    LOGGER. info("=> newValue=" + newValue.toString());
+    LOGGER. info("=> newValue=" + (newValue != null ? newValue.toString() : "<null>"));
     if (!(eObjectTreeItem == treeItem)) {
       throw new RuntimeException("treeItem has changed");
     }
@@ -337,21 +329,15 @@ public class EObjectTreeCellHelperForAttributeSimple extends EObjectTreeCellHelp
         }
         break;
         
-      case "boolean":
-        newValueObject = checkBox.isSelected();
-        break;
-        
         
       default:
         newValueObject = newValue;
       }
     }
     
-    if (checkBox == null) {
-      valueLabel.setText(getValueText(newValue));
-      graphic.getChildren().remove(valueLabel);
-      graphic.getChildren().add(valueLabel);
-    }
+    valueLabel.setText(getValueText(newValue));
+    graphic.getChildren().remove(valueLabel);
+    graphic.getChildren().add(valueLabel);
     
     EObjectTreeItem parentItem = (EObjectTreeItem) treeItem.getParent();
     Object parentValue = parentItem.getValue();
@@ -389,19 +375,14 @@ public class EObjectTreeCellHelperForAttributeSimple extends EObjectTreeCellHelp
     labelLabel.setMinWidth(150d);
     graphic.getChildren().add(labelLabel);
     
-    if (itemDescriptor.getPresentationType()  ==  PresentationType.BOOLEAN) {
-      checkBox = new CheckBox();
-      graphic.getChildren().add(checkBox);
-    } else {
-      valueLabel = new Label();
-      valueLabel.setMaxWidth(400);
-      graphic.getChildren().add(valueLabel);
-    }
+    valueLabel = new Label();
+    valueLabel.setMaxWidth(400);
+    graphic.getChildren().add(valueLabel);
     
     LOGGER.info("<=");
   }
   
-  private String getLabelText(Object eObjectTreeItemContent) {
+  protected String getLabelText(Object eObjectTreeItemContent) {
     EAttribute eAttribute = treeItem.getEAttribute();
 
     String labelText = null;

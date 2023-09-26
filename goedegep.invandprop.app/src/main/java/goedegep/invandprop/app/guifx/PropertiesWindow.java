@@ -113,8 +113,8 @@ public class PropertiesWindow extends JfxStage {
     controlsBox.getChildren().add(editPropertyButtonBox);
     
     HBox newPropertyButtonBox = componentFactory.createHBox(0.0, 12.0);
-    Button newPropertyButton = componentFactory.createButton("New Property", "click to enter the details of a new property");
-    newPropertyButton.setOnAction(e -> showPropertyEditor());
+    Button newPropertyButton = componentFactory.createButton("New Invoice and Property", "click to enter the details of a new invoice and property");
+    newPropertyButton.setOnAction(e -> showInvoiceAndPropertyEditor());
     newPropertyButtonBox.getChildren().add(newPropertyButton);
     controlsBox.getChildren().add(newPropertyButtonBox);
     rootLayout.getChildren().add(controlsBox);
@@ -220,7 +220,7 @@ public class PropertiesWindow extends JfxStage {
     }
   }
   
-  private void showPropertyEditor() {
+  private void showInvoiceAndPropertyEditor() {
     new InvoiceAndPropertyEditor(customization, invoicesAndProperties);
   }
 

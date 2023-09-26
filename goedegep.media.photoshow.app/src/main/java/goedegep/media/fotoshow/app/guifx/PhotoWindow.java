@@ -5,8 +5,7 @@ import java.awt.Point;
 import java.awt.Robot;
 import java.io.File;
 import java.io.IOException;
-//import java.io.FileInputStream;
-//import java.io.FileNotFoundException;
+import java.util.List;
 import java.util.Objects;
 import java.util.logging.Logger;
 
@@ -14,9 +13,10 @@ import org.apache.commons.imaging.ImageReadException;
 import org.apache.commons.imaging.formats.tiff.constants.TiffDirectoryConstants;
 import org.apache.commons.imaging.formats.tiff.constants.TiffTagConstants;
 
+import goedegep.jfx.ComponentFactoryFx;
+import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.img.ImageViewUtil;
 import goedegep.util.img.PhotoFileMetaDataHandler;
-import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.geometry.Dimension2D;
 import javafx.geometry.Insets;
@@ -24,42 +24,49 @@ import javafx.geometry.Point2D;
 import javafx.geometry.Pos;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Cursor;
+import javafx.scene.ImageCursor;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
-import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyEvent;
-import javafx.scene.input.MouseButton;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.CornerRadii;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
-public class FullScreenViewer extends Stage {
-  private final static Logger LOGGER = Logger.getLogger(FullScreenViewer.class.getName());
+/**
+ * This class shows a list of photos full screen.
+ */
+public class PhotoWindow extends Stage {
+  private final static Logger LOGGER = Logger.getLogger(PhotoWindow.class.getName());
   
-  private final static String WINDOW_TITLE = "Selection Full Screen View";
   private final static double INITIAL_ZOOM_LEVEL = 1.0;
   
+  private ComponentFactoryFx componentFactory;
+  
   /**
-   * List of pictures, with PhotoInfo, to view.
+   * Label initially showing the title of the show.
    */
-  private ObservableList<IPhotoInfo> picturesToView = null;
+  private Label titleLabel;
+  
+  /**
+   * List of picture files to view.
+   */
+  private List<String> pictureFilesToView = null;
   
   /**
    * Current index in {@code picturesToView} or {@code pictureFilesToView}
    */
   private int pictureIndex = 0;
   
-  /**
-   * Information on the current picture.
-   */
-  private IPhotoInfo currentPictureInfo;
+  private boolean cursorOn;
+  private Cursor noCursor;
+  private Cursor pointerCursor;
   
   
   /**
@@ -83,34 +90,48 @@ public class FullScreenViewer extends Stage {
   private double zoomLevel = 0;
   
   
-  public FullScreenViewer(ObservableList<IPhotoInfo> picturesToView) {
-    Objects.requireNonNull(picturesToView, "picturesToView may not be null");
-    if (picturesToView.isEmpty()) {
-      throw new IllegalArgumentException("picturesToView may not be empty");
+  /**
+   * Constructor
+   * 
+   * @param picturesFilesToView list of photo files to be shown
+   * @param title an optional title which will be shown on the first photo, until any key is pressed.
+   */
+  public PhotoWindow(CustomizationFx customization, List<String> picturesFilesToView, String title) {
+    Objects.requireNonNull(picturesFilesToView, "picturesFilesToView may not be null");
+    if (picturesFilesToView.isEmpty()) {
+      throw new IllegalArgumentException("picturesFilesToView may not be empty");
     }
-    LOGGER.severe("=> number of picturesToView: " + picturesToView.size());
-    this.picturesToView = picturesToView;
+    LOGGER.info("=> number of picturesFilesToView: " + picturesFilesToView.size());
+    LOGGER.severe("title: " + (title != null ? title : "(null)"));
+    this.pictureFilesToView = picturesFilesToView;
     
-    setTitle(WINDOW_TITLE);
-
+    componentFactory = customization.getComponentFactoryFx();
+    
     setFullScreen(true);
     
     createFullScreenView();
 
-    // Install 'Double clicking' toggles 'selected'.
-    imageView.setOnMouseClicked(event -> {
-      if(event.getButton().equals(MouseButton.PRIMARY) && event.getClickCount() == 2) {
-        currentPictureInfo.toggleSelectedForTheShow();
-        updateNotSelectedIndication(currentPictureInfo.isSelectedForTheShow());
-      }
-    });
+    noCursor = Cursor.NONE;
+    Image cursorImage = new Image(getClass().getResourceAsStream("pointerCursor.png"));
+    pointerCursor = new ImageCursor(cursorImage, 0d, 0d);
     
+    cursorOn = true;
+    toggleCursor();
     show();
     
-    LOGGER.severe("stackPane/imageView size = " + stackPane.getWidth() + ", " + stackPane.getHeight());
+    LOGGER.info("stackPane/imageView size = " + stackPane.getWidth() + ", " + stackPane.getHeight());
     
     updateImage();
-    
+
+    if (title != null) {
+      titleLabel = new Label(title);
+      final double MAX_FONT_SIZE = 180.0; // define max font size you need
+      titleLabel.setFont(new Font(MAX_FONT_SIZE)); // set to Label
+      titleLabel.setTextFill(Color.color(1, 1, 1));
+      titleLabel.setCenterShape(true);
+      stackPane.getChildren().add(titleLabel);
+    }
+ 
   }
 
   /**
@@ -134,6 +155,7 @@ public class FullScreenViewer extends Stage {
     Scene scene = new Scene(stackPane);
     setScene(scene);
     
+    
     /*
      *  Setup dragging the image around with the mouse.
      */
@@ -145,6 +167,14 @@ public class FullScreenViewer extends Stage {
       dragStartPoint = ImageViewUtil.imageViewCoordinatesToImageCoordinates(imageView, dragStartX, dragStartY);
       // Dragging cursor
       imageView.setCursor(Cursor.CLOSED_HAND);
+    });
+    imageView.setOnMouseReleased(e -> {
+      // Back to normal cursor
+      if (cursorOn) {
+        imageView.setCursor(pointerCursor);
+      } else {
+        imageView.setCursor(noCursor);
+      }
     });
     imageView.setOnMouseDragged(e -> {
       double dragToX = e.getSceneX();
@@ -163,102 +193,172 @@ public class FullScreenViewer extends Stage {
 
       @Override
       public void handle(KeyEvent event) {
-        LOGGER.info("Key typed: " + event.getCode());
-        Rectangle2D currentViewport;
-        Rectangle2D newViewport;
-        
-        switch (event.getCode()) {
-
-        // Right arrow: go to next image.
-        case RIGHT:
-          if (pictureIndex < picturesToView.size() - 1) {
-            pictureIndex++;
-            updateImage();
-          }
-          break;
-
-        // Left arrow: go to previous image.
-        case LEFT:
-          if (pictureIndex > 0) {
-            pictureIndex--;
-            updateImage();
-          }
-          break;
-          
-        // 'W' key: move image 10% up.
-        case W:
-          moveImageUp(imageView, 10);
-          break;
-
-        // 'S' key: move image 10% down
-        case S:
-          moveImageDown(imageView, 10);
-          break;
-
-        // 'A' key: move image 10% left
-        case A:
-          moveImageLeft(imageView, 10);
-          break;
-
-        // 'D' key: move image 10% right
-        case D:
-          moveImageRight(imageView, 10);
-          break;
-
-        // Numpad '+' key and '=' key (below the '+' so you don't have to use 'Shift'): zoom in (on cursor if visible).
-        case ADD:
-        case EQUALS:
-          zoomInOnCursorPosition(1.0);
-          break;
-
-        // Numpad '-' key and '-' key: zoom out around the center of the image, moving the image to fill the view if needed.
-        case SUBTRACT:
-        case MINUS:
-          zoomOutFromCenter(1.0);
-          break;
-
-        // 'Esc' key: close the application.
-        case ESCAPE:
-          closeWindow();
-          break;
-          
-        // 'Z' key: increase MinX
-        case Z:
-          currentViewport = imageView.getViewport();
-          newViewport = new Rectangle2D(currentViewport.getMinX() + 10, currentViewport.getMinY(), currentViewport.getWidth(), currentViewport.getHeight());
-          imageView.setViewport(newViewport);
-          break;
-          
-        // 'X' key: decrease MinX
-        case X:
-          currentViewport = imageView.getViewport();
-          newViewport = new Rectangle2D(currentViewport.getMinX() - 10, currentViewport.getMinY(), currentViewport.getWidth(), currentViewport.getHeight());
-          imageView.setViewport(newViewport);
-          break;
-          
-        // 'V' key: increase MinY
-        case V:
-          currentViewport = imageView.getViewport();
-          newViewport = new Rectangle2D(currentViewport.getMinX(), currentViewport.getMinY() + 10, currentViewport.getWidth(), currentViewport.getHeight());
-          imageView.setViewport(newViewport);
-          break;
-          
-        // 'B' key: decrease MinY
-        case B:
-          currentViewport = imageView.getViewport();
-          newViewport = new Rectangle2D(currentViewport.getMinX(), currentViewport.getMinY() - 10, currentViewport.getWidth(), currentViewport.getHeight());
-          imageView.setViewport(newViewport);
-          break;
-          
-
-        default:
-          // no action
+        if (titleLabel != null) {
+          removeTitle();
+        } else {
+          handleKeyEvent(event);
         }
+        
 
         event.consume();
       }
 
     });
+  }
+  
+  /**
+   * Remove the title
+   */
+  private void removeTitle() {
+    stackPane.getChildren().remove(titleLabel);
+    titleLabel = null;
+  }
+  
+  /**
+   * Handle a key event.
+   * 
+   * @param event the {@code KeyEvent} to handle.
+   */
+  private void handleKeyEvent(KeyEvent event) {
+    LOGGER.info("Key typed: " + event.getCode());
+    Rectangle2D currentViewport;
+    Rectangle2D newViewport;
+    
+    switch (event.getCode()) {
+
+    // Right arrow: go to next image.
+    case RIGHT:
+      if (pictureFilesToView != null) {
+        if (pictureIndex < pictureFilesToView.size() - 1) {
+          pictureIndex++;
+          updateImage();
+        }
+      }
+      break;
+
+    // Left arrow: go to previous image.
+    case LEFT:
+      if (pictureIndex > 0) {
+        pictureIndex--;
+        updateImage();
+      }
+      break;
+      
+    // 'W' key: move image 10% up.
+    case W:
+      moveImageUp(imageView, 10);
+      break;
+
+    // 'S' key: move image 10% down
+    case S:
+      moveImageDown(imageView, 10);
+      break;
+
+    // 'A' key: move image 10% left
+    case A:
+      moveImageLeft(imageView, 10);
+      break;
+
+    // 'D' key: move image 10% right
+    case D:
+      moveImageRight(imageView, 10);
+      break;
+
+    // Numpad '+' key and '=' key (below the '+' so you don't have to use 'Shift'): zoom in (on cursor if visible).
+    case ADD:
+    case EQUALS:
+      zoomInOnCursorPosition(1.0);
+      break;
+
+    // Numpad '-' key and '-' key: zoom out around the center of the image, moving the image to fill the view if needed.
+    case SUBTRACT:
+    case MINUS:
+      zoomOutFromCenter(1.0);
+      break;
+
+    // 'C' key: toggle the cursor on/off
+    case C:
+      toggleCursor();
+      break;
+
+    // 'Esc' key: close the application.
+    case ESCAPE:
+      closeWindow();
+      break;
+      
+    // 'Z' key: increase MinX
+    case Z:
+      currentViewport = imageView.getViewport();
+      newViewport = new Rectangle2D(currentViewport.getMinX() + 10, currentViewport.getMinY(), currentViewport.getWidth(), currentViewport.getHeight());
+      imageView.setViewport(newViewport);
+      break;
+      
+    // 'X' key: decrease MinX
+    case X:
+      currentViewport = imageView.getViewport();
+      newViewport = new Rectangle2D(currentViewport.getMinX() - 10, currentViewport.getMinY(), currentViewport.getWidth(), currentViewport.getHeight());
+      imageView.setViewport(newViewport);
+      break;
+      
+    // 'V' key: increase MinY
+    case V:
+      currentViewport = imageView.getViewport();
+      newViewport = new Rectangle2D(currentViewport.getMinX(), currentViewport.getMinY() + 10, currentViewport.getWidth(), currentViewport.getHeight());
+      imageView.setViewport(newViewport);
+      break;
+      
+    // 'B' key: decrease MinY
+    case B:
+      currentViewport = imageView.getViewport();
+      newViewport = new Rectangle2D(currentViewport.getMinX(), currentViewport.getMinY() - 10, currentViewport.getWidth(), currentViewport.getHeight());
+      imageView.setViewport(newViewport);
+      break;
+      
+    // 'H' key: show help dialog
+    case H:
+      showHelpDialog();
+      break;
+      
+
+    default:
+      // no action
+    }
+    
+  }
+  
+  /**
+   * Show a dialog with a help text.
+   */
+  private void showHelpDialog() {
+    String buttonInfo = """
+            Getting help
+              H - shows a this dialog
+
+            Navigating through the list of photos
+              ←  - Go to previous photo
+              → - Go to next photo
+
+            Moving the image on the screen
+              W - move the image 10% up
+              S - move the image 10% down
+              A - move the image 10% to the left
+              D - move the image 10% to the right
+              V - move the image a little up
+              B - move the image a little down
+              Z - move the image a little to the left
+              X - move the image a little to the right
+
+            Cursor on/of
+              C - toggle the cursor on/off
+
+            Zooming
+              +, = - zoom in on the cursor position
+              - - zoom out around the center of the image, moving the image to fill the view if needed. 
+
+            Closing the view
+              ESC - closes the view
+        """;
+    componentFactory.createInformationDialog("Photoshow viewer help", buttonInfo, null).showAndWait(); 
   }
   
   /**
@@ -402,6 +502,9 @@ public class FullScreenViewer extends Stage {
     
     imageView.setViewport(newViewport);
     
+    // Move the mouse cursor to the point on which we zoomed in.
+    Point2D newMouseCursorLocation = ImageViewUtil.imageCoordinatesToImageViewCoordinates(imageView, imageZoomPoint.getX(), imageZoomPoint.getY());
+    moveMousePointer(newMouseCursorLocation);
   }
   
   /**
@@ -455,8 +558,7 @@ public class FullScreenViewer extends Stage {
   private void updateImage() {
     LOGGER.info("=>");
     String fileName;
-    currentPictureInfo = picturesToView.get(pictureIndex);
-    fileName = currentPictureInfo.getFileName();
+    fileName = pictureFilesToView.get(pictureIndex);
     int orientation = TiffTagConstants.ORIENTATION_VALUE_HORIZONTAL_NORMAL; // default orientation, used if there is no 'Orientation' in the meta data.
     
     try {
@@ -514,10 +616,6 @@ public class FullScreenViewer extends Stage {
     Rectangle2D viewportRectangle = new Rectangle2D(0.0, 0.0, viewportDimensions.getWidth(), viewportDimensions.getHeight());
     LOGGER.info("viewport: " + viewportRectangle.getMinX() + ", " + viewportRectangle.getMinY() + ", " + viewportRectangle.getWidth() + ", " + viewportRectangle.getHeight());
     imageView.setViewport(viewportRectangle);
-    
-    if (currentPictureInfo != null) {
-      updateNotSelectedIndication(currentPictureInfo.isSelectedForTheShow());
-    }
   }
   
   /**
@@ -563,43 +661,21 @@ public class FullScreenViewer extends Stage {
   }
   
   /**
-   * Update the 'not selected indication'.
-   * <p>
-   * This indicatin is a white 'X' in the top right corner.
-   * It is shown if the photo isn't selected for the show.
-   * 
-   * @param selected if true, the photo is selected for the show.
+   * Toggle the cursor on/off.
    */
-  private void updateNotSelectedIndication(boolean selected) {
-    if (!selected) {
-      if (stackPane.getChildren().size() > 1) {
-        // It's already there, no action
-      } else {
-        Label notSelectedLabel = new Label("X");
-        notSelectedLabel.setStyle("-fx-font: 40 arial;");
-        notSelectedLabel.setTextFill(Color.ANTIQUEWHITE);
-        DropShadow ds = new DropShadow();
-        ds.setOffsetY(5.0f);
-        ds.setOffsetX(5.0f);
-        ds.setColor(Color.color(0.2f, 0.2f, 0.2f));
-        notSelectedLabel.setEffect(ds);
-        HBox labelBox = new HBox(50);
-        labelBox.setPadding(new Insets(20, 20, 20, 20));
-        labelBox.setMaxHeight(80);
-        labelBox.setMaxWidth(80);
-
-        labelBox.getChildren().add(notSelectedLabel);
-        stackPane.getChildren().add(labelBox);
-        StackPane.setAlignment(labelBox, Pos.TOP_RIGHT);
-      }
+  private void toggleCursor() {
+    LOGGER.info("=>");
+    
+    if (cursorOn) {
+      // Switch if off
+      getScene().setCursor(noCursor);
+      imageView.setCursor(noCursor);
     } else {
-      if (stackPane.getChildren().size() > 1) {
-        // It's there, remove it
-        stackPane.getChildren().remove(1);
-      } else {
-        // It's not there, no action
-      }
+      // Switch cursor on
+      getScene().setCursor(pointerCursor);
+      imageView.setCursor(pointerCursor);
     }
+    cursorOn = !cursorOn;
   }
   
   /**

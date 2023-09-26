@@ -1566,7 +1566,10 @@ class LocationPanel extends VBox implements ObjectSelectionListener<TreeItem<Obj
       
       itemText =  eObjectTreeItemClassListReferenceDescriptor.getLabelText();
     } else if (eObjectTreeItem instanceof EObjectTreeItemForObject eObjectTreeItemForObject) {
-      EObjectTreeItemClassDescriptor eObjectTreeItemClassDescriptor = null;
+      EObjectTreeItemClassDescriptor eObjectTreeItemClassDescriptor = eObjectTreeItemForObject.getClassDescriptor();
+      if (eObjectTreeItemClassDescriptor == null) {
+        LOGGER.severe("STOP");
+      }
       EObject eObject = (EObject) eObjectTreeItemContent;
       
       if (eObjectTreeItemClassDescriptor.getBuildText() != null) {

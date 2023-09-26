@@ -59,7 +59,7 @@ public class LocationDescriptionDialog extends Dialog<ButtonType> {
    */
   private void createGUI(CustomizationFx customization, Stage ownerWindow, Location location) {
     WebView webView = new WebView();
-    String description = vacationToHtmlConverter.LocationToHtml(location);
+    String description = vacationToHtmlConverter.LocationToHtml(location, false);
     webView.getEngine().loadContent("<div style=\"background-color:" + JfxUtil.colorToCssString(customization.getLook().getPanelBackgroundColor()) + "\">" +
                                     description +
                                     "</div>");

@@ -1,13 +1,18 @@
 package goedegep.vacations.app.logic;
 
+import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.net.URL;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
+import java.util.Base64;
 import java.util.Date;
 import java.util.logging.Logger;
 
+import org.apache.commons.io.IOUtils;
 import org.commonmark.node.Node;
 import org.commonmark.parser.Parser;
 import org.commonmark.renderer.html.HtmlRenderer;
@@ -26,6 +31,7 @@ import goedegep.util.emf.EMFResource;
 import goedegep.util.html.HtmlUtil;
 import goedegep.util.text.Indent;
 import goedegep.vacations.model.Day;
+import goedegep.vacations.model.Document;
 import goedegep.vacations.model.GPXTrack;
 import goedegep.vacations.model.Location;
 import goedegep.vacations.model.MapImage;
@@ -75,7 +81,7 @@ public class VacationToHtmlConverter extends VacationToTextConverterAbstract {
    * @param vacation the <code>Vacation</code> for which an HTML document is to be generated.
    * @return the generated HTML document.
    */
-  public String vacationToHtml(Vacation vacation) {
+  public String vacationToHtml(Vacation vacation, boolean embedImages) {
     LOGGER.info("=>");
     
     firstRow = true;
@@ -88,25 +94,44 @@ public class VacationToHtmlConverter extends VacationToTextConverterAbstract {
     }
     
     buf.append("<html>");
-    buf.append("<header>");
+    buf.append("<header>\n");
+    
     buf.append("</header>");
     
     buf.append("<body>");
+    
     buf.append("<h1>");
     buf.append(HtmlUtil.encodeHTML(getVacationTitle(vacation)));
     buf.append("</h1>");
     
-    // Vacation: Algemeen
+    // Vacation: Notes
     if (vacation.isSetNotes()) {
+      buf.append("<h2>Algemeen</h2>");
       Node document = parser.parse(vacation.getNotes());
-//      printCommonMarkNode(document);
       String htmlText = renderer.render(document);  
       
       buf.append(htmlText);
     }
     
+    // Documents
+    if (!vacation.getDocuments().isEmpty()) {
+      buf.append("<h2>Documenten</h2>");
+      
+      for (FileReference fileReference: vacation.getDocuments()) {
+        String text = fileReference.getTitle();
+        if (text == null) {
+          text = fileReference.getFile();
+        }
+        buf.append("<a href=\"")
+        .append(fileReference.getFile())
+        .append("\">")
+        .append(text)
+        .append("</a><br/>");
+      }
+    }
+    
     for (VacationElement element: vacation.getElements()) {
-      vacationElementToHtml(element);
+      vacationElementToHtml(element, embedImages);
     }
     
     if (tableStarted) {
@@ -132,7 +157,7 @@ public class VacationToHtmlConverter extends VacationToTextConverterAbstract {
    * @param location the <code>Location</code> for which an HTML document is to be generated. This argument may not be null.
    * @return an HTML document describing <code>location</code>.
    */
-  public String LocationToHtml(Location location) {
+  public String LocationToHtml(Location location, boolean embedImages) {
     buf.setLength(0);
 
     if (location == null) {
@@ -145,7 +170,7 @@ public class VacationToHtmlConverter extends VacationToTextConverterAbstract {
     
     buf.append("<body>");
     
-    vacationElementLocationToHtml(location);
+    vacationElementLocationToHtml(location, embedImages);
     
     buf.append("</body>");
     buf.append("</html>");
@@ -160,7 +185,7 @@ public class VacationToHtmlConverter extends VacationToTextConverterAbstract {
    * 
    * @param element the <code>VacationElement</code> for which HTML text is to be generated.
    */
-  private void vacationElementToHtml(VacationElement element) {
+  private void vacationElementToHtml(VacationElement element, boolean embedImages) {
     indent.increment();
     LOGGER.info("=> element=" + indent.toString() + element.toString());
     LOGGER.info("      type=" + indent.toString() + element.eClass().getName());
@@ -170,8 +195,12 @@ public class VacationToHtmlConverter extends VacationToTextConverterAbstract {
       vacationElementDayToHtml((Day) element);
       break;
       
+    case VacationsPackage.DOCUMENT:
+      vacationElementDocumentToHtml((Document) element);
+      break;
+           
     case VacationsPackage.LOCATION:
-      vacationElementLocationToHtml((Location) element);
+      vacationElementLocationToHtml((Location) element, embedImages);
       break;
       
     case VacationsPackage.TEXT:
@@ -179,11 +208,11 @@ public class VacationToHtmlConverter extends VacationToTextConverterAbstract {
       break;
       
     case VacationsPackage.PICTURE:
-      vacationElementPictureToHtml((Picture) element);
+      vacationElementPictureToHtml((Picture) element, embedImages);
       break;
       
     case VacationsPackage.GPX_TRACK:
-      vacationElementGPXToHtml((GPXTrack) element);
+      vacationElementGPXToHtml((GPXTrack) element, embedImages);
       break;
       
     case VacationsPackage.MAP_IMAGE:
@@ -192,7 +221,7 @@ public class VacationToHtmlConverter extends VacationToTextConverterAbstract {
     }
     
     for (VacationElement childElement: element.getChildren()) {
-      vacationElementToHtml(childElement);
+      vacationElementToHtml(childElement, embedImages);
     }
     
     indent.decrement();
@@ -235,6 +264,24 @@ public class VacationToHtmlConverter extends VacationToTextConverterAbstract {
     handleTableTagsAfterDayElement();    
   }
 
+  private void vacationElementDocumentToHtml(Document document) {
+    buf.append("<p>").append("Document: ");
+
+    FileReference fileReference = document.getDocumentReference();
+    File file = new File(fileReference.getFile());
+    String filename = file.getName();
+    String text = fileReference.getTitle();
+    if (text == null) {
+      text = filename;
+    }
+    buf.append("<a href=\"")
+    .append(filename)
+    .append("\">")
+    .append(text)
+    .append("</a></p>");
+
+  }
+
   /**
    * Generate HTML text for a <code>Location</code> element.
    * <p>
@@ -242,7 +289,7 @@ public class VacationToHtmlConverter extends VacationToTextConverterAbstract {
    * 
    * @param location the <code>Location</code> element for which HTML text is to be generated.
    */
-  private void vacationElementLocationToHtml(Location location) {
+  private void vacationElementLocationToHtml(Location location, boolean embedImages) {
     boolean separatorNeeded = false;
     boolean newLineNeeded = false;
     
@@ -268,9 +315,10 @@ public class VacationToHtmlConverter extends VacationToTextConverterAbstract {
     
     if (location.isSetLocationType()) {
       POICategoryId poiCategoryId = location.getLocationType();
-      buf.append("<img src=\"");
-      buf.append(HtmlUtil.encodeHTML(poiIcons.getIconUrl(poiCategoryId).toString()));
-      buf.append("\" height=\"32\" width=\"32\"/>");
+      addImage(buf, poiIcons.getIconUrl(poiCategoryId).toString(), 32, null, embedImages);
+//      buf.append("<img src=\"");
+//      buf.append(HtmlUtil.encodeHTML(poiIcons.getIconUrl(poiCategoryId).toString()));
+//      buf.append("\" height=\"32\" width=\"32\"/>");
       separatorNeeded = true;
     }
     
@@ -374,7 +422,7 @@ public class VacationToHtmlConverter extends VacationToTextConverterAbstract {
    * 
    * @param picture the <code>Picture</code> element for which HTML text is to be generated.
    */
-  private void vacationElementPictureToHtml(Picture picture) {
+  private void vacationElementPictureToHtml(Picture picture, boolean embedImages) {
     if (picture.isSetPictureReference()) {
       FileReference pictureReference = picture.getPictureReference();
       String pictureFileName = pictureReference.getFile();
@@ -386,16 +434,12 @@ public class VacationToHtmlConverter extends VacationToTextConverterAbstract {
       buf.append(HtmlUtil.encodeHTML(picturePath.toUri().toString()));
       buf.append("\">");
       buf.append("<figure>");
-      buf.append("<img src=\"");
-      buf.append(HtmlUtil.encodeHTML(picturePath.toUri().toString()));
-      buf.append("\" height=\"250\" >");
+//      buf.append("<img src=\"");
+//      buf.append(HtmlUtil.encodeHTML(picturePath.toUri().toString()));
+//      buf.append("\" height=\"250\" >");
       String caption = VacationsUtils.getPictureCaption(picture);
-      if (caption != null) {
-        buf.append("<figcaption>");
-        buf.append(HtmlUtil.encodeHTML(caption));
-        buf.append("</figcaption>");
-      }
-      buf.append("</img>");
+      addImage(buf, picturePath.toUri().toString(), 250, caption, embedImages);
+//      buf.append("</img>");
       buf.append("</figure>");   
       buf.append("</a>");
     }
@@ -408,42 +452,48 @@ public class VacationToHtmlConverter extends VacationToTextConverterAbstract {
    * 
    * @param gpxTrack the <code>GPXTrack</code> element for which HTML text is to be generated.
    */
-  private void vacationElementGPXToHtml(GPXTrack gpxTrack) {
+  private void vacationElementGPXToHtml(GPXTrack gpxTrack, boolean embedImage) {
     if (gpxTrack.isSetTrackReference()) {
       buf.append("<p/>");
 
       FileReference trackReference = gpxTrack.getTrackReference();
       if ((trackReference != null)  &&  (trackReference.getFile() != null)  &&  !trackReference.getFile().isEmpty()) {
+        
         EMFResource<DocumentRoot> gpxResource = GpxUtil.createEMFResource();
         try {
           gpxResource.load(trackReference.getFile());
           DocumentRoot documentRoot = gpxResource.getEObject();
+          URL iconUrl = goedegep.resources.ImageResource.GPX.getImageUrl();
           GpxType gpxType = documentRoot.getGpx();
           Activity activity = GpxAppUtil.getActivity(gpxType);
           if (activity != null) {
-            buf.append("<img src=\"");
-            activity.getIconUrl(ImageSize.SIZE_0);
-            URL url = activity.getIconUrl(ImageSize.SIZE_0);
-            if (url == null) {
+            iconUrl = activity.getIconUrl(ImageSize.SIZE_1);
+            if (iconUrl == null) {
               LOGGER.severe("Stop here");
-              url = activity.getIconUrl(ImageSize.SIZE_0);
+              iconUrl = activity.getIconUrl(ImageSize.SIZE_1);
             }
-            buf.append(HtmlUtil.encodeHTML(activity.getIconUrl(ImageSize.SIZE_0).toString()));
-            buf.append("\" height=\"16\" width=\"16\"/> ");
           }
+          
+          addImage(buf, iconUrl.toString(), 32, null, embedImage);
+//          buf.append("<img src=\"");
+//          buf.append(HtmlUtil.encodeHTML(iconUrl.toString()));
+//          buf.append("\" height=\"32\" ");
+
           String name = null;
           MetadataType metadataType = gpxType.getMetadata();
           if (metadataType != null) {
             name = metadataType.getName();
           }
-          if (name != null) {
+          if (name != null  && !name.isEmpty()) {
             buf.append(HtmlUtil.encodeHTML(name));
           } else {
             FileReference fileReference = gpxTrack.getTrackReference();
             if (fileReference != null) {
               String title = fileReference.getTitle();
-              if (title != null) {
+              if (title != null  &&  !title.isEmpty()) {
                 buf.append(HtmlUtil.encodeHTML(title));
+              } else {
+                buf.append("file: ").append(trackReference.getFile());
               }
             }
           }
@@ -543,5 +593,73 @@ public class VacationToHtmlConverter extends VacationToTextConverterAbstract {
     
     // close first column data, open second column data
     buf.append("</td><td>");
-  }  
+  }
+  
+  private void addImage(StringBuilder buf, String urlString, int height, String caption, boolean embedImage) {
+    String resizedFile = null;
+    if (imageHasToBeResized(urlString, height)) {
+      resizedFile = createResizedImageFile(urlString, height);
+      urlString = resizedFile;
+    }
+    buf.append("<img src=\"");
+    if (!embedImage) {
+      buf.append(HtmlUtil.encodeHTML(urlString));
+    } else {
+      buf.append("data:image/")
+      .append(getImageType(urlString))
+      .append(";base64,")
+      .append(getBase64EncodedImage(urlString, 32, 32));
+    }
+    buf.append("\" height=\"")
+    .append(height)
+    .append("\" >");
+    if (caption != null) {
+      buf.append("<figcaption>");
+      buf.append(HtmlUtil.encodeHTML(caption));
+      buf.append("</figcaption>");
+    }
+    buf.append("</img>");
+//    .append("\" width=\"32\"/>");
+    if (resizedFile != null) {
+      try {
+        Files.delete(Paths.get(resizedFile));
+      } catch (IOException e) {
+        // TODO Auto-generated catch block
+        e.printStackTrace();
+      }
+    }
+  }
+  
+  private String createResizedImageFile(String urlString, int height) {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  private boolean imageHasToBeResized(String urlString, int height) {
+    // TODO Auto-generated method stub
+    return false;
+  }
+
+  private Object getBase64EncodedImage(String urlString, int height, int width) {
+    try {
+      byte[] fileContent = IOUtils.toByteArray((new URL(urlString)).openStream());
+//      byte[] fileContent = FileUtils.readFileToByteArray(new File(urlString));
+      String encodedString = Base64.getEncoder().encodeToString(fileContent);
+      return encodedString;
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+    
+    return null;
+  }
+
+  private String getImageType(String urlString) {
+    if (urlString.endsWith(".jpg")) {
+      return "jpg";
+    } else if (urlString.endsWith(".png")) {
+      return "png";
+    } else {
+      return null;
+    }
+  }
 }
