@@ -863,7 +863,7 @@ public class ComponentFactoryFx {
    * Create a {@link ObjectControlFileSelecter}.
    * 
    * @param initiallySelecterFolder The initially selected folder. If not null, this is filled-in in the text field,
-   *                                and it is used as initial value for the DirectoryChooser.
+   *                                and it is used as initial value for the FileChooser.
    * @param textFieldWidth Width of the TextField (in pixels). If this value is -1, the default width is used.
    * @param textFiedlToolTipText if not null, this text will be used as Tooltip for the TextField
    * @param folderChooserButtonText the text shown on the button to call up a DirectoryChooser (may not be null)

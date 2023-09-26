@@ -50,6 +50,15 @@ public class ObjectControlBoolean extends ObjectControlAbstract<Boolean> {
 
   /**
    * {@inheritDoc}
+   * A checkbox is always filled in, so always valid.
+   */
+  @Override
+  public boolean ocIsValid() {
+    return true;
+  }
+
+  /**
+   * {@inheritDoc}
    * A checkbox is always filled in.
    */
   @Override

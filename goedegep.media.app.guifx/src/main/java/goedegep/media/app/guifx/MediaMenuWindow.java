@@ -23,6 +23,7 @@ import goedegep.media.fotomapview.guifx.PhotoEditor;
 import goedegep.media.fotomapview.guifx.PhotoMapView;
 import goedegep.media.fotoshow.app.guifx.FullScreenViewer;
 import goedegep.media.fotoshow.app.guifx.PhotoShowBuilder;
+import goedegep.media.fotoshow.app.guifx.PhotoShowViewer;
 import goedegep.media.mediadb.albumeditor.guifx.AlbumEditor;
 import goedegep.media.mediadb.app.MediaDbChecker;
 import goedegep.media.mediadb.app.derivealbuminfo.DeriveAlbumInfo;
@@ -360,7 +361,7 @@ public class MediaMenuWindow extends JfxStage {
     grid.add(applicationButton, 1, 0);
     
     // Second row: Photos
-    applicationButton = componentFactory.createToolButton("Photoshow builder", appResources.getApplicationImage(ImageSize.SIZE_0), "Start the Photo Show builder");
+    applicationButton = componentFactory.createToolButton("Photoshow builder", appResources.getApplicationImage(ImageSize.SIZE_0), "Start the Photoshow builder");
     applicationButton.setOnAction(new EventHandler<ActionEvent>() {
 
       @Override
@@ -371,7 +372,7 @@ public class MediaMenuWindow extends JfxStage {
     });
     grid.add(applicationButton, 0, 1);
     
-    applicationButton = componentFactory.createToolButton("Photoshow", appResources.getApplicationImage(ImageSize.SIZE_0), "Start a Photo Show");
+    applicationButton = componentFactory.createToolButton("Photoshow viewer", appResources.getApplicationImage(ImageSize.SIZE_0), "Start the Photoshow viewer");
     applicationButton.setOnAction(new EventHandler<ActionEvent>() {
 
       @Override
@@ -569,28 +570,29 @@ public class MediaMenuWindow extends JfxStage {
   }
   
   private void startPhotoShow() {
-    FileChooser fileChooser = componentFactory.createFileChooser("Select Photo Show");
-    if (MediaRegistry.photosFolder != null) {
-      fileChooser.setInitialDirectory(new File(MediaRegistry.photosFolder));
-    }
-    File file = fileChooser.showOpenDialog(this);
-    if (file != null) {
-      
-      try {
-        EMFResource<PhotoShowSpecification> emfResource = new EMFResource<PhotoShowSpecification>(
-            PhotoShowPackage.eINSTANCE,
-            () -> PhotoShowFactory.eINSTANCE.createPhotoShowSpecification(),
-            ".xmi");
-        PhotoShowSpecification photoShowSpecification = emfResource.load(file.getAbsolutePath());
-        List<String> photosToShow = photoShowSpecification.getPhotosToShow();
-        new FullScreenViewer(photosToShow);
-      } catch (FileNotFoundException e) {
-        e.printStackTrace();
-      } catch (WrappedException wrappedException) {
-        componentFactory.createExceptionDialog("An exception occurred while reading the file: '" + file.getAbsolutePath() + "'.", wrappedException).show();
-//        new JavaFxExceptionAlert(customization, null, "THE HEADER", wrappedException).showAndWait();
-      }
-    }
+    new PhotoShowViewer(customization);
+//    FileChooser fileChooser = componentFactory.createFileChooser("Select Photo Show");
+//    if (MediaRegistry.photosFolder != null) {
+//      fileChooser.setInitialDirectory(new File(MediaRegistry.photosFolder));
+//    }
+//    File file = fileChooser.showOpenDialog(this);
+//    if (file != null) {
+//      
+//      try {
+//        EMFResource<PhotoShowSpecification> emfResource = new EMFResource<PhotoShowSpecification>(
+//            PhotoShowPackage.eINSTANCE,
+//            () -> PhotoShowFactory.eINSTANCE.createPhotoShowSpecification(),
+//            ".xmi");
+//        PhotoShowSpecification photoShowSpecification = emfResource.load(file.getAbsolutePath());
+//        List<String> photosToShow = photoShowSpecification.getPhotosToShow();
+//        new FullScreenViewer(photosToShow, photoShowSpecification.getTitle());
+//      } catch (FileNotFoundException e) {
+//        e.printStackTrace();
+//      } catch (WrappedException wrappedException) {
+//        componentFactory.createExceptionDialog("An exception occurred while reading the file: '" + file.getAbsolutePath() + "'.", wrappedException).show();
+////        new JavaFxExceptionAlert(customization, null, "THE HEADER", wrappedException).showAndWait();
+//      }
+//    }
   }
   
   private void checkAndSaveMediaDb() {

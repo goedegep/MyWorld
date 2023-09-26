@@ -18,6 +18,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 import java.util.ResourceBundle;
+import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.logging.Logger;
@@ -95,6 +96,7 @@ import goedegep.vacations.app.logic.Ov2Util;
 import goedegep.vacations.app.logic.PhotoImportResult;
 import goedegep.vacations.app.logic.PhotosImporter;
 import goedegep.vacations.app.logic.VacationToHtmlConverter;
+import goedegep.vacations.app.logic.VacationsChecker;
 import goedegep.vacations.app.logic.VacationsRegistry;
 import goedegep.vacations.app.logic.VacationsUtils;
 import goedegep.vacations.checklist.model.VacationChecklist;
@@ -693,7 +695,12 @@ public class VacationsWindow extends JfxStage {
     menuItem.setOnAction(event -> importVacations());
     menu.getItems().add(menuItem);
     
-    // File: Create a kml file
+    // File: Export vacations to KML file
+    menuItem = componentFactory.createMenuItem("Export vacations to KML file");
+    menuItem.setOnAction(event -> exportVacationsToKml());
+    menu.getItems().add(menuItem);
+    
+    // File: Export selected vacation to KML file
     menuItem = componentFactory.createMenuItem("Export selected vacation to KML file");
     menuItem.setOnAction(event -> exportVacationToKml());
     menu.getItems().add(menuItem);
@@ -777,6 +784,9 @@ public class VacationsWindow extends JfxStage {
     
     // Tools menu
     menu = new Menu("Tools");
+
+    // Tools: Check selectedvacation
+    MenuUtil.addMenuItem(menu, "Check selected vacation", event -> checkSelectedVacation());
 
     // Tools: Check vacations
     MenuUtil.addMenuItem(menu, "Check vacations", event -> new CheckVacationsWindow(customization, vacations));
@@ -885,7 +895,7 @@ public class VacationsWindow extends JfxStage {
     if (treeItem != null) {
       Vacation vacation = getVacationForTreeItem(treeItem);
       if (vacation != null) {
-        htmlText = vacationToHtmlConverter.vacationToHtml(vacation);
+        htmlText = vacationToHtmlConverter.vacationToHtml(vacation, false);
       }
     }
     
@@ -2721,7 +2731,7 @@ public class VacationsWindow extends JfxStage {
     }
     
     // Generate HTML for the vacation.
-    String htmlText = vacationToHtmlConverter.vacationToHtml(vacation);
+    String htmlText = vacationToHtmlConverter.vacationToHtml(vacation, false);
         
     // Generate a PDF file for the HTML String
     String vacationsFolder = VacationsUtils.getVacationFolder(vacation);
@@ -2763,7 +2773,7 @@ public class VacationsWindow extends JfxStage {
       return;
     }
 
-    String vacationHtmlDocument = vacationToHtmlConverter.vacationToHtml(vacation);
+    String vacationHtmlDocument = vacationToHtmlConverter.vacationToHtml(vacation, true);
     String vacationsFolder = VacationsUtils.getVacationFolder(vacation);
     if (vacationsFolder == null) {
       statusLabel.setText("No vacation folder found");
@@ -2782,6 +2792,24 @@ public class VacationsWindow extends JfxStage {
       statusLabel.setText("Vacation exported to " + file);
     } catch (FileNotFoundException e) {
       e.printStackTrace();
+    }
+  }
+  
+  private void checkSelectedVacation() {
+    EObjectTreeItem treeItem = treeView.getSelectedObject();
+    Vacation vacation = getVacationForTreeItem(treeItem);
+    if (vacation == null) {
+      statusLabel.setText("No vacation selected");
+      return;
+    }
+
+    List<FileReference> nonExistingReferences = VacationsChecker.checkThatAllReferencesExist(vacation);
+    for (FileReference fileReference: nonExistingReferences) {
+      LOGGER.severe(fileReference.toString());
+    }
+    Set<String> filesNotReferredTo = VacationsChecker.checkThatAllFilesAreReferredTo(vacation);
+    for (String filename: filesNotReferredTo) {
+      LOGGER.severe(filename);
     }
   }
   
@@ -2835,6 +2863,29 @@ public class VacationsWindow extends JfxStage {
   
   /**
    * Generate a KML file from the vacations.
+   */
+  private void exportVacationsToKml() {
+    // Let user select a file to save to.
+    FileChooser fileChooser = new FileChooser();
+    fileChooser.setTitle("Kml file");
+    FileChooser.ExtensionFilter extensionFilter = new FileChooser.ExtensionFilter("KML files (*.kml)", "*.kml");
+    fileChooser.getExtensionFilters().add(extensionFilter);
+    fileChooser.setSelectedExtensionFilter(extensionFilter);
+    File file = fileChooser.showSaveDialog(this);
+    LOGGER.severe("Creating kml file: " + file.getAbsolutePath());
+        
+    // Generate the file using the VacationsKmlConverter
+    VacationsKmlConverter vacationsKmlConverter = new VacationsKmlConverter(poiIcons);
+    try {
+      vacationsKmlConverter.createKmlForVacations(vacations, file);
+      statusLabel.setText("KML file " + file.getAbsolutePath() + " created");
+    } catch (FileNotFoundException e) {
+      statusLabel.setText("Failed to write to file: " + file.getAbsolutePath());
+    }
+  }
+  
+  /**
+   * Generate a KML file for the currently selected vacation.
    */
   private void exportVacationToKml() {
     // Let user select a file to save to.

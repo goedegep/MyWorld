@@ -377,7 +377,7 @@ public class ControlledSetBuildingTask extends Task<Tuplet<FileInfoMap, List<Fil
         for (FileInfo checkFileInfo: fileInfos) {
           if (thisMd5String.equals(checkFileInfo.getMd5String()) &&
               fileInfo.getFileName().equals(checkFileInfo.getFileName())) {
-            LOGGER.severe("Copy found: " + fileInfo.toString() + ", " + checkFileInfo.toString());
+            LOGGER.info("Copy found: " + fileInfo.toString() + ", " + checkFileInfo.toString());
             return checkFileInfo;
           }
         }

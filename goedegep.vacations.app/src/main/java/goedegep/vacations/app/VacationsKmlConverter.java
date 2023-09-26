@@ -94,7 +94,40 @@ public class VacationsKmlConverter extends VacationToTextConverterAbstract {
    *     - Vacation elements
    * </pre>
    * 
-   * @param vacations The <code>Vacation</code>s structure for which a KML file is to be created.
+   * @param vacations The <code>Vacations</code> structure for which a KML file is to be created.
+   * @param file The file to be created.
+   * @throws FileNotFoundException if the file cannot be written.
+   */
+  public void createKmlForVacations(Vacations vacations, File file) throws FileNotFoundException {
+    if (!Files.isWritable(file.getParentFile().toPath())) {
+      LOGGER.severe("Geen schrijfrechten in " + file.getParentFile().toString());
+      throw new RuntimeException("Geen schrijfrechten in " + file.getParentFile().toString());
+    }
+    
+    kmlDocument = kml.createAndSetDocument().withOpen(true);
+    
+    createAndAddKmlForHome(vacations);
+    
+    Folder vacationsFolder = kmlDocument.createAndAddFolder().withName("Vakanties").withOpen(true);
+    
+    for (Vacation vacation: vacations.getVacations()) {
+      createKmlForVacation(vacation, vacationsFolder);
+    }
+    
+    saveToFile(file);
+  }
+  
+  /**
+   * Create a KML file for a Vacations structure.
+   * <p>
+   * The KML file will have the following structure:<pre>
+   * - Home
+   * - Vacations
+   *   - Vacation: folder, name is the vacation Title
+   *     - Vacation elements
+   * </pre>
+   * 
+   * @param vacation The <code>Vacation</code>s structure for which a KML file is to be created.
    * @param file The file to be created.
    * @throws FileNotFoundException if the file cannot be written.
    */

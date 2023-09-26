@@ -562,7 +562,7 @@ public final class PhotoFileMetaDataHandler {
       TiffImageMetadata exif = jpegMetadata.getExif();
       if (exif != null) {
         List<ImageMetadataItem> dirs = (List<ImageMetadataItem>) exif.getDirectories();
-        LOGGER.severe("Value of getDirectories: " + dirs);
+        LOGGER.info("Value of getDirectories: " + dirs);
 //        for (Directory directory: exif.getDirectories()) {
 //          if (directory.type == directoryType) {
 //            for (ImageMetadataItem item: directory.getItems()) {

@@ -328,7 +328,7 @@ public class EObjectTreeItemForObject extends EObjectTreeItem {
    * 
    * @return the best {@code EObjectTreeItemClassDescriptor} for the current value or {@code eClass}.
    */
-  EObjectTreeItemClassDescriptor getClassDescriptor() {
+  public EObjectTreeItemClassDescriptor getClassDescriptor() {
     
     EObjectTreeItemClassDescriptor classDescriptor = null;
     

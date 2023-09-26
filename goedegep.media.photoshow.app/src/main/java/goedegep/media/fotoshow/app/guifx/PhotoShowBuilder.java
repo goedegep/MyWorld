@@ -43,6 +43,7 @@ import goedegep.jfx.eobjecttreeview.EObjectTreeView;
 import goedegep.jfx.eobjecttreeview.NodeOperationDescriptor;
 import goedegep.media.app.MediaRegistry;
 import goedegep.media.fotoshow.app.OrderedNameGenerator;
+import goedegep.media.fotoshow.app.PhotoshowCommons;
 import goedegep.media.photo.GatherPhotoInfoTask;
 import goedegep.media.photo.IPhotoMetaDataWithImage;
 import goedegep.media.photoshow.model.FolderTimeOffsetSpecification;
@@ -53,6 +54,7 @@ import goedegep.util.Tuplet;
 import goedegep.util.datetime.DurationFormat;
 import goedegep.util.emf.EMFResource;
 import goedegep.util.emf.EmfPackageHelper;
+import goedegep.util.emf.EmfUtil;
 import goedegep.util.file.FileUtils;
 import goedegep.util.mslinks.ShellLink;
 import javafx.application.Platform;
@@ -90,6 +92,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
+import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.Window;
@@ -110,7 +113,7 @@ public class PhotoShowBuilder extends JfxStage {
   private final static String NEWLINE = System.getProperty("line.separator");
   private final static DurationFormat DF = new DurationFormat();
   
-  private final static String WINDOW_TITLE = "Photo Show Builder";
+  private final static String WINDOW_TITLE = "Photoshow builder";
   
   private final static List<String> SUPPORTED_FILE_TYPES = Arrays.asList(".jpg");
   private static final PhotoShowPackage PHOTO_SHOW_PACKAGE = PhotoShowPackage.eINSTANCE;
@@ -309,13 +312,13 @@ public class PhotoShowBuilder extends JfxStage {
    * @param stage the Stage to add the scene to.
    */
   private void createGUI() {
-    VBox topLevelVBox = componentFactory.createVBox();
+    VBox topLevelVBox = componentFactory.createVBox(12.0, 12.0);
     
     // Menu bar
     topLevelVBox.getChildren().add(createMenuBar(MediaRegistry.developmentMode));
     
     // Specification as TreeView and Wizards panel
-    HBox specificationAndWizardsPanel = componentFactory.createHBox();
+    HBox specificationAndWizardsPanel = componentFactory.createHBox(12.0);
     EObjectTreeDescriptor eObjectTreeDescriptor = createEObjectTreeDescriptorForPhotoShowSpecification();
     photoShowSpecificationView = new EObjectTreeView(photoShowSpecification, eObjectTreeDescriptor, true);
 //    photoShowSpecificationView = new EObjectTreeView(photoShowSpecification, null, true);
@@ -326,8 +329,8 @@ public class PhotoShowBuilder extends JfxStage {
     specificationAndWizardsPanel.getChildren().addAll(photoShowSpecificationView, wizardsPanel);
    
     // Photo show
-    VBox photoShowPanel = componentFactory.createVBox();
-    photoShowLabel = componentFactory.createLabel(null);
+    VBox photoShowPanel = componentFactory.createVBox(10.0);
+    photoShowLabel = componentFactory.createStrongLabel(null);
     photoShowPanel.getChildren().add(photoShowLabel);
     createPhotoShowView();
     photoShowPanel.getChildren().add(listView);
@@ -338,7 +341,7 @@ public class PhotoShowBuilder extends JfxStage {
     guiNodesToBeDisabled.add(specificationAndWizardsPanel);
     topLevelVBox.getChildren().addAll(specificationAndWizardsPanel, photoShowPanel, statusPanel);
     
-    Scene scene = new Scene(topLevelVBox, 1200, 950);
+    Scene scene = new Scene(topLevelVBox, 1300, 950);
     setScene(scene);
     show();
   }
@@ -1057,6 +1060,11 @@ public class PhotoShowBuilder extends JfxStage {
       fileChooser.setInitialDirectory(photosFolder);
     }
     File photoShowSpecificationFile = fileChooser.showOpenDialog(this);
+    
+    if (photoShowSpecificationFile == null) {
+      return;
+    }
+    
     LOGGER.info("Opening: " + photoShowSpecificationFile.getAbsolutePath());
     
     try {
@@ -1128,6 +1136,14 @@ public class PhotoShowBuilder extends JfxStage {
   private void handleSavePhotoShowSpecificationAsRequest() {
     FileChooser fileChooser = new FileChooser();
     fileChooser.setTitle("Save Photo Show Specification");
+    fileChooser.setInitialDirectory(new File(currentlySelectedFolder));
+    if (photoShowSpecification.getTitle() != null) {
+      fileChooser.setInitialFileName(photoShowSpecification.getTitle());
+    }
+    ExtensionFilter extensionFilter = new ExtensionFilter("Photoshow file", PhotoshowCommons.DEFAULT_PHOTOSHOW_SPECIFICATION_FILE_EXTENSION);
+    fileChooser.getExtensionFilters().add(extensionFilter);
+    fileChooser.setSelectedExtensionFilter(extensionFilter);
+    
     File file = fileChooser.showSaveDialog(this);
     if (file != null) {
       LOGGER.severe("Saving: " + file.getAbsolutePath());
@@ -1186,6 +1202,12 @@ public class PhotoShowBuilder extends JfxStage {
       @Override
       public void notifyChanged(Notification notification) {
         super.notifyChanged(notification);
+        
+        if (notification.getEventType() == Notification.REMOVING_ADAPTER) {
+          // no action
+          return;
+        }
+        
         Object feature = notification.getFeature();
         LOGGER.info("Feature: " + feature);
         LOGGER.info("Position: " + notification.getPosition());
@@ -1233,6 +1255,7 @@ public class PhotoShowBuilder extends JfxStage {
           if (feature != null) {
             throw new RuntimeException("Unknown feature: " + feature.toString());
           } else {
+            LOGGER.severe("Notification: " + EmfUtil.printNotification(notification, true));
             throw new RuntimeException("Feature is null ");
           }
         }
@@ -1293,9 +1316,11 @@ public class PhotoShowBuilder extends JfxStage {
         LocalDateTime photoDateTime2 = photoInfo2.getSortingDateTime();
         if (photoDateTime1 == null) {
           LOGGER.severe("No sorting time for photoInfo1: " + photoInfo1);
+          return 0;  // FIXME
         }
         if (photoDateTime2 == null) {
           LOGGER.severe("No sorting time for photoInfo2: " + photoInfo2);
+          return 0;   // FIXME
         }
         return photoInfo1.getSortingDateTime().compareTo(photoInfo2.getSortingDateTime());
       }
@@ -1463,11 +1488,11 @@ public class PhotoShowBuilder extends JfxStage {
     dialog.initOwner(owner);
     VBox dialogVbox = new VBox(20);
     StringBuilder buf = new StringBuilder();
-    buf.append("Creation date: ").append(creationDate.toString());
+    buf.append("Creation date: ").append(creationDate != null ? creationDate.toString() : "");
     if (modificationDate != null) {
-      buf.append(NEWLINE).append("Modification date: ").append(modificationDate.toString());
+      buf.append(NEWLINE).append("Modification date: ").append(modificationDate != null ? modificationDate.toString() : "");
     }
-    buf.append(NEWLINE).append("Sorting date: ").append(sortingDate.toString());
+    buf.append(NEWLINE).append("Sorting date: ").append(sortingDate != null ? sortingDate.toString() : "");
     
     WGS84Coordinates coordinates = photoInfo.getCoordinates();
     buf.append(NEWLINE).append("Latitude: ");
@@ -1497,16 +1522,15 @@ public class PhotoShowBuilder extends JfxStage {
   }
   
   private void playShow() {
-    ObservableList<IPhotoInfo> showList = FXCollections.observableArrayList();
+    List<String> showList = new ArrayList<>();
     
     for (IPhotoInfo photoInfo: photoShowList) {
       if (photoInfo.isSelectedForTheShow()) {
-        showList.add(photoInfo);
+        showList.add(photoInfo.getFileName());
       }
     }
     
-    Stage ss = new FullScreenViewer(showList);
-    ss.show();
+    new PhotoWindow(customization, showList, photoShowSpecification.getTitle());
   }
   
   /*

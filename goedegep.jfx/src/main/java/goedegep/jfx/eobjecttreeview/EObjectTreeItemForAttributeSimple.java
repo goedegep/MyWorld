@@ -154,6 +154,36 @@ public class EObjectTreeItemForAttributeSimple extends EObjectTreeItem {
   void switchToViewMode() {
     // No action, a simple attribute value has no children.
   }
+  
+  /**
+   * Handle the fact that an attribute has a new value.
+   * 
+   * @param eStructuralFeature the changed feature
+   * @param newValue the new value
+   */
+  public void handleAttributeValueChanged(EStructuralFeature eStructuralFeature, Object newValue) {
+    LOGGER.severe("=> " + toString());
+    setValue(newValue);
+    
+    EObjectTreeItem parentTreeItem = (EObjectTreeItem) getParent();
+    
+    if (parentTreeItem.isFirstTimeChildren) {
+      // The children haven't been built yet, so we don't have to add anything.
+      LOGGER.severe("Children haven't been built yet, so no action");
+      return;
+    }
+    
+    for (TreeItem<Object> child: parentTreeItem.getChildren()) {
+      EObjectTreeItem childEObjectTreeItem = (EObjectTreeItem) child;
+      if (eStructuralFeature.equals(childEObjectTreeItem.getEStructuralFeature())) {
+        LOGGER.severe("child found, going to rebuild children");
+        setExpanded(true);  // hack. This way the TreeView seems to re-evaluate whether the item is a leaf.
+        childEObjectTreeItem.rebuildChildren();
+        break;
+      }
+    }
+    
+  }
 
   /**
    * {@inheritDoc}

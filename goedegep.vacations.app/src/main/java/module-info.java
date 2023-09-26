@@ -36,7 +36,7 @@ module goedegep.vacations.app {
   requires org.commonmark;
   requires org.eclipse.emf.common;
   requires org.eclipse.emf.ecore;
-  requires pdfbox;
+  requires org.apache.pdfbox;
   requires spatial4j;
   requires com.google.gson;
   requires transitive goedegep.gpx;

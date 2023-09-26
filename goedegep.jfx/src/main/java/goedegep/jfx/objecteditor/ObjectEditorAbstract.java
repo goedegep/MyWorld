@@ -19,7 +19,7 @@ import javafx.scene.layout.Priority;
 /**
  * This class provides a template for an object editor and it provides some common functionality.
  * <p>
- *
+ * @param <T> The object type being edited
  */
 public abstract class ObjectEditorAbstract<T> extends JfxStage {
   private static Logger LOGGER = Logger.getLogger(ObjectEditorAbstract.class.getName());

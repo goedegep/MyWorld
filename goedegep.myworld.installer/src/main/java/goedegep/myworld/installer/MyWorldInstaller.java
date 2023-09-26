@@ -187,6 +187,7 @@ public class MyWorldInstaller extends JfxApplication {
       "goedegep\\gpx\\goedegep-gpx\\1.0-SNAPSHOT\\goedegep-gpx-1.0-SNAPSHOT.jar",
       "goedegep\\gpx\\goedegep-gpx-app\\1.0-SNAPSHOT\\goedegep-gpx-app-1.0-SNAPSHOT.jar",
       "goedegep\\gpx\\goedegep-gpx-model\\1.0-SNAPSHOT\\goedegep-gpx-model-1.0-SNAPSHOT.jar",
+      "goedegep\\gpx\\goedegep-gpx10-model\\1.0-SNAPSHOT\\goedegep-gpx10-model-1.0-SNAPSHOT.jar",
       "goedegep\\invandprop\\goedegep-invandprop-app\\1.0-SNAPSHOT\\goedegep-invandprop-app-1.0-SNAPSHOT.jar",
       "goedegep\\invandprop\\goedegep-invandprop-model\\1.0-SNAPSHOT\\goedegep-invandprop-model-1.0-SNAPSHOT.jar",
       "goedegep\\jfx\\goedegep-jfx\\1.0-SNAPSHOT\\goedegep-jfx-1.0-SNAPSHOT.jar",

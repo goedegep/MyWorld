@@ -63,8 +63,6 @@ public class MapRelatedItemsLayer extends MapLayer {
   
   private POIIcons poiIcons;
   
-  private VacationsAppResourcesFx appResources;
-  
   /**
    * For items added for display, the Nodes (e.g. ImageView, Canvas, Polygon) are added as children to this instance and information is kept
    * in the following fields. In layoutLayer the 'locations on the map' are re-calculated.
@@ -93,8 +91,6 @@ public class MapRelatedItemsLayer extends MapLayer {
     this.customization = customization;
     this.poiIcons = poiIcons;
     this.ownerWindow = ownerWindow;
-    
-    appResources = (VacationsAppResourcesFx) customization.getResources();
   }
   
   /**

@@ -2,6 +2,7 @@ package goedegep.util.emf;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
+import java.util.Objects;
 import java.util.logging.FileHandler;
 import java.util.logging.Formatter;
 import java.util.logging.Handler;
@@ -46,6 +47,7 @@ public class EObjectPath {
    */
   public EObjectPath(EObject eObject) {
     LOGGER.info("=> eObject=" + eObject.toString());
+    Objects.requireNonNull(eObject, "eObject may not be null");
     
     MutableXTree xtree = MutableXTreeFactory.createMutableXTree();
     MutableXTreeNode node = null;
@@ -146,17 +148,6 @@ public class EObjectPath {
   public ByteBuffer getSerializedData() {
     byte[] binaryTree = pathXTree.getSerializedTreeData();
 
-//    System.out.println();
-//    System.out.println("Serialized data:");
-//    for (byte aByte: binaryTree) {
-//      int i = (int) (aByte & 0x7f);
-//      if (aByte < 0) {
-//        i |= 0x80;
-//      }
-//      System.out.print("0x" + Integer.toHexString(i));
-//      System.out.print(" ");
-//    }
-//    System.out.println();
     return ByteBuffer.wrap(binaryTree);
   }
   
@@ -165,6 +156,7 @@ public class EObjectPath {
   }
     
   public EObjectPath(ByteBuffer binaryTree) {
+    Objects.requireNonNull(binaryTree, "Argument binaryTree may not be null");
     pathXTree = new BinarySerializedXTree(binaryTree.array());
     
     LOGGER.info("DESERIALIZED TREE: " + pathXTree.toString());

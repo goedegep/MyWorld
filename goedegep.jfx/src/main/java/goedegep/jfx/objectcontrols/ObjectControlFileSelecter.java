@@ -106,7 +106,11 @@ public class ObjectControlFileSelecter extends ObjectControlFileOrFolderSelecter
     // Do this at the end, so it automatically leads an update of the selectionValidProperty.
     if (initiallySelectedFilename != null) {
       File initiallySelectedFile = new File(initiallySelectedFilename);
-      initiallySelectedFolder = initiallySelectedFile.getParent();
+      if (initiallySelectedFile.isDirectory()) {
+        initiallySelectedFolder = initiallySelectedFilename;
+      } else {
+        initiallySelectedFolder = initiallySelectedFile.getParent();
+      }
 
       ocSetFilename(initiallySelectedFilename);
     }

@@ -461,39 +461,44 @@ public class EObjectTreeView extends TreeView<Object> implements ObjectSelector<
         Object feature = notification.getFeature();
         if (feature == null) {
           throw new RuntimeException("feature is null, this is not supported yet");
-        } else if (feature instanceof EStructuralFeature eStructuralFeature) {
-          LOGGER.severe("eStructuralFeature: " + eStructuralFeature);
+        } else if (feature instanceof EReference eReference) {
+          LOGGER.severe("eReference: " + eReference);
           EObjectPath eObjectPath = new EObjectPath(notifierEObject);
           EObjectTreeItem changedContainingTreeItem = findTreeItem(eObjectPath);
           LOGGER.info("changedContainingTreeItem: " + changedContainingTreeItem);
 //          changedContainingTreeItem.setExpanded(true);
 //          changedContainingTreeItem.rebuildChildren();
           
-          EObjectTreeItem changedTreeItem = (EObjectTreeItemForObjectList) changedContainingTreeItem.findChildTreeItem(eStructuralFeature);
-          LOGGER.severe("changedTreeItem: " + changedTreeItem);
-          
-          if (notification.getEventType() == Notification.ADD) {
-            // an element is added to a list of objects
-            ((EObjectTreeItemForObjectList) changedTreeItem).addObjectListChild(notification.getPosition());
-          } else if (notification.getEventType() == Notification.REMOVE) {
-            // an element is removed from a list of objects
-            ((EObjectTreeItemForObjectList) changedTreeItem).removeObjectListChild(notification.getPosition());
-          } else if (notification.getEventType() == Notification.SET) {
-            // the value of an attribute has changed
-            ((EObjectTreeItemForObject) changedTreeItem).handleAttributeValueChanged(eStructuralFeature, notification.getNewValue());
+          if (eReference.isMany()) {
+            EObjectTreeItem changedTreeItem = (EObjectTreeItemForObjectList) changedContainingTreeItem.findChildTreeItem(eReference);
+            LOGGER.severe("changedTreeItem: " + changedTreeItem);
+
+            if (notification.getEventType() == Notification.ADD) {
+              // an element is added to a list of objects
+              ((EObjectTreeItemForObjectList) changedTreeItem).addObjectListChild(notification.getPosition());
+            } else if (notification.getEventType() == Notification.REMOVE) {
+              // an element is removed from a list of objects
+              ((EObjectTreeItemForObjectList) changedTreeItem).removeObjectListChild(notification.getPosition());
+            } else if (notification.getEventType() == Notification.SET) {
+              // the value of an attribute has changed
+              ((EObjectTreeItemForObject) changedTreeItem).handleAttributeValueChanged(eReference, notification.getNewValue());
+            }
           }
-          
-          // TODO hier verder
-//          if (changedTreeItem != null) {
-//            if (notification.getEventType() == Notification.ADD) {
-//              changedTreeItem = (EObjectTreeItemForObjectList) changedTreeItem.getChildren().get(notification.getPosition());
-//            }
-//            LOGGER.info("Going to SELECT node: " + changedTreeItem.toString());
-////            changedTreeItem.setExpanded(true);
-//            getSelectionModel().select(changedTreeItem);
-//          } else {
-//            LOGGER.fine("Changed tree item not found: changedContainingTreeItem=" + changedContainingTreeItem.toString() + ", eStructuralFeature=" + eStructuralFeature);
-//          }
+        } else if (feature instanceof EAttribute eAttribute) {
+          if (eAttribute.isMany()) {
+//            throw new RuntimeException("eAttribute not supported: " + eAttribute.toString());
+          } else {
+            EObjectPath eObjectPath = new EObjectPath(notifierEObject);
+            EObjectTreeItem changedContainingTreeItem = findTreeItem(eObjectPath);
+            EObjectTreeItem changedTreeItem = (EObjectTreeItemForAttributeSimple) changedContainingTreeItem.findChildTreeItem(eAttribute);
+            LOGGER.severe("changedTreeItem: " + changedTreeItem);
+            if (notification.getEventType() == Notification.SET) {
+              // the value of an attribute has changed
+              ((EObjectTreeItemForAttributeSimple) changedTreeItem).handleAttributeValueChanged(eAttribute, notification.getNewValue());
+            } else {
+              throw new RuntimeException("EventType: " + notification.getEventType() + " , for eAttribute not supported: " + eAttribute.toString());
+            }
+          }
         } else {
           throw new RuntimeException("feature not supported: " + feature.toString());
         }
