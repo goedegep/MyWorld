@@ -8,6 +8,7 @@ import java.util.logging.Logger;
 
 import goedegep.appgen.TableRowOperation;
 import goedegep.appgen.TableRowOperationDescriptor;
+import goedegep.invandprop.app.PropertyStringConverter;
 import goedegep.invandprop.model.InvAndPropPackage;
 import goedegep.invandprop.model.Invoice;
 import goedegep.invandprop.model.InvoiceItem;
@@ -56,6 +57,7 @@ public class InvoicesWindow extends JfxStage {
   private ComponentFactoryFx componentFactory = null;
   
   private EObjectTableControlPanel eObjectTableControlPanel;
+  private Button editButton;
   private EObjectTable<Invoice> invoicesTable;
   private EObjectTable<InvoiceItem> invoiceItemsTable;
 
@@ -75,6 +77,7 @@ public class InvoicesWindow extends JfxStage {
     
     componentFactory = customization.getComponentFactoryFx();
     
+    createControls();
     createGUI();
     
     eObjectTableControlPanel.filterTextProperty().addListener((observable, oldValue, newValue) -> invoicesTable.setFilterExpression(newValue, null));
@@ -93,6 +96,10 @@ public class InvoicesWindow extends JfxStage {
   public void selectAndShow(Invoice invoice) {
     invoicesTable.getSelectionModel().select(invoice);
     invoicesTable.scrollTo(invoice);
+  }
+  
+  private void createControls() {
+    createInvoicesTable();
   }
   
   /**
@@ -116,12 +123,14 @@ public class InvoicesWindow extends JfxStage {
     
     HBox buttonsBox = componentFactory.createHBox(12.0, 12.0);
     
-    Button editInvoiceButton = componentFactory.createButton("Edit Invoice", "click to edit the details of the selected invoice");
-    editInvoiceButton.setOnAction(e -> showInvoiceEditor());
-    buttonsBox.getChildren().add(editInvoiceButton);
+    editButton = componentFactory.createButton("Edit Invoice", "click to edit the details of the selected invoice");
+    invoicesTable.addObjectSelectionListener((object, invoice) -> updateEditButton(invoice));
+    editButton.setOnAction(e -> showInvoiceEditor());
+    buttonsBox.getChildren().add(editButton);
     
     Button newInvoiceButton = componentFactory.createButton("New Invoice and Property", "click to enter the details of a new invoice and property");
     newInvoiceButton.setOnAction(e -> showNewInvoiceAndPropertyEditor());
+    updateEditButton(null);
     buttonsBox.getChildren().add(newInvoiceButton);
     controlsBox.getChildren().add(buttonsBox);
     
@@ -130,11 +139,25 @@ public class InvoicesWindow extends JfxStage {
     SplitPane tablesPane = new SplitPane();
     tablesPane.setOrientation(Orientation.VERTICAL);
     tablesPane.setDividerPositions(0.8);
-    tablesPane.getItems().add(createInvoicesTable());
+    tablesPane.getItems().add(invoicesTable);
     tablesPane.getItems().add(createInvoiceItemsTable());
     rootLayout.getChildren().add(tablesPane);
     
     setScene(new Scene(rootLayout, 1300, 700));
+  }
+  
+  private void updateEditButton(Invoice invoice) {
+    if (invoice != null) {
+      if (invoice.isSetPurchase()) {
+        editButton.setText("Edit Invoice and Property");
+      } else {
+        editButton.setText("Edit Invoice");
+      }
+      editButton.setDisable(false);
+    } else {
+      editButton.setText("Edit Invoice");
+      editButton.setDisable(true);
+    }
   }
   
   /**
@@ -143,7 +166,7 @@ public class InvoicesWindow extends JfxStage {
   private void showInvoiceEditor() {
     Invoice invoice = invoicesTable.getSelectedObject();
     if (invoice != null) {
-      new InvoiceAndPropertyEditor(customization, invoice);
+      new InvoiceAndPropertyEditor(customization, invoicesAndProperties).runEditor().setObject(invoice);
     }
   }
   
@@ -151,7 +174,7 @@ public class InvoicesWindow extends JfxStage {
    * Open de the invoice and property editor to create a new invoice.
    */
   private void showNewInvoiceAndPropertyEditor() {
-    new InvoiceAndPropertyEditor(customization, invoicesAndProperties);
+    new InvoiceAndPropertyEditor(customization, invoicesAndProperties).runEditor();;
   }
 
   /**
@@ -311,7 +334,6 @@ class PurchaseCell extends TextFieldTableCell<Invoice, Object> {
 
   public PurchaseCell(InvoicesAndPropertiesMenuWindow invoicesAndPropertiesMenuWindow) {
     setOnMouseClicked(e -> {
-      LOGGER.severe("Property: " + property.toString());
       PropertiesWindow propertiesWindow = invoicesAndPropertiesMenuWindow.getPropertiesWindow();
       propertiesWindow.selectAndShow(property);
       propertiesWindow.show();

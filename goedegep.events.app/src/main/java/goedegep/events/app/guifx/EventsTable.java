@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.logging.Logger;
 
 import org.commonmark.parser.Parser;
@@ -40,7 +41,9 @@ import javafx.scene.web.WebView;
 import javafx.util.Callback;
 
 public class EventsTable extends EObjectTable<EventInfo> {
+  @SuppressWarnings("unused")
   private CustomizationFx customization;
+  private Consumer<EventInfo> eventEditorLauncher = null;
   
   /**
    * Constructor
@@ -51,7 +54,6 @@ public class EventsTable extends EObjectTable<EventInfo> {
     super(customization, EventsPackage.eINSTANCE.getEventInfo(), EventsTableDescriptorFactory.createDescriptor(customization), null);
     
     this.customization = customization;
-//    setMinHeight(300);
     
     // refresh table on selection, used to show the selected row with larger images.
     addObjectSelectionListener((o, e) -> refresh());
@@ -59,11 +61,16 @@ public class EventsTable extends EObjectTable<EventInfo> {
     handleRowDoubleClicked(getSelectedObject());
   }
   
+  public void setEventEditorLauncher(Consumer<EventInfo> eventEditorLauncher) {
+    this.eventEditorLauncher = eventEditorLauncher;
+  }
+  
   @Override
   protected void handleRowDoubleClicked(EventInfo event) {
     if (event != null) {
-      EventsEditor eventsEditor = new EventsEditor(customization);
-      eventsEditor.setEvent(event);
+      eventEditorLauncher.accept(event);
+//      EventsEditor eventsEditor = new EventsEditor(customization);
+//      eventsEditor.setEvent(event);
     }
   }
 }

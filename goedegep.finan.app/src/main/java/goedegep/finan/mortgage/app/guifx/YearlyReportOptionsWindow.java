@@ -77,7 +77,7 @@ public class YearlyReportOptionsWindow extends JfxStage {
     label = componentFactory.createLabel("File: ");
     optionsPane.add(label, 0, 1);
     
-    fileSelecter = componentFactory.createFileSelecter(null, 400, "File to save the report to", "Choose file", "Open a file chooser", "Report file selection");
+    fileSelecter = componentFactory.createFileSelecterObjectControl(400, "File to save the report to", "Choose file", "Open a file chooser", "Report file selection", false);
     fileSelecter.addFileType(".pdf", "Portable Data Format", true);
     fileSelecter.setOpenOrSaveDialog(true);
     Node fileNameTextField = fileSelecter.ocGetControl();

@@ -117,7 +117,7 @@ public interface ObjectControl<T extends Object> extends Observable {
    * 
    * @return a node which represents the status of the control.
    */
-  public Node ocGetValidIndicator();
+  public Node ocGetStatusIndicator();
   
   /**
    * Get the primary control.
@@ -160,4 +160,9 @@ public interface ObjectControl<T extends Object> extends Observable {
    * @return true if the control has changed since the last call to ocSetValue().
    */
   public boolean ocIsChanged();
+  
+  /**
+   * Remove all listeners, which have been added via {@code addListener()}.
+   */
+  public void removeListeners();
 }

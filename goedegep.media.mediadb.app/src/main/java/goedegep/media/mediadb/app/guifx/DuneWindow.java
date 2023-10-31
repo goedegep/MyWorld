@@ -117,8 +117,9 @@ public class DuneWindow extends JfxStage {
     label = componentFactory.createLabel("Music folder:");
     grid.add(label, 1, 0);
     
-    ObjectControlFolderSelecter musicFolderSelecter = componentFactory.createFolderSelecter(currentMusicFolder, 200, "Currently selected folder",
-        "Choose folder", "Select music folder via a file chooser", "Select the folder with all music");
+    ObjectControlFolderSelecter musicFolderSelecter = componentFactory.createFolderSelecter(200, "Currently selected folder",
+        "Choose folder", "Select music folder via a file chooser", "Select the folder with all music", false);
+    musicFolderSelecter.setInitialFolderProvider(() -> currentMusicFolder);
     Node folderName = musicFolderSelecter.ocGetControl();
     grid.add(folderName, 2, 0);
     
@@ -137,8 +138,9 @@ public class DuneWindow extends JfxStage {
     label = componentFactory.createLabel("Dune music folder path:");
     grid.add(label, 1, 1);
     
-    duneMusicFolderSelecter = componentFactory.createFolderSelecter(currentDuneMusicFolderPath, 200, "Currently selected Dune music folder path",
-        "Choose folder", "Select  Dune music folder path via a file chooser", "Select the music folder on the Dune");
+    duneMusicFolderSelecter = componentFactory.createFolderSelecter(200, "Currently selected Dune music folder path",
+        "Choose folder", "Select  Dune music folder path via a file chooser", "Select the music folder on the Dune", false);
+    duneMusicFolderSelecter.setInitialFolderProvider(() -> currentDuneMusicFolderPath);
     Node duneFolderPathTextField = duneMusicFolderSelecter.ocGetControl();
     duneMusicFolderSelecter.addListener(e -> {
       currentDuneMusicFolderPath = duneMusicFolderSelecter.ocGetAbsolutePath();
@@ -157,8 +159,9 @@ public class DuneWindow extends JfxStage {
     label = componentFactory.createLabel("Dune playlist folder path:");
     grid.add(label, 1, 2);
     
-    playListFolderPathSelecter = componentFactory.createFolderSelecter(currentDunePlaylistsFolderPath, 200, "Currently selected Dune playlists folder path",
-        "Choose folder", "Select Dune playlists folder path via a file chooser", "Select the playlists folder on the Dune");
+    playListFolderPathSelecter = componentFactory.createFolderSelecter(200, "Currently selected Dune playlists folder path",
+        "Choose folder", "Select Dune playlists folder path via a file chooser", "Select the playlists folder on the Dune", false);
+    playListFolderPathSelecter.setInitialFolderProvider(() -> currentDunePlaylistsFolderPath);
     Node playListFolderPathTextField = playListFolderPathSelecter.ocGetControl();
     playListFolderPathSelecter.addListener(e -> {
       currentDunePlaylistsFolderPath = playListFolderPathSelecter.ocGetAbsolutePath();

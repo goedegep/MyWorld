@@ -54,7 +54,7 @@ public class ObjectControlAutoCompleteTextField<T> extends ObjectControlAbstract
       autoCompleteTextField.setTooltip(new Tooltip(toolTipText));
     }
     
-    autoCompleteTextField.textProperty().addListener((o) -> ociHandleNewUserInput());
+    autoCompleteTextField.textProperty().addListener((o) -> ociHandleNewUserInput(autoCompleteTextField));
     
     autoCompleteTextField.focusedProperty().addListener(this::handleFocusChanged);
     autoCompleteTextField.setText(objectToString(initialValue));
@@ -98,7 +98,7 @@ public class ObjectControlAutoCompleteTextField<T> extends ObjectControlAbstract
    * {@inheritDoc}
    */
   @Override
-  public T ociDetermineValue() {
+  public T ociDetermineValue(Object source) {
     if (autoCompleteTextField.getText() == null) {
       return null;
     }

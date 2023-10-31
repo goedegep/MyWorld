@@ -12,7 +12,7 @@ import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.JfxStage;
 import goedegep.jfx.eobjecttable.EObjectTable;
 import goedegep.jfx.objectcontrols.ObjectControlFileSelecter;
-import goedegep.media.mediadb.app.AlbumDetailsException;
+import goedegep.jfx.objecteditor.ObjectEditorException;
 import goedegep.media.mediadb.model.MediaDb;
 import goedegep.media.mediadb.model.MediadbFactory;
 import goedegep.media.mediadb.model.MediadbPackage;
@@ -169,7 +169,8 @@ public class VideoDetailsEditor extends JfxStage {
     label = componentFactory.createLabel("Image file:");
     gridPane.add(label, 0, 2);
     
-    videoImageFileSelecter = componentFactory.createFileSelecter("D:\\Photo", 300, "Select an image file", "Open file selecter", "Select this image file", "Select image");
+    videoImageFileSelecter = componentFactory.createFileSelecterObjectControl(300, "Select an image file", "Open file selecter", "Select this image file", "Select image", false);
+    videoImageFileSelecter.setInitialFolderProvider(() -> "D:\\Photo");
     gridPane.add(videoImageFileSelecter.ocGetControl(), 1, 2);
     gridPane.add(videoImageFileSelecter.getFileChooserButton(), 2, 2);
     
@@ -314,7 +315,7 @@ public class VideoDetailsEditor extends JfxStage {
     try {
     Video video = createVideoFromControls();
     mediaDb.getVideos().add(video);
-    } catch (AlbumDetailsException e) {
+    } catch (ObjectEditorException e) {
       StringBuilder buf = new StringBuilder();
       for (String problem: e.getProblems()) {
         buf.append(problem);
@@ -332,7 +333,7 @@ public class VideoDetailsEditor extends JfxStage {
    * @return the new Album
    * @throws AlbumtDetailsException if the provided information isn't correct.
    */
-  private Video createVideoFromControls() throws AlbumDetailsException {
+  private Video createVideoFromControls() throws ObjectEditorException {
     Video video;
     
     video = MEDIA_DB_FACTORY.createVideo();

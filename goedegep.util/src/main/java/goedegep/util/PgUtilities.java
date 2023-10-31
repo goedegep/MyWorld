@@ -45,11 +45,10 @@ public class PgUtilities {
     }
     
     boolean result = object1.equals(object2);
-    java.util.Objects.compare(null, null, null);
     if (!result) {
       LOGGER.info("<= false, object1=" + object1 + ", object2=" + object2);
     }
-    return object1.equals(object2);
+    return result;
   }
   
 }

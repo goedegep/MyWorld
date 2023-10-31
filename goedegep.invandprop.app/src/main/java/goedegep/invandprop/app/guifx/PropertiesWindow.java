@@ -10,7 +10,10 @@ import java.util.logging.Logger;
 
 import goedegep.appgen.TableRowOperation;
 import goedegep.appgen.TableRowOperationDescriptor;
+import goedegep.invandprop.app.ExpenditureStringConverter;
+import goedegep.invandprop.app.FileReferenceWrapper;
 import goedegep.invandprop.app.InvoicesAndPropertiesRegistry;
+import goedegep.invandprop.app.InvoicesAndPropertiesUtil;
 import goedegep.invandprop.model.Expenditure;
 import goedegep.invandprop.model.InvAndPropPackage;
 import goedegep.invandprop.model.Invoice;
@@ -149,8 +152,13 @@ public class PropertiesWindow extends JfxStage {
   
   public static void openDocument(FileReference fileReference) {
     String fileName = fileReference.getFile();
+    if (fileName == null  ||  fileName.isEmpty()) {
+      return;
+    }
+    
+    fileName = InvoicesAndPropertiesUtil.prependBaseDirToRelativeFilename(fileName);
     try {
-      File file = new File(InvoicesAndPropertiesRegistry.propertyRelatedFilesFolder + "\\" + fileName);
+      File file = new File(fileName);
       Desktop.getDesktop().open(file);
     } catch (IOException e) {
       e.printStackTrace();
@@ -216,12 +224,14 @@ public class PropertiesWindow extends JfxStage {
   private void editSelectedProperty() {
     Property property = propertiesTable.getSelectedObject();
     if (property != null) {
-      new InvoiceAndPropertyEditor(customization, property);
+      InvoiceAndPropertyEditor editor = new InvoiceAndPropertyEditor(customization, invoicesAndProperties);
+      editor.runEditor();
+      editor.setProperty(property);
     }
   }
   
   private void showInvoiceAndPropertyEditor() {
-    new InvoiceAndPropertyEditor(customization, invoicesAndProperties);
+    new InvoiceAndPropertyEditor(customization, invoicesAndProperties).runEditor();
   }
 
   /**

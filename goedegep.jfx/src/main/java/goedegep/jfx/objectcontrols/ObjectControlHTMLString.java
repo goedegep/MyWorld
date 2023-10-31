@@ -25,7 +25,7 @@ public class ObjectControlHTMLString extends ObjectControlAbstract<String> {
     super(isOptional);
     
     htmlEditor = customization.getComponentFactoryFx().createHTMLEditor();
-    htmlEditor.addEventHandler(InputEvent.ANY, (e) -> ociHandleNewUserInput());
+    htmlEditor.addEventHandler(InputEvent.ANY, (e) -> ociHandleNewUserInput(htmlEditor));
     
     ocSetValue(text);
   }
@@ -64,7 +64,7 @@ public class ObjectControlHTMLString extends ObjectControlAbstract<String> {
    * {@inheritDoc}
    */
   @Override
-  public String ociDetermineValue() {
+  public String ociDetermineValue(Object source) {
     String text = htmlEditor.getHtmlText();
     
     if (text != null) {

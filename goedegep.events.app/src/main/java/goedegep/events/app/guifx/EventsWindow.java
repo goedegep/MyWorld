@@ -16,7 +16,6 @@ import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.JfxStage;
 import goedegep.jfx.MenuUtil;
 import goedegep.jfx.PropertyDescriptorsEditorFx;
-import goedegep.jfx.eobjecttable.EObjectTable;
 import goedegep.properties.app.guifx.PropertiesEditor;
 import goedegep.resources.ImageSize;
 import goedegep.util.emf.EMFResource;
@@ -47,7 +46,7 @@ public class EventsWindow extends JfxStage {
   private EventsAppResources appResources;
   private EMFResource<Events> eventsResource = null;
   private Events events = null;
-  private EObjectTable<EventInfo> eventsTable = null;
+  private EventsTable eventsTable = null;
   private Label statusLabel = new Label("Nothing to report for now");
 
   /**
@@ -132,6 +131,7 @@ public class EventsWindow extends JfxStage {
     VBox vBox = componentFactory.createVBox(12.0);
     // Events EObjectTable
     eventsTable = new EventsTable(customization);
+    eventsTable.setEventEditorLauncher(this::LaunchEventsEditor);
     vBox.getChildren().add(eventsTable);
     
     VBox.setVgrow(vBox, Priority.ALWAYS);
@@ -140,6 +140,10 @@ public class EventsWindow extends JfxStage {
     mainPane.setBottom(createStatusAndButtonsPanel());
 
     setScene(new Scene(mainPane, 1700, 900));
+  }
+  
+  private void LaunchEventsEditor(EventInfo event) {
+    new EventsEditor(customization, events).runEditor().setObject(event);
   }
   
   /**
@@ -198,8 +202,8 @@ public class EventsWindow extends JfxStage {
         
     Button newEventButton = componentFactory.createButton("New Event", "Open the Event Editor for a new event");
     newEventButton.setOnAction(e -> {
-      EventsEditor eventsEditor = new EventsEditor(customization);
-      eventsEditor.setEvents(events);
+      EventsEditor eventsEditor = new EventsEditor(customization, events);
+      eventsEditor.runEditor();
     });
     hBox.getChildren().add(newEventButton);
     

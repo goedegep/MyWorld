@@ -1133,7 +1133,7 @@ class TrackReferenceControlsNormalAlbum extends TrackReferenceControlsAbstract {
   }
 
   @Override
-  protected TrackReference ociDetermineValue() {
+  protected TrackReference ociDetermineValue(Object source) {
     // TODO Auto-generated method stub
     return null;
   }

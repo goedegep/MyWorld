@@ -31,13 +31,15 @@ public class ObjectControlBoolean extends ObjectControlAbstract<Boolean> {
     
     checkBox = componentFactory.createCheckBox(toolTipText, selected);  // TODO check that ocSetValue leads to calling ociHandleNewUserInput()
     
-    checkBox.selectedProperty().addListener((o)-> ociHandleNewUserInput());
+    checkBox.selectedProperty().addListener((o)-> ociHandleNewUserInput(checkBox));
     
     if (toolTipText != null) {
       checkBox.setTooltip(new Tooltip(toolTipText));
     }
 
-    ocSetValue(selected);
+//    if (ocGetValue() != selected) {
+      ocSetValue(selected);
+//    }
   }
   
   /**
@@ -70,7 +72,7 @@ public class ObjectControlBoolean extends ObjectControlAbstract<Boolean> {
    * {@inheritDoc}
    */
   @Override
-  public Boolean ociDetermineValue() {
+  public Boolean ociDetermineValue(Object source) {
     return checkBox.isSelected();
   }
 
@@ -107,6 +109,18 @@ public class ObjectControlBoolean extends ObjectControlAbstract<Boolean> {
     referenceValue = objectValue;
     ociSetValue(objectValue);
     checkBox.setSelected(objectValue);
+  }
+  
+  @Override
+  public String toString() {
+    StringBuilder buf = new StringBuilder();
+    
+    buf.append("ObjectControl type=Boolean");
+    buf.append(", id=").append(ocGetId() != null ? ocGetId() : "<null>");
+    buf.append(", value=").append(value != null ? value : "<null>");
+    buf.append(", referenceValue=").append(referenceValue != null ? "\"" + referenceValue + "\"" : "<null>");
+    
+    return buf.toString();
   }
 
 }

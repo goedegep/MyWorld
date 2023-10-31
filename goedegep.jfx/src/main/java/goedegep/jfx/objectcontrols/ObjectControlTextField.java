@@ -72,7 +72,7 @@ public class ObjectControlTextField<T> extends ObjectControlAbstract<T> {
       this.stringConverter = new AnyTypeStringConverter<T>();
     }
     
-    textField.textProperty().addListener((observableValue, oldValue, newValue) -> ociHandleNewUserInput());
+    textField.textProperty().addListener((observableValue, oldValue, newValue) -> ociHandleNewUserInput(textField));
     
     textField.focusedProperty().addListener((observableValue, oldValue, newValue) -> {
       if (!newValue)
@@ -82,11 +82,11 @@ public class ObjectControlTextField<T> extends ObjectControlAbstract<T> {
     // The initial value of the textField is null. Again setting it to null doesn't trigger the listener.
     // So if the initial value isn't null, set the value (triggering the listener, leading to a call to ociHandleNewUserInput().
     // Else, just call ociHandleNewUserInput().
-    if (initialValue != null) {
+//    if (initialValue != null) {
       ocSetValue(initialValue);
-    } else {
-      ociHandleNewUserInput();
-    }
+//    } else {
+//      ociHandleNewUserInput();
+//    }
   }
   
   /**
@@ -103,6 +103,7 @@ public class ObjectControlTextField<T> extends ObjectControlAbstract<T> {
   @Override
   public void ocSetValue(T objectValue) {
     String text = objectToString(objectValue);
+    referenceValue = stringToObject(text);
     textField.setText(text);
   }
   
@@ -118,7 +119,7 @@ public class ObjectControlTextField<T> extends ObjectControlAbstract<T> {
    * {@inheritDoc}
    */
   @Override
-  public T ociDetermineValue() {
+  public T ociDetermineValue(Object source) {
     T value = stringToObject(textField.getText().trim());
     
     return value;
@@ -181,4 +182,16 @@ public class ObjectControlTextField<T> extends ObjectControlAbstract<T> {
     return stringConverter.toString(value);
   }
 
+  
+  @Override
+  public String toString() {
+    StringBuilder buf = new StringBuilder();
+    
+    buf.append("ObjectControl type=TextField");
+    buf.append(", id=").append(ocGetId() != null ? ocGetId() : "<null>");
+    buf.append(", value=").append(value != null ? value : "<null>");
+    buf.append(", referenceValue=").append(referenceValue != null ? referenceValue : "<null>");
+    
+    return buf.toString();
+  }
 }

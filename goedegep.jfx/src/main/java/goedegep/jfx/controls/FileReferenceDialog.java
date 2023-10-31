@@ -66,8 +66,9 @@ public class FileReferenceDialog extends Dialog<ButtonType> {
     Label fileNameLabel = componentFactory.createLabel("File:");
     wizardPanel.add(fileNameLabel, 0, 0);
     
-    ObjectControlFileSelecter fileSelecter = componentFactory.createFileSelecter(initiallySelectedFolder, 400, "Currently selected folder",
-        "Choose file", "Select a file via a file chooser", "Select the file");
+    ObjectControlFileSelecter fileSelecter = componentFactory.createFileSelecterObjectControl(400, "Currently selected folder",
+        "Choose file", "Select a file via a file chooser", "Select the file", false);
+    fileSelecter.setInitialFolderProvider(() -> initiallySelectedFolder);
     
     fileName = fileSelecter.ocGetControl();
     wizardPanel.add(fileName, 1, 0);

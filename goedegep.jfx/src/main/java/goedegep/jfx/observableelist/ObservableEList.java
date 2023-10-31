@@ -106,8 +106,6 @@ public class ObservableEList<T> implements ObservableList<T> {
               int index = getDecendentIndex(notification);
               ListListenerHelper.fireValueChangedEvent(listenerHelper, new ObservableEListChange<T>(index, index + 1, new ArrayList<T>(), EMPTY_PERM, true, thisList));
             }
-          } else {
-            LOGGER.severe("Notification is touch");
           }
           break;
           

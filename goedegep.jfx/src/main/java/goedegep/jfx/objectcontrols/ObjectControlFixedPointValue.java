@@ -46,7 +46,7 @@ public class ObjectControlFixedPointValue extends ObjectControlTextField<FixedPo
    * {@inheritDoc}
    */
   @Override
-  public FixedPointValue ociDetermineValue() {
+  public FixedPointValue ociDetermineValue(Object source) {
     FixedPointValue value = stringToObject(ocGetControl().getText().trim());
     
     if (value == null) {

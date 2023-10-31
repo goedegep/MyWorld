@@ -83,17 +83,12 @@ public class ObjectControlGroup implements Iterable<ObjectControl<? extends Obje
   public void addObjectControlGroup(ObjectControlGroup objectControlGroup) {
     LOGGER.info("=>");
     
-    BooleanProperty inputIsValidProperty = objectControlGroup.isValid();
-    InvalidationListener changeListener = new InvalidationListener() {
-      @Override
-      public void invalidated(Observable observable) {
-        updateValidity();
-      }
-    };
-    inputIsValidProperty.addListener(changeListener);
+    InvalidationListener invalidationListener = (observable) -> handleChanges(observable);
+    objectControlGroup.addListener(invalidationListener);
 
-    objectControlGroups.put(objectControlGroup, changeListener);
-    updateValidity();
+    objectControlGroups.put(objectControlGroup, invalidationListener);
+    
+    handleChanges(objectControlGroup);
     
     LOGGER.info("<=");
   }
@@ -247,9 +242,13 @@ public class ObjectControlGroup implements Iterable<ObjectControl<? extends Obje
     Iterator<ObjectControl<?>> iterator = iterator();
     
     while (iterator.hasNext()) {
-      ObjectControl<?> objectInput = iterator.next();
-      if (objectInput.ocIsChanged()) {
+      ObjectControl<?> objectControl = iterator.next();
+      if (objectControl.ocIsChanged()) {
+        LOGGER.info("First Object control changed: " + objectControl);
+        objectControl.ocIsChanged();
         return true;
+      } else {
+        LOGGER.info("Object control not changed: " + objectControl);
       }
     }
     
