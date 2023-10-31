@@ -442,7 +442,7 @@ public class MyWorldInstaller extends JfxApplication {
     label = new Label("Installation directory");
     controlsPanel.add(label, 0, 0);
     
-    installationFolder = new ObjectControlFolderSelecter(DefaultCustomizationFx.getInstance(), null, 200, null, "Select installation directory", null, "Installation directory");
+    installationFolder = new ObjectControlFolderSelecter(DefaultCustomizationFx.getInstance(), 200, null, "Select installation directory", null, "Installation directory", false);
 //    installationFolderValidProperty = installationFolder.ocValidProperty();
     installationFolder.addListener(new InvalidationListener() {
 
@@ -459,7 +459,8 @@ public class MyWorldInstaller extends JfxApplication {
     // User data folder
     label = new Label("User Data directory");
     controlsPanel.add(label, 0, 1);
-    userDataFolder = new ObjectControlFolderSelecter(DefaultCustomizationFx.getInstance(), "D:\\Database\\MyWorld", 200, null, "User Data directory", null, "User Data directory");
+    userDataFolder = new ObjectControlFolderSelecter(DefaultCustomizationFx.getInstance(), 200, null, "User Data directory", null, "User Data directory", false);
+    userDataFolder.setInitialFolderProvider(() -> "D:\\Database\\MyWorld");
 //    userDataFolderValidProperty = userDataFolder.ocValidProperty();
     controlsPanel.add(userDataFolder.ocGetControl(), 1, 1);
     controlsPanel.add(userDataFolder.getFolderChooserButton(), 2, 1);

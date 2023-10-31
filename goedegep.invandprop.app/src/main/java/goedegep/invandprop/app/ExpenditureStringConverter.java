@@ -1,4 +1,4 @@
-package goedegep.invandprop.app.guifx;
+package goedegep.invandprop.app;
 
 import goedegep.invandprop.model.Expenditure;
 import goedegep.invandprop.model.Invoice;

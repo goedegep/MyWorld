@@ -1,9 +1,14 @@
 package goedegep.jfx.objectcontrols;
 
+import java.util.logging.Logger;
+
 import goedegep.jfx.CustomizationFx;
+import goedegep.util.PgUtilities;
 import javafx.scene.control.TextField;
 
 public class ObjectControlString extends ObjectControlAbstract<String> {
+  @SuppressWarnings("unused")
+  private static final Logger         LOGGER = Logger.getLogger(ObjectControlString.class.getName());
   
   /**
    * The control.  
@@ -24,7 +29,7 @@ public class ObjectControlString extends ObjectControlAbstract<String> {
     
     textField = customization.getComponentFactoryFx().createTextField(width, toolTipText);
 
-    textField.textProperty().addListener((observableValue, oldValue, newValue) -> ociHandleNewUserInput());
+    textField.textProperty().addListener((observableValue, oldValue, newValue) -> ociHandleNewUserInput(textField));
     
     ocSetValue(initialValue);
   }
@@ -37,6 +42,24 @@ public class ObjectControlString extends ObjectControlAbstract<String> {
   public void ocSetValue(String objectValue) {
     referenceValue = objectValue;
     textField.setText(objectValue);
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public boolean ocIsChanged() {
+    // For Strings we handle an empty String as equal to null.
+    if (((value != null)  &&  value.isEmpty())  &&
+        (referenceValue == null)) {
+      return false;
+    }
+    
+    if (((referenceValue != null)  &&  referenceValue.isEmpty()) &&
+        (value == null)) {
+      return false;
+    }
+    return !PgUtilities.equals(value, referenceValue);
   }
   
   /**
@@ -51,7 +74,7 @@ public class ObjectControlString extends ObjectControlAbstract<String> {
    * {@inheritDoc}
    */
   @Override
-  public String ociDetermineValue() {
+  public String ociDetermineValue(Object source) {
     String text = textField.getText();
     
     if (text != null) {
@@ -85,5 +108,16 @@ public class ObjectControlString extends ObjectControlAbstract<String> {
   public String ocGetObjectValueAsFormattedText()  {
     return value;
   }
-
+  
+  @Override
+  public String toString() {
+    StringBuilder buf = new StringBuilder();
+    
+    buf.append("ObjectControl type=String");
+    buf.append(", id=").append(ocGetId() != null ? ocGetId() : "<null>");
+    buf.append(", value=").append(value != null ? value : "<null>");
+    buf.append(", referenceValue=").append(referenceValue != null ? "\"" + referenceValue + "\"" : "<null>");
+    
+    return buf.toString();
+  }
 }

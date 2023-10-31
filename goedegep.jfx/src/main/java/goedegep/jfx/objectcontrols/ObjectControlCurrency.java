@@ -98,4 +98,16 @@ public class ObjectControlCurrency extends ObjectControlTextField<PgCurrency> {
   protected String objectToString(PgCurrency value) {
     return CF.format(value);
   }
+  
+  @Override
+  public String toString() {
+    StringBuilder buf = new StringBuilder();
+    
+    buf.append("ObjectControl type=Currency");
+    buf.append(", id=").append(ocGetId() != null ? ocGetId() : "<null>");
+    buf.append(", value=").append(value != null ? value : "<null>");
+    buf.append(", referenceValue=").append(referenceValue != null ? referenceValue : "<null>");
+    
+    return buf.toString();
+  }
 }

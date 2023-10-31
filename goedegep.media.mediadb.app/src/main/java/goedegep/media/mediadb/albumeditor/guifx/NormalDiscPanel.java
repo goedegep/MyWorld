@@ -203,7 +203,7 @@ public class NormalDiscPanel extends DiscPanelAbstract {
   }
 
   @Override
-  protected Disc ociDetermineValue() {
+  protected Disc ociDetermineValue(Object source) {
     // TODO Auto-generated method stub
     return null;
   }

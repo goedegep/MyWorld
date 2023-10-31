@@ -109,13 +109,13 @@ public class ObjectControlEnumComboBox<T extends Enum<T>> extends ObjectControlA
     }
     
     
-    comboBox.valueProperty().addListener((o) -> ociHandleNewUserInput());
+    comboBox.valueProperty().addListener((o) -> ociHandleNewUserInput(comboBox));
             
     if (toolTipText != null) {
       comboBox.setTooltip(new Tooltip(toolTipText));
     }
     
-    comboBox.setOnAction(event -> ociHandleNewUserInput());
+    comboBox.setOnAction(event -> ociHandleNewUserInput(comboBox));
   }
 
   /**
@@ -130,7 +130,7 @@ public class ObjectControlEnumComboBox<T extends Enum<T>> extends ObjectControlA
    * {@inheritDoc}
    */
   @Override
-  public T ociDetermineValue() {
+  public T ociDetermineValue(Object source) {
     return comboBox.getSelectionModel().getSelectedItem();
   }
 

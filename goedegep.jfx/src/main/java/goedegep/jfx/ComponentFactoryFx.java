@@ -871,10 +871,10 @@ public class ComponentFactoryFx {
    * @param directoryChooserTitle title for the DirectoryChooser (may not be null)
    * @return the newly created FolderSelecter
    */
-  public ObjectControlFileSelecter createFileSelecter(String initiallySelecterFolder, int textFieldWidth, String textFieldToolTipText,
-      String folderChooserButtonText, String folderChooserButtonToolTipText, String directoryChooserTitle) {
-    ObjectControlFileSelecter fileSelecter = new ObjectControlFileSelecter(customization, initiallySelecterFolder, textFieldWidth, textFieldToolTipText,
-        folderChooserButtonText, folderChooserButtonToolTipText, directoryChooserTitle);
+  public ObjectControlFileSelecter createFileSelecterObjectControl(int textFieldWidth, String textFieldToolTipText,
+      String folderChooserButtonText, String folderChooserButtonToolTipText, String directoryChooserTitle, boolean isOptional) {
+    ObjectControlFileSelecter fileSelecter = new ObjectControlFileSelecter(customization, textFieldWidth, textFieldToolTipText,
+        folderChooserButtonText, folderChooserButtonToolTipText, directoryChooserTitle, isOptional);
     
     customizeTextInputControl(fileSelecter.ocGetControl());
     customizeButton(fileSelecter.getFileChooserButton());
@@ -894,10 +894,10 @@ public class ComponentFactoryFx {
    * @param directoryChooserTitle title for the DirectoryChooser (may not be null)
    * @return the newly created FolderSelecter
    */
-  public ObjectControlFolderSelecter createFolderSelecter(String initiallySelecterFolder, int textFieldWidth, String textFieldToolTipText,
-      String folderChooserButtonText, String folderChooserButtonToolTipText, String directoryChooserTitle) {
-    ObjectControlFolderSelecter folderSelecter = new ObjectControlFolderSelecter(customization, initiallySelecterFolder, textFieldWidth, textFieldToolTipText,
-        folderChooserButtonText, folderChooserButtonToolTipText, directoryChooserTitle);
+  public ObjectControlFolderSelecter createFolderSelecter(int textFieldWidth, String textFieldToolTipText,
+      String folderChooserButtonText, String folderChooserButtonToolTipText, String directoryChooserTitle, boolean isOptional) {
+    ObjectControlFolderSelecter folderSelecter = new ObjectControlFolderSelecter(customization, textFieldWidth, textFieldToolTipText,
+        folderChooserButtonText, folderChooserButtonToolTipText, directoryChooserTitle, isOptional);
     
     customizeTextInputControl(folderSelecter.ocGetControl());
     customizeButton(folderSelecter.getFolderChooserButton());

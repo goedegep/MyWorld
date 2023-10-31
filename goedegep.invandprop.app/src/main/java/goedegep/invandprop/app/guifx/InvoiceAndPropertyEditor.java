@@ -1,17 +1,13 @@
 package goedegep.invandprop.app.guifx;
 
-import java.awt.Desktop;
 import java.io.File;
-import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.logging.Logger;
 
 import goedegep.invandprop.app.InvoicesAndPropertiesRegistry;
+import goedegep.invandprop.app.InvoicesAndPropertiesUtil;
 import goedegep.invandprop.model.Expenditure;
 import goedegep.invandprop.model.InvAndPropFactory;
 import goedegep.invandprop.model.InvAndPropPackage;
@@ -21,57 +17,59 @@ import goedegep.invandprop.model.InvoicesAndProperties;
 import goedegep.invandprop.model.Property;
 import goedegep.jfx.ComponentFactoryFx;
 import goedegep.jfx.CustomizationFx;
+import goedegep.jfx.FileReferencePanel;
 import goedegep.jfx.eobjecteditor.EObjectAttributeEditDescriptor;
-import goedegep.jfx.eobjecteditor.EObjectEditor;
-import goedegep.jfx.eobjecteditor.EObjectEditorDescriptor;
 import goedegep.jfx.objectcontrols.ObjectControl;
 import goedegep.jfx.objectcontrols.ObjectControlBoolean;
 import goedegep.jfx.objectcontrols.ObjectControlCurrency;
-import goedegep.jfx.objectcontrols.ObjectControlFileSelecter;
 import goedegep.jfx.objectcontrols.ObjectControlFlexDate;
 import goedegep.jfx.objectcontrols.ObjectControlGroup;
 import goedegep.jfx.objectcontrols.ObjectControlString;
-import goedegep.jfx.objecteditor.ObjectEditorAbstract;
+import goedegep.jfx.objecteditor.EditMode;
+import goedegep.jfx.objecteditor.EditStatus;
+import goedegep.jfx.objecteditor.ObjectEditorTemplate;
 import goedegep.types.model.FileReference;
 import goedegep.types.model.TypesFactory;
+import goedegep.util.Debug;
 import goedegep.util.PgUtilities;
 import goedegep.util.money.PgCurrency;
-import javafx.beans.InvalidationListener;
-import javafx.beans.Observable;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
-import javafx.event.EventHandler;
 import javafx.scene.Node;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.TitledPane;
 import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.ClipboardContent;
-import javafx.scene.input.DataFormat;
-import javafx.scene.input.DragEvent;
-import javafx.scene.input.Dragboard;
-import javafx.scene.input.MouseEvent;
-import javafx.scene.input.TransferMode;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Font;
 
 /**
  * This class provides an editor for an invoice and the related property.
+ * <p>
+ * This editor is basically two editors in one: an invoice editor and a property editor. This because you often create them together.<br/>
+ * It extends the {@code ObjectEditorTemplate} for the invoice part. For the property part there are separate methods, all with 'property' in the name.
  */
-public class InvoiceAndPropertyEditor extends ObjectEditorAbstract<Invoice> {
+public class InvoiceAndPropertyEditor extends ObjectEditorTemplate<Invoice> {
+  /*
+   * Implementation information:
+   * The invoice part is the actual client of the ObjectEditorTemplate. For example the objectControlGroup is filled with the controls for the invoice.
+   * For the property, things are implemented in a similar way in this class. For example there is a propertyObjectControlGroup for the controls for the property.
+   */
   private static final Logger  LOGGER = Logger.getLogger(InvoiceItemPanel.class.getName());
+  @SuppressWarnings("unused")
+  private static final String NEW_LINE = System.getProperty("line.separator");
   private static final String WINDOW_TITLE = "New invoice and property";
   private static final InvAndPropFactory INVOICES_AND_PROPERTIES_FACTORY = InvAndPropFactory.eINSTANCE;
   private static final InvAndPropPackage INVOICES_AND_PROPERTIES_PACKAGE = InvAndPropPackage.eINSTANCE;
+  
 
   /**
    * The GUI customization
@@ -87,26 +85,21 @@ public class InvoiceAndPropertyEditor extends ObjectEditorAbstract<Invoice> {
    * Factory used to create all GUI elements
    */
   private ComponentFactoryFx componentFactory;
-  
-  /**
-   * ObjectControlGroup used to check the validity of the invoice controls.
-   */
-  private ObjectControlGroup invoiceObjectControlGroup;
-  
+    
   /**
    * ObjectControlGroup used to check the validity of the property controls.
    */
-  private ObjectControlGroup propertyObjectControlGroup;
+  private ObjectControlGroup propertyObjectControlsGroup;
   
   /**
-   * Descriptor used for the controls of the invoice part of this editor.
+   * Attribute Edit Descriptors used for the controls of the invoice part of this editor.
    */
-  private EObjectEditorDescriptor invoiceEditorDescriptor;
+  private List<EObjectAttributeEditDescriptor> invoiceAttributeEditDescriptors;
   
   /**
-   * Descriptor used for the controls of the property part of this editor.
+   * Attribute Edit Descriptors used for the controls of the property part of this editor.
    */
-  private EObjectEditorDescriptor propertyEditorDescriptor;
+  private List<EObjectAttributeEditDescriptor> propertyAttributeEditDescriptors;
   
   /**
    * List of panels, one for each invoice item.
@@ -120,461 +113,409 @@ public class InvoiceAndPropertyEditor extends ObjectEditorAbstract<Invoice> {
   
   
   /*
-   * References to the Invoice ObjectInput controls
+   * Invoice ObjectControls
    */
-  private ObjectControlFlexDate invoiceDateObjectInput;
-  private ObjectControlString invoiceCompanyObjectInput;
-  private ObjectControlString invoiceDescriptionObjectInput;
-  private ObjectControlCurrency invoiceAmountObjectInput;
-  private ObjectControlString invoiceRemarksObjectInput;
-  private ObjectControlBoolean invoiceDescriptionFromPropertyObjectInput;
+  private ObjectControlFlexDate invoiceDateObjectControl;
+  private ObjectControlString invoiceCompanyObjectControl;
+  private ObjectControlString invoiceDescriptionObjectControl;
+  private ObjectControlCurrency invoiceAmountObjectControl;
+  private ObjectControlString invoiceRemarksObjectControl;
+  private ObjectControlBoolean invoiceDescriptionFromPropertyObjectControl;
   
   /*
-   * References to the Property ObjectInput controls
+   * Property ObjectControls
    */
-  private ObjectControlString propertyDescriptionObjectInput;
-  private ObjectControlString propertyBrandObjectInput;
-  private ObjectControlString propertyTypeObjectInput;
-  private ObjectControlString propertySerialNumberObjectInput;
-  private ObjectControlString propertyRemarksObjectInput;
-  private ObjectControlFlexDate propertyFromDateObjectInput;
-  private ObjectControlFlexDate propertyUntilDateObjectInput;
-  private ObjectControlBoolean propertyArchiveObjectInput;
-  
-  private Map<InvoiceItemPanel, ObjectControlCurrency> amountObjectInputs = new HashMap<>();
-  private Map<ObjectControlCurrency, InvalidationListener> amountObjectInputListeners = new HashMap<>();
-  
-  private VBox documentReferencesVBox;
+  private ObjectControlString propertyDescriptionObjectControl;
+  private ObjectControlString propertyBrandObjectControl;
+  private ObjectControlString propertyTypeObjectControl;
+  private ObjectControlString propertySerialNumberObjectControl;
+  private ObjectControlString propertyRemarksObjectControl;
+  private ObjectControlFlexDate propertyFromDateObjectControl;
+  private ObjectControlFlexDate propertyUntilDateObjectControl;
+  private ObjectControlBoolean propertyArchiveObjectControl;
   
   /**
    * List of panels, one for each document reference.
    */
   private ObservableList<FileReferencePanel> documentReferencePanels;
   
-  private VBox pictureReferencesVBox;
+  /**
+   * The box which contains the document reference panels.
+   */
+  private VBox documentReferencesVBox;
   
   /**
    * List of panels, one for each picture reference.
    */
   private ObservableList<FileReferencePanel> pictureReferencePanels;
   
+  /**
+   * The box which contains the picture references.
+   */
+  private VBox pictureReferencesVBox;
+  
+  /**
+   * A picture preview box
+   */
   private HBox pictureViewPanel;
   
   /**
-   * Current invoice and property. If both are null, we're in 'new mode', otherwise we're in 'edit mode'.
+   * Current property.
    */
-  private Invoice invoice;
   private Property property;
   
-  /**
-   * Button to create or update an invoice.
-   */
-  private Button createOrUpdateInvoiceButton;
   
   /**
-   * Button to create or update a property.
-   */
-  private Button createOrUpdatePropertyButton;
-  
-  /**
-   * Button to create or update an invoice and property.
-   */
-  private Button createOrUpdateInvoiceAndPropertyButton;
-  
-//  private EditType editType = null;
-
-  
-  /**
-   * Constructor for creating a new invoice and/or property.
+   * Constructor.
   * 
    * @param Customization the GUI customization.
    * @param invoicesAndProperties The invoices and properties to which new invoices and properties will be added.
    */
   public InvoiceAndPropertyEditor(CustomizationFx customization, InvoicesAndProperties invoicesAndProperties) {
-    this(Objects.requireNonNull(customization, "argument ‘customization’ must not be null"), Objects.requireNonNull(invoicesAndProperties, "argument ‘invoicesAndProperties’ must not be null"), null, null);
-  }
-
-  /**
-   * Constructor for editing an invoice (with a probably related property).
-   * 
-   * @param Customization the GUI customization.
-   * @param invoice An invoice to edit
-   */
-  public InvoiceAndPropertyEditor(CustomizationFx customization, Invoice invoice) {
-    this(Objects.requireNonNull(customization, "argument ‘customization’ must not be null"), null, Objects.requireNonNull(invoice, "argument ‘invoice’ must not be null"), null);
-  }
-
-  /**
-   * Constructor for editing a property (with a probably related invoice).
-   * 
-   * @param Customization the GUI customization.
-   * @param property A property to edit
-   */
-  public InvoiceAndPropertyEditor(CustomizationFx customization, Property property) {
-    this(Objects.requireNonNull(customization, "argument ‘customization’ must not be null"), null, null, Objects.requireNonNull(property, "argument ‘property’ must not be null"));
-  }
-  
-  /**
-   * Constructor.
-   * <p>
-   * Of the parameters <code>invoicesAndProperties</code>, <code>invoice</code> and <code>property</code> exactly one parameter shall
-   * not be null.<br/>
-   * For a new invoice and/or property, <code>invoicesAndProperties</code> shall not be null.<br/>
-   * To edit an invoice (with a probably related property), the <code>invoice</code> shall not be null.<br/>
-   * To edit a property (with a probably related invoice), the <code>property</code> shall not be null.<br/>
-   * 
-   * @param Customization the GUI customization.
-   * @param invoicesAndProperties The invoices and properties to which new invoices and properties will be added.
-   * @param invoice An invoice to edit
-   * @param property A property to edit
-   */
-  private InvoiceAndPropertyEditor(CustomizationFx customization, InvoicesAndProperties invoicesAndProperties, Invoice invoice, Property property) {
     super(customization, WINDOW_TITLE);
+    
+    Objects.requireNonNull(customization, "argument ‘customization’ must not be null");
+    Objects.requireNonNull(invoicesAndProperties, "argument ‘invoicesAndProperties’ must not be null");
             
     this.customization = customization;
     this.invoicesAndProperties = invoicesAndProperties;
     
     componentFactory = customization.getComponentFactoryFx();
-    
-    invoiceEditorDescriptor = new InvoiceEditorDescriptor(customization);
-    propertyEditorDescriptor = new PropertyEditorDescriptor(customization);
-    
-    // Get the references to the ObjectInputs for the invoice.
-    invoiceDateObjectInput = (ObjectControlFlexDate) invoiceEditorDescriptor.getEObjectAttributeEditDescriptor(INVOICES_AND_PROPERTIES_PACKAGE.getInvoice_Date().getName()).getObjectControl();
-    invoiceCompanyObjectInput = (ObjectControlString) invoiceEditorDescriptor.getEObjectAttributeEditDescriptor(INVOICES_AND_PROPERTIES_PACKAGE.getInvoice_Company().getName()).getObjectControl();
-    invoiceDescriptionObjectInput = (ObjectControlString) invoiceEditorDescriptor.getEObjectAttributeEditDescriptor(INVOICES_AND_PROPERTIES_PACKAGE.getExpenditure_Description().getName()).getObjectControl();
-    invoiceAmountObjectInput = (ObjectControlCurrency) invoiceEditorDescriptor.getEObjectAttributeEditDescriptor(INVOICES_AND_PROPERTIES_PACKAGE.getExpenditure_Amount().getName()).getObjectControl();
-    invoiceRemarksObjectInput = (ObjectControlString) invoiceEditorDescriptor.getEObjectAttributeEditDescriptor(INVOICES_AND_PROPERTIES_PACKAGE.getExpenditure_Remarks().getName()).getObjectControl();
-    invoiceDescriptionFromPropertyObjectInput = (ObjectControlBoolean) invoiceEditorDescriptor.getEObjectAttributeEditDescriptor(INVOICES_AND_PROPERTIES_PACKAGE.getExpenditure_DescriptionFromProperty().getName()).getObjectControl();
-    
-    // Get the references to the ObjectInputs for the property
-    propertyDescriptionObjectInput = (ObjectControlString) propertyEditorDescriptor.getEObjectAttributeEditDescriptor(INVOICES_AND_PROPERTIES_PACKAGE.getProperty_Description().getName()).getObjectControl();
-    propertyBrandObjectInput = (ObjectControlString) propertyEditorDescriptor.getEObjectAttributeEditDescriptor(INVOICES_AND_PROPERTIES_PACKAGE.getProperty_Brand().getName()).getObjectControl();
-    propertyTypeObjectInput = (ObjectControlString) propertyEditorDescriptor.getEObjectAttributeEditDescriptor(INVOICES_AND_PROPERTIES_PACKAGE.getProperty_Type().getName()).getObjectControl();
-    propertySerialNumberObjectInput = (ObjectControlString) propertyEditorDescriptor.getEObjectAttributeEditDescriptor(INVOICES_AND_PROPERTIES_PACKAGE.getProperty_SerialNumber().getName()).getObjectControl();
-    propertyRemarksObjectInput = (ObjectControlString) propertyEditorDescriptor.getEObjectAttributeEditDescriptor(INVOICES_AND_PROPERTIES_PACKAGE.getProperty_Remarks().getName()).getObjectControl();
-    propertyFromDateObjectInput = (ObjectControlFlexDate) propertyEditorDescriptor.getEObjectAttributeEditDescriptor(INVOICES_AND_PROPERTIES_PACKAGE.getProperty_FromDate().getName()).getObjectControl();
-    propertyUntilDateObjectInput = (ObjectControlFlexDate) propertyEditorDescriptor.getEObjectAttributeEditDescriptor(INVOICES_AND_PROPERTIES_PACKAGE.getProperty_UntilDate().getName()).getObjectControl();
-    propertyArchiveObjectInput = (ObjectControlBoolean) propertyEditorDescriptor.getEObjectAttributeEditDescriptor(INVOICES_AND_PROPERTIES_PACKAGE.getProperty_Archive().getName()).getObjectControl();    
-    
-    createObjectControlGroups();
+  }
+  
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public void setObject(Invoice invoice, boolean checkOnUnsavedChanges) {
+    if (checkOnUnsavedChanges  &&  !getUserConfirmationInCaseOfUnsavedChanges()) {
+      return;
+    }
 
-    createGUI();
+    this.object = invoice;
+    ignoreChanges = true;
     
-    if (invoice != null) {
-      this.invoice = invoice;
-      if (invoice.isSetPurchase()) {
-        this.property = invoice.getPurchase();
-      }
+    if (invoice != null  &&  invoice.isSetPurchase()) {
+      property = invoice.getPurchase();
+    } else {
+      property = null;
+    }
+
+    fillControlsWithDefaultValues();
+    fillPropertyControlsWithDefaultValues();
+    
+    if (object != null) {
+      fillControlsFromObject();
+      editMode = EditMode.EDIT;
+    } else {
+      editMode = EditMode.NEW;
     }
     
     if (property != null) {
-      this.property = property;
+      fillControlsFromProperty();
+    }
+
+    ignoreChanges = false;
+    handleChanges();
+  }
+  
+  /**
+   * Start editing a property.
+   * <p>
+   * If there are any unsaved changes, show a dialog informing the user about this and ask for a confirmation.
+   * {@code property} is set to the specified value.
+   * All the controls are cleared then, if property isn't null, filled with the information from the {@code property}.
+   * 
+   * @param property the value to be edited.
+   */
+  public void setProperty(Property property) {
+    setProperty(property, true);
+  }
+  
+  /**
+   * Start editing a property.
+   * <p>
+   * If there are any unsaved changes while checkOnUnsavedChanges is set, show a dialog informing the user about this and ask for a confirmation.
+   * {@code property} is set to the specified value.
+   * All the controls are cleared then, if the property isn't null, filled with the information from the {@code property}.
+   * 
+   * @param property the value to be edited.
+   * @param checkOnUnsavedChanges if true and if there are any unsaved changes, show a dialog informing the user about this and ask for a confirmation.
+   */
+  public void setProperty(Property property, boolean checkOnUnsavedChanges) {
+    if (checkOnUnsavedChanges  &&  !getUserConfirmationInCaseOfUnsavedChanges()) {
+      return;
+    }
+
+    this.property = property;
+    ignoreChanges = true;
+    
+    if (property != null  &&  property.getExpenditure() != null) {
       Expenditure expenditure = property.getExpenditure();
-      if (expenditure != null) {
-        if (expenditure instanceof Invoice) {
-          this.invoice = (Invoice) expenditure;
-        } else {
-          this.invoice = (Invoice) expenditure.eContainer();
-        }
+      if (expenditure instanceof Invoice) {
+        object = (Invoice) expenditure;
+      } else {
+        object = (Invoice) expenditure.eContainer();
       }
-    }
-   
-    if (this.invoice != null) {
-      fillControlsFromInvoice(this.invoice);
-    }
-    
-    if (this.property != null) {
-      fillControlsFromProperty(this.property);
-    }
-    
-    invoiceObjectControlGroup.addListener(observable -> handleChanges(observable));
-    propertyObjectControlGroup.addListener(observable -> handleChanges(observable));
-    
-    handleInvoiceDescriptionType();
-    handleChanges(null);
-    show();
-  }
-  
-  /**
-   * Handle changes in any of the controls.
-   * 
-   * @param observable
-   */
-  private void handleChanges(Observable observable) {
-    LOGGER.info("=> " + observable);
-    
-//    EditType newEditType = determineEditType();
-//    if (newEditType != editType) {
-//      editType = newEditType;
-//      updateCreateOrUpdateButton();
-//    }
-    
-    handleInvoiceDescriptionType();
-    updateInvoiceDescription();
-    
-    updateCreateOrUpdateInvoiceButton();
-    updateCreateOrUpdatePropertyButton();
-    updateCreateOrUpdateInvoiceAndPropertyButton();
-    createOrUpdateInvoiceButton.setDisable(!isInvoiceInputValid());
-    createOrUpdatePropertyButton.setDisable(!isPropertyInputValid());
-    createOrUpdateInvoiceAndPropertyButton.setDisable(!(isInvoiceInputValid()  &&  isPropertyInputValid()));
-  }
-  
-  /**
-   * Handle the edit mode for the <code>createOrUpdateInvoiceButton</code>.
-   * <p>
-   * Update the text and tooltip of the <code>createOrUpdateInvoiceButton</code> depending on whether we are in 'new' or 'update' mode.
-   */
-  private void updateCreateOrUpdateInvoiceButton() {
-    if (invoice == null) {
-      createOrUpdateInvoiceButton.setText("Create invoice");
-      createOrUpdateInvoiceButton.setTooltip(new Tooltip("Create a new invoice based on the entered values"));
     } else {
-      createOrUpdateInvoiceButton.setText("Update invoice");
-      createOrUpdateInvoiceButton.setTooltip(new Tooltip("Update the invoice based on the entered values"));
+      object = null;
     }
-  }
-  
-  /**
-   * Handle the edit mode for the <code>createOrUpdatePropertyButton</code>.
-   * <p>
-   * Update the text and tooltip of the <code>createOrUpdatePropertyButton</code> depending on whether we are in 'new' or 'update' mode.
-   */
-  private void updateCreateOrUpdatePropertyButton() {
-    if (property == null) {
-      createOrUpdatePropertyButton.setText("Create property");
-      createOrUpdatePropertyButton.setTooltip(new Tooltip("Create a new property based on the entered values"));
-    } else {
-      createOrUpdatePropertyButton.setText("Update property");
-      createOrUpdatePropertyButton.setTooltip(new Tooltip("Update the property based on the entered values"));
-    }
-  }
-  
-  /**
-   * Handle the edit mode for the <code>createOrUpdateInvoiceAndPropertyButton</code>.
-   * <p>
-   * Update the text and tooltip of the <code>createOrUpdateInvoiceAndPropertyButton</code> depending on whether we are in 'new' or 'update' mode.
-   */
-  private void updateCreateOrUpdateInvoiceAndPropertyButton() {
-    if ((invoice == null) && (property == null)) {
-      createOrUpdateInvoiceAndPropertyButton.setText("Create invoice and property");
-      createOrUpdateInvoiceAndPropertyButton.setTooltip(new Tooltip("Create a new invoice and property based on the entered values"));
-    } else {
-      createOrUpdateInvoiceAndPropertyButton.setText("Update invoice and property");
-      createOrUpdateInvoiceAndPropertyButton.setTooltip(new Tooltip("Update the invoice and/or property based on the entered values"));
-    }
-  }
-  
-//  private boolean isInputValid() {
-//    boolean inputValid = false;
-//    
-//    switch(editType) {
-//    case NONE:
-//      inputValid = false;
-//      break;
-//      
-//    case INVOICE:
-//      inputValid = isInvoiceInputValid();
-//      break;
-//      
-//    case PROPERTY:
-//      inputValid = isPropertyInputValid();
-//      break;
-//      
-//    case INVOICE_AND_PROPERTY:
-//      inputValid = isInvoiceInputValid()  &&  isPropertyInputValid();
-//      break;
-//    }
-//    
-//    return inputValid;
-//  }
-  
-  private boolean isInvoiceInputValid() {
-    return invoiceObjectControlGroup.isValid().get();
-  }
-  
-  private boolean isPropertyInputValid() {
-    return propertyObjectControlGroup.isValid().get();
-  }
-  
-//  /**
-//   * Check whether we are in 'new' mode.
-//   * <p>
-//   * We are in 'new' mode if both <code>invoice</code> and <code>property</code> are null.
-//   * 
-//   * @return
-//   */
-//  private boolean inNewMode() {
-//    return (invoice == null)  &&  (property == null);
-//  }
-  
-//  /**
-//   * Determine the current edit type.
-//   * <p>
-//   * The edit type is defined as follows:<br/>
-//   * Nothing is filled-in -> UNDEFINED<br/>
-//   * Only invoice fields filled-in -> INVOICE<br/>
-//   * Only property fields filled-in -> PROPERTY<br/>
-//   * Invoice and property fields filled-in -> INVOICE_AND_PROPERTY
-//   * 
-//   * @return the newly determined <code>EditType</code>.
-//   */
-//  private EditType determineEditType() {
-//    EditType editType = null;
-//    
-//    boolean anyInvoiceFieldFilledIn = isAnyInvoiceFieldFilledIn();
-//    boolean anyPropertyFieldFilledIn = isAnyPropertyFieldFilledIn();
-//    
-//    if (!anyInvoiceFieldFilledIn  && !anyPropertyFieldFilledIn) {
-//      editType = EditType.NONE;
-//    } else if (anyInvoiceFieldFilledIn  && !anyPropertyFieldFilledIn) {
-//      editType = EditType.INVOICE;
-//    } else if (!anyInvoiceFieldFilledIn  && anyPropertyFieldFilledIn) {
-//      editType = EditType.PROPERTY;
-//    } else {
-//      editType = EditType.INVOICE_AND_PROPERTY;
-//    }
-//    
-//    LOGGER.info("<= " + editType);
-//    return editType;
-//  }
 
-  /**
-   * Check whether any invoice control is filled in.
-   * 
-   * @return
-   */
-  private boolean isAnyInvoiceFieldFilledIn() {
-    boolean anyInvoiceFieldFilledIn = false;
-    
-    if (invoiceDateObjectInput.ocIsFilledIn()  ||
-        invoiceCompanyObjectInput.ocIsFilledIn()  ||
-        invoiceDescriptionObjectInput.ocIsFilledIn()  ||
-        invoiceAmountObjectInput.ocIsFilledIn()  ||
-        invoiceRemarksObjectInput.ocIsFilledIn()) {
-      anyInvoiceFieldFilledIn = true;
-    }
-    
-    LOGGER.info("<= " + anyInvoiceFieldFilledIn);
-    return anyInvoiceFieldFilledIn;
-  }
+    fillControlsWithDefaultValues();
+    fillPropertyControlsWithDefaultValues();
 
-  private boolean isAnyPropertyFieldFilledIn() {
-    boolean anyPropertyFieldFilledIn = false;
     
-    if (propertyDescriptionObjectInput.ocIsFilledIn()  ||
-        propertyBrandObjectInput.ocIsFilledIn()  ||
-        propertyTypeObjectInput.ocIsFilledIn()  ||
-        propertySerialNumberObjectInput.ocIsFilledIn()  ||
-        propertyRemarksObjectInput.ocIsFilledIn()  ||
-        propertyFromDateObjectInput.ocIsFilledIn()  ||
-        propertyUntilDateObjectInput.ocIsFilledIn()) {
-      anyPropertyFieldFilledIn = true;
+    if (property != null) {
+      fillControlsFromProperty();
+      editMode = EditMode.EDIT;
+    } else {
+      editMode = EditMode.NEW;
     }
     
-    return anyPropertyFieldFilledIn;
+    if (object != null) {
+      fillControlsFromObject();
+    }
+
+    ignoreChanges = false;
+    handleChanges();
+  }
+  
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  protected void configureEditor() {
+    // no action as this editor has its own buttons.
+  }
+  
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  protected void createControls() {
     
+    invoiceDateObjectControl = componentFactory.createObjectControlFlexDate(null, 150.0, true, "the invoice date");
+    invoiceDateObjectControl.ocSetId("InvoiceDate");
+    invoiceCompanyObjectControl = componentFactory.createObjectControlString(null, 200, true, "the company you paid the invoice to");
+    invoiceCompanyObjectControl.ocSetId("InvoiceCompany");
+    invoiceDescriptionObjectControl = componentFactory.createObjectControlString(null, 200, false, "typically the product");
+    invoiceDescriptionObjectControl.ocSetId("ÏnvoiceDescription");
+    invoiceAmountObjectControl = componentFactory.createObjectControlCurrency(null, 150, false, "the amount of money paid");
+    invoiceAmountObjectControl.ocSetId("InvoiceAmount");
+    invoiceRemarksObjectControl = componentFactory.createObjectControlString(null, 150.0, true, "any comments on this invoice");
+    invoiceRemarksObjectControl.ocSetId("InvoiceRemarks");
+    invoiceDescriptionFromPropertyObjectControl = componentFactory.createObjectControlBoolean(null, false, true, "If set, the description will be derived from the related property");
+    invoiceDescriptionFromPropertyObjectControl.ocSetId("InvoiceDescriptionFromProperty");
+    
+    invoiceItemPanels = FXCollections.observableArrayList();
+        
+    objectControlsGroup.addObjectControls(
+        invoiceDateObjectControl,
+        invoiceCompanyObjectControl,
+        invoiceDescriptionObjectControl,
+        invoiceAmountObjectControl,
+        invoiceRemarksObjectControl,
+        invoiceDescriptionFromPropertyObjectControl
+    );
+    
+    propertyDescriptionObjectControl = componentFactory.createObjectControlString(null, 150.0, false, "the property description");
+    propertyDescriptionObjectControl.ocSetId("PropertyDescription");
+    propertyBrandObjectControl = componentFactory.createObjectControlString(null, 150.0, true, "the brand of the property");
+    propertyBrandObjectControl.ocSetId("PropertyBrand");
+    propertyTypeObjectControl = componentFactory.createObjectControlString(null, 150.0, true, "the property type");
+    propertyTypeObjectControl.ocSetId("PropertyType");
+    propertySerialNumberObjectControl = componentFactory.createObjectControlString(null, 150.0, true, "the serial number of the property");
+    propertySerialNumberObjectControl.ocSetId("PropertySerialNumber");
+    propertyRemarksObjectControl = componentFactory.createObjectControlString(null, 150.0, true, "any comments on this property");
+    propertyRemarksObjectControl.ocSetId("PropertyRemarks");
+    propertyFromDateObjectControl = componentFactory.createObjectControlFlexDate(null, 150.0, true, "date from when you own(ed) the property");
+    propertyFromDateObjectControl.ocSetId("PropertyFromDate");
+    propertyUntilDateObjectControl = componentFactory.createObjectControlFlexDate(null, 150.0, true, "date until when you owned the property");
+    propertyUntilDateObjectControl.ocSetId("PropertyUntilDate");
+    propertyArchiveObjectControl = componentFactory.createObjectControlBoolean(null, false, true, "select if you don't own the property anymore");
+    propertyArchiveObjectControl.ocSetId("PropertyArchive");
+
+    documentReferencePanels = FXCollections.observableArrayList();
+    pictureReferencePanels = FXCollections.observableArrayList();
+    
+    propertyObjectControlsGroup = new ObjectControlGroup();
+    propertyObjectControlsGroup.addObjectControls(
+        propertyDescriptionObjectControl,
+        propertyBrandObjectControl,
+        propertyTypeObjectControl,
+        propertySerialNumberObjectControl,
+        propertyRemarksObjectControl,
+        propertyFromDateObjectControl,
+        propertyUntilDateObjectControl,
+        propertyArchiveObjectControl
+    );
+
+  }
+  
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  protected void createAttributeEditDescriptors() {
+    
+    invoiceAttributeEditDescriptors = new ArrayList<>();
+    invoiceAttributeEditDescriptors.add(new EObjectAttributeEditDescriptor("Date", invoiceDateObjectControl, INVOICES_AND_PROPERTIES_PACKAGE.getInvoice_Date()));
+    invoiceAttributeEditDescriptors.add(new EObjectAttributeEditDescriptor("Company", invoiceCompanyObjectControl, INVOICES_AND_PROPERTIES_PACKAGE.getInvoice_Company()));
+    invoiceAttributeEditDescriptors.add(new EObjectAttributeEditDescriptor("Description", invoiceDescriptionObjectControl, INVOICES_AND_PROPERTIES_PACKAGE.getExpenditure_Description()));
+    invoiceAttributeEditDescriptors.add(new EObjectAttributeEditDescriptor("Amount", invoiceAmountObjectControl, INVOICES_AND_PROPERTIES_PACKAGE.getExpenditure_Amount()));
+    invoiceAttributeEditDescriptors.add(new EObjectAttributeEditDescriptor("Remarks", invoiceRemarksObjectControl, INVOICES_AND_PROPERTIES_PACKAGE.getExpenditure_Remarks()));
+    invoiceAttributeEditDescriptors.add(new EObjectAttributeEditDescriptor("Derive description from property", invoiceDescriptionFromPropertyObjectControl, INVOICES_AND_PROPERTIES_PACKAGE.getExpenditure_DescriptionFromProperty()));    
+ 
+    propertyAttributeEditDescriptors = new ArrayList<>();
+    propertyAttributeEditDescriptors.add(new EObjectAttributeEditDescriptor("Description", propertyDescriptionObjectControl, INVOICES_AND_PROPERTIES_PACKAGE.getProperty_Description()));
+    propertyAttributeEditDescriptors.add(new EObjectAttributeEditDescriptor("Brand", propertyBrandObjectControl, INVOICES_AND_PROPERTIES_PACKAGE.getProperty_Brand()));
+    propertyAttributeEditDescriptors.add(new EObjectAttributeEditDescriptor("Type", propertyTypeObjectControl, INVOICES_AND_PROPERTIES_PACKAGE.getProperty_Type()));
+    propertyAttributeEditDescriptors.add(new EObjectAttributeEditDescriptor("Serial number", propertySerialNumberObjectControl, INVOICES_AND_PROPERTIES_PACKAGE.getProperty_SerialNumber()));
+    propertyAttributeEditDescriptors.add(new EObjectAttributeEditDescriptor("Remarks", propertyRemarksObjectControl, INVOICES_AND_PROPERTIES_PACKAGE.getProperty_Remarks()));
+    propertyAttributeEditDescriptors.add(new EObjectAttributeEditDescriptor("From", propertyFromDateObjectControl, INVOICES_AND_PROPERTIES_PACKAGE.getProperty_FromDate()));
+    propertyAttributeEditDescriptors.add(new EObjectAttributeEditDescriptor("Until", propertyUntilDateObjectControl, INVOICES_AND_PROPERTIES_PACKAGE.getProperty_UntilDate()));
+    propertyAttributeEditDescriptors.add(new EObjectAttributeEditDescriptor("Archive", propertyArchiveObjectControl, INVOICES_AND_PROPERTIES_PACKAGE.getProperty_Archive()));
+    
+  }
+    
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  protected void fillControlsWithDefaultValues() {
+    invoiceDateObjectControl.ocSetValue(null);
+    invoiceCompanyObjectControl.ocSetValue(null);
+    invoiceDescriptionObjectControl.ocSetValue(null);
+    invoiceAmountObjectControl.ocSetValue(null);
+    invoiceRemarksObjectControl.ocSetValue(null);
+    invoiceDescriptionFromPropertyObjectControl.ocSetValue(false);
+    
+    invoiceItemPanels.clear();
+  }
+  
+  /**
+   * Fill the Property controls with default values.
+   * <p>
+   * This is the counterpart of {@code fillControlsWithDefaultValues()) for the Property.
+   */
+  private void fillPropertyControlsWithDefaultValues() {
+    propertyDescriptionObjectControl.ocSetValue(null);
+    propertyBrandObjectControl.ocSetValue(null);
+    propertyTypeObjectControl.ocSetValue(null);
+    propertySerialNumberObjectControl.ocSetValue(null);
+    propertyRemarksObjectControl.ocSetValue(null);
+    propertyFromDateObjectControl.ocSetValue(null);
+    propertyUntilDateObjectControl.ocSetValue(null);
+    propertyArchiveObjectControl.ocSetValue(false);
+    
+    documentReferencePanels.clear();
+    pictureReferencePanels.clear();
   }
 
   /**
-   * Fill the controls for the invoice with the values of an invoice.
-   * 
-   * @param invoice The {@code Invoice} to fill the controls from.
+   * {@inheritDoc}
    */
-  private void fillControlsFromInvoice(Invoice invoice) {
-    LOGGER.info("=> invoice=" + invoice);
+  @Override
+  protected void fillControlsFromObject() {
+    LOGGER.info("=>");
     
-    if (invoice.isSetDate()) {
-      invoiceDateObjectInput.ocSetValue(invoice.getDate());
+    if (object.isSetDate()) {
+      invoiceDateObjectControl.ocSetValue(object.getDate());
     }
     
-    if (invoice.isSetCompany()) {
-      invoiceCompanyObjectInput.ocSetValue(invoice.getCompany());
+    if (object.isSetCompany()) {
+      invoiceCompanyObjectControl.ocSetValue(object.getCompany());
     }
     
-    if (!invoice.isDescriptionFromProperty()) {
-      invoiceDescriptionObjectInput.ocSetValue(invoice.getDescription());
+    if (!object.isDescriptionFromProperty()) {
+      invoiceDescriptionObjectControl.ocSetValue(object.getDescription());
     }
     
-    if (invoice.isSetAmount()) {
-      invoiceAmountObjectInput.ocSetValue(invoice.getAmount());
+    if (object.isSetAmount()) {
+      invoiceAmountObjectControl.ocSetValue(object.getAmount());
     }
     
-    if (invoice.isSetRemarks()) {
-      invoiceRemarksObjectInput.ocSetValue(invoice.getRemarks());
+    if (object.isSetRemarks()) {
+      invoiceRemarksObjectControl.ocSetValue(object.getRemarks());
     }
     
-    invoiceDescriptionFromPropertyObjectInput.ocSetValue(invoice.isDescriptionFromProperty());
+    invoiceDescriptionFromPropertyObjectControl.ocSetValue(object.isDescriptionFromProperty());
     
-    createInvoiceItemPanelsFromInvoice(invoice);
+    createInvoiceItemPanelsFromInvoice();
     
   }
   
-  private void createInvoiceItemPanelsFromInvoice(Invoice invoice) {
-    for (InvoiceItem invoiceItem: invoice.getInvoiceItems()) {
+  /**
+   * File the invoice item panels from the invoice
+   */
+  private void createInvoiceItemPanelsFromInvoice() {
+    for (InvoiceItem invoiceItem: object.getInvoiceItems()) {
       InvoiceItemPanel invoiceItemPanel = createNewInvoiceItemPanel(false);
       
       invoiceItemPanel.getNumberOfItemsObjectInput().ocSetValue(invoiceItem.getNumberOfItems());
       
-      if (invoiceItem.isSetDescription()) {
-        invoiceItemPanel.getDescriptionObjectInput().ocSetValue(invoiceItem.getDescription());
-      }
+      invoiceItemPanel.getDescriptionObjectInput().ocSetValue(invoiceItem.getDescription());
+
+      invoiceItemPanel.getAmountObjectInput().ocSetValue(invoiceItem.getAmount());
       
-      if (invoiceItem.isSetAmount()) {
-        invoiceItemPanel.getAmountObjectInput().ocSetValue(invoiceItem.getAmount());
-      }
-      
-//      if (invoiceItem.isSetRemarks()) {
-        invoiceItemPanel.getRemarksObjectInput().ocSetValue(invoiceItem.getRemarks());
-//      }
-      
+      invoiceItemPanel.getRemarksObjectInput().ocSetValue(invoiceItem.getRemarks());
     }
     
   }
   
-  private void updateInvoiceFromControls(Invoice invoice) {
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  protected void updateObjectFromControls() {
 
-    for (EObjectAttributeEditDescriptor eObjectAttributeEditDescriptor: invoiceEditorDescriptor.getEObjectAttributeEditDescriptors()) {
+    for (EObjectAttributeEditDescriptor eObjectAttributeEditDescriptor: invoiceAttributeEditDescriptors) {
       ObjectControl<?> objectInput = eObjectAttributeEditDescriptor.getObjectControl();
       if (objectInput.ocIsFilledIn()) {
         Object value;
         value = objectInput.ocGetValue();
-        invoice.eSet(eObjectAttributeEditDescriptor.getStructuralFeature(), value);
+        object.eSet(eObjectAttributeEditDescriptor.getStructuralFeature(), value);
       }
     }
 
-    updateInvoiceItemsFromInvoiceItemPanels(invoice);
+    updateInvoiceItemsFromInvoiceItemPanels();
   }
   
-  private void updateInvoiceItemsFromInvoiceItemPanels(Invoice invoice) {
+  /**
+   * Update the invoice items of the invoice from the {@code invoiceItemPanels}.
+   * <p>
+   * If there are any changes, the complete list of invoice items is recreated.
+   */
+  private void updateInvoiceItemsFromInvoiceItemPanels() {
     // Check for any changes. If there are changes, recreate the complete list.
     boolean changes = false;
     
-    if (invoice.getInvoiceItems().size() != invoiceItemPanels.size()) {
+    if (object.getInvoiceItems().size() != invoiceItemPanels.size()) {
       changes = true;
     }
     
     if (!changes) {
       int index = 0;
-      for (InvoiceItem invoiceItem: invoice.getInvoiceItems()) {
+      for (InvoiceItem invoiceItem: object.getInvoiceItems()) {
         InvoiceItemPanel invoiceItemPanel = invoiceItemPanels.get(index++);
         if (!PgUtilities.equals((Integer) invoiceItem.getNumberOfItems(), invoiceItemPanel.getNumberOfItemsObjectInput().ocGetValue())  ||
             !PgUtilities.equals(invoiceItem.getDescription(), invoiceItemPanel.getDescriptionObjectInput().ocGetValue())  ||
             !PgUtilities.equals(invoiceItem.getAmount(), invoiceItemPanel.getAmountObjectInput().ocGetValue())  ||
             !PgUtilities.equals(invoiceItem.getRemarks(), invoiceItemPanel.getRemarksObjectInput().ocGetValue())) {
           changes = true;
-          LOGGER.severe("NumberOfItems: " + invoiceItem.getNumberOfItems() + ", " + invoiceItemPanel.getNumberOfItemsObjectInput().ocGetValue());
-          LOGGER.severe("Description: " + invoiceItem.getDescription() + ", " + invoiceItemPanel.getDescriptionObjectInput().ocGetValue());
-          LOGGER.severe("Amount: " + invoiceItem.getAmount() + ", " + invoiceItemPanel.getAmountObjectInput().ocGetValue());
-          LOGGER.severe("Remarks: " + invoiceItem.getRemarks() + ", " + invoiceItemPanel.getRemarksObjectInput().ocGetValue());
+          if (Debug.ON) {
+            LOGGER.severe("NumberOfItems: " + invoiceItem.getNumberOfItems() + ", " + invoiceItemPanel.getNumberOfItemsObjectInput().ocGetValue());
+            LOGGER.severe("Description: " + invoiceItem.getDescription() + ", " + invoiceItemPanel.getDescriptionObjectInput().ocGetValue());
+            LOGGER.severe("Amount: " + invoiceItem.getAmount() + ", " + invoiceItemPanel.getAmountObjectInput().ocGetValue());
+            LOGGER.severe("Remarks: " + invoiceItem.getRemarks() + ", " + invoiceItemPanel.getRemarksObjectInput().ocGetValue());
+          }
           break;
         }
       }
     }
     
     if (changes) {
-      List<InvoiceItem> invoiceItems = invoice.getInvoiceItems();
+      List<InvoiceItem> invoiceItems = object.getInvoiceItems();
       invoiceItems.clear();
       
       for (InvoiceItemPanel invoiceItemPanel: invoiceItemPanels) {
@@ -585,6 +526,12 @@ public class InvoiceAndPropertyEditor extends ObjectEditorAbstract<Invoice> {
     }
   }
 
+  /**
+   * Update an {@code InvoiceItem} with the values of an {@code InvoiceItemPanel}.
+   * 
+   * @param invoiceItem the {@code InvoiceItem} to be updated
+   * @param invoiceItemPanel the {@code InvoiceItemPanel} from which {@code invoiceItem} will be updated.
+   */
   private void updateInvoiceItemFromInvoiceItemPanel(InvoiceItem invoiceItem, InvoiceItemPanel invoiceItemPanel) {
     if (invoiceItemPanel.getNumberOfItemsObjectInput().ocIsFilledIn()) {
       invoiceItem.setNumberOfItems(invoiceItemPanel.getNumberOfItemsObjectInput().ocGetValue());
@@ -604,22 +551,29 @@ public class InvoiceAndPropertyEditor extends ObjectEditorAbstract<Invoice> {
 
   }
 
-  private void updatePropertyFromControls(Property property) {
+  /**
+   * Update the {@code property} from the controls.
+   */
+  private void updatePropertyFromControls() {
     
-    for (EObjectAttributeEditDescriptor eObjectAttributeEditDescriptor: propertyEditorDescriptor.getEObjectAttributeEditDescriptors()) {
-      ObjectControl<?> objectInput = (ObjectControl<?>) eObjectAttributeEditDescriptor.getObjectControl();
-      if (objectInput.ocIsFilledIn()) {
-        Object value;
-        value = objectInput.ocGetValue();
+    for (EObjectAttributeEditDescriptor eObjectAttributeEditDescriptor: propertyAttributeEditDescriptors) {
+      ObjectControl<?> objectControl = (ObjectControl<?>) eObjectAttributeEditDescriptor.getObjectControl();
+      if (objectControl.ocIsFilledIn()) {
+        Object value = objectControl.ocGetValue();
         property.eSet(eObjectAttributeEditDescriptor.getStructuralFeature(), value);
       }
     }
     
-    updateDocumentReferencesFromDocumentReferencePanels(property);
-    updatePictureReferencesFromDocumentReferencePanels(property);
+    updateDocumentReferencesFromDocumentReferencePanels();
+    updatePictureReferencesFromDocumentReferencePanels();
   }
   
-  private void updateDocumentReferencesFromDocumentReferencePanels(Property property) {
+  /**
+   * Update the document references of the {@code property} from the {@code documentReferencePanels}.
+   * <p>
+   * If there are any changes, the complete list of document references is recreated.
+   */
+  private void updateDocumentReferencesFromDocumentReferencePanels() {
     // Check for any changes. If there are changes, recreate the complete list.
     boolean changes = false;
     
@@ -632,7 +586,7 @@ public class InvoiceAndPropertyEditor extends ObjectEditorAbstract<Invoice> {
       for (FileReference fileReference: property.getDocuments()) {
         FileReferencePanel fileReferencePanel = documentReferencePanels.get(index++);
         if ((!fileReference.getFile().equals(fileReferencePanel.getFile()))  ||
-            (!fileReference.getTitle().equals(fileReferencePanel.titleTextField().ocGetValue()))) {
+            (!fileReference.getTitle().equals(fileReferencePanel.getTitleObjectControl().ocGetValue()))) {
           changes = true;
           break;
         }
@@ -651,7 +605,12 @@ public class InvoiceAndPropertyEditor extends ObjectEditorAbstract<Invoice> {
     }
   }
   
-  private void updatePictureReferencesFromDocumentReferencePanels(Property property) {
+  /**
+   * Update the picture references of the {@code property} from the {@code pictureReferencePanels}.
+   * <p>
+   * If there are any changes, the complete list of picture references is recreated.
+   */
+  private void updatePictureReferencesFromDocumentReferencePanels() {
     // Check for any changes. If there are changes, recreate the complete list.
     boolean changes = false;
     
@@ -664,7 +623,7 @@ public class InvoiceAndPropertyEditor extends ObjectEditorAbstract<Invoice> {
       for (FileReference fileReference: property.getPictures()) {
         FileReferencePanel fileReferencePanel = pictureReferencePanels.get(index++);
         if ((!fileReference.getFile().equals(fileReferencePanel.getFile()))  ||
-            (!fileReference.getTitle().equals(fileReferencePanel.titleTextField().ocGetValue()))) {
+            (!fileReference.getTitle().equals(fileReferencePanel.getTitleObjectControl().ocGetValue()))) {
           changes = true;
           break;
         }
@@ -683,131 +642,111 @@ public class InvoiceAndPropertyEditor extends ObjectEditorAbstract<Invoice> {
     }
   }
 
+  /**
+   * Update a {@code FileReference} from a {@code FileReferencePanel}.
+   * 
+   * @param fileReference the {@code FileReference} to be updated.
+   * @param fileReferencePanel the {@code FileReferencePanel} from which the {@code fileReference} will be updated.
+   */
   private void updateFileReferenceFromFileReferencePanel(FileReference fileReference, FileReferencePanel fileReferencePanel) {
     if (fileReferencePanel.getFile() != null) {
       fileReference.setFile(stripBaseDirFromFilename(fileReferencePanel.getFile()));
     }
 
-    if (fileReferencePanel.titleTextField().ocIsFilledIn()) {
-      fileReference.setTitle(fileReferencePanel.titleTextField().ocGetValue());
+    if (fileReferencePanel.getTitleObjectControl().ocIsFilledIn()) {
+      fileReference.setTitle(fileReferencePanel.getTitleObjectControl().ocGetValue());
     }    
   }
 
   /**
    * Fill the controls for the property with the values of a property.
-   * 
-   * @param property The {@code Property} to fill the control from.
    */
-  private void fillControlsFromProperty(Property property) {
+  private void fillControlsFromProperty() {
     if (property.isSetDescription()) {
-      propertyDescriptionObjectInput.ocSetValue(property.getDescription());
+      propertyDescriptionObjectControl.ocSetValue(property.getDescription());
     }
     
     if (property.isSetBrand()) {
-      propertyBrandObjectInput.ocSetValue(property.getBrand());
+      propertyBrandObjectControl.ocSetValue(property.getBrand());
     }
     
     if (property.isSetType()) {
-      propertyTypeObjectInput.ocSetValue(property.getType());
+      propertyTypeObjectControl.ocSetValue(property.getType());
     }
     
     if (property.isSetSerialNumber()) {
-      propertySerialNumberObjectInput.ocSetValue(property.getSerialNumber());
+      propertySerialNumberObjectControl.ocSetValue(property.getSerialNumber());
     }
     
     if (property.isSetRemarks()) {
-      propertyRemarksObjectInput.ocSetValue(property.getRemarks());
+      propertyRemarksObjectControl.ocSetValue(property.getRemarks());
     }
     
     if (property.isSetFromDate()) {
-      propertyFromDateObjectInput.ocSetValue(property.getFromDate());
+      propertyFromDateObjectControl.ocSetValue(property.getFromDate());
     }
     
     if (property.isSetUntilDate()) {
-      propertyUntilDateObjectInput.ocSetValue(property.getUntilDate());
+      propertyUntilDateObjectControl.ocSetValue(property.getUntilDate());
     }
     
-    propertyArchiveObjectInput.ocSetValue(property.isArchive());
+    propertyArchiveObjectControl.ocSetValue(property.isArchive());
     
-    createDocumentsPanelsFromProperty(property);
-    createPicturesPanelsFromProperty(property);
+    createDocumentReferencePanelsFromProperty();
+    createPicturesPanelsFromProperty();
   }
   
   /**
-   * Create document panels from the documents of a property.
+   * Create document reference panels from the documents of the {@code property}.
    * <p>
    * For each document reference of the property a FileReferencePanel is created and
    * the content of the controls is set to the values of the document reference.
-   * 
-   * @param property The Property for which the picture panels are to be created.
    */
-  private void createDocumentsPanelsFromProperty(Property property) {
+  private void createDocumentReferencePanelsFromProperty() {
     for (FileReference fileReference: property.getDocuments()) {
       FileReferencePanel fileReferencePanel = createNewDocumentReferencePanel(false);
       
       if (fileReference.isSetFile()) {
-        fileReferencePanel.getFileSelecter().ocSetFilename(prependBaseDirToFilename(fileReference.getFile()));
+        fileReferencePanel.getFileSelecterObjectControl().ocSetFilename(InvoicesAndPropertiesUtil.prependBaseDirToRelativeFilename(fileReference.getFile()));
       }
       
       if (fileReference.isSetTitle()) {
-        fileReferencePanel.titleTextField().ocSetValue(fileReference.getTitle());
+        fileReferencePanel.getTitleObjectControl().ocSetValue(fileReference.getTitle());
       }
       
     }
-    
   }
   
   /**
-   * Create picture panels from the pictures of a property.
+   * Create picture reference panels from the pictures of the {@code property}.
    * <p>
    * For each picture reference of the property a FileReferencePanel is created and
    * the content of the controls is set to the values of the picture reference.
-   * 
-   * @param property The Property for which the picture panels are to be created.
    */
-  private void createPicturesPanelsFromProperty(Property property) {
+  private void createPicturesPanelsFromProperty() {
     for (FileReference fileReference: property.getPictures()) {
       FileReferencePanel fileReferencePanel = createNewPictureReferencePanel(false);
       
       if (fileReference.isSetFile()) {
-        fileReferencePanel.getFileSelecter().ocSetFilename(prependBaseDirToFilename(fileReference.getFile()));
+        fileReferencePanel.getFileSelecterObjectControl().ocSetFilename(InvoicesAndPropertiesUtil.prependBaseDirToRelativeFilename(fileReference.getFile()));
       }
       
       if (fileReference.isSetTitle()) {
-        fileReferencePanel.titleTextField().ocSetValue(fileReference.getTitle());
+        fileReferencePanel.getTitleObjectControl().ocSetValue(fileReference.getTitle());
       }
       
     }
-    
   }
 
   /**
-   * Create an ObjectInputContainer and add all controls for the invoice and property.<br/>
-   * The controls for invoice items are added/deleted when needed.
-   */
-  private void createObjectControlGroups() {
-    invoiceObjectControlGroup = new ObjectControlGroup();
-    
-    for (EObjectAttributeEditDescriptor eObjectAttributeEditDescriptor: invoiceEditorDescriptor.getEObjectAttributeEditDescriptors()) {
-      invoiceObjectControlGroup.addObjectControl((ObjectControl<?>) eObjectAttributeEditDescriptor.getObjectControl());
-    }
-    
-    propertyObjectControlGroup = new ObjectControlGroup();
-    
-    for (EObjectAttributeEditDescriptor eObjectAttributeEditDescriptor: propertyEditorDescriptor.getEObjectAttributeEditDescriptors()) {
-      propertyObjectControlGroup.addObjectControl((ObjectControl<?>) eObjectAttributeEditDescriptor.getObjectControl());
-    }
-  }
-
-  /**
+   * {@inheritDoc}
    * Create the GUI.
    * <p>
    * Left is invoice: top is invoice details, below that invoice items.
    * Right is property: top is property details and picture, below that documents and pictures.
    */
-  protected void createGUI() {
-    VBox rootPane = componentFactory.createVBox();
-    
+  @Override
+  protected void createEditPanel(VBox rootPane) {    
     HBox invoiceAndPropertyHBox = componentFactory.createHBox(3.0, 3.0);
     
     VBox invoiceVBox = componentFactory.createVBox(0.0, 3.0);
@@ -818,14 +757,12 @@ public class InvoiceAndPropertyEditor extends ObjectEditorAbstract<Invoice> {
     
     invoiceAndPropertyHBox.getChildren().addAll(invoiceVBox, propertyVBox);
     
-    rootPane.getChildren().addAll(invoiceAndPropertyHBox, createButtonsBox());
-    
-    setScene(new Scene(rootPane));
-    
+    rootPane.getChildren().add(invoiceAndPropertyHBox);    
   }
 
   /**
    * Create the panel with the basic controls for an invoice.
+   * 
    * @return the invoice panel.
    */
   private Node createInvoicePanel() {
@@ -837,11 +774,206 @@ public class InvoiceAndPropertyEditor extends ObjectEditorAbstract<Invoice> {
     
     int rowIndex = 1;
     
-    for (EObjectAttributeEditDescriptor eObjectAttributeEditDescriptor: invoiceEditorDescriptor.getEObjectAttributeEditDescriptors()) {
+    for (EObjectAttributeEditDescriptor eObjectAttributeEditDescriptor: invoiceAttributeEditDescriptors) {
       addAttributeEditControlsToGrid(gridPane, rowIndex++, eObjectAttributeEditDescriptor);
     }
     
     return gridPane;
+  }
+
+  /**
+   * {@inheritDoc}
+   * 
+   */
+  @Override
+  protected void handleChanges() {
+    handleInvoiceDescriptionType();
+
+    updateActionButtonsPanel();
+  }
+  
+  /**
+   * {@inheritDoc}
+   * Handle changes in any of the controls.
+   * 
+   */
+  @Override
+  protected void updateActionButtonsPanel() {
+    if (Debug.ON) {
+      LOGGER.info("=> ");
+    }
+    
+    actionButtonsPanel.getChildren().clear();
+
+    final Pane spacer = new Pane();
+    HBox.setHgrow(spacer, Priority.ALWAYS);
+    actionButtonsPanel.getChildren().add(spacer);
+    
+    EditStatus editStatus = determineEditStatus();  // This is the total status for invoice and property
+    
+    // Status label
+    Label editStatusLabel = componentFactory.createStrongLabel(editStatus.getStatusIndicator());
+    String fontName = editStatusLabel.getFont().getName();
+    editStatusLabel.setFont(new Font(fontName, 22));
+    if (editStatus == EditStatus.INVALID) {
+      editStatusLabel.setTooltip(new Tooltip("At least one of the controls has an invalid value"));
+    }
+    actionButtonsPanel.getChildren().add(editStatusLabel);
+    
+    Button button;
+    
+    // Add or update invoice button
+    if (editMode == EditMode.NEW) {
+      button = componentFactory.createButton("Create invoice", "Create a new invoice based on the entered values");
+      button.setOnAction(e -> addObjectAction());
+      if (!objectControlsGroup.getIsValid()) {
+        button.setDisable(true);
+      }
+    } else {
+      button = componentFactory.createButton("Update invoice", "Update the invoice based on the entered values");
+      button.setOnAction(e -> updateObject());
+      EditStatus invoiceEditStatus = determineInvoiceEditStatus();
+      if (invoiceEditStatus != EditStatus.CHANGES) {
+        button.setDisable(true);
+      }
+    }
+    actionButtonsPanel.getChildren().add(button);
+    
+    // Add or update property button
+    if (editMode == EditMode.NEW) {
+      button = componentFactory.createButton("Create property", "Create a new property based on the entered values");
+      button.setOnAction(e -> addPropertyAction());
+      if (!objectControlsGroup.getIsValid()) {
+        button.setDisable(true);
+      }
+    } else {
+      button = componentFactory.createButton("Update property", "Update the property based on the entered values");
+      button.setOnAction(e -> updateProperty());
+      EditStatus propertyEditStatus = determinePropertyEditStatus();
+      if (propertyEditStatus != EditStatus.CHANGES) {
+        button.setDisable(true);
+      }
+    }
+    actionButtonsPanel.getChildren().add(button);
+        
+    // Add or update invoice and property button
+    if (editMode == EditMode.NEW) {
+      button = componentFactory.createButton("Create invoice & property", "Create a new invoice and its related property based on the entered values");
+      button.setOnAction(e -> addInvoiceAndPropertyAction());
+      if (!objectControlsGroup.getIsValid()) {
+        button.setDisable(true);
+      }
+    } else {
+      button = componentFactory.createButton("Update invoice & property", "Update the invoice and property based on the entered values");
+      button.setOnAction(e -> updateInvoiceAndProperty());
+      if (editStatus != EditStatus.CHANGES) {
+        button.setDisable(true);
+      }
+    }
+    actionButtonsPanel.getChildren().add(button);
+    
+    // New button
+    button = componentFactory.createButton(newObjectText, newObjectTooltipText);
+    button.setOnAction(e -> setObject(null, true));
+    actionButtonsPanel.getChildren().add(button);
+    
+    // Cancel button
+    button = componentFactory.createButton("Cancel", "Discard any changes and close the editor");
+    button.setOnAction(e -> closeWindow());
+    actionButtonsPanel.getChildren().add(button);
+  }
+  
+  /**
+   * {@inheritDoc}
+   * <p>
+   * For valid/invalid here we also take the {@code propertyObjectControlsGroup} into account.
+   */
+  @Override
+  protected EditStatus determineEditStatus() {
+    if (objectControlsGroup.getIsValid() && propertyObjectControlsGroup.getIsValid()) {
+      if (editMode == EditMode.NEW) {
+        return EditStatus.ADD;
+      } else {
+        if (changesInInput()) {
+          return EditStatus.CHANGES;
+        } else {
+          return EditStatus.NO_CHANGES;
+        }
+      }
+    } else {
+      return EditStatus.INVALID;
+    }
+  }
+  
+  /**
+   * Determine the edit status for the invoice part of the editor.
+   * <p>
+   * If any of the controls is invalid, the status is INVALID.
+   * Otherwise, the status is CHANGES if there are any changes in the controls, or NO_CHANGES.
+   * 
+   * @return the newly determined EditStatus.
+   */
+  private EditStatus determineInvoiceEditStatus() {
+    if (objectControlsGroup.getIsValid()) {
+      if (editMode == EditMode.NEW) {
+        return EditStatus.ADD;
+      } else {
+        if (objectControlsGroup.isAnyObjectControlChanged()) {
+          return EditStatus.CHANGES;
+        } else {
+          return EditStatus.NO_CHANGES;
+        }
+      }
+    } else {
+      return EditStatus.INVALID;
+    }
+    
+  }
+  
+  /**
+   * Determine the edit status for the property part of the editor.
+   * <p>
+   * If any of the controls is invalid, the status is INVALID.
+   * Otherwise, the status is CHANGES if there are any changes in the controls, or NO_CHANGES.
+   * 
+   * @return the newly determined EditStatus.
+   */
+  private EditStatus determinePropertyEditStatus() {
+    if (propertyObjectControlsGroup.getIsValid()) {
+      if (editMode == EditMode.NEW) {
+        return EditStatus.ADD;
+      } else {
+        if (propertyObjectControlsGroup.isAnyObjectControlChanged()) {
+          return EditStatus.CHANGES;
+        } else {
+          return EditStatus.NO_CHANGES;
+        }
+      }
+    } else {
+      return EditStatus.INVALID;
+    }
+    
+  }
+  
+  /**
+   * {@inheritDoc}
+   * Check whether any value of the controls differs from the invoice/property value.
+   * 
+   * @return true if any value of the controls differs from the invoice/property value, false otherwise.
+   */
+  @Override
+  protected boolean changesInInput() {    
+    return objectControlsGroup.isAnyObjectControlChanged()  ||  propertyObjectControlsGroup.isAnyObjectControlChanged();
+  }
+  
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  protected void installChangeListeners() {
+    super.installChangeListeners();
+    
+    propertyObjectControlsGroup.addListener(observable -> handleChanges());
   }
 
   /**
@@ -853,14 +985,14 @@ public class InvoiceAndPropertyEditor extends ObjectEditorAbstract<Invoice> {
    */
   private void handleInvoiceDescriptionType() {
     LOGGER.info("=>");
-    if (invoiceDescriptionFromPropertyObjectInput.ocGetValue()) {
+    if (invoiceDescriptionFromPropertyObjectControl.ocGetValue()) {
       // Invoice description is derived from property.
       // Disable the description control and set is to the value derived from the property.
-      invoiceDescriptionObjectInput.ocGetControl().setDisable(true);
-      updateInvoiceDescription();
+      invoiceDescriptionObjectControl.ocGetControl().setDisable(true);
+      setInvoiceDescriptionFromPropertyControls();
     } else {
       // Enable the description control, don't change the value.
-      invoiceDescriptionObjectInput.ocGetControl().setDisable(false);
+      invoiceDescriptionObjectControl.ocGetControl().setDisable(false);
     }
     
   }
@@ -870,12 +1002,11 @@ public class InvoiceAndPropertyEditor extends ObjectEditorAbstract<Invoice> {
    * <p>
    * The description is a concatenation of the description, the brand and the type of the property.
    */
-  private void updateInvoiceDescription() {
-    if (invoiceDescriptionFromPropertyObjectInput.ocGetValue()) {
+  private void setInvoiceDescriptionFromPropertyControls() {
       StringBuilder buf = new StringBuilder();
       boolean spaceNeeded = false;
       
-      String value = propertyDescriptionObjectInput.ocGetValue();
+      String value = propertyDescriptionObjectControl.ocGetValue();
       if (value !=  null) {
         value = value.trim();
         if (!value.isEmpty()) {
@@ -884,19 +1015,7 @@ public class InvoiceAndPropertyEditor extends ObjectEditorAbstract<Invoice> {
         }
       }
       
-      value = propertyBrandObjectInput.ocGetValue();
-      if (value !=  null) {
-        value = value.trim();
-        if (!value.isEmpty()) {
-          if (spaceNeeded) {
-            buf.append(" ");
-          }
-          buf.append(value);
-          spaceNeeded = true;
-        }
-      }
-      
-      value = propertyTypeObjectInput.ocGetValue();
+      value = propertyBrandObjectControl.ocGetValue();
       if (value !=  null) {
         value = value.trim();
         if (!value.isEmpty()) {
@@ -908,13 +1027,36 @@ public class InvoiceAndPropertyEditor extends ObjectEditorAbstract<Invoice> {
         }
       }
       
-      invoiceDescriptionObjectInput.ocSetValue(buf.toString());
-    }
+      value = propertyTypeObjectControl.ocGetValue();
+      if (value !=  null) {
+        value = value.trim();
+        if (!value.isEmpty()) {
+          if (spaceNeeded) {
+            buf.append(" ");
+          }
+          buf.append(value);
+          spaceNeeded = true;
+        }
+      }
+      
+      invoiceDescriptionObjectControl.ocSetValue(buf.toString());
   }
 
   /**
    * Create the panel for the invoice items.<br/>
-   * Initially the list of invoice items will be empty.
+   * <p>
+   * Initially the list of invoice items will be empty.<br/>
+   * Via a listener changes in the list of invoice item panels are handled:
+   * <ul>
+   *  <li>
+   *   For added panels, a listener is added to the 'amount' control. If this changes {@code updateAmountObjectControl()} is called.
+   *  </li>
+   *  <li>
+   *   for removed panels, the {@code ObjectControlGroup} of the panel is removed from the {@code objectControlsGroup} and any listeners
+   *   are removed from the 'amount' control.
+   *  </li>
+   * </ul>
+   * 
    * 
    * @return the invoice items panel.
    */
@@ -927,7 +1069,6 @@ public class InvoiceAndPropertyEditor extends ObjectEditorAbstract<Invoice> {
     invoiceItemsMainVBox.getChildren().add(label);
     
     invoiceItemsVBox = componentFactory.createVBox();
-    invoiceItemPanels = FXCollections.observableArrayList();
     invoiceItemPanels.addListener(new ListChangeListener<InvoiceItemPanel>() {
 
       @Override
@@ -935,37 +1076,24 @@ public class InvoiceAndPropertyEditor extends ObjectEditorAbstract<Invoice> {
         while (c.next()) {
           if (c.wasPermutated()) {
             // No action needed here
-            // for (int i = c.getFrom(); i < c.getTo(); ++i) {
-            //    //permutate
-            // }
           } else if (c.wasUpdated()) {
             // update item
           } else {
+            // removed or updated
             for (InvoiceItemPanel invoiceItemPanel: c.getRemoved()) {
-              invoiceObjectControlGroup.removeObjectControlGroup(invoiceItemPanel.getObjectInputContainer());
-              ObjectControlCurrency invoiceItemAmountObjectInput = amountObjectInputs.get(invoiceItemPanel);
-              InvalidationListener invalidationListener = amountObjectInputListeners.remove(invoiceItemAmountObjectInput);
-              invoiceItemAmountObjectInput.removeListener(invalidationListener);
-              amountObjectInputs.remove(invoiceItemPanel);
+              objectControlsGroup.removeObjectControlGroup(invoiceItemPanel.getObjectControlGroup());
+              ObjectControlCurrency invoiceItemAmountObjectInput = invoiceItemPanel.getAmountObjectInput();
+              invoiceItemAmountObjectInput.removeListeners();
             }
             for (InvoiceItemPanel invoiceItemPanel: c.getAddedSubList()) {
-              invoiceObjectControlGroup.addObjectControlGroup(invoiceItemPanel.getObjectInputContainer());
               ObjectControlCurrency invoiceItemAmountObjectInput = invoiceItemPanel.getAmountObjectInput();
-              InvalidationListener invalidationListener = new InvalidationListener()  {
-                @Override
-                public void invalidated(Observable observable) {
-                  updateAmountObjectInput();
-                }
-              };
-              invoiceItemAmountObjectInput.addListener(invalidationListener);
-              amountObjectInputListeners.put(invoiceItemAmountObjectInput, invalidationListener);
-              amountObjectInputs.put(invoiceItemPanel, invoiceItemAmountObjectInput);
+              invoiceItemAmountObjectInput.addListener((observable) -> updateAmountObjectControl());
             }
           }
         }
         
         updateInvoiceItemsPanel();
-        updateAmountObjectInput();
+        updateAmountObjectControl();
         
       }
       
@@ -982,15 +1110,20 @@ public class InvoiceAndPropertyEditor extends ObjectEditorAbstract<Invoice> {
 
   /**
    * Create a new invoice item panel.
+   * 
+   * @param expanded If true, the panel is expanded upon creation.
+   * @return the created panel
    */
   private InvoiceItemPanel createNewInvoiceItemPanel(boolean expanded) {
     InvoiceItemPanel invoiceItemPanel = new InvoiceItemPanel(customization, invoiceItemPanels, expanded);
-    
-//    invoiceItemPanels.add(invoiceItemPanel);
+    objectControlsGroup.addObjectControlGroup(invoiceItemPanel.getObjectControlGroup());
     
     return invoiceItemPanel;
   }
 
+  /**
+   * Update the invoice items panel (the {@code invoiceItemsVBox}).
+   */
   private void updateInvoiceItemsPanel() {
     invoiceItemsVBox.getChildren().clear();
     invoiceItemsVBox.getChildren().addAll(invoiceItemPanels);
@@ -1002,22 +1135,22 @@ public class InvoiceAndPropertyEditor extends ObjectEditorAbstract<Invoice> {
    * The amount on an invoice is the sum of the amounts of the invoice items, if there is at least one invoice item with an amount filled in.
    * Otherwise the value can be entered.
    */
-  private void updateAmountObjectInput() {
+  private void updateAmountObjectControl() {
     PgCurrency sumOfInvoiceItems = null;
     
-    for (ObjectControl<PgCurrency> itemAmountObjectInput: amountObjectInputs.values())  {
-      PgCurrency itemAmount;
-      itemAmount = itemAmountObjectInput.ocGetValue();
+    for (InvoiceItemPanel invoiceItemPanel: invoiceItemPanels) {
+      ObjectControlCurrency itemAmountObjectInput = invoiceItemPanel.getAmountObjectInput();
+      PgCurrency itemAmount = itemAmountObjectInput.ocGetValue();
       if (itemAmount != null) {
         if (sumOfInvoiceItems == null) {
           sumOfInvoiceItems = itemAmount;
         } else {
-          sumOfInvoiceItems = sumOfInvoiceItems.add(itemAmount);
+          sumOfInvoiceItems = sumOfInvoiceItems.add(itemAmount.certifyCurrency(sumOfInvoiceItems.getCurrency()));
         }
       }
     }
 
-    ObjectControlCurrency amountControl = (ObjectControlCurrency) invoiceAmountObjectInput;
+    ObjectControlCurrency amountControl = (ObjectControlCurrency) invoiceAmountObjectControl;
     if (sumOfInvoiceItems == null) {
       amountControl.ocGetControl().setDisable(false);
     } else {
@@ -1026,6 +1159,13 @@ public class InvoiceAndPropertyEditor extends ObjectEditorAbstract<Invoice> {
     }
   }
   
+  /**
+   * Create the Property and Picture view panel.
+   * <p>
+   * The left side is the Property panel, the right side the Picture view panel (showing the selected picture reference).
+   * 
+   * @return the created panel.
+   */
   private Node createPropertyAndPicturePanel() {
     HBox hBox = componentFactory.createHBox();
     hBox.getChildren().addAll(createPropertyPanel(), createPictureViewPanel());
@@ -1033,6 +1173,11 @@ public class InvoiceAndPropertyEditor extends ObjectEditorAbstract<Invoice> {
     return hBox;
   }
 
+  /**
+   * Create the Property panel.
+   * 
+   * @return the created panel
+   */
   private Node createPropertyPanel() {
     GridPane gridPane = componentFactory.createGridPane(12.0, 12.0, 12.0);
     gridPane.setBorder(componentFactory.getRectangularBorder());
@@ -1042,19 +1187,29 @@ public class InvoiceAndPropertyEditor extends ObjectEditorAbstract<Invoice> {
 
     int rowIndex = 1;
     
-    for (EObjectAttributeEditDescriptor eObjectAttributeEditDescriptor: propertyEditorDescriptor.getEObjectAttributeEditDescriptors()) {
+    for (EObjectAttributeEditDescriptor eObjectAttributeEditDescriptor: propertyAttributeEditDescriptors) {
       addAttributeEditControlsToGrid(gridPane, rowIndex++, eObjectAttributeEditDescriptor);
     }
     
     return gridPane;
   }
 
+  /**
+   * Create the Picture view panel.
+   * 
+   * @return the created panel
+   */
   private Node createPictureViewPanel() {
     pictureViewPanel = componentFactory.createHBox(12.0);
     
     return pictureViewPanel;
   }
   
+  /**
+   * Update the Picture view panel.
+   * 
+   * @param fileName the file name of the picture to show.
+   */
   private void updatePictureViewPanel(String fileName) {
     pictureViewPanel.getChildren().clear();
     
@@ -1064,6 +1219,11 @@ public class InvoiceAndPropertyEditor extends ObjectEditorAbstract<Invoice> {
     pictureViewPanel.getChildren().add(imageView);
   }
   
+  /**
+   * Create the document references and pictures references panel.
+   * 
+   * @return the created panel.
+   */
   private Node createDocumentsAndPicturesPanel() {
     HBox hBox = componentFactory.createHBox();
     hBox.getChildren().addAll(createDocumentsPanel(), createPicturesPanel());
@@ -1071,6 +1231,11 @@ public class InvoiceAndPropertyEditor extends ObjectEditorAbstract<Invoice> {
     return hBox;
   }
   
+  /**
+   * Create the document references panel.
+   * 
+   * @return the created panel.
+   */
   private Node createDocumentsPanel() {
     VBox documentsMainVBox = componentFactory.createVBox(12.0, 12.0);
     documentsMainVBox.setMinSize(300, 500);
@@ -1080,7 +1245,6 @@ public class InvoiceAndPropertyEditor extends ObjectEditorAbstract<Invoice> {
     documentsMainVBox.getChildren().add(label);
     
     documentReferencesVBox = componentFactory.createVBox();
-    documentReferencePanels = FXCollections.observableArrayList();
     documentReferencePanels.addListener(new ListChangeListener<FileReferencePanel>() {
 
       @Override
@@ -1092,10 +1256,10 @@ public class InvoiceAndPropertyEditor extends ObjectEditorAbstract<Invoice> {
             // update item
           } else {
             for (FileReferencePanel documentReferencePanel: c.getRemoved()) {
-              propertyObjectControlGroup.removeObjectControlGroup(documentReferencePanel.getObjectInputContainer());
+              propertyObjectControlsGroup.removeObjectControlGroup(documentReferencePanel.getObjectControlsGroup());
             }
             for (FileReferencePanel documentReferencePanel: c.getAddedSubList()) {
-              propertyObjectControlGroup.addObjectControlGroup(documentReferencePanel.getObjectInputContainer());
+              propertyObjectControlsGroup.addObjectControlGroup(documentReferencePanel.getObjectControlsGroup());
             }
           }
         }
@@ -1115,12 +1279,44 @@ public class InvoiceAndPropertyEditor extends ObjectEditorAbstract<Invoice> {
     return documentsMainVBox;
   }
   
+  /**
+   * Create a new document reference panel, which is a {@code FileReferencePanel}.
+   * 
+   * @param expand If true, the panel is expanded upon creation.
+   * @return the created panel
+   */
   private FileReferencePanel createNewDocumentReferencePanel(boolean expand) {
-    FileReferencePanel documentReferencePanel = new FileReferencePanel(customization, documentReferencePanels, expand);
+    FileReferencePanel documentReferencePanel = new FileReferencePanel.FileReferencePanelBuilder(customization, documentReferencePanels)
+        .setDefaultPaneTitle("Document reference")
+        .setExpandPaneOnCreation(true)
+        .setInitialFolderSupplier(this::getPropertyRelatedFilesFolder)
+        .build();
     
     documentReferencePanels.add(documentReferencePanel);
     
     return documentReferencePanel;
+  }
+  
+  private String getPropertyRelatedFilesFolder() {
+    // Try to get the folder from existing document and picture references.
+    
+    for (FileReferencePanel fileReferencePanel: documentReferencePanels) {
+      String filename = fileReferencePanel.getFile();
+      if (filename != null) {
+        File file = new File(filename);
+        return file.getParent();
+      }
+    }
+    
+    for (FileReferencePanel fileReferencePanel: pictureReferencePanels) {
+      String filename = fileReferencePanel.getFile();
+      if (filename != null) {
+        File file = new File(filename);
+        return file.getParent();
+      }
+    }
+    
+    return InvoicesAndPropertiesRegistry.propertyRelatedFilesFolder;
   }
 
   private void updateDocumentReferencesPanel() {
@@ -1137,7 +1333,6 @@ public class InvoiceAndPropertyEditor extends ObjectEditorAbstract<Invoice> {
     picturesMainVBox.getChildren().add(label);
     
     pictureReferencesVBox = componentFactory.createVBox();
-    pictureReferencePanels = FXCollections.observableArrayList();
     pictureReferencePanels.addListener(new ListChangeListener<FileReferencePanel>() {
 
       @Override
@@ -1149,10 +1344,10 @@ public class InvoiceAndPropertyEditor extends ObjectEditorAbstract<Invoice> {
             // update item
           } else {
             for (FileReferencePanel pictureReferencePanel: c.getRemoved()) {
-              propertyObjectControlGroup.removeObjectControlGroup(pictureReferencePanel.getObjectInputContainer());
+              propertyObjectControlsGroup.removeObjectControlGroup(pictureReferencePanel.getObjectControlsGroup());
             }
             for (FileReferencePanel pictureReferencePanel: c.getAddedSubList()) {
-              propertyObjectControlGroup.addObjectControlGroup(pictureReferencePanel.getObjectInputContainer());
+              propertyObjectControlsGroup.addObjectControlGroup(pictureReferencePanel.getObjectControlsGroup());
             }
           }
         }
@@ -1173,7 +1368,11 @@ public class InvoiceAndPropertyEditor extends ObjectEditorAbstract<Invoice> {
   }
   
   private FileReferencePanel createNewPictureReferencePanel(boolean expand) {
-    FileReferencePanel pictureReferencePanel = new FileReferencePanel(customization, pictureReferencePanels, expand);
+    FileReferencePanel pictureReferencePanel = new FileReferencePanel.FileReferencePanelBuilder(customization, pictureReferencePanels)
+        .setDefaultPaneTitle("Picture reference")
+        .setExpandPaneOnCreation(true)
+        .setInitialFolderSupplier(this::getPropertyRelatedFilesFolder)
+        .build();
     
     ChangeListener<Boolean> cl = new ChangeListener<Boolean>() {
 
@@ -1201,49 +1400,67 @@ public class InvoiceAndPropertyEditor extends ObjectEditorAbstract<Invoice> {
   }
 
   /**
-   * Create the box with the action buttons.
-   * <p>
-   * The box has the following buttons:
-   * <ul>
-   * <li>cancel - close the window without any changes</li>
-   * <li>create or update an invoice</li>
-   * <li>create or update a property</li>
-   * <li>create or update an invoice and property</li>
-   * </ul>
    * 
-   * @return
    */
-  private Node createButtonsBox() {
-    HBox buttonsBox = componentFactory.createHBox(12.0, 12.0);
-    final Pane spacer = new Pane();
-    HBox.setHgrow(spacer, Priority.ALWAYS);
-    buttonsBox.getChildren().add(spacer);
-    
-    // Cancel button
-    Button cancelButton = componentFactory.createButton("Cancel", "Close this window without creating an invoice and property");
-    cancelButton.setOnAction(e -> this.close());
-    buttonsBox.getChildren().add(cancelButton);
-    
-    // Create or update invoice
-    createOrUpdateInvoiceButton = componentFactory.createButton("", "");
-    updateCreateOrUpdateInvoiceButton();
-    createOrUpdateInvoiceButton.setOnAction(e -> createOrUpdateInvoice());
-    buttonsBox.getChildren().add(createOrUpdateInvoiceButton);
-    
-    // Create or update property button
-    createOrUpdatePropertyButton = componentFactory.createButton("", "");
-    updateCreateOrUpdatePropertyButton();
-    createOrUpdatePropertyButton.setOnAction(e -> createOrUpdateProperty());
-    buttonsBox.getChildren().add(createOrUpdatePropertyButton);
-    
-    // Create or update invoice and property button
-    createOrUpdateInvoiceAndPropertyButton = componentFactory.createButton("", "");
-    updateCreateOrUpdateInvoiceAndPropertyButton();
-    createOrUpdateInvoiceAndPropertyButton.setOnAction(e -> createOrUpdateInvoiceAndProperty());
-    buttonsBox.getChildren().add(createOrUpdateInvoiceAndPropertyButton);
-        
-    return  buttonsBox;
+  private  void addPropertyAction() {
+      createProperty();
+      updatePropertyFromControls();
+      invoicesAndProperties.getProperties().getProperties().add(property);
+      
+      updateActionButtonsPanel();
   }
+  
+  private void addInvoiceAndPropertyAction() {
+    createObject();
+    createProperty();
+
+    updateObjectFromControls();
+    updatePropertyFromControls();
+    object.setPurchase(property);
+    
+    invoicesAndProperties.getInvoices().getInvoices().add(object);
+    invoicesAndProperties.getProperties().getProperties().add(property);
+
+    updateActionButtonsPanel();    
+  }
+  
+  /**
+   * {@inheritDoc}
+   * Update {@code property} with the values of the controls.
+   */
+  protected void updateProperty() {
+    updatePropertyFromControls();
+    
+    setObject(object, false);
+  }
+  
+  private void updateInvoiceAndProperty() {
+    updateObjectFromControls();
+    updatePropertyFromControls();
+
+    updateActionButtonsPanel();    
+  }
+  
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  protected void createObject() {
+    object = INVOICES_AND_PROPERTIES_FACTORY.createInvoice();
+  }
+
+  private void createProperty() {
+    property = INVOICES_AND_PROPERTIES_FACTORY.createProperty();
+  }
+  
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  protected void addObjectToCollection() {
+    invoicesAndProperties.getInvoices().getInvoices().add(object);
+  }
+
 
   /*
    * Add the controls (Label and ObjectInput) for one attribute to the gridPane.
@@ -1268,71 +1485,8 @@ public class InvoiceAndPropertyEditor extends ObjectEditorAbstract<Invoice> {
     gridPane.add(objectInput.ocGetControl(), 1, rowIndex); 
     
     // Ok/Not OK label
-    Label statusLabel = componentFactory.createLabel(null);
-    objectInput.addListener((o) -> EObjectEditor.updateStatusLabel(statusLabel, objectInput.ocIsValid()));
-     EObjectEditor.updateStatusLabel(statusLabel, objectInput.ocIsValid());
-    gridPane.add(statusLabel, 2, rowIndex);
-  }
-
-  /**
-   * Create or update an invoice.
-   */
-  private void createOrUpdateInvoice() {
-    if (invoice == null) {
-      invoice = INVOICES_AND_PROPERTIES_FACTORY.createInvoice();
-      invoicesAndProperties.getInvoices().getInvoices().add(invoice);
-      
-      updateCreateOrUpdateInvoiceButton();
-    }
-    
-    updateInvoiceFromControls(invoice);
-  }
-
-  /**
-   * Create or update a property
-   */
-  private void createOrUpdateProperty() {
-    if (property == null) {
-      property  = INVOICES_AND_PROPERTIES_FACTORY.createProperty();
-      invoicesAndProperties.getProperties().getProperties().add(property);
-      
-      updateCreateOrUpdatePropertyButton();
-    }
-    
-    updatePropertyFromControls(property);
-  }
-
-  private void createOrUpdateInvoiceAndProperty() {
-    boolean linkInvoiceAndProperty = false;
-    
-    if (invoice == null) {
-      invoice = INVOICES_AND_PROPERTIES_FACTORY.createInvoice();
-      invoicesAndProperties.getInvoices().getInvoices().add(invoice);
-      linkInvoiceAndProperty = true;
-    }
-    
-    if (property == null) {
-      property  = INVOICES_AND_PROPERTIES_FACTORY.createProperty();
-      invoicesAndProperties.getProperties().getProperties().add(property);
-      linkInvoiceAndProperty = true;
-    }
-    
-    if (linkInvoiceAndProperty) {      
-      invoice.setPurchase(property);
-    }
-    
-    updateCreateOrUpdateInvoiceButton();
-    updateCreateOrUpdatePropertyButton();
-    updateCreateOrUpdateInvoiceAndPropertyButton();
-    
-    updateInvoiceFromControls(invoice);
-    updatePropertyFromControls(property);
-  }
-
-  private String prependBaseDirToFilename(String filename) {
-    File file = new File(InvoicesAndPropertiesRegistry.propertyRelatedFilesFolder, filename);
-    
-    return file.getAbsolutePath();
+    Node statusIndicator = eObjectAttributeEditDescriptor.getObjectControl().ocGetStatusIndicator();
+    gridPane.add(statusIndicator, 2, rowIndex);
   }
   
   private String stripBaseDirFromFilename(String fileName) {
@@ -1347,598 +1501,3 @@ public class InvoiceAndPropertyEditor extends ObjectEditorAbstract<Invoice> {
   }
 }
 
-
-/**
- * This class provides a panel to edit an invoice item.
- */
-class InvoiceItemPanel extends TitledPane {
-  private static final Logger LOGGER = Logger.getLogger(InvoiceItemPanel.class.getName());
-  private static String DEFAULT_TITLE = "New invoice item";
-  
-  private List<InvoiceItemPanel> invoiceItemPanels;
-  private ComponentFactoryFx componentFactory;
-  
-  private ObjectControlGroup objectControlGroup;
-  
-  private static final DataFormat INVOICE_ITEM_PANEL = new DataFormat("InvoiceItemPanel");
-  private InvoiceItemPanel thisInvoiceItemPanel;
-  
-  // References to the ObjectInputs
-  private ObjectControl<Integer> numberOfItemsObjectInput;
-  private ObjectControlString descriptionObjectInput;
-  private ObjectControlCurrency amountObjectInput;
-  private ObjectControlString remarksObjectInput;
-
-  /**
-   * Constructor
-   * 
-   * @param customization - the GUI customization
-   * @param invoiceItemPanels - the list of {@code InvoiceItemPanel}s of which this panel is part.
-   * @param expanded - if true the panel will initially be in the expanded state.
-   */
-  public InvoiceItemPanel(CustomizationFx customization, List<InvoiceItemPanel> invoiceItemPanels, boolean expanded) {
-    this.invoiceItemPanels = invoiceItemPanels;
-    componentFactory = customization.getComponentFactoryFx();
-    
-    // Create the ObjectInputs    
-    numberOfItemsObjectInput = componentFactory.createObjectControlInteger(1, 150.0, true, "the number of items");
-    descriptionObjectInput = componentFactory.createObjectControlString(null, 200, false, "typically the product");
-    amountObjectInput = componentFactory.createObjectControlCurrency(null, 150, false, "the amount of money paid");
-    remarksObjectInput = componentFactory.createObjectControlString(null, 150.0, true, "any comments on this invoice");
-    
-    createObjectControlGroup();
-
-    createGUI();
-    
-    objectControlGroup.isValid().addListener(new ChangeListener<>() {
-
-      @Override
-      public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
-        updateTitle();        
-      }
-
-        
-    });
-    
-    numberOfItemsObjectInput.addListener(new InvalidationListener() {
-
-      @Override
-      public void invalidated(Observable observable) {
-        updateTitle();
-      }
-
-        
-    });
-    
-    descriptionObjectInput.addListener(new InvalidationListener() {
-
-      @Override
-      public void invalidated(Observable observable) {
-        updateTitle();
-      }
-
-        
-    });
-    
-    amountObjectInput.addListener(new InvalidationListener() {
-
-      @Override
-      public void invalidated(Observable observable) {
-        updateTitle();
-      }
-
-        
-    });
-    
-    thisInvoiceItemPanel = this;
-    
-    /*
-     * Handle the starting of a drag event.
-     * This can be dragged.
-     */
-    setOnDragDetected(new EventHandler<MouseEvent>() {
-
-      public void handle(MouseEvent event) {
-        ClipboardContent clipboardContent = new ClipboardContent();
-        Integer myIndex = invoiceItemPanels.indexOf(thisInvoiceItemPanel);
-        clipboardContent.put(INVOICE_ITEM_PANEL, myIndex);
-
-        Dragboard dragBoard = startDragAndDrop(TransferMode.MOVE);
-        dragBoard.setContent(clipboardContent);
-
-        event.consume();
-      }
-    });
-    
-    /*
-     * Check whether a drop event can be handled (upon a drag over).
-     * Drop is supported for INVOICE_ITEM_PANEL.
-     */
-    setOnDragOver(new EventHandler<DragEvent>() {
-      public void handle(DragEvent event) {
-        /* data is dragged over a (possible) target */
-        /* accept it only if it is not dragged from the same node 
-         * and if it has a supported data format. */
-        Dragboard dragboard = event.getDragboard();
-        if (event.getGestureSource() != thisInvoiceItemPanel) {
-          if (dragboard.hasContent(INVOICE_ITEM_PANEL)) {
-            event.acceptTransferModes(TransferMode.MOVE);
-          }
-        }
-
-        event.consume();
-      }
-    });
-    
-    /*
-     * Handle the dropping on the target
-     */
-    setOnDragDropped(new EventHandler<DragEvent>() {
-      public void handle(DragEvent event) {
-        LOGGER.info("=>");
-
-        boolean success = false;
-
-        // Get the index from the drag board, and if it isn't null use it.
-        Dragboard dragboard = event.getDragboard();
-        if (dragboard.hasContent(INVOICE_ITEM_PANEL)) {
-          Integer sourceIndex = (Integer) dragboard.getContent(INVOICE_ITEM_PANEL);
-          if (sourceIndex != null) {
-            InvoiceItemPanel sourcePanel = invoiceItemPanels.get(sourceIndex);
-            int sourceIndexInt = sourceIndex;
-            invoiceItemPanels.remove(sourceIndexInt);
-            
-            Integer myIndex = invoiceItemPanels.indexOf(thisInvoiceItemPanel);
-            invoiceItemPanels.add(myIndex, sourcePanel);
-          }
-
-          /* let the source know whether the item was successfully transferred and used */
-          event.setDropCompleted(success);
-        }
-
-        event.consume();
-      }
-    });
-    
-    this.setExpanded(expanded);
-    invoiceItemPanels.add(this);
-    
-    updateTitle();
-  }
-
-  public ObjectControl<Integer> getNumberOfItemsObjectInput() {
-    return numberOfItemsObjectInput;
-  }
-
-  public ObjectControlString getDescriptionObjectInput() {
-    return descriptionObjectInput;
-  }
-
-  public ObjectControlCurrency getAmountObjectInput() {
-    return amountObjectInput;
-  }
-
-  public ObjectControlString getRemarksObjectInput() {
-    return remarksObjectInput;
-  }
-
-  public ObjectControlGroup getObjectInputContainer() {
-    return objectControlGroup;
-  }
-
-  /**
-   * Create the {@code objectControlGroup}.
-   * <p>
-   * The {@code objectControlGroup}is set to a new {@code ObjectControlGroup} to which all {@code ObjectControl}s of the {@code invoiceItemEditorDescriptor} are added.
-   */
-  private void createObjectControlGroup() {
-    objectControlGroup = new ObjectControlGroup();
-    
-    objectControlGroup.addObjectControl(numberOfItemsObjectInput);
-    objectControlGroup.addObjectControl(descriptionObjectInput);
-    objectControlGroup.addObjectControl(amountObjectInput);
-    objectControlGroup.addObjectControl(remarksObjectInput);
-  }
-  
-  /**
-   * Create the GUI
-   * <p>
-   * The GUI is a VBox, with a GridPane containing the ObjectControls and a buttons box.
-   */
-  private void createGUI() {
-    VBox rootPane = componentFactory.createVBox();
-
-    GridPane gridPane = componentFactory.createGridPane(12.0, 12.0, 12.0);
-        
-    int rowIndex = 1;
-    
-    addAttributeEditControlsToGrid(gridPane, rowIndex++, numberOfItemsObjectInput, "Number of items");
-    addAttributeEditControlsToGrid(gridPane, rowIndex++, descriptionObjectInput, "Description");
-    addAttributeEditControlsToGrid(gridPane, rowIndex++, amountObjectInput, "Amount");
-    addAttributeEditControlsToGrid(gridPane, rowIndex++, remarksObjectInput, "Remarks");
-    
-    rootPane.getChildren().addAll(gridPane, createButtonsBox());
-    
-    setContent(rootPane);
-  }
-
-  /**
-   * Add the controls (Label and ObjectInput) for one attribute to the gridPane.
-   * 
-   * @param gridPane The GridPane to add the controls to.
-   * @param rowIndex Index for the row in the GridPane to which the controls are to be added.
-   * @param eObjectAttributeEditDescriptor EObjectAttributeEditDescriptor for the attribute.
-   */
-  private void addAttributeEditControlsToGrid(GridPane gridPane, int rowIndex, ObjectControl<?> objectControl, String labelText) {
-    // Label
-    StringBuilder buf = new StringBuilder();
-    buf.append(labelText);
-    if (!objectControl.ocIsOptional()) {
-      buf.append(" *");
-    }
-    buf.append(":");
-    Label label = componentFactory.createLabel(buf.toString());
-    gridPane.add(label, 0, rowIndex);
-    
-    // ObjectInput control
-    Node node = objectControl.ocGetControl();
-    gridPane.add(node, 1, rowIndex); 
-    
-    // Ok/Not OK label
-    Node validIndicator = objectControl.ocGetValidIndicator();
-    gridPane.add(validIndicator, 2, rowIndex);
-  }
-
-  private Node createButtonsBox() {
-    HBox buttonsBox = componentFactory.createHBox(12.0, 12.0);
-    final Pane spacer = new Pane();
-    HBox.setHgrow(spacer, Priority.ALWAYS);
-    buttonsBox.getChildren().add(spacer);
-    
-    Button deleteButton = componentFactory.createButton("Delete this item", "Delete this invoice item");
-    deleteButton.setOnAction(e -> deleteInvoiceItem());
-    buttonsBox.getChildren().add(deleteButton);
-    
-    return  buttonsBox;
-  }
-  
-  private void deleteInvoiceItem() {
-    invoiceItemPanels.remove(this);
-  }
-  
-  /**
-   * Update the title of this TitledPane.
-   */
-  private void updateTitle() {
-    StringBuilder buf = new  StringBuilder();
-    
-    // Add number of items if available
-    Integer numberOfItems = null;
-    if (numberOfItemsObjectInput.ocIsValid() && numberOfItemsObjectInput.ocIsFilledIn()) {
-      numberOfItems = numberOfItemsObjectInput.ocGetValue();
-    }
-    if (numberOfItems != null  &&  numberOfItems != 0) {
-      buf.append(numberOfItems).append("x ");
-    }
-    
-    // Add description if available
-    String description = null;
-    description = descriptionObjectInput.ocGetValue();
-     if (description == null  ||  description.isEmpty()) {
-      description = DEFAULT_TITLE;
-    }
-    buf.append(description).append(" ");
-    
-    // Add amount if available
-    PgCurrency amount = null;
-    if (amountObjectInput.ocIsValid() && amountObjectInput.ocIsFilledIn()) {
-      amount = amountObjectInput.ocGetValue();
-    }
-    if (amount != null) {
-      buf.append(amountObjectInput.ocGetObjectValueAsFormattedText()).append(" ");
-    }
-    
-    // Add (in)valid indication
-    if (objectControlGroup.isValid().getValue()) {
-      buf.append(EObjectEditor.OK_INDICATOR);
-    } else {
-      buf.append(EObjectEditor.NOK_INDICATOR);
-    }
-    
-    setText(buf.toString());
-  }
-}
-
-
-/**
- * This class provides a panel to edit a file reference.
- */
-class FileReferencePanel extends TitledPane {
-  private static final Logger LOGGER = Logger.getLogger(InvoiceItemPanel.class.getName());
-  private static String DEFAULT_TITLE = "New document reference";
-  
-  private List<FileReferencePanel> documentReferencePanels;
-  private ComponentFactoryFx componentFactory;
-  
-  private ObjectControlGroup objectInputContainer;
-  
-  private static final DataFormat DOCUMENT_REFERENCE_PANEL = new DataFormat("DocumentReferencePanel");
-  private FileReferencePanel thisDocumentReferencePanel;
-  
-  // The ObjectInputs
-  private ObjectControlFileSelecter fileSelecter;
-  private ObjectControlString titleTextField;
-
-  private Desktop  desktop = null;
-  
-
-  public FileReferencePanel(CustomizationFx customization, List<FileReferencePanel> documentReferencePanels, boolean expand) {
-    this.documentReferencePanels = documentReferencePanels;
-    componentFactory = customization.getComponentFactoryFx();
-    
-    fileSelecter = componentFactory.createFileSelecter(getPropertyFilesFolder(), 400, "Currently selected folder",
-        "Choose file", "Select a file via a file chooser", "Select the file");
-    fileSelecter.ocSetId("fileSelecter");
-    fileSelecter.addListener(new InvalidationListener() {
-
-      @Override
-      public void invalidated(Observable observable) {
-        updateTitle();        
-      }
-        
-    });
-    titleTextField = componentFactory.createObjectControlString(null, 200, true, "a title for the file");
-    titleTextField.ocSetId("title");
-    titleTextField.addListener(new InvalidationListener() {
-
-      @Override
-      public void invalidated(Observable observable) {
-        updateTitle();        
-      }
-        
-    });
-    
-    createObjectInputContainer();
-
-    createGUI();
-    
-    objectInputContainer.isValid().addListener(new ChangeListener<>() {
-
-      @Override
-      public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
-        updateTitle();        
-      }
-        
-    });
-        
-    thisDocumentReferencePanel = this;
-    
-    /*
-     * Handle the starting of a drag event.
-     * This can be dragged.
-     */
-    setOnDragDetected(new EventHandler<MouseEvent>() {
-
-      public void handle(MouseEvent event) {
-        ClipboardContent clipboardContent = new ClipboardContent();
-        Integer myIndex = documentReferencePanels.indexOf(thisDocumentReferencePanel);
-        clipboardContent.put(DOCUMENT_REFERENCE_PANEL, myIndex);
-
-        Dragboard dragBoard = startDragAndDrop(TransferMode.MOVE);
-        dragBoard.setContent(clipboardContent);
-
-        event.consume();
-      }
-    });
-    
-    /*
-     * Check whether a drop event can be handled (upon a drag over).
-     * Drop is supported for DOCUMENT_REFERENCE_PANEL.
-     */
-    setOnDragOver(new EventHandler<DragEvent>() {
-      public void handle(DragEvent event) {
-        /* data is dragged over a (possible) target */
-        /* accept it only if it is not dragged from the same node 
-         * and if it has a supported data format. */
-        Dragboard dragboard = event.getDragboard();
-        if (event.getGestureSource() != thisDocumentReferencePanel) {
-          if (dragboard.hasContent(DOCUMENT_REFERENCE_PANEL)) {
-            event.acceptTransferModes(TransferMode.MOVE);
-          }
-        }
-
-        event.consume();
-      }
-    });
-    
-    /*
-     * Handle the dropping on the target
-     */
-    setOnDragDropped(new EventHandler<DragEvent>() {
-      public void handle(DragEvent event) {
-        LOGGER.info("=>");
-
-        boolean success = false;
-
-        // Get the index from the drag board, and if it isn't null use it.
-        Dragboard dragboard = event.getDragboard();
-        if (dragboard.hasContent(DOCUMENT_REFERENCE_PANEL)) {
-          Integer sourceIndex = (Integer) dragboard.getContent(DOCUMENT_REFERENCE_PANEL);
-          if (sourceIndex != null) {
-            FileReferencePanel sourcePanel = documentReferencePanels.get(sourceIndex);
-            int sourceIndexInt = sourceIndex;
-            documentReferencePanels.remove(sourceIndexInt);
-            
-            Integer myIndex = documentReferencePanels.indexOf(thisDocumentReferencePanel);
-            documentReferencePanels.add(myIndex, sourcePanel);
-          }
-
-          /* let the source know whether the item was successfully transferred and used */
-          event.setDropCompleted(success);
-        }
-
-        event.consume();
-      }
-    });
-    
-    setExpanded(expand);
-    
-    updateTitle();
-  }
-  
-  public ObjectControlFileSelecter getFileSelecter() {
-    return fileSelecter;
-  }
-  
-  public ObjectControlString titleTextField() {
-    return titleTextField;
-  }
-  
-  public String getFile() {
-    if (fileSelecter.ocIsValid()) {
-      return fileSelecter.ocGetAbsolutePath();
-    } else {
-      return null;
-    }
-  }
-  
-  private String getPropertyFilesFolder() {
-    String propertyFilesFolder = null;
-    
-    for (FileReferencePanel documentReferencePanel: documentReferencePanels) {
-      File file = documentReferencePanel.fileSelecter.ocGetValue();
-      propertyFilesFolder = file.getParent();
-      if (propertyFilesFolder != null) {
-        return propertyFilesFolder;
-      }
-    }
-    
-    return null;
-  }
-
-  public ObjectControlGroup getObjectInputContainer() {
-    return objectInputContainer;
-  }
-
-  private void createObjectInputContainer() {
-    objectInputContainer = new ObjectControlGroup();
-    
-    objectInputContainer.addObjectControl(fileSelecter);
-    objectInputContainer.addObjectControl(titleTextField);
-  }
-  
-  private void createGUI() {
-    VBox rootPane = componentFactory.createVBox();
-
-    GridPane gridPane = componentFactory.createGridPane(12.0, 12.0, 12.0);
-    
-    // Row 0: file selection; label, textfield and button to start file chooser.
-    Label fileNameLabel = componentFactory.createLabel("File:");
-    gridPane.add(fileNameLabel, 0, 0);
-        
-    gridPane.add(fileSelecter.ocGetControl(), 1, 0);
-    
-    Button fileChooserButton = fileSelecter.getFileChooserButton();
-    gridPane.add(fileChooserButton, 2, 0);
-        
-    // Row 1: title; label, textfield
-    Label titleLabel = componentFactory.createLabel("Title:");
-    gridPane.add(titleLabel, 0, 1);
-    
-    gridPane.add(titleTextField.ocGetControl(), 1, 1);
-    
-    rootPane.getChildren().addAll(gridPane, createButtonsBox());
-    
-    setContent(rootPane);
-  }
-
-  private Node createButtonsBox() {
-    HBox buttonsBox = componentFactory.createHBox(12.0, 12.0);
-    
-    Button openItemButton = componentFactory.createButton("Open item", "Open this item with the related application");
-    openItemButton.setOnAction(e -> openItem());
-    buttonsBox.getChildren().add(openItemButton);
-    
-    final Pane spacer = new Pane();
-    HBox.setHgrow(spacer, Priority.ALWAYS);
-    buttonsBox.getChildren().add(spacer);
-    
-    Button deleteButton = componentFactory.createButton("Delete this item", "Delete this invoice item");
-    deleteButton.setOnAction(e -> deleteInvoiceItem());
-    buttonsBox.getChildren().add(deleteButton);
-    
-    return  buttonsBox;
-  }
-  
-  private void deleteInvoiceItem() {
-    documentReferencePanels.remove(this);
-  }
-  
-  private void openItem() {
-    Desktop desktop = getDesktop();
-    if ((desktop == null)  ||  !desktop.isSupported(Desktop.Action.OPEN)) {
-      componentFactory.createErrorDialog("Unable to open a item", "Opening items isn't supported on this platform").showAndWait();
-      return;
-    }
-    
-    try {
-      URI uri = new URI(fileSelecter.ocGetAbsolutePath());
-      try {
-        desktop.browse(uri);
-      } catch (IOException e) {
-        componentFactory.createErrorDialog("Unable to open URL", e.getMessage());
-      }
-    } catch (URISyntaxException e1) {
-      File file = fileSelecter.ocGetValue();
-      
-      try {
-        desktop.open(file);
-      } catch (IllegalArgumentException | IOException e) {
-        componentFactory.createErrorDialog("An error occurred on trying to open the file", e.getMessage()).showAndWait();
-      }
-    }
-  }
-  
-  private Desktop getDesktop() {
-    if (desktop == null) {
-      // Before more Desktop API is used, first check 
-      // whether the API is supported by this particular 
-      // virtual machine (VM) on this particular host.
-      if (Desktop.isDesktopSupported()) {
-          desktop = Desktop.getDesktop();          
-      }
-      
-    }
-    
-    return desktop;
-  }
-  
-  /**
-   * Update the 'title' (actually the text) of this TitledPane.
-   */
-  private void updateTitle() {
-    StringBuilder buf = new  StringBuilder();
-    
-    String string = titleTextField.ocGetValue();
-    if ((string == null)  ||  string.isEmpty()) {
-
-      if (fileSelecter.ocGetValue() != null) {
-        File file = fileSelecter.ocGetValue();
-        string = file.getName();
-      } else {
-        string = DEFAULT_TITLE;
-      }
-    }
-    
-    buf.append(string).append(" ");
-        
-    // Add (in)valid indication
-    if (objectInputContainer.isValid().getValue()) {
-      buf.append(EObjectEditor.OK_INDICATOR);
-    } else {
-      buf.append(EObjectEditor.NOK_INDICATOR);
-    }
-    
-    setText(buf.toString());
-  }
-}

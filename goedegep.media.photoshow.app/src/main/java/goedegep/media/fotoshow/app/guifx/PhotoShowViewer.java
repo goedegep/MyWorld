@@ -80,15 +80,15 @@ public class PhotoShowViewer extends JfxStage {
     gridPane.add(label, 0, row);
     
     String initiallySelectedFolder = MediaRegistry.photosFolder;
-    ObjectControlFileSelecter fileSelecter = componentFactory.createFileSelecter(
-        initiallySelectedFolder,
+    ObjectControlFileSelecter fileSelecter = componentFactory.createFileSelecterObjectControl(
         300,
         "Enter Photoshow specification file name",
         "Select Photoshow specification",
         "Click to select a Photoshow specification via a file selecter",
-        "Select a Photoshow specification");
+        "Select a Photoshow specification", false);
     fileSelecter.addFileType(PhotoshowCommons.DEFAULT_PHOTOSHOW_SPECIFICATION_FILE_EXTENSION, "Photoshow specification file", true);
     fileSelecter.addFileType(".*", "Any file", false);
+    fileSelecter.setInitialFolderProvider(() -> initiallySelectedFolder);
     gridPane.add(fileSelecter.ocGetControl(), 1, row);
     gridPane.add(fileSelecter.getFileChooserButton(), 2, row);
     fileSelecter.addListener((e) -> {
@@ -112,12 +112,13 @@ public class PhotoShowViewer extends JfxStage {
     gridPane.add(label, 0, row);
     
     ObjectControlFolderSelecter folderSelecter = componentFactory.createFolderSelecter(
-        initiallySelectedFolder,
         300,
         "Enter folder that contains the photos to show",
         "Select photos folder",
         "Click to select a photos folder via a folder selecter",
-        "Select a photos folder");
+        "Select a photos folder",
+        false);
+    folderSelecter.setInitialFolderProvider(() -> initiallySelectedFolder);
     gridPane.add(folderSelecter.ocGetControl(), 1, row);
     gridPane.add(folderSelecter.getFolderChooserButton(), 2, row);
     folderSelecter.addListener((e) -> {

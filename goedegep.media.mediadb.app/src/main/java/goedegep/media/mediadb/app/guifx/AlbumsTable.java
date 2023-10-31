@@ -479,7 +479,7 @@ class AlbumsTableDescriptor extends EObjectTableDescriptor<Album> {
   }
   
   private void editAlbum(List<Album> albums, Album album) {
-    new AlbumEditor(customization, mediaDb, trackDiscLocationMap, album);
+    new AlbumEditor(customization, mediaDb, trackDiscLocationMap).runEditor().setObject(album);
   }
 }
 

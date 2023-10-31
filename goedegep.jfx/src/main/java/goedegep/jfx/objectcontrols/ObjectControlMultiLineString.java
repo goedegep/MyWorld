@@ -21,7 +21,7 @@ public class ObjectControlMultiLineString extends ObjectControlAbstract<String> 
     super(isOptional);
 
     textArea = customization.getComponentFactoryFx().createTextArea();
-    textArea.textProperty().addListener((observableValue, oldValue, newValue) -> ociHandleNewUserInput());
+    textArea.textProperty().addListener((observableValue, oldValue, newValue) -> ociHandleNewUserInput(textArea));
 
     ocSetValue(text);
   }
@@ -55,7 +55,7 @@ public class ObjectControlMultiLineString extends ObjectControlAbstract<String> 
    * {@inheritDoc}
    */
   @Override
-  public String ociDetermineValue() {
+  public String ociDetermineValue(Object source) {
     String text = textArea.getText();
     
     if (text != null) {

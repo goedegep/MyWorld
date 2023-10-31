@@ -124,8 +124,9 @@ public class FolderSelectionWizard extends Dialog<ButtonType> {
     Label folderNameLabel = componentFactory.createLabel("Photo folder:");
     wizardPanel.add(folderNameLabel, 0, 0);
     
-    folderSelecter = componentFactory.createFolderSelecter(initiallySelectedFolder, 400, "Currently selected folder",
-        "Choose folder", "Select photo folder via a file chooser", "Select the folder with photos");
+    folderSelecter = componentFactory.createFolderSelecter(400, "Currently selected folder",
+        "Choose folder", "Select photo folder via a file chooser", "Select the folder with photos", false);
+    folderSelecter.setInitialFolderProvider(() -> initiallySelectedFolder);
     
     Node folderName = folderSelecter.ocGetControl();
     folderSelecter.addListener((observable) -> {

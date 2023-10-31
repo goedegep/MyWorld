@@ -3,7 +3,6 @@ package goedegep.events.app.guifx;
 import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -15,36 +14,36 @@ import goedegep.events.model.EventsPackage;
 import goedegep.jfx.ComponentFactoryFx;
 import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.FileReferencePanel;
+import goedegep.jfx.FileReferencePanel.FileReferencePanelBuilder;
 import goedegep.jfx.FileReferenceTypeInfo;
-import goedegep.jfx.JfxStage;
 import goedegep.jfx.objectcontrols.ObjectControlBoolean;
 import goedegep.jfx.objectcontrols.ObjectControlFileSelecter;
 import goedegep.jfx.objectcontrols.ObjectControlFlexDate;
 import goedegep.jfx.objectcontrols.ObjectControlGroup;
 import goedegep.jfx.objectcontrols.ObjectControlHTMLString;
 import goedegep.jfx.objectcontrols.ObjectControlString;
+import goedegep.jfx.objecteditor.ObjectEditorTemplate;
 import goedegep.types.model.FileReference;
 import goedegep.types.model.TypesFactory;
 import goedegep.types.model.TypesPackage;
 import goedegep.util.PgUtilities;
 import goedegep.util.datetime.FlexDate;
 import goedegep.util.datetime.FlexDateFormat;
+import goedegep.util.dir.DirectoryChangesMonitoringTask;
 import goedegep.util.emf.EmfUtil;
 import goedegep.util.file.FileUtils;
-import javafx.beans.Observable;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.scene.Node;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 
 /**
@@ -54,9 +53,10 @@ import javafx.scene.layout.VBox;
  * the user can enter values, but an event cannot be created. As it can not be added to the <code>events</code>.
  *
  */
-public class EventsEditor extends JfxStage {
+public class EventsEditor extends ObjectEditorTemplate<EventInfo> {
   private static final Logger LOGGER = Logger.getLogger(EventsEditor.class.getName());
   private static final String WINDOW_TITLE = "Event editor";
+  private static final String ATTACHMENT_PANEL_TITLE = "attachment";
   private static final FlexDateFormat FDF =  new FlexDateFormat(true, true);
   
   /**
@@ -65,19 +65,9 @@ public class EventsEditor extends JfxStage {
   private CustomizationFx customization = null;
   
   /**
-   * The information on events
+   * The collection of events to which a new event will be added.
    */
   private Events events = null;
-  
-  /**
-   * The current event being shown/edited.
-   */
-  private EventInfo event = null;
-  
-  /**
-   * The folder where attachments of {@code event} are located.
-   */
-  private File eventFolder = null;
   
   /**
    * Factory used to create all GUI elements
@@ -85,7 +75,6 @@ public class EventsEditor extends JfxStage {
   private ComponentFactoryFx componentFactory;
   
   // Controls
-  
   private ObjectControlFlexDate eventDateControl;
   private ObjectControlString eventTitleControl;
   private ObjectControlString eventFolderControl;
@@ -99,21 +88,19 @@ public class EventsEditor extends JfxStage {
    * List of panels, one for each element.
    */
   private ObservableList<FileReferencePanel> attachmentPanels;
+  
+  /**
+   * Panel in which the {@code attachmentPanels} are shown.
+   */
   private VBox attachmentsVBox;
   
   /**
-   * ObjectControlGroup used to check the validity of the invoice controls.
+   * The generated or actual event folder (the folder where attachments of {@code event} are located).
+   * <p>
+   * If there is an attachment with a file reference to a sub folder of the Events Folder, this is the event folder.
+   * Otherwise if there is an event date and an event title, the folder is derived from these values.
    */
-  private ObjectControlGroup objectControlGroup;
-  
-  // Action buttons and box
-  private HBox buttonsBox;
-  private Button editButton;
-  private Button saveAsButton;
-  private Button updateButton;
-  private Button clearButton;
-  
-  private Mode mode = Mode.NEW_MODE;
+  private SimpleObjectProperty<File> generatedEventFolder;
   
   /**
    * Constructor
@@ -122,13 +109,49 @@ public class EventsEditor extends JfxStage {
    * 
    * @param customization the GUI customization.
    */
-  public EventsEditor(CustomizationFx customization) {
-    super(WINDOW_TITLE, customization);
+  public EventsEditor(CustomizationFx customization, Events events) {
+    super(customization, WINDOW_TITLE);
     
     this.customization = customization;
+    this.events = events;
     
     componentFactory = customization.getComponentFactoryFx();
     
+//    if (EventsRegistry.eventsFolderName != null) {
+//      pictureFileSelecter.setPrefix(EventsRegistry.eventsFolderName);
+//    }
+//    notesControl.ocGetControl().setPrefHeight(100);
+//    
+//    
+//    objectControlsGroup.addListener(observable -> handleChanges(observable));
+//    pictureFileSelecter.addListener((e) -> {
+//      File file = pictureFileSelecter.ocGetValue();
+//      if (file != null) {
+//        Image picture = new Image("file:" + file.getAbsolutePath());
+//        pictureImageView.setImage(picture);
+//      } else {
+//        pictureImageView.setImage(null);
+//      }
+//    });
+//    
+//    handleChanges(null);
+  }
+  
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  protected void configureEditor() {
+    setAddObjectTexts("Add event", "Add the event to the events");
+    setUpdateObjectTexts("Update", "Update the current event");
+    setNewObjectTexts("New", "Clear the controls to start entering new event data");
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  protected void createControls() {
     // Create object controls
     eventDateControl = componentFactory.createObjectControlFlexDate(null, 300, false, "Date of the event");
     eventTitleControl = componentFactory.createObjectControlString(null, 300, false, "Title of the event");
@@ -136,63 +159,47 @@ public class EventsEditor extends JfxStage {
     eventFolderControl.ocGetControl().setDisable(true);
     eventFolderExistsControl = componentFactory.createObjectControlBoolean(null, false, true, "Checked indicates that the event folder exists");
     createEventsFolderButton = componentFactory.createButton("create", "Click to create the event folder as shown on the left");
-    pictureFileSelecter = componentFactory.createFileSelecter(null, 300, "file name of a picture", "file chooser", "Start a file chooser", "Select picture file");
-    if (EventsRegistry.eventsFolderName != null) {
-      pictureFileSelecter.setPrefix(EventsRegistry.eventsFolderName);
-    }
-    notesControl = componentFactory.createObjectControlHTMLString(null, 400, true, "Enter the notes in HTML format");
-    notesControl.ocGetControl().setPrefHeight(100);
+    createEventsFolderButton.setOnAction(this::createEventsFolder);
+    pictureFileSelecter = componentFactory.createFileSelecterObjectControl(300, "file name of a picture", "file chooser", "Start a file chooser", "Select picture file", true);
+    pictureFileSelecter.setInitialFolderProvider(this::getEventRelatedFilesFolder);
+    pictureFileSelecter.setPrefix(EventsRegistry.eventsFolderName);
     pictureImageView = new ImageView();
-    pictureImageView.setFitWidth(400);
-    pictureImageView.setFitHeight(400);
-    pictureImageView.setPreserveRatio(true);
+    notesControl = componentFactory.createObjectControlHTMLString(null, 400, true, "Enter the notes in HTML format");
     
     // Create object controls group
-    objectControlGroup = new ObjectControlGroup();
-    objectControlGroup.addObjectControls(eventDateControl, eventTitleControl, notesControl);
+    objectControlsGroup = new ObjectControlGroup();
+    objectControlsGroup.addObjectControls(eventDateControl, eventTitleControl, notesControl, pictureFileSelecter);
     
-    createGUI();
-    
-    objectControlGroup.addListener(observable -> handleChanges(observable));
-    pictureFileSelecter.addListener((e) -> {
-      File file = pictureFileSelecter.ocGetValue();
-      if (file != null) {
-        Image picture = new Image("file:" + file.getAbsolutePath());
-        pictureImageView.setImage(picture);
-      } else {
-        pictureImageView.setImage(null);
-      }
-    });
-    
-    handleChanges(null);
-    show();
-  }
-  
-  /**
-   * Set the <code>Events</code> to which a new event will be added.
-   * 
-   * @param events the <code>Events</code> to which a new event will be added. 
-   */
-  public void setEvents(Events events) {
-    this.events = events;
-    updateButtons();
+    generatedEventFolder = new SimpleObjectProperty<>();
+    generatedEventFolder.addListener((e) -> updateEventFolderInfo());
   }
 
-  /** Set the <code>event</code> of which details will shown and which can be edited.
-   * 
-   * @param eventInfo the new current event.
-   */
-  public void setEvent(EventInfo event) {
-    this.event = event;
-    fillControlsFromEvent(event);
-    switchToEditMode();
-  }
-  
   /**
-   * Create the GUI.
+   * {@inheritDoc}
    */
-  private void createGUI() {
-    VBox rootPane = componentFactory.createVBox();
+  @Override
+  protected void createAttributeEditDescriptors() {
+    // This editor doesn't use attribute edit descriptors, so no action.
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  protected void fillControlsWithDefaultValues() {
+    eventDateControl.ocSetValue(null);
+    eventTitleControl.ocSetValue(null);
+    eventFolderControl.ociSetValue(null);
+    pictureFileSelecter.ocSetValue(null);
+    notesControl.ociSetValue(null);
+    eventFolderExistsControl.ociSetValue(false);
+  }
+    
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  protected void createEditPanel(VBox rootPane) {
     
     GridPane gridPane = componentFactory.createGridPane(12.0, 12.0, 12.0);
     Label label;
@@ -200,14 +207,14 @@ public class EventsEditor extends JfxStage {
     // Date
     label = componentFactory.createLabel("Date:");
     gridPane.add(label, 0, 0);
-    
     gridPane.add(eventDateControl.ocGetControl(), 1, 0);
+    gridPane.add(eventDateControl.ocGetStatusIndicator(), 2, 0);
     
     // Title + Event folder
     label = componentFactory.createLabel("Title:");
     gridPane.add(label, 0, 1);
-    
     gridPane.add(eventTitleControl.ocGetControl(), 1, 1);
+    gridPane.add(eventTitleControl.ocGetStatusIndicator(), 2, 1);
     
     HBox eventFolderControlsBox = componentFactory.createHBox(12.0);    
     label = componentFactory.createLabel("Event folder:");
@@ -217,32 +224,38 @@ public class EventsEditor extends JfxStage {
     eventFolderControlsBox.getChildren().add(eventFolderExistsControl.ocGetControl());
     eventFolderControlsBox.getChildren().add(createEventsFolderButton);
 
-    gridPane.add(eventFolderControlsBox, 2, 1);
+    gridPane.add(eventFolderControlsBox, 3, 1);
     
     // Picture
     label = componentFactory.createLabel("Picture:");
     gridPane.add(label, 0, 2);
 
     gridPane.add(pictureFileSelecter.ocGetControl(), 1, 2);
-    gridPane.add(pictureFileSelecter.getFileChooserButton(), 2, 2);
-    gridPane.add(pictureImageView, 4, 0, 1, 4);
+    HBox pictureControlsBox = componentFactory.createHBox(12.0);
+    pictureControlsBox.getChildren().addAll(pictureFileSelecter.ocGetStatusIndicator(), pictureFileSelecter.getFileChooserButton());
+    gridPane.add(pictureControlsBox, 2, 2);
         
-    // Notes
+    // Notes + Picture image view
     label = componentFactory.createLabel("Notes:");
     gridPane.add(label, 0, 3);
-    
     gridPane.add(notesControl.ocGetControl(), 1, 3);
+    gridPane.add(notesControl.ocGetStatusIndicator(), 2, 3);
+    
+    pictureImageView.setFitWidth(400);
+    pictureImageView.setFitHeight(400);
+    pictureImageView.setPreserveRatio(true);
+    gridPane.add(pictureImageView, 3, 3, 3, 2);
     
     rootPane.getChildren().add(gridPane);
     
-    rootPane.getChildren().add(createAttachmentsPanel());
-    
-    // Buttons panel
-    rootPane.getChildren().add(createButtonsBox());
-    
-    setScene(new Scene(rootPane));
+    rootPane.getChildren().add(createAttachmentsPanel());    
   }
   
+  /**
+   * Create the attachments panel.
+   * 
+   * @return the created attachments panel.
+   */
   private Node createAttachmentsPanel() {
     VBox documentsMainVBox = componentFactory.createVBox(12.0, 12.0);
     documentsMainVBox.setMinSize(300, 300);
@@ -264,10 +277,12 @@ public class EventsEditor extends JfxStage {
             // update item
           } else {
             for (FileReferencePanel documentReferencePanel: c.getRemoved()) {
-              objectControlGroup.removeObjectControlGroup(documentReferencePanel.getObjectInputContainer());
+              objectControlsGroup.removeObjectControlGroup(documentReferencePanel.getObjectControlsGroup());
+              handleChanges();
             }
             for (FileReferencePanel documentReferencePanel: c.getAddedSubList()) {
-              objectControlGroup.addObjectControlGroup(documentReferencePanel.getObjectInputContainer());
+              objectControlsGroup.addObjectControlGroup(documentReferencePanel.getObjectControlsGroup());
+              handleChanges();
             }
           }
         }
@@ -287,16 +302,29 @@ public class EventsEditor extends JfxStage {
     return documentsMainVBox;
   }
   
+  /**
+   * Update the attachments panel.
+   */
   private void updateAttachmentPanel() {
     attachmentsVBox.getChildren().clear();
     attachmentsVBox.getChildren().addAll(attachmentPanels);
   }
   
+  /**
+   * Create a new attachment panel.
+   * 
+   * @param expand if true, the panel will be expanded upon creation.
+   * @return the created attachment panel.
+   */
   private FileReferencePanel createNewAttachmentPanel(boolean expand) {
-    FileReferencePanel attachmentPanel = new FileReferencePanel(customization, attachmentPanels, expand, Arrays.asList(AttachmentType.values()));
-    if (eventFolder != null) {
-      attachmentPanel.getFileSelecter().setInitiallySelectedFolder(eventFolder.getAbsolutePath());
-    }
+    FileReferencePanel attachmentPanel = new FileReferencePanel.FileReferencePanelBuilder(customization, attachmentPanels)
+        .setDefaultPaneTitle(ATTACHMENT_PANEL_TITLE)
+        .setExpandPaneOnCreation(true)
+        .setInitialFolderSupplier(this::getEventRelatedFilesFolder)
+        .addFileReferenceType("file", "File", false)
+        .addFileReferenceType("photoFolder", "Photo folder", true)
+        .addFileReferenceType("videoTakesFolder", "Video takes folder", true)
+        .build();
     
     attachmentPanels.add(attachmentPanel);
     
@@ -304,113 +332,139 @@ public class EventsEditor extends JfxStage {
   }
   
   /**
-   * Create the box with the action buttons.
+   * Install listeners for changes in the controls.
    * <p>
-   * View mode (existing event is shown), no changes possible.
-   * Buttons: Edit - switch to edit mode
-   * 
-   * New event mode (starting with cleared controls), changes possible.
-   * Buttons: Save as, Clear
-   * 
-   * Edit mode (existing event is shown), changes possible
-   * Buttons: Update, Save as, Clear
-   *  
-   * The box has the following buttons:
-   * <ul>
-   * <li>   </li>
-   * </ul>
-   * 
-   * @return
+   * And in this case listen to changes in the events folder.
    */
-  private Node createButtonsBox() {
-    buttonsBox = componentFactory.createHBox(12.0, 12.0);
-    
-    // Edit button
-    editButton = componentFactory.createButton("Edit", "Edit this event");
-    editButton.setOnAction(e -> switchToEditMode());
-    
-    // Save as new event button
-    saveAsButton = componentFactory.createButton("Save as new event", "Create a new event");
-    saveAsButton.setOnAction(e -> saveAsNewEvent());
-    
-    // Update event button
-    updateButton = componentFactory.createButton("Update", "Update the current event");
-    updateButton.setOnAction(e -> updateEvent());
-    
-    // Clear button
-    clearButton = componentFactory.createButton("Clear", "Clear all controls");
-    clearButton.setOnAction(e -> clearControls());
-        
-    return  buttonsBox;
+  protected void installChangeListeners() {
+    super.installChangeListeners();
+
+    if (EventsRegistry.eventsFolderName != null) {
+      DirectoryChangesMonitoringTask directoryMonitoringTask = new DirectoryChangesMonitoringTask(EventsRegistry.eventsFolderName);
+
+      directoryMonitoringTask.valueProperty().addListener((observable, oldValue, newValue) -> {
+        String fileRelatedFilesFolderName = getEventRelatedFilesFolder();
+        if (fileRelatedFilesFolderName != null) {
+          File file = new File(fileRelatedFilesFolderName);
+          if (file.exists() && file.isDirectory()) {
+            eventFolderExistsControl.ocSetValue(true);
+            createEventsFolderButton.setDisable(true);
+          } else {
+            eventFolderExistsControl.ocSetValue(false);
+            createEventsFolderButton.setDisable(false);
+          }
+        }
+      });
+
+      Thread directoryMonitoringThread = new Thread(directoryMonitoringTask);
+      directoryMonitoringThread.setDaemon(true);
+      directoryMonitoringThread.start();
+    }
   }
   
-  private void switchToEditMode() {
-    eventDateControl.ocGetControl().setDisable(false);
-    eventTitleControl.ocGetControl().setDisable(false);
-    pictureFileSelecter.ocGetControl().setDisable(false);
-    pictureFileSelecter.getFileChooserButton().setDisable(false);
-    
-    mode = Mode.EDIT_MODE;
-    
-    updateButtons();
+  /**
+   * Get the event related files folder, or if this is not available, the Events Folder.
+   * 
+   * @return the event related files folder, or if this is not available, the Events Folder.
+   */
+  private String getEventRelatedFilesFolder() {
+    if (generatedEventFolder.get() != null) {
+      return generatedEventFolder.get().getAbsolutePath();
+    } else {
+      return EventsRegistry.eventsFolderName;
+    }
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  protected void createObject() {
+    object = EventsFactory.eINSTANCE.createEventInfo();
   }
   
-  private void saveAsNewEvent() {
-    EventInfo newEvent = EventsFactory.eINSTANCE.createEventInfo();
-    fillEventFromControls(newEvent);
-    
+  /**
+   * {@inheritDoc}
+   * <p>
+   * The events are kept ordered by date.
+   */
+  @Override
+  protected void addObjectToCollection() {
     List<EventInfo> eventList = events.getEvents();
-    FlexDate newEventDate = newEvent.getDate();
+    
+    FlexDate newEventDate = object.getDate();
     boolean eventInserted = false;
     for (int index = 0; index < eventList.size(); index++) {
       EventInfo event = eventList.get(index);
       if (newEventDate.compareTo(event.getDate()) == 1) {
-        eventList.add(index, newEvent);
+        eventList.add(index, object);
         eventInserted = true;
         break;
       }
     }
     if (!eventInserted) {
-      eventList.add(newEvent);
+      eventList.add(object);
     }
-    
-    event = newEvent;
-    
-    switchToEditMode();
   }
   
-  private void updateEvent() {
-    fillEventFromControls(event);
-  }
+//  
+//  private void saveAsNewEvent() {
+//    EventInfo newEvent = EventsFactory.eINSTANCE.createEventInfo();
+//    fillEventFromControls(newEvent);
+//    
+//    List<EventInfo> eventList = events.getEvents();
+//    FlexDate newEventDate = newEvent.getDate();
+//    boolean eventInserted = false;
+//    for (int index = 0; index < eventList.size(); index++) {
+//      EventInfo event = eventList.get(index);
+//      if (newEventDate.compareTo(event.getDate()) == 1) {
+//        eventList.add(index, newEvent);
+//        eventInserted = true;
+//        break;
+//      }
+//    }
+//    if (!eventInserted) {
+//      eventList.add(newEvent);
+//    }    
+//  }
   
-  private void fillEventFromControls(EventInfo event) {
-    EmfUtil.setFeatureValue(event, TypesPackage.eINSTANCE.getEvent_Date(), eventDateControl.ocGetValue());
-    EmfUtil.setFeatureValue(event, EventsPackage.eINSTANCE.getEventInfo_Title(), eventTitleControl.ocGetValue());
-    EmfUtil.setFeatureValue(event, EventsPackage.eINSTANCE.getEventInfo_Picture(), pictureFileSelecter.ocGetValue());
-//    EmfUtil.setFeatureValue(event, TypesPackage.eINSTANCE.getEvent_Notes(), notesControl.getText());
-    EmfUtil.setFeatureValue(event, TypesPackage.eINSTANCE.getEvent_Notes(), notesControl.ocGetValue());
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  protected void updateObjectFromControls() {
+    EmfUtil.setFeatureValue(object, TypesPackage.eINSTANCE.getEvent_Date(), eventDateControl.ocGetValue());
+    EmfUtil.setFeatureValue(object, EventsPackage.eINSTANCE.getEventInfo_Title(), eventTitleControl.ocGetValue());
+    EmfUtil.setFeatureValue(object, EventsPackage.eINSTANCE.getEventInfo_Picture(), pictureFileSelecter.ocGetValue().getAbsolutePath());
+    EmfUtil.setFeatureValue(object, TypesPackage.eINSTANCE.getEvent_Notes(), notesControl.ocGetValue());
+    EmfUtil.setFeatureValue(object, TypesPackage.eINSTANCE.getEvent_Notes(), notesControl.ocGetValue());
     
-    fillAttachmentsFromAttachmentPanels(event);
+    fillAttachmentsFromAttachmentPanels();
   }
   
-  private void fillAttachmentsFromAttachmentPanels(EventInfo event) {
+  /**
+   * Fill the event attachments from the attachment panels.
+   * <p>
+   * If there any changes in the attachments, the complete list of attachments is recreated.
+   */
+  private void fillAttachmentsFromAttachmentPanels() {
     // Check for any changes. If there are changes, recreate the complete list.
     boolean changes = false;
     
-    if (event.getAttachments().size() != attachmentPanels.size()) {
+    if (object.getAttachments().size() != attachmentPanels.size()) {
       changes = true;
     }
     
     if (!changes) {
       int index = 0;
-      for (FileReference attachment: event.getAttachments()) {
+      for (FileReference attachment: object.getAttachments()) {
         FileReferencePanel fileReferencePanel = attachmentPanels.get(index++);
         FileReferenceTypeInfo fileReferencePanelReferenceType = fileReferencePanel.getReferenceType();
         String fileReferencePanelReferenceTypeTag = (fileReferencePanelReferenceType != null ? fileReferencePanelReferenceType.getTag() : null);
         String fileReferencePanelFile = FileUtils.getPathRelativeToFolder(EventsRegistry.eventsFolderName, fileReferencePanel.getFile());
         if (!PgUtilities.equals(attachment.getTags(), fileReferencePanelReferenceTypeTag)  ||
             !attachment.getFile().equals(fileReferencePanelFile)  ||
-            !PgUtilities.equals(attachment.getTitle(), fileReferencePanel.titleTextField().ocGetValue())) {
+            !PgUtilities.equals(attachment.getTitle(), fileReferencePanel.getTitleObjectControl().ocGetValue())) {
           changes = true;
           break;
         }
@@ -418,7 +472,7 @@ public class EventsEditor extends JfxStage {
     }
     
     if (changes) {
-      List<FileReference> fileReferences = event.getAttachments();
+      List<FileReference> fileReferences = object.getAttachments();
       fileReferences.clear();
       
       for (FileReferencePanel fileReferencePanel: attachmentPanels) {
@@ -429,6 +483,12 @@ public class EventsEditor extends JfxStage {
     }
   }
 
+  /**
+   * Update a {@code FileReference} from a {@code FileReferencePanel}.
+   * 
+   * @param fileReference the {@code FileReference} to update
+   * @param fileReferencePanel the {@code FileReferencePanel} from which the {@code fileReference} will be updated.
+   */
   private void updateFileReferenceFromFileReferencePanel(FileReference fileReference, FileReferencePanel fileReferencePanel) {
     FileReferenceTypeInfo fileReferencePanelReferenceType = fileReferencePanel.getReferenceType();
     if (fileReferencePanelReferenceType != null) {
@@ -447,11 +507,18 @@ public class EventsEditor extends JfxStage {
       fileReference.setFile(stripBaseDirFromFilename(filename));
     }
 
-    if (fileReferencePanel.titleTextField().ocIsFilledIn()) {
-      fileReference.setTitle(fileReferencePanel.titleTextField().ocGetValue());
+    if (fileReferencePanel.getTitleObjectControl().ocIsFilledIn()) {
+      fileReference.setTitle(fileReferencePanel.getTitleObjectControl().ocGetValue());
     }    
   }
   
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  protected Double getWindowHeight() {
+    return 1320.0;
+  }  
   
   private String stripBaseDirFromFilename(String fileName) {
     File baseDir = new File(EventsRegistry.eventsFolderName);
@@ -463,66 +530,126 @@ public class EventsEditor extends JfxStage {
     
     return fileName;
   }
-
-  private void clearControls() {
-    eventDateControl.ocSetValue(null);
-    eventTitleControl.ocSetValue(null);
-    pictureFileSelecter.ocSetValue(null);
+  
+//  private void updateButtons() {
+//    if (events == null) {
+//      saveAsButton.setDisable(true);
+//    } else {
+//      saveAsButton.setDisable(false);
+//    }
+//    
+//    buttonsBox.getChildren().clear();
+//    
+//    final Pane spacer = new Pane();
+//    HBox.setHgrow(spacer, Priority.ALWAYS);
+//    buttonsBox.getChildren().add(spacer);
+//    
+//    switch (mode) {
+//    case EDIT_MODE:
+//      buttonsBox.getChildren().add(updateButton);
+//      buttonsBox.getChildren().add(saveAsButton);
+//      buttonsBox.getChildren().add(clearButton);
+//      break;
+//      
+//    case NEW_MODE:
+//      buttonsBox.getChildren().add(saveAsButton);
+//      buttonsBox.getChildren().add(clearButton);
+//      break;
+//      
+//    case VIEW_MODE:
+//      buttonsBox.getChildren().add(editButton);
+//      break;
+//    }
+//  }
+  
+  /**
+   * Update the {@code generatedEventFolder}
+   * <p>
+   * If there is an attachment with a file reference to a sub folder of the Events Folder, this is the event folder.
+   * Otherwise if there is an event date and an event title, the folder is derived from these values.
+   */
+  private void updateGeneratedEventFolder() {
+    String eventFolderName = deriveEventFolderNameFromAttachments();
+    
+    if (eventFolderName == null) {
+      eventFolderName = deriveEventFolderNameFromDateAndTitle();
+    }
+    
+    generatedEventFolder.set(eventFolderName != null ? new File(eventFolderName) : null);
   }
   
-  private void updateButtons() {
-    if (events == null) {
-      saveAsButton.setDisable(true);
-    } else {
-      saveAsButton.setDisable(false);
+  /**
+   * Get the event folder name derived from the attachments.
+   * <p>
+   * The event folder is the folder of the first attachment, which is a sub folder of the Events Folder.
+   * 
+   * @return the event folder name derived from the attachments, or null if this cannot be determined.
+   */
+  private String deriveEventFolderNameFromAttachments() {
+    if (EventsRegistry.eventsFolderName == null) {
+      return null;
     }
     
-    buttonsBox.getChildren().clear();
-    
-    final Pane spacer = new Pane();
-    HBox.setHgrow(spacer, Priority.ALWAYS);
-    buttonsBox.getChildren().add(spacer);
-    
-    switch (mode) {
-    case EDIT_MODE:
-      buttonsBox.getChildren().add(updateButton);
-      buttonsBox.getChildren().add(saveAsButton);
-      buttonsBox.getChildren().add(clearButton);
-      break;
-      
-    case NEW_MODE:
-      buttonsBox.getChildren().add(saveAsButton);
-      buttonsBox.getChildren().add(clearButton);
-      break;
-      
-    case VIEW_MODE:
-      buttonsBox.getChildren().add(editButton);
-      break;
+    for (FileReferencePanel fileReferencePanel: attachmentPanels) {
+      String fileReference = fileReferencePanel.getFile(); // This is the file
+      if (fileReference != null  &&  !fileReference.isEmpty()) {
+        File file = new File(fileReference);
+        file = file.getParentFile();  // This is the possible event directory
+        if (file != null) {
+          File eventsFolder = file.getParentFile();
+          String eventsFolderName = eventsFolder.getAbsolutePath();
+          if (eventsFolderName != null  &&  eventsFolderName.equals(EventsRegistry.eventsFolderName)) {
+            String eventFolderName = file.getAbsolutePath();
+            return eventFolderName;
+          }
+        }
+      }
     }
+    
+    return null;
   }
   
   /**
    * Update information related to the event folder.
    */
   private void updateEventFolderInfo() {
-    String eventFolderName = createEventFolderName();
+    File eventFolder = generatedEventFolder.get();
+    String eventFolderName = eventFolder != null ? eventFolder.getAbsolutePath() : null;
+    
     eventFolderControl.ocSetValue(eventFolderName);
     
-    if (eventFolderName != null) {
-      pictureFileSelecter.setInitiallySelectedFolder(eventFolderName);
-    }
-    
-    if (eventFolderName != null) {
-      eventFolder = new File(EventsRegistry.eventsFolderName, eventFolderName);
+    if (eventFolder != null) {
       eventFolderExistsControl.ocSetValue(eventFolder.exists());
     } else {
       eventFolderExistsControl.ocSetValue(false);
     }
     
-    createEventsFolderButton.setDisable((eventFolderName == null)  ||  eventFolderExistsControl.ocGetValue());
+    createEventsFolderButton.setDisable((eventFolder == null)  ||  eventFolderExistsControl.ocGetValue());    
   }
   
-  private String createEventFolderName() {
+  /**
+   * Update the {@code pictureImageView}.
+   */
+  private void updatePictureImageView() {
+    LOGGER.severe("=>");
+    File pictureFile = pictureFileSelecter.ocGetValue();
+    
+    if (pictureFile != null) {
+      Image picture = new Image("file:" + pictureFile.getAbsolutePath());
+      LOGGER.severe("Image loaded from: " + pictureFile.getAbsolutePath());
+      pictureImageView.setImage(picture);
+    } else {
+      LOGGER.severe("Clearing image");
+      pictureImageView.setImage(null);
+    }
+  }
+  
+  /**
+   * Derive the event folder from the date and title controls.
+   * 
+   * @return the event folder derived from the date and title controls, or null if these controls don't have the needed information.
+   */
+  private String deriveEventFolderNameFromDateAndTitle() {
     FlexDate eventDate = eventDateControl.ocGetValue();
     if (eventDate == null) {
       return null;
@@ -534,48 +661,69 @@ public class EventsEditor extends JfxStage {
       return null;
     }
     
-    return eventDateText + " " + title;
+    String subFolderName = eventDateText + " " + title;
+    File eventFolder = new File(EventsRegistry.eventsFolderName, subFolderName);
+    
+    return eventFolder.getAbsolutePath();
   }
   
-  private void fillControlsFromEvent(EventInfo eventInfo) {
-    if (eventInfo == null) {
-      clearControls();
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  protected void fillControlsFromObject() {
+    if (object == null) {
       return;
     }
-    eventDateControl.ocSetValue(eventInfo.getDate());
-    eventTitleControl.ocSetValue(eventInfo.getTitle());
-    pictureFileSelecter.ocSetValue(eventInfo.getPicture() != null ? new File(eventInfo.getPicture()) : null);
-    notesControl.ocSetValue(eventInfo.getNotes());
+    eventDateControl.ocSetValue(object.getDate());
+    eventTitleControl.ocSetValue(object.getTitle());
+    File pictureFile = object.getPicture() != null ? new File(EventsRegistry.eventsFolderName, object.getPicture()) : null;
+    LOGGER.severe("Picture: " + pictureFile);
+    pictureFileSelecter.ocSetValue(pictureFile);
+    notesControl.ocSetValue(object.getNotes());
     attachmentPanels.clear();
-    for (FileReference attachment: eventInfo.getAttachments()) {
-      FileReferencePanel fileReferencePanel = new FileReferencePanel(customization, attachmentPanels, false);
+    for (FileReference attachment: object.getAttachments()) {
+      FileReferencePanel fileReferencePanel = new FileReferencePanelBuilder(customization, attachmentPanels)
+          .setDefaultPaneTitle(ATTACHMENT_PANEL_TITLE)
+          .setInitialFolderSupplier(this::getEventRelatedFilesFolder)
+          .build();
       fillFileReferencePanelFromAttachment(fileReferencePanel, attachment);
       attachmentPanels.add(fileReferencePanel);
     }
   }
   
+  /**
+   * Fill a {@code FileReferencePanel} from a {@code FileReference}.
+   * 
+   * @param fileReferencePanel the {@code FileReferencePanel} to be filled.
+   * @param attachment the attachment (a {@code FileReference} to fill the {@code fileReferencePanel} from.
+   */
   private void fillFileReferencePanelFromAttachment(FileReferencePanel fileReferencePanel, FileReference attachment) {
     String  filename = attachment.getFile();
 
     Path filePath = Paths.get(EventsRegistry.eventsFolderName, filename);    
     fileReferencePanel.setFile(filePath.toAbsolutePath().toString());
-    fileReferencePanel.titleTextField().ocSetValue(attachment.getTitle());
+    fileReferencePanel.getTitleObjectControl().ocSetValue(attachment.getTitle());
   }
-  
   
   /**
-   * Handle changes in any of the controls.
-   * 
-   * @param observable
+   * {@inheritDoc}
    */
-  private void handleChanges(Observable observable) {
+  @Override
+  protected void handleChanges() {
+    updateGeneratedEventFolder();
     updateEventFolderInfo();
-    updateButtons();
+    updatePictureImageView();
+    
+    super.handleChanges();
   }
-}
-
-enum Mode {
-  VIEW_MODE,
-  NEW_MODE,
-  EDIT_MODE;
+  
+  /**
+   * Create a folder for the files related to an event.
+   */
+  private void createEventsFolder(ActionEvent event) {
+    if (generatedEventFolder.get() != null) {
+      generatedEventFolder.get().mkdir();
+    }
+  }
 }

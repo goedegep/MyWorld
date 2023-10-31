@@ -144,9 +144,10 @@ public class EditorPanel extends VBox {
     lastTravelRatingObjectControlFixedPointValue.setValidFactorRange(100, 100);
     
     lastTravelDateObjectControlLocalDate = componentFactory.createObjectControlLocalDate(null, 300.0, false, "When was your last travel?");
-    travelReportFileObjectControlFileSelecter = componentFactory.createFileSelecter("C:\\Users\\Peter\\Downloads\\Gebouw 464 BIC.jpg", 300, "The file with you're travel report", "Select file", "Select travel report", "Select the file with your travel report");
+    travelReportFileObjectControlFileSelecter = componentFactory.createFileSelecterObjectControl(300, "The file with you're travel report", "Select file", "Select travel report", "Select the file with your travel report", false);
     nextTravelDateObjectControlFlexDate = componentFactory.createObjectControlFlexDate(null, 300.0, false, "When do you expect to travel again?");
-    picturesFolderObjectControlFolderSelecter = componentFactory.createFolderSelecter("C:\\Users", 300, "The folder with pictures", "Select folder", "Select pictures folder", "Select the folder with the pictures");
+    picturesFolderObjectControlFolderSelecter = componentFactory.createFolderSelecter(300, "The folder with pictures", "Select folder", "Select pictures folder", "Select the folder with the pictures", false);
+    picturesFolderObjectControlFolderSelecter.setInitialFolderProvider(() -> "C:\\Users");
     imageFileObjectControlImageFile = componentFactory.createObjectControlImageFile();
     notesObjectControlMultiLineString = componentFactory.createObjectControlMultiLineString(null, 300.0, false, "Enter your notes");
     detailsObjectControlHTMLString = componentFactory.createObjectControlHTMLString(null, 300.0, false, "Enter details of your travel");
@@ -173,42 +174,42 @@ public class EditorPanel extends VBox {
     label = componentFactory.createLabel("Name:");
     gridPane.add(label, 0, row);
     gridPane.add(nameObjectControlTextField.ocGetControl(), 1, row);
-    gridPane.add(nameObjectControlTextField.ocGetValidIndicator(), 2, row);
+    gridPane.add(nameObjectControlTextField.ocGetStatusIndicator(), 2, row);
     
     row++;
     
     label = componentFactory.createLabel("I'm happy:");
     gridPane.add(label, 0, row);
     gridPane.add(happyObjectControlBoolean.ocGetControl(), 1, row);
-    gridPane.add(happyObjectControlBoolean.ocGetValidIndicator(), 2, row);
+    gridPane.add(happyObjectControlBoolean.ocGetStatusIndicator(), 2, row);
     
     row++;
     
     label = componentFactory.createLabel("Birthplace:");
     gridPane.add(label, 0, row);
     gridPane.add(birthPlaceObjectControlAutoCompleteTextField.ocGetControl(), 1, row);
-    gridPane.add(birthPlaceObjectControlAutoCompleteTextField.ocGetValidIndicator(), 2, row);
+    gridPane.add(birthPlaceObjectControlAutoCompleteTextField.ocGetStatusIndicator(), 2, row);
     
     row++;
     
     label = componentFactory.createLabel("Gender:");
     gridPane.add(label, 0, row);
     gridPane.add(genderObjectControlEnumComboBox.ocGetControl(), 1, row);
-    gridPane.add(genderObjectControlEnumComboBox.ocGetValidIndicator(), 2, row);
+    gridPane.add(genderObjectControlEnumComboBox.ocGetStatusIndicator(), 2, row);
     
     row++;
     
     label = componentFactory.createLabel("Age:");
     gridPane.add(label, 0, row);
     gridPane.add(ageObjectControlInteger.ocGetControl(), 1, row);
-    gridPane.add(ageObjectControlInteger.ocGetValidIndicator(), 2, row);
+    gridPane.add(ageObjectControlInteger.ocGetStatusIndicator(), 2, row);
     
     row++;
     
     label = componentFactory.createLabel("Price last holiday:");
     gridPane.add(label, 0, row);
     gridPane.add(priceLastHolidayObjectControlCurrency.ocGetControl(), 1, row);
-    gridPane.add(priceLastHolidayObjectControlCurrency.ocGetValidIndicator(), 2, row);
+    gridPane.add(priceLastHolidayObjectControlCurrency.ocGetStatusIndicator(), 2, row);
     
     row++;
     
@@ -233,28 +234,28 @@ public class EditorPanel extends VBox {
 //    };
 //    travelerTypeObjectControlEnumComboBox.setConverter(stringConverter);
     gridPane.add(travelerTypeObjectControlEnumComboBox.ocGetControl(), 1, row);
-    gridPane.add(travelerTypeObjectControlEnumComboBox.ocGetValidIndicator(), 2, row);
+    gridPane.add(travelerTypeObjectControlEnumComboBox.ocGetStatusIndicator(), 2, row);
     
     row++;
     
     label = componentFactory.createLabel("Last travel rating:");
     gridPane.add(label, 0, row);
     gridPane.add(lastTravelRatingObjectControlFixedPointValue.ocGetControl(), 1, row);
-    gridPane.add(lastTravelRatingObjectControlFixedPointValue.ocGetValidIndicator(), 2, row);
+    gridPane.add(lastTravelRatingObjectControlFixedPointValue.ocGetStatusIndicator(), 2, row);
     
     row++;
     
     label = componentFactory.createLabel("Last travel date:");
     gridPane.add(label, 0, row);
     gridPane.add(lastTravelDateObjectControlLocalDate.ocGetControl(), 1, row);
-    gridPane.add(lastTravelDateObjectControlLocalDate.ocGetValidIndicator(), 2, row);
+    gridPane.add(lastTravelDateObjectControlLocalDate.ocGetStatusIndicator(), 2, row);
     
     row++;
     
     label = componentFactory.createLabel("Traval report:");
     gridPane.add(label, 0, row);
     gridPane.add(travelReportFileObjectControlFileSelecter.ocGetControl(), 1, row);
-    gridPane.add(travelReportFileObjectControlFileSelecter.ocGetValidIndicator(), 2, row);
+    gridPane.add(travelReportFileObjectControlFileSelecter.ocGetStatusIndicator(), 2, row);
     gridPane.add(travelReportFileObjectControlFileSelecter.getFileChooserButton(), 3, row);
     
     row++;
@@ -262,14 +263,14 @@ public class EditorPanel extends VBox {
     label = componentFactory.createLabel("Next travel date:");
     gridPane.add(label, 0, row);
     gridPane.add(nextTravelDateObjectControlFlexDate.ocGetControl(), 1, row);
-    gridPane.add(nextTravelDateObjectControlFlexDate.ocGetValidIndicator(), 2, row);
+    gridPane.add(nextTravelDateObjectControlFlexDate.ocGetStatusIndicator(), 2, row);
     
     row++;
     
     label = componentFactory.createLabel("Pictures folder:");
     gridPane.add(label, 0, row);
     gridPane.add(picturesFolderObjectControlFolderSelecter.ocGetControl(), 1, row);
-    gridPane.add(picturesFolderObjectControlFolderSelecter.ocGetValidIndicator(), 2, row);
+    gridPane.add(picturesFolderObjectControlFolderSelecter.ocGetStatusIndicator(), 2, row);
     gridPane.add(picturesFolderObjectControlFolderSelecter.getFolderChooserButton(), 3, row);
     
     row++;
@@ -277,7 +278,7 @@ public class EditorPanel extends VBox {
     label = componentFactory.createLabel("Favorite picture:");
     gridPane.add(label, 0, row);
     gridPane.add(imageFileObjectControlImageFile.ocGetControl(), 1, row);
-    gridPane.add(imageFileObjectControlImageFile.ocGetValidIndicator(), 2, row);
+    gridPane.add(imageFileObjectControlImageFile.ocGetStatusIndicator(), 2, row);
     
     row++;
     
@@ -285,7 +286,7 @@ public class EditorPanel extends VBox {
     gridPane.add(label, 0, row);
     notesObjectControlMultiLineString.ocGetControl().setMaxHeight(80.0);
     gridPane.add(notesObjectControlMultiLineString.ocGetControl(), 1, row);
-    gridPane.add(notesObjectControlMultiLineString.ocGetValidIndicator(), 2, row);
+    gridPane.add(notesObjectControlMultiLineString.ocGetStatusIndicator(), 2, row);
     
     row++;
     
@@ -293,7 +294,7 @@ public class EditorPanel extends VBox {
     gridPane.add(label, 0, row);
     detailsObjectControlHTMLString.ocGetControl().setMaxHeight(200.0);
     gridPane.add(detailsObjectControlHTMLString.ocGetControl(), 1, row);
-    gridPane.add(detailsObjectControlHTMLString.ocGetValidIndicator(), 2, row);
+    gridPane.add(detailsObjectControlHTMLString.ocGetStatusIndicator(), 2, row);
     
     
     getChildren().add(gridPane);

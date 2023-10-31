@@ -93,7 +93,7 @@ public class ObjectControlImageFile extends ObjectControlAbstract<File> {
   public void ocSetValue(File file) {
     this.file = file;
     referenceValue = file;
-    ociHandleNewUserInput();
+    ociHandleNewUserInput(null);
   }
 
   @Override
@@ -128,7 +128,7 @@ public class ObjectControlImageFile extends ObjectControlAbstract<File> {
    * {@inheritDoc}
    */
   @Override
-  public File ociDetermineValue() {
+  public File ociDetermineValue(Object source) {
     return file;
   }
 
@@ -175,7 +175,7 @@ public class ObjectControlImageFile extends ObjectControlAbstract<File> {
       fileChooser.setInitialDirectory(initialDirectory);
     }
     file = fileChooser.showOpenDialog(null);
-    ociHandleNewUserInput();
+    ociHandleNewUserInput(fileChooser);
   }
   
 

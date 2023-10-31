@@ -2,7 +2,6 @@ package goedegep.jfx.objectcontrols;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.logging.Logger;
 
 import goedegep.util.PgUtilities;
@@ -15,8 +14,16 @@ public abstract class ObjectControlAbstract<T> implements ObjectControl<T> {
   @SuppressWarnings("unused")
   private static final Logger         LOGGER = Logger.getLogger(ObjectControlAbstract.class.getName());
   
-  public static final String OK_INDICATOR = "✓";
+  /*
+   * Object Control status:
+   * Invalid: mandatory field not filled in, invalid value
+   * Valid: changed
+   * Valid: not changed
+   */
+//  public static final String OK_INDICATOR = "✓";
   public static final String NOK_INDICATOR = "!";
+  public static final String CHANGED_INDICATOR = "≠";
+  public static final String NOT_CHANGED_INDICATOR = "=";
   
   /**
    * Indication of whether the control is optional (if true) or mandatory.
@@ -47,6 +54,11 @@ public abstract class ObjectControlAbstract<T> implements ObjectControl<T> {
    * Error information text
    */
   protected String errorText = null;
+  
+  /**
+   * Status indicator
+   */
+  private Label statusIndicator;
   
   /**
    * The invalidation listeners
@@ -102,7 +114,6 @@ public abstract class ObjectControlAbstract<T> implements ObjectControl<T> {
    */
   @Override
   public boolean ocIsChanged() {
-//    return value != referenceValue;
     return !PgUtilities.equals(value, referenceValue);
   }
   
@@ -133,13 +144,13 @@ public abstract class ObjectControlAbstract<T> implements ObjectControl<T> {
    * So when you listen to the ocValidProperty and this changes to true, the ocValueProperty will be valid.
    * Listeners to the contol are notified after the properties have been set.
    */
-  protected void ociHandleNewUserInput() {
+  protected void ociHandleNewUserInput(Object source) {
     boolean filledIn = ociDetermineFilledIn();
     boolean dataValid;
     T value;
     
     if (filledIn) {
-      value = ociDetermineValue();
+      value = ociDetermineValue(source);
       if (value != null) {
         dataValid = true;
       } else {
@@ -151,13 +162,13 @@ public abstract class ObjectControlAbstract<T> implements ObjectControl<T> {
     }
     ociSetErrorFeedback(dataValid);
     
-//    boolean changed = ociSetValue(value);
     boolean changed = !PgUtilities.equals(value, ocGetValue());
     if (changed) {
       ociSetValue(value);
     }
     ociSetValid(ociDetermineValidity(filledIn, dataValid));
     ociSetFilledIn(filledIn);
+    ociUpdateStatusIndicator();
     
     if (changed) {
       ociNotifyListeners();
@@ -173,8 +184,10 @@ public abstract class ObjectControlAbstract<T> implements ObjectControl<T> {
    * Determine the actual value.
    * <p>
    * PRE: control has to be filled in (determineFilledIn() has returned true).
+   * 
+   * @param The source of a change. This is needed if there is more than one GUI control, like for e.g. the {@link ObjectControlFileSelecter}.
    */
-  protected abstract T ociDetermineValue();
+  protected abstract T ociDetermineValue(Object source);
   
   /**
    * Determine whether the input is valid or not.
@@ -237,23 +250,73 @@ public abstract class ObjectControlAbstract<T> implements ObjectControl<T> {
    * {@inheritDoc}
    */
   @Override
-  public Node ocGetValidIndicator() {
-    final Label validIndicationLabel = new Label(ocIsValid() ? OK_INDICATOR : NOK_INDICATOR);
-    setValidIndicatorTooltip(validIndicationLabel);
+  public Node ocGetStatusIndicator() {
+    if (statusIndicator == null) {
+      statusIndicator = new Label();
+    }
     
-    addListener((o) -> setValidIndicatorTooltip(validIndicationLabel));
+    ociUpdateStatusIndicator();
     
-    return validIndicationLabel;
+//    final Label validIndicationLabel = new Label(statusString);
+//    final Label validIndicationLabel = new Label(ocIsValid() ? OK_INDICATOR : NOK_INDICATOR);
+//    setValidIndicatorTooltip(validIndicationLabel);
+//    
+//    addListener((o) -> setValidIndicatorTooltip(validIndicationLabel));
+    ociUpdateStatusIndicator();
+    
+    return statusIndicator;
   }
   
-  private void setValidIndicatorTooltip(Label validIndicationLabel) {
+//  private void setValidIndicatorTooltip(Label validIndicationLabel) {
+//    String tooltipText = null;
+//    
+//    if (ocIsValid()) {
+//      if (ocIsChanged()) {
+//        tooltipText = "Value is changed and OK";
+//      } else {
+//        tooltipText = "Value is not changed and OK";
+//      }
+//    } else {
+//      if (!ocIsFilledIn()) {
+//        if (!ocIsOptional()) {
+//          tooltipText = "This mandatory value is not filled in";
+//        }
+//      } else {
+//        tooltipText = ocGetErrorText();
+//      }
+//    }
+//    validIndicationLabel.setTooltip(new Tooltip(tooltipText));
+//  }
+  
+  private void ociUpdateStatusIndicator() {
+    if (statusIndicator == null) {
+      return;
+    }
+    
+    // Label text
+    String statusString;
+    if (!ocIsValid()) {
+      statusString = NOK_INDICATOR;
+    } else {
+      if (ocIsChanged()) {
+        statusString = CHANGED_INDICATOR;
+      } else {
+        statusString = NOT_CHANGED_INDICATOR;
+      }
+    }
+    
+    statusIndicator.setText(statusString);
+    
+    // Label tooltip
     String tooltipText = null;
     
     if (ocIsValid()) {
-      validIndicationLabel.setText(OK_INDICATOR);
-      tooltipText = "Ok";
+      if (ocIsChanged()) {
+        tooltipText = "Value is changed and OK";
+      } else {
+        tooltipText = "Value is not changed and OK";
+      }
     } else {
-      validIndicationLabel.setText(NOK_INDICATOR);
       if (!ocIsFilledIn()) {
         if (!ocIsOptional()) {
           tooltipText = "This mandatory value is not filled in";
@@ -262,7 +325,8 @@ public abstract class ObjectControlAbstract<T> implements ObjectControl<T> {
         tooltipText = ocGetErrorText();
       }
     }
-    validIndicationLabel.setTooltip(new Tooltip(tooltipText));
+    statusIndicator.setTooltip(new Tooltip(tooltipText));
+    
   }
   
   /**
@@ -281,6 +345,11 @@ public abstract class ObjectControlAbstract<T> implements ObjectControl<T> {
   @Override
   public void removeListener(InvalidationListener listener) {
     invalidationListeners.remove(listener);    
+  }
+
+  @Override
+  public void removeListeners() {
+    invalidationListeners.clear();    
   }
   
   /**

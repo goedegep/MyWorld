@@ -549,7 +549,7 @@ public class MediaDbWindow extends JfxStage {
    * Open the AlbumDetailsEditor to enter a new album.
    */
   void openAlbumDetailsEditor() {
-    new AlbumEditor(customization, mediaDb, trackDiscLocationMap);
+    new AlbumEditor(customization, mediaDb, trackDiscLocationMap).runEditor();
 //    AlbumDetailsEditorFx albumDetailsEditor = new AlbumDetailsEditorFx(customization, mediaDb);
   }
   /**

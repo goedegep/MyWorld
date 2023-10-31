@@ -3,6 +3,7 @@ package goedegep.jfx.objectcontrols;
 import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.function.Supplier;
 
 import goedegep.jfx.CustomizationFx;
 import goedegep.util.PgUtilities;
@@ -16,32 +17,64 @@ public abstract class ObjectControlFileOrFolderSelecterAbstract extends ObjectCo
 	
   
   /**
+   * A {@link Supplier} to provide the initial folder for the {@code fileChooser}.
+   */
+  protected Supplier<String> initialFolderSupplier = null;
+  
+  /**
    * TextField to show and edit the currently selected file or folder.
    */
-  private TextField pathTextField = null;
+  protected TextField pathTextField = null;
   
   /**
    * Prefix - The first part of the file or folder path.
+   * <p>
+   * If this value is null, no Prefix is used.
    */
   private String prefix = null;
+  
+  /**
+   * Ignore changes on the {@code pathTextField}.
+   */
+  private boolean ignorePathTextFieldChanges = false;
   
   /**
    * Constructor
    * 
    * @param textFieldWidth Value for the width of the TextField. If this value is -1, the default width is used.
    * @param textFieldToolTipText an optional tooltip text for the TextField.
+   * @param isOptional Indication of whether the control is optional (if true) or mandatory.
    */
-  protected ObjectControlFileOrFolderSelecterAbstract(CustomizationFx customization, int textFieldWidth, String textFieldToolTipText) {
-    super(false);
+  protected ObjectControlFileOrFolderSelecterAbstract(CustomizationFx customization, int textFieldWidth, String textFieldToolTipText, boolean isOptional) {
+    super(isOptional);
     
     pathTextField = customization.getComponentFactoryFx().createTextField(textFieldWidth, textFieldToolTipText);
     
-    pathTextField.textProperty().addListener((o) -> ociHandleNewUserInput());
+    pathTextField.textProperty().addListener((o) -> ociHandleNewUserInput(pathTextField));
     pathTextField.focusedProperty().addListener((observableValue, oldValue, newValue) -> {
       if (!newValue)
         ociRedrawValue();
     });
     
+ }
+  
+  /**
+   * Set the method for obtaining the initial folder.
+   * 
+   * @param initialFolderSupplier the method for obtaining the initial folder.
+   */
+  public void setInitialFolderProvider(Supplier<String> initialFolderSupplier) {
+    this.initialFolderSupplier = initialFolderSupplier;
+  }
+  
+ /**
+  * {@inheritDoc}
+  */
+ @Override
+ protected void ociHandleNewUserInput(Object source) {
+   if (!ignorePathTextFieldChanges) {
+     super.ociHandleNewUserInput(source);
+   }
  }
 
   /**
@@ -75,13 +108,40 @@ public abstract class ObjectControlFileOrFolderSelecterAbstract extends ObjectCo
     ocSetFilename(file != null ? file.getAbsolutePath() : null);
   }
   
+  /**
+   * Set the value via the name of the file.
+   * 
+   * @param filename the file name.
+   */
   public void ocSetFilename(String filename) {
     if (filename != null) {
       referenceValue = new File(filename);
     } else {
       referenceValue = null;
     }
-    pathTextField.textProperty().set(filename);
+    ociSetValue(referenceValue);
+    setPathTextFieldText();
+  }
+  
+  /**
+   * Set the text of the {@code pathTextField}.
+   * <p>
+   * As we set the text ourselves, the change of the TextField shall not lead to reacting to changes. Therefore {@code ignorePathTextFieldChanges} is set before making the change and reset afterwards.
+   * If the {@code prefix} is set, this is stripped from the text.
+   */
+  private void setPathTextFieldText() {
+    ignorePathTextFieldChanges = true;
+    
+    File file = ocGetValue();
+    if (file != null) {
+      String filename = file.getAbsolutePath();
+      filename = removePrefixIfSet(filename);    
+      pathTextField.textProperty().set(filename);
+    } else {
+      pathTextField.textProperty().set(null);
+    }
+    
+    ignorePathTextFieldChanges = false;
   }
 
   /**
@@ -89,14 +149,14 @@ public abstract class ObjectControlFileOrFolderSelecterAbstract extends ObjectCo
    */
   @Override
   public boolean ociDetermineFilledIn() {
-    return pathTextField.textProperty().get() != null  &&  !pathTextField.textProperty().get().isEmpty();
+    return (pathTextField.textProperty().get() != null  &&  !pathTextField.textProperty().get().isEmpty());
   }
 
   /**
    * @InheritDoc
    */
   @Override
-  public File ociDetermineValue() {
+  public File ociDetermineValue(Object source) {
     File file = new File(pathTextField.textProperty().get());
     return file;
   }
@@ -133,14 +193,41 @@ public abstract class ObjectControlFileOrFolderSelecterAbstract extends ObjectCo
     return value.getAbsolutePath();
   }
   
+  /**
+   * Get the {@link #prefix}.
+   * 
+   * @return the {@code prefix}.
+   */
   public String getPrefix() {
     return prefix;
   }
 
+  /**
+   * Set the {@link #prefix}.
+   * 
+   * @param prefix the new {@code prefix} value.
+   */
   public void setPrefix(String prefix) {
     this.prefix = prefix;
   }
   
+  /**
+   * Get the path relative to the prefix, if the absolute path starts with the prefix, otherwise it also just returns the absolute path.
+   * <p>
+   * This method can e.g. be used to store a path relative to some base folder.
+   * 
+   * @return the path relative to the prefix, if the absolute path starts with the prefix, otherwise it also just returns the absolute path.
+   */
+  public String getPathNameUsingPrefix() {
+    return ocGetValue() != null ? addPrefixIfSet(ocGetValue().getAbsolutePath()) : null;
+  }
+  
+  /**
+   * Add the {@code prefix}, if set, to a relative path.
+   * 
+   * @param path the file or folder path to which the {@ code prefix} is to be added.
+   * @return {@code path} prepended with the {@code prefix} if it is set, {@code path} otherwise.
+   */
   protected String addPrefixIfSet(String path) {
     if (prefix != null) {
       File file = new File (getPrefix(), pathTextField.textProperty().get());
@@ -150,6 +237,15 @@ public abstract class ObjectControlFileOrFolderSelecterAbstract extends ObjectCo
     }
   }
   
+  /**
+   * Remove the {@code prefix} from a file or folder path.
+   * <p>
+   * 
+   * @param path the file or folder path from which the {@code prefix} is to be removed.
+   * @return {@code path} from which {@code prefix} is removed,
+   *         if the {@code prefix} is set and {@code path} starts with this {@code prefix}.
+   *         Otherwise {@code path} is returned unchanged.
+   */
   protected String removePrefixIfSet(String path) {
     if (prefix != null) {
       return FileUtils.getPathRelativeToFolder(prefix, path);
@@ -185,6 +281,6 @@ public abstract class ObjectControlFileOrFolderSelecterAbstract extends ObjectCo
    */
   @Override
   public boolean ocIsChanged() {
-    return !PgUtilities.equals(ocGetAbsolutePath(), referenceValue != null ? referenceValue.getAbsolutePath() : "null");
+    return !PgUtilities.equals(ocGetAbsolutePath(), referenceValue);
   }
 }

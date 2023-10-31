@@ -1,4 +1,4 @@
-package goedegep.invandprop.app.guifx;
+package goedegep.invandprop.app;
 
 import java.io.File;
 import java.util.List;

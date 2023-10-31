@@ -43,8 +43,8 @@ public class PlayerObjectControl extends ObjectControlAbstract<Player> {
     artistObjectControl.setOptions(mediaDb.getArtists());
     playerInstrumentTextField = componentFactory.createObjectControlTextField(null, null, 300, true, "A comma separated list of instruments");
     
-    artistObjectControl.addListener((e) -> ociHandleNewUserInput());
-    playerInstrumentTextField.addListener((e) -> ociHandleNewUserInput());
+    artistObjectControl.addListener((e) -> ociHandleNewUserInput(artistObjectControl));
+    playerInstrumentTextField.addListener((e) -> ociHandleNewUserInput(playerInstrumentTextField));
   }
 
   /**
@@ -126,7 +126,7 @@ public class PlayerObjectControl extends ObjectControlAbstract<Player> {
   }
 
   @Override
-  public Player ociDetermineValue() {
+  public Player ociDetermineValue(Object source) {
     Player player = MediadbFactory.eINSTANCE.createPlayer();
     
     Artist artist = artistObjectControl.ocGetValue();

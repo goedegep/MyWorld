@@ -193,7 +193,7 @@ public class InvoicesAndPropertiesMenuWindow extends JfxStage {
     
     button = componentFactory.createButton("New Invoice and/or Property", "Create a new invoice and the related property");
     GridPane.setHalignment(button, HPos.CENTER);
-    button.setOnAction(e -> new InvoiceAndPropertyEditor(customization, invoicesAndProperties));
+    button.setOnAction(e -> new InvoiceAndPropertyEditor(customization, invoicesAndProperties).runEditor());
     grid.add(button, 0, 2, 2, 1);
     
 

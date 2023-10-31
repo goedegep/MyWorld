@@ -1,4 +1,22 @@
 h2. ToDo list
+* Clean up, again, the Object Control interface. removen oc prefix
+* Make ObjectControlAbstract ObjectControlTemplate?
+* Events: Start to edit 'Peter en Yvette lopen halve marathon Eindhoven'. Picture is marked as invalid, while it is valid. Edit this relative path and it becomes absolute.
+* Events: Start to edit 'Peter en Yvette lopen halve marathon Eindhoven'. Picture is marked as invalid, while it is valid.
+* Events: Start to edit 'Peter en Yvette lopen halve marathon Eindhoven'. Notes is marked as not equal.
+* Events: Use getPathNameUsingPrefix() to set the File in the model for Picture and Attachments.
+* Events: use ObjectControlImageFile for picture
+* ObjectControlFileSelecter: remove setInitiallySelectedFolder(), instead use setInitialFolderProvider()
+* All ObjectControls have to accept new value also on Enter, not only on focus lost.
+* Events: pictures are saved with wrong absolute path
+* Events: Editor has to extend ObjectEditorTemplate
+* Events: file chooser for attachment doesn't initially go to the most relevant folder (different for different attachment types)
+8 Invoice and property editor: if property is valid and invoice not, update property is disabled
+* Invoice and property editor: fill initial folder for file choosers for docs and pictures. Default: 'handleidingen', get from any reference.
+* Invoice and property editor: by default not all buttons visible. Options: Picture panels smaller and/or open in wider screen.
+* Invoice and property editor: Upon pressing NEW, invoice items and pictures (and probably documents) are not cleared
+* Invoice and property editor: Upon pressing NEW, some controls show '!', but status is OK and buttons enabled. There is 2 times 'Create invoice' and no 'Create invoice and Property'.
+* Bij event mispelhoefloop kan ik geen foto toevoegen. Kan wel foto kiezen in editor, maar na save gebeurt er niets
 * onder Database heb ik nu Dagtochten en Fietstochten. Gemixte informatie oplossen.
 * method installChangeListernerForArtists() in AlbumEditor has to check that the change is in the Artists list.
 * AlbumEditor: Overal status show have tooltip about which control has problem, maybe jump to that control
@@ -26,9 +44,6 @@ Top Down
 * Remove all Swing code
 
 Bottom up
-** one
-* Add EClass descriptors to EObjectTable
-* Use EClass descriptors in VacationsWindow
 * Extend Vacations with VacationElement etc.
 * Change all component menus into JavaFxStage
 * In all component menu's, implement Edit user settings (where applicable).

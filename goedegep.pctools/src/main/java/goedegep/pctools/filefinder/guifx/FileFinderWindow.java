@@ -89,8 +89,8 @@ public class FileFinderWindow extends JfxStage {
     Label folderNameLabel = componentFactory.createLabel("Search folder:");
     controlsPane.getChildren().add(folderNameLabel);
     
-    ObjectControlFolderSelecter folderSelecter = componentFactory.createFolderSelecter(null, 400, "Currently selected folder",
-        "Choose folder", "Select search folder via a file chooser", "Select the search folder");
+    ObjectControlFolderSelecter folderSelecter = componentFactory.createFolderSelecter(400, "Currently selected folder",
+        "Choose folder", "Select search folder via a file chooser", "Select the search folder", false);
     
     Node folderNameTextField = folderSelecter.ocGetControl();
     controlsPane.getChildren().add(folderNameTextField);

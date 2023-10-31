@@ -111,8 +111,9 @@ public class MusicFolderWindow extends JfxStage {
     label = componentFactory.createLabel("Music folder:");
     grid.add(label, 1, 0);
     
-    ObjectControlFolderSelecter musicFolderSelecter = componentFactory.createFolderSelecter(currentMusicFolder, 200, "Currently selected folder",
-        "Choose folder", "Select music folder via a file chooser", "Select the folder with all music");
+    ObjectControlFolderSelecter musicFolderSelecter = componentFactory.createFolderSelecter(200, "Currently selected folder",
+        "Choose folder", "Select music folder via a file chooser", "Select the folder with all music", false);
+    musicFolderSelecter.setInitialFolderProvider(() -> currentMusicFolder);
     Node folderName = musicFolderSelecter.ocGetControl();
     grid.add(folderName, 2, 0);
     

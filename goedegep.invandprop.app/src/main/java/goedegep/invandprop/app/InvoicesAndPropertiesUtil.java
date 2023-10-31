@@ -1,6 +1,7 @@
 package goedegep.invandprop.app;
 
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.IOException;
 
 import goedegep.invandprop.model.Invoice;
@@ -18,6 +19,30 @@ import goedegep.util.money.PgCurrencyFormat;
 public class InvoicesAndPropertiesUtil {
   private static final FlexDateFormat FDF = new FlexDateFormat();
   private static final PgCurrencyFormat  CF = new PgCurrencyFormat();
+  
+  /**
+   * Constructor - private as this is a utility class
+   */
+  private InvoicesAndPropertiesUtil() {
+    
+  }
+  
+
+  /**
+   * Prepend the base directory (define by {@code InvoicesAndPropertiesRegistry.propertyRelatedFilesFolder}) to a file name, if this isn't an absolute path.
+   * 
+   * @param filename an absolute or relative file name.
+   * @return {@code filename} if it {@code filename} is absolute, {@code filename} prepended with the {@code InvoicesAndPropertiesRegistry.propertyRelatedFilesFolder} otherwise.
+   */
+  public static String prependBaseDirToRelativeFilename(String filename) {
+    File file = new File(filename);
+    if (!file.isAbsolute()) {
+      file = new File(InvoicesAndPropertiesRegistry.propertyRelatedFilesFolder, filename);
+      return file.getAbsolutePath();
+    } else {
+      return filename;
+    }
+  }
 
   public static void dumpData(InvoicesAndProperties invoicesAndProperties, BufferedWriter out) throws IOException {
     out.write("INVOICES AND PROPERTIES DATA DUMP");
