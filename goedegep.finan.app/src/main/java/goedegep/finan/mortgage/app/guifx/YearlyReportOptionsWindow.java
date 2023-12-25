@@ -80,7 +80,7 @@ public class YearlyReportOptionsWindow extends JfxStage {
     fileSelecter = componentFactory.createFileSelecterObjectControl(400, "File to save the report to", "Choose file", "Open a file chooser", "Report file selection", false);
     fileSelecter.addFileType(".pdf", "Portable Data Format", true);
     fileSelecter.setOpenOrSaveDialog(true);
-    Node fileNameTextField = fileSelecter.ocGetControl();
+    Node fileNameTextField = fileSelecter.getControl();
     fileSelecter.addListener((observable) -> {
       LOGGER.severe("In textProperty Listener");
       checkOptions();      
@@ -109,7 +109,7 @@ public class YearlyReportOptionsWindow extends JfxStage {
     boolean selectionIsValid = false;
     
     if ((yearComboBox.getValue() != null)  &&
-        fileSelecter.ocIsValid()) {
+        fileSelecter.isValid()) {
       selectionIsValid = true;
     }
     
@@ -117,9 +117,9 @@ public class YearlyReportOptionsWindow extends JfxStage {
   }
   
   private void generateYearlyReport() {
-    LOGGER.severe("=>" + fileSelecter.ocGetValue());
+    LOGGER.severe("=>" + fileSelecter.getValue());
     int year = (int) yearComboBox.getValue();
-    File file = fileSelecter.ocGetValue();
+    File file = fileSelecter.getValue();
     MortgageReportsGenerator.generateYearlyPdfReport(mortgageCalculator, year, file);
     LOGGER.severe("Yearly report for " + year + " generated to:  " + file.getAbsolutePath());    
   }

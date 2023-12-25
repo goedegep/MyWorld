@@ -31,15 +31,15 @@ public class ObjectControlString extends ObjectControlAbstract<String> {
 
     textField.textProperty().addListener((observableValue, oldValue, newValue) -> ociHandleNewUserInput(textField));
     
-    ocSetValue(initialValue);
+    setValue(initialValue);
   }
   
-  public TextField ocGetControl() {
+  public TextField getControl() {
     return textField;
   }
 
   @Override
-  public void ocSetValue(String objectValue) {
+  public void setValue(String objectValue) {
     referenceValue = objectValue;
     textField.setText(objectValue);
   }
@@ -48,7 +48,7 @@ public class ObjectControlString extends ObjectControlAbstract<String> {
    * {@inheritDoc}
    */
   @Override
-  public boolean ocIsChanged() {
+  public boolean isChanged() {
     // For Strings we handle an empty String as equal to null.
     if (((value != null)  &&  value.isEmpty())  &&
         (referenceValue == null)) {
@@ -105,7 +105,7 @@ public class ObjectControlString extends ObjectControlAbstract<String> {
    * There is no formatting, so just return the text.
    */
   @Override
-  public String ocGetObjectValueAsFormattedText()  {
+  public String getValueAsFormattedText()  {
     return value;
   }
   
@@ -114,7 +114,7 @@ public class ObjectControlString extends ObjectControlAbstract<String> {
     StringBuilder buf = new StringBuilder();
     
     buf.append("ObjectControl type=String");
-    buf.append(", id=").append(ocGetId() != null ? ocGetId() : "<null>");
+    buf.append(", id=").append(getId() != null ? getId() : "<null>");
     buf.append(", value=").append(value != null ? value : "<null>");
     buf.append(", referenceValue=").append(referenceValue != null ? "\"" + referenceValue + "\"" : "<null>");
     

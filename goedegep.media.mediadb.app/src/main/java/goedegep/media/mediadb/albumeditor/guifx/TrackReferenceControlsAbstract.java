@@ -14,7 +14,7 @@ public abstract class TrackReferenceControlsAbstract extends ObjectControlAbstra
    * {@inheritDoc}
    */
   @Override
-  public String ocGetId() {
+  public String getId() {
     return id;
   }
 
@@ -22,7 +22,7 @@ public abstract class TrackReferenceControlsAbstract extends ObjectControlAbstra
    * {@inheritDoc}
    */
   @Override
-  public void ocSetId(String id) {
+  public void setId(String id) {
     this.id = id;
   }
 

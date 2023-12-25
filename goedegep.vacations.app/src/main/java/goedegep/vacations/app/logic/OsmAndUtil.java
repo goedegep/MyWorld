@@ -3,6 +3,7 @@ package goedegep.vacations.app.logic;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -81,6 +82,7 @@ public class OsmAndUtil {
     iconMap.put(POICategoryId.MONUMENT, "monument");
     iconMap.put(POICategoryId.MOUNTAIN, "natural");
     iconMap.put(POICategoryId.MOUNTAIN_PASS, "mountain_pass");
+    iconMap.put(POICategoryId.NEIGHBOURHOOD, "village");
     iconMap.put(POICategoryId.NIGHTLIFE, "dance_floor");
     iconMap.put(POICategoryId.PETROL_STATION, "amenity_fuel");
     iconMap.put(POICategoryId.PHARMACY, "amenity_pharmacy");
@@ -94,6 +96,7 @@ public class OsmAndUtil {
     iconMap.put(POICategoryId.SHOPPING_CENTER, "bag");
     iconMap.put(POICategoryId.SKI_RESORT, "piste");
     iconMap.put(POICategoryId.SQUARE, "square");
+    iconMap.put(POICategoryId.SWIMMING_POOL, "swimming_pool");
     iconMap.put(POICategoryId.RAILWAY_STATION, "locomotive");
     iconMap.put(POICategoryId.THEATER, "amenity_theatre");
     iconMap.put(POICategoryId.TOURIST_ATTRACTION, "camera");
@@ -124,8 +127,8 @@ public class OsmAndUtil {
    * @param file The favourites file that will be created.
    * @return a Map with the favourites names per category.
    */
-  public static Map<String, List<String>> createFavouritesFile(EObject startEObject, String group, File file) {
-    LOGGER.info("=> startEObject=" + startEObject.toString() + ", file=" + file.getAbsolutePath());
+  public static Map<String, List<String>> createFavouritesFile(EObject startEObject, String group, Path file) {
+    LOGGER.info("=> startEObject=" + startEObject.toString() + ", file=" + file);
     
     StringBuilder buf = new StringBuilder();
     Indent indent = new Indent(2);
@@ -155,7 +158,7 @@ public class OsmAndUtil {
     buf.append("</gpx>").append(NEW_LINE);
     
     try {
-      Files.write(Paths.get(file.getAbsolutePath()), buf.toString().getBytes());
+      Files.write(file, buf.toString().getBytes());
     } catch (IOException e) {
       e.printStackTrace();
     }    
@@ -253,7 +256,7 @@ public class OsmAndUtil {
           String iconString = iconMap.get(location.getLocationType());
           if (iconString == null) {
             message = "No OsmAnd icon for this location type";
-            LOGGER.severe("No OsmAnd icon for this location type");
+            LOGGER.severe("No OsmAnd icon for location type " + location.getLocationType().getName());
           }
           if (colorString != null  ||  iconString != null) {
             buf.append(SgmlUtil.createElementOpen(indent, null, "extensions")).append(NEW_LINE);

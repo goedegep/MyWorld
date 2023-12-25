@@ -22,8 +22,8 @@ public class PhoneNumberTextField extends ObjectControlAutoCompleteTextField<Str
     
     this.rolodex = rolodex;
     
-    customization.getComponentFactoryFx().customizeTextInputControl(ocGetControl());
-    ocGetControl().getEntries().addAll(phoneNumberToString(rolodex.getPhoneNumberList().getPhoneNumbers()));
+    customization.getComponentFactoryFx().customizeTextInputControl(getControl());
+    getControl().getEntries().addAll(phoneNumberToString(rolodex.getPhoneNumberList().getPhoneNumbers()));
   }
   
 //  /**
@@ -35,7 +35,7 @@ public class PhoneNumberTextField extends ObjectControlAutoCompleteTextField<Str
 //  }
   
   public PhoneNumber getMatchingPhoneNumber() {
-    String phoneNumberText = ocGetValue();
+    String phoneNumberText = getValue();
     
     for (PhoneNumber phoneNumber: rolodex.getPhoneNumberList().getPhoneNumbers()) {
       if (phoneNumber.toString().equals(phoneNumberText)) {

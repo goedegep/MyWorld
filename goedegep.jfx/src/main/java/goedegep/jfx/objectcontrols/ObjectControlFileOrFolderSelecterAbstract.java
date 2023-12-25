@@ -96,7 +96,7 @@ public abstract class ObjectControlFileOrFolderSelecterAbstract extends ObjectCo
    * @return the TextField to show and edit the currently selected file or folder.
    */
   @Override
-  public TextField ocGetControl() {
+  public TextField getControl() {
     return pathTextField;
   }
 
@@ -104,7 +104,7 @@ public abstract class ObjectControlFileOrFolderSelecterAbstract extends ObjectCo
    * @InheritDoc
    */
   @Override
-  public void ocSetValue(File file) {
+  public void setValue(File file) {
     ocSetFilename(file != null ? file.getAbsolutePath() : null);
   }
   
@@ -129,10 +129,10 @@ public abstract class ObjectControlFileOrFolderSelecterAbstract extends ObjectCo
    * As we set the text ourselves, the change of the TextField shall not lead to reacting to changes. Therefore {@code ignorePathTextFieldChanges} is set before making the change and reset afterwards.
    * If the {@code prefix} is set, this is stripped from the text.
    */
-  private void setPathTextFieldText() {
+  protected void setPathTextFieldText() {
     ignorePathTextFieldChanges = true;
     
-    File file = ocGetValue();
+    File file = getValue();
     if (file != null) {
       String filename = file.getAbsolutePath();
       filename = removePrefixIfSet(filename);    
@@ -146,31 +146,14 @@ public abstract class ObjectControlFileOrFolderSelecterAbstract extends ObjectCo
 
   /**
    * @InheritDoc
-   */
-  @Override
-  public boolean ociDetermineFilledIn() {
-    return (pathTextField.textProperty().get() != null  &&  !pathTextField.textProperty().get().isEmpty());
-  }
-
-  /**
-   * @InheritDoc
-   */
-  @Override
-  public File ociDetermineValue(Object source) {
-    File file = new File(pathTextField.textProperty().get());
-    return file;
-  }
-
-  /**
-   * @InheritDoc
    * For now no action. For 'open' this could be based on whether the file exists.
    */
   @Override
   public void ociSetErrorFeedback(boolean valid) {
-    if (!ocIsValid()) {
-      ocGetControl().setStyle("-fx-text-inner-color: red;");
+    if (!valid) {
+      getControl().setStyle("-fx-text-inner-color: red;");
     } else {
-      ocGetControl().setStyle("-fx-text-inner-color: black;");
+      getControl().setStyle("-fx-text-inner-color: black;");
     }
   }
 
@@ -189,7 +172,7 @@ public abstract class ObjectControlFileOrFolderSelecterAbstract extends ObjectCo
    * For now just return the 'value'.
    */
   @Override
-  public String ocGetObjectValueAsFormattedText() {
+  public String getValueAsFormattedText() {
     return value.getAbsolutePath();
   }
   
@@ -219,7 +202,7 @@ public abstract class ObjectControlFileOrFolderSelecterAbstract extends ObjectCo
    * @return the path relative to the prefix, if the absolute path starts with the prefix, otherwise it also just returns the absolute path.
    */
   public String getPathNameUsingPrefix() {
-    return ocGetValue() != null ? addPrefixIfSet(ocGetValue().getAbsolutePath()) : null;
+    return getValue() != null ? addPrefixIfSet(getValue().getAbsolutePath()) : null;
   }
   
   /**
@@ -280,7 +263,7 @@ public abstract class ObjectControlFileOrFolderSelecterAbstract extends ObjectCo
    * {@inheritDoc}
    */
   @Override
-  public boolean ocIsChanged() {
+  public boolean isChanged() {
     return !PgUtilities.equals(ocGetAbsolutePath(), referenceValue);
   }
 }

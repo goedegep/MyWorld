@@ -1,5 +1,14 @@
 h2. ToDo list
-* Clean up, again, the Object Control interface. removen oc prefix
+* EObjectTree: Split helper EObjectTreeCellHelperForAttributeSimple to TextArea, ChoiceBox<Object>, DirectoryChooser, FileChooser fileChooser
+* EObjectTree: Base cell helpers on Template pattern.
+* Check vacation: report files not referred to, references not existing.
+* Vacations: move building tree descriptor to VacationsTreeVew
+* Use builder pattern for each descriptor for an EObjectTreeView
+* DnD to element of vacation fails
+* Vacation element with reference: on delete ask whether the referred file also has to be deleted.
+* Kijk of OsmAnd favorieten ook links naar websites ondersteund
+* GPX Editor: Link selections in TreeView and map
+* GPX Editor implement delete waypoint of a track segment
 * Make ObjectControlAbstract ObjectControlTemplate?
 * Events: Start to edit 'Peter en Yvette lopen halve marathon Eindhoven'. Picture is marked as invalid, while it is valid. Edit this relative path and it becomes absolute.
 * Events: Start to edit 'Peter en Yvette lopen halve marathon Eindhoven'. Picture is marked as invalid, while it is valid.

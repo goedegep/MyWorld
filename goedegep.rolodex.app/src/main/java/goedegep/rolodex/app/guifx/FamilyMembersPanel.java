@@ -61,7 +61,7 @@ public class FamilyMembersPanel extends VBox {
     label = componentFactory.createLabel("Add a member to the family:");
     addMemberHBox.getChildren().add(label);
     PersonTextField personTextField = new PersonTextField(customization, rolodex);
-    addMemberHBox.getChildren().add(personTextField.ocGetControl());
+    addMemberHBox.getChildren().add(personTextField.getControl());
     Button addMemberButton = componentFactory.createButton("Add family member", "Add the selected person as member to the family");
     addMemberButton.setOnAction(new EventHandler<ActionEvent>() {
 

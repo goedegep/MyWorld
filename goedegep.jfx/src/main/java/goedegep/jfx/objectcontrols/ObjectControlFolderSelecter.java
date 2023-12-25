@@ -110,17 +110,6 @@ public class ObjectControlFolderSelecter extends ObjectControlFileOrFolderSelect
   public Button getFolderChooserButton() {
     return folderChooserButton;
   }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public void ociSetValue(File value) {
-    this.value = value;
-//    if (directoryChooser != null) {
-//      directoryChooser.setInitialDirectory(value);
-//    }
-  }
   
   /**
    * Handle the fact the the {@code folderChooserButton} is pressed.
@@ -165,6 +154,22 @@ public class ObjectControlFolderSelecter extends ObjectControlFileOrFolderSelect
   public boolean ociDetermineFilledIn() {
     return ((pathTextField.textProperty().get() != null  &&  !pathTextField.textProperty().get().isEmpty())  ||
         folderSelectedByDirectoryChooser != null);
+  }
+
+  /**
+   * @InheritDoc
+   */
+  @Override
+  public File ociDetermineValue(Object source) {
+    File file = null;
+    
+    if (source == directoryChooser) {
+      file = folderSelectedByDirectoryChooser;
+    } else {
+      file = new File(addPrefixIfSet(pathTextField.textProperty().get()));
+    }
+    
+    return file;
   }
   
 }

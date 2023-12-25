@@ -6,9 +6,6 @@ import java.util.logging.Logger;
 import org.eclipse.emf.common.util.EList;
 
 import goedegep.appgen.TableRowOperation;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
-import javafx.scene.Node;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.image.Image;
@@ -20,11 +17,12 @@ import javafx.scene.image.ImageView;
  * The representation consists of a 'list icon' followed by a label text provided by the item descriptor.<br/>
  * At the list level no editing is possible, so the related methods are not overridden by this class.
  */
-public class EObjectTreeCellHelperForAttributeList extends EObjectTreeCellHelperAbstract<EObjectTreeItemForAttributeList> {
+public class EObjectTreeCellHelperForAttributeList extends EObjectTreeCellHelperTemplate<EObjectTreeItemForAttributeList, EObjectTreeItemAttributeListDescriptor, ImageView> {
   private static final Logger LOGGER = Logger.getLogger(EObjectTreeCellHelperForAttributeList.class.getName());
   
-  private EObjectTreeItemAttributeListDescriptor itemDescriptor;
-  private final Node listIcon = new ImageView(new Image(EObjectTreeCellHelperForObjectList.class.getResourceAsStream("List 225x225.png"), 36, 18, true, true));
+//  private EObjectTreeItemAttributeListDescriptor itemDescriptor;
+  private Image defaultImage = new Image(EObjectTreeCellHelperForObjectList.class.getResourceAsStream("List 225x225.png"), 36, 18, true, true);
+  private final ImageView listIcon = new ImageView();
   
   /**
    * Constructor.
@@ -35,22 +33,25 @@ public class EObjectTreeCellHelperForAttributeList extends EObjectTreeCellHelper
     super(eObjectTreeCell);
   }
 
+  /**
+   * {@inheritDoc}
+   * The graphic is an {@code ImageView}.<br/>
+   */
   @Override
-  public void updateItem(Object eObjectTreeItemContent) {
-    LOGGER.info("=> item=" + (eObjectTreeItemContent != null ? eObjectTreeItemContent.toString() : "(null)"));
-
-    super.updateItem(eObjectTreeItemContent);
+  protected void createGraphic() {
+    LOGGER.info("=>");
     
-    itemDescriptor = getTreeItem().getEObjectTreeItemAttributeListDescriptor();
-    
-    ContextMenu contextMenu = createContextMenu();
-    eObjectTreeCell.setContextMenu(contextMenu);
-    
-    // This cell type cannot be edited, so we don't have to check on isEditing()
-    eObjectTreeCell.setText(getText(eObjectTreeItemContent));
-    eObjectTreeCell.setGraphic(listIcon);
+    graphic = new ImageView();
     
     LOGGER.info("<=");
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  protected void setEObjectTreeItemDescriptor() {
+    itemDescriptor = treeItem.getEObjectTreeItemAttributeListDescriptor();
   }
   
   /**
@@ -58,7 +59,7 @@ public class EObjectTreeCellHelperForAttributeList extends EObjectTreeCellHelper
    * 
    * @return a context menu derived from the node operation descriptors, or null if no node operation descriptors are specified.
    */
-  private ContextMenu createContextMenu() {
+  protected ContextMenu createContextMenu(Object object) {
     LOGGER.info("=>");
     List<NodeOperationDescriptor> nodeOperationDescriptors = itemDescriptor.getNodeOperationDescriptors();
     if (nodeOperationDescriptors == null) {
@@ -72,18 +73,9 @@ public class EObjectTreeCellHelperForAttributeList extends EObjectTreeCellHelper
       final TableRowOperation operation = nodeOperationDescriptor.getOperation();
       switch (operation) {
       case NEW_OBJECT:
-        EObjectTreeItem eObjectTreeItem = (EObjectTreeItem) eObjectTreeCell.getTreeItem();
-        // This operation is only there if there are no children yet.
-        // Otherwise you add items before or after a specific item in the list.
-        if (eObjectTreeItem.getChildren().size() == 0) {
-          menuItem = new MenuItem(nodeOperationDescriptor.getMenuText());
-          contextMenu.getItems().add(menuItem);
-          menuItem.setOnAction(new EventHandler<ActionEvent>() {
-            public void handle(ActionEvent t) {
-              createAndAddObject();
-            }
-          });
-        }
+        menuItem = new MenuItem(nodeOperationDescriptor.getMenuText());
+        contextMenu.getItems().add(menuItem);
+        menuItem.setOnAction((actionEvent) -> createAndAddObject());
         break;
 
       case NEW_OBJECT_BEFORE:
@@ -106,18 +98,42 @@ public class EObjectTreeCellHelperForAttributeList extends EObjectTreeCellHelper
       return null;
     }
   }
+
+  @Override
+  public void updateContent(Object value) {
+    LOGGER.info("=> item=" + (value != null ? value.toString() : "(null)"));
+    
+    // This cell type cannot be edited, so we don't have to check on isEditing()
+    String cellText = buildText(value);
+    eObjectTreeCell.setText(cellText);
+
+    Image image = null;
+    if (itemDescriptor.getNodeIconFunction() != null) {
+      image = itemDescriptor.getNodeIconFunction().apply(value);
+    }
+    
+    if (image == null) {
+      image = defaultImage;
+    }
+    
+    graphic.setImage(image);
+    
+    eObjectTreeCell.setGraphic(listIcon);
+    
+    LOGGER.info("<=");
+  }
   
+  /**
+   * Create a new object and add it to the list.
+   */
   protected void createAndAddObject() {
     LOGGER.info("=>");
     
-    EObjectTreeItem eObjectTreeItem = (EObjectTreeItem) eObjectTreeCell.getTreeItem();
-    LOGGER.severe("eObjectTreeItem=" + eObjectTreeItem.toString());
-    LOGGER.severe("eObjectTreeItemContent=" + eObjectTreeItem.getValue().toString());
+    LOGGER.severe("eObjectTreeItemContent=" + treeItem.getValue().toString());
     @SuppressWarnings("unchecked")
-    EList<Object> eObjectList = (EList<Object>) eObjectTreeItem.getValue();
+    EList<Object> eObjectList = (EList<Object>) treeItem.getValue();
     eObjectList.add(null);
     LOGGER.severe("eObjectList:" + eObjectList.toString());
-    eObjectTreeItem.rebuildChildren();
         
     LOGGER.info("=>");
   }
@@ -130,7 +146,7 @@ public class EObjectTreeCellHelperForAttributeList extends EObjectTreeCellHelper
    * @param eObjectTreeItemContent the item content. This parameter is ignored.
    * @return the text to be shown for this cell.
    */
-  private String getText(Object eObjectTreeItemContent) {
+  protected String buildText(Object eObjectTreeItemContent) {
     LOGGER.info("=> eObjectTreeItemContent=" + eObjectTreeItemContent.toString());
     String labelText = itemDescriptor.getLabelText() + ":";
         

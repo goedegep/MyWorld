@@ -82,7 +82,7 @@ public class ObjectControlImageFile extends ObjectControlAbstract<File> {
    * {@inheritDoc}
    */
   @Override
-  public StackPane ocGetControl() {
+  public StackPane getControl() {
     return stackPane;
   }
 
@@ -90,7 +90,7 @@ public class ObjectControlImageFile extends ObjectControlAbstract<File> {
    * {@inheritDoc}
    */
   @Override
-  public void ocSetValue(File file) {
+  public void setValue(File file) {
     this.file = file;
     referenceValue = file;
     ociHandleNewUserInput(null);
@@ -153,7 +153,7 @@ public class ObjectControlImageFile extends ObjectControlAbstract<File> {
    * There is no formatting, so just return the filename.
    */
   @Override
-  public String ocGetObjectValueAsFormattedText() {
+  public String getValueAsFormattedText() {
     return value.getAbsolutePath();
   }
 

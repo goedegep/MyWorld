@@ -491,13 +491,13 @@ public class PhotoMapView extends JfxStage {
     }
     
     WGS84Coordinates centerCoordinates = boundingBox.getCenter();
-    LOGGER.severe("center: " + centerCoordinates.toString());
+    LOGGER.info("center: " + centerCoordinates.toString());
     MapPoint mapCenter = new MapPoint(centerCoordinates.getLatitude(), centerCoordinates.getLongitude());
     mapView.flyTo(0, mapCenter, 1.0);
     
     Double zoomLevel = MapView.getZoomLevel(boundingBox);
     zoomLevel = 0.85 * zoomLevel;
-    LOGGER.severe("zoomLevel: " + zoomLevel);
+    LOGGER.info("zoomLevel: " + zoomLevel);
     mapView.setZoom(zoomLevel);
   }
   

@@ -173,43 +173,43 @@ public class EditorPanel extends VBox {
     
     label = componentFactory.createLabel("Name:");
     gridPane.add(label, 0, row);
-    gridPane.add(nameObjectControlTextField.ocGetControl(), 1, row);
-    gridPane.add(nameObjectControlTextField.ocGetStatusIndicator(), 2, row);
+    gridPane.add(nameObjectControlTextField.getControl(), 1, row);
+    gridPane.add(nameObjectControlTextField.getStatusIndicator(), 2, row);
     
     row++;
     
     label = componentFactory.createLabel("I'm happy:");
     gridPane.add(label, 0, row);
-    gridPane.add(happyObjectControlBoolean.ocGetControl(), 1, row);
-    gridPane.add(happyObjectControlBoolean.ocGetStatusIndicator(), 2, row);
+    gridPane.add(happyObjectControlBoolean.getControl(), 1, row);
+    gridPane.add(happyObjectControlBoolean.getStatusIndicator(), 2, row);
     
     row++;
     
     label = componentFactory.createLabel("Birthplace:");
     gridPane.add(label, 0, row);
-    gridPane.add(birthPlaceObjectControlAutoCompleteTextField.ocGetControl(), 1, row);
-    gridPane.add(birthPlaceObjectControlAutoCompleteTextField.ocGetStatusIndicator(), 2, row);
+    gridPane.add(birthPlaceObjectControlAutoCompleteTextField.getControl(), 1, row);
+    gridPane.add(birthPlaceObjectControlAutoCompleteTextField.getStatusIndicator(), 2, row);
     
     row++;
     
     label = componentFactory.createLabel("Gender:");
     gridPane.add(label, 0, row);
-    gridPane.add(genderObjectControlEnumComboBox.ocGetControl(), 1, row);
-    gridPane.add(genderObjectControlEnumComboBox.ocGetStatusIndicator(), 2, row);
+    gridPane.add(genderObjectControlEnumComboBox.getControl(), 1, row);
+    gridPane.add(genderObjectControlEnumComboBox.getStatusIndicator(), 2, row);
     
     row++;
     
     label = componentFactory.createLabel("Age:");
     gridPane.add(label, 0, row);
-    gridPane.add(ageObjectControlInteger.ocGetControl(), 1, row);
-    gridPane.add(ageObjectControlInteger.ocGetStatusIndicator(), 2, row);
+    gridPane.add(ageObjectControlInteger.getControl(), 1, row);
+    gridPane.add(ageObjectControlInteger.getStatusIndicator(), 2, row);
     
     row++;
     
     label = componentFactory.createLabel("Price last holiday:");
     gridPane.add(label, 0, row);
-    gridPane.add(priceLastHolidayObjectControlCurrency.ocGetControl(), 1, row);
-    gridPane.add(priceLastHolidayObjectControlCurrency.ocGetStatusIndicator(), 2, row);
+    gridPane.add(priceLastHolidayObjectControlCurrency.getControl(), 1, row);
+    gridPane.add(priceLastHolidayObjectControlCurrency.getStatusIndicator(), 2, row);
     
     row++;
     
@@ -233,68 +233,68 @@ public class EditorPanel extends VBox {
 //      }
 //    };
 //    travelerTypeObjectControlEnumComboBox.setConverter(stringConverter);
-    gridPane.add(travelerTypeObjectControlEnumComboBox.ocGetControl(), 1, row);
-    gridPane.add(travelerTypeObjectControlEnumComboBox.ocGetStatusIndicator(), 2, row);
+    gridPane.add(travelerTypeObjectControlEnumComboBox.getControl(), 1, row);
+    gridPane.add(travelerTypeObjectControlEnumComboBox.getStatusIndicator(), 2, row);
     
     row++;
     
     label = componentFactory.createLabel("Last travel rating:");
     gridPane.add(label, 0, row);
-    gridPane.add(lastTravelRatingObjectControlFixedPointValue.ocGetControl(), 1, row);
-    gridPane.add(lastTravelRatingObjectControlFixedPointValue.ocGetStatusIndicator(), 2, row);
+    gridPane.add(lastTravelRatingObjectControlFixedPointValue.getControl(), 1, row);
+    gridPane.add(lastTravelRatingObjectControlFixedPointValue.getStatusIndicator(), 2, row);
     
     row++;
     
     label = componentFactory.createLabel("Last travel date:");
     gridPane.add(label, 0, row);
-    gridPane.add(lastTravelDateObjectControlLocalDate.ocGetControl(), 1, row);
-    gridPane.add(lastTravelDateObjectControlLocalDate.ocGetStatusIndicator(), 2, row);
+    gridPane.add(lastTravelDateObjectControlLocalDate.getControl(), 1, row);
+    gridPane.add(lastTravelDateObjectControlLocalDate.getStatusIndicator(), 2, row);
     
     row++;
     
     label = componentFactory.createLabel("Traval report:");
     gridPane.add(label, 0, row);
-    gridPane.add(travelReportFileObjectControlFileSelecter.ocGetControl(), 1, row);
-    gridPane.add(travelReportFileObjectControlFileSelecter.ocGetStatusIndicator(), 2, row);
+    gridPane.add(travelReportFileObjectControlFileSelecter.getControl(), 1, row);
+    gridPane.add(travelReportFileObjectControlFileSelecter.getStatusIndicator(), 2, row);
     gridPane.add(travelReportFileObjectControlFileSelecter.getFileChooserButton(), 3, row);
     
     row++;
     
     label = componentFactory.createLabel("Next travel date:");
     gridPane.add(label, 0, row);
-    gridPane.add(nextTravelDateObjectControlFlexDate.ocGetControl(), 1, row);
-    gridPane.add(nextTravelDateObjectControlFlexDate.ocGetStatusIndicator(), 2, row);
+    gridPane.add(nextTravelDateObjectControlFlexDate.getControl(), 1, row);
+    gridPane.add(nextTravelDateObjectControlFlexDate.getStatusIndicator(), 2, row);
     
     row++;
     
     label = componentFactory.createLabel("Pictures folder:");
     gridPane.add(label, 0, row);
-    gridPane.add(picturesFolderObjectControlFolderSelecter.ocGetControl(), 1, row);
-    gridPane.add(picturesFolderObjectControlFolderSelecter.ocGetStatusIndicator(), 2, row);
+    gridPane.add(picturesFolderObjectControlFolderSelecter.getControl(), 1, row);
+    gridPane.add(picturesFolderObjectControlFolderSelecter.getStatusIndicator(), 2, row);
     gridPane.add(picturesFolderObjectControlFolderSelecter.getFolderChooserButton(), 3, row);
     
     row++;
     
     label = componentFactory.createLabel("Favorite picture:");
     gridPane.add(label, 0, row);
-    gridPane.add(imageFileObjectControlImageFile.ocGetControl(), 1, row);
-    gridPane.add(imageFileObjectControlImageFile.ocGetStatusIndicator(), 2, row);
+    gridPane.add(imageFileObjectControlImageFile.getControl(), 1, row);
+    gridPane.add(imageFileObjectControlImageFile.getStatusIndicator(), 2, row);
     
     row++;
     
     label = componentFactory.createLabel("Notes:");
     gridPane.add(label, 0, row);
-    notesObjectControlMultiLineString.ocGetControl().setMaxHeight(80.0);
-    gridPane.add(notesObjectControlMultiLineString.ocGetControl(), 1, row);
-    gridPane.add(notesObjectControlMultiLineString.ocGetStatusIndicator(), 2, row);
+    notesObjectControlMultiLineString.getControl().setMaxHeight(80.0);
+    gridPane.add(notesObjectControlMultiLineString.getControl(), 1, row);
+    gridPane.add(notesObjectControlMultiLineString.getStatusIndicator(), 2, row);
     
     row++;
     
     label = componentFactory.createLabel("Details:");
     gridPane.add(label, 0, row);
-    detailsObjectControlHTMLString.ocGetControl().setMaxHeight(200.0);
-    gridPane.add(detailsObjectControlHTMLString.ocGetControl(), 1, row);
-    gridPane.add(detailsObjectControlHTMLString.ocGetStatusIndicator(), 2, row);
+    detailsObjectControlHTMLString.getControl().setMaxHeight(200.0);
+    gridPane.add(detailsObjectControlHTMLString.getControl(), 1, row);
+    gridPane.add(detailsObjectControlHTMLString.getStatusIndicator(), 2, row);
     
     
     getChildren().add(gridPane);
@@ -368,42 +368,42 @@ public class EditorPanel extends VBox {
       return;
     }
     
-    nameObjectControlTextField.ocSetValue(inquiryData.getName());
-    happyObjectControlBoolean.ocSetValue(inquiryData.isHappy());
-    birthPlaceObjectControlAutoCompleteTextField.ocSetValue(inquiryData.getBirthPlace());
-    genderObjectControlEnumComboBox.ocSetValue(inquiryData.getGender());
-    ageObjectControlInteger.ocSetValue(inquiryData.getAge());
-    priceLastHolidayObjectControlCurrency.ocSetValue(inquiryData.getPriceLastHoliday());
-    travelerTypeObjectControlEnumComboBox.ocSetValue(inquiryData.getTravelerType());
-    lastTravelRatingObjectControlFixedPointValue.ocSetValue(inquiryData.getLastTravelRating());
-    lastTravelDateObjectControlLocalDate.ocSetValue(inquiryData.getLastTravelDate());
-    travelReportFileObjectControlFileSelecter.ocSetValue(inquiryData.getTravelReportFile());
-    nextTravelDateObjectControlFlexDate.ocSetValue(inquiryData.getNextTravelDate());
-    picturesFolderObjectControlFolderSelecter.ocSetValue(inquiryData.getPicturesFolder());
-    imageFileObjectControlImageFile.ocSetValue(inquiryData.getImageFile());
-    notesObjectControlMultiLineString.ocSetValue(inquiryData.getNotes());
-    detailsObjectControlHTMLString.ocSetValue(inquiryData.getDetails());
+    nameObjectControlTextField.setValue(inquiryData.getName());
+    happyObjectControlBoolean.setValue(inquiryData.isHappy());
+    birthPlaceObjectControlAutoCompleteTextField.setValue(inquiryData.getBirthPlace());
+    genderObjectControlEnumComboBox.setValue(inquiryData.getGender());
+    ageObjectControlInteger.setValue(inquiryData.getAge());
+    priceLastHolidayObjectControlCurrency.setValue(inquiryData.getPriceLastHoliday());
+    travelerTypeObjectControlEnumComboBox.setValue(inquiryData.getTravelerType());
+    lastTravelRatingObjectControlFixedPointValue.setValue(inquiryData.getLastTravelRating());
+    lastTravelDateObjectControlLocalDate.setValue(inquiryData.getLastTravelDate());
+    travelReportFileObjectControlFileSelecter.setValue(inquiryData.getTravelReportFile());
+    nextTravelDateObjectControlFlexDate.setValue(inquiryData.getNextTravelDate());
+    picturesFolderObjectControlFolderSelecter.setValue(inquiryData.getPicturesFolder());
+    imageFileObjectControlImageFile.setValue(inquiryData.getImageFile());
+    notesObjectControlMultiLineString.setValue(inquiryData.getNotes());
+    detailsObjectControlHTMLString.setValue(inquiryData.getDetails());
   }
   
   /**
    * Set the controls to their default values.
    */
   private void setControlsToDefaultValues() {
-    nameObjectControlTextField.ocSetValue(null);
-    happyObjectControlBoolean.ocSetValue(false);
-    birthPlaceObjectControlAutoCompleteTextField.ocSetValue(null);
-    genderObjectControlEnumComboBox.ocSetValue(null);
-    ageObjectControlInteger.ocSetValue(null);
-    priceLastHolidayObjectControlCurrency.ocSetValue(null);
-    travelerTypeObjectControlEnumComboBox.ocSetValue(TravelerType.REGULAR);
-    lastTravelRatingObjectControlFixedPointValue.ocSetValue(null);
-    lastTravelDateObjectControlLocalDate.ocSetValue(null);
+    nameObjectControlTextField.setValue(null);
+    happyObjectControlBoolean.setValue(false);
+    birthPlaceObjectControlAutoCompleteTextField.setValue(null);
+    genderObjectControlEnumComboBox.setValue(null);
+    ageObjectControlInteger.setValue(null);
+    priceLastHolidayObjectControlCurrency.setValue(null);
+    travelerTypeObjectControlEnumComboBox.setValue(TravelerType.REGULAR);
+    lastTravelRatingObjectControlFixedPointValue.setValue(null);
+    lastTravelDateObjectControlLocalDate.setValue(null);
     travelReportFileObjectControlFileSelecter.ocSetFilename("C:\\Users\\Peter\\Downloads\\Gebouw 464 BIC.jpg");
-    nextTravelDateObjectControlFlexDate.ocSetValue(null);
-    picturesFolderObjectControlFolderSelecter.ocSetValue(null);
-    imageFileObjectControlImageFile.ocSetValue(null);
-    notesObjectControlMultiLineString.ocSetValue(null);
-    detailsObjectControlHTMLString.ocSetValue(null);
+    nextTravelDateObjectControlFlexDate.setValue(null);
+    picturesFolderObjectControlFolderSelecter.setValue(null);
+    imageFileObjectControlImageFile.setValue(null);
+    notesObjectControlMultiLineString.setValue(null);
+    detailsObjectControlHTMLString.setValue(null);
   }
   
   /**
@@ -436,21 +436,21 @@ public class EditorPanel extends VBox {
    * Fill (update) {@code inquiryData} with the values of the controls.
    */
   private void updateInquiryDataFromControls() {
-    inquiryData.setName(nameObjectControlTextField.ocGetValue());
-    inquiryData.setHappy(happyObjectControlBoolean.ocGetValue());
-    inquiryData.setBirthPlace(birthPlaceObjectControlAutoCompleteTextField.ocGetValue());
-    inquiryData.setGender(genderObjectControlEnumComboBox.ocGetValue());
-    inquiryData.setAge(ageObjectControlInteger.ocGetValue());
-    inquiryData.setPriceLastHoliday(priceLastHolidayObjectControlCurrency.ocGetValue());
-    inquiryData.setTravelerType(travelerTypeObjectControlEnumComboBox.ocGetValue());
-    inquiryData.setLastTravelRating(lastTravelRatingObjectControlFixedPointValue.ocGetValue());
-    inquiryData.setLastTravelDate(lastTravelDateObjectControlLocalDate.ocGetValue());
-    inquiryData.setTravelReportFile(travelReportFileObjectControlFileSelecter.ocGetValue());
-    inquiryData.setNextTravelDate(nextTravelDateObjectControlFlexDate.ocGetValue());
-    inquiryData.setPicturesFolder(picturesFolderObjectControlFolderSelecter.ocGetValue());
-    inquiryData.setImageFile(imageFileObjectControlImageFile.ocGetValue());
-    inquiryData.setNotes(notesObjectControlMultiLineString.ocGetValue());
-    inquiryData.setDetails(detailsObjectControlHTMLString.ocGetValue());
+    inquiryData.setName(nameObjectControlTextField.getValue());
+    inquiryData.setHappy(happyObjectControlBoolean.getValue());
+    inquiryData.setBirthPlace(birthPlaceObjectControlAutoCompleteTextField.getValue());
+    inquiryData.setGender(genderObjectControlEnumComboBox.getValue());
+    inquiryData.setAge(ageObjectControlInteger.getValue());
+    inquiryData.setPriceLastHoliday(priceLastHolidayObjectControlCurrency.getValue());
+    inquiryData.setTravelerType(travelerTypeObjectControlEnumComboBox.getValue());
+    inquiryData.setLastTravelRating(lastTravelRatingObjectControlFixedPointValue.getValue());
+    inquiryData.setLastTravelDate(lastTravelDateObjectControlLocalDate.getValue());
+    inquiryData.setTravelReportFile(travelReportFileObjectControlFileSelecter.getValue());
+    inquiryData.setNextTravelDate(nextTravelDateObjectControlFlexDate.getValue());
+    inquiryData.setPicturesFolder(picturesFolderObjectControlFolderSelecter.getValue());
+    inquiryData.setImageFile(imageFileObjectControlImageFile.getValue());
+    inquiryData.setNotes(notesObjectControlMultiLineString.getValue());
+    inquiryData.setDetails(detailsObjectControlHTMLString.getValue());
   }
 
   
@@ -528,21 +528,21 @@ public class EditorPanel extends VBox {
    */
   private boolean changesInInput() {
     if (editMode == EditMode.EDIT) {
-      if (!PgUtilities.equals(nameObjectControlTextField.ocGetValue(), inquiryData.getName())  ||
-          !PgUtilities.equals(happyObjectControlBoolean.ocGetValue(), inquiryData.isHappy())  ||
-          !PgUtilities.equals(birthPlaceObjectControlAutoCompleteTextField.ocGetValue(), inquiryData.getBirthPlace())  ||
-          !PgUtilities.equals(genderObjectControlEnumComboBox.ocGetValue(), inquiryData.getGender())  ||
-          !PgUtilities.equals(ageObjectControlInteger.ocGetValue(), inquiryData.getAge())  ||
-          !PgUtilities.equals(priceLastHolidayObjectControlCurrency.ocGetValue(), inquiryData.getPriceLastHoliday())  ||
-          !PgUtilities.equals(travelerTypeObjectControlEnumComboBox.ocGetValue(), inquiryData.getTravelerType())  ||
-          !PgUtilities.equals(lastTravelRatingObjectControlFixedPointValue.ocGetValue(), inquiryData.getLastTravelRating())  ||
-          !PgUtilities.equals(lastTravelDateObjectControlLocalDate.ocGetValue(), inquiryData.getLastTravelDate())  ||
-          !PgUtilities.equals(travelReportFileObjectControlFileSelecter.ocGetValue(), inquiryData.getTravelReportFile())  ||
-          !PgUtilities.equals(nextTravelDateObjectControlFlexDate.ocGetValue(), inquiryData.getNextTravelDate())  ||
-          !PgUtilities.equals(picturesFolderObjectControlFolderSelecter.ocGetValue(), inquiryData.getPicturesFolder())  ||
-          Objects.compare(imageFileObjectControlImageFile.ocGetValue(), inquiryData.getImageFile(), FileUtils.getComparator()) != 0  ||
-          !PgUtilities.equals(notesObjectControlMultiLineString.ocGetValue(), inquiryData.getNotes())  ||
-          !PgUtilities.equals(detailsObjectControlHTMLString.ocGetValue(), inquiryData.getDetails())) {
+      if (!PgUtilities.equals(nameObjectControlTextField.getValue(), inquiryData.getName())  ||
+          !PgUtilities.equals(happyObjectControlBoolean.getValue(), inquiryData.isHappy())  ||
+          !PgUtilities.equals(birthPlaceObjectControlAutoCompleteTextField.getValue(), inquiryData.getBirthPlace())  ||
+          !PgUtilities.equals(genderObjectControlEnumComboBox.getValue(), inquiryData.getGender())  ||
+          !PgUtilities.equals(ageObjectControlInteger.getValue(), inquiryData.getAge())  ||
+          !PgUtilities.equals(priceLastHolidayObjectControlCurrency.getValue(), inquiryData.getPriceLastHoliday())  ||
+          !PgUtilities.equals(travelerTypeObjectControlEnumComboBox.getValue(), inquiryData.getTravelerType())  ||
+          !PgUtilities.equals(lastTravelRatingObjectControlFixedPointValue.getValue(), inquiryData.getLastTravelRating())  ||
+          !PgUtilities.equals(lastTravelDateObjectControlLocalDate.getValue(), inquiryData.getLastTravelDate())  ||
+          !PgUtilities.equals(travelReportFileObjectControlFileSelecter.getValue(), inquiryData.getTravelReportFile())  ||
+          !PgUtilities.equals(nextTravelDateObjectControlFlexDate.getValue(), inquiryData.getNextTravelDate())  ||
+          !PgUtilities.equals(picturesFolderObjectControlFolderSelecter.getValue(), inquiryData.getPicturesFolder())  ||
+          Objects.compare(imageFileObjectControlImageFile.getValue(), inquiryData.getImageFile(), FileUtils.getComparator()) != 0  ||
+          !PgUtilities.equals(notesObjectControlMultiLineString.getValue(), inquiryData.getNotes())  ||
+          !PgUtilities.equals(detailsObjectControlHTMLString.getValue(), inquiryData.getDetails())) {
         return true;
       } else {
         return false;

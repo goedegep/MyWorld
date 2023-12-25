@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 import java.util.logging.Logger;
 
 import org.eclipse.emf.common.util.EList;
@@ -23,6 +25,7 @@ import goedegep.geo.WGS84Coordinates;
 import goedegep.jfx.ComponentFactoryFx;
 import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.JfxStage;
+import goedegep.jfx.JfxUtil;
 import goedegep.jfx.eobjecttreeview.EEnumEditorDescriptor;
 import goedegep.jfx.eobjecttreeview.EObjectTreeItem;
 import goedegep.jfx.eobjecttreeview.EObjectTreeItemClassDescriptor;
@@ -32,9 +35,9 @@ import goedegep.jfx.eobjecttreeview.EObjectTreeItemForObjectList;
 import goedegep.jfx.eobjecttreeview.EObjectTreeView;
 import goedegep.poi.app.guifx.POIIcons;
 import goedegep.poi.model.POICategoryId;
-import goedegep.poi.model.POIPackage;
 import goedegep.util.emf.EmfUtil;
 import goedegep.util.objectselector.ObjectSelectionListener;
+import goedegep.util.objectselector.ObjectSelector;
 import goedegep.util.string.StringUtil;
 import goedegep.vacations.app.logic.NominatimUtil;
 import goedegep.vacations.model.Boundary;
@@ -43,8 +46,6 @@ import goedegep.vacations.model.Location;
 import goedegep.vacations.model.VacationsFactory;
 import goedegep.vacations.model.VacationsPackage;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -70,21 +71,22 @@ import javafx.util.Pair;
 /**
  * This class provides a window to search for locations.
  * <p>
- * The top part provides 3 ways to search for locations:
+ * The top part provides 3 different ways to search for locations:
  * <ul>
- * <li>Free text search<br/>
+ * <li><b>Free text search</b><br/>
  * To search for a location based on a free format text.
  * </li>
- * <li>Reverse geocode search<br/>
+ * <li><b>Reverse geocode search</b><br/>
  * To search for the address that corresponds to a specified latitude/longitude pair.
  * </li>
- * <li>Hierarchical search<br/>
+ * <li><b>Hierarchical search</b><br/>
  * To search for a location based on country, city, street and housenumber (or any subset thereof).
  * </li>
  * </ul>
  * Searching is based on the Open Street Map Nominatim API.
  * <p>
- * The center part shows all details of the search results, as obtained from the Nominatim API.
+ * The center part shows all details of the search results, as obtained from the Nominatim API. There is combobox to select one of the results.
+ * 
  * <p>
  * The bottom part shows the <code>Location</code> derived from the result selected in the center part.<br/>
  * The values here can be edited and then the location can be added to the <code>Vacations</code> tree.
@@ -94,37 +96,84 @@ import javafx.util.Pair;
 public class LocationSearchWindow extends JfxStage {
   private static final Logger LOGGER = Logger.getLogger(LocationSearchWindow.class.getName());
   
+  /**
+   * The GUI customization.
+   */
   private CustomizationFx customization;
+  
+  /**
+   * An instance of the {@link NominatimAPI} used to perform the search queries.
+   */
   private NominatimAPI nominatimAPI = null;
-  private SearchResultLayer searchResultLayer;
+  
+  /**
+   * An instance of a {@code VacationsWIndow}.
+   */
   private VacationsWindow vacationsWindow;
+  
+  /**
+   * A map layer on which the search result can be shown.
+   */
+  private SearchResultLayer searchResultLayer;
+  
+  /**
+   * The factory for providing GUI elements
+   */
   private ComponentFactoryFx componentFactory;
+  
+  /**
+   * A {@link POIIcons} instance for getting POI icons
+   */
   private POIIcons poiIcons;
+  
+  /**
+   * Panel for showing status information.
+   */
   private Label statusPanel;
+  
+  /**
+   * The panel for the free text search
+   */
   private FreeTextSearchPanel freeTextSearchPanel;
+  
+  /**
+   * The panel for a reverse geocode search.
+   */
   private ReverseGeoCodePanel reverseGeoCodePanel;
-  private LocationInfosPanel locationInfosPanel;
+  
+  /**
+   * The panel for a hierarchical search.
+   */
   private HierarchicalSearchPanel hierarchicalSearchPanel;
+  
+  /**
+   * The panel for showing OSM search results and selecting a result.
+   */
+  private OsmSearchResultsPanel locationInfosPanel;
+  
+  /**
+   * The panel for the actual {@link Location} to be added to a Vacations data structure.
+   */
   private LocationPanel locationPanel;
 
   /**
    * Constructor
    * 
    * @param customization the GUI customization.
-   * @param vacationsWindow a reference to the <code>VacationsWindow</code>.
+   * @param poiIcons A {@link POIIcons} instance for getting POI icons.
    * @param nominatimAPI a reference to a <code>NominatimAPI</code>.
-   * @param searchResultLayer a reference to a <code>SearchResultLayer</code>.
+   * @param searchResultLayer a reference to a <code>SearchResultLayer</code> for showing search results.
    */
-  public LocationSearchWindow(CustomizationFx customization, VacationsWindow vacationsWindow, NominatimAPI nominatimAPI, SearchResultLayer searchResultLayer) {
+  public LocationSearchWindow(CustomizationFx customization, POIIcons poiIcons, NominatimAPI nominatimAPI, VacationsWindow vacationsWindow) {
     super("Search for a Location", customization);
-    LOGGER.info("=> " + (searchResultLayer != null ? "searchResultLayer" : "no searchResultLayer"));
     
     this.customization = customization;
-    this.vacationsWindow = vacationsWindow;
+    this.poiIcons = poiIcons;
     this.nominatimAPI = nominatimAPI;
-    this.searchResultLayer = searchResultLayer;
+    this.vacationsWindow = vacationsWindow;
     
-    poiIcons = vacationsWindow.getPOIIcons();
+    this.searchResultLayer = vacationsWindow.getTravelMapView().getSearchResultLayer();
+    
     componentFactory = customization.getComponentFactoryFx();
     
     createGUI();
@@ -141,23 +190,21 @@ public class LocationSearchWindow extends JfxStage {
     // Left side is input for free text search and input for reverse geocode search.
     VBox leftSideSearchControlsBox = componentFactory.createVBox(12.0);
     
-    freeTextSearchPanel = new FreeTextSearchPanel(customization, this);
-    reverseGeoCodePanel = new ReverseGeoCodePanel(customization, this);
+    freeTextSearchPanel = new FreeTextSearchPanel(customization, this::searchOnFreeText);
+    reverseGeoCodePanel = new ReverseGeoCodePanel(customization, this::performReverseGeocodeSearch);
     leftSideSearchControlsBox.getChildren().addAll(freeTextSearchPanel, reverseGeoCodePanel);
     
     searchControlsHBox.getChildren().add(leftSideSearchControlsBox);
     
     // Right side is input for hierarchical search
-    hierarchicalSearchPanel  = new HierarchicalSearchPanel(customization, this);
+    hierarchicalSearchPanel  = new HierarchicalSearchPanel(customization, this::searchHierarchical);
     searchControlsHBox.getChildren().add(hierarchicalSearchPanel);
     
     mainVBox.getChildren().add(searchControlsHBox);
     
-    locationPanel = new LocationPanel(customization, vacationsWindow, reverseGeoCodePanel, poiIcons);
-    locationInfosPanel = new LocationInfosPanel(customization, searchResultLayer, locationPanel);
-    mainVBox.getChildren().add(locationInfosPanel);
-    
-    mainVBox.getChildren().add(locationPanel);
+    locationInfosPanel = new OsmSearchResultsPanel(customization, searchResultLayer);
+    locationPanel = new LocationPanel(customization, reverseGeoCodePanel, vacationsWindow, poiIcons, locationInfosPanel);
+    mainVBox.getChildren().addAll(locationInfosPanel, locationPanel);
     
     statusPanel = componentFactory.createLabel(null);
     mainVBox.getChildren().add(statusPanel);
@@ -166,14 +213,11 @@ public class LocationSearchWindow extends JfxStage {
   }
     
   /**
-   * Perform a reverse geocode search.
+   * Perform a reverse geocode search based on the latitude/longitude of the <code>reverseGeoCodePanel</code>.
    * <p>
-   * The search is performed using the latitude/longitude of the <code>reverseGeoCodePanel</code>.
+   * The result is handed over to the {@code locationInfosPanel}.
    */
-  void reverseGeocodeSearch() {
-    double latitude = reverseGeoCodePanel.getLatitude();
-    double longitude = reverseGeoCodePanel.getLongitude();
-    
+  void performReverseGeocodeSearch(double latitude, double longitude) {
     statusPanel.setText(null);
     OSMLocationInfo locationInfo;
     try {
@@ -187,25 +231,27 @@ public class LocationSearchWindow extends JfxStage {
   }
   
   /**
-   * Perform a reverse geocode search.
+   * Perform a reverse geocode search for specified coordinates.
    * <p>
    * The latitude/longitude for the search are specified via parameters.
-   * These values are set in the <code>reverseGeoCodePanel</code> before performing the search.
+   * These values are set in the <code>reverseGeoCodePanel</code> before performing the search (by calling {@code reverseGeocodeSearch).
    */
   public void reverseGeocodeSearch(double latitude, double longitude) {
-    reverseGeoCodePanel.setCoordinates(latitude, longitude);
-    reverseGeocodeSearch();
+    reverseGeoCodePanel.reverseGeocodeSearch(latitude, longitude);
   }
 
-  void searchOnFreeText() {
-    String searchText = freeTextSearchPanel.getSearchText();
+  /**
+   * Perform a free text search based on the text of the {@code freeTextSearchPanel}.
+   * <p>
+   * The result is handed over to the {@code locationInfosPanel}.
+   */
+  void searchOnFreeText(String searchText) {
     LOGGER.info("=> searchText=" + searchText);
     
     
     statusPanel.setText(null);
-    List<OSMLocationInfo> osmLocationInfos;
     try {
-      osmLocationInfos = nominatimAPI.freeTextSearch(searchText);
+      List<OSMLocationInfo> osmLocationInfos = nominatimAPI.freeTextSearch(searchText);
       LOGGER.info("osmLocationInfos=" + osmLocationInfos.size());
       
       locationInfosPanel.setLocationInfos(osmLocationInfos);
@@ -215,10 +261,14 @@ public class LocationSearchWindow extends JfxStage {
     
   }
 
-  void searchHierarchical() {
+  /**
+   * Perform a hierarchical search, based on the information filled in in the {@code hierarchicalSearchPanel}.
+   * <p>
+   * The result is handed over to the {@code locationInfosPanel}.
+   */
+  void searchHierarchical(String country, String city, String street, String houseNumber) {
     try {
-      List<OSMLocationInfo> osmLocationInfos = nominatimAPI.searchHierarchical(
-          hierarchicalSearchPanel.getCountry(), hierarchicalSearchPanel.getCity(), hierarchicalSearchPanel.getStreet(), hierarchicalSearchPanel.getHouseNumber());
+      List<OSMLocationInfo> osmLocationInfos = nominatimAPI.searchHierarchical(country, city, street, houseNumber);
 
       locationInfosPanel.setLocationInfos(osmLocationInfos);
     } catch (IOException e) {
@@ -226,6 +276,13 @@ public class LocationSearchWindow extends JfxStage {
     }
   }
   
+  /**
+   * Report an {@code IOException} information via the {@statusPanel}.
+   * <p>
+   * Only an {@code UnknownHostException} is reported.
+   * 
+   * @param e the {@code IOException} to be reported.
+   */
   private void reportProblemViaStatusPanel(IOException e) {
     StringBuilder buf = new StringBuilder();
     
@@ -233,25 +290,27 @@ public class LocationSearchWindow extends JfxStage {
     if (e instanceof UnknownHostException) {
       UnknownHostException unknownHostException = (UnknownHostException) e;
       buf.append("Unknown host: " + unknownHostException.getLocalizedMessage());
+    } else {
+      LOGGER.severe("Unexpected exception: " + e.getMessage());
     }
     
     statusPanel.setText(buf.toString());
   }
 }
 
+
 /**
  * This class is a panel with the controls for a free text search.
  */
 class FreeTextSearchPanel extends VBox {
-  private TextField searchTextField;  
 
   /**
    * Constructor
    * 
    * @param customization the GUI customization.
-   * @param locationSearchWindow the main window.
+   * @param performFreeTextSearchMethod a {@code FunctionalInterface} for performing a free text search.
    */
-  public FreeTextSearchPanel(CustomizationFx customization, LocationSearchWindow locationSearchWindow) {
+  public FreeTextSearchPanel(CustomizationFx customization, Consumer<String> performFreeTextSearchMethod) {
     ComponentFactoryFx componentFactory = customization.getComponentFactoryFx();
     
     setBorder(new Border(new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT)));
@@ -266,39 +325,24 @@ class FreeTextSearchPanel extends VBox {
     label = componentFactory.createLabel("Search text:");
     freeTextSearchParamPane.add(label, 0, 0);
     
-    searchTextField = componentFactory.createTextField(350, "Enter any text to search on");
+    TextField searchTextField = componentFactory.createTextField(350, "Enter any text to search on");
     freeTextSearchParamPane.add(searchTextField, 1, 0);
     getChildren().add(freeTextSearchParamPane);
     
     Button button = componentFactory.createButton("Free text search", "Click to perform a free text search");
-    button.setOnAction(new EventHandler<ActionEvent>() {
-
-      @Override
-      public void handle(ActionEvent arg0) {
-        locationSearchWindow.searchOnFreeText();
-        
-      }
-      
-    });
+    button.setOnAction((actionEvent) -> performFreeTextSearchMethod.accept(searchTextField.getText()));
     getChildren().add(button);
-  }
-  
-  /**
-   * Get the search text.
-   * 
-   * @return the text to search on.
-   */
-  public String getSearchText() {
-    return searchTextField.getText();
-  }
+  }  
 }
 
+
 /**
- * This class is a panel with the controls for reverse geocoding.
+ * This class is a panel with the controls for a reverse geocode search.
  */
 class ReverseGeoCodePanel extends VBox {
   private TextField latitudeTextField;  
-  private TextField longitudeTextField;  
+  private TextField longitudeTextField;
+  private BiConsumer<Double, Double> reverseGeocodeSearchMethod;
 
   /**
    * Constructor
@@ -306,7 +350,8 @@ class ReverseGeoCodePanel extends VBox {
    * @param customization the GUI customization.
    * @param locationSearchWindow the main window.
    */
-  public ReverseGeoCodePanel(CustomizationFx customization, LocationSearchWindow locationSearchWindow) {
+  public ReverseGeoCodePanel(CustomizationFx customization, BiConsumer<Double, Double> reverseGeocodeSearchMethod) {
+    this.reverseGeocodeSearchMethod = reverseGeocodeSearchMethod;
     ComponentFactoryFx componentFactory = customization.getComponentFactoryFx();
     
     setBorder(new Border(new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT)));
@@ -315,7 +360,7 @@ class ReverseGeoCodePanel extends VBox {
     Label label = componentFactory.createLabel("Reverse geocode search");
     label.setStyle("-fx-alignment: CENTER; -fx-font-weight: bold;");
     getChildren().add(label);
-    
+
     GridPane reverseGeoCodeSearchParamPane = componentFactory.createGridPane(12.0, 12.0, 12.0);
 
     label = componentFactory.createLabel("Latitude:");
@@ -333,14 +378,7 @@ class ReverseGeoCodePanel extends VBox {
     getChildren().add(reverseGeoCodeSearchParamPane);
     
     Button button = componentFactory.createButton("Reverse geocode search", "Click to perform a reverse geocode search (find an address for coordinates)");
-    button.setOnAction(new EventHandler<ActionEvent>() {
-
-      @Override
-      public void handle(ActionEvent arg0) {
-        locationSearchWindow.reverseGeocodeSearch();
-       }
-      
-    });
+    button.setOnAction((actionEvent) -> reverseGeocodeSearchMethod.accept(getLatitude(), getLongitude()));
     getChildren().add(button);
   }
   
@@ -349,7 +387,7 @@ class ReverseGeoCodePanel extends VBox {
    * 
    * @return the latitude coordinate.
    */
-  public Double getLatitude() {
+  Double getLatitude() {
     return Double.valueOf(latitudeTextField.getText());
   }
   
@@ -358,18 +396,29 @@ class ReverseGeoCodePanel extends VBox {
    * 
    * @return the longitude coordinate.
    */
-  public Double getLongitude() {
+  Double getLongitude() {
     return Double.valueOf(longitudeTextField.getText());
   }
   
   /**
    * Set the coordinates.
    */
-  public void setCoordinates(double latitude, double longitude) {
+  public void reverseGeocodeSearch(double latitude, double longitude) {
     latitudeTextField.setText(String.valueOf(latitude));
     longitudeTextField.setText(String.valueOf(longitude));
+    reverseGeocodeSearchMethod.accept(latitude, longitude);
   }
 }
+
+
+/**
+ * Interface which defines a hierarchical search method (used as callback in the {@code HierarchicalSearchPanel)).
+ */
+@FunctionalInterface
+interface HierarchicalSearch {
+  void searchHierarchical(String country, String city, String street, String houseNumber);
+}
+
 
 /**
  * This class is a panel with the controls for a hierarchical search.
@@ -379,7 +428,6 @@ class HierarchicalSearchPanel extends VBox {
   private TextField cityTextField;
   private TextField streetTextField;
   private TextField houseNumberTextField;
-  private Button performFreeTextSearchButton;
 
   /**
    * Constructor
@@ -387,7 +435,7 @@ class HierarchicalSearchPanel extends VBox {
    * @param customization the GUI customization.
    * @param locationSearchWindow the main window.
    */
-  public HierarchicalSearchPanel(CustomizationFx customization, LocationSearchWindow locationSearchWindow) {
+  public HierarchicalSearchPanel(CustomizationFx customization, HierarchicalSearch hierarchicalSearch) {
     ComponentFactoryFx componentFactory = customization.getComponentFactoryFx();
     
     setBorder(new Border(new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT)));
@@ -425,16 +473,8 @@ class HierarchicalSearchPanel extends VBox {
     
     getChildren().add(hierarchicalSearchParamPane);
     
-    performFreeTextSearchButton = componentFactory.createButton("Hierarchical search", "Click to perform a hierarchical search");
-    performFreeTextSearchButton.setOnAction(new EventHandler<ActionEvent>() {
-
-      @Override
-      public void handle(ActionEvent arg0) {
-        locationSearchWindow.searchHierarchical();
-        
-      }
-      
-    });
+    Button performFreeTextSearchButton = componentFactory.createButton("Hierarchical search", "Click to perform a hierarchical search");
+    performFreeTextSearchButton.setOnAction((actionEvent) -> hierarchicalSearch.searchHierarchical(getCountry(), getCity(), getStreet(), getHouseNumber()));
     getChildren().add(performFreeTextSearchButton);
   }
   
@@ -443,8 +483,8 @@ class HierarchicalSearchPanel extends VBox {
    * 
    * @return the country name.
    */
-  public String getCountry() {
-    return getTextFieldText(countryTextField);
+  private String getCountry() {
+    return JfxUtil.getTextFieldText(countryTextField);
   }
   
   /**
@@ -452,8 +492,8 @@ class HierarchicalSearchPanel extends VBox {
    * 
    * @return the city name.
    */
-  public String getCity() {
-    return getTextFieldText(cityTextField);
+  private String getCity() {
+    return JfxUtil.getTextFieldText(cityTextField);
   }
   
   /**
@@ -461,8 +501,8 @@ class HierarchicalSearchPanel extends VBox {
    * 
    * @return the streetname.
    */
-  public String getStreet() {
-    return getTextFieldText(streetTextField);
+  private String getStreet() {
+    return JfxUtil.getTextFieldText(streetTextField);
   }
   
   /**
@@ -470,30 +510,14 @@ class HierarchicalSearchPanel extends VBox {
    * 
    * @return the housenumber
    */
-  public String getHouseNumber() {
-    return getTextFieldText(houseNumberTextField);
-  }
-  
-  private String getTextFieldText(TextField textField) {
-    String text = textField.getText();
-    
-    if (text != null) {
-      text = text.trim();
-    } else {
-      return null;
-    }
-    
-    if (text.isEmpty()) {
-      return null;
-    } else {
-      return text;
-    }
+  private String getHouseNumber() {
+    return JfxUtil.getTextFieldText(houseNumberTextField);
   }
 }
 
 
 /**
- * This class provides a panel to show the OSMLocationInfo (including the OSMResponseAddress) values obtained from an OSM query.
+ * This class provides a panel to show the OSMLocationInfo (including the OSMResponseAddress) values obtained from an OSM query and to select one of the results.
  * <p>
  * At the top is a ComboBox listing all values by their 'display_name'.<br/>
  * For the selected value the details are shown:
@@ -511,11 +535,10 @@ class HierarchicalSearchPanel extends VBox {
  * 'license' - copyright information
  * 'display_name' - already shown in the location selection ComboBox
  */
-class LocationInfosPanel extends VBox {
-  private static final Logger LOGGER = Logger.getLogger(LocationInfosPanel.class.getName());
+class OsmSearchResultsPanel extends VBox implements ObjectSelector<OSMLocationInfo> {
+  private static final Logger LOGGER = Logger.getLogger(OsmSearchResultsPanel.class.getName());
   
   private SearchResultLayer searchResultLayer;      // A map layer on which to show the results
-  private LocationPanel locationPanel;
   private List<OSMLocationInfo> locationInfos;      // The information returned from the OSM Nominatim API
   private ComboBox<String> displayNamesComboBox;    // Lists the display names of the <code>locationInfos</code>
   
@@ -546,19 +569,21 @@ class LocationInfosPanel extends VBox {
   private TextField poiTypeTextField;
   private TextField poiValueTextField;
   private TextArea nominatimResultString;
-  
+
+  private OSMLocationInfo osmLocationInfo;
   private Integer idOfLocationShownOnMap = null;    // The id, returned by the <code>searchResultLayer</code> of a location shown on this layer.
+  
+  private List<ObjectSelectionListener<OSMLocationInfo>> objectSelectionListeners = new ArrayList<>();
   
   
   /**
    * Constructor
    * 
    * @param customization the GUI customization.
-   * @param searchResultLayer a map layer on which to show the results
+   * @param searchResultLayer a map layer on which to show a search result
    */
-  public LocationInfosPanel(CustomizationFx customization, SearchResultLayer searchResultLayer, LocationPanel locationPanel) {
+  public OsmSearchResultsPanel(CustomizationFx customization, SearchResultLayer searchResultLayer) {
     this.searchResultLayer = searchResultLayer;
-    this.locationPanel = locationPanel;
     
     ComponentFactoryFx componentFactory = customization.getComponentFactoryFx();
     
@@ -582,15 +607,7 @@ class LocationInfosPanel extends VBox {
     gridPane.add(label, 0, 0);
     
     displayNamesComboBox = componentFactory.createComboBox(null);
-    displayNamesComboBox.setOnAction(new EventHandler<ActionEvent>() {
-
-      @Override
-      public void handle(ActionEvent arg0) {
-        updateLocationInfo();
-        
-      }
-      
-    });
+    displayNamesComboBox.setOnAction((actionEvent) -> updateLocationInfo());
     gridPane.add(displayNamesComboBox, 1, 0);
     
     this.getChildren().add(gridPane);
@@ -819,7 +836,6 @@ class LocationInfosPanel extends VBox {
     gridPane.add(nominatimResultString, 1, row, 5, 2);
 
     this.getChildren().add(gridPane);
-    
   }
   
   /**
@@ -842,12 +858,11 @@ class LocationInfosPanel extends VBox {
     }
   }
   
-  
   /*
    * Update the location details for the selected location.
    */
   private void updateLocationInfo() {
-    OSMLocationInfo osmLocationInfo = null;
+    osmLocationInfo = null;
 
     int selectedIndex = displayNamesComboBox.getSelectionModel().getSelectedIndex();
     
@@ -885,7 +900,7 @@ class LocationInfosPanel extends VBox {
         if (idOfLocationShownOnMap != null) {
           searchResultLayer.removeLocation(idOfLocationShownOnMap);
         }
-        LOGGER.severe("Adding location to search results layer");
+        LOGGER.info("Adding location to search results layer");
 
         List<Boundary> boundaries = NominatimUtil.getBoundaries(osmLocationInfo);
         List<List<WGS84Coordinates>> polylines = null;
@@ -962,23 +977,47 @@ class LocationInfosPanel extends VBox {
       poiValueTextField.setText(null);
     }
     
-    Location location = null;
-    if (osmLocationInfo != null) {
-      location = NominatimUtil.osmLocationInfoToLocation(osmLocationInfo);
+    notifyListeners();
+  }
+
+  @Override
+  public void addObjectSelectionListener(ObjectSelectionListener<OSMLocationInfo> objectSelectionListener) {
+    objectSelectionListeners.add(objectSelectionListener);
+    
+  }
+
+  @Override
+  public void removeObjectSelectionListener(ObjectSelectionListener<OSMLocationInfo> objectSelectionListener) {
+    objectSelectionListeners.remove(objectSelectionListener);    
+  }
+
+  @Override
+  public OSMLocationInfo getSelectedObject() {
+    return osmLocationInfo;
+  }
+  
+  private void notifyListeners() {
+    for (ObjectSelectionListener<OSMLocationInfo> objectSelectionListener: objectSelectionListeners) {
+      objectSelectionListener.objectSelected(this, osmLocationInfo);
     }
-    locationPanel.setLocation(location);
   }
 }
 
-class LocationPanel extends VBox implements ObjectSelectionListener<TreeItem<Object>> {
+/**
+ * This class is a panel that shows the selected OSM search result, translated to a {@code Location}.
+ * <p>
+ * The values can be edited and then added to a node in a Vacations tree or update a Location.
+ */
+class LocationPanel extends VBox {
   private static final Logger LOGGER = Logger.getLogger(LocationPanel.class.getName());
   private static VacationsFactory VACATIONS_FACTORY = VacationsFactory.eINSTANCE;
   private static final String BEFORE_TEXT = "before";
   private static final String AFTER_TEXT = "after";
 
-  private VacationsWindow vacationsWindow;
+//  private VacationsWindow vacationsWindow;
   private ComponentFactoryFx componentFactory;
   private ReverseGeoCodePanel reverseGeoCodePanel;
+  private VacationsWindow vacationsWindow;
   private POIIcons poiIcons;
   private EObjectTreeItem selectedTreeItem;
   
@@ -1006,13 +1045,21 @@ class LocationPanel extends VBox implements ObjectSelectionListener<TreeItem<Obj
   // Note: the polyline coordinates are currently not shown, and can therefore not be edited.
   private List<Boundary> boundaries;
   
-  @SuppressWarnings("unchecked")
-  public LocationPanel(CustomizationFx customization, VacationsWindow vacationsWindow, ReverseGeoCodePanel reverseGeoCodePanel, POIIcons poiIcons) {
-    this.vacationsWindow = vacationsWindow;
+  /**
+   * Constructor
+   * 
+   * @param customization the GUI customization
+   * @param reverseGeoCodePanel the {@code ReverseGeoCodePanel} from which the reverse geocode coordinates can be obtained.
+   * @param vacationsWindow a {@code VacationsWindow} used to get the tree view, the map view and to bring it to front (in case of 'show on map').
+   * @param poiIcons a reference to {@code POIIcons} used to show an icon for the selected {@code POICategoryId}.
+   * @param osmLocationInfoSelector provider of the selected OSM search result
+   */
+  public LocationPanel(CustomizationFx customization, ReverseGeoCodePanel reverseGeoCodePanel, VacationsWindow vacationsWindow, POIIcons poiIcons, ObjectSelector<OSMLocationInfo> osmLocationInfoSelector) {
     this.reverseGeoCodePanel = reverseGeoCodePanel;
+    this.vacationsWindow = vacationsWindow;
     this.poiIcons = poiIcons;
     
-    eEnumEditorDescriptor = (EEnumEditorDescriptor<POICategoryId>) vacationsWindow.getTreeView().getEObjectTreeDescriptor().getEEnumEditorDescriptorForEEnum(POIPackage.eINSTANCE.getPOICategoryId());
+    eEnumEditorDescriptor = EEnumEditorDescriptorForPOIs.getInstance();
     
     setBorder(new Border(new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT)));
     setPadding(new Insets(12.0));
@@ -1071,20 +1118,15 @@ class LocationPanel extends VBox implements ObjectSelectionListener<TreeItem<Obj
     gridPane.add(label, 0, row);
     
     locationTypeComboBox = componentFactory.createComboBox(eEnumEditorDescriptor.getDisplayNames());
-    locationTypeComboBox.setOnAction(new EventHandler<ActionEvent>() {
-
-      @Override
-      public void handle(ActionEvent arg0) {
-        Object choice = locationTypeComboBox.getValue();
-        if (choice != null) {
-          POICategoryId poiCategoryId = eEnumEditorDescriptor.getEEnumLiteralForDisplayName((String) choice);
-          Image locationIcon = poiIcons.getIcon(poiCategoryId);
-          locationTypeIconImageView.setImage(locationIcon);
-        } else {
-          locationTypeIconImageView.setImage(null);
-        }
-      }
-      
+    locationTypeComboBox.setOnAction((actionEvent) -> {
+      Object choice = locationTypeComboBox.getValue();
+      if (choice != null) {
+        POICategoryId poiCategoryId = eEnumEditorDescriptor.getEEnumLiteralForDisplayName((String) choice);
+        Image locationIcon = poiIcons.getIcon(poiCategoryId);
+        locationTypeIconImageView.setImage(locationIcon);
+      } else {
+        locationTypeIconImageView.setImage(null);
+      }      
     });
     gridPane.add(locationTypeComboBox, 1, row);
     
@@ -1122,32 +1164,11 @@ class LocationPanel extends VBox implements ObjectSelectionListener<TreeItem<Obj
     
     // actionHBox items for when a list of Locations is selected
     addLocationButton = componentFactory.createButton("Add location", "Add this location at the selected tree item");
-    addLocationButton.setOnAction(new EventHandler<ActionEvent>() {
-
-      @Override
-      public void handle(ActionEvent arg0) {
-        addLocation();
-      }
-      
-    });
+    addLocationButton.setOnAction((actionEvent) -> addLocation());
     setLocationButton = componentFactory.createButton("Set location", "Change the selected location to the specified value");
-    setLocationButton.setOnAction(new EventHandler<ActionEvent>() {
-
-      @Override
-      public void handle(ActionEvent arg0) {
-        setLocation();
-      }
-      
-    });
+    setLocationButton.setOnAction((actionEvent) -> setLocation());
     updateBoundaryButton = componentFactory.createButton("Update boundary", "Change the boundary and bounding box of the selected location to the specified values");
-    updateBoundaryButton.setOnAction(new EventHandler<ActionEvent>() {
-
-      @Override
-      public void handle(ActionEvent arg0) {
-        updateBoundary();
-      }
-      
-    });
+    updateBoundaryButton.setOnAction((actionEvent) -> updateBoundary());
     addAsLastChildToListLabel = componentFactory.createLabel("as last child to");
     beforeOrAfterComboBox = componentFactory.createComboBox(null);
     beforeOrAfterComboBox.getItems().addAll(BEFORE_TEXT, AFTER_TEXT);
@@ -1160,22 +1181,38 @@ class LocationPanel extends VBox implements ObjectSelectionListener<TreeItem<Obj
     this.getChildren().add(actionVBox);
     
     EObjectTreeView treeView = vacationsWindow.getTreeView();
-    treeView.addObjectSelectionListener(this);
+    treeView.addObjectSelectionListener((source, selectedTreeItem) -> handleNewTreeItemSelected(selectedTreeItem));
+    osmLocationInfoSelector.addObjectSelectionListener((source, osmLocationInfo) -> setLocation(osmLocationInfo));
     handleNewTreeItemSelected(treeView.getSelectedObject());
   }
   
+  /**
+   * Focus the map view on the current coordinates.
+   */
   private void focusMapViewOnLocation() {
     WGS84Coordinates coordinates = getCoordinates();
     if (coordinates != null) {
       vacationsWindow.toFront();
 
-      MapView mapView = vacationsWindow.getMapView();
+      MapView mapView = vacationsWindow.getTravelMapView();
       MapPoint mapPoint = new MapPoint(coordinates.getLatitude(), coordinates.getLongitude());
       mapView.flyTo(0, mapPoint, 2);
     }
   }
    
-  public void setLocation(Location location) {
+  /**
+   * Fill the controls based on the information of {@code OSMLocationInfo}.
+   * <p>
+   * The {@code OSMLocationInfo} is translated to a {@code Location} and then the controls are filled from this value.
+   * 
+   * @param osmLocationInfo the {@code OSMLocationInfo} from which the controls are to be filled.
+   */
+  private void setLocation(OSMLocationInfo osmLocationInfo) {
+    Location location = null;
+    if (osmLocationInfo != null) {
+      location = NominatimUtil.osmLocationInfoToLocation(osmLocationInfo);
+    }
+    
     if (location != null) {
       if (location.isSetName()) {
         nameTextField.setText(location.getName());
@@ -1240,7 +1277,6 @@ class LocationPanel extends VBox implements ObjectSelectionListener<TreeItem<Obj
       cityTextField.setText(null);
       streetTextField.setText(null);
       houseNumberTextField.setText(null);
-//      locationTypeTextField.setText(null);
       locationTypeIconImageView.setImage(null);
       coordinatesTextField.setText(null);
       boundingBoxTextField.setText(null);
@@ -1260,27 +1296,27 @@ class LocationPanel extends VBox implements ObjectSelectionListener<TreeItem<Obj
     String value;
     List<String> values;
     
-    value = getTextFieldText(nameTextField);
+    value = JfxUtil.getTextFieldText(nameTextField);
     if (value != null) {
       location.setName(value);
     }
     
-    value = getTextFieldText(countryTextField);
+    value = JfxUtil.getTextFieldText(countryTextField);
     if (value != null) {
       location.setCountry(value);
     }
     
-    value = getTextFieldText(cityTextField);
+    value = JfxUtil.getTextFieldText(cityTextField);
     if (value != null) {
       location.setCity(value);
     }
     
-    value = getTextFieldText(streetTextField);
+    value = JfxUtil.getTextFieldText(streetTextField);
     if (value != null) {
       location.setStreet(value);
     }
     
-    value = getTextFieldText(houseNumberTextField);
+    value = JfxUtil.getTextFieldText(houseNumberTextField);
     if (value != null) {
       location.setHouseNumber(value);
     }
@@ -1304,7 +1340,7 @@ class LocationPanel extends VBox implements ObjectSelectionListener<TreeItem<Obj
       }
     }
     
-    value = getTextFieldText(boundingBoxTextField);
+    value = JfxUtil.getTextFieldText(boundingBoxTextField);
     if (value != null) {
       values = StringUtil.commaSeparatedValuesToListOfValues(value);
       if (values.size() == 4) {
@@ -1334,7 +1370,7 @@ class LocationPanel extends VBox implements ObjectSelectionListener<TreeItem<Obj
   private WGS84Coordinates getCoordinates() {
     WGS84Coordinates coordinates = null;
     
-    String value = getTextFieldText(coordinatesTextField);
+    String value = JfxUtil.getTextFieldText(coordinatesTextField);
     if (value != null) {
       List<String> values = StringUtil.commaSeparatedValuesToListOfValues(value);
       if (values.size() == 2) {
@@ -1343,31 +1379,6 @@ class LocationPanel extends VBox implements ObjectSelectionListener<TreeItem<Obj
     }
     
     return coordinates;
-  }
-  
-  /**
-   * Get the real text of a TextField.
-   * <p>
-   * The value of a TextField normally has to be trimmed.
-   * Also an empty value is to be treated as 'no value' (null).
-   * 
-   * @param textField the {@code TextField} from which the text value is to be obtained.
-   * @return the value of {@code textField}, or null if there is no text.
-   */
-  private String getTextFieldText(TextField textField) {
-    String text = textField.getText();
-    
-    if (text != null) {
-      text = text.trim();
-    } else {
-      return null;
-    }
-    
-    if (text.isEmpty()) {
-      return null;
-    } else {
-      return text;
-    }
   }
   
   /**
@@ -1382,7 +1393,7 @@ class LocationPanel extends VBox implements ObjectSelectionListener<TreeItem<Obj
   private void addLocation() {
     Location location = getLocation();
     
-    // Always deselect, in order to prevent next 'add' or 'set' uses this unintentionally.
+    // Always deselect use reverse geocoordinates, in order to prevent that next 'add' or 'set' uses this unintentionally.
     useReverseGeocodeSearchCoordinates.setSelected(false);
         
     Object eObjectTreeItemContent = selectedTreeItem.getValue();
@@ -1399,7 +1410,6 @@ class LocationPanel extends VBox implements ObjectSelectionListener<TreeItem<Obj
         EList<EObject> eObjectList = (EList<EObject>) eObjectTreeItemContent;
 
         eObjectList.add(location);
-        selectedTreeItem.rebuildChildren();
         
         return;
       }
@@ -1424,11 +1434,8 @@ class LocationPanel extends VBox implements ObjectSelectionListener<TreeItem<Obj
         if (!before) {
           index++;
         }
-        LOGGER.info("index=" + index);
         eObjectList.add(index, location);
 
-        parentTreeItem.rebuildChildren();
-        
         return;
       }
     }
@@ -1442,7 +1449,7 @@ class LocationPanel extends VBox implements ObjectSelectionListener<TreeItem<Obj
    * but from the <code>ReverseGeocodePanel</code> (if available).
    */
   private void setLocation() {
-    // Always directly deselect, in order to prevent next 'add' or 'set' uses this unintentionally.
+    // Always deselect use reverse geocoordinates, in order to prevent that next 'add' or 'set' uses this unintentionally.
     useReverseGeocodeSearchCoordinates.setSelected(false);
     
     Location location = getLocation();
@@ -1468,10 +1475,13 @@ class LocationPanel extends VBox implements ObjectSelectionListener<TreeItem<Obj
     }    
   }
   
+  /**
+   * Update the bounding box (boundary) of the currently selected tree item, which shall be of type {@code Location}, to the specified bounding box.
+   */
   private void updateBoundary() {
     Object  eObjectTreeItemContent = selectedTreeItem.getValue();
     if (eObjectTreeItemContent instanceof Location location) {            
-      String value = getTextFieldText(boundingBoxTextField);
+      String value = JfxUtil.getTextFieldText(boundingBoxTextField);
       if (value != null) {
         List<String> values = StringUtil.commaSeparatedValuesToListOfValues(value);
         if (values.size() == 4) {
@@ -1494,15 +1504,6 @@ class LocationPanel extends VBox implements ObjectSelectionListener<TreeItem<Obj
       selectedTreeItem.rebuildChildren();
     }
   }
-
-  @Override
-  public void objectSelected(Object source, TreeItem<Object> object) {
-    LOGGER.info("=>");
-    
-    handleNewTreeItemSelected(object);
-    
-    LOGGER.info("<=");
-  }
   
   /**
    * Handle the fact that a new item is selected in the tree view.
@@ -1512,13 +1513,9 @@ class LocationPanel extends VBox implements ObjectSelectionListener<TreeItem<Obj
    * @param selectedTreeItem the currently selected item in the tree view.
    */
   private void handleNewTreeItemSelected(TreeItem<Object> selectedTreeItem) {
-    LOGGER.info("=>");
-    
     this.selectedTreeItem = (EObjectTreeItem) selectedTreeItem;
     
     updateActionHBox();
-        
-    LOGGER.info("<=");
   }
   
   /**
@@ -1552,6 +1549,12 @@ class LocationPanel extends VBox implements ObjectSelectionListener<TreeItem<Obj
     }
   }
   
+  /**
+   * Get a textual representation for an {@code EObjectTreeItem}.
+   * 
+   * @param eObjectTreeItem the {@code EObjectTreeItem} for which to get a textual representation.
+   * @returna textual representation for a {@code eObjectTreeItem}.
+   */
   private String getTreeItemDescription(EObjectTreeItem eObjectTreeItem) {
     if (eObjectTreeItem == null) {
       return null;
@@ -1615,6 +1618,11 @@ class LocationPanel extends VBox implements ObjectSelectionListener<TreeItem<Obj
     return vacationsWindow.getTreeView().treeItemIsLocationsList(parentTreeItem);
   }
   
+  /**
+   * Check whether the {@code selectedTreeItem} is a reference to a {@code Location}.
+   * 
+   * @return true if the {@code selectedTreeItem} is a reference to a {@code Location}, false otherwise.
+   */
   private boolean selectedTreeItemIsReferenceToLocation() {
     if (selectedTreeItem == null) {
       return false;

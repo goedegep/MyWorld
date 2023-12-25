@@ -24,8 +24,8 @@ public class PersonTextField extends ObjectControlAutoCompleteTextField<String> 
     
     this.rolodex = rolodex;
     
-    customization.getComponentFactoryFx().customizeTextInputControl(ocGetControl());
-    ocGetControl().getEntries().addAll(personsToString(rolodex.getPersonList().getPersons()));
+    customization.getComponentFactoryFx().customizeTextInputControl(getControl());
+    getControl().getEntries().addAll(personsToString(rolodex.getPersonList().getPersons()));
   }
   
 //  /**
@@ -37,7 +37,7 @@ public class PersonTextField extends ObjectControlAutoCompleteTextField<String> 
 //  }
   
   public boolean isNonExistingPersonName() {
-    if (ocIsFilledIn() && (getMatchingPersons().isEmpty())) {
+    if (isFilledIn() && (getMatchingPersons().isEmpty())) {
       return true;
     } else {
       return false;
@@ -48,7 +48,7 @@ public class PersonTextField extends ObjectControlAutoCompleteTextField<String> 
     List<Person> matchingPersons = new ArrayList<>();
     
     for (Person person: rolodex.getPersonList().getPersons()) {
-      if (person.getName().equals(ocGetValue())) {
+      if (person.getName().equals(getValue())) {
         matchingPersons.add(person);
       }
     }
@@ -57,7 +57,7 @@ public class PersonTextField extends ObjectControlAutoCompleteTextField<String> 
   }
   
   public City getCity(Country country) {
-    return rolodex.getCityList().getCity(ocGetValue(), country);
+    return rolodex.getCityList().getCity(getValue(), country);
   }
   
   private static List<String> personsToString(List<Person> persons) {

@@ -230,7 +230,6 @@ public class EObjectTreeItemForObjectList extends EObjectTreeItem {
     
     if (isFirstTimeChildren) {
       // The children haven't been built yet, so we don't have to add anything.
-      LOGGER.severe("Children haven't been built yet, so no action");
       return;
     }
     
@@ -242,10 +241,6 @@ public class EObjectTreeItemForObjectList extends EObjectTreeItem {
     @SuppressWarnings("unchecked")
     List<? extends EObject> eObjects = (List<? extends EObject>) object;
     EObject listEObject = eObjects.get(position);
-    EObjectTreeItemClassDescriptor childPresentationDescriptorNode = getEObjectTreeView().getBestClassDescriptor(listEObject.eClass());
-    if (childPresentationDescriptorNode == null) {
-      throw new RuntimeException("No presentation descriptor found for class: " + listEObject.eClass().getName());
-    }
     EObjectTreeItem child = new EObjectTreeItemForObject(listEObject, (EClass) eReference.getEType(), null, getEObjectTreeView());
     if (children.size() < position + 1) {
       children.add(child);
@@ -298,7 +293,7 @@ public class EObjectTreeItemForObjectList extends EObjectTreeItem {
    */
   @Override
   public TransferMode isDropPossible(DragEvent dragEvent) {
-    LOGGER.severe("=> dragEvent=" + EObjectTreeItem.dragEventToString(dragEvent));
+    LOGGER.info("=> dragEvent=" + EObjectTreeItem.dragEventToString(dragEvent));
     
     boolean dropPossible = true;
     

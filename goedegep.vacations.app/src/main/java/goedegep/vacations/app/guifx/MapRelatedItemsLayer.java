@@ -444,7 +444,9 @@ public class MapRelatedItemsLayer extends MapLayer {
       for (LocationData locationData: locations) {
         if (location.equals(locationData.location())) {
           LOGGER.info("Going to select: " + location);
-          locationData.labeledIcon().setSelected(true);
+          if (locationData.labeledIcon() != null) {
+            locationData.labeledIcon().setSelected(true);
+          }
         }
       }
     }

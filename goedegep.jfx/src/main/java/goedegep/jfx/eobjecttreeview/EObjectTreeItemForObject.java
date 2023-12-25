@@ -82,12 +82,12 @@ public class EObjectTreeItemForObject extends EObjectTreeItem {
 
     super(value, EObjectTreeItemType.OBJECT, eObjectTreeView);
     LOGGER.info("=>");
-    if (value.eClass().getName().equals("Day")) {
-      String info = value.toString();
-      if (info.contains("null")) {
-        LOGGER.info("Stop");
-      }
-    }
+//    if (value.eClass().getName().equals("Day")) {
+//      String info = value.toString();
+//      if (info.contains("null")) {
+//        LOGGER.info("Stop");
+//      }
+//    }
     Objects.requireNonNull(eClass, "eClass may not be null");
     Objects.requireNonNull(eObjectTreeView, "eObjectTreeView may not be null");
 
@@ -127,12 +127,12 @@ public class EObjectTreeItemForObject extends EObjectTreeItem {
     LOGGER.info("=> this=" + this);
     
     EObject value = (EObject) getValue();
-    if (value.eClass().getName().equals("Day")) {
-      String info = value.toString();
-      if (info.contains("null")) {
-        LOGGER.info("Stop");
-      }
-    }
+//    if (value.eClass().getName().equals("Day")) {
+//      String info = value.toString();
+//      if (info.contains("null")) {
+//        LOGGER.info("Stop");
+//      }
+//    }
     
     boolean isLeaf = true;
 
@@ -567,8 +567,6 @@ public class EObjectTreeItemForObject extends EObjectTreeItem {
    */
   @Override
   public TransferMode isDropPossible(DragEvent dragEvent) {  
-    LOGGER.severe("=> dragEvent=" + EObjectTreeItem.dragEventToString(dragEvent));
-    
     boolean dropPossible = true;
     
     Dragboard dragboard = dragEvent.getDragboard();
@@ -643,7 +641,7 @@ public class EObjectTreeItemForObject extends EObjectTreeItem {
    */
   @Override
   public void handleDragDropped(DragEvent dragEvent) {
-    LOGGER.severe("=> dragEvent" + EObjectTreeItem.dragEventToString(dragEvent));
+    LOGGER.info("=> dragEvent" + EObjectTreeItem.dragEventToString(dragEvent));
 
     if (isDropPossible(dragEvent) == null) {
       return;

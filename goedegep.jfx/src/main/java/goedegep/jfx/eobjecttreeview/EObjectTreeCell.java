@@ -1,5 +1,9 @@
 package goedegep.jfx.eobjecttreeview;
 
+import java.lang.reflect.InvocationTargetException;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.Queue;
 import java.util.logging.Logger;
 
 import org.eclipse.emf.ecore.EAttribute;
@@ -9,6 +13,7 @@ import org.eclipse.emf.ecore.EStructuralFeature;
 import goedegep.util.emf.EObjectPath;
 import javafx.event.EventHandler;
 import javafx.scene.control.TreeCell;
+import javafx.scene.control.TreeItem;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.input.DragEvent;
 import javafx.scene.input.MouseEvent;
@@ -27,17 +32,21 @@ import javafx.scene.paint.Color;
  */
 public class EObjectTreeCell extends TreeCell<Object> {
   private static final Logger LOGGER = Logger.getLogger(EObjectTreeCell.class.getName());
-//  private static final DataFormat EOBJECT_PATH = new DataFormat("EObjectPath");
-    
+  
   /**
-   * The {@code EObjectTreeItemType} of the item rendered by this cell.
+   * Save the current {@code TreeItem} associated to this cell, to check whether a different {@code TreeItem} is associated.
    */
-  private EObjectTreeItemType treeItemType = null;
+  private TreeItem<?> currentTreeItem = null;
   
   /**
    * The {@code EObjectTreeCellHelper} for the {@code treeItemType}.
    */
   private EObjectTreeCellHelper treeCellHelper = null;
+  
+  /**
+   * Queues with free tree cell helpers per helper class.
+   */
+  private HashMap<Class<?>, Queue<EObjectTreeCellHelper>> helpers = new HashMap<>();
 
   /**
    * Constructor.
@@ -85,26 +94,33 @@ public class EObjectTreeCell extends TreeCell<Object> {
     setOnDragDropped(this::handleDragDropped);
         
     LOGGER.info("<=");
-  }  
+  }
   
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void updateItem(Object value, boolean empty) {
     LOGGER.info("=> item=" + (value != null ? value : "(null)") + ", empty=" + empty);
     
     super.updateItem(value, empty);
-    
+
+    setText(null);
+
     if (empty) {
-      setText(null);
       setGraphic(null);
-      
-      treeItemType = null;
-      treeCellHelper = null;
-    } else {
-      updateTreeCellHelper(value);
-      
-      treeCellHelper.updateItem(value);
+      return;
     }
-        
+
+    // Update the helper if this cell is associated to a different tree item.
+    TreeItem<?> newTreeItem = getTreeItem();
+    if (currentTreeItem == null  ||  currentTreeItem != newTreeItem) {
+      updateTreeCellHelper(value);
+    }
+    currentTreeItem = newTreeItem;
+
+    treeCellHelper.updateItem(value);
+
     LOGGER.info("<=");
   }
 
@@ -376,7 +392,7 @@ public class EObjectTreeCell extends TreeCell<Object> {
     if (dragEvent.getGestureSource() == this) {
       return null;
     }
-    LOGGER.severe("=> dragEvent=" + EObjectTreeItem.dragEventToString(dragEvent));
+//    LOGGER.severe("=> dragEvent=" + EObjectTreeItem.dragEventToString(dragEvent));
     
     EObjectTreeItem eObjectTreeItem = (EObjectTreeItem) getTreeItem();
     if (eObjectTreeItem == null) {
@@ -390,6 +406,8 @@ public class EObjectTreeCell extends TreeCell<Object> {
   /**
    * Update the {@code treeCellHelper} for the current content.
    * <p>
+   * If a {@code PresentationType} is specified (only possible for nodes of type {@code EObjectTreeItemForAttributeSimple}), this defines the helper class.<br/>
+   * Otherwise the best helper is selected based on the content type.
    * The type of content is specified by the {@link EObjectItemType} of the tree item. Each content
    * type has its own helper class as follows:
    * <pre>
@@ -397,7 +415,7 @@ public class EObjectTreeCell extends TreeCell<Object> {
    * OBJECT                 EObjectTreeCellHelperForObject
    * OBJECT_IN_LIST         EObjectTreeCellHelperForObjectInList
    * OBJECT_LIST            EObjectTreeCellHelperForObjectList
-   * ATTRIBUTE_SIMPLE       EObjectTreeCellHelperForAttributeSimple
+   * ATTRIBUTE_SIMPLE       EObjectTreeCellHelperForAttributeBoolean for data type Boolean, else EObjectTreeCellHelperForAttributeSimple
    * ATTRIBUTE_LIST         EObjectTreeCellHelperForAttributeList
    * ATTRIBUTE_LIST_VALUE   EObjectTreeCellHelperForAttributeListValue
    * </pre>
@@ -407,17 +425,53 @@ public class EObjectTreeCell extends TreeCell<Object> {
   private void updateTreeCellHelper(Object value) {
     LOGGER.info("=> EObjectTreeItemType=" + ((EObjectTreeItem) getTreeItem()).getEObjectTreeItemType());
     
+    Class<? extends EObjectTreeCellHelper> helperClass = null;
     
-    EObjectTreeItemType newTreeItemType = ((EObjectTreeItem) getTreeItem()).getEObjectTreeItemType();
+    PresentationType presentationType = null;
+    EObjectTreeItem treeItem = (EObjectTreeItem) getTreeItem();
+    if (treeItem instanceof EObjectTreeItemForAttributeSimple eObjectTreeItemForAttributeSimple) {
+      presentationType = eObjectTreeItemForAttributeSimple.getEObjectTreeItemAttributeDescriptor().getPresentationType();
+    }
     
-    if (treeItemType == null  ||  treeItemType != newTreeItemType) {
+    if (presentationType != null) {
+      switch(presentationType) {
+      case BOOLEAN:
+        helperClass = EObjectTreeCellHelperForAttributeBoolean.class;
+        break;
+
+      case SINGLE_LINE_TEXT:
+      case FORMAT:
+        helperClass = EObjectTreeCellHelperForAttributeSimple.class;
+        break;
+
+      case MULTI_LINE_TEXT:
+        helperClass = EObjectTreeCellHelperForAttributeMultiLineText.class;
+        break;
+
+      case ENUMERATION:
+        helperClass = EObjectTreeCellHelperForAttributeEnumeration.class;
+        break;
+
+      case FILE:
+        helperClass = EObjectTreeCellHelperForAttributeFile.class;
+        break;
+
+      case FOLDER:
+        helperClass = EObjectTreeCellHelperForAttributeFolder.class;
+        break;
+      }
+    }
+
+    if (helperClass == null) {
+      EObjectTreeItemType newTreeItemType = ((EObjectTreeItem) getTreeItem()).getEObjectTreeItemType();
+      
       switch (newTreeItemType) {
       case OBJECT:
-        treeCellHelper = new EObjectTreeCellHelperForObject(this);
+        helperClass = EObjectTreeCellHelperForObject.class;
         break;
 
       case OBJECT_LIST:
-        treeCellHelper = new EObjectTreeCellHelperForObjectList(this);
+        helperClass = EObjectTreeCellHelperForObjectList.class;
         break;
 
       case ATTRIBUTE_SIMPLE:
@@ -426,12 +480,13 @@ public class EObjectTreeCell extends TreeCell<Object> {
         if (eStructuralFeature instanceof EAttribute eAttribute) {
           EDataType eDataType = eAttribute.getEAttributeType();
           switch (eDataType.getName()) {
+          case "Boolean":
           case "EBoolean":
-            treeCellHelper = new EObjectTreeCellHelperForAttributeBoolean(this);
+            helperClass = EObjectTreeCellHelperForAttributeBoolean.class;
             break;
-            
+
           default:
-            treeCellHelper = new EObjectTreeCellHelperForAttributeSimple(this);
+            helperClass = EObjectTreeCellHelperForAttributeSimple.class;
             break;
           }
         } else {
@@ -440,26 +495,46 @@ public class EObjectTreeCell extends TreeCell<Object> {
         break;
 
       case ATTRIBUTE_LIST:
-        treeCellHelper = new EObjectTreeCellHelperForAttributeList(this);
+        helperClass = EObjectTreeCellHelperForAttributeList.class;
         break;
 
       case ATTRIBUTE_LIST_VALUE:
-        treeCellHelper = new EObjectTreeCellHelperForAttributeListValue(this);
+        helperClass = EObjectTreeCellHelperForAttributeListValue.class;
         break;
+
+      default:
+        LOGGER.severe("Error: reaching default clause for treeItemType: " + newTreeItemType);
+        throw new RuntimeException("Error: reaching default clause for treeItemType: " + newTreeItemType);
       }
+    }
+
+    if (treeCellHelper == null  ||  treeCellHelper.getClass() != helperClass) {
       
-      if (treeCellHelper == null) {
-        LOGGER.severe("Null after switch");
+      // store the current helper, if there is one, in the helpers map.
+      if (treeCellHelper != null) {
+        Queue<EObjectTreeCellHelper> queue = helpers.get(treeCellHelper.getClass());
+        if (queue == null) {
+          queue = new LinkedList<EObjectTreeCellHelper>();
+          helpers.put(treeCellHelper.getClass(), queue);
+        }
+        queue.add(treeCellHelper);
       }
-      
-      treeItemType = newTreeItemType;
+
+      // get new helper from helpers map, or create it if not available
+      Queue<EObjectTreeCellHelper> queue = helpers.get(helperClass);
+      if (queue != null  &&  !queue.isEmpty()) {
+        treeCellHelper = queue.remove();
+      } else {
+        try {
+          treeCellHelper = helperClass.getConstructor(this.getClass()).newInstance(this);
+        } catch (NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+          e.printStackTrace();
+        }
+        
+      }
     }
     
-    if (treeCellHelper == null) {
-      LOGGER.severe("Null after if");
-    }
-    
-    LOGGER.info("<= " + treeCellHelper.getClass().getName());
+    LOGGER.info("<= " + (treeCellHelper != null ? treeCellHelper.getClass().getName() : "<null>"));
   }
 
   @Override
@@ -468,7 +543,7 @@ public class EObjectTreeCell extends TreeCell<Object> {
     
     if (((EObjectTreeItem)getTreeItem()).getEObjectTreeItemType().isEditable()) {
       super.startEdit();
-      treeCellHelper.startEdit(this);
+      treeCellHelper.startEdit();
     }
     
     LOGGER.info("<=");

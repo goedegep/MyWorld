@@ -14,9 +14,9 @@ import javafx.scene.input.DragEvent;
  */
 public interface EObjectTreeCellHelper {
   /**
-   * Indicates that the helper is assigned to a new tree item.
+   * Update the cell for a new value.
    * 
-   * @param eObjectTreeItemContent the content of the tree item to which this helper is now assigned.
+   * @param eObjectTreeItemContent the content of the tree item to which this helper is now assigned. This value is never null.
    */
   public void updateItem(Object value);
   
@@ -27,7 +27,7 @@ public interface EObjectTreeCellHelper {
    * 
    * @param eObjectTreeCell the cell on which the editing starts.
    */
-  public default void startEdit(EObjectTreeCell eObjectTreeCell) {
+  public default void startEdit() {
     throw new UnsupportedOperationException();
   }
   
@@ -52,7 +52,9 @@ public interface EObjectTreeCellHelper {
   }
   
   /**
-   * This method shall return a text which represents as much as possible what is show in the node.
+   * This method shall return a text which represents as much as possible what is shown in the node.
+   * <p>
+   * This method is a kind of a toString method, which can e.g. be used to print a textual representation of a tree view.
    * 
    * @return an, as good as possible, textual representation of the cell.
    */

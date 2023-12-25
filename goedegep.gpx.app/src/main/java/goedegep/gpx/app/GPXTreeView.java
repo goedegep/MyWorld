@@ -1,5 +1,7 @@
 package goedegep.gpx.app;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Logger;
 
 import org.eclipse.emf.ecore.EAttribute;
@@ -7,6 +9,7 @@ import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EReference;
 
+import goedegep.appgen.TableRowOperation;
 import goedegep.gpx.model.GPXPackage;
 import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.eobjecttreeview.EObjectTreeDescriptor;
@@ -16,6 +19,7 @@ import goedegep.jfx.eobjecttreeview.EObjectTreeItemClassDescriptor;
 import goedegep.jfx.eobjecttreeview.EObjectTreeItemClassListReferenceDescriptor;
 import goedegep.jfx.eobjecttreeview.EObjectTreeItemClassReferenceDescriptor;
 import goedegep.jfx.eobjecttreeview.EObjectTreeView;
+import goedegep.jfx.eobjecttreeview.NodeOperationDescriptor;
 import goedegep.jfx.eobjecttreeview.PresentationType;
 import goedegep.resources.ImageResource;
 import goedegep.util.emf.EmfPackageHelper;
@@ -104,7 +108,9 @@ class GPXTreeViewDescriptor extends EObjectTreeDescriptor {
     });
     
     // GpxType.metadata
-    eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(new EObjectTreeItemClassReferenceDescriptor(GPX_PACKAGE.getGpxType_Metadata(), gpxPackageHelper.getEClass("goedegep.gpx.model.MetadataType"), (eObject) -> "Meta data (metadata)", true, null));
+    List<NodeOperationDescriptor> nodeOperationDescriptors = new ArrayList<>();
+    nodeOperationDescriptors.add(new NodeOperationDescriptor(TableRowOperation.NEW_OBJECT, "Create Metadata"));
+    eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(new EObjectTreeItemClassReferenceDescriptor(GPX_PACKAGE.getGpxType_Metadata(), gpxPackageHelper.getEClass("goedegep.gpx.model.MetadataType"), (eObject) -> "Meta data (metadata)", true, nodeOperationDescriptors));
 
     // GpxType.version
     eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(new EObjectTreeItemAttributeDescriptor(GPX_PACKAGE.getGpxType_Version(), "Version", PresentationType.SINGLE_LINE_TEXT, null));
@@ -137,7 +143,9 @@ class GPXTreeViewDescriptor extends EObjectTreeDescriptor {
     EClass eClass = gpxPackageHelper.getEClass("goedegep.gpx.model.WptType");
         
     // WptType
-    EObjectTreeItemClassDescriptor eObjectTreeItemClassDescriptor = new EObjectTreeItemClassDescriptor(eClass, (eObject) -> "Waypoint", false, null, eObject -> {
+    List<NodeOperationDescriptor> nodeOperationDescriptors = new ArrayList<>();
+    nodeOperationDescriptors.add(new NodeOperationDescriptor(TableRowOperation.DELETE_OBJECT, "Delete"));
+    EObjectTreeItemClassDescriptor eObjectTreeItemClassDescriptor = new EObjectTreeItemClassDescriptor(eClass, (eObject) -> "Waypoint", false, nodeOperationDescriptors, eObject -> {
       return ImageResource.LOCATION_FLAG_YELLOW.getImage();
     });
 

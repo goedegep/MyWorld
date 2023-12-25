@@ -215,19 +215,19 @@ class InstitutionEditPanel {
     label = componentFactory.createLabel("Institution name:");
     gridPane.add(label, 0, row);
 
-    gridPane.add(institutionNameTextField.ocGetControl(), 1, row);
+    gridPane.add(institutionNameTextField.getControl(), 1, row);
     
     row++;
     
     label = componentFactory.createLabel("Address:");
     gridPane.add(label, 0, row);
 
-    gridPane.add(addressTextField.ocGetControl(), 1, row);
+    gridPane.add(addressTextField.getControl(), 1, row);
     
     label = componentFactory.createLabel("Mailing address:");
     gridPane.add(label, 2, row);
 
-    gridPane.add(mailingAddressTextField.ocGetControl(), 3, row);
+    gridPane.add(mailingAddressTextField.getControl(), 3, row);
     
     row++;
     
@@ -235,7 +235,7 @@ class InstitutionEditPanel {
     gridPane.add(label,  0, row);
     
     for (int i = 0; i < phoneNumberTextFields.length; i++) {
-      gridPane.add(phoneNumberTextFields[i].ocGetControl(), 1 + i, row);
+      gridPane.add(phoneNumberTextFields[i].getControl(), 1 + i, row);
     }
     
   }
@@ -284,35 +284,35 @@ class InstitutionEditPanel {
       return;
     }
     
-    institutionNameTextField.ocSetValue(institution.getName());
+    institutionNameTextField.setValue(institution.getName());
     
     Address address = institution.getAddress();
     if (address != null) {
-      addressTextField.ocSetValue(address.toString());
+      addressTextField.setValue(address.toString());
     }
     
     Address mailingAddress = institution.getMailingAddress();
     if (mailingAddress != null) {
-      mailingAddressTextField.ocSetValue(mailingAddress.toString());
+      mailingAddressTextField.setValue(mailingAddress.toString());
     }
     
     List<PhoneNumber> phoneNumbers = institution.getPhoneNumbers();
     for (int i = 0; i < phoneNumberTextFields.length; i++) {
       if (phoneNumbers.size() > i) {
-        phoneNumberTextFields[i].ocSetValue(phoneNumbers.get(i).toString());
+        phoneNumberTextFields[i].setValue(phoneNumbers.get(i).toString());
       } else {
-        phoneNumberTextFields[i].ocSetValue(null);
+        phoneNumberTextFields[i].setValue(null);
       }
     }
   }
   
   private void clearFields() {
-    institutionNameTextField.ocSetValue(null);
+    institutionNameTextField.setValue(null);
 
-    addressTextField.ocSetValue(null);
-    mailingAddressTextField.ocSetValue(null);
+    addressTextField.setValue(null);
+    mailingAddressTextField.setValue(null);
     for (int i = 0; i < phoneNumberTextFields.length; i++) {
-      phoneNumberTextFields[i].ocSetValue(null);
+      phoneNumberTextFields[i].setValue(null);
     }
   }
   
@@ -345,7 +345,7 @@ class InstitutionEditPanel {
    * @param institution The Institution object to be updated.
    */
   public boolean updateInstitutionFromFields(Institution institution) {
-      String institutionName = institutionNameTextField.ocGetValue();
+      String institutionName = institutionNameTextField.getValue();
       if (!PgUtilities.equals(institution.getName(), institutionName)) {
         institution.setName(institutionName);
       }

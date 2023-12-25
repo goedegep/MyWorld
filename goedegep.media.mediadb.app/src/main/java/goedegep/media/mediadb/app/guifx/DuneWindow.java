@@ -120,7 +120,7 @@ public class DuneWindow extends JfxStage {
     ObjectControlFolderSelecter musicFolderSelecter = componentFactory.createFolderSelecter(200, "Currently selected folder",
         "Choose folder", "Select music folder via a file chooser", "Select the folder with all music", false);
     musicFolderSelecter.setInitialFolderProvider(() -> currentMusicFolder);
-    Node folderName = musicFolderSelecter.ocGetControl();
+    Node folderName = musicFolderSelecter.getControl();
     grid.add(folderName, 2, 0);
     
     button = musicFolderSelecter.getFolderChooserButton();
@@ -141,7 +141,7 @@ public class DuneWindow extends JfxStage {
     duneMusicFolderSelecter = componentFactory.createFolderSelecter(200, "Currently selected Dune music folder path",
         "Choose folder", "Select  Dune music folder path via a file chooser", "Select the music folder on the Dune", false);
     duneMusicFolderSelecter.setInitialFolderProvider(() -> currentDuneMusicFolderPath);
-    Node duneFolderPathTextField = duneMusicFolderSelecter.ocGetControl();
+    Node duneFolderPathTextField = duneMusicFolderSelecter.getControl();
     duneMusicFolderSelecter.addListener(e -> {
       currentDuneMusicFolderPath = duneMusicFolderSelecter.ocGetAbsolutePath();
       handleChanges();
@@ -162,7 +162,7 @@ public class DuneWindow extends JfxStage {
     playListFolderPathSelecter = componentFactory.createFolderSelecter(200, "Currently selected Dune playlists folder path",
         "Choose folder", "Select Dune playlists folder path via a file chooser", "Select the playlists folder on the Dune", false);
     playListFolderPathSelecter.setInitialFolderProvider(() -> currentDunePlaylistsFolderPath);
-    Node playListFolderPathTextField = playListFolderPathSelecter.ocGetControl();
+    Node playListFolderPathTextField = playListFolderPathSelecter.getControl();
     playListFolderPathSelecter.addListener(e -> {
       currentDunePlaylistsFolderPath = playListFolderPathSelecter.ocGetAbsolutePath();
       handleChanges();
@@ -225,14 +225,14 @@ public class DuneWindow extends JfxStage {
     
     // To synchronize to the Dune, the Dune music folder shall be valid.
     if (synchronizeToDuneCheckBox.isSelected()) {
-      if (!duneMusicFolderSelecter.ocIsValid()) {
+      if (!duneMusicFolderSelecter.isValid()) {
         inputsValid = false;
       }
     }
     
     // To update playlists on the Dune, the Dune playlists folder shall be valid.
     if (updatePlayListsCheckBox.isSelected()) {
-      if (!playListFolderPathSelecter.ocIsValid()) {
+      if (!playListFolderPathSelecter.isValid()) {
         inputsValid = false;
       }
     }

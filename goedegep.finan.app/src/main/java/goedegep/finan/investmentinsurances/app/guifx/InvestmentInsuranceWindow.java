@@ -82,7 +82,7 @@ public class InvestmentInsuranceWindow extends JfxStage {
     gridPane.add(label, 0, row);
 
     startingDateTextField = componentFactory.createObjectControlLocalDate((LocalDate) null, 100, false, "Ingangsdatum van de verzekering");
-    gridPane.add(startingDateTextField.ocGetControl(), 1, row);
+    gridPane.add(startingDateTextField.getControl(), 1, row);
     
     row++;
     
@@ -100,9 +100,9 @@ public class InvestmentInsuranceWindow extends JfxStage {
     gridPane.add(label, 0, row);
 
     insuredBenefitOnDeathTextField = componentFactory.createObjectControlCurrency((PgCurrency) null, 100, true, "Verzekerde uitkering bij overlijden (in oorspronkelijke munteenheid)");
-    gridPane.add(insuredBenefitOnDeathTextField.ocGetControl(), 1, row);
+    gridPane.add(insuredBenefitOnDeathTextField.getControl(), 1, row);
     insuredBenefitOnDeathInEurosTextField = componentFactory.createObjectControlCurrency((PgCurrency) null, 100, true, "Verzekerde uitkering bij overlijden (in euros)");
-    gridPane.add(insuredBenefitOnDeathInEurosTextField.ocGetControl(), 2, row);
+    gridPane.add(insuredBenefitOnDeathInEurosTextField.getControl(), 2, row);
     row++;
     TextArea insuredBenefitOnDeathInfoTextField = componentFactory.createTextArea(
         "De verzekerde uitkering is het uit te keren bedrag bij overlijden van de verzekerde en betaalbaar terstond na overlijden.\n" + 
@@ -119,9 +119,9 @@ public class InvestmentInsuranceWindow extends JfxStage {
     gridPane.add(label, 0, row);
 
     premiumTextField = componentFactory.createObjectControlCurrency((PgCurrency) null, 100, true, "Betaalde premie (in oorspronkelijke munteenheid))");
-    gridPane.add(premiumTextField.ocGetControl(), 1, row);
+    gridPane.add(premiumTextField.getControl(), 1, row);
     premiumInEurosTextField = componentFactory.createObjectControlCurrency((PgCurrency) null, 100, true, "Betaalde premie (in euros))");
-    gridPane.add(premiumInEurosTextField.ocGetControl(), 2, row);
+    gridPane.add(premiumInEurosTextField.getControl(), 2, row);
     
     
     
@@ -143,11 +143,11 @@ public class InvestmentInsuranceWindow extends JfxStage {
   }
 
   private void clearControls() {
-    startingDateTextField.ocSetValue(null);
-    insuredBenefitOnDeathTextField.ocSetValue(null);
-    insuredBenefitOnDeathInEurosTextField.ocSetValue(null);
-    premiumTextField.ocSetValue(null);
-    premiumInEurosTextField.ocSetValue(null);
+    startingDateTextField.setValue(null);
+    insuredBenefitOnDeathTextField.setValue(null);
+    insuredBenefitOnDeathInEurosTextField.setValue(null);
+    premiumTextField.setValue(null);
+    premiumInEurosTextField.setValue(null);
     policyHolderTextField.setText(null);
   }
 
@@ -158,19 +158,19 @@ public class InvestmentInsuranceWindow extends JfxStage {
 
     // Starting date
     if (investmentInsurance.isSetStartingDate()) {
-      startingDateTextField.ocSetValue(investmentInsurance.getStartingDate());
+      startingDateTextField.setValue(investmentInsurance.getStartingDate());
     }
 
     // Insured benefit on death
     if (investmentInsurance.isSetInsuredBenefitOnDeath()) {
-      insuredBenefitOnDeathTextField.ocSetValue(investmentInsurance.getInsuredBenefitOnDeath());
-      insuredBenefitOnDeathInEurosTextField.ocSetValue(investmentInsurance.getInsuredBenefitOnDeath().certifyCurrency(PgCurrency.EURO));
+      insuredBenefitOnDeathTextField.setValue(investmentInsurance.getInsuredBenefitOnDeath());
+      insuredBenefitOnDeathInEurosTextField.setValue(investmentInsurance.getInsuredBenefitOnDeath().certifyCurrency(PgCurrency.EURO));
     }
 
     // Premium
     if (investmentInsurance.isSetPremium()) {
-      premiumTextField.ocSetValue(investmentInsurance.getPremium());
-      premiumInEurosTextField.ocSetValue(investmentInsurance.getPremium().certifyCurrency(PgCurrency.EURO));
+      premiumTextField.setValue(investmentInsurance.getPremium());
+      premiumInEurosTextField.setValue(investmentInsurance.getPremium().certifyCurrency(PgCurrency.EURO));
     }
 
     // Policyholder

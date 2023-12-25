@@ -116,12 +116,18 @@ public class CompanyTreeViewDescriptorFactory {
           }
           buf.append(person.getSurname());
           return buf.toString();
-        }, false, null,
+        }, false, nodeOperationDescriptors,
         eObject -> Resources.getPersonImage());
     eObjectTreeItemClassDescriptor.setStrongText(true);
     
     // Person.firstNames
-    EObjectTreeItemAttributeListValueDescriptor listValueDescriptor = new EObjectTreeItemAttributeListValueDescriptor(false, null);
+    nodeOperationDescriptors = new ArrayList<>();
+    nodeOperationDescriptors.add(new NodeOperationDescriptor(TableRowOperation.NEW_OBJECT_BEFORE, "New firstname before this name"));
+    nodeOperationDescriptors.add(new NodeOperationDescriptor(TableRowOperation.NEW_OBJECT_AFTER, "New firstname after this name"));
+    nodeOperationDescriptors.add(new NodeOperationDescriptor(TableRowOperation.DELETE_OBJECT, "Delete this firstname"));
+    EObjectTreeItemAttributeListValueDescriptor listValueDescriptor = new EObjectTreeItemAttributeListValueDescriptor(false, nodeOperationDescriptors);
+    nodeOperationDescriptors = new ArrayList<>();
+    nodeOperationDescriptors.add(new NodeOperationDescriptor(TableRowOperation.NEW_OBJECT, "Add a firstname"));
     eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(new EObjectTreeItemAttributeListDescriptor(EMF_SAMPLE_PACKAGE.getPerson_Firstnames(), "First names", false, nodeOperationDescriptors, listValueDescriptor));
     
     // Person.surname

@@ -92,7 +92,7 @@ public class FileFinderWindow extends JfxStage {
     ObjectControlFolderSelecter folderSelecter = componentFactory.createFolderSelecter(400, "Currently selected folder",
         "Choose folder", "Select search folder via a file chooser", "Select the search folder", false);
     
-    Node folderNameTextField = folderSelecter.ocGetControl();
+    Node folderNameTextField = folderSelecter.getControl();
     controlsPane.getChildren().add(folderNameTextField);
     
     Button folderChooserButton = folderSelecter.getFolderChooserButton();
@@ -154,7 +154,7 @@ public class FileFinderWindow extends JfxStage {
     } else {
       searchFrameMakerFilesButton.setText(SEARCH_FRAMEMAKER_FILES_BUTTON_TEXT);
       searchFrameMakerFilesButton.setTooltip(new Tooltip(SEARCH_FRAMEMAKER_FILES_BUTTON_TOOLTIP));
-      searchFrameMakerFilesButton.setDisable(!folderSelecter.ocIsValid());
+      searchFrameMakerFilesButton.setDisable(!folderSelecter.isValid());
     }
   }
   

@@ -64,7 +64,7 @@ public class ObjectControlAutoCompleteTextField<T> extends ObjectControlAbstract
    * {@inheritDoc}
    */
   @Override
-  public AutoCompleteTextField ocGetControl() {
+  public AutoCompleteTextField getControl() {
     return autoCompleteTextField;
   }
 
@@ -111,15 +111,15 @@ public class ObjectControlAutoCompleteTextField<T> extends ObjectControlAbstract
    * {@inheritDoc}
    */
   @Override
-  public String ocGetObjectValueAsFormattedText()  {
-    return objectToString(ocGetValue());
+  public String getValueAsFormattedText()  {
+    return objectToString(getValue());
   }
 
   /**
    * {@inheritDoc}
    */
   @Override
-  public void ocSetValue(T objectValue) {
+  public void setValue(T objectValue) {
     referenceValue = objectValue;
     autoCompleteTextField.setText(objectToString(objectValue));
   }
@@ -181,7 +181,7 @@ public class ObjectControlAutoCompleteTextField<T> extends ObjectControlAbstract
    */
   @Override
   public void ociRedrawValue() {
-    autoCompleteTextField.setText(ocGetObjectValueAsFormattedText());    
+    autoCompleteTextField.setText(getValueAsFormattedText());    
   }
 
 }

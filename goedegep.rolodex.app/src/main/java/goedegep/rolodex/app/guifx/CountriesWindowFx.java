@@ -170,7 +170,7 @@ class CountryEditPanel {
     label = componentFactory.createLabel("Country name:");
     gridPane.add(label, 0, row);
     
-    gridPane.add(countryTextField.ocGetControl(), 1, row);
+    gridPane.add(countryTextField.getControl(), 1, row);
     
     Button addButton = componentFactory.createButton("Add", "Add the country to the Rolodex");
     addButton.setOnAction((e) -> {
@@ -222,7 +222,7 @@ class CountryEditPanel {
    */
   private void updateCountryIfControlsAreValid() {
     // Only update if all controls have valid values.
-    if (!countryTextField.ocIsValid()) {
+    if (!countryTextField.isValid()) {
       return;
     }
     
@@ -235,7 +235,7 @@ class CountryEditPanel {
    * @param country the Country who's values will be applied to the controls.
    */
   private void fillFieldsFromCountry(Country country) {
-    countryTextField.ocSetValue(country != null ? country.getCountryName() : null);
+    countryTextField.setValue(country != null ? country.getCountryName() : null);
   }
   
   /**
@@ -247,7 +247,7 @@ class CountryEditPanel {
    */
   private Country createCountryFromFields() {
     // Only update if all controls have valid values.
-    if (!countryTextField.ocIsValid()) {
+    if (!countryTextField.isValid()) {
       return null;
     }
     
@@ -266,7 +266,7 @@ class CountryEditPanel {
    * @param country The Country object to be updated.
    */
   public boolean updateCountryFromFields(Country country) {
-    String countryName = countryTextField.ocGetValue();
+    String countryName = countryTextField.getValue();
     if (!PgUtilities.equals(country.getCountryName(), countryName)) {
       country.setCountryName(countryName);
     }

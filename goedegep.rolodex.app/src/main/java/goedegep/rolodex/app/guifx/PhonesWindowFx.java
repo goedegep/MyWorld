@@ -223,14 +223,14 @@ class PhoneEditPanel {
     label = componentFactory.createLabel("Phone description:");
     gridPane.add(label, 0, row);
 
-    gridPane.add(phoneDescriptionTextField.ocGetControl(), 1, row);
+    gridPane.add(phoneDescriptionTextField.getControl(), 1, row);
         
     row++;
     
     label = componentFactory.createLabel("Phone type:");
     gridPane.add(label, 0, row);
 
-    gridPane.add(phoneTypeTextField.ocGetControl(), 1, row);
+    gridPane.add(phoneTypeTextField.getControl(), 1, row);
     
   }
   
@@ -278,13 +278,13 @@ class PhoneEditPanel {
       return;
     }
     
-    phoneDescriptionTextField.ocSetValue(phone.getDescription());
-    phoneTypeTextField.ocSetValue(phone.getPhoneType());
+    phoneDescriptionTextField.setValue(phone.getDescription());
+    phoneTypeTextField.setValue(phone.getPhoneType());
   }
   
   private void clearFields() {
-    phoneDescriptionTextField.ocSetValue(null);
-    phoneTypeTextField.ocSetValue(null);
+    phoneDescriptionTextField.setValue(null);
+    phoneTypeTextField.setValue(null);
   }
   
   /**
@@ -316,12 +316,12 @@ class PhoneEditPanel {
    * @param phone The Phone object to be updated.
    */
   public boolean updatePhoneFromFields(Phone phone) {
-    String phoneDescription = phoneDescriptionTextField.ocGetValue();
+    String phoneDescription = phoneDescriptionTextField.getValue();
     if (!PgUtilities.equals(phone.getDescription(), phoneDescription)) {
       phone.setDescription(phoneDescription);
     }      
         
-    String phoneType = phoneTypeTextField.ocGetValue();
+    String phoneType = phoneTypeTextField.getValue();
     if (!PgUtilities.equals(phone.getPhoneType(), phoneType)) {
       phone.setPhoneType(phoneType);
     }      
@@ -424,19 +424,19 @@ class PhoneAddressBookEntryEditPanel {
     label = componentFactory.createLabel("Entry name:");
     gridPane.add(label, 0, row);
 
-    gridPane.add(entryNameTextField.ocGetControl(), 1, row);
+    gridPane.add(entryNameTextField.getControl(), 1, row);
     
     label = componentFactory.createLabel("Entry type:");
     gridPane.add(label, 2, row);
 
-    gridPane.add(phoneAddressBookEntryTypeField.ocGetControl(), 3, row);
+    gridPane.add(phoneAddressBookEntryTypeField.getControl(), 3, row);
     
     row++;
     
     label = componentFactory.createLabel("Phone number:");
     gridPane.add(label, 0, row);
 
-    gridPane.add(phoneNumberTextField.ocGetControl(), 1, row);
+    gridPane.add(phoneNumberTextField.getControl(), 1, row);
     
   }
   
@@ -494,15 +494,15 @@ class PhoneAddressBookEntryEditPanel {
       return;
     }
     
-    entryNameTextField.ocSetValue(phoneAddressBookEntry.getEntryName());
-    phoneAddressBookEntryTypeField.ocSetValue(phoneAddressBookEntry.getEntryType());
-    phoneNumberTextField.ocSetValue(phoneAddressBookEntry.getPhoneNumber().toString());
+    entryNameTextField.setValue(phoneAddressBookEntry.getEntryName());
+    phoneAddressBookEntryTypeField.setValue(phoneAddressBookEntry.getEntryType());
+    phoneNumberTextField.setValue(phoneAddressBookEntry.getPhoneNumber().toString());
   }
   
   private void clearFields() {
-    entryNameTextField.ocSetValue(null);
-    phoneAddressBookEntryTypeField.ocSetValue(null);
-    phoneNumberTextField.ocSetValue(null);
+    entryNameTextField.setValue(null);
+    phoneAddressBookEntryTypeField.setValue(null);
+    phoneNumberTextField.setValue(null);
   }
   
   /**
@@ -534,12 +534,12 @@ class PhoneAddressBookEntryEditPanel {
    * @param phoneAddressBookEntry The PhoneNumber object to be updated.
    */
   public boolean updatePhoneAddressBookEntryFromFields(PhoneAddressBookEntry phoneAddressBookEntry) {
-    String entryName = entryNameTextField.ocGetValue();
+    String entryName = entryNameTextField.getValue();
     if (!PgUtilities.equals(phoneAddressBookEntry.getEntryName(), entryName)) {
       phoneAddressBookEntry.setEntryName(entryName);
     }      
         
-    PhoneAddressBookEntryType entryType = (PhoneAddressBookEntryType) phoneAddressBookEntryTypeField.ocGetValue();
+    PhoneAddressBookEntryType entryType = (PhoneAddressBookEntryType) phoneAddressBookEntryTypeField.getValue();
     if (!PgUtilities.equals(phoneAddressBookEntry.getEntryType(), entryType)) {
       phoneAddressBookEntry.setEntryType(entryType);
     } 

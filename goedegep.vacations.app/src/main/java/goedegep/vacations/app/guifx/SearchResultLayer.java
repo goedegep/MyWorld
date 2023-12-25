@@ -36,7 +36,7 @@ public class SearchResultLayer extends MapLayer {
   }
   
   public Integer addLocation(Double lat, Double lon, WGS84BoundingBox boundingBox, List<List<WGS84Coordinates>> polylines) {
-    LOGGER.severe("polylines: " + (polylines != null ? polylines.size() : "<null>"));
+    LOGGER.info("polylines: " + (polylines != null ? polylines.size() : "<null>"));
     locationId++;
     
     if (lat != null  &&  lon != null) {

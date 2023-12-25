@@ -22,8 +22,8 @@ public class InstitutionTextField extends ObjectControlAutoCompleteTextField<Str
     
     this.rolodex = rolodex;
     
-    customization.getComponentFactoryFx().customizeTextInputControl(this.ocGetControl());
-    ocGetControl().getEntries().addAll(institutionsToString(rolodex.getInstitutionList().getInstitutions()));
+    customization.getComponentFactoryFx().customizeTextInputControl(this.getControl());
+    getControl().getEntries().addAll(institutionsToString(rolodex.getInstitutionList().getInstitutions()));
   }
   
 //  /**
@@ -35,7 +35,7 @@ public class InstitutionTextField extends ObjectControlAutoCompleteTextField<Str
 //  }
   
   public boolean isNonExistingInstitutionName() {
-    if (ocIsFilledIn() && (getMatchingInstitutions().isEmpty())) {
+    if (isFilledIn() && (getMatchingInstitutions().isEmpty())) {
       return true;
     } else {
       return false;
@@ -46,7 +46,7 @@ public class InstitutionTextField extends ObjectControlAutoCompleteTextField<Str
     List<Institution> matchingInstitutions = new ArrayList<>();
     
     for (Institution institution: rolodex.getInstitutionList().getInstitutions()) {
-      if (institution.getName().equals(ocGetValue())) {
+      if (institution.getName().equals(getValue())) {
         matchingInstitutions.add(institution);
       }
     }

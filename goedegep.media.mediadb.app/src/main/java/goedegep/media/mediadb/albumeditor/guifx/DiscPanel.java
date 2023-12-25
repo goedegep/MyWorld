@@ -74,23 +74,23 @@ class DiscPanel extends DiscPanelAbstract {
 //    }
     discVBox.getChildren().add(gridPane);
     
-    ocSetValue(disc);
+    setValue(disc);
     
 //    getChildren().add(discVBox);    
   }
 
   @Override
-  public void ocSetValue(Disc disc) {
+  public void setValue(Disc disc) {
     this.disc = disc;
   }
 
   @Override
-  public Node ocGetControl() {
+  public Node getControl() {
     return titledPane;
   }
 
   @Override
-  public String ocGetObjectValueAsFormattedText() {
+  public String getValueAsFormattedText() {
     // TODO Auto-generated method stub
     return null;
   }

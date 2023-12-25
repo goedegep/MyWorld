@@ -244,7 +244,7 @@ public class AnnualStatementEditor extends JfxStage {
     label = componentFactory.createLabel("Datum jaaropgave:");
     gridPane.add(label, 0, row);
     
-    gridPane.add(annualStatementDateTextField.ocGetControl(), 1, row);
+    gridPane.add(annualStatementDateTextField.getControl(), 1, row);
     
     row++;
     
@@ -252,12 +252,12 @@ public class AnnualStatementEditor extends JfxStage {
     label = componentFactory.createLabel("Periode:");
     gridPane.add(label, 0, row);
     
-    gridPane.add(periodFromTextField.ocGetControl(), 1, row);
+    gridPane.add(periodFromTextField.getControl(), 1, row);
     
     label = componentFactory.createLabel("tot");
     gridPane.add(label, 2, row);
     
-    gridPane.add(periodUntilTextField.ocGetControl(), 3, row);
+    gridPane.add(periodUntilTextField.getControl(), 3, row);
     
     row++;
     
@@ -265,7 +265,7 @@ public class AnnualStatementEditor extends JfxStage {
     label = componentFactory.createLabel("Premies overlijdensrisicodekking:");
     gridPane.add(label, 0, row);
     
-    gridPane.add(premiumDeathRiskCoverageTextField.ocGetControl(), 1, row);
+    gridPane.add(premiumDeathRiskCoverageTextField.getControl(), 1, row);
     
     row++;
     
@@ -273,7 +273,7 @@ public class AnnualStatementEditor extends JfxStage {
     label = componentFactory.createLabel("Doorlopende kosten verzekeringsmaatschappij:");
     gridPane.add(label, 0, row);
     
-    gridPane.add(continuingCostsInsuranceCompanyTextField.ocGetControl(), 1, row);
+    gridPane.add(continuingCostsInsuranceCompanyTextField.getControl(), 1, row);
     
     row++;
     
@@ -281,7 +281,7 @@ public class AnnualStatementEditor extends JfxStage {
     label = componentFactory.createLabel("Beheerskosten:");
     gridPane.add(label, 0, row);
     
-    gridPane.add(managementCostsTextField.ocGetControl(), 1, row);
+    gridPane.add(managementCostsTextField.getControl(), 1, row);
     
     row++;
     
@@ -289,7 +289,7 @@ public class AnnualStatementEditor extends JfxStage {
     label = componentFactory.createLabel("Verdiend op de participaties:");
     gridPane.add(label, 0, row);
     
-    gridPane.add(earnedOnTheParticipationsTextField.ocGetControl(), 1, row);
+    gridPane.add(earnedOnTheParticipationsTextField.getControl(), 1, row);
     
     row++;
     
@@ -297,7 +297,7 @@ public class AnnualStatementEditor extends JfxStage {
     label = componentFactory.createLabel("Teruggave kosten:");
     gridPane.add(label, 0, row);
     
-    gridPane.add(costsRestitutionTextField.ocGetControl(), 1, row);
+    gridPane.add(costsRestitutionTextField.getControl(), 1, row);
     
     row++;
     
@@ -305,7 +305,7 @@ public class AnnualStatementEditor extends JfxStage {
     label = componentFactory.createLabel("Verwachtte kostenstijging per jaar:");
     gridPane.add(label, 0, row);
     
-    gridPane.add(expectedYearlyCostsIncreaseTextField.ocGetControl(), 1, row);
+    gridPane.add(expectedYearlyCostsIncreaseTextField.getControl(), 1, row);
     
     row++;
     
@@ -337,11 +337,11 @@ public class AnnualStatementEditor extends JfxStage {
       label = componentFactory.createLabel(investmentFundName);
       gridPane.add(label, 0, row);
       
-      gridPane.add(participationControls.numberOfParticipationsEndControl.ocGetControl(), 1, row);
+      gridPane.add(participationControls.numberOfParticipationsEndControl.getControl(), 1, row);
       
-      gridPane.add(participationControls.stockPriceEndControl.ocGetControl(), 2, row);
+      gridPane.add(participationControls.stockPriceEndControl.getControl(), 2, row);
       
-      gridPane.add(participationControls.distributionPercentageControl.ocGetControl(), 3, row);
+      gridPane.add(participationControls.distributionPercentageControl.getControl(), 3, row);
       
       row++;
     }
@@ -367,11 +367,11 @@ public class AnnualStatementEditor extends JfxStage {
       label = componentFactory.createLabel(participationControls.participation.getInvestmentFund().getName());
       gridPane.add(label, 0, row);
       
-      gridPane.add(participationControls.numberOfParticipationsBoughtControl.ocGetControl(), 1, row);
+      gridPane.add(participationControls.numberOfParticipationsBoughtControl.getControl(), 1, row);
       
-      gridPane.add(participationControls.numberOfParticipationsSoldControl.ocGetControl(), 2, row);
+      gridPane.add(participationControls.numberOfParticipationsSoldControl.getControl(), 2, row);
       
-      gridPane.add(participationControls.participationMutationsCompleteControl.ocGetControl(), 3, row);
+      gridPane.add(participationControls.participationMutationsCompleteControl.getControl(), 3, row);
       
       row++;
     }
@@ -380,7 +380,7 @@ public class AnnualStatementEditor extends JfxStage {
     label = componentFactory.createLabel("Voorbeeld kapitalen voor:");
     gridPane.add(label, 0, row);
     
-    gridPane.add(exampleCapitalOnEndDateTextField.ocGetControl(), 1, row);
+    gridPane.add(exampleCapitalOnEndDateTextField.getControl(), 1, row);
     
     row++;
 
@@ -406,13 +406,13 @@ public class AnnualStatementEditor extends JfxStage {
       label = componentFactory.createLabel(participationControls.participation.getInvestmentFund().getName());
       gridPane.add(label, 0, row);
       
-      gridPane.add(participationControls.exampleReturnOnInvestmentNetHistoricControl.ocGetControl(), 1, row);
+      gridPane.add(participationControls.exampleReturnOnInvestmentNetHistoricControl.getControl(), 1, row);
       
-      gridPane.add(participationControls.exampleCapitalNetHistoricControl.ocGetControl(), 2, row);
+      gridPane.add(participationControls.exampleCapitalNetHistoricControl.getControl(), 2, row);
       
-      gridPane.add(participationControls.exampleReturnOnInvestmentGrossControl.ocGetControl(), 3, row);
+      gridPane.add(participationControls.exampleReturnOnInvestmentGrossControl.getControl(), 3, row);
       
-      gridPane.add(participationControls.exampleCapitalGrossControl.ocGetControl(), 4, row);
+      gridPane.add(participationControls.exampleCapitalGrossControl.getControl(), 4, row);
       
       row++;
     }
@@ -436,14 +436,14 @@ public class AnnualStatementEditor extends JfxStage {
       label = componentFactory.createLabel(participationControls.participation.getInvestmentFund().getName());
       gridPane.add(label, 0, row);
       
-      gridPane.add(participationControls.exampleReturnOnInvestmentGrossCompanyOwnControl.ocGetControl(), 1, row);
+      gridPane.add(participationControls.exampleReturnOnInvestmentGrossCompanyOwnControl.getControl(), 1, row);
       
-      gridPane.add(participationControls.exampleCapitalGrossCompanyOwnControl.ocGetControl(), 2, row);
+      gridPane.add(participationControls.exampleCapitalGrossCompanyOwnControl.getControl(), 2, row);
       
       
-      gridPane.add(participationControls.exampleReturnOnInvestmentPessimisticControl.ocGetControl(), 3, row);
+      gridPane.add(participationControls.exampleReturnOnInvestmentPessimisticControl.getControl(), 3, row);
       
-      gridPane.add(participationControls.exampleCapitalPessimisticControl.ocGetControl(), 4, row);
+      gridPane.add(participationControls.exampleCapitalPessimisticControl.getControl(), 4, row);
       
       row++;
     }
@@ -469,7 +469,7 @@ public class AnnualStatementEditor extends JfxStage {
       label = componentFactory.createLabel(participationControls.participation.getInvestmentFund().getName());
       gridPane.add(label, 0, row);
       
-      gridPane.add(participationControls.totalExpenseRatioControl.ocGetControl(), 1, row);
+      gridPane.add(participationControls.totalExpenseRatioControl.getControl(), 1, row);
             
       row++;
     }
@@ -584,54 +584,54 @@ public class AnnualStatementEditor extends JfxStage {
     LOGGER.fine("=>");
     
     // Annual Statement date
-    if (!annualStatementDateTextField.ocIsValid()) {
-      statusBar.setText("Fout in het veld 'Datum jaaropgave': " + annualStatementDateTextField.ocGetErrorText());
+    if (!annualStatementDateTextField.isValid()) {
+      statusBar.setText("Fout in het veld 'Datum jaaropgave': " + annualStatementDateTextField.getErrorText());
       return false;
     }
 
     // Period
-    if (!periodFromTextField.ocIsValid()) {
-      statusBar.setText("Fout in het veld 'Periode van': " + periodFromTextField.ocGetErrorText());
+    if (!periodFromTextField.isValid()) {
+      statusBar.setText("Fout in het veld 'Periode van': " + periodFromTextField.getErrorText());
       return false;
     }
-    if (!periodUntilTextField.ocIsValid()) {
-      statusBar.setText("Fout in het veld 'Periode tot': " + periodUntilTextField.ocGetErrorText());
+    if (!periodUntilTextField.isValid()) {
+      statusBar.setText("Fout in het veld 'Periode tot': " + periodUntilTextField.getErrorText());
       return false;
     }
 
     // Premium death risk coverage
-    if (!premiumDeathRiskCoverageTextField.ocIsValid()) {
-      statusBar.setText("Fout in het veld 'Premies overlijdensrisicodekking': " + premiumDeathRiskCoverageTextField.ocGetErrorText());
+    if (!premiumDeathRiskCoverageTextField.isValid()) {
+      statusBar.setText("Fout in het veld 'Premies overlijdensrisicodekking': " + premiumDeathRiskCoverageTextField.getErrorText());
       return false;
     }
 
     // Continuing Costs Insurance Company; seems stable, so copy from last year
-    if (!continuingCostsInsuranceCompanyTextField.ocIsValid()) {
-      statusBar.setText("Fout in het veld 'Doorlopende kosten verzekeringsmaatschappij': " + continuingCostsInsuranceCompanyTextField.ocGetErrorText());
+    if (!continuingCostsInsuranceCompanyTextField.isValid()) {
+      statusBar.setText("Fout in het veld 'Doorlopende kosten verzekeringsmaatschappij': " + continuingCostsInsuranceCompanyTextField.getErrorText());
       return false;
     }
 
     // Management Costs
-    if (!managementCostsTextField.ocIsValid()) {
-      statusBar.setText("Fout in het veld 'Beheerskosten': " + managementCostsTextField.ocGetErrorText());
+    if (!managementCostsTextField.isValid()) {
+      statusBar.setText("Fout in het veld 'Beheerskosten': " + managementCostsTextField.getErrorText());
       return false;
     }
 
     // Earned on the participations
-    if (!earnedOnTheParticipationsTextField.ocIsValid()) {
-      statusBar.setText("Fout in het veld 'Verdiend op de participaties': " + earnedOnTheParticipationsTextField.ocGetErrorText());
+    if (!earnedOnTheParticipationsTextField.isValid()) {
+      statusBar.setText("Fout in het veld 'Verdiend op de participaties': " + earnedOnTheParticipationsTextField.getErrorText());
       return false;
     }
 
     // Costs restitution
-    if (!costsRestitutionTextField.ocIsValid()) {
-      statusBar.setText("Fout in het veld 'Teruggave kosten': " + costsRestitutionTextField.ocGetErrorText());
+    if (!costsRestitutionTextField.isValid()) {
+      statusBar.setText("Fout in het veld 'Teruggave kosten': " + costsRestitutionTextField.getErrorText());
       return false;
     }
 
     // expectedYearlyCostsIncrease.
-    if (!expectedYearlyCostsIncreaseTextField.ocIsValid()) {
-      statusBar.setText("Fout in het veld 'Verwachtte kostenstijging per jaar': " + expectedYearlyCostsIncreaseTextField.ocGetErrorText());
+    if (!expectedYearlyCostsIncreaseTextField.isValid()) {
+      statusBar.setText("Fout in het veld 'Verwachtte kostenstijging per jaar': " + expectedYearlyCostsIncreaseTextField.getErrorText());
       return false;
     }
 
@@ -643,8 +643,8 @@ public class AnnualStatementEditor extends JfxStage {
     }
 
     // Example end capital date.
-    if (!exampleCapitalOnEndDateTextField.ocIsValid()) {
-      statusBar.setText("Fout in het veld 'Voorbeeld kapitalen voor': " + exampleCapitalOnEndDateTextField.ocGetErrorText());
+    if (!exampleCapitalOnEndDateTextField.isValid()) {
+      statusBar.setText("Fout in het veld 'Voorbeeld kapitalen voor': " + exampleCapitalOnEndDateTextField.getErrorText());
       return false;
     }
     
@@ -654,13 +654,13 @@ public class AnnualStatementEditor extends JfxStage {
   
   private boolean participationControlValuesValid(ParticipationControls participationControls) {
     // Participations at the end of the period.
-    if (!participationControls.numberOfParticipationsEndControl.ocIsValid()) {
-      statusBar.setText("Fout in een veld 'Aantal participaties': " + participationControls.numberOfParticipationsEndControl.ocGetErrorText());
+    if (!participationControls.numberOfParticipationsEndControl.isValid()) {
+      statusBar.setText("Fout in een veld 'Aantal participaties': " + participationControls.numberOfParticipationsEndControl.getErrorText());
       return false;
     }
     // Distribution percentage
-    if (!participationControls.distributionPercentageControl.ocIsValid()) {
-      statusBar.setText("Fout in een veld 'Verdelingspercentage': " + participationControls.distributionPercentageControl.ocGetErrorText());
+    if (!participationControls.distributionPercentageControl.isValid()) {
+      statusBar.setText("Fout in een veld 'Verdelingspercentage': " + participationControls.distributionPercentageControl.getErrorText());
       return false;
     }
       
@@ -669,14 +669,14 @@ public class AnnualStatementEditor extends JfxStage {
     //
 
     // Participations bought.
-    if (!participationControls.numberOfParticipationsBoughtControl.ocIsValid()) {
-      statusBar.setText("Fout in een veld 'Participaties bij': " + participationControls.numberOfParticipationsBoughtControl.ocGetErrorText());
+    if (!participationControls.numberOfParticipationsBoughtControl.isValid()) {
+      statusBar.setText("Fout in een veld 'Participaties bij': " + participationControls.numberOfParticipationsBoughtControl.getErrorText());
       return false;
     }
 
     // Participations sold.
-    if (!participationControls.numberOfParticipationsSoldControl.ocIsValid()) {
-      statusBar.setText("Fout in een veld 'Participaties af': " + participationControls.numberOfParticipationsSoldControl.ocGetErrorText());
+    if (!participationControls.numberOfParticipationsSoldControl.isValid()) {
+      statusBar.setText("Fout in een veld 'Participaties af': " + participationControls.numberOfParticipationsSoldControl.getErrorText());
       return false;
     }
 
@@ -686,56 +686,56 @@ public class AnnualStatementEditor extends JfxStage {
     //
     // Example capitals
     //
-    if (!participationControls.exampleReturnOnInvestmentNetHistoricControl.ocIsValid()) {
-      statusBar.setText("Fout in een veld 'Percentag Netto historisch': " + participationControls.exampleReturnOnInvestmentNetHistoricControl.ocGetErrorText());
+    if (!participationControls.exampleReturnOnInvestmentNetHistoricControl.isValid()) {
+      statusBar.setText("Fout in een veld 'Percentag Netto historisch': " + participationControls.exampleReturnOnInvestmentNetHistoricControl.getErrorText());
       return false;
     }
-    if (!participationControls.exampleCapitalNetHistoricControl.ocIsValid()) {
-      statusBar.setText("Fout in een veld 'Voorbeeld kapitaal Netto historisch': " + participationControls.exampleCapitalNetHistoricControl.ocGetErrorText());
-      return false;
-    }
-    
-    if (!participationControls.exampleReturnOnInvestmentGrossControl.ocIsValid()) {
-      statusBar.setText("Fout in een veld 'Percentag 4% Bruto': " + participationControls.exampleReturnOnInvestmentGrossControl.ocGetErrorText());
-      return false;
-    }
-    if (!participationControls.exampleCapitalGrossControl.ocIsValid()) {
-      statusBar.setText("Fout in een veld 'Voorbeeld kapitaal 4% Bruto': " + participationControls.exampleCapitalGrossControl.ocGetErrorText());
+    if (!participationControls.exampleCapitalNetHistoricControl.isValid()) {
+      statusBar.setText("Fout in een veld 'Voorbeeld kapitaal Netto historisch': " + participationControls.exampleCapitalNetHistoricControl.getErrorText());
       return false;
     }
     
-    if (!participationControls.exampleReturnOnInvestmentPessimisticControl.ocIsValid()) {
-      statusBar.setText("Fout in een veld 'Percentag Pessimistisch': " + participationControls.exampleReturnOnInvestmentPessimisticControl.ocGetErrorText());
+    if (!participationControls.exampleReturnOnInvestmentGrossControl.isValid()) {
+      statusBar.setText("Fout in een veld 'Percentag 4% Bruto': " + participationControls.exampleReturnOnInvestmentGrossControl.getErrorText());
       return false;
     }
-    if (!participationControls.exampleCapitalPessimisticControl.ocIsValid()) {
-      statusBar.setText("Fout in een veld 'Voorbeeld kapitaal Pessimistisch': " + participationControls.exampleCapitalPessimisticControl.ocGetErrorText());
-      return false;
-    }
-    
-    if (!participationControls.exampleReturnOnInvestmentGrossCompanyOwnControl.ocIsValid()) {
-      statusBar.setText("Fout in een veld 'Percentag Bruto eigen': " + participationControls.exampleReturnOnInvestmentGrossCompanyOwnControl.ocGetErrorText());
-      return false;
-    }
-    if (!participationControls.exampleCapitalGrossCompanyOwnControl.ocIsValid()) {
-      statusBar.setText("Fout in een veld 'Voorbeeld kapitaal Bruto eigen': " + participationControls.exampleCapitalGrossCompanyOwnControl.ocGetErrorText());
+    if (!participationControls.exampleCapitalGrossControl.isValid()) {
+      statusBar.setText("Fout in een veld 'Voorbeeld kapitaal 4% Bruto': " + participationControls.exampleCapitalGrossControl.getErrorText());
       return false;
     }
     
-    if (!participationControls.returnOnInvestmentReductionNetHistoricControl.ocIsValid()) {
-      statusBar.setText("Fout in een veld 'Percentag Gereduceerd eigen': " + participationControls.returnOnInvestmentReductionNetHistoricControl.ocGetErrorText());
+    if (!participationControls.exampleReturnOnInvestmentPessimisticControl.isValid()) {
+      statusBar.setText("Fout in een veld 'Percentag Pessimistisch': " + participationControls.exampleReturnOnInvestmentPessimisticControl.getErrorText());
       return false;
     }
-    if (!participationControls.exampleCapitalAfterReductionControl.ocIsValid()) {
-      statusBar.setText("Fout in een veld 'Voorbeeld kapitaal Gereduceerd eigen': " + participationControls.exampleCapitalAfterReductionControl.ocGetErrorText());
+    if (!participationControls.exampleCapitalPessimisticControl.isValid()) {
+      statusBar.setText("Fout in een veld 'Voorbeeld kapitaal Pessimistisch': " + participationControls.exampleCapitalPessimisticControl.getErrorText());
+      return false;
+    }
+    
+    if (!participationControls.exampleReturnOnInvestmentGrossCompanyOwnControl.isValid()) {
+      statusBar.setText("Fout in een veld 'Percentag Bruto eigen': " + participationControls.exampleReturnOnInvestmentGrossCompanyOwnControl.getErrorText());
+      return false;
+    }
+    if (!participationControls.exampleCapitalGrossCompanyOwnControl.isValid()) {
+      statusBar.setText("Fout in een veld 'Voorbeeld kapitaal Bruto eigen': " + participationControls.exampleCapitalGrossCompanyOwnControl.getErrorText());
+      return false;
+    }
+    
+    if (!participationControls.returnOnInvestmentReductionNetHistoricControl.isValid()) {
+      statusBar.setText("Fout in een veld 'Percentag Gereduceerd eigen': " + participationControls.returnOnInvestmentReductionNetHistoricControl.getErrorText());
+      return false;
+    }
+    if (!participationControls.exampleCapitalAfterReductionControl.isValid()) {
+      statusBar.setText("Fout in een veld 'Voorbeeld kapitaal Gereduceerd eigen': " + participationControls.exampleCapitalAfterReductionControl.getErrorText());
       return false;
     }
     
     //
     // Total expense ratios.
     //
-    if (!participationControls.totalExpenseRatioControl.ocIsValid()) {
-      statusBar.setText("Fout in een veld 'Lopende kosten': " + participationControls.totalExpenseRatioControl.ocGetErrorText());
+    if (!participationControls.totalExpenseRatioControl.isValid()) {
+      statusBar.setText("Fout in een veld 'Lopende kosten': " + participationControls.totalExpenseRatioControl.getErrorText());
       return false;
     }
     
@@ -749,29 +749,29 @@ public class AnnualStatementEditor extends JfxStage {
   private void clearControls() {
         
     // Annual Statement date
-    annualStatementDateTextField.ocSetValue(null);
+    annualStatementDateTextField.setValue(null);
     
     // Period
-    periodFromTextField.ocSetValue(null);
-    periodUntilTextField.ocSetValue(null);
+    periodFromTextField.setValue(null);
+    periodUntilTextField.setValue(null);
     
     // Premium death risk coverage
-    premiumDeathRiskCoverageTextField.ocSetValue(null);
+    premiumDeathRiskCoverageTextField.setValue(null);
     
     // Continuing Costs Insurance Company
-    continuingCostsInsuranceCompanyTextField.ocSetValue(null);
+    continuingCostsInsuranceCompanyTextField.setValue(null);
     
     // Management Costs
-    managementCostsTextField.ocSetValue(null);
+    managementCostsTextField.setValue(null);
     
     // Earned on the participations
-    earnedOnTheParticipationsTextField.ocSetValue(null);
+    earnedOnTheParticipationsTextField.setValue(null);
     
     // Costs restitution
-    costsRestitutionTextField.ocSetValue(null);
+    costsRestitutionTextField.setValue(null);
     
     // expectedYearlyCostsIncrease
-    expectedYearlyCostsIncreaseTextField.ocSetValue(null);
+    expectedYearlyCostsIncreaseTextField.setValue(null);
     
     //
     // Participations at the end of the period
@@ -782,7 +782,7 @@ public class AnnualStatementEditor extends JfxStage {
     //
     
     // Example end capital date
-    exampleCapitalOnEndDateTextField.ocSetValue(null);
+    exampleCapitalOnEndDateTextField.setValue(null);
 
     //
     // Example capitals
@@ -808,21 +808,21 @@ public class AnnualStatementEditor extends JfxStage {
     if (lastAnnualStatement != null  &&  lastAnnualStatement.isSetDate()) {
       FlexDate previousAnnualStatementDate = lastAnnualStatement.getDate();
       FlexDate annualStatementDate = new FlexDate(previousAnnualStatementDate.getDay(), previousAnnualStatementDate.getMonth(), previousAnnualStatementDate.getYear() + 1);
-      annualStatementDateTextField.ocSetValue(annualStatementDate);
+      annualStatementDateTextField.setValue(annualStatementDate);
     }
     
     // Period; this is typically one year after the period of the previous annual statement.
     if (lastAnnualStatement != null  &&  lastAnnualStatement.isSetPeriodUntil()) {
       LocalDate lastAnnualStatementPeriodUntil = lastAnnualStatement.getPeriodUntil();
-      periodFromTextField.ocSetValue(lastAnnualStatementPeriodUntil);
-      periodUntilTextField.ocSetValue(lastAnnualStatementPeriodUntil.plusYears(1));
+      periodFromTextField.setValue(lastAnnualStatementPeriodUntil);
+      periodUntilTextField.setValue(lastAnnualStatementPeriodUntil.plusYears(1));
     }
     
     // Premium death risk coverage; no use setting this value, as it changes every year
     
     // Continuing Costs Insurance Company; seems stable, so copy from last year
     if (lastAnnualStatement != null  &&  lastAnnualStatement.isSetContinuingCostsInsuranceCompany()) {
-      continuingCostsInsuranceCompanyTextField.ocSetValue(lastAnnualStatement.getContinuingCostsInsuranceCompany());
+      continuingCostsInsuranceCompanyTextField.setValue(lastAnnualStatement.getContinuingCostsInsuranceCompany());
     }
     
     // Management Costs; no use setting this value, as it changes every year
@@ -833,7 +833,7 @@ public class AnnualStatementEditor extends JfxStage {
     
     // expectedYearlyCostsIncrease; I use a fixed value for this, so copy from last year.
     if (lastAnnualStatement != null  &&  lastAnnualStatement.isSetExpectedYearlyCostsIncrease()) {
-      expectedYearlyCostsIncreaseTextField.ocSetValue(lastAnnualStatement.getExpectedYearlyCostsIncrease());
+      expectedYearlyCostsIncreaseTextField.setValue(lastAnnualStatement.getExpectedYearlyCostsIncrease());
     }
     
     
@@ -845,7 +845,7 @@ public class AnnualStatementEditor extends JfxStage {
     
     // Example end capital date; normally the same date, so copy from last year
     if (lastAnnualStatement != null  &&  lastAnnualStatement.isSetExampleCapitalOnEndDate()) {
-      exampleCapitalOnEndDateTextField.ocSetValue(lastAnnualStatement.getExampleCapitalOnEndDate());
+      exampleCapitalOnEndDateTextField.setValue(lastAnnualStatement.getExampleCapitalOnEndDate());
     }
     
   }
@@ -1013,45 +1013,45 @@ public class AnnualStatementEditor extends JfxStage {
     
     // Annual Statement date
     if (annualStatement.isSetDate()) {
-      annualStatementDateTextField.ocSetValue(annualStatement.getDate());
+      annualStatementDateTextField.setValue(annualStatement.getDate());
     }
     
     // Period;
     if (annualStatement.isSetPeriodFrom()) {
-      periodFromTextField.ocSetValue(annualStatement.getPeriodFrom());
+      periodFromTextField.setValue(annualStatement.getPeriodFrom());
     }
     if (annualStatement.isSetPeriodUntil()) {
-      periodUntilTextField.ocSetValue(annualStatement.getPeriodUntil());
+      periodUntilTextField.setValue(annualStatement.getPeriodUntil());
     }
     
     // Premium death risk coverage
     if (annualStatement.isSetPremiumDeathRiskCoverage()) {
-      premiumDeathRiskCoverageTextField.ocSetValue(annualStatement.getPremiumDeathRiskCoverage());
+      premiumDeathRiskCoverageTextField.setValue(annualStatement.getPremiumDeathRiskCoverage());
     }
     
     // Continuing Costs Insurance Company.
     if (annualStatement.isSetContinuingCostsInsuranceCompany()) {
-      continuingCostsInsuranceCompanyTextField.ocSetValue(annualStatement.getContinuingCostsInsuranceCompany());
+      continuingCostsInsuranceCompanyTextField.setValue(annualStatement.getContinuingCostsInsuranceCompany());
     }
     
     // Management Costs
     if (annualStatement.isSetManagementCosts()) {
-      managementCostsTextField.ocSetValue(annualStatement.getManagementCosts());
+      managementCostsTextField.setValue(annualStatement.getManagementCosts());
     }
     
     // Earned on the participations
     if (annualStatement.isSetEarnedOnTheParticipations()) {
-      earnedOnTheParticipationsTextField.ocSetValue(annualStatement.getEarnedOnTheParticipations());
+      earnedOnTheParticipationsTextField.setValue(annualStatement.getEarnedOnTheParticipations());
     }
     
     // Costs restitution
     if (annualStatement.isSetCostsRestitution()) {
-      costsRestitutionTextField.ocSetValue(annualStatement.getCostsRestitution());
+      costsRestitutionTextField.setValue(annualStatement.getCostsRestitution());
     }
     
     // expectedYearlyCostsIncrease
     if (annualStatement.isSetExpectedYearlyCostsIncrease()) {
-      expectedYearlyCostsIncreaseTextField.ocSetValue(annualStatement.getExpectedYearlyCostsIncrease());
+      expectedYearlyCostsIncreaseTextField.setValue(annualStatement.getExpectedYearlyCostsIncrease());
     }
     
     
@@ -1063,7 +1063,7 @@ public class AnnualStatementEditor extends JfxStage {
     
     // Example end capital date
     if (annualStatement.isSetExampleCapitalOnEndDate()) {
-      exampleCapitalOnEndDateTextField.ocSetValue(annualStatement.getExampleCapitalOnEndDate());
+      exampleCapitalOnEndDateTextField.setValue(annualStatement.getExampleCapitalOnEndDate());
     }
     
     LOGGER.fine("<=");
@@ -1097,53 +1097,53 @@ public class AnnualStatementEditor extends JfxStage {
     LOGGER.fine("=>");
     
     // Annual Statement date
-    FlexDate annualStatementDate = annualStatementDateTextField.ocGetValue();
+    FlexDate annualStatementDate = annualStatementDateTextField.getValue();
     if (annualStatementDate != null) {
       annualStatement.setDate(annualStatementDate);
     }
     
     // Period;
-    LocalDate periodFrom = periodFromTextField.ocGetValue();
+    LocalDate periodFrom = periodFromTextField.getValue();
     if (periodFrom != null) {
       annualStatement.setPeriodFrom(periodFrom);
     }
-    LocalDate periodUntil = periodUntilTextField.ocGetValue();
+    LocalDate periodUntil = periodUntilTextField.getValue();
     if (periodUntil != null) {
       annualStatement.setPeriodUntil(periodUntil);
     }
 
     // Premium death risk coverage
-    PgCurrency premiumDeathRiskCoverage = premiumDeathRiskCoverageTextField.ocGetValue();
+    PgCurrency premiumDeathRiskCoverage = premiumDeathRiskCoverageTextField.getValue();
     if (premiumDeathRiskCoverage != null) {
       annualStatement.setPremiumDeathRiskCoverage(premiumDeathRiskCoverage);
     }
     
     // Continuing Costs Insurance Company; seems stable, so copy from last year
-    PgCurrency continuingCostsInsuranceCompany = continuingCostsInsuranceCompanyTextField.ocGetValue();
+    PgCurrency continuingCostsInsuranceCompany = continuingCostsInsuranceCompanyTextField.getValue();
     if (continuingCostsInsuranceCompany != null) {
       annualStatement.setContinuingCostsInsuranceCompany(continuingCostsInsuranceCompany);
     }
     
     // Management Costs
-    PgCurrency managementCosts = managementCostsTextField.ocGetValue();
+    PgCurrency managementCosts = managementCostsTextField.getValue();
     if (managementCosts != null) {
       annualStatement.setManagementCosts(managementCosts);
     }
     
     // Earned on the participations
-    PgCurrency earnedOnTheParticipations = earnedOnTheParticipationsTextField.ocGetValue();
+    PgCurrency earnedOnTheParticipations = earnedOnTheParticipationsTextField.getValue();
     if (earnedOnTheParticipations != null) {
       annualStatement.setEarnedOnTheParticipations(earnedOnTheParticipations);
     }
     
     // Costs restitution
-    PgCurrency costsRestitution = costsRestitutionTextField.ocGetValue();
+    PgCurrency costsRestitution = costsRestitutionTextField.getValue();
     if (costsRestitution != null) {
       annualStatement.setCostsRestitution(costsRestitution);
     }
     
     // expectedYearlyCostsIncrease.
-    FixedPointValue expectedYearlyCostsIncrease = expectedYearlyCostsIncreaseTextField.ocGetValue();
+    FixedPointValue expectedYearlyCostsIncrease = expectedYearlyCostsIncreaseTextField.getValue();
     if (expectedYearlyCostsIncrease != null) {
       annualStatement.setExpectedYearlyCostsIncrease(expectedYearlyCostsIncrease);
     }
@@ -1159,7 +1159,7 @@ public class AnnualStatementEditor extends JfxStage {
     for (ParticipationControls participationControls: participationsControls) {
       if (periodUntil != null) {
         // We have a date
-        PgCurrency stockPrice = participationControls.stockPriceEndControl.ocGetValue();
+        PgCurrency stockPrice = participationControls.stockPriceEndControl.getValue();
         if (stockPrice != null) {
           // And we have a price
           // Check whether there is already a price for this date, if so it should be equal to the value filled in.
@@ -1183,7 +1183,7 @@ public class AnnualStatementEditor extends JfxStage {
     
     
     // Example end capital date.
-    LocalDate exampleCapitalOnEndDate = exampleCapitalOnEndDateTextField.ocGetValue();
+    LocalDate exampleCapitalOnEndDate = exampleCapitalOnEndDateTextField.getValue();
     if (exampleCapitalOnEndDate != null) {
       annualStatement.setExampleCapitalOnEndDate(exampleCapitalOnEndDate);
     }    
@@ -1197,12 +1197,12 @@ public class AnnualStatementEditor extends JfxStage {
     participation.setInvestmentFund(participationControls.participation.getInvestmentFund());
     
     // Participations at the end of the period.    
-    FixedPointValue numberOfParticipationsEnd = participationControls.numberOfParticipationsEndControl.ocGetValue();
+    FixedPointValue numberOfParticipationsEnd = participationControls.numberOfParticipationsEndControl.getValue();
     if (numberOfParticipationsEnd != null) {
       participation.setNumberOfParticipationsEnd(numberOfParticipationsEnd);
     }
     // Distribution percentage
-    FixedPointValue distributionPercentage = participationControls.distributionPercentageControl.ocGetValue();
+    FixedPointValue distributionPercentage = participationControls.distributionPercentageControl.getValue();
     if (distributionPercentage != null) {
       participation.setDistributionPercentage(distributionPercentage);
     }
@@ -1212,65 +1212,65 @@ public class AnnualStatementEditor extends JfxStage {
     //
 
     // Participations bought.
-    FixedPointValue participationsBought = participationControls.numberOfParticipationsBoughtControl.ocGetValue();
+    FixedPointValue participationsBought = participationControls.numberOfParticipationsBoughtControl.getValue();
     if (participationsBought != null) {
       participation.getParticipationMutations().add(participationsBought);
     }
 
     // Participations sold.
-    FixedPointValue participationsSold = participationControls.numberOfParticipationsSoldControl.ocGetValue();
+    FixedPointValue participationsSold = participationControls.numberOfParticipationsSoldControl.getValue();
     if (participationsSold != null) {
       participationsSold = participationsSold.changeSign();
       participation.getParticipationMutations().add(participationsSold);
     }
 
     // Participation mutations complete.
-    participation.setParticipationMutationsComplete(participationControls.participationMutationsCompleteControl.ocGetValue());
+    participation.setParticipationMutationsComplete(participationControls.participationMutationsCompleteControl.getValue());
     
     //
     // Example capitals
     //
-    FixedPointValue exampleReturnOnInvestmentNetHistoric = participationControls.exampleReturnOnInvestmentNetHistoricControl.ocGetValue();
+    FixedPointValue exampleReturnOnInvestmentNetHistoric = participationControls.exampleReturnOnInvestmentNetHistoricControl.getValue();
     if (exampleReturnOnInvestmentNetHistoric != null) {
       participation.setExampleReturnOnInvestmentNetHistoric(exampleReturnOnInvestmentNetHistoric);
     }
-    PgCurrency exampleCapitalNetHistoric = participationControls.exampleCapitalNetHistoricControl.ocGetValue();
+    PgCurrency exampleCapitalNetHistoric = participationControls.exampleCapitalNetHistoricControl.getValue();
     if (exampleCapitalNetHistoric != null) {
       participation.setExampleCapitalNetHistoric(exampleCapitalNetHistoric);
     }
     
-    FixedPointValue exampleReturnOnInvestmentGross = participationControls.exampleReturnOnInvestmentGrossControl.ocGetValue();
+    FixedPointValue exampleReturnOnInvestmentGross = participationControls.exampleReturnOnInvestmentGrossControl.getValue();
     if (exampleReturnOnInvestmentGross != null) {
       participation.setExampleReturnOnInvestmentGross(exampleReturnOnInvestmentGross);
     }
-    PgCurrency exampleCapitalGross = participationControls.exampleCapitalGrossControl.ocGetValue();
+    PgCurrency exampleCapitalGross = participationControls.exampleCapitalGrossControl.getValue();
     if (exampleCapitalGross != null) {
       participation.setExampleCapitalGross(exampleCapitalGross);
     }
     
-    FixedPointValue exampleReturnOnInvestmentPessimistic = participationControls.exampleReturnOnInvestmentPessimisticControl.ocGetValue();
+    FixedPointValue exampleReturnOnInvestmentPessimistic = participationControls.exampleReturnOnInvestmentPessimisticControl.getValue();
     if (exampleReturnOnInvestmentPessimistic != null) {
       participation.setExampleReturnOnInvestmentPessimistic(exampleReturnOnInvestmentPessimistic);
     }
-    PgCurrency exampleCapitalPessimistic = participationControls.exampleCapitalPessimisticControl.ocGetValue();
+    PgCurrency exampleCapitalPessimistic = participationControls.exampleCapitalPessimisticControl.getValue();
     if (exampleCapitalPessimistic != null) {
       participation.setExampleCapitalPessimistic(exampleCapitalPessimistic);
     }
     
-    FixedPointValue exampleReturnOnInvestmentGrossCompanyOwn = participationControls.exampleReturnOnInvestmentGrossCompanyOwnControl.ocGetValue();
+    FixedPointValue exampleReturnOnInvestmentGrossCompanyOwn = participationControls.exampleReturnOnInvestmentGrossCompanyOwnControl.getValue();
     if (exampleReturnOnInvestmentGrossCompanyOwn != null) {
       participation.setExampleReturnOnInvestmentGrossCompanyOwn(exampleReturnOnInvestmentGrossCompanyOwn);
     }
-    PgCurrency exampleCapitalGrossCompanyOwn = participationControls.exampleCapitalGrossCompanyOwnControl.ocGetValue();
+    PgCurrency exampleCapitalGrossCompanyOwn = participationControls.exampleCapitalGrossCompanyOwnControl.getValue();
     if (exampleCapitalGrossCompanyOwn != null) {
       participation.setExampleCapitalGrossCompanyOwn(exampleCapitalGrossCompanyOwn);
     }
     
-    FixedPointValue returnOnInvestmentReductionNetHistoric = participationControls.returnOnInvestmentReductionNetHistoricControl.ocGetValue();
+    FixedPointValue returnOnInvestmentReductionNetHistoric = participationControls.returnOnInvestmentReductionNetHistoricControl.getValue();
     if (returnOnInvestmentReductionNetHistoric != null) {
       participation.setReturnOnInvestmentReductionNetHistoric(returnOnInvestmentReductionNetHistoric);
     }
-    PgCurrency exampleCapitalAfterReduction = participationControls.exampleCapitalAfterReductionControl.ocGetValue();
+    PgCurrency exampleCapitalAfterReduction = participationControls.exampleCapitalAfterReductionControl.getValue();
     if (exampleCapitalAfterReduction != null) {
       participation.setExampleCapitalAfterReduction(exampleCapitalAfterReduction);
     }
@@ -1278,7 +1278,7 @@ public class AnnualStatementEditor extends JfxStage {
     //
     // Total expense ratios.
     //
-    FixedPointValue totalExpenseRatio = participationControls.totalExpenseRatioControl.ocGetValue();
+    FixedPointValue totalExpenseRatio = participationControls.totalExpenseRatioControl.getValue();
     if (totalExpenseRatio != null) {
       participation.setTotalExpenseRatio(totalExpenseRatio);
     }

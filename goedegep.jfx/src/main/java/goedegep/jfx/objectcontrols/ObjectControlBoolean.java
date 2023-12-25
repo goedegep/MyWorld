@@ -38,7 +38,7 @@ public class ObjectControlBoolean extends ObjectControlAbstract<Boolean> {
     }
 
 //    if (ocGetValue() != selected) {
-      ocSetValue(selected);
+      setValue(selected);
 //    }
   }
   
@@ -46,7 +46,7 @@ public class ObjectControlBoolean extends ObjectControlAbstract<Boolean> {
    * {@inheritDoc}
    */
   @Override
-  public CheckBox ocGetControl() {
+  public CheckBox getControl() {
     return checkBox;
   }
 
@@ -55,7 +55,7 @@ public class ObjectControlBoolean extends ObjectControlAbstract<Boolean> {
    * A checkbox is always filled in, so always valid.
    */
   @Override
-  public boolean ocIsValid() {
+  public boolean isValid() {
     return true;
   }
 
@@ -97,7 +97,7 @@ public class ObjectControlBoolean extends ObjectControlAbstract<Boolean> {
    * Not very useful for a boolean, but we just return 'true' or 'false'.
    */
   @Override
-  public String ocGetObjectValueAsFormattedText() {
+  public String getValueAsFormattedText() {
     return value ? "true" : "false";
   }
 
@@ -105,7 +105,7 @@ public class ObjectControlBoolean extends ObjectControlAbstract<Boolean> {
    * {@inheritDoc}
    */
   @Override
-  public void ocSetValue(Boolean objectValue) {
+  public void setValue(Boolean objectValue) {
     referenceValue = objectValue;
     ociSetValue(objectValue);
     checkBox.setSelected(objectValue);
@@ -116,7 +116,7 @@ public class ObjectControlBoolean extends ObjectControlAbstract<Boolean> {
     StringBuilder buf = new StringBuilder();
     
     buf.append("ObjectControl type=Boolean");
-    buf.append(", id=").append(ocGetId() != null ? ocGetId() : "<null>");
+    buf.append(", id=").append(getId() != null ? getId() : "<null>");
     buf.append(", value=").append(value != null ? value : "<null>");
     buf.append(", referenceValue=").append(referenceValue != null ? "\"" + referenceValue + "\"" : "<null>");
     

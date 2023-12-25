@@ -704,7 +704,7 @@ class TrackReferenceAndMyTrackInfoControls extends TrackReferenceControlsAbstrac
       bonusTrackText = trackReference.getBonusTrack();
     }
     bonusTrack = componentFactory.createObjectControlTextField(null, bonusTrackText, 300, true, null);
-    gridPane.add(bonusTrack.ocGetControl(), column++, myRow);
+    gridPane.add(bonusTrack.getControl(), column++, myRow);
     
     /*
      * MyTrackInfo
@@ -741,7 +741,7 @@ class TrackReferenceAndMyTrackInfoControls extends TrackReferenceControlsAbstrac
       }
     }
     ObjectControlTextField<String> compilationTrackReferenceDiscControl = componentFactory.createObjectControlTextField(null, compilationTrackReferenceAlbumId, 300, true, null);
-    gridPane.add(compilationTrackReferenceDiscControl.ocGetControl(), column++, myRow);
+    gridPane.add(compilationTrackReferenceDiscControl.getControl(), column++, myRow);
     
     // Identification of the track of the track reference of the Compilation Track Reference (not Yet editable)
     String compilationTrackReferenceTrackTitle = null;
@@ -752,7 +752,7 @@ class TrackReferenceAndMyTrackInfoControls extends TrackReferenceControlsAbstrac
       }
     }
     ObjectControlTextField<String> compilationTrackReferenceTrackControl = componentFactory.createObjectControlTextField(null, compilationTrackReferenceTrackTitle, 300, true, null);
-    gridPane.add(compilationTrackReferenceTrackControl.ocGetControl(), column++, myRow);
+    gridPane.add(compilationTrackReferenceTrackControl.getControl(), column++, myRow);
     
     // MyTrackInfo:Collection
     collectionComboBox = componentFactory.createObjectControlEnumComboBox(goedegep.media.mediadb.model.Collection.NOT_SET, goedegep.media.mediadb.model.Collection.NOT_SET, MediadbPackage.eINSTANCE.getCollection(), true, "If applicable, select the collection in which this track resides");
@@ -760,8 +760,8 @@ class TrackReferenceAndMyTrackInfoControls extends TrackReferenceControlsAbstrac
     if (myTrackInfo != null) {
       collection = myTrackInfo.getCollection();
     }
-    collectionComboBox.ocSetValue(collection);
-    gridPane.add(collectionComboBox.ocGetControl(), column++, myRow);
+    collectionComboBox.setValue(collection);
+    gridPane.add(collectionComboBox.getControl(), column++, myRow);
     
     // MyTrackInfo:IWant
     iWantComboBox = componentFactory.createObjectControlEnumComboBox(IWant.NOT_SET, IWant.NOT_SET, MediadbPackage.eINSTANCE.getIWant(), true, "Select whether you want this track or not");
@@ -769,8 +769,8 @@ class TrackReferenceAndMyTrackInfoControls extends TrackReferenceControlsAbstrac
     if (myTrackInfo != null) {
       iWant = myTrackInfo.getIWant();
     }
-    iWantComboBox.ocSetValue(iWant);
-    gridPane.add(iWantComboBox.ocGetControl(), column++, myRow);
+    iWantComboBox.setValue(iWant);
+    gridPane.add(iWantComboBox.getControl(), column++, myRow);
     
     // IHaveOn
     if (myTrackInfo != null) {
@@ -911,7 +911,7 @@ class TrackReferenceAndMyTrackInfoControls extends TrackReferenceControlsAbstrac
       bonusTrackText = trackReference.getBonusTrack();
     }
     bonusTrack = componentFactory.createObjectControlTextField(null, bonusTrackText, 300, true, null);
-    gridPane.add(bonusTrack.ocGetControl(), column++, myRow);
+    gridPane.add(bonusTrack.getControl(), column++, myRow);
     
     /*
      * MyTrackInfo
@@ -948,7 +948,7 @@ class TrackReferenceAndMyTrackInfoControls extends TrackReferenceControlsAbstrac
       }
     }
     ObjectControlTextField<String> compilationTrackReferenceDiscControl = componentFactory.createObjectControlTextField(null, compilationTrackReferenceAlbumId, 300, true, null);
-    gridPane.add(compilationTrackReferenceDiscControl.ocGetControl(), column++, myRow);
+    gridPane.add(compilationTrackReferenceDiscControl.getControl(), column++, myRow);
     
     // Identification of the track of the track reference of the Compilation Track Reference (not Yet editable)
     String compilationTrackReferenceTrackTitle = null;
@@ -959,7 +959,7 @@ class TrackReferenceAndMyTrackInfoControls extends TrackReferenceControlsAbstrac
       }
     }
     ObjectControlTextField<String> compilationTrackReferenceTrackControl = componentFactory.createObjectControlTextField(null, compilationTrackReferenceTrackTitle, 300, true, null);
-    gridPane.add(compilationTrackReferenceTrackControl.ocGetControl(), column++, myRow);
+    gridPane.add(compilationTrackReferenceTrackControl.getControl(), column++, myRow);
     
     // MyTrackInfo:Collection
     collectionComboBox = componentFactory.createObjectControlEnumComboBox(goedegep.media.mediadb.model.Collection.NOT_SET, goedegep.media.mediadb.model.Collection.NOT_SET, MediadbPackage.eINSTANCE.getCollection(), true, "If applicable, select the collection in which this track resides");
@@ -967,8 +967,8 @@ class TrackReferenceAndMyTrackInfoControls extends TrackReferenceControlsAbstrac
     if (myTrackInfo != null) {
       collection = myTrackInfo.getCollection();
     }
-    collectionComboBox.ocSetValue(collection);
-    gridPane.add(collectionComboBox.ocGetControl(), column++, myRow);
+    collectionComboBox.setValue(collection);
+    gridPane.add(collectionComboBox.getControl(), column++, myRow);
     
     // MyTrackInfo:IWant
     iWantComboBox = componentFactory.createObjectControlEnumComboBox(IWant.NOT_SET, IWant.NOT_SET, MediadbPackage.eINSTANCE.getIWant(), true, "Select whether you want this track or not");
@@ -976,8 +976,8 @@ class TrackReferenceAndMyTrackInfoControls extends TrackReferenceControlsAbstrac
     if (myTrackInfo != null) {
       iWant = myTrackInfo.getIWant();
     }
-    iWantComboBox.ocSetValue(iWant);
-    gridPane.add(iWantComboBox.ocGetControl(), column++, myRow);
+    iWantComboBox.setValue(iWant);
+    gridPane.add(iWantComboBox.getControl(), column++, myRow);
     
     // IHaveOn
     if (myTrackInfo != null) {
@@ -1123,7 +1123,7 @@ class TrackReferenceAndMyTrackInfoControls extends TrackReferenceControlsAbstrac
   }
   
   public String getBonusTrack() {
-    return bonusTrack.ocGetValue();
+    return bonusTrack.getValue();
   }
   
   public Track getReference() {
@@ -1135,7 +1135,7 @@ class TrackReferenceAndMyTrackInfoControls extends TrackReferenceControlsAbstrac
    * @return
    */
   public goedegep.media.mediadb.model.Collection getCollection() {
-    goedegep.media.mediadb.model.Collection collection = collectionComboBox.ocGetValue();
+    goedegep.media.mediadb.model.Collection collection = collectionComboBox.getValue();
     if (collection == null) {
       collection = goedegep.media.mediadb.model.Collection.NOT_SET;
     }
@@ -1144,7 +1144,7 @@ class TrackReferenceAndMyTrackInfoControls extends TrackReferenceControlsAbstrac
   }
   
   public IWant getIWant() {
-    IWant iWant = iWantComboBox.ocGetValue();
+    IWant iWant = iWantComboBox.getValue();
     if (iWant == null) {
       iWant = IWant.NOT_SET;
     }
@@ -1153,13 +1153,13 @@ class TrackReferenceAndMyTrackInfoControls extends TrackReferenceControlsAbstrac
   }
 
   @Override
-  public void ocSetValue(TrackReference objectValue) {
+  public void setValue(TrackReference objectValue) {
     // TODO Auto-generated method stub
     
   }
 
   @Override
-  public TrackReference ocGetValue() {
+  public TrackReference getValue() {
 //    Track tr = mediaDb.getTrack();
     Track aTrack = getTrack();
     if (aTrack == null) {
@@ -1211,13 +1211,13 @@ class TrackReferenceAndMyTrackInfoControls extends TrackReferenceControlsAbstrac
   }
   
   @Override
-  public Node ocGetControl() {
+  public Node getControl() {
     // TODO Auto-generated method stub
     return null;
   }
 
   @Override
-  public String ocGetObjectValueAsFormattedText() {
+  public String getValueAsFormattedText() {
     // TODO Auto-generated method stub
     return null;
   }

@@ -83,7 +83,7 @@ public class FolderSelectionWizard extends Dialog<ButtonType> {
    * @return the selected main folder.
    */
   public String getSelectedFolder() {
-    if (folderSelecter.ocIsValid()) {
+    if (folderSelecter.isValid()) {
       return folderSelecter.ocGetAbsolutePath();
     } else {
       return null;
@@ -128,9 +128,9 @@ public class FolderSelectionWizard extends Dialog<ButtonType> {
         "Choose folder", "Select photo folder via a file chooser", "Select the folder with photos", false);
     folderSelecter.setInitialFolderProvider(() -> initiallySelectedFolder);
     
-    Node folderName = folderSelecter.ocGetControl();
+    Node folderName = folderSelecter.getControl();
     folderSelecter.addListener((observable) -> {
-      handleNewPhotoFolderSelected(folderSelecter.ocIsValid(), folderSelecter.ocGetAbsolutePath());      
+      handleNewPhotoFolderSelected(folderSelecter.isValid(), folderSelecter.ocGetAbsolutePath());      
     });
     wizardPanel.add(folderName, 1, 0);
     
@@ -169,7 +169,7 @@ public class FolderSelectionWizard extends Dialog<ButtonType> {
     
     okButton = (Button) getDialogPane().lookupButton(ButtonType.OK);
     
-    handleNewPhotoFolderSelected(folderSelecter.ocIsValid(), folderSelecter.ocGetAbsolutePath());
+    handleNewPhotoFolderSelected(folderSelecter.isValid(), folderSelecter.ocGetAbsolutePath());
   }
   
   /**
@@ -203,21 +203,23 @@ public class FolderSelectionWizard extends Dialog<ButtonType> {
   private void handleNewPhotoFolderSelected(Boolean selectionIsValid, String selectedFolder) {
     if (selectionIsValid) {
       photoFolders = determinePhotoFolders(selectedFolder);
-    } else {
+    } else if (photoFolders != null) {
       photoFolders.clear();
     }
     
-    okButton.setDisable(photoFolders.isEmpty());
+    okButton.setDisable(photoFolders != null ? photoFolders.isEmpty() : true);
     
     StringBuilder buf = new StringBuilder();
-    boolean first = true;
-    for (Path photoFolder: photoFolders) {
-      if (first) {
-        first = false;
-      } else {
-        buf.append(NEWLINE);
+    if (photoFolders != null) {
+      boolean first = true;
+      for (Path photoFolder: photoFolders) {
+        if (first) {
+          first = false;
+        } else {
+          buf.append(NEWLINE);
+        }
+        buf.append(photoFolder.toString());
       }
-      buf.append(photoFolder.toString());
     }
     photoFoldersArea.setText(buf.toString());
   }

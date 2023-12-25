@@ -83,7 +83,7 @@ public abstract class DiscPanelAbstract extends ObjectControlAbstract<Disc> {
     titleControl = componentFactory.createObjectControlTextField(null, null, 300, true, null);
     titleControl.addListener((o)-> updateTitle());
     objectControlsGroup.addObjectControl(titleControl);
-    titleBox.getChildren().add(titleControl.ocGetControl());
+    titleBox.getChildren().add(titleControl.getControl());
     discVBox.getChildren().add(titleBox);
     
     editMode = disc != null ? EditMode.EDIT : EditMode.NEW;
@@ -95,14 +95,14 @@ public abstract class DiscPanelAbstract extends ObjectControlAbstract<Disc> {
    * @return The title of the disc, which can be null.
    */
   public String getDiscTitle() {
-    return titleControl.ocGetValue();
+    return titleControl.getValue();
   }
   
   /**
    * Update the title of the TitledPane.
    */
   private void updateTitle() {
-    titledPane.setText(titleControl.ocGetValue() != null ? titleControl.ocGetValue() : "Disc n");
+    titledPane.setText(titleControl.getValue() != null ? titleControl.getValue() : "Disc n");
   }
   
   public void fillControlsFromDisc(Disc disc) {
@@ -118,7 +118,7 @@ public abstract class DiscPanelAbstract extends ObjectControlAbstract<Disc> {
   }
 
   public void updateObjectFromControls() {
-    EmfUtil.setFeatureValue(disc, MEDIA_DB_PACKAGE.getDisc_Title(), titleControl.ocGetValue());
+    EmfUtil.setFeatureValue(disc, MEDIA_DB_PACKAGE.getDisc_Title(), titleControl.getValue());
   }
 
   public abstract List<Track> getNewTracks();

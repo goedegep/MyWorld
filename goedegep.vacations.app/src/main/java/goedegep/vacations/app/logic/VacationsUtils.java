@@ -416,7 +416,6 @@ public class VacationsUtils {
         if (VacationsRegistry.vacationsFolderName.equals(vacationsFolder)) {
           vacationFolder = file.getParent();
 
-          LOGGER.severe("reference found to folder: " + vacationFolder);
           return vacationFolder;
         }
       }

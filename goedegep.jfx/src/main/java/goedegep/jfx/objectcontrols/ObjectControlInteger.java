@@ -47,7 +47,7 @@ public class ObjectControlInteger extends ObjectControlTextField<Integer> {
    */
   @Override
   public Integer ociDetermineValue(Object source) {
-    Integer value = stringToObject(ocGetControl().getText().trim());
+    Integer value = stringToObject(getControl().getText().trim());
     
     if (value == null) {
       return null;

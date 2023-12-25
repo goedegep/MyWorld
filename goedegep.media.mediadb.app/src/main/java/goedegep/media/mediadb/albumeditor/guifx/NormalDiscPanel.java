@@ -100,14 +100,14 @@ public class NormalDiscPanel extends DiscPanelAbstract {
     if (disc != null) {
       for (TrackReference trackReference: disc.getTrackReferences()) {
         TrackReferenceControlsNormalAlbum trackReferencePanel = new TrackReferenceControlsNormalAlbum(customization, gridPane, row++, trackReferencePanels, trackReference, mediaDb);
-        trackReferencePanel.ocSetId("trackReferencePanel row " + (row - 1));
+        trackReferencePanel.setId("trackReferencePanel row " + (row - 1));
         trackReferencePanels.add(trackReferencePanel);
         objectControlsGroup.addObjectControl(trackReferencePanel);
         trackReferencePanel.fillControlsFromObject();
       }
     } else { // A disc has at least one track
       TrackReferenceControlsNormalAlbum trackReferencePanel = new TrackReferenceControlsNormalAlbum(customization, gridPane, row++, trackReferencePanels, (TrackReference) null, mediaDb);
-      trackReferencePanel.ocSetId("trackReferencePanel row " + (row - 1));
+      trackReferencePanel.setId("trackReferencePanel row " + (row - 1));
       trackReferencePanels.add(trackReferencePanel);
       objectControlsGroup.addObjectControl(trackReferencePanel);
       trackReferencePanel.fillControlsFromObject();
@@ -131,7 +131,7 @@ public class NormalDiscPanel extends DiscPanelAbstract {
         TrackReference trackReference = MediadbFactory.eINSTANCE.createTrackReference();
         disc.getTrackReferences().add(trackReference);
         TrackReferenceControlsNormalAlbum trackReferencePanel = new TrackReferenceControlsNormalAlbum(customization, gridPane, row++, trackReferencePanels, trackReference, mediaDb);
-        trackReferencePanel.ocSetId("trackReferencePanel row " + (row - 1));
+        trackReferencePanel.setId("trackReferencePanel row " + (row - 1));
         trackReferencePanels.add(trackReferencePanel);
         objectControlsGroup.addObjectControl(trackReferencePanel);
         trackReferencePanel.fillControlsFromTrackInfo(trackInfo);
@@ -140,7 +140,7 @@ public class NormalDiscPanel extends DiscPanelAbstract {
       TrackReference trackReference = MediadbFactory.eINSTANCE.createTrackReference();
       disc.getTrackReferences().add(trackReference);
       TrackReferenceControlsNormalAlbum trackReferencePanel = new TrackReferenceControlsNormalAlbum(customization, gridPane, row++, trackReferencePanels, trackReference, mediaDb);
-      trackReferencePanel.ocSetId("trackReferencePanel row " + (row - 1));
+      trackReferencePanel.setId("trackReferencePanel row " + (row - 1));
       trackReferencePanels.add(trackReferencePanel);
       objectControlsGroup.addObjectControl(trackReferencePanel);
     }
@@ -154,14 +154,14 @@ public class NormalDiscPanel extends DiscPanelAbstract {
    * {@inheritDoc}
    */
   @Override
-  public Disc ocGetValue() {
+  public Disc getValue() {
     updateObjectFromControls();
     
     for (TrackReferenceControlsNormalAlbum trackReferencePanel: trackReferencePanels) {
       if (editMode == EditMode.NEW) {
-        disc.getTrackReferences().add(trackReferencePanel.ocGetValue());
+        disc.getTrackReferences().add(trackReferencePanel.getValue());
       }
-      trackReferencePanel.ocGetValue();
+      trackReferencePanel.getValue();
     }
     
     return disc;
@@ -171,7 +171,7 @@ public class NormalDiscPanel extends DiscPanelAbstract {
     super.updateObjectFromControls();
     
     for (TrackReferenceControlsNormalAlbum trackReferencePanel: trackReferencePanels) {
-      TrackReference trackReference = trackReferencePanel.ocGetValue();
+      TrackReference trackReference = trackReferencePanel.getValue();
       if (editMode == EditMode.NEW) {
         disc.getTrackReferences().add(trackReference);
       }
@@ -180,18 +180,18 @@ public class NormalDiscPanel extends DiscPanelAbstract {
   }
 
   @Override
-  public void ocSetValue(Disc objectValue) {
+  public void setValue(Disc objectValue) {
     // TODO Auto-generated method stub
     
   }
 
   @Override
-  public Node ocGetControl() {
+  public Node getControl() {
     return titledPane;
   }
 
   @Override
-  public String ocGetObjectValueAsFormattedText() {
+  public String getValueAsFormattedText() {
     // TODO Auto-generated method stub
     return null;
   }
@@ -221,7 +221,7 @@ public class NormalDiscPanel extends DiscPanelAbstract {
   }
   
   @Override
-  public boolean ocIsValid() {
+  public boolean isValid() {
     return true;
   }
 

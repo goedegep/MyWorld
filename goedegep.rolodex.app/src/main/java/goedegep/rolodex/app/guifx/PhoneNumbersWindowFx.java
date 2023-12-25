@@ -209,19 +209,19 @@ class PhoneNumberEditPanel {
     label = componentFactory.createLabel("Phone number:");
     gridPane.add(label, 0, row);
 
-    gridPane.add(phoneNumberTextField.ocGetControl(), 1, row);
+    gridPane.add(phoneNumberTextField.getControl(), 1, row);
     
     label = componentFactory.createLabel("Connection type:");
     gridPane.add(label, 2, row);
 
-    gridPane.add(connectionTypeTextField.ocGetControl(), 3, row);
+    gridPane.add(connectionTypeTextField.getControl(), 3, row);
     
     row++;
     
     label = componentFactory.createLabel("Description:");
     gridPane.add(label, 0, row);
 
-    gridPane.add(descriptionTextField.ocGetControl(), 1, row);
+    gridPane.add(descriptionTextField.getControl(), 1, row);
     
   }
   
@@ -269,15 +269,15 @@ class PhoneNumberEditPanel {
       return;
     }
     
-    phoneNumberTextField.ocSetValue(phoneNumber.getPhoneNumber());
-    connectionTypeTextField.ocSetValue(phoneNumber.getConnectionType());
-    descriptionTextField.ocSetValue(phoneNumber.getDescription());    
+    phoneNumberTextField.setValue(phoneNumber.getPhoneNumber());
+    connectionTypeTextField.setValue(phoneNumber.getConnectionType());
+    descriptionTextField.setValue(phoneNumber.getDescription());    
   }
   
   private void clearFields() {
-    phoneNumberTextField.ocSetValue(null);
-    connectionTypeTextField.ocSetValue(null);
-    descriptionTextField.ocSetValue(null);
+    phoneNumberTextField.setValue(null);
+    connectionTypeTextField.setValue(null);
+    descriptionTextField.setValue(null);
   }
   
   /**
@@ -309,18 +309,18 @@ class PhoneNumberEditPanel {
    * @param phoneNumber The PhoneNumber object to be updated.
    */
   public boolean updatePhoneNumberFromFields(PhoneNumber phoneNumber) {
-    String phoneNumberText = phoneNumberTextField.ocGetValue();
+    String phoneNumberText = phoneNumberTextField.getValue();
     if (!PgUtilities.equals(phoneNumber.getPhoneNumber(), phoneNumberText)) {
       phoneNumber.setPhoneNumber(phoneNumberText);
     }      
         
-    ConnectionType connectionType = connectionTypeTextField.ocGetValue();
+    ConnectionType connectionType = connectionTypeTextField.getValue();
 //    ConnectionType connectionType = ConnectionType.getByName(connectionTypeText);
     if (!PgUtilities.equals(phoneNumber.getConnectionType(), connectionType)) {
       phoneNumber.setConnectionType(connectionType);
     } 
     
-    String description = descriptionTextField.ocGetValue();
+    String description = descriptionTextField.getValue();
     if (!PgUtilities.equals(phoneNumber.getDescription(), description)) {
       phoneNumber.setDescription(description);
     }      
