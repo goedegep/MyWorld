@@ -104,7 +104,7 @@ public class ObjectControlCurrency extends ObjectControlTextField<PgCurrency> {
     StringBuilder buf = new StringBuilder();
     
     buf.append("ObjectControl type=Currency");
-    buf.append(", id=").append(ocGetId() != null ? ocGetId() : "<null>");
+    buf.append(", id=").append(getId() != null ? getId() : "<null>");
     buf.append(", value=").append(value != null ? value : "<null>");
     buf.append(", referenceValue=").append(referenceValue != null ? referenceValue : "<null>");
     

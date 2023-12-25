@@ -31,7 +31,7 @@ public class Gpx10To11Converter {
   static final GPXPackage GPX_PACKAGE = GPXPackage.eINSTANCE;
   
   public static DocumentRoot convertGpxVersion10To11(goedegep.gpx10.model.DocumentRoot documentRoot10) {
-    LOGGER.severe("=>");
+    LOGGER.info("=>");
     
     DocumentRoot documentRoot = GPX_FACTORY.createDocumentRoot();
     
@@ -58,7 +58,7 @@ public class Gpx10To11Converter {
     // Ignore the values in the model and set the values for version 1.1.
     documentRoot.getXSISchemaLocation().put("http://www.topografix.com/GPX/1/1", "http://www.topografix.com/GPX/1/1/gpx.xsd");
         
-    LOGGER.severe("<=");
+    LOGGER.info("<=");
     return documentRoot;
   }
 

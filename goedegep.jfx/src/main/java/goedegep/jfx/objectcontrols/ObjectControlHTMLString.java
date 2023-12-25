@@ -27,14 +27,14 @@ public class ObjectControlHTMLString extends ObjectControlAbstract<String> {
     htmlEditor = customization.getComponentFactoryFx().createHTMLEditor();
     htmlEditor.addEventHandler(InputEvent.ANY, (e) -> ociHandleNewUserInput(htmlEditor));
     
-    ocSetValue(text);
+    setValue(text);
   }
   
   /**
    * {@inheritDoc}
    */
   @Override
-  public HTMLEditor ocGetControl() {
+  public HTMLEditor getControl() {
     return htmlEditor;
   }
 
@@ -42,7 +42,7 @@ public class ObjectControlHTMLString extends ObjectControlAbstract<String> {
    * {@inheritDoc}
    */
   @Override
-  public void ocSetValue(String objectValue) {
+  public void setValue(String objectValue) {
     referenceValue = objectValue;
     if (objectValue != null) {
       htmlEditor.setHtmlText(objectValue);
@@ -95,7 +95,7 @@ public class ObjectControlHTMLString extends ObjectControlAbstract<String> {
    * In this case the formatted text can only be shown in a browser, so just return the HTML text.
    */
   @Override
-  public String ocGetObjectValueAsFormattedText()  {
+  public String getValueAsFormattedText()  {
     return value;
   }
   

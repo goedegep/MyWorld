@@ -25,14 +25,14 @@ class MediumInfoControls {
     // Medium type
     mediumTypeComboBox = componentFactory.createObjectControlEnumComboBox(MediumType.NOT_SET, MediumType.NOT_SET, MediadbPackage.eINSTANCE.getMediumType(), true, "Select the medium type");
     MediumType mediumType = mediumInfo.getMediumType();
-    mediumTypeComboBox.ocSetValue(mediumType);
-    gridPane.add(mediumTypeComboBox.ocGetControl(), column++, row);
+    mediumTypeComboBox.setValue(mediumType);
+    gridPane.add(mediumTypeComboBox.getControl(), column++, row);
     
     // Information type
     informationTypeComboBox = componentFactory.createObjectControlEnumComboBox(InformationType.NOT_SET, InformationType.NOT_SET, MediadbPackage.eINSTANCE.getInformationType(), true, "Select the information type");
     InformationType informationType = mediumInfo.getInformationType();
-    informationTypeComboBox.ocSetValue(informationType);
-    gridPane.add(informationTypeComboBox.ocGetControl(), column++, row);
+    informationTypeComboBox.setValue(informationType);
+    gridPane.add(informationTypeComboBox.getControl(), column++, row);
 
     // Source type
     sourceTypeComboBox = componentFactory.createObjectControlEnumComboBox(InformationType.NOT_SET, InformationType.NOT_SET, MediadbPackage.eINSTANCE.getInformationType(), true, "Select the source type(s)");
@@ -40,11 +40,11 @@ class MediumInfoControls {
     if (!mediumInfo.getSourceTypes().isEmpty()) {
       sourceType = mediumInfo.getSourceTypes().get(0);
     }
-    sourceTypeComboBox.ocSetValue(sourceType);
-    gridPane.add(sourceTypeComboBox.ocGetControl(), column++, row);
+    sourceTypeComboBox.setValue(sourceType);
+    gridPane.add(sourceTypeComboBox.getControl(), column++, row);
 
     // Source bit rate
     sourceBitRateControl = componentFactory.createObjectControlInteger(mediumInfo.getSourceBitRate(), 100.0, false, "enter the source bitrate");
-    gridPane.add(sourceBitRateControl.ocGetControl(), column++, row);
+    gridPane.add(sourceBitRateControl.getControl(), column++, row);
   }
 }

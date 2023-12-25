@@ -52,8 +52,8 @@ public class PlayerObjectControl extends ObjectControlAbstract<Player> {
    * The Artist control is the primary control.
    */
   @Override
-  public AutoCompleteTextField ocGetControl() {
-    return artistObjectControl.ocGetControl();
+  public AutoCompleteTextField getControl() {
+    return artistObjectControl.getControl();
   }
 
   // TODO should not be needed -> artistObjectControl.ocGetControl()
@@ -78,13 +78,13 @@ public class PlayerObjectControl extends ObjectControlAbstract<Player> {
    * {@inheritDoc}
    */
   @Override
-  public void ocSetValue(final Player player) {
+  public void setValue(final Player player) {
     if (player != null) {
-      artistObjectControl.ocSetValue(player.getArtist());
-      playerInstrumentTextField.ocSetValue(StringUtil.stringCollectionToCommaSeparatedStrings(player.getInstruments()));
+      artistObjectControl.setValue(player.getArtist());
+      playerInstrumentTextField.setValue(StringUtil.stringCollectionToCommaSeparatedStrings(player.getInstruments()));
     } else {
-      artistObjectControl.ocSetValue(null);
-      playerInstrumentTextField.ocSetValue(null);
+      artistObjectControl.setValue(null);
+      playerInstrumentTextField.setValue(null);
     }
   }
   
@@ -122,17 +122,17 @@ public class PlayerObjectControl extends ObjectControlAbstract<Player> {
    */
   @Override
   public boolean ociDetermineFilledIn() {
-    return artistObjectControl.ocIsFilledIn();
+    return artistObjectControl.isFilledIn();
   }
 
   @Override
   public Player ociDetermineValue(Object source) {
     Player player = MediadbFactory.eINSTANCE.createPlayer();
     
-    Artist artist = artistObjectControl.ocGetValue();
+    Artist artist = artistObjectControl.getValue();
     player.setArtist(artist);
     
-    List<String> instruments = StringUtil.commaSeparatedValuesToListOfValues(playerInstrumentTextField.ocGetValue());
+    List<String> instruments = StringUtil.commaSeparatedValuesToListOfValues(playerInstrumentTextField.getValue());
     player.getInstruments().addAll(instruments);
     
     return player;
@@ -151,8 +151,8 @@ public class PlayerObjectControl extends ObjectControlAbstract<Player> {
   }
 
   @Override
-  public String ocGetObjectValueAsFormattedText() {
-    return ocGetValue().toString();
+  public String getValueAsFormattedText() {
+    return getValue().toString();
   }
 
 }

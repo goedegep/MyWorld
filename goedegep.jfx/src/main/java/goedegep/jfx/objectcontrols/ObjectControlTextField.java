@@ -83,7 +83,7 @@ public class ObjectControlTextField<T> extends ObjectControlAbstract<T> {
     // So if the initial value isn't null, set the value (triggering the listener, leading to a call to ociHandleNewUserInput().
     // Else, just call ociHandleNewUserInput().
 //    if (initialValue != null) {
-      ocSetValue(initialValue);
+      setValue(initialValue);
 //    } else {
 //      ociHandleNewUserInput();
 //    }
@@ -93,7 +93,7 @@ public class ObjectControlTextField<T> extends ObjectControlAbstract<T> {
    * {@inheritDoc}
    */
   @Override
-  public TextField ocGetControl() {
+  public TextField getControl() {
     return textField;
   }
 
@@ -101,7 +101,7 @@ public class ObjectControlTextField<T> extends ObjectControlAbstract<T> {
    * {@inheritDoc}
    */
   @Override
-  public void ocSetValue(T objectValue) {
+  public void setValue(T objectValue) {
     String text = objectToString(objectValue);
     referenceValue = stringToObject(text);
     textField.setText(text);
@@ -155,8 +155,8 @@ public class ObjectControlTextField<T> extends ObjectControlAbstract<T> {
    * {@inheritDoc}
    */
   @Override
-  public String ocGetObjectValueAsFormattedText()  {
-    String text = objectToString(ocGetValue());
+  public String getValueAsFormattedText()  {
+    String text = objectToString(getValue());
     return text;
   }
   
@@ -188,7 +188,7 @@ public class ObjectControlTextField<T> extends ObjectControlAbstract<T> {
     StringBuilder buf = new StringBuilder();
     
     buf.append("ObjectControl type=TextField");
-    buf.append(", id=").append(ocGetId() != null ? ocGetId() : "<null>");
+    buf.append(", id=").append(getId() != null ? getId() : "<null>");
     buf.append(", value=").append(value != null ? value : "<null>");
     buf.append(", referenceValue=").append(referenceValue != null ? referenceValue : "<null>");
     

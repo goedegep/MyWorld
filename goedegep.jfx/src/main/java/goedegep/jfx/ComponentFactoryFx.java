@@ -876,7 +876,7 @@ public class ComponentFactoryFx {
     ObjectControlFileSelecter fileSelecter = new ObjectControlFileSelecter(customization, textFieldWidth, textFieldToolTipText,
         folderChooserButtonText, folderChooserButtonToolTipText, directoryChooserTitle, isOptional);
     
-    customizeTextInputControl(fileSelecter.ocGetControl());
+    customizeTextInputControl(fileSelecter.getControl());
     customizeButton(fileSelecter.getFileChooserButton());
     
     return fileSelecter;
@@ -899,7 +899,7 @@ public class ComponentFactoryFx {
     ObjectControlFolderSelecter folderSelecter = new ObjectControlFolderSelecter(customization, textFieldWidth, textFieldToolTipText,
         folderChooserButtonText, folderChooserButtonToolTipText, directoryChooserTitle, isOptional);
     
-    customizeTextInputControl(folderSelecter.ocGetControl());
+    customizeTextInputControl(folderSelecter.getControl());
     customizeButton(folderSelecter.getFolderChooserButton());
     
     return folderSelecter;

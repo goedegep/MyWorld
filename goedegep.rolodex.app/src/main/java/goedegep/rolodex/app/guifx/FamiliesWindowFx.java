@@ -229,21 +229,21 @@ class FamilyEditPanel {
     label = componentFactory.createLabel("Family title:");
     gridPane.add(label, 0, row);
 
-    gridPane.add(familyTitleTextField.ocGetControl(), 1, row);
+    gridPane.add(familyTitleTextField.getControl(), 1, row);
     
     label = componentFactory.createLabel("Family name:");
     gridPane.add(label, 2, row);
 
-    gridPane.add(familyNameTextField.ocGetControl(), 3, row);
+    gridPane.add(familyNameTextField.getControl(), 3, row);
     
     row++;
     
     label = componentFactory.createLabel("Address:");
     gridPane.add(label, 0, row);
 
-    gridPane.add(addressTextField.ocGetControl(), 1, row);
+    gridPane.add(addressTextField.getControl(), 1, row);
     
-    gridPane.add(moveToAddress.ocGetControl(), 2, row);
+    gridPane.add(moveToAddress.getControl(), 2, row);
     
     row++;
     
@@ -251,7 +251,7 @@ class FamilyEditPanel {
     gridPane.add(label,  0, row);
     
     for (int i = 0; i < phoneNumberTextFields.length; i++) {
-      gridPane.add(phoneNumberTextFields[i].ocGetControl(), 1 + i, row);
+      gridPane.add(phoneNumberTextFields[i].getControl(), 1 + i, row);
     }
     
   }
@@ -300,33 +300,33 @@ class FamilyEditPanel {
       return;
     }
     
-    familyTitleTextField.ocSetValue(family.getFamilyTitle());
-    familyNameTextField.ocSetValue(family.getFamilyName());
+    familyTitleTextField.setValue(family.getFamilyTitle());
+    familyNameTextField.setValue(family.getFamilyName());
     
-    addressTextField.ocGetControl().setText(null);
+    addressTextField.getControl().setText(null);
     Address address = family.getAddress();
     if (address != null) {
-      addressTextField.ocGetControl().setText(address.toString());
+      addressTextField.getControl().setText(address.toString());
     }
     
     List<PhoneNumber> phoneNumbers = family.getPhoneNumbers();
     for (int i = 0; i < phoneNumberTextFields.length; i++) {
       if (phoneNumbers.size() > i) {
-        phoneNumberTextFields[i].ocGetControl().setText(phoneNumbers.get(i).toString());
+        phoneNumberTextFields[i].getControl().setText(phoneNumbers.get(i).toString());
       } else {
-        phoneNumberTextFields[i].ocGetControl().setText(null);
+        phoneNumberTextFields[i].getControl().setText(null);
       }
     }
   }
   
   private void clearFields() {
-    familyTitleTextField.ocSetValue(null);
-    familyNameTextField.ocSetValue(null);
+    familyTitleTextField.setValue(null);
+    familyNameTextField.setValue(null);
 
-    addressTextField.ocGetControl().setText(null);
-    moveToAddress.ocSetValue(false);
+    addressTextField.getControl().setText(null);
+    moveToAddress.setValue(false);
     for (int i = 0; i < phoneNumberTextFields.length; i++) {
-      phoneNumberTextFields[i].ocGetControl().setText(null);
+      phoneNumberTextFields[i].getControl().setText(null);
     }
   }
   
@@ -359,18 +359,18 @@ class FamilyEditPanel {
    * @param family The Family object to be updated.
    */
   public boolean updateFamilyFromFields(Family family) {
-      String familyTitle = familyTitleTextField.ocGetValue();
+      String familyTitle = familyTitleTextField.getValue();
       if (!PgUtilities.equals(family.getFamilyTitle(), familyTitle)) {
         family.setFamilyTitle(familyTitle);
       }
       
-      String familyName = familyNameTextField.ocGetValue();
+      String familyName = familyNameTextField.getValue();
       if (!PgUtilities.equals(family.getFamilyName(), familyName)) {
         family.setFamilyName(familyName);
       }
                   
       Address address = addressTextField.getMatchingAddress();
-      if (moveToAddress.ocGetValue()) {
+      if (moveToAddress.getValue()) {
         Address currentAddress = family.getAddress();
         if (currentAddress != null) {
           AddressForPeriod addressForPeriod = ROLODEX_FACTORY.createAddressForPeriod();

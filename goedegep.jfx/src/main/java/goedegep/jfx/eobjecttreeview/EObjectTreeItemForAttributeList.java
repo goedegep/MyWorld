@@ -172,6 +172,76 @@ public class EObjectTreeItemForAttributeList extends EObjectTreeItem {
   void switchToViewMode() {
     // No action, all children remain present.
   }
+
+  /**
+   * Add a child to an attribute list item.
+   * <p>
+   * If the children haven't been built yet, nothing is done, because the right children will be built when needed.
+   * 
+   * @param position the position in the list of values and in the child items.
+   */
+  public void addAttributeListChild(int position) {
+    LOGGER.info("=>");
+    
+    boolean currentIsLeaf = isLeaf();
+    
+    isLeaf = null;
+    
+    if (isFirstTimeChildren) {
+      // The children haven't been built yet, so we don't have to add anything.
+      return;
+    }
+    
+    ObservableList<TreeItem<Object>> children = super.getChildren();
+        
+    Object object = getValue();
+    
+    // The object is a list of Objects, each of which will be a child Object.
+    @SuppressWarnings("unchecked")
+    List<? extends Object> eObjects = (List<? extends Object>) object;
+    Object listObject = eObjects.get(position);
+    EObjectTreeItemAttributeListValueDescriptor eObjectTreeItemAttributeListValueDescriptor = eObjectTreeItemAttributeListDescriptor.geteObjectTreeItemAttributeListValueDescriptor();
+    EObjectTreeItem child = new EObjectTreeItemForAttributeListValue(listObject, eObjectTreeItemAttributeListValueDescriptor, getEObjectTreeView());
+    if (children.size() < position + 1) {
+      children.add(child);
+    } else {
+      children.add(position, child);
+    }
+    
+    // hack. This way the TreeView seems to re-evaluate whether the item is a leaf.
+    if (currentIsLeaf) {
+      boolean expanded = isExpanded();
+      setExpanded(!expanded);
+      setExpanded(expanded);
+    }
+    
+    this.setExpanded(true);
+    getEObjectTreeView().getSelectionModel().select(child);
+            
+    LOGGER.info("<=");
+  }
+
+  /**
+   * Remove a child from an value list item.
+   * <p>
+   * If the children haven't been built yet, nothing is done, because the right children will be built when needed.
+   * 
+   * @param position the position in the list of values and in the child items.
+   */
+  public void removeAttributeListChild(int position) {
+    LOGGER.info("=>");
+    
+    if (isFirstTimeChildren) {
+      // The children haven't been built yet, so we don't have to add anything.
+      LOGGER.severe("Children haven't been built yet, so no action");
+      return;
+    }
+    
+    ObservableList<TreeItem<Object>> children = getChildren();
+    children.remove(position);
+        
+    LOGGER.info("<=");
+  }
   
   /**
    * {@inheritDoc}

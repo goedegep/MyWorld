@@ -19,6 +19,20 @@ public class UrlUtil {
   private UrlUtil() {
 
   }
+  
+  /**
+   * Check whether a {@code String} is a URL.
+   * 
+   * @param text the {@code String} to be checked. This may not be null.
+   * @return true if {@code text} is a URL, false otherwise.
+   */
+  public static boolean isURL(String text) {
+    if (text.startsWith("http:")  ||  text.startsWith("https:")) {
+      return true;
+    } else {
+      return false;
+    }
+  }
 
   /**
    * Append parameters to a URL string.

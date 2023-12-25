@@ -174,7 +174,7 @@ public class PhotoMapLayer extends MapLayer implements ObjectSelector<IPhotoInfo
         
         double x = dragEvent.getX();
         double y = dragEvent.getY();
-        LOGGER.severe("x, y = " + x + ", " + y);
+        LOGGER.info("x, y = " + x + ", " + y);
 //        MapPoint mapPoint = baseMap.getMapPosition(dragEvent.getX(), dragEvent.getY());
         MapPoint mapPoint = baseMap.getMapPosition(point.getX(), point.getY());
         WGS84Coordinates coordinates = new WGS84Coordinates(mapPoint.getLatitude(), mapPoint.getLongitude());

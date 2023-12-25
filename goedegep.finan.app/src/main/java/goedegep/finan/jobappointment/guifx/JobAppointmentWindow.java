@@ -131,13 +131,13 @@ public class JobAppointmentWindow extends JfxStage {
     gridPane.add(label, 0, 0);
     
     ObjectControlLocalDate objectInputLocalDate = componentFactory.createObjectControlLocalDate(jobAppointment.getCommencementOfEmploymentDate(), 300, true, null);
-    gridPane.add(objectInputLocalDate.ocGetControl(), 1, 0);
+    gridPane.add(objectInputLocalDate.getControl(), 1, 0);
     
     label = componentFactory.createLabel("Starting salary:");
     gridPane.add(label, 2, 0);
     
     ObjectControlCurrency objectInputCurrency = componentFactory.createObjectControlCurrency(jobAppointment.getStartingSalary(), 300, true, null);
-    gridPane.add(objectInputCurrency.ocGetControl(), 3, 0);
+    gridPane.add(objectInputCurrency.getControl(), 3, 0);
     
     mainPane.setCenter(gridPane);
     

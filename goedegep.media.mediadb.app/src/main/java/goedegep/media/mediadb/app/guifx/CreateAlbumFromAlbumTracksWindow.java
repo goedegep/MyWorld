@@ -77,7 +77,7 @@ public class CreateAlbumFromAlbumTracksWindow extends JfxStage {
         "Select the folder with the tracks of the album that has to be imported",
         false);
     sourceFolderSelector.setInitialFolderProvider(() -> SOURCE_FOLDER);
-    Node sourceFolderTextField = sourceFolderSelector.ocGetControl();
+    Node sourceFolderTextField = sourceFolderSelector.getControl();
     sourceFolderSelector.addListener((observable) -> handleNewSourceFolder(sourceFolderSelector.ocGetAbsolutePath()));
     gridPane.add(sourceFolderTextField, 1, 0);
     

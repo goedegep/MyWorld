@@ -453,7 +453,7 @@ public class MyWorldInstaller extends JfxApplication {
       
     });
     
-    controlsPanel.add(installationFolder.ocGetControl(), 1, 0);
+    controlsPanel.add(installationFolder.getControl(), 1, 0);
     controlsPanel.add(installationFolder.getFolderChooserButton(), 2, 0);
    
     // User data folder
@@ -462,7 +462,7 @@ public class MyWorldInstaller extends JfxApplication {
     userDataFolder = new ObjectControlFolderSelecter(DefaultCustomizationFx.getInstance(), 200, null, "User Data directory", null, "User Data directory", false);
     userDataFolder.setInitialFolderProvider(() -> "D:\\Database\\MyWorld");
 //    userDataFolderValidProperty = userDataFolder.ocValidProperty();
-    controlsPanel.add(userDataFolder.ocGetControl(), 1, 1);
+    controlsPanel.add(userDataFolder.getControl(), 1, 1);
     controlsPanel.add(userDataFolder.getFolderChooserButton(), 2, 1);
     
     runButton = new Button("Perform installation");
@@ -484,7 +484,7 @@ public class MyWorldInstaller extends JfxApplication {
    * Otherwise it is disabled.
    */
   private void updateRunButtonStatus() {
-    if (!installationRunning  &&  installationFolder.ocIsValid()  &&  userDataFolder.ocIsValid()) {
+    if (!installationRunning  &&  installationFolder.isValid()  &&  userDataFolder.isValid()) {
       runButton.setDisable(false);
     } else {
       runButton.setDisable(true);
@@ -514,7 +514,7 @@ public class MyWorldInstaller extends JfxApplication {
     statusLabel.setText("");
     appendOutputTextLine("Starting installation process ...");
     
-    String binInstallationFolder = installationFolder.ocGetValue() + "\\bin";
+    String binInstallationFolder = installationFolder.getValue() + "\\bin";
     try {
       createMyWorldShortCut(binInstallationFolder, userDataFolder.ocGetAbsolutePath(), MY_WORLD_SHORTCUT_PATH);
     } catch (IOException e) {
@@ -978,7 +978,7 @@ public class MyWorldInstaller extends JfxApplication {
   private void performInstallation() throws IOException {
     LOGGER.info("=>");
     
-    String installationDirectoryPrev = installationFolder.ocGetValue() + "Prev";
+    String installationDirectoryPrev = installationFolder.getValue() + "Prev";
     Path installationPathPrev = Paths.get(installationDirectoryPrev);
     Path installationPath = installationFolder.ocGetValueAsPath();
 

@@ -22,8 +22,8 @@ public class CountryTextField extends ObjectControlAutoCompleteTextField<String>
     
     this.rolodex = rolodex;
     
-    customization.getComponentFactoryFx().customizeTextInputControl(this.ocGetControl());
-    ocGetControl().getEntries().addAll(countriesToString(rolodex.getCountryList().getCountries()));
+    customization.getComponentFactoryFx().customizeTextInputControl(this.getControl());
+    getControl().getEntries().addAll(countriesToString(rolodex.getCountryList().getCountries()));
   }
   
 //  /**
@@ -35,7 +35,7 @@ public class CountryTextField extends ObjectControlAutoCompleteTextField<String>
 //  }
   
   public boolean isNonExistingCountyName() {
-    if (ocIsFilledIn() && (getCountry() == null)) {
+    if (isFilledIn() && (getCountry() == null)) {
       return true;
     } else {
       return false;
@@ -43,7 +43,7 @@ public class CountryTextField extends ObjectControlAutoCompleteTextField<String>
   }
   
   public Country getCountry() {
-    return rolodex.getCountryList().getCountry(ocGetControl().getText());    
+    return rolodex.getCountryList().getCountry(getControl().getText());    
   }
   
   private static List<String> countriesToString(List<Country> countries) {

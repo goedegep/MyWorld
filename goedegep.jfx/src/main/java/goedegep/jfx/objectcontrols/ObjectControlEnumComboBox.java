@@ -90,7 +90,7 @@ public class ObjectControlEnumComboBox<T extends Enum<T>> extends ObjectControlA
     init(customization, enumConstant, toolTipText);
   }
   
-  public ComboBox<T> ocGetControl() {
+  public ComboBox<T> getControl() {
     return comboBox;
   }
 
@@ -154,7 +154,7 @@ public class ObjectControlEnumComboBox<T extends Enum<T>> extends ObjectControlA
    * {@inheritDoc}
    */
   @Override
-  public String ocGetObjectValueAsFormattedText() {
+  public String getValueAsFormattedText() {
     if (value != null) {
       return comboBox.getConverter().toString(value);
     } else {
@@ -166,7 +166,7 @@ public class ObjectControlEnumComboBox<T extends Enum<T>> extends ObjectControlA
    * {@inheritDoc}
    */
   @Override
-  public void ocSetValue(T objectValue) {
+  public void setValue(T objectValue) {
     referenceValue = objectValue;
     comboBox.getSelectionModel().select(objectValue);
   }

@@ -115,17 +115,7 @@ public class ObjectControlFileSelecter extends ObjectControlFileOrFolderSelecter
     fileChooserButton = componentFactory.createButton(fileChooserButtonText, fileChooserButtonToolTipText);
     fileChooserButton.setOnAction(actionEvent -> handleFileChooserButtonPressed());
 
-//    // Do this at the end, so it automatically leads an update of the selectionValidProperty.
-//    if (initiallySelectedFilename != null) {
-//      File initiallySelectedFile = new File(initiallySelectedFilename);
-//      if (initiallySelectedFile.isDirectory()) {
-//        initiallySelectedFolder = initiallySelectedFilename;
-//      } else {
-//        initiallySelectedFolder = initiallySelectedFile.getParent();
-//      }
-//
-//      ocSetFilename(initiallySelectedFilename);
-//    }
+    setValue(null);
   }
 
   /**
@@ -163,17 +153,6 @@ public class ObjectControlFileSelecter extends ObjectControlFileOrFolderSelecter
     return fileChooserButton;
   }
 
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public void ociSetValue(File value) {
-    this.value = value;
-//    if (fileChooser != null  &&  value != null) {
-//      fileChooser.setInitialFileName(value.getAbsolutePath());
-//    }
-  }
-  
   /**
    * Handle the fact the the {@code fileChooserButton} is pressed.
    * <p>
@@ -232,5 +211,28 @@ public class ObjectControlFileSelecter extends ObjectControlFileOrFolderSelecter
   public boolean ociDetermineFilledIn() {
     return ((pathTextField.textProperty().get() != null  &&  !pathTextField.textProperty().get().isEmpty())  ||
         fileSelectedByFileChooser != null);
+  }
+
+  /**
+   * @InheritDoc
+   */
+  @Override
+  public File ociDetermineValue(Object source) {
+    File file = null;
+    
+    if (source == fileChooser) {
+      file = fileSelectedByFileChooser;
+    } else {
+      file = new File(addPrefixIfSet(pathTextField.textProperty().get()));
+    }
+    
+    return file;
+  }
+  
+  /**
+   * {@inheritDoc}
+   */
+  protected void ociUpdateNonSourceControls(Object source) {
+    setPathTextFieldText();
   }
 }

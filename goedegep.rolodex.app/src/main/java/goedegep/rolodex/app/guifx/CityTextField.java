@@ -23,8 +23,8 @@ public class CityTextField extends ObjectControlAutoCompleteTextField<String> {
     
     this.rolodex = rolodex;
     
-    customization.getComponentFactoryFx().customizeTextInputControl(this.ocGetControl());
-    ocGetControl().getEntries().addAll(citiesToString(rolodex.getCityList().getCities()));
+    customization.getComponentFactoryFx().customizeTextInputControl(this.getControl());
+    getControl().getEntries().addAll(citiesToString(rolodex.getCityList().getCities()));
   }
   
 //  @Override
@@ -33,7 +33,7 @@ public class CityTextField extends ObjectControlAutoCompleteTextField<String> {
 //  }
   
   public boolean isNonExistingCityName() {
-    if (ocIsFilledIn() && (getMatchingCities().isEmpty())) {
+    if (isFilledIn() && (getMatchingCities().isEmpty())) {
       return true;
     } else {
       return false;
@@ -41,11 +41,11 @@ public class CityTextField extends ObjectControlAutoCompleteTextField<String> {
   }
   
   public List<City> getMatchingCities() {
-    return rolodex.getCityList().getCity(ocGetControl().getText());
+    return rolodex.getCityList().getCity(getControl().getText());
   }
   
   public City getCity(Country country) {
-    return rolodex.getCityList().getCity(ocGetControl().getText(), country);
+    return rolodex.getCityList().getCity(getControl().getText(), country);
   }
   
   private static List<String> citiesToString(List<City> cities) {

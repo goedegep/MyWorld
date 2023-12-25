@@ -153,7 +153,7 @@ public class EObjectEditor<E extends EObject> extends JfxStage {
     // Label
     StringBuilder buf = new StringBuilder();
     buf.append(eObjectAttributeEditDescriptor.getLabelText());
-    if (!eObjectAttributeEditDescriptor.getObjectControl().ocIsOptional()) {
+    if (!eObjectAttributeEditDescriptor.getObjectControl().isOptional()) {
       buf.append(" *");
     }
     buf.append(":");
@@ -161,14 +161,14 @@ public class EObjectEditor<E extends EObject> extends JfxStage {
     gridPane.add(label, 0, rowIndex);
     
     // ObjectInput control
-    Node node = eObjectAttributeEditDescriptor.getObjectControl().ocGetControl();
+    Node node = eObjectAttributeEditDescriptor.getObjectControl().getControl();
     gridPane.add(node, 1, rowIndex); 
     
     // Ok/Not OK label
     Label statusLabel = componentFactory.createLabel(null);
     ObjectControl<?> objectInput = (ObjectControl<?>) node;
-    objectInput.addListener((o) -> updateStatusLabel(statusLabel, objectInput.ocIsValid()));   
-    updateStatusLabel(statusLabel, objectInput.ocIsValid());
+    objectInput.addListener((o) -> updateStatusLabel(statusLabel, objectInput.isValid()));   
+    updateStatusLabel(statusLabel, objectInput.isValid());
     gridPane.add(statusLabel, 2, rowIndex);
   }
   
@@ -191,9 +191,9 @@ public class EObjectEditor<E extends EObject> extends JfxStage {
     
     for (EObjectAttributeEditDescriptor eObjectAttributeEditDescriptor: eObjectEditorDescriptor.getEObjectAttributeEditDescriptors()) {
       ObjectControl<?> objectInput = eObjectAttributeEditDescriptor.getObjectControl();
-      if (objectInput.ocIsFilledIn()) {
+      if (objectInput.isFilledIn()) {
         Object value;
-        value = objectInput.ocGetValue();
+        value = objectInput.getValue();
         eObject.eSet(eObjectAttributeEditDescriptor.getStructuralFeature(), value);
       }
     }

@@ -218,14 +218,14 @@ class EmployeeEditPanel {
     label = componentFactory.createLabel("Person:");
     gridPane.add(label, 0, row);
 
-    gridPane.add(personTextField.ocGetControl(), 1, row);
+    gridPane.add(personTextField.getControl(), 1, row);
     
     row++;
     
     label = componentFactory.createLabel("Institution:");
     gridPane.add(label, 0, row);
 
-    gridPane.add(institutionTextField.ocGetControl(), 1, row);
+    gridPane.add(institutionTextField.getControl(), 1, row);
     
     row++;
     
@@ -233,7 +233,7 @@ class EmployeeEditPanel {
     gridPane.add(label,  0, row);
     
     for (int i = 0; i < phoneNumberTextFields.length; i++) {
-      gridPane.add(phoneNumberTextFields[i].ocGetControl(), 1 + i, row);
+      gridPane.add(phoneNumberTextFields[i].getControl(), 1 + i, row);
     }
     
   }
@@ -282,25 +282,25 @@ class EmployeeEditPanel {
       return;
     }
     
-    personTextField.ocSetValue(employee.getPerson().getName());
-    institutionTextField.ocSetValue(employee.getInstitution().getName());
+    personTextField.setValue(employee.getPerson().getName());
+    institutionTextField.setValue(employee.getInstitution().getName());
     
     List<PhoneNumber> phoneNumbers = employee.getPhoneNumbers();
     for (int i = 0; i < phoneNumberTextFields.length; i++) {
       if (phoneNumbers.size() > i) {
-        phoneNumberTextFields[i].ocSetValue(phoneNumbers.get(i).toString());
+        phoneNumberTextFields[i].setValue(phoneNumbers.get(i).toString());
       } else {
-        phoneNumberTextFields[i].ocSetValue(null);
+        phoneNumberTextFields[i].setValue(null);
       }
     }
   }
   
   private void clearFields() {
-    personTextField.ocSetValue(null);
-    institutionTextField.ocSetValue(null);
+    personTextField.setValue(null);
+    institutionTextField.setValue(null);
 
     for (int i = 0; i < phoneNumberTextFields.length; i++) {
-      phoneNumberTextFields[i].ocSetValue(null);
+      phoneNumberTextFields[i].setValue(null);
     }
   }
   

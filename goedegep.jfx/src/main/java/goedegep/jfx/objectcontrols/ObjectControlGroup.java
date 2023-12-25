@@ -37,7 +37,7 @@ public class ObjectControlGroup implements Iterable<ObjectControl<? extends Obje
    * @param objectControl The ObjectInput to check.
    */
   public void addObjectControl(ObjectControl<?> objectControl) {
-    LOGGER.info("=> " + (objectControl.ocGetId() != null ? objectControl.ocGetId() : "<null>"));
+    LOGGER.info("=> " + (objectControl.getId() != null ? objectControl.getId() : "<null>"));
     
     InvalidationListener invalidationListener = (observable) -> handleChanges(observable);
     objectControl.addListener(invalidationListener);
@@ -177,7 +177,7 @@ public class ObjectControlGroup implements Iterable<ObjectControl<? extends Obje
     boolean isValidValue = true;
     
     for (ObjectControl<?> objectControl: this) {
-      if (!objectControl.ocIsValid()) {
+      if (!objectControl.isValid()) {
         isValidValue = false;
         LOGGER.info("First invalid ObjectControl: " + objectControl.toString());
         break;
@@ -199,8 +199,8 @@ public class ObjectControlGroup implements Iterable<ObjectControl<? extends Obje
     boolean isFilledIn = false;
 
     for (ObjectControl<?> objectInput: this) {
-      LOGGER.info("objectInput: " + objectInput.ocGetId());
-      if (objectInput.ocIsFilledIn()) {
+      LOGGER.info("objectInput: " + objectInput.getId());
+      if (objectInput.isFilledIn()) {
         isFilledIn = true;
         LOGGER.info("Is filled");
         break;
@@ -230,7 +230,7 @@ public class ObjectControlGroup implements Iterable<ObjectControl<? extends Obje
     
     while (iterator.hasNext()) {
       ObjectControl<?> objectInput = iterator.next();
-      if (objectInput.ocIsFilledIn()) {
+      if (objectInput.isFilledIn()) {
         return true;
       }
     }
@@ -243,9 +243,9 @@ public class ObjectControlGroup implements Iterable<ObjectControl<? extends Obje
     
     while (iterator.hasNext()) {
       ObjectControl<?> objectControl = iterator.next();
-      if (objectControl.ocIsChanged()) {
+      if (objectControl.isChanged()) {
         LOGGER.info("First Object control changed: " + objectControl);
-        objectControl.ocIsChanged();
+        objectControl.isChanged();
         return true;
       } else {
         LOGGER.info("Object control not changed: " + objectControl);

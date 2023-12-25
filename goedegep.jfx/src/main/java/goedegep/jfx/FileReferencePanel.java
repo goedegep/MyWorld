@@ -173,7 +173,7 @@ public class FileReferencePanel extends TitledPane {
     if (fileSelecterObjectControl == null) {
       fileSelecterObjectControl = componentFactory.createFileSelecterObjectControl(400, "Currently selected file",
           "Choose file", "Select a file via a file chooser", "Select the file", false);
-      fileSelecterObjectControl.ocSetId("fileSelecter");
+      fileSelecterObjectControl.setId("fileSelecter");
       fileSelecterObjectControl.setInitialFolderProvider(initialFolderSupplier);
       fileSelecterObjectControl.addListener((observable) -> updatePaneTitle());
     }
@@ -192,7 +192,7 @@ public class FileReferencePanel extends TitledPane {
     if (folderSelecterObjectControl == null) {
       folderSelecterObjectControl = componentFactory.createFolderSelecter(400, "Currently selected folder",
           "Choose folder", "Select a folder via a folder chooser", "Select the folder", false);
-      folderSelecterObjectControl.ocSetId("folderSelecter");
+      folderSelecterObjectControl.setId("folderSelecter");
 //      folderSelecterObjectControl.setInitialFolderProvider(initialFolderSupplier);
       folderSelecterObjectControl.addListener((observable) -> updatePaneTitle());
     }
@@ -225,13 +225,13 @@ public class FileReferencePanel extends TitledPane {
    */
   public String getFile() {
     if (handlingFileReference) {
-      if (getFileSelecterObjectControl().ocIsValid()) {
+      if (getFileSelecterObjectControl().isValid()) {
         return getFileSelecterObjectControl().ocGetAbsolutePath();
       } else {
         return null;
       }
     } else {
-      if (getFolderSelecterObjectControl().ocIsValid()) {
+      if (getFolderSelecterObjectControl().isValid()) {
         return getFolderSelecterObjectControl().ocGetAbsolutePath();
       } else {
         return null;
@@ -270,7 +270,7 @@ public class FileReferencePanel extends TitledPane {
     }
     
     titleObjectControl = componentFactory.createObjectControlString(null, 200, true, "a title for the file");
-    titleObjectControl.ocSetId("title");
+    titleObjectControl.setId("title");
     
     objectControlsGroup = new ObjectControlGroup();
     
@@ -457,7 +457,7 @@ public class FileReferencePanel extends TitledPane {
       Label fileNameLabel = componentFactory.createLabel("File:");
       gridPane.add(fileNameLabel, 0, row);
           
-      gridPane.add(getFileSelecterObjectControl().ocGetControl(), 1, row);
+      gridPane.add(getFileSelecterObjectControl().getControl(), 1, row);
       
       Button fileChooserButton = getFileSelecterObjectControl().getFileChooserButton();
       gridPane.add(fileChooserButton, 2, row);
@@ -466,7 +466,7 @@ public class FileReferencePanel extends TitledPane {
       Label fileNameLabel = componentFactory.createLabel("Folder:");
       gridPane.add(fileNameLabel, 0, row);
           
-      gridPane.add(getFolderSelecterObjectControl().ocGetControl(), 1, row);
+      gridPane.add(getFolderSelecterObjectControl().getControl(), 1, row);
       
       Button fileChooserButton = getFolderSelecterObjectControl().getFolderChooserButton();
       gridPane.add(fileChooserButton, 2, row);
@@ -478,7 +478,7 @@ public class FileReferencePanel extends TitledPane {
     Label titleLabel = componentFactory.createLabel("Title:");
     gridPane.add(titleLabel, 0, row);
 
-    gridPane.add(titleObjectControl.ocGetControl(), 1, row);     
+    gridPane.add(titleObjectControl.getControl(), 1, row);     
   }
   
   /**
@@ -549,11 +549,11 @@ public class FileReferencePanel extends TitledPane {
   private void updatePaneTitle() {
     StringBuilder buf = new  StringBuilder();
     
-    String string = titleObjectControl.ocGetValue();
+    String string = titleObjectControl.getValue();
     if ((string == null)  ||  string.isEmpty()) {
 
-      if (getFileSelecterObjectControl().ocGetValue() != null) {
-        string = getFileSelecterObjectControl().ocGetValue().getName();
+      if (getFileSelecterObjectControl().getValue() != null) {
+        string = getFileSelecterObjectControl().getValue().getName();
       } else {
         string = defaultPaneTitle;
       }
@@ -571,6 +571,9 @@ public class FileReferencePanel extends TitledPane {
     setText(buf.toString());
   }
   
+  /**
+   * Builder class for creating a FileReferencePanel.
+   */
   public static class FileReferencePanelBuilder {
     /*
      * Required parameters

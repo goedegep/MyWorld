@@ -2,9 +2,9 @@ package goedegep.vacations.app.guifx;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Supplier;
 import java.util.logging.Logger;
 
-import com.atlis.location.nominatim.NominatimAPI;
 import com.gluonhq.maps.MapView;
 
 import goedegep.gpx.app.GPXLayer;
@@ -14,6 +14,9 @@ import goedegep.util.objectselector.ObjectSelectionListener;
 import goedegep.util.objectselector.ObjectSelector;
 import javafx.stage.Stage;
 
+/**
+ * This class extends a {@link MapView} with a number of {@link MapLayer}s.
+ */
 public class TravelMapView extends MapView implements ObjectSelector<Object> {
   @SuppressWarnings("unused")
   private static final Logger LOGGER = Logger.getLogger(TravelMapView.class.getName());
@@ -26,7 +29,7 @@ public class TravelMapView extends MapView implements ObjectSelector<Object> {
   
   private List<ObjectSelectionListener<Object>> objectSelectionListeners = new ArrayList<>();
 
-  public TravelMapView(CustomizationFx customization, Stage ownerWindow, VacationsWindow vacationsWindow, POIIcons poiIcons, NominatimAPI nominatimAPI) {
+  public TravelMapView(CustomizationFx customization, Stage ownerWindow, POIIcons poiIcons, Supplier<LocationSearchWindow> searchWindowSupplier) {
 //    componentFactory = customization.getComponentFactoryFx();
     
     mapRelatedItemsLayer = new MapRelatedItemsLayer(customization, poiIcons, ownerWindow);
@@ -38,7 +41,7 @@ public class TravelMapView extends MapView implements ObjectSelector<Object> {
     searchResultLayer = new SearchResultLayer();
     addLayer(searchResultLayer);
     
-    controlsLayer = new ControlsLayer(customization, vacationsWindow, nominatimAPI, searchResultLayer);
+    controlsLayer = new ControlsLayer(customization, searchWindowSupplier);
     addLayer(controlsLayer);
     
   }
@@ -59,6 +62,10 @@ public class TravelMapView extends MapView implements ObjectSelector<Object> {
 
   public GPXLayer getGpxLayer() {
     return trackLayer;
+  }
+  
+  public SearchResultLayer getSearchResultLayer() {
+    return searchResultLayer;
   }
 
   @Override

@@ -261,25 +261,25 @@ public class VacationToHtmlConverter extends VacationToTextConverterAbstract {
       buf.append(day.getTitle());
     }
     
-    handleTableTagsAfterDayElement();    
+    handleTableTagsAfterDayElement();
   }
 
   private void vacationElementDocumentToHtml(Document document) {
-    buf.append("<p>").append("Document: ");
-
     FileReference fileReference = document.getDocumentReference();
-    File file = new File(fileReference.getFile());
-    String filename = file.getName();
-    String text = fileReference.getTitle();
-    if (text == null) {
-      text = filename;
+    if (fileReference != null  &&  fileReference.getFile() != null) {
+      File file = new File(fileReference.getFile());
+      String filename = file.getName();
+      String text = fileReference.getTitle();
+      if (text == null) {
+        text = filename;
+      }
+      buf.append("<p>").append("Document: ");
+      buf.append("<a href=\"")
+      .append(filename)
+      .append("\">")
+      .append(text)
+      .append("</a></p>");
     }
-    buf.append("<a href=\"")
-    .append(filename)
-    .append("\">")
-    .append(text)
-    .append("</a></p>");
-
   }
 
   /**

@@ -114,7 +114,7 @@ public class MusicFolderWindow extends JfxStage {
     ObjectControlFolderSelecter musicFolderSelecter = componentFactory.createFolderSelecter(200, "Currently selected folder",
         "Choose folder", "Select music folder via a file chooser", "Select the folder with all music", false);
     musicFolderSelecter.setInitialFolderProvider(() -> currentMusicFolder);
-    Node folderName = musicFolderSelecter.ocGetControl();
+    Node folderName = musicFolderSelecter.getControl();
     grid.add(folderName, 2, 0);
     
     button = musicFolderSelecter.getFolderChooserButton();
@@ -144,7 +144,7 @@ public class MusicFolderWindow extends JfxStage {
 
       @Override
       public void handle(ActionEvent event) {
-        handleMusicFoldersAction(musicFolderSelecter.ocGetValue().getAbsolutePath());
+        handleMusicFoldersAction(musicFolderSelecter.getValue().getAbsolutePath());
       }
       
     });

@@ -24,8 +24,8 @@ public class AddressTextField extends ObjectControlAutoCompleteTextField<String>
     
     this.rolodex = rolodex;
     
-    customization.getComponentFactoryFx().customizeTextInputControl(this.ocGetControl());
-    ocGetControl().getEntries().addAll(addressesToString(rolodex.getAddressList().getAddresses()));
+    customization.getComponentFactoryFx().customizeTextInputControl(this.getControl());
+    getControl().getEntries().addAll(addressesToString(rolodex.getAddressList().getAddresses()));
    }
   
 //  /**
@@ -37,7 +37,7 @@ public class AddressTextField extends ObjectControlAutoCompleteTextField<String>
 //  }
   
   public Address getMatchingAddress() {
-    String addressText = ocGetControl().getText();
+    String addressText = getControl().getText();
     
     for (Address address: rolodex.getAddressList().getAddresses()) {
       if (address.toString().equals(addressText)) {

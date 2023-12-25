@@ -72,7 +72,7 @@ public class PhotoFoldersSettingsDialog extends Dialog<ButtonType> {
    * @return the selected main folder.
    */
   public String getSelectedFolder() {
-    if (folderSelecter.ocIsValid()) {
+    if (folderSelecter.isValid()) {
       return folderSelecter.ocGetAbsolutePath();
     } else {
       return null;
@@ -104,10 +104,10 @@ public class PhotoFoldersSettingsDialog extends Dialog<ButtonType> {
         "Choose folder", "Select photo folder via a file chooser", "Select the folder with photos", false);
     folderSelecter.setInitialFolderProvider(() -> initiallySelectedFolder);
     
-    Node folderName = folderSelecter.ocGetControl();
+    Node folderName = folderSelecter.getControl();
     folderSelecter.addListener((observable) -> {
       LOGGER.severe("In textProperty Listener");
-      handleNewPhotoFolderSelected(folderSelecter.ocIsValid(), folderSelecter.ocGetAbsolutePath());      
+      handleNewPhotoFolderSelected(folderSelecter.isValid(), folderSelecter.ocGetAbsolutePath());      
     });
     contentPanel.add(folderName, 1, 0);
     
@@ -138,7 +138,7 @@ public class PhotoFoldersSettingsDialog extends Dialog<ButtonType> {
     
     okButton = (Button) getDialogPane().lookupButton(ButtonType.OK);
     
-    handleNewPhotoFolderSelected(folderSelecter.ocIsValid(), folderSelecter.ocGetAbsolutePath());
+    handleNewPhotoFolderSelected(folderSelecter.isValid(), folderSelecter.ocGetAbsolutePath());
   }
   
   /**

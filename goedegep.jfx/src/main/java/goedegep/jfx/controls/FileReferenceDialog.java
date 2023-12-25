@@ -70,7 +70,7 @@ public class FileReferenceDialog extends Dialog<ButtonType> {
         "Choose file", "Select a file via a file chooser", "Select the file", false);
     fileSelecter.setInitialFolderProvider(() -> initiallySelectedFolder);
     
-    fileName = fileSelecter.ocGetControl();
+    fileName = fileSelecter.getControl();
     wizardPanel.add(fileName, 1, 0);
     
     Button fileChooserButton = fileSelecter.getFileChooserButton();

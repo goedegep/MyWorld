@@ -7,12 +7,11 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintWriter;
+import java.nio.file.FileSystem;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -20,26 +19,24 @@ import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.function.Consumer;
-import java.util.function.Predicate;
 import java.util.logging.Logger;
 
 import javax.imageio.ImageIO;
 
-import org.apache.commons.imaging.ImageReadException;
 import org.commonmark.parser.Parser;
 import org.commonmark.renderer.html.HtmlRenderer;
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.util.TreeIterator;
-import org.eclipse.emf.ecore.EClass;
-import org.eclipse.emf.ecore.EEnum;
 import org.eclipse.emf.ecore.EObject;
 
 import com.atlis.location.nominatim.NominatimAPI;
 import com.gluonhq.maps.MapPoint;
 import com.gluonhq.maps.MapView;
+import com.google.common.jimfs.Configuration;
+import com.google.common.jimfs.Jimfs;
+import com.google.gson.Gson;
 import com.openhtmltopdf.pdfboxout.PdfRendererBuilder;
 
-import goedegep.appgen.TableRowOperation;
 import goedegep.geo.WGS84BoundingBox;
 import goedegep.geo.WGS84Coordinates;
 import goedegep.gpx.GpxUtil;
@@ -55,21 +52,9 @@ import goedegep.jfx.JfxStage;
 import goedegep.jfx.MenuUtil;
 import goedegep.jfx.PropertyDescriptorsEditorFx;
 import goedegep.jfx.browser.Browser;
-import goedegep.jfx.eobjecttreeview.EEnumEditorDescriptor;
 import goedegep.jfx.eobjecttreeview.EObjectTreeCell;
-import goedegep.jfx.eobjecttreeview.EObjectTreeDescriptor;
 import goedegep.jfx.eobjecttreeview.EObjectTreeItem;
-import goedegep.jfx.eobjecttreeview.EObjectTreeItemAttributeDescriptor;
-import goedegep.jfx.eobjecttreeview.EObjectTreeItemClassDescriptor;
-import goedegep.jfx.eobjecttreeview.EObjectTreeItemClassListReferenceDescriptor;
-import goedegep.jfx.eobjecttreeview.EObjectTreeItemClassReferenceDescriptor;
-import goedegep.jfx.eobjecttreeview.EObjectTreeView;
-import goedegep.jfx.eobjecttreeview.ExtendedNodeOperationDescriptor;
-import goedegep.jfx.eobjecttreeview.NodeOperationDescriptor;
-import goedegep.jfx.eobjecttreeview.PresentationType;
 import goedegep.poi.app.guifx.POIIcons;
-import goedegep.poi.model.POICategoryId;
-import goedegep.poi.model.POIPackage;
 import goedegep.properties.app.guifx.PropertiesEditor;
 import goedegep.properties.model.PropertiesFactory;
 import goedegep.properties.model.PropertiesPackage;
@@ -79,18 +64,17 @@ import goedegep.resources.ImageResource;
 import goedegep.resources.ImageSize;
 import goedegep.types.model.FileReference;
 import goedegep.types.model.TypesFactory;
-import goedegep.types.model.TypesPackage;
 import goedegep.util.Tuplet;
-import goedegep.util.datetime.FlexDateFormat;
 import goedegep.util.emf.EMFResource;
-import goedegep.util.emf.EmfPackageHelper;
 import goedegep.util.file.FileUtils;
 import goedegep.util.i18n.TranslationFormatter;
 import goedegep.util.img.ImageUtils;
-import goedegep.util.img.PhotoFileMetaDataHandler;
 import goedegep.vacations.app.LocationDescriptionDialog;
 import goedegep.vacations.app.VacationsKmlConverter;
+import goedegep.vacations.app.logic.Item;
+import goedegep.vacations.app.logic.ItemGpx;
 import goedegep.vacations.app.logic.NominatimUtil;
+import goedegep.vacations.app.logic.OsmAndItems;
 import goedegep.vacations.app.logic.OsmAndUtil;
 import goedegep.vacations.app.logic.Ov2Util;
 import goedegep.vacations.app.logic.PhotoImportResult;
@@ -112,7 +96,6 @@ import goedegep.vacations.model.GPXTrack;
 import goedegep.vacations.model.Location;
 import goedegep.vacations.model.MapImage;
 import goedegep.vacations.model.Picture;
-import goedegep.vacations.model.Text;
 import goedegep.vacations.model.Vacation;
 import goedegep.vacations.model.VacationElement;
 import goedegep.vacations.model.Vacations;
@@ -145,6 +128,7 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.control.SplitPane;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
+import javafx.scene.control.TextField;
 import javafx.scene.control.TreeItem;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -157,8 +141,11 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.Priority;
 import javafx.scene.transform.Scale;
 import javafx.stage.FileChooser;
+import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Stage;
 
 /**
@@ -176,9 +163,6 @@ public class VacationsWindow extends JfxStage {
   private static final ResourceBundle TRANSLATIONS = getBundle(VacationsWindow.class, "VacationsResource");
   private static final VacationsPackage VACATIONS_PACKAGE = VacationsPackage.eINSTANCE;
   private static final TypesFactory TYPES_FACTORY = TypesFactory.eINSTANCE;
-  private static final POIPackage POI_PACKAGE = POIPackage.eINSTANCE; 
-  private static final SimpleDateFormat DF = new SimpleDateFormat("dd-MM-yyyy");
-  private static final FlexDateFormat FDF = new FlexDateFormat();
   
   private static final double FULL_MAP_ZOOM_LEVEL = 1.7;     // Shows almost complete world map. Determined with trial and error.
   private static final double VACATION_ZOOM_LEVEL = 8.0;     // For the time being hard coded zoom level to show one vacation. Determined with trial and error.
@@ -199,7 +183,6 @@ public class VacationsWindow extends JfxStage {
   private VacationToHtmlConverter vacationToHtmlConverter;
   private POIIcons poiIcons;
   private TravelMapView travelMapView;
-  private SearchResultLayer searchResultLayer;
   private LocationSearchWindow locationSearchWindow = null;
   
   private Browser browser;
@@ -209,7 +192,7 @@ public class VacationsWindow extends JfxStage {
   private CheckMenuItem vacationTreeEditableMenuItem;
   private NominatimAPI nominatimAPI = null;
   
-  private int pulseCounter;
+  private static int pulseCounter;
 
   /**
    * Constructor
@@ -351,12 +334,18 @@ public class VacationsWindow extends JfxStage {
     handleNewTreeItemSelected(null, null);
     updateTipsPane();
     
+    setOnCloseRequest( event -> {
+      if (locationSearchWindow != null) {
+        locationSearchWindow.close();
+      }
+    });
+    
     show();
     
     LOGGER.info("<=");
   }
 
-  public MapView getMapView() {
+  public TravelMapView getTravelMapView() {
     return travelMapView;
   }
   
@@ -472,7 +461,7 @@ public class VacationsWindow extends JfxStage {
     
     /*
      * Main pane is a BorderPane.
-     * North is the menu bar
+     * North is the menu bar + search bar
      * Center is a SplitPane with a TreeView for the Holidays on the left and TabPane on the right.
      *        There are Tabs for a map and an HTML view.
      * Bottom is a status label
@@ -480,21 +469,18 @@ public class VacationsWindow extends JfxStage {
     
     BorderPane mainPane = new BorderPane();
         
-    mainPane.setTop(createMenuBar());
+    HBox menuAndSearchBox = componentFactory.createHBox(12.0, 12.0);
+    final Pane spacer = new Pane();
+    HBox.setHgrow(spacer, Priority.ALWAYS);
+    menuAndSearchBox.getChildren().addAll(createMenuBar(), spacer, createSearchBar());
+    mainPane.setTop(menuAndSearchBox);
     
     SplitPane centerPane = new SplitPane();
     centerPane.setOrientation(Orientation.HORIZONTAL);
     centerPane.setDividerPositions(0.3);
-    
-    // Vacations TreeView - centerPane left
-    EObjectTreeDescriptor eObjectTreeDescriptor = createEObjectTreeDescriptor();
-    treeView = new VacationsTreeView(customization, eObjectTreeDescriptor, vacationTreeEditableMenuItem.isSelected());
-    treeView.setMinWidth(300);
-    treeView.addObjectSelectionListener(this::handleNewTreeItemSelected);
-    centerPane.getItems().add(treeView);
 
     // MapView
-    travelMapView = new TravelMapView(customization, this, this, poiIcons, getNominatimAPI());
+    travelMapView = new TravelMapView(customization, this, poiIcons, this::openLocationSearchWindow);
     travelMapView.setOnMouseClicked(new EventHandler<MouseEvent>() {
 
       @Override
@@ -511,11 +497,10 @@ public class VacationsWindow extends JfxStage {
           MenuItem menuItem;
           
           // Get location information
-          menuItem = componentFactory.createMenuItem("Get location information");
-          TreeItem<Object> treeItem = treeView.getSelectedObject();
-          
+          menuItem = componentFactory.createMenuItem("Get location information");          
           menuItem.setOnAction((ActionEvent event) -> {
-            openLocationSearchWindow((EObjectTreeItem) treeItem, newPoint);
+            openLocationSearchWindow();
+            locationSearchWindow.reverseGeocodeSearch(newPoint.getLatitude(), newPoint.getLongitude());
           });
           contextMenu.getItems().add(menuItem);
           
@@ -533,6 +518,12 @@ public class VacationsWindow extends JfxStage {
       }
       
     });
+    
+    // Vacations TreeView - centerPane left
+    treeView = new VacationsTreeView(customization, this::fillMapImage, this::updateMapImageFile, poiIcons, this::isMenuToBeEnabled, this::reduceBoundariesSizes, travelMapView, vacationTreeEditableMenuItem.isSelected());
+    treeView.setMinWidth(300);
+    treeView.addObjectSelectionListener(this::handleNewTreeItemSelected);
+    centerPane.getItems().add(treeView);
     
     treeView.addObjectSelectionListener((source, treeItem) -> {
       //TreeItem<EObjectTreeItemContent> treeItem
@@ -595,17 +586,14 @@ public class VacationsWindow extends JfxStage {
    * @param treeItem The TreeItem to which the new <code>Location</code> is to be added.
    * @param mapPoint A <code>MapPoint</code> which provides the coordinates of the <code>Location</code> to be created.
    */
-  private void openLocationSearchWindow(EObjectTreeItem treeItem, MapPoint mapPoint) {
-    LOGGER.severe("=> mapPoint=" + mapPoint.getLatitude() + "," + mapPoint.getLongitude());
-    
+  private LocationSearchWindow openLocationSearchWindow() {
     if (locationSearchWindow == null) {
-      locationSearchWindow = new LocationSearchWindow(customization, this, nominatimAPI, searchResultLayer);
+      locationSearchWindow = new LocationSearchWindow(customization, poiIcons, getNominatimAPI(), this);
     }
     
     locationSearchWindow.show();
-    locationSearchWindow.reverseGeocodeSearch(mapPoint.getLatitude(), mapPoint.getLongitude());
         
-    LOGGER.severe("<=");
+    return locationSearchWindow;
   }
 
   public static void saveImageAsJpeg(Image image, File file) {
@@ -710,9 +698,9 @@ public class VacationsWindow extends JfxStage {
     menuItem.setOnAction(event -> importLocationsFromKmlFile());
     menu.getItems().add(menuItem);
     
-    // File: Create OsmAnd favorites file
-    menuItem = componentFactory.createMenuItem("Create OsmAnd favorites file");
-    menuItem.setOnAction(event -> createOsmAndFavouritesFile());
+    // File: Create OsmAnd import file
+    menuItem = componentFactory.createMenuItem("Create OsmAnd import file");
+    menuItem.setOnAction(event -> createOsmAndImportFile());
     menu.getItems().add(menuItem);
     
     // File: Create TomTom ov2 file
@@ -802,6 +790,26 @@ public class VacationsWindow extends JfxStage {
     menuBar.getMenus().add(menu);
 
     return menuBar;
+  }
+  
+  private Node createSearchBar() {
+    HBox searchBar = componentFactory.createHBox(12.0);
+    
+    Label label = componentFactory.createLabel("Search:");
+    TextField searchTextField = componentFactory.createTextField(null, 300, "Enter text to search for");
+    searchTextField.setOnAction((e) -> updateSearch(searchTextField.getText()));
+    searchBar.getChildren().addAll(label, searchTextField);
+    
+    return searchBar;
+  }
+  
+  private void updateSearch(String searchText) {
+    if (searchText.isEmpty()) {
+      searchText = null;
+    }
+    
+    LOGGER.severe(searchText != null ? ("Searching for: " + searchText) : "No search");
+    treeView.setSearchText(searchText);
   }
   
   /**
@@ -1053,8 +1061,8 @@ public class VacationsWindow extends JfxStage {
         zoomLevel = MapView.getZoomLevel(vacationsLayerBoundingBox);
       }
     } else if ((vacations = getVacationsForTreeItem(treeItem)) != null) {
-//      addVacationsToVacationsLayer(vacations.getVacations());
-//      showWorldMap();
+      addVacationsToVacationsLayer(vacations.getVacations());
+      showWorldMap();
     } else {
       Object treeItemObject = treeItem.getValue();
       LOGGER.severe("Don't know what to show for selected treeItem, treeItemObject=" + (treeItemObject != null ? treeItemObject.toString() : "null"));
@@ -1515,7 +1523,7 @@ public class VacationsWindow extends JfxStage {
    * @return the vacations list, or null.
    */
   private Vacations getVacationsForTreeItem(TreeItem<Object> treeItem) {
-    LOGGER.severe("=> treeItem=" + (treeItem != null ? treeItem.toString() : "(null)"));
+    LOGGER.info("=> treeItem=" + (treeItem != null ? treeItem.toString() : "(null)"));
     
     if (treeItem == null) {
       LOGGER.info("<= (null)");
@@ -1529,7 +1537,7 @@ public class VacationsWindow extends JfxStage {
       vacations = (Vacations) object;
     }
         
-    LOGGER.severe("<= vacations=" + (vacations != null ? vacations.toString() : "(null)"));
+    LOGGER.info("<= vacations=" + (vacations != null ? vacations.toString() : "(null)"));
     return vacations;
   }
   
@@ -1552,7 +1560,7 @@ public class VacationsWindow extends JfxStage {
   private void addHomeLocationToVacationsLayer(TravelMapView travelMapView) {
     LOGGER.info("=>");
         
-    if ((vacations != null)  &&  vacations.isSetHome()) {
+    if ((vacations != null)  &&  vacations.getHome() != null) {
       Location homeLocation = vacations.getHome();
       if (homeLocation.isSetLatitude()  &&  homeLocation.isSetLongitude()) {
         travelMapView.getMapRelatedItemsLayer().addLocation(homeLocation, "Home");
@@ -1762,290 +1770,6 @@ public class VacationsWindow extends JfxStage {
     LOGGER.info("<= totalWGS84BoundingBox: " + (totalWGS84BoundingBox != null ? totalWGS84BoundingBox.toString() : "(null)"));
     return totalWGS84BoundingBox;
   }
-
-  /**
-   * Create the EObjectTreeDescriptor for the Vacations tree view.
-   * 
-   * @return the EObjectTreeDescriptor for the Vacations tree view
-   */
-  private EObjectTreeDescriptor createEObjectTreeDescriptor() {
-    EmfPackageHelper vakantiesPackageHelper = new EmfPackageHelper(VACATIONS_PACKAGE);
-    EmfPackageHelper poiPackageHelper = new EmfPackageHelper(POI_PACKAGE);
-    EObjectTreeDescriptor eObjectTreeDescriptor = new EObjectTreeDescriptor();
-    
-    createAndAddEObjectTreeDescriptorForVacations(eObjectTreeDescriptor, vakantiesPackageHelper);
-    createAndAddEObjectTreeDescriptorForBoundingBox(eObjectTreeDescriptor, vakantiesPackageHelper);
-    createAndAddEObjectTreeDescriptorForLocation(eObjectTreeDescriptor, vakantiesPackageHelper);
-    createAndAddEObjectTreeDescriptorForVacation(eObjectTreeDescriptor, vakantiesPackageHelper);
-    createAndAddEObjectTreeDescriptorForDayTrip(eObjectTreeDescriptor, vakantiesPackageHelper);
-    createAndAddEObjectTreeDescriptorForVacationElement(eObjectTreeDescriptor, vakantiesPackageHelper);
-    createAndAddEObjectTreeDescriptorForFileReference(eObjectTreeDescriptor);
-    createAndAddEObjectTreeDescriptorForDay(eObjectTreeDescriptor, vakantiesPackageHelper);
-    createAndAddEObjectTreeDescriptorForText(eObjectTreeDescriptor, vakantiesPackageHelper);
-    createAndAddEObjectTreeDescriptorForPicture(eObjectTreeDescriptor, vakantiesPackageHelper);
-    createAndAddEObjectTreeDescriptorForDocument(eObjectTreeDescriptor, vakantiesPackageHelper);
-    createAndAddEObjectTreeDescriptorForGPXTrack(eObjectTreeDescriptor, vakantiesPackageHelper);
-    createAndAddEObjectTreeDescriptorForMapImage(eObjectTreeDescriptor, vakantiesPackageHelper);
-    
-    creaeAndAddEEnumEditorDescriptorForLocationType(eObjectTreeDescriptor, poiPackageHelper);
-  
-    return eObjectTreeDescriptor;
-  }
-
-  /**
-   * Create the descriptor for the EClass goedegep.model.vacations.Vacations.
-   * 
-   * @param eObjectTreeDescriptor the tree descriptor to which the Vacations descriptor is to be added.
-   * @param vakantiesPackageHelper an <code>EmfPackageHelper</code> for the <code>VacationsPackage</code>
-   */
-  private void createAndAddEObjectTreeDescriptorForVacations(EObjectTreeDescriptor eObjectTreeDescriptor, EmfPackageHelper vakantiesPackageHelper) {
-    EClass eClass = vakantiesPackageHelper.getEClass("goedegep.vacations.model.Vacations");
-        
-    // Vacations = "Vakanties informatie" (root node)
-    EObjectTreeItemClassDescriptor eObjectTreeItemClassDescriptor = new EObjectTreeItemClassDescriptor(eClass, (eObject) -> "Travel information", true, null,
-        eObject -> TravelImageResource.TRAVEL.getIcon(ImageSize.SIZE_1));
-    eObjectTreeItemClassDescriptor.setStrongText(true);
-
-    // Vacations.tips
-    eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(new EObjectTreeItemAttributeDescriptor(VACATIONS_PACKAGE.getVacations_Tips(), "Tips", PresentationType.MULTI_LINE_TEXT, null));
-
-    // Vacations.home
-    List<NodeOperationDescriptor> nodeOperationDescriptors = new ArrayList<>();
-    nodeOperationDescriptors.add(new NodeOperationDescriptor(TableRowOperation.NEW_OBJECT, "Create home location"));
-    nodeOperationDescriptors.add(new NodeOperationDescriptor(TableRowOperation.DELETE_OBJECT, "Delete home location"));
-    EObjectTreeItemClassReferenceDescriptor homeDescriptor = new EObjectTreeItemClassReferenceDescriptor(VACATIONS_PACKAGE.getVacations_Home(), vakantiesPackageHelper.getEClass("goedegep.vacations.model.Location"), (eObject) -> "Home location", false, nodeOperationDescriptors);
-    homeDescriptor.setStrongText(true);
-    eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(homeDescriptor);
-    
-    // Vacations.vacations
-    nodeOperationDescriptors = new ArrayList<>();
-    nodeOperationDescriptors.add(new NodeOperationDescriptor(TableRowOperation.NEW_OBJECT, "New vacation"));
-    EObjectTreeItemClassListReferenceDescriptor vacationsDescriptor = new EObjectTreeItemClassListReferenceDescriptor(VACATIONS_PACKAGE.getVacations_Vacations(), "Vacations", true, nodeOperationDescriptors,
-        eObject -> TravelImageResource.VACATIONS.getIcon(ImageSize.SIZE_1));
-    vacationsDescriptor.setStrongText(true);
-    eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(vacationsDescriptor);
-    
-    // Vacations.dayTrips
-    nodeOperationDescriptors = new ArrayList<>();
-    nodeOperationDescriptors.add(new NodeOperationDescriptor(TableRowOperation.NEW_OBJECT, "New day trip"));
-    eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(new EObjectTreeItemClassListReferenceDescriptor(VACATIONS_PACKAGE.getVacations_DayTrips(), "Day trips", true, nodeOperationDescriptors));
-    
-    eObjectTreeDescriptor.addEClassDescriptor(eClass, eObjectTreeItemClassDescriptor);
-  }
-  
-  /**
-   * Create the descriptor for the EClass goedegep.model.vacations.BoundingBox.
-   * 
-   * @param eObjectTreeDescriptor the tree descriptor to which the BoundingBox descriptor is to be added.
-   * @param vakantiesPackageHelper an <code>EmfPackageHelper</code> for the <code>VacationsPackage</code>
-   */
-  private void createAndAddEObjectTreeDescriptorForBoundingBox(EObjectTreeDescriptor eObjectTreeDescriptor, EmfPackageHelper vakantiesPackageHelper) {
-    EClass eClass = vakantiesPackageHelper.getEClass("goedegep.vacations.model.BoundingBox");
-    
-    // BoundingBox
-    List<NodeOperationDescriptor> nodeOperationDescriptors = new ArrayList<>();
-    nodeOperationDescriptors.add(new NodeOperationDescriptor(TableRowOperation.NEW_OBJECT_BEFORE, "New element before ..."));
-    nodeOperationDescriptors.add(new NodeOperationDescriptor(TableRowOperation.NEW_OBJECT_AFTER, "New element after ..."));
-    nodeOperationDescriptors.add(new NodeOperationDescriptor(TableRowOperation.MOVE_OBJECT_UP, "Move element up"));
-    nodeOperationDescriptors.add(new NodeOperationDescriptor(TableRowOperation.MOVE_OBJECT_DOWN, "Move element down"));
-    nodeOperationDescriptors.add(new NodeOperationDescriptor(TableRowOperation.DELETE_OBJECT, "Delete element"));
-    EObjectTreeItemClassDescriptor eObjectTreeItemClassDescriptor = new EObjectTreeItemClassDescriptor(eClass,
-        eObject -> {
-          StringBuilder buf = new StringBuilder();
-          BoundingBox boundingBox = (BoundingBox) eObject;
-          if (boundingBox.isSetWest()) {
-            buf.append(boundingBox.getWest());
-          } else {
-            buf.append("..");
-          }
-          buf.append(", ");
-          if (boundingBox.isSetNorth()) {
-            buf.append(boundingBox.getNorth());
-          } else {
-            buf.append("..");
-          }
-          buf.append(", ");
-          if (boundingBox.isSetEast()) {
-            buf.append(boundingBox.getEast());
-          } else {
-            buf.append("..");
-          }
-          buf.append(", ");
-          if (boundingBox.isSetSouth()) {
-            buf.append(boundingBox.getSouth());
-          } else {
-            buf.append("..");
-          }
-          return buf.toString();
-        }, false, nodeOperationDescriptors);
-    
-    // BoundingBox.west
-    eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(new EObjectTreeItemAttributeDescriptor(VACATIONS_PACKAGE.getBoundingBox_West(), "West", null));
-    // BoundingBox.north
-    eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(new EObjectTreeItemAttributeDescriptor(VACATIONS_PACKAGE.getBoundingBox_North(), "North", null));
-    // BoundingBox.east
-    eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(new EObjectTreeItemAttributeDescriptor(VACATIONS_PACKAGE.getBoundingBox_East(), "East", null));
-    // BoundingBox.south
-    eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(new EObjectTreeItemAttributeDescriptor(VACATIONS_PACKAGE.getBoundingBox_South(), "South", null));
-    
-    eObjectTreeDescriptor.addEClassDescriptor(eClass, eObjectTreeItemClassDescriptor);
-  }
-  
-  /**
-   * Create the descriptor for the EClass goedegep.model.vacations.Location.
-   * 
-   * @param eObjectTreeDescriptor the tree descriptor to which the Location descriptor is to be added.
-   * @param vakantiesPackageHelper an <code>EmfPackageHelper</code> for the <code>VacationsPackage</code>
-   */
-  private void createAndAddEObjectTreeDescriptorForLocation(EObjectTreeDescriptor eObjectTreeDescriptor, EmfPackageHelper vakantiesPackageHelper) {
-    EClass eClass = vakantiesPackageHelper.getEClass("goedegep.vacations.model.Location");
-    
-    // VacationElementLocation
-    List<NodeOperationDescriptor> nodeOperationDescriptors = new ArrayList<>();
-    nodeOperationDescriptors.add(new NodeOperationDescriptor(TableRowOperation.NEW_OBJECT_BEFORE, "New element before ..."));
-    nodeOperationDescriptors.add(new NodeOperationDescriptor(TableRowOperation.NEW_OBJECT_AFTER, "New element after ..."));
-    nodeOperationDescriptors.add(new NodeOperationDescriptor(TableRowOperation.MOVE_OBJECT_UP, "Move element up"));
-    nodeOperationDescriptors.add(new NodeOperationDescriptor(TableRowOperation.MOVE_OBJECT_DOWN, "Move element down"));
-    nodeOperationDescriptors.add(new NodeOperationDescriptor(TableRowOperation.DELETE_OBJECT, "Delete element"));
-    nodeOperationDescriptors.add(new ExtendedNodeOperationDescriptor("Reduce boundaries sizes", (Predicate<EObjectTreeItem>) this::isMenuToBeEnabled, (Consumer<EObjectTreeItem>) this::reduceBoundariesSizes));
-    EObjectTreeItemClassDescriptor eObjectTreeItemClassDescriptor = new EObjectTreeItemClassDescriptor(eClass,
-        eObject -> {
-          StringBuilder buf = new StringBuilder();
-          boolean spaceNeeded = false;
-          Location location = (Location) eObject;
-          if (location.isSetLocationType()) {
-            spaceNeeded = true;
-          }
-          if (location.isSetName()) {
-            if (spaceNeeded) {
-              buf.append(" ");
-            }
-            buf.append(location.getName());
-          } else if (location.isSetCity()) {
-            if (spaceNeeded) {
-              buf.append(" ");
-            }
-            buf.append(location.getCity());
-          }
-          
-          if (buf.length() == 0) {
-            buf.append("Locatie");
-          }
-          return buf.toString();
-        }, false, nodeOperationDescriptors,
-        object -> {
-          Location location = (Location) object;
-          POICategoryId poiCategoryId = location.getLocationType();
-          return poiIcons.getIcon(poiCategoryId, 16, 16);
-        });
-    
-    // Location.stayedAtThisLocation
-    eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(new EObjectTreeItemAttributeDescriptor(VACATIONS_PACKAGE.getLocation_StayedAtThisLocation(), "Is stayed at location", PresentationType.BOOLEAN, null));
-    // VacationElement.startDate
-    eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(new EObjectTreeItemAttributeDescriptor(VACATIONS_PACKAGE.getLocation_StartDate(), "From", FDF, null));
-    // VacationElement.endDate
-    eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(new EObjectTreeItemAttributeDescriptor(VACATIONS_PACKAGE.getLocation_EndDate(), "Until", FDF, null));
-    // Location.duration
-    eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(new EObjectTreeItemAttributeDescriptor(VACATIONS_PACKAGE.getLocation_Duration(), "Duration of stay", null));
-    // Location.description
-    eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(new EObjectTreeItemAttributeDescriptor(VACATIONS_PACKAGE.getLocation_Description(), "Description", PresentationType.MULTI_LINE_TEXT, null));
-
-    // Location.name
-    eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(new EObjectTreeItemAttributeDescriptor(VACATIONS_PACKAGE.getLocation_Name(), "Name", null));
-    // Location.locationType
-    eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(new EObjectTreeItemAttributeDescriptor(VACATIONS_PACKAGE.getLocation_LocationType(), "Location type", null));
-    // Location.country
-    eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(new EObjectTreeItemAttributeDescriptor(VACATIONS_PACKAGE.getLocation_Country(), "Country", null));
-    // Location.city
-    eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(new EObjectTreeItemAttributeDescriptor(VACATIONS_PACKAGE.getLocation_City(), "City", null));
-    // Location.street
-    eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(new EObjectTreeItemAttributeDescriptor(VACATIONS_PACKAGE.getLocation_Street(), "Street", null));
-    // Location.houseNumber
-    eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(new EObjectTreeItemAttributeDescriptor(VACATIONS_PACKAGE.getLocation_HouseNumber(), "Housenumber", null));
-    // Location.webSite
-    nodeOperationDescriptors = new ArrayList<>();
-    nodeOperationDescriptors.add(new NodeOperationDescriptor(TableRowOperation.OPEN, "Open document"));
-    eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(new EObjectTreeItemAttributeDescriptor(VACATIONS_PACKAGE.getLocation_WebSite(), "Website", nodeOperationDescriptors));
-    // Location.referenceOnly
-    eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(new EObjectTreeItemAttributeDescriptor(VACATIONS_PACKAGE.getLocation_ReferenceOnly(), "Reference only", PresentationType.BOOLEAN, null));
-    // Location.latitude
-    eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(new EObjectTreeItemAttributeDescriptor(VACATIONS_PACKAGE.getLocation_Latitude(), "Latitude", null));
-    // Location.longitude
-    eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(new EObjectTreeItemAttributeDescriptor(VACATIONS_PACKAGE.getLocation_Longitude(), "Longitude", null));
-    // Location.boundingBox
-    nodeOperationDescriptors = new ArrayList<>();
-    nodeOperationDescriptors.add(new NodeOperationDescriptor(TableRowOperation.NEW_OBJECT, "Create bounding box"));
-    nodeOperationDescriptors.add(new NodeOperationDescriptor(TableRowOperation.DELETE_OBJECT, "Delete Bounding Box"));
-    nodeOperationDescriptors.add(new ExtendedNodeOperationDescriptor("Obtain bounding box", null, new BoundingBoxObtainer()));
-    eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(new EObjectTreeItemClassReferenceDescriptor(VACATIONS_PACKAGE.getLocation_Boundingbox(), vakantiesPackageHelper.getEClass("goedegep.vacations.model.BoundingBox"), (eObject) -> "Bounding box", true, nodeOperationDescriptors));
-
-    // Location.children
-    nodeOperationDescriptors = new ArrayList<>();
-    nodeOperationDescriptors.add(new NodeOperationDescriptor(TableRowOperation.NEW_OBJECT, "Nieuw element", this::fillMapImage));
-    eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(new EObjectTreeItemClassListReferenceDescriptor(VACATIONS_PACKAGE.getVacationElement_Children(), "Elements", true, nodeOperationDescriptors, object -> EObjectTreeView.getListIcon()));
-    
-    eObjectTreeDescriptor.addEClassDescriptor(eClass, eObjectTreeItemClassDescriptor);
-  }
-
-  /**
-   * Create the descriptor for the EClass goedegep.model.vacations.Vacation.
-   * 
-   * @param eObjectTreeDescriptor the tree descriptor to which the Vacation descriptor is to be added.
-   * @param vakantiesPackageHelper an <code>EmfPackageHelper</code> for the <code>VacationsPackage</code>
-   */
-  private void createAndAddEObjectTreeDescriptorForVacation(EObjectTreeDescriptor eObjectTreeDescriptor, EmfPackageHelper vakantiesPackageHelper) {
-    EClass eClass = vakantiesPackageHelper.getEClass("goedegep.vacations.model.Vacation");
-    TypesPackage typesPackage = TypesPackage.eINSTANCE;
-        
-    // Vacation
-    List<NodeOperationDescriptor> nodeOperationDescriptors = new ArrayList<>();
-    nodeOperationDescriptors.add(new NodeOperationDescriptor(TableRowOperation.NEW_OBJECT, "New ..."));
-    nodeOperationDescriptors.add(new NodeOperationDescriptor(TableRowOperation.NEW_OBJECT_BEFORE, "New vacation before this one"));
-    nodeOperationDescriptors.add(new NodeOperationDescriptor(TableRowOperation.NEW_OBJECT_AFTER, "New vacation after this one"));
-    nodeOperationDescriptors.add(new NodeOperationDescriptor(TableRowOperation.MOVE_OBJECT_UP, "Move vacation up"));
-    nodeOperationDescriptors.add(new NodeOperationDescriptor(TableRowOperation.MOVE_OBJECT_DOWN, "Move vacation down"));
-    nodeOperationDescriptors.add(new NodeOperationDescriptor(TableRowOperation.DELETE_OBJECT, "Delete vacation"));
-    EObjectTreeItemClassDescriptor eObjectTreeItemClassDescriptor = new EObjectTreeItemClassDescriptor(eClass,
-        eObject -> {
-          if (!(eObject instanceof Vacation)) {
-            LOGGER.severe("Wrong type, Vacation expected, but is: " + eObject.getClass().getSimpleName());
-          }
-          Vacation vacation = (Vacation) eObject;
-          return vacation.getId();
-        }, false, nodeOperationDescriptors,
-        eObject -> {
-          return customization.getResources().getApplicationImage(ImageSize.SIZE_0);
-        });
-    eObjectTreeItemClassDescriptor.setStrongText(true);
-    
-    // Vacation.title
-    eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(new EObjectTreeItemAttributeDescriptor(VACATIONS_PACKAGE.getVacation_Title(), "Title", null));
-    // Vacation.date (startDate)
-    eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(new EObjectTreeItemAttributeDescriptor(typesPackage.getEvent_Date(), "From", FDF, null));
-    // Vacation.endDate
-    eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(new EObjectTreeItemAttributeDescriptor(VACATIONS_PACKAGE.getVacation_EndDate(), "Until", FDF, null));
-    // Vacation.notes
-    eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(new EObjectTreeItemAttributeDescriptor(typesPackage.getEvent_Notes(), "General", PresentationType.MULTI_LINE_TEXT, null));
-    
-    // Vacation.documents
-    nodeOperationDescriptors = new ArrayList<>();
-    nodeOperationDescriptors.add(new NodeOperationDescriptor(TableRowOperation.NEW_OBJECT, "New document"));
-    eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(new EObjectTreeItemClassListReferenceDescriptor(VACATIONS_PACKAGE.getVacation_Documents(), "Documents", false, nodeOperationDescriptors));
-    
-    // Vacation.pictures
-    nodeOperationDescriptors = new ArrayList<>();
-    nodeOperationDescriptors.add(new NodeOperationDescriptor(TableRowOperation.OPEN, "Open photos folder"));
-    EObjectTreeItemAttributeDescriptor eObjectTreeItemAttributeDescriptor = new EObjectTreeItemAttributeDescriptor(VACATIONS_PACKAGE.getVacation_Pictures(), "Photos", PresentationType.FOLDER, nodeOperationDescriptors);
-    eObjectTreeItemAttributeDescriptor.setInitialDirectoryNameFunction(VacationsWindow::getInitialPhotoFolderName);
-    eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(eObjectTreeItemAttributeDescriptor);
-
-    // Vacation.elements
-    nodeOperationDescriptors = new ArrayList<>();
-    nodeOperationDescriptors.add(new NodeOperationDescriptor(TableRowOperation.NEW_OBJECT, "New element", this::fillMapImage));
-    eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(new EObjectTreeItemClassListReferenceDescriptor(VACATIONS_PACKAGE.getVacation_Elements(), "Elements", true, nodeOperationDescriptors, object -> EObjectTreeView.getListIcon()));
-    
-    eObjectTreeDescriptor.addEClassDescriptor(eClass, eObjectTreeItemClassDescriptor);
-  }
   
   /**
    * Determine the 'initial directory' to use in the FolderChooser for choosing the Pictures folder.
@@ -2057,7 +1781,7 @@ public class VacationsWindow extends JfxStage {
    * @param eObjectTreeCell the {@code EObjectTreeCell} for the 'Pictures' attribute of a Vacation.
    * @return the 'initial directory' to use in the FolderChooser for choosing the Pictures folder, or null if this folder cannot be determined.
    */
-  private static String getInitialPhotoFolderName(EObjectTreeCell eObjectTreeCell) {
+  static String getInitialPhotoFolderName(EObjectTreeCell eObjectTreeCell) {
     if (eObjectTreeCell == null) {
       LOGGER.severe("eObjectTreeCell is null");
       return null;
@@ -2077,84 +1801,6 @@ public class VacationsWindow extends JfxStage {
     
     return null;
   }
-
-  /**
-   * Create the descriptor for the EClass goedegep.model.vacations.DayTrip.
-   * 
-   * @param eObjectTreeDescriptor the tree descriptor to which the DayTrip descriptor is to be added.
-   * @param vakantiesPackageHelper an <code>EmfPackageHelper</code> for the <code>VacationsPackage</code>
-   */
-  private void createAndAddEObjectTreeDescriptorForDayTrip(EObjectTreeDescriptor eObjectTreeDescriptor, EmfPackageHelper vakantiesPackageHelper) {
-    EClass eClass = vakantiesPackageHelper.getEClass("goedegep.vacations.model.DayTrip");
-    TypesPackage typesPackage = TypesPackage.eINSTANCE;
-        
-    // DayTrip
-    List<NodeOperationDescriptor> nodeOperationDescriptors = new ArrayList<>();
-    nodeOperationDescriptors.add(new NodeOperationDescriptor(TableRowOperation.NEW_OBJECT, "New ..."));
-    nodeOperationDescriptors.add(new NodeOperationDescriptor(TableRowOperation.NEW_OBJECT_BEFORE, "New day trip before this one"));
-    nodeOperationDescriptors.add(new NodeOperationDescriptor(TableRowOperation.NEW_OBJECT_AFTER, "New day trip after this one"));
-    nodeOperationDescriptors.add(new NodeOperationDescriptor(TableRowOperation.MOVE_OBJECT_UP, "Move day trip up"));
-    nodeOperationDescriptors.add(new NodeOperationDescriptor(TableRowOperation.MOVE_OBJECT_DOWN, "Move day trip down"));
-    nodeOperationDescriptors.add(new NodeOperationDescriptor(TableRowOperation.DELETE_OBJECT, "Delete day trip"));
-    EObjectTreeItemClassDescriptor eObjectTreeItemClassDescriptor = new EObjectTreeItemClassDescriptor(eClass,
-        eObject -> {
-            DayTrip dayTrip = (DayTrip) eObject;
-            return dayTrip.getId();
-          }, false, nodeOperationDescriptors,
-        eObject -> {
-            return TravelImageResource.DAY_TRIP.getIcon(ImageSize.SIZE_0);
-        });
-    
-    // DayTrip.title
-    eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(new EObjectTreeItemAttributeDescriptor(VACATIONS_PACKAGE.getDayTrip_Title(), "Title", null));
-    // DayTrip.date
-    eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(new EObjectTreeItemAttributeDescriptor(typesPackage.getEvent_Date(), "Date", FDF, null));
-
-    // Vacation.elements
-    nodeOperationDescriptors = new ArrayList<>();
-    nodeOperationDescriptors.add(new NodeOperationDescriptor(TableRowOperation.NEW_OBJECT, "New element", this::fillMapImage));
-    eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(new EObjectTreeItemClassListReferenceDescriptor(VACATIONS_PACKAGE.getDayTrip_Elements(), "Elements", true, nodeOperationDescriptors, object -> EObjectTreeView.getListIcon()));
-    
-    eObjectTreeDescriptor.addEClassDescriptor(eClass, eObjectTreeItemClassDescriptor);
-  }
-  
-  /**
-   * Create the descriptor for the EClass goedegep.types.model.FileReference.
-   * 
-   * @param eObjectTreeDescriptor the tree descriptor to which the FileReference descriptor is to be added.
-   */
-  private void createAndAddEObjectTreeDescriptorForFileReference(EObjectTreeDescriptor eObjectTreeDescriptor) {
-    TypesPackage typesPackage = TypesPackage.eINSTANCE;
-    EmfPackageHelper typesPackageHelper = new EmfPackageHelper(typesPackage);
-    EClass eClass = typesPackageHelper.getEClass("goedegep.types.model.FileReference");
-
-    // FileReference
-    List<NodeOperationDescriptor> nodeOperationDescriptors = new ArrayList<>();
-    nodeOperationDescriptors.add(new NodeOperationDescriptor(TableRowOperation.NEW_OBJECT_BEFORE, "New document before this one"));
-    nodeOperationDescriptors.add(new NodeOperationDescriptor(TableRowOperation.NEW_OBJECT_AFTER, "New document after this one"));
-    nodeOperationDescriptors.add(new NodeOperationDescriptor(TableRowOperation.MOVE_OBJECT_UP, "Move document up"));
-    nodeOperationDescriptors.add(new NodeOperationDescriptor(TableRowOperation.MOVE_OBJECT_DOWN, "Move document down"));
-    nodeOperationDescriptors.add(new NodeOperationDescriptor(TableRowOperation.DELETE_OBJECT, "Delete document"));
-    EObjectTreeItemClassDescriptor eObjectTreeItemClassDescriptor = new EObjectTreeItemClassDescriptor(eClass,
-          eObject -> {
-            FileReference bestandReferentie = (FileReference) eObject;
-            return bestandReferentie.getTitle();
-          },
-          false, nodeOperationDescriptors);
-    
-    // FileReference.title
-    eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(new EObjectTreeItemAttributeDescriptor(typesPackage.getFileReference_Title(), "Titel", null));
-    
-    // FileReference.file
-    nodeOperationDescriptors = new ArrayList<>();
-    nodeOperationDescriptors.add(new NodeOperationDescriptor(TableRowOperation.OPEN, "Open document"));
-    nodeOperationDescriptors.add(new NodeOperationDescriptor(TableRowOperation.EXTENDED_OPERATION, "Select from vacation folder"));
-    EObjectTreeItemAttributeDescriptor eObjectTreeItemAttributeDescriptor = new EObjectTreeItemAttributeDescriptor(typesPackage.getFileReference_File(), "File", PresentationType.FILE, nodeOperationDescriptors);
-    eObjectTreeItemAttributeDescriptor.setInitialDirectoryNameFunction(VacationsWindow::getReferredFilesFolder);
-    eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(eObjectTreeItemAttributeDescriptor);
-        
-    eObjectTreeDescriptor.addEClassDescriptor(eClass, eObjectTreeItemClassDescriptor);
-  }
   
   /**
    * Get the best choice for the initial folder for a FolderChooser for selecting the file of a FileReference.
@@ -2165,7 +1811,7 @@ public class VacationsWindow extends JfxStage {
    * @param eObjectTreeCell the {@code EObjectTreeCell} for which the best initial folder is requested.
    * @return the best initial folder, or null if this can't be determined.
    */
-  private static String getReferredFilesFolder(EObjectTreeCell eObjectTreeCell) {
+  static String getReferredFilesFolder(EObjectTreeCell eObjectTreeCell) {
     EObjectTreeItem treeItem = (EObjectTreeItem) eObjectTreeCell.getTreeItem();
     Vacation vacation = getVacationForTreeItem(treeItem);
     
@@ -2184,7 +1830,7 @@ public class VacationsWindow extends JfxStage {
       EObjectTreeItem grandparentTreeItem = (EObjectTreeItem) parentTreeItem.getParent();
       if (grandparentTreeItem != null) {
         Object object = grandparentTreeItem.getValue();
-        LOGGER.severe("Class=" + object.getClass().getName());
+        LOGGER.info("Class=" + object.getClass().getName());
         if (object instanceof Picture) {
           Path path = VacationsUtils.getVacationPhotosFolderPath(vacation);
           return path != null ? path.toAbsolutePath().toString() : null;
@@ -2200,303 +1846,6 @@ public class VacationsWindow extends JfxStage {
     
     return null;
   }
-
-  /**
-   * Create the descriptor for the EClass goedegep.model.vacations.VacationElement.
-   * 
-   * @param eObjectTreeDescriptor the tree descriptor to which the VacationElement descriptor is to be added.
-   * @param vakantiesPackageHelper an <code>EmfPackageHelper</code> for the <code>VacationsPackage</code>
-   */
-  private void createAndAddEObjectTreeDescriptorForVacationElement(EObjectTreeDescriptor eObjectTreeDescriptor, EmfPackageHelper vakantiesPackageHelper) {
-    EClass eClass = vakantiesPackageHelper.getEClass("goedegep.vacations.model.VacationElement");
-        
-    // VacationElement
-    List<NodeOperationDescriptor> nodeOperationDescriptors = new ArrayList<>();
-    nodeOperationDescriptors.add(new NodeOperationDescriptor(TableRowOperation.NEW_OBJECT, "New element ..."));
-    EObjectTreeItemClassDescriptor eObjectTreeItemClassDescriptor = new EObjectTreeItemClassDescriptor(eClass,
-        eObject -> {
-            return "Vacation element";
-          }, false, nodeOperationDescriptors);
-        
-    eObjectTreeDescriptor.addEClassDescriptor(eClass, eObjectTreeItemClassDescriptor);
-  }
-
-  /**
-   * Create the descriptor for the EClass goedegep.model.vacations.VacationElementDay.
-   * 
-   * @param eObjectTreeDescriptor the tree descriptor to which the VacationElementDay descriptor is to be added.
-   * @param vakantiesPackageHelper an <code>EmfPackageHelper</code> for the <code>VacationsPackage</code>
-   */
-  private void createAndAddEObjectTreeDescriptorForDay(EObjectTreeDescriptor eObjectTreeDescriptor, EmfPackageHelper vakantiesPackageHelper) {
-    EClass eClass = vakantiesPackageHelper.getEClass("goedegep.vacations.model.Day");
-        
-    // Day (extends VacationElement)
-    List<NodeOperationDescriptor> nodeOperationDescriptors = new ArrayList<>();
-    nodeOperationDescriptors.add(new NodeOperationDescriptor(TableRowOperation.NEW_OBJECT_BEFORE, "New element before this one ..."));
-    nodeOperationDescriptors.add(new NodeOperationDescriptor(TableRowOperation.NEW_OBJECT_AFTER, "New element after this one ..."));
-    nodeOperationDescriptors.add(new NodeOperationDescriptor(TableRowOperation.MOVE_OBJECT_UP, "Move element up"));
-    nodeOperationDescriptors.add(new NodeOperationDescriptor(TableRowOperation.MOVE_OBJECT_DOWN, "Move element down"));
-    nodeOperationDescriptors.add(new NodeOperationDescriptor(TableRowOperation.DELETE_OBJECT, "Delete element"));
-    EObjectTreeItemClassDescriptor eObjectTreeItemClassDescriptor = new EObjectTreeItemClassDescriptor(eClass,
-        eObject -> {
-            Day day = (Day) eObject;
-            StringBuilder buf = new StringBuilder();
-            buf.append("Day: ");
-            Integer dayNr = day.getDayNr();
-            if (dayNr != null) {
-              buf.append(dayNr.toString());
-            }
-            Date date = day.getDate();
-            if (date != null) {
-              buf.append(" - ");
-              buf.append(DF.format(date));
-            }
-            if (day.isSetTitle()) {
-              buf.append(" - ");
-              buf.append(day.getTitle());
-            }
-            return buf.toString();
-          }, false, nodeOperationDescriptors, object -> TravelImageResource.DAY.getIcon(ImageSize.SIZE_0));
-    
-    // Day.title
-    eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(new EObjectTreeItemAttributeDescriptor(VACATIONS_PACKAGE.getDay_Title(), "Title", null));
-    
-    // Day.days
-    eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(new EObjectTreeItemAttributeDescriptor(VACATIONS_PACKAGE.getDay_Days(), "Days", null));
-
-    // Day.children
-    nodeOperationDescriptors = new ArrayList<>();
-    nodeOperationDescriptors.add(new NodeOperationDescriptor(TableRowOperation.NEW_OBJECT, "New element", this::fillMapImage));
-    eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(new EObjectTreeItemClassListReferenceDescriptor(VACATIONS_PACKAGE.getVacationElement_Children(), "Elements", true, nodeOperationDescriptors, object -> EObjectTreeView.getListIcon()));
-    
-    eObjectTreeDescriptor.addEClassDescriptor(eClass, eObjectTreeItemClassDescriptor);
-  }
-
-  /**
-   * Create the descriptor for the EClass goedegep.model.vacations.VacationElementText.
-   * 
-   * @param eObjectTreeDescriptor the tree descriptor to which the VacationElementText descriptor is to be added.
-   * @param vakantiesPackageHelper an <code>EmfPackageHelper</code> for the <code>VacationsPackage</code>
-   */
-  private void createAndAddEObjectTreeDescriptorForText(EObjectTreeDescriptor eObjectTreeDescriptor, EmfPackageHelper vakantiesPackageHelper) {
-    EClass eClass = vakantiesPackageHelper.getEClass("goedegep.vacations.model.Text");
-        
-    // VacationElementText (extends VacationElement)
-    List<NodeOperationDescriptor> nodeOperationDescriptors = new ArrayList<>();
-    nodeOperationDescriptors.add(new NodeOperationDescriptor(TableRowOperation.NEW_OBJECT_BEFORE, "New element before this one ..."));
-    nodeOperationDescriptors.add(new NodeOperationDescriptor(TableRowOperation.NEW_OBJECT_AFTER, "New element after this one ..."));
-    nodeOperationDescriptors.add(new NodeOperationDescriptor(TableRowOperation.MOVE_OBJECT_UP, "Move element up"));
-    nodeOperationDescriptors.add(new NodeOperationDescriptor(TableRowOperation.MOVE_OBJECT_DOWN, "Move element down"));
-    nodeOperationDescriptors.add(new NodeOperationDescriptor(TableRowOperation.DELETE_OBJECT, "Delete element"));
-    EObjectTreeItemClassDescriptor eObjectTreeItemClassDescriptor = new EObjectTreeItemClassDescriptor(eClass,
-        eObject -> {
-            Text text = (Text) eObject;
-            if (text.isSetText()) {
-              int maxTextLength = 80;
-              String displayText = text.getText();
-              if (displayText.length() > maxTextLength) {
-                displayText = displayText.substring(0, maxTextLength - 4) + "...";
-              }
-              return displayText;
-            } else {
-              return "Text";
-            }
-          }, false, nodeOperationDescriptors, object -> ImageResource.TEXT.getImage(ImageSize.SIZE_0));
-    
-    // VacationElementText.text
-    eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(new EObjectTreeItemAttributeDescriptor(VACATIONS_PACKAGE.getText_Text(), "Text", PresentationType.MULTI_LINE_TEXT, null));
-
-    // VacationElementText.children
-    nodeOperationDescriptors = new ArrayList<>();
-    nodeOperationDescriptors.add(new NodeOperationDescriptor(TableRowOperation.NEW_OBJECT, "New element", this::fillMapImage));
-    eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(new EObjectTreeItemClassListReferenceDescriptor(VACATIONS_PACKAGE.getVacationElement_Children(), "Elements", true, nodeOperationDescriptors, object -> EObjectTreeView.getListIcon()));
-    
-    eObjectTreeDescriptor.addEClassDescriptor(eClass, eObjectTreeItemClassDescriptor);
-  }
-
-  /**
-   * Create the descriptor for the EClass goedegep.model.vacations.Picture.
-   * 
-   * @param eObjectTreeDescriptor the tree descriptor to which the VacationElementPicture descriptor is to be added.
-   * @param vakantiesPackageHelper an <code>EmfPackageHelper</code> for the <code>VacationsPackage</code>
-   */
-  private void createAndAddEObjectTreeDescriptorForPicture(EObjectTreeDescriptor eObjectTreeDescriptor, EmfPackageHelper vakantiesPackageHelper) {
-    EClass eClass = vakantiesPackageHelper.getEClass("goedegep.vacations.model.Picture");
-        
-    // VacationElementPicture (extends VacationElement)
-    List<NodeOperationDescriptor> nodeOperationDescriptors = new ArrayList<>();
-    nodeOperationDescriptors.add(new NodeOperationDescriptor(TableRowOperation.NEW_OBJECT_BEFORE, "New element before this one ..."));
-    nodeOperationDescriptors.add(new NodeOperationDescriptor(TableRowOperation.NEW_OBJECT_AFTER, "New element after this one ..."));
-    nodeOperationDescriptors.add(new NodeOperationDescriptor(TableRowOperation.MOVE_OBJECT_UP, "Move element up"));
-    nodeOperationDescriptors.add(new NodeOperationDescriptor(TableRowOperation.MOVE_OBJECT_DOWN, "Move element down"));
-    nodeOperationDescriptors.add(new NodeOperationDescriptor(TableRowOperation.DELETE_OBJECT, "Delete element"));
-    EObjectTreeItemClassDescriptor eObjectTreeItemClassDescriptor = new EObjectTreeItemClassDescriptor(eClass,
-        eObject -> {
-          Picture picture = (Picture) eObject;
-          String text = "...";  // default value
-          File file = null;
-          if (picture.isSetPictureReference()) {
-            FileReference bestandReferentie = picture.getPictureReference();
-            text = bestandReferentie.getTitle();  // first preference; the title set in the FileReference
-            
-            if (text == null  ||  text.isEmpty()) {
-              String fileName = bestandReferentie.getFile();
-              if (fileName != null) {
-                try {
-                  file = new File(fileName);
-                  PhotoFileMetaDataHandler photoFileMetaDataHandler = new PhotoFileMetaDataHandler(file);
-                  text = photoFileMetaDataHandler.getTitle();   // second preference; title set in the photo
-                } catch (ImageReadException | IOException e) {
-                  text = "NOT FOUND: " + fileName;
-//                  e.printStackTrace();
-                }
-              }
-              
-              if (text == null  ||  text.isEmpty()) {
-                if (file != null) {
-                  text = file.getName();
-                }
-              }
-              return text;
-            }
-          } else {
-            return "Picture";
-          }
-          
-          return text;
-        }, false, nodeOperationDescriptors, (object) -> {
-          if (object instanceof Picture picture) {
-            FileReference fileReference = picture.getPictureReference();
-            Image image = null;
-            if (fileReference != null) {
-              LOGGER.severe("Creating image for: " + picture.getPictureReference().getFile());
-              image = new Image("file:" + picture.getPictureReference().getFile(), 150, 150, true, true);
-              LOGGER.severe("image = " + image);
-            }
-            return image;
-          } else {
-            return ImageResource.CAMERA_BLACK.getImage(ImageSize.SIZE_0);
-          }
-        });
-
-    // VacationElementPicture.pictureReference
-    nodeOperationDescriptors = new ArrayList<>();
-    nodeOperationDescriptors.add(new NodeOperationDescriptor(TableRowOperation.NEW_OBJECT, "Create photo reference"));
-    nodeOperationDescriptors.add(new NodeOperationDescriptor(TableRowOperation.DELETE_OBJECT, "Delete photo reference"));
-    TypesPackage typesPackage = TypesPackage.eINSTANCE;
-    EmfPackageHelper typesPackageHelper = new EmfPackageHelper(typesPackage);
-    eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(new EObjectTreeItemClassReferenceDescriptor(VACATIONS_PACKAGE.getPicture_PictureReference(), typesPackageHelper.getEClass("goedegep.types.model.FileReference"), (eObject) -> "Photo reference", true, nodeOperationDescriptors));
-    
-    // VacationElementText.children
-    nodeOperationDescriptors = new ArrayList<>();
-    nodeOperationDescriptors.add(new NodeOperationDescriptor(TableRowOperation.NEW_OBJECT, "New element", this::fillMapImage));
-    eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(new EObjectTreeItemClassListReferenceDescriptor(VACATIONS_PACKAGE.getVacationElement_Children(), "Elements", true, nodeOperationDescriptors, object -> EObjectTreeView.getListIcon()));
-    
-    eObjectTreeDescriptor.addEClassDescriptor(eClass, eObjectTreeItemClassDescriptor);
-  }
-
-  /**
-   * Create the descriptor for the EClass goedegep.model.vacations.Picture.
-   * 
-   * @param eObjectTreeDescriptor the tree descriptor to which the VacationElementPicture descriptor is to be added.
-   * @param vakantiesPackageHelper an <code>EmfPackageHelper</code> for the <code>VacationsPackage</code>
-   */
-  private void createAndAddEObjectTreeDescriptorForDocument(EObjectTreeDescriptor eObjectTreeDescriptor, EmfPackageHelper vakantiesPackageHelper) {
-    EClass eClass = vakantiesPackageHelper.getEClass("goedegep.vacations.model.Document");
-        
-    // Document (extends VacationElement)
-    List<NodeOperationDescriptor> nodeOperationDescriptors = new ArrayList<>();
-    nodeOperationDescriptors.add(new NodeOperationDescriptor(TableRowOperation.NEW_OBJECT_BEFORE, "New element before this one ..."));
-    nodeOperationDescriptors.add(new NodeOperationDescriptor(TableRowOperation.NEW_OBJECT_AFTER, "New element after this one ..."));
-    nodeOperationDescriptors.add(new NodeOperationDescriptor(TableRowOperation.MOVE_OBJECT_UP, "Move element up"));
-    nodeOperationDescriptors.add(new NodeOperationDescriptor(TableRowOperation.MOVE_OBJECT_DOWN, "Move element down"));
-    nodeOperationDescriptors.add(new NodeOperationDescriptor(TableRowOperation.DELETE_OBJECT, "Delete element"));
-    EObjectTreeItemClassDescriptor eObjectTreeItemClassDescriptor = new EObjectTreeItemClassDescriptor(eClass,
-        eObject -> {
-          Document document = (Document) eObject;
-          String text = "...";  // default value
-          File file = null;
-          if (document.isSetDocumentReference()) {
-            FileReference fileReference = document.getDocumentReference();
-            text = fileReference.getTitle();  // first preference; the title set in the FileReference
-            
-            if (text == null  ||  text.isEmpty()) {
-              String fileName = fileReference.getFile();
-              if (fileName != null) {
-                text = fileName;
-              }
-              
-            }
-          }
-          
-          return text;
-        }, false, nodeOperationDescriptors, (object) -> {
-          Image image = null;
-          if (object instanceof Document document) {
-            FileReference fileReference = document.getDocumentReference();
-            if (fileReference != null) {
-              String fileName = fileReference.getFile();
-              LOGGER.severe("Creating image for: " + fileName);
-              if (fileName != null  &&  FileUtils.isPDFFile(fileName)) {
-                image = ImageResource.PDF.getImage();
-              }
-              LOGGER.severe("image = " + image);
-            }
-          }
-
-          return image;
-        });
-
-    // Document.documentReference
-    nodeOperationDescriptors = new ArrayList<>();
-    nodeOperationDescriptors.add(new NodeOperationDescriptor(TableRowOperation.NEW_OBJECT, "Create document reference"));
-    nodeOperationDescriptors.add(new NodeOperationDescriptor(TableRowOperation.DELETE_OBJECT, "Delete document reference"));
-    TypesPackage typesPackage = TypesPackage.eINSTANCE;
-    EmfPackageHelper typesPackageHelper = new EmfPackageHelper(typesPackage);
-    eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(new EObjectTreeItemClassReferenceDescriptor(VACATIONS_PACKAGE.getDocument_DocumentReference(), typesPackageHelper.getEClass("goedegep.types.model.FileReference"), (eObject) -> "Document reference", true, nodeOperationDescriptors));
-    
-    //Document.children
-    nodeOperationDescriptors = new ArrayList<>();
-    nodeOperationDescriptors.add(new NodeOperationDescriptor(TableRowOperation.NEW_OBJECT, "New element", this::fillMapImage));
-    eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(new EObjectTreeItemClassListReferenceDescriptor(VACATIONS_PACKAGE.getVacationElement_Children(), "Elements", true, nodeOperationDescriptors, object -> EObjectTreeView.getListIcon()));
-    
-    eObjectTreeDescriptor.addEClassDescriptor(eClass, eObjectTreeItemClassDescriptor);
-  }
-
-  /**
-   * Create the descriptor for the EClass goedegep.model.vacations.VacationElementGPX.
-   * 
-   * @param eObjectTreeDescriptor the tree descriptor to which the VacationElementGPX descriptor is to be added.
-   * @param vakantiesPackageHelper an <code>EmfPackageHelper</code> for the <code>VacationsPackage</code>
-   */
-  private void createAndAddEObjectTreeDescriptorForGPXTrack(EObjectTreeDescriptor eObjectTreeDescriptor, EmfPackageHelper vakantiesPackageHelper) {
-    EClass eClass = vakantiesPackageHelper.getEClass("goedegep.vacations.model.GPXTrack");
-        
-    // VacationElementGPX (extends VacationElement)
-    List<NodeOperationDescriptor> nodeOperationDescriptors = new ArrayList<>();
-    nodeOperationDescriptors.add(new NodeOperationDescriptor(TableRowOperation.NEW_OBJECT_BEFORE, "New element before this one ..."));
-    nodeOperationDescriptors.add(new NodeOperationDescriptor(TableRowOperation.NEW_OBJECT_AFTER, "New element after this one ..."));
-    nodeOperationDescriptors.add(new NodeOperationDescriptor(TableRowOperation.MOVE_OBJECT_UP, "Move element up"));
-    nodeOperationDescriptors.add(new NodeOperationDescriptor(TableRowOperation.MOVE_OBJECT_DOWN, "Move element down"));
-    nodeOperationDescriptors.add(new NodeOperationDescriptor(TableRowOperation.DELETE_OBJECT, "Delete element"));
-    EObjectTreeItemClassDescriptor eObjectTreeItemClassDescriptor = new EObjectTreeItemClassDescriptor(eClass,
-        this::generateTextForGpxTrack, false, nodeOperationDescriptors, this::generateIconForGpxTrack);
-    
-    // VacationElementGPX.trackReference
-    nodeOperationDescriptors = new ArrayList<>();
-    nodeOperationDescriptors.add(new NodeOperationDescriptor(TableRowOperation.NEW_OBJECT, "Create GPX track reference"));
-    nodeOperationDescriptors.add(new NodeOperationDescriptor(TableRowOperation.DELETE_OBJECT, "Delete GPX track reference"));
-    TypesPackage typesPackage = TypesPackage.eINSTANCE;
-    EmfPackageHelper typesPackageHelper = new EmfPackageHelper(typesPackage);
-    eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(new EObjectTreeItemClassReferenceDescriptor(VACATIONS_PACKAGE.getGPXTrack_TrackReference(), typesPackageHelper.getEClass("goedegep.types.model.FileReference"), (eObject) -> "GPX track reference", true, nodeOperationDescriptors));
-    
-    // VacationElementGPX.children
-    nodeOperationDescriptors = new ArrayList<>();
-    nodeOperationDescriptors.add(new NodeOperationDescriptor(TableRowOperation.NEW_OBJECT, "New element", this::fillMapImage));
-    eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(new EObjectTreeItemClassListReferenceDescriptor(VACATIONS_PACKAGE.getVacationElement_Children(), "Elements", true, nodeOperationDescriptors, object -> EObjectTreeView.getListIcon()));
-    
-    eObjectTreeDescriptor.addEClassDescriptor(eClass, eObjectTreeItemClassDescriptor);
-  }
   
   /**
    * Generate the text to be shown for a GPXTrack item in the TreeView.
@@ -2510,7 +1859,7 @@ public class VacationsWindow extends JfxStage {
    * 
    * @param gpxTrack The <code>GPXTrack</code> for which a text is to be generated.
    */
-  private String generateTextForGpxTrack(EObject eObject) {
+  static String generateTextForGpxTrack(EObject eObject) {
     GPXTrack gpxTrack = (GPXTrack) eObject;
     String text = null;
     FileReference fileReference = gpxTrack.getTrackReference();
@@ -2560,7 +1909,7 @@ public class VacationsWindow extends JfxStage {
     return text;
   }
   
-  private Image generateIconForGpxTrack(Object object) {
+  static Image generateIconForGpxTrack(Object object) {
     Image gpxTrackImage = ImageResource.GPX.getImage();
 
     GPXTrack gpxTrack = (GPXTrack) object;
@@ -2602,81 +1951,12 @@ public class VacationsWindow extends JfxStage {
     return gpxTrackImage;
   }
 
-  public Image scale(Image source, double targetWidth, double targetHeight) {
+  public static Image scale(Image source, double targetWidth, double targetHeight) {
     ImageView imageView = new ImageView(source);
     imageView.setPreserveRatio(true);
     imageView.setFitWidth(targetWidth);
     imageView.setFitHeight(targetHeight);
     return imageView.snapshot(null, null);
-  }
-  
-  /**
-   * Create the descriptor for the EClass goedegep.model.vacations.MapImage.
-   * 
-   * @param eObjectTreeDescriptor the tree descriptor to which the MapImage descriptor is to be added.
-   * @param vakantiesPackageHelper an <code>EmfPackageHelper</code> for the <code>VacationsPackage</code>
-   */
-  private void createAndAddEObjectTreeDescriptorForMapImage(EObjectTreeDescriptor eObjectTreeDescriptor, EmfPackageHelper vakantiesPackageHelper) {
-    EClass eClass = vakantiesPackageHelper.getEClass("goedegep.vacations.model.MapImage");
-        
-    // MapImage (extends VacationElement)
-    List<NodeOperationDescriptor> nodeOperationDescriptors = new ArrayList<>();
-    nodeOperationDescriptors.add(new NodeOperationDescriptor(TableRowOperation.NEW_OBJECT_BEFORE, "New element before this one ..."));
-    nodeOperationDescriptors.add(new NodeOperationDescriptor(TableRowOperation.NEW_OBJECT_AFTER, "New element after this one ..."));
-    nodeOperationDescriptors.add(new NodeOperationDescriptor(TableRowOperation.MOVE_OBJECT_UP, "Move element up"));
-    nodeOperationDescriptors.add(new NodeOperationDescriptor(TableRowOperation.MOVE_OBJECT_DOWN, "Move element down"));
-    nodeOperationDescriptors.add(new NodeOperationDescriptor(TableRowOperation.DELETE_OBJECT, "Delete element"));
-    nodeOperationDescriptors.add(new ExtendedNodeOperationDescriptor("Update  image file", (eObjectTreeItem) -> true, this::updateMapImageFile));
-    EObjectTreeItemClassDescriptor eObjectTreeItemClassDescriptor = new EObjectTreeItemClassDescriptor(eClass,
-        eObject -> {
-            MapImage picture = (MapImage) eObject;
-            String title = picture.getTitle();
-            if (title != null  &&  !title.isEmpty()) {
-              return title;
-            } else {
-              return "MapImage";
-            }
-          }, false, nodeOperationDescriptors, object -> ImageResource.MAP.getImage());
-
-    // MapImage.title
-    eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(new EObjectTreeItemAttributeDescriptor(VACATIONS_PACKAGE.getMapImage_Title(), "Title", null));
-
-    // MapImage.imageWidth
-    eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(new EObjectTreeItemAttributeDescriptor(VACATIONS_PACKAGE.getMapImage_ImageWidth(), "Image width", null));
-
-    // MapImage.imageHeight
-    eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(new EObjectTreeItemAttributeDescriptor(VACATIONS_PACKAGE.getMapImage_ImageHeight(), "Image height", null));
-
-    // MapImage.zoom
-    eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(new EObjectTreeItemAttributeDescriptor(VACATIONS_PACKAGE.getMapImage_Zoom(), "Zoom level", null));
-
-    // MapImage.centerLatitude
-    eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(new EObjectTreeItemAttributeDescriptor(VACATIONS_PACKAGE.getMapImage_CenterLatitude(), "Center latitude", null));
-
-    // MapImage.centerLongitude
-    eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(new EObjectTreeItemAttributeDescriptor(VACATIONS_PACKAGE.getMapImage_CenterLongitude(), "Center longitude", null));
-
-    // MapImage.fileName
-    eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(new EObjectTreeItemAttributeDescriptor(VACATIONS_PACKAGE.getMapImage_FileName(), "Filename", PresentationType.FILE, null));
-    
-    // MapImage.children
-    nodeOperationDescriptors = new ArrayList<>();
-    nodeOperationDescriptors.add(new NodeOperationDescriptor(TableRowOperation.NEW_OBJECT, "New element", this::fillMapImage));
-    eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(new EObjectTreeItemClassListReferenceDescriptor(VACATIONS_PACKAGE.getVacationElement_Children(), "Elements", true, nodeOperationDescriptors, object -> EObjectTreeView.getListIcon()));
-    
-    eObjectTreeDescriptor.addEClassDescriptor(eClass, eObjectTreeItemClassDescriptor);
-  }
-  
-  private void creaeAndAddEEnumEditorDescriptorForLocationType(EObjectTreeDescriptor eObjectTreeDescriptor, EmfPackageHelper poiPackageHelper) {
-    EEnum eEnum = poiPackageHelper.getEEnum("goedegep.poi.model.POICategoryId");
-    
-    EEnumEditorDescriptor<POICategoryId> eEnumEditorDescriptor = new EEnumEditorDescriptor<>(true);
-        
-    for (POICategoryId poiCategoryId: POICategoryId.values()) {
-      eEnumEditorDescriptor.addDisplayNameForEEnum(poiCategoryId, poiCategoryId.getLiteral());
-    }
-    
-    eObjectTreeDescriptor.addEEnumEditorDescriptor(eEnum, eEnumEditorDescriptor);
   }
 
   /**
@@ -2795,6 +2075,17 @@ public class VacationsWindow extends JfxStage {
     }
   }
   
+  /**
+   * Check the selected vacation and report any problems and suspicious things.
+   * <p>
+   * The followings things are checked:
+   * <ul>
+   * <li>FileReferences to non-existing files<br/>
+   * The 'file' attribute of a {@code FileReference} shall be name of an existing file.
+   * If it is {@code null} it is a warning, if the file doesn't exist it is an error.
+   * </li>
+   * </ul>
+   */
   private void checkSelectedVacation() {
     EObjectTreeItem treeItem = treeView.getSelectedObject();
     Vacation vacation = getVacationForTreeItem(treeItem);
@@ -2802,15 +2093,34 @@ public class VacationsWindow extends JfxStage {
       statusLabel.setText("No vacation selected");
       return;
     }
+    
+    VacationCheckResultWindow.VacationCheckResultWindowBuilder builder = new VacationCheckResultWindow.VacationCheckResultWindowBuilder(customization, vacation.getId());
+    
+    List<FileReference> fileReferencesNotSet = VacationsChecker.checkThatAllReferencesAreSet(vacation);
+    if (fileReferencesNotSet != null) {
+      for (FileReference fileReference: fileReferencesNotSet) {
+        LOGGER.severe("FileReference not set " + fileReference.toString());
+      }
+      builder.setReferencesNotSet(fileReferencesNotSet);
+    }
 
     List<FileReference> nonExistingReferences = VacationsChecker.checkThatAllReferencesExist(vacation);
-    for (FileReference fileReference: nonExistingReferences) {
-      LOGGER.severe(fileReference.toString());
+    if (nonExistingReferences != null) {
+      for (FileReference fileReference: nonExistingReferences) {
+        LOGGER.severe("FileReference to non existing file: " + fileReference.toString());
+      }
+      builder.setNonExistingReferences(nonExistingReferences);
     }
+    
     Set<String> filesNotReferredTo = VacationsChecker.checkThatAllFilesAreReferredTo(vacation);
-    for (String filename: filesNotReferredTo) {
-      LOGGER.severe(filename);
+    if (filesNotReferredTo != null) {
+      for (String filename: filesNotReferredTo) {
+        LOGGER.severe("File not referred to: " + filename);
+      }
+      builder.setFilesNotReferredTo(filesNotReferredTo);
     }
+    
+    builder.build();
   }
   
   /**
@@ -2954,16 +2264,23 @@ public class VacationsWindow extends JfxStage {
   }
   
   /**
-   * Create an OsmAnd favourites file for a node in the Vacations database.
+   * Create an OsmAnd import file for a node in the Vacations database.
    * <p>
    * Typical use of this method is to first select a Vacation and then call this method.
-   * However this method works on any node in the Travels database. All locations below the selected node will
-   * be written to the favourites file.
+   * However this method works on any node in the Travels database.
+   * An OsmAnd import file is created containing a favourite for each location below the selected node,
+   * and all GPX tracks below the selected node.
+   * An OsmAnd import file is a zip file with:
+   * <ul>
+   *   <li>A gpx file per favorite category, e.g. favorites-CITY.gpx for cities</li>
+   *   <li>A folder '_/tracks/import' containing the GPX track to import. 
+   * </ul>
    * If the selected no isn't an EObject, the parent node is used (and so on until an EOBject node is encountered).
    * If no node is selected, a popup is shown to inform the user about this and than this method directly returns.
    */
-  private void createOsmAndFavouritesFile() {
-    // Get selected node in vacations
+  private void createOsmAndImportFile() {
+    
+    // Get the selected node in vacations
     EObject eObject = null;
     TreeItem<Object> treeItem = treeView.getSelectedObject();
     if (treeItem != null) {
@@ -2986,18 +2303,46 @@ public class VacationsWindow extends JfxStage {
     }
     
     // Choose file to save to.
-    FileChooser fileChooser = new FileChooser();
-    fileChooser.setTitle("OsmAnd Favourites file");
-    fileChooser.setInitialFileName("favourites.gpx");
+    FileChooser fileChooser = componentFactory.createFileChooser("File to write OsmAnd import file to");
+    String initialFileName = "OsmAndImport.osf";
+    if (eObject instanceof Vacation vacation) {
+      initialFileName = vacation.getTitle() + ".osf";
+    }
+    fileChooser.setInitialFileName(initialFileName);
+    fileChooser.getExtensionFilters().add(new ExtensionFilter("OsmAnd import file", "*.osf"));
     File file = fileChooser.showSaveDialog(this);
-    LOGGER.severe("Creating OsmAnd Favourites file: " + file.getAbsolutePath());
+    if (file == null) {
+      return;
+    }
+    LOGGER.severe("Creating OsmAnd import file: " + file.getAbsolutePath());
     
-    // Generate file
+    // We can safely delete the file, because the user agreed to this in the FileChooser.
+    if (file.exists()) {
+      file.delete();
+    }
+    
+    // create/get an in memory file system (imfs)
+    // Create an in-memory file system
+    FileSystem imfs = Jimfs.newFileSystem(Configuration.unix());
+    
+    // Datastructure for creating the contents file (items.json)
+    OsmAndItems osmAndItems = new OsmAndItems();
+    List<Item> items = new ArrayList<>();
+    osmAndItems.items = items;
+    
+    // Create the favorites.gpx file for the locations
     String group = null;
     if (eObject instanceof Vacation vacation) {
       group = vacation.getTitle();
     }
-    Map<String, List<String>> categoryToNameMap = OsmAndUtil.createFavouritesFile(eObject, group, file);
+    String favoritesFileName = "/favorites";
+    if (eObject instanceof Vacation vacation) {
+      favoritesFileName = favoritesFileName + "-" + vacation.getTitle();
+    }
+    favoritesFileName = favoritesFileName + ".gpx";
+    
+    Path favoritesFilePath = imfs.getPath(favoritesFileName);
+    Map<String, List<String>> categoryToNameMap = OsmAndUtil.createFavouritesFile(eObject, group, favoritesFilePath);
     StringBuilder buf = new StringBuilder();
     for (String category: categoryToNameMap.keySet()) {
       List<String> locationsForCategory = categoryToNameMap.get(category);
@@ -3006,10 +2351,80 @@ public class VacationsWindow extends JfxStage {
         buf.append("    ").append(location).append(NEWLINE);
       }
     }
+    
+    Item item = new Item();
+    item.type = "FAVOURITES";
+    item.file = favoritesFilePath.getFileName().toString();
+    items.add(item);
+    
     Alert alert = componentFactory.createInformationDialog("Favourites file created",
         buf.toString(),
         "Press OK to continue.");
     alert.showAndWait();
+    
+    // Create the folder for the GPX tracks
+    Path gpxTracksFolderPath = imfs.getPath("/_/tracks/import");
+    try {
+      Files.createDirectories(gpxTracksFolderPath);
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+    
+    // Copy the GPX tracks to that folder
+    TreeIterator<EObject> vacationIterator = eObject.eAllContents();
+    
+    while (vacationIterator.hasNext()) {
+      EObject currentEObject = vacationIterator.next();
+      if (currentEObject instanceof GPXTrack gpxTrack) {
+        FileReference fileReference = gpxTrack.getTrackReference();
+        if (fileReference != null) {
+          String fileName = fileReference.getFile();
+          if (fileName != null) {
+            Path sourcePath = Paths.get(fileName);
+            File sourceFile = new File(fileName);
+            Path destinationPath = gpxTracksFolderPath.resolve(sourceFile.getName());
+            LOGGER.severe("Going to copy: " + sourcePath.toString() + " to: " + destinationPath.toString());
+            try {
+              Files.copy(sourcePath, destinationPath);
+              
+              ItemGpx itemGpx = new ItemGpx();
+              itemGpx.type = "GPX";
+              itemGpx.file = destinationPath.toString();
+              items.add(itemGpx);
+            } catch (IOException e) {
+              LOGGER.severe("Failed to copy " + sourcePath.toString() + " to " + destinationPath.toString());
+            }
+          }
+        }
+      }
+    }
+    
+    // Create contents file (items.json)
+    Gson gson = new Gson();
+    String itemsJsonString = gson.toJson(osmAndItems);
+    LOGGER.severe("itemsJsonString: " + itemsJsonString);
+    try {
+      Path itemsFilePath = imfs.getPath("/items.json");
+      Files.write(itemsFilePath, itemsJsonString.getBytes());
+    } catch (IOException e) {
+      e.printStackTrace();
+    }    
+    
+    // Create a zip file from the imfs folder
+    Path zipFile = Paths.get(file.getAbsolutePath());
+    Path folderToZip = imfs.getPath("/");
+    try {
+      FileUtils.createZipFileForFolder(zipFile, folderToZip);
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+    
+    // Delete the imfs folder
+    try {
+      imfs.close();
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
   }
   
   private void createTomTomOv2File() {
@@ -3186,7 +2601,7 @@ public class VacationsWindow extends JfxStage {
    * @param treeItem the <code>EObjectTreeItem</code> to which the <code>eObject</code> is added.
    */
   private void fillMapImage(EObject eObject, EObjectTreeItem treeItem) {
-    LOGGER.severe("=> eObject=" + eObject + ", treeItem=" + treeItem);
+    LOGGER.info("=> eObject=" + eObject + ", treeItem=" + treeItem);
     
     if (eObject instanceof MapImage mapImage) {
       // No default value for 'title'.
@@ -3250,7 +2665,7 @@ public class VacationsWindow extends JfxStage {
     }
   }
   
-  private void updateMapImageFile(EObjectTreeItem eObjectTreeItem) {
+  void updateMapImageFile(EObjectTreeItem eObjectTreeItem) {
     Object object = eObjectTreeItem.getValue();
     if (object instanceof MapImage mapImage) {
       createMapImageView(mapImage, poiIcons, false);
@@ -3263,7 +2678,7 @@ public class VacationsWindow extends JfxStage {
       title = "MapImage";
     }
     JfxStage jfxStage = new JfxStage(title, staticCustomization);
-    TravelMapView imageTravelMapView = new TravelMapView(customization, jfxStage, this, poiIcons, getNominatimAPI());
+    TravelMapView imageTravelMapView = new TravelMapView(customization, jfxStage, poiIcons, null);
 
     Double height = mapImage.getImageHeight();
     if (height != null) {

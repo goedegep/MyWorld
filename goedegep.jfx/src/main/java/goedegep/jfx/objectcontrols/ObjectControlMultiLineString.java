@@ -23,14 +23,14 @@ public class ObjectControlMultiLineString extends ObjectControlAbstract<String> 
     textArea = customization.getComponentFactoryFx().createTextArea();
     textArea.textProperty().addListener((observableValue, oldValue, newValue) -> ociHandleNewUserInput(textArea));
 
-    ocSetValue(text);
+    setValue(text);
   }
   
   /**
    * {@inheritDoc}
    */
   @Override
-  public TextArea ocGetControl() {
+  public TextArea getControl() {
     return textArea;
   }
 
@@ -38,7 +38,7 @@ public class ObjectControlMultiLineString extends ObjectControlAbstract<String> 
    * {@inheritDoc}
    */
   @Override
-  public void ocSetValue(String objectValue) {
+  public void setValue(String objectValue) {
     referenceValue = objectValue;
     textArea.setText(objectValue);    
   }
@@ -86,7 +86,7 @@ public class ObjectControlMultiLineString extends ObjectControlAbstract<String> 
    * There is no formatting, so just return the value.
    */
   @Override
-  public String ocGetObjectValueAsFormattedText()  {
+  public String getValueAsFormattedText()  {
     return value;
   }
   

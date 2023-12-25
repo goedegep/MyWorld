@@ -33,9 +33,36 @@ public class VacationsChecker {
   private static List<String> specialFolders = Arrays.asList(
       "backup"                 // Folder with backup files.
       );
+  
+  /**
+   * Check that all references (type <code>FileReference</code>) of a Vacation have the 'file' attribute set.
+   * 
+   * @param vacation the Vacation structure to check
+   * @return a list of file references which don't have the 'file' attribute set, or null if there are no errors.
+   */
+  public static List<FileReference> checkThatAllReferencesAreSet(Vacation vacation) {
+    List<FileReference> fileReferencesNotSet = new ArrayList<>();
+    
+    TreeIterator<EObject> vacationIterator = vacation.eAllContents();
+    while (vacationIterator.hasNext()) {
+      EObject eObject = vacationIterator.next();
+      if (eObject instanceof FileReference fileReference) {
+        if (fileReference.getFile() == null) {
+          if (fileReferencesNotSet == null) {
+            fileReferencesNotSet = new ArrayList<>();
+          }
+          fileReferencesNotSet.add(fileReference);
+        }
+      }
+    }
+    
+    return fileReferencesNotSet;
+  }
  
   /**
-   * Check that all references (type <code>BestandReferentie</code>) of a Vacation refer to an existing file.
+   * Check that all references (type <code>FileReference</code>) of a Vacation refer to an existing file.
+   * <p>
+   * Note that this method doesn't report file references for which the 'file' attribute isn't set, this is handled by the method {@code checkThatAllReferencesAreSet}.
    * 
    * @param vacation the Vacation structure to check
    * @return a list of file references which refer to files that don't exist, or null if there are no errors.
@@ -46,14 +73,16 @@ public class VacationsChecker {
     TreeIterator<EObject> vacationIterator = vacation.eAllContents();
     while (vacationIterator.hasNext()) {
       EObject eObject = vacationIterator.next();
-      if (eObject instanceof FileReference) {
-        FileReference fileReference = (FileReference) eObject;
-        File file = new File(fileReference.getFile());
-        if (!file.exists()) {
-          if (fileReferencesNotFound == null) {
-            fileReferencesNotFound = new ArrayList<>();
+      if (eObject instanceof FileReference fileReference) {
+        String fileName = fileReference.getFile();
+        if (fileName != null) {
+          File file = new File(fileName);
+          if (!file.exists()) {
+            if (fileReferencesNotFound == null) {
+              fileReferencesNotFound = new ArrayList<>();
+            }
+            fileReferencesNotFound.add(fileReference);
           }
-          fileReferencesNotFound.add(fileReference);
         }
       }
     }
@@ -65,7 +94,7 @@ public class VacationsChecker {
    * Check that all files in the vacation folder are referred to.
    * 
    * @param vacation the Vacation structure to check
-   * @return a list of file references which refer to files that don't exist, or null if there are no errors.
+   * @return a set of file names of files which aren't referred to, or null if all files are referred to.
    */
   public static Set<String> checkThatAllFilesAreReferredTo(Vacation vacation) {
     // Build a set of all references
@@ -85,7 +114,7 @@ public class VacationsChecker {
     String vacationFoldername = VacationsUtils.getVacationFolder(vacation);
     
     // For each file in the vacations folder, check that it is in the set of references.
-    Set<String> filesNotReferredTo = new HashSet<>();
+    Set<String> filesNotReferredTo = null;
     
     Path vacationFolderPath = Paths.get(vacationFoldername);
     
@@ -94,6 +123,9 @@ public class VacationsChecker {
         if (!Files.isDirectory(path)) {
           String fileName = path.toString();
           if (!referredFiles.contains(fileName)) {
+            if (filesNotReferredTo == null) {
+              filesNotReferredTo = new HashSet<>();
+            }
             filesNotReferredTo.add(fileName);
           } else {
             LOGGER.info("Skipping file which is referred to: " + path.getFileName().toString());

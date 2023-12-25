@@ -190,14 +190,14 @@ class CityEditPanel {
     label = componentFactory.createLabel("City:");
     gridPane.add(label, 0, row);
     
-    gridPane.add(cityTextField.ocGetControl(), 1, row);
+    gridPane.add(cityTextField.getControl(), 1, row);
     
     row++;
     
     label = componentFactory.createLabel("Country:");
     gridPane.add(label, 0, row);
 
-    gridPane.add(countryTextField.ocGetControl(), 1, row);
+    gridPane.add(countryTextField.getControl(), 1, row);
     countryTextFieldRow = row;
 
     Button addButton = componentFactory.createButton("Add", "Add the city to the Rolodex");
@@ -266,8 +266,8 @@ class CityEditPanel {
    * @param city the City who's values will be applied to the controls.
    */
   private void fillFieldsFromCity(City city) {
-    cityTextField.ocSetValue(city.getCityName());
-    countryTextField.ocSetValue(city.getCountry().getCountryName());
+    cityTextField.setValue(city.getCityName());
+    countryTextField.setValue(city.getCountry().getCountryName());
   }
   
   /**
@@ -300,7 +300,7 @@ class CityEditPanel {
    * @param city The City object to be updated.
    */
   public boolean updateCityFromFields(City city) {
-      String cityName = cityTextField.ocGetValue();
+      String cityName = cityTextField.getValue();
       if (!PgUtilities.equals(city.getCityName(), cityName)) {
         city.setCityName(cityName);
       }
@@ -322,7 +322,7 @@ class CityEditPanel {
    */
   private void handleNewCountryName() {
     if (countryTextField.isNonExistingCountyName()) {
-      String countryName = countryTextField.ocGetValue();
+      String countryName = countryTextField.getValue();
       Alert alert = componentFactory.createYesNoConfirmationDialog(
           "Unknown country",
           "The country \'" + countryName + "\' doesn't exist in the Rolodex yet.",
@@ -334,8 +334,8 @@ class CityEditPanel {
 
         // The only way I found to update the autocompletion list is by recreating the textfield. 
         countryTextField = new CountryTextField(customization, rolodex);
-        countryTextField.ocSetValue(countryName);
-        gridPane.add(countryTextField.ocGetControl(), 1, countryTextFieldRow);
+        countryTextField.setValue(countryName);
+        gridPane.add(countryTextField.getControl(), 1, countryTextFieldRow);
       });
     }
   }

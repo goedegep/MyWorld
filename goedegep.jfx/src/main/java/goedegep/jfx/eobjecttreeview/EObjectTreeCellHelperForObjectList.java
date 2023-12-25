@@ -39,31 +39,41 @@ public class EObjectTreeCellHelperForObjectList extends EObjectTreeCellHelperAbs
     super(eObjectTreeCell);
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
-  public void updateItem(Object eObjectTreeItemContent) {
-    LOGGER.info("=> item=" + (eObjectTreeItemContent != null ? eObjectTreeItemContent.toString() : "(null)"));
-    
-    super.updateItem(eObjectTreeItemContent);
-    
+  protected void setEObjectTreeItemDescriptor() {
     itemDescriptor = treeItem.getEObjectTreeItemClassListReferenceDescriptor();
+  }
+
+  @Override
+  public void updateItem(Object object) {
+    LOGGER.info("=> item=" + (object != null ? object.toString() : "(null)"));
     
-    ContextMenu contextMenu = createContextMenu();
-    eObjectTreeCell.setContextMenu(contextMenu);
+    super.updateItem(object);
+    
+    setEObjectTreeItemDescriptor();
+    
+    ContextMenu contextMenu = createContextMenu(object);
+    eObjectTreeCell.setContextMenu(contextMenu); // also set when null to clear any previous value
+    
+    // HIER VERDER
 
     // This cell type cannot be edited, so we don't have to check on isEditing()
-    eObjectTreeCell.setText(getText(eObjectTreeItemContent));
+    eObjectTreeCell.setText(buildText(object));
     if (itemDescriptor.isStrongText()) {
       eObjectTreeCell.setStyle("-fx-font-weight: bold;");
     }
     
     
     ImageView iconImageView = null;
-    if (eObjectTreeItemContent != null) {
+    if (object != null) {
       if (itemDescriptor != null) {
         EObjectTreeItemClassListReferenceDescriptor descriptor = (EObjectTreeItemClassListReferenceDescriptor) itemDescriptor;
         Function<Object, Image> nodeIconFunction = descriptor.getNodeIconFunction();
         if (nodeIconFunction != null) {
-          Image iconImage = nodeIconFunction.apply(eObjectTreeItemContent);
+          Image iconImage = nodeIconFunction.apply(object);
           if (iconImage != null) {
             iconImageView = new ImageView(iconImage);
             iconImageView.setPreserveRatio(true);
@@ -86,7 +96,7 @@ public class EObjectTreeCellHelperForObjectList extends EObjectTreeCellHelperAbs
    * 
    * @return a context menu derived from the node operation descriptors, or null if no node operation descriptors are specified.
    */
-  private ContextMenu createContextMenu() {
+  protected ContextMenu createContextMenu(Object object) {
     LOGGER.info("=>");
     
     List<NodeOperationDescriptor> nodeOperationDescriptors = itemDescriptor.getNodeOperationDescriptors();
@@ -132,11 +142,7 @@ public class EObjectTreeCellHelperForObjectList extends EObjectTreeCellHelperAbs
         case NEW_OBJECT:
           menuItem = new MenuItem(nodeOperationDescriptor.getMenuText());
           contextMenu.getItems().add(menuItem);
-          menuItem.setOnAction(new EventHandler<ActionEvent>() {
-            public void handle(ActionEvent t) {
-              createAndAddObject(null, nodeOperationDescriptor.getBiConsumer());
-            }
-          });
+          menuItem.setOnAction((actionEvent) -> createAndAddObject(null, nodeOperationDescriptor.getBiConsumer()));
 
           if (!eReference.isContainment()) {
             LOGGER.info("Not containment: " + eReference.getName());
@@ -208,17 +214,25 @@ public class EObjectTreeCellHelperForObjectList extends EObjectTreeCellHelperAbs
   }
 
   @Override
-  public void startEdit(EObjectTreeCell eObjectTreeCell) {
+  public void startEdit() {
     LOGGER.severe("=>");
   }
   
-  private void createAndAddObject(EClass eClass, BiConsumer<EObject, EObjectTreeItem> biConsumer) {
+  /**
+   * Create an object of a specific class and add it to the object list.
+   * 
+   * @param eClass the object type to be created.
+   *        This is an optional parameter and if specified it must be a type compatible to the type of the objects in the list.
+   *        If the type is not specified, an object of the type of the objects in the list is created.
+   *        This parameter is typically used if you want to create an object which may be a sub type of the type of the objects in the list.
+   * @param uponObjectCreatedMethod this method, if specified, is called after the object is created. This is typically used to do some further initialization.
+   */
+  private void createAndAddObject(EClass eClass, BiConsumer<EObject, EObjectTreeItem> uponObjectCreatedMethod) {
     LOGGER.info("=>");
     
     EObjectTreeItemForObjectList eObjectTreeItem = (EObjectTreeItemForObjectList) eObjectTreeCell.getTreeItem();
     @SuppressWarnings("unchecked")
     EList<EObject> eObjectList = (EList<EObject>) eObjectTreeItem.getValue();    
-    LOGGER.info("eObjectList:" + eObjectList.toString());
     
     if (eClass == null) {
       EReference eReference = eObjectTreeItem.getEReference();
@@ -228,18 +242,18 @@ public class EObjectTreeCellHelperForObjectList extends EObjectTreeCellHelperAbs
     EFactory eFactory = eClass.getEPackage().getEFactoryInstance();
     EObject eObject = eFactory.create(eClass);
     
-    if (biConsumer != null) {
-      biConsumer.accept(eObject, eObjectTreeItem);
+    if (uponObjectCreatedMethod != null) {
+      uponObjectCreatedMethod.accept(eObject, eObjectTreeItem);
     }
     
     eObjectList.add(eObject);
-    
-    eObjectTreeItem.rebuildChildren();
+//    
+//    eObjectTreeItem.rebuildChildren();
     
     LOGGER.info("=>");
   }
 
-  private String getText(Object eObjectTreeItemContent) {
+  protected String buildText(Object value) {
     LOGGER.info("=>");
  
     

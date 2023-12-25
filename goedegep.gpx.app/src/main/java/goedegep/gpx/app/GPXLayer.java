@@ -72,7 +72,8 @@ public class GPXLayer extends MapLayer {
   private static final double WAYPOINT_ICON_SIZE = 24;
   private static final double ROUTE_POINT_ICON_SIZE = 16;
   
-  private static final WGS84CoordinatesStringConverter wgs84CoordinatesStringConverter = WGS84CoordinatesStringConverter.getInstance();
+  // Converter to convert {@code WGS84Coordinates} to text. Used to show the coordinates in the tooltips.
+  private static final WGS84CoordinatesStringConverter WGS84_COORDINATES_TO_STRING_CONVERTER = WGS84CoordinatesStringConverter.getInstance();
   
   /**
    * Image for waypoints.
@@ -154,6 +155,11 @@ public class GPXLayer extends MapLayer {
     return fileBoundingBox;
   }
   
+  /**
+   * Remove a GPX track.
+   * 
+   * @param gpxType the GPX track to be removed.
+   */
   public void removeGpx(final GpxType gpxType) {
     gpxType.eAdapters().clear();
     gpxFileDataMap.remove(gpxType);
@@ -750,7 +756,7 @@ public class GPXLayer extends MapLayer {
       buf.append("ele: ").append(gpxWaypoint.getEle()).append("\n");
       altitude = gpxWaypoint.getEle().doubleValue();
     }
-    buf.append("coordinates: ").append(wgs84CoordinatesStringConverter.toString(new WGS84Coordinates(latitude, longitude, altitude))).append("\n");
+    buf.append("coordinates: ").append(WGS84_COORDINATES_TO_STRING_CONVERTER.toString(new WGS84Coordinates(latitude, longitude, altitude))).append("\n");
     
     return buf.toString();
   }

@@ -69,6 +69,8 @@ public class GPXWindow extends JfxStage {
   private ObjectSelectionListener<TreeItem<Object>> gpxTreeViewSelectionListener;
   private ReduceTrackPointsWindow reduceTrackPointsWindow;
   
+  private boolean firstFile = true;
+  
   /**
    * Constructor.
    * 
@@ -84,6 +86,7 @@ public class GPXWindow extends JfxStage {
     
     gpxResource = GpxUtil.createEMFResource();
     gpxResource.dirtyProperty().addListener((observable, oldValue, newValue) -> updateTitle());
+    gpxResource.fileNameProperty().addListener((observable, oldValue, newValue) -> updateTitle());
     
     updateTitle();
     
@@ -137,6 +140,7 @@ public class GPXWindow extends JfxStage {
     // File menu
     menu = componentFactory.createMenu("File");
     
+    // File:New GPX file
     menuItem = componentFactory.createMenuItem("New GPX file");
     menuItem.setOnAction(new EventHandler<ActionEvent>() {
       public void handle(ActionEvent e) {
@@ -145,6 +149,7 @@ public class GPXWindow extends JfxStage {
     });
     menu.getItems().add(menuItem);
     
+    // File:Open GPX file ...
     menuItem = componentFactory.createMenuItem("Open GPX file ...");
     menuItem.setOnAction(new EventHandler<ActionEvent>() {
       public void handle(ActionEvent e) {
@@ -153,6 +158,7 @@ public class GPXWindow extends JfxStage {
     });
     menu.getItems().add(menuItem);
     
+    // File:Save GPX file
     menuItem = componentFactory.createMenuItem("Save GPX file");
     menuItem.setOnAction(new EventHandler<ActionEvent>() {
       public void handle(ActionEvent e) {
@@ -162,6 +168,7 @@ public class GPXWindow extends JfxStage {
     menuItem.setAccelerator(new KeyCodeCombination(KeyCode.S, KeyCombination.CONTROL_DOWN));
     menu.getItems().add(menuItem);
     
+    // File:Save GPX file as ...
     menuItem = componentFactory.createMenuItem("Save GPX file as ...");
     menuItem.setOnAction(new EventHandler<ActionEvent>() {
       public void handle(ActionEvent e) {
@@ -170,6 +177,7 @@ public class GPXWindow extends JfxStage {
     });
     menu.getItems().add(menuItem);
             
+    // File:Exit
     menuItem = componentFactory.createMenuItem("Exit");
     menuItem.setOnAction(new EventHandler<ActionEvent>() {
       public void handle(ActionEvent e) {
@@ -183,6 +191,7 @@ public class GPXWindow extends JfxStage {
     // Tools menu
     menu = componentFactory.createMenu("Tools");
     
+    // Tools:Import tracks segments
     menuItem = componentFactory.createMenuItem("Import tracks segments");
     menuItem.setOnAction(new EventHandler<ActionEvent>() {
       public void handle(ActionEvent e) {
@@ -217,6 +226,7 @@ public class GPXWindow extends JfxStage {
     });
     menu.getItems().add(menuItem);
     
+    // Edit:Reduce track points
     menuItem = componentFactory.createMenuItem("Reduce track points");
     menuItem.setOnAction(new EventHandler<ActionEvent>() {
       public void handle(ActionEvent e) {
@@ -298,6 +308,11 @@ public class GPXWindow extends JfxStage {
     }
   }
   
+  /**
+   * Open a GPX file.
+   * 
+   * @param gpxFile
+   */
   private void openGpxFile(File gpxFile) {
     LOGGER.info("Opening: " + gpxFile.getAbsolutePath());
     
@@ -421,8 +436,11 @@ public class GPXWindow extends JfxStage {
    * Handle the fact that there is a new GPX file (so a new documentRoot).
    */
   private void handleNewGpxFile() {
+    gpxLayer.clear();
+    
     gpxTreeView.setEObject(documentRoot);
     GpxType gpx = documentRoot.getGpx();
+    
     List<TrkType> tracks = gpx.getTrk();
     for (TrkType track: tracks) {
     	LOGGER.info("Track length: " + track.getLength());
@@ -511,7 +529,6 @@ public class GPXWindow extends JfxStage {
 
    }
    
-   gpxLayer.clear();
    handleNewGpxFile();
   }
   

@@ -1,8 +1,8 @@
 package goedegep.vacations.app.guifx;
 
+import java.util.function.Supplier;
 import java.util.logging.Logger;
 
-import com.atlis.location.nominatim.NominatimAPI;
 import com.gluonhq.maps.MapLayer;
 
 import goedegep.jfx.CustomizationFx;
@@ -16,7 +16,7 @@ public class ControlsLayer extends MapLayer {
   @SuppressWarnings("unused")
   private static final Logger LOGGER = Logger.getLogger(ControlsLayer.class.getName());
     
-  public ControlsLayer(CustomizationFx customization, VacationsWindow vacationsWindow, NominatimAPI nominatimAPI, SearchResultLayer searchResultLayer) {
+  public ControlsLayer(CustomizationFx customization, Supplier<LocationSearchWindow> searchWindowSupplier) {
     
     Node searchIcon = new ImageView(TravelImageResource.SEARCH.getIcon(ImageSize.SIZE_2));
     searchIcon.setTranslateX(30);
@@ -25,8 +25,7 @@ public class ControlsLayer extends MapLayer {
 
       @Override
       public void handle(MouseEvent arg0) {
-        LocationSearchWindow locationSearchWindow = new LocationSearchWindow(customization, vacationsWindow, nominatimAPI, searchResultLayer);
-        locationSearchWindow.show();
+        searchWindowSupplier.get();
       }
       
     });

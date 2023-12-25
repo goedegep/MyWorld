@@ -89,10 +89,10 @@ public class PhotoShowViewer extends JfxStage {
     fileSelecter.addFileType(PhotoshowCommons.DEFAULT_PHOTOSHOW_SPECIFICATION_FILE_EXTENSION, "Photoshow specification file", true);
     fileSelecter.addFileType(".*", "Any file", false);
     fileSelecter.setInitialFolderProvider(() -> initiallySelectedFolder);
-    gridPane.add(fileSelecter.ocGetControl(), 1, row);
+    gridPane.add(fileSelecter.getControl(), 1, row);
     gridPane.add(fileSelecter.getFileChooserButton(), 2, row);
     fileSelecter.addListener((e) -> {
-      File photoshowSpecificationFile = fileSelecter.ocGetValue();
+      File photoshowSpecificationFile = fileSelecter.getValue();
       LOGGER.severe("photoshowSpecificationFile: " + photoshowSpecificationFile);
       if (photoshowSpecificationFile.exists()  &&
           photoshowSpecificationFile.isFile()  &&
@@ -119,10 +119,10 @@ public class PhotoShowViewer extends JfxStage {
         "Select a photos folder",
         false);
     folderSelecter.setInitialFolderProvider(() -> initiallySelectedFolder);
-    gridPane.add(folderSelecter.ocGetControl(), 1, row);
+    gridPane.add(folderSelecter.getControl(), 1, row);
     gridPane.add(folderSelecter.getFolderChooserButton(), 2, row);
     folderSelecter.addListener((e) -> {
-      File photosFolder = folderSelecter.ocGetValue();
+      File photosFolder = folderSelecter.getValue();
       LOGGER.severe("photosFolder: " + photosFolder);
       if (photosFolder.exists()  &&
           photosFolder.isDirectory()) {

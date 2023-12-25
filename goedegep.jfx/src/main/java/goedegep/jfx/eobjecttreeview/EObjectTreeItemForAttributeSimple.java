@@ -162,7 +162,7 @@ public class EObjectTreeItemForAttributeSimple extends EObjectTreeItem {
    * @param newValue the new value
    */
   public void handleAttributeValueChanged(EStructuralFeature eStructuralFeature, Object newValue) {
-    LOGGER.severe("=> " + toString());
+    LOGGER.info("=> " + toString());
     setValue(newValue);
     
     EObjectTreeItem parentTreeItem = (EObjectTreeItem) getParent();
@@ -176,7 +176,7 @@ public class EObjectTreeItemForAttributeSimple extends EObjectTreeItem {
     for (TreeItem<Object> child: parentTreeItem.getChildren()) {
       EObjectTreeItem childEObjectTreeItem = (EObjectTreeItem) child;
       if (eStructuralFeature.equals(childEObjectTreeItem.getEStructuralFeature())) {
-        LOGGER.severe("child found, going to rebuild children");
+        LOGGER.info("child found, going to rebuild children");
         setExpanded(true);  // hack. This way the TreeView seems to re-evaluate whether the item is a leaf.
         childEObjectTreeItem.rebuildChildren();
         break;

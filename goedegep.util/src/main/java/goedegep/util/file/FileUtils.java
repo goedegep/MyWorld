@@ -6,11 +6,17 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
 import java.nio.file.DirectoryIteratorException;
 import java.nio.file.DirectoryStream;
+import java.nio.file.FileSystem;
+import java.nio.file.FileSystems;
+import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.SimpleFileVisitor;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
@@ -23,10 +29,13 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.logging.Logger;
+import java.util.zip.ZipException;
 
 /**
  * This is a utility class with methods which operate on files.
@@ -613,26 +622,34 @@ public class FileUtils {
   }
 
   /**
-   * Get the path (as String) of a folder relative to some base folder.<br/>
+   * Get the path (as String) of a file or folder relative to some base folder.<br/>
    * Example:<br/>
    * referenceFolder: "C:\aFolder\SomeSubfolder"<br/>
-   * folder: "C:\aFolder\SomeSubfolder\myDir\myFile.ext"<br/>
+   * fileName: "C:\aFolder\SomeSubfolder\myDir\myFile.ext"<br/>
    * returns: "myDir\myFile.ext"
    * 
    * @param referenceFolder the base folder
-   * @param folder the folder for which the relative path is to be returned
+   * @param fileName the folder for which the relative path is to be returned
    * @return the path of <code>folder</code> relative to <code>referenceFolder</code>.
    */
-  public static String getPathRelativeToFolder(String referenceFolder, String folder) {
-    LOGGER.info("=> referenceFolder=" + referenceFolder + ", folder" + folder);
+  public static String getPathRelativeToFolder(String referenceFolder, String fileName) {
+    LOGGER.info("=> referenceFolder=" + referenceFolder + ", file" + fileName);
     
-    if (folder.startsWith(referenceFolder + "\\")) {
-      String strippedName = folder.substring(referenceFolder.length() + 1);
+    File file = new File(fileName);
+    
+    
+//    if (fileName.startsWith(referenceFolder + "\\")) {
+    if (file.isAbsolute()) {
+      LOGGER.severe("Is absolute");
+    }
+      
+    if (fileName.startsWith(referenceFolder)) {
+      String strippedName = fileName.substring(referenceFolder.length());
       LOGGER.info("<= " + strippedName);
       return strippedName;
     } else {
       LOGGER.info("<= (folder)");
-      return folder;
+      return fileName;
     }
   }
   
@@ -767,5 +784,77 @@ public class FileUtils {
     }
     
     return convertedFile;
+  }
+  
+  /**
+   * Create a zip file for a all files in a folder.
+   * 
+   * @param zipFile the zip file to be created.
+   * @param folderToZip a folder of which all files are to be zipped to {@code zipFile}.
+   */
+  public static void createZipFileForFolder(Path zipFile, Path folderToZip) throws IOException {
+    LOGGER.severe("=> zipFile=" + zipFile + ", folderToZip=" + folderToZip);
+
+    Map<String, String> env = new HashMap<>();
+    // Create the zip file if it doesn't exist
+    env.put("create", "true");
+
+    URI zipFileUri = zipFile.toUri();  // Extra step needed because URI.create(String) requires *encoded* string.
+    URI uri = URI.create("jar:file:" + zipFileUri.getRawPath());
+    LOGGER.severe("zipFileUri: " + zipFileUri);
+
+    if (Files.exists(zipFile)) {
+      LOGGER.severe("Zip file " + zipFile + " already exists.");
+      return;
+    }
+    
+    try (FileSystem zipfs = FileSystems.newFileSystem(uri, env)) {
+      try {
+        Files.walkFileTree(folderToZip, new SimpleFileVisitor<Path>() {
+          @Override
+          public FileVisitResult visitFile(Path path, BasicFileAttributes attrs) throws IOException {
+            if (Files.isDirectory(path)) {
+              LOGGER.info("Directory: " + path.toString());
+            } else {
+              LOGGER.info("File: " + path.toString());
+            }
+            String relativePathName = getPathRelativeToFolder(folderToZip.toString(), path.toString());
+            LOGGER.info("relativePathName: " + relativePathName);
+            Path pathInZipfile = zipfs.getPath(relativePathName);
+            LOGGER.severe("pathInZipfile: " + pathInZipfile);
+            
+            // Create directory if it doesn't exist
+            Path destinationFolder = pathInZipfile.getParent();
+            LOGGER.info("destinationFolder: " + destinationFolder);
+            if (destinationFolder != null  &&  !Files.exists(pathInZipfile)) {
+              LOGGER.info("Going to create destination folder");
+              Files.createDirectories(destinationFolder);
+            }
+            
+            Files.copy(path, pathInZipfile);
+
+            return FileVisitResult.CONTINUE;
+          }
+
+          @Override
+          public FileVisitResult visitFileFailed(Path file, IOException exc) throws IOException {
+            // Handle exception
+            return FileVisitResult.CONTINUE;
+          }
+
+          @Override
+          public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
+            return FileVisitResult.CONTINUE;
+          }
+
+          @Override
+          public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
+            return FileVisitResult.CONTINUE;
+          }
+        });
+      } catch (IOException e) {
+        e.printStackTrace();
+      }      
+    }
   }
 }

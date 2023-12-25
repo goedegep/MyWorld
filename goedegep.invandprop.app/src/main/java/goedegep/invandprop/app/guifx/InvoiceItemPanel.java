@@ -112,13 +112,13 @@ class InvoiceItemPanel extends TitledPane {
   private void createControls() {
     // Create the ObjectControls    
     numberOfItemsObjectControl = componentFactory.createObjectControlInteger(1, 150.0, true, "the number of items");
-    numberOfItemsObjectControl.ocSetId("InvoiceItemNumberOfItems");
+    numberOfItemsObjectControl.setId("InvoiceItemNumberOfItems");
     descriptionObjectControl = componentFactory.createObjectControlString(null, 200, false, "typically the product");
-    descriptionObjectControl.ocSetId("InvoiceItemDescription");
+    descriptionObjectControl.setId("InvoiceItemDescription");
     amountObjectControl = componentFactory.createObjectControlCurrency(null, 150, false, "the amount of money paid");
-    amountObjectControl.ocSetId("InvoiceItemAmount");
+    amountObjectControl.setId("InvoiceItemAmount");
     remarksObjectControl = componentFactory.createObjectControlString(null, 150.0, true, "any comments on this invoice");
-    remarksObjectControl.ocSetId("InvoiceItemRemarks");
+    remarksObjectControl.setId("InvoiceItemRemarks");
     
     objectControlGroup = new ObjectControlGroup();
     objectControlGroup.addObjectControls(
@@ -162,7 +162,7 @@ class InvoiceItemPanel extends TitledPane {
     // Label
     StringBuilder buf = new StringBuilder();
     buf.append(labelText);
-    if (!objectControl.ocIsOptional()) {
+    if (!objectControl.isOptional()) {
       buf.append(" *");
     }
     buf.append(":");
@@ -170,11 +170,11 @@ class InvoiceItemPanel extends TitledPane {
     gridPane.add(label, 0, rowIndex);
     
     // ObjectInput control
-    Node node = objectControl.ocGetControl();
+    Node node = objectControl.getControl();
     gridPane.add(node, 1, rowIndex); 
     
     // Status indicator
-    Node statusIndicator = objectControl.ocGetStatusIndicator();
+    Node statusIndicator = objectControl.getStatusIndicator();
     gridPane.add(statusIndicator, 2, rowIndex);
   }
 
@@ -296,8 +296,8 @@ class InvoiceItemPanel extends TitledPane {
     
     // Add number of items if available
     Integer numberOfItems = null;
-    if (numberOfItemsObjectControl.ocIsValid() && numberOfItemsObjectControl.ocIsFilledIn()) {
-      numberOfItems = numberOfItemsObjectControl.ocGetValue();
+    if (numberOfItemsObjectControl.isValid() && numberOfItemsObjectControl.isFilledIn()) {
+      numberOfItems = numberOfItemsObjectControl.getValue();
     }
     if (numberOfItems != null  &&  numberOfItems != 0) {
       buf.append(numberOfItems).append("x ");
@@ -305,7 +305,7 @@ class InvoiceItemPanel extends TitledPane {
     
     // Add description if available
     String description = null;
-    description = descriptionObjectControl.ocGetValue();
+    description = descriptionObjectControl.getValue();
      if (description == null  ||  description.isEmpty()) {
       description = DEFAULT_TITLE;
     }
@@ -313,11 +313,11 @@ class InvoiceItemPanel extends TitledPane {
     
     // Add amount if available
     PgCurrency amount = null;
-    if (amountObjectControl.ocIsValid() && amountObjectControl.ocIsFilledIn()) {
-      amount = amountObjectControl.ocGetValue();
+    if (amountObjectControl.isValid() && amountObjectControl.isFilledIn()) {
+      amount = amountObjectControl.getValue();
     }
     if (amount != null) {
-      buf.append(amountObjectControl.ocGetObjectValueAsFormattedText()).append(" ");
+      buf.append(amountObjectControl.getValueAsFormattedText()).append(" ");
     }
     
     // Add (in)valid indication
