@@ -13,6 +13,7 @@ import goedegep.util.text.Indent;
  * This class provides a presentation descriptor for an EObjectTreeView.
  * <p>
  * The descriptor consists of EObjectTreeItemClassDescriptor's for the classes within an EObject hierarchy.
+ * TODO delete this class
  */
 public class EObjectTreeDescriptor {
   @SuppressWarnings("unused")
@@ -48,8 +49,23 @@ public class EObjectTreeDescriptor {
     eClassToClassDescriptorMap.put(eClass, eObjectTreeItemClassDescriptor);
   }
     
+  /**
+   * Get the descriptor for an {@code EClass}.
+   * 
+   * @param eClass the {@code EClass} for which a descriptor is requested.
+   * @return the {@code EObjectTreeItemClassDescriptor} for the {@code eClass}, or null if there is no descriptor for the {@code eClass}.
+   */
   public EObjectTreeItemClassDescriptor getDescriptorForEClass(EClass eClass) {
     return eClassToClassDescriptorMap.get(eClass);
+  }
+  
+  
+  public Map<EClass, EObjectTreeItemClassDescriptor> getEClassToClassDescriptorMap() {
+    return eClassToClassDescriptorMap;
+  }
+  
+  public Map<EEnum, EEnumEditorDescriptor<?>> getEEnumToEEnumEditorDescriptorMap() {
+    return eEnumToEEnumEditorDescriptorMap;
   }
   
   /**

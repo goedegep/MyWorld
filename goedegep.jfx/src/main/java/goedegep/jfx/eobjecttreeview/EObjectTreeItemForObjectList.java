@@ -368,7 +368,7 @@ public class EObjectTreeItemForObjectList extends EObjectTreeItem {
    */
   @Override
   public void handleDragDropped(DragEvent dragEvent) {
-    LOGGER.severe("=> dragEvent" + EObjectTreeItem.dragEventToString(dragEvent));
+    LOGGER.info("=> dragEvent" + EObjectTreeItem.dragEventToString(dragEvent));
 
     if (isDropPossible(dragEvent) == null) {
       return;
@@ -412,6 +412,13 @@ public class EObjectTreeItemForObjectList extends EObjectTreeItem {
   /*
    * End of Drag and Drop handling
    */
+  
+  /**
+   *{@inheritDoc}
+   */
+  public String getText() {
+    return eObjectTreeItemClassListReferenceDescriptor.getLabelText();
+  }
  
   /**
    * {@inheritDoc}

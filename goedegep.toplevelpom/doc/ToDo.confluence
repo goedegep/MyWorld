@@ -1,7 +1,14 @@
 h2. ToDo list
-* EObjectTree: Split helper EObjectTreeCellHelperForAttributeSimple to TextArea, ChoiceBox<Object>, DirectoryChooser, FileChooser fileChooser
-* EObjectTree: Base cell helpers on Template pattern.
-* Check vacation: report files not referred to, references not existing.
+* Instead of using e.g. typesPackageHelper.getEClass("goedegep.types.model.FileReference"), use typesPackage.getFileReference().
+Maybe ackageHelper.getEClass() can be removed.
+* ObjectControl should implement ObjectSelector
+* goedegep.jfx.controls.FileReferenceDialog is not used
+* DnD of a photo on an element doesn't work, it only works on the list
+* Import information from Google tijdlijn into vacation.
+On Google tijdlijn export each day to kml. Import the kml. Show each element and ask whether a location or path has to be created.
+* Currently there seems to be no difference between jfx stringconvertes and objectstringconverters, so remove objectstringconverters
+* See if EObjectTree and/or the descriptors can be replaced by Builder pattern
+* Remove/change getText() implementations in cell helpers
 * Vacations: move building tree descriptor to VacationsTreeVew
 * Use builder pattern for each descriptor for an EObjectTreeView
 * DnD to element of vacation fails

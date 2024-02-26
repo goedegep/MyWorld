@@ -496,13 +496,31 @@ public interface GPXPackage extends EPackage {
   int GPX_TYPE___GET_END_ELEVATION = 7;
 
   /**
+   * The operation id for the '<em>Set Start Time</em>' operation.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int GPX_TYPE___SET_START_TIME__DATE = 8;
+
+  /**
+   * The operation id for the '<em>Set End Time</em>' operation.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int GPX_TYPE___SET_END_TIME__DATE = 9;
+
+  /**
    * The number of operations of the '<em>Gpx Type</em>' class.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int GPX_TYPE_OPERATION_COUNT = 8;
+  int GPX_TYPE_OPERATION_COUNT = 10;
 
   /**
    * The meta object id for the '{@link goedegep.gpx.model.impl.LinkTypeImpl <em>Link Type</em>}' class.
@@ -1043,13 +1061,31 @@ public interface GPXPackage extends EPackage {
   int TRKSEG_TYPE___GET_END_ELEVATION = 7;
 
     /**
+   * The operation id for the '<em>Set Start Time</em>' operation.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int TRKSEG_TYPE___SET_START_TIME__DATE = 8;
+
+    /**
+   * The operation id for the '<em>Set End Time</em>' operation.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int TRKSEG_TYPE___SET_END_TIME__DATE = 9;
+
+    /**
    * The number of operations of the '<em>Trkseg Type</em>' class.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int TRKSEG_TYPE_OPERATION_COUNT = 8;
+  int TRKSEG_TYPE_OPERATION_COUNT = 10;
 
   /**
    * The meta object id for the '{@link goedegep.gpx.model.impl.TrkTypeImpl <em>Trk Type</em>}' class.
@@ -1224,13 +1260,31 @@ public interface GPXPackage extends EPackage {
   int TRK_TYPE___GET_END_ELEVATION = 7;
 
     /**
+   * The operation id for the '<em>Set Start Time</em>' operation.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int TRK_TYPE___SET_START_TIME__DATE = 8;
+
+    /**
+   * The operation id for the '<em>Set End Time</em>' operation.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int TRK_TYPE___SET_END_TIME__DATE = 9;
+
+    /**
    * The number of operations of the '<em>Trk Type</em>' class.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int TRK_TYPE_OPERATION_COUNT = 8;
+  int TRK_TYPE_OPERATION_COUNT = 10;
 
   /**
    * The meta object id for the '{@link goedegep.gpx.model.impl.WptTypeImpl <em>Wpt Type</em>}' class.
@@ -1893,6 +1947,26 @@ public interface GPXPackage extends EPackage {
   EOperation getGpxType__GetEndElevation();
 
   /**
+   * Returns the meta object for the '{@link goedegep.gpx.model.GpxType#setStartTime(java.util.Date) <em>Set Start Time</em>}' operation.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the '<em>Set Start Time</em>' operation.
+   * @see goedegep.gpx.model.GpxType#setStartTime(java.util.Date)
+   * @generated
+   */
+  EOperation getGpxType__SetStartTime__Date();
+
+  /**
+   * Returns the meta object for the '{@link goedegep.gpx.model.GpxType#setEndTime(java.util.Date) <em>Set End Time</em>}' operation.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the '<em>Set End Time</em>' operation.
+   * @see goedegep.gpx.model.GpxType#setEndTime(java.util.Date)
+   * @generated
+   */
+  EOperation getGpxType__SetEndTime__Date();
+
+  /**
    * Returns the meta object for class '{@link goedegep.gpx.model.LinkType <em>Link Type</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -2384,6 +2458,26 @@ public interface GPXPackage extends EPackage {
   EOperation getTrksegType__GetEndElevation();
 
     /**
+   * Returns the meta object for the '{@link goedegep.gpx.model.TrksegType#setStartTime(java.util.Date) <em>Set Start Time</em>}' operation.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the '<em>Set Start Time</em>' operation.
+   * @see goedegep.gpx.model.TrksegType#setStartTime(java.util.Date)
+   * @generated
+   */
+  EOperation getTrksegType__SetStartTime__Date();
+
+    /**
+   * Returns the meta object for the '{@link goedegep.gpx.model.TrksegType#setEndTime(java.util.Date) <em>Set End Time</em>}' operation.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the '<em>Set End Time</em>' operation.
+   * @see goedegep.gpx.model.TrksegType#setEndTime(java.util.Date)
+   * @generated
+   */
+  EOperation getTrksegType__SetEndTime__Date();
+
+    /**
    * Returns the meta object for class '{@link goedegep.gpx.model.TrkType <em>Trk Type</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -2571,6 +2665,26 @@ public interface GPXPackage extends EPackage {
    * @generated
    */
   EOperation getTrkType__GetEndElevation();
+
+    /**
+   * Returns the meta object for the '{@link goedegep.gpx.model.TrkType#setStartTime(java.util.Date) <em>Set Start Time</em>}' operation.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the '<em>Set Start Time</em>' operation.
+   * @see goedegep.gpx.model.TrkType#setStartTime(java.util.Date)
+   * @generated
+   */
+  EOperation getTrkType__SetStartTime__Date();
+
+    /**
+   * Returns the meta object for the '{@link goedegep.gpx.model.TrkType#setEndTime(java.util.Date) <em>Set End Time</em>}' operation.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the '<em>Set End Time</em>' operation.
+   * @see goedegep.gpx.model.TrkType#setEndTime(java.util.Date)
+   * @generated
+   */
+  EOperation getTrkType__SetEndTime__Date();
 
     /**
    * Returns the meta object for class '{@link goedegep.gpx.model.WptType <em>Wpt Type</em>}'.
@@ -3227,6 +3341,22 @@ public interface GPXPackage extends EPackage {
     EOperation GPX_TYPE___GET_END_ELEVATION = eINSTANCE.getGpxType__GetEndElevation();
 
     /**
+     * The meta object literal for the '<em><b>Set Start Time</b></em>' operation.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EOperation GPX_TYPE___SET_START_TIME__DATE = eINSTANCE.getGpxType__SetStartTime__Date();
+
+    /**
+     * The meta object literal for the '<em><b>Set End Time</b></em>' operation.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EOperation GPX_TYPE___SET_END_TIME__DATE = eINSTANCE.getGpxType__SetEndTime__Date();
+
+    /**
      * The meta object literal for the '{@link goedegep.gpx.model.impl.LinkTypeImpl <em>Link Type</em>}' class.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -3609,6 +3739,22 @@ public interface GPXPackage extends EPackage {
     EOperation TRKSEG_TYPE___GET_END_ELEVATION = eINSTANCE.getTrksegType__GetEndElevation();
 
         /**
+     * The meta object literal for the '<em><b>Set Start Time</b></em>' operation.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EOperation TRKSEG_TYPE___SET_START_TIME__DATE = eINSTANCE.getTrksegType__SetStartTime__Date();
+
+        /**
+     * The meta object literal for the '<em><b>Set End Time</b></em>' operation.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EOperation TRKSEG_TYPE___SET_END_TIME__DATE = eINSTANCE.getTrksegType__SetEndTime__Date();
+
+        /**
      * The meta object literal for the '{@link goedegep.gpx.model.impl.TrkTypeImpl <em>Trk Type</em>}' class.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -3753,6 +3899,22 @@ public interface GPXPackage extends EPackage {
      * @generated
      */
     EOperation TRK_TYPE___GET_END_ELEVATION = eINSTANCE.getTrkType__GetEndElevation();
+
+        /**
+     * The meta object literal for the '<em><b>Set Start Time</b></em>' operation.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EOperation TRK_TYPE___SET_START_TIME__DATE = eINSTANCE.getTrkType__SetStartTime__Date();
+
+        /**
+     * The meta object literal for the '<em><b>Set End Time</b></em>' operation.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EOperation TRK_TYPE___SET_END_TIME__DATE = eINSTANCE.getTrkType__SetEndTime__Date();
 
         /**
      * The meta object literal for the '{@link goedegep.gpx.model.impl.WptTypeImpl <em>Wpt Type</em>}' class.

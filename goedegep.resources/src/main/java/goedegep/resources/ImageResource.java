@@ -41,6 +41,7 @@ public enum ImageResource {
       new ImageFileInfo("Backpack - 128x128.png", 128, 128),
       new ImageFileInfo("Backpack - 512x512.png", 512, 512),
       }, "a backpack", null),
+  BUS(new ImageFileInfo[] {new ImageFileInfo("Bus - 512x504.png", 512, 504)}, "bus", "https://uxwing.com/"),
   CAMERA_BLACK(new ImageFileInfo[] {new ImageFileInfo("CameraBlack.png", 28, 22)}, "a black photo camera", null),
   CAMERA_GRAY(new ImageFileInfo[] {new ImageFileInfo("CameraGray.png", 28, 22)}, "a gray photo camera", null),
   CAMERA_BLUE(new ImageFileInfo[] {new ImageFileInfo("CameraBlue.png", 28, 22)}, "a blue photo camera", null),
@@ -64,6 +65,13 @@ public enum ImageResource {
   MAP(new ImageFileInfo[] {new ImageFileInfo("Map - 487x487.png", 487, 487)}, "a map", null),
   MARKDOWN(new ImageFileInfo[] {new ImageFileInfo("Markdown logo - 1600x1600.png", 487, 487)}, "Markdown logo", "https://imgbin.com/"),
   MS_WORD(new ImageFileInfo[] {new ImageFileInfo("MSWord - 1047x1024.png", 1047, 1024)}, "Microsoft Word document icon", "User:Airhogs777"),
+  PLANE_TAKEOFF(new ImageFileInfo[] {
+      new ImageFileInfo("PlaneTakeoff - 32x32.png", 32, 32),
+      new ImageFileInfo("PlaneTakeoff - 64x64.png", 64, 64),
+      new ImageFileInfo("PlaneTakeoff - 128x128.png", 128, 128),
+      new ImageFileInfo("PlaneTakeoff - 256x256.png", 256, 256),
+      new ImageFileInfo("PlaneTakeoff - 512x512.png", 512, 512)
+      }, "a plane taking off", "https://icon-icons.com/"),
   PDF(new ImageFileInfo[] {new ImageFileInfo("PDF - 417x512.png", 417, 512)}, "PDF file logo", null),
   PHOTO_FOLDER(new ImageFileInfo[] {new ImageFileInfo("PhotoFolder - 199x217.png", 417, 512)}, "Photo folder icon", "https://icon-library.com/icon/microsoft-folder-icon-24.html.html>Microsoft Folder Icon # 392312"),
   ROAD_TO_HORIZON(new ImageFileInfo[] {new ImageFileInfo("RoadToHorizon - 57x32.png", 57, 32), new ImageFileInfo("RoadToHorizon - 114x64.png", 114, 64)}, "a road to the horizon", null),
@@ -198,9 +206,13 @@ public enum ImageResource {
     Image image = null;
     if (imageWithSize == null) {
       ImageFileInfo imageInfo = selectImageInfoForSize(imageFilesInfo, width, height);
+      try {
       image = new Image(ImageResource.class.getResourceAsStream(imageInfo.filename()), width, height, true, true);
       imageWithSize = new ImageWithRequestedSize(image, width, height);
       cachedImages.add(imageWithSize);
+      } catch (NullPointerException e) {
+        throw new RuntimeException("Cannot get image as file doesn't seem to exist: " + imageInfo.filename());
+      }
     } else {
       image = imageWithSize.image();
     }

@@ -272,6 +272,12 @@
         <details key="documentation" value="Get the end elevation of the GPX track.&#xD;&#xA;&lt;p>&#xD;&#xA;The end elevation is the end elevation of the last track.&#xD;&#xA;&#xD;&#xA;@return the end elevation of the GPX track, or null if this isn't available."/>
       </eAnnotations>
     </eOperations>
+    <eOperations name="setStartTime">
+      <eParameters name="startTime" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDate"/>
+    </eOperations>
+    <eOperations name="setEndTime">
+      <eParameters name="endTime" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDate"/>
+    </eOperations>
     <eStructuralFeatures xsi:type="ecore:EReference" name="metadata" eType="#//MetadataType"
         containment="true" resolveProxies="false">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
@@ -771,6 +777,12 @@
         <details key="documentation" value="Get the end elevation of the track segment.&#xD;&#xA;&lt;p>&#xD;&#xA;The end elevation is the elevation of the last waypoint.&#xD;&#xA;&#xD;&#xA;@return the end elevation of the track segment, or null if this isn't available."/>
       </eAnnotations>
     </eOperations>
+    <eOperations name="setStartTime">
+      <eParameters name="startTime" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDate"/>
+    </eOperations>
+    <eOperations name="setEndTime">
+      <eParameters name="endTime" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDate"/>
+    </eOperations>
     <eStructuralFeatures xsi:type="ecore:EReference" name="trkpt" upperBound="-1"
         eType="#//WptType" containment="true" resolveProxies="false">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
@@ -841,6 +853,12 @@
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
         <details key="documentation" value="Get the end elevation of the track.&#xD;&#xA;&lt;p>&#xD;&#xA;The end elevation is the end elevation of the last segment.&#xD;&#xA;&#xD;&#xA;@return the end elevation of the track, or null if this isn't available."/>
       </eAnnotations>
+    </eOperations>
+    <eOperations name="setStartTime">
+      <eParameters name="startTime" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDate"/>
+    </eOperations>
+    <eOperations name="setEndTime">
+      <eParameters name="endTime" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDate"/>
     </eOperations>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2003/XMLType#//String">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">

@@ -9,7 +9,6 @@ import javafx.beans.InvalidationListener;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.control.Tooltip;
-import javafx.stage.FileChooser;
 
 /**
  * This class provides the common part for implementing an {@code ObjectControl}. So your class will extend this class.
@@ -172,9 +171,6 @@ public abstract class ObjectControlAbstract<T> implements ObjectControl<T> {
    * @param source the object that caused the change.  This is needed if there is more than one GUI control, like for e.g. the {@link ObjectControlFileSelecter}.
    */
   protected void ociHandleNewUserInput(Object source) {
-    if (source instanceof FileChooser) {
-        LOGGER.severe("new pictureFileSelecter input");
-    }
     boolean filledIn = ociDetermineFilledIn();
     boolean dataValid;
     T inputValue;

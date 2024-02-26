@@ -8,7 +8,7 @@ import org.eclipse.emf.ecore.EObject;
 import javafx.stage.FileChooser;
 
 public class EObjectTreeCellHelperForAttributeFile extends EObjectTreeCellHelperForAttributeAbstract {
-  @SuppressWarnings("unused")
+//  @SuppressWarnings("unused")
   private static final Logger LOGGER = Logger.getLogger(EObjectTreeCellHelperForAttributeMultiLineText.class.getName());
   
   private FileChooser fileChooser = null;
@@ -28,14 +28,41 @@ public class EObjectTreeCellHelperForAttributeFile extends EObjectTreeCellHelper
   @Override
   protected void changeGraphicForEditing() {
     fileChooser = new FileChooser();
-    fileChooser.setInitialDirectory(null);
+    
     if (itemDescriptor.getInitialDirectoryNameFunction() != null) {
+      LOGGER.severe("InitialDirectoryNameFunction specified");
       String initialDirectoryName = itemDescriptor.getInitialDirectoryNameFunction().apply(eObjectTreeCell);
+      LOGGER.severe("initialDirectoryName = " + initialDirectoryName);
       if (initialDirectoryName != null) {
-        fileChooser.setInitialDirectory(new File(initialDirectoryName));
+        File initialDirectory = new File(initialDirectoryName);
+        if (!initialDirectory.exists()) {
+          // try the directory above
+          LOGGER.severe("Directory doesn't exist, trying parent.");
+          initialDirectory = initialDirectory.getParentFile();
+        }
+        LOGGER.severe("initialDirectory = " + initialDirectory.toString());
+        if (initialDirectory.exists()) {
+          LOGGER.severe("Setting initial directory to: " + initialDirectory.toString());
+          fileChooser.setInitialDirectory(initialDirectory);
+        }
       }
     }
-    File file = fileChooser.showOpenDialog(null);
+    
+    if (itemDescriptor.getInitialFileNameFunction() != null) {
+      LOGGER.severe("InitialFileNameFunction specified");
+      String initialFileName = itemDescriptor.getInitialFileNameFunction().apply(eObjectTreeCell);
+      LOGGER.severe("initialFileName = " + initialFileName);
+      if (initialFileName != null) {
+        fileChooser.setInitialFileName(initialFileName);
+      }
+    }
+    
+    File file = null;
+    if (itemDescriptor.isOpenDialog()) {
+      file = fileChooser.showOpenDialog(null);
+    } else {
+      file = fileChooser.showSaveDialog(null);
+    }
     if (file != null) {
       eObjectTreeCell.commitEdit(file);
     } else {

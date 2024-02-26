@@ -265,7 +265,7 @@ public class EObjectTreeItemForObject extends EObjectTreeItem {
   static EObjectTreeItem createChildEObjectTreeItemForSingleObjectReference(EObject parentEObject, EReference eReference, EObjectTreeItemClassReferenceDescriptor eObjectTreeItemClassReferenceDescriptor,
       EObjectTreeView eObjectTreeView, boolean editMode) {
     LOGGER.info("=>");
-    Objects.requireNonNull(eReference, "eReference may not be null");
+//    Objects.requireNonNull(eReference, "eReference may not be null");
     
     if (parentEObject.eClass().getName().equals("Day")) {
       LOGGER.severe("Found: " + parentEObject.toString());
@@ -289,7 +289,7 @@ public class EObjectTreeItemForObject extends EObjectTreeItem {
         return null;
       }
     } else {
-      throw new RuntimeException("Non existing Class Reference in descriptor. Reference name is \'" + eReference.getName() +
+      throw new RuntimeException("Non existing Class Reference in descriptor. Reference name is \'" + (eReference != null ? eReference.getName() : "<null>") +
           "\', descriptor is: " + (eObjectTreeItemClassReferenceDescriptor != null ? eObjectTreeItemClassReferenceDescriptor.toString() : "<null>"));
     }
   }
@@ -679,7 +679,50 @@ public class EObjectTreeItemForObject extends EObjectTreeItem {
       list.add(index, sourceObject);
     }
 
-  }  
+  }
+  
+  /**
+   *{@inheritDoc}
+   */
+  public String getText() {
+    String labelText = null;
+    EObject eObject = (EObject) getValue();
+    
+    if (hasReferenceWithPresentationInfo()) {
+      if (eObjectTreeItemClassReferenceDescriptor.getBuildText() != null) {
+        labelText = eObjectTreeItemClassReferenceDescriptor.getBuildText().apply(eObject);
+      }
+    } else {
+      EObjectTreeItemClassDescriptor classDescriptor = getClassDescriptor();
+      if (classDescriptor.getBuildText() != null) {
+        labelText = classDescriptor.getBuildText().apply(eObject);
+      }
+    }
+    
+    if (labelText == null  &&  eObject != null) {
+      LOGGER.severe("Fall back to class name");
+      String className = eObject.getClass().getSimpleName();
+      labelText = className.substring(0, className.length() - 4);
+    }
+        
+    LOGGER.info("<= labelText=" + labelText);
+    return labelText;
+  }
+  
+  /**
+   * Check whether the object tree item has a reference with any presentation information.
+   * <p>
+   * An object tree item has a reference with any presentation information,if the {@code classReferenceDescriptor} in not null
+   * and this descriptor has any presentation value set (buildText, strongText, nodeIconFunction).
+   * 
+   * @return true if the object tree item has a reference with any presentation information, false otherwise.
+   */
+  boolean hasReferenceWithPresentationInfo() {
+    return eObjectTreeItemClassReferenceDescriptor != null &&
+      (eObjectTreeItemClassReferenceDescriptor.getBuildText() != null  ||
+          eObjectTreeItemClassReferenceDescriptor.isStrongText()  ||
+          eObjectTreeItemClassReferenceDescriptor.getNodeIconFunction() != null);
+  }
 
   /**
    * {@inheritDoc}

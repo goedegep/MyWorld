@@ -15,7 +15,7 @@ import goedegep.poi.app.guifx.POIIcons;
 import goedegep.poi.model.POICategoryId;
 import goedegep.resources.ImageResource;
 import goedegep.util.img.ImageUtils;
-import goedegep.vacations.app.LocationDescriptionDialog;
+import goedegep.vacations.app.logic.LocationDescriptionDialog;
 import goedegep.vacations.model.Boundary;
 import goedegep.vacations.model.BoundingBox;
 import goedegep.vacations.model.Location;

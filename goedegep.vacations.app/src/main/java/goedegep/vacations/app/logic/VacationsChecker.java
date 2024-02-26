@@ -20,8 +20,10 @@ import java.util.logging.Logger;
 import org.eclipse.emf.common.util.TreeIterator;
 import org.eclipse.emf.ecore.EObject;
 
+import goedegep.jfx.eobjecttreeview.EObjectTreeItem;
 import goedegep.types.model.FileReference;
 import goedegep.util.string.StringUtil;
+import goedegep.vacations.app.guifx.VacationsTreeView;
 import goedegep.vacations.model.Vacation;
 import goedegep.vacations.model.VacationElement;
 import goedegep.vacations.model.Vacations;
@@ -40,23 +42,59 @@ public class VacationsChecker {
    * @param vacation the Vacation structure to check
    * @return a list of file references which don't have the 'file' attribute set, or null if there are no errors.
    */
-  public static List<FileReference> checkThatAllReferencesAreSet(Vacation vacation) {
-    List<FileReference> fileReferencesNotSet = new ArrayList<>();
+  public static List<String> checkThatAllReferencesAreSet(VacationsTreeView treeView, Vacation vacation) {
+    List<String> fileReferencesNotSet = null;
     
     TreeIterator<EObject> vacationIterator = vacation.eAllContents();
     while (vacationIterator.hasNext()) {
       EObject eObject = vacationIterator.next();
       if (eObject instanceof FileReference fileReference) {
         if (fileReference.getFile() == null) {
+          String referencePath = getReferencePathFromTreeView(treeView, fileReference, fileReference.getTitle()); 
           if (fileReferencesNotSet == null) {
             fileReferencesNotSet = new ArrayList<>();
           }
-          fileReferencesNotSet.add(fileReference);
+          fileReferencesNotSet.add(referencePath);
         }
       }
     }
     
     return fileReferencesNotSet;
+  }
+  
+  /**
+   * Get a textual representation for a path from a vacation to one of its children.
+   * 
+   * @param treeView the {@code VacationsTreeView} from which to derive the path
+   * @param eObject the {@code EObject} below a {@code Vacation}.
+   * @param objectText an optional text for the {@code eObject} itself.
+   * @return a textual representation for a path from a vacation to the {@code eObject}.
+   */
+  private static String getReferencePathFromTreeView(VacationsTreeView treeView, EObject eObject, String objectText) {
+    LOGGER.severe("=> eObject" + eObject.toString());
+    
+    EObjectTreeItem treeItem = treeView.findTreeItem(eObject);
+    String path = objectText;
+    if (path == null) {
+      path = "...";
+    }
+    boolean foundVacationItem = false;
+    do {
+      EObjectTreeItem parentTreeItem = (EObjectTreeItem) treeItem.getParent();
+      Object value = parentTreeItem.getValue();
+      if (path == null) {
+        path = parentTreeItem.getText();
+      } else {
+        path = parentTreeItem.getText() + "/" + path;
+      }
+      if (value instanceof Vacation vacation) {
+        foundVacationItem = true;
+      } else {
+        treeItem = parentTreeItem;
+      }
+    } while (!foundVacationItem);
+    
+    return path;
   }
  
   /**
@@ -67,8 +105,8 @@ public class VacationsChecker {
    * @param vacation the Vacation structure to check
    * @return a list of file references which refer to files that don't exist, or null if there are no errors.
    */
-  public static List<FileReference> checkThatAllReferencesExist(Vacation vacation) {
-    List<FileReference> fileReferencesNotFound = new ArrayList<>();
+  public static List<String> checkThatAllReferencesExist(VacationsTreeView treeView, Vacation vacation) {
+    List<String> fileReferencesNotFound = null;
     
     TreeIterator<EObject> vacationIterator = vacation.eAllContents();
     while (vacationIterator.hasNext()) {
@@ -78,10 +116,11 @@ public class VacationsChecker {
         if (fileName != null) {
           File file = new File(fileName);
           if (!file.exists()) {
+            String referencePath = getReferencePathFromTreeView(treeView, fileReference, fileReference.getFile()); 
             if (fileReferencesNotFound == null) {
               fileReferencesNotFound = new ArrayList<>();
             }
-            fileReferencesNotFound.add(fileReference);
+            fileReferencesNotFound.add(referencePath);
           }
         }
       }

@@ -5,11 +5,8 @@ import java.util.logging.Logger;
 
 import org.eclipse.emf.ecore.EObject;
 
-import javafx.event.EventHandler;
 import javafx.scene.control.TextField;
-import javafx.scene.control.TreeItem;
 import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
 
 /**
  * This class is a tree cell helper for a simple attribute.

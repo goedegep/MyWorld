@@ -15,4 +15,5 @@ module goedegep.gpx.app {
   requires goedegep.mapview;
   requires javafx.controls;
   requires goedegep.util;
+  requires javafx.base;
 }

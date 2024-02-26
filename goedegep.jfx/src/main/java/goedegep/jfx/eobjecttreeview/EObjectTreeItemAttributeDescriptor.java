@@ -18,7 +18,9 @@ public class EObjectTreeItemAttributeDescriptor extends EObjectTreeItemDescripto
   private String labelText;                   // Text to display instead of the attribute name.
   private Format format;                      // The formatter used to format and parse the object.
   private PresentationType presentationType;  // Hint for rendering and editing
+  private boolean isOpenDialog = true;          // Only for files: if true use an 'open' dialog, else a 'save' dialog.
   private Function<EObjectTreeCell, String> initialDirectoryNameFunction = null; // Directory to start FileChooser or DirectoryChooser.
+  private Function<EObjectTreeCell, String> initialFileNameFunction = null; // Initial file name to start FileChooser.
   
   
   /**
@@ -113,7 +115,23 @@ public class EObjectTreeItemAttributeDescriptor extends EObjectTreeItemDescripto
   public void setInitialDirectoryNameFunction(Function<EObjectTreeCell, String> initialDirectoryNameFunction) {
     this.initialDirectoryNameFunction = initialDirectoryNameFunction;
   }
+
+  public Function<EObjectTreeCell, String> getInitialFileNameFunction() {
+    return initialFileNameFunction;
+  }
+
+  public void setInitialFileNameFunction(Function<EObjectTreeCell, String> initialFileNameFunction) {
+    this.initialFileNameFunction = initialFileNameFunction;
+  }
   
+  public boolean isOpenDialog() {
+    return isOpenDialog;
+  }
+
+  public void setOpenDialog(boolean isOpenDialog) {
+    this.isOpenDialog = isOpenDialog;
+  }
+
   @Override
   public String toString() {
     return toString(new Indent(2));

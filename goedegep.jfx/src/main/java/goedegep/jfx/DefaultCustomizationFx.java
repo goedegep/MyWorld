@@ -1,17 +1,28 @@
 package goedegep.jfx;
 
-import java.util.logging.Logger;
-
+/**
+ * This class provides a default for the GUI customization ({@link CustomizationFx}).
+ */
 public class DefaultCustomizationFx {
-  private static final Logger LOGGER = Logger.getLogger(DefaultCustomizationFx.class.getName());
   private static CustomizationFx customization = null;
   
+  /**
+   * Private constructor as this is a singleton.
+   */
+  private DefaultCustomizationFx() {
+    
+  }
+  
+  /**
+   * Get the default customization instance.
+   * 
+   * @return the default customization instance.
+   */
   public static CustomizationFx getInstance() {
     if (customization == null) {
       customization = new CustomizationFx(null, DefaultAppResourcesFx.getInstance());
     }
     
-    LOGGER.info("<= " + customization);
     return customization;
   }
 }

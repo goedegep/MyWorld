@@ -440,6 +440,21 @@ public class GpxTypeImpl extends MinimalEObjectImpl.Container implements GpxType
    * <!-- end-user-doc -->
    * @generated NOT
    */
+  public void setStartTime(Date startTime) {
+    int numberOfTracks = getTrk().size();
+    if (numberOfTracks == 0) {
+      return;
+    }
+    
+    TrkType firstTrack = getTrk().get(0);
+    firstTrack.setStartTime(startTime);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated NOT
+   */
   public Date getEndTime() {
     int numberOfTracks = getTrk().size();
     if (numberOfTracks == 0) {
@@ -448,6 +463,21 @@ public class GpxTypeImpl extends MinimalEObjectImpl.Container implements GpxType
     
     TrkType lastTrack = getTrk().get(numberOfTracks - 1);
     return lastTrack.getEndTime();
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated NOT
+   */
+  public void setEndTime(Date endTime) {
+    int numberOfTracks = getTrk().size();
+    if (numberOfTracks == 0) {
+      return;
+    }
+    
+    TrkType lastTrack = getTrk().get(numberOfTracks - 1);
+    lastTrack.setEndTime(endTime);
   }
 
   /**
@@ -648,6 +678,12 @@ public class GpxTypeImpl extends MinimalEObjectImpl.Container implements GpxType
         return getStartElevation();
       case GPXPackage.GPX_TYPE___GET_END_ELEVATION:
         return getEndElevation();
+      case GPXPackage.GPX_TYPE___SET_START_TIME__DATE:
+        setStartTime((Date)arguments.get(0));
+        return null;
+      case GPXPackage.GPX_TYPE___SET_END_TIME__DATE:
+        setEndTime((Date)arguments.get(0));
+        return null;
     }
     return super.eInvoke(operationID, arguments);
   }

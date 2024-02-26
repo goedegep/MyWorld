@@ -218,7 +218,7 @@ public class NominatimAPI {
    * @throws IOException 
    */
   public OSMLocationInfo getAddressFromMapPoint(double latitude, double longitude) throws IOException {
-    LOGGER.severe("=>");
+    LOGGER.info("=>");
 
     String url = createBaseUrl(ENDPOINT_FOR_REVERSE_GECODING);
     Map<String, String> params = new HashMap<>();
@@ -238,15 +238,15 @@ public class NominatimAPI {
       return null;
     }
 
-    LOGGER.severe("url=" + url);
+    LOGGER.info("url=" + url);
     String responseStr = performQuery(url);
     OSMLocationInfo openStreetMapResponse = gson.fromJson(responseStr, OSMLocationInfo.class);
     
     if (openStreetMapResponse == null || openStreetMapResponse.getError() != null) {
-      LOGGER.severe("can't reverse geocode location. error from open street map : " + 
+      LOGGER.info("can't reverse geocode location. error from open street map : " + 
           (openStreetMapResponse != null ? openStreetMapResponse.getError() + " url is " + url : " open street map error is null") +
           " object we tried to find is " + String.valueOf(latitude) + ", " + String.valueOf(longitude));
-      LOGGER.severe("<= null");
+      LOGGER.info("<= null");
       return null;
     }
     
@@ -254,7 +254,7 @@ public class NominatimAPI {
       openStreetMapResponse.setNominatimResponse(responseStr);
     }
         
-    LOGGER.severe("<= " + ToStringBuilder.reflectionToString(openStreetMapResponse));
+    LOGGER.info("<= " + ToStringBuilder.reflectionToString(openStreetMapResponse));
     return openStreetMapResponse;
   }
 

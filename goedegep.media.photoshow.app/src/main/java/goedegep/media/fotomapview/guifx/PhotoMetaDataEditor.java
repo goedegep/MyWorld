@@ -9,6 +9,7 @@ import goedegep.geo.WGS84Coordinates;
 import goedegep.jfx.ComponentFactoryFx;
 import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.JfxStage;
+import goedegep.jfx.objectcontrols.ObjectControlWGS84Coordinates;
 import goedegep.media.fotoshow.app.guifx.IPhotoInfo;
 import goedegep.resources.ImageSize;
 import javafx.collections.ObservableSet;
@@ -48,6 +49,7 @@ public class PhotoMetaDataEditor extends JfxStage {
   private ComponentFactoryFx componentFactory;
   
   private TextField titleTextField;
+  private ObjectControlWGS84Coordinates objectControlWGS84Coordinates;
   private CheckBox approximateGPScoordinatesCheckBox;
 
   public PhotoMetaDataEditor(CustomizationFx customization, IPhotoInfo photoMetaData) {
@@ -92,6 +94,15 @@ public class PhotoMetaDataEditor extends JfxStage {
   /**
    * Create the meta data panel.
    * <p>
+   * The meta data panel consists of controls to show and edit the meta data.
+   * <ul>
+   * <li>The folder in which the photo is located (not editable)<li>
+   * <li>The photo file name (not editable)<li>
+   * <li>The title<li>
+   * <li>The coordinates<li>
+   * <li>An approximate coordinates indication<li>
+   * <li>The sorting data/time<li>
+   * </ul>
    * 
    * @return the created meta data panel.
    */
@@ -138,13 +149,15 @@ public class PhotoMetaDataEditor extends JfxStage {
     // row: Coordinates: 'latitude', 'longitude'
     label = componentFactory.createLabel("Coordinates:");
     gridPane.add(label, 0, row);
-    textField = componentFactory.createTextField(300, null);
-    textField.setEditable(false);
+    objectControlWGS84Coordinates = componentFactory.createObjectControlWGS84Coordinates(null, 300, true, "The coordinates of where the photo was taken. Format 'latitude, longitude'.");
+//    textField = componentFactory.createTextField(300, null);
+//    textField.setEditable(false);
     WGS84Coordinates coordinates = photoMetaData.getCoordinates();
     if (coordinates != null) {
-      textField.setText(coordinates.getLatitude() + ", " + coordinates.getLongitude());
+      objectControlWGS84Coordinates.setValue(coordinates);
+//      textField.setText(coordinates.getLatitude() + ", " + coordinates.getLongitude());
     }
-    gridPane.add(textField, 1, row);
+    gridPane.add(objectControlWGS84Coordinates.getControl(), 1, row);
     
     row++;
     
@@ -218,7 +231,7 @@ public class PhotoMetaDataEditor extends JfxStage {
     }
     
     photoMetaData.setTitle(title);
-    
+    photoMetaData.setCoordinates(objectControlWGS84Coordinates.getValue());
     photoMetaData.setApproximateGPScoordinates(approximateGPScoordinatesCheckBox.isSelected());
     
     modifiedPhotos.add(photoMetaData);

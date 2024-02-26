@@ -115,7 +115,12 @@ public class EmfPackageHelper {
       eNameToEClasMap = result;
     }
 
-    return eNameToEClasMap.get(qualifiedName);
+    EClass result = eNameToEClasMap.get(qualifiedName);
+    if (result == null) {
+      throw new RuntimeException("No EClass found for qualified name: " + qualifiedName);
+      
+    }
+    return result;
   }
   
   

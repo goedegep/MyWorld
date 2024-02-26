@@ -4,10 +4,14 @@ package goedegep.gpx.model.impl;
 
 import java.lang.reflect.InvocationTargetException;
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.logging.Logger;
 
+import javax.xml.datatype.DatatypeConfigurationException;
+import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 
 import org.eclipse.emf.common.notify.Notification;
@@ -25,6 +29,7 @@ import goedegep.gpx.model.ExtensionsType;
 import goedegep.gpx.model.GPXPackage;
 import goedegep.gpx.model.TrksegType;
 import goedegep.gpx.model.WptType;
+import goedegep.util.datetime.DateUtil;
 
 /**
  * <!-- begin-user-doc -->
@@ -258,9 +263,37 @@ public class TrksegTypeImpl extends MinimalEObjectImpl.Container implements Trks
     
     XMLGregorianCalendar startTime = firstWaypoint.getTime();
     if (startTime != null) {
-      return new Date(startTime.getMillisecond());
+      return DateUtil.createDate(startTime.getDay(), startTime.getMonth(), startTime.getYear(), startTime.getHour(), startTime.getMinute());
+//      return startTime.toGregorianCalendar().getTime();
     } else {
       return null;
+    }
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated NOT
+   */
+  public void setStartTime(Date startTime) {
+    int numberOfWaypoints = getTrkpt().size();
+    if (numberOfWaypoints == 0) {
+      return;
+    }
+    
+    WptType firstWaypoint = getTrkpt().get(0);
+    
+    if (startTime != null) {
+      try {
+        new GregorianCalendar();
+        LocalDateTime localDate = DateUtil.dateToLocalDateTime(startTime);
+        XMLGregorianCalendar xmlGregorianCalendar = DatatypeFactory.newInstance().newXMLGregorianCalendar(localDate.getYear(), localDate.getMonth().getValue(), localDate.getDayOfMonth(), localDate.getHour(), localDate.getMinute(), 0, 0, 0);
+        firstWaypoint.setTime(xmlGregorianCalendar);
+      } catch (DatatypeConfigurationException e) {
+        e.printStackTrace();
+      }
+    } else {
+      firstWaypoint.setTime(null);
     }
   }
 
@@ -279,9 +312,36 @@ public class TrksegTypeImpl extends MinimalEObjectImpl.Container implements Trks
     
     XMLGregorianCalendar endTime = lastWaypoint.getTime();
     if (endTime != null) {
-      return new Date(endTime.getMillisecond());
+      return endTime.toGregorianCalendar().getTime();
     } else {
       return null;
+    }
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated NOT
+   */
+  public void setEndTime(Date endTime) {
+    int numberOfWaypoints = getTrkpt().size();
+    if (numberOfWaypoints == 0) {
+      return;
+    }
+    
+    WptType lastWaypoint = getTrkpt().get(numberOfWaypoints - 1);
+    
+    if (endTime != null) {
+      try {
+        new GregorianCalendar();
+        LocalDateTime localDate = DateUtil.dateToLocalDateTime(endTime);
+        XMLGregorianCalendar xmlGregorianCalendar = DatatypeFactory.newInstance().newXMLGregorianCalendar(localDate.getYear(), localDate.getMonth().getValue(), localDate.getDayOfMonth(), localDate.getHour(), localDate.getMinute(), 0, 0, 0);
+        lastWaypoint.setTime(xmlGregorianCalendar);
+      } catch (DatatypeConfigurationException e) {
+        e.printStackTrace();
+      }
+    } else {
+      lastWaypoint.setTime(null);
     }
   }
 
@@ -437,6 +497,12 @@ public class TrksegTypeImpl extends MinimalEObjectImpl.Container implements Trks
         return getStartElevation();
       case GPXPackage.TRKSEG_TYPE___GET_END_ELEVATION:
         return getEndElevation();
+      case GPXPackage.TRKSEG_TYPE___SET_START_TIME__DATE:
+        setStartTime((Date)arguments.get(0));
+        return null;
+      case GPXPackage.TRKSEG_TYPE___SET_END_TIME__DATE:
+        setEndTime((Date)arguments.get(0));
+        return null;
     }
     return super.eInvoke(operationID, arguments);
   }

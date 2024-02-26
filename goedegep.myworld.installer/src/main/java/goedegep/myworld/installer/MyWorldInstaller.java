@@ -74,6 +74,9 @@ import javafx.stage.Stage;
  * <li>installation directory - the directory where the application will be installed.</li>
  * <li>user data directory - the directory with the user data.</li>
  * </ul>
+ * 
+ * @see #helpText
+ * @see <a href="https://petersdigitallife.nl/myworld-user-manual/myworld-overview/">MyWorld overview</a>  
  */
 public class MyWorldInstaller extends JfxApplication {
   private static final Logger LOGGER = Logger.getLogger(MyWorldInstaller.class.getName());
@@ -88,6 +91,59 @@ public class MyWorldInstaller extends JfxApplication {
   private static final String UNIT_CONVERTER_SHORTCUT_PATH = "target\\classes\\UnitConverter.lnk";
   private static final String PC_TOOLS_SHORTCUT_PATH = "target\\classes\\PCTools.lnk";
   private static final String VACATIONS_SHORTCUT_PATH = "target\\classes\\Vacations.lnk";
+  
+  /**
+   * Help text
+   */
+  private static final String helpText = """
+    This application installs the 'MyWorld' application.
+    <p/>
+    All the required .jar files are taken from my maven repository, therefore it is recommended to run 'maven install' before running the installer.
+    <p/>
+    The installer patches the version information (by adding the current date/time) in the file 'MyWorldPropertyDescriptors.xmi'.
+    This way it can always be checked when the application was installed.
+    <p/>
+    The installer creates and installs the following shortcuts:
+    <ul>
+    <li>
+    MyWorld.lnk - which starts the MyWorld main window.
+    </li>
+    <li>
+    Events.lnk - which directly starts the Events component of the application.
+    </li>
+    <li>
+    Finan.lnk - which directly starts the Finan component of the application.
+    </li>
+    <li>
+    InvoicesAndProperties - which directly starts the InvoicesAndProperties component of the application.
+    </li>
+    <li>
+    Media - which directly starts the Media component of the application.
+    </li>
+    <li>
+    PCTools - which directly starts the PCTools component of the application.
+    </li>
+    <li>
+    Rolodex - which directly starts the Rolodex component of the application.
+    </li>
+    <li>
+    UnitConverter - which directly starts the UnitConverter component of the application.
+    </li>
+    <li>
+    Vacations - which directly starts the Vacations component of the application.
+    </li>
+    </ul>
+    <p/>
+    Installation can only be performed to a normal user directory, because of the access rights.<br/>
+    It is advised to install under the 'Applic' directory, because this directory is synchronized via my NAS. Therefore when the program is installed under this directory it can be used on any computer.
+    currently this doesn't work as the data is not available on all computers).<br/>
+    As this is a normal user directory, files can just be copied to this directory.<br/>
+    The installer will automatically run if it is started with the following arguments:
+    <ul>
+    <li>installation directory - the directory where the application will be installed.</li>
+    <li>user data directory - the directory with the user data.</li>
+    </ul>
+          """;
   
   // In this file the version information is patched.
   private static final String MY_WORLD_PROPERTY_DESCRIPTORS_FILE = "..\\goedegep.myworld\\src\\main\\resources\\MyWorldPropertyDescriptors.xmi";
@@ -166,7 +222,6 @@ public class MyWorldInstaller extends JfxApplication {
       "com\\openhtmltopdf\\openhtmltopdf-core\\1.0.0\\openhtmltopdf-core-1.0.0.jar",
       "com\\openhtmltopdf\\openhtmltopdf-pdfbox\\1.0.0\\openhtmltopdf-pdfbox-1.0.0.jar",
       "com\\sun\\istack\\istack-commons-runtime\\4.1.1\\istack-commons-runtime-4.1.1.jar",
-//      "com\\sun\\xml\\bind\\jaxb-impl\\2.2\\jaxb-impl-2.2.jar",
       "commons-cli\\commons-cli\\1.4\\commons-cli-1.4.jar",
       "commons-io\\commons-io\\2.7\\commons-io-2.7.jar",
       "commons-logging\\commons-logging\\1.2\\commons-logging-1.2.jar",
@@ -220,7 +275,6 @@ public class MyWorldInstaller extends JfxApplication {
       "java3d\\j3d-core\\1.7.0\\j3d-core-1.7.0.jar",
       "java3d\\j3d-utils\\1.7.0\\j3d-utils-1.7.0.jar",
       "java3d\\j3d-vecmath\\1.7.0\\j3d-vecmath-1.7.0.jar",
-//      "javax\\xml\\bind\\jaxb-api\\2.2\\jaxb-api-2.2.jar",
       "jfree\\jcommon\\1.0.15\\jcommon-1.0.15.jar",
       "jfree\\jfreechart\\1.0.12\\jfreechart-1.0.12.jar",
       "junit\\junit\\4.12\\junit-4.12.jar",
@@ -232,7 +286,7 @@ public class MyWorldInstaller extends JfxApplication {
       "org\\apache\\commons\\commons-imaging\\1.0-goedegep\\commons-imaging-1.0-goedegep.jar",
       "org\\apache\\commons\\commons-lang3\\3.9\\commons-lang3-3.9.jar",
       "org\\apache\\commons\\commons-text\\1.9\\commons-text-1.9.jar",
-      "org\\apache\\pdfbox\\pdfbox\\2.0.16\\pdfbox-2.0.16.jar",
+      "org\\apache\\pdfbox\\pdfbox\\2.0.24\\pdfbox-2.0.24.jar",
       "org\\apiguardian\\apiguardian-api\\1.1.0\\apiguardian-api-1.1.0.jar",
       "org\\atp-fivt\\ljv\\1.02\\ljv-1.02.jar",
       "org\\eclipse\\emf\\org.eclipse.emf.ecore\\2.10.0-v20140514-1158\\org.eclipse.emf.ecore-2.10.0-v20140514-1158.jar",
@@ -373,47 +427,50 @@ public class MyWorldInstaller extends JfxApplication {
    * @return A <code>WebView</code> with a help text.
    */
   private WebView createHelpTextArea() {
-    StringBuilder buf = new StringBuilder();
-    
-    buf.append("This application installs the 'MyWorld' application.");
-    buf.append("<p/>");
-    buf.append("As the required .jar files are taken from my maven repository, it is required to run 'maven install' before running the installer.");
-    buf.append("<p/>");
-    buf.append("The installer patches the version information (by adding the current date/time) in the file 'MyWorldPropertyDescriptors.xmi'.");
-    buf.append("This way it can always be checked when the application was installed.");
-    buf.append("<p/>");
-    buf.append("The installer creates and install 2 shortcuts:");
-    buf.append("<ul>");
-    buf.append("<li>");
-    buf.append("MyWorld.lnk - which starts the MyWorld main window.");
-    buf.append("</li>");
-    buf.append("<li>");
-    buf.append("Finan.lnk - which directly start the Finan component of the application.");
-    buf.append("</li>");
-    buf.append("</ul>");
-    buf.append("<p/>");
-    buf.append("There are 2 ways to perform the installation:");
-    buf.append("<ul>");
-    buf.append("<li>Windows 'Program Files' directory<br/>");
-    buf.append("To install under this directory you need admistrator rights, which I currently cannot get working from within this program.");
-    buf.append("Therefore a .bat installation script is generated, which you then have to execute as administrator.<br/>");
-    buf.append("This method is used if the specified Installation Directory starts with \"C:\\Program Files\" or \"C:\\Program Files (x86)\".");
-    buf.append("</li>");
-    buf.append("<li>'Applic' directory<br/>");
-    buf.append("'Applic' directory is synchronized via my NAS. Therefore when the program is installed under this directory it can be used on any computer.");
-    buf.append("currently this doesn't work as the data is not available on all computers).<br/>");
-    buf.append("As this is a normal user directory, files can just be copied to this directory.<br/>");
-    buf.append("This method is used if the specified Installation Directory doesn't start with \"C:\\Program Files\" or \"C:\\Program Files (x86)\".");
-    buf.append("</li>");
-    buf.append("</ul>");
-    buf.append("The installer will automatically run if it is started with the following arguments:");
-    buf.append("<ul>");
-    buf.append("<li>installation directory - the directory where the application will be installed.</li>");
-    buf.append("<li>user data directory - the directory with the user data.</li>");
-    buf.append("</ul>");
+//    StringBuilder buf = new StringBuilder();
+//    
+//    buf.append("This application installs the 'MyWorld' application.");
+//    buf.append("<p/>");
+//    buf.append("All the required .jar files are taken from my maven repository, therefore it is recommended to run 'maven install' before running the installer.");
+//    buf.append("<p/>");
+//    buf.append("The installer patches the version information (by adding the current date/time) in the file 'MyWorldPropertyDescriptors.xmi'.");
+//    buf.append("This way it can always be checked when the application was installed.");
+//    buf.append("<p/>");
+//    buf.append("The installer creates and installs the following shortcuts:");
+//    buf.append("<ul>");
+//    buf.append("<li>");
+//    buf.append("MyWorld.lnk - which starts the MyWorld main window.");
+//    buf.append("</li>");
+//    buf.append("<li>");
+//    buf.append("Events.lnk - which directly starts the Events component of the application.");
+//    buf.append("</li>");
+//    buf.append("<li>");
+//    buf.append("Finan.lnk - which directly starts the Finan component of the application.");
+//    buf.append("</li>");
+//    buf.append("</ul>");
+//    buf.append("<p/>");
+//    buf.append("There are 2 ways to perform the installation:");
+//    buf.append("<ul>");
+//    buf.append("<li>Windows 'Program Files' directory<br/>");
+//    buf.append("To install under this directory you need admistrator rights, which I currently cannot get working from within this program.");
+//    buf.append("Therefore a .bat installation script is generated, which you then have to execute as administrator.<br/>");
+//    buf.append("This method is used if the specified Installation Directory starts with \"C:\\Program Files\" or \"C:\\Program Files (x86)\".");
+//    buf.append("</li>");
+//    buf.append("<li>'Applic' directory<br/>");
+//    buf.append("'Applic' directory is synchronized via my NAS. Therefore when the program is installed under this directory it can be used on any computer.");
+//    buf.append("currently this doesn't work as the data is not available on all computers).<br/>");
+//    buf.append("As this is a normal user directory, files can just be copied to this directory.<br/>");
+//    buf.append("This method is used if the specified Installation Directory doesn't start with \"C:\\Program Files\" or \"C:\\Program Files (x86)\".");
+//    buf.append("</li>");
+//    buf.append("</ul>");
+//    buf.append("The installer will automatically run if it is started with the following arguments:");
+//    buf.append("<ul>");
+//    buf.append("<li>installation directory - the directory where the application will be installed.</li>");
+//    buf.append("<li>user data directory - the directory with the user data.</li>");
+//    buf.append("</ul>");
     
     WebView helpTextArea = new WebView();
-    helpTextArea.getEngine().loadContent(buf.toString());
+    helpTextArea.getEngine().loadContent(helpText);
     helpTextArea.setMaxHeight(400);
     
     return helpTextArea;
@@ -443,15 +500,7 @@ public class MyWorldInstaller extends JfxApplication {
     controlsPanel.add(label, 0, 0);
     
     installationFolder = new ObjectControlFolderSelecter(DefaultCustomizationFx.getInstance(), 200, null, "Select installation directory", null, "Installation directory", false);
-//    installationFolderValidProperty = installationFolder.ocValidProperty();
-    installationFolder.addListener(new InvalidationListener() {
-
-      @Override
-      public void invalidated(Observable observable) {
-        updateRunButtonStatus();
-      }
-      
-    });
+    installationFolder.addListener((observable) -> updateRunButtonStatus());
     
     controlsPanel.add(installationFolder.getControl(), 1, 0);
     controlsPanel.add(installationFolder.getFolderChooserButton(), 2, 0);
@@ -461,7 +510,7 @@ public class MyWorldInstaller extends JfxApplication {
     controlsPanel.add(label, 0, 1);
     userDataFolder = new ObjectControlFolderSelecter(DefaultCustomizationFx.getInstance(), 200, null, "User Data directory", null, "User Data directory", false);
     userDataFolder.setInitialFolderProvider(() -> "D:\\Database\\MyWorld");
-//    userDataFolderValidProperty = userDataFolder.ocValidProperty();
+    userDataFolder.addListener((observable) -> updateRunButtonStatus());
     controlsPanel.add(userDataFolder.getControl(), 1, 1);
     controlsPanel.add(userDataFolder.getFolderChooserButton(), 2, 1);
     

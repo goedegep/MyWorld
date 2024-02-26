@@ -12,6 +12,7 @@ import org.commonmark.renderer.html.HtmlRenderer;
 import org.eclipse.emf.ecore.EEnum;
 
 import goedegep.configuration.model.Look;
+import goedegep.geo.WGS84Coordinates;
 import goedegep.jfx.controls.AutoCompleteTextField;
 import goedegep.jfx.objectcontrols.ObjectControlAutoCompleteTextField;
 import goedegep.jfx.objectcontrols.ObjectControlBoolean;
@@ -28,6 +29,7 @@ import goedegep.jfx.objectcontrols.ObjectControlLocalDate;
 import goedegep.jfx.objectcontrols.ObjectControlMultiLineString;
 import goedegep.jfx.objectcontrols.ObjectControlString;
 import goedegep.jfx.objectcontrols.ObjectControlTextField;
+import goedegep.jfx.objectcontrols.ObjectControlWGS84Coordinates;
 import goedegep.jfx.stringconverters.StringConverterAndChecker;
 import goedegep.resources.ImageSize;
 import goedegep.util.datetime.FlexDate;
@@ -1090,8 +1092,6 @@ public class ComponentFactoryFx {
   public ObjectControlFlexDate createObjectControlFlexDate(FlexDate flexDate, double width, boolean isOptional, String toolTipText) {
     ObjectControlFlexDate objectControlFlexDate = new ObjectControlFlexDate(customization, flexDate, width, isOptional, toolTipText);
 
-//    customizeTextInputControl(objectControlFlexDate);
-
     return objectControlFlexDate;
   }
 
@@ -1188,6 +1188,21 @@ public class ComponentFactoryFx {
    */
   public <T> ObjectControlAutoCompleteTextField<T> createObjectControlAutoCompleteTextField(StringConverterAndChecker<T> stringConverter, T initialValue, double width, boolean isOptional, String toolTipText) {
     return new ObjectControlAutoCompleteTextField<T>(customization, stringConverter, initialValue, width, isOptional, toolTipText);
+  }
+
+  /**
+   * Create a WGS84Coordinates ObjectControl.
+   * 
+   * @param flexDate the initial value.
+   * @param width the width of the TextField.
+   * @param isOptional if true, the value provided by this control is optional.
+   * @param toolTipText an optional tooltip text.
+   * @return the newly created {@code ObjectControlFlexDate}.
+   */
+  public ObjectControlWGS84Coordinates createObjectControlWGS84Coordinates(WGS84Coordinates coordinates, double width, boolean isOptional, String toolTipText) {
+    ObjectControlWGS84Coordinates objectControlWGS84Coordinates = new ObjectControlWGS84Coordinates(customization, coordinates, width, isOptional, toolTipText);
+
+    return objectControlWGS84Coordinates;
   }
 
   /**

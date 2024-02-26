@@ -2,7 +2,9 @@ package goedegep.jfx.eobjecttreeview;
 
 import java.nio.file.FileVisitResult;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.function.BiPredicate;
 import java.util.logging.Logger;
 
@@ -11,17 +13,19 @@ import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.TreeIterator;
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
+import org.eclipse.emf.ecore.EEnum;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.util.EContentAdapter;
 
 import goedegep.appgen.TableRowOperation;
+import goedegep.jfx.CustomizationFx;
+import goedegep.jfx.DefaultCustomizationFx;
 import goedegep.jfx.treeview.TreeItemVisitResult;
 import goedegep.jfx.treeview.TreeItemVisitor;
 import goedegep.jfx.treeview.TreeViewWalker;
 import goedegep.util.emf.EObjectPath;
-import goedegep.util.emf.EmfPackageHelper;
 import goedegep.util.emf.EmfUtil;
 import goedegep.util.objectselector.ObjectSelectionListener;
 import goedegep.util.objectselector.ObjectSelector;
@@ -44,11 +48,15 @@ import javafx.scene.input.Dragboard;
  * In this case an EObjectTreeDescriptor is generated, where all information is derived from the EObjects.
  * The EObjectTreeDescriptor is derived from the first eObject set, either via the constructor or via the method {@link #setEObject}.<br/><br/>
  * 
- * <b>Edit mode</b><br/>
+ * <h3>GUI customization</h3>
+ * By default the customization is obtained via {@link DefaultCustomizationFx#getInstance}.
+ * 
+ * <h3>Edit mode</h3>
  * The tree view is either in 'view mode' or in 'edit mode'. In 'view mode' attributes which have no value are not shown and the items cannot be changed,
  * in 'edit mode' all attributes are shown (unless the Descriptor specifies that there aren't to be shown) and the items can be changed.<br/><br/>
+ * By defaullt the tree view view is in 'edit mode'. See {@link #setEditMode(boolean)} to change this.
  * 
- * <b>ObjectSelector</b><br/>
+ * <h3>ObjectSelector</h3>
  * The tree view implements the ObjectSelector interface. This normally provides an object of a specific type. A tree however contains items of different types.
  * This also means that some context information is required. Therefore objectSelected() provides the selected tree item (instead of the value).
  * 
@@ -88,9 +96,25 @@ public class EObjectTreeView extends TreeView<Object> implements ObjectSelector<
   protected static final String NEWLINE = System.getProperty("line.separator");
   
   /**
-   * The description of what is shown in the tree and how.
+   * GUI customization
    */
-  private EObjectTreeDescriptor eObjectTreeDescriptor;
+  @SuppressWarnings("unused")
+  private CustomizationFx customization;
+
+  /**
+   * EObjectTreeItemClassDescriptor's per EClass.
+   */
+  private Map<EClass, EObjectTreeItemClassDescriptor> eClassToClassDescriptorMap = new HashMap<>();
+  
+  /**
+   * EEnumEditorDescriptor's per EEnum.
+   */
+  private Map<EEnum, EEnumEditorDescriptor<?>> eEnumToEEnumEditorDescriptorMap = new HashMap<>();
+  
+  /**
+   * The description of what is shown in the tree and how. TODO delete
+   */
+//  private EObjectTreeDescriptor eObjectTreeDescriptor;
   
   /**
    * Content adapter to react to changes in the root EObject hierarchy.
@@ -117,6 +141,60 @@ public class EObjectTreeView extends TreeView<Object> implements ObjectSelector<
    */
   boolean ignoreNotification = false;
   
+  /**
+   * Constructor
+   */
+  public EObjectTreeView() {
+    customization = DefaultCustomizationFx.getInstance();
+    
+    setEditable(true);
+    
+    setCellFactory(treeView -> new EObjectTreeCell());
+    
+    // React to changes in the selected item, to notify ObjectSelection listeners.
+    getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Object>() {
+
+      @Override
+      public void changed(ObservableValue<? extends Object> observable, Object oldValue, Object newValue) {
+        if (newValue != null) {
+          @SuppressWarnings("unchecked")
+          TreeItem<Object> selectedItem = (TreeItem<Object>) newValue;
+          LOGGER.info("Selected Node: " + selectedItem.getValue());
+          notifySelectedObjectListeners(selectedItem);
+        } else {
+          LOGGER.info("Selected Node: (null)");
+          notifySelectedObjectListeners(null);
+        }
+      }
+
+    });
+    
+    eContentAdapter = createEContentAdapter();
+  }
+  
+  /**
+   * Set the GUI customization
+   * 
+   * @param customization the GUI customization
+   * @return this
+   */
+  public EObjectTreeView setCustomization(CustomizationFx customization) {
+    this.customization = customization;
+    
+    return this;
+  }
+  
+  /**
+   * Add an EClass descriptor
+   * 
+   * @param eClass the EClass for which a descriptor is added.
+   * @param eObjectTreeItemClassDescriptor the descriptor for the <code>eClass</code>.
+   */
+  public EObjectTreeView addEClassDescriptor(EClass eClass, EObjectTreeItemClassDescriptor eObjectTreeItemClassDescriptor) {
+    eClassToClassDescriptorMap.put(eClass, eObjectTreeItemClassDescriptor);
+    
+    return this;
+  }
   
   /**
    * Constructor for a default tree view (no EObjectTreeDescriptor specified).
@@ -131,7 +209,7 @@ public class EObjectTreeView extends TreeView<Object> implements ObjectSelector<
   }
   
   /**
-   * Constructor for a tree view where a descriptor can be specified.
+   * Constructor for a tree view where a descriptor can be specified. TODO Delete this constructor.
    * 
    * @param eObject the EObject (hierarchy) to be shown in the tree. (mandatory)
    * @param eObjectTreeDescriptor an optional descriptor for what is show and how.
@@ -140,7 +218,9 @@ public class EObjectTreeView extends TreeView<Object> implements ObjectSelector<
   public EObjectTreeView(EObject eObject, EObjectTreeDescriptor eObjectTreeDescriptor, boolean editMode) {
     super();
     
-    this.eObjectTreeDescriptor = eObjectTreeDescriptor;
+//    this.eObjectTreeDescriptor = eObjectTreeDescriptor;
+    eClassToClassDescriptorMap = eObjectTreeDescriptor.getEClassToClassDescriptorMap();
+    eEnumToEEnumEditorDescriptorMap = eObjectTreeDescriptor.getEEnumToEEnumEditorDescriptorMap();
     
     setEditable(editMode);
     
@@ -309,9 +389,9 @@ public class EObjectTreeView extends TreeView<Object> implements ObjectSelector<
    * 
    * @return the presentation descriptor.
    */
-  public EObjectTreeDescriptor getEObjectTreeDescriptor() {
-    return eObjectTreeDescriptor;
-  }
+//  public EObjectTreeDescriptor getEObjectTreeDescriptor() {
+//    return eObjectTreeDescriptor;
+//  }
   
   /**
    * Find the right presentation descriptor for an eObject.
@@ -331,10 +411,48 @@ public class EObjectTreeView extends TreeView<Object> implements ObjectSelector<
     EObjectTreeItemClassDescriptor eObjectTreeItemClassDescriptor = null;
 
     do {
-      eObjectTreeItemClassDescriptor = eObjectTreeDescriptor.getDescriptorForEClass(eClass);
+      eObjectTreeItemClassDescriptor = getDescriptorForEClass(eClass);
     } while ((eObjectTreeItemClassDescriptor == null)  &&  ((eClass = EmfUtil.getSuperType(eClass)) != null));
 
     return eObjectTreeItemClassDescriptor;
+  }
+  
+  /**
+   * Get the descriptor for an {@code EClass}.
+   * 
+   * @param eClass the {@code EClass} for which a descriptor is requested.
+   * @return the {@code EObjectTreeItemClassDescriptor} for the {@code eClass}, or null if there is no descriptor for the {@code eClass}.
+   */
+  public EObjectTreeItemClassDescriptor getDescriptorForEClass(EClass eClass) {
+    EObjectTreeItemClassDescriptor eObjectTreeItemClassDescriptor = eClassToClassDescriptorMap.get(eClass);
+    if (eObjectTreeItemClassDescriptor == null) {
+      eObjectTreeItemClassDescriptor = createEClassDescriptor(eClass);
+      eClassToClassDescriptorMap.put(eClass, eObjectTreeItemClassDescriptor);
+    }
+    return eObjectTreeItemClassDescriptor;
+  }
+  
+  public EObjectTreeItemAttributeDescriptor getEObjectTreeItemAttributeDescriptor(EClass eClass, EAttribute eAttribute) {
+    EObjectTreeItemClassDescriptor eObjectTreeItemClassDescriptor = getDescriptorForEClass(eClass);
+    for (EObjectTreeItemDescriptor eObjectTreeItemDescriptor: eObjectTreeItemClassDescriptor.getStructuralFeatureDescriptors()) {
+      if (eObjectTreeItemDescriptor instanceof EObjectTreeItemAttributeDescriptor eObjectTreeItemAttributeDescriptor) {
+        if (eObjectTreeItemAttributeDescriptor.getEAttribute().equals(eAttribute)) {
+          return eObjectTreeItemAttributeDescriptor;
+        }
+      }
+    }
+    
+    throw new RuntimeException("No EObjectTreeItemAttributeDescriptor found for eClass: " + eClass.getName() + ", eAttribute: " + eAttribute.getName());
+  }
+  
+  /**
+   * Get the descriptor for a specific <code>EEnum</code>.
+   * 
+   * @param eEnum the <code>EEnum</code> to get the descriptor for.
+   * @return the <code>EEnumEditorDescriptor</code> for <code>eEnum</code>, or null if it is not set.
+   */
+  public EEnumEditorDescriptor<?> getEEnumEditorDescriptorForEEnum(EEnum eEnum) {
+    return eEnumToEEnumEditorDescriptorMap.get(eEnum);
   }
   
   public static Image getListIcon() {
@@ -354,9 +472,9 @@ public class EObjectTreeView extends TreeView<Object> implements ObjectSelector<
     }
 
     // Create default descriptor if no descriptor is specified.
-    if (eObjectTreeDescriptor == null  &&  eObject != null) {
-      eObjectTreeDescriptor = createDefaultEObjectTreeDescriptor(eObject);
-    }
+//    if (eObjectTreeDescriptor == null  &&  eObject != null) {
+//      eObjectTreeDescriptor = createDefaultEObjectTreeDescriptor(eObject);
+//    }  TODO create default descriptors
     
     EObject currentRootEObject = getRootEObject();
     if (currentRootEObject != null) {
@@ -382,40 +500,38 @@ public class EObjectTreeView extends TreeView<Object> implements ObjectSelector<
    * @param eObject the EObject for which a descriptor will be generated.
    * @return the generated presentation descriptor.
    */
-  private EObjectTreeDescriptor createDefaultEObjectTreeDescriptor(EObject eObject) {
-    LOGGER.info("=>");
-    
-    EClass eClass = eObject.eClass();
-    LOGGER.info("eClass=" + eClass.getName());
-    EmfPackageHelper emfPackageHelper = new EmfPackageHelper(eClass.getEPackage());
-
-    EObjectTreeDescriptor eObjectTreeDescriptor = new EObjectTreeDescriptor();
-    
-    addClassDescriptor(eObjectTreeDescriptor, eClass, emfPackageHelper);
-    
-    LOGGER.info("<= " + NEWLINE + eObjectTreeDescriptor.toString());
-    return eObjectTreeDescriptor;
-  }
+//  private EObjectTreeDescriptor createDefaultEObjectTreeDescriptor(EObject eObject) {
+//    LOGGER.info("=>");
+//    
+//    EClass eClass = eObject.eClass();
+//    LOGGER.info("eClass=" + eClass.getName());
+//    EmfPackageHelper emfPackageHelper = new EmfPackageHelper(eClass.getEPackage());
+//
+//    EObjectTreeDescriptor eObjectTreeDescriptor = new EObjectTreeDescriptor();
+//    
+//    addClassDescriptor(eObjectTreeDescriptor, eClass, emfPackageHelper);
+//    
+//    LOGGER.info("<= " + NEWLINE + eObjectTreeDescriptor.toString());
+//    return eObjectTreeDescriptor;
+//  }
   
   /**
-   * Create an EObjectTreeItemClassDescriptor for an EClass (and all references EClasses) and add it to the EObjectTreeDescriptor.
+   * Create an EObjectTreeItemClassDescriptor for an EClass.
    * 
-   * @param eObjectTreeDescriptor the EObjectTreeDescriptor to which the new EObjectTreeItemClassDescriptor is to be added.
    * @param eClass the EClass for which a descriptor is to be created.
-   * @param emfPackageHelper an EmfPackageHelper for the package in which the <code>eClass</code> is located.
    */
-  private void addClassDescriptor(EObjectTreeDescriptor eObjectTreeDescriptor, EClass eClass, EmfPackageHelper emfPackageHelper) {
+  private EObjectTreeItemClassDescriptor createEClassDescriptor(EClass eClass) {
     LOGGER.info("=> eClass=" + eClass.getName());
     
-    // Simply return if a descriptor for this class already exists
-    if (eObjectTreeDescriptor.getDescriptorForEClass(eClass) != null) {
-      LOGGER.fine("<= existing class");
-      return;
-    }
+//    // Simply return if a descriptor for this class already exists
+//    if (eObjectTreeDescriptor.getDescriptorForEClass(eClass) != null) {
+//      LOGGER.fine("<= existing class");
+//      return;
+//    }
     
     List<NodeOperationDescriptor> nodeOperationDescriptors = new ArrayList<>();
     nodeOperationDescriptors.add(new NodeOperationDescriptor(TableRowOperation.DELETE_OBJECT, "Delete"));
-    EObjectTreeItemClassDescriptor eObjectTreeItemClassDescriptor = new EObjectTreeItemClassDescriptor(eClass, null, false, nodeOperationDescriptors);
+    EObjectTreeItemClassDescriptor eObjectTreeItemClassDescriptor = new EObjectTreeItemClassDescriptor(null, false, nodeOperationDescriptors);
     
     // Add information for the attributes and references
     for (EStructuralFeature structuralFeature: eClass.getEAllStructuralFeatures()) {
@@ -446,28 +562,29 @@ public class EObjectTreeView extends TreeView<Object> implements ObjectSelector<
       }
     }
     
-    eObjectTreeDescriptor.addEClassDescriptor(eClass, eObjectTreeItemClassDescriptor);
+//    eObjectTreeDescriptor.addEClassDescriptor(eClass, eObjectTreeItemClassDescriptor);
     
     // Add an EObjectTreeItemClassDescriptor for referenced classes.
-    for (EStructuralFeature structuralFeature: eClass.getEAllStructuralFeatures()) {
-      if (structuralFeature instanceof EReference) {
-        EReference eReference = (EReference) structuralFeature;
-        LOGGER.fine("Handling reference: " + eReference.getName());
-        EClass referenceClass = eReference.getEReferenceType();
-        addClassDescriptor(eObjectTreeDescriptor, referenceClass, emfPackageHelper);
-      }
-    }
+//    for (EStructuralFeature structuralFeature: eClass.getEAllStructuralFeatures()) {
+//      if (structuralFeature instanceof EReference) {
+//        EReference eReference = (EReference) structuralFeature;
+//        LOGGER.fine("Handling reference: " + eReference.getName());
+//        EClass referenceClass = eReference.getEReferenceType();
+//        addClassDescriptor(eObjectTreeDescriptor, referenceClass, emfPackageHelper);
+//      }
+//    }
     
     // Add descriptors for any sub class of this class.
-    try {
-      for (EClass subType : emfPackageHelper.getSubTypes(eClass)) {
-        addClassDescriptor(eObjectTreeDescriptor, subType, emfPackageHelper);
-      }
-    } catch (IllegalArgumentException e) {
-      // Ignore 'is not part of package' exceptions. TODO create emfPackageHelper for these.
-    }
+//    try {
+//      for (EClass subType : emfPackageHelper.getSubTypes(eClass)) {
+//        addClassDescriptor(eObjectTreeDescriptor, subType, emfPackageHelper);
+//      }
+//    } catch (IllegalArgumentException e) {
+//      // Ignore 'is not part of package' exceptions. TODO create emfPackageHelper for these.
+//    }
 
     LOGGER.fine("<=");
+    return eObjectTreeItemClassDescriptor;
   }
     
   /**
@@ -525,7 +642,12 @@ public class EObjectTreeView extends TreeView<Object> implements ObjectSelector<
 
             if (notification.getEventType() == Notification.ADD) {
               // an element is added to a list of objects
-              ((EObjectTreeItemForObjectList) changedTreeItem).addObjectListChild(notification.getPosition());
+              if (changedTreeItem == null) {
+                LOGGER.severe("changedTreeItem is null");
+                LOGGER.severe("notification: " + EmfUtil.printNotification(notification));
+              } else {
+                ((EObjectTreeItemForObjectList) changedTreeItem).addObjectListChild(notification.getPosition());
+              }
             } else if (notification.getEventType() == Notification.REMOVE) {
               // an element is removed from a list of objects
               ((EObjectTreeItemForObjectList) changedTreeItem).removeObjectListChild(notification.getPosition());
@@ -570,6 +692,9 @@ public class EObjectTreeView extends TreeView<Object> implements ObjectSelector<
             LOGGER.info("changedTreeItem: " + changedTreeItem);
             if (notification.getEventType() == Notification.SET) {
               // the value of an attribute has changed
+              if (changedTreeItem == null) {
+                LOGGER.severe("changedTreeItem is null!!!");
+              }
               ((EObjectTreeItemForAttributeSimple) changedTreeItem).handleAttributeValueChanged(eAttribute, notification.getNewValue());
             } else {
               throw new RuntimeException("EventType: " + notification.getEventType() + " , for eAttribute not supported: " + eAttribute.toString());

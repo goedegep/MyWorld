@@ -135,7 +135,7 @@ public class VacationChecklistEditor extends JfxStage {
      *  VacationChecklist
      */
     eClass = vacationChecklistPackageHelper.getEClass("goedegep.vacations.checklist.model.VacationChecklist");
-    eObjectTreeItemClassDescriptor = new EObjectTreeItemClassDescriptor(eClass, (eObject) -> "Vacation checklist labels and categories", true, null);
+    eObjectTreeItemClassDescriptor = new EObjectTreeItemClassDescriptor((eObject) -> "Vacation checklist labels and categories", true, null);
     eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(new EObjectTreeItemClassReferenceDescriptor(
         VacationChecklistPackage.eINSTANCE.getVacationChecklist_VacationChecklistLabelsList(),
         vacationChecklistPackageHelper.getEClass("goedegep.vacations.checklist.model.VacationChecklistLabelsList"), (eObject) -> "Label list", true, null));
@@ -148,7 +148,7 @@ public class VacationChecklistEditor extends JfxStage {
      *  VacationChecklistLabelsList
      */
     eClass = vacationChecklistPackageHelper.getEClass("goedegep.vacations.checklist.model.VacationChecklistLabelsList");
-    eObjectTreeItemClassDescriptor = new EObjectTreeItemClassDescriptor(eClass, (eObject) -> "Label list", true, null);
+    eObjectTreeItemClassDescriptor = new EObjectTreeItemClassDescriptor((eObject) -> "Label list", true, null);
     
     // VacationChecklistLabelsList.vacationChecklistLabels
     nodeOperationDescriptors = new ArrayList<>();
@@ -167,7 +167,7 @@ public class VacationChecklistEditor extends JfxStage {
     nodeOperationDescriptors.add(new NodeOperationDescriptor(TableRowOperation.MOVE_OBJECT_UP, "Move label up"));
     nodeOperationDescriptors.add(new NodeOperationDescriptor(TableRowOperation.MOVE_OBJECT_DOWN, "Move label down"));
     nodeOperationDescriptors.add(new NodeOperationDescriptor(TableRowOperation.DELETE_OBJECT, "Delete this label"));
-    eObjectTreeItemClassDescriptor = new EObjectTreeItemClassDescriptor(eClass, (eObject) -> ((VacationChecklistLabel)eObject).getName(), true, nodeOperationDescriptors);
+    eObjectTreeItemClassDescriptor = new EObjectTreeItemClassDescriptor((eObject) -> ((VacationChecklistLabel)eObject).getName(), true, nodeOperationDescriptors);
     
     // VacationChecklistLabel.name
     eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(new EObjectTreeItemAttributeDescriptor(VacationChecklistPackage.eINSTANCE.getVacationChecklistLabel_Name(), "name", null));
@@ -178,7 +178,7 @@ public class VacationChecklistEditor extends JfxStage {
      *  VacationChecklistCategoriesList
      */
     eClass = vacationChecklistPackageHelper.getEClass("goedegep.vacations.checklist.model.VacationChecklistCategoriesList");
-    eObjectTreeItemClassDescriptor = new EObjectTreeItemClassDescriptor(eClass, (eObject) -> "Categories list", true, null);
+    eObjectTreeItemClassDescriptor = new EObjectTreeItemClassDescriptor((eObject) -> "Categories list", true, null);
     
     // VacationChecklistCategoriesList.vacationChecklistCategories
     nodeOperationDescriptors = new ArrayList<>();
@@ -197,7 +197,7 @@ public class VacationChecklistEditor extends JfxStage {
     nodeOperationDescriptors.add(new NodeOperationDescriptor(TableRowOperation.MOVE_OBJECT_UP, "Move category up"));
     nodeOperationDescriptors.add(new NodeOperationDescriptor(TableRowOperation.MOVE_OBJECT_DOWN, "Move category down"));
     nodeOperationDescriptors.add(new NodeOperationDescriptor(TableRowOperation.DELETE_OBJECT, "Delete this category"));
-    eObjectTreeItemClassDescriptor = new EObjectTreeItemClassDescriptor(eClass, (eObject) -> ((VacationChecklistCategory)eObject).getName(), true, nodeOperationDescriptors);
+    eObjectTreeItemClassDescriptor = new EObjectTreeItemClassDescriptor((eObject) -> ((VacationChecklistCategory)eObject).getName(), true, nodeOperationDescriptors);
     
     // VacationChecklistCategory.name
     eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(new EObjectTreeItemAttributeDescriptor(VacationChecklistPackage.eINSTANCE.getVacationChecklistCategory_Name(), "name", null));
@@ -219,7 +219,7 @@ public class VacationChecklistEditor extends JfxStage {
     nodeOperationDescriptors.add(new NodeOperationDescriptor(TableRowOperation.MOVE_OBJECT_UP, "Move item up"));
     nodeOperationDescriptors.add(new NodeOperationDescriptor(TableRowOperation.MOVE_OBJECT_DOWN, "Move item down"));
     nodeOperationDescriptors.add(new NodeOperationDescriptor(TableRowOperation.DELETE_OBJECT, "Delete this item"));
-    eObjectTreeItemClassDescriptor = new EObjectTreeItemClassDescriptor(eClass, (eObject) -> ((VacationChecklistItem)eObject).getName(), true, nodeOperationDescriptors);
+    eObjectTreeItemClassDescriptor = new EObjectTreeItemClassDescriptor((eObject) -> ((VacationChecklistItem)eObject).getName(), true, nodeOperationDescriptors);
     
     // VacationChecklistItem.name
     eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(new EObjectTreeItemAttributeDescriptor(VacationChecklistPackage.eINSTANCE.getVacationChecklistItem_Name(), "name", null));

@@ -90,6 +90,7 @@ import javafx.scene.text.Font;
  * @param <T> The object type being edited
  */
 public abstract class ObjectEditorTemplate<T> extends JfxStage {
+  @SuppressWarnings("unused")
   private static Logger LOGGER = Logger.getLogger(ObjectEditorTemplate.class.getName());
   private static final String NEW_LINE = System.getProperty("line.separator");
   

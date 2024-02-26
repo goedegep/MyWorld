@@ -394,4 +394,20 @@ public interface TrkType extends EObject {
    */
   Double getEndElevation();
 
+    /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @model
+   * @generated
+   */
+  void setStartTime(Date startTime);
+
+    /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @model
+   * @generated
+   */
+  void setEndTime(Date endTime);
+
 } // TrkType

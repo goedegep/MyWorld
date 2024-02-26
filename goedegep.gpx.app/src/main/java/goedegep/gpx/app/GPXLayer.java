@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 import java.util.logging.Logger;
 
 import org.eclipse.emf.common.notify.Notification;
@@ -14,11 +15,13 @@ import org.eclipse.emf.ecore.util.FeatureMap.Entry;
 import org.eclipse.emf.ecore.xml.type.AnyType;
 
 import com.gluonhq.maps.MapLayer;
+import com.gluonhq.maps.MapPoint;
 
 import goedegep.geo.WGS84BoundingBox;
 import goedegep.geo.WGS84Coordinates;
 import goedegep.gpx.model.ExtensionsType;
 import goedegep.gpx.model.GpxType;
+import goedegep.gpx.model.MetadataType;
 import goedegep.gpx.model.RteType;
 import goedegep.gpx.model.TrkType;
 import goedegep.gpx.model.TrksegType;
@@ -31,17 +34,25 @@ import goedegep.resources.ImageResource;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.ObservableMap;
+import javafx.geometry.Insets;
 import javafx.geometry.Point2D;
 import javafx.scene.Node;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.Label;
 import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
+import javafx.scene.layout.CornerRadii;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Polygon;
+import javafx.scene.text.Text;
+import javafx.scene.text.TextAlignment;
+import javafx.scene.text.TextFlow;
 import javafx.util.Duration;
 
 /**
@@ -118,9 +129,11 @@ public class GPXLayer extends MapLayer {
    * The waypoints are represented by flags.</br>
    * The route points of all routes are represented by a different color flags.</br>
    * All points of all track segments are represented by small circles, connected by a line.</br>
-   * The bounding box of all data is drawn.</br>
+   * A bounding box is drawn around all data.</br>
    * A label is shown at the center of the bounding box.</br>
    * All items (except the connecting lines) have tooltips.
+   * <p>
+   * Note: Any {@code GpxType} can only be added once.
    * 
    * @param title the (optional) title of the file
    * @param fileName the file name of the GPX file of the {@code gpxType}.
@@ -128,6 +141,7 @@ public class GPXLayer extends MapLayer {
    * @return a bounding box surrounding all elements of the track.
    */
   public WGS84BoundingBox addGpx(final String title, final String fileName, final GpxType gpxType) {
+    Objects.requireNonNull(gpxType, "The gpxType may not be null");
     GpxFileData gpxFileData = gpxFileDataMap.get(gpxType);
     if (gpxFileData != null) {
       throw new RuntimeException("Cannot add a GPX track that is already shown");
@@ -215,16 +229,15 @@ public class GPXLayer extends MapLayer {
     getChildren().add(polygon);
     BoundingBoxData boundingBoxData = new BoundingBoxData(fileBoundingBox, polygon);
 
-//    BoundingBoxData boundingBoxData = createBoundingBoxData(fileBoundingBox);
-    Canvas label = createLabel(title, fileName, gpxType);
-    GpxData gpxData = new GpxData(waypointDataList, routeDataList, trackDataList, boundingBoxData);
+    Node label = createLabel(title, fileName, gpxType);
+    GpxData gpxData = new GpxData(waypointDataList, new ArrayList<>(), routeDataList, trackDataList, boundingBoxData);
     
     GpxFileData gpxFileData = new GpxFileData(title, fileName, gpxData, label);
     return gpxFileData;
   }
 
   /**
-   * Create the waypoints. The nodes are added to the map and the related information is created.
+   * Create the waypoints. The related information is created.
    * 
    * @param title the (optional) title of the file
    * @param fileName the file name of the GPX file of the {@code gpxType}.
@@ -247,8 +260,6 @@ public class GPXLayer extends MapLayer {
             final Tooltip tooltip = new Tooltip(createTooltipText(title, fileName, gpxWaypoint));
             tooltip.setShowDuration(Duration.seconds(10));
             Tooltip.install(icon, tooltip);
-            
-            this.getChildren().add(icon);
 
             waypointDataList.add(new WaypointData(gpxWaypoint, icon));
 
@@ -367,7 +378,7 @@ public class GPXLayer extends MapLayer {
             fileBoundingBox= WGS84BoundingBox.extend(fileBoundingBox, gpxWaypoint.getLon().doubleValue(), gpxWaypoint.getLat().doubleValue());
     }
     
-    RouteData routeData = new RouteData(routePointsDataList);
+    RouteData routeData = new RouteData(routePointsDataList, new ArrayList<>());
     
     return routeData;
   }
@@ -445,8 +456,6 @@ public class GPXLayer extends MapLayer {
    * @return the track segment data
    */
   private TrackSegmentData createTrackSegment(String title, String fileName, TrksegType trackSegment) {
-    ObservableList<TrackPointData> trackPointsDataList = FXCollections.observableArrayList();
-    
     List<WptType> trackPoints = trackSegment.getTrkpt();
     double ratio = MAX_DATAPOINTS / trackPoints.size();
     
@@ -454,54 +463,12 @@ public class GPXLayer extends MapLayer {
     if (ratio > 1.0) {
       ratio = (zoom + 1) / 20;
     }
-    
-    Node prevIcon = null;
 
-    double count = 0d;
-    double i = 0d;
     for (WptType trackPoint : trackPoints) {
-        i++;
-        if (i * ratio >= count) {
-            final Circle icon = new Circle(3.5, Color.LIGHTGOLDENRODYELLOW);
-            icon.setVisible(true);
-            icon.setStroke(Color.RED);
-            icon.setStrokeWidth(1);
-            
-            if (zoom > 15) {
-              final Tooltip tooltip = new Tooltip(createTooltipText(title, fileName, trackPoint));
-              Tooltip.install(icon, tooltip);
-            }
-            
-            this.getChildren().add(icon);
-
-            Line line = null;
-            // if its not the first point we also want a line
-            if (prevIcon != null) {
-                line = new Line();
-                line.setVisible(true);
-                line.setStrokeWidth(2);
-                line.setStroke(Color.BLUE);
-
-                // bind ends of line:
-                line.startXProperty().bind(prevIcon.layoutXProperty().add(prevIcon.translateXProperty()));
-                line.startYProperty().bind(prevIcon.layoutYProperty().add(prevIcon.translateYProperty()));
-                line.endXProperty().bind(icon.layoutXProperty().add(icon.translateXProperty()));
-                line.endYProperty().bind(icon.layoutYProperty().add(icon.translateYProperty()));
-
-                this.getChildren().add(line);
-            }
-
-            TrackPointData trackPointData = new TrackPointData(trackPoint, icon, line);
-            trackPointsDataList.add(trackPointData);
-            
-            prevIcon = icon;
-
-            fileBoundingBox= WGS84BoundingBox.extend(fileBoundingBox, trackPoint.getLon().doubleValue(), trackPoint.getLat().doubleValue());
-            count++;
-        }
+        fileBoundingBox= WGS84BoundingBox.extend(fileBoundingBox, trackPoint.getLon().doubleValue(), trackPoint.getLat().doubleValue());
     }
         
-    TrackSegmentData trackSegmentData = new TrackSegmentData(trackPointsDataList);
+    TrackSegmentData trackSegmentData = new TrackSegmentData(trackPoints, new ArrayList<>());
     return trackSegmentData;
   }
   
@@ -534,11 +501,8 @@ public class GPXLayer extends MapLayer {
    * @param trackSegmentData information about the track segment.
    */
   private void removeTrackSegment(TrackSegmentData trackSegmentData) {
-    for (TrackPointData trackPointData: trackSegmentData.trackPointsDataList()) {
-      this.getChildren().remove(trackPointData.node());
-      this.getChildren().remove(trackPointData.line());
-    }
-
+    getChildren().removeAll(trackSegmentData.currentItemsOnMap());
+    trackSegmentData.currentItemsOnMap().clear();
   }
   
   /**
@@ -549,23 +513,29 @@ public class GPXLayer extends MapLayer {
    * @param title the (optional) title of the file
    * @param fileName the file name of the GPX file of the {@code gpxType}.
    * @param gpxType the GPX data.
-   * @return the created label (as a {@code Canvas}).
+   * @return the created label (as a {@code TextFlow}).
    */
-  private Canvas createLabel(final String title, final String fileName, final GpxType gpxType) {
-    String text = createLabelText(title, fileName);
+  private Node createLabel(final String title, final String fileName, final GpxType gpxType) {
+    String text = createLabelText(title, fileName, gpxType);
     
-    Canvas canvas = new Canvas(200, 80);
-    GraphicsContext gc = canvas.getGraphicsContext2D();
-    gc.fillText(text, 10, 10);
+    Label label = new Label(text);
+    label.setWrapText(true);
+    label.setMaxWidth(200);
+    label.setTextAlignment(TextAlignment.CENTER);
+    TextFlow flow = new TextFlow(label);
+    Color color = new Color(0.9, 0.9, 0.9, 0.6);
+    BackgroundFill backgroundFill = new BackgroundFill(color, CornerRadii.EMPTY , Insets.EMPTY);
+    Background backGround = new Background(backgroundFill);
+    label.setBackground(backGround);
     
     String tooltipText = createLabelTooltipText(title, fileName, gpxType);
     final Tooltip tooltip = new Tooltip(tooltipText);
     tooltip.setShowDuration(Duration.seconds(10));
-    Tooltip.install(canvas, tooltip);
+    Tooltip.install(flow, tooltip);
 
-    getChildren().add(canvas);
+    getChildren().add(flow);
     
-    return canvas;
+    return flow;
   }
   
   /**
@@ -577,7 +547,7 @@ public class GPXLayer extends MapLayer {
    * @param fileName the file name of the GPX file of the {@code gpxType}.
    * @return the label text to be shown for the GPX data.
    */
-  private String createLabelText(final String title, final String fileName) {
+  private String createLabelText(final String title, final String fileName, final GpxType gpxType) {
     if (title != null) {
       return title;
     }
@@ -585,6 +555,14 @@ public class GPXLayer extends MapLayer {
     if (fileName != null) {
       File file = new File(fileName);
       return file.getName();
+    }
+    
+    MetadataType metaData = gpxType.getMetadata();
+    if (metaData != null) {
+      String name = metaData.getName();
+      if (name != null  &&  !name.isEmpty()) {
+        return name;
+      }
     }
     
     return "<no name>";
@@ -612,7 +590,7 @@ public class GPXLayer extends MapLayer {
    * 
    * @param canvas the label to be removed.
    */
-  private void removeLabel(Canvas canvas) {
+  private void removeLabel(Node canvas) {
     getChildren().remove(canvas);
   }
 
@@ -637,70 +615,155 @@ public class GPXLayer extends MapLayer {
 
   /**
    * {@inheritDoc}
+   * 
+   * Any {@code GpxData} is only drawn if it is on the visible area of the map.
+   * In more detail: Only if the bounding box of the {@code GpxData} intersects with the visible map area, all its information is drawn (so also the parts that are not visible).
    */
   @Override
   protected void layoutLayer() {
-    
     for (GpxFileData gpxFileData: gpxFileDataMap.values()) {
       GpxData gpxData = gpxFileData.gpx();
+      
+      // Determine whether this GpxData has to be drawn or not.
+      boolean drawGPXData = true;
+      BoundingBoxData boundingBoxData = gpxData.boundingBox();
+      WGS84BoundingBox boundingBox = boundingBoxData.boundingBox();
+      MapPoint topLeft = baseMap.getMapPosition(0, 0);
+      double width = baseMap.getParent().getLayoutBounds().getWidth();
+      double height = baseMap.getParent().getLayoutBounds().getHeight();
+      MapPoint bottomRight = baseMap.getMapPosition(width - 1, height - 1);
+      WGS84BoundingBox mapBoundingBox = new WGS84BoundingBox(topLeft.getLongitude(), topLeft.getLatitude(), bottomRight.getLongitude(), bottomRight.getLatitude());
+      if (boundingBox == null  ||  !mapBoundingBox.intersects(boundingBox)) {
+        drawGPXData = false;
+      }
 
       // Waypoints
-      for (WaypointData waypointData : gpxData.waypointsDataList()) {
-        final WptType point = waypointData.waypoint();
-        final Node icon = waypointData.node();
+      getChildren().removeAll(gpxData.currentWaypointsOnMap());
+      gpxData.currentWaypointsOnMap().clear();
+      
+      if (drawGPXData) {
+        for (WaypointData waypointData : gpxData.waypointsDataList()) {
+          final Node icon = waypointData.node();
+          final WptType point = waypointData.waypoint();
 
-        final Point2D mapPoint = baseMap.getMapPoint(point.getLat().doubleValue(), point.getLon().doubleValue());
-        icon.toFront();
-        icon.setTranslateX(mapPoint.getX());
-        icon.setTranslateY(mapPoint.getY());
+          final Point2D mapPoint = baseMap.getMapPoint(point.getLat().doubleValue(), point.getLon().doubleValue());
+          icon.setTranslateX(mapPoint.getX());
+          icon.setTranslateY(mapPoint.getY());
+
+          getChildren().add(icon);
+          gpxData.currentWaypointsOnMap().add(icon);
+        }
       }
       
       // Routes
       for (RouteData routeData: gpxData.routeDataList()) {
-        for (WaypointData waypointData : routeData.routePointsDataList()) {
-          final WptType point = waypointData.waypoint();
-          final Node icon = waypointData.node();
+        getChildren().removeAll(routeData.currentWaypointsOnMap());
+        routeData.currentWaypointsOnMap().clear();
 
-          final Point2D mapPoint = baseMap.getMapPoint(point.getLat().doubleValue(), point.getLon().doubleValue());
-          icon.toFront();
-          icon.setTranslateX(mapPoint.getX());
-          icon.setTranslateY(mapPoint.getY());
+        if (drawGPXData) {
+          for (WaypointData waypointData : routeData.routePointsDataList()) {
+            final WptType point = waypointData.waypoint();
+            final Node icon = waypointData.node();
+
+            final Point2D mapPoint = baseMap.getMapPoint(point.getLat().doubleValue(), point.getLon().doubleValue());
+            icon.setTranslateX(mapPoint.getX());
+            icon.setTranslateY(mapPoint.getY());
+
+            getChildren().add(icon);
+            routeData.currentWaypointsOnMap().add(icon);
+          }
         }
       }
       
       // Tracks
       for (TrackData trackData: gpxData.trackDataList()) {
+        
         for (TrackSegmentData trackSegmentData: trackData.trackSegmentsDataList()) {
+          // Remove current points and lines.
+          getChildren().removeAll(trackSegmentData.currentItemsOnMap());
+          trackSegmentData.currentItemsOnMap().clear();
+          
+          if (!drawGPXData) {
+            continue;
+          }
+          
+          Point2D previousMapPoint = null;  // used to check whether the current point is far enough away on screen. If not it is skipped.
           boolean prevSelected = false;
-          for (TrackPointData triple : trackSegmentData.trackPointsDataList()) {
-            final WptType point = triple.waypoint();
-            final Node icon = triple.node();
-            final Line line = triple.line();
+          Node prevIcon = null;  // used to bring it to front after drawing the connecting line
 
-            final boolean selected = selectedGPXWaypoints.contains(point);
-            // first point doesn't have a line
-            if (line != null) {
-              if (selected && prevSelected) {
-                // if selected AND previously selected => red line
-                line.setStrokeWidth(3);
-                line.setStroke(Color.RED);
-              } else {
-                line.setStrokeWidth(2);
-                line.setStroke(Color.BLUE);
+          Iterator<WptType> trackPointIterator = trackSegmentData.trackPointsDataList().iterator();
+          while (trackPointIterator.hasNext()) {
+            final WptType point = trackPointIterator.next();
+            
+            final Point2D mapPoint = baseMap.getMapPoint(point.getLat().doubleValue(), point.getLon().doubleValue());
+            if (previousMapPoint != null  &&  trackPointIterator.hasNext()) {
+              if (Math.abs(mapPoint.getX() - previousMapPoint.getX()) +  Math.abs(mapPoint.getY() - previousMapPoint.getY()) < 14) {
+                continue;
               }
             }
-            prevSelected = selected;
-
-            final Point2D mapPoint = baseMap.getMapPoint(point.getLat().doubleValue(), point.getLon().doubleValue());
-            icon.toFront();
+            
+            Node icon = null;
+            
+            if (prevIcon == null) {
+              icon = createStartImage();
+            } else if (!trackPointIterator.hasNext()) {
+              icon = createEndImage();
+            } else {
+              icon = createTrackPointImage();
+            }
+            
             icon.setTranslateX(mapPoint.getX());
             icon.setTranslateY(mapPoint.getY());
+             
+            final Tooltip tooltip = new Tooltip(createTooltipText(gpxFileData.title(), gpxFileData.fileName(), point));
+            Tooltip.install(icon, tooltip);
+            
+            
+            // if its not the first point we also want a line
+            Line line = null;
+            if (prevIcon != null) {
+                line = new Line();
+                line.setVisible(true);
+                
+                final boolean selected = selectedGPXWaypoints.contains(point);
+                if (selected && prevSelected) {
+                  // if selected AND previously selected => red line
+                  line.setStrokeWidth(3);
+                  line.setStroke(Color.RED);
+                } else {
+                  line.setStrokeWidth(2);
+                  line.setStroke(Color.BLUE);
+                }
+                prevSelected = selected;
+
+                // bind ends of line:
+//                line.startXProperty().bind(prevIcon.layoutXProperty().add(prevIcon.translateXProperty()));
+//                line.startYProperty().bind(prevIcon.layoutYProperty().add(prevIcon.translateYProperty()));
+                line.startXProperty().bind(prevIcon.translateXProperty());
+                line.startYProperty().bind(prevIcon.translateYProperty());
+//                line.endXProperty().bind(icon.layoutXProperty().add(icon.translateXProperty()));
+//                line.endYProperty().bind(icon.layoutYProperty().add(icon.translateYProperty()));
+                line.endXProperty().bind(icon.translateXProperty());
+                line.endYProperty().bind(icon.translateYProperty());
+
+                getChildren().add(line);
+                trackSegmentData.currentItemsOnMap().add(line);
+            }
+            
+            getChildren().add(icon);
+            trackSegmentData.currentItemsOnMap().add(icon);
+            
+            if (prevIcon != null) {
+              prevIcon.toFront();
+            }
+
+            prevIcon = icon;            
+            previousMapPoint = mapPoint;
           }
         }
       }
       
       // Bounding box
-      BoundingBoxData boundingBoxData = gpxData.boundingBox();
       if (boundingBoxData != null) {
         MapViewUtil.updateBoundingBoxPolygon(boundingBoxData.polygon(), boundingBoxData.boundingBox(), baseMap);
 //        layoutBoundingBox(boundingBoxData);
@@ -708,13 +771,12 @@ public class GPXLayer extends MapLayer {
       
       // Label
       if (boundingBoxData != null) {
-        WGS84BoundingBox boundingBox = boundingBoxData.boundingBox();
         if (boundingBox != null) {
           WGS84Coordinates center = boundingBox.getCenter();
           Point2D mapPoint = baseMap.getMapPoint(center.getLatitude(), center.getLongitude());
-          Canvas label = gpxFileData.label();
-          label.setTranslateX(mapPoint.getX() - 30);
-          label.setTranslateY(mapPoint.getY());
+          Node node = gpxFileData.label();
+          node.setTranslateX(mapPoint.getX() - node.prefWidth(-1) / 2);
+          node.setTranslateY(mapPoint.getY() - node.prefHeight(-1) / 2);
         }
       }
     }
@@ -786,12 +848,80 @@ public class GPXLayer extends MapLayer {
     
     return routePointFlagImage;
   }
+  
+  private Node createTrackPointImage() {
+    final Circle circle = new Circle(3.5, Color.LIGHTGOLDENRODYELLOW);
+    circle.setVisible(true);
+    circle.setStroke(Color.RED);
+    circle.setStrokeWidth(1);
+    
+    circle.setLayoutX(-2);
+    circle.setLayoutY(-2);
+    
+    return circle;
+  }
+  
+  private Canvas createStartImage() {
+    int width = 16;
+    int height = 16;
+    Canvas canvas = new Canvas(width, height);
+    
+    GraphicsContext gc = canvas.getGraphicsContext2D();
+    gc.setFill(Color.LIGHTBLUE);
+    gc.fillRect(0, 0, width, height);
+    
+    int firstX = 0;
+    int secondX = width -1;
+    int thirdX = 0;
+
+    int firstY =0;
+    int secondY = height / 2 - 1;
+    int thirdY = height - 1;
+
+    gc.setFill(Color.GREEN);
+    gc.fillPolygon(new double[]{firstX, secondX, thirdX},
+            new double[]{firstY, secondY, thirdY}, 3);
+
+    canvas.setLayoutX(- width / 2);
+    canvas.setLayoutY(- height / 2);
+
+    return canvas;
+  }
+
+  private Canvas createEndImage() {
+    int width = 16;
+    int height = 16;
+    Canvas canvas = new Canvas(width, height);
+
+    GraphicsContext gc = canvas.getGraphicsContext2D();
+//    gc.setFill(Color.WHITE);
+//    gc.fillRect(0, 0, width / 2 - 1, height / 2 - 1); // Top left white
+//    gc.fillRect(width / 2, height / 2, width / 2 - 1, height / 2 - 1); // Bottom right white
+//
+//    gc.setFill(Color.BLACK);
+//    gc.fillRect(width / 2, 0, width / 2 - 1, height / 2 - 1); // Top left white
+//    gc.fillRect(0, height / 2, width / 2 - 1, height / 2 - 1); // Top left white
+    
+    // fill with black
+    gc.setFill(Color.BLACK);
+    gc.fillRect(0, 0, width, height); // Top left white
+    
+    // top left and bottom right white boxes, leaving a black border
+    gc.setFill(Color.WHITE);
+    gc.fillRect(1, 1, width / 2 - 1, height / 2 - 1); // Top left white
+    gc.fillRect(width / 2, height / 2, width / 2 - 1, height / 2 - 1); // Bottom right white
+
+    canvas.setLayoutX(- width / 2);
+    canvas.setLayoutY(- height / 2);
+
+    return canvas;
+  }
 }
 
 /**
  *  All information needed for a GPX track file.
  */
-record GpxFileData(String title, String fileName, GpxData gpx, Canvas label) {
+record GpxFileData(String title, String fileName, GpxData gpx, Node label) {
 }
 
 /**
@@ -803,7 +933,7 @@ record BoundingBoxData(WGS84BoundingBox boundingBox, Polygon polygon) {
 /**
  *  All information needed for a GPX track.
  */
-record GpxData(ObservableList<WaypointData> waypointsDataList, ObservableList<RouteData> routeDataList, ObservableList<TrackData> trackDataList, BoundingBoxData boundingBox) {
+record GpxData(ObservableList<WaypointData> waypointsDataList, List<Object> currentWaypointsOnMap, ObservableList<RouteData> routeDataList, ObservableList<TrackData> trackDataList, BoundingBoxData boundingBox) {
 }
 
 /**
@@ -815,7 +945,7 @@ record WaypointData(WptType waypoint, Node node) {
 /**
  *  All information needed for a route.
  */
-record RouteData(ObservableList<WaypointData> routePointsDataList) {
+record RouteData(ObservableList<WaypointData> routePointsDataList, List<Object> currentWaypointsOnMap) {
 }
 
 /**
@@ -827,11 +957,11 @@ record TrackData(ObservableList<TrackSegmentData> trackSegmentsDataList) {
 /**
  *  All information needed for a track segment.
  */
-record TrackSegmentData(ObservableList<TrackPointData> trackPointsDataList) {
+record TrackSegmentData(List<WptType> trackPointsDataList, List<Object> currentItemsOnMap) {
 }
 
-/**
- * All information needed for a waypoint of a track.
- */
-record TrackPointData(WptType waypoint, Node node, Line line) {
-}
+///**
+// * All information needed for a waypoint of a track.
+// */
+//record TrackPointData(WptType waypoint) {
+//}

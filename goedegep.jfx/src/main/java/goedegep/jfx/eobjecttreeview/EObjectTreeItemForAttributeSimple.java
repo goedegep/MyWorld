@@ -95,9 +95,6 @@ public class EObjectTreeItemForAttributeSimple extends EObjectTreeItem {
     LOGGER.info("=> eObjectTreeItemContent" + eObjectTreeItemContent.toString());
         
     EObject eObject = (EObject) eObjectTreeItemContent;
-    if (eObject == null) {
-      LOGGER.severe("object is null in TreeItem");
-    }
     EAttribute eAttribute = eObjectTreeItemAttributeDescriptor.getEAttribute();
 
     EList<EAttribute> objectAttributes = eObject.eClass().getEAllAttributes();
@@ -183,6 +180,23 @@ public class EObjectTreeItemForAttributeSimple extends EObjectTreeItem {
       }
     }
     
+  }
+  
+  /**
+   *{@inheritDoc}
+   */
+  public String getText() {
+    String itemText = null;
+    
+    if (getValue() != null) {
+      if (eObjectTreeItemAttributeDescriptor.getFormat() != null) {
+        itemText = eObjectTreeItemAttributeDescriptor.getFormat().format(getValue());
+      } else {
+        itemText = getValue().toString();
+      }
+    }
+    
+    return itemText;
   }
 
   /**

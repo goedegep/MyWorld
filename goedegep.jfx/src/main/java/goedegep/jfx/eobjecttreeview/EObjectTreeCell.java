@@ -205,7 +205,7 @@ public class EObjectTreeCell extends TreeCell<Object> {
    * @param dragEvent a 'drag dropped' event.
    */
   private void handleDragDropped(DragEvent dragEvent) {
-      LOGGER.severe("=>");
+      LOGGER.info("=>");
       
       EObjectTreeItem eObjectTreeItem = (EObjectTreeItem) getTreeItem();
       if (eObjectTreeItem == null) {

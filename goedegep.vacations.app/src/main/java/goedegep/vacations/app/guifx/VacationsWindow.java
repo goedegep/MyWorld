@@ -69,10 +69,9 @@ import goedegep.util.emf.EMFResource;
 import goedegep.util.file.FileUtils;
 import goedegep.util.i18n.TranslationFormatter;
 import goedegep.util.img.ImageUtils;
-import goedegep.vacations.app.LocationDescriptionDialog;
-import goedegep.vacations.app.VacationsKmlConverter;
 import goedegep.vacations.app.logic.Item;
 import goedegep.vacations.app.logic.ItemGpx;
+import goedegep.vacations.app.logic.LocationDescriptionDialog;
 import goedegep.vacations.app.logic.NominatimUtil;
 import goedegep.vacations.app.logic.OsmAndItems;
 import goedegep.vacations.app.logic.OsmAndUtil;
@@ -81,6 +80,7 @@ import goedegep.vacations.app.logic.PhotoImportResult;
 import goedegep.vacations.app.logic.PhotosImporter;
 import goedegep.vacations.app.logic.VacationToHtmlConverter;
 import goedegep.vacations.app.logic.VacationsChecker;
+import goedegep.vacations.app.logic.VacationsKmlConverter;
 import goedegep.vacations.app.logic.VacationsRegistry;
 import goedegep.vacations.app.logic.VacationsUtils;
 import goedegep.vacations.checklist.model.VacationChecklist;
@@ -693,8 +693,8 @@ public class VacationsWindow extends JfxStage {
     menuItem.setOnAction(event -> exportVacationToKml());
     menu.getItems().add(menuItem);
     
-    // File: Import locations from kml/kmz file
-    menuItem = componentFactory.createMenuItem("Import locations from kml/kmz file");
+    // File: Import information from a kml/kmz file
+    menuItem = componentFactory.createMenuItem("Import information from a kml/kmz file");
     menuItem.setOnAction(event -> importLocationsFromKmlFile());
     menu.getItems().add(menuItem);
     
@@ -1387,7 +1387,7 @@ public class VacationsWindow extends JfxStage {
    * @param treeItem the <code>TreeItem</code> for which the related Vacation is to be found.
    * @return the related Vacation, or null if this doesn't exist.
    */
-  private static Vacation getVacationForTreeItem(TreeItem<Object> treeItem) {
+  static Vacation getVacationForTreeItem(TreeItem<Object> treeItem) {
     LOGGER.info("=> treeItem=" + (treeItem != null ? treeItem.toString() : "(null)"));
     LOGGER.info("=>");
     
@@ -1888,7 +1888,7 @@ public class VacationsWindow extends JfxStage {
             text = name;
           }
         } catch (FileNotFoundException e) {
-          e.printStackTrace();
+          text = "(file doesn't exist)";
         }
       }      
     }
@@ -1926,7 +1926,7 @@ public class VacationsWindow extends JfxStage {
           GpxType gpxType = documentRoot.getGpx();
           activity = GpxAppUtil.getActivity(gpxType);
         } catch (FileNotFoundException e) {
-          e.printStackTrace();
+          // no action, no file so no activity
         }
       }
     }
@@ -2096,27 +2096,18 @@ public class VacationsWindow extends JfxStage {
     
     VacationCheckResultWindow.VacationCheckResultWindowBuilder builder = new VacationCheckResultWindow.VacationCheckResultWindowBuilder(customization, vacation.getId());
     
-    List<FileReference> fileReferencesNotSet = VacationsChecker.checkThatAllReferencesAreSet(vacation);
+    List<String> fileReferencesNotSet = VacationsChecker.checkThatAllReferencesAreSet(treeView, vacation);
     if (fileReferencesNotSet != null) {
-      for (FileReference fileReference: fileReferencesNotSet) {
-        LOGGER.severe("FileReference not set " + fileReference.toString());
-      }
       builder.setReferencesNotSet(fileReferencesNotSet);
     }
 
-    List<FileReference> nonExistingReferences = VacationsChecker.checkThatAllReferencesExist(vacation);
+    List<String> nonExistingReferences = VacationsChecker.checkThatAllReferencesExist(treeView, vacation);
     if (nonExistingReferences != null) {
-      for (FileReference fileReference: nonExistingReferences) {
-        LOGGER.severe("FileReference to non existing file: " + fileReference.toString());
-      }
       builder.setNonExistingReferences(nonExistingReferences);
     }
     
     Set<String> filesNotReferredTo = VacationsChecker.checkThatAllFilesAreReferredTo(vacation);
     if (filesNotReferredTo != null) {
-      for (String filename: filesNotReferredTo) {
-        LOGGER.severe("File not referred to: " + filename);
-      }
       builder.setFilesNotReferredTo(filesNotReferredTo);
     }
     
@@ -2230,37 +2221,62 @@ public class VacationsWindow extends JfxStage {
    * The locations are created as children of the currently selected tree item.
    */
   private void importLocationsFromKmlFile() {
-    statusLabel.setText(null);
 
-    // check that currently selected tree item is of type Elements
-    EObjectTreeItem currentlySelectedItem = treeView.getSelectedObject();
-    if (!treeView.treeItemIsLocationsList(currentlySelectedItem)) {
-      statusLabel.setText("Please select a node in the tree where locations can be added.");
-      return;
-    }
+//    // check that currently selected tree item is of type Elements
+//    EObjectTreeItem currentlySelectedItem = treeView.getSelectedObject();
+//    if (!treeView.treeItemIsLocationsList(currentlySelectedItem)) {
+//      componentFactory.createInformationDialog(
+//          "No locations list selected",
+//          "In order to import locations from a KML/KMZ file, you have to select an item in the vacations tree where you can add locations",
+//          "Please select a list (typically 'Elements') where you can add locations and try again").showAndWait();
+//      return;
+//    }
     
-    // Let the user select a file to read from
-    FileChooser fileChooser = new FileChooser();
-    fileChooser.setTitle("Read Kml file");
-    FileChooser.ExtensionFilter extensionFilter = new FileChooser.ExtensionFilter("KML files", "*.kml", "*.kmz");
-    fileChooser.getExtensionFilters().add(extensionFilter);
-    fileChooser.setSelectedExtensionFilter(extensionFilter);
-    File file = fileChooser.showOpenDialog(this);
-    LOGGER.severe("Reading kml file: " + file.getAbsolutePath());
+//    // Let the user select a file to read from
+//    FileChooser fileChooser = new FileChooser();
+//    fileChooser.setTitle("Read Kml file");
+//    FileChooser.ExtensionFilter extensionFilter = new FileChooser.ExtensionFilter("KML files", "*.kml", "*.kmz");
+//    fileChooser.getExtensionFilters().add(extensionFilter);
+//    fileChooser.setSelectedExtensionFilter(extensionFilter);
+//    File file = fileChooser.showOpenDialog(this);
+//    
+//    if (file == null) {
+//      return;
+//    }
+//    LOGGER.severe("Reading kml file: " + file.getAbsolutePath());
     
-    // Use the VacationsKmlConverter to get the locations
-    VacationsKmlConverter vacationsKmlConverter = new VacationsKmlConverter(poiIcons);
-    List<Location> locations = vacationsKmlConverter.getLocationsFromKmlFile(file);
-    
+    // Use the KmlFileImporter to get the vacation elements.
+//    KmlFileImporter kmlFileImporter = new KmlFileImporter.Builder(file)
+//        .setVacationFolder(VacationsUtils.getVacationFolder(getVacationForTreeItem(treeView.getSelectedObject())))
+//        .build();
+//    List<Tuplet<VacationElement, Object>> vacationElements = kmlFileImporter.getLocationsFromKmlFile(file);
+    new KmlFileImportWindow(customization, this, poiIcons, getNominatimAPI());
     // Add the locations to the currently selected tree item.
-    EObjectTreeItem treeItem = (EObjectTreeItem) treeView.getSelectedObject();
-    Object object = treeItem.getValue();
-    @SuppressWarnings("unchecked")
-    List<VacationElement> elements = (List<VacationElement>) object;
-    for (Location location: locations) {
-      elements.add(location);
-    }
-    treeItem.rebuildChildren();
+//    EObjectTreeItem treeItem = (EObjectTreeItem) treeView.getSelectedObject();
+//    Object object = treeItem.getValue();
+//    @SuppressWarnings("unchecked")
+//    List<VacationElement> elements = (List<VacationElement>) object;
+//    for (Tuplet<VacationElement, Object> tuplet: vacationElements) {
+//      VacationElement vacationElement = tuplet.getObject1();
+//      LOGGER.severe("Handling: " + vacationElement.toString());
+//      if (vacationElement instanceof Location location) {
+//        if (locationIsHomeLocation(location)) {
+//          LOGGER.severe("Skipping home location");
+//          continue;
+//        }
+//        
+//        KmlFileImportWindow dialog = new KmlFileImportWindow(customization, this, poiIcons, location);
+//        dialog.showAndWait();
+//        LOGGER.severe("Closed");
+//      } else if (vacationElement instanceof GPXTrack gpxTrack) {
+//        GPXTrackPreviewWindow dialog = new GPXTrackPreviewWindow(customization, this, poiIcons, gpxTrack, (DocumentRoot) tuplet.getObject2());
+//        dialog.showAndWait();
+//      } else {
+//        throw new RuntimeException("Unsupported VacationElement subtype: " + vacationElement.getClass().getName());
+//      }
+//      elements.add(vacationElement);
+//    }
+//    treeItem.rebuildChildren();
   }
   
   /**
@@ -2744,6 +2760,10 @@ public class VacationsWindow extends JfxStage {
     
     createMapImageView(mapImage, poiIcons, false);
        
+  }
+
+  public Vacations getVacations() {
+    return vacations;
   }
   
 }
