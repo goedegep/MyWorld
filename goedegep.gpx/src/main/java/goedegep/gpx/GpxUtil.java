@@ -8,7 +8,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.logging.Logger;
 
-import org.eclipse.emf.ecore.EStructuralFeature;
+import org.eclipse.emf.common.util.EMap;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 
 import goedegep.geo.WGS84BoundingBox;
@@ -48,7 +48,7 @@ public class GpxUtil {
     resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap().put(
         "gpx", new GPXResourceFactoryImpl());
     
-    EMFResource<DocumentRoot> gpxResource = new EMFResource<>(GPXPackage.eINSTANCE, () -> GPXFactory.eINSTANCE.createDocumentRoot(), ".gpx", false);
+    EMFResource<DocumentRoot> gpxResource = new EMFResource<>(GPXPackage.eINSTANCE, GpxUtil::createBasicDocumentRoot, ".gpx", false);
     
     return gpxResource;
   }
@@ -66,6 +66,25 @@ public class GpxUtil {
     EMFResource<goedegep.gpx10.model.DocumentRoot> gpx10Resource = new EMFResource<>(GPX10Package.eINSTANCE, () -> GPX10Factory.eINSTANCE.createDocumentRoot(), ".gpx", false);
     
     return gpx10Resource;
+  }
+  
+  public static DocumentRoot createBasicDocumentRoot() {
+    GPXFactory gpxFactory = GPXFactory.eINSTANCE;
+    
+    DocumentRoot documentRoot = gpxFactory.createDocumentRoot();
+    
+    GpxType gpxType = gpxFactory.createGpxType();
+    gpxType.setVersion("1.1");
+    documentRoot.setGpx(gpxType);
+    
+    EMap<String, String> xmlNsPrefixMap = documentRoot.getXMLNSPrefixMap();
+    xmlNsPrefixMap.put("xsi", "http://www.w3.org/2001/XMLSchema-instance");
+    xmlNsPrefixMap.put("", "http://www.topografix.com/GPX/1/1");
+    
+    EMap<String, String> xsiSchemaLocationMap = documentRoot.getXSISchemaLocation();
+    xsiSchemaLocationMap.put("http://www.topografix.com/GPX/1/1", "http://www.topografix.com/GPX/1/1/gpx.xsd");
+    
+    return documentRoot;
   }
   
   

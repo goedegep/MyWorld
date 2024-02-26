@@ -528,7 +528,7 @@ public class PhotoShowBuilder extends JfxStage {
 
   private void createAndAddEObjectTreeDescriptorForPhotoShowSpecification(EObjectTreeDescriptor eObjectTreeDescriptor, EmfPackageHelper photoShowPackageHelper) {
     EClass eClass = photoShowPackageHelper.getEClass("goedegep.media.photoshow.model.PhotoShowSpecification");
-    EObjectTreeItemClassDescriptor eObjectTreeItemClassDescriptor = new EObjectTreeItemClassDescriptor(eClass, (eObject) -> "Photo show specification", true, null);
+    EObjectTreeItemClassDescriptor eObjectTreeItemClassDescriptor = new EObjectTreeItemClassDescriptor((eObject) -> "Photo show specification", true, null);
     List<NodeOperationDescriptor> nodeOperationDescriptors;
     
     // PhotoShowSpecification.title
@@ -580,7 +580,7 @@ public class PhotoShowBuilder extends JfxStage {
     nodeOperationDescriptors.add(new NodeOperationDescriptor(TableRowOperation.MOVE_OBJECT_DOWN, "Move time offset down"));
     nodeOperationDescriptors.add(new NodeOperationDescriptor(TableRowOperation.DELETE_OBJECT, "Delete this time offset"));
     
-    EObjectTreeItemClassDescriptor eObjectTreeItemClassDescriptor = new EObjectTreeItemClassDescriptor(eClass,
+    EObjectTreeItemClassDescriptor eObjectTreeItemClassDescriptor = new EObjectTreeItemClassDescriptor(
         eObject -> {
           StringBuilder buf = new StringBuilder();
           FolderTimeOffsetSpecification folderTimeOffsetSpecification = (FolderTimeOffsetSpecification) eObject;

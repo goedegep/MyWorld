@@ -77,7 +77,7 @@ class GPXTreeViewDescriptor extends EObjectTreeDescriptor {
     EClass eClass = gpxPackageHelper.getEClass("goedegep.gpx.model.DocumentRoot");
         
     // DocumentRoot is root node
-    EObjectTreeItemClassDescriptor eObjectTreeItemClassDescriptor = new EObjectTreeItemClassDescriptor(eClass, (eObject) -> "Document root", true, null);
+    EObjectTreeItemClassDescriptor eObjectTreeItemClassDescriptor = new EObjectTreeItemClassDescriptor((eObject) -> "Document root", true, null);
     
     // DocumentRoot.mixed - not shown, as the information is also available under GPX
     
@@ -103,7 +103,7 @@ class GPXTreeViewDescriptor extends EObjectTreeDescriptor {
     EClass eClass = gpxPackageHelper.getEClass("goedegep.gpx.model.GpxType");
         
     // GpxType
-    EObjectTreeItemClassDescriptor eObjectTreeItemClassDescriptor = new EObjectTreeItemClassDescriptor(eClass, (eObject) -> "GPX (gpx)", false, null, eObject -> {
+    EObjectTreeItemClassDescriptor eObjectTreeItemClassDescriptor = new EObjectTreeItemClassDescriptor((eObject) -> "GPX (gpx)", false, null, eObject -> {
       return ImageResource.GPX.getImage();
     });
     
@@ -145,7 +145,7 @@ class GPXTreeViewDescriptor extends EObjectTreeDescriptor {
     // WptType
     List<NodeOperationDescriptor> nodeOperationDescriptors = new ArrayList<>();
     nodeOperationDescriptors.add(new NodeOperationDescriptor(TableRowOperation.DELETE_OBJECT, "Delete"));
-    EObjectTreeItemClassDescriptor eObjectTreeItemClassDescriptor = new EObjectTreeItemClassDescriptor(eClass, (eObject) -> "Waypoint", false, nodeOperationDescriptors, eObject -> {
+    EObjectTreeItemClassDescriptor eObjectTreeItemClassDescriptor = new EObjectTreeItemClassDescriptor((eObject) -> "Waypoint", false, nodeOperationDescriptors, eObject -> {
       return ImageResource.LOCATION_FLAG_YELLOW.getImage();
     });
 
@@ -168,7 +168,7 @@ class GPXTreeViewDescriptor extends EObjectTreeDescriptor {
     eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(new EObjectTreeItemAttributeDescriptor(GPX_PACKAGE.getWptType_Ele(), "Elevation (ele)", PresentationType.SINGLE_LINE_TEXT, null));
 
     // WptType.time
-    eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(new EObjectTreeItemAttributeDescriptor(GPX_PACKAGE.getWptType_Ele(), "Time (time)", PresentationType.SINGLE_LINE_TEXT, null));
+    eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(new EObjectTreeItemAttributeDescriptor(GPX_PACKAGE.getWptType_Time(), "Time (time)", PresentationType.SINGLE_LINE_TEXT, null));
 
     // WptType.src
     eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(new EObjectTreeItemAttributeDescriptor(GPX_PACKAGE.getWptType_Src(), "Source (src)", PresentationType.SINGLE_LINE_TEXT, null));
@@ -225,7 +225,7 @@ class GPXTreeViewDescriptor extends EObjectTreeDescriptor {
     EClass eClass = gpxPackageHelper.getEClass("goedegep.gpx.model.RteType");
         
     // RteType
-    EObjectTreeItemClassDescriptor eObjectTreeItemClassDescriptor = new EObjectTreeItemClassDescriptor(eClass, (eObject) -> "Route (rte)", false, null);
+    EObjectTreeItemClassDescriptor eObjectTreeItemClassDescriptor = new EObjectTreeItemClassDescriptor((eObject) -> "Route (rte)", false, null);
 
     // RteType.name
     eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(new EObjectTreeItemAttributeDescriptor(GPX_PACKAGE.getRteType_Name(), "Name (name)", PresentationType.SINGLE_LINE_TEXT, null));
@@ -267,7 +267,7 @@ class GPXTreeViewDescriptor extends EObjectTreeDescriptor {
     EClass eClass = gpxPackageHelper.getEClass("goedegep.gpx.model.TrkType");
         
     // TrkType
-    EObjectTreeItemClassDescriptor eObjectTreeItemClassDescriptor = new EObjectTreeItemClassDescriptor(eClass, (eObject) -> "Track (trk)", false, null);
+    EObjectTreeItemClassDescriptor eObjectTreeItemClassDescriptor = new EObjectTreeItemClassDescriptor((eObject) -> "Track (trk)", false, null);
 
     // TrkType.name
     eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(new EObjectTreeItemAttributeDescriptor(GPX_PACKAGE.getTrkType_Name(), "Name (name)", PresentationType.SINGLE_LINE_TEXT, null));
@@ -309,7 +309,7 @@ class GPXTreeViewDescriptor extends EObjectTreeDescriptor {
     EClass eClass = gpxPackageHelper.getEClass("goedegep.gpx.model.TrksegType");
         
     // TrksegType
-    EObjectTreeItemClassDescriptor eObjectTreeItemClassDescriptor = new EObjectTreeItemClassDescriptor(eClass, (eObject) -> "Track segment (trkseg)", false, null);
+    EObjectTreeItemClassDescriptor eObjectTreeItemClassDescriptor = new EObjectTreeItemClassDescriptor((eObject) -> "Track segment (trkseg)", false, null);
     
     // TrksegType.trkpt
     eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(new EObjectTreeItemClassListReferenceDescriptor(GPX_PACKAGE.getTrksegType_Trkpt(), "Track points (trkpt)", false, null));
@@ -330,7 +330,7 @@ class GPXTreeViewDescriptor extends EObjectTreeDescriptor {
     EClass eClass = gpxPackageHelper.getEClass("goedegep.gpx.model.MetadataType");
         
     // MetadataType
-    EObjectTreeItemClassDescriptor eObjectTreeItemClassDescriptor = new EObjectTreeItemClassDescriptor(eClass, (eObject) -> "Meta data (metadata)", false, null);
+    EObjectTreeItemClassDescriptor eObjectTreeItemClassDescriptor = new EObjectTreeItemClassDescriptor((eObject) -> "Meta data (metadata)", false, null);
 
     // MetadataType.name
     eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(new EObjectTreeItemAttributeDescriptor(GPX_PACKAGE.getMetadataType_Name(), "Name (name)", PresentationType.SINGLE_LINE_TEXT, null));
@@ -372,7 +372,7 @@ class GPXTreeViewDescriptor extends EObjectTreeDescriptor {
     EClass eClass = gpxPackageHelper.getEClass("goedegep.gpx.model.BoundsType");
         
     // BoundsType
-    EObjectTreeItemClassDescriptor eObjectTreeItemClassDescriptor = new EObjectTreeItemClassDescriptor(eClass, (eObject) -> "Bounds (bounds)", false, null);
+    EObjectTreeItemClassDescriptor eObjectTreeItemClassDescriptor = new EObjectTreeItemClassDescriptor((eObject) -> "Bounds (bounds)", false, null);
 
     // BoundsType.minlat
     eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(new EObjectTreeItemAttributeDescriptor(GPX_PACKAGE.getBoundsType_Minlat(), "Minimum latitude (minlat)", PresentationType.SINGLE_LINE_TEXT, null));
@@ -399,7 +399,7 @@ class GPXTreeViewDescriptor extends EObjectTreeDescriptor {
     EClass eClass = gpxPackageHelper.getEClass("goedegep.gpx.model.PersonType");
         
     // PersonType
-    EObjectTreeItemClassDescriptor eObjectTreeItemClassDescriptor = new EObjectTreeItemClassDescriptor(eClass, (eObject) -> "Bounds (bounds)", false, null);
+    EObjectTreeItemClassDescriptor eObjectTreeItemClassDescriptor = new EObjectTreeItemClassDescriptor((eObject) -> "Bounds (bounds)", false, null);
 
     // PersonType.name
     eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(new EObjectTreeItemAttributeDescriptor(GPX_PACKAGE.getPersonType_Name(), "Name (name)", PresentationType.SINGLE_LINE_TEXT, null));
@@ -423,7 +423,7 @@ class GPXTreeViewDescriptor extends EObjectTreeDescriptor {
     EClass eClass = gpxPackageHelper.getEClass("goedegep.gpx.model.CopyrightType");
         
     // CopyrightType
-    EObjectTreeItemClassDescriptor eObjectTreeItemClassDescriptor = new EObjectTreeItemClassDescriptor(eClass, (eObject) -> "Bounds (bounds)", false, null);
+    EObjectTreeItemClassDescriptor eObjectTreeItemClassDescriptor = new EObjectTreeItemClassDescriptor((eObject) -> "Bounds (bounds)", false, null);
 
     // CopyrightType.year
     eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(new EObjectTreeItemAttributeDescriptor(GPX_PACKAGE.getCopyrightType_Year(), "Year (year)", PresentationType.SINGLE_LINE_TEXT, null));
@@ -447,7 +447,7 @@ class GPXTreeViewDescriptor extends EObjectTreeDescriptor {
     EClass eClass = gpxPackageHelper.getEClass("goedegep.gpx.model.EmailType");
         
     // EmailType
-    EObjectTreeItemClassDescriptor eObjectTreeItemClassDescriptor = new EObjectTreeItemClassDescriptor(eClass, (eObject) -> "Email (email)", false, null);
+    EObjectTreeItemClassDescriptor eObjectTreeItemClassDescriptor = new EObjectTreeItemClassDescriptor((eObject) -> "Email (email)", false, null);
 
     // EmailType.domain
     eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(new EObjectTreeItemAttributeDescriptor(GPX_PACKAGE.getEmailType_Domain(), "Domain (domain)", PresentationType.SINGLE_LINE_TEXT, null));
@@ -468,7 +468,7 @@ class GPXTreeViewDescriptor extends EObjectTreeDescriptor {
     EClass eClass = gpxPackageHelper.getEClass("goedegep.gpx.model.LinkType");
         
     // LinkType
-    EObjectTreeItemClassDescriptor eObjectTreeItemClassDescriptor = new EObjectTreeItemClassDescriptor(eClass, (eObject) -> "Link (link)", false, null);
+    EObjectTreeItemClassDescriptor eObjectTreeItemClassDescriptor = new EObjectTreeItemClassDescriptor((eObject) -> "Link (link)", false, null);
 
     // LinkType.text
     eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(new EObjectTreeItemAttributeDescriptor(GPX_PACKAGE.getLinkType_Text(), "Text (text)", PresentationType.SINGLE_LINE_TEXT, null));
@@ -492,7 +492,7 @@ class GPXTreeViewDescriptor extends EObjectTreeDescriptor {
     EClass eClass = gpxPackageHelper.getEClass("goedegep.gpx.model.ExtensionsType");
         
     // ExtensionsType
-    EObjectTreeItemClassDescriptor eObjectTreeItemClassDescriptor = new EObjectTreeItemClassDescriptor(eClass, (eObject) -> "Extensions (extensions)", false, null);
+    EObjectTreeItemClassDescriptor eObjectTreeItemClassDescriptor = new EObjectTreeItemClassDescriptor((eObject) -> "Extensions (extensions)", false, null);
 
     // ExtensionsType.any
     eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(new EObjectTreeItemAttributeListDescriptor(GPX_PACKAGE.getExtensionsType_Any(), "Any (any)", false, null, null));
@@ -511,7 +511,7 @@ class GPXTreeViewDescriptor extends EObjectTreeDescriptor {
     EClass eClass = eReference.getEReferenceType();
         
     // EStringToStringMapEntry
-    EObjectTreeItemClassDescriptor eObjectTreeItemClassDescriptor = new EObjectTreeItemClassDescriptor(eClass, (eObject) -> "Entry", false, null);
+    EObjectTreeItemClassDescriptor eObjectTreeItemClassDescriptor = new EObjectTreeItemClassDescriptor((eObject) -> "Entry", false, null);
 
     // EStringToStringMapEntry.key
     eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(new EObjectTreeItemAttributeDescriptor((EAttribute) eClass.getEStructuralFeature("key"), "Key", PresentationType.SINGLE_LINE_TEXT, null));

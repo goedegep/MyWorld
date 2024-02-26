@@ -41,8 +41,8 @@ public class EObjectTreeCellHelperForAttributeEnumeration extends EObjectTreeCel
     EClassifier eClassifier = itemDescriptor.getEAttribute().getEType();
     final EEnum eEnum = (EEnum) eClassifier;
     EObjectTreeView eObjectTreeView = treeItem.getEObjectTreeView();
-    EObjectTreeDescriptor eObjectTreeDescriptor = eObjectTreeView.getEObjectTreeDescriptor();
-    final EEnumEditorDescriptor<?> eEnumEditorDescriptorForEEnum = eObjectTreeDescriptor.getEEnumEditorDescriptorForEEnum(eEnum);
+//    EObjectTreeDescriptor eObjectTreeDescriptor = eObjectTreeView.getEObjectTreeDescriptor();
+    final EEnumEditorDescriptor<?> eEnumEditorDescriptorForEEnum = eObjectTreeView.getEEnumEditorDescriptorForEEnum(eEnum);
     if (eEnumEditorDescriptorForEEnum != null) {
       valueChoiceBox.getItems().addAll(eEnumEditorDescriptorForEEnum.getDisplayNames());
     } else {

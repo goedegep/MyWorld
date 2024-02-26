@@ -373,7 +373,7 @@ public class EObjectTreeCellHelperForObject extends EObjectTreeCellHelperTemplat
    * Delete the object related to this tree cell.
    */
   private void deleteObject() {
-    LOGGER.severe("=>");
+    LOGGER.info("=>");
     
     // Get the object to be deleted.
     EObject eObjectToBeDeleted = (EObject) treeItem.getValue();  // By definition the object will be an EOBject
@@ -414,7 +414,7 @@ public class EObjectTreeCellHelperForObject extends EObjectTreeCellHelperTemplat
       @SuppressWarnings("unchecked")
       EList<EObject> eObjectList = (EList<EObject>) parentObject;
       boolean removed = eObjectList.remove(eObjectToBeDeleted);
-      LOGGER.severe("Object removed=" + removed);
+      LOGGER.info("Object removed=" + removed);
     } else if (parentObject instanceof EObject parentEObject) {
       parentEObject.eSet(eReferenceToObjectToBeDeleted, null);
     } else {
@@ -492,7 +492,7 @@ public class EObjectTreeCellHelperForObject extends EObjectTreeCellHelperTemplat
     }
     
     if (labelText == null  &&  eObject != null) {
-      LOGGER.severe("Fall back to class name");
+      LOGGER.info("Fall back to class name");
       String className = eObject.getClass().getSimpleName();
       labelText = className.substring(0, className.length() - 4);
     }

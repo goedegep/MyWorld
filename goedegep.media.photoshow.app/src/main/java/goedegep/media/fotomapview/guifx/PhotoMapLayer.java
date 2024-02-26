@@ -169,8 +169,8 @@ public class PhotoMapLayer extends MapLayer implements ObjectSelector<IPhotoInfo
         double robotX = robot.getMouseX();
         double robotY = robot.getMouseY();
         Point2D point = this.screenToLocal(robot.getMousePosition());
-        LOGGER.severe("robotX, robotY = " + robotX + ", " + robotY);
-        LOGGER.severe("screenX, screenY = " + point.getX() + ", " + point.getY());
+        LOGGER.info("robotX, robotY = " + robotX + ", " + robotY);
+        LOGGER.info("screenX, screenY = " + point.getX() + ", " + point.getY());
         
         double x = dragEvent.getX();
         double y = dragEvent.getY();
@@ -313,7 +313,7 @@ public class PhotoMapLayer extends MapLayer implements ObjectSelector<IPhotoInfo
    * @param showOnMap if true, all photos of this index will be shown, else the photos added via .... are shown.
    */
   public void setPhotoIndex(S2PointIndex<IPhotoMetaData> index) {
-    LOGGER.severe("Index set");
+    LOGGER.info("Index set");
     this.index = index;
     markDirty();
   }

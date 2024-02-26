@@ -496,15 +496,49 @@ public class TrkTypeImpl extends MinimalEObjectImpl.Container implements TrkType
     return firstSegment.getStartTime();
   }
 
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated NOT
+   */
+  public void setStartTime(Date startTime) {
+    int numberOfSegments = getTrkseg().size();
+    if (numberOfSegments == 0) {
+      return;
+    }
+    
+    TrksegType firstSegment = getTrkseg().get(0);
+    firstSegment.setStartTime(startTime);
+  }
+
     /**
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @generated
+   * @generated NOT
    */
   public Date getEndTime() {
-    // TODO: implement this method
-    // Ensure that you remove @generated or mark it @generated NOT
-    throw new UnsupportedOperationException();
+    int numberOfSegments = getTrkseg().size();
+    if (numberOfSegments == 0) {
+      return null;
+    }
+    
+    TrksegType lastSegment = getTrkseg().get(numberOfSegments - 1);
+    return lastSegment.getEndTime();
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated NOT
+   */
+  public void setEndTime(Date endTime) {
+    int numberOfSegments = getTrkseg().size();
+    if (numberOfSegments == 0) {
+      return;
+    }
+    
+    TrksegType lastSegment = getTrkseg().get(numberOfSegments - 1);
+    lastSegment.setEndTime(endTime);
   }
 
     /**
@@ -720,6 +754,12 @@ public class TrkTypeImpl extends MinimalEObjectImpl.Container implements TrkType
         return getStartElevation();
       case GPXPackage.TRK_TYPE___GET_END_ELEVATION:
         return getEndElevation();
+      case GPXPackage.TRK_TYPE___SET_START_TIME__DATE:
+        setStartTime((Date)arguments.get(0));
+        return null;
+      case GPXPackage.TRK_TYPE___SET_END_TIME__DATE:
+        setEndTime((Date)arguments.get(0));
+        return null;
     }
     return super.eInvoke(operationID, arguments);
   }

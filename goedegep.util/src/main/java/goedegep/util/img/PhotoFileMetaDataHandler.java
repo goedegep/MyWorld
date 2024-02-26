@@ -28,6 +28,7 @@ import org.apache.commons.imaging.formats.tiff.TiffField;
 import org.apache.commons.imaging.formats.tiff.TiffImageMetadata;
 import org.apache.commons.imaging.formats.tiff.TiffImageMetadata.Directory;
 import org.apache.commons.imaging.formats.tiff.TiffImageMetadata.TiffMetadataItem;
+import org.apache.commons.imaging.formats.tiff.constants.ExifTagConstants;
 import org.apache.commons.imaging.formats.tiff.constants.GpsTagConstants;
 import org.apache.commons.imaging.formats.tiff.constants.MicrosoftTagConstants;
 import org.apache.commons.imaging.formats.tiff.constants.TiffDirectoryConstants;
@@ -270,7 +271,10 @@ public final class PhotoFileMetaDataHandler {
     
     if (jpegMetadata != null) {
 
-      final TiffField field = jpegMetadata.findEXIFValueWithExactMatch(TiffTagConstants.TIFF_TAG_IMAGE_WIDTH);
+      TiffField field = jpegMetadata.findEXIFValueWithExactMatch(TiffTagConstants.TIFF_TAG_IMAGE_WIDTH);
+      if (field == null) {
+        field = jpegMetadata.findEXIFValueWithExactMatch(ExifTagConstants.EXIF_TAG_EXIF_IMAGE_WIDTH);
+      }
       if (field == null) {
         LOGGER.severe("Width not found for photo: " + file.getName());
       } else {
@@ -296,7 +300,10 @@ public final class PhotoFileMetaDataHandler {
     
     if (jpegMetadata != null) {
 
-      final TiffField field = jpegMetadata.findEXIFValueWithExactMatch(TiffTagConstants.TIFF_TAG_IMAGE_LENGTH);
+      TiffField field = jpegMetadata.findEXIFValueWithExactMatch(TiffTagConstants.TIFF_TAG_IMAGE_LENGTH);
+      if (field == null) {
+        field = jpegMetadata.findEXIFValueWithExactMatch(ExifTagConstants.EXIF_TAG_EXIF_IMAGE_LENGTH);
+      }
       if (field == null) {
         LOGGER.severe("Length not found for photo: " + file.getName());
       } else {

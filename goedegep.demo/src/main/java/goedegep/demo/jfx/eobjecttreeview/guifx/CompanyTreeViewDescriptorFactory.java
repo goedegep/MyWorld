@@ -7,20 +7,18 @@ import java.util.List;
 import org.eclipse.emf.ecore.EClass;
 
 import goedegep.appgen.TableRowOperation;
-import goedegep.demo.guifx.DemoAppResources;
 import goedegep.emfsample.model.Birthday;
 import goedegep.emfsample.model.EmfSamplePackage;
 import goedegep.emfsample.model.Person;
 import goedegep.jfx.eobjecttreeview.EObjectTreeDescriptor;
 import goedegep.jfx.eobjecttreeview.EObjectTreeItemAttributeDescriptor;
 import goedegep.jfx.eobjecttreeview.EObjectTreeItemAttributeListDescriptor;
+import goedegep.jfx.eobjecttreeview.EObjectTreeItemAttributeListValueDescriptor;
 import goedegep.jfx.eobjecttreeview.EObjectTreeItemClassDescriptor;
 import goedegep.jfx.eobjecttreeview.EObjectTreeItemClassListReferenceDescriptor;
 import goedegep.jfx.eobjecttreeview.EObjectTreeItemClassReferenceDescriptor;
-import goedegep.jfx.eobjecttreeview.EObjectTreeItemAttributeListValueDescriptor;
 import goedegep.jfx.eobjecttreeview.NodeOperationDescriptor;
 import goedegep.jfx.eobjecttreeview.PresentationType;
-import goedegep.resources.ImageSize;
 import goedegep.util.emf.EmfPackageHelper;
 
 public class CompanyTreeViewDescriptorFactory {
@@ -51,7 +49,7 @@ public class CompanyTreeViewDescriptorFactory {
         
     // Company
     // Note: at this level there are no node operations.
-    EObjectTreeItemClassDescriptor eObjectTreeItemClassDescriptor = new EObjectTreeItemClassDescriptor(eClass,
+    EObjectTreeItemClassDescriptor eObjectTreeItemClassDescriptor = new EObjectTreeItemClassDescriptor(
         eObject -> {
             return "My Digital Life";
           }, true, null,
@@ -97,7 +95,7 @@ public class CompanyTreeViewDescriptorFactory {
     // Person
     nodeOperationDescriptors = new ArrayList<>();
     nodeOperationDescriptors.add(new NodeOperationDescriptor(TableRowOperation.NEW_OBJECT, "New employee after this employee"));
-    EObjectTreeItemClassDescriptor eObjectTreeItemClassDescriptor = new EObjectTreeItemClassDescriptor(eClass,
+    EObjectTreeItemClassDescriptor eObjectTreeItemClassDescriptor = new EObjectTreeItemClassDescriptor(
         eObject -> {
           StringBuilder buf = new StringBuilder();
           Person person = (Person) eObject;
@@ -159,7 +157,7 @@ public class CompanyTreeViewDescriptorFactory {
     EClass eClass = companyPackageHelper.getEClass("goedegep.emfsample.model.Birthday");
         
     // Birthday
-    EObjectTreeItemClassDescriptor eObjectTreeItemClassDescriptor = new EObjectTreeItemClassDescriptor(eClass,
+    EObjectTreeItemClassDescriptor eObjectTreeItemClassDescriptor = new EObjectTreeItemClassDescriptor(
         eObject -> {
           StringBuilder buf = new StringBuilder();
           if (eObject != null) {

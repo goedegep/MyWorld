@@ -29,7 +29,7 @@ public class ObjectControlBoolean extends ObjectControlAbstract<Boolean> {
   public ObjectControlBoolean(ComponentFactoryFx componentFactory, String text, boolean selected, boolean isOptional, String toolTipText) {
     super(isOptional);
     
-    checkBox = componentFactory.createCheckBox(toolTipText, selected);  // TODO check that ocSetValue leads to calling ociHandleNewUserInput()
+    checkBox = componentFactory.createCheckBox(text, selected);  // TODO check that ocSetValue leads to calling ociHandleNewUserInput()
     
     checkBox.selectedProperty().addListener((o)-> ociHandleNewUserInput(checkBox));
     

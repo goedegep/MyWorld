@@ -1014,7 +1014,6 @@ class LocationPanel extends VBox {
   private static final String BEFORE_TEXT = "before";
   private static final String AFTER_TEXT = "after";
 
-//  private VacationsWindow vacationsWindow;
   private ComponentFactoryFx componentFactory;
   private ReverseGeoCodePanel reverseGeoCodePanel;
   private VacationsWindow vacationsWindow;

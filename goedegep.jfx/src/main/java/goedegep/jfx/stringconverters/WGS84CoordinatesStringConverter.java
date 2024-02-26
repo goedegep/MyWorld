@@ -8,6 +8,11 @@ import goedegep.geo.WGS84Coordinates;
 public class WGS84CoordinatesStringConverter extends StringConverterAndChecker<WGS84Coordinates> {
   
   private static WGS84CoordinatesStringConverter instance;
+  private WGS84CoordinatesFormatType formatType;
+  
+  public WGS84CoordinatesStringConverter(WGS84CoordinatesFormatType formatType) {
+    this.formatType = formatType;
+  }
 
   /**
    * Get an instance of this WGS84CoordinatesStringConverter.
@@ -16,7 +21,7 @@ public class WGS84CoordinatesStringConverter extends StringConverterAndChecker<W
    */
   public static WGS84CoordinatesStringConverter getInstance() {
     if (instance == null) {
-      instance = new WGS84CoordinatesStringConverter();
+      instance = new WGS84CoordinatesStringConverter(WGS84CoordinatesFormatType.DEGREES_MINUTES_SECONDS);
     }
     
     return instance;
@@ -36,7 +41,16 @@ public class WGS84CoordinatesStringConverter extends StringConverterAndChecker<W
   @Override
   public String toString(WGS84Coordinates coordinates) {
     if (coordinates != null) {
-      return latToString(coordinates.getLatitude()) + " " + lonToString(coordinates.getLongitude());
+      switch (formatType) {
+      case DECIMAL:
+        return coordinates.getLatitude() + ", " + coordinates.getLongitude();
+        
+      case DEGREES_MINUTES_SECONDS:
+        return latToString(coordinates.getLatitude()) + " " + lonToString(coordinates.getLongitude());
+        
+      default:
+        throw new RuntimeException("Unknown format");
+      }
     } else {
       return null;
     }
@@ -89,7 +103,23 @@ public class WGS84CoordinatesStringConverter extends StringConverterAndChecker<W
    */
   @Override
   public WGS84Coordinates fromString(String string) {
-    return null;
+    if (string != null) {
+      switch (formatType) {
+      case DECIMAL:
+        String[] latLongString = string.split(",");
+        double latitude = Double.parseDouble(latLongString[0]);
+        double longitude = Double.parseDouble(latLongString[1]);
+        return new WGS84Coordinates(latitude, longitude);
+        
+      case DEGREES_MINUTES_SECONDS:
+        throw new RuntimeException("Unknown format");
+        
+      default:
+        throw new RuntimeException("Unknown format");
+      }
+    } else {
+      return null;
+    }
   }
   
   /**
@@ -103,4 +133,3 @@ public class WGS84CoordinatesStringConverter extends StringConverterAndChecker<W
   }
 
 }
-

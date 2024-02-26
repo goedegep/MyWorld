@@ -110,7 +110,7 @@ public class PropertyDescriptorsEditorFx extends JfxStage {
 
   private void createAndAddEObjectTreeDescriptorForPropertyDescriptorGroup(EObjectTreeDescriptor eObjectTreeDescriptor, EmfPackageHelper propertiesPackageHelper) {
     EClass eClass = propertiesPackageHelper.getEClass("goedegep.properties.model.PropertyDescriptorGroup");
-    EObjectTreeItemClassDescriptor eObjectTreeItemClassDescriptor = new EObjectTreeItemClassDescriptor(eClass, (eObject) -> "Group of Property Descriptors", true, null);
+    EObjectTreeItemClassDescriptor eObjectTreeItemClassDescriptor = new EObjectTreeItemClassDescriptor((eObject) -> "Group of Property Descriptors", true, null);
     List<NodeOperationDescriptor> nodeOperationDescriptors;
     
     eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(new EObjectTreeItemAttributeDescriptor(PROPERTIES_PACKAGE.getPropertyDescriptorGroup_Name(), "Name", null));
@@ -137,7 +137,7 @@ public class PropertyDescriptorsEditorFx extends JfxStage {
     nodeOperationDescriptors.add(new NodeOperationDescriptor(TableRowOperation.MOVE_OBJECT_DOWN, "Move Property Descriptor down"));
     nodeOperationDescriptors.add(new NodeOperationDescriptor(TableRowOperation.DELETE_OBJECT, "Remove PropertyDescriptor"));
     
-    EObjectTreeItemClassDescriptor eObjectTreeItemClassDescriptor = new EObjectTreeItemClassDescriptor(propertiesPackageHelper.getEClass("goedegep.properties.model.PropertyDescriptor"),
+    EObjectTreeItemClassDescriptor eObjectTreeItemClassDescriptor = new EObjectTreeItemClassDescriptor(
         eObject -> {
           StringBuilder buf = new StringBuilder();
           PropertyDescriptor propertyDescriptor = (PropertyDescriptor) eObject;
@@ -170,7 +170,7 @@ public class PropertyDescriptorsEditorFx extends JfxStage {
     nodeOperationDescriptors.add(new NodeOperationDescriptor(TableRowOperation.MOVE_OBJECT_DOWN, "Move Property Descriptor down"));
     nodeOperationDescriptors.add(new NodeOperationDescriptor(TableRowOperation.DELETE_OBJECT, "Remove PropertyDescriptor"));
    
-    EObjectTreeItemClassDescriptor eObjectTreeItemClassDescriptor = new EObjectTreeItemClassDescriptor(propertiesPackageHelper.getEClass("goedegep.properties.model.FilePropertyDescriptor"),
+    EObjectTreeItemClassDescriptor eObjectTreeItemClassDescriptor = new EObjectTreeItemClassDescriptor(
         eObject -> {
           StringBuilder buf = new StringBuilder();
           PropertyDescriptor propertyDescriptor = (PropertyDescriptor) eObject;

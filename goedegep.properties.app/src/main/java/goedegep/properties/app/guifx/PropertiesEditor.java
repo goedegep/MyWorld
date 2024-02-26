@@ -330,7 +330,7 @@ public class PropertiesEditor extends JfxStage {
    */
   private void createAndAddEObjectTreeDescriptorForEditablePropertyGroup(EObjectTreeDescriptor eObjectTreeDescriptor, EmfPackageHelper propertiesPackageHelper) {
     EClass eClass = editablePropertyGroup;
-    EObjectTreeItemClassDescriptor eObjectTreeItemClassDescriptor = new EObjectTreeItemClassDescriptor(eClass, (eObject) -> "Group of user changeable properties", true, null);
+    EObjectTreeItemClassDescriptor eObjectTreeItemClassDescriptor = new EObjectTreeItemClassDescriptor((eObject) -> "Group of user changeable properties", true, null);
     
     eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(new EObjectTreeItemAttributeDescriptor(editablePropertyGroup_name, "Name", null));
     eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(new EObjectTreeItemClassListReferenceDescriptor(editablePropertyGroup_editableProperties, "User changeable properties", true, null));
@@ -347,7 +347,7 @@ public class PropertiesEditor extends JfxStage {
    */
   private void createAndAddEObjectTreeDescriptorForEditableProperty(EObjectTreeDescriptor eObjectTreeDescriptor, EmfPackageHelper propertiesPackageHelper) {
     EClass eClass = editableProperty;
-    EObjectTreeItemClassDescriptor eObjectTreeItemClassDescriptor = new EObjectTreeItemClassDescriptor(eClass, (eObject) -> (String) eObject.eGet(editableProperty_displayName), true, null);
+    EObjectTreeItemClassDescriptor eObjectTreeItemClassDescriptor = new EObjectTreeItemClassDescriptor((eObject) -> (String) eObject.eGet(editableProperty_displayName), true, null);
     
     eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(new EObjectTreeItemAttributeDescriptor(editableProperty_description, "Description", PresentationType.MULTI_LINE_TEXT, null));
     eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(new EObjectTreeItemAttributeDescriptor(editableProperty_defaultValue, "Default value", null));

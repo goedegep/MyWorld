@@ -2,14 +2,7 @@ package goedegep.jfx.eobjecttreeview;
 
 import java.util.logging.Logger;
 
-import org.eclipse.emf.ecore.EClassifier;
-import org.eclipse.emf.ecore.EEnum;
-import org.eclipse.emf.ecore.EObject;
-
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.scene.Node;
-import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.TreeItem;
 
@@ -60,6 +53,7 @@ public abstract class EObjectTreeCellHelperTemplate<I extends EObjectTreeItem, D
   /**
    * {@inheritDoc}
    */
+  @SuppressWarnings("unchecked")
   @Override
   public void updateItem(Object value) {
     LOGGER.info("=> item=" + (value != null ? value.toString() : "(null)"));
@@ -75,7 +69,7 @@ public abstract class EObjectTreeCellHelperTemplate<I extends EObjectTreeItem, D
     }
     
     treeItem = (I) eObjectTreeCell.getTreeItem();
-    eObjectTreeCell.setStyle(null);  // TODO if I don't use setText, this isn't needed.
+    eObjectTreeCell.setStyle(null);
     
     setEObjectTreeItemDescriptor();
     

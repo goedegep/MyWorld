@@ -121,6 +121,10 @@ private static final Logger LOGGER = Logger.getLogger(WGS84BoundingBox.class.get
     return (latitude >= north)  &&  (latitude <= south)  &&  (longitude >= west)  &&  (longitude <= east);
   }
   
+  public boolean intersects(WGS84BoundingBox boundingBox) {
+    return ! (boundingBox.getWest() > getEast() || boundingBox.getEast() < getWest() || boundingBox.getNorth() < getSouth() || boundingBox.getSouth() > getNorth());
+  }
+  
   public String toString() {
     return String.valueOf(west) + ", " + String.valueOf(north) + ", " + String.valueOf(east) + ", " + String.valueOf(south);
   }

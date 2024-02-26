@@ -8,4 +8,5 @@ module goedegep.gpx.model {
   requires org.eclipse.emf.ecore.xmi;
   requires goedegep.geo;
   requires java.logging;
+  requires goedegep.util;
 }

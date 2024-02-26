@@ -1,7 +1,8 @@
 module goedegep.vacations.app {
-  exports goedegep.vacations.app;
   exports goedegep.vacations.app.logic;
   exports goedegep.vacations.app.guifx;
+  
+  opens goedegep.vacations.app.logic;
 
   requires atlis.location.base;
   requires transitive com.atlis.location.nominatim;
@@ -47,4 +48,5 @@ module goedegep.vacations.app {
   requires goedegep.mapview;
   requires goedegep.resources;
   requires transitive goedegep.gpx.app;
+  requires goedegep.gpx10.model;
 }

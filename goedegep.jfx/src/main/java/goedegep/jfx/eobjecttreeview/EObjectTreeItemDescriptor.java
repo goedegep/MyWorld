@@ -76,6 +76,12 @@ public abstract class EObjectTreeItemDescriptor {
   public Function<EObject, String> getBuildText() {
     return buildText;
   }
+  
+  public EObjectTreeItemDescriptor setBuildText(Function<EObject, String> buildText) {
+    this.buildText = buildText;
+    
+    return this;
+  }
 
   public java.util.function.Function<Object, Image> getNodeIconFunction() {
     return nodeIconFunction;

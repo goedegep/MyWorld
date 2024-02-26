@@ -51,6 +51,35 @@ public class VacationsUtils {
   private static final Logger LOGGER = Logger.getLogger(VacationsUtils.class.getName());
   
   /**
+   * For a given treeItem, check whether it is the vacations attribute of a Vacations object. If so, return the vacations list, else return null.
+   * 
+   * @param treeItem the <code>TreeItem</code> to check.
+   * @return the vacations list, or null.
+   */
+  public static Vacation getVacationForObject(Object object) {
+    LOGGER.severe("=> object=" + (object != null ? object.toString() : "(null)"));
+    
+    if (object == null) {
+      LOGGER.info("<= (null)");
+      return null;
+    }
+    
+    if (object instanceof EObject eObject) {
+      while ((eObject != null)  &&  !(eObject instanceof Vacation)) {
+        eObject = eObject.eContainer();
+      }
+      
+      if (eObject instanceof Vacation vacation) {
+        LOGGER.severe("<= vacation=" + vacation);
+        return vacation;
+      }
+    }
+        
+    LOGGER.severe("<= vacation=" + "(null)");
+    return null;
+  }
+  
+  /**
    * Get all geo-locations of a vacation.
    * 
    * @param vacation the <code>Vacation</code> for which the locations are to be collected.

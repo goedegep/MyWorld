@@ -1,6 +1,5 @@
 package goedegep.jfx.eobjecttreeview;
 
-import java.util.Objects;
 import java.util.logging.Logger;
 
 import org.eclipse.emf.ecore.EStructuralFeature;
@@ -90,26 +89,14 @@ public class EObjectTreeItemForAttributeListValue extends EObjectTreeItem {
    */
   public void handleValueChanged(EStructuralFeature eStructuralFeature, Object newValue) {
     LOGGER.info("=> " + toString());
-    setValue(newValue);
-    
-//    EObjectTreeItem parentTreeItem = (EObjectTreeItem) getParent();
-//    
-//    if (parentTreeItem.isFirstTimeChildren) {
-//      // The children haven't been built yet, so we don't have to add anything.
-//      LOGGER.severe("Children haven't been built yet, so no action");
-//      return;
-//    }
-//    
-//    for (TreeItem<Object> child: parentTreeItem.getChildren()) {
-//      EObjectTreeItem childEObjectTreeItem = (EObjectTreeItem) child;
-//      if (eStructuralFeature.equals(childEObjectTreeItem.getEStructuralFeature())) {
-//        LOGGER.severe("child found, going to rebuild children");
-//        setExpanded(true);  // hack. This way the TreeView seems to re-evaluate whether the item is a leaf.
-//        childEObjectTreeItem.rebuildChildren();
-//        break;
-//      }
-//    }
-    
+    setValue(newValue);    
+  }
+  
+  /**
+   *{@inheritDoc}
+   */
+  public String getText() {
+    return getValue() != null ? getValue().toString() : "";
   }
 
   /**

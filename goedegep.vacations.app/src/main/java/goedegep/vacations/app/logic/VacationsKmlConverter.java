@@ -1,4 +1,4 @@
-package goedegep.vacations.app;
+package goedegep.vacations.app.logic;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -6,7 +6,6 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.nio.file.Files;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -21,18 +20,15 @@ import org.commonmark.parser.Parser;
 import org.commonmark.renderer.html.HtmlRenderer;
 import org.eclipse.emf.ecore.EObject;
 
-import de.micromata.opengis.kml.v_2_2_0.Coordinate;
 import de.micromata.opengis.kml.v_2_2_0.Document;
 import de.micromata.opengis.kml.v_2_2_0.Feature;
 import de.micromata.opengis.kml.v_2_2_0.Folder;
-import de.micromata.opengis.kml.v_2_2_0.Geometry;
 import de.micromata.opengis.kml.v_2_2_0.Icon;
 import de.micromata.opengis.kml.v_2_2_0.IconStyle;
 import de.micromata.opengis.kml.v_2_2_0.Kml;
 import de.micromata.opengis.kml.v_2_2_0.KmlFactory;
 import de.micromata.opengis.kml.v_2_2_0.LineString;
 import de.micromata.opengis.kml.v_2_2_0.Placemark;
-import de.micromata.opengis.kml.v_2_2_0.Point;
 import de.micromata.opengis.kml.v_2_2_0.Style;
 import de.micromata.opengis.kml.v_2_2_0.StyleMap;
 import de.micromata.opengis.kml.v_2_2_0.StyleState;
@@ -44,8 +40,6 @@ import goedegep.util.datetime.FlexDateFormat;
 import goedegep.util.html.HtmlUtil;
 import goedegep.util.img.PhotoFileMetaDataHandler;
 import goedegep.util.sgml.SgmlUtil;
-import goedegep.vacations.app.logic.VacationToTextConverterAbstract;
-import goedegep.vacations.app.logic.VacationsUtils;
 import goedegep.vacations.model.Day;
 import goedegep.vacations.model.Location;
 import goedegep.vacations.model.Picture;
@@ -53,7 +47,6 @@ import goedegep.vacations.model.Text;
 import goedegep.vacations.model.Vacation;
 import goedegep.vacations.model.VacationElement;
 import goedegep.vacations.model.Vacations;
-import goedegep.vacations.model.VacationsFactory;
 import goedegep.vacations.model.VacationsPackage;
 
 /**
@@ -667,86 +660,5 @@ public class VacationsKmlConverter extends VacationToTextConverterAbstract {
     lineNodes.forEach((lineNode) -> {
       line.addToCoordinates(lineNode.getLongitude(), lineNode.getLatitude());
     });
-  }
-
-  /**
-   * Get a list of <code>Location</code>s from a KML file.
-   * 
-   * @param file The KML file to get the locations from.
-   * @return A list of all locations (Placemarks) in the KML file.
-   */
-  public List<Location> getLocationsFromKmlFile(File file) {
-    List<Location> locations = new ArrayList<>();
-    
-    Kml kml = Kml.unmarshal(file);
-    Feature feature = kml.getFeature();
-    if (!(feature instanceof Document)) {
-      return locations;
-    }
-    
-    Document document = (Document) feature;
-    String name = document.getName();
-    LOGGER.severe("name=" + name);
-    List<Feature> documentFeatures = document.getFeature();
-    for (Feature documentFeature: documentFeatures) {
-      if (documentFeature instanceof Folder) {
-        getLocationsFomKmlFolder((Folder) documentFeature, locations);
-      }
-     }
-    
-    return locations;
-  }
-
-  /**
-   * Get the locations from within a KML Folder.
-   * 
-   * @param folder the KML Folder to get the locations from
-   * @param locations the list to add the locations to
-   */
-  private void getLocationsFomKmlFolder(Folder folder, List<Location> locations) {
-    List<Feature> features = folder.getFeature();
-    for (Feature feature: features) {
-      if (feature instanceof Folder) {
-        getLocationsFomKmlFolder((Folder) feature, locations);
-      } else if (feature instanceof Placemark) {
-        Location location = placemarkToLocation((Placemark) feature);
-        locations.add(location);
-      }
-    }
-  }
-
-  /**
-   * Create a <code>Location</code> for a <code>Placemark</code>.
-   * 
-   * @param placemark The <code>Placemark</code> for which to create a <code>Location</code>.
-   * @return the <code>Location</code> created for the <code>placemark</code>.
-   */
-  private Location placemarkToLocation(Placemark placemark) {
-    VacationsFactory vacationsFactory = VacationsFactory.eINSTANCE;
-    Location location = vacationsFactory.createLocation();
-    
-    String locationName = placemark.getName();
-    if (locationName != null  &&  !locationName.isEmpty()) {
-      location.setName(locationName);
-    }
-    
-    String description = placemark.getDescription();
-    if (description != null  &&  !description.isEmpty()) {
-      location.setDescription(description);
-    }
-    
-    Geometry geometry = placemark.getGeometry();
-    if (geometry instanceof Point) {
-      Point point = (Point) geometry;
-      List<Coordinate> coordinates = point.getCoordinates();
-      LOGGER.severe("coordinates.size()" + coordinates.size());
-      if (coordinates.size() == 1) {
-        Coordinate coordinate = coordinates.get(0);
-        location.setLatitude(coordinate.getLatitude());
-        location.setLongitude(coordinate.getLongitude());
-      }
-    }
-    
-    return location;
   }
 }

@@ -63,6 +63,12 @@
       <genOperations ecoreOperation="GPX.ecore#//GpxType/getCumulativeDescent"/>
       <genOperations ecoreOperation="GPX.ecore#//GpxType/getStartElevation"/>
       <genOperations ecoreOperation="GPX.ecore#//GpxType/getEndElevation"/>
+      <genOperations ecoreOperation="GPX.ecore#//GpxType/setStartTime">
+        <genParameters ecoreParameter="GPX.ecore#//GpxType/setStartTime/startTime"/>
+      </genOperations>
+      <genOperations ecoreOperation="GPX.ecore#//GpxType/setEndTime">
+        <genParameters ecoreParameter="GPX.ecore#//GpxType/setEndTime/endTime"/>
+      </genOperations>
     </genClasses>
     <genClasses ecoreClass="GPX.ecore#//LinkType">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute GPX.ecore#//LinkType/text"/>
@@ -116,6 +122,12 @@
       <genOperations ecoreOperation="GPX.ecore#//TrksegType/getCumulativeDescent"/>
       <genOperations ecoreOperation="GPX.ecore#//TrksegType/getStartElevation"/>
       <genOperations ecoreOperation="GPX.ecore#//TrksegType/getEndElevation"/>
+      <genOperations ecoreOperation="GPX.ecore#//TrksegType/setStartTime">
+        <genParameters ecoreParameter="GPX.ecore#//TrksegType/setStartTime/startTime"/>
+      </genOperations>
+      <genOperations ecoreOperation="GPX.ecore#//TrksegType/setEndTime">
+        <genParameters ecoreParameter="GPX.ecore#//TrksegType/setEndTime/endTime"/>
+      </genOperations>
     </genClasses>
     <genClasses ecoreClass="GPX.ecore#//TrkType">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute GPX.ecore#//TrkType/name"/>
@@ -135,6 +147,12 @@
       <genOperations ecoreOperation="GPX.ecore#//TrkType/getCumulativeDescent"/>
       <genOperations ecoreOperation="GPX.ecore#//TrkType/getStartElevation"/>
       <genOperations ecoreOperation="GPX.ecore#//TrkType/getEndElevation"/>
+      <genOperations ecoreOperation="GPX.ecore#//TrkType/setStartTime">
+        <genParameters ecoreParameter="GPX.ecore#//TrkType/setStartTime/startTime"/>
+      </genOperations>
+      <genOperations ecoreOperation="GPX.ecore#//TrkType/setEndTime">
+        <genParameters ecoreParameter="GPX.ecore#//TrkType/setEndTime/endTime"/>
+      </genOperations>
     </genClasses>
     <genClasses ecoreClass="GPX.ecore#//WptType">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute GPX.ecore#//WptType/ele"/>

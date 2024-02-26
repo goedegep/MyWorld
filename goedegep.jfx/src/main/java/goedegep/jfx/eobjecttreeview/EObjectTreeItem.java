@@ -324,6 +324,15 @@ public abstract class EObjectTreeItem extends TreeItem<Object> {
   }
   
   /**
+   * This method shall return a text which represents as much as possible what is shown in the node.
+   * <p>
+   * This method is a kind of a toString method, which can e.g. be used to print a textual representation of a tree view.
+   * 
+   * @return an, as good as possible, textual representation of the cell.
+   */
+  public abstract String getText();
+  
+  /**
    * {@inheritDoc}
    */
   @Override

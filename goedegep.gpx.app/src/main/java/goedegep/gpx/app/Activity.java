@@ -23,8 +23,10 @@ import javafx.scene.image.Image;
  */
 public enum Activity {
   CANOEING(new String[] {"kanotocht"}, ImageResource.CANOEING),
-  CAR_RIDE(new String[] {"autorit"}, ImageResource.CAR),
+  CAR_RIDE(new String[] {"autorit", "driving"}, ImageResource.CAR),
+  BUS_RIDE(new String[] {"busrit", "on a bus"}, ImageResource.BUS),
   CYCLING(new String[] {"fietstocht"}, ImageResource.CYCLING),
+  FLYING(new String[] {"vliegen", "flying"}, ImageResource.PLANE_TAKEOFF),
   SKIÏNG(new String[] {"skiën"}, ImageResource.SKIÏNG),
   WALKING(new String[] {"wandeling"}, ImageResource.WALKING);
   

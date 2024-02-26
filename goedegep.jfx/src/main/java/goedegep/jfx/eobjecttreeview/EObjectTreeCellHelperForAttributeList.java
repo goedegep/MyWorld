@@ -20,9 +20,7 @@ import javafx.scene.image.ImageView;
 public class EObjectTreeCellHelperForAttributeList extends EObjectTreeCellHelperTemplate<EObjectTreeItemForAttributeList, EObjectTreeItemAttributeListDescriptor, ImageView> {
   private static final Logger LOGGER = Logger.getLogger(EObjectTreeCellHelperForAttributeList.class.getName());
   
-//  private EObjectTreeItemAttributeListDescriptor itemDescriptor;
   private Image defaultImage = new Image(EObjectTreeCellHelperForObjectList.class.getResourceAsStream("List 225x225.png"), 36, 18, true, true);
-  private final ImageView listIcon = new ImageView();
   
   /**
    * Constructor.
@@ -55,10 +53,9 @@ public class EObjectTreeCellHelperForAttributeList extends EObjectTreeCellHelper
   }
   
   /**
-   * Create a context menu for this cell.
-   * 
-   * @return a context menu derived from the node operation descriptors, or null if no node operation descriptors are specified.
+   * {@inheritDoc}
    */
+  @Override
   protected ContextMenu createContextMenu(Object object) {
     LOGGER.info("=>");
     List<NodeOperationDescriptor> nodeOperationDescriptors = itemDescriptor.getNodeOperationDescriptors();
@@ -117,8 +114,6 @@ public class EObjectTreeCellHelperForAttributeList extends EObjectTreeCellHelper
     }
     
     graphic.setImage(image);
-    
-    eObjectTreeCell.setGraphic(listIcon);
     
     LOGGER.info("<=");
   }

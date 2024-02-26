@@ -244,6 +244,13 @@ public class EObjectTreeItemForAttributeList extends EObjectTreeItem {
   }
   
   /**
+   *{@inheritDoc}
+   */
+  public String getText() {
+    return eObjectTreeItemAttributeListDescriptor.getLabelText();
+  }
+  
+  /**
    * {@inheritDoc}
    */
   @Override

@@ -7,7 +7,6 @@ import java.util.Set;
 import goedegep.jfx.ComponentFactoryFx;
 import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.JfxStage;
-import goedegep.types.model.FileReference;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
@@ -53,7 +52,7 @@ public class VacationCheckResultWindow extends JfxStage {
     setScene(new Scene(mainPanel, 1700, 900));
   }
 
-  private void addReferencesNotSetPanel(List<FileReference> fileReferencesNotSet) {
+  private void addReferencesNotSetPanel(List<String> fileReferencesNotSet) {
     VBox vBox = componentFactory.createVBox(6.0, 6.0);
     
     Label label;
@@ -61,19 +60,24 @@ public class VacationCheckResultWindow extends JfxStage {
     label = componentFactory.createStrongLabel("References for which the 'file' attribute isn't set:");
     vBox.getChildren().add(label);
     
-    for (FileReference fileReference: fileReferencesNotSet) {
-      label = componentFactory.createLabel("FileReference not set: " + fileReference.toString());
+    for (String fileReference: fileReferencesNotSet) {
+      label = componentFactory.createLabel("FileReference not set: " + fileReference);
       vBox.getChildren().add(label);
     }
     
     mainPanel.getChildren().add(vBox);
   }
 
-  private void addNonExistingReferencesPanel(List<FileReference> nonExistingReferences) {
+  private void addNonExistingReferencesPanel(List<String> nonExistingReferences) {
     VBox vBox = componentFactory.createVBox(6.0, 6.0);
     
-    for (FileReference fileReference: nonExistingReferences) {
-      Label label = componentFactory.createLabel("FileReference to non existing file: " + fileReference.toString());
+    Label label;
+    
+    label = componentFactory.createStrongLabel("References for which the referred file doesn't exist:");
+    vBox.getChildren().add(label);
+    
+    for (String fileReference: nonExistingReferences) {
+      label = componentFactory.createLabel("FileReference to non existing file: " + fileReference);
       vBox.getChildren().add(label);
     }
     
@@ -120,12 +124,12 @@ public class VacationCheckResultWindow extends JfxStage {
     /**
      * References for which the 'file' attribute isn't set.
      */
-    private List<FileReference> fileReferencesNotSet = null;
+    private List<String> fileReferencesNotSet = null;
     
     /**
      * References to non-existing files.
      */
-    private List<FileReference> nonExistingReferences = null;
+    private List<String> nonExistingReferences = null;
     
     /**
      * Files in the vacation folder which aren't referred to.
@@ -151,7 +155,7 @@ public class VacationCheckResultWindow extends JfxStage {
      * 
      * @param fileReferencesNotSet the list of file references for which the 'file' attribute isn't set.
      */
-    public void setReferencesNotSet(List<FileReference> fileReferencesNotSet) {
+    public void setReferencesNotSet(List<String> fileReferencesNotSet) {
       this.fileReferencesNotSet = fileReferencesNotSet;
     }
 
@@ -160,7 +164,7 @@ public class VacationCheckResultWindow extends JfxStage {
      * 
      * @param nonExistingReferences a list of non-existing file references.
      */
-    public void setNonExistingReferences(List<FileReference> nonExistingReferences) {
+    public void setNonExistingReferences(List<String> nonExistingReferences) {
       this.nonExistingReferences = nonExistingReferences;
     }
 

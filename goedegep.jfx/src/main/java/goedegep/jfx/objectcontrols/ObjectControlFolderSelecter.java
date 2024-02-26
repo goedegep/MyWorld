@@ -120,7 +120,6 @@ public class ObjectControlFolderSelecter extends ObjectControlFileOrFolderSelect
    * <li>Its title is set to {@code fileChooserTitle}.</li>
    * <li>Any extension filters, defined by {@code extensionFilters}, are added.</li>
    * <li>If there is a 'selected extension filter' defined, via {@code selectedExtensionFilter}, this filter is selected.</li>
-   * <li></li>
    * </ul>
    * 
    */
@@ -143,6 +142,7 @@ public class ObjectControlFolderSelecter extends ObjectControlFileOrFolderSelect
 
     if (folderSelectedByDirectoryChooser != null) {
       ociHandleNewUserInput(directoryChooser);
+      setPathTextFieldText();
     }
   }
 

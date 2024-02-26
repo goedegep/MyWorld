@@ -1,4 +1,4 @@
-package goedegep.vacations.app;
+package goedegep.vacations.app.logic;
 
 
 import java.util.logging.Logger;
@@ -6,7 +6,6 @@ import java.util.logging.Logger;
 import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.JfxUtil;
 import goedegep.poi.app.guifx.POIIcons;
-import goedegep.vacations.app.logic.VacationToHtmlConverter;
 import goedegep.vacations.model.Location;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Dialog;

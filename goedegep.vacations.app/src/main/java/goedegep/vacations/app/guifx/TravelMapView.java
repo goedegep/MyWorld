@@ -21,7 +21,6 @@ public class TravelMapView extends MapView implements ObjectSelector<Object> {
   @SuppressWarnings("unused")
   private static final Logger LOGGER = Logger.getLogger(TravelMapView.class.getName());
 
-//  private ComponentFactoryFx componentFactory = null;
   private MapRelatedItemsLayer mapRelatedItemsLayer;
   private GPXLayer trackLayer;
   private SearchResultLayer searchResultLayer;
@@ -30,7 +29,6 @@ public class TravelMapView extends MapView implements ObjectSelector<Object> {
   private List<ObjectSelectionListener<Object>> objectSelectionListeners = new ArrayList<>();
 
   public TravelMapView(CustomizationFx customization, Stage ownerWindow, POIIcons poiIcons, Supplier<LocationSearchWindow> searchWindowSupplier) {
-//    componentFactory = customization.getComponentFactoryFx();
     
     mapRelatedItemsLayer = new MapRelatedItemsLayer(customization, poiIcons, ownerWindow);
     addLayer(mapRelatedItemsLayer);
@@ -66,6 +64,10 @@ public class TravelMapView extends MapView implements ObjectSelector<Object> {
   
   public SearchResultLayer getSearchResultLayer() {
     return searchResultLayer;
+  }
+  
+  public void removeControlsLayer() {
+    removeLayer(controlsLayer);
   }
 
   @Override

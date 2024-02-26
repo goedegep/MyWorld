@@ -1,6 +1,7 @@
 package goedegep.util.datetime;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -29,6 +30,15 @@ public final class DateUtil {
   }
   
   /**
+   * 'Temporary' conversion function.
+   * @param localDate the LocalDate to be translated to a Date.
+   * @return a Date representation of the localDate.
+   */
+  public static Date localDateTimeToDate(LocalDateTime localDateTime) {
+    return createDate(localDateTime.getDayOfMonth(), localDateTime.getMonthValue(), localDateTime.getYear(), localDateTime.getHour(), localDateTime.getMinute());
+  }
+  
+  /**
    * 'Temporary'conversion function.
    * 
    * @param date the Date to be translated to a LocalDate.
@@ -37,6 +47,17 @@ public final class DateUtil {
   public static LocalDate dateToLocalDate(Date date) {
     LOGGER.info("=> date=" + getDayOfMonth(date) + "-" + getDateMonth(date) + "-" + getDateYear(date));
     return LocalDate.of(getDateYear(date), getDateMonth(date), getDayOfMonth(date));
+  }
+  
+  /**
+   * 'Temporary'conversion function.
+   * 
+   * @param date the Date to be translated to a LocalDateTime.
+   * @return a LocalDateTime representation of the date.
+   */
+  public static LocalDateTime dateToLocalDateTime(Date date) {
+    LOGGER.info("=> date=" + getDayOfMonth(date) + "-" + getDateMonth(date) + "-" + getDateYear(date));
+    return LocalDateTime.of(getDateYear(date), getDateMonth(date), getDayOfMonth(date), getHour(date), getMinute(date), getSecond(date));
   }
   
   /**
@@ -58,6 +79,17 @@ public final class DateUtil {
    */
   public static Date createDate(int day, int month, int year) {
     return (new GregorianCalendar(year, month - 1, day)).getTime();
+  }
+  
+  /**
+   * Create a Date.
+   * @param day day of the month, range 1 .. 31
+   * @param month month, range 1 .. 12
+   * @param year the year
+   * @return
+   */
+  public static Date createDate(int day, int month, int year, int hour, int minute) {
+    return (new GregorianCalendar(year, month - 1, day, hour, minute)).getTime();
   }
   
   /**
@@ -91,6 +123,39 @@ public final class DateUtil {
     Calendar calendar = Calendar.getInstance();
     calendar.setTime(date);
     return calendar.get(Calendar.DAY_OF_MONTH);
+  }
+  
+  /**
+   * Get the hour of a <code>Date</code>
+   * @param date the <code>Date</code>
+   * @return the hour value of <code>date</code>
+   */
+  public static int getHour(Date date) {
+    Calendar calendar = Calendar.getInstance();
+    calendar.setTime(date);
+    return calendar.get(Calendar.HOUR_OF_DAY);
+  }
+  
+  /**
+   * Get the minute of a <code>Date</code>
+   * @param date the <code>Date</code>
+   * @return the minute value of <code>date</code>
+   */
+  public static int getMinute(Date date) {
+    Calendar calendar = Calendar.getInstance();
+    calendar.setTime(date);
+    return calendar.get(Calendar.MINUTE);
+  }
+  
+  /**
+   * Get the second of a <code>Date</code>
+   * @param date the <code>Date</code>
+   * @return the second value of <code>date</code>
+   */
+  public static int getSecond(Date date) {
+    Calendar calendar = Calendar.getInstance();
+    calendar.setTime(date);
+    return calendar.get(Calendar.SECOND);
   }
   
   /**

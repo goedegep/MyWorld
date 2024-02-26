@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.logging.Logger;
 
+import org.eclipse.emf.common.util.EMap;
 import org.eclipse.emf.common.util.WrappedException;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 
@@ -273,6 +274,7 @@ public class GPXWindow extends JfxStage {
       }
     }
     
+    // Create minimal DocumentRoot
     documentRoot = gpxResource.newEObject();
     
     handleNewGpxFile();
@@ -311,10 +313,10 @@ public class GPXWindow extends JfxStage {
   /**
    * Open a GPX file.
    * 
-   * @param gpxFile
+   * @param gpxFile - the GPX file to open.
    */
   private void openGpxFile(File gpxFile) {
-    LOGGER.info("Opening: " + gpxFile.getAbsolutePath());
+    LOGGER.severe("Opening: " + gpxFile.getAbsolutePath());
     
     GpxVersion gpxVersion = null;
     try {
@@ -325,6 +327,7 @@ public class GPXWindow extends JfxStage {
           "The file '" + gpxFile.getAbsolutePath() + "' does not exist.")
       .showAndWait();
     }
+    
     switch (gpxVersion) {
     case VERSION_1_0:
       informUserAboutConversion(gpxFile);
@@ -367,6 +370,13 @@ public class GPXWindow extends JfxStage {
       break;
     }
 
+  }
+  
+  public void setDocumentRoot(DocumentRoot documentRoot) {
+    gpxResource.setEObject(documentRoot);
+    this.documentRoot = documentRoot;
+
+    handleNewGpxFile();
   }
   
   /**
@@ -462,7 +472,7 @@ public class GPXWindow extends JfxStage {
       if (mapCenter != null) {
         mapView.flyTo(0.0, mapCenter, 2);
       }
-    }
+    }    
   }
 
   private void importTrackSegments() {
