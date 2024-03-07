@@ -689,13 +689,13 @@ public class EObjectTreeItemForObject extends EObjectTreeItem {
     EObject eObject = (EObject) getValue();
     
     if (hasReferenceWithPresentationInfo()) {
-      if (eObjectTreeItemClassReferenceDescriptor.getBuildText() != null) {
-        labelText = eObjectTreeItemClassReferenceDescriptor.getBuildText().apply(eObject);
+      if (eObjectTreeItemClassReferenceDescriptor.getNodeTextFunction() != null) {
+        labelText = eObjectTreeItemClassReferenceDescriptor.getNodeTextFunction().apply(eObject);
       }
     } else {
       EObjectTreeItemClassDescriptor classDescriptor = getClassDescriptor();
-      if (classDescriptor.getBuildText() != null) {
-        labelText = classDescriptor.getBuildText().apply(eObject);
+      if (classDescriptor.getNodeTextFunction() != null) {
+        labelText = classDescriptor.getNodeTextFunction().apply(eObject);
       }
     }
     
@@ -719,7 +719,7 @@ public class EObjectTreeItemForObject extends EObjectTreeItem {
    */
   boolean hasReferenceWithPresentationInfo() {
     return eObjectTreeItemClassReferenceDescriptor != null &&
-      (eObjectTreeItemClassReferenceDescriptor.getBuildText() != null  ||
+      (eObjectTreeItemClassReferenceDescriptor.getNodeTextFunction() != null  ||
           eObjectTreeItemClassReferenceDescriptor.isStrongText()  ||
           eObjectTreeItemClassReferenceDescriptor.getNodeIconFunction() != null);
   }

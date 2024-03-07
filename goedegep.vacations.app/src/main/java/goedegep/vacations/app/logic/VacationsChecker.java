@@ -21,9 +21,9 @@ import org.eclipse.emf.common.util.TreeIterator;
 import org.eclipse.emf.ecore.EObject;
 
 import goedegep.jfx.eobjecttreeview.EObjectTreeItem;
+import goedegep.jfx.eobjecttreeview.EObjectTreeView;
 import goedegep.types.model.FileReference;
 import goedegep.util.string.StringUtil;
-import goedegep.vacations.app.guifx.VacationsTreeView;
 import goedegep.vacations.model.Vacation;
 import goedegep.vacations.model.VacationElement;
 import goedegep.vacations.model.Vacations;
@@ -42,7 +42,7 @@ public class VacationsChecker {
    * @param vacation the Vacation structure to check
    * @return a list of file references which don't have the 'file' attribute set, or null if there are no errors.
    */
-  public static List<String> checkThatAllReferencesAreSet(VacationsTreeView treeView, Vacation vacation) {
+  public static List<String> checkThatAllReferencesAreSet(EObjectTreeView treeView, Vacation vacation) {
     List<String> fileReferencesNotSet = null;
     
     TreeIterator<EObject> vacationIterator = vacation.eAllContents();
@@ -70,7 +70,7 @@ public class VacationsChecker {
    * @param objectText an optional text for the {@code eObject} itself.
    * @return a textual representation for a path from a vacation to the {@code eObject}.
    */
-  private static String getReferencePathFromTreeView(VacationsTreeView treeView, EObject eObject, String objectText) {
+  private static String getReferencePathFromTreeView(EObjectTreeView treeView, EObject eObject, String objectText) {
     LOGGER.severe("=> eObject" + eObject.toString());
     
     EObjectTreeItem treeItem = treeView.findTreeItem(eObject);
@@ -105,7 +105,7 @@ public class VacationsChecker {
    * @param vacation the Vacation structure to check
    * @return a list of file references which refer to files that don't exist, or null if there are no errors.
    */
-  public static List<String> checkThatAllReferencesExist(VacationsTreeView treeView, Vacation vacation) {
+  public static List<String> checkThatAllReferencesExist(EObjectTreeView treeView, Vacation vacation) {
     List<String> fileReferencesNotFound = null;
     
     TreeIterator<EObject> vacationIterator = vacation.eAllContents();

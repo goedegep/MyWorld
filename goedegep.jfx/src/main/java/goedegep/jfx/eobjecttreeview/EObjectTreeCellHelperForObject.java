@@ -482,12 +482,12 @@ public class EObjectTreeCellHelperForObject extends EObjectTreeCellHelperTemplat
     EObject eObject = (EObject) value;
     
     if (hasReferenceWithPresentationInfo()) {
-      if (itemDescriptor.getBuildText() != null) {
-        labelText = itemDescriptor.getBuildText().apply(eObject);
+      if (itemDescriptor.getNodeTextFunction() != null) {
+        labelText = itemDescriptor.getNodeTextFunction().apply(eObject);
       }
     } else {
-      if (classDescriptor.getBuildText() != null) {
-        labelText = classDescriptor.getBuildText().apply(eObject);
+      if (classDescriptor.getNodeTextFunction() != null) {
+        labelText = classDescriptor.getNodeTextFunction().apply(eObject);
       }
     }
     
@@ -516,7 +516,7 @@ public class EObjectTreeCellHelperForObject extends EObjectTreeCellHelperTemplat
    */
   boolean hasReferenceWithPresentationInfo() {
     return itemDescriptor != null &&
-      (itemDescriptor.getBuildText() != null  ||
+      (itemDescriptor.getNodeTextFunction() != null  ||
        itemDescriptor.isStrongText()  ||
        itemDescriptor.getNodeIconFunction() != null);
   }

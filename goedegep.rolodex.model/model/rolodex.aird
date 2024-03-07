@@ -10,7 +10,7 @@
     <semanticResources>platform:/resource/goedegep.types.model/model/types.genmodel</semanticResources>
     <ownedViews xmi:type="viewpoint:DView" uid="_ln92oJcWEeeIq4Gh5mEXMA">
       <viewpoint xmi:type="description:Viewpoint" href="platform:/plugin/org.eclipse.emf.ecoretools.design/description/ecore.odesign#//@ownedViewpoints[name='Design']"/>
-      <ownedRepresentationDescriptors xmi:type="viewpoint:DRepresentationDescriptor" uid="_loxH4JcWEeeIq4Gh5mEXMA" name="rolodex" repPath="#_lowg0JcWEeeIq4Gh5mEXMA" changeId="1708972017008">
+      <ownedRepresentationDescriptors xmi:type="viewpoint:DRepresentationDescriptor" uid="_loxH4JcWEeeIq4Gh5mEXMA" name="rolodex" repPath="#_lowg0JcWEeeIq4Gh5mEXMA" changeId="1708972974622">
         <description xmi:type="description_1:DiagramDescription" href="platform:/plugin/org.eclipse.emf.ecoretools.design/description/ecore.odesign#//@ownedViewpoints[name='Design']/@ownedRepresentations[name='Entities']"/>
         <target xmi:type="ecore:EPackage" href="rolodex.ecore#/"/>
       </ownedRepresentationDescriptors>

@@ -112,11 +112,6 @@ public class EObjectTreeView extends TreeView<Object> implements ObjectSelector<
   private Map<EEnum, EEnumEditorDescriptor<?>> eEnumToEEnumEditorDescriptorMap = new HashMap<>();
   
   /**
-   * The description of what is shown in the tree and how. TODO delete
-   */
-//  private EObjectTreeDescriptor eObjectTreeDescriptor;
-  
-  /**
    * Content adapter to react to changes in the root EObject hierarchy.
    */
   private EContentAdapter eContentAdapter = null;
@@ -142,6 +137,11 @@ public class EObjectTreeView extends TreeView<Object> implements ObjectSelector<
   boolean ignoreNotification = false;
   
   /**
+   * Indicate that a selection was set from outside, so we don't notify listeners.
+   */
+  boolean dontNotifyListeners = false;
+  
+  /**
    * Constructor
    */
   public EObjectTreeView() {
@@ -156,6 +156,10 @@ public class EObjectTreeView extends TreeView<Object> implements ObjectSelector<
 
       @Override
       public void changed(ObservableValue<? extends Object> observable, Object oldValue, Object newValue) {
+        if (dontNotifyListeners) {
+          return;
+        }
+        
         if (newValue != null) {
           @SuppressWarnings("unchecked")
           TreeItem<Object> selectedItem = (TreeItem<Object>) newValue;
@@ -170,7 +174,7 @@ public class EObjectTreeView extends TreeView<Object> implements ObjectSelector<
     });
     
     eContentAdapter = createEContentAdapter();
-  }
+  }  
   
   /**
    * Set the GUI customization
@@ -185,10 +189,11 @@ public class EObjectTreeView extends TreeView<Object> implements ObjectSelector<
   }
   
   /**
-   * Add an EClass descriptor
+   * Add an EClass descriptor.
    * 
    * @param eClass the EClass for which a descriptor is added.
    * @param eObjectTreeItemClassDescriptor the descriptor for the <code>eClass</code>.
+   * @return this
    */
   public EObjectTreeView addEClassDescriptor(EClass eClass, EObjectTreeItemClassDescriptor eObjectTreeItemClassDescriptor) {
     eClassToClassDescriptorMap.put(eClass, eObjectTreeItemClassDescriptor);
@@ -197,65 +202,24 @@ public class EObjectTreeView extends TreeView<Object> implements ObjectSelector<
   }
   
   /**
-   * Constructor for a default tree view (no EObjectTreeDescriptor specified).
-   * <p>
-   * All information of the eObject is shown. Labels are derived from the related EClass.
-   * 
-   * @param eObject the EObject (hierarchy) to be shown in the tree. (optional)
-   * @param editMode if true, the tree is shown in 'edit mode', otherwise the tree is shown in 'view mode'.
+   * Add an EEnum editor descriptor.
    */
-  public EObjectTreeView(EObject eObject, boolean editMode) {
-    this(eObject, null, editMode);
-  }
-  
-  /**
-   * Constructor for a tree view where a descriptor can be specified. TODO Delete this constructor.
-   * 
-   * @param eObject the EObject (hierarchy) to be shown in the tree. (mandatory)
-   * @param eObjectTreeDescriptor an optional descriptor for what is show and how.
-   * @param editMode if true, the tree is shown in 'edit mode', otherwise the tree is shown in 'view mode'.
-   */
-  public EObjectTreeView(EObject eObject, EObjectTreeDescriptor eObjectTreeDescriptor, boolean editMode) {
-    super();
+  public EObjectTreeView addEEnumEditorDescriptor(EEnum eEnum, EEnumEditorDescriptor<?> eEnumEditorDescriptor) {
+    eEnumToEEnumEditorDescriptorMap.put(eEnum, eEnumEditorDescriptor);
     
-//    this.eObjectTreeDescriptor = eObjectTreeDescriptor;
-    eClassToClassDescriptorMap = eObjectTreeDescriptor.getEClassToClassDescriptorMap();
-    eEnumToEEnumEditorDescriptorMap = eObjectTreeDescriptor.getEEnumToEEnumEditorDescriptorMap();
-    
-    setEditable(editMode);
-    
-    setCellFactory(treeView -> new EObjectTreeCell());
-    
-    // React to changes in the selected item, to notify ObjectSelection listeners.
-    getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Object>() {
-
-      @Override
-      public void changed(ObservableValue<? extends Object> observable, Object oldValue, Object newValue) {
-        if (newValue != null) {
-          @SuppressWarnings("unchecked")
-          TreeItem<Object> selectedItem = (TreeItem<Object>) newValue;
-          LOGGER.info("Selected Node: " + selectedItem.getValue());
-          notifySelectedObjectListeners(selectedItem);
-        } else {
-          LOGGER.info("Selected Node: (null)");
-          notifySelectedObjectListeners(null);
-        }
-      }
-
-    });
-    
-    eContentAdapter = createEContentAdapter();
-    
-    setEObject(eObject);
+    return this;
   }
   
   /**
    * Set the isDropPossible function.
    * 
    * @param isDropPossibleFunction the new isDropPossible function.
+   * @return this
    */
-  public void setIsDropPossibleFunction(BiPredicate<EObjectTreeItem, Dragboard> isDropPossibleFunction) {
+  public EObjectTreeView setIsDropPossibleFunction(BiPredicate<EObjectTreeItem, Dragboard> isDropPossibleFunction) {
     this.isDropPossibleFunction = isDropPossibleFunction;
+    
+    return this;
   }
   
   /**
@@ -271,9 +235,12 @@ public class EObjectTreeView extends TreeView<Object> implements ObjectSelector<
    * Set the handleDrop function.
    * 
    * @param handleDropFunction the new handleDrop function.
+   * @return this
    */
-  public void setHandleDropFunction(BiPredicate<EObjectTreeItem, Dragboard> handleDropFunction) {
+  public EObjectTreeView setHandleDropFunction(BiPredicate<EObjectTreeItem, Dragboard> handleDropFunction) {
     this.handleDropFunction = handleDropFunction;
+    
+    return this;
   }
   
   /**
@@ -290,7 +257,7 @@ public class EObjectTreeView extends TreeView<Object> implements ObjectSelector<
    * 
    * @param editMode if true, the mode is set to 'edit mode', else the mode is set to 'view mode'.
    */
-  public void setEditMode(boolean editMode) {
+  public EObjectTreeView setEditMode(boolean editMode) {
     LOGGER.info("=> editMode=" + editMode);
     
     setEditable(editMode);
@@ -298,6 +265,8 @@ public class EObjectTreeView extends TreeView<Object> implements ObjectSelector<
     if (root != null) {
       root.setEditMode(editMode);
     }
+    
+    return this;
   }
   
   /**
@@ -466,7 +435,7 @@ public class EObjectTreeView extends TreeView<Object> implements ObjectSelector<
    * 
    * @param eObject the new EObject to be shown in the tree. If null, the tree view will be cleared.
    */
-  public void setEObject(EObject eObject) {
+  public EObjectTreeView setEObject(EObject eObject) {
     if ((eObject != null)  &&  (eObject.eResource() == null)) {
       throw new IllegalArgumentException("The EObject has to be part of a Resource");
     }
@@ -489,6 +458,7 @@ public class EObjectTreeView extends TreeView<Object> implements ObjectSelector<
       setRoot(null);
     }
     
+    return this;
   }
   
   /**
@@ -529,17 +499,15 @@ public class EObjectTreeView extends TreeView<Object> implements ObjectSelector<
 //      return;
 //    }
     
-    List<NodeOperationDescriptor> nodeOperationDescriptors = new ArrayList<>();
-    nodeOperationDescriptors.add(new NodeOperationDescriptor(TableRowOperation.DELETE_OBJECT, "Delete"));
-    EObjectTreeItemClassDescriptor eObjectTreeItemClassDescriptor = new EObjectTreeItemClassDescriptor(null, false, nodeOperationDescriptors);
+    EObjectTreeItemClassDescriptor eObjectTreeItemClassDescriptor = new EObjectTreeItemClassDescriptor()
+        .addNodeOperationDescriptor(new NodeOperationDescriptor(TableRowOperation.DELETE_OBJECT, "Delete"));
     
     // Add information for the attributes and references
     for (EStructuralFeature structuralFeature: eClass.getEAllStructuralFeatures()) {
       if (structuralFeature instanceof EAttribute eAttribute) {
         LOGGER.info("Handling attribute: " + eAttribute.getName());
         if (eAttribute.isMany()) {
-          EObjectTreeItemAttributeListDescriptor eObjectTreeItemAttributeListDescriptor = new EObjectTreeItemAttributeListDescriptor(eAttribute,
-              eAttribute.getName(), true, null, null);
+          EObjectTreeItemAttributeListDescriptor eObjectTreeItemAttributeListDescriptor = new EObjectTreeItemAttributeListDescriptor(eAttribute);
           eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(eObjectTreeItemAttributeListDescriptor);
         } else {
           EObjectTreeItemAttributeDescriptor eObjectTreeItemAttributeDescriptor = new EObjectTreeItemAttributeDescriptor((EAttribute) structuralFeature);
@@ -548,13 +516,22 @@ public class EObjectTreeView extends TreeView<Object> implements ObjectSelector<
       } else if (structuralFeature instanceof EReference) {
         EReference eReference = (EReference) structuralFeature;
         LOGGER.fine("Handling reference: " + eReference.getName());
-        EClass referenceClass = eReference.getEReferenceType();
         if (eReference.isMany()) {
-          EObjectTreeItemClassListReferenceDescriptor eObjectTreeItemClassListReferenceDescriptor = new EObjectTreeItemClassListReferenceDescriptor(eReference);
+          EObjectTreeItemClassListReferenceDescriptor eObjectTreeItemClassListReferenceDescriptor;
+          if (eReference.isContainment()) {
+            eObjectTreeItemClassListReferenceDescriptor = new EObjectTreeItemClassListReferenceDescriptor(eReference);
+          } else {
+            eObjectTreeItemClassListReferenceDescriptor = new EObjectTreeItemClassListReferenceDescriptor(eReference, eClass);
+          }
           eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(eObjectTreeItemClassListReferenceDescriptor);          
         } else {
-          EObjectTreeItemClassReferenceDescriptor eObjectTreeItemClassReferenceDescriptor =
-              new EObjectTreeItemClassReferenceDescriptor(eReference, referenceClass, (eObject) -> eReference.getName(), false, nodeOperationDescriptors);
+          EObjectTreeItemClassReferenceDescriptor eObjectTreeItemClassReferenceDescriptor;
+          if (eReference.isContainment()) {
+            eObjectTreeItemClassReferenceDescriptor = new EObjectTreeItemClassReferenceDescriptor(eReference);
+          } else {
+            eObjectTreeItemClassReferenceDescriptor = new EObjectTreeItemClassReferenceDescriptor(eReference, eClass);
+          }
+          eObjectTreeItemClassReferenceDescriptor.addNodeOperationDescriptor(new NodeOperationDescriptor(TableRowOperation.DELETE_OBJECT, "Delete"));
           eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(eObjectTreeItemClassReferenceDescriptor);
         }
       } else {
@@ -794,6 +771,25 @@ public class EObjectTreeView extends TreeView<Object> implements ObjectSelector<
       LOGGER.info("No EObjectTreeItem selected");
     }
     return selectedItem;
+  }
+
+  @Override
+  public boolean selectObject(TreeItem<Object> treeItem) {
+    dontNotifyListeners = true;
+    
+    LOGGER.severe("treeItem=" + treeItem);
+    getSelectionModel().select(treeItem);
+//    this.scrollTo(getSelectionModel().getSelectedIndex());
+    
+    dontNotifyListeners = false;
+    
+    return true;  // TODO determine real value
+  }
+
+  public void selectObjectForObject(Object object) {
+    LOGGER.severe("object=" + object);
+    EObjectTreeItem treeItem = findTreeItem(object);
+    selectObject(treeItem);
   }
 
   private void notifySelectedObjectListeners(TreeItem<Object> selectedItem) {

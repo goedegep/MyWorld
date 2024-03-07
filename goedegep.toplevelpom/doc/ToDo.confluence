@@ -1,6 +1,5 @@
 h2. ToDo list
-* Instead of using e.g. typesPackageHelper.getEClass("goedegep.types.model.FileReference"), use typesPackage.getFileReference().
-Maybe ackageHelper.getEClass() can be removed.
+* NodeOperationDescriptors: use subclasses per operation. They should all have information on whether menu item can do its work
 * ObjectControl should implement ObjectSelector
 * goedegep.jfx.controls.FileReferenceDialog is not used
 * DnD of a photo on an element doesn't work, it only works on the list

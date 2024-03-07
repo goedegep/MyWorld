@@ -1,7 +1,7 @@
 package goedegep.jfx.eobjecttreeview;
 
 import java.text.Format;
-import java.util.List;
+import java.util.Objects;
 import java.util.function.Function;
 
 import org.eclipse.emf.ecore.EAttribute;
@@ -14,122 +14,209 @@ import goedegep.util.text.Indent;
 public class EObjectTreeItemAttributeDescriptor extends EObjectTreeItemDescriptor {
   static final String NEWLINE = System.getProperty("line.separator");
   
-  private EAttribute eAttribute;              // identifies the attribute to which this descriptor applies
-  private String labelText;                   // Text to display instead of the attribute name.
-  private Format format;                      // The formatter used to format and parse the object.
-  private PresentationType presentationType;  // Hint for rendering and editing
-  private boolean isOpenDialog = true;          // Only for files: if true use an 'open' dialog, else a 'save' dialog.
-  private Function<EObjectTreeCell, String> initialDirectoryNameFunction = null; // Directory to start FileChooser or DirectoryChooser.
-  private Function<EObjectTreeCell, String> initialFileNameFunction = null; // Initial file name to start FileChooser.
+  /**
+   * The attribute to which this descriptor applies (mandatory).
+   */
+  private EAttribute eAttribute = null;
+  
+  /**
+   * Text to display instead of the attribute name (optional).
+   */
+  private String labelText = null;
+  
+  /**
+   * A {@link Format} to parse and format the object value (optional).
+   */
+  private Format format = null;
+  
+  /**
+   * Hint for rendering and editing (optional).
+   * TODO Check in which cases this can be omitted.
+   */
+  private PresentationType presentationType = null;
+  
+  /**
+   * If true (default value) use an 'open' dialog, else a 'save' dialog.
+   * TODO this is only for files, so create EObjectTreeItemDescriptorForFile as subclass of EObjectTreeItemDescriptorForFile.
+   */
+  private boolean isOpenDialog = true;
+  
+  /**
+   * A function to provide the initial directory for a FileChooser or DirectoryChooser.
+   * TODO Move to EObjectTreeItemDescriptorForFile
+   */
+  private Function<EObjectTreeCell, String> initialDirectoryNameFunction = null;
+  
+  /**
+   * A function to provide the initial file name for a FileChooser.
+   * TODO this is only for files, so create EObjectTreeItemDescriptorForFile as subclass of EObjectTreeItemDescriptorForFile.
+   */
+  private Function<EObjectTreeCell, String> initialFileNameFunction = null;
+  
   
   
   /**
-   * Constructor for attributes with a multi-line text
+   * Constructor
    * 
-   * @param eAttribute the EAttribute to which this descriptor applies (mandatory)
-   * @param labelText the text to be shown as a label for 
-   * @param isMultiLineText
-   * @param presentationType indicates how the value is to be presented/edited
-   * @param nodeOperationDescriptors
+   * @param eAttribute the {@code EAttribute} to which this descriptor applies (mandatory)
    */
-  public EObjectTreeItemAttributeDescriptor(EAttribute eAttribute, String labelText, List<NodeOperationDescriptor> nodeOperationDescriptors) {
-    super(EObjectTreeItemDescriptorType.ATTRIBUTE, false, nodeOperationDescriptors);
-    
-    if (eAttribute == null) {
-      throw new RuntimeException("eAttribute may not be null");
-    }
-    
-    this.eAttribute = eAttribute;
-    this.labelText = labelText;
-    if (eAttribute.getEType().getInstanceClass().isEnum()) {
-      presentationType = PresentationType.ENUMERATION;
-    } else {
-      presentationType = PresentationType.SINGLE_LINE_TEXT;
-    }
-    format = null;
-  }
-  
-  /**
-   * Constructor for attributes with a multi-line text
-   * 
-   * @param eAttribute the EAttribute to which this descriptor applies (mandatory)
-   * @param labelText the text to be shown as a label for 
-   * @param isMultiLineText
-   * @param presentationType indicates how the value is to be presented/edited
-   * @param nodeOperationDescriptors
-   */
-  public EObjectTreeItemAttributeDescriptor(EAttribute eAttribute, String labelText, PresentationType presentationType, List<NodeOperationDescriptor> nodeOperationDescriptors) {
-    super(EObjectTreeItemDescriptorType.ATTRIBUTE, false, nodeOperationDescriptors);
-    
-    if (eAttribute == null) {
-      throw new RuntimeException("eAttribute may not be null");
-    }
-    
-    this.eAttribute = eAttribute;
-    this.labelText = labelText;
-    this.presentationType = presentationType;
-    format = null;
-  }
-  
-  public EObjectTreeItemAttributeDescriptor(EAttribute eAttribute, String labelText, Format format, List<NodeOperationDescriptor> nodeOperationDescriptors) {
-    super(EObjectTreeItemDescriptorType.ATTRIBUTE, false, nodeOperationDescriptors);
-    
-    if (eAttribute == null) {
-      throw new RuntimeException("eAttribute may not be null");
-    }
-    
-    this.eAttribute = eAttribute;
-    this.labelText = labelText;
-    presentationType = PresentationType.FORMAT;
-    this.format = format;
-  }
-  
   public EObjectTreeItemAttributeDescriptor(EAttribute eAttribute) {
-    this(eAttribute, eAttribute.getName(), null);
+    super(EObjectTreeItemDescriptorType.ATTRIBUTE);
+    
+    Objects.requireNonNull(eAttribute, "eAttribute may not be null");
+    
+    this.eAttribute = eAttribute;
+    labelText = eAttribute.getName();
   }
-
+      
+  /**
+   * Get the {@code EAttribute} to which this descriptor applies.
+   * 
+   * @return the {@code EAttribute} to which this descriptor applies
+   */
   public EAttribute getEAttribute() {
     return eAttribute;
   }
 
+  /**
+   * Get the text to display instead of the attribute name.
+   * 
+   * @return the text to display instead of the attribute name
+   */
   public String getLabelText() {
     return labelText;
   }
+  
+  /**
+   * Set the text to display instead of the attribute name.
+   * 
+   * @param labelText the text to display instead of the attribute name.
+   * @return this
+   */
+  public EObjectTreeItemAttributeDescriptor setLabelText(String labelText) {
+    this.labelText = labelText;
+    
+    return this;
+  }
 
+  /**
+   * Get the {@link Format} to parse and format the object value.
+   * 
+   * @return the {@link Format} to parse and format the object value
+   */
   public Format getFormat() {
     return format;
   }
   
+  /**
+   * Set the {@link Format} to parse and format the object value.
+   * 
+   * @param format the {@link Format} to parse and format the object value.
+   * @return this
+   */
+  public EObjectTreeItemAttributeDescriptor setFormat(Format format) {
+    this.format = format;
+    
+    return this;
+  }
+  
+  /**
+   * Get the hint ({@code PresentationType}) for rendering and editing.
+   * 
+   * @return the hint ({@code PresentationType}) for rendering and editing.
+   */
   public PresentationType getPresentationType() {
     return presentationType;
   }
 
-  public void setPresentationType(PresentationType presentationType) {
+  /**
+   * Set the hint ({@code PresentationType}) for rendering and editing.
+   * 
+   * @param presentationType the hint ({@code PresentationType}) for rendering and editing.
+   * @return this
+   */
+  public EObjectTreeItemAttributeDescriptor setPresentationType(PresentationType presentationType) {
     this.presentationType = presentationType;
-  }
     
-  public Function<EObjectTreeCell, String> getInitialDirectoryNameFunction() {
-    return initialDirectoryNameFunction;
-  }
-
-  public void setInitialDirectoryNameFunction(Function<EObjectTreeCell, String> initialDirectoryNameFunction) {
-    this.initialDirectoryNameFunction = initialDirectoryNameFunction;
-  }
-
-  public Function<EObjectTreeCell, String> getInitialFileNameFunction() {
-    return initialFileNameFunction;
-  }
-
-  public void setInitialFileNameFunction(Function<EObjectTreeCell, String> initialFileNameFunction) {
-    this.initialFileNameFunction = initialFileNameFunction;
+    return this;
   }
   
+  /**
+   * Check whether this is an open or save dialog.
+   * 
+   * @return true for an open dialog and false for a save dialog.
+   */
   public boolean isOpenDialog() {
     return isOpenDialog;
   }
 
-  public void setOpenDialog(boolean isOpenDialog) {
+  /**
+   * Specify whether this is an open or save dialog.
+   * 
+   * @param isOpenDialog true for an open dialog and false for a save dialog.
+   * @return this
+   */
+  public EObjectTreeItemAttributeDescriptor setOpenDialog(boolean isOpenDialog) {
     this.isOpenDialog = isOpenDialog;
+    
+    return this;
+  }
+    
+  /**
+   * Get the function to provide the initial directory for a FileChooser or DirectoryChooser.
+   * 
+   * @return the function to provide the initial directory for a FileChooser or DirectoryChooser.
+   */
+  public Function<EObjectTreeCell, String> getInitialDirectoryNameFunction() {
+    return initialDirectoryNameFunction;
+  }
+
+  /**
+   * Set the function to provide the initial directory for a FileChooser or DirectoryChooser.
+   * 
+   * @param initialDirectoryNameFunction the function to provide the initial directory for a FileChooser or DirectoryChooser.
+   * @return this
+   */
+  public EObjectTreeItemAttributeDescriptor setInitialDirectoryNameFunction(Function<EObjectTreeCell, String> initialDirectoryNameFunction) {
+    this.initialDirectoryNameFunction = initialDirectoryNameFunction;
+    
+    return this;
+  }
+
+  /**
+   * Get the function to provide the initial file name for a FileChooser.
+   * 
+   * @return the function to provide the initial file name for a FileChooser.
+   */
+  public Function<EObjectTreeCell, String> getInitialFileNameFunction() {
+    return initialFileNameFunction;
+  }
+
+  /**
+   * Set  the function to provide the initial file name for a FileChooser.
+   * 
+   * @param initialFileNameFunction the function to provide the initial file name for a FileChooser.
+   * @return this
+   */
+  public EObjectTreeItemAttributeDescriptor setInitialFileNameFunction(Function<EObjectTreeCell, String> initialFileNameFunction) {
+    this.initialFileNameFunction = initialFileNameFunction;
+    
+    return this;
+  }
+  
+  /**
+   * Add a node operation.
+   * <p>
+   * This operation will be added to the end of the list of operations.
+   * TODO instead of overwriting this method implement a solution 
+   * 
+   * @param nodeOperationDescriptor descriptor for the operation to be added.
+   * @return this
+   */
+  public EObjectTreeItemAttributeDescriptor addNodeOperationDescriptor(NodeOperationDescriptor nodeOperationDescriptor) {
+    super.addNodeOperationDescriptor(nodeOperationDescriptor);
+    
+    return this;
   }
 
   @Override

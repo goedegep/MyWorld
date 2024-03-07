@@ -10,6 +10,7 @@ import goedegep.jfx.ComponentFactoryFx;
 import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.JfxStage;
 import goedegep.jfx.eobjecttreeview.EObjectTreeItem;
+import goedegep.jfx.eobjecttreeview.EObjectTreeView;
 import goedegep.poi.model.POICategoryId;
 import goedegep.types.model.FileReference;
 import goedegep.vacations.app.logic.PhotoImportResult;
@@ -43,11 +44,11 @@ public class PhotoImportResultWindow extends JfxStage {
   private static final String WINDOW_TITLE = "Photos import results";
   
 //  private CustomizationFx customization;
-  private VacationsTreeView vacationsTreeView;
+  private EObjectTreeView vacationsTreeView;
   private List<PhotoImportResult> photoImportResults;
   private ComponentFactoryFx componentFactory;
 
-  public PhotoImportResultWindow(CustomizationFx customization, VacationsTreeView vacationsTreeView, List<PhotoImportResult> photoImportResults) {
+  public PhotoImportResultWindow(CustomizationFx customization, EObjectTreeView vacationsTreeView, List<PhotoImportResult> photoImportResults) {
     super(WINDOW_TITLE, customization);
     
 //    this.customization = customization;

@@ -24,23 +24,14 @@ import java.util.logging.Logger;
 
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.util.WrappedException;
-import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.util.EContentAdapter;
 
-import goedegep.appgen.TableRowOperation;
 import goedegep.geo.WGS84Coordinates;
 import goedegep.jfx.ComponentFactoryFx;
 import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.JfxStage;
-import goedegep.jfx.eobjecttreeview.EObjectTreeDescriptor;
-import goedegep.jfx.eobjecttreeview.EObjectTreeItemAttributeDescriptor;
-import goedegep.jfx.eobjecttreeview.EObjectTreeItemAttributeListDescriptor;
-import goedegep.jfx.eobjecttreeview.EObjectTreeItemAttributeListValueDescriptor;
-import goedegep.jfx.eobjecttreeview.EObjectTreeItemClassDescriptor;
-import goedegep.jfx.eobjecttreeview.EObjectTreeItemClassListReferenceDescriptor;
 import goedegep.jfx.eobjecttreeview.EObjectTreeView;
-import goedegep.jfx.eobjecttreeview.NodeOperationDescriptor;
 import goedegep.media.app.MediaRegistry;
 import goedegep.media.fotoshow.app.OrderedNameGenerator;
 import goedegep.media.fotoshow.app.PhotoshowCommons;
@@ -53,7 +44,6 @@ import goedegep.media.photoshow.model.PhotoShowSpecification;
 import goedegep.util.Tuplet;
 import goedegep.util.datetime.DurationFormat;
 import goedegep.util.emf.EMFResource;
-import goedegep.util.emf.EmfPackageHelper;
 import goedegep.util.emf.EmfUtil;
 import goedegep.util.file.FileUtils;
 import goedegep.util.mslinks.ShellLink;
@@ -116,7 +106,6 @@ public class PhotoShowBuilder extends JfxStage {
   private final static String WINDOW_TITLE = "Photoshow builder";
   
   private final static List<String> SUPPORTED_FILE_TYPES = Arrays.asList(".jpg");
-  private static final PhotoShowPackage PHOTO_SHOW_PACKAGE = PhotoShowPackage.eINSTANCE;
   private static final PhotoShowFactory PHOTO_SHOW_FACTORY = PhotoShowFactory.eINSTANCE;
 
   private CustomizationFx customization;
@@ -124,7 +113,11 @@ public class PhotoShowBuilder extends JfxStage {
   private final Stage thisStage = this;
   
   // GUI objects
-  EObjectTreeView photoShowSpecificationView = null;   // a tree view, in the top left corner, with the complete specification for the show.
+  /**
+   * A tree view, in the top left corner, with the complete specification for the show.
+   */
+  EObjectTreeView photoShowSpecificationTreeView = null;
+  
   private Label photoShowLabel;                        // label on top of the Photo Show panel
   private GatherPhotoInfoStatusPanel statusPanel;                     // shows status information.
   private List<Node> guiNodesToBeDisabled = new ArrayList<>();  // a list of GUI nodes which are disabled when certain computations take place.
@@ -319,14 +312,15 @@ public class PhotoShowBuilder extends JfxStage {
     
     // Specification as TreeView and Wizards panel
     HBox specificationAndWizardsPanel = componentFactory.createHBox(12.0);
-    EObjectTreeDescriptor eObjectTreeDescriptor = createEObjectTreeDescriptorForPhotoShowSpecification();
-    photoShowSpecificationView = new EObjectTreeView(photoShowSpecification, eObjectTreeDescriptor, true);
-//    photoShowSpecificationView = new EObjectTreeView(photoShowSpecification, null, true);
-    photoShowSpecificationView.setMinWidth(800);
-    photoShowSpecificationView.setStyle("-fx-border-style: solid inside;");
+    photoShowSpecificationTreeView = new PhotoShowSpecificationTreeViewCreator()
+        .createPhotoShowSpecificationTreeView(customization);
+    photoShowSpecificationTreeView.setEObject(photoShowSpecification);
+    photoShowSpecificationTreeView.setEditMode(true);
+    photoShowSpecificationTreeView.setMinWidth(800);
+    photoShowSpecificationTreeView.setStyle("-fx-border-style: solid inside;");
     
     Node wizardsPanel = createWizardsPanel();
-    specificationAndWizardsPanel.getChildren().addAll(photoShowSpecificationView, wizardsPanel);
+    specificationAndWizardsPanel.getChildren().addAll(photoShowSpecificationTreeView, wizardsPanel);
    
     // Photo show
     VBox photoShowPanel = componentFactory.createVBox(10.0);
@@ -506,107 +500,6 @@ public class PhotoShowBuilder extends JfxStage {
     menuBar.getMenus().add(menu);
 
     return menuBar;
-  }
-
-
-  /**
-   * Create the descriptor for the EObjectTreeView for the PhotoShowSpecification.
-   * 
-   * @return the descriptor for the EObjectTreeView for the PhotoShowSpecification
-   */
-  private EObjectTreeDescriptor createEObjectTreeDescriptorForPhotoShowSpecification() {
-    LOGGER.info("=>");
-    
-    EmfPackageHelper photoShowPackageHelper = new EmfPackageHelper(PHOTO_SHOW_PACKAGE);
-    EObjectTreeDescriptor eObjectTreeDescriptor = new EObjectTreeDescriptor();
-    
-    createAndAddEObjectTreeDescriptorForPhotoShowSpecification(eObjectTreeDescriptor, photoShowPackageHelper);
-    createAndAddEObjectTreeDescriptorForFolderTimeOffsetSpecification(eObjectTreeDescriptor, photoShowPackageHelper);
-        
-    return eObjectTreeDescriptor;
-  }
-
-  private void createAndAddEObjectTreeDescriptorForPhotoShowSpecification(EObjectTreeDescriptor eObjectTreeDescriptor, EmfPackageHelper photoShowPackageHelper) {
-    EClass eClass = photoShowPackageHelper.getEClass("goedegep.media.photoshow.model.PhotoShowSpecification");
-    EObjectTreeItemClassDescriptor eObjectTreeItemClassDescriptor = new EObjectTreeItemClassDescriptor((eObject) -> "Photo show specification", true, null);
-    List<NodeOperationDescriptor> nodeOperationDescriptors;
-    
-    // PhotoShowSpecification.title
-    eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(new EObjectTreeItemAttributeDescriptor(PHOTO_SHOW_PACKAGE.getPhotoShowSpecification_Title(), "Title", null));
-    
-    // PhotoShowSpecification.photoFolders
-    nodeOperationDescriptors = new ArrayList<>();
-    nodeOperationDescriptors.add(new NodeOperationDescriptor(TableRowOperation.NEW_OBJECT_BEFORE, "New photo folder before"));
-    nodeOperationDescriptors.add(new NodeOperationDescriptor(TableRowOperation.NEW_OBJECT_AFTER, "New photo folder after"));
-    nodeOperationDescriptors.add(new NodeOperationDescriptor(TableRowOperation.MOVE_OBJECT_UP, "Move photo folder up"));
-    nodeOperationDescriptors.add(new NodeOperationDescriptor(TableRowOperation.MOVE_OBJECT_DOWN, "Move photo folder down"));
-    nodeOperationDescriptors.add(new NodeOperationDescriptor(TableRowOperation.DELETE_OBJECT, "Remove photo folder"));
-    EObjectTreeItemAttributeListValueDescriptor photoFolderDescriptor = new EObjectTreeItemAttributeListValueDescriptor(false, nodeOperationDescriptors);
-    nodeOperationDescriptors = new ArrayList<>();
-    nodeOperationDescriptors.add(new NodeOperationDescriptor(TableRowOperation.NEW_OBJECT, "New photo folder"));
-    eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(new EObjectTreeItemAttributeListDescriptor(PHOTO_SHOW_PACKAGE.getPhotoShowSpecification_PhotoFolders(), "Photo folders", false, nodeOperationDescriptors, photoFolderDescriptor));
-    
-    // PhotoShowSpecification.foldertimeoffsetspecifications
-    nodeOperationDescriptors = new ArrayList<>();
-    nodeOperationDescriptors.add(new NodeOperationDescriptor(TableRowOperation.NEW_OBJECT, "New time offset"));
-    eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(new EObjectTreeItemClassListReferenceDescriptor(PHOTO_SHOW_PACKAGE.getPhotoShowSpecification_FolderTimeOffsetSpecifications(),
-        "Folder time offsets", true, nodeOperationDescriptors));
-    
-    // PhotoShowSpecification.photosToShow
-    nodeOperationDescriptors = new ArrayList<>();
-    nodeOperationDescriptors.add(new NodeOperationDescriptor(TableRowOperation.NEW_OBJECT_BEFORE, "New photo before"));
-    nodeOperationDescriptors.add(new NodeOperationDescriptor(TableRowOperation.NEW_OBJECT_AFTER, "New photo after"));
-    nodeOperationDescriptors.add(new NodeOperationDescriptor(TableRowOperation.MOVE_OBJECT_UP, "Move photo up"));
-    nodeOperationDescriptors.add(new NodeOperationDescriptor(TableRowOperation.MOVE_OBJECT_DOWN, "Move photo down"));
-    nodeOperationDescriptors.add(new NodeOperationDescriptor(TableRowOperation.DELETE_OBJECT, "Remove photo"));
-    EObjectTreeItemAttributeListValueDescriptor photoToShowDescriptor = new EObjectTreeItemAttributeListValueDescriptor(false, nodeOperationDescriptors);
-    nodeOperationDescriptors = new ArrayList<>();
-    nodeOperationDescriptors.add(new NodeOperationDescriptor(TableRowOperation.NEW_OBJECT, "New photo to show"));
-    eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(new EObjectTreeItemAttributeListDescriptor(PHOTO_SHOW_PACKAGE.getPhotoShowSpecification_PhotosToShow(),
-        "Photos to show", true, nodeOperationDescriptors, photoToShowDescriptor));
-    
-    eObjectTreeDescriptor.addEClassDescriptor(eClass, eObjectTreeItemClassDescriptor);
-  }
-  
-  private void createAndAddEObjectTreeDescriptorForFolderTimeOffsetSpecification(EObjectTreeDescriptor eObjectTreeDescriptor, EmfPackageHelper photoShowPackageHelper) {
-    EClass eClass = photoShowPackageHelper.getEClass("goedegep.media.photoshow.model.FolderTimeOffsetSpecification");
-    List<NodeOperationDescriptor> nodeOperationDescriptors;
-        
-    // PhotoShowSpecification.foldertimeoffsetspecifications.FolderTimeOffsetSpecification
-    nodeOperationDescriptors = new ArrayList<>();
-    nodeOperationDescriptors.add(new NodeOperationDescriptor(TableRowOperation.NEW_OBJECT_BEFORE, "New time offset before this one"));
-    nodeOperationDescriptors.add(new NodeOperationDescriptor(TableRowOperation.NEW_OBJECT_AFTER, "New time offset after this one"));
-    nodeOperationDescriptors.add(new NodeOperationDescriptor(TableRowOperation.MOVE_OBJECT_UP, "Move time offset up"));
-    nodeOperationDescriptors.add(new NodeOperationDescriptor(TableRowOperation.MOVE_OBJECT_DOWN, "Move time offset down"));
-    nodeOperationDescriptors.add(new NodeOperationDescriptor(TableRowOperation.DELETE_OBJECT, "Delete this time offset"));
-    
-    EObjectTreeItemClassDescriptor eObjectTreeItemClassDescriptor = new EObjectTreeItemClassDescriptor(
-        eObject -> {
-          StringBuilder buf = new StringBuilder();
-          FolderTimeOffsetSpecification folderTimeOffsetSpecification = (FolderTimeOffsetSpecification) eObject;
-          String folderName = folderTimeOffsetSpecification.getFolderName();
-          if ((folderName != null)  &&  !folderName.isEmpty()) {
-            buf.append(folderName);
-          } else {
-            buf.append("(no folder specified)");
-          }
-          buf.append(" - ");
-          String timeOffsetAsString = folderTimeOffsetSpecification.getTimeOffset();
-          if ((timeOffsetAsString != null)  &&  !timeOffsetAsString.isEmpty()) {
-            buf.append(timeOffsetAsString);
-          } else {
-            buf.append("(no time offset specified)");
-          }
-          
-          return buf.toString();
-        }, false, nodeOperationDescriptors);
-    
-    // PhotoShowSpecification.foldertimeoffsetspecifications.FolderTimeOffsetSpecification.folderName
-    eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(new EObjectTreeItemAttributeDescriptor(PHOTO_SHOW_PACKAGE.getFolderTimeOffsetSpecification_FolderName(), "Folder", null));
-    // PhotoShowSpecification.foldertimeoffsetspecifications.FolderTimeOffsetSpecification.timeOffset
-    eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(new EObjectTreeItemAttributeDescriptor(PHOTO_SHOW_PACKAGE.getFolderTimeOffsetSpecification_TimeOffset(), "Time offset", null));
-    
-    eObjectTreeDescriptor.addEClassDescriptor(eClass, eObjectTreeItemClassDescriptor);
   }
 
   /**
@@ -1267,7 +1160,7 @@ public class PhotoShowBuilder extends JfxStage {
     photoShowSpecification.eAdapters().add(eContentAdapter);
     //    System.out.println("Adapter installed");
 
-    photoShowSpecificationView.setEObject(photoShowSpecification);
+    photoShowSpecificationTreeView.setEObject(photoShowSpecification);
   }
   
   /**

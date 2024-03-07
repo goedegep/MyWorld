@@ -63,12 +63,12 @@ public class EObjectTreeViewDemo extends JfxStage {
     vBox.getChildren().add(createMenuBar());
     
     HBox treesHBox = componentFactory.createHBox();
-//    EObjectTreeView defaultTreeView = new EObjectTreeView(company, true);
-//    defaultTreeView.setMinWidth(400);
-//    defaultTreeView.setMinHeight(700);
-//    treesHBox.getChildren().add(defaultTreeView);
+    EObjectTreeView defaultTreeView = new EObjectTreeView().setEObject(company);
+    defaultTreeView.setMinWidth(400);
+    defaultTreeView.setMinHeight(700);
+    treesHBox.getChildren().add(defaultTreeView);
     
-    EObjectTreeView descriptorBasedTreeView = new EObjectTreeView(company, CompanyTreeViewDescriptorFactory.createDescriptor(), true);
+    EObjectTreeView descriptorBasedTreeView = new CompanyTreeViewCreator().createCompanyTreeView().setEObject(company);
     descriptorBasedTreeView.setMinWidth(400);
     descriptorBasedTreeView.setMinHeight(700);
     treesHBox.getChildren().add(descriptorBasedTreeView);

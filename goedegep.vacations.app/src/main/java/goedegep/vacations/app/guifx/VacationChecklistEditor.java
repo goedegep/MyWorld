@@ -1,30 +1,14 @@
 package goedegep.vacations.app.guifx;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.logging.Logger;
 
-import org.eclipse.emf.ecore.EClass;
-
-import goedegep.appgen.TableRowOperation;
 import goedegep.jfx.ComponentFactoryFx;
 import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.JfxStage;
-import goedegep.jfx.eobjecttreeview.EObjectTreeDescriptor;
-import goedegep.jfx.eobjecttreeview.EObjectTreeItemAttributeDescriptor;
-import goedegep.jfx.eobjecttreeview.EObjectTreeItemClassDescriptor;
-import goedegep.jfx.eobjecttreeview.EObjectTreeItemClassListReferenceDescriptor;
-import goedegep.jfx.eobjecttreeview.EObjectTreeItemClassReferenceDescriptor;
 import goedegep.jfx.eobjecttreeview.EObjectTreeView;
-import goedegep.jfx.eobjecttreeview.NodeOperationDescriptor;
 import goedegep.util.emf.EMFResource;
-import goedegep.util.emf.EmfPackageHelper;
 import goedegep.vacations.checklist.model.VacationChecklist;
-import goedegep.vacations.checklist.model.VacationChecklistCategory;
-import goedegep.vacations.checklist.model.VacationChecklistItem;
-import goedegep.vacations.checklist.model.VacationChecklistLabel;
-import goedegep.vacations.checklist.model.VacationChecklistPackage;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.Node;
@@ -40,7 +24,7 @@ public class VacationChecklistEditor extends JfxStage {
   @SuppressWarnings("unused")
   private static final Logger LOGGER = Logger.getLogger(VacationChecklistEditor.class.getName());
   private static final String WINDOW_TITLE = "Vacation checklist editor";
-
+  
   private EMFResource<VacationChecklist> vacationChecklistResource;
   private ComponentFactoryFx componentFactory;
   private Label statusLabel = new Label("");
@@ -88,8 +72,9 @@ public class VacationChecklistEditor extends JfxStage {
     
     // For now there is one TreeView. I think it's better to have separate trees for label and categories, but this is currently not possible
     // because the table expects that the root of the table is a top level class (problem is in support with the XTree path).
-    EObjectTreeDescriptor checklistTreeViewDescriptor = createChecklistTreeViewDescriptor();
-    EObjectTreeView checklistTreeView = new EObjectTreeView(vacationChecklist, checklistTreeViewDescriptor, true);    
+    EObjectTreeView checklistTreeView = new VacationChecklistTreeViewCreator().createVacationChecklistTreeView(getCustomization());
+    checklistTreeView.setEObject(vacationChecklist);
+    checklistTreeView.setEditMode(true);
     mainPanel.getChildren().addAll(checklistTreeView);
     
     // Save and cancel buttons
@@ -116,124 +101,6 @@ public class VacationChecklistEditor extends JfxStage {
     buttonsBox.getChildren().add(saveButton);
         
     return  buttonsBox;
-  }
-
-
-  /**
-   * Create the EObjectTreeDescriptor for the VacationChecklist tree view.
-   * 
-   * @return the EObjectTreeDescriptor for the VacationChecklist tree view
-   */
-  private EObjectTreeDescriptor createChecklistTreeViewDescriptor() {
-    EObjectTreeDescriptor eObjectTreeDescriptor = new EObjectTreeDescriptor();
-    EmfPackageHelper vacationChecklistPackageHelper = new EmfPackageHelper(VacationChecklistPackage.eINSTANCE);
-    EClass eClass;
-    List<NodeOperationDescriptor> nodeOperationDescriptors;
-    EObjectTreeItemClassDescriptor eObjectTreeItemClassDescriptor;
-    
-    /*
-     *  VacationChecklist
-     */
-    eClass = vacationChecklistPackageHelper.getEClass("goedegep.vacations.checklist.model.VacationChecklist");
-    eObjectTreeItemClassDescriptor = new EObjectTreeItemClassDescriptor((eObject) -> "Vacation checklist labels and categories", true, null);
-    eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(new EObjectTreeItemClassReferenceDescriptor(
-        VacationChecklistPackage.eINSTANCE.getVacationChecklist_VacationChecklistLabelsList(),
-        vacationChecklistPackageHelper.getEClass("goedegep.vacations.checklist.model.VacationChecklistLabelsList"), (eObject) -> "Label list", true, null));
-    eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(new EObjectTreeItemClassReferenceDescriptor(
-        VacationChecklistPackage.eINSTANCE.getVacationChecklist_VacationChecklistCategoriesList(),
-        vacationChecklistPackageHelper.getEClass("goedegep.vacations.checklist.model.VacationChecklistCategoriesList"), (eObject) -> "Categories list", true, null));
-    eObjectTreeDescriptor.addEClassDescriptor(eClass, eObjectTreeItemClassDescriptor);
-    
-    /*
-     *  VacationChecklistLabelsList
-     */
-    eClass = vacationChecklistPackageHelper.getEClass("goedegep.vacations.checklist.model.VacationChecklistLabelsList");
-    eObjectTreeItemClassDescriptor = new EObjectTreeItemClassDescriptor((eObject) -> "Label list", true, null);
-    
-    // VacationChecklistLabelsList.vacationChecklistLabels
-    nodeOperationDescriptors = new ArrayList<>();
-    nodeOperationDescriptors.add(new NodeOperationDescriptor(TableRowOperation.NEW_OBJECT, "New label"));
-    eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(new EObjectTreeItemClassListReferenceDescriptor(VacationChecklistPackage.eINSTANCE.getVacationChecklistLabelsList_VacationChecklistLabels(), "Labels", true, nodeOperationDescriptors));
-
-    eObjectTreeDescriptor.addEClassDescriptor(eClass, eObjectTreeItemClassDescriptor);
-    
-    /*
-     * VacationChecklistLabel
-     */
-    eClass = vacationChecklistPackageHelper.getEClass("goedegep.vacations.checklist.model.VacationChecklistLabel");
-    nodeOperationDescriptors = new ArrayList<>();
-    nodeOperationDescriptors.add(new NodeOperationDescriptor(TableRowOperation.NEW_OBJECT_BEFORE, "New label before this one ..."));
-    nodeOperationDescriptors.add(new NodeOperationDescriptor(TableRowOperation.NEW_OBJECT_AFTER, "New label after this one ..."));
-    nodeOperationDescriptors.add(new NodeOperationDescriptor(TableRowOperation.MOVE_OBJECT_UP, "Move label up"));
-    nodeOperationDescriptors.add(new NodeOperationDescriptor(TableRowOperation.MOVE_OBJECT_DOWN, "Move label down"));
-    nodeOperationDescriptors.add(new NodeOperationDescriptor(TableRowOperation.DELETE_OBJECT, "Delete this label"));
-    eObjectTreeItemClassDescriptor = new EObjectTreeItemClassDescriptor((eObject) -> ((VacationChecklistLabel)eObject).getName(), true, nodeOperationDescriptors);
-    
-    // VacationChecklistLabel.name
-    eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(new EObjectTreeItemAttributeDescriptor(VacationChecklistPackage.eINSTANCE.getVacationChecklistLabel_Name(), "name", null));
-
-    eObjectTreeDescriptor.addEClassDescriptor(eClass, eObjectTreeItemClassDescriptor);
-    
-    /*
-     *  VacationChecklistCategoriesList
-     */
-    eClass = vacationChecklistPackageHelper.getEClass("goedegep.vacations.checklist.model.VacationChecklistCategoriesList");
-    eObjectTreeItemClassDescriptor = new EObjectTreeItemClassDescriptor((eObject) -> "Categories list", true, null);
-    
-    // VacationChecklistCategoriesList.vacationChecklistCategories
-    nodeOperationDescriptors = new ArrayList<>();
-    nodeOperationDescriptors.add(new NodeOperationDescriptor(TableRowOperation.NEW_OBJECT, "New category"));
-    eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(new EObjectTreeItemClassListReferenceDescriptor(VacationChecklistPackage.eINSTANCE.getVacationChecklistCategoriesList_VacationChecklistCategories(), "Categories", true, nodeOperationDescriptors));
-
-    eObjectTreeDescriptor.addEClassDescriptor(eClass, eObjectTreeItemClassDescriptor);
-    
-    /*
-     * VacationChecklistCategory
-     */
-    eClass = vacationChecklistPackageHelper.getEClass("goedegep.vacations.checklist.model.VacationChecklistCategory");
-    nodeOperationDescriptors = new ArrayList<>();
-    nodeOperationDescriptors.add(new NodeOperationDescriptor(TableRowOperation.NEW_OBJECT_BEFORE, "New category before this one ..."));
-    nodeOperationDescriptors.add(new NodeOperationDescriptor(TableRowOperation.NEW_OBJECT_AFTER, "New category after this one ..."));
-    nodeOperationDescriptors.add(new NodeOperationDescriptor(TableRowOperation.MOVE_OBJECT_UP, "Move category up"));
-    nodeOperationDescriptors.add(new NodeOperationDescriptor(TableRowOperation.MOVE_OBJECT_DOWN, "Move category down"));
-    nodeOperationDescriptors.add(new NodeOperationDescriptor(TableRowOperation.DELETE_OBJECT, "Delete this category"));
-    eObjectTreeItemClassDescriptor = new EObjectTreeItemClassDescriptor((eObject) -> ((VacationChecklistCategory)eObject).getName(), true, nodeOperationDescriptors);
-    
-    // VacationChecklistCategory.name
-    eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(new EObjectTreeItemAttributeDescriptor(VacationChecklistPackage.eINSTANCE.getVacationChecklistCategory_Name(), "name", null));
-    
-    // VacationChecklistCategory.vacationChecklistItems
-    nodeOperationDescriptors = new ArrayList<>();
-    nodeOperationDescriptors.add(new NodeOperationDescriptor(TableRowOperation.NEW_OBJECT, "New item"));
-    eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(new EObjectTreeItemClassListReferenceDescriptor(VacationChecklistPackage.eINSTANCE.getVacationChecklistCategory_VacationChecklistItems(), "Items", true, nodeOperationDescriptors));
-
-    eObjectTreeDescriptor.addEClassDescriptor(eClass, eObjectTreeItemClassDescriptor);
-    
-    /*
-     * VacationChecklistItem
-     */
-    eClass = vacationChecklistPackageHelper.getEClass("goedegep.vacations.checklist.model.VacationChecklistItem");
-    nodeOperationDescriptors = new ArrayList<>();
-    nodeOperationDescriptors.add(new NodeOperationDescriptor(TableRowOperation.NEW_OBJECT_BEFORE, "New item before this one ..."));
-    nodeOperationDescriptors.add(new NodeOperationDescriptor(TableRowOperation.NEW_OBJECT_AFTER, "New item after this one ..."));
-    nodeOperationDescriptors.add(new NodeOperationDescriptor(TableRowOperation.MOVE_OBJECT_UP, "Move item up"));
-    nodeOperationDescriptors.add(new NodeOperationDescriptor(TableRowOperation.MOVE_OBJECT_DOWN, "Move item down"));
-    nodeOperationDescriptors.add(new NodeOperationDescriptor(TableRowOperation.DELETE_OBJECT, "Delete this item"));
-    eObjectTreeItemClassDescriptor = new EObjectTreeItemClassDescriptor((eObject) -> ((VacationChecklistItem)eObject).getName(), true, nodeOperationDescriptors);
-    
-    // VacationChecklistItem.name
-    eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(new EObjectTreeItemAttributeDescriptor(VacationChecklistPackage.eINSTANCE.getVacationChecklistItem_Name(), "name", null));
-    
-    // VacationChecklistItem.vacationChecklistLabels
-    nodeOperationDescriptors = new ArrayList<>();
-    nodeOperationDescriptors.add(new NodeOperationDescriptor(TableRowOperation.NEW_OBJECT, "Add label"));
-    eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(new EObjectTreeItemClassListReferenceDescriptor(VacationChecklistPackage.eINSTANCE.getVacationChecklistItem_VacationChecklistLabels(), "Labels", true, nodeOperationDescriptors));
-
-    eObjectTreeDescriptor.addEClassDescriptor(eClass, eObjectTreeItemClassDescriptor);
-
-    eObjectTreeDescriptor.addEClassDescriptor(eClass, eObjectTreeItemClassDescriptor);
-      
-    return eObjectTreeDescriptor;
   }
 
   /**

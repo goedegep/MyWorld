@@ -25,7 +25,7 @@ import goedegep.rolodex.model.*;
  * @see goedegep.rolodex.model.RolodexPackage
  * @generated
  */
-public class RolodexSwitch<T> extends Switch<T> {
+public class RolodexSwitch<T1> extends Switch<T1> {
   /**
    * The cached model package
    * <!-- begin-user-doc -->
@@ -67,43 +67,43 @@ public class RolodexSwitch<T> extends Switch<T> {
    * @generated
    */
   @Override
-  protected T doSwitch(int classifierID, EObject theEObject) {
+  protected T1 doSwitch(int classifierID, EObject theEObject) {
     switch (classifierID) {
     case RolodexPackage.ROLODEX: {
       Rolodex rolodex = (Rolodex) theEObject;
-      T result = caseRolodex(rolodex);
+      T1 result = caseRolodex(rolodex);
       if (result == null)
         result = defaultCase(theEObject);
       return result;
     }
     case RolodexPackage.COUNTRY: {
       Country country = (Country) theEObject;
-      T result = caseCountry(country);
+      T1 result = caseCountry(country);
       if (result == null)
-        result = caseComparable(country);
+        result = (T1) caseComparable(country);
       if (result == null)
         result = defaultCase(theEObject);
       return result;
     }
     case RolodexPackage.CITY: {
       City city = (City) theEObject;
-      T result = caseCity(city);
+      T1 result = caseCity(city);
       if (result == null)
-        result = caseComparable(city);
+        result = (T1) caseComparable(city);
       if (result == null)
         result = defaultCase(theEObject);
       return result;
     }
     case RolodexPackage.ADDRESS: {
       Address address = (Address) theEObject;
-      T result = caseAddress(address);
+      T1 result = caseAddress(address);
       if (result == null)
         result = defaultCase(theEObject);
       return result;
     }
     case RolodexPackage.PERSON: {
       Person person = (Person) theEObject;
-      T result = casePerson(person);
+      T1 result = casePerson(person);
       if (result == null)
         result = casePhoneNumberHolder(person);
       if (result == null)
@@ -118,7 +118,7 @@ public class RolodexSwitch<T> extends Switch<T> {
     }
     case RolodexPackage.INSTITUTION: {
       Institution institution = (Institution) theEObject;
-      T result = caseInstitution(institution);
+      T1 result = caseInstitution(institution);
       if (result == null)
         result = casePhoneNumberHolder(institution);
       if (result == null)
@@ -129,7 +129,7 @@ public class RolodexSwitch<T> extends Switch<T> {
     }
     case RolodexPackage.EMPLOYEE: {
       Employee employee = (Employee) theEObject;
-      T result = caseEmployee(employee);
+      T1 result = caseEmployee(employee);
       if (result == null)
         result = casePhoneNumberHolder(employee);
       if (result == null)
@@ -138,14 +138,14 @@ public class RolodexSwitch<T> extends Switch<T> {
     }
     case RolodexPackage.PHONE_NUMBER: {
       PhoneNumber phoneNumber = (PhoneNumber) theEObject;
-      T result = casePhoneNumber(phoneNumber);
+      T1 result = casePhoneNumber(phoneNumber);
       if (result == null)
         result = defaultCase(theEObject);
       return result;
     }
     case RolodexPackage.FAMILY: {
       Family family = (Family) theEObject;
-      T result = caseFamily(family);
+      T1 result = caseFamily(family);
       if (result == null)
         result = casePhoneNumberHolder(family);
       if (result == null)
@@ -160,126 +160,126 @@ public class RolodexSwitch<T> extends Switch<T> {
     }
     case RolodexPackage.COUNTRY_LIST: {
       CountryList countryList = (CountryList) theEObject;
-      T result = caseCountryList(countryList);
+      T1 result = caseCountryList(countryList);
       if (result == null)
         result = defaultCase(theEObject);
       return result;
     }
     case RolodexPackage.CITY_LIST: {
       CityList cityList = (CityList) theEObject;
-      T result = caseCityList(cityList);
+      T1 result = caseCityList(cityList);
       if (result == null)
         result = defaultCase(theEObject);
       return result;
     }
     case RolodexPackage.ADDRESS_LIST: {
       AddressList addressList = (AddressList) theEObject;
-      T result = caseAddressList(addressList);
+      T1 result = caseAddressList(addressList);
       if (result == null)
         result = defaultCase(theEObject);
       return result;
     }
     case RolodexPackage.PHONE_NUMBER_LIST: {
       PhoneNumberList phoneNumberList = (PhoneNumberList) theEObject;
-      T result = casePhoneNumberList(phoneNumberList);
+      T1 result = casePhoneNumberList(phoneNumberList);
       if (result == null)
         result = defaultCase(theEObject);
       return result;
     }
     case RolodexPackage.INSTITUTION_LIST: {
       InstitutionList institutionList = (InstitutionList) theEObject;
-      T result = caseInstitutionList(institutionList);
+      T1 result = caseInstitutionList(institutionList);
       if (result == null)
         result = defaultCase(theEObject);
       return result;
     }
     case RolodexPackage.EMPLOYEE_LIST: {
       EmployeeList employeeList = (EmployeeList) theEObject;
-      T result = caseEmployeeList(employeeList);
+      T1 result = caseEmployeeList(employeeList);
       if (result == null)
         result = defaultCase(theEObject);
       return result;
     }
     case RolodexPackage.PERSON_LIST: {
       PersonList personList = (PersonList) theEObject;
-      T result = casePersonList(personList);
+      T1 result = casePersonList(personList);
       if (result == null)
         result = defaultCase(theEObject);
       return result;
     }
     case RolodexPackage.FAMILY_LIST: {
       FamilyList familyList = (FamilyList) theEObject;
-      T result = caseFamilyList(familyList);
+      T1 result = caseFamilyList(familyList);
       if (result == null)
         result = defaultCase(theEObject);
       return result;
     }
     case RolodexPackage.PHONE_NUMBER_HOLDER: {
       PhoneNumberHolder phoneNumberHolder = (PhoneNumberHolder) theEObject;
-      T result = casePhoneNumberHolder(phoneNumberHolder);
+      T1 result = casePhoneNumberHolder(phoneNumberHolder);
       if (result == null)
         result = defaultCase(theEObject);
       return result;
     }
     case RolodexPackage.PHONE: {
       Phone phone = (Phone) theEObject;
-      T result = casePhone(phone);
+      T1 result = casePhone(phone);
       if (result == null)
         result = defaultCase(theEObject);
       return result;
     }
     case RolodexPackage.PHONE_LIST: {
       PhoneList phoneList = (PhoneList) theEObject;
-      T result = casePhoneList(phoneList);
+      T1 result = casePhoneList(phoneList);
       if (result == null)
         result = defaultCase(theEObject);
       return result;
     }
     case RolodexPackage.PHONE_ADDRESS_BOOK: {
       PhoneAddressBook phoneAddressBook = (PhoneAddressBook) theEObject;
-      T result = casePhoneAddressBook(phoneAddressBook);
+      T1 result = casePhoneAddressBook(phoneAddressBook);
       if (result == null)
         result = defaultCase(theEObject);
       return result;
     }
     case RolodexPackage.PHONE_ADDRESS_BOOK_ENTRY: {
       PhoneAddressBookEntry phoneAddressBookEntry = (PhoneAddressBookEntry) theEObject;
-      T result = casePhoneAddressBookEntry(phoneAddressBookEntry);
+      T1 result = casePhoneAddressBookEntry(phoneAddressBookEntry);
       if (result == null)
         result = defaultCase(theEObject);
       return result;
     }
     case RolodexPackage.ADDRESS_HOLDER: {
       AddressHolder addressHolder = (AddressHolder) theEObject;
-      T result = caseAddressHolder(addressHolder);
+      T1 result = caseAddressHolder(addressHolder);
       if (result == null)
         result = defaultCase(theEObject);
       return result;
     }
     case RolodexPackage.BIRTHDAY: {
       Birthday birthday = (Birthday) theEObject;
-      T result = caseBirthday(birthday);
+      T1 result = caseBirthday(birthday);
       if (result == null)
         result = defaultCase(theEObject);
       return result;
     }
     case RolodexPackage.DESCRIPTION: {
       Description description = (Description) theEObject;
-      T result = caseDescription(description);
+      T1 result = caseDescription(description);
       if (result == null)
         result = defaultCase(theEObject);
       return result;
     }
     case RolodexPackage.ADDRESS_FOR_PERIOD: {
       AddressForPeriod addressForPeriod = (AddressForPeriod) theEObject;
-      T result = caseAddressForPeriod(addressForPeriod);
+      T1 result = caseAddressForPeriod(addressForPeriod);
       if (result == null)
         result = defaultCase(theEObject);
       return result;
     }
     case RolodexPackage.ARCHIVE: {
       Archive archive = (Archive) theEObject;
-      T result = caseArchive(archive);
+      T1 result = caseArchive(archive);
       if (result == null)
         result = defaultCase(theEObject);
       return result;
@@ -300,7 +300,7 @@ public class RolodexSwitch<T> extends Switch<T> {
    * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
    * @generated
    */
-  public T caseRolodex(Rolodex object) {
+  public T1 caseRolodex(Rolodex object) {
     return null;
   }
 
@@ -315,7 +315,7 @@ public class RolodexSwitch<T> extends Switch<T> {
    * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
    * @generated
    */
-  public T caseCountry(Country object) {
+  public T1 caseCountry(Country object) {
     return null;
   }
 
@@ -330,7 +330,7 @@ public class RolodexSwitch<T> extends Switch<T> {
    * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
    * @generated
    */
-  public T caseCity(City object) {
+  public T1 caseCity(City object) {
     return null;
   }
 
@@ -345,7 +345,7 @@ public class RolodexSwitch<T> extends Switch<T> {
    * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
    * @generated
    */
-  public T caseAddress(Address object) {
+  public T1 caseAddress(Address object) {
     return null;
   }
 
@@ -360,7 +360,7 @@ public class RolodexSwitch<T> extends Switch<T> {
    * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
    * @generated
    */
-  public T casePerson(Person object) {
+  public T1 casePerson(Person object) {
     return null;
   }
 
@@ -375,7 +375,7 @@ public class RolodexSwitch<T> extends Switch<T> {
    * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
    * @generated
    */
-  public T caseInstitution(Institution object) {
+  public T1 caseInstitution(Institution object) {
     return null;
   }
 
@@ -390,7 +390,7 @@ public class RolodexSwitch<T> extends Switch<T> {
    * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
    * @generated
    */
-  public T caseEmployee(Employee object) {
+  public T1 caseEmployee(Employee object) {
     return null;
   }
 
@@ -405,7 +405,7 @@ public class RolodexSwitch<T> extends Switch<T> {
    * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
    * @generated
    */
-  public T casePhoneNumber(PhoneNumber object) {
+  public T1 casePhoneNumber(PhoneNumber object) {
     return null;
   }
 
@@ -420,7 +420,7 @@ public class RolodexSwitch<T> extends Switch<T> {
    * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
    * @generated
    */
-  public T caseFamily(Family object) {
+  public T1 caseFamily(Family object) {
     return null;
   }
 
@@ -435,7 +435,7 @@ public class RolodexSwitch<T> extends Switch<T> {
    * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
    * @generated
    */
-  public T caseCountryList(CountryList object) {
+  public T1 caseCountryList(CountryList object) {
     return null;
   }
 
@@ -450,7 +450,7 @@ public class RolodexSwitch<T> extends Switch<T> {
    * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
    * @generated
    */
-  public T caseCityList(CityList object) {
+  public T1 caseCityList(CityList object) {
     return null;
   }
 
@@ -465,7 +465,7 @@ public class RolodexSwitch<T> extends Switch<T> {
    * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
    * @generated
    */
-  public T caseAddressList(AddressList object) {
+  public T1 caseAddressList(AddressList object) {
     return null;
   }
 
@@ -480,7 +480,7 @@ public class RolodexSwitch<T> extends Switch<T> {
    * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
    * @generated
    */
-  public T casePhoneNumberList(PhoneNumberList object) {
+  public T1 casePhoneNumberList(PhoneNumberList object) {
     return null;
   }
 
@@ -495,7 +495,7 @@ public class RolodexSwitch<T> extends Switch<T> {
    * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
    * @generated
    */
-  public T caseInstitutionList(InstitutionList object) {
+  public T1 caseInstitutionList(InstitutionList object) {
     return null;
   }
 
@@ -510,7 +510,7 @@ public class RolodexSwitch<T> extends Switch<T> {
    * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
    * @generated
    */
-  public T caseEmployeeList(EmployeeList object) {
+  public T1 caseEmployeeList(EmployeeList object) {
     return null;
   }
 
@@ -525,7 +525,7 @@ public class RolodexSwitch<T> extends Switch<T> {
    * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
    * @generated
    */
-  public T casePersonList(PersonList object) {
+  public T1 casePersonList(PersonList object) {
     return null;
   }
 
@@ -540,7 +540,7 @@ public class RolodexSwitch<T> extends Switch<T> {
    * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
    * @generated
    */
-  public T caseFamilyList(FamilyList object) {
+  public T1 caseFamilyList(FamilyList object) {
     return null;
   }
 
@@ -555,7 +555,7 @@ public class RolodexSwitch<T> extends Switch<T> {
    * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
    * @generated
    */
-  public T casePhoneNumberHolder(PhoneNumberHolder object) {
+  public T1 casePhoneNumberHolder(PhoneNumberHolder object) {
     return null;
   }
 
@@ -570,7 +570,7 @@ public class RolodexSwitch<T> extends Switch<T> {
    * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
    * @generated
    */
-  public T casePhone(Phone object) {
+  public T1 casePhone(Phone object) {
     return null;
   }
 
@@ -585,7 +585,7 @@ public class RolodexSwitch<T> extends Switch<T> {
    * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
    * @generated
    */
-  public T casePhoneList(PhoneList object) {
+  public T1 casePhoneList(PhoneList object) {
     return null;
   }
 
@@ -600,7 +600,7 @@ public class RolodexSwitch<T> extends Switch<T> {
    * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
    * @generated
    */
-  public T casePhoneAddressBook(PhoneAddressBook object) {
+  public T1 casePhoneAddressBook(PhoneAddressBook object) {
     return null;
   }
 
@@ -615,7 +615,7 @@ public class RolodexSwitch<T> extends Switch<T> {
    * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
    * @generated
    */
-  public T casePhoneAddressBookEntry(PhoneAddressBookEntry object) {
+  public T1 casePhoneAddressBookEntry(PhoneAddressBookEntry object) {
     return null;
   }
 
@@ -630,7 +630,7 @@ public class RolodexSwitch<T> extends Switch<T> {
    * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
    * @generated
    */
-  public T caseAddressHolder(AddressHolder object) {
+  public T1 caseAddressHolder(AddressHolder object) {
     return null;
   }
 
@@ -645,7 +645,7 @@ public class RolodexSwitch<T> extends Switch<T> {
    * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
    * @generated
    */
-  public T caseBirthday(Birthday object) {
+  public T1 caseBirthday(Birthday object) {
     return null;
   }
 
@@ -660,7 +660,7 @@ public class RolodexSwitch<T> extends Switch<T> {
    * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
    * @generated
    */
-  public T caseDescription(Description object) {
+  public T1 caseDescription(Description object) {
     return null;
   }
 
@@ -675,7 +675,7 @@ public class RolodexSwitch<T> extends Switch<T> {
    * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
    * @generated
    */
-  public T caseAddressForPeriod(AddressForPeriod object) {
+  public T1 caseAddressForPeriod(AddressForPeriod object) {
     return null;
   }
 
@@ -690,7 +690,7 @@ public class RolodexSwitch<T> extends Switch<T> {
    * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
    * @generated
    */
-  public T caseArchive(Archive object) {
+  public T1 caseArchive(Archive object) {
     return null;
   }
 
@@ -706,7 +706,7 @@ public class RolodexSwitch<T> extends Switch<T> {
    * @generated
    */
   @SuppressWarnings("rawtypes")
-  public T caseComparable(Comparable object) {
+  public <T> T1 caseComparable(Comparable<T> object) {
     return null;
   }
 
@@ -722,7 +722,7 @@ public class RolodexSwitch<T> extends Switch<T> {
    * @generated
    */
   @Override
-  public T defaultCase(EObject object) {
+  public T1 defaultCase(EObject object) {
     return null;
   }
 

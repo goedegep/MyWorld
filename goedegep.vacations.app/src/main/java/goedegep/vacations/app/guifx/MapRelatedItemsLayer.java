@@ -15,6 +15,8 @@ import goedegep.poi.app.guifx.POIIcons;
 import goedegep.poi.model.POICategoryId;
 import goedegep.resources.ImageResource;
 import goedegep.util.img.ImageUtils;
+import goedegep.util.objectselector.ObjectSelectionListener;
+import goedegep.util.objectselector.ObjectSelector;
 import goedegep.vacations.app.logic.LocationDescriptionDialog;
 import goedegep.vacations.model.Boundary;
 import goedegep.vacations.model.BoundingBox;
@@ -32,6 +34,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Polygon;
 import javafx.scene.shape.Polyline;
 import javafx.scene.text.Font;
+import javafx.scene.transform.Translate;
 import javafx.stage.Stage;
 
 /**
@@ -46,7 +49,7 @@ import javafx.stage.Stage;
  * </ul>
  * 
  */
-public class MapRelatedItemsLayer extends MapLayer {
+public class MapRelatedItemsLayer extends MapLayer implements ObjectSelector<Object> {
   private static final Logger         LOGGER = Logger.getLogger(MapRelatedItemsLayer.class.getName());
   private static int MAX_IMAGE_WIDTH = 900;
   private static int MAX_IMAGE_HEIGHT = 500;
@@ -73,11 +76,15 @@ public class MapRelatedItemsLayer extends MapLayer {
   private final ObservableList<PolylineData> locationsVisitedList  = FXCollections.observableArrayList();
   private PhotoData currentPhoto = null;
 
+  private List<ObjectSelectionListener<Object>> objectSelectionListeners = new ArrayList<>();
+
 
   /**
    * in edit mode a bounding box is also shown when a polyline/polygon is available.
    */
   private boolean editMode = false;
+  
+  private Object selectedObject;
   
   VBox group;
 
@@ -135,7 +142,14 @@ public class MapRelatedItemsLayer extends MapLayer {
       POICategoryId poiCategoryId = location.getLocationType();
       Image locationIcon = poiIcons.getIcon(poiCategoryId);    
       labeledIcon = new LabeledIcon(locationIcon, text);
-      labeledIcon.mySetOnMouseClicked(e -> (new LocationDescriptionDialog(customization, ownerWindow, location)).show());
+      labeledIcon.installMouseEventHandling(e -> {
+        LOGGER.severe("Mouse clicked on: " + location);
+        if (!e.isControlDown()) {
+          setSelectedObject(location);
+        } else {
+          new LocationDescriptionDialog(customization, ownerWindow, location).show();
+        }
+      });
       getChildren().add(labeledIcon);
       
       wgs84BoundingBox = new WGS84BoundingBox(location.getLongitude(), location.getLatitude());
@@ -397,12 +411,11 @@ public class MapRelatedItemsLayer extends MapLayer {
     LabeledIcon labeledIcon = locationData.labeledIcon();
     if (labeledIcon != null) {
       double zoomLevel = baseMap.zoom().get();
-      double zoomCorrectionX = labeledIcon.getZoomDependendTranslateXCorrection(zoomLevel);
-      double zoomCorrectionY = labeledIcon.getZoomDependendTranslateYCorrection(zoomLevel);
+      Translate zoomCorrection = labeledIcon.getZoomDependendTranslateCorrection(zoomLevel);
 
       Point2D mapPoint = baseMap.getMapPoint(location.getLatitude(), location.getLongitude());
-      labeledIcon.setTranslateX(mapPoint.getX() - zoomCorrectionX);
-      labeledIcon.setTranslateY(mapPoint.getY() - zoomCorrectionY);
+      labeledIcon.setTranslateX(mapPoint.getX() - zoomCorrection.getX());
+      labeledIcon.setTranslateY(mapPoint.getY() - zoomCorrection.getY());
     }
     
     // Polylines
@@ -440,17 +453,46 @@ public class MapRelatedItemsLayer extends MapLayer {
       return false;
     }
     
+    selectedObject = object;
+
+    
     if (object instanceof Location location) {
       for (LocationData locationData: locations) {
         if (location.equals(locationData.location())) {
           LOGGER.info("Going to select: " + location);
           if (locationData.labeledIcon() != null) {
-            locationData.labeledIcon().setSelected(true);
+            locationData.labeledIcon().setSelectedStyle(true);
           }
         }
       }
     }
     return false;
+  }
+  
+  private void setSelectedObject(Object object) {
+    selectObject(object);
+    notifyListeners();
+  }
+  
+  private void notifyListeners() {
+    for (ObjectSelectionListener<Object> listener: objectSelectionListeners) {
+      listener.objectSelected(this, selectedObject);
+    }
+  }
+
+  @Override
+  public void addObjectSelectionListener(ObjectSelectionListener<Object> objectSelectionListener) {
+    objectSelectionListeners.add(objectSelectionListener); 
+  }
+
+  @Override
+  public void removeObjectSelectionListener(ObjectSelectionListener<Object> objectSelectionListener) {
+    objectSelectionListeners.remove(objectSelectionListener); 
+  }
+
+  @Override
+  public Object getSelectedObject() {
+    return selectedObject;
   }
 }
 

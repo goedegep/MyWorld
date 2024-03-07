@@ -54,6 +54,7 @@ import goedegep.jfx.PropertyDescriptorsEditorFx;
 import goedegep.jfx.browser.Browser;
 import goedegep.jfx.eobjecttreeview.EObjectTreeCell;
 import goedegep.jfx.eobjecttreeview.EObjectTreeItem;
+import goedegep.jfx.eobjecttreeview.EObjectTreeView;
 import goedegep.poi.app.guifx.POIIcons;
 import goedegep.properties.app.guifx.PropertiesEditor;
 import goedegep.properties.model.PropertiesFactory;
@@ -177,7 +178,7 @@ public class VacationsWindow extends JfxStage {
   private EMFResource<Vacations> vacationsResource = null;
   private EMFResource<VacationChecklist> vacationChecklistResource = null;
   private Vacations vacations = null;
-  private VacationsTreeView treeView = null;
+  private EObjectTreeView treeView = null;
   private Label statusLabel = new Label("");
   
   private VacationToHtmlConverter vacationToHtmlConverter;
@@ -449,7 +450,7 @@ public class VacationsWindow extends JfxStage {
    * 
    * @return the {@code VacationsTreeView}.
    */
-  public VacationsTreeView getTreeView() {
+  public EObjectTreeView getTreeView() {
     return treeView;
   }
   
@@ -520,7 +521,15 @@ public class VacationsWindow extends JfxStage {
     });
     
     // Vacations TreeView - centerPane left
-    treeView = new VacationsTreeView(customization, this::fillMapImage, this::updateMapImageFile, poiIcons, this::isMenuToBeEnabled, this::reduceBoundariesSizes, travelMapView, vacationTreeEditableMenuItem.isSelected());
+    treeView = new VacationsTreeViewCreator(customization)
+        .setPOIIcons(poiIcons)
+        .setNewEObjectInitializationFunction(this::initializeNewEObject)
+        .setMenuToBeEnabledPredicate(this::isMenuToBeEnabled)
+        .setReduceBoundariesSizesFunction(this::reduceBoundariesSizes)
+        .setTravelMapView(travelMapView)
+        .setUpdateMapImageFileFunction(this::updateMapImageFile)
+        .createVacationsTreeView();
+    treeView.setEditMode(vacationTreeEditableMenuItem.isSelected());
     treeView.setMinWidth(300);
     treeView.addObjectSelectionListener(this::handleNewTreeItemSelected);
     centerPane.getItems().add(treeView);
@@ -529,13 +538,13 @@ public class VacationsWindow extends JfxStage {
       //TreeItem<EObjectTreeItemContent> treeItem
       if (treeItem != null) {
         Object value = treeItem.getValue();
-        if (value != null) {
+        if (source != travelMapView) {
           travelMapView.selectObject(value);
         }
       }
     });
     travelMapView.addObjectSelectionListener((source, object) -> {
-      treeView.selectTreeItem(object);
+      treeView.selectObjectForObject(object);
     });
     
     TabPane tabPane = new TabPane();
@@ -1883,9 +1892,11 @@ public class VacationsWindow extends JfxStage {
           DocumentRoot documentRoot = gpxResource.getEObject();
           GpxType gpxType = documentRoot.getGpx();
           MetadataType metadataType = gpxType.getMetadata();
-          String name = metadataType.getName();
-          if (name != null  &&  !name.isEmpty()) {
-            text = name;
+          if (metadataType != null) {
+            String name = metadataType.getName();
+            if (name != null  &&  !name.isEmpty()) {
+              text = name;
+            }
           }
         } catch (FileNotFoundException e) {
           text = "(file doesn't exist)";
@@ -2330,7 +2341,6 @@ public class VacationsWindow extends JfxStage {
     if (file == null) {
       return;
     }
-    LOGGER.severe("Creating OsmAnd import file: " + file.getAbsolutePath());
     
     // We can safely delete the file, because the user agreed to this in the FileChooser.
     if (file.exists()) {
@@ -2399,7 +2409,6 @@ public class VacationsWindow extends JfxStage {
             Path sourcePath = Paths.get(fileName);
             File sourceFile = new File(fileName);
             Path destinationPath = gpxTracksFolderPath.resolve(sourceFile.getName());
-            LOGGER.severe("Going to copy: " + sourcePath.toString() + " to: " + destinationPath.toString());
             try {
               Files.copy(sourcePath, destinationPath);
               
@@ -2616,7 +2625,7 @@ public class VacationsWindow extends JfxStage {
    * @param eObject the newly created EObject
    * @param treeItem the <code>EObjectTreeItem</code> to which the <code>eObject</code> is added.
    */
-  private void fillMapImage(EObject eObject, EObjectTreeItem treeItem) {
+  private void initializeNewEObject(EObject eObject, EObjectTreeItem treeItem) {
     LOGGER.info("=> eObject=" + eObject + ", treeItem=" + treeItem);
     
     if (eObject instanceof MapImage mapImage) {

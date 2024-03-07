@@ -1,10 +1,10 @@
 package goedegep.jfx.eobjecttreeview;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 
 import org.eclipse.emf.ecore.EObject;
-
 import goedegep.util.text.Indent;
 import javafx.scene.image.Image;
 
@@ -29,69 +29,171 @@ import javafx.scene.image.Image;
 public abstract class EObjectTreeItemDescriptor {
   static final String NEWLINE = System.getProperty("line.separator");
 
-  private EObjectTreeItemDescriptorType descriptorType;
-  private boolean expandOnCreation = false;                          // Expand the node upon creation of the tree.
-  private boolean strongText = false;                                // If true, the text is in a strong font (bold).
-  private List<NodeOperationDescriptor> nodeOperationDescriptors;    // Defines the available operations for the node.
-  private Function<EObject, String> buildText;                       // Function to provide the node text.
-  private Function<Object, Image> nodeIconFunction;                  // A function to provide the node icon.
+  /**
+   * Indication of the kind of node that this descriptor is for (mandatory).
+   */
+  private EObjectTreeItemDescriptorType descriptorType = null;
+  
+  /**
+   * If true, the node will be expanded upon creation.
+   */
+  private boolean expandOnCreation = false;
+  
+  /**
+   * If true, the text is in a strong font (bold).
+   */
+  private boolean strongText = false;
+  
+  /**
+   * Defines the available operations for the node (optional).
+   */
+  private List<NodeOperationDescriptor> nodeOperationDescriptors = null;
+  
+  
+  /**
+   * Function to provide the node text (optional).
+   */
+  private Function<EObject, String> nodeTextFunction = null;
+  
+  /**
+   * A function to provide the node icon (optional).
+   */
+  private Function<Object, Image> nodeIconFunction = null;
+  
 
-  public EObjectTreeItemDescriptor(EObjectTreeItemDescriptorType descriptorType, boolean expandOnCreation, List<NodeOperationDescriptor> nodeOperationDescriptors) {
-    this(descriptorType, expandOnCreation, nodeOperationDescriptors, null, null);
-  }
-
-  public EObjectTreeItemDescriptor(EObjectTreeItemDescriptorType descriptorType, boolean expandOnCreation, List<NodeOperationDescriptor> nodeOperationDescriptors,
-      Function<EObject, String> buildText, Function<Object, Image> nodeIconFunction) {
+  /**
+   * Constructor.
+   * 
+   * @param descriptorType Indication of the kind of node that this descriptor is for. This value may not be null.
+   */
+  public EObjectTreeItemDescriptor(EObjectTreeItemDescriptorType descriptorType) {
+    java.util.Objects.requireNonNull(descriptorType, "The descriptorType may not be null");
+    
     this.descriptorType = descriptorType;
-    this.expandOnCreation = expandOnCreation;
-    this.nodeOperationDescriptors = nodeOperationDescriptors;
-    this.buildText = buildText;
-    this.nodeIconFunction = nodeIconFunction;
   }
-
+  
+  /**
+   * Get the descriptor type.
+   * 
+   * @return the descriptor type.
+   */
   public EObjectTreeItemDescriptorType getDescriptorType() {
     return descriptorType;
   }
 
-  protected void setDescriptorType(EObjectTreeItemDescriptorType descriptorType) {
-    this.descriptorType = descriptorType;
-  }
-
+  /**
+   * Check whether the node shall be expanded on creation or not.
+   * 
+   * @return whether the node shall be expanded on creation or not.
+   */
   public boolean isExpandOnCreation() {
     return expandOnCreation;
   }
-
-  public boolean isStrongText() {
-    return strongText;
-  }
-
-  public void setStrongText(boolean strongText) {
-    this.strongText = strongText;
-  }
-
-  public List<NodeOperationDescriptor> getNodeOperationDescriptors() {
-    return nodeOperationDescriptors;
-  }
-
-  public Function<EObject, String> getBuildText() {
-    return buildText;
-  }
   
-  public EObjectTreeItemDescriptor setBuildText(Function<EObject, String> buildText) {
-    this.buildText = buildText;
+  /**
+   * Set whether the node shall be expanded upon creation or not
+   * 
+   * @param expandOnCreation if true, the node will be expanded upon creation.
+   * @return this
+   */
+  public EObjectTreeItemDescriptor setExpandOnCreation(boolean expandOnCreation) {
+    this.expandOnCreation = expandOnCreation;
     
     return this;
   }
 
-  public java.util.function.Function<Object, Image> getNodeIconFunction() {
+  /**
+   * Check whether the text shall be in a strong font (bold).
+   * 
+   * @return true if the text shall be in a strong font (bold), false otherwise.
+   */
+  public boolean isStrongText() {
+    return strongText;
+  }
+
+  /**
+   * Set whether the text shall be in a strong font (bold) or not.
+   * 
+   * @param strongText if true the text shall be in a strong font (bold).
+   * @return this
+   */
+  public EObjectTreeItemDescriptor setStrongText(boolean strongText) {
+    this.strongText = strongText;
+    
+    return this;
+  }
+
+  /**
+   * Get the available operations for the node.
+   * 
+   * @return the available operations for the node.
+   */
+  public List<NodeOperationDescriptor> getNodeOperationDescriptors() {
+    return nodeOperationDescriptors;
+  }
+  
+  /**
+   * Add a node operation.
+   * <p>
+   * This operation will be added to the end of the list of operations.
+   * 
+   * @param nodeOperationDescriptor descriptor for the operation to be added.
+   * @return this
+   */
+  public EObjectTreeItemDescriptor addNodeOperationDescriptor(NodeOperationDescriptor nodeOperationDescriptor) {
+    if (nodeOperationDescriptors == null) {
+      nodeOperationDescriptors = new ArrayList<>();
+    }
+    
+    nodeOperationDescriptors.add(nodeOperationDescriptor);
+    
+    return this;
+  }
+
+  /**
+   * Get the function to provide the node text.
+   * 
+   * @return the function to provide the node text.
+   */
+  public Function<EObject, String> getNodeTextFunction() {
+    return nodeTextFunction;
+  }
+  
+  /**
+   * Set the function to provide the node text.
+   * 
+   * @param nodeTextFunction the function to provide the node text.
+   * @return this
+   */
+  public EObjectTreeItemDescriptor setNodeTextFunction(Function<EObject, String> nodeTextFunction) {
+    this.nodeTextFunction = nodeTextFunction;
+    
+    return this;
+  }
+
+  /**
+   * Get the function to provide the node icon.
+   * 
+   * @return the function to provide the node icon.
+   */
+  public Function<Object, Image> getNodeIconFunction() {
     return nodeIconFunction;
   }
   
-  public void setNodeIconFunction(java.util.function.Function<Object, Image> nodeIconFunction) {
+  /**
+   * Set the function to provide the node icon.
+   * @param nodeIconFunction the function to provide the node icon.
+   * @return this
+   */
+  public EObjectTreeItemDescriptor setNodeIconFunction(java.util.function.Function<Object, Image> nodeIconFunction) {
     this.nodeIconFunction = nodeIconFunction;
+    
+    return this;
   }
 
-
+  /**
+   * Indication of the node type for which this is a descriptor.
+   */
   public enum EObjectTreeItemDescriptorType {
     CLASS,
     ATTRIBUTE,
@@ -116,7 +218,7 @@ public abstract class EObjectTreeItemDescriptor {
       buf.append("<not set>");
     }
     buf.append(NEWLINE);
-    buf.append(indent.toString()).append("buildText: ").append(buildText != null ? "Set" : "Not set").append(NEWLINE);
+    buf.append(indent.toString()).append("buildText: ").append(nodeTextFunction != null ? "Set" : "Not set").append(NEWLINE);
     buf.append(indent.toString()).append("nodeIconFunction: ").append(nodeIconFunction != null ? "Set" : "Not set").append(NEWLINE);
     
     return buf.toString();
