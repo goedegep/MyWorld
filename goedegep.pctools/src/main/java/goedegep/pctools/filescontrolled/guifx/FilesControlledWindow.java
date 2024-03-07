@@ -15,20 +15,12 @@ import java.util.logging.Logger;
 
 import org.eclipse.emf.common.util.TreeIterator;
 import org.eclipse.emf.common.util.WrappedException;
-import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 
-import goedegep.appgen.TableRowOperation;
 import goedegep.jfx.ComponentFactoryFx;
 import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.JfxStage;
-import goedegep.jfx.eobjecttreeview.EObjectTreeDescriptor;
-import goedegep.jfx.eobjecttreeview.EObjectTreeItemAttributeDescriptor;
-import goedegep.jfx.eobjecttreeview.EObjectTreeItemClassDescriptor;
-import goedegep.jfx.eobjecttreeview.EObjectTreeItemClassListReferenceDescriptor;
 import goedegep.jfx.eobjecttreeview.EObjectTreeView;
-import goedegep.jfx.eobjecttreeview.NodeOperationDescriptor;
-import goedegep.jfx.eobjecttreeview.PresentationType;
 import goedegep.jfx.workerstategui.WorkerStateMonitorWindow;
 import goedegep.pctools.app.logic.PCToolsRegistry;
 import goedegep.pctools.filescontrolled.logic.CheckFilesTask;
@@ -55,7 +47,6 @@ import goedegep.pctools.filescontrolled.types.FileInfoMap;
 //import goedegep.pctools.filescontrolled.model.PCToolsPackage;
 import goedegep.util.Tuplet;
 import goedegep.util.emf.EMFResource;
-import goedegep.util.emf.EmfPackageHelper;
 import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -204,9 +195,7 @@ public class FilesControlledWindow extends JfxStage {
    * Create the instance level GUI controls.
    */
   private void createControls() {
-    EObjectTreeDescriptor eObjectTreeDescriptor = createEObjectTreeDescriptor();
-    treeView = new EObjectTreeView(discStructureSpecification, eObjectTreeDescriptor, true);
-    treeView.setEditable(true);
+    treeView = new DiscStructureSpecificationTreeViewCreator().createDiscStructureSpecificationTreeView().setEObject(discStructureSpecification);
     treeView.setMinWidth(600);
   }
   
@@ -273,137 +262,6 @@ public class FilesControlledWindow extends JfxStage {
 
     setScene(new Scene(mainPane, 2000, 600));
     
-  }
-
-  /**
-   * Create the EObjectTreeDescriptor for the DiscStructureSpecification tree view.
-   * 
-   * @return the EObjectTreeDescriptor for the DiscStructureSpecification tree view
-   */
-  private EObjectTreeDescriptor createEObjectTreeDescriptor() {
-    EmfPackageHelper discStructureSpecificationPackageHelper = new EmfPackageHelper(PC_TOOLS_PACKAGE);
-    EObjectTreeDescriptor eObjectTreeDescriptor = new EObjectTreeDescriptor();
-    
-    createAndAddEObjectTreeDescriptorForDiscStructureSpecification(eObjectTreeDescriptor, discStructureSpecificationPackageHelper);
-    createAndAddEObjectTreeDescriptorForDirectorySpecification(eObjectTreeDescriptor, discStructureSpecificationPackageHelper);
-    createAndAddEObjectTreeDescriptorForDescribedItem(eObjectTreeDescriptor, discStructureSpecificationPackageHelper);
-
-    return eObjectTreeDescriptor;
-  }
-
-  /**
-   * Create the descriptor for the EClass goedegep.pctools.filescontrolled.model.DiscStructureSpecification.
-   * 
-   * @param eObjectTreeDescriptor the tree descriptor to which the DiscStructureSpecification descriptor is to be added.
-   * @param discStructureSpecificationPackageHelper an <code>EmfPackageHelper</code> for the <code>PCToolsPackage</code>
-   */
-  private void createAndAddEObjectTreeDescriptorForDiscStructureSpecification(EObjectTreeDescriptor eObjectTreeDescriptor, EmfPackageHelper discStructureSpecificationPackageHelper) {
-    EClass eClass = discStructureSpecificationPackageHelper.getEClass("goedegep.pctools.filescontrolled.model.DiscStructureSpecification");
-        
-    // DiscStructureSpecification (root node)
-    EObjectTreeItemClassDescriptor eObjectTreeItemClassDescriptor = new EObjectTreeItemClassDescriptor((eObject) -> "Disc Structure Specification", true, null);
-
-    // DiscStructureSpecification.directorySpecifications
-    List<NodeOperationDescriptor> nodeOperationDescriptors = new ArrayList<>();
-    nodeOperationDescriptors.add(new NodeOperationDescriptor(TableRowOperation.NEW_OBJECT, "Create Directory Specification"));
-    eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(new EObjectTreeItemClassListReferenceDescriptor(PC_TOOLS_PACKAGE.getDiscStructureSpecification_DirectorySpecifications(), "Directory specifications", true, nodeOperationDescriptors));
-    
-    // DiscStructureSpecification.filesToIgnoreCompletely
-    nodeOperationDescriptors = new ArrayList<>();
-    nodeOperationDescriptors.add(new NodeOperationDescriptor(TableRowOperation.NEW_OBJECT, "New file to ignore completely"));
-    eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(new EObjectTreeItemClassListReferenceDescriptor(PC_TOOLS_PACKAGE.getDiscStructureSpecification_FilesToIgnoreCompletely(), "Files to ignore completely", true, nodeOperationDescriptors));
-    
-    // DiscStructureSpecification.directoriesToIgnoreCompletely
-    nodeOperationDescriptors = new ArrayList<>();
-    nodeOperationDescriptors.add(new NodeOperationDescriptor(TableRowOperation.NEW_OBJECT, "New directory to ignore completely"));
-    eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(new EObjectTreeItemClassListReferenceDescriptor(PC_TOOLS_PACKAGE.getDiscStructureSpecification_DirectoriesToIgnoreCompletely(), "Directories to ignore completely", true, nodeOperationDescriptors));
-    
-    eObjectTreeDescriptor.addEClassDescriptor(eClass, eObjectTreeItemClassDescriptor);
-  }
-
-  /**
-   * Create the descriptor for the EClass goedegep.pctools.filescontrolled.model.DirectorySpecification.
-   * 
-   * @param eObjectTreeDescriptor the tree descriptor to which the DirectorySpecification descriptor is to be added.
-   * @param discStructureSpecificationPackageHelper an <code>EmfPackageHelper</code> for the <code>PCToolsPackage</code>
-   */
-  private void createAndAddEObjectTreeDescriptorForDirectorySpecification(EObjectTreeDescriptor eObjectTreeDescriptor, EmfPackageHelper discStructureSpecificationPackageHelper) {
-    EClass eClass = discStructureSpecificationPackageHelper.getEClass("goedegep.pctools.filescontrolled.model.DirectorySpecification");
-        
-    // DirectorySpecification
-    List<NodeOperationDescriptor> nodeOperationDescriptors = new ArrayList<>();
-    nodeOperationDescriptors.add(new NodeOperationDescriptor(TableRowOperation.NEW_OBJECT_BEFORE, "New Directory Specification before this one ..."));
-    nodeOperationDescriptors.add(new NodeOperationDescriptor(TableRowOperation.NEW_OBJECT_AFTER, "New Directory Specification after this one ..."));
-    nodeOperationDescriptors.add(new NodeOperationDescriptor(TableRowOperation.MOVE_OBJECT_UP, "Move Directory Specification up"));
-    nodeOperationDescriptors.add(new NodeOperationDescriptor(TableRowOperation.MOVE_OBJECT_DOWN, "Move Directory Specification down"));
-    nodeOperationDescriptors.add(new NodeOperationDescriptor(TableRowOperation.DELETE_OBJECT, "Delete Directory Specification"));
-    EObjectTreeItemClassDescriptor eObjectTreeItemClassDescriptor = new EObjectTreeItemClassDescriptor(
-        eObject -> {
-          StringBuilder buf = new StringBuilder();
-          DirectorySpecification directorySpecification = (DirectorySpecification) eObject;
-          if (directorySpecification.isSetDirectoryPath()) {
-            buf.append(directorySpecification.getDirectoryPath());
-          } else {
-            buf.append("<name not specified>");
-          }
-          buf.append(": ");
-          if (directorySpecification.isControlled()) {
-            buf.append("(controlled)");
-          } else {
-            buf.append("(not controlled)");
-          }
-          
-          return buf.toString();
-        }, false, nodeOperationDescriptors);
-    
-    // DirectorySpecification.directoryPath
-    eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(new EObjectTreeItemAttributeDescriptor(PC_TOOLS_PACKAGE.getDirectorySpecification_DirectoryPath(), "Directory path", PresentationType.FOLDER, null));
-    // DirectorySpecification.description
-    eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(new EObjectTreeItemAttributeDescriptor(PC_TOOLS_PACKAGE.getDirectorySpecification_Description(), "Description", PresentationType.MULTI_LINE_TEXT, null));
-    // DirectorySpecification.synchronizationSpecification
-    eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(new EObjectTreeItemAttributeDescriptor(PC_TOOLS_PACKAGE.getDirectorySpecification_SynchronizationSpecification(), "Synchronization Specification", null));
-    // DirectorySpecification.sourceControlSpecification
-    eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(new EObjectTreeItemAttributeDescriptor(PC_TOOLS_PACKAGE.getDirectorySpecification_SourceControlSpecification(), "Source Control Specification", null));
-    // DirectorySpecification.toBeChecked
-    eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(new EObjectTreeItemAttributeDescriptor(PC_TOOLS_PACKAGE.getDirectorySpecification_ToBeChecked(), "To be checked", PresentationType.BOOLEAN, null));
-    
-    eObjectTreeDescriptor.addEClassDescriptor(eClass, eObjectTreeItemClassDescriptor);
-  }
-
-  /**
-   * Create the descriptor for the EClass goedegep.pctools.filescontrolled.model.DescribedItem.
-   * 
-   * @param eObjectTreeDescriptor the tree descriptor to which the DescribedItem descriptor is to be added.
-   * @param discStructureSpecificationPackageHelper an <code>EmfPackageHelper</code> for the <code>PCToolsPackage</code>
-   */
-  private void createAndAddEObjectTreeDescriptorForDescribedItem(EObjectTreeDescriptor eObjectTreeDescriptor, EmfPackageHelper discStructureSpecificationPackageHelper) {
-    EClass eClass = discStructureSpecificationPackageHelper.getEClass("goedegep.pctools.filescontrolled.model.DescribedItem");
-        
-    // DescribedItem
-    List<NodeOperationDescriptor> nodeOperationDescriptors = new ArrayList<>();
-    nodeOperationDescriptors.add(new NodeOperationDescriptor(TableRowOperation.NEW_OBJECT_BEFORE, "New item before this one ..."));
-    nodeOperationDescriptors.add(new NodeOperationDescriptor(TableRowOperation.NEW_OBJECT_AFTER, "New item after this one ..."));
-    nodeOperationDescriptors.add(new NodeOperationDescriptor(TableRowOperation.MOVE_OBJECT_UP, "Move item up"));
-    nodeOperationDescriptors.add(new NodeOperationDescriptor(TableRowOperation.MOVE_OBJECT_DOWN, "Move item down"));
-    nodeOperationDescriptors.add(new NodeOperationDescriptor(TableRowOperation.DELETE_OBJECT, "Delete item"));
-    EObjectTreeItemClassDescriptor eObjectTreeItemClassDescriptor = new EObjectTreeItemClassDescriptor(
-        eObject -> {
-          DescribedItem describedItem = (DescribedItem) eObject;
-          
-          if (describedItem.isSetItem()) {
-            return describedItem.getItem();
-          }
-          else {
-            return "<not specified>";
-          }
-        }, false, nodeOperationDescriptors);
-    
-    // DescribedItem.item
-    eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(new EObjectTreeItemAttributeDescriptor(PC_TOOLS_PACKAGE.getDescribedItem_Item(), "Item", null));
-    // DescribedItem.description
-    eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(new EObjectTreeItemAttributeDescriptor(PC_TOOLS_PACKAGE.getDescribedItem_Description(), "Description", PresentationType.MULTI_LINE_TEXT, null));
-    
-    eObjectTreeDescriptor.addEClassDescriptor(eClass, eObjectTreeItemClassDescriptor);
   }
   
   /**
@@ -979,7 +837,9 @@ public class FilesControlledWindow extends JfxStage {
   private void reportResult(Result result) {
     EMFResource<Result> resultResource = new EMFResource<>(PC_TOOLS_PACKAGE, null, null);
     resultResource.setEObject(result);
-    EObjectTreeView treeView = new EObjectTreeView(result, false);
+    EObjectTreeView treeView = new EObjectTreeView()
+        .setEditMode(false)
+        .setEObject(result);
     tabLayoutControlledCopy.setCenter(treeView);
   }
 

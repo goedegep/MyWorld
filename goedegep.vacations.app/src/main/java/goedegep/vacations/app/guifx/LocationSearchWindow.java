@@ -1574,8 +1574,8 @@ class LocationPanel extends VBox {
       }
       EObject eObject = (EObject) eObjectTreeItemContent;
       
-      if (eObjectTreeItemClassDescriptor.getBuildText() != null) {
-        itemText = eObjectTreeItemClassDescriptor.getBuildText().apply(eObject);
+      if (eObjectTreeItemClassDescriptor.getNodeTextFunction() != null) {
+        itemText = eObjectTreeItemClassDescriptor.getNodeTextFunction().apply(eObject);
       } else if (eObject != null) {
         itemText = eObject.getClass().getSimpleName();
       }
@@ -1596,7 +1596,7 @@ class LocationPanel extends VBox {
    * @return true if the selected tree item is a list of (supertypes of) Locations, false otherwise.
    */
   private boolean selectedTreeItemIsLocationsList() {
-    return vacationsWindow.getTreeView().treeItemIsLocationsList(selectedTreeItem);
+    return VacationsTreeViewCreator.treeItemIsLocationsList(selectedTreeItem);
   }
     
   /**
@@ -1614,7 +1614,7 @@ class LocationPanel extends VBox {
       return false;
     }
     
-    return vacationsWindow.getTreeView().treeItemIsLocationsList(parentTreeItem);
+    return VacationsTreeViewCreator.treeItemIsLocationsList(parentTreeItem);
   }
   
   /**

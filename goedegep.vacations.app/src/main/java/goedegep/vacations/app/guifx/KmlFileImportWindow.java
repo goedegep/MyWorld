@@ -27,7 +27,7 @@ import goedegep.geo.WGS84BoundingBox;
 import goedegep.geo.WGS84Coordinates;
 import goedegep.gpx.GpxUtil;
 import goedegep.gpx.app.Activity;
-import goedegep.gpx.app.GPXTreeView;
+import goedegep.gpx.app.GPXTreeViewCreator;
 import goedegep.gpx.app.GpxAppUtil;
 import goedegep.gpx.model.DocumentRoot;
 import goedegep.gpx.model.GpxType;
@@ -601,12 +601,12 @@ public class KmlFileImportWindow extends JfxStage {
     /**
      * A {@code VacationsTreeView} used to show a {@code Location}.
      */
-    private VacationsTreeView vacationsTreeView;
+    private EObjectTreeView vacationsTreeView;
 
     /**
      * A tree view for showing GPX data (a {@code DocumentRoot}).
      */
-    private GPXTreeView gpxTreeView;
+    private EObjectTreeView gpxTreeView;
 
     /**
      * The currently handled {@code KmlPlacemarkImportData}.
@@ -643,7 +643,10 @@ public class KmlFileImportWindow extends JfxStage {
       travelMapView.setMinWidth(800);
       travelMapView.removeControlsLayer();
 
-      vacationsTreeView = new VacationsTreeView(customization, null, null, poiIcons, null, null, null, true);
+      vacationsTreeView = new VacationsTreeViewCreator(customization)
+          .setPOIIcons(poiIcons)
+          .createVacationsTreeView();
+      vacationsTreeView.setEditMode(true);
       vacationsTreeView.setMinWidth(300);
 
 //      gpxElementTreeView = new GPXElementTreeView(customization,
@@ -651,7 +654,7 @@ public class KmlFileImportWindow extends JfxStage {
 //          this::getInitialFolderName, this::getInitialFileName);
       createGpxElementTreeView();
 
-      gpxTreeView = new GPXTreeView(customization, null);
+      gpxTreeView = new GPXTreeViewCreator().createGPXTreeView(customization);
       gpxTreeView.setMinWidth(300);
       gpxTreeView.setEditMode(true);
     }
@@ -668,7 +671,7 @@ public class KmlFileImportWindow extends JfxStage {
       eObjectTreeItemAttributeDescriptor.setInitialFileNameFunction(this::getInitialFileName);
       
       EObjectTreeItemClassDescriptor eObjectTreeItemClassDescriptor  = gpxElementTreeView.getDescriptorForEClass(VacationsPackage.eINSTANCE.getGPXTrack());
-      eObjectTreeItemClassDescriptor.setBuildText(this::generateTextForGpxTrack);
+      eObjectTreeItemClassDescriptor.setNodeTextFunction(this::generateTextForGpxTrack);
       eObjectTreeItemClassDescriptor.setNodeIconFunction(this::generateIconForGpxTrack);
 
       gpxElementTreeView.setMinWidth(300);
@@ -1347,8 +1350,8 @@ public class KmlFileImportWindow extends JfxStage {
         }
         EObject eObject = (EObject) eObjectTreeItemContent;
 
-        if (eObjectTreeItemClassDescriptor.getBuildText() != null) {
-          itemText = eObjectTreeItemClassDescriptor.getBuildText().apply(eObject);
+        if (eObjectTreeItemClassDescriptor.getNodeTextFunction() != null) {
+          itemText = eObjectTreeItemClassDescriptor.getNodeTextFunction().apply(eObject);
         } else if (eObject != null) {
           itemText = eObject.getClass().getSimpleName();
         }
@@ -1369,7 +1372,7 @@ public class KmlFileImportWindow extends JfxStage {
      * @return true if the selected tree item is a list of (supertypes of) Locations, false otherwise.
      */
     private boolean selectedTreeItemIsLocationsList() {
-      return vacationsWindow.getTreeView().treeItemIsLocationsList(selectedTreeItem);
+      return VacationsTreeViewCreator.treeItemIsLocationsList(selectedTreeItem);
     }
 
     /**
@@ -1387,7 +1390,7 @@ public class KmlFileImportWindow extends JfxStage {
         return false;
       }
 
-      return vacationsWindow.getTreeView().treeItemIsLocationsList(parentTreeItem);
+      return VacationsTreeViewCreator.treeItemIsLocationsList(parentTreeItem);
     }
 
   } // End of AddElementToVacationPanel

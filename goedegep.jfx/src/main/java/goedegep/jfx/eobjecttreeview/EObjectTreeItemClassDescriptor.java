@@ -21,34 +21,14 @@ public class EObjectTreeItemClassDescriptor extends EObjectTreeItemDescriptor {
    * Descriptors for the structural features of the EClass.
    */
   private List<EObjectTreeItemDescriptor> structuralFeatureDescriptors = new ArrayList<>();
-
-
-  /**
-   * Constructor.
-   * 
-   * @param buildText function for creating the text
-   * @param expandOnCreation if true the tree item will be expanded on creation
-   * @param nodeOperationDescriptors specification for the node operations
-   */
-  public EObjectTreeItemClassDescriptor(Function<EObject, String> buildText, boolean expandOnCreation,
-      List<NodeOperationDescriptor> nodeOperationDescriptors) {
-    this(buildText, expandOnCreation, nodeOperationDescriptors, null);
-  }
-
-  /**
-   * Constructor.
-   * 
-   * @param buildText function for creating the text
-   * @param expandOnCreation if true the tree item will be expanded on creation
-   * @param nodeOperationDescriptors specification for the node operations
-   * @param nodeIconFunction function to provide an icon 
-   */
-  public EObjectTreeItemClassDescriptor(Function<EObject, String> buildText, boolean expandOnCreation,
-      List<NodeOperationDescriptor> nodeOperationDescriptors, Function<Object, Image> nodeIconFunction) {
-    super(EObjectTreeItemDescriptorType.CLASS, expandOnCreation, nodeOperationDescriptors, buildText, nodeIconFunction);
-    
-  }
   
+  /**
+   * Constructor.
+   */
+  public EObjectTreeItemClassDescriptor() {
+    super(EObjectTreeItemDescriptorType.CLASS);
+  }
+
   /**
    * Add a structural feature descriptor.
    * 
@@ -67,13 +47,79 @@ public class EObjectTreeItemClassDescriptor extends EObjectTreeItemDescriptor {
     return structuralFeatureDescriptors;
   }
 
+  /**
+   * Set whether the text shall be in a strong font (bold) or not.
+   * TODO instead of overwriting this method implement a solution 
+   * 
+   * @param strongText if true the text shall be in a strong font (bold).
+   * @return this
+   */
+  public EObjectTreeItemClassDescriptor setStrongText(boolean strongText) {
+    super.setStrongText(strongText);
+    
+    return this;
+  }
+  
+  /**
+   * Set the function to provide the node icon.
+   * TODO instead of overwriting this method implement a solution 
+   * 
+   * @param nodeIconFunction the function to provide the node icon.
+   * @return this
+   */
+  public EObjectTreeItemClassDescriptor setNodeIconFunction(Function<Object, Image> nodeIconFunction) {
+    super.setNodeIconFunction(nodeIconFunction);
+    
+    return this;
+  }
+  
+  /**
+   * Set the function to provide the node text.
+   * TODO instead of overwriting this method implement a solution 
+   * 
+   * @param nodeTextFunction the function to provide the node text.
+   * @return this
+   */
+  public EObjectTreeItemClassDescriptor setNodeTextFunction(Function<EObject, String> nodeTextFunction) {
+    super.setNodeTextFunction(nodeTextFunction);
+    
+    return this;
+  }
+  
+  /**
+   * Set whether the node shall be expanded upon creation or not
+   * 
+   * @param expandOnCreation if true, the node will be expanded upon creation.
+   * @return this
+   */
+  public EObjectTreeItemClassDescriptor setExpandOnCreation(boolean expandOnCreation) {
+    super.setExpandOnCreation(expandOnCreation);
+    
+    return this;
+  }
+  
+  /**
+   * Add a node operation.
+   * <p>
+   * This operation will be added to the end of the list of operations.
+   * TODO instead of overwriting this method implement a solution 
+   * 
+   * @param nodeOperationDescriptor descriptor for the operation to be added.
+   * @return this
+   */
+  public EObjectTreeItemClassDescriptor addNodeOperationDescriptor(NodeOperationDescriptor nodeOperationDescriptor) {
+    super.addNodeOperationDescriptor(nodeOperationDescriptor);
+    
+    return this;
+  }
+
   @Override
   public String toString(Indent indent) {
     StringBuilder buf = new StringBuilder();
     
     buf.append(indent.toString()).append(getClass().getSimpleName());
     buf.append(": className=");
-    if (getBuildText() != null) {
+    if (getNodeTextFunction() != null) {
       buf.append(", buildText specified");
     } else {
       buf.append(", buildText not specified");

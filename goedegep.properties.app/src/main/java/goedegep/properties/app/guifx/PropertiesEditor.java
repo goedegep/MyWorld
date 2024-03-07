@@ -22,7 +22,6 @@ import org.eclipse.emf.ecore.util.EContentAdapter;
 import goedegep.jfx.ComponentFactoryFx;
 import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.JfxStage;
-import goedegep.jfx.eobjecttreeview.EObjectTreeDescriptor;
 import goedegep.jfx.eobjecttreeview.EObjectTreeItemAttributeDescriptor;
 import goedegep.jfx.eobjecttreeview.EObjectTreeItemClassDescriptor;
 import goedegep.jfx.eobjecttreeview.EObjectTreeItemClassListReferenceDescriptor;
@@ -35,7 +34,6 @@ import goedegep.properties.model.PropertyDescriptor;
 import goedegep.properties.model.PropertyDescriptorGroup;
 import goedegep.properties.model.PropertyGroup;
 import goedegep.util.emf.EMFResource;
-import goedegep.util.emf.EmfPackageHelper;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -290,11 +288,11 @@ public class PropertiesEditor extends JfxStage {
   private void createGUI() {
     BorderPane mainPane = new BorderPane();
     
-    EObjectTreeDescriptor eObjectTreeDescriptor = createEObjectTreeDescriptor();
-    editablePropertiesTreeView = new EObjectTreeView(editableProperties, eObjectTreeDescriptor, true);
+    EMFResource<EObject> emfResource = new EMFResource<EObject>(editablePropertiesPackage, null, ".xmi");
+    emfResource.setEObject(editableProperties);
+    editablePropertiesTreeView = createPropertiesTreeView(getCustomization()).setEObject(editableProperties);
     editablePropertiesTreeView.setMinWidth(800);
     editablePropertiesTreeView.setStyle("-fx-border-style: solid inside;");
-    editablePropertiesTreeView.setEditMode(true);
     mainPane.setCenter(editablePropertiesTreeView);
     
     mainPane.setBottom(createButtonsPane());
@@ -303,57 +301,73 @@ public class PropertiesEditor extends JfxStage {
     setScene(scene);
     show();
   }
+  
+  private EObjectTreeView createPropertiesTreeView(CustomizationFx customization) {
 
-  /**
-   * Create the descriptor for the EObjectTree.
-   * 
-   * @return the created EObjectTreeDescriptor.
-   */
-  private EObjectTreeDescriptor createEObjectTreeDescriptor() {
-    LOGGER.info("=>");
-    
-    EmfPackageHelper propertiesPackageHelper = new EmfPackageHelper(editablePropertiesPackage);
-    EObjectTreeDescriptor eObjectTreeDescriptor = new EObjectTreeDescriptor();
+    EObjectTreeView eObjectTreeView = new EObjectTreeView()
+        .setCustomization(customization)
+        .addEClassDescriptor(editablePropertyGroup, createDescriptorForEditablePropertyGroup())
+        .addEClassDescriptor(editableProperty, createDescriptorForEditableProperty());
 
-    createAndAddEObjectTreeDescriptorForEditablePropertyGroup(eObjectTreeDescriptor, propertiesPackageHelper);
-    createAndAddEObjectTreeDescriptorForEditableProperty(eObjectTreeDescriptor, propertiesPackageHelper);
-    
-    LOGGER.info("<=");
-    return eObjectTreeDescriptor;
+    return eObjectTreeView;
   }
   
   /**
    * Create an <code>EObjectTreeItemClassDescriptor</code> for the <code>editablePropertyGroup</code> and add it to an <code>EObjectTreeDescriptor</code>.
-   * 
-   * @param eObjectTreeDescriptor the <code>EObjectTreeDescriptor</code> to add the descriptor to.
-   * @param propertiesPackageHelper an <code>EmfPackageHelper</code> for the <code>editablePropertiesPackage</code>.
    */
-  private void createAndAddEObjectTreeDescriptorForEditablePropertyGroup(EObjectTreeDescriptor eObjectTreeDescriptor, EmfPackageHelper propertiesPackageHelper) {
-    EClass eClass = editablePropertyGroup;
-    EObjectTreeItemClassDescriptor eObjectTreeItemClassDescriptor = new EObjectTreeItemClassDescriptor((eObject) -> "Group of user changeable properties", true, null);
+  private EObjectTreeItemClassDescriptor createDescriptorForEditablePropertyGroup() {
+    EObjectTreeItemClassDescriptor eObjectTreeItemClassDescriptor = new EObjectTreeItemClassDescriptor()
+        .setNodeTextFunction(eObject -> "Group of user changeable properties")
+        .setExpandOnCreation(true);
     
-    eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(new EObjectTreeItemAttributeDescriptor(editablePropertyGroup_name, "Name", null));
-    eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(new EObjectTreeItemClassListReferenceDescriptor(editablePropertyGroup_editableProperties, "User changeable properties", true, null));
-    eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(new EObjectTreeItemClassListReferenceDescriptor(editablePropertyGroup_editablePropertyGroups, "Sub groups", false, null));
+    EObjectTreeItemAttributeDescriptor eObjectTreeItemAttributeDescriptor;
+    EObjectTreeItemClassListReferenceDescriptor eObjectTreeItemClassListReferenceDescriptor;
     
-    eObjectTreeDescriptor.addEClassDescriptor(eClass, eObjectTreeItemClassDescriptor);
+    // Name
+    eObjectTreeItemAttributeDescriptor = new EObjectTreeItemAttributeDescriptor(editablePropertyGroup_name)
+        .setLabelText("Name");
+    eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(eObjectTreeItemAttributeDescriptor);
+    
+    // User changeable properties
+    eObjectTreeItemClassListReferenceDescriptor = new EObjectTreeItemClassListReferenceDescriptor(editablePropertyGroup_editableProperties)
+        .setLabelText("User changeable properties");
+    eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(eObjectTreeItemClassListReferenceDescriptor);
+    
+    // Sub groups
+    eObjectTreeItemClassListReferenceDescriptor = new EObjectTreeItemClassListReferenceDescriptor(editablePropertyGroup_editablePropertyGroups)
+        .setLabelText("Sub groups");
+    eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(eObjectTreeItemClassListReferenceDescriptor);
+    
+    return eObjectTreeItemClassDescriptor;
   }
     
   /**
    * Create an <code>EObjectTreeItemClassDescriptor</code> for the <code>editableProperty</code> and add it to an <code>EObjectTreeDescriptor</code>.
-   * 
-   * @param eObjectTreeDescriptor the <code>EObjectTreeDescriptor</code> to add the descriptor to.
-   * @param propertiesPackageHelper an <code>EmfPackageHelper</code> for the <code>editablePropertiesPackage</code>.
    */
-  private void createAndAddEObjectTreeDescriptorForEditableProperty(EObjectTreeDescriptor eObjectTreeDescriptor, EmfPackageHelper propertiesPackageHelper) {
-    EClass eClass = editableProperty;
-    EObjectTreeItemClassDescriptor eObjectTreeItemClassDescriptor = new EObjectTreeItemClassDescriptor((eObject) -> (String) eObject.eGet(editableProperty_displayName), true, null);
+  private EObjectTreeItemClassDescriptor createDescriptorForEditableProperty() {
+    EObjectTreeItemClassDescriptor eObjectTreeItemClassDescriptor = new EObjectTreeItemClassDescriptor()
+        .setNodeTextFunction(eObject -> (String) eObject.eGet(editableProperty_displayName))
+        .setExpandOnCreation(true);
     
-    eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(new EObjectTreeItemAttributeDescriptor(editableProperty_description, "Description", PresentationType.MULTI_LINE_TEXT, null));
-    eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(new EObjectTreeItemAttributeDescriptor(editableProperty_defaultValue, "Default value", null));
-    eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(new EObjectTreeItemAttributeDescriptor(editableProperty_value, "User value", null));
+    EObjectTreeItemAttributeDescriptor eObjectTreeItemAttributeDescriptor;
     
-    eObjectTreeDescriptor.addEClassDescriptor(eClass, eObjectTreeItemClassDescriptor);
+    // Description
+    eObjectTreeItemAttributeDescriptor = new EObjectTreeItemAttributeDescriptor(editableProperty_description)
+        .setLabelText("Description")
+        .setPresentationType(PresentationType.MULTI_LINE_TEXT);
+    eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(eObjectTreeItemAttributeDescriptor);
+    
+    // Default value
+    eObjectTreeItemAttributeDescriptor = new EObjectTreeItemAttributeDescriptor(editableProperty_defaultValue)
+        .setLabelText("Default value");
+    eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(eObjectTreeItemAttributeDescriptor);
+    
+    // User value
+    eObjectTreeItemAttributeDescriptor = new EObjectTreeItemAttributeDescriptor(editableProperty_value)
+        .setLabelText("User value");
+    eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(eObjectTreeItemAttributeDescriptor);
+    
+    return eObjectTreeItemClassDescriptor;
   }
   
   /**

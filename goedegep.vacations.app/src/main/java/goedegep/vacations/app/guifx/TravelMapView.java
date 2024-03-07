@@ -42,6 +42,7 @@ public class TravelMapView extends MapView implements ObjectSelector<Object> {
     controlsLayer = new ControlsLayer(customization, searchWindowSupplier);
     addLayer(controlsLayer);
     
+    mapRelatedItemsLayer.addObjectSelectionListener((source, object) -> notifyListeners(object));
   }
   
   public void setEditMode(boolean editMode) {
@@ -68,6 +69,13 @@ public class TravelMapView extends MapView implements ObjectSelector<Object> {
   
   public void removeControlsLayer() {
     removeLayer(controlsLayer);
+  }
+  
+  private void notifyListeners(Object object) {
+    LOGGER.severe("=> object=" + object);
+    for (ObjectSelectionListener<Object> listener: objectSelectionListeners) {
+      listener.objectSelected(this, object);
+    }
   }
 
   @Override

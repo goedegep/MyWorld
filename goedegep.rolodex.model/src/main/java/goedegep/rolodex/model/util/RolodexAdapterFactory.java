@@ -205,7 +205,7 @@ public class RolodexAdapterFactory extends AdapterFactoryImpl {
     }
 
     @Override
-    public Adapter caseComparable(Comparable object) {
+    public <T> Adapter caseComparable(Comparable<T> object) {
       return createComparableAdapter();
     }
 

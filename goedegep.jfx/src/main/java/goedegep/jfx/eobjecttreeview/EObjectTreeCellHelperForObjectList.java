@@ -122,7 +122,7 @@ public class EObjectTreeCellHelperForObjectList extends EObjectTreeCellHelperTem
             for (EObject candidate: candidates) {
               LOGGER.info("candidate: " + candidate);
               EObjectTreeItemClassDescriptor eObjectTreeItemClassDescriptor = ((EObjectTreeView) eObjectTreeCell.getTreeView()).getDescriptorForEClass(candidate.eClass());
-              MenuItem subMenuItem = new MenuItem(eObjectTreeItemClassDescriptor.getBuildText().apply(candidate));
+              MenuItem subMenuItem = new MenuItem(eObjectTreeItemClassDescriptor.getNodeTextFunction().apply(candidate));
               subMenuItem.setOnAction(new EventHandler<ActionEvent>() {
                 @SuppressWarnings("unchecked")
                 public void handle(ActionEvent t) {

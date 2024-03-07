@@ -793,7 +793,7 @@ public class FileUtils {
    * @param folderToZip a folder of which all files are to be zipped to {@code zipFile}.
    */
   public static void createZipFileForFolder(Path zipFile, Path folderToZip) throws IOException {
-    LOGGER.severe("=> zipFile=" + zipFile + ", folderToZip=" + folderToZip);
+    LOGGER.info("=> zipFile=" + zipFile + ", folderToZip=" + folderToZip);
 
     Map<String, String> env = new HashMap<>();
     // Create the zip file if it doesn't exist
@@ -801,7 +801,6 @@ public class FileUtils {
 
     URI zipFileUri = zipFile.toUri();  // Extra step needed because URI.create(String) requires *encoded* string.
     URI uri = URI.create("jar:file:" + zipFileUri.getRawPath());
-    LOGGER.severe("zipFileUri: " + zipFileUri);
 
     if (Files.exists(zipFile)) {
       LOGGER.severe("Zip file " + zipFile + " already exists.");
@@ -821,7 +820,6 @@ public class FileUtils {
             String relativePathName = getPathRelativeToFolder(folderToZip.toString(), path.toString());
             LOGGER.info("relativePathName: " + relativePathName);
             Path pathInZipfile = zipfs.getPath(relativePathName);
-            LOGGER.severe("pathInZipfile: " + pathInZipfile);
             
             // Create directory if it doesn't exist
             Path destinationFolder = pathInZipfile.getParent();

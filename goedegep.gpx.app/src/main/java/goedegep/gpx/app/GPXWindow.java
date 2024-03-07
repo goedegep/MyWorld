@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.logging.Logger;
 
-import org.eclipse.emf.common.util.EMap;
 import org.eclipse.emf.common.util.WrappedException;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 
@@ -113,7 +112,7 @@ public class GPXWindow extends JfxStage {
     centerPane.setDividerPositions(0.3);
     
     // TreeView
-    gpxTreeView = new GPXTreeView(customization, null);
+    gpxTreeView = new GPXTreeViewCreator().createGPXTreeView(customization);
     centerPane.getItems().add(gpxTreeView);
     
     // MapView

@@ -5,7 +5,6 @@ import goedegep.jfx.eobjecttreeview.EObjectTreeItemAttributeDescriptor;
 import goedegep.jfx.eobjecttreeview.EObjectTreeItemClassDescriptor;
 import goedegep.jfx.eobjecttreeview.EObjectTreeItemClassReferenceDescriptor;
 import goedegep.jfx.eobjecttreeview.EObjectTreeView;
-import goedegep.jfx.eobjecttreeview.PresentationType;
 import goedegep.types.model.FileReference;
 import goedegep.types.model.TypesPackage;
 import goedegep.vacations.model.GPXTrack;
@@ -18,6 +17,12 @@ public class GPXElementTreeViewCreator {
   private final VacationsPackage vacationsPackage = VacationsPackage.eINSTANCE;
   private final TypesPackage typesPackage = TypesPackage.eINSTANCE;
     
+  /**
+   * Create an {@link EObjectTreeView} for a {@link GPXTrack} vacation element.
+   * 
+   * @param customization the GUI customization
+   * @return an {@code EObjectTreeView} for a {@code GPXTrack} vacation element.
+   */
   public EObjectTreeView createGPXElementTreeView(CustomizationFx customization) {
 
     EObjectTreeView eObjectTreeView = new EObjectTreeView()
@@ -36,23 +41,28 @@ public class GPXElementTreeViewCreator {
   private EObjectTreeItemClassDescriptor createEObjectTreeDescriptorForFileReference() {
 
     // FileReference
-    EObjectTreeItemClassDescriptor eObjectTreeItemClassDescriptor = new EObjectTreeItemClassDescriptor(
-          eObject -> {
-            FileReference fileReference = (FileReference) eObject;
-            if (fileReference != null) {
-              return fileReference.getTitle();
-            } else {
-              return "<no file reference>";
-            }
-          },
-          true, null);
+    EObjectTreeItemClassDescriptor eObjectTreeItemClassDescriptor = new EObjectTreeItemClassDescriptor()
+        .setNodeTextFunction(eObject -> {
+          FileReference fileReference = (FileReference) eObject;
+          if (fileReference != null) {
+            return fileReference.getTitle();
+          } else {
+            return "<no file reference>";
+          }
+        })
+        .setExpandOnCreation(true);
+    
+    EObjectTreeItemAttributeDescriptor eObjectTreeItemAttributeDescriptor;
     
     // FileReference.title
-    eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(new EObjectTreeItemAttributeDescriptor(typesPackage.getFileReference_Title(), "Titel", null));
+    eObjectTreeItemAttributeDescriptor = new EObjectTreeItemAttributeDescriptor(typesPackage.getFileReference_Title())
+        .setLabelText("Titel");
+    eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(eObjectTreeItemAttributeDescriptor);
     
     // FileReference.file
-    EObjectTreeItemAttributeDescriptor eObjectTreeItemAttributeDescriptor = new EObjectTreeItemAttributeDescriptor(typesPackage.getFileReference_File(), "File", PresentationType.FILE, null);
-    eObjectTreeItemAttributeDescriptor.setOpenDialog(false);
+    eObjectTreeItemAttributeDescriptor = new EObjectTreeItemAttributeDescriptor(typesPackage.getFileReference_File())
+        .setLabelText("File")
+        .setOpenDialog(false);
     eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(eObjectTreeItemAttributeDescriptor);
     
     return eObjectTreeItemClassDescriptor;
@@ -67,11 +77,14 @@ public class GPXElementTreeViewCreator {
   private EObjectTreeItemClassDescriptor createEObjectTreeDescriptorForGPXTrack() {
     
     // VacationElementGPX (extends VacationElement)
-    EObjectTreeItemClassDescriptor eObjectTreeItemClassDescriptor = new EObjectTreeItemClassDescriptor(null, true, null, null);
+    EObjectTreeItemClassDescriptor eObjectTreeItemClassDescriptor = new EObjectTreeItemClassDescriptor()
+        .setExpandOnCreation(true);
     
     // VacationElementGPX.trackReference
-    TypesPackage typesPackage = TypesPackage.eINSTANCE;
-    eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(new EObjectTreeItemClassReferenceDescriptor(vacationsPackage.getGPXTrack_TrackReference(), typesPackage.getFileReference(), (eObject) -> "GPX track reference", true, null));
+    EObjectTreeItemClassReferenceDescriptor eObjectTreeItemClassReferenceDescriptor = new EObjectTreeItemClassReferenceDescriptor(vacationsPackage.getGPXTrack_TrackReference())
+        .setNodeTextFunction(eObject -> "GPX track reference")
+        .setExpandOnCreation(true);
+    eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(eObjectTreeItemClassReferenceDescriptor);
     
     // VacationElementGPX.children not applicable here
     
