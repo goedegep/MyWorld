@@ -947,7 +947,7 @@ public class KmlFileImportWindow extends JfxStage {
       }
 
       gpxElementTreeView.setEObject(gpxTrack);
-      gpxTreeView.setEObject(documentRoot.getGpx());
+      gpxTreeView.setEObject(documentRoot);
       gpxTreeView.getRoot().setExpanded(true);
 
       previewBox.getChildren().clear();

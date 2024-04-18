@@ -190,8 +190,6 @@ public class EObjectTreeItemForObject extends EObjectTreeItem {
    */
   @Override
   ObservableList<TreeItem<Object>> buildChildren() {
-    LOGGER.info("=> eObjectTreeItem=" + toString());
-    
     EObject eObject = (EObject) getValue();
     if (eObject == null) {
       return null;

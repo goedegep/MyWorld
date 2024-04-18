@@ -24,9 +24,25 @@ public class MusicFolderContent {
   private static String SOUNDTRACK_FOLDER = MusicFolderDescription.getSoundtracksFolder();
   private static List<String> TRACK_FOLDERS = MusicFolderDescription.getTrackFolders();
 
+  /**
+   * Name of the MusicFolder directory.
+   */
   private String musicFolderName;
+  
+  
+  /**
+   * List of {@link AlbumOnDiscInfo} to be filled with information on the albums in the Main Index folders and the soundtrack folder.
+   */
   private List<AlbumOnDiscInfo> albumsOnDiscInfo = new ArrayList<>();
+  
+  /**
+   * List of {@link TrackOnDiscInfo} to be filled with the information of the tracks in the track folders.
+   */
   private List<TrackOnDiscInfo> tracksOnDiscInfo = new ArrayList<>();
+  
+  /**
+   * A list of errors of type {@link MusicFolderStructureErrorInfo} which are encountered while gathering the MusicFolder content.
+   */
   private List<MusicFolderStructureErrorInfo> errors = new ArrayList<>();
 
   /**
@@ -91,11 +107,9 @@ public class MusicFolderContent {
    * Gather all information on albums and their tracks in the Main Index folders under the Music folder.
    */
   private void gatherMainIndexAlbumOnDiscInfo() {
-    LOGGER.fine("=> musicFolderName = " + musicFolderName);
         
     for (String mainIndexFolderName: MAIN_INDEX_FOLDERS) {
       Path path = Paths.get(musicFolderName, mainIndexFolderName);
-      LOGGER.info("Handling path: " + path.toString());
       if (Files.exists(path)) {
         gatherAlbumOnDiscInfoForMainIndexFolder(path);
       }
@@ -109,16 +123,12 @@ public class MusicFolderContent {
    * There's one sub folder per artist name.
    */
   private void gatherAlbumOnDiscInfoForMainIndexFolder(Path artistIndexFolder) {
-    LOGGER.fine("=> artistIndexFolder = " + artistIndexFolder);
     
     try (DirectoryStream<Path> stream = Files.newDirectoryStream(artistIndexFolder)) {
       // Each path is a folder with the name of the artist.
       for (Path path: stream) {
 
-        LOGGER.fine("Handling path: " + path.getFileName().toString());
         if (Files.isDirectory(path)) {
-          LOGGER.fine("Is artist folder: " + path.getFileName());
-          
           ArtistFolder.getAlbumOnDiscInfoForArtistFolder(path, albumsOnDiscInfo, errors);
           
         } else {

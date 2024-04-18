@@ -33,6 +33,10 @@ public class ObjectControlLocalDate extends ObjectControlTextField<LocalDate> {
   protected LocalDate stringToObject(String valueAsString) {
     LocalDate localDate = null;
     
+    if (valueAsString == null) {
+      return null;
+    }
+    
     try {
       localDate = LocalDate.parse(valueAsString, DTF);
     } catch (DateTimeParseException e) {

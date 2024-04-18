@@ -1,10 +1,11 @@
 package goedegep.media.mediadb.app.guifx;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.logging.Logger;
 
 import org.eclipse.emf.common.notify.Notification;
@@ -21,13 +22,14 @@ import goedegep.jfx.browser.BrowserWindow;
 import goedegep.jfx.eobjecttable.EObjectTable;
 import goedegep.media.app.MediaRegistry;
 import goedegep.media.mediadb.albumeditor.guifx.AlbumEditor;
-import goedegep.media.mediadb.albuminfo.AlbumInfoFilesReader;
-import goedegep.media.mediadb.app.AlbumDiscLocationInfo;
+import goedegep.media.mediadb.albuminfo.ArtistInfoHandler;
 import goedegep.media.mediadb.app.MediaDbAppUtil;
+import goedegep.media.mediadb.app.MediaDbChecker;
 import goedegep.media.mediadb.app.MediaDbToDiscLocationMap;
 import goedegep.media.mediadb.model.Album;
-import goedegep.media.mediadb.model.Artist;
+import goedegep.media.mediadb.model.Collection;
 import goedegep.media.mediadb.model.Disc;
+import goedegep.media.mediadb.model.IWant;
 import goedegep.media.mediadb.model.InformationType;
 import goedegep.media.mediadb.model.MediaDb;
 import goedegep.media.mediadb.model.MediadbFactory;
@@ -38,15 +40,19 @@ import goedegep.media.mediadb.model.MyTrackInfo;
 import goedegep.media.mediadb.model.Track;
 import goedegep.media.mediadb.model.TrackReference;
 import goedegep.media.mediadb.model.util.MediaDbUtil;
+import goedegep.media.musicfolder.AlbumOnDiscInfo;
 import goedegep.media.musicfolder.MusicFolderContent;
 import goedegep.properties.app.guifx.PropertiesEditor;
 import goedegep.resources.ImageSize;
+import goedegep.util.emf.EMFResource;
+import goedegep.util.emf.EmfUtil;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Node;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.CheckMenuItem;
@@ -61,7 +67,7 @@ import javafx.scene.layout.VBox;
 /**
  * This class provides the main window for the music database
  * <p>
- * Currently the media database (type MediaDb) isn't saved as an EMF resource yet. Instead:
+ * At startup this class gets a reference to the media database.
  * <ul>
  * <li>An empty MediaDb is created</li>
  * <li>The Album Info files are read, and their information is added to the media database</li>
@@ -96,6 +102,11 @@ public class MediaDbWindow extends JfxStage {
   private AppResourcesFx appResources;
 
   /**
+   * The {@code EMFResource} for the media database ({@link #mediaDb}).
+   */
+  private EMFResource<MediaDb> mediaDbResource = null;
+  
+  /**
    * The Media Database.
    */
   private MediaDb mediaDb;
@@ -111,7 +122,12 @@ public class MediaDbWindow extends JfxStage {
   private TracksTable tracksTable;
   
   /**
-   * Current table, either albumsTable or trackTable
+   * A table listing all artists.
+   */
+  private ArtistsTable artistsTable;
+  
+  /**
+   * Current table, either albumsTable, trackTable or artistsTable.
    */
   private EObjectTable<?> currentTable;
 
@@ -119,13 +135,13 @@ public class MediaDbWindow extends JfxStage {
    * This map provides the on disc location for single disc albums.
    * TODO shouldn't this be renamed to singleDiscAlbumToAlbumDiscLocationInfoMap?
    */
-  private Map<Album, AlbumDiscLocationInfo> albumToMusicFolderLocationMap;
+  private Map<Album, AlbumOnDiscInfo> albumToMusicFolderLocationMap;
   
   /**
    * This map provides the on disc location for the discs of multi-disc albums.
    * TODO shouldn't this be renamed to albumDiscToAlbumDiscLocationInfoMap?
    */
-  private Map<Disc, AlbumDiscLocationInfo> albumDiscToMusicFolderLocationMap;
+  private Map<Disc, AlbumOnDiscInfo> albumDiscToMusicFolderLocationMap;
   
   /**
    * This map provides the on disc location for separate tracks (i.e. tracks which aren't part of a complete disc).
@@ -147,35 +163,48 @@ public class MediaDbWindow extends JfxStage {
    * 
    * @param customization the GUI customization.
    */
-  public MediaDbWindow(CustomizationFx customization, MediaDb mediaDb) {
+  public MediaDbWindow(CustomizationFx customization) {
     super(WINDOW_TITLE, customization);
 
     this.customization = customization;
-    this.mediaDb = mediaDb;
     componentFactory = customization.getComponentFactoryFx();
     appResources = customization.getResources();
+    
+    if (!checkThatMediaDbFileNameIsSetInRegistry()) {
+      return;
+    }
+    
+    // Create the MedaDb resource
+    mediaDbResource = new EMFResource<>(
+        MediadbPackage.eINSTANCE, 
+        () -> MediadbFactory.eINSTANCE.createMediaDb(),
+        ".xmi",
+        true);
+    
+    loadMediaDb();
+    if (mediaDb == null) {
+      return;
+    }
 
-//    // Start with an empty media database
-//    mediaDb = FACTORY.createMediaDb();
-//
     allErrors = new ArrayList<>();
-//
-//    // Add album information from the Album Info files.
-//    new AlbumInfoFilesReader(mediaDb).readAlbumInfoFiles(allErrors, MediaRegistry.albumInfoDirectory);
-//    
-//    // Add track information from the Tracks.xml file
-//    String tracksInfoFileName = MediaRegistry.albumInfoDirectory + "\\..\\Tracks\\Tracks.xml";
-//    List<TrackInfoErrorInfo> trackInfoErrors = new TrackInfoHandler().setMediaDb(mediaDb).read(tracksInfoFileName);
-//    allErrors.addAll(trackInfoErrors);
-//
-//    // Check the media database
-//    MediaDbAppUtil.checkMediaDb(mediaDb, allErrors);
+    
+//    // TODO Temp read artist information from ArtistInformation.xml. Delete if all works well.
+//    ArtistInfoHandler artistInfoHandler = new ArtistInfoHandler();
+//    artistInfoHandler.setMediaDb(mediaDb);
+//    artistInfoHandler.read("D:\\Database\\Muziek\\ArtistInformation\\ArtistInformation.xml");
+    
+
+    tempFixProblems();
+
+    // Check the media database
+    MediaDbChecker.checkMediaDb(mediaDb, allErrors);
 
     // Scan the Music Folder: The Main Index folders, the soundtrack folder and the tracks folders.
     MusicFolderContent musicFolderContent = new MusicFolderContent(MediaRegistry.musicDirectory);
     boolean allOk = musicFolderContent.gatherMusicFolderContent();
     if (!allOk) {
       allErrors.addAll(musicFolderContent.getErrors());
+      LOGGER.severe("Errors detected while gathering MusicFolder content: " + musicFolderContent.getErrors().size());
     }
     
     // Link the information in the media database to the information of the Music Folder.    
@@ -183,6 +212,7 @@ public class MediaDbWindow extends JfxStage {
     allOk = mediaDbToDiscLocationMap.createMediaDbToDiscLocationMap(true);
     if (!allOk) {
       allErrors.addAll(mediaDbToDiscLocationMap.getErrors());
+      LOGGER.severe("Errors detected while linking the information in the media database to the information of the Music Folder: " + mediaDbToDiscLocationMap.getErrors().size());
     }
     albumToMusicFolderLocationMap = mediaDbToDiscLocationMap.getAlbumToMusicFolderLocationMap();
     albumDiscToMusicFolderLocationMap = mediaDbToDiscLocationMap.getAlbumDiscToMusicFolderLocationMap();
@@ -230,7 +260,7 @@ public class MediaDbWindow extends JfxStage {
       }
       
       
-      if (!sourceTypeInMyInfo && trackWithoutSourceType  &&  !usesReference  &&  (MediaDbUtil.haveAlbumOnDisc(album, null)  ||  MediaDbUtil.haveAlbumPartlyOnDisc(album))) {
+      if (!sourceTypeInMyInfo && trackWithoutSourceType  &&  !usesReference  &&  (MediaDbUtil.haveAlbumOnDisc(album)  ||  MediaDbUtil.haveAlbumPartlyOnDisc(album))) {
         if (!sourceTypeInMyInfo) {
 //          LOGGER.severe("no SourceType in MyInfo of album: " + album.getArtistAndTitle()); TODO Enable
         } else {
@@ -260,13 +290,94 @@ public class MediaDbWindow extends JfxStage {
           if (MEDIA_DB_PACKAGE.getMediaDb_Albums().equals(feature)) {
             albumsTable.setObjects(mediaDb, MediadbPackage.eINSTANCE.getMediaDb_Albums());
             tracksTable.setObjects(mediaDb, MediadbPackage.eINSTANCE.getMediaDb_Tracks());
+            artistsTable.setObjects(mediaDb, MediadbPackage.eINSTANCE.getMediaDb_Artists());
           }
       }
 
     };
     mediaDb.eAdapters().add(eContentAdapter);
+    
+    mediaDbResource.dirtyProperty().addListener((observable, oldValue, newValue) -> updateTitle());    
+    
 
 //    init();
+  }
+  
+  private void tempFixProblems() {
+    // IWant shall only be set if I don't have it already (or if I want it on other media)
+    for (Album album: mediaDb.getAlbums()) {
+      for (Disc disc: album.getDiscs()) {
+        for (TrackReference trackReference: disc.getTrackReferences()) {
+          MyTrackInfo myInfo = trackReference.getMyTrackInfo();
+          if (myInfo != null) {
+            IWant iWant = myInfo.getIWant();
+            if (MediaDbAppUtil.doIHaveThisTrack(trackReference)  &&  iWant != IWant.NOT_SET) {
+              LOGGER.severe("IWant set at track level for a track I have: " + album.getArtistAndTitle() + " , " + trackReference.getTrackNr());
+              myInfo.setIWant(IWant.NOT_SET);
+            }
+          }
+        }
+      }
+    }
+  }
+      
+  /**
+   * Check that the file name for the media database is set in the {@link MediaRegistry}.
+   * <p>
+   * If the file name is not set, a dialog is shown to inform the user about this and to tell him what to do.
+   * 
+   * @return true if the file name is set, false otherwise.
+   */
+  private boolean checkThatMediaDbFileNameIsSetInRegistry() {
+    if (MediaRegistry.mediaDbFile != null) {
+      return true;
+    } else {
+      Alert alert = componentFactory.createErrorDialog(
+          "There's no filename configured for the file with the media database",
+          """
+          Configure the filename (e.g. via the 'Edit User Settings' below) and restart the application.
+          A restart is needed, because the settings are only read at startup.""");
+
+      ButtonType editorButtonType = new ButtonType("Edit User Settings");
+      alert.getButtonTypes().add(editorButtonType);
+
+      alert.showAndWait().ifPresent(response -> {
+        if (response == editorButtonType) {
+          showUserSettingsEditor();
+        }
+      });
+
+      return false;
+    }
+  }
+  
+  /**
+   * Load the media database.
+   * <p>
+   * The media database is loaded from the file specified in the registry.<br/>
+   * If the file doesn't exist, there are two options; either the file name in the registry is incorrect, or the file hasn't been created yet.
+   * Therefore a dialog is shown asking the user whether this file shall be created or not. In the latter case the user has to correct the file name in the registry.
+   */
+  private void loadMediaDb() {
+    try {
+      mediaDb = mediaDbResource.load(MediaRegistry.mediaDbFile);
+    } catch (FileNotFoundException e) {
+      Alert alert = componentFactory.createYesNoConfirmationDialog(
+          null,
+          "The file with media information (" + MediaRegistry.mediaDbFile + ") doesn't exist yet.",
+          "Do you want to create this file now?" + NEWLINE +
+          "If you choose \"No\" you can't do anything in this screen.");
+      alert.showAndWait().ifPresent(response -> {
+        if (response == ButtonType.YES) {
+          mediaDb = mediaDbResource.newEObject();
+          try {
+            mediaDbResource.save(MediaRegistry.mediaDbFile);
+          } catch (IOException e1) {
+            e1.printStackTrace();
+          }
+        }
+      });
+    }
   }
 
   /**
@@ -295,6 +406,8 @@ public class MediaDbWindow extends JfxStage {
     centerPane.getChildren().add(albumsTable);
     tracksTable = new TracksTable(customization, this, mediaDb, trackDiscLocationMap);
     tracksTable.setMinHeight(800);
+    artistsTable = new ArtistsTable(customization, mediaDb);
+    artistsTable.setMinHeight(800);
 
     mainPane.setCenter(centerPane);
     
@@ -327,21 +440,13 @@ public class MediaDbWindow extends JfxStage {
 
     // File menu
     menu = new Menu("File");
-    
-    
-//    // File: Save AlbumInfo files
-//    MenuUtil.addMenuItem(menu, "Save AlbumInfo files", new EventHandler<ActionEvent>()  {
-//      public void handle(ActionEvent e) {
-//        saveMediaDbToAlbumInfoFiles();
-//      }
-//    });
-//    
-//    // File: Save AlbumInfo file ...
-//    MenuUtil.addMenuItem(menu, "Save AlbumInfo file ...", new EventHandler<ActionEvent>()  {
-//      public void handle(ActionEvent e) {
-//        saveMediaDbArtistAlbumsToAlbumInfoFile();
-//      }
-//    });
+        
+    // File: Save media information
+    MenuUtil.addMenuItem(menu, "Save media information", new EventHandler<ActionEvent>()  {
+      public void handle(ActionEvent e) {
+        checkAndSaveMediaDb();
+      }
+    });
 
     // File: Edit Property Descriptors
     if (MediaRegistry.developmentMode) {
@@ -355,6 +460,15 @@ public class MediaDbWindow extends JfxStage {
       MenuUtil.addMenuItem(menu, "Edit User Settings", new EventHandler<ActionEvent>()  {
         public void handle(ActionEvent e) {
           showUserSettingsEditor();
+        }
+      });
+    }
+    
+    // File: Convert Database
+    if (MediaRegistry.developmentMode) {
+      MenuUtil.addMenuItem(menu, "Convert Database", new EventHandler<ActionEvent>()  {
+        public void handle(ActionEvent e) {
+          convertDatabase();
         }
       });
     }
@@ -413,6 +527,16 @@ public class MediaDbWindow extends JfxStage {
     return menuBar;
   }
   
+  /**
+   * Create the control panel.
+   * <p>
+   * The control panel contains:
+   * a label and a textfield for specifying a filter value.
+   * a button to open the problem solving screen.
+   * buttons to select albums, tracks or artists view
+   * 
+   * @return the created control panel.
+   */
   private Node createControlPanel() {
     HBox controlPanel = componentFactory.createHBox(18, 12);
     
@@ -427,54 +551,87 @@ public class MediaDbWindow extends JfxStage {
     });
     controlPanel.getChildren().add(textField);
     
-
+    // Button to open the MediaDbProblemsWindow
     Button openProblemsWindowButton = componentFactory.createButton("Open problem solving screen", "opens the problem solving screen");
-    openProblemsWindowButton.setOnAction((e) -> {
-      new MediaDbProblemsWindow(customization, mediaDb, allErrors);
-    });
+    openProblemsWindowButton.setOnAction((e) -> new MediaDbProblemsWindow(customization, mediaDb, allErrors));
     controlPanel.getChildren().add(openProblemsWindowButton);
 
-    Button toggleAlbumsTracksButton = componentFactory.createButton("Tracks", "switch from the albums table to the tracks table");
-    toggleAlbumsTracksButton.setOnAction((e) -> {
+    Button albumsButton = componentFactory.createButton("Albums", "switch to the albums table");
+    Button tracksButton = componentFactory.createButton("Tracks", "switch to the tracks table");
+    Button artistsButton = componentFactory.createButton("Artists", "switch to the artists table");
+    
+    albumsButton.setOnAction((e) -> {
       ObservableList<Node> centerPaneChildren = centerPane.getChildren();
       centerPaneChildren.remove(centerPaneChildren.size() - 1);
-      if (toggleAlbumsTracksButton.getText().equals("Tracks")) {
-        currentTable = tracksTable;
-        toggleAlbumsTracksButton.setText("Albums");
-      } else {
-        currentTable = albumsTable;
-        toggleAlbumsTracksButton.setText("Tracks");
-      }
+      currentTable = albumsTable;
       centerPaneChildren.add(currentTable);
+      albumsButton.setDisable(true);
+      tracksButton.setDisable(false);
+      artistsButton.setDisable(false);
     });
-    controlPanel.getChildren().add(toggleAlbumsTracksButton);
+    albumsButton.setDisable(true);
+    
+    tracksButton.setOnAction((e) -> {
+      ObservableList<Node> centerPaneChildren = centerPane.getChildren();
+      centerPaneChildren.remove(centerPaneChildren.size() - 1);
+      currentTable = tracksTable;
+      centerPaneChildren.add(currentTable);
+      albumsButton.setDisable(false);
+      tracksButton.setDisable(true);
+      artistsButton.setDisable(false);
+    });
+    
+    artistsButton.setOnAction((e) -> {
+      ObservableList<Node> centerPaneChildren = centerPane.getChildren();
+      centerPaneChildren.remove(centerPaneChildren.size() - 1);
+      currentTable = artistsTable;
+      centerPaneChildren.add(currentTable);
+      albumsButton.setDisable(false);
+      tracksButton.setDisable(false);
+      artistsButton.setDisable(true);
+    });
+    
+//    Button toggleAlbumsTracksButton = componentFactory.createButton("Tracks", "switch from the albums table to the tracks table");
+//    toggleAlbumsTracksButton.setOnAction((e) -> {
+//      ObservableList<Node> centerPaneChildren = centerPane.getChildren();
+//      centerPaneChildren.remove(centerPaneChildren.size() - 1);
+//      if (toggleAlbumsTracksButton.getText().equals("Tracks")) {
+//        currentTable = tracksTable;
+//        toggleAlbumsTracksButton.setText("Albums");
+//      } else {
+//        currentTable = albumsTable;
+//        toggleAlbumsTracksButton.setText("Tracks");
+//      }
+//      centerPaneChildren.add(currentTable);
+//    });
+    controlPanel.getChildren().addAll(albumsButton, tracksButton, artistsButton);
     
     return controlPanel;
   }
   
   /**
-   * Save the information from the <code>mediaDb</code> to a set of AlbumInfo files, one per artist.
+   * Check and save the media database.
    */
-  private void saveMediaDbToAlbumInfoFiles() {
+  private void checkAndSaveMediaDb() {
     List<Object> errors = new ArrayList<>();
-    AlbumInfoFilesReader albumInfoFilesReader = new AlbumInfoFilesReader(mediaDb);
-    albumInfoFilesReader.writeAlbumInfoFiles(errors, "C:\\ApplicLocal\\AlbumInfo");
+    MediaDbChecker.checkMediaDb(mediaDb, errors);
+    saveMediaDb();
   }
-  
+
   /**
-   * Save the information for one artist from the <code>mediaDb</code> to an AlbumInfo file.
+   * Save the media database to the related file.
    */
-  private void saveMediaDbArtistAlbumsToAlbumInfoFile() {
-    List<Artist> containerArtists = MediaDbAppUtil.getContainerArtists(mediaDb);
+  private void saveMediaDb() {    
+    EmfUtil.checkCompleteContainment(mediaDb);
     
-    ArtistSelectionDialog artistSelectionDialog = new ArtistSelectionDialog(customization, this, containerArtists);
-    Optional<ButtonType> choice = artistSelectionDialog.showAndWait();
-    if (choice.isPresent()) {
-      Artist artist = artistSelectionDialog.getSelectedArtist();
-      if (artist != null) {
-        List<Object> errors = new ArrayList<>();
-        AlbumInfoFilesReader albumInfoFilesReader = new AlbumInfoFilesReader(mediaDb);
-        albumInfoFilesReader.writeAlbumInfoFile(errors, "C:\\ApplicLocal\\AlbumInfo", artist);
+    if (mediaDbResource != null) {
+      try {
+        mediaDbResource.save(MediaRegistry.mediaDbFile);
+      } catch (IOException e) {        
+        componentFactory.createErrorDialog(
+            "Saving the media information has failed.",
+            "System error message: "  + e.getMessage()
+            ).showAndWait();
       }
     }
   }
@@ -509,6 +666,29 @@ public class MediaDbWindow extends JfxStage {
     } else {
       ObservableList<Album> albums = FXCollections.observableList(mediaDb.getAlbums());
       albumsTable.setItems(albums);
+    }
+  }
+  
+  /**
+   * Make changes to the media database.
+   * 
+   */
+  private void convertDatabase() {
+    // Change empty bonus track to null
+    for (Album album: mediaDb.getAlbums()) {
+      for (Disc disc: album.getDiscs()) {
+        for (TrackReference trackReference: disc.getTrackReferences()) {
+          String bonusTrack = trackReference.getBonusTrack();
+          if (bonusTrack != null  &&  bonusTrack.isEmpty()) {
+            LOGGER.severe("Bonus track empty: " + album.getArtistAndTitle() + ", " + disc.getTitle() + ", " + trackReference.getTrack().getTitle());
+            trackReference.setBonusTrack(null);
+          } else if (bonusTrack == null) {
+//            LOGGER.severe("Bonus track null: " + album.getArtistAndTitle() + ", " + disc.getTitle() + ", " + trackReference.getTrack().getTitle());
+          } else {
+//            LOGGER.severe("Bonus track set: " + album.getArtistAndTitle() + ", " + disc.getTitle() + ", " + trackReference.getTrack().getTitle() + "::" + bonusTrack);
+          }
+        }
+      }
     }
   }
 
@@ -557,5 +737,32 @@ public class MediaDbWindow extends JfxStage {
    */
   private void createAlbumFromAlbumTracks() {
     new CreateAlbumFromAlbumTracksWindow(customization);
+  }
+
+  /**
+   * Update the window title.
+   * <p>
+   * The format of the title is: &lt;title&gt; - &lt;dirty&gt;&lt;file-name&gt;<br/>
+   * Where:<br/>
+   * &lt;title&gt; is the window title<br/>
+   * &lt;dirty&gt; is a '*' symbol if the media file is dirty, empty otherwise<br/>
+   * &lt;file-name&gt; is the name of the media file.
+   * 
+   */
+  private void updateTitle() {
+    StringBuilder buf = new StringBuilder();
+    
+    buf.append(WINDOW_TITLE);
+    buf.append(" - ");
+    if (mediaDbResource.isDirty()) {
+      buf.append("*");
+    }
+    String fileName = mediaDbResource.getFileName();
+    if (fileName.equals("")) {
+      fileName = "<NoName>";
+    }
+    buf.append(fileName);
+    
+    setTitle(buf.toString());
   }
 }

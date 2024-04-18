@@ -268,13 +268,22 @@ public interface MediadbPackage extends EPackage {
   int MEDIA_DB___GET_TRACK_COLLECTION__COLLECTION = 3;
 
   /**
+   * The operation id for the '<em>Get Track</em>' operation.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int MEDIA_DB___GET_TRACK__ARTIST_STRING = 4;
+
+  /**
    * The number of operations of the '<em>Media Db</em>' class.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int MEDIA_DB_OPERATION_COUNT = 4;
+  int MEDIA_DB_OPERATION_COUNT = 5;
 
   /**
    * The meta object id for the '{@link goedegep.media.mediadb.model.impl.ArtistImpl <em>Artist</em>}' class.
@@ -305,13 +314,49 @@ public interface MediadbPackage extends EPackage {
   int ARTIST__CONTAINER_ARTIST = 1;
 
   /**
+   * The feature id for the '<em><b>Photo</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int ARTIST__PHOTO = 2;
+
+  /**
+   * The feature id for the '<em><b>Style</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int ARTIST__STYLE = 3;
+
+  /**
+   * The feature id for the '<em><b>My Comments</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int ARTIST__MY_COMMENTS = 4;
+
+  /**
+   * The feature id for the '<em><b>Sample</b></em>' containment reference.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int ARTIST__SAMPLE = 5;
+
+  /**
    * The number of structural features of the '<em>Artist</em>' class.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int ARTIST_FEATURE_COUNT = 2;
+  int ARTIST_FEATURE_COUNT = 6;
 
   /**
    * The number of operations of the '<em>Artist</em>' class.
@@ -1453,6 +1498,16 @@ public interface MediadbPackage extends EPackage {
   EOperation getMediaDb__GetTrackCollection__Collection();
 
   /**
+   * Returns the meta object for the '{@link goedegep.media.mediadb.model.MediaDb#getTrack(goedegep.media.mediadb.model.Artist, java.lang.String) <em>Get Track</em>}' operation.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the '<em>Get Track</em>' operation.
+   * @see goedegep.media.mediadb.model.MediaDb#getTrack(goedegep.media.mediadb.model.Artist, java.lang.String)
+   * @generated
+   */
+  EOperation getMediaDb__GetTrack__Artist_String();
+
+  /**
    * Returns the meta object for class '{@link goedegep.media.mediadb.model.Artist <em>Artist</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -1483,6 +1538,50 @@ public interface MediadbPackage extends EPackage {
    * @generated
    */
   EReference getArtist_ContainerArtist();
+
+  /**
+   * Returns the meta object for the attribute '{@link goedegep.media.mediadb.model.Artist#getPhoto <em>Photo</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Photo</em>'.
+   * @see goedegep.media.mediadb.model.Artist#getPhoto()
+   * @see #getArtist()
+   * @generated
+   */
+  EAttribute getArtist_Photo();
+
+  /**
+   * Returns the meta object for the attribute '{@link goedegep.media.mediadb.model.Artist#getStyle <em>Style</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Style</em>'.
+   * @see goedegep.media.mediadb.model.Artist#getStyle()
+   * @see #getArtist()
+   * @generated
+   */
+  EAttribute getArtist_Style();
+
+  /**
+   * Returns the meta object for the attribute '{@link goedegep.media.mediadb.model.Artist#getMyComments <em>My Comments</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>My Comments</em>'.
+   * @see goedegep.media.mediadb.model.Artist#getMyComments()
+   * @see #getArtist()
+   * @generated
+   */
+  EAttribute getArtist_MyComments();
+
+  /**
+   * Returns the meta object for the containment reference '{@link goedegep.media.mediadb.model.Artist#getSample <em>Sample</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the containment reference '<em>Sample</em>'.
+   * @see goedegep.media.mediadb.model.Artist#getSample()
+   * @see #getArtist()
+   * @generated
+   */
+  EReference getArtist_Sample();
 
   /**
    * Returns the meta object for class '{@link goedegep.media.mediadb.model.Album <em>Album</em>}'.
@@ -2483,6 +2582,14 @@ public interface MediadbPackage extends EPackage {
     EOperation MEDIA_DB___GET_TRACK_COLLECTION__COLLECTION = eINSTANCE.getMediaDb__GetTrackCollection__Collection();
 
     /**
+    	 * The meta object literal for the '<em><b>Get Track</b></em>' operation.
+    	 * <!-- begin-user-doc -->
+    	 * <!-- end-user-doc -->
+    	 * @generated
+    	 */
+    EOperation MEDIA_DB___GET_TRACK__ARTIST_STRING = eINSTANCE.getMediaDb__GetTrack__Artist_String();
+
+    /**
     	 * The meta object literal for the '{@link goedegep.media.mediadb.model.impl.ArtistImpl <em>Artist</em>}' class.
     	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -2507,6 +2614,38 @@ public interface MediadbPackage extends EPackage {
     	 * @generated
     	 */
     EReference ARTIST__CONTAINER_ARTIST = eINSTANCE.getArtist_ContainerArtist();
+
+    /**
+    	 * The meta object literal for the '<em><b>Photo</b></em>' attribute feature.
+    	 * <!-- begin-user-doc -->
+    	 * <!-- end-user-doc -->
+    	 * @generated
+    	 */
+    EAttribute ARTIST__PHOTO = eINSTANCE.getArtist_Photo();
+
+    /**
+    	 * The meta object literal for the '<em><b>Style</b></em>' attribute feature.
+    	 * <!-- begin-user-doc -->
+    	 * <!-- end-user-doc -->
+    	 * @generated
+    	 */
+    EAttribute ARTIST__STYLE = eINSTANCE.getArtist_Style();
+
+    /**
+    	 * The meta object literal for the '<em><b>My Comments</b></em>' attribute feature.
+    	 * <!-- begin-user-doc -->
+    	 * <!-- end-user-doc -->
+    	 * @generated
+    	 */
+    EAttribute ARTIST__MY_COMMENTS = eINSTANCE.getArtist_MyComments();
+
+    /**
+    	 * The meta object literal for the '<em><b>Sample</b></em>' containment reference feature.
+    	 * <!-- begin-user-doc -->
+    	 * <!-- end-user-doc -->
+    	 * @generated
+    	 */
+    EReference ARTIST__SAMPLE = eINSTANCE.getArtist_Sample();
 
     /**
     	 * The meta object literal for the '{@link goedegep.media.mediadb.model.impl.AlbumImpl <em>Album</em>}' class.

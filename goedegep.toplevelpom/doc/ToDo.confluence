@@ -1,5 +1,15 @@
 h2. ToDo list
-* NodeOperationDescriptors: use subclasses per operation. They should all have information on whether menu item can do its work
+* Add a background image to the MediaMenuWindow.
+* When starting to edit an album it complaints about changes which can't be there.
+* Clean up MijnWereld folder.
+* Fix exception that occurs on setMyTrackInfo
+* Media: Fix all current problems when starting MediaDbWindow
+* Media: import tracks - Add track information from the Tracks.xml file
+If this is complete, save the database and remove the code and then obsolete files
+* Media: import artist information
+If this is complete, save the database and remove the code and then obsolete files
+* GPX editor: proposed filename - date + name
+* If you delete a GPXTrack, it should ask whether the file should also be deleted
 * ObjectControl should implement ObjectSelector
 * goedegep.jfx.controls.FileReferenceDialog is not used
 * DnD of a photo on an element doesn't work, it only works on the list
@@ -8,7 +18,6 @@ On Google tijdlijn export each day to kml. Import the kml. Show each element and
 * Currently there seems to be no difference between jfx stringconvertes and objectstringconverters, so remove objectstringconverters
 * See if EObjectTree and/or the descriptors can be replaced by Builder pattern
 * Remove/change getText() implementations in cell helpers
-* Vacations: move building tree descriptor to VacationsTreeVew
 * Use builder pattern for each descriptor for an EObjectTreeView
 * DnD to element of vacation fails
 * Vacation element with reference: on delete ask whether the referred file also has to be deleted.
@@ -51,6 +60,7 @@ Try to derive the album type for existing albums in the database.
 See page 445 of the book.
 For each application define an extension. Register that extension to the ResourceSet. Set this extension also to the FileChooser. Maybe get rid of the '*' registration in EMFResourceSet.
 * Check whether startup performance can be improved by using CDS. See https://www.youtube.com/watch?v=vvlQv1Dh-HU&t=1086s
+* Check whether I can use the MediaCollageCreator somewhere else (was used in the MediaMenuWindow).
 
 h2. ToDo list - Refactoring
 

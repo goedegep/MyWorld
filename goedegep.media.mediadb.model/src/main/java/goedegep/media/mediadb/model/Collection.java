@@ -98,7 +98,16 @@ public enum Collection implements Enumerator {
    * @generated
    * @ordered
    */
-  PUNK(8, "PUNK", "Punk");
+  PUNK(8, "PUNK", "Punk"),
+  /**
+   * The '<em><b>SAMPLE</b></em>' literal object.
+   * <!-- begin-user-doc -->
+  * <!-- end-user-doc -->
+   * @see #SAMPLE_VALUE
+   * @generated
+   * @ordered
+   */
+  SAMPLE(9, "SAMPLE", "SAMPLE");
 
   /**
    * The '<em><b>EASY LISTENING</b></em>' literal value.
@@ -232,13 +241,24 @@ public enum Collection implements Enumerator {
   public static final int PUNK_VALUE = 8;
 
   /**
+   * The '<em><b>SAMPLE</b></em>' literal value.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #SAMPLE
+   * @model
+   * @generated
+   * @ordered
+   */
+  public static final int SAMPLE_VALUE = 9;
+
+  /**
    * An array of all the '<em><b>Collection</b></em>' enumerators.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    */
   private static final Collection[] VALUES_ARRAY = new Collection[] { EASY_LISTENING, FILM_BACKING_TRACKS, FRANSTALIG,
-      KLASSIEK, NEDERLANDSTALIG, POP, ROCK, NOT_SET, PUNK, };
+      KLASSIEK, NEDERLANDSTALIG, POP, ROCK, NOT_SET, PUNK, SAMPLE, };
 
   /**
    * A public read-only list of all the '<em><b>Collection</b></em>' enumerators.
@@ -312,6 +332,8 @@ public enum Collection implements Enumerator {
       return NOT_SET;
     case PUNK_VALUE:
       return PUNK;
+    case SAMPLE_VALUE:
+      return SAMPLE;
     }
     return null;
   }

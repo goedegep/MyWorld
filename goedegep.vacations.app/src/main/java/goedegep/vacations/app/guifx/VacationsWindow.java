@@ -1457,7 +1457,6 @@ public class VacationsWindow extends JfxStage {
       dayTrip = (DayTrip) treeItemObject;
     }
 
-    LOGGER.severe("<= dayTrip=" + (dayTrip != null ? dayTrip.toString() : "(null)"));
     return dayTrip;
   }
   

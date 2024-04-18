@@ -17,6 +17,7 @@ import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
 import org.eclipse.emf.ecore.util.EObjectContainmentEList;
 import org.eclipse.emf.ecore.util.InternalEList;
 
+import goedegep.media.mediadb.model.Album;
 import goedegep.media.mediadb.model.Collection;
 import goedegep.media.mediadb.model.IWant;
 import goedegep.media.mediadb.model.MediadbPackage;
@@ -475,14 +476,25 @@ public class MyTrackInfoImpl extends MinimalEObjectImpl.Container implements MyT
   public String toString() {
     StringBuilder buf = new StringBuilder();
 
-    buf.append("collection: ");
+    buf.append("  collection: ");
     buf.append(isSetCollection() ? getCollection().toString() : "<no-collection>").append(NEWLINE);
 
-    buf.append("iWant: ");
+    buf.append("  iWant: ");
     buf.append(isSetIWant() ? getIWant().toString() : "<no-iwant>").append(NEWLINE);
 
-    buf.append("iHaveOn: ");
+    buf.append("  iHaveOn: ");
     buf.append(isSetIHaveOn() ? getIHaveOn().toString() : "<no-ihave-on>").append(NEWLINE);
+
+    buf.append("  compilationTrackReference: ");
+    if (isSetCompilationTrackReference()) {
+      TrackReference compilationTrackReference = getCompilationTrackReference();
+      Album compilationAlbum = compilationTrackReference.getDisc().getAlbum();
+      buf.append("track '").append(compilationTrackReference.getTrack().getTitle()).append("' on '")
+          .append(compilationAlbum.getTitle()).append("'");
+    } else {
+      buf.append("<no-compilation-track-reference>");
+    }
+    buf.append(NEWLINE);
 
     return buf.toString();
   }

@@ -12,7 +12,7 @@ import java.util.logging.Logger;
 import org.commonmark.parser.Parser;
 import org.commonmark.renderer.html.HtmlRenderer;
 
-import goedegep.appgen.TableRowOperation;
+import goedegep.appgen.Operation;
 import goedegep.appgen.TableRowOperationDescriptor;
 import goedegep.events.app.EventsRegistry;
 import goedegep.events.model.EventInfo;
@@ -125,9 +125,9 @@ class EventsTableDescriptorFactory {
     /*
      * Row operations
      */
-    descriptor.getRowOperations().put(TableRowOperation.NEW_OBJECT_BEFORE, new TableRowOperationDescriptor<EventInfo>("New Event before this one"));
-    descriptor.getRowOperations().put(TableRowOperation.NEW_OBJECT_AFTER, new TableRowOperationDescriptor<EventInfo>("New Event below this one"));
-    descriptor.getRowOperations().put(TableRowOperation.DELETE_OBJECT, new TableRowOperationDescriptor<EventInfo>("Remove this Event"));
+    descriptor.getRowOperations().put(Operation.NEW_OBJECT_BEFORE, new TableRowOperationDescriptor<EventInfo>("New Event before this one"));
+    descriptor.getRowOperations().put(Operation.NEW_OBJECT_AFTER, new TableRowOperationDescriptor<EventInfo>("New Event below this one"));
+    descriptor.getRowOperations().put(Operation.DELETE_OBJECT, new TableRowOperationDescriptor<EventInfo>("Remove this Event"));
     
     return descriptor;
   }

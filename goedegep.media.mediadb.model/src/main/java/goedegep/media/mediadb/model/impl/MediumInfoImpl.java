@@ -443,18 +443,14 @@ public class MediumInfoImpl extends MinimalEObjectImpl.Container implements Medi
   @Override
   public String toString() {
     StringBuffer result = new StringBuffer();
-    result.append(" (mediumType: ");
-    if (isSetMediumType()) {
-      result.append(" " + getMediumType().getLiteral() + " ");
+    result.append("mediumType: ").append(getMediumType() != null ? getMediumType().getLiteral() : "<not set>");
+    result.append(", informationType: ")
+        .append(getInformationType() != null ? getInformationType().getLiteral() : "<not set>");
+    result.append(", sourceTypes:");
+    for (InformationType sourceType : getSourceTypes()) {
+      result.append(" " + sourceType.getLiteral());
     }
-    if (isSetSourceTypes()) {
-      for (InformationType sourceType : getSourceTypes()) {
-        result.append(" " + sourceType.getLiteral() + " ");
-      }
-    }
-    if (isSetSourceBitRate()) {
-      result.append(" " + getSourceBitRate() + " ");
-    }
+    result.append(", sourceBitRate: ").append(isSetSourceBitRate() ? getSourceBitRate() : "<not set>");
 
     return result.toString();
   }

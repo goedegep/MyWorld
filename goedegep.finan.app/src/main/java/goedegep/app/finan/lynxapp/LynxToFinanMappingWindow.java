@@ -23,7 +23,7 @@ import javax.swing.JMenuBar;
 import org.eclipse.emf.ecore.EClass;
 
 import goedegep.app.finan.registry.FinanRegistry;
-import goedegep.appgen.TableRowOperation;
+import goedegep.appgen.Operation;
 import goedegep.appgen.TableRowOperationDescriptor;
 import goedegep.appgen.eobjecttable.EObjectTableDescriptor;
 import goedegep.appgen.eobjecttable.EObjectTableFrame;
@@ -54,12 +54,12 @@ public class LynxToFinanMappingWindow extends EObjectTableFrame<LynxToFinanShare
   private LynxToFinanShareIdList lynxToFinanShareIdList;
   
   @SuppressWarnings("rawtypes")
-  private static Map<TableRowOperation, TableRowOperationDescriptor> rowOperations = new HashMap<TableRowOperation, TableRowOperationDescriptor>() {
+  private static Map<Operation, TableRowOperationDescriptor> rowOperations = new HashMap<Operation, TableRowOperationDescriptor>() {
     {
-      put(TableRowOperation.NEW_OBJECT, new TableRowOperationDescriptor("Nieuwe mapping"));
-      put(TableRowOperation.NEW_OBJECT_BEFORE, new TableRowOperationDescriptor("Nieuwe mapping hierna"));
-      put(TableRowOperation.NEW_OBJECT_AFTER, new TableRowOperationDescriptor("Nieuwe mapping hierna"));
-      put(TableRowOperation.DELETE_OBJECT, new TableRowOperationDescriptor("Verwijderen"));
+      put(Operation.NEW_OBJECT, new TableRowOperationDescriptor("Nieuwe mapping"));
+      put(Operation.NEW_OBJECT_BEFORE, new TableRowOperationDescriptor("Nieuwe mapping hierna"));
+      put(Operation.NEW_OBJECT_AFTER, new TableRowOperationDescriptor("Nieuwe mapping hierna"));
+      put(Operation.DELETE_OBJECT, new TableRowOperationDescriptor("Verwijderen"));
     }
   };
   

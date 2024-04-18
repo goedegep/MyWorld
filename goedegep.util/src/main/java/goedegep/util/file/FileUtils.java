@@ -57,7 +57,7 @@ public class FileUtils {
    * File name extensions of known audio files.
    */
   private final static Set<String> audioFileExtensions = new HashSet<>(Arrays.asList(
-      ".flac", ".m2ts", ".m4a", ".mp3", ".wav", ".wma"
+      ".dsf", ".flac", ".m2ts", ".m4a", ".mp3", ".wav", ".wma"
       ));
 
   /**

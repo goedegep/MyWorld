@@ -1,6 +1,5 @@
 package goedegep.media.mediadb.app.guifx;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -10,9 +9,6 @@ import goedegep.jfx.JfxStage;
 import goedegep.jfx.objectcontrols.ObjectControlFolderSelecter;
 import goedegep.media.app.MediaRegistry;
 import goedegep.media.app.base.MediaAppResourcesFx;
-import goedegep.media.mediadb.albuminfo.AlbumInfoFilesReader;
-import goedegep.media.mediadb.model.MediaDb;
-import goedegep.media.mediadb.model.MediadbFactory;
 import goedegep.media.musicfolder.MusicFolder;
 import goedegep.media.musicfolder.MusicFolderDescription;
 import goedegep.media.musicfolder.MusicFolderStructureErrorInfo;
@@ -48,7 +44,6 @@ public class MusicFolderWindow extends JfxStage {
   
   private ComponentFactoryFx componentFactory;
   private MediaAppResourcesFx appResources;
-  private MediaDb mediaDb;
   private MusicFolder musicFolder;
   private String currentMusicFolder = null;
   private CheckBox verifyStructureCheckBox = null;
@@ -67,14 +62,7 @@ public class MusicFolderWindow extends JfxStage {
     appResources = (MediaAppResourcesFx) getResources();
     currentMusicFolder = MediaRegistry.musicDirectory;
     
-    mediaDb = MediadbFactory.eINSTANCE.createMediaDb();
-    AlbumInfoFilesReader albumInfoFilesReader = new AlbumInfoFilesReader(mediaDb);
-    List<Object> errors = new ArrayList<>();
-    albumInfoFilesReader.readAlbumInfoFiles(errors, MediaRegistry.albumInfoDirectory);
-    
     musicFolder = new MusicFolder();
-    
-
     
     createGUI();
   }

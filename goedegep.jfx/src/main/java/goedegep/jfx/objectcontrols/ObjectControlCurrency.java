@@ -32,7 +32,8 @@ public class ObjectControlCurrency extends ObjectControlTextField<PgCurrency> {
   /**
    * Constructor
    * 
-   * @param pgCurrency the initial value
+   * @param customization the GUI customization (mandatory)
+   * @param pgCurrency the initial value (optional)
    * @param width width of the TextField
    * @param isOptional indicates whether the value is optional or not
    * @param toolTipText an optional tooltip text.

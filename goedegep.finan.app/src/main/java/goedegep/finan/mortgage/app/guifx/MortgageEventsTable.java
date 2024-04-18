@@ -7,7 +7,7 @@ import java.util.Map;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 
-import goedegep.appgen.TableRowOperation;
+import goedegep.appgen.Operation;
 import goedegep.appgen.TableRowOperationDescriptor;
 import goedegep.finan.mortgage.model.FinalPayment;
 import goedegep.finan.mortgage.model.MortgageEvent;
@@ -88,11 +88,11 @@ class MortgageEventsTableDescriptor extends EObjectTableDescriptor<MortgageEvent
   );
   
   @SuppressWarnings("serial")
-  private static Map<TableRowOperation, TableRowOperationDescriptor<MortgageEvent>> rowOperations = new HashMap<>() {
+  private static Map<Operation, TableRowOperationDescriptor<MortgageEvent>> rowOperations = new HashMap<>() {
     {
-      put(TableRowOperation.NEW_OBJECT_BEFORE, new TableRowOperationDescriptor<>("Insert event before this event"));
-      put(TableRowOperation.NEW_OBJECT_AFTER, new TableRowOperationDescriptor<>("Insert event after this event"));
-      put(TableRowOperation.DELETE_OBJECT, new TableRowOperationDescriptor<>("Delete event"));
+      put(Operation.NEW_OBJECT_BEFORE, new TableRowOperationDescriptor<>("Insert event before this event"));
+      put(Operation.NEW_OBJECT_AFTER, new TableRowOperationDescriptor<>("Insert event after this event"));
+      put(Operation.DELETE_OBJECT, new TableRowOperationDescriptor<>("Delete event"));
     }
   };
   

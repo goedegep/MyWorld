@@ -4,6 +4,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Logger;
@@ -12,13 +13,21 @@ import java.util.regex.Pattern;
 
 import org.eclipse.emf.common.util.BasicEList;
 import org.eclipse.emf.common.util.EList;
+import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.EReference;
+import org.eclipse.emf.ecore.EStructuralFeature;
+import org.eclipse.emf.ecore.resource.ResourceSet;
+import org.eclipse.emf.ecore.util.EcoreUtil;
 
 import goedegep.jfx.ComponentFactoryFx;
 import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.JfxStage;
+import goedegep.jfx.eobjecttreeview.EObjectTreeItem;
+import goedegep.jfx.eobjecttreeview.EObjectTreeItemForObject;
 import goedegep.media.mediadb.albuminfo.AlbumInfoErrorInfo;
 import goedegep.media.mediadb.albuminfo.AlbumReferenceInfo;
 import goedegep.media.mediadb.albuminfo.TrackReferenceInfo;
+import goedegep.media.mediadb.app.MediaDbAppError;
 import goedegep.media.mediadb.app.MediaDbAppErrorInfo;
 import goedegep.media.mediadb.app.MediaDbAppUtil;
 import goedegep.media.mediadb.app.MediaDbErrorInfo;
@@ -46,6 +55,8 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.control.ScrollPane.ScrollBarPolicy;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -145,7 +156,7 @@ private ComponentFactoryFx componentFactory;
       fillMusicFolderStructureErrorInfoPanel(errorPanel, musicFolderStructureErrorInfo);
     } else if (error instanceof MediaDbAppErrorInfo) {
       MediaDbAppErrorInfo mediaDbAppErrorInfo = (MediaDbAppErrorInfo) error;
-      fillMediaDbAppErrorInfoPanel(errorPanel, mediaDbAppErrorInfo);
+      fillErrorPanelForMediaDbAppErrorInfo(errorPanel, mediaDbAppErrorInfo);
     } else {
       throw new IllegalArgumentException("Unknown error class: " + error.getClass().getName());
     }
@@ -323,6 +334,7 @@ private ComponentFactoryFx componentFactory;
     // Report the error in a JTextArea.
     StringBuilder buf = new StringBuilder();
     Album album;
+    Artist artist;
 
     switch (mediaDbErrorInfo.getErrorCode()) {
     case ALBUM_WITHOUT_ARTIST:
@@ -352,11 +364,70 @@ private ComponentFactoryFx componentFactory;
         buf.append(NEWLINE).append("Track: ").append(trackReference.getTrack().getTitle());
       }
       break;
+      
+    case OBSOLETE_TRACK:
+      buf.append("Obsolete track (track that isn't referred to): ");
+      Track track = mediaDbErrorInfo.getTrack();
+      artist = track.getArtist();
+      buf.append(artist != null ? artist.getName() : "<no-artist>").append(" - ").append(track.getTitle());
+
+      Button removeObsoleteTrack = componentFactory.createButton("Remove obsolete track", "Remove the obsolete track from the data base");
+      removeObsoleteTrack.setOnAction((e) -> mediaDb.getTracks().remove(track));
+      errorPanel.getButtonsBox().getChildren().add(removeObsoleteTrack);
+      break;
+      
+    case ARTIST_NOT_REFERRED_TO:
+      fillMediaDbErrorInfoPanelForArtistNotReferredTo(errorPanel, mediaDbErrorInfo, buf);
+      break;
 
     default:
       throw new IllegalArgumentException("Unknown Error Code: " + mediaDbErrorInfo.getErrorCode());
     }
     errorPanel.getTextArea().setText(buf.toString());
+  }
+  
+  private void fillMediaDbErrorInfoPanelForArtistNotReferredTo(ErrorPanel errorPanel, MediaDbErrorInfo mediaDbErrorInfo, StringBuilder buf) {
+    buf.append("Artist that isn't referred to: ");
+    Artist artist = mediaDbErrorInfo.getArtist();
+    buf.append(artist.getName()).append(NEWLINE);
+    
+    // In case of this error, there are no references to the artist, except for a container artist reference.
+    // Check for these references and report and remove them.
+    
+    // Get the object to be deleted.
+    EObject eObjectToBeDeleted = mediaDbErrorInfo.getArtist();
+    
+    // The object to be deleted is referenced by a containment reference, check whether there are other references to this object.
+    LOGGER.info("Containment");
+    ResourceSet resourceSet = eObjectToBeDeleted.eResource().getResourceSet();
+    Collection<EStructuralFeature.Setting> settings = EcoreUtil.UsageCrossReferencer.find(eObjectToBeDeleted, resourceSet);
+
+    if (settings.size() != 0) {
+      buf.append("The following artists refer to this artist as container artist:").append(NEWLINE);
+      for (EStructuralFeature.Setting setting: settings) {
+        Artist referringArtist = (Artist) setting.getEObject();
+        
+        buf.append(referringArtist.getName()).append(NEWLINE);
+      }
+
+
+    } else {
+      buf.append("There are also no container artist references to this artist");
+    }
+
+    Button removeArtistNotReferredTo = componentFactory.createButton("Remove artist and references", "Remove this artist (and the references to this artist) from the data base");
+    removeArtistNotReferredTo.setOnAction((e) -> {
+      // Delete the references
+      for (EStructuralFeature.Setting setting: settings) {
+        Artist referringArtist = (Artist) setting.getEObject();
+        LOGGER.severe("Clearing container artist for: " + referringArtist.getName());
+        referringArtist.setContainerArtist(null);
+      }
+      
+      mediaDb.getArtists().remove(artist);
+    });
+    errorPanel.getButtonsBox().getChildren().add(removeArtistNotReferredTo);
+          
   }
 
   private void fillMusicFolderStructureErrorInfoPanel(ErrorPanel errorPanel, MusicFolderStructureErrorInfo musicFolderStructureErrorInfo) {
@@ -771,161 +842,188 @@ private ComponentFactoryFx componentFactory;
     return null;
   }
 
-  private void fillMediaDbAppErrorInfoPanel(ErrorPanel errorPanel, MediaDbAppErrorInfo mediaDbAppErrorInfo) {
-    StringBuilder buf = new StringBuilder();
-    AlbumOnDiscInfo albumOnDiscInfo = mediaDbAppErrorInfo.getAlbumOnDiscInfo();
-    Album album = mediaDbAppErrorInfo.getAlbum();
-
-    // Report the error in a JTextArea.
+  private void fillErrorPanelForMediaDbAppErrorInfo(ErrorPanel errorPanel, MediaDbAppErrorInfo mediaDbAppErrorInfo) {
     switch (mediaDbAppErrorInfo.getErrorCode()) {
     case ALBUM_ON_DISC_NOT_FOUND_IN_MEDIADB:
-      buf.append("Album op disc gevonden dat niet in de media database is gevonden:");
-      buf.append(NEWLINE);
-
-      buf.append("Uitgave datum: ");
-      if (albumOnDiscInfo.getIssueDate() != null) {
-        buf.append(FDF.format(albumOnDiscInfo.getIssueDate()));
-      }
-      buf.append(NEWLINE);
-
-      buf.append("Artiest: ");
-
-      if (albumOnDiscInfo.getArtist() != null) {
-        buf.append(albumOnDiscInfo.getArtist());
-      }
-      buf.append(NEWLINE);
-
-      buf.append("Titel: ");
-      if (albumOnDiscInfo.getTitle() != null) {
-        buf.append(albumOnDiscInfo.getTitle());
-      }
-      buf.append(NEWLINE);
-
-      buf.append("Map: ");
-      if (albumOnDiscInfo.getAlbumFolderName() != null) {
-        buf.append(albumOnDiscInfo.getAlbumFolderName());
-      }
-      buf.append(NEWLINE);
-
-      errorPanel.getTextArea().setText(buf.toString());
+      fillErrorPanelFor_ALBUM_ON_DISC_NOT_FOUND_IN_MEDIADB(errorPanel, mediaDbAppErrorInfo);
       break;
 
     case ALBUM_IN_MEDIADB_NOT_FOUND_ON_DISC:
-      LOGGER.info("mediaDbAppErrorInfo: " + mediaDbAppErrorInfo);
-      buf.append("Disc in media database not found in Music Folder:");
-      buf.append(NEWLINE);
-
-      buf.append("Release date: ");
-      if (album.isSetReleaseDate()) {
-        buf.append(FDF.format(album.getReleaseDate()));
-      }
-      buf.append(NEWLINE);
-
-      buf.append("Artist: ");
-
-      if (album.isSetArtist()) {
-        buf.append(album.getArtist().getName());
-      }
-      buf.append(NEWLINE);
-
-      buf.append("Title: ");
-      if (album.isSetTitle()) {
-        buf.append(album.getTitle());
-      }
-      buf.append(NEWLINE);
-      
-      Disc disc = mediaDbAppErrorInfo.getDisc();
-      if (disc != null) {
-        buf.append("Disc: ");
-        if (disc.isSetTitle()) {
-          buf.append(disc.getTitle());
-        } else {
-          int discNr = album.getDiscs().indexOf(disc) + 1;
-          buf.append(discNr);
-        }
-        buf.append(NEWLINE);
-      }
-      
-      buf.append("Disc should be in folder: ");
-      if (disc == null) {
-        disc = album.getDiscs().get(0);
-      }
-      String albumFolderName;
-      if (album.isSoundtrack()) {
-        albumFolderName = MediaDbAppUtil.generateSoundtrackAlbumDiscFolderName(disc, null);
-      } else {
-        albumFolderName = MediaDbAppUtil.generateAlbumDiscFolderName(disc, mediaDb, null);
-      }
-      buf.append(albumFolderName);
-      buf.append(NEWLINE);
-
-      errorPanel.getTextArea().setText(buf.toString());
+      fillErrorPanelFor_ALBUM_IN_MEDIADB_NOT_FOUND_ON_DISC(errorPanel, mediaDbAppErrorInfo);
       break;
 
     case NO_MY_INFO_FOR_ALBUM:
-      buf.append("Geen 'MyInfo' voor album:");
-      buf.append(NEWLINE);
-
-      buf.append("Uitgave datum: ");
-      if (album.isSetReleaseDate()) {
-        buf.append(FDF.format(album.getReleaseDate()));
-      }
-      buf.append(NEWLINE);
-
-      buf.append("Artiest: ");
-
-      if (album.isSetArtist()) {
-        buf.append(album.getArtist().getName());
-      }
-      buf.append(NEWLINE);
-
-      buf.append("Titel: ");
-      if (album.isSetTitle()) {
-        buf.append(album.getTitle());
-      }
-      buf.append(NEWLINE);
-
-      errorPanel.getTextArea().setText(buf.toString());
+      fillErrorPanelFor_NO_MY_INFO_FOR_ALBUM(errorPanel, mediaDbAppErrorInfo);
       break;
 
     case NO_RELEASE_DATE_FOR_ALBUM:
-      buf.append("Geen 'IssueDate' voor album:");
-      buf.append(NEWLINE);
-
-      buf.append("Artiest: ");
-
-      if (album.isSetArtist()) {
-        buf.append(album.getArtist().getName());
-      }
-      buf.append(NEWLINE);
-
-      buf.append("Titel: ");
-      if (album.isSetTitle()) {
-        buf.append(album.getTitle());
-      }
-      buf.append(NEWLINE);
-
-      errorPanel.getTextArea().setText(buf.toString());
+      fillErrorPanelFor_NO_RELEASE_DATE_FOR_ALBUM(errorPanel, mediaDbAppErrorInfo);
       break;
 
     case TRACK_IN_MEDIADB_NOT_FOUND_ON_DISC:
-      fillMediaDbAppErrorInfoPanelForOfAnAlbumTrackNotFoundOnDisc(errorPanel, mediaDbAppErrorInfo);
+      fillErrorPanelFor_TRACK_IN_MEDIADB_NOT_FOUND_ON_DISC(errorPanel, mediaDbAppErrorInfo);
       break;
 
     case TRACK_ON_DISC_NOT_FOUND_IN_MEDIADB:
-      Path trackPath = mediaDbAppErrorInfo.getTrackPath();
-      buf.append("Track on disc not found in media database:");
-      buf.append(NEWLINE);
-      buf.append("Bestand: ");
-      buf.append(trackPath.toString());
-      buf.append(NEWLINE);
-
-      errorPanel.getTextArea().setText(buf.toString());
+      fillErrorPanelFor_TRACK_ON_DISC_NOT_FOUND_IN_MEDIADB(errorPanel, mediaDbAppErrorInfo);
+      break;
+      
+    case ALBUM_IN_MEDIADB_FOUND_MORE_THAN_ONCE_ON_DISC:
+      errorPanel.getTextArea().setText("ToDo: " + MediaDbAppError.ALBUM_IN_MEDIADB_FOUND_MORE_THAN_ONCE_ON_DISC);      
+      break;
+      
+    case TRACKS_WITH_DIFFERENT_EXTENSIONS:
+      errorPanel.getTextArea().setText("ToDo: " + MediaDbAppError.TRACKS_WITH_DIFFERENT_EXTENSIONS);      
+      break;
+      
+    case WRONG_NUMBER_OF_TRACKS:
+      errorPanel.getTextArea().setText("ToDo: " + MediaDbAppError.WRONG_NUMBER_OF_TRACKS);      
+      break;
+      
+    default:
       break;
 
-    default:
-      throw new IllegalArgumentException("Unknown Error Code: " + mediaDbAppErrorInfo.getErrorCode());
     }
+  }
+
+  private void fillErrorPanelFor_ALBUM_ON_DISC_NOT_FOUND_IN_MEDIADB(ErrorPanel errorPanel, MediaDbAppErrorInfo mediaDbAppErrorInfo) {
+    StringBuilder buf = new StringBuilder();
+    AlbumOnDiscInfo albumOnDiscInfo = mediaDbAppErrorInfo.getAlbumOnDiscInfo();
+
+    buf.append("Found an album on disc that is not found in the media database:");
+    buf.append(NEWLINE);
+
+    buf.append("Issue date: ");
+    if (albumOnDiscInfo.getIssueDate() != null) {
+      buf.append(FDF.format(albumOnDiscInfo.getIssueDate()));
+    }
+    buf.append(NEWLINE);
+
+    buf.append("Artist: ");
+    if (albumOnDiscInfo.getArtist() != null) {
+      buf.append(albumOnDiscInfo.getArtist());
+    }
+    buf.append(NEWLINE);
+
+    buf.append("Title: ");
+    if (albumOnDiscInfo.getTitle() != null) {
+      buf.append(albumOnDiscInfo.getTitle());
+    }
+    buf.append(NEWLINE);
+
+    buf.append("Folder: ");
+    if (albumOnDiscInfo.getAlbumFolderName() != null) {
+      buf.append(albumOnDiscInfo.getAlbumFolderName());
+    }
+    buf.append(NEWLINE);
+
+    errorPanel.getTextArea().setText(buf.toString());
+  }
+
+  private void fillErrorPanelFor_ALBUM_IN_MEDIADB_NOT_FOUND_ON_DISC(ErrorPanel errorPanel, MediaDbAppErrorInfo mediaDbAppErrorInfo) {
+    StringBuilder buf = new StringBuilder();
+    Album album = mediaDbAppErrorInfo.getAlbum();
+
+    buf.append("Album disc in media database not found in Music Folder:");
+    buf.append(NEWLINE);
+
+    buf.append("Release date: ");
+    if (album.isSetReleaseDate()) {
+      buf.append(FDF.format(album.getReleaseDate()));
+    }
+    buf.append(NEWLINE);
+
+    buf.append("Artist: ");
+
+    if (album.isSetArtist()) {
+      buf.append(album.getArtist().getName());
+    }
+    buf.append(NEWLINE);
+
+    buf.append("Title: ");
+    if (album.isSetTitle()) {
+      buf.append(album.getTitle());
+    }
+    buf.append(NEWLINE);
+    
+    Disc disc = mediaDbAppErrorInfo.getDisc();
+    if (disc != null) {
+      buf.append("Disc: ");
+      if (disc.isSetTitle()) {
+        buf.append(disc.getTitle());
+      } else {
+        int discNr = album.getDiscs().indexOf(disc) + 1;
+        buf.append(discNr);
+      }
+      buf.append(NEWLINE);
+    }
+    
+    buf.append("Disc should be in folder: ");
+    if (disc == null) {
+      disc = album.getDiscs().get(0);
+    }
+    String albumFolderName;
+    if (album.isSoundtrack()) {
+      albumFolderName = MediaDbAppUtil.generateSoundtrackAlbumDiscFolderName(disc, null);
+    } else {
+      albumFolderName = MediaDbAppUtil.generateAlbumDiscFolderName(disc, mediaDb, null);
+    }
+    buf.append(albumFolderName);
+    buf.append(NEWLINE);
+
+    errorPanel.getTextArea().setText(buf.toString());
+  }
+
+  private void fillErrorPanelFor_NO_MY_INFO_FOR_ALBUM(ErrorPanel errorPanel, MediaDbAppErrorInfo mediaDbAppErrorInfo) {
+    StringBuilder buf = new StringBuilder();
+    Album album = mediaDbAppErrorInfo.getAlbum();
+
+    buf.append("No 'MyInfo' for album:");
+    buf.append(NEWLINE);
+
+    buf.append("Issue date: ");
+    if (album.isSetReleaseDate()) {
+      buf.append(FDF.format(album.getReleaseDate()));
+    }
+    buf.append(NEWLINE);
+
+    buf.append("Artist: ");
+
+    if (album.isSetArtist()) {
+      buf.append(album.getArtist().getName());
+    }
+    buf.append(NEWLINE);
+
+    buf.append("Title: ");
+    if (album.isSetTitle()) {
+      buf.append(album.getTitle());
+    }
+    buf.append(NEWLINE);
+
+    errorPanel.getTextArea().setText(buf.toString());
+  }
+
+  private void fillErrorPanelFor_NO_RELEASE_DATE_FOR_ALBUM(ErrorPanel errorPanel, MediaDbAppErrorInfo mediaDbAppErrorInfo) {
+    StringBuilder buf = new StringBuilder();
+    Album album = mediaDbAppErrorInfo.getAlbum();
+
+    buf.append("No 'IssueDate' for album:");
+    buf.append(NEWLINE);
+
+    buf.append("Artist: ");
+
+    if (album.isSetArtist()) {
+      buf.append(album.getArtist().getName());
+    }
+    buf.append(NEWLINE);
+
+    buf.append("Title: ");
+    if (album.isSetTitle()) {
+      buf.append(album.getTitle());
+    }
+    buf.append(NEWLINE);
+
+    errorPanel.getTextArea().setText(buf.toString());
   }
   
   /**
@@ -936,7 +1034,7 @@ private ComponentFactoryFx componentFactory;
    * @param errorPanel The error panel to be filled.
    * @param mediaDbAppErrorInfo the error information.
    */
-  private void fillMediaDbAppErrorInfoPanelForOfAnAlbumTrackNotFoundOnDisc(ErrorPanel errorPanel, MediaDbAppErrorInfo mediaDbAppErrorInfo) {
+  private void fillErrorPanelFor_TRACK_IN_MEDIADB_NOT_FOUND_ON_DISC(ErrorPanel errorPanel, MediaDbAppErrorInfo mediaDbAppErrorInfo) {
     TrackReference trackReference = mediaDbAppErrorInfo.getTrackReference();
     Track track = mediaDbAppErrorInfo.getTrack();
     
@@ -1031,6 +1129,19 @@ private ComponentFactoryFx componentFactory;
     
     LOGGER.info("mediaDbAppErrorInfo: " + mediaDbAppErrorInfo.toString());
   }
+
+  private void fillErrorPanelFor_TRACK_ON_DISC_NOT_FOUND_IN_MEDIADB(ErrorPanel errorPanel, MediaDbAppErrorInfo mediaDbAppErrorInfo) {
+    StringBuilder buf = new StringBuilder();
+
+    Path trackPath = mediaDbAppErrorInfo.getTrackPath();
+    buf.append("Track on disc not found in media database:");
+    buf.append(NEWLINE);
+    buf.append("Bestand: ");
+    buf.append(trackPath.toString());
+    buf.append(NEWLINE);
+
+    errorPanel.getTextArea().setText(buf.toString());
+  }
   
   public EList<Album> getAlbums(FlexDate releaseDate, Artist artist, String title) {
     EList<Album> albums = new BasicEList<Album>();
@@ -1096,6 +1207,7 @@ class ErrorPanel extends VBox {
   ErrorPanel(ComponentFactoryFx componentFactory) {
     setPadding(new Insets(12.0));
     setSpacing(10.0);
+    setMinHeight(150);
     
     HBox hBox = componentFactory.createHBox();
     hBox.setMaxHeight(120.0);

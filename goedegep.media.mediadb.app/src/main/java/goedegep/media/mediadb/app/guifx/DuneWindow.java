@@ -1,7 +1,5 @@
 package goedegep.media.mediadb.app.guifx;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.logging.Logger;
 
 import goedegep.jfx.ComponentFactoryFx;
@@ -10,9 +8,6 @@ import goedegep.jfx.JfxStage;
 import goedegep.jfx.objectcontrols.ObjectControlFolderSelecter;
 import goedegep.media.app.MediaRegistry;
 import goedegep.media.app.base.MediaAppResourcesFx;
-import goedegep.media.mediadb.albuminfo.AlbumInfoFilesReader;
-import goedegep.media.mediadb.model.MediaDb;
-import goedegep.media.mediadb.model.MediadbFactory;
 import goedegep.media.musicfolder.MusicFolderDescription;
 import goedegep.resources.ImageSize;
 import javafx.concurrent.Task;
@@ -48,7 +43,6 @@ public class DuneWindow extends JfxStage {
   
   private ComponentFactoryFx componentFactory;
   private MediaAppResourcesFx appResources;
-  private MediaDb mediaDb;
   private String currentMusicFolder = null;
   private String currentDuneMusicFolderPath = null;
   private String currentDunePlaylistsFolderPath = null;
@@ -76,11 +70,6 @@ public class DuneWindow extends JfxStage {
     currentMusicFolder = MediaRegistry.musicDirectory;
     currentDuneMusicFolderPath = MediaRegistry.duneMusicFolderPath;
     currentDunePlaylistsFolderPath = MediaRegistry.dunePlaylistsFolderPath;
-    
-    mediaDb = MediadbFactory.eINSTANCE.createMediaDb();
-    AlbumInfoFilesReader albumInfoFilesReader = new AlbumInfoFilesReader(mediaDb);
-    List<Object> errors = new ArrayList<>();
-    albumInfoFilesReader.readAlbumInfoFiles(errors, MediaRegistry.albumInfoDirectory);
     
     createGUI();
   }

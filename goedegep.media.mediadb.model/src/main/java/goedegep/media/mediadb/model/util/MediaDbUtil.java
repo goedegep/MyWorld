@@ -9,6 +9,7 @@ import java.util.logging.Logger;
 import goedegep.media.mediadb.model.Album;
 import goedegep.media.mediadb.model.AlbumType;
 import goedegep.media.mediadb.model.Artist;
+import goedegep.media.mediadb.model.Collection;
 import goedegep.media.mediadb.model.Disc;
 import goedegep.media.mediadb.model.DiscAndTrackNrs;
 import goedegep.media.mediadb.model.IWant;
@@ -43,6 +44,7 @@ public class MediaDbUtil {
    * Get all albums that need attention.
    * <p>
    * These are all albums in the {@link #mediaDb} that need attention (see {@link #albumNeedsAttention}).
+   * 
    * @return all albums that need attention.
    */
   public static List<Album> getAlbumsThatNeedAttention(MediaDb mediaDb) {
@@ -63,7 +65,9 @@ public class MediaDbUtil {
    * An album needs attention if:
    * <ul>
    * <li>
-   * 'IWant' is set to 'Don't know'.
+   * 'IWant' is set to at any level.<br/>
+   * Because this means that I either still have to judge the album (for DONT_KNOW),
+   * or that I have to obtain the album, or some track of the album.
    * </li>
    * </ul>
    * 
@@ -73,8 +77,17 @@ public class MediaDbUtil {
   public static boolean albumNeedsAttention(Album album) {
 
     MyInfo myInfo = album.getMyInfo();
-    if (myInfo.getIWant() == IWant.DONT_KNOW) {
+    if (myInfo.getIWant() != IWant.NOT_SET) {
       return true;
+    }
+    
+    for (Disc disc: album.getDiscs()) {
+      for (TrackReference trackReference: disc.getTrackReferences()) {
+        MyTrackInfo myTrackInfo = trackReference.getMyTrackInfo();
+        if (myTrackInfo != null  &&  myTrackInfo.getIWant() != IWant.NOT_SET) {
+          return true;
+        }
+      }
     }
 
     return false;
@@ -124,47 +137,54 @@ public class MediaDbUtil {
   }
   
   /**
-   * Check whether I should have an Album on disc, which is the case if I should have all tracks of all discs of the album on disc.
+   * Check whether I should have an Album completely on disc, which is the case if there is an 'IHaveOn' of type 'HARDDISK' at album level.
    * 
    * @param album the Album to be checked
-   * @param errors an error list, to which any errors encountered will be added.
    * @return true if I should have the album on disc, false otherwise.
    */
-  public static boolean haveAlbumOnDisc(Album album, List<Object> errors) {
-    LOGGER.info("=> album=" + album.getArtist() + " - " + album.getTitle());
+  public static boolean haveAlbumOnDisc(Album album) {
+    LOGGER.info("=> album=" + album.getArtistAndTitle());
     
-    if (album.getDiscs().isEmpty()) {
-      return false;
-    }
-
-    for (Disc disc: album.getDiscs()) {
-      boolean haveDiscOnDisc = haveDiscOnDisc(disc);
-      if (!haveDiscOnDisc) {
-        LOGGER.info("<= false");
-        return false;
+    MyInfo myInfo = album.getMyInfo();
+    if (myInfo != null) {
+      for (MediumInfo mediumInfo: myInfo.getIHaveOn()) {
+        if (mediumInfo.getMediumType() == MediumType.HARDDISK) {
+          return true;
+        }
       }
     }
-
-    LOGGER.info("<= true");
-    return true;
+    LOGGER.info("<= false");
+    return false;
   }
   
   /**
-   * Check whether I should have an Album Disc on disc, which is the case if I should have all tracks of the Album Disc on disc.
+   * Check whether I should have an Album Disc on disc, which is the case if:
+   * <ul>
+   * <li>At album level is specified that I have the complete album on disc</li>
+   * <li>Or no 'I have on' is specified at album level and the disc has track references which all state that I have them on disc.</li>
+   * </ul>
    * 
    * @param disc the Disc to be checked
    * @return true if I should have the Disc on disc, false otherwise.
    */
   public static boolean haveDiscOnDisc(Disc disc) {
     LOGGER.info("=> disc=" + disc.getTitle());
+    Album album = disc.getAlbum();
+    
+    MyInfo myInfo = album.getMyInfo();
+    if (myInfo != null) {
+      if (!myInfo.getIHaveOn().isEmpty()) {
+        // 'I have on' is specified at album level, so return this value
+        return haveAlbumOnDisc(album);
+      }
+    }
     
     if (disc.getTrackReferences().isEmpty()) {
       return false;
     }
 
     for (TrackReference trackReference: disc.getTrackReferences()) {
-      boolean haveTracOnDisc = haveTrackOnDisc(trackReference);
-      if (!haveTracOnDisc) {
+      if (!haveTrackOnDisc(trackReference)) {
         LOGGER.info("<= false");
         return false;
       }
@@ -330,7 +350,7 @@ public class MediaDbUtil {
    */
   public static boolean haveAlbumPartlyOnDisc(Album album) {
     for (Disc disc: album.getDiscs()) {
-      if (haveDiscPartlyOnDisc(disc)) {
+      if (doIHaveOneOrMoreDiscTracksOnDisc(disc)) {
         return true;
       }
     }
@@ -340,41 +360,32 @@ public class MediaDbUtil {
 
   /**
    * Check whether I have a part of a Disc on disc. A part means one or more tracks.
+   * <p>
+   * I have a track on disc if:
+   * <ul>
+   * <li>The is an 'I have on' for harddisk</li>
+   * <li>Or, the track is part of a collection</li>
+   * </ul>
    * 
    * @param disc the Disc for which the information is requested.
    * @return true if I have the disc partly on disc, false otherwise.
    */
-  public static boolean haveDiscPartlyOnDisc(Disc disc) {
-    boolean trackOnDiscFound = false;
-    boolean trackNotOnDiscFound = false;
-    
+  public static boolean doIHaveOneOrMoreDiscTracksOnDisc(Disc disc) {
     for (TrackReference trackReference: disc.getTrackReferences()) {
       MyTrackInfo myTrackInfo = trackReference.getMyTrackInfo();
       
-      boolean haveThisTrackOnDisc = false;
       if (myTrackInfo != null) {
         List<MediumInfo> mediumInfos = myTrackInfo.getIHaveOn();
         for (MediumInfo mediumInfo: mediumInfos) {
-          if (mediumInfo.getMediumType() == MediumType.HARDDISK) {
-            haveThisTrackOnDisc = true;
-            break;
+          if ((mediumInfo.getMediumType() == MediumType.HARDDISK)) {
+            return true;
           }
         }
-      }
-      
-      if (haveThisTrackOnDisc) {
-        if (trackNotOnDiscFound) {
+        
+        if (myTrackInfo.getCollection() != Collection.NOT_SET) {
           return true;
-        } else {
-          trackOnDiscFound = true;
         }
-      } else {
-        if (trackOnDiscFound) {
-          return true;
-        } else {
-          trackNotOnDiscFound = true;
-        }
-      }
+      }      
     }
     
     return false;
@@ -418,7 +429,7 @@ public class MediaDbUtil {
   /**
    * Check whether I have an album on a specific medium type (e.g. CD_AUDIO or Super Audio CD).
    * <p>
-   * <p>
+   * This is about having the complete album on the specified medium type, so this information shall be specified at album level.
    * This is the case if all track references refer to tracks that:
    * <ul>
    * <li>iHaveOn set with mediumType set to the specified medium type.</li>
@@ -430,56 +441,16 @@ public class MediaDbUtil {
    * @return true if I have the album on the specified medium type, false otherwise.
    */
   public static boolean haveAlbumOnMediumType(Album album, MediumType mediumType) {
-    if (album.getDiscs().isEmpty()) {
-      MyInfo myInfo = album.getMyInfo();
-      if (myInfo != null) {
-        List<MediumInfo> mediumInfos = myInfo.getIHaveOn();
-        for (MediumInfo mediumInfo: mediumInfos) {
-          if (mediumType.equals(mediumInfo.getMediumType())) {
-            return true;
-          }
-        }
-        
-      }
-      return false;
-    } else {
-
-      for (Disc disc: album.getDiscs()) {
-        if (disc.getTrackReferences().isEmpty()) {
-          return false;
-        }
-
-        for (TrackReference trackReference: disc.getTrackReferences()) {
-          Track track = trackReference.getTrack();
-          if (track == null) {
-            return false;
-          }
-          if (!disc.equals(track.getOriginalDisc())) {
-            return false;
-          }
-          MyTrackInfo myTrackInfo = trackReference.getMyTrackInfo();
-          if (myTrackInfo == null) {
-            return false;
-          }
-          if (!myTrackInfo.isSetIHaveOn()) {
-            return false;
-          }
-          List<MediumInfo> mediumInfos = myTrackInfo.getIHaveOn();
-          
-          boolean mediumTypeFound = false;
-          for (MediumInfo mediumInfo: mediumInfos) {
-            if (mediumType.equals(mediumInfo.getMediumType())) {
-              mediumTypeFound = true;
-            }
-          }
-          if (!mediumTypeFound) {
-            return false;
-          }
+    MyInfo myInfo = album.getMyInfo();
+    if (myInfo != null) {
+      for (MediumInfo mediumInfo: myInfo.getIHaveOn()) {
+        if (mediumType.equals(mediumInfo.getMediumType())) {
+          return true;
         }
       }
     }
     
-    return true;
+    return false;
   }
   
   /**
@@ -606,7 +577,7 @@ public class MediaDbUtil {
   }
   
   /**
-   * Check whether I should have a Track on disc, which is the case if the MyTrackInfo.mediumInfo.writability is MANY.
+   * Check whether I should have a Track on disc, which is the case if there is a 'I have on' of type HARDDISK.
    * 
    * @param trackReference the Track to be checked
    * @return true if I should have the Track on disc, false otherwise.
@@ -620,21 +591,14 @@ public class MediaDbUtil {
       return false;
     }
     
-    List<MediumInfo> mediumInfos = myTrackInfo.getIHaveOn();
-    boolean writeManyFound = false;
-    for (MediumInfo mediumInfo: mediumInfos) {
+    for (MediumInfo mediumInfo: myTrackInfo.getIHaveOn()) {
       if (mediumInfo.getMediumType() == MediumType.HARDDISK) {
-        writeManyFound = true;
-        break;
+        return true;
       }
     }
-    if (!writeManyFound) {
-      LOGGER.info("<= false");
-      return false;
-    }
     
-    LOGGER.info("<= true");
-    return true;
+    LOGGER.info("<= false");
+    return false;
   }
   
   /**
@@ -706,56 +670,55 @@ public class MediaDbUtil {
   }
   
   /**
-   * Get the IWant information of an album.
+   * Get the IWant information of an album at album level.
    * <p>
-   * If there are no tracks specified for the album, the IWant information is obtained from the MyInfo at album level.
-   * Otherwise it is obtained from the Tracks. If all tracks have the same IWant value, this value is returned. If there
-   * are different values, IWant.NOT_SET is returned.
+   * The result is the same as album.getMyInfo().getIWant(), but with checks on null values.
+   * 
    * @param album the Album for which the information is requested.
-   * @return the IWant information for the <code>album</code>.
+   * @return the IWant information at album level for the {@code album}.
    */
   public static IWant getIWant(Album album) {
     IWant iWant = IWant.NOT_SET;
     
     // If the album tracks are not available, get it from album level, otherwise get it per track.
-    if (album.getDiscs().isEmpty()) {
-      MyInfo myInfo = album.getMyInfo();
-      if (myInfo != null) {
-        iWant = myInfo.getIWant();
-      }
-    } else {
-      for (Disc disc: album.getDiscs()) {
-        for (TrackReference trackReference: disc.getTrackReferences()) {
-          Track track = trackReference.getTrack();
-          if (track == null) {
-            LOGGER.severe("track is null");
-            LOGGER.severe("STOP");
-          }
-          MyTrackInfo myTrackInfo = trackReference.getMyTrackInfo();
-          if (myTrackInfo != null) {
-            if (myTrackInfo.isSetIWant()) {
-              IWant trackIWant = myTrackInfo.getIWant();
-              if (trackIWant == IWant.NOT_SET) {
-                iWant = IWant.NOT_SET;
-                break;
-              }
-              if (iWant == IWant.NOT_SET) {
-                iWant = trackIWant;
-              } else if (iWant != trackIWant) {
-                iWant = IWant.NOT_SET;
-                break;
-              }
-            } else {
-              iWant = IWant.NOT_SET;
-              break;
-            }
-          } else {
-            iWant = IWant.NOT_SET;
-            break;
-          }
-        }
-      }
+//    if (album.getDiscs().isEmpty()) {
+    MyInfo myInfo = album.getMyInfo();
+    if (myInfo != null) {
+      iWant = myInfo.getIWant();
     }
+//    } else {
+//      for (Disc disc: album.getDiscs()) {
+//        for (TrackReference trackReference: disc.getTrackReferences()) {
+//          Track track = trackReference.getTrack();
+//          if (track == null) {
+//            LOGGER.severe("track is null");
+//            LOGGER.severe("STOP");
+//          }
+//          MyTrackInfo myTrackInfo = trackReference.getMyTrackInfo();
+//          if (myTrackInfo != null) {
+//            if (myTrackInfo.isSetIWant()) {
+//              IWant trackIWant = myTrackInfo.getIWant();
+//              if (trackIWant == IWant.NOT_SET) {
+//                iWant = IWant.NOT_SET;
+//                break;
+//              }
+//              if (iWant == IWant.NOT_SET) {
+//                iWant = trackIWant;
+//              } else if (iWant != trackIWant) {
+//                iWant = IWant.NOT_SET;
+//                break;
+//              }
+//            } else {
+//              iWant = IWant.NOT_SET;
+//              break;
+//            }
+//          } else {
+//            iWant = IWant.NOT_SET;
+//            break;
+//          }
+//        }
+//      }
+//    }
     
     return iWant;
   }
@@ -769,46 +732,46 @@ public class MediaDbUtil {
    * @param album the Album for which the information is to be set.
    * @param iHaveOn the value to set the IHaveOn information to.
    */
-  public static void setIHaveOn(Album album, List<MediumInfo> iHaveOn) {
-    if (iHaveOn == null  || iHaveOn.isEmpty()) {
-      return;
-    }
-    
-    if (album.getDiscs().isEmpty()) {
-      MyInfo myInfo;
-      if (!album.isSetMyInfo()) {
-        myInfo = MEDIA_DB_FACTORY.createMyInfo();
-        album.setMyInfo(myInfo);
-      } else {
-        myInfo = album.getMyInfo();
-      }
-      for (MediumInfo mediumInfo: iHaveOn) {
-        myInfo.getIHaveOn().add(createMediumInfoCopy(mediumInfo));
-      }
-    } else {
-      for (Disc disc: album.getDiscs()) {
-        for (TrackReference trackReference: disc.getTrackReferences()) {
-          Track track = trackReference.getTrack();
-          if (track == null) {
-            LOGGER.severe("track is null");
-            LOGGER.severe("STOP");
-          }
-          MyTrackInfo myTrackInfo;
-          if (trackReference.isSetMyTrackInfo()) {
-            myTrackInfo = trackReference.getMyTrackInfo();
-          } else {
-            myTrackInfo = MEDIA_DB_FACTORY.createMyTrackInfo();
-            trackReference.setMyTrackInfo(myTrackInfo);
-          }
-          myTrackInfo.getIHaveOn().clear();
-          
-          for (MediumInfo mediumInfo: iHaveOn) {
-            myTrackInfo.getIHaveOn().add(createMediumInfoCopy(mediumInfo));
-          }
-        }
-      }
-    }
-  }
+//  public static void setIHaveOn(Album album, List<MediumInfo> iHaveOn) {
+//    if (iHaveOn == null  || iHaveOn.isEmpty()) {
+//      return;
+//    }
+//    
+//    if (album.getDiscs().isEmpty()) {
+//      MyInfo myInfo;
+//      if (!album.isSetMyInfo()) {
+//        myInfo = MEDIA_DB_FACTORY.createMyInfo();
+//        album.setMyInfo(myInfo);
+//      } else {
+//        myInfo = album.getMyInfo();
+//      }
+//      for (MediumInfo mediumInfo: iHaveOn) {
+//        myInfo.getIHaveOn().add(createMediumInfoCopy(mediumInfo));
+//      }
+//    } else {
+//      for (Disc disc: album.getDiscs()) {
+//        for (TrackReference trackReference: disc.getTrackReferences()) {
+//          Track track = trackReference.getTrack();
+//          if (track == null) {
+//            LOGGER.severe("track is null");
+//            LOGGER.severe("STOP");
+//          }
+//          MyTrackInfo myTrackInfo;
+//          if (trackReference.isSetMyTrackInfo()) {
+//            myTrackInfo = trackReference.getMyTrackInfo();
+//          } else {
+//            myTrackInfo = MEDIA_DB_FACTORY.createMyTrackInfo();
+//            trackReference.setMyTrackInfo(myTrackInfo);
+//          }
+//          myTrackInfo.getIHaveOn().clear();
+//          
+//          for (MediumInfo mediumInfo: iHaveOn) {
+//            myTrackInfo.getIHaveOn().add(createMediumInfoCopy(mediumInfo));
+//          }
+//        }
+//      }
+//    }
+//  }
 
   /**
    * Set the AlbumType for an album.
@@ -828,8 +791,8 @@ public class MediaDbUtil {
   /**
    * Create a copy of a Disc.
    * 
-   * @param disc the Disc to be copied.
-   * @return a Disc, being a copy of the specified <code>disc</code>.
+   * @param disc the {@code Disc} to be copied.
+   * @return a Disc, being a copy of the specified {@code disc}.
    */
   public static Disc createDiscCopy(Disc disc) {
     Disc discCopy = MEDIA_DB_FACTORY.createDisc();

@@ -14,6 +14,7 @@ import goedegep.media.mediadb.model.Collection;
 import goedegep.media.mediadb.model.Disc;
 import goedegep.media.mediadb.model.IWant;
 import goedegep.media.mediadb.model.MediaDb;
+import goedegep.media.mediadb.model.MediumInfo;
 import goedegep.media.mediadb.model.MyInfo;
 import goedegep.media.mediadb.model.MyTrackInfo;
 import goedegep.media.mediadb.model.Track;
@@ -44,108 +45,6 @@ public class MediaDbAppUtil {
   }
 
   /**
-   * Check the contents of a <code>MediaDB</code>.
-   * <p>
-   * The following information is checked:
-   * <ul>
-   * <li>
-   * Information for each album (see {@link #checkAlbumInfo}.
-   * </li>
-   * </ul>
-   * 
-   * @param mediaDb the media database to be checked
-   * @param errors the list to which errors shall be appended
-   */
-  public static void checkMediaDb(MediaDb mediaDb, List<Object> errors) {
-    for (Album album: mediaDb.getAlbums()) {
-      checkAlbumInfo(album, errors);
-    }
-  }
-
-  /**
-   * Check the information of an <code>Album</code>.
-   * <p>
-   * The following information is checked:
-   * <ul>
-   * <li>
-   * the album shall have a title
-   * </li>
-   * <li>
-   * the album shall have an artist
-   * </li>
-   * </ul>
-   * 
-   * @param album the <code>Album</code> to be checked
-   * @param errors the list to which errors shall be appended
-   */
-  public static void checkAlbumInfo(Album album, List<Object> errors) {
-    MediaDbErrorInfo errorInfo;
-
-    if (album.getTitle() == null) {
-      errorInfo = new MediaDbErrorInfo();
-      errorInfo.setErrorCode(MediaDbError.ALBUM_WITHOUT_TITLE);
-      errorInfo.setAlbum(album);
-      errors.add(errorInfo);
-      LOGGER.severe("No Album title set for album: " + album.getArtistAndTitle());
-    }
-    if (album.getArtist() == null  &&  !album.isSoundtrack()) {
-      errorInfo = new MediaDbErrorInfo();
-      errorInfo.setErrorCode(MediaDbError.ALBUM_WITHOUT_ARTIST);
-      errorInfo.setAlbum(album);
-      errors.add(errorInfo);
-      LOGGER.severe("No Artist set for album: " + album.getArtistAndTitle());
-    }
-
-    for (Disc disc: album.getDiscs()) {
-      for (TrackReference trackReference: disc.getTrackReferences()) {
-        String trackTitle = trackReference.getTrack().getTitle();
-        if (trackTitle != null) {
-          if (trackTitle.toLowerCase().contains("bonus track")) {
-            errorInfo = new MediaDbErrorInfo();
-            errorInfo.setErrorCode(MediaDbError.BONUS_TRACK_IN_TITLE);
-            errorInfo.setAlbum(album);
-            errorInfo.setTrackReference(trackReference);
-            errors.add(errorInfo);
-            LOGGER.severe("Track title contains 'bonus track'. Album: " + album.getArtistAndTitle() + ", Track: " + trackTitle);
-          }
-        }
-      }
-    }
-  }
-
-//  /**
-//   * Check that I do not want an album.
-//   * 
-//   * @param myInfo my information about the album.
-//   * @return true if I do not want the album, false otherwise.
-//   */
-//  public static boolean iWantIsNo(MyInfo myInfo) {
-//    if (myInfo != null) {
-//      if (myInfo.getIWant() == IWant.NO) {
-//        return true;
-//      }
-//    }
-//    
-//    return false;
-//  }
-
-//  /**
-//   * Check whether I don't know if I want the album or not.
-//   * 
-//   * @param myInfo my information about the album.
-//   * @return true if I don't know whether I want the album, false otherwise.
-//   */
-//  public static boolean iWantIsDontKnow(MyInfo myInfo) {
-//    if (myInfo != null) {
-//      if (myInfo.getIWant() == IWant.DONT_KNOW) {
-//        return true;
-//      }
-//    }
-//    
-//    return false;
-//  }
-
-  /**
    * Get the album to which an album refers to.
    * 
    * TODO change for more than 1 reference.
@@ -163,6 +62,21 @@ public class MediaDbAppUtil {
     }
     
     return null;
+  }
+  
+  public static Artist getTrackArtist(Track track) {
+    Artist artist = track.getArtist();
+    
+    if (artist == null) {
+      Disc disc = track.getOriginalDisc();
+      
+      if (disc != null) {
+        Album album = disc.getAlbum();
+        artist = album.getArtist();
+      }
+    }
+    
+    return artist;
   }
 
   /**
@@ -224,6 +138,25 @@ public class MediaDbAppUtil {
   }
   
   /**
+   * Check whether I have a specific track.
+   * <p>
+   * I have the track if:
+   * <ul>
+   * <li>the IHaveOn information is not empty</li>
+   * <li>or a collection is set</li>
+   * </ul>
+   */
+  public static boolean doIHaveThisTrack(TrackReference trackReference) {
+    MyTrackInfo myTrackInfo = trackReference.getMyTrackInfo();
+    if (myTrackInfo != null) {
+      List<MediumInfo> mediumInfos = myTrackInfo.getIHaveOn();
+      return !mediumInfos.isEmpty()  ||  (myTrackInfo.getCollection() != Collection.NOT_SET);
+    }
+
+    return false;
+  }
+  
+  /**
    * Generate the filename for MyTrackReferenceInfo of a MyCompilation album in the MusicFolder.
    * 
    * @param myTrackReferenceInfo the MyTrackReferenceInfo for which the filename is to be generated.
@@ -252,7 +185,7 @@ public class MediaDbAppUtil {
 
       List<Album> albumsReleasedInYear = new ArrayList<>();
       for (Album anAlbum: mediaDb.getAlbums()) {
-        if (anAlbum.isSetArtist()) {
+        if (anAlbum.getArtist() != null) {
           Artist anAlbumArtist = anAlbum.getArtist();
           if (anAlbumArtist.isSetContainerArtist()) {
             anAlbumArtist = anAlbumArtist.getContainerArtist();
@@ -327,17 +260,37 @@ public class MediaDbAppUtil {
     return "zTracks " + collection.getLiteral();
   }
 
-  public static String generateTrackFileName(Track track) {
+  /**
+   * Generate the file name for a track TODO has to be for a track in a specific folder type
+   * @param track
+   * @return
+   */
+  public static String generateTrackFileNameForATrackInATracksFolder(Track track) {
     LOGGER.fine("=> track=" + track.getArtist() + " - " + track.getTitle());
     
     String artistName = null;
     if (track.isSetArtist()) {
       artistName = track.getArtist().getName();
+    } else {
+      Disc originalDisc = track.getOriginalDisc();
+      if (originalDisc != null) {
+        Album album = originalDisc.getAlbum();
+        Artist artist = album.getArtist();
+        if (artist != null) {
+          artistName = artist.getName();
+        }
+      }
+    }
+    if (artistName == null) {
+      return null;
     }
     
     String trackTitle = track.getTitle();
+    if (trackTitle == null) {
+      return null;
+    }
 
-    String trackFileName = TrackFile.generateTrackFileName(artistName, trackTitle);
+    String trackFileName = TrackFile.generateTrackFileNameForATrackInATracksFolder(artistName, trackTitle);
     LOGGER.fine("<= " + trackFileName);
     return trackFileName;
   }
@@ -384,7 +337,7 @@ public class MediaDbAppUtil {
     }
     
     String containerArtistName;
-    if (artist.isSetContainerArtist()) {
+    if (artist.getContainerArtist() != null) {
       containerArtistName = artist.getContainerArtist().getName();
     } else {
       containerArtistName = artistName;
@@ -466,7 +419,7 @@ public class MediaDbAppUtil {
     List<Album> albumsOnDisc = new ArrayList<>();
     for (Album albumInYear: albumsInYear) {
       LOGGER.fine("albumInYear: " + albumInYear.getTitle());
-      if (MediaDbUtil.haveAlbumOnDisc(albumInYear, null)) {
+      if (MediaDbUtil.haveAlbumOnDisc(albumInYear)) {
         albumsOnDisc.add(albumInYear);
       }
     }

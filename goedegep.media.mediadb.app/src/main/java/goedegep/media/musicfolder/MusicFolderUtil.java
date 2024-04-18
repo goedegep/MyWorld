@@ -144,7 +144,11 @@ public class MusicFolderUtil {
    * @return <code>group</code> with all instances of ' - ' replaced by ', '.
    */
   public static String replaceGroupSeparator(String group) {
-    return group.replaceAll(" \\- ", "\\, ");
+    if (group != null) {
+      return group.replaceAll(" \\- ", "\\, ");
+    } else {
+      return null;
+    }
   }
   
   /**

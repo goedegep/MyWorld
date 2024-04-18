@@ -455,6 +455,16 @@ public class MediadbPackageImpl extends EPackageImpl implements MediadbPackage {
    * @generated
    */
   @Override
+  public EOperation getMediaDb__GetTrack__Artist_String() {
+    return mediaDbEClass.getEOperations().get(4);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
   public EClass getArtist() {
     return artistEClass;
   }
@@ -477,6 +487,46 @@ public class MediadbPackageImpl extends EPackageImpl implements MediadbPackage {
   @Override
   public EReference getArtist_ContainerArtist() {
     return (EReference) artistEClass.getEStructuralFeatures().get(1);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public EAttribute getArtist_Photo() {
+    return (EAttribute) artistEClass.getEStructuralFeatures().get(2);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public EAttribute getArtist_Style() {
+    return (EAttribute) artistEClass.getEStructuralFeatures().get(3);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public EAttribute getArtist_MyComments() {
+    return (EAttribute) artistEClass.getEStructuralFeatures().get(4);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public EReference getArtist_Sample() {
+    return (EReference) artistEClass.getEStructuralFeatures().get(5);
   }
 
   /**
@@ -1290,10 +1340,15 @@ public class MediadbPackageImpl extends EPackageImpl implements MediadbPackage {
     createEOperation(mediaDbEClass, MEDIA_DB___GET_ALBUM__FLEXDATE_ARTIST_STRING);
     createEOperation(mediaDbEClass, MEDIA_DB___GET_ALBUMS__FLEXDATE_ARTIST_STRING);
     createEOperation(mediaDbEClass, MEDIA_DB___GET_TRACK_COLLECTION__COLLECTION);
+    createEOperation(mediaDbEClass, MEDIA_DB___GET_TRACK__ARTIST_STRING);
 
     artistEClass = createEClass(ARTIST);
     createEAttribute(artistEClass, ARTIST__NAME);
     createEReference(artistEClass, ARTIST__CONTAINER_ARTIST);
+    createEAttribute(artistEClass, ARTIST__PHOTO);
+    createEAttribute(artistEClass, ARTIST__STYLE);
+    createEAttribute(artistEClass, ARTIST__MY_COMMENTS);
+    createEReference(artistEClass, ARTIST__SAMPLE);
 
     albumEClass = createEClass(ALBUM);
     createEAttribute(albumEClass, ALBUM__TITLE);
@@ -1484,11 +1539,25 @@ public class MediadbPackageImpl extends EPackageImpl implements MediadbPackage {
         0, 1, IS_UNIQUE, IS_ORDERED);
     addEParameter(op, this.getCollection(), "collection", 0, 1, IS_UNIQUE, IS_ORDERED);
 
+    op = initEOperation(getMediaDb__GetTrack__Artist_String(), this.getTrack(), "getTrack", 0, 1, IS_UNIQUE,
+        IS_ORDERED);
+    addEParameter(op, this.getArtist(), "artist", 0, 1, IS_UNIQUE, IS_ORDERED);
+    addEParameter(op, ecorePackage.getEString(), "title", 0, 1, IS_UNIQUE, IS_ORDERED);
+
     initEClass(artistEClass, Artist.class, "Artist", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getArtist_Name(), ecorePackage.getEString(), "name", null, 0, 1, Artist.class, !IS_TRANSIENT,
         !IS_VOLATILE, IS_CHANGEABLE, IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEReference(getArtist_ContainerArtist(), this.getArtist(), null, "containerArtist", null, 0, 1, Artist.class,
         !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, IS_UNSETTABLE, IS_UNIQUE,
+        !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getArtist_Photo(), ecorePackage.getEString(), "photo", null, 0, 1, Artist.class, !IS_TRANSIENT,
+        !IS_VOLATILE, IS_CHANGEABLE, IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getArtist_Style(), ecorePackage.getEString(), "style", null, 0, 1, Artist.class, !IS_TRANSIENT,
+        !IS_VOLATILE, IS_CHANGEABLE, IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getArtist_MyComments(), ecorePackage.getEString(), "myComments", null, 0, 1, Artist.class,
+        !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEReference(getArtist_Sample(), this.getTrackReference(), null, "sample", null, 0, 1, Artist.class,
+        !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, IS_UNSETTABLE, IS_UNIQUE,
         !IS_DERIVED, IS_ORDERED);
 
     initEClass(albumEClass, Album.class, "Album", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
@@ -1695,6 +1764,9 @@ public class MediadbPackageImpl extends EPackageImpl implements MediadbPackage {
     addEEnumLiteral(informationTypeEEnum, InformationType.APE);
     addEEnumLiteral(informationTypeEEnum, InformationType.AIFF);
     addEEnumLiteral(informationTypeEEnum, InformationType.DSF);
+    addEEnumLiteral(informationTypeEEnum, InformationType.OPUS);
+    addEEnumLiteral(informationTypeEEnum, InformationType.SACD_MC);
+    addEEnumLiteral(informationTypeEEnum, InformationType.SACD);
 
     initEEnum(collectionEEnum, Collection.class, "Collection");
     addEEnumLiteral(collectionEEnum, Collection.EASY_LISTENING);
@@ -1706,6 +1778,7 @@ public class MediadbPackageImpl extends EPackageImpl implements MediadbPackage {
     addEEnumLiteral(collectionEEnum, Collection.ROCK);
     addEEnumLiteral(collectionEEnum, Collection.NOT_SET);
     addEEnumLiteral(collectionEEnum, Collection.PUNK);
+    addEEnumLiteral(collectionEEnum, Collection.SAMPLE);
 
     initEEnum(albumTypeEEnum, AlbumType.class, "AlbumType");
     addEEnumLiteral(albumTypeEEnum, AlbumType.NORMAL_ALBUM);

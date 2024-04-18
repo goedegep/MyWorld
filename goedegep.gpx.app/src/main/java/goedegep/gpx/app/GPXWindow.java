@@ -51,6 +51,7 @@ import javafx.scene.input.KeyCombination;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
+import tim.prune.GpsPrune;
 
 public class GPXWindow extends JfxStage {
   private static final Logger LOGGER = Logger.getLogger(GPXWindow.class.getName());
@@ -248,6 +249,21 @@ public class GPXWindow extends JfxStage {
       }
     });
     menu.getItems().add(menuItem);
+
+    // View: Open in GPSPrune
+    menuItem = componentFactory.createMenuItem("Open in GPSPrune");
+    menuItem.setOnAction(new EventHandler<ActionEvent>() {
+      public void handle(ActionEvent e) {
+        String fileName = gpxResource.getFileName();
+        if (fileName != null) {
+        String[] args = new String[2];
+        args[0] = "--lang=en";
+          args[1] = fileName;
+         GpsPrune.main(args);
+        }
+      }
+    });
+    menu.getItems().add(menuItem);
     
     menuBar.getMenus().add(menu);
         
@@ -430,9 +446,10 @@ public class GPXWindow extends JfxStage {
   private void handleSaveGpxFileAsRequest() {
     FileChooser fileChooser = new FileChooser();
     fileChooser.setTitle("Save GPX file");
+    ExtensionFilter gpxExtensionFilter = new ExtensionFilter("GPX file", "*.gpx");
+    fileChooser.getExtensionFilters().add(gpxExtensionFilter);
     File file = fileChooser.showSaveDialog(this);
     if (file != null) {
-      LOGGER.severe("Saving: " + file.getAbsolutePath());
       try {
         gpxResource.save(file.getAbsolutePath());
       } catch (IOException e) {
@@ -624,7 +641,6 @@ public class GPXWindow extends JfxStage {
     List<WptType> wayPoints = segment.getTrkpt();
     
     List<WptType> reducedWaypoints = DouglasPeuckerReducer.reduceWithTolerance(wayPoints, 40.0, GPXWindow::coordinateExtractor);
-    LOGGER.severe("Original number of waypoints: " + wayPoints.size() + ", new number of waypoints: " + reducedWaypoints.size());
     wayPoints.clear();
     wayPoints.addAll(reducedWaypoints);
   }

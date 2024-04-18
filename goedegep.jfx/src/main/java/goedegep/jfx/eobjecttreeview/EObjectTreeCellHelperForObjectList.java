@@ -13,7 +13,7 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.util.EObjectResolvingEList;
 
-import goedegep.appgen.TableRowOperation;
+import goedegep.appgen.Operation;
 import goedegep.util.emf.EmfPackageHelper;
 import goedegep.util.emf.EmfUtil;
 import javafx.event.ActionEvent;
@@ -97,11 +97,11 @@ public class EObjectTreeCellHelperForObjectList extends EObjectTreeCellHelperTem
       MenuItem menuItem;
       Menu menu;
 
-      final TableRowOperation operation = nodeOperationDescriptor.getOperation();
+      final Operation operation = nodeOperationDescriptor.getOperation();
 
-      if ((nodeOperationDescriptor.getOperation() == TableRowOperation.NEW_OBJECT)  &&
+      if ((nodeOperationDescriptor.getOperation() == Operation.NEW_OBJECT)  &&
           (subTypes != null)  &&  (subTypes.size() > 1)) {
-        menu = createSubClassesMenu(nodeOperationDescriptor.getMenuText(), subTypes, true, nodeOperationDescriptor.getBiConsumer());
+        menu = createSubClassesMenu(nodeOperationDescriptor.getMenuText(), subTypes, true, ((NodeOperationDescriptorNew) nodeOperationDescriptor).getNewEObjectInitializationFunction());
         contextMenu.getItems().add(menu);
       } else {
 
@@ -109,7 +109,7 @@ public class EObjectTreeCellHelperForObjectList extends EObjectTreeCellHelperTem
         case NEW_OBJECT:
           menuItem = new MenuItem(nodeOperationDescriptor.getMenuText());
           contextMenu.getItems().add(menuItem);
-          menuItem.setOnAction((actionEvent) -> createAndAddObject(null, nodeOperationDescriptor.getBiConsumer()));
+          menuItem.setOnAction((actionEvent) -> createAndAddObject(null, ((NodeOperationDescriptorNew) nodeOperationDescriptor).getNewEObjectInitializationFunction()));
 
           if (!eReference.isContainment()) {
             LOGGER.info("Not containment: " + eReference.getName());

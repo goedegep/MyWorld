@@ -178,12 +178,11 @@ public abstract class EObjectTreeItem extends TreeItem<Object> {
    * This is used to handle a changed value, where we get information that a feature has changed for an object.<br/>
    * Note: this method only applies to EObjects, but we have it here so no casting is needed to call this method.
    * 
-   * @param eObjectTreeItem the item of which a child is looked for. This value may not be null.
    * @param eStructuralFeature the EStructuralFeature of the child to be found. This value may not be null.
    * @return the specified child, or null if no such child exists.
    */
   EObjectTreeItem findChildTreeItem(EStructuralFeature eStructuralFeature) {
-    return null;
+    throw new UnsupportedOperationException("This method cannot be called on type: " + this.getClass().getName());
   }
   
   /**

@@ -1,11 +1,13 @@
 package goedegep.pctools.filescontrolled.guifx;
 
-import goedegep.appgen.TableRowOperation;
 import goedegep.jfx.eobjecttreeview.EObjectTreeItemAttributeDescriptor;
 import goedegep.jfx.eobjecttreeview.EObjectTreeItemClassDescriptor;
 import goedegep.jfx.eobjecttreeview.EObjectTreeItemClassListReferenceDescriptor;
 import goedegep.jfx.eobjecttreeview.EObjectTreeView;
-import goedegep.jfx.eobjecttreeview.NodeOperationDescriptor;
+import goedegep.jfx.eobjecttreeview.NodeOperationDescriptorDelete;
+import goedegep.jfx.eobjecttreeview.NodeOperationDescriptorNew;
+import goedegep.jfx.eobjecttreeview.NodeOperationDescriptorNewAfter;
+import goedegep.jfx.eobjecttreeview.NodeOperationDescriptorNewBefore;
 import goedegep.jfx.eobjecttreeview.PresentationType;
 import goedegep.pctools.filescontrolled.model.DescribedItem;
 import goedegep.pctools.filescontrolled.model.DirectorySpecification;
@@ -40,21 +42,21 @@ public class DiscStructureSpecificationTreeViewCreator {
     eObjectTreeItemClassListReferenceDescriptor = new EObjectTreeItemClassListReferenceDescriptor(PC_TOOLS_PACKAGE.getDiscStructureSpecification_DirectorySpecifications())
         .setLabelText("Directory specifications")
         .setExpandOnCreation(true)
-        .addNodeOperationDescriptor(new NodeOperationDescriptor(TableRowOperation.NEW_OBJECT, "Create Directory Specification"));
+        .addNodeOperationDescriptor(new NodeOperationDescriptorNew("Create Directory Specification", null, null));
     eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(eObjectTreeItemClassListReferenceDescriptor);
 
     // DiscStructureSpecification.filesToIgnoreCompletely
     eObjectTreeItemClassListReferenceDescriptor = new EObjectTreeItemClassListReferenceDescriptor(PC_TOOLS_PACKAGE.getDiscStructureSpecification_FilesToIgnoreCompletely())
         .setLabelText("Files to ignore completely")
         .setExpandOnCreation(true)
-        .addNodeOperationDescriptor(new NodeOperationDescriptor(TableRowOperation.NEW_OBJECT, "New file to ignore completely"));
+        .addNodeOperationDescriptor(new NodeOperationDescriptorNew("New file to ignore completely", null, null));
     eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(eObjectTreeItemClassListReferenceDescriptor);
 
     // DiscStructureSpecification.directoriesToIgnoreCompletely
     eObjectTreeItemClassListReferenceDescriptor = new EObjectTreeItemClassListReferenceDescriptor(PC_TOOLS_PACKAGE.getDiscStructureSpecification_DirectoriesToIgnoreCompletely())
         .setLabelText("Directories to ignore completely")
         .setExpandOnCreation(true)
-        .addNodeOperationDescriptor(new NodeOperationDescriptor(TableRowOperation.NEW_OBJECT, "New directory to ignore completely"));
+        .addNodeOperationDescriptor(new NodeOperationDescriptorNew("New directory to ignore completely", null, null));
     eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(eObjectTreeItemClassListReferenceDescriptor);
 
     return eObjectTreeItemClassDescriptor;
@@ -83,9 +85,9 @@ public class DiscStructureSpecificationTreeViewCreator {
 
           return buf.toString();
         })
-        .addNodeOperationDescriptor(new NodeOperationDescriptor(TableRowOperation.NEW_OBJECT_BEFORE, "New Directory Specification before this one ..."))
-        .addNodeOperationDescriptor(new NodeOperationDescriptor(TableRowOperation.NEW_OBJECT_AFTER, "New Directory Specification after this one ..."))
-        .addNodeOperationDescriptor(new NodeOperationDescriptor(TableRowOperation.DELETE_OBJECT, "Delete Directory Specification"));
+        .addNodeOperationDescriptor(new NodeOperationDescriptorNewBefore("New Directory Specification before this one ...", null, null))
+        .addNodeOperationDescriptor(new NodeOperationDescriptorNewAfter("New Directory Specification after this one ...", null, null))
+        .addNodeOperationDescriptor(new NodeOperationDescriptorDelete("Delete Directory Specification", null));
 
     EObjectTreeItemAttributeDescriptor eObjectTreeItemAttributeDescriptor;
 
@@ -136,9 +138,9 @@ public class DiscStructureSpecificationTreeViewCreator {
             return "<not specified>";
           }
         })
-        .addNodeOperationDescriptor(new NodeOperationDescriptor(TableRowOperation.NEW_OBJECT_BEFORE, "New item before this one ..."))
-        .addNodeOperationDescriptor(new NodeOperationDescriptor(TableRowOperation.NEW_OBJECT_AFTER, "New item after this one ..."))
-        .addNodeOperationDescriptor(new NodeOperationDescriptor(TableRowOperation.DELETE_OBJECT, "Delete item"));
+        .addNodeOperationDescriptor(new NodeOperationDescriptorNewBefore("New item before this one ...", null, null))
+        .addNodeOperationDescriptor(new NodeOperationDescriptorNewAfter("New item after this one ...", null, null))
+        .addNodeOperationDescriptor(new NodeOperationDescriptorDelete("Delete item",null));
 
     EObjectTreeItemAttributeDescriptor eObjectTreeItemAttributeDescriptor;
 

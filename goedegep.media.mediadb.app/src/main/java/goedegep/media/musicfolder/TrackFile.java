@@ -5,6 +5,7 @@ import java.nio.file.DirectoryIteratorException;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Objects;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -251,25 +252,27 @@ public class TrackFile {
   /**
    * Generate a basic file name for a track in a Tracks Folder. The format is: <artist> - <title>
    * 
-   * @param artistName the artist name.
-   * @param trackTitle the track title.
+   * @param artistName the artist name (may not be null).
+   * @param trackTitle the track title (may not be null).
    * @return the generated file name.
    */
-  public static String generateTrackFileName(String artistName, String trackTitle) {
+  public static String generateTrackFileNameForATrackInATracksFolder(String artistName, String trackTitle) {
     LOGGER.fine("=> artistName=" + artistName + ", trackTitle=" + trackTitle);
+    Objects.requireNonNull(artistName, "argument artistName may not be null");
+    Objects.requireNonNull(trackTitle, "argument trackTitle may not be null");
     StringBuilder buf = new StringBuilder();
     
-    if (artistName != null) {
+//    if (artistName != null) {
       buf.append(MusicFolderUtil.replaceGroupSeparatorAndNameToFileName(artistName, true));
-    } else {
-      buf.append("<no artist>");
-    }
+//    } else {
+//      buf.append("<no artist>");
+//    }
     buf.append(" - ");
-    if (trackTitle != null) {
+//    if (trackTitle != null) {
       buf.append(MusicFolderUtil.replaceGroupSeparatorAndNameToFileName(trackTitle, true));
-    } else {
-      buf.append("<no trackTitle>");
-    }
+//    } else {
+//      buf.append("<no trackTitle>");
+//    }
 
     String trackFileName = buf.toString();
     

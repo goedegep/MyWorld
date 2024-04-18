@@ -9,7 +9,7 @@ import javax.swing.table.TableCellRenderer;
 import org.eclipse.emf.ecore.EObject;
 
 import goedegep.appgen.EEnumEditorDescriptor;
-import goedegep.appgen.TableRowOperation;
+import goedegep.appgen.Operation;
 import goedegep.appgen.TableRowOperationDescriptor;
 
 public class EObjectTableDescriptor<T extends EObject> {
@@ -21,7 +21,7 @@ public class EObjectTableDescriptor<T extends EObject> {
   private Map<Class<?>, TableCellEditor>                       classSpecificCellEditors;
   private Map<Class<?>, EEnumEditorDescriptor>                 enumSpecificCellEditorValues;
   @SuppressWarnings("rawtypes")
-  private Map<TableRowOperation, TableRowOperationDescriptor>  rowOperations;
+  private Map<Operation, TableRowOperationDescriptor>  rowOperations;
 
   public EObjectTableDescriptor() {
   }
@@ -33,7 +33,7 @@ public class EObjectTableDescriptor<T extends EObject> {
       Map<Class<?>, TableCellRenderer> classSpecificCellRenderers,
       Map<Class<?>, TableCellEditor>   classSpecificCellEditors,
       Map<Class<?>, EEnumEditorDescriptor> enumSpecificCellEditorValues,
-      @SuppressWarnings("rawtypes") Map<TableRowOperation, TableRowOperationDescriptor> rowOperations,
+      @SuppressWarnings("rawtypes") Map<Operation, TableRowOperationDescriptor> rowOperations,
       Class<? extends EObjectTableModel<T>> tableModelClass) {
     this.dimension = dimension;
     this.columnDescriptors = columnDescriptors;
@@ -92,7 +92,7 @@ public class EObjectTableDescriptor<T extends EObject> {
   }
 
   @SuppressWarnings("rawtypes")
-  public Map<TableRowOperation, TableRowOperationDescriptor> getRowOperations() {
+  public Map<Operation, TableRowOperationDescriptor> getRowOperations() {
     return rowOperations;
   }
   

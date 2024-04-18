@@ -1099,7 +1099,7 @@ public class AlbumImpl extends MinimalEObjectImpl.Container implements Album {
   @Override
   public String getArtistAndTitle() {
     StringBuilder buf = new StringBuilder();
-    if (isSetArtist()) {
+    if (getArtist() != null) {
       Artist artist = getArtist();
       buf.append(artist.getName());
     } else {
@@ -1415,11 +1415,7 @@ public class AlbumImpl extends MinimalEObjectImpl.Container implements Album {
     buf.append("Artist: ");
     if (isSetArtist()) {
       Artist artist = getArtist();
-      if (artist.isSetName()) {
-        buf.append(artist.getName());
-      } else {
-        buf.append("<no-artist-name>");
-      }
+      buf.append(artist != null ? artist.getName() : "<no-artist>");
     } else {
       buf.append("<no-artist>");
     }

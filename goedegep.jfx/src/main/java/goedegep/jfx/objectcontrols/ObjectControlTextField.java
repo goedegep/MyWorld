@@ -79,14 +79,14 @@ public class ObjectControlTextField<T> extends ObjectControlAbstract<T> {
         ociRedrawValue();
     });
 
-    // The initial value of the textField is null. Again setting it to null doesn't trigger the listener.
+    // The initial value of the textField is an empty string. Again setting it to an empty string doesn't trigger the listener.
     // So if the initial value isn't null, set the value (triggering the listener, leading to a call to ociHandleNewUserInput().
     // Else, just call ociHandleNewUserInput().
-//    if (initialValue != null) {
+    if (initialValue != null) {
       setValue(initialValue);
-//    } else {
-//      ociHandleNewUserInput();
-//    }
+    } else {
+      ociHandleNewUserInput(textField);
+    }
   }
   
   /**
@@ -103,6 +103,9 @@ public class ObjectControlTextField<T> extends ObjectControlAbstract<T> {
   @Override
   public void setValue(T objectValue) {
     String text = objectToString(objectValue);
+    if (text == null) {
+      text = "";
+    };
     referenceValue = stringToObject(text);
     textField.setText(text);
   }

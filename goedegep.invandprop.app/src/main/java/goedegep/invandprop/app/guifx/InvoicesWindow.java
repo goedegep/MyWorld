@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
-import goedegep.appgen.TableRowOperation;
+import goedegep.appgen.Operation;
 import goedegep.appgen.TableRowOperationDescriptor;
 import goedegep.invandprop.app.PropertyStringConverter;
 import goedegep.invandprop.model.InvAndPropPackage;
@@ -298,9 +298,9 @@ class InvoicesTableDescriptor extends EObjectTableDescriptor<Invoice> {
       );
   
   @SuppressWarnings("serial")
-  private static Map<TableRowOperation, TableRowOperationDescriptor<Invoice>> rowOperations = new HashMap<>() {
+  private static Map<Operation, TableRowOperationDescriptor<Invoice>> rowOperations = new HashMap<>() {
     {
-    put(TableRowOperation.DELETE_OBJECT, new TableRowOperationDescriptor<>("Delete"));
+    put(Operation.DELETE_OBJECT, new TableRowOperationDescriptor<>("Delete"));
     }
   };
   
@@ -371,9 +371,9 @@ class InvoiceItemsTableDescriptor extends EObjectTableDescriptor<InvoiceItem> {
       );
   
   @SuppressWarnings("serial")
-  private static Map<TableRowOperation, TableRowOperationDescriptor<InvoiceItem>> rowOperations = new HashMap<>() {
+  private static Map<Operation, TableRowOperationDescriptor<InvoiceItem>> rowOperations = new HashMap<>() {
     {
-    put(TableRowOperation.DELETE_OBJECT, new TableRowOperationDescriptor<>("Delete"));
+    put(Operation.DELETE_OBJECT, new TableRowOperationDescriptor<>("Delete"));
     }
   };
   

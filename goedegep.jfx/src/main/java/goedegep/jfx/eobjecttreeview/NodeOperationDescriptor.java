@@ -1,21 +1,30 @@
 package goedegep.jfx.eobjecttreeview;
 
-import java.util.function.BiConsumer;
+import java.util.function.Predicate;
 
-import org.eclipse.emf.ecore.EObject;
-
-import goedegep.appgen.TableRowOperation;
+import goedegep.appgen.Operation;
 
 /**
- * This class describes the available operations for an item in a tree.
+ * This class is the base class for the descriptors that describe the operations in an {@code EObjectTreeView}.
+ * <p>
+ * Known, non abstract, sub classes:
+ * <ul>
+ * <li>NodeOperationDescriptorCustom - for custom operations</li>
+ * <li>NodeOperationDescriptorDelete - for deleting an object</li>
+ * <li>NodeOperationDescriptorNew - for creating and adding a new object</li>
+ * <li>NodeOperationDescriptorNewAfter - for creating and adding a new object after the current object</li>
+ * <li>NodeOperationDescriptorNewBefore - for creating and adding a new object before the current object</li>
+ * <li>NodeOperationDescriptorOpen - for opening an object</li>
+ * </ul>
+ * 
  */
-public class NodeOperationDescriptor {
+public abstract class NodeOperationDescriptor {
   private static final String NEW_LINE = System.getProperty("line.separator");
 
   /**
-   * The {@TableRowOperation}, a mandatory attribute.
+   * The {@link Operation}, a mandatory attribute.
    */
-  private TableRowOperation operation = null;
+  private Operation operation = null;
   
   /**
    * The text to be shown in a context (pop-up) menu, a mandatory attribute.
@@ -23,38 +32,29 @@ public class NodeOperationDescriptor {
   private String menuText = null;
   
   /**
-   * An optional method which is currently called after creating an object .
+   * A {@link Predicate} to check whether the menu item is to be shown. Optional, by default the menu item is shown.
    */
-  private BiConsumer<EObject, EObjectTreeItem> biConsumer = null;
+  private Predicate<EObjectTreeItem> isMenuToBeEnabled;
+  
 
   /**
    * Constructor
    * 
-   * @param operation the {@code TableRowOperation} (mandatory).
+   * @param operation the {@code Operation} (mandatory).
    * @param menuText the text to show in the context menu (mandatory).
+   * @param isMenuToBeEnabled Optional {@code Predicate} to determine whether the menu item is to be shown or not.
    */
-  public NodeOperationDescriptor(TableRowOperation operation, String menuText) {
-    this(operation, menuText, null);
-  }
-
-  /**
-   * Constructor
-   * 
-   * @param operation the {@code TableRowOperation} (mandatory).
-   * @param menuText the text to show in the context menu (mandatory).
-   * @param biConsumer an optional method, which is currently called after creating an object.
-   */
-  public NodeOperationDescriptor(TableRowOperation operation, String menuText, BiConsumer<EObject, EObjectTreeItem> biConsumer) {
+  protected NodeOperationDescriptor(Operation operation, String menuText, Predicate<EObjectTreeItem> isMenuToBeEnabled) {
     this.operation = operation;
     this.menuText = menuText;
-    this.biConsumer = biConsumer;
+    this.isMenuToBeEnabled = isMenuToBeEnabled;
   }
   
   /**
-   * Get the {@TableRowOperation}.
-   * @return the {@TableRowOperation}.
+   * Get the {@code Operation}.
+   * @return the {@code Operation}.
    */
-  public TableRowOperation getOperation() {
+  protected Operation getOperation() {
     return operation;
   }
 
@@ -68,12 +68,11 @@ public class NodeOperationDescriptor {
   }
 
   /**
-   * Get the optional method.
-   * 
-   * @return the optional method.
+   * Get the {@code Predicate} to determine whether the menu item is to be shown or not.
+   * @return The {@code Predicate} to determine whether the menu item is to be shown or not. Or null if this value is not set.
    */
-  public BiConsumer<EObject, EObjectTreeItem> getBiConsumer() {
-    return biConsumer;
+  public Predicate<EObjectTreeItem> getIsMenuToBeEnabled() {
+    return isMenuToBeEnabled;
   }
   
   @Override
@@ -82,7 +81,7 @@ public class NodeOperationDescriptor {
     
     buf.append("operation: ").append(operation).append(NEW_LINE);
     buf.append("menu text: ").append(menuText).append(NEW_LINE);
-    buf.append("biConsumer: ").append(biConsumer != null ? "Set" : "Not set").append(NEW_LINE);
+//    buf.append("biConsumer: ").append(biConsumer != null ? "Set" : "Not set").append(NEW_LINE);
     
     return buf.toString();
   }

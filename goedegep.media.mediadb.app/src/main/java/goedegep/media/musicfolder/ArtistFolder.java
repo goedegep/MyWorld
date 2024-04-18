@@ -20,8 +20,6 @@ public class ArtistFolder {
    * There's one sub folder per album.
    */
   public static void getAlbumOnDiscInfoForArtistFolder(Path artistFolder, List<AlbumOnDiscInfo> albumsOnDiscInfo, List<MusicFolderStructureErrorInfo> errors) {
-    LOGGER.fine("=> artistFolder = " + artistFolder);
-    
     MusicFolderStructureErrorInfo error;
     
     try (DirectoryStream<Path> stream = Files.newDirectoryStream(artistFolder)) {
@@ -30,8 +28,6 @@ public class ArtistFolder {
         String fileName = path.getFileName().toString();
 
         if (Files.isDirectory(path)) {
-          LOGGER.info("Is folder: " + fileName);
-          
           if (AlbumFolder.isValidAlbumFolderName(fileName)) {
             AlbumFolder.getAlbumOnDiscInfoForAlbumFolder(path, true, albumsOnDiscInfo, errors);
           } else {

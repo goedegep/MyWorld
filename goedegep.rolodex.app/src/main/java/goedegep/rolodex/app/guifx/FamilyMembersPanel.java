@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.BiConsumer;
 
-import goedegep.appgen.TableRowOperation;
+import goedegep.appgen.Operation;
 import goedegep.appgen.TableRowOperationDescriptor;
 import goedegep.jfx.ComponentFactoryFx;
 import goedegep.jfx.CustomizationFx;
@@ -108,9 +108,9 @@ class BasicPersonsTableDescriptor extends EObjectTableDescriptor<Person> {
       );
     
   @SuppressWarnings("serial")
-  private static Map<TableRowOperation, TableRowOperationDescriptor<Person>> rowOperations = new HashMap<>() {
+  private static Map<Operation, TableRowOperationDescriptor<Person>> rowOperations = new HashMap<>() {
     {
-      put(TableRowOperation.EXTENDED_OPERATION, new TableRowOperationDescriptor<>("Remove person from family", (BiConsumer<List<Person>, Person>) FamilyMembersPanel::removePersonFromFamily));
+      put(Operation.EXTENDED_OPERATION, new TableRowOperationDescriptor<>("Remove person from family", (BiConsumer<List<Person>, Person>) FamilyMembersPanel::removePersonFromFamily));
     }
   };
   

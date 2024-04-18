@@ -1,6 +1,5 @@
 package goedegep.media.fotoshow.app.guifx;
 
-import goedegep.appgen.TableRowOperation;
 import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.eobjecttreeview.EObjectTreeItemAttributeDescriptor;
 import goedegep.jfx.eobjecttreeview.EObjectTreeItemAttributeListDescriptor;
@@ -8,7 +7,10 @@ import goedegep.jfx.eobjecttreeview.EObjectTreeItemAttributeListValueDescriptor;
 import goedegep.jfx.eobjecttreeview.EObjectTreeItemClassDescriptor;
 import goedegep.jfx.eobjecttreeview.EObjectTreeItemClassListReferenceDescriptor;
 import goedegep.jfx.eobjecttreeview.EObjectTreeView;
-import goedegep.jfx.eobjecttreeview.NodeOperationDescriptor;
+import goedegep.jfx.eobjecttreeview.NodeOperationDescriptorDelete;
+import goedegep.jfx.eobjecttreeview.NodeOperationDescriptorNew;
+import goedegep.jfx.eobjecttreeview.NodeOperationDescriptorNewAfter;
+import goedegep.jfx.eobjecttreeview.NodeOperationDescriptorNewBefore;
 import goedegep.media.photoshow.model.FolderTimeOffsetSpecification;
 import goedegep.media.photoshow.model.PhotoShowPackage;
 import goedegep.media.photoshow.model.PhotoShowSpecification;
@@ -56,13 +58,13 @@ public class PhotoShowSpecificationTreeViewCreator {
 
     // PhotoShowSpecification.photoFolders
     EObjectTreeItemAttributeListValueDescriptor photoFolderDescriptor = new EObjectTreeItemAttributeListValueDescriptor()
-        .addNodeOperationDescriptor(new NodeOperationDescriptor(TableRowOperation.NEW_OBJECT_BEFORE, "New photo folder before"))
-        .addNodeOperationDescriptor(new NodeOperationDescriptor(TableRowOperation.NEW_OBJECT_AFTER, "New photo folder after"))
-        .addNodeOperationDescriptor(new NodeOperationDescriptor(TableRowOperation.DELETE_OBJECT, "Remove photo folder"));
+        .addNodeOperationDescriptor(new NodeOperationDescriptorNewBefore("New photo folder before", null, null))
+        .addNodeOperationDescriptor(new NodeOperationDescriptorNewAfter("New photo folder after", null, null))
+        .addNodeOperationDescriptor(new NodeOperationDescriptorDelete("Remove photo folder", null));
 
     eObjectTreeItemAttributeListDescriptor = new EObjectTreeItemAttributeListDescriptor(PHOTO_SHOW_PACKAGE.getPhotoShowSpecification_PhotoFolders())
         .setLabelText("Photo folders")
-        .addNodeOperationDescriptor(new NodeOperationDescriptor(TableRowOperation.NEW_OBJECT, "New photo folder"))
+        .addNodeOperationDescriptor(new NodeOperationDescriptorNew("New photo folder", null, null))
         .setListValuesDescriptor(photoFolderDescriptor);
     eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(eObjectTreeItemAttributeListDescriptor);
 
@@ -70,18 +72,18 @@ public class PhotoShowSpecificationTreeViewCreator {
     EObjectTreeItemClassListReferenceDescriptor eObjectTreeItemClassListReferenceDescriptor = new EObjectTreeItemClassListReferenceDescriptor(PHOTO_SHOW_PACKAGE.getPhotoShowSpecification_FolderTimeOffsetSpecifications())
         .setLabelText("Folder time offsets")
         .setExpandOnCreation(true)
-        .addNodeOperationDescriptor(new NodeOperationDescriptor(TableRowOperation.NEW_OBJECT, "New time offset"));
+        .addNodeOperationDescriptor(new NodeOperationDescriptorNew("New time offset", null, null));
     eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(eObjectTreeItemClassListReferenceDescriptor);
 
     // PhotoShowSpecification.photosToShow
     EObjectTreeItemAttributeListValueDescriptor photoToShowDescriptor = new EObjectTreeItemAttributeListValueDescriptor()
-        .addNodeOperationDescriptor(new NodeOperationDescriptor(TableRowOperation.NEW_OBJECT_BEFORE, "New photo before"))
-        .addNodeOperationDescriptor(new NodeOperationDescriptor(TableRowOperation.NEW_OBJECT_AFTER, "New photo after"))
-        .addNodeOperationDescriptor(new NodeOperationDescriptor(TableRowOperation.DELETE_OBJECT, "Remove photo"));
+        .addNodeOperationDescriptor(new NodeOperationDescriptorNewBefore("New photo before", null, null))
+        .addNodeOperationDescriptor(new NodeOperationDescriptorNewAfter("New photo after", null, null))
+        .addNodeOperationDescriptor(new NodeOperationDescriptorDelete("Remove photo", null));
 
     eObjectTreeItemAttributeListDescriptor = new EObjectTreeItemAttributeListDescriptor(PHOTO_SHOW_PACKAGE.getPhotoShowSpecification_PhotosToShow())
         .setLabelText("Photos to show")
-        .addNodeOperationDescriptor(new NodeOperationDescriptor(TableRowOperation.NEW_OBJECT, "New photo to show"))
+        .addNodeOperationDescriptor(new NodeOperationDescriptorNew("New photo to show", null, null))
         .setListValuesDescriptor(photoToShowDescriptor);
     eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(eObjectTreeItemAttributeListDescriptor);
 
@@ -114,9 +116,9 @@ public class PhotoShowSpecificationTreeViewCreator {
 
           return buf.toString();
         })
-        .addNodeOperationDescriptor(new NodeOperationDescriptor(TableRowOperation.NEW_OBJECT_BEFORE, "New time offset before this one"))
-        .addNodeOperationDescriptor(new NodeOperationDescriptor(TableRowOperation.NEW_OBJECT_AFTER, "New time offset after this one"))
-        .addNodeOperationDescriptor(new NodeOperationDescriptor(TableRowOperation.DELETE_OBJECT, "Delete this time offset"));
+        .addNodeOperationDescriptor(new NodeOperationDescriptorNewBefore("New time offset before this one", null, null))
+        .addNodeOperationDescriptor(new NodeOperationDescriptorNewAfter("New time offset after this one", null, null))
+        .addNodeOperationDescriptor(new NodeOperationDescriptorDelete("Delete this time offset", null));
 
     EObjectTreeItemAttributeDescriptor eObjectTreeItemAttributeDescriptor;
 

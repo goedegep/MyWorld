@@ -16,4 +16,5 @@ module goedegep.gpx.app {
   requires javafx.controls;
   requires goedegep.util;
   requires javafx.base;
+  requires tim.prune;
 }

@@ -40,6 +40,9 @@
       <genEnumLiterals ecoreEnumLiteral="mediadb.ecore#//InformationType/APE"/>
       <genEnumLiterals ecoreEnumLiteral="mediadb.ecore#//InformationType/AIFF"/>
       <genEnumLiterals ecoreEnumLiteral="mediadb.ecore#//InformationType/DSF"/>
+      <genEnumLiterals ecoreEnumLiteral="mediadb.ecore#//InformationType/OPUS"/>
+      <genEnumLiterals ecoreEnumLiteral="mediadb.ecore#//InformationType/SACD_MC"/>
+      <genEnumLiterals ecoreEnumLiteral="mediadb.ecore#//InformationType/SACD"/>
     </genEnums>
     <genEnums typeSafeEnumCompatible="false" ecoreEnum="mediadb.ecore#//Collection">
       <genEnumLiterals ecoreEnumLiteral="mediadb.ecore#//Collection/EASY_LISTENING"/>
@@ -51,6 +54,7 @@
       <genEnumLiterals ecoreEnumLiteral="mediadb.ecore#//Collection/ROCK"/>
       <genEnumLiterals ecoreEnumLiteral="mediadb.ecore#//Collection/NOT_SET"/>
       <genEnumLiterals ecoreEnumLiteral="mediadb.ecore#//Collection/PUNK"/>
+      <genEnumLiterals ecoreEnumLiteral="mediadb.ecore#//Collection/SAMPLE"/>
     </genEnums>
     <genEnums typeSafeEnumCompatible="false" ecoreEnum="mediadb.ecore#//AlbumType">
       <genEnumLiterals ecoreEnumLiteral="mediadb.ecore#//AlbumType/NORMAL_ALBUM"/>
@@ -92,10 +96,18 @@
       <genOperations ecoreOperation="mediadb.ecore#//MediaDb/getTrackCollection">
         <genParameters ecoreParameter="mediadb.ecore#//MediaDb/getTrackCollection/collection"/>
       </genOperations>
+      <genOperations ecoreOperation="mediadb.ecore#//MediaDb/getTrack">
+        <genParameters ecoreParameter="mediadb.ecore#//MediaDb/getTrack/artist"/>
+        <genParameters ecoreParameter="mediadb.ecore#//MediaDb/getTrack/title"/>
+      </genOperations>
     </genClasses>
     <genClasses ecoreClass="mediadb.ecore#//Artist">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute mediadb.ecore#//Artist/name"/>
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference mediadb.ecore#//Artist/containerArtist"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute mediadb.ecore#//Artist/photo"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute mediadb.ecore#//Artist/style"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute mediadb.ecore#//Artist/myComments"/>
+      <genFeatures children="true" createChild="true" propertySortChoices="true" ecoreFeature="ecore:EReference mediadb.ecore#//Artist/sample"/>
     </genClasses>
     <genClasses ecoreClass="mediadb.ecore#//Album">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute mediadb.ecore#//Album/title"/>

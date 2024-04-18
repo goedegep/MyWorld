@@ -3,7 +3,6 @@ package goedegep.jfx;
 import java.util.ArrayList;
 import java.util.List;
 
-import goedegep.appgen.TableRowOperation;
 import goedegep.jfx.eobjecttreeview.EObjectTreeItemAttributeDescriptor;
 import goedegep.jfx.eobjecttreeview.EObjectTreeItemAttributeListDescriptor;
 import goedegep.jfx.eobjecttreeview.EObjectTreeItemAttributeListValueDescriptor;
@@ -11,6 +10,10 @@ import goedegep.jfx.eobjecttreeview.EObjectTreeItemClassDescriptor;
 import goedegep.jfx.eobjecttreeview.EObjectTreeItemClassListReferenceDescriptor;
 import goedegep.jfx.eobjecttreeview.EObjectTreeView;
 import goedegep.jfx.eobjecttreeview.NodeOperationDescriptor;
+import goedegep.jfx.eobjecttreeview.NodeOperationDescriptorDelete;
+import goedegep.jfx.eobjecttreeview.NodeOperationDescriptorNew;
+import goedegep.jfx.eobjecttreeview.NodeOperationDescriptorNewAfter;
+import goedegep.jfx.eobjecttreeview.NodeOperationDescriptorNewBefore;
 import goedegep.jfx.eobjecttreeview.PresentationType;
 import goedegep.properties.model.PropertiesPackage;
 import goedegep.properties.model.PropertyDescriptor;
@@ -79,7 +82,7 @@ public class PropertyDescriptorsTreeViewCreator {
     
     eObjectTreeItemClassListReferenceDescriptor = new EObjectTreeItemClassListReferenceDescriptor(PROPERTIES_PACKAGE.getPropertyDescriptorGroup_PropertyDescriptorGroups())
         .setLabelText("Property Descriptor groups")
-        .addNodeOperationDescriptor(new NodeOperationDescriptor(TableRowOperation.NEW_OBJECT, "New Property Descriptors group"));
+        .addNodeOperationDescriptor(new NodeOperationDescriptorNew("New Property Descriptors group", null, null));
     eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(eObjectTreeItemClassListReferenceDescriptor);
     
     return eObjectTreeItemClassDescriptor;
@@ -100,9 +103,9 @@ public class PropertyDescriptorsTreeViewCreator {
           buf.append(propertyDescriptor.getInitialValue());
           return buf.toString();
         })
-        .addNodeOperationDescriptor(new NodeOperationDescriptor(TableRowOperation.NEW_OBJECT_BEFORE, "New Property Descriptor before"))
-        .addNodeOperationDescriptor(new NodeOperationDescriptor(TableRowOperation.NEW_OBJECT_AFTER, "New Property Descriptor after"))
-        .addNodeOperationDescriptor(new NodeOperationDescriptor(TableRowOperation.DELETE_OBJECT, "Remove PropertyDescriptor"));
+        .addNodeOperationDescriptor(new NodeOperationDescriptorNewBefore("New Property Descriptor before", null, null))
+        .addNodeOperationDescriptor(new NodeOperationDescriptorNewAfter("New Property Descriptor after", null, null))
+        .addNodeOperationDescriptor(new NodeOperationDescriptorDelete("Remove PropertyDescriptor", null));
     
     EObjectTreeItemAttributeDescriptor eObjectTreeItemAttributeDescriptor;
     
@@ -167,9 +170,9 @@ public class PropertyDescriptorsTreeViewCreator {
           buf.append(propertyDescriptor.getInitialValue());
           return buf.toString();
         })
-        .addNodeOperationDescriptor(new NodeOperationDescriptor(TableRowOperation.NEW_OBJECT_BEFORE, "New Property Descriptor before"))
-        .addNodeOperationDescriptor(new NodeOperationDescriptor(TableRowOperation.NEW_OBJECT_AFTER, "New Property Descriptor after"))
-        .addNodeOperationDescriptor(new NodeOperationDescriptor(TableRowOperation.DELETE_OBJECT, "Remove PropertyDescriptor"));
+        .addNodeOperationDescriptor(new NodeOperationDescriptorNewBefore("New Property Descriptor before", null, null))
+        .addNodeOperationDescriptor(new NodeOperationDescriptorNewAfter("New Property Descriptor after", null, null))
+        .addNodeOperationDescriptor(new NodeOperationDescriptorDelete("Remove PropertyDescriptor", null));
     
     EObjectTreeItemAttributeDescriptor eObjectTreeItemAttributeDescriptor;
     
@@ -215,15 +218,15 @@ public class PropertyDescriptorsTreeViewCreator {
     
     // File extensions
     EObjectTreeItemAttributeListValueDescriptor fileExtensionDescriptor = new EObjectTreeItemAttributeListValueDescriptor()
-        .addNodeOperationDescriptor(new NodeOperationDescriptor(TableRowOperation.NEW_OBJECT_BEFORE, "New file extension before"))
-        .addNodeOperationDescriptor(new NodeOperationDescriptor(TableRowOperation.NEW_OBJECT_AFTER, "New file extension after"))
-        .addNodeOperationDescriptor(new NodeOperationDescriptor(TableRowOperation.DELETE_OBJECT, "Remove file extension"));
+        .addNodeOperationDescriptor(new NodeOperationDescriptorNewBefore("New file extension before", null, null))
+        .addNodeOperationDescriptor(new NodeOperationDescriptorNewAfter("New file extension after", null, null))
+        .addNodeOperationDescriptor(new NodeOperationDescriptorDelete("Remove file extension", null));
     
     nodeOperationDescriptors = new ArrayList<>();
-    nodeOperationDescriptors.add(new NodeOperationDescriptor(TableRowOperation.NEW_OBJECT, "New file extension"));
+    nodeOperationDescriptors.add(new NodeOperationDescriptorNew("New file extension", null, null));
     EObjectTreeItemAttributeListDescriptor eObjectTreeItemAttributeListDescriptor = new EObjectTreeItemAttributeListDescriptor(PROPERTIES_PACKAGE.getFilePropertyDescriptor_FileExtensions())
         .setLabelText("File extensions")
-        .addNodeOperationDescriptor(new NodeOperationDescriptor(TableRowOperation.NEW_OBJECT, "New file extension"))
+        .addNodeOperationDescriptor(new NodeOperationDescriptorNew("New file extension", null, null))
         .setListValuesDescriptor(fileExtensionDescriptor);
     eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(eObjectTreeItemAttributeListDescriptor);
     

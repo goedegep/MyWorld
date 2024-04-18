@@ -39,7 +39,7 @@ public class AlbumDiscLocationInfo {
    * @param absAlbumFolderPathname The absolute pathname of the folder in which the album tracks are located.
    * @param trackFileNames The filenames of the tracks.
    */
-  public AlbumDiscLocationInfo(String absAlbumFolderPathname, List<String> trackFileNames) {
+  private AlbumDiscLocationInfo(String absAlbumFolderPathname, List<String> trackFileNames) {
     this.absAlbumFolderPathname = absAlbumFolderPathname;
     this.trackFileNames = trackFileNames;
   }

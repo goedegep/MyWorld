@@ -10,7 +10,7 @@ import java.util.function.Predicate;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 
-import goedegep.appgen.TableRowOperation;
+import goedegep.appgen.Operation;
 import goedegep.appgen.TableRowOperationDescriptor;
 
 /**
@@ -64,7 +64,7 @@ public class EObjectTableDescriptor<T extends EObject> {
   /**
    * Row operations.
    */
-  private Map<TableRowOperation, TableRowOperationDescriptor<T>>  rowOperations;
+  private Map<Operation, TableRowOperationDescriptor<T>>  rowOperations;
   
   /**
    * ?
@@ -86,7 +86,7 @@ public class EObjectTableDescriptor<T extends EObject> {
    */
   public EObjectTableDescriptor(
       List<EObjectTableColumnDescriptorAbstract<T>> columnDescriptors,
-      Map<TableRowOperation, TableRowOperationDescriptor<T>>  rowOperations
+      Map<Operation, TableRowOperationDescriptor<T>>  rowOperations
       ) {
     this(null, null, columnDescriptors, rowOperations);
   }
@@ -102,7 +102,7 @@ public class EObjectTableDescriptor<T extends EObject> {
   public EObjectTableDescriptor(
       String placeHolderText, Comparator<T> comparator,
       List<EObjectTableColumnDescriptorAbstract<T>> columnDescriptors,
-      Map<TableRowOperation, TableRowOperationDescriptor<T>>  rowOperations
+      Map<Operation, TableRowOperationDescriptor<T>>  rowOperations
       ) {
     this.placeHolderText = placeHolderText;
     this.comparator = comparator;
@@ -166,7 +166,7 @@ public class EObjectTableDescriptor<T extends EObject> {
    * 
    * @return the row operations.
    */
-  public Map<TableRowOperation, TableRowOperationDescriptor<T>> getRowOperations() {
+  public Map<Operation, TableRowOperationDescriptor<T>> getRowOperations() {
     return rowOperations;
   }
 
@@ -175,7 +175,7 @@ public class EObjectTableDescriptor<T extends EObject> {
    * 
    * @param rowOperations the row operations
    */
-  public void setRowOperations(Map<TableRowOperation, TableRowOperationDescriptor<T>> rowOperations) {
+  public void setRowOperations(Map<Operation, TableRowOperationDescriptor<T>> rowOperations) {
     this.rowOperations = rowOperations;
   }
 

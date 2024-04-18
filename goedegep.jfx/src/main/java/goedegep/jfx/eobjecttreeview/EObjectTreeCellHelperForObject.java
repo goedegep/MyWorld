@@ -18,7 +18,7 @@ import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 
-import goedegep.appgen.TableRowOperation;
+import goedegep.appgen.Operation;
 import goedegep.jfx.ComponentFactoryFx;
 import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.DefaultCustomizationFx;
@@ -91,7 +91,6 @@ public class EObjectTreeCellHelperForObject extends EObjectTreeCellHelperTemplat
    */
   @Override
   protected ContextMenu createContextMenu(Object eObjectTreeItemContent) {
-    LOGGER.info("=>");
     
     List<NodeOperationDescriptor> nodeOperationDescriptors = itemDescriptor != null ? itemDescriptor.getNodeOperationDescriptors() : classDescriptor.getNodeOperationDescriptors();
     if (nodeOperationDescriptors == null) {
@@ -154,32 +153,32 @@ public class EObjectTreeCellHelperForObject extends EObjectTreeCellHelperTemplat
     for (NodeOperationDescriptor nodeOperationDescriptor: nodeOperationDescriptors) {
       MenuItem menuItem;
       Menu menu;
-      if ((nodeOperationDescriptor.getOperation() == TableRowOperation.NEW_OBJECT_BEFORE)  &&
+      if ((nodeOperationDescriptor.getOperation() == Operation.NEW_OBJECT_BEFORE)  &&
           (subTypes != null)  &&  (subTypes.size() > 1)) {
         menu = createSubClassesMenu(nodeOperationDescriptor.getMenuText(), subTypes, true);
         contextMenu.getItems().add(menu);
-      } else if ((nodeOperationDescriptor.getOperation() == TableRowOperation.NEW_OBJECT_AFTER)  &&
+      } else if ((nodeOperationDescriptor.getOperation() == Operation.NEW_OBJECT_AFTER)  &&
           (subTypes != null)  &&  (subTypes.size() > 1)) {
         menu = createSubClassesMenu(nodeOperationDescriptor.getMenuText(), subTypes, false);
         contextMenu.getItems().add(menu);
       } else {
         menuItem = new MenuItem(nodeOperationDescriptor.getMenuText());
-        if ((eObjectTreeItemContent != null)  &&  (nodeOperationDescriptor.getOperation() == TableRowOperation.NEW_OBJECT)) {
+        if ((eObjectTreeItemContent != null)  &&  (nodeOperationDescriptor.getOperation() == Operation.NEW_OBJECT)) {
           menuItem.setDisable(true);
         }
-        if ((eObjectTreeItemContent == null)  &&  (nodeOperationDescriptor.getOperation() == TableRowOperation.DELETE_OBJECT)) {
-          menuItem.setDisable(true);
-        }
-        
-        if (first  &&  (nodeOperationDescriptor.getOperation() == TableRowOperation.MOVE_OBJECT_UP)) {
-          menuItem.setDisable(true);
-        }
-        if (last  &&  (nodeOperationDescriptor.getOperation() == TableRowOperation.MOVE_OBJECT_DOWN)) {
+        if ((eObjectTreeItemContent == null)  &&  (nodeOperationDescriptor.getOperation() == Operation.DELETE_OBJECT)) {
           menuItem.setDisable(true);
         }
         
-        if (nodeOperationDescriptor.getOperation() == TableRowOperation.EXTENDED_OPERATION) {
-          ExtendedNodeOperationDescriptor extendedNodeOperationDescriptor = (ExtendedNodeOperationDescriptor) nodeOperationDescriptor;
+        if (first  &&  (nodeOperationDescriptor.getOperation() == Operation.MOVE_OBJECT_UP)) {
+          menuItem.setDisable(true);
+        }
+        if (last  &&  (nodeOperationDescriptor.getOperation() == Operation.MOVE_OBJECT_DOWN)) {
+          menuItem.setDisable(true);
+        }
+        
+        if (nodeOperationDescriptor.getOperation() == Operation.EXTENDED_OPERATION) {
+          NodeOperationDescriptorCustom extendedNodeOperationDescriptor = (NodeOperationDescriptorCustom) nodeOperationDescriptor;
           Predicate<EObjectTreeItem> predicate = extendedNodeOperationDescriptor.getIsMenuToBeEnabled();
           if (predicate != null) {
             if (! predicate.test(eObjectTreeItem)) {
@@ -189,7 +188,7 @@ public class EObjectTreeCellHelperForObject extends EObjectTreeCellHelperTemplat
         }
         
         contextMenu.getItems().add(menuItem);
-        final TableRowOperation operation = nodeOperationDescriptor.getOperation();
+        final Operation operation = nodeOperationDescriptor.getOperation();
         menuItem.setOnAction(new EventHandler<ActionEvent>() {
           public void handle(ActionEvent t) {
             switch (operation) {
@@ -221,11 +220,18 @@ public class EObjectTreeCellHelperForObject extends EObjectTreeCellHelperTemplat
               throw new IllegalArgumentException("Operatie 'Attribuut editor' is (momenteel) niet mogelijk voor een object");
               
             case OPEN:
-              throw new IllegalArgumentException("Operatie 'Open' is (momenteel) niet mogelijk voor een object");
+              NodeOperationDescriptorOpen nodeOperationDescriptorOpen = (NodeOperationDescriptorOpen) nodeOperationDescriptor;
+              Consumer<EObjectTreeItem> openObjectFunction = nodeOperationDescriptorOpen.getOpenObjectFunction();
+              if (openObjectFunction != null) {
+                openObjectFunction.accept(eObjectTreeItem);
+              } else {
+                throw new IllegalArgumentException("Operation 'Open' for a class requires an openObjectFunction");
+              }
+              break;
               
             case EXTENDED_OPERATION:
-              ExtendedNodeOperationDescriptor extendedNodeOperationDescriptor = (ExtendedNodeOperationDescriptor) nodeOperationDescriptor;
-              Consumer<EObjectTreeItem> nodeOperation = extendedNodeOperationDescriptor.getNodeOperation();
+              NodeOperationDescriptorCustom extendedNodeOperationDescriptor = (NodeOperationDescriptorCustom) nodeOperationDescriptor;
+              Consumer<EObjectTreeItem> nodeOperation = extendedNodeOperationDescriptor.getNodeOperationFunction();
               if (nodeOperation != null) {
                 nodeOperation.accept(eObjectTreeItem);
               }

@@ -6,7 +6,7 @@ import java.util.Map;
 
 import org.eclipse.emf.ecore.EReference;
 
-import goedegep.appgen.TableRowOperation;
+import goedegep.appgen.Operation;
 import goedegep.appgen.TableRowOperationDescriptor;
 import goedegep.jfx.ComponentFactoryFx;
 import goedegep.jfx.CustomizationFx;
@@ -109,9 +109,9 @@ class PreviousAddressesTableDescriptor extends EObjectTableDescriptor<AddressFor
       );
   
   @SuppressWarnings("serial")
-  private static Map<TableRowOperation, TableRowOperationDescriptor<AddressForPeriod>> rowOperations = new HashMap<>() {
+  private static Map<Operation, TableRowOperationDescriptor<AddressForPeriod>> rowOperations = new HashMap<>() {
     {
-    put(TableRowOperation.DELETE_OBJECT, new TableRowOperationDescriptor<>("Delete"));
+    put(Operation.DELETE_OBJECT, new TableRowOperationDescriptor<>("Delete"));
     }
   };
   

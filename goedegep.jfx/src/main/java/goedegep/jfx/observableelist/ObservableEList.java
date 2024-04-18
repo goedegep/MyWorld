@@ -104,7 +104,9 @@ public class ObservableEList<T> implements ObservableList<T> {
               ListListenerHelper.fireValueChangedEvent(listenerHelper, new ObservableEListChange<T>(0, thisList.size() - 1, new ArrayList<T>(), EMPTY_PERM, true, thisList));
             } else {
               int index = getDecendentIndex(notification);
-              ListListenerHelper.fireValueChangedEvent(listenerHelper, new ObservableEListChange<T>(index, index + 1, new ArrayList<T>(), EMPTY_PERM, true, thisList));
+              if (index != -1) {
+                ListListenerHelper.fireValueChangedEvent(listenerHelper, new ObservableEListChange<T>(index, index + 1, new ArrayList<T>(), EMPTY_PERM, true, thisList));
+              }
             }
           }
           break;
@@ -112,7 +114,7 @@ public class ObservableEList<T> implements ObservableList<T> {
         case Notification.REMOVE:
           // for REMOVE isTouch() is always false
           LOGGER.severe("Removed item");
-          // if the notification is from this object, than a normal add many. Else it comes from a child, which means the element is updated.
+          // if the notification is from this object, than a normal remove. Else it comes from a child, which means the element is updated.
           if (notification.getFeature().equals(eReference)) {
             T removedObject = (T) notification.getOldValue();
             if (removeRangeState == null) {
@@ -140,7 +142,10 @@ public class ObservableEList<T> implements ObservableList<T> {
             }
           } else {
             int index = getDecendentIndex(notification);
-            ListListenerHelper.fireValueChangedEvent(listenerHelper, new ObservableEListChange<T>(index, index + 1, new ArrayList<T>(), EMPTY_PERM, true, thisList));
+            // In case of a bidirectional reference, the 'other side' also generates a notification, and the 'other side' may be outside this list.
+            if (index != -1) {
+              ListListenerHelper.fireValueChangedEvent(listenerHelper, new ObservableEListChange<T>(index, index + 1, new ArrayList<T>(), EMPTY_PERM, true, thisList));
+            }
           }
           break;
           
@@ -299,6 +304,9 @@ public class ObservableEList<T> implements ObservableList<T> {
 
   @Override
   public T get(int index) {
+    if (index < 0) {
+      LOGGER.severe("Negative index");
+    }
     return eList.get(index);
   }
 

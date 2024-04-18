@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
-import goedegep.appgen.TableRowOperation;
+import goedegep.appgen.Operation;
 import goedegep.appgen.TableRowOperationDescriptor;
 import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.eobjecttable.EObjectTable;
@@ -75,14 +75,14 @@ class SubjectsTableDescriptor extends EObjectTableDescriptor<Subject> {
   );
   
   @SuppressWarnings("serial")
-  private static Map<TableRowOperation, TableRowOperationDescriptor<Subject>> rowOperations = new HashMap<>() {
+  private static Map<Operation, TableRowOperationDescriptor<Subject>> rowOperations = new HashMap<>() {
     {
-      put(TableRowOperation.NEW_OBJECT, new TableRowOperationDescriptor<>("New subject"));
-      put(TableRowOperation.NEW_OBJECT_BEFORE, new TableRowOperationDescriptor<>("New subject before this one"));
-      put(TableRowOperation.NEW_OBJECT_AFTER, new TableRowOperationDescriptor<>("New subject after this one"));
-      put(TableRowOperation.MOVE_OBJECT_UP, new TableRowOperationDescriptor<>("Move subject up"));
-      put(TableRowOperation.MOVE_OBJECT_DOWN, new TableRowOperationDescriptor<>("Move subject down"));
-      put(TableRowOperation.DELETE_OBJECT, new TableRowOperationDescriptor<>("Delete subject"));
+      put(Operation.NEW_OBJECT, new TableRowOperationDescriptor<>("New subject"));
+      put(Operation.NEW_OBJECT_BEFORE, new TableRowOperationDescriptor<>("New subject before this one"));
+      put(Operation.NEW_OBJECT_AFTER, new TableRowOperationDescriptor<>("New subject after this one"));
+      put(Operation.MOVE_OBJECT_UP, new TableRowOperationDescriptor<>("Move subject up"));
+      put(Operation.MOVE_OBJECT_DOWN, new TableRowOperationDescriptor<>("Move subject down"));
+      put(Operation.DELETE_OBJECT, new TableRowOperationDescriptor<>("Delete subject"));
     }
   };
     
