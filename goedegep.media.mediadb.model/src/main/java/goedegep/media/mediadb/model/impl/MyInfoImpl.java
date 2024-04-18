@@ -547,67 +547,27 @@ public class MyInfoImpl extends MinimalEObjectImpl.Container implements MyInfo {
   public String toString() {
     StringBuilder buf = new StringBuilder();
 
-    buf.append("I want: ");
-    buf.append(isSetIWant() ? getIWant().toString() : "<no-iwant>").append(NEWLINE);
+    buf.append("albumType: ").append(getAlbumType()).append(NEWLINE);
+    buf.append("My comments: ").append(isSetMyComments() ? getMyComments() : "<no-my-comments>").append(NEWLINE);
+    buf.append("I want: ").append(getIWant() != null ? getIWant().toString() : "<no-iwant>").append(NEWLINE);
 
-    //    buf.append("I want tracks: ");
-    //    if (isSetIWantTracks()) {
-    //      boolean first = true;
-    //      for (DiscAndTrackNrs discAndTrackNrs : getIWantTracks()) {
-    //        Integer discNr = null;
-    //        if (discAndTrackNrs.isSetDiscNr()) {
-    //          discNr = discAndTrackNrs.getDiscNr();
-    //        }
-    //        for (Integer trackNr : discAndTrackNrs.getTrackNrs()) {
-    //          if (first) {
-    //            first = false;
-    //          } else {
-    //            buf.append(", ");
-    //          }
-    //          if (discNr != null) {
-    //            buf.append(discNr);
-    //            buf.append(".");
-    //          }
-    //          buf.append(trackNr);
-    //        }
-    //      }
-    //    }
-    //    buf.append(NEWLINE);
-
-    buf.append("My comments: ");
-    buf.append(isSetMyComments() ? getMyComments() : "<no-my-comments>").append(NEWLINE);
-
-    for (Album album : getAlbumReferences()) {
-      buf.append("Album reference: ");
-      if (album.isSetArtist()) {
-        buf.append(album.getArtist().getName());
+    if (getIHaveOn().isEmpty()) {
+      buf.append("No I Have on").append(NEWLINE);
+    } else {
+      for (MediumInfo mediumInfo : getIHaveOn()) {
+        buf.append("I have on: ").append(mediumInfo).append(NEWLINE);
       }
-      buf.append(" - ");
-      buf.append(album.getTitle());
-      buf.append(NEWLINE);
     }
 
-    //    buf.append("I have on: ");
-    //    if (isSetIHaveOn()) {
-    //      boolean first = true;
-    //      for (MediumInfo mediumInfo : getIHaveOn()) {
-    //        if (first) {
-    //          first = false;
-    //        } else {
-    //          buf.append(", ");
-    //        }
-    //        buf.append(mediumInfo.toString());
-    //      }
-    //    }
-    //    buf.append(NEWLINE);
+    if (getAlbumReferences().isEmpty()) {
+      buf.append("No album references").append(NEWLINE);
+    } else {
+      for (Album album : getAlbumReferences()) {
+        buf.append("Album reference: ").append(album.getArtistAndTitle()).append(NEWLINE);
+      }
+    }
 
-    buf.append("collection: ");
-    //    buf.append(isSetCollection() ? getCollection() : "<no-collection>").append(NEWLINE);
-
-    buf.append("iveHadOnLp: ");
-    buf.append(iveHadOnLP ? "yes" : "no").append(NEWLINE);
-
-    buf.append("inlayDocument: ");
+    buf.append("iveHadOnLp: ").append(isIveHadOnLP() ? "yes" : "no").append(NEWLINE);
 
     return buf.toString();
   }

@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
-import goedegep.appgen.TableRowOperation;
+import goedegep.appgen.Operation;
 import goedegep.appgen.TableRowOperationDescriptor;
 import goedegep.jfx.ComponentFactoryFx;
 import goedegep.jfx.CustomizationFx;
@@ -549,9 +549,9 @@ class AddressesTableDescriptor extends EObjectTableDescriptor<Address> {
       );
   
   @SuppressWarnings("serial")
-  private static Map<TableRowOperation, TableRowOperationDescriptor<Address>> rowOperations = new HashMap<>() {
+  private static Map<Operation, TableRowOperationDescriptor<Address>> rowOperations = new HashMap<>() {
     {
-    put(TableRowOperation.DELETE_OBJECT, new TableRowOperationDescriptor<>("Delete"));
+    put(Operation.DELETE_OBJECT, new TableRowOperationDescriptor<>("Delete"));
     }
   };
   

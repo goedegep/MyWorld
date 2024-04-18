@@ -99,15 +99,12 @@ public class AlbumFolder {
    * it is an audio track (see {@link #isAudioFile})
    * </li>
    * <li>
-   * <code>checkNamingConvention</code> is false, or the naming convention is correct.
+   * argument <code>checkNamingConvention</code> is false, or the naming convention is correct.
    * </li>
    * </ul>
    * 
    * @param albumFolder the <code>Path</code> of the folder that contains the album.
    * @param checkNamingConvention if true, only tracks with the correct naming convention are added to the <code>AlbumOnDiscInfo</code>.
-   * @param issueDate the year the album was issued, one of the 3 elements that identify the album
-   * @param albumArtist the artist of the album, one of the 3 elements that identify the album
-   * @param albumTitle the title of the album, one of the 3 elements that identify the album
    * @param albums a list of <code>AlbumOnDiscInfo</code>, to which the information of this album will be added.
    * @param errors a list to which all encountered problems have to be added
    */
@@ -231,7 +228,7 @@ public class AlbumFolder {
    * @param artist the artist of the album.
    * @param title the title of the album.
    * @param errors a list to which all encountered problems have to be added.
-   * @return the AlbumOnDiscInfo for the album in the <code>albumFolder</code>.
+   * @return the {@code AlbumOnDiscInfo} for the album in the {@code albumFolder}.
    */
   private static AlbumOnDiscInfo gatherTrackInfoAndCreateAlbumOnDiscInfo(Path albumFolder, boolean checkNamingConvention, FlexDate issueDate, String artist, String title, List<MusicFolderStructureErrorInfo> errors) {
     MusicFolderStructureErrorInfo error;
@@ -242,7 +239,6 @@ public class AlbumFolder {
     try (DirectoryStream<Path> stream = Files.newDirectoryStream(albumFolder)) {
       for (Path path: stream) {
 
-        LOGGER.fine("Handling path: " + path.getFileName().toString());
         if (FileUtils.isAudioFile(path)) {
           LOGGER.fine("Is audio track: " + path.getFileName());
           
@@ -487,8 +483,10 @@ public class AlbumFolder {
         buf.append(releaseDate.getMonth() + 1);
       }
     }
-    buf.append(" - ");
-    buf.append(MusicFolderUtil.replaceGroupSeparatorAndNameToFileName(artistName, true));
+    if (artistName != null) {
+      buf.append(" - ");
+      buf.append(MusicFolderUtil.replaceGroupSeparatorAndNameToFileName(artistName, true));
+    }
     buf.append(" - ");
     buf.append(MusicFolderUtil.replaceGroupSeparatorAndNameToFileName(albumTitle, discId != null));
     

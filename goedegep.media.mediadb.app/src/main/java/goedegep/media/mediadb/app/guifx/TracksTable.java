@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
-import goedegep.appgen.TableRowOperation;
+import goedegep.appgen.Operation;
 import goedegep.appgen.TableRowOperationDescriptor;
 import goedegep.jfx.AppResourcesFx;
 import goedegep.jfx.CustomizationFx;
@@ -233,11 +233,11 @@ class TracksTableDescriptor extends EObjectTableDescriptor<Track> {
   );
   
   @SuppressWarnings("serial")
-  private static Map<TableRowOperation, TableRowOperationDescriptor<Track>> rowOperations = new HashMap<>() {
+  private static Map<Operation, TableRowOperationDescriptor<Track>> rowOperations = new HashMap<>() {
     {
-      put(TableRowOperation.OPEN, new TableRowOperationDescriptor<>("Play"));
-      put(TableRowOperation.NEW_OBJECT, new TableRowOperationDescriptor<>("New track"));
-      put(TableRowOperation.DELETE_OBJECT, new TableRowOperationDescriptor<>("Delete track"));
+      put(Operation.OPEN, new TableRowOperationDescriptor<>("Play"));
+      put(Operation.NEW_OBJECT, new TableRowOperationDescriptor<>("New track"));
+      put(Operation.DELETE_OBJECT, new TableRowOperationDescriptor<>("Delete track"));
     }
   };
   
@@ -277,9 +277,9 @@ class TrackComparator implements Comparator<Track> {
       compareResult = track1.getArtist().getName().compareTo(track2.getArtist().getName());
     }
     if (compareResult == 0) {
-      if (!track1.isSetTitle()) {
+      if (track1.getTitle() == null) {
         compareResult = -1;
-      } else if (!track2.isSetTitle()) {
+      } else if (track2.getTitle() == null) {
         compareResult = 1;
       } else {
         compareResult = track1.getTitle().compareTo(track2.getTitle());

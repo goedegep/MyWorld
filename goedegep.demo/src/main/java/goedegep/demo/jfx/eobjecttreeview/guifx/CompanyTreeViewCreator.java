@@ -4,7 +4,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-import goedegep.appgen.TableRowOperation;
 import goedegep.emfsample.model.Birthday;
 import goedegep.emfsample.model.EmfSamplePackage;
 import goedegep.emfsample.model.Person;
@@ -16,6 +15,10 @@ import goedegep.jfx.eobjecttreeview.EObjectTreeItemClassListReferenceDescriptor;
 import goedegep.jfx.eobjecttreeview.EObjectTreeItemClassReferenceDescriptor;
 import goedegep.jfx.eobjecttreeview.EObjectTreeView;
 import goedegep.jfx.eobjecttreeview.NodeOperationDescriptor;
+import goedegep.jfx.eobjecttreeview.NodeOperationDescriptorDelete;
+import goedegep.jfx.eobjecttreeview.NodeOperationDescriptorNew;
+import goedegep.jfx.eobjecttreeview.NodeOperationDescriptorNewAfter;
+import goedegep.jfx.eobjecttreeview.NodeOperationDescriptorNewBefore;
 import goedegep.jfx.eobjecttreeview.PresentationType;
 
 public class CompanyTreeViewCreator {
@@ -62,12 +65,12 @@ public class CompanyTreeViewCreator {
     // Note: we use a different order for the children than the default order.
     // Company.employees
     nodeOperationDescriptors = new ArrayList<>();
-    nodeOperationDescriptors.add(new NodeOperationDescriptor(TableRowOperation.NEW_OBJECT, "New employee"));
+    nodeOperationDescriptors.add(new NodeOperationDescriptorNew("New employee", null, null));
     classListReferenceDescriptor = new EObjectTreeItemClassListReferenceDescriptor(EMF_SAMPLE_PACKAGE.getCompany_Employees())
         .setLabelText("Employees")
         .setStrongText(true)
         .setNodeIconFunction(object -> Resources.getEmployeesImage())
-        .addNodeOperationDescriptor(new NodeOperationDescriptor(TableRowOperation.NEW_OBJECT, "New employee"));
+        .addNodeOperationDescriptor(new NodeOperationDescriptorNew("New employee", null, null));
     eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(classListReferenceDescriptor);
     
     // Company.formerEmployees
@@ -95,7 +98,7 @@ public class CompanyTreeViewCreator {
         
     // Person
     nodeOperationDescriptors = new ArrayList<>();
-    nodeOperationDescriptors.add(new NodeOperationDescriptor(TableRowOperation.NEW_OBJECT, "New employee after this employee"));
+    nodeOperationDescriptors.add(new NodeOperationDescriptorNew("New employee after this employee", null, null));
     EObjectTreeItemClassDescriptor eObjectTreeItemClassDescriptor = new EObjectTreeItemClassDescriptor()
         .setNodeTextFunction(eObject -> {
           StringBuilder buf = new StringBuilder();
@@ -118,17 +121,17 @@ public class CompanyTreeViewCreator {
         })
         .setStrongText(true)
         .setNodeIconFunction(eObject -> Resources.getPersonImage())
-        .addNodeOperationDescriptor(new NodeOperationDescriptor(TableRowOperation.NEW_OBJECT, "New employee after this employee"));
+        .addNodeOperationDescriptor(new NodeOperationDescriptorNew("New employee after this employee", null, null));
     
     // Person.firstNames
     EObjectTreeItemAttributeListValueDescriptor listValueDescriptor = new EObjectTreeItemAttributeListValueDescriptor()
-        .addNodeOperationDescriptor(new NodeOperationDescriptor(TableRowOperation.NEW_OBJECT_BEFORE, "New firstname before this name"))
-        .addNodeOperationDescriptor(new NodeOperationDescriptor(TableRowOperation.NEW_OBJECT_AFTER, "New firstname after this name"))
-        .addNodeOperationDescriptor(new NodeOperationDescriptor(TableRowOperation.DELETE_OBJECT, "Delete this firstname"));
+        .addNodeOperationDescriptor(new NodeOperationDescriptorNewBefore("New firstname before this name", null, null))
+        .addNodeOperationDescriptor(new NodeOperationDescriptorNewAfter("New firstname after this name", null, null))
+        .addNodeOperationDescriptor(new NodeOperationDescriptorDelete("Delete this firstname", null));
     
     EObjectTreeItemAttributeListDescriptor eObjectTreeItemAttributeListDescriptor = new EObjectTreeItemAttributeListDescriptor(EMF_SAMPLE_PACKAGE.getPerson_Firstnames())
         .setLabelText("First names")
-        .addNodeOperationDescriptor(new NodeOperationDescriptor(TableRowOperation.NEW_OBJECT, "Add a firstname"))
+        .addNodeOperationDescriptor(new NodeOperationDescriptorNew("Add a firstname", null, null))
         .setListValuesDescriptor(listValueDescriptor);
     eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(eObjectTreeItemAttributeListDescriptor);
     

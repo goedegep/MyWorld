@@ -8,7 +8,7 @@ import java.util.logging.Logger;
 
 import org.eclipse.emf.ecore.EAttribute;
 
-import goedegep.appgen.TableRowOperation;
+import goedegep.appgen.Operation;
 import goedegep.jfx.DefaultCustomizationFx;
 import goedegep.jfx.browser.BrowserWindow;
 import goedegep.util.url.UrlUtil;
@@ -101,11 +101,11 @@ public abstract class EObjectTreeCellHelperForAttributeAbstract extends EObjectT
     for (NodeOperationDescriptor nodeOperationDescriptor: nodeOperationDescriptors) {
       LOGGER.info("Handling operation: " + nodeOperationDescriptor.getOperation().name());
       
-      if (nodeOperationDescriptor instanceof ExtendedNodeOperationDescriptor extendedNodeOperationDescriptor) {
+      if (nodeOperationDescriptor instanceof NodeOperationDescriptorCustom extendedNodeOperationDescriptor) {
         LOGGER.severe("Extended operation: " + extendedNodeOperationDescriptor.getMenuText());
         // TODO handle extended operations.
       } else {
-        if (!nodeOperationDescriptor.getOperation().equals(TableRowOperation.OPEN)) {
+        if (!nodeOperationDescriptor.getOperation().equals(Operation.OPEN)) {
           throw new IllegalArgumentException("Only operation 'OPEN' is possible for simple attributes, operation is: " + nodeOperationDescriptor.getOperation() + ", menu text is: " + nodeOperationDescriptor.getMenuText());
         }
 

@@ -50,7 +50,7 @@ import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 
 import goedegep.appgen.EEnumEditorDescriptor;
-import goedegep.appgen.TableRowOperation;
+import goedegep.appgen.Operation;
 import goedegep.appgen.TableRowOperationDescriptor;
 import goedegep.appgen.TextBasedCellRenderer;
 import goedegep.appgen.WindowUtil;
@@ -101,7 +101,7 @@ public class EObjectJTable<T extends EObject> extends AppGenAbstractTable implem
   private AppFrame owner;   // The AppFrame which contains this table.
   private EObjectTableColumnDescriptor[] columnDescriptors;
   @SuppressWarnings("rawtypes")
-  private Map<TableRowOperation, TableRowOperationDescriptor> rowOperations = null;
+  private Map<Operation, TableRowOperationDescriptor> rowOperations = null;
   private List<ObjectSelectionListener<T>> objectSelectionListeners = new ArrayList<ObjectSelectionListener<T>>();  // Listeners to which object is selected.
   private EList<T> objects;   // The objects shown in the table.
   private EObjectTableModel<T> tableModel;
@@ -450,7 +450,7 @@ public class EObjectJTable<T extends EObject> extends AppGenAbstractTable implem
     TableRowOperationDescriptor tableRowOperationDescriptor;
 
     if (row != -1) {
-      tableRowOperationDescriptor = rowOperations.get(TableRowOperation.OPEN);
+      tableRowOperationDescriptor = rowOperations.get(Operation.OPEN);
       if (tableRowOperationDescriptor != null) {
         MenuFactory.addMenuItem(popup, tableRowOperationDescriptor.getMenuText(), new ActionListener()  {
           public void actionPerformed(ActionEvent e) {
@@ -459,7 +459,7 @@ public class EObjectJTable<T extends EObject> extends AppGenAbstractTable implem
         });
       }
 
-      tableRowOperationDescriptor = rowOperations.get(TableRowOperation.NEW_OBJECT_BEFORE);
+      tableRowOperationDescriptor = rowOperations.get(Operation.NEW_OBJECT_BEFORE);
       if (tableRowOperationDescriptor != null) {
         MenuFactory.addMenuItem(popup, tableRowOperationDescriptor.getMenuText(), new ActionListener()  {
           public void actionPerformed(ActionEvent e) {
@@ -468,7 +468,7 @@ public class EObjectJTable<T extends EObject> extends AppGenAbstractTable implem
         });
       }
 
-      tableRowOperationDescriptor = rowOperations.get(TableRowOperation.NEW_OBJECT_AFTER);
+      tableRowOperationDescriptor = rowOperations.get(Operation.NEW_OBJECT_AFTER);
       if (tableRowOperationDescriptor != null) {
         MenuFactory.addMenuItem(popup, tableRowOperationDescriptor.getMenuText(), new ActionListener()  {
           public void actionPerformed(ActionEvent e) {
@@ -477,7 +477,7 @@ public class EObjectJTable<T extends EObject> extends AppGenAbstractTable implem
         });
       }
 
-      tableRowOperationDescriptor = rowOperations.get(TableRowOperation.DELETE_OBJECT);
+      tableRowOperationDescriptor = rowOperations.get(Operation.DELETE_OBJECT);
       if (tableRowOperationDescriptor != null) {
         MenuFactory.addMenuItem(popup, tableRowOperationDescriptor.getMenuText(), new ActionListener()  {
           public void actionPerformed(ActionEvent e) {
@@ -486,7 +486,7 @@ public class EObjectJTable<T extends EObject> extends AppGenAbstractTable implem
         });
       }
 
-      tableRowOperationDescriptor = rowOperations.get(TableRowOperation.MOVE_OBJECT_UP);
+      tableRowOperationDescriptor = rowOperations.get(Operation.MOVE_OBJECT_UP);
       if (tableRowOperationDescriptor != null) {
         menuItem = MenuFactory.addMenuItem(popup, tableRowOperationDescriptor.getMenuText(), new ActionListener()  {
           public void actionPerformed(ActionEvent e) {
@@ -498,7 +498,7 @@ public class EObjectJTable<T extends EObject> extends AppGenAbstractTable implem
         }
       }
 
-      tableRowOperationDescriptor = rowOperations.get(TableRowOperation.MOVE_OBJECT_DOWN);
+      tableRowOperationDescriptor = rowOperations.get(Operation.MOVE_OBJECT_DOWN);
       if (tableRowOperationDescriptor != null) {
         menuItem = MenuFactory.addMenuItem(popup, tableRowOperationDescriptor.getMenuText(), new ActionListener()  {
           public void actionPerformed(ActionEvent e) {
@@ -510,7 +510,7 @@ public class EObjectJTable<T extends EObject> extends AppGenAbstractTable implem
         }
       }
       
-      tableRowOperationDescriptor = rowOperations.get(TableRowOperation.ATTRIBUTE_EDITOR);
+      tableRowOperationDescriptor = rowOperations.get(Operation.ATTRIBUTE_EDITOR);
       if (tableRowOperationDescriptor != null) {
         MenuFactory.addMenuItem(popup, tableRowOperationDescriptor.getMenuText(), new ActionListener()  {
           public void actionPerformed(ActionEvent e) {
@@ -520,9 +520,9 @@ public class EObjectJTable<T extends EObject> extends AppGenAbstractTable implem
 
       }
     } else {
-      Object o = rowOperations.get(TableRowOperation.NEW_OBJECT);
+      Object o = rowOperations.get(Operation.NEW_OBJECT);
       LOGGER.info("o: " + o);
-      tableRowOperationDescriptor = rowOperations.get(TableRowOperation.NEW_OBJECT);
+      tableRowOperationDescriptor = rowOperations.get(Operation.NEW_OBJECT);
       if (tableRowOperationDescriptor != null) {
         MenuFactory.addMenuItem(popup, tableRowOperationDescriptor.getMenuText(), new ActionListener()  {
           public void actionPerformed(ActionEvent e) {

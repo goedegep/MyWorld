@@ -63,6 +63,7 @@ public class OsmAndUtil {
     iconMap.put(POICategoryId.CAR_RENTAL, "amenity_car_rental");
     iconMap.put(POICategoryId.CASINO, "amenity_casino");
     iconMap.put(POICategoryId.CASTLE, "historic_castle");
+    iconMap.put(POICategoryId.CAVE, "natural_cave_entrance");
     iconMap.put(POICategoryId.CHURCH, "building_type_church");
     iconMap.put(POICategoryId.CINEMA, "amenity_cinema");
     iconMap.put(POICategoryId.CITY, "place_city");
@@ -71,6 +72,7 @@ public class OsmAndUtil {
     iconMap.put(POICategoryId.FERRY, "cargo_vehicle");
     iconMap.put(POICategoryId.FIRE_DEPARTMENT, "amenity_fire_station");
     iconMap.put(POICategoryId.GOLF_COURSE, "golf_course");
+    iconMap.put(POICategoryId.HIKING, "piste_hike");
     iconMap.put(POICategoryId.HOSPITAL, "amenity_hospital");
     iconMap.put(POICategoryId.HOTEL, "accomodation");
     iconMap.put(POICategoryId.ICE_SKATING_RING, "ice_skating");

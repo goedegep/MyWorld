@@ -5,7 +5,6 @@ import java.util.logging.Logger;
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
 
-import goedegep.appgen.TableRowOperation;
 import goedegep.gpx.model.GPXPackage;
 import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.eobjecttreeview.EObjectTreeItemAttributeDescriptor;
@@ -14,7 +13,8 @@ import goedegep.jfx.eobjecttreeview.EObjectTreeItemClassDescriptor;
 import goedegep.jfx.eobjecttreeview.EObjectTreeItemClassListReferenceDescriptor;
 import goedegep.jfx.eobjecttreeview.EObjectTreeItemClassReferenceDescriptor;
 import goedegep.jfx.eobjecttreeview.EObjectTreeView;
-import goedegep.jfx.eobjecttreeview.NodeOperationDescriptor;
+import goedegep.jfx.eobjecttreeview.NodeOperationDescriptorDelete;
+import goedegep.jfx.eobjecttreeview.NodeOperationDescriptorNew;
 import goedegep.resources.ImageResource;
 
 public class GPXTreeViewCreator extends EObjectTreeView {
@@ -100,7 +100,7 @@ public class GPXTreeViewCreator extends EObjectTreeView {
     eObjectTreeItemClassReferenceDescriptor = new EObjectTreeItemClassReferenceDescriptor(GPX_PACKAGE.getGpxType_Metadata())
         .setNodeTextFunction(eObject -> "Meta data (metadata)")
         .setExpandOnCreation(true)
-        .addNodeOperationDescriptor(new NodeOperationDescriptor(TableRowOperation.NEW_OBJECT, "Create Metadata"));
+        .addNodeOperationDescriptor(new NodeOperationDescriptorNew("Create Metadata", null, null));
     eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(eObjectTreeItemClassReferenceDescriptor);
 
     EObjectTreeItemAttributeDescriptor eObjectTreeItemAttributeDescriptor;
@@ -134,7 +134,7 @@ public class GPXTreeViewCreator extends EObjectTreeView {
     eObjectTreeItemClassReferenceDescriptor = new EObjectTreeItemClassReferenceDescriptor(GPX_PACKAGE.getGpxType_Extensions())
         .setNodeTextFunction(eObject -> "Extensions (extensions)")
         .setExpandOnCreation(true)
-        .addNodeOperationDescriptor(new NodeOperationDescriptor(TableRowOperation.NEW_OBJECT, "Create Metadata"));
+        .addNodeOperationDescriptor(new NodeOperationDescriptorNew("Create Metadata", null, null));
     eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(eObjectTreeItemClassReferenceDescriptor);
     
     return eObjectTreeItemClassDescriptor;
@@ -150,7 +150,7 @@ public class GPXTreeViewCreator extends EObjectTreeView {
         .setNodeIconFunction(eObject -> {
           return ImageResource.LOCATION_FLAG_YELLOW.getImage();
         })
-        .addNodeOperationDescriptor(new NodeOperationDescriptor(TableRowOperation.DELETE_OBJECT, "Delete"));
+        .addNodeOperationDescriptor(new NodeOperationDescriptorDelete("Delete", null));
 
     EObjectTreeItemAttributeDescriptor eObjectTreeItemAttributeDescriptor;
 

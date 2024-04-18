@@ -13,7 +13,7 @@ import java.util.Set;
 import java.util.function.BiConsumer;
 import java.util.logging.Logger;
 
-import goedegep.appgen.TableRowOperation;
+import goedegep.appgen.Operation;
 import goedegep.appgen.TableRowOperationDescriptor;
 import goedegep.jfx.AppResourcesFx;
 import goedegep.jfx.ComponentFactoryFx;
@@ -44,6 +44,7 @@ import goedegep.media.mediadb.model.MyTrackInfo;
 import goedegep.media.mediadb.model.Track;
 import goedegep.media.mediadb.model.TrackReference;
 import goedegep.media.mediadb.model.util.MediaDbUtil;
+import goedegep.media.musicfolder.AlbumOnDiscInfo;
 import goedegep.resources.ImageSize;
 import goedegep.util.datetime.FlexDate;
 import javafx.beans.property.ObjectProperty;
@@ -84,12 +85,12 @@ public class AlbumsTable extends EObjectTable<Album> {
   /**
    * This map relates a single disc Album (as in the mediaDb) to its location on disc.
    */
-  private Map<Album, AlbumDiscLocationInfo> albumToMusicFolderLocationMap;
+  private Map<Album, AlbumOnDiscInfo> albumToMusicFolderLocationMap;
   
   /**
    * This map relates an Album disc (as in the mediaDb) to its location on disc.
    */
-  private Map<Disc, AlbumDiscLocationInfo> albumDiscToMusicFolderLocationMap;
+  private Map<Disc, AlbumOnDiscInfo> albumDiscToMusicFolderLocationMap;
   
   /**
    * This map relates a track (as in the mediaDb) to its location on disc.
@@ -106,7 +107,7 @@ public class AlbumsTable extends EObjectTable<Album> {
    */
   private Album currentlyPlayingAlbum = null;
   
-  ObjectProperty<AlbumDiscLocationInfo> discToPlay = new SimpleObjectProperty<>();
+  ObjectProperty<AlbumOnDiscInfo> discToPlay = new SimpleObjectProperty<>();
 
   /**
    * Constructor
@@ -117,7 +118,7 @@ public class AlbumsTable extends EObjectTable<Album> {
    * @param trackDiscLocationMap a map that relates tracks to their location on disc.
    */
   public AlbumsTable(CustomizationFx customization, MediaDbWindow mediaDbWindow, MediaDb mediaDb,
-      Map<Album, AlbumDiscLocationInfo> albumToMusicFolderLocationMap, Map<Disc, AlbumDiscLocationInfo> albumDiscToMusicFolderLocationMap, Map<Track, Path> trackDiscLocationMap) {
+      Map<Album, AlbumOnDiscInfo> albumToMusicFolderLocationMap, Map<Disc, AlbumOnDiscInfo> albumDiscToMusicFolderLocationMap, Map<Track, Path> trackDiscLocationMap) {
     super(customization, MediadbPackage.eINSTANCE.getAlbum(), new AlbumsTableDescriptor(customization, mediaDb, trackDiscLocationMap), mediaDb, MediadbPackage.eINSTANCE.getMediaDb_Albums());
     
     this.customization = customization;
@@ -166,7 +167,7 @@ public class AlbumsTable extends EObjectTable<Album> {
 
   @Override
   protected void handleRowDoubleClicked(Album rowData) {
-    LOGGER.severe("=>");
+    LOGGER.info("=>");
     mediaDbWindow.openAlbumDetailsWindow();
   }
 
@@ -200,19 +201,19 @@ public class AlbumsTable extends EObjectTable<Album> {
     }
     
 //    MyInfo myInfo = album.getMyInfo();
-    if (MediaDbUtil.haveAlbumOnDisc(album, null)) {
+    if (MediaDbUtil.haveAlbumOnDisc(album)) {
       // Complete album in MusicFolder, play complete album
-      AlbumDiscLocationInfo albumDiscLocationInfo;
+      AlbumOnDiscInfo albumDiscLocationInfo;
 
       albumDiscLocationInfo = albumToMusicFolderLocationMap.get(album);
       
       if (albumDiscLocationInfo == null) {
         // If the album is available on disc, MPC-HC is started with the related disc folder.
         List<Disc> discsInMusicFolder = new ArrayList<>();
-        List<AlbumDiscLocationInfo> albumDiscLocationInfos = new ArrayList<>();
+        List<AlbumOnDiscInfo> albumDiscLocationInfos = new ArrayList<>();
 
         for (Disc disc: album.getDiscs()) {
-          AlbumDiscLocationInfo thisAlbumDiscLocationInfo = albumDiscToMusicFolderLocationMap.get(disc);
+          AlbumOnDiscInfo thisAlbumDiscLocationInfo = albumDiscToMusicFolderLocationMap.get(disc);
           if (albumDiscLocationInfo != null) {
             discsInMusicFolder.add(disc);
             albumDiscLocationInfos.add(thisAlbumDiscLocationInfo);
@@ -240,9 +241,9 @@ public class AlbumsTable extends EObjectTable<Album> {
       // First argument is the MPC-HC player executable. Then for each album folder a '/play' argument followed by the folder.
       List<String> commandArguments = new ArrayList<>();
       commandArguments.add(MediaRegistry.mediaPlayerClassicExecutable);
-      LOGGER.severe("albumDiscLocationInfo: " + albumDiscLocationInfo.toString());
+      LOGGER.info("albumDiscLocationInfo: " + albumDiscLocationInfo.toString());
       commandArguments.add("/play ");
-      commandArguments.add(albumDiscLocationInfo.getAbsAlbumFolderPathname());
+      commandArguments.add(albumDiscLocationInfo.getAlbumFolderName());
       
       try {
         mediaPlayerProcess = new ProcessBuilder(commandArguments).start();
@@ -252,7 +253,11 @@ public class AlbumsTable extends EObjectTable<Album> {
       }
     } else if (MediaDbUtil.haveAlbumPartlyOnDisc(album)) {
       /*
-       * In this case the tracks I have are not part of a compilation, but are e.g. available in a Track Folder.
+       * If there are track of an album available, we have the following options:
+       * - the album is an Excerpt album
+       * - the tracks are part of a My Compilation album
+       * - the tracks are part of a Collection
+       * In all cases we play the available tracks.
        * If the tracks are available via the trackDiscLocationMap, they are played.
        */
       
@@ -261,25 +266,41 @@ public class AlbumsTable extends EObjectTable<Album> {
       List<String> commandArguments = new ArrayList<>();
       commandArguments.add(MediaRegistry.mediaPlayerClassicExecutable);        
 
-      List<DiscAndTrackNrs> tracks = MediaDbUtil.getAlbumTracksIHave(album, true);
-
-      for (DiscAndTrackNrs discAndTrackNr: tracks) {
-        int discNr = 1;
-        if (discAndTrackNr.isSetDiscNr()) {
-          discNr = discAndTrackNr.getDiscNr();
-        }
-        for (int trackNr: discAndTrackNr.getTrackNrs()) {
-          Track track = album.getTrackReference(discNr, trackNr).getTrack();
+//      List<DiscAndTrackNrs> tracks = MediaDbUtil.getAlbumTracksIHave(album, true);
+      
+      for (Disc disc: album.getDiscs()) {
+        for (TrackReference trackReference: disc.getTrackReferences()) {
+          Track track = trackReference.getTrack();
+          // TODO follow references
+          if (track == null) {
+            LOGGER.severe("track is null");
+          }
           Path trackPath = trackDiscLocationMap.get(track);
           if (trackPath != null) {
             LOGGER.severe("file: " + trackPath.toAbsolutePath().toString());
             commandArguments.add("/play ");
             commandArguments.add(trackPath.toAbsolutePath().toString());
-          } else {
-            LOGGER.severe("Path not found for: " + album.getArtistAndTitle() + ", track: " + discNr + "." + trackNr);
           }
         }
       }
+
+//      for (DiscAndTrackNrs discAndTrackNr: tracks) {
+//        int discNr = 1;
+//        if (discAndTrackNr.isSetDiscNr()) {
+//          discNr = discAndTrackNr.getDiscNr();
+//        }
+//        for (int trackNr: discAndTrackNr.getTrackNrs()) {
+//          Track track = album.getTrackReference(discNr, trackNr).getTrack();
+//          Path trackPath = trackDiscLocationMap.get(track);
+//          if (trackPath != null) {
+//            LOGGER.severe("file: " + trackPath.toAbsolutePath().toString());
+//            commandArguments.add("/play ");
+//            commandArguments.add(trackPath.toAbsolutePath().toString());
+//          } else {
+//            LOGGER.severe("Path not found for: " + album.getArtistAndTitle() + ", track: " + discNr + "." + trackNr);
+//          }
+//        }
+//      }
 
       // Only start the player if at least one track is found.
       if (commandArguments.size() > 1) {
@@ -299,6 +320,8 @@ public class AlbumsTable extends EObjectTable<Album> {
         }
         return;
       }
+    } else if (MediaDbUtil.haveAlbumOnCdda(album)) {
+      componentFactory.createInformationDialog("Play CD in CD player", "You have this album on CD", "So put the CD in your CD player and press 'Play'").show();
     } else {
       return;
     }
@@ -306,7 +329,7 @@ public class AlbumsTable extends EObjectTable<Album> {
   }
   
   private void playDisc(Album album) {
-    AlbumDiscLocationInfo albumDiscLocationInfo = discToPlay.getValue();
+    AlbumOnDiscInfo albumDiscLocationInfo = discToPlay.getValue();
     
     // Build the command to start the media player.
     // First argument is the MPC-HC player executable. Then for each album folder a '/play' argument followed by the folder.
@@ -314,7 +337,7 @@ public class AlbumsTable extends EObjectTable<Album> {
     commandArguments.add(MediaRegistry.mediaPlayerClassicExecutable);
     LOGGER.severe("albumDiscLocationInfo: " + albumDiscLocationInfo.toString());
     commandArguments.add("/play ");
-    commandArguments.add(albumDiscLocationInfo.getAbsAlbumFolderPathname());
+    commandArguments.add(albumDiscLocationInfo.getAlbumFolderName());
     
     try {
       mediaPlayerProcess = new ProcessBuilder(commandArguments).start();
@@ -431,10 +454,10 @@ class AlbumsTableDescriptor extends EObjectTableDescriptor<Album> {
   );
   
   @SuppressWarnings("serial")
-  private static Map<TableRowOperation, TableRowOperationDescriptor<Album>> rowOperations = new HashMap<>() {
+  private static Map<Operation, TableRowOperationDescriptor<Album>> rowOperations = new HashMap<>() {
     {
-      put(TableRowOperation.OPEN, new TableRowOperationDescriptor<>("Play"));
-      put(TableRowOperation.DELETE_OBJECT, new TableRowOperationDescriptor<>("Delete album"));
+      put(Operation.OPEN, new TableRowOperationDescriptor<>("Play"));
+      put(Operation.DELETE_OBJECT, new TableRowOperationDescriptor<>("Delete album"));
     }
   };
 
@@ -470,7 +493,7 @@ class AlbumsTableDescriptor extends EObjectTableDescriptor<Album> {
     setComparator(new AlbumComparator());
     setColumnDescriptors(columnDescriptors);
     
-    rowOperations.put(TableRowOperation.EXTENDED_OPERATION, new TableRowOperationDescriptor<>("Edit album", (BiConsumer<List<Album>, Album>) this::editAlbum));
+    rowOperations.put(Operation.EXTENDED_OPERATION, new TableRowOperationDescriptor<>("Edit album", (BiConsumer<List<Album>, Album>) this::editAlbum));
     setRowOperations(rowOperations);
   }
   
@@ -492,9 +515,9 @@ class AlbumComparator implements Comparator<Album> {
   public int compare(Album album1, Album album2) {
     int compareResult = 0;
     
-    if (!album1.isSetArtist() || !album1.getArtist().isSetName()) {
+    if (album1.getArtist() == null  ||  !album1.getArtist().isSetName()) {
       compareResult = -1;
-    } else if (!album2.isSetArtist() || !album2.getArtist().isSetName()) {
+    } else if (album2.getArtist() == null || !album2.getArtist().isSetName()) {
       compareResult = 1;
     } else {
       compareResult = album1.getArtist().getName().compareTo(album2.getArtist().getName());
@@ -550,7 +573,7 @@ class MyInfoPlayCellFactory implements Callback<TableColumn<Album, Object>, Tabl
 class MyInfoPlayCell extends TableCell<Album, Object> {
   private static final Logger LOGGER = Logger.getLogger(MyInfoPlayCell.class.getName());
 
-  static DefaultAppResourcesFx m = new DefaultAppResourcesFx();
+//  static DefaultAppResourcesFx m = new DefaultAppResourcesFx();
   
   private MediaAppResourcesFx mediaAppResources;
   private ImageView imageView;
@@ -561,19 +584,19 @@ class MyInfoPlayCell extends TableCell<Album, Object> {
     if (background != null) {
       setBackground(background);
     }
-    AppResourcesFx appResources = customization.getResources();
-    mediaAppResources = (MediaAppResourcesFx) appResources;
-    Image i = m.getAttentionImage(ImageSize.SIZE_0);
+//    AppResourcesFx appResources = customization.getResources();
+    mediaAppResources = (MediaAppResourcesFx) customization.getResources();
+//    Image i = m.getAttentionImage(ImageSize.SIZE_0);
     imageView = new ImageView();
     imageView.setFitHeight(imageHeight);
     imageView.setPreserveRatio(true);
-    imageView.setImage(i);
+//    imageView.setImage(i);
     setGraphic(imageView);
     
     addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
       MyInfoPlayCell cell = (MyInfoPlayCell) e.getSource();
       Album album = (Album) cell.getItem();
-      LOGGER.severe("Mouse clicked on: " + album.toString());
+      LOGGER.info("Mouse clicked on: " + album.toString());
       ((EObjectTable<Album>) getTableView()).openObject(album);
       e.consume();
     });
@@ -582,12 +605,6 @@ class MyInfoPlayCell extends TableCell<Album, Object> {
       e.consume();
     });
 
-//    setOnMouseClicked(e -> {
-//      MyInfoPlayCell cell = (MyInfoPlayCell) e.getSource();
-//      Album album = (Album) cell.getItem();
-//      LOGGER.severe("Mouse clicked on: " + album.toString());
-//      ((EObjectTable<Album>) getTableView()).openObject(album);
-//    });
   }
   
   @Override
@@ -603,6 +620,9 @@ class MyInfoPlayCell extends TableCell<Album, Object> {
         throw new IllegalArgumentException("item shall be of type 'Album', but is of type '" + item.getClass().getName() + "'");
       }
       Album album = (Album) item;
+      if ("Bigger, Better, Faster, More!".equals(album.getTitle())) {
+        LOGGER.severe("STOP");
+      }
       
       MyInfo myInfo = album.getMyInfo();
       String tooltipText = null;
@@ -610,18 +630,12 @@ class MyInfoPlayCell extends TableCell<Album, Object> {
       if (MediaDbAppUtil.iHaveToGetAlbumOrTracks(album)) {
         imageView.setImage(mediaAppResources.getIWantIcon());
         tooltipText = "I want to have this album (partly), so it cannot be played now";
-      } else if (MediaDbUtil.haveAlbumOnDisc(album, null)) {
+      } else if (MediaDbUtil.haveAlbumOnDisc(album)) {
         imageView.setImage(mediaAppResources.getPlayIcon());
         tooltipText = "I have this album on disc, so it can be played";
       } else if (MediaDbUtil.haveAlbumPartlyOnDisc(album)) {
-//        Album referredAlbum = MediaDbAppUtil.getReferredAlbum(myInfo);
-//        if (referredAlbum != null) {
-//          imageView.setImage(mediaAppResources.getReferencePartlyIcon());
-//          tooltipText = "Ik heb dit album gedeeltelijk (TODO referentie)";
-//        } else {
-          imageView.setImage(mediaAppResources.getPlayPartlyIcon());
-          tooltipText = "I have this album partly";
-//        }
+        imageView.setImage(mediaAppResources.getPlayPartlyIcon());
+        tooltipText = "I have this album partly";
       } else if (MediaDbUtil.haveAlbumOnCdda(album)) {
         imageView.setImage(mediaAppResources.getCddaIcon());
         tooltipText = "I have this album on CD, so it cannot be played here.";
@@ -639,7 +653,7 @@ class MyInfoPlayCell extends TableCell<Album, Object> {
         imageView.setImage(mediaAppResources.getReferenceIcon());
         tooltipText = "Referentie. TODO";
       } else {
-        LOGGER.severe("Unknown play type for album: " + album + ", myInfo=" + (myInfo != null ? myInfo.toString() : "null"));
+        LOGGER.severe("Unknown play type for album: " + album.getArtistAndTitle() + ", myInfo=" + (myInfo != null ? myInfo.toString() : "null"));
       }
       
       setGraphic(imageView);

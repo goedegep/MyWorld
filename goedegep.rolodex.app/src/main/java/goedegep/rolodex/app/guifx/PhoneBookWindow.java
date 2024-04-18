@@ -8,7 +8,7 @@ import java.util.logging.Logger;
 import org.eclipse.emf.common.util.BasicEList;
 import org.eclipse.emf.common.util.EList;
 
-import goedegep.appgen.TableRowOperation;
+import goedegep.appgen.Operation;
 import goedegep.appgen.TableRowOperationDescriptor;
 import goedegep.jfx.ComponentFactoryFx;
 import goedegep.jfx.CustomizationFx;
@@ -216,9 +216,9 @@ class PhoneBookTableDescriptor extends EObjectTableDescriptor<PhoneNumberHolder>
       );
   
   @SuppressWarnings("serial")
-  private static Map<TableRowOperation, TableRowOperationDescriptor<PhoneNumberHolder>> rowOperations = new HashMap<>() {
+  private static Map<Operation, TableRowOperationDescriptor<PhoneNumberHolder>> rowOperations = new HashMap<>() {
     {
-    put(TableRowOperation.DELETE_OBJECT, new TableRowOperationDescriptor<>("Delete"));
+    put(Operation.DELETE_OBJECT, new TableRowOperationDescriptor<>("Delete"));
     }
   };
   

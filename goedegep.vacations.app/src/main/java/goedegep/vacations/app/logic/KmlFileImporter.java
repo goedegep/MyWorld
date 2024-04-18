@@ -85,6 +85,7 @@ public class KmlFileImporter {
   
   static {
     // initialize the kmlCategoryToActivityMap
+    kmlCategoryToActivityMap.put("Cycling", Activity.CYCLING);
     kmlCategoryToActivityMap.put("Driving", Activity.CAR_RIDE);
     kmlCategoryToActivityMap.put("Flying", Activity.FLYING);
     kmlCategoryToActivityMap.put("On a bus", Activity.BUS_RIDE);
@@ -92,7 +93,9 @@ public class KmlFileImporter {
     
     // initialize the kmlCategoryToPOICategoryIdMap
     kmlCategoryToPOICategoryIdMap.put("Autoverhuur", POICategoryId.CAR_RENTAL);
+    kmlCategoryToPOICategoryIdMap.put("Bakkerij", POICategoryId.SHOP);
     kmlCategoryToPOICategoryIdMap.put("Bar", POICategoryId.BAR);
+    kmlCategoryToPOICategoryIdMap.put("Bushalte", POICategoryId.BUS_STATION); // TODO must be bus stop
     kmlCategoryToPOICategoryIdMap.put("Fastfood", POICategoryId.RESTAURANT);
     kmlCategoryToPOICategoryIdMap.put("Gebouw", POICategoryId.BUILDING);
     kmlCategoryToPOICategoryIdMap.put("Historisch herkenningspunt", POICategoryId.DEFAULT_POI);
@@ -100,7 +103,12 @@ public class KmlFileImporter {
     kmlCategoryToPOICategoryIdMap.put("Internationaal vliegveld", POICategoryId.AIRPORT);
     kmlCategoryToPOICategoryIdMap.put("Luchthaven", POICategoryId.AIRPORT);
     kmlCategoryToPOICategoryIdMap.put("Observatieplatform", POICategoryId.SCENIC_VIEWPOINT);
+    kmlCategoryToPOICategoryIdMap.put("Panoramisch uitzicht", POICategoryId.SCENIC_VIEWPOINT);
+    kmlCategoryToPOICategoryIdMap.put("Park", POICategoryId.PARK);
+    kmlCategoryToPOICategoryIdMap.put("Restaurant", POICategoryId.RESTAURANT);
+    kmlCategoryToPOICategoryIdMap.put("Supermarkt", POICategoryId.SHOP);
     kmlCategoryToPOICategoryIdMap.put("Toeristische attractie", POICategoryId.TOURIST_ATTRACTION);
+    kmlCategoryToPOICategoryIdMap.put("Veerbootterminal", POICategoryId.FERRY);
   }
   
   /**
@@ -128,7 +136,6 @@ public class KmlFileImporter {
     List<KmlPlacemarkImportData> vacationElements = new ArrayList<>();
     
     Kml kml = Kml.unmarshal(kmlFile);
-//    LOGGER.info(KmlUtil.toString(kml));
     
     Feature feature = kml.getFeature();
     getLocationsFromKmlFeature(null, feature, null, vacationElements);

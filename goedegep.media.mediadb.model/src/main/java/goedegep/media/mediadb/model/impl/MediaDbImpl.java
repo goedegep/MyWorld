@@ -4,6 +4,7 @@ package goedegep.media.mediadb.model.impl;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
+import java.util.Objects;
 import java.util.logging.Logger;
 
 import org.eclipse.emf.common.notify.NotificationChain;
@@ -205,8 +206,8 @@ public class MediaDbImpl extends MinimalEObjectImpl.Container implements MediaDb
    * @generated NOT
    */
   public Album getAlbum(FlexDate releaseDate, Artist artist, String title) {
-    assert artist != null;
-    assert title != null;
+    Objects.requireNonNull(artist, "The artist may not be null");
+    Objects.requireNonNull(title, "The title may not be null");
 
     for (Album album : getAlbums()) {
       boolean compareOkSoFar = true;
@@ -275,7 +276,7 @@ public class MediaDbImpl extends MinimalEObjectImpl.Container implements MediaDb
    */
   public EList<Album> getAlbums(FlexDate releaseDate, Artist artist, String title) {
     EList<Album> albums = new BasicEList<Album>();
-    if ((artist != null) && artist.isSetContainerArtist()) {
+    if ((artist != null) && (artist.getContainerArtist() != null)) {
       Artist containerArtist = artist.getContainerArtist();
       if (containerArtist == null) {
         throw new RuntimeException("container artist is null for artist: " + artist.getName());
@@ -359,6 +360,22 @@ public class MediaDbImpl extends MinimalEObjectImpl.Container implements MediaDb
     }
 
     return trackCollection;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated NOT
+   */
+  @Override
+  public Track getTrack(Artist artist, String title) {
+    for (Track track : getTracks()) {
+      if (artist.equals(track.getArtist()) && title.equals(track.getTitle())) {
+        return track;
+      }
+    }
+
+    return null;
   }
 
   /**
@@ -503,6 +520,8 @@ public class MediaDbImpl extends MinimalEObjectImpl.Container implements MediaDb
       return getAlbums((FlexDate) arguments.get(0), (Artist) arguments.get(1), (String) arguments.get(2));
     case MediadbPackage.MEDIA_DB___GET_TRACK_COLLECTION__COLLECTION:
       return getTrackCollection((goedegep.media.mediadb.model.Collection) arguments.get(0));
+    case MediadbPackage.MEDIA_DB___GET_TRACK__ARTIST_STRING:
+      return getTrack((Artist) arguments.get(0), (String) arguments.get(1));
     }
     return super.eInvoke(operationID, arguments);
   }

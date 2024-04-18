@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
-import goedegep.appgen.TableRowOperation;
+import goedegep.appgen.Operation;
 import goedegep.appgen.TableRowOperationDescriptor;
 import goedegep.invandprop.app.ExpenditureStringConverter;
 import goedegep.invandprop.app.FileReferenceWrapper;
@@ -273,9 +273,9 @@ class PropertiesTableDescriptor extends EObjectTableDescriptor<Property> {
       );
   
   @SuppressWarnings("serial")
-  private static Map<TableRowOperation, TableRowOperationDescriptor<Property>> rowOperations = new HashMap<>() {
+  private static Map<Operation, TableRowOperationDescriptor<Property>> rowOperations = new HashMap<>() {
     {
-    put(TableRowOperation.DELETE_OBJECT, new TableRowOperationDescriptor<>("Delete"));
+    put(Operation.DELETE_OBJECT, new TableRowOperationDescriptor<>("Delete"));
     }
   };
   

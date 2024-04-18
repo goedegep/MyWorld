@@ -29,7 +29,7 @@ import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 
-import goedegep.appgen.TableRowOperation;
+import goedegep.appgen.Operation;
 import goedegep.appgen.TableRowOperationDescriptor;
 import goedegep.jfx.ComponentFactoryFx;
 import goedegep.jfx.CustomizationFx;
@@ -842,7 +842,7 @@ public class EObjectTable<T extends EObject> extends TableView<T> implements Obj
    * @return the newly created context menu.
    */
   protected ContextMenu createContextMenu(TableRow<T> row) {
-    Map<TableRowOperation, TableRowOperationDescriptor<T>> rowOperations = tableDescriptor.getRowOperations();
+    Map<Operation, TableRowOperationDescriptor<T>> rowOperations = tableDescriptor.getRowOperations();
 
     if (rowOperations == null) {
       return null;
@@ -862,7 +862,7 @@ public class EObjectTable<T extends EObject> extends TableView<T> implements Obj
         subTypes.add(0, eClass);
       }
       
-      tableRowOperationDescriptor = rowOperations.get(TableRowOperation.OPEN);
+      tableRowOperationDescriptor = rowOperations.get(Operation.OPEN);
       if (tableRowOperationDescriptor != null) {
         menuItem = componentFactory.createMenuItem(tableRowOperationDescriptor.getMenuText());
         menuItem.setOnAction((ActionEvent event) -> {
@@ -871,7 +871,7 @@ public class EObjectTable<T extends EObject> extends TableView<T> implements Obj
         contextMenu.getItems().add(menuItem);
       }
 
-      tableRowOperationDescriptor = rowOperations.get(TableRowOperation.NEW_OBJECT_BEFORE);
+      tableRowOperationDescriptor = rowOperations.get(Operation.NEW_OBJECT_BEFORE);
       if (tableRowOperationDescriptor != null) {
         if (subTypes != null  &&  subTypes.size() > 1) {
           menu = createSubClassesMenu(tableRowOperationDescriptor.getMenuText(), subTypes, rowIndex, true);
@@ -885,7 +885,7 @@ public class EObjectTable<T extends EObject> extends TableView<T> implements Obj
         }
       }
 
-      tableRowOperationDescriptor = rowOperations.get(TableRowOperation.NEW_OBJECT_AFTER);
+      tableRowOperationDescriptor = rowOperations.get(Operation.NEW_OBJECT_AFTER);
       if (tableRowOperationDescriptor != null) {
         menuItem = componentFactory.createMenuItem(tableRowOperationDescriptor.getMenuText());
         menuItem.setOnAction((ActionEvent event) -> {
@@ -894,7 +894,7 @@ public class EObjectTable<T extends EObject> extends TableView<T> implements Obj
         contextMenu.getItems().add(menuItem);
       }
 
-      tableRowOperationDescriptor = rowOperations.get(TableRowOperation.DELETE_OBJECT);
+      tableRowOperationDescriptor = rowOperations.get(Operation.DELETE_OBJECT);
       if (tableRowOperationDescriptor != null) {
         menuItem = componentFactory.createMenuItem(tableRowOperationDescriptor.getMenuText());
         menuItem.setOnAction((ActionEvent event) -> {
@@ -903,7 +903,7 @@ public class EObjectTable<T extends EObject> extends TableView<T> implements Obj
         contextMenu.getItems().add(menuItem);
       }
 
-      tableRowOperationDescriptor = rowOperations.get(TableRowOperation.MOVE_OBJECT_UP);
+      tableRowOperationDescriptor = rowOperations.get(Operation.MOVE_OBJECT_UP);
       if (tableRowOperationDescriptor != null) {
         menuItem = componentFactory.createMenuItem(tableRowOperationDescriptor.getMenuText());
         menuItem.setOnAction((ActionEvent event) -> {
@@ -912,7 +912,7 @@ public class EObjectTable<T extends EObject> extends TableView<T> implements Obj
         contextMenu.getItems().add(menuItem);
       }
 
-      tableRowOperationDescriptor = rowOperations.get(TableRowOperation.MOVE_OBJECT_DOWN);
+      tableRowOperationDescriptor = rowOperations.get(Operation.MOVE_OBJECT_DOWN);
       if (tableRowOperationDescriptor != null) {
         menuItem = componentFactory.createMenuItem(tableRowOperationDescriptor.getMenuText());
         menuItem.setOnAction((ActionEvent event) -> {
@@ -921,7 +921,7 @@ public class EObjectTable<T extends EObject> extends TableView<T> implements Obj
         contextMenu.getItems().add(menuItem);
       }
 
-      tableRowOperationDescriptor = rowOperations.get(TableRowOperation.EXTENDED_OPERATION);
+      tableRowOperationDescriptor = rowOperations.get(Operation.EXTENDED_OPERATION);
       if (tableRowOperationDescriptor != null) {
         menuItem = componentFactory.createMenuItem(tableRowOperationDescriptor.getMenuText());
         final BiConsumer<List<T>, T> consumer = tableRowOperationDescriptor.getConsumer();

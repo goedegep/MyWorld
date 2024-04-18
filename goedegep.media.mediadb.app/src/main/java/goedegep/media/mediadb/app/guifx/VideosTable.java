@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
-import goedegep.appgen.TableRowOperation;
+import goedegep.appgen.Operation;
 import goedegep.appgen.TableRowOperationDescriptor;
 import goedegep.jfx.AppResourcesFx;
 import goedegep.jfx.ComponentFactoryFx;
@@ -331,11 +331,11 @@ class VideosTableDescriptor extends EObjectTableDescriptor<Video> {
   );
   
   @SuppressWarnings("serial")
-  private static Map<TableRowOperation, TableRowOperationDescriptor<Video>> rowOperations = new HashMap<>() {
+  private static Map<Operation, TableRowOperationDescriptor<Video>> rowOperations = new HashMap<>() {
     {
-      put(TableRowOperation.OPEN, new TableRowOperationDescriptor<>("Play"));
-      put(TableRowOperation.NEW_OBJECT, new TableRowOperationDescriptor<>("New film"));
-      put(TableRowOperation.DELETE_OBJECT, new TableRowOperationDescriptor<>("Delete film"));
+      put(Operation.OPEN, new TableRowOperationDescriptor<>("Play"));
+      put(Operation.NEW_OBJECT, new TableRowOperationDescriptor<>("New film"));
+      put(Operation.DELETE_OBJECT, new TableRowOperationDescriptor<>("Delete film"));
     }
   };
     

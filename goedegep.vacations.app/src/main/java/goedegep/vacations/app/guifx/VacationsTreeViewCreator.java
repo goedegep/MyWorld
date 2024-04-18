@@ -22,7 +22,6 @@ import org.eclipse.emf.ecore.EStructuralFeature;
 
 import com.gluonhq.maps.MapPoint;
 
-import goedegep.appgen.TableRowOperation;
 import goedegep.gpx.app.GPXWindow;
 import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.eobjecttreeview.EObjectTreeItem;
@@ -32,8 +31,12 @@ import goedegep.jfx.eobjecttreeview.EObjectTreeItemClassListReferenceDescriptor;
 import goedegep.jfx.eobjecttreeview.EObjectTreeItemClassReferenceDescriptor;
 import goedegep.jfx.eobjecttreeview.EObjectTreeItemForObject;
 import goedegep.jfx.eobjecttreeview.EObjectTreeView;
-import goedegep.jfx.eobjecttreeview.ExtendedNodeOperationDescriptor;
-import goedegep.jfx.eobjecttreeview.NodeOperationDescriptor;
+import goedegep.jfx.eobjecttreeview.NodeOperationDescriptorDelete;
+import goedegep.jfx.eobjecttreeview.NodeOperationDescriptorCustom;
+import goedegep.jfx.eobjecttreeview.NodeOperationDescriptorNew;
+import goedegep.jfx.eobjecttreeview.NodeOperationDescriptorNewAfter;
+import goedegep.jfx.eobjecttreeview.NodeOperationDescriptorNewBefore;
+import goedegep.jfx.eobjecttreeview.NodeOperationDescriptorOpen;
 import goedegep.jfx.eobjecttreeview.PresentationType;
 import goedegep.poi.app.guifx.POIIcons;
 import goedegep.poi.model.POICategoryId;
@@ -273,8 +276,8 @@ public class VacationsTreeViewCreator {
     EObjectTreeItemClassReferenceDescriptor homeDescriptor = new EObjectTreeItemClassReferenceDescriptor(VACATIONS_PACKAGE.getVacations_Home())
         .setNodeTextFunction(eObject -> "Home location")
         .setStrongText(true)
-        .addNodeOperationDescriptor(new NodeOperationDescriptor(TableRowOperation.NEW_OBJECT, "Create home location"))
-        .addNodeOperationDescriptor(new NodeOperationDescriptor(TableRowOperation.DELETE_OBJECT, "Delete home location"));
+        .addNodeOperationDescriptor(new NodeOperationDescriptorNew("Create home location", null, null))
+        .addNodeOperationDescriptor(new NodeOperationDescriptorDelete("Delete home location", null));
     eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(homeDescriptor);
     
     // Vacations.vacations
@@ -283,7 +286,7 @@ public class VacationsTreeViewCreator {
         .setStrongText(true)
         .setNodeIconFunction(eObject -> TravelImageResource.VACATIONS.getIcon(ImageSize.SIZE_1))
         .setExpandOnCreation(true)
-        .addNodeOperationDescriptor(new NodeOperationDescriptor(TableRowOperation.NEW_OBJECT, "New vacation"));
+        .addNodeOperationDescriptor(new NodeOperationDescriptorNew("New vacation", null, null));
     eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(eObjectTreeItemClassListReferenceDescriptor);
     
     // Vacations.dayTrips
@@ -291,7 +294,7 @@ public class VacationsTreeViewCreator {
         .setLabelText("Day trips")
         .setStrongText(true)
         .setExpandOnCreation(true)
-        .addNodeOperationDescriptor(new NodeOperationDescriptor(TableRowOperation.NEW_OBJECT, "New day trip"));
+        .addNodeOperationDescriptor(new NodeOperationDescriptorNew("New day trip", null, null));
     eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(eObjectTreeItemClassListReferenceDescriptor);
     
     return eObjectTreeItemClassDescriptor;
@@ -317,10 +320,10 @@ public class VacationsTreeViewCreator {
         .setNodeIconFunction(eObject -> {
           return customization.getResources().getApplicationImage(ImageSize.SIZE_0);
         })
-        .addNodeOperationDescriptor(new NodeOperationDescriptor(TableRowOperation.NEW_OBJECT, "New ..."))
-        .addNodeOperationDescriptor(new NodeOperationDescriptor(TableRowOperation.NEW_OBJECT_BEFORE, "New vacation before this one"))
-        .addNodeOperationDescriptor(new NodeOperationDescriptor(TableRowOperation.NEW_OBJECT_AFTER, "New vacation after this one"))
-        .addNodeOperationDescriptor(new NodeOperationDescriptor(TableRowOperation.DELETE_OBJECT, "Delete vacation"));
+        .addNodeOperationDescriptor(new NodeOperationDescriptorNew("New ...", null, null))
+        .addNodeOperationDescriptor(new NodeOperationDescriptorNewBefore("New vacation before this one", null, null))
+        .addNodeOperationDescriptor(new NodeOperationDescriptorNewAfter("New vacation after this one", null, null))
+        .addNodeOperationDescriptor(new NodeOperationDescriptorDelete("Delete vacation", null));
     
     EObjectTreeItemAttributeDescriptor eObjectTreeItemAttributeDescriptor;
     EObjectTreeItemClassListReferenceDescriptor eObjectTreeItemClassListReferenceDescriptor;
@@ -351,14 +354,14 @@ public class VacationsTreeViewCreator {
     // Vacation.documents
     eObjectTreeItemClassListReferenceDescriptor = new EObjectTreeItemClassListReferenceDescriptor(VACATIONS_PACKAGE.getVacation_Documents())
         .setLabelText("Documents")
-        .addNodeOperationDescriptor(new NodeOperationDescriptor(TableRowOperation.NEW_OBJECT, "New document"));
+        .addNodeOperationDescriptor(new NodeOperationDescriptorNew("New document", null, null));
     eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(eObjectTreeItemClassListReferenceDescriptor);
     
     // Vacation.pictures
     eObjectTreeItemAttributeDescriptor = new EObjectTreeItemAttributeDescriptor(VACATIONS_PACKAGE.getVacation_Pictures())
         .setLabelText("Photos")
         .setPresentationType(PresentationType.FOLDER)
-        .addNodeOperationDescriptor(new NodeOperationDescriptor(TableRowOperation.OPEN, "Open photos folder"))
+        .addNodeOperationDescriptor(new NodeOperationDescriptorOpen("Open photos folder", null, null))
         .setInitialDirectoryNameFunction(VacationsWindow::getInitialPhotoFolderName);
     eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(eObjectTreeItemAttributeDescriptor);
 
@@ -367,7 +370,7 @@ public class VacationsTreeViewCreator {
         .setLabelText("Elements")
         .setNodeIconFunction(object -> EObjectTreeView.getListIcon())
         .setExpandOnCreation(true)
-        .addNodeOperationDescriptor(new NodeOperationDescriptor(TableRowOperation.NEW_OBJECT, "New element", newEObjectInitializationFunction));
+        .addNodeOperationDescriptor(new NodeOperationDescriptorNew("New element", null, newEObjectInitializationFunction));
     eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(eObjectTreeItemClassListReferenceDescriptor);
     
     return eObjectTreeItemClassDescriptor;
@@ -388,10 +391,10 @@ public class VacationsTreeViewCreator {
         .setNodeIconFunction(eObject -> {
           return TravelImageResource.DAY_TRIP.getIcon(ImageSize.SIZE_0);
         })
-        .addNodeOperationDescriptor(new NodeOperationDescriptor(TableRowOperation.NEW_OBJECT, "New ..."))
-        .addNodeOperationDescriptor(new NodeOperationDescriptor(TableRowOperation.NEW_OBJECT_BEFORE, "New day trip before this one"))
-        .addNodeOperationDescriptor(new NodeOperationDescriptor(TableRowOperation.NEW_OBJECT_AFTER, "New day trip after this one"))
-        .addNodeOperationDescriptor(new NodeOperationDescriptor(TableRowOperation.DELETE_OBJECT, "Delete day trip"));
+        .addNodeOperationDescriptor(new NodeOperationDescriptorNew("New ...", null, null))
+        .addNodeOperationDescriptor(new NodeOperationDescriptorNewBefore("New day trip before this one", null, null))
+        .addNodeOperationDescriptor(new NodeOperationDescriptorNewAfter("New day trip after this one", null, null))
+        .addNodeOperationDescriptor(new NodeOperationDescriptorDelete("Delete day trip", null));
     
     EObjectTreeItemAttributeDescriptor eObjectTreeItemAttributeDescriptor;
     
@@ -411,7 +414,7 @@ public class VacationsTreeViewCreator {
         .setLabelText("Elements")
         .setNodeIconFunction(object -> EObjectTreeView.getListIcon())
         .setExpandOnCreation(true)
-        .addNodeOperationDescriptor(new NodeOperationDescriptor(TableRowOperation.NEW_OBJECT, "New element", newEObjectInitializationFunction));
+        .addNodeOperationDescriptor(new NodeOperationDescriptorNew("New element", null, newEObjectInitializationFunction));
     eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(eObjectTreeItemClassListReferenceDescriptor);
     
     return eObjectTreeItemClassDescriptor;
@@ -443,9 +446,9 @@ public class VacationsTreeViewCreator {
           return buf.toString();
         })
         .setNodeIconFunction(object -> TravelImageResource.DAY.getIcon(ImageSize.SIZE_0))
-        .addNodeOperationDescriptor(new NodeOperationDescriptor(TableRowOperation.NEW_OBJECT_BEFORE, "New element before this one ..."))
-        .addNodeOperationDescriptor(new NodeOperationDescriptor(TableRowOperation.NEW_OBJECT_AFTER, "New element after this one ..."))
-        .addNodeOperationDescriptor(new NodeOperationDescriptor(TableRowOperation.DELETE_OBJECT, "Delete element"));
+        .addNodeOperationDescriptor(new NodeOperationDescriptorNewBefore("New element before this one ...", null, null))
+        .addNodeOperationDescriptor(new NodeOperationDescriptorNewAfter("New element after this one ...", null, null))
+        .addNodeOperationDescriptor(new NodeOperationDescriptorDelete("Delete element", null));
     
     EObjectTreeItemAttributeDescriptor eObjectTreeItemAttributeDescriptor;
     
@@ -464,7 +467,7 @@ public class VacationsTreeViewCreator {
         .setLabelText("Elements")
         .setNodeIconFunction(object -> EObjectTreeView.getListIcon())
         .setExpandOnCreation(true)
-        .addNodeOperationDescriptor(new NodeOperationDescriptor(TableRowOperation.NEW_OBJECT, "New element", newEObjectInitializationFunction));
+        .addNodeOperationDescriptor(new NodeOperationDescriptorNew("New element", null, newEObjectInitializationFunction));
     eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(eObjectTreeItemClassListReferenceDescriptor);
     
     return eObjectTreeItemClassDescriptor;
@@ -490,9 +493,9 @@ public class VacationsTreeViewCreator {
           }
         })
         .setNodeIconFunction(object -> ImageResource.TEXT.getImage(ImageSize.SIZE_0))
-        .addNodeOperationDescriptor(new NodeOperationDescriptor(TableRowOperation.NEW_OBJECT_BEFORE, "New element before this one ..."))
-        .addNodeOperationDescriptor(new NodeOperationDescriptor(TableRowOperation.NEW_OBJECT_AFTER, "New element after this one ..."))
-        .addNodeOperationDescriptor(new NodeOperationDescriptor(TableRowOperation.DELETE_OBJECT, "Delete element"));
+        .addNodeOperationDescriptor(new NodeOperationDescriptorNewBefore("New element before this one ...", null, null))
+        .addNodeOperationDescriptor(new NodeOperationDescriptorNewAfter("New element after this one ...", null, null))
+        .addNodeOperationDescriptor(new NodeOperationDescriptorDelete("Delete element", null));
     
     EObjectTreeItemAttributeDescriptor eObjectTreeItemAttributeDescriptor;
     
@@ -507,7 +510,7 @@ public class VacationsTreeViewCreator {
         .setLabelText("Elements")
         .setNodeIconFunction(object -> EObjectTreeView.getListIcon())
         .setExpandOnCreation(true)
-        .addNodeOperationDescriptor(new NodeOperationDescriptor(TableRowOperation.NEW_OBJECT, "New element", newEObjectInitializationFunction));
+        .addNodeOperationDescriptor(new NodeOperationDescriptorNew("New element", null, newEObjectInitializationFunction));
     eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(eObjectTreeItemClassListReferenceDescriptor);
     
     return eObjectTreeItemClassDescriptor;
@@ -552,10 +555,10 @@ public class VacationsTreeViewCreator {
             return null;
           }
         })
-        .addNodeOperationDescriptor(new NodeOperationDescriptor(TableRowOperation.NEW_OBJECT_BEFORE, "New element before ...", VacationsTreeViewCreator::initNewObject))
-        .addNodeOperationDescriptor(new NodeOperationDescriptor(TableRowOperation.NEW_OBJECT_AFTER, "New element after ..."))
-        .addNodeOperationDescriptor(new NodeOperationDescriptor(TableRowOperation.DELETE_OBJECT, "Delete element"))
-        .addNodeOperationDescriptor(new ExtendedNodeOperationDescriptor("Show on map", isMenuToBeEnabledPredicate, eObject -> {
+        .addNodeOperationDescriptor(new NodeOperationDescriptorNewBefore("New element before ...", null, VacationsTreeViewCreator::initNewObject))
+        .addNodeOperationDescriptor(new NodeOperationDescriptorNewAfter("New element after ...", null, VacationsTreeViewCreator::initNewObject))
+        .addNodeOperationDescriptor(new NodeOperationDescriptorDelete("Delete element", null))
+        .addNodeOperationDescriptor(new NodeOperationDescriptorCustom("Show on map", isMenuToBeEnabledPredicate, eObject -> {
           LOGGER.severe("eObject type:" + eObject.getClass().getName());
           Object value = eObject.getValue();
           LOGGER.severe("value type:" + value.getClass().getName());
@@ -566,7 +569,7 @@ public class VacationsTreeViewCreator {
             }
           }
         }))
-        .addNodeOperationDescriptor(new ExtendedNodeOperationDescriptor("Reduce boundaries sizes", isMenuToBeEnabledPredicate, reduceBoundariesSizesFunction));
+        .addNodeOperationDescriptor(new NodeOperationDescriptorCustom("Reduce boundaries sizes", isMenuToBeEnabledPredicate, reduceBoundariesSizesFunction));
     
     EObjectTreeItemAttributeDescriptor eObjectTreeItemAttributeDescriptor;
 
@@ -632,7 +635,7 @@ public class VacationsTreeViewCreator {
     // Location.webSite
     eObjectTreeItemAttributeDescriptor = new EObjectTreeItemAttributeDescriptor(VACATIONS_PACKAGE.getLocation_WebSite())
         .setLabelText("Website")
-        .addNodeOperationDescriptor(new NodeOperationDescriptor(TableRowOperation.OPEN, "Open document"));
+        .addNodeOperationDescriptor(new NodeOperationDescriptorOpen("Open document", null, null));
     eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(eObjectTreeItemAttributeDescriptor);
 
     // Location.referenceOnly
@@ -655,9 +658,9 @@ public class VacationsTreeViewCreator {
     EObjectTreeItemClassReferenceDescriptor eObjectTreeItemClassReferenceDescriptor = new EObjectTreeItemClassReferenceDescriptor(VACATIONS_PACKAGE.getLocation_Boundingbox())
         .setNodeTextFunction(eObject -> "Bounding box")
         .setExpandOnCreation(true)
-        .addNodeOperationDescriptor(new NodeOperationDescriptor(TableRowOperation.NEW_OBJECT, "Create bounding box", VacationsTreeViewCreator::initNewObject))
-        .addNodeOperationDescriptor(new NodeOperationDescriptor(TableRowOperation.DELETE_OBJECT, "Delete Bounding Box"))
-        .addNodeOperationDescriptor(new ExtendedNodeOperationDescriptor("Obtain bounding box", null, new BoundingBoxObtainer()));
+        .addNodeOperationDescriptor(new NodeOperationDescriptorNew("Create bounding box", null, VacationsTreeViewCreator::initNewObject))
+        .addNodeOperationDescriptor(new NodeOperationDescriptorDelete("Delete Bounding Box", null))
+        .addNodeOperationDescriptor(new NodeOperationDescriptorCustom("Obtain bounding box", null, new BoundingBoxObtainer()));
     eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(eObjectTreeItemClassReferenceDescriptor);
 
     // Location.children
@@ -665,7 +668,7 @@ public class VacationsTreeViewCreator {
         .setLabelText("Elements")
         .setNodeIconFunction(object -> EObjectTreeView.getListIcon())
         .setExpandOnCreation(true)
-        .addNodeOperationDescriptor(new NodeOperationDescriptor(TableRowOperation.NEW_OBJECT, "New element", newEObjectInitializationFunction));
+        .addNodeOperationDescriptor(new NodeOperationDescriptorNew("New element", null, newEObjectInitializationFunction));
     eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(eObjectTreeItemClassListReferenceDescriptor);
     
     return eObjectTreeItemClassDescriptor;
@@ -679,17 +682,15 @@ public class VacationsTreeViewCreator {
     EObjectTreeItemClassDescriptor eObjectTreeItemClassDescriptor = new EObjectTreeItemClassDescriptor()
         .setNodeTextFunction(VacationsWindow::generateTextForGpxTrack)
         .setNodeIconFunction(VacationsWindow::generateIconForGpxTrack)
-        .addNodeOperationDescriptor(new NodeOperationDescriptor(TableRowOperation.NEW_OBJECT_BEFORE, "New element before this one ..."))
-        .addNodeOperationDescriptor(new NodeOperationDescriptor(TableRowOperation.NEW_OBJECT_AFTER, "New element after this one ..."))
-        .addNodeOperationDescriptor(new ExtendedNodeOperationDescriptor("View/edit GPX file", this::canGPXFileBeOpened, this::openGPXFile))
-        .addNodeOperationDescriptor(new NodeOperationDescriptor(TableRowOperation.DELETE_OBJECT, "Delete element"));
+        .addNodeOperationDescriptor(new NodeOperationDescriptorNewBefore("New element before this one ...", null, null))
+        .addNodeOperationDescriptor(new NodeOperationDescriptorNewAfter("New element after this one ...", null, null))
+        .addNodeOperationDescriptor(new NodeOperationDescriptorCustom("View/edit GPX file", this::canGPXFileBeOpened, this::openGPXFile))
+        .addNodeOperationDescriptor(new NodeOperationDescriptorDelete("Delete element", null));
     
     // VacationElementGPX.trackReference
     EObjectTreeItemClassReferenceDescriptor eObjectTreeItemClassReferenceDescriptor = new EObjectTreeItemClassReferenceDescriptor(VACATIONS_PACKAGE.getGPXTrack_TrackReference())
         .setNodeTextFunction(eObject -> "GPX track reference")
-        .setExpandOnCreation(true)
-        .addNodeOperationDescriptor(new NodeOperationDescriptor(TableRowOperation.NEW_OBJECT, "Create GPX track reference"))
-        .addNodeOperationDescriptor(new NodeOperationDescriptor(TableRowOperation.DELETE_OBJECT, "Delete GPX track reference"));
+        .setExpandOnCreation(true);
     eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(eObjectTreeItemClassReferenceDescriptor);
     
     // VacationElementGPX.children
@@ -697,7 +698,7 @@ public class VacationsTreeViewCreator {
         .setLabelText("Elements")
         .setNodeIconFunction(object -> EObjectTreeView.getListIcon())
         .setExpandOnCreation(true)
-        .addNodeOperationDescriptor(new NodeOperationDescriptor(TableRowOperation.NEW_OBJECT, "New element", newEObjectInitializationFunction));
+        .addNodeOperationDescriptor(new NodeOperationDescriptorNew("New element", null, newEObjectInitializationFunction));
     eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(eObjectTreeItemClassListReferenceDescriptor);
     
     return eObjectTreeItemClassDescriptor;
@@ -743,17 +744,17 @@ public class VacationsTreeViewCreator {
 
           return image;
         })
-        .addNodeOperationDescriptor(new NodeOperationDescriptor(TableRowOperation.NEW_OBJECT_BEFORE, "New element before this one ..."))
-        .addNodeOperationDescriptor(new NodeOperationDescriptor(TableRowOperation.NEW_OBJECT_AFTER, "New element after this one ..."))
-        .addNodeOperationDescriptor(new ExtendedNodeOperationDescriptor("Open document", VacationsTreeViewCreator::canDocumentBeOpened, VacationsTreeViewCreator::openDocument))
-        .addNodeOperationDescriptor(new NodeOperationDescriptor(TableRowOperation.DELETE_OBJECT, "Delete element"));
+        .addNodeOperationDescriptor(new NodeOperationDescriptorNewBefore("New element before this one ...", null, null))
+        .addNodeOperationDescriptor(new NodeOperationDescriptorNewAfter("New element after this one ...", null, null))
+        .addNodeOperationDescriptor(new NodeOperationDescriptorOpen("Open document", VacationsTreeViewCreator::canDocumentBeOpened, VacationsTreeViewCreator::openDocument))
+        .addNodeOperationDescriptor(new NodeOperationDescriptorDelete("Delete element", null));
 
     // Document.documentReference
     EObjectTreeItemClassReferenceDescriptor eObjectTreeItemClassReferenceDescriptor = new EObjectTreeItemClassReferenceDescriptor(VACATIONS_PACKAGE.getDocument_DocumentReference())
         .setNodeTextFunction(eObject -> "Document reference")
         .setExpandOnCreation(true)
-        .addNodeOperationDescriptor(new NodeOperationDescriptor(TableRowOperation.NEW_OBJECT, "Create document reference"))
-        .addNodeOperationDescriptor(new NodeOperationDescriptor(TableRowOperation.DELETE_OBJECT, "Delete document reference"));
+        .addNodeOperationDescriptor(new NodeOperationDescriptorNew("Create document reference", null, null))
+        .addNodeOperationDescriptor(new NodeOperationDescriptorDelete("Delete document reference", null));
     eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(eObjectTreeItemClassReferenceDescriptor);
     
     //Document.children
@@ -761,7 +762,7 @@ public class VacationsTreeViewCreator {
         .setLabelText("Elements")
         .setNodeIconFunction(object -> EObjectTreeView.getListIcon())
         .setExpandOnCreation(true)
-        .addNodeOperationDescriptor(new NodeOperationDescriptor(TableRowOperation.NEW_OBJECT, "New element", newEObjectInitializationFunction));
+        .addNodeOperationDescriptor(new NodeOperationDescriptorNew("New element", null, newEObjectInitializationFunction));
     eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(eObjectTreeItemClassListReferenceDescriptor);
     
     return eObjectTreeItemClassDescriptor;
@@ -821,16 +822,16 @@ public class VacationsTreeViewCreator {
             return ImageResource.CAMERA_BLACK.getImage(ImageSize.SIZE_0);
           }
         })
-        .addNodeOperationDescriptor(new NodeOperationDescriptor(TableRowOperation.NEW_OBJECT_BEFORE, "New element before this one ..."))
-        .addNodeOperationDescriptor(new NodeOperationDescriptor(TableRowOperation.NEW_OBJECT_AFTER, "New element after this one ..."))
-        .addNodeOperationDescriptor(new NodeOperationDescriptor(TableRowOperation.DELETE_OBJECT, "Delete element"));
+        .addNodeOperationDescriptor(new NodeOperationDescriptorNewBefore("New element before this one ...", null, null))
+        .addNodeOperationDescriptor(new NodeOperationDescriptorNewAfter("New element after this one ...", null, null))
+        .addNodeOperationDescriptor(new NodeOperationDescriptorDelete("Delete element", null));
 
     // VacationElementPicture.pictureReference
     EObjectTreeItemClassReferenceDescriptor eObjectTreeItemClassReferenceDescriptor = new EObjectTreeItemClassReferenceDescriptor(VACATIONS_PACKAGE.getPicture_PictureReference())
         .setNodeTextFunction(eObject -> "Photo reference")
         .setExpandOnCreation(true)
-        .addNodeOperationDescriptor(new NodeOperationDescriptor(TableRowOperation.NEW_OBJECT, "Create photo reference"))
-        .addNodeOperationDescriptor(new NodeOperationDescriptor(TableRowOperation.DELETE_OBJECT, "Delete photo reference"));
+        .addNodeOperationDescriptor(new NodeOperationDescriptorNew("Create photo reference", null, null))
+        .addNodeOperationDescriptor(new NodeOperationDescriptorDelete("Delete photo reference", null));
     eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(eObjectTreeItemClassReferenceDescriptor);
     
     // VacationElementText.children
@@ -838,7 +839,7 @@ public class VacationsTreeViewCreator {
         .setLabelText("Elements")
         .setNodeIconFunction(object -> EObjectTreeView.getListIcon())
         .setExpandOnCreation(true)
-        .addNodeOperationDescriptor(new NodeOperationDescriptor(TableRowOperation.NEW_OBJECT, "New element", newEObjectInitializationFunction));
+        .addNodeOperationDescriptor(new NodeOperationDescriptorNew("New element", null, newEObjectInitializationFunction));
     eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(eObjectTreeItemClassListReferenceDescriptor);
     
     return eObjectTreeItemClassDescriptor;
@@ -860,10 +861,10 @@ public class VacationsTreeViewCreator {
           }
         })
         .setNodeIconFunction(object -> ImageResource.MAP.getImage())
-        .addNodeOperationDescriptor(new NodeOperationDescriptor(TableRowOperation.NEW_OBJECT_BEFORE, "New element before this one ..."))
-        .addNodeOperationDescriptor(new NodeOperationDescriptor(TableRowOperation.NEW_OBJECT_AFTER, "New element after this one ..."))
-        .addNodeOperationDescriptor(new NodeOperationDescriptor(TableRowOperation.DELETE_OBJECT, "Delete element"))
-        .addNodeOperationDescriptor(new ExtendedNodeOperationDescriptor("Update  image file", (eObjectTreeItem) -> true, updateMapImageFileFunction));
+        .addNodeOperationDescriptor(new NodeOperationDescriptorNewBefore("New element before this one ...", null, null))
+        .addNodeOperationDescriptor(new NodeOperationDescriptorNewAfter("New element after this one ...", null, null))
+        .addNodeOperationDescriptor(new NodeOperationDescriptorDelete("Delete element", null))
+        .addNodeOperationDescriptor(new NodeOperationDescriptorCustom("Update  image file", (eObjectTreeItem) -> true, updateMapImageFileFunction));
     
     EObjectTreeItemAttributeDescriptor eObjectTreeItemAttributeDescriptor;
 
@@ -908,7 +909,7 @@ public class VacationsTreeViewCreator {
         .setLabelText("Elements")
         .setNodeIconFunction(object -> EObjectTreeView.getListIcon())
         .setExpandOnCreation(true)
-        .addNodeOperationDescriptor(new NodeOperationDescriptor(TableRowOperation.NEW_OBJECT, "New element", newEObjectInitializationFunction));
+        .addNodeOperationDescriptor(new NodeOperationDescriptorNew("New element", null, newEObjectInitializationFunction));
     eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(eObjectTreeItemClassListReferenceDescriptor);
     
     return eObjectTreeItemClassDescriptor;
@@ -950,9 +951,9 @@ public class VacationsTreeViewCreator {
           }
           return buf.toString();
         })
-        .addNodeOperationDescriptor(new NodeOperationDescriptor(TableRowOperation.NEW_OBJECT_BEFORE, "New element before ..."))
-        .addNodeOperationDescriptor(new NodeOperationDescriptor(TableRowOperation.NEW_OBJECT_AFTER, "New element after ..."))
-        .addNodeOperationDescriptor(new NodeOperationDescriptor(TableRowOperation.DELETE_OBJECT, "Delete element"));
+        .addNodeOperationDescriptor(new NodeOperationDescriptorNewBefore("New element before ...", null, null))
+        .addNodeOperationDescriptor(new NodeOperationDescriptorNewAfter("New element after ...", null, null))
+        .addNodeOperationDescriptor(new NodeOperationDescriptorDelete("Delete element", null));
     
     // BoundingBox.west
     eObjectTreeItemAttributeDescriptor = new EObjectTreeItemAttributeDescriptor(VACATIONS_PACKAGE.getBoundingBox_West())
@@ -988,9 +989,10 @@ public class VacationsTreeViewCreator {
             return "<no file reference>";
           }
         })
-        .addNodeOperationDescriptor(new NodeOperationDescriptor(TableRowOperation.NEW_OBJECT_BEFORE, "New document before this one"))
-        .addNodeOperationDescriptor(new NodeOperationDescriptor(TableRowOperation.NEW_OBJECT_AFTER, "New document after this one"))
-        .addNodeOperationDescriptor(new NodeOperationDescriptor(TableRowOperation.DELETE_OBJECT, "Delete document"));
+        .addNodeOperationDescriptor(new NodeOperationDescriptorNewBefore("New document before this one", null, null))
+        .addNodeOperationDescriptor(new NodeOperationDescriptorNewAfter("New document after this one", null, null))
+        .addNodeOperationDescriptor(new NodeOperationDescriptorOpen("Open document", VacationsTreeViewCreator::canDocumentBeOpened, VacationsTreeViewCreator::openDocument))
+        .addNodeOperationDescriptor(new NodeOperationDescriptorDelete("Delete document", null));
     
     EObjectTreeItemAttributeDescriptor eObjectTreeItemAttributeDescriptor;
     
@@ -1004,7 +1006,7 @@ public class VacationsTreeViewCreator {
         .setLabelText("File")
         .setPresentationType(PresentationType.FILE)
         .setInitialDirectoryNameFunction(VacationsWindow::getReferredFilesFolder)
-        .addNodeOperationDescriptor(new NodeOperationDescriptor(TableRowOperation.OPEN, "Open document"));
+        .addNodeOperationDescriptor(new NodeOperationDescriptorOpen("Open document", null, null));
     eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(eObjectTreeItemAttributeDescriptor);
         
     return eObjectTreeItemClassDescriptor;
@@ -1137,7 +1139,7 @@ public class VacationsTreeViewCreator {
    * @return true if the drop was successful, false otherwise.
    */
   private boolean handleDrop(EObjectTreeItem eObjectTreeItem, Dragboard dragboard) {
-    LOGGER.severe("=>");
+    LOGGER.info("=>");
     
     if (!isDropPossible(eObjectTreeItem, dragboard)) {
       return false;
@@ -1395,21 +1397,56 @@ public class VacationsTreeViewCreator {
     return true;
   }
   
+  /**
+   * Open the file related to an {@code EObjectTreeItem}
+   * <p>
+   * The {@code treeItem} shall be an {@code EObjectTreeItemForObject}.<br/>
+   * Objects of the following types are supported:
+   * <ul>
+   * <li>FileReference<br/>
+   * If the file of the FileReference is set, this file is opened.
+   * </li>
+   * <li>Document<br/>
+   * If the documentReference is set, this FileReference is handled as above.
+   * </li>
+   * </ul>
+   * 
+   * @param treeItem the {@code EObjectTreeItem} for which the file is to be opened.
+   */
   private static void openDocument(EObjectTreeItem treeItem) {
     LOGGER.info("=> treeItem=" + treeItem);
-    
-    EObjectTreeItemForObject eObjectTreeItemForObject = (EObjectTreeItemForObject) treeItem;
-    Document document = (Document) eObjectTreeItemForObject.getValue();
-    FileReference documentReference = document.getDocumentReference();
-    String filename = documentReference.getFile().trim();
-    
-    LOGGER.info("Going to open: " + filename);
-    
-    File file = new File(filename);
-    try {
-      Desktop.getDesktop().open(file);
-    } catch (IOException e) {
-      e.printStackTrace();
+
+    if (treeItem instanceof EObjectTreeItemForObject eObjectTreeItemForObject) {
+      FileReference fileReference = null;
+      Object value = eObjectTreeItemForObject.getValue();
+      
+      if (value instanceof Document document) {
+        fileReference = document.getDocumentReference();
+      } else if (value instanceof FileReference fr) {
+        fileReference = fr;
+      } else {
+        throw new IllegalArgumentException("Unsupported value: " + value);
+      }
+      
+      if (fileReference == null) {
+        return;
+      }
+      
+      String filename = fileReference.getFile().trim();
+      if (filename == null) {
+        return;
+      }
+
+      LOGGER.info("Going to open: " + filename);
+
+      File file = new File(filename);
+      try {
+        Desktop.getDesktop().open(file);
+      } catch (IOException e) {
+        e.printStackTrace();
+      }
+    } else {
+      throw new IllegalArgumentException("treeItem shall be an EObjectTreeItemForObject but is a " + treeItem.getClass().getName());
     }
   }
   
@@ -1437,6 +1474,8 @@ public class VacationsTreeViewCreator {
     String filename = trackReference.getFile();
     if (filename != null) {
       filename = filename.trim();
+    } else {
+      return false;
     }
     
     File file = new File(filename);

@@ -98,7 +98,34 @@ public enum InformationType implements Enumerator {
    * @generated
    * @ordered
    */
-  DSF(8, "DSF", "DSF");
+  DSF(8, "DSF", "DSF"),
+  /**
+   * The '<em><b>OPUS</b></em>' literal object.
+   * <!-- begin-user-doc -->
+  * <!-- end-user-doc -->
+   * @see #OPUS_VALUE
+   * @generated
+   * @ordered
+   */
+  OPUS(9, "OPUS", "OPUS"),
+  /**
+   * The '<em><b>SACD MC</b></em>' literal object.
+   * <!-- begin-user-doc -->
+  * <!-- end-user-doc -->
+   * @see #SACD_MC_VALUE
+   * @generated
+   * @ordered
+   */
+  SACD_MC(10, "SACD_MC", "SACD_MC"),
+  /**
+   * The '<em><b>SACD</b></em>' literal object.
+   * <!-- begin-user-doc -->
+  * <!-- end-user-doc -->
+   * @see #SACD_VALUE
+   * @generated
+   * @ordered
+   */
+  SACD(11, "SACD", "SACD");
 
   /**
    * The '<em><b>NOT SET</b></em>' literal value.
@@ -212,13 +239,46 @@ public enum InformationType implements Enumerator {
   public static final int DSF_VALUE = 8;
 
   /**
+   * The '<em><b>OPUS</b></em>' literal value.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #OPUS
+   * @model
+   * @generated
+   * @ordered
+   */
+  public static final int OPUS_VALUE = 9;
+
+  /**
+   * The '<em><b>SACD MC</b></em>' literal value.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #SACD_MC
+   * @model
+   * @generated
+   * @ordered
+   */
+  public static final int SACD_MC_VALUE = 10;
+
+  /**
+   * The '<em><b>SACD</b></em>' literal value.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #SACD
+   * @model
+   * @generated
+   * @ordered
+   */
+  public static final int SACD_VALUE = 11;
+
+  /**
    * An array of all the '<em><b>Information Type</b></em>' enumerators.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    */
   private static final InformationType[] VALUES_ARRAY = new InformationType[] { NOT_SET, MP3, VINYL_ANALOG, M2TS, FLAC,
-      WAV, APE, AIFF, DSF, };
+      WAV, APE, AIFF, DSF, OPUS, SACD_MC, SACD, };
 
   /**
    * A public read-only list of all the '<em><b>Information Type</b></em>' enumerators.
@@ -290,6 +350,12 @@ public enum InformationType implements Enumerator {
       return APE;
     case AIFF_VALUE:
       return AIFF;
+    case OPUS_VALUE:
+      return OPUS;
+    case SACD_MC_VALUE:
+      return SACD_MC;
+    case SACD_VALUE:
+      return SACD;
     }
     return null;
   }

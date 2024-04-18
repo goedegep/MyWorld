@@ -19,7 +19,6 @@ import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.util.EContentAdapter;
 
-import goedegep.appgen.TableRowOperation;
 import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.DefaultCustomizationFx;
 import goedegep.jfx.treeview.TreeItemVisitResult;
@@ -500,7 +499,7 @@ public class EObjectTreeView extends TreeView<Object> implements ObjectSelector<
 //    }
     
     EObjectTreeItemClassDescriptor eObjectTreeItemClassDescriptor = new EObjectTreeItemClassDescriptor()
-        .addNodeOperationDescriptor(new NodeOperationDescriptor(TableRowOperation.DELETE_OBJECT, "Delete"));
+        .addNodeOperationDescriptor(new NodeOperationDescriptorDelete("Delete", null));
     
     // Add information for the attributes and references
     for (EStructuralFeature structuralFeature: eClass.getEAllStructuralFeatures()) {
@@ -531,7 +530,7 @@ public class EObjectTreeView extends TreeView<Object> implements ObjectSelector<
           } else {
             eObjectTreeItemClassReferenceDescriptor = new EObjectTreeItemClassReferenceDescriptor(eReference, eClass);
           }
-          eObjectTreeItemClassReferenceDescriptor.addNodeOperationDescriptor(new NodeOperationDescriptor(TableRowOperation.DELETE_OBJECT, "Delete"));
+          eObjectTreeItemClassReferenceDescriptor.addNodeOperationDescriptor(new NodeOperationDescriptorDelete("Delete", null));
           eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(eObjectTreeItemClassReferenceDescriptor);
         }
       } else {

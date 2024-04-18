@@ -8,7 +8,7 @@ import java.util.logging.Logger;
 
 import org.eclipse.emf.ecore.EReference;
 
-import goedegep.appgen.TableRowOperation;
+import goedegep.appgen.Operation;
 import goedegep.appgen.TableRowOperationDescriptor;
 import goedegep.jfx.ComponentFactoryFx;
 import goedegep.jfx.CustomizationFx;
@@ -653,9 +653,9 @@ class PersonsTableDescriptor extends EObjectTableDescriptor<Person> {
       );
   
   @SuppressWarnings("serial")
-  private static Map<TableRowOperation, TableRowOperationDescriptor<Person>> rowOperations = new HashMap<>() {
+  private static Map<Operation, TableRowOperationDescriptor<Person>> rowOperations = new HashMap<>() {
     {
-    put(TableRowOperation.DELETE_OBJECT, new TableRowOperationDescriptor<>("Delete"));
+    put(Operation.DELETE_OBJECT, new TableRowOperationDescriptor<>("Delete"));
     }
   };
   
@@ -685,9 +685,9 @@ class AddressForPeriodTableDescriptor extends EObjectTableDescriptor<AddressForP
       );
   
   @SuppressWarnings("serial")
-  private static Map<TableRowOperation, TableRowOperationDescriptor<AddressForPeriod>> rowOperations = new HashMap<>() {
+  private static Map<Operation, TableRowOperationDescriptor<AddressForPeriod>> rowOperations = new HashMap<>() {
     {
-    put(TableRowOperation.DELETE_OBJECT, new TableRowOperationDescriptor<>("Delete"));
+    put(Operation.DELETE_OBJECT, new TableRowOperationDescriptor<>("Delete"));
     }
   };
   

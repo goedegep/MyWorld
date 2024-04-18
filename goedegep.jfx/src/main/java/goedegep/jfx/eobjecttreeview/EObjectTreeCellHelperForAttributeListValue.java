@@ -8,7 +8,7 @@ import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EDataType;
 import org.eclipse.emf.ecore.EEnum;
 
-import goedegep.appgen.TableRowOperation;
+import goedegep.appgen.Operation;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.ChoiceBox;
@@ -107,15 +107,15 @@ public class EObjectTreeCellHelperForAttributeListValue extends EObjectTreeCellH
       MenuItem menuItem;
       menuItem = new MenuItem(nodeOperationDescriptor.getMenuText());
 
-      if (first  &&  (nodeOperationDescriptor.getOperation() == TableRowOperation.MOVE_OBJECT_UP)) {
+      if (first  &&  (nodeOperationDescriptor.getOperation() == Operation.MOVE_OBJECT_UP)) {
         menuItem.setDisable(true);
       }
-      if (last  &&  (nodeOperationDescriptor.getOperation() == TableRowOperation.MOVE_OBJECT_DOWN)) {
+      if (last  &&  (nodeOperationDescriptor.getOperation() == Operation.MOVE_OBJECT_DOWN)) {
         menuItem.setDisable(true);
       }
 
       contextMenu.getItems().add(menuItem);
-      final TableRowOperation operation = nodeOperationDescriptor.getOperation();
+      final Operation operation = nodeOperationDescriptor.getOperation();
       menuItem.setOnAction(new EventHandler<ActionEvent>() {
         public void handle(ActionEvent t) {
           switch (operation) {

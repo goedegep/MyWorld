@@ -5,7 +5,7 @@ import java.util.logging.Logger;
 
 import org.eclipse.emf.common.util.EList;
 
-import goedegep.appgen.TableRowOperation;
+import goedegep.appgen.Operation;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.image.Image;
@@ -67,7 +67,7 @@ public class EObjectTreeCellHelperForAttributeList extends EObjectTreeCellHelper
     for (NodeOperationDescriptor nodeOperationDescriptor: nodeOperationDescriptors) {
       MenuItem menuItem;
       
-      final TableRowOperation operation = nodeOperationDescriptor.getOperation();
+      final Operation operation = nodeOperationDescriptor.getOperation();
       switch (operation) {
       case NEW_OBJECT:
         menuItem = new MenuItem(nodeOperationDescriptor.getMenuText());

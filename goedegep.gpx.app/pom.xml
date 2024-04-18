@@ -52,5 +52,9 @@
      <groupId>org.eclipse.emf</groupId>
     <artifactId>org.eclipse.emf.ecore.xmi</artifactId>
     </dependency>
+    <dependency>
+      <groupId>tim.prune</groupId>
+      <artifactId>tim.prune.gpsprune</artifactId>
+    </dependency>
   </dependencies>
 </project>

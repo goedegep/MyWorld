@@ -22,20 +22,39 @@
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="MediaDb">
     <eOperations name="getArtist" eType="#//Artist">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Get an {@code Artist} from the media database, based on its name.&#xD;&#xA;&#xD;&#xA;@param artistName the name of the artist&#xD;&#xA;@return the  {@code Artist} with the name {@code artistName}, or null if no such artist exists in the media database."/>
+      </eAnnotations>
       <eParameters name="artistName" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     </eOperations>
     <eOperations name="getAlbum" eType="#//Album">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Get an album based on release date (optional), artist and title.&#xD;&#xA;&#xD;&#xA;@param releaseDate The release date (issue date) of the album (optional)&#xD;&#xA;@param artist The {@code Artist} of the album (mandatory)&#xD;&#xA;@param title The {@code Title} of the album (mandatory)&#xD;&#xA;@return the spefied album, or null if no such album exists in the media database"/>
+      </eAnnotations>
       <eParameters name="releaseDate" eType="ecore:EDataType ../../goedegep.types.model/model/types.ecore#//EFlexDate"/>
       <eParameters name="artist" eType="#//Artist"/>
       <eParameters name="title" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     </eOperations>
     <eOperations name="getAlbums" ordered="false" upperBound="-1" eType="#//Album">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Get all albums with specified release date (optional), artist and title.&#xD;&#xA;&#xD;&#xA;@param releaseDate The release date (issue date) of the album (optional)&#xD;&#xA;@param artist The {@code Artist} of the album (optional). If the artist has a container artist, then this will be used.&#xD;&#xA;@param title The {@code Title} of the album (optional)&#xD;&#xA;@return all albums that match the specified values. The returned list may be empty, but it's never null."/>
+      </eAnnotations>
       <eParameters name="releaseDate" eType="ecore:EDataType ../../goedegep.types.model/model/types.ecore#//EFlexDate"/>
       <eParameters name="artist" eType="#//Artist"/>
       <eParameters name="title" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     </eOperations>
     <eOperations name="getTrackCollection" eType="#//TrackCollection">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Get a specific track collection.&#xD;&#xA;&#xD;&#xA;@param collection The {@code Collection} for which the track collection is to be returned.&#xD;&#xA;@return the {@code TrackCollection} for the {@collection}."/>
+      </eAnnotations>
       <eParameters name="collection" eType="#//Collection"/>
+    </eOperations>
+    <eOperations name="getTrack" eType="#//Track">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Get a track specified by its artist and title.&#xD;&#xA;&#xD;&#xA;@param artist the track {@code Artist} (mandatory).&#xD;&#xA;@param titlte the track title (mandatory).&#xD;&#xA;@return the {@code Track} with given {@code artist} and {@code title}, or null if such a track doesn't exist. "/>
+      </eAnnotations>
+      <eParameters name="artist" eType="#//Artist"/>
+      <eParameters name="title" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     </eOperations>
     <eStructuralFeatures xsi:type="ecore:EReference" name="artists" upperBound="-1"
         eType="#//Artist" containment="true"/>
@@ -57,6 +76,14 @@
         <details key="documentation" value="Some artists have albums under various names, which can best be grouped. For example &quot;Bob Marley&quot; and &quot;Bob Marley The Wailers&quot;. In this case &quot;Bob Marley&quot; is the 'containerArtist' of &quot;Bob Marley The Wailers&quot;."/>
       </eAnnotations>
     </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="photo" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
+        unsettable="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="style" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
+        unsettable="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="myComments" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
+        unsettable="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="sample" eType="#//TrackReference"
+        unsettable="true" containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Album">
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
@@ -196,6 +223,9 @@
     <eLiterals name="APE" value="7"/>
     <eLiterals name="AIFF" value="8"/>
     <eLiterals name="DSF" value="8"/>
+    <eLiterals name="OPUS" value="9"/>
+    <eLiterals name="SACD_MC" value="10"/>
+    <eLiterals name="SACD" value="11"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Player">
     <eStructuralFeatures xsi:type="ecore:EReference" name="artist" eType="#//Artist"
@@ -217,6 +247,7 @@
     <eLiterals name="ROCK" value="6" literal="Rock"/>
     <eLiterals name="NOT_SET" value="-1" literal="&lt;not-set>"/>
     <eLiterals name="PUNK" value="8" literal="Punk"/>
+    <eLiterals name="SAMPLE" value="9"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="MyTrackInfo">
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">

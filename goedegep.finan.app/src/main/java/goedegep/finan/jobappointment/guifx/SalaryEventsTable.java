@@ -7,7 +7,7 @@ import java.util.Map;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EReference;
 
-import goedegep.appgen.TableRowOperation;
+import goedegep.appgen.Operation;
 import goedegep.appgen.TableRowOperationDescriptor;
 import goedegep.finan.jobappointment.JobAppointmentUtil;
 import goedegep.finan.jobappointment.model.JobAppointmentPackage;
@@ -77,9 +77,9 @@ class SalaryEventsTableDescriptor extends EObjectTableDescriptor<SalaryEvent> {
       );
   
   @SuppressWarnings("serial")
-  private static Map<TableRowOperation, TableRowOperationDescriptor<SalaryEvent>> rowOperations = new HashMap<>() {
+  private static Map<Operation, TableRowOperationDescriptor<SalaryEvent>> rowOperations = new HashMap<>() {
     {
-      put(TableRowOperation.DELETE_OBJECT, new TableRowOperationDescriptor<>("Delete"));
+      put(Operation.DELETE_OBJECT, new TableRowOperationDescriptor<>("Delete"));
     }
   };
   

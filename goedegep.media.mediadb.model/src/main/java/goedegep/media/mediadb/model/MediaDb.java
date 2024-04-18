@@ -99,6 +99,12 @@ public interface MediaDb extends EObject {
   /**
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
+   * <!-- begin-model-doc -->
+   * Get an {@code Artist} from the media database, based on its name.
+   * 
+   * @param artistName the name of the artist
+   * @return the  {@code Artist} with the name {@code artistName}, or null if no such artist exists in the media database.
+   * <!-- end-model-doc -->
    * @model
    * @generated
    */
@@ -107,6 +113,14 @@ public interface MediaDb extends EObject {
   /**
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
+   * <!-- begin-model-doc -->
+   * Get an album based on release date (optional), artist and title.
+   * 
+   * @param releaseDate The release date (issue date) of the album (optional)
+   * @param artist The {@code Artist} of the album (mandatory)
+   * @param title The {@code Title} of the album (mandatory)
+   * @return the spefied album, or null if no such album exists in the media database
+   * <!-- end-model-doc -->
    * @model releaseDateDataType="goedegep.types.model.EFlexDate"
    * @generated
    */
@@ -115,6 +129,14 @@ public interface MediaDb extends EObject {
   /**
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
+   * <!-- begin-model-doc -->
+   * Get all albums with specified release date (optional), artist and title.
+   * 
+   * @param releaseDate The release date (issue date) of the album (optional)
+   * @param artist The {@code Artist} of the album (optional). If the artist has a container artist, then this will be used.
+   * @param title The {@code Title} of the album (optional)
+   * @return all albums that match the specified values. The returned list may be empty, but it's never null.
+   * <!-- end-model-doc -->
    * @model ordered="false" releaseDateDataType="goedegep.types.model.EFlexDate"
    * @generated
    */
@@ -123,9 +145,30 @@ public interface MediaDb extends EObject {
   /**
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
+   * <!-- begin-model-doc -->
+   * Get a specific track collection.
+   * 
+   * @param collection The {@code Collection} for which the track collection is to be returned.
+   * @return the {@code TrackCollection} for the {@collection}.
+   * <!-- end-model-doc -->
    * @model
    * @generated
    */
   TrackCollection getTrackCollection(Collection collection);
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * <!-- begin-model-doc -->
+   * Get a track specified by its artist and title.
+   * 
+   * @param artist the track {@code Artist} (mandatory).
+   * @param titlte the track title (mandatory).
+   * @return the {@code Track} with given {@code artist} and {@code title}, or null if such a track doesn't exist. 
+   * <!-- end-model-doc -->
+   * @model
+   * @generated
+   */
+  Track getTrack(Artist artist, String title);
 
 } // MediaDb

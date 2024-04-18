@@ -1,13 +1,15 @@
 package goedegep.vacations.app.guifx;
 
-import goedegep.appgen.TableRowOperation;
 import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.eobjecttreeview.EObjectTreeItemAttributeDescriptor;
 import goedegep.jfx.eobjecttreeview.EObjectTreeItemClassDescriptor;
 import goedegep.jfx.eobjecttreeview.EObjectTreeItemClassListReferenceDescriptor;
 import goedegep.jfx.eobjecttreeview.EObjectTreeItemClassReferenceDescriptor;
 import goedegep.jfx.eobjecttreeview.EObjectTreeView;
-import goedegep.jfx.eobjecttreeview.NodeOperationDescriptor;
+import goedegep.jfx.eobjecttreeview.NodeOperationDescriptorDelete;
+import goedegep.jfx.eobjecttreeview.NodeOperationDescriptorNew;
+import goedegep.jfx.eobjecttreeview.NodeOperationDescriptorNewAfter;
+import goedegep.jfx.eobjecttreeview.NodeOperationDescriptorNewBefore;
 import goedegep.vacations.checklist.model.VacationChecklist;
 import goedegep.vacations.checklist.model.VacationChecklistCategory;
 import goedegep.vacations.checklist.model.VacationChecklistItem;
@@ -74,7 +76,7 @@ public class VacationChecklistTreeViewCreator {
     EObjectTreeItemClassListReferenceDescriptor eObjectTreeItemClassListReferenceDescriptor = new EObjectTreeItemClassListReferenceDescriptor(VACATION_CHECKLIST_PACKAGE.getVacationChecklistLabelsList_VacationChecklistLabels())
         .setLabelText("Labels")
         .setExpandOnCreation(true)
-        .addNodeOperationDescriptor(new NodeOperationDescriptor(TableRowOperation.NEW_OBJECT, "New label"));
+        .addNodeOperationDescriptor(new NodeOperationDescriptorNew("New label", null, null));
     eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(eObjectTreeItemClassListReferenceDescriptor);
 
     return eObjectTreeItemClassDescriptor;
@@ -89,9 +91,9 @@ public class VacationChecklistTreeViewCreator {
     EObjectTreeItemClassDescriptor eObjectTreeItemClassDescriptor = new EObjectTreeItemClassDescriptor()
         .setNodeTextFunction(eObject -> ((VacationChecklistLabel)eObject).getName())
         .setExpandOnCreation(true)
-        .addNodeOperationDescriptor(new NodeOperationDescriptor(TableRowOperation.NEW_OBJECT_BEFORE, "New label before this one ..."))
-        .addNodeOperationDescriptor(new NodeOperationDescriptor(TableRowOperation.NEW_OBJECT_AFTER, "New label after this one ..."))
-        .addNodeOperationDescriptor(new NodeOperationDescriptor(TableRowOperation.DELETE_OBJECT, "Delete this label"));
+        .addNodeOperationDescriptor(new NodeOperationDescriptorNewBefore("New label before this one ...", null, null))
+        .addNodeOperationDescriptor(new NodeOperationDescriptorNewAfter("New label after this one ...", null, null))
+        .addNodeOperationDescriptor(new NodeOperationDescriptorDelete("Delete this label", null));
     
     EObjectTreeItemAttributeDescriptor eObjectTreeItemAttributeDescriptor;
     
@@ -117,7 +119,7 @@ public class VacationChecklistTreeViewCreator {
     EObjectTreeItemClassListReferenceDescriptor eObjectTreeItemClassListReferenceDescriptor = new EObjectTreeItemClassListReferenceDescriptor(VACATION_CHECKLIST_PACKAGE.getVacationChecklistCategoriesList_VacationChecklistCategories())
         .setLabelText("Categories")
         .setExpandOnCreation(true)
-        .addNodeOperationDescriptor(new NodeOperationDescriptor(TableRowOperation.NEW_OBJECT, "New category"));
+        .addNodeOperationDescriptor(new NodeOperationDescriptorNew("New category", null, null));
     eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(eObjectTreeItemClassListReferenceDescriptor);
 
     return eObjectTreeItemClassDescriptor;
@@ -131,9 +133,9 @@ public class VacationChecklistTreeViewCreator {
   private EObjectTreeItemClassDescriptor createDescriptorForVacationChecklistCategory() {
     EObjectTreeItemClassDescriptor eObjectTreeItemClassDescriptor = new EObjectTreeItemClassDescriptor()
         .setNodeTextFunction(eObject -> ((VacationChecklistCategory)eObject).getName())
-        .addNodeOperationDescriptor(new NodeOperationDescriptor(TableRowOperation.NEW_OBJECT_BEFORE, "New category before this one ..."))
-        .addNodeOperationDescriptor(new NodeOperationDescriptor(TableRowOperation.NEW_OBJECT_AFTER, "New category after this one ..."))
-        .addNodeOperationDescriptor(new NodeOperationDescriptor(TableRowOperation.DELETE_OBJECT, "Delete this category"));
+        .addNodeOperationDescriptor(new NodeOperationDescriptorNewBefore("New category before this one ...", null, null))
+        .addNodeOperationDescriptor(new NodeOperationDescriptorNewAfter("New category after this one ...", null, null))
+        .addNodeOperationDescriptor(new NodeOperationDescriptorDelete("Delete this category", null));
     
     // VacationChecklistCategory.name
     EObjectTreeItemAttributeDescriptor eObjectTreeItemAttributeDescriptor = new EObjectTreeItemAttributeDescriptor(VACATION_CHECKLIST_PACKAGE.getVacationChecklistCategory_Name())
@@ -144,7 +146,7 @@ public class VacationChecklistTreeViewCreator {
     EObjectTreeItemClassListReferenceDescriptor eObjectTreeItemClassListReferenceDescriptor = new EObjectTreeItemClassListReferenceDescriptor(VACATION_CHECKLIST_PACKAGE.getVacationChecklistCategory_VacationChecklistItems())
         .setLabelText("Items")
         .setExpandOnCreation(true)
-        .addNodeOperationDescriptor(new NodeOperationDescriptor(TableRowOperation.NEW_OBJECT, "New item"));
+        .addNodeOperationDescriptor(new NodeOperationDescriptorNew("New item", null, null));
     eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(eObjectTreeItemClassListReferenceDescriptor);
 
     return eObjectTreeItemClassDescriptor;
@@ -159,9 +161,9 @@ public class VacationChecklistTreeViewCreator {
     EObjectTreeItemClassDescriptor eObjectTreeItemClassDescriptor = new EObjectTreeItemClassDescriptor()
         .setNodeTextFunction(eObject -> ((VacationChecklistItem)eObject).getName())
         .setExpandOnCreation(true)
-        .addNodeOperationDescriptor(new NodeOperationDescriptor(TableRowOperation.NEW_OBJECT_BEFORE, "New item before this one ..."))
-        .addNodeOperationDescriptor(new NodeOperationDescriptor(TableRowOperation.NEW_OBJECT_AFTER, "New item after this one ..."))
-        .addNodeOperationDescriptor(new NodeOperationDescriptor(TableRowOperation.DELETE_OBJECT, "Delete this item"));
+        .addNodeOperationDescriptor(new NodeOperationDescriptorNewBefore("New item before this one ...", null, null))
+        .addNodeOperationDescriptor(new NodeOperationDescriptorNewAfter("New item after this one ...", null, null))
+        .addNodeOperationDescriptor(new NodeOperationDescriptorDelete("Delete this item", null));
     
     // VacationChecklistItem.name
     EObjectTreeItemAttributeDescriptor eObjectTreeItemAttributeDescriptor = new EObjectTreeItemAttributeDescriptor(VACATION_CHECKLIST_PACKAGE.getVacationChecklistItem_Name())
@@ -172,7 +174,7 @@ public class VacationChecklistTreeViewCreator {
     EObjectTreeItemClassListReferenceDescriptor eObjectTreeItemClassListReferenceDescriptor = new EObjectTreeItemClassListReferenceDescriptor(VACATION_CHECKLIST_PACKAGE.getVacationChecklistItem_VacationChecklistLabels())
         .setLabelText("Labels")
         .setExpandOnCreation(true)
-        .addNodeOperationDescriptor(new NodeOperationDescriptor(TableRowOperation.NEW_OBJECT, "Add label"));
+        .addNodeOperationDescriptor(new NodeOperationDescriptorNew("Add label", null, null));
     eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(eObjectTreeItemClassListReferenceDescriptor);
 
     return eObjectTreeItemClassDescriptor;
