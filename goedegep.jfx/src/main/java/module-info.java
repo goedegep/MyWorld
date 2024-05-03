@@ -18,7 +18,7 @@ module goedegep.appgenfx {
   exports goedegep.jfx.workerstategui;
   exports goedegep.jfx.xtreeview;
 
-  requires commons.cli;
+  requires org.apache.commons.cli;
   requires transitive goedegep.appgen;
   requires goedegep.model.configuration;
   requires transitive goedegep.model.properties;
@@ -32,7 +32,6 @@ module goedegep.appgenfx {
   requires org.commonmark;
   requires org.eclipse.emf.common;
   requires transitive org.eclipse.emf.ecore;
-  requires ljv;
   requires transitive goedegep.types.model;
   requires javafx.swing;
   requires goedegep.geo;

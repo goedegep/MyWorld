@@ -12,6 +12,30 @@ import org.eclipse.emf.ecore.EObject;
  * A representation of the model object '<em><b>Media Db</b></em>'.
  * <!-- end-user-doc -->
  *
+ * <!-- begin-model-doc -->
+ * This interface is the top level interface for the media (music) database.<br>
+ * It contains both general information like information on albums and artists, and personal information like whether I want to have an album and on what media I have it.</br>
+ * The interface names for personal information start with 'My', being {@code MyInfo} and {@code MyTrackInfo}.<br/>
+ * <h2>Overview of the interfaces</h2>
+ * <h3>{@link Album}</h3><
+ * The database contains a list of albums, where an album can be any collection of tracks.<br/>
+ * An album consists of one or more discs.
+ * <h3>{@link Disc}</h3>
+ * This interface represents a physical disc like a CD or SACD, but can also represent any collection of tracks.<br/>
+ * A disc contains tracks, represented by track references ({@code TrackReference}).
+ * <h3>{@link TrackReference}</h3>
+ * The tracks of a disc are specified by track references and not directly by tracks. Main reason for this is that the same track (the same recording) can appear on more than one album.
+ * <h3>{@link Track}</h3>
+ * The database contains a list of tracks, where a track represents a single song/recording.
+ * The tracks are referred to (via track references) by the tracks of the discs of the albums and by the tracks in the track collections.
+ * <h3>{@link TrackCollection}</h3>
+ * The database also contains track collections, which are collections of tracks of a specific genre and for which you don't have albums details.
+ * <h3>{@link Artist}</h3>
+ * The database has a list of artists, which may be an artist of an album or track, or a player on an album or track, or an author of a track.
+ * <h3>{@link Video}</h3>
+ * The database has a list of videos.
+ * <!-- end-model-doc -->
+ *
  * <p>
  * The following features are supported:
  * </p>

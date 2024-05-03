@@ -10,7 +10,7 @@
     <semanticResources>platform:/resource/goedegep.types.model/model/types.genmodel</semanticResources>
     <ownedViews xmi:type="viewpoint:DView" uid="_0TU9MJcpEeeIq4Gh5mEXMA">
       <viewpoint xmi:type="description:Viewpoint" href="platform:/plugin/org.eclipse.emf.ecoretools.design/description/ecore.odesign#//@ownedViewpoints[name='Design']"/>
-      <ownedRepresentationDescriptors xmi:type="viewpoint:DRepresentationDescriptor" uid="_0T92ZZcpEeeIq4Gh5mEXMA" name="mediadb" repPath="#_0T92YJcpEeeIq4Gh5mEXMA" changeId="1713300273748">
+      <ownedRepresentationDescriptors xmi:type="viewpoint:DRepresentationDescriptor" uid="_0T92ZZcpEeeIq4Gh5mEXMA" name="mediadb" repPath="#_0T92YJcpEeeIq4Gh5mEXMA" changeId="1713537867912">
         <description xmi:type="description_1:DiagramDescription" href="platform:/plugin/org.eclipse.emf.ecoretools.design/description/ecore.odesign#//@ownedViewpoints[name='Design']/@ownedRepresentations[name='Entities']"/>
         <target xmi:type="ecore:EPackage" href="mediadb.ecore#/"/>
       </ownedRepresentationDescriptors>
@@ -193,6 +193,14 @@
             <children xmi:type="notation:Node" xmi:id="_2FhKMGpDEeuVybFJ7p4IxQ" type="3010" element="_2FR5oGpDEeuVybFJ7p4IxQ">
               <styles xmi:type="notation:FontStyle" xmi:id="_2FhKMWpDEeuVybFJ7p4IxQ" fontName="Segoe UI" fontHeight="8"/>
               <layoutConstraint xmi:type="notation:Location" xmi:id="_2FhKMmpDEeuVybFJ7p4IxQ"/>
+            </children>
+            <children xmi:type="notation:Node" xmi:id="_fYRTwP5aEe6BrYQTuHpn2Q" type="3010" element="_fXssAP5aEe6BrYQTuHpn2Q">
+              <styles xmi:type="notation:FontStyle" xmi:id="_fYR60P5aEe6BrYQTuHpn2Q" fontName="Segoe UI" fontHeight="8"/>
+              <layoutConstraint xmi:type="notation:Location" xmi:id="_fYR60f5aEe6BrYQTuHpn2Q"/>
+            </children>
+            <children xmi:type="notation:Node" xmi:id="_NUX0AP5bEe6BrYQTuHpn2Q" type="3010" element="_NUGuQP5bEe6BrYQTuHpn2Q">
+              <styles xmi:type="notation:FontStyle" xmi:id="_NUX0Af5bEe6BrYQTuHpn2Q" fontName="Segoe UI" fontHeight="8"/>
+              <layoutConstraint xmi:type="notation:Location" xmi:id="_NUX0Av5bEe6BrYQTuHpn2Q"/>
             </children>
             <styles xmi:type="notation:SortingStyle" xmi:id="_PczSopcvEeeIq4Gh5mEXMA"/>
             <styles xmi:type="notation:FilteringStyle" xmi:id="_PczSo5cvEeeIq4Gh5mEXMA"/>
@@ -1354,6 +1362,22 @@
         <target xmi:type="ecore:EOperation" href="mediadb.ecore#//Album/getDisc"/>
         <semanticElements xmi:type="ecore:EOperation" href="mediadb.ecore#//Album/getDisc"/>
         <ownedStyle xmi:type="diagram:BundledImage" uid="_2FR5oWpDEeuVybFJ7p4IxQ" labelAlignment="LEFT">
+          <description xmi:type="style:BundledImageDescription" href="platform:/plugin/org.eclipse.emf.ecoretools.design/description/ecore.odesign#//@ownedViewpoints[name='Design']/@ownedRepresentations[name='Entities']/@defaultLayer/@containerMappings[name='EC%20EClass']/@subNodeMappings[name='Operation']/@style"/>
+        </ownedStyle>
+        <actualMapping xmi:type="description_1:NodeMapping" href="platform:/plugin/org.eclipse.emf.ecoretools.design/description/ecore.odesign#//@ownedViewpoints[name='Design']/@ownedRepresentations[name='Entities']/@defaultLayer/@containerMappings[name='EC%20EClass']/@subNodeMappings[name='Operation']"/>
+      </ownedElements>
+      <ownedElements xmi:type="diagram:DNodeListElement" uid="_fXssAP5aEe6BrYQTuHpn2Q" name="iWantAlbumOrTracksOfAlbum() : EBoolean" tooltipText="iWantAlbumOrTracksOfAlbum() : EBoolean">
+        <target xmi:type="ecore:EOperation" href="mediadb.ecore#//Album/iWantAlbumOrTracksOfAlbum"/>
+        <semanticElements xmi:type="ecore:EOperation" href="mediadb.ecore#//Album/iWantAlbumOrTracksOfAlbum"/>
+        <ownedStyle xmi:type="diagram:BundledImage" uid="_fXtTEP5aEe6BrYQTuHpn2Q" labelAlignment="LEFT">
+          <description xmi:type="style:BundledImageDescription" href="platform:/plugin/org.eclipse.emf.ecoretools.design/description/ecore.odesign#//@ownedViewpoints[name='Design']/@ownedRepresentations[name='Entities']/@defaultLayer/@containerMappings[name='EC%20EClass']/@subNodeMappings[name='Operation']/@style"/>
+        </ownedStyle>
+        <actualMapping xmi:type="description_1:NodeMapping" href="platform:/plugin/org.eclipse.emf.ecoretools.design/description/ecore.odesign#//@ownedViewpoints[name='Design']/@ownedRepresentations[name='Entities']/@defaultLayer/@containerMappings[name='EC%20EClass']/@subNodeMappings[name='Operation']"/>
+      </ownedElements>
+      <ownedElements xmi:type="diagram:DNodeListElement" uid="_NUGuQP5bEe6BrYQTuHpn2Q" name="iHaveToJudgeAlbumOrTracks() : EBoolean" tooltipText="iHaveToJudgeAlbumOrTracks() : EBoolean">
+        <target xmi:type="ecore:EOperation" href="mediadb.ecore#//Album/iHaveToJudgeAlbumOrTracks"/>
+        <semanticElements xmi:type="ecore:EOperation" href="mediadb.ecore#//Album/iHaveToJudgeAlbumOrTracks"/>
+        <ownedStyle xmi:type="diagram:BundledImage" uid="_NUHVUP5bEe6BrYQTuHpn2Q" labelAlignment="LEFT">
           <description xmi:type="style:BundledImageDescription" href="platform:/plugin/org.eclipse.emf.ecoretools.design/description/ecore.odesign#//@ownedViewpoints[name='Design']/@ownedRepresentations[name='Entities']/@defaultLayer/@containerMappings[name='EC%20EClass']/@subNodeMappings[name='Operation']/@style"/>
         </ownedStyle>
         <actualMapping xmi:type="description_1:NodeMapping" href="platform:/plugin/org.eclipse.emf.ecoretools.design/description/ecore.odesign#//@ownedViewpoints[name='Design']/@ownedRepresentations[name='Entities']/@defaultLayer/@containerMappings[name='EC%20EClass']/@subNodeMappings[name='Operation']"/>

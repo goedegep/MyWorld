@@ -48,7 +48,7 @@ module goedegep.util {
   exports goedegep.util.xtree.nodebased;
   exports goedegep.util.xtree.serialized;
   
-  requires commons.exec;
+  requires org.apache.commons.exec;
   requires transitive goedegep.geo;
   requires transitive java.desktop;
   requires transitive java.logging;

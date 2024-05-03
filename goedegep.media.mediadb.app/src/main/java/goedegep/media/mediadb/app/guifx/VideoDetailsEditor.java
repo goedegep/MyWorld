@@ -361,7 +361,7 @@ public class VideoDetailsEditor extends JfxStage {
     }
     
     // Video image
-    String imageText = videoImageFileSelecter.ocGetAbsolutePath().trim();
+    String imageText = videoImageFileSelecter.getAbsolutePath().trim();
     if (!imageText.isEmpty()) {
       video.setImage(imageText);
     }

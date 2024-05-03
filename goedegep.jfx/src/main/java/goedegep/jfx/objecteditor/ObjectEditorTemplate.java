@@ -73,7 +73,7 @@ import javafx.scene.text.Font;
  *     In UPDATE mode this is an 'Update' button, which is only enabled if all controls are valid and at least one control has changed. 
  *    </li>
  *    <li>
- *     New button: to start editing a new object. All controls are cleared (or filled with a default value) and the editor switches to EDIT mode. This button is always enabled.
+ *     New button: to start editing a new object. All controls are cleared (or filled with a default value) and the editor switches to NEW mode. This button is always enabled.
  *    </li>
  *   </ul>
  *  </li>
@@ -94,11 +94,15 @@ public abstract class ObjectEditorTemplate<T> extends JfxStage {
   private static Logger LOGGER = Logger.getLogger(ObjectEditorTemplate.class.getName());
   private static final String NEW_LINE = System.getProperty("line.separator");
   
-  
-  private ComponentFactoryFx componentFactory;
+  /**
+   * Factory for creating GUI components.
+   */
+  protected ComponentFactoryFx componentFactory;
   
   /**
    * An {@code ObjectControlGroup} containing all {@code ObjectControl}s.
+   * <p>
+   * Any ObjectControl you create shall be added to this group.
    */
   protected ObjectControlGroup objectControlsGroup;
   
@@ -164,7 +168,6 @@ public abstract class ObjectEditorTemplate<T> extends JfxStage {
    * Your constructor looks like this:
    * 
    *   this.dataCollection = dataCollection;
-   *   componentFactory = customization.getComponentFactoryFx();
    *
    * @param customization
    * @param title
@@ -263,7 +266,7 @@ public abstract class ObjectEditorTemplate<T> extends JfxStage {
   /**
    * Configure the editor.
    * <p>
-   * Override this method to make calls to: setAddObjectTexts(), setUpdateObjectTexts(), setNewObjectTexts()
+   * Override this method to make calls to setAddObjectTexts(), setUpdateObjectTexts() and setNewObjectTexts() for setting the texts for the action buttons.
    */
   protected void configureEditor() {
     setAddObjectTexts("Add object", "Add the object to the collection");
@@ -417,6 +420,8 @@ public abstract class ObjectEditorTemplate<T> extends JfxStage {
       addObjectToCollection();
       
       setObject(object, false);
+      
+      handleChanges();
     } catch (ObjectEditorException e) {
       StringBuilder buf = new StringBuilder();
       for (String problem: e.getProblems()) {

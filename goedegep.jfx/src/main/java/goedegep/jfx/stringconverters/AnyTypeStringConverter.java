@@ -30,10 +30,15 @@ public class AnyTypeStringConverter<T extends Object> extends StringConverterAnd
   @SuppressWarnings("unchecked")
   @Override
   public T fromString(String string) {
-    try {
-      return (T) string;
-    } catch (RuntimeException e) {
+    if (string.isEmpty()) {  // An empty string is handled as null value.
       return null;
+    } else {
+
+      try {
+        return (T) string;
+      } catch (RuntimeException e) {
+        return null;
+      }
     }
   }
 

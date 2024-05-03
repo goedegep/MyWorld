@@ -26,8 +26,6 @@ import org.apache.commons.imaging.formats.jpeg.exif.ExifRewriter;
 import org.apache.commons.imaging.formats.tiff.TiffDirectory;
 import org.apache.commons.imaging.formats.tiff.TiffField;
 import org.apache.commons.imaging.formats.tiff.TiffImageMetadata;
-import org.apache.commons.imaging.formats.tiff.TiffImageMetadata.Directory;
-import org.apache.commons.imaging.formats.tiff.TiffImageMetadata.TiffMetadataItem;
 import org.apache.commons.imaging.formats.tiff.constants.ExifTagConstants;
 import org.apache.commons.imaging.formats.tiff.constants.GpsTagConstants;
 import org.apache.commons.imaging.formats.tiff.constants.MicrosoftTagConstants;
@@ -568,6 +566,7 @@ public final class PhotoFileMetaDataHandler {
     if (jpegMetadata != null) {
       TiffImageMetadata exif = jpegMetadata.getExif();
       if (exif != null) {
+        @SuppressWarnings("unchecked")
         List<ImageMetadataItem> dirs = (List<ImageMetadataItem>) exif.getDirectories();
         LOGGER.info("Value of getDirectories: " + dirs);
 //        for (Directory directory: exif.getDirectories()) {

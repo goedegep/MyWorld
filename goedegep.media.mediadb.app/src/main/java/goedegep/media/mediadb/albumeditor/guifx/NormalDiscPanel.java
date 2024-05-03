@@ -9,7 +9,6 @@ import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.objecteditor.EditMode;
 import goedegep.media.mediadb.app.derivealbuminfo.DiscInfo;
 import goedegep.media.mediadb.app.derivealbuminfo.TrackInfo;
-import goedegep.media.mediadb.model.AlbumType;
 import goedegep.media.mediadb.model.Disc;
 import goedegep.media.mediadb.model.MediaDb;
 import goedegep.media.mediadb.model.MediadbFactory;

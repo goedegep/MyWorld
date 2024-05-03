@@ -22,14 +22,12 @@ import goedegep.jfx.browser.BrowserWindow;
 import goedegep.jfx.eobjecttable.EObjectTable;
 import goedegep.media.app.MediaRegistry;
 import goedegep.media.mediadb.albumeditor.guifx.AlbumEditor;
-import goedegep.media.mediadb.albuminfo.ArtistInfoHandler;
 import goedegep.media.mediadb.app.MediaDbAppUtil;
 import goedegep.media.mediadb.app.MediaDbChecker;
 import goedegep.media.mediadb.app.MediaDbToDiscLocationMap;
 import goedegep.media.mediadb.model.Album;
 import goedegep.media.mediadb.model.Collection;
 import goedegep.media.mediadb.model.Disc;
-import goedegep.media.mediadb.model.IWant;
 import goedegep.media.mediadb.model.InformationType;
 import goedegep.media.mediadb.model.MediaDb;
 import goedegep.media.mediadb.model.MediadbFactory;
@@ -40,6 +38,7 @@ import goedegep.media.mediadb.model.MyTrackInfo;
 import goedegep.media.mediadb.model.Track;
 import goedegep.media.mediadb.model.TrackReference;
 import goedegep.media.mediadb.model.util.MediaDbUtil;
+import goedegep.media.mediadb.trackeditor.guifx.TrackEditor;
 import goedegep.media.musicfolder.AlbumOnDiscInfo;
 import goedegep.media.musicfolder.MusicFolderContent;
 import goedegep.properties.app.guifx.PropertiesEditor;
@@ -304,16 +303,25 @@ public class MediaDbWindow extends JfxStage {
   }
   
   private void tempFixProblems() {
-    // IWant shall only be set if I don't have it already (or if I want it on other media)
+    // I have on shall only be set if it is stored for that reference. Not if it is in a collection or stored in another album
     for (Album album: mediaDb.getAlbums()) {
+      
+      if ("Het Beste Uit De Top 100 Allertijden + 1 Extra".equals(album.getTitle())) {
+        LOGGER.severe("STOP");
+      }
+      
       for (Disc disc: album.getDiscs()) {
         for (TrackReference trackReference: disc.getTrackReferences()) {
-          MyTrackInfo myInfo = trackReference.getMyTrackInfo();
-          if (myInfo != null) {
-            IWant iWant = myInfo.getIWant();
-            if (MediaDbAppUtil.doIHaveThisTrack(trackReference)  &&  iWant != IWant.NOT_SET) {
-              LOGGER.severe("IWant set at track level for a track I have: " + album.getArtistAndTitle() + " , " + trackReference.getTrackNr());
-              myInfo.setIWant(IWant.NOT_SET);
+          MyTrackInfo myTrackInfo = trackReference.getMyTrackInfo();
+          if (myTrackInfo != null) {
+            if (!myTrackInfo.getIHaveOn().isEmpty()) {
+              if (myTrackInfo.getCollection() != Collection.NOT_SET) {
+                LOGGER.severe("I Have on set for album track in collection. Album is " + album.getArtistAndTitle() + ", track is " + trackReference.getTrack().getTitle());
+              }
+              if (myTrackInfo.getCompilationTrackReference() != null) {
+                LOGGER.severe("I Have on set for referred album track. Album is " + album.getArtistAndTitle() + ", track is " + trackReference.getTrack().getTitle() + ", referred album is " + 
+                    myTrackInfo.getCompilationTrackReference().getDisc().getAlbum().getArtistAndTitle());
+              }
             }
           }
         }
@@ -492,7 +500,14 @@ public class MediaDbWindow extends JfxStage {
     // Media: New album
     MenuUtil.addMenuItem(menu, "New album", new EventHandler<ActionEvent>()  {
       public void handle(ActionEvent e) {
-        openAlbumDetailsEditor();
+        openAlbumEditor();
+      }
+    });
+
+    // Media: New track
+    MenuUtil.addMenuItem(menu, "New track", new EventHandler<ActionEvent>()  {
+      public void handle(ActionEvent e) {
+        openTrackEditor();
       }
     });
 
@@ -660,7 +675,7 @@ public class MediaDbWindow extends JfxStage {
    */
   protected void setOnlyAlbumsThatNeedAttentionFilter(boolean isSelected) {
     if (isSelected) {
-      List<Album> albumsThatNeedAttention = MediaDbUtil.getAlbumsThatNeedAttention(mediaDb);
+      List<Album> albumsThatNeedAttention = MediaDbAppUtil.getAlbumsThatNeedAttention(mediaDb);
       ObservableList<Album> albumsThatNeedAttentionObservable = FXCollections.observableList(albumsThatNeedAttention);
       albumsTable.setItems(albumsThatNeedAttentionObservable);
     } else {
@@ -723,15 +738,20 @@ public class MediaDbWindow extends JfxStage {
     albumDetailsWindow.setAlbum((Album) albumsTable.getSelectedObject());
   }
 
-
+  /**
+   * Open the AlbumEditor to enter a new album.
+   */
+  void openAlbumEditor() {
+    new AlbumEditor(customization, mediaDb).runEditor();
+  }
 
   /**
-   * Open the AlbumDetailsEditor to enter a new album.
+   * Open the TrackEditor to enter a new album.
    */
-  void openAlbumDetailsEditor() {
-    new AlbumEditor(customization, mediaDb, trackDiscLocationMap).runEditor();
-//    AlbumDetailsEditorFx albumDetailsEditor = new AlbumDetailsEditorFx(customization, mediaDb);
+  void openTrackEditor() {
+    new TrackEditor(customization, mediaDb).runEditor();
   }
+  
   /**
    * Create a new Album from the tracks in a folder.
    */

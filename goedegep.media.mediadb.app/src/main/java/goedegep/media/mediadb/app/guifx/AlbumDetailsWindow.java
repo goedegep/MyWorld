@@ -174,7 +174,7 @@ public class AlbumDetailsWindow extends JfxStage {
     
     Button editButton = componentFactory.createButton("Open in Album Editor", "Open edit window");
     editButton.setOnAction((e) -> {
-      new AlbumEditor(getCustomization(), mediaDb, trackDiscLocationMap).runEditor().setObject(album);
+      new AlbumEditor(getCustomization(), mediaDb).runEditor().setObject(album);
     });
     gridPane.add(editButton, 3, 0);
     

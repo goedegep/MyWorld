@@ -18,7 +18,6 @@ import goedegep.appgen.TableRowOperationDescriptor;
 import goedegep.jfx.AppResourcesFx;
 import goedegep.jfx.ComponentFactoryFx;
 import goedegep.jfx.CustomizationFx;
-import goedegep.jfx.DefaultAppResourcesFx;
 import goedegep.jfx.DoubleClickEventDispatcher;
 import goedegep.jfx.eobjecttable.EObjectTable;
 import goedegep.jfx.eobjecttable.EObjectTableColumnDescriptorAbstract;
@@ -29,11 +28,9 @@ import goedegep.jfx.eobjecttable.EObjectTableDescriptor;
 import goedegep.media.app.MediaRegistry;
 import goedegep.media.app.base.MediaAppResourcesFx;
 import goedegep.media.mediadb.albumeditor.guifx.AlbumEditor;
-import goedegep.media.mediadb.app.AlbumDiscLocationInfo;
 import goedegep.media.mediadb.app.MediaDbAppUtil;
 import goedegep.media.mediadb.model.Album;
 import goedegep.media.mediadb.model.Disc;
-import goedegep.media.mediadb.model.DiscAndTrackNrs;
 import goedegep.media.mediadb.model.IWant;
 import goedegep.media.mediadb.model.InformationType;
 import goedegep.media.mediadb.model.MediaDb;
@@ -45,7 +42,6 @@ import goedegep.media.mediadb.model.Track;
 import goedegep.media.mediadb.model.TrackReference;
 import goedegep.media.mediadb.model.util.MediaDbUtil;
 import goedegep.media.musicfolder.AlbumOnDiscInfo;
-import goedegep.resources.ImageSize;
 import goedegep.util.datetime.FlexDate;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -119,7 +115,7 @@ public class AlbumsTable extends EObjectTable<Album> {
    */
   public AlbumsTable(CustomizationFx customization, MediaDbWindow mediaDbWindow, MediaDb mediaDb,
       Map<Album, AlbumOnDiscInfo> albumToMusicFolderLocationMap, Map<Disc, AlbumOnDiscInfo> albumDiscToMusicFolderLocationMap, Map<Track, Path> trackDiscLocationMap) {
-    super(customization, MediadbPackage.eINSTANCE.getAlbum(), new AlbumsTableDescriptor(customization, mediaDb, trackDiscLocationMap), mediaDb, MediadbPackage.eINSTANCE.getMediaDb_Albums());
+    super(customization, MediadbPackage.eINSTANCE.getAlbum(), new AlbumsTableDescriptor(customization, mediaDb), mediaDb, MediadbPackage.eINSTANCE.getMediaDb_Albums());
     
     this.customization = customization;
     this.mediaDb = mediaDb;
@@ -463,7 +459,6 @@ class AlbumsTableDescriptor extends EObjectTableDescriptor<Album> {
 
   private CustomizationFx customization;
   private MediaDb mediaDb;
-  private Map<Track, Path>  trackDiscLocationMap;
   private AlbumReferenceCellFactory albumReferenceCellFactory;
 
   
@@ -472,11 +467,10 @@ class AlbumsTableDescriptor extends EObjectTableDescriptor<Album> {
    * 
    * @param customization the GUI customization.
    */
-  AlbumsTableDescriptor(CustomizationFx customization, MediaDb mediaDb, Map<Track, Path> trackDiscLocationMap) {
+  AlbumsTableDescriptor(CustomizationFx customization, MediaDb mediaDb) {
     super();
     this.customization = customization;
     this.mediaDb = mediaDb;
-    this.trackDiscLocationMap = trackDiscLocationMap;
     
     MyInfoPlayCellFactory myInfoPlayCellFactory = new MyInfoPlayCellFactory(customization, IMAGE_HEIGHT);
     playColumnDescriptor.setCellFactory(myInfoPlayCellFactory);
@@ -501,8 +495,14 @@ class AlbumsTableDescriptor extends EObjectTableDescriptor<Album> {
     albumReferenceCellFactory.setAlbumsTable(albumsTable);
   }
   
+  /**
+   * Open an album in the {@link AlbumEditor}.
+   * 
+   * @param albums this parameter is not used. It's only here for simple use in a {@code TableRowOperationDescriptor).
+   * @param album the {@code Album} to edit.
+   */
   private void editAlbum(List<Album> albums, Album album) {
-    new AlbumEditor(customization, mediaDb, trackDiscLocationMap).runEditor().setObject(album);
+    new AlbumEditor(customization, mediaDb).runEditor().setObject(album);
   }
 }
 
@@ -844,23 +844,3 @@ class AlbumReferenceCell extends TableCell<Album, Object> {
     }
   }
 }
-
-
-/**
- * Album disc player
- */
-class AlbumDiscPlayer implements Runnable {
-//  private Album album;
-  
-  public AlbumDiscPlayer(Album album) {
-//    this.album = album;
-  }
-
-  @Override
-  public void run() {
-    // TODO Auto-generated method stub
-    
-  }
-  
-}
-

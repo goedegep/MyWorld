@@ -10,6 +10,9 @@ import javafx.util.StringConverter;
 /**
  * This class forms the basis for classes implementing the {@link ObjectControl} interface, using a TextField control.
  * <p>
+ * The initial {@code text} of a {@code TextField} is an empty string. Also, when the user clears the field, the {@code text} is an empty string.<br/>
+ * This empty string is handled as 'not filled in' and the value in this case is {@code null}.
+ * 
  * Information about extending this class:
  * <ul>
  * <li>
@@ -82,11 +85,11 @@ public class ObjectControlTextField<T> extends ObjectControlAbstract<T> {
     // The initial value of the textField is an empty string. Again setting it to an empty string doesn't trigger the listener.
     // So if the initial value isn't null, set the value (triggering the listener, leading to a call to ociHandleNewUserInput().
     // Else, just call ociHandleNewUserInput().
-    if (initialValue != null) {
-      setValue(initialValue);
-    } else {
-      ociHandleNewUserInput(textField);
-    }
+    setValue(initialValue);
+    ociHandleNewUserInput(textField);
+//    if (initialValue == null) {
+//      ociHandleNewUserInput(textField);
+//    }
   }
   
   /**
@@ -102,11 +105,14 @@ public class ObjectControlTextField<T> extends ObjectControlAbstract<T> {
    */
   @Override
   public void setValue(T objectValue) {
+    LOGGER.severe("=> objectValue: \'" + objectValue + "'");
     String text = objectToString(objectValue);
+    LOGGER.severe("=> text: \'" + text + "'");
     if (text == null) {
       text = "";
     };
     referenceValue = stringToObject(text);
+    LOGGER.severe("=> referenceValue: \'" + referenceValue + "'");
     textField.setText(text);
   }
   
@@ -115,7 +121,10 @@ public class ObjectControlTextField<T> extends ObjectControlAbstract<T> {
    */
   @Override
   public boolean ociDetermineFilledIn() {
-    return textField.getText() != null  &&  !textField.getText().isEmpty();
+    if (textField.getText() == null) {
+      LOGGER.severe("text is null for: " + getId());
+    }
+    return !textField.getText().isEmpty();
   }
   
   /**
@@ -148,9 +157,13 @@ public class ObjectControlTextField<T> extends ObjectControlAbstract<T> {
   public void ociRedrawValue() {
 //    T value = ocValueProperty.get();
     if (value != null) {
+      String text = objectToString(value);
+      if (text == null) {
+        text = "";
+      }
       textField.setText(objectToString(value));
     } else {
-      textField.setText(null);
+      textField.setText("");
     }
   }
     

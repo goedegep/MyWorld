@@ -217,7 +217,7 @@ public class ImportAlbumTracksWindow extends JfxStage {
 
     albumTracksImportInfo = null;
     albumFolderTextField.setText("");
-    String sourceFolderName = sourceFolderSelector.ocGetAbsolutePath();
+    String sourceFolderName = sourceFolderSelector.getAbsolutePath();
     
     Disc disc = null;
     if (discComboBox != null) {

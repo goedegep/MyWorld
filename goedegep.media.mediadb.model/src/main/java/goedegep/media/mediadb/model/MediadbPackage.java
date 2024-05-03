@@ -21,6 +21,9 @@ import org.eclipse.emf.ecore.EReference;
  *   <li>and each data type</li>
  * </ul>
  * <!-- end-user-doc -->
+ * <!-- begin-model-doc -->
+ * D
+ * <!-- end-model-doc -->
  * @see goedegep.media.mediadb.model.MediadbFactory
  * @model kind="package"
  * @generated
@@ -576,13 +579,31 @@ public interface MediadbPackage extends EPackage {
   int ALBUM___GET_DISC = 4;
 
   /**
+   * The operation id for the '<em>IWant Album Or Tracks Of Album</em>' operation.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int ALBUM___IWANT_ALBUM_OR_TRACKS_OF_ALBUM = 5;
+
+  /**
+   * The operation id for the '<em>IHave To Judge Album Or Tracks</em>' operation.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int ALBUM___IHAVE_TO_JUDGE_ALBUM_OR_TRACKS = 6;
+
+  /**
    * The number of operations of the '<em>Album</em>' class.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int ALBUM_OPERATION_COUNT = 5;
+  int ALBUM_OPERATION_COUNT = 7;
 
   /**
    * The meta object id for the '{@link goedegep.media.mediadb.model.impl.TrackReferenceImpl <em>Track Reference</em>}' class.
@@ -1820,6 +1841,26 @@ public interface MediadbPackage extends EPackage {
   EOperation getAlbum__GetDisc();
 
   /**
+   * Returns the meta object for the '{@link goedegep.media.mediadb.model.Album#iWantAlbumOrTracksOfAlbum() <em>IWant Album Or Tracks Of Album</em>}' operation.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the '<em>IWant Album Or Tracks Of Album</em>' operation.
+   * @see goedegep.media.mediadb.model.Album#iWantAlbumOrTracksOfAlbum()
+   * @generated
+   */
+  EOperation getAlbum__IWantAlbumOrTracksOfAlbum();
+
+  /**
+   * Returns the meta object for the '{@link goedegep.media.mediadb.model.Album#iHaveToJudgeAlbumOrTracks() <em>IHave To Judge Album Or Tracks</em>}' operation.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the '<em>IHave To Judge Album Or Tracks</em>' operation.
+   * @see goedegep.media.mediadb.model.Album#iHaveToJudgeAlbumOrTracks()
+   * @generated
+   */
+  EOperation getAlbum__IHaveToJudgeAlbumOrTracks();
+
+  /**
    * Returns the meta object for class '{@link goedegep.media.mediadb.model.TrackReference <em>Track Reference</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -2824,6 +2865,22 @@ public interface MediadbPackage extends EPackage {
     	 * @generated
     	 */
     EOperation ALBUM___GET_DISC = eINSTANCE.getAlbum__GetDisc();
+
+    /**
+    	 * The meta object literal for the '<em><b>IWant Album Or Tracks Of Album</b></em>' operation.
+    	 * <!-- begin-user-doc -->
+    	 * <!-- end-user-doc -->
+    	 * @generated
+    	 */
+    EOperation ALBUM___IWANT_ALBUM_OR_TRACKS_OF_ALBUM = eINSTANCE.getAlbum__IWantAlbumOrTracksOfAlbum();
+
+    /**
+    	 * The meta object literal for the '<em><b>IHave To Judge Album Or Tracks</b></em>' operation.
+    	 * <!-- begin-user-doc -->
+    	 * <!-- end-user-doc -->
+    	 * @generated
+    	 */
+    EOperation ALBUM___IHAVE_TO_JUDGE_ALBUM_OR_TRACKS = eINSTANCE.getAlbum__IHaveToJudgeAlbumOrTracks();
 
     /**
     	 * The meta object literal for the '{@link goedegep.media.mediadb.model.impl.TrackReferenceImpl <em>Track Reference</em>}' class.

@@ -70,8 +70,6 @@ public class GPXWindow extends JfxStage {
   private ObjectSelectionListener<TreeItem<Object>> gpxTreeViewSelectionListener;
   private ReduceTrackPointsWindow reduceTrackPointsWindow;
   
-  private boolean firstFile = true;
-  
   /**
    * Constructor.
    * 

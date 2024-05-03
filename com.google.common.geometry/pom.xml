@@ -10,6 +10,10 @@
   </parent>
   <dependencies>
     <dependency>
+      <groupId>com.google.code.findbugs.jsr305</groupId>
+      <artifactId>com.google.code.findbugs.jsr305</artifactId>
+    </dependency>
+    <dependency>
       <groupId>com.google.errorprone</groupId>
       <artifactId>error_prone_annotations</artifactId>
     </dependency>
@@ -18,20 +22,8 @@
       <artifactId>guava</artifactId>
     </dependency>
     <dependency>
-      <groupId>com.google.jsinterop</groupId>
-      <artifactId>jsinterop-annotations</artifactId>
+      <groupId>com.google.jsinterop.jsinterop-annotations</groupId>
+      <artifactId>com.google.jsinterop.jsinterop-annotations</artifactId>
     </dependency>
   </dependencies>
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-surefire-plugin</artifactId>
-        <version>${maven-surefire-plugin.version}</version>
-        <configuration>
-          <skipTests>true</skipTests>
-        </configuration>
-      </plugin>
-    </plugins>
-  </build>
 </project>

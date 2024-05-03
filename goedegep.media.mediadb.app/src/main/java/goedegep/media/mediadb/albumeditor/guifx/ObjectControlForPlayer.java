@@ -5,7 +5,6 @@ import java.util.logging.Logger;
 
 import goedegep.jfx.ComponentFactoryFx;
 import goedegep.jfx.CustomizationFx;
-import goedegep.jfx.controls.AutoCompleteTextField;
 import goedegep.jfx.objectcontrols.ObjectControlAbstract;
 import goedegep.jfx.objectcontrols.ObjectControlAutoCompleteTextField;
 import goedegep.jfx.objectcontrols.ObjectControlTextField;
@@ -15,6 +14,7 @@ import goedegep.media.mediadb.model.MediaDb;
 import goedegep.media.mediadb.model.MediadbFactory;
 import goedegep.media.mediadb.model.Player;
 import goedegep.util.string.StringUtil;
+import javafx.scene.layout.HBox;
 
 /**
  * This {@ObjectControl} can be used to create/edit a {@link Player}.
@@ -22,17 +22,38 @@ import goedegep.util.string.StringUtil;
  * This ObjectControl has two controls; an autocomplete textfield for the Artist and a textfield for the instruments played by that artist.
  *
  */
-public class PlayerObjectControl extends ObjectControlAbstract<Player> {
-  @SuppressWarnings("unused")
-  private static final Logger LOGGER = Logger.getLogger(PlayerObjectControl.class.getName());
+public class ObjectControlForPlayer extends ObjectControlAbstract<Player> {
+  private static final Logger LOGGER = Logger.getLogger(ObjectControlForPlayer.class.getName());
+  
 
+  /**
+   * Used to convert an {@code Artist} to String and vice versa.
+   */
   private ArtistStringConverterAndChecker artistStringConverterAndChecker;
   
+  /**
+   * Object control for the artist.
+   */
   private ObjectControlAutoCompleteTextField<Artist> artistObjectControl;
+  
+  /**
+   * Object control for the instruments.
+   */
   private ObjectControlTextField<String> playerInstrumentTextField;
   
+  /**
+   * HBox to hold the two controls.
+   */
+  private HBox hBox;
+  
 
-  public PlayerObjectControl(CustomizationFx customization, MediaDb mediaDb) {
+  /**
+   * Constructor.
+   * 
+   * @param customization the GUI customization.
+   * @param mediaDb the media database holding the artists.
+   */
+  public ObjectControlForPlayer(CustomizationFx customization, MediaDb mediaDb) {
     super(false);  // If there is a control for a Player, the player has to be filled in. So this control is never optional.
     LOGGER.severe("=>");
     
@@ -45,6 +66,9 @@ public class PlayerObjectControl extends ObjectControlAbstract<Player> {
     
     artistObjectControl.addListener((e) -> ociHandleNewUserInput(artistObjectControl));
     playerInstrumentTextField.addListener((e) -> ociHandleNewUserInput(playerInstrumentTextField));
+    
+    hBox = componentFactory.createHBox(12.0, 12.0);
+    hBox.getChildren().addAll(artistObjectControl.getControl(), playerInstrumentTextField.getControl(), getStatusIndicator());
   }
 
   /**
@@ -52,16 +76,15 @@ public class PlayerObjectControl extends ObjectControlAbstract<Player> {
    * The Artist control is the primary control.
    */
   @Override
-  public AutoCompleteTextField getControl() {
-    return artistObjectControl.getControl();
+  public HBox getControl() {
+    return hBox;
   }
 
-  // TODO should not be needed -> artistObjectControl.ocGetControl()
-  public ObjectControlAutoCompleteTextField<Artist> getArtistObjectControl() {
-    return artistObjectControl;
-  }
+//  // TODO should not be needed -> artistObjectControl.ocGetControl()
+//  public ObjectControlAutoCompleteTextField<Artist> getArtistObjectControl() {
+//    return artistObjectControl;
+//  }
 
-  // TODO should not be needed -> playerInstrumentTextField.ocGetControl()
   public ObjectControlTextField<String> getPlayerInstrumentTextField() {
     return playerInstrumentTextField;
   }

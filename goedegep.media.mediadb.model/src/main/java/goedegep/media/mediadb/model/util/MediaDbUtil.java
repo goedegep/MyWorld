@@ -8,19 +8,16 @@ import java.util.logging.Logger;
 
 import goedegep.media.mediadb.model.Album;
 import goedegep.media.mediadb.model.AlbumType;
-import goedegep.media.mediadb.model.Artist;
 import goedegep.media.mediadb.model.Collection;
 import goedegep.media.mediadb.model.Disc;
 import goedegep.media.mediadb.model.DiscAndTrackNrs;
 import goedegep.media.mediadb.model.IWant;
 import goedegep.media.mediadb.model.InformationType;
-import goedegep.media.mediadb.model.MediaDb;
 import goedegep.media.mediadb.model.MediadbFactory;
 import goedegep.media.mediadb.model.MediumInfo;
 import goedegep.media.mediadb.model.MediumType;
 import goedegep.media.mediadb.model.MyInfo;
 import goedegep.media.mediadb.model.MyTrackInfo;
-import goedegep.media.mediadb.model.Track;
 import goedegep.media.mediadb.model.TrackPart;
 import goedegep.media.mediadb.model.TrackReference;
 
@@ -39,60 +36,6 @@ public class MediaDbUtil {
    */
   private MediaDbUtil() {
   }
-
-  /**
-   * Get all albums that need attention.
-   * <p>
-   * These are all albums in the {@link #mediaDb} that need attention (see {@link #albumNeedsAttention}).
-   * 
-   * @return all albums that need attention.
-   */
-  public static List<Album> getAlbumsThatNeedAttention(MediaDb mediaDb) {
-    List<Album> albumsThatNeedAttention = new ArrayList<>();
-
-    for (Album album: mediaDb.getAlbums()) {
-      if (albumNeedsAttention(album)) {
-        albumsThatNeedAttention.add(album);
-      }
-    }
-
-    return albumsThatNeedAttention;
-  }
-
-  /**
-   * Check whether an album needs attention.
-   * <p>
-   * An album needs attention if:
-   * <ul>
-   * <li>
-   * 'IWant' is set to at any level.<br/>
-   * Because this means that I either still have to judge the album (for DONT_KNOW),
-   * or that I have to obtain the album, or some track of the album.
-   * </li>
-   * </ul>
-   * 
-   * @param album the album to be checked.
-   * @return true if the album needs attention, false otherwise.
-   */
-  public static boolean albumNeedsAttention(Album album) {
-
-    MyInfo myInfo = album.getMyInfo();
-    if (myInfo.getIWant() != IWant.NOT_SET) {
-      return true;
-    }
-    
-    for (Disc disc: album.getDiscs()) {
-      for (TrackReference trackReference: disc.getTrackReferences()) {
-        MyTrackInfo myTrackInfo = trackReference.getMyTrackInfo();
-        if (myTrackInfo != null  &&  myTrackInfo.getIWant() != IWant.NOT_SET) {
-          return true;
-        }
-      }
-    }
-
-    return false;
-  }
-
   
   /**
    * Get a Track, or if it doesn't exist yet, create and add a Track.
@@ -103,38 +46,38 @@ public class MediaDbUtil {
    * @param originalAlbum the main album of which the track is part of.
    * @return a Track with the specified properties.
    */
-  public static Track getOrAddTrack(MediaDb mediaDb, Artist artist, String title, Disc originalDisc) {
-    Track track = null;
-    
-    // Try to find the track
-    for (Track currentTrack: mediaDb.getTracks()) {
-      if (artist.equals(currentTrack.getArtist())  &&  title.equals(currentTrack.getTitle())) {
-        if (originalDisc != null) {
-          if (originalDisc.equals(currentTrack.getOriginalDisc())) {
-            track = currentTrack;
-            break;
-          }
-        } else {
-          track = currentTrack;
-          break;
-        }
-      }
-    }
-    
-    // If not found, create and add it.
-    if (track == null) {
-      track = MEDIA_DB_FACTORY.createTrack();
-      
-      track.setArtist(artist);
-      track.setTitle(title);
-      if (originalDisc != null) {
-        track.setOriginalDisc(originalDisc);
-      }
-      mediaDb.getTracks().add(track);
-    }
-    
-    return track;
-  }
+//  public static Track getOrAddTrack(MediaDb mediaDb, Artist artist, String title, Disc originalDisc) {
+//    Track track = null;
+//    
+//    // Try to find the track
+//    for (Track currentTrack: mediaDb.getTracks()) {
+//      if (artist.equals(currentTrack.getArtist())  &&  title.equals(currentTrack.getTitle())) {
+//        if (originalDisc != null) {
+//          if (originalDisc.equals(currentTrack.getOriginalDisc())) {
+//            track = currentTrack;
+//            break;
+//          }
+//        } else {
+//          track = currentTrack;
+//          break;
+//        }
+//      }
+//    }
+//    
+//    // If not found, create and add it.
+//    if (track == null) {
+//      track = MEDIA_DB_FACTORY.createTrack();
+//      
+//      track.setArtist(artist);
+//      track.setTitle(title);
+//      if (originalDisc != null) {
+//        track.setOriginalDisc(originalDisc);
+//      }
+//      mediaDb.getTracks().add(track);
+//    }
+//    
+//    return track;
+//  }
   
   /**
    * Check whether I should have an Album completely on disc, which is the case if there is an 'IHaveOn' of type 'HARDDISK' at album level.

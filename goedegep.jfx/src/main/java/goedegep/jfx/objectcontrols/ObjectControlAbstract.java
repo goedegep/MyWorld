@@ -58,14 +58,14 @@ public abstract class ObjectControlAbstract<T> implements ObjectControl<T> {
   private boolean valid = false;
   
   /**
-   * Reference value to check for changes.
+   * The current value, initially set to {@code null}
    */
-  protected T referenceValue;
+  protected T value = null;
   
   /**
-   * The current value
+   * Reference value to check for changes, initially set to the value of {@code value}.
    */
-  protected T value;
+  protected T referenceValue = value;
   
   /**
    * Error information text
@@ -240,7 +240,7 @@ public abstract class ObjectControlAbstract<T> implements ObjectControl<T> {
   /**
    * Redraw the value on focus lost.
    * <p>
-   * Overwrite this method if you always want to present values in your 'standard' way.
+   * Have a non-empty implementation of this method if you always want to present values in your 'standard' way.
    * E.g.: the user may e.g. enter a date as 14-3-2023, this may be redrawn as 14-03-2023.
    */
   protected abstract void ociRedrawValue();
@@ -268,9 +268,6 @@ public abstract class ObjectControlAbstract<T> implements ObjectControl<T> {
    */
   public void ociSetValue(T value) {
     this.value = value;
-    if ("pictureFileSelecter".equals(getId())) {
-      LOGGER.severe("Value set to: " + value);
-    }
   }
   
   /**
