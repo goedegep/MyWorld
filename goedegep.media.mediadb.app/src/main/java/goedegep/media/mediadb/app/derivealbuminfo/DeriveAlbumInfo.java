@@ -17,6 +17,11 @@ import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.mpatric.mp3agic.ID3v1;
+import com.mpatric.mp3agic.InvalidDataException;
+import com.mpatric.mp3agic.Mp3File;
+import com.mpatric.mp3agic.UnsupportedTagException;
+
 import ealvatag.audio.AudioFile;
 import ealvatag.audio.AudioFileIO;
 import ealvatag.audio.exceptions.CannotReadException;
@@ -25,24 +30,43 @@ import ealvatag.tag.NullTag;
 import ealvatag.tag.Tag;
 import ealvatag.tag.TagException;
 import ealvatag.tag.TagField;
+import goedegep.media.mediadb.model.Album;
+import goedegep.media.mediadb.model.Artist;
+import goedegep.media.mediadb.model.Disc;
+import goedegep.media.mediadb.model.MediadbFactory;
+import goedegep.media.mediadb.model.MyInfo;
+import goedegep.media.mediadb.model.Track;
+import goedegep.media.mediadb.model.TrackReference;
 import goedegep.util.datetime.FlexDate;
 import goedegep.util.datetime.FlexDateFormat;
 import goedegep.util.file.FileUtils;
 
 public class DeriveAlbumInfo {
   private static final Logger LOGGER = Logger.getLogger(DeriveAlbumInfo.class.getName());
-  
+  private static final MediadbFactory MEDIA_DB_FACTORY = MediadbFactory.eINSTANCE;
   
   /**
    * Derive the information of an album from a folder (containing the tracks of an album).
+   * <p>
+   * Important: the returned {@code Album} is not part of the media database and does not reference any items in the media database.
+   * So the returned information is only to be used to fill the controls of the AlbumEditor.<br/>
+   * This method only handles single disc albums. All tracks found are added to a single disc.
    * 
-   * @param sourceFolderName the folder from which the information is to be derived.
+   * @param albumFolderName the folder from which the information is to be derived.
+   * @param imagesFolderName the folder where images of the album may be found
+   * @return an {@code Album} with the derived information, or null if no useful information could be derived.
    */
-  public static AlbumInfo deriveAlbumDetails(String albumFolderName, String imagesFolderName) {
+  public Album deriveAlbumDetails(String albumFolderName, String imagesFolderName) {
     LOGGER.severe("=> sourceFolderName" + albumFolderName);
+    
+    Album album = MEDIA_DB_FACTORY.createAlbum();
+    Disc disc = MEDIA_DB_FACTORY.createDisc();
+    album.getDiscs().add(disc);
+    
+    MyInfo myInfo = MEDIA_DB_FACTORY.createMyInfo();
+    album.setMyInfo(myInfo);
         
     Path sourceFolder = Paths.get(albumFolderName);
-    AlbumInfo albumInfo = null;
 
     // read all MP3 and FLAC files in the folder
     try (DirectoryStream<Path> stream = Files.newDirectoryStream(sourceFolder)) {
@@ -57,7 +81,7 @@ public class DeriveAlbumInfo {
           
           switch (extension) {
           case ".mp3":
-//            deriveInfoFromMp3File(album, path);
+            deriveInfoFromMp3File(album, path);
             break;
             
           case ".flac":
@@ -77,40 +101,44 @@ public class DeriveAlbumInfo {
       }
       
       if (flacFiles != null) {
-        albumInfo = deriveInfoFromFlacFiles(flacFiles, true);
+        deriveInfoFromFlacFiles(flacFiles, true, album);
       }
     } catch (IOException | DirectoryIteratorException x) {
       // IOException can never be thrown by the iteration.
       System.err.println(x);
     }
     
-    return albumInfo;
+    // Try to find picture files.
     
-//    // Try to find picture files.
-//    
-//    // First check whether there are already images in the images folder.
-//    // look for files with the name '<artist> - <album-title><anything> - front.jpg' 
-//    
-//    Path imagesFolder = Paths.get(imagesFolderName);
-//    Pattern pattern = Pattern.compile("Alquin - Marks.* - front.jpg");  
-//    
-//    // read all MP3 and FLAC files in the folder
-//    try (DirectoryStream<Path> stream = Files.newDirectoryStream(imagesFolder)) {
-//      for (Path path: stream) {
-//        String fileName = path.getFileName().toString();
-//        Matcher matcher = pattern.matcher(fileName);
-//        boolean b = matcher.matches();
-//        if (b) {
-//          LOGGER.severe("Matching file: " + fileName);
-//        }
-//      }
-//    } catch (IOException | DirectoryIteratorException x) {
-//      // IOException can never be thrown by the iteration.
-//      System.err.println(x);
-//    }
-//
-//    
-//    
+    // First check whether there are already images in the images folder.
+    // Look for files with the name '<artist> - <album-title><anything> - front.jpg'  ToDo why the <anything>???
+    // This can of course only be done if we have album artist and title.
+    
+    if (album.getTitle() != null  &&  album.getArtist() != null) {
+      Path imagesFolder = Paths.get(imagesFolderName);
+      Pattern pattern = Pattern.compile(album.getArtist().getName() + " - " + album.getTitle() + ".* - front.jpg");
+      LOGGER.severe("pattern: " + pattern.pattern());
+
+      try (DirectoryStream<Path> stream = Files.newDirectoryStream(imagesFolder)) {
+        for (Path path: stream) {
+          String fileName = path.getFileName().toString();
+          Matcher matcher = pattern.matcher(fileName);
+          boolean b = matcher.matches();
+          if (b) {
+            LOGGER.severe("Matching file: " + fileName);
+            album.getImagesFront().add(path.toString());
+          }
+        }
+      } catch (IOException | DirectoryIteratorException x) {
+        // IOException can never be thrown by the iteration.
+        System.err.println(x);
+      }
+    }
+    
+    LOGGER.severe("<= \n" + album);
+    return album;
+    
+    
 //    try (DirectoryStream<Path> stream = Files.newDirectoryStream(sourceFolder)) {
 //      for (Path path: stream) {
 //        String fileName = path.getFileName().toString();
@@ -158,14 +186,78 @@ public class DeriveAlbumInfo {
 ////    }
     
   }
+  
+  /**
+   * Derive track and album information from an .mp3 file.
+   * 
+   * @param album The {@link Album} to add the derived information to. This album shall already have 1 disc.
+   * @param mp3FilePath the {@code Path} of the .mp3 file.
+   */
+  private static void deriveInfoFromMp3File(Album album, Path mp3FilePath) {
+    LOGGER.severe("=>");
+
+    Mp3File mp3file;
+    Disc disc = album.getDiscs().get(0);
+
+    try {
+      mp3file = new Mp3File(mp3FilePath);
+      Track track = MEDIA_DB_FACTORY.createTrack();
+      long lengthInSeconds = mp3file.getLengthInSeconds();
+      LOGGER.severe("Length of this mp3 is: " + lengthInSeconds + " seconds");
+      track.setDuration((int) lengthInSeconds);
+      //      System.out.println("Bitrate: " + mp3file.getBitrate() + " kbps " + (mp3file.isVbr() ? "(VBR)" : "(CBR)"));
+      //      System.out.println("Sample rate: " + mp3file.getSampleRate() + " Hz");
+      //      System.out.println("Has ID3v1 tag?: " + (mp3file.hasId3v1Tag() ? "YES" : "NO"));
+      //      System.out.println("Has ID3v2 tag?: " + (mp3file.hasId3v2Tag() ? "YES" : "NO"));
+      //      System.out.println("Has custom tag?: " + (mp3file.hasCustomTag() ? "YES" : "NO"));
+
+      if (mp3file.hasId3v1Tag()) {
+        ID3v1 id3v1Tag = mp3file.getId3v1Tag();
+
+        System.out.println("Track: " + id3v1Tag.getTrack());
+        System.out.println("Artist: " + id3v1Tag.getArtist());
+        String artistName = id3v1Tag.getArtist();
+        Artist artist = MEDIA_DB_FACTORY.createArtist();
+        artist.setName(artistName);
+// TODo move to import screen
+//        if (artist == null) {
+//          ArtistDetailsEditor artistDetailsEditor = new ArtistDetailsEditor(getCustomization(), "New artist", mediaDb, "The artist doesn't exist in the database yet. Do you want to add it?", artistName);
+//          artistDetailsEditor.initModality(Modality.APPLICATION_MODAL);
+//          artistDetailsEditor.showAndWait();
+//          // retry to get the artist, should succeed if it has been added.
+//          artist = mediaDb.getArtist(id3v1Tag.getArtist());
+//        }
+        album.setArtist(artist);
+        System.out.println("Title: " + id3v1Tag.getTitle());
+        track.setTitle(id3v1Tag.getTitle());
+        System.out.println("Album: " + id3v1Tag.getAlbum());
+        album.setTitle(id3v1Tag.getAlbum());
+//        track = MediaDbUtil.getOrAddTrack(mediaDb, artist, id3v1Tag.getTitle(), disc);
+        System.out.println("Year: " + id3v1Tag.getYear());
+        Integer year = Integer.valueOf(id3v1Tag.getYear());
+        FlexDate releaseDate = new FlexDate(year);
+        album.setReleaseDate(releaseDate);
+        System.out.println("Genre: " + id3v1Tag.getGenre() + " (" + id3v1Tag.getGenreDescription() + ")");
+        System.out.println("Comment: " + id3v1Tag.getComment());
+        System.out.println("Version: " + id3v1Tag.getVersion());
+        System.out.println("Year: " + id3v1Tag.getYear());
+        TrackReference trackReference = MEDIA_DB_FACTORY.createTrackReference();
+        trackReference.setTrack(track);
+        disc.getTrackReferences().add(trackReference);
+      }
+    } catch (UnsupportedTagException | InvalidDataException | IOException e) {
+      e.printStackTrace();
+    }
+  }
     
   /**
-   * Derive ...
+   * Derive album information from the flac files in a folder.
    * 
-   * @param album
-   * @param flacFilePaths
+   * @param flacFilePaths the flac files
+   * @param ignoreDiscNumbers ToDo
+   * @param album the {@code Album} to add the information to.
    */
-  public static AlbumInfo deriveInfoFromFlacFiles(List<Path> flacFilePaths, boolean ignoreDiscNumbers) {
+  public static void deriveInfoFromFlacFiles(List<Path> flacFilePaths, boolean ignoreDiscNumbers, Album album) {
     LOGGER.severe("=>");
     
     String albumArtist = null;
@@ -315,11 +407,10 @@ public class DeriveAlbumInfo {
     List<DiscInfo> discInfos = new ArrayList<>();
     DiscInfo discInfo = new DiscInfo(tracks);
     discInfos.add(discInfo);
-    AlbumInfo albumInfo = new AlbumInfo(albumTitle, albumArtist, date, discInfos);
 
     LOGGER.info("<=");
     
-    return albumInfo;
+    return;
    
     
 //    Disc disc = album.getDiscs().get(0);

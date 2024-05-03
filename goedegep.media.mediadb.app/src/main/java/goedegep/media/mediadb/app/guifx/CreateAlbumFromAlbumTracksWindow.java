@@ -48,7 +48,7 @@ public class CreateAlbumFromAlbumTracksWindow extends JfxStage {
         
     createGUI();
     
-    sourceFolderName = sourceFolderSelector.ocGetAbsolutePath();
+    sourceFolderName = sourceFolderSelector.getAbsolutePath();
     
     show();
   }
@@ -78,7 +78,7 @@ public class CreateAlbumFromAlbumTracksWindow extends JfxStage {
         false);
     sourceFolderSelector.setInitialFolderProvider(() -> SOURCE_FOLDER);
     Node sourceFolderTextField = sourceFolderSelector.getControl();
-    sourceFolderSelector.addListener((observable) -> handleNewSourceFolder(sourceFolderSelector.ocGetAbsolutePath()));
+    sourceFolderSelector.addListener((observable) -> handleNewSourceFolder(sourceFolderSelector.getAbsolutePath()));
     gridPane.add(sourceFolderTextField, 1, 0);
     
     Button sourceFolderChooserButton = sourceFolderSelector.getFolderChooserButton();

@@ -19,6 +19,7 @@ import org.eclipse.emf.ecore.util.InternalEList;
 import goedegep.media.mediadb.model.Album;
 import goedegep.media.mediadb.model.Artist;
 import goedegep.media.mediadb.model.Disc;
+import goedegep.media.mediadb.model.IWant;
 import goedegep.media.mediadb.model.MediadbPackage;
 import goedegep.media.mediadb.model.MediumType;
 import goedegep.media.mediadb.model.MyInfo;
@@ -1148,6 +1149,52 @@ public class AlbumImpl extends MinimalEObjectImpl.Container implements Album {
   /**
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
+   * @generated NOT
+   */
+  @Override
+  public boolean iWantAlbumOrTracksOfAlbum() {
+
+    if ((getMyInfo() != null)  &&  (getMyInfo().getIWant() == IWant.YES)) {
+      return true;
+    }
+    
+    for (Disc disc: getDiscs()) {
+      for (TrackReference trackReference: disc.getTrackReferences()) {
+        if (trackReference.getMyTrackInfo() != null  &&  trackReference.getMyTrackInfo().getIWant() == IWant.YES) {
+          return true;
+        }
+      }
+    }
+
+    return false;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated NOT
+   */
+  @Override
+  public boolean iHaveToJudgeAlbumOrTracks() {
+
+    if ((getMyInfo() != null)  &&  (getMyInfo().getIWant() == IWant.DONT_KNOW)) {
+      return true;
+    }
+    
+    for (Disc disc: getDiscs()) {
+      for (TrackReference trackReference: disc.getTrackReferences()) {
+        if (trackReference.getMyTrackInfo() != null  &&  trackReference.getMyTrackInfo().getIWant() == IWant.DONT_KNOW) {
+          return true;
+        }
+      }
+    }
+
+    return false;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
    * @generated
    */
   @Override
@@ -1399,6 +1446,10 @@ public class AlbumImpl extends MinimalEObjectImpl.Container implements Album {
       return isMultiDiscAlbum();
     case MediadbPackage.ALBUM___GET_DISC:
       return getDisc();
+    case MediadbPackage.ALBUM___IWANT_ALBUM_OR_TRACKS_OF_ALBUM:
+      return iWantAlbumOrTracksOfAlbum();
+    case MediadbPackage.ALBUM___IHAVE_TO_JUDGE_ALBUM_OR_TRACKS:
+      return iHaveToJudgeAlbumOrTracks();
     }
     return super.eInvoke(operationID, arguments);
   }

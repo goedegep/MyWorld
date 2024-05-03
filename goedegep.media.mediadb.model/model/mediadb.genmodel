@@ -136,6 +136,8 @@
       <genOperations ecoreOperation="mediadb.ecore#//Album/getArtistAndTitle"/>
       <genOperations ecoreOperation="mediadb.ecore#//Album/isMultiDiscAlbum"/>
       <genOperations ecoreOperation="mediadb.ecore#//Album/getDisc"/>
+      <genOperations ecoreOperation="mediadb.ecore#//Album/iWantAlbumOrTracksOfAlbum"/>
+      <genOperations ecoreOperation="mediadb.ecore#//Album/iHaveToJudgeAlbumOrTracks"/>
     </genClasses>
     <genClasses ecoreClass="mediadb.ecore#//TrackReference">
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference mediadb.ecore#//TrackReference/track"/>

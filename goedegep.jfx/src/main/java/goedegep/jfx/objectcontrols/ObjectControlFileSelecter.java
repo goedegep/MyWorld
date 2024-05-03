@@ -186,7 +186,9 @@ public class ObjectControlFileSelecter extends ObjectControlFileOrFolderSelecter
       String initialFolderName = initialFolderSupplier.get();
       if (initialFolderName != null) {
         File initialFolder = new File(initialFolderName);
-        fileChooser.setInitialDirectory(initialFolder);
+        if (initialFolder.exists()) {
+          fileChooser.setInitialDirectory(initialFolder);
+        }
       }
     }
     

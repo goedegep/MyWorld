@@ -776,4 +776,31 @@ public interface Album extends EObject {
    */
   Disc getDisc();
 
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * <!-- begin-model-doc -->
+   * Check whether I want this album or some tracks of the album, which means I still have to obtain the album or tracks of the album.<br/>
+   * 
+   * @return true if {@code iWant}  is set to YES at album level or on any track, false otherwise.
+   * <!-- end-model-doc -->
+   * @model
+   * @generated
+   */
+  boolean iWantAlbumOrTracksOfAlbum();
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * <!-- begin-model-doc -->
+   * Check whether I still have to judge the album or tracks of the album.<br/>
+   * This is the case if {@code iWant} is set to 'DONT KNOW' at album level or on any track.
+   * 
+   * @return true if I still have to judge this album
+   * <!-- end-model-doc -->
+   * @model
+   * @generated
+   */
+  boolean iHaveToJudgeAlbumOrTracks();
+
 } // Album

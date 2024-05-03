@@ -10,8 +10,6 @@ import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonToken;
 import com.google.gson.stream.JsonWriter;
 
-import de.micromata.opengis.kml.v_2_2_0.Kml;
-
 public class OSMLocationInfoAdapter extends TypeAdapter<OSMLocationInfo> {
   private static final Logger LOGGER = Logger.getLogger(OSMLocationInfoAdapter.class.getName());
 

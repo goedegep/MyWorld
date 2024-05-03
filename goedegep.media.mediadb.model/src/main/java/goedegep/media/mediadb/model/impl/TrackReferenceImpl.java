@@ -2,27 +2,22 @@
  */
 package goedegep.media.mediadb.model.impl;
 
-import goedegep.media.mediadb.model.Album;
+import java.lang.reflect.InvocationTargetException;
+
+import org.eclipse.emf.common.notify.Notification;
+import org.eclipse.emf.common.notify.NotificationChain;
+import org.eclipse.emf.common.util.EList;
+import org.eclipse.emf.ecore.EClass;
+import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.InternalEObject;
+import org.eclipse.emf.ecore.impl.ENotificationImpl;
+import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
+
 import goedegep.media.mediadb.model.Disc;
 import goedegep.media.mediadb.model.MediadbPackage;
 import goedegep.media.mediadb.model.MyTrackInfo;
 import goedegep.media.mediadb.model.Track;
 import goedegep.media.mediadb.model.TrackReference;
-
-import java.lang.reflect.InvocationTargetException;
-import java.util.logging.Logger;
-
-import org.eclipse.emf.common.notify.Notification;
-import org.eclipse.emf.common.notify.NotificationChain;
-
-import org.eclipse.emf.common.util.EList;
-
-import org.eclipse.emf.ecore.EClass;
-import org.eclipse.emf.ecore.EObject;
-import org.eclipse.emf.ecore.InternalEObject;
-
-import org.eclipse.emf.ecore.impl.ENotificationImpl;
-import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
 
 /**
  * <!-- begin-user-doc -->
@@ -41,9 +36,7 @@ import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
  * @generated
  */
 public class TrackReferenceImpl extends MinimalEObjectImpl.Container implements TrackReference {
-  @SuppressWarnings("unused")
-  private static final Logger LOGGER = Logger.getLogger(TrackReferenceImpl.class.getName());
-  private static final String NEWLINE = System.getProperty("line.separator");
+  private static final String NEW_LINE = System.getProperty("line.separator");
 
   /**
    * The cached value of the '{@link #getTrack() <em>Track</em>}' reference.
@@ -521,11 +514,16 @@ public class TrackReferenceImpl extends MinimalEObjectImpl.Container implements 
    */
   @Override
   public int getTrackNr() {
-    Disc disc = (Disc) eContainer();
-    EList<TrackReference> tracks = disc.getTrackReferences();
-    int myIndex = tracks.indexOf(this);
+    EObject container = eContainer();
 
-    return myIndex + 1;
+    if (container instanceof Disc disc) {
+      EList<TrackReference> tracks = disc.getTrackReferences();
+      int myIndex = tracks.indexOf(this);
+
+      return myIndex + 1;
+    } else {
+      return -1;
+    }
   }
 
   /**
@@ -536,8 +534,8 @@ public class TrackReferenceImpl extends MinimalEObjectImpl.Container implements 
   @Override
   public Disc getDisc() {
     EObject eContainer = eContainer();
-    if (eContainer instanceof Disc disc) {
-      return disc;
+    if (eContainer instanceof Disc) {
+      return (Disc) eContainer;
     } else {
       return null;
     }
@@ -691,30 +689,14 @@ public class TrackReferenceImpl extends MinimalEObjectImpl.Container implements 
   @Override
   public String toString() {
     StringBuilder buf = new StringBuilder();
-
-    buf.append("track: ").append(getTrack() != null ? getTrack().toString() : "<no-track>");
-
-    buf.append("originalTrackReference:");
-    TrackReference trackReference = getOriginalAlbumTrackReference();
-    if (trackReference != null) {
-      Disc disc = trackReference.getDisc();
-      Album album = disc.getAlbum();
-      Track track = trackReference.getTrack();
-      buf.append("'").append(track != null ? track.getTitle() : "<no-track>").append("' on '").append(album.getTitle())
-          .append("'");
-    } else {
-      buf.append("<no-original-track-reference>");
-    }
-
-    buf.append(NEWLINE);
-
-    buf.append("MyTrackInfo:").append(NEWLINE);
-    if (isSetMyTrackInfo()) {
-      buf.append(getMyTrackInfo().toString());
-    } else {
-      buf.append("<no-my-track-info>").append(NEWLINE);
-    }
-
+    
+    buf.append("track nr: ").append(getTrackNr()).append(NEW_LINE);
+    Track track = getTrack();
+    buf.append("track: ").append(track != null ? track.getTitle() : "<no-track>").append(NEW_LINE);
+    buf.append("bonus track: ").append(getBonusTrack() != null ? getBonusTrack() : "No").append(NEW_LINE);
+    buf.append("myTrackInfo: ").append(getMyTrackInfo() != null ? myTrackInfo.toString() : "<no myTrackInfo>").append(NEW_LINE);
+    buf.append("originalAlbumTrackReference: ").append(originalAlbumTrackReference != null ? originalAlbumTrackReference.toString() : "<no-originalAlbumTrackReference>").append(NEW_LINE);
+    
     return buf.toString();
   }
 

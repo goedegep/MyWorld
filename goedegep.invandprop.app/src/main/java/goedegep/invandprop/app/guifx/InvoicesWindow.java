@@ -327,6 +327,7 @@ class PurchaseCellFactory implements Callback<TableColumn<Invoice, Object>, Tabl
 }
 
 class PurchaseCell extends TextFieldTableCell<Invoice, Object> {
+  @SuppressWarnings("unused")
   private static final Logger LOGGER = Logger.getLogger(PurchaseCell.class.getName());
   
   private PropertyStringConverter stringConverter = new PropertyStringConverter();

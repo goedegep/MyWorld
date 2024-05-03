@@ -6,7 +6,6 @@ import java.util.logging.Logger;
 
 import goedegep.jfx.ComponentFactoryFx;
 import goedegep.jfx.CustomizationFx;
-import goedegep.jfx.objectcontrols.ObjectControlAbstract;
 import goedegep.jfx.objectcontrols.ObjectControlEnumComboBox;
 import goedegep.jfx.objectcontrols.ObjectControlTextField;
 import goedegep.media.mediadb.app.derivealbuminfo.TrackInfo;

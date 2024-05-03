@@ -251,7 +251,7 @@ public abstract class ObjectControlFileOrFolderSelecterAbstract extends ObjectCo
    * 
    * @return the absolute path for the current value.
    */
-  public String ocGetAbsolutePath() {
+  public String getAbsolutePath() {
     if (value != null) {
       return value.getAbsolutePath();
     } else {
@@ -264,6 +264,6 @@ public abstract class ObjectControlFileOrFolderSelecterAbstract extends ObjectCo
    */
   @Override
   public boolean isChanged() {
-    return !PgUtilities.equals(ocGetAbsolutePath(), referenceValue);
+    return !PgUtilities.equals(getAbsolutePath(), referenceValue);
   }
 }

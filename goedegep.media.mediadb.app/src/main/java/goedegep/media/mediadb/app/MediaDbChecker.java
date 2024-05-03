@@ -97,7 +97,7 @@ public class MediaDbChecker {
    * @param errors the list to which errors shall be appended if this value is not null
    */
   private static void areThereNoObsoleteArtists(MediaDb mediaDb, List<Object> errors) {
-    List<Artist> artistsNotReferredTo = new ArrayList(mediaDb.getArtists());
+    List<Artist> artistsNotReferredTo = new ArrayList<>(mediaDb.getArtists());
     
     // album artist and album players:artist
     for (Album album: mediaDb.getAlbums()) {

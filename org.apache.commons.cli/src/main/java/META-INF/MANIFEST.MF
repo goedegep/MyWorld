@@ -1,0 +1,9 @@
+Manifest-Version: 1.0
+Created-By: Maven Source Plugin 3.2.1
+Specification-Title: Apache Commons CLI
+Specification-Version: 1.7
+Specification-Vendor: The Apache Software Foundation
+Implementation-Title: Apache Commons CLI
+Implementation-Version: 1.7.0
+Implementation-Vendor: The Apache Software Foundation
+

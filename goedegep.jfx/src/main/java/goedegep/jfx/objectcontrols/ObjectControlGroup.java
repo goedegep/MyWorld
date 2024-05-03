@@ -30,7 +30,9 @@ public class ObjectControlGroup implements Iterable<ObjectControl<? extends Obje
   private BooleanProperty  anyObjectInputFilledIn = new SimpleBooleanProperty();
   private List<InvalidationListener> invalidationListeners = new ArrayList<>();
   
-  
+  public ObjectControlGroup() {
+    handleChanges();
+  }
   /**
    * Add an {@code ObjectControl} for which the status is to be checked.
    * 
@@ -179,7 +181,7 @@ public class ObjectControlGroup implements Iterable<ObjectControl<? extends Obje
     for (ObjectControl<?> objectControl: this) {
       if (!objectControl.isValid()) {
         isValidValue = false;
-        LOGGER.info("First invalid ObjectControl: " + objectControl.toString());
+        LOGGER.severe("First invalid ObjectControl: " + objectControl.toString());
         break;
       }
     }
@@ -244,7 +246,7 @@ public class ObjectControlGroup implements Iterable<ObjectControl<? extends Obje
     while (iterator.hasNext()) {
       ObjectControl<?> objectControl = iterator.next();
       if (objectControl.isChanged()) {
-        LOGGER.info("First Object control changed: " + objectControl);
+        LOGGER.severe("First Object control changed: " + objectControl + ", id: " + objectControl.getId() + ", value: " + objectControl.getValue());
         objectControl.isChanged();
         return true;
       } else {

@@ -436,7 +436,7 @@ public class EventsEditor extends ObjectEditorTemplate<EventInfo> {
   protected void updateObjectFromControls() {
     EmfUtil.setFeatureValue(object, TypesPackage.eINSTANCE.getEvent_Date(), eventDateControl.getValue());
     EmfUtil.setFeatureValue(object, EventsPackage.eINSTANCE.getEventInfo_Title(), eventTitleControl.getValue());
-    EmfUtil.setFeatureValue(object, EventsPackage.eINSTANCE.getEventInfo_Picture(), pictureFileSelecter.getValue().getAbsolutePath());
+    EmfUtil.setFeatureValue(object, EventsPackage.eINSTANCE.getEventInfo_Picture(), stripBaseDirFromFilename(pictureFileSelecter.getValue().getAbsolutePath()));
     EmfUtil.setFeatureValue(object, TypesPackage.eINSTANCE.getEvent_Notes(), notesControl.getValue());
     EmfUtil.setFeatureValue(object, TypesPackage.eINSTANCE.getEvent_Notes(), notesControl.getValue());
     

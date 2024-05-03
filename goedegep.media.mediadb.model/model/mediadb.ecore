@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ecore:EPackage xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" name="model" nsURI="http://goedegep.media/mediadb/model" nsPrefix="mediadb">
+  <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+    <details key="documentation" value=""/>
+  </eAnnotations>
   <eClassifiers xsi:type="ecore:EClass" name="Track">
     <eOperations name="getOriginalDiscTrackReference" eType="#//TrackReference"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="title" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
@@ -21,6 +24,9 @@
         unsettable="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="MediaDb">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="This interface is the top level interface for the media (music) database.&lt;br>&#xD;&#xA;It contains both general information like information on albums and artists, and personal information like whether I want to have an album and on what media I have it.&lt;/br>&#xD;&#xA;The interface names for personal information start with 'My', being {@code MyInfo} and {@code MyTrackInfo}.&lt;br/>&#xD;&#xA;&lt;h2>Overview of the interfaces&lt;/h2>&#xD;&#xA;&lt;h3>{@link Album}&lt;/h3>&lt;&#xD;&#xA;The database contains a list of albums, where an album can be any collection of tracks.&lt;br/>&#xD;&#xA;An album consists of one or more discs.&#xD;&#xA;&lt;h3>{@link Disc}&lt;/h3>&#xD;&#xA;This interface represents a physical disc like a CD or SACD, but can also represent any collection of tracks.&lt;br/>&#xD;&#xA;A disc contains tracks, represented by track references ({@code TrackReference}).&#xD;&#xA;&lt;h3>{@link TrackReference}&lt;/h3>&#xD;&#xA;The tracks of a disc are specified by track references and not directly by tracks. Main reason for this is that the same track (the same recording) can appear on more than one album.&#xD;&#xA;&lt;h3>{@link Track}&lt;/h3>&#xD;&#xA;The database contains a list of tracks, where a track represents a single song/recording.&#xD;&#xA;The tracks are referred to (via track references) by the tracks of the discs of the albums and by the tracks in the track collections.&#xD;&#xA;&lt;h3>{@link TrackCollection}&lt;/h3>&#xD;&#xA;The database also contains track collections, which are collections of tracks of a specific genre and for which you don't have albums details.&#xD;&#xA;&lt;h3>{@link Artist}&lt;/h3>&#xD;&#xA;The database has a list of artists, which may be an artist of an album or track, or a player on an album or track, or an author of a track.&#xD;&#xA;&lt;h3>{@link Video}&lt;/h3>&#xD;&#xA;The database has a list of videos."/>
+    </eAnnotations>
     <eOperations name="getArtist" eType="#//Artist">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
         <details key="documentation" value="Get an {@code Artist} from the media database, based on its name.&#xD;&#xA;&#xD;&#xA;@param artistName the name of the artist&#xD;&#xA;@return the  {@code Artist} with the name {@code artistName}, or null if no such artist exists in the media database."/>
@@ -109,6 +115,16 @@
     <eOperations name="getDisc" eType="#//Disc">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
         <details key="documentation" value="Get the Disc of a single disc album. A RuntimeException is thrown if the album is a multi disc album.&#xD;&#xA;@return the disc of the album, or null if the album has no disc."/>
+      </eAnnotations>
+    </eOperations>
+    <eOperations name="iWantAlbumOrTracksOfAlbum" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Check whether I want this album or some tracks of the album, which means I still have to obtain the album or tracks of the album.&lt;br/>&#xD;&#xA;&#xD;&#xA;@return true if {@code iWant}  is set to YES at album level or on any track, false otherwise."/>
+      </eAnnotations>
+    </eOperations>
+    <eOperations name="iHaveToJudgeAlbumOrTracks" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Check whether I still have to judge the album or tracks of the album.&lt;br/>&#xD;&#xA;This is the case if {@code iWant} is set to 'DONT KNOW' at album level or on any track.&#xD;&#xA;&#xD;&#xA;@return true if I still have to judge this album"/>
       </eAnnotations>
     </eOperations>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="title" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"

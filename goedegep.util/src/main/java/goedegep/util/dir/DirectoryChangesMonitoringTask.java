@@ -61,6 +61,7 @@ public class DirectoryChangesMonitoringTask extends Task<WatchEvent<Path>> {
         }
 
         // Context for directory entry event is the file name of entry
+        @SuppressWarnings("unchecked")
         WatchEvent<Path> watchEvent = (WatchEvent<Path>) event;
         Path name = watchEvent.context();
         Path child = folderPath.resolve(name);
@@ -85,6 +86,7 @@ public class DirectoryChangesMonitoringTask extends Task<WatchEvent<Path>> {
     buf.append("kind: ").append(kind.name()).append(NEW_LINE);
     buf.append("Context: ").append(watchEvent.context().toString()).append(NEW_LINE);
     
+    @SuppressWarnings("unchecked")
     WatchEvent<Path> pathWatchEvent = (WatchEvent<Path>) watchEvent;
     Path path = pathWatchEvent.context();
     buf.append("Path: ").append(path.toString()).append(NEW_LINE);

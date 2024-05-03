@@ -33,6 +33,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Background;
 import javafx.util.Callback;
 
@@ -169,7 +170,7 @@ class TracksTableDescriptor extends EObjectTableDescriptor<Track> {
   /*
    * Column descriptors which have to be adapted in the constructor.
    */
-  private EObjectTableColumnDescriptorCustom<Track> playColumnDescriptor = new EObjectTableColumnDescriptorCustom<>(MEDIA_DB_PACKAGE.getTrackReference_MyTrackInfo(), "Play", null, true, true, null);
+  private EObjectTableColumnDescriptorCustom<Track> playColumnDescriptor = new EObjectTableColumnDescriptorCustom<>(null, "Play", null, true, true, null);
   
   /*
    * The complete list of column descriptors
@@ -334,6 +335,14 @@ class MyTrackInfoPlayCell extends TableCell<Track, Object> {
     imageView.setPreserveRatio(true);
     imageView.setImage(i);
     setGraphic(imageView);
+    
+    addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
+      MyTrackInfoPlayCell cell = (MyTrackInfoPlayCell) e.getSource();
+      Track track = (Track) cell.getItem();
+      LOGGER.info("Mouse clicked on: " + track.toString());
+      ((EObjectTable<Track>) getTableView()).openObject(track);
+      e.consume();
+    });
   }
 
   @Override
@@ -360,23 +369,3 @@ class MyTrackInfoPlayCell extends TableCell<Track, Object> {
     LOGGER.info("<=");
   }
 }
-
-
-/**
- * Album disc player
- */
-class TrackPlayer implements Runnable {
-//  private Track track;
-  
-  public TrackPlayer(Track track) {
-//    this.track = track;
-  }
-
-  @Override
-  public void run() {
-    // TODO Auto-generated method stub
-    
-  }
-  
-}
-

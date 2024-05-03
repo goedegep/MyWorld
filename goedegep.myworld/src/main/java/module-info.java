@@ -3,7 +3,7 @@ module goedegep.myworld {
   exports goedegep.myworld.app;
   exports goedegep.myworld.app.guifx;
   
-  requires commons.cli;
+  requires org.apache.commons.cli;
   requires goedegep.app.finan;
   requires goedegep.appgen;
   requires transitive goedegep.appgenfx;

@@ -170,12 +170,25 @@ public class ObjectControlImageFile extends ObjectControlAbstract<File> {
    * Launch a FileChooser to let the user select a file.
    */
   public void selectNewFile() {
-    FileChooser fileChooser = componentFactory.createFileChooser("Select front image");
+    FileChooser fileChooser = getFileChooser();
+    file = fileChooser.showOpenDialog(null);
+    if (file != null) {
+      ociHandleNewUserInput(fileChooser);
+    }
+  }
+  
+  /**
+   * Get a {@code FileChooser} to select the image file.
+   * 
+   * @return a {@code FileChooser} to select the image file.
+   */
+  public FileChooser getFileChooser() {
+    FileChooser fileChooser = componentFactory.createFileChooser("Select image");
     if (initialDirectory != null) {
       fileChooser.setInitialDirectory(initialDirectory);
     }
-    file = fileChooser.showOpenDialog(null);
-    ociHandleNewUserInput(fileChooser);
+    
+    return fileChooser;
   }
   
 

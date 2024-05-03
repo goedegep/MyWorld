@@ -1,6 +1,5 @@
 package goedegep.media.mediadb.albumeditor.guifx;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import goedegep.jfx.ComponentFactoryFx;

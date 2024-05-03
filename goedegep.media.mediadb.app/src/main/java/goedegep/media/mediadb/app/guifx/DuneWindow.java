@@ -132,7 +132,7 @@ public class DuneWindow extends JfxStage {
     duneMusicFolderSelecter.setInitialFolderProvider(() -> currentDuneMusicFolderPath);
     Node duneFolderPathTextField = duneMusicFolderSelecter.getControl();
     duneMusicFolderSelecter.addListener(e -> {
-      currentDuneMusicFolderPath = duneMusicFolderSelecter.ocGetAbsolutePath();
+      currentDuneMusicFolderPath = duneMusicFolderSelecter.getAbsolutePath();
       handleChanges();
       });
     grid.add(duneFolderPathTextField, 2, 1);
@@ -153,7 +153,7 @@ public class DuneWindow extends JfxStage {
     playListFolderPathSelecter.setInitialFolderProvider(() -> currentDunePlaylistsFolderPath);
     Node playListFolderPathTextField = playListFolderPathSelecter.getControl();
     playListFolderPathSelecter.addListener(e -> {
-      currentDunePlaylistsFolderPath = playListFolderPathSelecter.ocGetAbsolutePath();
+      currentDunePlaylistsFolderPath = playListFolderPathSelecter.getAbsolutePath();
       handleChanges();
       });
     grid.add(playListFolderPathTextField, 2, 2);
@@ -169,7 +169,7 @@ public class DuneWindow extends JfxStage {
 
       @Override
       public void handle(ActionEvent event) {
-        handleSynchronizationActions(musicFolderSelecter.ocGetAbsolutePath(), currentDuneMusicFolderPath, currentDunePlaylistsFolderPath);
+        handleSynchronizationActions(musicFolderSelecter.getAbsolutePath(), currentDuneMusicFolderPath, currentDunePlaylistsFolderPath);
       }
       
     });

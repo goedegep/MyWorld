@@ -45,6 +45,25 @@ public class MediaDbAppUtil {
   }
 
   /**
+   * Get all albums that need attention.
+   * <p>
+   * These are all albums in the {@link #mediaDb} that I still have to judge or obtain.
+   * 
+   * @return all albums that need attention.
+   */
+  public static List<Album> getAlbumsThatNeedAttention(MediaDb mediaDb) {
+    List<Album> albumsThatNeedAttention = new ArrayList<>();
+
+    for (Album album: mediaDb.getAlbums()) {
+      if (album.iHaveToJudgeAlbumOrTracks()  ||  album.iWantAlbumOrTracksOfAlbum()) {
+        albumsThatNeedAttention.add(album);
+      }
+    }
+
+    return albumsThatNeedAttention;
+  }
+
+  /**
    * Get the album to which an album refers to.
    * 
    * TODO change for more than 1 reference.

@@ -183,7 +183,7 @@ public class MediaDbToDiscLocationMap {
      */
     LOGGER.info("=> " + album.getArtistAndTitle());
     
-    if ("Bigger, Better, Faster, More!".equals(album.getTitle())) {
+    if ("Het Beste Uit De Top 100 Allertijden + 1 Extra".equals(album.getTitle())) {
       LOGGER.severe("STOP");
       LOGGER.severe(album.toString());
     }
@@ -265,7 +265,7 @@ public class MediaDbToDiscLocationMap {
                 albumFolderName = folderName;
               } else {
                 if (!folderName.equals(albumFolderName)) {
-                  LOGGER.severe("Tracks in different folders");
+                  LOGGER.severe("Tracks in different folders. Album is: " + album.getArtistAndTitle() + ", track filename is: " + trackOnDiscInfo.getTrackPath().toString());
                 }
               }
             }

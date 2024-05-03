@@ -226,13 +226,13 @@ public class FileReferencePanel extends TitledPane {
   public String getFile() {
     if (handlingFileReference) {
       if (getFileSelecterObjectControl().isValid()) {
-        return getFileSelecterObjectControl().ocGetAbsolutePath();
+        return getFileSelecterObjectControl().getAbsolutePath();
       } else {
         return null;
       }
     } else {
       if (getFolderSelecterObjectControl().isValid()) {
-        return getFolderSelecterObjectControl().ocGetAbsolutePath();
+        return getFolderSelecterObjectControl().getAbsolutePath();
       } else {
         return null;
       }
@@ -500,9 +500,9 @@ public class FileReferencePanel extends TitledPane {
     
     String fileOrFolderPath = null;
     if (handlingFileReference) {
-      fileOrFolderPath = getFileSelecterObjectControl().ocGetAbsolutePath();
+      fileOrFolderPath = getFileSelecterObjectControl().getAbsolutePath();
     } else {
-      fileOrFolderPath = getFolderSelecterObjectControl().ocGetAbsolutePath();
+      fileOrFolderPath = getFolderSelecterObjectControl().getAbsolutePath();
     }
     
     try {

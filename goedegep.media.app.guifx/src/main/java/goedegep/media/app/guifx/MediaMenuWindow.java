@@ -1,7 +1,5 @@
 package goedegep.media.app.guifx;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.util.logging.Logger;
 
 import goedegep.jfx.ComponentFactoryFx;
@@ -11,38 +9,25 @@ import goedegep.jfx.MenuUtil;
 import goedegep.jfx.PropertyDescriptorsEditorFx;
 import goedegep.media.app.MediaRegistry;
 import goedegep.media.app.base.MediaAppResourcesFx;
-import goedegep.media.app.base.MediaCollageCreator;
 import goedegep.media.fotomapview.guifx.PhotoEditor;
 import goedegep.media.fotomapview.guifx.PhotoMapView;
 import goedegep.media.fotoshow.app.guifx.PhotoShowBuilder;
 import goedegep.media.fotoshow.app.guifx.PhotoShowViewer;
-import goedegep.media.mediadb.app.MediaDbChecker;
 import goedegep.media.mediadb.app.guifx.DuneWindow;
 import goedegep.media.mediadb.app.guifx.MediaDbWindow;
 import goedegep.media.mediadb.app.guifx.MusicFolderWindow;
 import goedegep.media.mediadb.app.guifx.VideoDbWindow;
-import goedegep.media.mediadb.model.Album;
-import goedegep.media.mediadb.model.Disc;
-import goedegep.media.mediadb.model.MediaDb;
-import goedegep.media.mediadb.model.MediadbFactory;
-import goedegep.media.mediadb.model.MediadbPackage;
-import goedegep.media.mediadb.model.TrackReference;
 import goedegep.properties.app.guifx.PropertiesEditor;
 import goedegep.resources.ImageSize;
-import goedegep.util.emf.EMFResource;
-import goedegep.util.emf.EmfUtil;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
-import javafx.scene.control.ButtonType;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
@@ -55,12 +40,13 @@ import javafx.stage.Stage;
  * Saving the media database is also done via this window.
  */
 public class MediaMenuWindow extends JfxStage {
+  @SuppressWarnings("unused")
   private static final Logger LOGGER = Logger.getLogger(MediaMenuWindow.class.getName());
   private static final String WINDOW_TITLE   = "Media";
   private static final String NEWLINE = System.getProperty("line.separator");
-  private static final int MAX_NR_OF_PICTURES_IN_COLLAGE = 30;
-  private static final int MIN_NR_OF_PICTURES_IN_COLLAGE = 5;
-  private static final int WINDOW_WIDTH = 1920 / 2;
+//  private static final int MAX_NR_OF_PICTURES_IN_COLLAGE = 30;
+//  private static final int MIN_NR_OF_PICTURES_IN_COLLAGE = 5;
+//  private static final int WINDOW_WIDTH = 1920 / 2;
   
   private CustomizationFx customization;
   private ComponentFactoryFx componentFactory;

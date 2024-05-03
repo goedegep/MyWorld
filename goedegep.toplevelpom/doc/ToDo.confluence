@@ -1,5 +1,7 @@
 h2. ToDo list
-* Add a background image to the MediaMenuWindow.
+* AlbumEditor/new album
+Currently OK: title, artist, issuedate, albumId
+Next: players
 * When starting to edit an album it complaints about changes which can't be there.
 * Clean up MijnWereld folder.
 * Fix exception that occurs on setMyTrackInfo

@@ -25,8 +25,6 @@ import goedegep.util.emf.EMFResource;
 import goedegep.util.mslinks.ShellLink;
 import goedegep.util.mslinks.ShellLinkException;
 import goedegep.util.mslinks.ShellLinkHeader;
-import javafx.beans.InvalidationListener;
-import javafx.beans.Observable;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.Scene;
@@ -565,7 +563,7 @@ public class MyWorldInstaller extends JfxApplication {
     
     String binInstallationFolder = installationFolder.getValue() + "\\bin";
     try {
-      createMyWorldShortCut(binInstallationFolder, userDataFolder.ocGetAbsolutePath(), MY_WORLD_SHORTCUT_PATH);
+      createMyWorldShortCut(binInstallationFolder, userDataFolder.getAbsolutePath(), MY_WORLD_SHORTCUT_PATH);
     } catch (IOException e) {
       appendOutputTextLine("MyWorld shortcut couldn't be created. System message: " + e.getMessage());
       appendOutputTextLine("Installation aborted");
@@ -587,7 +585,7 @@ public class MyWorldInstaller extends JfxApplication {
     appendOutputTextLine("Events shortcut created: " + EVENTS_SHORTCUT_PATH);
         
     try {
-      createFinanShortCut(binInstallationFolder, userDataFolder.ocGetAbsolutePath(), FINAN_SHORTCUT_PATH);
+      createFinanShortCut(binInstallationFolder, userDataFolder.getAbsolutePath(), FINAN_SHORTCUT_PATH);
     } catch (IOException e) {
       appendOutputTextLine("Finan shortcut couldn't be created. System message: " + e.getMessage());
       appendOutputTextLine("Installation aborted");
@@ -598,7 +596,7 @@ public class MyWorldInstaller extends JfxApplication {
     appendOutputTextLine("MyWorld shortcut created: " + FINAN_SHORTCUT_PATH);
     
     try {
-      createMediaShortCut(binInstallationFolder, userDataFolder.ocGetAbsolutePath(), MEDIA_SHORTCUT_PATH);
+      createMediaShortCut(binInstallationFolder, userDataFolder.getAbsolutePath(), MEDIA_SHORTCUT_PATH);
     } catch (IOException e) {
       appendOutputTextLine("Media shortcut couldn't be created. System message: " + e.getMessage());
       appendOutputTextLine("Installation aborted");
@@ -609,7 +607,7 @@ public class MyWorldInstaller extends JfxApplication {
     appendOutputTextLine("Media shortcut created: " + MEDIA_SHORTCUT_PATH);
     
     try {
-      createInvoicesAndPropertiesShortCut(binInstallationFolder, userDataFolder.ocGetAbsolutePath(), INVOICES_AND_PROPERTIES_SHORTCUT_PATH);
+      createInvoicesAndPropertiesShortCut(binInstallationFolder, userDataFolder.getAbsolutePath(), INVOICES_AND_PROPERTIES_SHORTCUT_PATH);
     } catch (IOException e) {
       appendOutputTextLine("InvoicesAndProperties shortcut couldn't be created. System message: " + e.getMessage());
       appendOutputTextLine("Installation aborted");
@@ -620,7 +618,7 @@ public class MyWorldInstaller extends JfxApplication {
     appendOutputTextLine("InvoicesAndProperties shortcut created: " + INVOICES_AND_PROPERTIES_SHORTCUT_PATH);
     
     try {
-      createRolodexShortCut(binInstallationFolder, userDataFolder.ocGetAbsolutePath(), ROLODEX_SHORTCUT_PATH);
+      createRolodexShortCut(binInstallationFolder, userDataFolder.getAbsolutePath(), ROLODEX_SHORTCUT_PATH);
     } catch (IOException e) {
       appendOutputTextLine("Rolodex shortcut couldn't be created. System message: " + e.getMessage());
       appendOutputTextLine("Installation aborted");
@@ -631,7 +629,7 @@ public class MyWorldInstaller extends JfxApplication {
     appendOutputTextLine("Rolodex shortcut created: " + ROLODEX_SHORTCUT_PATH);
     
     try {
-      createUnitConverterShortCut(binInstallationFolder, userDataFolder.ocGetAbsolutePath(), UNIT_CONVERTER_SHORTCUT_PATH);
+      createUnitConverterShortCut(binInstallationFolder, userDataFolder.getAbsolutePath(), UNIT_CONVERTER_SHORTCUT_PATH);
     } catch (IOException e) {
       appendOutputTextLine("UnitConverter shortcut couldn't be created. System message: " + e.getMessage());
       appendOutputTextLine("Installation aborted");
@@ -642,7 +640,7 @@ public class MyWorldInstaller extends JfxApplication {
     appendOutputTextLine("UnitConverter shortcut created: " + UNIT_CONVERTER_SHORTCUT_PATH);
     
     try {
-      createPCToolsShortCut(binInstallationFolder, userDataFolder.ocGetAbsolutePath(), PC_TOOLS_SHORTCUT_PATH);
+      createPCToolsShortCut(binInstallationFolder, userDataFolder.getAbsolutePath(), PC_TOOLS_SHORTCUT_PATH);
     } catch (IOException e) {
       appendOutputTextLine("PCTools shortcut couldn't be created. System message: " + e.getMessage());
       appendOutputTextLine("Installation aborted");
@@ -653,7 +651,7 @@ public class MyWorldInstaller extends JfxApplication {
     appendOutputTextLine("PCTools shortcut created: " + PC_TOOLS_SHORTCUT_PATH);
     
     try {
-      createVacationsShortCut(binInstallationFolder, userDataFolder.ocGetAbsolutePath(), VACATIONS_SHORTCUT_PATH);
+      createVacationsShortCut(binInstallationFolder, userDataFolder.getAbsolutePath(), VACATIONS_SHORTCUT_PATH);
     } catch (IOException e) {
       appendOutputTextLine("Vacations shortcut couldn't be created. System message: " + e.getMessage());
       appendOutputTextLine("Installation aborted");

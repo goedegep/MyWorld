@@ -84,7 +84,7 @@ public class FolderSelectionWizard extends Dialog<ButtonType> {
    */
   public String getSelectedFolder() {
     if (folderSelecter.isValid()) {
-      return folderSelecter.ocGetAbsolutePath();
+      return folderSelecter.getAbsolutePath();
     } else {
       return null;
     }
@@ -130,7 +130,7 @@ public class FolderSelectionWizard extends Dialog<ButtonType> {
     
     Node folderName = folderSelecter.getControl();
     folderSelecter.addListener((observable) -> {
-      handleNewPhotoFolderSelected(folderSelecter.isValid(), folderSelecter.ocGetAbsolutePath());      
+      handleNewPhotoFolderSelected(folderSelecter.isValid(), folderSelecter.getAbsolutePath());      
     });
     wizardPanel.add(folderName, 1, 0);
     
@@ -169,7 +169,7 @@ public class FolderSelectionWizard extends Dialog<ButtonType> {
     
     okButton = (Button) getDialogPane().lookupButton(ButtonType.OK);
     
-    handleNewPhotoFolderSelected(folderSelecter.isValid(), folderSelecter.ocGetAbsolutePath());
+    handleNewPhotoFolderSelected(folderSelecter.isValid(), folderSelecter.getAbsolutePath());
   }
   
   /**

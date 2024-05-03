@@ -755,6 +755,26 @@ public class MediadbPackageImpl extends EPackageImpl implements MediadbPackage {
    * @generated
    */
   @Override
+  public EOperation getAlbum__IWantAlbumOrTracksOfAlbum() {
+    return albumEClass.getEOperations().get(5);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public EOperation getAlbum__IHaveToJudgeAlbumOrTracks() {
+    return albumEClass.getEOperations().get(6);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
   public EClass getTrackReference() {
     return trackReferenceEClass;
   }
@@ -1372,6 +1392,8 @@ public class MediadbPackageImpl extends EPackageImpl implements MediadbPackage {
     createEOperation(albumEClass, ALBUM___GET_ARTIST_AND_TITLE);
     createEOperation(albumEClass, ALBUM___IS_MULTI_DISC_ALBUM);
     createEOperation(albumEClass, ALBUM___GET_DISC);
+    createEOperation(albumEClass, ALBUM___IWANT_ALBUM_OR_TRACKS_OF_ALBUM);
+    createEOperation(albumEClass, ALBUM___IHAVE_TO_JUDGE_ALBUM_OR_TRACKS);
 
     trackReferenceEClass = createEClass(TRACK_REFERENCE);
     createEReference(trackReferenceEClass, TRACK_REFERENCE__TRACK);
@@ -1614,6 +1636,12 @@ public class MediadbPackageImpl extends EPackageImpl implements MediadbPackage {
         IS_ORDERED);
 
     initEOperation(getAlbum__GetDisc(), this.getDisc(), "getDisc", 0, 1, IS_UNIQUE, IS_ORDERED);
+
+    initEOperation(getAlbum__IWantAlbumOrTracksOfAlbum(), ecorePackage.getEBoolean(), "iWantAlbumOrTracksOfAlbum", 0, 1,
+        IS_UNIQUE, IS_ORDERED);
+
+    initEOperation(getAlbum__IHaveToJudgeAlbumOrTracks(), ecorePackage.getEBoolean(), "iHaveToJudgeAlbumOrTracks", 0, 1,
+        IS_UNIQUE, IS_ORDERED);
 
     initEClass(trackReferenceEClass, TrackReference.class, "TrackReference", !IS_ABSTRACT, !IS_INTERFACE,
         IS_GENERATED_INSTANCE_CLASS);
