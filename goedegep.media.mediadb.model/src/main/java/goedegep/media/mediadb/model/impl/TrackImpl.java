@@ -551,12 +551,32 @@ public class TrackImpl extends MinimalEObjectImpl.Container implements Track {
   @Override
   public TrackReference getOriginalDiscTrackReference() {
     for (TrackReference trackReference : getReferredBy()) {
-      if (trackReference.getOriginalAlbumTrackReference() == null) {
+      if (trackReference.getOriginalAlbumTrackReference() != null) {
         return trackReference;
       }
     }
 
     return null;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated NOT
+   */
+  @Override
+  public Artist getTrackArtist() {
+    Artist trackArtist = getArtist();
+
+    if (trackArtist == null) {
+      Disc disc = getOriginalDisc();
+      if (disc != null) {
+        Album album = disc.getAlbum();
+        trackArtist = album.getArtist();
+      }
+    }
+
+    return trackArtist;
   }
 
   /**
@@ -737,6 +757,8 @@ public class TrackImpl extends MinimalEObjectImpl.Container implements Track {
     switch (operationID) {
     case MediadbPackage.TRACK___GET_ORIGINAL_DISC_TRACK_REFERENCE:
       return getOriginalDiscTrackReference();
+    case MediadbPackage.TRACK___GET_TRACK_ARTIST:
+      return getTrackArtist();
     }
     return super.eInvoke(operationID, arguments);
   }
@@ -755,7 +777,7 @@ public class TrackImpl extends MinimalEObjectImpl.Container implements Track {
     buf.append(isSetDuration() ? getDuration() : "<no-duration>").append(NEWLINE);
 
     buf.append("artist:");
-    buf.append(isSetArtist() ? getArtist().getName() : "<no-artist>").append(NEWLINE);
+    buf.append(getArtist() != null ? getArtist().getName() : "<no-artist>").append(NEWLINE);
 
     buf.append("authors:");
     buf.append(StringUtil.objectCollectionToCommaSeparatedStrings(getAuthors())).append(NEWLINE);

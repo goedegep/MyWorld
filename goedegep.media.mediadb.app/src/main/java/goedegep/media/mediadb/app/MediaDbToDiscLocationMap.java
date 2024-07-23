@@ -30,7 +30,7 @@ import goedegep.util.file.FileUtils;
 
 
 /**
- * This class creates a mapping for albums and tracks, that should be available on disc, to their locations on disc.
+ * This class creates a mapping for albums and tracks in the media database, that should be available on disc, to their locations on disc.
  * 
  */
 public class MediaDbToDiscLocationMap {
@@ -108,7 +108,7 @@ public class MediaDbToDiscLocationMap {
       createAndAddAlbumMapping(album, ignoreMissingBonusTracks);
     }
 
-    // Handle the separate tracks.
+    // Handle the separate tracks in the track collections.
     createTrackLocationMap(ignoreMissingBonusTracks);
 
     for (TrackOnDiscInfo trackOnDiscInfo: tracksOnDiscInfoNotMapped) {
@@ -182,11 +182,6 @@ public class MediaDbToDiscLocationMap {
      *  If an album should be in the MusicFolder and it is not found, it is an error. So any remaining albums in albumsOnDiscInfoCopy are reported as errors.
      */
     LOGGER.info("=> " + album.getArtistAndTitle());
-    
-    if ("Het Beste Uit De Top 100 Allertijden + 1 Extra".equals(album.getTitle())) {
-      LOGGER.severe("STOP");
-      LOGGER.severe(album.toString());
-    }
     
     if (!album.isMultiDiscAlbum()) {
       // Single-disc album
@@ -416,10 +411,10 @@ public class MediaDbToDiscLocationMap {
    *   @param trackReference The Track to be found in the <code>tracksOnDiscInfo</code>.
    *   @param tracksOnDiscInfo the list of <b>TrackOnDiscInfo</b> in which the track is to be found.
    */
-  private static TrackOnDiscInfo findCollectionTrackInTracksOnDiscInfo(TrackReference trackReference, List<TrackOnDiscInfo> tracksOnDiscInfo) {
-    String trackFileNameByConvention = MediaDbAppUtil.generateTrackFileNameForATrackInATracksFolder(trackReference.getTrack());
+  private TrackOnDiscInfo findCollectionTrackInTracksOnDiscInfo(TrackReference trackReference, List<TrackOnDiscInfo> tracksOnDiscInfo) {
+    String trackFileNameByConvention = MediaDbAppUtil.generateTrackFileNameForATrackInATracksFolder(trackReference.getTrack(), mediaDb);
     if (trackFileNameByConvention == null) {
-      trackFileNameByConvention = MediaDbAppUtil.generateTrackFileNameForATrackInATracksFolder(trackReference.getTrack());
+      trackFileNameByConvention = MediaDbAppUtil.generateTrackFileNameForATrackInATracksFolder(trackReference.getTrack(), mediaDb);
       throw new RuntimeException("Error: track is not valid");
     }
 
@@ -464,7 +459,7 @@ public class MediaDbToDiscLocationMap {
    */
   private void createAndAddMappingForDiscCompletelyOnDisc(Disc disc, boolean ignoreMissingBonusTracks) {
     LOGGER.info("=> " + disc.getTitle());
-    AlbumOnDiscInfo albumOnDiscInfo = findAlbumDiscInAlbumsOnDiscInfo(disc, albumsOnDiscInfoNotMapped, mediaDb, errors);
+    AlbumOnDiscInfo albumOnDiscInfo = findAlbumDiscInAlbumsOnDiscInfo(disc, albumsOnDiscInfoNotMapped, errors);
     if (albumOnDiscInfo != null) {
       LOGGER.info("Found disc of album on disc");
 //      AlbumDiscLocationInfo albumDiscLocationInfo = new AlbumDiscLocationInfo(albumOnDiscInfo.getAlbumFolderName(), albumOnDiscInfo.getTrackFileNames());
@@ -483,10 +478,7 @@ public class MediaDbToDiscLocationMap {
   }
 
   private void createAndAddMappingForDiscPartlyOnDisc(Disc disc) {
-    if ("Annie Lennox - Medusa, Live In Central Park".equals(disc.getAlbum().getArtistAndTitle())) {
-      LOGGER.severe("STOP");
-    }
-    AlbumOnDiscInfo albumOnDiscInfo = findAlbumDiscInAlbumsOnDiscInfo(disc, albumsOnDiscInfoNotMapped, mediaDb, errors);
+    AlbumOnDiscInfo albumOnDiscInfo = findAlbumDiscInAlbumsOnDiscInfo(disc, albumsOnDiscInfoNotMapped, errors);
     if (albumOnDiscInfo != null) {
       addAlbumDiscTracksToTrackDiscLocationMap(disc, albumOnDiscInfo, false);
     } else {
@@ -596,15 +588,31 @@ public class MediaDbToDiscLocationMap {
 //    }
 //  }
 
+  /**
+   * Create a mapping for all tracks in all track collections to their location on disc.
+   * 
+   * @param ignoreMissingBonusTracks TODO is this needed?
+   */
   private void createTrackLocationMap(boolean ignoreMissingBonusTracks) {
     for (TrackCollection trackCollection: mediaDb.getTrackcollections()) {
       createTrackLocationMapForTrackCollection(trackCollection, ignoreMissingBonusTracks);
     }
   }
   
+  /**
+   * Create a mapping for all tracks in a track collection to their location on disc.
+   * <p>
+   * Tracks that aren't available on disc are ignored. 
+   * 
+   * @param trackCollection the {@code TrackCollection} for which a mapping is to be created.
+   * @param ignoreMissingBonusTracks TODO is this needed?
+   */
   private void createTrackLocationMapForTrackCollection(TrackCollection trackCollection, boolean ignoreMissingBonusTracks) {
 
     for (TrackReference trackReference: trackCollection.getTrackReferences()) {
+      if (trackReference.getTrack().getTitle().equals("Public Image")) {
+        LOGGER.severe("STOP");
+      }
       if (!MediaDbUtil.haveTrackOnDisc(trackReference)) {
         continue;
       }
@@ -736,13 +744,20 @@ public class MediaDbToDiscLocationMap {
    *   @param trackReference The Track to be found in the <code>tracksOnDiscInfo</code>.
    *   @param tracksOnDiscInfo the list of <b>TrackOnDiscInfo</b> in which the track is to be found.
    */
-  private static TrackOnDiscInfo findTrackInTracksOnDiscInfo(TrackReference trackReference, List<TrackOnDiscInfo> tracksOnDiscInfo) {
-    String trackFileNameByConvention = MediaDbAppUtil.generateTrackFileNameForATrackInATracksFolder(trackReference.getTrack());
+  private TrackOnDiscInfo findTrackInTracksOnDiscInfo(TrackReference trackReference, List<TrackOnDiscInfo> tracksOnDiscInfo) {
+    String trackFileNameByConvention = MediaDbAppUtil.generateTrackFileNameForATrackInATracksFolder(trackReference.getTrack(), mediaDb);
+    
+    if (trackFileNameByConvention.contains("Suicide Blonde")) {
+      LOGGER.severe("STOP");
+    }
 
     for (TrackOnDiscInfo trackOnDiscInfo: tracksOnDiscInfo) {
       // first only check on filename, if a match, check the folder.
       String trackFileNameOnDisc = trackOnDiscInfo.getTrackPath().getFileName().toString();
       String trackFileNameOnDiscWithoutExtension = FileUtils.getFileNameWithoutExtension(trackFileNameOnDisc);
+      if (trackFileNameOnDiscWithoutExtension.contains("Chelsea")) {
+        LOGGER.info("Found a Chelsea: " + trackFileNameOnDiscWithoutExtension);
+      }
       if (trackFileNameOnDiscWithoutExtension.equals(trackFileNameByConvention)) {
         String trackFolder = trackOnDiscInfo.getTrackPath().getParent().getFileName().toString();
         MyTrackInfo myTrackInfo = trackReference.getMyTrackInfo();
@@ -887,11 +902,10 @@ public class MediaDbToDiscLocationMap {
    * 
    * @param disc the Disc to search for in the <code>albumsOnDiscInfo</code>
    * @param albumsOnDiscInfo Information about the albums on disc.
-   * @param mediaDb the media database.
    * @param errors An error list to which errors that occur shall be added.
    * @return AlbumOnDiscInfo for the <code>disc</code>, or null if it couldn't be found.
    */
-  public static AlbumOnDiscInfo findAlbumDiscInAlbumsOnDiscInfo(Disc disc, List<AlbumOnDiscInfo> albumsOnDiscInfo, MediaDb mediaDb, List<Object> errors) {
+  public AlbumOnDiscInfo findAlbumDiscInAlbumsOnDiscInfo(Disc disc, List<AlbumOnDiscInfo> albumsOnDiscInfo, List<Object> errors) {
     Album album = disc.getAlbum();
     LOGGER.info("=> album: " + album.getArtist() + " - " + album.getTitle());
     

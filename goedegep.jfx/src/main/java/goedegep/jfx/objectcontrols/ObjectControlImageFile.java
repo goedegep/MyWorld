@@ -29,12 +29,11 @@ import javafx.stage.StageStyle;
  * This class provides an ObjectControl for selecting an image file.
  *
  */
-public class ObjectControlImageFile extends ObjectControlAbstract<File> {
+public class ObjectControlImageFile extends ObjectControlTemplate<File> {
   @SuppressWarnings("unused")
   private static final Logger         LOGGER = Logger.getLogger(ObjectControlImageFile.class.getName());
     
   private ComponentFactoryFx componentFactory;
-  
   private File file;
   private File initialDirectory;
   private StackPane stackPane;
@@ -45,10 +44,12 @@ public class ObjectControlImageFile extends ObjectControlAbstract<File> {
 
   /**
    * Constructor
+   * 
    * @param customization the GUI customization.
+   * @param isOptional if true, the value provided by this control is optional.
    */
-  public ObjectControlImageFile(CustomizationFx customization) {
-    super(false);
+  public ObjectControlImageFile(CustomizationFx customization, boolean isOptional) {
+    super(isOptional);
     
     componentFactory = customization.getComponentFactoryFx();
     
@@ -86,22 +87,12 @@ public class ObjectControlImageFile extends ObjectControlAbstract<File> {
     return stackPane;
   }
 
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public void setValue(File file) {
-    this.file = file;
-    referenceValue = file;
-    ociHandleNewUserInput(null);
-  }
-
   @Override
   public void ociSetValue(File value) {
     this.value = value;   
     
     if (value != null) {
-      Image image = new Image("file:" + file.getAbsolutePath(), 0.0, 200.0, true, true);
+      Image image = new Image("file:" + value.getAbsolutePath(), 0.0, 200.0, true, true);
       imageView.setImage(image);
     } else {
       imageView.setImage(null);
@@ -119,8 +110,8 @@ public class ObjectControlImageFile extends ObjectControlAbstract<File> {
    * {@inheritDoc}
    */
   @Override
-  public boolean ociDetermineFilledIn() {
-    // There is either a filename or not.
+  public boolean ociDetermineFilledIn(Object source) {
+    // There is either a filename or not, we don't have to check the source.
     return file != null;
   }
 
@@ -146,6 +137,12 @@ public class ObjectControlImageFile extends ObjectControlAbstract<File> {
    */
   @Override
   public void ociRedrawValue() {
+  }
+
+  @Override
+  protected void ociUpdateNonSourceControls(Object source) {
+    // TODO Auto-generated method stub
+    
   }
 
   /**
@@ -209,7 +206,7 @@ public class ObjectControlImageFile extends ObjectControlAbstract<File> {
       largePictureStageX = 20;
     }
     
-    Image image = new Image("file:" + file);
+    Image image = new Image("file:" + getValue());
     ImageView largePicture = new ImageView(image);
     
     largePictureStage = new Stage();

@@ -19,7 +19,6 @@ import goedegep.media.mediadb.model.DiscAndTrackNrs;
 import goedegep.media.mediadb.model.InformationType;
 import goedegep.media.mediadb.model.MediaDb;
 import goedegep.media.mediadb.model.MediumInfo;
-import goedegep.media.mediadb.model.MediumType;
 import goedegep.media.mediadb.model.MyInfo;
 import goedegep.media.mediadb.model.Player;
 import goedegep.media.mediadb.model.Track;
@@ -85,11 +84,6 @@ public class AlbumDetailsWindow extends JfxStage {
    * Shows information as HTML
    */
   private WebView webView;
-  
-  /**
-   * Shows on which media the album was issued
-   */
-  private TextField issuedOnMediaTextField;
   
   /**
    * Shows whether the album is a compilation album or not.
@@ -234,10 +228,6 @@ public class AlbumDetailsWindow extends JfxStage {
     label = componentFactory.createLabel("Issued on:");
     gridPane.add(label, 0, 0);
     
-    issuedOnMediaTextField = componentFactory.createTextField(600, null);
-    issuedOnMediaTextField.setEditable(false);
-    gridPane.add(issuedOnMediaTextField, 1, 0);
-    
     centerPane.getChildren().add(gridPane);
     
     /*
@@ -299,7 +289,6 @@ public class AlbumDetailsWindow extends JfxStage {
     updateGeneralInformation();
     updatePicturesPanel();
     updateHtmlInformation();
-    updateIssuedOnPanel();
     updateCheckBoxes();
     updateDiscsPanel();
   }
@@ -556,28 +545,6 @@ public class AlbumDetailsWindow extends JfxStage {
       webView.getEngine().loadContent(buf.toString());
     } else {
       webView.getEngine().loadContent("");
-    }
-  }
-
-  /**
-   * Update the Issued On information panel
-   */
-  private void updateIssuedOnPanel() {
-    if (album != null) {
-      StringBuilder buf = new StringBuilder();
-      
-      boolean first = true;
-      for (MediumType mediumType: album.getIssuedOnMediums()) {
-        if (first) {
-          first = false;
-        } else {
-          buf.append(", ");
-        }
-        buf.append(mediumType.getLiteral());
-      }
-      issuedOnMediaTextField.setText(buf.toString());
-    } else {
-      issuedOnMediaTextField.setText("");
     }
   }
   

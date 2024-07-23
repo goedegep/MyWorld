@@ -22,13 +22,17 @@ import javafx.scene.image.Image;
  * </ul>
  */
 public enum Activity {
+  BOAT_TRIP(new String[] {"boottocht", "on a ferry"}, ImageResource.BOAT),
   CANOEING(new String[] {"kanotocht"}, ImageResource.CANOEING),
   CAR_RIDE(new String[] {"autorit", "driving"}, ImageResource.CAR),
   BUS_RIDE(new String[] {"busrit", "on a bus"}, ImageResource.BUS),
-  CYCLING(new String[] {"fietstocht"}, ImageResource.CYCLING),
+  CYCLING(new String[] {"fietstocht", "cycling"}, ImageResource.CYCLING),
   FLYING(new String[] {"vliegen", "flying"}, ImageResource.PLANE_TAKEOFF),
+  HORSE_RIDING(new String[] {"paardrijden", "horseriding"}, ImageResource.HORSE_RIDING),
+  RUNNING(new String[] {"hardlopen", "running"}, ImageResource.RUNNING),
   SKIÏNG(new String[] {"skiën"}, ImageResource.SKIÏNG),
-  WALKING(new String[] {"wandeling"}, ImageResource.WALKING);
+  TRAIN_RIDE(new String[] {"treinrit", "on a train", "on the subway"}, ImageResource.TRAIN),
+  WALKING(new String[] {"wandeling", "walking"}, ImageResource.WALKING);
   
   private String[] gpxKeywords;
   private ImageResource imageResource;

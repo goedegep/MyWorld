@@ -50,8 +50,8 @@ public class OsmAndUtil {
      */
     iconMap.put(POICategoryId.AIRPORT, "aeroway_airport");
     iconMap.put(POICategoryId.AMUSEMENT, "attraction_amusement_ride");
+    iconMap.put(POICategoryId.AQUADUCT, "bridge_structure_arch");
     iconMap.put(POICategoryId.ATM, "amenity_atm");
-    iconMap.put(POICategoryId.ATM, "amenity_bank");
     iconMap.put(POICategoryId.BANK, "accommodation");
     iconMap.put(POICategoryId.BAR, "amenity_bar");
     iconMap.put(POICategoryId.BEACH, "beach");
@@ -72,16 +72,20 @@ public class OsmAndUtil {
     iconMap.put(POICategoryId.FERRY, "cargo_vehicle");
     iconMap.put(POICategoryId.FIRE_DEPARTMENT, "amenity_fire_station");
     iconMap.put(POICategoryId.GOLF_COURSE, "golf_course");
+    iconMap.put(POICategoryId.GOVERMENT, "special_poi_us_capitol");
     iconMap.put(POICategoryId.HIKING, "piste_hike");
     iconMap.put(POICategoryId.HOSPITAL, "amenity_hospital");
     iconMap.put(POICategoryId.HOTEL, "accomodation");
     iconMap.put(POICategoryId.ICE_SKATING_RING, "ice_skating");
     iconMap.put(POICategoryId.INDUSTRY, "industrial");
+    iconMap.put(POICategoryId.LANDSCAPE, "hill");
     iconMap.put(POICategoryId.LIBRARY, "amenity_library");
     iconMap.put(POICategoryId.MARINA, "leisure_marina");
+    iconMap.put(POICategoryId.MEMORIAL, "memorial_plaque");
     iconMap.put(POICategoryId.MONUMENT, "monument");
     iconMap.put(POICategoryId.MOUNTAIN, "natural");
     iconMap.put(POICategoryId.MOUNTAIN_PASS, "mountain_pass");
+    iconMap.put(POICategoryId.MUSEUM, "tourism_museum");
     iconMap.put(POICategoryId.NEIGHBOURHOOD, "village");
     iconMap.put(POICategoryId.NIGHTLIFE, "dance_floor");
     iconMap.put(POICategoryId.PETROL_STATION, "amenity_fuel");
@@ -95,11 +99,13 @@ public class OsmAndUtil {
     iconMap.put(POICategoryId.SHOP, "bag");
     iconMap.put(POICategoryId.SHOPPING_CENTER, "bag");
     iconMap.put(POICategoryId.SKI_RESORT, "piste");
+    iconMap.put(POICategoryId.SNORKELING_LOCATION, "scuba_diving_shop");
     iconMap.put(POICategoryId.SQUARE, "square");
     iconMap.put(POICategoryId.SWIMMING_POOL, "swimming_pool");
     iconMap.put(POICategoryId.RAILWAY_STATION, "locomotive");
     iconMap.put(POICategoryId.THEATER, "amenity_theatre");
     iconMap.put(POICategoryId.TOURIST_ATTRACTION, "camera");
+    iconMap.put(POICategoryId.WATERFALL, "waterfall");
     iconMap.put(POICategoryId.WINERY, "craft_winery");
   }
   

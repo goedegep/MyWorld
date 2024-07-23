@@ -27,7 +27,7 @@ package goedegep.rolodex.model;
  * @model
  * @generated
  */
-public interface Institution extends PhoneNumberHolder, AddressHolder {
+public interface Institution extends PhoneNumberHolder, AddressHolder, Archive {
   /**
    * Returns the value of the '<em><b>Name</b></em>' attribute.
    * <!-- begin-user-doc -->

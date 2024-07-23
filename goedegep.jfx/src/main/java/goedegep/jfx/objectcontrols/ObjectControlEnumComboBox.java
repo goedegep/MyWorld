@@ -31,7 +31,7 @@ import javafx.scene.control.Tooltip;
  * 
  * @param <T> The Enum type.
  */
-public class ObjectControlEnumComboBox<T extends Enum<T>> extends ObjectControlAbstract<T> {
+public class ObjectControlEnumComboBox<T extends Enum<T>> extends ObjectControlTemplate<T> {
   @SuppressWarnings("unused")
   private static final Logger         LOGGER = Logger.getLogger(ObjectControlEnumComboBox.class.getName());
   
@@ -83,7 +83,7 @@ public class ObjectControlEnumComboBox<T extends Enum<T>> extends ObjectControlA
    * @param isOptional indicates whether the value is optional or not
    * @param toolTipText an optional tooltip text
    */
-  public ObjectControlEnumComboBox(CustomizationFx customization, T enumConstant, T notSetValue, Map<T, String> enumToStringMap, boolean isOptional, String toolTipText) {
+  private ObjectControlEnumComboBox(CustomizationFx customization, T enumConstant, T notSetValue, Map<T, String> enumToStringMap, boolean isOptional, String toolTipText) {
     super(isOptional);
 //    enumTextConverter = new EnumTextConverter<T>(enumConstant, notSetValue, enumToStringMap);
     
@@ -122,7 +122,9 @@ public class ObjectControlEnumComboBox<T extends Enum<T>> extends ObjectControlA
    * {@inheritDoc}
    */
   @Override
-  public boolean ociDetermineFilledIn() {
+  public boolean ociDetermineFilledIn(Object source) {
+    // as there is only one control, we can ignore the source parameter
+        
     return comboBox.getSelectionModel().getSelectedItem() != null;
   }
 
@@ -162,13 +164,9 @@ public class ObjectControlEnumComboBox<T extends Enum<T>> extends ObjectControlA
     }
   }
 
-  /**
-   * {@inheritDoc}
-   */
   @Override
-  public void setValue(T objectValue) {
-    referenceValue = objectValue;
-    comboBox.getSelectionModel().select(objectValue);
+  protected void ociUpdateNonSourceControls(Object source) {
+    comboBox.getSelectionModel().select(getValue());
   }
 
 }

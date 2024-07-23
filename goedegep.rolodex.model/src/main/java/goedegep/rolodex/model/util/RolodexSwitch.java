@@ -124,6 +124,8 @@ public class RolodexSwitch<T1> extends Switch<T1> {
       if (result == null)
         result = caseAddressHolder(institution);
       if (result == null)
+        result = caseArchive(institution);
+      if (result == null)
         result = defaultCase(theEObject);
       return result;
     }

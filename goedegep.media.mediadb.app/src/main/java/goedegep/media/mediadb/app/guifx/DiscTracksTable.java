@@ -475,6 +475,28 @@ class DiscTracksTableDescriptor extends EObjectTableDescriptor<TrackReference> {
         };
 
         return cell;
+      }),
+      new EObjectTableColumnDescriptorCustom<TrackReference>(null, "Track reference", null, true, true, column -> {
+        TableCell<TrackReference, Object> cell = new TableCell<>() {
+
+          @Override
+          protected void updateItem(Object item, boolean empty) {            
+            super.updateItem(item, empty);
+            if(empty || (item == null)) {
+              setText(null);
+            }
+            else {
+              setText(null);
+              TrackReference trackReference = (TrackReference) item;
+              TrackReference compilationTrackReference = trackReference.getMyTrackInfo().getCompilationTrackReference();
+              if (compilationTrackReference != null) {
+                setText(GuiUtils.createTrackReferenceText(compilationTrackReference));
+              }
+            }
+          }
+        };
+
+        return cell;
       })
       );
   

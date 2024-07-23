@@ -33,7 +33,8 @@ public class MusicFolderDescription {
       new ItemDescription("zTracks Nederlandstalig", "Dutch tracks."),
       new ItemDescription("zTracks Pop", "Pop songs."),
       new ItemDescription("zTracks Punk", "Punk music."),
-      new ItemDescription("zTracks Rock", "Rock music.")
+      new ItemDescription("zTracks Rock", "Rock music."),
+      new ItemDescription("zzSamples", "Samples")
   };
   
   /**

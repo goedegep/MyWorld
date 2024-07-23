@@ -21,7 +21,6 @@ import goedegep.media.mediadb.model.Artist;
 import goedegep.media.mediadb.model.Disc;
 import goedegep.media.mediadb.model.IWant;
 import goedegep.media.mediadb.model.MediadbPackage;
-import goedegep.media.mediadb.model.MediumType;
 import goedegep.media.mediadb.model.MyInfo;
 import goedegep.media.mediadb.model.Player;
 import goedegep.media.mediadb.model.TrackReference;
@@ -51,7 +50,6 @@ import java.lang.reflect.InvocationTargetException;
  *   <li>{@link goedegep.media.mediadb.model.impl.AlbumImpl#getImagesLabel <em>Images Label</em>}</li>
  *   <li>{@link goedegep.media.mediadb.model.impl.AlbumImpl#getDescriptionTitle <em>Description Title</em>}</li>
  *   <li>{@link goedegep.media.mediadb.model.impl.AlbumImpl#getDescription <em>Description</em>}</li>
- *   <li>{@link goedegep.media.mediadb.model.impl.AlbumImpl#getIssuedOnMediums <em>Issued On Mediums</em>}</li>
  *   <li>{@link goedegep.media.mediadb.model.impl.AlbumImpl#isCompilation <em>Compilation</em>}</li>
  *   <li>{@link goedegep.media.mediadb.model.impl.AlbumImpl#getMyInfo <em>My Info</em>}</li>
  *   <li>{@link goedegep.media.mediadb.model.impl.AlbumImpl#isSoundtrack <em>Soundtrack</em>}</li>
@@ -273,15 +271,6 @@ public class AlbumImpl extends MinimalEObjectImpl.Container implements Album {
    * @ordered
    */
   protected boolean descriptionESet;
-  /**
-   * The cached value of the '{@link #getIssuedOnMediums() <em>Issued On Mediums</em>}' attribute list.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getIssuedOnMediums()
-   * @generated
-   * @ordered
-   */
-  protected EList<MediumType> issuedOnMediums;
   /**
    * The default value of the '{@link #isCompilation() <em>Compilation</em>}' attribute.
    * <!-- begin-user-doc -->
@@ -873,41 +862,6 @@ public class AlbumImpl extends MinimalEObjectImpl.Container implements Album {
    * @generated
    */
   @Override
-  public EList<MediumType> getIssuedOnMediums() {
-    if (issuedOnMediums == null) {
-      issuedOnMediums = new EDataTypeUniqueEList.Unsettable<MediumType>(MediumType.class, this,
-          MediadbPackage.ALBUM__ISSUED_ON_MEDIUMS);
-    }
-    return issuedOnMediums;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public void unsetIssuedOnMediums() {
-    if (issuedOnMediums != null)
-      ((InternalEList.Unsettable<?>) issuedOnMediums).unset();
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public boolean isSetIssuedOnMediums() {
-    return issuedOnMediums != null && ((InternalEList.Unsettable<?>) issuedOnMediums).isSet();
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
   public boolean isCompilation() {
     return compilation;
   }
@@ -1073,6 +1027,10 @@ public class AlbumImpl extends MinimalEObjectImpl.Container implements Album {
       discNr = 1;
     }
     Disc disc = getDiscs().get(discNr - 1);
+    int nrOfTracks = disc.getTrackReferences().size();
+    if (trackNr >= nrOfTracks) {
+      return null;
+    }
     return disc.getTrackReferences().get(trackNr - 1);
   }
 
@@ -1154,13 +1112,13 @@ public class AlbumImpl extends MinimalEObjectImpl.Container implements Album {
   @Override
   public boolean iWantAlbumOrTracksOfAlbum() {
 
-    if ((getMyInfo() != null)  &&  (getMyInfo().getIWant() == IWant.YES)) {
+    if ((getMyInfo() != null) && (getMyInfo().getIWant() == IWant.YES)) {
       return true;
     }
-    
-    for (Disc disc: getDiscs()) {
-      for (TrackReference trackReference: disc.getTrackReferences()) {
-        if (trackReference.getMyTrackInfo() != null  &&  trackReference.getMyTrackInfo().getIWant() == IWant.YES) {
+
+    for (Disc disc : getDiscs()) {
+      for (TrackReference trackReference : disc.getTrackReferences()) {
+        if (trackReference.getMyTrackInfo() != null && trackReference.getMyTrackInfo().getIWant() == IWant.YES) {
           return true;
         }
       }
@@ -1177,13 +1135,13 @@ public class AlbumImpl extends MinimalEObjectImpl.Container implements Album {
   @Override
   public boolean iHaveToJudgeAlbumOrTracks() {
 
-    if ((getMyInfo() != null)  &&  (getMyInfo().getIWant() == IWant.DONT_KNOW)) {
+    if ((getMyInfo() != null) && (getMyInfo().getIWant() == IWant.DONT_KNOW)) {
       return true;
     }
-    
-    for (Disc disc: getDiscs()) {
-      for (TrackReference trackReference: disc.getTrackReferences()) {
-        if (trackReference.getMyTrackInfo() != null  &&  trackReference.getMyTrackInfo().getIWant() == IWant.DONT_KNOW) {
+
+    for (Disc disc : getDiscs()) {
+      for (TrackReference trackReference : disc.getTrackReferences()) {
+        if (trackReference.getMyTrackInfo() != null && trackReference.getMyTrackInfo().getIWant() == IWant.DONT_KNOW) {
           return true;
         }
       }
@@ -1244,8 +1202,6 @@ public class AlbumImpl extends MinimalEObjectImpl.Container implements Album {
       return getDescriptionTitle();
     case MediadbPackage.ALBUM__DESCRIPTION:
       return getDescription();
-    case MediadbPackage.ALBUM__ISSUED_ON_MEDIUMS:
-      return getIssuedOnMediums();
     case MediadbPackage.ALBUM__COMPILATION:
       return isCompilation();
     case MediadbPackage.ALBUM__MY_INFO:
@@ -1307,10 +1263,6 @@ public class AlbumImpl extends MinimalEObjectImpl.Container implements Album {
     case MediadbPackage.ALBUM__DESCRIPTION:
       setDescription((String) newValue);
       return;
-    case MediadbPackage.ALBUM__ISSUED_ON_MEDIUMS:
-      getIssuedOnMediums().clear();
-      getIssuedOnMediums().addAll((Collection<? extends MediumType>) newValue);
-      return;
     case MediadbPackage.ALBUM__COMPILATION:
       setCompilation((Boolean) newValue);
       return;
@@ -1368,9 +1320,6 @@ public class AlbumImpl extends MinimalEObjectImpl.Container implements Album {
     case MediadbPackage.ALBUM__DESCRIPTION:
       unsetDescription();
       return;
-    case MediadbPackage.ALBUM__ISSUED_ON_MEDIUMS:
-      unsetIssuedOnMediums();
-      return;
     case MediadbPackage.ALBUM__COMPILATION:
       setCompilation(COMPILATION_EDEFAULT);
       return;
@@ -1416,8 +1365,6 @@ public class AlbumImpl extends MinimalEObjectImpl.Container implements Album {
       return isSetDescriptionTitle();
     case MediadbPackage.ALBUM__DESCRIPTION:
       return isSetDescription();
-    case MediadbPackage.ALBUM__ISSUED_ON_MEDIUMS:
-      return isSetIssuedOnMediums();
     case MediadbPackage.ALBUM__COMPILATION:
       return compilation != COMPILATION_EDEFAULT;
     case MediadbPackage.ALBUM__MY_INFO:
@@ -1493,9 +1440,6 @@ public class AlbumImpl extends MinimalEObjectImpl.Container implements Album {
     buf.append("Description title: ").append(isSetDescriptionTitle() ? getDescriptionTitle() : "<no-description-title>")
         .append(NEWLINE);
     buf.append("Description: ").append(isSetDescription() ? getDescription() : "<no-description>").append(NEWLINE);
-
-    buf.append("Issued on: ").append(StringUtil.objectCollectionToCommaSeparatedStrings(getIssuedOnMediums()))
-        .append(NEWLINE);
 
     buf.append("Compilation: ").append(isCompilation() ? "yes" : "no").append(NEWLINE);
     buf.append("Soundtrack: ").append(isSoundtrack() ? "yes" : "no").append(NEWLINE);

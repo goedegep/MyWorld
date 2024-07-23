@@ -11,25 +11,30 @@ import javafx.scene.control.Label;
 import javafx.scene.control.Tooltip;
 
 /**
- * This class provides the common part for implementing an {@code ObjectControl}. So your class will extend this class.
+ * This class provides a template for implementing an {@code ObjectControl}.
  * <p>
- * <b>Constructor</b><br/>
- * Your constructor should at least have an 'isOptional' parameter and call super() with this value.<br/>
+ * <h3>What this class does</h3>
+ * 
+ * <h4>Handling optional</h4>
+ * Apart from calling the constructor of this class with the right value for the {@code optional} parameter nothing has to be done. This class provides the implementation for {@code isOptional()}.
+ * 
+ * <h3>What your implementation has to do</h3>
+ * 
+ * <h4>Constructor</h4>
+ * Your constructor shall call super() with the value for the {@code optional} parameter.<br/>
  * Create the GUI controls and make sure that on any change initiated by the user the method {@code ociHandleNewUserInput()} is called.<br/>
  * Finally call {@code setValue()} with the default value (typically null) as argument.
- * <p>
- * <b>Handling changes</b><br/>
+ * 
+ * <h4>Handling changes</h4>
  * As described above, on any change initiated by the user the method {@code ociHandleNewUserInput()} has to be called.<br/>
  * This method is the main algorithm for handling changes.
  * 
- * <b>Handling optional</b><br/>
- * Apart from calling the constructor of this class with the right value for the {@code optional} parameter nothing has to be done. This class provides the implementation for {@code isOptional()}.
- * 
+ * <p>
  * @param <T> The value type handled by the control
  */
-public abstract class ObjectControlAbstract<T> implements ObjectControl<T> {
+public abstract class ObjectControlTemplate<T> implements ObjectControl<T> {
   @SuppressWarnings("unused")
-  private static final Logger         LOGGER = Logger.getLogger(ObjectControlAbstract.class.getName());
+  private static final Logger         LOGGER = Logger.getLogger(ObjectControlTemplate.class.getName());
   
   /*
    * Object Control status:
@@ -88,10 +93,9 @@ public abstract class ObjectControlAbstract<T> implements ObjectControl<T> {
    * 
    * @param isOptional Indication of whether the control is optional (if true) or mandatory.
    */
-  public ObjectControlAbstract(boolean optional) {    
+  public ObjectControlTemplate(boolean optional) {    
     this.optional = optional;
   }
-  
 
   /**
    * {@inheritDoc}
@@ -138,6 +142,9 @@ public abstract class ObjectControlAbstract<T> implements ObjectControl<T> {
    */
   @Override
   public String getId() {
+    if (getControl() == null) {
+      System.out.println("STOP");
+    }
     return getControl().getId();
   }
   
@@ -156,22 +163,51 @@ public abstract class ObjectControlAbstract<T> implements ObjectControl<T> {
   /**
    * Handle any new user input (typically registered as listener on changes on the GUI controls).
    * <p>
-   * Determine whether the control is filled in by calling {@link #ociDetermineFilledIn()}.<br/>
-   * If the control is filled in try to get the value by calling {@link #ociDetermineValue()}, else the value is null.<br/>
+   * The following is done:
+   * <ul>
+   * <li>
+   * Determine whether something is filled in (valid or not).<br/>
+   * This is done by calling {@link #ociDetermineFilledIn()}.
+   * </li>
+   * <li>
+   * If something is filled in,  try to get the 'new value' (which may be {@code null}). If nothing is filled in the 'new value' is also {@code null}.<br/>
+   * Getting the 'new value' is done by calling {@link #ociDetermineValue()}.
+   * </li>
+   * <li>
+   * Determine whether the data is valid<br/>
    * If {@code ociDetermineValue()} returned null the data is not valid (as something is filled in), else it is valid.<br/>
-   * If the control is not filled in we also say that the data is not valid, but actually this value is not relevant. If the control is not filled in, the validity of the data is not defined.<br/>
-   * The error feedback is set by calling {@link ociSetErrorFeedback()} with the determined data valid value.<br/>
-   * Next it is determined whether the new input value differs from the current value.
-   * If the value has changed, {@link ociSetValue()} is called with this new value.<br/>
-   * The validity of the control is set by calling {@link ociSetValid()} with the value returned by {@link ociDetermineValidity()}. Note that the validity of the control is not the same as the validity of the data.<br/>
-   * The filled in status is set by calling {@link ociSetFilledIn()}.<br/>
+   * If the control is not filled in we also say that the data is not valid, but actually this value is not relevant. If the control is not filled in, the validity of the data is not defined.
+   * </li>
+   * <li>
+   * Set the error feedback<br/>
+   * The error feedback is set by calling {@link ociSetErrorFeedback()} with the determined data valid value.
+   * </li>
+   * <li>
+   * Determine whether the new input value differs from the current value.<br/>
+   * If the value has changed, {@link ociSetValue()} is called with this new value.
+   * </li>
+   * <li>
+   * Set the validity of the control<br/>
+   * The validity of the control is set by calling {@link ociSetValid()} with the value returned by {@link ociDetermineValidity()}. Note that the validity of the control is not the same as the validity of the data.
+   * </li>
+   * <li>
+   * Set the filled in status<br/>
+   * The filled in status is set by calling {@link ociSetFilledIn()}.
+   * </li>
+   * <li>
+   * Update the status indicator<br/>
    * The status indicator is updated by calling {@link ociUpdateStatusIndicator()}.
-   * Finally, if the value has changed, the listeners are notified by calling {@link ociNotifyListeners()}.
+   * </li>
+   * <li>
+   * Finally, if the value has changed, the listeners are notified.
+   * Notifying the listeners is done by calling {@link ociNotifyListeners()}.
+   * </li>
+   * </ul>
    * 
    * @param source the object that caused the change.  This is needed if there is more than one GUI control, like for e.g. the {@link ObjectControlFileSelecter}.
    */
   protected void ociHandleNewUserInput(Object source) {
-    boolean filledIn = ociDetermineFilledIn();
+    boolean filledIn = ociDetermineFilledIn(source);
     boolean dataValid;
     T inputValue;
     
@@ -203,9 +239,85 @@ public abstract class ObjectControlAbstract<T> implements ObjectControl<T> {
   }
   
   /**
-   * Determine whether something is filled in or not. It is not relevant whether the value valid or not.
+   * Setting a new value programmatically.
+   * <p>
+   * The following is done:
+   * <ul>
+   * <li>
+   * Determine whether something is filled in (valid or not).<br/>
+   * If the value isn't {@code null}, it is considered to be filled in.
+   * </li>
+   * <li>
+   * If something is filled in,  try to get the 'new value' (which may be {@code null}). If nothing is filled in the 'new value' is also {@code null}.<br/>
+   * Getting the 'new value' is done by calling {@link #ociDetermineValue()}.
+   * </li>
+   * <li>
+   * Determine whether the data is valid<br/>
+   * If {@code ociDetermineValue()} returned null the data is not valid (as something is filled in), else it is valid.<br/>
+   * If the control is not filled in we also say that the data is not valid, but actually this value is not relevant. If the control is not filled in, the validity of the data is not defined.
+   * </li>
+   * <li>
+   * Set the error feedback<br/>
+   * The error feedback is set by calling {@link ociSetErrorFeedback()} with the determined data valid value.
+   * </li>
+   * <li>
+   * Determine whether the new input value differs from the current value.<br/>
+   * If the value has changed, {@link ociSetValue()} is called with this new value.
+   * </li>
+   * <li>
+   * Set the validity of the control<br/>
+   * The validity of the control is set by calling {@link ociSetValid()} with the value returned by {@link ociDetermineValidity()}. Note that the validity of the control is not the same as the validity of the data.
+   * </li>
+   * <li>
+   * Set the filled in status<br/>
+   * The filled in status is set by calling {@link ociSetFilledIn()}.
+   * </li>
+   * <li>
+   * Update the status indicator<br/>
+   * The status indicator is updated by calling {@link ociUpdateStatusIndicator()}.
+   * </li>
+   * <li>
+   * Finally, if the value has changed, the listeners are notified.
+   * Notifying the listeners is done by calling {@link ociNotifyListeners()}.
+   * </li>
+   * </ul>
+   * 
+   * @param source the object that caused the change.  This is needed if there is more than one GUI control, like for e.g. the {@link ObjectControlFileSelecter}.
    */
-  protected abstract boolean ociDetermineFilledIn();
+  public void setValue(T newValue) {
+    boolean filledIn = newValue != null;
+    boolean dataValid;
+    
+    if (filledIn) {
+      if (newValue != null) {
+        dataValid = true;
+      } else {
+        dataValid = false;
+      }
+    } else {
+      dataValid = false;
+    }
+    ociSetErrorFeedback(dataValid);
+    
+    boolean changed = !PgUtilities.equals(newValue, getValue());
+    if (changed) {
+      ociSetValue(newValue);
+    }
+    ociSetValid(ociDetermineValidity(filledIn, dataValid));
+    ociSetFilledIn(filledIn);
+    ociUpdateNonSourceControls(null);
+    referenceValue = newValue;
+    ociUpdateStatusIndicator();
+    
+    if (changed) {
+      ociNotifyListeners();
+    }
+  }
+  
+  /**
+   * Determine whether something is filled in or not. It is not relevant whether the value is valid or not.
+   */
+  protected abstract boolean ociDetermineFilledIn(Object source);
   
   /**
    * Determine the actual value.
@@ -243,6 +355,7 @@ public abstract class ObjectControlAbstract<T> implements ObjectControl<T> {
    * Have a non-empty implementation of this method if you always want to present values in your 'standard' way.
    * E.g.: the user may e.g. enter a date as 14-3-2023, this may be redrawn as 14-03-2023.
    */
+  // TODO Still needed? how related to updateNonSourceControls?
   protected abstract void ociRedrawValue();
   
   /**
@@ -279,13 +392,6 @@ public abstract class ObjectControlAbstract<T> implements ObjectControl<T> {
       statusIndicator = new Label();
     }
     
-    ociUpdateStatusIndicator();
-    
-//    final Label validIndicationLabel = new Label(statusString);
-//    final Label validIndicationLabel = new Label(ocIsValid() ? OK_INDICATOR : NOK_INDICATOR);
-//    setValidIndicatorTooltip(validIndicationLabel);
-//    
-//    addListener((o) -> setValidIndicatorTooltip(validIndicationLabel));
     ociUpdateStatusIndicator();
     
     return statusIndicator;
@@ -361,9 +467,7 @@ public abstract class ObjectControlAbstract<T> implements ObjectControl<T> {
    * 
    * @param source the object that caused the change.
    */
-  protected void ociUpdateNonSourceControls(Object source) {
-    // default no action
-  }
+  protected abstract void ociUpdateNonSourceControls(Object source);
   
   /**
    * {@inheritDoc}

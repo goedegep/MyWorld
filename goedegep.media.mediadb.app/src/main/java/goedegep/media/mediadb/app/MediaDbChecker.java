@@ -6,6 +6,7 @@ import java.util.logging.Logger;
 
 import goedegep.media.mediadb.model.Album;
 import goedegep.media.mediadb.model.Artist;
+import goedegep.media.mediadb.model.Collection;
 import goedegep.media.mediadb.model.Disc;
 import goedegep.media.mediadb.model.IWant;
 import goedegep.media.mediadb.model.MediaDb;
@@ -14,6 +15,7 @@ import goedegep.media.mediadb.model.MyInfo;
 import goedegep.media.mediadb.model.MyTrackInfo;
 import goedegep.media.mediadb.model.Player;
 import goedegep.media.mediadb.model.Track;
+import goedegep.media.mediadb.model.TrackCollection;
 import goedegep.media.mediadb.model.TrackReference;
 import goedegep.util.PgUtilities;
 
@@ -48,7 +50,10 @@ public class MediaDbChecker {
    * The following information is checked:
    * <ul>
    * <li>There shouldn't be tracks which aren't referred to (see {@link #areThereNoObsoleteTracks}).</li>
+   * <li>There shouldn't be artists which aren't referred to (see {@link #areThereNoObsoleteArtists}).</li>
    * <li>Information for each album (see {@link #checkAlbum}).</li>
+   * <li>'originalTrackReference' shall only be set to point to itself (as this will change to boolean originalTrack) (see {@link #areThereNoTrackReferencesThatHaveOriginalAlbumTrackReferenceReferringToAnotherTrackReference})</li>
+   * <li>'collectionType' shall only be set to NOT_SET, as this will be removed from the model.</li>
    * </ul>
    * 
    * @param mediaDb the media database to be checked
@@ -57,12 +62,83 @@ public class MediaDbChecker {
   public static void checkMediaDb(MediaDb mediaDb, List<Object> errors) {
     areThereNoObsoleteTracks(mediaDb, errors);
     areThereNoObsoleteArtists(mediaDb, errors);
+//    areThereNoTrackReferencesThatHaveOriginalAlbumTrackReferenceReferringToAnotherTrackReference(mediaDb, errors);
+//    areThereNoTrackReferencesThatHaveCollectionSet(mediaDb, errors);
 
     for (Album album: mediaDb.getAlbums()) {
       checkAlbum(album, errors);
     }
     
-    LOGGER.severe("<= number of errors = " + errors.size());
+    if (!errors.isEmpty()) {
+      LOGGER.severe("<= number of errors = " + errors.size());
+    }
+  }
+
+  /**
+   * Check that collection is not set on any TrackReference.
+   * 
+   * @param mediaDb the media database to check.
+   * @param errors the list to which errors shall be appended if this value is not null
+   */
+  private static void areThereNoTrackReferencesThatHaveCollectionSet(MediaDb mediaDb, List<Object> errors) {
+    // check for album tracks
+    for (Album album: mediaDb.getAlbums()) {
+      for (Disc disc: album.getDiscs()) {
+        for (TrackReference trackReference: disc.getTrackReferences()) {
+          MyTrackInfo myTrackInfo = trackReference.getMyTrackInfo();
+          if (myTrackInfo != null  &&  myTrackInfo.getCollection() != Collection.NOT_SET) {
+            LOGGER.severe("Collection set for: " + album.getArtistAndTitle() + " - " + disc.getTitle() + " - " + trackReference.getTrackNr());
+          }
+        }
+      }
+    }
+
+    // check for track folder tracks
+    for (TrackCollection trackCollection: mediaDb.getTrackcollections()) {
+      for (TrackReference trackReference: trackCollection.getTrackReferences()) {
+        MyTrackInfo myTrackInfo = trackReference.getMyTrackInfo();
+        if (myTrackInfo != null  &&  myTrackInfo.getCollection() != Collection.NOT_SET) {
+          LOGGER.severe("Collection set for: " + trackCollection.getCollection().getLiteral() + " - " + trackReference.getTrack().getTrackArtist().getName() + " - " + trackReference.getTrack().getTitle());
+          if (myTrackInfo.getCollection() != trackCollection.getCollection()) {
+            LOGGER.severe("Wrong collection: " + myTrackInfo.getCollection().getLiteral());
+            throw new RuntimeException();
+          } else {
+            myTrackInfo.setCollection(Collection.NOT_SET);
+          }
+        }
+      }
+    }
+  }
+
+  /**
+   * Check that there are no TrackReferences that have the originalTrackReference set to something other than itself.
+   * 
+   * @param mediaDb the media database to check.
+   * @param errors the list to which errors shall be appended if this value is not null
+   */
+  private static void areThereNoTrackReferencesThatHaveOriginalAlbumTrackReferenceReferringToAnotherTrackReference(
+      MediaDb mediaDb, List<Object> errors) {
+    // check for album tracks
+    for (Album album: mediaDb.getAlbums()) {
+      for (Disc disc: album.getDiscs()) {
+        for (TrackReference trackReference: disc.getTrackReferences()) {
+          if (trackReference.getOriginalAlbumTrackReference() != null  &&
+              trackReference.getOriginalAlbumTrackReference() != trackReference) {
+            LOGGER.severe("Original track reference not pointing to itself: " + album.getArtistAndTitle() + " - " + disc.getTitle() + " - " + trackReference.getTrackNr());
+          }
+        }
+      }
+    }
+    
+    // check for track folder tracks
+    for (TrackCollection trackCollection: mediaDb.getTrackcollections()) {
+      for (TrackReference trackReference: trackCollection.getTrackReferences()) {
+        if (trackReference.getOriginalAlbumTrackReference() != null  &&
+            trackReference.getOriginalAlbumTrackReference() != trackReference) {
+          LOGGER.severe("Original track reference not pointing to itself: " + trackCollection.getCollection().getLiteral() + " - " + trackReference.getTrack().getTrackArtist().getName() + " - " + trackReference.getTrack().getTitle());
+        }
+      }
+    }
   }
 
   /**
@@ -73,6 +149,8 @@ public class MediaDbChecker {
    */
   public static boolean areThereNoObsoleteTracks(MediaDb mediaDb, List<Object> errors) {
     boolean result = true;
+    
+//    Track trackToRemove = null;
 
     for (Track track: mediaDb.getTracks()) {
       if (track.getReferredBy().isEmpty()) {
@@ -82,10 +160,15 @@ public class MediaDbChecker {
           errorInfo.setErrorCode(MediaDbError.OBSOLETE_TRACK);
           errorInfo.setTrack(track);
           errors.add(errorInfo);
+//          trackToRemove = track;
         }
         LOGGER.severe("Obsolete track: " + track.getTitle());
       }
     }
+    
+//    if (trackToRemove != null) {
+//      mediaDb.getTracks().remove(trackToRemove);
+//    }
 
     return result;
   }

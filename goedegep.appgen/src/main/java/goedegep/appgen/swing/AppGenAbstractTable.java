@@ -8,16 +8,10 @@ import java.awt.Window;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.swing.JCheckBox;
-import javax.swing.JLabel;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -29,8 +23,6 @@ import javax.swing.table.TableRowSorter;
 
 import goedegep.appgen.MessageDialogType;
 import goedegep.appgen.TextBasedCellRenderer;
-import goedegep.util.sgml.SgmlUtil;
-import goedegep.util.text.Indent;
 
 /**
  * There are 2 ways to create an abstract table:
@@ -40,7 +32,6 @@ import goedegep.util.text.Indent;
 @SuppressWarnings("serial")
 public abstract class AppGenAbstractTable extends JScrollPane {
   private static final Logger LOGGER = Logger.getLogger(AppGenAbstractTable.class.getName());
-  private static final String       NEWLINE = System.getProperty("line.separator");
   
   private ComponentFactory           componentFactory;
   private int                        width;
@@ -93,122 +84,7 @@ public abstract class AppGenAbstractTable extends JScrollPane {
   public JTable getTable() {
     return table;
   }
-  
-  // TODO rewrite using HtmlUtil
-  public void exportAsHtml(File file) throws IOException {
-    BufferedWriter writer = new BufferedWriter(new FileWriter(file));
-    Indent indent = new Indent(2);
     
-    writer.write(SgmlUtil.createElementOpen(indent, null, "html"));
-    writer.write(NEWLINE);
-    indent.increment();
-    writer.write(SgmlUtil.createElementOpen(indent, null, "header"));
-    writer.write(NEWLINE);
-    indent.increment();
-    writer.write(SgmlUtil.createElement(indent, null, "title", "Tabel titel"));
-    writer.write(NEWLINE);
-    indent.decrement();
-    writer.write(SgmlUtil.createElementClose(indent, null, "header"));
-    writer.write(NEWLINE);
-
-    writer.write(SgmlUtil.createElementOpen(indent, null, "body"));
-    writer.write(NEWLINE);
-    indent.increment();
-    
-    writer.write(SgmlUtil.createElementOpen(indent, null, "table border=\"2\""));
-    writer.write(NEWLINE);
-    indent.increment();
-    
-    exportHeaderAsHtml(writer, indent);
-    exportBodyAsHtml(writer, indent);
-    
-    indent.decrement();
-    writer.write(SgmlUtil.createElementClose(indent, null, "table"));
-    writer.write(NEWLINE);
-    
-    indent.decrement();
-    writer.write(SgmlUtil.createElementClose(indent, null, "body"));
-    writer.write(NEWLINE);
-    
-    writer.write(SgmlUtil.createElementClose(indent, null, "html"));
-    writer.write(NEWLINE);
-    
-    writer.close();
-  }
-  
-  private void exportHeaderAsHtml(BufferedWriter writer, Indent indent) throws IOException {
-    writer.write(SgmlUtil.createElementOpen(indent, null, "tr"));
-    writer.write(NEWLINE);
-    indent.increment();
-    
-    for (int columnIndex = 0; columnIndex < table.getColumnCount(); columnIndex++) {
-      writer.write(SgmlUtil.createElement(indent, null, "th", table.getColumnName(columnIndex)));
-      writer.write(NEWLINE);
-    }
-
-    indent.decrement();
-    writer.write(SgmlUtil.createElementClose(indent, null, "tr"));
-    writer.write(NEWLINE);
-  }
-  
-  private void exportBodyAsHtml(BufferedWriter writer, Indent indent) throws IOException {
-   
-    TableModel tableModel = table.getModel();
-    
-    for (int rowIndex = 0; rowIndex < tableModel.getRowCount(); rowIndex++) {
-      writer.write(SgmlUtil.createElementOpen(indent, null, "tr"));
-      writer.write(NEWLINE);
-      indent.increment();
-      int viewRowIndex = table.convertRowIndexToModel(rowIndex);
-      
-      for (int columnIndex = 0; columnIndex < table.getColumnCount(); columnIndex++) {
-        Object value = table.getModel().getValueAt(viewRowIndex, columnIndex);
-        TableCellRenderer cellRenderer = table.getCellRenderer(viewRowIndex, columnIndex);
-        Component component = cellRenderer.getTableCellRendererComponent(table, value, false, false, viewRowIndex, columnIndex);
-        if (component instanceof JLabel) {
-          JLabel label = (JLabel) component;
-          writer.write(SgmlUtil.createElement(indent, null, "td", encodeHTML(label.getText())));
-        } else if (component instanceof JCheckBox) {
-          JCheckBox checkBox = (JCheckBox) component;
-          if (checkBox.isSelected()) {
-            writer.write(SgmlUtil.createElement(indent, null, "td", "true"));
-          } else {
-            writer.write(SgmlUtil.createElement(indent, null, "td", "false"));
-          }
-        } else {
-          if (value != null) {
-            writer.write(SgmlUtil.createElement(indent, null, "td", encodeHTML(value.toString())));
-          } else {
-            writer.write(SgmlUtil.createElement(indent, null, "td", null));
-          }
-        }
-        writer.write(NEWLINE);
-      }
-      
-      indent.decrement();
-      writer.write(SgmlUtil.createElementClose(indent, null, "tr"));
-      writer.write(NEWLINE);
-    }
-  }
-  
-  private static String encodeHTML(String s)
-  {
-      StringBuffer out = new StringBuffer();
-      for(int i=0; i<s.length(); i++)
-      {
-          char c = s.charAt(i);
-          if(c > 127 || c=='"' || c=='<' || c=='>')
-          {
-             out.append("&#"+(int)c+";");
-          }
-          else
-          {
-              out.append(c);
-          }
-      }
-      return out.toString();
-  }  
-  
   /*
    * This method picks good column sizes.
    * If all column heads are wider than the column's cells'

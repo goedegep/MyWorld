@@ -13,12 +13,12 @@
   </parent>
   <dependencies>
     <dependency>
-      <groupId>com.google.jimfs</groupId>
-      <artifactId>jimfs</artifactId>
+      <groupId>com.atlassian.commonmark</groupId>
+      <artifactId>commonmark</artifactId>
     </dependency>
     <dependency>
-      <groupId>goedegep.appgen</groupId>
-      <artifactId>goedegep-appgen</artifactId>
+      <groupId>com.google.jimfs</groupId>
+      <artifactId>jimfs</artifactId>
     </dependency>
     <dependency>
       <groupId>goedegep.gpx</groupId>
@@ -41,8 +41,44 @@
       <artifactId>goedegep-properties-app</artifactId>
     </dependency>
     <dependency>
+      <groupId>goedegep.properties</groupId>
+      <artifactId>goedegep-properties-model</artifactId>
+    </dependency>
+    <dependency>
       <groupId>goedegep.resources</groupId>
       <artifactId>goedegep-resources</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.emf</groupId>
+	  <artifactId>org.eclipse.emf.common</artifactId>
+    </dependency>
+    <dependency>
+     <groupId>org.eclipse.emf</groupId>
+	  <artifactId>org.eclipse.emf.ecore</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.openjfx</groupId>
+      <artifactId>javafx-base</artifactId>
+      <classifier>win</classifier>
+    </dependency>
+    <dependency>
+      <groupId>org.openjfx</groupId>
+      <artifactId>javafx-controls</artifactId>
+      <classifier>win</classifier>
+    </dependency>
+    <dependency>
+      <groupId>org.openjfx</groupId>
+      <artifactId>javafx-graphics</artifactId>
+      <classifier>win</classifier>
+    </dependency>
+    <dependency>
+      <groupId>org.openjfx</groupId>
+      <artifactId>javafx-web</artifactId>
+      <classifier>win</classifier>
     </dependency>
     <dependency>
       <groupId>tim.prune</groupId>

@@ -392,20 +392,10 @@ public class EObjectTableFrame<T extends EObject> extends AppFrame {
           //Plain text components do not fire these events
         }
         public void insertUpdate(DocumentEvent e) {
-//          try {
-//            setFilter(e.getDocument().getText(0, e.getDocument().getLength()));
-            setFilter();
-//          } catch (BadLocationException e1) {
-//            e1.printStackTrace();
-//          }
+          setFilter();
         }
         public void removeUpdate(DocumentEvent e) {
-//          try {
-//            setFilter(e.getDocument().getText(0, e.getDocument().getLength()));
-            setFilter();
-//          } catch (BadLocationException e1) {
-//            e1.printStackTrace();
-//          }
+          setFilter();
         }
       });
 
@@ -431,11 +421,6 @@ public class EObjectTableFrame<T extends EObject> extends AppFrame {
     // JComboBox: to select a column, or all columns.
     filterAttributeComboBox = componentFactory.createComboBox(20, "kies een of 'alle' attributen waarop je wilt zoeken, filteren of sorteren");
     filterAttributeComboBox.addItem("alle kolommen");
-//    for (int columnIndex = 0; columnIndex < table.getColumnCount(); columnIndex++) {
-//      if (countriesTable.isSearchableColumn(columnIndex)) {
-//        filterAttributeComboBox.addItem(table.getColumnName(columnIndex));
-//      }
-//    }
 
     EObjectTableColumnDescriptor[] columnDescriptors = objectTableDescriptor.getColumnDescriptors();
     for (int columnIndex = 0; columnIndex < columnDescriptors.length; columnIndex++) {
@@ -455,10 +440,6 @@ public class EObjectTableFrame<T extends EObject> extends AppFrame {
       
     });
     
-    
-    
-    
-    // TODO add actionListener if used.
     panel.add(filterAttributeComboBox);
     layout.putConstraint(SpringLayout.WEST, filterAttributeComboBox,
         COL4_ROW2,

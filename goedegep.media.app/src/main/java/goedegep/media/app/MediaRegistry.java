@@ -9,6 +9,7 @@ public class MediaRegistry {
   public static String copyrightMessage = null;         // Copyright message for the application.
   public static String customPropertiesFile = null;     // Name of the file with custom properties.
   public static String mediaDbFile = null;              // Name of the file with de media database.
+  public static String musicDataDirectory = null;       // Directory where pictures of albums and artists are located.
   public static String albumInfoDirectory = null;       // Directory where the AlbumInfo xml files are located.
   public static String musicDirectory = null;           // Directory where all music is stored.
   public static String duneMusicFolderPath = null;      // Directory on the Dune where the music is stored.

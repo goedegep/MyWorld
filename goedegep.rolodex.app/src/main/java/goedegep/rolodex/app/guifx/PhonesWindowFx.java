@@ -38,15 +38,12 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
 /**
- * This class provides a window with information on PhoneNumbers.
- * <p>
- * The top part of the window shows an editable PhoneNumbers table.<br/>
- * The bottom part shows all details of a PhoneNumbers. The information here can be edited to update the PhoneNumbers information, or to add a new PhoneNumbers.
+ * This class provides a window with information on Phones (mainly phone address book).
  */
 public class PhonesWindowFx extends JfxStage {
   @SuppressWarnings("unused")
   private static final Logger LOGGER = Logger.getLogger(PhonesWindowFx.class.getName());
-  private static final String WINDOW_TITLE   = "Phone numbers";
+  private static final String WINDOW_TITLE   = "Phones";
   
   private static RolodexPackage ROLODEX_PACKAGE = RolodexPackage.eINSTANCE;
   
@@ -137,7 +134,7 @@ public class PhonesWindowFx extends JfxStage {
    * @return the created phoneAddressBookTable
    */
   private EObjectTable<PhoneAddressBookEntry> createPhoneAddressBookTable() {
-    phoneAddressBookTable = new EObjectTable<PhoneAddressBookEntry>(customization, ROLODEX_PACKAGE.getPhone(), new PhoneAddressBookTableDescriptor(), null);
+    phoneAddressBookTable = new EObjectTable<PhoneAddressBookEntry>(customization, ROLODEX_PACKAGE.getPhone(), new PhoneAddressBookTableDescriptor());
         
     return phoneAddressBookTable;
   }

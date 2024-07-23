@@ -703,13 +703,22 @@ public interface RolodexPackage extends EPackage {
   int INSTITUTION__PREVIOUS_ADDRESSES = PHONE_NUMBER_HOLDER_FEATURE_COUNT + 1;
 
   /**
+   * The feature id for the '<em><b>Archived</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int INSTITUTION__ARCHIVED = PHONE_NUMBER_HOLDER_FEATURE_COUNT + 2;
+
+  /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int INSTITUTION__NAME = PHONE_NUMBER_HOLDER_FEATURE_COUNT + 2;
+  int INSTITUTION__NAME = PHONE_NUMBER_HOLDER_FEATURE_COUNT + 3;
 
   /**
    * The feature id for the '<em><b>Mailing Address</b></em>' reference.
@@ -718,7 +727,7 @@ public interface RolodexPackage extends EPackage {
    * @generated
    * @ordered
    */
-  int INSTITUTION__MAILING_ADDRESS = PHONE_NUMBER_HOLDER_FEATURE_COUNT + 3;
+  int INSTITUTION__MAILING_ADDRESS = PHONE_NUMBER_HOLDER_FEATURE_COUNT + 4;
 
   /**
    * The number of structural features of the '<em>Institution</em>' class.
@@ -727,7 +736,7 @@ public interface RolodexPackage extends EPackage {
    * @generated
    * @ordered
    */
-  int INSTITUTION_FEATURE_COUNT = PHONE_NUMBER_HOLDER_FEATURE_COUNT + 4;
+  int INSTITUTION_FEATURE_COUNT = PHONE_NUMBER_HOLDER_FEATURE_COUNT + 5;
 
   /**
    * The number of operations of the '<em>Institution</em>' class.

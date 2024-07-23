@@ -24,7 +24,7 @@ public abstract class AbstractAppResources implements AppResources {
   
   // Names of files for the default icons.
   private static final String[] INFO_IMAGE_NAMES = {"info_225x225.jpg"};
-  private static final String[] ERROR_IMAGE_NAMES = {"error_204x204.jpg"};  // TODO Add transparancy to icon.
+  private static final String[] ERROR_IMAGE_NAMES = {"error_204x204.jpg"};
   private static final String[] ATTENTION_IMAGE_NAMES = {"attention_239x211.png"};
   private static final String[] APPLICATION_IMAGE_NAMES = {"java_icon.gif"};
   
@@ -520,7 +520,7 @@ public abstract class AbstractAppResources implements AppResources {
         rawAttentionImages = rawDefaultAttentionImages;
       }
 
-      if (rawApplicationImages.length == 0) {  // TODO provide a default application image.
+      if (rawApplicationImages.length == 0) {
         throw new RuntimeException("Geen beschikbare afbeeldingen");
       }
 

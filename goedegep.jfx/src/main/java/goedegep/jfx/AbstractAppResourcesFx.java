@@ -17,9 +17,9 @@ public abstract class AbstractAppResourcesFx implements AppResourcesFx {
   public static final int NUMBER_OF_SIZES = ImageSize.values().length;
   
   // Names of files for the default icons.
-  private static final String[] INFO_IMAGE_NAMES = {"info_225x225.jpg"};
-  private static final String[] ERROR_IMAGE_NAMES = {"error_204x204.jpg"};  // TODO Add transparancy to icon.
-  private static final String[] ATTENTION_IMAGE_NAMES = {"attention_239x211.png"};
+  private static final String[] INFO_IMAGE_NAMES = {"dialog-information.png", "dialog-information@2x.png"}; // this and the next 2 from \com\sun\javafx\scene\control\skin\modena
+  private static final String[] ERROR_IMAGE_NAMES = {"dialog-error.png", "dialog-error@2x.png"};            // These icons are copied here as I see no way to obtain them via an API.
+  private static final String[] ATTENTION_IMAGE_NAMES = {"dialog-warning.png", "dialog-warning@2x.png"};
   private static final String[] APPLICATION_IMAGE_NAMES = {"java_icon.gif"};
   
   // Raw default images: the images read from the files.
@@ -304,10 +304,6 @@ public abstract class AbstractAppResourcesFx implements AppResourcesFx {
       
       if (rawAttentionImages == null) {
         rawAttentionImages = rawDefaultAttentionImages;
-      }
-
-      if (rawApplicationImages.length == 0) {  // TODO provide a default application image.
-        throw new RuntimeException("Geen beschikbare afbeeldingen");
       }
 
       initialized = true;

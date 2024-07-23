@@ -8,6 +8,7 @@ import java.util.logging.Logger;
 
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EDataType;
+import org.eclipse.emf.ecore.EEnum;
 import org.eclipse.emf.ecore.EStructuralFeature;
 
 import goedegep.util.emf.EObjectPath;
@@ -479,19 +480,24 @@ public class EObjectTreeCell extends TreeCell<Object> {
         EStructuralFeature eStructuralFeature = eObjectTreeItem.getEStructuralFeature();
         if (eStructuralFeature instanceof EAttribute eAttribute) {
           EDataType eDataType = eAttribute.getEAttributeType();
-          switch (eDataType.getName()) {
-          case "Boolean":
-          case "EBoolean":
-            helperClass = EObjectTreeCellHelperForAttributeBoolean.class;
-            break;
+          if (eDataType instanceof EEnum) {
+            helperClass = EObjectTreeCellHelperForAttributeEnumeration.class;
+          } else {
+            switch (eDataType.getName()) {
+            case "Boolean":
+            case "EBoolean":
+              helperClass = EObjectTreeCellHelperForAttributeBoolean.class;
+              break;
 
-          default:
-            helperClass = EObjectTreeCellHelperForAttributeSimple.class;
-            break;
+            default:
+              helperClass = EObjectTreeCellHelperForAttributeSimple.class;
+              break;
+            }
           }
         } else {
           throw new RuntimeException("eStructuralFeature is not an eAttribute");
         }
+        
         break;
 
       case ATTRIBUTE_LIST:

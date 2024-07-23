@@ -7,7 +7,7 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.control.Tooltip;
 
 
-public class ObjectControlBoolean extends ObjectControlAbstract<Boolean> {
+public class ObjectControlBoolean extends ObjectControlTemplate<Boolean> {
   @SuppressWarnings("unused")
   private static final Logger         LOGGER = Logger.getLogger(ObjectControlBoolean.class.getName());
   
@@ -64,7 +64,9 @@ public class ObjectControlBoolean extends ObjectControlAbstract<Boolean> {
    * A checkbox is always filled in.
    */
   @Override
-  public boolean ociDetermineFilledIn() {
+  public boolean ociDetermineFilledIn(Object source) {
+    // as there is only one control, we can ignore the source parameter
+    
     return true;
   }
 
@@ -92,6 +94,11 @@ public class ObjectControlBoolean extends ObjectControlAbstract<Boolean> {
   public void ociRedrawValue() {
   }
 
+  @Override
+  protected void ociUpdateNonSourceControls(Object source) {
+    checkBox.setSelected(getValue());
+  }
+
   /**
    * {@inheritDoc}
    * Not very useful for a boolean, but we just return 'true' or 'false'.
@@ -99,16 +106,6 @@ public class ObjectControlBoolean extends ObjectControlAbstract<Boolean> {
   @Override
   public String getValueAsFormattedText() {
     return value ? "true" : "false";
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public void setValue(Boolean objectValue) {
-    referenceValue = objectValue;
-    ociSetValue(objectValue);
-    checkBox.setSelected(objectValue);
   }
   
   @Override

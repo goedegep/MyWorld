@@ -1114,7 +1114,7 @@ public class VacationsWindow extends JfxStage {
       WGS84Coordinates pictureCoordinates = getPictureCoordinates(vacationElementPicture);
 
       if (pictureCoordinates == null) {
-        LOGGER.severe("<= (null)");
+        LOGGER.severe("<= (null) (picture has no coordinates)");
         return null;
       }
 

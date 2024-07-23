@@ -4,6 +4,7 @@ import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.function.Supplier;
+import java.util.logging.Logger;
 
 import goedegep.jfx.CustomizationFx;
 import goedegep.util.PgUtilities;
@@ -12,12 +13,19 @@ import javafx.scene.control.TextField;
 
 /**
  * This class provides the common functionality for the FileSelecter and FolderSelecter.
+ * <p>
+ * This common functionality consists of:
+ * <h4>An initial folder supplier</h4>
+ * 
+ * 
+ * 
  */
-public abstract class ObjectControlFileOrFolderSelecterAbstract extends ObjectControlAbstract<File> {
+public abstract class ObjectControlFileOrFolderSelecterAbstract extends ObjectControlTemplate<File> {
+  private static final Logger         LOGGER = Logger.getLogger(ObjectControlFileOrFolderSelecterAbstract.class.getName());
 	
   
   /**
-   * A {@link Supplier} to provide the initial folder for the {@code fileChooser}.
+   * A {@link Supplier} to provide the initial folder for the {@code FileChooser} or {@code FolderChooser}.
    */
   protected Supplier<String> initialFolderSupplier = null;
   
@@ -34,11 +42,6 @@ public abstract class ObjectControlFileOrFolderSelecterAbstract extends ObjectCo
   private String prefix = null;
   
   /**
-   * Ignore changes on the {@code pathTextField}.
-   */
-  private boolean ignorePathTextFieldChanges = false;
-  
-  /**
    * Constructor
    * 
    * @param textFieldWidth Value for the width of the TextField. If this value is -1, the default width is used.
@@ -50,7 +53,10 @@ public abstract class ObjectControlFileOrFolderSelecterAbstract extends ObjectCo
     
     pathTextField = customization.getComponentFactoryFx().createTextField(textFieldWidth, textFieldToolTipText);
     
-    pathTextField.textProperty().addListener((o) -> ociHandleNewUserInput(pathTextField));
+    pathTextField.textProperty().addListener((o) -> {
+      LOGGER.info("Text property changed, id is: " + getId());
+      ociHandleNewUserInput(pathTextField);
+    });
     pathTextField.focusedProperty().addListener((observableValue, oldValue, newValue) -> {
       if (!newValue)
         ociRedrawValue();
@@ -66,16 +72,6 @@ public abstract class ObjectControlFileOrFolderSelecterAbstract extends ObjectCo
   public void setInitialFolderProvider(Supplier<String> initialFolderSupplier) {
     this.initialFolderSupplier = initialFolderSupplier;
   }
-  
- /**
-  * {@inheritDoc}
-  */
- @Override
- protected void ociHandleNewUserInput(Object source) {
-   if (!ignorePathTextFieldChanges) {
-     super.ociHandleNewUserInput(source);
-   }
- }
 
   /**
    * Get the TextField to show and edit the currently selected file or folder.
@@ -99,38 +95,13 @@ public abstract class ObjectControlFileOrFolderSelecterAbstract extends ObjectCo
   public TextField getControl() {
     return pathTextField;
   }
-
-  /**
-   * @InheritDoc
-   */
-  @Override
-  public void setValue(File file) {
-    ocSetFilename(file != null ? file.getAbsolutePath() : null);
-  }
-  
-  /**
-   * Set the value via the name of the file.
-   * 
-   * @param filename the file name.
-   */
-  public void ocSetFilename(String filename) {
-    if (filename != null) {
-      referenceValue = new File(filename);
-    } else {
-      referenceValue = null;
-    }
-    ociSetValue(referenceValue);
-    setPathTextFieldText();
-  }
-  
+    
   /**
    * Set the text of the {@code pathTextField}.
    * <p>
-   * As we set the text ourselves, the change of the TextField shall not lead to reacting to changes. Therefore {@code ignorePathTextFieldChanges} is set before making the change and reset afterwards.
    * If the {@code prefix} is set, this is stripped from the text.
    */
   protected void setPathTextFieldText() {
-    ignorePathTextFieldChanges = true;
     
     File file = getValue();
     if (file != null) {
@@ -141,7 +112,6 @@ public abstract class ObjectControlFileOrFolderSelecterAbstract extends ObjectCo
       pathTextField.textProperty().set(null);
     }
     
-    ignorePathTextFieldChanges = false;
   }
 
   /**
@@ -163,8 +133,7 @@ public abstract class ObjectControlFileOrFolderSelecterAbstract extends ObjectCo
    */
   @Override
   public void ociRedrawValue() {
-    String filePathText = value != null ? value.getAbsolutePath() : null;
-    pathTextField.textProperty().set(filePathText);
+    setPathTextFieldText();
   }
 
   /**
@@ -201,8 +170,18 @@ public abstract class ObjectControlFileOrFolderSelecterAbstract extends ObjectCo
    * 
    * @return the path relative to the prefix, if the absolute path starts with the prefix, otherwise it also just returns the absolute path.
    */
-  public String getPathNameUsingPrefix() {
-    return getValue() != null ? addPrefixIfSet(getValue().getAbsolutePath()) : null;
+  public String getPathNameRelativeToPrefix() {
+    return getValue() != null ? removePrefixIfSet(getValue().getAbsolutePath()) : null;
+  }
+  
+  public void setPathNameRelativeToPrefix(String pathName) {
+    if (pathName == null) {
+      setValue(null);
+    } else {
+      pathName = addPrefixIfSet(pathName);
+      File file = new File(pathName);
+      setValue(file);
+    }
   }
   
   /**
@@ -213,8 +192,9 @@ public abstract class ObjectControlFileOrFolderSelecterAbstract extends ObjectCo
    */
   protected String addPrefixIfSet(String path) {
     if (prefix != null) {
-      File file = new File (getPrefix(), pathTextField.textProperty().get());
-      return file.getAbsolutePath();
+//      File file = new File (getPrefix(), pathTextField.textProperty().get());
+//      return file.getAbsolutePath();
+      return FileUtils.createPathNameFromPrefixAndFileName(prefix, path);
     } else {
       return path;
     }
@@ -260,10 +240,23 @@ public abstract class ObjectControlFileOrFolderSelecterAbstract extends ObjectCo
   }
   
   /**
+   * Get the absolute path for the reference value.
+   * 
+   * @return the absolute path for the reference value.
+   */
+  public String getReferenceAbsolutePath() {
+    if (referenceValue != null) {
+      return referenceValue.getAbsolutePath();
+    } else {
+      return null;
+    }
+  }
+  
+  /**
    * {@inheritDoc}
    */
   @Override
   public boolean isChanged() {
-    return !PgUtilities.equals(getAbsolutePath(), referenceValue);
+    return !PgUtilities.equals(getAbsolutePath(), getReferenceAbsolutePath());
   }
 }

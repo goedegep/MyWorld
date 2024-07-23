@@ -24,4 +24,7 @@ module goedegep.rolodex.app {
   requires org.eclipse.emf.ecore;
 //  requires ljv;
   requires goedegep.resources;
+  requires openhtmltopdf.core;
+  requires openhtmltopdf.pdfbox;
+  requires org.apache.commons.io;
 }

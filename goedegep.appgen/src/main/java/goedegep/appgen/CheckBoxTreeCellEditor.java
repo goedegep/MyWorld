@@ -40,7 +40,6 @@ public class CheckBoxTreeCellEditor extends AbstractCellEditor implements TreeCe
       TreePath path = tree.getPathForLocation(mouseEvent.getX(), mouseEvent.getY());
       if (path != null) {
         Object node = path.getLastPathComponent();
-        // TODO change to getting editable from node itself, instead of its type.
         if ((node != null) && (node instanceof DefaultMutableTreeNode)) {
           DefaultMutableTreeNode treeNode = (DefaultMutableTreeNode) node;
           Object userObject = treeNode.getUserObject();

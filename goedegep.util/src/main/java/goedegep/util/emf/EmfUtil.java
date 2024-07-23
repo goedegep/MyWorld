@@ -535,4 +535,19 @@ public final class EmfUtil {
       eObject.eSet(feature, value);
     }    
   }
+  
+  /**
+   * Get a list reference value without checking the types.
+   * <p>
+   * You can use this method to avoid having to add {@code @SuppressWarnings("unchecked")} to your line of code or method.
+   * 
+   * @param <T>
+   * @param eObject {@code EObject} containing the list.
+   * @param eReference {@code EReference} within the {@code eObject} to the list.
+   * @return the list, of type T, to which the {@code eReference} refers to.
+   */
+  @SuppressWarnings("unchecked")
+  public static <T> List<T> getListUnchecked(EObject eObject, EReference eReference) {
+    return (List<T>) eObject.eGet(eReference);
+  }
 }

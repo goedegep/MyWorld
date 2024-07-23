@@ -13,48 +13,35 @@
   </parent>
   <dependencies>
     <dependency>
-      <groupId>goedegep.appgen</groupId>
-      <artifactId>goedegep-appgen</artifactId>
-    </dependency>
-    <dependency>
       <groupId>goedegep.jfx</groupId>
       <artifactId>goedegep-jfx</artifactId>
     </dependency>
     <dependency>
-        <groupId>goedegep.configuration</groupId>
-        <artifactId>goedegep-configuration-model</artifactId>
-    </dependency>
-    <dependency>
       <groupId>goedegep.properties</groupId>
-      <artifactId>goedegep-properties-app</artifactId>
+      <artifactId>goedegep-properties-model</artifactId>
     </dependency>
     <dependency>
       <groupId>goedegep.resources</groupId>
       <artifactId>goedegep-resources</artifactId>
     </dependency>
     <dependency>
-      <groupId>goedegep.types</groupId>
-      <artifactId>goedegep-types-model</artifactId>
-    </dependency>
-    <dependency>
       <groupId>goedegep.util</groupId>
       <artifactId>goedegep-util</artifactId>
     </dependency>
     <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
+      <groupId>org.openjfx</groupId>
+      <artifactId>javafx-base</artifactId>
+      <classifier>win</classifier>
     </dependency>
     <dependency>
-      <groupId>org.eclipse.emf</groupId>
-      <artifactId>org.eclipse.emf.common</artifactId>
+      <groupId>org.openjfx</groupId>
+      <artifactId>javafx-controls</artifactId>
+      <classifier>win</classifier>
     </dependency>
     <dependency>
-      <groupId>org.eclipse.emf</groupId>
-      <artifactId>org.eclipse.emf.ecore</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.eclipse.emf</groupId>
-      <artifactId>org.eclipse.emf.ecore.xmi</artifactId>
+      <groupId>org.openjfx</groupId>
+      <artifactId>javafx-graphics</artifactId>
+      <classifier>win</classifier>
     </dependency>
   </dependencies>
   <build>

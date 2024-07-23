@@ -5,7 +5,7 @@ import java.util.logging.Logger;
 
 import goedegep.jfx.ComponentFactoryFx;
 import goedegep.jfx.CustomizationFx;
-import goedegep.jfx.objectcontrols.ObjectControlAbstract;
+import goedegep.jfx.objectcontrols.ObjectControlTemplate;
 import goedegep.jfx.objectcontrols.ObjectControlAutoCompleteTextField;
 import goedegep.jfx.objectcontrols.ObjectControlTextField;
 import goedegep.media.mediadb.app.ArtistStringConverterAndChecker;
@@ -22,7 +22,7 @@ import javafx.scene.layout.HBox;
  * This ObjectControl has two controls; an autocomplete textfield for the Artist and a textfield for the instruments played by that artist.
  *
  */
-public class ObjectControlForPlayer extends ObjectControlAbstract<Player> {
+public class ObjectControlForPlayer extends ObjectControlTemplate<Player> {
   private static final Logger LOGGER = Logger.getLogger(ObjectControlForPlayer.class.getName());
   
 
@@ -144,7 +144,9 @@ public class ObjectControlForPlayer extends ObjectControlAbstract<Player> {
    * This ObjectControl is filled in if at least the Artist is filled in.
    */
   @Override
-  public boolean ociDetermineFilledIn() {
+  public boolean ociDetermineFilledIn(Object source) {
+    // There is only one control so we don't have to check the source.
+    
     return artistObjectControl.isFilledIn();
   }
 
@@ -176,6 +178,12 @@ public class ObjectControlForPlayer extends ObjectControlAbstract<Player> {
   @Override
   public String getValueAsFormattedText() {
     return getValue().toString();
+  }
+
+  @Override
+  protected void ociUpdateNonSourceControls(Object source) {
+    // TODO Auto-generated method stub
+    
   }
 
 }

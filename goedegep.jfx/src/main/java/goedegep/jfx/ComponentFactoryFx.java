@@ -4,7 +4,6 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.time.LocalDate;
 import java.util.Collection;
-import java.util.Map;
 import java.util.logging.Logger;
 
 import org.commonmark.parser.Parser;
@@ -1171,9 +1170,9 @@ public class ComponentFactoryFx {
    * @param toolTipText an optional tooltip text
    * @return the newly created {@code ObjectControlEnumComboBox}.
    */
-  public <T extends Enum<T>>ObjectControlEnumComboBox<T> createObjectControlEnumComboBox(T enumConstant, T notSetValue, Map<T, String> enumToStringMap, boolean isOptional, String toolTipText) {
-    return new ObjectControlEnumComboBox<T>(customization, enumConstant, notSetValue, enumToStringMap, isOptional, toolTipText);
-  }
+//  public <T extends Enum<T>>ObjectControlEnumComboBox<T> createObjectControlEnumComboBox(T enumConstant, T notSetValue, Map<T, String> enumToStringMap, boolean isOptional, String toolTipText) {
+//    return new ObjectControlEnumComboBox<T>(customization, enumConstant, notSetValue, enumToStringMap, isOptional, toolTipText);
+//  }
   
   /**
    * Create an auto complete TextField ObjectControl.
@@ -1208,11 +1207,11 @@ public class ComponentFactoryFx {
   /**
    * Create an ObjectControl for an image file selection.
    * 
-   * @param customization 
-   * @return
+   * @param isOptional if true, the value provided by this control is optional.
+   * @return the newly created {@code ObjectControlImageFile}
    */
-  public ObjectControlImageFile createObjectControlImageFile() {
-    return new ObjectControlImageFile(customization);
+  public ObjectControlImageFile createObjectControlImageFile(boolean isOptional) {
+    return new ObjectControlImageFile(customization, isOptional);
   }
     
   public String addHtmlContext(String text) {

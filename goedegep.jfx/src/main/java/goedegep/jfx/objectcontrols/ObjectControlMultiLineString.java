@@ -3,7 +3,7 @@ package goedegep.jfx.objectcontrols;
 import goedegep.jfx.CustomizationFx;
 import javafx.scene.control.TextArea;
 
-public class ObjectControlMultiLineString extends ObjectControlAbstract<String> {
+public class ObjectControlMultiLineString extends ObjectControlTemplate<String> {
   
     
   private TextArea textArea = null;
@@ -38,16 +38,9 @@ public class ObjectControlMultiLineString extends ObjectControlAbstract<String> 
    * {@inheritDoc}
    */
   @Override
-  public void setValue(String objectValue) {
-    referenceValue = objectValue;
-    textArea.setText(objectValue);    
-  }
-  
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public boolean ociDetermineFilledIn() {
+  public boolean ociDetermineFilledIn(Object source) {
+    // As there is only one control we don't have to check the source.
+    
     return textArea.getText() != null  &&  !textArea.getText().isEmpty();
   }
 
@@ -79,6 +72,11 @@ public class ObjectControlMultiLineString extends ObjectControlAbstract<String> 
    */
   @Override
   public void ociRedrawValue() {
+  }
+
+  @Override
+  protected void ociUpdateNonSourceControls(Object source) {
+    textArea.setText(getValue());
   }
   
   /**

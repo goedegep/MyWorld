@@ -9,4 +9,5 @@ module goedegep.demo {
   requires javafx.web;
   requires goedegep.util;
   requires goedegep.emfsample.model;
+  requires goedegep.model.configuration;
 }

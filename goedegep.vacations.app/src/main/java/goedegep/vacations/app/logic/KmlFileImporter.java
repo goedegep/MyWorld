@@ -89,26 +89,50 @@ public class KmlFileImporter {
     kmlCategoryToActivityMap.put("Driving", Activity.CAR_RIDE);
     kmlCategoryToActivityMap.put("Flying", Activity.FLYING);
     kmlCategoryToActivityMap.put("On a bus", Activity.BUS_RIDE);
+    kmlCategoryToActivityMap.put("On a ferry", Activity.BOAT_TRIP);
+    kmlCategoryToActivityMap.put("On a train", Activity.TRAIN_RIDE);
+    kmlCategoryToActivityMap.put("On the subway", Activity.TRAIN_RIDE);
+    kmlCategoryToActivityMap.put("Running", Activity.RUNNING);
     kmlCategoryToActivityMap.put("Walking", Activity.WALKING);
     
     // initialize the kmlCategoryToPOICategoryIdMap
     kmlCategoryToPOICategoryIdMap.put("Autoverhuur", POICategoryId.CAR_RENTAL);
     kmlCategoryToPOICategoryIdMap.put("Bakkerij", POICategoryId.SHOP);
     kmlCategoryToPOICategoryIdMap.put("Bar", POICategoryId.BAR);
-    kmlCategoryToPOICategoryIdMap.put("Bushalte", POICategoryId.BUS_STATION); // TODO must be bus stop
+    kmlCategoryToPOICategoryIdMap.put("Barbecue", POICategoryId.RESTAURANT);
+    kmlCategoryToPOICategoryIdMap.put("Cultureel monument", POICategoryId.MONUMENT);
+    kmlCategoryToPOICategoryIdMap.put("Station bergspoorweg", POICategoryId.RAILWAY_STATION);
+    kmlCategoryToPOICategoryIdMap.put("Boerenmarkt", POICategoryId.MARKET);
+    kmlCategoryToPOICategoryIdMap.put("Buffet", POICategoryId.RESTAURANT);
+    kmlCategoryToPOICategoryIdMap.put("Buitenzwembad", POICategoryId.SWIMMING_POOL);
+    kmlCategoryToPOICategoryIdMap.put("Bushalte", POICategoryId.BUS_STOP);
+    kmlCategoryToPOICategoryIdMap.put("Cadeauwinkel", POICategoryId.SHOP);
+    kmlCategoryToPOICategoryIdMap.put("Dierentuin", POICategoryId.ZOO);
+    kmlCategoryToPOICategoryIdMap.put("Eiland", POICategoryId.ISLAND);
     kmlCategoryToPOICategoryIdMap.put("Fastfood", POICategoryId.RESTAURANT);
     kmlCategoryToPOICategoryIdMap.put("Gebouw", POICategoryId.BUILDING);
+    kmlCategoryToPOICategoryIdMap.put("Herberg", POICategoryId.GUESTHOUSE);
     kmlCategoryToPOICategoryIdMap.put("Historisch herkenningspunt", POICategoryId.DEFAULT_POI);
     kmlCategoryToPOICategoryIdMap.put("Hotel", POICategoryId.HOTEL);
+    kmlCategoryToPOICategoryIdMap.put("Kabelbaanstation", POICategoryId.RAILWAY_STATION);
+    kmlCategoryToPOICategoryIdMap.put("Kantoor van lokale/provinciale overheid", POICategoryId.GOVERMENT);
     kmlCategoryToPOICategoryIdMap.put("Internationaal vliegveld", POICategoryId.AIRPORT);
     kmlCategoryToPOICategoryIdMap.put("Luchthaven", POICategoryId.AIRPORT);
+    kmlCategoryToPOICategoryIdMap.put("Markt", POICategoryId.MARKET);
+    kmlCategoryToPOICategoryIdMap.put("Nationaal park", POICategoryId.PARK);
     kmlCategoryToPOICategoryIdMap.put("Observatieplatform", POICategoryId.SCENIC_VIEWPOINT);
     kmlCategoryToPOICategoryIdMap.put("Panoramisch uitzicht", POICategoryId.SCENIC_VIEWPOINT);
     kmlCategoryToPOICategoryIdMap.put("Park", POICategoryId.PARK);
+    kmlCategoryToPOICategoryIdMap.put("Paspoortkantoor", POICategoryId.BORDER_CROSSING);
     kmlCategoryToPOICategoryIdMap.put("Restaurant", POICategoryId.RESTAURANT);
+    kmlCategoryToPOICategoryIdMap.put("Snackbar", POICategoryId.RESTAURANT);
     kmlCategoryToPOICategoryIdMap.put("Supermarkt", POICategoryId.SHOP);
+    kmlCategoryToPOICategoryIdMap.put("Tankstation", POICategoryId.PETROL_STATION);
     kmlCategoryToPOICategoryIdMap.put("Toeristische attractie", POICategoryId.TOURIST_ATTRACTION);
+    kmlCategoryToPOICategoryIdMap.put("Treinstation", POICategoryId.RAILWAY_STATION);
+    kmlCategoryToPOICategoryIdMap.put("Vakantiecomplex", POICategoryId.HOTEL);
     kmlCategoryToPOICategoryIdMap.put("Veerbootterminal", POICategoryId.FERRY);
+    kmlCategoryToPOICategoryIdMap.put("Winkelcentrum", POICategoryId.SHOPPING_CENTER);
   }
   
   /**
@@ -233,7 +257,8 @@ public class KmlFileImporter {
   private void getVacationElementFromKmlPlacemark(Placemark previousPlacemark, Placemark placemark, Placemark nextPlacemark, List<KmlPlacemarkImportData> vacationElements) {
     Geometry geometry = placemark.getGeometry();
     if (geometry == null) {
-      throw new RuntimeException("Placemark without geometry: " + KmlUtil.geometryToString(geometry));
+      LOGGER.severe("Placemark without geometry: " + KmlUtil.geometryToString(geometry));
+      return;
     }
     
     if (geometry instanceof Point point) {
@@ -302,7 +327,7 @@ public class KmlFileImporter {
     POICategoryId poiCategoryId = kmlCategoryToPOICategoryIdMap.get(category);
     
     if (poiCategoryId == null) {
-      throw new RuntimeException("Unsupported KML category: " + category);
+     LOGGER.severe("Unsupported KML category: " + category);
     }
     
     return poiCategoryId;
@@ -494,7 +519,7 @@ public class KmlFileImporter {
     
     MetadataType metadataType = gpxFactory.createMetadataType();
     metadataType.setName(createGpxTrackName(previousPlacemark, placemark, nextPlacemark));
-    metadataType.setDesc(placemark.getDescription());
+//    metadataType.setDesc(placemark.getDescription()); Description doesn't seem interesting
     if (placemark.getName() != null) {
       metadataType.setKeywords(placemark.getName());
     }
@@ -604,22 +629,14 @@ public class KmlFileImporter {
     
     if (previousPlacemark != null) {
       Geometry geometry = previousPlacemark.getGeometry();
-      if (geometry == null) {
-        throw new RuntimeException("Placemark without geometry: " + KmlUtil.geometryToString(geometry));
-      }
-      
-      if (geometry instanceof Point point) {
+      if (geometry != null  &&  geometry instanceof Point point) {
         buf.append(" van ").append(previousPlacemark.getName());
       }
     }
     
     if (nextPlacemark != null) {
       Geometry geometry = nextPlacemark.getGeometry();
-      if (geometry == null) {
-        throw new RuntimeException("Placemark without geometry: " + KmlUtil.geometryToString(geometry));
-      }
-      
-      if (geometry instanceof Point point) {
+      if (geometry != null  &&  geometry instanceof Point point) {
         buf.append(" naar ").append(nextPlacemark.getName());
       }
     }

@@ -8,7 +8,7 @@ import org.eclipse.emf.ecore.util.EcoreUtil;
 import goedegep.jfx.ComponentFactoryFx;
 import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.objectcontrols.ObjectControl;
-import goedegep.jfx.objectcontrols.ObjectControlAbstract;
+import goedegep.jfx.objectcontrols.ObjectControlTemplate;
 import goedegep.jfx.objectcontrols.ObjectControlGroup;
 import goedegep.media.mediadb.model.MediaDb;
 import goedegep.media.mediadb.model.Player;
@@ -21,7 +21,7 @@ import javafx.scene.layout.VBox;
 /**
  * This class is an {@link ObjectControl} for a list of {@code Player}s.
  */
-public class ObjectControlForPlayers extends ObjectControlAbstract<List<Player>> {
+public class ObjectControlForPlayers extends ObjectControlTemplate<List<Player>> {
   
   /**
    * The GUI customization.
@@ -129,7 +129,7 @@ public class ObjectControlForPlayers extends ObjectControlAbstract<List<Player>>
   }
 
   @Override
-  protected boolean ociDetermineFilledIn() {
+  protected boolean ociDetermineFilledIn(Object source) {
     return objectControlsGroup.isAnyObjectInputFilledIn();
   }
 
@@ -152,6 +152,12 @@ public class ObjectControlForPlayers extends ObjectControlAbstract<List<Player>>
   @Override
   protected void ociRedrawValue() {
     // no action
+    
+  }
+
+  @Override
+  protected void ociUpdateNonSourceControls(Object source) {
+    // TODO Auto-generated method stub
     
   }
 

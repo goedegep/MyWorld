@@ -27,12 +27,12 @@ import javafx.scene.control.TableCell;
 public class MortgageEventsTable extends EObjectTable<MortgageEvent> {
   
   public MortgageEventsTable(CustomizationFx customization) {
-    super(customization, MortgagePackage.eINSTANCE.getMortgageEvent(), new MortgageEventsTableDescriptor(), null);
+    super(customization, MortgagePackage.eINSTANCE.getMortgageEvent(), new MortgageEventsTableDescriptor());
   }
   
-  public void setMortgageEvents(List<MortgageEvent> mortgageEvents) {
-    this.setObjects(mortgageEvents);
-  }
+//  public void setMortgageEvents(List<MortgageEvent> mortgageEvents) {
+//    this.setObjects(mortgageEvents);
+//  }
 }
 
 class MortgageEventsTableDescriptor extends EObjectTableDescriptor<MortgageEvent> {

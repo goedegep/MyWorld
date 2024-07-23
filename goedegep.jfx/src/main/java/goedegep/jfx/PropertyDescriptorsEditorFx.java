@@ -106,7 +106,6 @@ public class PropertyDescriptorsEditorFx extends JfxStage {
         try {
           propertyDescriptorsResource.save();
         } catch (IOException e) {
-          // TODO Auto-generated catch block
           e.printStackTrace();
         }
         isDirty = false;

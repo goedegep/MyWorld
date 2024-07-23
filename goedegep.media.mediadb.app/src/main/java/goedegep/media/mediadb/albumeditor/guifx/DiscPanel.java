@@ -79,11 +79,6 @@ class DiscPanel extends DiscPanelAbstract {
   }
 
   @Override
-  public void setValue(Disc disc) {
-    this.disc = disc;
-  }
-
-  @Override
   public Node getControl() {
     return titledPane;
   }
@@ -95,7 +90,7 @@ class DiscPanel extends DiscPanelAbstract {
   }
 
   @Override
-  protected boolean ociDetermineFilledIn() {
+  protected boolean ociDetermineFilledIn(Object source) {
     // TODO Auto-generated method stub
     return false;
   }
@@ -130,5 +125,11 @@ class DiscPanel extends DiscPanelAbstract {
     }
     
     return newTracks;
+  }
+
+  @Override
+  protected void ociUpdateNonSourceControls(Object source) {
+    // TODO Auto-generated method stub
+    
   }
 }

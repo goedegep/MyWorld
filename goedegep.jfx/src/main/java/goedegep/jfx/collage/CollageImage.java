@@ -1,10 +1,8 @@
 package goedegep.jfx.collage;
 
 
-import java.awt.Graphics;
 import java.io.File;
 import java.util.List;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import goedegep.util.Tuplet;
@@ -17,8 +15,20 @@ import javafx.scene.image.WritableImage;
 import javafx.scene.paint.Color;
 import javafx.scene.transform.Rotate;
 
+/**
+ * This class provides methods to create collages of pictures.
+ * <p>
+ * <h3>Tiled photo collage</h3>
+ * The method {@link #createTiledCollage} creates a tiled collage. This is a collage where pictures are placed in rows and columns.
+ * <h3>Collage</h3>
+ * The method {@link #createCollageImage} creates a normal collage. This is a collage where the pictures are rotated and spread over the image.
+ */
 public class CollageImage {
   private static final Logger LOGGER = Logger.getLogger(CollageImage.class.getName());
+  
+  /**
+   * The amount of overlap of pictures in a collage.
+   */
   private static final double OVERLAP_FACTOR = 3.0;
 
   /**
@@ -59,6 +69,14 @@ public class CollageImage {
     return canvas;
   }
 
+  /**
+   * Create a collage.
+   * 
+   * @param collageWidth the width of the collage in pixels.
+   * @param collageHeight the height of the collage in pixels.
+   * @param imageFiles the names of the picture files to use in the collage.
+   * @return the created collage.
+   */
   public static Canvas createCollageImage(int collageWidth, int collageHeight, List<File> imageFiles) {
     LOGGER.info("=> collageWidth = " + collageWidth + ", collageHeight = " + collageHeight);
     
@@ -71,18 +89,12 @@ public class CollageImage {
     Canvas canvas = new Canvas(collageWidth, collageHeight);
     GraphicsContext gc = canvas.getGraphicsContext2D();
 
-
+    // Use a QTree to divide the images over the collage.
     QTreeFx qtree = new QTreeFx(6, collageWidth, collageHeight, imageWidthAndLength);
-
-    if ((LOGGER.getLevel() != null)  &&
-        (LOGGER.getLevel().intValue() <= Level.FINE.intValue())) {
-      qtree.print();
-    }
 
     for (File file: imageFiles) {
       addImage(gc, qtree, file, imageWidthAndLength);
     }
-    
     
     Canvas transparentCanvas = new Canvas(collageWidth, collageHeight);
     GraphicsContext transparentCanvasGC = transparentCanvas.getGraphicsContext2D();
@@ -132,7 +144,6 @@ public class CollageImage {
     Tuplet<Integer, Integer> imageCoordinates = qtree.addImage();
     LOGGER.info("imageCoordinates=" + imageCoordinates.getObject1() + "," + imageCoordinates.getObject2());
         
-    // TODO Somewhere the center has to be changed to top left
     double angle = getRandomRotation();
     javafx.scene.image.Image imageWithTransparency = addBackgroundTransparencyToImage(image); 
     drawRotatedTransparentImage(gc, imageWithTransparency,  angle,   imageCoordinates.getObject1() - image.getWidth() / 2, imageCoordinates.getObject2() - image.getHeight() / 2);
@@ -165,9 +176,5 @@ public class CollageImage {
     }
     
     return rotation;
-  }
-
-  public void paintComponent(Graphics g) {
-//    g.drawImage(collage, 0, 0, getWidth(), getHeight(), this);
   }
 }

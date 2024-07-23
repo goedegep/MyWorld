@@ -43,7 +43,7 @@ public class FamilyMembersPanel extends VBox {
 
     componentFactory = customization.getComponentFactoryFx();
 
-    basicPersonsTable = new EObjectTable<Person>(customization, ROLODEX_PACKAGE.getPerson(), new BasicPersonsTableDescriptor(), null);
+    basicPersonsTable = new EObjectTable<Person>(customization, ROLODEX_PACKAGE.getPerson(), new BasicPersonsTableDescriptor());
 
     createGUI();
   }

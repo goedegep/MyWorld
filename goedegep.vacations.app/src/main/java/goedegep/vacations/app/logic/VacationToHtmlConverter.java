@@ -313,13 +313,15 @@ public class VacationToHtmlConverter extends VacationToTextConverterAbstract {
       buf.append("<br/>");
     }
     
-    if (location.isSetLocationType()) {
+    if (location.getLocationType() != null) {
       POICategoryId poiCategoryId = location.getLocationType();
-      addImage(buf, poiIcons.getIconUrl(poiCategoryId).toString(), 32, null, embedImages);
-//      buf.append("<img src=\"");
-//      buf.append(HtmlUtil.encodeHTML(poiIcons.getIconUrl(poiCategoryId).toString()));
-//      buf.append("\" height=\"32\" width=\"32\"/>");
-      separatorNeeded = true;
+      URL url = poiIcons.getIconUrl(poiCategoryId);
+      if (url != null) {
+        addImage(buf, url.toString(), 32, null, embedImages);
+        separatorNeeded = true;
+      } else {
+        LOGGER.severe("No icon for POICategoryId: " + poiCategoryId);
+      }
     }
     
     if (location.isSetName()) {
@@ -331,7 +333,7 @@ public class VacationToHtmlConverter extends VacationToTextConverterAbstract {
       newLineNeeded = true;
     }
     
-    if (location.isSetCity()) {
+    if (location.getCity() != null) {
       if (separatorNeeded) {
         buf.append(" - ");
       }
@@ -339,18 +341,12 @@ public class VacationToHtmlConverter extends VacationToTextConverterAbstract {
       newLineNeeded = true;
     }
     
-    if (location.isSetStreet()) {
+    if (location.getStreet() != null) {
       if (newLineNeeded) {
         buf.append("<br/>");
       }
-      if (location.getStreet() == null) {
-        LOGGER.severe("Street is set, but is null: " + location.toString());
-      }
       buf.append(HtmlUtil.encodeHTML(location.getStreet()));
-      if (location.isSetHouseNumber()) {
-        if (location.getHouseNumber() == null) {
-          LOGGER.severe("HouseNumber is set, but is null: " + location.toString());
-        }
+      if (location.getHouseNumber() != null) {
         buf.append(" ");
         buf.append(HtmlUtil.encodeHTML(location.getHouseNumber()));
       }
@@ -434,12 +430,8 @@ public class VacationToHtmlConverter extends VacationToTextConverterAbstract {
       buf.append(HtmlUtil.encodeHTML(picturePath.toUri().toString()));
       buf.append("\">");
       buf.append("<figure>");
-//      buf.append("<img src=\"");
-//      buf.append(HtmlUtil.encodeHTML(picturePath.toUri().toString()));
-//      buf.append("\" height=\"250\" >");
       String caption = VacationsUtils.getPictureCaption(picture);
       addImage(buf, picturePath.toUri().toString(), 250, caption, embedImages);
-//      buf.append("</img>");
       buf.append("</figure>");   
       buf.append("</a>");
     }
@@ -475,9 +467,6 @@ public class VacationToHtmlConverter extends VacationToTextConverterAbstract {
           }
           
           addImage(buf, iconUrl.toString(), 32, null, embedImage);
-//          buf.append("<img src=\"");
-//          buf.append(HtmlUtil.encodeHTML(iconUrl.toString()));
-//          buf.append("\" height=\"32\" ");
 
           String name = null;
           MetadataType metadataType = gpxType.getMetadata();
@@ -619,7 +608,6 @@ public class VacationToHtmlConverter extends VacationToTextConverterAbstract {
       buf.append("</figcaption>");
     }
     buf.append("</img>");
-//    .append("\" width=\"32\"/>");
     if (resizedFile != null) {
       try {
         Files.delete(Paths.get(resizedFile));

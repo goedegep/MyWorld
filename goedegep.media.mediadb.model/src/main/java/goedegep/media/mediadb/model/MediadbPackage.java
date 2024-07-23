@@ -22,7 +22,7 @@ import org.eclipse.emf.ecore.EReference;
  * </ul>
  * <!-- end-user-doc -->
  * <!-- begin-model-doc -->
- * D
+ * 
  * <!-- end-model-doc -->
  * @see goedegep.media.mediadb.model.MediadbFactory
  * @model kind="package"
@@ -162,13 +162,22 @@ public interface MediadbPackage extends EPackage {
   int TRACK___GET_ORIGINAL_DISC_TRACK_REFERENCE = 0;
 
   /**
+   * The operation id for the '<em>Get Track Artist</em>' operation.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int TRACK___GET_TRACK_ARTIST = 1;
+
+  /**
    * The number of operations of the '<em>Track</em>' class.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int TRACK_OPERATION_COUNT = 1;
+  int TRACK_OPERATION_COUNT = 2;
 
   /**
    * The meta object id for the '{@link goedegep.media.mediadb.model.impl.MediaDbImpl <em>Media Db</em>}' class.
@@ -489,22 +498,13 @@ public interface MediadbPackage extends EPackage {
   int ALBUM__DESCRIPTION = 11;
 
   /**
-   * The feature id for the '<em><b>Issued On Mediums</b></em>' attribute list.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int ALBUM__ISSUED_ON_MEDIUMS = 12;
-
-  /**
    * The feature id for the '<em><b>Compilation</b></em>' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int ALBUM__COMPILATION = 13;
+  int ALBUM__COMPILATION = 12;
 
   /**
    * The feature id for the '<em><b>My Info</b></em>' containment reference.
@@ -513,7 +513,7 @@ public interface MediadbPackage extends EPackage {
    * @generated
    * @ordered
    */
-  int ALBUM__MY_INFO = 14;
+  int ALBUM__MY_INFO = 13;
 
   /**
    * The feature id for the '<em><b>Soundtrack</b></em>' attribute.
@@ -522,7 +522,7 @@ public interface MediadbPackage extends EPackage {
    * @generated
    * @ordered
    */
-  int ALBUM__SOUNDTRACK = 15;
+  int ALBUM__SOUNDTRACK = 14;
 
   /**
    * The number of structural features of the '<em>Album</em>' class.
@@ -531,7 +531,7 @@ public interface MediadbPackage extends EPackage {
    * @generated
    * @ordered
    */
-  int ALBUM_FEATURE_COUNT = 16;
+  int ALBUM_FEATURE_COUNT = 15;
 
   /**
    * The operation id for the '<em>Get Track Reference</em>' operation.
@@ -1128,13 +1128,22 @@ public interface MediadbPackage extends EPackage {
   int TRACK_COLLECTION_FEATURE_COUNT = 2;
 
   /**
+   * The operation id for the '<em>Get Track Referece</em>' operation.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int TRACK_COLLECTION___GET_TRACK_REFERECE__ARTIST_STRING = 0;
+
+  /**
    * The number of operations of the '<em>Track Collection</em>' class.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int TRACK_COLLECTION_OPERATION_COUNT = 0;
+  int TRACK_COLLECTION_OPERATION_COUNT = 1;
 
   /**
    * The meta object id for the '{@link goedegep.media.mediadb.model.impl.VideoImpl <em>Video</em>}' class.
@@ -1412,6 +1421,16 @@ public interface MediadbPackage extends EPackage {
    * @generated
    */
   EOperation getTrack__GetOriginalDiscTrackReference();
+
+  /**
+   * Returns the meta object for the '{@link goedegep.media.mediadb.model.Track#getTrackArtist() <em>Get Track Artist</em>}' operation.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the '<em>Get Track Artist</em>' operation.
+   * @see goedegep.media.mediadb.model.Track#getTrackArtist()
+   * @generated
+   */
+  EOperation getTrack__GetTrackArtist();
 
   /**
    * Returns the meta object for class '{@link goedegep.media.mediadb.model.MediaDb <em>Media Db</em>}'.
@@ -1745,17 +1764,6 @@ public interface MediadbPackage extends EPackage {
    * @generated
    */
   EAttribute getAlbum_Description();
-
-  /**
-   * Returns the meta object for the attribute list '{@link goedegep.media.mediadb.model.Album#getIssuedOnMediums <em>Issued On Mediums</em>}'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the meta object for the attribute list '<em>Issued On Mediums</em>'.
-   * @see goedegep.media.mediadb.model.Album#getIssuedOnMediums()
-   * @see #getAlbum()
-   * @generated
-   */
-  EAttribute getAlbum_IssuedOnMediums();
 
   /**
    * Returns the meta object for the attribute '{@link goedegep.media.mediadb.model.Album#isCompilation <em>Compilation</em>}'.
@@ -2288,6 +2296,16 @@ public interface MediadbPackage extends EPackage {
   EReference getTrackCollection_TrackReferences();
 
   /**
+   * Returns the meta object for the '{@link goedegep.media.mediadb.model.TrackCollection#getTrackReferece(goedegep.media.mediadb.model.Artist, java.lang.String) <em>Get Track Referece</em>}' operation.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the '<em>Get Track Referece</em>' operation.
+   * @see goedegep.media.mediadb.model.TrackCollection#getTrackReferece(goedegep.media.mediadb.model.Artist, java.lang.String)
+   * @generated
+   */
+  EOperation getTrackCollection__GetTrackReferece__Artist_String();
+
+  /**
    * Returns the meta object for class '{@link goedegep.media.mediadb.model.Video <em>Video</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -2538,6 +2556,14 @@ public interface MediadbPackage extends EPackage {
     	 * @generated
     	 */
     EOperation TRACK___GET_ORIGINAL_DISC_TRACK_REFERENCE = eINSTANCE.getTrack__GetOriginalDiscTrackReference();
+
+    /**
+    	 * The meta object literal for the '<em><b>Get Track Artist</b></em>' operation.
+    	 * <!-- begin-user-doc -->
+    	 * <!-- end-user-doc -->
+    	 * @generated
+    	 */
+    EOperation TRACK___GET_TRACK_ARTIST = eINSTANCE.getTrack__GetTrackArtist();
 
     /**
     	 * The meta object literal for the '{@link goedegep.media.mediadb.model.impl.MediaDbImpl <em>Media Db</em>}' class.
@@ -2793,14 +2819,6 @@ public interface MediadbPackage extends EPackage {
     	 * @generated
     	 */
     EAttribute ALBUM__DESCRIPTION = eINSTANCE.getAlbum_Description();
-
-    /**
-    	 * The meta object literal for the '<em><b>Issued On Mediums</b></em>' attribute list feature.
-    	 * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-    	 * @generated
-    	 */
-    EAttribute ALBUM__ISSUED_ON_MEDIUMS = eINSTANCE.getAlbum_IssuedOnMediums();
 
     /**
     	 * The meta object literal for the '<em><b>Compilation</b></em>' attribute feature.
@@ -3220,6 +3238,15 @@ public interface MediadbPackage extends EPackage {
     	 * @generated
     	 */
     EReference TRACK_COLLECTION__TRACK_REFERENCES = eINSTANCE.getTrackCollection_TrackReferences();
+
+    /**
+    	 * The meta object literal for the '<em><b>Get Track Referece</b></em>' operation.
+    	 * <!-- begin-user-doc -->
+    	 * <!-- end-user-doc -->
+    	 * @generated
+    	 */
+    EOperation TRACK_COLLECTION___GET_TRACK_REFERECE__ARTIST_STRING = eINSTANCE
+        .getTrackCollection__GetTrackReferece__Artist_String();
 
     /**
     	 * The meta object literal for the '{@link goedegep.media.mediadb.model.impl.VideoImpl <em>Video</em>}' class.

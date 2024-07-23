@@ -38,7 +38,6 @@ public class NumberCellRenderer extends DefaultTableCellRenderer {
    *
    * @return the component that can render the contents of the cell.
    */
-  // TODO Cleanup, use formatter for creating the text.
   public Component getTableCellRendererComponent(final JTable table, 
       final Object value, final boolean isSelected, 
       final boolean hasFocus, final int row, final int column) {

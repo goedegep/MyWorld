@@ -1,6 +1,5 @@
 package goedegep.media.mediadb.albumeditor.guifx;
 
-import java.io.File;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -23,7 +22,6 @@ import goedegep.jfx.objectcontrols.ObjectControlAutoCompleteTextField;
 import goedegep.jfx.objectcontrols.ObjectControlEnumComboBox;
 import goedegep.jfx.objectcontrols.ObjectControlFlexDate;
 import goedegep.jfx.objectcontrols.ObjectControlFolderSelecter;
-import goedegep.jfx.objectcontrols.ObjectControlImageFile;
 import goedegep.jfx.objectcontrols.ObjectControlMultiLineString;
 import goedegep.jfx.objectcontrols.ObjectControlString;
 import goedegep.jfx.objectcontrols.ObjectControlTextField;
@@ -54,7 +52,6 @@ import goedegep.util.file.FileUtils;
 import goedegep.util.string.StringUtil;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -66,7 +63,6 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
@@ -98,6 +94,9 @@ public class AlbumEditor extends ObjectEditorTemplate<Album> {
   private static final MediadbFactory MEDIA_DB_FACTORY = MediadbFactory.eINSTANCE;
   private static final MediadbPackage MEDIA_DB_PACKAGE = MediadbPackage.eINSTANCE;
   
+  /**
+   * The GUI customization.
+   */
   private CustomizationFx customization;
 
   /**
@@ -128,7 +127,7 @@ public class AlbumEditor extends ObjectEditorTemplate<Album> {
   private ObjectControlTextField<String> albumTitleTextFieldObjectControl;
   
   /**
-   * Control for the album artist name.
+   * Control for the album artist.
    */
   private ObjectControlAutoCompleteTextField<Artist> albumArtistObjectControl;
   
@@ -136,115 +135,56 @@ public class AlbumEditor extends ObjectEditorTemplate<Album> {
    * Control for the album release date.
    * A <code>FlexDateFormat</code> is used to fill and parse this value.
    */
-  private ObjectControlFlexDate albumIssueDateTextField;
+  private ObjectControlFlexDate albumIssueDateObjectControl;
   
   /**
    * Control for the album Id.<br/>
    * The album Id is plain text.
    */
-  private ObjectControlTextField<String> albumIdTextField;
+  private ObjectControlTextField<String> albumIdObjectControl;
   
   /**
    * Object control for the collaborating artists, a.k.a. the {@code players}.
    */
-  private ObjectControlForPlayers objectControlForPlayers;
+  private ObjectControlForPlayers playersObjectControl;
   
   /**
-   * Control for the Description Title (which is plain text).
+   * Object control for the Description Title (which is plain text).
    */
-  private ObjectControlTextField<String> descriptionTitleTextField;
+  private ObjectControlTextField<String> descriptionTitleObjectControl;
   
   /**
-   * Control for the Description (which is plain MarkDown text).
+   * Object control for the Description (which is plain MarkDown text).
    */
-  private ObjectControlMultiLineString descriptionTextArea;
+  private ObjectControlMultiLineString descriptionObjectControl;
   
   /**
-   * Control for the front images.  
+   * Object control for the front images.  
    */
-  private ObjectControlForImages frontImagesPanel = null;
+  private ObjectControlForImages frontImagesObjectControl;
   
   /**
-   * Control for the front inside images.  
+   * Object control for the front inside images.  
    */
-  private ObjectControlForImages frontInsideImagesPanel = null;
+  private ObjectControlForImages frontInsideImagesObjectControl;
   
   /**
-   * Control for the back images.  
+   * Object control for the back images.  
    */
-  private ObjectControlForImages backImagesPanel = null;
+  private ObjectControlForImages backImagesObjectControl;
   
   /**
-   * Control for the label images.  
+   * Object control for the label images.  
    */
-  private ObjectControlForImages labelImagesPanel = null;
-  
-//  /**
-//   * List of front images files.
-//   * These are shown in the <code>frontImagesHBox</code>.
-//   */
-//  private List<ObjectControlImageFile> frontImageControls = null;
-  
-//  /**
-//   * Shows the album front pictures, which are stored in the <code>frontImageFiles</code>.
-//   */
-//  private HBox frontImagesHBox;
-  
-//  /**
-//   * List of front inside images files.
-//   * These are shown in the <code>frontInsideImagesHBox</code>.
-//   */
-//  private List<ObjectControlImageFile> frontInsideImageControls = null;
-//  
-//  /**
-//   * Shows the album front inlay pictures, which are stored in the <code>frontInsideImageFiles</code>.
-//   */
-//  private HBox frontInsideImagesHBox;
-  
-//  /**
-//   * List of back images files.
-//   * These are shown in the <code>backImagesHBox</code>.
-//   */
-//  private List<ObjectControlImageFile> backImageControls = null;
-//  
-//  /**
-//   * Shows the album back pictures, which are stored in the <code>backImageFiles</code>.
-//   */
-//  private HBox backImagesHBox;
-  
-//  /**
-//   * List of label images files.
-//   * These are shown in the <code>labelImagesHBox</code>.
-//   */
-//  private List<ObjectControlImageFile> labelImageControls = null;
-//  
-//  /**
-//   * Shows the album label pictures, which are stored in the <code>labelImageFiles</code>.
-//   */
-//  private HBox labelImagesHBox;
-  
+  private ObjectControlForImages labelImagesObjectControl;
+      
   /**
-   * Shows the media on which the album was issued
+   * Object control to select an 'issued on' medium.
    */
-  private HBox issuedOnMediaPane;
+  private ObjectControlEnumComboBox<MediumType> issuedOnObjectControl;
   
   /**
-   * List of media on which the album was issued
-   */
-  private List<Label> issuedOnMediaLabels = null;
-  
-  /**
-   * ComboBox to select an 'issued on' medium.
-   */
-  private ObjectControlEnumComboBox<MediumType> mediaComboBox;
-  
-  /**
-   * Button to add an 'issued on' medium.
-   */
-  Button addMediumTypeButton;
-  
-  /**
-   * Shows whether the album is a compilation album or not.
+   * Object control to select whether the album is a compilation album or not.
    */
   private CheckBox isCompilationAlbumCheckBox;
   
@@ -330,21 +270,21 @@ public class AlbumEditor extends ObjectEditorTemplate<Album> {
     albumTitleTextFieldObjectControl.setId("album title");
     albumArtistObjectControl = componentFactory.createObjectControlAutoCompleteTextField(artistStringConverterAndChecker, null, 300, false, "Enter the album artist");
     albumArtistObjectControl.setId("album artist");
-    albumIssueDateTextField = componentFactory.createObjectControlFlexDate(null, 600, false, "Optional first issue date of the album");
-    albumIssueDateTextField.setId("issue date");
-    albumIdTextField = componentFactory.createObjectControlTextField(null, null, 600, true, "Enter the optional Id of the album");
-    albumIdTextField.setId("album Id");
-    objectControlForPlayers = new ObjectControlForPlayers(customization, mediaDb);
-    objectControlForPlayers.setId("players");
+    albumIssueDateObjectControl = componentFactory.createObjectControlFlexDate(null, 600, false, "Optional first issue date of the album");
+    albumIssueDateObjectControl.setId("issue date");
+    albumIdObjectControl = componentFactory.createObjectControlTextField(null, null, 600, true, "Enter the optional Id of the album");
+    albumIdObjectControl.setId("album Id");
+    playersObjectControl = new ObjectControlForPlayers(customization, mediaDb);
+    playersObjectControl.setId("players");
     
-    frontImagesPanel = new ObjectControlForImages(customization, "Front images");
-    frontImagesPanel.setId("front images");
-    frontInsideImagesPanel = new ObjectControlForImages(customization, "Front inside images");
-    frontInsideImagesPanel.setId("front inside images");
-    backImagesPanel = new ObjectControlForImages(customization, "Back images");
-    backImagesPanel.setId("back images");
-    labelImagesPanel = new ObjectControlForImages(customization, "Label images");
-    labelImagesPanel.setId("label images");
+    frontImagesObjectControl = new ObjectControlForImages(customization, "Front images");
+    frontImagesObjectControl.setId("front images");
+    frontInsideImagesObjectControl = new ObjectControlForImages(customization, "Front inside images");
+    frontInsideImagesObjectControl.setId("front inside images");
+    backImagesObjectControl = new ObjectControlForImages(customization, "Back images");
+    backImagesObjectControl.setId("back images");
+    labelImagesObjectControl = new ObjectControlForImages(customization, "Label images");
+    labelImagesObjectControl.setId("label images");
 
 //    playerObjectControls = new ArrayList<>();
 //    frontImageControls = new ArrayList<>();
@@ -352,21 +292,10 @@ public class AlbumEditor extends ObjectEditorTemplate<Album> {
 //    backImageControls = new ArrayList<>();
 //    labelImageControls = new ArrayList<>();
 
-    descriptionTitleTextField = componentFactory.createObjectControlTextField(null, null, 600, true, "Enter the optional titel of the description");
-    descriptionTextArea = componentFactory.createObjectControlMultiLineString(null, 400, true, "Enter an optional description of the album");
+    descriptionTitleObjectControl = componentFactory.createObjectControlTextField(null, null, 600, true, "Enter the optional titel of the description");
+    descriptionObjectControl = componentFactory.createObjectControlMultiLineString(null, 400, true, "Enter an optional description of the album");
     
-    mediaComboBox = componentFactory.createObjectControlEnumComboBox(MediumType.CD_AUDIO, MediumType.NOT_SET, MEDIA_DB_PACKAGE.getMediumType(), false, "Select a medium on which the album is issued");
-    
-    addMediumTypeButton = componentFactory.createButton("Add medium", "Add this medium type");
-    addMediumTypeButton.setOnAction((e) -> {
-      MediumType selectedMediumType = mediaComboBox.getValue();
-      if (selectedMediumType != null  &&  selectedMediumType != MediumType.NOT_SET) {
-        Label label = componentFactory.createLabel(selectedMediumType.getLiteral());
-        issuedOnMediaLabels.add(label);
-        updateIssuedOnMediaPane();
-      }
-    });
-    issuedOnMediaLabels = new ArrayList<>();
+    issuedOnObjectControl = componentFactory.createObjectControlEnumComboBox(MediumType.CD_AUDIO, MediumType.NOT_SET, MEDIA_DB_PACKAGE.getMediumType(), false, "Select a medium on which the album is issued");
     
     isCompilationAlbumCheckBox = componentFactory.createCheckBox("compilation album", false);
     isSoundTrackCheckBox = componentFactory.createCheckBox("soundtrack", false);
@@ -381,13 +310,13 @@ public class AlbumEditor extends ObjectEditorTemplate<Album> {
     objectControlsGroup.addObjectControls(
         albumTitleTextFieldObjectControl,
         albumArtistObjectControl,
-        albumIssueDateTextField,
-        albumIdTextField,
-        objectControlForPlayers,
-        frontImagesPanel,
-        frontInsideImagesPanel,
-        backImagesPanel,
-        labelImagesPanel
+        albumIssueDateObjectControl,
+        albumIdObjectControl,
+        playersObjectControl,
+        frontImagesObjectControl,
+        frontInsideImagesObjectControl,
+        backImagesObjectControl,
+        labelImagesObjectControl
 //        descriptionTitleTextField,
 //        descriptionTextArea,
 //        iWantComboBox
@@ -483,14 +412,14 @@ public class AlbumEditor extends ObjectEditorTemplate<Album> {
     // Fourth row: 'Issue date: <album-issue-date>'
     label = componentFactory.createLabel("Issued:");
     gridPane.add(label, 0, 3);
-    gridPane.add(albumIssueDateTextField.getControl(), 1, 3);
-    gridPane.add(albumIssueDateTextField.getStatusIndicator(), 2, 3);
+    gridPane.add(albumIssueDateObjectControl.getControl(), 1, 3);
+    gridPane.add(albumIssueDateObjectControl.getStatusIndicator(), 2, 3);
     
     // Fifth row: 'Album Id: <album-id>'
     label = componentFactory.createLabel("Album Id:");
     gridPane.add(label, 0, 4);
-    gridPane.add(albumIdTextField.getControl(), 1, 4);
-    gridPane.add(albumIdTextField.getStatusIndicator(), 2, 4);
+    gridPane.add(albumIdObjectControl.getControl(), 1, 4);
+    gridPane.add(albumIdObjectControl.getStatusIndicator(), 2, 4);
     
     // Sixth row: 'Collaborating Artists:'
     label = componentFactory.createLabel("Collaborating artists:");
@@ -502,13 +431,13 @@ public class AlbumEditor extends ObjectEditorTemplate<Album> {
     
     mainPane.getChildren().add(gridPane);
     
-    mainPane.getChildren().add(objectControlForPlayers.getControl());
+    mainPane.getChildren().add(playersObjectControl.getControl());
 
     
     /*
      * Front, front inside, back and label images
      */
-    mainPane.getChildren().addAll(frontImagesPanel.getControl(), frontInsideImagesPanel.getControl(), backImagesPanel.getControl(), labelImagesPanel.getControl());
+    mainPane.getChildren().addAll(frontImagesObjectControl.getControl(), frontInsideImagesObjectControl.getControl(), backImagesObjectControl.getControl(), labelImagesObjectControl.getControl());
     
 //    /*
 //     * Front Inside images
@@ -596,12 +525,6 @@ public class AlbumEditor extends ObjectEditorTemplate<Album> {
 //    label = componentFactory.createLabel("Description:");
 //    gridPane.add(label, 0, 1);
 //    gridPane.add(descriptionTextArea.getControl(), 1, 1);
-//    
-//    // Third row: 'Issued on: <medium-1> ... <medium-n> <medium-select-combobox> <add-medium-button>    
-//    label = componentFactory.createLabel("Issued on:");
-//    gridPane.add(label, 0, 2);
-    issuedOnMediaPane = componentFactory.createHBox(10.0);
-//    gridPane.add(issuedOnMediaPane, 1, 2, 2, 4);
 //    
 //    mainPane.getChildren().add(gridPane);
 //    
@@ -753,12 +676,11 @@ public class AlbumEditor extends ObjectEditorTemplate<Album> {
 
     // Then the controls
     fillGeneralControlsFromAlbum(object);
-    objectControlForPlayers.setValue(object.getPlayers());
-    frontImagesPanel.setValue(object.getImagesFront());
-    frontInsideImagesPanel.setValue(object.getImagesFrontInside());
-    backImagesPanel.setValue(object.getImagesBack());
-    labelImagesPanel.setValue(object.getImagesLabel());
-    updateIssuedOnMediaPane();
+    playersObjectControl.setValue(object.getPlayers());
+    frontImagesObjectControl.setValue(object.getImagesFront());
+    frontInsideImagesObjectControl.setValue(object.getImagesFrontInside());
+    backImagesObjectControl.setValue(object.getImagesBack());
+    labelImagesObjectControl.setValue(object.getImagesLabel());
     updateCheckBoxes(object);
     updateAlbumReferences(object);
     //  updateDiscsPanel(object);
@@ -795,10 +717,10 @@ public class AlbumEditor extends ObjectEditorTemplate<Album> {
     // Then the controls
     fillGeneralControlsFromAlbum(album);
 //    redrawPlayersPane();
-    frontImagesPanel.setValue(album.getImagesFront());
-    frontInsideImagesPanel.setValue(album.getImagesFrontInside());
-    backImagesPanel.setValue(album.getImagesBack());
-    labelImagesPanel.setValue(album.getImagesLabel());
+    frontImagesObjectControl.setValue(album.getImagesFront());
+    frontInsideImagesObjectControl.setValue(album.getImagesFrontInside());
+    backImagesObjectControl.setValue(album.getImagesBack());
+    labelImagesObjectControl.setValue(album.getImagesLabel());
 
 //    updateIssuedOnMediaPane();
 //    redrawImagesPanel(frontImagesHBox, frontImageControls);
@@ -846,11 +768,11 @@ public class AlbumEditor extends ObjectEditorTemplate<Album> {
     albumTypeObjectControlEnumComboBox.setValue(AlbumType.NORMAL_ALBUM);
     albumTitleTextFieldObjectControl.setValue(null);
     albumArtistObjectControl.setValue(null);
-    albumIssueDateTextField.setValue(null);
-    albumIdTextField.setValue(null);
-    objectControlForPlayers.setValue(null);
-    descriptionTitleTextField.setValue(null);
-    descriptionTextArea.setValue(null);
+    albumIssueDateObjectControl.setValue(null);
+    albumIdObjectControl.setValue(null);
+    playersObjectControl.setValue(null);
+    descriptionTitleObjectControl.setValue(null);
+    descriptionObjectControl.setValue(null);
     myCommentsTextArea.setValue(null);
     iWantComboBox.ociSetValue(IWant.DONT_KNOW);
   }
@@ -861,7 +783,6 @@ public class AlbumEditor extends ObjectEditorTemplate<Album> {
    * @param album the <code>Album</code> for which the controls are updated. This value may be null, in which case all controls are cleared.
    */
   private void fillGeneralControlsFromAlbum(Album album) {
-    issuedOnMediaLabels.clear();
 
     if (album != null) {
       if (album.getMyInfo().getAlbumType() != null) {
@@ -871,18 +792,13 @@ public class AlbumEditor extends ObjectEditorTemplate<Album> {
 
       albumArtistObjectControl.setValue(album.getArtist());
 
-      albumIssueDateTextField.setValue(album.getReleaseDate());
+      albumIssueDateObjectControl.setValue(album.getReleaseDate());
 
-      albumIdTextField.setValue(album.getId());
+      albumIdObjectControl.setValue(album.getId());
 
-      descriptionTitleTextField.setValue(album.getDescriptionTitle());
+      descriptionTitleObjectControl.setValue(album.getDescriptionTitle());
 
-      descriptionTextArea.setValue(album.getDescription());
-
-      for (MediumType mediumType: album.getIssuedOnMediums()) {
-        Label label = componentFactory.createLabel(mediumType.getLiteral());
-        issuedOnMediaLabels.add(label);
-      }
+      descriptionObjectControl.setValue(album.getDescription());
 
       if (album.isSetMyInfo()) {
         MyInfo myInfo = album.getMyInfo();
@@ -895,10 +811,10 @@ public class AlbumEditor extends ObjectEditorTemplate<Album> {
     } else {
       albumTitleTextFieldObjectControl.setValue(null);
       albumArtistObjectControl.setValue(null);
-      albumIssueDateTextField.setValue(null);
-      albumIdTextField.setValue(null);
-      descriptionTitleTextField.setValue(null);
-      descriptionTextArea.setValue(null);
+      albumIssueDateObjectControl.setValue(null);
+      albumIdObjectControl.setValue(null);
+      descriptionTitleObjectControl.setValue(null);
+      descriptionObjectControl.setValue(null);
       myCommentsTextArea.setValue(null);
     }
   }
@@ -1041,19 +957,6 @@ public class AlbumEditor extends ObjectEditorTemplate<Album> {
 //    });
 //    playersGridPane.add(addPlayerButton, 0, row);   
 //  }
-  
-  /**
-   * Update the {@code issuedOnMediaPane}.
-   * 
-   * @param album
-   */
-  private void updateIssuedOnMediaPane() {
-    issuedOnMediaPane.getChildren().clear();
-    
-    issuedOnMediaPane.getChildren().addAll(issuedOnMediaLabels);
-    
-    issuedOnMediaPane.getChildren().addAll(mediaComboBox.getControl(), addMediumTypeButton);
-  }
   
 //  private void redrawImagesPanel(HBox imagesBox, List<ObjectControlImageFile> objectControlsImageFile) {
 //    LOGGER.info("=>");
@@ -1417,15 +1320,15 @@ public class AlbumEditor extends ObjectEditorTemplate<Album> {
     EmfUtil.setFeatureValue(object, MEDIA_DB_PACKAGE.getAlbum_Artist(), artist);
 
     // Issue date
-    FlexDate releaseDate = albumIssueDateTextField.getValue();
+    FlexDate releaseDate = albumIssueDateObjectControl.getValue();
     EmfUtil.setFeatureValue(object, MEDIA_DB_PACKAGE.getAlbum_ReleaseDate(), releaseDate);
     
     // Album Id
-    String albumIdText = albumIdTextField.getValue();
+    String albumIdText = albumIdObjectControl.getValue();
     EmfUtil.setFeatureValue(object, MEDIA_DB_PACKAGE.getAlbum_Id(), albumIdText);
     
     // Players
-    List<Player> players = objectControlForPlayers.getValue();
+    List<Player> players = playersObjectControl.getValue();
     
     // Update the complete list of players if there is any change.
     boolean playersChanged = false;
@@ -1461,26 +1364,23 @@ public class AlbumEditor extends ObjectEditorTemplate<Album> {
     }
     
     // Images front
-    setImagesIfChanged2(object.getImagesFront(), frontImagesPanel);
+    setImagesIfChanged2(object.getImagesFront(), frontImagesObjectControl);
     
     // Images front inside
-    setImagesIfChanged2(object.getImagesFrontInside(), frontInsideImagesPanel);
+    setImagesIfChanged2(object.getImagesFrontInside(), frontInsideImagesObjectControl);
     
     // Images back
-    setImagesIfChanged2(object.getImagesBack(), backImagesPanel);
+    setImagesIfChanged2(object.getImagesBack(), backImagesObjectControl);
     
     // Images label
-    setImagesIfChanged2(object.getImagesLabel(), labelImagesPanel);
-    
-    // Issued on
-    setIssuedOnMediumsIfChanged(object.getIssuedOnMediums(), issuedOnMediaLabels);
+    setImagesIfChanged2(object.getImagesLabel(), labelImagesObjectControl);
 
     // Description title
-    String descriptionTitleText = descriptionTitleTextField.getValue();
+    String descriptionTitleText = descriptionTitleObjectControl.getValue();
     EmfUtil.setFeatureValue(object, MEDIA_DB_PACKAGE.getAlbum_DescriptionTitle(), descriptionTitleText);
 
     // Description
-    String descriptionText = descriptionTextArea.getValue();
+    String descriptionText = descriptionObjectControl.getValue();
     EmfUtil.setFeatureValue(object, MEDIA_DB_PACKAGE.getAlbum_Description(), descriptionText);
 
     /*

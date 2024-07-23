@@ -12,6 +12,22 @@
     <relativePath>../goedegep.toplevelpom</relativePath>
   </parent>
   <dependencies>
+  	<dependency>
+  	  <!-- Required for PDF output. -->
+  	  <groupId>com.openhtmltopdf</groupId>
+  	  <artifactId>openhtmltopdf-pdfbox</artifactId>
+  	  <version>1.0.10</version>
+  	</dependency>
+  	<dependency>
+  	  <!-- Required for image output only. -->
+  	  <groupId>com.openhtmltopdf</groupId>
+  	  <artifactId>openhtmltopdf-core</artifactId>
+  	  <version>1.0.10</version>
+  	</dependency>
+    <dependency>
+      <groupId>commons-io</groupId>
+      <artifactId>commons-io</artifactId>
+    </dependency>
     <dependency>
       <groupId>goedegep.appgen</groupId>
       <artifactId>goedegep-appgen</artifactId>
@@ -27,6 +43,10 @@
     <dependency>
       <groupId>goedegep.properties</groupId>
       <artifactId>goedegep-properties-app</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>goedegep.properties</groupId>
+      <artifactId>goedegep-properties-model</artifactId>
     </dependency>
     <dependency>
       <groupId>goedegep.resources</groupId>
@@ -45,16 +65,27 @@
       <artifactId>junit</artifactId>
     </dependency>
     <dependency>
-     <groupId>org.eclipse.emf</groupId>
+      <groupId>org.eclipse.emf</groupId>
 	  <artifactId>org.eclipse.emf.common</artifactId>
     </dependency>
     <dependency>
-     <groupId>org.eclipse.emf</groupId>
+      <groupId>org.eclipse.emf</groupId>
 	  <artifactId>org.eclipse.emf.ecore</artifactId>
     </dependency>
     <dependency>
-     <groupId>org.eclipse.emf</groupId>
-	  <artifactId>org.eclipse.emf.ecore.xmi</artifactId>
+      <groupId>org.openjfx</groupId>
+	  <artifactId>javafx-base</artifactId>
+	  <classifier>win</classifier>
+    </dependency>
+    <dependency>
+      <groupId>org.openjfx</groupId>
+	  <artifactId>javafx-controls</artifactId>
+	  <classifier>win</classifier>
+    </dependency>
+    <dependency>
+      <groupId>org.openjfx</groupId>
+	  <artifactId>javafx-graphics</artifactId>
+	  <classifier>win</classifier>
     </dependency>
   </dependencies>
 </project>

@@ -619,6 +619,11 @@ public class FileUtils {
     String fileExtension = getFileExtension(fileName);
     return GPX_EXTENSION .equals(fileExtension);
   }
+  
+  public static String createPathNameFromPrefixAndFileName(String prefix, String fileName) {
+    File file = new File (prefix, fileName);
+    return file.getAbsolutePath();
+  }
 
   /**
    * Get the path (as String) of a file or folder relative to some base folder.<br/>
@@ -635,15 +640,9 @@ public class FileUtils {
     LOGGER.info("=> referenceFolder=" + referenceFolder + ", file" + fileName);
     
     File file = new File(fileName);
-    
-    
-//    if (fileName.startsWith(referenceFolder + "\\")) {
-    if (file.isAbsolute()) {
-      LOGGER.severe("Is absolute");
-    }
       
-    if (fileName.startsWith(referenceFolder)) {
-      String strippedName = fileName.substring(referenceFolder.length());
+    if (fileName.startsWith(referenceFolder)  &&  fileName.length() >= referenceFolder.length() + 1) {
+      String strippedName = fileName.substring(referenceFolder.length() + 1);  // +1 for the '/' between referenceFolder and the rest of the path.
       LOGGER.info("<= " + strippedName);
       return strippedName;
     } else {

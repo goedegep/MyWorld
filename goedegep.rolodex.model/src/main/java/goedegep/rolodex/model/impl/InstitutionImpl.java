@@ -22,6 +22,7 @@ import org.eclipse.emf.ecore.util.InternalEList;
 import goedegep.rolodex.model.Address;
 import goedegep.rolodex.model.AddressForPeriod;
 import goedegep.rolodex.model.AddressHolder;
+import goedegep.rolodex.model.Archive;
 import goedegep.rolodex.model.Institution;
 import goedegep.rolodex.model.PhoneNumber;
 import goedegep.rolodex.model.RolodexPackage;
@@ -37,6 +38,7 @@ import goedegep.rolodex.model.RolodexPackage;
  *   <li>{@link goedegep.rolodex.model.impl.InstitutionImpl#getPhoneNumbers <em>Phone Numbers</em>}</li>
  *   <li>{@link goedegep.rolodex.model.impl.InstitutionImpl#getAddress <em>Address</em>}</li>
  *   <li>{@link goedegep.rolodex.model.impl.InstitutionImpl#getPreviousAddresses <em>Previous Addresses</em>}</li>
+ *   <li>{@link goedegep.rolodex.model.impl.InstitutionImpl#isArchived <em>Archived</em>}</li>
  *   <li>{@link goedegep.rolodex.model.impl.InstitutionImpl#getName <em>Name</em>}</li>
  *   <li>{@link goedegep.rolodex.model.impl.InstitutionImpl#getMailingAddress <em>Mailing Address</em>}</li>
  * </ul>
@@ -73,6 +75,35 @@ public class InstitutionImpl extends MinimalEObjectImpl.Container implements Ins
    * @ordered
    */
   protected EList<AddressForPeriod> previousAddresses;
+
+  /**
+   * The default value of the '{@link #isArchived() <em>Archived</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #isArchived()
+   * @generated
+   * @ordered
+   */
+  protected static final boolean ARCHIVED_EDEFAULT = false;
+
+  /**
+   * The cached value of the '{@link #isArchived() <em>Archived</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #isArchived()
+   * @generated
+   * @ordered
+   */
+  protected boolean archived = ARCHIVED_EDEFAULT;
+
+  /**
+   * This is true if the Archived attribute has been set.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  protected boolean archivedESet;
 
   /**
    * The default value of the '{@link #getName() <em>Name</em>}' attribute.
@@ -230,6 +261,58 @@ public class InstitutionImpl extends MinimalEObjectImpl.Container implements Ins
    * @generated
    */
   @Override
+  public boolean isArchived() {
+    return archived;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public void setArchived(boolean newArchived) {
+    boolean oldArchived = archived;
+    archived = newArchived;
+    boolean oldArchivedESet = archivedESet;
+    archivedESet = true;
+    if (eNotificationRequired())
+      eNotify(new ENotificationImpl(this, Notification.SET, RolodexPackage.INSTITUTION__ARCHIVED, oldArchived, archived,
+          !oldArchivedESet));
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public void unsetArchived() {
+    boolean oldArchived = archived;
+    boolean oldArchivedESet = archivedESet;
+    archived = ARCHIVED_EDEFAULT;
+    archivedESet = false;
+    if (eNotificationRequired())
+      eNotify(new ENotificationImpl(this, Notification.UNSET, RolodexPackage.INSTITUTION__ARCHIVED, oldArchived,
+          ARCHIVED_EDEFAULT, oldArchivedESet));
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public boolean isSetArchived() {
+    return archivedESet;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
   public Address getMailingAddress() {
     if (mailingAddress != null && mailingAddress.eIsProxy()) {
       InternalEObject oldMailingAddress = (InternalEObject) mailingAddress;
@@ -341,6 +424,8 @@ public class InstitutionImpl extends MinimalEObjectImpl.Container implements Ins
       return basicGetAddress();
     case RolodexPackage.INSTITUTION__PREVIOUS_ADDRESSES:
       return getPreviousAddresses();
+    case RolodexPackage.INSTITUTION__ARCHIVED:
+      return isArchived();
     case RolodexPackage.INSTITUTION__NAME:
       return getName();
     case RolodexPackage.INSTITUTION__MAILING_ADDRESS:
@@ -371,6 +456,9 @@ public class InstitutionImpl extends MinimalEObjectImpl.Container implements Ins
       getPreviousAddresses().clear();
       getPreviousAddresses().addAll((Collection<? extends AddressForPeriod>) newValue);
       return;
+    case RolodexPackage.INSTITUTION__ARCHIVED:
+      setArchived((Boolean) newValue);
+      return;
     case RolodexPackage.INSTITUTION__NAME:
       setName((String) newValue);
       return;
@@ -398,6 +486,9 @@ public class InstitutionImpl extends MinimalEObjectImpl.Container implements Ins
     case RolodexPackage.INSTITUTION__PREVIOUS_ADDRESSES:
       getPreviousAddresses().clear();
       return;
+    case RolodexPackage.INSTITUTION__ARCHIVED:
+      unsetArchived();
+      return;
     case RolodexPackage.INSTITUTION__NAME:
       setName(NAME_EDEFAULT);
       return;
@@ -422,6 +513,8 @@ public class InstitutionImpl extends MinimalEObjectImpl.Container implements Ins
       return address != null;
     case RolodexPackage.INSTITUTION__PREVIOUS_ADDRESSES:
       return previousAddresses != null && !previousAddresses.isEmpty();
+    case RolodexPackage.INSTITUTION__ARCHIVED:
+      return isSetArchived();
     case RolodexPackage.INSTITUTION__NAME:
       return NAME_EDEFAULT == null ? name != null : !NAME_EDEFAULT.equals(name);
     case RolodexPackage.INSTITUTION__MAILING_ADDRESS:
@@ -447,6 +540,14 @@ public class InstitutionImpl extends MinimalEObjectImpl.Container implements Ins
         return -1;
       }
     }
+    if (baseClass == Archive.class) {
+      switch (derivedFeatureID) {
+      case RolodexPackage.INSTITUTION__ARCHIVED:
+        return RolodexPackage.ARCHIVE__ARCHIVED;
+      default:
+        return -1;
+      }
+    }
     return super.eBaseStructuralFeatureID(derivedFeatureID, baseClass);
   }
 
@@ -463,6 +564,14 @@ public class InstitutionImpl extends MinimalEObjectImpl.Container implements Ins
         return RolodexPackage.INSTITUTION__ADDRESS;
       case RolodexPackage.ADDRESS_HOLDER__PREVIOUS_ADDRESSES:
         return RolodexPackage.INSTITUTION__PREVIOUS_ADDRESSES;
+      default:
+        return -1;
+      }
+    }
+    if (baseClass == Archive.class) {
+      switch (baseFeatureID) {
+      case RolodexPackage.ARCHIVE__ARCHIVED:
+        return RolodexPackage.INSTITUTION__ARCHIVED;
       default:
         return -1;
       }

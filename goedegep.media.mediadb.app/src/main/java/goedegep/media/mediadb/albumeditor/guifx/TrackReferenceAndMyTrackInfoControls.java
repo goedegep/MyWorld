@@ -1152,12 +1152,6 @@ class TrackReferenceAndMyTrackInfoControls extends TrackReferenceControlsAbstrac
   }
 
   @Override
-  public void setValue(TrackReference objectValue) {
-    // TODO Auto-generated method stub
-    
-  }
-
-  @Override
   public TrackReference getValue() {
 //    Track tr = mediaDb.getTrack();
     Track aTrack = getTrack();
@@ -1222,7 +1216,7 @@ class TrackReferenceAndMyTrackInfoControls extends TrackReferenceControlsAbstrac
   }
 
   @Override
-  protected boolean ociDetermineFilledIn() {
+  protected boolean ociDetermineFilledIn(Object source) {
     // TODO Auto-generated method stub
     return false;
   }
@@ -1247,6 +1241,12 @@ class TrackReferenceAndMyTrackInfoControls extends TrackReferenceControlsAbstrac
 
   public Track getNewTrack() {
     return newTrack;
+  }
+
+  @Override
+  protected void ociUpdateNonSourceControls(Object source) {
+    // TODO Auto-generated method stub
+    
   }
   
 }

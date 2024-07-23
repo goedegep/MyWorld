@@ -25,7 +25,6 @@ public class DefaultAppResourcesFx extends AbstractAppResourcesFx {
     
     try {
       applicationImages[0] = new Image(goedegep.jfx.DefaultAppResourcesFx.class.getResourceAsStream("java_icon.gif"));
-      
     } catch (RuntimeException e) {
       e.printStackTrace();
     }

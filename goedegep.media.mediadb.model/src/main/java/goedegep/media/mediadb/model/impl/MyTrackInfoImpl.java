@@ -10,7 +10,7 @@ import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EClass;
-
+import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
@@ -19,10 +19,12 @@ import org.eclipse.emf.ecore.util.InternalEList;
 
 import goedegep.media.mediadb.model.Album;
 import goedegep.media.mediadb.model.Collection;
+import goedegep.media.mediadb.model.Disc;
 import goedegep.media.mediadb.model.IWant;
 import goedegep.media.mediadb.model.MediadbPackage;
 import goedegep.media.mediadb.model.MediumInfo;
 import goedegep.media.mediadb.model.MyTrackInfo;
+import goedegep.media.mediadb.model.TrackCollection;
 import goedegep.media.mediadb.model.TrackReference;
 
 /**
@@ -485,14 +487,23 @@ public class MyTrackInfoImpl extends MinimalEObjectImpl.Container implements MyT
     buf.append("  iHaveOn: ");
     buf.append(isSetIHaveOn() ? getIHaveOn().toString() : "<no-ihave-on>").append(NEWLINE);
 
-    buf.append("  compilationTrackReference: ");
+    buf.append("  trackReference: ");
     if (isSetCompilationTrackReference()) {
-      TrackReference compilationTrackReference = getCompilationTrackReference();
-      Album compilationAlbum = compilationTrackReference.getDisc().getAlbum();
-      buf.append("track '").append(compilationTrackReference.getTrack().getTitle()).append("' on '")
-          .append(compilationAlbum.getTitle()).append("'");
+      TrackReference trackReference = getCompilationTrackReference();
+      EObject eContainer = trackReference.eContainer();
+      if (eContainer instanceof Disc) {
+        Disc disc = (Disc) eContainer;
+        Album compilationAlbum = disc.getAlbum();
+        buf.append("track '").append(trackReference.getTrack().getTitle()).append("' on '")
+            .append(compilationAlbum.getTitle()).append("'");
+      } else if (eContainer instanceof TrackCollection) {
+        TrackCollection trackCollection = (TrackCollection) eContainer;
+        buf.append("track '").append(trackReference.getTrack().getTitle()).append("' in collection '")
+            .append(trackCollection.getCollection().getName()).append("'");
+      }
+
     } else {
-      buf.append("<no-compilation-track-reference>");
+      buf.append("<no-track-reference>");
     }
     buf.append(NEWLINE);
 

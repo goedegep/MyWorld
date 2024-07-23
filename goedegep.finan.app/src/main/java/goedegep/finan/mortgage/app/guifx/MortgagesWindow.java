@@ -21,6 +21,7 @@ import goedegep.finan.mortgage.MortgageReportsGenerator;
 import goedegep.finan.mortgage.model.InterestCompensationMortgage;
 import goedegep.finan.mortgage.model.InterestCompensationMortgageYearlyOverview;
 import goedegep.finan.mortgage.model.Mortgage;
+import goedegep.finan.mortgage.model.MortgageEvent;
 import goedegep.finan.mortgage.model.MortgageFactory;
 import goedegep.finan.mortgage.model.MortgagePackage;
 import goedegep.finan.mortgage.model.MortgageYearlyOverview;
@@ -31,11 +32,13 @@ import goedegep.finan.mortgage.model.util.MortgageUtil;
 import goedegep.jfx.ComponentFactoryFx;
 import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.JfxStage;
+import goedegep.jfx.eobjecttable.EObjectListContainerSpecification;
 import goedegep.jfx.eobjecttable.EObjectTable;
 import goedegep.properties.app.guifx.PropertiesEditor;
 import goedegep.rolodex.model.Rolodex;
 import goedegep.util.emf.EMFNotificationListener;
 import goedegep.util.emf.EMFResource;
+import goedegep.util.emf.EmfUtil;
 import goedegep.util.i18n.TranslationFormatter;
 import goedegep.util.text.TextWriter;
 import javafx.event.ActionEvent;
@@ -82,6 +85,8 @@ public class MortgagesWindow extends JfxStage implements EMFNotificationListener
   private MortgageEventsTable mortgageEventsTable = null;
   @SuppressWarnings("rawtypes")
   private EObjectTable mortgageYearlyOverviewsTable = null;
+  private List<MortgageYearlyOverview> yearlyOverviews = null;
+  private EObjectListContainerSpecification listContainerSpecification;
   private VBox mortgageYearlyOverviewsTableBox = null;
   private Label statusLabel = new Label("");
   
@@ -405,20 +410,26 @@ public class MortgagesWindow extends JfxStage implements EMFNotificationListener
     }
   }
   
-  @SuppressWarnings("unchecked")
   private void handleNewHypotheekSelected() {
     hypotheekInfoPanel.setHypotheek(mortgageCalculator);
-    mortgageEventsTable.setMortgageEvents(mortgageCalculator.getCalculatedMortgageEvents());
+    listContainerSpecification = mortgageEventsTable.createObjectListContainer();
+    List<MortgageEvent> mortgageEvents = EmfUtil.getListUnchecked(listContainerSpecification.listContainer(), listContainerSpecification.listReference());
+    List<MortgageEvent> calculatedMortgageEvents = mortgageCalculator.getCalculatedMortgageEvents();
+    if (calculatedMortgageEvents != null) {
+      mortgageEvents.addAll(calculatedMortgageEvents);
+    }
+    mortgageEventsTable.setObjects(listContainerSpecification);
     
     if (mortgage instanceof InterestCompensationMortgage) {
-      List<InterestCompensationMortgageYearlyOverview> yearlyOverviews = getInterestCompensationYearlyOverviews();
       if (mortgageYearlyOverviewsTable == null  ||  mortgageYearlyOverviewsTable instanceof MortgageYearlyOverviewsTable) {
-        mortgageYearlyOverviewsTable = new InterestCompensationMortgageYearlyOverviewsTable(customization, yearlyOverviews);
+        mortgageYearlyOverviewsTable = new InterestCompensationMortgageYearlyOverviewsTable(customization);
+        listContainerSpecification = mortgageYearlyOverviewsTable.createObjectListContainer();
+        yearlyOverviews = EmfUtil.getListUnchecked(listContainerSpecification.listContainer(), listContainerSpecification.listReference());
         mortgageYearlyOverviewsTableBox.getChildren().clear();
         mortgageYearlyOverviewsTableBox.getChildren().add(mortgageYearlyOverviewsTable);
-      } else {
-        mortgageYearlyOverviewsTable.setObjects(yearlyOverviews);
       }
+      getInterestCompensationYearlyOverviews(yearlyOverviews);
+      mortgageYearlyOverviewsTable.setObjects(listContainerSpecification);
     } else {
       MortgageYearlyOverviews yearlyOverviews = getYearlyOverviews();
       if ((mortgageYearlyOverviewsTable == null)  ||  mortgageYearlyOverviewsTable instanceof InterestCompensationMortgageYearlyOverviewsTable) {
@@ -459,8 +470,7 @@ public class MortgagesWindow extends JfxStage implements EMFNotificationListener
     return mortgageYearlyOverviews;
   }
   
-  private List<InterestCompensationMortgageYearlyOverview> getInterestCompensationYearlyOverviews() {
-    List<InterestCompensationMortgageYearlyOverview> yearlyOverviews = new ArrayList<>();
+  private void getInterestCompensationYearlyOverviews(List<MortgageYearlyOverview> yearlyOverviews) {
     
     int startYear = mortgageCalculator.getStartYear();
     int endYear = mortgageCalculator.getActualEndYear();
@@ -471,8 +481,6 @@ public class MortgagesWindow extends JfxStage implements EMFNotificationListener
         yearlyOverviews.add(mortgageYearlyOverview);
       }
     }
-    
-    return yearlyOverviews;
   }
   
   private void saveMortgages() {
@@ -566,12 +574,15 @@ public class MortgagesWindow extends JfxStage implements EMFNotificationListener
   
   private void showFixedEvents() {
     LOGGER.severe("=>");
-    mortgageEventsTable.setMortgageEvents(mortgage.getMortgageEvents());
+    mortgageEventsTable.setObjects(mortgage.getMortgageEvents());
   }
   
   private void showAllEvents() {
     LOGGER.severe("=>");
-    mortgageEventsTable.setMortgageEvents(mortgageCalculator.getCalculatedMortgageEvents());
+    EObjectListContainerSpecification listContainerSpecification = mortgageEventsTable.createObjectListContainer();
+    List<MortgageEvent> mortgageEvents = EmfUtil.getListUnchecked(listContainerSpecification.listContainer(), listContainerSpecification.listReference());
+    mortgageEvents.addAll(mortgageCalculator.getCalculatedMortgageEvents());
+    mortgageEventsTable.setObjects(listContainerSpecification);
   }
   
   /**

@@ -1,5 +1,6 @@
 package goedegep.myworld.installer;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.DirectoryIteratorException;
@@ -207,7 +208,7 @@ public class MyWorldInstaller extends JfxApplication {
       "co\\kaleidok\\javaFlacEncoder\\0.3.2-SNAPSHOT\\javaFlacEncoder-0.3.2-SNAPSHOT.jar",
       "com\\atlassian\\commonmark\\commonmark\\0.12.1\\commonmark-0.12.1.jar",
       "com\\ealva\\ealvatag\\0.4.3\\ealvatag-0.4.3.jar",
-      "com\\google\\code\\findbugs\\jsr305\\3.0.2\\jsr305-3.0.2.jar",
+      "com\\google\\code\\findbugs\\jsr305\\com.google.code.findbugs.jsr305\\1.0-SNAPSHOT\\com.google.code.findbugs.jsr305-1.0-SNAPSHOT.jar",
       "com\\google\\code\\gson\\gson\\2.8.9\\gson-2.8.9.jar",
       "com\\google\\common\\geometry\\com.google.common.geometry\\1.0-SNAPSHOT\\com.google.common.geometry-1.0-SNAPSHOT.jar",
       "com\\google\\errorprone\\error_prone_annotations\\2.5.1\\error_prone_annotations-2.5.1.jar",
@@ -220,7 +221,7 @@ public class MyWorldInstaller extends JfxApplication {
       "com\\openhtmltopdf\\openhtmltopdf-core\\1.0.0\\openhtmltopdf-core-1.0.0.jar",
       "com\\openhtmltopdf\\openhtmltopdf-pdfbox\\1.0.0\\openhtmltopdf-pdfbox-1.0.0.jar",
       "com\\sun\\istack\\istack-commons-runtime\\4.1.1\\istack-commons-runtime-4.1.1.jar",
-      "commons-cli\\commons-cli\\1.4\\commons-cli-1.4.jar",
+      "org\\apache\\commons\\cli\\org.apache.commons.cli\\1.0-SNAPSHOT\\org.apache.commons.cli-1.0-SNAPSHOT.jar",
       "commons-io\\commons-io\\2.7\\commons-io-2.7.jar",
       "commons-logging\\commons-logging\\1.2\\commons-logging-1.2.jar",
       "de\\micromata\\jak\\JavaAPIforKml\\2.3.0-SNAPSHOT\\JavaAPIforKml-2.3.0-SNAPSHOT.jar",
@@ -337,7 +338,7 @@ public class MyWorldInstaller extends JfxApplication {
           statusLabel.setText("Specified installFolder '" + installFolderName + "' can't be created. System message: " + e.getMessage());
         }
       }
-      installationFolder.ocSetFilename(installFolderName);
+      installationFolder.setValue(new File(installFolderName));
     }
     
     // If a second argument is present, set it as User Data directory
@@ -350,7 +351,7 @@ public class MyWorldInstaller extends JfxApplication {
           statusLabel.setText("Specified User Data folder '" + userDataFolderName + "' can't be created. System message: " + e.getMessage());
         }
       }
-      userDataFolder.ocSetFilename(userDataFolderName);
+      userDataFolder.setValue(new File(userDataFolderName));
     }
     
 //    if (!runButton.isDisabled()) {

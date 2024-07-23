@@ -1645,6 +1645,7 @@ public class RolodexPackageImpl extends EPackageImpl implements RolodexPackage {
     personEClass.getESuperTypes().add(this.getArchive());
     institutionEClass.getESuperTypes().add(this.getPhoneNumberHolder());
     institutionEClass.getESuperTypes().add(this.getAddressHolder());
+    institutionEClass.getESuperTypes().add(this.getArchive());
     employeeEClass.getESuperTypes().add(this.getPhoneNumberHolder());
     familyEClass.getESuperTypes().add(this.getPhoneNumberHolder());
     familyEClass.getESuperTypes().add(this.getAddressHolder());

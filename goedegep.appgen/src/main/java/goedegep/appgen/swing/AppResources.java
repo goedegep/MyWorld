@@ -23,7 +23,7 @@ public interface AppResources {
   final static int IMAGE_BORDER_SIZE = 4;
   
   // The basic image represents the application in which it is used.  
-  public ImageIcon getSmallIconDisabled();  // TODO AAA make generic
+  public ImageIcon getSmallIconDisabled();
   
   /*
    * Get the raw default images. These are the fall back images for when there are no class specific images.

@@ -52,7 +52,7 @@ public class AddressTextField extends ObjectControlAutoCompleteTextField<String>
     List<String> addressesTexts = new ArrayList<>();
     
     for (Address address: addresses) {
-      LOGGER.severe("adding address: " + address);
+      LOGGER.info(address.toString());
       addressesTexts.add(address.toString());
     }
     

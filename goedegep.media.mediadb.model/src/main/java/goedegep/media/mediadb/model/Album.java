@@ -32,7 +32,6 @@ import org.eclipse.emf.ecore.EObject;
  *   <li>{@link goedegep.media.mediadb.model.Album#getImagesLabel <em>Images Label</em>}</li>
  *   <li>{@link goedegep.media.mediadb.model.Album#getDescriptionTitle <em>Description Title</em>}</li>
  *   <li>{@link goedegep.media.mediadb.model.Album#getDescription <em>Description</em>}</li>
- *   <li>{@link goedegep.media.mediadb.model.Album#getIssuedOnMediums <em>Issued On Mediums</em>}</li>
  *   <li>{@link goedegep.media.mediadb.model.Album#isCompilation <em>Compilation</em>}</li>
  *   <li>{@link goedegep.media.mediadb.model.Album#getMyInfo <em>My Info</em>}</li>
  *   <li>{@link goedegep.media.mediadb.model.Album#isSoundtrack <em>Soundtrack</em>}</li>
@@ -571,47 +570,6 @@ public interface Album extends EObject {
    * @generated
    */
   boolean isSetDescription();
-
-  /**
-   * Returns the value of the '<em><b>Issued On Mediums</b></em>' attribute list.
-   * The list contents are of type {@link goedegep.media.mediadb.model.MediumType}.
-   * The literals are from the enumeration {@link goedegep.media.mediadb.model.MediumType}.
-   * <!-- begin-user-doc -->
-   * <p>
-   * If the meaning of the '<em>Issued On Mediums</em>' attribute list isn't clear,
-   * there really should be more of a description here...
-   * </p>
-   * <!-- end-user-doc -->
-   * @return the value of the '<em>Issued On Mediums</em>' attribute list.
-   * @see goedegep.media.mediadb.model.MediumType
-   * @see #isSetIssuedOnMediums()
-   * @see #unsetIssuedOnMediums()
-   * @see goedegep.media.mediadb.model.MediadbPackage#getAlbum_IssuedOnMediums()
-   * @model unsettable="true"
-   * @generated
-   */
-  EList<MediumType> getIssuedOnMediums();
-
-  /**
-   * Unsets the value of the '{@link goedegep.media.mediadb.model.Album#getIssuedOnMediums <em>Issued On Mediums</em>}' attribute list.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #isSetIssuedOnMediums()
-   * @see #getIssuedOnMediums()
-   * @generated
-   */
-  void unsetIssuedOnMediums();
-
-  /**
-   * Returns whether the value of the '{@link goedegep.media.mediadb.model.Album#getIssuedOnMediums <em>Issued On Mediums</em>}' attribute list is set.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return whether the value of the '<em>Issued On Mediums</em>' attribute list is set.
-   * @see #unsetIssuedOnMediums()
-   * @see #getIssuedOnMediums()
-   * @generated
-   */
-  boolean isSetIssuedOnMediums();
 
   /**
    * Returns the value of the '<em><b>Compilation</b></em>' attribute.

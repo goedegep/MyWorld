@@ -54,18 +54,21 @@ import javafx.scene.Node;
  * Besides this there is a status indicator control, which can be obtained via {@link getStatusIndicator}.<br/>
  * If an ObjectControl has more GUI controls (like e.g. the ObjectControlFileSelecter) this control will provide extra methods to obtain these controls.
  * <p>
- * <b>Textual representations</b><br/>
+ * <b>Textual representation</b><br/>
  * As the control often already represents the value in a textual form, this text can also be obtained via {@link #getValueAsFormattedText()}.<br/>
+ * <p>
+ * <b>Textual error description</b><br/>
  * In case of an error an error message can be obtained via {@link #getErrorText()}.
  * <p>
  * <b>Id</b><br/>
- * To identify your controls, you can set an Id. See the methods {@link #getId()} and {@link #setId()}.
+ * To identify your controls, you can set an Id (just like {@code javafx.scene.Node.setId()}). See the methods {@link #getId()} and {@link #setId()}.
  * <p>
  * <b>Listeners</b>
  * This interface extends the {@link Observable} interface. It notifies listeners upon any change in the control.<br/>
  * For convenience there is an extra method {@link #removeListeners()} to remove all listeners.
- * <b>How to write an ObjectControl</b>
- * Extend the class ObjectControlAbstract and follow the documentation within that class.
+ * <h3>How to write an ObjectControl</h3>
+ * Of course you can simple implement this interface, but in general it is advised to
+ * extend the class {@link ObjectControlTemplate} and follow the documentation within that class.
  * 
  * @param T The value type handled by the control
  */

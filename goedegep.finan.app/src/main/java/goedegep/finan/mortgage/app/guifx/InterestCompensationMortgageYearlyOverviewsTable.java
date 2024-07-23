@@ -12,8 +12,8 @@ import goedegep.jfx.eobjecttable.EObjectTableDescriptor;
 
 public class InterestCompensationMortgageYearlyOverviewsTable extends EObjectTable<InterestCompensationMortgageYearlyOverview> {
   
-  public InterestCompensationMortgageYearlyOverviewsTable(CustomizationFx customization, List<InterestCompensationMortgageYearlyOverview> mortgageYearlyOverviews) {
-    super(customization, MortgagePackage.eINSTANCE.getInterestCompensationMortgageYearlyOverview(), new InterestCompensationMortgageYearlyOverviewsTableDescriptor(), mortgageYearlyOverviews);
+  public InterestCompensationMortgageYearlyOverviewsTable(CustomizationFx customization) {
+    super(customization, MortgagePackage.eINSTANCE.getInterestCompensationMortgageYearlyOverview(), new InterestCompensationMortgageYearlyOverviewsTableDescriptor());
   }
 
 }

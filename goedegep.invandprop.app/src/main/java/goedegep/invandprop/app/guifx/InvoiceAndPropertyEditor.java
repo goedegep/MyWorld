@@ -1,13 +1,14 @@
 package goedegep.invandprop.app.guifx;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.logging.Logger;
 
 import goedegep.invandprop.app.InvoicesAndPropertiesRegistry;
-import goedegep.invandprop.app.InvoicesAndPropertiesUtil;
 import goedegep.invandprop.model.Expenditure;
 import goedegep.invandprop.model.InvAndPropFactory;
 import goedegep.invandprop.model.InvAndPropPackage;
@@ -649,8 +650,9 @@ public class InvoiceAndPropertyEditor extends ObjectEditorTemplate<Invoice> {
    * @param fileReferencePanel the {@code FileReferencePanel} from which the {@code fileReference} will be updated.
    */
   private void updateFileReferenceFromFileReferencePanel(FileReference fileReference, FileReferencePanel fileReferencePanel) {
-    if (fileReferencePanel.getFile() != null) {
-      fileReference.setFile(stripBaseDirFromFilename(fileReferencePanel.getFile()));
+    String fileName = fileReferencePanel.getPathNameRelativeToPrefix();
+    if (fileName != null) {
+      fileReference.setFile(fileName);
     }
 
     if (fileReferencePanel.getTitleObjectControl().isFilledIn()) {
@@ -707,7 +709,7 @@ public class InvoiceAndPropertyEditor extends ObjectEditorTemplate<Invoice> {
       FileReferencePanel fileReferencePanel = createNewDocumentReferencePanel(false);
       
       if (fileReference.isSetFile()) {
-        fileReferencePanel.getFileSelecterObjectControl().ocSetFilename(InvoicesAndPropertiesUtil.prependBaseDirToRelativeFilename(fileReference.getFile()));
+        fileReferencePanel.setPathNameRelativeToPrefix(fileReference.getFile());
       }
       
       if (fileReference.isSetTitle()) {
@@ -728,7 +730,7 @@ public class InvoiceAndPropertyEditor extends ObjectEditorTemplate<Invoice> {
       FileReferencePanel fileReferencePanel = createNewPictureReferencePanel(false);
       
       if (fileReference.isSetFile()) {
-        fileReferencePanel.getFileSelecterObjectControl().ocSetFilename(InvoicesAndPropertiesUtil.prependBaseDirToRelativeFilename(fileReference.getFile()));
+        fileReferencePanel.setPathNameRelativeToPrefix(fileReference.getFile());
       }
       
       if (fileReference.isSetTitle()) {
@@ -1210,13 +1212,18 @@ public class InvoiceAndPropertyEditor extends ObjectEditorTemplate<Invoice> {
    * 
    * @param fileName the file name of the picture to show.
    */
-  private void updatePictureViewPanel(String fileName) {
+  private void updatePictureViewPanel(File file) {
     pictureViewPanel.getChildren().clear();
     
-    Image image = new Image("file:" + fileName, 300, 300, true, true);
-    ImageView imageView = new ImageView(image);
-    
-    pictureViewPanel.getChildren().add(imageView);
+    Image image;
+    try {
+      image = new Image(new FileInputStream(file), 300, 300, true, true);
+      ImageView imageView = new ImageView(image);
+      
+      pictureViewPanel.getChildren().add(imageView);
+    } catch (FileNotFoundException e) {
+      e.printStackTrace();
+    }
   }
   
   /**
@@ -1301,17 +1308,15 @@ public class InvoiceAndPropertyEditor extends ObjectEditorTemplate<Invoice> {
     // Try to get the folder from existing document and picture references.
     
     for (FileReferencePanel fileReferencePanel: documentReferencePanels) {
-      String filename = fileReferencePanel.getFile();
-      if (filename != null) {
-        File file = new File(filename);
+      File file = fileReferencePanel.getFile();
+      if (file != null) {
         return file.getParent();
       }
     }
     
     for (FileReferencePanel fileReferencePanel: pictureReferencePanels) {
-      String filename = fileReferencePanel.getFile();
-      if (filename != null) {
-        File file = new File(filename);
+      File file = fileReferencePanel.getFile();
+      if (file != null) {
         return file.getParent();
       }
     }
@@ -1379,9 +1384,9 @@ public class InvoiceAndPropertyEditor extends ObjectEditorTemplate<Invoice> {
       @Override
       public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
         if (newValue) {
-          String fileName = pictureReferencePanel.getFile();
-          if (fileName != null) {
-            updatePictureViewPanel(fileName);
+          File file = pictureReferencePanel.getFile();
+          if (file != null) {
+            updatePictureViewPanel(file);
           }
         }
         
@@ -1489,15 +1494,15 @@ public class InvoiceAndPropertyEditor extends ObjectEditorTemplate<Invoice> {
     gridPane.add(statusIndicator, 2, rowIndex);
   }
   
-  private String stripBaseDirFromFilename(String fileName) {
-    File baseDir = new File(InvoicesAndPropertiesRegistry.propertyRelatedFilesFolder);
-    if ((fileName.length() > baseDir.getAbsolutePath().length() + 1)  &&
-        fileName.startsWith(baseDir.getAbsolutePath())  &&
-        (fileName.charAt(baseDir.getAbsolutePath().length()) == '\\')) {
-      fileName = fileName.substring(baseDir.getAbsolutePath().length() + 1);
-    }
-    
-    return fileName;
-  }
+//  private String stripBaseDirFromFilename(String fileName) {
+//    File baseDir = new File(InvoicesAndPropertiesRegistry.propertyRelatedFilesFolder);
+//    if ((fileName.length() > baseDir.getAbsolutePath().length() + 1)  &&
+//        fileName.startsWith(baseDir.getAbsolutePath())  &&
+//        (fileName.charAt(baseDir.getAbsolutePath().length()) == '\\')) {
+//      fileName = fileName.substring(baseDir.getAbsolutePath().length() + 1);
+//    }
+//    
+//    return fileName;
+//  }
 }
 

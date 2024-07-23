@@ -1,114 +1,52 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<properties:PropertyDescriptorGroup
-    xmi:version="2.0"
-    xmlns:xmi="http://www.omg.org/XMI"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xmlns:properties="http://goedegep.properties/model"
-    name="Media"
-    packageName="goedegep.media.app"
+<properties:PropertyDescriptorGroup xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:properties="http://goedegep.properties/model"
+    name="Media" packageName="goedegep.media.app"
     registryClassName="MediaRegistry">
-  <propertyDescriptors
-      xsi:type="properties:FilePropertyDescriptor"
-      type="FILE"
-      name="customPropertiesFile"
-      description="Name of the file with user settings."
-      displayName="User settings filename"
-      initialValue="MediaSettings.xmi"
-      installInitialValue="true">
+  <propertyDescriptors xsi:type="properties:FilePropertyDescriptor" type="FILE" name="customPropertiesFile"
+      description="Name of the file with user settings." displayName="User settings filename"
+      initialValue="MediaSettings.xmi" installInitialValue="true">
     <fileExtensions>xmi</fileExtensions>
   </propertyDescriptors>
-  <propertyDescriptors
-      name="shortProductInfo"
-      description="Korte productinformatie."
-      displayName="KorteProductInformatie"
-      initialValue="Media database"
-      installInitialValue="true"/>
-  <propertyDescriptors
-      name="version"
-      description="Software versie informatie."
-      displayName="Versie"
-      initialValue="1.0"
-      installInitialValue="true"/>
-  <propertyDescriptors
-      name="copyrightMessage"
-      description="Copyright informatie."
-      displayName="Copyright Tekst"
-      initialValue="Copyright (c) 2001-2012"
-      installInitialValue="true"/>
-  <propertyDescriptors
-      name="author"
-      description="Auteur van dit programma."
-      displayName="Auteur"
-      initialValue="Peter Goedegebure"
-      installInitialValue="true"/>
-  <propertyDescriptors
-      xsi:type="properties:FilePropertyDescriptor"
-      type="FILE"
-      name="configurationFile"
-      description="Name of the file with configuration information."
-      displayName="Configuration filename"
-      initialValue="MediaConfiguration.xmi"
-      installInitialValue="true">
+  <propertyDescriptors name="shortProductInfo" description="Korte productinformatie."
+      displayName="KorteProductInformatie" initialValue="Media database" installInitialValue="true"/>
+  <propertyDescriptors name="version" description="Software versie informatie." displayName="Versie"
+      initialValue="1.0" installInitialValue="true"/>
+  <propertyDescriptors name="copyrightMessage" description="Copyright informatie."
+      displayName="Copyright Tekst" initialValue="Copyright (c) 2001-2024" installInitialValue="true"/>
+  <propertyDescriptors name="author" description="Auteur van dit programma." displayName="Auteur"
+      initialValue="Peter Goedegebure" installInitialValue="true"/>
+  <propertyDescriptors xsi:type="properties:FilePropertyDescriptor" type="FILE" name="configurationFile"
+      description="Name of the file with configuration information." displayName="Configuration filename"
+      initialValue="MediaConfiguration.xmi" installInitialValue="true">
     <fileExtensions>xmi</fileExtensions>
   </propertyDescriptors>
-  <propertyDescriptors
-      xsi:type="properties:FilePropertyDescriptor"
-      type="FILE"
-      name="mediaDbFile"
-      description="Name of the file with media information."
-      displayName="Media database filename"
-      initialValue="D:\Database\MyWorld\MediaDb.xmi"
-      installInitialValue="true">
+  <propertyDescriptors xsi:type="properties:FilePropertyDescriptor" type="FILE" name="mediaDbFile"
+      description="Name of the file with media information." displayName="Media database filename"
+      initialValue="D:\Database\MyWorld\MediaDb.xmi" installInitialValue="true">
     <fileExtensions>xmi</fileExtensions>
-  </propertyDescriptors>  <propertyDescriptors
-      type="DIRECTORY"
-      name="albumInfoDirectory"
-      description="Folder with the AlbumInfo files (Artist *.xml)."
-      displayName="Album Info folder"
-      initialValue="D:\Database\Muziek\Albums"
+  </propertyDescriptors>
+  <propertyDescriptors type="DIRECTORY" name="musicDataDirectory" description="Directory where pictures of albums and artists are located."
+      displayName="Music data directory" initialValue="D:\Database\Muziek" userSettable="true"
       installInitialValue="true"/>
-  <propertyDescriptors
-      type="DIRECTORY"
-      name="musicDirectory"
-      description="Folder with all music."
-      displayName="Music folder"
-      initialValue="D:\Music"
+  <propertyDescriptors type="DIRECTORY" name="albumInfoDirectory" description="Folder with the AlbumInfo files (Artist *.xml)."
+      displayName="Album Info folder" initialValue="D:\Database\Muziek\Albums" installInitialValue="true"/>
+  <propertyDescriptors type="DIRECTORY" name="musicDirectory" description="Folder with all music."
+      displayName="Music folder" initialValue="D:\Music" installInitialValue="true"/>
+  <propertyDescriptors type="DIRECTORY" name="duneMusicFolderPath" description="Folder with all music on the Dune media player."
+      displayName="Dune Music Folder Path" initialValue="\\Dune\DuneHDD_00f1f4a3_110b_40ec_b5a1_d89bd7c8f93f\Music"
       installInitialValue="true"/>
-  <propertyDescriptors
-      type="DIRECTORY"
-      name="duneMusicFolderPath"
-      description="Folder with all music on the Dune media player."
-      displayName="Dune Music Folder Path"
-      initialValue="\\Dune\DuneHDD_00f1f4a3_110b_40ec_b5a1_d89bd7c8f93f\Music"
+  <propertyDescriptors type="DIRECTORY" name="dunePlaylistsFolderPath" description="Folder with all playlists on the Dune media player."
+      displayName="Dune Playlist Folder Path" initialValue="\\Dune\DuneHDD_00f1f4a3_110b_40ec_b5a1_d89bd7c8f93f\Playlists"
       installInitialValue="true"/>
-  <propertyDescriptors
-      type="DIRECTORY"
-      name="dunePlaylistsFolderPath"
-      description="Folder with all playlists on the Dune media player."
-      displayName="Dune Playlist Folder Path"
-      initialValue="\\Dune\DuneHDD_00f1f4a3_110b_40ec_b5a1_d89bd7c8f93f\Playlists"
+  <propertyDescriptors type="DIRECTORY" name="photosFolder" description="Top level folder of all photos."
+      displayName="Photo folder" initialValue="D:\Photo" installInitialValue="true"/>
+  <propertyDescriptors name="ignoreFolderNames" description="List of folder names to be ignored."
+      displayName="Ignore folders" initialValue="show;selectie;weg;Originals;.SynologyWorkingDirectory"
       installInitialValue="true"/>
-  <propertyDescriptors
-      type="DIRECTORY"
-      name="photosFolder"
-      description="Top level folder of all photos."
-      displayName="Photo folder"
-      initialValue="D:\Photo"
-      installInitialValue="true"/>
-  <propertyDescriptors
-      name="ignoreFolderNames"
-      description="List of folder names to be ignored."
-      displayName="Ignore folders"
-      initialValue="show;selectie;weg;Originals;.SynologyWorkingDirectory"
-      installInitialValue="true"/>
-  <propertyDescriptors
-      xsi:type="properties:FilePropertyDescriptor"
-      type="FILE"
-      name="mediaPlayerClassicExecutable"
-      description="Full path to the MPC-BE media player."
-      displayName="Media Player Classic (MPC-BE) file"
-      initialValue="C:\Program Files\MPC-BE x64\mpc-be64.exe"
-      installInitialValue="true">
+  <propertyDescriptors xsi:type="properties:FilePropertyDescriptor" type="FILE" name="mediaPlayerClassicExecutable"
+      description="Full path to the MPC-BE media player." displayName="Media Player Classic (MPC-BE) file"
+      initialValue="C:\Program Files\MPC-BE x64\mpc-be64.exe" installInitialValue="true">
     <fileExtensions>xmi</fileExtensions>
   </propertyDescriptors>
 </properties:PropertyDescriptorGroup>

@@ -41,7 +41,15 @@ public enum ImageResource {
       new ImageFileInfo("Backpack - 128x128.png", 128, 128),
       new ImageFileInfo("Backpack - 512x512.png", 512, 512),
       }, "a backpack", null),
+  BOAT(new ImageFileInfo[] {
+      new ImageFileInfo("Boat - 48x48.png", 48, 48),
+      new ImageFileInfo("Boat - 512x512.png", 512, 512)
+      }, "boat", "https://iconscout.com/"),
   BUS(new ImageFileInfo[] {new ImageFileInfo("Bus - 512x504.png", 512, 504)}, "bus", "https://uxwing.com/"),
+  BUS_STOP(new ImageFileInfo[] {
+      new ImageFileInfo("BusStop - 48x48.png", 48, 48),
+      new ImageFileInfo("BusStop - 512x512.png", 512, 512)
+      }, "bus stop", "<a href=\"https://www.flaticon.com/free-icons/bus\" title=\"bus icons\">Bus icons created by Freepik - Flaticon</a>"),
   CAMERA_BLACK(new ImageFileInfo[] {new ImageFileInfo("CameraBlack.png", 28, 22)}, "a black photo camera", null),
   CAMERA_GRAY(new ImageFileInfo[] {new ImageFileInfo("CameraGray.png", 28, 22)}, "a gray photo camera", null),
   CAMERA_BLUE(new ImageFileInfo[] {new ImageFileInfo("CameraBlue.png", 28, 22)}, "a blue photo camera", null),
@@ -58,11 +66,24 @@ public enum ImageResource {
   CANOEING(new ImageFileInfo[] {new ImageFileInfo("Canoeing - 512x512.png", 512, 512)}, "a person canoeing", null),
   CYCLING(new ImageFileInfo[] {new ImageFileInfo("RegularBiking.png", 128, 128)}, "regular biking", "from https://findicons.com/"),
   DEMO(new ImageFileInfo[] {new ImageFileInfo("Demo - 512x512.png", 128, 128)}, "computer screen with demo as text", "<a href=\"https://www.flaticon.com/free-icons/demo\" title=\"demo icons\">Demo icons created by Freepik - Flaticon</a>"),
+  GPX(new ImageFileInfo[] {new ImageFileInfo("Gpx.png", 359, 329)}, "a map with a track and a location", null),
+  HORSE_RIDING(new ImageFileInfo[] {
+      new ImageFileInfo("HorseRiding - 48x48.png", 48, 48),
+      new ImageFileInfo("HorseRiding - 512x512.png", 512, 512)
+
+      }, "horse riding", "<a href=\"https://www.flaticon.com/free-icons/rider\" title=\"rider icons\">Rider icons created by Freepik - Flaticon</a>"),
+  ISLAND(new ImageFileInfo[] {
+      new ImageFileInfo("Island - 32x32.png", 32, 32),
+      new ImageFileInfo("Island - 512x512.png", 512, 512)
+
+      }, "an island with a palm tree", "<a href=\"https://www.flaticon.com/free-icons/island\" title=\"island icons\">Island icons created by Freepik - Flaticon</a>"),
   LOCATION_FLAG_BLUE(new ImageFileInfo[] {new ImageFileInfo("LocationFlagBlue.png", 121, 126)}, "a blue location flag", null),
   LOCATION_FLAG_YELLOW(new ImageFileInfo[] {new ImageFileInfo("LocationFlagYellow.png", 121, 126)}, "a yellow location flag", null),
-  GPX(new ImageFileInfo[] {new ImageFileInfo("Gpx.png", 359, 329)}, "a map with a track and a location", null),
   MAGNIFYING_GLASS(new ImageFileInfo[] {new ImageFileInfo("MagnifyingGlass - 256x256.png", 256, 256)}, "a magnifying glass", null),
   MAP(new ImageFileInfo[] {new ImageFileInfo("Map - 487x487.png", 487, 487)}, "a map", null),
+  MARKET(new ImageFileInfo[] {
+      new ImageFileInfo("Market - 48x48.png", 48, 48),
+      new ImageFileInfo("Market - 512x512.png", 512, 512)}, "a market", null),
   MARKDOWN(new ImageFileInfo[] {new ImageFileInfo("Markdown logo - 1600x1600.png", 487, 487)}, "Markdown logo", "https://imgbin.com/"),
   MS_WORD(new ImageFileInfo[] {new ImageFileInfo("MSWord - 1047x1024.png", 1047, 1024)}, "Microsoft Word document icon", "User:Airhogs777"),
   PLANE_TAKEOFF(new ImageFileInfo[] {
@@ -75,13 +96,25 @@ public enum ImageResource {
   PDF(new ImageFileInfo[] {new ImageFileInfo("PDF - 417x512.png", 417, 512)}, "PDF file logo", null),
   PHOTO_FOLDER(new ImageFileInfo[] {new ImageFileInfo("PhotoFolder - 199x217.png", 417, 512)}, "Photo folder icon", "https://icon-library.com/icon/microsoft-folder-icon-24.html.html>Microsoft Folder Icon # 392312"),
   ROAD_TO_HORIZON(new ImageFileInfo[] {new ImageFileInfo("RoadToHorizon - 57x32.png", 57, 32), new ImageFileInfo("RoadToHorizon - 114x64.png", 114, 64)}, "a road to the horizon", null),
+  RUNNING(new ImageFileInfo[] {
+      new ImageFileInfo("RunningFigure - 48x48.png", 48, 48),
+      new ImageFileInfo("RunningFigure - 512x512.png", 512, 512)
+      }, "running figure", "<a href=\"https://www.flaticon.com/free-icons/run\" title=\"run icons\">Run icons created by Freepik - Flaticon</a>"),
   SKIÏNG(new ImageFileInfo[] {new ImageFileInfo("Skiïng.png", 34, 39)}, "a skiër", null),
   SNOW_MOUNTAINS(new ImageFileInfo[] {new ImageFileInfo("SnowMountains - 64x30.png", 64, 30)}, "snow capped mountains", null),
   SUNRISE(new ImageFileInfo[] {new ImageFileInfo("Sunrise - 256x189.png", 256, 189)}, "sunrise (or sunset)", null),
   TEXT(new ImageFileInfo[] {new ImageFileInfo("Text - 512x512.png", 512, 512)}, "a letter T for Text", null),
   TEXT_FILE(new ImageFileInfo[] {new ImageFileInfo("TextIcon - 512x512.png", 512, 512)}, "Text file icon", "<a href=\"https://www.flaticon.com/free-icons/text-file\" title=\"text file icons\">Text file icons created by Freepik - Flaticon</a>"),
+  TRAIN(new ImageFileInfo[] {
+      new ImageFileInfo("Train - 48x48.png", 48, 48),
+      new ImageFileInfo("Train - 512x512.png", 512, 512)
+      }, "a train", "<a href=\"https://www.freepik.com/icon/train_4540243#fromView=keyword&page=1&position=67&uuid=b9dfd6a4-8d00-4a11-9397-c7033983ba0e\">Icon by Milkghost Studio</a>"),
   VIDEO_FOLDER(new ImageFileInfo[] {new ImageFileInfo("VideoFolder - 936x936.png", 936, 936)}, "Video folder icon", null),
-  WALKING(new ImageFileInfo[] {new ImageFileInfo("Walking - 512x512.png", 512, 512)}, "a person walking with stick and backpack", null);
+  WALKING(new ImageFileInfo[] {new ImageFileInfo("Walking - 512x512.png", 512, 512)}, "a person walking with stick and backpack", null),
+  ZOO(new ImageFileInfo[] {
+      new ImageFileInfo("Zoo - 32x32.png", 32, 32),
+      new ImageFileInfo("Zoo - 512x512.png", 512, 512)
+      }, "zoo gate", "<a href=\"https://www.flaticon.com/free-icons/zoo\" title=\"zoo icons\">Zoo icons created by Freepik - Flaticon</a>");
   
   @SuppressWarnings("unused")
   private static final Logger LOGGER = Logger.getLogger(ImageResource.class.getName());
