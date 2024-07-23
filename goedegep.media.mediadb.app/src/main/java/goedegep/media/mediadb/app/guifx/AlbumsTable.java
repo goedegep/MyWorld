@@ -386,7 +386,6 @@ class AlbumsTableDescriptor extends EObjectTableDescriptor<Album> {
       insideImagesColumnDescriptor,
       backImagesColumnDescriptor,
       labelImagesColumnDescriptor,
-      new EObjectTableColumnDescriptorCheckBox<Album>(MEDIA_DB_PACKAGE.getAlbum_Compilation(), "Compilation album", false, true),
       new EObjectTableColumnDescriptorCheckBox<Album>(MEDIA_DB_PACKAGE.getAlbum_Soundtrack(), "Soundtrack", false, true),
       albumReferenceColumnDescriptor,
       new EObjectTableColumnDescriptorCustom<>(null, "Source", 300, false, true, column -> {

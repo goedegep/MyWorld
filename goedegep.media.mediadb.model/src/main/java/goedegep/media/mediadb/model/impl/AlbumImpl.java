@@ -50,7 +50,6 @@ import java.lang.reflect.InvocationTargetException;
  *   <li>{@link goedegep.media.mediadb.model.impl.AlbumImpl#getImagesLabel <em>Images Label</em>}</li>
  *   <li>{@link goedegep.media.mediadb.model.impl.AlbumImpl#getDescriptionTitle <em>Description Title</em>}</li>
  *   <li>{@link goedegep.media.mediadb.model.impl.AlbumImpl#getDescription <em>Description</em>}</li>
- *   <li>{@link goedegep.media.mediadb.model.impl.AlbumImpl#isCompilation <em>Compilation</em>}</li>
  *   <li>{@link goedegep.media.mediadb.model.impl.AlbumImpl#getMyInfo <em>My Info</em>}</li>
  *   <li>{@link goedegep.media.mediadb.model.impl.AlbumImpl#isSoundtrack <em>Soundtrack</em>}</li>
  * </ul>
@@ -271,24 +270,6 @@ public class AlbumImpl extends MinimalEObjectImpl.Container implements Album {
    * @ordered
    */
   protected boolean descriptionESet;
-  /**
-   * The default value of the '{@link #isCompilation() <em>Compilation</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #isCompilation()
-   * @generated
-   * @ordered
-   */
-  protected static final boolean COMPILATION_EDEFAULT = false;
-  /**
-   * The cached value of the '{@link #isCompilation() <em>Compilation</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #isCompilation()
-   * @generated
-   * @ordered
-   */
-  protected boolean compilation = COMPILATION_EDEFAULT;
   /**
    * The cached value of the '{@link #getMyInfo() <em>My Info</em>}' containment reference.
    * <!-- begin-user-doc -->
@@ -862,30 +843,6 @@ public class AlbumImpl extends MinimalEObjectImpl.Container implements Album {
    * @generated
    */
   @Override
-  public boolean isCompilation() {
-    return compilation;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public void setCompilation(boolean newCompilation) {
-    boolean oldCompilation = compilation;
-    compilation = newCompilation;
-    if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, MediadbPackage.ALBUM__COMPILATION, oldCompilation,
-          compilation));
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
   public MyInfo getMyInfo() {
     return myInfo;
   }
@@ -1202,8 +1159,6 @@ public class AlbumImpl extends MinimalEObjectImpl.Container implements Album {
       return getDescriptionTitle();
     case MediadbPackage.ALBUM__DESCRIPTION:
       return getDescription();
-    case MediadbPackage.ALBUM__COMPILATION:
-      return isCompilation();
     case MediadbPackage.ALBUM__MY_INFO:
       return getMyInfo();
     case MediadbPackage.ALBUM__SOUNDTRACK:
@@ -1263,9 +1218,6 @@ public class AlbumImpl extends MinimalEObjectImpl.Container implements Album {
     case MediadbPackage.ALBUM__DESCRIPTION:
       setDescription((String) newValue);
       return;
-    case MediadbPackage.ALBUM__COMPILATION:
-      setCompilation((Boolean) newValue);
-      return;
     case MediadbPackage.ALBUM__MY_INFO:
       setMyInfo((MyInfo) newValue);
       return;
@@ -1320,9 +1272,6 @@ public class AlbumImpl extends MinimalEObjectImpl.Container implements Album {
     case MediadbPackage.ALBUM__DESCRIPTION:
       unsetDescription();
       return;
-    case MediadbPackage.ALBUM__COMPILATION:
-      setCompilation(COMPILATION_EDEFAULT);
-      return;
     case MediadbPackage.ALBUM__MY_INFO:
       unsetMyInfo();
       return;
@@ -1365,8 +1314,6 @@ public class AlbumImpl extends MinimalEObjectImpl.Container implements Album {
       return isSetDescriptionTitle();
     case MediadbPackage.ALBUM__DESCRIPTION:
       return isSetDescription();
-    case MediadbPackage.ALBUM__COMPILATION:
-      return compilation != COMPILATION_EDEFAULT;
     case MediadbPackage.ALBUM__MY_INFO:
       return isSetMyInfo();
     case MediadbPackage.ALBUM__SOUNDTRACK:
@@ -1441,7 +1388,6 @@ public class AlbumImpl extends MinimalEObjectImpl.Container implements Album {
         .append(NEWLINE);
     buf.append("Description: ").append(isSetDescription() ? getDescription() : "<no-description>").append(NEWLINE);
 
-    buf.append("Compilation: ").append(isCompilation() ? "yes" : "no").append(NEWLINE);
     buf.append("Soundtrack: ").append(isSoundtrack() ? "yes" : "no").append(NEWLINE);
 
     buf.append("My info: ");

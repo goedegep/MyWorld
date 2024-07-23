@@ -675,18 +675,8 @@ public class MediadbPackageImpl extends EPackageImpl implements MediadbPackage {
    * @generated
    */
   @Override
-  public EAttribute getAlbum_Compilation() {
-    return (EAttribute) albumEClass.getEStructuralFeatures().get(12);
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
   public EReference getAlbum_MyInfo() {
-    return (EReference) albumEClass.getEStructuralFeatures().get(13);
+    return (EReference) albumEClass.getEStructuralFeatures().get(12);
   }
 
   /**
@@ -696,7 +686,7 @@ public class MediadbPackageImpl extends EPackageImpl implements MediadbPackage {
    */
   @Override
   public EAttribute getAlbum_Soundtrack() {
-    return (EAttribute) albumEClass.getEStructuralFeatures().get(14);
+    return (EAttribute) albumEClass.getEStructuralFeatures().get(13);
   }
 
   /**
@@ -1394,7 +1384,6 @@ public class MediadbPackageImpl extends EPackageImpl implements MediadbPackage {
     createEAttribute(albumEClass, ALBUM__IMAGES_LABEL);
     createEAttribute(albumEClass, ALBUM__DESCRIPTION_TITLE);
     createEAttribute(albumEClass, ALBUM__DESCRIPTION);
-    createEAttribute(albumEClass, ALBUM__COMPILATION);
     createEReference(albumEClass, ALBUM__MY_INFO);
     createEAttribute(albumEClass, ALBUM__SOUNDTRACK);
     createEOperation(albumEClass, ALBUM___GET_TRACK_REFERENCE__INTEGER_INT);
@@ -1624,8 +1613,6 @@ public class MediadbPackageImpl extends EPackageImpl implements MediadbPackage {
         !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getAlbum_Description(), ecorePackage.getEString(), "description", null, 0, 1, Album.class,
         !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEAttribute(getAlbum_Compilation(), ecorePackage.getEBoolean(), "compilation", "false", 0, 1, Album.class,
-        !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEReference(getAlbum_MyInfo(), this.getMyInfo(), null, "myInfo", null, 0, 1, Album.class, !IS_TRANSIENT,
         !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED,
         IS_ORDERED);

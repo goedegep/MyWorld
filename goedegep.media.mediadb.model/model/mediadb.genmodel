@@ -123,7 +123,6 @@
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute mediadb.ecore#//Album/imagesLabel"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute mediadb.ecore#//Album/descriptionTitle"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute mediadb.ecore#//Album/description"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute mediadb.ecore#//Album/compilation"/>
       <genFeatures children="true" createChild="true" propertySortChoices="true" ecoreFeature="ecore:EReference mediadb.ecore#//Album/myInfo"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute mediadb.ecore#//Album/soundtrack"/>
       <genOperations ecoreOperation="mediadb.ecore#//Album/getTrackReference">

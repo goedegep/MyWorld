@@ -498,22 +498,13 @@ public interface MediadbPackage extends EPackage {
   int ALBUM__DESCRIPTION = 11;
 
   /**
-   * The feature id for the '<em><b>Compilation</b></em>' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int ALBUM__COMPILATION = 12;
-
-  /**
    * The feature id for the '<em><b>My Info</b></em>' containment reference.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int ALBUM__MY_INFO = 13;
+  int ALBUM__MY_INFO = 12;
 
   /**
    * The feature id for the '<em><b>Soundtrack</b></em>' attribute.
@@ -522,7 +513,7 @@ public interface MediadbPackage extends EPackage {
    * @generated
    * @ordered
    */
-  int ALBUM__SOUNDTRACK = 14;
+  int ALBUM__SOUNDTRACK = 13;
 
   /**
    * The number of structural features of the '<em>Album</em>' class.
@@ -531,7 +522,7 @@ public interface MediadbPackage extends EPackage {
    * @generated
    * @ordered
    */
-  int ALBUM_FEATURE_COUNT = 15;
+  int ALBUM_FEATURE_COUNT = 14;
 
   /**
    * The operation id for the '<em>Get Track Reference</em>' operation.
@@ -1766,17 +1757,6 @@ public interface MediadbPackage extends EPackage {
   EAttribute getAlbum_Description();
 
   /**
-   * Returns the meta object for the attribute '{@link goedegep.media.mediadb.model.Album#isCompilation <em>Compilation</em>}'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the meta object for the attribute '<em>Compilation</em>'.
-   * @see goedegep.media.mediadb.model.Album#isCompilation()
-   * @see #getAlbum()
-   * @generated
-   */
-  EAttribute getAlbum_Compilation();
-
-  /**
    * Returns the meta object for the containment reference '{@link goedegep.media.mediadb.model.Album#getMyInfo <em>My Info</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -2819,14 +2799,6 @@ public interface MediadbPackage extends EPackage {
     	 * @generated
     	 */
     EAttribute ALBUM__DESCRIPTION = eINSTANCE.getAlbum_Description();
-
-    /**
-    	 * The meta object literal for the '<em><b>Compilation</b></em>' attribute feature.
-    	 * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-    	 * @generated
-    	 */
-    EAttribute ALBUM__COMPILATION = eINSTANCE.getAlbum_Compilation();
 
     /**
     	 * The meta object literal for the '<em><b>My Info</b></em>' containment reference feature.

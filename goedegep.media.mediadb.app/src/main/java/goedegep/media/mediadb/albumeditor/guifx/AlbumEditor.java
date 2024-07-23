@@ -184,11 +184,6 @@ public class AlbumEditor extends ObjectEditorTemplate<Album> {
   private ObjectControlEnumComboBox<MediumType> issuedOnObjectControl;
   
   /**
-   * Object control to select whether the album is a compilation album or not.
-   */
-  private CheckBox isCompilationAlbumCheckBox;
-  
-  /**
    * Shows whether the album is a movie soundtrack or not.
    */
   private CheckBox isSoundTrackCheckBox;
@@ -297,7 +292,6 @@ public class AlbumEditor extends ObjectEditorTemplate<Album> {
     
     issuedOnObjectControl = componentFactory.createObjectControlEnumComboBox(MediumType.CD_AUDIO, MediumType.NOT_SET, MEDIA_DB_PACKAGE.getMediumType(), false, "Select a medium on which the album is issued");
     
-    isCompilationAlbumCheckBox = componentFactory.createCheckBox("compilation album", false);
     isSoundTrackCheckBox = componentFactory.createCheckBox("soundtrack", false);
     iveHadOnLpCheckBox = componentFactory.createCheckBox("I've had on lp", false);
 
@@ -529,10 +523,10 @@ public class AlbumEditor extends ObjectEditorTemplate<Album> {
 //    mainPane.getChildren().add(gridPane);
 //    
 //    /*
-//     * Checkboxes for 'compilation album', 'soundtrack' and 'I've had on lp'.
+//     * Checkboxes for 'soundtrack' and 'I've had on lp'.
 //     */
 //    HBox hBox = componentFactory.createHBox(10.0, 10.0);
-//    hBox.getChildren().addAll(isCompilationAlbumCheckBox, isSoundTrackCheckBox, iveHadOnLpCheckBox);
+//    hBox.getChildren().addAll(isSoundTrackCheckBox, iveHadOnLpCheckBox);
 //    
 //    mainPane.getChildren().add(hBox);
 //    
@@ -987,11 +981,9 @@ public class AlbumEditor extends ObjectEditorTemplate<Album> {
    */
   private void updateCheckBoxes(Album album) {
     if (album != null) {      
-      isCompilationAlbumCheckBox.setSelected(album.isCompilation());
       isSoundTrackCheckBox.setSelected(album.isSoundtrack());
       iveHadOnLpCheckBox.setSelected(album.getMyInfo().isIveHadOnLP());
     } else {
-      isCompilationAlbumCheckBox.setSelected(false);
       isSoundTrackCheckBox.setSelected(false);
       iveHadOnLpCheckBox.setSelected(false);
     }
