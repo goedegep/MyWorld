@@ -164,10 +164,10 @@ public class EObjectTreeCellHelperForObjectList extends EObjectTreeCellHelperTem
    * @param menuText the menu text
    * @param classes the subclasses
    * @param before 'before' (if set) or 'after' indication
-   * @param biCon TODO
+   * @param uponObjectCreatedMethod this method, if specified, is called after the object is created. This is typically used to do some further initialization.
    * @return a {@code Menu} for the {@classes}.
    */
-  private Menu createSubClassesMenu(String menuText, List<EClass> classes, boolean before, BiConsumer<EObject, EObjectTreeItem> biConsumer) {
+  private Menu createSubClassesMenu(String menuText, List<EClass> classes, boolean before, BiConsumer<EObject, EObjectTreeItem> uponObjectCreatedMethod) {
     Menu menu = new Menu(menuText);
     MenuItem menuItem;
     
@@ -178,7 +178,7 @@ public class EObjectTreeCellHelperForObjectList extends EObjectTreeCellHelperTem
 
         @Override
         public void handle(ActionEvent event) {
-          createAndAddObject(eClass, biConsumer);
+          createAndAddObject(eClass, uponObjectCreatedMethod);
         }
         
       });

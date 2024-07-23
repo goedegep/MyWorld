@@ -32,7 +32,7 @@ import javafx.util.StringConverter;
  *
  * @param <T> The object type represented by this control.
  */
-public class ObjectControlTextField<T> extends ObjectControlAbstract<T> {
+public class ObjectControlTextField<T> extends ObjectControlTemplate<T> {
   @SuppressWarnings("unused")
   private static final Logger         LOGGER = Logger.getLogger(ObjectControlTextField.class.getName());
   
@@ -86,10 +86,6 @@ public class ObjectControlTextField<T> extends ObjectControlAbstract<T> {
     // So if the initial value isn't null, set the value (triggering the listener, leading to a call to ociHandleNewUserInput().
     // Else, just call ociHandleNewUserInput().
     setValue(initialValue);
-    ociHandleNewUserInput(textField);
-//    if (initialValue == null) {
-//      ociHandleNewUserInput(textField);
-//    }
   }
   
   /**
@@ -99,28 +95,14 @@ public class ObjectControlTextField<T> extends ObjectControlAbstract<T> {
   public TextField getControl() {
     return textField;
   }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public void setValue(T objectValue) {
-    LOGGER.severe("=> objectValue: \'" + objectValue + "'");
-    String text = objectToString(objectValue);
-    LOGGER.severe("=> text: \'" + text + "'");
-    if (text == null) {
-      text = "";
-    };
-    referenceValue = stringToObject(text);
-    LOGGER.severe("=> referenceValue: \'" + referenceValue + "'");
-    textField.setText(text);
-  }
   
   /**
    * {@inheritDoc}
    */
   @Override
-  public boolean ociDetermineFilledIn() {
+  public boolean ociDetermineFilledIn(Object source) {
+    // As there is only one control we don't have to check the source.
+        
     if (textField.getText() == null) {
       LOGGER.severe("text is null for: " + getId());
     }
@@ -164,6 +146,17 @@ public class ObjectControlTextField<T> extends ObjectControlAbstract<T> {
       textField.setText(objectToString(value));
     } else {
       textField.setText("");
+    }
+  }
+
+  @Override
+  protected void ociUpdateNonSourceControls(Object source) {
+    if (source == null) {
+      String text = objectToString(getValue());
+      if (text == null) {
+        text = "";
+      }
+      textField.setText(text);
     }
   }
     

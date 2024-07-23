@@ -21,12 +21,12 @@
       <artifactId>goedegep-util</artifactId>
     </dependency>
     <dependency>
-     <groupId>org.eclipse.emf</groupId>
-    <artifactId>org.eclipse.emf.common</artifactId>
+      <groupId>org.eclipse.emf</groupId>
+      <artifactId>org.eclipse.emf.common</artifactId>
     </dependency>
     <dependency>
-     <groupId>org.eclipse.emf</groupId>
-    <artifactId>org.eclipse.emf.ecore</artifactId>
+      <groupId>org.eclipse.emf</groupId>
+      <artifactId>org.eclipse.emf.ecore</artifactId>
     </dependency>
     <dependency>
      <groupId>org.eclipse.emf</groupId>

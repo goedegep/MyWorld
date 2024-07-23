@@ -788,7 +788,39 @@ public enum POICategoryId implements Enumerator {
    * @generated
    * @ordered
    */
-  SWIMMING_POOL(83, "SWIMMING_POOL", "Swimming pool");
+  SWIMMING_POOL(83, "SWIMMING_POOL", "Swimming pool"), /**
+   * The '<em><b>MARKET</b></em>' literal object.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #MARKET_VALUE
+   * @generated
+   * @ordered
+   */
+  MARKET(84, "MARKET", "Market"), /**
+   * The '<em><b>BUS STOP</b></em>' literal object.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #BUS_STOP_VALUE
+   * @generated
+   * @ordered
+   */
+  BUS_STOP(85, "BUS_STOP", "Bus stop"), /**
+   * The '<em><b>ZOO</b></em>' literal object.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #ZOO_VALUE
+   * @generated
+   * @ordered
+   */
+  ZOO(86, "ZOO", "Zoo"), /**
+   * The '<em><b>ISLAND</b></em>' literal object.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #ISLAND_VALUE
+   * @generated
+   * @ordered
+   */
+  ISLAND(87, "ISLAND", "Island");
 
   /**
    * The '<em><b>AMUSEMENT</b></em>' literal value.
@@ -1991,6 +2023,50 @@ public enum POICategoryId implements Enumerator {
   public static final int SWIMMING_POOL_VALUE = 83;
 
   /**
+   * The '<em><b>MARKET</b></em>' literal value.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #MARKET
+   * @model literal="Market"
+   * @generated
+   * @ordered
+   */
+  public static final int MARKET_VALUE = 84;
+
+  /**
+   * The '<em><b>BUS STOP</b></em>' literal value.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #BUS_STOP
+   * @model literal="Bus stop"
+   * @generated
+   * @ordered
+   */
+  public static final int BUS_STOP_VALUE = 85;
+
+  /**
+   * The '<em><b>ZOO</b></em>' literal value.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #ZOO
+   * @model literal="Zoo"
+   * @generated
+   * @ordered
+   */
+  public static final int ZOO_VALUE = 86;
+
+  /**
+   * The '<em><b>ISLAND</b></em>' literal value.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #ISLAND
+   * @model literal="Island"
+   * @generated
+   * @ordered
+   */
+  public static final int ISLAND_VALUE = 87;
+
+  /**
    * An array of all the '<em><b>Category Id</b></em>' enumerators.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -2082,6 +2158,10 @@ public enum POICategoryId implements Enumerator {
       GLACIER,
       WATERFALL,
       SWIMMING_POOL,
+      MARKET,
+      BUS_STOP,
+      ZOO,
+      ISLAND,
     };
 
   /**
@@ -2222,6 +2302,10 @@ public enum POICategoryId implements Enumerator {
       case GLACIER_VALUE: return GLACIER;
       case WATERFALL_VALUE: return WATERFALL;
       case SWIMMING_POOL_VALUE: return SWIMMING_POOL;
+      case MARKET_VALUE: return MARKET;
+      case BUS_STOP_VALUE: return BUS_STOP;
+      case ZOO_VALUE: return ZOO;
+      case ISLAND_VALUE: return ISLAND;
     }
     return null;
   }

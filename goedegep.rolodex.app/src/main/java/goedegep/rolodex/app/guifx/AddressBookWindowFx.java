@@ -3,12 +3,14 @@ package goedegep.rolodex.app.guifx;
 import java.util.List;
 import java.util.logging.Logger;
 
-import org.eclipse.emf.common.util.BasicEList;
-import org.eclipse.emf.common.util.EList;
+import org.eclipse.emf.common.notify.Adapter;
+import org.eclipse.emf.common.notify.Notification;
+import org.eclipse.emf.ecore.util.EContentAdapter;
 
 import goedegep.jfx.ComponentFactoryFx;
 import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.JfxStage;
+import goedegep.jfx.eobjecttable.EObjectListContainerSpecification;
 import goedegep.jfx.eobjecttable.EObjectTable;
 import goedegep.jfx.eobjecttable.EObjectTableColumnDescriptorAbstract;
 import goedegep.jfx.eobjecttable.EObjectTableColumnDescriptorCheckBox;
@@ -23,19 +25,13 @@ import goedegep.rolodex.model.Country;
 import goedegep.rolodex.model.Family;
 import goedegep.rolodex.model.Institution;
 import goedegep.rolodex.model.Person;
-import goedegep.rolodex.model.PhoneNumber;
-import goedegep.rolodex.model.PhoneNumberHolder;
 import goedegep.rolodex.model.Rolodex;
 import goedegep.rolodex.model.RolodexPackage;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
+import goedegep.util.emf.EmfUtil;
 import javafx.scene.Scene;
 import javafx.scene.control.CheckMenuItem;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
-import javafx.scene.control.MenuItem;
 import javafx.scene.control.TableCell;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -43,23 +39,55 @@ import javafx.scene.layout.VBox;
 
 /**
  * This class provides an address book window.
+ * <p>
+ * The window consists of a table listing all families, persons and institutions (being all {@link AddressHolder}s) with their addresses.<br/>
+ * You can filter on any text occurring in the table.
  */
 public class AddressBookWindowFx extends JfxStage {
-  @SuppressWarnings("unused")
   private static final Logger LOGGER = Logger.getLogger(AddressBookWindowFx.class.getName());
   private static final String WINDOW_TITLE   = "Address book";
   
   private static RolodexPackage ROLODEX_PACKAGE = RolodexPackage.eINSTANCE;
   
+  /**
+   * The {@code Rolodex} for which the information is shown
+   */
   private Rolodex rolodex;
+  
+  /**
+   * The GUI customization
+   */
   private CustomizationFx customization;
+  
+  /**
+   * Factory for creating all GUI components
+   */
   private ComponentFactoryFx componentFactory;
+  
+  /**
+   * Control panel for the {@code addressHoldersTable}.
+   */
   private EObjectTableControlPanel eObjectTableControlPanel;
+  
+  /**
+   * The {@link EObjectTable} showing the {@code AddressHolder}s.
+   */
   private EObjectTable<AddressHolder> addressHoldersTable;
+  
+  /**
+   * A {@code TableFilterBooleanPredicate} for letting the {@code addressHoldersTable} show archived items or not.
+   */
   private TableFilterBooleanPredicate<AddressHolder> showArchivedItemsPredicate = null;
+  
+  /**
+   * A {@code CheckMenuItem} for letting the user select whether archived items shouls be shown or not.
+   */
   private CheckMenuItem  showArchivedItems;
   
-  private EList<AddressHolder> addressesHolders;
+  /**
+   * The {@code List} with all {@code AddressHolder}s.
+   */
+  private List<AddressHolder> addressesHolders;
   
   /**
    * Constructor
@@ -74,18 +102,20 @@ public class AddressBookWindowFx extends JfxStage {
     this.rolodex = rolodex;
     componentFactory = customization.getComponentFactoryFx();
     
+    createControls();
+    
     createGUI();
     
-    eObjectTableControlPanel.filterTextProperty().addListener(new ChangeListener<String>(){
-
-      @Override
-      public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-        addressHoldersTable.setFilterExpression(newValue, null);
-      }
-      
-    });
-    
     show();
+  }
+  
+  /**
+   * Create the controls.
+   */
+  private void createControls() {
+    createAddressHoldersTable();
+    eObjectTableControlPanel = new EObjectTableControlPanel(customization);
+    eObjectTableControlPanel.filterTextProperty().addListener((observable, oldValue, newValue) -> addressHoldersTable.setFilterExpression(newValue, null));    
   }
   
   /**
@@ -95,110 +125,43 @@ public class AddressBookWindowFx extends JfxStage {
    * <ul>
    * <li>Controls which operate on the table.</li>
    * <li>The addresses table</li>
-   * <li>A panel to add a new address</li>
    * </ul>
    */
   private void createGUI() {
     VBox rootLayout = new VBox();
     
     rootLayout.getChildren().add(createMenuBar());
-    eObjectTableControlPanel = new EObjectTableControlPanel(customization);
     rootLayout.getChildren().add(eObjectTableControlPanel);
-    rootLayout.getChildren().add(createAddressHoldersTable());
+    rootLayout.getChildren().add(addressHoldersTable);
         
     setScene(new Scene(rootLayout, 700, 700));
   }
 
+  /**
+   * Create the menu bar.
+   * 
+   * @return the created menu bar.
+   */
   private MenuBar createMenuBar() {
     MenuBar menuBar = componentFactory.createMenuBar();
-    MenuItem menuItem;
     Menu menu;
     
-    // Print menu
-    menu = componentFactory.createMenu("Print");
-    
-    // Print: Print address list
-    menuItem = new MenuItem("Print address list");
-    menuItem.setOnAction(e -> printAddressList());
-    menu.getItems().add(menuItem);
-    
-    menuBar.getMenus().add(menu);
-    
-
     // Show menu
     menu = componentFactory.createMenu("Show");
     
     // Show: Show archived items
     showArchivedItems = new CheckMenuItem("Show archived items");
-    showArchivedItems.setOnAction(new EventHandler<ActionEvent>()  {
-      public void handle(ActionEvent e) {
-        updateShowArchivedItems();
-      }
-    });
+    showArchivedItems.setOnAction((event) -> updateShowArchivedItems());
     menu.getItems().add(showArchivedItems);
     
     menuBar.getMenus().add(menu);
 
     return menuBar;
   }
-  
-  private Object printAddressList() {
-    addressesHolders = new BasicEList<>();
-    addressesHolders.addAll(rolodex.getFamilyList().getFamilies());
-    addressesHolders.addAll(rolodex.getPersonList().getPersons());
-    addressesHolders.addAll(rolodex.getInstitutionList().getInstitutions());
-    
-    for (AddressHolder addressHolder: addressesHolders) {
-      if (addressHolder.getAddress() == null) {
-        continue;
-      }
-      
-      if (addressHolder instanceof Person person) {
-        if (person.isArchived()) {
-          continue;
-        }
-        System.out.print(person.getName());
-      } else if (addressHolder instanceof Family family) {
-        if (family.isArchived()) {
-          continue;
-        }
-        System.out.print(family.getFamilyTitle() + " " + family.getFamilyName());
-      } else if (addressHolder instanceof Institution institution) {
-        System.out.print(institution.getName());
-      }
-      
-      printAddress(addressHolder.getAddress());
-      
-      if (addressHolder instanceof PhoneNumberHolder phoneNumberHolder) {
-        List<PhoneNumber> phoneNumbers = phoneNumberHolder.getPhoneNumbers();
-        if (phoneNumbers != null  &&  !phoneNumbers.isEmpty()) {
-          printPhoneNumber(phoneNumbers.get(0));
-        }
-      }
-      
-      System.out.println();
-    }
-    return null;
-  }
-  
-  private void printAddress(Address address) {
-    if (address == null) {
-      System.out.println();
-      return;
-    }
-    
-    System.out.print(", " + address.getStreetName() + " " + address.getHouseNumber());
-    if (address.getHouseNumberExtension() != null) {
-      System.out.print(address.getHouseNumberExtension());
-    }
-    System.out.print(", " + address.getPostalCode() + "  " + address.getCity().getCityName());
-    
-  }
-  
-  private void printPhoneNumber(PhoneNumber phoneNumber) {
-    System.out.print(", tel.: " + phoneNumber.getPhoneNumber());
-  }
 
+  /**
+   * Update filtering on 'archived items' based on a new menu selection.
+   */
   private void updateShowArchivedItems() {
     LOGGER.info("Show archived items: " + showArchivedItems.isSelected());
     if (showArchivedItems.isSelected()) {
@@ -212,18 +175,79 @@ public class AddressBookWindowFx extends JfxStage {
   }
   
   /**
-   * Create the addressesTable.
-   * 
-   * @return the created citiesTable
+   * Create the {@code addressHoldersTable} and fill it with all {@code AddressHolder}s.
    */
-  private EObjectTable<AddressHolder> createAddressHoldersTable() {
-    addressesHolders = new BasicEList<>();
+  private void createAddressHoldersTable() {
+    addressHoldersTable = new EObjectTable<AddressHolder>(customization, ROLODEX_PACKAGE.getAddressHolder(), new AddressesBookTableDescriptor(customization));
+    
+    EObjectListContainerSpecification listSpecification = addressHoldersTable.createObjectListContainer();
+    addressesHolders =  EmfUtil.<AddressHolder>getListUnchecked(listSpecification.listContainer(), listSpecification.listReference());
+    
+    // As we work with copies of the lists, we have to update the addressesHolders list if items are added or deleted to these lists.
+    // In the GUI items are only added or removed one by one, so here's no implementation needed for ADD_MANY and REMOVE_MANY.
+    Adapter adapter = new EContentAdapter() {
+      public void notifyChanged(Notification notification) {
+        super.notifyChanged(notification);
+        
+        switch (notification.getEventType()) {
+        case Notification.ADD:
+          // for ADD isTouch() is always false
+          LOGGER.severe("Added item");
+          // if the notification is from one of the lists add the new item to the addressesHolders list.
+          AddressHolder newAddressHolder = null;
+          int addIndex = -1;
+          if (notification.getFeature().equals(ROLODEX_PACKAGE.getFamilyList_Families())) {
+            newAddressHolder = rolodex.getFamilyList().getFamilies().get(notification.getPosition());
+            addIndex = notification.getPosition();
+          } else if (notification.getFeature().equals(ROLODEX_PACKAGE.getPersonList_Persons())) {
+            newAddressHolder = rolodex.getPersonList().getPersons().get(notification.getPosition());
+            addIndex = rolodex.getFamilyList().getFamilies().size() + notification.getPosition();
+          } else if (notification.getFeature().equals(ROLODEX_PACKAGE.getInstitutionList_Institutions())) {
+            newAddressHolder = rolodex.getInstitutionList().getInstitutions().get(notification.getPosition());
+            addIndex = rolodex.getFamilyList().getFamilies().size() + rolodex.getPersonList().getPersons().size() + notification.getPosition();
+          }
+          if (newAddressHolder != null) {
+            addressesHolders.add(addIndex, newAddressHolder);
+          }
+          break;
+          
+        case Notification.ADD_MANY:
+          // No implementation needed
+          break;
+        
+        case Notification.SET:
+        case Notification.UNSET:
+          // No implementation needed as this is already seen by the table.
+          break;
+          
+        case Notification.REMOVE:
+          // for REMOVE isTouch() is always false
+          LOGGER.severe("Removed item");
+          // if the notification is from one of the lists remove the item from the addressesHolders list.
+          addressesHolders.remove(notification.getOldValue());
+          break;
+          
+        case Notification.REMOVING_ADAPTER:
+          // This is no change in the data, so no action.
+          break;
+          
+        case Notification.REMOVE_MANY:
+          // No implementation needed
+          break;
+        
+        default:
+          throw new RuntimeException ("Event type " + notification.getEventType() + " not supported");
+        }
+      }
+
+    };
+    
     addressesHolders.addAll(rolodex.getFamilyList().getFamilies());
     addressesHolders.addAll(rolodex.getPersonList().getPersons());
     addressesHolders.addAll(rolodex.getInstitutionList().getInstitutions());
-    addressHoldersTable = new EObjectTable<AddressHolder>(customization, ROLODEX_PACKAGE.getAddressHolder(), new AddressesBookTableDescriptor(customization), addressesHolders);
-        
-    return addressHoldersTable;
+    addressHoldersTable.setObjects(listSpecification);
+    
+    rolodex.eAdapters().add(adapter);
   }
     
 }
@@ -236,10 +260,24 @@ class AddressesBookTableDescriptor extends EObjectTableDescriptor<AddressHolder>
   private static final Logger LOGGER = Logger.getLogger(AddressesBookTableDescriptor.class.getName());
   private static RolodexPackage ROLODEX_PACKAGE = RolodexPackage.eINSTANCE;
   
+  /**
+   * The {@code Image} for a person.
+   */
   private static Image personImage;
+  
+  /**
+   * The {@code Image} for a family.
+   */
   private static Image familyImage;
+  
+  /**
+   * The {@code Image} for an institution.
+   */
   private static Image institutionImage;
   
+  /**
+   * The columns descriptors.
+   */
   private static List<EObjectTableColumnDescriptorAbstract<AddressHolder>> columnDescriptors = List.<EObjectTableColumnDescriptorAbstract<AddressHolder>>of(
       new EObjectTableColumnDescriptorCustom<AddressHolder>(null, "Type", null, true, true, column -> {
         TableCell<AddressHolder, Object> cell = new TableCell<>() {
@@ -492,6 +530,11 @@ class AddressesBookTableDescriptor extends EObjectTableDescriptor<AddressHolder>
       new EObjectTableColumnDescriptorCheckBox<AddressHolder>(ROLODEX_PACKAGE.getArchive_Archived(), "Archived", true, true)
       );
   
+  /**
+   * Constructor.
+   * 
+   * @param customization the GUI customization.
+   */
   public AddressesBookTableDescriptor(CustomizationFx customization) {
     super("The are no addressess in the Rolodex", null, columnDescriptors, null);
     

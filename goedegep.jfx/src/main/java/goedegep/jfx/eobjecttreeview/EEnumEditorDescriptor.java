@@ -43,8 +43,8 @@ public class EEnumEditorDescriptor<T> {
    * @param eEnumLiteral an EEnum literal
    * @param displayName the display name for <code>eEnumLiteral</code>.
    */
-  public void addDisplayNameForEEnum(T eEnumLiteral, String displayName) {
-    eEnumDisplayNamesMap.put(displayName, eEnumLiteral);
+  public void addDisplayNameForEEnum(Object eEnumLiteral, String displayName) {
+    eEnumDisplayNamesMap.put(displayName, (T) eEnumLiteral);
   }
   
   /**

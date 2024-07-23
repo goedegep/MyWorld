@@ -13,24 +13,12 @@
   </parent>
   <dependencies>
     <dependency>
-      <groupId>goedegep.types</groupId>
-      <artifactId>goedegep-types-model</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>goedegep.util</groupId>
-      <artifactId>goedegep-util</artifactId>
-    </dependency>
-    <dependency>
       <groupId>org.eclipse.emf</groupId>
       <artifactId>org.eclipse.emf.common</artifactId>
     </dependency>
     <dependency>
       <groupId>org.eclipse.emf</groupId>
       <artifactId>org.eclipse.emf.ecore</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.eclipse.emf</groupId>
-      <artifactId>org.eclipse.emf.ecore.xmi</artifactId>
     </dependency>
   </dependencies>
 </project>

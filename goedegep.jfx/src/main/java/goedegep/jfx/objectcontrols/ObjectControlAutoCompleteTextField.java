@@ -11,7 +11,7 @@ import goedegep.jfx.stringconverters.StringConverterAndChecker;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.control.Tooltip;
 
-public class ObjectControlAutoCompleteTextField<T> extends ObjectControlAbstract<T> {
+public class ObjectControlAutoCompleteTextField<T> extends ObjectControlTemplate<T> {
   private static final Logger         LOGGER = Logger.getLogger(ObjectControlAutoCompleteTextField.class.getName());
   
   private AutoCompleteTextField autoCompleteTextField = null;
@@ -84,9 +84,12 @@ public class ObjectControlAutoCompleteTextField<T> extends ObjectControlAbstract
 
   /**
    * {@inheritDoc}
+   * 
    */
   @Override
-  public boolean ociDetermineFilledIn() {
+  public boolean ociDetermineFilledIn(Object source) {
+    // as there is only one control, we can ignore the source parameter
+    
     if (autoCompleteTextField.getText() == null  ||  autoCompleteTextField.getText().isEmpty()) {
       return false;
     } else {
@@ -113,15 +116,6 @@ public class ObjectControlAutoCompleteTextField<T> extends ObjectControlAbstract
   @Override
   public String getValueAsFormattedText()  {
     return objectToString(getValue());
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public void setValue(T objectValue) {
-    referenceValue = objectValue;
-    autoCompleteTextField.setText(objectToString(objectValue));
   }
 
   /**
@@ -182,6 +176,13 @@ public class ObjectControlAutoCompleteTextField<T> extends ObjectControlAbstract
   @Override
   public void ociRedrawValue() {
     autoCompleteTextField.setText(getValueAsFormattedText());    
+  }
+
+  @Override
+  protected void ociUpdateNonSourceControls(Object source) {
+    if (source != autoCompleteTextField) {
+      autoCompleteTextField.setText(objectToString(getValue()));
+    }
   }
 
 }

@@ -29,6 +29,13 @@ import javafx.util.StringConverter;
  * This class provides a table to list {@link Artist}s.
  */
 public class ArtistsTable extends EObjectTable<Artist> {
+  private static final Logger LOGGER = Logger.getLogger(ArtistsTable.class.getName());
+  
+  /**
+   * A reference to a MediaDbWindow, which provides functionality like opening an album details window.
+   */
+  private MediaDbWindow mediaDbWindow;
+  
 
   /**
    * Constructor
@@ -36,14 +43,22 @@ public class ArtistsTable extends EObjectTable<Artist> {
    * @param customization  the GUI customization.
    * @param mediaDb the media database from which the artists are listed
    */
-  public ArtistsTable(CustomizationFx customization, MediaDb mediaDb) {
+  public ArtistsTable(CustomizationFx customization, MediaDbWindow mediaDbWindow, MediaDb mediaDb) {
     super(customization, MediadbPackage.eINSTANCE.getArtist(), new ArtistsTableDescriptor(customization), mediaDb, MediadbPackage.eINSTANCE.getMediaDb_Artists());
+    
+    this.mediaDbWindow = mediaDbWindow;
     
     setTableMenuButtonVisible(true);
     Background background = customization.getComponentFactoryFx().getPanelBackground();
     if (background != null) {
       setBackground(background);
     }
+  }
+
+  @Override
+  protected void handleRowDoubleClicked(Artist artist) {
+    LOGGER.severe("=>");
+    mediaDbWindow.openArtistEditor();
   }
 
 }

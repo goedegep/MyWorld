@@ -1,8 +1,6 @@
 package goedegep.events.app.guifx;
 
 import java.io.File;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -14,12 +12,10 @@ import goedegep.events.model.EventsPackage;
 import goedegep.jfx.ComponentFactoryFx;
 import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.FileReferencePanel;
-import goedegep.jfx.FileReferencePanel.FileReferencePanelBuilder;
 import goedegep.jfx.FileReferenceTypeInfo;
 import goedegep.jfx.objectcontrols.ObjectControlBoolean;
 import goedegep.jfx.objectcontrols.ObjectControlFileSelecter;
 import goedegep.jfx.objectcontrols.ObjectControlFlexDate;
-import goedegep.jfx.objectcontrols.ObjectControlGroup;
 import goedegep.jfx.objectcontrols.ObjectControlHTMLString;
 import goedegep.jfx.objectcontrols.ObjectControlString;
 import goedegep.jfx.objecteditor.ObjectEditorTemplate;
@@ -31,7 +27,6 @@ import goedegep.util.datetime.FlexDate;
 import goedegep.util.datetime.FlexDateFormat;
 import goedegep.util.dir.DirectoryChangesMonitoringTask;
 import goedegep.util.emf.EmfUtil;
-import goedegep.util.file.FileUtils;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
@@ -80,6 +75,10 @@ public class EventsEditor extends ObjectEditorTemplate<EventInfo> {
   private ObjectControlString eventFolderControl;
   private ObjectControlBoolean eventFolderExistsControl;
   private Button createEventsFolderButton;
+  
+  /**
+   * {@code ObjectControl} for the event picture.
+   */
   private ObjectControlFileSelecter pictureFileSelecter;
   private ObjectControlHTMLString notesControl;
   private ImageView pictureImageView;
@@ -102,6 +101,7 @@ public class EventsEditor extends ObjectEditorTemplate<EventInfo> {
    */
   private SimpleObjectProperty<File> generatedEventFolder;
   
+  
   /**
    * Constructor
    * <p>
@@ -116,25 +116,6 @@ public class EventsEditor extends ObjectEditorTemplate<EventInfo> {
     this.events = events;
     
     componentFactory = customization.getComponentFactoryFx();
-    
-//    if (EventsRegistry.eventsFolderName != null) {
-//      pictureFileSelecter.setPrefix(EventsRegistry.eventsFolderName);
-//    }
-//    notesControl.ocGetControl().setPrefHeight(100);
-//    
-//    
-//    objectControlsGroup.addListener(observable -> handleChanges(observable));
-//    pictureFileSelecter.addListener((e) -> {
-//      File file = pictureFileSelecter.ocGetValue();
-//      if (file != null) {
-//        Image picture = new Image("file:" + file.getAbsolutePath());
-//        pictureImageView.setImage(picture);
-//      } else {
-//        pictureImageView.setImage(null);
-//      }
-//    });
-//    
-//    handleChanges(null);
   }
   
   /**
@@ -167,8 +148,7 @@ public class EventsEditor extends ObjectEditorTemplate<EventInfo> {
     pictureImageView = new ImageView();
     notesControl = componentFactory.createObjectControlHTMLString(null, 400, true, "Enter the notes in HTML format");
     
-    // Create object controls group
-    objectControlsGroup = new ObjectControlGroup();
+    // Add the object controls to the {@code objectControlsGroup}
     objectControlsGroup.addObjectControls(eventDateControl, eventTitleControl, notesControl, pictureFileSelecter);
     
     generatedEventFolder = new SimpleObjectProperty<>();
@@ -249,7 +229,7 @@ public class EventsEditor extends ObjectEditorTemplate<EventInfo> {
     
     rootPane.getChildren().add(gridPane);
     
-    rootPane.getChildren().add(createAttachmentsPanel());    
+    rootPane.getChildren().add(createAttachmentsPanel());
   }
   
   /**
@@ -320,15 +300,17 @@ public class EventsEditor extends ObjectEditorTemplate<EventInfo> {
   private FileReferencePanel createNewAttachmentPanel(boolean expand) {
     FileReferencePanel attachmentPanel = new FileReferencePanel.FileReferencePanelBuilder(customization, attachmentPanels)
         .setDefaultPaneTitle(ATTACHMENT_PANEL_TITLE)
-        .setExpandPaneOnCreation(true)
+        .setExpandPaneOnCreation(expand)
         .setInitialFolderSupplier(this::getEventRelatedFilesFolder)
-        .addFileReferenceType("file", "File", false)
-        .addFileReferenceType("photoFolder", "Photo folder", true)
-        .addFileReferenceType("videoTakesFolder", "Video takes folder", true)
+        .addFileReferenceTypes(
+            new FileReferenceTypeInfo(AttachmentTypeInfo.FILE.getTag(), AttachmentTypeInfo.FILE.getDisplayName(), false, EventsRegistry.eventsFolderName),
+            new FileReferenceTypeInfo(AttachmentTypeInfo.PHOTO_FOLDER.getTag(), AttachmentTypeInfo.PHOTO_FOLDER.getDisplayName(), true, null),
+            new FileReferenceTypeInfo(AttachmentTypeInfo.VIDEO_TAKES_FOLDER.getTag(), AttachmentTypeInfo.VIDEO_TAKES_FOLDER.getDisplayName(), true, null)
+            )
         .build();
-    
+
     attachmentPanels.add(attachmentPanel);
-    
+
     return attachmentPanel;
   }
   
@@ -375,7 +357,7 @@ public class EventsEditor extends ObjectEditorTemplate<EventInfo> {
       return EventsRegistry.eventsFolderName;
     }
   }
-
+  
   /**
    * {@inheritDoc}
    */
@@ -436,7 +418,7 @@ public class EventsEditor extends ObjectEditorTemplate<EventInfo> {
   protected void updateObjectFromControls() {
     EmfUtil.setFeatureValue(object, TypesPackage.eINSTANCE.getEvent_Date(), eventDateControl.getValue());
     EmfUtil.setFeatureValue(object, EventsPackage.eINSTANCE.getEventInfo_Title(), eventTitleControl.getValue());
-    EmfUtil.setFeatureValue(object, EventsPackage.eINSTANCE.getEventInfo_Picture(), stripBaseDirFromFilename(pictureFileSelecter.getValue().getAbsolutePath()));
+    EmfUtil.setFeatureValue(object, EventsPackage.eINSTANCE.getEventInfo_Picture(), pictureFileSelecter.getPathNameRelativeToPrefix());
     EmfUtil.setFeatureValue(object, TypesPackage.eINSTANCE.getEvent_Notes(), notesControl.getValue());
     EmfUtil.setFeatureValue(object, TypesPackage.eINSTANCE.getEvent_Notes(), notesControl.getValue());
     
@@ -461,8 +443,8 @@ public class EventsEditor extends ObjectEditorTemplate<EventInfo> {
       for (FileReference attachment: object.getAttachments()) {
         FileReferencePanel fileReferencePanel = attachmentPanels.get(index++);
         FileReferenceTypeInfo fileReferencePanelReferenceType = fileReferencePanel.getReferenceType();
-        String fileReferencePanelReferenceTypeTag = (fileReferencePanelReferenceType != null ? fileReferencePanelReferenceType.getTag() : null);
-        String fileReferencePanelFile = FileUtils.getPathRelativeToFolder(EventsRegistry.eventsFolderName, fileReferencePanel.getFile());
+        String fileReferencePanelReferenceTypeTag = (fileReferencePanelReferenceType != null ? fileReferencePanelReferenceType.tag() : null);
+        String fileReferencePanelFile = fileReferencePanel.getPathNameRelativeToPrefix();
         if (!PgUtilities.equals(attachment.getTags(), fileReferencePanelReferenceTypeTag)  ||
             !attachment.getFile().equals(fileReferencePanelFile)  ||
             !PgUtilities.equals(attachment.getTitle(), fileReferencePanel.getTitleObjectControl().getValue())) {
@@ -493,23 +475,20 @@ public class EventsEditor extends ObjectEditorTemplate<EventInfo> {
   private void updateFileReferenceFromFileReferencePanel(FileReference fileReference, FileReferencePanel fileReferencePanel) {
     FileReferenceTypeInfo fileReferencePanelReferenceType = fileReferencePanel.getReferenceType();
     if (fileReferencePanelReferenceType != null) {
-      fileReference.setTags(fileReferencePanelReferenceType.getTag());
+      fileReference.setTags(fileReferencePanelReferenceType.tag());
+      LOGGER.severe("tags set to: " + fileReferencePanelReferenceType.tag());
     }
     
-    
-    if (fileReferencePanel.getFile() != null) {
-      String filename = fileReferencePanel.getFile();
+    if (fileReferencePanel.getPathNameRelativeToPrefix() != null) {
+      String filename = fileReferencePanel.getPathNameRelativeToPrefix();
       
-      if (fileReferencePanelReferenceType == null  ||  fileReferencePanelReferenceType.getTag() != AttachmentType.PHOTO_FOLDER.getTag()) {
-        LOGGER.info("filename=" + filename);
-        filename = FileUtils.getPathRelativeToFolder(EventsRegistry.eventsFolderName, filename);
-        LOGGER.info("filename=" + filename);
-      }
-      fileReference.setFile(stripBaseDirFromFilename(filename));
+      fileReference.setFile(filename);
+      LOGGER.severe("file set to: " + filename);
     }
 
     if (fileReferencePanel.getTitleObjectControl().isFilledIn()) {
       fileReference.setTitle(fileReferencePanel.getTitleObjectControl().getValue());
+      LOGGER.severe("title set to: " + fileReferencePanel.getTitleObjectControl().getValue());
     }    
   }
   
@@ -521,16 +500,16 @@ public class EventsEditor extends ObjectEditorTemplate<EventInfo> {
     return 1320.0;
   }  
   
-  private String stripBaseDirFromFilename(String fileName) {
-    File baseDir = new File(EventsRegistry.eventsFolderName);
-    if ((fileName.length() > baseDir.getAbsolutePath().length() + 1)  &&
-        fileName.startsWith(baseDir.getAbsolutePath())  &&
-        (fileName.charAt(baseDir.getAbsolutePath().length()) == '\\')) {
-      fileName = fileName.substring(baseDir.getAbsolutePath().length() + 1);
-    }
-    
-    return fileName;
-  }
+//  private String stripBaseDirFromFilename(String fileName) {
+//    File baseDir = new File(EventsRegistry.eventsFolderName);
+//    if ((fileName.length() > baseDir.getAbsolutePath().length() + 1)  &&
+//        fileName.startsWith(baseDir.getAbsolutePath())  &&
+//        (fileName.charAt(baseDir.getAbsolutePath().length()) == '\\')) {
+//      fileName = fileName.substring(baseDir.getAbsolutePath().length() + 1);
+//    }
+//    
+//    return fileName;
+//  }
   
 //  private void updateButtons() {
 //    if (events == null) {
@@ -592,9 +571,8 @@ public class EventsEditor extends ObjectEditorTemplate<EventInfo> {
     }
     
     for (FileReferencePanel fileReferencePanel: attachmentPanels) {
-      String fileReference = fileReferencePanel.getFile(); // This is the file
-      if (fileReference != null  &&  !fileReference.isEmpty()) {
-        File file = new File(fileReference);
+      File file = fileReferencePanel.getFile();
+      if (file != null ) {
         file = file.getParentFile();  // This is the possible event directory
         if (file != null) {
           File eventsFolder = file.getParentFile();
@@ -632,15 +610,15 @@ public class EventsEditor extends ObjectEditorTemplate<EventInfo> {
    * Update the {@code pictureImageView}.
    */
   private void updatePictureImageView() {
-    LOGGER.severe("=>");
+    LOGGER.info("=>");
     File pictureFile = pictureFileSelecter.getValue();
     
     if (pictureFile != null) {
       Image picture = new Image("file:" + pictureFile.getAbsolutePath());
-      LOGGER.severe("Image loaded from: " + pictureFile.getAbsolutePath());
+      LOGGER.info("Image loaded from: " + pictureFile.getAbsolutePath());
       pictureImageView.setImage(picture);
     } else {
-      LOGGER.severe("Clearing image");
+      LOGGER.info("Clearing image");
       pictureImageView.setImage(null);
     }
   }
@@ -678,18 +656,12 @@ public class EventsEditor extends ObjectEditorTemplate<EventInfo> {
     }
     eventDateControl.setValue(object.getDate());
     eventTitleControl.setValue(object.getTitle());
-    File pictureFile = object.getPicture() != null ? new File(EventsRegistry.eventsFolderName, object.getPicture()) : null;
-    LOGGER.severe("Picture: " + pictureFile);
-    pictureFileSelecter.setValue(pictureFile);
+    pictureFileSelecter.setPathNameRelativeToPrefix(object.getPicture());
     notesControl.setValue(object.getNotes());
     attachmentPanels.clear();
     for (FileReference attachment: object.getAttachments()) {
-      FileReferencePanel fileReferencePanel = new FileReferencePanelBuilder(customization, attachmentPanels)
-          .setDefaultPaneTitle(ATTACHMENT_PANEL_TITLE)
-          .setInitialFolderSupplier(this::getEventRelatedFilesFolder)
-          .build();
+      FileReferencePanel fileReferencePanel = createNewAttachmentPanel(false);
       fillFileReferencePanelFromAttachment(fileReferencePanel, attachment);
-      attachmentPanels.add(fileReferencePanel);
     }
   }
   
@@ -700,10 +672,11 @@ public class EventsEditor extends ObjectEditorTemplate<EventInfo> {
    * @param attachment the attachment (a {@code FileReference} to fill the {@code fileReferencePanel} from.
    */
   private void fillFileReferencePanelFromAttachment(FileReferencePanel fileReferencePanel, FileReference attachment) {
-    String  filename = attachment.getFile();
-
-    Path filePath = Paths.get(EventsRegistry.eventsFolderName, filename);    
-    fileReferencePanel.setFile(filePath.toAbsolutePath().toString());
+    String tag = attachment.getTags();
+    if (tag != null) {
+      fileReferencePanel.setReferenceType(tag);
+    }
+    fileReferencePanel.setPathNameRelativeToPrefix(attachment.getFile());
     fileReferencePanel.getTitleObjectControl().setValue(attachment.getTitle());
   }
   

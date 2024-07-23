@@ -34,7 +34,7 @@ import goedegep.appgen.TableRowOperationDescriptor;
  *     Operations that can be performed on the rows of the table. These operations are available via a context menu.
  * </li>
  * <li>subClassDescriptors<br/>
- *     TODO.
+ *     Descriptors for the sub-classes of {@code T}. Sub-classes may have extra attributes to show/edit.
  * </li>
  * </ul>
  *

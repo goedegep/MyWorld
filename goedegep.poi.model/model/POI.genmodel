@@ -92,6 +92,10 @@
       <genEnumLiterals ecoreEnumLiteral="POI.ecore#//POICategoryId/GLACIER"/>
       <genEnumLiterals ecoreEnumLiteral="POI.ecore#//POICategoryId/WATERFALL"/>
       <genEnumLiterals ecoreEnumLiteral="POI.ecore#//POICategoryId/SWIMMING_POOL"/>
+      <genEnumLiterals ecoreEnumLiteral="POI.ecore#//POICategoryId/MARKET"/>
+      <genEnumLiterals ecoreEnumLiteral="POI.ecore#//POICategoryId/BUS_STOP"/>
+      <genEnumLiterals ecoreEnumLiteral="POI.ecore#//POICategoryId/ZOO"/>
+      <genEnumLiterals ecoreEnumLiteral="POI.ecore#//POICategoryId/ISLAND"/>
     </genEnums>
     <genClasses ecoreClass="POI.ecore#//POIIconResourceDescriptor">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute POI.ecore#//POIIconResourceDescriptor/category"/>

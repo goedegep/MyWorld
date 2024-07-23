@@ -60,7 +60,6 @@ module goedegep.app.finan {
   requires javafx.base;
   requires javafx.controls;
   requires javafx.graphics;
-  requires javafx.swing;
   requires jcommon;
   requires jfreechart;
   requires ofx4j;

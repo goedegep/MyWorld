@@ -442,7 +442,6 @@ public class EObjectJTable<T extends EObject> extends AppGenAbstractTable implem
     JMenuItem       menuItem;
     JPopupMenu      popup = null;
     final int       row = getTable().rowAtPoint(new Point(x, y));
-    final int       column = getTable().columnAtPoint(new Point(x, y));
 
     popup = new JPopupMenu();
 
@@ -508,16 +507,6 @@ public class EObjectJTable<T extends EObject> extends AppGenAbstractTable implem
         if (row == getTable().getRowCount() - 1) {
           menuItem.setEnabled(false);
         }
-      }
-      
-      tableRowOperationDescriptor = rowOperations.get(Operation.ATTRIBUTE_EDITOR);
-      if (tableRowOperationDescriptor != null) {
-        MenuFactory.addMenuItem(popup, tableRowOperationDescriptor.getMenuText(), new ActionListener()  {
-          public void actionPerformed(ActionEvent e) {
-            attribuutEditor(row, column);
-          }
-        });
-
       }
     } else {
       Object o = rowOperations.get(Operation.NEW_OBJECT);
@@ -708,13 +697,7 @@ public class EObjectJTable<T extends EObject> extends AppGenAbstractTable implem
     
     updateData();
   }
-  
-  
-  protected void attribuutEditor(int row, int column) {
-    // TODO Auto-generated method stub
-    LOGGER.info("=>");
-  }
-  
+    
   /*
    * Implementation of ObjectSelectionListener.
    */

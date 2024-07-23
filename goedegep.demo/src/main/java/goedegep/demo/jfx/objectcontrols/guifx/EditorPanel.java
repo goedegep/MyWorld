@@ -1,5 +1,6 @@
 package goedegep.demo.jfx.objectcontrols.guifx;
 
+import java.io.File;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -148,7 +149,7 @@ public class EditorPanel extends VBox {
     nextTravelDateObjectControlFlexDate = componentFactory.createObjectControlFlexDate(null, 300.0, false, "When do you expect to travel again?");
     picturesFolderObjectControlFolderSelecter = componentFactory.createFolderSelecter(300, "The folder with pictures", "Select folder", "Select pictures folder", "Select the folder with the pictures", false);
     picturesFolderObjectControlFolderSelecter.setInitialFolderProvider(() -> "C:\\Users");
-    imageFileObjectControlImageFile = componentFactory.createObjectControlImageFile();
+    imageFileObjectControlImageFile = componentFactory.createObjectControlImageFile(false);
     notesObjectControlMultiLineString = componentFactory.createObjectControlMultiLineString(null, 300.0, false, "Enter your notes");
     detailsObjectControlHTMLString = componentFactory.createObjectControlHTMLString(null, 300.0, false, "Enter details of your travel");
     
@@ -398,7 +399,7 @@ public class EditorPanel extends VBox {
     travelerTypeObjectControlEnumComboBox.setValue(TravelerType.REGULAR);
     lastTravelRatingObjectControlFixedPointValue.setValue(null);
     lastTravelDateObjectControlLocalDate.setValue(null);
-    travelReportFileObjectControlFileSelecter.ocSetFilename("C:\\Users\\Peter\\Downloads\\Gebouw 464 BIC.jpg");
+    travelReportFileObjectControlFileSelecter.setValue(new File("C:\\Users\\Peter\\Downloads\\Gebouw 464 BIC.jpg"));
     nextTravelDateObjectControlFlexDate.setValue(null);
     picturesFolderObjectControlFolderSelecter.setValue(null);
     imageFileObjectControlImageFile.setValue(null);

@@ -27,7 +27,6 @@ module goedegep.media.mediadb.app {
   requires java.base;
   requires mp3agic;
   requires ealvatag;
-  requires javaFlacEncoder;
   requires org.apache.commons.text;
   requires goedegep.resources;
   requires org.apache.commons.io;

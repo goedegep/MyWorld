@@ -20,6 +20,10 @@
       <artifactId>goedegep-appgen</artifactId>
     </dependency>
     <dependency>
+      <groupId>goedegep.configuration</groupId>
+      <artifactId>goedegep-configuration-model</artifactId>
+    </dependency>
+    <dependency>
       <groupId>goedegep.demo</groupId>
       <artifactId>goedegep-demo</artifactId>
     </dependency>
@@ -64,8 +68,20 @@
       <artifactId>goedegep-properties-app</artifactId>
     </dependency>
     <dependency>
+      <groupId>goedegep.properties</groupId>
+      <artifactId>goedegep-properties-model</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>goedegep.resources</groupId>
+      <artifactId>goedegep-resources</artifactId>
+    </dependency>
+    <dependency>
       <groupId>goedegep.rolodex</groupId>
       <artifactId>goedegep-rolodex-app</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>goedegep.rolodex</groupId>
+      <artifactId>goedegep-rolodex-model</artifactId>
     </dependency>
     <dependency>
       <groupId>goedegep.unitconverter</groupId>
@@ -76,12 +92,23 @@
       <artifactId>goedegep-vacations-app</artifactId>
     </dependency>
     <dependency>
+     <groupId>org.eclipse.emf</groupId>
+	  <artifactId>org.eclipse.emf.ecore</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.openjfx</groupId>
+      <artifactId>javafx-base</artifactId>
+      <classifier>win</classifier>
+    </dependency>
+    <dependency>
       <groupId>org.openjfx</groupId>
       <artifactId>javafx-controls</artifactId>
+      <classifier>win</classifier>
     </dependency>
     <dependency>
       <groupId>org.openjfx</groupId>
       <artifactId>javafx-graphics</artifactId>
+      <classifier>win</classifier>
     </dependency>
   </dependencies>
 </project>

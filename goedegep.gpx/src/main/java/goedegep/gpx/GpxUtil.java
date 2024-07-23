@@ -375,7 +375,6 @@ public class GpxUtil {
       if ((distance1 > maxDistance) && (distance2 <= maxDistance)) {
         // this point is garbage
         keep[index] = false;
-        // TODO: also not a valid prev point
       } else {
         keep[index] = true;
       }

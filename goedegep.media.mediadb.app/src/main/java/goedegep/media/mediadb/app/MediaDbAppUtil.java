@@ -5,6 +5,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.logging.Logger;
 
 import goedegep.media.mediadb.model.Album;
@@ -284,12 +285,27 @@ public class MediaDbAppUtil {
    * @param track
    * @return
    */
-  public static String generateTrackFileNameForATrackInATracksFolder(Track track) {
+  public static String generateTrackFileNameForATrackInATracksFolder(Track track, MediaDb mediaDb) {
     LOGGER.fine("=> track=" + track.getArtist() + " - " + track.getTitle());
+    
+    String trackFileName = null;
+    
+    if (track.getTitle().contains("xxSuicide Blonde")) {
+      LOGGER.severe("STOP");
+    }
+    
+    TrackReference originalAlbumTrackReference = track.getOriginalDiscTrackReference();
+    if (originalAlbumTrackReference != null) {
+      trackFileName = generateTrackFileNameForATrackInATracksFolderUsingOriginalAlbum(originalAlbumTrackReference, mediaDb);
+      if (trackFileName != null) {
+        LOGGER.info("Using file based on original album");
+        return trackFileName;
+      }
+    }
     
     String artistName = null;
     if (track.isSetArtist()) {
-      artistName = track.getArtist().getName();
+      artistName = track.getTrackArtist().getName();
     } else {
       Disc originalDisc = track.getOriginalDisc();
       if (originalDisc != null) {
@@ -309,9 +325,123 @@ public class MediaDbAppUtil {
       return null;
     }
 
-    String trackFileName = TrackFile.generateTrackFileNameForATrackInATracksFolder(artistName, trackTitle);
+    trackFileName = TrackFile.generateTrackFileNameForATrackInATracksFolder(artistName, trackTitle);
     LOGGER.fine("<= " + trackFileName);
     return trackFileName;
+  }
+  
+  /**
+   * Generate the filename for MyTrackReferenceInfo of a MyCompilation album in the MusicFolder.
+   * 
+   * @param myTrackReferenceInfo the MyTrackReferenceInfo for which the filename is to be generated.
+   * @return the filename for the <code>trackReference</code>.
+   */
+  public static String generateTrackFileNameForATrackInATracksFolderUsingOriginalAlbum(TrackReference originalAlbumTrackReference, MediaDb mediaDb) {
+    Objects.requireNonNull(originalAlbumTrackReference, "Parameter originalAlbumTrackReference may not be null");
+    Objects.requireNonNull(mediaDb, "Parameter mediaDb may not be null");
+    
+    StringBuilder buf = new StringBuilder();
+    
+    Disc originalAlbumDisc = originalAlbumTrackReference.getDisc();
+    
+    if (originalAlbumDisc == null) {
+      LOGGER.severe("Cannot create filename for track without originalAlbumDisc, originalAlbumTrackReference: " + originalAlbumTrackReference);
+      return null;
+    }
+    
+    Album originalAlbum = originalAlbumDisc.getAlbum();
+    Artist artist = originalAlbum.getArtist();
+    
+    if (artist == null) {
+      LOGGER.severe("Cannot create filename for track without artist, originalAlbumTrackReference: " + originalAlbumTrackReference);
+      return null;
+    }
+    
+    buf.append(artist.getName());
+    buf.append(" - ");
+    
+    // four digit album year
+    FlexDate releaseDate = originalAlbum.getReleaseDate();
+    
+    if (releaseDate == null) {
+      LOGGER.severe("Cannot create filename for track without releaseDate, originalAlbumTrackReference: " + originalAlbumTrackReference);
+      return null;
+    }
+    
+    int year = releaseDate.getYear();    
+    
+    boolean addMonthToFileName = false;
+    if (originalAlbum.isSetArtist()) {
+      Artist artist2 = originalAlbum.getArtist();
+      if (artist2.isSetContainerArtist()) {
+        artist2 = artist.getContainerArtist();
+      }
+
+      List<Album> albumsReleasedInYear = new ArrayList<>();
+      for (Album anAlbum: mediaDb.getAlbums()) {
+        if (anAlbum.getArtist() != null) {
+          Artist anAlbumArtist = anAlbum.getArtist();
+          if (anAlbumArtist.isSetContainerArtist()) {
+            anAlbumArtist = anAlbumArtist.getContainerArtist();
+          }
+
+          if (artist2.equals(anAlbumArtist)) {
+            if (anAlbum.isSetReleaseDate()) {
+              FlexDate anAlbumReleaseDate = anAlbum.getReleaseDate();
+              int anAlbumYear = anAlbumReleaseDate.getYear();
+              if (anAlbumYear == year) {
+                albumsReleasedInYear.add(anAlbum);
+              }
+            }
+          }
+        }
+      }
+      
+      if (albumsReleasedInYear.size() > 1) {
+        addMonthToFileName = true;
+      }
+
+    }
+    
+    buf.append(year);
+    if (addMonthToFileName) {
+      buf.append("-");
+      Integer month = releaseDate.getMonth();
+      if (month != null) {
+        if (month < 9) {
+          buf.append(0);
+        }
+        buf.append(month + 1);
+      } else {
+        LOGGER.severe("No release month for album, which should have it: " + originalAlbum.getArtistAndTitle());
+      }
+    }
+    
+    buf.append(" - ");
+    
+    // album title
+    String title = originalAlbum.getTitle();
+    buf.append(MusicFolderUtil.replaceGroupSeparatorAndNameToFileName(title, true));
+    
+    buf.append(" - ");
+   
+    // track number on album
+    if (originalAlbum.getDiscs().size() > 1) {
+      int discNr = originalAlbum.getDiscs().indexOf(originalAlbumDisc) + 1;
+      buf.append(discNr).append("-");
+    }
+    int trackNr = originalAlbumDisc.getTrackReferences().indexOf(originalAlbumTrackReference) + 1;
+    buf.append(String.format("%02d", trackNr));
+    
+    buf.append(" - ");
+   
+    
+    // track title
+    Track track = originalAlbumTrackReference.getTrack();
+    String trackTitle = track.getTitle();
+    buf.append(MusicFolderUtil.replaceGroupSeparatorAndNameToFileName(trackTitle, true));
+    
+    return buf.toString();
   }
 
   /**

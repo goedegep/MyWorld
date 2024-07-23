@@ -135,6 +135,9 @@ public class EObjectTable<T extends EObject> extends TableView<T> implements Obj
   private Predicate<T> tableFilterPredicate;
   private List<Predicate<T>> predicates = new ArrayList<>();
   
+  /**
+   * Factory for creating the GUI components.
+   */
   private ComponentFactoryFx componentFactory;
 
   
@@ -160,9 +163,9 @@ public class EObjectTable<T extends EObject> extends TableView<T> implements Obj
    * </li>
    * </ul>
    * 
-   * @param customization the GUI customization.
+   * @param customization the GUI customization (mandatory).
    * @param eClass the {@link EClass} of the objects listed in the table (mandatory).
-   * @param objectTableDescriptor full specification of the table. If <code>null</code>, default values are used, where most information is derived from the <b>eClass</b>.
+   * @param objectTableDescriptor full specification of the table. If <code>null</code>, default values are used, where most information is derived from the {@code eClass}.
    * @param containingObject the object containing the list of objects.
    * @param objectsEReference the reference, in the containingObject, to the list of objects.
    */
@@ -171,14 +174,14 @@ public class EObjectTable<T extends EObject> extends TableView<T> implements Obj
     
     setObjects(containingObject, objectsEReference);
   }
-  
-  
-  public EObjectTable(CustomizationFx customization, EClass eClass, EObjectTableDescriptor<T> objectTableDescriptor, List<T> objects) {
-    this(customization, eClass, objectTableDescriptor);
     
-    setObjects(objects);
-  }
-  
+  /**
+   * Constructor.
+   * 
+   * @param customization the GUI customization (mandatory).
+   * @param eClass the {@link EClass} of the objects listed in the table (mandatory).
+   * @param objectTableDescriptor full specification of the table. If <code>null</code>, default values are used, where most information is derived from the {@code eClass}.
+   */
   public EObjectTable(CustomizationFx customization, EClass eClass, EObjectTableDescriptor<T> objectTableDescriptor) {
     super();
 
@@ -665,12 +668,17 @@ public class EObjectTable<T extends EObject> extends TableView<T> implements Obj
     return tableDescriptor;
   }
   
+  public void setObjects(EObjectListContainerSpecification eObjectListSpecification) {
+    this.setObjects(eObjectListSpecification.listContainer(), eObjectListSpecification.listReference());
+  }
+  
   /**
    * Set the list of EObjects to be shown in the table.
    * 
    * @param objects object (items) to be shown in the table.
    */
   public void setObjects(List<T> objects) {
+    
     if (objects == null) {
       setObjects(null, null);
     } else {
@@ -751,6 +759,49 @@ public class EObjectTable<T extends EObject> extends TableView<T> implements Obj
 //    };
 //    LOGGER.severe("adding listener");
 //    tableSortedList.addListener(l);
+  }
+  
+  /**
+   * Create an {@code EObject} (referred to as ObjectListContainer) with a list as its only structural feature. 
+   * <p>
+   * The items to be shown in an EObjectTable have to be in a list, which is part of an EObject (which makes the items observable).
+   * For lists which are part of an EMF data model this is already the case.
+   * But if you create a list on the fly (e.g. for combining lists) you can use this method to create an {@code EObject} with a list.<br/>
+   * Assume you want to create a list to be used in a table.
+   *     EObjectTable eObjectTable = new EObjectTable<EObject>(customization, MyClass, myTableDescriptor);
+   *     EObjectListContainerSpecification listContainerSpecification = eObjectTable.createObjectsListContainer();
+   *
+   *     List<MyClass> list = EmfUtil.<MyClass>getListUnchecked(listContainerSpecification.listContainer(), listContainerSpecification.listReference());
+   *     
+   *     // add items to the list.
+   *     // observe the source of your items to keep the list up to date.
+   *     
+   *     eObjectTable.setObjects(listContainerSpecification);
+   * 
+   */
+  public EObjectListContainerSpecification createObjectListContainer() {
+    // Create an EPackage and EFactory
+    EPackage listContainerPackage = EcoreFactory.eINSTANCE.createEPackage();
+    EFactory listContainerFactory = listContainerPackage.getEFactoryInstance();
+   
+    // Create an EClass to contain the list.
+    EClass listContainerClass = EcoreFactory.eINSTANCE.createEClass();
+    listContainerClass.setName("listContainer");
+    
+    // Create a reference, set name, type and upperBound (making it a list) and add it to the structural features.
+    EReference listReference = EcoreFactory.eINSTANCE.createEReference();
+    listReference.setName("list");
+    listReference.setEType(eClass);
+    listReference.setUpperBound(-1);
+    listContainerClass.getEStructuralFeatures().add(listReference);
+    
+    // Make the list container class known to the EPackage
+    listContainerPackage.getEClassifiers().add(listContainerClass);
+
+    // Create a list container
+    EObject listContainerEObject = listContainerFactory.create(listContainerClass);
+    
+    return new EObjectListContainerSpecification(listContainerEObject, listReference);
   }
   
   /**
@@ -1397,16 +1448,6 @@ public class EObjectTable<T extends EObject> extends TableView<T> implements Obj
 
 }
 
-class RowMouseEventHandler implements EventHandler<MouseEvent> {
-
-  @Override
-  public void handle(MouseEvent arg0) {
-    // TODO Auto-generated method stub
-    
-  }
-  
-}
-
 /**
  * This class is a Predicate used to filter rows from the table.
  *
@@ -1514,6 +1555,10 @@ class CheckBoxCellHelper<T extends EObject> implements Callback<Integer, SimpleB
     Object o = t.eGet((EStructuralFeature) eTypedElement);
     if (o instanceof org.eclipse.emf.ecore.util.EObjectWithInverseResolvingEList.ManyInverse<?> manyInverse) {
       LOGGER.severe("ManyInverse: " + o.toString());
+    }
+    Object obj = t.eGet((EStructuralFeature) eTypedElement);
+    if (!(obj instanceof Boolean)) {
+      LOGGER.severe("not boolean");
     }
     Boolean value = (Boolean) t.eGet((EStructuralFeature) eTypedElement);
     SimpleBooleanProperty booleanProperty = new SimpleBooleanProperty(value);

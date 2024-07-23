@@ -3,6 +3,7 @@ package goedegep.media.mediadb.model.util;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.logging.Logger;
 
@@ -36,49 +37,7 @@ public class MediaDbUtil {
    */
   private MediaDbUtil() {
   }
-  
-  /**
-   * Get a Track, or if it doesn't exist yet, create and add a Track.
-   * 
-   * @param mediaDb the media database to get the Track from, or to add the track to.
-   * @param artist the track artist.
-   * @param title the track title.
-   * @param originalAlbum the main album of which the track is part of.
-   * @return a Track with the specified properties.
-   */
-//  public static Track getOrAddTrack(MediaDb mediaDb, Artist artist, String title, Disc originalDisc) {
-//    Track track = null;
-//    
-//    // Try to find the track
-//    for (Track currentTrack: mediaDb.getTracks()) {
-//      if (artist.equals(currentTrack.getArtist())  &&  title.equals(currentTrack.getTitle())) {
-//        if (originalDisc != null) {
-//          if (originalDisc.equals(currentTrack.getOriginalDisc())) {
-//            track = currentTrack;
-//            break;
-//          }
-//        } else {
-//          track = currentTrack;
-//          break;
-//        }
-//      }
-//    }
-//    
-//    // If not found, create and add it.
-//    if (track == null) {
-//      track = MEDIA_DB_FACTORY.createTrack();
-//      
-//      track.setArtist(artist);
-//      track.setTitle(title);
-//      if (originalDisc != null) {
-//        track.setOriginalDisc(originalDisc);
-//      }
-//      mediaDb.getTracks().add(track);
-//    }
-//    
-//    return track;
-//  }
-  
+    
   /**
    * Check whether I should have an Album completely on disc, which is the case if there is an 'IHaveOn' of type 'HARDDISK' at album level.
    * 
@@ -315,21 +274,45 @@ public class MediaDbUtil {
    */
   public static boolean doIHaveOneOrMoreDiscTracksOnDisc(Disc disc) {
     for (TrackReference trackReference: disc.getTrackReferences()) {
-      MyTrackInfo myTrackInfo = trackReference.getMyTrackInfo();
-      
-      if (myTrackInfo != null) {
-        List<MediumInfo> mediumInfos = myTrackInfo.getIHaveOn();
-        for (MediumInfo mediumInfo: mediumInfos) {
-          if ((mediumInfo.getMediumType() == MediumType.HARDDISK)) {
-            return true;
-          }
-        }
-        
-        if (myTrackInfo.getCollection() != Collection.NOT_SET) {
+      if (doIHaveTrackOnDisc(trackReference)) {
+        return true;
+      }
+    }
+    
+    return false;
+  }
+  
+  /**
+   * Check whether I have a track, specified by a TrackReference, on disc or not.
+   * <p>
+   * I can either have the specified TrackReference on disc, or the TrackReference to which the MyTrackInfo.trackReference refers (and so on).<br/>
+   * I have a track on disc if there is a MediumInfo of type MediumType.HARDDISK.
+   * 
+   * @param trackReference reference for the track to check.
+   * @return true I have the track, specified by a trackReference, on disc. False otherwise.
+   */
+  public static boolean doIHaveTrackOnDisc(TrackReference trackReference) {
+    Objects.requireNonNull(trackReference, "Parameter trackReference may not be null");
+    
+    MyTrackInfo myTrackInfo = trackReference.getMyTrackInfo();
+    
+    if (myTrackInfo != null) {
+      List<MediumInfo> mediumInfos = myTrackInfo.getIHaveOn();
+      for (MediumInfo mediumInfo: mediumInfos) {
+        if ((mediumInfo.getMediumType() == MediumType.HARDDISK)) {
           return true;
         }
-      }      
-    }
+      }
+      
+      if (myTrackInfo.getCollection() != Collection.NOT_SET) {
+        return true;
+      }
+      
+      TrackReference referredTrackReference = myTrackInfo.getCompilationTrackReference();
+      if (referredTrackReference != null) {
+        return doIHaveTrackOnDisc(referredTrackReference);
+      }
+    }      
     
     return false;
   }

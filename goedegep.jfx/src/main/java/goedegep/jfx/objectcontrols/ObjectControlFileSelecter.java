@@ -3,6 +3,7 @@ package goedegep.jfx.objectcontrols;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Supplier;
 import java.util.logging.Logger;
 
 import goedegep.jfx.ComponentFactoryFx;
@@ -90,7 +91,8 @@ public class ObjectControlFileSelecter extends ObjectControlFileOrFolderSelecter
    * This value is used by the methods called by {@code ociHandleNewUserInput()}.
    */
   private File fileSelectedByFileChooser = null;
-
+  
+  
   /**
    * Constructor.
    * 
@@ -141,6 +143,17 @@ public class ObjectControlFileSelecter extends ObjectControlFileOrFolderSelecter
       selectedExtensionFilter = extensionFilter;
     }
   }
+  
+  /**
+   * Set the method for obtaining the initial file.
+   * <p>
+   * THIS METHOD IS NOT SUPPORTED! This because it is not supported on Window.
+   * 
+   * @param initialFileSupplier the method for obtaining the initial file.
+   */
+  public void setInitialFileProvider(Supplier<String> initialFileSupplier) {
+    throw new UnsupportedOperationException("Setting the initial file name is not implemented, as it is not supported on Windows.");
+  }
 
   /**
    * Get the Button for calling up a FileChooser.
@@ -178,16 +191,18 @@ public class ObjectControlFileSelecter extends ObjectControlFileOrFolderSelecter
     
     if (value != null) {  // If there is a valid file value.
       File folder = value.getParentFile();
-      LOGGER.severe("Setting initial directory: " + folder.getAbsolutePath());
+      LOGGER.info("Setting initial directory: " + folder.getAbsolutePath());
       fileChooser.setInitialDirectory(folder);
-      LOGGER.severe("Setting initial file name: " + value.getName());
+      LOGGER.info("Setting initial file name: " + value.getName());
       fileChooser.setInitialFileName(value.getName());
-    } else if (initialFolderSupplier != null) {  // If there is a initialFolderProvider.
-      String initialFolderName = initialFolderSupplier.get();
-      if (initialFolderName != null) {
-        File initialFolder = new File(initialFolderName);
-        if (initialFolder.exists()) {
-          fileChooser.setInitialDirectory(initialFolder);
+    } else {
+      if (initialFolderSupplier != null) {
+        String initialFolderName = initialFolderSupplier.get();
+        if (initialFolderName != null) {
+          File initialFolder = new File(initialFolderName);
+          if (initialFolder.exists()) {
+            fileChooser.setInitialDirectory(initialFolder);
+          }
         }
       }
     }
@@ -208,9 +223,13 @@ public class ObjectControlFileSelecter extends ObjectControlFileOrFolderSelecter
    * <p>
    */
   @Override
-  public boolean ociDetermineFilledIn() {
-    return ((pathTextField.textProperty().get() != null  &&  !pathTextField.textProperty().get().isEmpty())  ||
-        fileSelectedByFileChooser != null);
+  public boolean ociDetermineFilledIn(Object source) {
+    if (source == pathTextField) {
+      return ((pathTextField.textProperty().get() != null  &&  !pathTextField.textProperty().get().isEmpty())  ||
+          fileSelectedByFileChooser != null);
+    } else {
+      return fileSelectedByFileChooser != null;
+    }
   }
 
   /**
@@ -233,6 +252,8 @@ public class ObjectControlFileSelecter extends ObjectControlFileOrFolderSelecter
    * {@inheritDoc}
    */
   protected void ociUpdateNonSourceControls(Object source) {
-    setPathTextFieldText();
+    if (source != pathTextField) {
+      setPathTextFieldText();
+    }
   }
 }

@@ -4,7 +4,7 @@ module goedegep.vacations.app {
   
   opens goedegep.vacations.app.logic;
 
-  requires atlis.location.base;
+//  requires atlis.location.base;
   requires transitive com.atlis.location.nominatim;
   requires transitive com.gluonhq.maps;
   requires com.google.common.geometry;
@@ -38,7 +38,6 @@ module goedegep.vacations.app {
   requires org.eclipse.emf.common;
   requires org.eclipse.emf.ecore;
   requires org.apache.pdfbox;
-  requires spatial4j;
   requires com.google.gson;
   requires transitive goedegep.gpx;
   requires javafx.media;

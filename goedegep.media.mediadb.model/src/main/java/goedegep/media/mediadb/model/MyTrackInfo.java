@@ -180,6 +180,10 @@ public interface MyTrackInfo extends EObject {
    * Returns the value of the '<em><b>Compilation Track Reference</b></em>' reference.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
+   * <!-- begin-model-doc -->
+   * This has to be set if I have the track, but not as part of this disc. The reference refers to the TrackReference for which I have the track.
+   * This may be a reference to the track of an OWN_COMPILATION_ALBUM or a track in a track collection.
+   * <!-- end-model-doc -->
    * @return the value of the '<em>Compilation Track Reference</em>' reference.
    * @see #isSetCompilationTrackReference()
    * @see #unsetCompilationTrackReference()

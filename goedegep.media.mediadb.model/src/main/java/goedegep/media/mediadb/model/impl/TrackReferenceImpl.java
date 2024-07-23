@@ -13,6 +13,7 @@ import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
 
+import goedegep.media.mediadb.model.Album;
 import goedegep.media.mediadb.model.Disc;
 import goedegep.media.mediadb.model.MediadbPackage;
 import goedegep.media.mediadb.model.MyTrackInfo;
@@ -516,7 +517,8 @@ public class TrackReferenceImpl extends MinimalEObjectImpl.Container implements 
   public int getTrackNr() {
     EObject container = eContainer();
 
-    if (container instanceof Disc disc) {
+    if (container instanceof Disc) {
+      Disc disc = (Disc) container;
       EList<TrackReference> tracks = disc.getTrackReferences();
       int myIndex = tracks.indexOf(this);
 
@@ -689,14 +691,32 @@ public class TrackReferenceImpl extends MinimalEObjectImpl.Container implements 
   @Override
   public String toString() {
     StringBuilder buf = new StringBuilder();
-    
+
     buf.append("track nr: ").append(getTrackNr()).append(NEW_LINE);
     Track track = getTrack();
     buf.append("track: ").append(track != null ? track.getTitle() : "<no-track>").append(NEW_LINE);
     buf.append("bonus track: ").append(getBonusTrack() != null ? getBonusTrack() : "No").append(NEW_LINE);
-    buf.append("myTrackInfo: ").append(getMyTrackInfo() != null ? myTrackInfo.toString() : "<no myTrackInfo>").append(NEW_LINE);
-    buf.append("originalAlbumTrackReference: ").append(originalAlbumTrackReference != null ? originalAlbumTrackReference.toString() : "<no-originalAlbumTrackReference>").append(NEW_LINE);
-    
+    buf.append("myTrackInfo: ").append(getMyTrackInfo() != null ? myTrackInfo.toString() : "<no myTrackInfo>")
+    .append(NEW_LINE);
+    buf.append("originalAlbumTrackReference: ");
+    if (originalAlbumTrackReference != null) {
+      buf.append("track nr ").append(originalAlbumTrackReference.getTrackNr());
+      Disc disc = originalAlbumTrackReference.getDisc();
+      if (disc == null) {
+        buf.append("  ==Disc is null==  ");
+        System.out.println("Disc is null");
+      } else {
+        Album album = disc.getAlbum();
+        if (album.isMultiDiscAlbum()) {
+          buf.append(" on disc ").append(disc.getTitle());
+        }
+        buf.append(" of album " + album.getArtistAndTitle());
+      }
+    } else {
+      buf.append("<no-originalAlbumTrackReference>");
+    }
+    buf.append(NEW_LINE);
+
     return buf.toString();
   }
 

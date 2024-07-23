@@ -8,9 +8,7 @@ module goedegep.appgen {
   exports goedegep.appgen.eobjectsexamplemodel;
 
   requires org.apache.commons.cli;
-  requires org.apache.commons.exec;
   requires transitive goedegep.model.configuration;
-  requires goedegep.model.properties;
   requires transitive goedegep.types.model;
   requires transitive goedegep.util;
   requires java.datatransfer;

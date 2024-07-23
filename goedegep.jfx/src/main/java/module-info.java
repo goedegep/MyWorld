@@ -28,12 +28,12 @@ module goedegep.appgenfx {
   requires javafx.base;
   requires transitive javafx.controls;
   requires javafx.graphics;
+  requires javafx.swing;
   requires transitive javafx.web;
   requires org.commonmark;
   requires org.eclipse.emf.common;
   requires transitive org.eclipse.emf.ecore;
   requires transitive goedegep.types.model;
-  requires javafx.swing;
   requires goedegep.geo;
   requires goedegep.resources;
   requires junit;

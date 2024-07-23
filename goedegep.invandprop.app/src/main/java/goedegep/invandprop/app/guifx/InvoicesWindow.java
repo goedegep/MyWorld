@@ -194,7 +194,7 @@ public class InvoicesWindow extends JfxStage {
    * @return the created familiesTable
    */
   private EObjectTable<InvoiceItem> createInvoiceItemsTable() {
-    invoiceItemsTable = new EObjectTable<InvoiceItem>(customization, INVOICES_AND_PROPERTIES_PACKAGE.getInvoiceItem(), new InvoiceItemsTableDescriptor(), null);
+    invoiceItemsTable = new EObjectTable<InvoiceItem>(customization, INVOICES_AND_PROPERTIES_PACKAGE.getInvoiceItem(), new InvoiceItemsTableDescriptor());
         
     return invoiceItemsTable;
   }

@@ -55,9 +55,9 @@ public class EObjectTreeItemClassListReferenceDescriptor extends EObjectTreeItem
     
     Objects.requireNonNull(eReference, "The value of eReference may not be null.");
     
-    if (!eReference.isContainment()) {
-      throw new IllegalArgumentException("In this constructor only a containment eReference is allowed");
-    }
+//    if (!eReference.isContainment()) {
+//      throw new IllegalArgumentException("In this constructor only a containment eReference is allowed");
+//    }
     
     this.eReference = eReference;
     eClass = (EClass) eReference.eContainer();

@@ -26,20 +26,12 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 module com.gluonhq.maps {
-    requires transitive javafx.controls;
-
-//    requires com.gluonhq.attach.storage;
-//    requires com.gluonhq.attach.util;
 
     requires transitive java.logging;
     requires javafx.graphics;
     requires javafx.base;
     requires transitive goedegep.geo;
     requires java.desktop;
-    requires transitive goedegep.gpx.model;
-    requires goedegep.appgenfx;
-    requires goedegep.resources;
-    requires goedegep.poi.app;
 
     uses com.gluonhq.maps.tile.TileRetriever;
 

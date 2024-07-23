@@ -4,6 +4,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
@@ -26,6 +27,8 @@ import goedegep.media.mediadb.app.MediaDbAppUtil;
 import goedegep.media.mediadb.app.MediaDbChecker;
 import goedegep.media.mediadb.app.MediaDbToDiscLocationMap;
 import goedegep.media.mediadb.model.Album;
+import goedegep.media.mediadb.model.AlbumType;
+import goedegep.media.mediadb.model.Artist;
 import goedegep.media.mediadb.model.Collection;
 import goedegep.media.mediadb.model.Disc;
 import goedegep.media.mediadb.model.InformationType;
@@ -33,16 +36,20 @@ import goedegep.media.mediadb.model.MediaDb;
 import goedegep.media.mediadb.model.MediadbFactory;
 import goedegep.media.mediadb.model.MediadbPackage;
 import goedegep.media.mediadb.model.MediumInfo;
+import goedegep.media.mediadb.model.MediumType;
 import goedegep.media.mediadb.model.MyInfo;
 import goedegep.media.mediadb.model.MyTrackInfo;
 import goedegep.media.mediadb.model.Track;
+import goedegep.media.mediadb.model.TrackCollection;
 import goedegep.media.mediadb.model.TrackReference;
 import goedegep.media.mediadb.model.util.MediaDbUtil;
+import goedegep.media.mediadb.model.util.TrackReferencesIterator;
 import goedegep.media.mediadb.trackeditor.guifx.TrackEditor;
 import goedegep.media.musicfolder.AlbumOnDiscInfo;
 import goedegep.media.musicfolder.MusicFolderContent;
 import goedegep.properties.app.guifx.PropertiesEditor;
 import goedegep.resources.ImageSize;
+import goedegep.util.datetime.FlexDate;
 import goedegep.util.emf.EMFResource;
 import goedegep.util.emf.EmfUtil;
 import javafx.collections.FXCollections;
@@ -276,7 +283,7 @@ public class MediaDbWindow extends JfxStage {
       @Override
       public void notifyChanged(org.eclipse.emf.common.notify.Notification notification) {
         super.notifyChanged(notification);
-        LOGGER.info("Change detected: " + notification.toString());
+//        LOGGER.info("Change detected: " + notification.toString());
         
         if (notification.getEventType() == Notification.REMOVING_ADAPTER) {
           // for now no action
@@ -297,38 +304,28 @@ public class MediaDbWindow extends JfxStage {
     mediaDb.eAdapters().add(eContentAdapter);
     
     mediaDbResource.dirtyProperty().addListener((observable, oldValue, newValue) -> updateTitle());    
-    
-
-//    init();
   }
   
   private void tempFixProblems() {
-    // I have on shall only be set if it is stored for that reference. Not if it is in a collection or stored in another album
+    // check that all albums have myInfo with albumType
     for (Album album: mediaDb.getAlbums()) {
-      
-      if ("Het Beste Uit De Top 100 Allertijden + 1 Extra".equals(album.getTitle())) {
-        LOGGER.severe("STOP");
+//      MyInfo myInfo = album.getMyInfo();
+      if (album.isCompilation()) {
+        LOGGER.severe("Compilation album still set for: " + album.getArtistAndTitle());
+//        myInfo.setAlbumType(AlbumType.COMPILATION_ALBUM);
+//        album.setCompilation(false);
       }
-      
-      for (Disc disc: album.getDiscs()) {
-        for (TrackReference trackReference: disc.getTrackReferences()) {
-          MyTrackInfo myTrackInfo = trackReference.getMyTrackInfo();
-          if (myTrackInfo != null) {
-            if (!myTrackInfo.getIHaveOn().isEmpty()) {
-              if (myTrackInfo.getCollection() != Collection.NOT_SET) {
-                LOGGER.severe("I Have on set for album track in collection. Album is " + album.getArtistAndTitle() + ", track is " + trackReference.getTrack().getTitle());
-              }
-              if (myTrackInfo.getCompilationTrackReference() != null) {
-                LOGGER.severe("I Have on set for referred album track. Album is " + album.getArtistAndTitle() + ", track is " + trackReference.getTrack().getTitle() + ", referred album is " + 
-                    myTrackInfo.getCompilationTrackReference().getDisc().getAlbum().getArtistAndTitle());
-              }
-            }
-          }
-        }
-      }
+//      if (myInfo == null) {
+//        LOGGER.severe("No MyInfo for album: " + album.getArtistAndTitle());
+//      } else {
+//        AlbumType albumType = myInfo.getAlbumType();
+//        if (albumType != AlbumType.NORMAL_ALBUM  &&  albumType != AlbumType.OWN_COMPILATION_ALBUM) {
+//          LOGGER.severe("albumType: " + albumType.getLiteral());
+//        }
+//      }
     }
   }
-      
+        
   /**
    * Check that the file name for the media database is set in the {@link MediaRegistry}.
    * <p>
@@ -414,7 +411,7 @@ public class MediaDbWindow extends JfxStage {
     centerPane.getChildren().add(albumsTable);
     tracksTable = new TracksTable(customization, this, mediaDb, trackDiscLocationMap);
     tracksTable.setMinHeight(800);
-    artistsTable = new ArtistsTable(customization, mediaDb);
+    artistsTable = new ArtistsTable(customization, this, mediaDb);
     artistsTable.setMinHeight(800);
 
     mainPane.setCenter(centerPane);
@@ -737,6 +734,10 @@ public class MediaDbWindow extends JfxStage {
     
     albumDetailsWindow.setAlbum((Album) albumsTable.getSelectedObject());
   }
+  
+  void openArtistEditor() {
+    new ArtistDetailsEditor(customization, "Artist editor", mediaDb).runEditor().setObject((Artist) artistsTable.getSelectedObject());
+  }
 
   /**
    * Open the AlbumEditor to enter a new album.
@@ -751,7 +752,7 @@ public class MediaDbWindow extends JfxStage {
   void openTrackEditor() {
     new TrackEditor(customization, mediaDb).runEditor();
   }
-  
+    
   /**
    * Create a new Album from the tracks in a folder.
    */

@@ -48,7 +48,7 @@ public class MediaCollageCreator {
     if (candidates.size() > minNrOfPicturesInCollage) {
       List<File> imageFiles = new ArrayList<>();
       for (String fileName: candidates) {
-        File file = new File(MediaRegistry.albumInfoDirectory, fileName);       
+        File file = new File(MediaRegistry.musicDataDirectory + "\\Albums", fileName);       
         imageFiles.add(file);
       }
 

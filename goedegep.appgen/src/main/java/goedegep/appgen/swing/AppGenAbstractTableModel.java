@@ -11,7 +11,7 @@ public abstract class AppGenAbstractTableModel extends DefaultTableModel {
   private String[] columnNames;
   private Object[] longValues;
   
-  private AppGenAbstractTable table;  // TODO is this needed.
+  private AppGenAbstractTable table;
   
   protected AppGenAbstractTableModel() {
     this.columnNames = null;

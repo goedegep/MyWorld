@@ -33,7 +33,7 @@ public class SubjectsTable extends EObjectTable<Subject> {
    * @param mediaDb the media database from which the albums are listed
    */
   public SubjectsTable(CustomizationFx customization) {
-    super(customization, MediadbPackage.eINSTANCE.getSubject(), new SubjectsTableDescriptor(customization), null);
+    super(customization, MediadbPackage.eINSTANCE.getSubject(), new SubjectsTableDescriptor(customization));
         
     setTableMenuButtonVisible(true);
     Background background = customization.getComponentFactoryFx().getPanelBackground();

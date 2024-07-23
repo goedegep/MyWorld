@@ -1,5 +1,7 @@
 package goedegep.rolodex.app.guifx;
 
+import java.net.URL;
+
 import goedegep.jfx.AbstractAppResourcesFx;
 import javafx.scene.image.Image;
 
@@ -95,6 +97,12 @@ public class AdminResourcesFx extends AbstractAppResourcesFx {
     return personImage;
   }
   
+  public URL getPersonImageUrl() {
+    URL iconURL = AdminResourcesFx.class.getResource("Person.png");
+    
+    return iconURL;
+  }
+  
   public Image getFamilyImage() {
     if (familyImage == null) {
       try {
@@ -107,6 +115,12 @@ public class AdminResourcesFx extends AbstractAppResourcesFx {
     return familyImage;
   }
   
+  public URL getFamilyImageUrl() {
+    URL iconURL = AdminResourcesFx.class.getResource("Family.png");
+    
+    return iconURL;
+  }
+  
   public Image getInstitutionImage() {
     if (institutionImage == null) {
       try {
@@ -117,6 +131,12 @@ public class AdminResourcesFx extends AbstractAppResourcesFx {
     }
 
     return institutionImage;
+  }
+  
+  public URL getInstitutionImageUrl() {
+    URL iconURL = AdminResourcesFx.class.getResource("Institution.png");
+    
+    return iconURL;
   }
   
   public Image getEmployeeImage() {

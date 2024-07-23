@@ -32,10 +32,6 @@
       <artifactId>goedegep-configuration-model</artifactId>
     </dependency>
     <dependency>
-      <groupId>goedegep.properties</groupId>
-      <artifactId>goedegep-properties-model</artifactId>
-    </dependency>
-    <dependency>
       <groupId>goedegep.resources</groupId>
       <artifactId>goedegep-resources</artifactId>
     </dependency>
@@ -48,28 +44,12 @@
       <artifactId>goedegep-util</artifactId>
     </dependency>
     <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-    </dependency>
-    <dependency>
-        <groupId>org.apache.commons</groupId>
-        <artifactId>commons-exec</artifactId>
-    </dependency>
-    <dependency>
-     <groupId>org.eclipse.emf</groupId>
+      <groupId>org.eclipse.emf</groupId>
       <artifactId>org.eclipse.emf.common</artifactId>
     </dependency>
     <dependency>
-     <groupId>org.eclipse.emf</groupId>
+      <groupId>org.eclipse.emf</groupId>
       <artifactId>org.eclipse.emf.ecore</artifactId>
-    </dependency>
-    <dependency>
-     <groupId>org.eclipse.emf</groupId>
-      <artifactId>org.eclipse.emf.ecore.xmi</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.openjfx</groupId>
-      <artifactId>javafx-base</artifactId>
     </dependency>
   </dependencies>
 </project>

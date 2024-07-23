@@ -48,7 +48,6 @@ module goedegep.util {
   exports goedegep.util.xtree.nodebased;
   exports goedegep.util.xtree.serialized;
   
-  requires org.apache.commons.exec;
   requires transitive goedegep.geo;
   requires transitive java.desktop;
   requires transitive java.logging;
@@ -64,6 +63,5 @@ module goedegep.util {
   requires transitive javafx.graphics;
   
   requires org.junit.jupiter.api;
-  requires org.junit.jupiter.params;
   requires org.hamcrest;
 }

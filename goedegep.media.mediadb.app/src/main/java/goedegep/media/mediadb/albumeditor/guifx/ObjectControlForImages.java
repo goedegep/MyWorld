@@ -6,7 +6,7 @@ import java.util.logging.Logger;
 
 import goedegep.jfx.ComponentFactoryFx;
 import goedegep.jfx.CustomizationFx;
-import goedegep.jfx.objectcontrols.ObjectControlAbstract;
+import goedegep.jfx.objectcontrols.ObjectControlTemplate;
 import goedegep.jfx.objectcontrols.ObjectControlGroup;
 import goedegep.jfx.objectcontrols.ObjectControlImageFile;
 import goedegep.media.app.MediaRegistry;
@@ -20,7 +20,7 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 
-public class ObjectControlForImages extends ObjectControlAbstract<List<String>> {
+public class ObjectControlForImages extends ObjectControlTemplate<List<String>> {
   private static final Logger LOGGER = Logger.getLogger(ObjectControlForImages.class.getName());
   
   private ComponentFactoryFx componentFactory;
@@ -69,7 +69,7 @@ public class ObjectControlForImages extends ObjectControlAbstract<List<String>> 
     mainLayout.getChildren().add(getStatusIndicator());
     
     addImageButton.setOnAction((e) -> {
-      ObjectControlImageFile objectControlImageFile = new ObjectControlImageFile(customization);
+      ObjectControlImageFile objectControlImageFile = new ObjectControlImageFile(customization, false);
       if (MediaRegistry.albumInfoDirectory != null) {
         objectControlImageFile.setInitialDirectory(new File(MediaRegistry.albumInfoDirectory + File.separator + "Pictures"));
       }
@@ -84,7 +84,7 @@ public class ObjectControlForImages extends ObjectControlAbstract<List<String>> 
   }
   
   private ObjectControlImageFile createAndAddImageControl(String imageFileName) {
-    ObjectControlImageFile objectControlImageFile = new ObjectControlImageFile(customization);
+    ObjectControlImageFile objectControlImageFile = new ObjectControlImageFile(customization, false);
     if (MediaRegistry.albumInfoDirectory != null) {
       objectControlImageFile.setInitialDirectory(new File(MediaRegistry.albumInfoDirectory + File.separator + "Pictures"));
     }
@@ -135,7 +135,7 @@ public class ObjectControlForImages extends ObjectControlAbstract<List<String>> 
   }
 
   @Override
-  protected boolean ociDetermineFilledIn() {
+  protected boolean ociDetermineFilledIn(Object source) {
     // TODO Auto-generated method stub
     return false;
   }
@@ -163,5 +163,11 @@ public class ObjectControlForImages extends ObjectControlAbstract<List<String>> 
   @Override
   public boolean isValid() {
     return objectControlsGroup.getIsValid();
+  }
+
+  @Override
+  protected void ociUpdateNonSourceControls(Object source) {
+    // TODO Auto-generated method stub
+    
   }
 }

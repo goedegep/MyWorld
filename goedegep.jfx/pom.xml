@@ -40,8 +40,16 @@
       <artifactId>goedegep-configuration-model</artifactId>
     </dependency>
     <dependency>
+      <groupId>goedegep.geo</groupId>
+      <artifactId>goedegep-geo</artifactId>
+    </dependency>
+    <dependency>
       <groupId>goedegep.properties</groupId>
       <artifactId>goedegep-properties-model</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>goedegep.resources</groupId>
+      <artifactId>goedegep-resources</artifactId>
     </dependency>
     <dependency>
       <groupId>goedegep.types</groupId>
@@ -56,10 +64,6 @@
       <artifactId>junit</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.apache.commons</groupId>
-      <artifactId>commons-exec</artifactId>
-    </dependency>
-    <dependency>
       <groupId>org.eclipse.emf</groupId>
       <artifactId>org.eclipse.emf.common</artifactId>
     </dependency>
@@ -68,24 +72,33 @@
       <artifactId>org.eclipse.emf.ecore</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.eclipse.emf</groupId>
-      <artifactId>org.eclipse.emf.ecore.xmi</artifactId>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.openjfx</groupId>
+      <artifactId>javafx-base</artifactId>
+      <classifier>win</classifier>
     </dependency>
     <dependency>
       <groupId>org.openjfx</groupId>
       <artifactId>javafx-controls</artifactId>
+      <classifier>win</classifier>
     </dependency>
     <dependency>
-      <groupId>org.openjfx</groupId>
-      <artifactId>javafx-swing</artifactId>
+    	<groupId>org.openjfx</groupId>
+    	<artifactId>javafx-graphics</artifactId>
+    	<classifier>win</classifier>
+    </dependency>
+    <dependency>
+    	<groupId>org.openjfx</groupId>
+    	<artifactId>javafx-swing</artifactId>
+    	<classifier>win</classifier>
     </dependency>
     <dependency>
       <groupId>org.openjfx</groupId>
       <artifactId>javafx-web</artifactId>
-    </dependency>
-    <dependency>
-    	<groupId>org.openjfx</groupId>
-    	<artifactId>javafx-base</artifactId>
+      <classifier>win</classifier>
     </dependency>
   </dependencies>
 </project>

@@ -34,16 +34,14 @@ public class GpxAppUtil {
           for (String activityText: activity.getGpxKeywords()) {
             LOGGER.info("Checking on activityText: " + activityText);
             if (keyword.equals(activityText)) {
-              LOGGER.info("Hit");
               return activity;
-            } else {
-              LOGGER.info("No match");
             }
           }
         }
       }
     }
     
+    LOGGER.severe("No Activity found for GPX Keywords '" + keywords + "'");
     return null;
   }
 }

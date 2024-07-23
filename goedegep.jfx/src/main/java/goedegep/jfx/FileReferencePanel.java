@@ -46,6 +46,11 @@ public class FileReferencePanel extends TitledPane {
   private static final Logger LOGGER = Logger.getLogger(FileReferencePanel.class.getName());
   
   /**
+   * Clipboard content type used for drag and drop.
+   */
+  private static final DataFormat FILE_REFERENCE_PANEL = new DataFormat("FileReferencePanel");
+  
+  /**
    * The list of {@code FileReferencePanel}s to which a newly created panel has to add itself.
    * <p>
    * This list is used for reordering the panels via drag and drop.
@@ -53,14 +58,14 @@ public class FileReferencePanel extends TitledPane {
   private List<FileReferencePanel> fileReferencePanels = null;
   
   /**
-   * Default pane title (used if nothing is filled in yet)
+   * Default panel title (used if nothing is filled in yet)
    */
-  private String defaultPaneTitle = null;
+  private String defaultPanelTitle = null;
   
   /**
    * Expand pane on creation
    */
-  private boolean expandPaneOnCreation;
+  private boolean expandPanelOnCreation;
   
   /**
    * Supplier for the initial folder in the file or folder selecter.
@@ -78,17 +83,24 @@ public class FileReferencePanel extends TitledPane {
   FileReferenceTypeInfo currentFileReferenceTypeInfo = null;
   
   /**
-   * Indication of whether were handling a file or folder reference.
+   * Indication of whether we're handling a file or folder reference.
    */
   private Boolean handlingFileReference = null;
   
+  /**
+   * The GUI customization
+   */
   private CustomizationFx customization;
   
+  /**
+   * Factory for creating the GUI components
+   */
   private ComponentFactoryFx componentFactory;
   
+  /**
+   * {@code ObjectControlGroup} to which the object controls are added.
+   */
   private ObjectControlGroup objectControlsGroup;
-  
-  private static final DataFormat FILE_REFERENCE_PANEL = new DataFormat("FileReferencePanel");
   
   /**
    * Reference to {@code this}. Used in lambdas where 'this' is not available.
@@ -96,9 +108,24 @@ public class FileReferencePanel extends TitledPane {
   private FileReferencePanel thisFileReferencePanel;
   
   // The ObjectControls
+  /**
+   * Object control for the reference type.
+   */
   private ComboBox<String> referenceTypeComboBox;
+  
+  /**
+   * Object control used if the reference is a file reference.
+   */
   private ObjectControlFileSelecter fileSelecterObjectControl = null;
+  
+  /**
+   * Object control used if the reference is a folder reference.
+   */
   private ObjectControlFolderSelecter folderSelecterObjectControl = null;
+  
+  /**
+   * Object control for the reference title.
+   */
   private ObjectControlString titleObjectControl;
 
   /**
@@ -107,28 +134,23 @@ public class FileReferencePanel extends TitledPane {
   private GridPane gridPane;
   
   /**
-   * Used to open a file.
+   * Reference to the {@code DeskTop}, used to open a file.
    */
   private Desktop  desktop = null;
   
   /**
    * Constructor using builder
+   * <p>
+   * @param builder A builder with all configuration information.
    */
   public FileReferencePanel(FileReferencePanelBuilder builder) {
     this.customization = builder.customization;
     this.fileReferencePanels = builder.fileReferencePanels;
-    this.defaultPaneTitle = builder.defaultPaneTitle;
-    this.expandPaneOnCreation = builder.expandPaneOnCreation;
+    this.defaultPanelTitle = builder.defaultPaneTitle;
+    this.expandPanelOnCreation = builder.expandPaneOnCreation;
     this.initialFolderSupplier = builder.initialFolderSupplier;
     this.fileReferenceTypeInfos = builder.fileReferenceTypeInfos;
     
-    componentFactory = customization.getComponentFactoryFx();
-    
-    if (fileReferenceTypeInfos != null  &&  fileReferenceTypeInfos.isEmpty()) {
-      throw new IllegalArgumentException("If fileReferenceTypeInfos is not null, it may not be empty");
-    }
-    
-//    this.fileReferenceTypeInfos = fileReferenceTypeInfos;
     componentFactory = customization.getComponentFactoryFx();
     
     createControls();
@@ -145,7 +167,7 @@ public class FileReferencePanel extends TitledPane {
         
     thisFileReferencePanel = this;
     
-    setExpanded(expandPaneOnCreation);
+    setExpanded(expandPanelOnCreation);
     
     if (referenceTypeComboBox != null) {
       referenceTypeComboBox.getSelectionModel().select(0);
@@ -193,7 +215,7 @@ public class FileReferencePanel extends TitledPane {
       folderSelecterObjectControl = componentFactory.createFolderSelecter(400, "Currently selected folder",
           "Choose folder", "Select a folder via a folder chooser", "Select the folder", false);
       folderSelecterObjectControl.setId("folderSelecter");
-//      folderSelecterObjectControl.setInitialFolderProvider(initialFolderSupplier);
+      folderSelecterObjectControl.setInitialFolderProvider(initialFolderSupplier);
       folderSelecterObjectControl.addListener((observable) -> updatePaneTitle());
     }
     
@@ -210,49 +232,63 @@ public class FileReferencePanel extends TitledPane {
   }
   
   /**
-   * Set the selected file (TODO or folder??)
-   * 
-   * @param file the selected file.
+   * Set the reference type
    */
-  public void setFile(String file) {
-    getFileSelecterObjectControl().ocSetFilename(file);
+  public void setReferenceType(String tag) {
+    referenceTypeComboBox.setValue(tag);
   }
   
   /**
-   * Get the selected file or folder.
+   * Set the selected file.
+   * 
+   * @param file the selected file.
+   */
+  public void setPathNameRelativeToPrefix(String file) {
+    getFileSelecterObjectControl().setPathNameRelativeToPrefix(file);
+  }
+  
+  /**
+   * Get the selected file or folder path name, relative to the prefix.
    * 
    * @return the selected file or folder, if this has a valid value, null otherwise.
    */
-  public String getFile() {
+  public String getPathNameRelativeToPrefix() {
     if (handlingFileReference) {
       if (getFileSelecterObjectControl().isValid()) {
-        return getFileSelecterObjectControl().getAbsolutePath();
+        return getFileSelecterObjectControl().getPathNameRelativeToPrefix();
       } else {
         return null;
       }
     } else {
       if (getFolderSelecterObjectControl().isValid()) {
-        return getFolderSelecterObjectControl().getAbsolutePath();
+        return getFolderSelecterObjectControl().getPathNameRelativeToPrefix();
       } else {
         return null;
       }
     }
   }
   
-//  private String getPropertyFilesFolder() {
-//    String propertyFilesFolder = null;
-//    
-//    for (FileReferencePanel documentReferencePanel: documentReferencePanels) {
-//      File file = new File(documentReferencePanel.fileSelecter.getFilePathTextField().getText());
-//      propertyFilesFolder = file.getParent();
-//      if (propertyFilesFolder != null) {
-//        return propertyFilesFolder;
-//      }
-//    }
-//    
-//    return null;
-//  }
-
+  public File getFile() {
+    if (handlingFileReference) {
+      if (getFileSelecterObjectControl().isValid()) {
+        return getFileSelecterObjectControl().getValue();
+      } else {
+        return null;
+      }
+    } else {
+      if (getFolderSelecterObjectControl().isValid()) {
+        return getFolderSelecterObjectControl().getValue();
+      } else {
+        return null;
+      }
+    }
+  }
+  
+  /**
+   * Get the {@code ObjectControlGroup} for the object controls of this panel.
+   * 
+   * @return the {@code ObjectControlGroup} for the object controls of this panel.
+   */
   public ObjectControlGroup getObjectControlsGroup() {
     return objectControlsGroup;
   }
@@ -264,7 +300,7 @@ public class FileReferencePanel extends TitledPane {
     if (fileReferenceTypeInfos != null) {
       ObservableList<String> items = FXCollections.observableArrayList();
       for (FileReferenceTypeInfo fileReferenceTypeInfo: fileReferenceTypeInfos) {
-        items.add(fileReferenceTypeInfo.getDisplayName());
+        items.add(fileReferenceTypeInfo.displayName());
       }
       referenceTypeComboBox = new ComboBox<>(items);
     }
@@ -321,7 +357,6 @@ public class FileReferencePanel extends TitledPane {
    * Listeners are installed on: fileSelecterObjectControl, titleObjectControl, objectControlsGroup.isValid.
    */
   private void installChangeListeners() {
-    // TODO Change like other FileReferencePanel??
     objectControlsGroup.isValid().addListener((observable, oldValue, newValue) -> updatePaneTitle());
     titleObjectControl.addListener((observable) -> updatePaneTitle());
   }
@@ -413,7 +448,7 @@ public class FileReferencePanel extends TitledPane {
       String typeString = referenceTypeComboBox.getSelectionModel().getSelectedItem();
       currentFileReferenceTypeInfo = null;
       for (FileReferenceTypeInfo fileReferenceTypeInfo: fileReferenceTypeInfos) {
-        if (fileReferenceTypeInfo.getDisplayName().equals(typeString)) {
+        if (fileReferenceTypeInfo.displayName().equals(typeString)) {
           currentFileReferenceTypeInfo = fileReferenceTypeInfo;
           isFile = !fileReferenceTypeInfo.isFolder();
           break;
@@ -427,6 +462,16 @@ public class FileReferencePanel extends TitledPane {
     }
     
     handlingFileReference = isFile;
+    
+    String prefix = null;
+    if (currentFileReferenceTypeInfo != null) {
+      prefix = currentFileReferenceTypeInfo.filePathPrefix();
+    }
+    if (isFile) {
+      getFileSelecterObjectControl().setPrefix(prefix);
+    } else {
+      getFolderSelecterObjectControl().setPrefix(prefix);
+    }
     
     if (typeChanged) {
       updateGUI();
@@ -555,7 +600,7 @@ public class FileReferencePanel extends TitledPane {
       if (getFileSelecterObjectControl().getValue() != null) {
         string = getFileSelecterObjectControl().getValue().getName();
       } else {
-        string = defaultPaneTitle;
+        string = defaultPanelTitle;
       }
     }
     
@@ -657,12 +702,15 @@ public class FileReferencePanel extends TitledPane {
       return this;
     }
     
-    public FileReferencePanelBuilder addFileReferenceType(String tag, String displayName, boolean isFolder) {
+    public FileReferencePanelBuilder addFileReferenceTypes(FileReferenceTypeInfo... fileReferenceTypeInfo) {
       if (fileReferenceTypeInfos == null) {
         fileReferenceTypeInfos = new ArrayList<>();
       }
       
-      fileReferenceTypeInfos.add(new FileReferenceTypeDescriptor(tag, displayName, isFolder));
+      for (FileReferenceTypeInfo aFileReferenceTypeInfo: fileReferenceTypeInfo) {
+        fileReferenceTypeInfos.add(aFileReferenceTypeInfo);
+      }
+      
       return this;
     }
     
@@ -677,39 +725,46 @@ public class FileReferencePanel extends TitledPane {
   }
 }
 
-class FileReferenceTypeDescriptor implements FileReferenceTypeInfo {
-  
-  private String tag;
-  private String displayName;
-  private boolean isFolder;
-
-  FileReferenceTypeDescriptor(String tag, String displayName, boolean isFolder) {
-    this.tag = tag;
-    this.displayName = displayName;
-    this.isFolder = isFolder;
-  }
-  
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public String getTag() {
-    return tag;
-  }
-  
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public String getDisplayName() {
-    return displayName;
-  }
-  
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public boolean isFolder() {
-    return isFolder;
-  }
-}
+//class FileReferenceTypeDescriptor implements FileReferenceTypeInfo {
+//  
+//  private String tag;
+//  private String displayName;
+//  private boolean isFolder;
+//  private String prefix;
+//
+//  FileReferenceTypeDescriptor(String tag, String displayName, boolean isFolder, String prefix) {
+//    this.tag = tag;
+//    this.displayName = displayName;
+//    this.isFolder = isFolder;
+//    this.prefix = prefix;
+//  }
+//  
+//  /**
+//   * {@inheritDoc}
+//   */
+//  @Override
+//  public String getTag() {
+//    return tag;
+//  }
+//  
+//  /**
+//   * {@inheritDoc}
+//   */
+//  @Override
+//  public String getDisplayName() {
+//    return displayName;
+//  }
+//  
+//  /**
+//   * {@inheritDoc}
+//   */
+//  @Override
+//  public boolean isFolder() {
+//    return isFolder;
+//  }
+//
+//  @Override
+//  public String getPrefix() {
+//    return prefix;
+//  }
+//}

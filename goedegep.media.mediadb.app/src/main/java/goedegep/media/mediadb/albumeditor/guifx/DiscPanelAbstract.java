@@ -4,7 +4,7 @@ import java.util.List;
 
 import goedegep.jfx.ComponentFactoryFx;
 import goedegep.jfx.CustomizationFx;
-import goedegep.jfx.objectcontrols.ObjectControlAbstract;
+import goedegep.jfx.objectcontrols.ObjectControlTemplate;
 import goedegep.jfx.objectcontrols.ObjectControlGroup;
 import goedegep.jfx.objectcontrols.ObjectControlTextField;
 import goedegep.jfx.objecteditor.EditMode;
@@ -25,7 +25,7 @@ import javafx.scene.layout.VBox;
  * With an object control, the object value is directly updated upon any change in the controls,
  * here this is done only on getting the object value (which performs the editor method fillObjectFromControls)
  */
-public abstract class DiscPanelAbstract extends ObjectControlAbstract<Disc> {
+public abstract class DiscPanelAbstract extends ObjectControlTemplate<Disc> {
   private static final MediadbPackage MEDIA_DB_PACKAGE = MediadbPackage.eINSTANCE;
   
   /**

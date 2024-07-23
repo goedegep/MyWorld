@@ -6,7 +6,8 @@ import goedegep.jfx.CustomizationFx;
 import goedegep.util.PgUtilities;
 import javafx.scene.control.TextField;
 
-public class ObjectControlString extends ObjectControlAbstract<String> {
+// TODO why do I have this, instead of using ObjectControlTextField?
+public class ObjectControlString extends ObjectControlTemplate<String> {
   @SuppressWarnings("unused")
   private static final Logger         LOGGER = Logger.getLogger(ObjectControlString.class.getName());
   
@@ -38,12 +39,6 @@ public class ObjectControlString extends ObjectControlAbstract<String> {
     return textField;
   }
 
-  @Override
-  public void setValue(String objectValue) {
-    referenceValue = objectValue;
-    textField.setText(objectValue);
-  }
-
   /**
    * {@inheritDoc}
    */
@@ -66,7 +61,9 @@ public class ObjectControlString extends ObjectControlAbstract<String> {
    * {@inheritDoc}
    */
   @Override
-  public boolean ociDetermineFilledIn() {
+  public boolean ociDetermineFilledIn(Object source) {
+    // As there is only one control we don't have to check the source.
+    
     return textField.getText() != null  &&  !textField.getText().isEmpty();
   }
 
@@ -98,6 +95,13 @@ public class ObjectControlString extends ObjectControlAbstract<String> {
    */
   @Override
   public void ociRedrawValue() {
+  }
+
+  @Override
+  protected void ociUpdateNonSourceControls(Object source) {
+    if (source == null) {
+      textField.setText(getValue());
+    }
   }
   
   /**

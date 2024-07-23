@@ -1026,12 +1026,6 @@ class TrackReferenceControlsNormalAlbum extends TrackReferenceControlsAbstract {
   }
 
   @Override
-  public void setValue(TrackReference objectValue) {
-    // TODO Auto-generated method stub
-    
-  }
-
-  @Override
   public TrackReference getValue() {
     Track aTrack = getTrack();
     if (aTrack == null) {
@@ -1123,7 +1117,7 @@ class TrackReferenceControlsNormalAlbum extends TrackReferenceControlsAbstract {
   }
 
   @Override
-  protected boolean ociDetermineFilledIn() {
+  protected boolean ociDetermineFilledIn(Object source) {
     // TODO Auto-generated method stub
     return false;
   }
@@ -1155,6 +1149,12 @@ class TrackReferenceControlsNormalAlbum extends TrackReferenceControlsAbstract {
     getValue();
     LOGGER.severe("<= newTrack: " + (newTrack != null ? newTrack.toString() : "<null>"));
     return newTrack;
+  }
+
+  @Override
+  protected void ociUpdateNonSourceControls(Object source) {
+    // TODO Auto-generated method stub
+    
   }
   
 }

@@ -92,6 +92,10 @@
     <eLiterals name="GLACIER" value="81" literal="Glacier"/>
     <eLiterals name="WATERFALL" value="82" literal="Waterfall"/>
     <eLiterals name="SWIMMING_POOL" value="83" literal="Swimming pool"/>
+    <eLiterals name="MARKET" value="84" literal="Market"/>
+    <eLiterals name="BUS_STOP" value="85" literal="Bus stop"/>
+    <eLiterals name="ZOO" value="86" literal="Zoo"/>
+    <eLiterals name="ISLAND" value="87" literal="Island"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="POIIconResourceInfo">
     <eStructuralFeatures xsi:type="ecore:EReference" name="poiIconResourceDescriptors"

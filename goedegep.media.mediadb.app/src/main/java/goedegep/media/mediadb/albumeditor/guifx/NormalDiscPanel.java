@@ -179,12 +179,6 @@ public class NormalDiscPanel extends DiscPanelAbstract {
   }
 
   @Override
-  public void setValue(Disc objectValue) {
-    // TODO Auto-generated method stub
-    
-  }
-
-  @Override
   public Node getControl() {
     return titledPane;
   }
@@ -196,7 +190,7 @@ public class NormalDiscPanel extends DiscPanelAbstract {
   }
 
   @Override
-  protected boolean ociDetermineFilledIn() {
+  protected boolean ociDetermineFilledIn(Object source) {
     // TODO Auto-generated method stub
     return false;
   }
@@ -237,6 +231,12 @@ public class NormalDiscPanel extends DiscPanelAbstract {
     
     LOGGER.severe("<= Number of new tracks: " + newTracks.size());
     return newTracks;
+  }
+
+  @Override
+  protected void ociUpdateNonSourceControls(Object source) {
+    // TODO Auto-generated method stub
+    
   }
 
 }

@@ -51,6 +51,7 @@ import goedegep.types.model.FileReference;
 import goedegep.types.model.TypesPackage;
 import goedegep.util.emf.EMFResource;
 import goedegep.util.emf.EmfUtil;
+import goedegep.util.file.FileUtils;
 import goedegep.util.objectselector.ObjectSelectionListener;
 import goedegep.util.objectselector.ObjectSelector;
 import goedegep.vacations.app.logic.KmlFileImporter;
@@ -752,12 +753,20 @@ public class KmlFileImportWindow extends JfxStage {
         GpxType gpxType = documentRoot.getGpx();
         String name = gpxType.getMetadata().getName();
         Date startTime = gpxType.getStartTime();
+        name = createLegalFileName(name);
         LOGGER.info("startTime (" + name + "): " + startTime);
         fileName = DF.format(startTime) + " " + name + ".gpx";
       }
       Path path = Paths.get(vacationFolder, fileName);
 
       return path.toString();
+    }
+    
+    private String createLegalFileName(String name) {
+      name = name.replace("|", ",");
+      name = name.replace("\"", "'");
+      
+      return name;
     }
 
     String getInitialFolderName(EObjectTreeCell eObjectTreeCell) {

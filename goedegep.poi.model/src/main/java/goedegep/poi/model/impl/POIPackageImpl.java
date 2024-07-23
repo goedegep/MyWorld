@@ -328,6 +328,10 @@ public class POIPackageImpl extends EPackageImpl implements POIPackage {
     addEEnumLiteral(poiCategoryIdEEnum, POICategoryId.GLACIER);
     addEEnumLiteral(poiCategoryIdEEnum, POICategoryId.WATERFALL);
     addEEnumLiteral(poiCategoryIdEEnum, POICategoryId.SWIMMING_POOL);
+    addEEnumLiteral(poiCategoryIdEEnum, POICategoryId.MARKET);
+    addEEnumLiteral(poiCategoryIdEEnum, POICategoryId.BUS_STOP);
+    addEEnumLiteral(poiCategoryIdEEnum, POICategoryId.ZOO);
+    addEEnumLiteral(poiCategoryIdEEnum, POICategoryId.ISLAND);
 
     // Create resource
     createResource(eNS_URI);

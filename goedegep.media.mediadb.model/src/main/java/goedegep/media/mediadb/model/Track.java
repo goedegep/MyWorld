@@ -349,4 +349,15 @@ public interface Track extends EObject {
    */
   TrackReference getOriginalDiscTrackReference();
 
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * <!-- begin-model-doc -->
+   * Get the track artist. If {@code artist} is set, this is returned. Else, if {@code originalDisc} is set, the artist of the album of that disc is returned.
+   * <!-- end-model-doc -->
+   * @model kind="operation"
+   * @generated
+   */
+  Artist getTrackArtist();
+
 } // Track

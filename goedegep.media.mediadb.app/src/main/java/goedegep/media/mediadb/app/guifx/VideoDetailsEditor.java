@@ -1,5 +1,6 @@
 package goedegep.media.mediadb.app.guifx;
 
+import java.io.File;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
@@ -232,7 +233,7 @@ public class VideoDetailsEditor extends JfxStage {
       }
       
       if (video.isSetImage()) {
-        videoImageFileSelecter.ocSetFilename(video.getImage());
+        videoImageFileSelecter.setValue(new File(video.getImage()));
       } else {
         videoImageFileSelecter.setValue(null);
       }

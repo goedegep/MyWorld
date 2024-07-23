@@ -1,9 +1,9 @@
 package goedegep.media.mediadb.albumeditor.guifx;
 
-import goedegep.jfx.objectcontrols.ObjectControlAbstract;
+import goedegep.jfx.objectcontrols.ObjectControlTemplate;
 import goedegep.media.mediadb.model.TrackReference;
 
-public abstract class TrackReferenceControlsAbstract extends ObjectControlAbstract<TrackReference>  {
+public abstract class TrackReferenceControlsAbstract extends ObjectControlTemplate<TrackReference>  {
   private String id;
   
   public TrackReferenceControlsAbstract(boolean optional) {

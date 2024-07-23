@@ -181,7 +181,7 @@ public class ObjectControlGroup implements Iterable<ObjectControl<? extends Obje
     for (ObjectControl<?> objectControl: this) {
       if (!objectControl.isValid()) {
         isValidValue = false;
-        LOGGER.severe("First invalid ObjectControl: " + objectControl.toString());
+        LOGGER.info("First invalid ObjectControl: " + objectControl.toString());
         break;
       }
     }
@@ -246,7 +246,7 @@ public class ObjectControlGroup implements Iterable<ObjectControl<? extends Obje
     while (iterator.hasNext()) {
       ObjectControl<?> objectControl = iterator.next();
       if (objectControl.isChanged()) {
-        LOGGER.severe("First Object control changed: " + objectControl + ", id: " + objectControl.getId() + ", value: " + objectControl.getValue());
+        LOGGER.info("First Object control changed: " + objectControl + ", id: " + objectControl.getId() + ", value: " + objectControl.getValue());
         objectControl.isChanged();
         return true;
       } else {
@@ -266,14 +266,28 @@ public class ObjectControlGroup implements Iterable<ObjectControl<? extends Obje
   public void removeListener(InvalidationListener listener) {
     invalidationListeners.remove(listener);
   }
+  
+  public String toString() {
+    StringBuilder buf = new StringBuilder();
+
+    for (ObjectControl<?> objectControl: objectInputInvalidationListeners.keySet()) {
+      buf.append(objectControl.getId() + " - " + objectControl.getClass().getName() + "\n");
+    }
+    
+    for (ObjectControlGroup objectControlGroup: objectControlGroups.keySet()) {
+      buf.append("ObjectControlGroup\n");
+      buf.append(objectControlGroup.toString());
+    }
+    
+    return buf.toString();
+   }
 }
 
 /**
  * This class provides an {@code Iterator} to iterate over all controls (so also the controls in the sub-groups.
  */
 class ObjectControlGroupIterator implements Iterator<ObjectControl<? extends Object>> {
-//  private boolean iterateOverControls = true; // if false, we're iterating over the groups.
-//  private ObjectControlGroup objectControlGroup;
+  private static final Logger LOGGER = Logger.getLogger(ObjectControlGroupIterator.class.getName());
   
   /**
    * Iterator to iterate over the ObjectControls of the groups.
@@ -319,6 +333,7 @@ class ObjectControlGroupIterator implements Iterator<ObjectControl<? extends Obj
         objectControlsIterator = subObjectControlGroup.getObjectControls().iterator();
         if (objectControlsIterator.hasNext()) {
           nextFound = true;
+          return true;
         }
       }
     }
@@ -333,7 +348,10 @@ class ObjectControlGroupIterator implements Iterator<ObjectControl<? extends Obj
   public ObjectControl<?> next() {
     hasNext();
     
-    return objectControlsIterator.next();
+    ObjectControl<?> objectControl = objectControlsIterator.next();
+    LOGGER.info("=> " + objectControl.toString());
+    
+    return objectControl;
   }
   
   /**
@@ -347,5 +365,4 @@ class ObjectControlGroupIterator implements Iterator<ObjectControl<? extends Obj
       addControlGroupsToSubObjectControlGroups(objectControlGroup.getObjectControlGroups());
     }
   }
-    
 }

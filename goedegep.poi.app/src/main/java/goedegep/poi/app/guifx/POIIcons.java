@@ -3,6 +3,9 @@ package goedegep.poi.app.guifx;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
@@ -13,6 +16,8 @@ import goedegep.poi.model.POIFactory;
 import goedegep.poi.model.POIIconResourceDescriptor;
 import goedegep.poi.model.POIIconResourceInfo;
 import goedegep.poi.model.POIPackage;
+import goedegep.resources.ImageResource;
+import goedegep.resources.ImageSize;
 import goedegep.util.emf.EMFResource;
 import javafx.scene.image.Image;
 
@@ -55,13 +60,18 @@ public class POIIcons {
   public Image getIcon(POICategoryId poiCategoryId) {
     Image icon = iconMap.get(poiCategoryId);
     if (icon == null) {
+      
       String iconFileName = iconFileNameMap.get(poiCategoryId);
-      InputStream iconInputStream = POIIcons.class.getResourceAsStream(iconFileName);
-      if (iconInputStream == null) {
-        LOGGER.severe("Icon file doesn't seem to exist: " + iconFileName + " (category is " + poiCategoryId.getLiteral() + ")");
-        return getIcon(POICategoryId.DEFAULT_POI);        
+      if (iconFileName.startsWith("file:")) {
+        icon = new Image(iconFileName);
+      } else {
+        InputStream iconInputStream = POIIcons.class.getResourceAsStream(iconFileName);
+        if (iconInputStream == null) {
+          LOGGER.severe("Icon file doesn't seem to exist: " + iconFileName + " (category is " + poiCategoryId.getLiteral() + ")");
+          return getIcon(POICategoryId.DEFAULT_POI);        
+        }
+        icon = new Image(iconInputStream, 36, 36, true, true);
       }
-      icon = new Image(iconInputStream, 36, 36, true, true);
       iconMap.put(poiCategoryId, icon);
     }
     
@@ -70,18 +80,32 @@ public class POIIcons {
   
   public Image getIcon(POICategoryId poiCategoryId, double requestedWitdh, double requestedHeight) {
     String iconFileName = iconFileNameMap.get(poiCategoryId);
-    InputStream iconInputStream = POIIcons.class.getResourceAsStream(iconFileName);
-    if (iconInputStream == null) {
-      LOGGER.severe("Icon file doesn't seem to exist: " + iconFileName + " (category is " + poiCategoryId.getLiteral() + ")");
-      return getIcon(POICategoryId.DEFAULT_POI);        
+    
+    if (iconFileName.startsWith("file:")) {
+      return new Image(iconFileName, requestedWitdh, requestedHeight, true, true);
+    } else {
+      InputStream iconInputStream = POIIcons.class.getResourceAsStream(iconFileName);
+      if (iconInputStream == null) {
+        LOGGER.severe("Icon file doesn't seem to exist: " + iconFileName + " (category is " + poiCategoryId.getLiteral() + ")");
+        return getIcon(POICategoryId.DEFAULT_POI);        
+      }
+      return new Image(iconInputStream, requestedWitdh, requestedHeight, true, true);
     }
-    return new Image(iconInputStream, requestedWitdh, requestedHeight, true, true);
   }
   
   public URL getIconUrl(POICategoryId poiCategoryId) {
     String iconFileName = iconFileNameMap.get(poiCategoryId);
-    URL iconURL = POIIcons.class.getResource(iconFileName);
-    
+    URL iconURL = null;
+    if (iconFileName.startsWith("file:")) {
+      try {
+        iconURL = new URI(iconFileName).toURL();
+      } catch (MalformedURLException | URISyntaxException e) {
+        e.printStackTrace();
+      }
+    } else {
+      iconURL = POIIcons.class.getResource(iconFileName);
+    }
+
     return iconURL;
   }
   
@@ -123,6 +147,11 @@ public class POIIcons {
     poiIconResourceDescriptor = factory.createPOIIconResourceDescriptor();
     poiIconResourceDescriptor.setCategory(POICategoryId.BUS_STATION);
     poiIconResourceDescriptor.setIconFileName("busstation.png");
+    poiIconResourceInfo.getPoiIconResourceDescriptors().add(poiIconResourceDescriptor);
+    
+    poiIconResourceDescriptor = factory.createPOIIconResourceDescriptor();
+    poiIconResourceDescriptor.setCategory(POICategoryId.BUS_STOP);
+    poiIconResourceDescriptor.setIconFileName(ImageResource.BUS_STOP.getImageUrl(ImageSize.SIZE_2).toString());
     poiIconResourceInfo.getPoiIconResourceDescriptors().add(poiIconResourceDescriptor);
     
     poiIconResourceDescriptor = factory.createPOIIconResourceDescriptor();
@@ -226,8 +255,8 @@ public class POIIcons {
     poiIconResourceInfo.getPoiIconResourceDescriptors().add(poiIconResourceDescriptor);
     
     poiIconResourceDescriptor = factory.createPOIIconResourceDescriptor();
-    poiIconResourceDescriptor.setCategory(POICategoryId.MARINA);
-    poiIconResourceDescriptor.setIconFileName("marina.png");
+    poiIconResourceDescriptor.setCategory(POICategoryId.MARKET);
+    poiIconResourceDescriptor.setIconFileName(ImageResource.MARKET.getImageUrl(ImageSize.SIZE_2).toString());
     poiIconResourceInfo.getPoiIconResourceDescriptors().add(poiIconResourceDescriptor);
     
     poiIconResourceDescriptor = factory.createPOIIconResourceDescriptor();
@@ -416,6 +445,11 @@ public class POIIcons {
     poiIconResourceInfo.getPoiIconResourceDescriptors().add(poiIconResourceDescriptor);
     
     poiIconResourceDescriptor = factory.createPOIIconResourceDescriptor();
+    poiIconResourceDescriptor.setCategory(POICategoryId.ISLAND);
+    poiIconResourceDescriptor.setIconFileName(ImageResource.ISLAND.getImageUrl(ImageSize.SIZE_2).toString());
+    poiIconResourceInfo.getPoiIconResourceDescriptors().add(poiIconResourceDescriptor);
+    
+    poiIconResourceDescriptor = factory.createPOIIconResourceDescriptor();
     poiIconResourceDescriptor.setCategory(POICategoryId.BAR);
     poiIconResourceDescriptor.setIconFileName("bar.png");
     poiIconResourceInfo.getPoiIconResourceDescriptors().add(poiIconResourceDescriptor);
@@ -523,6 +557,11 @@ public class POIIcons {
     poiIconResourceDescriptor = factory.createPOIIconResourceDescriptor();
     poiIconResourceDescriptor.setCategory(POICategoryId.SWIMMING_POOL);
     poiIconResourceDescriptor.setIconFileName("swimmingPool.png");
+    poiIconResourceInfo.getPoiIconResourceDescriptors().add(poiIconResourceDescriptor);
+    
+    poiIconResourceDescriptor = factory.createPOIIconResourceDescriptor();
+    poiIconResourceDescriptor.setCategory(POICategoryId.ZOO);
+    poiIconResourceDescriptor.setIconFileName(ImageResource.ZOO.getImageUrl(ImageSize.SIZE_2).toString());
     poiIconResourceInfo.getPoiIconResourceDescriptors().add(poiIconResourceDescriptor);
     
     return poiIconResourceInfo;

@@ -89,4 +89,12 @@ public interface TrackCollection extends EObject {
    */
   EList<TrackReference> getTrackReferences();
 
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @model
+   * @generated
+   */
+  TrackReference getTrackReferece(Artist artist, String title);
+
 } // TrackCollection

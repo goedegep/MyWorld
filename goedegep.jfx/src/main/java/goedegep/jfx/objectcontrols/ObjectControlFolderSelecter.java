@@ -1,7 +1,6 @@
 package goedegep.jfx.objectcontrols;
 
 import java.io.File;
-import java.util.function.Supplier;
 import java.util.logging.Logger;
 
 import goedegep.jfx.ComponentFactoryFx;
@@ -66,12 +65,7 @@ public class ObjectControlFolderSelecter extends ObjectControlFileOrFolderSelect
    * This value is used by the methods called by {@code ociHandleNewUserInput()}.
    */
   private File folderSelectedByDirectoryChooser = null;
-  
-  /**
-   * A {@link Supplier} to provide the initial folder for the {@code directoryChooser}.
-   */
-  private Supplier<String> initialFolderSupplier = null;
-  
+    
   
   /**
    * Constructor.
@@ -93,7 +87,7 @@ public class ObjectControlFolderSelecter extends ObjectControlFileOrFolderSelect
     componentFactory = customization.getComponentFactoryFx();
     
     folderChooserButton = componentFactory.createButton(folderChooserButtonText, folderChooserButtonToolTipText);    
-    folderChooserButton.setOnAction(actionEvent -> handleFileChooserButtonPressed());
+    folderChooserButton.setOnAction(actionEvent -> handleFolderChooserButtonPressed());
     
 //    // Do this at the end, so it automatically leads an update of the selectionValidProperty.
 //    if (initiallySelecterFolder != null) {
@@ -123,7 +117,7 @@ public class ObjectControlFolderSelecter extends ObjectControlFileOrFolderSelect
    * </ul>
    * 
    */
-  private void handleFileChooserButtonPressed() {
+  private void handleFolderChooserButtonPressed() {
     if (directoryChooser == null) {
       directoryChooser = componentFactory.createDirectoryChooser(directoryChooserTitle);
     }
@@ -151,9 +145,13 @@ public class ObjectControlFolderSelecter extends ObjectControlFileOrFolderSelect
    * <p>
    */
   @Override
-  public boolean ociDetermineFilledIn() {
-    return ((pathTextField.textProperty().get() != null  &&  !pathTextField.textProperty().get().isEmpty())  ||
-        folderSelectedByDirectoryChooser != null);
+  public boolean ociDetermineFilledIn(Object source) {
+    if (source == pathTextField) {
+      return ((pathTextField.textProperty().get() != null  &&  !pathTextField.textProperty().get().isEmpty())  ||
+          folderSelectedByDirectoryChooser != null);
+    } else {
+      return folderSelectedByDirectoryChooser != null;
+    }
   }
 
   /**
@@ -170,6 +168,14 @@ public class ObjectControlFolderSelecter extends ObjectControlFileOrFolderSelect
     }
     
     return file;
+  }
+
+
+  @Override
+  protected void ociUpdateNonSourceControls(Object source) {
+    if (source != pathTextField) {
+      setPathTextFieldText();
+    }
   }
   
 }

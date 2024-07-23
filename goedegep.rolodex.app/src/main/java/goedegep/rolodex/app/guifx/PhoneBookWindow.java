@@ -5,14 +5,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
-import org.eclipse.emf.common.util.BasicEList;
-import org.eclipse.emf.common.util.EList;
-
 import goedegep.appgen.Operation;
 import goedegep.appgen.TableRowOperationDescriptor;
 import goedegep.jfx.ComponentFactoryFx;
 import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.JfxStage;
+import goedegep.jfx.eobjecttable.EObjectListContainerSpecification;
 import goedegep.jfx.eobjecttable.EObjectTable;
 import goedegep.jfx.eobjecttable.EObjectTableColumnDescriptorAbstract;
 import goedegep.jfx.eobjecttable.EObjectTableColumnDescriptorCustom;
@@ -26,6 +24,7 @@ import goedegep.rolodex.model.PhoneNumber;
 import goedegep.rolodex.model.PhoneNumberHolder;
 import goedegep.rolodex.model.Rolodex;
 import goedegep.rolodex.model.RolodexPackage;
+import goedegep.util.emf.EmfUtil;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.Scene;
@@ -49,8 +48,6 @@ public class PhoneBookWindow extends JfxStage {
   private ComponentFactoryFx componentFactory;
   private EObjectTableControlPanel eObjectTableControlPanel;
   private EObjectTable<PhoneNumberHolder> phoneNumbersTable;
-  
-  private EList<PhoneNumberHolder> phoneNumberHolders;
   
   /**
    * Constructor
@@ -105,7 +102,10 @@ public class PhoneBookWindow extends JfxStage {
    * @return the created phoneNumbersTable
    */
   private EObjectTable<PhoneNumberHolder> createPhoneNumbersTable() {
-    phoneNumberHolders = new BasicEList<>();
+    
+    phoneNumbersTable = new EObjectTable<PhoneNumberHolder>(customization, ROLODEX_PACKAGE.getPhoneNumber(), new PhoneBookTableDescriptor());
+    EObjectListContainerSpecification listContainerSpecification = phoneNumbersTable.createObjectListContainer();
+    List<PhoneNumberHolder> phoneNumberHolders = EmfUtil.getListUnchecked(listContainerSpecification.listContainer(), listContainerSpecification.listReference());
     
     // Add families
     for (Family family: rolodex.getFamilyList().getFamilies()) {
@@ -135,7 +135,7 @@ public class PhoneBookWindow extends JfxStage {
       }
     }
     
-    phoneNumbersTable = new EObjectTable<PhoneNumberHolder>(customization, ROLODEX_PACKAGE.getPhoneNumber(), new PhoneBookTableDescriptor(), phoneNumberHolders);
+    phoneNumbersTable.setObjects(listContainerSpecification);
         
     return phoneNumbersTable;
   }

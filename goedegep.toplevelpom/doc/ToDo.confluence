@@ -1,10 +1,22 @@
+h2. Notes
+* MediaDb Original Track Reference
+Change this to a boolean. Only set on original track.
+Original Track is found via Track (like now), but check on referred by reference has set original track set to true.
+For now: only let original track reference refer to itself.
+
 h2. ToDo list
+
+* isCompilationAlbumCheckBox shall be removed, all albums shall have MyInfo.albumType set
+* Collection should not be needed anymore.
+* compilationTrackReference shall be renamed to trackReference.
+* Remove references to albumInfoDirectory in MediaRegistry and then remove it.
 * AlbumEditor/new album
 Currently OK: title, artist, issuedate, albumId
 Next: players
 * When starting to edit an album it complaints about changes which can't be there.
 * Clean up MijnWereld folder.
 * Fix exception that occurs on setMyTrackInfo
+* Implement usage of SubClassDescriptor (EObjectTable). See MortgageEventsTable.
 * Media: Fix all current problems when starting MediaDbWindow
 * Media: import tracks - Add track information from the Tracks.xml file
 If this is complete, save the database and remove the code and then obsolete files
@@ -106,3 +118,6 @@ Add an ignore message system (could be a hidden part of the Vacations data model
 h2. credits
 * Lake icon by Icons made by <a href="https://www.flaticon.com/authors/freepik" title="Freepik">Freepik</a> from <a href="https://www.flaticon.com/" title="Flaticon"> www.flaticon.com</a>
 * Canyon icon by Icons made by <a href="https://www.flaticon.com/authors/vitaly-gorbachev" title="Vitaly Gorbachev">Vitaly Gorbachev</a> from <a href="https://www.flaticon.com/" title="Flaticon"> www.flaticon.com</a>
+
+h2. Google timeline
+Handled: 03-12-2023 - 29-06-2024

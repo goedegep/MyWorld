@@ -9,6 +9,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
+import org.eclipse.emf.ecore.EObject;
+
 import goedegep.appgen.Operation;
 import goedegep.appgen.TableRowOperationDescriptor;
 import goedegep.jfx.AppResourcesFx;
@@ -27,6 +29,8 @@ import goedegep.media.mediadb.model.Disc;
 import goedegep.media.mediadb.model.MediaDb;
 import goedegep.media.mediadb.model.MediadbPackage;
 import goedegep.media.mediadb.model.Track;
+import goedegep.media.mediadb.model.TrackCollection;
+import goedegep.media.mediadb.model.TrackReference;
 import goedegep.resources.ImageSize;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
@@ -161,6 +165,7 @@ public class TracksTable extends EObjectTable<Track> {
 class TracksTableDescriptor extends EObjectTableDescriptor<Track> {
   private static final int IMAGE_HEIGHT = 60;
   private static final MediadbPackage MEDIA_DB_PACKAGE = MediadbPackage.eINSTANCE;
+  private static final String NEWLINE = System.getProperty("line.separator");
   
   /**
    * This map relates a track (as in the mediaDb) to its location on disc.
@@ -177,7 +182,32 @@ class TracksTableDescriptor extends EObjectTableDescriptor<Track> {
    */
   private List<EObjectTableColumnDescriptorAbstract<Track>> columnDescriptors = List.<EObjectTableColumnDescriptorAbstract<Track>>of(
       playColumnDescriptor,
-      new EObjectTableColumnDescriptorBasic<Track>(MEDIA_DB_PACKAGE.getTrack_Artist(), "Artist", true, true),
+      new EObjectTableColumnDescriptorCustom<Track>(null, "Artist", null, true, true, item -> {
+        TableCell<Track, Object> cell = new TableCell<>() {
+
+          @Override
+          protected void updateItem(Object item, boolean empty) {
+            super.updateItem(item, empty);
+            if(empty || (item == null)) {
+              setText(null);
+            }
+            else {
+              StringBuilder buf = new StringBuilder();
+              Track track = (Track) item;
+              Artist artist = track.getTrackArtist();
+              if (artist != null) {
+                buf.append(artist.getName());
+              } else {
+                buf.append("<no artist>");
+              }
+              
+              setText(buf.toString());
+            }
+          }
+        };
+
+        return cell;
+      }),
       new EObjectTableColumnDescriptorBasic<Track>(MEDIA_DB_PACKAGE.getTrack_Title(), "Title", true, true),
       new EObjectTableColumnDescriptorCustom<Track>(MEDIA_DB_PACKAGE.getTrack_OriginalDisc(), "Album", null, false, true, column -> {
         TableCell<Track, Object> cell = new TableCell<>() {
@@ -230,6 +260,45 @@ class TracksTableDescriptor extends EObjectTableDescriptor<Track> {
         };
 
         return cell;
+      }),
+      new EObjectTableColumnDescriptorCustom<Track>(MEDIA_DB_PACKAGE.getTrack_ReferredBy(), "Referred by", null, false, true, column -> {
+        TableCell<Track, Object> cell = new TableCell<>() {
+
+          @Override
+          protected void updateItem(Object item, boolean empty) {
+            super.updateItem(item, empty);
+            if(empty || (item == null)) {
+              setText(null);
+            }
+            else {
+              StringBuilder buf = new StringBuilder();
+              @SuppressWarnings("unchecked")
+              List<TrackReference> referredTrackReferences = (List<TrackReference>) item;
+              boolean first = true;
+              for (TrackReference trackReference: referredTrackReferences) {
+                if (first) {
+                  first = false;
+                } else {
+                  buf.append(NEWLINE);
+                }
+                EObject container = trackReference.eContainer();
+                if (container instanceof Disc disc) {
+                  Album album = disc.getAlbum();
+                  buf.append(album.getArtistAndTitle());
+                } else if (container instanceof TrackCollection trackCollection) {
+                  buf.append("collection ").append(trackCollection.getCollection().getName());
+                } else if (container instanceof Artist artist) {
+                  buf.append("sample of ").append(artist.getName());
+                } else {
+                  throw new RuntimeException("Unknown track reference");
+                }
+              }
+              setText(buf.toString());
+            }
+          }
+        };
+
+        return cell;
       })
   );
   
@@ -269,13 +338,15 @@ class TrackComparator implements Comparator<Track> {
   @Override
   public int compare(Track track1, Track track2) {
     int compareResult = 0;
+    Artist artist1 = track1 != null ? track1.getTrackArtist() : null;
+    Artist artist2 = track2 != null ? track2.getTrackArtist() : null;
     
-    if (!track1.isSetArtist() || !track1.getArtist().isSetName()) {
+    if (artist1 == null || !artist1.isSetName()) {
       compareResult = -1;
-    } else if (!track2.isSetArtist() || !track2.getArtist().isSetName()) {
+    } else if (artist2 == null || !artist2.isSetName()) {
       compareResult = 1;
     } else {
-      compareResult = track1.getArtist().getName().compareTo(track2.getArtist().getName());
+      compareResult = artist1.getName().compareTo(artist2.getName());
     }
     if (compareResult == 0) {
       if (track1.getTitle() == null) {
@@ -286,6 +357,7 @@ class TrackComparator implements Comparator<Track> {
         compareResult = track1.getTitle().compareTo(track2.getTitle());
       }
     }
+    
     return compareResult;
   }
   

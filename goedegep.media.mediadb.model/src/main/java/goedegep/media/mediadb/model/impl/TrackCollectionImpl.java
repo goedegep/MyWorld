@@ -2,11 +2,13 @@
  */
 package goedegep.media.mediadb.model.impl;
 
+import goedegep.media.mediadb.model.Artist;
 import goedegep.media.mediadb.model.Collection;
 import goedegep.media.mediadb.model.MediadbPackage;
 import goedegep.media.mediadb.model.TrackCollection;
 import goedegep.media.mediadb.model.TrackReference;
 
+import java.lang.reflect.InvocationTargetException;
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
 
@@ -163,6 +165,31 @@ public class TrackCollectionImpl extends MinimalEObjectImpl.Container implements
   /**
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
+   * @generated NOT
+   */
+  @Override
+  public TrackReference getTrackReferece(Artist artist, String title) {
+    java.util.Objects.requireNonNull(artist, "Parameter artist may not be null");
+    java.util.Objects.requireNonNull(title, "Parameter title may not be null");
+
+    TrackReference collectionTrackReference = null;
+
+    for (TrackReference trackReference : getTrackReferences()) {
+      if (artist == trackReference.getTrack().getArtist() && title.equals(trackReference.getTrack().getTitle())) {
+        if (collectionTrackReference != null) {
+          throw new RuntimeException("Found more than one TrackReference for: " + artist.getName() + " - " + title);
+        }
+
+        collectionTrackReference = trackReference;
+      }
+    }
+
+    return collectionTrackReference;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
    * @generated
    */
   @Override
@@ -242,6 +269,20 @@ public class TrackCollectionImpl extends MinimalEObjectImpl.Container implements
       return trackReferences != null && !trackReferences.isEmpty();
     }
     return super.eIsSet(featureID);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public Object eInvoke(int operationID, EList<?> arguments) throws InvocationTargetException {
+    switch (operationID) {
+    case MediadbPackage.TRACK_COLLECTION___GET_TRACK_REFERECE__ARTIST_STRING:
+      return getTrackReferece((Artist) arguments.get(0), (String) arguments.get(1));
+    }
+    return super.eInvoke(operationID, arguments);
   }
 
   /**

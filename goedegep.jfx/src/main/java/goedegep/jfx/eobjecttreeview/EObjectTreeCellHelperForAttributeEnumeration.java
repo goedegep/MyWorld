@@ -27,8 +27,6 @@ public class EObjectTreeCellHelperForAttributeEnumeration extends EObjectTreeCel
    */
   @Override
   protected void changeGraphicForEditing() {
-    Object eObjectTreeItemContent = eObjectTreeCell.getItem();
-
     /*
      *  replace the valueLabel with a ChoiceBox.
      *  The value for the control is obtained from the item of this cell.
@@ -41,24 +39,16 @@ public class EObjectTreeCellHelperForAttributeEnumeration extends EObjectTreeCel
     EClassifier eClassifier = itemDescriptor.getEAttribute().getEType();
     final EEnum eEnum = (EEnum) eClassifier;
     EObjectTreeView eObjectTreeView = treeItem.getEObjectTreeView();
-//    EObjectTreeDescriptor eObjectTreeDescriptor = eObjectTreeView.getEObjectTreeDescriptor();
-    final EEnumEditorDescriptor<?> eEnumEditorDescriptorForEEnum = eObjectTreeView.getEEnumEditorDescriptorForEEnum(eEnum);
-    if (eEnumEditorDescriptorForEEnum != null) {
-      valueChoiceBox.getItems().addAll(eEnumEditorDescriptorForEEnum.getDisplayNames());
-    } else {
-      for (Object value: eObjectTreeItemContent.getClass().getEnumConstants()) {
-        valueChoiceBox.getItems().add(value.toString());
-      }
-    }
+    final EEnumEditorDescriptor<?> eEnumEditorDescriptorForEEnum = eObjectTreeView.getEEnumEditorDescriptorForEEnum(eEnum.getDefaultValue());
+    valueChoiceBox.getItems().addAll(eEnumEditorDescriptorForEEnum.getDisplayNames());
     
-    LOGGER.severe("Going to select: " + valueLabel.getText());
+    LOGGER.info("Going to select: " + valueLabel.getText());
     valueChoiceBox.getSelectionModel().select(valueLabel.getText());
     
     valueChoiceBox.onActionProperty().set((actionEvent) -> {
         Object value = valueChoiceBox.getValue();
         if (eEnumEditorDescriptorForEEnum != null) {
           value = eEnumEditorDescriptorForEEnum.getEEnumLiteralForDisplayName((String) value);
-          LOGGER.severe("value: " + value.toString() + ", " + value.getClass().getName());
         }
         eObjectTreeCell.commitEdit(value);
     });

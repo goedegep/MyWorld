@@ -51,7 +51,7 @@ public class EventsTable extends EObjectTable<EventInfo> {
    * @param customization the GUI customization.
    */
   public EventsTable(CustomizationFx customization) {
-    super(customization, EventsPackage.eINSTANCE.getEventInfo(), EventsTableDescriptorFactory.createDescriptor(customization), null);
+    super(customization, EventsPackage.eINSTANCE.getEventInfo(), EventsTableDescriptorFactory.createDescriptor(customization));
     
     this.customization = customization;
     
@@ -264,7 +264,7 @@ class AttachmentsCell extends TableCell<EventInfo, Object> {
         String  attachmentFileName = fileReference.getFile();
         LOGGER.info("imageFileName: " + attachmentFileName);
         
-        if (fileReference.getTags() != null  &&  fileReference.getTags().equals(AttachmentType.PHOTO_FOLDER.getTag())) {
+        if (fileReference.getTags() != null  &&  fileReference.getTags().equals(AttachmentTypeInfo.PHOTO_FOLDER.getTag())) {
           Image image = ImageResource.PHOTO_FOLDER.getImage();
           ImageView imageView = new ImageView(image);
           imageView.setFitHeight(imageHeight);
@@ -288,7 +288,7 @@ class AttachmentsCell extends TableCell<EventInfo, Object> {
           });
 
           hBox.getChildren().add(vBox);
-        } else if (fileReference.getTags() != null  &&  fileReference.getTags().equals(AttachmentType.VIDEO_TAKES.getTag())) {
+        } else if (fileReference.getTags() != null  &&  fileReference.getTags().equals(AttachmentTypeInfo.VIDEO_TAKES_FOLDER.getTag())) {
           Image image = ImageResource.VIDEO_FOLDER.getImage();
           ImageView imageView = new ImageView(image);
           imageView.setFitHeight(imageHeight);

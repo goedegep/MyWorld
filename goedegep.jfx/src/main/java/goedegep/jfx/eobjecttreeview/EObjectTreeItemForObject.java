@@ -415,7 +415,7 @@ public class EObjectTreeItemForObject extends EObjectTreeItem {
       case CLASS_REFERENCE:
         EObjectTreeItemClassReferenceDescriptor eObjectTreeItemClassReferenceDescriptor = (EObjectTreeItemClassReferenceDescriptor) descriptor;
         if (!doChildrenContainItemForFeature(eObjectTreeItemClassReferenceDescriptor.getEReference())) {        
-          treeItem = EObjectTreeItemForObject.createChildEObjectTreeItemForSingleObjectReference(eObject, null, eObjectTreeItemClassReferenceDescriptor, getEObjectTreeView(), isInEditMode());
+          treeItem = EObjectTreeItemForObject.createChildEObjectTreeItemForSingleObjectReference(eObject, eObjectTreeItemClassReferenceDescriptor.getEReference(), eObjectTreeItemClassReferenceDescriptor, getEObjectTreeView(), isInEditMode());
         } else {
           childIndex++;
         }

@@ -8,7 +8,8 @@ import goedegep.util.Tuplet;
 /**
  * This class represents a QTree, a tree where each non-leaf node has four children.
  * These children represent North-West, North-East, South-East and South-West.
- *
+ * <p>
+ * This QTree is specific for creating a collage.
  */
 public class QTreeFx {
   private static final Logger LOGGER = Logger.getLogger(QTree.class.getName());
@@ -33,7 +34,8 @@ public class QTreeFx {
    * to the collage.
    * 
    * @param depth the depth of the tree
-   * @param collage the collage image to draw
+   * @param collageWidth the width of the collage in pixels.
+   * @param collageHeight the height of the collage in pixels.
    * @param imageSize the width and height of an image
    */
   public QTreeFx(int depth, int collageWidth, int collageHeight, double imageSize) {

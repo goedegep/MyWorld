@@ -47,7 +47,6 @@ public class DefaultAppResources extends AbstractAppResources {
     try {
       applicationImages[0] = ImageIO.read(goedegep.appgen.swing.DefaultAppResources.class.getResource("java_icon.gif"));
     } catch (IOException e) {
-      // TODO Auto-generated catch block
       e.printStackTrace();
     }
     

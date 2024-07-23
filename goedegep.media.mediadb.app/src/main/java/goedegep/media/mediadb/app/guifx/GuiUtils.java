@@ -1,8 +1,13 @@
 package goedegep.media.mediadb.app.guifx;
 
+import org.eclipse.emf.ecore.EObject;
+
 import goedegep.media.mediadb.model.Album;
+import goedegep.media.mediadb.model.Artist;
 import goedegep.media.mediadb.model.Disc;
 import goedegep.media.mediadb.model.MediumType;
+import goedegep.media.mediadb.model.Track;
+import goedegep.media.mediadb.model.TrackCollection;
 import goedegep.media.mediadb.model.TrackReference;
 
 public class GuiUtils {
@@ -70,7 +75,29 @@ public class GuiUtils {
    * @return the text for the <code>trackReference</code>.
    */
   public static String createTrackReferenceText(TrackReference trackReference) {
+    EObject eContainer = trackReference.eContainer();
+    return switch (eContainer) {
+    case Disc disc -> createTrackReferenceTextForDiscTrack(trackReference);
+    case TrackCollection trackCollection -> createTrackReferenceTextForCollectionTrack(trackReference, trackCollection);
+    case Artist artist -> createTrackReferenceTextForArtistSampleTrack(trackReference, artist);
+    case Object object -> throw new RuntimeException("Unsupported container type: " + eContainer.getClass().getName());
+    };
+    
+  }
+  
+  private static String createTrackReferenceTextForArtistSampleTrack(TrackReference trackReference, Artist artist) {
     StringBuilder buf = new StringBuilder();
+    
+    buf.append("Sample track for artist ")
+       .append(artist.getName());
+    
+    return buf.toString();
+  }
+
+
+  public static String createTrackReferenceTextForDiscTrack(TrackReference trackReference) {
+    StringBuilder buf = new StringBuilder();
+    
     Disc disc = trackReference.getDisc();
     Album album = null;
     if (disc != null) {
@@ -80,7 +107,7 @@ public class GuiUtils {
     
     buf.append(" - ");
     
-    if (album.isMultiDiscAlbum()) {
+    if (album != null  &&  album.isMultiDiscAlbum()) {
       int discNr = album.getDiscs().indexOf(disc);
       buf.append(discNr).append("-");
     }
@@ -91,6 +118,22 @@ public class GuiUtils {
     buf.append(" - ");
     
     buf.append(trackReference.getTrack().getTitle());
+    
+    return buf.toString();
+    
+  }
+  
+  
+  public static String createTrackReferenceTextForCollectionTrack(TrackReference trackReference, TrackCollection trackCollection) {
+    StringBuilder buf = new StringBuilder();
+    
+    Track track = trackReference.getTrack();
+    buf.append(track.getTrackArtist().getName())
+    .append(" - ")
+    .append(track.getTitle())
+    .append(" in collection ")
+    .append(trackCollection.getCollection().getLiteral());
+
     
     return buf.toString();
   }

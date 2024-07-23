@@ -10,28 +10,18 @@
   </parent>
   <dependencies>
     <dependency>
-      <groupId>gluon-oss-charm-down</groupId>
-      <artifactId>gluon-oss-charm-down</artifactId>
-    </dependency>
-    <dependency>
       <groupId>goedegep.geo</groupId>
       <artifactId>goedegep-geo</artifactId>
     </dependency>
     <dependency>
-      <groupId>goedegep.gpx</groupId>
-      <artifactId>goedegep-gpx-model</artifactId>
+      <groupId>org.openjfx</groupId>
+      <artifactId>javafx-base</artifactId>
+      <classifier>win</classifier>
     </dependency>
     <dependency>
-      <groupId>goedegep.jfx</groupId>
-      <artifactId>goedegep-jfx</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>goedegep.poi</groupId>
-      <artifactId>goedegep-poi-app</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>goedegep.resources</groupId>
-      <artifactId>goedegep-resources</artifactId>
+      <groupId>org.openjfx</groupId>
+      <artifactId>javafx-graphics</artifactId>
+      <classifier>win</classifier>
     </dependency>
 <!--     <dependency> This code is copied into the project under com.gluonhq.attach.util -->
 <!--       <groupId>com.gluonhq.attach</groupId> -->

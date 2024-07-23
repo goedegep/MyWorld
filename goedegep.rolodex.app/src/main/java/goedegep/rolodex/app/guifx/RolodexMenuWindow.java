@@ -1,6 +1,8 @@
 package goedegep.rolodex.app.guifx;
 
 import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
@@ -15,6 +17,7 @@ import goedegep.jfx.PropertyDescriptorsEditorFx;
 import goedegep.properties.app.guifx.PropertiesEditor;
 import goedegep.resources.ImageSize;
 import goedegep.rolodex.app.RolodexRegistry;
+import goedegep.rolodex.app.logic.AddressBookExporter;
 import goedegep.rolodex.model.Employee;
 import goedegep.rolodex.model.Family;
 import goedegep.rolodex.model.Institution;
@@ -241,6 +244,13 @@ public class RolodexMenuWindow extends JfxStage {
     menuItem.setAccelerator(new KeyCodeCombination(KeyCode.S, KeyCombination.CONTROL_DOWN));
     menu.getItems().add(menuItem);
     
+    // File: Export to PDF
+    MenuUtil.addMenuItem(menu, "Export to PDF", new EventHandler<ActionEvent>()  {
+      public void handle(ActionEvent e) {
+        exportToPdf();
+      }
+    });
+    
     // File: Check Rolodex
     MenuUtil.addMenuItem(menu, "Check Rolodex", new EventHandler<ActionEvent>()  {
       public void handle(ActionEvent e) {
@@ -429,6 +439,14 @@ public class RolodexMenuWindow extends JfxStage {
     }
     
     updateWindowTitle();
+  }
+  
+  private void exportToPdf() {
+    AddressBookExporter adressBookExporter = new AddressBookExporter(customization, rolodex);
+    
+    Path pdfFilePath = Paths.get("C:\\Users\\Peter\\Downloads\\Adreslijst" + ".pdf");
+
+    adressBookExporter.exportAddressBookToPdf(pdfFilePath);
   }
 
   /**
