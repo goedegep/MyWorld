@@ -697,7 +697,7 @@ public class TrackReferenceImpl extends MinimalEObjectImpl.Container implements 
     buf.append("track: ").append(track != null ? track.getTitle() : "<no-track>").append(NEW_LINE);
     buf.append("bonus track: ").append(getBonusTrack() != null ? getBonusTrack() : "No").append(NEW_LINE);
     buf.append("myTrackInfo: ").append(getMyTrackInfo() != null ? myTrackInfo.toString() : "<no myTrackInfo>")
-    .append(NEW_LINE);
+        .append(NEW_LINE);
     buf.append("originalAlbumTrackReference: ");
     if (originalAlbumTrackReference != null) {
       buf.append("track nr ").append(originalAlbumTrackReference.getTrackNr());

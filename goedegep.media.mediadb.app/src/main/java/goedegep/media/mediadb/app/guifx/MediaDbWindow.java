@@ -307,23 +307,6 @@ public class MediaDbWindow extends JfxStage {
   }
   
   private void tempFixProblems() {
-    // check that all albums have myInfo with albumType
-    for (Album album: mediaDb.getAlbums()) {
-//      MyInfo myInfo = album.getMyInfo();
-      if (album.isCompilation()) {
-        LOGGER.severe("Compilation album still set for: " + album.getArtistAndTitle());
-//        myInfo.setAlbumType(AlbumType.COMPILATION_ALBUM);
-//        album.setCompilation(false);
-      }
-//      if (myInfo == null) {
-//        LOGGER.severe("No MyInfo for album: " + album.getArtistAndTitle());
-//      } else {
-//        AlbumType albumType = myInfo.getAlbumType();
-//        if (albumType != AlbumType.NORMAL_ALBUM  &&  albumType != AlbumType.OWN_COMPILATION_ALBUM) {
-//          LOGGER.severe("albumType: " + albumType.getLiteral());
-//        }
-//      }
-    }
   }
         
   /**

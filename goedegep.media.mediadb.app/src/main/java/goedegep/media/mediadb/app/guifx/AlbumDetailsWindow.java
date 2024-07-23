@@ -86,11 +86,6 @@ public class AlbumDetailsWindow extends JfxStage {
   private WebView webView;
   
   /**
-   * Shows whether the album is a compilation album or not.
-   */
-  private CheckBox isCompilationAlbumCheckBox;
-  
-  /**
    * Shows whether the album is 'my own' compilation or not.
    */
   private CheckBox isOwnCompilationCheckBox;
@@ -234,16 +229,13 @@ public class AlbumDetailsWindow extends JfxStage {
      * Checkboxes for 'compilation album', 'own compilation' and 'soundtrack'.
      */
     hBox = componentFactory.createHBox(10.0, 10.0);
-    isCompilationAlbumCheckBox = componentFactory.createCheckBox("compilation album", false);
-    isCompilationAlbumCheckBox.setDisable(true);
-    isCompilationAlbumCheckBox.setStyle("-fx-opacity: 1");
     isOwnCompilationCheckBox = componentFactory.createCheckBox("own compilation", false);
     isOwnCompilationCheckBox.setDisable(true);
     isOwnCompilationCheckBox.setStyle("-fx-opacity: 1");
     isSoundTrackCheckBox = componentFactory.createCheckBox("soundtrack", false);
     isSoundTrackCheckBox.setDisable(true);
     isSoundTrackCheckBox.setStyle("-fx-opacity: 1");
-    hBox.getChildren().addAll(isCompilationAlbumCheckBox, isOwnCompilationCheckBox, isSoundTrackCheckBox);
+    hBox.getChildren().addAll(isOwnCompilationCheckBox, isSoundTrackCheckBox);
     
     centerPane.getChildren().add(hBox);
     
@@ -553,12 +545,10 @@ public class AlbumDetailsWindow extends JfxStage {
    */
   private void updateCheckBoxes() {
     if (album != null) {      
-      isCompilationAlbumCheckBox.setSelected(album.isCompilation());
       isOwnCompilationCheckBox.setSelected(MediaDbUtil.isOwnCompilationAlbum(album));
       isSoundTrackCheckBox.setSelected(album.isSoundtrack());
 
     } else {
-      isCompilationAlbumCheckBox.setSelected(false);
       isOwnCompilationCheckBox.setSelected(false);
       isSoundTrackCheckBox.setSelected(false);
     }

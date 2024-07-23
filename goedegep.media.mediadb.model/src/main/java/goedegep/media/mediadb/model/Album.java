@@ -32,7 +32,6 @@ import org.eclipse.emf.ecore.EObject;
  *   <li>{@link goedegep.media.mediadb.model.Album#getImagesLabel <em>Images Label</em>}</li>
  *   <li>{@link goedegep.media.mediadb.model.Album#getDescriptionTitle <em>Description Title</em>}</li>
  *   <li>{@link goedegep.media.mediadb.model.Album#getDescription <em>Description</em>}</li>
- *   <li>{@link goedegep.media.mediadb.model.Album#isCompilation <em>Compilation</em>}</li>
  *   <li>{@link goedegep.media.mediadb.model.Album#getMyInfo <em>My Info</em>}</li>
  *   <li>{@link goedegep.media.mediadb.model.Album#isSoundtrack <em>Soundtrack</em>}</li>
  * </ul>
@@ -570,33 +569,6 @@ public interface Album extends EObject {
    * @generated
    */
   boolean isSetDescription();
-
-  /**
-   * Returns the value of the '<em><b>Compilation</b></em>' attribute.
-   * The default value is <code>"false"</code>.
-   * <!-- begin-user-doc -->
-   * <p>
-   * If the meaning of the '<em>Compilation</em>' attribute isn't clear,
-   * there really should be more of a description here...
-   * </p>
-   * <!-- end-user-doc -->
-   * @return the value of the '<em>Compilation</em>' attribute.
-   * @see #setCompilation(boolean)
-   * @see goedegep.media.mediadb.model.MediadbPackage#getAlbum_Compilation()
-   * @model default="false"
-   * @generated
-   */
-  boolean isCompilation();
-
-  /**
-   * Sets the value of the '{@link goedegep.media.mediadb.model.Album#isCompilation <em>Compilation</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @param value the new value of the '<em>Compilation</em>' attribute.
-   * @see #isCompilation()
-   * @generated
-   */
-  void setCompilation(boolean value);
 
   /**
    * Returns the value of the '<em><b>My Info</b></em>' containment reference.

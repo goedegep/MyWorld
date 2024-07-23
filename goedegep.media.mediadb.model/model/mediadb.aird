@@ -10,7 +10,7 @@
     <semanticResources>platform:/resource/goedegep.types.model/model/types.genmodel</semanticResources>
     <ownedViews xmi:type="viewpoint:DView" uid="_0TU9MJcpEeeIq4Gh5mEXMA">
       <viewpoint xmi:type="description:Viewpoint" href="platform:/plugin/org.eclipse.emf.ecoretools.design/description/ecore.odesign#//@ownedViewpoints[name='Design']"/>
-      <ownedRepresentationDescriptors xmi:type="viewpoint:DRepresentationDescriptor" uid="_0T92ZZcpEeeIq4Gh5mEXMA" name="mediadb" repPath="#_0T92YJcpEeeIq4Gh5mEXMA" changeId="1720633562392">
+      <ownedRepresentationDescriptors xmi:type="viewpoint:DRepresentationDescriptor" uid="_0T92ZZcpEeeIq4Gh5mEXMA" name="mediadb" repPath="#_0T92YJcpEeeIq4Gh5mEXMA" changeId="1721749959887">
         <description xmi:type="description_1:DiagramDescription" href="platform:/plugin/org.eclipse.emf.ecoretools.design/description/ecore.odesign#//@ownedViewpoints[name='Design']/@ownedRepresentations[name='Entities']"/>
         <target xmi:type="ecore:EPackage" href="mediadb.ecore#/"/>
       </ownedRepresentationDescriptors>
@@ -165,10 +165,6 @@
             <children xmi:type="notation:Node" xmi:id="_PdB8I5cvEeeIq4Gh5mEXMA" type="3010" element="_PbtGcJcvEeeIq4Gh5mEXMA">
               <styles xmi:type="notation:FontStyle" xmi:id="_PdB8JJcvEeeIq4Gh5mEXMA" fontName="Segoe UI" fontHeight="8"/>
               <layoutConstraint xmi:type="notation:Location" xmi:id="_PdB8JZcvEeeIq4Gh5mEXMA"/>
-            </children>
-            <children xmi:type="notation:Node" xmi:id="_PdDKQ5cvEeeIq4Gh5mEXMA" type="3010" element="_PbuUkZcvEeeIq4Gh5mEXMA">
-              <styles xmi:type="notation:FontStyle" xmi:id="_PdDKRJcvEeeIq4Gh5mEXMA" fontName="Segoe UI" fontHeight="8"/>
-              <layoutConstraint xmi:type="notation:Location" xmi:id="_PdDKRZcvEeeIq4Gh5mEXMA"/>
             </children>
             <children xmi:type="notation:Node" xmi:id="_PdDxUJcvEeeIq4Gh5mEXMA" type="3010" element="_Pbu7oJcvEeeIq4Gh5mEXMA">
               <styles xmi:type="notation:FontStyle" xmi:id="_PdDxUZcvEeeIq4Gh5mEXMA" fontName="Segoe UI" fontHeight="8"/>
@@ -1307,14 +1303,6 @@
         <target xmi:type="ecore:EAttribute" href="mediadb.ecore#//Album/description"/>
         <semanticElements xmi:type="ecore:EAttribute" href="mediadb.ecore#//Album/description"/>
         <ownedStyle xmi:type="diagram:BundledImage" uid="_PbtGcZcvEeeIq4Gh5mEXMA" labelAlignment="LEFT">
-          <description xmi:type="style:BundledImageDescription" href="platform:/plugin/org.eclipse.emf.ecoretools.design/description/ecore.odesign#//@ownedViewpoints[name='Design']/@ownedRepresentations[name='Entities']/@defaultLayer/@containerMappings[name='EC%20EClass']/@subNodeMappings[name='EC%20EAttribute']/@style"/>
-        </ownedStyle>
-        <actualMapping xmi:type="description_1:NodeMapping" href="platform:/plugin/org.eclipse.emf.ecoretools.design/description/ecore.odesign#//@ownedViewpoints[name='Design']/@ownedRepresentations[name='Entities']/@defaultLayer/@containerMappings[name='EC%20EClass']/@subNodeMappings[name='EC%20EAttribute']"/>
-      </ownedElements>
-      <ownedElements xmi:type="diagram:DNodeListElement" uid="_PbuUkZcvEeeIq4Gh5mEXMA" name="compilation : EBoolean = false" tooltipText="">
-        <target xmi:type="ecore:EAttribute" href="mediadb.ecore#//Album/compilation"/>
-        <semanticElements xmi:type="ecore:EAttribute" href="mediadb.ecore#//Album/compilation"/>
-        <ownedStyle xmi:type="diagram:BundledImage" uid="_PbuUkpcvEeeIq4Gh5mEXMA" labelAlignment="LEFT">
           <description xmi:type="style:BundledImageDescription" href="platform:/plugin/org.eclipse.emf.ecoretools.design/description/ecore.odesign#//@ownedViewpoints[name='Design']/@ownedRepresentations[name='Entities']/@defaultLayer/@containerMappings[name='EC%20EClass']/@subNodeMappings[name='EC%20EAttribute']/@style"/>
         </ownedStyle>
         <actualMapping xmi:type="description_1:NodeMapping" href="platform:/plugin/org.eclipse.emf.ecoretools.design/description/ecore.odesign#//@ownedViewpoints[name='Design']/@ownedRepresentations[name='Entities']/@defaultLayer/@containerMappings[name='EC%20EClass']/@subNodeMappings[name='EC%20EAttribute']"/>
