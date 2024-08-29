@@ -304,10 +304,6 @@ public class MediaDbUtil {
         }
       }
       
-      if (myTrackInfo.getCollection() != Collection.NOT_SET) {
-        return true;
-      }
-      
       TrackReference referredTrackReference = myTrackInfo.getCompilationTrackReference();
       if (referredTrackReference != null) {
         return doIHaveTrackOnDisc(referredTrackReference);
@@ -835,8 +831,6 @@ public class MediaDbUtil {
    */
   public static MyTrackInfo createMyTrackInfoCopy(MyTrackInfo myTrackInfo) {
     MyTrackInfo myTrackInfoCopy = MEDIA_DB_FACTORY.createMyTrackInfo();
-    
-    myTrackInfoCopy.setCollection(myTrackInfo.getCollection());
     
     myTrackInfoCopy.setIWant(myTrackInfo.getIWant());
     

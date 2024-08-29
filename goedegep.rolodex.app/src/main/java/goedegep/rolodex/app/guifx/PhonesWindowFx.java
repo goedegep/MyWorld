@@ -256,7 +256,7 @@ class PhoneEditPanel {
   private void updatePhoneIfControlsAreValid() {
     
     // Only update if all controls have valid values.
-    if (!objectControlGroup.getIsValid()) {
+    if (!objectControlGroup.isValid()) {
       return;
     }
         
@@ -294,7 +294,7 @@ class PhoneEditPanel {
   private Phone createPhoneFromFields() {
     
     // Only create if all controls have valid values.
-    if (!objectControlGroup.getIsValid()) {
+    if (!objectControlGroup.isValid()) {
       return null;
     }
     
@@ -472,7 +472,7 @@ class PhoneAddressBookEntryEditPanel {
   private void updatePhoneAddressBookEntryIfControlsAreValid() {
     
     // Only update if all controls have valid values.
-    if (!objectControlGroup.getIsValid()) {
+    if (!objectControlGroup.isValid()) {
       return;
     }
         
@@ -512,7 +512,7 @@ class PhoneAddressBookEntryEditPanel {
   private PhoneAddressBookEntry createPhoneAddressBookEntryFromFields() {
     
     // Only create if all controls have valid values.
-    if (!objectControlGroup.getIsValid()) {
+    if (!objectControlGroup.isValid()) {
       return null;
     }
     

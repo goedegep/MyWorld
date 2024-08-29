@@ -3,6 +3,7 @@ package goedegep.media.mediadb.app;
 public enum MediaDbError {
   ALBUM_WITHOUT_ARTIST,
   ALBUM_WITHOUT_TITLE,
+  ALBUM_WITHOUT_MYINFO,
   ALBUM_WITH_EMPTY_TITLE,
   TRACK_WITHOUT_TITLE,
   BONUS_TRACK_IN_TITLE,

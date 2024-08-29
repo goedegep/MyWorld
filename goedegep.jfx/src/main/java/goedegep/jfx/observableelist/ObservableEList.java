@@ -156,7 +156,7 @@ public class ObservableEList<T> implements ObservableList<T> {
         case Notification.REMOVE_MANY:
           // for REMOVE isTouch() is always false
           LOGGER.info("Removed many items");
-          // if the notification is from this object, than a normal add many. Else it comes from a child, which means the element is updated.
+          // if the notification is from this object, than a normal remove many. Else it comes from a child, which means the element is updated.
           if (notification.getFeature().equals(eReference)) {
             if (notification.getPosition() == -1) {  // clear()
               List<T> removedManyList = (List<T>) notification.getOldValue();
@@ -175,7 +175,9 @@ public class ObservableEList<T> implements ObservableList<T> {
             }
           } else {
             int index = getDecendentIndex(notification);
-            ListListenerHelper.fireValueChangedEvent(listenerHelper, new ObservableEListChange<T>(index, index + 1, new ArrayList<T>(), EMPTY_PERM, true, thisList));
+            if (index != -1) {
+              ListListenerHelper.fireValueChangedEvent(listenerHelper, new ObservableEListChange<T>(index, index + 1, new ArrayList<T>(), EMPTY_PERM, true, thisList));
+            }
           }
           break;
         

@@ -982,22 +982,13 @@ public interface MediadbPackage extends EPackage {
   int MY_TRACK_INFO = 10;
 
   /**
-   * The feature id for the '<em><b>Collection</b></em>' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int MY_TRACK_INFO__COLLECTION = 0;
-
-  /**
    * The feature id for the '<em><b>IHave On</b></em>' containment reference list.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int MY_TRACK_INFO__IHAVE_ON = 1;
+  int MY_TRACK_INFO__IHAVE_ON = 0;
 
   /**
    * The feature id for the '<em><b>IWant</b></em>' attribute.
@@ -1006,7 +997,7 @@ public interface MediadbPackage extends EPackage {
    * @generated
    * @ordered
    */
-  int MY_TRACK_INFO__IWANT = 2;
+  int MY_TRACK_INFO__IWANT = 1;
 
   /**
    * The feature id for the '<em><b>Compilation Track Reference</b></em>' reference.
@@ -1015,7 +1006,7 @@ public interface MediadbPackage extends EPackage {
    * @generated
    * @ordered
    */
-  int MY_TRACK_INFO__COMPILATION_TRACK_REFERENCE = 3;
+  int MY_TRACK_INFO__COMPILATION_TRACK_REFERENCE = 2;
 
   /**
    * The number of structural features of the '<em>My Track Info</em>' class.
@@ -1024,7 +1015,7 @@ public interface MediadbPackage extends EPackage {
    * @generated
    * @ordered
    */
-  int MY_TRACK_INFO_FEATURE_COUNT = 4;
+  int MY_TRACK_INFO_FEATURE_COUNT = 3;
 
   /**
    * The number of operations of the '<em>My Track Info</em>' class.
@@ -2168,17 +2159,6 @@ public interface MediadbPackage extends EPackage {
   EClass getMyTrackInfo();
 
   /**
-   * Returns the meta object for the attribute '{@link goedegep.media.mediadb.model.MyTrackInfo#getCollection <em>Collection</em>}'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the meta object for the attribute '<em>Collection</em>'.
-   * @see goedegep.media.mediadb.model.MyTrackInfo#getCollection()
-   * @see #getMyTrackInfo()
-   * @generated
-   */
-  EAttribute getMyTrackInfo_Collection();
-
-  /**
    * Returns the meta object for the containment reference list '{@link goedegep.media.mediadb.model.MyTrackInfo#getIHaveOn <em>IHave On</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -3126,14 +3106,6 @@ public interface MediadbPackage extends EPackage {
     	 * @generated
     	 */
     EClass MY_TRACK_INFO = eINSTANCE.getMyTrackInfo();
-
-    /**
-    	 * The meta object literal for the '<em><b>Collection</b></em>' attribute feature.
-    	 * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-    	 * @generated
-    	 */
-    EAttribute MY_TRACK_INFO__COLLECTION = eINSTANCE.getMyTrackInfo_Collection();
 
     /**
     	 * The meta object literal for the '<em><b>IHave On</b></em>' containment reference list feature.

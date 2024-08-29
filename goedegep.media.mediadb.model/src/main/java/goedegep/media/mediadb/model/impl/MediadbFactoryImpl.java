@@ -174,11 +174,12 @@ public class MediadbFactoryImpl extends EFactoryImpl implements MediadbFactory {
   /**
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @generated
+   * @generated NOT
    */
   @Override
   public Album createAlbum() {
     AlbumImpl album = new AlbumImpl();
+    album.setMyInfo(createMyInfo());
     return album;
   }
 

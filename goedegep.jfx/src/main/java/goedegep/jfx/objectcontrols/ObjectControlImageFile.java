@@ -1,10 +1,15 @@
 package goedegep.jfx.objectcontrols;
 
 import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.logging.Logger;
 
+import goedegep.jfx.AppResourcesFx;
 import goedegep.jfx.ComponentFactoryFx;
 import goedegep.jfx.CustomizationFx;
+import goedegep.resources.ImageSize;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.geometry.Rectangle2D;
@@ -19,7 +24,6 @@ import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.StackPane;
-import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
@@ -30,16 +34,53 @@ import javafx.stage.StageStyle;
  *
  */
 public class ObjectControlImageFile extends ObjectControlTemplate<File> {
-  @SuppressWarnings("unused")
   private static final Logger         LOGGER = Logger.getLogger(ObjectControlImageFile.class.getName());
     
+  /**
+   * The GUI customization.
+   */
+  private CustomizationFx customization;
+  
+  /**
+   * Factory for creating GUI components.
+   */
   private ComponentFactoryFx componentFactory;
+  
+  /**
+   * The image file selected by the user via the file chooser.
+   * <p>
+   * We have to save this value, as it is returned by the open dialog of the file chooser and we have to provide it in {@code ociDetermineFilledIn} and {@code ociDetermineValue}.
+   */
   private File file;
+  
+  /**
+   * The optional initial directory to be set on the file chooser.
+   */
   private File initialDirectory;
+  
+  /**
+   * The GUI control
+   * <p>
+   * This is a {@code StackPane} so that an application can easily add other items like e.g. a 'delete' button.
+   */
   private StackPane stackPane;
+  
+  /**
+   * The {@code ImageView} showing the image.
+   */
   private ImageView imageView;
+  
+  /**
+   * A {@code Label} that is on top of the {@code imageView} showing the image file name.
+   */
   private Label label;
-  private Stage largePictureStage = null;    
+  
+  /**
+   * A {@link Stage} showing a full size version of the image. This is done upon hoovering over the control.
+   */
+  private Stage largePictureStage = null;
+  
+  private boolean useErrorFeedback = false;
   
 
   /**
@@ -51,6 +92,7 @@ public class ObjectControlImageFile extends ObjectControlTemplate<File> {
   public ObjectControlImageFile(CustomizationFx customization, boolean isOptional) {
     super(isOptional);
     
+    this.customization = customization;
     componentFactory = customization.getComponentFactoryFx();
     
     stackPane = new StackPane();
@@ -66,14 +108,13 @@ public class ObjectControlImageFile extends ObjectControlTemplate<File> {
     });
     stackPane.getChildren().add(imageView);
     
-    Button changeButton = new Button("Change");
+    Button changeButton = componentFactory.createButton("Change", "Click to select a different picture via a file chooser");
     changeButton.setOnAction(actionEvent -> selectNewFile());
     stackPane.getChildren().add(changeButton);              
     StackPane.setAlignment(changeButton, Pos.TOP_LEFT);
     
-    label = new Label();
-    Color backgroundColor = Color.color(1.0, 1.0, 1.0);
-    label.setBackground(new Background(new BackgroundFill(backgroundColor, new CornerRadii(3), new Insets(0))));
+    label = componentFactory.createLabel(errorText);
+    label.setBackground(new Background(new BackgroundFill(customization.getLook().getLabelBackgroundColor(), new CornerRadii(3), new Insets(0))));
     stackPane.getChildren().add(label);
     StackPane.setAlignment(label, Pos.BOTTOM_CENTER);
     
@@ -87,20 +128,35 @@ public class ObjectControlImageFile extends ObjectControlTemplate<File> {
     return stackPane;
   }
 
-  @Override
-  public void ociSetValue(File value) {
-    this.value = value;   
-    
-    if (value != null) {
-      Image image = new Image("file:" + value.getAbsolutePath(), 0.0, 200.0, true, true);
-      imageView.setImage(image);
+  /**
+   * Update the control for a new value.
+   * <p>
+   * For this object control this is needed, because the presentation control (the {@code stackPane}) differs from the selection control (a {@code FileChooser}).
+   * 
+   * @param file the new image file name.
+   */
+  private void updateControl(File file) {
+    if (useErrorFeedback) {
+      AppResourcesFx appResources = customization.getResources();
+      Image errorImage = appResources.getErrorImage(ImageSize.SIZE_2);
+      imageView.setImage(errorImage);
     } else {
-      imageView.setImage(null);
+      if (file != null) {
+        Image image = new Image("file:" + file.getAbsolutePath(), 0.0, 200.0, true, true);
+        imageView.setImage(image);
+      } else {
+        imageView.setImage(null);
+      }
     }
     
+    if (useErrorFeedback) {
+      label.setStyle("-fx-text-fill: red;");
+    } else {
+      label.setStyle("-fx-text-fill: black;");
+    }
     
-    if (value != null) {
-      label.setText(value.getName());
+    if (file != null) {
+      label.setText(file.getName());
     } else {
       label.setText(null);
     }
@@ -125,10 +181,13 @@ public class ObjectControlImageFile extends ObjectControlTemplate<File> {
 
   /**
    * {@inheritDoc}
-   * As the filename is always selected via a FileChooser, it's always valid. So, no action.
+   * 
+   * An error occurs if the {@code File} set via {@code setValue()} isn't accessible.
+   * In this case we show the error icon.
    */
   @Override
   public void ociSetErrorFeedback(boolean valid) {
+      useErrorFeedback = !valid;
   }
 
   /**
@@ -141,8 +200,9 @@ public class ObjectControlImageFile extends ObjectControlTemplate<File> {
 
   @Override
   protected void ociUpdateNonSourceControls(Object source) {
-    // TODO Auto-generated method stub
-    
+    if (source == null) {
+      updateControl(getValue());
+    }
   }
 
   /**
@@ -151,7 +211,7 @@ public class ObjectControlImageFile extends ObjectControlTemplate<File> {
    */
   @Override
   public String getValueAsFormattedText() {
-    return value.getAbsolutePath();
+    return getValue().getAbsolutePath();
   }
 
   /**
@@ -163,6 +223,14 @@ public class ObjectControlImageFile extends ObjectControlTemplate<File> {
     this.initialDirectory = initialDirectory;
   }
   
+  @Override
+  protected boolean ociIsValueValid(File file) {
+    Path path = Paths.get(file.getAbsolutePath().toString());
+    boolean result = Files.exists(path);
+    LOGGER.severe("<= " + result);
+    return result;
+  }
+  
   /**
    * Launch a FileChooser to let the user select a file.
    */
@@ -170,6 +238,8 @@ public class ObjectControlImageFile extends ObjectControlTemplate<File> {
     FileChooser fileChooser = getFileChooser();
     file = fileChooser.showOpenDialog(null);
     if (file != null) {
+      useErrorFeedback = false;
+      updateControl(file);
       ociHandleNewUserInput(fileChooser);
     }
   }
@@ -219,8 +289,8 @@ public class ObjectControlImageFile extends ObjectControlTemplate<File> {
   }
   
   public String ocGetAbsolutePath() {
-    if (value != null) {
-      return value.getAbsolutePath();
+    if (getValue() != null) {
+      return getValue().getAbsolutePath();
     } else {
       return null;
     }

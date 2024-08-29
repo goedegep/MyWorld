@@ -403,15 +403,17 @@ class AlbumsTableDescriptor extends EObjectTableDescriptor<Album> {
                   boolean commaNeeded = false;
                   
                   MyInfo myInfo = album.getMyInfo();
-                  List<MediumInfo> mediumInfos = myInfo.getIHaveOn();
-                  for (MediumInfo mediumInfo: mediumInfos) {
-                    List<InformationType> sourceTypes = mediumInfo.getSourceTypes();
-                    for (InformationType sourceType: sourceTypes) {
-                      if (commaNeeded) {
-                        buf.append(", ");
+                  if (myInfo != null) {
+                    List<MediumInfo> mediumInfos = myInfo.getIHaveOn();
+                    for (MediumInfo mediumInfo: mediumInfos) {
+                      List<InformationType> sourceTypes = mediumInfo.getSourceTypes();
+                      for (InformationType sourceType: sourceTypes) {
+                        if (commaNeeded) {
+                          buf.append(", ");
+                        }
+                        buf.append(sourceType.getName());
+                        commaNeeded = true;
                       }
-                      buf.append(sourceType.getName());
-                      commaNeeded = true;
                     }
                   }
                   

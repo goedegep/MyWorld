@@ -265,7 +265,7 @@ class InstitutionEditPanel {
   private void updateInstitutionIfControlsAreValid() {
     
     // Only update if all controls have valid values.
-    if (!objectControlGroup.getIsValid()) {
+    if (!objectControlGroup.isValid()) {
       return;
     }
         
@@ -326,7 +326,7 @@ class InstitutionEditPanel {
   private Institution createInstitutionFromFields() {
     
     // Only create if all controls have valid values.
-    if (!objectControlGroup.getIsValid()) {
+    if (!objectControlGroup.isValid()) {
       return null;
     }
     

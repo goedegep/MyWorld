@@ -18,7 +18,6 @@ import org.eclipse.emf.ecore.util.EObjectContainmentEList;
 import org.eclipse.emf.ecore.util.InternalEList;
 
 import goedegep.media.mediadb.model.Album;
-import goedegep.media.mediadb.model.Collection;
 import goedegep.media.mediadb.model.Disc;
 import goedegep.media.mediadb.model.IWant;
 import goedegep.media.mediadb.model.MediadbPackage;
@@ -35,7 +34,6 @@ import goedegep.media.mediadb.model.TrackReference;
  * The following features are implemented:
  * </p>
  * <ul>
- *   <li>{@link goedegep.media.mediadb.model.impl.MyTrackInfoImpl#getCollection <em>Collection</em>}</li>
  *   <li>{@link goedegep.media.mediadb.model.impl.MyTrackInfoImpl#getIHaveOn <em>IHave On</em>}</li>
  *   <li>{@link goedegep.media.mediadb.model.impl.MyTrackInfoImpl#getIWant <em>IWant</em>}</li>
  *   <li>{@link goedegep.media.mediadb.model.impl.MyTrackInfoImpl#getCompilationTrackReference <em>Compilation Track Reference</em>}</li>
@@ -46,35 +44,6 @@ import goedegep.media.mediadb.model.TrackReference;
 public class MyTrackInfoImpl extends MinimalEObjectImpl.Container implements MyTrackInfo {
   private static final Logger LOGGER = Logger.getLogger(MyTrackInfoImpl.class.getName());
   private static final String NEWLINE = System.getProperty("line.separator");
-
-  /**
-   * The default value of the '{@link #getCollection() <em>Collection</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getCollection()
-   * @generated
-   * @ordered
-   */
-  protected static final Collection COLLECTION_EDEFAULT = Collection.NOT_SET;
-
-  /**
-   * The cached value of the '{@link #getCollection() <em>Collection</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getCollection()
-   * @generated
-   * @ordered
-   */
-  protected Collection collection = COLLECTION_EDEFAULT;
-
-  /**
-   * This is true if the Collection attribute has been set.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  protected boolean collectionESet;
 
   /**
    * The cached value of the '{@link #getIHaveOn() <em>IHave On</em>}' containment reference list.
@@ -151,58 +120,6 @@ public class MyTrackInfoImpl extends MinimalEObjectImpl.Container implements MyT
   @Override
   protected EClass eStaticClass() {
     return MediadbPackage.Literals.MY_TRACK_INFO;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public Collection getCollection() {
-    return collection;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public void setCollection(Collection newCollection) {
-    Collection oldCollection = collection;
-    collection = newCollection == null ? COLLECTION_EDEFAULT : newCollection;
-    boolean oldCollectionESet = collectionESet;
-    collectionESet = true;
-    if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, MediadbPackage.MY_TRACK_INFO__COLLECTION, oldCollection,
-          collection, !oldCollectionESet));
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public void unsetCollection() {
-    Collection oldCollection = collection;
-    boolean oldCollectionESet = collectionESet;
-    collection = COLLECTION_EDEFAULT;
-    collectionESet = false;
-    if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.UNSET, MediadbPackage.MY_TRACK_INFO__COLLECTION, oldCollection,
-          COLLECTION_EDEFAULT, oldCollectionESet));
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public boolean isSetCollection() {
-    return collectionESet;
   }
 
   /**
@@ -385,8 +302,6 @@ public class MyTrackInfoImpl extends MinimalEObjectImpl.Container implements MyT
   @Override
   public Object eGet(int featureID, boolean resolve, boolean coreType) {
     switch (featureID) {
-    case MediadbPackage.MY_TRACK_INFO__COLLECTION:
-      return getCollection();
     case MediadbPackage.MY_TRACK_INFO__IHAVE_ON:
       return getIHaveOn();
     case MediadbPackage.MY_TRACK_INFO__IWANT:
@@ -408,9 +323,6 @@ public class MyTrackInfoImpl extends MinimalEObjectImpl.Container implements MyT
   @Override
   public void eSet(int featureID, Object newValue) {
     switch (featureID) {
-    case MediadbPackage.MY_TRACK_INFO__COLLECTION:
-      setCollection((Collection) newValue);
-      return;
     case MediadbPackage.MY_TRACK_INFO__IHAVE_ON:
       getIHaveOn().clear();
       getIHaveOn().addAll((java.util.Collection<? extends MediumInfo>) newValue);
@@ -433,9 +345,6 @@ public class MyTrackInfoImpl extends MinimalEObjectImpl.Container implements MyT
   @Override
   public void eUnset(int featureID) {
     switch (featureID) {
-    case MediadbPackage.MY_TRACK_INFO__COLLECTION:
-      unsetCollection();
-      return;
     case MediadbPackage.MY_TRACK_INFO__IHAVE_ON:
       unsetIHaveOn();
       return;
@@ -457,8 +366,6 @@ public class MyTrackInfoImpl extends MinimalEObjectImpl.Container implements MyT
   @Override
   public boolean eIsSet(int featureID) {
     switch (featureID) {
-    case MediadbPackage.MY_TRACK_INFO__COLLECTION:
-      return isSetCollection();
     case MediadbPackage.MY_TRACK_INFO__IHAVE_ON:
       return isSetIHaveOn();
     case MediadbPackage.MY_TRACK_INFO__IWANT:
@@ -477,9 +384,6 @@ public class MyTrackInfoImpl extends MinimalEObjectImpl.Container implements MyT
   @Override
   public String toString() {
     StringBuilder buf = new StringBuilder();
-
-    buf.append("  collection: ");
-    buf.append(isSetCollection() ? getCollection().toString() : "<no-collection>").append(NEWLINE);
 
     buf.append("  iWant: ");
     buf.append(isSetIWant() ? getIWant().toString() : "<no-iwant>").append(NEWLINE);

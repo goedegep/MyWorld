@@ -1,6 +1,7 @@
 package goedegep.jfx.objectcontrols;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -29,11 +30,15 @@ import javafx.scene.control.Tooltip;
  * As described above, on any change initiated by the user the method {@code ociHandleNewUserInput()} has to be called.<br/>
  * This method is the main algorithm for handling changes.
  * 
- * <p>
+ * <h4>Methods to implement</h4>
+ * {@link #ociDetermineFilledIn}
+ * {@link #ociDetermineValue}
+ * {@link #ociSetErrorFeedback}
+ * {@link #ociUpdateNonSourceControls}
+ *
  * @param <T> The value type handled by the control
  */
 public abstract class ObjectControlTemplate<T> implements ObjectControl<T> {
-  @SuppressWarnings("unused")
   private static final Logger         LOGGER = Logger.getLogger(ObjectControlTemplate.class.getName());
   
   /*
@@ -55,12 +60,12 @@ public abstract class ObjectControlTemplate<T> implements ObjectControl<T> {
   /**
    * Indication of whether the control is filled-in or not.
    */
-  private boolean filledIn = false;
+  protected boolean filledIn = false;
   
   /**
    * Indication of whether the control has a valid value or not.
    */
-  private boolean valid = false;
+  protected boolean valid = false;
   
   /**
    * The current value, initially set to {@code null}
@@ -87,14 +92,35 @@ public abstract class ObjectControlTemplate<T> implements ObjectControl<T> {
    */
   protected List<InvalidationListener> invalidationListeners = new ArrayList<>();
   
+  /**
+   * An optional {@link Comparator} to check on a changed {@code value}.
+   */
+  Comparator<T> comparator = null;
+  
+  /**
+   * Ignore new user input when setting the value (in {@code setValue}).
+   */
+  protected boolean ignoreNewUserInput = false;
   
   /**
    * Constructor.
+   * <p>
+   * Your constructor shall call this super() constructor with the value for the {@code optional} parameter.<br/>
+   * In your constructor:<br/>
+   * Create the GUI controls and make sure that on any change initiated by the user the method {@code ociHandleNewUserInput()} is called.<br/>
+   * If needed, set a comparator via {@code setComparator()}. This is needed if {@code !Objects.equals(value, referenceValue)} doesn't work.<br/>
+   * Finally call {@code setValue()} with the default value (typically null) as argument. Note: an application will normally set its own default value after constructing this control.
    * 
    * @param isOptional Indication of whether the control is optional (if true) or mandatory.
    */
-  public ObjectControlTemplate(boolean optional) {    
+  public ObjectControlTemplate(boolean optional) {
+    LOGGER.info("=>");
     this.optional = optional;
+    LOGGER.info("<=");
+  }
+  
+  protected void setComparator(Comparator<T> comparator) {
+    this.comparator = comparator;
   }
 
   /**
@@ -102,6 +128,7 @@ public abstract class ObjectControlTemplate<T> implements ObjectControl<T> {
    */
   @Override
   public final boolean isOptional() {
+    LOGGER.info("<=> " + optional);
     return optional;
   }
 
@@ -109,7 +136,8 @@ public abstract class ObjectControlTemplate<T> implements ObjectControl<T> {
    * {@inheritDoc}
    */
   @Override
-  public boolean isFilledIn() {
+  public final boolean isFilledIn() {
+    LOGGER.info("<=> " + filledIn);
     return filledIn;
   }
 
@@ -117,7 +145,8 @@ public abstract class ObjectControlTemplate<T> implements ObjectControl<T> {
    * {@inheritDoc}
    */
   @Override
-  public boolean isValid() {
+  public final boolean isValid() {
+    LOGGER.info("<=> " + valid);
     return valid;
   }
 
@@ -125,35 +154,48 @@ public abstract class ObjectControlTemplate<T> implements ObjectControl<T> {
    * {@inheritDoc}
    */
   @Override
-  public T getValue() {
+  public final T getValue() {
+    LOGGER.info("<=> " + value);
     return value;
   }
 
   /**
    * {@inheritDoc}
+   * <p>
    */
   @Override
-  public boolean isChanged() {
-    return !PgUtilities.equals(value, referenceValue);
-  }
-  
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public String getId() {
-    if (getControl() == null) {
-      System.out.println("STOP");
+  public final boolean isChanged() {
+    boolean result;
+    
+    LOGGER.info("=>");
+    if (comparator != null) {
+      result = comparator.compare(value, referenceValue) != 0;
+    } else {
+      result = !PgUtilities.equals(value, referenceValue);
     }
-    return getControl().getId();
+    LOGGER.info("<= " + result);
+    return result;
   }
   
   /**
    * {@inheritDoc}
    */
   @Override
-  public void setId(String id) {
+  public final String getId() {
+    LOGGER.info("=>");
+    String result = getControl().getId();
+    LOGGER.info("<= " + result);
+    return result;
+  }
+  
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public final void setId(String id) {
+    LOGGER.info("=> " + id);
     getControl().setId(id);
+    LOGGER.info("<=");
   }
   
   /*
@@ -184,15 +226,15 @@ public abstract class ObjectControlTemplate<T> implements ObjectControl<T> {
    * </li>
    * <li>
    * Determine whether the new input value differs from the current value.<br/>
-   * If the value has changed, {@link ociSetValue()} is called with this new value.
+   * If the value has changed, {@link value} is set to the new value.
    * </li>
    * <li>
    * Set the validity of the control<br/>
-   * The validity of the control is set by calling {@link ociSetValid()} with the value returned by {@link ociDetermineValidity()}. Note that the validity of the control is not the same as the validity of the data.
+   * The validity of the control ({@code valid}) is set with the value returned by {@link ociDetermineValidity()}. Note that the validity of the control is not the same as the validity of the data.
    * </li>
    * <li>
    * Set the filled in status<br/>
-   * The filled in status is set by calling {@link ociSetFilledIn()}.
+   * The filled in status ({@code filledInf}) is set.
    * </li>
    * <li>
    * Update the status indicator<br/>
@@ -206,12 +248,18 @@ public abstract class ObjectControlTemplate<T> implements ObjectControl<T> {
    * 
    * @param source the object that caused the change.  This is needed if there is more than one GUI control, like for e.g. the {@link ObjectControlFileSelecter}.
    */
-  protected void ociHandleNewUserInput(Object source) {
-    boolean filledIn = ociDetermineFilledIn(source);
+  protected final void ociHandleNewUserInput(Object source) {
+    LOGGER.info("=> " + source);
+    
+    if (ignoreNewUserInput) {
+      return;
+    }
+    
+    boolean newFilledIn = ociDetermineFilledIn(source);
     boolean dataValid;
     T inputValue;
     
-    if (filledIn) {
+    if (newFilledIn) {
       inputValue = ociDetermineValue(source);
       if (inputValue != null) {
         dataValid = true;
@@ -226,16 +274,18 @@ public abstract class ObjectControlTemplate<T> implements ObjectControl<T> {
     
     boolean changed = !PgUtilities.equals(inputValue, getValue());
     if (changed) {
-      ociSetValue(inputValue);
+      value = inputValue;
     }
-    ociSetValid(ociDetermineValidity(filledIn, dataValid));
-    ociSetFilledIn(filledIn);
+    valid = ociDetermineValidity(newFilledIn, dataValid);
+    filledIn = newFilledIn;
     ociUpdateNonSourceControls(source);
     ociUpdateStatusIndicator();
     
     if (changed) {
       ociNotifyListeners();
     }
+
+    LOGGER.info("<=");
   }
   
   /**
@@ -284,13 +334,17 @@ public abstract class ObjectControlTemplate<T> implements ObjectControl<T> {
    * 
    * @param source the object that caused the change.  This is needed if there is more than one GUI control, like for e.g. the {@link ObjectControlFileSelecter}.
    */
-  public void setValue(T newValue) {
-    boolean filledIn = newValue != null;
+  public  void setValue(T newValue) {
+    LOGGER.info("=> " + newValue);
+    
+    ignoreNewUserInput = true;
+    
+    boolean newFilledIn = newValue != null;
     boolean dataValid;
     
-    if (filledIn) {
+    if (newFilledIn) {
       if (newValue != null) {
-        dataValid = true;
+        dataValid = ociIsValueValid(newValue);
       } else {
         dataValid = false;
       }
@@ -301,10 +355,10 @@ public abstract class ObjectControlTemplate<T> implements ObjectControl<T> {
     
     boolean changed = !PgUtilities.equals(newValue, getValue());
     if (changed) {
-      ociSetValue(newValue);
+      value = newValue;
     }
-    ociSetValid(ociDetermineValidity(filledIn, dataValid));
-    ociSetFilledIn(filledIn);
+    valid = ociDetermineValidity(newFilledIn, dataValid);
+    filledIn = newFilledIn;
     ociUpdateNonSourceControls(null);
     referenceValue = newValue;
     ociUpdateStatusIndicator();
@@ -312,6 +366,14 @@ public abstract class ObjectControlTemplate<T> implements ObjectControl<T> {
     if (changed) {
       ociNotifyListeners();
     }
+    
+    ignoreNewUserInput = false;
+    
+    LOGGER.info("<=");
+  }
+  
+  protected boolean ociIsValueValid(T value) {
+    return value != null;
   }
   
   /**
@@ -320,23 +382,26 @@ public abstract class ObjectControlTemplate<T> implements ObjectControl<T> {
   protected abstract boolean ociDetermineFilledIn(Object source);
   
   /**
-   * Determine the actual value.
+   * Determine the new value set by the user via a specific GUI control.
    * <p>
-   * PRE: control has to be filled in (determineFilledIn() has returned true).
+   * This method is called from {@code ociHandleNewUserInput} after it has checked that the control is filled in.
    * 
-   * @param The source of a change. This is needed if there is more than one GUI control, like for e.g. the {@link ObjectControlFileSelecter}.
+   * @param The source of a change, which is the value with which {@code ociHandleNewUserInput} was called. This is needed if there is more than one GUI control, like for e.g. the {@link ObjectControlFileSelecter}.
    */
   protected abstract T ociDetermineValue(Object source);
   
   /**
    * Determine whether the input is valid or not.
    */
-  protected boolean ociDetermineValidity(boolean filledIn, boolean dataValid) {
-    
+  protected final boolean ociDetermineValidity(boolean filledIn, boolean dataValid) {
+    LOGGER.info("=> filledIn=" + filledIn + ", dataValid=" + dataValid);
+        
     if (isOptional()  &&  !filledIn) {
       return true;
     }
         
+    LOGGER.info("<= " + dataValid);
+    
     return (dataValid);
   }
   
@@ -355,70 +420,28 @@ public abstract class ObjectControlTemplate<T> implements ObjectControl<T> {
    * Have a non-empty implementation of this method if you always want to present values in your 'standard' way.
    * E.g.: the user may e.g. enter a date as 14-3-2023, this may be redrawn as 14-03-2023.
    */
-  // TODO Still needed? how related to updateNonSourceControls?
   protected abstract void ociRedrawValue();
-  
-  /**
-   * Set the filledIn flag.
-   */
-  public void ociSetFilledIn(boolean filledIn) {
-    this.filledIn = filledIn;
-  }
-
-  /**
-   * Set the valid flag.
-   * 
-   * @param valid the new valid value.
-   */
-  public void ociSetValid(boolean valid) {
-    this.valid = valid;
-  }
-
-  /**
-   * Set the value.
-   * 
-   * @param value the new value of the ObjectControl.
-   */
-  public void ociSetValue(T value) {
-    this.value = value;
-  }
-  
+    
   /**
    * {@inheritDoc}
    */
   @Override
-  public Node getStatusIndicator() {
+  public final Node getStatusIndicator() {
+    LOGGER.info("=>");
+    
     if (statusIndicator == null) {
       statusIndicator = new Label();
     }
     
     ociUpdateStatusIndicator();
     
+    LOGGER.info("=> " + statusIndicator);
     return statusIndicator;
   }
-  
-//  private void setValidIndicatorTooltip(Label validIndicationLabel) {
-//    String tooltipText = null;
-//    
-//    if (ocIsValid()) {
-//      if (ocIsChanged()) {
-//        tooltipText = "Value is changed and OK";
-//      } else {
-//        tooltipText = "Value is not changed and OK";
-//      }
-//    } else {
-//      if (!ocIsFilledIn()) {
-//        if (!ocIsOptional()) {
-//          tooltipText = "This mandatory value is not filled in";
-//        }
-//      } else {
-//        tooltipText = ocGetErrorText();
-//      }
-//    }
-//    validIndicationLabel.setTooltip(new Tooltip(tooltipText));
-//  }
-  
-  private void ociUpdateStatusIndicator() {
+    
+  protected final void ociUpdateStatusIndicator() {
+    LOGGER.info("=>");
+
     if (statusIndicator == null) {
       return;
     }
@@ -457,6 +480,7 @@ public abstract class ObjectControlTemplate<T> implements ObjectControl<T> {
     }
     statusIndicator.setTooltip(new Tooltip(tooltipText));
     
+    LOGGER.info("<=");
   }
   
   /**
@@ -473,36 +497,50 @@ public abstract class ObjectControlTemplate<T> implements ObjectControl<T> {
    * {@inheritDoc}
    */
   @Override
-  public String getErrorText() {
-      return errorText;
+  public final String getErrorText() {
+    LOGGER.info("<=> " + errorText);
+    return errorText;
   }
   
   @Override
-  public void addListener(InvalidationListener listener) {
+  public final void addListener(InvalidationListener listener) {
+    LOGGER.info("<=> " + listener);
     invalidationListeners.add(listener);    
   }
 
   @Override
-  public void removeListener(InvalidationListener listener) {
+  public final void removeListener(InvalidationListener listener) {
+    LOGGER.info("<=> " + listener);
     invalidationListeners.remove(listener);    
   }
 
   @Override
-  public void removeListeners() {
-    invalidationListeners.clear();    
+  public final void removeListeners() {
+    LOGGER.info("=>");
+    invalidationListeners.clear();
+    LOGGER.info("<=");
   }
   
   /**
    * Notify the {@code invalidationListeners} that something has changed.
    */
-  protected void ociNotifyListeners() {
+  protected final void ociNotifyListeners() {
+    LOGGER.info("=>");
     for (InvalidationListener invalidationListener: invalidationListeners) {
       invalidationListener.invalidated(this);
     }
+    LOGGER.info("<=");
   }
   
   @Override
   public String toString() {
-    return getId() + ":" + getValue();
+    LOGGER.info("=>");
+    String id = getId();
+    if (id == null) {
+      id = getClass().getName();
+    }
+    String result = id + ":" + getValue();
+    LOGGER.info("<= " + result);
+    return result;
   }
 }

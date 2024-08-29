@@ -1,5 +1,6 @@
 package goedegep.jfx.objectcontrols;
 
+import java.util.Objects;
 import java.util.logging.Logger;
 
 import goedegep.jfx.CustomizationFx;
@@ -30,7 +31,26 @@ public class ObjectControlString extends ObjectControlTemplate<String> {
     
     textField = customization.getComponentFactoryFx().createTextField(width, toolTipText);
 
-    textField.textProperty().addListener((observableValue, oldValue, newValue) -> ociHandleNewUserInput(textField));
+    textField.textProperty().addListener((observableValue, oldValue, newValue) -> {
+      if ("disc title".equals(getId())) {
+        LOGGER.severe("Disc title");
+      }
+      ociHandleNewUserInput(textField);
+    });
+        
+    setComparator((o1, o2) -> {
+      // For Strings we handle an empty String as equal to null.
+      if (o1 != null  &&  o1.isEmpty()) {
+        o1 = null;
+      }
+      
+      if (o2 != null  &&  o2.isEmpty()) {
+        o2 = null;
+      }
+      
+      int result = Objects.equals(o1, o2) ? 0 : -1;
+      return result;
+    });
     
     setValue(initialValue);
   }
@@ -39,23 +59,23 @@ public class ObjectControlString extends ObjectControlTemplate<String> {
     return textField;
   }
 
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public boolean isChanged() {
-    // For Strings we handle an empty String as equal to null.
-    if (((value != null)  &&  value.isEmpty())  &&
-        (referenceValue == null)) {
-      return false;
-    }
-    
-    if (((referenceValue != null)  &&  referenceValue.isEmpty()) &&
-        (value == null)) {
-      return false;
-    }
-    return !PgUtilities.equals(value, referenceValue);
-  }
+//  /**
+//   * {@inheritDoc}
+//   */
+//  @Override
+//  public boolean isChanged() {
+//    // For Strings we handle an empty String as equal to null.
+//    if (((value != null)  &&  value.isEmpty())  &&
+//        (referenceValue == null)) {
+//      return false;
+//    }
+//    
+//    if (((referenceValue != null)  &&  referenceValue.isEmpty()) &&
+//        (value == null)) {
+//      return false;
+//    }
+//    return !PgUtilities.equals(value, referenceValue);
+//  }
   
   /**
    * {@inheritDoc}
@@ -110,7 +130,7 @@ public class ObjectControlString extends ObjectControlTemplate<String> {
    */
   @Override
   public String getValueAsFormattedText()  {
-    return value;
+    return getValue();
   }
   
   @Override
@@ -119,7 +139,7 @@ public class ObjectControlString extends ObjectControlTemplate<String> {
     
     buf.append("ObjectControl type=String");
     buf.append(", id=").append(getId() != null ? getId() : "<null>");
-    buf.append(", value=").append(value != null ? value : "<null>");
+    buf.append(", value=").append(getValue() != null ? getValue() : "<null>");
     buf.append(", referenceValue=").append(referenceValue != null ? "\"" + referenceValue + "\"" : "<null>");
     
     return buf.toString();

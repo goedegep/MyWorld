@@ -49,17 +49,18 @@ public class MediaDbChecker {
    * <p>
    * The following information is checked:
    * <ul>
+   * <li>An {@code Album} must always have its {@code MyInfo} set .
    * <li>There shouldn't be tracks which aren't referred to (see {@link #areThereNoObsoleteTracks}).</li>
    * <li>There shouldn't be artists which aren't referred to (see {@link #areThereNoObsoleteArtists}).</li>
    * <li>Information for each album (see {@link #checkAlbum}).</li>
    * <li>'originalTrackReference' shall only be set to point to itself (as this will change to boolean originalTrack) (see {@link #areThereNoTrackReferencesThatHaveOriginalAlbumTrackReferenceReferringToAnotherTrackReference})</li>
-   * <li>'collectionType' shall only be set to NOT_SET, as this will be removed from the model.</li>
    * </ul>
    * 
    * @param mediaDb the media database to be checked
    * @param errors the list to which errors shall be appended if this value is not null
    */
   public static void checkMediaDb(MediaDb mediaDb, List<Object> errors) {
+    areThereNoAlbumsWithoutMyInfo(mediaDb, errors);
     areThereNoObsoleteTracks(mediaDb, errors);
     areThereNoObsoleteArtists(mediaDb, errors);
 //    areThereNoTrackReferencesThatHaveOriginalAlbumTrackReferenceReferringToAnotherTrackReference(mediaDb, errors);
@@ -73,38 +74,22 @@ public class MediaDbChecker {
       LOGGER.severe("<= number of errors = " + errors.size());
     }
   }
-
+  
   /**
-   * Check that collection is not set on any TrackReference.
+   * Check that there are no albums which don't have {@code myInfo} set.
    * 
    * @param mediaDb the media database to check.
    * @param errors the list to which errors shall be appended if this value is not null
    */
-  private static void areThereNoTrackReferencesThatHaveCollectionSet(MediaDb mediaDb, List<Object> errors) {
-    // check for album tracks
+  private static void areThereNoAlbumsWithoutMyInfo(MediaDb mediaDb, List<Object> errors) {
     for (Album album: mediaDb.getAlbums()) {
-      for (Disc disc: album.getDiscs()) {
-        for (TrackReference trackReference: disc.getTrackReferences()) {
-          MyTrackInfo myTrackInfo = trackReference.getMyTrackInfo();
-          if (myTrackInfo != null  &&  myTrackInfo.getCollection() != Collection.NOT_SET) {
-            LOGGER.severe("Collection set for: " + album.getArtistAndTitle() + " - " + disc.getTitle() + " - " + trackReference.getTrackNr());
-          }
-        }
-      }
-    }
-
-    // check for track folder tracks
-    for (TrackCollection trackCollection: mediaDb.getTrackcollections()) {
-      for (TrackReference trackReference: trackCollection.getTrackReferences()) {
-        MyTrackInfo myTrackInfo = trackReference.getMyTrackInfo();
-        if (myTrackInfo != null  &&  myTrackInfo.getCollection() != Collection.NOT_SET) {
-          LOGGER.severe("Collection set for: " + trackCollection.getCollection().getLiteral() + " - " + trackReference.getTrack().getTrackArtist().getName() + " - " + trackReference.getTrack().getTitle());
-          if (myTrackInfo.getCollection() != trackCollection.getCollection()) {
-            LOGGER.severe("Wrong collection: " + myTrackInfo.getCollection().getLiteral());
-            throw new RuntimeException();
-          } else {
-            myTrackInfo.setCollection(Collection.NOT_SET);
-          }
+      if (album.getMyInfo() == null) {
+        LOGGER.severe("Album which doesn't have myInfo set: " + album.getArtistAndTitle());
+        if (errors != null) {
+          MediaDbErrorInfo errorInfo = new MediaDbErrorInfo();
+          errorInfo.setErrorCode(MediaDbError.ALBUM_WITHOUT_MYINFO);
+          errorInfo.setAlbum(album);
+          errors.add(errorInfo);
         }
       }
     }
@@ -116,8 +101,7 @@ public class MediaDbChecker {
    * @param mediaDb the media database to check.
    * @param errors the list to which errors shall be appended if this value is not null
    */
-  private static void areThereNoTrackReferencesThatHaveOriginalAlbumTrackReferenceReferringToAnotherTrackReference(
-      MediaDb mediaDb, List<Object> errors) {
+  private static void areThereNoTrackReferencesThatHaveOriginalAlbumTrackReferenceReferringToAnotherTrackReference(MediaDb mediaDb, List<Object> errors) {
     // check for album tracks
     for (Album album: mediaDb.getAlbums()) {
       for (Disc disc: album.getDiscs()) {

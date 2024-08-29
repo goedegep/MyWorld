@@ -52,15 +52,6 @@ public class ObjectControlBoolean extends ObjectControlTemplate<Boolean> {
 
   /**
    * {@inheritDoc}
-   * A checkbox is always filled in, so always valid.
-   */
-  @Override
-  public boolean isValid() {
-    return true;
-  }
-
-  /**
-   * {@inheritDoc}
    * A checkbox is always filled in.
    */
   @Override
@@ -105,7 +96,7 @@ public class ObjectControlBoolean extends ObjectControlTemplate<Boolean> {
    */
   @Override
   public String getValueAsFormattedText() {
-    return value ? "true" : "false";
+    return getValue() ? "true" : "false";
   }
   
   @Override
@@ -114,7 +105,7 @@ public class ObjectControlBoolean extends ObjectControlTemplate<Boolean> {
     
     buf.append("ObjectControl type=Boolean");
     buf.append(", id=").append(getId() != null ? getId() : "<null>");
-    buf.append(", value=").append(value != null ? value : "<null>");
+    buf.append(", value=").append(getValue() != null ? getValue() : "<null>");
     buf.append(", referenceValue=").append(referenceValue != null ? "\"" + referenceValue + "\"" : "<null>");
     
     return buf.toString();

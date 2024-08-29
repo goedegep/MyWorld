@@ -46,6 +46,10 @@ public class AutoCompleteTextField extends TextField
     entriesPopup = new ContextMenu();
     
     textProperty().addListener((ObservableValue<? extends String> observableValue, String s, String s2) -> {
+      if (getScene() == null) {  // Fix for when used in a TitledPane
+        return;
+      }
+      
       if ((getText() == null) || getText().isEmpty())
       {
         entriesPopup.hide();
@@ -57,7 +61,7 @@ public class AutoCompleteTextField extends TextField
         {
           populatePopup(searchResult);
           if (!entriesPopup.isShowing()) {
-            entriesPopup.show(AutoCompleteTextField.this, Side.BOTTOM, 0, 0);
+            entriesPopup.show(this, Side.BOTTOM, 0, 0);
           }
         } else {
           entriesPopup.hide();

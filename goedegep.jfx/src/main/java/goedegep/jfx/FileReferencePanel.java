@@ -357,7 +357,7 @@ public class FileReferencePanel extends TitledPane {
    * Listeners are installed on: fileSelecterObjectControl, titleObjectControl, objectControlsGroup.isValid.
    */
   private void installChangeListeners() {
-    objectControlsGroup.isValid().addListener((observable, oldValue, newValue) -> updatePaneTitle());
+    objectControlsGroup.addListener((observable) -> updatePaneTitle());
     titleObjectControl.addListener((observable) -> updatePaneTitle());
   }
   
@@ -607,7 +607,7 @@ public class FileReferencePanel extends TitledPane {
     buf.append(string).append(" ");
         
     // Add (in)valid indication
-    if (objectControlsGroup.isValid().getValue()) {
+    if (objectControlsGroup.isValid()) {
       buf.append(EObjectEditor.OK_INDICATOR);
     } else {
       buf.append(EObjectEditor.NOK_INDICATOR);

@@ -263,7 +263,7 @@ class EmployeeEditPanel {
   private void updateEmployeeIfControlsAreValid() {
     
     // Only update if all controls have valid values.
-    if (!objectControlGroup.getIsValid()) {
+    if (!objectControlGroup.isValid()) {
       return;
     }
         
@@ -314,7 +314,7 @@ class EmployeeEditPanel {
   private Employee createEmployeeFromFields() {
     
     // Only create if all controls have valid values.
-    if (!objectControlGroup.getIsValid()) {
+    if (!objectControlGroup.isValid()) {
       return null;
     }
     

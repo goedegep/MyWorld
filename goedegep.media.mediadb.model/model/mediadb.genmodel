@@ -174,7 +174,6 @@
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute mediadb.ecore#//TrackPart/title"/>
     </genClasses>
     <genClasses ecoreClass="mediadb.ecore#//MyTrackInfo">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute mediadb.ecore#//MyTrackInfo/collection"/>
       <genFeatures children="true" createChild="true" propertySortChoices="true" ecoreFeature="ecore:EReference mediadb.ecore#//MyTrackInfo/iHaveOn"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute mediadb.ecore#//MyTrackInfo/iWant"/>
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference mediadb.ecore#//MyTrackInfo/compilationTrackReference"/>

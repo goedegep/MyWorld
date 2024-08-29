@@ -478,7 +478,7 @@ public class EditorPanel extends VBox {
     if (editMode == EditMode.NEW) {
       addOrUpdateButton = componentFactory.createButton("Add InquiryData", "Add the InquiryData to the list");
       addOrUpdateButton.setOnAction(e -> addInquiryData());
-      if (!objectControlGroup.getIsValid()) {
+      if (!objectControlGroup.isValid()) {
         addOrUpdateButton.setDisable(true);
       }
     } else {
@@ -504,7 +504,7 @@ public class EditorPanel extends VBox {
    * @return the newly determined EditStatus.
    */
   private EditStatus determineEditStatus() {
-    if (objectControlGroup.isValid().getValue()) {
+    if (objectControlGroup.isValid()) {
       if (editMode == EditMode.NEW) {
         return EditStatus.ADD;
       } else {
@@ -549,7 +549,7 @@ public class EditorPanel extends VBox {
         return false;
       }
     } else {  // editMode = NEW
-      return objectControlGroup.isAnyObjectControlChanged();
+      return objectControlGroup.isAnyObjectChanged();
     }
   }
   

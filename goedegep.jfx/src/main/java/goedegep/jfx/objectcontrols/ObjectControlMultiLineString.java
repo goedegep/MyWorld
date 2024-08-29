@@ -85,7 +85,7 @@ public class ObjectControlMultiLineString extends ObjectControlTemplate<String> 
    */
   @Override
   public String getValueAsFormattedText()  {
-    return value;
+    return getValue();
   }
   
 }

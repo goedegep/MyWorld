@@ -3,6 +3,7 @@ package goedegep.jfx.objectcontrols;
 import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Objects;
 import java.util.function.Supplier;
 import java.util.logging.Logger;
 
@@ -62,6 +63,10 @@ public abstract class ObjectControlFileOrFolderSelecterAbstract extends ObjectCo
         ociRedrawValue();
     });
     
+    setComparator((o1, o2) -> {
+      int result = Objects.equals(getAbsolutePath(o1), getAbsolutePath(o2)) ? 0 : -1;
+      return result;
+    });
  }
   
   /**
@@ -142,7 +147,7 @@ public abstract class ObjectControlFileOrFolderSelecterAbstract extends ObjectCo
    */
   @Override
   public String getValueAsFormattedText() {
-    return value.getAbsolutePath();
+    return getValue().getAbsolutePath();
   }
   
   /**
@@ -223,7 +228,16 @@ public abstract class ObjectControlFileOrFolderSelecterAbstract extends ObjectCo
    * @return the current value as a Path.
    */
   public Path ocGetValueAsPath() {
-    return value != null ? Paths.get(value.getAbsolutePath()) : null;
+    return getValue() != null ? Paths.get(getValue().getAbsolutePath()) : null;
+  }
+  
+  public String getAbsolutePath(File file) {
+    if (file != null) {
+      return file.getAbsolutePath();
+    } else {
+      return null;
+    }
+    
   }
   
   /**
@@ -232,8 +246,8 @@ public abstract class ObjectControlFileOrFolderSelecterAbstract extends ObjectCo
    * @return the absolute path for the current value.
    */
   public String getAbsolutePath() {
-    if (value != null) {
-      return value.getAbsolutePath();
+    if (getValue() != null) {
+      return getValue().getAbsolutePath();
     } else {
       return null;
     }
@@ -252,11 +266,12 @@ public abstract class ObjectControlFileOrFolderSelecterAbstract extends ObjectCo
     }
   }
   
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public boolean isChanged() {
-    return !PgUtilities.equals(getAbsolutePath(), getReferenceAbsolutePath());
-  }
+//  /**
+//   * {@inheritDoc}
+//   */
+//  @Override
+//  public boolean isChanged() {
+//    return !PgUtilities.equals(getAbsolutePath(), getReferenceAbsolutePath());
+//  }
+  
 }

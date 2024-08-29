@@ -157,8 +157,8 @@ public class ObjectControlEnumComboBox<T extends Enum<T>> extends ObjectControlT
    */
   @Override
   public String getValueAsFormattedText() {
-    if (value != null) {
-      return comboBox.getConverter().toString(value);
+    if (getValue() != null) {
+      return comboBox.getConverter().toString(getValue());
     } else {
       return null;
     }

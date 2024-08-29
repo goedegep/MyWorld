@@ -170,7 +170,7 @@ public class MediaDbAppUtil {
     MyTrackInfo myTrackInfo = trackReference.getMyTrackInfo();
     if (myTrackInfo != null) {
       List<MediumInfo> mediumInfos = myTrackInfo.getIHaveOn();
-      return !mediumInfos.isEmpty()  ||  (myTrackInfo.getCollection() != Collection.NOT_SET);
+      return !mediumInfos.isEmpty();
     }
 
     return false;
