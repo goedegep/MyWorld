@@ -828,7 +828,7 @@ public class InvoiceAndPropertyEditor extends ObjectEditorTemplate<Invoice> {
     if (editMode == EditMode.NEW) {
       button = componentFactory.createButton("Create invoice", "Create a new invoice based on the entered values");
       button.setOnAction(e -> addObjectAction());
-      if (!objectControlsGroup.getIsValid()) {
+      if (!objectControlsGroup.isValid()) {
         button.setDisable(true);
       }
     } else {
@@ -845,7 +845,7 @@ public class InvoiceAndPropertyEditor extends ObjectEditorTemplate<Invoice> {
     if (editMode == EditMode.NEW) {
       button = componentFactory.createButton("Create property", "Create a new property based on the entered values");
       button.setOnAction(e -> addPropertyAction());
-      if (!objectControlsGroup.getIsValid()) {
+      if (!objectControlsGroup.isValid()) {
         button.setDisable(true);
       }
     } else {
@@ -862,7 +862,7 @@ public class InvoiceAndPropertyEditor extends ObjectEditorTemplate<Invoice> {
     if (editMode == EditMode.NEW) {
       button = componentFactory.createButton("Create invoice & property", "Create a new invoice and its related property based on the entered values");
       button.setOnAction(e -> addInvoiceAndPropertyAction());
-      if (!objectControlsGroup.getIsValid()) {
+      if (!objectControlsGroup.isValid()) {
         button.setDisable(true);
       }
     } else {
@@ -892,7 +892,7 @@ public class InvoiceAndPropertyEditor extends ObjectEditorTemplate<Invoice> {
    */
   @Override
   protected EditStatus determineEditStatus() {
-    if (objectControlsGroup.getIsValid() && propertyObjectControlsGroup.getIsValid()) {
+    if (objectControlsGroup.isValid() && propertyObjectControlsGroup.isValid()) {
       if (editMode == EditMode.NEW) {
         return EditStatus.ADD;
       } else {
@@ -916,11 +916,11 @@ public class InvoiceAndPropertyEditor extends ObjectEditorTemplate<Invoice> {
    * @return the newly determined EditStatus.
    */
   private EditStatus determineInvoiceEditStatus() {
-    if (objectControlsGroup.getIsValid()) {
+    if (objectControlsGroup.isValid()) {
       if (editMode == EditMode.NEW) {
         return EditStatus.ADD;
       } else {
-        if (objectControlsGroup.isAnyObjectControlChanged()) {
+        if (objectControlsGroup.isAnyObjectChanged()) {
           return EditStatus.CHANGES;
         } else {
           return EditStatus.NO_CHANGES;
@@ -941,11 +941,11 @@ public class InvoiceAndPropertyEditor extends ObjectEditorTemplate<Invoice> {
    * @return the newly determined EditStatus.
    */
   private EditStatus determinePropertyEditStatus() {
-    if (propertyObjectControlsGroup.getIsValid()) {
+    if (propertyObjectControlsGroup.isValid()) {
       if (editMode == EditMode.NEW) {
         return EditStatus.ADD;
       } else {
-        if (propertyObjectControlsGroup.isAnyObjectControlChanged()) {
+        if (propertyObjectControlsGroup.isAnyObjectChanged()) {
           return EditStatus.CHANGES;
         } else {
           return EditStatus.NO_CHANGES;
@@ -965,7 +965,7 @@ public class InvoiceAndPropertyEditor extends ObjectEditorTemplate<Invoice> {
    */
   @Override
   protected boolean changesInInput() {    
-    return objectControlsGroup.isAnyObjectControlChanged()  ||  propertyObjectControlsGroup.isAnyObjectControlChanged();
+    return objectControlsGroup.isAnyObjectChanged()  ||  propertyObjectControlsGroup.isAnyObjectChanged();
   }
   
   /**

@@ -208,7 +208,7 @@ class InvoiceItemPanel extends TitledPane {
     numberOfItemsObjectControl.addListener(invalidationListener);
     descriptionObjectControl.addListener(invalidationListener);
     amountObjectControl.addListener(invalidationListener);
-    objectControlGroup.isValid().addListener(invalidationListener);
+    objectControlGroup.addListener(invalidationListener);
   }
   
   /**
@@ -321,7 +321,7 @@ class InvoiceItemPanel extends TitledPane {
     }
     
     // Add (in)valid indication
-    if (objectControlGroup.isValid().getValue()) {
+    if (objectControlGroup.isValid()) {
       buf.append(EObjectEditor.OK_INDICATOR);
     } else {
       buf.append(EObjectEditor.NOK_INDICATOR);

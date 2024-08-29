@@ -27,14 +27,9 @@ public class ObjectControlForPlayer extends ObjectControlTemplate<Player> {
   
 
   /**
-   * Used to convert an {@code Artist} to String and vice versa.
-   */
-  private ArtistStringConverterAndChecker artistStringConverterAndChecker;
-  
-  /**
    * Object control for the artist.
    */
-  private ObjectControlAutoCompleteTextField<Artist> artistObjectControl;
+  private ArtistObjectControl artistObjectControl;
   
   /**
    * Object control for the instruments.
@@ -58,16 +53,14 @@ public class ObjectControlForPlayer extends ObjectControlTemplate<Player> {
     LOGGER.severe("=>");
     
     ComponentFactoryFx componentFactory = customization.getComponentFactoryFx();
-    artistStringConverterAndChecker = new ArtistStringConverterAndChecker(mediaDb);
     
-    artistObjectControl = componentFactory.createObjectControlAutoCompleteTextField(artistStringConverterAndChecker, null, 300, false, "Enter a player");
-    artistObjectControl.setOptions(mediaDb.getArtists());
+    artistObjectControl = new ArtistObjectControl(customization, mediaDb);
     playerInstrumentTextField = componentFactory.createObjectControlTextField(null, null, 300, true, "A comma separated list of instruments");
     
     artistObjectControl.addListener((e) -> ociHandleNewUserInput(artistObjectControl));
     playerInstrumentTextField.addListener((e) -> ociHandleNewUserInput(playerInstrumentTextField));
     
-    hBox = componentFactory.createHBox(12.0, 12.0);
+    hBox = componentFactory.createHBox(12.0, 2.0);
     hBox.getChildren().addAll(artistObjectControl.getControl(), playerInstrumentTextField.getControl(), getStatusIndicator());
   }
 
@@ -80,64 +73,9 @@ public class ObjectControlForPlayer extends ObjectControlTemplate<Player> {
     return hBox;
   }
 
-//  // TODO should not be needed -> artistObjectControl.ocGetControl()
-//  public ObjectControlAutoCompleteTextField<Artist> getArtistObjectControl() {
-//    return artistObjectControl;
-//  }
-
   public ObjectControlTextField<String> getPlayerInstrumentTextField() {
     return playerInstrumentTextField;
   }
-
-//  /**
-//   * {@inheritDoc}
-//   */
-//  @Override
-//  public Player ocGetValue() {
-//    throw new UnsupportedOperationException();
-//  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public void setValue(final Player player) {
-    if (player != null) {
-      artistObjectControl.setValue(player.getArtist());
-      playerInstrumentTextField.setValue(StringUtil.stringCollectionToCommaSeparatedStrings(player.getInstruments()));
-    } else {
-      artistObjectControl.setValue(null);
-      playerInstrumentTextField.setValue(null);
-    }
-  }
-  
-//  public void fillFromPlayer(Player player) {
-//    artistObjectControl.ocSetValue(player.getArtist());
-//    playerInstrumentTextField.ocSetValue(StringUtil.stringCollectionToCommaSeparatedStrings(player.getInstruments()));
-//  }
-
-//  /**
-//   * {@inheritDoc}
-//   */
-//  @Override
-//  public ObjectProperty<Player> ocValueProperty() {
-//    throw new UnsupportedOperationException();
-//  }
-
-//  /**
-//   * {@inheritDoc}
-//   */
-//  @Override
-//  public String ocGetId() {
-//    return artistObjectControl.ocGetId();
-//  }
-
-//  /**
-//   * {@inheritDoc}
-//   */
-//  public List<InvalidationListener> ociGetInvalidationListeners() {
-//    return invalidationListeners;
-//  }
 
   /**
    * {@inheritDoc}
@@ -182,8 +120,13 @@ public class ObjectControlForPlayer extends ObjectControlTemplate<Player> {
 
   @Override
   protected void ociUpdateNonSourceControls(Object source) {
-    // TODO Auto-generated method stub
+    if (artistObjectControl != source  &&  getValue() != null) {
+      artistObjectControl.setValue(getValue().getArtist());
+    }
     
+    if (playerInstrumentTextField != source  &&  getValue() != null) {
+      playerInstrumentTextField.setValue(StringUtil.stringCollectionToCommaSeparatedStrings(getValue().getInstruments()));
+    }
   }
 
 }

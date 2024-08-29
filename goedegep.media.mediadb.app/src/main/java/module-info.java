@@ -3,7 +3,6 @@ module goedegep.media.mediadb.app {
   exports goedegep.media.mediadb.app.guifx;
   exports goedegep.media.mediadb.app.derivealbuminfo;
   exports goedegep.media.mediadb.albumeditor.guifx;
-  exports goedegep.media.mediadb.albuminfo;
   exports goedegep.media.musicfolder;
 
   requires com.google.common;

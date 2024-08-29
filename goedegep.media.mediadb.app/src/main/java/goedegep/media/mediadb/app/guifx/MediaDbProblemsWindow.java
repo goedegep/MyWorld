@@ -21,9 +21,6 @@ import org.eclipse.emf.ecore.util.EcoreUtil;
 import goedegep.jfx.ComponentFactoryFx;
 import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.JfxStage;
-import goedegep.media.mediadb.albuminfo.AlbumInfoErrorInfo;
-import goedegep.media.mediadb.albuminfo.AlbumReferenceInfo;
-import goedegep.media.mediadb.albuminfo.TrackReferenceInfo;
 import goedegep.media.mediadb.app.MediaDbAppError;
 import goedegep.media.mediadb.app.MediaDbAppErrorInfo;
 import goedegep.media.mediadb.app.MediaDbAppUtil;
@@ -140,9 +137,6 @@ private ComponentFactoryFx componentFactory;
     if (error instanceof ParseException) {
       ParseException parseException = (ParseException) error;
       fillParseExceptionPanel(errorPanel, parseException);
-    } else if (error instanceof AlbumInfoErrorInfo) {
-      AlbumInfoErrorInfo albumInfoErrorInfo = (AlbumInfoErrorInfo) error;
-      fillAlbumInfoErrorInfoPanel(errorPanel, albumInfoErrorInfo);
     } else if (error instanceof MediaDbErrorInfo) {
       MediaDbErrorInfo mediaDbErrorInfo = (MediaDbErrorInfo) error;
       fillMediaDbErrorInfoPanel(errorPanel, mediaDbErrorInfo);
@@ -189,140 +183,6 @@ private ComponentFactoryFx componentFactory;
       }
     });
     errorPanel.getButtonsBox().getChildren().add(editButton);
-  }
-
-  /**
-   * Fill a panel to report and possibly fix a <code>AlbumInfoError</code>.
-   * <p>
-   * The panel shows the problem.
-   * If possible it provides a fix for the problem, or helps fixing the problem.
-   * @param errorPanel the panel to be filled
-   * @param albumInfoErrorInfo the problem to be reported
-   */
-  private void fillAlbumInfoErrorInfoPanel(ErrorPanel errorPanel, AlbumInfoErrorInfo albumInfoErrorInfo) {
-    Button editButton;
-    TrackReferenceInfo trackReferenceInfo;
-
-    // Report the error in a JTextArea.
-    switch (albumInfoErrorInfo.getErrorCode()) {
-    case DISC_NR_TOO_HIGH:
-      trackReferenceInfo = albumInfoErrorInfo.getTrackReferenceInfo();
-      errorPanel.getTextArea().setText(
-          "Disc nummer te hoog in nummer referentie in bestand '" + trackReferenceInfo.getAlbumInfoFileName() + "'" + NEWLINE +
-          "Regel: " + trackReferenceInfo.getLineNumber() + ", kolom:; " + trackReferenceInfo.getColumn() + "." + NEWLINE +
-          "Referentie in album: " + trackReferenceInfo.getSourceAlbum().getTitle() + "." + NEWLINE +
-          "Referentie is in album: \"" + trackReferenceInfo.getSourceAlbum().getTitle() + "\", naar album titel: \"" + trackReferenceInfo.getReferencedAlbumTitle() +
-          "\", disc nummer: " + trackReferenceInfo.getReferencedDiscNr() + ", nummer: " + trackReferenceInfo.getReferencedTrackNr()
-          );
-
-      // Button to open the file with the problem in Notapad++.
-      editButton = componentFactory.createButton("Open bestand in Notepad++", "opent " + trackReferenceInfo.getAlbumInfoFileName() + " met Notepad++");
-      editButton.setOnAction((e) -> {
-        List<String> commandArguments = new ArrayList<>();
-
-        commandArguments.add("C:\\Program Files (x86)\\Notepad++\\Notepad++.exe");
-        commandArguments.add(trackReferenceInfo.getAlbumInfoFileName());
-        commandArguments.add("-n " + trackReferenceInfo.getLineNumber());
-        commandArguments.add("-c " + trackReferenceInfo.getColumn());
-
-        try {
-          new ProcessBuilder(commandArguments).start();
-        } catch (IOException e1) {
-          e1.printStackTrace();
-        }
-      });
-      errorPanel.getButtonsBox().getChildren().add(editButton);
-      break;
-
-    case REFERENCE_NOT_FOUND:
-      AlbumReferenceInfo albumReferenceInfo = albumInfoErrorInfo.getAlbumReferenceInfo();
-      errorPanel.getTextArea().setText(
-          "Album referentie niet gevonden in bestand '" + albumReferenceInfo.getAlbumInfoFileName() + "'" + NEWLINE +
-          "Regel: " + albumReferenceInfo.getLineNumber() + ", kolom:; " + albumReferenceInfo.getColumn() + "." + NEWLINE +
-          "Referentie in album: " + albumReferenceInfo.getSourceAlbum().getTitle() + "." + NEWLINE +
-          "Referentie is: " + albumReferenceInfo.getReferencedAlbum() + "."
-          );
-
-      // JButton to open the file with the problem in Notapad++.
-      editButton = componentFactory.createButton("Open bestand in Notepad++", "opent " + albumReferenceInfo.getAlbumInfoFileName() + " met Notepad++");
-      editButton.setOnAction((e) -> {
-        List<String> commandArguments = new ArrayList<>();
-
-        commandArguments.add("C:\\Program Files (x86)\\Notepad++\\Notepad++.exe");
-        commandArguments.add(albumReferenceInfo.getAlbumInfoFileName());
-        commandArguments.add("-n " + albumReferenceInfo.getLineNumber());
-        commandArguments.add("-c " + albumReferenceInfo.getColumn());
-
-        try {
-          new ProcessBuilder(commandArguments).start();
-        } catch (IOException e1) {
-          e1.printStackTrace();
-        }
-      });
-      errorPanel.getButtonsBox().getChildren().add(editButton);
-      break;
-
-    case TRACK_NR_TOO_HIGH:
-      trackReferenceInfo = albumInfoErrorInfo.getTrackReferenceInfo();
-      errorPanel.getTextArea().setText(
-          "Nummer index te hoog in nummer referentie in bestand '" + trackReferenceInfo.getAlbumInfoFileName() + "'" + NEWLINE +
-          "Regel: " + trackReferenceInfo.getLineNumber() + ", kolom:; " + trackReferenceInfo.getColumn() + "." + NEWLINE +
-          "Referentie in album: " + trackReferenceInfo.getSourceAlbum().getTitle() + "." + NEWLINE +
-          "Referentie is in album: \"" + trackReferenceInfo.getSourceAlbum().getTitle() + "\", naar album titel: \"" + trackReferenceInfo.getReferencedAlbumTitle() +
-          "\", disc nummer: " + trackReferenceInfo.getReferencedDiscNr() + ", nummer: " + trackReferenceInfo.getReferencedTrackNr()
-          );
-
-      // JButton to open the file with the problem in Notapad++.
-      editButton = componentFactory.createButton("Open bestand in Notepad++", "opent " + trackReferenceInfo.getAlbumInfoFileName() + " met Notepad++");
-      editButton.setOnAction((e) -> {
-        List<String> commandArguments = new ArrayList<>();
-
-        commandArguments.add("C:\\Program Files (x86)\\Notepad++\\Notepad++.exe");
-        commandArguments.add(trackReferenceInfo.getAlbumInfoFileName());
-        commandArguments.add("-n " + trackReferenceInfo.getLineNumber());
-        commandArguments.add("-c " + trackReferenceInfo.getColumn());
-
-        try {
-          new ProcessBuilder(commandArguments).start();
-        } catch (IOException e1) {
-          e1.printStackTrace();
-        }
-      });
-      errorPanel.getButtonsBox().getChildren().add(editButton);
-      break;
-
-    case TRACK_REFERENCE_NOT_FOUND:
-      trackReferenceInfo = albumInfoErrorInfo.getTrackReferenceInfo();
-      errorPanel.getTextArea().setText(
-          "Nummer referentie niet gevonden in bestand '" + trackReferenceInfo.getAlbumInfoFileName() + "'" + NEWLINE +
-          "Regel: " + trackReferenceInfo.getLineNumber() + ", kolom:; " + trackReferenceInfo.getColumn() + "." + NEWLINE +
-          "Referentie in album: " + trackReferenceInfo.getSourceAlbum().getTitle() + "." + NEWLINE +
-          "Referentie is in album: \"" + trackReferenceInfo.getSourceAlbum().getTitle() + "\", naar album titel: \"" + trackReferenceInfo.getReferencedAlbumTitle() +
-          "\", disc nummer: " + trackReferenceInfo.getReferencedDiscNr() + ", nummer: " + trackReferenceInfo.getReferencedTrackNr()
-          );
-
-      // JButton to open the file with the problem in Notapad++.
-      editButton = componentFactory.createButton("Open bestand in Notepad++", "opent " + trackReferenceInfo.getAlbumInfoFileName() + " met Notepad++");
-      editButton.setOnAction((e) -> {
-        List<String> commandArguments = new ArrayList<>();
-
-        commandArguments.add("C:\\Program Files (x86)\\Notepad++\\Notepad++.exe");
-        commandArguments.add(trackReferenceInfo.getAlbumInfoFileName());
-        commandArguments.add("-n " + trackReferenceInfo.getLineNumber());
-        commandArguments.add("-c " + trackReferenceInfo.getColumn());
-
-        try {
-          new ProcessBuilder(commandArguments).start();
-        } catch (IOException e1) {
-          e1.printStackTrace();
-        }
-      });
-      errorPanel.getButtonsBox().getChildren().add(editButton);
-      break;
-
-    default:
-      throw new IllegalArgumentException("Unknown Error Code: " + albumInfoErrorInfo.getErrorCode());
-    }
   }
 
   private void fillMediaDbErrorInfoPanel(ErrorPanel errorPanel, MediaDbErrorInfo mediaDbErrorInfo) {

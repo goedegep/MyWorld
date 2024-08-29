@@ -1,18 +1,24 @@
 package goedegep.jfx.objecteditor;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.logging.Logger;
 
 import goedegep.jfx.ComponentFactoryFx;
 import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.JfxStage;
+import goedegep.jfx.objectcontrols.ObjectControl;
 import goedegep.jfx.objectcontrols.ObjectControlGroup;
+import javafx.beans.InvalidationListener;
+import javafx.beans.Observable;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.Tooltip;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
@@ -89,7 +95,7 @@ import javafx.scene.text.Font;
  * 
  * @param <T> The object type being edited
  */
-public abstract class ObjectEditorTemplate<T> extends JfxStage {
+public abstract class ObjectEditorTemplate<T> extends JfxStage implements Observable  {
   @SuppressWarnings("unused")
   private static Logger LOGGER = Logger.getLogger(ObjectEditorTemplate.class.getName());
   private static final String NEW_LINE = System.getProperty("line.separator");
@@ -159,6 +165,11 @@ public abstract class ObjectEditorTemplate<T> extends JfxStage {
    * Ignore changes
    */
   protected boolean ignoreChanges;
+  
+  /**
+   * The invalidation listeners
+   */
+  protected List<InvalidationListener> invalidationListeners = new ArrayList<>();
 
   
   /**
@@ -175,6 +186,7 @@ public abstract class ObjectEditorTemplate<T> extends JfxStage {
   public ObjectEditorTemplate(CustomizationFx customization, String title) {
     super(title, customization);
     
+    objectControlsGroup = new ObjectControlGroup();
     componentFactory = customization.getComponentFactoryFx();
   }
   
@@ -186,7 +198,6 @@ public abstract class ObjectEditorTemplate<T> extends JfxStage {
   public ObjectEditorTemplate<T> runEditor() {
     configureEditor();
         
-    objectControlsGroup = new ObjectControlGroup();
     createControls();
     fillControlsWithDefaultValues();
     
@@ -231,6 +242,10 @@ public abstract class ObjectEditorTemplate<T> extends JfxStage {
   public void setObject(T object) {
     setObject(object, true);
   }
+  
+  public T getObject() {
+    return object;
+  }
 
   /**
    * Start editing an object, or clear the editor for starting to create a new object.
@@ -261,6 +276,7 @@ public abstract class ObjectEditorTemplate<T> extends JfxStage {
     ignoreChanges = false;
 
     handleChanges();
+    notifyListeners();
   }
   
   /**
@@ -349,6 +365,23 @@ public abstract class ObjectEditorTemplate<T> extends JfxStage {
    */
   protected void updateActionButtonsPanel() {
     actionButtonsPanel.getChildren().clear();
+    
+    TextArea statusTextArea = componentFactory.createTextArea();
+    statusTextArea.setEditable(false);
+    statusTextArea.setMaxHeight(30);
+    ObjectControl<? extends Object> objectControl = objectControlsGroup.getFirstInvalidControl();
+    LOGGER.info("First invalid object control: " + (objectControl != null ? objectControl.toString() : "All controls are valid"));
+    if (objectControl != null) {
+      String errorText = objectControl.getErrorText();
+      if (errorText == null) {
+        errorText = objectControl.toString();
+      }
+      LOGGER.severe("errorText=" + errorText);
+      statusTextArea.setText(errorText);
+    } else {
+      statusTextArea.setText("All is fine");
+    }
+    actionButtonsPanel.getChildren().add(statusTextArea);
 
     final Pane spacer = new Pane();
     HBox.setHgrow(spacer, Priority.ALWAYS);
@@ -370,7 +403,7 @@ public abstract class ObjectEditorTemplate<T> extends JfxStage {
       // Add button
       addOrUpdateButton = componentFactory.createButton(addObjectText, addObjectTooltipText);
       addOrUpdateButton.setOnAction(e -> addObjectAction());
-      if (!objectControlsGroup.getIsValid()) {
+      if (!objectControlsGroup.isValid()) {
         addOrUpdateButton.setDisable(true);
       }
     } else {
@@ -422,6 +455,7 @@ public abstract class ObjectEditorTemplate<T> extends JfxStage {
       setObject(object, false);
       
       handleChanges();
+      notifyListeners();
     } catch (ObjectEditorException e) {
       StringBuilder buf = new StringBuilder();
       for (String problem: e.getProblems()) {
@@ -445,14 +479,17 @@ public abstract class ObjectEditorTemplate<T> extends JfxStage {
   protected abstract void addObjectToCollection();
   
   /**
-   * {@inheritDoc}
    * Update {@code object} with the values of the controls.
+   * <p>
+   * If the provided information is correct, the {@code object} is updated.
+   * Otherwise, an Alert is shown with information about what is wrong.
    */
   protected void updateObject() {
     try {
       updateObjectFromControls();
       
       setObject(object, false);
+      notifyListeners();
     } catch (ObjectEditorException e) {
       StringBuilder buf = new StringBuilder();
       for (String problem: e.getProblems()) {
@@ -472,7 +509,7 @@ public abstract class ObjectEditorTemplate<T> extends JfxStage {
    * @return the newly determined EditStatus.
    */
   protected EditStatus determineEditStatus() {
-    if (objectControlsGroup.getIsValid()) {
+    if (objectControlsGroup.isValid()) {
       if (editMode == EditMode.NEW) {
         return EditStatus.ADD;
       } else {
@@ -511,7 +548,7 @@ public abstract class ObjectEditorTemplate<T> extends JfxStage {
    * @return true if there are any changes in the controls, false otherwise.
    */
   protected boolean changesInInput() {        
-    return objectControlsGroup.isAnyObjectControlChanged();
+    return objectControlsGroup.isAnyObjectChanged();
   }
   
   /**
@@ -561,6 +598,33 @@ public abstract class ObjectEditorTemplate<T> extends JfxStage {
    */
   protected Double getWindowWidth() {
     return null;
+  }
+  
+  public final void addListener(InvalidationListener listener) {
+    LOGGER.info("<=> " + listener);
+    invalidationListeners.add(listener);    
+  }
+
+  public final void removeListener(InvalidationListener listener) {
+    LOGGER.info("<=> " + listener);
+    invalidationListeners.remove(listener);    
+  }
+
+  public final void removeListeners() {
+    LOGGER.info("=>");
+    invalidationListeners.clear();
+    LOGGER.info("<=");
+  }
+  
+  /**
+   * Notify the {@code invalidationListeners} that something has changed.
+   */
+  private final void notifyListeners() {
+    LOGGER.info("=>");
+    for (InvalidationListener invalidationListener: invalidationListeners) {
+      invalidationListener.invalidated(this);
+    }
+    LOGGER.info("<=");
   }
 }
 

@@ -116,7 +116,11 @@ public class GatherPhotoMetaDataTask extends Task<Tuplet<String, List<PhotoMetaD
           LOGGER.severe("foldername: " + foldername);
           if (!skipFolders.contains(foldername)) {
             LOGGER.severe("going down into folder: " + foldername);
-            handleFolder(checkPath);
+            if (!"Visual fun".equals(foldername)) {
+              handleFolder(checkPath);
+            } else {
+              LOGGER.severe("Skipping folder: " + foldername);  // TODO Find out why it hangs on this folder
+            }
           } else {
             LOGGER.severe("skipping folder: " + foldername);
           }
@@ -210,7 +214,7 @@ public class GatherPhotoMetaDataTask extends Task<Tuplet<String, List<PhotoMetaD
    * @return all needed information about the photo
    */
   public static PhotoMetaData createPhotoMetaData(String fileName) {
-    LOGGER.severe("=> fileName=" + fileName);
+//    LOGGER.severe("=> fileName=" + fileName);
     
     PhotoMetaData photoMetaData = new PhotoMetaData();
 

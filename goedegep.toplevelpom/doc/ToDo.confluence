@@ -6,12 +6,14 @@ For now: only let original track reference refer to itself.
 
 h2. ToDo list
 
-* isCompilationAlbumCheckBox shall be removed, all albums shall have MyInfo.albumType set
-* Collection should not be needed anymore.
+* Remove PgUtilities.equals(), replace by Objects.equals()
+* ObjectControl: look for better handling of error feedback, use ObjectControlImageFile for reference
+* Continue cleanup of ObjectControlImageFile
 * compilationTrackReference shall be renamed to trackReference.
 * Remove references to albumInfoDirectory in MediaRegistry and then remove it.
 * AlbumEditor/new album
-Currently OK: title, artist, issuedate, albumId
+Currently OK: albumType, title, artist, issuedate, albumId
+Next: Front image, tracks
 Next: players
 * When starting to edit an album it complaints about changes which can't be there.
 * Clean up MijnWereld folder.

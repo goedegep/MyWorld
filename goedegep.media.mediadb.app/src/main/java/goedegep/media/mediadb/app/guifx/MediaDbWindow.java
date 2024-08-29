@@ -194,12 +194,6 @@ public class MediaDbWindow extends JfxStage {
 
     allErrors = new ArrayList<>();
     
-//    // TODO Temp read artist information from ArtistInformation.xml. Delete if all works well.
-//    ArtistInfoHandler artistInfoHandler = new ArtistInfoHandler();
-//    artistInfoHandler.setMediaDb(mediaDb);
-//    artistInfoHandler.read("D:\\Database\\Muziek\\ArtistInformation\\ArtistInformation.xml");
-    
-
     tempFixProblems();
 
     // Check the media database
@@ -226,6 +220,7 @@ public class MediaDbWindow extends JfxStage {
 
     createGUI();
     
+    // TODO ??
     for (Album album: mediaDb.getAlbums()) {
       boolean sourceTypeInMyInfo = false;
       MyInfo myInfo = album.getMyInfo();

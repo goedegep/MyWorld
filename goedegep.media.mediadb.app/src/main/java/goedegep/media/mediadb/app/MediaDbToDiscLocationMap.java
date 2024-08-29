@@ -10,7 +10,6 @@ import java.util.logging.Logger;
 
 import goedegep.media.mediadb.model.Album;
 import goedegep.media.mediadb.model.Artist;
-import goedegep.media.mediadb.model.Collection;
 import goedegep.media.mediadb.model.Disc;
 import goedegep.media.mediadb.model.DiscAndTrackNrs;
 import goedegep.media.mediadb.model.MediaDb;
@@ -243,32 +242,17 @@ public class MediaDbToDiscLocationMap {
    */
   private AlbumOnDiscInfo createAndAddMappingForAlbumPartlyOnDisc(Album album) {
     LOGGER.info("=> album: " + album.getArtistAndTitle());
-    
+
     String albumFolderName = null;
     List<String> trackFileNames = new ArrayList<>();
-    
+
     for (Disc disc: album.getDiscs()) {
       for (TrackReference trackReference: disc.getTrackReferences()) {
         MyTrackInfo myTrackInfo = trackReference.getMyTrackInfo();
         if (myTrackInfo != null) {
-          if (myTrackInfo.getCollection() != null  &&  myTrackInfo.getCollection() != Collection.NOT_SET) {
-            TrackOnDiscInfo trackOnDiscInfo = createAndAddMappingForTrackInCollection(trackReference);
-            if (trackOnDiscInfo != null) {
-              trackFileNames.add(trackOnDiscInfo.getTrackPath().toString());
-              String folderName = trackOnDiscInfo.getTrackPath().getParent().toString();
-              if (albumFolderName == null) {
-                albumFolderName = folderName;
-              } else {
-                if (!folderName.equals(albumFolderName)) {
-                  LOGGER.severe("Tracks in different folders. Album is: " + album.getArtistAndTitle() + ", track filename is: " + trackOnDiscInfo.getTrackPath().toString());
-                }
-              }
-            }
-          } else {         
-            for (MediumInfo mediumInfo: myTrackInfo.getIHaveOn()) {
-              if (mediumInfo.getMediumType() == MediumType.HARDDISK) {
-                createAndAddMappingForTrackOfAlbum(trackReference);
-              }
+          for (MediumInfo mediumInfo: myTrackInfo.getIHaveOn()) {
+            if (mediumInfo.getMediumType() == MediumType.HARDDISK) {
+              createAndAddMappingForTrackOfAlbum(trackReference);
             }
           }
         } else {
@@ -423,27 +407,14 @@ public class MediaDbToDiscLocationMap {
       String trackFileNameOnDisc = trackOnDiscInfo.getTrackPath().getFileName().toString();
       String trackFileNameOnDiscWithoutExtension = FileUtils.getFileNameWithoutExtension(trackFileNameOnDisc);
       if (trackFileNameOnDiscWithoutExtension.equals(trackFileNameByConvention)) {
-        String trackFolder = trackOnDiscInfo.getTrackPath().getParent().getFileName().toString();
-        MyTrackInfo myTrackInfo = trackReference.getMyTrackInfo();
 //        if (myTrackInfo == null) { myTrackInfo cannot be null for a collection track of an album
 //          return null;
 //        }
-        Collection collection = myTrackInfo.getCollection();
-        String collectionFolder = MediaDbAppUtil.getCollectionFolderName(collection);
-//        if (collection.equals(Collection.NOT_SET)) {  // cannot occur for a collection track of an album
+ //        if (collection.equals(Collection.NOT_SET)) {  // cannot occur for a collection track of an album
 //          LOGGER.info("Collection not set for track: track=" + trackReference.toString());
 //        } else if (!trackFolder.equals(collectionFolder)) {
 //          LOGGER.severe("Track in wrong collection: track=" + trackReference.toString());
 //        }
-        if (!trackFolder.equals(collectionFolder)) {
-          LOGGER.severe("Track in wrong collection: track=" + trackReference.toString());
-          return null;
-        } else {
-          LOGGER.info("Track folder=" + trackOnDiscInfo.getTrackPath().getParent().getFileName().toString());
-          LOGGER.info("Collection=" + trackReference.getMyTrackInfo().getCollection().getLiteral());
-
-          return trackOnDiscInfo;
-        }
       }
     }
 
@@ -485,108 +456,6 @@ public class MediaDbToDiscLocationMap {
       LOGGER.info("Still to handle references");
     }
   }
-
-//  /**
-//   * Create a mapping from Albums in the media database to their location on disc, for albums which I have partly on disc.
-//   * <p>
-//   * Based on information from the media database (describing which albums we should have partly) and from what we have in the 
-//   * MusicFolder, the {@link #trackDiscLocationMap} is filled which maps album tracks to their location in the Music Folder.
-//   */
-//  private void createPartlyAlbumDiscLocationMap() {
-//    for (Album album: mediaDb.getAlbums()) {
-//
-//      LOGGER.info("Handling album: " + album.getArtistAndTitle());
-//
-//      List<DiscAndTrackNrs> discAndTrackNrsList = null;
-//      if (MediaDbUtil.haveAlbumPartlyOnDisc(album)) {
-//        discAndTrackNrsList = MediaDbUtil.getAlbumTracksIHave(album, true);
-//      }
-//
-//      if (discAndTrackNrsList != null) {
-//        LOGGER.fine("I should have tracks on disc");
-//        // Separate tracks are either stored as track within a Collection, they are on some other album, or they are part of my own compilation for that artist.
-//        MyInfo myInfo = album.getMyInfo();
-//
-//        if (myInfo != null) {
-//          Album referredAlbum = null;
-//          List<Album> albumReferences = myInfo.getAlbumReferences();
-//          if (!albumReferences.isEmpty()) {
-//            // TODO handle multiple references
-//            referredAlbum = albumReferences.get(0);
-//          }
-//          if (referredAlbum != null) {
-//            for (DiscAndTrackNrs discAndTrackNr: discAndTrackNrsList) {
-//              for (Integer trackNr: discAndTrackNr.getTrackNrs()) {
-//                Integer discNr = null;
-//                if (discAndTrackNr.isSetDiscNr()) {
-//                  discNr = discAndTrackNr.getDiscNr();
-//                }
-//                try {
-//                  Track track = album.getTrackReference(discNr, trackNr).getTrack();
-//                  TrackOnDiscInfo trackOnDiscInfo = findTrackInReferredAlbum(album, discNr, trackNr, referredAlbum, albumToMusicFolderLocationMap);
-//
-//                  if (trackOnDiscInfo != null) {
-//                    Path pathToTrack = trackOnDiscInfo.getTrackPath();
-//                    LOGGER.fine("Path found: " + pathToTrack.toAbsolutePath().toString());
-//                    trackDiscLocationMap.put(track, pathToTrack);
-//                    tracksOnDiscInfoNotMapped.remove(trackOnDiscInfo);
-//                  } else {
-//                    LOGGER.fine("Path NOT found: ");
-//                    MediaDbAppErrorInfo error = new MediaDbAppErrorInfo(MediaDbAppError.TRACK_IN_MEDIADB_NOT_FOUND_ON_DISC);
-//                    error.setAlbum(album);
-//                    error.setTrack(track);
-//                    errors.add(error);
-//                  }
-//                } catch(Exception e) {
-//                  LOGGER.severe("Track not found for album. album=" + album.toString() + "discNr=" + discNr + "trackNr=" + trackNr);
-//                }
-//              }
-//            }
-//          } else {
-//            // For now find it in the Collections.
-//            for (DiscAndTrackNrs discAndTrackNrs: discAndTrackNrsList) {
-//              for (Integer trackNr: discAndTrackNrs.getTrackNrs()) {
-//                Integer discNr = null;
-//                if (discAndTrackNrs.isSetDiscNr()) {
-//                  discNr = discAndTrackNrs.getDiscNr();
-//                }
-//                try {
-//                  Track track = album.getTrackReference(discNr, trackNr).getTrack();
-//                  TrackReference trackReference = album.getTrackReference(discNr, trackNr);
-//                  TrackReference originalAlbumTrackReference = trackReference.getOriginalAlbumTrackReference();
-//                  if (originalAlbumTrackReference != null) {
-//                    MyTrackInfo originalAlbumTrackReferenceMyTrackInfo = originalAlbumTrackReference.getMyTrackInfo();
-//                    if (originalAlbumTrackReferenceMyTrackInfo != null) {
-//                      List<MediumInfo> mediumInfos = originalAlbumTrackReferenceMyTrackInfo.getIHaveOn();
-//                      for (MediumInfo mediumInfo: mediumInfos) {
-//                        LOGGER.severe("MediumInfo: " + mediumInfo);
-//                      }
-//                    }
-//                  }
-//                  TrackOnDiscInfo trackOnDiscInfo = findTrackInTracksOnDiscInfo(album, discNr, trackNr, tracksOnDiscInfoNotMapped);
-//
-//                  if (trackOnDiscInfo != null) {
-//                    Path pathToTrack = trackOnDiscInfo.getTrackPath();
-//                    LOGGER.fine("Path found: " + pathToTrack.toAbsolutePath().toString());
-//                    trackDiscLocationMap.put(track, pathToTrack);
-//                    tracksOnDiscInfoNotMapped.remove(trackOnDiscInfo);
-//                  } else {
-//                    LOGGER.fine("Path NOT found: ");
-//                    MediaDbAppErrorInfo error = new MediaDbAppErrorInfo(MediaDbAppError.TRACK_IN_MEDIADB_NOT_FOUND_ON_DISC);
-//                    error.setAlbum(album);
-//                    error.setTrack(track);
-//                    errors.add(error);
-//                  }
-//                } catch(Exception e) {
-//                  LOGGER.severe("Track not found for album. album=" + album.toString() + "discNr=" + discNr + "trackNr=" + trackNr);
-//                }
-//              }
-//            }
-//          }
-//        }
-//      }
-//    }
-//  }
 
   /**
    * Create a mapping for all tracks in all track collections to their location on disc.
@@ -764,15 +633,7 @@ public class MediaDbToDiscLocationMap {
         if (myTrackInfo == null) {
           return null;
         }
-        Collection collection = myTrackInfo.getCollection();
-        String collectionFolder = MediaDbAppUtil.getCollectionFolderName(collection);
-        if (collection.equals(Collection.NOT_SET)) {
-          LOGGER.info("Collection not set for track: track=" + trackReference.toString());
-        } else if (!trackFolder.equals(collectionFolder)) {
-          LOGGER.severe("Track in wrong collection: track=" + trackReference.toString());
-        }
         LOGGER.fine("Track folder=" + trackOnDiscInfo.getTrackPath().getParent().getFileName().toString());
-        LOGGER.fine("Collection=" + trackReference.getMyTrackInfo().getCollection().getLiteral());
 
         return trackOnDiscInfo;
       }
@@ -818,17 +679,8 @@ public class MediaDbToDiscLocationMap {
       }
       if (trackFileNameOnDiscWithoutExtension.equals(trackFileNameByConvention)  ||
           trackFileNameOnDiscWithoutExtension.equals(trackFileNameByConvention2)) {
-        String trackFolder = trackOnDiscInfo.getTrackPath().getParent().getFileName().toString();
         MyTrackInfo myTrackInfo = trackReference.getMyTrackInfo();
-        Collection collection = myTrackInfo.getCollection();
-        String collectionFolder = MediaDbAppUtil.getCollectionFolderName(collection);
-        if (collection.equals(Collection.NOT_SET)) {
-          LOGGER.severe("Collection not set for track: album=" + album.getArtistAndTitle() + ", discNr=" + discNr + ", trackNr=" + trackNr);
-        } else if (!trackFolder.equals(collectionFolder)) {
-          LOGGER.severe("Track in wrong collection: album=" + album.getTitle() + ", discNr=" + discNr + ", trackNr=" + trackNr + ", collection=" + collection.getLiteral());
-        }
         LOGGER.fine("Track folder=" + trackOnDiscInfo.getTrackPath().getParent().getFileName().toString());
-        LOGGER.fine("Collection=" + collection.getLiteral());
 
         return trackOnDiscInfo;
       }

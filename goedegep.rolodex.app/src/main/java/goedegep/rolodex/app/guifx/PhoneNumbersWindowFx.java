@@ -250,7 +250,7 @@ class PhoneNumberEditPanel {
   private void updatePhoneNumberIfControlsAreValid() {
     
     // Only update if all controls have valid values.
-    if (!objectControlGroup.getIsValid()) {
+    if (!objectControlGroup.isValid()) {
       return;
     }
         
@@ -290,7 +290,7 @@ class PhoneNumberEditPanel {
   private PhoneNumber createPhoneNumberFromFields() {
     
     // Only create if all controls have valid values.
-    if (!objectControlGroup.getIsValid()) {
+    if (!objectControlGroup.isValid()) {
       return null;
     }
     

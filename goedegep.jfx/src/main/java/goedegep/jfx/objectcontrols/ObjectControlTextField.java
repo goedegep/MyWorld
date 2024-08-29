@@ -42,6 +42,8 @@ public class ObjectControlTextField<T> extends ObjectControlTemplate<T> {
   
   private TextField textField = null;
   
+  private boolean ignoreChanges = false;
+  
     
   /**
    * Constructor for using an object as initial value.
@@ -75,7 +77,11 @@ public class ObjectControlTextField<T> extends ObjectControlTemplate<T> {
       this.stringConverter = new AnyTypeStringConverter<T>();
     }
     
-    textField.textProperty().addListener((observableValue, oldValue, newValue) -> ociHandleNewUserInput(textField));
+    textField.textProperty().addListener((observableValue, oldValue, newValue) -> {
+      if (!ignoreChanges) {
+        ociHandleNewUserInput(textField);
+      }
+    });
     
     textField.focusedProperty().addListener((observableValue, oldValue, newValue) -> {
       if (!newValue)
@@ -138,12 +144,12 @@ public class ObjectControlTextField<T> extends ObjectControlTemplate<T> {
   @Override
   public void ociRedrawValue() {
 //    T value = ocValueProperty.get();
-    if (value != null) {
-      String text = objectToString(value);
+    if (getValue() != null) {
+      String text = objectToString(getValue());
       if (text == null) {
         text = "";
       }
-      textField.setText(objectToString(value));
+      textField.setText(objectToString(getValue()));
     } else {
       textField.setText("");
     }
@@ -151,6 +157,8 @@ public class ObjectControlTextField<T> extends ObjectControlTemplate<T> {
 
   @Override
   protected void ociUpdateNonSourceControls(Object source) {
+    ignoreChanges = true;
+    
     if (source == null) {
       String text = objectToString(getValue());
       if (text == null) {
@@ -158,6 +166,8 @@ public class ObjectControlTextField<T> extends ObjectControlTemplate<T> {
       }
       textField.setText(text);
     }
+    
+    ignoreChanges = false;
   }
     
   /**
@@ -198,7 +208,7 @@ public class ObjectControlTextField<T> extends ObjectControlTemplate<T> {
     
     buf.append("ObjectControl type=TextField");
     buf.append(", id=").append(getId() != null ? getId() : "<null>");
-    buf.append(", value=").append(value != null ? value : "<null>");
+    buf.append(", value=").append(getValue() != null ? getValue() : "<null>");
     buf.append(", referenceValue=").append(referenceValue != null ? referenceValue : "<null>");
     
     return buf.toString();

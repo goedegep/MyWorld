@@ -57,7 +57,13 @@ public class ObjectControlAutoCompleteTextField<T> extends ObjectControlTemplate
     autoCompleteTextField.textProperty().addListener((o) -> ociHandleNewUserInput(autoCompleteTextField));
     
     autoCompleteTextField.focusedProperty().addListener(this::handleFocusChanged);
-    autoCompleteTextField.setText(objectToString(initialValue));
+    
+    setValue(initialValue);
+//    String initialText = objectToString(initialValue);
+//    if (initialText == null) {
+//      initialText = "";
+//    }
+//    autoCompleteTextField.setText(objectToString(initialValue));
   }
   
   /**
@@ -66,6 +72,10 @@ public class ObjectControlAutoCompleteTextField<T> extends ObjectControlTemplate
   @Override
   public AutoCompleteTextField getControl() {
     return autoCompleteTextField;
+  }  
+
+  public StringConverterAndChecker<T> getStringConverterAndChecker() {
+    return stringConverterAndChecker;
   }
 
   /**

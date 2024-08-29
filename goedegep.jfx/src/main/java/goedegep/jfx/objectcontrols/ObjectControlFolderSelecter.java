@@ -122,8 +122,8 @@ public class ObjectControlFolderSelecter extends ObjectControlFileOrFolderSelect
       directoryChooser = componentFactory.createDirectoryChooser(directoryChooserTitle);
     }
     
-    if (value != null) {  // If there is a valid file value.
-      directoryChooser.setInitialDirectory(value);
+    if (getValue() != null) {  // If there is a valid file value.
+      directoryChooser.setInitialDirectory(getValue());
     } else if (initialFolderSupplier != null) {  // If there is a initialFolderProvider.
       String initialFolderName = initialFolderSupplier.get();
       if (initialFolderName != null) {

@@ -1002,6 +1002,7 @@ public class VacationsWindow extends JfxStage {
     Vacation vacation = null;
     Vacations vacations = null;
     DayTrip dayTrip = null;
+    List<DayTrip> dayTrips = null;
     List<Vacation> vacationsList = null;
     
     
@@ -1069,6 +1070,13 @@ public class VacationsWindow extends JfxStage {
       if (vacationsLayerBoundingBox != null) {
         zoomLevel = MapView.getZoomLevel(vacationsLayerBoundingBox);
       }
+    } else if ((dayTrips = getDayTripListForTreeItem(treeItem)) != null) {                  // day trips (the list)
+      WGS84BoundingBox vacationsLayerBoundingBox = addDayTripsToVacationsLayer(dayTrips);
+      if (vacationsLayerBoundingBox != null) {
+        WGS84Coordinates center = vacationsLayerBoundingBox.getCenter();
+        mapCenter = new MapPoint(center.getLatitude(), center.getLongitude());
+      }
+ 
     } else if ((vacations = getVacationsForTreeItem(treeItem)) != null) {
       addVacationsToVacationsLayer(vacations.getVacations());
       showWorldMap();
@@ -1087,7 +1095,7 @@ public class VacationsWindow extends JfxStage {
     
     LOGGER.info("<=");
   }
-  
+
   /**
    * For a given treeItem, try to find the related picture and, if found, try to find the related Location.
    * <p>
@@ -1525,6 +1533,34 @@ public class VacationsWindow extends JfxStage {
   }
   
   /**
+   * For a given treeItem, check whether it is the dayTrips attribute of a Vacations object. If so, return the day trips list, else return null.
+   * 
+   * @param treeItem the <code>TreeItem</code> to check.
+   * @return the day trips list, or null.
+   */
+  @SuppressWarnings("unchecked")
+  private List<DayTrip> getDayTripListForTreeItem(TreeItem<Object> treeItem) {
+    LOGGER.info("=> treeItem=" + (treeItem != null ? treeItem.toString() : "(null)"));
+//    LOGGER.info("=>");
+    
+    if (treeItem == null) {
+      LOGGER.severe("<= (null)");
+      return null;
+    }
+    
+    List<DayTrip> dayTrips = null;
+    Object treeItemContent = treeItem.getValue();;
+    
+    if ((((EObjectTreeItem) treeItem).getEStructuralFeature() != null)  &&
+        ((EObjectTreeItem) treeItem).getEStructuralFeature().equals(VACATIONS_PACKAGE.getVacations_DayTrips())) {
+      dayTrips = (List<DayTrip>) treeItemContent;
+    }
+    
+    LOGGER.info("<= dayTrips=" + (dayTrips != null ? dayTrips.toString() : "(null)"));
+    return dayTrips;
+  }
+  
+  /**
    * For a given treeItem, check whether it is the vacations attribute of a Vacations object. If so, return the vacations list, else return null.
    * 
    * @param treeItem the <code>TreeItem</code> to check.
@@ -1558,6 +1594,21 @@ public class VacationsWindow extends JfxStage {
     for (Vacation vacation: vacations) {
       addVacationToVacationsLayer(travelMapView, vacation, true);
     }
+  }
+  
+  private WGS84BoundingBox addDayTripsToVacationsLayer(List<DayTrip> dayTrips) {
+    WGS84BoundingBox vacationsLayerBoundingBox = null;
+
+    for (DayTrip dayTrip: dayTrips) {
+      WGS84BoundingBox tripBoundingBox = addDayTripToMapView(travelMapView, dayTrip);
+      if (vacationsLayerBoundingBox == null) {
+        vacationsLayerBoundingBox = tripBoundingBox;
+      } else {
+        vacationsLayerBoundingBox.extend(tripBoundingBox);
+      }
+    }
+    
+    return vacationsLayerBoundingBox;
   }
   
   /**

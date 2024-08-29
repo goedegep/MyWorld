@@ -189,12 +189,12 @@ public class ObjectControlFileSelecter extends ObjectControlFileOrFolderSelecter
       }
     }
     
-    if (value != null) {  // If there is a valid file value.
-      File folder = value.getParentFile();
+    if (getValue() != null) {  // If there is a valid file value.
+      File folder = getValue().getParentFile();
       LOGGER.info("Setting initial directory: " + folder.getAbsolutePath());
       fileChooser.setInitialDirectory(folder);
-      LOGGER.info("Setting initial file name: " + value.getName());
-      fileChooser.setInitialFileName(value.getName());
+      LOGGER.info("Setting initial file name: " + getValue().getName());
+      fileChooser.setInitialFileName(getValue().getName());
     } else {
       if (initialFolderSupplier != null) {
         String initialFolderName = initialFolderSupplier.get();

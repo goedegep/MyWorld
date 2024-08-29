@@ -69,7 +69,7 @@ public class EObjectEditor<E extends EObject> extends JfxStage {
   private void createObjectInputContainer() {
     objectInputContainer = new ObjectControlGroup();
     for (EObjectAttributeEditDescriptor eObjectAttributeEditDescriptor: eObjectEditorDescriptor.getEObjectAttributeEditDescriptors()) {
-      objectInputContainer.addObjectControl((ObjectControl<?>) eObjectAttributeEditDescriptor.getObjectControl());
+      objectInputContainer.addObjectControls((ObjectControl<?>) eObjectAttributeEditDescriptor.getObjectControl());
     }
     
   }
@@ -107,16 +107,16 @@ public class EObjectEditor<E extends EObject> extends JfxStage {
     buttonsBox.getChildren().add(cancelButton);
     
     Button createButton = componentFactory.createButton("Create " + StringUtil.CapitalizeWords(eObjectEditorDescriptor.getWindowTitle()), "Create a new " + eObjectEditorDescriptor.getWindowTitle() + " based on the entered values");
-    objectInputContainer.isValid().addListener(new ChangeListener<>() {
-
-      @Override
-      public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
-        createButton.setDisable(!newValue);        
-      }
-
-        
-    });
-    createButton.setDisable(!objectInputContainer.isValid().get());
+//    objectInputContainer.isValid().addListener(new ChangeListener<>() {
+//
+//      @Override
+//      public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+//        createButton.setDisable(!newValue);        
+//      }
+//
+//        
+//    });
+    createButton.setDisable(!objectInputContainer.isValid());
     createButton.setOnAction(e -> createObject());
     buttonsBox.getChildren().add(createButton);
     

@@ -232,8 +232,10 @@ public class MediaDbImpl extends MinimalEObjectImpl.Container implements MediaDb
       if (album.getArtist() == null) {
         LOGGER.severe("No artist set for album: " + album.getArtistAndTitle());
       }
-      if (compareOkSoFar && FuzzyStringCompare.fuzzyStringCompare(album.getArtist().getName(), artist.getName())
-          && FuzzyStringCompare.fuzzyStringCompare(album.getTitle(), title)) {
+      if (compareOkSoFar  &&
+          (album.getArtist() != null)  &&
+          FuzzyStringCompare.fuzzyStringCompare(album.getArtist().getName(), artist.getName())  &&
+          FuzzyStringCompare.fuzzyStringCompare(album.getTitle(), title)) {
         return album;
       }
     }

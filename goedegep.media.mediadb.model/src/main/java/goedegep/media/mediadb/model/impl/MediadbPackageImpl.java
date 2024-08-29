@@ -1065,18 +1065,8 @@ public class MediadbPackageImpl extends EPackageImpl implements MediadbPackage {
    * @generated
    */
   @Override
-  public EAttribute getMyTrackInfo_Collection() {
-    return (EAttribute) myTrackInfoEClass.getEStructuralFeatures().get(0);
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
   public EReference getMyTrackInfo_IHaveOn() {
-    return (EReference) myTrackInfoEClass.getEStructuralFeatures().get(1);
+    return (EReference) myTrackInfoEClass.getEStructuralFeatures().get(0);
   }
 
   /**
@@ -1086,7 +1076,7 @@ public class MediadbPackageImpl extends EPackageImpl implements MediadbPackage {
    */
   @Override
   public EAttribute getMyTrackInfo_IWant() {
-    return (EAttribute) myTrackInfoEClass.getEStructuralFeatures().get(2);
+    return (EAttribute) myTrackInfoEClass.getEStructuralFeatures().get(1);
   }
 
   /**
@@ -1096,7 +1086,7 @@ public class MediadbPackageImpl extends EPackageImpl implements MediadbPackage {
    */
   @Override
   public EReference getMyTrackInfo_CompilationTrackReference() {
-    return (EReference) myTrackInfoEClass.getEStructuralFeatures().get(3);
+    return (EReference) myTrackInfoEClass.getEStructuralFeatures().get(2);
   }
 
   /**
@@ -1430,7 +1420,6 @@ public class MediadbPackageImpl extends EPackageImpl implements MediadbPackage {
     createEAttribute(trackPartEClass, TRACK_PART__TITLE);
 
     myTrackInfoEClass = createEClass(MY_TRACK_INFO);
-    createEAttribute(myTrackInfoEClass, MY_TRACK_INFO__COLLECTION);
     createEReference(myTrackInfoEClass, MY_TRACK_INFO__IHAVE_ON);
     createEAttribute(myTrackInfoEClass, MY_TRACK_INFO__IWANT);
     createEReference(myTrackInfoEClass, MY_TRACK_INFO__COMPILATION_TRACK_REFERENCE);
@@ -1712,9 +1701,6 @@ public class MediadbPackageImpl extends EPackageImpl implements MediadbPackage {
 
     initEClass(myTrackInfoEClass, MyTrackInfo.class, "MyTrackInfo", !IS_ABSTRACT, !IS_INTERFACE,
         IS_GENERATED_INSTANCE_CLASS);
-    initEAttribute(getMyTrackInfo_Collection(), this.getCollection(), "collection", "<not-set>", 0, 1,
-        MyTrackInfo.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED,
-        IS_ORDERED);
     initEReference(getMyTrackInfo_IHaveOn(), this.getMediumInfo(), null, "iHaveOn", null, 0, -1, MyTrackInfo.class,
         !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, IS_UNSETTABLE, IS_UNIQUE,
         !IS_DERIVED, IS_ORDERED);

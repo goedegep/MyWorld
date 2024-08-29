@@ -78,10 +78,6 @@ public class DiscTracksTable extends EObjectTable<TrackReference> {
         hide = allItemsNullOrEmpty(MediadbPackage.eINSTANCE.getTrack_Authors());
         break;
         
-      case "Collection":
-        hide = hideCollection();
-        break;
-        
       case "Bonus track":
         hide = hideBonusTrack();
         break;
@@ -99,28 +95,7 @@ public class DiscTracksTable extends EObjectTable<TrackReference> {
     
     this.trackDiscLocationMap = trackDiscLocationMap;
   }
-  
-  /**
-   * Check whether the Collection column shall be hidden?
-   * <p>
-   * This is the fact if all values are NOT_SET, or if all values are the same.
-   * 
-   * @return true if the Artist column shall be hidden, false otherwise.
-   */
-  private boolean hideCollection() {
-    for (TrackReference trackReference: getItems()) {
-      MyTrackInfo myTrackInfo = trackReference.getMyTrackInfo();
-      if (myTrackInfo == null) {
-        continue;
-      }
-      if (myTrackInfo.getCollection() != null  &&  myTrackInfo.getCollection() != Collection.NOT_SET) {
-        return false;
-      }
-    }
     
-    return true;
-  }
-  
   /**
    * Check whether the Bonus track column shall be hidden?
    * <p>
@@ -382,24 +357,6 @@ class DiscTracksTableDescriptor extends EObjectTableDescriptor<TrackReference> {
 
         return cell;
       }),
-      new EObjectTableColumnDescriptorChoiceBox<TrackReference>(
-          Arrays.asList(MEDIA_DB_PACKAGE.getTrackReference_MyTrackInfo(), MEDIA_DB_PACKAGE.getMyTrackInfo_Collection()),
-          "Collection", 300, true, true, FXCollections.observableList(Arrays.asList((Object[]) Collection.values())), new StringConverter<Object>() {
-
-            @Override
-            public String toString(Object object) {
-              if (object instanceof Collection collection) {
-                if (!collection.equals(Collection.NOT_SET)) {
-                  return collection.getLiteral();
-                }
-              }
-              return null;
-            }
-
-            @Override
-            public Object fromString(String string) {
-              return null;
-            }}),
       new EObjectTableColumnDescriptorCustom<TrackReference>(null, "Bonus track", null, true, true, column -> {
         TableCell<TrackReference, Object> cell = new TableCell<>() {
 
@@ -488,9 +445,12 @@ class DiscTracksTableDescriptor extends EObjectTableDescriptor<TrackReference> {
             else {
               setText(null);
               TrackReference trackReference = (TrackReference) item;
-              TrackReference compilationTrackReference = trackReference.getMyTrackInfo().getCompilationTrackReference();
-              if (compilationTrackReference != null) {
-                setText(GuiUtils.createTrackReferenceText(compilationTrackReference));
+              MyTrackInfo myTrackInfo = trackReference.getMyTrackInfo();
+              if (myTrackInfo != null) {
+                TrackReference compilationTrackReference = myTrackInfo.getCompilationTrackReference();
+                if (compilationTrackReference != null) {
+                  setText(GuiUtils.createTrackReferenceText(compilationTrackReference));
+                }
               }
             }
           }
