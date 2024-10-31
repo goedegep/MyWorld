@@ -36,7 +36,7 @@ public class VacationChecklistEditor extends JfxStage {
    * @param vacations the vacations structure.
    */
   public VacationChecklistEditor(CustomizationFx customization, EMFResource<VacationChecklist> vacationChecklistResource) {
-    super(WINDOW_TITLE, customization);
+    super(customization, WINDOW_TITLE);
     
     this.vacationChecklistResource = vacationChecklistResource;
     componentFactory = customization.getComponentFactoryFx();
@@ -72,7 +72,7 @@ public class VacationChecklistEditor extends JfxStage {
     
     // For now there is one TreeView. I think it's better to have separate trees for label and categories, but this is currently not possible
     // because the table expects that the root of the table is a top level class (problem is in support with the XTree path).
-    EObjectTreeView checklistTreeView = new VacationChecklistTreeViewCreator().createVacationChecklistTreeView(getCustomization());
+    EObjectTreeView checklistTreeView = new VacationChecklistTreeViewCreator().createVacationChecklistTreeView(customization);
     checklistTreeView.setEObject(vacationChecklist);
     checklistTreeView.setEditMode(true);
     mainPanel.getChildren().addAll(checklistTreeView);

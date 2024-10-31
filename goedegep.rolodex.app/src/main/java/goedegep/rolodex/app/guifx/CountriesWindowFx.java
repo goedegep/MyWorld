@@ -61,7 +61,7 @@ public class CountriesWindowFx extends JfxStage {
    * @param rolodex a <code>Rolodex</code>
    */
   public CountriesWindowFx(CustomizationFx customization, Rolodex rolodex) {
-    super(WINDOW_TITLE, customization);
+    super(customization, WINDOW_TITLE);
     
     this.customization = customization;
     this.rolodex = rolodex;
@@ -117,7 +117,7 @@ public class CountriesWindowFx extends JfxStage {
    */
   private EObjectTable<Country> createCountriesTable() {
     
-    countriesTable = new EObjectTable<Country>(customization, ROLODEX_PACKAGE.getCountry(), new CountriesTableDescriptor(rolodex), rolodex.getCountryList(), RolodexPackage.eINSTANCE.getCountryList_Countries());
+    countriesTable = new EObjectTable<Country>(customization, ROLODEX_PACKAGE.getCountry(), new CountriesTableDescriptor(), rolodex.getCountryList(), RolodexPackage.eINSTANCE.getCountryList_Countries());
         
     return countriesTable;
   }
@@ -293,7 +293,7 @@ class CountriesTableDescriptor extends EObjectTableDescriptor<Country> {
     }
   };
 
-  public CountriesTableDescriptor(Rolodex rolodex) {
+  public CountriesTableDescriptor() {
     super("The are no countries in the Rolodex", CountriesComparator.getInstance(), columnDescriptors, rowOperations);
   }
 }

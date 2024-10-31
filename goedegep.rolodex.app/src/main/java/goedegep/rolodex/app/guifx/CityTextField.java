@@ -19,7 +19,7 @@ public class CityTextField extends ObjectControlAutoCompleteTextField<String> {
    * Constructor.
    */
   public CityTextField(CustomizationFx customization, Rolodex rolodex) {
-    super(customization, null, 300, false, "Enter the name of a city");
+    super(customization, 300, false, "Enter the name of a city");
     
     this.rolodex = rolodex;
     
@@ -27,13 +27,8 @@ public class CityTextField extends ObjectControlAutoCompleteTextField<String> {
     getControl().getEntries().addAll(citiesToString(rolodex.getCityList().getCities()));
   }
   
-//  @Override
-//  public boolean isDataValid() {
-//    return (!getMatchingCities().isEmpty());
-//  }
-  
   public boolean isNonExistingCityName() {
-    if (isFilledIn() && (getMatchingCities().isEmpty())) {
+    if (isFilledIn() && getMatchingCities().isEmpty()) {
       return true;
     } else {
       return false;

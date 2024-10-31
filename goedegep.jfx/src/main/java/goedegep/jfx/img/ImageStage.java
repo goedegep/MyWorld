@@ -16,7 +16,7 @@ public class ImageStage extends JfxStage {
   private final static int MAX_HEIGHT = 1400;
 
   public ImageStage(CustomizationFx customization, String pictureFilename) {
-    super(pictureFilename, customization);
+    super(customization, pictureFilename);
     
     ComponentFactoryFx componentFactory = customization.getComponentFactoryFx();
     

@@ -13,6 +13,10 @@ import org.eclipse.emf.ecore.EObject;
  * A representation of the model object '<em><b>Subject</b></em>'.
  * <!-- end-user-doc -->
  *
+ * <!-- begin-model-doc -->
+ * This interface describes a subject of a {@code Video}.
+ * <!-- end-model-doc -->
+ *
  * <p>
  * The following features are supported:
  * </p>
@@ -31,6 +35,9 @@ public interface Subject extends EObject {
    * Returns the value of the '<em><b>Title</b></em>' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
+   * <!-- begin-model-doc -->
+   * The title of the subject.
+   * <!-- end-model-doc -->
    * @return the value of the '<em>Title</em>' attribute.
    * @see #isSetTitle()
    * @see #unsetTitle()
@@ -81,6 +88,9 @@ public interface Subject extends EObject {
    * The list contents are of type {@link java.lang.String}.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
+   * <!-- begin-model-doc -->
+   * A list of free format tags (or keywords).
+   * <!-- end-model-doc -->
    * @return the value of the '<em>Tags</em>' attribute list.
    * @see goedegep.media.mediadb.model.MediadbPackage#getSubject_Tags()
    * @model
@@ -92,6 +102,9 @@ public interface Subject extends EObject {
    * Returns the value of the '<em><b>Date</b></em>' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
+   * <!-- begin-model-doc -->
+   * The date related to the subject.
+   * <!-- end-model-doc -->
    * @return the value of the '<em>Date</em>' attribute.
    * @see #isSetDate()
    * @see #unsetDate()

@@ -60,7 +60,7 @@ public class InvestmentInsurancesOverviewWindow extends JfxStage {
   private File dataDumpFile;
 
   public InvestmentInsurancesOverviewWindow(CustomizationFx customization) {
-    super(WINDOW_TITLE, customization);
+    super(customization, WINDOW_TITLE);
     
     this.customization = customization;
     componentFactory = customization.getComponentFactoryFx();

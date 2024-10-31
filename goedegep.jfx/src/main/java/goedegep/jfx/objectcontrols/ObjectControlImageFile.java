@@ -7,7 +7,6 @@ import java.nio.file.Paths;
 import java.util.logging.Logger;
 
 import goedegep.jfx.AppResourcesFx;
-import goedegep.jfx.ComponentFactoryFx;
 import goedegep.jfx.CustomizationFx;
 import goedegep.resources.ImageSize;
 import javafx.geometry.Insets;
@@ -35,16 +34,6 @@ import javafx.stage.StageStyle;
  */
 public class ObjectControlImageFile extends ObjectControlTemplate<File> {
   private static final Logger         LOGGER = Logger.getLogger(ObjectControlImageFile.class.getName());
-    
-  /**
-   * The GUI customization.
-   */
-  private CustomizationFx customization;
-  
-  /**
-   * Factory for creating GUI components.
-   */
-  private ComponentFactoryFx componentFactory;
   
   /**
    * The image file selected by the user via the file chooser.
@@ -90,10 +79,7 @@ public class ObjectControlImageFile extends ObjectControlTemplate<File> {
    * @param isOptional if true, the value provided by this control is optional.
    */
   public ObjectControlImageFile(CustomizationFx customization, boolean isOptional) {
-    super(isOptional);
-    
-    this.customization = customization;
-    componentFactory = customization.getComponentFactoryFx();
+    super(customization, isOptional);
     
     stackPane = new StackPane();
     imageView = new ImageView();

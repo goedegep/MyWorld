@@ -3,8 +3,11 @@ package goedegep.jfx.objectcontrols;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.function.Supplier;
 import java.util.logging.Logger;
 
+import goedegep.jfx.ComponentFactoryFx;
+import goedegep.jfx.CustomizationFx;
 import goedegep.util.PgUtilities;
 import javafx.beans.InvalidationListener;
 import javafx.scene.Node;
@@ -53,6 +56,17 @@ public abstract class ObjectControlTemplate<T> implements ObjectControl<T> {
   public static final String NOT_CHANGED_INDICATOR = "=";
   
   /**
+   * The GUI customization
+   */
+  protected CustomizationFx customization;
+  
+  /**
+   * Factory for creating GUI components
+   */
+  protected ComponentFactoryFx componentFactory;
+
+  
+  /**
    * Indication of whether the control is optional (if true) or mandatory.
    */
   protected boolean optional;
@@ -83,9 +97,25 @@ public abstract class ObjectControlTemplate<T> implements ObjectControl<T> {
   protected String errorText = null;
   
   /**
+   * Error text supplier.
+   */
+  protected Supplier<String> errorTextSupplier;
+  
+  /**
+   * Label base text
+   */
+  private String labelBaseText = null;
+  
+  /**
+   * Label
+   */
+  private Label label = null;
+
+  
+  /**
    * Status indicator
    */
-  private Label statusIndicator;
+  private Label statusIndicator = null;
   
   /**
    * The invalidation listeners
@@ -113,9 +143,13 @@ public abstract class ObjectControlTemplate<T> implements ObjectControl<T> {
    * 
    * @param isOptional Indication of whether the control is optional (if true) or mandatory.
    */
-  public ObjectControlTemplate(boolean optional) {
+  public ObjectControlTemplate(CustomizationFx customization, boolean optional) {
     LOGGER.info("=>");
+    this.customization = customization;
     this.optional = optional;
+    
+    componentFactory = customization.getComponentFactoryFx();
+   
     LOGGER.info("<=");
   }
   
@@ -196,6 +230,14 @@ public abstract class ObjectControlTemplate<T> implements ObjectControl<T> {
     LOGGER.info("=> " + id);
     getControl().setId(id);
     LOGGER.info("<=");
+  }
+  
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public final void setErrorTextSupplier(Supplier<String> errorTextSupplier) {
+    this.errorTextSupplier = errorTextSupplier;
   }
   
   /*
@@ -402,7 +444,7 @@ public abstract class ObjectControlTemplate<T> implements ObjectControl<T> {
         
     LOGGER.info("<= " + dataValid);
     
-    return (dataValid);
+    return dataValid;
   }
   
   /**
@@ -421,6 +463,32 @@ public abstract class ObjectControlTemplate<T> implements ObjectControl<T> {
    * E.g.: the user may e.g. enter a date as 14-3-2023, this may be redrawn as 14-03-2023.
    */
   protected abstract void ociRedrawValue();
+  
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public Label getLabel() {
+    if (label == null) {
+      StringBuilder buf = new StringBuilder();
+      buf.append(labelBaseText);
+      if (!isOptional()) {
+        buf.append(" *");
+      }
+      buf.append(":");
+      label = new Label(buf.toString());
+    }
+    
+    return label;
+  }
+  
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public void setLabelBaseText(String labelBaseText) {
+    this.labelBaseText = labelBaseText;
+  }
     
   /**
    * {@inheritDoc}
@@ -499,6 +567,10 @@ public abstract class ObjectControlTemplate<T> implements ObjectControl<T> {
   @Override
   public final String getErrorText() {
     LOGGER.info("<=> " + errorText);
+    if (errorTextSupplier != null) {
+      return errorTextSupplier.get();
+    }
+    
     return errorText;
   }
   

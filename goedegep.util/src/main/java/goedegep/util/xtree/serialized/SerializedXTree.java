@@ -15,5 +15,5 @@ public interface SerializedXTree extends XTree {
    * 
    * @return the serialized data for the tree.
    */
-  public byte[] getSerializedTreeData();
+  byte[] getSerializedTreeData();
 }

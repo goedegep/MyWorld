@@ -356,7 +356,7 @@ public final class PhotoFileMetaDataHandler {
   public boolean hasApproximateCoordinates() throws ImageReadException {
     LOGGER.info("=>");
     
-    return jpegMetadata != null ? metadataHasApproximateCoordinatesIndication(jpegMetadata) : false;
+    return jpegMetadata != null && metadataHasApproximateCoordinatesIndication(jpegMetadata);
   }  
   
   /**
@@ -543,11 +543,9 @@ public final class PhotoFileMetaDataHandler {
   private static boolean metadataHasApproximateCoordinatesIndication(JpegImageMetadata jpegMetadata) {
     String gpsProcessingMethodText = getTiffItemValue(jpegMetadata, TiffDirectoryConstants.DIRECTORY_TYPE_GPS, GpsTagConstants.GPS_TAG_GPS_PROCESSING_METHOD.name);
     gpsProcessingMethodText = StringUtil.removeQuotes(gpsProcessingMethodText);
-    if (gpsProcessingMethodText != null) {
-      if (gpsProcessingMethodText.equals(GPS_PROCESSING_METHOD_MANUAL)) {
+    if ((gpsProcessingMethodText != null)  &&  gpsProcessingMethodText.equals(GPS_PROCESSING_METHOD_MANUAL)) {
         LOGGER.info("<= true GPS Processing Method MANUAL found");
         return true;
-      }
     }
 
     LOGGER.info("<= false");
@@ -625,7 +623,7 @@ public final class PhotoFileMetaDataHandler {
           
           WGS84Coordinates geoLocation = new WGS84Coordinates(41.249866, 9.184371);
           try {
-            PhotoFileMetaDataHandler.writeGeoLocationAndTitle(fileOrDirectory, geoLocation, true, "Nice Photo");
+            writeGeoLocationAndTitle(fileOrDirectory, geoLocation, true, "Nice Photo");
           } catch (ImageWriteException e) {
             e.printStackTrace();
           }

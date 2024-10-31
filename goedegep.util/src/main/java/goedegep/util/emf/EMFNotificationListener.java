@@ -9,6 +9,6 @@ import org.eclipse.emf.common.notify.Notification;
 @FunctionalInterface
 public interface EMFNotificationListener {
   
-  public void notifyChanged(Notification notification);
+  void notifyChanged(Notification notification);
   
 }

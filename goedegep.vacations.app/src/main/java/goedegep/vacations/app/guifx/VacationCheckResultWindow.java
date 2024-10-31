@@ -23,8 +23,7 @@ public class VacationCheckResultWindow extends JfxStage {
   private VBox mainPanel = null;
 
   public VacationCheckResultWindow(VacationCheckResultWindowBuilder builder) {
-    super("Results for checking vacation " + builder.vacationTitle,
-        builder.customization);
+    super(builder.customization, "Results for checking vacation " + builder.vacationTitle);
     
     customization = builder.customization;
     componentFactory = customization.getComponentFactoryFx();

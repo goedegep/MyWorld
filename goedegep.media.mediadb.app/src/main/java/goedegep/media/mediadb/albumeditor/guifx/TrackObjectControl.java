@@ -12,8 +12,8 @@ import org.eclipse.emf.ecore.util.EContentAdapter;
 
 import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.DoubleClickEventDispatcher;
+import goedegep.jfx.objectcontrols.ObjectControl;
 import goedegep.jfx.objectcontrols.ObjectControlAutoCompleteTextField;
-import goedegep.jfx.objecteditor.ObjectEditorTemplate;
 import goedegep.jfx.stringconverters.StringConverterAndChecker;
 import goedegep.media.mediadb.model.Album;
 import goedegep.media.mediadb.model.Artist;
@@ -100,11 +100,12 @@ public class TrackObjectControl extends ObjectControlAutoCompleteTextField<Track
    */
   private void handleMouseDoubleClickedEvent(Node trackObjectControlNode, MouseEvent e) {
     LOGGER.severe("=>");
-    ObjectEditorTemplate<Track> trackEditor = new TrackEditor(customization, mediaDb).runEditor();
+    TrackEditor trackEditor = TrackEditor.newInstance(customization, mediaDb);
     trackEditor.setObject(value);
     trackEditor.addListener((o) -> {
       setValue(trackEditor.getObject());
     });
+    trackEditor.show();
   }
   
   /**
@@ -118,8 +119,10 @@ public class TrackObjectControl extends ObjectControlAutoCompleteTextField<Track
   }
 
   public static void setMediaDb(MediaDb mediaDb) {
-    TrackObjectControl.mediaDb = mediaDb;
-    TrackStringConverterAndChecker.setMediaDb(mediaDb);    
+    if (mediaDb != TrackObjectControl.mediaDb) {
+      TrackObjectControl.mediaDb = mediaDb;
+      TrackStringConverterAndChecker.setMediaDb(mediaDb);
+    }
   }
 }
 

@@ -251,7 +251,7 @@ public class AsciiSerializedXTree extends NodeBasedXTreeAbstract implements Node
 
     while (--charCount >= 0)
     {
-      byteSequence.put((numberBuf[charCount]));    /* the digits. */
+      byteSequence.put(numberBuf[charCount]);    /* the digits. */
     }      
   }
 

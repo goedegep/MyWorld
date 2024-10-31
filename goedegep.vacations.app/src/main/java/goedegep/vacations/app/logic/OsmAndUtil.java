@@ -46,7 +46,7 @@ public class OsmAndUtil {
     /*
      * Category icons
      * zie C:\Users\Peter\Downloads\OsmAnd-resources-master\rendering_styles\style-icons\poi-icons-png\drawable-hdpi
-     * Verder met mx_special_building.png
+     * Geyser toevoegen aan pois, met mx_natural_geyser
      */
     iconMap.put(POICategoryId.AIRPORT, "aeroway_airport");
     iconMap.put(POICategoryId.AMUSEMENT, "attraction_amusement_ride");
@@ -78,6 +78,7 @@ public class OsmAndUtil {
     iconMap.put(POICategoryId.HOTEL, "accomodation");
     iconMap.put(POICategoryId.ICE_SKATING_RING, "ice_skating");
     iconMap.put(POICategoryId.INDUSTRY, "industrial");
+    iconMap.put(POICategoryId.LAKE, "water");
     iconMap.put(POICategoryId.LANDSCAPE, "hill");
     iconMap.put(POICategoryId.LIBRARY, "amenity_library");
     iconMap.put(POICategoryId.MARINA, "leisure_marina");

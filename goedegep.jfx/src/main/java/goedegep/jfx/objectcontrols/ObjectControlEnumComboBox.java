@@ -1,9 +1,6 @@
 package goedegep.jfx.objectcontrols;
 
-import java.util.Map;
 import java.util.logging.Logger;
-
-import org.eclipse.emf.ecore.EEnum;
 
 import goedegep.jfx.CustomizationFx;
 import javafx.scene.control.ComboBox;
@@ -41,55 +38,20 @@ public class ObjectControlEnumComboBox<T extends Enum<T>> extends ObjectControlT
   /**
    * Constructor
    * <p>
-   * With this constructor the text for an enum constant is created by calling toString() on the constant.
-   * So it is whatever you return by overwriting toString(), or it is the name of the constant if you don't overwrite toString().
-   * 
-   * @param enumConstant A single enum constant of the enum.
-   * @param notSetValue The 'not set' value.
-   * @param isOptional indicates whether the value is optional or not
-   * @param toolTipText an optional tooltip text
-   */
-  public ObjectControlEnumComboBox(CustomizationFx customization, T enumConstant, T notSetValue, boolean isOptional, String toolTipText) {
-    super(isOptional);
-    init(customization, enumConstant, toolTipText);
-  }
-  
-  /**
-   * Constructor
-   * <p>
    * With this constructor the text for an enum constant is provided by the  <code>eEnum</code>.
    * 
+   * @param customization the GUI customization
    * @param enumConstant A single enum constant of the enum.
-   * @param notSetValue The 'not set' value.
-   * @param eEnum an EEnum providing the literal values for the texts for the constants.
    * @param isOptional indicates whether the value is optional or not
    * @param toolTipText an optional tooltip text
    */
-  public ObjectControlEnumComboBox(CustomizationFx customization, T enumConstant, T notSetValue, EEnum eEnum, boolean isOptional, String toolTipText) {
-    super(isOptional);
+  public ObjectControlEnumComboBox(CustomizationFx customization, T enumConstant, boolean isOptional, String toolTipText) {
+    super(customization, isOptional);
 //    enumTextConverter = new EnumTextConverter<T>(enumConstant, notSetValue, eEnum);
     
     init(customization, enumConstant, toolTipText);
   }
-  
-  /**
-   * Constructor
-   * <p>
-   * With this constructor the text for an enum constant is the literal for the constant as given by the <code>enumToStringMap</code>.
-   * 
-   * @param enumConstant A single enum constant of the enum.
-   * @param notSetValue The 'not set' value.
-   * @param enumToStringMap provides the names for the enum constants.
-   * @param isOptional indicates whether the value is optional or not
-   * @param toolTipText an optional tooltip text
-   */
-  private ObjectControlEnumComboBox(CustomizationFx customization, T enumConstant, T notSetValue, Map<T, String> enumToStringMap, boolean isOptional, String toolTipText) {
-    super(isOptional);
-//    enumTextConverter = new EnumTextConverter<T>(enumConstant, notSetValue, enumToStringMap);
     
-    init(customization, enumConstant, toolTipText);
-  }
-  
   public ComboBox<T> getControl() {
     return comboBox;
   }

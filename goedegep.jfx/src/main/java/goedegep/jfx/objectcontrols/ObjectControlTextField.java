@@ -67,7 +67,7 @@ public class ObjectControlTextField<T> extends ObjectControlTemplate<T> {
    * @param toolTipText An optional ToolTip text.
    */
   public ObjectControlTextField(CustomizationFx customization, StringConverter<T> stringConverter, T initialValue, double width, boolean isOptional, String toolTipText) {
-    super(isOptional);
+    super(customization, isOptional);
     
     textField = customization.getComponentFactoryFx().createTextField(width, toolTipText);
     

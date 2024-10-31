@@ -2,7 +2,6 @@
  */
 package goedegep.media.mediadb.model;
 
-import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EObject;
 
 /**
@@ -16,8 +15,8 @@ import org.eclipse.emf.ecore.EObject;
  * <ul>
  *   <li>{@link goedegep.media.mediadb.model.MediumInfo#getMediumType <em>Medium Type</em>}</li>
  *   <li>{@link goedegep.media.mediadb.model.MediumInfo#getInformationType <em>Information Type</em>}</li>
- *   <li>{@link goedegep.media.mediadb.model.MediumInfo#getSourceTypes <em>Source Types</em>}</li>
  *   <li>{@link goedegep.media.mediadb.model.MediumInfo#getSourceBitRate <em>Source Bit Rate</em>}</li>
+ *   <li>{@link goedegep.media.mediadb.model.MediumInfo#getSourceType <em>Source Type</em>}</li>
  * </ul>
  *
  * @see goedegep.media.mediadb.model.MediadbPackage#getMediumInfo()
@@ -135,47 +134,6 @@ public interface MediumInfo extends EObject {
   boolean isSetInformationType();
 
   /**
-   * Returns the value of the '<em><b>Source Types</b></em>' attribute list.
-   * The list contents are of type {@link goedegep.media.mediadb.model.InformationType}.
-   * The literals are from the enumeration {@link goedegep.media.mediadb.model.InformationType}.
-   * <!-- begin-user-doc -->
-   * <p>
-   * If the meaning of the '<em>Source Types</em>' attribute list isn't clear,
-   * there really should be more of a description here...
-   * </p>
-   * <!-- end-user-doc -->
-   * @return the value of the '<em>Source Types</em>' attribute list.
-   * @see goedegep.media.mediadb.model.InformationType
-   * @see #isSetSourceTypes()
-   * @see #unsetSourceTypes()
-   * @see goedegep.media.mediadb.model.MediadbPackage#getMediumInfo_SourceTypes()
-   * @model unsettable="true"
-   * @generated
-   */
-  EList<InformationType> getSourceTypes();
-
-  /**
-   * Unsets the value of the '{@link goedegep.media.mediadb.model.MediumInfo#getSourceTypes <em>Source Types</em>}' attribute list.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #isSetSourceTypes()
-   * @see #getSourceTypes()
-   * @generated
-   */
-  void unsetSourceTypes();
-
-  /**
-   * Returns whether the value of the '{@link goedegep.media.mediadb.model.MediumInfo#getSourceTypes <em>Source Types</em>}' attribute list is set.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return whether the value of the '<em>Source Types</em>' attribute list is set.
-   * @see #unsetSourceTypes()
-   * @see #getSourceTypes()
-   * @generated
-   */
-  boolean isSetSourceTypes();
-
-  /**
    * Returns the value of the '<em><b>Source Bit Rate</b></em>' attribute.
    * <!-- begin-user-doc -->
    * <p>
@@ -227,5 +185,57 @@ public interface MediumInfo extends EObject {
    * @generated
    */
   boolean isSetSourceBitRate();
+
+  /**
+   * Returns the value of the '<em><b>Source Type</b></em>' attribute.
+   * The literals are from the enumeration {@link goedegep.media.mediadb.model.InformationType}.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the value of the '<em>Source Type</em>' attribute.
+   * @see goedegep.media.mediadb.model.InformationType
+   * @see #isSetSourceType()
+   * @see #unsetSourceType()
+   * @see #setSourceType(InformationType)
+   * @see goedegep.media.mediadb.model.MediadbPackage#getMediumInfo_SourceType()
+   * @model unsettable="true"
+   * @generated
+   */
+  InformationType getSourceType();
+
+  /**
+   * Sets the value of the '{@link goedegep.media.mediadb.model.MediumInfo#getSourceType <em>Source Type</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @param value the new value of the '<em>Source Type</em>' attribute.
+   * @see goedegep.media.mediadb.model.InformationType
+   * @see #isSetSourceType()
+   * @see #unsetSourceType()
+   * @see #getSourceType()
+   * @generated
+   */
+  void setSourceType(InformationType value);
+
+  /**
+   * Unsets the value of the '{@link goedegep.media.mediadb.model.MediumInfo#getSourceType <em>Source Type</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #isSetSourceType()
+   * @see #getSourceType()
+   * @see #setSourceType(InformationType)
+   * @generated
+   */
+  void unsetSourceType();
+
+  /**
+   * Returns whether the value of the '{@link goedegep.media.mediadb.model.MediumInfo#getSourceType <em>Source Type</em>}' attribute is set.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return whether the value of the '<em>Source Type</em>' attribute is set.
+   * @see #unsetSourceType()
+   * @see #getSourceType()
+   * @see #setSourceType(InformationType)
+   * @generated
+   */
+  boolean isSetSourceType();
 
 } // MediumInfo

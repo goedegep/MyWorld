@@ -62,7 +62,7 @@ public class PhotoFoldersSettingsDialog extends Dialog<ButtonType> {
 
     componentFactory = customization.getComponentFactoryFx();
     
-    createGUI(ownerWindow, initiallySelectedFolder);
+    createGUI(initiallySelectedFolder);
     setResizable(true);
   }
   
@@ -91,7 +91,7 @@ public class PhotoFoldersSettingsDialog extends Dialog<ButtonType> {
   /*
    * Create the GUI.
    */
-  private void createGUI(Stage ownerWindow, String initiallySelectedFolder) {
+  private void createGUI(String initiallySelectedFolder) {
     setHeaderText("Select the folder of which the sub folders contain the photos to be shown on the map.");
     
     GridPane contentPanel = componentFactory.createGridPane();
@@ -107,7 +107,7 @@ public class PhotoFoldersSettingsDialog extends Dialog<ButtonType> {
     Node folderName = folderSelecter.getControl();
     folderSelecter.addListener((observable) -> {
       LOGGER.severe("In textProperty Listener");
-      handleNewPhotoFolderSelected(folderSelecter.isValid(), folderSelecter.getAbsolutePath());      
+      handleNewPhotoFolderSelected(folderSelecter.isValid());      
     });
     contentPanel.add(folderName, 1, 0);
     
@@ -138,7 +138,7 @@ public class PhotoFoldersSettingsDialog extends Dialog<ButtonType> {
     
     okButton = (Button) getDialogPane().lookupButton(ButtonType.OK);
     
-    handleNewPhotoFolderSelected(folderSelecter.isValid(), folderSelecter.getAbsolutePath());
+    handleNewPhotoFolderSelected(folderSelecter.isValid());
   }
   
   /**
@@ -169,7 +169,7 @@ public class PhotoFoldersSettingsDialog extends Dialog<ButtonType> {
    * @param selectionIsValid If true, <code>selectedFolder</code> is the absolute path of an existing folder.
    * @param selectedFolder the folder under which the photo folders are located.
    */
-  private void handleNewPhotoFolderSelected(Boolean selectionIsValid, String selectedFolder) {
+  private void handleNewPhotoFolderSelected(Boolean selectionIsValid) {
     okButton.setDisable(!selectionIsValid);    
   }
 }

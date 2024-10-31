@@ -1,7 +1,10 @@
 package goedegep.jfx.objectcontrols;
 
+import java.util.function.Supplier;
+
 import javafx.beans.Observable;
 import javafx.scene.Node;
+import javafx.scene.control.Label;
 
 /**
  * This interface defines a set of methods for GUI controls to show and enter object values.
@@ -81,7 +84,7 @@ public interface ObjectControl<T extends Object> extends Observable {
    * 
    * @return true if the Object provided by this component is optional, false if the Object is mandatory.
    */
-  public boolean isOptional();
+  boolean isOptional();
   
   /**
    * Indicates whether information is filled in or not.
@@ -90,7 +93,7 @@ public interface ObjectControl<T extends Object> extends Observable {
    * 
    * @return true if something is filled in, false otherwise.
    */
-  public boolean isFilledIn();
+  boolean isFilledIn();
 
   /**
    * Indicates whether the information is valid or not.
@@ -107,21 +110,21 @@ public interface ObjectControl<T extends Object> extends Observable {
    * @param errorMessageBuffer A StringBuilder to append a possible error message to. This parameter may be null.
    * @return true if the information is valid, false otherwise.
    */
-  public boolean isValid();
+  boolean isValid();
   
   /**
    * Get the current Object value.
    * 
    * @return the Object value.
    */
-  public T getValue();
+  T getValue();
   
   /**
    * Set the Object value.
    * 
    * @param objectValue the value to set the Object to.
    */
-  public void setValue(final T objectValue);
+  void setValue(final T objectValue);
   
   
   /**
@@ -129,7 +132,7 @@ public interface ObjectControl<T extends Object> extends Observable {
    * 
    * @return a node which represents the status of the control.
    */
-  public Node getStatusIndicator();
+  Node getStatusIndicator();
   
   /**
    * Get the primary control.
@@ -139,25 +142,46 @@ public interface ObjectControl<T extends Object> extends Observable {
   Node getControl();
   
   /**
+   * Get the label
+   */
+  default Label getLabel() {
+    throw new UnsupportedOperationException();
+  }
+  
+  /**
+   * Set the base text for the label.
+   */
+  default void setLabelBaseText(String labelBaseText) {
+    throw new UnsupportedOperationException();
+  }
+  
+  /**
    * Get a text which explains why the control has no valid value.
    * 
    * @return a text which explains why the control has no valid value.
    */
-  public String getErrorText();
+  String getErrorText();
+  
+  /**
+   * Set the supplier for providing the error text, which is obtained by {@link #getErrorText()}.
+   * 
+   * @param errorTextSupplier a method which provides the error text.
+   */
+  void setErrorTextSupplier(Supplier<String> errorTextSupplier);
   
   /**
    * Get the unique id of the ObjectControl.
    * 
    * @return the unique id of the ObjectControl, or null if this hasn't been set.
    */
-  public String getId();
+  String getId();
   
   /**
    * Set the unique id of the ObjectControl.
    * 
    * @param id the unique id for the ObjectControl.
    */
-  public void setId(String id);
+  void setId(String id);
   
   /**
    * Get the object value as formatted text.
@@ -171,10 +195,10 @@ public interface ObjectControl<T extends Object> extends Observable {
    * 
    * @return true if the control has changed since the last call to ocSetValue().
    */
-  public boolean isChanged();
+  boolean isChanged();
   
   /**
    * Remove all listeners, which have been added via {@code addListener()}.
    */
-  public void removeListeners();
+  void removeListeners();
 }

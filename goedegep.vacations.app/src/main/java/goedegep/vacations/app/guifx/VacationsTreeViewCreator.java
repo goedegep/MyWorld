@@ -924,32 +924,36 @@ public class VacationsTreeViewCreator {
     // BoundingBox
     EObjectTreeItemClassDescriptor eObjectTreeItemClassDescriptor = new EObjectTreeItemClassDescriptor()
         .setNodeTextFunction(eObject -> {
-          StringBuilder buf = new StringBuilder();
           BoundingBox boundingBox = (BoundingBox) eObject;
-          if (boundingBox.isSetWest()) {
-            buf.append(boundingBox.getWest());
+          if (boundingBox != null) {
+            StringBuilder buf = new StringBuilder();
+            if (boundingBox.isSetWest()) {
+              buf.append(boundingBox.getWest());
+            } else {
+              buf.append("..");
+            }
+            buf.append(", ");
+            if (boundingBox.isSetNorth()) {
+              buf.append(boundingBox.getNorth());
+            } else {
+              buf.append("..");
+            }
+            buf.append(", ");
+            if (boundingBox.isSetEast()) {
+              buf.append(boundingBox.getEast());
+            } else {
+              buf.append("..");
+            }
+            buf.append(", ");
+            if (boundingBox.isSetSouth()) {
+              buf.append(boundingBox.getSouth());
+            } else {
+              buf.append("..");
+            }
+            return buf.toString();
           } else {
-            buf.append("..");
+            return null;
           }
-          buf.append(", ");
-          if (boundingBox.isSetNorth()) {
-            buf.append(boundingBox.getNorth());
-          } else {
-            buf.append("..");
-          }
-          buf.append(", ");
-          if (boundingBox.isSetEast()) {
-            buf.append(boundingBox.getEast());
-          } else {
-            buf.append("..");
-          }
-          buf.append(", ");
-          if (boundingBox.isSetSouth()) {
-            buf.append(boundingBox.getSouth());
-          } else {
-            buf.append("..");
-          }
-          return buf.toString();
         })
         .addNodeOperationDescriptor(new NodeOperationDescriptorNewBefore("New element before ...", null, null))
         .addNodeOperationDescriptor(new NodeOperationDescriptorNewAfter("New element after ...", null, null))

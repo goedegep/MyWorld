@@ -86,26 +86,24 @@ public class PgCurrencyFormat extends Format {
             minusSign = true;
             signSeen = true;
           } else {
-            throw new ParseException("Meer dan 1 min teken in geldbedrag.", 0);
+            throw new ParseException("More than one minus sign in currency string.", 0);
           }
         } else if ((c == FLORIN_SYMBOL_ASCII_CHAR)  ||  (c == FLORIN_SYMBOL_CHAR)) {
           if (!currencySeen) {
             currency = PgCurrency.GUILDER;
             currencySeen = true;
           } else {
-            throw new ParseException("Meer dan 1 munt aanduiding in geldbedrag.", 0);
+            throw new ParseException("More than one currency character in currency string.", 0);
           }
         } else if ((c == EURO_SYMBOL_ASCII_CHAR)  || (c == EURO_SYMBOL_CHAR)) {
           if (!currencySeen) {
             currency = PgCurrency.EURO;
             currencySeen = true;
           } else {
-            throw new ParseException("Meer dan 1 munt aanduiding in geldbedrag.", 0);
+            throw new ParseException("ore than one currency character in currency string.", 0);
           }
-        } else if (c == ' ') {
-          // just skip spaces.
-        } else {
-          throw new ParseException("Ongeldig teken in geldbedrag.", 0);
+        } else if (c != ' ') {
+          throw new ParseException("Invalid character in currency string", 0);
         }
       }
     }

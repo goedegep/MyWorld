@@ -85,7 +85,7 @@ public class PrintWindow extends JfxStage {
    * @throws Exception if something goes wrong
    */
   public PrintWindow(CustomizationFx customization, VacationsWindow vacationsWindow, Vacation vacation) throws Exception {
-    super(WINDOW_TITLE, customization);
+    super(customization, WINDOW_TITLE);
     
     this.customization = customization;
     

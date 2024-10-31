@@ -278,25 +278,22 @@ public class EventImpl extends MinimalEObjectImpl.Container implements Event {
   /**
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @generated
+   * @generated NOT
    */
   @Override
   public String toString() {
     if (eIsProxy())
       return super.toString();
 
-    StringBuilder result = new StringBuilder(super.toString());
-    result.append(" (date: ");
-    if (dateESet)
-      result.append(date);
-    else
-      result.append("<unset>");
-    result.append(", notes: ");
-    if (notesESet)
-      result.append(notes);
-    else
-      result.append("<unset>");
-    result.append(')');
+    StringBuilder result = new StringBuilder();
+    
+    result.append("Date: ")
+    .append(getDate() != null ? getDate() : "<unset>")
+    .append("\n");
+    result.append("notes: ")
+    .append(getNotes() != null ? getNotes() : "<unset>")
+    .append("\n");
+    
     return result.toString();
   }
 

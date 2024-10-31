@@ -11,6 +11,7 @@ import goedegep.jfx.stringconverters.StringConverterAndChecker;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.control.Tooltip;
 
+@SuppressWarnings("PMD.UnusedFormalParameter")
 public class ObjectControlAutoCompleteTextField<T> extends ObjectControlTemplate<T> {
   private static final Logger         LOGGER = Logger.getLogger(ObjectControlAutoCompleteTextField.class.getName());
   
@@ -25,7 +26,7 @@ public class ObjectControlAutoCompleteTextField<T> extends ObjectControlTemplate
    * @param isOptional Indicates whether the control is optional (if true) or mandatory.
    * @param toolTipText An optional ToolTip text.
    */
-  public ObjectControlAutoCompleteTextField(CustomizationFx customization, T initialValue, double width, boolean isOptional, String toolTipText) {
+  public ObjectControlAutoCompleteTextField(CustomizationFx customization, double width, boolean isOptional, String toolTipText) {
     this(customization, (StringConverterAndChecker<T>) null, null, width, isOptional, toolTipText);
   }
     
@@ -38,7 +39,7 @@ public class ObjectControlAutoCompleteTextField<T> extends ObjectControlTemplate
    * @param toolTipText An optional ToolTip text.
    */
   public ObjectControlAutoCompleteTextField(CustomizationFx customization, StringConverterAndChecker<T> stringConverter, T initialValue, double width, boolean isOptional, String toolTipText) {
-    super(isOptional);
+    super(customization, isOptional);
     
     if (stringConverter != null) {
       this.stringConverterAndChecker = stringConverter;

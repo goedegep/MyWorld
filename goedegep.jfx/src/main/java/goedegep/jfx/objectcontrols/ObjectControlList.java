@@ -2,6 +2,7 @@ package goedegep.jfx.objectcontrols;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Supplier;
 import java.util.logging.Logger;
 
 import javafx.beans.InvalidationListener;
@@ -11,7 +12,23 @@ import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
 
-public class ObjectControlList implements ObjectControl<List<? extends Object>> {
+/**
+ * This class handles a list of {@code ObjectControl}s.
+ * <p>
+ * This class implements the {@code ObjectControl} functionality for a list objects.
+ * 
+ * <h5>optional</h5>
+ * In this case optional is interpreted as the list may be empty.
+ * 
+ * <h5>filled in</h5>
+ * If the list is not empty, it is filled in.
+ * 
+ * This class can be used if the object you are editing has a reference to a list of sub object. For example: a music album has a list of discs.
+ * In this case you could have an Object Edit Panel for each disc
+ * and then group these panels in this {@code ObjectControlList}.<br/>
+ * This class then 
+ */
+public class ObjectControlList<T> implements ObjectControl<List<T>> {
   private static final Logger         LOGGER = Logger.getLogger(ObjectControlTemplate.class.getName());
   
   
@@ -23,7 +40,7 @@ public class ObjectControlList implements ObjectControl<List<? extends Object>> 
   /**
    * The current list.
    */
-  ObservableList<Object> list = FXCollections.observableArrayList();
+  ObservableList<T> list = FXCollections.observableArrayList();
   
   /**
    * A reference list for detecting changes.
@@ -65,12 +82,12 @@ public class ObjectControlList implements ObjectControl<List<? extends Object>> 
   }
 
   @Override
-  public List<Object> getValue() {
+  public List<T> getValue() {
     return list;
   }
 
   @Override
-  public void setValue(List<? extends Object> list) {
+  public void setValue(List<T> list) {
     referenceList = list;
     this.list = FXCollections.observableArrayList(list);
     
@@ -166,5 +183,11 @@ public class ObjectControlList implements ObjectControl<List<? extends Object>> 
       invalidationListener.invalidated(this);
     }
     LOGGER.info("<=");
+  }
+
+  @Override
+  public void setErrorTextSupplier(Supplier<String> errorTextSupplier) {
+    // TODO Auto-generated method stub
+    
   }
 }

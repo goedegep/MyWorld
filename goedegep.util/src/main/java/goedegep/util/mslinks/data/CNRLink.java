@@ -117,7 +117,9 @@ public class CNRLink implements Serializable {
 			try {
 				if ((f.getModifiers() & mod) == mod && type == ((Integer)f.get(null)).intValue())
 					return;
-			} catch (Exception e) {}
+			} catch (Exception e) {
+			  e.printStackTrace();
+			}
 		}
 		throw new ShellLinkException("incorrect network type");
 	}

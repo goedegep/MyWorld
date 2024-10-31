@@ -41,7 +41,7 @@ public class InvestmentInsuranceWindow extends JfxStage {
   private TextField policyHolderTextField;
 
   public InvestmentInsuranceWindow(CustomizationFx customization, InvestmentInsurancesData investmentInsurancesData) {
-    super(WINDOW_TITLE, customization);
+    super(customization, WINDOW_TITLE);
 
     this.investmentInsurancesData = investmentInsurancesData;
     

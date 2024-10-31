@@ -26,7 +26,7 @@ public class IHaveOnObjectControl extends ObjectControlTextField<List<MediumInfo
    * @param customization - The GUI customization.
    */
   public IHaveOnObjectControl(CustomizationFx customization) {
-    super(customization, new MediumInfoListStringConverter(), null, 200,  false, "");
+    super(customization, new MediumInfoListStringConverter(), null, 200,  true, "");
     
     this.customization = customization;
     
@@ -36,7 +36,9 @@ public class IHaveOnObjectControl extends ObjectControlTextField<List<MediumInfo
 
   private void handleMouseDoubleClickedEvent(TextField control, MouseEvent e) {
     LOGGER.severe("Launching MediumInfo editor");
-    new MediumInfoListEditor(customization).runEditor();
+    MediumInfoListEditor mediumInfoListEditor = MediumInfoListEditor.newInstance(customization);
+    mediumInfoListEditor.setObject(getValue());
+    mediumInfoListEditor.show();
   }
   
 }
@@ -75,9 +77,8 @@ class MediumInfoListStringConverter extends StringConverter<List<MediumInfo>> {
       buf.append(mediumInfo.getInformationType().getLiteral()).append(":");
     }
     
-    for (InformationType sourceType : mediumInfo.getSourceTypes()) {
-      buf.append(sourceType.getLiteral()).append(":");
-    }
+    InformationType sourceType = mediumInfo.getSourceType();
+    buf.append(sourceType.getLiteral()).append(":");
     
     if (mediumInfo.isSetSourceBitRate()) {
       buf.append(mediumInfo.getSourceBitRate()).append(":");

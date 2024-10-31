@@ -42,7 +42,6 @@ import java.lang.reflect.InvocationTargetException;
  *   <li>{@link goedegep.media.mediadb.model.impl.TrackImpl#getParts <em>Parts</em>}</li>
  *   <li>{@link goedegep.media.mediadb.model.impl.TrackImpl#getAuthors <em>Authors</em>}</li>
  *   <li>{@link goedegep.media.mediadb.model.impl.TrackImpl#getReferredBy <em>Referred By</em>}</li>
- *   <li>{@link goedegep.media.mediadb.model.impl.TrackImpl#getOriginalDisc <em>Original Disc</em>}</li>
  * </ul>
  *
  * @generated
@@ -166,25 +165,6 @@ public class TrackImpl extends MinimalEObjectImpl.Container implements Track {
    * @ordered
    */
   protected EList<TrackReference> referredBy;
-
-  /**
-   * The cached value of the '{@link #getOriginalDisc() <em>Original Disc</em>}' reference.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getOriginalDisc()
-   * @generated
-   * @ordered
-   */
-  protected Disc originalDisc;
-
-  /**
-   * This is true if the Original Disc reference has been set.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  protected boolean originalDiscESet;
 
   /**
    * <!-- begin-user-doc -->
@@ -476,82 +456,12 @@ public class TrackImpl extends MinimalEObjectImpl.Container implements Track {
   /**
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public Disc getOriginalDisc() {
-    if (originalDisc != null && originalDisc.eIsProxy()) {
-      InternalEObject oldOriginalDisc = (InternalEObject) originalDisc;
-      originalDisc = (Disc) eResolveProxy(oldOriginalDisc);
-      if (originalDisc != oldOriginalDisc) {
-        if (eNotificationRequired())
-          eNotify(new ENotificationImpl(this, Notification.RESOLVE, MediadbPackage.TRACK__ORIGINAL_DISC,
-              oldOriginalDisc, originalDisc));
-      }
-    }
-    return originalDisc;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public Disc basicGetOriginalDisc() {
-    return originalDisc;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public void setOriginalDisc(Disc newOriginalDisc) {
-    Disc oldOriginalDisc = originalDisc;
-    originalDisc = newOriginalDisc;
-    boolean oldOriginalDiscESet = originalDiscESet;
-    originalDiscESet = true;
-    if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, MediadbPackage.TRACK__ORIGINAL_DISC, oldOriginalDisc,
-          originalDisc, !oldOriginalDiscESet));
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public void unsetOriginalDisc() {
-    Disc oldOriginalDisc = originalDisc;
-    boolean oldOriginalDiscESet = originalDiscESet;
-    originalDisc = null;
-    originalDiscESet = false;
-    if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.UNSET, MediadbPackage.TRACK__ORIGINAL_DISC, oldOriginalDisc,
-          null, oldOriginalDiscESet));
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public boolean isSetOriginalDisc() {
-    return originalDiscESet;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
    * @generated NOT
    */
   @Override
   public TrackReference getOriginalDiscTrackReference() {
     for (TrackReference trackReference : getReferredBy()) {
-      if (trackReference.getOriginalAlbumTrackReference() != null) {
+      if (trackReference.isOriginalAlbumTrackReference()) {
         return trackReference;
       }
     }
@@ -577,6 +487,23 @@ public class TrackImpl extends MinimalEObjectImpl.Container implements Track {
     }
 
     return trackArtist;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated NOT
+   */
+  @Override
+  public Disc getOriginalDisc() {
+    Disc originalDisc = null;
+
+    TrackReference trackReference = getOriginalDiscTrackReference();
+    if (trackReference != null) {
+      originalDisc = trackReference.getDisc();
+    }
+
+    return originalDisc;
   }
 
   /**
@@ -634,10 +561,6 @@ public class TrackImpl extends MinimalEObjectImpl.Container implements Track {
       return getAuthors();
     case MediadbPackage.TRACK__REFERRED_BY:
       return getReferredBy();
-    case MediadbPackage.TRACK__ORIGINAL_DISC:
-      if (resolve)
-        return getOriginalDisc();
-      return basicGetOriginalDisc();
     }
     return super.eGet(featureID, resolve, coreType);
   }
@@ -676,9 +599,6 @@ public class TrackImpl extends MinimalEObjectImpl.Container implements Track {
       getReferredBy().clear();
       getReferredBy().addAll((Collection<? extends TrackReference>) newValue);
       return;
-    case MediadbPackage.TRACK__ORIGINAL_DISC:
-      setOriginalDisc((Disc) newValue);
-      return;
     }
     super.eSet(featureID, newValue);
   }
@@ -712,9 +632,6 @@ public class TrackImpl extends MinimalEObjectImpl.Container implements Track {
     case MediadbPackage.TRACK__REFERRED_BY:
       getReferredBy().clear();
       return;
-    case MediadbPackage.TRACK__ORIGINAL_DISC:
-      unsetOriginalDisc();
-      return;
     }
     super.eUnset(featureID);
   }
@@ -741,8 +658,6 @@ public class TrackImpl extends MinimalEObjectImpl.Container implements Track {
       return isSetAuthors();
     case MediadbPackage.TRACK__REFERRED_BY:
       return referredBy != null && !referredBy.isEmpty();
-    case MediadbPackage.TRACK__ORIGINAL_DISC:
-      return isSetOriginalDisc();
     }
     return super.eIsSet(featureID);
   }
@@ -759,6 +674,8 @@ public class TrackImpl extends MinimalEObjectImpl.Container implements Track {
       return getOriginalDiscTrackReference();
     case MediadbPackage.TRACK___GET_TRACK_ARTIST:
       return getTrackArtist();
+    case MediadbPackage.TRACK___GET_ORIGINAL_DISC:
+      return getOriginalDisc();
     }
     return super.eInvoke(operationID, arguments);
   }
@@ -789,9 +706,14 @@ public class TrackImpl extends MinimalEObjectImpl.Container implements Track {
     buf.append(StringUtil.objectCollectionToCommaSeparatedStrings(getParts())).append(NEWLINE);
 
     buf.append("originalDisc:");
-    if (isSetOriginalDisc()) {
-      Disc originalDisc = getOriginalDisc();
-      Album originalAlbum = originalDisc.getAlbum();
+    Disc originalDisc = null;
+    TrackReference originalDiscTrackReference = getOriginalDiscTrackReference();
+    if (originalDiscTrackReference != null) {
+      originalDisc = originalDiscTrackReference.getDisc();
+    }
+    if (originalDisc != null) {
+      Album originalAlbum = null;
+      originalAlbum = originalDisc.getAlbum();
       buf.append(originalAlbum != null ? originalAlbum.getTitle() : "<no title>").append(" - ");
       if (originalDisc.isSetTitle()) {
         buf.append(originalDisc.getTitle());

@@ -28,7 +28,7 @@ public class PropertyDescriptorsEditorFx extends JfxStage {
   private boolean isDirty = false;
       
   public PropertyDescriptorsEditorFx(CustomizationFx customization, EMFResource<PropertyDescriptorGroup> propertyDescriptorsResource) {
-    super(WINDOW_TITLE, customization);
+    super(customization, WINDOW_TITLE);
     
     this.propertyDescriptorsResource = propertyDescriptorsResource;
     propertyDescriptorGroup = propertyDescriptorsResource.getEObject();

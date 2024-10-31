@@ -43,7 +43,7 @@ public class EObjectTreeViewDemo extends JfxStage {
    * @param customization
    */
   public EObjectTreeViewDemo(CustomizationFx customization) {
-    super("EObjectTreeView demo", customization);
+    super(customization, "EObjectTreeView demo");
     
     componentFactory = customization.getComponentFactoryFx();
     
@@ -145,8 +145,7 @@ public class EObjectTreeViewDemo extends JfxStage {
    * @return a {@code Company}; the newly created company information.
    */
   private Company createCompany() {
-    EMFResource<Company> emfResource = new EMFResource<>(EmfSamplePackage.eINSTANCE, () -> EMF_SAMPLE_FACTORY.createCompany(), ".xmi");
-    Company company = emfResource.newEObject();
+    Company company = EMF_SAMPLE_FACTORY.createCompany();
     
     Person person;
     Birthday birthday;

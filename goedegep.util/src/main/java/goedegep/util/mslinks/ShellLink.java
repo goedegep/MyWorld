@@ -533,7 +533,9 @@ public class ShellLink {
       else 
         idlist.getLast().setType(ItemID.TYPE_FILE);
 
-    } catch (ShellLinkException e) {}
+    } catch (ShellLinkException e) {
+      e.printStackTrace();
+    }
 
     return this;
   }

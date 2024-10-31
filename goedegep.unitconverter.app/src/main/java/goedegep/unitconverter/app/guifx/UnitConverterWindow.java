@@ -6,7 +6,6 @@ import java.time.Duration;
 import java.util.Locale;
 import java.util.logging.Logger;
 
-import goedegep.jfx.ComponentFactoryFx;
 import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.JfxStage;
 import goedegep.jfx.MenuUtil;
@@ -73,8 +72,6 @@ public class UnitConverterWindow extends JfxStage {
   private static final String OK_TEXT_STYLE = "-fx-text-fill: black;";
   private static final String ERROR_TEXT_STYLE = "-fx-text-fill: red;";
   
-  private ComponentFactoryFx componentFactory = null;
-  private CustomizationFx customization = null;
   private UnitConverterAppResourcesFx appResources;
   
   private Node errorComponent;  // There can only be one error component, the last entered value. Others are overwritten with calculated or null values.
@@ -129,10 +126,8 @@ public class UnitConverterWindow extends JfxStage {
   private TableView<SplitTime> splitTimesTableView = null;
 
   public UnitConverterWindow(CustomizationFx customization) {
-    super(WINDOW_TITLE, customization);
+    super(customization, WINDOW_TITLE);
     
-    customization = getCustomization();
-    componentFactory = getComponentFactory();
     appResources = (UnitConverterAppResourcesFx) getResources();
     
     createGUI();
@@ -972,12 +967,12 @@ public class UnitConverterWindow extends JfxStage {
       // No history, so start it.
       laatstIngevoerd = inputType;
     } else {
-      if (laatstIngevoerd == inputType) {
+      if (laatstIngevoerd == inputType) {  // NOPMD
         // no action
       } else {
-        if (voorLaatstIngevoerd == null) {
+        if (voorLaatstIngevoerd == null) {  // NOPMD
           // no extra action
-        } else if (voorLaatstIngevoerd == inputType) {
+        } else if (voorLaatstIngevoerd == inputType) {  // NOPMD
           // also no extra action, the last two types are just switching place.
         } else {
           // unlock oldest input fields
@@ -1034,8 +1029,8 @@ public class UnitConverterWindow extends JfxStage {
       if (laatstIngevoerd != InputType.AFSTAND  &&  voorLaatstIngevoerd != InputType.AFSTAND) {
         // bereken afstand waardes.
         if (snelheidInKmh != null  &&  snelheidInMijlh != null  &&  duration != null) {
-          afstandInKm = (snelheidInKmh * duration.getSeconds()) / 3600;
-          afstandInMijl = (snelheidInMijlh * duration.getSeconds()) / 3600;
+          afstandInKm = snelheidInKmh * duration.getSeconds() / 3600;
+          afstandInMijl = snelheidInMijlh * duration.getSeconds() / 3600;
         }
       } else if (laatstIngevoerd != InputType.TIJD  &&  voorLaatstIngevoerd != InputType.TIJD) {
         // bereken tijd.

@@ -228,24 +228,18 @@ public class AddressBookToHtmlConverter {
     }
     buf.append("</td>");
     buf.append("<td>");
-    if (address != null) {
-      if (address.getPostalCode() != null) {
-        buf.append(address.getPostalCode());
-      }
+    if (address != null  &&  address.getPostalCode() != null) {
+      buf.append(address.getPostalCode());
     }
     buf.append("</td>");
     buf.append("<td>");
-    if (address != null) {
-      if (address.getCity() != null) {
-        buf.append(address.getCity().getCityName());
-      }
+    if (address != null  &&  address.getCity() != null) {
+      buf.append(address.getCity().getCityName());
     }
     buf.append("</td>");
     buf.append("<td>");
-    if (address != null) {
-      if (address.getCity() != null  &&  address.getCity().getCountry() != null) {
-        buf.append(address.getCity().getCountry().getCountryName());
-      }
+    if (address != null  &&  address.getCity() != null  &&  address.getCity().getCountry() != null) {
+      buf.append(address.getCity().getCountry().getCountryName());
     }
     buf.append("</td>");
   }

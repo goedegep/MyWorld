@@ -50,7 +50,7 @@ public class FinanMenuWindow extends JfxStage {
    * @param finan the financial information.
    */
   public FinanMenuWindow(CustomizationFx customization, Finan finan) {
-    super(WINDOW_TITLE, customization);
+    super(customization, WINDOW_TITLE);
     
     this.customization = customization;
     this.finan = finan;

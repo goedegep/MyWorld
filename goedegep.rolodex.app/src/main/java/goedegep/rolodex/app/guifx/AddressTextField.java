@@ -20,7 +20,7 @@ public class AddressTextField extends ObjectControlAutoCompleteTextField<String>
    * Constructor.
    */
   public AddressTextField(CustomizationFx customization, Rolodex rolodex) {
-    super(customization, null, 300, true, "Select an address");
+    super(customization, 300, true, "Select an address");
     
     this.rolodex = rolodex;
     

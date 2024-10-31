@@ -9,11 +9,11 @@ import javafx.util.Callback;
 
 public interface IPhotoInfo extends IPhotoMetaDataWithImage {
   
-  public void setPhotoMetaDataWithImage(IPhotoMetaDataWithImage iPhotoMetaDataWithImage);
+  void setPhotoMetaDataWithImage(IPhotoMetaDataWithImage iPhotoMetaDataWithImage);
   
-  public IPhotoMetaDataWithImage getPhotoMetaDataWithImage();
+  IPhotoMetaDataWithImage getPhotoMetaDataWithImage();
 
-  public void setSortingDateTime(LocalDateTime sortingDateTime);
+  void setSortingDateTime(LocalDateTime sortingDateTime);
   
   /**
    * Get the data/time to be used for sorting.
@@ -22,10 +22,10 @@ public interface IPhotoInfo extends IPhotoMetaDataWithImage {
    * 
    * @return the date/time to be used for sorting, or null if this isn't available.
    */
-  public LocalDateTime getSortingDateTime();
+  LocalDateTime getSortingDateTime();
 
-  public boolean isSelectedForTheShow();
-  public BooleanProperty selectedForTheShowProperty();
+  boolean isSelectedForTheShow();
+  BooleanProperty selectedForTheShowProperty();
   
 
   static Callback<IPhotoInfo, Observable[]> extractor() {
@@ -33,6 +33,6 @@ public interface IPhotoInfo extends IPhotoMetaDataWithImage {
   }
 
 
-  public boolean toggleSelectedForTheShow();
+  boolean toggleSelectedForTheShow();
 
 }

@@ -136,10 +136,10 @@ public class EditorPanel extends VBox {
     null, 300.0, false, "Select the city where you were born");
     birthPlaceObjectControlAutoCompleteTextField.setOptions(City.getCities());
     
-    genderObjectControlEnumComboBox = componentFactory.createObjectControlEnumComboBox(Gender.FEMALE, null, false, "What is your gender?");
+    genderObjectControlEnumComboBox = componentFactory.createObjectControlEnumComboBox(Gender.FEMALE, false, "What is your gender?");
     ageObjectControlInteger = componentFactory.createObjectControlInteger(null, 300.0, false, "Enter your age");
     priceLastHolidayObjectControlCurrency = componentFactory.createObjectControlCurrency(null, 300.0, false, "How much did your last travel cost");
-    travelerTypeObjectControlEnumComboBox = componentFactory.createObjectControlEnumComboBox(TravelerType.REGULAR, null, false, "What kind of traveler are you?");
+    travelerTypeObjectControlEnumComboBox = componentFactory.createObjectControlEnumComboBox(TravelerType.REGULAR, false, "What kind of traveler are you?");
     
     lastTravelRatingObjectControlFixedPointValue = componentFactory.createObjectControlFixedPointValue(null, 150.0, false, "How do you rate your last travel (scale 0 to 10, with 2 decimal digits)");
     lastTravelRatingObjectControlFixedPointValue.setValidFactorRange(100, 100);
@@ -150,8 +150,8 @@ public class EditorPanel extends VBox {
     picturesFolderObjectControlFolderSelecter = componentFactory.createFolderSelecter(300, "The folder with pictures", "Select folder", "Select pictures folder", "Select the folder with the pictures", false);
     picturesFolderObjectControlFolderSelecter.setInitialFolderProvider(() -> "C:\\Users");
     imageFileObjectControlImageFile = componentFactory.createObjectControlImageFile(false);
-    notesObjectControlMultiLineString = componentFactory.createObjectControlMultiLineString(null, 300.0, false, "Enter your notes");
-    detailsObjectControlHTMLString = componentFactory.createObjectControlHTMLString(null, 300.0, false, "Enter details of your travel");
+    notesObjectControlMultiLineString = componentFactory.createObjectControlMultiLineString(null, false);
+    detailsObjectControlHTMLString = componentFactory.createObjectControlHTMLString(null, false);
     
     objectControlGroup = new ObjectControlGroup();
     objectControlGroup.addObjectControls(nameObjectControlTextField, happyObjectControlBoolean, birthPlaceObjectControlAutoCompleteTextField, genderObjectControlEnumComboBox,

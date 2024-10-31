@@ -2,18 +2,27 @@ package goedegep.media.mediadb.albumeditor.guifx;
 
 import goedegep.jfx.ComponentFactoryFx;
 import goedegep.jfx.CustomizationFx;
+import goedegep.jfx.objectcontrols.ObjectControlDuration;
 import goedegep.jfx.objectcontrols.ObjectControlString;
 import goedegep.jfx.objecteditor.ObjectEditorException;
 import goedegep.jfx.objecteditor.ObjectEditorTemplate;
+import goedegep.media.mediadb.model.Artist;
 import goedegep.media.mediadb.model.MediaDb;
 import goedegep.media.mediadb.model.MediadbFactory;
 import goedegep.media.mediadb.model.MediadbPackage;
 import goedegep.media.mediadb.model.Track;
+import goedegep.media.mediadb.model.TrackReference;
 import goedegep.util.emf.EmfUtil;
 import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 
+/**
+ * This class is a track editor.
+ * <p>
+ * It can be used to create an new Track, or to make changes to an existing Track.
+ *
+ */
 public class TrackEditor extends ObjectEditorTemplate<Track> {
   
   /**
@@ -29,7 +38,45 @@ public class TrackEditor extends ObjectEditorTemplate<Track> {
   /**
    * {@code ObjectControl} for the track title.
    */
-  private ObjectControlString titleObjectControl;
+  private ObjectControlString trackTitleObjectControl;
+  
+  /**
+   * {@code ObjectControl} for the track artist.
+   */
+  private ArtistObjectControl artistObjectControl;
+  
+  /**
+   * {@code ObjectControl} for the track duration.
+   */
+  private ObjectControlDuration durationObjectControl;
+  
+  private PlayersEditPanel playersEditPanel;
+  
+  private ArtistObjectControl authorObjectControl;
+  
+  
+  /**
+   * Factory method to obtain a new instance of a {@code TrackEditor}.
+   * 
+   * @param customization the GUI customization.
+   * @param mediaDb the media database.
+   * @return a newly created {@code TrackEditor}.
+   */
+  public static TrackEditor newInstance(CustomizationFx customization, MediaDb mediaDb) {
+    TrackEditor trackEditor = new TrackEditor(customization, mediaDb);
+    trackEditor.performInitialization();
+    
+    return trackEditor;
+  }
+
+  public void setTrackTitle(String title) {
+    trackTitleObjectControl.setValue(title);
+  }
+
+  public void setArtist(Artist artist) {
+    // TODO Auto-generated method stub
+    
+  }
   
   /**
    * Constructor.
@@ -37,7 +84,7 @@ public class TrackEditor extends ObjectEditorTemplate<Track> {
    * @param customization the GUI customization.
    * @param mediaDb the media database.
    */
-  public TrackEditor(CustomizationFx customization, MediaDb mediaDb) {
+  private TrackEditor(CustomizationFx customization, MediaDb mediaDb) {
     super(customization, "Track selecter/editor");
     
     this.mediaDb = mediaDb;
@@ -59,14 +106,9 @@ public class TrackEditor extends ObjectEditorTemplate<Track> {
    */
   @Override
   protected void createControls() {
-    titleObjectControl = componentFactory.createObjectControlString("Title", 250, false, "Click to edit the track title.");
+    trackTitleObjectControl = componentFactory.createObjectControlString("Title", 250, false, "Click to edit the track title.");
 
-    objectControlsGroup.addObjectControls(titleObjectControl);
-  }
-
-  @Override
-  protected void createAttributeEditDescriptors() {
-    // No action. This implementation doesn't use edit descriptors.
+    objectControlsGroup.addObjectControls(trackTitleObjectControl);
   }
 
   /**
@@ -79,7 +121,7 @@ public class TrackEditor extends ObjectEditorTemplate<Track> {
     
     Label label = componentFactory.createLabel("Title:");
     gridPane.add(label, 0, row);
-    gridPane.add(titleObjectControl.getControl(), 1, row);
+    gridPane.add(trackTitleObjectControl.getControl(), 1, row);
     
     rootPane.getChildren().add(gridPane);
   }
@@ -97,12 +139,12 @@ public class TrackEditor extends ObjectEditorTemplate<Track> {
 
   @Override
   protected void fillControlsWithDefaultValues() {
-    titleObjectControl.setValue(null);    
+    trackTitleObjectControl.setValue(null);    
   }
 
   @Override
   protected void fillControlsFromObject() {
-    titleObjectControl.setValue(object.getTitle());
+    trackTitleObjectControl.setValue(object.getTitle());
     
   }
 
@@ -110,7 +152,7 @@ public class TrackEditor extends ObjectEditorTemplate<Track> {
   protected void updateObjectFromControls() throws ObjectEditorException {
     MediadbPackage mediaDbPackage = MediadbPackage.eINSTANCE;
     
-    EmfUtil.setFeatureValue(object, mediaDbPackage.getTrack_Title(), titleObjectControl.getValue());
+    EmfUtil.setFeatureValue(object, mediaDbPackage.getTrack_Title(), trackTitleObjectControl.getValue());
     
   }
 

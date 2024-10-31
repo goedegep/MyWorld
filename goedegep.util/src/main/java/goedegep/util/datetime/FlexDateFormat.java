@@ -241,13 +241,13 @@ public class FlexDateFormat extends Format {
   public StringBuffer format(Object object, StringBuffer buf, FieldPosition arg2) {
     
     if (reversedDate) {
-      return formatReversed(object, buf, arg2);
+      return formatReversed(object, buf);
     } else {
-      return formatNormal(object, buf, arg2);
+      return formatNormal(object, buf);
     }
   }
 
-  private StringBuffer formatNormal(Object object, StringBuffer buf, FieldPosition arg2) {
+  private StringBuffer formatNormal(Object object, StringBuffer buf) {
     
     FlexDate flexDate = (FlexDate) object;
     
@@ -278,7 +278,7 @@ public class FlexDateFormat extends Format {
     return buf;
   }
 
-  private StringBuffer formatReversed(Object object, StringBuffer buf, FieldPosition arg2) {
+  private StringBuffer formatReversed(Object object, StringBuffer buf) {
     
     FlexDate flexDate = (FlexDate) object;
     

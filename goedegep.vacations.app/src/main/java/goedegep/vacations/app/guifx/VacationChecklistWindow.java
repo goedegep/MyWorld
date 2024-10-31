@@ -57,7 +57,7 @@ public class VacationChecklistWindow extends JfxStage {
    * @param vacationChecklistResource the {@code EMFResource} with the vacation checklist.
    */
   public VacationChecklistWindow(CustomizationFx customization, EMFResource<VacationChecklist> vacationChecklistResource) {
-    super(WINDOW_TITLE, customization);
+    super(customization, WINDOW_TITLE);
     
     this.vacationChecklistResource = vacationChecklistResource;
     componentFactory = customization.getComponentFactoryFx();

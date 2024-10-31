@@ -315,7 +315,7 @@ public class FlexDate implements Cloneable, Comparable<FlexDate> {
     }
     
     FlexDate flexDate = (FlexDate) object;
-    return (compareTo(flexDate) == 0);
+    return compareTo(flexDate) == 0;
   }
 
   @Override
@@ -338,16 +338,12 @@ public class FlexDate implements Cloneable, Comparable<FlexDate> {
       return false;
     }
     
-    if (isMonthSet()) {
-      if (flexDate.isMonthSet()  &&  (month.intValue() != flexDate.getMonth().intValue())) {
+    if (isMonthSet()  &&  flexDate.isMonthSet()  &&  (month.intValue() != flexDate.getMonth().intValue())) {
         return false;
-      }
     }
     
-    if (isDaySet()) {
-      if (flexDate.isDaySet()  &&  !calendar.equals(flexDate.calendar)) {
+    if (isDaySet()  &&  flexDate.isDaySet()  &&  !calendar.equals(flexDate.calendar)) {
         return false;
-      }
     }
     
     return true;
@@ -368,16 +364,12 @@ public class FlexDate implements Cloneable, Comparable<FlexDate> {
       return false;
     }
     
-    if (isMonthSet()) {
-      if (!flexDate.isMonthSet()  ||  (month.intValue() != flexDate.getMonth().intValue())) {
+    if (isMonthSet()  &&  !flexDate.isMonthSet()  ||  (month.intValue() != flexDate.getMonth().intValue())) {
         return false;
-      }
     }
     
-    if (isDaySet()) {
-      if (!flexDate.isDaySet()  ||  !calendar.equals(flexDate.calendar)) {
+    if (isDaySet()  &&  !flexDate.isDaySet()  ||  !calendar.equals(flexDate.calendar)) {
         return false;
-      }
     }
     
     return true;

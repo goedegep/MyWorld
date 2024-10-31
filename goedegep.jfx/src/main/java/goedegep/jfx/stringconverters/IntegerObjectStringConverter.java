@@ -23,7 +23,7 @@ public class IntegerObjectStringConverter extends StringConverterAndChecker<Inte
     
     try {
     value = integerStringConverter.fromString(string);
-    } catch (NumberFormatException e) {
+    } catch (NumberFormatException e) { //NOPMD
       // no action.
     }
     

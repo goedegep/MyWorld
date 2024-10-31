@@ -416,10 +416,8 @@ public class EObjectTreeView extends TreeView<Object> implements ObjectSelector<
   public EObjectTreeItemAttributeDescriptor getEObjectTreeItemAttributeDescriptor(EClass eClass, EAttribute eAttribute) {
     EObjectTreeItemClassDescriptor eObjectTreeItemClassDescriptor = getDescriptorForEClass(eClass);
     for (EObjectTreeItemDescriptor eObjectTreeItemDescriptor: eObjectTreeItemClassDescriptor.getStructuralFeatureDescriptors()) {
-      if (eObjectTreeItemDescriptor instanceof EObjectTreeItemAttributeDescriptor eObjectTreeItemAttributeDescriptor) {
-        if (eObjectTreeItemAttributeDescriptor.getEAttribute().equals(eAttribute)) {
-          return eObjectTreeItemAttributeDescriptor;
-        }
+      if (eObjectTreeItemDescriptor instanceof EObjectTreeItemAttributeDescriptor eObjectTreeItemAttributeDescriptor  &&  eObjectTreeItemAttributeDescriptor.getEAttribute().equals(eAttribute)) {
+        return eObjectTreeItemAttributeDescriptor;
       }
     }
     
@@ -474,10 +472,6 @@ public class EObjectTreeView extends TreeView<Object> implements ObjectSelector<
    * @param eObject the new EObject to be shown in the tree. If null, the tree view will be cleared.
    */
   public EObjectTreeView setEObject(EObject eObject) {
-    if ((eObject != null)  &&  (eObject.eResource() == null)) {
-      throw new IllegalArgumentException("The EObject has to be part of a Resource");
-    }
-
     EObject currentRootEObject = getRootEObject();
     if (currentRootEObject != null) {
       currentRootEObject.eAdapters().remove(eContentAdapter);
@@ -486,7 +480,7 @@ public class EObjectTreeView extends TreeView<Object> implements ObjectSelector<
     if (eObject != null) {
       EObjectTreeItem rootItem = new EObjectTreeItemForObject(eObject, eObject.eClass(), null, this);
       setRoot(rootItem);
-      eObject.eAdapters().add(eContentAdapter);;
+      eObject.eAdapters().add(eContentAdapter);
     } else {
       setRoot(null);
     }
@@ -559,7 +553,7 @@ public class EObjectTreeView extends TreeView<Object> implements ObjectSelector<
        * {@inheritDoc}
        */
       @Override
-      public void notifyChanged(org.eclipse.emf.common.notify.Notification notification) {
+      public void notifyChanged(Notification notification) {
         super.notifyChanged(notification);
         
         if (ignoreNotification) {
@@ -641,7 +635,7 @@ public class EObjectTreeView extends TreeView<Object> implements ObjectSelector<
               ((EObjectTreeItemForAttributeList) changedTreeItem).removeAttributeListChild(notification.getPosition());
             } else if (notification.getEventType() == Notification.SET) {
               // the value has changed
-              EObjectTreeItemForAttributeList listItem = ((EObjectTreeItemForAttributeList) changedTreeItem);
+              EObjectTreeItemForAttributeList listItem = (EObjectTreeItemForAttributeList) changedTreeItem;
               EObjectTreeItemForAttributeListValue changedChild = (EObjectTreeItemForAttributeListValue) listItem.getChildren().get(notification.getPosition());
               changedChild.handleValueChanged(eAttribute, notification.getNewValue());
             } else {

@@ -8,8 +8,6 @@ module goedegep.util {
   exports goedegep.util.dir;
   exports goedegep.util.douglaspeuckerreducer;
   exports goedegep.util.emf;
-  exports goedegep.util.emf.samplemodel;
-  exports goedegep.util.emf.samplemodel.impl;
   exports goedegep.util.chart;
   exports goedegep.util.clazz;
   exports goedegep.util.file;
@@ -64,4 +62,5 @@ module goedegep.util {
   
   requires org.junit.jupiter.api;
   requires org.hamcrest;
+  requires goedegep.emfsample.model;
 }

@@ -101,7 +101,7 @@ public class GpxUtil {
     try {
       gpxResource.load(fileName);
       DocumentRoot documentRoot = gpxResource.getEObject();
-      return GpxUtil.getStartLocation(documentRoot.getGpx());
+      return getStartLocation(documentRoot.getGpx());
     } catch (FileNotFoundException e) {
       e.printStackTrace();
       return null;
@@ -220,7 +220,7 @@ public class GpxUtil {
         boundingBox = boundingBox.extend(trackPoint.getLon().doubleValue(), trackPoint.getLat().doubleValue());
       }
     }
-    LOGGER.info("=> " + boundingBox.toString());
+    LOGGER.info("=> " + (boundingBox != null ? boundingBox.toString() : "<null>"));
     
     return boundingBox;
   }

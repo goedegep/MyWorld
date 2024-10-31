@@ -18,6 +18,11 @@
         <details key="documentation" value="Get the track artist. If {@code artist} is set, this is returned. Else, if {@code originalDisc} is set, the artist of the album of that disc is returned."/>
       </eAnnotations>
     </eOperations>
+    <eOperations name="getOriginalDisc" eType="#//Disc">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Get the {@code Disc} of the original album.&#xD;&#xA;&lt;p>&#xD;&#xA;This is equal to calling {@code getOriginalDiscTrackReference()} followed by calling {@code getDisc()} on the obtained {@code TrackReference} (if it isn't null)."/>
+      </eAnnotations>
+    </eOperations>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="title" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
         unsettable="true"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="duration" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EIntegerObject"
@@ -32,8 +37,6 @@
         eType="#//Artist" unsettable="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="referredBy" upperBound="-1"
         eType="#//TrackReference" eOpposite="#//TrackReference/track"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="originalDisc" eType="#//Disc"
-        unsettable="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="MediaDb">
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
@@ -272,8 +275,12 @@
         unsettable="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="myTrackInfo" eType="#//MyTrackInfo"
         unsettable="true" containment="true"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="originalAlbumTrackReference"
-        eType="#//TrackReference" unsettable="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="originalAlbumTrackReference"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean" unsettable="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="If set this track reference indicates that this track is the track on the original album.&lt;br/>&#xD;&#xA;This can e.g. be used to create the file name for a track in a compilation album or a track collection, where the original album release year and tiltle can be part of the name.&lt;br/>&#xD;&#xA;You can of course use this attribute in a practical way. If you only have the album information of a compilation album containing a certain track, you can still set this as the original album."/>
+      </eAnnotations>
+    </eStructuralFeatures>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Disc">
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
@@ -316,9 +323,9 @@
         defaultValueLiteral="&lt;not-set>" unsettable="true"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="informationType" eType="#//InformationType"
         unsettable="true"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="sourceTypes" upperBound="-1"
-        eType="#//InformationType" unsettable="true"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="sourceBitRate" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"
+        unsettable="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="sourceType" eType="#//InformationType"
         unsettable="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="MyInfo">
@@ -459,12 +466,8 @@
         eType="#//MediumInfo" unsettable="true" containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="iWant" eType="#//IWant"
         defaultValueLiteral="&lt;not-set>" unsettable="true"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="compilationTrackReference"
-        eType="#//TrackReference" unsettable="true">
-      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="This has to be set if I have the track, but not as part of this disc. The reference refers to the TrackReference for which I have the track.&#xD;&#xA;This may be a reference to the track of an OWN_COMPILATION_ALBUM or a track in a track collection."/>
-      </eAnnotations>
-    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="trackReference" eType="#//TrackReference"
+        unsettable="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="DiscAndTrackNrs">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="discNr" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"

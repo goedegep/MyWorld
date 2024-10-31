@@ -112,6 +112,11 @@ public class EObjectTable<T extends EObject> extends TableView<T> implements Obj
    * Listeners to which object is selected.
    */
   private List<ObjectSelectionListener<T>> objectSelectionListeners = new ArrayList<>();
+  
+  /**
+   * The {@code EObject} containing the list of objects shown in the table.
+   */
+  private EObject containingObject;
     
   /**
    * The objects to be shown in the table. Any editing (add and delete) shall occur on this list.
@@ -815,12 +820,14 @@ public class EObjectTable<T extends EObject> extends TableView<T> implements Obj
       setItems(null);
       return;
     }
+    
+    this.containingObject = containingObject;
         
     // For the sorting and filtering to work, we need to wrap an ObservableList in a FilteredList and then in a SortedList.
     // And bind the SortedList comparator to the TableView comparator.
     // In order to support default sorting, based on the specified comparator, a second SortedList between the FilteredList and the SortedList is needed.
     
-    observableObjects = new ObservableEList<>(false, containingObject, eReference);
+    observableObjects = new ObservableEList<>(containingObject, eReference);
             
     filteredObjects = new FilteredList<>(observableObjects);
     if (tableDescriptor.getFilterPredicate() != null) {
@@ -857,6 +864,7 @@ public class EObjectTable<T extends EObject> extends TableView<T> implements Obj
     }
 
     if (mouseEvent.getButton() == MouseButton.PRIMARY) {
+      LOGGER.severe("To be implemented");
 //      T rowData = row.getItem();
 //      LOGGER.severe("row=" + row.toString());
 //      
@@ -986,6 +994,7 @@ public class EObjectTable<T extends EObject> extends TableView<T> implements Obj
       }
 
     } else {
+      LOGGER.severe("To be implemented");
 //      Object o = rowOperations.get(TableRowOperation.NIEUW_OBJECT);
 //      LOGGER.info("o: " + o);
 //      tableRowOperationDescriptor = rowOperations.get(TableRowOperation.NIEUW_OBJECT);
@@ -1052,6 +1061,7 @@ public class EObjectTable<T extends EObject> extends TableView<T> implements Obj
   }
   
   private void addObject(T object, int atIndex, boolean before) {
+    LOGGER.severe("Currently not implemented, object=" + object + ", atIndex" + atIndex + ", " + before);
 //    if (before) {
 //      objects.add(atIndex, object);
 //    } else {
@@ -1070,6 +1080,7 @@ public class EObjectTable<T extends EObject> extends TableView<T> implements Obj
   }
 
   private void moveObject(T item, boolean up) {
+    LOGGER.severe("Currently not implemented, item=" + item + ", up" + up);
 //    int currentPosition = objects.indexOf(item);
 //    int newPosition;
 //    if (up) {
@@ -1093,14 +1104,14 @@ public class EObjectTable<T extends EObject> extends TableView<T> implements Obj
   public void deleteObject(T objectToRemove) {
     LOGGER.severe("Object to remove=" + objectToRemove.toString());
     
-    Resource resource = objectToRemove.eResource();
-    if (resource == null) {
-      throw new RuntimeException("Object cannot be deleted as it is not part of a Resource: " + objectToRemove.toString());
-    }
+//    Resource resource = objectToRemove.eResource();
+//    if (resource == null) {
+//      throw new RuntimeException("Object cannot be deleted as it is not part of a Resource: " + objectToRemove.toString());
+//    }
     
-    ResourceSet resourceSet = resource.getResourceSet();
+//    ResourceSet resourceSet = resource.getResourceSet();
     
-    Collection<EStructuralFeature.Setting> settings = EcoreUtil.UsageCrossReferencer.find(objectToRemove, resourceSet);
+    Collection<EStructuralFeature.Setting> settings = EcoreUtil.UsageCrossReferencer.find(objectToRemove, containingObject);
     if (settings.size() != 0) {
       StringBuffer buf = new StringBuffer();
       buf.append("There are ");

@@ -2,10 +2,10 @@ package goedegep.jfx.objecteditor;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.logging.Logger;
 
-import goedegep.jfx.ComponentFactoryFx;
 import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.JfxStage;
 import goedegep.jfx.objectcontrols.ObjectControl;
@@ -20,6 +20,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.Tooltip;
+import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
@@ -66,7 +67,7 @@ import javafx.scene.text.Font;
  *       '=' - The controls are valid, but none of the values has changed
  *      </li>
  *      <li>
- *       '*' - in UPDATE mode, the controls are valid and there are changes.
+ *       '≠' - in UPDATE mode, the controls are valid and there are changes.
  *      </li>
  *     </ul>
  *    </li>
@@ -96,14 +97,18 @@ import javafx.scene.text.Font;
  * @param <T> The object type being edited
  */
 public abstract class ObjectEditorTemplate<T> extends JfxStage implements Observable  {
-  @SuppressWarnings("unused")
   private static Logger LOGGER = Logger.getLogger(ObjectEditorTemplate.class.getName());
   private static final String NEW_LINE = System.getProperty("line.separator");
+
+  /**
+   * A pre-defined {@link ButtonType} that displays "Add" (in new mode) or "Update" (in edit mode).
+   */
+  public static final ButtonType ADD_OR_UPDATE = new ButtonType("ObjectEditor.addorupdate.button");
   
   /**
-   * Factory for creating GUI components.
+   * A pre-defined {@link ButtonType} that displays "New" to start editing a new object.
    */
-  protected ComponentFactoryFx componentFactory;
+  public static final ButtonType NEW = new ButtonType("ObjectEditor.new.button");
   
   /**
    * An {@code ObjectControlGroup} containing all {@code ObjectControl}s.
@@ -152,6 +157,13 @@ public abstract class ObjectEditorTemplate<T> extends JfxStage implements Observ
   protected EditMode editMode = EditMode.NEW;
   
   /**
+   * Main panel of the editor
+   */
+  private VBox rootPane = null;
+  
+  private List<ButtonType> buttonTypes;
+    
+  /**
    * Panel for the action buttons (Add/Update and New).
    */
   protected HBox actionButtonsPanel;
@@ -184,26 +196,44 @@ public abstract class ObjectEditorTemplate<T> extends JfxStage implements Observ
    * @param title
    */
   public ObjectEditorTemplate(CustomizationFx customization, String title) {
-    super(title, customization);
+    super(customization, title);
     
     objectControlsGroup = new ObjectControlGroup();
-    componentFactory = customization.getComponentFactoryFx();
+    buttonTypes = new ArrayList<>();
+    buttonTypes.add(ADD_OR_UPDATE);
+    buttonTypes.add(NEW);
+    buttonTypes.add(ButtonType.CANCEL);
   }
   
   /**
-   * Create and show the editor.
+   * Set the explanation text.
+   * 
+   * @param explanatoryText the explanation text.
+   */
+  public void setExplanation(String explanatoryText) {
+    TextArea explanationText = componentFactory.createTextArea(explanatoryText);
+    explanationText.setMinHeight(40);
+    explanationText.setPrefHeight(40);
+    rootPane.getChildren().addFirst(explanationText);
+  }
+  
+  public List<ButtonType> getButtonTypes() {
+    return buttonTypes;
+  }
+  
+  /**
+   * Perform editor initialization.
    * 
    * @return this
    */
-  public ObjectEditorTemplate<T> runEditor() {
+  protected void performInitialization() {
     configureEditor();
+    createObject();
         
     createControls();
     fillControlsWithDefaultValues();
     
-    createAttributeEditDescriptors();
-    
-    VBox rootPane = componentFactory.createVBox();
+    rootPane = componentFactory.createVBox();
     createEditPanel(rootPane);
     createActionButtonsPanel();
     rootPane.getChildren().add(actionButtonsPanel);
@@ -213,38 +243,38 @@ public abstract class ObjectEditorTemplate<T> extends JfxStage implements Observ
     setScene(new Scene(scrollPane));
     Double windowHeight = getWindowHeight();
     if (windowHeight != null) {
-      setHeight(windowHeight);
+      setMaxHeight(windowHeight);
     }
     Double windowWidth = getWindowWidth();
     if (windowWidth != null) {
-      setWidth(windowWidth);
+      setMaxWidth(windowWidth);
     }
         
     installChangeListeners();
     ignoreChanges = false;
     
     handleChanges();
+  }
 
-    show();
-    
-    return this;
+  /**
+   * Get the object being edited.
+   * @return the object being edited.
+   */
+  public T getObject() {
+    return object;
   }
   
   /**
-   * Start editing an object, or clear the editor for starting to create a new object.
+   * Start editing an object.
    * <p>
    * If there are any unsaved changes, show a dialog informing the user about this and ask for a confirmation.
    * {@code object} is set to the specified value.
-   * All the controls are cleared and then, if {@code object} isn't null, filled with the information from the {@code object}.
+   * All the controls are cleared and then filled with the information from the {@code object}.
    * 
-   * @param object the value to be edited, or null to start editing a new object.
+   * @param object the value to be edited.
    */
   public void setObject(T object) {
-    setObject(object, true);
-  }
-  
-  public T getObject() {
-    return object;
+    setObject(object, true, false);
   }
 
   /**
@@ -257,7 +287,9 @@ public abstract class ObjectEditorTemplate<T> extends JfxStage implements Observ
    * @param object the value to be edited, or null to start editing a new object.
    * @param checkOnUnsavedChanges if true and if there are any unsaved changes, show a dialog informing the user about this and ask for a confirmation.
    */
-  public void setObject(T object, boolean checkOnUnsavedChanges) {
+  public void setObject(T object, boolean checkOnUnsavedChanges, boolean newObject) {
+    Objects.requireNonNull(object, "object may not be null (use newObject()");
+    
     if (checkOnUnsavedChanges  &&  !getUserConfirmationInCaseOfUnsavedChanges()) {
       return;
     }
@@ -267,12 +299,35 @@ public abstract class ObjectEditorTemplate<T> extends JfxStage implements Observ
 
     fillControlsWithDefaultValues();
     
-    if (object != null) {
-      fillControlsFromObject();
-      editMode = EditMode.EDIT;
-    } else {
-      editMode = EditMode.NEW;
+    fillControlsFromObject();
+    
+    editMode = newObject ? EditMode.NEW : EditMode.EDIT;
+
+    ignoreChanges = false;
+
+    handleChanges();
+    notifyListeners();
+  }
+  
+  /**
+   * Start editing a new object.
+   * <p>
+   * If there are any unsaved changes while checkOnUnsavedChanges is set, show a dialog informing the user about this and ask for a confirmation.
+   * All the controls are set to their default values.
+   * 
+   * @param checkOnUnsavedChanges if true and if there are any unsaved changes, show a dialog informing the user about this and ask for a confirmation.
+   */
+  public void newObject(boolean checkOnUnsavedChanges) {
+    if (checkOnUnsavedChanges  &&  !getUserConfirmationInCaseOfUnsavedChanges()) {
+      return;
     }
+
+    createObject();
+    ignoreChanges = true;
+
+    fillControlsWithDefaultValues();
+    
+    editMode = EditMode.NEW;
     ignoreChanges = false;
 
     handleChanges();
@@ -327,12 +382,7 @@ public abstract class ObjectEditorTemplate<T> extends JfxStage implements Observ
    * Create the GUI controls and add them to the {@code objectControlsGroup}
    */
   protected abstract void createControls();
-  
-  /**
-   * Create the descriptors per attribute.
-   */
-  protected abstract void createAttributeEditDescriptors();
-  
+    
   /**
    * Create the actual edit panel.
    */
@@ -376,7 +426,7 @@ public abstract class ObjectEditorTemplate<T> extends JfxStage implements Observ
       if (errorText == null) {
         errorText = objectControl.toString();
       }
-      LOGGER.severe("errorText=" + errorText);
+      LOGGER.info("errorText=" + errorText);
       statusTextArea.setText(errorText);
     } else {
       statusTextArea.setText("All is fine");
@@ -417,9 +467,11 @@ public abstract class ObjectEditorTemplate<T> extends JfxStage implements Observ
     actionButtonsPanel.getChildren().add(addOrUpdateButton);
     
     // New button
-    button = componentFactory.createButton(newObjectText, newObjectTooltipText);
-    button.setOnAction(e -> setObject(null, true));
-    actionButtonsPanel.getChildren().add(button);
+    if (buttonTypes.contains(NEW)) {
+      button = componentFactory.createButton(newObjectText, newObjectTooltipText);
+      button.setOnAction(e -> newObject(true));
+      actionButtonsPanel.getChildren().add(button);
+    }
     
     // Cancel button
     button = componentFactory.createButton("Cancel", "Discard any changes and close the editor");
@@ -438,21 +490,20 @@ public abstract class ObjectEditorTemplate<T> extends JfxStage implements Observ
   }
   
   /**
-   * Add a new object to the data list.
+   * Add the object to the data list.
    * <p>
-   * A new object is created and filled with the values of the controls.
-   * This new object is then added to the list.
-   * {@code object} is set to this new object and the editor switches to Edit mode.
+   * The object is filled with the values of the controls and then added to the list.
+   * The editor switches to Edit mode.
    */
   protected void addObjectAction() {
-    createObject();
     
     try {
       updateObjectFromControls();
       
       addObjectToCollection();
       
-      setObject(object, false);
+      // calling setObject causes: all controls to be unchanged, all values shown in the preferred way
+      setObject(object, false, false);
       
       handleChanges();
       notifyListeners();
@@ -468,8 +519,6 @@ public abstract class ObjectEditorTemplate<T> extends JfxStage implements Observ
   
   /**
    * Create a new instance of type T
-   * 
-   * @return the newly created object.
    */
   protected abstract void createObject();
   
@@ -488,7 +537,7 @@ public abstract class ObjectEditorTemplate<T> extends JfxStage implements Observ
     try {
       updateObjectFromControls();
       
-      setObject(object, false);
+//      setObject(object, false);
       notifyListeners();
     } catch (ObjectEditorException e) {
       StringBuilder buf = new StringBuilder();
@@ -588,7 +637,7 @@ public abstract class ObjectEditorTemplate<T> extends JfxStage implements Observ
    * @return the requested window height, or null if the default height is to be used.
    */
   protected Double getWindowHeight() {
-    return null;
+    return 1400.0;
   }
   
   /**
@@ -597,7 +646,7 @@ public abstract class ObjectEditorTemplate<T> extends JfxStage implements Observ
    * @return the requested window width, or null if the default width is to be used.
    */
   protected Double getWindowWidth() {
-    return null;
+    return 1200.0;
   }
   
   public final void addListener(InvalidationListener listener) {
@@ -619,7 +668,7 @@ public abstract class ObjectEditorTemplate<T> extends JfxStage implements Observ
   /**
    * Notify the {@code invalidationListeners} that something has changed.
    */
-  private final void notifyListeners() {
+  private void notifyListeners() {
     LOGGER.info("=>");
     for (InvalidationListener invalidationListener: invalidationListeners) {
       invalidationListener.invalidated(this);

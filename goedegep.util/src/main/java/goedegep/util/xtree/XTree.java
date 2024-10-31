@@ -24,7 +24,7 @@ public interface XTree {
   /**
    * Maximum number of BLOB bytes show by the {@link #nodeToString} method.
    */
-  static final int MAX_BLOB_BYTES_SHOWN = 15;
+  int MAX_BLOB_BYTES_SHOWN = 15;
   
   
   /**
@@ -32,7 +32,7 @@ public interface XTree {
    * 
    * @param xTreeNodeVisitor the <b>XTreeNodeVisitor</b> called for each node.
    */
-  public void traverse(XTreeNodeVisitor xTreeNodeVisitor);
+  void traverse(XTreeNodeVisitor xTreeNodeVisitor);
 
   
   /*
@@ -49,7 +49,7 @@ public interface XTree {
    * @param value the node value
    * @return a textual representation of the content of the node, specified by the {@code dataType} and {@code value}.
    */
-  public static String nodeToString(XNodeDataType dataType, Object value) {
+  static String nodeToString(XNodeDataType dataType, Object value) {
     StringBuilder buf = new StringBuilder();
 
     switch (dataType) {

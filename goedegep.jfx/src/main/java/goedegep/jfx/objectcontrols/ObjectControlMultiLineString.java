@@ -17,8 +17,8 @@ public class ObjectControlMultiLineString extends ObjectControlTemplate<String> 
    * @param isOptional Indicates whether the control is optional (if true) or mandatory.
    * @param toolTipText An optional ToolTip text.
    */
-  public ObjectControlMultiLineString(CustomizationFx customization, String text, double width, boolean isOptional, String toolTipText) {
-    super(isOptional);
+  public ObjectControlMultiLineString(CustomizationFx customization, String text, boolean isOptional) {
+    super(customization, isOptional);
 
     textArea = customization.getComponentFactoryFx().createTextArea();
     textArea.textProperty().addListener((observableValue, oldValue, newValue) -> ociHandleNewUserInput(textArea));

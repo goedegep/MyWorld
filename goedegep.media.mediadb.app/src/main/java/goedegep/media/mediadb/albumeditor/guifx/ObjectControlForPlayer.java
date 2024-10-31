@@ -3,12 +3,9 @@ package goedegep.media.mediadb.albumeditor.guifx;
 import java.util.List;
 import java.util.logging.Logger;
 
-import goedegep.jfx.ComponentFactoryFx;
 import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.objectcontrols.ObjectControlTemplate;
-import goedegep.jfx.objectcontrols.ObjectControlAutoCompleteTextField;
 import goedegep.jfx.objectcontrols.ObjectControlTextField;
-import goedegep.media.mediadb.app.ArtistStringConverterAndChecker;
 import goedegep.media.mediadb.model.Artist;
 import goedegep.media.mediadb.model.MediaDb;
 import goedegep.media.mediadb.model.MediadbFactory;
@@ -49,10 +46,8 @@ public class ObjectControlForPlayer extends ObjectControlTemplate<Player> {
    * @param mediaDb the media database holding the artists.
    */
   public ObjectControlForPlayer(CustomizationFx customization, MediaDb mediaDb) {
-    super(false);  // If there is a control for a Player, the player has to be filled in. So this control is never optional.
+    super(customization, false);  // If there is a control for a Player, the player has to be filled in. So this control is never optional.
     LOGGER.severe("=>");
-    
-    ComponentFactoryFx componentFactory = customization.getComponentFactoryFx();
     
     artistObjectControl = new ArtistObjectControl(customization, mediaDb);
     playerInstrumentTextField = componentFactory.createObjectControlTextField(null, null, 300, true, "A comma separated list of instruments");

@@ -69,7 +69,7 @@ public class ReduceTrackPointsWindow extends JfxStage implements ObjectSelection
    * @param location the {@code Location} of which the number of points of the boundaries are to be reduced.
    */
   public ReduceTrackPointsWindow(CustomizationFx customization, EObject gpxOrTrackOrSegment) {
-    super(WINDOW_TITLE, customization);
+    super(customization, WINDOW_TITLE);
     
     componentFactory = customization.getComponentFactoryFx();
         

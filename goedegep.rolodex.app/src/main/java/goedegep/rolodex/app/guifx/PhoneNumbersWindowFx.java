@@ -63,7 +63,7 @@ public class PhoneNumbersWindowFx extends JfxStage {
    * @param rolodex a <code>Rolodex</code>
    */
   public PhoneNumbersWindowFx(CustomizationFx customization, Rolodex rolodex) {
-    super(WINDOW_TITLE, customization);
+    super(customization, WINDOW_TITLE);
     
     this.customization = customization;
     this.rolodex = rolodex;
@@ -157,7 +157,7 @@ class PhoneNumberEditPanel {
     
     // Create the controls.
     phoneNumberTextField = componentFactory.createObjectControlString(null, 300, true, "Enter the phone number");
-    connectionTypeTextField =componentFactory.createObjectControlEnumComboBox(ConnectionType.VAST, null, true, "Enter the kind of connection");
+    connectionTypeTextField =componentFactory.createObjectControlEnumComboBox(ConnectionType.VAST, true, "Enter the kind of connection");
 //    connectionTypeTextField = new ObjectInputConnectionType(ROLODEX_PACKAGE.getConnectionType(), true, "Enter the kind of connection");
     descriptionTextField = componentFactory.createObjectControlString(null, 300, true, "Enter a description");
     objectControlGroup = new ObjectControlGroup();

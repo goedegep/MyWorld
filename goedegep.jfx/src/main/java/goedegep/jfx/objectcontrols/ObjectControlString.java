@@ -4,12 +4,10 @@ import java.util.Objects;
 import java.util.logging.Logger;
 
 import goedegep.jfx.CustomizationFx;
-import goedegep.util.PgUtilities;
 import javafx.scene.control.TextField;
 
 // TODO why do I have this, instead of using ObjectControlTextField?
 public class ObjectControlString extends ObjectControlTemplate<String> {
-  @SuppressWarnings("unused")
   private static final Logger         LOGGER = Logger.getLogger(ObjectControlString.class.getName());
   
   /**
@@ -27,7 +25,7 @@ public class ObjectControlString extends ObjectControlTemplate<String> {
    * @param toolTipText an optional tooltip text.
    */
   public ObjectControlString(CustomizationFx customization, String initialValue, double width, boolean isOptional, String toolTipText) {
-    super(isOptional);
+    super(customization, isOptional);
     
     textField = customization.getComponentFactoryFx().createTextField(width, toolTipText);
 
@@ -59,24 +57,6 @@ public class ObjectControlString extends ObjectControlTemplate<String> {
     return textField;
   }
 
-//  /**
-//   * {@inheritDoc}
-//   */
-//  @Override
-//  public boolean isChanged() {
-//    // For Strings we handle an empty String as equal to null.
-//    if (((value != null)  &&  value.isEmpty())  &&
-//        (referenceValue == null)) {
-//      return false;
-//    }
-//    
-//    if (((referenceValue != null)  &&  referenceValue.isEmpty()) &&
-//        (value == null)) {
-//      return false;
-//    }
-//    return !PgUtilities.equals(value, referenceValue);
-//  }
-  
   /**
    * {@inheritDoc}
    */

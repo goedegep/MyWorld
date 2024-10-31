@@ -49,7 +49,7 @@ public class SaveModifiedPhotosDialog extends Dialog<ButtonType> {
 
     componentFactory = customization.getComponentFactoryFx();
     
-    createGUI(ownerWindow);
+    createGUI();
     setResizable(true);
   }
   
@@ -74,7 +74,7 @@ public class SaveModifiedPhotosDialog extends Dialog<ButtonType> {
   /*
    * Create the GUI.
    */
-  private void createGUI(Stage ownerWindow) {
+  private void createGUI() {
     setHeaderText("Select the photos to be saved.");
     
     VBox vBox = componentFactory.createVBox(12.0);

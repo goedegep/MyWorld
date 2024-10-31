@@ -12,26 +12,26 @@ public interface MutableXTreeNode extends XTreeNode {
    * {@inheritDoc}
    */
   @Override
-  public MutableXTreeNode getParent();
+  MutableXTreeNode getParent();
   
   /**
    * Set the parent node of this node.
    * 
    * @param parent the new value for the parent node, which may be null.
    */
-  public void setParent(MutableXTreeNode parent);
+  void setParent(MutableXTreeNode parent);
 
   /**
    * {@inheritDoc}
    */
   @Override
-  public MutableXTreeNode getFirstChild();
+  MutableXTreeNode getFirstChild();
   
   /**
    * {@inheritDoc}
    */
   @Override
-  public MutableXTreeNode getLastChild();
+  MutableXTreeNode getLastChild();
   
   
   /**
@@ -39,160 +39,43 @@ public interface MutableXTreeNode extends XTreeNode {
    * 
    * @param firstChild the new value for the first child, which may be null.
    */
-  public void setFirstChild(MutableXTreeNode firstChild);
+  void setFirstChild(MutableXTreeNode firstChild);
 
 
   /**
    * {@inheritDoc}
    */
   @Override
-  public MutableXTreeNode getNextSibling();
+  MutableXTreeNode getNextSibling();
 
   /**
    * {@inheritDoc}
    */
   @Override
-  public MutableXTreeNode getLastSibling();
+  MutableXTreeNode getLastSibling();
   
   /**
    * Set the next sibling node of this node.
    * 
    * @param nextSibling the new value for the next sibling, which may be null.
    */
-  public void setNextSibling(MutableXTreeNode nextSibling);
+  void setNextSibling(MutableXTreeNode nextSibling);
 
   /*
    * Getting data from a node.
    */
-//
-//  /**
-//   * Get the data type of a node.
-//   * 
-//   * @return The data type of the node.
-//   */
-//  public XNodeDataType getDataType();
-//
-//  /**
-//   * Get the size of the data stored in a node.
-//   * In this Java API this method only works for the BLOB data type.
-//   * 
-//   * @return The size of the data in the node.
-//   */
-//  public int getDataSize();
-//  
-//  /**
-//   * Get the data from a node.
-//   * 
-//   * @return the data from this node.
-//   */
-//  public Object getData();
-//
-//  /**
-//   * Get the data from a node of type TAG.
-//   * <p>
-//   * An UnsupportedOperationException will be thrown if this method is called on a node which isn't of type TAG.
-//   * 
-//   * @return the TAG data from this node, which is never null.
-//   */
-//  public XTreeTag getTagData();
-//
-//  /**
-//   * Get the data from a node of type BOOLEAN.
-//   * <p>
-//   * An UnsupportedOperationException will be thrown if this method is called on a node which isn't of type BOOLEAN.
-//   * 
-//   * @return the BOOLEAN data from this node.
-//   */
-//  public boolean getBooleanData();
-//
-//  /**
-//   * Get the data from a node of type INTEGER.
-//   * <p>
-//   * An UnsupportedOperationException will be thrown if this method is called on a node which isn't of type INTEGER.
-//   * 
-//   * @return the INTEGER data from this node.
-//   */
-//  public int getIntegerData();
-//
-//  /**
-//   * Get the data from a node of type STRING.
-//   * <p>
-//   * An UnsupportedOperationException will be thrown if this method is called on a node which isn't of type STRING.
-//   * 
-//   * @return the STRING data from this node, which is never null.
-//   */
-//  public String getStringData();
-//
-//  /**
-//   * Get the data from a node of type BLOB.
-//   * <p>
-//   * An UnsupportedOperationException will be thrown if this method is called on a node which isn't of type BLOB.
-//   * 
-//   * @return the BLOB data from this node, which is never null.
-//   */
-//  public byte[] getBlobData();
-//
-//  /**
-//   * Get the data, of type TAG, from the first child node of this node.
-//   * <p>
-//   * An UnsupportedOperationException will be thrown if this method is called on a node of which the first child node isn't of type TAG.
-//   * 
-//   * @return the TAG data of the first child of this node, which is never null.
-//   */
-//  public XTreeTag getTagChildData();
-//  
-//  /**
-//   * Get the data, of type BOOLEAN, from the first child node of this node.
-//   * <p>
-//   * An UnsupportedOperationException will be thrown if this method is called on a node of which the first child node isn't of type BOOLEAN.
-//   * 
-//   * @return the BOOLEAN data of the first child of this node.
-//   */
-//  public boolean getBooleanChildData();
-//
-//  /**
-//   * Get the data, of type INTEGER, from the first child node of this node.
-//   * <p>
-//   * An UnsupportedOperationException will be thrown if this method is called on a node of which the first child node isn't of type INTEGER.
-//   * 
-//   * @return the INTEGER data of the first child of this node.
-//   */
-//  public int getIntegerChildData();
-//
-//  /**
-//   * Get the data, of type STRING, from the first child node of this node.
-//   * <p>
-//   * An UnsupportedOperationException will be thrown if this method is called on a node of which the first child node isn't of type STRING.
-//   * 
-//   * @return the STRING data of the first child of this node, which is never null.
-//   */
-//  public String getStringChildData();
-//
-//  /**
-//   * Get the data, of type BLOB, from the first child node of this node.
-//   * <p>
-//   * An UnsupportedOperationException will be thrown if this method is called on a node of which the first child node isn't of type BLOB.
-//   * 
-//   * @return the BLOB data of the first child of this node, which is never null.
-//   */
-//  public byte[] getBlobChildData();
 
   /*
    * Adding nodes and changing node values.
    */
-  
-//  /**
-//   * Remove all children from the node.
-//   */
-//  public void clearChildren();
-  
+    
   /**
    * Add a node as the last child of this node.
    * 
    * @param newNode the node to be added as a child of this node.
    * @return newNode
    */
-  public default MutableXTreeNode addChild(MutableXTreeNode newNode) {
+  default MutableXTreeNode addChild(MutableXTreeNode newNode) {
     if (!hasChild()) {
       // No child yet, so add as first child.
       setFirstChild(newNode);
@@ -216,7 +99,7 @@ public interface MutableXTreeNode extends XTreeNode {
    *
    * @return The new node, or null if this could not be created.
    */
-  public MutableXTreeNode addTagChild(XTreeTag data);
+  MutableXTreeNode addTagChild(XTreeTag data);
   
   /**
    * Create a node of type 'BOOLEAN' and add this node to the tree as a child of a this node.
@@ -228,7 +111,7 @@ public interface MutableXTreeNode extends XTreeNode {
    *
    * @return The new node, or null if this could not be created.
    */
-  public MutableXTreeNode addBooleanChild(boolean data);
+  MutableXTreeNode addBooleanChild(boolean data);
     
   /**
    * Create a node of type 'INTEGER' and add this node to the tree as a child of this node.
@@ -240,7 +123,7 @@ public interface MutableXTreeNode extends XTreeNode {
    *
    * @return The new node, or null if this could not be created.
    */
-  public MutableXTreeNode addIntegerChild(int data);
+  MutableXTreeNode addIntegerChild(int data);
   
   /**
    * Create a node of type 'STRING' and add this node to the tree as a child of this node.
@@ -252,7 +135,7 @@ public interface MutableXTreeNode extends XTreeNode {
    *
    * @return The new node, or null if this could not be created.
    */
-  public MutableXTreeNode addStringChild(String data);
+  MutableXTreeNode addStringChild(String data);
 
   /**
    * Create a node of type 'BLOB' and add this node to the tree as a child of this node.
@@ -264,7 +147,7 @@ public interface MutableXTreeNode extends XTreeNode {
    *
    * @return The new node, or null if this could not be created.
    */
-  public MutableXTreeNode addBlobChild(byte[] data);
+  MutableXTreeNode addBlobChild(byte[] data);
 
   /**
    * Add a node as the next sibling of this node.
@@ -272,7 +155,7 @@ public interface MutableXTreeNode extends XTreeNode {
    * @param newNode the node to be added as a next sibling of this node.
    * @return newNode
    */
-  public default MutableXTreeNode appendSibling(MutableXTreeNode newNode) {
+  default MutableXTreeNode appendSibling(MutableXTreeNode newNode) {
     
     newNode.setParent((MutableXTreeNode) this.getParent());
     newNode.setNextSibling((MutableXTreeNode) this.getNextSibling());
@@ -291,7 +174,7 @@ public interface MutableXTreeNode extends XTreeNode {
    *
    * @return The new node, or null if this could not be created.
    */
-  public MutableXTreeNode appendTagSibling(XTreeTag data);
+  MutableXTreeNode appendTagSibling(XTreeTag data);
   /**
    * Create a node of type 'BOOLEAN' and add this node to the tree as a sibling of this node.
    * The node is added AFTER this node.
@@ -301,7 +184,7 @@ public interface MutableXTreeNode extends XTreeNode {
    *
    * @return The new node, or null if this could not be created.
    */
-  public MutableXTreeNode appendBooleanSibling(boolean data);
+  MutableXTreeNode appendBooleanSibling(boolean data);
   
   /**
    * Create a node of type 'INTEGER' and add this node to the tree as a sibling of this node.
@@ -312,7 +195,7 @@ public interface MutableXTreeNode extends XTreeNode {
    *
    * @return The new node, or null if this could not be created.
    */
-  public MutableXTreeNode appendIntegerSibling(int data);
+  MutableXTreeNode appendIntegerSibling(int data);
   
   /**
    * Create a node of type 'STRING' and add this node to the tree as a sibling of this node.
@@ -323,7 +206,7 @@ public interface MutableXTreeNode extends XTreeNode {
    *
    * @return The new node, or null if this could not be created.
    */
-  public MutableXTreeNode appendStringSibling(String data);
+  MutableXTreeNode appendStringSibling(String data);
   
   /**
    * Create a node of type 'BLOB' and add this node to the tree as a sibling of this node.
@@ -334,7 +217,7 @@ public interface MutableXTreeNode extends XTreeNode {
    *
    * @return The new node, or null if this could not be created.
    */
-  public MutableXTreeNode appendBlobSibling(byte[] data);
+  MutableXTreeNode appendBlobSibling(byte[] data);
   
   
   /**
@@ -344,7 +227,7 @@ public interface MutableXTreeNode extends XTreeNode {
    * 
    * @param tagValue the value to be stored in this node, which may not be null.
    */
-  public void setTagData(XTreeTag tagValue);
+  void setTagData(XTreeTag tagValue);
 
   /**
    * Set the value of a node of type BOOLEAN.
@@ -353,7 +236,7 @@ public interface MutableXTreeNode extends XTreeNode {
    * 
    * @param booleanValue the value to be stored in this node.
    */
-  public void setBooleanData(boolean booleanValue);
+  void setBooleanData(boolean booleanValue);
 
   /**
    * Set the value of a node of type INTEGER.
@@ -362,7 +245,7 @@ public interface MutableXTreeNode extends XTreeNode {
    * 
    * @param integerValue the value to be stored in this node.
    */
-  public void setIntegerData(int integerValue);
+  void setIntegerData(int integerValue);
 
   /**
    * Set the value of a node of type STRING.
@@ -371,7 +254,7 @@ public interface MutableXTreeNode extends XTreeNode {
    * 
    * @param stringValue the value to be stored in this node, which may not be null.
    */
-  public void setStringData(String stringValue);
+  void setStringData(String stringValue);
 
   /**
    * Set the value of a node of type BLOB.
@@ -380,7 +263,7 @@ public interface MutableXTreeNode extends XTreeNode {
    * 
    * @param blob the value to be stored in this node, which may not be null.
    */
-  public void setBlobData(byte[] blob);
+  void setBlobData(byte[] blob);
 
   
   /**
@@ -390,5 +273,5 @@ public interface MutableXTreeNode extends XTreeNode {
    * 
    * @return a clone of this node.
    */
-  public MutableXTreeNode cloneNode();
+  MutableXTreeNode cloneNode();
 }

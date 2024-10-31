@@ -33,7 +33,7 @@ public class ObjectControlsDemo extends JfxStage {
   private EditorPanel editorPanel;
   
   public ObjectControlsDemo(CustomizationFx customization) {
-    super("ObjectControls demo", customization);
+    super(customization, "ObjectControls demo");
     
     componentFactory = customization.getComponentFactoryFx();
     

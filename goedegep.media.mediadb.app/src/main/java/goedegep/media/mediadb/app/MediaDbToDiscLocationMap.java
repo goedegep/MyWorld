@@ -313,7 +313,7 @@ public class MediaDbToDiscLocationMap {
               try {
                 Track track = album.getTrackReference(discNr, trackNr).getTrack();
                 TrackReference trackReference = album.getTrackReference(discNr, trackNr);
-                TrackReference originalAlbumTrackReference = trackReference.getOriginalAlbumTrackReference();
+                TrackReference originalAlbumTrackReference = trackReference.getTrack().getOriginalDiscTrackReference();
                 if (originalAlbumTrackReference != null) {
                   MyTrackInfo originalAlbumTrackReferenceMyTrackInfo = originalAlbumTrackReference.getMyTrackInfo();
                   if (originalAlbumTrackReferenceMyTrackInfo != null) {
@@ -615,10 +615,6 @@ public class MediaDbToDiscLocationMap {
    */
   private TrackOnDiscInfo findTrackInTracksOnDiscInfo(TrackReference trackReference, List<TrackOnDiscInfo> tracksOnDiscInfo) {
     String trackFileNameByConvention = MediaDbAppUtil.generateTrackFileNameForATrackInATracksFolder(trackReference.getTrack(), mediaDb);
-    
-    if (trackFileNameByConvention.contains("Suicide Blonde")) {
-      LOGGER.severe("STOP");
-    }
 
     for (TrackOnDiscInfo trackOnDiscInfo: tracksOnDiscInfo) {
       // first only check on filename, if a match, check the folder.
@@ -708,7 +704,7 @@ public class MediaDbToDiscLocationMap {
     }
     
     for (TrackReference trackReference: referredAlbum.getDiscs().get(0).getTrackReferences()) {
-      TrackReference originalAlbumTrackReference = trackReference.getOriginalAlbumTrackReference();
+      TrackReference originalAlbumTrackReference = trackReference.getTrack().getOriginalDiscTrackReference();
       if (originalAlbumTrackReference != null) {
         int referredTrackNr = originalAlbumTrackReference.getTrackNr();
         LOGGER.info("referredTrackNr: " + referredTrackNr);
@@ -810,7 +806,7 @@ public class MediaDbToDiscLocationMap {
     String expectedTrackFileName;
 
     if (myCompilation) {
-      TrackReference originalAlbumTrackReference = trackReference.getOriginalAlbumTrackReference();
+      TrackReference originalAlbumTrackReference = trackReference.getTrack().getOriginalDiscTrackReference();
       if (originalAlbumTrackReference != null) {
         // If MyTrackReferenceInfo is available, the name shall be the name which is derived from this information.
         expectedTrackFileName = MediaDbAppUtil.generateTrackFileNameForMyCompilationAlbum(originalAlbumTrackReference, mediaDb);

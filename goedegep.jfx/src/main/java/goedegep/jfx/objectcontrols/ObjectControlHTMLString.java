@@ -21,8 +21,8 @@ public class ObjectControlHTMLString extends ObjectControlTemplate<String> {
    * @param isOptional Indicates whether the control is optional (if true) or mandatory.
    * @param toolTipText An optional ToolTip text.
    */
-  public ObjectControlHTMLString(CustomizationFx customization, String text, double width, boolean isOptional, String toolTipText) {
-    super(isOptional);
+  public ObjectControlHTMLString(CustomizationFx customization, String text, boolean isOptional) {
+    super(customization, isOptional);
     
     htmlEditor = customization.getComponentFactoryFx().createHTMLEditor();
     htmlEditor.addEventHandler(InputEvent.ANY, (e) -> ociHandleNewUserInput(htmlEditor));

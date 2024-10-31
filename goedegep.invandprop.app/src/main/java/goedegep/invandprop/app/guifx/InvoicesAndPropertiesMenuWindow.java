@@ -92,7 +92,7 @@ public class InvoicesAndPropertiesMenuWindow extends JfxStage {
    * @param customization GUI customization.
    */
   public InvoicesAndPropertiesMenuWindow(CustomizationFx customization) {
-    super(WINDOW_TITLE, customization);
+    super(customization, WINDOW_TITLE);
     
     this.customization = customization;
     
@@ -193,7 +193,7 @@ public class InvoicesAndPropertiesMenuWindow extends JfxStage {
     
     button = componentFactory.createButton("New Invoice and/or Property", "Create a new invoice and the related property");
     GridPane.setHalignment(button, HPos.CENTER);
-    button.setOnAction(e -> new InvoiceAndPropertyEditor(customization, invoicesAndProperties).runEditor());
+    button.setOnAction(e -> InvoiceAndPropertyEditor.newInstance(customization, invoicesAndProperties).show());
     grid.add(button, 0, 2, 2, 1);
     
 

@@ -27,7 +27,7 @@ public class PhotoEditor extends JfxStage {
   private ImageView imageView = new ImageView();
 
   public PhotoEditor(CustomizationFx customization) {
-    super(WINDOW_TITLE, customization);
+    super(customization, WINDOW_TITLE);
     
     imageView.setFitWidth(1600);
     imageView.setPreserveRatio(true);
@@ -146,7 +146,7 @@ public class PhotoEditor extends JfxStage {
         if (ySource > sourceImageHeight - 1) ySource = sourceImageHeight - 1;
         if (ySource < 0) ySource = 0;
         
-        Color color = pixelReader.getColor((int) (xSource), (int )(ySource));
+        Color color = pixelReader.getColor((int) xSource, (int )ySource);
 //        if (Math.abs(xDestIndex) < 5  &&  Math.abs(yDestIndex) < 5) {
 //          LOGGER.severe(quadrant + " : " + xSource + " : " + ySource + " : " + x + " : " + y);
 //        }

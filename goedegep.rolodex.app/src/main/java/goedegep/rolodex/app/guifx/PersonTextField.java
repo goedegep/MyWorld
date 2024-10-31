@@ -20,7 +20,7 @@ public class PersonTextField extends ObjectControlAutoCompleteTextField<String> 
    * Constructor.
    */
   public PersonTextField(CustomizationFx customization, Rolodex rolodex) {
-    super(customization, null, 300, false, "Enter the name of a person");
+    super(customization, 300, false, "Enter the name of a person");
     
     this.rolodex = rolodex;
     
@@ -28,16 +28,8 @@ public class PersonTextField extends ObjectControlAutoCompleteTextField<String> 
     getControl().getEntries().addAll(personsToString(rolodex.getPersonList().getPersons()));
   }
   
-//  /**
-//   * {@inheritDoc}
-//   */
-//  @Override
-//  public boolean isDataValid() {
-//    return (!getMatchingPersons().isEmpty());
-//  }
-  
   public boolean isNonExistingPersonName() {
-    if (isFilledIn() && (getMatchingPersons().isEmpty())) {
+    if (isFilledIn() && getMatchingPersons().isEmpty()) {
       return true;
     } else {
       return false;

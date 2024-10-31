@@ -21,7 +21,7 @@ public enum XTreeTag {
       this.value = (short) value;
   }
   
-  public final short getValue() {
+  public short getValue() {
       return value;
   }
   

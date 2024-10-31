@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.function.Supplier;
 import java.util.logging.Logger;
 
-import goedegep.jfx.ComponentFactoryFx;
 import goedegep.jfx.CustomizationFx;
 import javafx.scene.control.Button;
 import javafx.stage.FileChooser;
@@ -29,13 +28,13 @@ import javafx.stage.FileChooser.ExtensionFilter;
  * </li>
  * </ul>
  * By providing separate controls (instead of e.g. a Node containing the controls) there is complete freedom in using the
- * controls in a GUI.<br/>
+ * controls in a GUI.
  * 
- * <b>File types (filters on file extensions)</b><br/>
- * You can add file types via the method {@code addFileType()}.<br/>
+ * <h4>File types (filters on file extensions)</h4>
+ * You can add file types via the method {@code addFileType()}.
  *
- * <b>Prefix</b><br/>
- * You can set a prefix, which is a base path for the selected file.
+ * <h4>Prefix</h4>
+ * You can set a prefix, which is a base path for the selected file.<br/>
  * In this case {@code setValue()} still expects an absolute path and {@code getValue()} still returns an absolute path.
  * But:
  * <ul>
@@ -49,14 +48,7 @@ import javafx.stage.FileChooser.ExtensionFilter;
 public class ObjectControlFileSelecter extends ObjectControlFileOrFolderSelecterAbstract {
   @SuppressWarnings("unused")
   private static final Logger LOGGER = Logger.getLogger(ObjectControlFileSelecter.class.getName());
-  
-  private ComponentFactoryFx componentFactory;
 
-  /**
-   * The title of the FileChooser.
-   */
-  private String fileChooserTitle = null;
-  
   /**
    * Distinguish between an open or save dialog.
    * <p>
@@ -106,11 +98,7 @@ public class ObjectControlFileSelecter extends ObjectControlFileOrFolderSelecter
    */
   public ObjectControlFileSelecter(CustomizationFx customization, int textFieldWidth, String textFiedlToolTipText,
       String fileChooserButtonText, String fileChooserButtonToolTipText, String fileChooserTitle, boolean isOptional) {
-    super(customization, textFieldWidth, textFiedlToolTipText, isOptional);
-    
-    this.fileChooserTitle = fileChooserTitle;
-    
-    componentFactory = customization.getComponentFactoryFx();
+    super(customization, textFieldWidth, textFiedlToolTipText, fileChooserTitle, isOptional);
 
     fileChooserButton = componentFactory.createButton(fileChooserButtonText, fileChooserButtonToolTipText);
     fileChooserButton.setOnAction(actionEvent -> handleFileChooserButtonPressed());
@@ -179,7 +167,7 @@ public class ObjectControlFileSelecter extends ObjectControlFileOrFolderSelecter
    */
   private void handleFileChooserButtonPressed() {
     if (fileChooser == null) {
-      fileChooser = componentFactory.createFileChooser(fileChooserTitle);
+      fileChooser = componentFactory.createFileChooser(fileOrFolderChooserTitle);
 
       if (!extensionFilters.isEmpty()) {
         fileChooser.getExtensionFilters().addAll(extensionFilters);
@@ -189,12 +177,10 @@ public class ObjectControlFileSelecter extends ObjectControlFileOrFolderSelecter
       }
     }
     
-    if (getValue() != null) {  // If there is a valid file value.
+    if (getValue() != null) {  // If there is a valid File value.
       File folder = getValue().getParentFile();
-      LOGGER.info("Setting initial directory: " + folder.getAbsolutePath());
       fileChooser.setInitialDirectory(folder);
-      LOGGER.info("Setting initial file name: " + getValue().getName());
-      fileChooser.setInitialFileName(getValue().getName());
+      // Setting the file with fileChooser.setInitialFileName(getValue().getName()); doesn't work on Windows.
     } else {
       if (initialFolderSupplier != null) {
         String initialFolderName = initialFolderSupplier.get();
@@ -225,8 +211,8 @@ public class ObjectControlFileSelecter extends ObjectControlFileOrFolderSelecter
   @Override
   public boolean ociDetermineFilledIn(Object source) {
     if (source == pathTextField) {
-      return ((pathTextField.textProperty().get() != null  &&  !pathTextField.textProperty().get().isEmpty())  ||
-          fileSelectedByFileChooser != null);
+      return (pathTextField.textProperty().get() != null  &&  !pathTextField.textProperty().get().isEmpty())  ||
+          fileSelectedByFileChooser != null;
     } else {
       return fileSelectedByFileChooser != null;
     }

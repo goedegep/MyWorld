@@ -331,27 +331,28 @@ public class FileUtils {
     MessageDigest md;
     try {
       md = MessageDigest.getInstance("MD5");
-      
-      FileInputStream fis = new FileInputStream(fileName);
 
-      byte[] dataBytes = new byte[1024];
+      try (FileInputStream fis = new FileInputStream(fileName)) {
 
-      int nread = 0;
-      while ((nread = fis.read(dataBytes)) != -1) {
-        md.update(dataBytes, 0, nread);
+        byte[] dataBytes = new byte[1024];
+
+        int nread = 0;
+        while ((nread = fis.read(dataBytes)) != -1) {
+          md.update(dataBytes, 0, nread);
+        }
+        byte[] mdbytes = md.digest();
+        StringBuffer sb = new StringBuffer();
+        for (int i = 0; i < mdbytes.length; i++) {
+          sb.append(Integer.toString((mdbytes[i] & 0xff) + 0x100, 16).substring(1));
+        }
+        fis.close();
+
+        return sb.toString();
       }
-      byte[] mdbytes = md.digest();
-      StringBuffer sb = new StringBuffer();
-      for (int i = 0; i < mdbytes.length; i++) {
-        sb.append(Integer.toString((mdbytes[i] & 0xff) + 0x100, 16).substring(1));
-      }
-      fis.close();
-
-      return sb.toString();
     } catch (NoSuchAlgorithmException e) {
       e.printStackTrace();
     }
-    
+
     return null;
   }
 
@@ -373,7 +374,7 @@ public class FileUtils {
    * @return
    */
   public static boolean isM2tsFile(Path file, boolean ignoreCase) {
-    String fileExtension = FileUtils.getFileExtension(file);
+    String fileExtension = getFileExtension(file);
     
     if (fileExtension == null) {
       return false;
@@ -389,27 +390,51 @@ public class FileUtils {
   }
 
   public static boolean isWindowsMediaAudioFile(Path file) {
-    String fileExtension = FileUtils.getFileExtension(file);
+    String fileExtension = getFileExtension(file);
     fileExtension = fileExtension.toLowerCase();
     return ".wma".equals(fileExtension);
   }
 
   public static boolean isMpeg4AudioFile(Path file) {
-    String fileExtension = FileUtils.getFileExtension(file);
+    String fileExtension = getFileExtension(file);
     fileExtension = fileExtension.toLowerCase();
     return ".m4a".equals(fileExtension);
   }
 
   /**
-   * Check whether the file is an audio  WAV file, based on the filename extension.
+   * Check whether the file is an audio WAV file, based on the filename extension.
    * 
    * @param file the file to be checked.
-   * @return true if the file is an audio file, false otherwise
+   * @return true if the file is a WAV file, false otherwise
    */
   public static boolean isWavFile(Path file) {
-    String fileExtension = FileUtils.getFileExtension(file);
+    String fileExtension = getFileExtension(file);
     fileExtension = fileExtension.toLowerCase();
     return ".wav".equals(fileExtension);
+  }
+
+  /**
+   * Check whether the file is an audio MP3 file, based on the filename extension.
+   * 
+   * @param file the file to be checked.
+   * @return true if the file is an MP3 file, false otherwise
+   */
+  public static boolean isMP3File(Path file) {
+    String fileExtension = getFileExtension(file);
+    fileExtension = fileExtension.toLowerCase();
+    return ".mp3".equals(fileExtension);
+  }
+
+  /**
+   * Check whether the file is an audio flac file, based on the filename extension.
+   * 
+   * @param file the file to be checked.
+   * @return true if the file is a flac file, false otherwise
+   */
+  public static boolean isFlacFile(Path file) {
+    String fileExtension = getFileExtension(file);
+    fileExtension = fileExtension.toLowerCase();
+    return ".flac".equals(fileExtension);
   }
 
   /**
@@ -598,6 +623,21 @@ public class FileUtils {
       return false;
     }
   }
+
+  /**
+   * Check whether a file is an OpenDocument Text file (based on its extension).
+   * 
+   * @param fileName a filename. This value may not be null.
+   * @return true is the file is a OpenDocument Text file, false otherwise.
+   */
+  public static boolean isODTFile(String fileName) {
+    String fileExtension = getFileExtension(fileName);
+    if (fileExtension != null) {
+      return fileExtension.equalsIgnoreCase(".odt");
+    } else {
+      return false;
+    }
+  }
   
   /**
    * Check whether a file is a GPX file (based on its extension).
@@ -615,7 +655,7 @@ public class FileUtils {
    * @param fileName a fileName. This value may not be null.
    * @return true is the file is a GPX file, false otherwise.
    */
-  private static boolean isGpxFile(String fileName) {
+  public static boolean isGpxFile(String fileName) {
     String fileExtension = getFileExtension(fileName);
     return GPX_EXTENSION .equals(fileExtension);
   }
@@ -628,7 +668,7 @@ public class FileUtils {
   /**
    * Get the path (as String) of a file or folder relative to some base folder.<br/>
    * Example:<br/>
-   * referenceFolder: "C:\aFolder\SomeSubfolder"<br/>
+   * referenceFolder: "C:\aFolder\SomeSubfolder\"<br/>
    * fileName: "C:\aFolder\SomeSubfolder\myDir\myFile.ext"<br/>
    * returns: "myDir\myFile.ext"
    * 
@@ -638,11 +678,12 @@ public class FileUtils {
    */
   public static String getPathRelativeToFolder(String referenceFolder, String fileName) {
     LOGGER.info("=> referenceFolder=" + referenceFolder + ", file" + fileName);
+    if (!referenceFolder.endsWith("/")  &&  !referenceFolder.endsWith("\\")) {
+      throw new RuntimeException("referenceFolder has to end with a '/' or '\\'. referenceFolder is: '" + referenceFolder + "'");
+    }
     
-    File file = new File(fileName);
-      
     if (fileName.startsWith(referenceFolder)  &&  fileName.length() >= referenceFolder.length() + 1) {
-      String strippedName = fileName.substring(referenceFolder.length() + 1);  // +1 for the '/' between referenceFolder and the rest of the path.
+      String strippedName = fileName.substring(referenceFolder.length());
       LOGGER.info("<= " + strippedName);
       return strippedName;
     } else {
@@ -678,7 +719,7 @@ public class FileUtils {
         if (Files.isDirectory(file)) {
           LOGGER.severe("Skipping directory");
         } else {
-          if (FileUtils.isAudioFile(file)) {
+          if (isAudioFile(file)) {
             LOGGER.severe("Audio file");            
             String fileName = file.getFileName().toString();
             LOGGER.fine("fileName: " + fileName);
@@ -711,7 +752,7 @@ public class FileUtils {
     try {
       dateTime = LocalDateTime.parse(fileName, fileNameDateTimeFormat);
     } catch (DateTimeParseException e) {
-      // No action.
+      return null;
     }
     return dateTime;
   }
@@ -749,8 +790,8 @@ public class FileUtils {
     
     // webp file are often namen name.jpg.webp
     // In that case only the .webp extension is removed.
-    String convertedFileName = FileUtils.getFileNameWithoutExtension(file);
-    String extension = FileUtils.getFileExtension(convertedFileName);
+    String convertedFileName = getFileNameWithoutExtension(file);
+    String extension = getFileExtension(convertedFileName);
     if (!DEFAULT_JPEG_EXTENSION.equals(extension)) {
       convertedFileName = convertedFileName + DEFAULT_JPEG_EXTENSION;
     }

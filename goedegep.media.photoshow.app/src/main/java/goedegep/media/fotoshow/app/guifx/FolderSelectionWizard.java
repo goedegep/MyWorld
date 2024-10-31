@@ -73,7 +73,7 @@ public class FolderSelectionWizard extends Dialog<ButtonType> {
 
     componentFactory = customization.getComponentFactoryFx();
     
-    createGUI(ownerWindow, initiallySelectedFolder);
+    createGUI(initiallySelectedFolder);
     setResizable(true);
   }
   
@@ -115,7 +115,7 @@ public class FolderSelectionWizard extends Dialog<ButtonType> {
   /*
    * Create the GUI.
    */
-  private void createGUI(Stage ownerWindow, String initiallySelectedFolder) {
+  private void createGUI(String initiallySelectedFolder) {
     setHeaderText("Select the folder of which the sub folders contain the photos.");
     
     GridPane wizardPanel = componentFactory.createGridPane();
@@ -207,7 +207,7 @@ public class FolderSelectionWizard extends Dialog<ButtonType> {
       photoFolders.clear();
     }
     
-    okButton.setDisable(photoFolders != null ? photoFolders.isEmpty() : true);
+    okButton.setDisable(photoFolders == null  ||  photoFolders.isEmpty());
     
     StringBuilder buf = new StringBuilder();
     if (photoFolders != null) {

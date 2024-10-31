@@ -116,7 +116,7 @@ public class EObjectTreeCell extends TreeCell<Object> {
     // Update the helper if this cell is associated to a different tree item.
     TreeItem<?> newTreeItem = getTreeItem();
     if (currentTreeItem == null  ||  currentTreeItem != newTreeItem) {
-      updateTreeCellHelper(value);
+      updateTreeCellHelper();
     }
     currentTreeItem = newTreeItem;
 
@@ -140,9 +140,7 @@ public class EObjectTreeCell extends TreeCell<Object> {
     LOGGER.info("=>");
     
     EObjectTreeItem eObjectTreeItem = (EObjectTreeItem) getTreeItem();
-    if (eObjectTreeItem == null) {
-      return;
-    } else {
+    if (eObjectTreeItem != null) {
       eObjectTreeItem.handleDragDetected(event, this);
     }
   }
@@ -209,175 +207,12 @@ public class EObjectTreeCell extends TreeCell<Object> {
       LOGGER.info("=>");
       
       EObjectTreeItem eObjectTreeItem = (EObjectTreeItem) getTreeItem();
-      if (eObjectTreeItem == null) {
-        return;
-      } else {
+      if (eObjectTreeItem != null) {
         eObjectTreeItem.handleDragDropped(dragEvent);
-        return;
       }
       
-//      boolean success = false;
-//      
-//      EObject sourceEObject = getSourceObject(dragEvent.getDragboard());
-//      
-//      Dragboard dragboard = dragEvent.getDragboard();
-//      dragboard.getContent(EOBJECT_PATH);
-//      
-//      if (sourceEObject != null) {        
-//        // Check that this node isn't the sourceNode, as you cannot cut and paste an object to itself. If so throw an exception as this shouldn't happen, as it is checked on drag entered.
-//        EObjectTreeItem thisEObjectTreeItem = (EObjectTreeItem)  getTreeItem();        
-//        EObjectTreeItemContent thisEObjectTreeItemContent = thisEObjectTreeItem.getValue();
-//        Object thisObject = thisEObjectTreeItemContent.getObject();
-//        LOGGER.info("thisObject=" + thisObject.toString());
-//        if (thisObject.equals(sourceEObject)) {
-//          throw new RuntimeException("Cannot cut and past object to itself: object=" + sourceEObject.toString());
-//        }
-//        
-//        treeCellHelper.handleDragDropped(dragEvent, sourceEObject, thisEObjectTreeItem);
-//                
-////        EStructuralFeature thisStructuralFeature = thisEObjectTreeItemContent.getEStructuralFeature();
-////        if (thisStructuralFeature != null) {
-////          LOGGER.info("contentStructuralFeature=" + thisStructuralFeature.toString());
-////          if (thisStructuralFeature instanceof EReference) {
-////            EReference contentEReference = (EReference) thisStructuralFeature;
-////            EClass contentReferenceType = contentEReference.getEReferenceType();
-////            if (contentReferenceType.isSuperTypeOf(sourceEObject.eClass())) {
-////              LOGGER.info("Yes it is a supertype");
-////              
-////              handleCutForDragAndDrop(dragEvent, sourceEObject);
-////              
-////              @SuppressWarnings("unchecked")
-////              EList<Object> contentEList = (EList<Object>) thisObject;
-////              contentEList.add(sourceEObject);
-////              thisEObjectTreeItem.rebuildChildren();
-////              
-////              success = true;
-////            }
-////          }
-////        } else {
-////          LOGGER.info("Node has no StructuralFeature");
-////          if (sourceEObject.getClass().equals(thisObject.getClass())) {
-////            // this item is either a single value, which can be overwritten, or it is part of a list, so the source can be inserted.
-////            LOGGER.info("Object has same type");
-////            EObjectTreeItem eObjectParentTreeItem = (EObjectTreeItem)  thisEObjectTreeItem.getParent();
-////            EObjectTreeItemContent eObjectParentTreeItemContent = eObjectParentTreeItem.getValue();
-////            EStructuralFeature parentStructuralFeature = eObjectParentTreeItemContent.getEStructuralFeature();
-////            if (parentStructuralFeature != null) {
-////              LOGGER.info("parentStructuralFeature=" + parentStructuralFeature.toString());
-////              if (parentStructuralFeature instanceof EReference) {
-////                EReference parentEReference = (EReference) parentStructuralFeature;
-////                if (parentEReference.isMany()) {
-////                  
-////                  // It is a list, so insert before this item.
-////                  LOGGER.info("Item is part of a list; insert before");
-////                  @SuppressWarnings("unchecked")
-////                  EList<Object> contentEList = (EList<Object>) eObjectParentTreeItemContent.getObject();
-////                  LOGGER.info("contentEList=" + contentEList.toString());
-////                  LOGGER.info("contentObject=" + thisObject.toString());
-////                  int contentObjectIndex = contentEList.indexOf(thisObject);
-////                  LOGGER.info("contentObjectIndex=" + contentObjectIndex);
-////                  if (contentObjectIndex != -1) {
-////                    handleCutForDragAndDrop(dragEvent, sourceEObject);
-////                    contentEList.add(contentEList.indexOf(thisObject), sourceEObject);
-////                    eObjectParentTreeItem.rebuildChildren();
-////
-////                    success = true;
-////                  }
-////               } else {
-////                  // It is a single value, which will be replaced.
-////                  LOGGER.info("Single item; replace");
-////                }
-////              }
-////            }
-////          }
-////        }
-////        LOGGER.info("contentObject=" + thisObject.toString());
-////        if (thisObject instanceof EObject) {
-////          EObject contentEObject = (EObject) thisObject;
-////          LOGGER.info("contentEObject=" + contentEObject.toString());
-////        } else if (thisObject instanceof EReference) {
-////          EReference contentEReference = (EReference) thisObject;
-////          LOGGER.info("contentEReference=" + contentEReference.toString());
-////        } else if (thisObject instanceof EList) {
-////          @SuppressWarnings("unchecked")
-////          EList<Object> contentEList = (EList<Object>) thisObject;
-////          LOGGER.info("contentEList=" + contentEList.toString());
-////        }
-////        
-////      
-//      /* let the source know whether the item was successfully transferred and used */
-//      dragEvent.setDropCompleted(success);
-//      } else {
-//        BiPredicate<EObjectTreeItem, Dragboard> handleDropFunction = ((EObjectTreeView) getTreeView()).getHandleDropFunction();
-//        if (handleDropFunction != null) {
-//          if (handleDropFunction.test((EObjectTreeItem) getTreeItem(), dragEvent.getDragboard())) {
-//            LOGGER.info("Drop successful");
-//          }
-//        }
-//      }
-//
-//      dragEvent.consume();
   }
-  
-//  /**
-//   * Get the source EObject from the dragboard of a DragEvent.
-//   * <p>
-//   * If the specified dragboard has content of type EOBJECT_PATH. This content is used to retrieve the related
-//   * EObject in the tree in which this node is contained.
-//   * 
-//   * @param dragboard a Dragboard
-//   * @return the EObject specified in the EOBJECT_PATH of the content of the <code>dragboard</code>, or null if this content isn't available or doesn't specify a node.
-//   */
-//  private EObject getSourceObject(Dragboard dragboard) {
-//    // Get the EOBJECT_PATH from the drag board, and if it isn't null use it to reconstruct the EObjectPath.
-//    if (dragboard.hasContent(EOBJECT_PATH)) {
-//      ByteBuffer eObjectPathBytes = (ByteBuffer) dragboard.getContent(EOBJECT_PATH);
-//      if (eObjectPathBytes != null) {
-//        LOGGER.info("EObjectPath received!!");
-//        EObjectPath eObjectPath = new EObjectPath(eObjectPathBytes);
-//
-//        // Get the root EObject, which is needed (together with the eObjectPath) to get the source object.
-//        EObjectTreeItem thisEObjectTreeItem = (EObjectTreeItem)  getTreeItem();
-//        EObject rootEObject = thisEObjectTreeItem.getRootEObject();
-//        EObject sourceEObject = eObjectPath.resolveEObjectPath(rootEObject);
-//        
-//        LOGGER.info("Resolved source EObject=" + sourceEObject.toString());
-//        return sourceEObject;
-//      }
-//
-//    }
-//    return null;
-//  }
-  
-//  /**
-//   * Delete the source object of a drag and drop event.
-//   * 
-//   * @param event the Drag and Drop event.
-//   * @param sourceEObject the source object of the Drag and Drop event.
-//   */
-//  private void handleCutForDragAndDrop(DragEvent event, EObject sourceEObject) {
-//    // Remove object from its current location
-//    Object eventSource = event.getGestureSource();
-//    LOGGER.info("event source=" + eventSource);
-//    EObjectTreeCell eventSourceCell = (EObjectTreeCell) eventSource;
-//    EObjectTreeItem eventSourceTreeItem = (EObjectTreeItem) eventSourceCell.getTreeItem();
-//    LOGGER.info("eventSourceTreeItem.value.structuralFeature=" + eventSourceTreeItem.getValue().getEStructuralFeature());
-//    LOGGER.info("eventSourceTreeItem.value.object=" + eventSourceTreeItem.getValue().getObject());
-//    EObjectTreeItem eventSourceParentsTreeItem = (EObjectTreeItem) eventSourceTreeItem.getParent();
-//    LOGGER.info("eventSourceParentsTreeItem.value.structuralFeature=" + eventSourceParentsTreeItem.getValue().getEStructuralFeature());
-//    LOGGER.info("eventSourceParentsTreeItem.value.object=" + eventSourceParentsTreeItem.getValue().getObject());
-//    EStructuralFeature eventSourceParentsStructuralFeature = eventSourceParentsTreeItem.getValue().getEStructuralFeature();
-//    if (eventSourceParentsStructuralFeature instanceof EReference) {
-//      EReference eventSourceParentsReference = (EReference) eventSourceParentsStructuralFeature;
-//      LOGGER.info("eventSourceParentsReference=" + eventSourceParentsReference);
-//      
-//      @SuppressWarnings("unchecked")
-//      EList<Object> sourceParentEList = (EList<Object>) eventSourceParentsTreeItem.getValue().getObject();
-//      sourceParentEList.remove(sourceEObject);
-//      eventSourceParentsTreeItem.rebuildChildren();
-//    }
-//  }
-  
+    
   /**
    * Check whether the information of the dragEvent can be dropped on this tree item and if so return the TransferMode.
    * <p>
@@ -399,7 +234,7 @@ public class EObjectTreeCell extends TreeCell<Object> {
     if (eObjectTreeItem == null) {
       return null;
     } else {
-      return eObjectTreeItem.isDropPossible(dragEvent);
+      return eObjectTreeItem.getTransferModeForDrop(dragEvent);
     }
     
   }
@@ -423,7 +258,7 @@ public class EObjectTreeCell extends TreeCell<Object> {
    * 
    * @param eObjectTreeItemContent the content of the tree item to be rendered by a tree cell.
    */
-  private void updateTreeCellHelper(Object value) {
+  private void updateTreeCellHelper() {
     LOGGER.info("=> EObjectTreeItemType=" + ((EObjectTreeItem) getTreeItem()).getEObjectTreeItemType());
     
     Class<? extends EObjectTreeCellHelper> helperClass = null;

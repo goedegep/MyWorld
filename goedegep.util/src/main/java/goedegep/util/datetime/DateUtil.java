@@ -78,7 +78,7 @@ public final class DateUtil {
    * @return
    */
   public static Date createDate(int day, int month, int year) {
-    return (new GregorianCalendar(year, month - 1, day)).getTime();
+    return new GregorianCalendar(year, month - 1, day).getTime();
   }
   
   /**
@@ -89,7 +89,7 @@ public final class DateUtil {
    * @return
    */
   public static Date createDate(int day, int month, int year, int hour, int minute) {
-    return (new GregorianCalendar(year, month - 1, day, hour, minute)).getTime();
+    return new GregorianCalendar(year, month - 1, day, hour, minute).getTime();
   }
   
   /**
@@ -215,7 +215,7 @@ public final class DateUtil {
     if (startDay <= endDay) {
       days = endDay - startDay;
     } else {
-      days = endDay + (365 - startDay);
+      days = endDay + 365 - startDay;
     }
     
     double fraction = days / 365;

@@ -107,7 +107,7 @@ public class VideoDetailsEditor extends JfxStage {
    * @param mediaDb the media database.
    */
   public VideoDetailsEditor(CustomizationFx customization, MediaDb mediaDb) {
-    super("New video", customization);
+    super(customization, "New video");
     
     this.customization = customization;
     this.mediaDb = mediaDb;

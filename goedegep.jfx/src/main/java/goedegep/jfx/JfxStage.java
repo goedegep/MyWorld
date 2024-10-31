@@ -13,8 +13,15 @@ public class JfxStage extends Stage {
   @SuppressWarnings("unused")
   private static final Logger         LOGGER = Logger.getLogger(JfxStage.class.getName());
   
-  private CustomizationFx customization = null;
-  private ComponentFactoryFx componentFactory = null;
+  /**
+   * The GUI customization.
+   */
+  protected CustomizationFx customization = null;
+  
+  /**
+   * Factory for creating GUI components.
+   */
+  protected ComponentFactoryFx componentFactory = null;
 
   /**
    * Constructor
@@ -22,7 +29,7 @@ public class JfxStage extends Stage {
    * @param owner the owner (parent?) window of this Stage.
    * @param title the title of this Stage.
    */
-  public JfxStage(String title, CustomizationFx customization) {
+  public JfxStage(CustomizationFx customization, String title) {
     if (title != null) {
       setTitle(title);
     }
@@ -39,16 +46,7 @@ public class JfxStage extends Stage {
     
     getIcons().add(this.customization.getResources().getApplicationImage(ImageSize.SIZE_0));
   }
-  
-  /**
-   * Get the customization of this stage.
-   * 
-   * @return the customization of this stage.
-   */
-  public CustomizationFx getCustomization() {
-    return customization;
-  }
-  
+    
   /**
    * Get the look of this stage.
    * 

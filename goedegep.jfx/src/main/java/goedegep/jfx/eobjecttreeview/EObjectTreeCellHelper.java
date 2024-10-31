@@ -18,7 +18,7 @@ public interface EObjectTreeCellHelper {
    * 
    * @param eObjectTreeItemContent the content of the tree item to which this helper is now assigned. This value is never null.
    */
-  public void updateItem(Object value);
+  void updateItem(Object value);
   
   /**
    * The implementation of this method shall perform the content specific work for {@link TreeCell.startEdit}.
@@ -27,7 +27,7 @@ public interface EObjectTreeCellHelper {
    * 
    * @param eObjectTreeCell the cell on which the editing starts.
    */
-  public default void startEdit() {
+  default void startEdit() {
     throw new UnsupportedOperationException();
   }
   
@@ -38,7 +38,7 @@ public interface EObjectTreeCellHelper {
    * 
    * @param eObjectTreeCell the cell on which the editing is to be committed.
    */
-  public default void commitEdit(TreeItem<Object> treeItem, Object newValue) {
+  default void commitEdit(TreeItem<Object> treeItem, Object newValue) {
   }
   
   /**
@@ -48,7 +48,7 @@ public interface EObjectTreeCellHelper {
    * 
    * @param eObjectTreeCell the cell on which the editing is to be cancelled.
    */
-  public default void cancelEdit() {
+  default void cancelEdit() {
   }
   
   /**
@@ -58,18 +58,7 @@ public interface EObjectTreeCellHelper {
    * 
    * @return an, as good as possible, textual representation of the cell.
    */
-  public String getText();
-  
-//  /**
-//   * Check whether a move drop of a source EObject is possible on this cell.
-//   * 
-//   * @param sourceEObject the EObject that is to be moved.
-//   * @return true if the <code>sourceEObject</code> can be moved to this cell, false otherwise.
-//   */
-//  public default boolean isDropPossible(EObject sourceEObject, EObjectTreeItem thisEObjectTreeItem) {
-//    System.out.println("Drop possible not supported for: " + getClass().getName());
-//    return false;
-//  }
+  String getText();
   
   /**
    * Handle a move drop of a source EObject to this cell.
@@ -78,7 +67,7 @@ public interface EObjectTreeCellHelper {
    * @param sourceEObject the EObject that is to be moved.
    * @param thisEObjectTreeItem this EObjectTreeItem.
    */
-  public default void handleDragDropped(DragEvent dragEvent, EObject sourceEObject, EObjectTreeItem thisEObjectTreeItem) {
+  default void handleDragDropped(DragEvent dragEvent, EObject sourceEObject, EObjectTreeItem thisEObjectTreeItem) {
     System.out.println("Drag drop not supported for: " + getClass().getName());
   }
 }

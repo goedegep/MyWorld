@@ -100,6 +100,7 @@ public class KmlFileImporter {
     kmlCategoryToPOICategoryIdMap.put("Bakkerij", POICategoryId.SHOP);
     kmlCategoryToPOICategoryIdMap.put("Bar", POICategoryId.BAR);
     kmlCategoryToPOICategoryIdMap.put("Barbecue", POICategoryId.RESTAURANT);
+    kmlCategoryToPOICategoryIdMap.put("Bergkabelbaan", POICategoryId.CABLE_CAR);
     kmlCategoryToPOICategoryIdMap.put("Cultureel monument", POICategoryId.MONUMENT);
     kmlCategoryToPOICategoryIdMap.put("Station bergspoorweg", POICategoryId.RAILWAY_STATION);
     kmlCategoryToPOICategoryIdMap.put("Boerenmarkt", POICategoryId.MARKET);
@@ -114,8 +115,10 @@ public class KmlFileImporter {
     kmlCategoryToPOICategoryIdMap.put("Herberg", POICategoryId.GUESTHOUSE);
     kmlCategoryToPOICategoryIdMap.put("Historisch herkenningspunt", POICategoryId.DEFAULT_POI);
     kmlCategoryToPOICategoryIdMap.put("Hotel", POICategoryId.HOTEL);
+    kmlCategoryToPOICategoryIdMap.put("Italiaans", POICategoryId.RESTAURANT);
     kmlCategoryToPOICategoryIdMap.put("Kabelbaanstation", POICategoryId.RAILWAY_STATION);
     kmlCategoryToPOICategoryIdMap.put("Kantoor van lokale/provinciale overheid", POICategoryId.GOVERMENT);
+    kmlCategoryToPOICategoryIdMap.put("Koffiehuis", POICategoryId.CAFE);
     kmlCategoryToPOICategoryIdMap.put("Internationaal vliegveld", POICategoryId.AIRPORT);
     kmlCategoryToPOICategoryIdMap.put("Luchthaven", POICategoryId.AIRPORT);
     kmlCategoryToPOICategoryIdMap.put("Markt", POICategoryId.MARKET);
@@ -123,11 +126,16 @@ public class KmlFileImporter {
     kmlCategoryToPOICategoryIdMap.put("Observatieplatform", POICategoryId.SCENIC_VIEWPOINT);
     kmlCategoryToPOICategoryIdMap.put("Panoramisch uitzicht", POICategoryId.SCENIC_VIEWPOINT);
     kmlCategoryToPOICategoryIdMap.put("Park", POICategoryId.PARK);
+    kmlCategoryToPOICategoryIdMap.put("Parkeergarage", POICategoryId.PARKING);
+    kmlCategoryToPOICategoryIdMap.put("Parkeerplaats", POICategoryId.PARKING);
     kmlCategoryToPOICategoryIdMap.put("Paspoortkantoor", POICategoryId.BORDER_CROSSING);
+    kmlCategoryToPOICategoryIdMap.put("Pension", POICategoryId.GUESTHOUSE);
     kmlCategoryToPOICategoryIdMap.put("Restaurant", POICategoryId.RESTAURANT);
     kmlCategoryToPOICategoryIdMap.put("Snackbar", POICategoryId.RESTAURANT);
+    kmlCategoryToPOICategoryIdMap.put("Skioord", POICategoryId.SKI_RESORT);
     kmlCategoryToPOICategoryIdMap.put("Supermarkt", POICategoryId.SHOP);
     kmlCategoryToPOICategoryIdMap.put("Tankstation", POICategoryId.PETROL_STATION);
+    kmlCategoryToPOICategoryIdMap.put("Thais", POICategoryId.RESTAURANT);
     kmlCategoryToPOICategoryIdMap.put("Toeristische attractie", POICategoryId.TOURIST_ATTRACTION);
     kmlCategoryToPOICategoryIdMap.put("Treinstation", POICategoryId.RAILWAY_STATION);
     kmlCategoryToPOICategoryIdMap.put("Vakantiecomplex", POICategoryId.HOTEL);
@@ -328,6 +336,7 @@ public class KmlFileImporter {
     
     if (poiCategoryId == null) {
      LOGGER.severe("Unsupported KML category: " + category);
+     poiCategoryId = POICategoryId.DEFAULT_POI;
     }
     
     return poiCategoryId;

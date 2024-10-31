@@ -24,6 +24,7 @@ import javafx.scene.image.Image;
 public enum Activity {
   BOAT_TRIP(new String[] {"boottocht", "on a ferry"}, ImageResource.BOAT),
   CANOEING(new String[] {"kanotocht"}, ImageResource.CANOEING),
+  CABLE_CAR(new String[] {"kabelbaan", "cable car"}, ImageResource.CABLE_CAR),
   CAR_RIDE(new String[] {"autorit", "driving"}, ImageResource.CAR),
   BUS_RIDE(new String[] {"busrit", "on a bus"}, ImageResource.BUS),
   CYCLING(new String[] {"fietstocht", "cycling"}, ImageResource.CYCLING),

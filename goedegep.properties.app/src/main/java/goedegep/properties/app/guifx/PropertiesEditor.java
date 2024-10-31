@@ -127,7 +127,7 @@ public class PropertiesEditor extends JfxStage {
    */
   public PropertiesEditor(String windowTitle, CustomizationFx customization, ResourceBundle resourceBundle,
       EMFResource<PropertyDescriptorGroup> propertyDescriptorsResource, String propertiesFileName) {
-    super(null, customization);
+    super(customization, null);
     
     if (propertyDescriptorsResource == null) {
       throw new IllegalArgumentException("Argument propertyDescriptorsResource may not be null");
@@ -290,7 +290,7 @@ public class PropertiesEditor extends JfxStage {
     
     EMFResource<EObject> emfResource = new EMFResource<EObject>(editablePropertiesPackage, null, ".xmi");
     emfResource.setEObject(editableProperties);
-    editablePropertiesTreeView = createPropertiesTreeView(getCustomization()).setEObject(editableProperties);
+    editablePropertiesTreeView = createPropertiesTreeView(customization).setEObject(editableProperties);
     editablePropertiesTreeView.setMinWidth(800);
     editablePropertiesTreeView.setStyle("-fx-border-style: solid inside;");
     mainPane.setCenter(editablePropertiesTreeView);
@@ -448,7 +448,7 @@ public class PropertiesEditor extends JfxStage {
     LOGGER.info("=> propertyGroup=" + propertyGroup.getName());
     
     String editablePropertyGroupName = (String) editablePropertyGroup.eGet(editablePropertyGroup_name);
-    assert(editablePropertyGroupName.equals(propertyGroup.getName()));
+    assert editablePropertyGroupName.equals(propertyGroup.getName());
     
     @SuppressWarnings("unchecked")
     EList<EObject> editableProperties = (EList<EObject>) editablePropertyGroup.eGet(editablePropertyGroup_editableProperties);

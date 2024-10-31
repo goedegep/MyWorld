@@ -34,6 +34,6 @@ public final class FinanceUtil {
 
     returnOnInvestmentAsDouble = 100 * 100 * returnOnInvestmentAsDouble;  // For % and for FixedPointValue factor.
     
-    return new FixedPointValue((long) (returnOnInvestmentAsDouble));
+    return new FixedPointValue((long) returnOnInvestmentAsDouble);
   }
 }

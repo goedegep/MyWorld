@@ -13,7 +13,7 @@ public enum AsciiTypeIndication {
   
   private byte value;
   
-  private AsciiTypeIndication(char value) {
+  AsciiTypeIndication(char value) {
     this.value = (byte) value;
   }
   

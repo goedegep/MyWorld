@@ -43,7 +43,7 @@ public class XTreeDemo extends JfxStage {
    * @param customization the GUI customization.
    */
   public XTreeDemo(CustomizationFx customization) {
-    super(WINDOW_TITLE, customization);
+    super(customization, WINDOW_TITLE);
     
     // Create a tree and show it.
     tree = createSimpleTree();

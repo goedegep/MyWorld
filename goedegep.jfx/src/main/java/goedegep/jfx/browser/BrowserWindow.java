@@ -8,7 +8,7 @@ import javafx.scene.paint.Color;
 public class BrowserWindow extends JfxStage {
 
   public BrowserWindow(String title, CustomizationFx customization, String url) {
-    super(title, customization);
+    super(customization, title);
     
     Scene scene = new Scene(new Browser(url),750,500, Color.web("#666970"));
     setScene(scene);

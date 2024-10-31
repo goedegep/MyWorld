@@ -35,10 +35,15 @@ import javafx.scene.layout.VBox;
  * 
  * @param <T> The object type being edited
  */
-public abstract class ObjectEditPanelTemplate<T> {
+public abstract class ObjectEditPanelTemplate<T> implements ObjectEditPanel {
   @SuppressWarnings("unused")
   private static Logger LOGGER = Logger.getLogger(ObjectEditPanelTemplate.class.getName());
   private static final String NEW_LINE = System.getProperty("line.separator");
+  
+  /**
+   * The GUI customization ToDo move to ObjectEditPanelTemplate
+   */
+  protected CustomizationFx customization;
   
   /**
    * Factory for creating GUI components.
@@ -78,7 +83,8 @@ public abstract class ObjectEditPanelTemplate<T> {
    *
    * @param customization The GUI customization.
    */
-  public ObjectEditPanelTemplate(CustomizationFx customization) {    
+  public ObjectEditPanelTemplate(CustomizationFx customization) {
+    this.customization = customization;
     componentFactory = customization.getComponentFactoryFx();
     objectControlsGroup = new ObjectControlGroup();
   }
@@ -88,7 +94,7 @@ public abstract class ObjectEditPanelTemplate<T> {
    * 
    * @return this
    */
-  public ObjectEditPanelTemplate<T> runEditor() {
+  public void performInitialization() {
     createControls();
     fillControlsWithDefaultValues();
     
@@ -97,44 +103,20 @@ public abstract class ObjectEditPanelTemplate<T> {
     ScrollPane scrollPane = new ScrollPane();
     scrollPane.setContent(rootPane);
             ignoreChanges = false;
-    
-    return this;
   }
   
   public T getValue() {
     return object;
   }
   
-  public final void setValue(T newValue) {
+  public final void setObject(T newValue) {
     LOGGER.info("=> " + newValue);
     
-//    boolean newFilledIn = newValue != null;
-//    boolean dataValid;
-    
-//    if (newFilledIn) {
-//      if (newValue != null) {
-//        dataValid = ociIsValueValid(newValue);
-//      } else {
-//        dataValid = false;
-//      }
-//    } else {
-//      dataValid = false;
-//    }
-//    ociSetErrorFeedback(dataValid);  // error feedback is at control level not at pane level
-    
-    boolean changed = !PgUtilities.equals(newValue, getValue());
-    if (changed) {
+    if (newValue != object) {
       object = newValue;
     }
-//    filledIn = newFilledIn;
     fillControlsFromObject();
-//    valid = objectControlsGroup.isValid();
     referenceValue = newValue;
-//    ociUpdateStatusIndicator();
-    
-//    if (changed) {
-//      ociNotifyListeners();
-//    }
     
     LOGGER.info("<=");
   }  
@@ -155,12 +137,12 @@ public abstract class ObjectEditPanelTemplate<T> {
    */
   protected abstract void createEditPanel();
 
-  /**
-   * Create a new instance of type T
-   * 
-   * @return the newly created object.
-   */
-  public abstract void createObject();
+//  /**
+//   * Create a new instance of type T
+//   * 
+//   * @return the newly created object.
+//   */
+//  public abstract void createObject();
   
 
   
@@ -182,7 +164,7 @@ public abstract class ObjectEditPanelTemplate<T> {
     try {
       updateObjectFromControls();
       
-      setValue(object);
+      setObject(object);
     } catch (ObjectEditorException e) {
       StringBuilder buf = new StringBuilder();
       for (String problem: e.getProblems()) {

@@ -5,12 +5,11 @@ import java.util.logging.Logger;
 
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
-import org.eclipse.emf.ecore.resource.Resource;
-import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 
 import goedegep.jfx.ComponentFactoryFx;
 import goedegep.jfx.CustomizationFx;
+import goedegep.util.emf.EmfUtil;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
@@ -66,13 +65,13 @@ public class ReferredByPanel {
       return;
     }
     
-    ResourceSet resourceSet = null;
-    Resource resource = eObject.eResource();
-    if (resource != null) {
-      resourceSet = resource.getResourceSet();
-    }
+//    ResourceSet resourceSet = null;
+//    Resource resource = eObject.eResource();
+//    if (resource != null) {
+//      resourceSet = resource.getResourceSet();
+//    }
     
-    Collection<EStructuralFeature.Setting> settings = EcoreUtil.UsageCrossReferencer.find(eObject, resourceSet);
+    Collection<EStructuralFeature.Setting> settings = EcoreUtil.UsageCrossReferencer.find(eObject, EmfUtil.getRoot(eObject));
 
     for (EStructuralFeature.Setting setting: settings) {
       EObject referringObject = setting.getEObject();

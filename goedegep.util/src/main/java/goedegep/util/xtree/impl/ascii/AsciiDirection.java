@@ -11,7 +11,7 @@ public enum AsciiDirection {
   
   private byte value;
   
-  private AsciiDirection(char value) {
+  AsciiDirection(char value) {
     this.value = (byte) value;
   }
   

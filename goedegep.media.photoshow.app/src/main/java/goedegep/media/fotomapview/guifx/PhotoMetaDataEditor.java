@@ -53,7 +53,7 @@ public class PhotoMetaDataEditor extends JfxStage {
   private CheckBox approximateGPScoordinatesCheckBox;
 
   public PhotoMetaDataEditor(CustomizationFx customization, IPhotoInfo photoMetaData) {
-    super("Details for " + photoMetaData.getFileName() , customization);
+    super(customization, "Details for " + photoMetaData.getFileName());
     
     this.customization = customization;
     this.photoMetaData = photoMetaData;

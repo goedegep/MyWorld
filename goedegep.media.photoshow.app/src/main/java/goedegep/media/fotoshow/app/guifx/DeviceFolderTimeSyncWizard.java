@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -86,7 +87,7 @@ public class DeviceFolderTimeSyncWizard extends Dialog<ButtonType> {
     
     initOwner(ownerWindow);
     
-    createGUI(ownerWindow);
+    createGUI();
     setResizable(true);
   }
   
@@ -105,11 +106,8 @@ public class DeviceFolderTimeSyncWizard extends Dialog<ButtonType> {
    * The content pane starts with the controls for selecting the reference folder and the to be corrected folder.
    * Below that are the lists with the photos; one list per folder.
    * Below that are the ok and cancel buttons.
-   * 
-   * 
-   * @param ownerWindow The window owning this dialog.
    */
-  private void createGUI(Stage ownerWindow) {
+  private void createGUI() {
     setHeaderText("For the photo show, the photos will be sorted on the time that the photos were taken. " +
                   "This leads to a problem however, if the times of the devices (camera, smart phone), with which the photos were taken, were not synchronized."+ NEWLINE +
                   "Select the time reference folder. This is the folder with the most reliable time." + NEWLINE +
@@ -449,7 +447,7 @@ class SyncDetailsDialog extends Dialog<ButtonType> {
     try {
       beforeTime = DF.parse(beforeText.getText());
       beforeTimeValid = (beforeTime != null)  && !beforeTime.isZero();
-    } catch ( java.lang.NumberFormatException e) {
+    } catch (NumberFormatException e) {  // NOPMD
       // no action
     }
     
@@ -654,7 +652,7 @@ class CorrectTimeDetailsDialog extends Dialog<ButtonType> {
       LocalDateTime localDateTime = LocalDateTime.parse(actualDateTimeTextField.getText(), DTF);
       correctedPhotoCreationDate = localDateTime;
       timeValid = true;
-    } catch (java.time.format.DateTimeParseException | java.lang.NumberFormatException e) {
+    } catch (DateTimeParseException | NumberFormatException e) {  // NOPMD
       // no action
     }
     

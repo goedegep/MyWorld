@@ -8,7 +8,6 @@ import java.util.logging.Logger;
 
 import org.commonmark.parser.Parser;
 import org.commonmark.renderer.html.HtmlRenderer;
-import org.eclipse.emf.ecore.EEnum;
 
 import goedegep.configuration.model.Look;
 import goedegep.geo.WGS84Coordinates;
@@ -970,7 +969,7 @@ public class ComponentFactoryFx {
    * @return the newly created {@code ObjectControlBoolean}.
    */
   public ObjectControlBoolean createObjectControlBoolean(String text, boolean selected, boolean isOptional, String toolTipText) {
-    ObjectControlBoolean objectControlBoolean = new ObjectControlBoolean(this, text, selected, isOptional, toolTipText);
+    ObjectControlBoolean objectControlBoolean = new ObjectControlBoolean(customization, text, selected, isOptional, toolTipText);
 
 //    if (panelBackgroundHexColorValue != null) {
 //      objectControlBoolean.getControl().setStyle("-fx-background-color: " + panelBackgroundHexColorValue);
@@ -1017,15 +1016,11 @@ public class ComponentFactoryFx {
    * Create a Multi Line String ObjectControl.
    * 
    * @param text The initial value.
-   * @param width the width of the TextArea.
    * @param isOptional if true, the value provided by this control is optional.
-   * @param toolTipText an optional tooltip text.
    * @return the newly created {@code ObjectControlMultiLineString}.
    */
-  public ObjectControlMultiLineString createObjectControlMultiLineString(String text, double width, boolean isOptional, String toolTipText) {
-    ObjectControlMultiLineString objectControlMultiLineString = new ObjectControlMultiLineString(customization, text, width, isOptional, toolTipText);
-//
-//    customizeTextInputControl(objectControlMultiLineString);
+  public ObjectControlMultiLineString createObjectControlMultiLineString(String text, boolean isOptional) {
+    ObjectControlMultiLineString objectControlMultiLineString = new ObjectControlMultiLineString(customization, text, isOptional);
 
     return objectControlMultiLineString;
   }
@@ -1039,8 +1034,8 @@ public class ComponentFactoryFx {
    * @param toolTipText an optional tooltip text.
    * @return the newly created {@code ObjectControlHTMLString}.
    */
-  public ObjectControlHTMLString createObjectControlHTMLString(String text, double width, boolean isOptional, String toolTipText) {
-    ObjectControlHTMLString objectControlHTMLString = new ObjectControlHTMLString(customization, text, width, isOptional, toolTipText);
+  public ObjectControlHTMLString createObjectControlHTMLString(String text, boolean isOptional) {
+    ObjectControlHTMLString objectControlHTMLString = new ObjectControlHTMLString(customization, text, isOptional);
 
     return objectControlHTMLString;
   }
@@ -1056,8 +1051,6 @@ public class ComponentFactoryFx {
    */
   public ObjectControlCurrency createObjectControlCurrency(PgCurrency pgCurrency, double width, boolean isOptional, String toolTipText) {
     ObjectControlCurrency objectControlCurrency = new ObjectControlCurrency(customization, pgCurrency, width, isOptional, toolTipText);
-
-//    customizeTextInputControl(objectControlCurrency);
 
     return objectControlCurrency;
   }
@@ -1135,44 +1128,13 @@ public class ComponentFactoryFx {
    * 
    * @param <T> The enum type
    * @param enumConstant A single enum constant of the enum.
-   * @param notSetValue The 'not set' value.
    * @param isOptional indicates whether the value is optional or not
    * @param toolTipText an optional tooltip text
    * @return the newly created {@code ObjectControlEnumComboBox}.
    */
-  public <T extends Enum<T>>ObjectControlEnumComboBox<T> createObjectControlEnumComboBox(T enumConstant, T notSetValue, boolean isOptional, String toolTipText) {
-    return new ObjectControlEnumComboBox<T>(customization, enumConstant, notSetValue, isOptional, toolTipText);
+  public <T extends Enum<T>>ObjectControlEnumComboBox<T> createObjectControlEnumComboBox(T enumConstant, boolean isOptional, String toolTipText) {
+    return new ObjectControlEnumComboBox<T>(customization, enumConstant, isOptional, toolTipText);
   }
-  
-  /**
-   * Create a ComboBox ObjectControl for an Enum. The texts for the enum constants are the literals of the <code>eEnum</code> parameter.
-   * 
-   * @param <T> The enum type
-   * @param enumConstant A single enum constant of the enum.
-   * @param notSetValue The 'not set' value.
-   * @param eEnum an EEnum providing the literal values for the texts for the constants.
-   * @param isOptional indicates whether the value is optional or not
-   * @param toolTipText an optional tooltip text
-   * @return the newly created {@code ObjectControlEnumComboBox}.
-   */
-  public <T extends Enum<T>>ObjectControlEnumComboBox<T> createObjectControlEnumComboBox(T enumConstant, T notSetValue, EEnum eEnum, boolean isOptional, String toolTipText) {
-    return new ObjectControlEnumComboBox<T>(customization, enumConstant, notSetValue, eEnum, isOptional, toolTipText);
-  }
-  
-  /**
-   * Create a ComboBox ObjectControl for an Enum. The texts for the enum constants are the texts provided by the {@code enumToStringMap}.
-   * 
-   * @param <T> The enum type
-   * @param enumConstant A single enum constant of the enum.
-   * @param notSetValue The 'not set' value.
-   * @param enumToStringMap provides the names for the enum constants.
-   * @param isOptional indicates whether the value is optional or not
-   * @param toolTipText an optional tooltip text
-   * @return the newly created {@code ObjectControlEnumComboBox}.
-   */
-//  public <T extends Enum<T>>ObjectControlEnumComboBox<T> createObjectControlEnumComboBox(T enumConstant, T notSetValue, Map<T, String> enumToStringMap, boolean isOptional, String toolTipText) {
-//    return new ObjectControlEnumComboBox<T>(customization, enumConstant, notSetValue, enumToStringMap, isOptional, toolTipText);
-//  }
   
   /**
    * Create an auto complete TextField ObjectControl.

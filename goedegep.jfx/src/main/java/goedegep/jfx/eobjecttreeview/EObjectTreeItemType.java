@@ -44,7 +44,7 @@ public enum EObjectTreeItemType {
    * @param leaf indicates whether this node has children or not
    * @param isEditable indicates whether the value of this item can be changed.
    */
-  private EObjectTreeItemType(boolean isEditable) {
+  EObjectTreeItemType(boolean isEditable) {
     this.isEditable = isEditable;
   }
 

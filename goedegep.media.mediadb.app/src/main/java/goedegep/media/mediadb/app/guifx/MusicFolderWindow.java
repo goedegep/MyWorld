@@ -56,7 +56,7 @@ public class MusicFolderWindow extends JfxStage {
    * @param customization the application customization to be used.
    */
   public MusicFolderWindow(CustomizationFx customization) {
-    super(WINDOW_TITLE, customization);
+    super(customization, WINDOW_TITLE);
     
     componentFactory = customization.getComponentFactoryFx();
     appResources = (MediaAppResourcesFx) getResources();

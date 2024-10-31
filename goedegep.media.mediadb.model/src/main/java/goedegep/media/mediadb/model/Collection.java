@@ -22,6 +22,9 @@ public enum Collection implements Enumerator {
    * The '<em><b>EASY LISTENING</b></em>' literal object.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
+   * <!-- begin-model-doc -->
+   * Easy listening tracks.
+   * <!-- end-model-doc -->
    * @see #EASY_LISTENING_VALUE
    * @generated
    * @ordered
@@ -31,6 +34,9 @@ public enum Collection implements Enumerator {
    * The '<em><b>FILM BACKING TRACKS</b></em>' literal object.
    * <!-- begin-user-doc -->
   * <!-- end-user-doc -->
+   * <!-- begin-model-doc -->
+   * Tracks that can be used as backing tracks in movies you edit.
+   * <!-- end-model-doc -->
    * @see #FILM_BACKING_TRACKS_VALUE
    * @generated
    * @ordered
@@ -40,6 +46,9 @@ public enum Collection implements Enumerator {
    * The '<em><b>FRANSTALIG</b></em>' literal object.
    * <!-- begin-user-doc -->
   * <!-- end-user-doc -->
+   * <!-- begin-model-doc -->
+   * French track.
+   * <!-- end-model-doc -->
    * @see #FRANSTALIG_VALUE
    * @generated
    * @ordered
@@ -49,6 +58,9 @@ public enum Collection implements Enumerator {
    * The '<em><b>KLASSIEK</b></em>' literal object.
    * <!-- begin-user-doc -->
   * <!-- end-user-doc -->
+   * <!-- begin-model-doc -->
+   * Classical music tracks.
+   * <!-- end-model-doc -->
    * @see #KLASSIEK_VALUE
    * @generated
    * @ordered
@@ -58,6 +70,9 @@ public enum Collection implements Enumerator {
    * The '<em><b>NEDERLANDSTALIG</b></em>' literal object.
    * <!-- begin-user-doc -->
   * <!-- end-user-doc -->
+   * <!-- begin-model-doc -->
+   * Dutch tracks.
+   * <!-- end-model-doc -->
    * @see #NEDERLANDSTALIG_VALUE
    * @generated
    * @ordered
@@ -67,6 +82,9 @@ public enum Collection implements Enumerator {
    * The '<em><b>POP</b></em>' literal object.
    * <!-- begin-user-doc -->
   * <!-- end-user-doc -->
+   * <!-- begin-model-doc -->
+   * Pop songs.
+   * <!-- end-model-doc -->
    * @see #POP_VALUE
    * @generated
    * @ordered
@@ -76,6 +94,9 @@ public enum Collection implements Enumerator {
    * The '<em><b>ROCK</b></em>' literal object.
    * <!-- begin-user-doc -->
   * <!-- end-user-doc -->
+   * <!-- begin-model-doc -->
+   * Rock music.
+   * <!-- end-model-doc -->
    * @see #ROCK_VALUE
    * @generated
    * @ordered
@@ -85,6 +106,9 @@ public enum Collection implements Enumerator {
    * The '<em><b>NOT SET</b></em>' literal object.
    * <!-- begin-user-doc -->
   * <!-- end-user-doc -->
+   * <!-- begin-model-doc -->
+   * Indicates that the value isn't set.
+   * <!-- end-model-doc -->
    * @see #NOT_SET_VALUE
    * @generated
    * @ordered
@@ -94,6 +118,9 @@ public enum Collection implements Enumerator {
    * The '<em><b>PUNK</b></em>' literal object.
    * <!-- begin-user-doc -->
   * <!-- end-user-doc -->
+   * <!-- begin-model-doc -->
+   * Punk and new wave tracks.
+   * <!-- end-model-doc -->
    * @see #PUNK_VALUE
    * @generated
    * @ordered
@@ -103,6 +130,9 @@ public enum Collection implements Enumerator {
    * The '<em><b>SAMPLE</b></em>' literal object.
    * <!-- begin-user-doc -->
   * <!-- end-user-doc -->
+   * <!-- begin-model-doc -->
+   * Artist sample tracks.
+   * <!-- end-model-doc -->
    * @see #SAMPLE_VALUE
    * @generated
    * @ordered
@@ -117,6 +147,9 @@ public enum Collection implements Enumerator {
    * there really should be more of a description here...
    * </p>
    * <!-- end-user-doc -->
+   * <!-- begin-model-doc -->
+   * Easy listening tracks.
+   * <!-- end-model-doc -->
    * @see #EASY_LISTENING
    * @model literal="Easy Listening"
    * @generated
@@ -132,6 +165,9 @@ public enum Collection implements Enumerator {
    * there really should be more of a description here...
    * </p>
    * <!-- end-user-doc -->
+   * <!-- begin-model-doc -->
+   * Tracks that can be used as backing tracks in movies you edit.
+   * <!-- end-model-doc -->
    * @see #FILM_BACKING_TRACKS
    * @model literal="Film Backing Tracks"
    * @generated
@@ -147,6 +183,9 @@ public enum Collection implements Enumerator {
    * there really should be more of a description here...
    * </p>
    * <!-- end-user-doc -->
+   * <!-- begin-model-doc -->
+   * French track.
+   * <!-- end-model-doc -->
    * @see #FRANSTALIG
    * @model literal="Franstalig"
    * @generated
@@ -162,6 +201,9 @@ public enum Collection implements Enumerator {
    * there really should be more of a description here...
    * </p>
    * <!-- end-user-doc -->
+   * <!-- begin-model-doc -->
+   * Classical music tracks.
+   * <!-- end-model-doc -->
    * @see #KLASSIEK
    * @model literal="Klassiek"
    * @generated
@@ -177,6 +219,9 @@ public enum Collection implements Enumerator {
    * there really should be more of a description here...
    * </p>
    * <!-- end-user-doc -->
+   * <!-- begin-model-doc -->
+   * Dutch tracks.
+   * <!-- end-model-doc -->
    * @see #NEDERLANDSTALIG
    * @model literal="Nederlandstalig"
    * @generated
@@ -192,6 +237,9 @@ public enum Collection implements Enumerator {
    * there really should be more of a description here...
    * </p>
    * <!-- end-user-doc -->
+   * <!-- begin-model-doc -->
+   * Pop songs.
+   * <!-- end-model-doc -->
    * @see #POP
    * @model literal="Pop"
    * @generated
@@ -207,6 +255,9 @@ public enum Collection implements Enumerator {
    * there really should be more of a description here...
    * </p>
    * <!-- end-user-doc -->
+   * <!-- begin-model-doc -->
+   * Rock music.
+   * <!-- end-model-doc -->
    * @see #ROCK
    * @model literal="Rock"
    * @generated
@@ -222,6 +273,9 @@ public enum Collection implements Enumerator {
    * there really should be more of a description here...
    * </p>
    * <!-- end-user-doc -->
+   * <!-- begin-model-doc -->
+   * Indicates that the value isn't set.
+   * <!-- end-model-doc -->
    * @see #NOT_SET
    * @model literal="&lt;not-set&gt;"
    * @generated
@@ -233,6 +287,9 @@ public enum Collection implements Enumerator {
    * The '<em><b>PUNK</b></em>' literal value.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
+   * <!-- begin-model-doc -->
+   * Punk and new wave tracks.
+   * <!-- end-model-doc -->
    * @see #PUNK
    * @model literal="Punk"
    * @generated
@@ -244,6 +301,9 @@ public enum Collection implements Enumerator {
    * The '<em><b>SAMPLE</b></em>' literal value.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
+   * <!-- begin-model-doc -->
+   * Artist sample tracks.
+   * <!-- end-model-doc -->
    * @see #SAMPLE
    * @model
    * @generated

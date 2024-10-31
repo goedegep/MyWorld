@@ -4,14 +4,15 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
 import org.eclipse.emf.common.notify.Notification;
+import org.eclipse.emf.common.util.TreeIterator;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.util.EContentAdapter;
+import org.eclipse.emf.ecore.util.EcoreUtil;
 
 import goedegep.jfx.AppResourcesFx;
 import goedegep.jfx.ComponentFactoryFx;
@@ -23,33 +24,29 @@ import goedegep.jfx.browser.BrowserWindow;
 import goedegep.jfx.eobjecttable.EObjectTable;
 import goedegep.media.app.MediaRegistry;
 import goedegep.media.mediadb.albumeditor.guifx.AlbumEditor;
+import goedegep.media.mediadb.albumeditor.guifx.TrackEditor;
 import goedegep.media.mediadb.app.MediaDbAppUtil;
 import goedegep.media.mediadb.app.MediaDbChecker;
 import goedegep.media.mediadb.app.MediaDbToDiscLocationMap;
 import goedegep.media.mediadb.model.Album;
-import goedegep.media.mediadb.model.AlbumType;
 import goedegep.media.mediadb.model.Artist;
-import goedegep.media.mediadb.model.Collection;
 import goedegep.media.mediadb.model.Disc;
 import goedegep.media.mediadb.model.InformationType;
 import goedegep.media.mediadb.model.MediaDb;
 import goedegep.media.mediadb.model.MediadbFactory;
 import goedegep.media.mediadb.model.MediadbPackage;
 import goedegep.media.mediadb.model.MediumInfo;
-import goedegep.media.mediadb.model.MediumType;
 import goedegep.media.mediadb.model.MyInfo;
 import goedegep.media.mediadb.model.MyTrackInfo;
 import goedegep.media.mediadb.model.Track;
 import goedegep.media.mediadb.model.TrackCollection;
 import goedegep.media.mediadb.model.TrackReference;
 import goedegep.media.mediadb.model.util.MediaDbUtil;
-import goedegep.media.mediadb.model.util.TrackReferencesIterator;
-import goedegep.media.mediadb.trackeditor.guifx.TrackEditor;
+import goedegep.media.mediadb.trackeditor.guifx.TrackReferenceEditor;
 import goedegep.media.musicfolder.AlbumOnDiscInfo;
 import goedegep.media.musicfolder.MusicFolderContent;
 import goedegep.properties.app.guifx.PropertiesEditor;
 import goedegep.resources.ImageSize;
-import goedegep.util.datetime.FlexDate;
 import goedegep.util.emf.EMFResource;
 import goedegep.util.emf.EmfUtil;
 import javafx.collections.FXCollections;
@@ -170,7 +167,7 @@ public class MediaDbWindow extends JfxStage {
    * @param customization the GUI customization.
    */
   public MediaDbWindow(CustomizationFx customization) {
-    super(WINDOW_TITLE, customization);
+    super(customization, WINDOW_TITLE);
 
     this.customization = customization;
     componentFactory = customization.getComponentFactoryFx();
@@ -227,14 +224,9 @@ public class MediaDbWindow extends JfxStage {
       boolean usesReference = !myInfo.getAlbumReferences().isEmpty();
       List<MediumInfo> mediumInfos = myInfo.getIHaveOn();
       for (MediumInfo mediumInfo: mediumInfos) {
-        List<InformationType> sourceTypes = mediumInfo.getSourceTypes();
-        if (sourceTypes.size() == 0) {
-//          LOGGER.severe("no SourceType in MyInfo of album: " + album.getArtistAndTitle());
-        } else {
+        InformationType sourceType = mediumInfo.getSourceType();
+        if (sourceType != null) {
           sourceTypeInMyInfo = true;
-          if (sourceTypes.size() > 1) {
-            LOGGER.severe("more than one SourceType in MyInfo of album: " + album.getArtistAndTitle());
-          }
         }
       }
       
@@ -248,12 +240,10 @@ public class MediaDbWindow extends JfxStage {
           } else {
             List<MediumInfo> mediumInfos2 = myTrackInfo.getIHaveOn();
             for (MediumInfo mediumInfo: mediumInfos2) {
-              List<InformationType> sourceTypes = mediumInfo.getSourceTypes();
-              if (sourceTypes.size() == 0) {
+              InformationType sourceType = mediumInfo.getSourceType();
+              if (sourceType == null) {
                 trackWithoutSourceType = true;
 //                LOGGER.severe("no SourceType for Track: " + trackReference.getTrack().getTitle() + " of album: " + album.getArtistAndTitle());
-              } else if (sourceTypes.size() > 1) {
-                LOGGER.severe("more than one SourceType for Track: " + trackReference.getTrack().getTitle() + " of album: " + album.getArtistAndTitle());
               }
             }
           }
@@ -302,8 +292,25 @@ public class MediaDbWindow extends JfxStage {
   }
   
   private void tempFixProblems() {
+//    TreeIterator it = EcoreUtil.getAllContents(mediaDb, true);
+//    
+//    while (it.hasNext()) {
+//      Object o = it.next();
+//      if (o instanceof TrackReference trackReference) {
+//        LOGGER.severe("ref: " + trackReference.getTrack().getTitle());
+//        MyTrackInfo myTrackInfo = trackReference.getMyTrackInfo();
+//        if (myTrackInfo != null) {
+//          TrackReference trackreference = myTrackInfo.getTrackReference();
+//          if (trackreference != null) {
+//            myTrackInfo.setTrackReference(trackreference);
+//          }
+//          myTrackInfo.unsetTrackreference();
+//        }
+//      }
+//    }
+//        
   }
-        
+
   /**
    * Check that the file name for the media database is set in the {@link MediaRegistry}.
    * <p>
@@ -637,7 +644,7 @@ public class MediaDbWindow extends JfxStage {
    * Open the User Settings editor.
    */
   private void showUserSettingsEditor() {
-    PropertiesEditor propertiesEditor = new PropertiesEditor("Edit Media settings", getCustomization(),
+    PropertiesEditor propertiesEditor = new PropertiesEditor("Edit Media settings", customization,
         MediaRegistry.propertyDescriptorsResource, MediaRegistry.customPropertiesFile);
     propertiesEditor.show();
   }
@@ -714,21 +721,23 @@ public class MediaDbWindow extends JfxStage {
   }
   
   void openArtistEditor() {
-    new ArtistDetailsEditor(customization, "Artist editor", mediaDb).runEditor().setObject((Artist) artistsTable.getSelectedObject());
+    ArtistDetailsEditor artistDetailsEditor = ArtistDetailsEditor.newInstance(customization, "Artist editor", mediaDb);
+    artistDetailsEditor.setObject((Artist) artistsTable.getSelectedObject());
+    artistDetailsEditor.show();
   }
 
   /**
    * Open the AlbumEditor to enter a new album.
    */
   void openAlbumEditor() {
-    new AlbumEditor(customization, mediaDb).runEditor();
+    AlbumEditor.newInstance(customization, mediaDb).show();
   }
 
   /**
    * Open the TrackEditor to enter a new album.
    */
   void openTrackEditor() {
-    new TrackEditor(customization, mediaDb).runEditor();
+    TrackEditor.newInstance(customization, mediaDb).show();
   }
     
   /**

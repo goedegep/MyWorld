@@ -69,10 +69,10 @@ public class EnumTextConverter<T extends Enum<T>> {
    * <p>
    * With this constructor the texts for the enum constants is defined by the provided Map.
    * 
-   * @param enumConstant A single enum constant of the enum.
    * @param notSetValue The 'not set' value.
+   * @param enumToStringMap a map mapping each enum constant to a string.
    */
-  public EnumTextConverter(T enumConstant, T notSetValue, Map<T, String> enumToStringMap) {
+  public EnumTextConverter(T notSetValue, Map<T, String> enumToStringMap) {
     this.enumToStringMap = enumToStringMap;
     for (T constant: enumToStringMap.keySet()) {
       if (constant != notSetValue) {

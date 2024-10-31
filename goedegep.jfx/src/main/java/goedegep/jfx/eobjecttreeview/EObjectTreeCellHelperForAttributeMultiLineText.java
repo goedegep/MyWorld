@@ -38,7 +38,7 @@ public class EObjectTreeCellHelperForAttributeMultiLineText extends EObjectTreeC
     valueTextArea.setText(buildText(eObjectTreeItemContent));
     valueTextArea.setOnKeyReleased((keyEvent) -> {
         if ((keyEvent.getCode() == KeyCode.ENTER)  &&  
-            (keyEvent.isControlDown())) {
+            keyEvent.isControlDown()) {
           eObjectTreeCell.commitEdit(valueTextArea.getText());
         } else if (keyEvent.getCode() == KeyCode.ESCAPE) {
           eObjectTreeCell.cancelEdit();

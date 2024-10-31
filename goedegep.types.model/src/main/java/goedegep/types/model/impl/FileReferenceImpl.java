@@ -371,30 +371,27 @@ public class FileReferenceImpl extends MinimalEObjectImpl.Container implements F
   /**
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @generated
+   * @generated NOT
    */
   @Override
   public String toString() {
     if (eIsProxy())
       return super.toString();
 
-    StringBuilder result = new StringBuilder(super.toString());
-    result.append(" (file: ");
-    if (fileESet)
-      result.append(file);
-    else
-      result.append("<unset>");
-    result.append(", title: ");
-    if (titleESet)
-      result.append(title);
-    else
-      result.append("<unset>");
-    result.append(", tags: ");
-    if (tagsESet)
-      result.append(tags);
-    else
-      result.append("<unset>");
-    result.append(')');
+    StringBuilder result = new StringBuilder();
+    
+    result.append("File: ")
+    .append(getFile() != null ? getFile() : "<unset>")
+    .append("\n");
+    
+    result.append("Title: ")
+    .append(getTitle() != null ? getTitle() : "<unset>")
+    .append("\n");
+    
+    result.append("Tags: ")
+    .append(getTags() != null ? getTags() : "<unset>")
+    .append("\n");
+    
     return result.toString();
   }
 

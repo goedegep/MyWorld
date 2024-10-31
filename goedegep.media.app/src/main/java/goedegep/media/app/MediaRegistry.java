@@ -12,6 +12,7 @@ public class MediaRegistry {
   public static String musicDataDirectory = null;       // Directory where pictures of albums and artists are located.
   public static String albumInfoDirectory = null;       // Directory where the AlbumInfo xml files are located.
   public static String musicDirectory = null;           // Directory where all music is stored.
+  public static String albumImportDirectory = null;     // Default location for selecting a directory from which album import information is to be derived.
   public static String duneMusicFolderPath = null;      // Directory on the Dune where the music is stored.
   public static String dunePlaylistsFolderPath = null;  // Directory on the Dune where the playlists are stored.
   public static String shortProductInfo = null;         // Short description of this application.

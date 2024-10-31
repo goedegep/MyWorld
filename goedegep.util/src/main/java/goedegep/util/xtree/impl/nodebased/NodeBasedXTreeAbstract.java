@@ -114,6 +114,14 @@ public abstract class NodeBasedXTreeAbstract extends XTreeAbstract implements No
     return compareSubtrees(getRoot(), tree, tree.getRoot(), true);
   }
   
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public int hashCode() {
+    return getRoot().hashCode();
+  }
+  
   
   /**
    * {@inheritDoc}
@@ -147,7 +155,7 @@ public abstract class NodeBasedXTreeAbstract extends XTreeAbstract implements No
       child = child.getNextSibling();
     }
 
-    return (child);
+    return child;
   }
   
   /**
@@ -170,7 +178,7 @@ public abstract class NodeBasedXTreeAbstract extends XTreeAbstract implements No
       child = child.getNextSibling();
     }
 
-    return (child);
+    return child;
   }
   
   /**
@@ -193,7 +201,7 @@ public abstract class NodeBasedXTreeAbstract extends XTreeAbstract implements No
       child = child.getNextSibling();
     }
 
-    return (child);
+    return child;
   }
 
 
@@ -216,7 +224,7 @@ public abstract class NodeBasedXTreeAbstract extends XTreeAbstract implements No
       }
       child = child.getNextSibling();
     }
-    return (child);
+    return child;
   }
 
   /**
@@ -239,7 +247,7 @@ public abstract class NodeBasedXTreeAbstract extends XTreeAbstract implements No
       child = child.getNextSibling();
     }
 
-    return (child);
+    return child;
   }
 
   /**
@@ -258,12 +266,12 @@ public abstract class NodeBasedXTreeAbstract extends XTreeAbstract implements No
     
     while (child != null && !child.contains(value)) {
       if ((grandchild = findNode(child, value)) != null) {
-        return (grandchild);
+        return grandchild;
       }
       child = child.getNextSibling();
     }
     
-    return (child);
+    return child;
   }
 
   /**
@@ -282,12 +290,12 @@ public abstract class NodeBasedXTreeAbstract extends XTreeAbstract implements No
     
     while (child != null && !child.contains(value)) {
       if ((grandchild = findNode(child, value)) != null) {
-        return (grandchild);
+        return grandchild;
       }
       child = child.getNextSibling();
     }
     
-    return (child);
+    return child;
   }
 
   /**
@@ -306,12 +314,12 @@ public abstract class NodeBasedXTreeAbstract extends XTreeAbstract implements No
     
     while (child != null && !child.contains(value)) {
       if ((grandchild = findNode(child, value)) != null) {
-        return (grandchild);
+        return grandchild;
       }
       child = child.getNextSibling();
     }
     
-    return (child);
+    return child;
   }
 
   /**
@@ -330,12 +338,12 @@ public abstract class NodeBasedXTreeAbstract extends XTreeAbstract implements No
     
     while (child != null && !child.contains(value)) {
       if ((grandchild = findNode(child, value)) != null) {
-        return (grandchild);
+        return grandchild;
       }
       child = child.getNextSibling();
     }
     
-    return (child);
+    return child;
   }
 
   /**
@@ -354,12 +362,12 @@ public abstract class NodeBasedXTreeAbstract extends XTreeAbstract implements No
     
     while (child != null && !child.contains(value)) {
       if ((grandchild = findNode(child, value)) != null) {
-        return (grandchild);
+        return grandchild;
       }
       child = child.getNextSibling();
     }
     
-    return (child);
+    return child;
   }
   
   
@@ -388,11 +396,9 @@ public abstract class NodeBasedXTreeAbstract extends XTreeAbstract implements No
       return false;
     }
 
-    if (thisStartNode.hasChild()) {
-      if (!compareSubtrees(thisStartNode.getFirstChild(),
-          toTree, toStartNode.getFirstChild(), true, false)) {
-        return false;
-      }
+    if (thisStartNode.hasChild()  &&
+        !compareSubtrees(thisStartNode.getFirstChild(), toTree, toStartNode.getFirstChild(), true, false)) {
+      return false;
     }
 
     if (includeSiblings  &&  !handlingSiblings) {

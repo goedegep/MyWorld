@@ -63,7 +63,7 @@ public class POIIcons {
       
       String iconFileName = iconFileNameMap.get(poiCategoryId);
       if (iconFileName.startsWith("file:")) {
-        icon = new Image(iconFileName);
+        icon = new Image(iconFileName, 32, 32, true, true);
       } else {
         InputStream iconInputStream = POIIcons.class.getResourceAsStream(iconFileName);
         if (iconInputStream == null) {
@@ -152,6 +152,16 @@ public class POIIcons {
     poiIconResourceDescriptor = factory.createPOIIconResourceDescriptor();
     poiIconResourceDescriptor.setCategory(POICategoryId.BUS_STOP);
     poiIconResourceDescriptor.setIconFileName(ImageResource.BUS_STOP.getImageUrl(ImageSize.SIZE_2).toString());
+    poiIconResourceInfo.getPoiIconResourceDescriptors().add(poiIconResourceDescriptor);
+    
+    poiIconResourceDescriptor = factory.createPOIIconResourceDescriptor();
+    poiIconResourceDescriptor.setCategory(POICategoryId.CABLE_CAR);
+    poiIconResourceDescriptor.setIconFileName(ImageResource.CABLE_CAR.getImageUrl(ImageSize.SIZE_2).toString());
+    poiIconResourceInfo.getPoiIconResourceDescriptors().add(poiIconResourceDescriptor);
+    
+    poiIconResourceDescriptor = factory.createPOIIconResourceDescriptor();
+    poiIconResourceDescriptor.setCategory(POICategoryId.CAFE);
+    poiIconResourceDescriptor.setIconFileName(ImageResource.CAFE.getImageUrl(ImageSize.SIZE_2).toString());
     poiIconResourceInfo.getPoiIconResourceDescriptors().add(poiIconResourceDescriptor);
     
     poiIconResourceDescriptor = factory.createPOIIconResourceDescriptor();

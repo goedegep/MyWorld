@@ -42,7 +42,7 @@ public class PhotoListCell extends ListCell<IPhotoInfo> {
    */
   public static void setCustomization(CustomizationFx customization) {
     PhotoListCell.customization = customization;
-    PhotoListCell.mediaAppResourcesFx = (MediaAppResourcesFx) customization.getResources();
+    mediaAppResourcesFx = (MediaAppResourcesFx) customization.getResources();
   }
   
   /**
@@ -103,8 +103,8 @@ public class PhotoListCell extends ListCell<IPhotoInfo> {
       stackPane.getChildren().add(imageView);
     }
 
-    boolean hasTitle = (photoMetaData.getTitle() != null);
-    boolean hasCoordinates = (photoMetaData.getCoordinates() != null);
+    boolean hasTitle = photoMetaData.getTitle() != null;
+    boolean hasCoordinates = photoMetaData.getCoordinates() != null;
 
     if (hasTitle  ||  hasCoordinates) {
       HBox hBox = new HBox();
@@ -147,7 +147,6 @@ public class PhotoListCell extends ListCell<IPhotoInfo> {
   private void handleMouseEventOnPhotoIcon(MouseEvent mouseEvent, IPhotoInfo photoInfo) {
     if (mouseEvent.getClickCount() > 1) {
       new PhotoMetaDataEditor(customization, photoInfo);
-    } else {
     }
   }
   

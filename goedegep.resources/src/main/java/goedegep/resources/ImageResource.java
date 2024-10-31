@@ -50,6 +50,11 @@ public enum ImageResource {
       new ImageFileInfo("BusStop - 48x48.png", 48, 48),
       new ImageFileInfo("BusStop - 512x512.png", 512, 512)
       }, "bus stop", "<a href=\"https://www.flaticon.com/free-icons/bus\" title=\"bus icons\">Bus icons created by Freepik - Flaticon</a>"),
+  CABLE_CAR(new ImageFileInfo[] {
+      new ImageFileInfo("CableCar - 800x800.png", 800, 800),
+      new ImageFileInfo("CableCar - 48x48.png", 48, 48)
+      }, "a cable car", null),
+  CAFE(new ImageFileInfo[] {new ImageFileInfo("Coffee - 512x512.png", 512, 512)}, "a cup of coffee", null),
   CAMERA_BLACK(new ImageFileInfo[] {new ImageFileInfo("CameraBlack.png", 28, 22)}, "a black photo camera", null),
   CAMERA_GRAY(new ImageFileInfo[] {new ImageFileInfo("CameraGray.png", 28, 22)}, "a gray photo camera", null),
   CAMERA_BLUE(new ImageFileInfo[] {new ImageFileInfo("CameraBlue.png", 28, 22)}, "a blue photo camera", null),
@@ -61,11 +66,12 @@ public enum ImageResource {
       new ImageFileInfo("Car - 64x64.png", 64, 64),
       new ImageFileInfo("Car - 128x128.png", 128, 128),
       new ImageFileInfo("Car - 256x256.png", 256, 256),
-      new ImageFileInfo("Car - 512x512.png", 512, 512),
+      new ImageFileInfo("Car - 512x512.png", 512, 512)
       }, "a car", "downloaded from https://icons8.com/, as Creative Commons Attribution-NoDerivs 3.0."),
   CANOEING(new ImageFileInfo[] {new ImageFileInfo("Canoeing - 512x512.png", 512, 512)}, "a person canoeing", null),
   CYCLING(new ImageFileInfo[] {new ImageFileInfo("RegularBiking.png", 128, 128)}, "regular biking", "from https://findicons.com/"),
   DEMO(new ImageFileInfo[] {new ImageFileInfo("Demo - 512x512.png", 128, 128)}, "computer screen with demo as text", "<a href=\"https://www.flaticon.com/free-icons/demo\" title=\"demo icons\">Demo icons created by Freepik - Flaticon</a>"),
+  FOLDER_WITH_FILES(new ImageFileInfo[] {new ImageFileInfo("FolderWithFiles - 64x64.png", 64, 64)}, "a folder containing files", "<a href=\"https://www.flaticon.com/free-icons/files-and-folders\" title=\"files and folders icons\">Files and folders icons created by NajmunNahar - Flaticon</a>"),
   GPX(new ImageFileInfo[] {new ImageFileInfo("Gpx.png", 359, 329)}, "a map with a track and a location", null),
   HORSE_RIDING(new ImageFileInfo[] {
       new ImageFileInfo("HorseRiding - 48x48.png", 48, 48),
@@ -86,6 +92,7 @@ public enum ImageResource {
       new ImageFileInfo("Market - 512x512.png", 512, 512)}, "a market", null),
   MARKDOWN(new ImageFileInfo[] {new ImageFileInfo("Markdown logo - 1600x1600.png", 487, 487)}, "Markdown logo", "https://imgbin.com/"),
   MS_WORD(new ImageFileInfo[] {new ImageFileInfo("MSWord - 1047x1024.png", 1047, 1024)}, "Microsoft Word document icon", "User:Airhogs777"),
+  ODT(new ImageFileInfo[] {new ImageFileInfo("ODT - 512x512.png", 1047, 1024)}, "OpenDocument Text document icon", "<a href=\"https://www.flaticon.com/free-icons/files-and-folders\" title=\"files and folders icons\">Files and folders icons created by Awicon - Flaticon</a>"),
   PLANE_TAKEOFF(new ImageFileInfo[] {
       new ImageFileInfo("PlaneTakeoff - 32x32.png", 32, 32),
       new ImageFileInfo("PlaneTakeoff - 64x64.png", 64, 64),

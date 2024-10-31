@@ -33,4 +33,19 @@
       <artifactId>org.eclipse.emf.ecore</artifactId>
     </dependency>
   </dependencies>
+  <build>
+    <plugins>
+      <plugin>    
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-pmd-plugin</artifactId>
+        <version>3.25.0</version>
+        <executions>
+          <execution>
+            <id>run-pmd</id>
+            <phase/>
+          </execution>    
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
 </project>

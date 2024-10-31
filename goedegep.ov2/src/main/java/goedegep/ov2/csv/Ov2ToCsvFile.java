@@ -53,6 +53,7 @@ public class Ov2ToCsvFile {
 				bufferedWriter.flush();
 				bufferedWriter.close();
 			} catch (IOException e) {
+			    e.printStackTrace();
 			}
 		}
 	}

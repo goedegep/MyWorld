@@ -25,7 +25,7 @@ module goedegep.media.mediadb.app {
   requires org.eclipse.emf.ecore;
   requires java.base;
   requires mp3agic;
-  requires ealvatag;
+  requires transitive ealvatag;
   requires org.apache.commons.text;
   requires goedegep.resources;
   requires org.apache.commons.io;

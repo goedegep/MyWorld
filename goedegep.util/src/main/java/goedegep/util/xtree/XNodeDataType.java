@@ -41,7 +41,7 @@ public enum XNodeDataType {
    * 
    * @param value numerical representation of the type.
    */
-  private XNodeDataType(int value) {
+  XNodeDataType(int value) {
     this.value = value;
   }
 

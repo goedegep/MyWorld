@@ -45,7 +45,7 @@ public class JobAppointmentWindow extends JfxStage {
    * @param jobAppointmentDepr the job appointment information.
    */
   public JobAppointmentWindow(CustomizationFx customization) {
-    super(WINDOW_TITLE, customization);
+    super(customization, WINDOW_TITLE);
     
     this.customization = customization;
     

@@ -72,7 +72,7 @@ public class WorkerStateMonitorWindow<T> extends JfxStage {
    */
   public WorkerStateMonitorWindow(CustomizationFx customization, Worker<T> worker)
   {
-    super(WINDOW_TITLE, customization);
+    super(customization, WINDOW_TITLE);
     
     GridPane monitorPanel = createMonitorPanel();
     setScene(new Scene(monitorPanel, 800, 500));

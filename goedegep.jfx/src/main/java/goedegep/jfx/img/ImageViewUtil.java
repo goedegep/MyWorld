@@ -140,8 +140,8 @@ public class ImageViewUtil {
    */
   public static Point2D imageCoordinatesToImageViewCoordinates(ImageView imageView, double imageX, double imageY) {
     Rectangle2D viewport = imageView.getViewport();
-    double zoomFactor = ImageViewUtil.getImageViewImageHorizontalSize(imageView) / (viewport.getMaxX() - viewport.getMinX());
-    double imageToViewScaleFactor = imageView.getFitWidth() / ImageViewUtil.getImageViewImageHorizontalSize(imageView);
+    double zoomFactor = getImageViewImageHorizontalSize(imageView) / (viewport.getMaxX() - viewport.getMinX());
+    double imageToViewScaleFactor = imageView.getFitWidth() / getImageViewImageHorizontalSize(imageView);
     double imageViewX = (imageX - viewport.getMinX()) * imageToViewScaleFactor * zoomFactor;
     double imageViewY = (imageY - viewport.getMinY()) * imageToViewScaleFactor * zoomFactor;
     
@@ -170,8 +170,8 @@ public class ImageViewUtil {
     
     double imageX;
     double imageY;
-    double zoomFactor = ImageViewUtil.getImageViewImageHorizontalSize(imageView) / (viewport.getMaxX() - viewport.getMinX());
-    double imageToViewScaleFactor = imageView.getFitWidth() / ImageViewUtil.getImageViewImageHorizontalSize(imageView);
+    double zoomFactor = getImageViewImageHorizontalSize(imageView) / (viewport.getMaxX() - viewport.getMinX());
+    double imageToViewScaleFactor = imageView.getFitWidth() / getImageViewImageHorizontalSize(imageView);
     
     double rotation = imageView.rotateProperty().getValue();
     

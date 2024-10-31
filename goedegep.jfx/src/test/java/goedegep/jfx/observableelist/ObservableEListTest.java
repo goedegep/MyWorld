@@ -440,7 +440,7 @@ public class ObservableEListTest {
     personListPersons.add(createEPerson("Four"));
     personListPersons.add(createEPerson("Five"));
     
-    ObservableEList<EObject> observablePersonsEList = new ObservableEList<>(false, personList, personList_persons);
+    ObservableEList<EObject> observablePersonsEList = new ObservableEList<>(personList, personList_persons);
     
     ListChangeListener<EObject> eListChangeListener = new ListChangeListener<>() {
 

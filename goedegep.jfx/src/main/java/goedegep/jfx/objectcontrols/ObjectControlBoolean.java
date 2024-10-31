@@ -2,7 +2,7 @@ package goedegep.jfx.objectcontrols;
 
 import java.util.logging.Logger;
 
-import goedegep.jfx.ComponentFactoryFx;
+import goedegep.jfx.CustomizationFx;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Tooltip;
 
@@ -26,8 +26,8 @@ public class ObjectControlBoolean extends ObjectControlTemplate<Boolean> {
    * @param isOptional Indication of whether the control is optional (if true) or mandatory.
    * @param toolTipText An optional ToolTip text.
    */
-  public ObjectControlBoolean(ComponentFactoryFx componentFactory, String text, boolean selected, boolean isOptional, String toolTipText) {
-    super(isOptional);
+  public ObjectControlBoolean(CustomizationFx customization, String text, boolean selected, boolean isOptional, String toolTipText) {
+    super(customization, isOptional);
     
     checkBox = componentFactory.createCheckBox(text, selected);  // TODO check that ocSetValue leads to calling ociHandleNewUserInput()
     

@@ -71,9 +71,9 @@
       <genFeatures children="true" createChild="true" propertySortChoices="true" ecoreFeature="ecore:EReference mediadb.ecore#//Track/parts"/>
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference mediadb.ecore#//Track/authors"/>
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference mediadb.ecore#//Track/referredBy"/>
-      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference mediadb.ecore#//Track/originalDisc"/>
       <genOperations ecoreOperation="mediadb.ecore#//Track/getOriginalDiscTrackReference"/>
       <genOperations ecoreOperation="mediadb.ecore#//Track/getTrackArtist"/>
+      <genOperations ecoreOperation="mediadb.ecore#//Track/getOriginalDisc"/>
     </genClasses>
     <genClasses ecoreClass="mediadb.ecore#//MediaDb">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference mediadb.ecore#//MediaDb/artists"/>
@@ -142,7 +142,7 @@
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference mediadb.ecore#//TrackReference/track"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute mediadb.ecore#//TrackReference/bonusTrack"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference mediadb.ecore#//TrackReference/myTrackInfo"/>
-      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference mediadb.ecore#//TrackReference/originalAlbumTrackReference"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute mediadb.ecore#//TrackReference/originalAlbumTrackReference"/>
       <genOperations ecoreOperation="mediadb.ecore#//TrackReference/getTrackNr"/>
       <genOperations ecoreOperation="mediadb.ecore#//TrackReference/getDisc"/>
     </genClasses>
@@ -155,8 +155,8 @@
     <genClasses ecoreClass="mediadb.ecore#//MediumInfo">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute mediadb.ecore#//MediumInfo/mediumType"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute mediadb.ecore#//MediumInfo/informationType"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute mediadb.ecore#//MediumInfo/sourceTypes"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute mediadb.ecore#//MediumInfo/sourceBitRate"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute mediadb.ecore#//MediumInfo/sourceType"/>
     </genClasses>
     <genClasses ecoreClass="mediadb.ecore#//MyInfo">
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference mediadb.ecore#//MyInfo/albumReferences"/>
@@ -176,7 +176,7 @@
     <genClasses ecoreClass="mediadb.ecore#//MyTrackInfo">
       <genFeatures children="true" createChild="true" propertySortChoices="true" ecoreFeature="ecore:EReference mediadb.ecore#//MyTrackInfo/iHaveOn"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute mediadb.ecore#//MyTrackInfo/iWant"/>
-      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference mediadb.ecore#//MyTrackInfo/compilationTrackReference"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference mediadb.ecore#//MyTrackInfo/trackReference"/>
     </genClasses>
     <genClasses ecoreClass="mediadb.ecore#//DiscAndTrackNrs">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute mediadb.ecore#//DiscAndTrackNrs/discNr"/>

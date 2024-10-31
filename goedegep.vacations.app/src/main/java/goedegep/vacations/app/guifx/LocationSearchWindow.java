@@ -165,7 +165,7 @@ public class LocationSearchWindow extends JfxStage {
    * @param searchResultLayer a reference to a <code>SearchResultLayer</code> for showing search results.
    */
   public LocationSearchWindow(CustomizationFx customization, POIIcons poiIcons, NominatimAPI nominatimAPI, VacationsWindow vacationsWindow) {
-    super("Search for a Location", customization);
+    super(customization, "Search for a Location");
     
     this.customization = customization;
     this.poiIcons = poiIcons;

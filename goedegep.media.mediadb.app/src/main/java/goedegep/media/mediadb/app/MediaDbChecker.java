@@ -96,36 +96,6 @@ public class MediaDbChecker {
   }
 
   /**
-   * Check that there are no TrackReferences that have the originalTrackReference set to something other than itself.
-   * 
-   * @param mediaDb the media database to check.
-   * @param errors the list to which errors shall be appended if this value is not null
-   */
-  private static void areThereNoTrackReferencesThatHaveOriginalAlbumTrackReferenceReferringToAnotherTrackReference(MediaDb mediaDb, List<Object> errors) {
-    // check for album tracks
-    for (Album album: mediaDb.getAlbums()) {
-      for (Disc disc: album.getDiscs()) {
-        for (TrackReference trackReference: disc.getTrackReferences()) {
-          if (trackReference.getOriginalAlbumTrackReference() != null  &&
-              trackReference.getOriginalAlbumTrackReference() != trackReference) {
-            LOGGER.severe("Original track reference not pointing to itself: " + album.getArtistAndTitle() + " - " + disc.getTitle() + " - " + trackReference.getTrackNr());
-          }
-        }
-      }
-    }
-    
-    // check for track folder tracks
-    for (TrackCollection trackCollection: mediaDb.getTrackcollections()) {
-      for (TrackReference trackReference: trackCollection.getTrackReferences()) {
-        if (trackReference.getOriginalAlbumTrackReference() != null  &&
-            trackReference.getOriginalAlbumTrackReference() != trackReference) {
-          LOGGER.severe("Original track reference not pointing to itself: " + trackCollection.getCollection().getLiteral() + " - " + trackReference.getTrack().getTrackArtist().getName() + " - " + trackReference.getTrack().getTitle());
-        }
-      }
-    }
-  }
-
-  /**
    * Check that there are no Tracks which aren't referred to.
    * 
    * @param mediaDb the media database to check.
@@ -554,20 +524,20 @@ public class MediaDbChecker {
 
     Track track = trackReference.getTrack();
     if (track == null) {
-//      LOGGER.severe("No track set in TrackReference: " + album.getArtistAndTitle() + ", track number: " + trackReference.getTrackNr());
+      LOGGER.severe("No track set in TrackReference: " + album.getArtistAndTitle() + ", track number: " + trackReference.getTrackNr());
       
-      TrackReference originalAlbumTrackReference = trackReference.getOriginalAlbumTrackReference();
-      if (originalAlbumTrackReference != null) {
-        Track originalAlbumTrackReferenceTrack = originalAlbumTrackReference.getTrack();
-        if (originalAlbumTrackReferenceTrack != null) {
-//          LOGGER.severe("Setting track to: " + originalAlbumTrackReferenceTrack);
-          trackReference.setTrack(originalAlbumTrackReferenceTrack);
-        } else {
-          LOGGER.severe("Also no track set in OriginalAlbumTrackReference");
-        }
-      } else {
-        LOGGER.severe("Also no OriginalAlbumTrackReference");
-      }
+//      TrackReference originalAlbumTrackReference = trackReference.getOriginalAlbumTrackReference();
+//      if (originalAlbumTrackReference != null) {
+//        Track originalAlbumTrackReferenceTrack = originalAlbumTrackReference.getTrack();
+//        if (originalAlbumTrackReferenceTrack != null) {
+////          LOGGER.severe("Setting track to: " + originalAlbumTrackReferenceTrack);
+//          trackReference.setTrack(originalAlbumTrackReferenceTrack);
+//        } else {
+//          LOGGER.severe("Also no track set in OriginalAlbumTrackReference");
+//        }
+//      } else {
+//        LOGGER.severe("Also no OriginalAlbumTrackReference");
+//      }
     } else {
       String trackTitle = track.getTitle();
       if (trackTitle != null) {

@@ -63,7 +63,7 @@ public class PhonesWindowFx extends JfxStage {
    * @param rolodex a <code>Rolodex</code>
    */
   public PhonesWindowFx(CustomizationFx customization, Rolodex rolodex) {
-    super(WINDOW_TITLE, customization);
+    super(customization, WINDOW_TITLE);
     
     this.customization = customization;
     this.rolodex = rolodex;
@@ -362,7 +362,7 @@ class PhoneAddressBookEntryEditPanel {
     
     // Create the controls.
     entryNameTextField = componentFactory.createObjectControlString(null, 300, true, "Enter the entry name");
-    phoneAddressBookEntryTypeField =componentFactory.createObjectControlEnumComboBox(PhoneAddressBookEntryType.NAME_AND_PHONE_NUMBER_ENTRY, null, true, "Enter the type of entry");
+    phoneAddressBookEntryTypeField =componentFactory.createObjectControlEnumComboBox(PhoneAddressBookEntryType.NAME_AND_PHONE_NUMBER_ENTRY, true, "Enter the type of entry");
     phoneNumberTextField = new PhoneNumberTextField(customization, rolodex);
     objectControlGroup = new ObjectControlGroup();
     objectControlGroup.addObjectControls(entryNameTextField, phoneAddressBookEntryTypeField, phoneNumberTextField);

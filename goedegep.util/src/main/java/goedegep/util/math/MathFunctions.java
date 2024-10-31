@@ -30,7 +30,8 @@ public class MathFunctions {
     long bit;
     int g;
     
-    for (bit = 0x4000000000000000l, g = 31; bit > value; bit >>= 2, g--) {
+    for (bit = 0x4000000000000000l, g = 31; bit > value; bit >>= 2) {
+      g--;
     }
     
     value -= bit;

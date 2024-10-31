@@ -24,7 +24,6 @@ public class YearlyReportOptionsWindow extends JfxStage {
   
   private final static String WINDOW_TITLE = "Yearly Report options";
   
-  private CustomizationFx customization;
   private MortgageCalculator mortgageCalculator;
 
 //  private BooleanProperty selectionValidProperty;
@@ -33,9 +32,8 @@ public class YearlyReportOptionsWindow extends JfxStage {
   private Button okButton;
   
   public YearlyReportOptionsWindow(CustomizationFx customization, MortgageCalculator mortgageCalculator) {
-    super(WINDOW_TITLE, customization);
+    super(customization, WINDOW_TITLE);
     
-    this.customization = customization;
     this.mortgageCalculator = mortgageCalculator;
     
     createGUI();

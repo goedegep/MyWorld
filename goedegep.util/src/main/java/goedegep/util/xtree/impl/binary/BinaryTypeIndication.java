@@ -33,7 +33,7 @@ public enum BinaryTypeIndication {
   private static final int NR_OF_BITS_BINARY_TYPE_INDICATION = 3;
   private static final int BINARY_VALUE_TYPE_INDICATION_ESCAPE = 7;
   
-  private BinaryTypeIndication(int group, int value) {
+  BinaryTypeIndication(int group, int value) {
     bitSequence = new BitSequence();
     this.value = value;
     if (group == 1) {

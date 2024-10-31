@@ -135,22 +135,13 @@ public interface MediadbPackage extends EPackage {
   int TRACK__REFERRED_BY = 6;
 
   /**
-   * The feature id for the '<em><b>Original Disc</b></em>' reference.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int TRACK__ORIGINAL_DISC = 7;
-
-  /**
    * The number of structural features of the '<em>Track</em>' class.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int TRACK_FEATURE_COUNT = 8;
+  int TRACK_FEATURE_COUNT = 7;
 
   /**
    * The operation id for the '<em>Get Original Disc Track Reference</em>' operation.
@@ -171,13 +162,22 @@ public interface MediadbPackage extends EPackage {
   int TRACK___GET_TRACK_ARTIST = 1;
 
   /**
+   * The operation id for the '<em>Get Original Disc</em>' operation.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int TRACK___GET_ORIGINAL_DISC = 2;
+
+  /**
    * The number of operations of the '<em>Track</em>' class.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int TRACK_OPERATION_COUNT = 2;
+  int TRACK_OPERATION_COUNT = 3;
 
   /**
    * The meta object id for the '{@link goedegep.media.mediadb.model.impl.MediaDbImpl <em>Media Db</em>}' class.
@@ -634,7 +634,7 @@ public interface MediadbPackage extends EPackage {
   int TRACK_REFERENCE__MY_TRACK_INFO = 2;
 
   /**
-   * The feature id for the '<em><b>Original Album Track Reference</b></em>' reference.
+   * The feature id for the '<em><b>Original Album Track Reference</b></em>' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
@@ -771,22 +771,22 @@ public interface MediadbPackage extends EPackage {
   int MEDIUM_INFO__INFORMATION_TYPE = 1;
 
   /**
-   * The feature id for the '<em><b>Source Types</b></em>' attribute list.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int MEDIUM_INFO__SOURCE_TYPES = 2;
-
-  /**
    * The feature id for the '<em><b>Source Bit Rate</b></em>' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int MEDIUM_INFO__SOURCE_BIT_RATE = 3;
+  int MEDIUM_INFO__SOURCE_BIT_RATE = 2;
+
+  /**
+   * The feature id for the '<em><b>Source Type</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int MEDIUM_INFO__SOURCE_TYPE = 3;
 
   /**
    * The number of structural features of the '<em>Medium Info</em>' class.
@@ -1000,13 +1000,13 @@ public interface MediadbPackage extends EPackage {
   int MY_TRACK_INFO__IWANT = 1;
 
   /**
-   * The feature id for the '<em><b>Compilation Track Reference</b></em>' reference.
+   * The feature id for the '<em><b>Track Reference</b></em>' reference.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int MY_TRACK_INFO__COMPILATION_TRACK_REFERENCE = 2;
+  int MY_TRACK_INFO__TRACK_REFERENCE = 2;
 
   /**
    * The number of structural features of the '<em>My Track Info</em>' class.
@@ -1384,17 +1384,6 @@ public interface MediadbPackage extends EPackage {
   EReference getTrack_ReferredBy();
 
   /**
-   * Returns the meta object for the reference '{@link goedegep.media.mediadb.model.Track#getOriginalDisc <em>Original Disc</em>}'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the meta object for the reference '<em>Original Disc</em>'.
-   * @see goedegep.media.mediadb.model.Track#getOriginalDisc()
-   * @see #getTrack()
-   * @generated
-   */
-  EReference getTrack_OriginalDisc();
-
-  /**
    * Returns the meta object for the '{@link goedegep.media.mediadb.model.Track#getOriginalDiscTrackReference() <em>Get Original Disc Track Reference</em>}' operation.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -1413,6 +1402,16 @@ public interface MediadbPackage extends EPackage {
    * @generated
    */
   EOperation getTrack__GetTrackArtist();
+
+  /**
+   * Returns the meta object for the '{@link goedegep.media.mediadb.model.Track#getOriginalDisc() <em>Get Original Disc</em>}' operation.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the '<em>Get Original Disc</em>' operation.
+   * @see goedegep.media.mediadb.model.Track#getOriginalDisc()
+   * @generated
+   */
+  EOperation getTrack__GetOriginalDisc();
 
   /**
    * Returns the meta object for class '{@link goedegep.media.mediadb.model.MediaDb <em>Media Db</em>}'.
@@ -1883,15 +1882,15 @@ public interface MediadbPackage extends EPackage {
   EReference getTrackReference_MyTrackInfo();
 
   /**
-   * Returns the meta object for the reference '{@link goedegep.media.mediadb.model.TrackReference#getOriginalAlbumTrackReference <em>Original Album Track Reference</em>}'.
+   * Returns the meta object for the attribute '{@link goedegep.media.mediadb.model.TrackReference#isOriginalAlbumTrackReference <em>Original Album Track Reference</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return the meta object for the reference '<em>Original Album Track Reference</em>'.
-   * @see goedegep.media.mediadb.model.TrackReference#getOriginalAlbumTrackReference()
+   * @return the meta object for the attribute '<em>Original Album Track Reference</em>'.
+   * @see goedegep.media.mediadb.model.TrackReference#isOriginalAlbumTrackReference()
    * @see #getTrackReference()
    * @generated
    */
-  EReference getTrackReference_OriginalAlbumTrackReference();
+  EAttribute getTrackReference_OriginalAlbumTrackReference();
 
   /**
    * Returns the meta object for the '{@link goedegep.media.mediadb.model.TrackReference#getTrackNr() <em>Get Track Nr</em>}' operation.
@@ -1998,17 +1997,6 @@ public interface MediadbPackage extends EPackage {
   EAttribute getMediumInfo_InformationType();
 
   /**
-   * Returns the meta object for the attribute list '{@link goedegep.media.mediadb.model.MediumInfo#getSourceTypes <em>Source Types</em>}'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the meta object for the attribute list '<em>Source Types</em>'.
-   * @see goedegep.media.mediadb.model.MediumInfo#getSourceTypes()
-   * @see #getMediumInfo()
-   * @generated
-   */
-  EAttribute getMediumInfo_SourceTypes();
-
-  /**
    * Returns the meta object for the attribute '{@link goedegep.media.mediadb.model.MediumInfo#getSourceBitRate <em>Source Bit Rate</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -2018,6 +2006,17 @@ public interface MediadbPackage extends EPackage {
    * @generated
    */
   EAttribute getMediumInfo_SourceBitRate();
+
+  /**
+   * Returns the meta object for the attribute '{@link goedegep.media.mediadb.model.MediumInfo#getSourceType <em>Source Type</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Source Type</em>'.
+   * @see goedegep.media.mediadb.model.MediumInfo#getSourceType()
+   * @see #getMediumInfo()
+   * @generated
+   */
+  EAttribute getMediumInfo_SourceType();
 
   /**
    * Returns the meta object for class '{@link goedegep.media.mediadb.model.MyInfo <em>My Info</em>}'.
@@ -2181,15 +2180,15 @@ public interface MediadbPackage extends EPackage {
   EAttribute getMyTrackInfo_IWant();
 
   /**
-   * Returns the meta object for the reference '{@link goedegep.media.mediadb.model.MyTrackInfo#getCompilationTrackReference <em>Compilation Track Reference</em>}'.
+   * Returns the meta object for the reference '{@link goedegep.media.mediadb.model.MyTrackInfo#getTrackReference <em>Track Reference</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return the meta object for the reference '<em>Compilation Track Reference</em>'.
-   * @see goedegep.media.mediadb.model.MyTrackInfo#getCompilationTrackReference()
+   * @return the meta object for the reference '<em>Track Reference</em>'.
+   * @see goedegep.media.mediadb.model.MyTrackInfo#getTrackReference()
    * @see #getMyTrackInfo()
    * @generated
    */
-  EReference getMyTrackInfo_CompilationTrackReference();
+  EReference getMyTrackInfo_TrackReference();
 
   /**
    * Returns the meta object for class '{@link goedegep.media.mediadb.model.DiscAndTrackNrs <em>Disc And Track Nrs</em>}'.
@@ -2502,14 +2501,6 @@ public interface MediadbPackage extends EPackage {
     EReference TRACK__REFERRED_BY = eINSTANCE.getTrack_ReferredBy();
 
     /**
-    	 * The meta object literal for the '<em><b>Original Disc</b></em>' reference feature.
-    	 * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-    	 * @generated
-    	 */
-    EReference TRACK__ORIGINAL_DISC = eINSTANCE.getTrack_OriginalDisc();
-
-    /**
     	 * The meta object literal for the '<em><b>Get Original Disc Track Reference</b></em>' operation.
     	 * <!-- begin-user-doc -->
     	 * <!-- end-user-doc -->
@@ -2524,6 +2515,14 @@ public interface MediadbPackage extends EPackage {
     	 * @generated
     	 */
     EOperation TRACK___GET_TRACK_ARTIST = eINSTANCE.getTrack__GetTrackArtist();
+
+    /**
+    	 * The meta object literal for the '<em><b>Get Original Disc</b></em>' operation.
+    	 * <!-- begin-user-doc -->
+    	 * <!-- end-user-doc -->
+    	 * @generated
+    	 */
+    EOperation TRACK___GET_ORIGINAL_DISC = eINSTANCE.getTrack__GetOriginalDisc();
 
     /**
     	 * The meta object literal for the '{@link goedegep.media.mediadb.model.impl.MediaDbImpl <em>Media Db</em>}' class.
@@ -2887,12 +2886,12 @@ public interface MediadbPackage extends EPackage {
     EReference TRACK_REFERENCE__MY_TRACK_INFO = eINSTANCE.getTrackReference_MyTrackInfo();
 
     /**
-    	 * The meta object literal for the '<em><b>Original Album Track Reference</b></em>' reference feature.
+    	 * The meta object literal for the '<em><b>Original Album Track Reference</b></em>' attribute feature.
     	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
     	 * @generated
     	 */
-    EReference TRACK_REFERENCE__ORIGINAL_ALBUM_TRACK_REFERENCE = eINSTANCE
+    EAttribute TRACK_REFERENCE__ORIGINAL_ALBUM_TRACK_REFERENCE = eINSTANCE
         .getTrackReference_OriginalAlbumTrackReference();
 
     /**
@@ -2980,20 +2979,20 @@ public interface MediadbPackage extends EPackage {
     EAttribute MEDIUM_INFO__INFORMATION_TYPE = eINSTANCE.getMediumInfo_InformationType();
 
     /**
-    	 * The meta object literal for the '<em><b>Source Types</b></em>' attribute list feature.
-    	 * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-    	 * @generated
-    	 */
-    EAttribute MEDIUM_INFO__SOURCE_TYPES = eINSTANCE.getMediumInfo_SourceTypes();
-
-    /**
     	 * The meta object literal for the '<em><b>Source Bit Rate</b></em>' attribute feature.
     	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
     	 * @generated
     	 */
     EAttribute MEDIUM_INFO__SOURCE_BIT_RATE = eINSTANCE.getMediumInfo_SourceBitRate();
+
+    /**
+    	 * The meta object literal for the '<em><b>Source Type</b></em>' attribute feature.
+    	 * <!-- begin-user-doc -->
+    	 * <!-- end-user-doc -->
+    	 * @generated
+    	 */
+    EAttribute MEDIUM_INFO__SOURCE_TYPE = eINSTANCE.getMediumInfo_SourceType();
 
     /**
     	 * The meta object literal for the '{@link goedegep.media.mediadb.model.impl.MyInfoImpl <em>My Info</em>}' class.
@@ -3124,12 +3123,12 @@ public interface MediadbPackage extends EPackage {
     EAttribute MY_TRACK_INFO__IWANT = eINSTANCE.getMyTrackInfo_IWant();
 
     /**
-    	 * The meta object literal for the '<em><b>Compilation Track Reference</b></em>' reference feature.
+    	 * The meta object literal for the '<em><b>Track Reference</b></em>' reference feature.
     	 * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
+    	 * <!-- end-user-doc -->
     	 * @generated
     	 */
-    EReference MY_TRACK_INFO__COMPILATION_TRACK_REFERENCE = eINSTANCE.getMyTrackInfo_CompilationTrackReference();
+    EReference MY_TRACK_INFO__TRACK_REFERENCE = eINSTANCE.getMyTrackInfo_TrackReference();
 
     /**
     	 * The meta object literal for the '{@link goedegep.media.mediadb.model.impl.DiscAndTrackNrsImpl <em>Disc And Track Nrs</em>}' class.

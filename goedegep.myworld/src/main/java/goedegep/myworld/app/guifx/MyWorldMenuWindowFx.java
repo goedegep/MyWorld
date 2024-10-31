@@ -67,7 +67,7 @@ public class MyWorldMenuWindowFx extends JfxStage {
   private MyWorldAppResourcesFx appResources;
 
   public MyWorldMenuWindowFx(CustomizationFx customization) {
-    super(WINDOW_TITLE + "\"getting version\"", customization);
+    super(customization, WINDOW_TITLE + "\"getting version\"");
     LOGGER.setLevel(Level.SEVERE);
     
     this.customization = customization;
@@ -394,7 +394,7 @@ public class MyWorldMenuWindowFx extends JfxStage {
   }
   
   private void showUserSettingsEditor() {
-    PropertiesEditor propertiesEditor = new PropertiesEditor("Edit MyWorld settings", getCustomization(),
+    PropertiesEditor propertiesEditor = new PropertiesEditor("Edit MyWorld settings", customization,
         MyWorldRegistry.propertyDescriptorsResource, MyWorldRegistry.customPropertiesFile);
     propertiesEditor.show();
   }

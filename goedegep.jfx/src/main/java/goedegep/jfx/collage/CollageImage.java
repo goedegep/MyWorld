@@ -82,7 +82,7 @@ public class CollageImage {
     
     // The size of the images is made dependent on the size of the collage and the number images available.
     int collageSizeInPixels = collageWidth * collageHeight;
-    double imageSizeInPixels = (OVERLAP_FACTOR * collageSizeInPixels) / imageFiles.size();
+    double imageSizeInPixels = OVERLAP_FACTOR * collageSizeInPixels / imageFiles.size();
     double imageWidthAndLength = Math.sqrt(imageSizeInPixels);
     LOGGER.info("imageSizeInPixels=" + imageSizeInPixels + ", imageWidthAndLength=" + imageWidthAndLength);
 

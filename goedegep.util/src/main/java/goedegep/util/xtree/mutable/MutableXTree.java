@@ -18,14 +18,14 @@ public interface MutableXTree extends NodeBasedXTree {
    * {@inheritDoc}
    */
   @Override
-  public MutableXTreeNode getRoot();
+  MutableXTreeNode getRoot();
 
   /**
    * Set the root node of a tree.
    * 
    * @return The root node of the tree.
    */
-  public MutableXTreeNode setRoot(MutableXTreeNode rootNode);
+  MutableXTreeNode setRoot(MutableXTreeNode rootNode);
 
   /*
    * Adding nodes to the tree
@@ -38,7 +38,7 @@ public interface MutableXTree extends NodeBasedXTree {
    * @param newNode the node to be added as a previous sibling of referenceNode.
    * @return newNode
    */
-  public MutableXTreeNode insertSibling(MutableXTreeNode referenceNode, MutableXTreeNode newNode);
+  MutableXTreeNode insertSibling(MutableXTreeNode referenceNode, MutableXTreeNode newNode);
 
   /**
    * Create a node of type 'TAG' and add this node to the tree as a sibling of a specific node.
@@ -54,7 +54,7 @@ public interface MutableXTree extends NodeBasedXTree {
    *
    * @return The new node, or null if this could not be created.
    */
-  public MutableXTreeNode insertTagSibling(MutableXTreeNode referenceNode, XTreeTag data);
+  MutableXTreeNode insertTagSibling(MutableXTreeNode referenceNode, XTreeTag data);
   
   /**
    * Create a node of type 'BOOLEAN' and add this node to the tree as a sibling of a specific node.
@@ -67,7 +67,7 @@ public interface MutableXTree extends NodeBasedXTree {
    *
    * @return The new node, or null if this could not be created.
    */
-  public MutableXTreeNode insertBooleanSibling(MutableXTreeNode referenceNode, boolean data);
+  MutableXTreeNode insertBooleanSibling(MutableXTreeNode referenceNode, boolean data);
   
   /**
    * Create a node of type 'INTEGER' and add this node to the tree as a sibling of a specific node.
@@ -80,7 +80,7 @@ public interface MutableXTree extends NodeBasedXTree {
    *
    * @return The new node, or null if this could not be created.
    */
-  public MutableXTreeNode insertIntegerSibling(MutableXTreeNode referenceNode, int data);
+  MutableXTreeNode insertIntegerSibling(MutableXTreeNode referenceNode, int data);
 
   /**
    * Create a node of type 'STRING' and add this node to the tree as a sibling of a specific node.
@@ -93,7 +93,7 @@ public interface MutableXTree extends NodeBasedXTree {
    *
    * @return The new node, or null if this could not be created.
    */
-  public MutableXTreeNode insertStringSibling(MutableXTreeNode referenceNode, String data);
+  MutableXTreeNode insertStringSibling(MutableXTreeNode referenceNode, String data);
   
   /**
    * Create a node of type 'BLOB' and add this node to the tree as a sibling of a specific node.
@@ -106,7 +106,7 @@ public interface MutableXTree extends NodeBasedXTree {
    *
    * @return The new node, or null if this could not be created.
    */
-  public MutableXTreeNode insertBlobSibling(MutableXTreeNode referenceNode, byte[] data);
+  MutableXTreeNode insertBlobSibling(MutableXTreeNode referenceNode, byte[] data);
   
   
   /**
@@ -117,7 +117,7 @@ public interface MutableXTree extends NodeBasedXTree {
    * @param node
    *      The node to be removed, which may not be null.
    */
-  public void removeNode(MutableXTreeNode node);
+  void removeNode(MutableXTreeNode node);
 
   /*
    * Filtering
@@ -130,7 +130,7 @@ public interface MutableXTree extends NodeBasedXTree {
    * 
    * @return The filtered tree.
    */
-  public MutableXTree filterTree(MutableXTree filter);
+  MutableXTree filterTree(MutableXTree filter);
 
   /**
    * Copy and merge
@@ -163,7 +163,7 @@ public interface MutableXTree extends NodeBasedXTree {
    *      decendents.  If this value is true, the new tree also contains the
    *      siblings of 'srcReferenceNode' and all their decendents.
    */
-  public void addSubtreeCopy(MutableXTreeNode dstParentNode, MutableXTreeNode dstSiblingNode,
+  void addSubtreeCopy(MutableXTreeNode dstParentNode, MutableXTreeNode dstSiblingNode,
       boolean insert, MutableXTree srcTree, MutableXTreeNode srcReferenceNode,
       boolean includeSiblings);
 
@@ -183,7 +183,7 @@ public interface MutableXTree extends NodeBasedXTree {
    * @param[in] srcTree
    *      The tree to be added to this tree.
    */
-  public void mergeSubtree(MutableXTreeNode parentNode, MutableXTreeNode siblingNode, MutableXTree srcTree);
+  void mergeSubtree(MutableXTreeNode parentNode, MutableXTreeNode siblingNode, MutableXTree srcTree);
 
   /*
    * Debug support.
@@ -206,7 +206,7 @@ public interface MutableXTree extends NodeBasedXTree {
    * @param stream
    *      Output stream to which the data shall be written.
    */
-  public void print(MutableXTreeNode start_node,
+  void print(MutableXTreeNode start_node,
                     boolean printChildren,boolean printSiblings,
                     OutputStream stream);
 
@@ -228,7 +228,7 @@ public interface MutableXTree extends NodeBasedXTree {
    * @param stream
    *      Output stream to which the data shall be written.
    */
-  public String print(MutableXTreeNode start_node,
+  String print(MutableXTreeNode start_node,
                     boolean printChildren,boolean printSiblings);
 
   /**
@@ -237,6 +237,6 @@ public interface MutableXTree extends NodeBasedXTree {
    * @param node - the node to be printed.
    * @return A string representation of the node.
    */
-  public String nodeToString(MutableXTreeNode node);
+  String nodeToString(MutableXTreeNode node);
 
 }

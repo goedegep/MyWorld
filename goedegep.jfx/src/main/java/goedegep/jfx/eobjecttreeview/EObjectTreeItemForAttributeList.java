@@ -119,10 +119,9 @@ public class EObjectTreeItemForAttributeList extends EObjectTreeItem {
     if (objectAttributes.contains(eAttribute)) {
       if (editMode  ||  value.eIsSet(eAttribute)) {
         Object childObject = value.eGet(eAttribute);
-        if (eAttribute.isMany()) {
-          // This tree item will only show the attribute name, child nodes will be created for each value.
-          // Therefore the value (a list) is stored in this node.
-        } else {
+        // This tree item will only show the attribute name, child nodes will be created for each value.
+        // Therefore the value (a list) is stored in this node.
+        if (!eAttribute.isMany()) {
           throw new RuntimeException("Descriptor doesn't match with reference. eAttribute is " + eAttribute.toString());
         }
         return new EObjectTreeItemForAttributeList(childObject, eAttribute, eObjectTreeItemAttributeListDescriptor, eObjectTreeView);

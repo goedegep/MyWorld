@@ -11,6 +11,10 @@ import org.eclipse.emf.ecore.EObject;
  * A representation of the model object '<em><b>Disc</b></em>'.
  * <!-- end-user-doc -->
  *
+ * <!-- begin-model-doc -->
+ * A disc of an {@code Album}.
+ * <!-- end-model-doc -->
+ *
  * <p>
  * The following features are supported:
  * </p>
@@ -32,6 +36,9 @@ public interface Disc extends EObject {
    * there really should be more of a description here...
    * </p>
    * <!-- end-user-doc -->
+   * <!-- begin-model-doc -->
+   * An optional title of a disc.
+   * <!-- end-model-doc -->
    * @return the value of the '<em>Title</em>' attribute.
    * @see #isSetTitle()
    * @see #unsetTitle()
@@ -92,6 +99,11 @@ public interface Disc extends EObject {
   /**
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
+   * <!-- begin-model-doc -->
+   * Get the {@code Album} of which this disc is a part.
+   * 
+   * @return the {@code Album} of which this disc is a part.
+   * <!-- end-model-doc -->
    * @model kind="operation"
    * @generated
    */
@@ -100,6 +112,9 @@ public interface Disc extends EObject {
   /**
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
+   * <!-- begin-model-doc -->
+   * Get the index of this disc (starting at 1) in the list of discs of the album.
+   * <!-- end-model-doc -->
    * @model kind="operation"
    * @generated
    */

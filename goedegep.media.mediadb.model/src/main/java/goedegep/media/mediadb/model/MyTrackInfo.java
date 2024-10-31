@@ -22,7 +22,7 @@ import org.eclipse.emf.ecore.EObject;
  * <ul>
  *   <li>{@link goedegep.media.mediadb.model.MyTrackInfo#getIHaveOn <em>IHave On</em>}</li>
  *   <li>{@link goedegep.media.mediadb.model.MyTrackInfo#getIWant <em>IWant</em>}</li>
- *   <li>{@link goedegep.media.mediadb.model.MyTrackInfo#getCompilationTrackReference <em>Compilation Track Reference</em>}</li>
+ *   <li>{@link goedegep.media.mediadb.model.MyTrackInfo#getTrackReference <em>Track Reference</em>}</li>
  * </ul>
  *
  * @see goedegep.media.mediadb.model.MediadbPackage#getMyTrackInfo()
@@ -119,56 +119,52 @@ public interface MyTrackInfo extends EObject {
   boolean isSetIWant();
 
   /**
-   * Returns the value of the '<em><b>Compilation Track Reference</b></em>' reference.
+   * Returns the value of the '<em><b>Track Reference</b></em>' reference.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * <!-- begin-model-doc -->
-   * This has to be set if I have the track, but not as part of this disc. The reference refers to the TrackReference for which I have the track.
-   * This may be a reference to the track of an OWN_COMPILATION_ALBUM or a track in a track collection.
-   * <!-- end-model-doc -->
-   * @return the value of the '<em>Compilation Track Reference</em>' reference.
-   * @see #isSetCompilationTrackReference()
-   * @see #unsetCompilationTrackReference()
-   * @see #setCompilationTrackReference(TrackReference)
-   * @see goedegep.media.mediadb.model.MediadbPackage#getMyTrackInfo_CompilationTrackReference()
+   * @return the value of the '<em>Track Reference</em>' reference.
+   * @see #isSetTrackReference()
+   * @see #unsetTrackReference()
+   * @see #setTrackReference(TrackReference)
+   * @see goedegep.media.mediadb.model.MediadbPackage#getMyTrackInfo_TrackReference()
    * @model unsettable="true"
    * @generated
    */
-  TrackReference getCompilationTrackReference();
+  TrackReference getTrackReference();
 
   /**
-   * Sets the value of the '{@link goedegep.media.mediadb.model.MyTrackInfo#getCompilationTrackReference <em>Compilation Track Reference</em>}' reference.
+   * Sets the value of the '{@link goedegep.media.mediadb.model.MyTrackInfo#getTrackReference <em>Track Reference</em>}' reference.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @param value the new value of the '<em>Compilation Track Reference</em>' reference.
-   * @see #isSetCompilationTrackReference()
-   * @see #unsetCompilationTrackReference()
-   * @see #getCompilationTrackReference()
+   * @param value the new value of the '<em>Track Reference</em>' reference.
+   * @see #isSetTrackReference()
+   * @see #unsetTrackReference()
+   * @see #getTrackReference()
    * @generated
    */
-  void setCompilationTrackReference(TrackReference value);
+  void setTrackReference(TrackReference value);
 
   /**
-   * Unsets the value of the '{@link goedegep.media.mediadb.model.MyTrackInfo#getCompilationTrackReference <em>Compilation Track Reference</em>}' reference.
+   * Unsets the value of the '{@link goedegep.media.mediadb.model.MyTrackInfo#getTrackReference <em>Track Reference</em>}' reference.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see #isSetCompilationTrackReference()
-   * @see #getCompilationTrackReference()
-   * @see #setCompilationTrackReference(TrackReference)
+   * @see #isSetTrackReference()
+   * @see #getTrackReference()
+   * @see #setTrackReference(TrackReference)
    * @generated
    */
-  void unsetCompilationTrackReference();
+  void unsetTrackReference();
 
   /**
-   * Returns whether the value of the '{@link goedegep.media.mediadb.model.MyTrackInfo#getCompilationTrackReference <em>Compilation Track Reference</em>}' reference is set.
+   * Returns whether the value of the '{@link goedegep.media.mediadb.model.MyTrackInfo#getTrackReference <em>Track Reference</em>}' reference is set.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return whether the value of the '<em>Compilation Track Reference</em>' reference is set.
-   * @see #unsetCompilationTrackReference()
-   * @see #getCompilationTrackReference()
-   * @see #setCompilationTrackReference(TrackReference)
+   * @return whether the value of the '<em>Track Reference</em>' reference is set.
+   * @see #unsetTrackReference()
+   * @see #getTrackReference()
+   * @see #setTrackReference(TrackReference)
    * @generated
    */
-  boolean isSetCompilationTrackReference();
+  boolean isSetTrackReference();
 
 } // MyTrackInfo

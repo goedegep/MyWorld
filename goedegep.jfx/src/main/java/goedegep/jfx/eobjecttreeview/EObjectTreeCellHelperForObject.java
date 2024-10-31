@@ -180,10 +180,8 @@ public class EObjectTreeCellHelperForObject extends EObjectTreeCellHelperTemplat
         if (nodeOperationDescriptor.getOperation() == Operation.EXTENDED_OPERATION) {
           NodeOperationDescriptorCustom extendedNodeOperationDescriptor = (NodeOperationDescriptorCustom) nodeOperationDescriptor;
           Predicate<EObjectTreeItem> predicate = extendedNodeOperationDescriptor.getIsMenuToBeEnabled();
-          if (predicate != null) {
-            if (! predicate.test(eObjectTreeItem)) {
-              menuItem.setDisable(true);
-            }
+          if (predicate != null  &&  !predicate.test(eObjectTreeItem)) {
+            menuItem.setDisable(true);
           }
         }
         
@@ -383,13 +381,14 @@ public class EObjectTreeCellHelperForObject extends EObjectTreeCellHelperTemplat
     
     // Get the object to be deleted.
     EObject eObjectToBeDeleted = (EObject) treeItem.getValue();  // By definition the object will be an EOBject
+    EObject rootEObject = (EObject) treeItem.getEObjectTreeView().getRoot().getValue();
     
     // If the object to be deleted is referenced by a containment reference, check whether there are other references to this object. Inform the user about this.
     EReference eReferenceToObjectToBeDeleted = EObjectTreeItemForObject.getApplicableEReference(treeItem);
     if (eReferenceToObjectToBeDeleted.isContainment()) {
       LOGGER.info("Containment");
-      ResourceSet resourceSet = eObjectToBeDeleted.eResource().getResourceSet();
-      Collection<EStructuralFeature.Setting> settings = EcoreUtil.UsageCrossReferencer.find(eObjectToBeDeleted, resourceSet);
+//      ResourceSet resourceSet = eObjectToBeDeleted.eResource().getResourceSet();
+      Collection<EStructuralFeature.Setting> settings = EcoreUtil.UsageCrossReferencer.find(eObjectToBeDeleted, rootEObject);
       
       if (settings.size() != 0) {
         if (!canWeDeleteCrossReferences(eObjectToBeDeleted, settings)) {

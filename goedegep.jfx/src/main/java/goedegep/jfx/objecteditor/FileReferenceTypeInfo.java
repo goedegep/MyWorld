@@ -1,8 +1,8 @@
-package goedegep.jfx;
+package goedegep.jfx.objecteditor;
 
 /**
  * Via a list of these records you can specify the types of file references to be handled by
- * a {@code FileReferencePanel}.<br/>
+ * a {@code FileReferenceEditPanel}.<br/>
  * 
  * @param tag A string to refer to this type in your code
  * @param displayName The text shown in the GUI.

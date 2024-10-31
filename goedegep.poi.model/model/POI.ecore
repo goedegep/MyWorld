@@ -96,6 +96,8 @@
     <eLiterals name="BUS_STOP" value="85" literal="Bus stop"/>
     <eLiterals name="ZOO" value="86" literal="Zoo"/>
     <eLiterals name="ISLAND" value="87" literal="Island"/>
+    <eLiterals name="CABLE_CAR" value="88" literal="Cable car"/>
+    <eLiterals name="CAFE" value="89" literal="Cafe"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="POIIconResourceInfo">
     <eStructuralFeatures xsi:type="ecore:EReference" name="poiIconResourceDescriptors"

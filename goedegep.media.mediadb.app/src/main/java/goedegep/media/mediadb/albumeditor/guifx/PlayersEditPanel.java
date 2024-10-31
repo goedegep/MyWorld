@@ -58,12 +58,26 @@ public class PlayersEditPanel extends ObjectEditPanelTemplate<List<Player>> {
  
   
   /**
+   * Factory method to obtain a new instance of a {@code PlayersEditPanel}.
+   * 
+   * @param customization the GUI customization.
+   * @param mediaDb the media database.
+   * @return a newly created {@code PlayersEditPanel}.
+   */
+  public static PlayersEditPanel newInstance(CustomizationFx customization, MediaDb mediaDb) {
+    PlayersEditPanel playersEditPanel = new PlayersEditPanel(customization, mediaDb);
+    playersEditPanel.performInitialization();
+    
+    return playersEditPanel;
+  }
+  
+  /**
    * Constructor.
    * 
    * @param customization The GUI customization.
    * @param mediaDb The media database.
    */
-  public PlayersEditPanel(CustomizationFx customization, MediaDb mediaDb) {
+  private PlayersEditPanel(CustomizationFx customization, MediaDb mediaDb) {
     super(customization);
     
     this.customization = customization;
@@ -107,13 +121,13 @@ public class PlayersEditPanel extends ObjectEditPanelTemplate<List<Player>> {
      });
   }
 
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public void createObject() {
-    object = new ArrayList<Player>();
-  }
+//  /**
+//   * {@inheritDoc}
+//   */
+//  @Override
+//  public void createObject() {
+//    object = new ArrayList<Player>();
+//  }
 
   /**
    * {@inheritDoc}

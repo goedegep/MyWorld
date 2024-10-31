@@ -362,7 +362,7 @@ public abstract class AbstractAppResourcesFx implements AppResourcesFx {
 
         for (int i = 0; i < INFO_IMAGE_NAMES.length; i++) {
           LOGGER.fine("Going to read image: " + INFO_IMAGE_NAMES[i]);
-          rawDefaultInfoImages[i] = new Image(goedegep.jfx.AbstractAppResourcesFx.class.getResourceAsStream(INFO_IMAGE_NAMES[i]));
+          rawDefaultInfoImages[i] = new Image(AbstractAppResourcesFx.class.getResourceAsStream(INFO_IMAGE_NAMES[i]));
         }
       }
 
@@ -371,7 +371,7 @@ public abstract class AbstractAppResourcesFx implements AppResourcesFx {
 
         for (int i = 0; i < ERROR_IMAGE_NAMES.length; i++) {
           LOGGER.info("Going to read image: " + ERROR_IMAGE_NAMES[i]);
-          rawDefaultErrorImages[i] = new Image(goedegep.jfx.AbstractAppResourcesFx.class.getResourceAsStream(ERROR_IMAGE_NAMES[i]));
+          rawDefaultErrorImages[i] = new Image(AbstractAppResourcesFx.class.getResourceAsStream(ERROR_IMAGE_NAMES[i]));
         }
       }
 
@@ -380,7 +380,7 @@ public abstract class AbstractAppResourcesFx implements AppResourcesFx {
 
         for (int i = 0; i < ATTENTION_IMAGE_NAMES.length; i++) {
           LOGGER.info("Going to read image: " + ATTENTION_IMAGE_NAMES[i]);
-          rawDefaultAttentionImages[i] = new Image(goedegep.jfx.AbstractAppResourcesFx.class.getResourceAsStream(ATTENTION_IMAGE_NAMES[i]));
+          rawDefaultAttentionImages[i] = new Image(AbstractAppResourcesFx.class.getResourceAsStream(ATTENTION_IMAGE_NAMES[i]));
         }
       }
 
@@ -389,7 +389,7 @@ public abstract class AbstractAppResourcesFx implements AppResourcesFx {
 
         for (int i = 0; i < APPLICATION_IMAGE_NAMES.length; i++) {
           LOGGER.info("Going to read image: " + APPLICATION_IMAGE_NAMES[i]);
-          rawDefaultApplicationImages[i] = new Image(goedegep.jfx.AbstractAppResourcesFx.class.getResourceAsStream(APPLICATION_IMAGE_NAMES[i]));
+          rawDefaultApplicationImages[i] = new Image(AbstractAppResourcesFx.class.getResourceAsStream(APPLICATION_IMAGE_NAMES[i]));
         }
       }
 

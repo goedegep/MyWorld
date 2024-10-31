@@ -33,4 +33,19 @@ public enum AttachmentTypeInfo {
     return displayName;
   }
 
+  /**
+   * Get the {@code AttachmentTypeInfo} for a specific tag.
+   * 
+   * @param tag a tag {@code String} value
+   * @return the {@code AttachmentTypeInfo} for the {@code tag}, or null if no such {@code AttachmentTypeInfo} exists.
+   */
+  public static AttachmentTypeInfo getAttachmentTypeInfoForTag(String tag) {
+    for (AttachmentTypeInfo attachmentTypeInfo: values()) {
+      if (attachmentTypeInfo.tag.equals(tag)) {
+        return attachmentTypeInfo;
+      }
+    }
+    
+    return null;
+  }
 }

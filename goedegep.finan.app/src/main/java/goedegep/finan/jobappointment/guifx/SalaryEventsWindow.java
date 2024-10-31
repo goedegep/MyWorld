@@ -30,7 +30,7 @@ public class SalaryEventsWindow extends JfxStage {
    * @param salaryEvents the salary events to show.
    */
   public SalaryEventsWindow(CustomizationFx customization, JobAppointment jobAppointment) {
-    super(WINDOW_TITLE, customization);
+    super(customization, WINDOW_TITLE);
     
     this.customization = customization;
     this.jobAppointment = jobAppointment;
