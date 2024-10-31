@@ -31,7 +31,7 @@ import goedegep.media.mediadb.model.TrackReference;
  *   <li>{@link goedegep.media.mediadb.model.impl.TrackReferenceImpl#getTrack <em>Track</em>}</li>
  *   <li>{@link goedegep.media.mediadb.model.impl.TrackReferenceImpl#getBonusTrack <em>Bonus Track</em>}</li>
  *   <li>{@link goedegep.media.mediadb.model.impl.TrackReferenceImpl#getMyTrackInfo <em>My Track Info</em>}</li>
- *   <li>{@link goedegep.media.mediadb.model.impl.TrackReferenceImpl#getOriginalAlbumTrackReference <em>Original Album Track Reference</em>}</li>
+ *   <li>{@link goedegep.media.mediadb.model.impl.TrackReferenceImpl#isOriginalAlbumTrackReference <em>Original Album Track Reference</em>}</li>
  * </ul>
  *
  * @generated
@@ -107,17 +107,27 @@ public class TrackReferenceImpl extends MinimalEObjectImpl.Container implements 
   protected boolean myTrackInfoESet;
 
   /**
-   * The cached value of the '{@link #getOriginalAlbumTrackReference() <em>Original Album Track Reference</em>}' reference.
+   * The default value of the '{@link #isOriginalAlbumTrackReference() <em>Original Album Track Reference</em>}' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see #getOriginalAlbumTrackReference()
+   * @see #isOriginalAlbumTrackReference()
    * @generated
    * @ordered
    */
-  protected TrackReference originalAlbumTrackReference;
+  protected static final boolean ORIGINAL_ALBUM_TRACK_REFERENCE_EDEFAULT = false;
 
   /**
-   * This is true if the Original Album Track Reference reference has been set.
+   * The cached value of the '{@link #isOriginalAlbumTrackReference() <em>Original Album Track Reference</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #isOriginalAlbumTrackReference()
+   * @generated
+   * @ordered
+   */
+  protected boolean originalAlbumTrackReference = ORIGINAL_ALBUM_TRACK_REFERENCE_EDEFAULT;
+
+  /**
+   * This is true if the Original Album Track Reference attribute has been set.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
@@ -441,26 +451,7 @@ public class TrackReferenceImpl extends MinimalEObjectImpl.Container implements 
    * @generated
    */
   @Override
-  public TrackReference getOriginalAlbumTrackReference() {
-    if (originalAlbumTrackReference != null && originalAlbumTrackReference.eIsProxy()) {
-      InternalEObject oldOriginalAlbumTrackReference = (InternalEObject) originalAlbumTrackReference;
-      originalAlbumTrackReference = (TrackReference) eResolveProxy(oldOriginalAlbumTrackReference);
-      if (originalAlbumTrackReference != oldOriginalAlbumTrackReference) {
-        if (eNotificationRequired())
-          eNotify(new ENotificationImpl(this, Notification.RESOLVE,
-              MediadbPackage.TRACK_REFERENCE__ORIGINAL_ALBUM_TRACK_REFERENCE, oldOriginalAlbumTrackReference,
-              originalAlbumTrackReference));
-      }
-    }
-    return originalAlbumTrackReference;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public TrackReference basicGetOriginalAlbumTrackReference() {
+  public boolean isOriginalAlbumTrackReference() {
     return originalAlbumTrackReference;
   }
 
@@ -470,8 +461,8 @@ public class TrackReferenceImpl extends MinimalEObjectImpl.Container implements 
    * @generated
    */
   @Override
-  public void setOriginalAlbumTrackReference(TrackReference newOriginalAlbumTrackReference) {
-    TrackReference oldOriginalAlbumTrackReference = originalAlbumTrackReference;
+  public void setOriginalAlbumTrackReference(boolean newOriginalAlbumTrackReference) {
+    boolean oldOriginalAlbumTrackReference = originalAlbumTrackReference;
     originalAlbumTrackReference = newOriginalAlbumTrackReference;
     boolean oldOriginalAlbumTrackReferenceESet = originalAlbumTrackReferenceESet;
     originalAlbumTrackReferenceESet = true;
@@ -488,14 +479,14 @@ public class TrackReferenceImpl extends MinimalEObjectImpl.Container implements 
    */
   @Override
   public void unsetOriginalAlbumTrackReference() {
-    TrackReference oldOriginalAlbumTrackReference = originalAlbumTrackReference;
+    boolean oldOriginalAlbumTrackReference = originalAlbumTrackReference;
     boolean oldOriginalAlbumTrackReferenceESet = originalAlbumTrackReferenceESet;
-    originalAlbumTrackReference = null;
+    originalAlbumTrackReference = ORIGINAL_ALBUM_TRACK_REFERENCE_EDEFAULT;
     originalAlbumTrackReferenceESet = false;
     if (eNotificationRequired())
       eNotify(new ENotificationImpl(this, Notification.UNSET,
-          MediadbPackage.TRACK_REFERENCE__ORIGINAL_ALBUM_TRACK_REFERENCE, oldOriginalAlbumTrackReference, null,
-          oldOriginalAlbumTrackReferenceESet));
+          MediadbPackage.TRACK_REFERENCE__ORIGINAL_ALBUM_TRACK_REFERENCE, oldOriginalAlbumTrackReference,
+          ORIGINAL_ALBUM_TRACK_REFERENCE_EDEFAULT, oldOriginalAlbumTrackReferenceESet));
   }
 
   /**
@@ -592,9 +583,7 @@ public class TrackReferenceImpl extends MinimalEObjectImpl.Container implements 
     case MediadbPackage.TRACK_REFERENCE__MY_TRACK_INFO:
       return getMyTrackInfo();
     case MediadbPackage.TRACK_REFERENCE__ORIGINAL_ALBUM_TRACK_REFERENCE:
-      if (resolve)
-        return getOriginalAlbumTrackReference();
-      return basicGetOriginalAlbumTrackReference();
+      return isOriginalAlbumTrackReference();
     }
     return super.eGet(featureID, resolve, coreType);
   }
@@ -617,7 +606,7 @@ public class TrackReferenceImpl extends MinimalEObjectImpl.Container implements 
       setMyTrackInfo((MyTrackInfo) newValue);
       return;
     case MediadbPackage.TRACK_REFERENCE__ORIGINAL_ALBUM_TRACK_REFERENCE:
-      setOriginalAlbumTrackReference((TrackReference) newValue);
+      setOriginalAlbumTrackReference((Boolean) newValue);
       return;
     }
     super.eSet(featureID, newValue);
@@ -699,9 +688,10 @@ public class TrackReferenceImpl extends MinimalEObjectImpl.Container implements 
     buf.append("myTrackInfo: ").append(getMyTrackInfo() != null ? myTrackInfo.toString() : "<no myTrackInfo>")
         .append(NEW_LINE);
     buf.append("originalAlbumTrackReference: ");
-    if (originalAlbumTrackReference != null) {
-      buf.append("track nr ").append(originalAlbumTrackReference.getTrackNr());
-      Disc disc = originalAlbumTrackReference.getDisc();
+    TrackReference originalReference = getTrack().getOriginalDiscTrackReference();
+    if (originalReference != null) {
+      buf.append("track nr ").append(originalReference.getTrackNr());
+      Disc disc = originalReference.getDisc();
       if (disc == null) {
         buf.append("  ==Disc is null==  ");
         System.out.println("Disc is null");

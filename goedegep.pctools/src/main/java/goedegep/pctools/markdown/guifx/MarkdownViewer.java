@@ -36,7 +36,7 @@ public class MarkdownViewer extends JfxStage {
   private WebEngine webEngine = webView.getEngine();
   
   public MarkdownViewer(CustomizationFx customization, String filename) {
-    super(WINDOW_TITLE, customization);
+    super(customization, WINDOW_TITLE);
     LOGGER.info("=>");
     
     componentFactory = customization.getComponentFactoryFx();

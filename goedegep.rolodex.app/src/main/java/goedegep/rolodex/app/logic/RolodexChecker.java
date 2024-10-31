@@ -15,6 +15,7 @@ import goedegep.rolodex.model.Country;
 import goedegep.rolodex.model.Person;
 import goedegep.rolodex.model.PhoneNumber;
 import goedegep.rolodex.model.Rolodex;
+import goedegep.util.emf.EmfUtil;
 
 /**
  * This class provides various checks on a Rolodex.
@@ -37,7 +38,7 @@ public class RolodexChecker {
     List<Country> countriesNotReferredTo = new ArrayList<>();
     
     for (Country country: rolodex.getCountryList().getCountries()) {
-      Collection<EStructuralFeature.Setting> settings = EcoreUtil.UsageCrossReferencer.find(country, resourceSet);
+      Collection<EStructuralFeature.Setting> settings = EcoreUtil.UsageCrossReferencer.find(country, EmfUtil.getRoot(country));
       if (settings.isEmpty()) {
         countriesNotReferredTo.add(country);
       }
@@ -55,7 +56,7 @@ public class RolodexChecker {
     List<City> citiesNotReferredTo = new ArrayList<>();
     
     for (City city: rolodex.getCityList().getCities()) {
-      Collection<EStructuralFeature.Setting> settings = EcoreUtil.UsageCrossReferencer.find(city, resourceSet);
+      Collection<EStructuralFeature.Setting> settings = EcoreUtil.UsageCrossReferencer.find(city, EmfUtil.getRoot(city));
       if (settings.isEmpty()) {
         citiesNotReferredTo.add(city);
       }
@@ -85,7 +86,7 @@ public class RolodexChecker {
     List<Address> addressesNotReferredTo = new ArrayList<>();
     
     for (Address address: rolodex.getAddressList().getAddresses()) {
-      Collection<EStructuralFeature.Setting> settings = EcoreUtil.UsageCrossReferencer.find(address, resourceSet);
+      Collection<EStructuralFeature.Setting> settings = EcoreUtil.UsageCrossReferencer.find(address, EmfUtil.getRoot(address));
       if (settings.isEmpty()) {
         addressesNotReferredTo.add(address);
       }
@@ -103,7 +104,7 @@ public class RolodexChecker {
     List<PhoneNumber> phoneNumbersNotReferredTo = new ArrayList<>();
     
     for (PhoneNumber phoneNumber: rolodex.getPhoneNumberList().getPhoneNumbers()) {
-      Collection<EStructuralFeature.Setting> settings = EcoreUtil.UsageCrossReferencer.find(phoneNumber, resourceSet);
+      Collection<EStructuralFeature.Setting> settings = EcoreUtil.UsageCrossReferencer.find(phoneNumber, EmfUtil.getRoot(phoneNumber));
       if (settings.isEmpty()) {
         phoneNumbersNotReferredTo.add(phoneNumber);
       }
@@ -122,10 +123,8 @@ public class RolodexChecker {
     
     for (Person person: rolodex.getPersonList().getPersons()) {
       Birthday birthday = person.getBirthday();
-      if (birthday != null) {
-        if ((birthday.getDay() == 0)  &&  (birthday.getMonth() == 0)  &&  (birthday.getYear() == 0)) {
-          personsWithEmptyBirthday.add(person);
-        }
+      if (birthday != null  &&  (birthday.getDay() == 0)  &&  (birthday.getMonth() == 0)  &&  (birthday.getYear() == 0)) {
+        personsWithEmptyBirthday.add(person);
       }
     }
     

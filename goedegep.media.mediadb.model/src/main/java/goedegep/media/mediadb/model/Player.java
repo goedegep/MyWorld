@@ -11,6 +11,10 @@ import org.eclipse.emf.ecore.EObject;
  * A representation of the model object '<em><b>Player</b></em>'.
  * <!-- end-user-doc -->
  *
+ * <!-- begin-model-doc -->
+ * This interface provides information on someone who plays/performs on an album or track. It consists of an {@code Artist} combined with the instrument played by that artist (where vocals are also seen as an instrument).
+ * <!-- end-model-doc -->
+ *
  * <p>
  * The following features are supported:
  * </p>
@@ -32,6 +36,9 @@ public interface Player extends EObject {
    * there really should be more of a description here...
    * </p>
    * <!-- end-user-doc -->
+   * <!-- begin-model-doc -->
+   * The player.
+   * <!-- end-model-doc -->
    * @return the value of the '<em>Artist</em>' reference.
    * @see #isSetArtist()
    * @see #unsetArtist()
@@ -86,6 +93,9 @@ public interface Player extends EObject {
    * there really should be more of a description here...
    * </p>
    * <!-- end-user-doc -->
+   * <!-- begin-model-doc -->
+   * A list of instruments played by this player. Vocals is also seen as an instrument. An instrument is a free format text.
+   * <!-- end-model-doc -->
    * @return the value of the '<em>Instruments</em>' attribute list.
    * @see goedegep.media.mediadb.model.MediadbPackage#getPlayer_Instruments()
    * @model

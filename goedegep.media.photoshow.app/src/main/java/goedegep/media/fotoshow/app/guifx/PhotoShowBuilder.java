@@ -150,7 +150,7 @@ public class PhotoShowBuilder extends JfxStage {
   private List<String> openSpecificationPhotosToShow;
 
   public PhotoShowBuilder(CustomizationFx customization) {
-    super(WINDOW_TITLE, customization);
+    super(customization, WINDOW_TITLE);
     
     this.customization = customization;
     componentFactory = customization.getComponentFactoryFx();
@@ -308,7 +308,7 @@ public class PhotoShowBuilder extends JfxStage {
     VBox topLevelVBox = componentFactory.createVBox(12.0, 12.0);
     
     // Menu bar
-    topLevelVBox.getChildren().add(createMenuBar(MediaRegistry.developmentMode));
+    topLevelVBox.getChildren().add(createMenuBar());
     
     // Specification as TreeView and Wizards panel
     HBox specificationAndWizardsPanel = componentFactory.createHBox(12.0);
@@ -448,7 +448,7 @@ public class PhotoShowBuilder extends JfxStage {
    * 
    * @return the menu bar for this window.
    */
-  private MenuBar createMenuBar(boolean developmentMode) {
+  private MenuBar createMenuBar() {
     MenuBar menuBar = componentFactory.createMenuBar();
     Menu menu;
     MenuItem menuItem;
@@ -893,10 +893,8 @@ public class PhotoShowBuilder extends JfxStage {
       alert.getButtonTypes().add(ButtonType.YES);
       Optional<ButtonType> res = alert.showAndWait();
 
-      if(res.isPresent()) {
-        if(res.get().equals(ButtonType.CANCEL)) {
-          event.consume();
-        }
+      if(res.isPresent()  &&  res.get().equals(ButtonType.CANCEL)) {
+        event.consume();
       }
     }
   }
@@ -1229,8 +1227,16 @@ public class PhotoShowBuilder extends JfxStage {
     updatePhotoShowLabel();
   }
     
+  /**
+   * Check whether a {@code Path} exists in a list of {@code Path}s.
+   * 
+   * @param pathList the list of {@code Path}s to check against.
+   * @param path the {@code Path} that should be in {@code pathList}.
+   * @return true if {@code pathList} contains {@code path}.
+   */
   private boolean pathListContainsPath(List<Path> pathList, Path path) {
-    return false;
+    // contains() uses equals, which is implemented for a WindowsPath. So we can simply call contains().
+    return pathList.contains(path);
   }
     
   /**
@@ -1259,7 +1265,7 @@ public class PhotoShowBuilder extends JfxStage {
       } else {
         ((PhotoInfo) photoInfo).setSelectedForTheShow(true);
       }
-      photosToAddToPhotoShowList.add(((PhotoInfo) photoInfo));
+      photosToAddToPhotoShowList.add((PhotoInfo) photoInfo);
       ((PhotoInfo) photoInfo).selectedForTheShowProperty().addListener(new ChangeListener<Boolean>() {
 
         @Override

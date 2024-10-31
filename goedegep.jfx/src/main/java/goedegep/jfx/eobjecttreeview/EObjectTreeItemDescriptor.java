@@ -185,7 +185,7 @@ public abstract class EObjectTreeItemDescriptor {
    * @param nodeIconFunction the function to provide the node icon.
    * @return this
    */
-  public EObjectTreeItemDescriptor setNodeIconFunction(java.util.function.Function<Object, Image> nodeIconFunction) {
+  public EObjectTreeItemDescriptor setNodeIconFunction(Function<Object, Image> nodeIconFunction) {
     this.nodeIconFunction = nodeIconFunction;
     
     return this;

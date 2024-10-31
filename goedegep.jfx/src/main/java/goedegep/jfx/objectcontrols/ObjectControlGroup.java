@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.logging.Logger;
 
+import goedegep.util.text.Indent;
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
 
@@ -135,6 +136,10 @@ public class ObjectControlGroup implements Iterable<ObjectControl<?>>, Observabl
    */
   public void addObjectControlGroup(ObjectControlGroup objectControlGroup) {
     LOGGER.info("=>");
+    
+    if (objectControlGroup.getId() == null) {
+      LOGGER.severe("Id is null");
+    }
     
     objectControlGroup.addListener(invalidationListener);
     objectControlGroups.add(objectControlGroup);
@@ -375,7 +380,7 @@ public class ObjectControlGroup implements Iterable<ObjectControl<?>>, Observabl
    * This class provides an {@code Iterator} to iterate over all controls (so also the controls in the sub-groups.
    */
   class ObjectControlGroupIterator implements Iterator<ObjectControl<?>> {
-    @SuppressWarnings("unused")
+//    @SuppressWarnings("unused")
     private static final Logger LOGGER = Logger.getLogger(ObjectControlGroupIterator.class.getName());
 
     /**
@@ -403,7 +408,7 @@ public class ObjectControlGroup implements Iterable<ObjectControl<?>>, Observabl
     ObjectControlGroupIterator(ObjectControlGroup objectControlGroup) {
       subObjectControlGroups = new ArrayList<>();
       subObjectControlGroups.add(objectControlGroup);
-      addControlGroupsToSubObjectControlGroups(objectControlGroup.objectControlGroups);
+      addControlGroupsToSubObjectControlGroups(objectControlGroup.objectControlGroups, 0);
 
       objectControlGroupsIterator = subObjectControlGroups.iterator();    
       objectControlsIterator = objectControlGroupsIterator.next().objectControls.iterator();
@@ -449,13 +454,53 @@ public class ObjectControlGroup implements Iterable<ObjectControl<?>>, Observabl
      * 
      * @param objectControlGroups the groups to add.
      */
-    private void addControlGroupsToSubObjectControlGroups(List<ObjectControlGroup> objectControlGroups) {
+    private void addControlGroupsToSubObjectControlGroups(List<ObjectControlGroup> objectControlGroups, int level) {
       subObjectControlGroups.addAll(objectControlGroups);
       for (ObjectControlGroup objectControlGroup: objectControlGroups) {
-        addControlGroupsToSubObjectControlGroups(objectControlGroup.objectControlGroups);
+        addControlGroupsToSubObjectControlGroups(objectControlGroup.objectControlGroups, ++level);
       }
     }
+    
+    public String toString() {
+      StringBuilder buf = new StringBuilder();
+      
+      for (ObjectControlGroup objectControlGroup: subObjectControlGroups) {
+        buf.append(objectControlGroup.toString()).append(", ");
+      }
+      
+      return buf.toString();
+    }
   }  // End of ObjectControlGroupIterator
+
+
+  /**
+   * Print (on logger)
+   * @return
+   */
+  public void print() {
+    StringBuilder buf = new StringBuilder();
+    buf.append("\n");
+    Indent indent = new Indent(4);
+    print(this, buf, indent);
+    LOGGER.severe(buf.toString());
+  }
+
+  private static void print(ObjectControlGroup objectControlGroup, StringBuilder buf, Indent indent) {
+    if (indent.toString().length() > 40) return;
+    
+    buf.append(indent).append("Group: ").append(objectControlGroup.getId()).append("\n");
+    indent.increment();
+    
+    for (ObjectControl<?> objectControl: objectControlGroup.objectControls) {
+      buf.append(indent).append(objectControl.getId()).append(" - ").append(objectControl.getStatusIndicator()).append("\n");
+    }
+    
+    for (ObjectControlGroup subObjectControlGroup: objectControlGroup.objectControlGroups) {
+      print(subObjectControlGroup, buf, indent);
+    }
+    
+    indent.decrement();
+  }
 
 
 }

@@ -61,6 +61,9 @@ public interface MediaDb extends EObject {
    * there really should be more of a description here...
    * </p>
    * <!-- end-user-doc -->
+   * <!-- begin-model-doc -->
+   * The collection of artists in the database.
+   * <!-- end-model-doc -->
    * @return the value of the '<em>Artists</em>' containment reference list.
    * @see goedegep.media.mediadb.model.MediadbPackage#getMediaDb_Artists()
    * @model containment="true"
@@ -77,6 +80,9 @@ public interface MediaDb extends EObject {
    * there really should be more of a description here...
    * </p>
    * <!-- end-user-doc -->
+   * <!-- begin-model-doc -->
+   * The collection of albums in the database.
+   * <!-- end-model-doc -->
    * @return the value of the '<em>Albums</em>' containment reference list.
    * @see goedegep.media.mediadb.model.MediadbPackage#getMediaDb_Albums()
    * @model containment="true"
@@ -101,6 +107,9 @@ public interface MediaDb extends EObject {
    * The list contents are of type {@link goedegep.media.mediadb.model.TrackCollection}.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
+   * <!-- begin-model-doc -->
+   * The collection of track collections in the database.
+   * <!-- end-model-doc -->
    * @return the value of the '<em>Trackcollections</em>' containment reference list.
    * @see goedegep.media.mediadb.model.MediadbPackage#getMediaDb_Trackcollections()
    * @model containment="true"
@@ -113,6 +122,9 @@ public interface MediaDb extends EObject {
    * The list contents are of type {@link goedegep.media.mediadb.model.Video}.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
+   * <!-- begin-model-doc -->
+   * The collection of videos in the database.
+   * <!-- end-model-doc -->
    * @return the value of the '<em>Videos</em>' containment reference list.
    * @see goedegep.media.mediadb.model.MediadbPackage#getMediaDb_Videos()
    * @model containment="true"

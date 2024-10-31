@@ -41,7 +41,7 @@ public class ImportAlbumPicturesWindow extends JfxStage {
    * @param customization the GUI customization.
    */
   public ImportAlbumPicturesWindow(CustomizationFx customization, Album album) {
-    super(WINDOW_TITLE, customization);
+    super(customization, WINDOW_TITLE);
         
     this.album = album;
     componentFactory = customization.getComponentFactoryFx();

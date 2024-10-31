@@ -304,7 +304,7 @@ public class MediaDbUtil {
         }
       }
       
-      TrackReference referredTrackReference = myTrackInfo.getCompilationTrackReference();
+      TrackReference referredTrackReference = myTrackInfo.getTrackReference();
       if (referredTrackReference != null) {
         return doIHaveTrackOnDisc(referredTrackReference);
       }
@@ -469,17 +469,9 @@ public class MediaDbUtil {
       }
     }
     
-    if (mediumInfo1.isSetSourceTypes()  &&  mediumInfo2.isSetSourceTypes()) {
-      List<InformationType> sourceTypes1 = mediumInfo1.getSourceTypes();
-      List<InformationType> sourceTypes2 = mediumInfo2.getSourceTypes();
-      if (sourceTypes1.size() != sourceTypes2.size()) {
+    if (mediumInfo1.getSourceType() != null  &&  mediumInfo2.getSourceType() != null) {
+      if (!mediumInfo1.getSourceType().equals(mediumInfo2.getSourceType())) {
         return false;
-      }
-      
-      for (InformationType sourceType: sourceTypes1) {
-        if (sourceTypes2.contains(sourceType)) {
-          return false;
-        }
       }
     }
     
@@ -745,7 +737,7 @@ public class MediaDbUtil {
       trackReferenceCopy.setBonusTrack(new String(bonusTrack));
     }
     trackReferenceCopy.setTrack(trackReference.getTrack());
-    trackReferenceCopy.setOriginalAlbumTrackReference(trackReference.getOriginalAlbumTrackReference());
+    trackReferenceCopy.setOriginalAlbumTrackReference(trackReference.isOriginalAlbumTrackReference());
     
     MyTrackInfo myTrackInfo = trackReference.getMyTrackInfo();
     if (myTrackInfo != null) {
@@ -784,7 +776,7 @@ public class MediaDbUtil {
       mediumInfoCopy.setSourceBitRate(mediumInfo.getSourceBitRate());
     }
     
-    mediumInfoCopy.getSourceTypes().addAll(mediumInfo.getSourceTypes());
+    mediumInfoCopy.setSourceType(mediumInfo.getSourceType());
     
     return mediumInfoCopy;
   }
@@ -838,8 +830,8 @@ public class MediaDbUtil {
       myTrackInfoCopy.getIHaveOn().add(createMediumInfoCopy(mediumInfo));
     }
     
-    if (myTrackInfo.getCompilationTrackReference() != null) {
-      myTrackInfoCopy.setCompilationTrackReference(createTrackReferenceCopy(myTrackInfo.getCompilationTrackReference()));
+    if (myTrackInfo.getTrackReference() != null) {
+      myTrackInfoCopy.setTrackReference(createTrackReferenceCopy(myTrackInfo.getTrackReference()));
     }
     
     return myTrackInfoCopy;

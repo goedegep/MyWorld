@@ -13,6 +13,9 @@ import org.eclipse.emf.common.util.Enumerator;
  * A representation of the literals of the enumeration '<em><b>Album Type</b></em>',
  * and utility methods for working with them.
  * <!-- end-user-doc -->
+ * <!-- begin-model-doc -->
+ * The kind of album.
+ * <!-- end-model-doc -->
  * @see goedegep.media.mediadb.model.MediadbPackage#getAlbumType()
  * @model
  * @generated
@@ -22,6 +25,11 @@ public enum AlbumType implements Enumerator {
    * The '<em><b>NORMAL ALBUM</b></em>' literal object.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
+   * <!-- begin-model-doc -->
+   * This is what most albums (e.g. CD or LP) you buy in the (online) shop are.<br/>
+   * It is an album from a single artist with mostly tracks that appear on an album for the first time.
+   * In your collection you may have the complete album, or just a number of tracks. These tracks can be on a MyCompilation album, or they can be in a track collection.
+   * <!-- end-model-doc -->
    * @see #NORMAL_ALBUM_VALUE
    * @generated
    * @ordered
@@ -32,6 +40,9 @@ public enum AlbumType implements Enumerator {
    * The '<em><b>COMPILATION ALBUM</b></em>' literal object.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
+   * <!-- begin-model-doc -->
+   * Also this is an album from a single artist, but the tracks were earlier released on a number of Normal albums.
+   * <!-- end-model-doc -->
    * @see #COMPILATION_ALBUM_VALUE
    * @generated
    * @ordered
@@ -42,6 +53,9 @@ public enum AlbumType implements Enumerator {
    * The '<em><b>VARIOUS ARTISTS ALBUM</b></em>' literal object.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
+   * <!-- begin-model-doc -->
+   * This is an album where there a tracks from different artists. Therefore the artist shall be filled in per track.
+   * <!-- end-model-doc -->
    * @see #VARIOUS_ARTISTS_ALBUM_VALUE
    * @generated
    * @ordered
@@ -52,6 +66,9 @@ public enum AlbumType implements Enumerator {
    * The '<em><b>SOUNDTRACK ALBUM</b></em>' literal object.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
+   * <!-- begin-model-doc -->
+   * These albums contain the soundtracks of movies. You typically search them based on the movie title, instead of on the composer or artist.
+   * <!-- end-model-doc -->
    * @see #SOUNDTRACK_ALBUM_VALUE
    * @generated
    * @ordered
@@ -62,6 +79,9 @@ public enum AlbumType implements Enumerator {
    * The '<em><b>OWN COMPILATION ALBUM</b></em>' literal object.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
+   * <!-- begin-model-doc -->
+   * This is an album you created yourself.
+   * <!-- end-model-doc -->
    * @see #OWN_COMPILATION_ALBUM_VALUE
    * @generated
    * @ordered
@@ -72,6 +92,11 @@ public enum AlbumType implements Enumerator {
    * The '<em><b>NORMAL ALBUM</b></em>' literal value.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
+   * <!-- begin-model-doc -->
+   * This is what most albums (e.g. CD or LP) you buy in the (online) shop are.<br/>
+   * It is an album from a single artist with mostly tracks that appear on an album for the first time.
+   * In your collection you may have the complete album, or just a number of tracks. These tracks can be on a MyCompilation album, or they can be in a track collection.
+   * <!-- end-model-doc -->
    * @see #NORMAL_ALBUM
    * @model literal="Normal"
    * @generated
@@ -83,6 +108,9 @@ public enum AlbumType implements Enumerator {
    * The '<em><b>COMPILATION ALBUM</b></em>' literal value.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
+   * <!-- begin-model-doc -->
+   * Also this is an album from a single artist, but the tracks were earlier released on a number of Normal albums.
+   * <!-- end-model-doc -->
    * @see #COMPILATION_ALBUM
    * @model literal="Compilation"
    * @generated
@@ -94,6 +122,9 @@ public enum AlbumType implements Enumerator {
    * The '<em><b>VARIOUS ARTISTS ALBUM</b></em>' literal value.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
+   * <!-- begin-model-doc -->
+   * This is an album where there a tracks from different artists. Therefore the artist shall be filled in per track.
+   * <!-- end-model-doc -->
    * @see #VARIOUS_ARTISTS_ALBUM
    * @model literal="Various Artists"
    * @generated
@@ -105,6 +136,9 @@ public enum AlbumType implements Enumerator {
    * The '<em><b>SOUNDTRACK ALBUM</b></em>' literal value.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
+   * <!-- begin-model-doc -->
+   * These albums contain the soundtracks of movies. You typically search them based on the movie title, instead of on the composer or artist.
+   * <!-- end-model-doc -->
    * @see #SOUNDTRACK_ALBUM
    * @model literal="Soundtrack"
    * @generated
@@ -116,6 +150,9 @@ public enum AlbumType implements Enumerator {
    * The '<em><b>OWN COMPILATION ALBUM</b></em>' literal value.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
+   * <!-- begin-model-doc -->
+   * This is an album you created yourself.
+   * <!-- end-model-doc -->
    * @see #OWN_COMPILATION_ALBUM
    * @model literal="Own Compilation"
    * @generated

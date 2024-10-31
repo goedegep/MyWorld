@@ -24,17 +24,12 @@ public class DefaultAppResourcesFx extends AbstractAppResourcesFx {
     Image picture = null;
     
     try {
-      applicationImages[0] = new Image(goedegep.jfx.DefaultAppResourcesFx.class.getResourceAsStream("java_icon.gif"));
+      applicationImages[0] = new Image(DefaultAppResourcesFx.class.getResourceAsStream("java_icon.gif"));
     } catch (RuntimeException e) {
       e.printStackTrace();
     }
     
     setRawImages(null, null, null, applicationImages);
     setPicture(picture);
-  }
-  
-  @Override
-  public String toString() {
-    return super.toString();
   }
 }

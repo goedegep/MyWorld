@@ -7,12 +7,11 @@ import java.util.List;
 import java.util.function.Consumer;
 import java.util.logging.Logger;
 
-import goedegep.jfx.ComponentFactoryFx;
 import goedegep.jfx.CustomizationFx;
-import goedegep.jfx.objectcontrols.ObjectControlTemplate;
 import goedegep.jfx.objectcontrols.ObjectControl;
 import goedegep.jfx.objectcontrols.ObjectControlGroup;
 import goedegep.jfx.objectcontrols.ObjectControlImageFile;
+import goedegep.jfx.objectcontrols.ObjectControlTemplate;
 import goedegep.media.app.MediaRegistry;
 import goedegep.util.file.FileUtils;
 import goedegep.util.string.StringUtil;
@@ -30,9 +29,7 @@ import javafx.stage.FileChooser;
  */
 public class ObjectControlForImages extends ObjectControlTemplate<List<String>> {
   private static final Logger LOGGER = Logger.getLogger(ObjectControlForImages.class.getName());
-  
-  private ComponentFactoryFx componentFactory;
-  private CustomizationFx customization;
+
   
   /**
    * Main layout
@@ -62,11 +59,9 @@ public class ObjectControlForImages extends ObjectControlTemplate<List<String>> 
    * @param labelText a text to identify the list of images
    */
   public ObjectControlForImages(CustomizationFx customization, String labelText) {
-    super(true);
+    super(customization, true);
     
     LOGGER.info("=>");
-    this.customization = customization;
-    componentFactory = customization.getComponentFactoryFx();
     mainLayout = componentFactory.createHBox(10.0, 10.0);
     
     // Controls

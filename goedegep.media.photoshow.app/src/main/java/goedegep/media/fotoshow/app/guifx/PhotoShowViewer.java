@@ -54,7 +54,7 @@ public class PhotoShowViewer extends JfxStage {
    * @param customization The GUI customization
    */
   public PhotoShowViewer(CustomizationFx customization) {
-    super(WINDOW_TITLE, customization);
+    super(customization, WINDOW_TITLE);
     
     this.customization = customization;
     componentFactory = customization.getComponentFactoryFx();

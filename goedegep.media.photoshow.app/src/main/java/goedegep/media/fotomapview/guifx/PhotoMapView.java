@@ -243,7 +243,7 @@ public class PhotoMapView extends JfxStage {
    * @param customization the GUI customization.
    */
   public PhotoMapView(CustomizationFx customization) {
-    super(WINDOW_TITLE, customization);
+    super(customization, WINDOW_TITLE);
 
     this.customization = customization;
     componentFactory = customization.getComponentFactoryFx();
@@ -555,7 +555,7 @@ public class PhotoMapView extends JfxStage {
     mapView.prefWidthProperty().bind(mainPane.widthProperty());
     mapView.prefHeightProperty().bind(mainPane.heightProperty());
     
-    photoMapLayer = new PhotoMapLayer(customization, this, mapView, photoMetaDatasWithImagesPerFolder, modifiedPhotos, mainPhotosFolder);
+    photoMapLayer = new PhotoMapLayer(customization, this, mapView, photoMetaDatasWithImagesPerFolder, modifiedPhotos);
     centerPane.getItems().add(mapView);
    
     mainPane.setCenter(centerPane);
@@ -1002,9 +1002,7 @@ public class PhotoMapView extends JfxStage {
         if (Files.isDirectory(checkDirectory)) {
           LOGGER.info("Handling: " + checkDirectory.toAbsolutePath().toString());
           scanFolders(checkDirectory, ignoreFolders);
-        } else {
-          // It's a file; no action.
-        }
+        } // else it's a file; no action.
       }
     } catch (IOException | DirectoryIteratorException x) {
       System.err.println(x);

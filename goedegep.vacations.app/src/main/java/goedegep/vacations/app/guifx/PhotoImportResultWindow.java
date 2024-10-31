@@ -49,7 +49,7 @@ public class PhotoImportResultWindow extends JfxStage {
   private ComponentFactoryFx componentFactory;
 
   public PhotoImportResultWindow(CustomizationFx customization, EObjectTreeView vacationsTreeView, List<PhotoImportResult> photoImportResults) {
-    super(WINDOW_TITLE, customization);
+    super(customization, WINDOW_TITLE);
     
 //    this.customization = customization;
     this .vacationsTreeView = vacationsTreeView;

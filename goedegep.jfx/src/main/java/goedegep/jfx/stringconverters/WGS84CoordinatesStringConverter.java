@@ -125,7 +125,7 @@ public class WGS84CoordinatesStringConverter extends StringConverterAndChecker<W
   /**
    * Values for the directions North, South, East and West.
    */
-  private static enum Directions {
+  private enum Directions {
       N,
       S,
       E,

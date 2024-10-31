@@ -66,7 +66,7 @@ public class RolodexMenuWindow extends JfxStage {
   private Rolodex rolodex;
 
   public RolodexMenuWindow(CustomizationFx customization) {
-    super(WINDOW_TITLE, customization);
+    super(customization, WINDOW_TITLE);
     
     this.customization = customization;
     
@@ -88,63 +88,7 @@ public class RolodexMenuWindow extends JfxStage {
         updateWindowTitle();
       }
       
-    });
-    
-//    Country country = RolodexFactory.eINSTANCE.createCountry();
-//    country.setCountryName("Nederland");
-//    City city = RolodexFactory.eINSTANCE.createCity();
-//    city.setCityName("Eindhoven");
-//    city.setCountry(country);
-//    Address address = RolodexFactory.eINSTANCE.createAddress();
-//    address.setCity(city);
-//    address.setStreetName("De Regge");
-//    address.setHouseNumber(24);
-//    address.setPostalCode("5626 GZ");
-//    PhoneNumber phoneNumber = RolodexFactory.eINSTANCE.createPhoneNumber();
-//    phoneNumber.setPhoneNumber("0402621982");
-//    phoneNumber.setConnectionType(ConnectionType.VAST);
-//    Person person = RolodexFactory.eINSTANCE.createPerson();
-//    person.setFirstname("Peter");
-//    person.setSurname("Goedegebure");
-//    Birthday birthday = RolodexFactory.eINSTANCE.createBirthday();
-//    birthday.setDay(23);
-//    birthday.setMonth(1);
-//    birthday.setYear(1957);
-//    person.setBirthday(birthday);
-//    person.setGender(Gender.MALE);
-//    person.getPhoneNumbers().add(phoneNumber);
-//    person.setAddress(address);
-//    Family family = RolodexFactory.eINSTANCE.createFamily();
-//    family.setFamilyName("P. Goedegebure");
-//    family.getMembers().add(person);
-//    family.setAddress(address);
-//    
-//    
-//    System.out.println(new LJV()
-//        .setIgnoreNullValuedFields(true)
-//        .setTreatAsPrimitive(String.class)
-//        .addIgnoreField("id")
-//        .addIgnoreField("eFlags")
-//        .addIgnoreField("eStorage")
-//        .addIgnoreField("eContainer")
-//        .addIgnoreField("dataClass")
-////        .addIgnoreClass(goedegep.model.rolodex.Person.class)
-//        .drawGraph(family));
-    
-    
-//    ObservableList<Country> countries = FXCollections.observableList(rolodex.getCountryList().getCountries());
-//    countries.addListener(new ListChangeListener<Country>() {
-//
-//      @Override
-//      public void onChanged(Change<? extends Country> c) {
-//        LOGGER.severe(c.toString());
-//        
-//      }
-//      
-//    });
-//    countries.get(1).setCountryName("MORE");
-//    
-//    countries.add(RolodexFactory.eINSTANCE.createCountry());
+    });    
   }
 
   
@@ -492,8 +436,6 @@ public class RolodexMenuWindow extends JfxStage {
     for (PhoneNumber phoneNumber: rolodex.getPhoneNumberList().getPhoneNumbers()) {
       if (!usedPhoneNumbers.contains(phoneNumber)) {
         System.out.println("Telefoonnummer \'" + phoneNumber.toString() + "\' wordt niet gebruikt (dus kan verwijderd worden)");
-      } else {
-//        System.out.println("Adres \'" + address.toString() + "\' wordt wel gebruikt");
       }
     }
     
@@ -588,7 +530,7 @@ public class RolodexMenuWindow extends JfxStage {
         ButtonType buttonType = res.get();
         if(buttonType.equals(ButtonType.CANCEL)) {
           event.consume();
-        } else if (buttonType.equals(ButtonType.NO)) {
+        } else if (buttonType.equals(ButtonType.NO)) {  // NOPMD
           // no action
         } else if (buttonType.equals(ButtonType.YES)) {
           saveRolodex();

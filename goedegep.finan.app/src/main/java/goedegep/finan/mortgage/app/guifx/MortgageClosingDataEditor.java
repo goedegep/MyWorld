@@ -82,7 +82,7 @@ public class MortgageClosingDataEditor extends JfxStage {
    * @param mortgage the mortgage of which the values are to be edited.
    */
   public MortgageClosingDataEditor(CustomizationFx customization, Mortgage mortgage) {
-    super(WINDOW_TITLE, customization);
+    super(customization, WINDOW_TITLE);
     
     this.mortgage = mortgage;
     editMortgage = true;
@@ -103,7 +103,7 @@ public class MortgageClosingDataEditor extends JfxStage {
    * @param mortgages the list of mortgages to which the new mortgage is to be added.
    */
   public MortgageClosingDataEditor(CustomizationFx customization, List<Mortgage> mortgages) {
-    super(WINDOW_TITLE, customization);
+    super(customization, WINDOW_TITLE);
     
     this.mortgages = mortgages;
     editMortgage = false;

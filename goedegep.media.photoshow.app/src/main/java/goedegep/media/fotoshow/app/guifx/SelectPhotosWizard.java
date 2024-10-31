@@ -25,11 +25,11 @@ public class SelectPhotosWizard extends Dialog<ButtonType> {
     
     initOwner(ownerWindow);
     
-    createGUI(customization, ownerWindow);
+    createGUI(customization);
     setResizable(true);
   }
     
-  private void createGUI(CustomizationFx customization, Stage ownerWindow) {
+  private void createGUI(CustomizationFx customization) {
     WebView webView = new WebView();
     webView.getEngine().loadContent("<div style=\"background-color:" + JfxUtil.colorToCssString(customization.getLook().getPanelBackgroundColor()) + "\">" +
                                     "Double click on a photo to (de)select it for the show." +

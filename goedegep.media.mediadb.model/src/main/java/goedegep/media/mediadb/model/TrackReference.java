@@ -20,7 +20,7 @@ import org.eclipse.emf.ecore.EObject;
  *   <li>{@link goedegep.media.mediadb.model.TrackReference#getTrack <em>Track</em>}</li>
  *   <li>{@link goedegep.media.mediadb.model.TrackReference#getBonusTrack <em>Bonus Track</em>}</li>
  *   <li>{@link goedegep.media.mediadb.model.TrackReference#getMyTrackInfo <em>My Track Info</em>}</li>
- *   <li>{@link goedegep.media.mediadb.model.TrackReference#getOriginalAlbumTrackReference <em>Original Album Track Reference</em>}</li>
+ *   <li>{@link goedegep.media.mediadb.model.TrackReference#isOriginalAlbumTrackReference <em>Original Album Track Reference</em>}</li>
  * </ul>
  *
  * @see goedegep.media.mediadb.model.MediadbPackage#getTrackReference()
@@ -182,50 +182,55 @@ public interface TrackReference extends EObject {
   boolean isSetMyTrackInfo();
 
   /**
-   * Returns the value of the '<em><b>Original Album Track Reference</b></em>' reference.
+   * Returns the value of the '<em><b>Original Album Track Reference</b></em>' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return the value of the '<em>Original Album Track Reference</em>' reference.
+   * <!-- begin-model-doc -->
+   * If set this track reference indicates that this track is the track on the original album.<br/>
+   * This can e.g. be used to create the file name for a track in a compilation album or a track collection, where the original album release year and tiltle can be part of the name.<br/>
+   * You can of course use this attribute in a practical way. If you only have the album information of a compilation album containing a certain track, you can still set this as the original album.
+   * <!-- end-model-doc -->
+   * @return the value of the '<em>Original Album Track Reference</em>' attribute.
    * @see #isSetOriginalAlbumTrackReference()
    * @see #unsetOriginalAlbumTrackReference()
-   * @see #setOriginalAlbumTrackReference(TrackReference)
+   * @see #setOriginalAlbumTrackReference(boolean)
    * @see goedegep.media.mediadb.model.MediadbPackage#getTrackReference_OriginalAlbumTrackReference()
    * @model unsettable="true"
    * @generated
    */
-  TrackReference getOriginalAlbumTrackReference();
+  boolean isOriginalAlbumTrackReference();
 
   /**
-   * Sets the value of the '{@link goedegep.media.mediadb.model.TrackReference#getOriginalAlbumTrackReference <em>Original Album Track Reference</em>}' reference.
+   * Sets the value of the '{@link goedegep.media.mediadb.model.TrackReference#isOriginalAlbumTrackReference <em>Original Album Track Reference</em>}' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @param value the new value of the '<em>Original Album Track Reference</em>' reference.
+   * @param value the new value of the '<em>Original Album Track Reference</em>' attribute.
    * @see #isSetOriginalAlbumTrackReference()
    * @see #unsetOriginalAlbumTrackReference()
-   * @see #getOriginalAlbumTrackReference()
+   * @see #isOriginalAlbumTrackReference()
    * @generated
    */
-  void setOriginalAlbumTrackReference(TrackReference value);
+  void setOriginalAlbumTrackReference(boolean value);
 
   /**
-   * Unsets the value of the '{@link goedegep.media.mediadb.model.TrackReference#getOriginalAlbumTrackReference <em>Original Album Track Reference</em>}' reference.
+   * Unsets the value of the '{@link goedegep.media.mediadb.model.TrackReference#isOriginalAlbumTrackReference <em>Original Album Track Reference</em>}' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @see #isSetOriginalAlbumTrackReference()
-   * @see #getOriginalAlbumTrackReference()
-   * @see #setOriginalAlbumTrackReference(TrackReference)
+   * @see #isOriginalAlbumTrackReference()
+   * @see #setOriginalAlbumTrackReference(boolean)
    * @generated
    */
   void unsetOriginalAlbumTrackReference();
 
   /**
-   * Returns whether the value of the '{@link goedegep.media.mediadb.model.TrackReference#getOriginalAlbumTrackReference <em>Original Album Track Reference</em>}' reference is set.
+   * Returns whether the value of the '{@link goedegep.media.mediadb.model.TrackReference#isOriginalAlbumTrackReference <em>Original Album Track Reference</em>}' attribute is set.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return whether the value of the '<em>Original Album Track Reference</em>' reference is set.
+   * @return whether the value of the '<em>Original Album Track Reference</em>' attribute is set.
    * @see #unsetOriginalAlbumTrackReference()
-   * @see #getOriginalAlbumTrackReference()
-   * @see #setOriginalAlbumTrackReference(TrackReference)
+   * @see #isOriginalAlbumTrackReference()
+   * @see #setOriginalAlbumTrackReference(boolean)
    * @generated
    */
   boolean isSetOriginalAlbumTrackReference();

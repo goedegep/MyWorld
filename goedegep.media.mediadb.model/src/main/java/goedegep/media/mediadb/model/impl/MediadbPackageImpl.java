@@ -335,16 +335,6 @@ public class MediadbPackageImpl extends EPackageImpl implements MediadbPackage {
    * @generated
    */
   @Override
-  public EReference getTrack_OriginalDisc() {
-    return (EReference) trackEClass.getEStructuralFeatures().get(7);
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
   public EOperation getTrack__GetOriginalDiscTrackReference() {
     return trackEClass.getEOperations().get(0);
   }
@@ -357,6 +347,16 @@ public class MediadbPackageImpl extends EPackageImpl implements MediadbPackage {
   @Override
   public EOperation getTrack__GetTrackArtist() {
     return trackEClass.getEOperations().get(1);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public EOperation getTrack__GetOriginalDisc() {
+    return trackEClass.getEOperations().get(2);
   }
 
   /**
@@ -805,8 +805,8 @@ public class MediadbPackageImpl extends EPackageImpl implements MediadbPackage {
    * @generated
    */
   @Override
-  public EReference getTrackReference_OriginalAlbumTrackReference() {
-    return (EReference) trackReferenceEClass.getEStructuralFeatures().get(3);
+  public EAttribute getTrackReference_OriginalAlbumTrackReference() {
+    return (EAttribute) trackReferenceEClass.getEStructuralFeatures().get(3);
   }
 
   /**
@@ -915,7 +915,7 @@ public class MediadbPackageImpl extends EPackageImpl implements MediadbPackage {
    * @generated
    */
   @Override
-  public EAttribute getMediumInfo_SourceTypes() {
+  public EAttribute getMediumInfo_SourceBitRate() {
     return (EAttribute) mediumInfoEClass.getEStructuralFeatures().get(2);
   }
 
@@ -925,7 +925,7 @@ public class MediadbPackageImpl extends EPackageImpl implements MediadbPackage {
    * @generated
    */
   @Override
-  public EAttribute getMediumInfo_SourceBitRate() {
+  public EAttribute getMediumInfo_SourceType() {
     return (EAttribute) mediumInfoEClass.getEStructuralFeatures().get(3);
   }
 
@@ -1085,7 +1085,7 @@ public class MediadbPackageImpl extends EPackageImpl implements MediadbPackage {
    * @generated
    */
   @Override
-  public EReference getMyTrackInfo_CompilationTrackReference() {
+  public EReference getMyTrackInfo_TrackReference() {
     return (EReference) myTrackInfoEClass.getEStructuralFeatures().get(2);
   }
 
@@ -1337,9 +1337,9 @@ public class MediadbPackageImpl extends EPackageImpl implements MediadbPackage {
     createEReference(trackEClass, TRACK__PARTS);
     createEReference(trackEClass, TRACK__AUTHORS);
     createEReference(trackEClass, TRACK__REFERRED_BY);
-    createEReference(trackEClass, TRACK__ORIGINAL_DISC);
     createEOperation(trackEClass, TRACK___GET_ORIGINAL_DISC_TRACK_REFERENCE);
     createEOperation(trackEClass, TRACK___GET_TRACK_ARTIST);
+    createEOperation(trackEClass, TRACK___GET_ORIGINAL_DISC);
 
     mediaDbEClass = createEClass(MEDIA_DB);
     createEReference(mediaDbEClass, MEDIA_DB__ARTISTS);
@@ -1388,7 +1388,7 @@ public class MediadbPackageImpl extends EPackageImpl implements MediadbPackage {
     createEReference(trackReferenceEClass, TRACK_REFERENCE__TRACK);
     createEAttribute(trackReferenceEClass, TRACK_REFERENCE__BONUS_TRACK);
     createEReference(trackReferenceEClass, TRACK_REFERENCE__MY_TRACK_INFO);
-    createEReference(trackReferenceEClass, TRACK_REFERENCE__ORIGINAL_ALBUM_TRACK_REFERENCE);
+    createEAttribute(trackReferenceEClass, TRACK_REFERENCE__ORIGINAL_ALBUM_TRACK_REFERENCE);
     createEOperation(trackReferenceEClass, TRACK_REFERENCE___GET_TRACK_NR);
     createEOperation(trackReferenceEClass, TRACK_REFERENCE___GET_DISC);
 
@@ -1401,8 +1401,8 @@ public class MediadbPackageImpl extends EPackageImpl implements MediadbPackage {
     mediumInfoEClass = createEClass(MEDIUM_INFO);
     createEAttribute(mediumInfoEClass, MEDIUM_INFO__MEDIUM_TYPE);
     createEAttribute(mediumInfoEClass, MEDIUM_INFO__INFORMATION_TYPE);
-    createEAttribute(mediumInfoEClass, MEDIUM_INFO__SOURCE_TYPES);
     createEAttribute(mediumInfoEClass, MEDIUM_INFO__SOURCE_BIT_RATE);
+    createEAttribute(mediumInfoEClass, MEDIUM_INFO__SOURCE_TYPE);
 
     myInfoEClass = createEClass(MY_INFO);
     createEReference(myInfoEClass, MY_INFO__ALBUM_REFERENCES);
@@ -1422,7 +1422,7 @@ public class MediadbPackageImpl extends EPackageImpl implements MediadbPackage {
     myTrackInfoEClass = createEClass(MY_TRACK_INFO);
     createEReference(myTrackInfoEClass, MY_TRACK_INFO__IHAVE_ON);
     createEAttribute(myTrackInfoEClass, MY_TRACK_INFO__IWANT);
-    createEReference(myTrackInfoEClass, MY_TRACK_INFO__COMPILATION_TRACK_REFERENCE);
+    createEReference(myTrackInfoEClass, MY_TRACK_INFO__TRACK_REFERENCE);
 
     discAndTrackNrsEClass = createEClass(DISC_AND_TRACK_NRS);
     createEAttribute(discAndTrackNrsEClass, DISC_AND_TRACK_NRS__DISC_NR);
@@ -1506,14 +1506,13 @@ public class MediadbPackageImpl extends EPackageImpl implements MediadbPackage {
     initEReference(getTrack_ReferredBy(), this.getTrackReference(), this.getTrackReference_Track(), "referredBy", null,
         0, -1, Track.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES,
         !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEReference(getTrack_OriginalDisc(), this.getDisc(), null, "originalDisc", null, 0, 1, Track.class,
-        !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, IS_UNSETTABLE, IS_UNIQUE,
-        !IS_DERIVED, IS_ORDERED);
 
     initEOperation(getTrack__GetOriginalDiscTrackReference(), this.getTrackReference(), "getOriginalDiscTrackReference",
         0, 1, IS_UNIQUE, IS_ORDERED);
 
     initEOperation(getTrack__GetTrackArtist(), this.getArtist(), "getTrackArtist", 0, 1, IS_UNIQUE, IS_ORDERED);
+
+    initEOperation(getTrack__GetOriginalDisc(), this.getDisc(), "getOriginalDisc", 0, 1, IS_UNIQUE, IS_ORDERED);
 
     initEClass(mediaDbEClass, MediaDb.class, "MediaDb", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEReference(getMediaDb_Artists(), this.getArtist(), null, "artists", null, 0, -1, MediaDb.class, !IS_TRANSIENT,
@@ -1602,7 +1601,7 @@ public class MediadbPackageImpl extends EPackageImpl implements MediadbPackage {
         !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getAlbum_Description(), ecorePackage.getEString(), "description", null, 0, 1, Album.class,
         !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEReference(getAlbum_MyInfo(), this.getMyInfo(), null, "myInfo", null, 0, 1, Album.class, !IS_TRANSIENT,
+    initEReference(getAlbum_MyInfo(), this.getMyInfo(), null, "myInfo", null, 1, 1, Album.class, !IS_TRANSIENT,
         !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED,
         IS_ORDERED);
     initEAttribute(getAlbum_Soundtrack(), ecorePackage.getEBoolean(), "soundtrack", null, 0, 1, Album.class,
@@ -1641,9 +1640,9 @@ public class MediadbPackageImpl extends EPackageImpl implements MediadbPackage {
     initEReference(getTrackReference_MyTrackInfo(), this.getMyTrackInfo(), null, "myTrackInfo", null, 0, 1,
         TrackReference.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES,
         IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEReference(getTrackReference_OriginalAlbumTrackReference(), this.getTrackReference(), null,
+    initEAttribute(getTrackReference_OriginalAlbumTrackReference(), ecorePackage.getEBoolean(),
         "originalAlbumTrackReference", null, 0, 1, TrackReference.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE,
-        !IS_COMPOSITE, IS_RESOLVE_PROXIES, IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+        IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEOperation(getTrackReference__GetTrackNr(), ecorePackage.getEInt(), "getTrackNr", 0, 1, IS_UNIQUE, IS_ORDERED);
 
@@ -1667,9 +1666,9 @@ public class MediadbPackageImpl extends EPackageImpl implements MediadbPackage {
     initEAttribute(getMediumInfo_InformationType(), this.getInformationType(), "informationType", null, 0, 1,
         MediumInfo.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED,
         IS_ORDERED);
-    initEAttribute(getMediumInfo_SourceTypes(), this.getInformationType(), "sourceTypes", null, 0, -1, MediumInfo.class,
-        !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getMediumInfo_SourceBitRate(), ecorePackage.getEInt(), "sourceBitRate", null, 0, 1, MediumInfo.class,
+        !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getMediumInfo_SourceType(), this.getInformationType(), "sourceType", null, 0, 1, MediumInfo.class,
         !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(myInfoEClass, MyInfo.class, "MyInfo", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
@@ -1706,9 +1705,9 @@ public class MediadbPackageImpl extends EPackageImpl implements MediadbPackage {
         !IS_DERIVED, IS_ORDERED);
     initEAttribute(getMyTrackInfo_IWant(), this.getIWant(), "iWant", "<not-set>", 0, 1, MyTrackInfo.class,
         !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEReference(getMyTrackInfo_CompilationTrackReference(), this.getTrackReference(), null,
-        "compilationTrackReference", null, 0, 1, MyTrackInfo.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE,
-        !IS_COMPOSITE, IS_RESOLVE_PROXIES, IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEReference(getMyTrackInfo_TrackReference(), this.getTrackReference(), null, "trackReference", null, 0, 1,
+        MyTrackInfo.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, IS_UNSETTABLE,
+        IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(discAndTrackNrsEClass, DiscAndTrackNrs.class, "DiscAndTrackNrs", !IS_ABSTRACT, !IS_INTERFACE,
         IS_GENERATED_INSTANCE_CLASS);

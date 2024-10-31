@@ -76,7 +76,7 @@ public class GPXWindow extends JfxStage {
    * @param customization the GUI customization.
    */
   public GPXWindow(CustomizationFx customization, String fileToOpen) {
-    super(WINDOW_TITLE, customization);
+    super(customization, WINDOW_TITLE);
 
     this.customization = customization;
     componentFactory = customization.getComponentFactoryFx();

@@ -32,13 +32,13 @@ public class FormatBasedObjectStringConverter extends StringConverter<Object> {
     try {
       // If the specified value is null or zero-length, return null
       if (string == null) {
-          return (null);
+          return null;
       }
 
       string = string.trim();
 
       if (string.isEmpty()) {
-          return (null);
+          return null;
       }
 
       // Perform the requested parsing

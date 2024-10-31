@@ -42,7 +42,7 @@ public class CreateAlbumFromAlbumTracksWindow extends JfxStage {
   private TextArea proposedTracksTextArea;
   
   public CreateAlbumFromAlbumTracksWindow(CustomizationFx customization) {
-    super(WINDOW_TITLE, customization);
+    super(customization, WINDOW_TITLE);
         
     componentFactory = customization.getComponentFactoryFx();
         

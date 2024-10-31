@@ -257,7 +257,7 @@ public abstract class EObjectTreeItem extends TreeItem<Object> {
    * @param dragEvent the Drag and Drop event.
    * @return true if the {@code dragEvent} can be handled.
    */
-  public TransferMode isDropPossible(DragEvent dragEvent) {
+  public TransferMode getTransferModeForDrop(DragEvent dragEvent) {
     return null;
   }
 

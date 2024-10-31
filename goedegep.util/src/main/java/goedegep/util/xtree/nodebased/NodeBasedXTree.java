@@ -15,7 +15,7 @@ public interface NodeBasedXTree extends XTree {
    * 
    * @return The root node of the tree.
    */
-  public XTreeNode getRoot();
+  XTreeNode getRoot();
 
   
   /**
@@ -26,7 +26,7 @@ public interface NodeBasedXTree extends XTree {
    * @param visitStartNodeSiblings if true the siblings of the starting node are visited, else they are not visited.
    * @param xTreeNodeVisitor the <b>XTreeNodeVisitor</b> called for each node.
    */
-  public void traverse(XTreeNode startNode, boolean visitChildren, boolean visitStartNodeSiblings, XTreeNodeVisitor xTreeNodeVisitor);
+  void traverse(XTreeNode startNode, boolean visitChildren, boolean visitStartNodeSiblings, XTreeNodeVisitor xTreeNodeVisitor);
   
   /*
    * Comparing
@@ -42,7 +42,7 @@ public interface NodeBasedXTree extends XTree {
    *        the children of the startNodes are taken into account.
    * @return true if the sub trees are identical, false otherwise.
    */
-  public boolean compareSubtrees(XTreeNode thisStartNode, XTree toTree, XTreeNode toStartNode, boolean includeSiblings);
+  boolean compareSubtrees(XTreeNode thisStartNode, XTree toTree, XTreeNode toStartNode, boolean includeSiblings);
   
   /*
    * Searching
@@ -58,7 +58,7 @@ public interface NodeBasedXTree extends XTree {
    *
    * @return The first child that fits the criteria, or null if the node has no child that fits the criteria.
    */
-  public XTreeNode findChild(XTreeNode node, XTreeTag value);
+  XTreeNode findChild(XTreeNode node, XTreeTag value);
 
   /**
    * Find a child of a node of type BOOLEAN and which has a specific value.
@@ -70,7 +70,7 @@ public interface NodeBasedXTree extends XTree {
    *
    * @return The first child that fits the criteria, or null if the node has no child that fits the criteria.
    */
-  public XTreeNode findChild(XTreeNode node, boolean value);
+  XTreeNode findChild(XTreeNode node, boolean value);
 
   /**
    * Find a child of a node of type INTEGER and which has a specific value.
@@ -82,7 +82,7 @@ public interface NodeBasedXTree extends XTree {
    *
    * @return The first child that fits the criteria, or null if the node has no child that fits the criteria.
    */
-  public XTreeNode findChild(XTreeNode node, int value);
+  XTreeNode findChild(XTreeNode node, int value);
 
   /**
    * Find a child of a node of type STRING and which has a specific value.
@@ -94,7 +94,7 @@ public interface NodeBasedXTree extends XTree {
    *
    * @return The first child that fits the criteria, or null if the node has no child that fits the criteria.
    */
-  public XTreeNode findChild(XTreeNode node, String value);
+  XTreeNode findChild(XTreeNode node, String value);
 
   /**
    * Find a child of a node of type BLOB and which has a specific value.
@@ -106,7 +106,7 @@ public interface NodeBasedXTree extends XTree {
    *
    * @return The first child that fits the criteria, or null if the node has no child that fits the criteria.
    */
-  public XTreeNode findChild(XTreeNode node, byte[] value);
+  XTreeNode findChild(XTreeNode node, byte[] value);
 
   
   /**
@@ -125,7 +125,7 @@ public interface NodeBasedXTree extends XTree {
    *              If multiple (great)(grand)children fit the criteria then
    *              this function returns a child rather then any sibling.
    */
-  public XTreeNode findNode(XTreeNode node, short value);
+  XTreeNode findNode(XTreeNode node, short value);
 
   /**
    * Find a (great)(grand)child of a node of type BOOLEAN which has a specific value.
@@ -143,7 +143,7 @@ public interface NodeBasedXTree extends XTree {
    *              If multiple (great)(grand)children fit the criteria then
    *              this function returns a child rather then any sibling.
    */
-  public XTreeNode findNode(XTreeNode node, boolean value);
+  XTreeNode findNode(XTreeNode node, boolean value);
 
   /**
    * Find a (great)(grand)child of a node of type INTEGER which has a specific value.
@@ -161,7 +161,7 @@ public interface NodeBasedXTree extends XTree {
    *              If multiple (great)(grand)children fit the criteria then
    *              this function returns a child rather then any sibling.
    */
-  public XTreeNode findNode(XTreeNode node, int value);
+  XTreeNode findNode(XTreeNode node, int value);
 
   /**
    * Find a (great)(grand)child of a node of type STRING which has a specific value.
@@ -179,7 +179,7 @@ public interface NodeBasedXTree extends XTree {
    *              If multiple (great)(grand)children fit the criteria then
    *              this function returns a child rather then any sibling.
    */
-  public XTreeNode findNode(XTreeNode node, String value);
+  XTreeNode findNode(XTreeNode node, String value);
 
   /**
    * Find a (great)(grand)child of a node of type BLOB which has a specific value.
@@ -197,6 +197,6 @@ public interface NodeBasedXTree extends XTree {
    *              If multiple (great)(grand)children fit the criteria then
    *              this function returns a child rather then any sibling.
    */
-  public XTreeNode findNode(XTreeNode node, byte[] value);
+  XTreeNode findNode(XTreeNode node, byte[] value);
   
 }

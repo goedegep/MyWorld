@@ -96,6 +96,24 @@ public class ArtistDetailsEditor extends ObjectEditorTemplate<Artist> {
    */
   private Map<String, TrackReference> trackNameToReferenceMap = new HashMap<>();
   
+  
+  /**
+   * Factory method to obtain a new instance of an {@code ArtistDetailsEditor}.
+   * 
+   * @param customization the GUI customization.
+   * @param mediaDb the media database.
+   * @return a newly created {@code ArtistDetailsEditor}.
+   */
+  public static ArtistDetailsEditor newInstance(CustomizationFx customization, String windowTitle, MediaDb mediaDb) {
+    ArtistDetailsEditor artistDetailsEditor = new ArtistDetailsEditor(customization, windowTitle, mediaDb);
+    artistDetailsEditor.performInitialization();
+    
+    return artistDetailsEditor;
+  }
+  
+  public void setArtistName(String artistName) {
+    nameObjectControl.setValue(artistName);
+  }
     
   /**
    * Constructor
@@ -104,7 +122,7 @@ public class ArtistDetailsEditor extends ObjectEditorTemplate<Artist> {
    * @param windowTitle the window title
    * @param mediaDb the media database to add the artist to
    */
-  public ArtistDetailsEditor(CustomizationFx customization, String windowTitle, MediaDb mediaDb) {
+  private ArtistDetailsEditor(CustomizationFx customization, String windowTitle, MediaDb mediaDb) {
     super(customization, windowTitle);
     
     this.mediaDb = mediaDb;
@@ -164,7 +182,7 @@ public class ArtistDetailsEditor extends ObjectEditorTemplate<Artist> {
     photoObjectControl = componentFactory.createObjectControlImageFile(true);
     photoObjectControl.setInitialDirectory(new File(MediaRegistry.musicDataDirectory + "\\ArtistInformation\\Pictures"));
     styleObjectControl = componentFactory.createObjectControlString(null, 300, true, "Free text describing the music style of the artist");
-    myCommentsControl = componentFactory.createObjectControlMultiLineString(null, 300, true, "Any optional remarks");
+    myCommentsControl = componentFactory.createObjectControlMultiLineString(null, true);
     sampleTrackObjectControl = componentFactory.createObjectControlAutoCompleteTextField(
         new StringConverterAndChecker<TrackReference>() {
 
@@ -246,8 +264,8 @@ public class ArtistDetailsEditor extends ObjectEditorTemplate<Artist> {
     StringBuilder buf = new StringBuilder();
 
     MyTrackInfo myTrackInfo = trackReference.getMyTrackInfo();
-    if (myTrackInfo != null  &&  myTrackInfo.getCompilationTrackReference() != null) {
-      trackReference = myTrackInfo.getCompilationTrackReference();
+    if (myTrackInfo != null  &&  myTrackInfo.getTrackReference() != null) {
+      trackReference = myTrackInfo.getTrackReference();
     }
     
     EObject trackReferenceContainer = trackReference.eContainer();
@@ -268,14 +286,6 @@ public class ArtistDetailsEditor extends ObjectEditorTemplate<Artist> {
     }
 
     return buf.toString();
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  protected void createAttributeEditDescriptors() {
-    // This editor doesn't use attribute edit descriptors, so no action.
   }
 
   /**
@@ -422,7 +432,7 @@ public class ArtistDetailsEditor extends ObjectEditorTemplate<Artist> {
     if (photoFile == null) {
       EmfUtil.setFeatureValue(object, MEDIA_DB_PACKAGE.getArtist_Photo(), null);
     } else {
-      String photoFileName = FileUtils.getPathRelativeToFolder(MediaRegistry.musicDataDirectory + "\\ArtistInformation\\Pictures", photoFile.getAbsolutePath());
+      String photoFileName = FileUtils.getPathRelativeToFolder(MediaRegistry.musicDataDirectory + "\\ArtistInformation\\Pictures\\", photoFile.getAbsolutePath());
       LOGGER.severe("photoFileName: " + photoFileName);
       EmfUtil.setFeatureValue(object, MEDIA_DB_PACKAGE.getArtist_Photo(), photoFileName);
     }
@@ -444,7 +454,7 @@ public class ArtistDetailsEditor extends ObjectEditorTemplate<Artist> {
         trackReference.setMyTrackInfo(myTrackInfo);
       }
       
-      EmfUtil.setFeatureValue(myTrackInfo, MEDIA_DB_PACKAGE.getMyTrackInfo_CompilationTrackReference(), newSampleReference);
+      EmfUtil.setFeatureValue(myTrackInfo, MEDIA_DB_PACKAGE.getMyTrackInfo_TrackReference(), newSampleReference);
     }
   }
 
@@ -488,7 +498,7 @@ public class ArtistDetailsEditor extends ObjectEditorTemplate<Artist> {
     TrackReference nextTrackReference = null;
     MyTrackInfo myTrackInfo = trackReference.getMyTrackInfo();
     if (myTrackInfo != null) {
-      nextTrackReference = myTrackInfo.getCompilationTrackReference();
+      nextTrackReference = myTrackInfo.getTrackReference();
     }
     
     if (nextTrackReference == null) {

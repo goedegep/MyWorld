@@ -167,7 +167,7 @@ public class FilesControlledWindow extends JfxStage {
    * @param customization the GUI customization.
    */
   public FilesControlledWindow(CustomizationFx customization) {
-    super(WINDOW_TITLE, customization);
+    super(customization, WINDOW_TITLE);
     LOGGER.info("=>");
     
     componentFactory = customization.getComponentFactoryFx();
@@ -584,7 +584,7 @@ public class FilesControlledWindow extends JfxStage {
 
     Result result = PCTOOLS_FACTORY.createResult();
     controlledSetBuildingTask = new ControlledSetBuildingTask(discStructureSpecification, result);
-    WorkerStateMonitorWindow<Tuplet<FileInfoMap, List<FileCopyInfo>>> workerMonitor = new WorkerStateMonitorWindow<>(getCustomization(), controlledSetBuildingTask);
+    WorkerStateMonitorWindow<Tuplet<FileInfoMap, List<FileCopyInfo>>> workerMonitor = new WorkerStateMonitorWindow<>(customization, controlledSetBuildingTask);
     workerMonitor.setTitle("Building Controlled Set progress");
     workerMonitor.show();
 
@@ -634,7 +634,7 @@ public class FilesControlledWindow extends JfxStage {
     
 //    CheckFilesTask checkFilesTask = new CheckFilesTask(controlledFiles, discStructureSpecification, result);
     CheckFilesTask checkFilesTask = new CheckFilesTask(discStructureSpecification, result);
-    WorkerStateMonitorWindow<Result> workerMonitor = new WorkerStateMonitorWindow<>(getCustomization(), checkFilesTask);
+    WorkerStateMonitorWindow<Result> workerMonitor = new WorkerStateMonitorWindow<>(customization, checkFilesTask);
     workerMonitor.setTitle("Checking Files progress");
     workerMonitor.show();
     

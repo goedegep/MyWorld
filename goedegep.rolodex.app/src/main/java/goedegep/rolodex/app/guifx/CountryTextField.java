@@ -18,7 +18,7 @@ public class CountryTextField extends ObjectControlAutoCompleteTextField<String>
    * Constructor.
    */
   public CountryTextField(CustomizationFx customization, Rolodex rolodex) {
-    super(customization, null, 300, false, "Enter the name of the country in which the city is located");
+    super(customization, 300, false, "Enter the name of the country in which the city is located");
     
     this.rolodex = rolodex;
     

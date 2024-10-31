@@ -54,7 +54,7 @@ public class ImportAlbumTracksWindow extends JfxStage {
 //  private String sourceFolderName;
   
   public ImportAlbumTracksWindow(CustomizationFx customization, MediaDb mediaDb, Album album) {
-    super(createWindowTitle(album), customization);
+    super(customization, createWindowTitle(album));
     
     this.mediaDb = mediaDb;
     this.album = album;

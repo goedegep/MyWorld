@@ -14,7 +14,7 @@ public class GeoUtil {
   /**
    * Directions North, South, East and West.
    */
-  private static enum Direction {
+  enum Direction {
       N,
       S,
       E,

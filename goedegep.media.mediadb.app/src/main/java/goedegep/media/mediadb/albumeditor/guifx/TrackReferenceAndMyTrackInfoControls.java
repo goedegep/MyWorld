@@ -1,20 +1,15 @@
 package goedegep.media.mediadb.albumeditor.guifx;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
-import goedegep.jfx.ComponentFactoryFx;
 import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.DoubleClickEventDispatcher;
-import goedegep.jfx.controls.AutoCompleteTextField;
 import goedegep.jfx.objectcontrols.ObjectControlAggregationTemplate;
 import goedegep.jfx.objectcontrols.ObjectControlEnumComboBox;
 import goedegep.jfx.objectcontrols.ObjectControlString;
 import goedegep.jfx.objectcontrols.ObjectControlTextField;
-import goedegep.jfx.objectcontrols.ObjectEditPanelTemplate;
 import goedegep.jfx.objecteditor.ObjectEditorException;
-import goedegep.jfx.objecteditor.ObjectEditorTemplate;
 import goedegep.media.mediadb.app.derivealbuminfo.TrackInfo;
 import goedegep.media.mediadb.model.Album;
 import goedegep.media.mediadb.model.AlbumType;
@@ -24,18 +19,12 @@ import goedegep.media.mediadb.model.IWant;
 import goedegep.media.mediadb.model.MediaDb;
 import goedegep.media.mediadb.model.MediadbFactory;
 import goedegep.media.mediadb.model.MediadbPackage;
-import goedegep.media.mediadb.model.MediumInfo;
 import goedegep.media.mediadb.model.MyTrackInfo;
 import goedegep.media.mediadb.model.Track;
 import goedegep.media.mediadb.model.TrackReference;
 import goedegep.util.emf.EmfUtil;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
-import javafx.scene.control.ChoiceDialog;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
-import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.GridPane;
   
 /**
  * This class creates and adds controls for a TrackReference and its contained MyTrackInfo, and adds these controls to the specified {@code GridPane}.
@@ -98,6 +87,22 @@ class TrackReferenceAndMyTrackInfoControls extends ObjectControlAggregationTempl
   
   private IHaveOnObjectControl iHaveOnObjectControl;
 
+  
+  /**
+   * Factory method to obtain a new instance of a {@code MediumInfoListEditor}.
+   * 
+   * @param customization the GUI customization.
+   * @param trackReferenceControls the list of {@code TrackReferenceAndMyTrackInfoControls} of which this is part
+   * @param albumType the {@code AlbumType} of the album
+   * @param mediaDb the media database.
+   * @return a newly created {@code TrackReferenceAndMyTrackInfoControls}.
+   */
+  public static TrackReferenceAndMyTrackInfoControls newInstance(CustomizationFx customization, List<TrackReferenceAndMyTrackInfoControls> trackReferenceControls, AlbumType albumType, MediaDb mediaDb) {
+    TrackReferenceAndMyTrackInfoControls trackReferenceAndMyTrackInfoControls = new TrackReferenceAndMyTrackInfoControls(customization, trackReferenceControls, albumType, mediaDb);
+    trackReferenceAndMyTrackInfoControls.performInitialization();
+    
+    return trackReferenceAndMyTrackInfoControls;
+  }
 
   /**
    * Constructor
@@ -107,7 +112,7 @@ class TrackReferenceAndMyTrackInfoControls extends ObjectControlAggregationTempl
    * @param albumType the type of album we're editing.
    * @param mediaDb the media database
    */
-  TrackReferenceAndMyTrackInfoControls(CustomizationFx customization, List<TrackReferenceAndMyTrackInfoControls> trackReferenceControls, AlbumType albumType, MediaDb mediaDb) {
+  private TrackReferenceAndMyTrackInfoControls(CustomizationFx customization, List<TrackReferenceAndMyTrackInfoControls> trackReferenceControls, AlbumType albumType, MediaDb mediaDb) {
     super(customization);
     
     this.trackReferenceControls = trackReferenceControls;
@@ -213,7 +218,7 @@ class TrackReferenceAndMyTrackInfoControls extends ObjectControlAggregationTempl
     bonusTrackObjectControl = componentFactory.createObjectControlString(null, -1, true, "If this track is a bonus track, enter a free format text like 'bonus track' or 'extra track on the 2024 issue'");
     bonusTrackObjectControl.setId("track reference: bonus track");
     
-    iWantObjectControl = componentFactory.createObjectControlEnumComboBox(IWant.NOT_SET, IWant.NOT_SET, MediadbPackage.eINSTANCE.getIWant(), true, "Select whether you want this track or not");
+    iWantObjectControl = componentFactory.createObjectControlEnumComboBox(IWant.NOT_SET, true, "Select whether you want this track or not");
     iWantObjectControl.setId("track reference: my track info: i want");
     
     iHaveOnObjectControl = new IHaveOnObjectControl(customization);
@@ -489,7 +494,7 @@ class TrackReferenceAndMyTrackInfoControls extends ObjectControlAggregationTempl
     TrackReference compilationTrackReference = null;
     
     if (myTrackInfo != null) {
-      compilationTrackReference = myTrackInfo.getCompilationTrackReference();
+      compilationTrackReference = myTrackInfo.getTrackReference();
     }
     
     if (compilationTrackReference != null) {
@@ -615,7 +620,7 @@ class TrackReferenceAndMyTrackInfoControls extends ObjectControlAggregationTempl
     String originalAlbumTrackReferenceDiscId = null;
     TrackReference originalTrackReference = null;
     if (object != null) {
-      originalTrackReference = object.getOriginalAlbumTrackReference();
+      originalTrackReference = object.getTrack().getOriginalDiscTrackReference();
     }
     
     if (originalTrackReference != null) {
@@ -687,7 +692,7 @@ class TrackReferenceAndMyTrackInfoControls extends ObjectControlAggregationTempl
     TrackReference compilationTrackReference = null;
     
     if (myTrackInfo != null) {
-      compilationTrackReference = myTrackInfo.getCompilationTrackReference();
+      compilationTrackReference = myTrackInfo.getTrackReference();
     }
     
     if (compilationTrackReference != null) {

@@ -149,7 +149,7 @@ public class PhotoMapLayer extends MapLayer implements ObjectSelector<IPhotoInfo
    * @param modifiedPhotos a list of modified photos
    * @param rootFolderName the root folder name.
    */
-  public PhotoMapLayer(CustomizationFx customization, PhotoMapView photoMapView, MapView mapView, ObservableMap<String, List<IPhotoInfo>> photoInfosPerFolder, ObservableSet<IPhotoInfo> modifiedPhotos, String rootFolderName) {
+  public PhotoMapLayer(CustomizationFx customization, PhotoMapView photoMapView, MapView mapView, ObservableMap<String, List<IPhotoInfo>> photoInfosPerFolder, ObservableSet<IPhotoInfo> modifiedPhotos) {
     this.customization = customization;
 //    this.photoInfosPerFolder = photoInfosPerFolder;
     this.mapView = mapView;
@@ -579,7 +579,7 @@ public class PhotoMapLayer extends MapLayer implements ObjectSelector<IPhotoInfo
   @Override
   protected void layoutLayer() {
     LOGGER.info("=>");
-    WGS84BoundingBox mapBoundingBox = MapViewUtil.getVisibleMapCoordinates(baseMap);
+//    WGS84BoundingBox mapBoundingBox = MapViewUtil.getVisibleMapCoordinates(baseMap);
 
 //    if (showPhotoIndexOnMap) {
 //      layoutIndexPhotosOnLayer();

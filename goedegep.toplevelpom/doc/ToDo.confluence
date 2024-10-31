@@ -6,6 +6,7 @@ For now: only let original track reference refer to itself.
 
 h2. ToDo list
 
+* Disable opening browser as it crashes the application !!!
 * Remove PgUtilities.equals(), replace by Objects.equals()
 * ObjectControl: look for better handling of error feedback, use ObjectControlImageFile for reference
 * Continue cleanup of ObjectControlImageFile
@@ -122,4 +123,4 @@ h2. credits
 * Canyon icon by Icons made by <a href="https://www.flaticon.com/authors/vitaly-gorbachev" title="Vitaly Gorbachev">Vitaly Gorbachev</a> from <a href="https://www.flaticon.com/" title="Flaticon"> www.flaticon.com</a>
 
 h2. Google timeline
-Handled: 03-12-2023 - 29-06-2024
+Handled: 23-11-2022 - 15-10-2024

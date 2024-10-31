@@ -75,9 +75,7 @@ public class FixedPointValueFormat extends Format {
           } else {
             throw new ParseException("Meer dan 1 min teken in fixed point waarde.", 0);
           }
-        } else if (c == ' ') {
-          // just skip spaces.
-        } else {
+        } else if (c != ' ') {
           throw new ParseException("Ongeldig teken in fixed point waarde.", 0);
         }
       }

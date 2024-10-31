@@ -69,7 +69,7 @@ public class InvoicesWindow extends JfxStage {
    * @param invoicesAndPropertiesMenuWindow 
    */
   public InvoicesWindow(CustomizationFx customization, InvoicesAndProperties invoicesAndProperties, InvoicesAndPropertiesMenuWindow invoicesAndPropertiesMenuWindow) {
-    super(WINDOW_TITLE, customization);
+    super(customization, WINDOW_TITLE);
     
     this.customization = customization;
     this.invoicesAndProperties = invoicesAndProperties;
@@ -166,7 +166,7 @@ public class InvoicesWindow extends JfxStage {
   private void showInvoiceEditor() {
     Invoice invoice = invoicesTable.getSelectedObject();
     if (invoice != null) {
-      new InvoiceAndPropertyEditor(customization, invoicesAndProperties).runEditor().setObject(invoice);
+      InvoiceAndPropertyEditor.newInstance(customization, invoicesAndProperties).setObject(invoice);
     }
   }
   
@@ -174,7 +174,7 @@ public class InvoicesWindow extends JfxStage {
    * Open de the invoice and property editor to create a new invoice.
    */
   private void showNewInvoiceAndPropertyEditor() {
-    new InvoiceAndPropertyEditor(customization, invoicesAndProperties).runEditor();;
+    InvoiceAndPropertyEditor.newInstance(customization, invoicesAndProperties);
   }
 
   /**

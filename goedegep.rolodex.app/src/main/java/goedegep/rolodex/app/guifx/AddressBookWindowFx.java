@@ -96,7 +96,7 @@ public class AddressBookWindowFx extends JfxStage {
    * @param rolodex a <code>Rolodex</code>
    */
   public AddressBookWindowFx(CustomizationFx customization, Rolodex rolodex) {
-    super(WINDOW_TITLE, customization);
+    super(customization, WINDOW_TITLE);
     
     this.customization = customization;
     this.rolodex = rolodex;
@@ -320,14 +320,11 @@ class AddressesBookTableDescriptor extends EObjectTableDescriptor<AddressHolder>
               setText(null);
               setGraphic(null);
               AddressHolder addressHolder = (AddressHolder) item;
-              if (addressHolder instanceof Institution) {
-                Institution institution = (Institution) addressHolder;
+              if (addressHolder instanceof Institution institution) {
                 setText(institution.getName());
-             } else if (addressHolder instanceof Family) {
-               Family family = (Family) addressHolder;
+             } else if (addressHolder instanceof Family family) {
                setText(family.getFamilyTitle() + " " + family.getFamilyName());
-              } else if (addressHolder instanceof Person) {
-                Person person = (Person) addressHolder;
+              } else if (addressHolder instanceof Person person) {
                 setText(person.getName());
               }
             }
@@ -352,12 +349,9 @@ class AddressesBookTableDescriptor extends EObjectTableDescriptor<AddressHolder>
               AddressHolder addressHolder = (AddressHolder) item;
               
               Address address = addressHolder.getAddress();
-              if (address == null) {
-                if (addressHolder instanceof Person) {
-                  Person person = (Person) addressHolder;
-                  address = person.retrieveAddress();
-                  LOGGER.info("Address taken from family for " + person.getName());
-                }
+              if (address == null  &&  addressHolder instanceof Person person) {
+                address = person.retrieveAddress();
+                LOGGER.info("Address taken from family for " + person.getName());
               }
 
               if (address != null) {
@@ -439,12 +433,9 @@ class AddressesBookTableDescriptor extends EObjectTableDescriptor<AddressHolder>
               setGraphic(null);
               AddressHolder addressHolder = (AddressHolder) item;
               Address address = addressHolder.getAddress();
-              if (address == null) {
-                if (addressHolder instanceof Person) {
-                  Person person = (Person) addressHolder;
-                  address = person.retrieveAddress();
-                  LOGGER.info("Address taken from family for " + person.getName());
-                }
+              if (address == null  &&  addressHolder instanceof Person person) {
+                address = person.retrieveAddress();
+                LOGGER.info("Address taken from family for " + person.getName());
               }
               
               if (address != null) {
@@ -471,12 +462,9 @@ class AddressesBookTableDescriptor extends EObjectTableDescriptor<AddressHolder>
               setGraphic(null);
               AddressHolder addressHolder = (AddressHolder) item;
               Address address = addressHolder.getAddress();
-              if (address == null) {
-                if (addressHolder instanceof Person) {
-                  Person person = (Person) addressHolder;
-                  address = person.retrieveAddress();
-                  LOGGER.info("Address taken from family for " + person.getName());
-                }
+              if (address == null  &&  addressHolder instanceof Person person) {
+                address = person.retrieveAddress();
+                LOGGER.info("Address taken from family for " + person.getName());
               }
               if (address != null) {
                 City city = address.getCity();
@@ -505,12 +493,9 @@ class AddressesBookTableDescriptor extends EObjectTableDescriptor<AddressHolder>
               setGraphic(null);
               AddressHolder addressHolder = (AddressHolder) item;
               Address address = addressHolder.getAddress();
-              if (address == null) {
-                if (addressHolder instanceof Person) {
-                  Person person = (Person) addressHolder;
-                  address = person.retrieveAddress();
-                  LOGGER.info("Address taken from family for " + person.getName());
-                }
+              if (address == null  &&  addressHolder instanceof Person person) {
+                address = person.retrieveAddress();
+                LOGGER.info("Address taken from family for " + person.getName());
               }
               if (address != null) {
                 City city = address.getCity();

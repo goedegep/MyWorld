@@ -4,6 +4,7 @@ module goedegep.events.app {
 
   requires transitive goedegep.appgenfx;
   requires transitive goedegep.events.model;
+  requires goedegep.gpx.app;
   requires goedegep.model.properties;
   requires goedegep.properties.app;
   requires goedegep.resources;

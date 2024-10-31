@@ -24,7 +24,7 @@ public interface XTreeNode {
    * @return
    *    true if the node has a parent, false otherwise.
    */
-  public boolean hasParent();
+  boolean hasParent();
   
   /**
    * Get the parent of a node.
@@ -33,7 +33,7 @@ public interface XTreeNode {
    *    null if the node has no parent. <br>
    *    The parent of the node otherwise.
    */
-  public XTreeNode getParent();
+  XTreeNode getParent();
 
   /**
    * Test whether a node has one or more children.
@@ -41,7 +41,7 @@ public interface XTreeNode {
    * @return
    *    true if the node has a child, false otherwise.
    */
-  public boolean hasChild();
+  boolean hasChild();
 
   /**
    * Get the first child of a node.
@@ -49,52 +49,52 @@ public interface XTreeNode {
    * @param node - The node.
    * @return The first child of {@code node}, or null is the node doesn't have any children.
    */
-  public XTreeNode getFirstChild();
+  XTreeNode getFirstChild();
 
   /**
    * Get the last child of a node.
    * 
    * @return The last child of the node, or null if the node doesn't have any children.
    */
-  public XTreeNode getLastChild();
+  XTreeNode getLastChild();
 
   /**
    * Get the number of children of a node.
    */
-  public int getNumberOfChildren();
+  int getNumberOfChildren();
   
   /**
    * Get the child index of a node.
    * 
    * @return the index of this node in the list of children of its parent, or -1 if the node has no parent.
    */
-  public int getChildIndex();
+  int getChildIndex();
 
   /**
    * Test whether a node has a sibling.
    * 
    * @return TRUE if the node has a sibling, FALSE otherwise.
    */
-  public boolean hasSibling();
+  boolean hasSibling();
 
   /**
    * Get the next sibling of a node.
    * 
    * @return The next sibling of the node, or null if there is no next sibling.
    */
-  public XTreeNode getNextSibling();
+  XTreeNode getNextSibling();
 
   /**
    * Get the last sibling of a node.
    * 
    * @return The last sibling of the node, or null if there isn't any next sibling.
    */
-  public XTreeNode getLastSibling();
+  XTreeNode getLastSibling();
 
   /**
    * Get the number of siblings following a node.
    */
-  public int getNumberOfRemainingSiblings();
+  int getNumberOfRemainingSiblings();
   
   /*
    * Getting data from a node.
@@ -105,7 +105,7 @@ public interface XTreeNode {
    * 
    * @return The data type of the node.
    */
-  public XNodeDataType getDataType();
+  XNodeDataType getDataType();
 
   /**
    * Get the size of the data stored in a node.
@@ -114,7 +114,7 @@ public interface XTreeNode {
    * 
    * @return The size of the data in the node.
    */
-  public default int getDataSize() {
+  default int getDataSize() {
     throw new UnsupportedOperationException();
   }
   
@@ -123,7 +123,7 @@ public interface XTreeNode {
    * 
    * @return the data from this node.
    */
-  public Object getData();
+  Object getData();
 
   /**
    * Get the data from a node of type TAG.
@@ -132,7 +132,7 @@ public interface XTreeNode {
    * 
    * @return the TAG data from this node, which is never null.
    */
-  public default XTreeTag getTagData() {
+  default XTreeTag getTagData() {
     return (XTreeTag) getData();
   }
 
@@ -143,7 +143,7 @@ public interface XTreeNode {
    * 
    * @return the BOOLEAN data from this node.
    */
-  public default boolean getBooleanData() {
+  default boolean getBooleanData() {
     return (boolean) getData();
   }
 
@@ -154,7 +154,7 @@ public interface XTreeNode {
    * 
    * @return the INTEGER data from this node.
    */
-  public default int getIntegerData() {
+  default int getIntegerData() {
     return (int) getData();
   }
 
@@ -165,7 +165,7 @@ public interface XTreeNode {
    * 
    * @return the STRING data from this node, which is never null.
    */
-  public default String getStringData() {
+  default String getStringData() {
     return (String) getData();
   }
 
@@ -176,7 +176,7 @@ public interface XTreeNode {
    * 
    * @return the BLOB data from this node, which is never null.
    */
-  public default byte[] getBlobData() {
+  default byte[] getBlobData() {
     return (byte[]) getData();
   }
   
@@ -189,7 +189,7 @@ public interface XTreeNode {
    * 
    * @return the TAG data of the first child of this node, which is never null.
    */
-  public default XTreeTag getTagChildData() {
+  default XTreeTag getTagChildData() {
     return getFirstChild().getTagData();
   }
   
@@ -201,7 +201,7 @@ public interface XTreeNode {
    * 
    * @return the BOOLEAN data of the first child of this node.
    */
-  public default boolean getBooleanChildData() {
+  default boolean getBooleanChildData() {
     return getFirstChild().getBooleanData();
   }
 
@@ -213,7 +213,7 @@ public interface XTreeNode {
    * 
    * @return the INTEGER data of the first child of this node.
    */
-  public default int getIntegerChildData() {
+  default int getIntegerChildData() {
     return getFirstChild().getIntegerData();
   }
 
@@ -225,7 +225,7 @@ public interface XTreeNode {
    * 
    * @return the STRING data of the first child of this node, which is never null.
    */
-  public default String getStringChildData() {
+  default String getStringChildData() {
     return getFirstChild().getStringData();
   }
 
@@ -237,7 +237,7 @@ public interface XTreeNode {
    * 
    * @return the BLOB data of the first child of this node, which is never null.
    */
-  public default byte[] getBlobChildData() {
+  default byte[] getBlobChildData() {
     return getFirstChild().getBlobData();
   }
   
@@ -261,7 +261,7 @@ public interface XTreeNode {
    * @param secondNode
    * @return true is the nodes are 'equal', false otherwise.
    */
-  public static boolean compareNodesStructureAndContent(XTreeNode firstNode, XTreeNode secondNode) {
+  static boolean compareNodesStructureAndContent(XTreeNode firstNode, XTreeNode secondNode) {
     if (((firstNode == null) && (secondNode != null))  ||
         ((firstNode != null) && (secondNode == null))  ||
         (firstNode.hasChild()  &&  !secondNode.hasChild())  ||
@@ -281,9 +281,9 @@ public interface XTreeNode {
    * @param value the value to check against
    * @return true if the node contains {@code value}, false otherwise.
    */
-  public default boolean contains(XTreeTag value) {
-    return (getDataType() == XNodeDataType.TAG &&
-        getTagChildData() == value);  
+  default boolean contains(XTreeTag value) {
+    return getDataType() == XNodeDataType.TAG &&
+        getTagChildData() == value;  
   }
   
   /**
@@ -292,9 +292,9 @@ public interface XTreeNode {
    * @param value the value to check against
    * @return true if the node contains {@code value}, false otherwise.
    */
-  public default boolean contains(boolean value) {
-    return (getDataType() == XNodeDataType.BOOLEAN &&
-        getBooleanData() == value);    
+  default boolean contains(boolean value) {
+    return getDataType() == XNodeDataType.BOOLEAN &&
+        getBooleanData() == value;    
   }
   
   /**
@@ -303,9 +303,9 @@ public interface XTreeNode {
    * @param value the value to check against
    * @return true if the node contains {@code value}, false otherwise.
    */
-  public default boolean contains(int value) {
-    return (getDataType() == XNodeDataType.INTEGER &&
-        getIntegerData() == value);   
+  default boolean contains(int value) {
+    return getDataType() == XNodeDataType.INTEGER &&
+        getIntegerData() == value;   
   }
   
   /**
@@ -314,9 +314,9 @@ public interface XTreeNode {
    * @param value the value to check against
    * @return true if the node contains {@code value}, false otherwise.
    */
-  public default boolean contains(String value) {
-    return (getDataType() == XNodeDataType.STRING &&
-        getStringData().compareTo(value) == 0);
+  default boolean contains(String value) {
+    return getDataType() == XNodeDataType.STRING &&
+        getStringData().compareTo(value) == 0;
   }
   
   /**
@@ -325,7 +325,7 @@ public interface XTreeNode {
    * @param value the value to check against
    * @return true if the node contains {@code value}, false otherwise.
    */
-  public default boolean contains(byte[] value) { 
+  default boolean contains(byte[] value) { 
     // Not OK if type is not BLOB.
     if (getDataType() != XNodeDataType.BLOB) {
       return false;
@@ -344,7 +344,7 @@ public interface XTreeNode {
    * 
    * @return a String representation of the references (parent, firstChild and nextSibling) of this node.
    */
-  public default String nodeStructureToString() {
+  default String nodeStructureToString() {
     StringBuilder buf = new StringBuilder();
     buf.append("(");
     if (getParent() != null) {

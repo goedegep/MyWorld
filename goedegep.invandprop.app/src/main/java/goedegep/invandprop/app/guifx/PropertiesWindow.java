@@ -78,7 +78,7 @@ public class PropertiesWindow extends JfxStage {
    * @param invoicesAndProperties the invoices and properties from which the properties are shown.
    */
   public PropertiesWindow(CustomizationFx customization, InvoicesAndProperties invoicesAndProperties, InvoicesAndPropertiesMenuWindow invoicesAndPropertiesMenuWindow) {
-    super(WINDOW_TITLE, customization);
+    super(customization, WINDOW_TITLE);
     
     this.customization = customization;
     this.invoicesAndProperties = invoicesAndProperties;
@@ -224,14 +224,13 @@ public class PropertiesWindow extends JfxStage {
   private void editSelectedProperty() {
     Property property = propertiesTable.getSelectedObject();
     if (property != null) {
-      InvoiceAndPropertyEditor editor = new InvoiceAndPropertyEditor(customization, invoicesAndProperties);
-      editor.runEditor();
+      InvoiceAndPropertyEditor editor = InvoiceAndPropertyEditor.newInstance(customization, invoicesAndProperties);
       editor.setProperty(property);
     }
   }
   
   private void showInvoiceAndPropertyEditor() {
-    new InvoiceAndPropertyEditor(customization, invoicesAndProperties).runEditor();
+    InvoiceAndPropertyEditor.newInstance(customization, invoicesAndProperties);
   }
 
   /**

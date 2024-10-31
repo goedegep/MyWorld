@@ -31,13 +31,12 @@ public class RolodexCheckWindow extends JfxStage {
   private static final Logger LOGGER = Logger.getLogger(RolodexCheckWindow.class.getName());
   private static final String WINDOW_TITLE   = "Rolodex checker";
   
-  private CustomizationFx customization;
   private ComponentFactoryFx componentFactory;
   private RolodexChecker rolodexChecker;
   private List<CheckPanel> checks;
 
   public RolodexCheckWindow(CustomizationFx customization, Rolodex rolodex) {
-    super(WINDOW_TITLE, customization);
+    super(customization, WINDOW_TITLE);
     
     this.customization = customization;
     componentFactory = customization.getComponentFactoryFx();
@@ -59,13 +58,13 @@ public class RolodexCheckWindow extends JfxStage {
   private void createGUI() {
     VBox vBox =componentFactory.createVBox(6.0, 12.0);
     
-    vBox.getChildren().add(createGeneralCheckPanel(customization));
+    vBox.getChildren().add(createGeneralCheckPanel());
     vBox.getChildren().addAll(checks);
     
     setScene(new Scene(vBox, 900, 1100));
   }
 
-  private Node createGeneralCheckPanel(CustomizationFx customization2) {
+  private Node createGeneralCheckPanel() {
     HBox hBox = componentFactory.createHBox(12.0, 12.0);
     hBox.setStyle("-fx-border-color: black");
 
@@ -85,7 +84,7 @@ public class RolodexCheckWindow extends JfxStage {
     return hBox;
   }
   
-  private void runSelectedChecks(ActionEvent e) {
+  private void runSelectedChecks(ActionEvent e) {  // NOPMD
     for (CheckPanel checkPanel: checks) {
       checkPanel.runCheckIfSelected();
     }

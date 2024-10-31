@@ -18,7 +18,7 @@ public class InstitutionTextField extends ObjectControlAutoCompleteTextField<Str
    * Constructor.
    */
   public InstitutionTextField(CustomizationFx customization, Rolodex rolodex) {
-    super(customization, null, 300, false, "Enter the name of an institution");
+    super(customization, 300, false, "Enter the name of an institution");
     
     this.rolodex = rolodex;
     
@@ -35,7 +35,7 @@ public class InstitutionTextField extends ObjectControlAutoCompleteTextField<Str
 //  }
   
   public boolean isNonExistingInstitutionName() {
-    if (isFilledIn() && (getMatchingInstitutions().isEmpty())) {
+    if (isFilledIn() && getMatchingInstitutions().isEmpty()) {
       return true;
     } else {
       return false;

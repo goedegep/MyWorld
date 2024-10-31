@@ -72,7 +72,6 @@ private static final int MAX_ERRORS_SHOWN = 18;
  */
 private MediaDb mediaDb;
 
-private ComponentFactoryFx componentFactory;
 
   /**
    * Constructor.
@@ -83,7 +82,7 @@ private ComponentFactoryFx componentFactory;
    * @param errors the problems to be listed
    */
   public MediaDbProblemsWindow(CustomizationFx customization, MediaDb mediaDb, List<Object> errors) {
-    super(WINDOW_TITLE, customization);
+    super(customization, WINDOW_TITLE);
 
     this.mediaDb = mediaDb;
 
@@ -98,7 +97,6 @@ private ComponentFactoryFx componentFactory;
    * @param errors the problems to be listed
    */
   private void initGUI(List<Object> errors) {
-    componentFactory = getCustomization().getComponentFactoryFx();
 
     VBox errorListPanel = componentFactory.createVBox(12.0);
 
@@ -946,7 +944,7 @@ private ComponentFactoryFx componentFactory;
       String sourceTrackFileName = TrackFile.getTrackFileNameForTrackIndex(albumFolderPath, trackReference.getTrackNr());
       String trackFileNameWithoutExtension = null;
       if (MediaDbUtil.isOwnCompilationAlbum(album)) {
-        TrackReference originalAlbumTrackReference = trackReference.getOriginalAlbumTrackReference();
+        TrackReference originalAlbumTrackReference = trackReference.getTrack().getOriginalDiscTrackReference();
         if (originalAlbumTrackReference != null) {
           trackFileNameWithoutExtension = MediaDbAppUtil.generateTrackFileNameForMyCompilationAlbum(originalAlbumTrackReference, mediaDb);
         } else {

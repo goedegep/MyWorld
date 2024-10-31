@@ -1,4 +1,4 @@
-package goedegep.jfx;
+package goedegep.jfx.objecteditor;
 
 import java.awt.Desktop;
 import java.io.File;
@@ -7,28 +7,26 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Supplier;
+import java.util.function.Function;
 import java.util.logging.Logger;
 
+import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.eobjecteditor.EObjectEditor;
 import goedegep.jfx.objectcontrols.ObjectControlFileSelecter;
 import goedegep.jfx.objectcontrols.ObjectControlFolderSelecter;
-import goedegep.jfx.objectcontrols.ObjectControlGroup;
 import goedegep.jfx.objectcontrols.ObjectControlString;
+import goedegep.jfx.objectcontrols.ObjectEditPanelTemplate;
+import goedegep.types.model.FileReference;
+import goedegep.types.model.TypesFactory;
+import goedegep.types.model.TypesPackage;
+import goedegep.util.emf.EmfUtil;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.EventHandler;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TitledPane;
-import javafx.scene.input.ClipboardContent;
-import javafx.scene.input.DataFormat;
-import javafx.scene.input.DragEvent;
-import javafx.scene.input.Dragboard;
-import javafx.scene.input.MouseEvent;
-import javafx.scene.input.TransferMode;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
@@ -36,26 +34,17 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 
 /**
- * This class provides a panel to edit a {@link FileReference}.
+ * This class is an object edit panel (extension of {@link ObjectEditPanelTemplate} to
+ * show/edit a {@link FileReference}.
  * <p>
  * By default the panel handles a reference to a file,
  * but by providing a list of {@code FileReferenceTypeInfo} references to folders are also supported.
  * In the latter case, there's an extra control via which the user can select the reference type.
+ * <p>
+ * The panel (the Control) is a {@link TitledPane}.
  */
-public class FileReferencePanel extends TitledPane {
-  private static final Logger LOGGER = Logger.getLogger(FileReferencePanel.class.getName());
-  
-  /**
-   * Clipboard content type used for drag and drop.
-   */
-  private static final DataFormat FILE_REFERENCE_PANEL = new DataFormat("FileReferencePanel");
-  
-  /**
-   * The list of {@code FileReferencePanel}s to which a newly created panel has to add itself.
-   * <p>
-   * This list is used for reordering the panels via drag and drop.
-   */
-  private List<FileReferencePanel> fileReferencePanels = null;
+public class FileReferenceEditPanel extends ObjectEditPanelTemplate<FileReference> {
+  private static final Logger LOGGER = Logger.getLogger(FileReferenceEditPanel.class.getName());
   
   /**
    * Default panel title (used if nothing is filled in yet)
@@ -70,7 +59,12 @@ public class FileReferencePanel extends TitledPane {
   /**
    * Supplier for the initial folder in the file or folder selecter.
    */
-  private Supplier<String> initialFolderSupplier = null;
+  private Function<FileReferenceTypeInfo, String> initialFolderSupplier = null;
+  
+  /**
+   * Path prefix
+   */
+  private String prefix = null;
   
   /**
    * Information on the types of references to handle.
@@ -83,33 +77,16 @@ public class FileReferencePanel extends TitledPane {
   FileReferenceTypeInfo currentFileReferenceTypeInfo = null;
   
   /**
-   * Indication of whether we're handling a file or folder reference.
+   * Indication of whether we're handling a file or folder reference (or nothing).
    */
   private Boolean handlingFileReference = null;
-  
-  /**
-   * The GUI customization
-   */
-  private CustomizationFx customization;
-  
-  /**
-   * Factory for creating the GUI components
-   */
-  private ComponentFactoryFx componentFactory;
-  
-  /**
-   * {@code ObjectControlGroup} to which the object controls are added.
-   */
-  private ObjectControlGroup objectControlsGroup;
-  
-  /**
-   * Reference to {@code this}. Used in lambdas where 'this' is not available.
-   */
-  private FileReferencePanel thisFileReferencePanel;
+    
   
   // The ObjectControls
+  
   /**
    * Object control for the reference type.
+   * This is only used if {@code fileReferenceTypeInfos} is not null.
    */
   private ComboBox<String> referenceTypeComboBox;
   
@@ -127,6 +104,11 @@ public class FileReferencePanel extends TitledPane {
    * Object control for the reference title.
    */
   private ObjectControlString titleObjectControl;
+  
+  /**
+   * Top level panel.
+   */
+  protected TitledPane titledPane;
 
   /**
    * The pane containing the controls.
@@ -138,42 +120,45 @@ public class FileReferencePanel extends TitledPane {
    */
   private Desktop  desktop = null;
   
+  
+  /**
+   * Factory method to create a new {@code FileReferenceEditPanel} instance.
+   * 
+   * @param builder A builder with all configuration information.
+   * @return a new {@code FileReferenceEditPanel} instance, configured according to the {@code builer}.
+   */
+  public static FileReferenceEditPanel newInstance(FileReferencePanelBuilder builder) {
+    FileReferenceEditPanel fileReferenceEditPanel = new FileReferenceEditPanel(builder);
+    
+    fileReferenceEditPanel.performInitialization();
+    
+    return fileReferenceEditPanel;
+  }
+  
   /**
    * Constructor using builder
    * <p>
    * @param builder A builder with all configuration information.
    */
-  public FileReferencePanel(FileReferencePanelBuilder builder) {
+  private FileReferenceEditPanel(FileReferencePanelBuilder builder) {
+    super(builder.customization);
+    
     this.customization = builder.customization;
-    this.fileReferencePanels = builder.fileReferencePanels;
     this.defaultPanelTitle = builder.defaultPaneTitle;
     this.expandPanelOnCreation = builder.expandPaneOnCreation;
     this.initialFolderSupplier = builder.initialFolderSupplier;
+    this.prefix = builder.prefix;
     this.fileReferenceTypeInfos = builder.fileReferenceTypeInfos;
-    
-    componentFactory = customization.getComponentFactoryFx();
-    
-    createControls();
-
-    createGUI();
-    
-    if (referenceTypeComboBox != null) {
-      referenceTypeComboBox.setOnAction((e) -> handleNewReferenceTypeSelected());
-    }
-    
-    installChangeListeners();
-    
-    installDragAndDropHandling();
         
-    thisFileReferencePanel = this;
-    
-    setExpanded(expandPanelOnCreation);
-    
-    if (referenceTypeComboBox != null) {
-      referenceTypeComboBox.getSelectionModel().select(0);
-    }
-    
-    handleNewReferenceTypeSelected();
+    object = TypesFactory.eINSTANCE.createFileReference();
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public Node getControl() {
+    return titledPane;
   }
   
   /**
@@ -196,11 +181,18 @@ public class FileReferencePanel extends TitledPane {
       fileSelecterObjectControl = componentFactory.createFileSelecterObjectControl(400, "Currently selected file",
           "Choose file", "Select a file via a file chooser", "Select the file", false);
       fileSelecterObjectControl.setId("fileSelecter");
-      fileSelecterObjectControl.setInitialFolderProvider(initialFolderSupplier);
+      fileSelecterObjectControl.setInitialFolderProvider(this::getInitialFolder);
+      if (prefix != null) {
+        fileSelecterObjectControl.setPrefix(prefix);
+      }
       fileSelecterObjectControl.addListener((observable) -> updatePaneTitle());
     }
     
     return fileSelecterObjectControl;
+  }
+  
+  private String getInitialFolder() {    
+    return initialFolderSupplier.apply(currentFileReferenceTypeInfo);
   }
   
   /**
@@ -215,7 +207,7 @@ public class FileReferencePanel extends TitledPane {
       folderSelecterObjectControl = componentFactory.createFolderSelecter(400, "Currently selected folder",
           "Choose folder", "Select a folder via a folder chooser", "Select the folder", false);
       folderSelecterObjectControl.setId("folderSelecter");
-      folderSelecterObjectControl.setInitialFolderProvider(initialFolderSupplier);
+      folderSelecterObjectControl.setInitialFolderProvider(this::getInitialFolder);
       folderSelecterObjectControl.addListener((observable) -> updatePaneTitle());
     }
     
@@ -245,6 +237,10 @@ public class FileReferencePanel extends TitledPane {
    */
   public void setPathNameRelativeToPrefix(String file) {
     getFileSelecterObjectControl().setPathNameRelativeToPrefix(file);
+  }
+  
+  public void setPrefix(String prefix) {
+    getFileSelecterObjectControl().setPrefix(prefix);
   }
   
   /**
@@ -284,47 +280,56 @@ public class FileReferencePanel extends TitledPane {
     }
   }
   
-  /**
-   * Get the {@code ObjectControlGroup} for the object controls of this panel.
-   * 
-   * @return the {@code ObjectControlGroup} for the object controls of this panel.
-   */
-  public ObjectControlGroup getObjectControlsGroup() {
-    return objectControlsGroup;
-  }
+//  /**
+//   * Get the {@code ObjectControlGroup} for the object controls of this panel.
+//   * 
+//   * @return the {@code ObjectControlGroup} for the object controls of this panel.
+//   */
+//  public ObjectControlGroup getObjectControlsGroup() {
+//    return objectControlsGroup;
+//  }
   
   /**
    * Create the controls and controls group.
    */
-  private void createControls() {
+  protected void createControls() {
     if (fileReferenceTypeInfos != null) {
       ObservableList<String> items = FXCollections.observableArrayList();
       for (FileReferenceTypeInfo fileReferenceTypeInfo: fileReferenceTypeInfos) {
         items.add(fileReferenceTypeInfo.displayName());
       }
-      referenceTypeComboBox = new ComboBox<>(items);
+      referenceTypeComboBox = new ComboBox<>(items);      
+      referenceTypeComboBox.setOnAction((e) -> handleNewReferenceTypeSelected());
+      referenceTypeComboBox.getSelectionModel().select(0);
     }
     
     titleObjectControl = componentFactory.createObjectControlString(null, 200, true, "a title for the file");
     titleObjectControl.setId("title");
     
-    objectControlsGroup = new ObjectControlGroup();
-    
+    objectControlsGroup.setId("file reference edit panel");
     objectControlsGroup.addObjectControls(getFileSelecterObjectControl(), titleObjectControl);
+    
+    titledPane = new TitledPane();
+        
+    installChangeListeners();
+    
   }
   
   /**
    * Create the GUI
    */
-  private void createGUI() {
+  protected void createEditPanel() {
     VBox rootPane = componentFactory.createVBox();
 
     gridPane = componentFactory.createGridPane(12.0, 12.0, 12.0);
     
     rootPane.getChildren().addAll(gridPane, createButtonsBox());
     
-    setContent(rootPane);
-  }
+    titledPane.setContent(rootPane);
+    titledPane.setExpanded(expandPanelOnCreation);
+    
+    handleNewReferenceTypeSelected();
+   }
 
   /**
    * Create the box with the action buttons: 'Open item' and 'Delete this item'.
@@ -342,9 +347,10 @@ public class FileReferencePanel extends TitledPane {
     HBox.setHgrow(spacer, Priority.ALWAYS);
     buttonsBox.getChildren().add(spacer);
     
-    Button deleteButton = componentFactory.createButton("Delete this reference", "Delete this reference");
-    deleteButton.setOnAction(e -> deleteThisFileReference());
-    buttonsBox.getChildren().add(deleteButton);
+// TODO
+//    Button deleteButton = componentFactory.createButton("Delete this reference", "Delete this reference");
+//    deleteButton.setOnAction(e -> deleteThisFileReference());
+//    buttonsBox.getChildren().add(deleteButton);
     
     return  buttonsBox;
   }
@@ -353,89 +359,12 @@ public class FileReferencePanel extends TitledPane {
    * Install change listeners.
    * <p>
    * The title of this panel is built up from a number of control values. So for these controls an invalidation listener is installed and
-   * upon a change {@code updateTitle()} is called.<br/>
-   * Listeners are installed on: fileSelecterObjectControl, titleObjectControl, objectControlsGroup.isValid.
+   * upon a change {@code updatePaneTitle()} is called.<br/>
+   * Listeners are installed on: fileSelecterObjectControl, titleObjectControl.
    */
   private void installChangeListeners() {
     objectControlsGroup.addListener((observable) -> updatePaneTitle());
-    titleObjectControl.addListener((observable) -> updatePaneTitle());
-  }
-  
-  /**
-   * Install drag and drop handling.
-   * <p>
-   * The file references on our {@code fileReferencePanels} can be reordered via drag and drop.
-   */
-  private void installDragAndDropHandling() {
-    
-    /*
-     * Handle the starting of a drag event.
-     * This can be dragged.
-     */
-    setOnDragDetected(new EventHandler<MouseEvent>() {
-
-      public void handle(MouseEvent event) {
-        ClipboardContent clipboardContent = new ClipboardContent();
-        Integer myIndex = fileReferencePanels.indexOf(thisFileReferencePanel);
-        clipboardContent.put(FILE_REFERENCE_PANEL, myIndex);
-
-        Dragboard dragBoard = startDragAndDrop(TransferMode.MOVE);
-        dragBoard.setContent(clipboardContent);
-
-        event.consume();
-      }
-    });
-    
-    /*
-     * Check whether a drop event can be handled (upon a drag over).
-     * Drop is supported for FILE_REFERENCE_PANEL.
-     */
-    setOnDragOver(new EventHandler<DragEvent>() {
-      public void handle(DragEvent event) {
-        /* data is dragged over a (possible) target */
-        /* accept it only if it is not dragged from the same node 
-         * and if it has a supported data format. */
-        Dragboard dragboard = event.getDragboard();
-        if (event.getGestureSource() != thisFileReferencePanel) {
-          if (dragboard.hasContent(FILE_REFERENCE_PANEL)) {
-            event.acceptTransferModes(TransferMode.MOVE);
-          }
-        }
-
-        event.consume();
-      }
-    });
-    
-    /*
-     * Handle the dropping on the target
-     */
-    setOnDragDropped(new EventHandler<DragEvent>() {
-      public void handle(DragEvent event) {
-        LOGGER.info("=>");
-
-        boolean success = false;
-
-        // Get the index from the drag board, and if it isn't null use it.
-        Dragboard dragboard = event.getDragboard();
-        if (dragboard.hasContent(FILE_REFERENCE_PANEL)) {
-          Integer sourceIndex = (Integer) dragboard.getContent(FILE_REFERENCE_PANEL);
-          if (sourceIndex != null) {
-            FileReferencePanel sourcePanel = fileReferencePanels.get(sourceIndex);
-            int sourceIndexInt = sourceIndex;
-            fileReferencePanels.remove(sourceIndexInt);
-            
-            Integer myIndex = fileReferencePanels.indexOf(thisFileReferencePanel);
-            fileReferencePanels.add(myIndex, sourcePanel);
-          }
-
-          /* let the source know whether the item was successfully transferred and used */
-          event.setDropCompleted(success);
-        }
-
-        event.consume();
-      }
-    });
-    
+//    titleObjectControl.addListener((observable) -> updatePaneTitle());
   }
   
   /**
@@ -525,13 +454,13 @@ public class FileReferencePanel extends TitledPane {
 
     gridPane.add(titleObjectControl.getControl(), 1, row);     
   }
-  
-  /**
-   * Remove this reference (panel) from the {@code fileReferencePanels}.
-   */
-  private void deleteThisFileReference() {
-    fileReferencePanels.remove(this);
-  }
+//  TODO
+//  /**
+//   * Remove this reference (panel) from the {@code fileReferencePanels}.
+//   */
+//  private void deleteThisFileReference() {
+//    fileReferencePanels.remove(this);
+//  }
   
   /**
    * Open the referred file or folder.
@@ -569,14 +498,11 @@ public class FileReferencePanel extends TitledPane {
   }
   
   private Desktop getDesktop() {
-    if (desktop == null) {
-      // Before more Desktop API is used, first check 
-      // whether the API is supported by this particular 
-      // virtual machine (VM) on this particular host.
-      if (Desktop.isDesktopSupported()) {
-          desktop = Desktop.getDesktop();          
-      }
-      
+    // Before more Desktop API is used, first check 
+    // whether the API is supported by this particular 
+    // virtual machine (VM) on this particular host.
+    if (desktop == null  &&  Desktop.isDesktopSupported()) {
+      desktop = Desktop.getDesktop();                
     }
     
     return desktop;
@@ -589,7 +515,7 @@ public class FileReferencePanel extends TitledPane {
    * Else it is the file/folder name of the file/folder selected by the file/folder chooser.<br/>
    * If this is also not set, the {@code title} is used.<br/>
    * 
-   * To this a valid/invalid indication is added, based on the status of the {@code objectControlsGroup}.
+   * To this a valid/invalid indication is added, based on the status of the {@code myObjectControlsGroup}.
    */
   private void updatePaneTitle() {
     StringBuilder buf = new  StringBuilder();
@@ -613,7 +539,67 @@ public class FileReferencePanel extends TitledPane {
       buf.append(EObjectEditor.NOK_INDICATOR);
     }
     
-    setText(buf.toString());
+    titledPane.setText(buf.toString());
+  }
+
+  @Override
+  protected void fillControlsWithDefaultValues() {
+    fileSelecterObjectControl.setValue(null);
+    titleObjectControl.setValue(null);
+  }
+
+  @Override
+  protected void fillControlsFromObject() {
+    if (object == null) {
+      return;
+    }
+    
+    String fileName = object.getFile();
+    if (fileName != null) {
+      String prefix = getPrefixForTag(object.getTags());
+      if (prefix != null) {
+        fileSelecterObjectControl.setPathNameRelativeToPrefix(fileName);
+      } else {
+        File file = new File(fileName);
+        fileSelecterObjectControl.setValue(file);
+      }
+    }
+    
+    titleObjectControl.setValue(object.getTitle());
+  }
+  
+  private String getPrefixForTag(String tags) {
+    if (tags == null) {
+      return null;
+    }
+    
+    for (FileReferenceTypeInfo fileReferenceTypeInfo: fileReferenceTypeInfos) {
+      if (tags.equals(fileReferenceTypeInfo.tag())) {
+        return fileReferenceTypeInfo.filePathPrefix();
+      }
+    }
+    
+    return null;
+  }
+
+  @Override
+  protected void updateObjectFromControls() throws ObjectEditorException {
+    if (currentFileReferenceTypeInfo != null) {
+      EmfUtil.setFeatureValue(object, TypesPackage.eINSTANCE.getFileReference_Tags(), currentFileReferenceTypeInfo.tag());
+    }
+    EmfUtil.setFeatureValue(object, TypesPackage.eINSTANCE.getFileReference_File(), fileSelecterObjectControl.getPathNameRelativeToPrefix());
+    EmfUtil.setFeatureValue(object, TypesPackage.eINSTANCE.getFileReference_Title(), titleObjectControl.getValue());
+  }
+
+  @Override
+  public String toString() {
+    StringBuilder buf = new StringBuilder();
+    
+    buf.append("File: " + fileSelecterObjectControl.getValue());
+    buf.append("Title: " + titleObjectControl.getValue());
+    buf.append("titledPane: " + titledPane);
+    
+    return buf.toString();
   }
   
   /**
@@ -628,13 +614,6 @@ public class FileReferencePanel extends TitledPane {
      * GUI customization
      */
     private CustomizationFx customization;
-    
-    /**
-     * The list of {@code FileReferencePanel}s to which a newly created panel has to add itself.
-     * <p>
-     * This list is used for reordering the panels via drag and drop.
-     */
-    private List<FileReferencePanel> fileReferencePanels;
     
     
     /*
@@ -654,7 +633,12 @@ public class FileReferencePanel extends TitledPane {
     /**
      * Supplier for the initial folder in the file or folder selecter.
      */
-    private Supplier<String> initialFolderSupplier;
+    private Function<FileReferenceTypeInfo, String> initialFolderSupplier = null;
+    
+    /**
+     * Path prefix.
+     */
+    private String prefix;
     
     /**
      * Information on the types of references to handle.
@@ -667,9 +651,8 @@ public class FileReferencePanel extends TitledPane {
      * 
      * @param customization the GUI customization.
      */
-    public FileReferencePanelBuilder(CustomizationFx customization, List<FileReferencePanel> fileReferencePanels) {
+    public FileReferencePanelBuilder(CustomizationFx customization) {
       this.customization = customization;
-      this.fileReferencePanels = fileReferencePanels;
     }
     
     /**
@@ -696,12 +679,32 @@ public class FileReferencePanel extends TitledPane {
     
     /**
      * Set the initial folder supplier.
+     * 
+     * @param initialFolderSupplier a method to provide an initial folder.
+    * @return this.
      */
-    public FileReferencePanelBuilder setInitialFolderSupplier(Supplier<String> initialFolderSupplier) {
+    public FileReferencePanelBuilder setInitialFolderSupplier(Function<FileReferenceTypeInfo, String> initialFolderSupplier) {
       this.initialFolderSupplier = initialFolderSupplier;
       return this;
     }
+
+    /**
+     * Set a path prefix.
+     * 
+     * @param prefix the file/folder prefix.
+     * @return this.
+     */
+    public FileReferencePanelBuilder setPrefix(String prefix) {
+      this.prefix = prefix;
+      return this;
+    }
     
+    /**
+     * Add one or more reference types.
+     * 
+     * @param fileReferenceTypeInfo
+     * @return this.
+     */
     public FileReferencePanelBuilder addFileReferenceTypes(FileReferenceTypeInfo... fileReferenceTypeInfo) {
       if (fileReferenceTypeInfos == null) {
         fileReferenceTypeInfos = new ArrayList<>();
@@ -715,56 +718,24 @@ public class FileReferencePanel extends TitledPane {
     }
     
     /**
+     * Set the reference types.
+     * 
+     * @param fileReferenceTypeInfos
+     * @return this.
+     */
+    public FileReferencePanelBuilder setFileReferenceTypes(List<FileReferenceTypeInfo> fileReferenceTypeInfos) {
+      this.fileReferenceTypeInfos = fileReferenceTypeInfos;
+      
+      return this;
+    }
+    
+    /**
      * Construct the panel.
      * 
      * @return the created panel.
      */
-    public FileReferencePanel build() {
-      return new FileReferencePanel(this);
+    public FileReferenceEditPanel build() {
+      return FileReferenceEditPanel.newInstance(this);
     }
-  }
+  }  // End of FileReferencePanelBuilder
 }
-
-//class FileReferenceTypeDescriptor implements FileReferenceTypeInfo {
-//  
-//  private String tag;
-//  private String displayName;
-//  private boolean isFolder;
-//  private String prefix;
-//
-//  FileReferenceTypeDescriptor(String tag, String displayName, boolean isFolder, String prefix) {
-//    this.tag = tag;
-//    this.displayName = displayName;
-//    this.isFolder = isFolder;
-//    this.prefix = prefix;
-//  }
-//  
-//  /**
-//   * {@inheritDoc}
-//   */
-//  @Override
-//  public String getTag() {
-//    return tag;
-//  }
-//  
-//  /**
-//   * {@inheritDoc}
-//   */
-//  @Override
-//  public String getDisplayName() {
-//    return displayName;
-//  }
-//  
-//  /**
-//   * {@inheritDoc}
-//   */
-//  @Override
-//  public boolean isFolder() {
-//    return isFolder;
-//  }
-//
-//  @Override
-//  public String getPrefix() {
-//    return prefix;
-//  }
-//}

@@ -93,7 +93,7 @@ public class MortgagesWindow extends JfxStage implements EMFNotificationListener
   private MortgageInfoPanel hypotheekInfoPanel;
 
   public MortgagesWindow(CustomizationFx customization, Rolodex rolodex) {
-    super(null, customization);
+    super(customization, null);
     
     if (FinanRegistry.mortgagesFileName == null) {
       statusLabel.setText(TRANSLATIONS.getString("MortgagesWindow.statusLabel.noMortgagesFileNameMsg"));

@@ -25,7 +25,7 @@ public class FxConcurrentExample1 extends Application
 
     public static void main(String[] args)
     {
-        Application.launch(args);
+        launch(args);
     }
 
     @Override

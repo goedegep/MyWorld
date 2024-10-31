@@ -25,6 +25,10 @@
       <artifactId>goedegep-events-model</artifactId>
     </dependency>
     <dependency>
+      <groupId>goedegep.gpx</groupId>
+      <artifactId>goedegep-gpx-app</artifactId>
+    </dependency>
+    <dependency>
       <groupId>goedegep.jfx</groupId>
       <artifactId>goedegep-jfx</artifactId>
     </dependency>

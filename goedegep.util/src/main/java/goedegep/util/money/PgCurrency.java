@@ -491,8 +491,8 @@ public class PgCurrency implements Comparator<PgCurrency>, Comparable<PgCurrency
   
   @Override
   public String toString() {
-    return ("amount = " + amount.getValue() + ", currency = " + currency +
-        ", factor = " + amount.getFactor());
+    return "amount = " + amount.getValue() + ", currency = " + currency +
+        ", factor = " + amount.getFactor();
   }
   
   /**

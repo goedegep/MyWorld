@@ -62,10 +62,8 @@ public abstract class EObjectTreeCellHelperTemplate<I extends EObjectTreeItem, D
     
     Node cellGraphic = eObjectTreeCell.getGraphic();
     
-    if (cellGraphic == null) {
-      if (graphic != null) {
-        eObjectTreeCell.setGraphic(graphic);
-      }      
+    if (cellGraphic == null  &&  graphic != null) {
+      eObjectTreeCell.setGraphic(graphic);
     }
     
     treeItem = (I) eObjectTreeCell.getTreeItem();

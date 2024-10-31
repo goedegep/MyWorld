@@ -30,9 +30,9 @@ public class DirectoryChangesMonitoringTask extends Task<WatchEvent<Path>> {
     try {
       watchService = FileSystems.getDefault().newWatchService();
       folderPath = Paths.get(folderName);
-      LOGGER.severe("Going to register folder: " + folderPath.toString());
+      LOGGER.info("Going to register folder: " + folderPath.toString());
       WatchKey key = folderPath.register(watchService, ENTRY_CREATE, ENTRY_DELETE, ENTRY_MODIFY);
-      LOGGER.severe("Obtained WatchKey: " + key);
+      LOGGER.info("Obtained WatchKey: " + key);
     } catch (IOException e) {
       e.printStackTrace();
     }

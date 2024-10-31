@@ -10,7 +10,7 @@ import java.util.Objects;
  */
 public class Quarter implements Comparable<Quarter> {
   private final static int NUMBER_OF_MONTHS_IN_QUARTER = 3;
-  java.time.Month m;
+  Month m;
   
   private int year;
   private int quarter;  // 1, 2, 3 or 4

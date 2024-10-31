@@ -31,13 +31,27 @@ class MediumInfoListEditor extends ObjectEditorTemplate<List<MediumInfo>> {
    */
   private GridPane gridPane;
   
+  
+  /**
+   * Factory method to obtain a new instance of a {@code MediumInfoListEditor}.
+   * 
+   * @param customization the GUI customization.
+   * @param mediaDb the media database.
+   * @return a newly created {@code MediumInfoListEditor}.
+   */
+  public static MediumInfoListEditor newInstance(CustomizationFx customization) {
+    MediumInfoListEditor mediumInfoListEditor = new MediumInfoListEditor(customization);
+    mediumInfoListEditor.performInitialization();
+    
+    return mediumInfoListEditor;
+  }
 
   /**
    * Constructor.
    * 
    * @param customization the GUI customization.
    */
-  public MediumInfoListEditor (CustomizationFx customization) {
+  private MediumInfoListEditor (CustomizationFx customization) {
     super(customization, "Medium information editor");
     
     this.customization = customization;
@@ -48,7 +62,7 @@ class MediumInfoListEditor extends ObjectEditorTemplate<List<MediumInfo>> {
    */
   @Override
   protected void configureEditor() {
-    setAddObjectTexts("TODO", "");
+    setAddObjectTexts("No action", "");
     setUpdateObjectTexts("Update medium info", "Update the medium information");
     setNewObjectTexts("New", "Clear the controls to start entering new media information");
   }
@@ -58,13 +72,7 @@ class MediumInfoListEditor extends ObjectEditorTemplate<List<MediumInfo>> {
    */
   @Override
   protected void createControls() {
-    
     mediumInfoObjectControlAggregations = new ArrayList<>();
-  }
-  
-  @Override
-  protected void createAttributeEditDescriptors() {
-    // No action. This implementation doesn't use edit descriptors.
   }
 
   /**
@@ -84,8 +92,8 @@ class MediumInfoListEditor extends ObjectEditorTemplate<List<MediumInfo>> {
    * Add a new {@code MediumInfo}.
    */
   private void addNewMediaInfomation() {
-    MediumInfoObjectControlAggregation mediumInfoObjectControlAggregation = new MediumInfoObjectControlAggregation(customization);
-    mediumInfoObjectControlAggregation.runEditor();
+    MediumInfoObjectControlAggregation mediumInfoObjectControlAggregation = MediumInfoObjectControlAggregation.newInstance(customization);
+    objectControlsGroup.addObjectControlGroup(mediumInfoObjectControlAggregation.getObjectControlsGroup());
     mediumInfoObjectControlAggregations.add(mediumInfoObjectControlAggregation);
     
     redrawMediumInfos();
@@ -134,13 +142,17 @@ class MediumInfoListEditor extends ObjectEditorTemplate<List<MediumInfo>> {
 
   @Override
   protected void fillControlsWithDefaultValues() {
-    // TODO Auto-generated method stub
-    
+    mediumInfoObjectControlAggregations.clear();    
   }
 
   @Override
   protected void fillControlsFromObject() {
-    // TODO Auto-generated method stub
+    for (MediumInfo mediumInfo: object) {
+      addNewMediaInfomation();
+      MediumInfoObjectControlAggregation mediumInfoObjectControlAggregation = mediumInfoObjectControlAggregations.getLast();
+      mediumInfoObjectControlAggregation.setId("medium info "  + mediumInfoObjectControlAggregations.size());
+      mediumInfoObjectControlAggregation.setObject(mediumInfo);
+    }
     
   }
 

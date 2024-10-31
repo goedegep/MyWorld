@@ -186,10 +186,8 @@ public class PhotoMetaDataWithImage implements Serializable, IPhotoMetaDataWithI
       metaDataChangeListener = (observable, oldValue, newValue) -> notifyChangeListeners();
     }
     
-    if (changeListeners.isEmpty()) {
-      if (photoMetaData != null) {
-        photoMetaData.addListener(metaDataChangeListener);
-      }
+    if (changeListeners.isEmpty()  &&  photoMetaData != null) {
+      photoMetaData.addListener(metaDataChangeListener);
     }
     changeListeners.add(changeListener);
   }

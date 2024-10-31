@@ -33,7 +33,7 @@ public class MortgageInterestRateDevelopmentWindow extends JfxStage {
   private VBox chartVBox;
 
   public MortgageInterestRateDevelopmentWindow(CustomizationFx customization, Mortgage mortgage, List<InterestRateSet> interestRateSets) {
-    super("Mortgage interest rate development", customization);
+    super(customization, "Mortgage interest rate development");
     
     this.customization = customization;
     this.mortgage = mortgage;

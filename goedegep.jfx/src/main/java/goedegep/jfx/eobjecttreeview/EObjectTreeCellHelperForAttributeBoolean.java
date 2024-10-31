@@ -61,7 +61,7 @@ public class EObjectTreeCellHelperForAttributeBoolean extends EObjectTreeCellHel
     if (eObjectTreeCell.isEditing()) {
       throw new RuntimeException("Call to updateItem while editing");
     } else {
-      checkBox.setSelected(object != null ? (boolean) object : false);
+      checkBox.setSelected(object != null  &&  (boolean) object);
     }
     
     LOGGER.info("<=");

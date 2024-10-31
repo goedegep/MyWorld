@@ -10,6 +10,10 @@ import org.eclipse.emf.ecore.EObject;
  * A representation of the model object '<em><b>Track</b></em>'.
  * <!-- end-user-doc -->
  *
+ * <!-- begin-model-doc -->
+ * A music track that may appear on one or more albums.
+ * <!-- end-model-doc -->
+ *
  * <p>
  * The following features are supported:
  * </p>
@@ -21,7 +25,6 @@ import org.eclipse.emf.ecore.EObject;
  *   <li>{@link goedegep.media.mediadb.model.Track#getParts <em>Parts</em>}</li>
  *   <li>{@link goedegep.media.mediadb.model.Track#getAuthors <em>Authors</em>}</li>
  *   <li>{@link goedegep.media.mediadb.model.Track#getReferredBy <em>Referred By</em>}</li>
- *   <li>{@link goedegep.media.mediadb.model.Track#getOriginalDisc <em>Original Disc</em>}</li>
  * </ul>
  *
  * @see goedegep.media.mediadb.model.MediadbPackage#getTrack()
@@ -293,57 +296,13 @@ public interface Track extends EObject {
   EList<TrackReference> getReferredBy();
 
   /**
-   * Returns the value of the '<em><b>Original Disc</b></em>' reference.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return the value of the '<em>Original Disc</em>' reference.
-   * @see #isSetOriginalDisc()
-   * @see #unsetOriginalDisc()
-   * @see #setOriginalDisc(Disc)
-   * @see goedegep.media.mediadb.model.MediadbPackage#getTrack_OriginalDisc()
-   * @model unsettable="true"
-   * @generated
-   */
-  Disc getOriginalDisc();
-
-  /**
-   * Sets the value of the '{@link goedegep.media.mediadb.model.Track#getOriginalDisc <em>Original Disc</em>}' reference.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @param value the new value of the '<em>Original Disc</em>' reference.
-   * @see #isSetOriginalDisc()
-   * @see #unsetOriginalDisc()
-   * @see #getOriginalDisc()
-   * @generated
-   */
-  void setOriginalDisc(Disc value);
-
-  /**
-   * Unsets the value of the '{@link goedegep.media.mediadb.model.Track#getOriginalDisc <em>Original Disc</em>}' reference.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #isSetOriginalDisc()
-   * @see #getOriginalDisc()
-   * @see #setOriginalDisc(Disc)
-   * @generated
-   */
-  void unsetOriginalDisc();
-
-  /**
-   * Returns whether the value of the '{@link goedegep.media.mediadb.model.Track#getOriginalDisc <em>Original Disc</em>}' reference is set.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return whether the value of the '<em>Original Disc</em>' reference is set.
-   * @see #unsetOriginalDisc()
-   * @see #getOriginalDisc()
-   * @see #setOriginalDisc(Disc)
-   * @generated
-   */
-  boolean isSetOriginalDisc();
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
+   * <!-- begin-model-doc -->
+   * Get the {@code TrackReference} of the original album.
+   * <p>
+   * This is the 'referred by' {@code TrackReference} which has its {@code originalAlbumTrackReference} set.
+   * <!-- end-model-doc -->
    * @model kind="operation"
    * @generated
    */
@@ -359,5 +318,18 @@ public interface Track extends EObject {
    * @generated
    */
   Artist getTrackArtist();
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * <!-- begin-model-doc -->
+   * Get the {@code Disc} of the original album.
+   * <p>
+   * This is equal to calling {@code getOriginalDiscTrackReference()} followed by calling {@code getDisc()} on the obtained {@code TrackReference} (if it isn't null).
+   * <!-- end-model-doc -->
+   * @model kind="operation"
+   * @generated
+   */
+  Disc getOriginalDisc();
 
 } // Track

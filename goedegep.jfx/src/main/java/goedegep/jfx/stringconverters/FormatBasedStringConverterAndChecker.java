@@ -38,21 +38,20 @@ public class FormatBasedStringConverterAndChecker<T extends Object> extends Stri
   public T fromString(String string) {
     // If the specified value is null or zero-length, return null
     if (string == null) {
-      return (null);
+      return null;
     }
 
     string = string.trim();
 
     if (string.isEmpty()) {
-      return (null);
+      return null;
     }
     
     try {
       // Perform the requested parsing
       return (T) format.parseObject(string);
-    } catch (ParseException ex) {
+    } catch (ParseException ex) { //NOPMD
       // No action
-//      throw new RuntimeException(ex);
     }
 
     return null;

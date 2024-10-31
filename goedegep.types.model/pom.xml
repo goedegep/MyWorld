@@ -3,7 +3,7 @@
   <groupId>goedegep.types</groupId>
   <artifactId>goedegep-types-model</artifactId>
   <packaging>jar</packaging>
-  <name>Goedegep basic type EMF model</name>
+  <name>Goedegep EMF model for basic data types</name>
   <description>This project contains basic types defined with EMF.</description>
   <parent>
     <groupId>goedegep.toplevelpom</groupId>
@@ -34,4 +34,19 @@
       <classifier>win</classifier>
     </dependency>
   </dependencies>
+  <build>
+    <plugins>
+      <plugin>    
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-pmd-plugin</artifactId>
+        <version>3.25.0</version>
+        <executions>
+          <execution>
+            <id>run-pmd</id>
+            <phase/>
+          </execution>    
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
 </project>

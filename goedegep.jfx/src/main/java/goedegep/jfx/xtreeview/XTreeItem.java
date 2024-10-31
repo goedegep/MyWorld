@@ -170,7 +170,7 @@ public class XTreeItem extends TreeItem<XTreeNode> {
   private ObservableList<TreeItem<XTreeNode>> buildChildren() {
     LOGGER.info("=> MutableXTreeNode=" + toString());
     
-    ObservableList<TreeItem<XTreeNode>> children = FXCollections.observableArrayList();;
+    ObservableList<TreeItem<XTreeNode>> children = FXCollections.observableArrayList();
     
     XTreeNode xTreeNode = getValue();
     XTreeNode childXTreeNode = xTreeNode.getFirstChild();
@@ -188,7 +188,7 @@ public class XTreeItem extends TreeItem<XTreeNode> {
   private ObservableList<TreeItem<XTreeNode>> buildRootChildren() {
     LOGGER.info("=> MutableXTreeNode=" + toString());
     
-    ObservableList<TreeItem<XTreeNode>> children = FXCollections.observableArrayList();;
+    ObservableList<TreeItem<XTreeNode>> children = FXCollections.observableArrayList();
     
     XTreeNode xTreeNode = getValue();
     while (xTreeNode != null) {

@@ -24,7 +24,7 @@ public enum ImageSize {
   private int width;
   private int height;
 
-  private ImageSize(int width, int height) {
+  ImageSize(int width, int height) {
     this.width = width;
     this.height = height;
   }

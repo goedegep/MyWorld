@@ -55,7 +55,7 @@ public class ReduceBoundarySizesWindow extends JfxStage {
    * @param location the {@code Location} of which the number of points of the boundaries are to be reduced.
    */
   public ReduceBoundarySizesWindow(CustomizationFx customization, Location location, MapView mapView) {
-    super(WINDOW_TITLE, customization);
+    super(customization, WINDOW_TITLE);
     
     this.location = location;
     this.mapView = mapView;

@@ -25,6 +25,7 @@ import goedegep.media.mediadb.model.MediumInfo;
 import goedegep.media.mediadb.model.MyTrackInfo;
 import goedegep.media.mediadb.model.TrackCollection;
 import goedegep.media.mediadb.model.TrackReference;
+import java.util.Collection;
 
 /**
  * <!-- begin-user-doc -->
@@ -36,7 +37,7 @@ import goedegep.media.mediadb.model.TrackReference;
  * <ul>
  *   <li>{@link goedegep.media.mediadb.model.impl.MyTrackInfoImpl#getIHaveOn <em>IHave On</em>}</li>
  *   <li>{@link goedegep.media.mediadb.model.impl.MyTrackInfoImpl#getIWant <em>IWant</em>}</li>
- *   <li>{@link goedegep.media.mediadb.model.impl.MyTrackInfoImpl#getCompilationTrackReference <em>Compilation Track Reference</em>}</li>
+ *   <li>{@link goedegep.media.mediadb.model.impl.MyTrackInfoImpl#getTrackReference <em>Track Reference</em>}</li>
  * </ul>
  *
  * @generated
@@ -85,23 +86,22 @@ public class MyTrackInfoImpl extends MinimalEObjectImpl.Container implements MyT
   protected boolean iWantESet;
 
   /**
-   * The cached value of the '{@link #getCompilationTrackReference() <em>Compilation Track Reference</em>}' reference.
+   * The cached value of the '{@link #getTrackReference() <em>Track Reference</em>}' reference.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see #getCompilationTrackReference()
+   * @see #getTrackReference()
    * @generated
    * @ordered
    */
-  protected TrackReference compilationTrackReference;
-
+  protected TrackReference trackReference;
   /**
-   * This is true if the Compilation Track Reference reference has been set.
+   * This is true if the Track Reference reference has been set.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  protected boolean compilationTrackReferenceESet;
+  protected boolean trackReferenceESet;
 
   /**
    * <!-- begin-user-doc -->
@@ -215,18 +215,17 @@ public class MyTrackInfoImpl extends MinimalEObjectImpl.Container implements MyT
    * @generated
    */
   @Override
-  public TrackReference getCompilationTrackReference() {
-    if (compilationTrackReference != null && compilationTrackReference.eIsProxy()) {
-      InternalEObject oldCompilationTrackReference = (InternalEObject) compilationTrackReference;
-      compilationTrackReference = (TrackReference) eResolveProxy(oldCompilationTrackReference);
-      if (compilationTrackReference != oldCompilationTrackReference) {
+  public TrackReference getTrackReference() {
+    if (trackReference != null && trackReference.eIsProxy()) {
+      InternalEObject oldTrackReference = (InternalEObject) trackReference;
+      trackReference = (TrackReference) eResolveProxy(oldTrackReference);
+      if (trackReference != oldTrackReference) {
         if (eNotificationRequired())
-          eNotify(new ENotificationImpl(this, Notification.RESOLVE,
-              MediadbPackage.MY_TRACK_INFO__COMPILATION_TRACK_REFERENCE, oldCompilationTrackReference,
-              compilationTrackReference));
+          eNotify(new ENotificationImpl(this, Notification.RESOLVE, MediadbPackage.MY_TRACK_INFO__TRACK_REFERENCE,
+              oldTrackReference, trackReference));
       }
     }
-    return compilationTrackReference;
+    return trackReference;
   }
 
   /**
@@ -234,8 +233,8 @@ public class MyTrackInfoImpl extends MinimalEObjectImpl.Container implements MyT
    * <!-- end-user-doc -->
    * @generated
    */
-  public TrackReference basicGetCompilationTrackReference() {
-    return compilationTrackReference;
+  public TrackReference basicGetTrackReference() {
+    return trackReference;
   }
 
   /**
@@ -244,14 +243,14 @@ public class MyTrackInfoImpl extends MinimalEObjectImpl.Container implements MyT
    * @generated
    */
   @Override
-  public void setCompilationTrackReference(TrackReference newCompilationTrackReference) {
-    TrackReference oldCompilationTrackReference = compilationTrackReference;
-    compilationTrackReference = newCompilationTrackReference;
-    boolean oldCompilationTrackReferenceESet = compilationTrackReferenceESet;
-    compilationTrackReferenceESet = true;
+  public void setTrackReference(TrackReference newTrackReference) {
+    TrackReference oldTrackReference = trackReference;
+    trackReference = newTrackReference;
+    boolean oldTrackReferenceESet = trackReferenceESet;
+    trackReferenceESet = true;
     if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, MediadbPackage.MY_TRACK_INFO__COMPILATION_TRACK_REFERENCE,
-          oldCompilationTrackReference, compilationTrackReference, !oldCompilationTrackReferenceESet));
+      eNotify(new ENotificationImpl(this, Notification.SET, MediadbPackage.MY_TRACK_INFO__TRACK_REFERENCE,
+          oldTrackReference, trackReference, !oldTrackReferenceESet));
   }
 
   /**
@@ -260,14 +259,14 @@ public class MyTrackInfoImpl extends MinimalEObjectImpl.Container implements MyT
    * @generated
    */
   @Override
-  public void unsetCompilationTrackReference() {
-    TrackReference oldCompilationTrackReference = compilationTrackReference;
-    boolean oldCompilationTrackReferenceESet = compilationTrackReferenceESet;
-    compilationTrackReference = null;
-    compilationTrackReferenceESet = false;
+  public void unsetTrackReference() {
+    TrackReference oldTrackReference = trackReference;
+    boolean oldTrackReferenceESet = trackReferenceESet;
+    trackReference = null;
+    trackReferenceESet = false;
     if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.UNSET, MediadbPackage.MY_TRACK_INFO__COMPILATION_TRACK_REFERENCE,
-          oldCompilationTrackReference, null, oldCompilationTrackReferenceESet));
+      eNotify(new ENotificationImpl(this, Notification.UNSET, MediadbPackage.MY_TRACK_INFO__TRACK_REFERENCE,
+          oldTrackReference, null, oldTrackReferenceESet));
   }
 
   /**
@@ -276,8 +275,8 @@ public class MyTrackInfoImpl extends MinimalEObjectImpl.Container implements MyT
    * @generated
    */
   @Override
-  public boolean isSetCompilationTrackReference() {
-    return compilationTrackReferenceESet;
+  public boolean isSetTrackReference() {
+    return trackReferenceESet;
   }
 
   /**
@@ -306,10 +305,10 @@ public class MyTrackInfoImpl extends MinimalEObjectImpl.Container implements MyT
       return getIHaveOn();
     case MediadbPackage.MY_TRACK_INFO__IWANT:
       return getIWant();
-    case MediadbPackage.MY_TRACK_INFO__COMPILATION_TRACK_REFERENCE:
+    case MediadbPackage.MY_TRACK_INFO__TRACK_REFERENCE:
       if (resolve)
-        return getCompilationTrackReference();
-      return basicGetCompilationTrackReference();
+        return getTrackReference();
+      return basicGetTrackReference();
     }
     return super.eGet(featureID, resolve, coreType);
   }
@@ -325,13 +324,13 @@ public class MyTrackInfoImpl extends MinimalEObjectImpl.Container implements MyT
     switch (featureID) {
     case MediadbPackage.MY_TRACK_INFO__IHAVE_ON:
       getIHaveOn().clear();
-      getIHaveOn().addAll((java.util.Collection<? extends MediumInfo>) newValue);
+      getIHaveOn().addAll((Collection<? extends MediumInfo>) newValue);
       return;
     case MediadbPackage.MY_TRACK_INFO__IWANT:
       setIWant((IWant) newValue);
       return;
-    case MediadbPackage.MY_TRACK_INFO__COMPILATION_TRACK_REFERENCE:
-      setCompilationTrackReference((TrackReference) newValue);
+    case MediadbPackage.MY_TRACK_INFO__TRACK_REFERENCE:
+      setTrackReference((TrackReference) newValue);
       return;
     }
     super.eSet(featureID, newValue);
@@ -351,8 +350,8 @@ public class MyTrackInfoImpl extends MinimalEObjectImpl.Container implements MyT
     case MediadbPackage.MY_TRACK_INFO__IWANT:
       unsetIWant();
       return;
-    case MediadbPackage.MY_TRACK_INFO__COMPILATION_TRACK_REFERENCE:
-      unsetCompilationTrackReference();
+    case MediadbPackage.MY_TRACK_INFO__TRACK_REFERENCE:
+      unsetTrackReference();
       return;
     }
     super.eUnset(featureID);
@@ -370,8 +369,8 @@ public class MyTrackInfoImpl extends MinimalEObjectImpl.Container implements MyT
       return isSetIHaveOn();
     case MediadbPackage.MY_TRACK_INFO__IWANT:
       return isSetIWant();
-    case MediadbPackage.MY_TRACK_INFO__COMPILATION_TRACK_REFERENCE:
-      return isSetCompilationTrackReference();
+    case MediadbPackage.MY_TRACK_INFO__TRACK_REFERENCE:
+      return isSetTrackReference();
     }
     return super.eIsSet(featureID);
   }
@@ -392,8 +391,8 @@ public class MyTrackInfoImpl extends MinimalEObjectImpl.Container implements MyT
     buf.append(isSetIHaveOn() ? getIHaveOn().toString() : "<no-ihave-on>").append(NEWLINE);
 
     buf.append("  trackReference: ");
-    if (isSetCompilationTrackReference()) {
-      TrackReference trackReference = getCompilationTrackReference();
+    if (isSetTrackReference()) {
+      TrackReference trackReference = getTrackReference();
       EObject eContainer = trackReference.eContainer();
       if (eContainer instanceof Disc) {
         Disc disc = (Disc) eContainer;

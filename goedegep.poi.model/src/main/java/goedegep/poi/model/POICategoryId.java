@@ -820,7 +820,23 @@ public enum POICategoryId implements Enumerator {
    * @generated
    * @ordered
    */
-  ISLAND(87, "ISLAND", "Island");
+  ISLAND(87, "ISLAND", "Island"), /**
+   * The '<em><b>CABLE CAR</b></em>' literal object.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #CABLE_CAR_VALUE
+   * @generated
+   * @ordered
+   */
+  CABLE_CAR(88, "CABLE_CAR", "Cable car"), /**
+   * The '<em><b>CAFE</b></em>' literal object.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #CAFE_VALUE
+   * @generated
+   * @ordered
+   */
+  CAFE(89, "CAFE", "Cafe");
 
   /**
    * The '<em><b>AMUSEMENT</b></em>' literal value.
@@ -2067,6 +2083,28 @@ public enum POICategoryId implements Enumerator {
   public static final int ISLAND_VALUE = 87;
 
   /**
+   * The '<em><b>CABLE CAR</b></em>' literal value.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #CABLE_CAR
+   * @model literal="Cable car"
+   * @generated
+   * @ordered
+   */
+  public static final int CABLE_CAR_VALUE = 88;
+
+  /**
+   * The '<em><b>CAFE</b></em>' literal value.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #CAFE
+   * @model literal="Cafe"
+   * @generated
+   * @ordered
+   */
+  public static final int CAFE_VALUE = 89;
+
+  /**
    * An array of all the '<em><b>Category Id</b></em>' enumerators.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -2162,6 +2200,8 @@ public enum POICategoryId implements Enumerator {
       BUS_STOP,
       ZOO,
       ISLAND,
+      CABLE_CAR,
+      CAFE,
     };
 
   /**
@@ -2306,6 +2346,8 @@ public enum POICategoryId implements Enumerator {
       case BUS_STOP_VALUE: return BUS_STOP;
       case ZOO_VALUE: return ZOO;
       case ISLAND_VALUE: return ISLAND;
+      case CABLE_CAR_VALUE: return CABLE_CAR;
+      case CAFE_VALUE: return CAFE;
     }
     return null;
   }

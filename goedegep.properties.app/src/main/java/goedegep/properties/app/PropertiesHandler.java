@@ -3,6 +3,8 @@ package goedegep.properties.app;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.lang.reflect.Field;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.logging.Logger;
 
 import goedegep.properties.model.PropertiesFactory;
@@ -87,12 +89,14 @@ public class PropertiesHandler {
           resourceFileName = createResourcePath(runningInEclipse, projectPath, customPropertiesFileName, true);
           LOGGER.info("resourceFileName: " + resourceFileName);
           customPropertiesFileField.set(customPropertiesFileField, resourceFileName);
-          try {
-            PropertyGroup propertyGroup = propertiesResource.load(resourceFileName);
-            updateRegistryGroup(registryClass, propertyGroup, propertyDescriptorGroup);
-//            LOGGER.info(ClassUtil.staticFieldsToString(registryClass));
-          } catch (FileNotFoundException e) {
-            // It's not mandatory to have a custom settings file.
+          if (Files.exists(Paths.get(resourceFileName))) {
+            try {
+              PropertyGroup propertyGroup = propertiesResource.load(resourceFileName);
+              updateRegistryGroup(registryClass, propertyGroup, propertyDescriptorGroup);
+              //            LOGGER.info(ClassUtil.staticFieldsToString(registryClass));
+            } catch (FileNotFoundException e) {
+              e.printStackTrace();
+            }
           }
         }
       } catch (SecurityException | IllegalArgumentException | IllegalAccessException e) {

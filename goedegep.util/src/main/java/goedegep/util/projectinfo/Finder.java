@@ -59,12 +59,16 @@ public class Finder extends SimpleFileVisitor<Path> {
   }
   
   public int countLines(String filename) throws IOException {
-    LineNumberReader reader  = new LineNumberReader(new FileReader(filename));
     int cnt = 0;
-    while ((reader.readLine()) != null) {}
+    try (LineNumberReader reader  = new LineNumberReader(new FileReader(filename))) {
+      String line;
+      do {
+        line = reader.readLine();
+      } while (line != null);
 
-    cnt = reader.getLineNumber(); 
-    reader.close();
+      cnt = reader.getLineNumber(); 
+      reader.close();
+    }
     return cnt;
   }
 }

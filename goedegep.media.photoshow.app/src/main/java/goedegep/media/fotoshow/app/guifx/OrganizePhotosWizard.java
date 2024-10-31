@@ -31,14 +31,14 @@ public class OrganizePhotosWizard extends Dialog<ButtonType> {
     
     initOwner(ownerWindow);
     
-    createGUI(customization, ownerWindow);
+    createGUI(customization);
     setResizable(true);
   }
     
   /*
    * Create the GUI.
    */
-  private void createGUI(CustomizationFx customization, Stage ownerWindow) {
+  private void createGUI(CustomizationFx customization) {
     WebView webView = new WebView();
     webView.getEngine().loadContent("<div style=\"background-color:" + JfxUtil.colorToCssString(customization.getLook().getPanelBackgroundColor()) + "\">" +
                                     "This step, organizing your photos, is to be done outside of this program.</br>" +

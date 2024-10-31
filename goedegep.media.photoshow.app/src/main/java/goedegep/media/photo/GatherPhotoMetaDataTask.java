@@ -85,11 +85,8 @@ public class GatherPhotoMetaDataTask extends Task<Tuplet<String, List<PhotoMetaD
    */
   @Override
   protected Tuplet<String, List<PhotoMetaData>> call() throws Exception {
-    LOGGER.info("=>");
-    
     handleFolder(Paths.get(photosFolder));
     
-    LOGGER.severe("<=");
     return null;
   }
   
@@ -102,10 +99,8 @@ public class GatherPhotoMetaDataTask extends Task<Tuplet<String, List<PhotoMetaD
     
     // Report the information back to the application.
     Tuplet<String, List<PhotoMetaData>> photoFolderInfo = new Tuplet<>(photoFolderName, photoInfoList);
-    updateMessage("Information gathered for " + totalNumberOfPhotos + " photos from folder " + photoFolderName);
+    updateMessage("Information gathered for " + totalNumberOfPhotos + " photos from folder " + photoFolderName + ". (" + photosWithoutCoordinates + " photos without coordinates");
     updateValue(photoFolderInfo);
-    LOGGER.info("Finished handling folder: " + photoFolderName + ", photos found: " + totalNumberOfPhotos + ", photosWithoutCoordinates: " + photosWithoutCoordinates);
-//    Thread.sleep(100);
     
     // Next recurse into all subfolders
     try (DirectoryStream<Path> stream = Files.newDirectoryStream(photoFolder)) {
@@ -127,39 +122,9 @@ public class GatherPhotoMetaDataTask extends Task<Tuplet<String, List<PhotoMetaD
         }
       }
     } catch (IOException | DirectoryIteratorException x) {
-      System.err.println(x);
+      x.printStackTrace();
     }
     
-  }
-  
-  /**
-   * Count the number of photos in a folder.
-   * <p>
-   * This method counts the number of files in the specified folder, which have a supported file extension.
-   * 
-   * @param photoFolder the folder in which to count the photos
-   * @return the number of photos in folder {@code photoFolder}.
-   */
-  private int getNumberOfPhotosInFolder(Path photoFolder) {
-    int numberOfPhotos = 0;
-    
-    try (DirectoryStream<Path> stream = Files.newDirectoryStream(photoFolder)) {
-
-      for (Path checkDirectory: stream) {
-        if (!Files.isDirectory(checkDirectory)) {
-          String fileExtension = FileUtils.getFileExtension(checkDirectory);
-          LOGGER.fine("extensie: " + fileExtension);
-          if (supportedFileTypes.contains(fileExtension.toLowerCase())) {
-            // it is a supported picture file.
-            numberOfPhotos++;
-          }
-        }
-      }
-    } catch (IOException | DirectoryIteratorException x) {
-      System.err.println(x);
-    }
-    
-    return numberOfPhotos;
   }
   
   /**
@@ -181,8 +146,7 @@ public class GatherPhotoMetaDataTask extends Task<Tuplet<String, List<PhotoMetaD
       for (Path checkDirectory: stream) {
         if (!Files.isDirectory(checkDirectory)) {
           String fileExtension = FileUtils.getFileExtension(checkDirectory);
-          LOGGER.fine("extensie: " + fileExtension);
-          if (supportedFileTypes.contains(fileExtension.toLowerCase())) {
+           if (supportedFileTypes.contains(fileExtension.toLowerCase())) {
             // it is a supported picture file.
             PhotoMetaData photoMetaData = createPhotoMetaData(checkDirectory.toAbsolutePath().toString());
             if (photoMetaData.getCoordinates() == null) {
@@ -214,8 +178,6 @@ public class GatherPhotoMetaDataTask extends Task<Tuplet<String, List<PhotoMetaD
    * @return all needed information about the photo
    */
   public static PhotoMetaData createPhotoMetaData(String fileName) {
-//    LOGGER.severe("=> fileName=" + fileName);
-    
     PhotoMetaData photoMetaData = new PhotoMetaData();
 
     photoMetaData.setFileName(fileName);
@@ -228,14 +190,11 @@ public class GatherPhotoMetaDataTask extends Task<Tuplet<String, List<PhotoMetaD
       photoMetaData.setApproximateGPScoordinates(photoFileMetaDataHandler.hasApproximateCoordinates());
     } catch (ImageReadException e) {
       LOGGER.severe("ImageReadException while reading file " + fileName + ", message: " + e.getMessage());
-//      e.printStackTrace();
     } catch (IOException e) {
       LOGGER.severe("IOException while reading file " + fileName + ", message: " + e.getMessage());
-//      e.printStackTrace();
     }
     photoMetaData.setModificationDateTime(FileUtils.getLastModificationDate(new File(fileName)));
 
-    LOGGER.info("<=");
     return photoMetaData;
   }
 }

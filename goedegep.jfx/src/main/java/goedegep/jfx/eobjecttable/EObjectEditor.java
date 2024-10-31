@@ -4,6 +4,6 @@ import org.eclipse.emf.ecore.EObject;
 
 public interface EObjectEditor<T extends EObject> {
   
-  public void setEObject(T eObject);
+  void setEObject(T eObject);
   
 }

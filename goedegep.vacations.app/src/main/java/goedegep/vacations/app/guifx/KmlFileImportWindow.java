@@ -207,7 +207,7 @@ public class KmlFileImportWindow extends JfxStage {
    * @param nominatimAPI a {@code NominatimAPI} to retrieve location information from
    */
   public KmlFileImportWindow(CustomizationFx customization, VacationsWindow vacationsWindow, POIIcons poiIcons, NominatimAPI nominatimAPI) {
-    super(WINDOW_TITLE, customization);
+    super(customization, WINDOW_TITLE);
 
     this.customization = customization;
     this.vacationsWindow = vacationsWindow;
@@ -765,6 +765,7 @@ public class KmlFileImportWindow extends JfxStage {
     private String createLegalFileName(String name) {
       name = name.replace("|", ",");
       name = name.replace("\"", "'");
+      name = name.replace("/", "-");
       
       return name;
     }

@@ -20,6 +20,7 @@ public class ObjectControlLocalDate extends ObjectControlTextField<LocalDate> {
   /**
    * Constructor.
    * 
+   * @param customization the GUI customization
    * @param localDate initial value.
    * @param width The width of the TextField
    * @param isOptional Indicates whether the control is optional (if true) or mandatory.
@@ -39,7 +40,7 @@ public class ObjectControlLocalDate extends ObjectControlTextField<LocalDate> {
     
     try {
       localDate = LocalDate.parse(valueAsString, DTF);
-    } catch (DateTimeParseException e) {
+    } catch (DateTimeParseException e) {  //NOPMD
       // No action
     }
     

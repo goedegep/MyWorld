@@ -59,7 +59,7 @@ public class MediaMenuWindow extends JfxStage {
    * @param customization GUI customization.
    */
   public MediaMenuWindow(CustomizationFx customization) {
-    super(WINDOW_TITLE, customization);
+    super(customization, WINDOW_TITLE);
     
     this.customization = customization;
     componentFactory = getComponentFactory();

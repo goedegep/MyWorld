@@ -49,7 +49,7 @@ public class ObservableEList<T> implements ObservableList<T> {
    * @param list
    */
   @SuppressWarnings("unchecked")
-  public ObservableEList(boolean dummy, EObject containingObject, EReference eReference) {
+  public ObservableEList(EObject containingObject, EReference eReference) {
     this.containingObject = containingObject;
     Object referredObject = containingObject.eGet(eReference);
     if (!(referredObject instanceof EList)) {
@@ -261,7 +261,14 @@ public class ObservableEList<T> implements ObservableList<T> {
   @SuppressWarnings("unchecked")
   @Override
   public <S> S[] toArray(S[] array) {
-    return (S[]) eList.toArray();
+    if (array != null  &&  array.length >= eList.size()) {
+      for (int i = 0; i < eList.size(); i++) {
+        array[i] = (S) eList.get(i);
+      }
+      return array;
+    } else {
+      return (S[]) eList.toArray();   //NOPMD
+    }
   }
 
   @Override

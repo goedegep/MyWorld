@@ -184,7 +184,7 @@ public abstract class XTreeNodeAbstract implements XTreeNode {
         return getIntegerData() == node.getIntegerData();
 
       case STRING:
-        return (getStringData().compareTo(node.getStringData()) == 0);
+        return getStringData().compareTo(node.getStringData()) == 0;
 
       case BLOB:
         return Arrays.equals(getBlobData(), node.getBlobData());
@@ -194,6 +194,14 @@ public abstract class XTreeNodeAbstract implements XTreeNode {
     } else {
       return false;
     }
+  }
+  
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public int hashCode() {
+    return getDataType().hashCode();
   }
   
   @Override

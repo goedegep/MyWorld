@@ -3,7 +3,6 @@ package goedegep.invandprop.app.guifx;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.logging.Logger;
@@ -16,10 +15,7 @@ import goedegep.invandprop.model.Invoice;
 import goedegep.invandprop.model.InvoiceItem;
 import goedegep.invandprop.model.InvoicesAndProperties;
 import goedegep.invandprop.model.Property;
-import goedegep.jfx.ComponentFactoryFx;
 import goedegep.jfx.CustomizationFx;
-import goedegep.jfx.FileReferencePanel;
-import goedegep.jfx.eobjecteditor.EObjectAttributeEditDescriptor;
 import goedegep.jfx.objectcontrols.ObjectControl;
 import goedegep.jfx.objectcontrols.ObjectControlBoolean;
 import goedegep.jfx.objectcontrols.ObjectControlCurrency;
@@ -28,11 +24,14 @@ import goedegep.jfx.objectcontrols.ObjectControlGroup;
 import goedegep.jfx.objectcontrols.ObjectControlString;
 import goedegep.jfx.objecteditor.EditMode;
 import goedegep.jfx.objecteditor.EditStatus;
+import goedegep.jfx.objecteditor.FileReferenceEditPanel;
+import goedegep.jfx.objecteditor.FileReferenceTypeInfo;
 import goedegep.jfx.objecteditor.ObjectEditorTemplate;
 import goedegep.types.model.FileReference;
 import goedegep.types.model.TypesFactory;
 import goedegep.util.Debug;
 import goedegep.util.PgUtilities;
+import goedegep.util.emf.EmfUtil;
 import goedegep.util.money.PgCurrency;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -71,11 +70,6 @@ public class InvoiceAndPropertyEditor extends ObjectEditorTemplate<Invoice> {
   private static final InvAndPropFactory INVOICES_AND_PROPERTIES_FACTORY = InvAndPropFactory.eINSTANCE;
   private static final InvAndPropPackage INVOICES_AND_PROPERTIES_PACKAGE = InvAndPropPackage.eINSTANCE;
   
-
-  /**
-   * The GUI customization
-   */
-  private CustomizationFx customization;
     
   /**
    * The invoices and properties to which new invoices and properties will be added.
@@ -83,24 +77,9 @@ public class InvoiceAndPropertyEditor extends ObjectEditorTemplate<Invoice> {
   private InvoicesAndProperties invoicesAndProperties;
   
   /**
-   * Factory used to create all GUI elements
-   */
-  private ComponentFactoryFx componentFactory;
-    
-  /**
    * ObjectControlGroup used to check the validity of the property controls.
    */
   private ObjectControlGroup propertyObjectControlsGroup;
-  
-  /**
-   * Attribute Edit Descriptors used for the controls of the invoice part of this editor.
-   */
-  private List<EObjectAttributeEditDescriptor> invoiceAttributeEditDescriptors;
-  
-  /**
-   * Attribute Edit Descriptors used for the controls of the property part of this editor.
-   */
-  private List<EObjectAttributeEditDescriptor> propertyAttributeEditDescriptors;
   
   /**
    * List of panels, one for each invoice item.
@@ -138,7 +117,7 @@ public class InvoiceAndPropertyEditor extends ObjectEditorTemplate<Invoice> {
   /**
    * List of panels, one for each document reference.
    */
-  private ObservableList<FileReferencePanel> documentReferencePanels;
+  private ObservableList<FileReferenceEditPanel> documentReferencePanels;
   
   /**
    * The box which contains the document reference panels.
@@ -148,7 +127,7 @@ public class InvoiceAndPropertyEditor extends ObjectEditorTemplate<Invoice> {
   /**
    * List of panels, one for each picture reference.
    */
-  private ObservableList<FileReferencePanel> pictureReferencePanels;
+  private ObservableList<FileReferenceEditPanel> pictureReferencePanels;
   
   /**
    * The box which contains the picture references.
@@ -167,28 +146,39 @@ public class InvoiceAndPropertyEditor extends ObjectEditorTemplate<Invoice> {
   
   
   /**
+   * Factory method to obtain a new instance of an {@code InvoiceAndPropertyEditor}.
+   * 
+   * @param Customization the GUI customization.
+   * @param invoicesAndProperties The invoices and properties to which new invoices and properties will be added.
+   * @return a newly created {@code InvoiceAndPropertyEditor}.
+   */
+  public static InvoiceAndPropertyEditor newInstance(CustomizationFx customization, InvoicesAndProperties invoicesAndProperties) {
+    InvoiceAndPropertyEditor invoiceAndPropertyEditor = new InvoiceAndPropertyEditor(customization, invoicesAndProperties);
+    invoiceAndPropertyEditor.performInitialization();
+    
+    return invoiceAndPropertyEditor;
+  }
+  
+  /**
    * Constructor.
   * 
    * @param Customization the GUI customization.
    * @param invoicesAndProperties The invoices and properties to which new invoices and properties will be added.
    */
-  public InvoiceAndPropertyEditor(CustomizationFx customization, InvoicesAndProperties invoicesAndProperties) {
+  private InvoiceAndPropertyEditor(CustomizationFx customization, InvoicesAndProperties invoicesAndProperties) {
     super(customization, WINDOW_TITLE);
     
     Objects.requireNonNull(customization, "argument ‘customization’ must not be null");
     Objects.requireNonNull(invoicesAndProperties, "argument ‘invoicesAndProperties’ must not be null");
             
-    this.customization = customization;
     this.invoicesAndProperties = invoicesAndProperties;
-    
-    componentFactory = customization.getComponentFactoryFx();
   }
   
   /**
    * {@inheritDoc}
    */
   @Override
-  public void setObject(Invoice invoice, boolean checkOnUnsavedChanges) {
+  public void setObject(Invoice invoice, boolean checkOnUnsavedChanges, boolean newObject) {
     if (checkOnUnsavedChanges  &&  !getUserConfirmationInCaseOfUnsavedChanges()) {
       return;
     }
@@ -294,6 +284,7 @@ public class InvoiceAndPropertyEditor extends ObjectEditorTemplate<Invoice> {
    */
   @Override
   protected void createControls() {
+//    createAttributeEditDescriptors();
     
     invoiceDateObjectControl = componentFactory.createObjectControlFlexDate(null, 150.0, true, "the invoice date");
     invoiceDateObjectControl.setId("InvoiceDate");
@@ -307,6 +298,7 @@ public class InvoiceAndPropertyEditor extends ObjectEditorTemplate<Invoice> {
     invoiceRemarksObjectControl.setId("InvoiceRemarks");
     invoiceDescriptionFromPropertyObjectControl = componentFactory.createObjectControlBoolean(null, false, true, "If set, the description will be derived from the related property");
     invoiceDescriptionFromPropertyObjectControl.setId("InvoiceDescriptionFromProperty");
+    invoiceDescriptionFromPropertyObjectControl.addListener((e) -> handleChanges());
     
     invoiceItemPanels = FXCollections.observableArrayList();
         
@@ -351,32 +343,6 @@ public class InvoiceAndPropertyEditor extends ObjectEditorTemplate<Invoice> {
         propertyArchiveObjectControl
     );
 
-  }
-  
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  protected void createAttributeEditDescriptors() {
-    
-    invoiceAttributeEditDescriptors = new ArrayList<>();
-    invoiceAttributeEditDescriptors.add(new EObjectAttributeEditDescriptor("Date", invoiceDateObjectControl, INVOICES_AND_PROPERTIES_PACKAGE.getInvoice_Date()));
-    invoiceAttributeEditDescriptors.add(new EObjectAttributeEditDescriptor("Company", invoiceCompanyObjectControl, INVOICES_AND_PROPERTIES_PACKAGE.getInvoice_Company()));
-    invoiceAttributeEditDescriptors.add(new EObjectAttributeEditDescriptor("Description", invoiceDescriptionObjectControl, INVOICES_AND_PROPERTIES_PACKAGE.getExpenditure_Description()));
-    invoiceAttributeEditDescriptors.add(new EObjectAttributeEditDescriptor("Amount", invoiceAmountObjectControl, INVOICES_AND_PROPERTIES_PACKAGE.getExpenditure_Amount()));
-    invoiceAttributeEditDescriptors.add(new EObjectAttributeEditDescriptor("Remarks", invoiceRemarksObjectControl, INVOICES_AND_PROPERTIES_PACKAGE.getExpenditure_Remarks()));
-    invoiceAttributeEditDescriptors.add(new EObjectAttributeEditDescriptor("Derive description from property", invoiceDescriptionFromPropertyObjectControl, INVOICES_AND_PROPERTIES_PACKAGE.getExpenditure_DescriptionFromProperty()));    
- 
-    propertyAttributeEditDescriptors = new ArrayList<>();
-    propertyAttributeEditDescriptors.add(new EObjectAttributeEditDescriptor("Description", propertyDescriptionObjectControl, INVOICES_AND_PROPERTIES_PACKAGE.getProperty_Description()));
-    propertyAttributeEditDescriptors.add(new EObjectAttributeEditDescriptor("Brand", propertyBrandObjectControl, INVOICES_AND_PROPERTIES_PACKAGE.getProperty_Brand()));
-    propertyAttributeEditDescriptors.add(new EObjectAttributeEditDescriptor("Type", propertyTypeObjectControl, INVOICES_AND_PROPERTIES_PACKAGE.getProperty_Type()));
-    propertyAttributeEditDescriptors.add(new EObjectAttributeEditDescriptor("Serial number", propertySerialNumberObjectControl, INVOICES_AND_PROPERTIES_PACKAGE.getProperty_SerialNumber()));
-    propertyAttributeEditDescriptors.add(new EObjectAttributeEditDescriptor("Remarks", propertyRemarksObjectControl, INVOICES_AND_PROPERTIES_PACKAGE.getProperty_Remarks()));
-    propertyAttributeEditDescriptors.add(new EObjectAttributeEditDescriptor("From", propertyFromDateObjectControl, INVOICES_AND_PROPERTIES_PACKAGE.getProperty_FromDate()));
-    propertyAttributeEditDescriptors.add(new EObjectAttributeEditDescriptor("Until", propertyUntilDateObjectControl, INVOICES_AND_PROPERTIES_PACKAGE.getProperty_UntilDate()));
-    propertyAttributeEditDescriptors.add(new EObjectAttributeEditDescriptor("Archive", propertyArchiveObjectControl, INVOICES_AND_PROPERTIES_PACKAGE.getProperty_Archive()));
-    
   }
     
   /**
@@ -468,16 +434,13 @@ public class InvoiceAndPropertyEditor extends ObjectEditorTemplate<Invoice> {
    * {@inheritDoc}
    */
   @Override
-  protected void updateObjectFromControls() {
-
-    for (EObjectAttributeEditDescriptor eObjectAttributeEditDescriptor: invoiceAttributeEditDescriptors) {
-      ObjectControl<?> objectInput = eObjectAttributeEditDescriptor.getObjectControl();
-      if (objectInput.isFilledIn()) {
-        Object value;
-        value = objectInput.getValue();
-        object.eSet(eObjectAttributeEditDescriptor.getStructuralFeature(), value);
-      }
-    }
+  protected void updateObjectFromControls() {    
+    EmfUtil.setFeatureValue(object, INVOICES_AND_PROPERTIES_PACKAGE.getInvoice_Date(), invoiceDateObjectControl.getValue());
+    EmfUtil.setFeatureValue(object, INVOICES_AND_PROPERTIES_PACKAGE.getInvoice_Company(), invoiceCompanyObjectControl.getValue());
+    EmfUtil.setFeatureValue(object, INVOICES_AND_PROPERTIES_PACKAGE.getExpenditure_Description(), invoiceDescriptionObjectControl.getValue());
+    EmfUtil.setFeatureValue(object, INVOICES_AND_PROPERTIES_PACKAGE.getExpenditure_Amount(), invoiceAmountObjectControl.getValue());
+    EmfUtil.setFeatureValue(object, INVOICES_AND_PROPERTIES_PACKAGE.getExpenditure_Remarks(), invoiceRemarksObjectControl.getValue());
+    EmfUtil.setFeatureValue(object, INVOICES_AND_PROPERTIES_PACKAGE.getExpenditure_DescriptionFromProperty(), invoiceDescriptionFromPropertyObjectControl.getValue());
 
     updateInvoiceItemsFromInvoiceItemPanels();
   }
@@ -556,14 +519,14 @@ public class InvoiceAndPropertyEditor extends ObjectEditorTemplate<Invoice> {
    * Update the {@code property} from the controls.
    */
   private void updatePropertyFromControls() {
-    
-    for (EObjectAttributeEditDescriptor eObjectAttributeEditDescriptor: propertyAttributeEditDescriptors) {
-      ObjectControl<?> objectControl = (ObjectControl<?>) eObjectAttributeEditDescriptor.getObjectControl();
-      if (objectControl.isFilledIn()) {
-        Object value = objectControl.getValue();
-        property.eSet(eObjectAttributeEditDescriptor.getStructuralFeature(), value);
-      }
-    }
+    EmfUtil.setFeatureValue(property, INVOICES_AND_PROPERTIES_PACKAGE.getProperty_Description(), propertyDescriptionObjectControl.getValue());
+    EmfUtil.setFeatureValue(property, INVOICES_AND_PROPERTIES_PACKAGE.getProperty_Brand(), propertyBrandObjectControl.getValue());
+    EmfUtil.setFeatureValue(property, INVOICES_AND_PROPERTIES_PACKAGE.getProperty_Type(), propertyTypeObjectControl.getValue());
+    EmfUtil.setFeatureValue(property, INVOICES_AND_PROPERTIES_PACKAGE.getProperty_SerialNumber(), propertySerialNumberObjectControl.getValue());
+    EmfUtil.setFeatureValue(property, INVOICES_AND_PROPERTIES_PACKAGE.getProperty_Remarks(), propertyRemarksObjectControl.getValue());
+    EmfUtil.setFeatureValue(property, INVOICES_AND_PROPERTIES_PACKAGE.getProperty_FromDate(), propertyFromDateObjectControl.getValue());
+    EmfUtil.setFeatureValue(property, INVOICES_AND_PROPERTIES_PACKAGE.getProperty_UntilDate(), propertyUntilDateObjectControl.getValue());
+    EmfUtil.setFeatureValue(property, INVOICES_AND_PROPERTIES_PACKAGE.getProperty_Archive(), propertyArchiveObjectControl.getValue());
     
     updateDocumentReferencesFromDocumentReferencePanels();
     updatePictureReferencesFromDocumentReferencePanels();
@@ -585,8 +548,10 @@ public class InvoiceAndPropertyEditor extends ObjectEditorTemplate<Invoice> {
     if (!changes) {
       int index = 0;
       for (FileReference fileReference: property.getDocuments()) {
-        FileReferencePanel fileReferencePanel = documentReferencePanels.get(index++);
-        if ((!fileReference.getFile().equals(fileReferencePanel.getFile()))  ||
+        FileReferenceEditPanel fileReferencePanel = documentReferencePanels.get(index++);
+        File file = fileReferencePanel.getFile();
+        String fileName = file != null ? file.getAbsolutePath() : null;
+        if ((!fileReference.getFile().equals(fileName))  ||
             (!fileReference.getTitle().equals(fileReferencePanel.getTitleObjectControl().getValue()))) {
           changes = true;
           break;
@@ -598,7 +563,7 @@ public class InvoiceAndPropertyEditor extends ObjectEditorTemplate<Invoice> {
       List<FileReference> fileReferences = property.getDocuments();
       fileReferences.clear();
       
-      for (FileReferencePanel fileReferencePanel: documentReferencePanels) {
+      for (FileReferenceEditPanel fileReferencePanel: documentReferencePanels) {
         FileReference fileReference = TypesFactory.eINSTANCE.createFileReference();
         updateFileReferenceFromFileReferencePanel(fileReference, fileReferencePanel);
         fileReferences.add(fileReference);
@@ -622,8 +587,10 @@ public class InvoiceAndPropertyEditor extends ObjectEditorTemplate<Invoice> {
     if (!changes) {
       int index = 0;
       for (FileReference fileReference: property.getPictures()) {
-        FileReferencePanel fileReferencePanel = pictureReferencePanels.get(index++);
-        if ((!fileReference.getFile().equals(fileReferencePanel.getFile()))  ||
+        FileReferenceEditPanel fileReferencePanel = pictureReferencePanels.get(index++);
+        File file = fileReferencePanel.getFile();
+        String fileName = file != null ? file.getAbsolutePath() : null;
+        if ((!fileReference.getFile().equals(fileName))  ||
             (!fileReference.getTitle().equals(fileReferencePanel.getTitleObjectControl().getValue()))) {
           changes = true;
           break;
@@ -635,7 +602,7 @@ public class InvoiceAndPropertyEditor extends ObjectEditorTemplate<Invoice> {
       List<FileReference> fileReferences = property.getPictures();
       fileReferences.clear();
       
-      for (FileReferencePanel fileReferencePanel: pictureReferencePanels) {
+      for (FileReferenceEditPanel fileReferencePanel: pictureReferencePanels) {
         FileReference fileReference = TypesFactory.eINSTANCE.createFileReference();
         updateFileReferenceFromFileReferencePanel(fileReference, fileReferencePanel);
         fileReferences.add(fileReference);
@@ -649,7 +616,7 @@ public class InvoiceAndPropertyEditor extends ObjectEditorTemplate<Invoice> {
    * @param fileReference the {@code FileReference} to be updated.
    * @param fileReferencePanel the {@code FileReferencePanel} from which the {@code fileReference} will be updated.
    */
-  private void updateFileReferenceFromFileReferencePanel(FileReference fileReference, FileReferencePanel fileReferencePanel) {
+  private void updateFileReferenceFromFileReferencePanel(FileReference fileReference, FileReferenceEditPanel fileReferencePanel) {
     String fileName = fileReferencePanel.getPathNameRelativeToPrefix();
     if (fileName != null) {
       fileReference.setFile(fileName);
@@ -706,7 +673,7 @@ public class InvoiceAndPropertyEditor extends ObjectEditorTemplate<Invoice> {
    */
   private void createDocumentReferencePanelsFromProperty() {
     for (FileReference fileReference: property.getDocuments()) {
-      FileReferencePanel fileReferencePanel = createNewDocumentReferencePanel(false);
+      FileReferenceEditPanel fileReferencePanel = createNewDocumentReferencePanel(false);
       
       if (fileReference.isSetFile()) {
         fileReferencePanel.setPathNameRelativeToPrefix(fileReference.getFile());
@@ -727,7 +694,7 @@ public class InvoiceAndPropertyEditor extends ObjectEditorTemplate<Invoice> {
    */
   private void createPicturesPanelsFromProperty() {
     for (FileReference fileReference: property.getPictures()) {
-      FileReferencePanel fileReferencePanel = createNewPictureReferencePanel(false);
+      FileReferenceEditPanel fileReferencePanel = createNewPictureReferencePanel(false);
       
       if (fileReference.isSetFile()) {
         fileReferencePanel.setPathNameRelativeToPrefix(fileReference.getFile());
@@ -776,9 +743,12 @@ public class InvoiceAndPropertyEditor extends ObjectEditorTemplate<Invoice> {
     
     int rowIndex = 1;
     
-    for (EObjectAttributeEditDescriptor eObjectAttributeEditDescriptor: invoiceAttributeEditDescriptors) {
-      addAttributeEditControlsToGrid(gridPane, rowIndex++, eObjectAttributeEditDescriptor);
-    }
+    addAttributeEditControlsToGrid(gridPane, rowIndex++, "Date", invoiceDateObjectControl);
+    addAttributeEditControlsToGrid(gridPane, rowIndex++, "Company", invoiceCompanyObjectControl);
+    addAttributeEditControlsToGrid(gridPane, rowIndex++, "Description", invoiceDescriptionObjectControl);
+    addAttributeEditControlsToGrid(gridPane, rowIndex++, "Amount", invoiceAmountObjectControl);
+    addAttributeEditControlsToGrid(gridPane, rowIndex++, "Remarks", invoiceRemarksObjectControl);
+    addAttributeEditControlsToGrid(gridPane, rowIndex++, "Derive description from property", invoiceDescriptionFromPropertyObjectControl);    
     
     return gridPane;
   }
@@ -876,7 +846,7 @@ public class InvoiceAndPropertyEditor extends ObjectEditorTemplate<Invoice> {
     
     // New button
     button = componentFactory.createButton(newObjectText, newObjectTooltipText);
-    button.setOnAction(e -> setObject(null, true));
+    button.setOnAction(e -> newObject(true));
     actionButtonsPanel.getChildren().add(button);
     
     // Cancel button
@@ -1189,9 +1159,14 @@ public class InvoiceAndPropertyEditor extends ObjectEditorTemplate<Invoice> {
 
     int rowIndex = 1;
     
-    for (EObjectAttributeEditDescriptor eObjectAttributeEditDescriptor: propertyAttributeEditDescriptors) {
-      addAttributeEditControlsToGrid(gridPane, rowIndex++, eObjectAttributeEditDescriptor);
-    }
+    addAttributeEditControlsToGrid(gridPane, rowIndex++, "Description", propertyDescriptionObjectControl);
+    addAttributeEditControlsToGrid(gridPane, rowIndex++, "Brand", propertyBrandObjectControl);
+    addAttributeEditControlsToGrid(gridPane, rowIndex++, "Type", propertyTypeObjectControl);
+    addAttributeEditControlsToGrid(gridPane, rowIndex++, "Serial number", propertySerialNumberObjectControl);
+    addAttributeEditControlsToGrid(gridPane, rowIndex++, "Remarks", propertyRemarksObjectControl);
+    addAttributeEditControlsToGrid(gridPane, rowIndex++, "From", propertyFromDateObjectControl);
+    addAttributeEditControlsToGrid(gridPane, rowIndex++, "Until", propertyUntilDateObjectControl);
+    addAttributeEditControlsToGrid(gridPane, rowIndex++, "Archive", propertyArchiveObjectControl);
     
     return gridPane;
   }
@@ -1252,20 +1227,20 @@ public class InvoiceAndPropertyEditor extends ObjectEditorTemplate<Invoice> {
     documentsMainVBox.getChildren().add(label);
     
     documentReferencesVBox = componentFactory.createVBox();
-    documentReferencePanels.addListener(new ListChangeListener<FileReferencePanel>() {
+    documentReferencePanels.addListener(new ListChangeListener<FileReferenceEditPanel>() {
 
       @Override
-      public void onChanged(Change<? extends FileReferencePanel> c) {
+      public void onChanged(Change<? extends FileReferenceEditPanel> c) {
         while (c.next()) {
           if (c.wasPermutated()) {
             // No action needed here
           } else if (c.wasUpdated()) {
             // update item
           } else {
-            for (FileReferencePanel documentReferencePanel: c.getRemoved()) {
+            for (FileReferenceEditPanel documentReferencePanel: c.getRemoved()) {
               propertyObjectControlsGroup.removeObjectControlGroup(documentReferencePanel.getObjectControlsGroup());
             }
-            for (FileReferencePanel documentReferencePanel: c.getAddedSubList()) {
+            for (FileReferenceEditPanel documentReferencePanel: c.getAddedSubList()) {
               propertyObjectControlsGroup.addObjectControlGroup(documentReferencePanel.getObjectControlsGroup());
             }
           }
@@ -1292,29 +1267,31 @@ public class InvoiceAndPropertyEditor extends ObjectEditorTemplate<Invoice> {
    * @param expand If true, the panel is expanded upon creation.
    * @return the created panel
    */
-  private FileReferencePanel createNewDocumentReferencePanel(boolean expand) {
-    FileReferencePanel documentReferencePanel = new FileReferencePanel.FileReferencePanelBuilder(customization, documentReferencePanels)
+  private FileReferenceEditPanel createNewDocumentReferencePanel(boolean expand) {
+    FileReferenceEditPanel documentReferencePanel = new FileReferenceEditPanel.FileReferencePanelBuilder(customization)
         .setDefaultPaneTitle("Document reference")
         .setExpandPaneOnCreation(true)
         .setInitialFolderSupplier(this::getPropertyRelatedFilesFolder)
+        .setPrefix(InvoicesAndPropertiesRegistry.propertyRelatedFilesFolder)
         .build();
     
+    objectControlsGroup.addObjectControlGroup(documentReferencePanel.getObjectControlsGroup());
     documentReferencePanels.add(documentReferencePanel);
     
     return documentReferencePanel;
   }
   
-  private String getPropertyRelatedFilesFolder() {
+  private String getPropertyRelatedFilesFolder(FileReferenceTypeInfo fileReferenceTypeInfo) {
     // Try to get the folder from existing document and picture references.
     
-    for (FileReferencePanel fileReferencePanel: documentReferencePanels) {
+    for (FileReferenceEditPanel fileReferencePanel: documentReferencePanels) {
       File file = fileReferencePanel.getFile();
       if (file != null) {
         return file.getParent();
       }
     }
     
-    for (FileReferencePanel fileReferencePanel: pictureReferencePanels) {
+    for (FileReferenceEditPanel fileReferencePanel: pictureReferencePanels) {
       File file = fileReferencePanel.getFile();
       if (file != null) {
         return file.getParent();
@@ -1326,7 +1303,9 @@ public class InvoiceAndPropertyEditor extends ObjectEditorTemplate<Invoice> {
 
   private void updateDocumentReferencesPanel() {
     documentReferencesVBox.getChildren().clear();
-    documentReferencesVBox.getChildren().addAll(documentReferencePanels);
+    for (FileReferenceEditPanel fileReferenceEditPanel: documentReferencePanels) {
+      documentReferencesVBox.getChildren().add(fileReferenceEditPanel.getControl());
+    }
   }
   
   private Node createPicturesPanel() {
@@ -1338,20 +1317,20 @@ public class InvoiceAndPropertyEditor extends ObjectEditorTemplate<Invoice> {
     picturesMainVBox.getChildren().add(label);
     
     pictureReferencesVBox = componentFactory.createVBox();
-    pictureReferencePanels.addListener(new ListChangeListener<FileReferencePanel>() {
+    pictureReferencePanels.addListener(new ListChangeListener<FileReferenceEditPanel>() {
 
       @Override
-      public void onChanged(Change<? extends FileReferencePanel> c) {
+      public void onChanged(Change<? extends FileReferenceEditPanel> c) {
         while (c.next()) {
           if (c.wasPermutated()) {
             // No action needed here
           } else if (c.wasUpdated()) {
             // update item
           } else {
-            for (FileReferencePanel pictureReferencePanel: c.getRemoved()) {
+            for (FileReferenceEditPanel pictureReferencePanel: c.getRemoved()) {
               propertyObjectControlsGroup.removeObjectControlGroup(pictureReferencePanel.getObjectControlsGroup());
             }
-            for (FileReferencePanel pictureReferencePanel: c.getAddedSubList()) {
+            for (FileReferenceEditPanel pictureReferencePanel: c.getAddedSubList()) {
               propertyObjectControlsGroup.addObjectControlGroup(pictureReferencePanel.getObjectControlsGroup());
             }
           }
@@ -1372,8 +1351,8 @@ public class InvoiceAndPropertyEditor extends ObjectEditorTemplate<Invoice> {
     return picturesMainVBox;
   }
   
-  private FileReferencePanel createNewPictureReferencePanel(boolean expand) {
-    FileReferencePanel pictureReferencePanel = new FileReferencePanel.FileReferencePanelBuilder(customization, pictureReferencePanels)
+  private FileReferenceEditPanel createNewPictureReferencePanel(boolean expand) {
+    FileReferenceEditPanel pictureReferencePanel = new FileReferenceEditPanel.FileReferencePanelBuilder(customization)
         .setDefaultPaneTitle("Picture reference")
         .setExpandPaneOnCreation(true)
         .setInitialFolderSupplier(this::getPropertyRelatedFilesFolder)
@@ -1392,8 +1371,9 @@ public class InvoiceAndPropertyEditor extends ObjectEditorTemplate<Invoice> {
         
       }
     };
-    pictureReferencePanel.focusedProperty().addListener(cl);
+    pictureReferencePanel.getControl().focusedProperty().addListener(cl);
     
+    objectControlsGroup.addObjectControlGroup(pictureReferencePanel.getObjectControlsGroup());
     pictureReferencePanels.add(pictureReferencePanel);
     
     return pictureReferencePanel;
@@ -1401,7 +1381,9 @@ public class InvoiceAndPropertyEditor extends ObjectEditorTemplate<Invoice> {
 
   private void updatePictureReferencesPanel() {
     pictureReferencesVBox.getChildren().clear();
-    pictureReferencesVBox.getChildren().addAll(pictureReferencePanels);
+    for (FileReferenceEditPanel fileReferenceEditPanel: pictureReferencePanels) {
+      pictureReferencesVBox.getChildren().add(fileReferenceEditPanel.getControl());
+    }
   }
 
   /**
@@ -1436,7 +1418,7 @@ public class InvoiceAndPropertyEditor extends ObjectEditorTemplate<Invoice> {
   protected void updateProperty() {
     updatePropertyFromControls();
     
-    setObject(object, false);
+    setObject(object, false, false);
   }
   
   private void updateInvoiceAndProperty() {
@@ -1474,11 +1456,11 @@ public class InvoiceAndPropertyEditor extends ObjectEditorTemplate<Invoice> {
    * @param rowIndex Index for the row in the GridPane to which the controls are to be added.
    * @param eObjectAttributeEditDescriptor EObjectAttributeEditDescriptor for the attribute.
    */
-  private void addAttributeEditControlsToGrid(GridPane gridPane, int rowIndex, EObjectAttributeEditDescriptor eObjectAttributeEditDescriptor) {
+  private void addAttributeEditControlsToGrid(GridPane gridPane, int rowIndex, String labelText, ObjectControl<?> objectControl) {
     // Label
     StringBuilder buf = new StringBuilder();
-    buf.append(eObjectAttributeEditDescriptor.getLabelText());
-    if (!eObjectAttributeEditDescriptor.getObjectControl().isOptional()) {
+    buf.append(labelText);
+    if (!objectControl.isOptional()) {
       buf.append(" *");
     }
     buf.append(":");
@@ -1486,23 +1468,12 @@ public class InvoiceAndPropertyEditor extends ObjectEditorTemplate<Invoice> {
     gridPane.add(label, 0, rowIndex);
     
     // ObjectInput control
-    ObjectControl<?> objectInput = eObjectAttributeEditDescriptor.getObjectControl();
+    ObjectControl<?> objectInput = objectControl;
     gridPane.add(objectInput.getControl(), 1, rowIndex); 
     
     // Ok/Not OK label
-    Node statusIndicator = eObjectAttributeEditDescriptor.getObjectControl().getStatusIndicator();
+    Node statusIndicator = objectControl.getStatusIndicator();
     gridPane.add(statusIndicator, 2, rowIndex);
   }
-  
-//  private String stripBaseDirFromFilename(String fileName) {
-//    File baseDir = new File(InvoicesAndPropertiesRegistry.propertyRelatedFilesFolder);
-//    if ((fileName.length() > baseDir.getAbsolutePath().length() + 1)  &&
-//        fileName.startsWith(baseDir.getAbsolutePath())  &&
-//        (fileName.charAt(baseDir.getAbsolutePath().length()) == '\\')) {
-//      fileName = fileName.substring(baseDir.getAbsolutePath().length() + 1);
-//    }
-//    
-//    return fileName;
-//  }
 }
 

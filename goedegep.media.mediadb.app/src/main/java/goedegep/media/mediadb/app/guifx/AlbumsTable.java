@@ -406,14 +406,12 @@ class AlbumsTableDescriptor extends EObjectTableDescriptor<Album> {
                   if (myInfo != null) {
                     List<MediumInfo> mediumInfos = myInfo.getIHaveOn();
                     for (MediumInfo mediumInfo: mediumInfos) {
-                      List<InformationType> sourceTypes = mediumInfo.getSourceTypes();
-                      for (InformationType sourceType: sourceTypes) {
-                        if (commaNeeded) {
-                          buf.append(", ");
-                        }
-                        buf.append(sourceType.getName());
-                        commaNeeded = true;
+                      InformationType sourceType = mediumInfo.getSourceType();
+                      if (commaNeeded) {
+                        buf.append(", ");
                       }
+                      buf.append(sourceType.getName());
+                      commaNeeded = true;
                     }
                   }
                   
@@ -424,10 +422,8 @@ class AlbumsTableDescriptor extends EObjectTableDescriptor<Album> {
                       if (myTrackInfo != null) {
                         List<MediumInfo> mediumInfos2 = myTrackInfo.getIHaveOn();
                         for (MediumInfo mediumInfo: mediumInfos2) {
-                          List<InformationType> sourceTypes2 = mediumInfo.getSourceTypes();
-                          for (InformationType sourceType2: sourceTypes2) {
-                            sourceTypesSet.add(sourceType2);
-                          }
+                          InformationType sourceType2 = mediumInfo.getSourceType();
+                          sourceTypesSet.add(sourceType2);
                         }
                       }
                     }
@@ -503,7 +499,9 @@ class AlbumsTableDescriptor extends EObjectTableDescriptor<Album> {
    * @param album the {@code Album} to edit.
    */
   private void editAlbum(List<Album> albums, Album album) {
-    new AlbumEditor(customization, mediaDb).runEditor().setObject(album);
+    AlbumEditor albumEditor = AlbumEditor.newInstance(customization, mediaDb);
+    albumEditor.setObject(album);
+    albumEditor.show();
   }
 }
 

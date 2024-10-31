@@ -33,6 +33,9 @@
       displayName="Album Info folder" initialValue="D:\Database\Muziek\Albums" installInitialValue="true"/>
   <propertyDescriptors type="DIRECTORY" name="musicDirectory" description="Folder with all music."
       displayName="Music folder" initialValue="D:\Music" installInitialValue="true"/>
+  <propertyDescriptors type="DIRECTORY" name="albumImportDirectory" description="Default location for selecting a directory from which album import information is to be derived."
+      displayName="Album Import Directory" initialValue="D:\SoulSeek\complete" userSettable="true"
+      installInitialValue="true"/>
   <propertyDescriptors type="DIRECTORY" name="duneMusicFolderPath" description="Folder with all music on the Dune media player."
       displayName="Dune Music Folder Path" initialValue="\\Dune\DuneHDD_00f1f4a3_110b_40ec_b5a1_d89bd7c8f93f\Music"
       installInitialValue="true"/>

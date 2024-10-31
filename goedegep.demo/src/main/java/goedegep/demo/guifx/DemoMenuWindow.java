@@ -29,7 +29,7 @@ public class DemoMenuWindow extends JfxStage {
   private ComponentFactoryFx componentFactory;
   
   public DemoMenuWindow(CustomizationFx customization) {
-    super(WINDOW_TITLE, customization);
+    super(customization, WINDOW_TITLE);
     
     this.customization = customization;
     componentFactory = customization.getComponentFactoryFx();

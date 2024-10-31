@@ -9,6 +9,10 @@ import org.eclipse.emf.ecore.EObject;
  * A representation of the model object '<em><b>Artist</b></em>'.
  * <!-- end-user-doc -->
  *
+ * <!-- begin-model-doc -->
+ * This inteface provides information on an artist. An artist can be the artist of an album or track, or a player on an album or track. An artist can also be the container artist of an  artist.
+ * <!-- end-model-doc -->
+ *
  * <p>
  * The following features are supported:
  * </p>
@@ -34,6 +38,9 @@ public interface Artist extends EObject {
    * there really should be more of a description here...
    * </p>
    * <!-- end-user-doc -->
+   * <!-- begin-model-doc -->
+   * The name of the artist.
+   * <!-- end-model-doc -->
    * @return the value of the '<em>Name</em>' attribute.
    * @see #isSetName()
    * @see #unsetName()
@@ -139,6 +146,9 @@ public interface Artist extends EObject {
    * Returns the value of the '<em><b>Photo</b></em>' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
+   * <!-- begin-model-doc -->
+   * The filename of a photo of the artist.
+   * <!-- end-model-doc -->
    * @return the value of the '<em>Photo</em>' attribute.
    * @see #isSetPhoto()
    * @see #unsetPhoto()
@@ -188,6 +198,9 @@ public interface Artist extends EObject {
    * Returns the value of the '<em><b>Style</b></em>' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
+   * <!-- begin-model-doc -->
+   * A free format style of the artist.
+   * <!-- end-model-doc -->
    * @return the value of the '<em>Style</em>' attribute.
    * @see #isSetStyle()
    * @see #unsetStyle()
@@ -237,6 +250,9 @@ public interface Artist extends EObject {
    * Returns the value of the '<em><b>My Comments</b></em>' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
+   * <!-- begin-model-doc -->
+   * My comments about the artist.
+   * <!-- end-model-doc -->
    * @return the value of the '<em>My Comments</em>' attribute.
    * @see #isSetMyComments()
    * @see #unsetMyComments()

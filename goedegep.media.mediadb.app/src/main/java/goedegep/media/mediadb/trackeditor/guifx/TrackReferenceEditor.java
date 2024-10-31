@@ -30,7 +30,7 @@ import javafx.scene.layout.VBox;
  * they appear on is also part of the media database.
  *
  */
-public class TrackEditor extends ObjectEditorTemplate<TrackReference> {
+public class TrackReferenceEditor extends ObjectEditorTemplate<TrackReference> {
   private static final MediadbFactory MEDIA_DB_FACTORY = MediadbFactory.eINSTANCE;
   private static final MediadbPackage MEDIA_DB_PACKAGE = MediadbPackage.eINSTANCE;
   
@@ -59,7 +59,27 @@ public class TrackEditor extends ObjectEditorTemplate<TrackReference> {
   private ObjectControlEnumComboBox<IWant> iWantComboBox;
 
   
-  public TrackEditor(CustomizationFx customization, MediaDb mediaDb) {
+  /**
+   * Factory method to obtain a new instance of a {@code TrackEditor}.
+   * 
+   * @param customization the GUI customization.
+   * @param mediaDb the media database.
+   * @return a newly created {@code TrackEditor}.
+   */
+  public static TrackReferenceEditor newInstance(CustomizationFx customization, MediaDb mediaDb) {
+    TrackReferenceEditor trackEditor = new TrackReferenceEditor(customization, mediaDb);
+    trackEditor.performInitialization();
+    
+    return trackEditor;
+  }
+  
+  /**
+   * Constructor.
+   * 
+   * @param customization the GUI customization.
+   * @param mediaDb the media database.
+   */
+  private TrackReferenceEditor(CustomizationFx customization, MediaDb mediaDb) {
     super(customization, null);
     
     this.mediaDb = mediaDb;
@@ -85,7 +105,7 @@ public class TrackEditor extends ObjectEditorTemplate<TrackReference> {
     trackArtistObjectControl = componentFactory.createObjectControlAutoCompleteTextField(artistStringConverterAndChecker, null, 300, false, "Enter the artist");
     trackTitleTextFieldObjectControl = componentFactory.createObjectControlTextField(null, null, 600, false, "The album title is a mandatory field");
 
-    iWantComboBox = componentFactory.createObjectControlEnumComboBox(IWant.NOT_SET, IWant.NOT_SET, MEDIA_DB_PACKAGE.getIWant(), true, "Select whether you want this album or not");
+    iWantComboBox = componentFactory.createObjectControlEnumComboBox(IWant.NOT_SET, true, "Select whether you want this album or not");
     
     
     objectControlsGroup.addObjectControls(
@@ -107,12 +127,6 @@ public class TrackEditor extends ObjectEditorTemplate<TrackReference> {
   }
 
   @Override
-  protected void createAttributeEditDescriptors() {
-    // TODO Auto-generated method stub
-    
-  }
-
-  @Override
   protected void createEditPanel(VBox rootPane) {
     GridPane gridPane = componentFactory.createGridPane(10.0, 10.0, 10.0);
     
@@ -122,7 +136,7 @@ public class TrackEditor extends ObjectEditorTemplate<TrackReference> {
     gridPane.add(trackArtistObjectControl.getControl(), 1, 0);
     gridPane.add(trackArtistObjectControl.getStatusIndicator(), 2, 0);
     Button newArtistButton = componentFactory.createButton("New artist", "The artist of the track has to be selected from the list of known artists. With this button you can add a new artist to the database");
-    newArtistButton.setOnAction(e -> (new ArtistDetailsEditor(getCustomization(), "New artist", mediaDb)).show());
+    newArtistButton.setOnAction(e -> ArtistDetailsEditor.newInstance(customization, "New artist", mediaDb).show());
     gridPane.add(newArtistButton, 3, 0);
     
     // Second row: 'Title: <track-title>'

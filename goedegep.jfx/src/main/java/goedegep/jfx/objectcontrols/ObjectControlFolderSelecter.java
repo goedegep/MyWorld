@@ -3,7 +3,6 @@ package goedegep.jfx.objectcontrols;
 import java.io.File;
 import java.util.logging.Logger;
 
-import goedegep.jfx.ComponentFactoryFx;
 import goedegep.jfx.CustomizationFx;
 import javafx.scene.control.Button;
 import javafx.stage.DirectoryChooser;
@@ -42,13 +41,6 @@ public class ObjectControlFolderSelecter extends ObjectControlFileOrFolderSelect
   @SuppressWarnings("unused")
   private static final Logger LOGGER = Logger.getLogger(ObjectControlFolderSelecter.class.getName());
   
-  private ComponentFactoryFx componentFactory;
-  
-  /**
-   * The title of the DirectoryChooser
-   */
-  private String directoryChooserTitle = null;
-  
   /**
    * {@code Button} to activate the {@code DirectoryChooser}.
    */
@@ -80,19 +72,12 @@ public class ObjectControlFolderSelecter extends ObjectControlFileOrFolderSelect
    */
   public ObjectControlFolderSelecter(CustomizationFx customization, int textFieldWidth, String textFieldToolTipText,
       String folderChooserButtonText, String folderChooserButtonToolTipText, String directoryChooserTitle, boolean isOptional) {
-    super(customization, textFieldWidth, textFieldToolTipText, isOptional);
-    
-    this.directoryChooserTitle = directoryChooserTitle;
-    
-    componentFactory = customization.getComponentFactoryFx();
+    super(customization, textFieldWidth, textFieldToolTipText, directoryChooserTitle, isOptional);
     
     folderChooserButton = componentFactory.createButton(folderChooserButtonText, folderChooserButtonToolTipText);    
     folderChooserButton.setOnAction(actionEvent -> handleFolderChooserButtonPressed());
     
-//    // Do this at the end, so it automatically leads an update of the selectionValidProperty.
-//    if (initiallySelecterFolder != null) {
-//      ocSetValue(new File(initiallySelecterFolder));
-//    }
+    setValue(null);
   }
   
 
@@ -119,16 +104,18 @@ public class ObjectControlFolderSelecter extends ObjectControlFileOrFolderSelect
    */
   private void handleFolderChooserButtonPressed() {
     if (directoryChooser == null) {
-      directoryChooser = componentFactory.createDirectoryChooser(directoryChooserTitle);
+      directoryChooser = componentFactory.createDirectoryChooser(fileOrFolderChooserTitle);
     }
     
-    if (getValue() != null) {  // If there is a valid file value.
+    if (getValue() != null) {  // If there is a valid File value.
       directoryChooser.setInitialDirectory(getValue());
-    } else if (initialFolderSupplier != null) {  // If there is a initialFolderProvider.
+    } else if (initialFolderSupplier != null) {
       String initialFolderName = initialFolderSupplier.get();
       if (initialFolderName != null) {
         File initialFolder = new File(initialFolderName);
-        directoryChooser.setInitialDirectory(initialFolder);
+        if (initialFolder.exists()) {
+          directoryChooser.setInitialDirectory(initialFolder);
+        }
       }
     }
     
@@ -136,7 +123,6 @@ public class ObjectControlFolderSelecter extends ObjectControlFileOrFolderSelect
 
     if (folderSelectedByDirectoryChooser != null) {
       ociHandleNewUserInput(directoryChooser);
-      setPathTextFieldText();
     }
   }
 
@@ -147,8 +133,8 @@ public class ObjectControlFolderSelecter extends ObjectControlFileOrFolderSelect
   @Override
   public boolean ociDetermineFilledIn(Object source) {
     if (source == pathTextField) {
-      return ((pathTextField.textProperty().get() != null  &&  !pathTextField.textProperty().get().isEmpty())  ||
-          folderSelectedByDirectoryChooser != null);
+      return (pathTextField.textProperty().get() != null  &&  !pathTextField.textProperty().get().isEmpty())  ||
+          folderSelectedByDirectoryChooser != null;
     } else {
       return folderSelectedByDirectoryChooser != null;
     }

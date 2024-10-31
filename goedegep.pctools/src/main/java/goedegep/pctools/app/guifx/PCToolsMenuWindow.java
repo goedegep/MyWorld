@@ -44,7 +44,7 @@ public class PCToolsMenuWindow extends JfxStage {
   private PCToolsAppResourcesFx appResources;
 
   public PCToolsMenuWindow(CustomizationFx customization, String fileToOpen) {
-    super(WINDOW_TITLE, customization);
+    super(customization, WINDOW_TITLE);
         
     this.customization = customization;
     this.gpxFileToOpen = fileToOpen;

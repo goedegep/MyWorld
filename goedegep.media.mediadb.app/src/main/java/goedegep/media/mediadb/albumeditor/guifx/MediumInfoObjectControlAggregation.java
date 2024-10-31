@@ -1,8 +1,5 @@
 package goedegep.media.mediadb.albumeditor.guifx;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.objectcontrols.ObjectControlAggregationTemplate;
 import goedegep.jfx.objectcontrols.ObjectControlEnumComboBox;
@@ -28,6 +25,7 @@ public class MediumInfoObjectControlAggregation extends ObjectControlAggregation
    * {@code ObjectControl} for the information type.
    */
   private ObjectControlEnumComboBox<InformationType> informationTypeObjectControl;
+  
   /**
    * {@code ObjectControl} for the source type.
    */
@@ -38,13 +36,26 @@ public class MediumInfoObjectControlAggregation extends ObjectControlAggregation
    */
   private ObjectControlInteger sourceBitRateObjectControl;
 
+
+  /**
+   * Create and get a new instance of a {@code MediumInfoObjectControlAggregation}.
+   * 
+   * @param customization the GUI customization.
+   * @return a new instance of a {@code MediumInfoObjectControlAggregation}
+   */
+  public static MediumInfoObjectControlAggregation newInstance(CustomizationFx customization) {
+    MediumInfoObjectControlAggregation mediumInfoObjectControlAggregation = new MediumInfoObjectControlAggregation(customization);
+    mediumInfoObjectControlAggregation.performInitialization();
+    
+    return mediumInfoObjectControlAggregation;
+  }  
   
   /**
    * Constructor
    * 
    * @param customization The GUI customization
    */
-  public MediumInfoObjectControlAggregation(CustomizationFx customization) {
+  private MediumInfoObjectControlAggregation(CustomizationFx customization) {
     super(customization);
   }
   
@@ -71,13 +82,13 @@ public class MediumInfoObjectControlAggregation extends ObjectControlAggregation
    */
   @Override
   protected void createControls() {
-    mediumTypeObjectControl = componentFactory.createObjectControlEnumComboBox(MediumType.NOT_SET, MediumType.NOT_SET, MediadbPackage.eINSTANCE.getMediumType(), true, "Select the medium type");
+    mediumTypeObjectControl = componentFactory.createObjectControlEnumComboBox(MediumType.NOT_SET, true, "Select the medium type");
     mediumTypeObjectControl.setId("medium type");
     
-    informationTypeObjectControl = componentFactory.createObjectControlEnumComboBox(InformationType.NOT_SET, InformationType.NOT_SET, MediadbPackage.eINSTANCE.getInformationType(), true, "Select the information type");
+    informationTypeObjectControl = componentFactory.createObjectControlEnumComboBox(InformationType.NOT_SET, true, "Select the information type");
     informationTypeObjectControl.setId("information type");
     
-    sourceTypeObjectControl = componentFactory.createObjectControlEnumComboBox(InformationType.NOT_SET, InformationType.NOT_SET, MediadbPackage.eINSTANCE.getInformationType(), true, "Select the source type(s)");
+    sourceTypeObjectControl = componentFactory.createObjectControlEnumComboBox(InformationType.NOT_SET, true, "Select the source type(s)");
     sourceTypeObjectControl.setId("source type");
     
     sourceBitRateObjectControl = componentFactory.createObjectControlInteger(0, 100.0, false, "enter the source bitrate");
@@ -111,9 +122,7 @@ public class MediumInfoObjectControlAggregation extends ObjectControlAggregation
     
     mediumTypeObjectControl.setValue(object.getMediumType());
     informationTypeObjectControl.setValue(object.getInformationType());
-    if (!object.getSourceTypes().isEmpty()) {
-      sourceTypeObjectControl.setValue(object.getSourceTypes().get(0));
-    }
+    sourceTypeObjectControl.setValue(object.getSourceType());
     sourceBitRateObjectControl.setValue(object.getSourceBitRate());
   }
 
@@ -126,11 +135,7 @@ public class MediumInfoObjectControlAggregation extends ObjectControlAggregation
   protected void updateObjectFromControls() throws ObjectEditorException {
     EmfUtil.setFeatureValue(object, MEDIA_DB_PACKAGE.getMediumInfo_MediumType(), mediumTypeObjectControl.getValue());
     EmfUtil.setFeatureValue(object, MEDIA_DB_PACKAGE.getMediumInfo_InformationType(), informationTypeObjectControl.getValue());
-    List<InformationType> sourceTypes = new ArrayList<>();
-    if (informationTypeObjectControl.getValue() != null) {
-      sourceTypes.add(informationTypeObjectControl.getValue());
-    }
-    EmfUtil.setFeatureValue(object, MEDIA_DB_PACKAGE.getMediumInfo_SourceTypes(), sourceTypes);
+    EmfUtil.setFeatureValue(object, MEDIA_DB_PACKAGE.getMediumInfo_SourceType(), sourceTypeObjectControl.getValue());
     EmfUtil.setFeatureValue(object, MEDIA_DB_PACKAGE.getMediumInfo_SourceBitRate(), sourceBitRateObjectControl.getValue());
   }
 }

@@ -8,7 +8,6 @@ import java.util.function.Supplier;
 import java.util.logging.Logger;
 
 import goedegep.jfx.CustomizationFx;
-import goedegep.util.PgUtilities;
 import goedegep.util.file.FileUtils;
 import javafx.scene.control.TextField;
 
@@ -16,14 +15,30 @@ import javafx.scene.control.TextField;
  * This class provides the common functionality for the FileSelecter and FolderSelecter.
  * <p>
  * This common functionality consists of:
- * <h4>An initial folder supplier</h4>
+ * <h4>{@link #pathTextField}</h4>
+ * The {@code TextField} showing the currently selected file or folder.
  * 
+ * <h4>{@link #fileOrFolderChooserTitle}</h4>
+ * The title of the {@code FileChooser} or {@code FolderChooser}.
  * 
+ * <h4>{@link #initialFolderSupplier}</h4>
+ * Upon creating the {@code FileChooser} or {@code FolderChooser} this method, if set,
+ * is called to obtain the initial folder name. This is then used to set the initial folder
+ * on the {@code FileChooser} or {@code FolderChooser} (by calling {@code setInitialDirectory}).
+ * 
+ * <h4>{@link prefix}</h4>
+ * You can set a prefix, which is a base path for the folder (in which the file is located). * 
  * 
  */
 public abstract class ObjectControlFileOrFolderSelecterAbstract extends ObjectControlTemplate<File> {
+  @SuppressWarnings("unused")
   private static final Logger         LOGGER = Logger.getLogger(ObjectControlFileOrFolderSelecterAbstract.class.getName());
 	
+
+  /**
+   * The title of the {@code FileChooser} or {@code FolderChooser}.
+   */
+  protected String fileOrFolderChooserTitle = null;
   
   /**
    * A {@link Supplier} to provide the initial folder for the {@code FileChooser} or {@code FolderChooser}.
@@ -45,17 +60,25 @@ public abstract class ObjectControlFileOrFolderSelecterAbstract extends ObjectCo
   /**
    * Constructor
    * 
+   * @param customization the GUI customization.
    * @param textFieldWidth Value for the width of the TextField. If this value is -1, the default width is used.
    * @param textFieldToolTipText an optional tooltip text for the TextField.
+   * @param fileOrFolderChooserTitle The title of the {@code FileChooser} or {@code FolderChooser}.
    * @param isOptional Indication of whether the control is optional (if true) or mandatory.
    */
-  protected ObjectControlFileOrFolderSelecterAbstract(CustomizationFx customization, int textFieldWidth, String textFieldToolTipText, boolean isOptional) {
-    super(isOptional);
+  protected ObjectControlFileOrFolderSelecterAbstract(
+      CustomizationFx customization,
+      int textFieldWidth,
+      String textFieldToolTipText,
+      String fileOrFolderChooserTitle,
+      boolean isOptional) {
+    super(customization, isOptional);
+    
+    this.fileOrFolderChooserTitle = fileOrFolderChooserTitle;
     
     pathTextField = customization.getComponentFactoryFx().createTextField(textFieldWidth, textFieldToolTipText);
     
     pathTextField.textProperty().addListener((o) -> {
-      LOGGER.info("Text property changed, id is: " + getId());
       ociHandleNewUserInput(pathTextField);
     });
     pathTextField.focusedProperty().addListener((observableValue, oldValue, newValue) -> {
@@ -134,7 +157,6 @@ public abstract class ObjectControlFileOrFolderSelecterAbstract extends ObjectCo
 
   /**
    * @InheritDoc
-   * For now no action. Could change to showing absolute path, or path relative to prefix (if set).
    */
   @Override
   public void ociRedrawValue() {
@@ -197,8 +219,6 @@ public abstract class ObjectControlFileOrFolderSelecterAbstract extends ObjectCo
    */
   protected String addPrefixIfSet(String path) {
     if (prefix != null) {
-//      File file = new File (getPrefix(), pathTextField.textProperty().get());
-//      return file.getAbsolutePath();
       return FileUtils.createPathNameFromPrefixAndFileName(prefix, path);
     } else {
       return path;
@@ -231,7 +251,14 @@ public abstract class ObjectControlFileOrFolderSelecterAbstract extends ObjectCo
     return getValue() != null ? Paths.get(getValue().getAbsolutePath()) : null;
   }
   
-  public String getAbsolutePath(File file) {
+  /**
+   * Get the absolute path of a file.
+   * This method accepts a null input in which case null is returned.
+   * 
+   * @param file a {@code File}, which may be null.
+   * @return the absolute path of {@code file}, or null is {@code file} is null.
+   */
+  private String getAbsolutePath(File file) {
     if (file != null) {
       return file.getAbsolutePath();
     } else {
@@ -246,11 +273,7 @@ public abstract class ObjectControlFileOrFolderSelecterAbstract extends ObjectCo
    * @return the absolute path for the current value.
    */
   public String getAbsolutePath() {
-    if (getValue() != null) {
-      return getValue().getAbsolutePath();
-    } else {
-      return null;
-    }
+    return getAbsolutePath(getValue());
   }
   
   /**
@@ -259,19 +282,7 @@ public abstract class ObjectControlFileOrFolderSelecterAbstract extends ObjectCo
    * @return the absolute path for the reference value.
    */
   public String getReferenceAbsolutePath() {
-    if (referenceValue != null) {
-      return referenceValue.getAbsolutePath();
-    } else {
-      return null;
-    }
+    return getAbsolutePath(referenceValue);
   }
-  
-//  /**
-//   * {@inheritDoc}
-//   */
-//  @Override
-//  public boolean isChanged() {
-//    return !PgUtilities.equals(getAbsolutePath(), getReferenceAbsolutePath());
-//  }
   
 }

@@ -33,7 +33,7 @@ public class CompensationPaymentsWindow extends JfxStage {
   private ComboBox<Integer> yearComboBox;
   
   public CompensationPaymentsWindow(CustomizationFx customization, InterestCompensationMortgageCalculator mortgageCalculator) {
-    super(WINDOW_TITLE + mortgageCalculator.getMortgage().getId(), customization);
+    super(customization, WINDOW_TITLE + mortgageCalculator.getMortgage().getId());
     
     this.customization = customization;
     this.mortgageCalculator = mortgageCalculator;

@@ -224,29 +224,17 @@ public class QTree {
     
     // handle scaling
     long imageSize = (long) Math.sqrt(image.getWidth(null) * image.getHeight(null));
-//    System.out.println("Qtree: imageSize = " + imageSize);
-    Double scaleFactor = scaleIfNeeded(imageSize, at);
-//    System.out.println("Qtree: ImageWidth = " + image.getWidth(null));
+    Double scaleFactor = scaleIfNeeded(imageSize);
     double halfImageWidth = image.getWidth(null) / 2;
-//    System.out.println("Qtree: halfImageWidth = " + halfImageWidth);
-//    System.out.println("Qtree: ImageHeight = " + image.getHeight(null));
     double halfImageHeight = image.getHeight(null) / 2;
-//    System.out.println("Qtree: halfImageHeight = " + halfImageHeight);
 
     if (scaleFactor != null) {
-//      System.out.println("Qtree: scaleFactor = " + scaleFactor);
       halfImageWidth *= scaleFactor;
-//      System.out.println("Qtree: halfImageWidth = " + halfImageWidth);
       halfImageHeight *= scaleFactor;
-//      System.out.println("Qtree: halfImageHeight = " + halfImageHeight);
-    } else {
-//      System.out.println("Qtree: NO scaleFactor");
     }
     
     double xCenter = x - halfImageWidth;
-//    System.out.println("Qtree: xCenter = " + xCenter);
     double yCenter = y - halfImageHeight;
-//    System.out.println("Qtree: yCenter = " + yCenter);
 
     at.translate(xCenter, yCenter);
     if (scaleFactor != null) {
@@ -268,15 +256,15 @@ public class QTree {
     graphics2D.setTransform(saveAffineTransform);
   }
   
-  private Double scaleIfNeeded(long imageSize, AffineTransform at) {
-    Double scaleFactor = scaleUpIfNeeded(imageSize, at);
+  private Double scaleIfNeeded(long imageSize) {
+    Double scaleFactor = scaleUpIfNeeded(imageSize);
     if (scaleFactor == null) {
-      scaleFactor = scaleDownIfNeeded(imageSize, at);
+      scaleFactor = scaleDownIfNeeded(imageSize);
     }
     return scaleFactor;
   }
   
-  private Double scaleUpIfNeeded(long imageSize, AffineTransform at) {
+  private Double scaleUpIfNeeded(long imageSize) {
     Double scaleFactor = null;
     
     if (imageSize < minimumImageSize) {
@@ -287,7 +275,7 @@ public class QTree {
     return scaleFactor;
   }
   
-  private Double scaleDownIfNeeded(long imageSize, AffineTransform at) {
+  private Double scaleDownIfNeeded(long imageSize) {
     Double scaleFactor = null;
     
     if (imageSize > maximumImageSize) {

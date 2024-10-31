@@ -14,8 +14,6 @@ import goedegep.jfx.JfxStage;
 import goedegep.jfx.objectcontrols.ObjectControl;
 import goedegep.jfx.objectcontrols.ObjectControlGroup;
 import goedegep.util.string.StringUtil;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -48,7 +46,7 @@ public class EObjectEditor<E extends EObject> extends JfxStage {
   private ObjectControlGroup objectInputContainer;
   
   public EObjectEditor(CustomizationFx customization, EClass eClass, EObjectEditorDescriptor eObjectEditorDescriptor, EList<E> objects) {
-    super(createWindowTitle(eObjectEditorDescriptor.getWindowTitle()), customization);
+    super(customization, createWindowTitle(eObjectEditorDescriptor.getWindowTitle()));
     
     this.eClass = eClass;
     this.eObjectEditorDescriptor = eObjectEditorDescriptor;

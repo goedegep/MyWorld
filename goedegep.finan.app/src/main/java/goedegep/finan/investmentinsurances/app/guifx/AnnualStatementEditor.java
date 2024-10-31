@@ -97,7 +97,7 @@ public class AnnualStatementEditor extends JfxStage {
    * @param newStatementMode if true, start in new statement mode, else in edit existing statement mode.
    */
   public AnnualStatementEditor(CustomizationFx customization, InvestmentInsurancesData investmentInsurancesData, boolean newStatementMode) {
-    super(WINDOW_TITLE, customization);
+    super(customization, WINDOW_TITLE);
     
     LOGGER.fine("=>");
     

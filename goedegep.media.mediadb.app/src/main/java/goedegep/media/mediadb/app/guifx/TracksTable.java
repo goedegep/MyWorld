@@ -209,7 +209,7 @@ class TracksTableDescriptor extends EObjectTableDescriptor<Track> {
         return cell;
       }),
       new EObjectTableColumnDescriptorBasic<Track>(MEDIA_DB_PACKAGE.getTrack_Title(), "Title", true, true),
-      new EObjectTableColumnDescriptorCustom<Track>(MEDIA_DB_PACKAGE.getTrack_OriginalDisc(), "Album", null, false, true, column -> {
+      new EObjectTableColumnDescriptorCustom<Track>(null, "Album", null, false, true, column -> {
         TableCell<Track, Object> cell = new TableCell<>() {
 
           @Override
@@ -220,16 +220,19 @@ class TracksTableDescriptor extends EObjectTableDescriptor<Track> {
             }
             else {
               StringBuilder buf = new StringBuilder();
-              Disc disc = (Disc) item;
-              Album album = disc.getAlbum();
-              Artist artist = album.getArtist();
-              if (artist != null) {
-                buf.append(artist.getName());
-              } else {
-                buf.append("<no artist>");
+              Track track = (Track) item;
+              Disc disc = track.getOriginalDisc();
+              Album album = null;
+              if (disc != null) {
+                album = disc.getAlbum();
               }
+              Artist artist = null;
+              if (album != null) {
+                artist = album.getArtist();
+              }
+              buf.append(artist != null ? artist.getName() : "<no artist>");
               buf.append(" - ");
-              buf.append(album.getTitle());
+              buf.append(album != null ? album.getTitle() : "<no album>");
               
               setText(buf.toString());
             }

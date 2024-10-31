@@ -16,7 +16,7 @@ public class DetailsView extends JfxStage  {
   private ComponentFactoryFx componentFactory;
   
   public DetailsView(CustomizationFx customization, DocumentRoot documentRoot) {
-    super("GPX File Details", customization);
+    super(customization, "GPX File Details");
     
     componentFactory = customization.getComponentFactoryFx();
     

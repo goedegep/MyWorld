@@ -90,7 +90,7 @@ public class PersonsWindowFx extends JfxStage {
    * @param rolodex a <code>Rolodex</code>
    */
   public PersonsWindowFx(CustomizationFx customization, Rolodex rolodex) {
-    super(WINDOW_TITLE, customization);
+    super(customization, WINDOW_TITLE);
     
     this.customization = customization;
     this.rolodex = rolodex;

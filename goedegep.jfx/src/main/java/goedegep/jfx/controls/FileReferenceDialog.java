@@ -42,7 +42,7 @@ public class FileReferenceDialog extends Dialog<ButtonType> {
     
     componentFactory = customization.getComponentFactoryFx();
     
-    createGUI(ownerWindow, initiallySelectedFolder);
+    createGUI(initiallySelectedFolder);
   }
   
   /**
@@ -57,7 +57,7 @@ public class FileReferenceDialog extends Dialog<ButtonType> {
   /*
    * Create the GUI.
    */
-  private void createGUI(Stage ownerWindow, String initiallySelectedFolder) {
+  private void createGUI(String initiallySelectedFolder) {
     setHeaderText("Select a file and optionally give it a title");
     
     GridPane wizardPanel = componentFactory.createGridPane();

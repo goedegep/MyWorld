@@ -155,11 +155,9 @@ public class EObjectTreeItemForObject extends EObjectTreeItem {
         }
 
         //      EObject value = (EObject) getValue();
-        if (value != null) {
-          if (value.eIsSet(feature)) {
-            isLeaf = false;
-            break;
-          }
+        if (value != null  &&  value.eIsSet(feature)) {
+          isLeaf = false;
+          break;
         }
       }
     }
@@ -224,7 +222,7 @@ public class EObjectTreeItemForObject extends EObjectTreeItem {
         throw new RuntimeException("Descriptor of type ATTRIBUTE_LIST_VALUE cannot occur as child of EObject. Descriptor is: " + descriptor.toString());
             
       case CLASS_REFERENCE:
-        treeItem = EObjectTreeItemForObject.createChildEObjectTreeItemForSingleObjectReference(eObject, ((EObjectTreeItemClassReferenceDescriptor) descriptor).getEReference(), (EObjectTreeItemClassReferenceDescriptor) descriptor, getEObjectTreeView(), isInEditMode());
+        treeItem = createChildEObjectTreeItemForSingleObjectReference(eObject, ((EObjectTreeItemClassReferenceDescriptor) descriptor).getEReference(), (EObjectTreeItemClassReferenceDescriptor) descriptor, getEObjectTreeView(), isInEditMode());
         if (treeItem != null) {
           children.add(treeItem);
         }
@@ -415,7 +413,7 @@ public class EObjectTreeItemForObject extends EObjectTreeItem {
       case CLASS_REFERENCE:
         EObjectTreeItemClassReferenceDescriptor eObjectTreeItemClassReferenceDescriptor = (EObjectTreeItemClassReferenceDescriptor) descriptor;
         if (!doChildrenContainItemForFeature(eObjectTreeItemClassReferenceDescriptor.getEReference())) {        
-          treeItem = EObjectTreeItemForObject.createChildEObjectTreeItemForSingleObjectReference(eObject, eObjectTreeItemClassReferenceDescriptor.getEReference(), eObjectTreeItemClassReferenceDescriptor, getEObjectTreeView(), isInEditMode());
+          treeItem = createChildEObjectTreeItemForSingleObjectReference(eObject, eObjectTreeItemClassReferenceDescriptor.getEReference(), eObjectTreeItemClassReferenceDescriptor, getEObjectTreeView(), isInEditMode());
         } else {
           childIndex++;
         }
@@ -564,7 +562,7 @@ public class EObjectTreeItemForObject extends EObjectTreeItem {
    * {@inheritDoc}
    */
   @Override
-  public TransferMode isDropPossible(DragEvent dragEvent) {  
+  public TransferMode getTransferModeForDrop(DragEvent dragEvent) {  
     boolean dropPossible = true;
     
     Dragboard dragboard = dragEvent.getDragboard();
@@ -613,21 +611,17 @@ public class EObjectTreeItemForObject extends EObjectTreeItem {
       }
     }
       
-    if (dropPossible) {
-      if (sourceReference.isContainment()  &&  !destinationReference.isContainment()) {
-        LOGGER.severe("Cut and paste from a containment reference to a non-containment reference is not allowed");
-        dropPossible = false;
-      }
+    if (dropPossible  &&  sourceReference.isContainment()  &&  !destinationReference.isContainment()) {
+      LOGGER.severe("Cut and paste from a containment reference to a non-containment reference is not allowed");
+      dropPossible = false;
     }
     
     if (dropPossible) {
       return TransferMode.MOVE;
     } else {
       BiPredicate<EObjectTreeItem, Dragboard> isDropPossibleFunction = getEObjectTreeView().getIsDropPossibleFunction();
-      if (isDropPossibleFunction != null) {
-        if (isDropPossibleFunction.test(this, dragboard)) {
-          return TransferMode.COPY;
-        }
+      if (isDropPossibleFunction != null  &&  isDropPossibleFunction.test(this, dragboard)) {
+        return TransferMode.COPY;
       }
     }
     
@@ -639,9 +633,9 @@ public class EObjectTreeItemForObject extends EObjectTreeItem {
    */
   @Override
   public void handleDragDropped(DragEvent dragEvent) {
-    LOGGER.info("=> dragEvent" + EObjectTreeItem.dragEventToString(dragEvent));
+    LOGGER.info("=> dragEvent" + dragEventToString(dragEvent));
 
-    if (isDropPossible(dragEvent) == null) {
+    if (getTransferModeForDrop(dragEvent) == null) {
       return;
     }
 

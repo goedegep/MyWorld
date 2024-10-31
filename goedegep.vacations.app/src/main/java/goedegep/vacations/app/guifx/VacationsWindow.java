@@ -201,7 +201,7 @@ public class VacationsWindow extends JfxStage {
    * @param customization the GUI customization.
    */
   public VacationsWindow(CustomizationFx customization) {
-    super(null, customization);
+    super(customization, null);
     LOGGER.info("=>");
     
     componentFactory = customization.getComponentFactoryFx();
@@ -2752,7 +2752,7 @@ public class VacationsWindow extends JfxStage {
     if (title == null) {
       title = "MapImage";
     }
-    JfxStage jfxStage = new JfxStage(title, staticCustomization);
+    JfxStage jfxStage = new JfxStage(staticCustomization, title);
     TravelMapView imageTravelMapView = new TravelMapView(customization, jfxStage, poiIcons, null);
 
     Double height = mapImage.getImageHeight();

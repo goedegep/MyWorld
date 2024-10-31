@@ -87,7 +87,7 @@ public class EObjectTreeItemForObjectList extends EObjectTreeItem {
    * @return the real (casted) value.
    */
   EList<?> getRealValue() {
-    return ((EList<?>) getValue());
+    return (EList<?>) getValue();
   }
   
   /**
@@ -292,8 +292,8 @@ public class EObjectTreeItemForObjectList extends EObjectTreeItem {
    * {@inheritDoc}
    */
   @Override
-  public TransferMode isDropPossible(DragEvent dragEvent) {
-    LOGGER.info("=> dragEvent=" + EObjectTreeItem.dragEventToString(dragEvent));
+  public TransferMode getTransferModeForDrop(DragEvent dragEvent) {
+    LOGGER.info("=> dragEvent=" + dragEventToString(dragEvent));
     
     boolean dropPossible = true;
     
@@ -342,21 +342,17 @@ public class EObjectTreeItemForObjectList extends EObjectTreeItem {
       }
     }
       
-    if (dropPossible) {
-      if (sourceReference.isContainment()  &&  !destinationReference.isContainment()) {
-        LOGGER.severe("Cut and paste from a containment reference to a non-containment reference is not allowed");
-        dropPossible = false;
-      }
+    if (dropPossible  &&  sourceReference.isContainment()  &&  !destinationReference.isContainment()) {
+      LOGGER.severe("Cut and paste from a containment reference to a non-containment reference is not allowed");
+      dropPossible = false;
     }
     
     if (dropPossible) {
       return TransferMode.MOVE;
     } else {
       BiPredicate<EObjectTreeItem, Dragboard> isDropPossibleFunction = getEObjectTreeView().getIsDropPossibleFunction();
-      if (isDropPossibleFunction != null) {
-        if (isDropPossibleFunction.test(this, dragboard)) {
-          return TransferMode.COPY;
-        }
+      if (isDropPossibleFunction != null  &&  isDropPossibleFunction.test(this, dragboard)) {
+        return TransferMode.COPY;
       }
     }
     
@@ -368,9 +364,9 @@ public class EObjectTreeItemForObjectList extends EObjectTreeItem {
    */
   @Override
   public void handleDragDropped(DragEvent dragEvent) {
-    LOGGER.info("=> dragEvent" + EObjectTreeItem.dragEventToString(dragEvent));
+    LOGGER.info("=> dragEvent" + dragEventToString(dragEvent));
 
-    if (isDropPossible(dragEvent) == null) {
+    if (getTransferModeForDrop(dragEvent) == null) {
       return;
     }
 
@@ -403,8 +399,7 @@ public class EObjectTreeItemForObjectList extends EObjectTreeItem {
     } else {
       BiPredicate<EObjectTreeItem, Dragboard> handleDropFunction = getEObjectTreeView().getHandleDropFunction();
       if (handleDropFunction != null) {
-        if (handleDropFunction.test(this, dragboard)) {
-        }
+        handleDropFunction.test(this, dragboard);
       }
     }
   }

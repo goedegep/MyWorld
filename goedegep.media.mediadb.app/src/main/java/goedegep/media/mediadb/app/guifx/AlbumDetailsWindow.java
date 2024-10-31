@@ -112,7 +112,7 @@ public class AlbumDetailsWindow extends JfxStage {
    * @param customization the GUI customization.
    */
   public AlbumDetailsWindow(CustomizationFx customization, MediaDb mediaDb, Map<Track, Path> trackDiscLocationMap, AlbumsTable albumsTable) {
-    super("Album details", customization);
+    super(customization, "Album details");
     
     this.customization = customization;
     this.mediaDb = mediaDb;
@@ -163,7 +163,9 @@ public class AlbumDetailsWindow extends JfxStage {
     
     Button editButton = componentFactory.createButton("Open in Album Editor", "Open edit window");
     editButton.setOnAction((e) -> {
-      new AlbumEditor(getCustomization(), mediaDb).runEditor().setObject(album);
+      AlbumEditor albumEditor = AlbumEditor.newInstance(customization, mediaDb);
+      albumEditor.setObject(album);
+      albumEditor.show();
     });
     gridPane.add(editButton, 3, 0);
     
@@ -433,20 +435,13 @@ public class AlbumDetailsWindow extends JfxStage {
             buf.append(", ");
           }
           buf.append(GuiUtils.createMediumText(iHaveOnMedium.getMediumType()));
-          if (iHaveOnMedium.isSetSourceTypes()) {
+          if (iHaveOnMedium.isSetSourceType()) {
             buf.append(" (from ");
-            boolean firstSourceType = true;
-            for (InformationType sourceType: iHaveOnMedium.getSourceTypes()) {
-              if (firstSourceType) {
-                firstSourceType = false;
-              } else {
-                buf.append(", ");
-              }
-              if (sourceType != InformationType.NOT_SET) {
-                buf.append(sourceType.getLiteral());
-              } else {
-                buf.append("??");
-              }
+            InformationType sourceType = iHaveOnMedium.getSourceType();
+            if (sourceType != InformationType.NOT_SET) {
+              buf.append(sourceType.getLiteral());
+            } else {
+              buf.append("??");
             }
             buf.append(")");
           }

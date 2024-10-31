@@ -11,7 +11,6 @@ import goedegep.events.model.EventInfo;
 import goedegep.events.model.Events;
 import goedegep.events.model.EventsFactory;
 import goedegep.events.model.EventsPackage;
-import goedegep.jfx.ComponentFactoryFx;
 import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.JfxStage;
 import goedegep.jfx.MenuUtil;
@@ -37,31 +36,54 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 
+/**
+ * This class is the main window of the Events application.
+ * <p>
+ * This window shows an overview of the {@link Events} in a table.<br/>
+ * Creation of this window requires that {@code EventsRegistry.eventsFileName} has a value that points to a file with {@link Events} (see {@link EventsLauncher}).
+ */
 public class EventsWindow extends JfxStage {
   private static final Logger LOGGER = Logger.getLogger(EventsWindow.class.getName());
   private static final String NEWLINE = System.getProperty("line.separator");
   
-  private CustomizationFx customization = null;
-  private ComponentFactoryFx componentFactory = null;
+  /**
+   * The resources for this application.
+   */
   private EventsAppResources appResources;
+  
+  /**
+   * The {@link EMFResource} for the {@link Events}
+   */
   private EMFResource<Events> eventsResource = null;
+  
+  /**
+   * The {@link Events}
+   */
   private Events events = null;
+  
+  /**
+   * The table showing the overview of the events.
+   */
   private EventsTable eventsTable = null;
+  
+  /**
+   * A {@code Label} showing status information at the bottom of the window.
+   */
   private Label statusLabel = new Label("Nothing to report for now");
 
+  
   /**
    * Constructor
+   * <p>
+   * Creation of this window requires that {@code EventsRegistry.eventsFileName} has a value that points to a file with {@link Events}.
    * 
    * @param customization the GUI customization.
    */
   public EventsWindow(CustomizationFx customization) {
-    super(null, customization);
+    super(customization, null);
     LOGGER.info("=>");
     
-    componentFactory = customization.getComponentFactoryFx();
     appResources = (EventsAppResources) getResources();
-        
-    this.customization = customization;
         
     createGUI();
 
@@ -74,38 +96,18 @@ public class EventsWindow extends JfxStage {
     try {
       events = eventsResource.load(EventsRegistry.eventsFileName);
     } catch (FileNotFoundException e) {
-      LOGGER.severe("File not found: " + e.getMessage());
-      Alert alert = componentFactory.createYesNoConfirmationDialog(
-          "Events file not found",
-          "Header",
-          "Content");
-      alert.showAndWait().ifPresent(response -> {
-        if (response == ButtonType.YES) {
-          LOGGER.severe("yes, create file");
-          events = eventsResource.newEObject();
-          try {
-            eventsResource.save(EventsRegistry.eventsFileName);
-          } catch (IOException e1) {
-            e1.printStackTrace();
-          }
-        } else {
-          LOGGER.severe("no, don't create file");
-        }
-      });
+      e.printStackTrace();
+      return;
     }
                
     setX(10);
     setY(20);
         
-    if (events != null) {
-      eventsTable.setObjects(events, EventsPackage.eINSTANCE.getEvents_Events());
-    }
+    eventsTable.setObjects(events, EventsPackage.eINSTANCE.getEvents_Events());
     
     updateTitle();
     
     eventsResource.dirtyProperty().addListener((observable, oldValue, newValue) -> updateTitle());
-        
-    eventsResource.addNotificationListener(this::handleChangesInTheEventsData);
     
     show();
     
@@ -143,7 +145,9 @@ public class EventsWindow extends JfxStage {
   }
   
   private void LaunchEventsEditor(EventInfo event) {
-    new EventsEditor(customization, events).runEditor().setObject(event);
+    EventsEditor eventsEditor = EventsEditor.newInstance(customization, events);
+    eventsEditor.setObject(event);
+    eventsEditor.show();
   }
   
   /**
@@ -202,8 +206,7 @@ public class EventsWindow extends JfxStage {
         
     Button newEventButton = componentFactory.createButton("New Event", "Open the Event Editor for a new event");
     newEventButton.setOnAction(e -> {
-      EventsEditor eventsEditor = new EventsEditor(customization, events);
-      eventsEditor.runEditor();
+      EventsEditor.newInstance(customization, events).show();
     });
     hBox.getChildren().add(newEventButton);
     
@@ -230,13 +233,7 @@ public class EventsWindow extends JfxStage {
   private void exportEventsToPdf() {
     
   }
-  
-  
-  private void handleChangesInTheEventsData(Notification notification) {
-    LOGGER.info("=>");
     
-  }
-  
   private void showPropertyDescriptorsEditor() {
     new PropertyDescriptorsEditorFx(customization, EventsRegistry.propertyDescriptorsResource);
   }

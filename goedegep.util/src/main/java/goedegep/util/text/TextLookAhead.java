@@ -9,5 +9,5 @@ public interface TextLookAhead {
    * @param key The string with which the returned object shall start.
    * @return The first object which starts with the 'key', or null if none of the objects starts with the 'key'.
    */
-  public Object doLookAhead(String key);
+  Object doLookAhead(String key);
 }

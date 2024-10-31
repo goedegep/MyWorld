@@ -56,7 +56,7 @@ public class FixedPointValue implements Comparator<FixedPointValue>, Comparable<
   }
 
   public FixedPointValue multiply(FixedPointValue factor) {
-    return new FixedPointValue((value * factor.value) / factor.factor, this.factor);
+    return new FixedPointValue(value * factor.value / factor.factor, this.factor);
   }
 
   public FixedPointValue divide(long factor) {
@@ -175,7 +175,7 @@ public class FixedPointValue implements Comparator<FixedPointValue>, Comparable<
   }
   
   public int compare(FixedPointValue fixedPointValue1, FixedPointValue fixedPointValue2) {
-    if ((fixedPointValue1.factor != fixedPointValue2.factor)) {
+    if (fixedPointValue1.factor != fixedPointValue2.factor) {
 //      // If the factors aren't equal, the fixedPointValues aren't equal.
 //      // The factors are made equal, only to return -1 or 1.
 //      if (fixedPointValue1.factor < fixedPointValue2.factor) {
@@ -223,7 +223,7 @@ public class FixedPointValue implements Comparator<FixedPointValue>, Comparable<
   }
   
   public String toString() {
-    return ("value = " + value + ", factor = " + factor);
+    return "value = " + value + ", factor = " + factor;
   }
   
   public static FixedPointValue max(FixedPointValue a, FixedPointValue b) {

@@ -101,7 +101,7 @@ public class EObjectTreeCellHelperForObjectList extends EObjectTreeCellHelperTem
 
       if ((nodeOperationDescriptor.getOperation() == Operation.NEW_OBJECT)  &&
           (subTypes != null)  &&  (subTypes.size() > 1)) {
-        menu = createSubClassesMenu(nodeOperationDescriptor.getMenuText(), subTypes, true, ((NodeOperationDescriptorNew) nodeOperationDescriptor).getNewEObjectInitializationFunction());
+        menu = createSubClassesMenu(nodeOperationDescriptor.getMenuText(), subTypes, ((NodeOperationDescriptorNew) nodeOperationDescriptor).getNewEObjectInitializationFunction());
         contextMenu.getItems().add(menu);
       } else {
 
@@ -167,7 +167,7 @@ public class EObjectTreeCellHelperForObjectList extends EObjectTreeCellHelperTem
    * @param uponObjectCreatedMethod this method, if specified, is called after the object is created. This is typically used to do some further initialization.
    * @return a {@code Menu} for the {@classes}.
    */
-  private Menu createSubClassesMenu(String menuText, List<EClass> classes, boolean before, BiConsumer<EObject, EObjectTreeItem> uponObjectCreatedMethod) {
+  private Menu createSubClassesMenu(String menuText, List<EClass> classes, BiConsumer<EObject, EObjectTreeItem> uponObjectCreatedMethod) {
     Menu menu = new Menu(menuText);
     MenuItem menuItem;
     
@@ -203,12 +203,10 @@ public class EObjectTreeCellHelperForObjectList extends EObjectTreeCellHelperTem
     
     Image image = null;
 
-    if (object != null) {
-      if (itemDescriptor != null) {
-        Function<Object, Image> nodeIconFunction = itemDescriptor.getNodeIconFunction();
-        if (nodeIconFunction != null) {
-          image = nodeIconFunction.apply(object);
-        }
+    if (object != null  &&  itemDescriptor != null) {
+      Function<Object, Image> nodeIconFunction = itemDescriptor.getNodeIconFunction();
+      if (nodeIconFunction != null) {
+        image = nodeIconFunction.apply(object);
       }
     }
     

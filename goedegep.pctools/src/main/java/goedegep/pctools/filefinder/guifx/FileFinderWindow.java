@@ -62,7 +62,7 @@ public class FileFinderWindow extends JfxStage {
   private StatusPanel statusPanel;                     // shows status information.
 
   public FileFinderWindow(CustomizationFx customization) {
-    super(WINDOW_TITLE, customization);
+    super(customization, WINDOW_TITLE);
         
     componentFactory = getComponentFactory();
     

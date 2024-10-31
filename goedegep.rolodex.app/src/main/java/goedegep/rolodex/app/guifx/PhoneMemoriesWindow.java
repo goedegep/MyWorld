@@ -86,7 +86,7 @@ public class PhoneMemoriesWindow extends JfxStage {
    * @param rolodex a <code>Rolodex</code>
    */
   public PhoneMemoriesWindow(CustomizationFx customization, Rolodex rolodex) {
-    super(WINDOW_TITLE, customization);
+    super(customization, WINDOW_TITLE);
     
     this.customization = customization;
     this.rolodex = rolodex;
@@ -142,7 +142,7 @@ public class PhoneMemoriesWindow extends JfxStage {
      * Therefore the items in the table are of type {@code EObject}.
      */
     createPhoneMemoriesModel(phonesWithMemory.size());
-    phoneMemoriesTable = new EObjectTable<EObject>(customization, phoneMemoryEntryClass, new PhoneMemoriesTableDescriptor(customization, phonesWithMemory));
+    phoneMemoriesTable = new EObjectTable<EObject>(customization, phoneMemoryEntryClass, new PhoneMemoriesTableDescriptor(phonesWithMemory));
     EObjectListContainerSpecification listContainerSpecification = phoneMemoriesTable.createObjectListContainer();
     List<EObject> list = EmfUtil.getListUnchecked(listContainerSpecification.listContainer(), listContainerSpecification.listReference());
     fillData(phonesWithMemory, list);
@@ -352,7 +352,7 @@ public class PhoneMemoriesWindow extends JfxStage {
      * @param customization the GUI customization
      * @param phonesWithMemory the list of phones with a memory (address book)
      */
-    public PhoneMemoriesTableDescriptor(CustomizationFx customization, List<Phone> phonesWithMemory) {
+    public PhoneMemoriesTableDescriptor(List<Phone> phonesWithMemory) {
       super("There are no memory entries to show", null, null, null);
 
       List<EObjectTableColumnDescriptorAbstract<EObject>> columnDescriptors = new ArrayList<>();

@@ -13,7 +13,8 @@ import org.eclipse.emf.ecore.EObject;
  * <!-- end-user-doc -->
  *
  * <!-- begin-model-doc -->
- * Bijvoorbeeld een LP of CD.
+ * In this model an album can be any collection of tracks. It can be an LP, CD, BD, or your own compilation of tracks.<br/>
+ * An album consists of one or more discs. So even if you have your own compilation of tracks, which you only have on your harddisk, this is still handled via tracks on a disc.
  * <!-- end-model-doc -->
  *
  * <p>
@@ -49,6 +50,9 @@ public interface Album extends EObject {
    * there really should be more of a description here...
    * </p>
    * <!-- end-user-doc -->
+   * <!-- begin-model-doc -->
+   * The album title.
+   * <!-- end-model-doc -->
    * @return the value of the '<em>Title</em>' attribute.
    * @see #isSetTitle()
    * @see #unsetTitle()
@@ -102,6 +106,9 @@ public interface Album extends EObject {
    * there really should be more of a description here...
    * </p>
    * <!-- end-user-doc -->
+   * <!-- begin-model-doc -->
+   * The date on which the album was released (issued).
+   * <!-- end-model-doc -->
    * @return the value of the '<em>Release Date</em>' attribute.
    * @see #isSetReleaseDate()
    * @see #unsetReleaseDate()
@@ -156,6 +163,9 @@ public interface Album extends EObject {
    * there really should be more of a description here...
    * </p>
    * <!-- end-user-doc -->
+   * <!-- begin-model-doc -->
+   * The discs of the album. Even if an album has no physicals discs, the track references will be divided over one of more discs.
+   * <!-- end-model-doc -->
    * @return the value of the '<em>Discs</em>' containment reference list.
    * @see goedegep.media.mediadb.model.MediadbPackage#getAlbum_Discs()
    * @model containment="true"
@@ -225,6 +235,9 @@ public interface Album extends EObject {
    * there really should be more of a description here...
    * </p>
    * <!-- end-user-doc -->
+   * <!-- begin-model-doc -->
+   * A list of file names for the images on the front of the album.
+   * <!-- end-model-doc -->
    * @return the value of the '<em>Images Front</em>' attribute list.
    * @see #isSetImagesFront()
    * @see #unsetImagesFront()
@@ -263,6 +276,9 @@ public interface Album extends EObject {
    * there really should be more of a description here...
    * </p>
    * <!-- end-user-doc -->
+   * <!-- begin-model-doc -->
+   * The official id of the album.
+   * <!-- end-model-doc -->
    * @return the value of the '<em>Id</em>' attribute.
    * @see #isSetId()
    * @see #unsetId()
@@ -317,6 +333,9 @@ public interface Album extends EObject {
    * there really should be more of a description here...
    * </p>
    * <!-- end-user-doc -->
+   * <!-- begin-model-doc -->
+   * The list of players on this album.
+   * <!-- end-model-doc -->
    * @return the value of the '<em>Players</em>' containment reference list.
    * @see #isSetPlayers()
    * @see #unsetPlayers()
@@ -356,6 +375,9 @@ public interface Album extends EObject {
    * there really should be more of a description here...
    * </p>
    * <!-- end-user-doc -->
+   * <!-- begin-model-doc -->
+   * A list of file names for the images on the inside of the album.
+   * <!-- end-model-doc -->
    * @return the value of the '<em>Images Front Inside</em>' attribute list.
    * @see #isSetImagesFrontInside()
    * @see #unsetImagesFrontInside()
@@ -395,6 +417,9 @@ public interface Album extends EObject {
    * there really should be more of a description here...
    * </p>
    * <!-- end-user-doc -->
+   * <!-- begin-model-doc -->
+   * A list of file names for the images on the back of the album.
+   * <!-- end-model-doc -->
    * @return the value of the '<em>Images Back</em>' attribute list.
    * @see #isSetImagesBack()
    * @see #unsetImagesBack()
@@ -434,6 +459,9 @@ public interface Album extends EObject {
    * there really should be more of a description here...
    * </p>
    * <!-- end-user-doc -->
+   * <!-- begin-model-doc -->
+   * A list of file names for the images on the label of the album.
+   * <!-- end-model-doc -->
    * @return the value of the '<em>Images Label</em>' attribute list.
    * @see #isSetImagesLabel()
    * @see #unsetImagesLabel()
@@ -472,6 +500,9 @@ public interface Album extends EObject {
    * there really should be more of a description here...
    * </p>
    * <!-- end-user-doc -->
+   * <!-- begin-model-doc -->
+   * A title for the description of the album.
+   * <!-- end-model-doc -->
    * @return the value of the '<em>Description Title</em>' attribute.
    * @see #isSetDescriptionTitle()
    * @see #unsetDescriptionTitle()
@@ -525,6 +556,9 @@ public interface Album extends EObject {
    * there really should be more of a description here...
    * </p>
    * <!-- end-user-doc -->
+   * <!-- begin-model-doc -->
+   * A free text description of the album.
+   * <!-- end-model-doc -->
    * @return the value of the '<em>Description</em>' attribute.
    * @see #isSetDescription()
    * @see #unsetDescription()
@@ -578,12 +612,16 @@ public interface Album extends EObject {
    * there really should be more of a description here...
    * </p>
    * <!-- end-user-doc -->
+   * <!-- begin-model-doc -->
+   * Your personal information on the album.<br/>
+   * This information shall always be there, as the {@albumType} is mandatory.
+   * <!-- end-model-doc -->
    * @return the value of the '<em>My Info</em>' containment reference.
    * @see #isSetMyInfo()
    * @see #unsetMyInfo()
    * @see #setMyInfo(MyInfo)
    * @see goedegep.media.mediadb.model.MediadbPackage#getAlbum_MyInfo()
-   * @model containment="true" unsettable="true"
+   * @model containment="true" unsettable="true" required="true"
    * @generated
    */
   MyInfo getMyInfo();
@@ -631,6 +669,9 @@ public interface Album extends EObject {
    * there really should be more of a description here...
    * </p>
    * <!-- end-user-doc -->
+   * <!-- begin-model-doc -->
+   * If set to true, this indicates that the album is a movie soundtrack.
+   * <!-- end-model-doc -->
    * @return the value of the '<em>Soundtrack</em>' attribute.
    * @see #setSoundtrack(boolean)
    * @see goedegep.media.mediadb.model.MediadbPackage#getAlbum_Soundtrack()
@@ -652,6 +693,13 @@ public interface Album extends EObject {
   /**
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
+   * <!-- begin-model-doc -->
+   * Get the track reference specified by disc number and track number.
+   * 
+   * @param discNr The disc number (starting at 1) on which a track is to be found.
+   * @param trackNr The track number.
+   * @return The {@code TrackReference} specified by {@code discNr} and {@code trackNr}, or null if such a track doesn't exist.
+   * <!-- end-model-doc -->
    * @model
    * @generated
    */
@@ -660,6 +708,12 @@ public interface Album extends EObject {
   /**
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
+   * <!-- begin-model-doc -->
+   * Get a player specified by the artist.
+   * 
+   * @param artist The {@code Artist} of the player.
+   * @return the {@code Player} for the specified {@code artist}, or null if such a player doesn't exist.
+   * <!-- end-model-doc -->
    * @model
    * @generated
    */
@@ -675,6 +729,8 @@ public interface Album extends EObject {
    * where:<br/>
    *  &lt;artist&gt; is the name of the artist of the album, or '&lt;no artist&gt;' if this information isn't available.<br/>.
    *  &lt;title&gt; is the title of the album,  '&lt;no title&gt;' if title isn't set.
+   * 
+   * @return the artist and title of the album.
    * <!-- end-model-doc -->
    * @model kind="operation"
    * @generated
@@ -686,7 +742,8 @@ public interface Album extends EObject {
    * <!-- end-user-doc -->
    * <!-- begin-model-doc -->
    * Check whether the album is a multi disc album, i.e. the album consists of more than one disc.<br/>
-   * The result of this method is the same as: album.getDiscs().size() > 1
+   * The result of this method is the same as: album.getDiscs().size() > 1.
+   * 
    * @return true if the album is a multi disc album, false otherwise.
    * <!-- end-model-doc -->
    * @model kind="operation"
@@ -699,6 +756,7 @@ public interface Album extends EObject {
    * <!-- end-user-doc -->
    * <!-- begin-model-doc -->
    * Get the Disc of a single disc album. A RuntimeException is thrown if the album is a multi disc album.
+   * 
    * @return the disc of the album, or null if the album has no disc.
    * <!-- end-model-doc -->
    * @model kind="operation"
@@ -726,7 +784,7 @@ public interface Album extends EObject {
    * Check whether I still have to judge the album or tracks of the album.<br/>
    * This is the case if {@code iWant} is set to 'DONT KNOW' at album level or on any track.
    * 
-   * @return true if I still have to judge this album
+   * @return true if I still have to judge this album, false otherwise.
    * <!-- end-model-doc -->
    * @model
    * @generated

@@ -10,19 +10,16 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.eclipse.emf.common.util.EList;
-import org.eclipse.emf.ecore.EAttribute;
-import org.eclipse.emf.ecore.EClass;
-import org.eclipse.emf.ecore.EFactory;
 import org.eclipse.emf.ecore.EObject;
-import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.EReference;
-import org.eclipse.emf.ecore.EcoreFactory;
-import org.eclipse.emf.ecore.EcorePackage;
 
-import goedegep.util.emf.samplemodel.DescribedItem;
-import goedegep.util.emf.samplemodel.DirectorySpecification;
-import goedegep.util.emf.samplemodel.DiscStructureSpecification;
-import goedegep.util.emf.samplemodel.PCToolsFactory;
+import goedegep.emfsample.model.Birthday;
+import goedegep.emfsample.model.Company;
+import goedegep.emfsample.model.EmfSampleFactory;
+import goedegep.emfsample.model.EmfSamplePackage;
+import goedegep.emfsample.model.Gender;
+import goedegep.emfsample.model.Person;
+import goedegep.util.datetime.DateUtil;
 import goedegep.util.logging.MyLoggingFormatter;
 import goedegep.util.xtree.XNodeDataType;
 import goedegep.util.xtree.XTreeNodeVisitResult;
@@ -35,6 +32,7 @@ import goedegep.util.xtree.serialized.SerializedXTree;
 
 public class EObjectPath {
   private final static Logger LOGGER = Logger.getLogger(EObjectPath.class.getName());
+  private final static EmfSampleFactory EMF_SAMPLE_FACTORY = EmfSampleFactory.eINSTANCE;
   
   private SerializedXTree pathXTree;
   
@@ -171,12 +169,13 @@ public class EObjectPath {
     logSetup(Level.SEVERE, null);
     
     // Create an EObject hierarchy.
-    DiscStructureSpecification discStructureSpecification = createSampleDiscStructureSpecification();
-    DirectorySpecification directorySpecification = discStructureSpecification.getDirectorySpecifications().get(1);
-    System.out.println("directorySpecification: " + directorySpecification.toString());
+    Company company = createCompany();
+    Person person = company.getEmployees().get(1);
+    Birthday personsBirthday = person.getBirthday();
+    System.out.println("personsBirthday: " + personsBirthday.toString());
     
     // Get the path for an object
-    EObjectPath eObjectPath = new EObjectPath(directorySpecification);
+    EObjectPath eObjectPath = new EObjectPath(personsBirthday);
     
     // Serialize the path
     ByteBuffer serialized = eObjectPath.getSerializedData();
@@ -198,11 +197,15 @@ public class EObjectPath {
     EObjectPath reconstructedPath = new EObjectPath(serialized);
     
     // Retrieve the object
-    EObject retrievedObject = reconstructedPath.resolveToEObject(discStructureSpecification);
+    EObject retrievedObject = reconstructedPath.resolveToEObject(company);
     System.out.println("retrievedObject: " + retrievedObject.toString());
     
     // Check that it is the original object.
-    
+    if (retrievedObject == personsBirthday) {
+      System.out.println("Ok");
+    } else {
+      System.out.println("NOT Ok");
+    }
   }
 
   /**
@@ -246,40 +249,65 @@ public class EObjectPath {
     }
 
   }
-  
-  private static DiscStructureSpecification createSampleDiscStructureSpecification() {
-    PCToolsFactory pcToolsFactory = PCToolsFactory.eINSTANCE;
-    DescribedItem describedItem = null;
-        
-    DiscStructureSpecification discStructureSpecification = pcToolsFactory.createDiscStructureSpecification();
-    discStructureSpecification.setName("Test disc structure specification");
-    discStructureSpecification.setDescription("Specification for a directory structure under 'src/test/resources' for testing this program");
-    
-    describedItem = pcToolsFactory.createDescribedItem();
-    describedItem.setItem("blablafile.bla");
-    describedItem.setDescription("Dit is alleen maar blabla");
-    discStructureSpecification.getFilesToIgnoreCompletely().add(describedItem);
-    
-    describedItem = pcToolsFactory.createDescribedItem();
-    describedItem.setItem("ignoreMeDirectory");
-    describedItem.setDescription("Een map die genegeerd moet worden");
-    discStructureSpecification.getDirectoriesToIgnoreCompletely().add(describedItem);
-    
-    DirectorySpecification directorySpecification;
-    
-    directorySpecification = pcToolsFactory.createDirectorySpecification();
-    directorySpecification.setDirectoryPath("K:\\EclipseWorkspace\\goedegep.pctools\\target\\test-classes\\Test Directory Structure\\directory not to be checked\\controlled directory");
-    directorySpecification.setDescription("Controlled directory");
-    directorySpecification.setSynchronizationSpecification("Yes this is marked as synchronized");
-    discStructureSpecification.getDirectorySpecifications().add(directorySpecification);
-    
-    directorySpecification = pcToolsFactory.createDirectorySpecification();
-    directorySpecification.setDirectoryPath("K:\\EclipseWorkspace\\goedegep.pctools\\target\\test-classes\\Test Directory Structure\\directory to be checked");
-    directorySpecification.setDescription("Directory to be checked");
-    directorySpecification.setToBeChecked(true);
-    discStructureSpecification.getDirectorySpecifications().add(directorySpecification);
 
-    return discStructureSpecification;
+  /**
+   * Create the initial company information.
+   * <p>
+   * The {@code Company} is created by using an {@link EMFResource}.
+   * 
+   * @return a {@code Company}; the newly created company information.
+   */
+  private static Company createCompany() {
+    EMFResource<Company> emfResource = new EMFResource<>(EmfSamplePackage.eINSTANCE, () -> EMF_SAMPLE_FACTORY.createCompany(), ".xmi");
+    Company company = emfResource.newEObject();
+    
+    Person person;
+    Birthday birthday;
+    
+    person = EMF_SAMPLE_FACTORY.createPerson();
+    birthday = EMF_SAMPLE_FACTORY.createBirthday();
+    birthday.setDay(12);
+    birthday.setMonth(4);
+    birthday.setYear(1987);
+    person.setBirthday(birthday);
+    person.getFirstnames().add("John");
+    person.setSurname("Williams");
+    person.setRetirementDate(DateUtil.createDate(1, birthday.getMonth(), birthday.getYear() + 67));
+    person.setGender(Gender.MALE);
+    person.setHasChildren(true);
+    company.getEmployees().add(person);
+    company.getBirthdays().add(birthday);
+    
+    person = EMF_SAMPLE_FACTORY.createPerson();
+    birthday = EMF_SAMPLE_FACTORY.createBirthday();
+    birthday.setDay(23);
+    birthday.setMonth(8);
+    birthday.setYear(1966);
+    person.setBirthday(birthday);
+    person.getFirstnames().add("Eliza");
+    person.getFirstnames().add("Marie");
+    person.setSurname("Jones");
+    person.setRetirementDate(DateUtil.createDate(1, birthday.getMonth(), birthday.getYear() + 67));
+    person.setGender(Gender.FEMALE);
+    person.setHasChildren(true);
+    company.getEmployees().add(person);
+    company.getBirthdays().add(birthday);
+    
+    person = EMF_SAMPLE_FACTORY.createPerson();
+    birthday = EMF_SAMPLE_FACTORY.createBirthday();
+    birthday.setDay(1);
+    birthday.setMonth(12);
+    birthday.setYear(2001);
+    person.setBirthday(birthday);
+    person.getFirstnames().add("Jim");
+    person.setSurname("Dales");
+    person.setRetirementDate(DateUtil.createDate(1, birthday.getMonth(), birthday.getYear() + 67));
+    person.setGender(Gender.MALE);
+    person.setHasChildren(false);
+    company.getEmployees().add(person);
+    company.getBirthdays().add(birthday);
+    
+    return company;
   }
   
 }
@@ -399,71 +427,4 @@ class EObjectResolverVisitor implements XTreeNodeVisitor {
     return XTreeNodeVisitResult.CONTINUE;
   }
   
-}
-
-
-class APISampleModel {
-  private static EPackage apiPackage;
-  
-  private static EClass apiClass;
-  private static EAttribute apiNameAttribute;
-  private static EReference interfacesReference;
-  
-  private static EClass interfaceClass;
-  private static EAttribute interfaceNameAttribute;
-  
-  static {
-    createApiEPackage();
-  }
-  
-  private static EPackage createApiEPackage() {
-    EcoreFactory ecoreFactory = EcoreFactory.eINSTANCE;
-    EcorePackage ecorePackage = EcorePackage.eINSTANCE;
-    
-    apiPackage = ecoreFactory.createEPackage();
-    
-    interfaceClass = ecoreFactory.createEClass();
-    interfaceClass.setName("Interface");
-    interfaceNameAttribute = ecoreFactory.createEAttribute();
-    interfaceNameAttribute.setName("name");
-    interfaceNameAttribute.setEType(ecorePackage.getEString());
-    interfaceClass.getEStructuralFeatures().add(interfaceNameAttribute);
-    apiPackage.getEClassifiers().add(interfaceClass);
-    
-    apiClass = ecoreFactory.createEClass();
-    apiClass.setName("API");
-    
-    apiNameAttribute = ecoreFactory.createEAttribute();
-    apiNameAttribute.setName("name");
-    apiNameAttribute.setEType(ecorePackage.getEString());
-    apiClass.getEStructuralFeatures().add(apiNameAttribute);
-    
-    interfacesReference = ecoreFactory.createEReference();
-    interfacesReference.setName("interfaces");
-    interfacesReference.setEType(interfaceClass);
-    interfacesReference.setContainment(true);
-    interfacesReference.setLowerBound(0);
-    interfacesReference.setUpperBound(-1);
-    apiClass.getEStructuralFeatures().add(interfacesReference);
-    
-    apiPackage.getEClassifiers().add(apiClass);
-    
-    return apiPackage;
-  }
-
-  public static EObject createSampleAPI() {
-    EFactory apiFactory = apiPackage.getEFactoryInstance();
-    
-    EObject api = apiFactory.create(apiClass);
-    api.eSet(apiNameAttribute, "SampleAPI");
-    
-    EObject simpleInterface = apiFactory.create(interfaceClass);
-    simpleInterface.eSet(interfaceNameAttribute, "SimpleInterface");
-    
-    @SuppressWarnings("unchecked")
-    EList<EObject> interfaces = (EList<EObject>) api.eGet(interfacesReference);
-    interfaces.add(simpleInterface);
-
-    return api;
-  }
 }

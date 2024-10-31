@@ -16,7 +16,7 @@ public enum BinaryDirection {
   
   private int value;
   
-  private BinaryDirection(int value) {
+  BinaryDirection(int value) {
     this.value = value;
   }
   

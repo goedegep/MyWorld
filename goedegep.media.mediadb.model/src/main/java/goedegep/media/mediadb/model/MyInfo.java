@@ -11,6 +11,10 @@ import org.eclipse.emf.ecore.EObject;
  * A representation of the model object '<em><b>My Info</b></em>'.
  * <!-- end-user-doc -->
  *
+ * <!-- begin-model-doc -->
+ * This interface is used to add your personel information to an album.
+ * <!-- end-model-doc -->
+ *
  * <p>
  * The following features are supported:
  * </p>
@@ -33,6 +37,9 @@ public interface MyInfo extends EObject {
    * The list contents are of type {@link goedegep.media.mediadb.model.Album}.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
+   * <!-- begin-model-doc -->
+   * References to other albums. For example if you have only some tracks of the album available in a compilation album, refer to this compilation album.
+   * <!-- end-model-doc -->
    * @return the value of the '<em>Album References</em>' reference list.
    * @see #isSetAlbumReferences()
    * @see #unsetAlbumReferences()
@@ -70,7 +77,9 @@ public interface MyInfo extends EObject {
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * <!-- begin-model-doc -->
-   * This attribute is only used if there is no disc/track information present. If disc/track information is present the attribute shall be unset.
+   * Indication on whether you want to have this album or not.<br/>
+   * If you already have the album, this attribute shall not be set.<br/>
+   * This attribute shall only be used if the information is the same for all tracks.
    * <!-- end-model-doc -->
    * @return the value of the '<em>IWant</em>' attribute.
    * @see goedegep.media.mediadb.model.IWant
@@ -137,6 +146,9 @@ public interface MyInfo extends EObject {
    * The literals are from the enumeration {@link goedegep.media.mediadb.model.AlbumType}.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
+   * <!-- begin-model-doc -->
+   * The kind of album, see {@link AlbumType}.
+   * <!-- end-model-doc -->
    * @return the value of the '<em>Album Type</em>' attribute.
    * @see goedegep.media.mediadb.model.AlbumType
    * @see #isSetAlbumType()
@@ -192,6 +204,9 @@ public interface MyInfo extends EObject {
    * there really should be more of a description here...
    * </p>
    * <!-- end-user-doc -->
+   * <!-- begin-model-doc -->
+   * Your free text comments on the album.
+   * <!-- end-model-doc -->
    * @return the value of the '<em>My Comments</em>' attribute.
    * @see #isSetMyComments()
    * @see #unsetMyComments()
@@ -245,6 +260,9 @@ public interface MyInfo extends EObject {
    * there really should be more of a description here...
    * </p>
    * <!-- end-user-doc -->
+   * <!-- begin-model-doc -->
+   * Set this value to true if you had the album on LP.
+   * <!-- end-model-doc -->
    * @return the value of the '<em>Ive Had On LP</em>' attribute.
    * @see #setIveHadOnLP(boolean)
    * @see goedegep.media.mediadb.model.MediadbPackage#getMyInfo_IveHadOnLP()

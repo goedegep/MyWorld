@@ -94,6 +94,7 @@ public class Ov2DecodeFileIterator implements Iterator<Ov2Item> {
       try {
         inputSteam.close();
       } catch (IOException e) {
+        e.printStackTrace();
       }
     }
   }

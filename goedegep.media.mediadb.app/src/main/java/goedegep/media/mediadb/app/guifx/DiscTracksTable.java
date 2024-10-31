@@ -122,7 +122,7 @@ public class DiscTracksTable extends EObjectTable<TrackReference> {
    */
   private boolean hideOriginalTrackReference() {
     for (TrackReference trackReference: getItems()) {
-      if (trackReference.getOriginalAlbumTrackReference() != null) {
+      if (trackReference.isOriginalAlbumTrackReference()) {
         return false;
       }
     }
@@ -423,7 +423,7 @@ class DiscTracksTableDescriptor extends EObjectTableDescriptor<TrackReference> {
             else {
               setText(null);
               TrackReference trackReference = (TrackReference) item;
-              TrackReference originalTrackReference = trackReference.getOriginalAlbumTrackReference();
+              TrackReference originalTrackReference = trackReference.getTrack().getOriginalDiscTrackReference();
               if (originalTrackReference != null) {
                 setText(GuiUtils.createTrackReferenceText(originalTrackReference));
               }
@@ -447,7 +447,7 @@ class DiscTracksTableDescriptor extends EObjectTableDescriptor<TrackReference> {
               TrackReference trackReference = (TrackReference) item;
               MyTrackInfo myTrackInfo = trackReference.getMyTrackInfo();
               if (myTrackInfo != null) {
-                TrackReference compilationTrackReference = myTrackInfo.getCompilationTrackReference();
+                TrackReference compilationTrackReference = myTrackInfo.getTrackReference();
                 if (compilationTrackReference != null) {
                   setText(GuiUtils.createTrackReferenceText(compilationTrackReference));
                 }

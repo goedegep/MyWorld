@@ -143,7 +143,7 @@ public class DouglasPeuckerReducer {
     double bottom = Math.hypot(lineStart.getLatitude() * 1e6 - lineEnd.getLatitude() * 1e6,
         lineStart.getLongitude() * 1e6 - lineEnd.getLongitude() * 1e6);
 
-    return (area / bottom * 2.0);
+    return area / bottom * 2.0;
   }
 
 }

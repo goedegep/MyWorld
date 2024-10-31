@@ -2,17 +2,12 @@
  */
 package goedegep.media.mediadb.model.impl;
 
-import java.util.Collection;
 import java.util.logging.Logger;
 
 import org.eclipse.emf.common.notify.Notification;
-import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
-import org.eclipse.emf.ecore.util.EDataTypeUniqueEList;
-import org.eclipse.emf.ecore.util.InternalEList;
-
 import goedegep.media.mediadb.model.InformationType;
 import goedegep.media.mediadb.model.MediadbPackage;
 import goedegep.media.mediadb.model.MediumInfo;
@@ -28,8 +23,8 @@ import goedegep.media.mediadb.model.MediumType;
  * <ul>
  *   <li>{@link goedegep.media.mediadb.model.impl.MediumInfoImpl#getMediumType <em>Medium Type</em>}</li>
  *   <li>{@link goedegep.media.mediadb.model.impl.MediumInfoImpl#getInformationType <em>Information Type</em>}</li>
- *   <li>{@link goedegep.media.mediadb.model.impl.MediumInfoImpl#getSourceTypes <em>Source Types</em>}</li>
  *   <li>{@link goedegep.media.mediadb.model.impl.MediumInfoImpl#getSourceBitRate <em>Source Bit Rate</em>}</li>
+ *   <li>{@link goedegep.media.mediadb.model.impl.MediumInfoImpl#getSourceType <em>Source Type</em>}</li>
  * </ul>
  *
  * @generated
@@ -97,16 +92,6 @@ public class MediumInfoImpl extends MinimalEObjectImpl.Container implements Medi
   protected boolean informationTypeESet;
 
   /**
-   * The cached value of the '{@link #getSourceTypes() <em>Source Types</em>}' attribute list.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getSourceTypes()
-   * @generated
-   * @ordered
-   */
-  protected EList<InformationType> sourceTypes;
-
-  /**
    * The default value of the '{@link #getSourceBitRate() <em>Source Bit Rate</em>}' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -134,6 +119,35 @@ public class MediumInfoImpl extends MinimalEObjectImpl.Container implements Medi
    * @ordered
    */
   protected boolean sourceBitRateESet;
+
+  /**
+   * The default value of the '{@link #getSourceType() <em>Source Type</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getSourceType()
+   * @generated
+   * @ordered
+   */
+  protected static final InformationType SOURCE_TYPE_EDEFAULT = InformationType.NOT_SET;
+
+  /**
+   * The cached value of the '{@link #getSourceType() <em>Source Type</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getSourceType()
+   * @generated
+   * @ordered
+   */
+  protected InformationType sourceType = SOURCE_TYPE_EDEFAULT;
+
+  /**
+   * This is true if the Source Type attribute has been set.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  protected boolean sourceTypeESet;
 
   /**
    * <!-- begin-user-doc -->
@@ -264,41 +278,6 @@ public class MediumInfoImpl extends MinimalEObjectImpl.Container implements Medi
    * @generated
    */
   @Override
-  public EList<InformationType> getSourceTypes() {
-    if (sourceTypes == null) {
-      sourceTypes = new EDataTypeUniqueEList.Unsettable<InformationType>(InformationType.class, this,
-          MediadbPackage.MEDIUM_INFO__SOURCE_TYPES);
-    }
-    return sourceTypes;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public void unsetSourceTypes() {
-    if (sourceTypes != null)
-      ((InternalEList.Unsettable<?>) sourceTypes).unset();
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public boolean isSetSourceTypes() {
-    return sourceTypes != null && ((InternalEList.Unsettable<?>) sourceTypes).isSet();
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
   public int getSourceBitRate() {
     return sourceBitRate;
   }
@@ -351,16 +330,68 @@ public class MediumInfoImpl extends MinimalEObjectImpl.Container implements Medi
    * @generated
    */
   @Override
+  public InformationType getSourceType() {
+    return sourceType;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public void setSourceType(InformationType newSourceType) {
+    InformationType oldSourceType = sourceType;
+    sourceType = newSourceType == null ? SOURCE_TYPE_EDEFAULT : newSourceType;
+    boolean oldSourceTypeESet = sourceTypeESet;
+    sourceTypeESet = true;
+    if (eNotificationRequired())
+      eNotify(new ENotificationImpl(this, Notification.SET, MediadbPackage.MEDIUM_INFO__SOURCE_TYPE, oldSourceType,
+          sourceType, !oldSourceTypeESet));
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public void unsetSourceType() {
+    InformationType oldSourceType = sourceType;
+    boolean oldSourceTypeESet = sourceTypeESet;
+    sourceType = SOURCE_TYPE_EDEFAULT;
+    sourceTypeESet = false;
+    if (eNotificationRequired())
+      eNotify(new ENotificationImpl(this, Notification.UNSET, MediadbPackage.MEDIUM_INFO__SOURCE_TYPE, oldSourceType,
+          SOURCE_TYPE_EDEFAULT, oldSourceTypeESet));
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public boolean isSetSourceType() {
+    return sourceTypeESet;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
   public Object eGet(int featureID, boolean resolve, boolean coreType) {
     switch (featureID) {
     case MediadbPackage.MEDIUM_INFO__MEDIUM_TYPE:
       return getMediumType();
     case MediadbPackage.MEDIUM_INFO__INFORMATION_TYPE:
       return getInformationType();
-    case MediadbPackage.MEDIUM_INFO__SOURCE_TYPES:
-      return getSourceTypes();
     case MediadbPackage.MEDIUM_INFO__SOURCE_BIT_RATE:
       return getSourceBitRate();
+    case MediadbPackage.MEDIUM_INFO__SOURCE_TYPE:
+      return getSourceType();
     }
     return super.eGet(featureID, resolve, coreType);
   }
@@ -380,12 +411,11 @@ public class MediumInfoImpl extends MinimalEObjectImpl.Container implements Medi
     case MediadbPackage.MEDIUM_INFO__INFORMATION_TYPE:
       setInformationType((InformationType) newValue);
       return;
-    case MediadbPackage.MEDIUM_INFO__SOURCE_TYPES:
-      getSourceTypes().clear();
-      getSourceTypes().addAll((Collection<? extends InformationType>) newValue);
-      return;
     case MediadbPackage.MEDIUM_INFO__SOURCE_BIT_RATE:
       setSourceBitRate((Integer) newValue);
+      return;
+    case MediadbPackage.MEDIUM_INFO__SOURCE_TYPE:
+      setSourceType((InformationType) newValue);
       return;
     }
     super.eSet(featureID, newValue);
@@ -405,11 +435,11 @@ public class MediumInfoImpl extends MinimalEObjectImpl.Container implements Medi
     case MediadbPackage.MEDIUM_INFO__INFORMATION_TYPE:
       unsetInformationType();
       return;
-    case MediadbPackage.MEDIUM_INFO__SOURCE_TYPES:
-      unsetSourceTypes();
-      return;
     case MediadbPackage.MEDIUM_INFO__SOURCE_BIT_RATE:
       unsetSourceBitRate();
+      return;
+    case MediadbPackage.MEDIUM_INFO__SOURCE_TYPE:
+      unsetSourceType();
       return;
     }
     super.eUnset(featureID);
@@ -427,10 +457,10 @@ public class MediumInfoImpl extends MinimalEObjectImpl.Container implements Medi
       return isSetMediumType();
     case MediadbPackage.MEDIUM_INFO__INFORMATION_TYPE:
       return isSetInformationType();
-    case MediadbPackage.MEDIUM_INFO__SOURCE_TYPES:
-      return isSetSourceTypes();
     case MediadbPackage.MEDIUM_INFO__SOURCE_BIT_RATE:
       return isSetSourceBitRate();
+    case MediadbPackage.MEDIUM_INFO__SOURCE_TYPE:
+      return isSetSourceType();
     }
     return super.eIsSet(featureID);
   }
@@ -446,10 +476,7 @@ public class MediumInfoImpl extends MinimalEObjectImpl.Container implements Medi
     result.append("mediumType: ").append(getMediumType() != null ? getMediumType().getLiteral() : "<not set>");
     result.append(", informationType: ")
         .append(getInformationType() != null ? getInformationType().getLiteral() : "<not set>");
-    result.append(", sourceTypes:");
-    for (InformationType sourceType : getSourceTypes()) {
-      result.append(" " + sourceType.getLiteral());
-    }
+    result.append(", sourceTypes:").append(getSourceType() != null ? getSourceType().getLiteral() : "<not set>");
     result.append(", sourceBitRate: ").append(isSetSourceBitRate() ? getSourceBitRate() : "<not set>");
 
     return result.toString();

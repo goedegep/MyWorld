@@ -18,7 +18,7 @@ public class PhoneNumberTextField extends ObjectControlAutoCompleteTextField<Str
    * Constructor.
    */
   public PhoneNumberTextField(CustomizationFx customization, Rolodex rolodex) {
-    super(customization, null, 100, true, "Select a phone number");
+    super(customization, 100, true, "Select a phone number");
     
     this.rolodex = rolodex;
     

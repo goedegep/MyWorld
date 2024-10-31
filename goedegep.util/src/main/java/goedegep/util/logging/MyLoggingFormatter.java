@@ -36,11 +36,9 @@ public class MyLoggingFormatter extends SimpleFormatter {
     for ( StackTraceElement stackTraceElement : Thread.currentThread().getStackTrace() ) {
       className = stackTraceElement.getClassName();
       
-      if (!loggerFound) {
-        if (className.equals(LOGGER)) {
-          loggerFound = true;
-          continue;
-        }
+      if (!loggerFound  &&  className.equals(LOGGER)) {
+        loggerFound = true;
+        continue;
       }
       
       

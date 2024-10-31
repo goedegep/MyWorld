@@ -44,7 +44,7 @@ public class ImageResourceDemo extends JfxStage {
   private ToggleGroup toggleGroup;
 
   public ImageResourceDemo(CustomizationFx customization) {
-    super(WINDOW_TITLE, customization);
+    super(customization, WINDOW_TITLE);
     
     createGUI();
     

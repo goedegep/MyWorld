@@ -485,13 +485,8 @@ public class DefaultMutableXTree extends NodeBasedXTreeAbstract implements Mutab
     MutableXTreeNode treeFilterNode = null;
     boolean            onlySameTrees = false;
     // workaround for not recognizing root
-    if (handlingSiblings) {
-      if (resultParentNode == null) {
-        resultParentNode = (MutableXTreeNode) resultTree.getRoot();
-        if (resultParentNode != null) {
-//          addAss = ADD_SIBLING;
-        }
-      }
+    if (handlingSiblings  &&  (resultParentNode == null)) {
+      resultParentNode = (MutableXTreeNode) resultTree.getRoot();
     }
     
     // Handle special Query nodes.
@@ -558,10 +553,6 @@ public class DefaultMutableXTree extends NodeBasedXTreeAbstract implements Mutab
              node2 = (MutableXTreeNode) node2.getNextSibling()) {
           if (((DefaultMutableXTree) filterTree).isSubTree(treeFilterNode, this, node2, "")) {
             DefaultMutableXTreeNode newNode = null;
-            if (copy) {
-//              newNode = (POIDataTreeRealNode)
-//              resultTree.addCopyOfNode(resultParentNode, addAss, sourceTree, node);
-            }
 
             // if filterNode has a child, handle it by recursively calling filterSubTree
             // for this child.
@@ -582,22 +573,18 @@ public class DefaultMutableXTree extends NodeBasedXTreeAbstract implements Mutab
       for (node = sourceNode;
            node != null;
            node = (MutableXTreeNode) node.getNextSibling()) {
-        if (!indexRange  ||
-            (index >= indexStart  &&  index <= indexEnd)) {
-          if (filterNode.equals(node)) {
-            DefaultMutableXTreeNode newNode = null;
-            if (copy) {
-//              newNode = (POIDataTreeRealNode) resultTree.addCopyOfNode(resultParentNode, addAss, sourceTree, node);
-            }
+        if ((!indexRange  ||
+            (index >= indexStart  &&  index <= indexEnd))  &&
+            filterNode.equals(node)) {
+          DefaultMutableXTreeNode newNode = null;
 
-            // if filterNode has a child, handle it by recursively calling filterSubTree
-            // for this child.
-            if (filterNode.hasChild()) {
-              filterSubTree(filterTree, filterNode.getFirstChild(),
-                  node.getFirstChild(),
-                  resultTree, newNode,
-                  copy, false, indent + "  ");
-            }
+          // if filterNode has a child, handle it by recursively calling filterSubTree
+          // for this child.
+          if (filterNode.hasChild()) {
+            filterSubTree(filterTree, filterNode.getFirstChild(),
+                node.getFirstChild(),
+                resultTree, newNode,
+                copy, false, indent + "  ");
           }
         }
         index++;
@@ -637,39 +624,38 @@ public class DefaultMutableXTree extends NodeBasedXTreeAbstract implements Mutab
       int     secondTreeCurrNodeNrSiblingsRemaining = secondTreeNode.getNumberOfRemainingSiblings();
 
       if ((firstTreeCurrNodeNrSiblingsRemaining <= secondTreeCurrNodeNrSiblingsRemaining) &&
-          (firstTreeCurrNodeNrChildren <= secondTreeCurrNodeNrChildren)) {
-        if (firstTreeCurrNodeNrChildren > 0) {
-          boolean    foundSameTree = false;
-          MutableXTreeNode firstTreeNextChild = firstTreeNode.getFirstChild();
-          for (int i = 0; (i < firstTreeCurrNodeNrChildren) && noDifferenceFound; i++) {
-            foundSameTree = false;
-            MutableXTreeNode secondTreeNextChild = secondTreeNode.getFirstChild();
-            for (int j = 0; (j < secondTreeCurrNodeNrChildren) && !foundSameTree; j++) {
-              if (isSubTree(firstTreeNextChild,
-                            secondTree, secondTreeNextChild, indent + "  ")) {
-                foundSameTree = true;
-              }
-              secondTreeNextChild = (MutableXTreeNode) secondTreeNextChild.getNextSibling();
+          (firstTreeCurrNodeNrChildren <= secondTreeCurrNodeNrChildren)  &&
+          (firstTreeCurrNodeNrChildren > 0)) {
+        boolean    foundSameTree = false;
+        MutableXTreeNode firstTreeNextChild = firstTreeNode.getFirstChild();
+        for (int i = 0; (i < firstTreeCurrNodeNrChildren) && noDifferenceFound; i++) {
+          foundSameTree = false;
+          MutableXTreeNode secondTreeNextChild = secondTreeNode.getFirstChild();
+          for (int j = 0; (j < secondTreeCurrNodeNrChildren) && !foundSameTree; j++) {
+            if (isSubTree(firstTreeNextChild,
+                secondTree, secondTreeNextChild, indent + "  ")) {
+              foundSameTree = true;
             }
-            if (!foundSameTree) {
-              noDifferenceFound = false;
-            }
-            firstTreeNextChild = (MutableXTreeNode) firstTreeNextChild.getNextSibling();
+            secondTreeNextChild = (MutableXTreeNode) secondTreeNextChild.getNextSibling();
           }
+          if (!foundSameTree) {
+            noDifferenceFound = false;
+          }
+          firstTreeNextChild = (MutableXTreeNode) firstTreeNextChild.getNextSibling();
+        }
 
-          if (noDifferenceFound && firstTreeNode.hasSibling()) {
-            MutableXTreeNode firstTreeCurrNodeNextSib = (MutableXTreeNode) firstTreeNode.getNextSibling();
-            MutableXTreeNode secondTreeCurrNodeNextSib = (MutableXTreeNode) secondTreeNode.getNextSibling();
-            for (int k = 0; (k < secondTreeCurrNodeNrSiblingsRemaining) && !foundSameTree; k++) {
-              if (isSubTree(firstTreeCurrNodeNextSib,
-                            secondTree, secondTreeCurrNodeNextSib, indent + "  ")) {
-                foundSameTree = true;
-              }
-              secondTreeCurrNodeNextSib = (MutableXTreeNode) secondTreeCurrNodeNextSib.getNextSibling();
+        if (noDifferenceFound && firstTreeNode.hasSibling()) {
+          MutableXTreeNode firstTreeCurrNodeNextSib = (MutableXTreeNode) firstTreeNode.getNextSibling();
+          MutableXTreeNode secondTreeCurrNodeNextSib = (MutableXTreeNode) secondTreeNode.getNextSibling();
+          for (int k = 0; (k < secondTreeCurrNodeNrSiblingsRemaining) && !foundSameTree; k++) {
+            if (isSubTree(firstTreeCurrNodeNextSib,
+                secondTree, secondTreeCurrNodeNextSib, indent + "  ")) {
+              foundSameTree = true;
             }
-            if (!foundSameTree) {
-              noDifferenceFound = false;
-            }
+            secondTreeCurrNodeNextSib = (MutableXTreeNode) secondTreeCurrNodeNextSib.getNextSibling();
+          }
+          if (!foundSameTree) {
+            noDifferenceFound = false;
           }
         }
       }

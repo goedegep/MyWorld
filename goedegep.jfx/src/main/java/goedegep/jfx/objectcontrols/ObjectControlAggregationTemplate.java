@@ -53,8 +53,6 @@ public abstract class ObjectControlAggregationTemplate<T> {
    * Ignore changes
    */
   protected boolean ignoreChanges;
-
-  
   
   /**
    * Constructor called by your constructor.
@@ -72,7 +70,7 @@ public abstract class ObjectControlAggregationTemplate<T> {
    * 
    * @return this
    */
-  public ObjectControlAggregationTemplate<T> runEditor() {
+  public ObjectControlAggregationTemplate<T> performInitialization() {
     createControls();
     fillControlsWithDefaultValues();
     

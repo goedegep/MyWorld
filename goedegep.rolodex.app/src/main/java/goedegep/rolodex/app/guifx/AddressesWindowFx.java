@@ -70,7 +70,7 @@ public class AddressesWindowFx extends JfxStage {
    * @param rolodex a <code>Rolodex</code>
    */
   public AddressesWindowFx(CustomizationFx customization, Rolodex rolodex) {
-    super(WINDOW_TITLE, customization);
+    super(customization, WINDOW_TITLE);
     
     this.customization = customization;
     this.rolodex = rolodex;
@@ -310,10 +310,8 @@ class AddressEditPanel {
     // Extra check: If both city and country are filled in, it must be an existing combination
     List<City> cities = cityTextField.getMatchingCities();
     Country country = countryTextField.getCountry();
-    if (!cities.isEmpty()  &&  country != null) {
-      if (cityTextField.getCity(country) == null) {
-        return;
-      }
+    if (!cities.isEmpty()  &&  country != null  &&  cityTextField.getCity(country) == null) {
+      return;
     }
     
     updateAddressFromFields(addressProperty.get());
@@ -362,10 +360,8 @@ class AddressEditPanel {
     // Extra check: If both city and country are filled in, it must be an existing combination
     List<City> cities = cityTextField.getMatchingCities();
     Country country = countryTextField.getCountry();
-    if (!cities.isEmpty()  &&  country != null) {
-      if (cityTextField.getCity(country) == null) {
-        return null;
-      }
+    if (!cities.isEmpty()  &&  country != null  &&  cityTextField.getCity(country) == null) {
+      return null;
     }
     
     Address newAddress = ROLODEX_FACTORY.createAddress();

@@ -19,7 +19,7 @@ public class JfxUtil {
     int a = awtColor.getAlpha();
     double opacity = a / 255.0 ;
     
-    return javafx.scene.paint.Color.rgb(r, g, b, opacity);
+    return Color.rgb(r, g, b, opacity);
   }
   
   /**

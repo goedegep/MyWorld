@@ -228,11 +228,9 @@ public class PhotoWindow extends Stage {
 
     // Right arrow: go to next image.
     case RIGHT:
-      if (pictureFilesToView != null) {
-        if (pictureIndex < pictureFilesToView.size() - 1) {
-          pictureIndex++;
-          updateImage();
-        }
+      if (pictureFilesToView != null  &&  pictureIndex < pictureFilesToView.size() - 1) {
+        pictureIndex++;
+        updateImage();
       }
       break;
 
@@ -604,7 +602,7 @@ public class PhotoWindow extends Stage {
     
     LOGGER.info("imageWidth=" + ImageViewUtil.getImageViewImageHorizontalSize(imageView) + ", imageHeight=" + ImageViewUtil.getImageViewImageVerticalSize(imageView));
 
-    imageToViewScaleFactor = calculateImageToViewScaleFactor(image, stackPane);
+    imageToViewScaleFactor = calculateImageToViewScaleFactor(stackPane);
     LOGGER.info("imageToViewScaleFactor: " + imageToViewScaleFactor);
     
     Dimension2D imageViewDimensions = ImageViewUtil.calculateImageViewDimensions(imageView, imageToViewScaleFactor);
@@ -628,7 +626,7 @@ public class PhotoWindow extends Stage {
    * @param region the Region in which the <code>image</code> shall fit.
    * @return the scale factor to be applied to the <code>image</code> for the best fit in the <code>region</code>.
    */
-  private double calculateImageToViewScaleFactor(Image image, Region region) {
+  private double calculateImageToViewScaleFactor(Region region) {
     double horizontalImageScreenRatio =  region.getWidth() / ImageViewUtil.getImageViewImageHorizontalSize(imageView);
     double verticalImageScreenRatio =  region.getHeight() / ImageViewUtil.getImageViewImageVerticalSize(imageView);
     

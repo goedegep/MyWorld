@@ -502,7 +502,7 @@ public class FullScreenViewer extends Stage {
     
     LOGGER.info("imageWidth=" + ImageViewUtil.getImageViewImageHorizontalSize(imageView) + ", imageHeight=" + ImageViewUtil.getImageViewImageVerticalSize(imageView));
 
-    imageToViewScaleFactor = calculateImageToViewScaleFactor(image, stackPane);
+    imageToViewScaleFactor = calculateImageToViewScaleFactor(stackPane);
     LOGGER.info("imageToViewScaleFactor: " + imageToViewScaleFactor);
     
     Dimension2D imageViewDimensions = ImageViewUtil.calculateImageViewDimensions(imageView, imageToViewScaleFactor);
@@ -526,11 +526,10 @@ public class FullScreenViewer extends Stage {
    * If the Image is larger than the Region, the factor is less than 1.
    * The factor is such that the largest size (horizontal or vertical) will exactly fit the Region and the other size may be smaller than the Region.
    * 
-   * @param image the Image for which the factor is to be calculated.
    * @param region the Region in which the <code>image</code> shall fit.
    * @return the scale factor to be applied to the <code>image</code> for the best fit in the <code>region</code>.
    */
-  private double calculateImageToViewScaleFactor(Image image, Region region) {
+  private double calculateImageToViewScaleFactor(Region region) {
     double horizontalImageScreenRatio =  region.getWidth() / ImageViewUtil.getImageViewImageHorizontalSize(imageView);
     double verticalImageScreenRatio =  region.getHeight() / ImageViewUtil.getImageViewImageVerticalSize(imageView);
     
@@ -572,9 +571,7 @@ public class FullScreenViewer extends Stage {
    */
   private void updateNotSelectedIndication(boolean selected) {
     if (!selected) {
-      if (stackPane.getChildren().size() > 1) {
-        // It's already there, no action
-      } else {
+      if (stackPane.getChildren().size() <= 1) {
         Label notSelectedLabel = new Label("X");
         notSelectedLabel.setStyle("-fx-font: 40 arial;");
         notSelectedLabel.setTextFill(Color.ANTIQUEWHITE);
@@ -596,9 +593,7 @@ public class FullScreenViewer extends Stage {
       if (stackPane.getChildren().size() > 1) {
         // It's there, remove it
         stackPane.getChildren().remove(1);
-      } else {
-        // It's not there, no action
-      }
+      }  // else it's not there, no action
     }
   }
   

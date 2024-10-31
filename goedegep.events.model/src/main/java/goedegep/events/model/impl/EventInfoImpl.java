@@ -326,18 +326,25 @@ public class EventInfoImpl extends EventImpl implements EventInfo {
   /**
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @generated
+   * @generated NOT
    */
   @Override
   public String toString() {
     if (eIsProxy()) return super.toString();
 
-    StringBuilder result = new StringBuilder(super.toString());
-    result.append(" (title: ");
-    if (titleESet) result.append(title); else result.append("<unset>");
-    result.append(", picture: ");
-    if (pictureESet) result.append(picture); else result.append("<unset>");
-    result.append(')');
+    StringBuilder result = new StringBuilder();
+    result.append(super.toString());
+    result.append("Title: ")
+        .append(getTitle() != null ? getTitle() : "<unset>")
+        .append("\n");
+    result.append("Picture: ")
+        .append(getPicture() != null ? getPicture() : "<unset>")
+        .append("\n");
+    for (FileReference fileReference: getAttachments()) {
+      result.append("Attachment")
+      .append(fileReference.toString());
+    }
+    
     return result.toString();
   }
 

@@ -72,7 +72,7 @@ public class VideoDbWindow extends JfxStage {
    * @param customization the GUI customization.
    */
   public VideoDbWindow(CustomizationFx customization) {
-    super(WINDOW_TITLE, customization);
+    super(customization, WINDOW_TITLE);
 
     this.customization = customization;
     componentFactory = customization.getComponentFactoryFx();
@@ -277,7 +277,7 @@ public class VideoDbWindow extends JfxStage {
    * Open the User Settings editor.
    */
   private void showUserSettingsEditor() {
-    PropertiesEditor propertiesEditor = new PropertiesEditor("Edit Media settings", getCustomization(),
+    PropertiesEditor propertiesEditor = new PropertiesEditor("Edit Media settings", customization,
         MediaRegistry.propertyDescriptorsResource, MediaRegistry.customPropertiesFile);
     propertiesEditor.show();
   }

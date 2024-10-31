@@ -284,7 +284,7 @@ public class EObjectTreeCellHelperForAttributeListValue extends EObjectTreeCellH
       valueTextField = new TextField();
       valueTextField.setText(buildText(treeItem.getValue()));
       valueTextField.setOnKeyReleased((keyEvent) -> {
-          if ((keyEvent.getCode() == KeyCode.ENTER)) {
+          if (keyEvent.getCode() == KeyCode.ENTER) {
             eObjectTreeCell.commitEdit(valueTextField.getText());
           } else if (keyEvent.getCode() == KeyCode.ESCAPE) {
             eObjectTreeCell.cancelEdit();

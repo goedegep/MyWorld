@@ -13,6 +13,10 @@ import org.eclipse.emf.ecore.EObject;
  * A representation of the model object '<em><b>Film</b></em>'.
  * <!-- end-user-doc -->
  *
+ * <!-- begin-model-doc -->
+ * This interface provides information on a video.
+ * <!-- end-model-doc -->
+ *
  * <p>
  * The following features are supported:
  * </p>
@@ -32,6 +36,9 @@ public interface Video extends EObject {
    * Returns the value of the '<em><b>Title</b></em>' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
+   * <!-- begin-model-doc -->
+   * The title of the video.
+   * <!-- end-model-doc -->
    * @return the value of the '<em>Title</em>' attribute.
    * @see #isSetTitle()
    * @see #unsetTitle()
@@ -81,6 +88,9 @@ public interface Video extends EObject {
    * Returns the value of the '<em><b>Date</b></em>' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
+   * <!-- begin-model-doc -->
+   * The release or creation date of the video.
+   * <!-- end-model-doc -->
    * @return the value of the '<em>Date</em>' attribute.
    * @see #isSetDate()
    * @see #unsetDate()
@@ -130,6 +140,9 @@ public interface Video extends EObject {
    * Returns the value of the '<em><b>Image</b></em>' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
+   * <!-- begin-model-doc -->
+   * The filename of a picture for the video.
+   * <!-- end-model-doc -->
    * @return the value of the '<em>Image</em>' attribute.
    * @see #isSetImage()
    * @see #unsetImage()
@@ -180,6 +193,9 @@ public interface Video extends EObject {
    * The list contents are of type {@link goedegep.media.mediadb.model.Subject}.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
+   * <!-- begin-model-doc -->
+   * The subjects of the video.
+   * <!-- end-model-doc -->
    * @return the value of the '<em>Subjects</em>' containment reference list.
    * @see goedegep.media.mediadb.model.MediadbPackage#getVideo_Subjects()
    * @model containment="true"

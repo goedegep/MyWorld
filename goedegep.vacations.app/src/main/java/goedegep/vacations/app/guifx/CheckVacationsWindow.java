@@ -52,7 +52,7 @@ public class CheckVacationsWindow extends JfxStage {
    * @param vacations the vacations structure.
    */
   public CheckVacationsWindow(CustomizationFx customization, Vacations vacations) {
-    super(WINDOW_TITLE, customization);
+    super(customization, WINDOW_TITLE);
     
     this.vacations = vacations;
     componentFactory = customization.getComponentFactoryFx();

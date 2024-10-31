@@ -326,7 +326,7 @@ public class Gpx10To11Converter {
       rteType.setExtensions(extensionsType);
     }
     
-    for (goedegep.gpx10.model.RteptType rteptType10: rteType10.getRtept()) {
+    for (RteptType rteptType10: rteType10.getRtept()) {
       rteType.getRtept().add(convertRtept10ToWpt(rteptType10));
     }
     
@@ -474,7 +474,7 @@ public class Gpx10To11Converter {
   private static TrksegType convertTrkseg10ToTrkseg(goedegep.gpx10.model.TrksegType trksegType10) {
     TrksegType trksegType = GPX_FACTORY.createTrksegType();
     
-    for (goedegep.gpx10.model.TrkptType trkptType10: trksegType10.getTrkpt()) {
+    for (TrkptType trkptType10: trksegType10.getTrkpt()) {
       trksegType.getTrkpt().add(convertTrkpt10ToWpt(trkptType10));
     }
     
