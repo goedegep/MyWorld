@@ -1,5 +1,7 @@
 package goedegep.media.mediadb.trackeditor.guifx;
 
+import java.util.function.Consumer;
+
 import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.objectcontrols.ObjectControlAutoCompleteTextField;
 import goedegep.jfx.objectcontrols.ObjectControlEnumComboBox;
@@ -7,10 +9,10 @@ import goedegep.jfx.objectcontrols.ObjectControlTextField;
 import goedegep.jfx.objecteditor.ObjectEditorException;
 import goedegep.jfx.objecteditor.ObjectEditorTemplate;
 import goedegep.media.mediadb.app.ArtistStringConverterAndChecker;
+import goedegep.media.mediadb.app.MediaDbService;
 import goedegep.media.mediadb.app.guifx.ArtistDetailsEditor;
 import goedegep.media.mediadb.model.Artist;
 import goedegep.media.mediadb.model.IWant;
-import goedegep.media.mediadb.model.MediaDb;
 import goedegep.media.mediadb.model.MediadbFactory;
 import goedegep.media.mediadb.model.MediadbPackage;
 import goedegep.media.mediadb.model.MyTrackInfo;
@@ -36,9 +38,9 @@ public class TrackReferenceEditor extends ObjectEditorTemplate<TrackReference> {
   
 
   /**
-   * The Media Database.
+   * The Media Database service.
    */
-  private MediaDb mediaDb;
+  private MediaDbService mediaDbService;
   
   private ArtistStringConverterAndChecker artistStringConverterAndChecker;
   
@@ -66,8 +68,8 @@ public class TrackReferenceEditor extends ObjectEditorTemplate<TrackReference> {
    * @param mediaDb the media database.
    * @return a newly created {@code TrackEditor}.
    */
-  public static TrackReferenceEditor newInstance(CustomizationFx customization, MediaDb mediaDb) {
-    TrackReferenceEditor trackEditor = new TrackReferenceEditor(customization, mediaDb);
+  public static TrackReferenceEditor newInstance(CustomizationFx customization, Consumer<TrackReference> addTrackReferenceMethod, MediaDbService mediaDbService) {
+    TrackReferenceEditor trackEditor = new TrackReferenceEditor(customization, addTrackReferenceMethod, mediaDbService);
     trackEditor.performInitialization();
     
     return trackEditor;
@@ -79,10 +81,10 @@ public class TrackReferenceEditor extends ObjectEditorTemplate<TrackReference> {
    * @param customization the GUI customization.
    * @param mediaDb the media database.
    */
-  private TrackReferenceEditor(CustomizationFx customization, MediaDb mediaDb) {
-    super(customization, null);
+  private TrackReferenceEditor(CustomizationFx customization, Consumer<TrackReference> addTrackReferenceMethod, MediaDbService mediaDbService) {
+    super(customization, null, addTrackReferenceMethod);
     
-    this.mediaDb = mediaDb;
+    this.mediaDbService = mediaDbService;
   }
   
   /**
@@ -101,7 +103,7 @@ public class TrackReferenceEditor extends ObjectEditorTemplate<TrackReference> {
    */
   @Override
   protected void createControls() {
-    artistStringConverterAndChecker = new ArtistStringConverterAndChecker(mediaDb);
+    artistStringConverterAndChecker = new ArtistStringConverterAndChecker(mediaDbService.getMediaDbResource().getEObject());
     trackArtistObjectControl = componentFactory.createObjectControlAutoCompleteTextField(artistStringConverterAndChecker, null, 300, false, "Enter the artist");
     trackTitleTextFieldObjectControl = componentFactory.createObjectControlTextField(null, null, 600, false, "The album title is a mandatory field");
 
@@ -122,8 +124,8 @@ public class TrackReferenceEditor extends ObjectEditorTemplate<TrackReference> {
    */
   private void updateTrackArtistComboBox() {
     Artist currentSelectedArtist = trackArtistObjectControl.getValue();
-    trackArtistObjectControl.setOptions(mediaDb.getArtists());
-    trackArtistObjectControl.setValue(currentSelectedArtist);
+    trackArtistObjectControl.setOptions(mediaDbService.getMediaDbResource().getEObject().getArtists());
+    trackArtistObjectControl.setObject(currentSelectedArtist);
   }
 
   @Override
@@ -136,7 +138,7 @@ public class TrackReferenceEditor extends ObjectEditorTemplate<TrackReference> {
     gridPane.add(trackArtistObjectControl.getControl(), 1, 0);
     gridPane.add(trackArtistObjectControl.getStatusIndicator(), 2, 0);
     Button newArtistButton = componentFactory.createButton("New artist", "The artist of the track has to be selected from the list of known artists. With this button you can add a new artist to the database");
-    newArtistButton.setOnAction(e -> ArtistDetailsEditor.newInstance(customization, "New artist", mediaDb).show());
+    newArtistButton.setOnAction(e -> ArtistDetailsEditor.newInstance(customization, "New artist", mediaDbService).show());
     gridPane.add(newArtistButton, 3, 0);
     
     // Second row: 'Title: <track-title>'
@@ -161,16 +163,10 @@ public class TrackReferenceEditor extends ObjectEditorTemplate<TrackReference> {
   }
 
   @Override
-  protected void addObjectToCollection() {
-    // TODO Auto-generated method stub
-    
-  }
-
-  @Override
   protected void fillControlsWithDefaultValues() {
-    trackArtistObjectControl.setValue(null);
-    trackTitleTextFieldObjectControl.setValue(null);
-    iWantComboBox.setValue(IWant.DONT_KNOW);
+    trackArtistObjectControl.setObject(null);
+    trackTitleTextFieldObjectControl.setObject(null);
+    iWantComboBox.setObject(IWant.DONT_KNOW);
   }
 
   @Override
@@ -183,20 +179,20 @@ public class TrackReferenceEditor extends ObjectEditorTemplate<TrackReference> {
     
     Track track = object.getTrack();
     if (track != null) {
-      trackArtistObjectControl.setValue(track.getArtist());
-      trackTitleTextFieldObjectControl.setValue(track.getTitle());
+      trackArtistObjectControl.setObject(track.getArtist());
+      trackTitleTextFieldObjectControl.setObject(track.getTitle());
     }
     
     MyTrackInfo myTrackInfo = object.getMyTrackInfo();
     if (myTrackInfo != null) {
-      iWantComboBox.setValue(myTrackInfo.getIWant());
+      iWantComboBox.setObject(myTrackInfo.getIWant());
     }
   }
 
   @Override
   protected void updateObjectFromControls() throws ObjectEditorException {
     // Track
-    Track track = mediaDb.getTrack(trackArtistObjectControl.getValue(), trackTitleTextFieldObjectControl.getValue());
+    Track track = mediaDbService.getMediaDbResource().getEObject().getTrack(trackArtistObjectControl.getValue(), trackTitleTextFieldObjectControl.getValue());
     
     EmfUtil.setFeatureValue(object, MEDIA_DB_PACKAGE.getTrackReference_Track(), track);
     

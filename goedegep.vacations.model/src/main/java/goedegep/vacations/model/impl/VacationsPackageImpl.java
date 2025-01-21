@@ -14,6 +14,9 @@ import goedegep.vacations.model.Location;
 import goedegep.vacations.model.MapImage;
 import goedegep.vacations.model.Picture;
 import goedegep.vacations.model.Text;
+import goedegep.vacations.model.Travel;
+import goedegep.vacations.model.TravelCategories;
+import goedegep.vacations.model.TravelCategory;
 import goedegep.vacations.model.Vacation;
 import goedegep.vacations.model.VacationElement;
 import goedegep.vacations.model.Vacations;
@@ -126,6 +129,27 @@ public class VacationsPackageImpl extends EPackageImpl implements VacationsPacka
    * @generated
    */
   private EClass documentEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass travelCategoryEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass travelEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass travelCategoriesEClass = null;
 
   /**
    * Creates an instance of the model <b>Package</b>, registered with
@@ -252,6 +276,16 @@ public class VacationsPackageImpl extends EPackageImpl implements VacationsPacka
    * @generated
    */
   @Override
+  public EReference getVacations_Travelcategories() {
+    return (EReference) vacationsEClass.getEStructuralFeatures().get(4);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
   public EOperation getVacations__FindVacation__FlexDate_String() {
     return vacationsEClass.getEOperations().get(0);
   }
@@ -322,18 +356,8 @@ public class VacationsPackageImpl extends EPackageImpl implements VacationsPacka
    * @generated
    */
   @Override
-  public EAttribute getVacation_Title() {
-    return (EAttribute) vacationEClass.getEStructuralFeatures().get(3);
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
   public EReference getVacation_Elements() {
-    return (EReference) vacationEClass.getEStructuralFeatures().get(4);
+    return (EReference) vacationEClass.getEStructuralFeatures().get(3);
   }
 
   /**
@@ -352,7 +376,7 @@ public class VacationsPackageImpl extends EPackageImpl implements VacationsPacka
    * @generated
    */
   @Override
-  public EOperation getVacation__GetAllFileReferences() {
+  public EOperation getVacation__GetAllReferencedFiles() {
     return vacationEClass.getEOperations().get(1);
   }
 
@@ -362,28 +386,8 @@ public class VacationsPackageImpl extends EPackageImpl implements VacationsPacka
    * @generated
    */
   @Override
-  public EOperation getVacation__GetAllReferencedFiles() {
-    return vacationEClass.getEOperations().get(2);
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public EOperation getVacation__GetId() {
-    return vacationEClass.getEOperations().get(3);
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
   public EOperation getVacation__GetDayNr__VacationElement() {
-    return vacationEClass.getEOperations().get(4);
+    return vacationEClass.getEOperations().get(2);
   }
 
   /**
@@ -614,6 +618,16 @@ public class VacationsPackageImpl extends EPackageImpl implements VacationsPacka
   @Override
   public EOperation getVacationElement__GetDayTrip() {
     return vacationElementEClass.getEOperations().get(2);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public EOperation getVacationElement__GetDay() {
+    return vacationElementEClass.getEOperations().get(3);
   }
 
   /**
@@ -892,28 +906,8 @@ public class VacationsPackageImpl extends EPackageImpl implements VacationsPacka
    * @generated
    */
   @Override
-  public EAttribute getDayTrip_Title() {
-    return (EAttribute) dayTripEClass.getEStructuralFeatures().get(0);
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
   public EReference getDayTrip_Elements() {
-    return (EReference) dayTripEClass.getEStructuralFeatures().get(1);
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public EOperation getDayTrip__GetId() {
-    return dayTripEClass.getEOperations().get(0);
+    return (EReference) dayTripEClass.getEStructuralFeatures().get(0);
   }
 
   /**
@@ -934,6 +928,86 @@ public class VacationsPackageImpl extends EPackageImpl implements VacationsPacka
   @Override
   public EReference getDocument_DocumentReference() {
     return (EReference) documentEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public EClass getTravelCategory() {
+    return travelCategoryEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public EReference getTravelCategory_Travels() {
+    return (EReference) travelCategoryEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public EClass getTravel() {
+    return travelEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public EAttribute getTravel_Title() {
+    return (EAttribute) travelEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public EOperation getTravel__GetId() {
+    return travelEClass.getEOperations().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public EOperation getTravel__GetAllFileReferences() {
+    return travelEClass.getEOperations().get(1);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public EClass getTravelCategories() {
+    return travelCategoriesEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public EReference getTravelCategories_Travelcategories() {
+    return (EReference) travelCategoriesEClass.getEStructuralFeatures().get(0);
   }
 
   /**
@@ -971,6 +1045,7 @@ public class VacationsPackageImpl extends EPackageImpl implements VacationsPacka
     createEReference(vacationsEClass, VACATIONS__HOME);
     createEAttribute(vacationsEClass, VACATIONS__TIPS);
     createEReference(vacationsEClass, VACATIONS__DAY_TRIPS);
+    createEReference(vacationsEClass, VACATIONS__TRAVELCATEGORIES);
     createEOperation(vacationsEClass, VACATIONS___FIND_VACATION__FLEXDATE_STRING);
     createEOperation(vacationsEClass, VACATIONS___ADD_VACATION__VACATION);
     createEOperation(vacationsEClass, VACATIONS___FIND_VACATION__FLEXDATE);
@@ -979,12 +1054,9 @@ public class VacationsPackageImpl extends EPackageImpl implements VacationsPacka
     createEAttribute(vacationEClass, VACATION__END_DATE);
     createEReference(vacationEClass, VACATION__DOCUMENTS);
     createEAttribute(vacationEClass, VACATION__PICTURES);
-    createEAttribute(vacationEClass, VACATION__TITLE);
     createEReference(vacationEClass, VACATION__ELEMENTS);
     createEOperation(vacationEClass, VACATION___FIND_DOCUMENT__STRING);
-    createEOperation(vacationEClass, VACATION___GET_ALL_FILE_REFERENCES);
     createEOperation(vacationEClass, VACATION___GET_ALL_REFERENCED_FILES);
-    createEOperation(vacationEClass, VACATION___GET_ID);
     createEOperation(vacationEClass, VACATION___GET_DAY_NR__VACATIONELEMENT);
 
     locationEClass = createEClass(LOCATION);
@@ -1011,6 +1083,7 @@ public class VacationsPackageImpl extends EPackageImpl implements VacationsPacka
     createEOperation(vacationElementEClass, VACATION_ELEMENT___GET_DAY_NR);
     createEOperation(vacationElementEClass, VACATION_ELEMENT___GET_VACATION);
     createEOperation(vacationElementEClass, VACATION_ELEMENT___GET_DAY_TRIP);
+    createEOperation(vacationElementEClass, VACATION_ELEMENT___GET_DAY);
 
     textEClass = createEClass(TEXT);
     createEAttribute(textEClass, TEXT__TEXT);
@@ -1046,12 +1119,21 @@ public class VacationsPackageImpl extends EPackageImpl implements VacationsPacka
     createEAttribute(mapImageEClass, MAP_IMAGE__FILE_NAME);
 
     dayTripEClass = createEClass(DAY_TRIP);
-    createEAttribute(dayTripEClass, DAY_TRIP__TITLE);
     createEReference(dayTripEClass, DAY_TRIP__ELEMENTS);
-    createEOperation(dayTripEClass, DAY_TRIP___GET_ID);
 
     documentEClass = createEClass(DOCUMENT);
     createEReference(documentEClass, DOCUMENT__DOCUMENT_REFERENCE);
+
+    travelCategoryEClass = createEClass(TRAVEL_CATEGORY);
+    createEReference(travelCategoryEClass, TRAVEL_CATEGORY__TRAVELS);
+
+    travelEClass = createEClass(TRAVEL);
+    createEAttribute(travelEClass, TRAVEL__TITLE);
+    createEOperation(travelEClass, TRAVEL___GET_ID);
+    createEOperation(travelEClass, TRAVEL___GET_ALL_FILE_REFERENCES);
+
+    travelCategoriesEClass = createEClass(TRAVEL_CATEGORIES);
+    createEReference(travelCategoriesEClass, TRAVEL_CATEGORIES__TRAVELCATEGORIES);
   }
 
   /**
@@ -1089,14 +1171,16 @@ public class VacationsPackageImpl extends EPackageImpl implements VacationsPacka
 
     // Add supertypes to classes
     vacationEClass.getESuperTypes().add(theTypesPackage.getEvent());
+    vacationEClass.getESuperTypes().add(this.getTravel());
     locationEClass.getESuperTypes().add(this.getVacationElement());
     textEClass.getESuperTypes().add(this.getVacationElement());
     dayEClass.getESuperTypes().add(this.getVacationElement());
     pictureEClass.getESuperTypes().add(this.getVacationElement());
     gpxTrackEClass.getESuperTypes().add(this.getVacationElement());
     mapImageEClass.getESuperTypes().add(this.getVacationElement());
-    dayTripEClass.getESuperTypes().add(theTypesPackage.getEvent());
+    dayTripEClass.getESuperTypes().add(this.getTravel());
     documentEClass.getESuperTypes().add(this.getVacationElement());
+    travelEClass.getESuperTypes().add(theTypesPackage.getEvent());
 
     // Initialize classes, features, and operations; add parameters
     initEClass(vacationsEClass, Vacations.class, "Vacations", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
@@ -1111,6 +1195,9 @@ public class VacationsPackageImpl extends EPackageImpl implements VacationsPacka
     initEReference(getVacations_DayTrips(), this.getDayTrip(), null, "dayTrips", null, 0, -1, Vacations.class,
         !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE,
         !IS_DERIVED, IS_ORDERED);
+    initEReference(getVacations_Travelcategories(), this.getTravelCategories(), null, "travelcategories", null, 0, -1,
+        Vacations.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE,
+        IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     EOperation op = initEOperation(getVacations__FindVacation__FlexDate_String(), this.getVacation(), "findVacation", 0,
         1, IS_UNIQUE, IS_ORDERED);
@@ -1132,8 +1219,6 @@ public class VacationsPackageImpl extends EPackageImpl implements VacationsPacka
         IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getVacation_Pictures(), ecorePackage.getEString(), "pictures", null, 0, 1, Vacation.class,
         !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEAttribute(getVacation_Title(), ecorePackage.getEString(), "title", null, 0, 1, Vacation.class, !IS_TRANSIENT,
-        !IS_VOLATILE, IS_CHANGEABLE, IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEReference(getVacation_Elements(), this.getVacationElement(), null, "elements", null, 0, -1, Vacation.class,
         !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE,
         !IS_DERIVED, IS_ORDERED);
@@ -1142,13 +1227,8 @@ public class VacationsPackageImpl extends EPackageImpl implements VacationsPacka
         IS_UNIQUE, IS_ORDERED);
     addEParameter(op, ecorePackage.getEString(), "documentPath", 0, 1, IS_UNIQUE, IS_ORDERED);
 
-    initEOperation(getVacation__GetAllFileReferences(), theTypesPackage.getFileReference(), "getAllFileReferences", 0,
-        -1, IS_UNIQUE, !IS_ORDERED);
-
     initEOperation(getVacation__GetAllReferencedFiles(), theXMLTypePackage.getString(), "getAllReferencedFiles", 0, -1,
         IS_UNIQUE, IS_ORDERED);
-
-    initEOperation(getVacation__GetId(), ecorePackage.getEString(), "getId", 0, 1, IS_UNIQUE, IS_ORDERED);
 
     op = initEOperation(getVacation__GetDayNr__VacationElement(), ecorePackage.getEIntegerObject(), "getDayNr", 0, 1,
         IS_UNIQUE, IS_ORDERED);
@@ -1206,6 +1286,8 @@ public class VacationsPackageImpl extends EPackageImpl implements VacationsPacka
     initEOperation(getVacationElement__GetVacation(), this.getVacation(), "getVacation", 0, 1, IS_UNIQUE, IS_ORDERED);
 
     initEOperation(getVacationElement__GetDayTrip(), this.getDayTrip(), "getDayTrip", 0, 1, IS_UNIQUE, IS_ORDERED);
+
+    initEOperation(getVacationElement__GetDay(), this.getDay(), "getDay", 0, 1, IS_UNIQUE, IS_ORDERED);
 
     initEClass(textEClass, Text.class, "Text", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getText_Text(), ecorePackage.getEString(), "text", null, 0, 1, Text.class, !IS_TRANSIENT,
@@ -1266,18 +1348,35 @@ public class VacationsPackageImpl extends EPackageImpl implements VacationsPacka
         !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(dayTripEClass, DayTrip.class, "DayTrip", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-    initEAttribute(getDayTrip_Title(), ecorePackage.getEString(), "title", null, 0, 1, DayTrip.class, !IS_TRANSIENT,
-        !IS_VOLATILE, IS_CHANGEABLE, IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEReference(getDayTrip_Elements(), this.getVacationElement(), null, "elements", null, 0, -1, DayTrip.class,
         !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE,
         !IS_DERIVED, IS_ORDERED);
-
-    initEOperation(getDayTrip__GetId(), ecorePackage.getEString(), "getId", 0, 1, IS_UNIQUE, IS_ORDERED);
 
     initEClass(documentEClass, Document.class, "Document", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEReference(getDocument_DocumentReference(), theTypesPackage.getFileReference(), null, "documentReference", null,
         0, 1, Document.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES,
         IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+    initEClass(travelCategoryEClass, TravelCategory.class, "TravelCategory", !IS_ABSTRACT, !IS_INTERFACE,
+        IS_GENERATED_INSTANCE_CLASS);
+    initEReference(getTravelCategory_Travels(), this.getTravel(), null, "travels", null, 0, -1, TravelCategory.class,
+        !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE,
+        !IS_DERIVED, IS_ORDERED);
+
+    initEClass(travelEClass, Travel.class, "Travel", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getTravel_Title(), ecorePackage.getEString(), "title", null, 0, 1, Travel.class, !IS_TRANSIENT,
+        !IS_VOLATILE, IS_CHANGEABLE, IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+    initEOperation(getTravel__GetId(), ecorePackage.getEString(), "getId", 0, 1, IS_UNIQUE, IS_ORDERED);
+
+    initEOperation(getTravel__GetAllFileReferences(), theTypesPackage.getFileReference(), "getAllFileReferences", 0, -1,
+        IS_UNIQUE, !IS_ORDERED);
+
+    initEClass(travelCategoriesEClass, TravelCategories.class, "TravelCategories", !IS_ABSTRACT, !IS_INTERFACE,
+        IS_GENERATED_INSTANCE_CLASS);
+    initEReference(getTravelCategories_Travelcategories(), this.getTravelCategory(), null, "travelcategories", null, 0,
+        -1, TravelCategories.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES,
+        !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     // Create resource
     createResource(eNS_URI);

@@ -46,4 +46,5 @@ module org.apache.commons.imaging {
   requires org.junit.jupiter.api;
   requires org.junit.jupiter.params;
   requires org.hamcrest;
+  requires java.base;
 }

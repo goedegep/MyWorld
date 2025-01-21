@@ -12,6 +12,11 @@ import org.commonmark.renderer.html.HtmlRenderer;
 import goedegep.configuration.model.Look;
 import goedegep.geo.WGS84Coordinates;
 import goedegep.jfx.controls.AutoCompleteTextField;
+import goedegep.jfx.editor.controls.EditorControlFileSelecter;
+import goedegep.jfx.editor.controls.EditorControlFlexDate;
+import goedegep.jfx.editor.controls.EditorControlFolderSelecter;
+import goedegep.jfx.editor.controls.EditorControlHTMLString;
+import goedegep.jfx.editor.controls.EditorControlString;
 import goedegep.jfx.objectcontrols.ObjectControlAutoCompleteTextField;
 import goedegep.jfx.objectcontrols.ObjectControlBoolean;
 import goedegep.jfx.objectcontrols.ObjectControlCurrency;
@@ -883,6 +888,29 @@ public class ComponentFactoryFx {
   }
   
   /**
+   * Create an {@link EditorControlFileSelecter}.
+   * 
+   * @param initiallySelecterFolder The initially selected folder. If not null, this is filled-in in the text field,
+   *                                and it is used as initial value for the FileChooser.
+   * @param textFieldWidth Width of the TextField (in pixels). If this value is -1, the default width is used.
+   * @param textFiedlToolTipText if not null, this text will be used as Tooltip for the TextField
+   * @param folderChooserButtonText the text shown on the button to call up a DirectoryChooser (may not be null)
+   * @param folderChooserButtonToolTipText if not null, this text will be used as Tooltip for the button to call up a DirectoryChooser.
+   * @param directoryChooserTitle title for the DirectoryChooser (may not be null)
+   * @return the newly created FolderSelecter
+   */
+  public EditorControlFileSelecter createEditorControlFileSelecter(int textFieldWidth, String textFieldToolTipText,
+      String folderChooserButtonText, String folderChooserButtonToolTipText, String directoryChooserTitle, boolean isOptional) {
+    EditorControlFileSelecter fileSelecter = EditorControlFileSelecter.newInstance(customization, textFieldWidth, textFieldToolTipText,
+        folderChooserButtonText, folderChooserButtonToolTipText, directoryChooserTitle, isOptional);
+    
+    customizeTextInputControl(fileSelecter.getControl());
+    customizeButton(fileSelecter.getFileChooserButton());
+    
+    return fileSelecter;
+  }
+  
+  /**
    * Create a {@link ObjectControlFolderSelecter}.
    * 
    * @param initiallySelecterFolder The initially selected folder. If not null, this is filled-in in the text field,
@@ -897,6 +925,29 @@ public class ComponentFactoryFx {
   public ObjectControlFolderSelecter createFolderSelecter(int textFieldWidth, String textFieldToolTipText,
       String folderChooserButtonText, String folderChooserButtonToolTipText, String directoryChooserTitle, boolean isOptional) {
     ObjectControlFolderSelecter folderSelecter = new ObjectControlFolderSelecter(customization, textFieldWidth, textFieldToolTipText,
+        folderChooserButtonText, folderChooserButtonToolTipText, directoryChooserTitle, isOptional);
+    
+    customizeTextInputControl(folderSelecter.getControl());
+    customizeButton(folderSelecter.getFolderChooserButton());
+    
+    return folderSelecter;
+  }
+  
+  /**
+   * Create an {@link EditorControlFolderSelecter}.
+   * 
+   * @param initiallySelecterFolder The initially selected folder. If not null, this is filled-in in the text field,
+   *                                and it is used as initial value for the DirectoryChooser.
+   * @param textFieldWidth Width of the TextField (in pixels). If this value is -1, the default width is used.
+   * @param textFiedlToolTipText if not null, this text will be used as Tooltip for the TextField
+   * @param folderChooserButtonText the text shown on the button to call up a DirectoryChooser (may not be null)
+   * @param folderChooserButtonToolTipText if not null, this text will be used as Tooltip for the button to call up a DirectoryChooser.
+   * @param directoryChooserTitle title for the DirectoryChooser (may not be null)
+   * @return the newly created FolderSelecter
+   */
+  public EditorControlFolderSelecter createEditorControlFolderSelecter(int textFieldWidth, String textFieldToolTipText,
+      String folderChooserButtonText, String folderChooserButtonToolTipText, String directoryChooserTitle, boolean isOptional) {
+    EditorControlFolderSelecter folderSelecter = EditorControlFolderSelecter.newInstance(customization, textFieldWidth, textFieldToolTipText,
         folderChooserButtonText, folderChooserButtonToolTipText, directoryChooserTitle, isOptional);
     
     customizeTextInputControl(folderSelecter.getControl());
@@ -996,6 +1047,7 @@ public class ComponentFactoryFx {
   }
 
   /**
+   * @deprecated
    * Create a String ObjectControl.
    * 
    * @param text The initial value.
@@ -1007,10 +1059,23 @@ public class ComponentFactoryFx {
   public ObjectControlString createObjectControlString(String text, double width, boolean isOptional, String toolTipText) {
     ObjectControlString objectControlString = new ObjectControlString(customization, text, width, isOptional, toolTipText);
 
-//    customizeTextInputControl(objectControlString);
-
     return objectControlString;
   }
+
+  /**
+   * Create a String ObjectControl.
+   * 
+   * @param width the width of the TextField.
+   * @param isOptional if true, the value provided by this control is optional.
+   * @param toolTipText an optional tooltip text.
+   * @return the newly created {@code ObjectControlString}.
+   */
+  public EditorControlString createEditorControlString(double width, boolean isOptional, String toolTipText) {
+    EditorControlString editorControlString = EditorControlString.newInstance(customization, width, isOptional, toolTipText);
+
+    return editorControlString;
+  }
+
 
   /**
    * Create a Multi Line String ObjectControl.
@@ -1029,15 +1094,25 @@ public class ComponentFactoryFx {
    * Create an HTML String ObjectControl.
    * 
    * @param text The initial value.
-   * @param width the width of the TextArea.
    * @param isOptional if true, the value provided by this control is optional.
-   * @param toolTipText an optional tooltip text.
    * @return the newly created {@code ObjectControlHTMLString}.
    */
   public ObjectControlHTMLString createObjectControlHTMLString(String text, boolean isOptional) {
     ObjectControlHTMLString objectControlHTMLString = new ObjectControlHTMLString(customization, text, isOptional);
 
     return objectControlHTMLString;
+  }
+
+  /**
+   * Create an HTML String EditorControl.
+   * 
+   * @param optional if true, the value provided by this control is optional.
+   * @return the newly created {@code EditorControlHTMLString}.
+   */
+  public EditorControlHTMLString createEditorControlHTMLString(boolean optional) {
+    EditorControlHTMLString editorControlHTMLString = EditorControlHTMLString.newInstance(customization, optional);
+
+    return editorControlHTMLString;
   }
   
   /**
@@ -1073,6 +1148,7 @@ public class ComponentFactoryFx {
   }
 
   /**
+   * @deprecated
    * Create a FlexDate ObjectControl.
    * 
    * @param flexDate the initial value.
@@ -1085,6 +1161,20 @@ public class ComponentFactoryFx {
     ObjectControlFlexDate objectControlFlexDate = new ObjectControlFlexDate(customization, flexDate, width, isOptional, toolTipText);
 
     return objectControlFlexDate;
+  }
+
+  /**
+   * Create a FlexDate EditorControl.
+   * 
+   * @param width the width of the TextField.
+   * @param isOptional if true, the value provided by this control is optional.
+   * @param toolTipText an optional tooltip text.
+   * @return the newly created {@code ObjectControlFlexDate}.
+   */
+  public EditorControlFlexDate createEditorControlFlexDate(double width, boolean isOptional, String toolTipText) {
+    EditorControlFlexDate editorControlFlexDate = EditorControlFlexDate.newInstance(customization, width, isOptional, toolTipText);
+
+    return editorControlFlexDate;
   }
 
   /**

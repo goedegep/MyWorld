@@ -329,7 +329,7 @@ public class VacationsTreeViewCreator {
     EObjectTreeItemClassListReferenceDescriptor eObjectTreeItemClassListReferenceDescriptor;
     
     // Vacation.title
-    eObjectTreeItemAttributeDescriptor = new EObjectTreeItemAttributeDescriptor(VACATIONS_PACKAGE.getVacation_Title())
+    eObjectTreeItemAttributeDescriptor = new EObjectTreeItemAttributeDescriptor(VACATIONS_PACKAGE.getTravel_Title())
         .setLabelText("Title");
     eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(eObjectTreeItemAttributeDescriptor);
     
@@ -399,7 +399,7 @@ public class VacationsTreeViewCreator {
     EObjectTreeItemAttributeDescriptor eObjectTreeItemAttributeDescriptor;
     
     // DayTrip.title
-    eObjectTreeItemAttributeDescriptor = new EObjectTreeItemAttributeDescriptor(VACATIONS_PACKAGE.getDayTrip_Title())
+    eObjectTreeItemAttributeDescriptor = new EObjectTreeItemAttributeDescriptor(VACATIONS_PACKAGE.getTravel_Title())
         .setLabelText("Title");
     eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(eObjectTreeItemAttributeDescriptor);
     

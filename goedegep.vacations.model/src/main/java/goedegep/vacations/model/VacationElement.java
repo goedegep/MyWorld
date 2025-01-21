@@ -70,4 +70,12 @@ public interface VacationElement extends EObject {
    */
   DayTrip getDayTrip();
 
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @model kind="operation"
+   * @generated
+   */
+  Day getDay();
+
 } // VacationElement

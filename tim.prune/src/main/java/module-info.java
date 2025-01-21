@@ -7,5 +7,6 @@ module tim.prune {
   requires j3d.vecmath;
   requires j3d.core;
   requires j3d.utils;
+  requires java.base;
 
 }

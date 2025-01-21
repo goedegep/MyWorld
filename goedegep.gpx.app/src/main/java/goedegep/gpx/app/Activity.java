@@ -22,14 +22,15 @@ import javafx.scene.image.Image;
  * </ul>
  */
 public enum Activity {
-  BOAT_TRIP(new String[] {"boottocht", "on a ferry"}, ImageResource.BOAT),
+  BOAT_TRIP(new String[] {"boottocht", "on a ferry", "boating"}, ImageResource.BOAT),
   CANOEING(new String[] {"kanotocht"}, ImageResource.CANOEING),
-  CABLE_CAR(new String[] {"kabelbaan", "cable car"}, ImageResource.CABLE_CAR),
+  CABLE_CAR(new String[] {"kabelbaan", "cable car", "in a gondola lift"}, ImageResource.CABLE_CAR),
   CAR_RIDE(new String[] {"autorit", "driving"}, ImageResource.CAR),
   BUS_RIDE(new String[] {"busrit", "on a bus"}, ImageResource.BUS),
   CYCLING(new String[] {"fietstocht", "cycling"}, ImageResource.CYCLING),
   FLYING(new String[] {"vliegen", "flying"}, ImageResource.PLANE_TAKEOFF),
   HORSE_RIDING(new String[] {"paardrijden", "horseriding"}, ImageResource.HORSE_RIDING),
+  MOTOR_CYCLING(new String[] {"motorrijden", "motorcycling"}, ImageResource.MOTORCYCLE),
   RUNNING(new String[] {"hardlopen", "running"}, ImageResource.RUNNING),
   SKIÏNG(new String[] {"skiën"}, ImageResource.SKIÏNG),
   TRAIN_RIDE(new String[] {"treinrit", "on a train", "on the subway"}, ImageResource.TRAIN),

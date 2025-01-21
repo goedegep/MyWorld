@@ -1,5 +1,6 @@
 package goedegep.media.mediadb.app.guifx;
 
+import java.io.File;
 import java.util.logging.Logger;
 
 import org.eclipse.emf.common.notify.Notification;
@@ -22,6 +23,7 @@ import goedegep.media.mediadb.model.Video;
 import goedegep.properties.app.guifx.PropertiesEditor;
 import goedegep.resources.ImageSize;
 import goedegep.util.datetime.FlexDate;
+import goedegep.util.desktop.DesktopUtil;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Node;
@@ -226,7 +228,8 @@ public class VideoDbWindow extends JfxStage {
     // Help: Media DB Information
     MenuUtil.addMenuItem(menu, "Video DB Information", new EventHandler<ActionEvent>()  {
       public void handle(ActionEvent e) {
-        new BrowserWindow("MediaDbHelp", customization, "http://mydigitallife.rf.gd/myworld-user-manual/media/mediadb-the-media-database/");
+        DesktopUtil.open("http://mydigitallife.rf.gd/myworld-user-manual/media/mediadb-the-media-database/");
+//        new BrowserWindow("MediaDbHelp", customization, "http://mydigitallife.rf.gd/myworld-user-manual/media/mediadb-the-media-database/");
       }
     });
 

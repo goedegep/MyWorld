@@ -29,6 +29,11 @@ public class GpxAppUtil {
         keyword = keyword.trim().toLowerCase();
         LOGGER.info("Handling keyword: " + keyword);
         
+        // no activity for 'Moving' as doesn't add any information
+        if ("moving".equals(keyword)) {
+          return null;
+        }
+        
         for (Activity activity: Activity.values()) {
           LOGGER.info("Handling activity: " + activity.name());
           for (String activityText: activity.getGpxKeywords()) {

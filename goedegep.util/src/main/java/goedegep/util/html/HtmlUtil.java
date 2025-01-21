@@ -35,44 +35,45 @@ public final class HtmlUtil {
    * @throws IOException
    */
   public static void writeHtmlTable(File file, List<String> columnNames, List<List<String>> tableData) throws IOException {
-    BufferedWriter writer = new BufferedWriter(new FileWriter(file));
-    Indent indent = new Indent(2);
-    
-    writer.write(SgmlUtil.createElementOpen(indent, null, "html"));
-    writer.write(NEWLINE);
-    indent.increment();
-    writer.write(SgmlUtil.createElementOpen(indent, null, "header"));
-    writer.write(NEWLINE);
-    indent.increment();
-    writer.write(SgmlUtil.createElement(indent, null, "title", "Tabel titel"));
-    writer.write(NEWLINE);
-    indent.decrement();
-    writer.write(SgmlUtil.createElementClose(indent, null, "header"));
-    writer.write(NEWLINE);
+    try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
+      Indent indent = new Indent(2);
+      
+      writer.write(SgmlUtil.createElementOpen(indent, null, "html"));
+      writer.write(NEWLINE);
+      indent.increment();
+      writer.write(SgmlUtil.createElementOpen(indent, null, "header"));
+      writer.write(NEWLINE);
+      indent.increment();
+      writer.write(SgmlUtil.createElement(indent, null, "title", "Tabel titel"));
+      writer.write(NEWLINE);
+      indent.decrement();
+      writer.write(SgmlUtil.createElementClose(indent, null, "header"));
+      writer.write(NEWLINE);
 
-    writer.write(SgmlUtil.createElementOpen(indent, null, "body"));
-    writer.write(NEWLINE);
-    indent.increment();
-    
-    writer.write(SgmlUtil.createElementOpen(indent, null, "table border=\"2\""));
-    writer.write(NEWLINE);
-    indent.increment();
-    
-    writeHtmlTableHeader(writer, indent, columnNames);
-    writeHtmlTableBody(writer, indent, tableData);
-    
-    indent.decrement();
-    writer.write(SgmlUtil.createElementClose(indent, null, "table"));
-    writer.write(NEWLINE);
-    
-    indent.decrement();
-    writer.write(SgmlUtil.createElementClose(indent, null, "body"));
-    writer.write(NEWLINE);
-    
-    writer.write(SgmlUtil.createElementClose(indent, null, "html"));
-    writer.write(NEWLINE);
-    
-    writer.close();
+      writer.write(SgmlUtil.createElementOpen(indent, null, "body"));
+      writer.write(NEWLINE);
+      indent.increment();
+      
+      writer.write(SgmlUtil.createElementOpen(indent, null, "table border=\"2\""));
+      writer.write(NEWLINE);
+      indent.increment();
+      
+      writeHtmlTableHeader(writer, indent, columnNames);
+      writeHtmlTableBody(writer, indent, tableData);
+      
+      indent.decrement();
+      writer.write(SgmlUtil.createElementClose(indent, null, "table"));
+      writer.write(NEWLINE);
+      
+      indent.decrement();
+      writer.write(SgmlUtil.createElementClose(indent, null, "body"));
+      writer.write(NEWLINE);
+      
+      writer.write(SgmlUtil.createElementClose(indent, null, "html"));
+      writer.write(NEWLINE);
+      
+      writer.close();
+    }
   }
   
   /**
@@ -170,4 +171,35 @@ public final class HtmlUtil {
     }
   }  
   
+  /**
+   * Create an HTML element for a picture with a link and a caption.
+   * 
+   * @param imageUrlString the URL, as {@code String}, for the picture.
+   * @param height the height of the picture.
+   * @param caption an optional caption to be shown below the picture.
+   * @param linkUrlString an optional URL, as {@code String}, for a link.
+   * 
+   * @return the created HTML element.
+   */
+  public static String createPictureElement(String imageUrlString, int height, String caption, String linkUrlString) {
+    StringBuilder buf = new StringBuilder();
+    
+    buf.append("<a href=\"")
+    .append(encodeHTML(linkUrlString))
+    .append("\"><figure><img src=\"")
+    .append(encodeHTML(imageUrlString))
+    .append("\" height=\"")
+    .append(height)
+    .append("\" >");
+    
+    if (caption != null) {
+      buf.append("<figcaption>")
+      .append(encodeHTML(caption))
+      .append("</figcaption>");
+    }
+    
+    buf.append("</img></figure></a>");
+    
+    return buf.toString();
+  }
 }

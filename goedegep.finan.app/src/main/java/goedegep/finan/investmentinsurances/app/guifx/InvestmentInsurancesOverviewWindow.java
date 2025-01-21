@@ -18,6 +18,7 @@ import goedegep.jfx.JfxStage;
 import goedegep.jfx.MenuUtil;
 import goedegep.jfx.browser.BrowserWindow;
 import goedegep.properties.app.guifx.PropertiesEditor;
+import goedegep.util.desktop.DesktopUtil;
 import goedegep.util.emf.EMFResource;
 import goedegep.util.text.TextWriter;
 import javafx.beans.value.ChangeListener;
@@ -238,7 +239,8 @@ public class InvestmentInsurancesOverviewWindow extends JfxStage {
     // Help: Investment Insurances Information
     MenuUtil.addMenuItem(menu, "Investment Insurances Information", new EventHandler<ActionEvent>()  {
       public void handle(ActionEvent e) {
-        new BrowserWindow("Beleggingsverzekeringen informatie", customization, "http://mydigitallife.rf.gd/myworld-user-manual/finan/beleggingsverzekeringen/");
+        DesktopUtil.open("http://mydigitallife.rf.gd/myworld-user-manual/finan/beleggingsverzekeringen/");
+//        new BrowserWindow("Beleggingsverzekeringen informatie", customization, "http://mydigitallife.rf.gd/myworld-user-manual/finan/beleggingsverzekeringen/");
       }
     });
 

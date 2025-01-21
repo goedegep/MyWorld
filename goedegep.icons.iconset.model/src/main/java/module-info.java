@@ -4,4 +4,5 @@ module goedegep.appgen.iconset.model {
 
   requires transitive org.eclipse.emf.common;
   requires org.eclipse.emf.ecore;
+  requires java.base;
 }

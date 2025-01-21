@@ -2,6 +2,7 @@
  */
 package goedegep.vacations.model.impl;
 
+import goedegep.vacations.model.Day;
 import goedegep.vacations.model.DayTrip;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
@@ -125,6 +126,22 @@ public abstract class VacationElementImpl extends MinimalEObjectImpl.Container i
   /**
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
+   * @generated NOT
+   */
+  @Override
+  public Day getDay() {
+    EObject container = eContainer();
+
+    while ((container != null) && !(container instanceof Day)) {
+      container = container.eContainer();
+    }
+
+    return (Day) container;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
    * @generated
    */
   @Override
@@ -210,6 +227,8 @@ public abstract class VacationElementImpl extends MinimalEObjectImpl.Container i
       return getVacation();
     case VacationsPackage.VACATION_ELEMENT___GET_DAY_TRIP:
       return getDayTrip();
+    case VacationsPackage.VACATION_ELEMENT___GET_DAY:
+      return getDay();
     }
     return super.eInvoke(operationID, arguments);
   }

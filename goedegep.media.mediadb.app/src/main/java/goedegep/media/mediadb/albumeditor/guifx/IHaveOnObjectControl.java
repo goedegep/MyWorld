@@ -36,7 +36,7 @@ public class IHaveOnObjectControl extends ObjectControlTextField<List<MediumInfo
 
   private void handleMouseDoubleClickedEvent(TextField control, MouseEvent e) {
     LOGGER.severe("Launching MediumInfo editor");
-    MediumInfoListEditor mediumInfoListEditor = MediumInfoListEditor.newInstance(customization);
+    MediumInfoListEditor mediumInfoListEditor = MediumInfoListEditor.newInstance(customization, this::setObject);
     mediumInfoListEditor.setObject(getValue());
     mediumInfoListEditor.show();
   }

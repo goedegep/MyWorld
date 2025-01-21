@@ -235,7 +235,7 @@ class CountryEditPanel {
    * @param country the Country who's values will be applied to the controls.
    */
   private void fillFieldsFromCountry(Country country) {
-    countryTextField.setValue(country != null ? country.getCountryName() : null);
+    countryTextField.setObject(country != null ? country.getCountryName() : null);
   }
   
   /**

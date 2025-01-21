@@ -78,6 +78,8 @@ public class VacationsSwitch<T> extends Switch<T> {
       Vacation vacation = (Vacation) theEObject;
       T result = caseVacation(vacation);
       if (result == null)
+        result = caseTravel(vacation);
+      if (result == null)
         result = caseEvent(vacation);
       if (result == null)
         result = defaultCase(theEObject);
@@ -162,6 +164,8 @@ public class VacationsSwitch<T> extends Switch<T> {
       DayTrip dayTrip = (DayTrip) theEObject;
       T result = caseDayTrip(dayTrip);
       if (result == null)
+        result = caseTravel(dayTrip);
+      if (result == null)
         result = caseEvent(dayTrip);
       if (result == null)
         result = defaultCase(theEObject);
@@ -172,6 +176,29 @@ public class VacationsSwitch<T> extends Switch<T> {
       T result = caseDocument(document);
       if (result == null)
         result = caseVacationElement(document);
+      if (result == null)
+        result = defaultCase(theEObject);
+      return result;
+    }
+    case VacationsPackage.TRAVEL_CATEGORY: {
+      TravelCategory travelCategory = (TravelCategory) theEObject;
+      T result = caseTravelCategory(travelCategory);
+      if (result == null)
+        result = defaultCase(theEObject);
+      return result;
+    }
+    case VacationsPackage.TRAVEL: {
+      Travel travel = (Travel) theEObject;
+      T result = caseTravel(travel);
+      if (result == null)
+        result = caseEvent(travel);
+      if (result == null)
+        result = defaultCase(theEObject);
+      return result;
+    }
+    case VacationsPackage.TRAVEL_CATEGORIES: {
+      TravelCategories travelCategories = (TravelCategories) theEObject;
+      T result = caseTravelCategories(travelCategories);
       if (result == null)
         result = defaultCase(theEObject);
       return result;
@@ -373,6 +400,51 @@ public class VacationsSwitch<T> extends Switch<T> {
    * @generated
    */
   public T caseDocument(Document object) {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>Travel Category</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Travel Category</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseTravelCategory(TravelCategory object) {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>Travel</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Travel</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseTravel(Travel object) {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>Travel Categories</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Travel Categories</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseTravelCategories(TravelCategories object) {
     return null;
   }
 

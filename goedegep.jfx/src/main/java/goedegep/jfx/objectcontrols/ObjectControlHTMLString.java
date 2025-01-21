@@ -27,7 +27,7 @@ public class ObjectControlHTMLString extends ObjectControlTemplate<String> {
     htmlEditor = customization.getComponentFactoryFx().createHTMLEditor();
     htmlEditor.addEventHandler(InputEvent.ANY, (e) -> ociHandleNewUserInput(htmlEditor));
     
-    setValue(text);
+    setObject(text);
   }
   
   /**

@@ -35,25 +35,21 @@
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="tips" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="dayTrips" upperBound="-1"
         eType="#//DayTrip" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="travelcategories" upperBound="-1"
+        eType="#//TravelCategories" containment="true"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="Vacation" eSuperTypes="../../goedegep.types.model/model/types.ecore#//Event">
+  <eClassifiers xsi:type="ecore:EClass" name="Vacation" eSuperTypes="../../goedegep.types.model/model/types.ecore#//Event #//Travel">
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
       <details key="documentation" value="A vacation may have been at a single location. In this case fill in 'location'. Fill in 'bezochteLocaties' for any location visited.&lt;br/>&#xD;&#xA;If you stayed at different locations, you can mix the locations where you stayed with the visited places, all in 'bezochteLocaties'.&#xD;&#xA;"/>
     </eAnnotations>
     <eOperations name="findDocument" eType="ecore:EClass ../../goedegep.types.model/model/types.ecore#//FileReference">
       <eParameters name="documentPath" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     </eOperations>
-    <eOperations name="getAllFileReferences" ordered="false" upperBound="-1" eType="ecore:EClass ../../goedegep.types.model/model/types.ecore#//FileReference">
-      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="This method returns all file references (as FileReference) of the vacation. This means all documents of the vacation and all pictures of all Locations."/>
-      </eAnnotations>
-    </eOperations>
     <eOperations name="getAllReferencedFiles" upperBound="-1" eType="ecore:EDataType http://www.eclipse.org/emf/2003/XMLType#//String">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
         <details key="documentation" value="This method returns all referenced files (as String) of the vacation. This means all  'Bestand' attributes  of the documents of the vacation and all pictures of all Locations."/>
       </eAnnotations>
     </eOperations>
-    <eOperations name="getId" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     <eOperations name="getDayNr" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EIntegerObject">
       <eParameters name="vacationElement" eType="#//VacationElement"/>
     </eOperations>
@@ -63,8 +59,6 @@
         eType="ecore:EClass ../../goedegep.types.model/model/types.ecore#//FileReference"
         containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="pictures" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="title" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
-        unsettable="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="elements" upperBound="-1"
         eType="#//VacationElement" containment="true"/>
   </eClassifiers>
@@ -115,6 +109,7 @@
       </eAnnotations>
     </eOperations>
     <eOperations name="getDayTrip" eType="#//DayTrip"/>
+    <eOperations name="getDay" eType="#//Day"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="children" upperBound="-1"
         eType="#//VacationElement" containment="true"/>
   </eClassifiers>
@@ -167,15 +162,30 @@
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="fileName" lowerBound="1"
         eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="DayTrip" eSuperTypes="../../goedegep.types.model/model/types.ecore#//Event">
-    <eOperations name="getId" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="title" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
-        unsettable="true"/>
+  <eClassifiers xsi:type="ecore:EClass" name="DayTrip" eSuperTypes="#//Travel">
     <eStructuralFeatures xsi:type="ecore:EReference" name="elements" upperBound="-1"
         eType="#//VacationElement" containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Document" eSuperTypes="#//VacationElement">
     <eStructuralFeatures xsi:type="ecore:EReference" name="documentReference" eType="ecore:EClass ../../goedegep.types.model/model/types.ecore#//FileReference"
         unsettable="true" containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="TravelCategory">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="travels" upperBound="-1"
+        eType="#//Travel" containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Travel" eSuperTypes="../../goedegep.types.model/model/types.ecore#//Event">
+    <eOperations name="getId" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eOperations name="getAllFileReferences" ordered="false" upperBound="-1" eType="ecore:EClass ../../goedegep.types.model/model/types.ecore#//FileReference">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="This method returns all file references (as FileReference) of the vacation. This means all documents of the vacation and all pictures of all Locations."/>
+      </eAnnotations>
+    </eOperations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="title" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
+        unsettable="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="TravelCategories">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="travelcategories" upperBound="-1"
+        eType="#//TravelCategory" containment="true"/>
   </eClassifiers>
 </ecore:EPackage>

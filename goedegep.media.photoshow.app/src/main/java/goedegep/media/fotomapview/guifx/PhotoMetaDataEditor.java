@@ -154,7 +154,7 @@ public class PhotoMetaDataEditor extends JfxStage {
 //    textField.setEditable(false);
     WGS84Coordinates coordinates = photoMetaData.getCoordinates();
     if (coordinates != null) {
-      objectControlWGS84Coordinates.setValue(coordinates);
+      objectControlWGS84Coordinates.setObject(coordinates);
 //      textField.setText(coordinates.getLatitude() + ", " + coordinates.getLongitude());
     }
     gridPane.add(objectControlWGS84Coordinates.getControl(), 1, row);

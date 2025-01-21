@@ -13,8 +13,8 @@ import goedegep.media.fotomapview.guifx.PhotoEditor;
 import goedegep.media.fotomapview.guifx.PhotoMapView;
 import goedegep.media.fotoshow.app.guifx.PhotoShowBuilder;
 import goedegep.media.fotoshow.app.guifx.PhotoShowViewer;
+import goedegep.media.mediadb.app.MediaDbAppLauncher;
 import goedegep.media.mediadb.app.guifx.DuneWindow;
-import goedegep.media.mediadb.app.guifx.MediaDbWindow;
 import goedegep.media.mediadb.app.guifx.MusicFolderWindow;
 import goedegep.media.mediadb.app.guifx.VideoDbWindow;
 import goedegep.properties.app.guifx.PropertiesEditor;
@@ -102,7 +102,7 @@ public class MediaMenuWindow extends JfxStage {
     
     // First row: Music
     applicationButton = componentFactory.createToolButton("Music database", appResources.getApplicationImage(ImageSize.SIZE_0), "Open the Music database window");
-    applicationButton.setOnAction((event) -> showMusicDbWindow());
+    applicationButton.setOnAction((event) -> MediaDbAppLauncher.launchMediaApplication(customization));
     grid.add(applicationButton, 0, 0);
     
     applicationButton = componentFactory.createToolButton("Music Folder", appResources.getMusicFolderImage(), "Open the Music Folder window");
@@ -216,14 +216,6 @@ public class MediaMenuWindow extends JfxStage {
         MediaRegistry.copyrightMessage + NEWLINE +
         "Author: " + MediaRegistry.author)
         .showAndWait();
-  }
-
-  /**
-   * Show the media database window.
-   */
-  private void showMusicDbWindow() {
-    Stage stage = new MediaDbWindow(customization);
-    stage.show();
   }
   
   /**

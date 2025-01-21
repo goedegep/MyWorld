@@ -13,6 +13,10 @@
   </parent>
   <dependencies>
     <dependency>
+    <groupId>org.apache.commons</groupId>
+    <artifactId>commons-io</artifactId>
+    </dependency>
+    <dependency>
       <groupId>com.google.jimfs</groupId>
       <artifactId>jimfs</artifactId>
     </dependency>
@@ -23,6 +27,11 @@
     <dependency>
       <groupId>goedegep.geo</groupId>
       <artifactId>goedegep-geo</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>net.iakovlev</groupId>
+      <artifactId>timeshape</artifactId>
+      <version>2024a.24</version>
     </dependency>
     <dependency>
       <groupId>org.apache.commons</groupId>

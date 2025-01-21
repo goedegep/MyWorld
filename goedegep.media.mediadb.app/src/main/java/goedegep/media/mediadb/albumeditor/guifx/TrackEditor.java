@@ -1,17 +1,18 @@
 package goedegep.media.mediadb.albumeditor.guifx;
 
+import java.util.function.Consumer;
+
 import goedegep.jfx.ComponentFactoryFx;
 import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.objectcontrols.ObjectControlDuration;
 import goedegep.jfx.objectcontrols.ObjectControlString;
 import goedegep.jfx.objecteditor.ObjectEditorException;
 import goedegep.jfx.objecteditor.ObjectEditorTemplate;
+import goedegep.media.mediadb.app.MediaDbService;
 import goedegep.media.mediadb.model.Artist;
-import goedegep.media.mediadb.model.MediaDb;
 import goedegep.media.mediadb.model.MediadbFactory;
 import goedegep.media.mediadb.model.MediadbPackage;
 import goedegep.media.mediadb.model.Track;
-import goedegep.media.mediadb.model.TrackReference;
 import goedegep.util.emf.EmfUtil;
 import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
@@ -24,11 +25,6 @@ import javafx.scene.layout.VBox;
  *
  */
 public class TrackEditor extends ObjectEditorTemplate<Track> {
-  
-  /**
-   * The media database.
-   */
-  private MediaDb mediaDb;
   
   /**
    * Factory for creating the GUI components.
@@ -62,15 +58,15 @@ public class TrackEditor extends ObjectEditorTemplate<Track> {
    * @param mediaDb the media database.
    * @return a newly created {@code TrackEditor}.
    */
-  public static TrackEditor newInstance(CustomizationFx customization, MediaDb mediaDb) {
-    TrackEditor trackEditor = new TrackEditor(customization, mediaDb);
+  public static TrackEditor newInstance(CustomizationFx customization, MediaDbService mediaDbService) {
+    TrackEditor trackEditor = new TrackEditor(customization, mediaDbService);
     trackEditor.performInitialization();
     
     return trackEditor;
   }
 
   public void setTrackTitle(String title) {
-    trackTitleObjectControl.setValue(title);
+    trackTitleObjectControl.setObject(title);
   }
 
   public void setArtist(Artist artist) {
@@ -84,10 +80,9 @@ public class TrackEditor extends ObjectEditorTemplate<Track> {
    * @param customization the GUI customization.
    * @param mediaDb the media database.
    */
-  private TrackEditor(CustomizationFx customization, MediaDb mediaDb) {
-    super(customization, "Track selecter/editor");
+  private TrackEditor(CustomizationFx customization, MediaDbService mediaDbService) {
+    super(customization, "Track selecter/editor", mediaDbService::addTrackToMediaDatabase);
     
-    this.mediaDb = mediaDb;
     componentFactory = customization.getComponentFactoryFx();
   }
   
@@ -132,19 +127,13 @@ public class TrackEditor extends ObjectEditorTemplate<Track> {
   }
 
   @Override
-  protected void addObjectToCollection() {
-    mediaDb.getTracks().add(object);
-    
-  }
-
-  @Override
   protected void fillControlsWithDefaultValues() {
-    trackTitleObjectControl.setValue(null);    
+    trackTitleObjectControl.setObject(null);    
   }
 
   @Override
   protected void fillControlsFromObject() {
-    trackTitleObjectControl.setValue(object.getTitle());
+    trackTitleObjectControl.setObject(object.getTitle());
     
   }
 

@@ -4,12 +4,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.function.Consumer;
 import java.util.logging.Logger;
 
 import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.JfxStage;
-import goedegep.jfx.objectcontrols.ObjectControl;
 import goedegep.jfx.objectcontrols.ObjectControlGroup;
+import goedegep.jfx.objectcontrols.ObjectControlStatus;
+import goedegep.jfx.objectcontrols.ObjectEditPanel;
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
 import javafx.geometry.Insets;
@@ -20,7 +22,6 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.Tooltip;
-import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
@@ -174,6 +175,11 @@ public abstract class ObjectEditorTemplate<T> extends JfxStage implements Observ
   protected T object = null;
   
   /**
+   * Callback method for adding a new object
+   */
+  private Consumer<T> addObjectMethod;
+  
+  /**
    * Ignore changes
    */
   protected boolean ignoreChanges;
@@ -195,8 +201,10 @@ public abstract class ObjectEditorTemplate<T> extends JfxStage implements Observ
    * @param customization
    * @param title
    */
-  public ObjectEditorTemplate(CustomizationFx customization, String title) {
+  protected ObjectEditorTemplate(CustomizationFx customization, String title, Consumer<T> addObjectMethod) {
     super(customization, title);
+    
+    this.addObjectMethod = addObjectMethod;
     
     objectControlsGroup = new ObjectControlGroup();
     buttonTypes = new ArrayList<>();
@@ -204,7 +212,7 @@ public abstract class ObjectEditorTemplate<T> extends JfxStage implements Observ
     buttonTypes.add(NEW);
     buttonTypes.add(ButtonType.CANCEL);
   }
-  
+    
   /**
    * Set the explanation text.
    * 
@@ -419,7 +427,7 @@ public abstract class ObjectEditorTemplate<T> extends JfxStage implements Observ
     TextArea statusTextArea = componentFactory.createTextArea();
     statusTextArea.setEditable(false);
     statusTextArea.setMaxHeight(30);
-    ObjectControl<? extends Object> objectControl = objectControlsGroup.getFirstInvalidControl();
+    ObjectControlStatus objectControl = objectControlsGroup.getFirstInvalidControl();
     LOGGER.info("First invalid object control: " + (objectControl != null ? objectControl.toString() : "All controls are valid"));
     if (objectControl != null) {
       String errorText = objectControl.getErrorText();
@@ -500,7 +508,8 @@ public abstract class ObjectEditorTemplate<T> extends JfxStage implements Observ
     try {
       updateObjectFromControls();
       
-      addObjectToCollection();
+      addObjectMethod.accept(object);
+//      addObjectToCollection();
       
       // calling setObject causes: all controls to be unchanged, all values shown in the preferred way
       setObject(object, false, false);
@@ -522,10 +531,10 @@ public abstract class ObjectEditorTemplate<T> extends JfxStage implements Observ
    */
   protected abstract void createObject();
   
-  /**
-   * Add the new object to the collection.
-   */
-  protected abstract void addObjectToCollection();
+//  /**
+//   * Add the new object to the collection.
+//   */
+//  protected abstract void addObjectToCollection();
   
   /**
    * Update {@code object} with the values of the controls.

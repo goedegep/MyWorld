@@ -13,6 +13,7 @@ import goedegep.jfx.objectcontrols.ObjectControlTemplate;
 import goedegep.jfx.objectcontrols.ObjectEditPanelTemplate;
 import goedegep.jfx.objecteditor.ObjectEditorException;
 import goedegep.jfx.objectcontrols.ObjectControlGroup;
+import goedegep.media.mediadb.app.MediaDbService;
 import goedegep.media.mediadb.model.MediaDb;
 import goedegep.media.mediadb.model.MediadbFactory;
 import goedegep.media.mediadb.model.MediadbPackage;
@@ -37,9 +38,9 @@ public class PlayersEditPanel extends ObjectEditPanelTemplate<List<Player>> {
   private CustomizationFx customization;
   
   /**
-   * The media database (containing the artists)
+   * The media database service (containing the artists)
    */
-  private MediaDb mediaDb;
+  private MediaDbService mediaDbService;
   
   /**
    * Main panel
@@ -64,8 +65,8 @@ public class PlayersEditPanel extends ObjectEditPanelTemplate<List<Player>> {
    * @param mediaDb the media database.
    * @return a newly created {@code PlayersEditPanel}.
    */
-  public static PlayersEditPanel newInstance(CustomizationFx customization, MediaDb mediaDb) {
-    PlayersEditPanel playersEditPanel = new PlayersEditPanel(customization, mediaDb);
+  public static PlayersEditPanel newInstance(CustomizationFx customization, MediaDbService mediaDbService) {
+    PlayersEditPanel playersEditPanel = new PlayersEditPanel(customization, mediaDbService);
     playersEditPanel.performInitialization();
     
     return playersEditPanel;
@@ -77,11 +78,11 @@ public class PlayersEditPanel extends ObjectEditPanelTemplate<List<Player>> {
    * @param customization The GUI customization.
    * @param mediaDb The media database.
    */
-  private PlayersEditPanel(CustomizationFx customization, MediaDb mediaDb) {
+  private PlayersEditPanel(CustomizationFx customization, MediaDbService mediaDbService) {
     super(customization);
     
     this.customization = customization;
-    this.mediaDb = mediaDb;
+    this.mediaDbService = mediaDbService;
     
     objectControlsGroup.setId("PlayersEditPanel");
   }
@@ -115,7 +116,7 @@ public class PlayersEditPanel extends ObjectEditPanelTemplate<List<Player>> {
 //    mainPanel.getChildren().add(getStatusIndicator());  // TODO per player
     
     addPlayerButton.setOnAction((e) -> {
-      ObjectControlForPlayer objectControlForPlayer = new ObjectControlForPlayer(customization, mediaDb);
+      ObjectControlForPlayer objectControlForPlayer = new ObjectControlForPlayer(customization, mediaDbService);
       playersPanel.getChildren().add(objectControlForPlayer.getControl());
       objectControlsGroup.addObjectControls(objectControlForPlayer);
      });
@@ -148,10 +149,10 @@ public class PlayersEditPanel extends ObjectEditPanelTemplate<List<Player>> {
   protected void fillControlsFromObject() {
     if (object != null) {
       for (Player player: object) {
-        ObjectControlForPlayer objectControlForPlayer = new ObjectControlForPlayer(customization, mediaDb);
+        ObjectControlForPlayer objectControlForPlayer = new ObjectControlForPlayer(customization, mediaDbService);
         objectControlsForPlayers.add(objectControlForPlayer);
         Player playerCopy = EcoreUtil.copy(player);
-        objectControlForPlayer.setValue(playerCopy);
+        objectControlForPlayer.setObject(playerCopy);
         playersPanel.getChildren().add(objectControlForPlayer.getControl());
         objectControlsGroup.addObjectControls(objectControlForPlayer);
       }

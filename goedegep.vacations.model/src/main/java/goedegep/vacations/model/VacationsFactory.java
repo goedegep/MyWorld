@@ -130,6 +130,33 @@ public interface VacationsFactory extends EFactory {
   Document createDocument();
 
   /**
+   * Returns a new object of class '<em>Travel Category</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Travel Category</em>'.
+   * @generated
+   */
+  TravelCategory createTravelCategory();
+
+  /**
+   * Returns a new object of class '<em>Travel</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Travel</em>'.
+   * @generated
+   */
+  Travel createTravel();
+
+  /**
+   * Returns a new object of class '<em>Travel Categories</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Travel Categories</em>'.
+   * @generated
+   */
+  TravelCategories createTravelCategories();
+
+  /**
    * Returns the package supported by this factory.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->

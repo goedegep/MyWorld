@@ -4,4 +4,5 @@ module goedegep.poi.model {
 
   requires transitive org.eclipse.emf.common;
   requires org.eclipse.emf.ecore;
+  requires java.base;
 }

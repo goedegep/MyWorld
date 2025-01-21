@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 import java.util.logging.Logger;
 
 import goedegep.appgen.Operation;
@@ -29,6 +30,7 @@ import goedegep.media.app.MediaRegistry;
 import goedegep.media.app.base.MediaAppResourcesFx;
 import goedegep.media.mediadb.albumeditor.guifx.AlbumEditor;
 import goedegep.media.mediadb.app.MediaDbAppUtil;
+import goedegep.media.mediadb.app.MediaDbService;
 import goedegep.media.mediadb.model.Album;
 import goedegep.media.mediadb.model.Disc;
 import goedegep.media.mediadb.model.IWant;
@@ -72,6 +74,7 @@ public class AlbumsTable extends EObjectTable<Album> {
    * The Media Database
    */
   private MediaDb mediaDb;
+
   
   /**
    * A reference to a MediaDbWindow, which provides functionality like opening an album details window.
@@ -113,12 +116,18 @@ public class AlbumsTable extends EObjectTable<Album> {
    * @param albumDiscToMusicFolderLocationMap a map that relates the albums in the <code>mediaDb</code> to their locations on disc.
    * @param trackDiscLocationMap a map that relates tracks to their location on disc.
    */
-  public AlbumsTable(CustomizationFx customization, MediaDbWindow mediaDbWindow, MediaDb mediaDb,
-      Map<Album, AlbumOnDiscInfo> albumToMusicFolderLocationMap, Map<Disc, AlbumOnDiscInfo> albumDiscToMusicFolderLocationMap, Map<Track, Path> trackDiscLocationMap) {
-    super(customization, MediadbPackage.eINSTANCE.getAlbum(), new AlbumsTableDescriptor(customization, mediaDb), mediaDb, MediadbPackage.eINSTANCE.getMediaDb_Albums());
+  public AlbumsTable(
+      CustomizationFx customization,
+      MediaDbWindow mediaDbWindow,
+      Consumer<Album> addAlbumMethod,
+      MediaDbService mediaDbService,
+      Map<Album, AlbumOnDiscInfo> albumToMusicFolderLocationMap,
+      Map<Disc, AlbumOnDiscInfo> albumDiscToMusicFolderLocationMap,
+      Map<Track, Path> trackDiscLocationMap) {
+    super(customization, MediadbPackage.eINSTANCE.getAlbum(), new AlbumsTableDescriptor(customization, mediaDbService), mediaDbService.getMediaDbResource().getEObject(), MediadbPackage.eINSTANCE.getMediaDb_Albums());
     
     this.customization = customization;
-    this.mediaDb = mediaDb;
+    mediaDb = mediaDbService.getMediaDbResource().getEObject();
     this.mediaDbWindow = mediaDbWindow;
     this.albumToMusicFolderLocationMap = albumToMusicFolderLocationMap;
     this.albumDiscToMusicFolderLocationMap = albumDiscToMusicFolderLocationMap;
@@ -164,7 +173,7 @@ public class AlbumsTable extends EObjectTable<Album> {
   @Override
   protected void handleRowDoubleClicked(Album rowData) {
     LOGGER.info("=>");
-    mediaDbWindow.openAlbumDetailsWindow();
+    mediaDbWindow.openAlbumInAlbumDetailsWindow();
   }
 
   /**
@@ -362,6 +371,7 @@ public class AlbumsTable extends EObjectTable<Album> {
 class AlbumsTableDescriptor extends EObjectTableDescriptor<Album> {
   private static final int IMAGE_HEIGHT = 60;
   private static final MediadbPackage MEDIA_DB_PACKAGE = MediadbPackage.eINSTANCE;
+  
 
   /*
    * Column descriptors which have to be adapted in the constructor.
@@ -455,7 +465,7 @@ class AlbumsTableDescriptor extends EObjectTableDescriptor<Album> {
   };
 
   private CustomizationFx customization;
-  private MediaDb mediaDb;
+  private MediaDbService mediaDbService;
   private AlbumReferenceCellFactory albumReferenceCellFactory;
 
   
@@ -464,10 +474,10 @@ class AlbumsTableDescriptor extends EObjectTableDescriptor<Album> {
    * 
    * @param customization the GUI customization.
    */
-  AlbumsTableDescriptor(CustomizationFx customization, MediaDb mediaDb) {
+  AlbumsTableDescriptor(CustomizationFx customization, MediaDbService mediaDbService) {
     super();
     this.customization = customization;
-    this.mediaDb = mediaDb;
+    this.mediaDbService = mediaDbService;
     
     MyInfoPlayCellFactory myInfoPlayCellFactory = new MyInfoPlayCellFactory(customization, IMAGE_HEIGHT);
     playColumnDescriptor.setCellFactory(myInfoPlayCellFactory);
@@ -499,7 +509,7 @@ class AlbumsTableDescriptor extends EObjectTableDescriptor<Album> {
    * @param album the {@code Album} to edit.
    */
   private void editAlbum(List<Album> albums, Album album) {
-    AlbumEditor albumEditor = AlbumEditor.newInstance(customization, mediaDb);
+    AlbumEditor albumEditor = AlbumEditor.newInstance(customization, mediaDbService);
     albumEditor.setObject(album);
     albumEditor.show();
   }

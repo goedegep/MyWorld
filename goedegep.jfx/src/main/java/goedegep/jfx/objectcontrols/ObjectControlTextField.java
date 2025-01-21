@@ -91,7 +91,7 @@ public class ObjectControlTextField<T> extends ObjectControlTemplate<T> {
     // The initial value of the textField is an empty string. Again setting it to an empty string doesn't trigger the listener.
     // So if the initial value isn't null, set the value (triggering the listener, leading to a call to ociHandleNewUserInput().
     // Else, just call ociHandleNewUserInput().
-    setValue(initialValue);
+    setObject(initialValue);
   }
   
   /**

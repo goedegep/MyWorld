@@ -50,7 +50,7 @@ public class ObjectControlString extends ObjectControlTemplate<String> {
       return result;
     });
     
-    setValue(initialValue);
+    setObject(initialValue);
   }
   
   public TextField getControl() {

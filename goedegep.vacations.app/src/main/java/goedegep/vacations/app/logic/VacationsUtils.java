@@ -37,9 +37,11 @@ import goedegep.util.img.PhotoFileMetaDataHandler;
 import goedegep.vacations.model.Boundary;
 import goedegep.vacations.model.BoundingBox;
 import goedegep.vacations.model.Day;
+import goedegep.vacations.model.DayTrip;
 import goedegep.vacations.model.GPXTrack;
 import goedegep.vacations.model.Location;
 import goedegep.vacations.model.Picture;
+import goedegep.vacations.model.Travel;
 import goedegep.vacations.model.Vacation;
 import goedegep.vacations.model.VacationElement;
 import goedegep.vacations.model.VacationsPackage;
@@ -86,8 +88,32 @@ public class VacationsUtils {
    * @return a list of coordinates of all locations of <code>vacation</code>.
    * @throws FileNotFoundException if a file, referenced by an element, doesn't exist.
    */
-  public static List<WGS84Coordinates> getGeoLocations(Vacation vacation) throws FileNotFoundException {
-    List<WGS84Coordinates> geoLocations = new ArrayList<>();
+//  public static List<WGS84Coordinates> getGeoLocations(Vacation vacation) throws FileNotFoundException {
+//    List<WGS84Coordinates> geoLocations = new ArrayList<>();
+//    int numberOfDays = getNumberOfDays(vacation);
+//    WGS84Coordinates[] stayedAtLocations = null;
+//    if (numberOfDays != 0) {
+//      stayedAtLocations = new WGS84Coordinates[numberOfDays];
+//    }
+//    
+//    for (VacationElement element: vacation.getElements()) {
+//      addGeoLocationsForVacationElement(geoLocations, element, stayedAtLocations);
+//    }
+//    
+//    return geoLocations;
+//  }
+  
+  /**
+   * Get all geo-locations of a vacation.
+   * 
+   * @param vacation the {@code Vacation} for which the locations are to be collected.
+   * @return a list of coordinates of all locations of {@code Vacation}.
+   * @throws FileNotFoundException if a file, referenced by an element, doesn't exist.
+   */
+  public static List<List<WGS84Coordinates>> getLocationConnectingLines(Vacation vacation) throws FileNotFoundException {
+    List<List<WGS84Coordinates>> locationConnectingLines = new ArrayList<>();
+    List<WGS84Coordinates> locationsConnectingLine = new ArrayList<>();
+    locationConnectingLines.add(locationsConnectingLine);
     int numberOfDays = getNumberOfDays(vacation);
     WGS84Coordinates[] stayedAtLocations = null;
     if (numberOfDays != 0) {
@@ -95,10 +121,54 @@ public class VacationsUtils {
     }
     
     for (VacationElement element: vacation.getElements()) {
-      addGeoLocationsForVacationElement(geoLocations, element, stayedAtLocations);
+      locationsConnectingLine = addGeoLocationsForVacationElement(locationConnectingLines, locationsConnectingLine, element, stayedAtLocations);
     }
     
-    return geoLocations;
+    if (locationConnectingLines.getLast().isEmpty()) {
+      locationConnectingLines.removeLast();
+    }
+    
+    
+    return locationConnectingLines;
+  }
+  
+  /**
+   * Get all geo-locations of a day.
+   * 
+   * @param day the {@code Day} for which the locations are to be collected.
+   * @return a list of coordinates of all locations of the {@code day}.
+   * @throws FileNotFoundException if a file, referenced by an element, doesn't exist.
+   */
+  public static List<List<WGS84Coordinates>> getLocationConnectingLines(Day day) throws FileNotFoundException {
+    List<List<WGS84Coordinates>> locationConnectingLines = new ArrayList<>();
+    List<WGS84Coordinates> locationsConnectingLine = new ArrayList<>();
+    locationConnectingLines.add(locationsConnectingLine);
+    
+    for (VacationElement element: day.getChildren()) {
+      locationsConnectingLine = addGeoLocationsForVacationElement(locationConnectingLines, locationsConnectingLine, element, null);
+    }
+    
+    if (locationConnectingLines.getLast().isEmpty()) {
+      locationConnectingLines.removeLast();
+    }
+    
+    
+    return locationConnectingLines;
+  }
+  
+  private static void printLocations(List<List<WGS84Coordinates>> locationConnectingLines, String title) {
+    LOGGER.severe(title);
+    for (List<WGS84Coordinates> list: locationConnectingLines) {
+      for (WGS84Coordinates coordinates: list) {
+        if (coordinates == null) {
+          LOGGER.severe("null");
+        } else {
+          LOGGER.severe(coordinates.toString());
+        }
+      }
+      LOGGER.severe("Line ended");
+    }
+    
   }
   
   /**
@@ -304,6 +374,61 @@ public class VacationsUtils {
   }
 
   /**
+   * Add the geo-locations of a <code>VacationElement</code> and all its children to a list of geo-locations.
+   * 
+   * @param geoLocations the list to which the locations are added.
+   * @param element the <code>VacationElement</code> for which the locations will be added.
+   * @param stayedAtLocations optional array of stayed at locations
+   * @throws FileNotFoundException in case the file specified by the pictureReference of a Picture element doesn't exist.
+   */
+  private static List<WGS84Coordinates> addGeoLocationsForVacationElement(List<List<WGS84Coordinates>> locationsConnectingLines, List<WGS84Coordinates> geoLocations, VacationElement element, WGS84Coordinates[] stayedAtLocations) throws FileNotFoundException {
+    
+    switch(element.eClass().getClassifierID()) {
+    case VacationsPackage.DAY:
+      // A day has no location. Stayed at locations are handled after handling the children.
+      break;
+      
+    case VacationsPackage.LOCATION:
+      addGeoLocationForVacationElementLocation(geoLocations, (Location) element, stayedAtLocations);
+      break;
+      
+    case VacationsPackage.TEXT:
+    case VacationsPackage.DOCUMENT:
+      // No action; a Text or Document has no location.
+      break;
+      
+    case VacationsPackage.PICTURE:
+      addGeoLocationForVacationElementPicture(geoLocations, (Picture) element);
+      break;
+      
+    case VacationsPackage.GPX_TRACK:
+      geoLocations = addGeoLocationForVacationElementGPXTrack(locationsConnectingLines, geoLocations, (GPXTrack) element);
+      break;
+    }
+    
+    for (VacationElement childElement: element.getChildren()) {
+      geoLocations = addGeoLocationsForVacationElement(locationsConnectingLines, geoLocations, childElement, stayedAtLocations);
+    }
+    
+    if (element.eClass().getClassifierID() == VacationsPackage.DAY) {
+      Day day = (Day) element;
+      int dayNr = day.getDayNr();
+      LOGGER.info("Trying to retrieve stayed at for day number: " + dayNr);
+      if (stayedAtLocations != null  &&  stayedAtLocations.length >= dayNr) {
+        WGS84Coordinates coordinates = stayedAtLocations[dayNr - 1];
+        if (coordinates != null) {
+          LOGGER.info("Found stayed at");
+          geoLocations.add(coordinates);
+        } else {
+          LOGGER.info("No stayed at for dayNr: " + dayNr);
+        }
+      }
+    }
+    
+    return geoLocations;
+  }
+
+  /**
    * Add the geo-location of a <code>Location</code> to a list of geo-locations or to an array of stayed at locations.
    * <p>
    * The location can only be added if both latitude and longitude of the <code>Location</code> are set.<br/>
@@ -316,6 +441,9 @@ public class VacationsUtils {
    *        in the elements corresponding to the days you stayed at this location.
    */
   private static void addGeoLocationForVacationElementLocation(List<WGS84Coordinates> geoLocations, Location location, WGS84Coordinates[] stayedAtLocations) {
+    if (elementIsChildOfGpxTrackOrLocation(location)) {
+      return;
+    }
     
     if (!location.isReferenceOnly()  &&  location.isSetLatitude()  &&  location.isSetLongitude()) {
       WGS84Coordinates coordinates = new WGS84Coordinates(location.getLatitude(), location.getLongitude());
@@ -338,11 +466,13 @@ public class VacationsUtils {
           LOGGER.info("Adding location to stayedAtLocations for day number: " + i);
           stayedAtLocations[i - 1] = coordinates;
         }
-      } else {
+      }
+      
+      // If a 'stayed at' location exists at vacation level, it is not added here.
+      if (!(location.isStayedAtThisLocation()  &&  elementIsChildOfVacation(location))) {
         geoLocations.add(coordinates);
       }
     }
-    
   }
 
   /**
@@ -355,6 +485,10 @@ public class VacationsUtils {
    * @throws FileNotFoundException in case the file specified by the pictureReference doesn't exist.
    */
   private static void addGeoLocationForVacationElementPicture(List<WGS84Coordinates> geoLocations, Picture picture) throws FileNotFoundException {
+    if (elementIsChildOfGpxTrackOrLocation(picture)) {
+      return;
+    }
+    
     WGS84Coordinates coordinates = null;
     FileReference pictureReference = picture.getPictureReference();
     if (pictureReference == null) {
@@ -374,6 +508,26 @@ public class VacationsUtils {
 
     if (coordinates != null) {      
       geoLocations.add(coordinates);
+    }
+  }
+  
+  private static boolean elementIsChildOfVacation(VacationElement element) {
+    EObject containingObject = element.eContainer();
+    
+    if (containingObject instanceof Vacation) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+  
+  private static boolean elementIsChildOfGpxTrackOrLocation(VacationElement element) {
+    EObject containingObject = element.eContainer();
+    
+    if (containingObject instanceof GPXTrack  ||  containingObject instanceof Location) {
+      return true;
+    } else {
+      return false;
     }
   }
 
@@ -427,28 +581,127 @@ public class VacationsUtils {
     }
     
   }
+
+  /**
+   * Add the location for a GPX track to the list of geo locations.
+   * <p>
+   * The location added is the location of the first point of the first segment of the first track.
+   * 
+   * @param geoLocations a list of geo locations to which the location is to be added.
+   * @param gpxTrack the GPX track of which the location is to be added.
+   */
+  private static List<WGS84Coordinates> addGeoLocationForVacationElementGPXTrack(List<List<WGS84Coordinates>> locationsConnectingLines, List<WGS84Coordinates> geoLocations, GPXTrack gpxTrack) {
+    FileReference trackReference = gpxTrack.getTrackReference();
+    if (trackReference == null) {
+      return geoLocations;
+    }
+    
+    String fileName = trackReference.getFile();
+    if ((fileName == null)  ||  fileName.isEmpty()) {
+      return geoLocations;
+    }    
+
+    EMFResource<DocumentRoot> gpxResource = GpxUtil.createEMFResource();
+    try {
+      gpxResource.load(fileName);
+      DocumentRoot documentRoot = gpxResource.getEObject();
+      
+      WGS84Coordinates endCoordinates = GpxUtil.getEndLocation(documentRoot.getGpx());
+      if (endCoordinates == null) {
+        return geoLocations;
+      }
+      WGS84Coordinates startCoordinates = GpxUtil.getStartLocation(documentRoot.getGpx());
+      if (startCoordinates == null) {  // This can happen if the first waypoint is missing a latitude or longitude
+        return geoLocations;
+      }
+      
+      if (geoLocations.isEmpty()) {
+        geoLocations.add(endCoordinates);
+      } else {
+        geoLocations.add(startCoordinates);
+        
+        geoLocations = new ArrayList<>();
+        geoLocations.add(endCoordinates);
+        locationsConnectingLines.add(geoLocations);
+      }
+    } catch (FileNotFoundException e) {
+      e.printStackTrace();
+    }
+    
+    return geoLocations;
+  }
   
   /**
-   * Guess the folder in which the documents related to a vacation are stored.
+   * Guess the folder in which the files related to a travel are stored.
+   * <p>
+   * If the travel has one or more file references, the folder is taken from the first reference that refers to a file in a folder that is a sub folder of the folder where all travels of that category are stored.
+   * The folder where all travels of a category are stored is category specific:
+   * <ul>
+   * <li>Vacation - specified by VacationsRegistry.vacationsFolderName</li>
+   * <li>DayTrip - specified by 
+   * </ul>
+   * If the folder can't be derived from the file references, the default is used. This is a subfolder, with the name of the travel id, of the folder where all travels of that category are stored
    * 
-   * @param vacation the Vacation to determine the folder for.
-   * @return the folder in which the documents related to <code>vacation</code> are stored
+   * @param travel the Travel to determine the folder for.
+   * @return the folder in which the files related to <code>travel</code> are stored
    */
-  public static String getVacationFolder(Vacation vacation) {
-    String vacationFolder = null;
+  public static String getTravelFilesFolder(Travel travel) {
+    String travelFilesFolder = null;
 
-    for (FileReference fileReference: vacation.getAllFileReferences()) {
+    for (FileReference fileReference: travel.getAllFileReferences()) {
       String filename = fileReference.getFile();
       if (filename != null) {
         File file = new File(filename);
-        String vacationsFolder = file.getParentFile().getParent();
-        if (VacationsRegistry.vacationsFolderName.equals(vacationsFolder)) {
-          vacationFolder = file.getParent();
-
-          return vacationFolder;
+        File parentFile = file.getParentFile();
+        String parentFolder = file.getParentFile().getParent();
+        if (travel instanceof Vacation) {
+          if (VacationsRegistry.vacationsFolderName.equals(parentFolder)) {
+            travelFilesFolder = file.getParent();
+            break;
+          }
+        } else if (travel instanceof DayTrip) {
+          if ("D:\\Database\\Dagtochten".equals(parentFolder)) {
+            travelFilesFolder = file.getParent();
+            break;
+          }
         }
       }
     }
+    
+    if (travelFilesFolder == null) {
+      String baseFolder = null;
+      if (travel instanceof Vacation) {
+        baseFolder = VacationsRegistry.vacationsFolderName;
+      } else if (travel instanceof DayTrip) {
+        baseFolder = "D:\\Database\\Dagtochten";
+      }
+      travelFilesFolder = baseFolder + "\\" + travel.getId();
+    }
+
+    return travelFilesFolder;
+  }
+  
+  /**
+   * Guess the folder in which the documents related to a dayTrip are stored.
+   * 
+   * @param dayTrip the DayTrop to determine the folder for.
+   * @return the folder in which the documents related to <code>dayTrip</code> are stored
+   */
+  public static String getDayTripFolder(DayTrip dayTrip) {
+    String vacationFolder = null;
+
+//    for (FileReference fileReference: dayTrip.getAllFileReferences()) {
+//      String filename = fileReference.getFile();
+//      if (filename != null) {
+//        File file = new File(filename);
+//        String vacationsFolder = file.getParentFile().getParent();
+//        if (VacationsRegistry.vacationsFolderName.equals(vacationsFolder)) {
+//          vacationFolder = file.getParent();
+//
+//          return vacationFolder;
+//        }
+//      }
+//    }
 
     return null;
   }
@@ -495,23 +748,8 @@ public class VacationsUtils {
      *  - a valid vacation date
      *  - a valid vacation title
      */
-    Path vacationsPhotosFolderPath = getVacationsPhotosFolderPath();
     
-    if (vacationsPhotosFolderPath == null) {
-      return null;
-    }
-    
-    if (vacation.getDate() == null) {
-      return null;
-    }
-    
-    if (vacation.getTitle() == null  ||  vacation.getTitle().isEmpty()) {
-      return null;
-    }
-    
-    String vacationId = vacation.getId();
-    
-    Path vacationPhotosFolderPath = vacationsPhotosFolderPath.resolve(vacationId);
+    Path vacationPhotosFolderPath = getVacationPhotosFolderPathByConvention(vacation);
     if (Files.exists(vacationPhotosFolderPath)  &&  Files.isDirectory(vacationPhotosFolderPath)) {
       LOGGER.severe("<= " + vacationPhotosFolderPath);
       return vacationPhotosFolderPath;
@@ -532,12 +770,48 @@ public class VacationsUtils {
     String vacationsPhotosFolderName = VacationsRegistry.vacationPicturesFolderName;
     Path vacationsPhotosFolderPath = Paths.get(vacationsPhotosFolderName);
     if (Files.exists(vacationsPhotosFolderPath)  &&  Files.isDirectory(vacationsPhotosFolderPath)) {
-      LOGGER.severe("<= " + vacationsPhotosFolderPath);
       return vacationsPhotosFolderPath;
     } else {
-      LOGGER.severe("<= " + null);
       return null;
     }
+  }
+  
+  /**
+   * Get the vacation photo folder path by convention.
+   * <p>
+   * By convention:
+   * <ul>
+   * <li>
+   * the vacation folder is a subfolder of the folder with photos for all vacations (see {@link #getVacationsPhotosFolderPath}
+   * </li>
+   * <li>
+   * the name of the subfolder is the vacation id, which means that it can only be determined if the vacation has a date and title.
+   * </li>
+   * </ul>
+   * 
+   * @param vacation the {@Vacation} to get the path for.
+   * @return the photo folder path by convention for {@code vacation}, or null if this cannot be determined.
+   */
+  public static Path getVacationPhotosFolderPathByConvention(Vacation vacation) {
+    Path vacationsPhotosFolderPath = getVacationsPhotosFolderPath();
+    
+    if (vacationsPhotosFolderPath == null) {
+      return null;
+    }
+    
+    if (vacation.getDate() == null) {
+      return null;
+    }
+    
+    if (vacation.getTitle() == null  ||  vacation.getTitle().isEmpty()) {
+      return null;
+    }
+    
+    String vacationId = vacation.getId();
+    
+    Path vacationPhotosFolderPath = vacationsPhotosFolderPath.resolve(vacationId);
+    
+    return vacationPhotosFolderPath;
   }
   
   /**

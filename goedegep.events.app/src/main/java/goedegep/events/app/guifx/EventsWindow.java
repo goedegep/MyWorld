@@ -1,15 +1,19 @@
 package goedegep.events.app.guifx;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.logging.Logger;
 
-import org.eclipse.emf.common.notify.Notification;
+import com.openhtmltopdf.outputdevice.helper.BaseRendererBuilder.PageSizeUnits;
+import com.openhtmltopdf.pdfboxout.PdfRendererBuilder;
 
 import goedegep.events.app.EventsRegistry;
-import goedegep.events.model.EventInfo;
+import goedegep.events.app.EventsService;
+import goedegep.events.app.EventsToHtmlConverter;
 import goedegep.events.model.Events;
-import goedegep.events.model.EventsFactory;
 import goedegep.events.model.EventsPackage;
 import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.JfxStage;
@@ -17,12 +21,11 @@ import goedegep.jfx.MenuUtil;
 import goedegep.jfx.PropertyDescriptorsEditorFx;
 import goedegep.properties.app.guifx.PropertiesEditor;
 import goedegep.resources.ImageSize;
+import goedegep.util.Result;
 import goedegep.util.emf.EMFResource;
 import javafx.scene.Node;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
-import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
@@ -45,6 +48,11 @@ import javafx.scene.layout.VBox;
 public class EventsWindow extends JfxStage {
   private static final Logger LOGGER = Logger.getLogger(EventsWindow.class.getName());
   private static final String NEWLINE = System.getProperty("line.separator");
+  
+  /**
+   * The {@link EventsService} this window operates on.
+   */
+  private EventsService eventsService;
   
   /**
    * The resources for this application.
@@ -78,27 +86,19 @@ public class EventsWindow extends JfxStage {
    * Creation of this window requires that {@code EventsRegistry.eventsFileName} has a value that points to a file with {@link Events}.
    * 
    * @param customization the GUI customization.
+   * @param eventsService the {@code EventsService} this window operates on.
    */
-  public EventsWindow(CustomizationFx customization) {
+  public EventsWindow(CustomizationFx customization, EventsService eventsService) {
     super(customization, null);
     LOGGER.info("=>");
     
+    this.eventsService = eventsService;
     appResources = (EventsAppResources) getResources();
         
     createGUI();
 
-    eventsResource = new EMFResource<>(
-        EventsPackage.eINSTANCE, 
-        () -> EventsFactory.eINSTANCE.createEvents(),
-        ".xmi",
-        true);
-    
-    try {
-      events = eventsResource.load(EventsRegistry.eventsFileName);
-    } catch (FileNotFoundException e) {
-      e.printStackTrace();
-      return;
-    }
+    eventsResource = eventsService.getEventsResource();
+    events = eventsResource.getEObject();
                
     setX(10);
     setY(20);
@@ -133,7 +133,6 @@ public class EventsWindow extends JfxStage {
     VBox vBox = componentFactory.createVBox(12.0);
     // Events EObjectTable
     eventsTable = new EventsTable(customization);
-    eventsTable.setEventEditorLauncher(this::LaunchEventsEditor);
     vBox.getChildren().add(eventsTable);
     
     VBox.setVgrow(vBox, Priority.ALWAYS);
@@ -143,13 +142,7 @@ public class EventsWindow extends JfxStage {
 
     setScene(new Scene(mainPane, 1700, 900));
   }
-  
-  private void LaunchEventsEditor(EventInfo event) {
-    EventsEditor eventsEditor = EventsEditor.newInstance(customization, events);
-    eventsEditor.setObject(event);
-    eventsEditor.show();
-  }
-  
+    
   /**
    * Create the menu bar for this window.
    * 
@@ -206,7 +199,7 @@ public class EventsWindow extends JfxStage {
         
     Button newEventButton = componentFactory.createButton("New Event", "Open the Event Editor for a new event");
     newEventButton.setOnAction(e -> {
-      EventsEditor.newInstance(customization, events).show();
+      EventsLauncher.getInstance().LaunchEventsEditor(null);
     });
     hBox.getChildren().add(newEventButton);
     
@@ -217,29 +210,59 @@ public class EventsWindow extends JfxStage {
    * Save the events information to the related file.
    */
   private void saveEvents() {
-    if (eventsResource != null) {
-      try {
-        eventsResource.save();
-        statusLabel.setText("Events saved to '" + eventsResource.getFileName() + "'");
-      } catch (IOException e) {        
-        componentFactory.createErrorDialog(
-            "Saving the events has failed.",
-            "System error message: "  + e.getMessage()
-            ).showAndWait();
-      }
+    Result result = eventsService.saveEvents();
+    switch (result.getResultType()) {
+    case OK:
+      statusLabel.setText(result.getMessage());
+      break;
+    
+    case FAILED:
+      componentFactory.createErrorDialog(
+          "Saving the events has failed.",
+          result.getMessage()
+          ).showAndWait();
+      break;
+      
+    default:
+      throw new RuntimeException("Unknown result type: " + result.getResultType());
     }
   }
   
+  /**
+   * Export the events to a PDF file.
+   */
   private void exportEventsToPdf() {
+    EventsToHtmlConverter eventsToHtmlConverter = new EventsToHtmlConverter();
+    String eventsHtmlDocument = eventsToHtmlConverter.eventsToHtml(events);
     
+    String eventsFolder = EventsRegistry.eventsFolderName;
+
+    Path pdfFilePath = Paths.get(eventsFolder, "Events.pdf");
+    try(OutputStream os = Files.newOutputStream(pdfFilePath)) {
+      PdfRendererBuilder builder = new PdfRendererBuilder();
+      builder.useFastMode();
+      builder.useDefaultPageSize(600, 1000, PageSizeUnits.MM);
+      builder.withHtmlContent(eventsHtmlDocument, null);
+      builder.toStream(os);
+      builder.run();
+      os.close();
+      statusLabel.setText("Event exported to " + pdfFilePath.toString());
+    } catch (IOException e) {
+      e.printStackTrace();
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
   }
     
+  /**
+   * Open an editor to edit the property descriptors (in development mode only).
+   */
   private void showPropertyDescriptorsEditor() {
     new PropertyDescriptorsEditorFx(customization, EventsRegistry.propertyDescriptorsResource);
   }
   
   /**
-   * Show the User Properties editor.
+   * Open an editor where the user can edit his preferences.
    */
   private void showPropertiesEditor() {
     new PropertiesEditor("Events properties", customization, null,

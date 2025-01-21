@@ -91,6 +91,7 @@ public enum ImageResource {
       new ImageFileInfo("Market - 48x48.png", 48, 48),
       new ImageFileInfo("Market - 512x512.png", 512, 512)}, "a market", null),
   MARKDOWN(new ImageFileInfo[] {new ImageFileInfo("Markdown logo - 1600x1600.png", 487, 487)}, "Markdown logo", "https://imgbin.com/"),
+  MOTORCYCLE(new ImageFileInfo[] {new ImageFileInfo("Motorcycle - 512x512.png", 487, 487)}, "Motorcycle", "<a href=\"https://www.flaticon.com/free-icons/motorcycle\" title=\"motorcycle icons\">Motorcycle icons created by Freepik - Flaticon</a>"),
   MS_WORD(new ImageFileInfo[] {new ImageFileInfo("MSWord - 1047x1024.png", 1047, 1024)}, "Microsoft Word document icon", "User:Airhogs777"),
   ODT(new ImageFileInfo[] {new ImageFileInfo("ODT - 512x512.png", 1047, 1024)}, "OpenDocument Text document icon", "<a href=\"https://www.flaticon.com/free-icons/files-and-folders\" title=\"files and folders icons\">Files and folders icons created by Awicon - Flaticon</a>"),
   PLANE_TAKEOFF(new ImageFileInfo[] {
@@ -102,6 +103,7 @@ public enum ImageResource {
       }, "a plane taking off", "https://icon-icons.com/"),
   PDF(new ImageFileInfo[] {new ImageFileInfo("PDF - 417x512.png", 417, 512)}, "PDF file logo", null),
   PHOTO_FOLDER(new ImageFileInfo[] {new ImageFileInfo("PhotoFolder - 199x217.png", 417, 512)}, "Photo folder icon", "https://icon-library.com/icon/microsoft-folder-icon-24.html.html>Microsoft Folder Icon # 392312"),
+  RIVER(new ImageFileInfo[] {new ImageFileInfo("River - 512x512.png", 57, 32)}, "a river", "<a href=\"https://www.freepik.com/icons/river\">Icon by Warangkhana Sookruay</a>"),
   ROAD_TO_HORIZON(new ImageFileInfo[] {new ImageFileInfo("RoadToHorizon - 57x32.png", 57, 32), new ImageFileInfo("RoadToHorizon - 114x64.png", 114, 64)}, "a road to the horizon", null),
   RUNNING(new ImageFileInfo[] {
       new ImageFileInfo("RunningFigure - 48x48.png", 48, 48),
@@ -116,6 +118,11 @@ public enum ImageResource {
       new ImageFileInfo("Train - 48x48.png", 48, 48),
       new ImageFileInfo("Train - 512x512.png", 512, 512)
       }, "a train", "<a href=\"https://www.freepik.com/icon/train_4540243#fromView=keyword&page=1&position=67&uuid=b9dfd6a4-8d00-4a11-9397-c7033983ba0e\">Icon by Milkghost Studio</a>"),
+  TREES(new ImageFileInfo[] {
+      new ImageFileInfo("Trees - 32x32.png", 32, 32),
+      new ImageFileInfo("Trees - 64x64.png", 64, 64),
+      new ImageFileInfo("Trees - 512x512.png", 512, 512)
+      }, "trees", "<a href=\"https://www.flaticon.com/free-icons/trees\" title=\"trees icons\">Trees icons created by surang - Flaticon</a>"),
   VIDEO_FOLDER(new ImageFileInfo[] {new ImageFileInfo("VideoFolder - 936x936.png", 936, 936)}, "Video folder icon", null),
   WALKING(new ImageFileInfo[] {new ImageFileInfo("Walking - 512x512.png", 512, 512)}, "a person walking with stick and backpack", null),
   ZOO(new ImageFileInfo[] {

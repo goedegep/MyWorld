@@ -7,4 +7,5 @@ module goedegep.gpx10.model {
   requires transitive org.eclipse.emf.common;
   requires org.eclipse.emf.ecore;
   requires org.eclipse.emf.ecore.xmi;
+  requires java.base;
 }

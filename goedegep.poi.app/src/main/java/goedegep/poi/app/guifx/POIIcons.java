@@ -574,6 +574,16 @@ public class POIIcons {
     poiIconResourceDescriptor.setIconFileName(ImageResource.ZOO.getImageUrl(ImageSize.SIZE_2).toString());
     poiIconResourceInfo.getPoiIconResourceDescriptors().add(poiIconResourceDescriptor);
     
+    poiIconResourceDescriptor = factory.createPOIIconResourceDescriptor();
+    poiIconResourceDescriptor.setCategory(POICategoryId.RIVER);
+    poiIconResourceDescriptor.setIconFileName(ImageResource.ZOO.getImageUrl(ImageSize.SIZE_2).toString());
+    poiIconResourceInfo.getPoiIconResourceDescriptors().add(poiIconResourceDescriptor);
+    
+    poiIconResourceDescriptor = factory.createPOIIconResourceDescriptor();
+    poiIconResourceDescriptor.setCategory(POICategoryId.FOREST);
+    poiIconResourceDescriptor.setIconFileName(ImageResource.TREES.getImageUrl(ImageSize.SIZE_2).toString());
+    poiIconResourceInfo.getPoiIconResourceDescriptors().add(poiIconResourceDescriptor);
+    
     return poiIconResourceInfo;
   }
 

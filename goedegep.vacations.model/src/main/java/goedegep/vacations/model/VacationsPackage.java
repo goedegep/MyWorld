@@ -110,13 +110,22 @@ public interface VacationsPackage extends EPackage {
   int VACATIONS__DAY_TRIPS = 3;
 
   /**
+   * The feature id for the '<em><b>Travelcategories</b></em>' containment reference list.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int VACATIONS__TRAVELCATEGORIES = 4;
+
+  /**
    * The number of structural features of the '<em>Vacations</em>' class.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int VACATIONS_FEATURE_COUNT = 4;
+  int VACATIONS_FEATURE_COUNT = 5;
 
   /**
    * The operation id for the '<em>Find Vacation</em>' operation.
@@ -183,13 +192,22 @@ public interface VacationsPackage extends EPackage {
   int VACATION__NOTES = TypesPackage.EVENT__NOTES;
 
   /**
+   * The feature id for the '<em><b>Title</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int VACATION__TITLE = TypesPackage.EVENT_FEATURE_COUNT + 0;
+
+  /**
    * The feature id for the '<em><b>End Date</b></em>' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int VACATION__END_DATE = TypesPackage.EVENT_FEATURE_COUNT + 0;
+  int VACATION__END_DATE = TypesPackage.EVENT_FEATURE_COUNT + 1;
 
   /**
    * The feature id for the '<em><b>Documents</b></em>' containment reference list.
@@ -198,7 +216,7 @@ public interface VacationsPackage extends EPackage {
    * @generated
    * @ordered
    */
-  int VACATION__DOCUMENTS = TypesPackage.EVENT_FEATURE_COUNT + 1;
+  int VACATION__DOCUMENTS = TypesPackage.EVENT_FEATURE_COUNT + 2;
 
   /**
    * The feature id for the '<em><b>Pictures</b></em>' attribute.
@@ -207,16 +225,7 @@ public interface VacationsPackage extends EPackage {
    * @generated
    * @ordered
    */
-  int VACATION__PICTURES = TypesPackage.EVENT_FEATURE_COUNT + 2;
-
-  /**
-   * The feature id for the '<em><b>Title</b></em>' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int VACATION__TITLE = TypesPackage.EVENT_FEATURE_COUNT + 3;
+  int VACATION__PICTURES = TypesPackage.EVENT_FEATURE_COUNT + 3;
 
   /**
    * The feature id for the '<em><b>Elements</b></em>' containment reference list.
@@ -237,13 +246,13 @@ public interface VacationsPackage extends EPackage {
   int VACATION_FEATURE_COUNT = TypesPackage.EVENT_FEATURE_COUNT + 5;
 
   /**
-   * The operation id for the '<em>Find Document</em>' operation.
+   * The operation id for the '<em>Get Id</em>' operation.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int VACATION___FIND_DOCUMENT__STRING = TypesPackage.EVENT_OPERATION_COUNT + 0;
+  int VACATION___GET_ID = TypesPackage.EVENT_OPERATION_COUNT + 0;
 
   /**
    * The operation id for the '<em>Get All File References</em>' operation.
@@ -255,22 +264,22 @@ public interface VacationsPackage extends EPackage {
   int VACATION___GET_ALL_FILE_REFERENCES = TypesPackage.EVENT_OPERATION_COUNT + 1;
 
   /**
+   * The operation id for the '<em>Find Document</em>' operation.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int VACATION___FIND_DOCUMENT__STRING = TypesPackage.EVENT_OPERATION_COUNT + 2;
+
+  /**
    * The operation id for the '<em>Get All Referenced Files</em>' operation.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int VACATION___GET_ALL_REFERENCED_FILES = TypesPackage.EVENT_OPERATION_COUNT + 2;
-
-  /**
-   * The operation id for the '<em>Get Id</em>' operation.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int VACATION___GET_ID = TypesPackage.EVENT_OPERATION_COUNT + 3;
+  int VACATION___GET_ALL_REFERENCED_FILES = TypesPackage.EVENT_OPERATION_COUNT + 3;
 
   /**
    * The operation id for the '<em>Get Day Nr</em>' operation.
@@ -346,13 +355,22 @@ public interface VacationsPackage extends EPackage {
   int VACATION_ELEMENT___GET_DAY_TRIP = 2;
 
   /**
+   * The operation id for the '<em>Get Day</em>' operation.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int VACATION_ELEMENT___GET_DAY = 3;
+
+  /**
    * The number of operations of the '<em>Vacation Element</em>' class.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int VACATION_ELEMENT_OPERATION_COUNT = 3;
+  int VACATION_ELEMENT_OPERATION_COUNT = 4;
 
   /**
    * The meta object id for the '{@link goedegep.vacations.model.impl.LocationImpl <em>Location</em>}' class.
@@ -563,6 +581,15 @@ public interface VacationsPackage extends EPackage {
   int LOCATION___GET_DAY_TRIP = VACATION_ELEMENT___GET_DAY_TRIP;
 
   /**
+   * The operation id for the '<em>Get Day</em>' operation.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int LOCATION___GET_DAY = VACATION_ELEMENT___GET_DAY;
+
+  /**
    * The number of operations of the '<em>Location</em>' class.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -634,6 +661,15 @@ public interface VacationsPackage extends EPackage {
    * @ordered
    */
   int TEXT___GET_DAY_TRIP = VACATION_ELEMENT___GET_DAY_TRIP;
+
+  /**
+   * The operation id for the '<em>Get Day</em>' operation.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int TEXT___GET_DAY = VACATION_ELEMENT___GET_DAY;
 
   /**
    * The number of operations of the '<em>Text</em>' class.
@@ -718,6 +754,15 @@ public interface VacationsPackage extends EPackage {
   int DAY___GET_DAY_TRIP = VACATION_ELEMENT___GET_DAY_TRIP;
 
   /**
+   * The operation id for the '<em>Get Day</em>' operation.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int DAY___GET_DAY = VACATION_ELEMENT___GET_DAY;
+
+  /**
    * The operation id for the '<em>Get Date</em>' operation.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -800,6 +845,15 @@ public interface VacationsPackage extends EPackage {
   int PICTURE___GET_DAY_TRIP = VACATION_ELEMENT___GET_DAY_TRIP;
 
   /**
+   * The operation id for the '<em>Get Day</em>' operation.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int PICTURE___GET_DAY = VACATION_ELEMENT___GET_DAY;
+
+  /**
    * The number of operations of the '<em>Picture</em>' class.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -871,6 +925,15 @@ public interface VacationsPackage extends EPackage {
    * @ordered
    */
   int GPX_TRACK___GET_DAY_TRIP = VACATION_ELEMENT___GET_DAY_TRIP;
+
+  /**
+   * The operation id for the '<em>Get Day</em>' operation.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int GPX_TRACK___GET_DAY = VACATION_ELEMENT___GET_DAY;
 
   /**
    * The number of operations of the '<em>GPX Track</em>' class.
@@ -1110,6 +1173,15 @@ public interface VacationsPackage extends EPackage {
   int MAP_IMAGE___GET_DAY_TRIP = VACATION_ELEMENT___GET_DAY_TRIP;
 
   /**
+   * The operation id for the '<em>Get Day</em>' operation.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int MAP_IMAGE___GET_DAY = VACATION_ELEMENT___GET_DAY;
+
+  /**
    * The number of operations of the '<em>Map Image</em>' class.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -1117,6 +1189,79 @@ public interface VacationsPackage extends EPackage {
    * @ordered
    */
   int MAP_IMAGE_OPERATION_COUNT = VACATION_ELEMENT_OPERATION_COUNT + 0;
+
+  /**
+   * The meta object id for the '{@link goedegep.vacations.model.impl.TravelImpl <em>Travel</em>}' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see goedegep.vacations.model.impl.TravelImpl
+   * @see goedegep.vacations.model.impl.VacationsPackageImpl#getTravel()
+   * @generated
+   */
+  int TRAVEL = 14;
+
+  /**
+   * The feature id for the '<em><b>Date</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int TRAVEL__DATE = TypesPackage.EVENT__DATE;
+
+  /**
+   * The feature id for the '<em><b>Notes</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int TRAVEL__NOTES = TypesPackage.EVENT__NOTES;
+
+  /**
+   * The feature id for the '<em><b>Title</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int TRAVEL__TITLE = TypesPackage.EVENT_FEATURE_COUNT + 0;
+
+  /**
+   * The number of structural features of the '<em>Travel</em>' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int TRAVEL_FEATURE_COUNT = TypesPackage.EVENT_FEATURE_COUNT + 1;
+
+  /**
+   * The operation id for the '<em>Get Id</em>' operation.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int TRAVEL___GET_ID = TypesPackage.EVENT_OPERATION_COUNT + 0;
+
+  /**
+   * The operation id for the '<em>Get All File References</em>' operation.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int TRAVEL___GET_ALL_FILE_REFERENCES = TypesPackage.EVENT_OPERATION_COUNT + 1;
+
+  /**
+   * The number of operations of the '<em>Travel</em>' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int TRAVEL_OPERATION_COUNT = TypesPackage.EVENT_OPERATION_COUNT + 2;
 
   /**
    * The meta object id for the '{@link goedegep.vacations.model.impl.DayTripImpl <em>Day Trip</em>}' class.
@@ -1135,7 +1280,7 @@ public interface VacationsPackage extends EPackage {
    * @generated
    * @ordered
    */
-  int DAY_TRIP__DATE = TypesPackage.EVENT__DATE;
+  int DAY_TRIP__DATE = TRAVEL__DATE;
 
   /**
    * The feature id for the '<em><b>Notes</b></em>' attribute.
@@ -1144,52 +1289,7 @@ public interface VacationsPackage extends EPackage {
    * @generated
    * @ordered
    */
-  int DAY_TRIP__NOTES = TypesPackage.EVENT__NOTES;
-
-  /**
-   * The feature id for the '<em><b>Title</b></em>' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int DAY_TRIP__TITLE = TypesPackage.EVENT_FEATURE_COUNT + 0;
-
-  /**
-   * The feature id for the '<em><b>Elements</b></em>' containment reference list.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int DAY_TRIP__ELEMENTS = TypesPackage.EVENT_FEATURE_COUNT + 1;
-
-  /**
-   * The number of structural features of the '<em>Day Trip</em>' class.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int DAY_TRIP_FEATURE_COUNT = TypesPackage.EVENT_FEATURE_COUNT + 2;
-
-  /**
-   * The operation id for the '<em>Get Id</em>' operation.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int DAY_TRIP___GET_ID = TypesPackage.EVENT_OPERATION_COUNT + 0;
-
-  /**
-   * The number of operations of the '<em>Day Trip</em>' class.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int DAY_TRIP_OPERATION_COUNT = TypesPackage.EVENT_OPERATION_COUNT + 1;
+  int DAY_TRIP__NOTES = TRAVEL__NOTES;
 
   /**
    * The meta object id for the '{@link goedegep.vacations.model.impl.DocumentImpl <em>Document</em>}' class.
@@ -1200,6 +1300,80 @@ public interface VacationsPackage extends EPackage {
    * @generated
    */
   int DOCUMENT = 12;
+
+  /**
+   * The meta object id for the '{@link goedegep.vacations.model.impl.TravelCategoryImpl <em>Travel Category</em>}' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see goedegep.vacations.model.impl.TravelCategoryImpl
+   * @see goedegep.vacations.model.impl.VacationsPackageImpl#getTravelCategory()
+   * @generated
+   */
+  int TRAVEL_CATEGORY = 13;
+
+  /**
+   * The meta object id for the '{@link goedegep.vacations.model.impl.TravelCategoriesImpl <em>Travel Categories</em>}' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see goedegep.vacations.model.impl.TravelCategoriesImpl
+   * @see goedegep.vacations.model.impl.VacationsPackageImpl#getTravelCategories()
+   * @generated
+   */
+  int TRAVEL_CATEGORIES = 15;
+
+  /**
+   * The feature id for the '<em><b>Title</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int DAY_TRIP__TITLE = TRAVEL__TITLE;
+
+  /**
+   * The feature id for the '<em><b>Elements</b></em>' containment reference list.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int DAY_TRIP__ELEMENTS = TRAVEL_FEATURE_COUNT + 0;
+
+  /**
+   * The number of structural features of the '<em>Day Trip</em>' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int DAY_TRIP_FEATURE_COUNT = TRAVEL_FEATURE_COUNT + 1;
+
+  /**
+   * The operation id for the '<em>Get Id</em>' operation.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int DAY_TRIP___GET_ID = TRAVEL___GET_ID;
+
+  /**
+   * The operation id for the '<em>Get All File References</em>' operation.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int DAY_TRIP___GET_ALL_FILE_REFERENCES = TRAVEL___GET_ALL_FILE_REFERENCES;
+
+  /**
+   * The number of operations of the '<em>Day Trip</em>' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int DAY_TRIP_OPERATION_COUNT = TRAVEL_OPERATION_COUNT + 0;
 
   /**
    * The feature id for the '<em><b>Children</b></em>' containment reference list.
@@ -1256,6 +1430,15 @@ public interface VacationsPackage extends EPackage {
   int DOCUMENT___GET_DAY_TRIP = VACATION_ELEMENT___GET_DAY_TRIP;
 
   /**
+   * The operation id for the '<em>Get Day</em>' operation.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int DOCUMENT___GET_DAY = VACATION_ELEMENT___GET_DAY;
+
+  /**
    * The number of operations of the '<em>Document</em>' class.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -1263,6 +1446,60 @@ public interface VacationsPackage extends EPackage {
    * @ordered
    */
   int DOCUMENT_OPERATION_COUNT = VACATION_ELEMENT_OPERATION_COUNT + 0;
+
+  /**
+   * The feature id for the '<em><b>Travels</b></em>' containment reference list.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int TRAVEL_CATEGORY__TRAVELS = 0;
+
+  /**
+   * The number of structural features of the '<em>Travel Category</em>' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int TRAVEL_CATEGORY_FEATURE_COUNT = 1;
+
+  /**
+   * The number of operations of the '<em>Travel Category</em>' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int TRAVEL_CATEGORY_OPERATION_COUNT = 0;
+
+  /**
+   * The feature id for the '<em><b>Travelcategories</b></em>' containment reference list.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int TRAVEL_CATEGORIES__TRAVELCATEGORIES = 0;
+
+  /**
+   * The number of structural features of the '<em>Travel Categories</em>' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int TRAVEL_CATEGORIES_FEATURE_COUNT = 1;
+
+  /**
+   * The number of operations of the '<em>Travel Categories</em>' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int TRAVEL_CATEGORIES_OPERATION_COUNT = 0;
 
   /**
    * Returns the meta object for class '{@link goedegep.vacations.model.Vacations <em>Vacations</em>}'.
@@ -1317,6 +1554,17 @@ public interface VacationsPackage extends EPackage {
    * @generated
    */
   EReference getVacations_DayTrips();
+
+  /**
+   * Returns the meta object for the containment reference list '{@link goedegep.vacations.model.Vacations#getTravelcategories <em>Travelcategories</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the containment reference list '<em>Travelcategories</em>'.
+   * @see goedegep.vacations.model.Vacations#getTravelcategories()
+   * @see #getVacations()
+   * @generated
+   */
+  EReference getVacations_Travelcategories();
 
   /**
    * Returns the meta object for the '{@link goedegep.vacations.model.Vacations#findVacation(goedegep.util.datetime.FlexDate, java.lang.String) <em>Find Vacation</em>}' operation.
@@ -1392,17 +1640,6 @@ public interface VacationsPackage extends EPackage {
   EAttribute getVacation_Pictures();
 
   /**
-   * Returns the meta object for the attribute '{@link goedegep.vacations.model.Vacation#getTitle <em>Title</em>}'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the meta object for the attribute '<em>Title</em>'.
-   * @see goedegep.vacations.model.Vacation#getTitle()
-   * @see #getVacation()
-   * @generated
-   */
-  EAttribute getVacation_Title();
-
-  /**
    * Returns the meta object for the containment reference list '{@link goedegep.vacations.model.Vacation#getElements <em>Elements</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -1424,16 +1661,6 @@ public interface VacationsPackage extends EPackage {
   EOperation getVacation__FindDocument__String();
 
   /**
-   * Returns the meta object for the '{@link goedegep.vacations.model.Vacation#getAllFileReferences() <em>Get All File References</em>}' operation.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the meta object for the '<em>Get All File References</em>' operation.
-   * @see goedegep.vacations.model.Vacation#getAllFileReferences()
-   * @generated
-   */
-  EOperation getVacation__GetAllFileReferences();
-
-  /**
    * Returns the meta object for the '{@link goedegep.vacations.model.Vacation#getAllReferencedFiles() <em>Get All Referenced Files</em>}' operation.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -1442,16 +1669,6 @@ public interface VacationsPackage extends EPackage {
    * @generated
    */
   EOperation getVacation__GetAllReferencedFiles();
-
-  /**
-   * Returns the meta object for the '{@link goedegep.vacations.model.Vacation#getId() <em>Get Id</em>}' operation.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the meta object for the '<em>Get Id</em>' operation.
-   * @see goedegep.vacations.model.Vacation#getId()
-   * @generated
-   */
-  EOperation getVacation__GetId();
 
   /**
    * Returns the meta object for the '{@link goedegep.vacations.model.Vacation#getDayNr(goedegep.vacations.model.VacationElement) <em>Get Day Nr</em>}' operation.
@@ -1710,6 +1927,16 @@ public interface VacationsPackage extends EPackage {
    * @generated
    */
   EOperation getVacationElement__GetDayTrip();
+
+  /**
+   * Returns the meta object for the '{@link goedegep.vacations.model.VacationElement#getDay() <em>Get Day</em>}' operation.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the '<em>Get Day</em>' operation.
+   * @see goedegep.vacations.model.VacationElement#getDay()
+   * @generated
+   */
+  EOperation getVacationElement__GetDay();
 
   /**
    * Returns the meta object for class '{@link goedegep.vacations.model.Text <em>Text</em>}'.
@@ -1999,17 +2226,6 @@ public interface VacationsPackage extends EPackage {
   EClass getDayTrip();
 
   /**
-   * Returns the meta object for the attribute '{@link goedegep.vacations.model.DayTrip#getTitle <em>Title</em>}'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the meta object for the attribute '<em>Title</em>'.
-   * @see goedegep.vacations.model.DayTrip#getTitle()
-   * @see #getDayTrip()
-   * @generated
-   */
-  EAttribute getDayTrip_Title();
-
-  /**
    * Returns the meta object for the containment reference list '{@link goedegep.vacations.model.DayTrip#getElements <em>Elements</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -2019,16 +2235,6 @@ public interface VacationsPackage extends EPackage {
    * @generated
    */
   EReference getDayTrip_Elements();
-
-  /**
-   * Returns the meta object for the '{@link goedegep.vacations.model.DayTrip#getId() <em>Get Id</em>}' operation.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the meta object for the '<em>Get Id</em>' operation.
-   * @see goedegep.vacations.model.DayTrip#getId()
-   * @generated
-   */
-  EOperation getDayTrip__GetId();
 
   /**
    * Returns the meta object for class '{@link goedegep.vacations.model.Document <em>Document</em>}'.
@@ -2050,6 +2256,89 @@ public interface VacationsPackage extends EPackage {
    * @generated
    */
   EReference getDocument_DocumentReference();
+
+  /**
+   * Returns the meta object for class '{@link goedegep.vacations.model.TravelCategory <em>Travel Category</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for class '<em>Travel Category</em>'.
+   * @see goedegep.vacations.model.TravelCategory
+   * @generated
+   */
+  EClass getTravelCategory();
+
+  /**
+   * Returns the meta object for the containment reference list '{@link goedegep.vacations.model.TravelCategory#getTravels <em>Travels</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the containment reference list '<em>Travels</em>'.
+   * @see goedegep.vacations.model.TravelCategory#getTravels()
+   * @see #getTravelCategory()
+   * @generated
+   */
+  EReference getTravelCategory_Travels();
+
+  /**
+   * Returns the meta object for class '{@link goedegep.vacations.model.Travel <em>Travel</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for class '<em>Travel</em>'.
+   * @see goedegep.vacations.model.Travel
+   * @generated
+   */
+  EClass getTravel();
+
+  /**
+   * Returns the meta object for the attribute '{@link goedegep.vacations.model.Travel#getTitle <em>Title</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Title</em>'.
+   * @see goedegep.vacations.model.Travel#getTitle()
+   * @see #getTravel()
+   * @generated
+   */
+  EAttribute getTravel_Title();
+
+  /**
+   * Returns the meta object for the '{@link goedegep.vacations.model.Travel#getId() <em>Get Id</em>}' operation.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the '<em>Get Id</em>' operation.
+   * @see goedegep.vacations.model.Travel#getId()
+   * @generated
+   */
+  EOperation getTravel__GetId();
+
+  /**
+   * Returns the meta object for the '{@link goedegep.vacations.model.Travel#getAllFileReferences() <em>Get All File References</em>}' operation.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the '<em>Get All File References</em>' operation.
+   * @see goedegep.vacations.model.Travel#getAllFileReferences()
+   * @generated
+   */
+  EOperation getTravel__GetAllFileReferences();
+
+  /**
+   * Returns the meta object for class '{@link goedegep.vacations.model.TravelCategories <em>Travel Categories</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for class '<em>Travel Categories</em>'.
+   * @see goedegep.vacations.model.TravelCategories
+   * @generated
+   */
+  EClass getTravelCategories();
+
+  /**
+   * Returns the meta object for the containment reference list '{@link goedegep.vacations.model.TravelCategories#getTravelcategories <em>Travelcategories</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the containment reference list '<em>Travelcategories</em>'.
+   * @see goedegep.vacations.model.TravelCategories#getTravelcategories()
+   * @see #getTravelCategories()
+   * @generated
+   */
+  EReference getTravelCategories_Travelcategories();
 
   /**
    * Returns the factory that creates the instances of the model.
@@ -2117,6 +2406,14 @@ public interface VacationsPackage extends EPackage {
     EReference VACATIONS__DAY_TRIPS = eINSTANCE.getVacations_DayTrips();
 
     /**
+    	 * The meta object literal for the '<em><b>Travelcategories</b></em>' containment reference list feature.
+    	 * <!-- begin-user-doc -->
+    	 * <!-- end-user-doc -->
+    	 * @generated
+    	 */
+    EReference VACATIONS__TRAVELCATEGORIES = eINSTANCE.getVacations_Travelcategories();
+
+    /**
     	 * The meta object literal for the '<em><b>Find Vacation</b></em>' operation.
     	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -2175,14 +2472,6 @@ public interface VacationsPackage extends EPackage {
     EAttribute VACATION__PICTURES = eINSTANCE.getVacation_Pictures();
 
     /**
-    	 * The meta object literal for the '<em><b>Title</b></em>' attribute feature.
-    	 * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-    	 * @generated
-    	 */
-    EAttribute VACATION__TITLE = eINSTANCE.getVacation_Title();
-
-    /**
     	 * The meta object literal for the '<em><b>Elements</b></em>' containment reference list feature.
     	 * <!-- begin-user-doc -->
     	 * <!-- end-user-doc -->
@@ -2199,28 +2488,12 @@ public interface VacationsPackage extends EPackage {
     EOperation VACATION___FIND_DOCUMENT__STRING = eINSTANCE.getVacation__FindDocument__String();
 
     /**
-    	 * The meta object literal for the '<em><b>Get All File References</b></em>' operation.
-    	 * <!-- begin-user-doc -->
-    	 * <!-- end-user-doc -->
-    	 * @generated
-    	 */
-    EOperation VACATION___GET_ALL_FILE_REFERENCES = eINSTANCE.getVacation__GetAllFileReferences();
-
-    /**
     	 * The meta object literal for the '<em><b>Get All Referenced Files</b></em>' operation.
     	 * <!-- begin-user-doc -->
     	 * <!-- end-user-doc -->
     	 * @generated
     	 */
     EOperation VACATION___GET_ALL_REFERENCED_FILES = eINSTANCE.getVacation__GetAllReferencedFiles();
-
-    /**
-    	 * The meta object literal for the '<em><b>Get Id</b></em>' operation.
-    	 * <!-- begin-user-doc -->
-    	 * <!-- end-user-doc -->
-    	 * @generated
-    	 */
-    EOperation VACATION___GET_ID = eINSTANCE.getVacation__GetId();
 
     /**
     	 * The meta object literal for the '<em><b>Get Day Nr</b></em>' operation.
@@ -2417,6 +2690,14 @@ public interface VacationsPackage extends EPackage {
     	 * @generated
     	 */
     EOperation VACATION_ELEMENT___GET_DAY_TRIP = eINSTANCE.getVacationElement__GetDayTrip();
+
+    /**
+    	 * The meta object literal for the '<em><b>Get Day</b></em>' operation.
+    	 * <!-- begin-user-doc -->
+    	 * <!-- end-user-doc -->
+    	 * @generated
+    	 */
+    EOperation VACATION_ELEMENT___GET_DAY = eINSTANCE.getVacationElement__GetDay();
 
     /**
     	 * The meta object literal for the '{@link goedegep.vacations.model.impl.TextImpl <em>Text</em>}' class.
@@ -2651,28 +2932,12 @@ public interface VacationsPackage extends EPackage {
     EClass DAY_TRIP = eINSTANCE.getDayTrip();
 
     /**
-    	 * The meta object literal for the '<em><b>Title</b></em>' attribute feature.
-    	 * <!-- begin-user-doc -->
-    	 * <!-- end-user-doc -->
-    	 * @generated
-    	 */
-    EAttribute DAY_TRIP__TITLE = eINSTANCE.getDayTrip_Title();
-
-    /**
     	 * The meta object literal for the '<em><b>Elements</b></em>' containment reference list feature.
     	 * <!-- begin-user-doc -->
     	 * <!-- end-user-doc -->
     	 * @generated
     	 */
     EReference DAY_TRIP__ELEMENTS = eINSTANCE.getDayTrip_Elements();
-
-    /**
-    	 * The meta object literal for the '<em><b>Get Id</b></em>' operation.
-    	 * <!-- begin-user-doc -->
-    	 * <!-- end-user-doc -->
-    	 * @generated
-    	 */
-    EOperation DAY_TRIP___GET_ID = eINSTANCE.getDayTrip__GetId();
 
     /**
     	 * The meta object literal for the '{@link goedegep.vacations.model.impl.DocumentImpl <em>Document</em>}' class.
@@ -2691,6 +2956,76 @@ public interface VacationsPackage extends EPackage {
     	 * @generated
     	 */
     EReference DOCUMENT__DOCUMENT_REFERENCE = eINSTANCE.getDocument_DocumentReference();
+
+    /**
+    	 * The meta object literal for the '{@link goedegep.vacations.model.impl.TravelCategoryImpl <em>Travel Category</em>}' class.
+    	 * <!-- begin-user-doc -->
+    	 * <!-- end-user-doc -->
+    	 * @see goedegep.vacations.model.impl.TravelCategoryImpl
+    	 * @see goedegep.vacations.model.impl.VacationsPackageImpl#getTravelCategory()
+    	 * @generated
+    	 */
+    EClass TRAVEL_CATEGORY = eINSTANCE.getTravelCategory();
+
+    /**
+    	 * The meta object literal for the '<em><b>Travels</b></em>' containment reference list feature.
+    	 * <!-- begin-user-doc -->
+    	 * <!-- end-user-doc -->
+    	 * @generated
+    	 */
+    EReference TRAVEL_CATEGORY__TRAVELS = eINSTANCE.getTravelCategory_Travels();
+
+    /**
+    	 * The meta object literal for the '{@link goedegep.vacations.model.impl.TravelImpl <em>Travel</em>}' class.
+    	 * <!-- begin-user-doc -->
+    	 * <!-- end-user-doc -->
+    	 * @see goedegep.vacations.model.impl.TravelImpl
+    	 * @see goedegep.vacations.model.impl.VacationsPackageImpl#getTravel()
+    	 * @generated
+    	 */
+    EClass TRAVEL = eINSTANCE.getTravel();
+
+    /**
+    	 * The meta object literal for the '<em><b>Title</b></em>' attribute feature.
+    	 * <!-- begin-user-doc -->
+    	 * <!-- end-user-doc -->
+    	 * @generated
+    	 */
+    EAttribute TRAVEL__TITLE = eINSTANCE.getTravel_Title();
+
+    /**
+    	 * The meta object literal for the '<em><b>Get Id</b></em>' operation.
+    	 * <!-- begin-user-doc -->
+    	 * <!-- end-user-doc -->
+    	 * @generated
+    	 */
+    EOperation TRAVEL___GET_ID = eINSTANCE.getTravel__GetId();
+
+    /**
+    	 * The meta object literal for the '<em><b>Get All File References</b></em>' operation.
+    	 * <!-- begin-user-doc -->
+    	 * <!-- end-user-doc -->
+    	 * @generated
+    	 */
+    EOperation TRAVEL___GET_ALL_FILE_REFERENCES = eINSTANCE.getTravel__GetAllFileReferences();
+
+    /**
+    	 * The meta object literal for the '{@link goedegep.vacations.model.impl.TravelCategoriesImpl <em>Travel Categories</em>}' class.
+    	 * <!-- begin-user-doc -->
+    	 * <!-- end-user-doc -->
+    	 * @see goedegep.vacations.model.impl.TravelCategoriesImpl
+    	 * @see goedegep.vacations.model.impl.VacationsPackageImpl#getTravelCategories()
+    	 * @generated
+    	 */
+    EClass TRAVEL_CATEGORIES = eINSTANCE.getTravelCategories();
+
+    /**
+    	 * The meta object literal for the '<em><b>Travelcategories</b></em>' containment reference list feature.
+    	 * <!-- begin-user-doc -->
+    	 * <!-- end-user-doc -->
+    	 * @generated
+    	 */
+    EReference TRAVEL_CATEGORIES__TRAVELCATEGORIES = eINSTANCE.getTravelCategories_Travelcategories();
 
   }
 

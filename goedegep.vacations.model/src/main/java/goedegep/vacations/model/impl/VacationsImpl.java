@@ -5,6 +5,7 @@ package goedegep.vacations.model.impl;
 import goedegep.util.datetime.FlexDate;
 import goedegep.vacations.model.DayTrip;
 import goedegep.vacations.model.Location;
+import goedegep.vacations.model.TravelCategories;
 import goedegep.vacations.model.Vacation;
 import goedegep.vacations.model.Vacations;
 import goedegep.vacations.model.VacationsPackage;
@@ -36,6 +37,7 @@ import org.eclipse.emf.ecore.util.InternalEList;
  *   <li>{@link goedegep.vacations.model.impl.VacationsImpl#getHome <em>Home</em>}</li>
  *   <li>{@link goedegep.vacations.model.impl.VacationsImpl#getTips <em>Tips</em>}</li>
  *   <li>{@link goedegep.vacations.model.impl.VacationsImpl#getDayTrips <em>Day Trips</em>}</li>
+ *   <li>{@link goedegep.vacations.model.impl.VacationsImpl#getTravelcategories <em>Travelcategories</em>}</li>
  * </ul>
  *
  * @generated
@@ -98,6 +100,16 @@ public class VacationsImpl extends MinimalEObjectImpl.Container implements Vacat
    * @ordered
    */
   protected EList<DayTrip> dayTrips;
+
+  /**
+   * The cached value of the '{@link #getTravelcategories() <em>Travelcategories</em>}' containment reference list.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getTravelcategories()
+   * @generated
+   * @ordered
+   */
+  protected EList<TravelCategories> travelcategories;
 
   /**
    * <!-- begin-user-doc -->
@@ -304,6 +316,20 @@ public class VacationsImpl extends MinimalEObjectImpl.Container implements Vacat
   /**
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public EList<TravelCategories> getTravelcategories() {
+    if (travelcategories == null) {
+      travelcategories = new EObjectContainmentEList<TravelCategories>(TravelCategories.class, this,
+          VacationsPackage.VACATIONS__TRAVELCATEGORIES);
+    }
+    return travelcategories;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
    * @generated NOT
    */
   public Vacation findVacation(FlexDate date) {
@@ -372,6 +398,8 @@ public class VacationsImpl extends MinimalEObjectImpl.Container implements Vacat
       return basicUnsetHome(msgs);
     case VacationsPackage.VACATIONS__DAY_TRIPS:
       return ((InternalEList<?>) getDayTrips()).basicRemove(otherEnd, msgs);
+    case VacationsPackage.VACATIONS__TRAVELCATEGORIES:
+      return ((InternalEList<?>) getTravelcategories()).basicRemove(otherEnd, msgs);
     }
     return super.eInverseRemove(otherEnd, featureID, msgs);
   }
@@ -392,6 +420,8 @@ public class VacationsImpl extends MinimalEObjectImpl.Container implements Vacat
       return getTips();
     case VacationsPackage.VACATIONS__DAY_TRIPS:
       return getDayTrips();
+    case VacationsPackage.VACATIONS__TRAVELCATEGORIES:
+      return getTravelcategories();
     }
     return super.eGet(featureID, resolve, coreType);
   }
@@ -419,6 +449,10 @@ public class VacationsImpl extends MinimalEObjectImpl.Container implements Vacat
       getDayTrips().clear();
       getDayTrips().addAll((Collection<? extends DayTrip>) newValue);
       return;
+    case VacationsPackage.VACATIONS__TRAVELCATEGORIES:
+      getTravelcategories().clear();
+      getTravelcategories().addAll((Collection<? extends TravelCategories>) newValue);
+      return;
     }
     super.eSet(featureID, newValue);
   }
@@ -443,6 +477,9 @@ public class VacationsImpl extends MinimalEObjectImpl.Container implements Vacat
     case VacationsPackage.VACATIONS__DAY_TRIPS:
       getDayTrips().clear();
       return;
+    case VacationsPackage.VACATIONS__TRAVELCATEGORIES:
+      getTravelcategories().clear();
+      return;
     }
     super.eUnset(featureID);
   }
@@ -463,6 +500,8 @@ public class VacationsImpl extends MinimalEObjectImpl.Container implements Vacat
       return TIPS_EDEFAULT == null ? tips != null : !TIPS_EDEFAULT.equals(tips);
     case VacationsPackage.VACATIONS__DAY_TRIPS:
       return dayTrips != null && !dayTrips.isEmpty();
+    case VacationsPackage.VACATIONS__TRAVELCATEGORIES:
+      return travelcategories != null && !travelcategories.isEmpty();
     }
     return super.eIsSet(featureID);
   }

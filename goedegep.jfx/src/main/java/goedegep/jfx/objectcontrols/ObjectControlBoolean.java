@@ -38,7 +38,7 @@ public class ObjectControlBoolean extends ObjectControlTemplate<Boolean> {
     }
 
 //    if (ocGetValue() != selected) {
-      setValue(selected);
+      setObject(selected);
 //    }
   }
   

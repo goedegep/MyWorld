@@ -338,7 +338,7 @@ public class MyWorldInstaller extends JfxApplication {
           statusLabel.setText("Specified installFolder '" + installFolderName + "' can't be created. System message: " + e.getMessage());
         }
       }
-      installationFolder.setValue(new File(installFolderName));
+      installationFolder.setObject(new File(installFolderName));
     }
     
     // If a second argument is present, set it as User Data directory
@@ -351,7 +351,7 @@ public class MyWorldInstaller extends JfxApplication {
           statusLabel.setText("Specified User Data folder '" + userDataFolderName + "' can't be created. System message: " + e.getMessage());
         }
       }
-      userDataFolder.setValue(new File(userDataFolderName));
+      userDataFolder.setObject(new File(userDataFolderName));
     }
     
 //    if (!runButton.isDisabled()) {

@@ -2,13 +2,11 @@ package goedegep.invandprop.app.guifx;
 
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.logging.Logger;
 
 import javax.swing.JDialog;
@@ -16,9 +14,8 @@ import javax.swing.JDialog;
 import goedegep.appgen.MessageDialogType;
 import goedegep.appgen.swing.MessageDialog;
 import goedegep.invandprop.app.InvoicesAndPropertiesRegistry;
+import goedegep.invandprop.app.InvoicesAndPropertiesService;
 import goedegep.invandprop.app.InvoicesAndPropertiesUtil;
-import goedegep.invandprop.model.InvAndPropFactory;
-import goedegep.invandprop.model.InvAndPropPackage;
 import goedegep.invandprop.model.InvoicesAndProperties;
 import goedegep.invandprop.model.Property;
 import goedegep.jfx.ComponentFactoryFx;
@@ -30,7 +27,7 @@ import goedegep.jfx.collage.CollageImage;
 import goedegep.properties.app.guifx.PropertiesEditor;
 import goedegep.resources.ImageSize;
 import goedegep.types.model.FileReference;
-import goedegep.util.emf.EMFResource;
+import goedegep.util.Result;
 import goedegep.util.file.FileUtils;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -41,9 +38,7 @@ import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
-import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
@@ -65,6 +60,8 @@ public class InvoicesAndPropertiesMenuWindow extends JfxStage {
   private static final Logger LOGGER = Logger.getLogger(InvoicesAndPropertiesMenuWindow.class.getName());
   private final static String NEWLINE = System.getProperty("line.separator");
   
+  private InvoicesAndPropertiesService invoicesAndPropertiesService;
+  
   /**
    * Base of the window title.
    */
@@ -78,53 +75,32 @@ public class InvoicesAndPropertiesMenuWindow extends JfxStage {
   private CustomizationFx customization;
   private ComponentFactoryFx componentFactory;
   private InvoicesAndPropertiesAppResourcesFx appResources;
-  private EMFResource<InvoicesAndProperties> invoicesAndPropertiesResource;
+//  private EMFResource<InvoicesAndProperties> invoicesAndPropertiesResource;
   private InvoicesAndProperties invoicesAndProperties;
   private Label statusBar = null;       // Statusbar
   private File dataDumpFile = null;     // File to which data has been dumped.
   
-  private InvoicesWindow invoicesWindow;
-  private PropertiesWindow propertiesWindow;
+//  private InvoicesWindow invoicesWindow;
+//  private PropertiesWindow propertiesWindow;
 
   /**
    * Constructor.
    * 
    * @param customization GUI customization.
    */
-  public InvoicesAndPropertiesMenuWindow(CustomizationFx customization) {
+  public InvoicesAndPropertiesMenuWindow(CustomizationFx customization, InvoicesAndPropertiesService invoicesAndPropertiesService) {
     super(customization, WINDOW_TITLE);
     
     this.customization = customization;
+    this.invoicesAndPropertiesService = invoicesAndPropertiesService;
     
     componentFactory = getComponentFactory();
     appResources = (InvoicesAndPropertiesAppResourcesFx) getResources();
-    
-    if (InvoicesAndPropertiesRegistry.invoicesAndPropertiesFile == null) {
-      Alert alert = componentFactory.createErrorDialog(
-          "There's no filename configured for the file with invoices and properties",
-          "Configure the filename (e.g. via the 'Edit User Settings' button below) and restart the application." +
-              NEWLINE +
-              "A restart is needed, because the settings are only read at startup.");
-      
-      ButtonType editorButtonType = new ButtonType("Edit User Settings");
-      alert.getButtonTypes().add(editorButtonType);
-      
-      alert.showAndWait().ifPresent(response -> {
-        if (response == editorButtonType) {
-          showPropertiesEditor();
-        }
-      });
-      
-      return;
-    }
-    
-    getInvoicesAndPropertiesResource();
-    
-//    convertData();
+    invoicesAndProperties = invoicesAndPropertiesService.getInvoicesAndPropertiesResource().getEObject();
     
     createGUI();
     
-    invoicesAndPropertiesResource.dirtyProperty().addListener(new ChangeListener<Boolean>() {
+    invoicesAndPropertiesService.getInvoicesAndPropertiesResource().dirtyProperty().addListener(new ChangeListener<Boolean>() {
 
       @Override
       public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
@@ -133,7 +109,7 @@ public class InvoicesAndPropertiesMenuWindow extends JfxStage {
       
     });
     
-    invoicesAndPropertiesResource.fileNameProperty().addListener(new ChangeListener<String>() {
+    invoicesAndPropertiesService.getInvoicesAndPropertiesResource().fileNameProperty().addListener(new ChangeListener<String>() {
 
       @Override
       public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
@@ -179,13 +155,13 @@ public class InvoicesAndPropertiesMenuWindow extends JfxStage {
 
     applicationButton = componentFactory.createToolButton("Invoices", appResources.getApplicationImage(ImageSize.SIZE_0), "Open the invoices window");
     applicationButton.setOnAction(e -> {
-      getInvoicesWindow().show();
+      InvoicesAndPropertiesLauncher.getInvoicesWindow().show();
     });
     grid.add(applicationButton, 0, 0);
 
     applicationButton = componentFactory.createToolButton("Properties", appResources.getApplicationImage(ImageSize.SIZE_0), "Open the properties window");
     applicationButton.setOnAction(e -> {
-      getPropertiesWindow().show();
+      InvoicesAndPropertiesLauncher.getPropertiesWindow().show();
     });
     grid.add(applicationButton, 1, 0);
     
@@ -193,7 +169,7 @@ public class InvoicesAndPropertiesMenuWindow extends JfxStage {
     
     button = componentFactory.createButton("New Invoice and/or Property", "Create a new invoice and the related property");
     GridPane.setHalignment(button, HPos.CENTER);
-    button.setOnAction(e -> InvoiceAndPropertyEditor.newInstance(customization, invoicesAndProperties).show());
+    button.setOnAction(e -> InvoiceAndPropertyEditor.newInstance(customization, invoicesAndPropertiesService).show());
     grid.add(button, 0, 2, 2, 1);
     
 
@@ -206,22 +182,22 @@ public class InvoicesAndPropertiesMenuWindow extends JfxStage {
 
     setScene(new Scene(rootLayout));
   }
-  
-  public InvoicesWindow getInvoicesWindow() {
-    if (invoicesWindow == null) {
-      invoicesWindow = new InvoicesWindow(customization, invoicesAndPropertiesResource.getEObject(), this);
-    }
-    
-    return invoicesWindow;
-  }
-  
-  public PropertiesWindow getPropertiesWindow() {
-    if (propertiesWindow == null) {
-      propertiesWindow = new PropertiesWindow(customization, invoicesAndPropertiesResource.getEObject(), this);
-    }
-    
-    return propertiesWindow;
-  }
+//  
+//  public InvoicesWindow getInvoicesWindow() {
+//    if (invoicesWindow == null) {
+//      invoicesWindow = new InvoicesWindow(customization, invoicesAndPropertiesService);
+//    }
+//    
+//    return invoicesWindow;
+//  }
+//  
+//  public PropertiesWindow getPropertiesWindow() {
+//    if (propertiesWindow == null) {
+//      propertiesWindow = new PropertiesWindow(customization, invoicesAndPropertiesService);
+//    }
+//    
+//    return propertiesWindow;
+//  }
 
   /**
    * Create the menu bar.
@@ -269,80 +245,6 @@ public class InvoicesAndPropertiesMenuWindow extends JfxStage {
     menuBar.getMenus().add(menu);
 
     return menuBar;
-  }
-      
-  /**
-   * Try to get the Invoices and Properties resource.
-   * 
-   * @return true if the resource could be opened, false otherwise.
-   */
-  private boolean getInvoicesAndPropertiesResource() {
-    boolean returnValue = false;
-    
-    invoicesAndPropertiesResource = new EMFResource<InvoicesAndProperties>(InvAndPropPackage.eINSTANCE, () -> InvAndPropFactory.eINSTANCE.createInvoicesAndProperties(), ".xmi", true);
-    
-    try {
-      invoicesAndProperties = invoicesAndPropertiesResource.load(InvoicesAndPropertiesRegistry.invoicesAndPropertiesFile);
-      returnValue = true;
-    } catch (FileNotFoundException e) {
-      LOGGER.severe("File not found: " + e.getMessage());
-      Alert alert = componentFactory.createYesNoConfirmationDialog(
-          null,
-          "The file with invoices and properties (" + InvoicesAndPropertiesRegistry.invoicesAndPropertiesFile + ") doesn't exist yet.",
-          "Do you want to create this file now?" + NEWLINE +
-          "If you choose \"No\" you can't do anything in this screen.");
-      Optional<ButtonType> response = alert.showAndWait();
-      if (response.isPresent()  &&  response.get() == ButtonType.YES) {
-        LOGGER.severe("yes, create file");
-        invoicesAndProperties = invoicesAndPropertiesResource.newEObject();
-        try {
-          invoicesAndPropertiesResource.save(InvoicesAndPropertiesRegistry.invoicesAndPropertiesFile);
-          returnValue = true;
-        } catch (IOException e1) {
-          e1.printStackTrace();
-        }
-      } else {
-        LOGGER.severe("no, don't create file");
-      }
-    }
-    
-//    try {
-//      notasEnEigendommenResource = new NotasEnEigendommenResource(false);
-//      returnValue = true;
-//    } catch (IOException e) {
-//      Image image = getCustomization().getResources().getAttentionImage(ImageSize.SIZE_3);
-//      OptionDialog optionDialog = new OptionDialog(
-//          null,
-//          "Hoe verder?",
-//          null,  // TODO image
-//          "Het bestand met nota's en eigendommen, " + e.getMessage() + ", bestaat nog niet.",
-//          NO_INVOICES_AND_PROPERTIES_FILE_OPTIONS,
-//          DEFAULT_NO_INVOICES_AND_PROPERTIES_FILE_OPTION);
-//      optionDialog.setModalityType(java.awt.Dialog.ModalityType.APPLICATION_MODAL);
-//      optionDialog.setVisible(true);
-////      WindowUtil.showDialogCenteredOnParent(this, optionDialog);
-//      String selectedOption = optionDialog.getSelectedOption();
-//      LOGGER.info("Selection = " + selectedOption);
-//      switch (selectedOption) {
-//      case NEW_EMPTY_FILE_OPTION:
-//        try {
-//          notasEnEigendommenResource = new NotasEnEigendommenResource(true);
-//          returnValue = true;
-//        } catch (IOException e1) {
-//          showMessageDialog(MessageDialogType.ERROR,
-//              "Het is niet gelukt om het bestand voor nota's en eigendommen aan te maken. Systeeem foutmelding: " + e1.getMessage());
-//        }
-//        break;
-//
-//      case SELECT_EXISTING_FILE_OPTION:
-//        break;
-//
-//      case NO_FILE_OPTION:
-//        break;
-//      }
-//    }
-    
-    return returnValue;
   }
 
   /**
@@ -402,17 +304,19 @@ public class InvoicesAndPropertiesMenuWindow extends JfxStage {
     return collage;
   }
   
-  private void saveInvoicesAndProperties() {    
-    if (invoicesAndPropertiesResource != null) {
-      try {
-        invoicesAndPropertiesResource.save();
-        statusBar.setText("Invoices and properties saved to '" + invoicesAndPropertiesResource.getFileName() + "'");
-      } catch (IOException e) {        
-        componentFactory.createErrorDialog(
-            "Saving the invoices and properties has failed.",
-            "System error message: "  + e.getMessage()
-            ).showAndWait();
-      }
+  private void saveInvoicesAndProperties() {
+    Result result = invoicesAndPropertiesService.saveInvoicesAndProperties();
+    switch (result.getResultType()) {
+    case OK:
+      statusBar.setText(result.getMessage());
+      break;
+      
+    case FAILED:
+      componentFactory.createErrorDialog(
+          "Saving the invoices and properties has failed.",
+          result.getMessage()
+          ).showAndWait();
+      
     }
   }
 
@@ -434,7 +338,6 @@ public class InvoicesAndPropertiesMenuWindow extends JfxStage {
     }
     ExtensionFilter extFilter = new FileChooser.ExtensionFilter("Text files", "*.txt");
     fileChooser.getExtensionFilters().add(extFilter);
-//    fileChooser.setApproveButtonToolTipText("Data naar het gekozen bestand dumpen");
 
     dataDumpFile = fileChooser.showOpenDialog(this);
     if (dataDumpFile != null) {
@@ -500,10 +403,10 @@ public class InvoicesAndPropertiesMenuWindow extends JfxStage {
     
     buf.append(WINDOW_TITLE);
     buf.append(" - ");
-    if (invoicesAndPropertiesResource.isDirty()) {
+    if (invoicesAndPropertiesService.getInvoicesAndPropertiesResource().isDirty()) {
       buf.append("*");
     }
-    String fileName = invoicesAndPropertiesResource.getFileName();
+    String fileName = invoicesAndPropertiesService.getInvoicesAndPropertiesResource().getFileName();
     if (fileName.equals("")) {
       fileName = "<NoName>";
     }

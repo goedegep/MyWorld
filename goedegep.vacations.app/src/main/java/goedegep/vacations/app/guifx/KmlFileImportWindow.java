@@ -57,8 +57,10 @@ import goedegep.util.objectselector.ObjectSelector;
 import goedegep.vacations.app.logic.KmlFileImporter;
 import goedegep.vacations.app.logic.KmlPlacemarkImportData;
 import goedegep.vacations.app.logic.VacationsUtils;
+import goedegep.vacations.model.DayTrip;
 import goedegep.vacations.model.GPXTrack;
 import goedegep.vacations.model.Location;
+import goedegep.vacations.model.Travel;
 import goedegep.vacations.model.Vacation;
 import goedegep.vacations.model.VacationElement;
 import goedegep.vacations.model.Vacations;
@@ -250,7 +252,7 @@ public class KmlFileImportWindow extends JfxStage {
   }
 
   /**
-   * Handle the fact that a new item is selected in the Vacations tree view.
+   * Handle the fact that a new item is selected in the Travels tree view.
    * <p>
    * The related {@code Vacation} is passed on to the {@code vacationElementPanel}.
    * The {@code selectedTreeItem} is passed on to the {@code addElementToVacationPanel}.
@@ -258,10 +260,11 @@ public class KmlFileImportWindow extends JfxStage {
    * @param selectedTreeItem the currently selected item in the Vacations tree view.
    */
   private void handleNewTreeItemSelected(TreeItem<Object> selectedTreeItem) {
-    Vacation vacation = VacationsWindow.getVacationForTreeItem(selectedTreeItem);
-
-    vacationElementPanel.handleNewVacationSelected(vacation);
-    addElementToVacationPanel.handleNewTreeItemSelected(selectedTreeItem);
+    Travel travel = VacationsWindow.getVacationForTreeItem(selectedTreeItem, VacationsPackage.eINSTANCE.getTravel());
+    if (travel != null) {
+      vacationElementPanel.handleNewVacationSelected(travel);
+      addElementToVacationPanel.handleNewTreeItemSelected(selectedTreeItem);
+    }
   }
 
   /**
@@ -617,7 +620,8 @@ public class KmlFileImportWindow extends JfxStage {
     /**
      * Used to determine the folder name for the track reference.
      */
-    private Vacation vacation;
+    private Travel travel;
+    
 
 
     /**
@@ -696,19 +700,19 @@ public class KmlFileImportWindow extends JfxStage {
     }
 
     /**
-     * Handle the fact that a new Vacation is selected.
+     * Handle the fact that a new Travel is selected.
      * <p>
      * Only if the current element is a {@code GPXTrack}, {@link #setGpxTrackReference} is called to update the track reference.
      * 
-     * @param vacation the new {@code Vacation}.
+     * @param travel the new {@code Travel}.
      */
-    void handleNewVacationSelected(Vacation vacation) {
-      LOGGER.info("New vacation selected: " + (vacation != null ? vacation.getTitle() : "null"));
-      this.vacation = vacation;
+    void handleNewVacationSelected(Travel travel) {
+      LOGGER.info("New travel selected: " + (travel != null ? travel.getTitle() : "null"));
+      this.travel = travel;
 
       if (gpxTrack != null) {
         // No GPXTrack means we don't have to update the file in its track reference.
-        setGpxTrackReference();
+        setGpxTrackReferenceForTravel();
       }
     }
 
@@ -718,17 +722,17 @@ public class KmlFileImportWindow extends JfxStage {
      * The folder name is the name of the folder where the files related to the current Vacation are stored (see {@link VacationsUtils.getVacationFolder}).<br/>
      * The complete filename is obtained by calling {@link #createGpxTrackFileName}.
      */
-    private void setGpxTrackReference() {
-      String vacationFolder = null;
+    private void setGpxTrackReferenceForTravel() {
+      String travelFolder = null;
 
-      if (vacation != null) {
-        vacationFolder = VacationsUtils.getVacationFolder(vacation);
+      if (travel != null) {
+        travelFolder = VacationsUtils.getTravelFilesFolder(travel);
       }
 
       String gpxTrackFileName = null;
 
-      if (vacationFolder != null) {
-        gpxTrackFileName = createGpxTrackFileName(vacationFolder);
+      if (travelFolder != null) {
+        gpxTrackFileName = createGpxTrackFileName(travelFolder);
       }
 
       gpxTrack.getTrackReference().setFile(gpxTrackFileName);
@@ -766,6 +770,7 @@ public class KmlFileImportWindow extends JfxStage {
       name = name.replace("|", ",");
       name = name.replace("\"", "'");
       name = name.replace("/", "-");
+      name = name.replace(":", ";");
       
       return name;
     }
@@ -819,7 +824,7 @@ public class KmlFileImportWindow extends JfxStage {
         gpxTrack = (GPXTrack) vacationElement;
         documentRoot = (DocumentRoot) tuplet.gpxFileDocumentRoot();
         location = null;
-        setGpxTrackReference();
+        setGpxTrackReferenceForTravel();
         switchPreviewBoxToGpxTrack();
       } else {
         throw new RuntimeException("Unsupported VacationElement sub type: " + vacationElement.getClass().getName());

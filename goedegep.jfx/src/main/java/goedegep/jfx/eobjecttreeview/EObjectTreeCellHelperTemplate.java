@@ -83,14 +83,14 @@ public abstract class EObjectTreeCellHelperTemplate<I extends EObjectTreeItem, D
    * Perform initialization if it hasn't been done yet.
    */
   private void init() {
-    if (!initialized) {
+//    if (!initialized) {
       createGraphic();
       if (graphic != null) {
         eObjectTreeCell.setGraphic(graphic);
       }      
       
       initialized = true;
-    }
+//    }
   }
 
   /**

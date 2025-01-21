@@ -23,12 +23,17 @@ import org.eclipse.emf.ecore.EObject;
 import goedegep.jfx.eobjecttreeview.EObjectTreeItem;
 import goedegep.jfx.eobjecttreeview.EObjectTreeView;
 import goedegep.types.model.FileReference;
+import goedegep.util.file.FileUtils;
 import goedegep.util.string.StringUtil;
+import goedegep.vacations.model.Picture;
 import goedegep.vacations.model.Vacation;
 import goedegep.vacations.model.VacationElement;
 import goedegep.vacations.model.Vacations;
 import goedegep.vacations.model.VacationsPackage;
 
+/**
+ * This class provides various checks on a {@code Vacation}.
+ */
 public class VacationsChecker {
   private static final Logger LOGGER = Logger.getLogger(VacationsChecker.class.getName());
   
@@ -43,7 +48,7 @@ public class VacationsChecker {
    * @return a list of file references which don't have the 'file' attribute set, or null if there are no errors.
    */
   public static List<String> checkThatAllReferencesAreSet(EObjectTreeView treeView, Vacation vacation) {
-    List<String> fileReferencesNotSet = null;
+    List<String> fileReferencesNotSet = new ArrayList<>();
     
     TreeIterator<EObject> vacationIterator = vacation.eAllContents();
     while (vacationIterator.hasNext()) {
@@ -51,9 +56,6 @@ public class VacationsChecker {
       if (eObject instanceof FileReference fileReference) {
         if (fileReference.getFile() == null) {
           String referencePath = getReferencePathFromTreeView(treeView, fileReference, fileReference.getTitle()); 
-          if (fileReferencesNotSet == null) {
-            fileReferencesNotSet = new ArrayList<>();
-          }
           fileReferencesNotSet.add(referencePath);
         }
       }
@@ -106,7 +108,7 @@ public class VacationsChecker {
    * @return a list of file references which refer to files that don't exist, or null if there are no errors.
    */
   public static List<String> checkThatAllReferencesExist(EObjectTreeView treeView, Vacation vacation) {
-    List<String> fileReferencesNotFound = null;
+    List<String> fileReferencesNotFound = new ArrayList<>();
     
     TreeIterator<EObject> vacationIterator = vacation.eAllContents();
     while (vacationIterator.hasNext()) {
@@ -117,9 +119,6 @@ public class VacationsChecker {
           File file = new File(fileName);
           if (!file.exists()) {
             String referencePath = getReferencePathFromTreeView(treeView, fileReference, fileReference.getFile()); 
-            if (fileReferencesNotFound == null) {
-              fileReferencesNotFound = new ArrayList<>();
-            }
             fileReferencesNotFound.add(referencePath);
           }
         }
@@ -150,7 +149,7 @@ public class VacationsChecker {
     }
     
     // Get the vacations folder
-    String vacationFoldername = VacationsUtils.getVacationFolder(vacation);
+    String vacationFoldername = VacationsUtils.getTravelFilesFolder(vacation);
     
     // For each file in the vacations folder, check that it is in the set of references.
     Set<String> filesNotReferredTo = null;
@@ -187,7 +186,7 @@ public class VacationsChecker {
    * @return a list of file references which refer to files that don't exist, or null if there are no errors.
    */
   public static List<FileReference> checkThatAllReferencesExist(Vacations vacations) {
-    List<FileReference> fileReferencesNotFound = null;
+    List<FileReference> fileReferencesNotFound = new ArrayList<>();
     
     TreeIterator<EObject> vacationIterator = vacations.eAllContents();
     while (vacationIterator.hasNext()) {
@@ -196,9 +195,6 @@ public class VacationsChecker {
         FileReference fileReference = (FileReference) eObject;
         File file = new File(fileReference.getFile());
         if (!file.exists()) {
-          if (fileReferencesNotFound == null) {
-            fileReferencesNotFound = new ArrayList<>();
-          }
           fileReferencesNotFound.add(fileReference);
         }
       }
@@ -265,6 +261,64 @@ public class VacationsChecker {
     }
     
     return paths;
+  }
+  
+  public static List<String> checkThatAllPhotosAreReferredTo(Vacation vacation) {
+    List<String> photosNotReferredTo = new ArrayList<>();
+    
+    
+    String vacationPhotoFolderName = vacation.getPictures();
+    if (vacationPhotoFolderName == null) {
+      photosNotReferredTo.add("Check could not be performed because the 'Photos' attribute is not set.");
+      return photosNotReferredTo;
+    }
+    
+    List<String> referredPhotos = getReferredPhotos(vacation);
+    
+    Path vacationPhotoFolderPath = Paths.get(vacationPhotoFolderName);
+    List<String> photosInVacationPhotosFolder = getPhotosInFolder(vacationPhotoFolderPath);
+    
+    for (String photoInVacationPhotosFolder: photosInVacationPhotosFolder) {
+      if (!referredPhotos.contains(photoInVacationPhotosFolder)) {
+        photosNotReferredTo.add(photoInVacationPhotosFolder);
+      }
+    }    
+    
+    return photosNotReferredTo;
+  }
+  
+  public static List<String> getReferredPhotos(Vacation vacation) {
+    List<String> referredPhotos = new ArrayList<>();
+     
+    TreeIterator<EObject> vacationIterator = vacation.eAllContents();
+    while (vacationIterator.hasNext()) {
+      EObject eObject = vacationIterator.next();
+      if (eObject instanceof Picture picture) {
+        FileReference fileReference = picture.getPictureReference();
+        if (fileReference.getFile() != null) {
+          referredPhotos.add(fileReference.getFile());
+        }
+      }
+    }
+    
+    
+    return referredPhotos;
+  }
+  
+  public static List<String> getPhotosInFolder(Path folder) {
+    List<String> photosInVacationPhotosFolder = new ArrayList<>();
+    
+    try {
+      Files.walk(folder).forEach((path) -> {
+        if (FileUtils.isPictureFile(path.toFile())) {
+          photosInVacationPhotosFolder.add(path.toString());
+        }
+      });
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+    
+    return photosInVacationPhotosFolder;
   }
   
   /**

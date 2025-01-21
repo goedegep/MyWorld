@@ -2,6 +2,7 @@ package goedegep.media.mediadb.albumeditor.guifx;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 
 import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.objecteditor.ObjectEditorException;
@@ -39,8 +40,8 @@ class MediumInfoListEditor extends ObjectEditorTemplate<List<MediumInfo>> {
    * @param mediaDb the media database.
    * @return a newly created {@code MediumInfoListEditor}.
    */
-  public static MediumInfoListEditor newInstance(CustomizationFx customization) {
-    MediumInfoListEditor mediumInfoListEditor = new MediumInfoListEditor(customization);
+  public static MediumInfoListEditor newInstance(CustomizationFx customization, Consumer<List<MediumInfo>> addMediumInfoMethod) {
+    MediumInfoListEditor mediumInfoListEditor = new MediumInfoListEditor(customization, addMediumInfoMethod);
     mediumInfoListEditor.performInitialization();
     
     return mediumInfoListEditor;
@@ -51,8 +52,8 @@ class MediumInfoListEditor extends ObjectEditorTemplate<List<MediumInfo>> {
    * 
    * @param customization the GUI customization.
    */
-  private MediumInfoListEditor (CustomizationFx customization) {
-    super(customization, "Medium information editor");
+  private MediumInfoListEditor (CustomizationFx customization, Consumer<List<MediumInfo>> addMediumInfoMethod) {
+    super(customization, "Medium information editor", addMediumInfoMethod);
     
     this.customization = customization;
   }
@@ -130,12 +131,6 @@ class MediumInfoListEditor extends ObjectEditorTemplate<List<MediumInfo>> {
 
   @Override
   protected void createObject() {
-    // TODO Auto-generated method stub
-    
-  }
-
-  @Override
-  protected void addObjectToCollection() {
     // TODO Auto-generated method stub
     
   }

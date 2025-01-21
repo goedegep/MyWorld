@@ -41,19 +41,8 @@ import javafx.scene.control.Tooltip;
  *
  * @param <T> The value type handled by the control
  */
-public abstract class ObjectControlTemplate<T> implements ObjectControl<T> {
+public abstract class ObjectControlTemplate<T> extends ObjectControlAbstract<T> {
   private static final Logger         LOGGER = Logger.getLogger(ObjectControlTemplate.class.getName());
-  
-  /*
-   * Object Control status:
-   * Invalid: mandatory field not filled in, invalid value
-   * Valid: changed
-   * Valid: not changed
-   */
-//  public static final String OK_INDICATOR = "✓";
-  public static final String NOK_INDICATOR = "!";
-  public static final String CHANGED_INDICATOR = "≠";
-  public static final String NOT_CHANGED_INDICATOR = "=";
   
   /**
    * The GUI customization
@@ -67,39 +56,9 @@ public abstract class ObjectControlTemplate<T> implements ObjectControl<T> {
 
   
   /**
-   * Indication of whether the control is optional (if true) or mandatory.
-   */
-  protected boolean optional;
-  
-  /**
-   * Indication of whether the control is filled-in or not.
-   */
-  protected boolean filledIn = false;
-  
-  /**
-   * Indication of whether the control has a valid value or not.
-   */
-  protected boolean valid = false;
-  
-  /**
-   * The current value, initially set to {@code null}
-   */
-  protected T value = null;
-  
-  /**
-   * Reference value to check for changes, initially set to the value of {@code value}.
-   */
-  protected T referenceValue = value;
-  
-  /**
    * Error information text
    */
   protected String errorText = null;
-  
-  /**
-   * Error text supplier.
-   */
-  protected Supplier<String> errorTextSupplier;
   
   /**
    * Label base text
@@ -110,27 +69,16 @@ public abstract class ObjectControlTemplate<T> implements ObjectControl<T> {
    * Label
    */
   private Label label = null;
-
-  
-  /**
-   * Status indicator
-   */
-  private Label statusIndicator = null;
-  
-  /**
-   * The invalidation listeners
-   */
-  protected List<InvalidationListener> invalidationListeners = new ArrayList<>();
-  
-  /**
-   * An optional {@link Comparator} to check on a changed {@code value}.
-   */
-  Comparator<T> comparator = null;
   
   /**
    * Ignore new user input when setting the value (in {@code setValue}).
    */
   protected boolean ignoreNewUserInput = false;
+  
+  /**
+   *  A list of {@code ObjectControlStatus} children. 
+   */
+  private List<ObjectControlStatus> children = new ArrayList<>();
   
   /**
    * Constructor.
@@ -161,54 +109,9 @@ public abstract class ObjectControlTemplate<T> implements ObjectControl<T> {
    * {@inheritDoc}
    */
   @Override
-  public final boolean isOptional() {
-    LOGGER.info("<=> " + optional);
-    return optional;
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public final boolean isFilledIn() {
-    LOGGER.info("<=> " + filledIn);
-    return filledIn;
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public final boolean isValid() {
-    LOGGER.info("<=> " + valid);
-    return valid;
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
   public final T getValue() {
     LOGGER.info("<=> " + value);
     return value;
-  }
-
-  /**
-   * {@inheritDoc}
-   * <p>
-   */
-  @Override
-  public final boolean isChanged() {
-    boolean result;
-    
-    LOGGER.info("=>");
-    if (comparator != null) {
-      result = comparator.compare(value, referenceValue) != 0;
-    } else {
-      result = !PgUtilities.equals(value, referenceValue);
-    }
-    LOGGER.info("<= " + result);
-    return result;
   }
   
   /**
@@ -230,14 +133,6 @@ public abstract class ObjectControlTemplate<T> implements ObjectControl<T> {
     LOGGER.info("=> " + id);
     getControl().setId(id);
     LOGGER.info("<=");
-  }
-  
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public final void setErrorTextSupplier(Supplier<String> errorTextSupplier) {
-    this.errorTextSupplier = errorTextSupplier;
   }
   
   /*
@@ -376,7 +271,7 @@ public abstract class ObjectControlTemplate<T> implements ObjectControl<T> {
    * 
    * @param source the object that caused the change.  This is needed if there is more than one GUI control, like for e.g. the {@link ObjectControlFileSelecter}.
    */
-  public  void setValue(T newValue) {
+  public  void setObject(T newValue) {
     LOGGER.info("=> " + newValue);
     
     ignoreNewUserInput = true;
@@ -489,67 +384,6 @@ public abstract class ObjectControlTemplate<T> implements ObjectControl<T> {
   public void setLabelBaseText(String labelBaseText) {
     this.labelBaseText = labelBaseText;
   }
-    
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public final Node getStatusIndicator() {
-    LOGGER.info("=>");
-    
-    if (statusIndicator == null) {
-      statusIndicator = new Label();
-    }
-    
-    ociUpdateStatusIndicator();
-    
-    LOGGER.info("=> " + statusIndicator);
-    return statusIndicator;
-  }
-    
-  protected final void ociUpdateStatusIndicator() {
-    LOGGER.info("=>");
-
-    if (statusIndicator == null) {
-      return;
-    }
-    
-    // Label text
-    String statusString;
-    if (!isValid()) {
-      statusString = NOK_INDICATOR;
-    } else {
-      if (isChanged()) {
-        statusString = CHANGED_INDICATOR;
-      } else {
-        statusString = NOT_CHANGED_INDICATOR;
-      }
-    }
-    
-    statusIndicator.setText(statusString);
-    
-    // Label tooltip
-    String tooltipText = null;
-    
-    if (isValid()) {
-      if (isChanged()) {
-        tooltipText = "Value is changed and OK";
-      } else {
-        tooltipText = "Value is not changed and OK";
-      }
-    } else {
-      if (!isFilledIn()) {
-        if (!isOptional()) {
-          tooltipText = "This mandatory value is not filled in";
-        }
-      } else {
-        tooltipText = getErrorText();
-      }
-    }
-    statusIndicator.setTooltip(new Tooltip(tooltipText));
-    
-    LOGGER.info("<=");
-  }
   
   /**
    * Update the value of other controls than the control that called ociHandleNewUserInput().
@@ -574,25 +408,6 @@ public abstract class ObjectControlTemplate<T> implements ObjectControl<T> {
     return errorText;
   }
   
-  @Override
-  public final void addListener(InvalidationListener listener) {
-    LOGGER.info("<=> " + listener);
-    invalidationListeners.add(listener);    
-  }
-
-  @Override
-  public final void removeListener(InvalidationListener listener) {
-    LOGGER.info("<=> " + listener);
-    invalidationListeners.remove(listener);    
-  }
-
-  @Override
-  public final void removeListeners() {
-    LOGGER.info("=>");
-    invalidationListeners.clear();
-    LOGGER.info("<=");
-  }
-  
   /**
    * Notify the {@code invalidationListeners} that something has changed.
    */
@@ -603,6 +418,15 @@ public abstract class ObjectControlTemplate<T> implements ObjectControl<T> {
     }
     LOGGER.info("<=");
   }
+  
+
+  /**
+   * {@inheritDoc}
+   */
+  public List<ObjectControlStatus> getObjectControls() {
+    return children;
+  }
+
   
   @Override
   public String toString() {

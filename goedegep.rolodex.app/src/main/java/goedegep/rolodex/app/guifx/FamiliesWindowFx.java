@@ -300,8 +300,8 @@ class FamilyEditPanel {
       return;
     }
     
-    familyTitleTextField.setValue(family.getFamilyTitle());
-    familyNameTextField.setValue(family.getFamilyName());
+    familyTitleTextField.setObject(family.getFamilyTitle());
+    familyNameTextField.setObject(family.getFamilyName());
     
     addressTextField.getControl().setText(null);
     Address address = family.getAddress();
@@ -320,11 +320,11 @@ class FamilyEditPanel {
   }
   
   private void clearFields() {
-    familyTitleTextField.setValue(null);
-    familyNameTextField.setValue(null);
+    familyTitleTextField.setObject(null);
+    familyNameTextField.setObject(null);
 
     addressTextField.getControl().setText(null);
-    moveToAddress.setValue(false);
+    moveToAddress.setObject(false);
     for (int i = 0; i < phoneNumberTextFields.length; i++) {
       phoneNumberTextFields[i].getControl().setText(null);
     }

@@ -2,7 +2,6 @@ package goedegep.jfx.objectcontrols;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Supplier;
 import java.util.logging.Logger;
 
 import javafx.beans.InvalidationListener;
@@ -28,7 +27,7 @@ import javafx.scene.Node;
  * and then group these panels in this {@code ObjectControlList}.<br/>
  * This class then 
  */
-public class ObjectControlList<T> implements ObjectControl<List<T>> {
+public class ObjectControlStatusList implements ObjectControlStatus {
   private static final Logger         LOGGER = Logger.getLogger(ObjectControlTemplate.class.getName());
   
   
@@ -40,7 +39,7 @@ public class ObjectControlList<T> implements ObjectControl<List<T>> {
   /**
    * The current list.
    */
-  ObservableList<T> list = FXCollections.observableArrayList();
+  ObservableList<? super Object> list = FXCollections.observableArrayList();
   
   /**
    * A reference list for detecting changes.
@@ -62,7 +61,7 @@ public class ObjectControlList<T> implements ObjectControl<List<T>> {
    */
   protected List<InvalidationListener> invalidationListeners = new ArrayList<>();
   
-  public ObjectControlList(boolean optional) {
+  public ObjectControlStatusList(boolean optional) {
     this.optional = optional;
   }
 
@@ -81,13 +80,11 @@ public class ObjectControlList<T> implements ObjectControl<List<T>> {
     return true;
   }
 
-  @Override
-  public List<T> getValue() {
+  public List<? super Object> getValue() {
     return list;
   }
 
-  @Override
-  public void setValue(List<T> list) {
+  public void setObject(List<?> list) {
     referenceList = list;
     this.list = FXCollections.observableArrayList(list);
     
@@ -126,11 +123,6 @@ public class ObjectControlList<T> implements ObjectControl<List<T>> {
   }
 
   @Override
-  public Node getControl() {
-    return null;
-  }
-
-  @Override
   public String getErrorText() {
     return null;
   }
@@ -143,11 +135,6 @@ public class ObjectControlList<T> implements ObjectControl<List<T>> {
   @Override
   public void setId(String id) {
     this.id = id;
-  }
-
-  @Override
-  public String getValueAsFormattedText() {
-    return null;
   }
 
   @Override
@@ -184,10 +171,12 @@ public class ObjectControlList<T> implements ObjectControl<List<T>> {
     }
     LOGGER.info("<=");
   }
+  
 
-  @Override
-  public void setErrorTextSupplier(Supplier<String> errorTextSupplier) {
-    // TODO Auto-generated method stub
-    
+  /**
+   * {@inheritDoc}
+   */
+  public List<ObjectControl> getObjectControls() {
+    throw new UnsupportedOperationException();
   }
 }

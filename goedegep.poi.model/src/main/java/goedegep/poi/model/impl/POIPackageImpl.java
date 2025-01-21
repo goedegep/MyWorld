@@ -334,6 +334,8 @@ public class POIPackageImpl extends EPackageImpl implements POIPackage {
     addEEnumLiteral(poiCategoryIdEEnum, POICategoryId.ISLAND);
     addEEnumLiteral(poiCategoryIdEEnum, POICategoryId.CABLE_CAR);
     addEEnumLiteral(poiCategoryIdEEnum, POICategoryId.CAFE);
+    addEEnumLiteral(poiCategoryIdEEnum, POICategoryId.RIVER);
+    addEEnumLiteral(poiCategoryIdEEnum, POICategoryId.FOREST);
 
     // Create resource
     createResource(eNS_URI);

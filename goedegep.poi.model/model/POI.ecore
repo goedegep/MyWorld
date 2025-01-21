@@ -98,6 +98,8 @@
     <eLiterals name="ISLAND" value="87" literal="Island"/>
     <eLiterals name="CABLE_CAR" value="88" literal="Cable car"/>
     <eLiterals name="CAFE" value="89" literal="Cafe"/>
+    <eLiterals name="RIVER" value="90" literal="River"/>
+    <eLiterals name="FOREST" value="91" literal="Forest"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="POIIconResourceInfo">
     <eStructuralFeatures xsi:type="ecore:EReference" name="poiIconResourceDescriptors"

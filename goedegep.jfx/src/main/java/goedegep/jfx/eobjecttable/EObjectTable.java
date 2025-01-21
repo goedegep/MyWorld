@@ -25,8 +25,6 @@ import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.ETypedElement;
 import org.eclipse.emf.ecore.EcoreFactory;
 import org.eclipse.emf.ecore.EcorePackage;
-import org.eclipse.emf.ecore.resource.Resource;
-import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 
 import goedegep.appgen.Operation;
@@ -37,6 +35,7 @@ import goedegep.jfx.DoubleClickEventDispatcher;
 import goedegep.jfx.eobjecttable.objectstringconverters.DateObjectStringConverter;
 import goedegep.jfx.eobjecttable.objectstringconverters.IntegerObjectStringConverter;
 import goedegep.jfx.observableelist.ObservableEList;
+import goedegep.jfx.observableelist.ObservableEListChange;
 import goedegep.jfx.stringconverters.AnyTypeStringConverter;
 import goedegep.util.emf.EmfPackageHelper;
 import goedegep.util.objectselector.ObjectSelectionListener;
@@ -45,6 +44,8 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.ListChangeListener;
+import javafx.collections.ListChangeListener.Change;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
@@ -838,8 +839,21 @@ public class EObjectTable<T extends EObject> extends TableView<T> implements Obj
     tableSortedList = new SortedList<>(comparatorBasedSortedList);
     tableSortedList.comparatorProperty().bind(comparatorProperty());
     
+    // The table doesn't seem to react on a change in a value, so we add an extra listener to refresh the table.
+    ListChangeListener<T> listChangeListener = change  -> handleSimpleChanges(change);
+    tableSortedList.addListener(listChangeListener);
+    
     setItems(tableSortedList);
-    ((ObservableEList<T>) observableObjects).addTableRefreshNeededListener(o -> refresh());
+  }
+  
+  /*
+   * Refresh the table on a change in an object in the list.
+   */
+  private void handleSimpleChanges(@SuppressWarnings("rawtypes") Change change) {
+    change.next();
+    if (change.wasUpdated()) {
+      this.refresh();
+    }
   }
   
 //  private void handleMouseClickedEvent(TableColumn column, MouseEvent mouseEvent) {

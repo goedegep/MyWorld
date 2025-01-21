@@ -75,42 +75,42 @@ import javafx.scene.control.Label;
  * 
  * @param T The value type handled by the control
  */
-public interface ObjectControl<T extends Object> extends Observable {
+public interface ObjectControl<T extends Object> extends Observable, ObjectControlStatus {
     
-  /**
-   * Indication of whether the Object provided by this component is optional or not.
-   * <p>
-   * This method is identical to ocOptionalProperty().get().
-   * 
-   * @return true if the Object provided by this component is optional, false if the Object is mandatory.
-   */
-  boolean isOptional();
-  
-  /**
-   * Indicates whether information is filled in or not.
-   * <p>
-   * If information is filled in, this may be a valid value but also an invalid value.
-   * 
-   * @return true if something is filled in, false otherwise.
-   */
-  boolean isFilledIn();
+//  /**
+//   * Indication of whether the Object provided by this component is optional or not.
+//   * <p>
+//   * This method is identical to ocOptionalProperty().get().
+//   * 
+//   * @return true if the Object provided by this component is optional, false if the Object is mandatory.
+//   */
+//  boolean isOptional();
+//  
+//  /**
+//   * Indicates whether information is filled in or not.
+//   * <p>
+//   * If information is filled in, this may be a valid value but also an invalid value.
+//   * 
+//   * @return true if something is filled in, false otherwise.
+//   */
+//  boolean isFilledIn();
 
-  /**
-   * Indicates whether the information is valid or not.
-   * Where valid is defined as:
-   * <ul>
-   * <li>
-   * Either: the control is optional and nothing is filled in
-   * </li>
-   * <li>
-   * Or: What is filled in can be translated to an object of the type of the control.
-   * </li>
-   * </ul>
-   * 
-   * @param errorMessageBuffer A StringBuilder to append a possible error message to. This parameter may be null.
-   * @return true if the information is valid, false otherwise.
-   */
-  boolean isValid();
+//  /**
+//   * Indicates whether the information is valid or not.
+//   * Where valid is defined as:
+//   * <ul>
+//   * <li>
+//   * Either: the control is optional and nothing is filled in
+//   * </li>
+//   * <li>
+//   * Or: What is filled in can be translated to an object of the type of the control.
+//   * </li>
+//   * </ul>
+//   * 
+//   * @param errorMessageBuffer A StringBuilder to append a possible error message to. This parameter may be null.
+//   * @return true if the information is valid, false otherwise.
+//   */
+//  boolean isValid();
   
   /**
    * Get the current Object value.
@@ -124,15 +124,15 @@ public interface ObjectControl<T extends Object> extends Observable {
    * 
    * @param objectValue the value to set the Object to.
    */
-  void setValue(final T objectValue);
+  void setObject(final T objectValue);
   
   
-  /**
-   * Get a node which represents the status of the control.
-   * 
-   * @return a node which represents the status of the control.
-   */
-  Node getStatusIndicator();
+//  /**
+//   * Get a node which represents the status of the control.
+//   * 
+//   * @return a node which represents the status of the control.
+//   */
+//  Node getStatusIndicator();
   
   /**
    * Get the primary control.
@@ -155,12 +155,12 @@ public interface ObjectControl<T extends Object> extends Observable {
     throw new UnsupportedOperationException();
   }
   
-  /**
-   * Get a text which explains why the control has no valid value.
-   * 
-   * @return a text which explains why the control has no valid value.
-   */
-  String getErrorText();
+//  /**
+//   * Get a text which explains why the control has no valid value.
+//   * 
+//   * @return a text which explains why the control has no valid value.
+//   */
+//  String getErrorText();
   
   /**
    * Set the supplier for providing the error text, which is obtained by {@link #getErrorText()}.
@@ -169,19 +169,19 @@ public interface ObjectControl<T extends Object> extends Observable {
    */
   void setErrorTextSupplier(Supplier<String> errorTextSupplier);
   
-  /**
-   * Get the unique id of the ObjectControl.
-   * 
-   * @return the unique id of the ObjectControl, or null if this hasn't been set.
-   */
-  String getId();
-  
-  /**
-   * Set the unique id of the ObjectControl.
-   * 
-   * @param id the unique id for the ObjectControl.
-   */
-  void setId(String id);
+//  /**
+//   * Get the unique id of the ObjectControl.
+//   * 
+//   * @return the unique id of the ObjectControl, or null if this hasn't been set.
+//   */
+//  String getId();
+//  
+//  /**
+//   * Set the unique id of the ObjectControl.
+//   * 
+//   * @param id the unique id for the ObjectControl.
+//   */
+//  void setId(String id);
   
   /**
    * Get the object value as formatted text.
@@ -190,15 +190,15 @@ public interface ObjectControl<T extends Object> extends Observable {
    */
   String getValueAsFormattedText();
 
-  /**
-   * Check whether the control has changed since the last call to ocSetValue().
-   * 
-   * @return true if the control has changed since the last call to ocSetValue().
-   */
-  boolean isChanged();
+//  /**
+//   * Check whether the control has changed since the last call to ocSetValue().
+//   * 
+//   * @return true if the control has changed since the last call to ocSetValue().
+//   */
+//  boolean isChanged();
   
-  /**
-   * Remove all listeners, which have been added via {@code addListener()}.
-   */
-  void removeListeners();
+//  /**
+//   * Remove all listeners, which have been added via {@code addListener()}.
+//   */
+//  void removeListeners();
 }

@@ -749,29 +749,29 @@ public class AnnualStatementEditor extends JfxStage {
   private void clearControls() {
         
     // Annual Statement date
-    annualStatementDateTextField.setValue(null);
+    annualStatementDateTextField.setObject(null);
     
     // Period
-    periodFromTextField.setValue(null);
-    periodUntilTextField.setValue(null);
+    periodFromTextField.setObject(null);
+    periodUntilTextField.setObject(null);
     
     // Premium death risk coverage
-    premiumDeathRiskCoverageTextField.setValue(null);
+    premiumDeathRiskCoverageTextField.setObject(null);
     
     // Continuing Costs Insurance Company
-    continuingCostsInsuranceCompanyTextField.setValue(null);
+    continuingCostsInsuranceCompanyTextField.setObject(null);
     
     // Management Costs
-    managementCostsTextField.setValue(null);
+    managementCostsTextField.setObject(null);
     
     // Earned on the participations
-    earnedOnTheParticipationsTextField.setValue(null);
+    earnedOnTheParticipationsTextField.setObject(null);
     
     // Costs restitution
-    costsRestitutionTextField.setValue(null);
+    costsRestitutionTextField.setObject(null);
     
     // expectedYearlyCostsIncrease
-    expectedYearlyCostsIncreaseTextField.setValue(null);
+    expectedYearlyCostsIncreaseTextField.setObject(null);
     
     //
     // Participations at the end of the period
@@ -782,7 +782,7 @@ public class AnnualStatementEditor extends JfxStage {
     //
     
     // Example end capital date
-    exampleCapitalOnEndDateTextField.setValue(null);
+    exampleCapitalOnEndDateTextField.setObject(null);
 
     //
     // Example capitals
@@ -808,21 +808,21 @@ public class AnnualStatementEditor extends JfxStage {
     if (lastAnnualStatement != null  &&  lastAnnualStatement.isSetDate()) {
       FlexDate previousAnnualStatementDate = lastAnnualStatement.getDate();
       FlexDate annualStatementDate = new FlexDate(previousAnnualStatementDate.getDay(), previousAnnualStatementDate.getMonth(), previousAnnualStatementDate.getYear() + 1);
-      annualStatementDateTextField.setValue(annualStatementDate);
+      annualStatementDateTextField.setObject(annualStatementDate);
     }
     
     // Period; this is typically one year after the period of the previous annual statement.
     if (lastAnnualStatement != null  &&  lastAnnualStatement.isSetPeriodUntil()) {
       LocalDate lastAnnualStatementPeriodUntil = lastAnnualStatement.getPeriodUntil();
-      periodFromTextField.setValue(lastAnnualStatementPeriodUntil);
-      periodUntilTextField.setValue(lastAnnualStatementPeriodUntil.plusYears(1));
+      periodFromTextField.setObject(lastAnnualStatementPeriodUntil);
+      periodUntilTextField.setObject(lastAnnualStatementPeriodUntil.plusYears(1));
     }
     
     // Premium death risk coverage; no use setting this value, as it changes every year
     
     // Continuing Costs Insurance Company; seems stable, so copy from last year
     if (lastAnnualStatement != null  &&  lastAnnualStatement.isSetContinuingCostsInsuranceCompany()) {
-      continuingCostsInsuranceCompanyTextField.setValue(lastAnnualStatement.getContinuingCostsInsuranceCompany());
+      continuingCostsInsuranceCompanyTextField.setObject(lastAnnualStatement.getContinuingCostsInsuranceCompany());
     }
     
     // Management Costs; no use setting this value, as it changes every year
@@ -833,7 +833,7 @@ public class AnnualStatementEditor extends JfxStage {
     
     // expectedYearlyCostsIncrease; I use a fixed value for this, so copy from last year.
     if (lastAnnualStatement != null  &&  lastAnnualStatement.isSetExpectedYearlyCostsIncrease()) {
-      expectedYearlyCostsIncreaseTextField.setValue(lastAnnualStatement.getExpectedYearlyCostsIncrease());
+      expectedYearlyCostsIncreaseTextField.setObject(lastAnnualStatement.getExpectedYearlyCostsIncrease());
     }
     
     
@@ -845,7 +845,7 @@ public class AnnualStatementEditor extends JfxStage {
     
     // Example end capital date; normally the same date, so copy from last year
     if (lastAnnualStatement != null  &&  lastAnnualStatement.isSetExampleCapitalOnEndDate()) {
-      exampleCapitalOnEndDateTextField.setValue(lastAnnualStatement.getExampleCapitalOnEndDate());
+      exampleCapitalOnEndDateTextField.setObject(lastAnnualStatement.getExampleCapitalOnEndDate());
     }
     
   }
@@ -1013,45 +1013,45 @@ public class AnnualStatementEditor extends JfxStage {
     
     // Annual Statement date
     if (annualStatement.isSetDate()) {
-      annualStatementDateTextField.setValue(annualStatement.getDate());
+      annualStatementDateTextField.setObject(annualStatement.getDate());
     }
     
     // Period;
     if (annualStatement.isSetPeriodFrom()) {
-      periodFromTextField.setValue(annualStatement.getPeriodFrom());
+      periodFromTextField.setObject(annualStatement.getPeriodFrom());
     }
     if (annualStatement.isSetPeriodUntil()) {
-      periodUntilTextField.setValue(annualStatement.getPeriodUntil());
+      periodUntilTextField.setObject(annualStatement.getPeriodUntil());
     }
     
     // Premium death risk coverage
     if (annualStatement.isSetPremiumDeathRiskCoverage()) {
-      premiumDeathRiskCoverageTextField.setValue(annualStatement.getPremiumDeathRiskCoverage());
+      premiumDeathRiskCoverageTextField.setObject(annualStatement.getPremiumDeathRiskCoverage());
     }
     
     // Continuing Costs Insurance Company.
     if (annualStatement.isSetContinuingCostsInsuranceCompany()) {
-      continuingCostsInsuranceCompanyTextField.setValue(annualStatement.getContinuingCostsInsuranceCompany());
+      continuingCostsInsuranceCompanyTextField.setObject(annualStatement.getContinuingCostsInsuranceCompany());
     }
     
     // Management Costs
     if (annualStatement.isSetManagementCosts()) {
-      managementCostsTextField.setValue(annualStatement.getManagementCosts());
+      managementCostsTextField.setObject(annualStatement.getManagementCosts());
     }
     
     // Earned on the participations
     if (annualStatement.isSetEarnedOnTheParticipations()) {
-      earnedOnTheParticipationsTextField.setValue(annualStatement.getEarnedOnTheParticipations());
+      earnedOnTheParticipationsTextField.setObject(annualStatement.getEarnedOnTheParticipations());
     }
     
     // Costs restitution
     if (annualStatement.isSetCostsRestitution()) {
-      costsRestitutionTextField.setValue(annualStatement.getCostsRestitution());
+      costsRestitutionTextField.setObject(annualStatement.getCostsRestitution());
     }
     
     // expectedYearlyCostsIncrease
     if (annualStatement.isSetExpectedYearlyCostsIncrease()) {
-      expectedYearlyCostsIncreaseTextField.setValue(annualStatement.getExpectedYearlyCostsIncrease());
+      expectedYearlyCostsIncreaseTextField.setObject(annualStatement.getExpectedYearlyCostsIncrease());
     }
     
     
@@ -1063,7 +1063,7 @@ public class AnnualStatementEditor extends JfxStage {
     
     // Example end capital date
     if (annualStatement.isSetExampleCapitalOnEndDate()) {
-      exampleCapitalOnEndDateTextField.setValue(annualStatement.getExampleCapitalOnEndDate());
+      exampleCapitalOnEndDateTextField.setObject(annualStatement.getExampleCapitalOnEndDate());
     }
     
     LOGGER.fine("<=");

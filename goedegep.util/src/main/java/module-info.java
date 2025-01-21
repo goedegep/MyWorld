@@ -10,6 +10,7 @@ module goedegep.util {
   exports goedegep.util.emf;
   exports goedegep.util.chart;
   exports goedegep.util.clazz;
+  exports goedegep.util.desktop;
   exports goedegep.util.file;
   exports goedegep.util.finance;
   exports goedegep.util.fixedpointvalue;
@@ -18,6 +19,7 @@ module goedegep.util {
   exports goedegep.util.i18n;
   exports goedegep.util.img;
   exports goedegep.util.img.collageimpl;
+  exports goedegep.util.listener;
   exports goedegep.util.logging;
   exports goedegep.util.math;
   exports goedegep.util.money;
@@ -52,6 +54,7 @@ module goedegep.util {
   requires java.prefs;
   requires java.sql;
   requires java.xml;
+  requires net.iakovlev.timeshape;
   requires transitive org.apache.commons.imaging;
   requires transitive org.eclipse.emf.common;
   requires transitive org.eclipse.emf.ecore;
@@ -63,4 +66,5 @@ module goedegep.util {
   requires org.junit.jupiter.api;
   requires org.hamcrest;
   requires goedegep.emfsample.model;
+  requires java.base;
 }

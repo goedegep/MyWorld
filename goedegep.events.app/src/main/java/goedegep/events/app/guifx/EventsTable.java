@@ -9,7 +9,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
-import java.util.function.Consumer;
 import java.util.logging.Logger;
 
 import org.commonmark.parser.Parser;
@@ -51,7 +50,6 @@ import javafx.util.Callback;
  * This class is a table for events ({@link EventInfo}).
  */
 public class EventsTable extends EObjectTable<EventInfo> {
-  private Consumer<EventInfo> eventEditorLauncher = null;
   
   /**
    * Constructor
@@ -64,19 +62,10 @@ public class EventsTable extends EObjectTable<EventInfo> {
     handleRowDoubleClicked(getSelectedObject());
   }
   
-  /**
-   * Set the method to be called to edit an event.
-   * 
-   * @param eventEditorLauncher the method to be called to edit an event.
-   */
-  public void setEventEditorLauncher(Consumer<EventInfo> eventEditorLauncher) {
-    this.eventEditorLauncher = eventEditorLauncher;
-  }
-  
   @Override
   protected void handleRowDoubleClicked(EventInfo event) {
-    if (event != null  &&  eventEditorLauncher != null) {
-      eventEditorLauncher.accept(event);
+    if (event != null) {
+      EventsLauncher.getInstance().LaunchEventsEditor(event);
     }
   }
 }

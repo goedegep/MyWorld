@@ -6,6 +6,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.logging.Logger;
 
 import org.eclipse.emf.common.util.EList;
@@ -20,7 +21,7 @@ import goedegep.jfx.objectcontrols.ObjectControlBoolean;
 import goedegep.jfx.objectcontrols.ObjectControlEnumComboBox;
 import goedegep.jfx.objectcontrols.ObjectControlFlexDate;
 import goedegep.jfx.objectcontrols.ObjectControlFolderSelecter;
-import goedegep.jfx.objectcontrols.ObjectControlList;
+import goedegep.jfx.objectcontrols.ObjectControlStatusList;
 import goedegep.jfx.objectcontrols.ObjectControlMultiLineString;
 import goedegep.jfx.objectcontrols.ObjectControlString;
 import goedegep.jfx.objectcontrols.ObjectEditPanelTemplate;
@@ -28,6 +29,7 @@ import goedegep.jfx.objecteditor.EditMode;
 import goedegep.jfx.objecteditor.ObjectEditorException;
 import goedegep.jfx.objecteditor.ObjectEditorTemplate;
 import goedegep.media.app.MediaRegistry;
+import goedegep.media.mediadb.app.MediaDbService;
 import goedegep.media.mediadb.app.derivealbuminfo.AlbumInfo;
 import goedegep.media.mediadb.app.derivealbuminfo.DeriveAlbumInfo;
 import goedegep.media.mediadb.app.derivealbuminfo.DiscInfo;
@@ -84,6 +86,8 @@ public class AlbumEditor extends ObjectEditorTemplate<Album> {
   private static final String NEW_LINE = System.getProperty("line.separator");
   private static final MediadbFactory MEDIA_DB_FACTORY = MediadbFactory.eINSTANCE;
   private static final MediadbPackage MEDIA_DB_PACKAGE = MediadbPackage.eINSTANCE;
+  
+  private MediaDbService mediaDbService;
   
   /**
    * The Media Database.
@@ -205,7 +209,7 @@ public class AlbumEditor extends ObjectEditorTemplate<Album> {
   /**
    * Control for handling the status of the list of album discs.
    */
-  private ObjectControlList<Disc> discsObjectControl;
+  private ObjectControlStatusList discsObjectControl;
   
   /**
    * Factory method to obtain a new instance of an {@code AlbumEditor}.
@@ -214,8 +218,8 @@ public class AlbumEditor extends ObjectEditorTemplate<Album> {
    * @param mediaDb the media database.
    * @return a newly created {@code AlbumEditor}.
    */
-  public static AlbumEditor newInstance(CustomizationFx customization, MediaDb mediaDb) {
-    AlbumEditor albumEditor = new AlbumEditor(customization, mediaDb);
+  public static AlbumEditor newInstance(CustomizationFx customization, MediaDbService mediaDbService) {
+    AlbumEditor albumEditor = new AlbumEditor(customization, mediaDbService);
     albumEditor.performInitialization();
     
     return albumEditor;
@@ -229,11 +233,12 @@ public class AlbumEditor extends ObjectEditorTemplate<Album> {
    * @param customization the GUI customization.
    * @param mediaDb the media database.
    */
-  private AlbumEditor(CustomizationFx customization, MediaDb mediaDb) {
+  private AlbumEditor(CustomizationFx customization, MediaDbService mediaDbService) {
     // title is set to null, as it is updated via updateTitle().
-    super(customization, null);
+    super(customization, null, mediaDbService::addAlbumToMediaDatabase);
     
-    this.mediaDb = mediaDb;
+    this.mediaDbService = mediaDbService;
+    mediaDb = mediaDbService.getMediaDbResource().getEObject();
     
     objectControlsGroup.setId("AlbumEditor");
     
@@ -264,7 +269,7 @@ public class AlbumEditor extends ObjectEditorTemplate<Album> {
     albumTitleTextFieldObjectControl.setId("album title");
     albumTitleTextFieldObjectControl.setLabelBaseText("Title");
 
-    albumArtistObjectControl = new ArtistObjectControl(customization, mediaDb);
+    albumArtistObjectControl = new ArtistObjectControl(customization, mediaDbService);
     albumArtistObjectControl.setId("album artist");
     albumArtistObjectControl.setLabelBaseText("Artist");
 
@@ -276,11 +281,11 @@ public class AlbumEditor extends ObjectEditorTemplate<Album> {
     albumIdObjectControl.setId("album Id");
     albumIdObjectControl.setLabelBaseText("Album Id");
     
-    discsObjectControl = new ObjectControlList<>(true);
+    discsObjectControl = new ObjectControlStatusList(true);
     discsObjectControl.setId("discs");
     
     
-    playersObjectControl = PlayersEditPanel.newInstance(customization, mediaDb);
+    playersObjectControl = PlayersEditPanel.newInstance(customization, mediaDbService);
     playersObjectControl.setId("players");
     objectControlsGroup.addObjectControlGroup(playersObjectControl.getObjectControlsGroup());
     
@@ -416,7 +421,7 @@ public class AlbumEditor extends ObjectEditorTemplate<Album> {
     gridPane.add(albumArtistObjectControl.getControl(), 1, 2);
     gridPane.add(albumArtistObjectControl.getStatusIndicator(), 2, 2);
     Button newArtistButton = componentFactory.createButton("New artist", "The artist of the album has to be selected from the list of known artists. With this button you can add a new artist to the database");
-    newArtistButton.setOnAction(e -> ArtistDetailsEditor.newInstance(customization, "New artist", mediaDb).show());
+    newArtistButton.setOnAction(e -> ArtistDetailsEditor.newInstance(customization, "New artist", mediaDbService).show());
     gridPane.add(newArtistButton, 3, 2);
    
     // Fourth row: 'Issue date: <album-issue-date>'
@@ -545,7 +550,7 @@ public class AlbumEditor extends ObjectEditorTemplate<Album> {
       Artist artistInMediaDb = mediaDb.getArtist(artist.getName());
       
       if (artistInMediaDb == null) {
-        ArtistDetailsEditor artistDetailsEditor = ArtistDetailsEditor.newInstance(customization, "New artist", mediaDb);
+        ArtistDetailsEditor artistDetailsEditor = ArtistDetailsEditor.newInstance(customization, "New artist", mediaDbService);
         artistDetailsEditor.initModality(Modality.APPLICATION_MODAL);
         StringBuilder buf = new StringBuilder();
         buf.append("The artist ")
@@ -591,7 +596,7 @@ public class AlbumEditor extends ObjectEditorTemplate<Album> {
       Track trackInMediaDb = mediaDb.getTrack(trackArtist, track.getTitle());
       
       if (trackInMediaDb == null) {
-        TrackEditor trackEditor = TrackEditor.newInstance(customization, mediaDb);
+        TrackEditor trackEditor = TrackEditor.newInstance(customization, mediaDbService);
         trackEditor.initModality(Modality.APPLICATION_MODAL);
         StringBuilder buf = new StringBuilder();
         buf.append("The track '")
@@ -633,25 +638,25 @@ public class AlbumEditor extends ObjectEditorTemplate<Album> {
       return;
     }
     
-    albumTitleTextFieldObjectControl.setValue(album.getTitle());
-    albumArtistObjectControl.setValue(album.getArtist());
-    albumIssueDateObjectControl.setValue(album.getReleaseDate());
-    albumIdObjectControl.setValue(album.getId());
-    descriptionTitleObjectControl.setValue(album.getDescriptionTitle());
-    descriptionObjectControl.setValue(album.getDescription());
+    albumTitleTextFieldObjectControl.setObject(album.getTitle());
+    albumArtistObjectControl.setObject(album.getArtist());
+    albumIssueDateObjectControl.setObject(album.getReleaseDate());
+    albumIdObjectControl.setObject(album.getId());
+    descriptionTitleObjectControl.setObject(album.getDescriptionTitle());
+    descriptionObjectControl.setObject(album.getDescription());
 
     MyInfo myInfo = album.getMyInfo();
-    albumTypeObjectControl.setValue(myInfo.getAlbumType());
-    iWantObjectControl.setValue(myInfo.getIWant());
-    iHaveOnObjectControl.setValue(myInfo.getIHaveOn());
-    myCommentsObjectControl.setValue(myInfo.getMyComments());
+    albumTypeObjectControl.setObject(myInfo.getAlbumType());
+    iWantObjectControl.setObject(myInfo.getIWant());
+    iHaveOnObjectControl.setObject(myInfo.getIHaveOn());
+    myCommentsObjectControl.setObject(myInfo.getMyComments());
 
     fillGeneralControlsFromAlbum(album);
     playersObjectControl.setObject(album.getPlayers());
-    frontImagesObjectControl.setValue(new ArrayList<>(album.getImagesFront()));
-    frontInsideImagesObjectControl.setValue(new ArrayList<>(album.getImagesFrontInside()));
-    backImagesObjectControl.setValue(new ArrayList<>(album.getImagesBack()));
-    labelImagesObjectControl.setValue(new ArrayList<>(album.getImagesLabel()));
+    frontImagesObjectControl.setObject(new ArrayList<>(album.getImagesFront()));
+    frontInsideImagesObjectControl.setObject(new ArrayList<>(album.getImagesFrontInside()));
+    backImagesObjectControl.setObject(new ArrayList<>(album.getImagesBack()));
+    labelImagesObjectControl.setObject(new ArrayList<>(album.getImagesLabel()));
     updateCheckBoxes(album);
     updateAlbumReferences(album);
     updateDiscsPanel(album);
@@ -683,10 +688,10 @@ public class AlbumEditor extends ObjectEditorTemplate<Album> {
     // Then the controls
     fillGeneralControlsFromAlbum(album);
 //    redrawPlayersPane();
-    frontImagesObjectControl.setValue(album.getImagesFront());
-    frontInsideImagesObjectControl.setValue(album.getImagesFrontInside());
-    backImagesObjectControl.setValue(album.getImagesBack());
-    labelImagesObjectControl.setValue(album.getImagesLabel());
+    frontImagesObjectControl.setObject(album.getImagesFront());
+    frontInsideImagesObjectControl.setObject(album.getImagesFrontInside());
+    backImagesObjectControl.setObject(album.getImagesBack());
+    labelImagesObjectControl.setObject(album.getImagesLabel());
 
 //    updateIssuedOnMediaPane();
 //    redrawImagesPanel(frontImagesHBox, frontImageControls);
@@ -731,17 +736,17 @@ public class AlbumEditor extends ObjectEditorTemplate<Album> {
    */
   @Override
   protected void fillControlsWithDefaultValues() {
-    albumTypeObjectControl.setValue(AlbumType.NORMAL_ALBUM);
-    albumTitleTextFieldObjectControl.setValue(null);
-    albumArtistObjectControl.setValue(null);
-    albumIssueDateObjectControl.setValue(null);
-    albumIdObjectControl.setValue(null);
+    albumTypeObjectControl.setObject(AlbumType.NORMAL_ALBUM);
+    albumTitleTextFieldObjectControl.setObject(null);
+    albumArtistObjectControl.setObject(null);
+    albumIssueDateObjectControl.setObject(null);
+    albumIdObjectControl.setObject(null);
     playersObjectControl.setObject(null);
-    descriptionTitleObjectControl.setValue(null);
-    descriptionObjectControl.setValue(null);
-    myCommentsObjectControl.setValue(null);
-    iWantObjectControl.setValue(IWant.DONT_KNOW);
-    iHaveOnObjectControl.setValue(null);
+    descriptionTitleObjectControl.setObject(null);
+    descriptionObjectControl.setObject(null);
+    myCommentsObjectControl.setObject(null);
+    iWantObjectControl.setObject(IWant.DONT_KNOW);
+    iHaveOnObjectControl.setObject(null);
   }
 
   /**
@@ -752,25 +757,25 @@ public class AlbumEditor extends ObjectEditorTemplate<Album> {
   private void fillGeneralControlsFromAlbum(Album album) {
 
     if (album != null) {
-      albumTitleTextFieldObjectControl.setValue(album.getTitle());
+      albumTitleTextFieldObjectControl.setObject(album.getTitle());
 
-      albumArtistObjectControl.setValue(album.getArtist());
+      albumArtistObjectControl.setObject(album.getArtist());
 
-      albumIssueDateObjectControl.setValue(album.getReleaseDate());
+      albumIssueDateObjectControl.setObject(album.getReleaseDate());
 
-      albumIdObjectControl.setValue(album.getId());
+      albumIdObjectControl.setObject(album.getId());
 
-      descriptionTitleObjectControl.setValue(album.getDescriptionTitle());
+      descriptionTitleObjectControl.setObject(album.getDescriptionTitle());
 
-      descriptionObjectControl.setValue(album.getDescription());
+      descriptionObjectControl.setObject(album.getDescription());
 
       MyInfo myInfo = album.getMyInfo();
-      albumTypeObjectControl.setValue(myInfo.getAlbumType());
+      albumTypeObjectControl.setObject(myInfo.getAlbumType());
 
-      iWantObjectControl.setValue(myInfo.getIWant());
-      iHaveOnObjectControl.setValue(myInfo.getIHaveOn());
+      iWantObjectControl.setObject(myInfo.getIWant());
+      iHaveOnObjectControl.setObject(myInfo.getIHaveOn());
 
-      myCommentsObjectControl.setValue(myInfo.getMyComments());
+      myCommentsObjectControl.setObject(myInfo.getMyComments());
 
     }
   }
@@ -798,11 +803,11 @@ public class AlbumEditor extends ObjectEditorTemplate<Album> {
    */
   private void updateCheckBoxes(Album album) {
     if (album != null) {      
-      soundTrackObjectControl.setValue(album.isSoundtrack());
-      iveHadOnLpObjectControl.setValue(album.getMyInfo().isIveHadOnLP());
+      soundTrackObjectControl.setObject(album.isSoundtrack());
+      iveHadOnLpObjectControl.setObject(album.getMyInfo().isIveHadOnLP());
     } else {
-      soundTrackObjectControl.setValue(false);
-      iveHadOnLpObjectControl.setValue(false);
+      soundTrackObjectControl.setObject(false);
+      iveHadOnLpObjectControl.setObject(false);
     }
   }
   
@@ -842,7 +847,7 @@ public class AlbumEditor extends ObjectEditorTemplate<Album> {
     discPanels.clear();
 
     if (album != null) {
-      discsObjectControl.setValue(new ArrayList<Disc>(album.getDiscs()));
+      discsObjectControl.setObject(new ArrayList<Disc>(album.getDiscs()));
       for (Disc disc: album.getDiscs()) {
         addNewDiscPanel(disc);
       }
@@ -850,7 +855,7 @@ public class AlbumEditor extends ObjectEditorTemplate<Album> {
   }
   
   private void addNewDiscPanel(Disc disc) {
-    DiscEditPanel discEditPanel = DiscEditPanel.newInstance(customization, mediaDb);
+    DiscEditPanel discEditPanel = DiscEditPanel.newInstance(customization, mediaDbService);
     //      discEditPanel.createObject();
     discEditPanel.setId("Disc panel");
     discPanels.add(discEditPanel);
@@ -1020,14 +1025,6 @@ public class AlbumEditor extends ObjectEditorTemplate<Album> {
   @Override
   protected void createObject() {
     object = MEDIA_DB_FACTORY.createAlbum();
-  }
-  
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  protected void addObjectToCollection() {
-    mediaDb.getAlbums().add(object);
   }
       
   /**

@@ -183,7 +183,7 @@ class AddressEditPanel {
         List<City> cities = cityTextField.getMatchingCities();
         if (!cities.isEmpty()) {
           Country country = cities.get(0).getCountry();
-          countryTextField.setValue(country.getCountryName());
+          countryTextField.setObject(country.getCountryName());
         }
       });
     
@@ -323,17 +323,17 @@ class AddressEditPanel {
    * @param address the Address who's values will be applied to the controls.
    */
   private void fillFieldsFromAddress(Address address) {
-    streetTextField.setValue(address.getStreetName());
-    houseNumberTextField.setValue(address.getHouseNumber());
-    houseNumberExtensionTextField.setValue(address.getHouseNumberExtension());
-    poBoxTextField.setValue(address.getPOBox());
-    postalCodeTextField.setValue(address.getPostalCode());
+    streetTextField.setObject(address.getStreetName());
+    houseNumberTextField.setObject(address.getHouseNumber());
+    houseNumberExtensionTextField.setObject(address.getHouseNumberExtension());
+    poBoxTextField.setObject(address.getPOBox());
+    postalCodeTextField.setObject(address.getPostalCode());
     City city = address.getCity();
     if (city != null) {
-      cityTextField.setValue(city.getCityName());
+      cityTextField.setObject(city.getCityName());
       Country country = city.getCountry();
       if (country != null) {
-        countryTextField.setValue(country.getCountryName());
+        countryTextField.setObject(country.getCountryName());
       }
     }
   }
@@ -433,7 +433,7 @@ class AddressEditPanel {
 
         // The only way I found to update the autocompletion list is by recreating the textfield. 
         countryTextField = new CountryTextField(customization, rolodex);
-        countryTextField.setValue(countryName);
+        countryTextField.setObject(countryName);
         gridPane.add(countryTextField.getControl(), 1, countryTextFieldRow);
       });
     }
@@ -465,7 +465,7 @@ class AddressEditPanel {
 
         // The only way I found to update the autocompletion list is by recreating the textfield. 
         cityTextField = new CityTextField(customization, rolodex);
-        cityTextField.setValue(cityName);
+        cityTextField.setObject(cityName);
         gridPane.add(cityTextField.getControl(), 1, cityTextFieldRow);
       });
     }
@@ -489,7 +489,7 @@ class AddressEditPanel {
 
           // The only way I found to update the autocompletion list is by recreating the textfield. 
           cityTextField = new CityTextField(customization, rolodex);
-          cityTextField.setValue(cityName);
+          cityTextField.setObject(cityName);
           gridPane.add(cityTextField.getControl(), 1, cityTextFieldRow);
         });
       }

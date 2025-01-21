@@ -7,17 +7,16 @@ import java.util.Map;
 import java.util.Set;
 import java.util.logging.Logger;
 
-import goedegep.jfx.ComponentFactoryFx;
 import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.JfxStage;
 import goedegep.media.app.MediaRegistry;
 import goedegep.media.mediadb.albumeditor.guifx.AlbumEditor;
+import goedegep.media.mediadb.app.MediaDbService;
 import goedegep.media.mediadb.model.Album;
 import goedegep.media.mediadb.model.Artist;
 import goedegep.media.mediadb.model.Disc;
 import goedegep.media.mediadb.model.DiscAndTrackNrs;
 import goedegep.media.mediadb.model.InformationType;
-import goedegep.media.mediadb.model.MediaDb;
 import goedegep.media.mediadb.model.MediumInfo;
 import goedegep.media.mediadb.model.MyInfo;
 import goedegep.media.mediadb.model.Player;
@@ -49,11 +48,9 @@ public class AlbumDetailsWindow extends JfxStage {
   private static final Logger LOGGER = Logger.getLogger(AlbumDetailsWindow.class.getName());
   private static final FlexDateFormat FDF = new FlexDateFormat();
   
-  private CustomizationFx customization;
-  private MediaDb mediaDb;  
+  private MediaDbService mediaDbService;  
   private Map<Track, Path> trackDiscLocationMap;
   private AlbumsTable albumsTable;
-  private ComponentFactoryFx componentFactory;
   
   /**
    * Shows the album title.
@@ -111,14 +108,12 @@ public class AlbumDetailsWindow extends JfxStage {
    * 
    * @param customization the GUI customization.
    */
-  public AlbumDetailsWindow(CustomizationFx customization, MediaDb mediaDb, Map<Track, Path> trackDiscLocationMap, AlbumsTable albumsTable) {
+  public AlbumDetailsWindow(CustomizationFx customization, MediaDbService mediaDbService, Map<Track, Path> trackDiscLocationMap, AlbumsTable albumsTable) {
     super(customization, "Album details");
     
-    this.customization = customization;
-    this.mediaDb = mediaDb;
-    this.trackDiscLocationMap = trackDiscLocationMap;
+    this.mediaDbService = mediaDbService;
     this.albumsTable = albumsTable;
-    componentFactory = customization.getComponentFactoryFx();
+    this.trackDiscLocationMap = trackDiscLocationMap;
 
     createGUI();
   }
@@ -163,7 +158,7 @@ public class AlbumDetailsWindow extends JfxStage {
     
     Button editButton = componentFactory.createButton("Open in Album Editor", "Open edit window");
     editButton.setOnAction((e) -> {
-      AlbumEditor albumEditor = AlbumEditor.newInstance(customization, mediaDb);
+      AlbumEditor albumEditor = AlbumEditor.newInstance(customization, mediaDbService);
       albumEditor.setObject(album);
       albumEditor.show();
     });

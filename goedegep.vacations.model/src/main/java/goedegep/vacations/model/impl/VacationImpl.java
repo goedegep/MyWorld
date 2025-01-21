@@ -23,6 +23,7 @@ import goedegep.types.model.impl.EventImpl;
 import goedegep.util.datetime.FlexDate;
 import goedegep.util.datetime.FlexDateFormat;
 import goedegep.vacations.model.Day;
+import goedegep.vacations.model.Travel;
 import goedegep.vacations.model.Vacation;
 import goedegep.vacations.model.VacationElement;
 import goedegep.vacations.model.VacationsPackage;
@@ -35,10 +36,10 @@ import goedegep.vacations.model.VacationsPackage;
  * The following features are implemented:
  * </p>
  * <ul>
+ *   <li>{@link goedegep.vacations.model.impl.VacationImpl#getTitle <em>Title</em>}</li>
  *   <li>{@link goedegep.vacations.model.impl.VacationImpl#getEndDate <em>End Date</em>}</li>
  *   <li>{@link goedegep.vacations.model.impl.VacationImpl#getDocuments <em>Documents</em>}</li>
  *   <li>{@link goedegep.vacations.model.impl.VacationImpl#getPictures <em>Pictures</em>}</li>
- *   <li>{@link goedegep.vacations.model.impl.VacationImpl#getTitle <em>Title</em>}</li>
  *   <li>{@link goedegep.vacations.model.impl.VacationImpl#getElements <em>Elements</em>}</li>
  * </ul>
  *
@@ -48,6 +49,32 @@ public class VacationImpl extends EventImpl implements Vacation {
   private static final Logger LOGGER = Logger.getLogger(VacationImpl.class.getName());
   private static final FlexDateFormat FDF = new FlexDateFormat(true, true);
 
+  /**
+   * The default value of the '{@link #getTitle() <em>Title</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getTitle()
+   * @generated
+   * @ordered
+   */
+  protected static final String TITLE_EDEFAULT = null;
+  /**
+   * The cached value of the '{@link #getTitle() <em>Title</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getTitle()
+   * @generated
+   * @ordered
+   */
+  protected String title = TITLE_EDEFAULT;
+  /**
+   * This is true if the Title attribute has been set.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  protected boolean titleESet;
   /**
    * The default value of the '{@link #getEndDate() <em>End Date</em>}' attribute.
    * <!-- begin-user-doc -->
@@ -74,7 +101,6 @@ public class VacationImpl extends EventImpl implements Vacation {
    * @ordered
    */
   protected boolean endDateESet;
-
   /**
    * The cached value of the '{@link #getDocuments() <em>Documents</em>}' containment reference list.
    * <!-- begin-user-doc -->
@@ -102,32 +128,6 @@ public class VacationImpl extends EventImpl implements Vacation {
    * @ordered
    */
   protected String pictures = PICTURES_EDEFAULT;
-  /**
-   * The default value of the '{@link #getTitle() <em>Title</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getTitle()
-   * @generated
-   * @ordered
-   */
-  protected static final String TITLE_EDEFAULT = null;
-  /**
-   * The cached value of the '{@link #getTitle() <em>Title</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getTitle()
-   * @generated
-   * @ordered
-   */
-  protected String title = TITLE_EDEFAULT;
-  /**
-   * This is true if the Title attribute has been set.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  protected boolean titleESet;
   /**
    * The cached value of the '{@link #getElements() <em>Elements</em>}' containment reference list.
    * <!-- begin-user-doc -->
@@ -456,14 +456,14 @@ public class VacationImpl extends EventImpl implements Vacation {
   @Override
   public Object eGet(int featureID, boolean resolve, boolean coreType) {
     switch (featureID) {
+    case VacationsPackage.VACATION__TITLE:
+      return getTitle();
     case VacationsPackage.VACATION__END_DATE:
       return getEndDate();
     case VacationsPackage.VACATION__DOCUMENTS:
       return getDocuments();
     case VacationsPackage.VACATION__PICTURES:
       return getPictures();
-    case VacationsPackage.VACATION__TITLE:
-      return getTitle();
     case VacationsPackage.VACATION__ELEMENTS:
       return getElements();
     }
@@ -479,6 +479,9 @@ public class VacationImpl extends EventImpl implements Vacation {
   @Override
   public void eSet(int featureID, Object newValue) {
     switch (featureID) {
+    case VacationsPackage.VACATION__TITLE:
+      setTitle((String) newValue);
+      return;
     case VacationsPackage.VACATION__END_DATE:
       setEndDate((FlexDate) newValue);
       return;
@@ -488,9 +491,6 @@ public class VacationImpl extends EventImpl implements Vacation {
       return;
     case VacationsPackage.VACATION__PICTURES:
       setPictures((String) newValue);
-      return;
-    case VacationsPackage.VACATION__TITLE:
-      setTitle((String) newValue);
       return;
     case VacationsPackage.VACATION__ELEMENTS:
       getElements().clear();
@@ -508,6 +508,9 @@ public class VacationImpl extends EventImpl implements Vacation {
   @Override
   public void eUnset(int featureID) {
     switch (featureID) {
+    case VacationsPackage.VACATION__TITLE:
+      unsetTitle();
+      return;
     case VacationsPackage.VACATION__END_DATE:
       unsetEndDate();
       return;
@@ -516,9 +519,6 @@ public class VacationImpl extends EventImpl implements Vacation {
       return;
     case VacationsPackage.VACATION__PICTURES:
       setPictures(PICTURES_EDEFAULT);
-      return;
-    case VacationsPackage.VACATION__TITLE:
-      unsetTitle();
       return;
     case VacationsPackage.VACATION__ELEMENTS:
       getElements().clear();
@@ -535,14 +535,14 @@ public class VacationImpl extends EventImpl implements Vacation {
   @Override
   public boolean eIsSet(int featureID) {
     switch (featureID) {
+    case VacationsPackage.VACATION__TITLE:
+      return isSetTitle();
     case VacationsPackage.VACATION__END_DATE:
       return isSetEndDate();
     case VacationsPackage.VACATION__DOCUMENTS:
       return documents != null && !documents.isEmpty();
     case VacationsPackage.VACATION__PICTURES:
       return PICTURES_EDEFAULT == null ? pictures != null : !PICTURES_EDEFAULT.equals(pictures);
-    case VacationsPackage.VACATION__TITLE:
-      return isSetTitle();
     case VacationsPackage.VACATION__ELEMENTS:
       return elements != null && !elements.isEmpty();
     }
@@ -555,18 +555,74 @@ public class VacationImpl extends EventImpl implements Vacation {
    * @generated
    */
   @Override
+  public int eBaseStructuralFeatureID(int derivedFeatureID, Class<?> baseClass) {
+    if (baseClass == Travel.class) {
+      switch (derivedFeatureID) {
+      case VacationsPackage.VACATION__TITLE:
+        return VacationsPackage.TRAVEL__TITLE;
+      default:
+        return -1;
+      }
+    }
+    return super.eBaseStructuralFeatureID(derivedFeatureID, baseClass);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public int eDerivedStructuralFeatureID(int baseFeatureID, Class<?> baseClass) {
+    if (baseClass == Travel.class) {
+      switch (baseFeatureID) {
+      case VacationsPackage.TRAVEL__TITLE:
+        return VacationsPackage.VACATION__TITLE;
+      default:
+        return -1;
+      }
+    }
+    return super.eDerivedStructuralFeatureID(baseFeatureID, baseClass);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public int eDerivedOperationID(int baseOperationID, Class<?> baseClass) {
+    if (baseClass == Travel.class) {
+      switch (baseOperationID) {
+      case VacationsPackage.TRAVEL___GET_ID:
+        return VacationsPackage.VACATION___GET_ID;
+      case VacationsPackage.TRAVEL___GET_ALL_FILE_REFERENCES:
+        return VacationsPackage.VACATION___GET_ALL_FILE_REFERENCES;
+      default:
+        return -1;
+      }
+    }
+    return super.eDerivedOperationID(baseOperationID, baseClass);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
   public Object eInvoke(int operationID, EList<?> arguments) throws InvocationTargetException {
     switch (operationID) {
     case VacationsPackage.VACATION___FIND_DOCUMENT__STRING:
       return findDocument((String) arguments.get(0));
-    case VacationsPackage.VACATION___GET_ALL_FILE_REFERENCES:
-      return getAllFileReferences();
     case VacationsPackage.VACATION___GET_ALL_REFERENCED_FILES:
       return getAllReferencedFiles();
-    case VacationsPackage.VACATION___GET_ID:
-      return getId();
     case VacationsPackage.VACATION___GET_DAY_NR__VACATIONELEMENT:
       return getDayNr((VacationElement) arguments.get(0));
+    case VacationsPackage.VACATION___GET_ID:
+      return getId();
+    case VacationsPackage.VACATION___GET_ALL_FILE_REFERENCES:
+      return getAllFileReferences();
     }
     return super.eInvoke(operationID, arguments);
   }
@@ -582,18 +638,18 @@ public class VacationImpl extends EventImpl implements Vacation {
       return super.toString();
 
     StringBuilder result = new StringBuilder(super.toString());
-    result.append(" (endDate: ");
+    result.append(" (title: ");
+    if (titleESet)
+      result.append(title);
+    else
+      result.append("<unset>");
+    result.append(", endDate: ");
     if (endDateESet)
       result.append(endDate);
     else
       result.append("<unset>");
     result.append(", pictures: ");
     result.append(pictures);
-    result.append(", title: ");
-    if (titleESet)
-      result.append(title);
-    else
-      result.append("<unset>");
     result.append(')');
     return result.toString();
   }

@@ -15,6 +15,7 @@ import goedegep.jfx.DoubleClickEventDispatcher;
 import goedegep.jfx.objectcontrols.ObjectControl;
 import goedegep.jfx.objectcontrols.ObjectControlAutoCompleteTextField;
 import goedegep.jfx.stringconverters.StringConverterAndChecker;
+import goedegep.media.mediadb.app.MediaDbService;
 import goedegep.media.mediadb.model.Album;
 import goedegep.media.mediadb.model.Artist;
 import goedegep.media.mediadb.model.Disc;
@@ -38,6 +39,8 @@ public class TrackObjectControl extends ObjectControlAutoCompleteTextField<Track
    */
   private static TrackStringConverterAndChecker trackStringConverter = new TrackStringConverterAndChecker();
   
+  private MediaDbService mediaDbService;
+  
   /**
    * The media database.
    */
@@ -53,10 +56,11 @@ public class TrackObjectControl extends ObjectControlAutoCompleteTextField<Track
    * 
    * @param customization - The GUI customization.
    */
-  public TrackObjectControl(CustomizationFx customization) {
+  public TrackObjectControl(CustomizationFx customization, MediaDbService mediaDbService) {
     super(customization, trackStringConverter, null, 200, false, "TODO");
 
     this.customization = customization;
+    this.mediaDbService = mediaDbService;
     setOptions(mediaDb.getTracks());
 
     getControl().addEventHandler(DoubleClickEventDispatcher.MOUSE_DOUBLE_CLICKED, e -> handleMouseDoubleClickedEvent(getControl(), e));
@@ -100,10 +104,10 @@ public class TrackObjectControl extends ObjectControlAutoCompleteTextField<Track
    */
   private void handleMouseDoubleClickedEvent(Node trackObjectControlNode, MouseEvent e) {
     LOGGER.severe("=>");
-    TrackEditor trackEditor = TrackEditor.newInstance(customization, mediaDb);
+    TrackEditor trackEditor = TrackEditor.newInstance(customization, mediaDbService);
     trackEditor.setObject(value);
     trackEditor.addListener((o) -> {
-      setValue(trackEditor.getObject());
+      setObject(trackEditor.getObject());
     });
     trackEditor.show();
   }
