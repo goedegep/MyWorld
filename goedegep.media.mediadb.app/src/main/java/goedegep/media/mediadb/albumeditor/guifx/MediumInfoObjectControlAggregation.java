@@ -106,10 +106,10 @@ public class MediumInfoObjectControlAggregation extends ObjectControlAggregation
 
   @Override
   protected void fillControlsWithDefaultValues() {
-    mediumTypeObjectControl.setValue(MediumType.NOT_SET);
-    informationTypeObjectControl.setValue(InformationType.NOT_SET);
-    sourceTypeObjectControl.setValue(InformationType.NOT_SET);
-    sourceBitRateObjectControl.setValue(null);
+    mediumTypeObjectControl.setObject(MediumType.NOT_SET);
+    informationTypeObjectControl.setObject(InformationType.NOT_SET);
+    sourceTypeObjectControl.setObject(InformationType.NOT_SET);
+    sourceBitRateObjectControl.setObject(null);
   }
 
   @Override
@@ -120,10 +120,10 @@ public class MediumInfoObjectControlAggregation extends ObjectControlAggregation
       return;
     }
     
-    mediumTypeObjectControl.setValue(object.getMediumType());
-    informationTypeObjectControl.setValue(object.getInformationType());
-    sourceTypeObjectControl.setValue(object.getSourceType());
-    sourceBitRateObjectControl.setValue(object.getSourceBitRate());
+    mediumTypeObjectControl.setObject(object.getMediumType());
+    informationTypeObjectControl.setObject(object.getInformationType());
+    sourceTypeObjectControl.setObject(object.getSourceType());
+    sourceBitRateObjectControl.setObject(object.getSourceBitRate());
   }
 
   @Override

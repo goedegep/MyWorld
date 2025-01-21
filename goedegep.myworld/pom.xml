@@ -53,6 +53,10 @@
     </dependency>
     <dependency>
       <groupId>goedegep.media</groupId>
+      <artifactId>goedegep-media-mediadb-app</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>goedegep.media</groupId>
       <artifactId>goedegep-media-app-guifx</artifactId>
     </dependency>
 <!--     <dependency> -->

@@ -11,6 +11,7 @@ import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.objectcontrols.ObjectControl;
 import goedegep.jfx.objectcontrols.ObjectControlGroup;
 import goedegep.jfx.objectcontrols.ObjectControlImageFile;
+import goedegep.jfx.objectcontrols.ObjectControlStatus;
 import goedegep.jfx.objectcontrols.ObjectControlTemplate;
 import goedegep.media.app.MediaRegistry;
 import goedegep.util.file.FileUtils;
@@ -99,7 +100,7 @@ public class ObjectControlForImages extends ObjectControlTemplate<List<String>> 
       LOGGER.info("Adding new image control <=");
     });
     
-    setValue(new ArrayList<String>());
+    setObject(new ArrayList<String>());
     LOGGER.info("<=");
   }
   
@@ -127,7 +128,7 @@ public class ObjectControlForImages extends ObjectControlTemplate<List<String>> 
    */
   private void addImageControl(ObjectControlImageFileWithDelete objectControlImageFileWithDelete, String imageFileName) {
     LOGGER.info("=>");
-    objectControlImageFileWithDelete.setValue(new File(MediaRegistry.albumInfoDirectory + File.separator + imageFileName));
+    objectControlImageFileWithDelete.setObject(new File(MediaRegistry.albumInfoDirectory + File.separator + imageFileName));
     
     objectControlsGroup.addObjectControls(objectControlImageFileWithDelete);
     
@@ -174,9 +175,9 @@ public class ObjectControlForImages extends ObjectControlTemplate<List<String>> 
 
     List<String> newValue = new ArrayList<>();
     
-    Iterator<ObjectControl<? extends Object>> iterator = objectControlsGroup.iterator();
+    Iterator<ObjectControlStatus> iterator = objectControlsGroup.iterator();
     while (iterator.hasNext()) {
-      ObjectControl<? extends Object> objectControl = iterator.next();
+      ObjectControlStatus objectControl = iterator.next();
       if (objectControl instanceof ObjectControlImageFile objectControlImageFile) {
         String fileName = objectControlImageFile.getValue().getAbsolutePath();
         fileName = FileUtils.getPathRelativeToFolder(MediaRegistry.albumInfoDirectory, fileName);

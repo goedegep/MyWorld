@@ -48,6 +48,7 @@ import goedegep.vacations.model.Vacation;
 import goedegep.vacations.model.VacationElement;
 import goedegep.vacations.model.Vacations;
 import goedegep.vacations.model.VacationsPackage;
+import javafx.collections.FXCollections;
 
 /**
  * This class creates a KML file for a Vacations structure.
@@ -229,10 +230,16 @@ public class VacationsKmlConverter extends VacationToTextConverterAbstract {
     }
     
     try {
-      List<WGS84Coordinates> lineNodes = VacationsUtils.getGeoLocations(vacation);
-      if (lineNodes.size() > 1) {
-        addPath(vacationFolder, lineNodes);
+      List<List<WGS84Coordinates>> locationsConnectingLines = VacationsUtils.getLocationConnectingLines(vacation);
+      for (List<WGS84Coordinates> locationsConnectingLine: locationsConnectingLines) {
+        addPath(vacationFolder, locationsConnectingLine);
       }
+      
+      
+//      List<WGS84Coordinates> lineNodes = VacationsUtils.getGeoLocations(vacation);
+//      if (lineNodes.size() > 1) {
+//        addPath(vacationFolder, lineNodes);
+//      }
     } catch (FileNotFoundException e) {
       LOGGER.severe("File not found");
     }

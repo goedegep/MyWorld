@@ -8,6 +8,7 @@ import java.util.Objects;
 import java.util.logging.Logger;
 
 import goedegep.invandprop.app.InvoicesAndPropertiesRegistry;
+import goedegep.invandprop.app.InvoicesAndPropertiesService;
 import goedegep.invandprop.model.Expenditure;
 import goedegep.invandprop.model.InvAndPropFactory;
 import goedegep.invandprop.model.InvAndPropPackage;
@@ -70,6 +71,10 @@ public class InvoiceAndPropertyEditor extends ObjectEditorTemplate<Invoice> {
   private static final InvAndPropFactory INVOICES_AND_PROPERTIES_FACTORY = InvAndPropFactory.eINSTANCE;
   private static final InvAndPropPackage INVOICES_AND_PROPERTIES_PACKAGE = InvAndPropPackage.eINSTANCE;
   
+  /**
+   * The {@code InvoicesAndPropertiesService}.
+   */
+//  private InvoicesAndPropertiesService invoicesAndPropertiesService;
     
   /**
    * The invoices and properties to which new invoices and properties will be added.
@@ -152,8 +157,8 @@ public class InvoiceAndPropertyEditor extends ObjectEditorTemplate<Invoice> {
    * @param invoicesAndProperties The invoices and properties to which new invoices and properties will be added.
    * @return a newly created {@code InvoiceAndPropertyEditor}.
    */
-  public static InvoiceAndPropertyEditor newInstance(CustomizationFx customization, InvoicesAndProperties invoicesAndProperties) {
-    InvoiceAndPropertyEditor invoiceAndPropertyEditor = new InvoiceAndPropertyEditor(customization, invoicesAndProperties);
+  public static InvoiceAndPropertyEditor newInstance(CustomizationFx customization, InvoicesAndPropertiesService invoicesAndPropertiesService) {
+    InvoiceAndPropertyEditor invoiceAndPropertyEditor = new InvoiceAndPropertyEditor(customization, invoicesAndPropertiesService);
     invoiceAndPropertyEditor.performInitialization();
     
     return invoiceAndPropertyEditor;
@@ -165,13 +170,13 @@ public class InvoiceAndPropertyEditor extends ObjectEditorTemplate<Invoice> {
    * @param Customization the GUI customization.
    * @param invoicesAndProperties The invoices and properties to which new invoices and properties will be added.
    */
-  private InvoiceAndPropertyEditor(CustomizationFx customization, InvoicesAndProperties invoicesAndProperties) {
-    super(customization, WINDOW_TITLE);
+  private InvoiceAndPropertyEditor(CustomizationFx customization, InvoicesAndPropertiesService invoicesAndPropertiesService) {
+    super(customization, WINDOW_TITLE, invoicesAndPropertiesService::addInvoiceToInvoicesAndPropertiesDatabase);
     
     Objects.requireNonNull(customization, "argument ‘customization’ must not be null");
-    Objects.requireNonNull(invoicesAndProperties, "argument ‘invoicesAndProperties’ must not be null");
+    Objects.requireNonNull(invoicesAndPropertiesService, "argument ‘invoicesAndPropertiesService’ must not be null");
             
-    this.invoicesAndProperties = invoicesAndProperties;
+    invoicesAndProperties = invoicesAndPropertiesService.getInvoicesAndPropertiesResource().getEObject();
   }
   
   /**
@@ -350,12 +355,12 @@ public class InvoiceAndPropertyEditor extends ObjectEditorTemplate<Invoice> {
    */
   @Override
   protected void fillControlsWithDefaultValues() {
-    invoiceDateObjectControl.setValue(null);
-    invoiceCompanyObjectControl.setValue(null);
-    invoiceDescriptionObjectControl.setValue(null);
-    invoiceAmountObjectControl.setValue(null);
-    invoiceRemarksObjectControl.setValue(null);
-    invoiceDescriptionFromPropertyObjectControl.setValue(false);
+    invoiceDateObjectControl.setObject(null);
+    invoiceCompanyObjectControl.setObject(null);
+    invoiceDescriptionObjectControl.setObject(null);
+    invoiceAmountObjectControl.setObject(null);
+    invoiceRemarksObjectControl.setObject(null);
+    invoiceDescriptionFromPropertyObjectControl.setObject(false);
     
     invoiceItemPanels.clear();
   }
@@ -366,14 +371,14 @@ public class InvoiceAndPropertyEditor extends ObjectEditorTemplate<Invoice> {
    * This is the counterpart of {@code fillControlsWithDefaultValues()) for the Property.
    */
   private void fillPropertyControlsWithDefaultValues() {
-    propertyDescriptionObjectControl.setValue(null);
-    propertyBrandObjectControl.setValue(null);
-    propertyTypeObjectControl.setValue(null);
-    propertySerialNumberObjectControl.setValue(null);
-    propertyRemarksObjectControl.setValue(null);
-    propertyFromDateObjectControl.setValue(null);
-    propertyUntilDateObjectControl.setValue(null);
-    propertyArchiveObjectControl.setValue(false);
+    propertyDescriptionObjectControl.setObject(null);
+    propertyBrandObjectControl.setObject(null);
+    propertyTypeObjectControl.setObject(null);
+    propertySerialNumberObjectControl.setObject(null);
+    propertyRemarksObjectControl.setObject(null);
+    propertyFromDateObjectControl.setObject(null);
+    propertyUntilDateObjectControl.setObject(null);
+    propertyArchiveObjectControl.setObject(false);
     
     documentReferencePanels.clear();
     pictureReferencePanels.clear();
@@ -387,26 +392,26 @@ public class InvoiceAndPropertyEditor extends ObjectEditorTemplate<Invoice> {
     LOGGER.info("=>");
     
     if (object.isSetDate()) {
-      invoiceDateObjectControl.setValue(object.getDate());
+      invoiceDateObjectControl.setObject(object.getDate());
     }
     
     if (object.isSetCompany()) {
-      invoiceCompanyObjectControl.setValue(object.getCompany());
+      invoiceCompanyObjectControl.setObject(object.getCompany());
     }
     
     if (!object.isDescriptionFromProperty()) {
-      invoiceDescriptionObjectControl.setValue(object.getDescription());
+      invoiceDescriptionObjectControl.setObject(object.getDescription());
     }
     
     if (object.isSetAmount()) {
-      invoiceAmountObjectControl.setValue(object.getAmount());
+      invoiceAmountObjectControl.setObject(object.getAmount());
     }
     
     if (object.isSetRemarks()) {
-      invoiceRemarksObjectControl.setValue(object.getRemarks());
+      invoiceRemarksObjectControl.setObject(object.getRemarks());
     }
     
-    invoiceDescriptionFromPropertyObjectControl.setValue(object.isDescriptionFromProperty());
+    invoiceDescriptionFromPropertyObjectControl.setObject(object.isDescriptionFromProperty());
     
     createInvoiceItemPanelsFromInvoice();
     
@@ -419,13 +424,13 @@ public class InvoiceAndPropertyEditor extends ObjectEditorTemplate<Invoice> {
     for (InvoiceItem invoiceItem: object.getInvoiceItems()) {
       InvoiceItemPanel invoiceItemPanel = createNewInvoiceItemPanel(false);
       
-      invoiceItemPanel.getNumberOfItemsObjectInput().setValue(invoiceItem.getNumberOfItems());
+      invoiceItemPanel.getNumberOfItemsObjectInput().setObject(invoiceItem.getNumberOfItems());
       
-      invoiceItemPanel.getDescriptionObjectInput().setValue(invoiceItem.getDescription());
+      invoiceItemPanel.getDescriptionObjectInput().setObject(invoiceItem.getDescription());
 
-      invoiceItemPanel.getAmountObjectInput().setValue(invoiceItem.getAmount());
+      invoiceItemPanel.getAmountObjectInput().setObject(invoiceItem.getAmount());
       
-      invoiceItemPanel.getRemarksObjectInput().setValue(invoiceItem.getRemarks());
+      invoiceItemPanel.getRemarksObjectInput().setObject(invoiceItem.getRemarks());
     }
     
   }
@@ -632,34 +637,34 @@ public class InvoiceAndPropertyEditor extends ObjectEditorTemplate<Invoice> {
    */
   private void fillControlsFromProperty() {
     if (property.isSetDescription()) {
-      propertyDescriptionObjectControl.setValue(property.getDescription());
+      propertyDescriptionObjectControl.setObject(property.getDescription());
     }
     
     if (property.isSetBrand()) {
-      propertyBrandObjectControl.setValue(property.getBrand());
+      propertyBrandObjectControl.setObject(property.getBrand());
     }
     
     if (property.isSetType()) {
-      propertyTypeObjectControl.setValue(property.getType());
+      propertyTypeObjectControl.setObject(property.getType());
     }
     
     if (property.isSetSerialNumber()) {
-      propertySerialNumberObjectControl.setValue(property.getSerialNumber());
+      propertySerialNumberObjectControl.setObject(property.getSerialNumber());
     }
     
     if (property.isSetRemarks()) {
-      propertyRemarksObjectControl.setValue(property.getRemarks());
+      propertyRemarksObjectControl.setObject(property.getRemarks());
     }
     
     if (property.isSetFromDate()) {
-      propertyFromDateObjectControl.setValue(property.getFromDate());
+      propertyFromDateObjectControl.setObject(property.getFromDate());
     }
     
     if (property.isSetUntilDate()) {
-      propertyUntilDateObjectControl.setValue(property.getUntilDate());
+      propertyUntilDateObjectControl.setObject(property.getUntilDate());
     }
     
-    propertyArchiveObjectControl.setValue(property.isArchive());
+    propertyArchiveObjectControl.setObject(property.isArchive());
     
     createDocumentReferencePanelsFromProperty();
     createPicturesPanelsFromProperty();
@@ -680,7 +685,7 @@ public class InvoiceAndPropertyEditor extends ObjectEditorTemplate<Invoice> {
       }
       
       if (fileReference.isSetTitle()) {
-        fileReferencePanel.getTitleObjectControl().setValue(fileReference.getTitle());
+        fileReferencePanel.getTitleObjectControl().setObject(fileReference.getTitle());
       }
       
     }
@@ -701,7 +706,7 @@ public class InvoiceAndPropertyEditor extends ObjectEditorTemplate<Invoice> {
       }
       
       if (fileReference.isSetTitle()) {
-        fileReferencePanel.getTitleObjectControl().setValue(fileReference.getTitle());
+        fileReferencePanel.getTitleObjectControl().setObject(fileReference.getTitle());
       }
       
     }
@@ -1011,7 +1016,7 @@ public class InvoiceAndPropertyEditor extends ObjectEditorTemplate<Invoice> {
         }
       }
       
-      invoiceDescriptionObjectControl.setValue(buf.toString());
+      invoiceDescriptionObjectControl.setObject(buf.toString());
   }
 
   /**
@@ -1127,7 +1132,7 @@ public class InvoiceAndPropertyEditor extends ObjectEditorTemplate<Invoice> {
       amountControl.getControl().setDisable(false);
     } else {
       amountControl.getControl().setDisable(true);
-      amountControl.setValue(sumOfInvoiceItems);
+      amountControl.setObject(sumOfInvoiceItems);
     }
   }
   
@@ -1438,14 +1443,6 @@ public class InvoiceAndPropertyEditor extends ObjectEditorTemplate<Invoice> {
 
   private void createProperty() {
     property = INVOICES_AND_PROPERTIES_FACTORY.createProperty();
-  }
-  
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  protected void addObjectToCollection() {
-    invoicesAndProperties.getInvoices().getInvoices().add(object);
   }
 
 

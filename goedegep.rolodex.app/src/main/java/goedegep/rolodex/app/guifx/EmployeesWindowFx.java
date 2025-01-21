@@ -282,25 +282,25 @@ class EmployeeEditPanel {
       return;
     }
     
-    personTextField.setValue(employee.getPerson().getName());
-    institutionTextField.setValue(employee.getInstitution().getName());
+    personTextField.setObject(employee.getPerson().getName());
+    institutionTextField.setObject(employee.getInstitution().getName());
     
     List<PhoneNumber> phoneNumbers = employee.getPhoneNumbers();
     for (int i = 0; i < phoneNumberTextFields.length; i++) {
       if (phoneNumbers.size() > i) {
-        phoneNumberTextFields[i].setValue(phoneNumbers.get(i).toString());
+        phoneNumberTextFields[i].setObject(phoneNumbers.get(i).toString());
       } else {
-        phoneNumberTextFields[i].setValue(null);
+        phoneNumberTextFields[i].setObject(null);
       }
     }
   }
   
   private void clearFields() {
-    personTextField.setValue(null);
-    institutionTextField.setValue(null);
+    personTextField.setObject(null);
+    institutionTextField.setObject(null);
 
     for (int i = 0; i < phoneNumberTextFields.length; i++) {
-      phoneNumberTextFields[i].setValue(null);
+      phoneNumberTextFields[i].setObject(null);
     }
   }
   

@@ -35,7 +35,6 @@ public class ObservableEList<T> implements ObservableList<T> {
   private ListListenerHelper<T> listenerHelper;
   private ObservableEList<T> thisList;
 //  private List<T> presentationList;
-  private List<InvalidationListener> tableRefreshNeededListeners = new ArrayList<>();
   
   // For handling remove(from, to), which is not available on EList and List
   private RemoveRangeState removeRangeState = null;
@@ -216,22 +215,6 @@ public class ObservableEList<T> implements ObservableList<T> {
     }
     
   }
-
-//  private void notifyTableRefreshNeededListeners() {
-//    for (InvalidationListener listener: tableRefreshNeededListeners) {
-//      listener.invalidated(thisList);
-//    }
-//    
-//  }
-  
-  public void addTableRefreshNeededListener(InvalidationListener listener) {
-    tableRefreshNeededListeners.add(listener);
-  }
-  
-  
-//  public void setPresentationList(List<T> presentationList) {
-//    this.presentationList = presentationList;
-//  }
 
   @Override
   public int size() {

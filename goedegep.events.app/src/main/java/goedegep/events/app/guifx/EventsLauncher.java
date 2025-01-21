@@ -1,6 +1,7 @@
 package goedegep.events.app.guifx;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -10,13 +11,19 @@ import java.util.ResourceBundle;
 import java.util.logging.Logger;
 
 import goedegep.events.app.EventsRegistry;
+import goedegep.events.app.EventsService;
+import goedegep.events.model.EventInfo;
 import goedegep.events.model.Events;
 import goedegep.events.model.EventsFactory;
 import goedegep.events.model.EventsPackage;
 import goedegep.jfx.ComponentFactoryFx;
 import goedegep.jfx.CustomizationFx;
+import goedegep.jfx.DefaultCustomizationFx;
+import goedegep.jfx.editor.Editor;
 import goedegep.properties.app.guifx.PropertiesEditor;
 import goedegep.util.emf.EMFResource;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 
 /**
  * This class is used to launch the EventsWindow.
@@ -28,29 +35,96 @@ import goedegep.util.emf.EMFResource;
 public class EventsLauncher {
   private static final Logger LOGGER = Logger.getLogger(EventsLauncher.class.getName());
   private static final String NEWLINE = System.getProperty("line.separator");
+  
+  /**
+   * The GUI customization for the complete events application.
+   */
+  private static CustomizationFx customization;
+  
+  /**
+   * The {@code EventsLauncher} singleton.
+   */
+  private static EventsLauncher eventsLauncher;
+  
+  /**
+   * The {@code EventsService}.
+   */
+  private EventsService eventsService;
 
+  /**
+   * Set the GUI customization for the events application.
+   * 
+   * @param customization the GUI customization for the events application.
+   */
+  public static void setCustomization(CustomizationFx customization) {
+    EventsLauncher.customization = customization;
+  }
+  
+  /**
+   * Get the {@code EventsLauncher} singleton.
+   * 
+   * @return {@code EventsLauncher} singleton.
+   */
+  public static EventsLauncher getInstance() {
+    if (eventsLauncher == null) {
+      eventsLauncher = new EventsLauncher();
+    }
+    
+    return eventsLauncher;
+  }
 
   /**
    * Launch the EventsWindow
    * 
    * @param customization the GUI customization.
    */
-  public static void launchEventsWindow(CustomizationFx customization) {
+  public void launchEventsWindow() {
     LOGGER.info("=>");
     
     boolean eventsInitializationOk = handleEventsInitialization(customization);
     
-    if (eventsInitializationOk) {
-      new EventsWindow(customization);      
+    if (!eventsInitializationOk) {
+      return;
     }
+    
+    new EventsWindow(customization, eventsService);      
         
     LOGGER.info("<=");
   }
   
   /**
+   * Launch an {@link EventsEditor}.
+   * 
+   * @param event the {@code EventInfo} to be edited.
+   */
+  public void LaunchEventsEditor(EventInfo event) {
+    Editor<EventInfo> eventEditor = EventEditor.newInstance(customization, eventsService);
+    if (event != null) {
+      eventEditor.setObject(event);
+    }
+    eventEditor.show();
+  }
+  
+  /**
+   * Private constructor as this is a singleton.
+   */
+  private EventsLauncher() {
+    if (customization == null) {
+      customization = DefaultCustomizationFx.getInstance();
+    }
+    
+    EMFResource<Events> eventsResource = getEventsResource(customization);
+    if (eventsResource == null) {
+      return;
+    }
+    
+    eventsService = new EventsService(eventsResource);
+  }
+  
+  /**
    * If the events file doesn't exist and/or the events folder doesn't exist, ask the user whether they should be created, or whether the user wants to edit the User Settings.
    */
-  private static boolean handleEventsInitialization(CustomizationFx customization) {
+  private boolean handleEventsInitialization(CustomizationFx customization) {
     boolean returnValue = false;
     
     File eventsFile = new File(EventsRegistry.eventsFileName);
@@ -122,28 +196,51 @@ public class EventsLauncher {
 
     return returnValue;
   }
-
-  enum UserChoice {
-    SHOW_SETTINGS_EDITOR("Edit User Settings"),
-    CREATE_MISSING_FILES_AND_OR_FOLDERS("Create missing files and/or folders");
-
-    private String text;
-
-    UserChoice(String text) {
-      this.text = text;
-    }
-
-    public String toString() {
-      return text;
-    }
-  }
   
   /**
    * Show the User Properties editor.
    */
-  private static void showPropertiesEditor(CustomizationFx customization) {
+  public void showPropertiesEditor(CustomizationFx customization) {
     new PropertiesEditor("Events properties", customization, null,
         EventsRegistry.propertyDescriptorsResource, EventsRegistry.customPropertiesFile);
+  }
+  
+  /**
+   * Try to get (load) the Events resource.
+   * <p>
+   * The events database is loaded from the file specified in the registry.<br/>
+   * If the file doesn't exist, there are two options; either the file name in the registry is incorrect, or the file hasn't been created yet.
+   * Therefore a dialog is shown asking the user whether this file shall be created or not. In the latter case the user has to correct the file name in the registry.
+   * 
+   * @return true if the resource could be opened, false otherwise.
+   */
+  private EMFResource<Events> getEventsResource(CustomizationFx customization) {
+    boolean returnValue = false;
+
+    EMFResource<Events> eventsResource = new EMFResource<>(EventsPackage.eINSTANCE, () -> EventsFactory.eINSTANCE.createEvents(), ".xmi", true);
+
+    try {
+      eventsResource.load(EventsRegistry.eventsFileName);
+      returnValue = true;
+    } catch (FileNotFoundException e) {
+      Alert alert = customization.getComponentFactoryFx().createYesNoConfirmationDialog(
+          null,
+          "The file with event information (" + EventsRegistry.eventsFileName + ") doesn't exist yet.",
+          "Do you want to create this file now?" + NEWLINE +
+          "If you choose \"No\" the events application will not be started.");
+      Optional<ButtonType> response = alert.showAndWait();
+      if (response.isPresent()  &&  response.get() == ButtonType.YES) {
+        eventsResource.newEObject();
+        try {
+          eventsResource.save(EventsRegistry.eventsFileName);
+          returnValue = true;
+        } catch (IOException e1) {
+          e1.printStackTrace();
+        }
+      }
+    }
+
+    return returnValue ? eventsResource : null;
   }
 
   /**
@@ -162,4 +259,22 @@ public class EventsLauncher {
       return ResourceBundle.getBundle(bundlePath, locale, classLoader);
   }
 
+}
+
+/**
+ * Possible user choices.
+ */
+enum UserChoice {
+  SHOW_SETTINGS_EDITOR("Edit User Settings"),
+  CREATE_MISSING_FILES_AND_OR_FOLDERS("Create missing files and/or folders");
+
+  private String text;
+
+  UserChoice(String text) {
+    this.text = text;
+  }
+
+  public String toString() {
+    return text;
+  }
 }

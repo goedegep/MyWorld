@@ -6,8 +6,8 @@ import java.util.logging.Logger;
 import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.objectcontrols.ObjectControlTemplate;
 import goedegep.jfx.objectcontrols.ObjectControlTextField;
+import goedegep.media.mediadb.app.MediaDbService;
 import goedegep.media.mediadb.model.Artist;
-import goedegep.media.mediadb.model.MediaDb;
 import goedegep.media.mediadb.model.MediadbFactory;
 import goedegep.media.mediadb.model.Player;
 import goedegep.util.string.StringUtil;
@@ -45,11 +45,11 @@ public class ObjectControlForPlayer extends ObjectControlTemplate<Player> {
    * @param customization the GUI customization.
    * @param mediaDb the media database holding the artists.
    */
-  public ObjectControlForPlayer(CustomizationFx customization, MediaDb mediaDb) {
+  public ObjectControlForPlayer(CustomizationFx customization, MediaDbService mediaDbService) {
     super(customization, false);  // If there is a control for a Player, the player has to be filled in. So this control is never optional.
     LOGGER.severe("=>");
     
-    artistObjectControl = new ArtistObjectControl(customization, mediaDb);
+    artistObjectControl = new ArtistObjectControl(customization, mediaDbService);
     playerInstrumentTextField = componentFactory.createObjectControlTextField(null, null, 300, true, "A comma separated list of instruments");
     
     artistObjectControl.addListener((e) -> ociHandleNewUserInput(artistObjectControl));
@@ -116,11 +116,11 @@ public class ObjectControlForPlayer extends ObjectControlTemplate<Player> {
   @Override
   protected void ociUpdateNonSourceControls(Object source) {
     if (artistObjectControl != source  &&  getValue() != null) {
-      artistObjectControl.setValue(getValue().getArtist());
+      artistObjectControl.setObject(getValue().getArtist());
     }
     
     if (playerInstrumentTextField != source  &&  getValue() != null) {
-      playerInstrumentTextField.setValue(StringUtil.stringCollectionToCommaSeparatedStrings(getValue().getInstruments()));
+      playerInstrumentTextField.setObject(StringUtil.stringCollectionToCommaSeparatedStrings(getValue().getInstruments()));
     }
   }
 

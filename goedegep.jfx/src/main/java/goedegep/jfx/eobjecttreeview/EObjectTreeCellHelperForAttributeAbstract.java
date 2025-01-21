@@ -11,6 +11,7 @@ import org.eclipse.emf.ecore.EAttribute;
 import goedegep.appgen.Operation;
 import goedegep.jfx.DefaultCustomizationFx;
 import goedegep.jfx.browser.BrowserWindow;
+import goedegep.util.desktop.DesktopUtil;
 import goedegep.util.url.UrlUtil;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -202,17 +203,19 @@ public abstract class EObjectTreeCellHelperForAttributeAbstract extends EObjectT
     }
     
     if (object instanceof String documentReference) {
-      if (UrlUtil.isURL(documentReference)) {
-        LOGGER.severe("Going to open browser for URL: " + documentReference);
-        new BrowserWindow("Browser", DefaultCustomizationFx.getInstance(), documentReference);
-      } else {
-        File file = new File(documentReference);
-        try {
-          Desktop.getDesktop().open(file);
-        } catch (IOException e) {
-          e.printStackTrace();
-        }
-      }
+//      if (UrlUtil.isURL(documentReference)) {
+//        LOGGER.severe("Going to open browser for URL: " + documentReference);
+//        new BrowserWindow("Browser", DefaultCustomizationFx.getInstance(), documentReference);
+//      } else {
+//        File file = new File(documentReference);
+//        try {
+//          Desktop.getDesktop().open(file);
+//        } catch (IOException e) {
+//          e.printStackTrace();
+//        }
+//      }
+      
+      DesktopUtil.open(documentReference);
     }
     
     LOGGER.info("<=");

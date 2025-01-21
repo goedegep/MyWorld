@@ -4,6 +4,9 @@ module goedegep.appgenfx {
   exports goedegep.jfx.collage;
   exports goedegep.jfx.collections;
   exports goedegep.jfx.controls;
+  exports goedegep.jfx.editor;
+  exports goedegep.jfx.editor.controls;
+  exports goedegep.jfx.editor.panels;
   exports goedegep.jfx.eobjecteditor;
   exports goedegep.jfx.eobjecttable;
   exports goedegep.jfx.eobjecttable.objectstringconverters;

@@ -92,6 +92,7 @@ public class MapLayer extends Parent {
     protected void layoutChildren() {
         if (dirty) {
             layoutLayer();
+            dirty = false;
         }
     }
     /**

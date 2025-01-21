@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -233,26 +234,67 @@ public class GpxUtil {
    *         or null if this isn't available.
    */
   public static WGS84Coordinates getStartLocation(GpxType gpxType) {
-    List<TrkType> tracks = gpxType.getTrk();
-    if (tracks.isEmpty()) {
-      return null;
-    }
-    TrkType track = tracks.get(0);
-    List<TrksegType> segments = track.getTrkseg();
-    if (segments.isEmpty()) {
-      return null;
-    }
-    TrksegType segment = segments.get(0);
-    List<WptType> trackPoints = segment.getTrkpt();
-    if (trackPoints.isEmpty()) {
-      return null;
-    }
-    WptType firstTrackPoint = trackPoints.get(0);
+    WptType firstTrackPoint = getFirstWaypoint(gpxType);
     if ((firstTrackPoint.getLat() == null)  ||  (firstTrackPoint.getLon() == null)) {
       return null;
     }
     
-    return new WGS84Coordinates(firstTrackPoint.getLat().doubleValue(), firstTrackPoint.getLon().doubleValue(), firstTrackPoint.getEle().doubleValue());
+    Double elevation = null;
+    BigDecimal elevationBigDecimal = firstTrackPoint.getEle();
+    if (elevationBigDecimal != null) {
+      elevation = elevationBigDecimal.doubleValue();
+    }
+    
+    return new WGS84Coordinates(firstTrackPoint.getLat().doubleValue(), firstTrackPoint.getLon().doubleValue(), elevation);
+  }
+  
+  private static WptType getFirstWaypoint(GpxType gpxType) {
+    for (TrkType track: gpxType.getTrk()) {
+      for (TrksegType segment: track.getTrkseg()) {
+        List<WptType> trackPoints = segment.getTrkpt();
+        if (!trackPoints.isEmpty()) {
+          return trackPoints.get(0);
+        }
+      }
+    }
+    
+    return null;
+  }
+  
+  /**
+   * Get the end location of a <code>GpxType</code>.
+   *  
+   * @param gpxType a <code>GpxType</code>.
+   * @return the coordinates of the the location of the last point of the last segment of the last track of the <code>gpxType</code>,
+   *         or null if this isn't available.
+   */
+  public static WGS84Coordinates getEndLocation(GpxType gpxType) {
+    List<TrkType> tracks = gpxType.getTrk();
+    TrkType track = tracks.getLast();
+    if (track == null) {
+      return null;
+    }
+    List<TrksegType> segments = track.getTrkseg();
+    TrksegType segment = segments.getLast();
+    if (segment == null) {
+      return null;
+    }
+    List<WptType> trackPoints = segment.getTrkpt();
+    WptType lastTrackPoint = trackPoints.getLast();
+    if (lastTrackPoint == null) {
+      return null;
+    }
+    if ((lastTrackPoint.getLat() == null)  ||  (lastTrackPoint.getLon() == null)) {
+      return null;
+    }
+    
+    Double elevation = null;
+    BigDecimal elevationBigDecimal = lastTrackPoint.getEle();
+    if (elevationBigDecimal != null) {
+      elevation = elevationBigDecimal.doubleValue();
+    }
+    
+    return new WGS84Coordinates(lastTrackPoint.getLat().doubleValue(), lastTrackPoint.getLon().doubleValue(), elevation);
   }
 
   /**

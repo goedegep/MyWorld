@@ -241,6 +241,29 @@ public class EObjectTreeItemForAttributeList extends EObjectTreeItem {
         
     LOGGER.info("<=");
   }
+
+  /**
+   * Remove children from an value list item.
+   * <p>
+   * If the children haven't been built yet, nothing is done, because the right children will be built when needed.
+   * 
+   * @param first the first position in the list of values and in the child items.
+   * @param last the last position in the list of values and in the child items.
+   */
+  public void removeAttributeListChildren() {
+    LOGGER.info("=>");
+    
+    if (isFirstTimeChildren) {
+      // The children haven't been built yet, so we don't have to add anything.
+      LOGGER.severe("Children haven't been built yet, so no action");
+      return;
+    }
+    
+    ObservableList<TreeItem<Object>> children = getChildren();
+    children.clear();
+        
+    LOGGER.info("<=");
+  }
   
   /**
    *{@inheritDoc}

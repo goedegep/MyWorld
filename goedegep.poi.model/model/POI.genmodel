@@ -98,6 +98,8 @@
       <genEnumLiterals ecoreEnumLiteral="POI.ecore#//POICategoryId/ISLAND"/>
       <genEnumLiterals ecoreEnumLiteral="POI.ecore#//POICategoryId/CABLE_CAR"/>
       <genEnumLiterals ecoreEnumLiteral="POI.ecore#//POICategoryId/CAFE"/>
+      <genEnumLiterals ecoreEnumLiteral="POI.ecore#//POICategoryId/RIVER"/>
+      <genEnumLiterals ecoreEnumLiteral="POI.ecore#//POICategoryId/FOREST"/>
     </genEnums>
     <genClasses ecoreClass="POI.ecore#//POIIconResourceDescriptor">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute POI.ecore#//POIIconResourceDescriptor/category"/>

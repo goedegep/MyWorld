@@ -49,6 +49,7 @@ import goedegep.poi.model.POICategoryId;
 import goedegep.types.model.FileReference;
 import goedegep.types.model.TypesFactory;
 import goedegep.util.datetime.DateUtil;
+import goedegep.util.datetime.TimeZoneRetriever;
 import goedegep.vacations.model.GPXTrack;
 import goedegep.vacations.model.Location;
 import goedegep.vacations.model.VacationsFactory;
@@ -85,12 +86,16 @@ public class KmlFileImporter {
   
   static {
     // initialize the kmlCategoryToActivityMap
+    kmlCategoryToActivityMap.put("Boating", Activity.BOAT_TRIP);
     kmlCategoryToActivityMap.put("Cycling", Activity.CYCLING);
     kmlCategoryToActivityMap.put("Driving", Activity.CAR_RIDE);
     kmlCategoryToActivityMap.put("Flying", Activity.FLYING);
+    kmlCategoryToActivityMap.put("In a gondola lift", Activity.CABLE_CAR);
+    kmlCategoryToActivityMap.put("Motorcycling", Activity.FLYING);
     kmlCategoryToActivityMap.put("On a bus", Activity.BUS_RIDE);
     kmlCategoryToActivityMap.put("On a ferry", Activity.BOAT_TRIP);
     kmlCategoryToActivityMap.put("On a train", Activity.TRAIN_RIDE);
+    kmlCategoryToActivityMap.put("On a tram", Activity.TRAIN_RIDE);
     kmlCategoryToActivityMap.put("On the subway", Activity.TRAIN_RIDE);
     kmlCategoryToActivityMap.put("Running", Activity.RUNNING);
     kmlCategoryToActivityMap.put("Walking", Activity.WALKING);
@@ -101,6 +106,8 @@ public class KmlFileImporter {
     kmlCategoryToPOICategoryIdMap.put("Bar", POICategoryId.BAR);
     kmlCategoryToPOICategoryIdMap.put("Barbecue", POICategoryId.RESTAURANT);
     kmlCategoryToPOICategoryIdMap.put("Bergkabelbaan", POICategoryId.CABLE_CAR);
+    kmlCategoryToPOICategoryIdMap.put("Bergtop", POICategoryId.MOUNTAIN);
+    kmlCategoryToPOICategoryIdMap.put("Bierwinkel", POICategoryId.SHOP);
     kmlCategoryToPOICategoryIdMap.put("Cultureel monument", POICategoryId.MONUMENT);
     kmlCategoryToPOICategoryIdMap.put("Station bergspoorweg", POICategoryId.RAILWAY_STATION);
     kmlCategoryToPOICategoryIdMap.put("Boerenmarkt", POICategoryId.MARKET);
@@ -109,9 +116,12 @@ public class KmlFileImporter {
     kmlCategoryToPOICategoryIdMap.put("Bushalte", POICategoryId.BUS_STOP);
     kmlCategoryToPOICategoryIdMap.put("Cadeauwinkel", POICategoryId.SHOP);
     kmlCategoryToPOICategoryIdMap.put("Dierentuin", POICategoryId.ZOO);
+    kmlCategoryToPOICategoryIdMap.put("Delicatessenwinkel", POICategoryId.SHOP);
     kmlCategoryToPOICategoryIdMap.put("Eiland", POICategoryId.ISLAND);
+    kmlCategoryToPOICategoryIdMap.put("Espressobar", POICategoryId.CAFE);
     kmlCategoryToPOICategoryIdMap.put("Fastfood", POICategoryId.RESTAURANT);
     kmlCategoryToPOICategoryIdMap.put("Gebouw", POICategoryId.BUILDING);
+    kmlCategoryToPOICategoryIdMap.put("Grieks", POICategoryId.RESTAURANT);
     kmlCategoryToPOICategoryIdMap.put("Herberg", POICategoryId.GUESTHOUSE);
     kmlCategoryToPOICategoryIdMap.put("Historisch herkenningspunt", POICategoryId.DEFAULT_POI);
     kmlCategoryToPOICategoryIdMap.put("Hotel", POICategoryId.HOTEL);
@@ -120,16 +130,24 @@ public class KmlFileImporter {
     kmlCategoryToPOICategoryIdMap.put("Kantoor van lokale/provinciale overheid", POICategoryId.GOVERMENT);
     kmlCategoryToPOICategoryIdMap.put("Koffiehuis", POICategoryId.CAFE);
     kmlCategoryToPOICategoryIdMap.put("Internationaal vliegveld", POICategoryId.AIRPORT);
+    kmlCategoryToPOICategoryIdMap.put("Lodge", POICategoryId.LODGE);
     kmlCategoryToPOICategoryIdMap.put("Luchthaven", POICategoryId.AIRPORT);
     kmlCategoryToPOICategoryIdMap.put("Markt", POICategoryId.MARKET);
+    kmlCategoryToPOICategoryIdMap.put("Momo restaurant", POICategoryId.RESTAURANT);
     kmlCategoryToPOICategoryIdMap.put("Nationaal park", POICategoryId.PARK);
+    kmlCategoryToPOICategoryIdMap.put("Nepalees", POICategoryId.RESTAURANT);
     kmlCategoryToPOICategoryIdMap.put("Observatieplatform", POICategoryId.SCENIC_VIEWPOINT);
+    kmlCategoryToPOICategoryIdMap.put("Ov-station", POICategoryId.RAILWAY_STATION);
+    kmlCategoryToPOICategoryIdMap.put("Pannenkoekenrestaurant", POICategoryId.RESTAURANT);
     kmlCategoryToPOICategoryIdMap.put("Panoramisch uitzicht", POICategoryId.SCENIC_VIEWPOINT);
     kmlCategoryToPOICategoryIdMap.put("Park", POICategoryId.PARK);
     kmlCategoryToPOICategoryIdMap.put("Parkeergarage", POICategoryId.PARKING);
     kmlCategoryToPOICategoryIdMap.put("Parkeerplaats", POICategoryId.PARKING);
     kmlCategoryToPOICategoryIdMap.put("Paspoortkantoor", POICategoryId.BORDER_CROSSING);
     kmlCategoryToPOICategoryIdMap.put("Pension", POICategoryId.GUESTHOUSE);
+    kmlCategoryToPOICategoryIdMap.put("Plein", POICategoryId.SQUARE);
+    kmlCategoryToPOICategoryIdMap.put("Rivier", POICategoryId.RIVER);
+    kmlCategoryToPOICategoryIdMap.put("Restaurant", POICategoryId.RESTAURANT);
     kmlCategoryToPOICategoryIdMap.put("Restaurant", POICategoryId.RESTAURANT);
     kmlCategoryToPOICategoryIdMap.put("Snackbar", POICategoryId.RESTAURANT);
     kmlCategoryToPOICategoryIdMap.put("Skioord", POICategoryId.SKI_RESORT);
@@ -141,6 +159,7 @@ public class KmlFileImporter {
     kmlCategoryToPOICategoryIdMap.put("Vakantiecomplex", POICategoryId.HOTEL);
     kmlCategoryToPOICategoryIdMap.put("Veerbootterminal", POICategoryId.FERRY);
     kmlCategoryToPOICategoryIdMap.put("Winkelcentrum", POICategoryId.SHOPPING_CENTER);
+    kmlCategoryToPOICategoryIdMap.put("Woods", POICategoryId.FOREST);
   }
   
   /**
@@ -583,40 +602,41 @@ public class KmlFileImporter {
   }
   
   private ZoneId getZoneId(Coordinate coordinate) {
-    String lat = String.valueOf(coordinate.getLatitude());
-    String lon = String.valueOf(coordinate.getLongitude());
-
-    String urlString = "https://api.geotimezone.com/public/timezone?latitude=" + lat + "&longitude=" + lon;
-    try {
-      HttpsURLConnection connection = (HttpsURLConnection) new URL(urlString).openConnection();
-      String responseStr = new BufferedReader(new InputStreamReader(connection.getInputStream())).readLine();
-      LOGGER.info("Response: " + responseStr);
-
-      GeoTimeZoneResponse geoTimeZoneResponse = gson.fromJson(responseStr, GeoTimeZoneResponse.class);
-      LOGGER.info("geoTimeZoneResponse: " + geoTimeZoneResponse.toString());
-      
-      String ianaTimeZone = geoTimeZoneResponse.getIana_timezone();
-      if (ianaTimeZone != null) {
-        ZoneId zoneId = ZoneId.of(ianaTimeZone);
-        return zoneId;
-      } else if (geoTimeZoneResponse.getTimezone_abbreviation() != null) {
-        ZoneId zoneId = ZoneId.of(geoTimeZoneResponse.getTimezone_abbreviation());
-        LOGGER.info("ZoneId from abbreviation: " + zoneId);
-        return zoneId;
-      } else if (geoTimeZoneResponse.getOffset() != null) {
-        String offset = geoTimeZoneResponse.getOffset();
-        offset = offset.substring(3);
-        ZoneId zoneId = ZoneId.of(offset);
-        LOGGER.info("ZoneId from offset: " + zoneId);
-        return zoneId;
-      }
-      
-      
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
-    
-    return null;
+    return TimeZoneRetriever.getZoneId(coordinate.getLatitude(), coordinate.getLongitude());
+//    String lat = String.valueOf(coordinate.getLatitude());
+//    String lon = String.valueOf(coordinate.getLongitude());
+//
+//    String urlString = "https://api.geotimezone.com/public/timezone?latitude=" + lat + "&longitude=" + lon;
+//    try {
+//      HttpsURLConnection connection = (HttpsURLConnection) new URL(urlString).openConnection();
+//      String responseStr = new BufferedReader(new InputStreamReader(connection.getInputStream())).readLine();
+//      LOGGER.info("Response: " + responseStr);
+//
+//      GeoTimeZoneResponse geoTimeZoneResponse = gson.fromJson(responseStr, GeoTimeZoneResponse.class);
+//      LOGGER.info("geoTimeZoneResponse: " + geoTimeZoneResponse.toString());
+//      
+//      String ianaTimeZone = geoTimeZoneResponse.getIana_timezone();
+//      if (ianaTimeZone != null) {
+//        ZoneId zoneId = ZoneId.of(ianaTimeZone);
+//        return zoneId;
+//      } else if (geoTimeZoneResponse.getTimezone_abbreviation() != null) {
+//        ZoneId zoneId = ZoneId.of(geoTimeZoneResponse.getTimezone_abbreviation());
+//        LOGGER.info("ZoneId from abbreviation: " + zoneId);
+//        return zoneId;
+//      } else if (geoTimeZoneResponse.getOffset() != null) {
+//        String offset = geoTimeZoneResponse.getOffset();
+//        offset = offset.substring(3);
+//        ZoneId zoneId = ZoneId.of(offset);
+//        LOGGER.info("ZoneId from offset: " + zoneId);
+//        return zoneId;
+//      }
+//      
+//      
+//    } catch (IOException e) {
+//      e.printStackTrace();
+//    }
+//    
+//    return null;
   }
   
   /**
@@ -633,7 +653,9 @@ public class KmlFileImporter {
     String category = getExtendedDataValue(placemark, "Category");
     if (category != null) {
       Activity activity = kmlCategoryToActivity(category);
-      buf.append(activity.getGpxKeywords()[0]);
+      if (activity != null) {
+        buf.append(activity.getGpxKeywords()[0]);
+      }
     }
     
     if (previousPlacemark != null) {
@@ -654,6 +676,10 @@ public class KmlFileImporter {
   }
   
   private static Activity kmlCategoryToActivity(String kmlCategory) {
+    if (kmlCategory.equals("Moving")) {
+      return null;
+    }
+    
     Activity activity = kmlCategoryToActivityMap.get(kmlCategory);
     
     if (activity == null) {

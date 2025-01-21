@@ -1,5 +1,7 @@
 package goedegep.jfx.objectcontrols;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Logger;
 
 import goedegep.jfx.ComponentFactoryFx;
@@ -35,10 +37,8 @@ import javafx.scene.layout.VBox;
  * 
  * @param <T> The object type being edited
  */
-public abstract class ObjectEditPanelTemplate<T> implements ObjectEditPanel {
-  @SuppressWarnings("unused")
+public abstract class ObjectEditPanelTemplate<T> extends ObjectControlAbstract<T> implements ObjectEditPanel<T> {
   private static Logger LOGGER = Logger.getLogger(ObjectEditPanelTemplate.class.getName());
-  private static final String NEW_LINE = System.getProperty("line.separator");
   
   /**
    * The GUI customization ToDo move to ObjectEditPanelTemplate
@@ -76,6 +76,11 @@ public abstract class ObjectEditPanelTemplate<T> implements ObjectEditPanel {
    * Ignore changes
    */
   protected boolean ignoreChanges;
+  
+  /**
+   *  A list of {@code ObjectControlStatus} elements.
+   */
+  private List<ObjectControl> objectControls = new ArrayList<>();
 
   
   /**
@@ -102,13 +107,18 @@ public abstract class ObjectEditPanelTemplate<T> implements ObjectEditPanel {
     createEditPanel();
     ScrollPane scrollPane = new ScrollPane();
     scrollPane.setContent(rootPane);
-            ignoreChanges = false;
+    
+    installChangeListeners();
+    ignoreChanges = false;
+    
+    handleChanges();
   }
   
   public T getValue() {
     return object;
   }
   
+  @Override
   public final void setObject(T newValue) {
     LOGGER.info("=> " + newValue);
     
@@ -119,7 +129,7 @@ public abstract class ObjectEditPanelTemplate<T> implements ObjectEditPanel {
     referenceValue = newValue;
     
     LOGGER.info("<=");
-  }  
+  }
   
   public abstract Node getControl();
   
@@ -130,7 +140,7 @@ public abstract class ObjectEditPanelTemplate<T> implements ObjectEditPanel {
   /**
    * Create the GUI controls and add them to the {@code objectControlsGroup}
    */
-  protected abstract void createControls();
+   protected abstract void createControls();
   
   /**
    * Create the actual edit panel.
@@ -198,7 +208,51 @@ public abstract class ObjectEditPanelTemplate<T> implements ObjectEditPanel {
    * 
    * @return true if there are any changes in the controls, false otherwise.
    */
-  protected boolean changesInInput() {        
+  protected boolean changesInInput() {
     return objectControlsGroup.isAnyObjectChanged();
-  }  
+  }
+  
+  /**
+   * Install listeners for changes in the controls.
+   * <p>
+   * This implementation installs a listener on the {@code objectControlsGroup}.<br/>
+   * If a client has any other controls, this method shall be overridden.
+   */
+  protected void installChangeListeners() {
+    objectControlsGroup.addListener(observable -> handleChanges());
+  }
+
+  /**
+   * Handle changes in any of the controls
+   * <p>
+   * This default implementation only updates the action buttons.
+   */
+  protected void handleChanges() {
+    if (ignoreChanges) {
+      return;
+    }    
+  }
+  
+  
+  /**
+   * Get a text which explains why the control has no valid value.
+   * 
+   * @return a text which explains why the control has no valid value.
+   */
+  public String getErrorText() {
+    ObjectControlStatus objectControlStatus = objectControlsGroup.getFirstInvalidControl();
+    
+    if (objectControlStatus != null) {
+      return objectControlStatus.getErrorText();
+    } else {
+      return null;
+    }
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  public List<ObjectControl> getObjectControls() {
+    return objectControls;
+  }
 }

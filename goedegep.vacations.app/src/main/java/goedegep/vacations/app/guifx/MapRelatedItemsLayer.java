@@ -324,6 +324,25 @@ public class MapRelatedItemsLayer extends MapLayer implements ObjectSelector<Obj
             
     this.markDirty();
   }
+  
+  
+  /**
+   * Add lines along locations visited to the map.
+   *
+   * @param locationsPolyLines
+   */
+  public void addLocationsVisitedPolyLines(final List<List<WGS84Coordinates>> locationsPolyLines) {
+    for (List<WGS84Coordinates> polyLineCoordinates: locationsPolyLines) {
+      Polyline polyline = new Polyline();
+      polyline.setStrokeWidth(3);
+      polyline.setStroke(Color.MEDIUMSLATEBLUE);
+      getChildren().add(polyline);
+      PolylineData polylineData = new PolylineData(polyLineCoordinates, polyline);
+      locationsVisitedList.add(polylineData);
+    }
+
+    this.markDirty();
+  }
 
   /**
    * Clear the layer, i.e. remove all nodes to be shown.

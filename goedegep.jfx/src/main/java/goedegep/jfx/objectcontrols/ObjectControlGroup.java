@@ -19,7 +19,7 @@ import javafx.beans.Observable;
  * <p>
  * 
  */
-public class ObjectControlGroup implements Iterable<ObjectControl<?>>, Observable {
+public class ObjectControlGroup implements Iterable<ObjectControlStatus>, Observable {
   private static final Logger LOGGER = Logger.getLogger(ObjectControlGroup.class.getName());
   
   /*
@@ -34,7 +34,7 @@ public class ObjectControlGroup implements Iterable<ObjectControl<?>>, Observabl
   /**
    * The list of object controls.
    */
-  private List<ObjectControl<?>> objectControls = new ArrayList<>();
+  private List<ObjectControlStatus> objectControls = new ArrayList<>();
   
   /**
    * The list of object control groups.
@@ -60,7 +60,7 @@ public class ObjectControlGroup implements Iterable<ObjectControl<?>>, Observabl
   /**
    * The first control in the group that is invalid.
    */
-  private ObjectControl<?> firstInvalidObjectControl;
+  private ObjectControlStatus firstInvalidObjectControl;
   
   /**
    * An {@code InvalidationListener} to listen for changes in any of the controls in the group.
@@ -106,10 +106,10 @@ public class ObjectControlGroup implements Iterable<ObjectControl<?>>, Observabl
    * 
    * @param objectControls The {@code ObjectControl}s for which to maintain the status.
    */
-  public void addObjectControls(ObjectControl<?>... objectControls) {
+  public void addObjectControls(ObjectControlStatus... objectControls) {
     LOGGER.info("=> ");
     
-    for (ObjectControl<?> objectControl: objectControls) {
+    for (ObjectControlStatus objectControl: objectControls) {
       objectControl.addListener(invalidationListener);
       this.objectControls.add(objectControl);
     }
@@ -170,7 +170,7 @@ public class ObjectControlGroup implements Iterable<ObjectControl<?>>, Observabl
    */
   public void clear()  {
     
-    for (ObjectControl<?> objectControl: objectControls) {
+    for (ObjectControlStatus objectControl: objectControls) {
       objectControl.removeListener(invalidationListener);
     }
     
@@ -226,7 +226,7 @@ public class ObjectControlGroup implements Iterable<ObjectControl<?>>, Observabl
    * 
    * @return The first invalid control, or {@code null} if all controls are valid.
    */
-  public ObjectControl<?> getFirstInvalidControl() {
+  public ObjectControlStatus getFirstInvalidControl() {
     return firstInvalidObjectControl;
   }
   
@@ -237,7 +237,7 @@ public class ObjectControlGroup implements Iterable<ObjectControl<?>>, Observabl
    */
   private void handleChanges(Observable... observables) {
     
-    ObjectControl<?> newfirstInvalidObjectControl = determineValidity();
+    ObjectControlStatus newfirstInvalidObjectControl = determineValidity();
     boolean newIsValid = newfirstInvalidObjectControl == null;
     boolean newAnyObjectControlFilledIn = determineFilledIn();
     boolean newAnyObjectChanged = determineAnyObjectChanged();
@@ -271,12 +271,12 @@ public class ObjectControlGroup implements Iterable<ObjectControl<?>>, Observabl
    * 
    * @return the first invalid object control, or null if all controls are valid.
    */
-  private ObjectControl<?> determineValidity() {
+  private ObjectControlStatus determineValidity() {
     LOGGER.info("=>");
 
-    ObjectControl<?> invalidObjectControl = null;
+    ObjectControlStatus invalidObjectControl = null;
 
-    for (ObjectControl<?> objectControl: this) {
+    for (ObjectControlStatus objectControl: this) {
       if (!objectControl.isValid()) {
         invalidObjectControl = objectControl;
         LOGGER.info("First invalid ObjectControl: " + objectControl.toString());
@@ -298,7 +298,7 @@ public class ObjectControlGroup implements Iterable<ObjectControl<?>>, Observabl
 
     boolean isFilledIn = false;
 
-    for (ObjectControl<?> objectInput: this) {
+    for (ObjectControlStatus objectInput: this) {
       LOGGER.info("objectInput: " + objectInput.getId());
       if (objectInput.isFilledIn()) {
         isFilledIn = true;
@@ -321,7 +321,7 @@ public class ObjectControlGroup implements Iterable<ObjectControl<?>>, Observabl
 
     boolean isChanged = false;
 
-    for (ObjectControl<?> objectControl: this) {
+    for (ObjectControlStatus objectControl: this) {
       if (objectControl.isChanged()) {
         isChanged = true;
         LOGGER.info("First changed ObjectControl: " + objectControl.toString());
@@ -345,7 +345,7 @@ public class ObjectControlGroup implements Iterable<ObjectControl<?>>, Observabl
   }
 
   @Override
-  public Iterator<ObjectControl<?>> iterator() {
+  public Iterator<ObjectControlStatus> iterator() {
     return new ObjectControlGroupIterator(this);
   }
 
@@ -362,7 +362,7 @@ public class ObjectControlGroup implements Iterable<ObjectControl<?>>, Observabl
   public String toString() {
     StringBuilder buf = new StringBuilder();
 
-    for (ObjectControl<?> objectControl: objectControls) {
+    for (ObjectControlStatus objectControl: objectControls) {
       buf.append(objectControl.getId() + " - " + objectControl.getClass().getName() + "\n");
     }
 
@@ -379,14 +379,14 @@ public class ObjectControlGroup implements Iterable<ObjectControl<?>>, Observabl
   /**
    * This class provides an {@code Iterator} to iterate over all controls (so also the controls in the sub-groups.
    */
-  class ObjectControlGroupIterator implements Iterator<ObjectControl<?>> {
+  class ObjectControlGroupIterator implements Iterator<ObjectControlStatus> {
 //    @SuppressWarnings("unused")
     private static final Logger LOGGER = Logger.getLogger(ObjectControlGroupIterator.class.getName());
 
     /**
      * Iterator to iterate over the ObjectControls of the groups.
      */
-    private Iterator<ObjectControl<?>> objectControlsIterator;
+    private Iterator<ObjectControlStatus> objectControlsIterator;
 
     /**
      * Complete set of all sub groups
@@ -440,10 +440,10 @@ public class ObjectControlGroup implements Iterable<ObjectControl<?>>, Observabl
      * @InheritDoc
      */
     @Override
-    public ObjectControl<?> next() {
+    public ObjectControlStatus next() {
       hasNext();
 
-      ObjectControl<?> objectControl = objectControlsIterator.next();
+      ObjectControlStatus objectControl = objectControlsIterator.next();
       //    LOGGER.info("=> " + objectControl.toString());
 
       return objectControl;
@@ -491,7 +491,7 @@ public class ObjectControlGroup implements Iterable<ObjectControl<?>>, Observabl
     buf.append(indent).append("Group: ").append(objectControlGroup.getId()).append("\n");
     indent.increment();
     
-    for (ObjectControl<?> objectControl: objectControlGroup.objectControls) {
+    for (ObjectControlStatus objectControl: objectControlGroup.objectControls) {
       buf.append(indent).append(objectControl.getId()).append(" - ").append(objectControl.getStatusIndicator()).append("\n");
     }
     

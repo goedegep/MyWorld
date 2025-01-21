@@ -369,42 +369,42 @@ public class EditorPanel extends VBox {
       return;
     }
     
-    nameObjectControlTextField.setValue(inquiryData.getName());
-    happyObjectControlBoolean.setValue(inquiryData.isHappy());
-    birthPlaceObjectControlAutoCompleteTextField.setValue(inquiryData.getBirthPlace());
-    genderObjectControlEnumComboBox.setValue(inquiryData.getGender());
-    ageObjectControlInteger.setValue(inquiryData.getAge());
-    priceLastHolidayObjectControlCurrency.setValue(inquiryData.getPriceLastHoliday());
-    travelerTypeObjectControlEnumComboBox.setValue(inquiryData.getTravelerType());
-    lastTravelRatingObjectControlFixedPointValue.setValue(inquiryData.getLastTravelRating());
-    lastTravelDateObjectControlLocalDate.setValue(inquiryData.getLastTravelDate());
-    travelReportFileObjectControlFileSelecter.setValue(inquiryData.getTravelReportFile());
-    nextTravelDateObjectControlFlexDate.setValue(inquiryData.getNextTravelDate());
-    picturesFolderObjectControlFolderSelecter.setValue(inquiryData.getPicturesFolder());
-    imageFileObjectControlImageFile.setValue(inquiryData.getImageFile());
-    notesObjectControlMultiLineString.setValue(inquiryData.getNotes());
-    detailsObjectControlHTMLString.setValue(inquiryData.getDetails());
+    nameObjectControlTextField.setObject(inquiryData.getName());
+    happyObjectControlBoolean.setObject(inquiryData.isHappy());
+    birthPlaceObjectControlAutoCompleteTextField.setObject(inquiryData.getBirthPlace());
+    genderObjectControlEnumComboBox.setObject(inquiryData.getGender());
+    ageObjectControlInteger.setObject(inquiryData.getAge());
+    priceLastHolidayObjectControlCurrency.setObject(inquiryData.getPriceLastHoliday());
+    travelerTypeObjectControlEnumComboBox.setObject(inquiryData.getTravelerType());
+    lastTravelRatingObjectControlFixedPointValue.setObject(inquiryData.getLastTravelRating());
+    lastTravelDateObjectControlLocalDate.setObject(inquiryData.getLastTravelDate());
+    travelReportFileObjectControlFileSelecter.setObject(inquiryData.getTravelReportFile());
+    nextTravelDateObjectControlFlexDate.setObject(inquiryData.getNextTravelDate());
+    picturesFolderObjectControlFolderSelecter.setObject(inquiryData.getPicturesFolder());
+    imageFileObjectControlImageFile.setObject(inquiryData.getImageFile());
+    notesObjectControlMultiLineString.setObject(inquiryData.getNotes());
+    detailsObjectControlHTMLString.setObject(inquiryData.getDetails());
   }
   
   /**
    * Set the controls to their default values.
    */
   private void setControlsToDefaultValues() {
-    nameObjectControlTextField.setValue(null);
-    happyObjectControlBoolean.setValue(false);
-    birthPlaceObjectControlAutoCompleteTextField.setValue(null);
-    genderObjectControlEnumComboBox.setValue(null);
-    ageObjectControlInteger.setValue(null);
-    priceLastHolidayObjectControlCurrency.setValue(null);
-    travelerTypeObjectControlEnumComboBox.setValue(TravelerType.REGULAR);
-    lastTravelRatingObjectControlFixedPointValue.setValue(null);
-    lastTravelDateObjectControlLocalDate.setValue(null);
-    travelReportFileObjectControlFileSelecter.setValue(new File("C:\\Users\\Peter\\Downloads\\Gebouw 464 BIC.jpg"));
-    nextTravelDateObjectControlFlexDate.setValue(null);
-    picturesFolderObjectControlFolderSelecter.setValue(null);
-    imageFileObjectControlImageFile.setValue(null);
-    notesObjectControlMultiLineString.setValue(null);
-    detailsObjectControlHTMLString.setValue(null);
+    nameObjectControlTextField.setObject(null);
+    happyObjectControlBoolean.setObject(false);
+    birthPlaceObjectControlAutoCompleteTextField.setObject(null);
+    genderObjectControlEnumComboBox.setObject(null);
+    ageObjectControlInteger.setObject(null);
+    priceLastHolidayObjectControlCurrency.setObject(null);
+    travelerTypeObjectControlEnumComboBox.setObject(TravelerType.REGULAR);
+    lastTravelRatingObjectControlFixedPointValue.setObject(null);
+    lastTravelDateObjectControlLocalDate.setObject(null);
+    travelReportFileObjectControlFileSelecter.setObject(new File("C:\\Users\\Peter\\Downloads\\Gebouw 464 BIC.jpg"));
+    nextTravelDateObjectControlFlexDate.setObject(null);
+    picturesFolderObjectControlFolderSelecter.setObject(null);
+    imageFileObjectControlImageFile.setObject(null);
+    notesObjectControlMultiLineString.setObject(null);
+    detailsObjectControlHTMLString.setObject(null);
   }
   
   /**

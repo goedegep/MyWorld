@@ -13,6 +13,7 @@ import goedegep.appgen.TableRowOperationDescriptor;
 import goedegep.invandprop.app.ExpenditureStringConverter;
 import goedegep.invandprop.app.FileReferenceWrapper;
 import goedegep.invandprop.app.InvoicesAndPropertiesRegistry;
+import goedegep.invandprop.app.InvoicesAndPropertiesService;
 import goedegep.invandprop.app.InvoicesAndPropertiesUtil;
 import goedegep.invandprop.model.Expenditure;
 import goedegep.invandprop.model.InvAndPropPackage;
@@ -59,8 +60,8 @@ public class PropertiesWindow extends JfxStage {
   
   
   private CustomizationFx customization;
+  private InvoicesAndPropertiesService invoicesAndPropertiesService = null;
   private InvoicesAndProperties invoicesAndProperties = null;
-  private InvoicesAndPropertiesMenuWindow invoicesAndPropertiesMenuWindow;
   
   private ComponentFactoryFx componentFactory;
   
@@ -77,12 +78,12 @@ public class PropertiesWindow extends JfxStage {
    * @param customization GUI customization.
    * @param invoicesAndProperties the invoices and properties from which the properties are shown.
    */
-  public PropertiesWindow(CustomizationFx customization, InvoicesAndProperties invoicesAndProperties, InvoicesAndPropertiesMenuWindow invoicesAndPropertiesMenuWindow) {
+  public PropertiesWindow(CustomizationFx customization, InvoicesAndPropertiesService invoicesAndPropertiesService) {
     super(customization, WINDOW_TITLE);
     
     this.customization = customization;
-    this.invoicesAndProperties = invoicesAndProperties;
-    this.invoicesAndPropertiesMenuWindow = invoicesAndPropertiesMenuWindow;
+    this.invoicesAndPropertiesService = invoicesAndPropertiesService;
+    invoicesAndProperties = invoicesAndPropertiesService.getInvoicesAndPropertiesResource().getEObject();
     
     componentFactory = customization.getComponentFactoryFx();
     
@@ -224,13 +225,13 @@ public class PropertiesWindow extends JfxStage {
   private void editSelectedProperty() {
     Property property = propertiesTable.getSelectedObject();
     if (property != null) {
-      InvoiceAndPropertyEditor editor = InvoiceAndPropertyEditor.newInstance(customization, invoicesAndProperties);
+      InvoiceAndPropertyEditor editor = InvoiceAndPropertyEditor.newInstance(customization, invoicesAndPropertiesService);
       editor.setProperty(property);
     }
   }
   
   private void showInvoiceAndPropertyEditor() {
-    InvoiceAndPropertyEditor.newInstance(customization, invoicesAndProperties);
+    InvoiceAndPropertyEditor.newInstance(customization, invoicesAndPropertiesService);
   }
 
   /**
@@ -239,7 +240,7 @@ public class PropertiesWindow extends JfxStage {
    * @return the created propertiesTable.
    */
   private EObjectTable<Property> createPropertiesTable() {
-    propertiesTable = new EObjectTable<Property>(customization, INVOICES_AND_PROPERTIES_PACKAGE.getInvoice(), new PropertiesTableDescriptor(invoicesAndPropertiesMenuWindow), invoicesAndProperties.getProperties(), INVOICES_AND_PROPERTIES_PACKAGE.getProperties_Properties());
+    propertiesTable = new EObjectTable<Property>(customization, INVOICES_AND_PROPERTIES_PACKAGE.getInvoice(), new PropertiesTableDescriptor(), invoicesAndProperties.getProperties(), INVOICES_AND_PROPERTIES_PACKAGE.getProperties_Properties());
         
     return propertiesTable;
   }
@@ -278,25 +279,23 @@ class PropertiesTableDescriptor extends EObjectTableDescriptor<Property> {
     }
   };
   
-  public PropertiesTableDescriptor(InvoicesAndPropertiesMenuWindow invoicesAndPropertiesMenuWindow) {
+  public PropertiesTableDescriptor() {
     super("There are no properties to show", null, columnDescriptors, rowOperations);
     
-    expenditureColumn.setCellFactory(new ExpenditureCellFactory(invoicesAndPropertiesMenuWindow));
+    expenditureColumn.setCellFactory(new ExpenditureCellFactory());
   }
   
 }
 
 
 class ExpenditureCellFactory implements Callback<TableColumn<Property, Object>, TableCell<Property, Object>>  {
-  private InvoicesAndPropertiesMenuWindow invoicesAndPropertiesMenuWindow;
   
-  public ExpenditureCellFactory(InvoicesAndPropertiesMenuWindow invoicesAndPropertiesMenuWindow) {
-    this.invoicesAndPropertiesMenuWindow = invoicesAndPropertiesMenuWindow;
+  public ExpenditureCellFactory() {
   }
 
   @Override
   public TableCell<Property, Object> call(TableColumn<Property, Object> param) {
-    return new ExpenditureCell(invoicesAndPropertiesMenuWindow);
+    return new ExpenditureCell();
   }
   
 }
@@ -307,10 +306,10 @@ class ExpenditureCell extends TextFieldTableCell<Property, Object> {
   private ExpenditureStringConverter stringConverter = new ExpenditureStringConverter();
   private Invoice invoice;
 
-  public ExpenditureCell(InvoicesAndPropertiesMenuWindow invoicesAndPropertiesMenuWindow) {
+  public ExpenditureCell() {
     setOnMouseClicked(e -> {
       LOGGER.severe("Invoice: " + invoice.toString());
-      InvoicesWindow invoicesWindow = invoicesAndPropertiesMenuWindow.getInvoicesWindow();
+      InvoicesWindow invoicesWindow = InvoicesAndPropertiesLauncher.getInvoicesWindow();
       invoicesWindow.selectAndShow(invoice);
       invoicesWindow.show();
     });

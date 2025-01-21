@@ -284,35 +284,35 @@ class InstitutionEditPanel {
       return;
     }
     
-    institutionNameTextField.setValue(institution.getName());
+    institutionNameTextField.setObject(institution.getName());
     
     Address address = institution.getAddress();
     if (address != null) {
-      addressTextField.setValue(address.toString());
+      addressTextField.setObject(address.toString());
     }
     
     Address mailingAddress = institution.getMailingAddress();
     if (mailingAddress != null) {
-      mailingAddressTextField.setValue(mailingAddress.toString());
+      mailingAddressTextField.setObject(mailingAddress.toString());
     }
     
     List<PhoneNumber> phoneNumbers = institution.getPhoneNumbers();
     for (int i = 0; i < phoneNumberTextFields.length; i++) {
       if (phoneNumbers.size() > i) {
-        phoneNumberTextFields[i].setValue(phoneNumbers.get(i).toString());
+        phoneNumberTextFields[i].setObject(phoneNumbers.get(i).toString());
       } else {
-        phoneNumberTextFields[i].setValue(null);
+        phoneNumberTextFields[i].setObject(null);
       }
     }
   }
   
   private void clearFields() {
-    institutionNameTextField.setValue(null);
+    institutionNameTextField.setObject(null);
 
-    addressTextField.setValue(null);
-    mailingAddressTextField.setValue(null);
+    addressTextField.setObject(null);
+    mailingAddressTextField.setObject(null);
     for (int i = 0; i < phoneNumberTextFields.length; i++) {
-      phoneNumberTextFields[i].setValue(null);
+      phoneNumberTextFields[i].setObject(null);
     }
   }
   

@@ -80,6 +80,12 @@ public class VacationsFactoryImpl extends EFactoryImpl implements VacationsFacto
       return createDayTrip();
     case VacationsPackage.DOCUMENT:
       return createDocument();
+    case VacationsPackage.TRAVEL_CATEGORY:
+      return createTravelCategory();
+    case VacationsPackage.TRAVEL:
+      return createTravel();
+    case VacationsPackage.TRAVEL_CATEGORIES:
+      return createTravelCategories();
     default:
       throw new IllegalArgumentException("The class '" + eClass.getName() + "' is not a valid classifier");
     }
@@ -215,6 +221,39 @@ public class VacationsFactoryImpl extends EFactoryImpl implements VacationsFacto
   public Document createDocument() {
     DocumentImpl document = new DocumentImpl();
     return document;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public TravelCategory createTravelCategory() {
+    TravelCategoryImpl travelCategory = new TravelCategoryImpl();
+    return travelCategory;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public Travel createTravel() {
+    TravelImpl travel = new TravelImpl();
+    return travel;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public TravelCategories createTravelCategories() {
+    TravelCategoriesImpl travelCategories = new TravelCategoriesImpl();
+    return travelCategories;
   }
 
   /**

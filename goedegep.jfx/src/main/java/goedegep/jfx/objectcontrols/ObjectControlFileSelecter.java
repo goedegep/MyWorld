@@ -103,7 +103,7 @@ public class ObjectControlFileSelecter extends ObjectControlFileOrFolderSelecter
     fileChooserButton = componentFactory.createButton(fileChooserButtonText, fileChooserButtonToolTipText);
     fileChooserButton.setOnAction(actionEvent -> handleFileChooserButtonPressed());
 
-    setValue(null);
+    setObject(null);
   }
 
   /**

@@ -1,6 +1,7 @@
 package goedegep.media.mediadb.albumeditor.guifx;
 
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.logging.Logger;
 
 import goedegep.jfx.CustomizationFx;
@@ -10,6 +11,7 @@ import goedegep.jfx.objectcontrols.ObjectControlEnumComboBox;
 import goedegep.jfx.objectcontrols.ObjectControlString;
 import goedegep.jfx.objectcontrols.ObjectControlTextField;
 import goedegep.jfx.objecteditor.ObjectEditorException;
+import goedegep.media.mediadb.app.MediaDbService;
 import goedegep.media.mediadb.app.derivealbuminfo.TrackInfo;
 import goedegep.media.mediadb.model.Album;
 import goedegep.media.mediadb.model.AlbumType;
@@ -55,7 +57,12 @@ class TrackReferenceAndMyTrackInfoControls extends ObjectControlAggregationTempl
   private static final MediadbFactory MEDIA_DB_FACTORY = MediadbFactory.eINSTANCE;
   
   /**
-   * TODO is this needen?
+   * Method to add a new {@code Track}
+   */
+  private Consumer<Track> addTrackMethod;
+  
+  /**
+   * TODO is this needed?
    */
   private AlbumType albumType;
   
@@ -63,6 +70,8 @@ class TrackReferenceAndMyTrackInfoControls extends ObjectControlAggregationTempl
    * The list of TrackReferenceAndMyTrackInfoControls of which this control is part.
    */
   private List<TrackReferenceAndMyTrackInfoControls> trackReferenceControls;
+  
+  private MediaDbService mediaDbService;
   
   /**
    * The media database.
@@ -97,8 +106,12 @@ class TrackReferenceAndMyTrackInfoControls extends ObjectControlAggregationTempl
    * @param mediaDb the media database.
    * @return a newly created {@code TrackReferenceAndMyTrackInfoControls}.
    */
-  public static TrackReferenceAndMyTrackInfoControls newInstance(CustomizationFx customization, List<TrackReferenceAndMyTrackInfoControls> trackReferenceControls, AlbumType albumType, MediaDb mediaDb) {
-    TrackReferenceAndMyTrackInfoControls trackReferenceAndMyTrackInfoControls = new TrackReferenceAndMyTrackInfoControls(customization, trackReferenceControls, albumType, mediaDb);
+  public static TrackReferenceAndMyTrackInfoControls newInstance(
+      CustomizationFx customization,
+      List<TrackReferenceAndMyTrackInfoControls> trackReferenceControls,
+      AlbumType albumType,
+      MediaDbService mediaDbService) {
+    TrackReferenceAndMyTrackInfoControls trackReferenceAndMyTrackInfoControls = new TrackReferenceAndMyTrackInfoControls(customization, trackReferenceControls, albumType, mediaDbService);
     trackReferenceAndMyTrackInfoControls.performInitialization();
     
     return trackReferenceAndMyTrackInfoControls;
@@ -112,12 +125,17 @@ class TrackReferenceAndMyTrackInfoControls extends ObjectControlAggregationTempl
    * @param albumType the type of album we're editing.
    * @param mediaDb the media database
    */
-  private TrackReferenceAndMyTrackInfoControls(CustomizationFx customization, List<TrackReferenceAndMyTrackInfoControls> trackReferenceControls, AlbumType albumType, MediaDb mediaDb) {
+  private TrackReferenceAndMyTrackInfoControls(
+      CustomizationFx customization,
+      List<TrackReferenceAndMyTrackInfoControls> trackReferenceControls,
+      AlbumType albumType,
+      MediaDbService mediaDbService) {
     super(customization);
     
     this.trackReferenceControls = trackReferenceControls;
     this.albumType = albumType;
-    this.mediaDb = mediaDb;
+    this.mediaDbService = mediaDbService;
+    mediaDb = mediaDbService.getMediaDbResource().getEObject();
     
 //    setObject(trackReference);
     
@@ -209,7 +227,7 @@ class TrackReferenceAndMyTrackInfoControls extends ObjectControlAggregationTempl
     
     TrackObjectControl.setMediaDb(mediaDb);
     
-    trackObjectControl = new TrackObjectControl(customization);
+    trackObjectControl = new TrackObjectControl(customization, mediaDbService);
     trackObjectControl.setId("track reference: track");
     Node trackObjectControlNode =  trackObjectControl.getControl();
     trackObjectControlNode.setEventDispatcher(new DoubleClickEventDispatcher(trackObjectControlNode.getEventDispatcher()));
@@ -469,9 +487,9 @@ class TrackReferenceAndMyTrackInfoControls extends ObjectControlAggregationTempl
      */
     
     // Track text/reference
-    trackObjectControl.setValue(object.getTrack());
-    bonusTrackObjectControl.setValue(object.getBonusTrack());
-    iWantObjectControl.setValue(getIWant());
+    trackObjectControl.setObject(object.getTrack());
+    bonusTrackObjectControl.setObject(object.getBonusTrack());
+    iWantObjectControl.setObject(getIWant());
     
     /*
      * MyTrackInfo
@@ -482,8 +500,8 @@ class TrackReferenceAndMyTrackInfoControls extends ObjectControlAggregationTempl
     }
     
     if (myTrackInfo != null) {
-      iWantObjectControl.setValue(myTrackInfo.getIWant());
-      iHaveOnObjectControl.setValue(myTrackInfo.getIHaveOn());
+      iWantObjectControl.setObject(myTrackInfo.getIWant());
+      iHaveOnObjectControl.setObject(myTrackInfo.getIHaveOn());
     }
     
     // Identification of the disc of the track reference of the Compilation Track Reference (not Yet editable)
@@ -884,7 +902,15 @@ class TrackReferenceAndMyTrackInfoControls extends ObjectControlAggregationTempl
     EmfUtil.setFeatureValue(object, MEDIA_DB_PACKAGE.getTrackReference_Track(), trackObjectControl.getValue());
     EmfUtil.setFeatureValue(object, MEDIA_DB_PACKAGE.getTrackReference_BonusTrack(), bonusTrackObjectControl.getValue());
   }
-
+  
+  public String getValueAsFormattedText() {
+    if (trackObjectControl != null  &&  trackObjectControl.getValue() != null) {
+      return trackObjectControl.getValue().getTitle();
+    } else {
+      return null;
+    }
+  }
+  
 //  @Override
 //  public String getValueAsFormattedText() {
 //    // TODO Auto-generated method stub

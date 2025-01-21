@@ -143,11 +143,11 @@ public class InvestmentInsuranceWindow extends JfxStage {
   }
 
   private void clearControls() {
-    startingDateTextField.setValue(null);
-    insuredBenefitOnDeathTextField.setValue(null);
-    insuredBenefitOnDeathInEurosTextField.setValue(null);
-    premiumTextField.setValue(null);
-    premiumInEurosTextField.setValue(null);
+    startingDateTextField.setObject(null);
+    insuredBenefitOnDeathTextField.setObject(null);
+    insuredBenefitOnDeathInEurosTextField.setObject(null);
+    premiumTextField.setObject(null);
+    premiumInEurosTextField.setObject(null);
     policyHolderTextField.setText(null);
   }
 
@@ -158,19 +158,19 @@ public class InvestmentInsuranceWindow extends JfxStage {
 
     // Starting date
     if (investmentInsurance.isSetStartingDate()) {
-      startingDateTextField.setValue(investmentInsurance.getStartingDate());
+      startingDateTextField.setObject(investmentInsurance.getStartingDate());
     }
 
     // Insured benefit on death
     if (investmentInsurance.isSetInsuredBenefitOnDeath()) {
-      insuredBenefitOnDeathTextField.setValue(investmentInsurance.getInsuredBenefitOnDeath());
-      insuredBenefitOnDeathInEurosTextField.setValue(investmentInsurance.getInsuredBenefitOnDeath().certifyCurrency(PgCurrency.EURO));
+      insuredBenefitOnDeathTextField.setObject(investmentInsurance.getInsuredBenefitOnDeath());
+      insuredBenefitOnDeathInEurosTextField.setObject(investmentInsurance.getInsuredBenefitOnDeath().certifyCurrency(PgCurrency.EURO));
     }
 
     // Premium
     if (investmentInsurance.isSetPremium()) {
-      premiumTextField.setValue(investmentInsurance.getPremium());
-      premiumInEurosTextField.setValue(investmentInsurance.getPremium().certifyCurrency(PgCurrency.EURO));
+      premiumTextField.setObject(investmentInsurance.getPremium());
+      premiumInEurosTextField.setObject(investmentInsurance.getPremium().certifyCurrency(PgCurrency.EURO));
     }
 
     // Policyholder

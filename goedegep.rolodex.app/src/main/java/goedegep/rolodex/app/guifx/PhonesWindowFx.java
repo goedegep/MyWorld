@@ -275,13 +275,13 @@ class PhoneEditPanel {
       return;
     }
     
-    phoneDescriptionTextField.setValue(phone.getDescription());
-    phoneTypeTextField.setValue(phone.getPhoneType());
+    phoneDescriptionTextField.setObject(phone.getDescription());
+    phoneTypeTextField.setObject(phone.getPhoneType());
   }
   
   private void clearFields() {
-    phoneDescriptionTextField.setValue(null);
-    phoneTypeTextField.setValue(null);
+    phoneDescriptionTextField.setObject(null);
+    phoneTypeTextField.setObject(null);
   }
   
   /**
@@ -491,15 +491,15 @@ class PhoneAddressBookEntryEditPanel {
       return;
     }
     
-    entryNameTextField.setValue(phoneAddressBookEntry.getEntryName());
-    phoneAddressBookEntryTypeField.setValue(phoneAddressBookEntry.getEntryType());
-    phoneNumberTextField.setValue(phoneAddressBookEntry.getPhoneNumber().toString());
+    entryNameTextField.setObject(phoneAddressBookEntry.getEntryName());
+    phoneAddressBookEntryTypeField.setObject(phoneAddressBookEntry.getEntryType());
+    phoneNumberTextField.setObject(phoneAddressBookEntry.getPhoneNumber().toString());
   }
   
   private void clearFields() {
-    entryNameTextField.setValue(null);
-    phoneAddressBookEntryTypeField.setValue(null);
-    phoneNumberTextField.setValue(null);
+    entryNameTextField.setObject(null);
+    phoneAddressBookEntryTypeField.setObject(null);
+    phoneNumberTextField.setObject(null);
   }
   
   /**

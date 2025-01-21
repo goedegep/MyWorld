@@ -6,7 +6,6 @@ For now: only let original track reference refer to itself.
 
 h2. ToDo list
 
-* Disable opening browser as it crashes the application !!!
 * Remove PgUtilities.equals(), replace by Objects.equals()
 * ObjectControl: look for better handling of error feedback, use ObjectControlImageFile for reference
 * Continue cleanup of ObjectControlImageFile
@@ -30,9 +29,7 @@ If this is complete, save the database and remove the code and then obsolete fil
 * ObjectControl should implement ObjectSelector
 * goedegep.jfx.controls.FileReferenceDialog is not used
 * DnD of a photo on an element doesn't work, it only works on the list
-* Import information from Google tijdlijn into vacation.
-On Google tijdlijn export each day to kml. Import the kml. Show each element and ask whether a location or path has to be created.
-* Currently there seems to be no difference between jfx stringconvertes and objectstringconverters, so remove objectstringconverters
+* Currently there seems to be no difference between jfx stringconverters and objectstringconverters, so remove objectstringconverters
 * See if EObjectTree and/or the descriptors can be replaced by Builder pattern
 * Remove/change getText() implementations in cell helpers
 * Use builder pattern for each descriptor for an EObjectTreeView
@@ -122,5 +119,6 @@ h2. credits
 * Lake icon by Icons made by <a href="https://www.flaticon.com/authors/freepik" title="Freepik">Freepik</a> from <a href="https://www.flaticon.com/" title="Flaticon"> www.flaticon.com</a>
 * Canyon icon by Icons made by <a href="https://www.flaticon.com/authors/vitaly-gorbachev" title="Vitaly Gorbachev">Vitaly Gorbachev</a> from <a href="https://www.flaticon.com/" title="Flaticon"> www.flaticon.com</a>
 
-h2. Google timeline
-Handled: 23-11-2022 - 15-10-2024
+h2. Handling data
+Google timeline - Handled: begin - 04-01-2025
+Vakanties (met foto's): 25-07-2024 - 07-01-2025

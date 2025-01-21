@@ -451,25 +451,25 @@ class PersonEditPanel {
       return;
     }
     
-    firstNameTextField.setValue(person.getFirstname());
-    infixTextField.setValue(person.getInfix());
-    surNameTextField.setValue(person.getSurname());
-    initialsTextField.setValue(person.getInitials());
+    firstNameTextField.setObject(person.getFirstname());
+    infixTextField.setObject(person.getInfix());
+    surNameTextField.setObject(person.getSurname());
+    initialsTextField.setObject(person.getInitials());
     genderComboBox.setValue(person.getGender());
-    birthdayDayTextField.setValue(null);
-    birthdayMonthTextField.setValue(null);
-    birthdayYearTextField.setValue(null);
+    birthdayDayTextField.setObject(null);
+    birthdayMonthTextField.setObject(null);
+    birthdayYearTextField.setObject(null);
     Birthday birthday = person.getBirthday();
     if (birthday != null) {
-      birthdayDayTextField.setValue(birthday.getDay());
-      birthdayMonthTextField.setValue(birthday.getMonth());
-      birthdayYearTextField.setValue(birthday.getYear());
+      birthdayDayTextField.setObject(birthday.getDay());
+      birthdayMonthTextField.setObject(birthday.getMonth());
+      birthdayYearTextField.setObject(birthday.getYear());
     }
     
-    addressTextField.setValue(null);
+    addressTextField.setObject(null);
     Address address = person.getAddress();
     if (address != null) {
-      addressTextField.setValue(address.toString());
+      addressTextField.setObject(address.toString());
     }
     
     Family personsFamily = person.getFamily();
@@ -484,31 +484,31 @@ class PersonEditPanel {
     List<PhoneNumber> phoneNumbers = person.getPhoneNumbers();
     for (int i = 0; i < phoneNumberTextFields.length; i++) {
       if (phoneNumbers.size() > i) {
-        phoneNumberTextFields[i].setValue(phoneNumbers.get(i).toString());
+        phoneNumberTextFields[i].setObject(phoneNumbers.get(i).toString());
       } else {
-        phoneNumberTextFields[i].setValue(null);
+        phoneNumberTextFields[i].setObject(null);
       }
     }
   }
   
   private void clearFields() {
-    firstNameTextField.setValue(null);
-    infixTextField.setValue(null);
-    surNameTextField.setValue(null);
-    initialsTextField.setValue(null);
+    firstNameTextField.setObject(null);
+    infixTextField.setObject(null);
+    surNameTextField.setObject(null);
+    initialsTextField.setObject(null);
     genderComboBox.setValue(null);
-    birthdayDayTextField.setValue(null);
-    birthdayMonthTextField.setValue(null);
-    birthdayYearTextField.setValue(null);
-    birthdayDayTextField.setValue(null);
-    birthdayMonthTextField.setValue(null);
-    birthdayYearTextField.setValue(null);
+    birthdayDayTextField.setObject(null);
+    birthdayMonthTextField.setObject(null);
+    birthdayYearTextField.setObject(null);
+    birthdayDayTextField.setObject(null);
+    birthdayMonthTextField.setObject(null);
+    birthdayYearTextField.setObject(null);
 
-    addressTextField.setValue(null);
+    addressTextField.setObject(null);
     addressForFamilyAdviceLabel.setText(null);
-    moveToAddress.setValue(false);
+    moveToAddress.setObject(false);
     for (int i = 0; i < phoneNumberTextFields.length; i++) {
-      phoneNumberTextFields[i].setValue(null);
+      phoneNumberTextFields[i].setObject(null);
     }
   }
   

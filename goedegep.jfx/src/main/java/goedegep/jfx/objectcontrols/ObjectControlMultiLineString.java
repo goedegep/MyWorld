@@ -23,7 +23,7 @@ public class ObjectControlMultiLineString extends ObjectControlTemplate<String> 
     textArea = customization.getComponentFactoryFx().createTextArea();
     textArea.textProperty().addListener((observableValue, oldValue, newValue) -> ociHandleNewUserInput(textArea));
 
-    setValue(text);
+    setObject(text);
   }
   
   /**

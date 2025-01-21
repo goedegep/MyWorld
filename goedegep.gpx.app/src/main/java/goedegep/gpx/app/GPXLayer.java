@@ -55,7 +55,7 @@ import javafx.scene.text.TextFlow;
 import javafx.util.Duration;
 
 /**
- * This class is a {@link MapLayer} to show a GPX track (represented by a {@link GpxType}) on a map.
+ * This class is a {@link MapLayer} to show a GPX tracks (represented by a {@link GpxType}) on a map.
  * <p>
  * The following is shown on the map:
  * <ul>
@@ -136,7 +136,7 @@ public class GPXLayer extends MapLayer {
    * 
    * @param title the (optional) title of the file
    * @param fileName the file name of the GPX file of the {@code gpxType}.
-   * @param gpxType the GPX data.
+   * @param gpxType the GPX data (may not be null).
    * @return a bounding box surrounding all elements of the track.
    */
   public WGS84BoundingBox addGpx(final String title, final String fileName, final GpxType gpxType) {
@@ -164,7 +164,7 @@ public class GPXLayer extends MapLayer {
 
     });
 
-    this.markDirty();
+    markDirty();
     return fileBoundingBox;
   }
   
@@ -176,7 +176,7 @@ public class GPXLayer extends MapLayer {
   public void removeGpx(final GpxType gpxType) {
     gpxType.eAdapters().clear();
     gpxFileDataMap.remove(gpxType);
-    this.markDirty();
+    markDirty();
   }
   
   /**
@@ -202,7 +202,7 @@ public class GPXLayer extends MapLayer {
     gpxFileData = createGpxData(gpxFileData.title(), gpxFileData.fileName(), gpxType);
     gpxFileDataMap.put(gpxType, gpxFileData);
 
-    this.markDirty();
+    markDirty();
     return fileBoundingBox;
   }
 
@@ -259,6 +259,8 @@ public class GPXLayer extends MapLayer {
             final Tooltip tooltip = new Tooltip(createTooltipText(title, fileName, gpxWaypoint));
             tooltip.setShowDuration(Duration.seconds(10));
             Tooltip.install(icon, tooltip);
+            
+            getChildren().add(icon);
 
             waypointDataList.add(new WaypointData(gpxWaypoint, icon));
 
@@ -326,7 +328,7 @@ public class GPXLayer extends MapLayer {
    */
   private void removeWaypoints(ObservableList<WaypointData> waypointDataList) {
     for (WaypointData waypointData: waypointDataList) {
-      this.getChildren().remove(waypointData.node());
+      getChildren().remove(waypointData.node());
     }
   }
 
@@ -370,7 +372,7 @@ public class GPXLayer extends MapLayer {
             tooltip.setShowDuration(Duration.seconds(10));
             Tooltip.install(icon, tooltip);
             
-            this.getChildren().add(icon);
+            getChildren().add(icon);
 
             routePointsDataList.add(new WaypointData(gpxWaypoint, icon));
 
@@ -403,7 +405,7 @@ public class GPXLayer extends MapLayer {
   private void removeRoute(RouteData routeData) {
     ObservableList<WaypointData> routePointsDataList = routeData.routePointsDataList();
     for (WaypointData waypointData: routePointsDataList) {
-      this.getChildren().remove(waypointData.node());
+      getChildren().remove(waypointData.node());
     }
   }
 
@@ -609,7 +611,7 @@ public class GPXLayer extends MapLayer {
   public void setSelectedGPXWaypoints(final List<WptType> gpxWaypoints) {
       selectedGPXWaypoints.clear();
       selectedGPXWaypoints.addAll(gpxWaypoints);
-      this.markDirty();
+      markDirty();
   }
 
   /**
@@ -620,6 +622,7 @@ public class GPXLayer extends MapLayer {
    */
   @Override
   protected void layoutLayer() {
+    
     for (GpxFileData gpxFileData: gpxFileDataMap.values()) {
       GpxData gpxData = gpxFileData.gpx();
       
@@ -637,8 +640,8 @@ public class GPXLayer extends MapLayer {
       }
 
       // Waypoints
-      getChildren().removeAll(gpxData.currentWaypointsOnMap());
-      gpxData.currentWaypointsOnMap().clear();
+//      getChildren().removeAll(gpxData.currentWaypointsOnMap());
+//      gpxData.currentWaypointsOnMap().clear();
       
       if (drawGPXData) {
         for (WaypointData waypointData : gpxData.waypointsDataList()) {
@@ -649,27 +652,30 @@ public class GPXLayer extends MapLayer {
           icon.setTranslateX(mapPoint.getX());
           icon.setTranslateY(mapPoint.getY());
 
-          getChildren().add(icon);
+//          getChildren().add(icon);
           gpxData.currentWaypointsOnMap().add(icon);
         }
       }
       
       // Routes
       for (RouteData routeData: gpxData.routeDataList()) {
+        for (Object o: routeData.currentWaypointsOnMap()) {
+          LOGGER.severe("Wpt on map: " + o);
+        }
         getChildren().removeAll(routeData.currentWaypointsOnMap());
         routeData.currentWaypointsOnMap().clear();
 
         if (drawGPXData) {
           for (WaypointData waypointData : routeData.routePointsDataList()) {
             final WptType point = waypointData.waypoint();
-            final Node icon = waypointData.node();
+            Node icon = waypointData.node();
 
             final Point2D mapPoint = baseMap.getMapPoint(point.getLat().doubleValue(), point.getLon().doubleValue());
             icon.setTranslateX(mapPoint.getX());
             icon.setTranslateY(mapPoint.getY());
-
-            getChildren().add(icon);
-            routeData.currentWaypointsOnMap().add(icon);
+            
+//            getChildren().add(icon);
+//            routeData.currentWaypointsOnMap().add(icon);
           }
         }
       }

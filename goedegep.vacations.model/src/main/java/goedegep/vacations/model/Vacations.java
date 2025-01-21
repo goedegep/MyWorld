@@ -20,6 +20,7 @@ import org.eclipse.emf.ecore.EObject;
  *   <li>{@link goedegep.vacations.model.Vacations#getHome <em>Home</em>}</li>
  *   <li>{@link goedegep.vacations.model.Vacations#getTips <em>Tips</em>}</li>
  *   <li>{@link goedegep.vacations.model.Vacations#getDayTrips <em>Day Trips</em>}</li>
+ *   <li>{@link goedegep.vacations.model.Vacations#getTravelcategories <em>Travelcategories</em>}</li>
  * </ul>
  *
  * @see goedegep.vacations.model.VacationsPackage#getVacations()
@@ -152,6 +153,18 @@ public interface Vacations extends EObject {
    * @generated
    */
   EList<DayTrip> getDayTrips();
+
+  /**
+   * Returns the value of the '<em><b>Travelcategories</b></em>' containment reference list.
+   * The list contents are of type {@link goedegep.vacations.model.TravelCategories}.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the value of the '<em>Travelcategories</em>' containment reference list.
+   * @see goedegep.vacations.model.VacationsPackage#getVacations_Travelcategories()
+   * @model containment="true"
+   * @generated
+   */
+  EList<TravelCategories> getTravelcategories();
 
   /**
    * <!-- begin-user-doc -->

@@ -27,7 +27,7 @@ import javafx.scene.control.TextField;
  * on the {@code FileChooser} or {@code FolderChooser} (by calling {@code setInitialDirectory}).
  * 
  * <h4>{@link prefix}</h4>
- * You can set a prefix, which is a base path for the folder (in which the file is located). * 
+ * You can set a prefix, which is a base path for the folder (in which the file is located).
  * 
  */
 public abstract class ObjectControlFileOrFolderSelecterAbstract extends ObjectControlTemplate<File> {
@@ -203,11 +203,11 @@ public abstract class ObjectControlFileOrFolderSelecterAbstract extends ObjectCo
   
   public void setPathNameRelativeToPrefix(String pathName) {
     if (pathName == null) {
-      setValue(null);
+      setObject(null);
     } else {
       pathName = addPrefixIfSet(pathName);
       File file = new File(pathName);
-      setValue(file);
+      setObject(file);
     }
   }
   

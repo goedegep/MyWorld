@@ -12,6 +12,7 @@ import goedegep.util.PgUtilities;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
@@ -22,6 +23,7 @@ import javafx.scene.input.DragEvent;
 import javafx.scene.input.Dragboard;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.TransferMode;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
 /**
@@ -136,14 +138,14 @@ public class FileReferencesEditPanel extends ObjectEditPanelTemplate<List<FileRe
           } else if (c.wasUpdated()) {
             LOGGER.severe("Update not handled!!");
           } else {
-//            for (FileReferenceEditPanel documentReferencePanel: c.getRemoved()) {
-//              objectControlsGroup.removeObjectControlGroup(documentReferencePanel.getObjectControlsGroup());
-//              handleChanges();
-//            }
-//            for (FileReferenceEditPanel documentReferencePanel: c.getAddedSubList()) {
-//              objectControlsGroup.addObjectControlGroup(documentReferencePanel.getObjectControlsGroup());
-//              handleChanges();
-//            }
+            for (FileReferenceEditPanel documentReferencePanel: c.getRemoved()) {
+              objectControlsGroup.removeObjectControlGroup(documentReferencePanel.getObjectControlsGroup());
+              handleChanges();
+            }
+            for (FileReferenceEditPanel documentReferencePanel: c.getAddedSubList()) {
+              objectControlsGroup.addObjectControlGroup(documentReferencePanel.getObjectControlsGroup());
+              handleChanges();
+            }
           }
         }
         
@@ -163,11 +165,51 @@ public class FileReferencesEditPanel extends ObjectEditPanelTemplate<List<FileRe
 //    super.handleChanges();
   }
   
+  /**
+   * Redraw the file references panel ({@link fileReferencesVBox}).
+   */
   private void updateAttachmentPanel() {
     fileReferencesVBox.getChildren().clear();
     for (FileReferenceEditPanel fileReferenceEditPanel: fileReferencePanels) {
-      fileReferencesVBox.getChildren().add(fileReferenceEditPanel.getControl());
+      HBox hBox = componentFactory.createHBox(12.0);
+      Button deleteButton = componentFactory.createButton("Delete", "Remove this item");
+      deleteButton.setOnAction((e) -> deleteFileReference(e));
+      hBox.getChildren().addAll(fileReferenceEditPanel.getControl(), deleteButton);
+      fileReferencesVBox.getChildren().add(hBox);
     }
+  }
+  
+  /**
+   * Handle the action of one of the delete buttons.
+   * 
+   * @param actionEvent the {@code ActionEvent}.
+   */
+  private void deleteFileReference(ActionEvent actionEvent) {
+    /*
+     * The source of the actionEvent is a delete button.
+     * Find the HBox with this button, then the first node in this HBox is the control of one of the fileReferencePanels.
+     */
+    Object eventSource = actionEvent.getSource();
+    
+    for (Node node: fileReferencesVBox.getChildren()) {
+      if (node instanceof HBox hBox) {
+        Node lastNode = hBox.getChildren().getLast();
+        if (lastNode instanceof Button deleteButton) {
+          if (deleteButton == eventSource) {
+            Node firstNode = hBox.getChildren().getFirst();
+            FileReferenceEditPanel fileReferenceEditPanelToDelete = null;
+            for (FileReferenceEditPanel fileReferenceEditPanel: fileReferencePanels) {
+              if (fileReferenceEditPanel.getControl() == firstNode) {
+                fileReferenceEditPanelToDelete = fileReferenceEditPanel;
+                break;
+              }
+            }
+            fileReferencePanels.remove(fileReferenceEditPanelToDelete);
+            break;
+          }
+        }
+      }
+    }    
   }
 
   /**

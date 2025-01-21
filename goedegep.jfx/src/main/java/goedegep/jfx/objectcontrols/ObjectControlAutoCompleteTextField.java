@@ -59,7 +59,7 @@ public class ObjectControlAutoCompleteTextField<T> extends ObjectControlTemplate
     
     autoCompleteTextField.focusedProperty().addListener(this::handleFocusChanged);
     
-    setValue(initialValue);
+    setObject(initialValue);
 //    String initialText = objectToString(initialValue);
 //    if (initialText == null) {
 //      initialText = "";

@@ -4,42 +4,65 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
-import goedegep.jfx.ComponentFactoryFx;
 import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.JfxStage;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
 
+/**
+ * This class is a window displaying the results of checking a vacation.
+ */
 public class VacationCheckResultWindow extends JfxStage {
-  
-  /**
-   * GUI customization
-   */
-  private CustomizationFx customization;
-  
-  private ComponentFactoryFx componentFactory;
-  
+    
   private VBox mainPanel = null;
 
   public VacationCheckResultWindow(VacationCheckResultWindowBuilder builder) {
     super(builder.customization, "Results for checking vacation " + builder.vacationTitle);
-    
-    customization = builder.customization;
-    componentFactory = customization.getComponentFactoryFx();
 
     createGUI();
     
-    if (builder.fileReferencesNotSet != null) {
+    if (builder.fileReferencesNotSet != null  &&  !builder.fileReferencesNotSet.isEmpty()) {
       addReferencesNotSetPanel(builder.fileReferencesNotSet);
+    } else {
+      VBox vBox = componentFactory.createVBox(6.0, 6.0);
+      Label label = componentFactory.createStrongLabel("✓ All reference have their 'file' attribute set.");
+      vBox.getChildren().add(label);
+      mainPanel.getChildren().add(vBox);
     }
     
-    if (builder.nonExistingReferences != null) {
+    if (builder.nonExistingReferences != null  &&  !builder.nonExistingReferences.isEmpty()) {
       addNonExistingReferencesPanel(builder.nonExistingReferences);
+    } else {
+      VBox vBox = componentFactory.createVBox(6.0, 6.0);
+      Label label = componentFactory.createStrongLabel("✓ All files referred to exist.");
+      vBox.getChildren().add(label);
+      mainPanel.getChildren().add(vBox);
     }
     
-    if (builder.filesNotReferredTo != null) {
+    if (builder.filesNotReferredTo != null  &&  !builder.filesNotReferredTo.isEmpty()) {
       addFilesNotReferredToPanel(builder.filesNotReferredTo);
+    } else {
+      VBox vBox = componentFactory.createVBox(6.0, 6.0);
+      Label label = componentFactory.createStrongLabel("✓ The vacation folder doesn't contain files which aren't referred to.");
+      vBox.getChildren().add(label);
+      mainPanel.getChildren().add(vBox);
+    }
+    
+    if (builder.photosFolderProblem != null) {
+      VBox vBox = componentFactory.createVBox(6.0, 6.0);
+      Label label = componentFactory.createStrongLabel("! There is a problem with the photos folder: " + builder.photosFolderProblem);
+      vBox.getChildren().add(label);
+      mainPanel.getChildren().add(vBox);
+    }
+    
+    if (builder.photosNotReferredTo != null  &&  !builder.photosNotReferredTo.isEmpty()) {
+      addPhotosNotReferredToPanel(builder.photosNotReferredTo);
+    } else {
+      VBox vBox = componentFactory.createVBox(6.0, 6.0);
+      Label label = componentFactory.createStrongLabel("✓ There are no photos which aren't referred to.");
+      vBox.getChildren().add(label);
+      mainPanel.getChildren().add(vBox);
     }
     
     show();
@@ -56,7 +79,7 @@ public class VacationCheckResultWindow extends JfxStage {
     
     Label label;
     
-    label = componentFactory.createStrongLabel("References for which the 'file' attribute isn't set:");
+    label = componentFactory.createStrongLabel("! References for which the 'file' attribute isn't set:");
     vBox.getChildren().add(label);
     
     for (String fileReference: fileReferencesNotSet) {
@@ -76,7 +99,7 @@ public class VacationCheckResultWindow extends JfxStage {
     vBox.getChildren().add(label);
     
     for (String fileReference: nonExistingReferences) {
-      label = componentFactory.createLabel("FileReference to non existing file: " + fileReference);
+      label = componentFactory.createLabel("! FileReference to non existing file: " + fileReference);
       vBox.getChildren().add(label);
     }
     
@@ -88,10 +111,26 @@ public class VacationCheckResultWindow extends JfxStage {
     
     Label label;
     
-    label = componentFactory.createStrongLabel("Files not referred to:");
+    label = componentFactory.createStrongLabel("! Files not referred to:");
     vBox.getChildren().add(label);
     
     for (String fileName: filesNotReferredTo) {
+      label = componentFactory.createLabel(fileName);
+      vBox.getChildren().add(label);
+    }
+    
+    mainPanel.getChildren().add(vBox);
+  }
+
+  private void addPhotosNotReferredToPanel(List<String> photosNotReferredTo) {
+    VBox vBox = componentFactory.createVBox(6.0, 6.0);
+    
+    Label label;
+    
+    label = componentFactory.createStrongLabel("! Photos not referred to:");
+    vBox.getChildren().add(label);
+    
+    for (String fileName: photosNotReferredTo) {
       label = componentFactory.createLabel(fileName);
       vBox.getChildren().add(label);
     }
@@ -135,6 +174,16 @@ public class VacationCheckResultWindow extends JfxStage {
      */
     private Set<String> filesNotReferredTo = null;
     
+    /**
+     * Problem with the photos folder (name)
+     */
+    private String photosFolderProblem = null;
+    
+    /**
+     * Photos in the vacation photo folder which aren't referred to by the vacation.
+     */
+    private List<String> photosNotReferredTo = null;
+    
     
     /**
      * Constructor providing required parameters.
@@ -174,7 +223,21 @@ public class VacationCheckResultWindow extends JfxStage {
      */
     public void setFilesNotReferredTo(Set<String> filesNotReferredTo) {
       this.filesNotReferredTo = filesNotReferredTo;
-    }    
+    }
+
+    public void setPhotosFolderProblem(String photosFolderProblem) {
+      this.photosFolderProblem = photosFolderProblem;
+      
+    }
+    
+    /**
+     * Set the list of photos in the vacation photo folder which aren't referred to by the vacation.
+     * 
+     * @param photosNotReferredTo the list of photos in the vacation photo folder which aren't referred to by the vacation
+     */
+    public void setPhotosNotReferredTo(List<String> photosNotReferredTo) {
+      this.photosNotReferredTo = photosNotReferredTo;      
+    }
     
     /**
      * Construct the {@code VacationCheckResultWindow}.

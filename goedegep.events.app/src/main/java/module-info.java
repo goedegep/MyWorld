@@ -14,6 +14,8 @@ module goedegep.events.app {
   requires javafx.base;
   requires javafx.controls;
   requires javafx.graphics;
+  requires openhtmltopdf.core;
+  requires openhtmltopdf.pdfbox;
   requires org.eclipse.emf.common;
   requires org.eclipse.emf.ecore;
   requires org.commonmark;

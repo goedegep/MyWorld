@@ -311,7 +311,7 @@ public class FileReferenceEditPanel extends ObjectEditPanelTemplate<FileReferenc
     
     titledPane = new TitledPane();
         
-    installChangeListeners();
+//    installChangeListeners();
     
   }
   
@@ -355,16 +355,24 @@ public class FileReferenceEditPanel extends ObjectEditPanelTemplate<FileReferenc
     return  buttonsBox;
   }
   
+//  /**
+//   * Install change listeners.
+//   * <p>
+//   * The title of this panel is built up from a number of control values. So for these controls an invalidation listener is installed and
+//   * upon a change {@code updatePaneTitle()} is called.<br/>
+//   * Listeners are installed on: fileSelecterObjectControl, titleObjectControl.
+//   */
+//  private void installChangeListeners() {
+//    objectControlsGroup.addListener((observable) -> updatePaneTitle());
+////    titleObjectControl.addListener((observable) -> updatePaneTitle());
+//  }
+  
   /**
-   * Install change listeners.
-   * <p>
-   * The title of this panel is built up from a number of control values. So for these controls an invalidation listener is installed and
-   * upon a change {@code updatePaneTitle()} is called.<br/>
-   * Listeners are installed on: fileSelecterObjectControl, titleObjectControl.
+   * {@inheritDoc}
    */
-  private void installChangeListeners() {
-    objectControlsGroup.addListener((observable) -> updatePaneTitle());
-//    titleObjectControl.addListener((observable) -> updatePaneTitle());
+  @Override
+  protected void handleChanges() {
+    updatePaneTitle();
   }
   
   /**
@@ -530,22 +538,26 @@ public class FileReferenceEditPanel extends ObjectEditPanelTemplate<FileReferenc
       }
     }
     
-    buf.append(string).append(" ");
+    Label statusLabel = (Label) getStatusIndicator();
+    
+    buf.append(string)
+    .append(" ")
+    .append(statusLabel.getText());
         
-    // Add (in)valid indication
-    if (objectControlsGroup.isValid()) {
-      buf.append(EObjectEditor.OK_INDICATOR);
-    } else {
-      buf.append(EObjectEditor.NOK_INDICATOR);
-    }
+//    // Add (in)valid indication
+//    if (objectControlsGroup.isValid()) {
+//      buf.append(EObjectEditor.OK_INDICATOR);
+//    } else {
+//      buf.append(EObjectEditor.NOK_INDICATOR);
+//    }
     
     titledPane.setText(buf.toString());
   }
 
   @Override
   protected void fillControlsWithDefaultValues() {
-    fileSelecterObjectControl.setValue(null);
-    titleObjectControl.setValue(null);
+    fileSelecterObjectControl.setObject(null);
+    titleObjectControl.setObject(null);
   }
 
   @Override
@@ -561,11 +573,11 @@ public class FileReferenceEditPanel extends ObjectEditPanelTemplate<FileReferenc
         fileSelecterObjectControl.setPathNameRelativeToPrefix(fileName);
       } else {
         File file = new File(fileName);
-        fileSelecterObjectControl.setValue(file);
+        fileSelecterObjectControl.setObject(file);
       }
     }
     
-    titleObjectControl.setValue(object.getTitle());
+    titleObjectControl.setObject(object.getTitle());
   }
   
   private String getPrefixForTag(String tags) {

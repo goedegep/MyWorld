@@ -7,7 +7,7 @@
     <semanticResources>http://www.eclipse.org/emf/2002/Ecore</semanticResources>
     <ownedViews xmi:type="viewpoint:DView" uid="_boyj4ByxEeih2tDBb6ehzg">
       <viewpoint xmi:type="description:Viewpoint" href="platform:/plugin/org.eclipse.emf.ecoretools.design/description/ecore.odesign#//@ownedViewpoints[name='Design']"/>
-      <ownedRepresentationDescriptors xmi:type="viewpoint:DRepresentationDescriptor" uid="_6CNZYByxEeih2tDBb6ehzg" name="POI class diagram" repPath="#_6CK9IByxEeih2tDBb6ehzg" changeId="1729799411031">
+      <ownedRepresentationDescriptors xmi:type="viewpoint:DRepresentationDescriptor" uid="_6CNZYByxEeih2tDBb6ehzg" name="POI class diagram" repPath="#_6CK9IByxEeih2tDBb6ehzg" changeId="1735299377827">
         <description xmi:type="description_1:DiagramDescription" href="platform:/plugin/org.eclipse.emf.ecoretools.design/description/ecore.odesign#//@ownedViewpoints[name='Design']/@ownedRepresentations[name='Entities']"/>
         <target xmi:type="ecore:EPackage" href="POI.ecore#/"/>
       </ownedRepresentationDescriptors>
@@ -409,11 +409,19 @@
               <styles xmi:type="notation:FontStyle" xmi:id="_J1dYoZJBEe-csPUnhR0KeQ" fontName="Segoe UI" fontHeight="8"/>
               <layoutConstraint xmi:type="notation:Location" xmi:id="_J1dYopJBEe-csPUnhR0KeQ"/>
             </children>
+            <children xmi:type="notation:Node" xmi:id="_L3kgoL7_Ee-gm8ML6lVH_A" type="3010" element="_L3H0sL7_Ee-gm8ML6lVH_A">
+              <styles xmi:type="notation:FontStyle" xmi:id="_L3kgob7_Ee-gm8ML6lVH_A" fontName="Segoe UI" fontHeight="8"/>
+              <layoutConstraint xmi:type="notation:Location" xmi:id="_L3kgor7_Ee-gm8ML6lVH_A"/>
+            </children>
+            <children xmi:type="notation:Node" xmi:id="_tXNsUMRGEe-74qDC1IR7uQ" type="3010" element="_tWt9EMRGEe-74qDC1IR7uQ">
+              <styles xmi:type="notation:FontStyle" xmi:id="_tXNsUcRGEe-74qDC1IR7uQ" fontName="Segoe UI" fontHeight="8"/>
+              <layoutConstraint xmi:type="notation:Location" xmi:id="_tXNsUsRGEe-74qDC1IR7uQ"/>
+            </children>
             <styles xmi:type="notation:SortingStyle" xmi:id="_KL7O8hyyEeih2tDBb6ehzg"/>
             <styles xmi:type="notation:FilteringStyle" xmi:id="_KL7O8xyyEeih2tDBb6ehzg"/>
           </children>
           <styles xmi:type="notation:ShapeStyle" xmi:id="_KL6n4RyyEeih2tDBb6ehzg" fontName="Segoe UI" fontHeight="8"/>
-          <layoutConstraint xmi:type="notation:Bounds" xmi:id="_KL6n4hyyEeih2tDBb6ehzg" x="777" y="-21" width="210" height="1228"/>
+          <layoutConstraint xmi:type="notation:Bounds" xmi:id="_KL6n4hyyEeih2tDBb6ehzg" x="798" y="91" width="210" height="1228"/>
         </children>
         <children xmi:type="notation:Node" xmi:id="_JxmmQBy5Eeih2tDBb6ehzg" type="2003" element="_JxbAEBy5Eeih2tDBb6ehzg">
           <children xmi:type="notation:Node" xmi:id="_JxmmQxy5Eeih2tDBb6ehzg" type="5007"/>
@@ -1196,6 +1204,22 @@
         <target xmi:type="ecore:EEnumLiteral" href="POI.ecore#//POICategoryId/CAFE"/>
         <semanticElements xmi:type="ecore:EEnumLiteral" href="POI.ecore#//POICategoryId/CAFE"/>
         <ownedStyle xmi:type="diagram:BundledImage" uid="_J1Vc0JJBEe-csPUnhR0KeQ" labelAlignment="LEFT">
+          <description xmi:type="style:BundledImageDescription" href="platform:/plugin/org.eclipse.emf.ecoretools.design/description/ecore.odesign#//@ownedViewpoints[name='Design']/@ownedRepresentations[name='Entities']/@defaultLayer/@containerMappings[name='EC%20EEnum']/@subNodeMappings[name='EC%20EEnumLiteral']/@style"/>
+        </ownedStyle>
+        <actualMapping xmi:type="description_1:NodeMapping" href="platform:/plugin/org.eclipse.emf.ecoretools.design/description/ecore.odesign#//@ownedViewpoints[name='Design']/@ownedRepresentations[name='Entities']/@defaultLayer/@containerMappings[name='EC%20EEnum']/@subNodeMappings[name='EC%20EEnumLiteral']"/>
+      </ownedElements>
+      <ownedElements xmi:type="diagram:DNodeListElement" uid="_L3H0sL7_Ee-gm8ML6lVH_A" name="RIVER" tooltipText="">
+        <target xmi:type="ecore:EEnumLiteral" href="POI.ecore#//POICategoryId/RIVER"/>
+        <semanticElements xmi:type="ecore:EEnumLiteral" href="POI.ecore#//POICategoryId/RIVER"/>
+        <ownedStyle xmi:type="diagram:BundledImage" uid="_L3H0sb7_Ee-gm8ML6lVH_A" labelAlignment="LEFT">
+          <description xmi:type="style:BundledImageDescription" href="platform:/plugin/org.eclipse.emf.ecoretools.design/description/ecore.odesign#//@ownedViewpoints[name='Design']/@ownedRepresentations[name='Entities']/@defaultLayer/@containerMappings[name='EC%20EEnum']/@subNodeMappings[name='EC%20EEnumLiteral']/@style"/>
+        </ownedStyle>
+        <actualMapping xmi:type="description_1:NodeMapping" href="platform:/plugin/org.eclipse.emf.ecoretools.design/description/ecore.odesign#//@ownedViewpoints[name='Design']/@ownedRepresentations[name='Entities']/@defaultLayer/@containerMappings[name='EC%20EEnum']/@subNodeMappings[name='EC%20EEnumLiteral']"/>
+      </ownedElements>
+      <ownedElements xmi:type="diagram:DNodeListElement" uid="_tWt9EMRGEe-74qDC1IR7uQ" name="FOREST" tooltipText="">
+        <target xmi:type="ecore:EEnumLiteral" href="POI.ecore#//POICategoryId/FOREST"/>
+        <semanticElements xmi:type="ecore:EEnumLiteral" href="POI.ecore#//POICategoryId/FOREST"/>
+        <ownedStyle xmi:type="diagram:BundledImage" uid="_tWukIMRGEe-74qDC1IR7uQ" labelAlignment="LEFT">
           <description xmi:type="style:BundledImageDescription" href="platform:/plugin/org.eclipse.emf.ecoretools.design/description/ecore.odesign#//@ownedViewpoints[name='Design']/@ownedRepresentations[name='Entities']/@defaultLayer/@containerMappings[name='EC%20EEnum']/@subNodeMappings[name='EC%20EEnumLiteral']/@style"/>
         </ownedStyle>
         <actualMapping xmi:type="description_1:NodeMapping" href="platform:/plugin/org.eclipse.emf.ecoretools.design/description/ecore.odesign#//@ownedViewpoints[name='Design']/@ownedRepresentations[name='Entities']/@defaultLayer/@containerMappings[name='EC%20EEnum']/@subNodeMappings[name='EC%20EEnumLiteral']"/>

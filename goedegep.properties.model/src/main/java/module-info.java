@@ -5,4 +5,5 @@ module goedegep.model.properties {
   requires java.logging;
   requires transitive org.eclipse.emf.common;
   requires org.eclipse.emf.ecore;
+  requires java.base;
 }

@@ -10,6 +10,7 @@ import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.DoubleClickEventDispatcher;
 import goedegep.jfx.objectcontrols.ObjectControlAutoCompleteTextField;
 import goedegep.media.mediadb.app.ArtistStringConverterAndChecker;
+import goedegep.media.mediadb.app.MediaDbService;
 import goedegep.media.mediadb.app.guifx.ArtistDetailsEditor;
 import goedegep.media.mediadb.model.Artist;
 import goedegep.media.mediadb.model.MediaDb;
@@ -26,9 +27,9 @@ public class ArtistObjectControl extends ObjectControlAutoCompleteTextField<Arti
   private CustomizationFx customization;
   
   /**
-   * The media database.
+   * The media database service.
    */
-  private MediaDb mediaDb;
+  private MediaDbService mediaDbService;
   
   /**
    * Constructor.
@@ -36,11 +37,11 @@ public class ArtistObjectControl extends ObjectControlAutoCompleteTextField<Arti
    * @param customization The GUI customization.
    * @param mediaDb the media database.
    */
-  public ArtistObjectControl(CustomizationFx customization, MediaDb mediaDb) {
-    super(customization, new ArtistStringConverterAndChecker(mediaDb), null, 200, false, "Click and start typing to select an artist, or double click to add a new artist");
+  public ArtistObjectControl(CustomizationFx customization, MediaDbService mediaDbService) {
+    super(customization, new ArtistStringConverterAndChecker(mediaDbService.getMediaDbResource().getEObject()), null, 200, false, "Click and start typing to select an artist, or double click to add a new artist");
     this.customization = customization;
-    this.mediaDb = mediaDb;
-    setOptions(mediaDb.getArtists());
+    this.mediaDbService = mediaDbService;
+    setOptions(mediaDbService.getMediaDbResource().getEObject().getArtists());
     
     getControl().setEventDispatcher(new DoubleClickEventDispatcher(getControl().getEventDispatcher()));
     getControl().addEventHandler(DoubleClickEventDispatcher.MOUSE_DOUBLE_CLICKED, e -> handleMouseDoubleClickedEvent(getControl(), e));
@@ -77,7 +78,7 @@ public class ArtistObjectControl extends ObjectControlAutoCompleteTextField<Arti
 
     };
     
-    mediaDb.eAdapters().add(adapter);
+    mediaDbService.getMediaDbResource().getEObject().eAdapters().add(adapter);
   }
 
   /**
@@ -85,8 +86,8 @@ public class ArtistObjectControl extends ObjectControlAutoCompleteTextField<Arti
    */
   private void updateAlbumArtistComboBox() {
     Artist currentSelectedArtist = getValue();
-    setOptions(mediaDb.getArtists());
-    setValue(currentSelectedArtist);
+    setOptions(mediaDbService.getMediaDbResource().getEObject().getArtists());
+    setObject(currentSelectedArtist);
   }
 
   /**
@@ -99,10 +100,10 @@ public class ArtistObjectControl extends ObjectControlAutoCompleteTextField<Arti
    */
   private void handleMouseDoubleClickedEvent(Node trackObjectControlNode, MouseEvent e) {
     LOGGER.severe("=>");
-    ArtistDetailsEditor artistDetailsEditor = ArtistDetailsEditor.newInstance(customization, "New artist", mediaDb);
+    ArtistDetailsEditor artistDetailsEditor = ArtistDetailsEditor.newInstance(customization, "New artist", mediaDbService);
     artistDetailsEditor.setObject(value);
     artistDetailsEditor.addListener((o) -> {
-      setValue(artistDetailsEditor.getObject());
+      setObject(artistDetailsEditor.getObject());
     });
     artistDetailsEditor.show();
   }

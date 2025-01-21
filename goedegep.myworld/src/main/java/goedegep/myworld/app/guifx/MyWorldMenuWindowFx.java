@@ -13,7 +13,7 @@ import goedegep.demo.guifx.DemoCustomization;
 import goedegep.demo.guifx.DemoMenuWindow;
 import goedegep.events.app.guifx.EventsLauncher;
 import goedegep.finan.Finan;
-import goedegep.invandprop.app.guifx.InvoicesAndPropertiesMenuWindow;
+import goedegep.invandprop.app.guifx.InvoicesAndPropertiesLauncher;
 import goedegep.jfx.ComponentFactoryFx;
 import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.CustomizationsFx;
@@ -148,8 +148,7 @@ public class MyWorldMenuWindowFx extends JfxStage {
 
       @Override
       public void handle(ActionEvent event) {
-        Stage stage = new InvoicesAndPropertiesMenuWindow(CustomizationsFx.getCustomization(MyWorldAppModule.INVOICES_AND_PROPERTIES.name()));
-        stage.show();
+        InvoicesAndPropertiesLauncher.launchInvoicesAndPropertiesApplication(CustomizationsFx.getCustomization(MyWorldAppModule.INVOICES_AND_PROPERTIES.name()));
       }
       
     });
@@ -222,7 +221,8 @@ public class MyWorldMenuWindowFx extends JfxStage {
 
       @Override
       public void handle(ActionEvent event) {
-        EventsLauncher.launchEventsWindow(CustomizationsFx.getCustomization(MyWorldAppModule.EVENTS.name()));
+        EventsLauncher.setCustomization(CustomizationsFx.getCustomization(MyWorldAppModule.EVENTS.name()));
+        EventsLauncher.getInstance().launchEventsWindow();
       }
       
     });

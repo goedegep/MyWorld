@@ -7,11 +7,12 @@ import java.util.logging.Logger;
 import goedegep.jfx.ComponentFactoryFx;
 import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.objectcontrols.ObjectControlGroup;
-import goedegep.jfx.objectcontrols.ObjectControlList;
+import goedegep.jfx.objectcontrols.ObjectControlStatusList;
 import goedegep.jfx.objectcontrols.ObjectControlString;
 import goedegep.jfx.objectcontrols.ObjectEditPanelTemplate;
 import goedegep.jfx.objecteditor.EditMode;
 import goedegep.jfx.objecteditor.ObjectEditorException;
+import goedegep.media.mediadb.app.MediaDbService;
 import goedegep.media.mediadb.app.derivealbuminfo.DiscInfo;
 import goedegep.media.mediadb.app.derivealbuminfo.TrackInfo;
 import goedegep.media.mediadb.model.AlbumType;
@@ -53,6 +54,8 @@ class DiscEditPanel extends ObjectEditPanelTemplate<Disc> {
    */
   private CustomizationFx customization;
   
+  private MediaDbService mediaDbService;
+  
   /**
    * The media database.
    */
@@ -91,7 +94,7 @@ class DiscEditPanel extends ObjectEditPanelTemplate<Disc> {
   /**
    * Control for handling the status of the list of track references.
    */
-  private ObjectControlList<TrackReference> trackReferencesObjectControl;
+  private ObjectControlStatusList trackReferencesObjectControl;
   
   /**
    * One panel per track reference, for editing all track details.
@@ -106,8 +109,8 @@ class DiscEditPanel extends ObjectEditPanelTemplate<Disc> {
    * @param mediaDb the media database.
    * @return a newly created {@code MediumInfoListEditor}.
    */
-  public static DiscEditPanel newInstance(CustomizationFx customization, MediaDb mediaDb) {
-    DiscEditPanel discEditPanel = new DiscEditPanel(customization, mediaDb);
+  public static DiscEditPanel newInstance(CustomizationFx customization, MediaDbService mediaDbService) {
+    DiscEditPanel discEditPanel = new DiscEditPanel(customization, mediaDbService);
     discEditPanel.performInitialization();
     
     return discEditPanel;
@@ -120,11 +123,12 @@ class DiscEditPanel extends ObjectEditPanelTemplate<Disc> {
    * @param customization the GUI customization.
    * @param mediaDb The Media Database, used to find/add tracks.
    */
-  private DiscEditPanel(CustomizationFx customization, MediaDb mediaDb) {
+  private DiscEditPanel(CustomizationFx customization, MediaDbService mediaDbService) {
     super(customization);
     
     this.customization = customization;
-    this.mediaDb = mediaDb;
+    this.mediaDbService = mediaDbService;
+    mediaDb = mediaDbService.getMediaDbResource().getEObject();
     
   }
 
@@ -146,7 +150,7 @@ class DiscEditPanel extends ObjectEditPanelTemplate<Disc> {
     titleControl.setId("disc title");
     titleControl.addListener((o)-> updateTitle());
     
-    trackReferencesObjectControl = new ObjectControlList(true);
+    trackReferencesObjectControl = new ObjectControlStatusList(true);
     trackReferencesObjectControl.setId("track references");
     
     objectControlsGroup.setId("DiscEditPanel");
@@ -223,7 +227,7 @@ class DiscEditPanel extends ObjectEditPanelTemplate<Disc> {
     if (trackReferenceControls.isEmpty()) {
       createTracksPane();
     }
-    TrackReferenceAndMyTrackInfoControls trackReferencePanel = TrackReferenceAndMyTrackInfoControls.newInstance(customization, trackReferenceControls, null, mediaDb);
+    TrackReferenceAndMyTrackInfoControls trackReferencePanel = TrackReferenceAndMyTrackInfoControls.newInstance(customization, trackReferenceControls, null, mediaDbService);
     trackReferencePanel.setId("trackReferencePanel row " + trackReferenceControls.size());
     trackReferencePanel.createObject();
     trackReferencesObjectControl.getValue().add(trackReferencePanel.getValue());
@@ -242,7 +246,7 @@ class DiscEditPanel extends ObjectEditPanelTemplate<Disc> {
 
   @Override
   protected void fillControlsWithDefaultValues() {
-    titleControl.setValue(null);
+    titleControl.setObject(null);
     
     for (TrackReferenceAndMyTrackInfoControls trackReferenceControl: trackReferenceControls) {
       objectControlsGroup.removeObjectControlGroup(trackReferenceControl.getObjectControlsGroup());
@@ -264,7 +268,7 @@ class DiscEditPanel extends ObjectEditPanelTemplate<Disc> {
     gridPane.getChildren().clear();
     
     if (object != null) {
-      titleControl.setValue(object.getTitle());
+      titleControl.setObject(object.getTitle());
 
       if (!object.getTrackReferences().isEmpty()) {
         createTracksPane();
@@ -272,9 +276,9 @@ class DiscEditPanel extends ObjectEditPanelTemplate<Disc> {
       int row = firstTrackRowInGridPane;
       int trackNr = 1;
       
-      trackReferencesObjectControl.setValue(new ArrayList<>(object.getTrackReferences()));
+      trackReferencesObjectControl.setObject(new ArrayList<>(object.getTrackReferences()));
       for (TrackReference trackReference: object.getTrackReferences()) {
-        TrackReferenceAndMyTrackInfoControls trackReferenceAndMyTrackInfoControls = TrackReferenceAndMyTrackInfoControls.newInstance(customization, trackReferenceControls, null, mediaDb);
+        TrackReferenceAndMyTrackInfoControls trackReferenceAndMyTrackInfoControls = TrackReferenceAndMyTrackInfoControls.newInstance(customization, trackReferenceControls, null, mediaDbService);
         trackReferenceAndMyTrackInfoControls.setId("trackReferencePanel row " + (row));
         trackReferenceControls.add(trackReferenceAndMyTrackInfoControls);
         objectControlsGroup.addObjectControlGroup(trackReferenceAndMyTrackInfoControls.getObjectControlsGroup());
@@ -336,7 +340,7 @@ class DiscEditPanel extends ObjectEditPanelTemplate<Disc> {
   }
   
   private void setControlsToDefaultValues() {
-    titleControl.setValue(null);
+    titleControl.setObject(null);
   }
 
   public void updateObjectFromControls() {
@@ -375,6 +379,22 @@ class DiscEditPanel extends ObjectEditPanelTemplate<Disc> {
     
     LOGGER.severe("<= Number of new tracks: " + newTracks.size());
     return newTracks;
+  }
+  
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public String getValueAsFormattedText() {
+    StringBuilder buf = new StringBuilder();
+    
+    buf.append(getDiscTitle()).append(NEW_LINE);
+    
+    for (TrackReferenceAndMyTrackInfoControls trackReferenceAndMyTrackInfoControls: trackReferenceControls) {
+      buf.append(trackReferenceAndMyTrackInfoControls.getValueAsFormattedText()).append(NEW_LINE);
+    }
+    
+    return buf.toString();
   }
 
 }

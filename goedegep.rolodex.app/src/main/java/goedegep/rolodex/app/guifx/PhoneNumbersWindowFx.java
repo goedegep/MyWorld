@@ -269,15 +269,15 @@ class PhoneNumberEditPanel {
       return;
     }
     
-    phoneNumberTextField.setValue(phoneNumber.getPhoneNumber());
-    connectionTypeTextField.setValue(phoneNumber.getConnectionType());
-    descriptionTextField.setValue(phoneNumber.getDescription());    
+    phoneNumberTextField.setObject(phoneNumber.getPhoneNumber());
+    connectionTypeTextField.setObject(phoneNumber.getConnectionType());
+    descriptionTextField.setObject(phoneNumber.getDescription());    
   }
   
   private void clearFields() {
-    phoneNumberTextField.setValue(null);
-    connectionTypeTextField.setValue(null);
-    descriptionTextField.setValue(null);
+    phoneNumberTextField.setObject(null);
+    connectionTypeTextField.setObject(null);
+    descriptionTextField.setObject(null);
   }
   
   /**

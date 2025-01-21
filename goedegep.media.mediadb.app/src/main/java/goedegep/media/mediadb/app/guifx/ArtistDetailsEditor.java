@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 import java.util.logging.Logger;
 
 import org.eclipse.emf.common.notify.Notification;
@@ -20,6 +21,7 @@ import goedegep.jfx.objectcontrols.ObjectControlString;
 import goedegep.jfx.objecteditor.ObjectEditorTemplate;
 import goedegep.jfx.stringconverters.StringConverterAndChecker;
 import goedegep.media.app.MediaRegistry;
+import goedegep.media.mediadb.app.MediaDbService;
 import goedegep.media.mediadb.model.Album;
 import goedegep.media.mediadb.model.Artist;
 import goedegep.media.mediadb.model.Disc;
@@ -104,15 +106,15 @@ public class ArtistDetailsEditor extends ObjectEditorTemplate<Artist> {
    * @param mediaDb the media database.
    * @return a newly created {@code ArtistDetailsEditor}.
    */
-  public static ArtistDetailsEditor newInstance(CustomizationFx customization, String windowTitle, MediaDb mediaDb) {
-    ArtistDetailsEditor artistDetailsEditor = new ArtistDetailsEditor(customization, windowTitle, mediaDb);
+  public static ArtistDetailsEditor newInstance(CustomizationFx customization, String windowTitle, MediaDbService mediaDbService) {
+    ArtistDetailsEditor artistDetailsEditor = new ArtistDetailsEditor(customization, windowTitle, mediaDbService);
     artistDetailsEditor.performInitialization();
     
     return artistDetailsEditor;
   }
   
   public void setArtistName(String artistName) {
-    nameObjectControl.setValue(artistName);
+    nameObjectControl.setObject(artistName);
   }
     
   /**
@@ -122,10 +124,10 @@ public class ArtistDetailsEditor extends ObjectEditorTemplate<Artist> {
    * @param windowTitle the window title
    * @param mediaDb the media database to add the artist to
    */
-  private ArtistDetailsEditor(CustomizationFx customization, String windowTitle, MediaDb mediaDb) {
-    super(customization, windowTitle);
+  private ArtistDetailsEditor(CustomizationFx customization, String windowTitle, MediaDbService mediaDbService) {
+    super(customization, windowTitle, mediaDbService::addArtistToMediaDatabase);
     
-    this.mediaDb = mediaDb;
+    mediaDb = mediaDbService.getMediaDbResource().getEObject();
     
     componentFactory = customization.getComponentFactoryFx();
 
@@ -293,12 +295,12 @@ public class ArtistDetailsEditor extends ObjectEditorTemplate<Artist> {
    */
   @Override
   protected void fillControlsWithDefaultValues() {
-    nameObjectControl.setValue(null);
-    containerArtistObjectControl.setValue(null);
-    photoObjectControl.setValue(null);
-    styleObjectControl.setValue(null);
-    myCommentsControl.setValue(null);
-    sampleTrackObjectControl.setValue(null);
+    nameObjectControl.setObject(null);
+    containerArtistObjectControl.setObject(null);
+    photoObjectControl.setObject(null);
+    styleObjectControl.setObject(null);
+    myCommentsControl.setObject(null);
+    sampleTrackObjectControl.setObject(null);
   }
   
   /**
@@ -363,7 +365,7 @@ public class ArtistDetailsEditor extends ObjectEditorTemplate<Artist> {
     artists.sort((Artist artist1, Artist artist2) -> {return artist1.getName().compareTo(artist2.getName());});
     containerArtistObjectControl.setOptions(artists);
     if (currentSelectedArtist != null) {
-      containerArtistObjectControl.setValue(currentSelectedArtist);
+      containerArtistObjectControl.setObject(currentSelectedArtist);
     }
   }
   
@@ -401,7 +403,7 @@ public class ArtistDetailsEditor extends ObjectEditorTemplate<Artist> {
     sampleTrackObjectControl.setOptions(trackReferences);
     
     if (currentSelectedSample != null) {
-      sampleTrackObjectControl.setValue(currentSelectedSample);
+      sampleTrackObjectControl.setObject(currentSelectedSample);
     }
   }
   
@@ -411,14 +413,6 @@ public class ArtistDetailsEditor extends ObjectEditorTemplate<Artist> {
   @Override
   protected void createObject() {
     object = MEDIA_DB_FACTORY.createArtist();
-  }
-  
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  protected void addObjectToCollection() {
-    mediaDb.getArtists().add(object);
   }
   
   /**
@@ -467,8 +461,8 @@ public class ArtistDetailsEditor extends ObjectEditorTemplate<Artist> {
     if (object == null) {
       return;
     }
-    nameObjectControl.setValue(object.getName());
-    containerArtistObjectControl.setValue(object.getContainerArtist());
+    nameObjectControl.setObject(object.getName());
+    containerArtistObjectControl.setObject(object.getContainerArtist());
     String photoFileName = object.getPhoto();
     if (photoFileName != null) {
       String photosFolder = MediaRegistry.musicDataDirectory + "\\ArtistInformation\\Pictures";
@@ -478,16 +472,16 @@ public class ArtistDetailsEditor extends ObjectEditorTemplate<Artist> {
       } else {
         LOGGER.severe("NOT OK");
       }
-      photoObjectControl.setValue(file);
+      photoObjectControl.setObject(file);
     }
-    styleObjectControl.setValue(object.getStyle());
-    myCommentsControl.setValue(object.getMyComments());
+    styleObjectControl.setObject(object.getStyle());
+    myCommentsControl.setObject(object.getMyComments());
     TrackReference sampleTrackReference = object.getSample();
     LOGGER.severe("sampleTrackReference: " + sampleTrackReference);
     TrackReference finalTrackReference = getFinalTrackReference(sampleTrackReference);
     LOGGER.severe("finalTrackReference: " + finalTrackReference);
 
-    sampleTrackObjectControl.setValue(finalTrackReference);
+    sampleTrackObjectControl.setObject(finalTrackReference);
   }
   
   public static TrackReference getFinalTrackReference(TrackReference trackReference) {

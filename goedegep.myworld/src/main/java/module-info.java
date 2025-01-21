@@ -9,6 +9,7 @@ module goedegep.myworld {
   requires transitive goedegep.appgenfx;
   requires goedegep.finan.nota.app;
   requires goedegep.media.app;
+  requires goedegep.media.mediadb.app;
   requires transitive goedegep.model.properties;
   requires goedegep.model.rolodex;
   requires goedegep.pctools;

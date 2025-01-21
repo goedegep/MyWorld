@@ -77,7 +77,7 @@ public class ObjectControlFolderSelecter extends ObjectControlFileOrFolderSelect
     folderChooserButton = componentFactory.createButton(folderChooserButtonText, folderChooserButtonToolTipText);    
     folderChooserButton.setOnAction(actionEvent -> handleFolderChooserButtonPressed());
     
-    setValue(null);
+    setObject(null);
   }
   
 

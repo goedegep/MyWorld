@@ -233,9 +233,9 @@ public class VideoDetailsEditor extends JfxStage {
       }
       
       if (video.isSetImage()) {
-        videoImageFileSelecter.setValue(new File(video.getImage()));
+        videoImageFileSelecter.setObject(new File(video.getImage()));
       } else {
-        videoImageFileSelecter.setValue(null);
+        videoImageFileSelecter.setObject(null);
       }
       
       videoImagePanel.getChildren().clear();
@@ -251,7 +251,7 @@ public class VideoDetailsEditor extends JfxStage {
     } else {
       videoTitleTextField.setText("");
       videoDateTextField.setText("");
-      videoImageFileSelecter.setValue(null);
+      videoImageFileSelecter.setObject(null);
     }
   }
   

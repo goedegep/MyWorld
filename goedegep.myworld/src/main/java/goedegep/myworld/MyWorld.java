@@ -27,6 +27,7 @@ import goedegep.events.app.EventsRegistry;
 import goedegep.events.app.guifx.EventsLauncher;
 import goedegep.finan.Finan;
 import goedegep.invandprop.app.InvoicesAndPropertiesRegistry;
+import goedegep.invandprop.app.guifx.InvoicesAndPropertiesLauncher;
 import goedegep.invandprop.app.guifx.InvoicesAndPropertiesMenuWindow;
 import goedegep.jfx.CustomizationsFx;
 import goedegep.jfx.JfxApplication;
@@ -432,7 +433,8 @@ private static final String         VACATIONS_PROJECT_PATH = "../../../goedegep.
     } else {
       switch (appModule) {
       case EVENTS:
-        EventsLauncher.launchEventsWindow(CustomizationsFx.getCustomization(MyWorldAppModule.EVENTS.name()));
+        EventsLauncher.setCustomization(CustomizationsFx.getCustomization(MyWorldAppModule.EVENTS.name()));
+        EventsLauncher.getInstance().launchEventsWindow();
         break;
         
       case FINAN:
@@ -449,7 +451,7 @@ private static final String         VACATIONS_PROJECT_PATH = "../../../goedegep.
         break;
         
       case INVOICES_AND_PROPERTIES:
-        stage = new InvoicesAndPropertiesMenuWindow(CustomizationsFx.getCustomization(MyWorldAppModule.INVOICES_AND_PROPERTIES.name()));
+        InvoicesAndPropertiesLauncher.launchInvoicesAndPropertiesApplication(CustomizationsFx.getCustomization(MyWorldAppModule.INVOICES_AND_PROPERTIES.name()));
         break;
         
       case ROLODEX:
