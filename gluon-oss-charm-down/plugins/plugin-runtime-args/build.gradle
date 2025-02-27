@@ -1,6 +1,0 @@
-dependencies {
-    compile project(':core')
-}
-
-ext.description = 'Common API to for injecting runtime arguments into Charm Down applications, ' +
-        'and listening for these arguments.'

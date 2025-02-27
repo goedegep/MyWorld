@@ -1,5 +1,0 @@
-dependencies {
-    compile project(':plugin-dialer')
-}
-
-ext.description = 'API to access dialer features for the android platform'
