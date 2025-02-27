@@ -16,12 +16,10 @@
 package com.google.common.geometry;
 
 import java.util.AbstractList;
-import jsinterop.annotations.JsType;
 
 /**
  * A list of {@link S2CellId}s, and specialized methods for directly operating on the encoded form.
  */
-@JsType
 abstract class S2CellIdVector extends AbstractList<S2CellId> {
 
   /**

@@ -18,15 +18,11 @@ package com.google.common.geometry;
 import com.google.common.base.Preconditions;
 import java.util.AbstractList;
 import java.util.List;
-import jsinterop.annotations.JsConstructor;
-import jsinterop.annotations.JsMethod;
-import jsinterop.annotations.JsType;
 
 /**
  * S2Shape is an abstract base class that defines a shape. Typically it wraps some other geometric
  * object in order to provide access to its edges without duplicating the edge data.
  */
-@JsType
 public interface S2Shape {
   /**
    * Returns the number of edges in this shape. 0-dimensional shapes contain points, as one
@@ -63,7 +59,6 @@ public interface S2Shape {
    * triggers allocations. This class is intended to allow fast retrieval of the endpoints in a
    * single call.
    */
-  @JsType
   final class MutableEdge {
     /**
      * Endpoints of this edge last set by passing this instance to {@link S2Shape#getEdge(int,
@@ -216,12 +211,11 @@ public interface S2Shape {
   }
 
   /** A point with a known containment relationship. */
-  @JsType
+  @SuppressWarnings("serial")
   abstract class ReferencePoint extends S2Point {
     private static final ReferencePoint ORIGIN_INSIDE = create(S2.origin(), true);
     private static final ReferencePoint ORIGIN_OUTSIDE = create(S2.origin(), false);
 
-    @JsConstructor
     private ReferencePoint(S2Point p) {
       super(p.x, p.y, p.z);
     }
@@ -238,7 +232,6 @@ public interface S2Shape {
     }
 
     /** Creates a referenced point at position 'p', with known containment 'contained'. */
-    @JsMethod(name = "createfromPoint")
     public static ReferencePoint create(S2Point p, boolean contained) {
       if (contained) {
         return new ReferencePoint(p) {

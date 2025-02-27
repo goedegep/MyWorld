@@ -64,7 +64,7 @@ import java.util.List;
  * Demonstration of the algorithm and code:
  * en.wikibooks.org/wiki/Algorithm_Implementation/Geometry/Convex_hull/Monotone_chain
  */
-public final strictfp class S2ConvexHullQuery {
+public final class S2ConvexHullQuery {
   /** The length of edges to expand away from degenerate points to form a polygon. */
   private static final double OFFSET_FOR_SINGLE_POINT_LOOP = 1e-15;
 

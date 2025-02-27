@@ -31,7 +31,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.PriorityQueue;
 import java.util.logging.Logger;
-import javax.annotation.Nullable;
 
 /**
  * S2BestEdgesQueryBase is an abstract class for finding the best edge(s) between two geometries. It
@@ -1344,7 +1343,7 @@ public abstract class S2BestEdgesQueryBase<D extends S1Distance<D>> {
    *
    * <p>This version is called directly only by initQueue().
    */
-  private void processOrEnqueue(S2CellId id, @Nullable Cell indexCell) {
+  private void processOrEnqueue(S2CellId id, Cell indexCell) {
     if (indexCell != null) {
       // If this index cell has only a few edges, then it is faster to check them directly rather
       // than computing the minimum distance to the S2Cell and inserting it into the queue.

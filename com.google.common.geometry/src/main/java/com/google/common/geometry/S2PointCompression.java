@@ -58,7 +58,7 @@ import java.util.List;
  * <p>To encode leaf cells, this requires 8 bytes for the first vertex plus an average of 3.8 bytes
  * for each additional vertex.
  */
-public final strictfp class S2PointCompression {
+public final class S2PointCompression {
 
   private S2PointCompression() {}
 

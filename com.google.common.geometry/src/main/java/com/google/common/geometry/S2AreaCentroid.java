@@ -18,8 +18,6 @@ package com.google.common.geometry;
 
 import com.google.common.base.Objects;
 import java.io.Serializable;
-import javax.annotation.Nullable;
-import jsinterop.annotations.JsType;
 
 /**
  * The area of an interior, i.e. the region on the left side of an odd number of loops and
@@ -29,13 +27,13 @@ import jsinterop.annotations.JsType;
  *
  * @author dbentley@google.com (Daniel Bentley)
  */
-@JsType
+@SuppressWarnings("serial")
 public final class S2AreaCentroid implements Serializable {
 
   private final double area;
   private final S2Point centroid;
 
-  public S2AreaCentroid(double area, @Nullable S2Point centroid) {
+  public S2AreaCentroid(double area, S2Point centroid) {
     this.area = area;
     this.centroid = centroid;
   }
@@ -44,7 +42,6 @@ public final class S2AreaCentroid implements Serializable {
     return area;
   }
 
-  @Nullable
   public S2Point getCentroid() {
     return centroid;
   }

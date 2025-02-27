@@ -311,7 +311,7 @@ public abstract class S2FurthestEdgeQuery<D extends S1Distance<D>> extends S2Bes
    */
   @VisibleForTesting
   @CanIgnoreReturnValue
-  public boolean visitAntipodalShapes(Target<D> target, S2ContainsPointQuery.ShapeVisitor visitor) {
+  public boolean visitAntipodalShapes(Target<D> target, @SuppressWarnings("exports") S2ContainsPointQuery.ShapeVisitor visitor) {
     return visitBestDistanceContainingShapes(target, visitor);
   }
 

@@ -18,14 +18,13 @@ package com.google.common.geometry;
 
 import com.google.common.base.Preconditions;
 import java.io.Serializable;
-import jsinterop.annotations.JsType;
 
 /**
  * An abstract directed edge from one S2Point to another S2Point.
  *
  * @author kirilll@google.com (Kirill Levin)
  */
-@JsType
+@SuppressWarnings("serial")
 public final class S2Edge implements Serializable, S2Shape {
 
   private final S2Point start;

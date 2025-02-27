@@ -19,9 +19,6 @@ import static java.lang.Math.abs;
 import static java.lang.Math.sqrt;
 
 import java.io.Serializable;
-import jsinterop.annotations.JsIgnore;
-import jsinterop.annotations.JsMethod;
-import jsinterop.annotations.JsType;
 
 /**
  * R2Vector represents a vector in the two-dimensional space. It defines the basic geometrical
@@ -29,14 +26,12 @@ import jsinterop.annotations.JsType;
  *
  * @author danieldanciu@google.com (Daniel Danciu)
  */
-@SuppressWarnings("AmbiguousMethodReference")
-@JsType
-public final strictfp class R2Vector implements Serializable {
+@SuppressWarnings("serial")
+public final class R2Vector implements Serializable {
   double x;
   double y;
 
   /** Constructs a new R2Vector at the origin [0,0] of the R2 coordinate system. */
-  @JsIgnore
   public R2Vector() {
     this(0, 0);
   }
@@ -48,7 +43,6 @@ public final strictfp class R2Vector implements Serializable {
   }
 
   /** Constructs a new R2 vector from the given coordinates array, which must have length 2. */
-  @JsIgnore
   public R2Vector(double[] coord) {
     this(coord[0], coord[1]);
     if (coord.length != 2) {
@@ -92,7 +86,6 @@ public final strictfp class R2Vector implements Serializable {
    * Sets the position of this vector from the given values. Package private since this is only
    * mutable for S2.
    */
-  @JsMethod(name = "setCoordinates")
   void set(double x, double y) {
     this.x = x;
     this.y = y;
@@ -163,7 +156,6 @@ public final strictfp class R2Vector implements Serializable {
   }
 
   /** Returns the dot product of the given vectors. */
-  @JsIgnore
   public static double dotProd(final R2Vector p1, final R2Vector p2) {
     return (p1.x * p2.x) + (p1.y * p2.y);
   }

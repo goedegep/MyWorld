@@ -34,6 +34,7 @@ import java.util.Collection;
  * by parents, resulting in coverings that may have significantly fewer than maxSize cells, and so
  * are less accurate. This is not a concern for unions of disjoint regions.
  */
+@SuppressWarnings("serial")
 public class S2RegionUnion implements S2Region, Serializable {
   // Regions is non-private so that it can be accessed from the custom field serializer.
   final S2Region[] regions;

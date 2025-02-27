@@ -276,6 +276,7 @@ public class S2CellIndex {
   }
 
   /** Appends labels intersecting 'target', in unspecified order, with possible duplicates. */
+  @SuppressWarnings("unused")
   public void getIntersectingLabels(S2CellUnion target, Labels results) {
     visitIntersectingCells(target, (cellId, label) -> results.add(label));
   }
@@ -314,7 +315,6 @@ public class S2CellIndex {
     }
 
     @Override
-    @SuppressWarnings("unusable-by-js")
     public Integer get(int index) {
       return getInt(index);
     }

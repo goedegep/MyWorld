@@ -51,8 +51,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
-import jsinterop.annotations.JsIgnore;
-import jsinterop.annotations.JsType;
 
 /**
  * An S2Polygon is an S2Region object that represents a polygon. A polygon is defined by zero or
@@ -105,8 +103,8 @@ import jsinterop.annotations.JsType;
  * @author shakusa@google.com (Steven Hakusa) ported from util/geometry
  * @author ericv@google.com (Eric Veach) original author
  */
-@JsType
-public final strictfp class S2Polygon implements S2Region, Comparable<S2Polygon>, Serializable {
+@SuppressWarnings("serial")
+public final class S2Polygon implements S2Region, Comparable<S2Polygon>, Serializable {
 
   /** Version number of the lossless encoding format for S2Polygon. */
   private static final byte LOSSLESS_ENCODING_VERSION = 1;
@@ -167,7 +165,6 @@ public final strictfp class S2Polygon implements S2Region, Comparable<S2Polygon>
   private int numVertices = 0;
 
   /** Creates an empty polygon. It can be made non-empty by calling {@link #init(List)}. */
-  @JsIgnore
   public S2Polygon() {
     bound = S2LatLngRect.empty();
     subregionBound = S2LatLngRect.empty();
@@ -175,7 +172,6 @@ public final strictfp class S2Polygon implements S2Region, Comparable<S2Polygon>
   }
 
   /** Creates an S2Polygon for a given cell. */
-  @JsIgnore
   public S2Polygon(S2Cell cell) {
     loops.add(new S2Loop(cell));
     initOneLoop();
@@ -185,13 +181,11 @@ public final strictfp class S2Polygon implements S2Region, Comparable<S2Polygon>
    * Creates an empty polygon and then calls {@link #initNested(List)} with the given loops. Clears
    * the given list.
    */
-  @JsIgnore
   public S2Polygon(List<S2Loop> loops) {
     initNested(loops);
   }
 
   /** Copy constructor. */
-  @JsIgnore
   public S2Polygon(S2Loop loop) {
     this.numVertices = loop.numVertices();
     this.bound = loop.getRectBound();
@@ -201,7 +195,6 @@ public final strictfp class S2Polygon implements S2Region, Comparable<S2Polygon>
   }
 
   /** Copy constructor. */
-  @JsIgnore
   public S2Polygon(S2Polygon src) {
     copy(src);
   }
@@ -355,7 +348,6 @@ public final strictfp class S2Polygon implements S2Region, Comparable<S2Polygon>
    * orientations in the input to this method. (During initialization, loops representing holes will
    * automatically be inverted.)
    */
-  @SuppressWarnings("UseCorrectAssertInTests")
   public void initOriented(List<S2Loop> loops) {
     // Here is the algorithm:
     //
@@ -447,7 +439,6 @@ public final strictfp class S2Polygon implements S2Region, Comparable<S2Polygon>
   }
 
   /** Given that loops contains a single loop, initializes all other fields. */
-  @SuppressWarnings("UseCorrectAssertInTests")
   private void initOneLoop() {
     assert 1 == loops.size();
     S2Loop loop = loops.get(0);
@@ -507,7 +498,6 @@ public final strictfp class S2Polygon implements S2Region, Comparable<S2Polygon>
    * Returns true if the given loops form a valid polygon, including checking whether the loops
    * themselves are valid.
    */
-  @JsIgnore
   public static boolean isValid(List<S2Loop> loops) {
     return new S2Polygon(Lists.newArrayList(loops)).isValid();
   }
@@ -1579,7 +1569,6 @@ public final strictfp class S2Polygon implements S2Region, Comparable<S2Polygon>
   }
 
   /** Returns a polygon that is the union of the given polygons. */
-  @JsIgnore // J2CL warning "Iterable<S2Polygon> is not usable by JavaScript", but not clear why.
   public static S2Polygon union(Iterable<S2Polygon> polygons) {
     return unionSloppy(polygons, S2EdgeUtil.DEFAULT_INTERSECTION_TOLERANCE);
   }
@@ -1588,7 +1577,6 @@ public final strictfp class S2Polygon implements S2Region, Comparable<S2Polygon>
    * Returns a polygon that is the union of the given polygons; combines vertices that form edges
    * that are almost identical, as defined by {@code vertexMergeRadius}.
    */
-  @JsIgnore // J2CL warning "Iterable<S2Polygon> is not usable by JavaScript", but not clear why.
   public static S2Polygon unionSloppy(Iterable<S2Polygon> polygons, S1Angle vertexMergeRadius) {
     // Effectively create a priority queue of polygons in order of number of vertices. Repeatedly
     // union the two smallest polygons and add the result to the queue until we have a single
@@ -1866,7 +1854,6 @@ public final strictfp class S2Polygon implements S2Region, Comparable<S2Polygon>
    * the region does not contain the cell or the containment relationship could not be determined.
    */
   @Override
-  @JsIgnore
   public boolean contains(S2Cell cell) {
     S2Iterator<S2ShapeIndex.Cell> it = index.iterator();
     S2ShapeIndex.CellRelation relation = it.locate(cell.id());
@@ -2292,7 +2279,6 @@ public final strictfp class S2Polygon implements S2Region, Comparable<S2Polygon>
    * @param output The output stream into which the encoding should be written.
    * @throws IOException if there was a problem writing into the output stream.
    */
-  @JsIgnore // OutputStream is not available to J2CL.
   public void encode(OutputStream output) throws IOException {
     int level = getNumVertices() == 0 ? S2CellId.MAX_LEVEL : getBestSnapLevel();
     LittleEndianOutput encoder = new LittleEndianOutput(output);
@@ -2312,7 +2298,6 @@ public final strictfp class S2Polygon implements S2Region, Comparable<S2Polygon>
    * @throws IOException if there was a problem writing into the output stream.
    */
   @VisibleForTesting // Visible for benchmarking.
-  @JsIgnore // LittleEndianOutput is not available to J2CL.
   public void encodeUncompressed(LittleEndianOutput encoder) throws IOException {
     encoder.writeByte(LOSSLESS_ENCODING_VERSION);
     // Placeholder value for backward compatibility; previously stored the "owns_loops_" value.
@@ -2346,7 +2331,6 @@ public final strictfp class S2Polygon implements S2Region, Comparable<S2Polygon>
    * @return the decoded {@link S2Polygon}.
    * @throws IOException if there was a problem reading from the input stream.
    */
-  @JsIgnore // InputStream is not available to J2CL.
   public static S2Polygon decode(InputStream input) throws IOException {
     LittleEndianInput decoder = new LittleEndianInput(input);
     byte version = decoder.readByte();
@@ -2362,10 +2346,10 @@ public final strictfp class S2Polygon implements S2Region, Comparable<S2Polygon>
 
   /** Decodes from the given input stream, stopping at the first byte after the polygon. */
   @VisibleForTesting // Visible for benchmarking.
-  @JsIgnore // LittleEndianInput wraps InputStream and is not available to J2CL.
   public static S2Polygon decodeUncompressed(LittleEndianInput decoder) throws IOException {
     S2Polygon result = new S2Polygon();
     // Ignore irrelevant serialized owns_loops_ value.
+    @SuppressWarnings("unused")
     byte unused = decoder.readByte();
     // Whether or not there are holes.
     result.hasHoles = (decoder.readByte() == 1);
@@ -2635,7 +2619,6 @@ public final strictfp class S2Polygon implements S2Region, Comparable<S2Polygon>
    * <p>Note that unlike S2Polygon, the edges of this shape are directed such that the polygon
    * interior is always on the left.
    */
-  @JsType
   public abstract static class Shape implements S2Shape, Serializable {
     private final S2Polygon polygon;
 

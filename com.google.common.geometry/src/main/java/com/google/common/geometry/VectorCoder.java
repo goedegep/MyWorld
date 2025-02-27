@@ -30,6 +30,7 @@ import java.util.List;
 /**
  * An encoder/decoder of {@link List}s. Decoding is on-demand, so {@link S2Coder#isLazy() is true.
  */
+@SuppressWarnings("serial")
 public class VectorCoder<T> implements S2Coder<List<T>> {
 
   /** An encoder/decoder of {@code List<byte[]>}. */

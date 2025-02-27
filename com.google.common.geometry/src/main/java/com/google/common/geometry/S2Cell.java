@@ -31,9 +31,6 @@ import com.google.common.collect.Ordering;
 import com.google.common.primitives.Doubles;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import java.io.Serializable;
-import jsinterop.annotations.JsIgnore;
-import jsinterop.annotations.JsMethod;
-import jsinterop.annotations.JsType;
 
 /**
  * An S2Cell is an S2Region object that represents a cell. Unlike S2CellIds, it supports efficient
@@ -42,8 +39,8 @@ import jsinterop.annotations.JsType;
  * @author danieldanciu@google.com (Daniel Danciu) ported from util/geometry
  * @author ericv@google.com (Eric Veach) original author
  */
-@JsType
-public final strictfp class S2Cell implements S2Region, Serializable {
+@SuppressWarnings("serial")
+public final class S2Cell implements S2Region, Serializable {
   byte face;
   byte level;
   byte orientation;
@@ -60,7 +57,6 @@ public final strictfp class S2Cell implements S2Region, Serializable {
    * An S2Cell always corresponds to a particular S2CellId. The other constructors are just
    * convenience methods.
    */
-  @JsIgnore
   public S2Cell(S2CellId id) {
     init(id);
   }
@@ -82,13 +78,11 @@ public final strictfp class S2Cell implements S2Region, Serializable {
   }
 
   /** Convenience method to construct a leaf S2Cell containing the given point. */
-  @JsIgnore
   public S2Cell(S2Point p) {
     init(S2CellId.fromPoint(p));
   }
 
   /** Convenience method to construct a leaf S2Cell containing the given lat,lng. */
-  @JsIgnore
   public S2Cell(S2LatLng ll) {
     init(S2CellId.fromLatLng(ll));
   }
@@ -263,7 +257,6 @@ public final strictfp class S2Cell implements S2Region, Serializable {
   }
 
   /** Return the average area in steradians for cells at the given level. */
-  @JsMethod(name = "averageAreaAtLevel")
   public static double averageArea(int level) {
     return PROJ.avgArea.getValue(level);
   }
@@ -320,7 +313,6 @@ public final strictfp class S2Cell implements S2Region, Serializable {
 
   // NOTE: This should be marked as @Override, but clone() isn't present in GWT's version of Object,
   // so we can't mark it as such.
-  @SuppressWarnings("MissingOverride")
   public S2Region clone() {
     S2Cell clone = new S2Cell();
     clone.face = this.face;
@@ -459,7 +451,6 @@ public final strictfp class S2Cell implements S2Region, Serializable {
    * <p>The point "p" does not need to be normalized.
    */
   @Override
-  @JsMethod(name = "containsPoint")
   public boolean contains(S2Point p) {
     // We can't just call XYZtoFaceUV, because for points that lie on the boundary between two faces
     // (i.e. u or v is +1/-1) we need to return true for both adjacent cells.
@@ -495,7 +486,6 @@ public final strictfp class S2Cell implements S2Region, Serializable {
     return cellId.contains(cell.cellId);
   }
 
-  @SuppressWarnings("AndroidJdkLibsChecker")
   private double vertexChordDist2(S2Point uvw, DoubleBinaryOperator reducer) {
     double d1 = chordDist2(uvw, uMin, vMin);
     double d2 = chordDist2(uvw, uMin, vMax);
@@ -559,7 +549,6 @@ public final strictfp class S2Cell implements S2Region, Serializable {
    * Returns the distance from the given point to the cell. Returns zero if the point is inside the
    * cell.
    */
-  @JsMethod(name = "getDistanceToPoint")
   public S1ChordAngle getDistance(S2Point targetXyz) {
     return S1ChordAngle.fromLength2(getDistanceInternal(targetXyz, true));
   }
@@ -657,7 +646,6 @@ public final strictfp class S2Cell implements S2Region, Serializable {
   }
 
   /** Returns the maximum distance from the cell (including its interior) to the given point. */
-  @JsMethod(name = "getMaxDistanceToPoint")
   public S1ChordAngle getMaxDistance(S2Point target) {
     // First check the 4 cell vertices. If all are within the hemisphere centered around target, the
     // max distance will be to one of these vertices.
@@ -673,7 +661,6 @@ public final strictfp class S2Cell implements S2Region, Serializable {
   }
 
   /** Returns the maximum distance from the cell (including its interior) to the given edge AB. */
-  @JsMethod(name = "getMaxDistanceToEdge")
   public S1ChordAngle getMaxDistance(S2Point a, S2Point b) {
     // If the maximum distance from both endpoints to the cell is less than Pi/2 then the maximum
     // distance from the edge to the cell is the maximum of the two endpoint distances.

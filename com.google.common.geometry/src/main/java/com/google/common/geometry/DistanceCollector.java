@@ -15,9 +15,6 @@
  */
 package com.google.common.geometry;
 
-import jsinterop.annotations.JsMethod;
-import jsinterop.annotations.JsType;
-
 /**
  * DistanceCollector is an interface for working with abstract distances, tracking the current
  * "best" distance seen over a sequence of update calls. This can be better than simply computing
@@ -28,7 +25,6 @@ import jsinterop.annotations.JsType;
  * support finding a best distance between S2 points, edges, and cells. Current implementations
  * support finding minimum and maximum distances.
  */
-@JsType
 public interface DistanceCollector<T extends S1Distance<T>>
     extends Comparable<DistanceCollector<T>> {
   /**
@@ -61,41 +57,35 @@ public interface DistanceCollector<T extends S1Distance<T>>
    * Update this collector to the better of the current distance, and the distance between the two
    * given points. Returns true if this distance was updated, false otherwise.
    */
-  @JsMethod(name = "updatePointToPoint")
   boolean update(S2Point p1, S2Point p2);
 
   /**
    * Update this collector to the better of the current distance, and the distance between the
    * given point and edge. Returns true if this distance was updated, false otherwise.
    */
-  @JsMethod(name = "updatePointToEdge")
   boolean update(S2Point p, S2Point v0, S2Point v1);
 
   /**
    * Update this collector to the better of the current distance, and the distance between the two
    * given edges. Returns true if this distance was updated, false otherwise.
    */
-  @JsMethod(name = "updateEdgeToEdge")
   boolean update(S2Point v0, S2Point v1, S2Point w0, S2Point w1);
 
   /**
    * Update this collector to the better of the current distance, and the distance between the
    * given point and cell. Returns true if this distance was updated, false otherwise.
    */
-  @JsMethod(name = "updatePointToCell")
   boolean update(S2Point p, S2Cell c);
 
   /**
    * Update this collector to the better of the current distance, and the distance between the
    * given edge and cell. Returns true if this distance was updated, false otherwise.
    */
-  @JsMethod(name = "updateEdgeToCell")
   boolean update(S2Point v0, S2Point v1, S2Cell c);
 
   /**
    * Update this collector to the better of the current distance, and the distance between the two
    * given cells. Returns true if this distance was updated, false otherwise.
    */
-  @JsMethod(name = "updateCellToCell")
   boolean update(S2Cell c1, S2Cell c2);
 }

@@ -25,6 +25,7 @@ import java.util.Collection;
  * computing a covering of the intersection of a set of regions. The regions are assumed to be
  * immutable. Note: An intersection of no regions covers the entire sphere.
  */
+@SuppressWarnings("serial")
 public class S2RegionIntersection implements S2Region, Serializable {
   // Regions is non-private so that it can be accessed from the custom field serializer.
   final S2Region[] regions;

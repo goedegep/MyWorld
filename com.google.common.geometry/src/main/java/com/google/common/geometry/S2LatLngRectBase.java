@@ -28,15 +28,13 @@ import static java.lang.Math.sqrt;
 
 import com.google.common.base.Preconditions;
 import java.io.Serializable;
-import jsinterop.annotations.JsMethod;
-import jsinterop.annotations.JsType;
 
 /**
  * Base class for methods shared between the immutable {@link S2LatLngRect} and the mutable {@link
  * S2LatLngRect.Builder}.
  */
-@JsType
-public abstract strictfp class S2LatLngRectBase implements S2Region, Serializable {
+@SuppressWarnings("serial")
+public abstract class S2LatLngRectBase implements S2Region, Serializable {
   // A vector orthogonal to longitude 0.
   private static final S2Point ORTHO_LNG = S2Point.Y_NEG;
 
@@ -174,7 +172,6 @@ public abstract strictfp class S2LatLngRectBase implements S2Region, Serializabl
    * Returns the minimum distance (measured along the surface of the sphere) from a given point to
    * the rectangle (both its boundary and its interior). The latLng must be valid.
    */
-  @JsMethod(name = "getDistanceLatLng")
   public final S1Angle getDistance(S2LatLng p) {
     // The algorithm here is the same as in getDistance(S2LatLngRect), only with simplified
     // calculations.
@@ -514,7 +511,6 @@ public abstract strictfp class S2LatLngRectBase implements S2Region, Serializabl
    * More efficient version of contains() that accepts a S2LatLng rather than an S2Point. The
    * argument must be normalized.
    */
-  @JsMethod(name = "containsLatLng")
   public final boolean contains(S2LatLng ll) {
     // assert (ll.isValid());
     return (lat.contains(ll.latRadians()) && lng.contains(ll.lngRadians()));
@@ -524,7 +520,6 @@ public abstract strictfp class S2LatLngRectBase implements S2Region, Serializabl
    * Returns true if and only if the given point is contained in the interior of the region (i.e.
    * the region excluding its boundary). The point 'p' does not need to be normalized.
    */
-  @JsMethod(name = "interiorContainsPoint")
   public final boolean interiorContains(S2Point p) {
     return interiorContains(new S2LatLng(p));
   }
@@ -532,7 +527,6 @@ public abstract strictfp class S2LatLngRectBase implements S2Region, Serializabl
   /**
    * More efficient version of interiorContains() that accepts a S2LatLng rather than an S2Point.
    */
-  @JsMethod(name = "interiorContainsLatLng")
   public final boolean interiorContains(S2LatLng ll) {
     // assert (ll.isValid());
     return (lat.interiorContains(ll.lat().radians()) && lng.interiorContains(ll.lng().radians()));
@@ -560,7 +554,6 @@ public abstract strictfp class S2LatLngRectBase implements S2Region, Serializabl
    * Returns true if this rectangle intersects the given cell. (This is an exact test and may be
    * fairly expensive, see also MayIntersect below.)
    */
-  @JsMethod(name = "intersectsCell")
   public final boolean intersects(S2Cell cell) {
     // First we eliminate the cases where one region completely contains the other. Once these are
     // disposed of, then the regions will intersect if and only if their boundaries intersect.
@@ -672,7 +665,6 @@ public abstract strictfp class S2LatLngRectBase implements S2Region, Serializabl
    * Returns true if the latitude and longitude intervals of the two rectangles are the same up to
    * the given tolerance. See {@link R1Interval} and {@link S1Interval} for details.
    */
-  @JsMethod(name = "approxEqualsWithMaxError")
   public final boolean approxEquals(S2LatLngRectBase other, double maxError) {
     return lat.approxEquals(other.lat, maxError) && lng.approxEquals(other.lng, maxError);
   }
@@ -686,7 +678,6 @@ public abstract strictfp class S2LatLngRectBase implements S2Region, Serializabl
    * As {@link #approxEquals(S2LatLngRectBase, double)}, but with separate tolerances for latitude
    * and longitude.
    */
-  @JsMethod(name = "approxEqualsLatLng")
   public final boolean approxEquals(S2LatLngRectBase other, S2LatLng maxError) {
     return lat.approxEquals(other.lat, maxError.lat().radians())
         && lng.approxEquals(other.lng, maxError.lng().radians());
@@ -748,7 +739,6 @@ public abstract strictfp class S2LatLngRectBase implements S2Region, Serializabl
    * S2CellId#sentinel()} is passed here.
    */
   @Override
-  @JsMethod(name = "containsCell")
   public final boolean contains(S2Cell cell) {
     return contains(cell.getRectBound());
   }
@@ -767,7 +757,6 @@ public abstract strictfp class S2LatLngRectBase implements S2Region, Serializabl
 
   /** The point 'p' does not need to be normalized. */
   @Override
-  @JsMethod(name = "containsPoint")
   public final boolean contains(S2Point p) {
     return contains(new S2LatLng(p));
   }

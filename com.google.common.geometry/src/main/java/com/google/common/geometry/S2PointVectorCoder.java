@@ -46,6 +46,7 @@ import java.util.List;
  * points into a large contiguous buffer that contains other encoded data as well. This buffer may
  * not be modified after decode() is called: {@link S2Coder#isLazy()} is true.
  */
+@SuppressWarnings("serial")
 public class S2PointVectorCoder implements S2Coder<List<S2Point>> {
   /**
    * An instance of a {@code S2PointVectorCoder} which encodes/decodes {@link S2Point}s in the FAST

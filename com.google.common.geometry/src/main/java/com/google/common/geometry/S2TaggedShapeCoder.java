@@ -27,7 +27,6 @@ import java.util.HashMap;
 import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
-import javax.annotation.Nullable;
 
 /**
  * An encoder/decoder of tagged {@link S2Shape}s. Note it is the various implementations of S2Shape
@@ -38,6 +37,7 @@ import javax.annotation.Nullable;
  * encoding and decoding of all kinds of S2Shapes, respectively. Decoding of some types of S2Shapes
  * is on-demand, so {@link S2Coder#isLazy() is true.
  */
+@SuppressWarnings("serial")
 public class S2TaggedShapeCoder implements S2Coder<S2Shape> {
 
   private static final int POLYGON_TYPE_TAG = 1;
@@ -121,7 +121,6 @@ public class S2TaggedShapeCoder implements S2Coder<S2Shape> {
   }
 
   @Override
-  @Nullable
   public S2Shape decode(Bytes data, Cursor cursor) throws IOException {
     if (cursor.remaining() == 0) {
       // A null shape is encoded as 0 bytes.

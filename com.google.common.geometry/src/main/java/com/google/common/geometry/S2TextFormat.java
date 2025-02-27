@@ -22,7 +22,6 @@ import com.google.common.geometry.S2Shape.MutableEdge;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import javax.annotation.Nullable;
 
 /**
  * S2TextFormat contains a collection of functions for converting geometry to and from a human-
@@ -30,7 +29,7 @@ import javax.annotation.Nullable;
  * readable format is *not* designed to preserve the full precision of the original object, so it
  * should not be used for data storage.
  */
-public strictfp class S2TextFormat {
+public class S2TextFormat {
 
   /**
    * Returns an S2Point corresponding to the given a latitude-longitude coordinate in degrees.
@@ -45,7 +44,6 @@ public strictfp class S2TextFormat {
   /**
    * As above, but do not CHECK-fail on invalid input. Returns null if conversion is unsuccessful.
    */
-  @Nullable
   public static S2Point makePoint(String str) {
     List<S2Point> vertices = parsePoints(str);
     if (vertices == null || vertices.size() != 1) {
@@ -75,7 +73,6 @@ public strictfp class S2TextFormat {
   /**
    * As above, but does not CHECK-fail on invalid input. Returns null if conversion is unsuccessful.
    */
-  @Nullable
   static List<S2LatLng> parseLatLngs(String str) {
     List<ParseEntry> ps = dictionaryParse(str);
     if (ps == null) {
@@ -84,13 +81,7 @@ public strictfp class S2TextFormat {
     List<S2LatLng> latlngs = new ArrayList<>();
     for (ParseEntry p : ps) {
       Double lat = parseDouble(p.key);
-      if (lat == null) {
-        return null;
-      }
       Double lng = parseDouble(p.value);
-      if (lng == null) {
-        return null;
-      }
       latlngs.add(S2LatLng.fromDegrees(lat, lng));
     }
     return latlngs;
@@ -109,7 +100,6 @@ public strictfp class S2TextFormat {
   /**
    * As above, but does not CHECK-fail on invalid input. Returns null if conversion is unsuccessful.
    */
-  @Nullable
   public static List<S2Point> parsePoints(String str) {
     List<S2LatLng> latlngs = parseLatLngs(str);
     if (latlngs == null) {
@@ -132,7 +122,6 @@ public strictfp class S2TextFormat {
   /**
    * As above, but does not CHECK-fail on invalid input. Returns null if conversion is unsuccessful.
    */
-  @Nullable
   public static S2LatLng makeLatLng(String str) {
     List<S2LatLng> latlngs = parseLatLngs(str);
     if (null == latlngs || latlngs.size() != 1) {
@@ -154,7 +143,6 @@ public strictfp class S2TextFormat {
   /**
    * As above, but does not CHECK-fail on invalid input. Returns null if conversion is unsuccessful.
    */
-  @Nullable
   public static S2LatLngRect makeLatLngRect(String str) {
     List<S2LatLng> latlngs = parseLatLngs(str);
     if (null == latlngs || latlngs.isEmpty()) {
@@ -186,7 +174,6 @@ public strictfp class S2TextFormat {
   /**
    * As above, but does not CHECK-fail on invalid input. Returns null if conversion is unsuccessful.
    */
-  @Nullable
   public static S2CellId makeCellId(String str) {
     S2CellId cellId = S2CellId.fromDebugString(str);
     if (cellId.equals(S2CellId.none())) {
@@ -209,7 +196,6 @@ public strictfp class S2TextFormat {
   /**
    * As above, but does not CHECK-fail on invalid input. Returns null if conversion is unsuccessful.
    */
-  @Nullable
   public static S2CellUnion makeCellUnion(String str) {
     ArrayList<S2CellId> cellIds = new ArrayList<>();
     for (String cellStr : splitString(str, ",")) {
@@ -242,7 +228,6 @@ public strictfp class S2TextFormat {
   /**
    * As above, but does not CHECK-fail on invalid input. Returns null if conversion is unsuccessful.
    */
-  @Nullable
   public static S2Loop makeLoop(String str) {
     if (str.equals("empty")) {
       return S2Loop.empty();
@@ -267,7 +252,6 @@ public strictfp class S2TextFormat {
   /**
    * As above, but does not CHECK-fail on invalid input. Returns null if conversion is unsuccessful.
    */
-  @Nullable
   public static S2Polyline makePolyline(String str) {
     List<S2Point> vertices = parsePoints(str);
     if (null == vertices) {
@@ -286,7 +270,6 @@ public strictfp class S2TextFormat {
   /**
    * As above, but does not CHECK-fail on invalid input. Returns null if conversion is unsuccessful.
    */
-  @Nullable
   public static S2LaxPolylineShape makeLaxPolyline(String str) {
     List<S2Point> vertices = parsePoints(str);
     if (null == vertices) {
@@ -321,7 +304,6 @@ public strictfp class S2TextFormat {
   /**
    * As above, but does not CHECK-fail on invalid input. Returns null if conversion is unsuccessful.
    */
-  @Nullable
   public static S2Polygon makePolygon(String str) {
     return internalMakePolygon(str, true);
   }
@@ -339,7 +321,6 @@ public strictfp class S2TextFormat {
   /**
    * As above, but does not CHECK-fail on invalid input. Returns null if conversion is unsuccessful.
    */
-  @Nullable
   public static S2Polygon makeVerbatimPolygon(String str) {
     return internalMakePolygon(str, false);
   }
@@ -359,7 +340,6 @@ public strictfp class S2TextFormat {
   /**
    * As above, but does not CHECK-fail on invalid input. Returns null if conversion is unsuccessful.
    */
-  @Nullable
   public static S2LaxPolygonShape makeLaxPolygon(String str) {
     List<String> loopStrs = splitString(str, ";");
     List<List<S2Point>> loops = new ArrayList<>();
@@ -414,7 +394,6 @@ public strictfp class S2TextFormat {
   /**
    * As above, but does not CHECK-fail on invalid input. Returns null if conversion is unsuccessful.
    */
-  @Nullable
   public static S2ShapeIndex makeIndex(String str) {
     String[] strs = str.split("#", -1); // Here, we want to include empty strings in split.
     if (strs.length != 3) {
@@ -671,7 +650,6 @@ public strictfp class S2TextFormat {
   }
 
   /** Modeled on the DictionaryParse method of strings/serialize.cc */
-  @Nullable
   private static List<ParseEntry> dictionaryParse(String str) {
     List<ParseEntry> items = new ArrayList<>();
     String[] entries = str.split(",", -1);
@@ -688,7 +666,6 @@ public strictfp class S2TextFormat {
     return items;
   }
 
-  @Nullable
   private static S2Polygon internalMakePolygon(String str, boolean normalizeLoops) {
     if (str.equals("empty")) {
       return new S2Polygon(new ArrayList<S2Loop>()); // Can't be an ImmutableList, it is clear()ed.

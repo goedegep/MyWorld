@@ -46,7 +46,7 @@ import com.google.common.base.Preconditions;
  * @author shakusa@google.com (Steven Hakusa) ported from util/geometry
  * @author ericv@google.com (Eric Veach) original author
  */
-public strictfp class S2EdgeUtil {
+public class S2EdgeUtil {
   /**
    * IEEE floating-point operations have a maximum error of 0.5 ULPS (units in the last place). For
    * double-precision numbers, this works out to 2**-53 (about 1.11e-16) times the magnitude of the
@@ -942,6 +942,7 @@ public strictfp class S2EdgeUtil {
   }
 
   /** Returns the relation from wedge A to B. */
+  @SuppressWarnings("exports")
   public static WedgeRelation getWedgeRelation(
       S2Point a0, S2Point ab1, S2Point a2, S2Point b0, S2Point b2) {
     // There are 6 possible edge orderings at a shared vertex (all of these orderings are circular,

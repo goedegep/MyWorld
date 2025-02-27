@@ -42,9 +42,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
-import javax.annotation.Nullable;
-import jsinterop.annotations.JsIgnore;
-import jsinterop.annotations.JsType;
 
 /**
  * An S2Loop represents a simple spherical polygon. It consists of a single chain of vertices where
@@ -70,8 +67,8 @@ import jsinterop.annotations.JsType;
  * @author shakusa@google.com (Steven Hakusa) ported from util/geometry
  * @author ericv@google.com (Eric Veach) original author
  */
-@JsType
-public final strictfp class S2Loop implements S2Region, Comparable<S2Loop>, Serializable, S2Shape {
+@SuppressWarnings("serial")
+public final class S2Loop implements S2Region, Comparable<S2Loop>, Serializable, S2Shape {
 
   @VisibleForTesting static final byte LOSSLESS_ENCODING_VERSION = 1;
 
@@ -121,7 +118,6 @@ public final strictfp class S2Loop implements S2Region, Comparable<S2Loop>, Seri
    *
    * @param vertices the vertices for this new loop
    */
-  @JsIgnore
   public S2Loop(final List<S2Point> vertices) {
     initIndex();
     this.numVertices = vertices.size();
@@ -190,7 +186,6 @@ public final strictfp class S2Loop implements S2Region, Comparable<S2Loop>, Seri
   }
 
   /** Initialize a loop corresponding to the given cell. */
-  @JsIgnore
   public S2Loop(S2Cell cell) {
     initIndex();
     numVertices = 4;
@@ -205,7 +200,6 @@ public final strictfp class S2Loop implements S2Region, Comparable<S2Loop>, Seri
   }
 
   /** Copy constructor. */
-  @JsIgnore
   public S2Loop(S2Loop src) {
     initIndex();
     this.numVertices = src.numVertices;
@@ -548,7 +542,6 @@ public final strictfp class S2Loop implements S2Region, Comparable<S2Loop>, Seri
    *
    * <p>Note that the return value is not affected by whether this loop is a "hole" or a "shell".
    */
-  @Nullable
   public S2Point getCentroid() {
     if (numVertices < 3) {
       return null;
@@ -1014,7 +1007,6 @@ public final strictfp class S2Loop implements S2Region, Comparable<S2Loop>, Seri
    * the region does not contain the cell or the containment relationship could not be determined.
    */
   @Override
-  @JsIgnore
   public boolean contains(S2Cell target) {
     S2Iterator<S2ShapeIndex.Cell> it = index.iterator();
     S2ShapeIndex.CellRelation relation = it.locate(target.id());
@@ -1121,8 +1113,6 @@ public final strictfp class S2Loop implements S2Region, Comparable<S2Loop>, Seri
    * keeps vertices for which {@code vertexFilter.shouldKeepVertex()} is true.
    */
   // Covered by tests of S2Polygon.initToSimplified.
-  @Nullable
-  @JsIgnore // J2CL warning "Predicate<S2Point> is not usable by JavaScript", probably because
   // Predicate is not a JsType.
   public S2Loop simplify(S1Angle tolerance, Predicate<S2Point> vertexFilter) {
     if (vertices.length < 2) {
@@ -1276,7 +1266,6 @@ public final strictfp class S2Loop implements S2Region, Comparable<S2Loop>, Seri
    * @return true if the given loop is valid. Creates an instance of S2Loop and defers this call to
    *     {@link #isValid()}.
    */
-  @JsIgnore
   public static boolean isValid(List<S2Point> vertices) {
     return new S2Loop(vertices).isValid();
   }

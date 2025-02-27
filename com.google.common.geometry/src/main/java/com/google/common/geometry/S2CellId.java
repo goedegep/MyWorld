@@ -39,9 +39,6 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
-import jsinterop.annotations.JsIgnore;
-import jsinterop.annotations.JsMethod;
-import jsinterop.annotations.JsType;
 
 /**
  * An S2CellId is a 64-bit unsigned integer that uniquely identifies a cell in the S2 cell
@@ -76,9 +73,9 @@ import jsinterop.annotations.JsType;
  * @author danieldanciu@google.com (Daniel Danciu) ported from util/geometry
  * @author ericv@google.com (Eric Veach) original author
  */
+@SuppressWarnings("serial")
 @Immutable
-@JsType
-public final strictfp class S2CellId implements Comparable<S2CellId>, Serializable {
+public final class S2CellId implements Comparable<S2CellId>, Serializable {
   // Although only 60 bits are needed to represent the index of a leaf cell, the extra position bit
   // lets us encode each cell as its Hilbert curve position at the cell center, which is halfway
   // along the portion of the Hilbert curve that fills that cell.
@@ -150,7 +147,6 @@ public final strictfp class S2CellId implements Comparable<S2CellId>, Serializab
 
   /** A coder of S2CellId instances as an 8 byte little-endian long. */
   public static final S2Coder<S2CellId> CODER = new S2Coder<S2CellId>() {
-    @JsIgnore // OutputStream is not available to J2CL.
     @Override public void encode(S2CellId value, OutputStream output) throws IOException {
       LittleEndianOutput.writeLong(output, value.id());
     }
@@ -167,7 +163,6 @@ public final strictfp class S2CellId implements Comparable<S2CellId>, Serializab
     // TODO(eengle): Use StandardCharsets when Android supports it.
     private static final String CHARSET = "UTF-8";
 
-    @JsIgnore // OutputStream is not available to J2CL.
     @Override public void encode(S2CellId value, OutputStream output) throws IOException {
       byte[] data = value.toToken().getBytes(CHARSET);
       output.write(data.length);
@@ -192,7 +187,6 @@ public final strictfp class S2CellId implements Comparable<S2CellId>, Serializab
   }
 
   /** The default constructor returns an invalid cell id. */
-  @JsIgnore
   public S2CellId() {
     this(0);
   }
@@ -455,7 +449,6 @@ public final strictfp class S2CellId implements Comparable<S2CellId>, Serializab
    * parent. The argument should be in the range 1..MAX_LEVEL. For example, childPosition(1) returns
    * the position of this cell's level-1 ancestor within its top-level face cell.
    */
-  @JsMethod(name = "childPositionAtLevel")
   public int childPosition(int level) {
     return (int) (id >>> (2 * (MAX_LEVEL - level) + 1)) & 3;
   }
@@ -528,7 +521,6 @@ public final strictfp class S2CellId implements Comparable<S2CellId>, Serializab
    * Return the cell id of this cell's parent at the given level, which must be less than or equal
    * to the current level.
    */
-  @JsMethod(name = "parentAtLevel")
   public S2CellId parent(int level) {
     // assert (isValid() && level >= 0 && level <= this.level());
     return new S2CellId(parentAsLong(id, level));
@@ -552,7 +544,6 @@ public final strictfp class S2CellId implements Comparable<S2CellId>, Serializab
    * Iterable over the ids of the immediate children of this cell id. This cells' level must be less
    * than MAX_LEVEL.
    */
-  @JsIgnore
   public Iterable<S2CellId> children() {
     if (isLeaf()) {
       return ImmutableList.of();
@@ -565,7 +556,6 @@ public final strictfp class S2CellId implements Comparable<S2CellId>, Serializab
    * Iterable over the ids of the children of this cell id at the given level, which must be greater
    * than or equal to this ids' level, and less than or equal to MAX_LEVEL.
    */
-  @JsIgnore
   public Iterable<S2CellId> childrenAtLevel(final int level) {
     Preconditions.checkState(isValid());
     Preconditions.checkArgument(level >= level() && level <= MAX_LEVEL);
@@ -617,7 +607,6 @@ public final strictfp class S2CellId implements Comparable<S2CellId>, Serializab
    * Returns the first cell in a traversal of children a given level deeper than this cell, in
    * Hilbert curve order. Requires that the given level be greater or equal to this cell level.
    */
-  @JsMethod(name = "childBeginAtLevel")
   public S2CellId childBegin(int level) {
     // assert (isValid() && level >= this.level() && level <= MAX_LEVEL);
     return new S2CellId(childBeginAsLong(id, level));
@@ -636,7 +625,6 @@ public final strictfp class S2CellId implements Comparable<S2CellId>, Serializab
    * Returns the first cell after the last child in a traversal of children a given level deeper
    * than this cell, in Hilbert curve order. This cell can be invalid.
    */
-  @JsMethod(name = "childEndAtLevel")
   public S2CellId childEnd(int level) {
     // assert (isValid() && level >= this.level() && level <= MAX_LEVEL);
     return new S2CellId(childEndAsLong(id, level));

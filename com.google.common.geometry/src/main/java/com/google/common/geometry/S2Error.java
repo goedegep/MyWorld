@@ -14,15 +14,12 @@
  * limitations under the License.
  */
 package com.google.common.geometry;
-import jsinterop.annotations.JsType;
 
 /**
  * An error code and text string describing the first error encountered during a validation process.
  */
-@JsType
 public class S2Error {
   /** Numeric values for S2 errors. */
-  @JsType
   public enum Code {
     /** No problems detected. */
     NO_ERROR(0),

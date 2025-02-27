@@ -29,9 +29,6 @@ import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import jsinterop.annotations.JsIgnore;
-import jsinterop.annotations.JsMethod;
-import jsinterop.annotations.JsType;
 
 /**
  * S2LatLngRect represents a latitude-longitude rectangle. It is capable of representing the empty
@@ -61,8 +58,8 @@ import jsinterop.annotations.JsType;
  * @author danieldanciu@google.com (Daniel Danciu) ported from util/geometry
  * @author ericv@google.com (Eric Veach) original author
  */
-@JsType
-public final strictfp class S2LatLngRect extends S2LatLngRectBase {
+@SuppressWarnings("serial")
+public final class S2LatLngRect extends S2LatLngRectBase {
   /** Version number of the lossless encoding format for S2LatLngRect. */
   private static final byte LOSSLESS_ENCODING_VERSION = 1;
 
@@ -177,21 +174,18 @@ public final strictfp class S2LatLngRect extends S2LatLngRectBase {
    * with {@code lo.lat() <= hi.lat()}. The rectangle contains all the points p such that {@code lo
    * <= p && p <= hi}, where {@code <=} is defined in the obvious way.
    */
-  @JsIgnore
   public S2LatLngRect(final S2LatLng lo, final S2LatLng hi) {
     super(lo, hi);
     // assert (isValid());
   }
 
   /** Constructs a rectangle from latitude and longitude intervals. */
-  @JsIgnore
   public S2LatLngRect(R1Interval lat, S1Interval lng) {
     super(lat, lng);
     // assert (isValid());
   }
 
   /** Creates a new S2LatLngRect as a copy of {@code b}. */
-  @JsIgnore
   public S2LatLngRect(S2LatLngRectBase b) {
     lat.setLo(b.lat.lo());
     lat.setHi(b.lat.hi());
@@ -228,7 +222,6 @@ public final strictfp class S2LatLngRect extends S2LatLngRectBase {
    * rectangle to include the point by the minimum amount possible. The S2LatLng argument must be
    * normalized.
    */
-  @JsMethod(name = "addLatLng")
   public S2LatLngRect addPoint(S2LatLng ll) {
     // assert (ll.isValid());
     R1Interval newLat = lat.addPoint(ll.lat().radians());
@@ -377,7 +370,6 @@ public final strictfp class S2LatLngRect extends S2LatLngRectBase {
 
   // NOTE: This should be marked as @Override, but clone() isn't present in GWT's version of Object,
   // so we can't mark it as such.
-  @SuppressWarnings("MissingOverride")
   public S2Region clone() {
     return new S2LatLngRect(this.lo(), this.hi());
   }
@@ -395,12 +387,10 @@ public final strictfp class S2LatLngRect extends S2LatLngRectBase {
    * @param output The output stream into which the encoding should be written.
    * @throws IOException if there was a problem writing into the output stream.
    */
-  @JsIgnore
   public void encode(OutputStream output) throws IOException {
     encode(new LittleEndianOutput(output));
   }
 
-  @JsIgnore
   void encode(LittleEndianOutput encoder) throws IOException {
     encoder.writeByte(LOSSLESS_ENCODING_VERSION);
     encoder.writeDouble(lat().lo());
@@ -417,12 +407,10 @@ public final strictfp class S2LatLngRect extends S2LatLngRectBase {
    * @throws IOException if there was a problem reading from the input stream, or the contents are
    *     malformed.
    */
-  @JsIgnore
   public static S2LatLngRect decode(InputStream input) throws IOException {
     return decode(new LittleEndianInput(input));
   }
 
-  @JsIgnore
   static S2LatLngRect decode(LittleEndianInput decoder) throws IOException {
     byte version = decoder.readByte();
     if (version != LOSSLESS_ENCODING_VERSION) {
@@ -451,7 +439,7 @@ public final strictfp class S2LatLngRect extends S2LatLngRectBase {
    * S2LatLngRect.Builder(); for (S2LatLng point : points) { builder.addPoint(point); } return
    * builder.build(); }}
    */
-  public static final strictfp class Builder extends S2LatLngRectBase {
+  public static final class Builder extends S2LatLngRectBase {
     public Builder() {
       super();
     }
@@ -610,7 +598,6 @@ public final strictfp class S2LatLngRect extends S2LatLngRectBase {
 
     // NOTE: This should be marked as @Override, but clone() isn't present in GWT's version of
     // Object, so we can't mark it as such.
-    @SuppressWarnings("MissingOverride")
     public S2Region clone() {
       return new S2LatLngRect(this.lo(), this.hi());
     }
