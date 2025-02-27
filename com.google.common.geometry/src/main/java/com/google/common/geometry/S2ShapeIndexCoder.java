@@ -31,10 +31,6 @@ import java.util.AbstractList;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import javax.annotation.Nullable;
-import jsinterop.annotations.JsConstructor;
-import jsinterop.annotations.JsIgnore;
-import jsinterop.annotations.JsType;
 
 /**
  * An encoder/decoder of {@link S2ShapeIndex}s.
@@ -45,7 +41,7 @@ import jsinterop.annotations.JsType;
  * accessing the entire index, this uses slightly more memory than {@link S2ShapeIndex}, but uses
  * dramatically less memory when accessing only a few cells of the index.
  */
-@JsType
+@SuppressWarnings("serial")
 public class S2ShapeIndexCoder implements S2Coder<S2ShapeIndex> {
 
   /**
@@ -65,13 +61,12 @@ public class S2ShapeIndexCoder implements S2Coder<S2ShapeIndex> {
    * @param shapes the list of shapes, used only by {@link #decode}, commonly the result of {@link
    *     VectorCoder#decode} for {@link VectorCoder#FAST_SHAPE}.
    */
-  public S2ShapeIndexCoder(@Nullable List<S2Shape> shapes) {
+  public S2ShapeIndexCoder(List<S2Shape> shapes) {
     this.shapes = shapes;
   }
 
   /** Encodes the given S2ShapeIndex into the given OutputStream. */
   @Override
-  @JsIgnore // OutputStream is not available to J2CL.
   public void encode(S2ShapeIndex value, OutputStream output) throws IOException {
     // The version number is encoded in 2 bits, under the assumption that by the time we need 5
     // versions the first version can be permanently retired. This only saves 1 byte, but that's
@@ -155,7 +150,6 @@ public class S2ShapeIndexCoder implements S2Coder<S2ShapeIndex> {
     private final S2Coder<S2ClippedShape[]> clippedShapeArrayCoder =
         new S2Coder<S2ClippedShape[]>() {
           @Override
-          @JsIgnore // OutputStream is not available to J2CL.
           public void encode(S2ClippedShape[] values, OutputStream output) {
             throw new UnsupportedOperationException();
           }
@@ -178,7 +172,6 @@ public class S2ShapeIndexCoder implements S2Coder<S2ShapeIndex> {
      * <p>Values are decoded only when they are accessed. This allows for very fast initialization
      * and little additional memory use beyond the encoded data.
      */
-    @JsConstructor
     EncodedS2ShapeIndex(Options options, Bytes data, Cursor cursor, List<S2Shape> shapeFactory)
         throws IOException {
       super(options);
@@ -247,7 +240,6 @@ public class S2ShapeIndexCoder implements S2Coder<S2ShapeIndex> {
       private S2CellId cachedCellId = null;
       private volatile S2ClippedShape[] cachedClippedShapes;
 
-      @JsConstructor
       LazyCell(int i) {
         this.i = i;
       }

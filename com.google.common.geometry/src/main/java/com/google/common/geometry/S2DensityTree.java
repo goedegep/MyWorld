@@ -40,9 +40,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
-import jsinterop.annotations.JsEnum;
-import jsinterop.annotations.JsIgnore;
-import jsinterop.annotations.JsType;
 
 /**
  * A density tree is a kind of spatial histogram, computed over a collection of shapes in an
@@ -98,7 +95,6 @@ import jsinterop.annotations.JsType;
  * List<S2CellId> partitions = tree.getPartitioning(100 * 2 << 10);
  * }</pre>
  */
-@JsType
 public class S2DensityTree {
   /** The current version string that prefixes all density trees, in the latin1 charset. */
   public static final String VERSION = "S2DensityTree0";
@@ -113,8 +109,8 @@ public class S2DensityTree {
   }
 
   /** An {@link S2Coder} of density trees. */
+  @SuppressWarnings("serial")
   public static final S2Coder<S2DensityTree> CODER = new S2Coder<S2DensityTree>() {
-    @JsIgnore // OutputStream is not available in J2CL.
     @Override public void encode(S2DensityTree value, OutputStream output) throws IOException {
       value.encoded.writeTo(output);
     }
@@ -152,7 +148,6 @@ public class S2DensityTree {
   }
 
   /** As {@link #decode(Bytes, Cursor)} with a default cursor over the whole set of bytes. */
-  @JsIgnore // No method overloading in J2CL. Use decode(bytes, bytes.cursor()).
   public static S2DensityTree decode(Bytes bytes) throws IOException {
     return new S2DensityTree(bytes, bytes.cursor());
   }
@@ -203,6 +198,7 @@ public class S2DensityTree {
         return S2LatLngRect.full();
       }
       @Override public boolean mayIntersect(S2Cell cell) {
+        @SuppressWarnings("unused")
         Cell unusedCell = path.cell(cell.id());
         return path.last != null && path.last.intersects(cell.id());
       }
@@ -283,7 +279,6 @@ public class S2DensityTree {
   }
 
   /** A visitor to stream through the cell,weight pairs of the density tree in depth-first order. */
-  @JsType
   public interface CellVisitor {
     /**
      * @param cell the cell
@@ -293,7 +288,6 @@ public class S2DensityTree {
     Action visit(S2CellId cell, Cell node);
 
     /** The action requested by the visitor. */
-    @JsEnum
     enum Action {
       /** Continue visitation but skip the children of this node. */
       SKIP_CELL,
@@ -304,7 +298,6 @@ public class S2DensityTree {
     }
 
     /** A visitor of all nodes. */
-    @JsType
     interface All extends CellVisitor {
       @Override default Action visit(S2CellId cell, Cell node) {
         visit(cell, node.weight);
@@ -312,12 +305,10 @@ public class S2DensityTree {
       }
 
       /** Visits the next cell. */
-      @JsIgnore // J2CL has no method overloads.
       void visit(S2CellId cell, long weight);
     }
 
     /** A visitor of nodes while {@link #visit} returns true. */
-    @JsType
     interface While extends CellVisitor {
       @Override
       default Action visit(S2CellId cell, Cell node) {
@@ -325,7 +316,6 @@ public class S2DensityTree {
       }
 
       /** Visits the next cell. */
-      @JsIgnore // J2CL has no method overloads.
       boolean visit(S2CellId cell, long weight);
     }
   }
@@ -336,7 +326,6 @@ public class S2DensityTree {
    * <p>See {@link S2DensityTree class comments} for the meaning of weights).
    */
   // TODO(eengle): This should extend ToLongFunction, but that isn't Android-compliant.
-  @JsType
   public interface ShapeWeightFunction {
     /**
      * Returns the weight of the given shape, which must be in the closed range
@@ -414,7 +403,6 @@ public class S2DensityTree {
    * this limit except cells contained by polygons, which can save a lot of space in polygonal
    * datasets
    */
-  @JsIgnore // Iterable<S2DensityTree> "is not usable by JavaScript" but not clear why.
   public static S2DensityTree sumDensity(
       Iterable<S2DensityTree> trees, int approximateSizeBytes, int maxLevel) {
     return createSumDensityOp(approximateSizeBytes, maxLevel).apply(trees);
@@ -425,7 +413,6 @@ public class S2DensityTree {
    * accelerates repeated density computations with the same settings.
    */
   // TODO(eengle): This should extend BiFunction, but that isn't Android-compliant.
-  @JsType
   public interface ShapeDensityOp {
     /** Returns the density of {@code index} using {@code weigher} at each cell. */
     S2DensityTree apply(S2ShapeIndex index, ShapeWeightFunction weigher);
@@ -436,14 +423,12 @@ public class S2DensityTree {
    * safe, but greatly accelerates repeated density computations with the same settings.
    */
   // TODO(eengle): This should extend Function, but that isn't Android-compliant.
-  @JsType
   public interface VertexDensityOp {
     /** Returns the density of {@code index}, weighing the number of vertices at each cell. */
     S2DensityTree apply(S2ShapeIndex index);
   }
 
   /** A density function that collects the sum of feature weights with any shapes in each cell. */
-  @JsType
   public interface FeatureDensityOp<F> {
     /**
      * Returns the density of {@code shapes}, by converting shapes that intersect each cell to
@@ -455,9 +440,7 @@ public class S2DensityTree {
 
   /** A density function that collects the sum of values in each cell into a new tree. */
   // TODO(eengle): This should extend Function, but that isn't Android-compliant.
-  @JsType
   public interface SumDensityOp {
-    @JsIgnore // Iterable<S2DensityTree> "is not usable by JavaScript" but not clear why.
     S2DensityTree apply(Iterable<S2DensityTree> trees);
   }
 
@@ -501,21 +484,18 @@ public class S2DensityTree {
   }
 
   /** A lookup API that finds the feature corresponding to a shape. */
-  @JsType
   public interface FeatureLookup<T> {
     /** Returns the feature for {@code shape}. */
     T feature(S2Shape shape);
   }
 
   /** A weigher of a given feature. */
-  @JsType
   public interface FeatureWeigher<T> {
     /** Returns the positive non-zero weight of {@code feature}. */
     long weight(T feature);
   }
 
   /** A weigher of feature weights, where each feature may have multiple shapes. */
-  @JsType
   public static class FeatureDensityWeigher<T> implements CellWeightFunction {
     private S2ShapeIndexRegion region;
     private FeatureLookup<T> features;
@@ -780,7 +760,6 @@ public class S2DensityTree {
    * weigher result is greater than 0, the cell level is below the given max level, and the final
    * tree size is estimated to be within the max size.
    */
-  @JsType
   public static class BreadthFirstTreeBuilder {
     private final int approximateSizeBytes;
     private final int maxLevel;
@@ -795,13 +774,12 @@ public class S2DensityTree {
      * but averages around this size
      * @param maxLevel The max level to compute density information for
      */
-    @JsIgnore
     public BreadthFirstTreeBuilder(int approximateSizeBytes, int maxLevel) {
       this(approximateSizeBytes, maxLevel, new TreeEncoder());
     }
 
     /** As {@link #BreadthFirstTreeBuilder(int, int)} but with a reusable encoder. */
-    public BreadthFirstTreeBuilder(int approximateSizeBytes, int maxLevel, TreeEncoder encoder) {
+    public BreadthFirstTreeBuilder(int approximateSizeBytes, int maxLevel, @SuppressWarnings("exports") TreeEncoder encoder) {
       this.approximateSizeBytes = approximateSizeBytes;
       this.maxLevel = maxLevel;
       this.encoder = encoder;
@@ -889,7 +867,6 @@ public class S2DensityTree {
      * when the cell is contained by a polygon.
      */
     // TODO(eengle): This should extend ToLongFunction, but that isn't Android-compliant.
-    @JsType
     public interface CellWeightFunction {
       long applyAsLong(S2CellId cell);
     }
@@ -929,7 +906,6 @@ public class S2DensityTree {
   }
 
   /** The decoded weight and positions of encoded child cells. */
-  @JsType
   public static class Cell {
     private static final int[] NO_CHILDREN = {-1, -1, -1, -1};
 
@@ -1017,7 +993,6 @@ public class S2DensityTree {
    * reverse the array at the end.
    */
   @VisibleForTesting
-  @JsType
   static class TreeEncoder {
     private final ReversibleBytes output = new ReversibleBytes();
     private WeightedCell[] weights = new WeightedCell[8];

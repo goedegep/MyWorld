@@ -34,10 +34,6 @@ import com.google.errorprone.annotations.Immutable;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.Serializable;
-import jsinterop.annotations.JsConstructor;
-import jsinterop.annotations.JsIgnore;
-import jsinterop.annotations.JsMethod;
-import jsinterop.annotations.JsType;
 
 /**
  * This class represents a point on the unit sphere as a pair of latitude-longitude coordinates.
@@ -49,9 +45,9 @@ import jsinterop.annotations.JsType;
  * @author danieldanciu@google.com (Daniel Danciu) ported from util/geometry
  * @author ericv@google.com (Eric Veach) original author
  */
+@SuppressWarnings("serial")
 @Immutable
-@JsType
-public final strictfp class S2LatLng implements Serializable {
+public final class S2LatLng implements Serializable {
   /** The center point the lat/lng coordinate system. */
   public static final S2LatLng CENTER = new S2LatLng(0.0, 0.0);
 
@@ -124,7 +120,6 @@ public final strictfp class S2LatLng implements Serializable {
   }
 
   /** This is internal to avoid ambiguity about which units are expected. */
-  @JsConstructor
   private S2LatLng(double latRadians, double lngRadians) {
     this.latRadians = latRadians;
     this.lngRadians = lngRadians;
@@ -134,19 +129,16 @@ public final strictfp class S2LatLng implements Serializable {
    * Basic constructor. The latitude and longitude must be within the ranges allowed by isValid()
    * below.
    */
-  @JsIgnore
   public S2LatLng(S1Angle lat, S1Angle lng) {
     this(lat.radians(), lng.radians());
   }
 
   /** Default constructor for convenience when declaring arrays, etc. */
-  @JsIgnore
   public S2LatLng() {
     this(0, 0);
   }
 
   /** Convert a point (not necessarily normalized) to an S2LatLng. */
-  @JsIgnore
   public S2LatLng(S2Point p) {
     // The "+ 0.0" is to ensure that points with coordinates of -0.0 and +0.0 (which compare equal)
     // are converted to identical S2LatLng values, since even though -0.0 == +0.0 they can be
@@ -252,7 +244,6 @@ public final strictfp class S2LatLng implements Serializable {
   }
 
   /** Returns the surface distance to the given point assuming a constant radius. */
-  @JsMethod(name = "getDistanceWithRadius")
   public double getDistance(final S2LatLng o, double radius) {
     return getDistance(o).distance(radius);
   }
@@ -305,7 +296,6 @@ public final strictfp class S2LatLng implements Serializable {
    * Returns true if both the latitude and longitude of the given point are within {@code maxError}
    * radians of this point.
    */
-  @JsMethod(name = "approxEqualsWithMaxError")
   public boolean approxEquals(S2LatLng o, double maxError) {
     return (abs(latRadians - o.latRadians) < maxError)
         && (abs(lngRadians - o.lngRadians) < maxError);

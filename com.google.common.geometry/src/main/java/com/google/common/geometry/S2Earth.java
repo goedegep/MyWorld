@@ -18,9 +18,6 @@ package com.google.common.geometry;
 
 
 import com.google.common.annotations.GwtCompatible;
-import jsinterop.annotations.JsIgnore;
-import jsinterop.annotations.JsMethod;
-import jsinterop.annotations.JsType;
 
 /**
  * The Earth modeled as a sphere.
@@ -36,7 +33,6 @@ import jsinterop.annotations.JsType;
  * @author ericv@google.com (Eric Veach)
  * @author norris@google.com (Norris Boyd)
  */
-@JsType
 @GwtCompatible
 public class S2Earth {
   private S2Earth() {}
@@ -67,7 +63,6 @@ public class S2Earth {
    *
    * @return The altitude of the lowest known point on Earth.
    */
-  @JsIgnore
   public static double getLowestAltitudeMeters() {
     return -10898;
   }
@@ -80,7 +75,6 @@ public class S2Earth {
    *
    * @return The altitude of the highest known point on Earth.
    */
-  @JsIgnore
   public static double getHighestAltitudeMeters() {
     return 8846;
   }
@@ -140,25 +134,21 @@ public class S2Earth {
   }
 
   /** Returns the distance between two {@link S2Point}s on the globe in kilometers. */
-  @JsMethod(name = "getDistanceBetweenPointsKm")
   public static double getDistanceKm(S2Point a, S2Point b) {
     return radiansToKm(a.angle(b));
   }
 
   /** Returns the distance between two {@link S2LatLng}s on the globe in kilometers. */
-  @JsMethod(name = "getDistanceBetweenLatLngsKm")
   public static double getDistanceKm(S2LatLng a, S2LatLng b) {
     return toKm(a.getDistance(b));
   }
 
   /** Returns the distance between two {@link S2Point}s on the globe in meters. */
-  @JsMethod(name = "getDistanceBetweenPointsMeters")
   public static double getDistanceMeters(S2Point a, S2Point b) {
     return radiansToMeters(a.angle(b));
   }
 
   /** Returns the distance between two {@link S2LatLng}s on the globe in meters. */
-  @JsMethod(name = "getDistanceBetweenLatLngsMeters")
   public static double getDistanceMeters(S2LatLng a, S2LatLng b) {
     return toMeters(a.getDistance(b));
   }

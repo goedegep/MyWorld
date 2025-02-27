@@ -32,10 +32,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-import jsinterop.annotations.JsConstructor;
-import jsinterop.annotations.JsIgnore;
-import jsinterop.annotations.JsMethod;
-import jsinterop.annotations.JsType;
 
 /**
  * An S2CellUnion is a region consisting of cells of various sizes. Typically a cell union is used
@@ -51,15 +47,15 @@ import jsinterop.annotations.JsType;
  * @author danieldanciu (Daniel Danciu) ported from util/geometry
  * @author ericv@google.com (Eric Veach) original author
  */
-@JsType
-public strictfp class S2CellUnion implements S2Region, Iterable<S2CellId>, Serializable {
+
+public class S2CellUnion implements S2Region, Iterable<S2CellId>, Serializable {
   private static final long serialVersionUID = 1L;
 
   private static final byte LOSSLESS_ENCODING_VERSION = 1;
 
   /** An {@link S2Coder} of cell unions that uses {@link #encode} and {@link #decode}. */
+  @SuppressWarnings("serial")
   public static final S2Coder<S2CellUnion> FAST_CODER = new S2Coder<S2CellUnion>() {
-    @JsIgnore // OutputStream is not available to J2CL.
     @Override public void encode(S2CellUnion value, OutputStream output) throws IOException {
       value.encode(output);
     }
@@ -80,11 +76,9 @@ public strictfp class S2CellUnion implements S2Region, Iterable<S2CellId>, Seria
   /** The CellIds that form the Union */
   private ArrayList<S2CellId> cellIds = new ArrayList<>();
 
-  @JsConstructor
   public S2CellUnion() {}
 
   /** Creates a new cell union from a copy of the given cells. */
-  @JsIgnore // J2CL warning "Iterable<S2CellId> ... is not usable by JavaScript" but not clear why.
   public static S2CellUnion copyFrom(Iterable<S2CellId> cells) {
     S2CellUnion result = new S2CellUnion();
     Iterables.addAll(result.cellIds, cells);
@@ -207,7 +201,6 @@ public strictfp class S2CellUnion implements S2Region, Iterable<S2CellId>, Seria
 
   /** Enable iteration over the union's cells. */
   @Override
-  @JsIgnore
   public Iterator<S2CellId> iterator() {
     return cellIds.iterator();
   }
@@ -336,7 +329,6 @@ public strictfp class S2CellUnion implements S2Region, Iterable<S2CellId>, Seria
    * 4 child cells are <em>not</em> considered to contain their parent cell. To get this behavior
    * you must construct a normalized cell union, or call {@link #normalize()} prior to this method.
    */
-  @JsMethod(name = "containsCellId")
   public boolean contains(S2CellId id) {
     // This is an exact test. Each cell occupies a linear span of the S2 space-filling curve, and
     // the cell id is simply the position at the center of this span. The cell union ids are sorted
@@ -357,7 +349,6 @@ public strictfp class S2CellUnion implements S2Region, Iterable<S2CellId>, Seria
    * Return true if the cell union intersects the given cell id. This is a fast operation
    * (logarithmic in the size of the cell union).
    */
-  @JsMethod(name = "intersectsCellId")
   public boolean intersects(S2CellId id) {
     // This is an exact test; see the comments for contains(S2CellId) above.
     int pos = Collections.binarySearch(cellIds, id);
@@ -387,7 +378,6 @@ public strictfp class S2CellUnion implements S2Region, Iterable<S2CellId>, Seria
 
   /** This is a fast operation (logarithmic in the size of the cell union). */
   @Override
-  @JsMethod(name = "containsCell")
   public boolean contains(S2Cell cell) {
     return contains(cell.id());
   }
@@ -443,7 +433,6 @@ public strictfp class S2CellUnion implements S2Region, Iterable<S2CellId>, Seria
    * <p><b>Note:</b> {@code x} and {@code y} must both be normalized to ensure the output is
    * normalized.
    */
-  @JsMethod(name = "getIntersectionCellUnion")
   public void getIntersection(S2CellUnion x, S2CellUnion y) {
     getIntersection(x.cellIds, y.cellIds, cellIds);
     // The output is normalized as long as both inputs are normalized.
@@ -458,7 +447,6 @@ public strictfp class S2CellUnion implements S2Region, Iterable<S2CellId>, Seria
    *
    * <p><b>Note:</b> {@code x} and {@code y} must be sorted.
    */
-  @JsIgnore
   public static void getIntersection(List<S2CellId> x, List<S2CellId> y, List<S2CellId> results) {
     // assert (x != results && y != results);
 
@@ -570,7 +558,6 @@ public strictfp class S2CellUnion implements S2Region, Iterable<S2CellId>, Seria
    * output. For most applications the expand(minRadius, maxLevelDiff) method below is easier to
    * use.
    */
-  @JsMethod(name = "expandAtLevel")
   public void expand(int level) {
     ArrayList<S2CellId> output = new ArrayList<>();
     long levelLsb = S2CellId.lowestOnBitForLevel(level);
@@ -618,7 +605,6 @@ public strictfp class S2CellUnion implements S2Region, Iterable<S2CellId>, Seria
 
   // NOTE: This should be marked as @Override, but clone() isn't present in GWT's version of
   // Object, so we can't mark it as such.
-  @SuppressWarnings("MissingOverride")
   public S2CellUnion clone() {
     S2CellUnion copy = new S2CellUnion();
     copy.initRawCellIds(Lists.newArrayList(cellIds));
@@ -673,7 +659,6 @@ public strictfp class S2CellUnion implements S2Region, Iterable<S2CellId>, Seria
    * of the cell union).
    */
   @Override
-  @JsMethod(name = "containsPoint")
   public boolean contains(S2Point p) {
     return contains(S2CellId.fromPoint(p));
   }
@@ -773,7 +758,6 @@ public strictfp class S2CellUnion implements S2Region, Iterable<S2CellId>, Seria
   }
 
   /** Like {@link #normalize()}, but works directly with a vector of S2CellIds. */
-  @JsIgnore
   @CanIgnoreReturnValue
   public static boolean normalize(List<S2CellId> ids) {
     // Optimize the representation by looking for cases where all subcells of a parent cell are
@@ -839,7 +823,6 @@ public strictfp class S2CellUnion implements S2Region, Iterable<S2CellId>, Seria
    *
    * @throws IOException there is a problem writing to the underlying stream
    */
-  @JsIgnore
   public void encode(OutputStream output) throws IOException {
     output.write(LOSSLESS_ENCODING_VERSION);
     LittleEndianOutput.writeLong(output, cellIds.size());
@@ -857,7 +840,6 @@ public strictfp class S2CellUnion implements S2Region, Iterable<S2CellId>, Seria
    * @throws IOException there is a problem reading from the underlying stream, the version number
    * doesn't match, or the number of elements to read is not between 0 and 2^31-1.
    */
-  @JsIgnore
   public static S2CellUnion decode(InputStream input) throws IOException {
     // Should contain at least version and vector length.
     byte version = (byte) input.read();

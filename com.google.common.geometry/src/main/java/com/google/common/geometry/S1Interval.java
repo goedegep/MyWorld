@@ -22,10 +22,6 @@ import static java.lang.Math.max;
 
 import com.google.errorprone.annotations.CheckReturnValue;
 import java.io.Serializable;
-import jsinterop.annotations.JsConstructor;
-import jsinterop.annotations.JsIgnore;
-import jsinterop.annotations.JsMethod;
-import jsinterop.annotations.JsType;
 
 /**
  * An S1Interval represents a closed interval on a unit circle (also known as a 1-dimensional
@@ -45,12 +41,11 @@ import jsinterop.annotations.JsType;
  * @author danieldanciu@google.com (Daniel Danciu) ported from util/geometry
  * @author ericv@google.com (Eric Veach) original author
  */
-@JsType
-public final strictfp class S1Interval implements Cloneable, Serializable {
+@SuppressWarnings("serial")
+public final class S1Interval implements Cloneable, Serializable {
   private double lo;
   private double hi;
 
-  @JsIgnore
   public S1Interval() {
     this(PI, -PI);
   }
@@ -59,13 +54,11 @@ public final strictfp class S1Interval implements Cloneable, Serializable {
    * Both endpoints must be in the range -Pi to Pi inclusive. The value -Pi is converted internally
    * to Pi except for the full() and empty() intervals.
    */
-  @JsConstructor
   public S1Interval(double lo, double hi) {
     set(lo, hi, false);
   }
 
   /** Copy constructor. */
-  @JsIgnore
   public S1Interval(S1Interval interval) {
     this(interval.lo, interval.hi);
   }
@@ -249,7 +242,6 @@ public final strictfp class S1Interval implements Cloneable, Serializable {
   }
 
   /** Returns true if the interval (which is closed) contains the point 'p'. */
-  @JsMethod(name = "containsPoint")
   public boolean contains(double p) {
     // Works for empty, full, and singleton intervals.
     // assert abs(p) <= PI;
@@ -293,7 +285,6 @@ public final strictfp class S1Interval implements Cloneable, Serializable {
   }
 
   /** Returns true if the interior of the interval contains the point 'p'. */
-  @JsMethod(name = "interiorContainsPoint")
   public boolean interiorContains(double p) {
     // Works for empty, full, and singleton intervals.
     // assert abs(p) <= PI;
@@ -612,7 +603,6 @@ public final strictfp class S1Interval implements Cloneable, Serializable {
    * circle, thus any interval with {@code length <= 2*maxError} matches the empty interval, and any
    * interval with {@code length >= 2*Pi - 2*maxError} matches the full interval.
    */
-  @JsMethod(name = "approxEqualsWithMaxError")
   public boolean approxEquals(S1Interval y, double maxError) {
     // Full and empty intervals require special cases because the "endpoints" are considered to be
     // positioned arbitrarily.

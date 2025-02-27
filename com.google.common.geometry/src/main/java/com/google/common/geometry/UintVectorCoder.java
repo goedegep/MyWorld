@@ -27,6 +27,7 @@ import java.io.OutputStream;
  * An encoder/decoder of {@link Longs}. Either uint64 or uint32 values are supported. Decoding is
  * on-demand, so {@link S2Coder#isLazy() is true.
  */
+@SuppressWarnings("serial")
 public class UintVectorCoder implements S2Coder<Longs> {
   /** An instance of an {@code UintVectorCoder} which encodes/decodes {@code uint32}s. */
   public static final UintVectorCoder UINT32 = new UintVectorCoder(Ints.BYTES);

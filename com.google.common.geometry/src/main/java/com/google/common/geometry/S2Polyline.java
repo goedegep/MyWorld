@@ -40,9 +40,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.logging.Logger;
-import jsinterop.annotations.JsConstructor;
-import jsinterop.annotations.JsIgnore;
-import jsinterop.annotations.JsType;
 
 /**
  * An S2Polyline represents a sequence of zero or more vertices connected by straight edges
@@ -55,8 +52,8 @@ import jsinterop.annotations.JsType;
  * @author shakusa@google.com (Steven Hakusa) ported from util/geometry
  * @author ericv@google.com (Eric Veach) original author
  */
-@JsType
-public final strictfp class S2Polyline implements S2Shape, S2Region, Serializable {
+@SuppressWarnings("serial")
+public final class S2Polyline implements S2Shape, S2Region, Serializable {
   private static final Logger log = Platform.getLoggerForClass(S2Polyline.class);
 
   private static final S2Point[] ARR_TEMPLATE = {};
@@ -100,12 +97,10 @@ public final strictfp class S2Polyline implements S2Shape, S2Region, Serializabl
    * Create a polyline that connects the given vertices. Empty polylines are allowed. Adjacent
    * vertices should not be identical or antipodal. All vertices should be unit length.
    */
-  @JsIgnore
   public S2Polyline(List<S2Point> vertices) {
     this(vertices.toArray(ARR_TEMPLATE));
   }
 
-  @JsConstructor
   private S2Polyline(S2Point[] vertices) {
     // assert isValid(vertices);
     this.numVertices = vertices.length;
@@ -126,7 +121,6 @@ public final strictfp class S2Polyline implements S2Shape, S2Region, Serializabl
   }
 
   /** Return true if the given vertices form a valid polyline. */
-  @JsIgnore
   public boolean isValid(List<S2Point> vertices) {
     // All vertices must be unit length.
     int n = vertices.size();
@@ -630,7 +624,6 @@ public final strictfp class S2Polyline implements S2Shape, S2Region, Serializabl
   }
 
   /** Encodes this polyline into the given output stream. */
-  @JsIgnore // OutputStream is not available to J2CL.
   public void encode(OutputStream os) throws IOException {
     encodeUncompressed(new LittleEndianOutput(os));
   }
@@ -643,7 +636,6 @@ public final strictfp class S2Polyline implements S2Shape, S2Region, Serializabl
    * @param output The output stream into which the encoding should be written.
    * @throws IOException if there was a problem writing into the output stream.
    */
-  @JsIgnore // OutputStream is not available to J2CL.
   public void encodeCompact(OutputStream output) throws IOException {
     int level = numVertices == 0 ? S2CellId.MAX_LEVEL : getBestSnapLevel();
     LittleEndianOutput encoder = new LittleEndianOutput(output);
@@ -671,7 +663,6 @@ public final strictfp class S2Polyline implements S2Shape, S2Region, Serializabl
     S2PointCompression.encodePointsCompressed(vertices(), snapLevel, encoder);
   }
 
-  @JsIgnore // InputStream is not available to J2CL.
   public static S2Polyline decode(InputStream is) throws IOException {
     return decode(new LittleEndianInput(is));
   }

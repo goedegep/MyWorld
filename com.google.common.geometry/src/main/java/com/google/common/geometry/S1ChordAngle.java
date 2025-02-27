@@ -23,9 +23,6 @@ import static java.lang.Math.sqrt;
 
 import com.google.common.primitives.Doubles;
 import java.io.Serializable;
-import jsinterop.annotations.JsConstructor;
-import jsinterop.annotations.JsIgnore;
-import jsinterop.annotations.JsType;
 
 /**
  * S1ChordAngle represents the angle subtended by a chord (i.e., the straight 3D Cartesian line
@@ -121,8 +118,8 @@ import jsinterop.annotations.JsType;
  *
  * which is 9.5 cm on the Earth's surface.
  */
-@JsType
-public final strictfp class S1ChordAngle implements S1Distance<S1ChordAngle>, Serializable {
+@SuppressWarnings("serial")
+public final class S1ChordAngle implements S1Distance<S1ChordAngle>, Serializable {
 
   /**
    * Returns a new DistanceCollector for finding a minimum S1ChordAngle, starting from an initial
@@ -288,7 +285,6 @@ public final strictfp class S1ChordAngle implements S1Distance<S1ChordAngle>, Se
    * S1ChordAngles are represented by the squared chord length, which can range from 0 to {@code
    * MAX_LENGTH2}. {@link #INFINITY} uses an infinite squared length.
    */
-  @JsConstructor
   private S1ChordAngle(double length2) {
     this.length2 = length2;
     checkArgument(isValid());
@@ -298,7 +294,6 @@ public final strictfp class S1ChordAngle implements S1Distance<S1ChordAngle>, Se
    * Constructs the S1ChordAngle corresponding to the distance between the two given points. The
    * points must be unit length.
    */
-  @JsIgnore
   public S1ChordAngle(S2Point x, S2Point y) {
     // The distance may slightly exceed 4.0 due to roundoff errors.
     this(Math.min(MAX_LENGTH2, x.getDistance2(y)));

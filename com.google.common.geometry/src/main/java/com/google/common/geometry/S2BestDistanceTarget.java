@@ -35,7 +35,7 @@ public interface S2BestDistanceTarget<D extends S1Distance<D>> {
    * visited and this method returns true.
    */
   @CanIgnoreReturnValue
-  public boolean visitConnectedComponentPoints(PointVisitor visitor);
+  public boolean visitConnectedComponentPoints(@SuppressWarnings("exports") PointVisitor visitor);
 
   /**
    * If includeInteriors() is true, distance will be measured to the boundary and interior of

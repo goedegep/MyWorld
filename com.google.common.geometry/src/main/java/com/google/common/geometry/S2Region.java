@@ -15,9 +15,6 @@
  */
 package com.google.common.geometry;
 
-import jsinterop.annotations.JsMethod;
-import jsinterop.annotations.JsType;
-
 /**
  * An S2Region represents a two-dimensional region over the unit sphere. It is an abstract interface
  * with various concrete subtypes.
@@ -29,7 +26,6 @@ import jsinterop.annotations.JsType;
  * @author danieldanciu@google.com (Daniel Danciu) ported from util/geometry
  * @author ericv@google.com (Eric Veach) original author
  */
-@JsType
 public interface S2Region {
 
   /** Return a bounding spherical cap. */
@@ -42,14 +38,12 @@ public interface S2Region {
    * If this method returns true, the region completely contains the given cell. Otherwise, either
    * the region does not contain the cell or the containment relationship could not be determined.
    */
-  @JsMethod(name = "containsCell")
   public abstract boolean contains(S2Cell cell);
 
   /**
    * Returns true if and only if the given point is contained by the region. {@code p} is generally
    * required to be unit length, although some subtypes may relax this restriction.
    */
-  @JsMethod(name = "containsPoint")
   public abstract boolean contains(S2Point p);
 
   /**

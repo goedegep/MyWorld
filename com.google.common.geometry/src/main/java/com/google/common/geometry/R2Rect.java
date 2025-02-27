@@ -17,21 +17,17 @@ package com.google.common.geometry;
 
 import com.google.errorprone.annotations.CheckReturnValue;
 import java.io.Serializable;
-import jsinterop.annotations.JsIgnore;
-import jsinterop.annotations.JsMethod;
-import jsinterop.annotations.JsType;
 
 /**
  * An R2Rect represents a closed axis-aligned rectangle in the (x,y) plane. This class is mutable to
  * allow iteratively constructing bounds via e.g. {@link #addPoint(R2Vector)}.
  */
-@JsType
-public final strictfp class R2Rect implements Serializable {
+@SuppressWarnings("serial")
+public final class R2Rect implements Serializable {
   private final R1Interval x;
   private final R1Interval y;
 
   /** Creates an empty R2Rect. */
-  @JsIgnore
   public R2Rect() {
     // The default R1Interval constructor creates an empty interval.
     this(new R1Interval(), new R1Interval());
@@ -39,7 +35,6 @@ public final strictfp class R2Rect implements Serializable {
   }
 
   /** Constructs a rectangle from the given lower-left and upper-right points. */
-  @JsIgnore
   public R2Rect(R2Vector lo, R2Vector hi) {
     this(new R1Interval(lo.x(), hi.x()), new R1Interval(lo.y(), hi.y()));
     // assert (isValid());
@@ -56,7 +51,6 @@ public final strictfp class R2Rect implements Serializable {
   }
 
   /** Copy constructor. */
-  @JsIgnore
   public R2Rect(R2Rect rect) {
     this(new R1Interval(rect.x), new R1Interval(rect.y));
   }
@@ -133,7 +127,6 @@ public final strictfp class R2Rect implements Serializable {
    * Returns the k<sup>th</sup> vertex of this rectangle (k = 0,1,2,3) in CCW order. Vertex 0 is in
    * the lower-left corner. For convenience, the argument is reduced modulo 4 to the range [0..3].
    */
-  @JsMethod(name = "getVertexCCW")
   public R2Vector getVertex(int k) {
     // Twiddle bits to return the points in CCW order (lower left, lower right, upper right,
     // upper left).
@@ -182,7 +175,6 @@ public final strictfp class R2Rect implements Serializable {
   }
 
   /** Returns the interval for the given axis, which must not be null. */
-  @JsIgnore
   public R1Interval getInterval(Axis axis) {
     return axis.getInterval(this);
   }
@@ -191,7 +183,6 @@ public final strictfp class R2Rect implements Serializable {
    * Returns true if this rectangle contains the given point. Note that rectangles are closed
    * regions, i.e. they contain their boundary.
    */
-  @JsMethod(name = "containsVector")
   public boolean contains(R2Vector p) {
     return x().contains(p.x()) && y().contains(p.y());
   }
@@ -200,7 +191,6 @@ public final strictfp class R2Rect implements Serializable {
    * Returns true if and only if the given point is contained in the interior of the region (i.e.
    * the region excluding its boundary).
    */
-  @JsMethod(name = "interiorContainsVector")
   public boolean interiorContains(R2Vector p) {
     return x().interiorContains(p.x()) && y().interiorContains(p.y());
   }
@@ -279,7 +269,6 @@ public final strictfp class R2Rect implements Serializable {
    * an empty rectangle remains empty.
    */
   @CheckReturnValue
-  @JsMethod(name = "expandedUniform")
   public R2Rect expanded(double margin) {
     return expanded(new R2Vector(margin, margin));
   }
@@ -347,7 +336,6 @@ public final strictfp class R2Rect implements Serializable {
    * Returns true if the given rectangles are equal to within {@code maxError}. See {@link
    * R1Interval} for details on approximate interval equality.
    */
-  @JsMethod(name = "approxEqualsUniform")
   public boolean approxEquals(R2Rect other, double maxError) {
     return x().approxEquals(other.x(), maxError) && y().approxEquals(other.y(), maxError);
   }

@@ -27,7 +27,6 @@ import static java.lang.Math.sqrt;
 import static java.lang.Math.tan;
 
 import com.google.common.geometry.S2.Metric;
-import javax.annotation.Nullable;
 
 /**
  * This class specifies the coordinate systems and transforms used to project points from the sphere
@@ -137,7 +136,7 @@ import javax.annotation.Nullable;
  * @author eengle@google.com (Eric Engle) ported from util/geometry
  * @author ericv@google.com (Eric Veach) original author
  */
-public strictfp enum S2Projections {
+public enum S2Projections {
   // All of the values below were obtained by a combination of hand analysis and Mathematica. In
   // general, S2_TAN_PROJECTION produces the most uniform shapes and sizes of cells,
   // S2_LINEAR_PROJECTION is considerably worse, and S2_QUADRATIC_PROJECTION is somewhere in between
@@ -712,7 +711,6 @@ public strictfp enum S2Projections {
    * If the dot product of p with the given face normal is positive, set the corresponding u and v
    * values (which may lie outside the range [-1,1]) and return true. Otherwise return null.
    */
-  @Nullable
   public static R2Vector faceXyzToUv(int face, S2Point p) {
     if (face < 3) {
       if (p.get(face) <= 0) {

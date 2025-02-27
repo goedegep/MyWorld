@@ -21,9 +21,6 @@ import static java.lang.Math.min;
 
 import com.google.errorprone.annotations.CheckReturnValue;
 import java.io.Serializable;
-import jsinterop.annotations.JsIgnore;
-import jsinterop.annotations.JsMethod;
-import jsinterop.annotations.JsType;
 
 /**
  * An R1Interval represents a closed, bounded interval on the real line. It is capable of
@@ -33,8 +30,8 @@ import jsinterop.annotations.JsType;
  * @author danieldanciu@google.com (Daniel Danciu) ported from util/geometry
  * @author ericv@google.com (Eric Veach) original author
  */
-@JsType
-public final strictfp class R1Interval implements Serializable {
+@SuppressWarnings("serial")
+public final class R1Interval implements Serializable {
   private double lo;
   private double hi;
 
@@ -55,7 +52,6 @@ public final strictfp class R1Interval implements Serializable {
   }
 
   /** Copy constructor. */
-  @JsIgnore
   public R1Interval(R1Interval interval) {
     this(interval.lo, interval.hi);
   }
@@ -178,13 +174,11 @@ public final strictfp class R1Interval implements Serializable {
   }
 
   /** Returns true if the given point is in the closed interval [lo, hi]. */
-  @JsMethod(name = "containsPoint")
   public boolean contains(double p) {
     return p >= lo && p <= hi;
   }
 
   /** Returns true if the given point is in the open interval (lo, hi). */
-  @JsMethod(name = "interiorContainsPoint")
   public boolean interiorContains(double p) {
     return p > lo && p < hi;
   }
@@ -425,7 +419,6 @@ public final strictfp class R1Interval implements Serializable {
    * real line, thus any interval for which {@code length <= 2*maxError} is true matches the empty
    * interval.
    */
-  @JsMethod(name = "approxEqualsWithMaxError")
   public boolean approxEquals(R1Interval y, double maxError) {
     if (isEmpty()) {
       return y.getLength() <= maxError;

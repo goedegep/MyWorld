@@ -348,6 +348,7 @@ public interface S2LaxPolygonShape extends S2ShapeAspect.EdgeAspect.Closed {
   }
 
   /** An encoder/decoder of {@link S2LaxPolygonShape}s. */
+  @SuppressWarnings("serial")
   class Coder implements S2Coder<S2LaxPolygonShape> {
     private final S2Coder<List<S2Point>> coder;
 

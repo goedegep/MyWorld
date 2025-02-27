@@ -30,7 +30,6 @@ import static java.lang.Math.tan;
 import com.google.common.base.Preconditions;
 import com.google.errorprone.annotations.Immutable;
 import java.io.Serializable;
-import jsinterop.annotations.JsType;
 
 /**
  * The S2 class is simply a namespace for constants and static utility functions related to
@@ -50,7 +49,7 @@ import jsinterop.annotations.JsType;
  * @author danieldanciu@google.com (Daniel Danciu) ported from util/geometry
  * @author ericv@google.com (Eric Veach) original author
  */
-public final strictfp class S2 {
+public final class S2 {
   // Declare some frequently used constants
   public static final double M_PI = PI;
   public static final double M_1_PI = 1.0 / PI;
@@ -77,7 +76,6 @@ public final strictfp class S2 {
   // for more details. It is written here using constant components to avoid computational errors
   // from producting a different value than other implementations of S2.
   // Warning: Not the same as S2Point.ORIGIN.
-  @SuppressWarnings("FloatingPointLiteralPrecision") // Deliberate, same as other implementations.
   private static final S2Point ORIGIN =
       new S2Point(-0.0099994664350250197, 0.0025924542609324121, 0.99994664350250195);
 
@@ -665,7 +663,6 @@ public final strictfp class S2 {
 
   /** A serializable function from type A to type B. */
   // TODO(eengle): Make this extend java.util.function.Function & Serializable, once Android can.
-  @JsType
   public interface SerializableFunction<A, B> extends Serializable {
     B apply(A input);
   }

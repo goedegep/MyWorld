@@ -22,8 +22,6 @@ import com.google.common.geometry.S2ShapeIndex.CellRelation;
 import com.google.common.primitives.UnsignedLongs;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import java.util.List;
-import jsinterop.annotations.JsIgnore;
-import jsinterop.annotations.JsType;
 
 /**
  * A random access iterator that provides low-level access to entries sorted by cell ID. The
@@ -33,10 +31,8 @@ import jsinterop.annotations.JsType;
  */
 // TODO(user): Replace Entry<T> with a Multimap<long,T> that is space efficient, and supports
 // time-efficient inserts, removes, and lookups.
-@JsType
 public final class S2Iterator<T extends S2Iterator.Entry> {
   /** An interface to provide the cell ID for an element in a sorted list. */
-  @JsType
   public interface Entry {
     /** Returns the cell ID of this cell as a primitive. */
     long id();
@@ -235,7 +231,6 @@ public final class S2Iterator<T extends S2Iterator.Entry> {
    * <p>The resulting index position is guaranteed to contain all edges that might intersect the
    * line segment between {@code targetPoint} and {@link #center()}.
    */
-  @JsIgnore // No method overloading for J2CL.
   public boolean locate(S2Point targetPoint) {
     // Let I be the first cell not less than T, where T is the leaf cell containing "targetPoint".
     // Then if T is contained by an index cell, then the containing cell is either I or I'. We

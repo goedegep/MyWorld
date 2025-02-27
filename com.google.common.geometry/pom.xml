@@ -10,20 +10,12 @@
   </parent>
   <dependencies>
     <dependency>
-      <groupId>com.google.code.findbugs.jsr305</groupId>
-      <artifactId>com.google.code.findbugs.jsr305</artifactId>
-    </dependency>
-    <dependency>
       <groupId>com.google.errorprone</groupId>
       <artifactId>error_prone_annotations</artifactId>
     </dependency>
     <dependency>
       <groupId>com.google.guava</groupId>
       <artifactId>guava</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>com.google.jsinterop.jsinterop-annotations</groupId>
-      <artifactId>com.google.jsinterop.jsinterop-annotations</artifactId>
     </dependency>
   </dependencies>
   <build>

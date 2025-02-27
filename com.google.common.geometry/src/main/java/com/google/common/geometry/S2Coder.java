@@ -23,8 +23,6 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.Serializable;
 import java.nio.charset.Charset;
-import jsinterop.annotations.JsIgnore;
-import jsinterop.annotations.JsType;
 
 /**
  * An interface for encoding and decoding values.
@@ -33,9 +31,9 @@ import jsinterop.annotations.JsType;
  * from an encoded format in constant time and then decoded on demand. This can be a big performance
  * advantage when only a small part of the data structure is actually used.
  */
-@JsType
 public interface S2Coder<T> extends Serializable {
   /** A delimited string coder that converts to/from UTF8, writing a varint length before it. */
+  @SuppressWarnings("serial")
   S2Coder<String> STRING =
       new S2Coder<String>() {
         /** The charset to use. Note the StandardCharsets constant is not available in Android. */
@@ -66,7 +64,6 @@ public interface S2Coder<T> extends Serializable {
       };
 
   /** Encodes {@code value} to {@code output}. */
-  @JsIgnore // OutputStream is not available to J2CL.
   void encode(T value, OutputStream output) throws IOException;
 
   /**
@@ -81,7 +78,6 @@ public interface S2Coder<T> extends Serializable {
   T decode(Bytes data, Cursor cursor) throws IOException;
 
   /** As {@link #decode(Bytes, Cursor)} but reads from the current position in {@code data}. */
-  @JsIgnore // No method overloading in J2CL. Use decode(data, data.cursor()).
   default T decode(Bytes data) throws IOException {
     return decode(data, data.cursor());
   }
@@ -97,12 +93,12 @@ public interface S2Coder<T> extends Serializable {
   }
 
   /** Returns a coder that delegates to this coder via the given encode/decode transforms. */
+  @SuppressWarnings("serial")
   default <U> S2Coder<U> delegating(
       SerializableFunction<U, T> encode,
       SerializableFunction<T, U> decode) {
     S2Coder<T> base = this;
     return new S2Coder<U>() {
-      @JsIgnore // OutputStream is not available to J2CL.
       @Override public void encode(U value, OutputStream output) throws IOException {
         base.encode(encode.apply(value), output);
       }

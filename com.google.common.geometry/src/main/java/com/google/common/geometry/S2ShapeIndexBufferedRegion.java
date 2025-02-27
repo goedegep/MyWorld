@@ -17,7 +17,6 @@ package com.google.common.geometry;
 
 import com.google.common.geometry.S2ClosestEdgeQuery.CellTarget;
 import com.google.common.geometry.S2ClosestEdgeQuery.PointTarget;
-import jsinterop.annotations.JsMethod;
 
 /**
  * This class provides a way to expand an arbitrary collection of geometry by a fixed radius (an
@@ -111,7 +110,6 @@ public class S2ShapeIndexBufferedRegion implements S2Region {
   }
 
   @Override
-  @JsMethod(name = "containsCell")
   public boolean contains(S2Cell cell) {
     // Return true if the buffered region is guaranteed to cover the whole globe.
     if (radiusSuccessor.greaterThan(S1ChordAngle.STRAIGHT)) {
@@ -144,7 +142,6 @@ public class S2ShapeIndexBufferedRegion implements S2Region {
   }
 
   @Override
-  @JsMethod(name = "containsPoint")
   public boolean contains(S2Point p) {
     // Returns true if the distance from the point to the target is less than or equal to "radius".
     return query.isDistanceLess(new PointTarget<>(p), radiusSuccessor);

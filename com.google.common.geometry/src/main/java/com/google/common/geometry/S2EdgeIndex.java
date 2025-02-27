@@ -138,7 +138,7 @@ import java.util.Set;
  * @author pilloff@google.com (Mark Pilloff) original author
  * @author julienbasch@google.com (Julien Basch) original author
  */
-public abstract strictfp class S2EdgeIndex {
+public abstract class S2EdgeIndex {
   /**
    * Thicken the edge in all directions by roughly 1% of the edge length when thickenEdge is true.
    */

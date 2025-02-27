@@ -24,11 +24,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.ByteBuffer;
-import jsinterop.annotations.JsIgnore;
-import jsinterop.annotations.JsType;
 
 /** A set of interfaces for describing primitive arrays. */
-@JsType
 public final class PrimitiveArrays {
   private PrimitiveArrays() {}
 
@@ -53,7 +50,6 @@ public final class PrimitiveArrays {
    * }
    * }</pre>
    */
-  @JsType
   public interface Bytes {
     /**
      * Returns the {@code byte} at position {@code position}.
@@ -77,7 +73,6 @@ public final class PrimitiveArrays {
      *
      * <p>The {@code limit} of the returned cursor is the {@link #length()} of this array.
      */
-    @JsIgnore // overload.
     default Cursor cursor(long position) {
       return cursor(position, length());
     }
@@ -88,7 +83,6 @@ public final class PrimitiveArrays {
      * <p>The {@code position} of the returned cursor is 0, and the {@code limit} is the {@link
      * #length()} of this array.
      */
-    @JsIgnore // overload.
     default Cursor cursor() {
       return cursor(0);
     }
@@ -135,7 +129,6 @@ public final class PrimitiveArrays {
     }
 
     /** Returns an {@link InputStream} wrapping this array starting at {@code offset}. */
-    @JsIgnore // InputStream is not usable by Javascript.
     default InputStream toInputStream(long offset) {
       Preconditions.checkArgument(offset >= 0 && offset <= length());
       return new InputStream() {
@@ -157,7 +150,6 @@ public final class PrimitiveArrays {
      * <p>{@code cursor.position} is incremented for each byte read from the returned {@link
      * InputStream}.
      */
-    @JsIgnore // InputStream is not usable by Javascript.
     default InputStream toInputStream(Cursor cursor) {
       Preconditions.checkArgument(cursor.position >= 0 && cursor.position <= cursor.limit);
       Preconditions.checkArgument(cursor.remaining() <= length());
@@ -173,13 +165,11 @@ public final class PrimitiveArrays {
     }
 
     /** Returns an {@link InputStream} wrapping this array starting at the 0th byte. */
-    @JsIgnore // InputStream is not usable by Javascript.
     default InputStream toInputStream() {
       return toInputStream(0);
     }
 
     /** Writes this array to {@code output}. */
-    @JsIgnore // OutputStream is not usable by Javascript.
     default void writeTo(OutputStream output) throws IOException {
       for (long i = 0; i < length(); i++) {
         output.write(get(i));
@@ -232,7 +222,6 @@ public final class PrimitiveArrays {
     }
 
     /** Same as {@link #readUintWithLength(Cursor, int)}, but does not require a {@link Cursor}. */
-    @JsIgnore // No method overloading in J2CL. Use readUintWithLength(Cursor, int).
     default long readUintWithLength(long position, int numBytes) {
       long x = 0;
       for (int i = 0; i < numBytes; i++) {
@@ -259,7 +248,6 @@ public final class PrimitiveArrays {
    * ensure the underlying data is not mutated in order to get predictable behaviour. Any buffering
    * should be done internally.
    */
-  @JsType
   public interface Longs {
     /**
      * Returns the {@code long} at position {@code position}.
@@ -273,7 +261,7 @@ public final class PrimitiveArrays {
     int length();
 
     /** Returns a {@link Longs} wrapping {@code immutableLongArray}. */
-    @JsIgnore
+    @SuppressWarnings("exports")
     static Longs fromImmutableLongArray(ImmutableLongArray immutableLongArray) {
       return new Longs() {
         @Override
@@ -304,7 +292,6 @@ public final class PrimitiveArrays {
   }
 
   /** A cursor storing a position and a limit. */
-  @JsType
   public static class Cursor {
     public long position;
     public long limit;

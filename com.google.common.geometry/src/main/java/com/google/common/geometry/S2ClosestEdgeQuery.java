@@ -323,7 +323,7 @@ public abstract class S2ClosestEdgeQuery<D extends S1Distance<D>> extends S2Best
   @VisibleForTesting
   @CanIgnoreReturnValue
   public boolean visitContainingShapes(
-      Target<D> target, S2ContainsPointQuery.ShapeVisitor visitor) {
+      Target<D> target, @SuppressWarnings("exports") S2ContainsPointQuery.ShapeVisitor visitor) {
     return visitBestDistanceContainingShapes(target, visitor);
   }
 

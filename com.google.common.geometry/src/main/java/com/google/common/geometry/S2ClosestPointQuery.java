@@ -111,7 +111,7 @@ public final class S2ClosestPointQuery<T> {
   private final List<S2CellId> intersectionWithMaxDistance = Lists.newArrayList();
 
   /** Temporary storage for index entries that are of interest during query processing. */
-  @SuppressWarnings({"rawtypes", "unchecked"})
+  @SuppressWarnings("unchecked")
   private final Entry<T>[] tmpPoints = new Entry[MAX_LEAF_POINTS];
 
   /** Temporary queue of results sorted in descending order. */

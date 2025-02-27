@@ -33,7 +33,7 @@ import java.math.BigDecimal;
  *       (-1), colinear (0), or counter-clockwise (1).
  * </ul>
  */
-public final strictfp class S2Predicates {
+public final class S2Predicates {
   /** Maximum rounding error of a 64 bit double. */
   private static final double DBL_ERR = DBL_EPSILON / 2;
 
@@ -304,6 +304,7 @@ public final strictfp class S2Predicates {
      * Edelsbrunner and Muecke, ACM Transactions on Graphics, 1990
      * </pre>
      */
+    @SuppressWarnings("exports")
     public static int sos(BigPoint a, BigPoint b, BigPoint c, BigPoint bc) {
       // This method requires that the points are sorted in lexicographically increasing order. This
       // is because every possible S2Point has its own symbolic perturbation such that if A < B then

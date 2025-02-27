@@ -30,10 +30,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Stack;
-import javax.annotation.Nullable;
-import jsinterop.annotations.JsIgnore;
-import jsinterop.annotations.JsMethod;
-import jsinterop.annotations.JsType;
 
 /**
  * This is a simple class for assembling polygons out of edges.  It requires that no two edges
@@ -63,8 +59,7 @@ import jsinterop.annotations.JsType;
  * @author shakusa@google.com (Steven Hakusa) ported from util/geometry
  * @author ericv@google.com (Eric Veach) original author
  */
-@JsType
-public final strictfp class S2PolygonBuilder {
+public final class S2PolygonBuilder {
   private final Options options;
 
   /**
@@ -80,7 +75,6 @@ public final strictfp class S2PolygonBuilder {
   private final List<S2Point> startingVertices = Lists.newArrayList();
 
   /** Default constructor for well-behaved polygons.  Uses the DIRECTED_XOR options. */
-  @JsIgnore // J2CL allows only one constructor.
   public S2PolygonBuilder() {
     this(Options.DIRECTED_XOR);
   }
@@ -114,7 +108,6 @@ public final strictfp class S2PolygonBuilder {
    * S2PolygonBuilder polygonBuilder = new S2PolygonBuilder(options);
    * }</pre>
    */
-  @JsType
   public static final class Options {
     /**
      * These are the options that should be used for assembling well-behaved input data into
@@ -329,7 +322,6 @@ public final strictfp class S2PolygonBuilder {
     }
 
     /** Builder class for {@link Options}. */
-    @JsType
     public static class Builder {
       private boolean undirectedEdges = false;
       private boolean xorEdges = true;
@@ -546,7 +538,7 @@ public final strictfp class S2PolygonBuilder {
    * <p>This method resets the {@link S2PolygonBuilder} state so that it can be reused.
    */
   @CanIgnoreReturnValue
-  public boolean assembleLoops(List<S2Loop> loops, @Nullable List<S2Edge> unusedEdges) {
+  public boolean assembleLoops(List<S2Loop> loops, List<S2Edge> unusedEdges) {
     if (options.getMergeDistance().radians() > 0) {
       S1Angle mergeDistance = options.getMergeDistance();
       Map<S2Point, S2Point> mergeMap = buildMergeMap(mergeDistance);
@@ -619,7 +611,7 @@ public final strictfp class S2PolygonBuilder {
    * For example, it is often possible to estimate the polygon area.
    */
   @CanIgnoreReturnValue
-  public boolean assemblePolygon(S2Polygon polygon, @Nullable List<S2Edge> unusedEdges) {
+  public boolean assemblePolygon(S2Polygon polygon, List<S2Edge> unusedEdges) {
     List<S2Loop> loops = Lists.newArrayList();
     boolean success = assembleLoops(loops, unusedEdges);
 
@@ -647,7 +639,6 @@ public final strictfp class S2PolygonBuilder {
   }
 
   /** Convenience method for when you don't care about unused edges. */
-  @JsMethod(name = "getPolygon")
   public S2Polygon assemblePolygon() {
     S2Polygon polygon = new S2Polygon();
     assemblePolygon(polygon, null);
@@ -692,8 +683,7 @@ public final strictfp class S2PolygonBuilder {
    * the loop as soon as we encounter any vertex that we have seen before *except* for the first
    * vertex (v0).  This ensures that only CCW loops are constructed when possible.
    */
-  @Nullable
-  private S2Loop assembleLoop(S2Point v0, S2Point v1, @Nullable List<S2Edge> unusedEdges) {
+  private S2Loop assembleLoop(S2Point v0, S2Point v1, List<S2Edge> unusedEdges) {
     // The path so far.
     List<S2Point> path = Lists.newArrayList();
 

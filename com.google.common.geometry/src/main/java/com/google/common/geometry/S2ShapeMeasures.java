@@ -33,7 +33,7 @@ import java.util.List;
  * S2Polygon} and {@link S2Polyline} methods, these methods allow the underlying data to be
  * represented arbitrarily.
  */
-final strictfp class S2ShapeMeasures {
+final class S2ShapeMeasures {
 
   private S2ShapeMeasures() {}
 

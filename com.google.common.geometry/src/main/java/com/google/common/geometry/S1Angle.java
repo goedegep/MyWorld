@@ -22,10 +22,6 @@ import com.google.common.primitives.Ints;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import com.google.errorprone.annotations.CheckReturnValue;
 import java.io.Serializable;
-import jsinterop.annotations.JsConstructor;
-import jsinterop.annotations.JsIgnore;
-import jsinterop.annotations.JsMethod;
-import jsinterop.annotations.JsType;
 
 /**
  * This class represents a one-dimensional angle (as opposed to a two-dimensional solid angle). It
@@ -43,8 +39,9 @@ import jsinterop.annotations.JsType;
  *
  * @author danieldanciu@google.com (Daniel Danciu) ported from util/geometry
  */
-@JsType
-public final strictfp class S1Angle implements S1Distance<S1Angle>, Serializable {
+
+@SuppressWarnings("serial")
+public final class S1Angle implements S1Distance<S1Angle>, Serializable {
 
   /** An angle larger than any finite angle. */
   public static final S1Angle INFINITY = new S1Angle(Double.POSITIVE_INFINITY);
@@ -128,12 +125,10 @@ public final strictfp class S1Angle implements S1Distance<S1Angle>, Serializable
   }
 
   /** The default constructor yields a zero angle. */
-  @JsIgnore
   public S1Angle() {
     this(0);
   }
 
-  @JsConstructor
   private S1Angle(double radians) {
     this.radians = radians;
   }
@@ -142,7 +137,6 @@ public final strictfp class S1Angle implements S1Distance<S1Angle>, Serializable
    * Return the angle between two points, which is also equal to the distance between these points
    * on the unit sphere. The points do not need to be normalized.
    */
-  @JsIgnore
   public S1Angle(S2Point x, S2Point y) {
     this(x.angle(y));
   }
@@ -287,7 +281,6 @@ public final strictfp class S1Angle implements S1Distance<S1Angle>, Serializable
   }
 
   /** A builder of {@link S1Angle} instances. */
-  @JsType
   public static final class Builder {
     private double radians;
 
@@ -303,7 +296,6 @@ public final strictfp class S1Angle implements S1Distance<S1Angle>, Serializable
 
     /** Adds radians. */
     @CanIgnoreReturnValue
-    @JsMethod(name = "addRadians")
     public Builder add(double radians) {
       this.radians += radians;
       return this;

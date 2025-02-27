@@ -30,11 +30,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.RandomAccess;
-import javax.annotation.Nullable;
-import jsinterop.annotations.JsConstructor;
-import jsinterop.annotations.JsEnum;
-import jsinterop.annotations.JsIgnore;
-import jsinterop.annotations.JsType;
 
 /**
  * S2ShapeIndex indexes a set of "shapes", where a shape is a collection of edges that optionally
@@ -89,8 +84,7 @@ import jsinterop.annotations.JsType;
  * <p>Shapes added to the index are expected to be deeply immutable, or else not mutated. The state
  * of the index is undefined if a shape is mutated after passing it to {@link #add}.
  */
-@JsType
-public strictfp class S2ShapeIndex implements Serializable {
+public class S2ShapeIndex implements Serializable {
   private static final long serialVersionUID = 1L;
 
   /**
@@ -169,13 +163,11 @@ public strictfp class S2ShapeIndex implements Serializable {
   private volatile boolean isIndexFresh = true;
 
   /** Creates an S2ShapeIndex that uses the default options, {@link Options}. */
-  @JsIgnore // Only one constructor is allowed for J2CL.
   public S2ShapeIndex() {
     this(new Options());
   }
 
   /** Creates an S2ShapeIndex with the given options. */
-  @JsConstructor // JSInterop requires all other constructors to delegate to this one.
   public S2ShapeIndex(Options options) {
     this.options = options;
     shapes = new ArrayList<>();
@@ -898,7 +890,6 @@ public strictfp class S2ShapeIndex implements Serializable {
   }
 
   /** Options that affect construction of the S2ShapeIndex. */
-  @JsType
   public static class Options implements Serializable {
     private static final long serialVersionUID = 1L;
 
@@ -1016,7 +1007,6 @@ public strictfp class S2ShapeIndex implements Serializable {
    *       implementation that is half the size of the general purpose MultiCell in that case.
    * </ul>
    */
-  @JsType
   public abstract static class Cell implements S2Iterator.Entry, Serializable {
     private static final long serialVersionUID = 1L;
 
@@ -1052,7 +1042,6 @@ public strictfp class S2ShapeIndex implements Serializable {
      * Returns the clipped shape corresponding to the given shape, or null if the shape does not
      * intersect this cell.
      */
-    @Nullable
     S2ClippedShape findClipped(S2Shape shape) {
       // Linear search is fine because the number of shapes per cell is typically very small (most
       // often 1), and is large only for pathological inputs (e.g. very deeply nested loops).
@@ -1071,7 +1060,6 @@ public strictfp class S2ShapeIndex implements Serializable {
       private final S2ClippedShape shape1;
       private final S2ClippedShape shape2;
 
-      @JsConstructor
       BinaryCell(S2ClippedShape shape1, S2ClippedShape shape2) {
         this.shape1 = shape1;
         this.shape2 = shape2;
@@ -1099,10 +1087,10 @@ public strictfp class S2ShapeIndex implements Serializable {
      * A specialization of Cell for multiple shapes per cell. Last resort, largest-memory
      * implementation that is not used very often.
      */
+    @SuppressWarnings("serial")
     private static final class MultiCell extends Cell {
       private final S2ClippedShape[] clippedShapes;
 
-      @JsConstructor
       MultiCell(S2ClippedShape[] shapes) {
         this.clippedShapes = shapes;
       }
@@ -1124,7 +1112,6 @@ public strictfp class S2ShapeIndex implements Serializable {
    * target is an index cell or is contained by an index cell, it is "INDEXED". If the target is
    * subdivided into one or more index cells, it is "SUBDIVIDED". Otherwise it is "DISJOINT".
    */
-  @JsEnum
   public enum CellRelation {
     /** Target is contained by an index cell. */
     INDEXED,
@@ -1152,6 +1139,7 @@ public strictfp class S2ShapeIndex implements Serializable {
    *       implementation.
    * </ul>
    */
+  @SuppressWarnings("serial")
   public abstract static class S2ClippedShape extends Cell {
     static S2ClippedShape create(
         S2CellId cellId,
@@ -1174,19 +1162,18 @@ public strictfp class S2ShapeIndex implements Serializable {
     }
 
     static S2ClippedShape create(
-        @Nullable S2CellId cellId, S2Shape shape, boolean containsCenter, int[] edges) {
+        S2CellId cellId, S2Shape shape, boolean containsCenter, int[] edges) {
       return ManyEdges.create(cellId, shape, containsCenter, edges);
     }
 
     static S2ClippedShape create(
-        @Nullable S2CellId cellId, S2Shape shape, boolean containsCenter, int offset, int count) {
+        S2CellId cellId, S2Shape shape, boolean containsCenter, int offset, int count) {
       return EdgeRange.create(cellId, shape, containsCenter, offset, count);
     }
 
     /** The original shape that this S2ClippedShape represents. */
     private final S2Shape shape;
 
-    @JsConstructor
     private S2ClippedShape(S2Shape shape) {
       this.shape = shape;
     }
@@ -1244,7 +1231,7 @@ public strictfp class S2ShapeIndex implements Serializable {
      * containsCenter is true.)
      */
     private abstract static class Contained extends S2ClippedShape {
-      static Contained create(@Nullable S2CellId cellId, S2Shape shape) {
+      static Contained create(S2CellId cellId, S2Shape shape) {
         if (cellId != null) {
           final long id = cellId.id();
           return new Contained(shape) {
@@ -1263,7 +1250,6 @@ public strictfp class S2ShapeIndex implements Serializable {
         }
       }
 
-      @JsConstructor
       private Contained(S2Shape shape) {
         super(shape);
       }
@@ -1287,7 +1273,7 @@ public strictfp class S2ShapeIndex implements Serializable {
     /** An S2ClippedShape that contains a single edge from a given shape. Very common. */
     private abstract static class OneEdge extends S2ClippedShape {
       static final OneEdge create(
-          @Nullable S2CellId cellId,
+          S2CellId cellId,
           S2Shape shape,
           boolean containsCenter,
           ClippedEdge clippedEdge) {
@@ -1349,7 +1335,6 @@ public strictfp class S2ShapeIndex implements Serializable {
 
       private final int edge;
 
-      @JsConstructor
       private OneEdge(S2Shape shape, ClippedEdge clippedEdge) {
         super(shape);
         this.edge = clippedEdge.orig.edgeId;
@@ -1373,7 +1358,7 @@ public strictfp class S2ShapeIndex implements Serializable {
      */
     private abstract static class ManyEdges extends S2ClippedShape {
       static ManyEdges create(
-          @Nullable S2CellId cellId,
+          S2CellId cellId,
           S2Shape shape,
           boolean containsCenter,
           List<ClippedEdge> edges,
@@ -1388,7 +1373,7 @@ public strictfp class S2ShapeIndex implements Serializable {
       }
 
       static ManyEdges create(
-          @Nullable S2CellId cellId, S2Shape shape, boolean containsCenter, int[] edges) {
+          S2CellId cellId, S2Shape shape, boolean containsCenter, int[] edges) {
         if (cellId != null) {
           final long id = cellId.id();
           if (containsCenter) {
@@ -1447,7 +1432,6 @@ public strictfp class S2ShapeIndex implements Serializable {
 
       private final int[] edges;
 
-      @JsConstructor
       private ManyEdges(S2Shape shape, int[] edges) {
         super(shape);
         this.edges = edges;
@@ -1467,7 +1451,7 @@ public strictfp class S2ShapeIndex implements Serializable {
     /** An S2ClippedShape containing a single range of contiguous edge IDs. Very common. */
     private abstract static class EdgeRange extends S2ClippedShape {
       static EdgeRange create(
-          @Nullable S2CellId cellId, S2Shape shape, boolean containsCenter, int offset, int count) {
+          S2CellId cellId, S2Shape shape, boolean containsCenter, int offset, int count) {
         if (cellId != null) {
           final long id = cellId.id();
           if (containsCenter) {
@@ -1527,7 +1511,6 @@ public strictfp class S2ShapeIndex implements Serializable {
       private final int offset;
       private final int count;
 
-      @JsConstructor
       private EdgeRange(S2Shape shape, int offset, int count) {
         super(shape);
         this.offset = offset;
@@ -1630,7 +1613,6 @@ public strictfp class S2ShapeIndex implements Serializable {
   }
 
   /** ClippedEdge represents the portion of a FaceEdge that has been clipped to an S2Cell. */
-  @JsType
   private static class ClippedEdge {
     /**
      * The original unclipped edge. This field is not final so we can reuse ClippedEdge instances in

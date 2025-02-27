@@ -31,9 +31,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Serializable;
-import jsinterop.annotations.JsIgnore;
-import jsinterop.annotations.JsMethod;
-import jsinterop.annotations.JsType;
 
 /**
  * An S2Cap represents a disc-shaped region defined by a center and radius. Technically this shape
@@ -54,11 +51,10 @@ import jsinterop.annotations.JsType;
  * @author danieldanciu@google.com (Daniel Danciu) ported from util/geometry
  * @author ericv@google.com (Eric Veach) original author
  */
-@JsType
-public final strictfp class S2Cap implements S2Region, Serializable {
+@SuppressWarnings("serial")
+public final class S2Cap implements S2Region, Serializable {
   /** An {@link S2Coder} that uses {@link #encode} and {@link #decode}. */
   public static final S2Coder<S2Cap> CODER = new S2Coder<S2Cap>() {
-    @JsIgnore  // OutputStream is not available to J2CL.
     @Override public void encode(S2Cap value, OutputStream output) throws IOException {
       value.encode(output);
     }
@@ -229,7 +225,6 @@ public final strictfp class S2Cap implements S2Region, Serializable {
    * Return true if and only if this cap contains the given other cap (in a set containment sense,
    * e.g. every cap contains the empty cap).
    */
-  @JsMethod(name = "containsCap")
   public boolean contains(S2Cap other) {
     if (isFull() || other.isEmpty()) {
       return true;
@@ -242,7 +237,6 @@ public final strictfp class S2Cap implements S2Region, Serializable {
    * Return true if and only if this cap intersects the given other cap, i.e. whether they have any
    * points in common.
    */
-  @JsMethod(name = "intersectsCap")
   public boolean intersects(S2Cap other) {
     if (isEmpty() || other.isEmpty()) {
       return false;
@@ -405,7 +399,6 @@ public final strictfp class S2Cap implements S2Region, Serializable {
   }
 
   @Override
-  @JsMethod(name = "containsCell")
   public boolean contains(S2Cell cell) {
     // If the cap does not contain all cell vertices, return false. We check the vertices before
     // taking the Complement() because we can't accurately represent the complement of a very small
@@ -489,7 +482,6 @@ public final strictfp class S2Cap implements S2Region, Serializable {
   }
 
   @Override
-  @JsMethod(name = "containsPoint")
   public boolean contains(S2Point p) {
     // The point 'p' should be a unit-length vector.
     // assert (S2.isUnitLength(p));
@@ -548,7 +540,6 @@ public final strictfp class S2Cap implements S2Region, Serializable {
   }
 
   /** Writes this cap to the given output stream. */
-  @JsIgnore
   public void encode(OutputStream os) throws IOException {
     encode(new LittleEndianOutput(os));
   }
@@ -560,7 +551,6 @@ public final strictfp class S2Cap implements S2Region, Serializable {
   }
 
   /** Returns a new S2Cap decoded from the given input stream. */
-  @JsIgnore
   public static S2Cap decode(InputStream is) throws IOException {
     return decode(new LittleEndianInput(is));
   }

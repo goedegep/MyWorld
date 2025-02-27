@@ -151,7 +151,7 @@ class S2MinDistanceTargets {
 
     @CanIgnoreReturnValue
     @Override
-    public boolean visitConnectedComponentPoints(PointVisitor visitor) {
+    public boolean visitConnectedComponentPoints(@SuppressWarnings("exports") PointVisitor visitor) {
       for (S2Shape shape : index.getShapes()) {
         if (shape == null) {
           continue;

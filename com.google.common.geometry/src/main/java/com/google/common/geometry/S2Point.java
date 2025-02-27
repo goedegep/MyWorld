@@ -31,10 +31,6 @@ import java.io.OutputStream;
 import java.io.Serializable;
 import java.util.AbstractList;
 import java.util.List;
-import jsinterop.annotations.JsConstructor;
-import jsinterop.annotations.JsIgnore;
-import jsinterop.annotations.JsMethod;
-import jsinterop.annotations.JsType;
 
 /**
  * An S2Point represents a point on the unit sphere as a 3D vector. Usually points are normalized to
@@ -43,9 +39,8 @@ import jsinterop.annotations.JsType;
  * @author danieldanciu@google.com (Daniel Danciu) ported from util/geometry
  * @author ericv@google.com (Eric Veach) original author
  */
-@SuppressWarnings("AmbiguousMethodReference")
-@JsType
-public strictfp class S2Point implements S2Region, Comparable<S2Point>, Serializable {
+@SuppressWarnings("serial")
+public class S2Point implements S2Region, Comparable<S2Point>, Serializable {
   /** Origin of the coordinate system, [0,0,0]. */
   public static final S2Point ORIGIN = new S2Point(0, 0, 0);
 
@@ -71,7 +66,6 @@ public strictfp class S2Point implements S2Region, Comparable<S2Point>, Serializ
   public static final S2Coder<S2Point> CODER =
       new S2Coder<S2Point>() {
         @Override
-        @JsIgnore // OutputStream
         public void encode(S2Point value, OutputStream output) throws IOException {
           value.encode(output);
         }
@@ -91,12 +85,10 @@ public strictfp class S2Point implements S2Region, Comparable<S2Point>, Serializ
   final double y;
   final double z;
 
-  @JsIgnore
   public S2Point() {
     this(0, 0, 0);
   }
 
-  @JsConstructor
   public S2Point(double x, double y, double z) {
     this.x = x;
     this.y = y;
@@ -121,7 +113,6 @@ public strictfp class S2Point implements S2Region, Comparable<S2Point>, Serializ
   }
 
   /** Returns the component-wise addition of 'p1' and 'p2'. */
-  @JsIgnore
   public static final S2Point add(final S2Point p1, final S2Point p2) {
     return new S2Point(p1.x + p2.x, p1.y + p2.y, p1.z + p2.z);
   }
@@ -132,7 +123,6 @@ public strictfp class S2Point implements S2Region, Comparable<S2Point>, Serializ
   }
 
   /** Returns the component-wise subtraction of 'p1' and 'p2'. */
-  @JsIgnore
   public static final S2Point sub(final S2Point p1, final S2Point p2) {
     return new S2Point(p1.x - p2.x, p1.y - p2.y, p1.z - p2.z);
   }
@@ -148,7 +138,6 @@ public strictfp class S2Point implements S2Region, Comparable<S2Point>, Serializ
   }
 
   /** Returns the component-wise multiplication of 'p' with 'm'. */
-  @JsIgnore
   public static final S2Point mul(final S2Point p, double m) {
     return new S2Point(m * p.x, m * p.y, m * p.z);
   }
@@ -159,7 +148,6 @@ public strictfp class S2Point implements S2Region, Comparable<S2Point>, Serializ
   }
 
   /** Returns the component-wise division of 'p' by 'm'. */
-  @JsIgnore
   public static final S2Point div(final S2Point p, double m) {
     return new S2Point(p.x / m, p.y / m, p.z / m);
   }
@@ -182,7 +170,6 @@ public strictfp class S2Point implements S2Region, Comparable<S2Point>, Serializ
    * be a better choice when the two vectors are nearly parallel, are equal, or one is the negation
    * of the other.
    */
-  @JsIgnore
   public static final S2Point crossProd(final S2Point p1, final S2Point p2) {
     return new S2Point(
         p1.y * p2.z - p1.z * p2.y, p1.z * p2.x - p1.x * p2.z, p1.x * p2.y - p1.y * p2.x);
@@ -194,7 +181,6 @@ public strictfp class S2Point implements S2Region, Comparable<S2Point>, Serializ
   }
 
   /** Returns the component-wise negation of 'p', i.e. its antipodal point. */
-  @JsIgnore
   public static final S2Point neg(S2Point p) {
     return new S2Point(-p.x, -p.y, -p.z);
   }
@@ -205,7 +191,6 @@ public strictfp class S2Point implements S2Region, Comparable<S2Point>, Serializ
   }
 
   /** Returns the component-wise absolute point from 'p'. */
-  @JsIgnore
   public static final S2Point fabs(S2Point p) {
     return new S2Point(abs(p.x), abs(p.y), abs(p.z));
   }
@@ -216,7 +201,6 @@ public strictfp class S2Point implements S2Region, Comparable<S2Point>, Serializ
   }
 
   /** Returns a copy of 'p' rescaled to be unit-length. */
-  @JsIgnore
   public static final S2Point normalize(S2Point p) {
     double norm = p.norm();
     if (norm != 0) {
@@ -441,7 +425,6 @@ public strictfp class S2Point implements S2Region, Comparable<S2Point>, Serializ
 
   // S2Region implementation.
   @Override
-  @JsMethod(name = "containsCell")
   public boolean contains(S2Cell cell) {
     return false;
   }
@@ -468,13 +451,11 @@ public strictfp class S2Point implements S2Region, Comparable<S2Point>, Serializ
   }
 
   /** Writes this point to the given output stream. */
-  @JsIgnore
   public void encode(OutputStream os) throws IOException {
     encode(new LittleEndianOutput(os));
   }
 
   /** Writes this point to the given little endian output stream. */
-  @JsIgnore
   void encode(LittleEndianOutput os) throws IOException {
     os.writeDouble(x);
     os.writeDouble(y);
@@ -482,13 +463,11 @@ public strictfp class S2Point implements S2Region, Comparable<S2Point>, Serializ
   }
 
   /** Returns a new S2Point decoded from the given input stream. */
-  @JsIgnore
   public static S2Point decode(InputStream is) throws IOException {
     return decode(new LittleEndianInput(is));
   }
 
   /** Returns a new S2Point decoded from the given little endian input stream. */
-  @JsIgnore
   static S2Point decode(LittleEndianInput is) throws IOException {
     return new S2Point(is.readDouble(), is.readDouble(), is.readDouble());
   }
@@ -645,7 +624,6 @@ public strictfp class S2Point implements S2Region, Comparable<S2Point>, Serializ
   }
 
   /** A builder of {@link S2Point} instances. */
-  @JsType
   public static final class Builder {
     private double x;
     private double y;

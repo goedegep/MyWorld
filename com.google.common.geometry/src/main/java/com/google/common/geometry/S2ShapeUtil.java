@@ -38,10 +38,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import javax.annotation.Nullable;
 
 /** Utilities for working with S2Shape. */
-public strictfp class S2ShapeUtil {
+public class S2ShapeUtil {
   /** Utility methods only. */
   private S2ShapeUtil() {}
 
@@ -669,7 +668,6 @@ public strictfp class S2ShapeUtil {
    * Returns null if 'vtest' is balanced (see definition above), otherwise 'vtest' is unbalanced and
    * the return value indicates whether it is contained by 'shape'.
    */
-  @Nullable
   private static Boolean getReferencePointAtVertex(S2Shape shape, S2Point vtest) {
     // Let P be an unbalanced vertex. Vertex P is defined to be inside the region if the region
     // contains a particular direction vector starting from P, namely the direction of

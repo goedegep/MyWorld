@@ -15,12 +15,10 @@
  */
 package com.google.common.geometry;
 
-import jsinterop.annotations.JsType;
 
 /**
  * An abstract, immutable distance on the surface of the sphere.
  */
-@JsType
 public interface S1Distance<T extends S1Distance<T>> extends Comparable<T> {
   /**
    * Compares this S1Distance to the {@code other}. Returns a positive value if this one is

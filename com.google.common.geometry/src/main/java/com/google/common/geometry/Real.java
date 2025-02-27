@@ -45,7 +45,7 @@ import java.math.BigDecimal;
  *
  * <p>Faster adaptive techniques are also presented in that paper, but are not implemented here.
  */
-strictfp class Real extends Number {
+class Real extends Number {
   private static final long serialVersionUID = 1L;
 
   /**

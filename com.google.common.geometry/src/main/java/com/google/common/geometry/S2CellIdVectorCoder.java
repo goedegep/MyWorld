@@ -27,6 +27,7 @@ import java.io.OutputStream;
 import java.util.List;
 
 /** An encoder/decoder of Lists of {@link S2CellId}s. */
+@SuppressWarnings("serial")
 class S2CellIdVectorCoder implements S2Coder<List<S2CellId>> {
 
   /** An instance of an {@code S2CellIdVectorCoder}. */

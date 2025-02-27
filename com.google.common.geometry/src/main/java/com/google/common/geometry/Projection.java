@@ -16,14 +16,10 @@
 
 package com.google.common.geometry;
 
-import jsinterop.annotations.JsIgnore;
-import jsinterop.annotations.JsType;
-
 /**
  * For the purposes of the S2 library, a projection is a function that maps between S2Points and
  * R2Points. It can also define the coordinate wrapping behavior along each axis.
  */
-@JsType
 public interface Projection {
   /* Converts a point on the sphere to a projected 2D point. */
   default R2Vector project(S2Point p) {
@@ -117,7 +113,6 @@ public interface Projection {
    * where one endpoint is a pole. If you need to do this, clip the edge first so that the "y"
    * coordinate is no more than about 5 * max_x.)
    */
-  @JsType
   public final class MercatorProjection implements Projection {
 
     private final double xWrap;
@@ -128,7 +123,6 @@ public interface Projection {
      * Default constructor with the projected 'x' coordinate in [-pi, pi]. Note 'y' coordinate is
      * unbounded from -infinity to infinity.
      */
-    @JsIgnore
     public static MercatorProjection createInRadians() {
       return new MercatorProjection(Math.PI);
     }
@@ -179,7 +173,6 @@ public interface Projection {
    * ordering, in order to match the usual convention for graphs in which "x" is horizontal and "y"
    * is vertical.
    */
-  @JsType
   public final class PlateCarreeProjection implements Projection {
 
     private final double xWrap;
@@ -191,7 +184,6 @@ public interface Projection {
      * to equal the latitudes and longitudes and vice versa with some accommodation for wrapping the
      * x coordinate in Unproject.
      */
-    @JsIgnore
     public static PlateCarreeProjection createInRadians() {
       return new PlateCarreeProjection(Math.PI);
     }
