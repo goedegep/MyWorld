@@ -616,10 +616,10 @@
   <modules>
     <!-- Commons -->
     <module>../goedegep.resources</module>
+    <module>../com.google.common.geometry</module>
     <module>../goedegep.geo</module>
     <module>../commons-imaging</module>
     <module>../gluon-oss-maps</module>
-    <module>../com.google.common.geometry</module>
     <module>../goedegep.emfsample.model</module>
     <module>../goedegep.util</module>
     <module>../goedegep.gpx.model</module>
