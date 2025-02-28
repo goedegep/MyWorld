@@ -2,6 +2,7 @@ package goedegep.util.emf;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.logging.Logger;
 
 import org.eclipse.emf.common.notify.Notification;
@@ -13,8 +14,6 @@ import org.eclipse.emf.ecore.EClassifier;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EStructuralFeature;
-
-import goedegep.util.PgUtilities;
 
 /**
  * This is a utility class, with EMF utility methods.
@@ -531,7 +530,7 @@ public final class EmfUtil {
    * @param value the value to set.
    */
   public static <T> void setFeatureValue(EObject eObject, EStructuralFeature feature, T value) {
-    if (!PgUtilities.equals(value, eObject.eGet(feature))) {
+    if (!Objects.equals(value, eObject.eGet(feature))) {
       eObject.eSet(feature, value);
     }    
   }

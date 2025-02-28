@@ -3,6 +3,7 @@ package goedegep.rolodex.app.guifx;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.logging.Logger;
 
 import goedegep.appgen.Operation;
@@ -27,7 +28,6 @@ import goedegep.rolodex.model.PhoneNumber;
 import goedegep.rolodex.model.Rolodex;
 import goedegep.rolodex.model.RolodexFactory;
 import goedegep.rolodex.model.RolodexPackage;
-import goedegep.util.PgUtilities;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -336,7 +336,7 @@ class EmployeeEditPanel {
       List<Person> persons = personTextField.getMatchingPersons();
       if (persons.size() == 1) {
         Person person = persons.get(0);
-        if (!PgUtilities.equals(employee.getPerson(), person)) {
+        if (!Objects.equals(employee.getPerson(), person)) {
           employee.setPerson(person);
         }
       }
@@ -344,7 +344,7 @@ class EmployeeEditPanel {
       List<Institution> institutions = institutionTextField.getMatchingInstitutions();
       if (institutions.size() == 1) {
         Institution institution = institutions.get(0);
-        if (!PgUtilities.equals(employee.getInstitution(), institution)) {
+        if (!Objects.equals(employee.getInstitution(), institution)) {
           employee.setInstitution(institution);
         }
       }

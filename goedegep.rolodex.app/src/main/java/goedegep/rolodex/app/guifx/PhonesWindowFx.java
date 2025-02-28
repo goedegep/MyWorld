@@ -3,6 +3,7 @@ package goedegep.rolodex.app.guifx;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.logging.Logger;
 
 import goedegep.appgen.Operation;
@@ -25,7 +26,6 @@ import goedegep.rolodex.model.PhoneNumber;
 import goedegep.rolodex.model.Rolodex;
 import goedegep.rolodex.model.RolodexFactory;
 import goedegep.rolodex.model.RolodexPackage;
-import goedegep.util.PgUtilities;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -314,12 +314,12 @@ class PhoneEditPanel {
    */
   public boolean updatePhoneFromFields(Phone phone) {
     String phoneDescription = phoneDescriptionTextField.getValue();
-    if (!PgUtilities.equals(phone.getDescription(), phoneDescription)) {
+    if (!Objects.equals(phone.getDescription(), phoneDescription)) {
       phone.setDescription(phoneDescription);
     }      
         
     String phoneType = phoneTypeTextField.getValue();
-    if (!PgUtilities.equals(phone.getPhoneType(), phoneType)) {
+    if (!Objects.equals(phone.getPhoneType(), phoneType)) {
       phone.setPhoneType(phoneType);
     }      
         
@@ -532,17 +532,17 @@ class PhoneAddressBookEntryEditPanel {
    */
   public boolean updatePhoneAddressBookEntryFromFields(PhoneAddressBookEntry phoneAddressBookEntry) {
     String entryName = entryNameTextField.getValue();
-    if (!PgUtilities.equals(phoneAddressBookEntry.getEntryName(), entryName)) {
+    if (!Objects.equals(phoneAddressBookEntry.getEntryName(), entryName)) {
       phoneAddressBookEntry.setEntryName(entryName);
     }      
         
     PhoneAddressBookEntryType entryType = (PhoneAddressBookEntryType) phoneAddressBookEntryTypeField.getValue();
-    if (!PgUtilities.equals(phoneAddressBookEntry.getEntryType(), entryType)) {
+    if (!Objects.equals(phoneAddressBookEntry.getEntryType(), entryType)) {
       phoneAddressBookEntry.setEntryType(entryType);
     } 
     
     PhoneNumber phoneNumber = phoneNumberTextField.getMatchingPhoneNumber();
-    if (!PgUtilities.equals(phoneAddressBookEntry.getPhoneNumber(), phoneNumber)) {
+    if (!Objects.equals(phoneAddressBookEntry.getPhoneNumber(), phoneNumber)) {
       phoneAddressBookEntry.setPhoneNumber(phoneNumber);
     }      
         

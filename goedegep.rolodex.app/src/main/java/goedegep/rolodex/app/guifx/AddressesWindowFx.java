@@ -3,6 +3,7 @@ package goedegep.rolodex.app.guifx;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.logging.Logger;
 
 import goedegep.appgen.Operation;
@@ -28,7 +29,6 @@ import goedegep.rolodex.model.Country;
 import goedegep.rolodex.model.Rolodex;
 import goedegep.rolodex.model.RolodexFactory;
 import goedegep.rolodex.model.RolodexPackage;
-import goedegep.util.PgUtilities;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -380,32 +380,32 @@ class AddressEditPanel {
    */
   public boolean updateAddressFromFields(Address address) {
       String streetName = streetTextField.getValue();
-      if (!PgUtilities.equals(address.getStreetName(), streetName)) {
+      if (!Objects.equals(address.getStreetName(), streetName)) {
         address.setStreetName(streetName);
       }
       
       Integer houseNumber = houseNumberTextField.getValue();
-      if (!PgUtilities.equals(address.getHouseNumber(), houseNumber)) {
+      if (!Objects.equals(address.getHouseNumber(), houseNumber)) {
         address.setHouseNumber(houseNumber);
       }
       
       String houseNumberExtension = houseNumberExtensionTextField.getValue();
-      if (!PgUtilities.equals(address.getHouseNumberExtension(), houseNumberExtension)) {
+      if (!Objects.equals(address.getHouseNumberExtension(), houseNumberExtension)) {
         address.setHouseNumberExtension(houseNumberExtension);
       }
       
       String poBox = poBoxTextField.getValue();
-      if (!PgUtilities.equals(address.getPOBox(), poBox)) {
+      if (!Objects.equals(address.getPOBox(), poBox)) {
         address.setPOBox(poBox);
       }
       
       String postalCode = postalCodeTextField.getValue();
-      if (!PgUtilities.equals(address.getPostalCode(), postalCode)) {
+      if (!Objects.equals(address.getPostalCode(), postalCode)) {
         address.setPostalCode(postalCode);
       }
       
       City city = cityTextField.getCity(countryTextField.getCountry());
-      if (!PgUtilities.equals(address.getCity(), city)) {
+      if (!Objects.equals(address.getCity(), city)) {
         address.setCity(city);
       }
         

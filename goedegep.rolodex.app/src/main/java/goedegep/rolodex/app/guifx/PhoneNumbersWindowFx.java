@@ -3,6 +3,7 @@ package goedegep.rolodex.app.guifx;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.logging.Logger;
 
 import goedegep.appgen.Operation;
@@ -23,7 +24,6 @@ import goedegep.rolodex.model.PhoneNumber;
 import goedegep.rolodex.model.Rolodex;
 import goedegep.rolodex.model.RolodexFactory;
 import goedegep.rolodex.model.RolodexPackage;
-import goedegep.util.PgUtilities;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -310,18 +310,18 @@ class PhoneNumberEditPanel {
    */
   public boolean updatePhoneNumberFromFields(PhoneNumber phoneNumber) {
     String phoneNumberText = phoneNumberTextField.getValue();
-    if (!PgUtilities.equals(phoneNumber.getPhoneNumber(), phoneNumberText)) {
+    if (!Objects.equals(phoneNumber.getPhoneNumber(), phoneNumberText)) {
       phoneNumber.setPhoneNumber(phoneNumberText);
     }      
         
     ConnectionType connectionType = connectionTypeTextField.getValue();
 //    ConnectionType connectionType = ConnectionType.getByName(connectionTypeText);
-    if (!PgUtilities.equals(phoneNumber.getConnectionType(), connectionType)) {
+    if (!Objects.equals(phoneNumber.getConnectionType(), connectionType)) {
       phoneNumber.setConnectionType(connectionType);
     } 
     
     String description = descriptionTextField.getValue();
-    if (!PgUtilities.equals(phoneNumber.getDescription(), description)) {
+    if (!Objects.equals(phoneNumber.getDescription(), description)) {
       phoneNumber.setDescription(description);
     }      
         

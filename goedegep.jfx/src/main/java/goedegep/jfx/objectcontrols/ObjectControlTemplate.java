@@ -3,16 +3,13 @@ package goedegep.jfx.objectcontrols;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import java.util.function.Supplier;
+import java.util.Objects;
 import java.util.logging.Logger;
 
 import goedegep.jfx.ComponentFactoryFx;
 import goedegep.jfx.CustomizationFx;
-import goedegep.util.PgUtilities;
 import javafx.beans.InvalidationListener;
-import javafx.scene.Node;
 import javafx.scene.control.Label;
-import javafx.scene.control.Tooltip;
 
 /**
  * This class provides a template for implementing an {@code ObjectControl}.
@@ -209,7 +206,7 @@ public abstract class ObjectControlTemplate<T> extends ObjectControlAbstract<T> 
     }
     ociSetErrorFeedback(dataValid);
     
-    boolean changed = !PgUtilities.equals(inputValue, getValue());
+    boolean changed = !Objects.equals(inputValue, getValue());
     if (changed) {
       value = inputValue;
     }
@@ -290,7 +287,7 @@ public abstract class ObjectControlTemplate<T> extends ObjectControlAbstract<T> 
     }
     ociSetErrorFeedback(dataValid);
     
-    boolean changed = !PgUtilities.equals(newValue, getValue());
+    boolean changed = !Objects.equals(newValue, getValue());
     if (changed) {
       value = newValue;
     }

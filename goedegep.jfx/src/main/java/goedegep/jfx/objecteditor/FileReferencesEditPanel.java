@@ -2,13 +2,13 @@ package goedegep.jfx.objecteditor;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Function;
 import java.util.logging.Logger;
 
 import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.objectcontrols.ObjectEditPanelTemplate;
 import goedegep.types.model.FileReference;
-import goedegep.util.PgUtilities;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
@@ -382,9 +382,9 @@ public class FileReferencesEditPanel extends ObjectEditPanelTemplate<List<FileRe
         FileReferenceTypeInfo fileReferencePanelReferenceType = fileReferencePanel.getReferenceType();
         String fileReferencePanelReferenceTypeTag = fileReferencePanelReferenceType != null ? fileReferencePanelReferenceType.tag() : null;
         String fileReferencePanelFile = fileReferencePanel.getPathNameRelativeToPrefix();
-        if (!PgUtilities.equals(attachment.getTags(), fileReferencePanelReferenceTypeTag)  ||
+        if (!Objects.equals(attachment.getTags(), fileReferencePanelReferenceTypeTag)  ||
             !attachment.getFile().equals(fileReferencePanelFile)  ||
-            !PgUtilities.equals(attachment.getTitle(), fileReferencePanel.getTitleObjectControl().getValue())) {
+            !Objects.equals(attachment.getTitle(), fileReferencePanel.getTitleObjectControl().getValue())) {
           changes = true;
           break;
         }

@@ -25,7 +25,6 @@ import goedegep.jfx.objectcontrols.ObjectControlMultiLineString;
 import goedegep.jfx.objectcontrols.ObjectControlTextField;
 import goedegep.jfx.objecteditor.EditMode;
 import goedegep.jfx.stringconverters.StringConverterAndChecker;
-import goedegep.util.PgUtilities;
 import goedegep.util.file.FileUtils;
 import javafx.geometry.Insets;
 import javafx.scene.control.Button;
@@ -529,21 +528,21 @@ public class EditorPanel extends VBox {
    */
   private boolean changesInInput() {
     if (editMode == EditMode.EDIT) {
-      if (!PgUtilities.equals(nameObjectControlTextField.getValue(), inquiryData.getName())  ||
-          !PgUtilities.equals(happyObjectControlBoolean.getValue(), inquiryData.isHappy())  ||
-          !PgUtilities.equals(birthPlaceObjectControlAutoCompleteTextField.getValue(), inquiryData.getBirthPlace())  ||
-          !PgUtilities.equals(genderObjectControlEnumComboBox.getValue(), inquiryData.getGender())  ||
-          !PgUtilities.equals(ageObjectControlInteger.getValue(), inquiryData.getAge())  ||
-          !PgUtilities.equals(priceLastHolidayObjectControlCurrency.getValue(), inquiryData.getPriceLastHoliday())  ||
-          !PgUtilities.equals(travelerTypeObjectControlEnumComboBox.getValue(), inquiryData.getTravelerType())  ||
-          !PgUtilities.equals(lastTravelRatingObjectControlFixedPointValue.getValue(), inquiryData.getLastTravelRating())  ||
-          !PgUtilities.equals(lastTravelDateObjectControlLocalDate.getValue(), inquiryData.getLastTravelDate())  ||
-          !PgUtilities.equals(travelReportFileObjectControlFileSelecter.getValue(), inquiryData.getTravelReportFile())  ||
-          !PgUtilities.equals(nextTravelDateObjectControlFlexDate.getValue(), inquiryData.getNextTravelDate())  ||
-          !PgUtilities.equals(picturesFolderObjectControlFolderSelecter.getValue(), inquiryData.getPicturesFolder())  ||
+      if (!Objects.equals(nameObjectControlTextField.getValue(), inquiryData.getName())  ||
+          !Objects.equals(happyObjectControlBoolean.getValue(), inquiryData.isHappy())  ||
+          !Objects.equals(birthPlaceObjectControlAutoCompleteTextField.getValue(), inquiryData.getBirthPlace())  ||
+          !Objects.equals(genderObjectControlEnumComboBox.getValue(), inquiryData.getGender())  ||
+          !Objects.equals(ageObjectControlInteger.getValue(), inquiryData.getAge())  ||
+          !Objects.equals(priceLastHolidayObjectControlCurrency.getValue(), inquiryData.getPriceLastHoliday())  ||
+          !Objects.equals(travelerTypeObjectControlEnumComboBox.getValue(), inquiryData.getTravelerType())  ||
+          !Objects.equals(lastTravelRatingObjectControlFixedPointValue.getValue(), inquiryData.getLastTravelRating())  ||
+          !Objects.equals(lastTravelDateObjectControlLocalDate.getValue(), inquiryData.getLastTravelDate())  ||
+          !Objects.equals(travelReportFileObjectControlFileSelecter.getValue(), inquiryData.getTravelReportFile())  ||
+          !Objects.equals(nextTravelDateObjectControlFlexDate.getValue(), inquiryData.getNextTravelDate())  ||
+          !Objects.equals(picturesFolderObjectControlFolderSelecter.getValue(), inquiryData.getPicturesFolder())  ||
           Objects.compare(imageFileObjectControlImageFile.getValue(), inquiryData.getImageFile(), FileUtils.getComparator()) != 0  ||
-          !PgUtilities.equals(notesObjectControlMultiLineString.getValue(), inquiryData.getNotes())  ||
-          !PgUtilities.equals(detailsObjectControlHTMLString.getValue(), inquiryData.getDetails())) {
+          !Objects.equals(notesObjectControlMultiLineString.getValue(), inquiryData.getNotes())  ||
+          !Objects.equals(detailsObjectControlHTMLString.getValue(), inquiryData.getDetails())) {
         return true;
       } else {
         return false;

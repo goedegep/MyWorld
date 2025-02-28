@@ -2,11 +2,11 @@ package goedegep.media.mediadb.app;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.logging.Logger;
 
 import goedegep.media.mediadb.model.Album;
 import goedegep.media.mediadb.model.Artist;
-import goedegep.media.mediadb.model.Collection;
 import goedegep.media.mediadb.model.Disc;
 import goedegep.media.mediadb.model.IWant;
 import goedegep.media.mediadb.model.MediaDb;
@@ -15,9 +15,7 @@ import goedegep.media.mediadb.model.MyInfo;
 import goedegep.media.mediadb.model.MyTrackInfo;
 import goedegep.media.mediadb.model.Player;
 import goedegep.media.mediadb.model.Track;
-import goedegep.media.mediadb.model.TrackCollection;
 import goedegep.media.mediadb.model.TrackReference;
-import goedegep.util.PgUtilities;
 
 /**
  * This class provides methods to perform checks on (a part of) a media database ({@link MediaDb}).
@@ -427,7 +425,7 @@ public class MediaDbChecker {
             iWantFirstTrack = trackIWant;
             first = false;
           } else {
-            if (!PgUtilities.equals(iWantFirstTrack, trackIWant)) {
+            if (!Objects.equals(iWantFirstTrack, trackIWant)) {
               differentIHaveFound = true;
               break;
             }
@@ -437,7 +435,7 @@ public class MediaDbChecker {
             iWantFirstTrack = null;
             first = false;
           } else {
-            if (!PgUtilities.equals(iWantFirstTrack, null)) {
+            if (!Objects.equals(iWantFirstTrack, null)) {
               differentIHaveFound = true;
               break;
             }
@@ -489,13 +487,13 @@ public class MediaDbChecker {
   
 
   private static boolean mediumInfoIsEqual(MediumInfo mediumInfoFirstTrack, MediumInfo mediumInfo) {
-    if (!PgUtilities.equals(mediumInfoFirstTrack.getInformationType(), mediumInfo.getInformationType())) {
+    if (!Objects.equals(mediumInfoFirstTrack.getInformationType(), mediumInfo.getInformationType())) {
       return false;
     }
-    if (!PgUtilities.equals(mediumInfoFirstTrack.getMediumType(), mediumInfo.getMediumType())) {
+    if (!Objects.equals(mediumInfoFirstTrack.getMediumType(), mediumInfo.getMediumType())) {
       return false;
     }
-    if (!PgUtilities.equals(mediumInfoFirstTrack.getSourceBitRate(), mediumInfo.getSourceBitRate())) {
+    if (!Objects.equals(mediumInfoFirstTrack.getSourceBitRate(), mediumInfo.getSourceBitRate())) {
       return false;
     }
     // TODO check source types.

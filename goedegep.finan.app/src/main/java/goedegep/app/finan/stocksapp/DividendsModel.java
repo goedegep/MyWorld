@@ -1,12 +1,13 @@
 package goedegep.app.finan.stocksapp;
 
+import java.util.Objects;
+
 import goedegep.appgen.MessageDialogType;
 import goedegep.appgen.swing.AppGenAbstractTableModel;
 import goedegep.finan.stocks.DividendType;
 import goedegep.finan.stocks.Share;
 import goedegep.finan.stocks.ShareDividend;
 import goedegep.finan.stocks.StockDividend;
-import goedegep.util.PgUtilities;
 import goedegep.util.money.PgCurrency;
 import goedegep.util.money.PgCurrencyFormat;
 
@@ -71,7 +72,7 @@ public class DividendsModel extends AppGenAbstractTableModel {
       }
       // There must either be a name or a year.
       if ((dividend.getYear() != null)  ||  (s != null)) {
-        if (!PgUtilities.equals(s, dividend.getName())) {
+        if (!Objects.equals(s, dividend.getName())) {
           dividend.setName(s);
           fireTableRowsUpdated(row, row);
         }
@@ -95,7 +96,7 @@ public class DividendsModel extends AppGenAbstractTableModel {
 
       // There must either be a name or a year.
       if ((dividend.getName() != null)  ||  (year != null)) {
-        if (!PgUtilities.equals(year, dividend.getYear())) {
+        if (!Objects.equals(year, dividend.getYear())) {
           dividend.setYear(year);
           fireTableRowsUpdated(row, row);
         }
@@ -170,7 +171,7 @@ public class DividendsModel extends AppGenAbstractTableModel {
       }
 
       // There must either be a name or a year.
-      if (!PgUtilities.equals(taxPercentage, dividend.getTaxPercentage())) {
+      if (!Objects.equals(taxPercentage, dividend.getTaxPercentage())) {
         dividend.setTaxPercentage(taxPercentage);
         fireTableRowsUpdated(row, row);
       }

@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.logging.Logger;
 
 import org.eclipse.emf.ecore.EReference;
@@ -39,7 +40,6 @@ import goedegep.rolodex.model.PhoneNumber;
 import goedegep.rolodex.model.Rolodex;
 import goedegep.rolodex.model.RolodexFactory;
 import goedegep.rolodex.model.RolodexPackage;
-import goedegep.util.PgUtilities;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -542,27 +542,27 @@ class PersonEditPanel {
    */
   public boolean updatePersonFromFields(Person person) {
       String firstName = firstNameTextField.getValue();
-      if (!PgUtilities.equals(person.getFirstname(), firstName)) {
+      if (!Objects.equals(person.getFirstname(), firstName)) {
         person.setFirstname(firstName);
       }
       
       String infix = infixTextField.getValue();
-      if (!PgUtilities.equals(person.getInfix(), infix)) {
+      if (!Objects.equals(person.getInfix(), infix)) {
         person.setInfix(infix);
       }
       
       String surName = surNameTextField.getValue();
-      if (!PgUtilities.equals(person.getSurname(), surName)) {
+      if (!Objects.equals(person.getSurname(), surName)) {
         person.setSurname(surName);
       }
       
       String initials = initialsTextField.getValue();
-      if (!PgUtilities.equals(person.getInitials(), initials)) {
+      if (!Objects.equals(person.getInitials(), initials)) {
         person.setInitials(initials);
       }
       
       Gender gender = genderComboBox.getValue();
-      if (!PgUtilities.equals(person.getGender(), gender)) {
+      if (!Objects.equals(person.getGender(), gender)) {
         person.setGender(gender);
       }
       
@@ -602,7 +602,7 @@ class PersonEditPanel {
           person.getPreviousAddresses().add(addressForPeriod);
         }
       }
-      if (!PgUtilities.equals(person.getAddress(), address)) {
+      if (!Objects.equals(person.getAddress(), address)) {
         person.setAddress(address);
       }
       

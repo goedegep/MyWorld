@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.logging.Logger;
 
 import org.eclipse.emf.ecore.EObject;
@@ -16,7 +17,6 @@ import goedegep.gpx.model.WptType;
 import goedegep.jfx.ComponentFactoryFx;
 import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.JfxStage;
-import goedegep.util.PgUtilities;
 import goedegep.util.douglaspeuckerreducer.DouglasPeuckerReducer;
 import goedegep.util.objectselector.ObjectSelectionListener;
 import javafx.geometry.Insets;
@@ -273,7 +273,7 @@ public class ReduceTrackPointsWindow extends JfxStage implements ObjectSelection
     LOGGER.severe("=> " + object);
     GpxType newGpx = getGpxForObject(object);
     
-    if (!PgUtilities.equals(gpx, newGpx)) {
+    if (!Objects.equals(gpx, newGpx)) {
       originalWaypointsPerSegment.clear();
       
       if (newGpx != null) {
