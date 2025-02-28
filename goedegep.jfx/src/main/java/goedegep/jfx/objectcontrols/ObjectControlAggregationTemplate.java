@@ -1,11 +1,11 @@
 package goedegep.jfx.objectcontrols;
 
+import java.util.Objects;
 import java.util.logging.Logger;
 
 import goedegep.jfx.ComponentFactoryFx;
 import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.objecteditor.ObjectEditorException;
-import goedegep.util.PgUtilities;
 
 /**
  * This class provides a template for a number of ObjectControls representing an Object.
@@ -86,7 +86,7 @@ public abstract class ObjectControlAggregationTemplate<T> {
   public final void setObject(T newValue) {
     LOGGER.info("=> " + newValue);
         
-    boolean changed = !PgUtilities.equals(newValue, getValue());
+    boolean changed = !Objects.equals(newValue, getValue());
     if (changed) {
       object = newValue;
     }

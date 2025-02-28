@@ -3,10 +3,10 @@ package goedegep.jfx.objectcontrols;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Supplier;
 import java.util.logging.Logger;
 
-import goedegep.util.PgUtilities;
 import javafx.beans.InvalidationListener;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
@@ -115,7 +115,7 @@ public abstract class ObjectControlAbstract<T> implements ObjectControl<T> {
     if (comparator != null) {
       result = comparator.compare(value, referenceValue) != 0;
     } else {
-      result = !PgUtilities.equals(value, referenceValue);
+      result = !Objects.equals(value, referenceValue);
     }
     LOGGER.info("<= " + result);
     return result;

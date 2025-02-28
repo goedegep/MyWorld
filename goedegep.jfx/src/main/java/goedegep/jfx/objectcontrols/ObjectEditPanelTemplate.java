@@ -7,7 +7,6 @@ import java.util.logging.Logger;
 import goedegep.jfx.ComponentFactoryFx;
 import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.objecteditor.ObjectEditorException;
-import goedegep.util.PgUtilities;
 import javafx.scene.Node;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.VBox;

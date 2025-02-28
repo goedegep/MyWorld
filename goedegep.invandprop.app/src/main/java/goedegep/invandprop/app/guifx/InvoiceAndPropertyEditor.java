@@ -31,7 +31,6 @@ import goedegep.jfx.objecteditor.ObjectEditorTemplate;
 import goedegep.types.model.FileReference;
 import goedegep.types.model.TypesFactory;
 import goedegep.util.Debug;
-import goedegep.util.PgUtilities;
 import goedegep.util.emf.EmfUtil;
 import goedegep.util.money.PgCurrency;
 import javafx.beans.value.ChangeListener;
@@ -467,10 +466,10 @@ public class InvoiceAndPropertyEditor extends ObjectEditorTemplate<Invoice> {
       int index = 0;
       for (InvoiceItem invoiceItem: object.getInvoiceItems()) {
         InvoiceItemPanel invoiceItemPanel = invoiceItemPanels.get(index++);
-        if (!PgUtilities.equals((Integer) invoiceItem.getNumberOfItems(), invoiceItemPanel.getNumberOfItemsObjectInput().getValue())  ||
-            !PgUtilities.equals(invoiceItem.getDescription(), invoiceItemPanel.getDescriptionObjectInput().getValue())  ||
-            !PgUtilities.equals(invoiceItem.getAmount(), invoiceItemPanel.getAmountObjectInput().getValue())  ||
-            !PgUtilities.equals(invoiceItem.getRemarks(), invoiceItemPanel.getRemarksObjectInput().getValue())) {
+        if (!Objects.equals((Integer) invoiceItem.getNumberOfItems(), invoiceItemPanel.getNumberOfItemsObjectInput().getValue())  ||
+            !Objects.equals(invoiceItem.getDescription(), invoiceItemPanel.getDescriptionObjectInput().getValue())  ||
+            !Objects.equals(invoiceItem.getAmount(), invoiceItemPanel.getAmountObjectInput().getValue())  ||
+            !Objects.equals(invoiceItem.getRemarks(), invoiceItemPanel.getRemarksObjectInput().getValue())) {
           changes = true;
           if (Debug.ON) {
             LOGGER.severe("NumberOfItems: " + invoiceItem.getNumberOfItems() + ", " + invoiceItemPanel.getNumberOfItemsObjectInput().getValue());

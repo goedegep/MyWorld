@@ -3,6 +3,7 @@ package goedegep.rolodex.app.guifx;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.logging.Logger;
 
 import goedegep.appgen.Operation;
@@ -27,7 +28,6 @@ import goedegep.rolodex.model.PhoneNumber;
 import goedegep.rolodex.model.Rolodex;
 import goedegep.rolodex.model.RolodexFactory;
 import goedegep.rolodex.model.RolodexPackage;
-import goedegep.util.PgUtilities;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -360,12 +360,12 @@ class FamilyEditPanel {
    */
   public boolean updateFamilyFromFields(Family family) {
       String familyTitle = familyTitleTextField.getValue();
-      if (!PgUtilities.equals(family.getFamilyTitle(), familyTitle)) {
+      if (!Objects.equals(family.getFamilyTitle(), familyTitle)) {
         family.setFamilyTitle(familyTitle);
       }
       
       String familyName = familyNameTextField.getValue();
-      if (!PgUtilities.equals(family.getFamilyName(), familyName)) {
+      if (!Objects.equals(family.getFamilyName(), familyName)) {
         family.setFamilyName(familyName);
       }
                   
@@ -378,7 +378,7 @@ class FamilyEditPanel {
           family.getPreviousAddresses().add(addressForPeriod);
         }
       }
-      if (!PgUtilities.equals(family.getAddress(), address)) {
+      if (!Objects.equals(family.getAddress(), address)) {
         family.setAddress(address);
       }
       

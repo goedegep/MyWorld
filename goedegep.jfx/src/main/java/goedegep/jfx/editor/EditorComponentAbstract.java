@@ -3,12 +3,12 @@ package goedegep.jfx.editor;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Supplier;
 import java.util.logging.Logger;
 
 import goedegep.jfx.ComponentFactoryFx;
 import goedegep.jfx.CustomizationFx;
-import goedegep.util.PgUtilities;
 import goedegep.util.listener.ValueAndOrStatusChangeListener;
 import goedegep.util.listener.ValueAndOrStatusChangeListenersManager;
 import javafx.beans.InvalidationListener;
@@ -221,7 +221,7 @@ public abstract class EditorComponentAbstract<T> implements EditorComponent<T> {
     if (comparator != null) {
       result = comparator.compare(newValue, referenceValue) != 0;
     } else {
-      result = !PgUtilities.equals(newValue, referenceValue);
+      result = !Objects.equals(newValue, referenceValue);
     }
     
     return result;
