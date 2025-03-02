@@ -1,0 +1,35 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>goedegep.jfx</groupId>
+  <artifactId>goedegep-jfxtest</artifactId>
+  <packaging>jar</packaging>
+  <name>Goedegep JavaFX Application Generics tests</name>
+  <description>This project contains test code for goedegep.jfx.</description>
+  <parent>
+    <groupId>goedegep.toplevelpom</groupId>
+    <artifactId>goedegep-toplevelpom</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <relativePath>../goedegep.toplevelpom</relativePath>
+  </parent>
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <version>2.10.4</version>
+        <configuration>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+  <dependencies>
+    <dependency>
+      <groupId>goedegep.jfx</groupId>
+      <artifactId>goedegep-jfx</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-api</artifactId>
+    </dependency>
+  </dependencies>
+</project>

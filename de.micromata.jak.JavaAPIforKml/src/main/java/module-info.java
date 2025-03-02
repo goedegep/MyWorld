@@ -15,6 +15,6 @@ module de.micromata.opengis.kml.v220 {
   requires java.logging;
   requires java.xml;
   requires org.glassfish.jaxb.runtime;
-  requires junit;
+//  requires junit;
 //  requires log4j;
 }

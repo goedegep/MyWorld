@@ -13,5 +13,4 @@ module goedegep.properties.app {
   requires javafx.graphics;
   requires org.eclipse.emf.common;
   requires org.eclipse.emf.ecore;
-  requires junit;
 }

@@ -47,7 +47,7 @@ public class StockPositionHistoryRedenomination extends StockPositionHistory {
     originalHistory = sph;
   }
 
-  protected StockPositionHistory getOriginalHistory() {
+  public StockPositionHistory getOriginalHistory() {
     return originalHistory;
   }
   

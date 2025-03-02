@@ -142,6 +142,11 @@
           <version>1.0-SNAPSHOT</version>
       </dependency>
       <dependency>
+          <groupId>goedegep.finan</groupId>
+          <artifactId>goedegep-finan-apptest</artifactId>
+          <version>1.0-SNAPSHOT</version>
+      </dependency>
+      <dependency>
         <groupId>goedegep.finan</groupId>
         <artifactId>goedegep-finan-investmentinsurance-model</artifactId>
         <version>1.0-SNAPSHOT</version>
@@ -217,6 +222,11 @@
         <version>1.0-SNAPSHOT</version>
       </dependency>
       <dependency>
+        <groupId>goedegep.jfx</groupId>
+        <artifactId>goedegep-jfxtest</artifactId>
+        <version>1.0-SNAPSHOT</version>
+      </dependency>
+      <dependency>
         <groupId>goedegep.media</groupId>
         <artifactId>goedegep-media-app</artifactId>
         <version>1.0-SNAPSHOT</version>
@@ -263,6 +273,11 @@
       </dependency>
       <dependency>
         <groupId>goedegep.pctools</groupId>
+        <artifactId>goedegep-pctoolstest</artifactId>
+        <version>1.0-SNAPSHOT</version>
+      </dependency>
+      <dependency>
+        <groupId>goedegep.pctools</groupId>
         <artifactId>goedegep-pctools-model</artifactId>
         <version>1.0-SNAPSHOT</version>
       </dependency>
@@ -283,6 +298,10 @@
       </dependency>
       <dependency>
         <groupId>goedegep.properties</groupId>
+        <artifactId>goedegep-properties-apptest</artifactId>
+      </dependency>
+      <dependency>
+        <groupId>goedegep.properties</groupId>
         <artifactId>goedegep-properties-model</artifactId>
         <version>1.0-SNAPSHOT</version>
       </dependency>
@@ -294,6 +313,11 @@
       <dependency>
         <groupId>goedegep.rolodex</groupId>
         <artifactId>goedegep-rolodex-app</artifactId>
+        <version>1.0-SNAPSHOT</version>
+      </dependency>
+      <dependency>
+        <groupId>goedegep.rolodex</groupId>
+        <artifactId>goedegep-rolodextest-app</artifactId>
         <version>1.0-SNAPSHOT</version>
       </dependency>
       <dependency>
@@ -348,6 +372,11 @@
       </dependency>
       <dependency>
         <groupId>goedegep.util</groupId>
+        <artifactId>goedegep-util</artifactId>
+        <version>1.0-SNAPSHOT</version>
+      </dependency>
+      <dependency>
+        <groupId>goedegep.utiltest</groupId>
         <artifactId>goedegep-util</artifactId>
         <version>1.0-SNAPSHOT</version>
       </dependency>
@@ -515,13 +544,14 @@
       <dependency>
         <groupId>org.apache.commons</groupId>
         <artifactId>commons-imaging</artifactId>
-        <version>1.0-alpha3</version>
+        <version>1.0-goedegep</version>
       </dependency>
-<dependency>
-    <groupId>org.apache.commons</groupId>
-    <artifactId>commons-io</artifactId>
-    <version>1.3.2</version>
-</dependency>      <dependency>
+      <dependency>
+        <groupId>org.apache.commons</groupId>
+        <artifactId>commons-io</artifactId>
+        <version>1.3.2</version>
+      </dependency>
+      <dependency>
         <groupId>org.apache.commons</groupId>
         <artifactId>commons-lang3</artifactId>
         <version>3.9</version>
@@ -622,6 +652,7 @@
     <module>../gluon-oss-maps</module>
     <module>../goedegep.emfsample.model</module>
     <module>../goedegep.util</module>
+    <module>../goedegep.utiltest</module>
     <module>../goedegep.gpx.model</module>
     <module>../goedegep.gpx10.model</module>
     <module>../goedegep.gpx</module>
@@ -632,7 +663,9 @@
     <module>../goedegep.properties.model</module>
     <module>../goedegep.appgen</module>
     <module>../goedegep.jfx</module>
+    <module>../goedegep.jfxtest</module>
     <module>../goedegep.properties.app</module>
+    <module>../goedegep.properties.apptest</module>
     <module>../goedegep.mapview</module>
     <module>../de.micromata.jak.JavaAPIforKml</module>
     <module>../me.atlis.nominatim-api</module>
@@ -655,6 +688,7 @@
     <module>../goedegep.pctools.model</module>
     <module>../goedegep.unitconverter.app</module>
     <module>../goedegep.rolodex.app</module>
+    <module>../goedegep.rolodextest.app</module>
     <module>../goedegep.events.app</module>
     <module>../goedegep.media.app</module>
     <module>../goedegep.media.photoshow.model</module>
@@ -662,9 +696,11 @@
     <module>../goedegep.media.mediadb.app</module>
     <module>../goedegep.media.app.guifx</module>
     <module>../goedegep.finan.app</module>
+    <module>../goedegep.finan.apptest</module>
     <module>../goedegep.invandprop.app</module>
     <module>../goedegep.gpx.app</module>
     <module>../goedegep.pctools</module>
+    <module>../goedegep.pctoolstest</module>
     <module>../goedegep.vacations.app</module>
     <module>../goedegep.demo</module>
     <module>../goedegep.myworld</module>

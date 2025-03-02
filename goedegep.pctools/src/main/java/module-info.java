@@ -17,7 +17,6 @@ module goedegep.pctools {
   requires javafx.base;
   requires javafx.controls;
   requires javafx.graphics;
-  requires junit;
   requires org.eclipse.emf.common;
   requires org.eclipse.emf.ecore;
   requires javafx.web;
