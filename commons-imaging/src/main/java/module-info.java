@@ -43,8 +43,8 @@ module org.apache.commons.imaging {
 
   requires transitive java.desktop;
   requires java.logging;
-  requires org.junit.jupiter.api;
-  requires org.junit.jupiter.params;
-  requires org.hamcrest;
+//  requires org.junit.jupiter.api;
+//  requires org.junit.jupiter.params;
+//  requires org.hamcrest;
   requires java.base;
 }

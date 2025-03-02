@@ -15,7 +15,6 @@ module goedegep.appgenfx {
   exports goedegep.jfx.objecteditor;
   exports goedegep.jfx.observableelist;
   exports goedegep.jfx.img;
-  exports goedegep.jfx.jfxjunitrunner;
   exports goedegep.jfx.stringconverters;
   exports goedegep.jfx.treeview;
   exports goedegep.jfx.workerstategui;
@@ -39,8 +38,6 @@ module goedegep.appgenfx {
   requires transitive goedegep.types.model;
   requires goedegep.geo;
   requires goedegep.resources;
-  requires junit;
-  requires org.junit.jupiter.api;
   
   opens goedegep.jfx.eobjecttable;
 }

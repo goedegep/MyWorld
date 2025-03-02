@@ -1,0 +1,32 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>goedegep.pctools</groupId>
+  <artifactId>goedegep-pctoolstest</artifactId>
+  <packaging>jar</packaging>
+  <name>PC Tools test classses</name>
+  <description>This project contains PC tools test classes.</description>
+  <parent>
+    <groupId>goedegep.toplevelpom</groupId>
+    <artifactId>goedegep-toplevelpom</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <relativePath>../goedegep.toplevelpom</relativePath>
+  </parent>
+  <dependencies>
+    <dependency>
+      <groupId>goedegep.jfx</groupId>
+      <artifactId>goedegep-jfxtest</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>goedegep.pctools</groupId>
+      <artifactId>goedegep-pctools</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>goedegep.pctools</groupId>
+      <artifactId>goedegep-pctools-model</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+    </dependency>
+  </dependencies>
+</project>

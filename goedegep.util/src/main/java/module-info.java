@@ -63,8 +63,6 @@ module goedegep.util {
   requires transitive com.google.common.geometry;
   requires transitive javafx.graphics;
   
-  requires org.junit.jupiter.api;
-  requires org.hamcrest;
   requires goedegep.emfsample.model;
   requires java.base;
 }
