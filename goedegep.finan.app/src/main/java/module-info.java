@@ -62,7 +62,6 @@ module goedegep.app.finan {
   requires javafx.graphics;
   requires jcommon;
   requires jfreechart;
-  requires ofx4j;
   requires org.eclipse.emf.common;
   requires org.eclipse.emf.ecore;
   requires org.eclipse.emf.ecore.xmi;
