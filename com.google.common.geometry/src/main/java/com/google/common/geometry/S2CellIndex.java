@@ -16,7 +16,6 @@
 package com.google.common.geometry;
 
 import com.google.common.base.Preconditions;
-import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import java.util.AbstractList;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -225,7 +224,6 @@ public class S2CellIndex {
    * <p>Each (cellId, label) pair in the index is visited at most once. If the index contains
    * duplicates, then each copy is visited.
    */
-  @CanIgnoreReturnValue
   public boolean visitIntersectingCells(S2CellUnion target, CellVisitor visitor) {
     if (target.size() == 0) {
       return true;

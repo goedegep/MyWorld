@@ -20,7 +20,6 @@ import static java.lang.Math.max;
 import com.google.common.base.Function;
 import com.google.common.geometry.S2ShapeIndex.CellRelation;
 import com.google.common.primitives.UnsignedLongs;
-import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import java.util.List;
 
 /**
@@ -167,7 +166,6 @@ public final class S2Iterator<T extends S2Iterator.Entry> {
    * If {@code pos} is equal to the number of cells in the index, does not move the iterator, and
    * returns false. Otherwise, advances the iterator to the next cell in the index and returns true.
    */
-  @CanIgnoreReturnValue
   public boolean next() {
     if (pos < entries.size()) {
       pos++;
@@ -180,7 +178,6 @@ public final class S2Iterator<T extends S2Iterator.Entry> {
    * If {@code pos} is equal to 0, does not move the iterator and returns false. Otherwise,
    * positions the iterator at the previous cell in the index and returns true.
    */
-  @CanIgnoreReturnValue
   public boolean prev() {
     if (pos > 0) {
       pos--;

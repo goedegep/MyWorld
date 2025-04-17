@@ -25,5 +25,6 @@ module goedegep.myworld {
   requires java.desktop;
   requires goedegep.resources;
   requires goedegep.events.app;
-  requires goedegep.demo; 
+  requires goedegep.demo;
+  requires javafx.base; 
 }

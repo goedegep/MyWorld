@@ -4,6 +4,5 @@ module com.google.common.geometry {
   requires com.google.common;
   requires java.logging;
   requires java.prefs;
-  requires com.google.errorprone.annotations;
   requires java.base;
 }

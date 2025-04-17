@@ -26,7 +26,6 @@ import static java.lang.Math.min;
 import com.google.common.base.Preconditions;
 import com.google.common.geometry.PrimitiveArrays.Bytes;
 import com.google.common.geometry.PrimitiveArrays.Cursor;
-import com.google.errorprone.annotations.CheckReturnValue;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -208,7 +207,6 @@ public final class S2Cap implements S2Region, Serializable {
    * since the complement of a singleton cap (containing a single point) is the same as the
    * complement of an empty cap.
    */
-  @CheckReturnValue
   public S2Cap complement() {
     // The complement of a full cap is an empty cap, not a singleton. Also make sure that the
     // complement of an empty cap is full.
@@ -269,7 +267,6 @@ public final class S2Cap implements S2Region, Serializable {
    *
    * @param p must be {@link S2#isUnitLength unit length}
    */
-  @CheckReturnValue
   public S2Cap addPoint(S2Point p) {
     // assert (S2.isUnitLength(p));
     if (isEmpty()) {
@@ -287,7 +284,6 @@ public final class S2Cap implements S2Region, Serializable {
    * Increase the cap radius if necessary to include the given cap. If the current cap is empty, it
    * is set to the given other cap.
    */
-  @CheckReturnValue
   public S2Cap addCap(S2Cap other) {
     if (isEmpty()) {
       return other;

@@ -22,7 +22,7 @@ import jakarta.xml.bind.annotation.XmlRootElement;
 
 import junit.framework.Assert;
 
-import org.apache.log4j.Logger;
+//import org.apache.log4j.Logger;
 import org.junit.Test;
 
 import de.micromata.jak.internal.IAtsConformanceLevel1;
@@ -75,8 +75,8 @@ import de.micromata.opengis.kml.v_2_2_0.gx.TourPrimitive;
  * 
  */
 public class AtsConformanceLevel1Test implements IAtsConformanceLevel1 {
-	@SuppressWarnings("unused")
-	private static final Logger LOG = Logger.getLogger(KmlReferencePojoTest.class.getName());
+//	@SuppressWarnings("unused")
+//	private static final Logger LOG = Logger.getLogger(KmlReferencePojoTest.class.getName());
 
 	/**
 	 * @see de.micromata.jak.internal.IAtsConformanceLevel1#atc01RootElement()

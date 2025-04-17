@@ -17,7 +17,6 @@
 package com.google.common.geometry;
 
 import com.google.common.collect.Iterables;
-import com.google.errorprone.annotations.CheckReturnValue;
 import java.util.List;
 import java.util.function.Consumer;
 
@@ -150,7 +149,6 @@ import java.util.function.Consumer;
  * <li>Mercator Cubic: 17.4%
  * </ul>
  */
-@CheckReturnValue
 final class S2EdgeTessellator {
 
   /**

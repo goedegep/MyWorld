@@ -32,7 +32,7 @@ public class EventEditor extends EditorTemplate<EventInfo> {
    * Factory method to obtain a new instance of an {@code EventEditor}.
    * 
    * @param customization the GUI customization.
-   * @param addEventInfotMethod a method used for adding events.
+   * @param eventsService a service used for adding events.
    * @return a newly created {@code EventEditor}.
    */
   public static EventEditor newInstance(CustomizationFx customization, EventsService eventsService) {

@@ -12,6 +12,7 @@ import java.util.logging.Logger;
 
 import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.editor.EditPanelTemplate;
+import goedegep.jfx.editor.EditorControl;
 import goedegep.jfx.editor.EditorException;
 import goedegep.jfx.editor.controls.EditorControlFileSelecter;
 import goedegep.jfx.editor.controls.EditorControlFolderSelecter;
@@ -20,6 +21,10 @@ import goedegep.types.model.FileReference;
 import goedegep.types.model.TypesFactory;
 import goedegep.types.model.TypesPackage;
 import goedegep.util.emf.EmfUtil;
+import goedegep.util.objectselector.ObjectSelectionListener;
+import goedegep.util.objectselector.ObjectSelector;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
@@ -38,13 +43,16 @@ import javafx.scene.layout.VBox;
  * <p>
  * By default the panel handles a reference to a file,
  * but by providing a list of {@code FileReferenceTypeInfo} references to folders are also supported.
- * In the latter case, there's an extra control via which the user can select the reference type.
+ * In the latter case, there's an extra control via which the user can select the reference type.<br/>
+ * This class implements the ObjectSelector interface, which in this case means that the FileReference is either selected or not.
  * <p>
  * The panel (the Control) is a {@link TitledPane}.
  */
-public class FileReferenceEditPanel extends EditPanelTemplate<FileReference> {
+public class FileReferenceEditPanel extends EditPanelTemplate<FileReference> implements ObjectSelector<FileReference> {
   @SuppressWarnings("unused")
   private static final Logger LOGGER = Logger.getLogger(FileReferenceEditPanel.class.getName());
+  
+  private static int instanceNr = 1;
   
   /**
    * Default panel title (used if nothing is filled in yet)
@@ -123,6 +131,8 @@ public class FileReferenceEditPanel extends EditPanelTemplate<FileReference> {
    */
   private Desktop  desktop = null;
   
+  private List<ObjectSelectionListener<FileReference>> objectSelectionListeners = new ArrayList<>();
+  
   
   /**
    * Factory method to create a new {@code FileReferenceEditPanel} instance.
@@ -180,7 +190,6 @@ public class FileReferenceEditPanel extends EditPanelTemplate<FileReference> {
       if (prefix != null) {
         fileSelecterEditorControl.setPrefix(prefix);
       }
-//      fileSelecterEditorControl.addListener((observable) -> updatePaneTitle());
       registerEditorComponents(fileSelecterEditorControl);
     }
     
@@ -208,7 +217,6 @@ public class FileReferenceEditPanel extends EditPanelTemplate<FileReference> {
           "Choose folder", "Select a folder via a folder chooser", "Select the folder", false);
       folderSelecterEditorControl.setId("folderSelecter");
       folderSelecterEditorControl.setInitialFolderProvider(this::getInitialFolder);
-//      folderSelecterEditorControl.addListener((observable) -> updatePaneTitle());
       registerEditorComponents(folderSelecterEditorControl);
     }
     
@@ -277,8 +285,7 @@ public class FileReferenceEditPanel extends EditPanelTemplate<FileReference> {
     registerEditorComponents(titleEditorControl);
         
     titledPane = new TitledPane();
-    
-//    addListener((o) -> updatePaneTitle());
+    titledPane.setId("fileReferenceEditPanel " + instanceNr++);    
   }
   
   /**
@@ -351,7 +358,7 @@ public class FileReferenceEditPanel extends EditPanelTemplate<FileReference> {
     
     handlingFileReference = isFile;
     
-    String prefix = null;
+    String prefix = this.prefix;
     if (currentFileReferenceTypeInfo != null) {
       prefix = currentFileReferenceTypeInfo.filePathPrefix();
     }
@@ -374,6 +381,7 @@ public class FileReferenceEditPanel extends EditPanelTemplate<FileReference> {
     gridPane.getChildren().clear();
     
     int row = 0;
+    EditorControl fileOrFolderSelecterEditorControl;
     
     if (referenceTypeComboBox != null) {
       // Row 0: type selection ComboBox
@@ -391,6 +399,7 @@ public class FileReferenceEditPanel extends EditPanelTemplate<FileReference> {
       gridPane.add(fileNameLabel, 0, row);
           
       gridPane.add(getFileSelecterEditorControl().getControl(), 1, row);
+      fileOrFolderSelecterEditorControl = getFileSelecterEditorControl();
       
       Button fileChooserButton = getFileSelecterEditorControl().getFileChooserButton();
       gridPane.add(fileChooserButton, 2, row);
@@ -400,6 +409,7 @@ public class FileReferenceEditPanel extends EditPanelTemplate<FileReference> {
       gridPane.add(fileNameLabel, 0, row);
           
       gridPane.add(getFolderSelecterEditorControl().getControl(), 1, row);
+      fileOrFolderSelecterEditorControl = getFolderSelecterEditorControl();
       
       Button fileChooserButton = getFolderSelecterEditorControl().getFolderChooserButton();
       gridPane.add(fileChooserButton, 2, row);
@@ -411,7 +421,18 @@ public class FileReferenceEditPanel extends EditPanelTemplate<FileReference> {
     Label titleLabel = componentFactory.createLabel("Title:");
     gridPane.add(titleLabel, 0, row);
 
-    gridPane.add(titleEditorControl.getControl(), 1, row);     
+    gridPane.add(titleEditorControl.getControl(), 1, row);
+    ChangeListener<Boolean> cl = new ChangeListener<>() {
+
+      @Override
+      public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+        LOGGER.severe(newValue ? "Selected" : "NOT selected");
+        notifyListeners(newValue);
+      }
+      
+    };
+    titleEditorControl.getControl().focusedProperty().addListener(cl);
+    fileOrFolderSelecterEditorControl.getControl().focusedProperty().addListener(cl);
   }
   
   /**
@@ -486,13 +507,6 @@ public class FileReferenceEditPanel extends EditPanelTemplate<FileReference> {
     .append(" ")
     .append(getStatusSymbol());
         
-    // Add (in)valid indication
-//    if (isValid()) {
-//      buf.append(EObjectEditor.OK_INDICATOR);
-//    } else {
-//      buf.append(EObjectEditor.NOK_INDICATOR);
-//    }
-    
     titledPane.setText(buf.toString());
   }
 
@@ -523,6 +537,10 @@ public class FileReferenceEditPanel extends EditPanelTemplate<FileReference> {
   }
   
   private String getPrefixForTag(String tags) {
+    if (fileReferenceTypeInfos == null) {
+      return prefix;
+    }
+    
     if (tags == null) {
       return null;
     }
@@ -568,6 +586,39 @@ public class FileReferenceEditPanel extends EditPanelTemplate<FileReference> {
     
     return buf.toString();
   }
+
+  @Override
+  public String getValueAsFormattedText() {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  @Override
+  public void addObjectSelectionListener(ObjectSelectionListener<FileReference> objectSelectionListener) {
+    objectSelectionListeners.add(objectSelectionListener);
+  }
+
+  @Override
+  public void removeObjectSelectionListener(ObjectSelectionListener<FileReference> objectSelectionListener) {
+    objectSelectionListeners.remove(objectSelectionListener);
+  }
+
+  private void notifyListeners(Boolean newValue) {
+    for (ObjectSelectionListener<FileReference> objectSelectionListener: objectSelectionListeners) {
+      try {
+        objectSelectionListener.objectSelected(this, getCurrentValue());
+      } catch (EditorException e) {
+        e.printStackTrace();
+      }
+    }
+  }
+
+  @Override
+  public FileReference getSelectedObject() {
+    // TODO Auto-generated method stub
+    return null;
+  }
+  
   
   /**
    * Builder class for creating a FileReferencePanel.
@@ -705,10 +756,4 @@ public class FileReferenceEditPanel extends EditPanelTemplate<FileReference> {
       return FileReferenceEditPanel.newInstance(this);
     }
   }  // End of FileReferencePanelBuilder
-
-  @Override
-  public String getValueAsFormattedText() {
-    // TODO Auto-generated method stub
-    return null;
-  }
 }

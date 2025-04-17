@@ -47,8 +47,6 @@ import goedegep.app.finan.direktbankapp.DirektbankWindow;
 import goedegep.app.finan.gen.AppModules;
 import goedegep.app.finan.gen.FinanBank;
 import goedegep.app.finan.gen.GenResources;
-import goedegep.app.finan.lynxapp.LynxTransactionContentHandler;
-import goedegep.app.finan.lynxapp.LynxWindow;
 import goedegep.app.finan.overzichten.VermogensontwikkelingWindow;
 import goedegep.app.finan.postbankapp.PbEffRekTestWindow;
 import goedegep.app.finan.postbankapp.PbRekWindow;
@@ -80,7 +78,6 @@ import goedegep.finan.basic.TransactionError;
 import goedegep.finan.direktbank.Direktbank;
 import goedegep.finan.effrek.EffRekAandelenTransactie;
 import goedegep.finan.effrek.EffRekOptieTransactie;
-import goedegep.finan.lynx.Lynx;
 import goedegep.finan.postbank.pbeffrek.PbEffRek;
 import goedegep.finan.postbank.pbrek.PbRek;
 import goedegep.finan.stocks.ClaimEmissionsContentHandler;
@@ -121,7 +118,6 @@ public class FinanMainWindow extends AppFrame implements SumAccountListener {
   // bank Identificatie Strings
   protected static String              bankNameAbnAmroString;
   protected static String              bankNameDirektbankString;
-  protected static String              bankNameLynxString;
   protected static String              bankNamePostbankString;
 
   // For popup to ask whether transactions shall be handled before dumping data
@@ -222,13 +218,6 @@ public class FinanMainWindow extends AppFrame implements SumAccountListener {
     finanBank = new FinanBank(bank, appResources.getApplicationIcon(ImageSize.SIZE_0), appResources.getSmallIconDisabled());
     sumAccount.addBank(finanBank);
     bankInfoList.add(new BankInfo(bank.getName(), PbTransactionContentHandler.class));
-    
-    bank = new Lynx(sumStockDepot);
-    bankNameLynxString = bank.getName();
-    appResources = Customizations.getCustomization(AppModules.FINAN_LYNX.name()).getResources();
-    finanBank = new FinanBank(bank, appResources.getApplicationIcon(ImageSize.SIZE_0), appResources.getSmallIconDisabled());
-    sumAccount.addBank(finanBank);
-    bankInfoList.add(new BankInfo(bank.getName(), LynxTransactionContentHandler.class));
     
     bank = new AbnAmroBank(sumStockDepot);
     bankNameAbnAmroString = bank.getName();
@@ -477,15 +466,6 @@ public class FinanMainWindow extends AppFrame implements SumAccountListener {
         new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         direktbank_actionPerformed(e);
-      }
-    });
-
-    // Banken: Lynx
-    appResources = Customizations.getCustomization(AppModules.FINAN_LYNX.name()).getResources();
-    MenuFactory.addMenuItem(menu, "Lynx", appResources.getApplicationIcon(ImageSize.SIZE_0),
-        new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
-        lynx_actionPerformed(e);
       }
     });
 
@@ -839,11 +819,6 @@ public class FinanMainWindow extends AppFrame implements SumAccountListener {
     finanBank = new FinanBank(bank, appResources.getApplicationIcon(ImageSize.SIZE_0), appResources.getSmallIconDisabled());
     sumAccount.addBank(finanBank);
     
-    bank = new Lynx(sumStockDepot);
-    appResources = Customizations.getCustomization(AppModules.FINAN_LYNX.name()).getResources();
-    finanBank = new FinanBank(bank, appResources.getApplicationIcon(ImageSize.SIZE_0), appResources.getSmallIconDisabled());
-    sumAccount.addBank(finanBank);
-    
     bank = new AbnAmroBank(sumStockDepot);
     appResources = Customizations.getCustomization(AppModules.FINAN_ABNAMRO_BANK.name()).getResources();
     finanBank = new FinanBank(bank, appResources.getApplicationIcon(ImageSize.SIZE_0), appResources.getSmallIconDisabled());
@@ -970,11 +945,6 @@ public class FinanMainWindow extends AppFrame implements SumAccountListener {
   void direktbank_actionPerformed(ActionEvent e) {
     Direktbank direktbank = (Direktbank) sumAccount.getBankForBankName(bankNameDirektbankString).getBank();
     WindowUtil.showFrameCenteredOnScreen(new DirektbankWindow(Customizations.getCustomization(AppModules.FINAN_DIREKTBANK.name()), direktbank), 22, 22);
-  }
-
-  void lynx_actionPerformed(ActionEvent e) {
-    FinanBank finanBank = sumAccount.getBankForBankName(bankNameLynxString);
-    WindowUtil.showFrameCenteredOnScreen(new LynxWindow(Customizations.getCustomization(AppModules.FINAN_LYNX.name()), finanBank), 22, 22);
   }
 
   void postbank_actionPerformed(ActionEvent e) {

@@ -20,7 +20,6 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.common.geometry.S2PointIndex.Entry;
-import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -210,7 +209,6 @@ public final class S2ClosestPointQuery<T> {
    * Creates an empty list if 'list' is null, otherwise uses 'list'. Polls all results out of
    * {@link #results} and appends them to 'list' in reverse order. Returns the resulting list.
    */
-  @CanIgnoreReturnValue
   private List<Result<T>> toList(List<Result<T>> list) {
     int size = results.size();
     int index = size;
@@ -539,7 +537,6 @@ public final class S2ClosestPointQuery<T> {
    * @return true if the cell was added to the queue, and false if it was processed immediately (in
    *     which case {@code iter} is left positioned at the next cell in S2CellId order.
    */
-  @CanIgnoreReturnValue
   private boolean addCell(S2CellId id, S2Iterator<Entry<T>> iter, boolean seek, Target target) {
     if (seek) {
       iter.seek(id.rangeMin());

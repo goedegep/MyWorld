@@ -15,8 +15,6 @@
  */
 package com.google.common.geometry;
 
-import com.google.errorprone.annotations.CanIgnoreReturnValue;
-import com.google.errorprone.annotations.CheckReturnValue;
 import java.util.List;
 import java.util.Optional;
 
@@ -78,7 +76,6 @@ import java.util.Optional;
  * <p>For the definition of Hausdorff distance and other details see
  * https://en.wikipedia.org/wiki/HausdorffDistance.
  */
-@CheckReturnValue
 public final class S2HausdorffDistanceQuery {
   // Options are constructed from a Builder.
   private final Options options;
@@ -133,7 +130,6 @@ public final class S2HausdorffDistanceQuery {
      * example, if target shape A is fully contained inside the source shape B, and
      * includeInteriors is set to true, then the directed Hausdorff distance from A to B is zero.
      */
-    @CanIgnoreReturnValue
     public Builder setIncludeInteriors(boolean includeInteriors) {
       this.includeInteriors = includeInteriors;
       return this;

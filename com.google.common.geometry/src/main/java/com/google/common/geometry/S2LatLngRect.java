@@ -25,7 +25,6 @@ import static java.lang.Math.sin;
 
 import com.google.common.geometry.PrimitiveArrays.Bytes;
 import com.google.common.geometry.PrimitiveArrays.Cursor;
-import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -484,7 +483,6 @@ public final class S2LatLngRect extends S2LatLngRectBase {
     }
 
     /** Sets the rectangle to the full rectangle. */
-    @CanIgnoreReturnValue
     public Builder setFull() {
       lat.set(-M_PI_2, M_PI_2);
       lng.setFull();
@@ -495,7 +493,6 @@ public final class S2LatLngRect extends S2LatLngRectBase {
      * Increases the size of the bounding rectangle to include the given point. The rectangle is
      * expanded by the minimum amount possible.
      */
-    @CanIgnoreReturnValue
     public Builder addPoint(S2Point p) {
       addPoint(new S2LatLng(p));
       return this;
@@ -505,7 +502,6 @@ public final class S2LatLngRect extends S2LatLngRectBase {
      * Increases the size of the bounding rectangle to include the given point. The rectangle is
      * expanded by the minimum amount possible.
      */
-    @CanIgnoreReturnValue
     public Builder addPoint(S2LatLng ll) {
       // assert (ll.isValid());
       lat.unionInternal(ll.lat().radians());
@@ -523,7 +519,6 @@ public final class S2LatLngRect extends S2LatLngRectBase {
      * <p>NOTE: If you are trying to grow a rectangle by a certain *distance* on the sphere (e.g.
      * 5km), use the convolveWithCap() method instead.
      */
-    @CanIgnoreReturnValue
     public Builder expanded(S2LatLng margin) {
       // assert (margin.lat().radians() >= 0 && margin.lng().radians() >= 0);
       lat.expandedInternal(margin.lat().radians());
@@ -537,7 +532,6 @@ public final class S2LatLngRect extends S2LatLngRectBase {
      * longitude range to full() so that the rectangle contains all possible representations of the
      * contained pole(s).
      */
-    @CanIgnoreReturnValue
     public Builder polarClosure() {
       if (lat.lo() == -M_PI_2 || lat.hi() == M_PI_2) {
         lng.setFull();
@@ -549,7 +543,6 @@ public final class S2LatLngRect extends S2LatLngRectBase {
      * Mutates this rectangle to be the smallest rectangle containing the union of the current and
      * given rectangles.
      */
-    @CanIgnoreReturnValue
     public Builder union(S2LatLngRect other) {
       lat.unionInternal(other.lat);
       lng.unionInternal(other.lng);
@@ -562,7 +555,6 @@ public final class S2LatLngRect extends S2LatLngRectBase {
      * disjoint rectangles, in which case we set the rectangle to be a single rectangle spanning
      * both of them.
      */
-    @CanIgnoreReturnValue
     public Builder intersection(S2LatLngRect other) {
       lat.intersectionInternal(other.lat);
       lng.intersectionInternal(other.lng);
@@ -581,7 +573,6 @@ public final class S2LatLngRect extends S2LatLngRectBase {
      * rectangle in latitude-longitude space). The new rectangle includes all points whose minimum
      * distance to the original rectangle is at most the given angle.
      */
-    @CanIgnoreReturnValue
     public Builder convolveWithCap(S1Angle angle) {
       S1ChordAngle r = S1ChordAngle.fromS1Angle(angle);
       // Make a local copy of the original coordinates.

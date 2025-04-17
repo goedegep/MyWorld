@@ -118,65 +118,67 @@ public class PrintWindow extends JfxStage {
    * - print button
    */
   private void createGui() {
-    ComponentFactoryFx componentFactory = customization.getComponentFactoryFx();
+    throw new UnsupportedOperationException("Goedegep");
     
-    BorderPane mainPane = new BorderPane();
-        
-    // Center (is left): PDF page preview
-    try {
-      InputStream input = Files.newInputStream(pdfFilePath);
-      document = PDDocument.load(input);
-      input.close();
-      renderer = new PDFRenderer(document);
-      pageView = new ImageView();
-      mainPane.setCenter(pageView);
-      displayPage();
-    } catch (IOException e) {
-      e.printStackTrace();
-      Label label = componentFactory.createLabel("Document could not be created");
-      mainPane.setCenter(label);
-    }
-    
-    // Right: control panel
-    VBox controlPanel = componentFactory.createVBox(16);
-    
-    Button printdialogButton = componentFactory.createButton("print dialog", "press to show the print dialog");
-    printdialogButton.setOnAction((e) -> showPrintDialog());
-    Button printButton = componentFactory.createButton("print", "press to print the document shown on the left");
-    printButton.setOnAction(this::printDocument);
-    controlPanel.getChildren().addAll(printdialogButton, printButton);
-    
-    HBox pageControlBox = componentFactory.createHBox(16);
-    Button firstPageButton = componentFactory.createButton("<<", "go to the first page of the document");
-    firstPageButton.setOnAction((e) -> {
-      currentPageIndex = 0;
-      displayPage();
-    });
-    Button previousPageButton = componentFactory.createButton("<", "go to the previous page of the document");
-    previousPageButton.setOnAction((e) -> {
-      if (currentPageIndex > 0) {
-        currentPageIndex--;
-        displayPage();
-      }
-    });
-    Button nextPageButton = componentFactory.createButton(">", "go to the next page of the document");
-    nextPageButton.setOnAction((e) -> {
-      if (currentPageIndex < document.getNumberOfPages() - 1) {
-        currentPageIndex++;
-        displayPage();
-      }
-    });
-    Button lastPageButton = componentFactory.createButton(">>", "go to the last page of the document");
-    lastPageButton.setOnAction((e) -> {
-      currentPageIndex = document.getNumberOfPages() - 1;
-      displayPage();
-    });
-    pageControlBox.getChildren().addAll(firstPageButton, previousPageButton, nextPageButton, lastPageButton);
-    controlPanel.getChildren().add(pageControlBox);
-    
-    mainPane.setRight(controlPanel);
-    
-    setScene(new Scene(mainPane, 800, 900));
+//    ComponentFactoryFx componentFactory = customization.getComponentFactoryFx();
+//    
+//    BorderPane mainPane = new BorderPane();
+//        
+//    // Center (is left): PDF page preview
+//    try {
+//      InputStream input = Files.newInputStream(pdfFilePath);
+//      document = PDDocument.load(input);
+//      input.close();
+//      renderer = new PDFRenderer(document);
+//      pageView = new ImageView();
+//      mainPane.setCenter(pageView);
+//      displayPage();
+//    } catch (IOException e) {
+//      e.printStackTrace();
+//      Label label = componentFactory.createLabel("Document could not be created");
+//      mainPane.setCenter(label);
+//    }
+//    
+//    // Right: control panel
+//    VBox controlPanel = componentFactory.createVBox(16);
+//    
+//    Button printdialogButton = componentFactory.createButton("print dialog", "press to show the print dialog");
+//    printdialogButton.setOnAction((e) -> showPrintDialog());
+//    Button printButton = componentFactory.createButton("print", "press to print the document shown on the left");
+//    printButton.setOnAction(this::printDocument);
+//    controlPanel.getChildren().addAll(printdialogButton, printButton);
+//    
+//    HBox pageControlBox = componentFactory.createHBox(16);
+//    Button firstPageButton = componentFactory.createButton("<<", "go to the first page of the document");
+//    firstPageButton.setOnAction((e) -> {
+//      currentPageIndex = 0;
+//      displayPage();
+//    });
+//    Button previousPageButton = componentFactory.createButton("<", "go to the previous page of the document");
+//    previousPageButton.setOnAction((e) -> {
+//      if (currentPageIndex > 0) {
+//        currentPageIndex--;
+//        displayPage();
+//      }
+//    });
+//    Button nextPageButton = componentFactory.createButton(">", "go to the next page of the document");
+//    nextPageButton.setOnAction((e) -> {
+//      if (currentPageIndex < document.getNumberOfPages() - 1) {
+//        currentPageIndex++;
+//        displayPage();
+//      }
+//    });
+//    Button lastPageButton = componentFactory.createButton(">>", "go to the last page of the document");
+//    lastPageButton.setOnAction((e) -> {
+//      currentPageIndex = document.getNumberOfPages() - 1;
+//      displayPage();
+//    });
+//    pageControlBox.getChildren().addAll(firstPageButton, previousPageButton, nextPageButton, lastPageButton);
+//    controlPanel.getChildren().add(pageControlBox);
+//    
+//    mainPane.setRight(controlPanel);
+//    
+//    setScene(new Scene(mainPane, 800, 900));
   }
   
   /*

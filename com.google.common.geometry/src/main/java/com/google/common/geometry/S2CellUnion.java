@@ -23,7 +23,6 @@ import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.common.geometry.PrimitiveArrays.Bytes;
 import com.google.common.geometry.PrimitiveArrays.Cursor;
-import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -752,13 +751,11 @@ public class S2CellUnion implements S2Region, Iterable<S2CellId>, Serializable {
    * @return true if the normalize operation had any effect on the cell union, false if the union
    *     was already normalized
    */
-  @CanIgnoreReturnValue
   public boolean normalize() {
     return normalize(cellIds);
   }
 
   /** Like {@link #normalize()}, but works directly with a vector of S2CellIds. */
-  @CanIgnoreReturnValue
   public static boolean normalize(List<S2CellId> ids) {
     // Optimize the representation by looking for cases where all subcells of a parent cell are
     // present.

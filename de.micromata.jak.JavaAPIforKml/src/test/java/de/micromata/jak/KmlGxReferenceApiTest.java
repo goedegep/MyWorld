@@ -2,8 +2,8 @@ package de.micromata.jak;
 
 import java.util.ArrayList;
 
-import org.apache.log4j.PropertyConfigurator;
-import org.junit.Before;
+//import org.apache.log4j.PropertyConfigurator;
+//import org.junit.Before;
 import org.junit.Test;
 
 import de.micromata.jak.internal.IKmlGxReference;
@@ -27,12 +27,12 @@ import de.micromata.opengis.kml.v_2_2_0.gx.LatLonQuad;
 import de.micromata.opengis.kml.v_2_2_0.gx.Playlist;
 
 public class KmlGxReferenceApiTest implements IKmlGxReference {
-	private static final String LOG4J_LOCATION = "src/main/java/log4j.properties";
-
-	@Before
-	public void setUp() {
-		PropertyConfigurator.configure(LOG4J_LOCATION);
-	}
+//	private static final String LOG4J_LOCATION = "src/main/java/log4j.properties";
+//
+//	@Before
+//	public void setUp() {
+//		PropertyConfigurator.configure(LOG4J_LOCATION);
+//	}
 	/**
 	 * @throws  
 	 * @see de.micromata.jak.internal.IKmlGxReference#altitudeMode()

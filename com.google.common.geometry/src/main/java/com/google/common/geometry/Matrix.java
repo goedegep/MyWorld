@@ -16,7 +16,6 @@
 package com.google.common.geometry;
 
 import com.google.common.base.Preconditions;
-import com.google.errorprone.annotations.CheckReturnValue;
 import java.util.List;
 
 /** A simple dense matrix class. */
@@ -81,7 +80,6 @@ public final class Matrix {
   }
 
   /** Returns the transpose of this. */
-  @CheckReturnValue
   public Matrix transpose() {
     Matrix result = new Matrix(cols, rows);
     for (int row = 0; row < result.rows; row++) {
@@ -93,7 +91,6 @@ public final class Matrix {
   }
 
   /** Returns the result of multiplying this x m. */
-  @CheckReturnValue
   public Matrix mult(Matrix m) {
     Preconditions.checkArgument(cols == m.rows);
     Matrix result = new Matrix(rows, m.cols);

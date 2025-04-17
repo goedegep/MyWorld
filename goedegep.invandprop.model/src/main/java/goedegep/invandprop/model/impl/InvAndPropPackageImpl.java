@@ -6,6 +6,8 @@ import goedegep.invandprop.model.Expenditure;
 import goedegep.invandprop.model.InvAndPropFactory;
 import goedegep.invandprop.model.InvAndPropPackage;
 import goedegep.invandprop.model.Invoice;
+import goedegep.invandprop.model.InvoiceAndProperty;
+import goedegep.invandprop.model.InvoiceAndPropertyItem;
 import goedegep.invandprop.model.InvoiceItem;
 import goedegep.invandprop.model.Invoices;
 import goedegep.invandprop.model.InvoicesAndProperties;
@@ -76,6 +78,20 @@ public class InvAndPropPackageImpl extends EPackageImpl implements InvAndPropPac
    * @generated
    */
   private EClass propertyEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass invoiceAndPropertyItemEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass invoiceAndPropertyEClass = null;
 
   /**
    * Creates an instance of the model <b>Package</b>, registered with
@@ -166,6 +182,15 @@ public class InvAndPropPackageImpl extends EPackageImpl implements InvAndPropPac
    */
   public EReference getInvoicesAndProperties_Properties() {
     return (EReference)invoicesAndPropertiesEClass.getEStructuralFeatures().get(1);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EReference getInvoicesAndProperties_Invoicseandpropertys() {
+    return (EReference)invoicesAndPropertiesEClass.getEStructuralFeatures().get(2);
   }
 
   /**
@@ -443,6 +468,168 @@ public class InvAndPropPackageImpl extends EPackageImpl implements InvAndPropPac
    * <!-- end-user-doc -->
    * @generated
    */
+  public EClass getInvoiceAndPropertyItem() {
+    return invoiceAndPropertyItemEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getInvoiceAndPropertyItem_Type() {
+    return (EAttribute)invoiceAndPropertyItemEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getInvoiceAndPropertyItem_SerialNumber() {
+    return (EAttribute)invoiceAndPropertyItemEClass.getEStructuralFeatures().get(1);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getInvoiceAndPropertyItem_Description() {
+    return (EAttribute)invoiceAndPropertyItemEClass.getEStructuralFeatures().get(2);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getInvoiceAndPropertyItem_Brand() {
+    return (EAttribute)invoiceAndPropertyItemEClass.getEStructuralFeatures().get(3);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getInvoiceAndPropertyItem_Amount() {
+    return (EAttribute)invoiceAndPropertyItemEClass.getEStructuralFeatures().get(4);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getInvoiceAndPropertyItem_FromDate() {
+    return (EAttribute)invoiceAndPropertyItemEClass.getEStructuralFeatures().get(5);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getInvoiceAndPropertyItem_UntilDate() {
+    return (EAttribute)invoiceAndPropertyItemEClass.getEStructuralFeatures().get(6);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getInvoiceAndPropertyItem_Archive() {
+    return (EAttribute)invoiceAndPropertyItemEClass.getEStructuralFeatures().get(7);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getInvoiceAndPropertyItem_Remarks() {
+    return (EAttribute)invoiceAndPropertyItemEClass.getEStructuralFeatures().get(8);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getInvoiceAndPropertyItem_NumberOfItems() {
+    return (EAttribute)invoiceAndPropertyItemEClass.getEStructuralFeatures().get(9);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EReference getInvoiceAndPropertyItem_Pictures() {
+    return (EReference)invoiceAndPropertyItemEClass.getEStructuralFeatures().get(10);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EReference getInvoiceAndPropertyItem_Documents() {
+    return (EReference)invoiceAndPropertyItemEClass.getEStructuralFeatures().get(11);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EClass getInvoiceAndProperty() {
+    return invoiceAndPropertyEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getInvoiceAndProperty_Date() {
+    return (EAttribute)invoiceAndPropertyEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getInvoiceAndProperty_Company() {
+    return (EAttribute)invoiceAndPropertyEClass.getEStructuralFeatures().get(1);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EReference getInvoiceAndProperty_Invoiceandpropertyitems() {
+    return (EReference)invoiceAndPropertyEClass.getEStructuralFeatures().get(2);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EOperation getInvoiceAndProperty__GetTotalAmountInvoiceItems() {
+    return invoiceAndPropertyEClass.getEOperations().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   public InvAndPropFactory getInvAndPropFactory() {
     return (InvAndPropFactory)getEFactoryInstance();
   }
@@ -469,6 +656,7 @@ public class InvAndPropPackageImpl extends EPackageImpl implements InvAndPropPac
     invoicesAndPropertiesEClass = createEClass(INVOICES_AND_PROPERTIES);
     createEReference(invoicesAndPropertiesEClass, INVOICES_AND_PROPERTIES__INVOICES);
     createEReference(invoicesAndPropertiesEClass, INVOICES_AND_PROPERTIES__PROPERTIES);
+    createEReference(invoicesAndPropertiesEClass, INVOICES_AND_PROPERTIES__INVOICSEANDPROPERTYS);
 
     invoicesEClass = createEClass(INVOICES);
     createEReference(invoicesEClass, INVOICES__INVOICES);
@@ -505,6 +693,26 @@ public class InvAndPropPackageImpl extends EPackageImpl implements InvAndPropPac
     createEAttribute(propertyEClass, PROPERTY__ARCHIVE);
     createEReference(propertyEClass, PROPERTY__DOCUMENTS);
     createEReference(propertyEClass, PROPERTY__PICTURES);
+
+    invoiceAndPropertyItemEClass = createEClass(INVOICE_AND_PROPERTY_ITEM);
+    createEAttribute(invoiceAndPropertyItemEClass, INVOICE_AND_PROPERTY_ITEM__TYPE);
+    createEAttribute(invoiceAndPropertyItemEClass, INVOICE_AND_PROPERTY_ITEM__SERIAL_NUMBER);
+    createEAttribute(invoiceAndPropertyItemEClass, INVOICE_AND_PROPERTY_ITEM__DESCRIPTION);
+    createEAttribute(invoiceAndPropertyItemEClass, INVOICE_AND_PROPERTY_ITEM__BRAND);
+    createEAttribute(invoiceAndPropertyItemEClass, INVOICE_AND_PROPERTY_ITEM__AMOUNT);
+    createEAttribute(invoiceAndPropertyItemEClass, INVOICE_AND_PROPERTY_ITEM__FROM_DATE);
+    createEAttribute(invoiceAndPropertyItemEClass, INVOICE_AND_PROPERTY_ITEM__UNTIL_DATE);
+    createEAttribute(invoiceAndPropertyItemEClass, INVOICE_AND_PROPERTY_ITEM__ARCHIVE);
+    createEAttribute(invoiceAndPropertyItemEClass, INVOICE_AND_PROPERTY_ITEM__REMARKS);
+    createEAttribute(invoiceAndPropertyItemEClass, INVOICE_AND_PROPERTY_ITEM__NUMBER_OF_ITEMS);
+    createEReference(invoiceAndPropertyItemEClass, INVOICE_AND_PROPERTY_ITEM__PICTURES);
+    createEReference(invoiceAndPropertyItemEClass, INVOICE_AND_PROPERTY_ITEM__DOCUMENTS);
+
+    invoiceAndPropertyEClass = createEClass(INVOICE_AND_PROPERTY);
+    createEAttribute(invoiceAndPropertyEClass, INVOICE_AND_PROPERTY__DATE);
+    createEAttribute(invoiceAndPropertyEClass, INVOICE_AND_PROPERTY__COMPANY);
+    createEReference(invoiceAndPropertyEClass, INVOICE_AND_PROPERTY__INVOICEANDPROPERTYITEMS);
+    createEOperation(invoiceAndPropertyEClass, INVOICE_AND_PROPERTY___GET_TOTAL_AMOUNT_INVOICE_ITEMS);
   }
 
   /**
@@ -540,11 +748,13 @@ public class InvAndPropPackageImpl extends EPackageImpl implements InvAndPropPac
     // Add supertypes to classes
     invoiceEClass.getESuperTypes().add(this.getExpenditure());
     invoiceItemEClass.getESuperTypes().add(this.getExpenditure());
+    invoiceAndPropertyEClass.getESuperTypes().add(this.getInvoiceAndPropertyItem());
 
     // Initialize classes, features, and operations; add parameters
     initEClass(invoicesAndPropertiesEClass, InvoicesAndProperties.class, "InvoicesAndProperties", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEReference(getInvoicesAndProperties_Invoices(), this.getInvoices(), null, "invoices", null, 1, 1, InvoicesAndProperties.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEReference(getInvoicesAndProperties_Properties(), this.getProperties(), null, "properties", null, 1, 1, InvoicesAndProperties.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEReference(getInvoicesAndProperties_Invoicseandpropertys(), this.getInvoiceAndProperty(), null, "invoicseandpropertys", null, 0, -1, InvoicesAndProperties.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(invoicesEClass, Invoices.class, "Invoices", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEReference(getInvoices_Invoices(), this.getInvoice(), null, "invoices", null, 0, -1, Invoices.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
@@ -582,6 +792,27 @@ public class InvAndPropPackageImpl extends EPackageImpl implements InvAndPropPac
     initEAttribute(getProperty_Archive(), ecorePackage.getEBoolean(), "archive", "false", 1, 1, Property.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEReference(getProperty_Documents(), theTypesPackage.getFileReference(), null, "documents", null, 0, -1, Property.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEReference(getProperty_Pictures(), theTypesPackage.getFileReference(), null, "pictures", null, 0, -1, Property.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+    initEClass(invoiceAndPropertyItemEClass, InvoiceAndPropertyItem.class, "InvoiceAndPropertyItem", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getInvoiceAndPropertyItem_Type(), ecorePackage.getEString(), "type", null, 0, 1, InvoiceAndPropertyItem.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getInvoiceAndPropertyItem_SerialNumber(), ecorePackage.getEString(), "serialNumber", null, 0, 1, InvoiceAndPropertyItem.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getInvoiceAndPropertyItem_Description(), ecorePackage.getEString(), "description", null, 0, 1, InvoiceAndPropertyItem.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getInvoiceAndPropertyItem_Brand(), ecorePackage.getEString(), "brand", null, 0, 1, InvoiceAndPropertyItem.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getInvoiceAndPropertyItem_Amount(), theTypesPackage.getEMoney(), "amount", null, 0, 1, InvoiceAndPropertyItem.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getInvoiceAndPropertyItem_FromDate(), theTypesPackage.getEFlexDate(), "fromDate", null, 0, 1, InvoiceAndPropertyItem.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getInvoiceAndPropertyItem_UntilDate(), theTypesPackage.getEFlexDate(), "untilDate", null, 0, 1, InvoiceAndPropertyItem.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getInvoiceAndPropertyItem_Archive(), ecorePackage.getEBoolean(), "archive", "false", 1, 1, InvoiceAndPropertyItem.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getInvoiceAndPropertyItem_Remarks(), ecorePackage.getEString(), "remarks", null, 0, 1, InvoiceAndPropertyItem.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getInvoiceAndPropertyItem_NumberOfItems(), ecorePackage.getEInt(), "numberOfItems", "1", 1, 1, InvoiceAndPropertyItem.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEReference(getInvoiceAndPropertyItem_Pictures(), theTypesPackage.getFileReference(), null, "pictures", null, 0, -1, InvoiceAndPropertyItem.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEReference(getInvoiceAndPropertyItem_Documents(), theTypesPackage.getFileReference(), null, "documents", null, 0, -1, InvoiceAndPropertyItem.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+    initEClass(invoiceAndPropertyEClass, InvoiceAndProperty.class, "InvoiceAndProperty", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getInvoiceAndProperty_Date(), theTypesPackage.getEFlexDate(), "date", null, 0, 1, InvoiceAndProperty.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getInvoiceAndProperty_Company(), ecorePackage.getEString(), "company", null, 0, 1, InvoiceAndProperty.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEReference(getInvoiceAndProperty_Invoiceandpropertyitems(), this.getInvoiceAndPropertyItem(), null, "invoiceandpropertyitems", null, 0, -1, InvoiceAndProperty.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+    initEOperation(getInvoiceAndProperty__GetTotalAmountInvoiceItems(), theTypesPackage.getEMoney(), "getTotalAmountInvoiceItems", 0, 1, IS_UNIQUE, IS_ORDERED);
 
     // Create resource
     createResource(eNS_URI);

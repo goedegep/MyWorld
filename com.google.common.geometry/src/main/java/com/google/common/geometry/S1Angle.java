@@ -19,8 +19,6 @@ import static java.lang.Math.PI;
 import static java.lang.Math.round;
 
 import com.google.common.primitives.Ints;
-import com.google.errorprone.annotations.CanIgnoreReturnValue;
-import com.google.errorprone.annotations.CheckReturnValue;
 import java.io.Serializable;
 
 /**
@@ -198,25 +196,21 @@ public final class S1Angle implements S1Distance<S1Angle>, Serializable {
   }
 
   /** Returns an {@link S1Angle} whose angle is <code>(this + a)</code>. */
-  @CheckReturnValue
   public S1Angle add(S1Angle a) {
     return new S1Angle(radians + a.radians);
   }
 
   /** Returns an {@link S1Angle} whose angle is <code>(this - a)</code>. */
-  @CheckReturnValue
   public S1Angle sub(S1Angle a) {
     return new S1Angle(radians - a.radians);
   }
 
   /** Returns an {@link S1Angle} whose angle is <code>(this * m)</code>. */
-  @CheckReturnValue
   public S1Angle mul(double m) {
     return new S1Angle(radians * m);
   }
 
   /** Returns an {@link S1Angle} whose angle is <code>(this / d)</code>. */
-  @CheckReturnValue
   public S1Angle div(double d) {
     return new S1Angle(radians / d);
   }
@@ -245,7 +239,6 @@ public final class S1Angle implements S1Distance<S1Angle>, Serializable {
   /**
    * Returns the angle normalized to the range (-180, 180] degrees.
    */
-  @CheckReturnValue
   public S1Angle normalize() {
     final boolean isNormalized = radians > -PI && radians <= PI;
     if (isNormalized) {
@@ -288,14 +281,12 @@ public final class S1Angle implements S1Distance<S1Angle>, Serializable {
     public Builder() {}
 
     /** Adds angle. */
-    @CanIgnoreReturnValue
     public Builder add(S1Angle angle) {
       radians += angle.radians;
       return this;
     }
 
     /** Adds radians. */
-    @CanIgnoreReturnValue
     public Builder add(double radians) {
       this.radians += radians;
       return this;

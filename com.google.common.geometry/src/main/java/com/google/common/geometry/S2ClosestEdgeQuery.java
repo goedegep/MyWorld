@@ -19,8 +19,6 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static java.util.Comparator.naturalOrder;
 
 import com.google.common.annotations.VisibleForTesting;
-import com.google.errorprone.annotations.CanIgnoreReturnValue;
-import com.google.errorprone.annotations.CheckReturnValue;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
@@ -160,7 +158,6 @@ class ClosestEdgeDemo {
  *
  * <p>The implementation is designed to be fast for both simple and complex geometric objects.
  */
-@CheckReturnValue
 public abstract class S2ClosestEdgeQuery<D extends S1Distance<D>> extends S2BestEdgesQueryBase<D> {
 
   /** Target is the base interface of all the S2ClosestEdgeQuery-specific targets. */
@@ -321,14 +318,12 @@ public abstract class S2ClosestEdgeQuery<D extends S1Distance<D>> extends S2Best
    * Result#isInterior()}.
    */
   @VisibleForTesting
-  @CanIgnoreReturnValue
   public boolean visitContainingShapes(
       Target<D> target, @SuppressWarnings("exports") S2ContainsPointQuery.ShapeVisitor visitor) {
     return visitBestDistanceContainingShapes(target, visitor);
   }
 
   @Override
-  @CanIgnoreReturnValue
   protected boolean visitBestDistanceContainingShapes(
       S2BestDistanceTarget<D> target, S2ContainsPointQuery.ShapeVisitor visitor) {
     S2ContainsPointQuery containsPointQuery = new S2ContainsPointQuery(index);
@@ -376,7 +371,6 @@ public abstract class S2ClosestEdgeQuery<D extends S1Distance<D>> extends S2Best
     }
 
     /** Specifies the maximum number of results to be returned. */
-    @CanIgnoreReturnValue
     @Override
     public Builder setMaxResults(int maxResults) {
       this.maxResults = maxResults;
@@ -392,7 +386,6 @@ public abstract class S2ClosestEdgeQuery<D extends S1Distance<D>> extends S2Best
      * place, but if such edges are needed then you can use {@link
      * Builder#setInclusiveMaxDistance(S1ChordAngle)}.
      */
-    @CanIgnoreReturnValue
     public Builder setMaxDistance(S1ChordAngle maxDistance) {
       this.distanceLimit = maxDistance;
       return this;
@@ -402,7 +395,6 @@ public abstract class S2ClosestEdgeQuery<D extends S1Distance<D>> extends S2Best
      * Like {@link Builder#setMaxDistance(S1ChordAngle)}, but maxDistance is provided as an
      * S1Angle.
      */
-    @CanIgnoreReturnValue
     public Builder setMaxDistance(S1Angle maxDistance) {
       this.distanceLimit = S1ChordAngle.fromS1Angle(maxDistance);
       return this;
@@ -412,14 +404,12 @@ public abstract class S2ClosestEdgeQuery<D extends S1Distance<D>> extends S2Best
      * Specifies that only edges whose distance to the target is less than or equal to maxDistance
      * should be returned.
      */
-    @CanIgnoreReturnValue
     public Builder setInclusiveMaxDistance(S1ChordAngle maxDistance) {
       this.distanceLimit = maxDistance.successor();
       return this;
     }
 
     /** Like {@link setInclusiveMaxDistance(S1ChordAngle)} but takes an S1Angle for convenience. */
-    @CanIgnoreReturnValue
     public Builder setInclusiveMaxDistance(S1Angle maxDistance) {
       setInclusiveMaxDistance(S1ChordAngle.fromS1Angle(maxDistance));
       return this;
@@ -435,7 +425,6 @@ public abstract class S2ClosestEdgeQuery<D extends S1Distance<D>> extends S2Best
      * candidate edges that can then be filtered further (e.g., using {@code
      * S2Predicates.compareDistance}).
      */
-    @CanIgnoreReturnValue
     public Builder setConservativeMaxDistance(S1ChordAngle maxDistance) {
       this.distanceLimit =
           maxDistance.plusError(S2EdgeUtil.getMinDistanceMaxError(maxDistance)).successor();
@@ -445,7 +434,6 @@ public abstract class S2ClosestEdgeQuery<D extends S1Distance<D>> extends S2Best
     /**
      * Like {@link setConservativeMaxDistance(S1ChordAngle)} but takes an S1Angle for convenience.
      */
-    @CanIgnoreReturnValue
     public Builder setConservativeMaxDistance(S1Angle maxDistance) {
       setConservativeMaxDistance(S1ChordAngle.fromS1Angle(maxDistance));
       return this;
@@ -472,7 +460,6 @@ public abstract class S2ClosestEdgeQuery<D extends S1Distance<D>> extends S2Best
      * it finds any edge whose distance is less than 'threshold', rather than continuing to search
      * for an edge that is even closer.
      */
-    @CanIgnoreReturnValue
     @Override
     public Builder setMaxError(S1ChordAngle maxError) {
       this.maxError = maxError;
@@ -480,7 +467,6 @@ public abstract class S2ClosestEdgeQuery<D extends S1Distance<D>> extends S2Best
     }
 
     /** Like {@link setMaxError(S1ChordAngle)}, but maxError is provided as an S1Angle. */
-    @CanIgnoreReturnValue
     public Builder setMaxError(S1Angle maxError) {
       this.maxError = S1ChordAngle.fromS1Angle(maxError);
       return this;
@@ -501,7 +487,6 @@ public abstract class S2ClosestEdgeQuery<D extends S1Distance<D>> extends S2Best
      * (edgeId == -1) result. Such results are optional because in that case the distance from the
      * polygon is already zero.
      */
-    @CanIgnoreReturnValue
     @Override
     public Builder setIncludeInteriors(boolean includeInteriors) {
       this.includeInteriors = includeInteriors;
@@ -512,7 +497,6 @@ public abstract class S2ClosestEdgeQuery<D extends S1Distance<D>> extends S2Best
      * If true, distances should be computed by examining every edge rather than using the
      * S2ShapeIndex. This is useful for testing, benchmarking, and debugging.
      */
-    @CanIgnoreReturnValue
     @Override
     public Builder setUseBruteForce(boolean useBruteForce) {
       this.useBruteForce = useBruteForce;

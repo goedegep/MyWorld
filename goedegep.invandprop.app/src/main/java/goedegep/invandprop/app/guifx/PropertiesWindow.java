@@ -308,7 +308,6 @@ class ExpenditureCell extends TextFieldTableCell<Property, Object> {
 
   public ExpenditureCell() {
     setOnMouseClicked(e -> {
-      LOGGER.severe("Invoice: " + invoice.toString());
       InvoicesWindow invoicesWindow = InvoicesAndPropertiesLauncher.getInvoicesWindow();
       invoicesWindow.selectAndShow(invoice);
       invoicesWindow.show();
@@ -340,7 +339,8 @@ class ListCellWithContextMenu extends ListCell<FileReference> {
   
   @Override
   public void updateItem(FileReference item, boolean empty) {
-    if (empty) {
+    super.updateItem(item, empty);
+    if (empty  ||  item == null) {
       setText("");
     } else {
       // item text

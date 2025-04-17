@@ -12,6 +12,8 @@ import org.commonmark.renderer.html.HtmlRenderer;
 import goedegep.configuration.model.Look;
 import goedegep.geo.WGS84Coordinates;
 import goedegep.jfx.controls.AutoCompleteTextField;
+import goedegep.jfx.editor.controls.EditorControlBoolean;
+import goedegep.jfx.editor.controls.EditorControlCurrency;
 import goedegep.jfx.editor.controls.EditorControlFileSelecter;
 import goedegep.jfx.editor.controls.EditorControlFlexDate;
 import goedegep.jfx.editor.controls.EditorControlFolderSelecter;
@@ -1063,7 +1065,7 @@ public class ComponentFactoryFx {
   }
 
   /**
-   * Create a String ObjectControl.
+   * Create a String EditorControl.
    * 
    * @param width the width of the TextField.
    * @param isOptional if true, the value provided by this control is optional.
@@ -1076,6 +1078,31 @@ public class ComponentFactoryFx {
     return editorControlString;
   }
 
+  /**
+   * Create a PgCurrency EditorControl.
+   * 
+   * @param width the width of the TextField.
+   * @param isOptional if true, the value provided by this control is optional.
+   * @param toolTipText an optional tooltip text.
+   * @return the newly created {@code ObjectControlCurrency}.
+   */
+  public EditorControlCurrency createEditorControlCurrency(double width, boolean isOptional, String toolTipText) {
+    EditorControlCurrency editorControlCurrency = EditorControlCurrency.newInstance(customization, width, isOptional, toolTipText);
+
+    return editorControlCurrency;
+  }
+
+  /**
+   * Create a Boolean EditorControl.
+   * 
+   * @param toolTipText an optional tooltip text.
+   * @return the newly created {@code ObjectControlBoolean}.
+   */
+  public EditorControlBoolean createEditorControlBoolean(String toolTipText) {
+    EditorControlBoolean editorControlBoolean = EditorControlBoolean.newInstance(customization, toolTipText);
+
+    return editorControlBoolean;
+  }
 
   /**
    * Create a Multi Line String ObjectControl.

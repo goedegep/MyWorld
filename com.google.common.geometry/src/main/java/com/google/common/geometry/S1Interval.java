@@ -20,7 +20,6 @@ import static java.lang.Math.PI;
 import static java.lang.Math.abs;
 import static java.lang.Math.max;
 
-import com.google.errorprone.annotations.CheckReturnValue;
 import java.io.Serializable;
 
 /**
@@ -391,7 +390,6 @@ public final class S1Interval implements Cloneable, Serializable {
    * Expands the interval by the minimum amount necessary so that it contains the point {@code p}
    * (an angle in the range [-Pi, Pi]).
    */
-  @CheckReturnValue
   public S1Interval addPoint(double p) {
     // assert abs(p) <= PI;
     if (p == -PI) {
@@ -444,7 +442,6 @@ public final class S1Interval implements Cloneable, Serializable {
    * interval may be empty or full. Any expansion (positive or negative) of a full interval remains
    * full, and any expansion of an empty interval remains empty.
    */
-  @CheckReturnValue
   public S1Interval expanded(double margin) {
     S1Interval copy = new S1Interval(this);
     copy.expandedInternal(margin);
@@ -492,7 +489,6 @@ public final class S1Interval implements Cloneable, Serializable {
   }
 
   /** Returns the smallest interval that contains this interval and the interval {@code y}. */
-  @CheckReturnValue
   public S1Interval union(S1Interval y) {
     S1Interval result = new S1Interval(this);
     result.unionInternal(y);
@@ -554,7 +550,6 @@ public final class S1Interval implements Cloneable, Serializable {
    * Returns the smallest interval that contains the intersection of this interval with {@code y}.
    * Note that the region of intersection may consist of two disjoint intervals.
    */
-  @CheckReturnValue
   public S1Interval intersection(final S1Interval y) {
     S1Interval result = new S1Interval(this);
     result.intersectionInternal(y);

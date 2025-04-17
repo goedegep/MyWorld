@@ -22,7 +22,6 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
-import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -155,7 +154,6 @@ public class S2IndexingHelperImpl implements S2IndexingHelper {
      * @param level The minimum level
      * @return This builder
      */
-    @CanIgnoreReturnValue
     public Builder setMinLevel(int level) {
       covererBuilder.setMinLevel(level);
       return this;
@@ -168,7 +166,6 @@ public class S2IndexingHelperImpl implements S2IndexingHelper {
      * @param level The minimum level
      * @return This builder
      */
-    @CanIgnoreReturnValue
     public Builder setMaxLevel(int level) {
       covererBuilder.setMaxLevel(level);
       return this;
@@ -181,7 +178,6 @@ public class S2IndexingHelperImpl implements S2IndexingHelper {
      * @param spacing The level spacing
      * @return This builder
      */
-    @CanIgnoreReturnValue
     public Builder setLevelMod(int spacing) {
       covererBuilder.setLevelMod(spacing);
       return this;
@@ -196,7 +192,6 @@ public class S2IndexingHelperImpl implements S2IndexingHelper {
      * @param limit The limit on the number of cells
      * @return This builder
      */
-    @CanIgnoreReturnValue
     public Builder setMaxCells(int limit) {
       covererBuilder.setMaxCells(limit);
       return this;
@@ -207,7 +202,6 @@ public class S2IndexingHelperImpl implements S2IndexingHelper {
      *
      * @return This builder
      */
-    @CanIgnoreReturnValue
     public Builder setOptimizeForComplexity() {
       optimizeForSpace = false;
       return this;
@@ -218,7 +212,6 @@ public class S2IndexingHelperImpl implements S2IndexingHelper {
      *
      * @return This builder
      */
-    @CanIgnoreReturnValue
     public Builder setOptimizeForSpace() {
       optimizeForSpace = true;
       return this;
@@ -229,7 +222,6 @@ public class S2IndexingHelperImpl implements S2IndexingHelper {
      *
      * @return This builder
      */
-    @CanIgnoreReturnValue
     public Builder setPointAndRegionsIndexed() {
       onlyPointsIndexed = false;
       return this;
@@ -241,7 +233,6 @@ public class S2IndexingHelperImpl implements S2IndexingHelper {
      *
      * @return This builder
      */
-    @CanIgnoreReturnValue
     public Builder setOnlyPointIndexed() {
       onlyPointsIndexed = true;
       return this;

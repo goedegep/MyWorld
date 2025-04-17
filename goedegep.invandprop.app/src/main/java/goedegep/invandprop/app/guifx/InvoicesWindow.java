@@ -173,7 +173,9 @@ public class InvoicesWindow extends JfxStage {
   private void showInvoiceEditor() {
     Invoice invoice = invoicesTable.getSelectedObject();
     if (invoice != null) {
-      InvoiceAndPropertyEditor.newInstance(customization, invoicesAndPropertiesService).setObject(invoice);
+      InvoiceAndPropertyEditor invoiceAndPropertyEditor = InvoiceAndPropertyEditor.newInstance(customization, invoicesAndPropertiesService);
+      invoiceAndPropertyEditor.setObject(invoice);
+      invoiceAndPropertyEditor.show();
     }
   }
   

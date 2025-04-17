@@ -28,9 +28,9 @@ module goedegep.vacations.app {
   requires transitive javafx.graphics;
   requires javafx.swing;
   requires javafx.web;
-  requires jimfs;
-  requires openhtmltopdf.core;
-  requires openhtmltopdf.pdfbox;
+  requires com.google.common.jimfs;
+  requires com.openhtmltopdf;
+  requires com.openhtmltopdf.pdfboxout;
   requires org.apache.commons.imaging;
   requires org.apache.commons.io;
   requires org.apache.commons.lang3;

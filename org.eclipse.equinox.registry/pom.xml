@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>goedegep.toplevelpom</groupId>
+    <artifactId>goedegep-toplevelpom</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <relativePath>../goedegep.toplevelpom</relativePath>
+  </parent>
+
+  <groupId>org.eclipse.equinox</groupId>
+  <artifactId>org.eclipse.equinox.registry</artifactId>
+  <version>3.12.200.v20241004-0654-goedegep</version>
+  <packaging>jar</packaging>
+
+  <dependencies>
+  </dependencies>
+</project>

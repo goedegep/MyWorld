@@ -28,7 +28,6 @@ import static java.lang.Math.sqrt;
 import static java.lang.Math.tan;
 
 import com.google.common.base.Preconditions;
-import com.google.errorprone.annotations.Immutable;
 import java.io.Serializable;
 
 /**
@@ -148,7 +147,6 @@ public final class S2 {
   }
 
   /** Defines an area or a length cell metric. Immutable after construction. */
-  @Immutable
   public static final class Metric {
     // NOTE: This isn't GWT serializable because writing custom field serializers for inner classes
     // is hard.

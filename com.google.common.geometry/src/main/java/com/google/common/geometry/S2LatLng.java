@@ -29,8 +29,6 @@ import static java.lang.Math.sqrt;
 import com.google.common.geometry.PrimitiveArrays.Bytes;
 import com.google.common.geometry.PrimitiveArrays.Cursor;
 import com.google.common.primitives.Doubles;
-import com.google.errorprone.annotations.CheckReturnValue;
-import com.google.errorprone.annotations.Immutable;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.Serializable;
@@ -46,7 +44,6 @@ import java.io.Serializable;
  * @author ericv@google.com (Eric Veach) original author
  */
 @SuppressWarnings("serial")
-@Immutable
 public final class S2LatLng implements Serializable {
   /** The center point the lat/lng coordinate system. */
   public static final S2LatLng CENTER = new S2LatLng(0.0, 0.0);
@@ -198,7 +195,6 @@ public final class S2LatLng implements Serializable {
    *
    * <p>If the current point is valid then the returned point will have the same coordinates.
    */
-  @CheckReturnValue
   public S2LatLng normalized() {
     // IEEEremainder(x, 2 * PI) reduces its argument to the range [-PI, PI] inclusive, which is what
     // we want here.
@@ -252,7 +248,6 @@ public final class S2LatLng implements Serializable {
    * Adds the given point to this point. Note that there is no guarantee that the new point will be
    * <em>valid</em>.
    */
-  @CheckReturnValue
   public S2LatLng add(final S2LatLng o) {
     return new S2LatLng(latRadians + o.latRadians, lngRadians + o.lngRadians);
   }
@@ -261,7 +256,6 @@ public final class S2LatLng implements Serializable {
    * Subtracts the given point from this point. Note that there is no guarantee that the new point
    * will be <em>valid</em>.
    */
-  @CheckReturnValue
   public S2LatLng sub(final S2LatLng o) {
     return new S2LatLng(latRadians - o.latRadians, lngRadians - o.lngRadians);
   }
@@ -270,7 +264,6 @@ public final class S2LatLng implements Serializable {
    * Scales this point by the given scaling factor. Note that there is no guarantee that the new
    * point will be <em>valid</em>.
    */
-  @CheckReturnValue
   public S2LatLng mul(final double m) {
     return new S2LatLng(latRadians * m, lngRadians * m);
   }
@@ -305,7 +298,6 @@ public final class S2LatLng implements Serializable {
    * Returns true if the given point is within {@code 1e-9} radians of this point. This corresponds
    * to a distance of less than {@code 1cm} at the surface of the Earth.
    */
-  @CheckReturnValue
   public boolean approxEquals(S2LatLng o) {
     return approxEquals(o, 1e-9);
   }

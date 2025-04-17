@@ -110,6 +110,19 @@ public class InvAndPropSwitch<T> extends Switch<T> {
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
+      case InvAndPropPackage.INVOICE_AND_PROPERTY_ITEM: {
+        InvoiceAndPropertyItem invoiceAndPropertyItem = (InvoiceAndPropertyItem)theEObject;
+        T result = caseInvoiceAndPropertyItem(invoiceAndPropertyItem);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case InvAndPropPackage.INVOICE_AND_PROPERTY: {
+        InvoiceAndProperty invoiceAndProperty = (InvoiceAndProperty)theEObject;
+        T result = caseInvoiceAndProperty(invoiceAndProperty);
+        if (result == null) result = caseInvoiceAndPropertyItem(invoiceAndProperty);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
       default: return defaultCase(theEObject);
     }
   }
@@ -216,6 +229,36 @@ public class InvAndPropSwitch<T> extends Switch<T> {
    * @generated
    */
   public T caseProperty(Property object) {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>Invoice And Property Item</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Invoice And Property Item</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseInvoiceAndPropertyItem(InvoiceAndPropertyItem object) {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>Invoice And Property</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Invoice And Property</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseInvoiceAndProperty(InvoiceAndProperty object) {
     return null;
   }
 

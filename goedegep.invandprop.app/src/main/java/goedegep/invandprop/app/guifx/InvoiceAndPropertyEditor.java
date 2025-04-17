@@ -1360,6 +1360,7 @@ public class InvoiceAndPropertyEditor extends ObjectEditorTemplate<Invoice> {
         .setDefaultPaneTitle("Picture reference")
         .setExpandPaneOnCreation(true)
         .setInitialFolderSupplier(this::getPropertyRelatedFilesFolder)
+        .setPrefix(InvoicesAndPropertiesRegistry.propertyRelatedFilesFolder)
         .build();
     
     ChangeListener<Boolean> cl = new ChangeListener<Boolean>() {

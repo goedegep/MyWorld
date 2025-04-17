@@ -17,8 +17,8 @@
       <artifactId>commonmark</artifactId>
     </dependency>
     <dependency>
-      <groupId>com.google.jimfs</groupId>
-      <artifactId>jimfs</artifactId>
+      <groupId>com.google.common.jimfs</groupId>
+      <artifactId>com.google.common.jimfs</artifactId>
     </dependency>
     <dependency>
       <groupId>goedegep.gpx</groupId>

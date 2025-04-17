@@ -29,7 +29,6 @@ import static java.lang.Math.sqrt;
 
 import com.google.common.collect.Ordering;
 import com.google.common.primitives.Doubles;
-import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import java.io.Serializable;
 
 /**
@@ -170,7 +169,6 @@ public final class S2Cell implements S2Region, Serializable {
    *
    * <p>except that it is more than two times faster.
    */
-  @CanIgnoreReturnValue
   public boolean subdivide(S2Cell[] children) {
     if (cellId.isLeaf()) {
       return false;

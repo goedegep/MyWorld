@@ -18,7 +18,6 @@ package com.google.common.geometry;
 import com.google.common.base.Objects;
 import com.google.common.collect.Lists;
 import com.google.common.primitives.UnsignedLongs;
-import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import java.util.Collections;
 import java.util.List;
 
@@ -103,7 +102,6 @@ public final class S2PointIndex<D> {
   }
 
   /** As {@link #remove(Entry)}, but more convenient. */
-  @CanIgnoreReturnValue
   public boolean remove(S2Point point, D data) {
     return remove(createEntry(point, data));
   }
@@ -113,7 +111,6 @@ public final class S2PointIndex<D> {
    * removed. Both the "point" and "data" fields must match the point to be removed. Invalidates all
    * iterators; clients must create new ones.
    */
-  @CanIgnoreReturnValue
   public boolean remove(Entry<D> entry) {
     return entries.remove(entry);
   }

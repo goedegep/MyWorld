@@ -2,6 +2,7 @@
  */
 package goedegep.invandprop.model;
 
+import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EObject;
 
 /**
@@ -15,6 +16,7 @@ import org.eclipse.emf.ecore.EObject;
  * <ul>
  *   <li>{@link goedegep.invandprop.model.InvoicesAndProperties#getInvoices <em>Invoices</em>}</li>
  *   <li>{@link goedegep.invandprop.model.InvoicesAndProperties#getProperties <em>Properties</em>}</li>
+ *   <li>{@link goedegep.invandprop.model.InvoicesAndProperties#getInvoicseandpropertys <em>Invoicseandpropertys</em>}</li>
  * </ul>
  *
  * @see goedegep.invandprop.model.InvAndPropPackage#getInvoicesAndProperties()
@@ -65,5 +67,17 @@ public interface InvoicesAndProperties extends EObject {
    * @generated
    */
   void setProperties(Properties value);
+
+  /**
+   * Returns the value of the '<em><b>Invoicseandpropertys</b></em>' containment reference list.
+   * The list contents are of type {@link goedegep.invandprop.model.InvoiceAndProperty}.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the value of the '<em>Invoicseandpropertys</em>' containment reference list.
+   * @see goedegep.invandprop.model.InvAndPropPackage#getInvoicesAndProperties_Invoicseandpropertys()
+   * @model containment="true"
+   * @generated
+   */
+  EList<InvoiceAndProperty> getInvoicseandpropertys();
 
 } // InvoicesAndProperties

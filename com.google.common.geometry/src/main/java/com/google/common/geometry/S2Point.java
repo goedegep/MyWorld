@@ -24,7 +24,6 @@ import static java.lang.Math.sqrt;
 import com.google.common.base.Preconditions;
 import com.google.common.geometry.PrimitiveArrays.Bytes;
 import com.google.common.geometry.PrimitiveArrays.Cursor;
-import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -633,7 +632,6 @@ public class S2Point implements S2Region, Comparable<S2Point>, Serializable {
     public Builder() {}
 
     /** Adds point. */
-    @CanIgnoreReturnValue
     public Builder add(S2Point point) {
       x += point.x;
       y += point.y;

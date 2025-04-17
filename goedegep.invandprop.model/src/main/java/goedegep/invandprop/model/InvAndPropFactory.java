@@ -85,6 +85,24 @@ public interface InvAndPropFactory extends EFactory {
   Property createProperty();
 
   /**
+   * Returns a new object of class '<em>Invoice And Property Item</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Invoice And Property Item</em>'.
+   * @generated
+   */
+  InvoiceAndPropertyItem createInvoiceAndPropertyItem();
+
+  /**
+   * Returns a new object of class '<em>Invoice And Property</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Invoice And Property</em>'.
+   * @generated
+   */
+  InvoiceAndProperty createInvoiceAndProperty();
+
+  /**
    * Returns the package supported by this factory.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
