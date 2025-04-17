@@ -23,7 +23,6 @@ import static java.lang.Math.min;
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
-import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -166,7 +165,6 @@ public final class S2RegionCoverer implements Serializable {
      *
      * <p>Default: 0
      */
-    @CanIgnoreReturnValue
     public Builder setMinLevel(int minLevel) {
       // assert (minLevel >= 0 && minLevel <= S2CellId.MAX_LEVEL);
       this.minLevel = max(0, min(S2CellId.MAX_LEVEL, minLevel));
@@ -183,7 +181,6 @@ public final class S2RegionCoverer implements Serializable {
      *
      * <p>Default: S2CellId.MAX_LEVEL
      */
-    @CanIgnoreReturnValue
     public Builder setMaxLevel(int maxLevel) {
       // assert (maxLevel >= 0 && maxLevel <= S2CellId.MAX_LEVEL);
       this.maxLevel = max(0, min(S2CellId.MAX_LEVEL, maxLevel));
@@ -203,7 +200,6 @@ public final class S2RegionCoverer implements Serializable {
      *
      * <p>Default: 1
      */
-    @CanIgnoreReturnValue
     public Builder setLevelMod(int levelMod) {
       // assert (levelMod >= 1 && levelMod <= 3);
       this.levelMod = max(1, min(3, levelMod));
@@ -244,7 +240,6 @@ public final class S2RegionCoverer implements Serializable {
      *
      * <p>Default: 8
      */
-    @CanIgnoreReturnValue
     public Builder setMaxCells(int maxCells) {
       this.maxCells = maxCells;
       return this;

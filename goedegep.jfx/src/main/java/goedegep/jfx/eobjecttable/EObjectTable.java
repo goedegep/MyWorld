@@ -817,7 +817,7 @@ public class EObjectTable<T extends EObject> extends TableView<T> implements Obj
    */
   public void setObjects(EObject containingObject, EReference eReference) {
     
-    if (eReference == null) {
+    if (containingObject == null || eReference == null) {
       setItems(null);
       return;
     }

@@ -19,7 +19,6 @@ import static java.lang.Math.abs;
 import static java.lang.Math.max;
 import static java.lang.Math.min;
 
-import com.google.errorprone.annotations.CheckReturnValue;
 import java.io.Serializable;
 
 /**
@@ -304,7 +303,6 @@ public final class R1Interval implements Serializable {
    * "margin" is negative, then shrink the interval on each side by "margin" instead. The resulting
    * interval may be empty. Any expansion of an empty interval remains empty.
    */
-  @CheckReturnValue
   public R1Interval expanded(double margin) {
     if (isEmpty()) {
       return this;
@@ -324,7 +322,6 @@ public final class R1Interval implements Serializable {
   }
 
   /** Returns the smallest interval that contains this interval and {@code y}. */
-  @CheckReturnValue
   public R1Interval union(R1Interval y) {
     if (isEmpty()) {
       return y;
@@ -354,7 +351,6 @@ public final class R1Interval implements Serializable {
    * Returns the intersection of this interval with {@code y}. Empty intervals do not need to be
    * special-cased.
    */
-  @CheckReturnValue
   public R1Interval intersection(R1Interval y) {
     return new R1Interval(max(lo, y.lo), min(hi, y.hi));
   }
@@ -370,7 +366,6 @@ public final class R1Interval implements Serializable {
   }
 
   /** Returns the smallest interval that contains this interval and the point {@code p}. */
-  @CheckReturnValue
   public R1Interval addPoint(double p) {
     if (isEmpty()) {
       return R1Interval.fromPoint(p);

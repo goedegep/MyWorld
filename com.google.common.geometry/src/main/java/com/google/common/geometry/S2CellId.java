@@ -31,7 +31,6 @@ import com.google.common.collect.UnmodifiableIterator;
 import com.google.common.geometry.PrimitiveArrays.Bytes;
 import com.google.common.geometry.PrimitiveArrays.Cursor;
 import com.google.common.primitives.UnsignedLongs;
-import com.google.errorprone.annotations.Immutable;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.Serializable;
@@ -74,7 +73,6 @@ import java.util.NoSuchElementException;
  * @author ericv@google.com (Eric Veach) original author
  */
 @SuppressWarnings("serial")
-@Immutable
 public final class S2CellId implements Comparable<S2CellId>, Serializable {
   // Although only 60 bits are needed to represent the index of a leaf cell, the extra position bit
   // lets us encode each cell as its Hilbert curve position at the cell center, which is halfway

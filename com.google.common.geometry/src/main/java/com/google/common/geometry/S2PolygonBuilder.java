@@ -25,7 +25,6 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Multiset;
 import com.google.common.geometry.S2ClosestPointQuery.Result;
-import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -346,7 +345,6 @@ public final class S2PolygonBuilder {
        *
        * <p>Default: false
        */
-      @CanIgnoreReturnValue
       public Builder setUndirectedEdges(boolean undirectedEdges) {
         this.undirectedEdges = undirectedEdges;
         return this;
@@ -357,7 +355,6 @@ public final class S2PolygonBuilder {
        *
        * <p>Default: true
        */
-      @CanIgnoreReturnValue
       public Builder setXorEdges(boolean xorEdges) {
         this.xorEdges = xorEdges;
         return this;
@@ -369,7 +366,6 @@ public final class S2PolygonBuilder {
        *
        * <p>Default: false
        */
-      @CanIgnoreReturnValue
       public Builder setValidate(boolean validate) {
         this.validate = validate;
         return this;
@@ -381,7 +377,6 @@ public final class S2PolygonBuilder {
        *
        * <p>Default value: 0.
        */
-      @CanIgnoreReturnValue
       public Builder setMergeDistance(S1Angle mergeDistance) {
         this.mergeDistance = mergeDistance;
         return this;
@@ -395,7 +390,6 @@ public final class S2PolygonBuilder {
        *
        * <p>Default value: false
        */
-      @CanIgnoreReturnValue
       public Builder setSnapToCellCenters(boolean snapToCellCenters) {
         this.snapToCellCenters = snapToCellCenters;
         return this;
@@ -407,7 +401,6 @@ public final class S2PolygonBuilder {
        *
        * <p>Default value: 0.866
        */
-      @CanIgnoreReturnValue
       public Builder setEdgeSpliceFraction(double edgeSpliceFraction) {
         Preconditions.checkState(
             edgeSpliceFraction < sqrt(3) / 2,
@@ -428,7 +421,6 @@ public final class S2PolygonBuilder {
        *
        * <p>If your grid has maximum diameter {@code d}, call {@code setRobustnessRadius(d/2)}.
        */
-      @CanIgnoreReturnValue
       public Builder setRobustnessRadius(S1Angle robustnessRadius) {
         this.mergeDistance = S1Angle.radians(2.0 * robustnessRadius.radians() / edgeSpliceFraction);
         return this;
@@ -448,7 +440,6 @@ public final class S2PolygonBuilder {
    * <p>Returns true if the edge was actually added to the edge graph, and false if an edge was
    * erased (due to XORing) or not added (if both endpoints were the same).
    */
-  @CanIgnoreReturnValue
   public boolean addEdge(S2Point v0, S2Point v1) {
     if (v0.equalsPoint(v1)) {
       return false;
@@ -537,7 +528,6 @@ public final class S2PolygonBuilder {
    *
    * <p>This method resets the {@link S2PolygonBuilder} state so that it can be reused.
    */
-  @CanIgnoreReturnValue
   public boolean assembleLoops(List<S2Loop> loops, List<S2Edge> unusedEdges) {
     if (options.getMergeDistance().radians() > 0) {
       S1Angle mergeDistance = options.getMergeDistance();
@@ -610,7 +600,6 @@ public final class S2PolygonBuilder {
    * outside of this class (and will need to consider factors other than the polygon's boundary).
    * For example, it is often possible to estimate the polygon area.
    */
-  @CanIgnoreReturnValue
   public boolean assemblePolygon(S2Polygon polygon, List<S2Edge> unusedEdges) {
     List<S2Loop> loops = Lists.newArrayList();
     boolean success = assembleLoops(loops, unusedEdges);

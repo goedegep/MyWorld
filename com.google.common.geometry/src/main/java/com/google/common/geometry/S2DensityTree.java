@@ -28,7 +28,6 @@ import com.google.common.geometry.PrimitiveArrays.Bytes;
 import com.google.common.geometry.PrimitiveArrays.Cursor;
 import com.google.common.geometry.S2DensityTree.BreadthFirstTreeBuilder.CellWeightFunction;
 import com.google.common.geometry.S2ShapeIndexRegion.ShapeVisitor;
-import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
@@ -237,7 +236,6 @@ public class S2DensityTree {
    *  Visits each cell,weight pair in depth-first order, halting early and returning false if
    *  {@link CellVisitor#visit} ever returns {@link CellVisitor.Action#STOP}.
    */
-  @CanIgnoreReturnValue
   public boolean visitCells(CellVisitor visitor) {
     Cursor cursor = encoded.cursor();
     Cell cell = new Cell();

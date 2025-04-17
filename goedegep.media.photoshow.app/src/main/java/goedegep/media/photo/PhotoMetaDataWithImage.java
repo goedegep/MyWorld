@@ -12,6 +12,7 @@ import javafx.scene.image.Image;
 
 public class PhotoMetaDataWithImage implements Serializable, IPhotoMetaDataWithImage {
   private static final long serialVersionUID = -4467398989079454134L;
+  private final static String NEWLINE = System.getProperty("line.separator");
   
   private IPhotoMetaData photoMetaData = new PhotoMetaData();
   private Image image;
@@ -209,6 +210,21 @@ public class PhotoMetaDataWithImage implements Serializable, IPhotoMetaDataWithI
   @Override
   public PhotoMetaDataWithImage getValue() {
     return this;
+  }
+  
+  @Override
+  public String toString() {
+    StringBuilder buf = new StringBuilder();
+    
+    buf.append("FileName: ").append(getFileName() != null ? getFileName().toString() : "<null>").append(NEWLINE);
+    buf.append("Title: ").append(getTitle() != null ? getTitle().toString() : "<null>").append(NEWLINE);
+    buf.append("Coordinates: ").append(getCoordinates() != null ? getCoordinates().toString() : "<null>").append(NEWLINE);
+    buf.append("HasApproximateGPScoordinates: ").append(hasApproximateGPScoordinates()).append(NEWLINE);
+    buf.append("DeviceSpecificPhotoTakenTime: ").append(getDeviceSpecificPhotoTakenTime() != null ? getDeviceSpecificPhotoTakenTime().toString() : "<null>").append(NEWLINE);
+    buf.append("ModificationDateTime: ").append(getModificationDateTime() != null ? getModificationDateTime().toString() : "<null>").append(NEWLINE);
+    buf.append("RotationAngle: ").append(getRotationAngle() != null ? getRotationAngle().toString() : "<null>").append(NEWLINE);
+    
+    return buf.toString();
   }
 
 //  public static Comparator<IPhotoMetaDataWithImage> getSortingDateTimeComparator() {

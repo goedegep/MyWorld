@@ -8,4 +8,115 @@
     <version>1.0-SNAPSHOT</version>
     <relativePath>../goedegep.toplevelpom</relativePath>
   </parent>
+  
+
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+
+    <bouncycastle.version>1.80</bouncycastle.version>
+    <log4j2.version>2.24.3</log4j2.version>
+    <junit.version>5.12.0</junit.version>
+    <jbig2.version>3.0.4</jbig2.version>
+    <jai.version>1.4.0</jai.version>
+    <commons-io.version>2.18.0</commons-io.version>
+    <picocli.version>4.7.6</picocli.version>
+    <!-- This is a default value to avoid problems when running single tests
+          see also https://stackoverflow.com/a/28695766/535646
+          https://maven.apache.org/surefire/maven-surefire-plugin/faq.html#late-property-evaluation
+    -->
+    <surefireArgLine />
+    <!-- needed here since apache 32 -->
+    <maven.compiler.source>11</maven.compiler.source>
+    <maven.compiler.release>11</maven.compiler.release>
+  </properties>
+
+    
+    <dependencies>
+<!--        <dependency>
+            <groupId>org.apache.pdfbox</groupId>
+            <artifactId>pdfbox-io</artifactId>
+            <version>${project.version}</version>
+        </dependency>-->
+<!--        <dependency>
+            <groupId>org.apache.pdfbox</groupId>
+            <artifactId>fontbox</artifactId>
+            <version>${project.version}</version>
+        </dependency>-->
+        <dependency>
+            <groupId>org.bouncycastle</groupId>
+            <artifactId>bcprov-jdk18on</artifactId>
+            <version>${bouncycastle.version}</version>
+            <scope>compile</scope>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.bouncycastle</groupId>
+            <artifactId>bcpkix-jdk18on</artifactId>
+            <version>${bouncycastle.version}</version>
+            <scope>compile</scope>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+	      <groupId>org.junit.jupiter</groupId>
+	      <artifactId>junit-jupiter</artifactId>
+          <version>${junit.version}</version>
+          <scope>test</scope>
+	    </dependency>
+        <dependency>
+            <groupId>com.googlecode.java-diff-utils</groupId>
+            <artifactId>diffutils</artifactId>
+            <version>1.3.0</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.pdfbox</groupId>
+            <artifactId>jbig2-imageio</artifactId>
+            <version>${jbig2.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <version>5.15.2</version>
+            <scope>test</scope>
+        </dependency>
+        <!-- For legal reasons (incompatible license), these three dependencies below
+        are to be used only in the tests and may not be distributed. 
+        See also LEGAL-195 -->
+        <dependency>
+            <groupId>com.github.jai-imageio</groupId>
+            <artifactId>jai-imageio-core</artifactId>
+            <version>${jai.version}</version>
+            <scope>test</scope>
+        </dependency>    
+        <dependency>
+            <groupId>com.github.jai-imageio</groupId>
+            <artifactId>jai-imageio-jpeg2000</artifactId>
+            <version>${jai.version}</version>
+            <scope>test</scope>
+        </dependency>
+<!--        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-core</artifactId>
+            <scope>test</scope>
+        </dependency>-->
+    </dependencies>
+    <build>
+      <plugins>
+        <plugin>    
+          <artifactId>maven-pmd-plugin</artifactId> <!-- Don't run PMD by specifying an empty phase for the execution -->
+          <executions>
+            <execution>
+              <id>run-pmd</id>
+              <phase/>
+            </execution>    
+          </executions>
+        </plugin>
+      </plugins>
+    </build>
 </project>

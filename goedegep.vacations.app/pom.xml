@@ -25,20 +25,16 @@
       <artifactId>com.google.common.geometry</artifactId>
     </dependency>
     <dependency>
-      <groupId>com.google.jimfs</groupId>
-      <artifactId>jimfs</artifactId>
+      <groupId>com.google.common.jimfs</groupId>
+      <artifactId>com.google.common.jimfs</artifactId>
     </dependency>
   	<dependency>
-  	  <!-- Required for PDF output. -->
-  	  <groupId>com.openhtmltopdf</groupId>
-  	  <artifactId>openhtmltopdf-pdfbox</artifactId>
-  	  <version>1.0.10</version>
+      <groupId>com.openhtmltopdf</groupId>
+      <artifactId>com.openhtmltopdf.openhtmltopdf-pdfbox</artifactId>
   	</dependency>
   	<dependency>
-  	  <!-- Required for image output only. -->
-  	  <groupId>com.openhtmltopdf</groupId>
-  	  <artifactId>openhtmltopdf-core</artifactId>
-  	  <version>1.0.10</version>
+      <groupId>com.openhtmltopdf</groupId>
+      <artifactId>com.openhtmltopdf.openhtmltopdf-core</artifactId>
   	</dependency>
     <dependency>
       <groupId>commons-io</groupId>
@@ -134,7 +130,7 @@
     </dependency>
     <dependency>
       <groupId>org.apache.pdfbox</groupId>
-      <artifactId>pdfbox</artifactId>
+      <artifactId>org.apache.pdfbox</artifactId>
     </dependency>
     <dependency>
       <groupId>org.eclipse.emf</groupId>

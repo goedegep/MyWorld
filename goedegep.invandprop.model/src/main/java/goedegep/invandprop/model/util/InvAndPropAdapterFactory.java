@@ -96,6 +96,14 @@ public class InvAndPropAdapterFactory extends AdapterFactoryImpl {
         return createPropertyAdapter();
       }
       @Override
+      public Adapter caseInvoiceAndPropertyItem(InvoiceAndPropertyItem object) {
+        return createInvoiceAndPropertyItemAdapter();
+      }
+      @Override
+      public Adapter caseInvoiceAndProperty(InvoiceAndProperty object) {
+        return createInvoiceAndPropertyAdapter();
+      }
+      @Override
       public Adapter defaultCase(EObject object) {
         return createEObjectAdapter();
       }
@@ -210,6 +218,34 @@ public class InvAndPropAdapterFactory extends AdapterFactoryImpl {
    * @generated
    */
   public Adapter createPropertyAdapter() {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link goedegep.invandprop.model.InvoiceAndPropertyItem <em>Invoice And Property Item</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see goedegep.invandprop.model.InvoiceAndPropertyItem
+   * @generated
+   */
+  public Adapter createInvoiceAndPropertyItemAdapter() {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link goedegep.invandprop.model.InvoiceAndProperty <em>Invoice And Property</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see goedegep.invandprop.model.InvoiceAndProperty
+   * @generated
+   */
+  public Adapter createInvoiceAndPropertyAdapter() {
     return null;
   }
 

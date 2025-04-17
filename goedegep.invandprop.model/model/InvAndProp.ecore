@@ -6,6 +6,8 @@
         eType="#//Invoices" containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="properties" lowerBound="1"
         eType="#//Properties" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="invoicseandpropertys" upperBound="-1"
+        eType="#//InvoiceAndProperty" containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Invoices">
     <eStructuralFeatures xsi:type="ecore:EReference" name="invoices" ordered="false"
@@ -68,5 +70,42 @@
     <eStructuralFeatures xsi:type="ecore:EReference" name="pictures" upperBound="-1"
         eType="ecore:EClass ../../goedegep.types.model/model/types.ecore#//FileReference"
         containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="InvoiceAndPropertyItem">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="type" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
+        unsettable="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="serialNumber" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
+        unsettable="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="description" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
+        unsettable="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="brand" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
+        unsettable="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="amount" eType="ecore:EDataType ../../goedegep.types.model/model/types.ecore#//EMoney"
+        unsettable="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="fromDate" eType="ecore:EDataType ../../goedegep.types.model/model/types.ecore#//EFlexDate"
+        unsettable="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="untilDate" eType="ecore:EDataType ../../goedegep.types.model/model/types.ecore#//EFlexDate"
+        unsettable="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="archive" lowerBound="1"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean" defaultValueLiteral="false"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="remarks" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
+        unsettable="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="numberOfItems" lowerBound="1"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt" defaultValueLiteral="1"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="pictures" upperBound="-1"
+        eType="ecore:EClass ../../goedegep.types.model/model/types.ecore#//FileReference"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="documents" upperBound="-1"
+        eType="ecore:EClass ../../goedegep.types.model/model/types.ecore#//FileReference"
+        containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="InvoiceAndProperty" eSuperTypes="#//InvoiceAndPropertyItem">
+    <eOperations name="getTotalAmountInvoiceItems" eType="ecore:EDataType ../../goedegep.types.model/model/types.ecore#//EMoney"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="date" eType="ecore:EDataType ../../goedegep.types.model/model/types.ecore#//EFlexDate"
+        unsettable="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="company" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
+        unsettable="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="invoiceandpropertyitems"
+        upperBound="-1" eType="#//InvoiceAndPropertyItem" containment="true"/>
   </eClassifiers>
 </ecore:EPackage>

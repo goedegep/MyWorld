@@ -21,7 +21,6 @@ import com.google.common.collect.Lists;
 import com.google.common.geometry.S2EdgeUtil.FaceSegment;
 import com.google.common.geometry.S2Shape.MutableEdge;
 import com.google.common.geometry.S2ShapeIndex.S2ClippedShape;
-import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import java.util.Collections;
 import java.util.IdentityHashMap;
 import java.util.List;
@@ -261,7 +260,6 @@ public class S2EdgeQuery {
    * Convenience method for calling {@link #getCells(S2Point, R2Vector, S2Point, R2Vector,
    * S2PaddedCell, List)}.
    */
-  @CanIgnoreReturnValue
   public boolean getCells(S2Point a, S2Point b, S2PaddedCell root, List<S2ShapeIndex.Cell> cells) {
     R2Vector aVector = new R2Vector();
     R2Vector bVector = new R2Vector();
@@ -274,7 +272,6 @@ public class S2EdgeQuery {
    * versions of the [A, B] edge projected onto the same cube face as {@code root}.
    */
   @VisibleForTesting
-  @CanIgnoreReturnValue
   boolean getCells(
       S2Point a,
       R2Vector aVector,

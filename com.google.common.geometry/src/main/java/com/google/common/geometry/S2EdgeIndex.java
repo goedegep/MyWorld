@@ -22,7 +22,6 @@ import static java.lang.Math.min;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
-import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -391,7 +390,6 @@ public abstract class S2EdgeIndex {
    *
    * <p>It is guaranteed that no child of a covering cell will fully contain the covered edge.
    */
-  @CanIgnoreReturnValue
   private int getCovering(
       S2Point a, S2Point b, boolean thickenEdge, ArrayList<S2CellId> edgeCovering) {
     edgeCovering.clear();

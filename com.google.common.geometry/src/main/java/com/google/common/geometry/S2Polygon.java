@@ -35,7 +35,6 @@ import com.google.common.geometry.S2ContainsPointQuery.S2VertexModel;
 import com.google.common.geometry.S2Projections.FaceSiTi;
 import com.google.common.geometry.S2Shape.MutableEdge;
 import com.google.common.geometry.S2ShapeIndex.S2ClippedShape;
-import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -234,7 +233,6 @@ public final class S2Polygon implements S2Region, Comparable<S2Polygon>, Seriali
   }
 
   /** Returns the same instance after initializing transient fields. */
-  @CanIgnoreReturnValue
   private Object readResolve() {
     initIndex();
     return this;
@@ -518,7 +516,6 @@ public final class S2Polygon implements S2Region, Comparable<S2Polygon>, Seriali
    * Returns true if this is *not* a valid polygon and sets {@code error} appropriately. Otherwise,
    * returns false and leaves {@code error} unchanged.
    */
-  @CanIgnoreReturnValue
   public boolean findValidationError(S2Error error) {
     for (int i = 0; i < numLoops(); ++i) {
       // Check for loop errors that don't require building an S2ShapeIndex.

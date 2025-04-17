@@ -31,11 +31,6 @@
         listBackgroundColor="50,210,255" labelBackgroundColor="30,190,255" boxBackgroundColor="50,210,255"
         textFieldBackgroundColor="60,220,255"/>
   </moduleLooks>
-  <moduleLooks moduleName="FINAN_LYNX" resourcesClassName="goedegep.app.finan.lynxapp.guifx.LynxResourcesFx">
-    <look backgroundColor="165,160,150" buttonBackgroundColor="150,120,130" panelBackgroundColor="165,160,150"
-        listBackgroundColor="165,170,165" labelBackgroundColor="165,160,150" boxBackgroundColor="165,170,165"
-        textFieldBackgroundColor="170,190,145"/>
-  </moduleLooks>
   <moduleLooks moduleName="FINAN_POSTBANK" resourcesClassName="goedegep.app.finan.postbankapp.guifx.PbResourcesFx">
     <look backgroundColor="30,190,255" buttonBackgroundColor="20,150,230" panelBackgroundColor="30,190,255"
         listBackgroundColor="50,210,255" labelBackgroundColor="30,190,255" boxBackgroundColor="50,210,255"

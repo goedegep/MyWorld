@@ -20,7 +20,6 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.geometry.PrimitiveArrays.Bytes;
 import com.google.common.geometry.PrimitiveArrays.Cursor;
 import com.google.common.primitives.Ints;
-import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.HashMap;
@@ -180,7 +179,6 @@ public class S2TaggedShapeCoder implements S2Coder<S2Shape> {
      * <p>If {@code clazz} or {@code typeTag} was already added, an {@link IllegalArgumentException}
      * is thrown.
      */
-    @CanIgnoreReturnValue
     <T extends S2Shape> Builder add(Class<? extends T> clazz, S2Coder<T> coder, int typeTag) {
       validateTypeTag(typeTag);
       validateClass(clazz);
@@ -193,7 +191,6 @@ public class S2TaggedShapeCoder implements S2Coder<S2Shape> {
      * Same as {@link #add(Class, S2Coder, int)}, but associates all elements of {@code clazzes}
      * with a unique {@code coder} and {@code typeTag}.
      */
-    @CanIgnoreReturnValue
     <T extends S2Shape> Builder add(
         List<Class<? extends T>> clazzes, S2Coder<T> coder, int typeTag) {
       validateTypeTag(typeTag);

@@ -1,0 +1,34 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.apache.logging.log4j</groupId>
+  <artifactId>org.apache.logging.log4j</artifactId>
+  <parent>
+    <groupId>goedegep.toplevelpom</groupId>
+    <artifactId>goedegep-toplevelpom</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <relativePath>../goedegep.toplevelpom</relativePath>
+  </parent>
+  <dependencies>
+<!--    <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>org.apache.pdfbox.io</artifactId>
+    </dependency>-->
+<!--    <dependency>
+      <groupId>org.apache.pdfbox</groupId>
+      <artifactId>org.apache.pdfbox.fontbox</artifactId>
+    </dependency>-->
+  </dependencies>
+  <build>
+    <plugins>
+      <plugin>    
+        <artifactId>maven-pmd-plugin</artifactId> <!-- Don't run PMD by specifying an empty phase for the execution -->
+        <executions>
+          <execution>
+            <id>run-pmd</id>
+            <phase/>
+          </execution>    
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+</project>

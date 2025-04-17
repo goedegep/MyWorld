@@ -13,12 +13,12 @@
   </parent>
   <dependencies>
     <dependency>
-    <groupId>org.apache.commons</groupId>
-    <artifactId>commons-io</artifactId>
+      <groupId>com.google.common.jimfs</groupId>
+      <artifactId>com.google.common.jimfs</artifactId>
     </dependency>
     <dependency>
-      <groupId>com.google.jimfs</groupId>
-      <artifactId>jimfs</artifactId>
+    <groupId>org.apache.commons</groupId>
+    <artifactId>commons-io</artifactId>
     </dependency>
     <dependency>
       <groupId>goedegep.emfsample</groupId>

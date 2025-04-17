@@ -16,11 +16,8 @@
 package com.google.common.geometry;
 
 import com.google.common.geometry.S2ShapeUtil.PointVisitor;
-import com.google.errorprone.annotations.CanIgnoreReturnValue;
-import com.google.errorprone.annotations.CheckReturnValue;
 
 /** Targets for finding minimum distances. */
-@CheckReturnValue
 class S2MinDistanceTargets {
   private S2MinDistanceTargets() {}
 
@@ -132,24 +129,20 @@ class S2MinDistanceTargets {
     }
 
     @Override
-    @CanIgnoreReturnValue
     public boolean updateBestDistance(S2Point p, DistanceCollector<D> minDist) {
       return updateMinDistance(new PointTarget<D>(p), minDist);
     }
 
     @Override
-    @CanIgnoreReturnValue
     public boolean updateBestDistance(S2Point v0, S2Point v1, DistanceCollector<D> minDist) {
       return updateMinDistance(new EdgeTarget<D>(v0, v1), minDist);
     }
 
     @Override
-    @CanIgnoreReturnValue
     public boolean updateBestDistance(S2Cell cell, DistanceCollector<D> minDist) {
       return updateMinDistance(new CellTarget<D>(cell), minDist);
     }
 
-    @CanIgnoreReturnValue
     @Override
     public boolean visitConnectedComponentPoints(@SuppressWarnings("exports") PointVisitor visitor) {
       for (S2Shape shape : index.getShapes()) {

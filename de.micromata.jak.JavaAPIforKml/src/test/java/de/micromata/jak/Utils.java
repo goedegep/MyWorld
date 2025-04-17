@@ -21,6 +21,7 @@ import java.io.FileOutputStream;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.lang.reflect.Field;
+import java.util.logging.Logger;
 
 import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.JAXBElement;
@@ -31,9 +32,9 @@ import jakarta.xml.bind.Unmarshaller;
 import javax.xml.namespace.QName;
 import javax.xml.transform.stream.StreamSource;
 
-import org.apache.log4j.Logger;
+//import org.apache.log4j.Logger;
 
-import de.micromata.opengis.kml.v_2_2_0.Kml;
+//import de.micromata.opengis.kml.v_2_2_0.Kml;
 
 public final class Utils {
 	private static final Logger LOG = Logger.getLogger(Utils.class.getName());

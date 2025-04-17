@@ -20,8 +20,6 @@ import static java.lang.Math.sqrt;
 import com.google.common.base.Preconditions;
 import com.google.common.geometry.S2ShapeIndex.Cell;
 import com.google.common.geometry.S2ShapeUtil.PointVisitor;
-import com.google.errorprone.annotations.CanIgnoreReturnValue;
-import com.google.errorprone.annotations.CheckReturnValue;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -67,7 +65,6 @@ import java.util.logging.Logger;
  * obtaining Result objects, clients provide a ResultVisitor that accepts (distance, shape, edge id)
  * tuples.
  */
-@CheckReturnValue
 public abstract class S2BestEdgesQueryBase<D extends S1Distance<D>> {
   private static final Logger log = Platform.getLoggerForClass(S2BestEdgesQueryBase.class);
 
@@ -247,7 +244,6 @@ public abstract class S2BestEdgesQueryBase<D extends S1Distance<D>> {
    * false. Otherwise all the best distance shapes will be visited for all connected components of
    * the target and this method returns true.
    */
-  @CanIgnoreReturnValue
   protected abstract boolean visitBestDistanceContainingShapes(
       S2BestDistanceTarget<D> target, S2ContainsPointQuery.ShapeVisitor visitor);
 
@@ -382,7 +378,6 @@ public abstract class S2BestEdgesQueryBase<D extends S1Distance<D>> {
     }
 
     /** Specifies the maximum number of results to be returned. */
-    @CanIgnoreReturnValue
     public Builder<D> setMaxResults(int maxResults) {
       this.maxResults = maxResults;
       return this;
@@ -394,7 +389,6 @@ public abstract class S2BestEdgesQueryBase<D extends S1Distance<D>> {
     }
 
     /** All returned results must have a distance better than the distanceLimit. */
-    @CanIgnoreReturnValue
     public Builder<D> setDistanceLimit(D distanceLimit) {
       this.distanceLimit = distanceLimit;
       return this;
@@ -421,7 +415,6 @@ public abstract class S2BestEdgesQueryBase<D extends S1Distance<D>> {
      * it finds any edge whose distance is less than minDist, rather than continuing to search for
      * an edge that is even closer.
      */
-    @CanIgnoreReturnValue
     public Builder<D> setMaxError(D maxError) {
       this.maxError = maxError;
       return this;
@@ -447,7 +440,6 @@ public abstract class S2BestEdgesQueryBase<D extends S1Distance<D>> {
      * (edgeId == -1) result. Such results are optional because in that case the distance from the
      * polygon is already zero.
      */
-    @CanIgnoreReturnValue
     public Builder<D> setIncludeInteriors(boolean includeInteriors) {
       this.includeInteriors = includeInteriors;
       return this;
@@ -462,7 +454,6 @@ public abstract class S2BestEdgesQueryBase<D extends S1Distance<D>> {
      * If true, distances should be computed by examining every edge rather than using the
      * S2ShapeIndex. This is useful for testing, benchmarking, and debugging.
      */
-    @CanIgnoreReturnValue
     public Builder<D> setUseBruteForce(boolean useBruteForce) {
       this.useBruteForce = useBruteForce;
       return this;
@@ -597,7 +588,6 @@ public abstract class S2BestEdgesQueryBase<D extends S1Distance<D>> {
      * current value in {@code collector}, update {@code collector} and return true. Otherwise
      * return false.
      */
-    @CanIgnoreReturnValue
     @Override
     public boolean updateBestDistance(S2Point p, DistanceCollector<D> collector) {
       return collector.update(point, p);
@@ -608,7 +598,6 @@ public abstract class S2BestEdgesQueryBase<D extends S1Distance<D>> {
      * current value in {@code collector}, update {@code collector} and return true. Otherwise
      * return false.
      */
-    @CanIgnoreReturnValue
     @Override
     public boolean updateBestDistance(S2Point v0, S2Point v1, DistanceCollector<D> collector) {
       return collector.update(point, v0, v1);
@@ -619,13 +608,11 @@ public abstract class S2BestEdgesQueryBase<D extends S1Distance<D>> {
      * than the current value in {@code collector}, update {@code collector} and return true.
      * Otherwise return false.
      */
-    @CanIgnoreReturnValue
     @Override
     public boolean updateBestDistance(S2Cell cell, DistanceCollector<D> collector) {
       return collector.update(point, cell);
     }
 
-    @CanIgnoreReturnValue
     @Override
     public boolean visitConnectedComponentPoints(PointVisitor visitor) {
       return visitor.apply(point);
@@ -653,7 +640,6 @@ public abstract class S2BestEdgesQueryBase<D extends S1Distance<D>> {
      * If the distance to this target edge from the given point {@code p} is better than the current
      * value in {@code collector}, update {@code collector} and return true. Otherwise return false.
      */
-    @CanIgnoreReturnValue
     @Override
     public boolean updateBestDistance(S2Point p, DistanceCollector<D> collector) {
       return collector.update(p, a, b);
@@ -664,7 +650,6 @@ public abstract class S2BestEdgesQueryBase<D extends S1Distance<D>> {
      * current value in {@code collector}, update {@code collector} and return true. Otherwise
      * return false.
      */
-    @CanIgnoreReturnValue
     @Override
     public boolean updateBestDistance(S2Point v0, S2Point v1, DistanceCollector<D> collector) {
       return collector.update(v0, v1, a, b);
@@ -675,7 +660,6 @@ public abstract class S2BestEdgesQueryBase<D extends S1Distance<D>> {
      * the current value in {@code collector}, update {@code collector} and return true. Otherwise
      * return false.
      */
-    @CanIgnoreReturnValue
     @Override
     public boolean updateBestDistance(S2Cell cell, DistanceCollector<D> collector) {
       return collector.update(a, b, cell);
@@ -690,7 +674,6 @@ public abstract class S2BestEdgesQueryBase<D extends S1Distance<D>> {
       return (0.5 * d2) / (1 + sqrt(1 - 0.25 * d2));
     }
 
-    @CanIgnoreReturnValue
     @Override
     public boolean visitConnectedComponentPoints(PointVisitor visitor) {
       // We visit the center of the edge in order to ensure that edge targets AB and BA yield
@@ -718,7 +701,6 @@ public abstract class S2BestEdgesQueryBase<D extends S1Distance<D>> {
      * If the distance to this target cell from the given point {@code p} is better than the current
      * value in {@code collector}, update {@code collector} and return true. Otherwise return false.
      */
-    @CanIgnoreReturnValue
     @Override
     public boolean updateBestDistance(S2Point p, DistanceCollector<D> collector) {
       return collector.update(p, cell);
@@ -729,7 +711,6 @@ public abstract class S2BestEdgesQueryBase<D extends S1Distance<D>> {
      * current value in {@code collector}, update {@code collector} and return true. Otherwise
      * return false.
      */
-    @CanIgnoreReturnValue
     @Override
     public boolean updateBestDistance(S2Point v0, S2Point v1, DistanceCollector<D> collector) {
       return collector.update(v0, v1, cell);
@@ -740,13 +721,11 @@ public abstract class S2BestEdgesQueryBase<D extends S1Distance<D>> {
      * the current value in {@code collector}, update {@code collector} and return true. Otherwise
      * return false.
      */
-    @CanIgnoreReturnValue
     @Override
     public boolean updateBestDistance(S2Cell c, DistanceCollector<D> collector) {
       return collector.update(cell, c);
     }
 
-    @CanIgnoreReturnValue
     @Override
     public boolean visitConnectedComponentPoints(PointVisitor visitor) {
       return visitor.apply(cell.getCenter());

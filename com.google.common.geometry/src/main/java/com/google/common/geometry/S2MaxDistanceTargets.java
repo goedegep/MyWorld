@@ -16,11 +16,8 @@
 package com.google.common.geometry;
 
 import com.google.common.geometry.S2ShapeUtil.PointVisitor;
-import com.google.errorprone.annotations.CanIgnoreReturnValue;
-import com.google.errorprone.annotations.CheckReturnValue;
 
 /** Targets for finding maximum distances. */
-@CheckReturnValue
 class S2MaxDistanceTargets {
   private S2MaxDistanceTargets() {}
 
@@ -140,24 +137,20 @@ class S2MaxDistanceTargets {
     }
 
     @Override
-    @CanIgnoreReturnValue
     public boolean updateBestDistance(S2Point p, DistanceCollector<D> maxDist) {
       return updateMaxDistance(new PointTarget<D>(p), maxDist);
     }
 
     @Override
-    @CanIgnoreReturnValue
     public boolean updateBestDistance(S2Point v0, S2Point v1, DistanceCollector<D> maxDist) {
       return updateMaxDistance(new EdgeTarget<D>(v0, v1), maxDist);
     }
 
     @Override
-    @CanIgnoreReturnValue
     public boolean updateBestDistance(S2Cell cell, DistanceCollector<D> maxDist) {
       return updateMaxDistance(new CellTarget<D>(cell), maxDist);
     }
 
-    @CanIgnoreReturnValue
     @Override
     public boolean visitConnectedComponentPoints(@SuppressWarnings("exports") PointVisitor visitor) {
       for (S2Shape shape : index.getShapes()) {

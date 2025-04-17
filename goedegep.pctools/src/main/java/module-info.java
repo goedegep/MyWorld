@@ -20,10 +20,9 @@ module goedegep.pctools {
   requires org.eclipse.emf.common;
   requires org.eclipse.emf.ecore;
   requires javafx.web;
-  requires org.hamcrest;
   requires tim.prune;
   requires goedegep.gpx.app;
   requires goedegep.resources;
   requires org.commonmark;
-  requires jimfs;
+  requires com.google.common.jimfs;
 }

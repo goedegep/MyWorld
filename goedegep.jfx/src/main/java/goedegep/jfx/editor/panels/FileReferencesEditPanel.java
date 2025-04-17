@@ -8,8 +8,9 @@ import java.util.logging.Logger;
 import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.editor.EditPanelTemplate;
 import goedegep.jfx.editor.EditorException;
-import goedegep.jfx.editor.panels.FileReferenceEditPanel.FileReferencePanelBuilder;
 import goedegep.types.model.FileReference;
+import goedegep.util.objectselector.ObjectSelectionListener;
+import goedegep.util.objectselector.ObjectSelector;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
@@ -34,7 +35,7 @@ import javafx.scene.layout.VBox;
  * The panel (the Control) is a {@link TitledPane}.<br/>
  * The file references can be reordered via drag and drop.
  */
-public class FileReferencesEditPanel extends EditPanelTemplate<List<FileReference>> {
+public class FileReferencesEditPanel extends EditPanelTemplate<List<FileReference>> implements ObjectSelector<FileReference> {
   private static final Logger LOGGER = Logger.getLogger(FileReferencesEditPanel.class.getName());
   
   /**
@@ -82,7 +83,14 @@ public class FileReferencesEditPanel extends EditPanelTemplate<List<FileReferenc
    */
   protected VBox fileReferencesVBox;
   
+  /**
+   * The list of {@code FileReferenceEditPanel}s.
+   */
   ObservableList<FileReferenceEditPanel> fileReferencePanels;
+  
+  boolean ignoreChanges = false;
+  
+  private List<ObjectSelectionListener<FileReference>> objectSelectionListeners = new ArrayList<>();
   
   /**
    * Create a new {@code FileReferencesEditPanel}
@@ -134,6 +142,10 @@ public class FileReferencesEditPanel extends EditPanelTemplate<List<FileReferenc
 
       @Override
       public void onChanged(Change<? extends FileReferenceEditPanel> c) {
+        if (ignoreChanges) {
+          return;
+        }
+        
         while (c.next()) {
           if (c.wasPermutated()) {  // NOPMD
             // No action needed here
@@ -186,12 +198,14 @@ public class FileReferencesEditPanel extends EditPanelTemplate<List<FileReferenc
    */
   private void updateAttachmentPanel() {
     fileReferencesVBox.getChildren().clear();
+    
     for (FileReferenceEditPanel fileReferenceEditPanel: fileReferencePanels) {
       HBox hBox = componentFactory.createHBox(12.0);
       Button deleteButton = componentFactory.createButton("Delete", "Remove this item");
+      deleteButton.setId("Delete ");
       deleteButton.setOnAction((e) -> deleteFileReference(e));
       hBox.getChildren().addAll(fileReferenceEditPanel.getControl(), deleteButton);
-      fileReferencesVBox.getChildren().add(hBox);
+      fileReferencesVBox.getChildren().add(hBox);      
     }
   }
   
@@ -263,6 +277,7 @@ public class FileReferencesEditPanel extends EditPanelTemplate<List<FileReferenc
         .build();
 
     installDragAndDropHandling(fileReferenceEditPanel);
+    fileReferenceEditPanel.addObjectSelectionListener((source, fileReference) -> notifyListeners(fileReference));
     fileReferencePanels.add(fileReferenceEditPanel);
     
     return fileReferenceEditPanel;
@@ -344,13 +359,6 @@ public class FileReferencesEditPanel extends EditPanelTemplate<List<FileReferenc
     
   }
   
-
-//  @Override
-//  public void createObject() {
-//    // TODO Auto-generated method stub
-//    
-//  }
-
 //  @Override
 //  protected void fillControlsWithDefaultValues() {
 //    // TODO Auto-generated method stub
@@ -362,21 +370,16 @@ public class FileReferencesEditPanel extends EditPanelTemplate<List<FileReferenc
     if (value == null) {
       return;
     }
+    ignoreChanges = true;
     
     for (FileReference fileReference: value) {
-      FileReferenceEditPanel fileReferenceEditPanel = new FileReferenceEditPanel.FileReferencePanelBuilder(customization)
-          .setDefaultPaneTitle(referenceEditPanelTitle)
-          .setExpandPaneOnCreation(false)
-          .setInitialFolderSupplier(initialFolderSupplier)
-          .setFileReferenceTypes(fileReferenceTypeInfos)
-          .build();
-      
-      installDragAndDropHandling(fileReferenceEditPanel);
+      FileReferenceEditPanel fileReferenceEditPanel = createNewAttachmentEditPanel(false);
       fileReferenceEditPanel.setObject(fileReference);
-
-      fileReferencePanels.add(fileReferenceEditPanel);
     }
     
+    ignoreChanges = false;
+    handleChanges();
+    updateAttachmentPanel();
   }
 
   @Override
@@ -612,6 +615,34 @@ public class FileReferencesEditPanel extends EditPanelTemplate<List<FileReferenc
   @Override
   public String getValueAsFormattedText() {
     // TODO Auto-generated method stub
+    return null;
+  }
+
+  @Override
+  public void addObjectSelectionListener(ObjectSelectionListener<FileReference> objectSelectionListener) {
+    objectSelectionListeners.add(objectSelectionListener);
+  }
+
+  @Override
+  public void removeObjectSelectionListener(ObjectSelectionListener<FileReference> objectSelectionListener) {
+    objectSelectionListeners.remove(objectSelectionListener);
+  }
+  
+  private void notifyListeners(FileReference fileReference) {
+    for (ObjectSelectionListener<FileReference> objectSelectionListener: objectSelectionListeners) {
+      objectSelectionListener.objectSelected(this, fileReference);
+    }
+  }
+
+  @Override
+  public FileReference getSelectedObject() {
+    for (FileReferenceEditPanel fileReferenceEditPanel: fileReferencePanels) {
+      FileReference fileReference = fileReferenceEditPanel.getSelectedObject();
+      if (fileReference != null) {
+        return fileReference;
+      }
+    }
+    
     return null;
   }
 

@@ -20,7 +20,6 @@ import com.google.common.base.Preconditions;
 import com.google.common.geometry.S2ContainsPointQuery.S2VertexModel;
 import com.google.common.geometry.S2Shape.MutableEdge;
 import com.google.common.geometry.S2ShapeIndex.S2ClippedShape;
-import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
@@ -255,7 +254,6 @@ public class S2ShapeIndexRegion implements S2Region {
    * (visitContainingShapes) by simply having the ShapeVisitor predicate immediately return true
    * when containsTarget is false.
    */
-  @CanIgnoreReturnValue
   public boolean visitIntersectingShapes(S2Cell target, ShapeVisitor visitor) {
     S2ShapeIndex.CellRelation relation = it.locate(target.id());
     switch (relation) {

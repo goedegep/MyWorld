@@ -20,7 +20,6 @@ module goedegep.app.finan {
   exports goedegep.finan.abnamrobank;
   exports goedegep.app.finan.direktbankapp.guifx;
   exports goedegep.finan.basic;
-  exports goedegep.finan.lynx.lynxeffrek;
   exports goedegep.finan.postbank.pbeffrek;
   exports goedegep.app.finan.effrek;
   exports goedegep.finan.pensioen.nn;
@@ -29,13 +28,9 @@ module goedegep.app.finan {
   exports goedegep.app.finan.postbankapp.guifx;
   exports goedegep.finan.postbank.pbsprek;
   exports goedegep.app.finan.registry;
-  exports goedegep.finan.lynx;
-  exports goedegep.app.finan.lynxapp;
   exports goedegep.app.finan.direktbankapp;
-  exports goedegep.app.finan.lynxapp.transactioncheck;
   exports goedegep.finan.postbank.pbfonds;
   exports goedegep.app.finan.koopwoning;
-  exports goedegep.app.finan.lynxapp.guifx;
   exports goedegep.finan.mortgage;
   exports goedegep.finan.effrek;
   exports goedegep.app.finan.overzichten;
@@ -52,7 +47,7 @@ module goedegep.app.finan {
   requires goedegep.properties.app;
   requires goedegep.rolodex.app;
   requires transitive goedegep.util;
-  requires itextpdf;
+//  requires itextpdf;
   requires transitive java.desktop;
   requires java.base;
   requires java.logging;
@@ -62,6 +57,7 @@ module goedegep.app.finan {
   requires javafx.graphics;
   requires jcommon;
   requires jfreechart;
+  requires org.apache.pdfbox;
   requires org.eclipse.emf.common;
   requires org.eclipse.emf.ecore;
   requires org.eclipse.emf.ecore.xmi;

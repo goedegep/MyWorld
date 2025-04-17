@@ -22,7 +22,6 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.geometry.S2EdgeUtil.EdgeCrosser;
 import com.google.common.geometry.S2Shape.MutableEdge;
 import com.google.common.geometry.S2ShapeIndex.S2ClippedShape;
-import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import java.util.Iterator;
 
 /**
@@ -183,7 +182,6 @@ public class S2ContainsPointQuery {
    * <p>Also see {@link S2ShapeIndexRegion#visitIntersectingShapes}, which allows visiting all
    * shapes in an S2ShapeIndex that intersect or contain a given target S2Cell.
    */
-  @CanIgnoreReturnValue
   boolean visitContainingShapes(S2Point p, ShapeVisitor visitor) {
     // This function returns false only if the algorithm terminates early because the "visitor"
     // function returned false.

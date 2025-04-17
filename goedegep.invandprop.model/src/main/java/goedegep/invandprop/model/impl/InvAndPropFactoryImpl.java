@@ -63,6 +63,8 @@ public class InvAndPropFactoryImpl extends EFactoryImpl implements InvAndPropFac
       case InvAndPropPackage.INVOICE_ITEM: return createInvoiceItem();
       case InvAndPropPackage.PROPERTIES: return createProperties();
       case InvAndPropPackage.PROPERTY: return createProperty();
+      case InvAndPropPackage.INVOICE_AND_PROPERTY_ITEM: return createInvoiceAndPropertyItem();
+      case InvAndPropPackage.INVOICE_AND_PROPERTY: return createInvoiceAndProperty();
       default:
         throw new IllegalArgumentException("The class '" + eClass.getName() + "' is not a valid classifier");
     }
@@ -136,6 +138,26 @@ public class InvAndPropFactoryImpl extends EFactoryImpl implements InvAndPropFac
   public Property createProperty() {
     PropertyImpl property = new PropertyImpl();
     return property;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public InvoiceAndPropertyItem createInvoiceAndPropertyItem() {
+    InvoiceAndPropertyItemImpl invoiceAndPropertyItem = new InvoiceAndPropertyItemImpl();
+    return invoiceAndPropertyItem;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public InvoiceAndProperty createInvoiceAndProperty() {
+    InvoiceAndPropertyImpl invoiceAndProperty = new InvoiceAndPropertyImpl();
+    return invoiceAndProperty;
   }
 
   /**

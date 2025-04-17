@@ -15,7 +15,6 @@
  */
 package com.google.common.geometry;
 
-import com.google.errorprone.annotations.CheckReturnValue;
 import java.io.Serializable;
 
 /**
@@ -253,7 +252,6 @@ public final class R2Rect implements Serializable {
    * on the corresponding sides instead. The resulting rectangle may be empty. Any expansion of an
    * empty rectangle remains empty.
    */
-  @CheckReturnValue
   public R2Rect expanded(R2Vector margin) {
     R1Interval xx = x().expanded(margin.x());
     R1Interval yy = y().expanded(margin.y());
@@ -268,7 +266,6 @@ public final class R2Rect implements Serializable {
    * Returns a rectangle that has been expanded on both sides by the given margin. Any expansion of
    * an empty rectangle remains empty.
    */
-  @CheckReturnValue
   public R2Rect expanded(double margin) {
     return expanded(new R2Vector(margin, margin));
   }
@@ -288,7 +285,6 @@ public final class R2Rect implements Serializable {
   /**
    * Returns the smallest rectangle containing the union of this rectangle and the given rectangle.
    */
-  @CheckReturnValue
   public R2Rect union(R2Rect other) {
     return new R2Rect(x().union(other.x()), y().union(other.y()));
   }
@@ -297,7 +293,6 @@ public final class R2Rect implements Serializable {
    * Returns the smallest rectangle containing the intersection of this rectangle and the given
    * rectangle.
    */
-  @CheckReturnValue
   public R2Rect intersection(R2Rect other) {
     R1Interval xx = x().intersection(other.x());
     R1Interval yy = y().intersection(other.y());

@@ -26,6 +26,8 @@ import org.apache.commons.imaging.formats.jpeg.exif.ExifRewriter;
 import org.apache.commons.imaging.formats.tiff.TiffDirectory;
 import org.apache.commons.imaging.formats.tiff.TiffField;
 import org.apache.commons.imaging.formats.tiff.TiffImageMetadata;
+import org.apache.commons.imaging.formats.tiff.TiffImageMetadata.Directory;
+import org.apache.commons.imaging.formats.tiff.TiffImageMetadata.TiffMetadataItem;
 import org.apache.commons.imaging.formats.tiff.constants.ExifTagConstants;
 import org.apache.commons.imaging.formats.tiff.constants.GpsTagConstants;
 import org.apache.commons.imaging.formats.tiff.constants.MicrosoftTagConstants;
@@ -564,19 +566,18 @@ public final class PhotoFileMetaDataHandler {
     if (jpegMetadata != null) {
       TiffImageMetadata exif = jpegMetadata.getExif();
       if (exif != null) {
-        @SuppressWarnings("unchecked")
-        List<ImageMetadataItem> dirs = (List<ImageMetadataItem>) exif.getDirectories();
+        List<TiffImageMetadata.Directory> dirs = exif.getDirectories();
         LOGGER.info("Value of getDirectories: " + dirs);
-//        for (Directory directory: exif.getDirectories()) {
-//          if (directory.type == directoryType) {
-//            for (ImageMetadataItem item: directory.getItems()) {
-//              TiffMetadataItem tiffMetadataItem = (TiffMetadataItem) item;
-//              if (tiffMetadataItem.getKeyword().equals(itemName)) {
-//                return tiffMetadataItem.getText();
-//              }
-//            }
-//          }
-//        }
+        for (Directory directory: exif.getDirectories()) {
+          if (directory.type == directoryType) {
+            for (ImageMetadataItem item: directory.getItems()) {
+              TiffMetadataItem tiffMetadataItem = (TiffMetadataItem) item;
+              if (tiffMetadataItem.getKeyword().equals(itemName)) {
+                return tiffMetadataItem.getText();
+              }
+            }
+          }
+        }
       }
     }
 

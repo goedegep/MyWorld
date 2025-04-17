@@ -11,6 +11,10 @@
   </parent>
   <dependencies>
     <dependency>
+      <groupId>com.google.common.jimfs</groupId>
+      <artifactId>com.google.common.jimfs</artifactId>
+    </dependency>
+    <dependency>
       <groupId>goedegep.util</groupId>
       <artifactId>goedegep-util</artifactId>
     </dependency>

@@ -33,7 +33,6 @@ import com.google.common.geometry.S2ShapeIndex.Cell;
 import com.google.common.geometry.S2ShapeIndex.S2ClippedShape;
 import com.google.common.geometry.S2ShapeUtil.RangeIterator;
 import com.google.common.primitives.UnsignedLongs;
-import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.AbstractList;
@@ -238,7 +237,6 @@ public final class S2Loop implements S2Region, Comparable<S2Loop>, Serializable,
   }
 
   /** Returns the same instance after initializing transient fields. */
-  @CanIgnoreReturnValue
   private Object readResolve() {
     initIndex();
     return this;
@@ -1274,7 +1272,6 @@ public final class S2Loop implements S2Region, Comparable<S2Loop>, Serializable,
    * Returns true if this is *not* a valid loop and sets {@code error} appropriately. Otherwise
    * returns false and leaves {@code error} unchanged. Requires that error != null.
    */
-  @CanIgnoreReturnValue
   public boolean findValidationError(S2Error error) {
     return findValidationErrorNoIndex(error)
         || S2ShapeUtil.findSelfIntersection(index, this, error);
@@ -1285,7 +1282,6 @@ public final class S2Loop implements S2Region, Comparable<S2Loop>, Serializable,
    * (i.e., self-intersection tests). This will be used by the S2Polygon implementation, which uses
    * its own index to check for loop self-intersection.
    */
-  @CanIgnoreReturnValue
   public boolean findValidationErrorNoIndex(S2Error error) {
     // subregionBound must be at least as large as bound. (This is an internal consistency check
     // rather than a test of client data.

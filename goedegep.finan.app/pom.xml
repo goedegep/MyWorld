@@ -12,10 +12,10 @@
     <relativePath>../goedegep.toplevelpom</relativePath>
   </parent>
   <dependencies>
-    <dependency>
+<!--    <dependency>
       <groupId>com.itextpdf</groupId>
       <artifactId>itextpdf</artifactId>
-    </dependency>
+    </dependency>-->
     <dependency>
       <groupId>goedegep.rolodex</groupId>
       <artifactId>goedegep-rolodex-app</artifactId>
@@ -79,6 +79,10 @@
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
+    </dependency>
+    <dependency>
+     <groupId>org.apache.pdfbox</groupId>
+      <artifactId>org.apache.pdfbox</artifactId>
     </dependency>
     <dependency>
      <groupId>org.eclipse.emf</groupId>

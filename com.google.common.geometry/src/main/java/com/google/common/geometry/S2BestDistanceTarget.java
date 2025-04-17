@@ -16,15 +16,12 @@
 package com.google.common.geometry;
 
 import com.google.common.geometry.S2ShapeUtil.PointVisitor;
-import com.google.errorprone.annotations.CanIgnoreReturnValue;
-import com.google.errorprone.annotations.CheckReturnValue;
 
 /**
  * S2BestDistanceTarget is an interface representing an abstract geometric object to which a "best
  * distance" is being computed. The meaning of "best" is determined by the implementation, but
  * minimum or maximum are typical.
  */
-@CheckReturnValue
 public interface S2BestDistanceTarget<D extends S1Distance<D>> {
   /**
    * For every connected component of this target, a point on that component is passed to the
@@ -34,7 +31,6 @@ public interface S2BestDistanceTarget<D extends S1Distance<D>> {
    * components stops and this method returns false. Otherwise, all connected components will be
    * visited and this method returns true.
    */
-  @CanIgnoreReturnValue
   public boolean visitConnectedComponentPoints(@SuppressWarnings("exports") PointVisitor visitor);
 
   /**
@@ -63,21 +59,18 @@ public interface S2BestDistanceTarget<D extends S1Distance<D>> {
    * If the distance to the point p from this target is better than "bestDist", then updates
    * "bestDist" and returns true. Otherwise returns false.
    */
-  @CanIgnoreReturnValue
   public boolean updateBestDistance(S2Point p, DistanceCollector<D> bestDist);
 
   /**
    * If the distance to the edge (v0, v1) from this target is better than "bestDist", then updates
    * "bestDist" and returns true. Otherwise returns false.
    */
-  @CanIgnoreReturnValue
   public boolean updateBestDistance(S2Point v0, S2Point v1, DistanceCollector<D> bestDist);
 
   /**
    * If the distance to the given S2Cell (including its interior) from this target is better than
    * "bestDist", then updates "bestDist" and returns true. Otherwise returns false.
    */
-  @CanIgnoreReturnValue
   public boolean updateBestDistance(S2Cell cell, DistanceCollector<D> bestDist);
 
   /**
