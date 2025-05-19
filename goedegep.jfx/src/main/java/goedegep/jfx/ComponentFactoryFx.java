@@ -14,6 +14,7 @@ import goedegep.geo.WGS84Coordinates;
 import goedegep.jfx.controls.AutoCompleteTextField;
 import goedegep.jfx.editor.controls.EditorControlBoolean;
 import goedegep.jfx.editor.controls.EditorControlCurrency;
+import goedegep.jfx.editor.controls.EditorControlEnumComboBox;
 import goedegep.jfx.editor.controls.EditorControlFileSelecter;
 import goedegep.jfx.editor.controls.EditorControlFlexDate;
 import goedegep.jfx.editor.controls.EditorControlFolderSelecter;
@@ -1065,34 +1066,6 @@ public class ComponentFactoryFx {
   }
 
   /**
-   * Create a String EditorControl.
-   * 
-   * @param width the width of the TextField.
-   * @param isOptional if true, the value provided by this control is optional.
-   * @param toolTipText an optional tooltip text.
-   * @return the newly created {@code ObjectControlString}.
-   */
-  public EditorControlString createEditorControlString(double width, boolean isOptional, String toolTipText) {
-    EditorControlString editorControlString = EditorControlString.newInstance(customization, width, isOptional, toolTipText);
-
-    return editorControlString;
-  }
-
-  /**
-   * Create a PgCurrency EditorControl.
-   * 
-   * @param width the width of the TextField.
-   * @param isOptional if true, the value provided by this control is optional.
-   * @param toolTipText an optional tooltip text.
-   * @return the newly created {@code ObjectControlCurrency}.
-   */
-  public EditorControlCurrency createEditorControlCurrency(double width, boolean isOptional, String toolTipText) {
-    EditorControlCurrency editorControlCurrency = EditorControlCurrency.newInstance(customization, width, isOptional, toolTipText);
-
-    return editorControlCurrency;
-  }
-
-  /**
    * Create a Boolean EditorControl.
    * 
    * @param toolTipText an optional tooltip text.
@@ -1191,20 +1164,6 @@ public class ComponentFactoryFx {
   }
 
   /**
-   * Create a FlexDate EditorControl.
-   * 
-   * @param width the width of the TextField.
-   * @param isOptional if true, the value provided by this control is optional.
-   * @param toolTipText an optional tooltip text.
-   * @return the newly created {@code ObjectControlFlexDate}.
-   */
-  public EditorControlFlexDate createEditorControlFlexDate(double width, boolean isOptional, String toolTipText) {
-    EditorControlFlexDate editorControlFlexDate = EditorControlFlexDate.newInstance(customization, width, isOptional, toolTipText);
-
-    return editorControlFlexDate;
-  }
-
-  /**
    * Create a LocalDate ObjectControl.
    * 
    * @param localDate the initial value.
@@ -1249,7 +1208,7 @@ public class ComponentFactoryFx {
    * @param toolTipText an optional tooltip text
    * @return the newly created {@code ObjectControlEnumComboBox}.
    */
-  public <T extends Enum<T>>ObjectControlEnumComboBox<T> createObjectControlEnumComboBox(T enumConstant, boolean isOptional, String toolTipText) {
+  public <T extends Enum<T>> ObjectControlEnumComboBox<T> createObjectControlEnumComboBox(T enumConstant, boolean isOptional, String toolTipText) {
     return new ObjectControlEnumComboBox<T>(customization, enumConstant, isOptional, toolTipText);
   }
   

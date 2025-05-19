@@ -33,6 +33,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.logging.Logger;
 
@@ -51,7 +52,6 @@ public class FileUtils {
    */
   private static final String BACKUP_FOLDER_NAME = "backup";
   
-      
   /**
    * File name extensions of known audio files.
    */
@@ -660,30 +660,59 @@ public class FileUtils {
     return GPX_EXTENSION .equals(fileExtension);
   }
   
+  /**
+   * Create a path name from a prefix and filename.
+   * <p>
+   * Basically this calls {@code new File(prefix, fileName)} and returns the absolute path.
+   * However if the {@code fileName} is null, it just returns null.
+   * If the {@code fileName} is an absolute path, a runtime exception is thrown.
+   * 
+   * @param prefix the prefix to be prepended to the {@code fileName} (may not be null and shall not end with a '/' or '\').
+   * @param fileName a relative file name to which the {@code prefix} will be prepended.
+   * @return an absolute path constructed from {@code prefix} and {@code fileName}.
+   */
   public static String createPathNameFromPrefixAndFileName(String prefix, String fileName) {
-    File file = new File (prefix, fileName);
+    Objects.requireNonNull(prefix, "prefix may not be null");
+    
+    if (fileName == null) {
+      return null;
+    }
+    
+    if (new File(fileName).isAbsolute()) {
+      throw new RuntimeException("fileName may not be an absolute filename: " + fileName);
+    }
+    
+    File file = new File(prefix, fileName);
     return file.getAbsolutePath();
   }
 
   /**
    * Get the path (as String) of a file or folder relative to some base folder.<br/>
    * Example:<br/>
-   * referenceFolder: "C:\aFolder\SomeSubfolder\"<br/>
+   * referenceFolder: "C:\aFolder\SomeSubfolder"<br/>
    * fileName: "C:\aFolder\SomeSubfolder\myDir\myFile.ext"<br/>
-   * returns: "myDir\myFile.ext"
+   * returns: "myDir\myFile.ext"<br/>
    * 
-   * @param referenceFolder the base folder
+   * If {@code fileName} is null, null is returned.
+   * 
+   * @param referenceFolder the base folder (may not be null and shall not end with a '/' or '\').
    * @param fileName the folder for which the relative path is to be returned
-   * @return the path of <code>folder</code> relative to <code>referenceFolder</code>.
+   * @return the path of {@code fileName} relative to the {@code referenceFolder}, or {@code fileName} if that doesn't start with the {@code referenceFolder}.
    */
   public static String getPathRelativeToFolder(String referenceFolder, String fileName) {
+    Objects.requireNonNull(referenceFolder, "referenceFolder may not be null");
+    
     LOGGER.info("=> referenceFolder=" + referenceFolder + ", file" + fileName);
-    if (!referenceFolder.endsWith("/")  &&  !referenceFolder.endsWith("\\")) {
-      throw new RuntimeException("referenceFolder has to end with a '/' or '\\'. referenceFolder is: '" + referenceFolder + "'");
+    if (referenceFolder.endsWith("/")  ||  referenceFolder.endsWith("\\")) {
+      throw new RuntimeException("referenceFolder may not end with a '/' or '\\'. referenceFolder is: '" + referenceFolder + "'");
+    }
+    
+    if (fileName == null) {
+      return null;
     }
     
     if (fileName.startsWith(referenceFolder)  &&  fileName.length() >= referenceFolder.length() + 1) {
-      String strippedName = fileName.substring(referenceFolder.length());
+      String strippedName = fileName.substring(referenceFolder.length() + 1);
       LOGGER.info("<= " + strippedName);
       return strippedName;
     } else {

@@ -18,6 +18,7 @@ import goedegep.jfx.editor.panels.FileReferencesEditPanel;
 import goedegep.jfx.editor.panels.FileReferencesEditPanel.FileReferencesEditPanelBuilder;
 import goedegep.types.model.FileReference;
 import goedegep.util.emf.EmfUtil;
+import goedegep.util.file.FileUtils;
 import javafx.scene.Node;
 import javafx.scene.control.TitledPane;
 import javafx.scene.image.Image;
@@ -126,38 +127,67 @@ public class InvoiceAndPropertyItemPanel extends EditPanelTemplate<InvoiceAndPro
 
   @Override
   public void createControls() {
-    descriptionControl = componentFactory.createEditorControlString(300, false, "Description");
-    descriptionControl.setId("itemDescription");
-    descriptionControl.setLabelBaseText("Description");
-    descriptionControl.setErrorTextSupplier(() -> "The description is not filled in");
     
-    brandControl = componentFactory.createEditorControlString(300, true, "Brand");
-    brandControl.setId("itemBrand");
-    brandControl.setLabelBaseText("Brand");
+    descriptionControl = new EditorControlString.Builder("itemDescription")
+        .setWidth(300d)
+        .setLabelBaseText("Description")
+        .setToolTipText("Description")
+        .setErrorTextSupplier(() -> "The description is not filled in")
+        .build();
     
-    typeControl = componentFactory.createEditorControlString(300, true, "Type");
-    typeControl.setId("itemType");
-    typeControl.setLabelBaseText("Type");
+    brandControl = new EditorControlString.Builder("itemBrand")
+        .setWidth(300d)
+        .setLabelBaseText("Brand")
+        .setToolTipText("Brand")
+        .setOptional(true)
+        .build();
     
-    serialNumberControl = componentFactory.createEditorControlString(300, true, "Serial number");
-    serialNumberControl.setId("itemSerialNumber");
-    serialNumberControl.setLabelBaseText("Serial number");
+    typeControl = new EditorControlString.Builder("itemType")
+        .setWidth(300d)
+        .setLabelBaseText("Type")
+        .setToolTipText("Type")
+        .setOptional(true)
+        .build();
     
-    amountControl = componentFactory.createEditorControlCurrency(300, true, "Amount");
-    amountControl.setId("itemAmount");
-    amountControl.setLabelBaseText("Amount");
+    serialNumberControl = new EditorControlString.Builder("itemSerialNumber")
+        .setWidth(300d)
+        .setLabelBaseText("Serial number")
+        .setToolTipText("Serial number")
+        .setOptional(true)
+        .build();
+
     
-    fromDateControl = componentFactory.createEditorControlFlexDate(300, true, "From date");
-    fromDateControl.setId("itemFromDate");
-    fromDateControl.setLabelBaseText("From date");
+    amountControl = new EditorControlCurrency.CurrencyBuilder("itemAmount")
+        .setWidth(300d)
+        .setLabelBaseText("Amount")
+        .setToolTipText("Amount")
+        .setOptional(true)
+        .build();
     
-    untilDateControl = componentFactory.createEditorControlFlexDate(300, true, "Until date");
-    untilDateControl.setId("itemUntilDate");
-    untilDateControl.setLabelBaseText("Util date");
+    fromDateControl = new EditorControlFlexDate.FlexDateBuilder("itemFromDate")
+        .setWidth(300d)
+        .setLabelBaseText("From date")
+        .setToolTipText("From date")
+        .setOptional(true)
+        .build();
     
-    remarksControl = componentFactory.createEditorControlString(300, true, "Remarks");
-    remarksControl.setId("itemRemarks");
-    remarksControl.setLabelBaseText("Remarks");
+    untilDateControl = new EditorControlFlexDate.FlexDateBuilder("itemUntilDate")
+        .setWidth(300d)
+        .setLabelBaseText("Until date")
+        .setToolTipText("Until date")
+        .setOptional(true)
+        .build();
+    
+    remarksControl = new EditorControlString.Builder("itemRemarks")
+        .setWidth(300d)
+        .setLabelBaseText("Remarks")
+        .setToolTipText("Remarks")
+        .setOptional(true)
+        .build();
+    
+//    remarksControl = componentFactory.createEditorControlString(300, true, "Remarks");
+//    remarksControl.setId("itemRemarks");
+//    remarksControl.setLabelBaseText("Remarks");
     
     archiveControl = componentFactory.createEditorControlBoolean("Archived");
     archiveControl.setId("itemArchived");
@@ -292,6 +322,7 @@ public class InvoiceAndPropertyItemPanel extends EditPanelTemplate<InvoiceAndPro
        
     if (getCurrentValue) {
       List<FileReference> documents = documentsEditPanel.getCurrentValue();
+      makeReferencesRelative(documents);
       object.getDocuments().clear();
       object.getDocuments().addAll(documents);
     } else {
@@ -300,11 +331,19 @@ public class InvoiceAndPropertyItemPanel extends EditPanelTemplate<InvoiceAndPro
 
     if (getCurrentValue) {
       List<FileReference> pictures = picturesEditPanel.getCurrentValue();
+      makeReferencesRelative(pictures);
       object.getPictures().clear();
       object.getPictures().addAll(pictures);
     } else {
       picturesEditPanel.accept();
     }
+  }
+
+  private void makeReferencesRelative(List<FileReference> fileReferences) {
+    for (FileReference fileReference: fileReferences) {
+      fileReference.setFile(FileUtils.getPathRelativeToFolder(InvoicesAndPropertiesRegistry.propertyRelatedFilesFolder, fileReference.getFile()));
+    }
+    
   }
 
   @Override

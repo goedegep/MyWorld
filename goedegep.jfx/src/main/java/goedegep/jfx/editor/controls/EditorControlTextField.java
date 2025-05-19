@@ -1,10 +1,14 @@
 package goedegep.jfx.editor.controls;
 
+import java.util.Objects;
+import java.util.function.Supplier;
 import java.util.logging.Logger;
 
+import goedegep.appgen.swing.DefaultCustomization;
 import goedegep.jfx.CustomizationFx;
+import goedegep.jfx.DefaultCustomizationFx;
 import goedegep.jfx.editor.EditorControlTemplate;
-import goedegep.jfx.editor.EditorException;
+import goedegep.jfx.editor.controls.EditorControlString.Builder;
 import goedegep.jfx.objectcontrols.ObjectControl;
 import goedegep.jfx.stringconverters.AnyTypeStringConverter;
 import javafx.scene.control.TextField;
@@ -48,51 +52,71 @@ public class EditorControlTextField<T> extends EditorControlTemplate<T> {
   
   private boolean ignoreChanges = false;
   
-  public static <U> EditorControlTextField<U> newInstance(CustomizationFx customization, double width, boolean isOptional, String toolTipText) {
-    EditorControlTextField<U> editorControlTextField = new EditorControlTextField<U>(customization, width, isOptional, toolTipText);
-    editorControlTextField.performInitialization();
-    
-    return editorControlTextField;
-  }
-    
+//  public static <U> EditorControlTextField<U> newInstance(CustomizationFx customization, double width, boolean isOptional, String toolTipText) {
+//    EditorControlTextField<U> editorControlTextField = new EditorControlTextField<U>(customization, width, isOptional, toolTipText);
+//    editorControlTextField.performInitialization();
+//    
+//    return editorControlTextField;
+//  }
+//    
+//  /**
+//   * Constructor for using an object as initial value.
+//   * 
+//   * @param initialValue Initial value to set the text to (may be null).
+//   * @param width The width of the TextField
+//   * @param isOptional Indicates whether the control is optional (if true) or mandatory.
+//   * @param toolTipText An optional ToolTip text.
+//   */
+//  public EditorControlTextField(CustomizationFx customization, double width, boolean isOptional, String toolTipText) {
+//    this(customization, null, width, isOptional, toolTipText);
+//  }
+
   /**
-   * Constructor for using an object as initial value.
+   * Constructor using builder.
    * 
-   * @param initialValue Initial value to set the text to (may be null).
-   * @param width The width of the TextField
-   * @param isOptional Indicates whether the control is optional (if true) or mandatory.
-   * @param toolTipText An optional ToolTip text.
+   * @param builder The {@code Builder} providing all settings.
    */
-  public EditorControlTextField(CustomizationFx customization, double width, boolean isOptional, String toolTipText) {
-    this(customization, null, width, isOptional, toolTipText);
+  protected EditorControlTextField(Builder<T> builder) {
+    super(builder.customization != null ? builder.customization : DefaultCustomizationFx.getInstance(), builder.optional);
+    
+    toolTipText = builder.toolTipText;
+    width = builder.width;
+    setLabelBaseText(builder.labelBaseText);
+    setId(builder.id);
+    setErrorTextSupplier(builder.errorTextSupplier);
+    
+    if (builder.stringConverter != null) {
+      stringConverter = builder.stringConverter;
+    } else {
+      stringConverter = new AnyTypeStringConverter<T>();
+    }
   }
   
-  /**
-   * Constructor for using an object as initial value.
-   * 
-   * @param stringConverter a StringConverterAndChecker for conversion between object of type T and String.
-   * @param initialValue Initial value to set the text to (may be null).
-   * @param width The width of the TextField
-   * @param isOptional Indicates whether the control is optional (if true) or mandatory.
-   * @param toolTipText An optional ToolTip text.
-   */
-  public EditorControlTextField(CustomizationFx customization, StringConverter<T> stringConverter, double width, boolean isOptional, String toolTipText) {
-    super(customization, isOptional);
-    
-    this.width = width;
-    this.toolTipText = toolTipText;
-    
-    if (stringConverter != null) {
-      this.stringConverter = stringConverter;
-    } else {
-      this.stringConverter = new AnyTypeStringConverter<T>();
-    }
-
-    // The initial value of the textField is an empty string. Again setting it to an empty string doesn't trigger the listener.
-    // So if the initial value isn't null, set the value (triggering the listener, leading to a call to handleNewUserInput().
-    // Else, just call handleNewUserInput().
-//    setObject(null);
-  }
+//  /**
+//   * Constructor for using an object as initial value.
+//   * 
+//   * @param stringConverter a StringConverterAndChecker for conversion between object of type T and String.
+//   * @param initialValue Initial value to set the text to (may be null).
+//   * @param width The width of the TextField
+//   * @param isOptional Indicates whether the control is optional (if true) or mandatory.
+//   * @param toolTipText An optional ToolTip text.
+//   */
+//  public EditorControlTextField(CustomizationFx customization, StringConverter<T> stringConverter, double width, boolean isOptional, String toolTipText) {
+//    super(customization, isOptional);
+//    
+//    this.width = width;
+//    this.toolTipText = toolTipText;
+//    
+//    if (stringConverter != null) {
+//      this.stringConverter = stringConverter;
+//    } else {
+//      this.stringConverter = new AnyTypeStringConverter<T>();
+//    }
+//
+//    // The initial value of the textField is an empty string. Again setting it to an empty string doesn't trigger the listener.
+//    // So if the initial value isn't null, set the value (triggering the listener, leading to a call to handleNewUserInput().
+//    // Else, just call handleNewUserInput().
+//  }
   
   public void createControls() {
     textField = customization.getComponentFactoryFx().createTextField(width, toolTipText);
@@ -176,7 +200,13 @@ public class EditorControlTextField<T> extends EditorControlTemplate<T> {
     ignoreChanges = true;
     
     if (source == null) {
-      String text = objectToString(getValue());
+      String text = null;
+      T value = getValue();
+      
+      if (value != null) {
+        text = objectToString(value);
+      }
+      
       if (text == null) {
         text = "";
       }
@@ -233,6 +263,164 @@ public class EditorControlTextField<T> extends EditorControlTemplate<T> {
   @Override
   protected void fillControlsWithDefaultValues() {
     // TODO Auto-generated method stub
+    
+  }
+ 
+  
+  /**
+   * Builder class to set all properties for an {@code EditorControlString}.
+   */
+  public static class Builder<T> {
+    
+    /**
+     * The unique id of the ObjectControl (mandatory).
+     */
+    String id;
+    
+    /**
+     * The GUI customization (optional).
+     * <p>
+     * If not set an instance of the {@link DefaultCustomization} is used.
+     */
+    private CustomizationFx customization;
+    
+    
+    /**
+     * Indication of whether a value is optional or not (default value is {@code false}, indicating mandatory).
+     */
+    private boolean optional;
+    
+    /**
+     * Base text for the label.
+     */
+    private String labelBaseText;
+    
+    /**
+     * Width of the text field.
+     */
+    private Double width;
+    
+    /**
+     * ToolTip text for the control (optional).
+     */
+    private String toolTipText;
+    
+    /**
+     * Error text supplier. A method that provides an error text.
+     */
+    protected Supplier<String> errorTextSupplier;
+    
+    /**
+     * A StringConverterAndChecker for conversion between object of type T and String.
+     */
+    private StringConverter<T> stringConverter = null;
+    
+    /**
+     * Constructor with mandatory arguments.
+     * 
+     * @param id The unique id of the ObjectControl (may not be null).
+     */
+    public Builder(String id) {
+      Objects.requireNonNull(id, "The id may not be null");
+      
+      this.id = id;
+    }
+    
+    /**
+     * Set the GUI customization.
+     * 
+     * @param customization The GUI customization
+     * @return this
+     */
+    public Builder<T> setCustomization(CustomizationFx customization) {
+      this.customization = customization;
+      
+      return this;
+    }
+    
+    /**
+     * Set the optional indication.
+     * 
+     * @param optional Indication of whether a value is optional or not (default value is {@code false}, indicating mandatory).
+     * @return this
+     */
+    public Builder<T> setOptional(boolean optional) {
+      this.optional = optional;
+      
+      return this;
+    }
+    
+    /**
+     * Set the base text for the label.
+     * 
+     * @param labelBaseText  the base text for the label.
+     * @return this
+     */
+    public Builder<T> setLabelBaseText(String labelBaseText) {
+      this.labelBaseText = labelBaseText;
+      
+      return this;
+    }
+    
+    /**
+     * Set the width of the text field.
+     * 
+     * @param width  the width of the text field.
+     * @return this
+     */
+    public Builder<T> setWidth(Double width) {
+      this.width = width;
+      
+      return this;
+    }
+    
+    /**
+     * Set the ToolTip text.
+     * 
+     * @param toolTipText the ToolTip text
+     * @return this
+     */
+    public Builder<T> setToolTipText(String toolTipText) {
+      this.toolTipText = toolTipText;
+      
+      return this;
+    }
+    
+    /**
+     * Set the method that provides an error text.
+     * 
+     * @param errorTextSupplier the method that provides an error text.
+     * @return this
+     */
+    public Builder<T> setErrorTextSupplier(Supplier<String> errorTextSupplier) {
+      this.errorTextSupplier = errorTextSupplier;
+      
+      return this;
+    }
+    
+    /**
+     * Set the String converter.
+     * 
+     * @param stringConverter A StringConverterAndChecker for conversion between object of type T and String.
+     * @return this
+     */
+    public Builder<T> setStringConverter(StringConverter<T> stringConverter) {
+      this.stringConverter = stringConverter;
+      
+      return this;
+    }
+    
+    /**
+     * Create the {@code EditorControlString}.
+     * 
+     * @return the {@code EditorControlString}.
+     */
+    public EditorControlTextField<T> build() {
+      EditorControlTextField<T> editorControlTextField = new EditorControlTextField<T>(this);
+      editorControlTextField.performInitialization();
+      
+      return editorControlTextField;
+    }
     
   }
 }

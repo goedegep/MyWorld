@@ -28,7 +28,6 @@ import goedegep.events.app.guifx.EventsLauncher;
 import goedegep.finan.Finan;
 import goedegep.invandprop.app.InvoicesAndPropertiesRegistry;
 import goedegep.invandprop.app.guifx.InvoicesAndPropertiesLauncher;
-import goedegep.invandprop.app.guifx.InvoicesAndPropertiesMenuWindow;
 import goedegep.jfx.CustomizationsFx;
 import goedegep.jfx.JfxApplication;
 import goedegep.jfx.eobjecttable.EObjectTable;

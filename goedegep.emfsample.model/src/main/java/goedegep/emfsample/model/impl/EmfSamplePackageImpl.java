@@ -269,6 +269,26 @@ public class EmfSamplePackageImpl extends EPackageImpl implements EmfSamplePacka
    * @generated
    */
   @Override
+  public EAttribute getCompany_CompanyName() {
+    return (EAttribute)companyEClass.getEStructuralFeatures().get(3);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public EAttribute getCompany_DateOfEstablishment() {
+    return (EAttribute)companyEClass.getEStructuralFeatures().get(4);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
   public EEnum getGender() {
     return genderEEnum;
   }
@@ -319,6 +339,8 @@ public class EmfSamplePackageImpl extends EPackageImpl implements EmfSamplePacka
     createEReference(companyEClass, COMPANY__EMPLOYEES);
     createEReference(companyEClass, COMPANY__BIRTHDAYS);
     createEReference(companyEClass, COMPANY__FORMER_EMPLOYEES);
+    createEAttribute(companyEClass, COMPANY__COMPANY_NAME);
+    createEAttribute(companyEClass, COMPANY__DATE_OF_ESTABLISHMENT);
 
     // Create enums
     genderEEnum = createEEnum(GENDER);
@@ -371,6 +393,8 @@ public class EmfSamplePackageImpl extends EPackageImpl implements EmfSamplePacka
     initEReference(getCompany_Employees(), this.getPerson(), null, "employees", null, 0, -1, Company.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEReference(getCompany_Birthdays(), this.getBirthday(), null, "birthdays", null, 0, -1, Company.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEReference(getCompany_FormerEmployees(), this.getPerson(), null, "formerEmployees", null, 0, -1, Company.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getCompany_CompanyName(), ecorePackage.getEString(), "companyName", null, 0, 1, Company.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getCompany_DateOfEstablishment(), ecorePackage.getEDate(), "dateOfEstablishment", null, 0, 1, Company.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     // Initialize enums and add enum literals
     initEEnum(genderEEnum, Gender.class, "Gender");

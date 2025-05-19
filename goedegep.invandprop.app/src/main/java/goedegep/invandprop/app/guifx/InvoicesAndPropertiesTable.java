@@ -10,7 +10,6 @@ import goedegep.appgen.Operation;
 import goedegep.appgen.TableRowOperationDescriptor;
 import goedegep.invandprop.app.InvoicesAndPropertiesService;
 import goedegep.invandprop.model.InvAndPropPackage;
-import goedegep.invandprop.model.Invoice;
 import goedegep.invandprop.model.InvoiceAndProperty;
 import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.eobjecttable.EObjectTable;
@@ -145,6 +144,7 @@ class InvoicesAndPropertieseDescriptor extends EObjectTableDescriptor<InvoiceAnd
 
 
 class ListCellWithContextMenu2 extends ListCell<FileReference> {
+  private static final Logger LOGGER = Logger.getLogger(ListCellWithContextMenu2.class.getName());
   
   public ListCellWithContextMenu2(ListView<FileReference> listView) {
   }
@@ -166,7 +166,8 @@ class ListCellWithContextMenu2 extends ListCell<FileReference> {
       // item context menu
       ContextMenu contextMenu = new ContextMenu();
       MenuItem menuItem = new MenuItem("Open document");
-      menuItem.setOnAction(e -> PropertiesWindow.openDocument(item));
+      LOGGER.severe("NOT IMPLEMENTED");
+//      menuItem.setOnAction(e -> PropertiesWindow.openDocument(item));  // TOdo Implement via service
       contextMenu.getItems().add(menuItem);
       setContextMenu(contextMenu);
 

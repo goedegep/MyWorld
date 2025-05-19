@@ -232,13 +232,31 @@ public interface EmfSamplePackage extends EPackage {
   int COMPANY__FORMER_EMPLOYEES = 2;
 
   /**
+   * The feature id for the '<em><b>Company Name</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int COMPANY__COMPANY_NAME = 3;
+
+  /**
+   * The feature id for the '<em><b>Date Of Establishment</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int COMPANY__DATE_OF_ESTABLISHMENT = 4;
+
+  /**
    * The number of structural features of the '<em>Company</em>' class.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int COMPANY_FEATURE_COUNT = 3;
+  int COMPANY_FEATURE_COUNT = 5;
 
   /**
    * The number of operations of the '<em>Company</em>' class.
@@ -423,6 +441,28 @@ public interface EmfSamplePackage extends EPackage {
   EReference getCompany_FormerEmployees();
 
   /**
+   * Returns the meta object for the attribute '{@link goedegep.emfsample.model.Company#getCompanyName <em>Company Name</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Company Name</em>'.
+   * @see goedegep.emfsample.model.Company#getCompanyName()
+   * @see #getCompany()
+   * @generated
+   */
+  EAttribute getCompany_CompanyName();
+
+  /**
+   * Returns the meta object for the attribute '{@link goedegep.emfsample.model.Company#getDateOfEstablishment <em>Date Of Establishment</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Date Of Establishment</em>'.
+   * @see goedegep.emfsample.model.Company#getDateOfEstablishment()
+   * @see #getCompany()
+   * @generated
+   */
+  EAttribute getCompany_DateOfEstablishment();
+
+  /**
    * Returns the meta object for enum '{@link goedegep.emfsample.model.Gender <em>Gender</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -580,6 +620,22 @@ public interface EmfSamplePackage extends EPackage {
      * @generated
      */
     EReference COMPANY__FORMER_EMPLOYEES = eINSTANCE.getCompany_FormerEmployees();
+
+    /**
+     * The meta object literal for the '<em><b>Company Name</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute COMPANY__COMPANY_NAME = eINSTANCE.getCompany_CompanyName();
+
+    /**
+     * The meta object literal for the '<em><b>Date Of Establishment</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute COMPANY__DATE_OF_ESTABLISHMENT = eINSTANCE.getCompany_DateOfEstablishment();
 
     /**
      * The meta object literal for the '{@link goedegep.emfsample.model.Gender <em>Gender</em>}' enum.

@@ -462,18 +462,22 @@ class AttachmentsCell extends TableCell<EventInfo, Object> {
     for (FileReference fileReference: eventInfo.getAttachments()) {
       String fileName = fileReference.getFile();
       if (fileName != null) {
-        fileName = FileUtils.createPathNameFromPrefixAndFileName(EventsRegistry.eventsFolderName + "\\", fileName);
-        if (fileName.equals(pathAsString)) {
-          return true;
+        if (!(new File(fileName).isAbsolute())) {
+          fileName = FileUtils.createPathNameFromPrefixAndFileName(EventsRegistry.eventsFolderName, fileName);
+          if (fileName.equals(pathAsString)) {
+            return true;
+          }
         }
       }
     }
     
     String pictureFileName = eventInfo.getPicture();
     if (pictureFileName != null) {
-      pictureFileName = FileUtils.createPathNameFromPrefixAndFileName(EventsRegistry.eventsFolderName + "\\", pictureFileName);
-      if (pictureFileName.equals(pathAsString)) {
-        return true;
+      if (!(new File(pictureFileName).isAbsolute())) {      
+        pictureFileName = FileUtils.createPathNameFromPrefixAndFileName(EventsRegistry.eventsFolderName, pictureFileName);
+        if (pictureFileName.equals(pathAsString)) {
+          return true;
+        }
       }
     }
     
@@ -510,21 +514,20 @@ class AttachmentsCell extends TableCell<EventInfo, Object> {
     
     for (FileReference fileReference: eventInfo.getAttachments()) {
       String fileName = fileReference.getFile();
-      if (fileName != null) {
-        fileName = FileUtils.createPathNameFromPrefixAndFileName(EventsRegistry.eventsFolderName + "\\", fileName);
-        File file = new File(fileName);
-        file = file.getParentFile();  // This is the possible event directory
-        if (file != null) {
-          File eventsFolder = file.getParentFile();
-          if (eventsFolder == null) {
-            LOGGER.severe("null");
-          }
-          String eventsFolderName = eventsFolder.getAbsolutePath();
-          if (eventsFolderName != null  &&  eventsFolderName.equals(EventsRegistry.eventsFolderName)) {
-            String eventFolderName = file.getAbsolutePath();
-            return eventFolderName;
-          }
-        }
+      if (fileName == null) {
+        continue;
+      }
+      
+      // If the fileName is an absolute path, the attachment (by definition) is not in the event folder (but e.g. a picture under 'photos'.
+      File file = new File(fileName);
+      
+      if (file.isAbsolute()) {
+        continue;
+      }
+      
+      String eventsFolderName = file.getParent();
+      if (eventsFolderName != null) {
+        return eventsFolderName;
       }
     }
     

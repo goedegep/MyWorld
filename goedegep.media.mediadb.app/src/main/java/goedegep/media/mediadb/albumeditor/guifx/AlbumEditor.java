@@ -6,14 +6,11 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.function.Consumer;
 import java.util.logging.Logger;
 
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
-import org.eclipse.emf.ecore.resource.Resource;
-import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 
 import goedegep.jfx.CustomizationFx;
@@ -21,8 +18,8 @@ import goedegep.jfx.objectcontrols.ObjectControlBoolean;
 import goedegep.jfx.objectcontrols.ObjectControlEnumComboBox;
 import goedegep.jfx.objectcontrols.ObjectControlFlexDate;
 import goedegep.jfx.objectcontrols.ObjectControlFolderSelecter;
-import goedegep.jfx.objectcontrols.ObjectControlStatusList;
 import goedegep.jfx.objectcontrols.ObjectControlMultiLineString;
+import goedegep.jfx.objectcontrols.ObjectControlStatusList;
 import goedegep.jfx.objectcontrols.ObjectControlString;
 import goedegep.jfx.objectcontrols.ObjectEditPanelTemplate;
 import goedegep.jfx.objecteditor.EditMode;
@@ -215,7 +212,7 @@ public class AlbumEditor extends ObjectEditorTemplate<Album> {
    * Factory method to obtain a new instance of an {@code AlbumEditor}.
    * 
    * @param customization the GUI customization.
-   * @param mediaDb the media database.
+   * @param mediaDbService the media database service.
    * @return a newly created {@code AlbumEditor}.
    */
   public static AlbumEditor newInstance(CustomizationFx customization, MediaDbService mediaDbService) {

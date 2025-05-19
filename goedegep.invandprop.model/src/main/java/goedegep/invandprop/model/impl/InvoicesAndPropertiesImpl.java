@@ -4,19 +4,13 @@ package goedegep.invandprop.model.impl;
 
 import goedegep.invandprop.model.InvAndPropPackage;
 import goedegep.invandprop.model.InvoiceAndProperty;
-import goedegep.invandprop.model.Invoices;
 import goedegep.invandprop.model.InvoicesAndProperties;
-
-import goedegep.invandprop.model.Properties;
 import java.util.Collection;
-import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
 
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.InternalEObject;
-
-import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
 import org.eclipse.emf.ecore.util.EObjectContainmentEList;
 import org.eclipse.emf.ecore.util.InternalEList;
@@ -29,34 +23,12 @@ import org.eclipse.emf.ecore.util.InternalEList;
  * The following features are implemented:
  * </p>
  * <ul>
- *   <li>{@link goedegep.invandprop.model.impl.InvoicesAndPropertiesImpl#getInvoices <em>Invoices</em>}</li>
- *   <li>{@link goedegep.invandprop.model.impl.InvoicesAndPropertiesImpl#getProperties <em>Properties</em>}</li>
  *   <li>{@link goedegep.invandprop.model.impl.InvoicesAndPropertiesImpl#getInvoicseandpropertys <em>Invoicseandpropertys</em>}</li>
  * </ul>
  *
  * @generated
  */
 public class InvoicesAndPropertiesImpl extends MinimalEObjectImpl.Container implements InvoicesAndProperties {
-  /**
-   * The cached value of the '{@link #getInvoices() <em>Invoices</em>}' containment reference.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getInvoices()
-   * @generated
-   * @ordered
-   */
-  protected Invoices invoices;
-
-  /**
-   * The cached value of the '{@link #getProperties() <em>Properties</em>}' containment reference.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getProperties()
-   * @generated
-   * @ordered
-   */
-  protected Properties properties;
-
   /**
    * The cached value of the '{@link #getInvoicseandpropertys() <em>Invoicseandpropertys</em>}' containment reference list.
    * <!-- begin-user-doc -->
@@ -91,92 +63,6 @@ public class InvoicesAndPropertiesImpl extends MinimalEObjectImpl.Container impl
    * <!-- end-user-doc -->
    * @generated
    */
-  public Invoices getInvoices() {
-    return invoices;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public NotificationChain basicSetInvoices(Invoices newInvoices, NotificationChain msgs) {
-    Invoices oldInvoices = invoices;
-    invoices = newInvoices;
-    if (eNotificationRequired()) {
-      ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, InvAndPropPackage.INVOICES_AND_PROPERTIES__INVOICES, oldInvoices, newInvoices);
-      if (msgs == null) msgs = notification; else msgs.add(notification);
-    }
-    return msgs;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public void setInvoices(Invoices newInvoices) {
-    if (newInvoices != invoices) {
-      NotificationChain msgs = null;
-      if (invoices != null)
-        msgs = ((InternalEObject)invoices).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - InvAndPropPackage.INVOICES_AND_PROPERTIES__INVOICES, null, msgs);
-      if (newInvoices != null)
-        msgs = ((InternalEObject)newInvoices).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - InvAndPropPackage.INVOICES_AND_PROPERTIES__INVOICES, null, msgs);
-      msgs = basicSetInvoices(newInvoices, msgs);
-      if (msgs != null) msgs.dispatch();
-    }
-    else if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, InvAndPropPackage.INVOICES_AND_PROPERTIES__INVOICES, newInvoices, newInvoices));
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public Properties getProperties() {
-    return properties;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public NotificationChain basicSetProperties(Properties newProperties, NotificationChain msgs) {
-    Properties oldProperties = properties;
-    properties = newProperties;
-    if (eNotificationRequired()) {
-      ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, InvAndPropPackage.INVOICES_AND_PROPERTIES__PROPERTIES, oldProperties, newProperties);
-      if (msgs == null) msgs = notification; else msgs.add(notification);
-    }
-    return msgs;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public void setProperties(Properties newProperties) {
-    if (newProperties != properties) {
-      NotificationChain msgs = null;
-      if (properties != null)
-        msgs = ((InternalEObject)properties).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - InvAndPropPackage.INVOICES_AND_PROPERTIES__PROPERTIES, null, msgs);
-      if (newProperties != null)
-        msgs = ((InternalEObject)newProperties).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - InvAndPropPackage.INVOICES_AND_PROPERTIES__PROPERTIES, null, msgs);
-      msgs = basicSetProperties(newProperties, msgs);
-      if (msgs != null) msgs.dispatch();
-    }
-    else if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, InvAndPropPackage.INVOICES_AND_PROPERTIES__PROPERTIES, newProperties, newProperties));
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
   public EList<InvoiceAndProperty> getInvoicseandpropertys() {
     if (invoicseandpropertys == null) {
       invoicseandpropertys = new EObjectContainmentEList<InvoiceAndProperty>(InvoiceAndProperty.class, this, InvAndPropPackage.INVOICES_AND_PROPERTIES__INVOICSEANDPROPERTYS);
@@ -192,10 +78,6 @@ public class InvoicesAndPropertiesImpl extends MinimalEObjectImpl.Container impl
   @Override
   public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
     switch (featureID) {
-      case InvAndPropPackage.INVOICES_AND_PROPERTIES__INVOICES:
-        return basicSetInvoices(null, msgs);
-      case InvAndPropPackage.INVOICES_AND_PROPERTIES__PROPERTIES:
-        return basicSetProperties(null, msgs);
       case InvAndPropPackage.INVOICES_AND_PROPERTIES__INVOICSEANDPROPERTYS:
         return ((InternalEList<?>)getInvoicseandpropertys()).basicRemove(otherEnd, msgs);
     }
@@ -210,10 +92,6 @@ public class InvoicesAndPropertiesImpl extends MinimalEObjectImpl.Container impl
   @Override
   public Object eGet(int featureID, boolean resolve, boolean coreType) {
     switch (featureID) {
-      case InvAndPropPackage.INVOICES_AND_PROPERTIES__INVOICES:
-        return getInvoices();
-      case InvAndPropPackage.INVOICES_AND_PROPERTIES__PROPERTIES:
-        return getProperties();
       case InvAndPropPackage.INVOICES_AND_PROPERTIES__INVOICSEANDPROPERTYS:
         return getInvoicseandpropertys();
     }
@@ -229,12 +107,6 @@ public class InvoicesAndPropertiesImpl extends MinimalEObjectImpl.Container impl
   @Override
   public void eSet(int featureID, Object newValue) {
     switch (featureID) {
-      case InvAndPropPackage.INVOICES_AND_PROPERTIES__INVOICES:
-        setInvoices((Invoices)newValue);
-        return;
-      case InvAndPropPackage.INVOICES_AND_PROPERTIES__PROPERTIES:
-        setProperties((Properties)newValue);
-        return;
       case InvAndPropPackage.INVOICES_AND_PROPERTIES__INVOICSEANDPROPERTYS:
         getInvoicseandpropertys().clear();
         getInvoicseandpropertys().addAll((Collection<? extends InvoiceAndProperty>)newValue);
@@ -251,12 +123,6 @@ public class InvoicesAndPropertiesImpl extends MinimalEObjectImpl.Container impl
   @Override
   public void eUnset(int featureID) {
     switch (featureID) {
-      case InvAndPropPackage.INVOICES_AND_PROPERTIES__INVOICES:
-        setInvoices((Invoices)null);
-        return;
-      case InvAndPropPackage.INVOICES_AND_PROPERTIES__PROPERTIES:
-        setProperties((Properties)null);
-        return;
       case InvAndPropPackage.INVOICES_AND_PROPERTIES__INVOICSEANDPROPERTYS:
         getInvoicseandpropertys().clear();
         return;
@@ -272,10 +138,6 @@ public class InvoicesAndPropertiesImpl extends MinimalEObjectImpl.Container impl
   @Override
   public boolean eIsSet(int featureID) {
     switch (featureID) {
-      case InvAndPropPackage.INVOICES_AND_PROPERTIES__INVOICES:
-        return invoices != null;
-      case InvAndPropPackage.INVOICES_AND_PROPERTIES__PROPERTIES:
-        return properties != null;
       case InvAndPropPackage.INVOICES_AND_PROPERTIES__INVOICSEANDPROPERTYS:
         return invoicseandpropertys != null && !invoicseandpropertys.isEmpty();
     }

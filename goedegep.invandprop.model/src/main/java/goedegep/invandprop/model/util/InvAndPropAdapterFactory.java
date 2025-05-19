@@ -72,30 +72,6 @@ public class InvAndPropAdapterFactory extends AdapterFactoryImpl {
         return createInvoicesAndPropertiesAdapter();
       }
       @Override
-      public Adapter caseInvoices(Invoices object) {
-        return createInvoicesAdapter();
-      }
-      @Override
-      public Adapter caseInvoice(Invoice object) {
-        return createInvoiceAdapter();
-      }
-      @Override
-      public Adapter caseExpenditure(Expenditure object) {
-        return createExpenditureAdapter();
-      }
-      @Override
-      public Adapter caseInvoiceItem(InvoiceItem object) {
-        return createInvoiceItemAdapter();
-      }
-      @Override
-      public Adapter caseProperties(Properties object) {
-        return createPropertiesAdapter();
-      }
-      @Override
-      public Adapter caseProperty(Property object) {
-        return createPropertyAdapter();
-      }
-      @Override
       public Adapter caseInvoiceAndPropertyItem(InvoiceAndPropertyItem object) {
         return createInvoiceAndPropertyItemAdapter();
       }
@@ -134,90 +110,6 @@ public class InvAndPropAdapterFactory extends AdapterFactoryImpl {
    * @generated
    */
   public Adapter createInvoicesAndPropertiesAdapter() {
-    return null;
-  }
-
-  /**
-   * Creates a new adapter for an object of class '{@link goedegep.invandprop.model.Invoices <em>Invoices</em>}'.
-   * <!-- begin-user-doc -->
-   * This default implementation returns null so that we can easily ignore cases;
-   * it's useful to ignore a case when inheritance will catch all the cases anyway.
-   * <!-- end-user-doc -->
-   * @return the new adapter.
-   * @see goedegep.invandprop.model.Invoices
-   * @generated
-   */
-  public Adapter createInvoicesAdapter() {
-    return null;
-  }
-
-  /**
-   * Creates a new adapter for an object of class '{@link goedegep.invandprop.model.Invoice <em>Invoice</em>}'.
-   * <!-- begin-user-doc -->
-   * This default implementation returns null so that we can easily ignore cases;
-   * it's useful to ignore a case when inheritance will catch all the cases anyway.
-   * <!-- end-user-doc -->
-   * @return the new adapter.
-   * @see goedegep.invandprop.model.Invoice
-   * @generated
-   */
-  public Adapter createInvoiceAdapter() {
-    return null;
-  }
-
-  /**
-   * Creates a new adapter for an object of class '{@link goedegep.invandprop.model.Expenditure <em>Expenditure</em>}'.
-   * <!-- begin-user-doc -->
-   * This default implementation returns null so that we can easily ignore cases;
-   * it's useful to ignore a case when inheritance will catch all the cases anyway.
-   * <!-- end-user-doc -->
-   * @return the new adapter.
-   * @see goedegep.invandprop.model.Expenditure
-   * @generated
-   */
-  public Adapter createExpenditureAdapter() {
-    return null;
-  }
-
-  /**
-   * Creates a new adapter for an object of class '{@link goedegep.invandprop.model.InvoiceItem <em>Invoice Item</em>}'.
-   * <!-- begin-user-doc -->
-   * This default implementation returns null so that we can easily ignore cases;
-   * it's useful to ignore a case when inheritance will catch all the cases anyway.
-   * <!-- end-user-doc -->
-   * @return the new adapter.
-   * @see goedegep.invandprop.model.InvoiceItem
-   * @generated
-   */
-  public Adapter createInvoiceItemAdapter() {
-    return null;
-  }
-
-  /**
-   * Creates a new adapter for an object of class '{@link goedegep.invandprop.model.Properties <em>Properties</em>}'.
-   * <!-- begin-user-doc -->
-   * This default implementation returns null so that we can easily ignore cases;
-   * it's useful to ignore a case when inheritance will catch all the cases anyway.
-   * <!-- end-user-doc -->
-   * @return the new adapter.
-   * @see goedegep.invandprop.model.Properties
-   * @generated
-   */
-  public Adapter createPropertiesAdapter() {
-    return null;
-  }
-
-  /**
-   * Creates a new adapter for an object of class '{@link goedegep.invandprop.model.Property <em>Property</em>}'.
-   * <!-- begin-user-doc -->
-   * This default implementation returns null so that we can easily ignore cases;
-   * it's useful to ignore a case when inheritance will catch all the cases anyway.
-   * <!-- end-user-doc -->
-   * @return the new adapter.
-   * @see goedegep.invandprop.model.Property
-   * @generated
-   */
-  public Adapter createPropertyAdapter() {
     return null;
   }
 

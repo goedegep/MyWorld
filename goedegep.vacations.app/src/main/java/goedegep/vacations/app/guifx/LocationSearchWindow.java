@@ -894,7 +894,13 @@ class OsmSearchResultsPanel extends VBox implements ObjectSelector<OSMLocationIn
         iconImageView.setImage(null);
       }
       
-      nominatimResultString.setText(osmLocationInfo.getNominatimResponse());
+      String nominatimResponse = osmLocationInfo.getNominatimResponse();
+      if (nominatimResponse.length() > 1000) {
+        nominatimResponse = nominatimResponse.substring(0, 1000);
+        LOGGER.severe("nominatimResponse truncated, length = " + nominatimResponse.length());
+      }
+      
+      nominatimResultString.setText(nominatimResponse);
 
       if (searchResultLayer != null) {
         if (idOfLocationShownOnMap != null) {

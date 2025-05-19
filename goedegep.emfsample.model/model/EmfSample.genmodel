@@ -28,6 +28,8 @@
       <genFeatures children="true" createChild="true" propertySortChoices="true" ecoreFeature="ecore:EReference EmfSample.ecore#//Company/employees"/>
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference EmfSample.ecore#//Company/birthdays"/>
       <genFeatures children="true" createChild="true" propertySortChoices="true" ecoreFeature="ecore:EReference EmfSample.ecore#//Company/formerEmployees"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute EmfSample.ecore#//Company/companyName"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute EmfSample.ecore#//Company/dateOfEstablishment"/>
     </genClasses>
   </genPackages>
 </genmodel:GenModel>

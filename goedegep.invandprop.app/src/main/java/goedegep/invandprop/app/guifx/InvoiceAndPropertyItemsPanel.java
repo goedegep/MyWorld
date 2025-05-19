@@ -1,7 +1,9 @@
 package goedegep.invandprop.app.guifx;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
 
 import goedegep.invandprop.app.InvoicesAndPropertiesService;
@@ -61,6 +63,20 @@ public class InvoiceAndPropertyItemsPanel extends EditPanelTemplate<List<Invoice
    */
   ObservableList<InvoiceAndPropertyItemPanel> invoiceAndPropertyItemPanels;
   
+  /**
+   * Mapping from the {@code InvoiceAndPropertyItemPanels} to the related {@code InvoiceAndPropertyItem}.
+   * FillControlsFromObject (via setObject): Clear the map. For each InvoiceAndPropertyItem an InvoiceAndPropertyItemPanel is created (and appended to the invoiceAndPropertyItemPanels) and a mapping is added.
+   * Add: A new item is always added as the last item. So an InvoiceAndPropertyItemPanel is created (and appended to the invoiceAndPropertyItemPanels). No mapping is added.
+   * Delete: The mapping of the InvoiceAndPropertyItemPanel is deleted and the item itself is deleted.
+   * Reorder (via Drag & Drop): Only the order of the panels in the fileReferencePanels is changed.
+   * FillObjectFromControls (via accept):
+   *     for each item in the invoiceAndPropertyItemPanels
+   *        if there is a mapping, move the InvoiceAndPropertyItem to the index of the item
+   *        else insert the InvoiceAndPropertyItem at the index of the panel
+   *     Delete all InvoiceAndPropertyItems with an index higher than the size of the invoiceAndPropertyItemPanels minus 1
+   */
+  Map<InvoiceAndPropertyItemPanel, InvoiceAndPropertyItem> editPanelToInvoiceAndPropertyItemMap = new HashMap<>();
+  
   
   /**
    * Create a new {@code InvoiceAndPropertyItemsPanel}
@@ -97,7 +113,6 @@ public class InvoiceAndPropertyItemsPanel extends EditPanelTemplate<List<Invoice
     return titledPane;
   }
 
-
   /**
    * {@inheritDoc}
    */
@@ -131,7 +146,7 @@ public class InvoiceAndPropertyItemsPanel extends EditPanelTemplate<List<Invoice
       
     });
     
-    this.addValueAndOrStatusChangeListener((e,f) -> handleChanges());
+    this.addValueAndOrStatusChangeListener((_, _) -> handleChanges());
   }
   
   protected void handleChanges() {
@@ -187,6 +202,7 @@ public class InvoiceAndPropertyItemsPanel extends EditPanelTemplate<List<Invoice
                 break;
               }
             }
+            editPanelToInvoiceAndPropertyItemMap.remove(invoiceAndPropertyItemPanelToDelete);
             invoiceAndPropertyItemPanels.remove(invoiceAndPropertyItemPanelToDelete);
             break;
           }
@@ -197,7 +213,7 @@ public class InvoiceAndPropertyItemsPanel extends EditPanelTemplate<List<Invoice
 
   @Override
   public String getValueAsFormattedText() {
-    // TODO Auto-generated method stub
+    // Not applicable
     return null;
   }
 
@@ -213,7 +229,7 @@ public class InvoiceAndPropertyItemsPanel extends EditPanelTemplate<List<Invoice
     contentVBox.getChildren().add(invoiceAndPropertyItemsVBox);
     
     Button newInvoiceAndPropertyItemButton = componentFactory.createButton("+ Add an invoice and property item", "Click to add an invoice and property item");
-    newInvoiceAndPropertyItemButton.setOnAction(e -> createNewInvoiceAndPropertyItemPanel(true));
+    newInvoiceAndPropertyItemButton.setOnAction(_ -> createNewInvoiceAndPropertyItemPanel(null, true));
     contentVBox.getChildren().add(newInvoiceAndPropertyItemButton);
     
     titledPane = new TitledPane(getLabelBaseText(), contentVBox);
@@ -223,24 +239,27 @@ public class InvoiceAndPropertyItemsPanel extends EditPanelTemplate<List<Invoice
   }
   
   /**
-   * Create a new file reference (attachment) panel.
+   * Create a new {@code InvoiceAndPropertyItemPanel}.
    * 
+   * @param invoiceAndPropertyItem the optional value for the panel.
    * @param expand if true, the panel will be expanded upon creation.
-   * @return the created file reference (attachment) panel.
    */
-  private InvoiceAndPropertyItemPanel createNewInvoiceAndPropertyItemPanel(boolean expand) {
+  private void createNewInvoiceAndPropertyItemPanel(InvoiceAndPropertyItem invoiceAndPropertyItem, boolean expand) {
     InvoiceAndPropertyItemPanel invoiceAndPropertyItemPanel = InvoiceAndPropertyItemPanel.newInstance(customization);
     
     installDragAndDropHandling(invoiceAndPropertyItemPanel);
     invoiceAndPropertyItemPanels.add(invoiceAndPropertyItemPanel);
     
-    return invoiceAndPropertyItemPanel;
+    if (invoiceAndPropertyItem != null) {
+      editPanelToInvoiceAndPropertyItemMap.put(invoiceAndPropertyItemPanel, invoiceAndPropertyItem);
+      invoiceAndPropertyItemPanel.setObject(invoiceAndPropertyItem);    
+    }
   }
   
   /**
    * Install drag and drop handling.
    * <p>
-   * The file references can be reordered via drag and drop.
+   * The items can be reordered via drag and drop.
    */
   private void installDragAndDropHandling(InvoiceAndPropertyItemPanel invoiceAndPropertyItemPanel) {
     
@@ -314,8 +333,7 @@ public class InvoiceAndPropertyItemsPanel extends EditPanelTemplate<List<Invoice
 
   @Override
   protected void setErrorFeedback(boolean valid) {
-    // TODO Auto-generated method stub
-    
+    // Not applicable    
   }
 
   /**
@@ -332,11 +350,11 @@ public class InvoiceAndPropertyItemsPanel extends EditPanelTemplate<List<Invoice
       return;
     }
     
+    // Clear the map. For each InvoiceAndPropertyItem an InvoiceAndPropertyItemPanel is created (and appended to the invoiceAndPropertyItemPanels) and a mapping is added.
+    editPanelToInvoiceAndPropertyItemMap.clear();
     for (InvoiceAndPropertyItem invoiceAndPropertyItem: value) {
-      InvoiceAndPropertyItemPanel invoiceAndPropertyItemPanel = createNewInvoiceAndPropertyItemPanel(false);
-      invoiceAndPropertyItemPanel.setObject(invoiceAndPropertyItem);
+      createNewInvoiceAndPropertyItemPanel(invoiceAndPropertyItem, false);
     }
-    
   }
 
   @Override
@@ -349,45 +367,31 @@ public class InvoiceAndPropertyItemsPanel extends EditPanelTemplate<List<Invoice
         invoiceAndPropertyItems.add(invoiceAndPropertyItem);
       }
     } else {
-      // First update all panels
+      /*     for each panel in the invoiceAndPropertyItemPanels
+      *        if there is a mapping, move the InvoiceAndPropertyItem to the index of the panel
+      *        else insert the InvoiceAndPropertyItem at the index of the panel
+      *     Delete all InvoiceAndPropertyItems with an index higher than the size of the invoiceAndPropertyItemPanels minus 1
+      */
+      int index = 0;
       for (InvoiceAndPropertyItemPanel invoiceAndPropertyItemPanel: invoiceAndPropertyItemPanels) {
-        invoiceAndPropertyItemPanel.accept();
+        InvoiceAndPropertyItem invoiceAndPropertyItemFromPanel = invoiceAndPropertyItemPanel.accept();
+        InvoiceAndPropertyItem invoiceAndPropertyItem = editPanelToInvoiceAndPropertyItemMap.get(invoiceAndPropertyItemPanel);
+        if (invoiceAndPropertyItem != null) {
+          int indexOffInvoiceAndPropertyItemToMove = value.indexOf(invoiceAndPropertyItem);
+          InvoiceAndPropertyItem invoiceAndPropertyItemToMove = value.get(indexOffInvoiceAndPropertyItemToMove);
+          value.remove(indexOffInvoiceAndPropertyItemToMove);
+          value.add(index, invoiceAndPropertyItemToMove);
+        } else {
+          value.add(index, invoiceAndPropertyItemFromPanel);
+          editPanelToInvoiceAndPropertyItemMap.put(invoiceAndPropertyItemPanel, invoiceAndPropertyItemFromPanel);
+        }
+        
+        index++;
       }
-
-      // Check for any changes. If there are changes, recreate the complete list.
-      boolean changes = false;
-
-      if (invoiceAndPropertyItems.size() != invoiceAndPropertyItemPanels.size()) {
-        LOGGER.info("changes because of different list sizes");
-        changes = true;
+      
+      while (value.size() > invoiceAndPropertyItemPanels.size()) {
+        value.removeLast();
       }
-
-      if (!changes) {
-        //      int index = 0;
-        //      for (FileReference attachment: fileReferences) {
-        //        FileReferenceEditPanel fileReferencePanel = fileReferencePanels.get(index++);
-        //        FileReferenceTypeInfo fileReferencePanelReferenceType = fileReferencePanel.getReferenceType();
-        //        String fileReferencePanelReferenceTypeTag = fileReferencePanelReferenceType != null ? fileReferencePanelReferenceType.tag() : null;
-        //        String fileReferencePanelFile = fileReferencePanel.getPathNameRelativeToPrefix();
-        //        if (!PgUtilities.equals(attachment.getTags(), fileReferencePanelReferenceTypeTag)  ||
-        //            !attachment.getFile().equals(fileReferencePanelFile)  ||
-        //            !PgUtilities.equals(attachment.getTitle(), fileReferencePanel.getTitleObjectControl().getValue())) {
-        //          changes = true;
-        //          break;
-        //        }
-        //      }
-      }
-
-      if (changes) {
-        //      object.clear();
-
-        //      for (FileReferenceEditPanel fileReferencePanel: fileReferencePanels) {
-        ////        FileReference fileReference = TypesFactory.eINSTANCE.createFileReference();
-        ////        updateFileReferenceFromFileReferencePanel(fileReference, fileReferencePanel);
-        //        object.add(fileReferencePanel.getValue());
-        //      }
-      }
-
     }
 
   }

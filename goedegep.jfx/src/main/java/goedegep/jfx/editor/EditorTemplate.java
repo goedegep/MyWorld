@@ -174,17 +174,18 @@ public abstract class EditorTemplate<T> extends JfxStage implements Editor<T> {
     
     buttonTypes = new ArrayList<>();
     addButton = componentFactory.createButton(addObjectText, addObjectTooltipText);
-    addButton.setOnAction(e -> addObjectAction());
+    addButton.setOnAction((_) -> addObjectAction());
     buttonTypes.add(ADD);
     buttonTypes = new ArrayList<>();
     updateButton = componentFactory.createButton(updateObjectText, updateObjectTooltipText);
-    updateButton.setOnAction(e -> accept());
+    updateButton.setOnAction((_) -> accept());
     buttonTypes.add(UPDATE);
     newButton = componentFactory.createButton(newObjectText, newObjectTooltipText);
-    newButton.setOnAction(e -> newObject(true));
+    newButton.setOnAction((_) -> newObject(true));
     buttonTypes.add(NEW);
     cancelButton = componentFactory.createButton("Cancel", "Discard any changes and close the editor");
-    cancelButton.setOnAction(e -> closeWindow());
+    cancelButton.setCancelButton(true);
+    cancelButton.setOnAction((_) -> closeWindow());
     buttonTypes.add(ButtonType.CANCEL);
   }
   

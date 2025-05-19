@@ -138,7 +138,7 @@ public class ObjectControlGroup implements Iterable<ObjectControlStatus>, Observ
     LOGGER.info("=>");
     
     if (objectControlGroup.getId() == null) {
-      LOGGER.severe("Id is null");
+      LOGGER.info("Id is null");
     }
     
     objectControlGroup.addListener(invalidationListener);

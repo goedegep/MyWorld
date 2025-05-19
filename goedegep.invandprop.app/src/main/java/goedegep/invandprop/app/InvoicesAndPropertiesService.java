@@ -3,7 +3,6 @@ package goedegep.invandprop.app;
 import java.io.File;
 import java.io.IOException;
 
-import goedegep.invandprop.model.Invoice;
 import goedegep.invandprop.model.InvoiceAndProperty;
 import goedegep.invandprop.model.InvoiceAndPropertyItem;
 import goedegep.invandprop.model.InvoicesAndProperties;
@@ -31,14 +30,14 @@ public class InvoicesAndPropertiesService {
   }
 
   
-  /**
-   * Add a new {@code Invoice} to the database.
-   * 
-   * @param invoice the {@code Invoice} to be added.
-   */
-  public void addInvoiceToInvoicesAndPropertiesDatabase(Invoice invoice) {
-    invoicesAndProperties.getInvoices().getInvoices().add(invoice);
-  }
+//  /**
+//   * Add a new {@code Invoice} to the database.
+//   * 
+//   * @param invoice the {@code Invoice} to be added.
+//   */
+//  public void addInvoiceToInvoicesAndPropertiesDatabase(Invoice invoice) {
+//    invoicesAndProperties.getInvoices().getInvoices().add(invoice);
+//  }
   
   /**
    * Add a new {@code InvoiceAndProperty} to the database.

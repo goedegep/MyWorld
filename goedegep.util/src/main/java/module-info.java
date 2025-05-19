@@ -35,6 +35,7 @@ module goedegep.util {
   exports goedegep.util.sgml;
   exports goedegep.util.string;
   exports goedegep.util.text;
+  exports goedegep.util.thread;
   exports goedegep.util.tree;
   exports goedegep.util.unit;
   exports goedegep.util.url;
@@ -65,4 +66,5 @@ module goedegep.util {
   
   requires goedegep.emfsample.model;
   requires java.base;
+  requires java.management;
 }

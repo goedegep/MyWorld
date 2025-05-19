@@ -3,6 +3,7 @@ package goedegep.jfx.editor;
 import java.util.function.Supplier;
 
 import goedegep.util.listener.ValueAndOrStatusChangeListener;
+import javafx.beans.property.ReadOnlyBooleanProperty;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 
@@ -228,4 +229,12 @@ public interface EditorComponent<T> {
    * @return the value as formatted text.
    */
   String getValueAsFormattedText();
+  
+  /**
+   * Get the focusedProperty, which indicates whether the component has focus or not.
+   * 
+   * @return a read only focused property.
+   */
+  ReadOnlyBooleanProperty focusedProperty();
+  
 }

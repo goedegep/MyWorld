@@ -4,13 +4,26 @@
   <artifactId>goedegep-demo</artifactId>
   <packaging>jar</packaging>
   <name>Demo application</name>
-  <description>This project provides demos for libraries.</description>
+  <description>This project provides demos for the MyWorld libraries.</description>
+  
   <parent>
     <groupId>goedegep.toplevelpom</groupId>
     <artifactId>goedegep-toplevelpom</artifactId>
     <version>1.0-SNAPSHOT</version>
     <relativePath>../goedegep.toplevelpom</relativePath>
   </parent>
+
+  <properties>
+    <project.build.sourceEncoding>UTF8</project.build.sourceEncoding>
+    <app.name>Demo</app.name>
+    <app.version>1.0.0</app.version>
+    <vendor.name>goedegep</vendor.name>
+    <copyright>Copyright (c) 2001-2025</copyright>
+    <maven.compiler.source>20</maven.compiler.source>
+    <maven.compiler.target>${maven.compiler.source}</maven.compiler.target>
+    <lombok.version>1.18.36</lombok.version>
+  </properties>
+  
   <dependencies>
     <dependency>
       <groupId>goedegep.configuration</groupId>
@@ -61,4 +74,8 @@
       <classifier>win</classifier>
     </dependency>
   </dependencies>
+
+  <build>
+    <finalName>${app.name}-${app.version}</finalName>
+  </build>
 </project>

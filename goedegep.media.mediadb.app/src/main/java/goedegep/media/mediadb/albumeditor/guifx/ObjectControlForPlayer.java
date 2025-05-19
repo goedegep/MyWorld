@@ -47,7 +47,6 @@ public class ObjectControlForPlayer extends ObjectControlTemplate<Player> {
    */
   public ObjectControlForPlayer(CustomizationFx customization, MediaDbService mediaDbService) {
     super(customization, false);  // If there is a control for a Player, the player has to be filled in. So this control is never optional.
-    LOGGER.severe("=>");
     
     artistObjectControl = new ArtistObjectControl(customization, mediaDbService);
     playerInstrumentTextField = componentFactory.createObjectControlTextField(null, null, 300, true, "A comma separated list of instruments");
