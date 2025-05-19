@@ -22,7 +22,6 @@ import goedegep.invandprop.model.InvAndPropPackage;
 import goedegep.invandprop.model.InvoiceAndProperty;
 import goedegep.invandprop.model.InvoiceAndPropertyItem;
 import goedegep.invandprop.model.InvoicesAndProperties;
-import goedegep.invandprop.model.Property;
 import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.DoubleClickEventDispatcher;
 import goedegep.jfx.JfxStage;
@@ -35,6 +34,7 @@ import goedegep.properties.app.guifx.PropertiesEditor;
 import goedegep.resources.ImageSize;
 import goedegep.types.model.FileReference;
 import goedegep.util.Result;
+import goedegep.util.desktop.DesktopUtil;
 import goedegep.util.file.FileUtils;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -187,7 +187,6 @@ public class InvoicesAndPropertiesWindow extends JfxStage {
         
     Button newInvoiceAndPropertyButton = componentFactory.createButton("New Invoice and Property", "click to enter the details of a new invoice and property");
     newInvoiceAndPropertyButton.setOnAction((e) -> {
-      InvoiceAndPropertyEditor.newInstance(customization, invoicesAndPropertiesService).show();
       InvoiceAndPropertyEditor2.newInstance(customization, invoicesAndPropertiesService).show();
     });
     controlsBox.getChildren().add(newInvoiceAndPropertyButton);
@@ -380,15 +379,14 @@ public class InvoicesAndPropertiesWindow extends JfxStage {
     LOGGER.info("=>");
     
     Canvas collage = null;
-    List<Property> properties = invoicesAndProperties.getProperties().getProperties();
-    LOGGER.info("number of properties: " + properties.size());
+    LOGGER.info("number of properties: " + invoicesAndProperties.getInvoicseandpropertys().size());
     
     // Candidates are the first pictures of properties which aren't archived.
     List<FileReference> candidates = new ArrayList<>();
-    for (Property property: properties) {
+    for (InvoiceAndProperty invoiceAndProperty: invoicesAndProperties.getInvoicseandpropertys()) {
       FileReference fileReference = null;
-      if (!property.isArchive()  &&  property.getPictures().size() > 0) {
-        fileReference = property.getPictures().get(0);
+      if (!invoiceAndProperty.isArchive()  &&  invoiceAndProperty.getPictures().size() > 0) {
+        fileReference = invoiceAndProperty.getPictures().get(0);
       }
       if (fileReference != null  &&  fileReference.getFile() != null) {
         candidates.add(fileReference);
@@ -586,7 +584,7 @@ class FileReferenceListCell extends ListCell<FileReference> {
       // item context menu
       ContextMenu contextMenu = new ContextMenu();
       MenuItem menuItem = new MenuItem("Open document");
-      menuItem.setOnAction(e -> PropertiesWindow.openDocument(item));
+      menuItem.setOnAction(_ -> DesktopUtil.open(InvoicesAndPropertiesUtil.prependBaseDirToRelativeFilename(item.getFile())));
       contextMenu.getItems().add(menuItem);
       setContextMenu(contextMenu);
 

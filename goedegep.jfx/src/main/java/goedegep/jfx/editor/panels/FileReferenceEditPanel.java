@@ -14,6 +14,7 @@ import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.editor.EditPanelTemplate;
 import goedegep.jfx.editor.EditorControl;
 import goedegep.jfx.editor.EditorException;
+import goedegep.jfx.editor.controls.EditorControlFileOrFolderSelecterAbstract;
 import goedegep.jfx.editor.controls.EditorControlFileSelecter;
 import goedegep.jfx.editor.controls.EditorControlFolderSelecter;
 import goedegep.jfx.editor.controls.EditorControlString;
@@ -200,8 +201,8 @@ public class FileReferenceEditPanel extends EditPanelTemplate<FileReference> imp
    * Get the initial folder as text.
    * @return  the initial folder as text.
    */
-  private String getInitialFolder() {    
-    return initialFolderSupplier.apply(currentFileReferenceTypeInfo);
+  private String getInitialFolder() {
+    return initialFolderSupplier != null ? initialFolderSupplier.apply(currentFileReferenceTypeInfo) : null;
   }
   
   /**
@@ -276,12 +277,19 @@ public class FileReferenceEditPanel extends EditPanelTemplate<FileReference> imp
         items.add(fileReferenceTypeInfo.displayName());
       }
       referenceTypeComboBox = new ComboBox<>(items);      
-      referenceTypeComboBox.setOnAction((e) -> handleNewReferenceTypeSelected());
+      referenceTypeComboBox.setOnAction(_ -> handleNewReferenceTypeSelected());
       referenceTypeComboBox.getSelectionModel().select(0);
     }
     
-    titleEditorControl = componentFactory.createEditorControlString(200, true, "a title for the file");
-    titleEditorControl.setId("title");
+    titleEditorControl = new EditorControlString.Builder("title")
+        .setWidth(200d)
+        .setLabelBaseText("Title")
+        .setToolTipText("A title for the file")
+        .setOptional(true)
+        .build();
+    
+//    titleEditorControl = componentFactory.createEditorControlString(200, true, "a title for the file");
+//    titleEditorControl.setId("title");
     registerEditorComponents(titleEditorControl);
         
     titledPane = new TitledPane();
@@ -314,7 +322,7 @@ public class FileReferenceEditPanel extends EditPanelTemplate<FileReference> imp
     HBox buttonsBox = componentFactory.createHBox(12.0, 12.0);
     
     Button openItemButton = componentFactory.createButton("Open item", "Open this attachment with the related application");
-    openItemButton.setOnAction(e -> openItem());
+    openItemButton.setOnAction(_ -> openItem());
     buttonsBox.getChildren().add(openItemButton);
     
     final Pane spacer = new Pane();
@@ -330,7 +338,7 @@ public class FileReferenceEditPanel extends EditPanelTemplate<FileReference> imp
   
   @Override
   protected void installChangeListeners() {
-    addValueAndOrStatusChangeListener((valueChanged, statusChanged) -> updatePaneTitle());
+    addValueAndOrStatusChangeListener((_, _) -> updatePaneTitle());
   }
     
   /**
@@ -381,7 +389,7 @@ public class FileReferenceEditPanel extends EditPanelTemplate<FileReference> imp
     gridPane.getChildren().clear();
     
     int row = 0;
-    EditorControl fileOrFolderSelecterEditorControl;
+    EditorControl<?> fileOrFolderSelecterEditorControl;
     
     if (referenceTypeComboBox != null) {
       // Row 0: type selection ComboBox
@@ -426,13 +434,13 @@ public class FileReferenceEditPanel extends EditPanelTemplate<FileReference> imp
 
       @Override
       public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
-        LOGGER.severe(newValue ? "Selected" : "NOT selected");
-        notifyListeners(newValue);
+        focusedProperty.set(newValue);
       }
       
     };
     titleEditorControl.getControl().focusedProperty().addListener(cl);
     fileOrFolderSelecterEditorControl.getControl().focusedProperty().addListener(cl);
+    titledPane.focusedProperty().addListener(cl);
   }
   
   /**

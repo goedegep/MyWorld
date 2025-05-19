@@ -9,45 +9,7 @@
   <genPackages prefix="InvAndProp" basePackage="goedegep.invandprop" disposableProviderFactory="true"
       ecorePackage="InvAndProp.ecore#/">
     <genClasses ecoreClass="InvAndProp.ecore#//InvoicesAndProperties">
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference InvAndProp.ecore#//InvoicesAndProperties/invoices"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference InvAndProp.ecore#//InvoicesAndProperties/properties"/>
       <genFeatures children="true" createChild="true" propertySortChoices="true" ecoreFeature="ecore:EReference InvAndProp.ecore#//InvoicesAndProperties/invoicseandpropertys"/>
-    </genClasses>
-    <genClasses ecoreClass="InvAndProp.ecore#//Invoices">
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference InvAndProp.ecore#//Invoices/invoices"/>
-    </genClasses>
-    <genClasses ecoreClass="InvAndProp.ecore#//Invoice">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute InvAndProp.ecore#//Invoice/date"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute InvAndProp.ecore#//Invoice/company"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference InvAndProp.ecore#//Invoice/invoiceItems"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference InvAndProp.ecore#//Invoice/documents"/>
-      <genOperations ecoreOperation="InvAndProp.ecore#//Invoice/getTotalAmountInvoiceItems"/>
-    </genClasses>
-    <genClasses ecoreClass="InvAndProp.ecore#//Expenditure">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute InvAndProp.ecore#//Expenditure/description"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute InvAndProp.ecore#//Expenditure/amount"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute InvAndProp.ecore#//Expenditure/remarks"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute InvAndProp.ecore#//Expenditure/descriptionFromProperty"/>
-      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference InvAndProp.ecore#//Expenditure/purchase"/>
-    </genClasses>
-    <genClasses ecoreClass="InvAndProp.ecore#//InvoiceItem">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute InvAndProp.ecore#//InvoiceItem/numberOfItems"/>
-    </genClasses>
-    <genClasses ecoreClass="InvAndProp.ecore#//Properties">
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference InvAndProp.ecore#//Properties/properties"/>
-    </genClasses>
-    <genClasses ecoreClass="InvAndProp.ecore#//Property">
-      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference InvAndProp.ecore#//Property/expenditure"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute InvAndProp.ecore#//Property/description"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute InvAndProp.ecore#//Property/brand"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute InvAndProp.ecore#//Property/type"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute InvAndProp.ecore#//Property/serialNumber"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute InvAndProp.ecore#//Property/remarks"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute InvAndProp.ecore#//Property/fromDate"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute InvAndProp.ecore#//Property/untilDate"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute InvAndProp.ecore#//Property/archive"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference InvAndProp.ecore#//Property/documents"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference InvAndProp.ecore#//Property/pictures"/>
     </genClasses>
     <genClasses ecoreClass="InvAndProp.ecore#//InvoiceAndPropertyItem">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute InvAndProp.ecore#//InvoiceAndPropertyItem/type"/>

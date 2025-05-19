@@ -196,49 +196,82 @@ public class InvoiceAndPropertyEditPanel extends EditPanelTemplate<InvoiceAndPro
 
   @Override
   public void createControls() {
-    dateControl = componentFactory.createEditorControlFlexDate(300, true, "Date");
-    dateControl.setId("date");
-    dateControl.setLabelBaseText("Date");
+    
+    dateControl = new EditorControlFlexDate.FlexDateBuilder("date")
+        .setWidth(300d)
+        .setLabelBaseText("Date")
+        .setToolTipText("Date")
+        .setOptional(true)
+        .setErrorTextSupplier(() -> "The date is not filled in")
+        .build();
+    
     dateControl.setErrorTextSupplier(() -> "The date is not filled in");
     
-    companyControl = componentFactory.createEditorControlString(300, true, "Company");
-    companyControl.setId("company");
-    companyControl.setLabelBaseText("Company");
-    companyControl.setErrorTextSupplier(() -> "The company is not filled in");
+    companyControl = new EditorControlString.Builder("company")
+        .setWidth(300d)
+        .setLabelBaseText("Company")
+        .setToolTipText("Company")
+        .setOptional(true)
+        .setErrorTextSupplier(() -> "The company is not filled in")
+        .build();
     
-    descriptionControl = componentFactory.createEditorControlString(300, false, "Description");
-    descriptionControl.setId("description");
-    descriptionControl.setLabelBaseText("Description");
-    descriptionControl.setErrorTextSupplier(() -> "The description is not filled in");
+    descriptionControl = new EditorControlString.Builder("description")
+        .setWidth(300d)
+        .setLabelBaseText("Description")
+        .setToolTipText("Description")
+        .setErrorTextSupplier(() -> "The description is not filled in")
+        .build();
     
-    brandControl = componentFactory.createEditorControlString(300, true, "Brand");
-    brandControl.setId("brand");
-    brandControl.setLabelBaseText("Brand");
+    brandControl = new EditorControlString.Builder("brand")
+        .setWidth(300d)
+        .setLabelBaseText("Brand")
+        .setToolTipText("Brand")
+        .setOptional(true)
+        .build();
     
-    typeControl = componentFactory.createEditorControlString(300, true, "Type");
-    typeControl.setId("type");
-    typeControl.setLabelBaseText("Type");
+    typeControl = new EditorControlString.Builder("type")
+        .setWidth(300d)
+        .setLabelBaseText("Type")
+        .setToolTipText("Type")
+        .setOptional(true)
+        .build();
     
-    serialNumberControl = componentFactory.createEditorControlString(300, true, "Serial number");
-    serialNumberControl.setId("serialNumber");
-    serialNumberControl.setLabelBaseText("Serial number");
+    serialNumberControl = new EditorControlString.Builder("serialNumber")
+        .setWidth(300d)
+        .setLabelBaseText("Serial number")
+        .setToolTipText("Serial number")
+        .setOptional(true)
+        .build();
     
-    amountControl = componentFactory.createEditorControlCurrency(300, true, "Amount");
-    amountControl.setId("amount");
-    amountControl.setLabelBaseText("Amount");
+    amountControl = new EditorControlCurrency.CurrencyBuilder("amount")
+        .setWidth(300d)
+        .setLabelBaseText("Amount")
+        .setToolTipText("Amount")
+        .setOptional(true)
+        .build();
+            
+    fromDateControl = new EditorControlFlexDate.FlexDateBuilder("fromDate")
+        .setWidth(300d)
+        .setLabelBaseText("From date")
+        .setToolTipText("From date")
+        .setOptional(true)
+        .build();
     
-    fromDateControl = componentFactory.createEditorControlFlexDate(300, true, "From date");
-    fromDateControl.setId("fromDate");
-    fromDateControl.setLabelBaseText("From date");
     
-    untilDateControl = componentFactory.createEditorControlFlexDate(300, true, "Until date");
-    untilDateControl.setId("untilDate");
-    untilDateControl.setLabelBaseText("Util date");
-    
-    remarksControl = componentFactory.createEditorControlString(300, true, "Remarks");
-    remarksControl.setId("remarks");
-    remarksControl.setLabelBaseText("Remarks");
-    
+    untilDateControl = new EditorControlFlexDate.FlexDateBuilder("untilDate")
+        .setWidth(300d)
+        .setLabelBaseText("Until date")
+        .setToolTipText("Until date")
+        .setOptional(true)
+        .build();
+        
+    remarksControl = new EditorControlString.Builder("remarks")
+        .setWidth(300d)
+        .setLabelBaseText("Remarks")
+        .setToolTipText("Remarks")
+        .setOptional(true)
+        .build();
+        
     archiveControl = componentFactory.createEditorControlBoolean("Archived");
     archiveControl.setId("archived");
     archiveControl.setLabelBaseText("Archived");
@@ -249,7 +282,7 @@ public class InvoiceAndPropertyEditPanel extends EditPanelTemplate<InvoiceAndPro
         .setAddFileReferenceButtonText("Add document")
         .setAddFileReferenceButtonTooltipText("Add a document")
         .setInitialFolderSupplier(this::getInitialFolder)
-        .setPrefix(InvoicesAndPropertiesRegistry.propertyRelatedFilesFolder + "/")
+        .setPrefix(InvoicesAndPropertiesRegistry.propertyRelatedFilesFolder)
         .build();
     documentsEditPanel.setId("documents");
     documentsEditPanel.addValueAndOrStatusChangeListener((valueChanged, statusChanged) -> updateAttachmentsFolderPathProperty());
@@ -260,7 +293,7 @@ public class InvoiceAndPropertyEditPanel extends EditPanelTemplate<InvoiceAndPro
         .setAddFileReferenceButtonText("Add picture")
         .setAddFileReferenceButtonTooltipText("Add a picture")
         .setInitialFolderSupplier(this::getInitialFolder)
-        .setPrefix(InvoicesAndPropertiesRegistry.propertyRelatedFilesFolder + "/")
+        .setPrefix(InvoicesAndPropertiesRegistry.propertyRelatedFilesFolder)
         .build();
     documentsEditPanel.setId("pictures");
     documentsEditPanel.addValueAndOrStatusChangeListener((valueChanged, statusChanged) -> updateAttachmentsFolderPathProperty());
@@ -275,9 +308,16 @@ public class InvoiceAndPropertyEditPanel extends EditPanelTemplate<InvoiceAndPro
     attachmentsFolderPathProperty = new SimpleObjectProperty<>();
     attachmentsFolderPathProperty.addListener((e) -> updateAttachmentsFolderInfo());
     
-    attachmentsFolderControl = componentFactory.createEditorControlString(300, true, "Folder where invoice and property documents and pictures are stored");
-    attachmentsFolderControl.setId("attachments folder");
-    attachmentsFolderControl.setLabelBaseText("Attachments folder");
+    attachmentsFolderControl = new EditorControlString.Builder("attachments folder")
+        .setWidth(300d)
+        .setLabelBaseText("Attachments folder")
+        .setToolTipText("Folder where invoice and property documents and pictures are stored")
+        .setOptional(true)
+        .build();
+    
+//    attachmentsFolderControl = componentFactory.createEditorControlString(300, true, "Folder where invoice and property documents and pictures are stored");
+//    attachmentsFolderControl.setId("attachments folder");
+//    attachmentsFolderControl.setLabelBaseText("Attachments folder");
     attachmentsFolderControl.getControl().setEditable(false);
     
     
@@ -286,11 +326,12 @@ public class InvoiceAndPropertyEditPanel extends EditPanelTemplate<InvoiceAndPro
     
     selectedPictureImageView = new ImageView();
     selectedPictureImageView.setFitWidth(400);
+    selectedPictureImageView.setFitHeight(400);
     selectedPictureImageView.setPreserveRatio(true);
     
     picturesEditPanel.addObjectSelectionListener((source, fileReference) -> {
       if (fileReference != null  &&  fileReference.getFile() != null) {
-        Image image = new Image("file:" + fileReference.getFile());
+        Image image = new Image("file:" + FileUtils.createPathNameFromPrefixAndFileName(InvoicesAndPropertiesRegistry.propertyRelatedFilesFolder, fileReference.getFile()));
         selectedPictureImageView.setImage(image);
       }
     });
@@ -512,7 +553,7 @@ public class InvoiceAndPropertyEditPanel extends EditPanelTemplate<InvoiceAndPro
     String attachmentsFolderName = null;
     String toolTipText = "Folder where invoice and property attachments are stored";
     if (attachmentsFolder != null) {
-      attachmentsFolderName = "...\\" + FileUtils.getPathRelativeToFolder(InvoicesAndPropertiesRegistry.propertyRelatedFilesFolder + "\\", attachmentsFolder.toString());
+      attachmentsFolderName = FileUtils.getPathRelativeToFolder(InvoicesAndPropertiesRegistry.propertyRelatedFilesFolder, attachmentsFolder.toString());
       toolTipText = "Attachments of the invoice and property are stored in the folder: " + attachmentsFolder.toString();
     }
     attachmentsFolderControl.setObject(attachmentsFolderName);

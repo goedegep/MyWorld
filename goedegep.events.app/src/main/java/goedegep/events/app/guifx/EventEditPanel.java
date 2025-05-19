@@ -28,7 +28,6 @@ import goedegep.types.model.FileReference;
 import goedegep.types.model.TypesPackage;
 import goedegep.util.dir.DirectoryChangesMonitoringTask;
 import goedegep.util.emf.EmfUtil;
-import goedegep.util.file.FileUtils;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.event.ActionEvent;
 import javafx.scene.Node;
@@ -41,7 +40,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
 /**
- * This class is the main edit panel for the EventEditor.
+ * This class is the main edit panel for the {@link EventEditor}.
  */
 public class EventEditPanel extends EditPanelTemplate<EventInfo> {
   private static final Logger LOGGER = Logger.getLogger(EventEditPanel.class.getName());
@@ -116,9 +115,10 @@ public class EventEditPanel extends EditPanelTemplate<EventInfo> {
   private SimpleObjectProperty<Path> eventFolderPathProperty;
 
   /**
-   * Create an instance of the {@code EventEditPanel2}.
+   * Create an instance of the {@code EventEditPanel}.
    * 
    * @param customization the GUI customization
+   * @param eventsService the events service
    * @return the newly created {@code EventEditPanel2}.
    */
   public static EventEditPanel newInstance(CustomizationFx customization, EventsService eventsService) {
@@ -132,6 +132,7 @@ public class EventEditPanel extends EditPanelTemplate<EventInfo> {
    * Constructor.
    * 
    * @param customization the GUI customization
+   * @param eventsService the events service
    */
   private EventEditPanel(CustomizationFx customization, EventsService eventsService) {
     super(customization, false);
@@ -144,28 +145,38 @@ public class EventEditPanel extends EditPanelTemplate<EventInfo> {
    */
   @Override
   public void createControls() {
-    eventDateControl = componentFactory.createEditorControlFlexDate(300, false, "Date of the event");
-    eventDateControl.setId("event date");
-    eventDateControl.setLabelBaseText("Date");
-    eventDateControl.setErrorTextSupplier(() -> "The event date is not filled in");
-    eventDateControl.addValueAndOrStatusChangeListener((valueChanged, statusChanged) -> updateEventFolderPathProperty());
     
-    eventTitleControl = componentFactory.createEditorControlString(300, false, "Title of the event");
-    eventTitleControl.setId("event title");
-    eventTitleControl.setLabelBaseText("Title");
-    eventTitleControl.setErrorTextSupplier(() -> "The event title is not filled in");
-    eventTitleControl.addValueAndOrStatusChangeListener((valueChanged, statusChanged) -> updateEventFolderPathProperty());
+    eventDateControl = new EditorControlFlexDate.FlexDateBuilder("eventDate")
+        .setWidth(300d)
+        .setLabelBaseText("Date")
+        .setToolTipText("Date of the event")
+        .setErrorTextSupplier(() -> "The event date is not filled in")
+        .build();
+    eventDateControl.addValueAndOrStatusChangeListener((_, _) -> updateEventFolderPathProperty());
     
-    eventFolderControl = componentFactory.createEditorControlString(300, true, "Folder where event attachments are stored");
-    eventFolderControl.setId("event folder");
-    eventFolderControl.setLabelBaseText("Event folder");
+    eventTitleControl = new EditorControlString.Builder("eventTitle")
+        .setWidth(300d)
+        .setLabelBaseText("Title")
+        .setToolTipText("Title of the event")
+        .setErrorTextSupplier(() -> "The event title is not filled in")
+        .build();
+    
+    eventTitleControl.addValueAndOrStatusChangeListener((_, _) -> updateEventFolderPathProperty());
+    
+    eventFolderControl = new EditorControlString.Builder("eventFolder")
+        .setWidth(300d)
+        .setLabelBaseText("Event folder")
+        .setToolTipText("Folder where event attachments are stored")
+        .setOptional(true)
+        .build();
+    
     eventFolderControl.getControl().setEditable(false);
    
     pictureFileSelecter = componentFactory.createEditorControlFileSelecter(300, "file name of a picture", "file chooser", "Start a file chooser", "Select picture file", true);
     pictureFileSelecter.setId("pictureFileSelecter");
     pictureFileSelecter.setLabelBaseText("Picture");
     pictureFileSelecter.setInitialFolderProvider(this::getEventRelatedFilesFolder);
-    pictureFileSelecter.setPrefix(EventsRegistry.eventsFolderName + "\\");
+    pictureFileSelecter.setPrefix(EventsRegistry.eventsFolderName);
     pictureFileSelecter.addValueAndOrStatusChangeListener((valueChanged, statusChanged) -> updatePictureImageView(valueChanged, statusChanged));
     
     notesControl = componentFactory.createEditorControlHTMLString(true);
@@ -179,14 +190,14 @@ public class EventEditPanel extends EditPanelTemplate<EventInfo> {
         .setAddFileReferenceButtonTooltipText("Add an attachment")
         .setInitialFolderSupplier(this::getInitialFolder)
         .addFileReferenceTypes(
-            new FileReferenceTypeInfo(AttachmentTypeInfo.FILE.getTag(), AttachmentTypeInfo.FILE.getDisplayName(), false, EventsRegistry.eventsFolderName + "\\"),
+            new FileReferenceTypeInfo(AttachmentTypeInfo.FILE.getTag(), AttachmentTypeInfo.FILE.getDisplayName(), false, EventsRegistry.eventsFolderName),
             new FileReferenceTypeInfo(AttachmentTypeInfo.PHOTO_FOLDER.getTag(), AttachmentTypeInfo.PHOTO_FOLDER.getDisplayName(), true, null),
             new FileReferenceTypeInfo(AttachmentTypeInfo.VIDEO_TAKES_FOLDER.getTag(), AttachmentTypeInfo.VIDEO_TAKES_FOLDER.getDisplayName(), true, null)
             )
         .setPrefix(EventsRegistry.eventsFolderName)
         .build();
     attachmentsEditPanel.setId("attachments");
-    attachmentsEditPanel.addValueAndOrStatusChangeListener((valueChanged, statusChanged) -> updateEventFolderPathProperty());
+    attachmentsEditPanel.addValueAndOrStatusChangeListener((_, _) -> updateEventFolderPathProperty());
     
     registerEditorComponents(eventDateControl, eventTitleControl, pictureFileSelecter, notesControl, attachmentsEditPanel);
     
@@ -197,7 +208,7 @@ public class EventEditPanel extends EditPanelTemplate<EventInfo> {
     createOrOpenEventFolderButton.setId("create or open events folder button");
     
     eventFolderPathProperty = new SimpleObjectProperty<>();
-    eventFolderPathProperty.addListener((e) -> updateEventFolderInfo());
+    eventFolderPathProperty.addListener(_ -> updateEventFolderInfo());
   }
 
   /**
@@ -318,7 +329,7 @@ public class EventEditPanel extends EditPanelTemplate<EventInfo> {
     if (EventsRegistry.eventsFolderName != null) {
       DirectoryChangesMonitoringTask directoryMonitoringTask = new DirectoryChangesMonitoringTask(EventsRegistry.eventsFolderName);
 
-      directoryMonitoringTask.valueProperty().addListener((observable, oldValue, newValue) -> {
+      directoryMonitoringTask.valueProperty().addListener((_, _, _) -> {
         updateEventFolderInfo();
       });
 
@@ -374,7 +385,7 @@ public class EventEditPanel extends EditPanelTemplate<EventInfo> {
     String eventFolderName = null;
     String toolTipText = "Folder where event attachments are stored";
     if (eventFolder != null) {
-      eventFolderName = "...\\" + FileUtils.getPathRelativeToFolder(EventsRegistry.eventsFolderName + "\\", eventFolder.toString());
+      eventFolderName = eventFolder.getFileName().toString();
       toolTipText = "Attachments of the event are stored in the folder: " + eventFolder.toString();
     }
     eventFolderControl.setObject(eventFolderName);
@@ -382,7 +393,7 @@ public class EventEditPanel extends EditPanelTemplate<EventInfo> {
     
     if (eventFolder != null  &&  Files.exists(eventFolder)) {
       createOrOpenEventFolderButton.setText("Open");
-      createOrOpenEventFolderButton.setOnAction((e) -> {
+      createOrOpenEventFolderButton.setOnAction(_ -> {
         try {
           Desktop.getDesktop().open(eventFolder.toFile());
         } catch (IOException e1) {
@@ -391,7 +402,7 @@ public class EventEditPanel extends EditPanelTemplate<EventInfo> {
       });
     } else {
       createOrOpenEventFolderButton.setText("Create");
-      createOrOpenEventFolderButton.setOnAction((e) -> {
+      createOrOpenEventFolderButton.setOnAction(_ -> {
         createEventsFolder(null);
       });
       createOrOpenEventFolderButton.setDisable(eventFolder == null);

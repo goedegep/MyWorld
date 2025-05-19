@@ -34,5 +34,9 @@
         eType="#//Birthday"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="formerEmployees" upperBound="-1"
         eType="#//Person" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="companyName" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
+        unsettable="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="dateOfEstablishment" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDate"
+        unsettable="true"/>
   </eClassifiers>
 </ecore:EPackage>

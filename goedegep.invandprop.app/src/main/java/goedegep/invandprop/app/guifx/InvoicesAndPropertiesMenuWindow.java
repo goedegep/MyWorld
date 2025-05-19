@@ -16,8 +16,8 @@ import goedegep.appgen.swing.MessageDialog;
 import goedegep.invandprop.app.InvoicesAndPropertiesRegistry;
 import goedegep.invandprop.app.InvoicesAndPropertiesService;
 import goedegep.invandprop.app.InvoicesAndPropertiesUtil;
+import goedegep.invandprop.model.InvoiceAndProperty;
 import goedegep.invandprop.model.InvoicesAndProperties;
-import goedegep.invandprop.model.Property;
 import goedegep.jfx.ComponentFactoryFx;
 import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.JfxStage;
@@ -33,12 +33,10 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
@@ -150,29 +148,7 @@ public class InvoicesAndPropertiesMenuWindow extends JfxStage {
     grid.setHgap(10);
     grid.setVgap(10);
     grid.setPadding(new Insets(50));
-
-    Button applicationButton;
-
-    applicationButton = componentFactory.createToolButton("Invoices", appResources.getApplicationImage(ImageSize.SIZE_0), "Open the invoices window");
-    applicationButton.setOnAction(e -> {
-      InvoicesAndPropertiesLauncher.getInvoicesWindow().show();
-    });
-    grid.add(applicationButton, 0, 0);
-
-    applicationButton = componentFactory.createToolButton("Properties", appResources.getApplicationImage(ImageSize.SIZE_0), "Open the properties window");
-    applicationButton.setOnAction(e -> {
-      InvoicesAndPropertiesLauncher.getPropertiesWindow().show();
-    });
-    grid.add(applicationButton, 1, 0);
     
-    Button button;
-    
-    button = componentFactory.createButton("New Invoice and/or Property", "Create a new invoice and the related property");
-    GridPane.setHalignment(button, HPos.CENTER);
-    button.setOnAction(e -> InvoiceAndPropertyEditor.newInstance(customization, invoicesAndPropertiesService).show());
-    grid.add(button, 0, 2, 2, 1);
-    
-
     mainLayout.getChildren().add(grid);
 
     rootLayout.setCenter(mainLayout);
@@ -260,15 +236,15 @@ public class InvoicesAndPropertiesMenuWindow extends JfxStage {
     LOGGER.info("=>");
     
     Canvas collage = null;
-    List<Property> properties = invoicesAndProperties.getProperties().getProperties();
-    LOGGER.info("number of properties: " + properties.size());
+    List<InvoiceAndProperty> invoiceAndProperties = invoicesAndProperties.getInvoicseandpropertys();
+    LOGGER.info("number of properties: " + invoiceAndProperties.size());
     
     // Candidates are the first pictures of properties which aren't archived.
     List<FileReference> candidates = new ArrayList<>();
-    for (Property property: properties) {
+    for (InvoiceAndProperty invoiceAndProperty: invoiceAndProperties) {
       FileReference fileReference = null;
-      if (!property.isArchive()  &&  property.getPictures().size() > 0) {
-        fileReference = property.getPictures().get(0);
+      if (!invoiceAndProperty.isArchive()  &&  invoiceAndProperty.getPictures().size() > 0) {
+        fileReference = invoiceAndProperty.getPictures().get(0);
       }
       if (fileReference != null  &&  fileReference.getFile() != null) {
         candidates.add(fileReference);

@@ -36,7 +36,7 @@ public class EventEditor extends EditorTemplate<EventInfo> {
    * @return a newly created {@code EventEditor}.
    */
   public static EventEditor newInstance(CustomizationFx customization, EventsService eventsService) {
-    Objects.requireNonNull(eventsService, "addEventInfotMethod may not be null");
+    Objects.requireNonNull(eventsService, "eventsService may not be null");
     
     EventEditor eventEditor = new EventEditor(customization, eventsService);
     eventEditor.performInitialization();
@@ -77,19 +77,4 @@ public class EventEditor extends EditorTemplate<EventInfo> {
 
     return eventEditPanel;
   }
-  
-//  @Override
-//  protected void installChangeListeners() {
-//    addListener((e) -> handleStatusChanged());
-//  }
-  
-//  private void handleStatusChanged() {
-//    try {
-//      EventInfo eventInfo = eventEditPanel.getCurrentValue();
-//      LOGGER.severe("eventInfo: " + eventInfo.toString());
-//    } catch (EditorException e) {
-//      e.printStackTrace();
-//    }
-//  }
-
 }

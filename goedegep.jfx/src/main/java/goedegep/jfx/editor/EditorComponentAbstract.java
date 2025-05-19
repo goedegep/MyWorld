@@ -13,6 +13,8 @@ import goedegep.util.listener.ValueAndOrStatusChangeListener;
 import goedegep.util.listener.ValueAndOrStatusChangeListenersManager;
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
+import javafx.beans.property.ReadOnlyBooleanProperty;
+import javafx.beans.property.ReadOnlyBooleanWrapper;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.control.Tooltip;
@@ -105,16 +107,13 @@ public abstract class EditorComponentAbstract<T> implements EditorComponent<T> {
    * The invalidation listeners (for the {@code Observable} implementation).
    */
   protected List<InvalidationListener> invalidationListeners = new ArrayList<>();
-  
-//  /**
-//   * The value changed.
-//   */
-//  private ValueChangedListenerManager<T> valueChangedListenerManager = new ValueChangedListenerManager<>();
-  
+    
   /**
    * The value changed.
    */
   private ValueAndOrStatusChangeListenersManager valueAndOrStatusChangeListenersManager = new ValueAndOrStatusChangeListenersManager();
+  
+  protected ReadOnlyBooleanWrapper focusedProperty = new ReadOnlyBooleanWrapper();
   
   /**
    * Constructor.
@@ -155,6 +154,10 @@ public abstract class EditorComponentAbstract<T> implements EditorComponent<T> {
       }
       buf.append(":");
       label = new Label(buf.toString());
+      
+      Node node = getControl();
+      label.setMnemonicParsing(true);
+      label.setLabelFor(node);
     }
     
     return label;
@@ -353,20 +356,19 @@ public abstract class EditorComponentAbstract<T> implements EditorComponent<T> {
     this.comparator = comparator;
   }
   
-//  @Override
-//  public final void addListener(InvalidationListener listener) {
-//    invalidationListeners.add(listener);    
-//  }
-
-//  @Override
-//  public final void removeListener(InvalidationListener listener) {
-//    invalidationListeners.remove(listener);    
-//  }
-
-//  @Override
-//  public final void removeListeners() {
-//    invalidationListeners.clear();
-//  }
+  @Override
+  public ReadOnlyBooleanProperty focusedProperty() {
+    return focusedProperty.getReadOnlyProperty();
+  }
+  
+  /**
+   * Set whether the component has focus or not.
+   * 
+   * @param focused the new focus status.
+   */
+  protected void setFocused(boolean focused) {
+    focusedProperty.set(focused);
+  }
   
   /**
    * Notify the {@code invalidationListeners} that something has changed.
@@ -376,10 +378,6 @@ public abstract class EditorComponentAbstract<T> implements EditorComponent<T> {
       invalidationListener.invalidated(observable);
     }
   }
-  
-//  protected void notifyValueChangedListeners(T newValue) {
-//    valueChangedListenerManager.notifyListeners(newValue);
-//  }
 
   
   @Override

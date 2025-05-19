@@ -29,6 +29,7 @@ import goedegep.jfx.eobjecttable.EObjectTableDescriptor;
 import goedegep.media.app.MediaRegistry;
 import goedegep.media.app.base.MediaAppResourcesFx;
 import goedegep.media.mediadb.albumeditor.guifx.AlbumEditor;
+import goedegep.media.mediadb.albumeditor.guifx.AlbumEditor2;
 import goedegep.media.mediadb.app.MediaDbAppUtil;
 import goedegep.media.mediadb.app.MediaDbService;
 import goedegep.media.mediadb.model.Album;
@@ -512,6 +513,11 @@ class AlbumsTableDescriptor extends EObjectTableDescriptor<Album> {
     AlbumEditor albumEditor = AlbumEditor.newInstance(customization, mediaDbService);
     albumEditor.setObject(album);
     albumEditor.show();
+    
+    AlbumEditor2 albumEditor2 = AlbumEditor2.newInstance(customization, mediaDbService);
+    albumEditor2.setObject(album);
+    albumEditor2.show();
+    
   }
 }
 

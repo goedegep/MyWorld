@@ -1,7 +1,9 @@
 package goedegep.jfx.editor.panels;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Function;
 import java.util.logging.Logger;
 
@@ -9,8 +11,11 @@ import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.editor.EditPanelTemplate;
 import goedegep.jfx.editor.EditorException;
 import goedegep.types.model.FileReference;
+import goedegep.util.file.FileUtils;
 import goedegep.util.objectselector.ObjectSelectionListener;
 import goedegep.util.objectselector.ObjectSelector;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
@@ -88,9 +93,25 @@ public class FileReferencesEditPanel extends EditPanelTemplate<List<FileReferenc
    */
   ObservableList<FileReferenceEditPanel> fileReferencePanels;
   
+  /**
+   * Mapping from FileReferenceEditPanels to the related FileReference.
+   * FillControlsFromObject (via setObject): Clear the map. For each FileReference a FileReferenceEditPanel is created (and appended to the fileReferencePanels) and a mapping is added.
+   * Add: A new reference is always added as the last reference. So a FileReferenceEditPanel is created (and appended to the fileReferencePanels). No mapping is added.
+   * Delete: The mapping of the FileReferenceEditPanel is deleted and the panel itself is deleted.
+   * Reorder (via Drag & Drop): Only the order of the panels in the fileReferencePanels is changed.
+   * FillObjectFromControls (via accept):
+   *     for each panel in the fileReferencePanels
+   *        if there is a mapping, move the FileReference to the index of the panel
+   *        else insert the FileReference at the index of the panel
+   *     Delete all FileReferences with an index higher than the size of the fileReferencePanels minus 1
+   */
+  Map<FileReferenceEditPanel, FileReference> editPanelToFileReferenceMap = new HashMap<>();
+  
   boolean ignoreChanges = false;
   
   private List<ObjectSelectionListener<FileReference>> objectSelectionListeners = new ArrayList<>();
+  
+  private FileReference selectedFileReference;
   
   /**
    * Create a new {@code FileReferencesEditPanel}
@@ -168,6 +189,7 @@ public class FileReferencesEditPanel extends EditPanelTemplate<List<FileReferenc
       }
       
     });
+    
   }
   
   protected void handleChanges() {
@@ -234,6 +256,7 @@ public class FileReferencesEditPanel extends EditPanelTemplate<List<FileReferenc
                 break;
               }
             }
+            editPanelToFileReferenceMap.remove(fileReferenceEditPanelToDelete);
             fileReferencePanels.remove(fileReferenceEditPanelToDelete);
             break;
           }
@@ -254,7 +277,7 @@ public class FileReferencesEditPanel extends EditPanelTemplate<List<FileReferenc
     contentVBox.getChildren().add(fileReferencesVBox);
     
     Button newFileReferencesButton = componentFactory.createButton("+ " + addFileReferenceButtonText, addFileReferenceButtonTooltipText);
-    newFileReferencesButton.setOnAction(e -> createNewAttachmentEditPanel(true));
+    newFileReferencesButton.setOnAction(e -> createNewAttachmentEditPanel(null, true));
     contentVBox.getChildren().add(newFileReferencesButton);
     
     titledPane = new TitledPane(getLabelBaseText(), contentVBox);
@@ -267,7 +290,7 @@ public class FileReferencesEditPanel extends EditPanelTemplate<List<FileReferenc
    * @param expand if true, the panel will be expanded upon creation.
    * @return the created file reference (attachment) panel.
    */
-  private FileReferenceEditPanel createNewAttachmentEditPanel(boolean expand) {
+  private void createNewAttachmentEditPanel(FileReference fileReference, boolean expand) {
     FileReferenceEditPanel fileReferenceEditPanel = new FileReferenceEditPanel.FileReferencePanelBuilder(customization)
         .setDefaultPaneTitle(referenceEditPanelTitle)
         .setExpandPaneOnCreation(expand)
@@ -277,10 +300,25 @@ public class FileReferencesEditPanel extends EditPanelTemplate<List<FileReferenc
         .build();
 
     installDragAndDropHandling(fileReferenceEditPanel);
-    fileReferenceEditPanel.addObjectSelectionListener((source, fileReference) -> notifyListeners(fileReference));
+    ChangeListener changeListener = new ChangeListener<Boolean>() {
+
+      @Override
+      public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+        try {
+          selectedFileReference = fileReferenceEditPanel.getCurrentValue();
+          notifyListeners();
+        } catch (EditorException e) {
+          // No action needed
+        }
+      }
+      
+    };
+    fileReferenceEditPanel.focusedProperty().addListener(changeListener);
     fileReferencePanels.add(fileReferenceEditPanel);
-    
-    return fileReferenceEditPanel;
+    if (fileReference != null) {
+      editPanelToFileReferenceMap.put(fileReferenceEditPanel, fileReference);
+      fileReferenceEditPanel.setObject(fileReference);    
+    }
   }
   
   
@@ -372,9 +410,10 @@ public class FileReferencesEditPanel extends EditPanelTemplate<List<FileReferenc
     }
     ignoreChanges = true;
     
+    // Clear the map. For each FileReference a FileReferenceEditPanel is created (and appended to the fileReferencePanels) and a mapping is added.
+    editPanelToFileReferenceMap.clear();
     for (FileReference fileReference: value) {
-      FileReferenceEditPanel fileReferenceEditPanel = createNewAttachmentEditPanel(false);
-      fileReferenceEditPanel.setObject(fileReference);
+      createNewAttachmentEditPanel(fileReference, false);
     }
     
     ignoreChanges = false;
@@ -386,53 +425,39 @@ public class FileReferencesEditPanel extends EditPanelTemplate<List<FileReferenc
   protected void fillObjectFromControls(List<FileReference> fileReferences, boolean getCurrentValue) throws EditorException {
     if (getCurrentValue) {
       fileReferences.clear();
-      
+
       for (FileReferenceEditPanel fileReferenceEditPanel: fileReferencePanels) {
         FileReference fileReference = fileReferenceEditPanel.getCurrentValue();
         fileReferences.add(fileReference);
       }
     } else {
-    // First update all panels
-    for (FileReferenceEditPanel fileReferenceEditPanel: fileReferencePanels) {
-      fileReferenceEditPanel.accept();
-    }
-    
-    // Check for any changes. If there are changes, recreate the complete list.
-    boolean changes = false;
-    
-    if (fileReferences.size() != fileReferencePanels.size()) {
-      LOGGER.info("changes because of different list sizes");
-      changes = true;
-    }
-    
-    if (!changes) {
-//      int index = 0;
-//      for (FileReference attachment: fileReferences) {
-//        FileReferenceEditPanel fileReferencePanel = fileReferencePanels.get(index++);
-//        FileReferenceTypeInfo fileReferencePanelReferenceType = fileReferencePanel.getReferenceType();
-//        String fileReferencePanelReferenceTypeTag = fileReferencePanelReferenceType != null ? fileReferencePanelReferenceType.tag() : null;
-//        String fileReferencePanelFile = fileReferencePanel.getPathNameRelativeToPrefix();
-//        if (!PgUtilities.equals(attachment.getTags(), fileReferencePanelReferenceTypeTag)  ||
-//            !attachment.getFile().equals(fileReferencePanelFile)  ||
-//            !PgUtilities.equals(attachment.getTitle(), fileReferencePanel.getTitleObjectControl().getValue())) {
-//          changes = true;
-//          break;
-//        }
-//      }
-    }
-    
-    if (changes) {
-//      object.clear();
+      /*     for each panel in the fileReferencePanels
+      *        if there is a mapping, move the FileReference to the index of the panel
+      *        else insert the FileReference at the index of the panel
+      *     Delete all FileReferences with an index higher than the size of the fileReferencePanels minus 1
+      */
+      int index = 0;
+      for (FileReferenceEditPanel fileReferenceEditPanel: fileReferencePanels) {
+        FileReference fileReferenceFromPanel = fileReferenceEditPanel.accept();
+        FileReference fileReference = editPanelToFileReferenceMap.get(fileReferenceEditPanel);
+        if (fileReference != null) {
+          int indexOffFileReferenceToMove = value.indexOf(fileReference);
+          FileReference fileReferenceToMove = value.get(indexOffFileReferenceToMove);
+          value.remove(indexOffFileReferenceToMove);
+          value.add(index, fileReferenceToMove);
+        } else {
+          value.add(index, fileReferenceFromPanel);
+          editPanelToFileReferenceMap.put(fileReferenceEditPanel, fileReferenceFromPanel);
+        }
+        
+        index++;
+      }
       
-//      for (FileReferenceEditPanel fileReferencePanel: fileReferencePanels) {
-////        FileReference fileReference = TypesFactory.eINSTANCE.createFileReference();
-////        updateFileReferenceFromFileReferencePanel(fileReference, fileReferencePanel);
-//        object.add(fileReferencePanel.getValue());
-//      }
+      while (value.size() > fileReferencePanels.size()) {
+        value.removeLast();
+      }
     }
-    
-    }
-    
+
   }
 
   @Override
@@ -628,22 +653,15 @@ public class FileReferencesEditPanel extends EditPanelTemplate<List<FileReferenc
     objectSelectionListeners.remove(objectSelectionListener);
   }
   
-  private void notifyListeners(FileReference fileReference) {
+  private void notifyListeners() {
     for (ObjectSelectionListener<FileReference> objectSelectionListener: objectSelectionListeners) {
-      objectSelectionListener.objectSelected(this, fileReference);
+      objectSelectionListener.objectSelected(this, selectedFileReference);
     }
   }
 
   @Override
   public FileReference getSelectedObject() {
-    for (FileReferenceEditPanel fileReferenceEditPanel: fileReferencePanels) {
-      FileReference fileReference = fileReferenceEditPanel.getSelectedObject();
-      if (fileReference != null) {
-        return fileReference;
-      }
-    }
-    
-    return null;
+    return selectedFileReference;
   }
 
 }
