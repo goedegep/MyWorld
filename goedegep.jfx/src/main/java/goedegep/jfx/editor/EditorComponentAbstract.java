@@ -153,7 +153,7 @@ public abstract class EditorComponentAbstract<T> implements EditorComponent<T> {
         .append(MANDATORY_SYMBOL);
       }
       buf.append(":");
-      label = new Label(buf.toString());
+      label = componentFactory.createLabel(buf.toString());
       
       Node node = getControl();
       label.setMnemonicParsing(true);

@@ -25,6 +25,7 @@ public abstract class JfxApplication extends Application {
   protected static final String         NEWLINE = System.getProperty("line.separator");
   
   private static boolean loggingAlreadySetup = false;  // Used to detect that logging is setup more than once.
+  private static Boolean runningInEclipse = null;
     
   /**
    * Logging setup.
@@ -149,6 +150,27 @@ public abstract class JfxApplication extends Application {
 
     Platform.exit();
   }
+  
+  /**
+   * Report an exception.
+   * <p>
+   * The stack trace of the exception is logged.<br/>
+   * And if the application is not running in Eclipse (an official installation), the stack trace is also shown in an exception dialog.
+   * @param exception
+   */
+  protected static void reportException(CustomizationFx customization, Exception exception) {
+    ComponentFactoryFx componentFactory = customization.getComponentFactoryFx();
+    
+    StringWriter sw = new StringWriter();
+    PrintWriter pw = new PrintWriter(sw);
+    exception.printStackTrace(pw);
+    String exceptionText = sw.toString();
+    Logger.getGlobal().severe(exceptionText);
+
+    if (!runningInEclipse()) {
+      componentFactory.createExceptionDialog("An exception occurred", (Exception) exception).showAndWait();
+    }
+  }
 
   /**
    * This method determines whether the application is running in Eclipse or not (i.e. it is an official installation.
@@ -156,18 +178,18 @@ public abstract class JfxApplication extends Application {
    * If this program is an official installation, the property descriptor files are all in the
    * directory from where the program is started.
    * If the program is running in eclipse, each property descriptor file is in the directory of the related project.
+   * 
    * If the current directory ends with 'target/classes' we assume we're running within eclipse.
+   * So make sure to set the working directory in your run configuration to .../target/classes.
    * 
    * @return true, if the program is running within Eclipse, false otherwise.
    */
-  protected static boolean areWeRunningInEclipse() {
-    boolean runningInEclipse = false;
-    
-    String currentDirectory = System.getProperty("user.dir");
-    if (currentDirectory.endsWith("target" + File.separator + "classes")) {
-      runningInEclipse = true;
+  protected static boolean runningInEclipse() {
+    if (runningInEclipse == null) {
+      String currentDirectory = System.getProperty("user.dir");
+      runningInEclipse = currentDirectory.endsWith("target" + File.separator + "classes");
     }
-    
+
     return runningInEclipse;
   }
 }

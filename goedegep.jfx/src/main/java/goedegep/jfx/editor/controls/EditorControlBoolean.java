@@ -23,8 +23,17 @@ public class EditorControlBoolean extends EditorControlTemplate<Boolean> {
   CheckBox checkBox = null;
 
   
-  public static EditorControlBoolean newInstance(CustomizationFx customization, String toolTipText) {
-    EditorControlBoolean editorControlBoolean = new EditorControlBoolean(customization, toolTipText);
+  /**
+   * Create a new {@code EditorControlBoolean} instance.
+   * 
+   * @param customization The GUI customization.
+   * @param id the (unique) Id of the control
+   * @param labelBaseText the base text for the label
+   * @param toolTipText An optional Tooltip text.
+   * @return the newly created {@code EditorControlBoolean}.
+   */
+  public static EditorControlBoolean newInstance(CustomizationFx customization, String id, String labelBaseText, String toolTipText) {
+    EditorControlBoolean editorControlBoolean = new EditorControlBoolean(customization, id, labelBaseText, toolTipText);
     editorControlBoolean.performInitialization();
     
     return editorControlBoolean;
@@ -33,13 +42,17 @@ public class EditorControlBoolean extends EditorControlTemplate<Boolean> {
   /**
    * Constructor.
    * 
-   * @param customization the GUI customization
+   * @param customization The GUI customization.
+   * @param id the (unique) Id of the control
+   * @param labelBaseText the base text for the label
    * @param toolTipText An optional Tooltip text.
    */
-  public EditorControlBoolean(CustomizationFx customization, String toolTipText) {
+  public EditorControlBoolean(CustomizationFx customization, String id, String labelBaseText, String toolTipText) {
     super(customization, true);
     
     this.toolTipText = toolTipText;
+    setId(id);
+    setLabelBaseText(labelBaseText);
   }
 
   @Override
@@ -47,7 +60,7 @@ public class EditorControlBoolean extends EditorControlTemplate<Boolean> {
     
     checkBox = componentFactory.createCheckBox(null, false);
     
-    checkBox.selectedProperty().addListener((o)-> handleNewUserInput(checkBox));
+    checkBox.selectedProperty().addListener((_)-> handleNewUserInput(checkBox));
     
     if (toolTipText != null) {
       checkBox.setTooltip(new Tooltip(toolTipText));

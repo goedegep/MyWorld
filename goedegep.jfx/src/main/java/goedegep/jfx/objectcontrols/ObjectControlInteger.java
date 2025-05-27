@@ -98,9 +98,7 @@ public class ObjectControlInteger extends ObjectControlTextField<Integer> {
   }
 
   /**
-   * Set the default valid factor range.
-   * <p>
-   * Most currency values are in 2 decimals, so this is the default.
+   * Set the default valid range.
    */
   private void setDefaultValidValueRange() {
     minimumValue = null;

@@ -272,9 +272,7 @@ public class InvoiceAndPropertyEditPanel extends EditPanelTemplate<InvoiceAndPro
         .setOptional(true)
         .build();
         
-    archiveControl = componentFactory.createEditorControlBoolean("Archived");
-    archiveControl.setId("archived");
-    archiveControl.setLabelBaseText("Archived");
+    archiveControl = componentFactory.createEditorControlBoolean("archived", "Archived", "Archived");
     
     documentsEditPanel = new FileReferencesEditPanelBuilder(customization)
         .setReferencesEditPanelTitle("Documents")
