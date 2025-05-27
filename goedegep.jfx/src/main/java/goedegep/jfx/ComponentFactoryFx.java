@@ -13,13 +13,9 @@ import goedegep.configuration.model.Look;
 import goedegep.geo.WGS84Coordinates;
 import goedegep.jfx.controls.AutoCompleteTextField;
 import goedegep.jfx.editor.controls.EditorControlBoolean;
-import goedegep.jfx.editor.controls.EditorControlCurrency;
-import goedegep.jfx.editor.controls.EditorControlEnumComboBox;
 import goedegep.jfx.editor.controls.EditorControlFileSelecter;
-import goedegep.jfx.editor.controls.EditorControlFlexDate;
 import goedegep.jfx.editor.controls.EditorControlFolderSelecter;
 import goedegep.jfx.editor.controls.EditorControlHTMLString;
-import goedegep.jfx.editor.controls.EditorControlString;
 import goedegep.jfx.objectcontrols.ObjectControlAutoCompleteTextField;
 import goedegep.jfx.objectcontrols.ObjectControlBoolean;
 import goedegep.jfx.objectcontrols.ObjectControlCurrency;
@@ -108,7 +104,6 @@ public class ComponentFactoryFx {
   private CustomizationFx customization;
   private AppResourcesFx appResources;
   
-//  private Background boxBackground = null;
   private Color boxBackgroundColor = null;
   private Color panelBackgroundColor = null;
   private Color textFieldBackgroundColor = null;
@@ -126,11 +121,10 @@ public class ComponentFactoryFx {
   private String buttonHexColorValue2 = null;
   private String buttonHexColorValue3 = null;
   private String buttonHexColorValue4 = null;
-  private String boxHexColorValue1 = null;
-  private String boxHexColorValue2 = null;
-  private String boxHexColorValue3 = null;
-  private String boxHexColorValue4 = null;
-  private String labelBackgroundHexColorValue = null;
+//  private String boxHexColorValue1 = null;
+//  private String boxHexColorValue2 = null;
+//  private String boxHexColorValue3 = null;
+//  private String boxHexColorValue4 = null;
   private String panelBackgroundHexColorValue = null;
   private String textFieldBackgroundHexColorValue = null;
 
@@ -151,30 +145,33 @@ public class ComponentFactoryFx {
       panelBackgroundColor = look.getPanelBackgroundColor();
       borderColor = createColor(look.getButtonBackgroundColor(), 0.3);
       buttonBackgroundColor = look.getButtonBackgroundColor();
-//      boxBackground = new Background(new BackgroundFill(look.getBoxBackgroundColor(), boxCornerRadii, Insets.EMPTY));
       
       boxBackgroundColor = look.getBoxBackgroundColor();
       Color color1 = new Color(0.8 * boxBackgroundColor.getRed(), 0.8 * boxBackgroundColor.getGreen(), 0.8 * boxBackgroundColor.getBlue(), 1.0);
       Color color2 = new Color(0.95 * boxBackgroundColor.getRed(), 0.95 * boxBackgroundColor.getGreen(), 0.95 * boxBackgroundColor.getBlue(), 1.0);
       Color color3 = new Color(1.0 * boxBackgroundColor.getRed(), 1.0 * boxBackgroundColor.getGreen(), 1.0 * boxBackgroundColor.getBlue(), 1.0);
       Color color4 = new Color(0.9 * boxBackgroundColor.getRed(), 0.9 * boxBackgroundColor.getGreen(), 0.9 * boxBackgroundColor.getBlue(), 1.0);
-      boxHexColorValue1 = JfxUtil.colorToCssString(color1);
-      boxHexColorValue2 = JfxUtil.colorToCssString(color2);
-      boxHexColorValue3 = JfxUtil.colorToCssString(color3);
-      boxHexColorValue4 = JfxUtil.colorToCssString(color4);
+//      boxHexColorValue1 = JfxUtil.colorToCssString(color1);
+//      boxHexColorValue2 = JfxUtil.colorToCssString(color2);
+//      boxHexColorValue3 = JfxUtil.colorToCssString(color3);
+//      boxHexColorValue4 = JfxUtil.colorToCssString(color4);
       
       panelBackground = new Background(new BackgroundFill(look.getPanelBackgroundColor(), CornerRadii.EMPTY, Insets.EMPTY));
-      labelBackground = new Background(new BackgroundFill(look.getLabelBackgroundColor(), CornerRadii.EMPTY, Insets.EMPTY));
+      
+      // For labels often no background is used
+      if (look.getLabelBackgroundColor() != null) {
+        labelBackground = new Background(new BackgroundFill(look.getLabelBackgroundColor(), CornerRadii.EMPTY, Insets.EMPTY));
+      }
 
-      labelBackgroundHexColorValue = JfxUtil.colorToCssString(look.getLabelBackgroundColor());
       panelBackgroundHexColorValue = JfxUtil.colorToCssString(look.getPanelBackgroundColor());
       textFieldBackgroundHexColorValue = JfxUtil.colorToCssString(look.getTextFieldBackgroundColor());
+      textFieldBackground = new Background(new BackgroundFill(look.getTextFieldBackgroundColor(), CornerRadii.EMPTY, Insets.EMPTY));
 
       textFieldBackgroundColor = look.getTextFieldBackgroundColor();
-      color1 = new Color(0.8 * textFieldBackgroundColor.getRed(), 0.8 * textFieldBackgroundColor.getGreen(), 0.8 * textFieldBackgroundColor.getBlue(), 1.0);
-      color2 = new Color(0.95 * textFieldBackgroundColor.getRed(), 0.95 * textFieldBackgroundColor.getGreen(), 0.95 * textFieldBackgroundColor.getBlue(), 1.0);
-      color3 = new Color(1.0 * textFieldBackgroundColor.getRed(), 1.0 * textFieldBackgroundColor.getGreen(), 1.0 * textFieldBackgroundColor.getBlue(), 1.0);
-      color4 = new Color(0.9 * textFieldBackgroundColor.getRed(), 0.9 * textFieldBackgroundColor.getGreen(), 0.9 * textFieldBackgroundColor.getBlue(), 1.0);
+      color1 = new Color(0.8 * buttonBackgroundColor.getRed(), 0.8 * buttonBackgroundColor.getGreen(), 0.8 * buttonBackgroundColor.getBlue(), 1.0);
+      color2 = new Color(0.95 * buttonBackgroundColor.getRed(), 0.95 * buttonBackgroundColor.getGreen(), 0.95 * buttonBackgroundColor.getBlue(), 1.0);
+      color3 = new Color(1.0 * buttonBackgroundColor.getRed(), 1.0 * buttonBackgroundColor.getGreen(), 1.0 * buttonBackgroundColor.getBlue(), 1.0);
+      color4 = new Color(0.9 * buttonBackgroundColor.getRed(), 0.9 * buttonBackgroundColor.getGreen(), 0.9 * buttonBackgroundColor.getBlue(), 1.0);
 
       buttonHexColorValue1 = JfxUtil.colorToCssString(color1);
       buttonHexColorValue2 = JfxUtil.colorToCssString(color2);
@@ -526,15 +523,16 @@ public class ComponentFactoryFx {
    */
   public <E> ComboBox<E> createComboBox(Collection<E> items) {
     ComboBox<E> comboBox = new ComboBox<>();
-    if (boxHexColorValue1 != null) {
-      CornerRadii cornerRadii = new CornerRadii(3.0);
-      comboBox.setStyle("-fx-padding: 0 10 0 10;" + 
-          "-fx-background-color:linear-gradient(" + boxHexColorValue1 + " 0%, " + boxHexColorValue2 + " 25%, " + boxHexColorValue3 + " 75%, " + boxHexColorValue4 + " 100%);" + 
-          "-fx-background-insets: 0;" + 
-          "-fx-background-radius: 3;");
-      Color borderColor = new Color(0.7 * boxBackgroundColor.getRed(), 0.7 * boxBackgroundColor.getGreen(), 0.7 * boxBackgroundColor.getBlue(), 1.0);
-      comboBox.setBorder(new Border(new BorderStroke(borderColor, BorderStrokeStyle.SOLID, cornerRadii, new BorderWidths(1, 2, 1, 2))));
-    }
+    customizeButton(comboBox);
+//    if (boxHexColorValue1 != null) {
+//      CornerRadii cornerRadii = new CornerRadii(3.0);
+//      comboBox.setStyle("-fx-padding: 0 10 0 10;" + 
+//          "-fx-background-color:linear-gradient(" + boxHexColorValue1 + " 0%, " + boxHexColorValue2 + " 25%, " + boxHexColorValue3 + " 75%, " + boxHexColorValue4 + " 100%);" + 
+//          "-fx-background-insets: 0;" + 
+//          "-fx-background-radius: 3;");
+//      Color borderColor = new Color(0.7 * boxBackgroundColor.getRed(), 0.7 * boxBackgroundColor.getGreen(), 0.7 * boxBackgroundColor.getBlue(), 1.0);
+//      comboBox.setBorder(new Border(new BorderStroke(borderColor, BorderStrokeStyle.SOLID, cornerRadii, new BorderWidths(1, 2, 1, 2))));
+//    }
     
     if (items != null) {
       comboBox.getItems().addAll(items);
@@ -562,6 +560,8 @@ public class ComponentFactoryFx {
   public AutoCompleteTextField createAutoCompleteTextField() {
     AutoCompleteTextField autoCompleteTextField = new AutoCompleteTextField();
     
+    customizeTextInputControl(autoCompleteTextField);
+    
     return autoCompleteTextField;
   }
   
@@ -580,7 +580,7 @@ public class ComponentFactoryFx {
    * 
    * @param button the Button to be customized.
    */
-  public void customizeButton(Button button) {
+  public void customizeButton(Node button) {
     if (buttonHexColorValue1 != null) {
       CornerRadii cornerRadii = new CornerRadii(3.0);
       button.setStyle("-fx-padding: 3 10 3 10;-fx-font-weight: bold;" + 
@@ -588,7 +588,13 @@ public class ComponentFactoryFx {
           "-fx-background-insets: 0;" + 
           "-fx-background-radius: 3;");
       Color borderColor = new Color(0.7 * textFieldBackgroundColor.getRed(), 0.7 * textFieldBackgroundColor.getGreen(), 0.7 * textFieldBackgroundColor.getBlue(), 1.0);
-      button.setBorder(new Border(new BorderStroke(borderColor, BorderStrokeStyle.SOLID, cornerRadii, new BorderWidths(1, 2, 1, 2))));
+      
+      if (button instanceof Button) {
+        ((Button) button).setBorder(new Border(new BorderStroke(borderColor, BorderStrokeStyle.SOLID, cornerRadii, new BorderWidths(1, 2, 1, 2))));
+      }
+      if (button instanceof ComboBox) {
+        ((ComboBox<?>) button).setBorder(new Border(new BorderStroke(borderColor, BorderStrokeStyle.SOLID, cornerRadii, new BorderWidths(1, 2, 1, 2))));
+      }
     }
   }
     
@@ -679,12 +685,12 @@ public class ComponentFactoryFx {
     colorAdjust.setBrightness(normalBrightnessAdjust);
 
     button.setEffect(colorAdjust);
-    button.setOnMouseEntered(e -> {
+    button.setOnMouseEntered(_ -> {
       Timeline highlightTimeline = new Timeline(
           new KeyFrame(Duration.seconds(0.2), new KeyValue(colorAdjust.brightnessProperty(), 0.4, Interpolator.LINEAR)));
       highlightTimeline.play();
     });
-    button.setOnMouseExited(e -> {
+    button.setOnMouseExited(_ -> {
       Timeline backToNormalTimeline = new Timeline(
           new KeyFrame(Duration.seconds(1), new KeyValue(colorAdjust.brightnessProperty(), normalBrightnessAdjust, Interpolator.LINEAR)
               ));
@@ -709,13 +715,15 @@ public class ComponentFactoryFx {
       java.util.function.Supplier<String> infoSupplier) {
     Button button = createButton("i", toolTip);
     
-    button.setOnAction(e -> createMarkdownTextDialog(infoDialogTitle, image, null, infoSupplier.get()).showAndWait());
+    button.setOnAction(_ -> createMarkdownTextDialog(infoDialogTitle, image, null, infoSupplier.get()).showAndWait());
     
     return button;
   }
   
   /**
    * Create a {@link CheckBox}.
+   * <p>
+   * Note: the color of the checkBox is always the default value.
    * 
    * @param text the text added to the CheckBox.
    * @param selected if true, the CheckBox is set to be selected.
@@ -727,9 +735,6 @@ public class ComponentFactoryFx {
       checkBox.setText(text);
     }
     checkBox.setSelected(selected);
-    if (panelBackgroundHexColorValue != null) {
-      checkBox.setStyle("-fx-background-color: " + panelBackgroundHexColorValue);
-    }
 
     return checkBox;
   }
@@ -879,6 +884,7 @@ public class ComponentFactoryFx {
    * @param directoryChooserTitle title for the DirectoryChooser (may not be null)
    * @return the newly created FolderSelecter
    */
+  @Deprecated
   public ObjectControlFileSelecter createFileSelecterObjectControl(int textFieldWidth, String textFieldToolTipText,
       String folderChooserButtonText, String folderChooserButtonToolTipText, String directoryChooserTitle, boolean isOptional) {
     ObjectControlFileSelecter fileSelecter = new ObjectControlFileSelecter(customization, textFieldWidth, textFieldToolTipText,
@@ -925,6 +931,7 @@ public class ComponentFactoryFx {
    * @param directoryChooserTitle title for the DirectoryChooser (may not be null)
    * @return the newly created FolderSelecter
    */
+  @Deprecated
   public ObjectControlFolderSelecter createFolderSelecter(int textFieldWidth, String textFieldToolTipText,
       String folderChooserButtonText, String folderChooserButtonToolTipText, String directoryChooserTitle, boolean isOptional) {
     ObjectControlFolderSelecter folderSelecter = new ObjectControlFolderSelecter(customization, textFieldWidth, textFieldToolTipText,
@@ -1022,6 +1029,7 @@ public class ComponentFactoryFx {
    * @param toolTipText an optional tooltip text.
    * @return the newly created {@code ObjectControlBoolean}.
    */
+  @Deprecated
   public ObjectControlBoolean createObjectControlBoolean(String text, boolean selected, boolean isOptional, String toolTipText) {
     ObjectControlBoolean objectControlBoolean = new ObjectControlBoolean(customization, text, selected, isOptional, toolTipText);
 
@@ -1041,6 +1049,7 @@ public class ComponentFactoryFx {
    * @param toolTipText an optional tooltip text.
    * @return the newly created {@code ObjectControlInteger}.
    */
+  @Deprecated
   public ObjectControlInteger createObjectControlInteger(Integer integer, double width, boolean isOptional, String toolTipText) {
     ObjectControlInteger objectControlInteger = new ObjectControlInteger(customization, integer, width, isOptional, toolTipText);
 
@@ -1071,8 +1080,8 @@ public class ComponentFactoryFx {
    * @param toolTipText an optional tooltip text.
    * @return the newly created {@code ObjectControlBoolean}.
    */
-  public EditorControlBoolean createEditorControlBoolean(String toolTipText) {
-    EditorControlBoolean editorControlBoolean = EditorControlBoolean.newInstance(customization, toolTipText);
+  public EditorControlBoolean createEditorControlBoolean(String id, String labelBaseText, String toolTipText) {
+    EditorControlBoolean editorControlBoolean = EditorControlBoolean.newInstance(customization, id, labelBaseText, toolTipText);
 
     return editorControlBoolean;
   }
@@ -1084,6 +1093,7 @@ public class ComponentFactoryFx {
    * @param isOptional if true, the value provided by this control is optional.
    * @return the newly created {@code ObjectControlMultiLineString}.
    */
+  @Deprecated
   public ObjectControlMultiLineString createObjectControlMultiLineString(String text, boolean isOptional) {
     ObjectControlMultiLineString objectControlMultiLineString = new ObjectControlMultiLineString(customization, text, isOptional);
 
@@ -1097,6 +1107,7 @@ public class ComponentFactoryFx {
    * @param isOptional if true, the value provided by this control is optional.
    * @return the newly created {@code ObjectControlHTMLString}.
    */
+  @Deprecated
   public ObjectControlHTMLString createObjectControlHTMLString(String text, boolean isOptional) {
     ObjectControlHTMLString objectControlHTMLString = new ObjectControlHTMLString(customization, text, isOptional);
 
@@ -1124,6 +1135,7 @@ public class ComponentFactoryFx {
    * @param toolTipText an optional tooltip text.
    * @return the newly created {@code ObjectControlCurrency}.
    */
+  @Deprecated
   public ObjectControlCurrency createObjectControlCurrency(PgCurrency pgCurrency, double width, boolean isOptional, String toolTipText) {
     ObjectControlCurrency objectControlCurrency = new ObjectControlCurrency(customization, pgCurrency, width, isOptional, toolTipText);
 
@@ -1139,6 +1151,7 @@ public class ComponentFactoryFx {
    * @param toolTipText an optional tooltip text.
    * @return the newly created {@code ObjectControlFixedPointValue}.
    */
+  @Deprecated
   public ObjectControlFixedPointValue createObjectControlFixedPointValue(FixedPointValue objectValue, double width, boolean isOptional, String toolTipText) {
     ObjectControlFixedPointValue objectControlFixedPointValue = new ObjectControlFixedPointValue(customization, objectValue, width, isOptional, toolTipText);
 
@@ -1172,6 +1185,7 @@ public class ComponentFactoryFx {
    * @param toolTipText an optional tooltip text.
    * @return the newly created {@code ObjectControlLocalDate}.
    */
+  @Deprecated
   public ObjectControlLocalDate createObjectControlLocalDate(LocalDate localDate, double width, boolean isOptional, String toolTipText) {
     ObjectControlLocalDate objectControlLocalDate = new ObjectControlLocalDate(customization, localDate, width, isOptional, toolTipText);
 
@@ -1191,6 +1205,7 @@ public class ComponentFactoryFx {
    * @param toolTipText an optional tooltip text.
    * @return the newly created {@code ObjectControlTextField}.
    */
+  @Deprecated
   public <T>ObjectControlTextField<T> createObjectControlTextField(StringConverterAndChecker<T> stringConverter, T initialValue, double width, boolean isOptional, String toolTipText) {
     ObjectControlTextField<T> objectControlTextField = new ObjectControlTextField<>(customization, stringConverter, initialValue, width, isOptional, toolTipText);
 
@@ -1208,6 +1223,7 @@ public class ComponentFactoryFx {
    * @param toolTipText an optional tooltip text
    * @return the newly created {@code ObjectControlEnumComboBox}.
    */
+  @Deprecated
   public <T extends Enum<T>> ObjectControlEnumComboBox<T> createObjectControlEnumComboBox(T enumConstant, boolean isOptional, String toolTipText) {
     return new ObjectControlEnumComboBox<T>(customization, enumConstant, isOptional, toolTipText);
   }
@@ -1223,6 +1239,7 @@ public class ComponentFactoryFx {
    * @param toolTipText an optional tooltip text
    * @return the newly created {@code ObjectControlAutoCompleteTextField}.
    */
+  @Deprecated
   public <T> ObjectControlAutoCompleteTextField<T> createObjectControlAutoCompleteTextField(StringConverterAndChecker<T> stringConverter, T initialValue, double width, boolean isOptional, String toolTipText) {
     return new ObjectControlAutoCompleteTextField<T>(customization, stringConverter, initialValue, width, isOptional, toolTipText);
   }
@@ -1248,6 +1265,7 @@ public class ComponentFactoryFx {
    * @param isOptional if true, the value provided by this control is optional.
    * @return the newly created {@code ObjectControlImageFile}
    */
+  @Deprecated
   public ObjectControlImageFile createObjectControlImageFile(boolean isOptional) {
     return new ObjectControlImageFile(customization, isOptional);
   }
@@ -1524,7 +1542,7 @@ public class ComponentFactoryFx {
     stage.getIcons().add(appResources.getApplicationImage(ImageSize.SIZE_0));
 
     // Set the background color
-    alert.getDialogPane().setStyle("-fx-background-color: " + labelBackgroundHexColorValue);
+    alert.getDialogPane().setStyle("-fx-background-color: " + panelBackgroundHexColorValue);
         
     if (title != null) {
       alert.setTitle(title);
@@ -1569,7 +1587,7 @@ public class ComponentFactoryFx {
     stage.getIcons().add(appResources.getApplicationImage(ImageSize.SIZE_0));
 
     // Set the background color
-    alert.getDialogPane().setStyle("-fx-background-color: " + labelBackgroundHexColorValue);
+    alert.getDialogPane().setStyle("-fx-background-color: " + panelBackgroundHexColorValue);
         
     if (title != null) {
       alert.setTitle(title);

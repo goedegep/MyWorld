@@ -54,7 +54,7 @@ public class EditorControlAutoCompleteTextField<T> extends EditorControlTemplate
    * @param toolTipText an optional tooltip text
    * @return a new {@code EditorControlEnumComboBox} instance
    */
-  public static <U extends Enum<U>> EditorControlAutoCompleteTextField<U> newInstance(CustomizationFx customization, StringConverterAndChecker<U> stringConverterAndChecker, double width, boolean isOptional, String toolTipText) {
+  public static <U> EditorControlAutoCompleteTextField<U> newInstance(CustomizationFx customization, StringConverterAndChecker<U> stringConverterAndChecker, double width, boolean isOptional, String toolTipText) {
     EditorControlAutoCompleteTextField<U> editorControlAutoCompleteTextField = new EditorControlAutoCompleteTextField<U>(customization, stringConverterAndChecker, width, isOptional, toolTipText);
     editorControlAutoCompleteTextField.performInitialization();
     

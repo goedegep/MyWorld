@@ -9,8 +9,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import goedegep.app.finan.guifx.FinanMenuWindow;
-import goedegep.demo.guifx.DemoCustomization;
-import goedegep.demo.guifx.DemoMenuWindow;
 import goedegep.events.app.guifx.EventsLauncher;
 import goedegep.finan.Finan;
 import goedegep.invandprop.app.guifx.InvoicesAndPropertiesLauncher;
@@ -243,22 +241,6 @@ public class MyWorldMenuWindowFx extends JfxStage {
       
     });
     grid.add(applicationButton, 2, 2);
-    
-    // Demo
-    applicationButton = createModuleButton(
-        MyWorldAppModule.DEMO.getModuleName(),
-        DemoCustomization.getInstance().getResources().getApplicationImage(ImageSize.SIZE_3));
-    applicationButton.setOnAction(new EventHandler<ActionEvent>() {
-
-      @Override
-      public void handle(ActionEvent event) {
-        Stage stage = new DemoMenuWindow(DemoCustomization.getInstance());
-        stage.centerOnScreen();
-        stage.show();
-      }
-      
-    });
-    grid.add(applicationButton, 3, 2);
    
     mainLayout.getChildren().add(grid);
     
@@ -370,14 +352,14 @@ public class MyWorldMenuWindowFx extends JfxStage {
     colorAdjust.setBrightness(normalBrightnessAdjust);
 
     buttonImageView.setEffect(colorAdjust);
-    button.setOnMouseEntered(e -> {
+    button.setOnMouseEntered(_ -> {
 
       Timeline highlightTimeline = new Timeline(
           new KeyFrame(Duration.seconds(0.2), new KeyValue(colorAdjust.brightnessProperty(), 0.4, Interpolator.LINEAR)));
       highlightTimeline.play();
 
     });
-    button.setOnMouseExited(e -> {
+    button.setOnMouseExited(_ -> {
 
       Timeline backToNormalTimeline = new Timeline(
           new KeyFrame(Duration.seconds(1), new KeyValue(colorAdjust.brightnessProperty(), normalBrightnessAdjust, Interpolator.LINEAR)

@@ -4,7 +4,7 @@ import java.util.logging.Logger;
 
 import goedegep.demo.jfx.editor.CompanyService;
 import goedegep.demo.jfx.eobjecttreeview.guifx.EObjectTreeViewDemo;
-import goedegep.demo.jfx.objectcontrols.guifx.ObjectControlsDemo;
+import goedegep.demo.jfx.objectcontrols.guifx.EditorControlsDemo;
 import goedegep.demo.resources.guifx.ImageResourceDemo;
 import goedegep.demo.xtree.guifx.XTreeDemo;
 import goedegep.jfx.ComponentFactoryFx;
@@ -90,8 +90,8 @@ public class DemoMenuWindow extends JfxStage {
     menu = componentFactory.createMenu("Jfx");
     
     // Jfx:ObjectControls
-    menuItem = componentFactory.createMenuItem("ObjectControls");
-    menuItem.setOnAction((e) -> new ObjectControlsDemo(customization));
+    menuItem = componentFactory.createMenuItem("EditorControls");
+    menuItem.setOnAction((e) -> new EditorControlsDemo(customization));
     menu.getItems().add(menuItem);
     
     // Jfx:Editor

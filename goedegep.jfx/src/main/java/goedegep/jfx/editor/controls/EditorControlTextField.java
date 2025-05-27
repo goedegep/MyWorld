@@ -8,14 +8,13 @@ import goedegep.appgen.swing.DefaultCustomization;
 import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.DefaultCustomizationFx;
 import goedegep.jfx.editor.EditorControlTemplate;
-import goedegep.jfx.editor.controls.EditorControlString.Builder;
 import goedegep.jfx.objectcontrols.ObjectControl;
 import goedegep.jfx.stringconverters.AnyTypeStringConverter;
 import javafx.scene.control.TextField;
 import javafx.util.StringConverter;
 
 /**
- * This class forms the basis for classes implementing the {@link ObjectControl} interface, using a TextField control.
+ * This class forms the basis for classes implementing the {@link EditorControl} interface, using a {@code TextField} control.
  * <p>
  * The initial {@code text} of a {@code TextField} is an empty string. Also, when the user clears the field, the {@code text} is an empty string.<br/>
  * This empty string is handled as 'not filled in' and the value in this case is {@code null}.
@@ -27,15 +26,16 @@ import javafx.util.StringConverter;
  * To convert an object to String and vice versa there are the following options:
  * <ul>
  * <li>
- * Provide a StringConverter via the constructor.
+ * Provide a {@link StringConverterAndChecker} via the builder.
  * </li>
  * <li>
- * Overwrite the methods {@link #objectToString} and {@link #stringToObject}.</br>
- * In this case any StringConverter is ignored.
+ * Or overwrite the methods {@link #objectToString} and {@link #stringToObject}.</br>
+ * In this case any {@code StringConverterAndChecker} is ignored.
  * </li>
  * </ul>
  * </li>
  * </ul>
+ * If you directly use this class, you have to provide a {@code StringConverterAndChecker}.
  *
  * @param <T> The object type represented by this control.
  */
@@ -52,24 +52,6 @@ public class EditorControlTextField<T> extends EditorControlTemplate<T> {
   
   private boolean ignoreChanges = false;
   
-//  public static <U> EditorControlTextField<U> newInstance(CustomizationFx customization, double width, boolean isOptional, String toolTipText) {
-//    EditorControlTextField<U> editorControlTextField = new EditorControlTextField<U>(customization, width, isOptional, toolTipText);
-//    editorControlTextField.performInitialization();
-//    
-//    return editorControlTextField;
-//  }
-//    
-//  /**
-//   * Constructor for using an object as initial value.
-//   * 
-//   * @param initialValue Initial value to set the text to (may be null).
-//   * @param width The width of the TextField
-//   * @param isOptional Indicates whether the control is optional (if true) or mandatory.
-//   * @param toolTipText An optional ToolTip text.
-//   */
-//  public EditorControlTextField(CustomizationFx customization, double width, boolean isOptional, String toolTipText) {
-//    this(customization, null, width, isOptional, toolTipText);
-//  }
 
   /**
    * Constructor using builder.
@@ -91,32 +73,6 @@ public class EditorControlTextField<T> extends EditorControlTemplate<T> {
       stringConverter = new AnyTypeStringConverter<T>();
     }
   }
-  
-//  /**
-//   * Constructor for using an object as initial value.
-//   * 
-//   * @param stringConverter a StringConverterAndChecker for conversion between object of type T and String.
-//   * @param initialValue Initial value to set the text to (may be null).
-//   * @param width The width of the TextField
-//   * @param isOptional Indicates whether the control is optional (if true) or mandatory.
-//   * @param toolTipText An optional ToolTip text.
-//   */
-//  public EditorControlTextField(CustomizationFx customization, StringConverter<T> stringConverter, double width, boolean isOptional, String toolTipText) {
-//    super(customization, isOptional);
-//    
-//    this.width = width;
-//    this.toolTipText = toolTipText;
-//    
-//    if (stringConverter != null) {
-//      this.stringConverter = stringConverter;
-//    } else {
-//      this.stringConverter = new AnyTypeStringConverter<T>();
-//    }
-//
-//    // The initial value of the textField is an empty string. Again setting it to an empty string doesn't trigger the listener.
-//    // So if the initial value isn't null, set the value (triggering the listener, leading to a call to handleNewUserInput().
-//    // Else, just call handleNewUserInput().
-//  }
   
   public void createControls() {
     textField = customization.getComponentFactoryFx().createTextField(width, toolTipText);

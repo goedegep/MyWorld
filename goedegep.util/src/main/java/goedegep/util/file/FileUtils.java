@@ -703,7 +703,7 @@ public class FileUtils {
     Objects.requireNonNull(referenceFolder, "referenceFolder may not be null");
     
     LOGGER.info("=> referenceFolder=" + referenceFolder + ", file" + fileName);
-    if (referenceFolder.endsWith("/")  ||  referenceFolder.endsWith("\\")) {
+    if (!referenceFolder.equals("/")  &&  (referenceFolder.endsWith("/")  ||  referenceFolder.endsWith("\\"))) {
       throw new RuntimeException("referenceFolder may not end with a '/' or '\\'. referenceFolder is: '" + referenceFolder + "'");
     }
     
@@ -712,7 +712,12 @@ public class FileUtils {
     }
     
     if (fileName.startsWith(referenceFolder)  &&  fileName.length() >= referenceFolder.length() + 1) {
-      String strippedName = fileName.substring(referenceFolder.length() + 1);
+      String strippedName;
+      if (referenceFolder.equals("/")) {
+        strippedName = fileName.substring(referenceFolder.length());
+      } else {
+        strippedName = fileName.substring(referenceFolder.length() + 1);
+      }
       LOGGER.info("<= " + strippedName);
       return strippedName;
     } else {

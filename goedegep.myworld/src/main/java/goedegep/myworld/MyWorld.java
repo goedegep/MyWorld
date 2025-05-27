@@ -234,7 +234,9 @@ private static final String         VACATIONS_PROJECT_PATH = "../../../goedegep.
       modulesToInitialize.addAll(MyWorldAppModule.MY_WORLD.getDependsOnModules());
     }
 
-    boolean runningInEclipse = areWeRunningInEclipse();
+    getComputerName();
+    
+    boolean runningInEclipse = runningInEclipse();
 
     // DevelopmentMode
     // In development mode extra items are added to menu's.
@@ -287,6 +289,13 @@ private static final String         VACATIONS_PROJECT_PATH = "../../../goedegep.
     }
     
     LOGGER.fine("<=");
+  }
+  
+  private String getComputerName() {
+    String computerName = System.getenv("COMPUTERNAME");
+    LOGGER.severe("computer name: " + computerName);
+  
+    return computerName;
   }
   
   /**

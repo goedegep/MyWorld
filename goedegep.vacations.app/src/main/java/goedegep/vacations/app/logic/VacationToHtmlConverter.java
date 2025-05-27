@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
+import java.nio.file.FileSystem;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -17,6 +18,9 @@ import org.commonmark.node.Node;
 import org.commonmark.parser.Parser;
 import org.commonmark.renderer.html.HtmlRenderer;
 
+import com.google.common.jimfs.Configuration;
+import com.google.common.jimfs.Jimfs;
+
 import goedegep.gpx.GpxUtil;
 import goedegep.gpx.app.Activity;
 import goedegep.gpx.app.GpxAppUtil;
@@ -28,6 +32,7 @@ import goedegep.poi.model.POICategoryId;
 import goedegep.resources.ImageSize;
 import goedegep.types.model.FileReference;
 import goedegep.util.emf.EMFResource;
+import goedegep.util.file.FileUtils;
 import goedegep.util.html.HtmlUtil;
 import goedegep.util.text.Indent;
 import goedegep.vacations.model.Day;
@@ -51,6 +56,16 @@ public class VacationToHtmlConverter extends VacationToTextConverterAbstract {
   private StringBuilder buf = new StringBuilder();
   private Parser parser = Parser.builder().build();
   private HtmlRenderer renderer = HtmlRenderer.builder().build();
+  
+  private boolean embedImages = false;
+  
+  /* For exporting a website zip file (first try, all files in same folder):
+   *   Images: copy the image to the imfs, replace URL with just the filename
+   *   File reference: same as image
+   * Name the html file 'Vacation'
+   * Put everything in a zip file called Vacation.zip
+   */
+  private Path vacationFolderPath;
 
 
   // For creating the table.
@@ -81,8 +96,24 @@ public class VacationToHtmlConverter extends VacationToTextConverterAbstract {
    * @param vacation the <code>Vacation</code> for which an HTML document is to be generated.
    * @return the generated HTML document.
    */
-  public String vacationToHtml(Vacation vacation, boolean embedImages) {
+  public String vacationToHtml(Vacation vacation, boolean generateForWeb) {
     LOGGER.info("=>");
+    
+    // Set up IMFS if we're generating for web.
+    FileSystem imfs = null;
+    if (generateForWeb) {
+      
+      // create/get an in memory file system (imfs)
+      // Create an in-memory file system
+      imfs = Jimfs.newFileSystem(Configuration.unix());
+      vacationFolderPath = imfs.getPath("/Vacation");
+      try {
+        Files.createDirectory(vacationFolderPath);
+      } catch (IOException e) {
+        // TODO Auto-generated catch block
+        e.printStackTrace();
+      }
+    }
     
     firstRow = true;
     tableStarted = false;
@@ -122,8 +153,23 @@ public class VacationToHtmlConverter extends VacationToTextConverterAbstract {
         if (text == null) {
           text = fileReference.getFile();
         }
+        
+        String filename = fileReference.getFile();
+        if (generateForWeb && filename != null) {
+          File file = new File(filename);
+          filename = file.getName();
+          try {
+            Path destinationPath = vacationFolderPath.resolve(filename);
+            if (!Files.exists(destinationPath)) {
+              Files.copy(Paths.get(fileReference.getFile()), destinationPath);
+            }
+          } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+          }
+        }
         buf.append("<a href=\"")
-        .append(fileReference.getFile())
+        .append(filename)
         .append("\">")
         .append(text)
         .append("</a><br/>");
@@ -131,7 +177,7 @@ public class VacationToHtmlConverter extends VacationToTextConverterAbstract {
     }
     
     for (VacationElement element: vacation.getElements()) {
-      vacationElementToHtml(element, embedImages);
+      vacationElementToHtml(element, generateForWeb);
     }
     
     if (tableStarted) {
@@ -145,6 +191,25 @@ public class VacationToHtmlConverter extends VacationToTextConverterAbstract {
     buf.append("</body>");
     buf.append("</html>");
     
+    if (generateForWeb) {
+      
+      // Create a zip file from the imfs folder
+      Path zipFile = Paths.get("D:\\Database\\Vakantie\\Vakantie.zip");
+      Path folderToZip = imfs.getPath("/");
+      try {
+        FileUtils.createZipFileForFolder(zipFile, folderToZip);
+      } catch (IOException e) {
+        e.printStackTrace();
+      }
+      
+      // Delete the imfs folder
+      try {
+        imfs.close();
+      } catch (IOException e) {
+        e.printStackTrace();
+      }
+    }
+    
 //    LOGGER.severe("<= " + buf.toString());
     return buf.toString();
   }
@@ -157,7 +222,7 @@ public class VacationToHtmlConverter extends VacationToTextConverterAbstract {
    * @param location the <code>Location</code> for which an HTML document is to be generated. This argument may not be null.
    * @return an HTML document describing <code>location</code>.
    */
-  public String LocationToHtml(Location location, boolean embedImages) {
+  public String LocationToHtml(Location location, boolean generateForWeb) {
     buf.setLength(0);
 
     if (location == null) {
@@ -170,7 +235,7 @@ public class VacationToHtmlConverter extends VacationToTextConverterAbstract {
     
     buf.append("<body>");
     
-    vacationElementLocationToHtml(location, embedImages);
+    vacationElementLocationToHtml(location, generateForWeb);
     
     buf.append("</body>");
     buf.append("</html>");
@@ -185,7 +250,7 @@ public class VacationToHtmlConverter extends VacationToTextConverterAbstract {
    * 
    * @param element the <code>VacationElement</code> for which HTML text is to be generated.
    */
-  private void vacationElementToHtml(VacationElement element, boolean embedImages) {
+  private void vacationElementToHtml(VacationElement element, boolean generateForWeb) {
     indent.increment();
     LOGGER.info("=> element=" + indent.toString() + element.toString());
     LOGGER.info("      type=" + indent.toString() + element.eClass().getName());
@@ -200,7 +265,7 @@ public class VacationToHtmlConverter extends VacationToTextConverterAbstract {
       break;
            
     case VacationsPackage.LOCATION:
-      vacationElementLocationToHtml((Location) element, embedImages);
+      vacationElementLocationToHtml((Location) element, generateForWeb);
       break;
       
     case VacationsPackage.TEXT:
@@ -208,11 +273,11 @@ public class VacationToHtmlConverter extends VacationToTextConverterAbstract {
       break;
       
     case VacationsPackage.PICTURE:
-      vacationElementPictureToHtml((Picture) element, embedImages);
+      vacationElementPictureToHtml((Picture) element, generateForWeb);
       break;
       
     case VacationsPackage.GPX_TRACK:
-      vacationElementGPXToHtml((GPXTrack) element, embedImages);
+      vacationElementGPXToHtml((GPXTrack) element, generateForWeb);
       break;
       
     case VacationsPackage.MAP_IMAGE:
@@ -221,7 +286,7 @@ public class VacationToHtmlConverter extends VacationToTextConverterAbstract {
     }
     
     for (VacationElement childElement: element.getChildren()) {
-      vacationElementToHtml(childElement, embedImages);
+      vacationElementToHtml(childElement, generateForWeb);
     }
     
     indent.decrement();
@@ -289,7 +354,7 @@ public class VacationToHtmlConverter extends VacationToTextConverterAbstract {
    * 
    * @param location the <code>Location</code> element for which HTML text is to be generated.
    */
-  private void vacationElementLocationToHtml(Location location, boolean embedImages) {
+  private void vacationElementLocationToHtml(Location location, boolean generateForWeb) {
     boolean separatorNeeded = false;
     boolean newLineNeeded = false;
     
@@ -317,7 +382,7 @@ public class VacationToHtmlConverter extends VacationToTextConverterAbstract {
       POICategoryId poiCategoryId = location.getLocationType();
       URL url = poiIcons.getIconUrl(poiCategoryId);
       if (url != null) {
-        addImage(buf, url.toString(), 32, null, embedImages);
+        addImage(buf, url.toString(), 32, null, generateForWeb);
         separatorNeeded = true;
       } else {
         LOGGER.severe("No icon for POICategoryId: " + poiCategoryId);
@@ -418,20 +483,41 @@ public class VacationToHtmlConverter extends VacationToTextConverterAbstract {
    * 
    * @param picture the <code>Picture</code> element for which HTML text is to be generated.
    */
-  private void vacationElementPictureToHtml(Picture picture, boolean embedImages) {
+  private void vacationElementPictureToHtml(Picture picture, boolean generateForWeb) {
     if (picture.isSetPictureReference()) {
       FileReference pictureReference = picture.getPictureReference();
       String pictureFileName = pictureReference.getFile();
       if ((pictureFileName == null)  ||  pictureFileName.isEmpty()) {
         return;
       }
+      
+//      String filename = fileReference.getFile();
+//      if (generateForWeb && filename != null) {
+//        File file = new File(filename);
+//        filename = file.getName();
+//        try {
+//          Path destinationPath = vacationFolderPath.resolve(filename);
+//          Files.copy(Paths.get(fileReference.getFile()), destinationPath);
+//        } catch (IOException e) {
+//          // TODO Auto-generated catch block
+//          e.printStackTrace();
+//        }
+//      }
+//      buf.append("<a href=\"")
+//      .append(filename)
+//      .append("\">")
+//      .append(text)
+//      .append("</a><br/>");
+      
+      
       Path picturePath = Paths.get(pictureFileName);
+      
       buf.append("<a href=\"");
       buf.append(HtmlUtil.encodeHTML(picturePath.toUri().toString()));
       buf.append("\">");
       buf.append("<figure>");
       String caption = VacationsUtils.getPictureCaption(picture);
-      addImage(buf, picturePath.toUri().toString(), 250, caption, embedImages);
+      addImage(buf, picturePath.toUri().toString(), 250, caption, generateForWeb);
       buf.append("</figure>");   
       buf.append("</a>");
     }
@@ -444,7 +530,7 @@ public class VacationToHtmlConverter extends VacationToTextConverterAbstract {
    * 
    * @param gpxTrack the <code>GPXTrack</code> element for which HTML text is to be generated.
    */
-  private void vacationElementGPXToHtml(GPXTrack gpxTrack, boolean embedImage) {
+  private void vacationElementGPXToHtml(GPXTrack gpxTrack, boolean generateForWeb) {
     if (gpxTrack.isSetTrackReference()) {
       buf.append("<p/>");
 
@@ -466,7 +552,7 @@ public class VacationToHtmlConverter extends VacationToTextConverterAbstract {
             }
           }
           
-          addImage(buf, iconUrl.toString(), 32, null, embedImage);
+          addImage(buf, iconUrl.toString(), 32, null, generateForWeb);
 
           String name = null;
           MetadataType metadataType = gpxType.getMetadata();
@@ -584,15 +670,49 @@ public class VacationToHtmlConverter extends VacationToTextConverterAbstract {
     buf.append("</td><td>");
   }
   
-  private void addImage(StringBuilder buf, String urlString, int height, String caption, boolean embedImage) {
+  /**
+   * Add the 'img' part for an image
+   * 
+   * @param buf the {@code StringBuilder} to add the text to.
+   * @param urlString URL of the image.
+   * @param height maximum image height (to be implemented).
+   * @param caption the image caption.
+   * @param generateForWeb if {@code true} information for deploying on a website is generated.
+   */
+  private void addImage(StringBuilder buf, String urlString, int height, String caption, boolean generateForWeb) {
     String resizedFile = null;
     if (imageHasToBeResized(urlString, height)) {
       resizedFile = createResizedImageFile(urlString, height);
       urlString = resizedFile;
     }
+    
     buf.append("<img src=\"");
-    if (!embedImage) {
-      buf.append(HtmlUtil.encodeHTML(urlString));
+    if (!embedImages) {
+      if (generateForWeb && urlString != null) {
+        String absoluteFileName = urlString.substring(5);
+        while (absoluteFileName.startsWith("/")) {
+          absoluteFileName = absoluteFileName.substring(1);
+        }
+        absoluteFileName = absoluteFileName.replaceAll("%20", " ");
+        File file = new File(absoluteFileName);
+        String filename = file.getName();
+        if (absoluteFileName.startsWith("/")) {
+          LOGGER.severe("Illegal start: " + absoluteFileName);
+        }
+        try {
+          Path destinationPath = vacationFolderPath.resolve(filename);
+          if (!Files.exists(destinationPath)) {
+            Files.copy(Paths.get(absoluteFileName), destinationPath);
+          }
+        } catch (IOException e) {
+          // TODO Auto-generated catch block
+          e.printStackTrace();
+        }
+        buf.append(HtmlUtil.encodeHTML(filename));
+      } else {
+        buf.append(HtmlUtil.encodeHTML(urlString));
+      }
+      
     } else {
       buf.append("data:image/")
       .append(getImageType(urlString))

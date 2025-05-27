@@ -5,9 +5,6 @@ import java.util.function.Supplier;
 import java.util.logging.Logger;
 
 import goedegep.jfx.CustomizationFx;
-import goedegep.jfx.editor.controls.EditorControlFlexDate.FlexDateBuilder;
-import goedegep.jfx.editor.controls.EditorControlTextField.Builder;
-import goedegep.util.datetime.FlexDate;
 import goedegep.util.money.PgCurrency;
 import goedegep.util.money.PgCurrencyFormat;
 
@@ -18,25 +15,6 @@ public class EditorControlCurrency extends EditorControlTextField<PgCurrency> {
   private static final Logger         LOGGER = Logger.getLogger(EditorControlCurrency.class.getName());
   private static final PgCurrencyFormat CF = new PgCurrencyFormat();
   
-//  @SuppressWarnings("unchecked")
-//  public static EditorControlCurrency newInstance(CustomizationFx customization, double width, boolean isOptional, String toolTipText) {
-//    EditorControlCurrency editorControlCurrency = new EditorControlCurrency(customization, width, isOptional, toolTipText);
-//    editorControlCurrency.performInitialization();
-//    
-//    return editorControlCurrency;
-//  }
-  
-//  /**
-//   * Constructor.
-//   * 
-//   * @param customization the GUI customization
-//   * @param width Width of the TextField.
-//   * @param isOptional Indication of whether the value is an optional values.
-//   * @param toolTipText An optional Tooltip text.
-//   */
-//  public EditorControlCurrency(CustomizationFx customization, double width, boolean isOptional, String toolTipText) {
-//    super(customization, width, isOptional, toolTipText);
-//  }
   
   protected EditorControlCurrency(CurrencyBuilder builder) {
     super(builder);
@@ -76,6 +54,13 @@ public class EditorControlCurrency extends EditorControlTextField<PgCurrency> {
      */
     public CurrencyBuilder(String id) {
       super(id);
+    }
+    
+    @Override
+    public CurrencyBuilder setCustomization(CustomizationFx customization) {
+      super.setCustomization(customization);
+      
+      return this;
     }
     
     @Override
