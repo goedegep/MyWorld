@@ -15,7 +15,7 @@ module goedegep.appgenfx {
   exports goedegep.jfx.objecteditor;
   exports goedegep.jfx.observableelist;
   exports goedegep.jfx.img;
-  exports goedegep.jfx.stringconverters;
+  exports goedegep.jfx.stringconverterandchecker;
   exports goedegep.jfx.treeview;
   exports goedegep.jfx.workerstategui;
   exports goedegep.jfx.xtreeview;

@@ -9,7 +9,7 @@ import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.DefaultCustomizationFx;
 import goedegep.jfx.editor.EditorControlTemplate;
 import goedegep.jfx.objectcontrols.ObjectControl;
-import goedegep.jfx.stringconverters.AnyTypeStringConverter;
+import goedegep.jfx.stringconverterandchecker.AnyTypeStringConverterAndChecker;
 import javafx.scene.control.TextField;
 import javafx.util.StringConverter;
 
@@ -70,7 +70,7 @@ public class EditorControlTextField<T> extends EditorControlTemplate<T> {
     if (builder.stringConverter != null) {
       stringConverter = builder.stringConverter;
     } else {
-      stringConverter = new AnyTypeStringConverter<T>();
+      stringConverter = new AnyTypeStringConverterAndChecker<T>();
     }
   }
   

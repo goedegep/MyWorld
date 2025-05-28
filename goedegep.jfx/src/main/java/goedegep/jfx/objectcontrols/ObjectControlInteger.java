@@ -3,7 +3,7 @@ package goedegep.jfx.objectcontrols;
 import java.util.logging.Logger;
 
 import goedegep.jfx.CustomizationFx;
-import goedegep.jfx.stringconverters.IntegerObjectStringConverter;
+import goedegep.jfx.stringconverterandchecker.IntegerStringConverterAndChecker;
 import goedegep.util.money.PgCurrency;
 
 /**
@@ -37,7 +37,7 @@ public class ObjectControlInteger extends ObjectControlTextField<Integer> {
    * @param toolTipText An optional ToolTip text.
    */
   public ObjectControlInteger(CustomizationFx customization, Integer integer, double width, boolean isOptional, String toolTipText) {
-    super(customization, new IntegerObjectStringConverter(), integer, width, isOptional, toolTipText);
+    super(customization, IntegerStringConverterAndChecker.getInstance(), integer, width, isOptional, toolTipText);
     
     setDefaultValidValueRange();
   }

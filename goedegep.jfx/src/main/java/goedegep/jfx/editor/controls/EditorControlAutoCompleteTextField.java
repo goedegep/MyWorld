@@ -8,7 +8,7 @@ import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.controls.AutoCompleteTextField;
 import goedegep.jfx.editor.EditorControlTemplate;
 import goedegep.jfx.objectcontrols.ObjectControlAutoCompleteTextField;
-import goedegep.jfx.stringconverters.StringConverterAndChecker;
+import goedegep.jfx.stringconverterandchecker.StringConverterAndChecker;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.Node;
 import javafx.scene.control.Tooltip;

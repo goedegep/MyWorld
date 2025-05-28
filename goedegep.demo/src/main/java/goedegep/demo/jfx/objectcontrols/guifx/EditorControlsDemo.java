@@ -19,7 +19,7 @@ import goedegep.jfx.objectcontrols.ObjectControlHTMLString;
 import goedegep.jfx.objectcontrols.ObjectControlImageFile;
 import goedegep.jfx.objectcontrols.ObjectControlLocalDate;
 import goedegep.jfx.objectcontrols.ObjectControlMultiLineString;
-import goedegep.jfx.stringconverters.StringConverterAndChecker;
+import goedegep.jfx.stringconverterandchecker.StringConverterAndChecker;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;

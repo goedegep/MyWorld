@@ -6,8 +6,8 @@ import java.util.logging.Logger;
 
 import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.controls.AutoCompleteTextField;
-import goedegep.jfx.stringconverters.AnyTypeStringConverter;
-import goedegep.jfx.stringconverters.StringConverterAndChecker;
+import goedegep.jfx.stringconverterandchecker.AnyTypeStringConverterAndChecker;
+import goedegep.jfx.stringconverterandchecker.StringConverterAndChecker;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.control.Tooltip;
 
@@ -44,7 +44,7 @@ public class ObjectControlAutoCompleteTextField<T> extends ObjectControlTemplate
     if (stringConverter != null) {
       this.stringConverterAndChecker = stringConverter;
     } else {
-      this.stringConverterAndChecker = new AnyTypeStringConverter<T>();
+      this.stringConverterAndChecker = new AnyTypeStringConverterAndChecker<T>();
     }
     
     autoCompleteTextField = customization.getComponentFactoryFx().createAutoCompleteTextField();

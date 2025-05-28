@@ -32,11 +32,10 @@ import goedegep.appgen.TableRowOperationDescriptor;
 import goedegep.jfx.ComponentFactoryFx;
 import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.DoubleClickEventDispatcher;
-import goedegep.jfx.eobjecttable.objectstringconverters.DateObjectStringConverter;
-import goedegep.jfx.eobjecttable.objectstringconverters.IntegerObjectStringConverter;
 import goedegep.jfx.observableelist.ObservableEList;
-import goedegep.jfx.observableelist.ObservableEListChange;
-import goedegep.jfx.stringconverters.AnyTypeStringConverter;
+import goedegep.jfx.stringconverterandchecker.AnyTypeStringConverterAndChecker;
+import goedegep.jfx.stringconverterandchecker.DateStringConverterAndChecker;
+import goedegep.jfx.stringconverterandchecker.IntegerStringConverterAndChecker;
 import goedegep.util.emf.EmfPackageHelper;
 import goedegep.util.objectselector.ObjectSelectionListener;
 import goedegep.util.objectselector.ObjectSelector;
@@ -97,7 +96,7 @@ public class EObjectTable<T extends EObject> extends TableView<T> implements Obj
   /**
    * Default StringConverters
    */
-  private static Map<Class<? extends Object>, StringConverter<Object>> defaultStringConverters = new HashMap<>();
+  private static Map<Class<? extends Object>, StringConverter<? extends Object>> defaultStringConverters = new HashMap<>();
   
   /**
    * The EClass of the items in the table.
@@ -231,7 +230,7 @@ public class EObjectTable<T extends EObject> extends TableView<T> implements Obj
     initObjectSelectionListening();
   }
 
-  public static void addDefaultStringConverter(Class<? extends Object> clazz, StringConverter<Object> stringConverter) {
+  public static void addDefaultStringConverter(Class<? extends Object> clazz, StringConverter<? extends Object> stringConverter) {
     defaultStringConverters.put(clazz, stringConverter);
   }
   
@@ -410,7 +409,7 @@ public class EObjectTable<T extends EObject> extends TableView<T> implements Obj
     }
     
     
-    StringConverter<Object> stringConverter = null;
+    StringConverter<? extends Object> stringConverter = null;
     if (columnDescriptor instanceof EObjectTableColumnDescriptorBasic) {
       stringConverter = (StringConverter<Object>) ((EObjectTableColumnDescriptorBasic<T>) columnDescriptor).getStringConverter();
     } else if (columnDescriptor instanceof EObjectTableColumnDescriptorChoiceBox) {
@@ -420,19 +419,19 @@ public class EObjectTable<T extends EObject> extends TableView<T> implements Obj
       String columnClassName = columnClass.getName();
       switch (columnClassName) {
       case "java.lang.Integer":
-        stringConverter = new IntegerObjectStringConverter();
+        stringConverter = IntegerStringConverterAndChecker.getInstance();
         break;
         
       case "java.util.Date":
-        stringConverter = new DateObjectStringConverter();
+        stringConverter = DateStringConverterAndChecker.getDefaultFormatDateStringConverterAndChecker();
         break;
         
       default:
-        stringConverter = new AnyTypeStringConverter<Object>();
+        stringConverter = new AnyTypeStringConverterAndChecker<Object>();
         break;
       }
     }
-    final StringConverter<Object> finalStringConverter = stringConverter;
+    final StringConverter<Object> finalStringConverter = (StringConverter<Object>) stringConverter;
     
     if (columnDescriptor.isEditable()) {
       

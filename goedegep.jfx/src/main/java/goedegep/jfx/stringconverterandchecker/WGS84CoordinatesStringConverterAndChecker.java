@@ -1,30 +1,56 @@
-package goedegep.jfx.stringconverters;
+package goedegep.jfx.stringconverterandchecker;
 
 import goedegep.geo.WGS84Coordinates;
 
 /**
  * This class is a {@link StringConverterAndChecker} for {@link WGS84Coordinates}.
  */
-public class WGS84CoordinatesStringConverter extends StringConverterAndChecker<WGS84Coordinates> {
+public class WGS84CoordinatesStringConverterAndChecker extends StringConverterAndChecker<WGS84Coordinates> {
   
-  private static WGS84CoordinatesStringConverter instance;
+  /**
+   * Single instance of this class for the {@code DECIMAL} format.
+   */
+  private static WGS84CoordinatesStringConverterAndChecker decimalFormatInstance;
+  
+  /**
+   * Single instance of this class for the {@code DEGREES_MINUTES_SECONDS} format.
+   */
+  private static WGS84CoordinatesStringConverterAndChecker degreesMinutesSecondsInstance;
+  
+  /**
+   * The {@link WGS84CoordinatesFormatType} to use.
+   */
   private WGS84CoordinatesFormatType formatType;
   
-  public WGS84CoordinatesStringConverter(WGS84CoordinatesFormatType formatType) {
+  
+  private WGS84CoordinatesStringConverterAndChecker(WGS84CoordinatesFormatType formatType) {
     this.formatType = formatType;
   }
 
   /**
-   * Get an instance of this WGS84CoordinatesStringConverter.
+   * Get an instance of this WGS84CoordinatesStringConverter for the {@code DEGREES_MINUTES_SECONDS} format.
    * 
-   * @return an instance of this WGS84CoordinatesStringConverter.
+   * @return an instance of this WGS84CoordinatesStringConverter for the {@code DEGREES_MINUTES_SECONDS} format.
    */
-  public static WGS84CoordinatesStringConverter getInstance() {
-    if (instance == null) {
-      instance = new WGS84CoordinatesStringConverter(WGS84CoordinatesFormatType.DEGREES_MINUTES_SECONDS);
+  public static WGS84CoordinatesStringConverterAndChecker getDegreesMinutesSecondsFormatInstance() {
+    if (degreesMinutesSecondsInstance == null) {
+      degreesMinutesSecondsInstance = new WGS84CoordinatesStringConverterAndChecker(WGS84CoordinatesFormatType.DEGREES_MINUTES_SECONDS);
     }
     
-    return instance;
+    return degreesMinutesSecondsInstance;
+  }
+
+  /**
+   * Get an instance of this WGS84CoordinatesStringConverter for the {@code DECIMAL} format.
+   * 
+   * @return an instance of this WGS84CoordinatesStringConverter for the {@code DECIMAL} format.
+   */
+  public static WGS84CoordinatesStringConverterAndChecker getDecimalFormatInstance() {
+    if (decimalFormatInstance == null) {
+      decimalFormatInstance = new WGS84CoordinatesStringConverterAndChecker(WGS84CoordinatesFormatType.DECIMAL);
+    }
+    
+    return decimalFormatInstance;
   }
   
   /**

@@ -32,7 +32,7 @@ import goedegep.jfx.objectcontrols.ObjectControlMultiLineString;
 import goedegep.jfx.objectcontrols.ObjectControlString;
 import goedegep.jfx.objectcontrols.ObjectControlTextField;
 import goedegep.jfx.objectcontrols.ObjectControlWGS84Coordinates;
-import goedegep.jfx.stringconverters.StringConverterAndChecker;
+import goedegep.jfx.stringconverterandchecker.StringConverterAndChecker;
 import goedegep.resources.ImageSize;
 import goedegep.util.datetime.FlexDate;
 import goedegep.util.fixedpointvalue.FixedPointValue;

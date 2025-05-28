@@ -1,4 +1,4 @@
-package goedegep.jfx.stringconverters;
+package goedegep.jfx.stringconverterandchecker;
 
 import javafx.util.StringConverter;
 
