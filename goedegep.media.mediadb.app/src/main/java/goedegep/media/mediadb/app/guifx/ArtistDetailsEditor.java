@@ -19,7 +19,7 @@ import goedegep.jfx.objectcontrols.ObjectControlImageFile;
 import goedegep.jfx.objectcontrols.ObjectControlMultiLineString;
 import goedegep.jfx.objectcontrols.ObjectControlString;
 import goedegep.jfx.objecteditor.ObjectEditorTemplate;
-import goedegep.jfx.stringconverters.StringConverterAndChecker;
+import goedegep.jfx.stringconverterandchecker.StringConverterAndChecker;
 import goedegep.media.app.MediaRegistry;
 import goedegep.media.mediadb.app.MediaDbService;
 import goedegep.media.mediadb.model.Album;

@@ -1,4 +1,4 @@
-package goedegep.jfx.stringconverters;
+package goedegep.jfx.stringconverterandchecker;
 
 import java.util.logging.Logger;
 
@@ -7,11 +7,11 @@ import javafx.util.StringConverter;
 /**
  * This class is a {@link StringConverter} for any data type.
  * <p>
- * The toString method simply returns toString() on the provided object.<br/>
- * The fromString method just return null. So actually it is only half a StringConverter.
+ * The {@code toString()} method simply returns {@code toString()} on the provided object.<br/>
+ * The {@code fromString()} method just returns null and {@code isvalid()} returns false. So actually it is only a partial implementation.
  */
-public class AnyTypeStringConverter<T extends Object> extends StringConverterAndChecker<T> {
-  private static final Logger         LOGGER = Logger.getLogger(AnyTypeStringConverter.class.getName());
+public class AnyTypeStringConverterAndChecker<T extends Object> extends StringConverterAndChecker<T> {
+  private static final Logger         LOGGER = Logger.getLogger(AnyTypeStringConverterAndChecker.class.getName());
 
   @Override
   public String toString(T object) {
@@ -47,7 +47,7 @@ public class AnyTypeStringConverter<T extends Object> extends StringConverterAnd
    */
   @Override
   public boolean isValid(String string) {
-    return true;
+    return false;
   }
 
 }

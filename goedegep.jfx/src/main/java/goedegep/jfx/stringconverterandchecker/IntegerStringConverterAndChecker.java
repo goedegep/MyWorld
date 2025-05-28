@@ -1,12 +1,33 @@
-package goedegep.jfx.stringconverters;
+package goedegep.jfx.stringconverterandchecker;
 
 import javafx.util.converter.IntegerStringConverter;
 
 /**
- * This class is a {@link StringConverterAndChecker} for Integer type.
+ * This class is a {@link StringConverterAndChecker} for the Integer type.
  */
-public class IntegerObjectStringConverter extends StringConverterAndChecker<Integer> {
+public class IntegerStringConverterAndChecker extends StringConverterAndChecker<Integer> {
   private static IntegerStringConverter integerStringConverter = new IntegerStringConverter();
+  
+  private static IntegerStringConverterAndChecker instance = null;
+  
+  /**
+   * Get the instance of the {@code IntegerStringConverterAndChecker}.
+   * 
+   * @return the instance of the {@code IntegerStringConverterAndChecker}.
+   */
+  public static IntegerStringConverterAndChecker getInstance() {
+    if (instance == null) {
+      instance = new IntegerStringConverterAndChecker();
+    }
+    
+    return instance;
+  }
+  
+  /**
+   * Private constructor.
+   */
+  private IntegerStringConverterAndChecker() {
+  }
 
   @Override
   public String toString(Integer object) {

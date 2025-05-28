@@ -3,7 +3,7 @@ package goedegep.jfx.objectcontrols;
 import java.util.logging.Logger;
 
 import goedegep.jfx.CustomizationFx;
-import goedegep.jfx.stringconverters.AnyTypeStringConverter;
+import goedegep.jfx.stringconverterandchecker.AnyTypeStringConverterAndChecker;
 import javafx.scene.control.TextField;
 import javafx.util.StringConverter;
 
@@ -75,7 +75,7 @@ public class ObjectControlTextField<T> extends ObjectControlTemplate<T> {
     if (stringConverter != null) {
       this.stringConverter = stringConverter;
     } else {
-      this.stringConverter = new AnyTypeStringConverter<T>();
+      this.stringConverter = new AnyTypeStringConverterAndChecker<T>();
     }
     
     textField.textProperty().addListener((observableValue, oldValue, newValue) -> {

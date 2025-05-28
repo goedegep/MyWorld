@@ -14,7 +14,7 @@ import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.DoubleClickEventDispatcher;
 import goedegep.jfx.objectcontrols.ObjectControl;
 import goedegep.jfx.objectcontrols.ObjectControlAutoCompleteTextField;
-import goedegep.jfx.stringconverters.StringConverterAndChecker;
+import goedegep.jfx.stringconverterandchecker.StringConverterAndChecker;
 import goedegep.media.mediadb.app.MediaDbService;
 import goedegep.media.mediadb.model.Album;
 import goedegep.media.mediadb.model.Artist;

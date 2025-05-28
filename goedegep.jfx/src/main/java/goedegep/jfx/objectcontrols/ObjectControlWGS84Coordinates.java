@@ -4,8 +4,8 @@ import java.util.logging.Logger;
 
 import goedegep.geo.WGS84Coordinates;
 import goedegep.jfx.CustomizationFx;
-import goedegep.jfx.stringconverters.WGS84CoordinatesFormatType;
-import goedegep.jfx.stringconverters.WGS84CoordinatesStringConverter;
+import goedegep.jfx.stringconverterandchecker.WGS84CoordinatesFormatType;
+import goedegep.jfx.stringconverterandchecker.WGS84CoordinatesStringConverterAndChecker;
 
 /**
  * This class provides a TextField to be used to edit {@link WGS84Coordinates}.
@@ -13,7 +13,7 @@ import goedegep.jfx.stringconverters.WGS84CoordinatesStringConverter;
 public class ObjectControlWGS84Coordinates extends ObjectControlTextField<WGS84Coordinates> {
   @SuppressWarnings("unused")
   private static final Logger         LOGGER = Logger.getLogger(ObjectControlWGS84Coordinates.class.getName());
-  private static final WGS84CoordinatesStringConverter WGS84_COORDINATES_STRING_CONVERTER = new WGS84CoordinatesStringConverter(WGS84CoordinatesFormatType.DECIMAL);
+  private static final WGS84CoordinatesStringConverterAndChecker WGS84_COORDINATES_STRING_CONVERTER = WGS84CoordinatesStringConverterAndChecker.getDecimalFormatInstance();
   
   /**
    * Constructor.

@@ -2,7 +2,7 @@ package goedegep.media.mediadb.app;
 
 import java.util.logging.Logger;
 
-import goedegep.jfx.stringconverters.StringConverterAndChecker;
+import goedegep.jfx.stringconverterandchecker.StringConverterAndChecker;
 import goedegep.media.mediadb.model.Artist;
 import goedegep.media.mediadb.model.MediaDb;
 

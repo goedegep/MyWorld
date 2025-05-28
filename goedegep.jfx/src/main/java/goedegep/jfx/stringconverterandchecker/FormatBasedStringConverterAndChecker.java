@@ -1,4 +1,4 @@
-package goedegep.jfx.stringconverters;
+package goedegep.jfx.stringconverterandchecker;
 
 import java.text.Format;
 import java.text.ParseException;

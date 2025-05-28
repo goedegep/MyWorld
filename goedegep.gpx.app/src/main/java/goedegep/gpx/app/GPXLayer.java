@@ -26,7 +26,7 @@ import goedegep.gpx.model.RteType;
 import goedegep.gpx.model.TrkType;
 import goedegep.gpx.model.TrksegType;
 import goedegep.gpx.model.WptType;
-import goedegep.jfx.stringconverters.WGS84CoordinatesStringConverter;
+import goedegep.jfx.stringconverterandchecker.WGS84CoordinatesStringConverterAndChecker;
 import goedegep.mapview.MapViewUtil;
 import goedegep.poi.app.guifx.POIIcons;
 import goedegep.poi.model.POICategoryId;
@@ -83,7 +83,7 @@ public class GPXLayer extends MapLayer {
   private static final double ROUTE_POINT_ICON_SIZE = 16;
   
   // Converter to convert {@code WGS84Coordinates} to text. Used to show the coordinates in the tooltips.
-  private static final WGS84CoordinatesStringConverter WGS84_COORDINATES_TO_STRING_CONVERTER = WGS84CoordinatesStringConverter.getInstance();
+  private static final WGS84CoordinatesStringConverterAndChecker WGS84_COORDINATES_TO_STRING_CONVERTER = WGS84CoordinatesStringConverterAndChecker.getDecimalFormatInstance();
   
   /**
    * Image for waypoints.

@@ -24,7 +24,7 @@ import goedegep.jfx.objectcontrols.ObjectControlLocalDate;
 import goedegep.jfx.objectcontrols.ObjectControlMultiLineString;
 import goedegep.jfx.objectcontrols.ObjectControlTextField;
 import goedegep.jfx.objecteditor.EditMode;
-import goedegep.jfx.stringconverters.StringConverterAndChecker;
+import goedegep.jfx.stringconverterandchecker.StringConverterAndChecker;
 import goedegep.util.file.FileUtils;
 import javafx.geometry.Insets;
 import javafx.scene.control.Button;

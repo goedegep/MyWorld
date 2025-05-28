@@ -3,7 +3,7 @@ package goedegep.jfx.objectcontrols;
 import java.util.logging.Logger;
 
 import goedegep.jfx.CustomizationFx;
-import goedegep.jfx.stringconverters.FixedPointValueStringConverter;
+import goedegep.jfx.stringconverterandchecker.FixedPointValueStringConverterAndChecker;
 import goedegep.util.fixedpointvalue.FixedPointValue;
 
 /**
@@ -28,7 +28,7 @@ public class ObjectControlFixedPointValue extends ObjectControlTextField<FixedPo
   protected Integer maximumFactor = null;
   
   public ObjectControlFixedPointValue(CustomizationFx customization, FixedPointValue objectValue, double width, boolean isOptional, String toolTipText) {
-    super(customization, new FixedPointValueStringConverter(), objectValue, width, isOptional, toolTipText);
+    super(customization, FixedPointValueStringConverterAndChecker.getDefaultFormatFixedPointValueStringConverterAndChecker(), objectValue, width, isOptional, toolTipText);
   }
   
   /**

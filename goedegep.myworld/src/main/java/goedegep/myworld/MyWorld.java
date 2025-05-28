@@ -31,8 +31,8 @@ import goedegep.invandprop.app.guifx.InvoicesAndPropertiesLauncher;
 import goedegep.jfx.CustomizationsFx;
 import goedegep.jfx.JfxApplication;
 import goedegep.jfx.eobjecttable.EObjectTable;
-import goedegep.jfx.eobjecttable.objectstringconverters.FixedPointValueObjectStringConverter;
-import goedegep.jfx.eobjecttable.objectstringconverters.PgCurrencyObjectStringConverter;
+import goedegep.jfx.stringconverterandchecker.CurrencyStringConverterAndChecker;
+import goedegep.jfx.stringconverterandchecker.FixedPointValueStringConverterAndChecker;
 import goedegep.media.app.MediaRegistry;
 import goedegep.media.app.guifx.MediaMenuWindow;
 import goedegep.myworld.app.MyWorldAppModule;
@@ -278,8 +278,8 @@ private static final String         VACATIONS_PROJECT_PATH = "../../../goedegep.
     createCustomizationsSwing(runningInEclipse, modulesToInitialize);
     
     // Customize the EStructuralFeatureValueCellFactory class with the default formatters
-    EObjectTable.addDefaultStringConverter(PgCurrency.class, new PgCurrencyObjectStringConverter());
-    EObjectTable.addDefaultStringConverter(FixedPointValue.class, new FixedPointValueObjectStringConverter());
+    EObjectTable.addDefaultStringConverter(PgCurrency.class, CurrencyStringConverterAndChecker.getDefaultFormatInstance());
+    EObjectTable.addDefaultStringConverter(FixedPointValue.class, FixedPointValueStringConverterAndChecker.getDefaultFormatFixedPointValueStringConverterAndChecker());
 
     createAndShowApplicationWindow(appModule, fileToOpen);
     
