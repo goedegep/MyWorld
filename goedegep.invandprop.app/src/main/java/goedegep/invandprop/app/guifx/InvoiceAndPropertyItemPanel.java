@@ -189,7 +189,12 @@ public class InvoiceAndPropertyItemPanel extends EditPanelTemplate<InvoiceAndPro
 //    remarksControl.setId("itemRemarks");
 //    remarksControl.setLabelBaseText("Remarks");
     
-    archiveControl = componentFactory.createEditorControlBoolean("itemArchived", "Archived", "Archived");
+    
+    archiveControl = new EditorControlBoolean.Builder("itemArchived")
+        .setCustomization(customization)
+        .setLabelBaseText("Archived")
+        .setToolTipText("Archived")
+        .build();
     
     documentsEditPanel = new FileReferencesEditPanelBuilder(customization)
         .setReferencesEditPanelTitle("Documents")

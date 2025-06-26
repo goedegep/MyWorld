@@ -2649,7 +2649,7 @@ public class VacationsWindow extends JfxStage {
     // Create contents file (items.json)
     Gson gson = new Gson();
     String itemsJsonString = gson.toJson(osmAndItems);
-    LOGGER.severe("itemsJsonString: " + itemsJsonString);
+    LOGGER.info("itemsJsonString: " + itemsJsonString);
     try {
       Path itemsFilePath = imfs.getPath("/items.json");
       Files.write(itemsFilePath, itemsJsonString.getBytes());

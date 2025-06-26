@@ -1,9 +1,16 @@
 package goedegep.invandprop.app;
 
+import java.net.URL;
+
+import goedegep.properties.app.PropertyFileURLProvider;
 import goedegep.properties.model.PropertyDescriptorGroup;
 import goedegep.util.emf.EMFResource;
 
-public class InvoicesAndPropertiesRegistry {
+public class InvoicesAndPropertiesRegistry implements PropertyFileURLProvider {
+  
+  private static final String INV_AND_PROP_PROPERTY_DESCRIPTORS_FILE = "InvoicesAndPropertiesPropertyDescriptors.xmi";
+  private static final String INV_AND_PROP_CONFIGURATION_FILE = "InvoicesAndPropertiesConfiguration.xmi";
+  
   public static String author = null;                        // Name of the author of the application.
   public static String configurationFile = null;             // Name of the file with Configuration data.
   public static String copyrightMessage = null;              // Copyright message for the application.
@@ -15,4 +22,19 @@ public class InvoicesAndPropertiesRegistry {
   public static boolean developmentMode = false;             // For extra functionality during development
   public static String projectPath = null;                   // Used in development mode to find e.g. the customPropertiesFile.
   public static EMFResource<PropertyDescriptorGroup> propertyDescriptorsResource = null;
+  
+
+  @Override
+  public URL getPropertyFileURL() {
+    URL url = getClass().getResource(INV_AND_PROP_PROPERTY_DESCRIPTORS_FILE);
+    
+    return url;
+  }
+
+  @Override
+  public URL getCustomizationFileURL() {
+    URL url = getClass().getResource(INV_AND_PROP_CONFIGURATION_FILE);
+    
+    return url;
+  }
 }

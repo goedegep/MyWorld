@@ -1,9 +1,15 @@
 package goedegep.media.app;
 
+import java.net.URL;
+
+import goedegep.properties.app.PropertyFileURLProvider;
 import goedegep.properties.model.PropertyDescriptorGroup;
 import goedegep.util.emf.EMFResource;
 
-public class MediaRegistry {
+public class MediaRegistry implements PropertyFileURLProvider {
+  private static final String MEDIA_PROPERTY_DESCRIPTORS_FILE = "MediaPropertyDescriptors.xmi";
+  private static final String MEDIA_CONFIGURATION_FILE = "MediaConfiguration.xmi";
+
   public static String author = null;                   // Name of the author of the application.
   public static String configurationFile = null;        // Name of the system file (in the currentDirectory) with Configuration data.
   public static String copyrightMessage = null;         // Copyright message for the application.
@@ -35,4 +41,19 @@ public class MediaRegistry {
    * The list consists of folder names, separated by semicolons.
    */
   public static String ignoreFolderNames = null;        // Folder names to ignore
+
+  
+  @Override
+  public URL getPropertyFileURL() {
+    URL url = getClass().getResource(MEDIA_PROPERTY_DESCRIPTORS_FILE);
+    
+    return url;
+  }
+
+  @Override
+  public URL getCustomizationFileURL() {
+    URL url = getClass().getResource(MEDIA_CONFIGURATION_FILE);
+    
+    return url;
+  }
 }

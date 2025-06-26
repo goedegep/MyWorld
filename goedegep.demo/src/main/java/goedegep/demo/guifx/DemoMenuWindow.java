@@ -72,7 +72,7 @@ public class DemoMenuWindow extends JfxStage {
     menu = componentFactory.createMenu("Resources");
     
     menuItem = componentFactory.createMenuItem("ImageResource");
-    menuItem.setOnAction((e) -> new ImageResourceDemo(customization));
+    menuItem.setOnAction((_) -> new ImageResourceDemo(customization));
     menu.getItems().add(menuItem);
     
     menuBar.getMenus().add(menu);
@@ -81,7 +81,7 @@ public class DemoMenuWindow extends JfxStage {
     menu = componentFactory.createMenu("Util");
     
     menuItem = componentFactory.createMenuItem("XTree");
-    menuItem.setOnAction((e) -> new XTreeDemo(customization));
+    menuItem.setOnAction((_) -> new XTreeDemo(customization));
     menu.getItems().add(menuItem);
     
     menuBar.getMenus().add(menu);
@@ -91,7 +91,7 @@ public class DemoMenuWindow extends JfxStage {
     
     // Jfx:ObjectControls
     menuItem = componentFactory.createMenuItem("EditorControls");
-    menuItem.setOnAction((e) -> new EditorControlsDemo(customization));
+    menuItem.setOnAction((_) -> new EditorControlsDemo(customization));
     menu.getItems().add(menuItem);
     
     // Jfx:Editor
@@ -99,7 +99,7 @@ public class DemoMenuWindow extends JfxStage {
     
     // Jfx:Editor/Step 1
     menuItem = componentFactory.createMenuItem("Editor step1");
-    menuItem.setOnAction((e) -> {
+    menuItem.setOnAction((_) -> {
       CompanyService companyService = new CompanyService();
       goedegep.demo.jfx.editor.step1.CompanyEditor.newInstance(customization, companyService).show();
       
@@ -110,7 +110,7 @@ public class DemoMenuWindow extends JfxStage {
     
     // Jfx:EObjectTreeView
     menuItem = componentFactory.createMenuItem("EObjectTreeView");
-    menuItem.setOnAction((e) -> new EObjectTreeViewDemo(customization));
+    menuItem.setOnAction((_) -> new EObjectTreeViewDemo(customization));
     menu.getItems().add(menuItem);
     
     menuBar.getMenus().add(menu);

@@ -140,6 +140,11 @@
         <version>${goedegep.myworld.version}</version>
       </dependency>
       <dependency>
+        <groupId>goedegep.applicationcomponent</groupId>
+        <artifactId>goedegep-applicationcomponent</artifactId>
+        <version>${goedegep.myworld.version}</version>
+      </dependency>
+      <dependency>
         <groupId>goedegep.configuration</groupId>
         <artifactId>goedegep-configuration-model</artifactId>
         <version>${goedegep.myworld.version}</version>
@@ -147,6 +152,11 @@
       <dependency>
         <groupId>goedegep.demo</groupId>
         <artifactId>goedegep-demo</artifactId>
+        <version>${goedegep.myworld.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>goedegep.demo</groupId>
+        <artifactId>goedegep-demo-exe</artifactId>
         <version>${goedegep.myworld.version}</version>
       </dependency>
       <dependency>
@@ -671,6 +681,7 @@
     <module>../goedegep.properties.app</module>
     <module>../goedegep.properties.apptest</module>
     <module>../goedegep.mapview</module>
+    <module>../goedegep.applicationcomponent</module>
     
     <!-- MyWorld -->
     <module>../tim.prune</module>

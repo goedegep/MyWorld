@@ -81,57 +81,44 @@ public class VacationsUtils {
     return null;
   }
   
-  /**
-   * Get all geo-locations of a vacation.
-   * 
-   * @param vacation the <code>Vacation</code> for which the locations are to be collected.
-   * @return a list of coordinates of all locations of <code>vacation</code>.
-   * @throws FileNotFoundException if a file, referenced by an element, doesn't exist.
-   */
-//  public static List<WGS84Coordinates> getGeoLocations(Vacation vacation) throws FileNotFoundException {
-//    List<WGS84Coordinates> geoLocations = new ArrayList<>();
-//    int numberOfDays = getNumberOfDays(vacation);
-//    WGS84Coordinates[] stayedAtLocations = null;
-//    if (numberOfDays != 0) {
-//      stayedAtLocations = new WGS84Coordinates[numberOfDays];
-//    }
-//    
-//    for (VacationElement element: vacation.getElements()) {
-//      addGeoLocationsForVacationElement(geoLocations, element, stayedAtLocations);
-//    }
-//    
-//    return geoLocations;
-//  }
   
   /**
-   * Get all geo-locations of a vacation.
+   * Get a list of lines connecting the locations of a vacation.
+   * <p>
+   * For point locations, a line connects the points.<br/>
+   * For a GPX track, the line ends at the start of the track and a new line starts at the end of the track.<br/>
+   * At the end of a day, if there is a stayed at location for that day, the line goes back to that stayed at location.
    * 
    * @param vacation the {@code Vacation} for which the locations are to be collected.
-   * @return a list of coordinates of all locations of {@code Vacation}.
+   * @return a list of polylines (a list of code WGS84Coordinates) of all locations of {@code vacation}.
    * @throws FileNotFoundException if a file, referenced by an element, doesn't exist.
    */
   public static List<List<WGS84Coordinates>> getLocationConnectingLines(Vacation vacation) throws FileNotFoundException {
+    // The list of polylines
     List<List<WGS84Coordinates>> locationConnectingLines = new ArrayList<>();
+    
+    /*
+     * The current polyline.
+     * A polyline often goes across vacation elements. Therefore the method addGeoLocationsForVacationElement() gets the current polyline as a parameter.
+     * If a polyline ends addGeoLocationsForVacationElement() creates a new line and adds it to the locationConnectingLines.
+     * The last line may be empty, so we have to remove that in that case.
+     */
     List<WGS84Coordinates> locationsConnectingLine = new ArrayList<>();
+        
     locationConnectingLines.add(locationsConnectingLine);
-    int numberOfDays = getNumberOfDays(vacation);
-    WGS84Coordinates[] stayedAtLocations = null;
-    if (numberOfDays != 0) {
-      stayedAtLocations = new WGS84Coordinates[numberOfDays];
-    }
     
     for (VacationElement element: vacation.getElements()) {
-      locationsConnectingLine = addGeoLocationsForVacationElement(locationConnectingLines, locationsConnectingLine, element, stayedAtLocations);
+      locationsConnectingLine = addGeoLocationsForVacationElement(locationConnectingLines, locationsConnectingLine, element);
     }
     
-    if (locationConnectingLines.getLast().isEmpty()) {
+    if (locationConnectingLines.getLast().size() < 2) {
       locationConnectingLines.removeLast();
     }
     
     
     return locationConnectingLines;
   }
-  
+    
   /**
    * Get all geo-locations of a day.
    * 
@@ -140,18 +127,26 @@ public class VacationsUtils {
    * @throws FileNotFoundException if a file, referenced by an element, doesn't exist.
    */
   public static List<List<WGS84Coordinates>> getLocationConnectingLines(Day day) throws FileNotFoundException {
+    // The list of polylines
     List<List<WGS84Coordinates>> locationConnectingLines = new ArrayList<>();
+    
+    /*
+     * The current polyline.
+     * A polyline often goes across vacation elements. Therefore the method addGeoLocationsForVacationElement() gets the current polyline as a parameter.
+     * If a polyline ends addGeoLocationsForVacationElement() creates a new line and adds it to the locationConnectingLines.
+     * The last line may be empty, so we have to remove that in that case.
+     */
     List<WGS84Coordinates> locationsConnectingLine = new ArrayList<>();
+    
     locationConnectingLines.add(locationsConnectingLine);
     
     for (VacationElement element: day.getChildren()) {
-      locationsConnectingLine = addGeoLocationsForVacationElement(locationConnectingLines, locationsConnectingLine, element, null);
+      locationsConnectingLine = addGeoLocationsForVacationElement(locationConnectingLines, locationsConnectingLine, element);
     }
     
-    if (locationConnectingLines.getLast().isEmpty()) {
+    if (locationConnectingLines.getLast().size() < 2) {
       locationConnectingLines.removeLast();
     }
-    
     
     return locationConnectingLines;
   }
@@ -339,7 +334,7 @@ public class VacationsUtils {
       break;
       
     case VacationsPackage.LOCATION:
-      addGeoLocationForVacationElementLocation(geoLocations, (Location) element, stayedAtLocations);
+      addGeoLocationForVacationElementLocation(geoLocations, (Location) element);
       break;
       
     case VacationsPackage.TEXT:
@@ -375,13 +370,16 @@ public class VacationsUtils {
 
   /**
    * Add the geo-locations of a <code>VacationElement</code> and all its children to a list of geo-locations.
+   * <p>
+   * If the {@code element} is a day, then at the end of the day the line is drawn back to the stayed at location (if available).
    * 
-   * @param geoLocations the list to which the locations are added.
-   * @param element the <code>VacationElement</code> for which the locations will be added.
+   * @param locationsConnectingLines the list of polylines to which any new line has to be added.
+   * @param geoLocations the current polyline to which the locations are added.
+   * @param element the {@code VacationElement} for which the locations will be added.
    * @param stayedAtLocations optional array of stayed at locations
    * @throws FileNotFoundException in case the file specified by the pictureReference of a Picture element doesn't exist.
    */
-  private static List<WGS84Coordinates> addGeoLocationsForVacationElement(List<List<WGS84Coordinates>> locationsConnectingLines, List<WGS84Coordinates> geoLocations, VacationElement element, WGS84Coordinates[] stayedAtLocations) throws FileNotFoundException {
+  private static List<WGS84Coordinates> addGeoLocationsForVacationElement(List<List<WGS84Coordinates>> locationsConnectingLines, List<WGS84Coordinates> geoLocations, VacationElement element) throws FileNotFoundException {
     
     switch(element.eClass().getClassifierID()) {
     case VacationsPackage.DAY:
@@ -389,7 +387,7 @@ public class VacationsUtils {
       break;
       
     case VacationsPackage.LOCATION:
-      addGeoLocationForVacationElementLocation(geoLocations, (Location) element, stayedAtLocations);
+      addGeoLocationForVacationElementLocation(geoLocations, (Location) element);
       break;
       
     case VacationsPackage.TEXT:
@@ -407,25 +405,106 @@ public class VacationsUtils {
     }
     
     for (VacationElement childElement: element.getChildren()) {
-      geoLocations = addGeoLocationsForVacationElement(locationsConnectingLines, geoLocations, childElement, stayedAtLocations);
+      geoLocations = addGeoLocationsForVacationElement(locationsConnectingLines, geoLocations, childElement);
     }
     
     if (element.eClass().getClassifierID() == VacationsPackage.DAY) {
       Day day = (Day) element;
-      int dayNr = day.getDayNr();
-      LOGGER.info("Trying to retrieve stayed at for day number: " + dayNr);
-      if (stayedAtLocations != null  &&  stayedAtLocations.length >= dayNr) {
-        WGS84Coordinates coordinates = stayedAtLocations[dayNr - 1];
-        if (coordinates != null) {
-          LOGGER.info("Found stayed at");
-          geoLocations.add(coordinates);
-        } else {
-          LOGGER.info("No stayed at for dayNr: " + dayNr);
-        }
+      Location stayedAtLocation = getStayedAtLocation(day);
+      if (stayedAtLocation != null  &&  stayedAtLocation.getLatitude() != null  &&  stayedAtLocation.getLongitude() != null) {
+        WGS84Coordinates coordinates = new WGS84Coordinates(stayedAtLocation.getLatitude(), stayedAtLocation.getLongitude());
+        geoLocations.add(coordinates);
+        LOGGER.info("Found stayed at");
+      } else {
+        LOGGER.info("No stayed at for day: " + day);
       }
     }
     
     return geoLocations;
+  }
+
+  /**
+   * Get the stayed at location for a specific day.
+   * 
+   * @param day the {@code Day} for which the stayed at location is requested.
+   * @return the stayed at {@code Location} for the {@code day}, or null if there is none.
+   */
+  private static Location getStayedAtLocation(Day day) {
+
+    // Try to find a stayed at location in the current day, or in any of the previous days (with a long enough duration).
+    int nrOfDaysStayed = 1;
+    Day currentDay = day;
+    while (currentDay != null) {
+      Location location = findStayedAtLocationElement(currentDay);
+
+      if (location != null  &&  location.getDuration() != null  &&  location.getDuration() >= nrOfDaysStayed) { 
+        return location;
+      } else {
+        nrOfDaysStayed++;
+        currentDay = getPreviousDay(currentDay);
+      }
+    }
+
+    Location location = getTopLevelStayedAtLocationElement(day.getVacation());
+    if (location != null  &&  location.getDuration() != null  &&  location.getDuration() >= day.getDayNr()) {
+      return location;
+    }
+
+    return null;
+  }
+
+  private static Location getTopLevelStayedAtLocationElement(Vacation vacation) {
+    
+    for (VacationElement vacationElement: vacation.getElements()) {
+      if (vacationElement instanceof Location location  &&  location.isStayedAtThisLocation()) {
+        return location;
+      }
+    }
+    
+    return null;
+  }
+
+  /**
+   * Get the previous day of a {@code Day}.
+   * 
+   * @param day the day for which the previous day is requested.
+   * @return the previous {@code Day} of {@code day}, or null if this doesn't exist.
+   */
+  private static Day getPreviousDay(Day day) {
+    Vacation vacation = day.getVacation();
+    
+    Day previousDay = null;
+    
+    for (VacationElement vacationElement: vacation.getElements()) {
+      if (vacationElement instanceof Day aDay) {
+        if (aDay == day) {
+          return previousDay;
+        } else {
+          previousDay = aDay;
+        }
+      }
+    }
+    
+    return null;
+  }
+
+  /**
+   * Find the first stayed at {@code Location} element in a {@code Day}.
+   * 
+   * @param day the {@code Day} in which the stayed at location is to be found.
+   * @return the first stayed at {@code Location} element in the {@code day}, or null if this doesn't exist.
+   */
+  private static Location findStayedAtLocationElement(Day day) {
+    TreeIterator<EObject> iterator = day.eAllContents();
+    
+    while (iterator.hasNext()) {
+      EObject eObject = iterator.next();
+      if (eObject instanceof Location location  &&  location.isStayedAtThisLocation()) {
+        return location;
+      }
+    }
+    
+    return null;
   }
 
   /**
@@ -440,38 +519,17 @@ public class VacationsUtils {
    * @param stayedAtLocations optional array of 'stayed at' locations. If the <code>location</code> is a 'stayed at' location, the coordinates of the <code>location</code> are set
    *        in the elements corresponding to the days you stayed at this location.
    */
-  private static void addGeoLocationForVacationElementLocation(List<WGS84Coordinates> geoLocations, Location location, WGS84Coordinates[] stayedAtLocations) {
+  private static void addGeoLocationForVacationElementLocation(List<WGS84Coordinates> geoLocations, Location location) {
     if (elementIsChildOfGpxTrackOrLocation(location)) {
+      // These elements are not added as they are supposed to be on or close to the line.
       return;
     }
     
-    if (!location.isReferenceOnly()  &&  location.isSetLatitude()  &&  location.isSetLongitude()) {
-      WGS84Coordinates coordinates = new WGS84Coordinates(location.getLatitude(), location.getLongitude());
-      /*
-       * If it is a stayed at location, add the location to the stayedAtLocations for the day numbers we stayed there.
-       */
-      if (stayedAtLocations != null  &&  location.isStayedAtThisLocation()) {
-        LOGGER.info("Stayed at: " + location.getName());
-        Integer dayNr = location.getDayNr();
-        if (dayNr == 0) {
-          // The location is in the hierarchy before the first day, assume it's a stayed at location for the complete vacation. So dayNr is 1.
-          dayNr = 1;
-        }
-        int nrOfNights = 1;
-        if (location.isSetDuration()) {
-          nrOfNights = location.getDuration();
-        }
-        
-        for (int i = dayNr; i < dayNr + nrOfNights; i++) {
-          LOGGER.info("Adding location to stayedAtLocations for day number: " + i);
-          stayedAtLocations[i - 1] = coordinates;
-        }
-      }
-      
-      // If a 'stayed at' location exists at vacation level, it is not added here.
-      if (!(location.isStayedAtThisLocation()  &&  elementIsChildOfVacation(location))) {
-        geoLocations.add(coordinates);
-      }
+    if (!location.isReferenceOnly()  &&                                                   // Reference only locations are not part of the lines
+        !(location.isStayedAtThisLocation()  &&  elementIsChildOfVacation(location))  &&  // If a 'stayed at' location exists at vacation level, it is not added here.
+        location.isSetLatitude()  &&  location.isSetLongitude()) {                        // And of course it must have coordinates.
+      WGS84Coordinates coordinates = new WGS84Coordinates(location.getLatitude(), location.getLongitude());      
+      geoLocations.add(coordinates);
     }
   }
 

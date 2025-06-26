@@ -82,6 +82,10 @@ public class GPXLayer extends MapLayer {
   private static final double WAYPOINT_ICON_SIZE = 24;
   private static final double ROUTE_POINT_ICON_SIZE = 16;
   
+  private static final double STROKE_WIDTH = 4;
+  private static final double STROKE_WIDTH_SELECTED = 4;
+  private static final boolean DRAW_TRACK_POINTS = false;
+  
   // Converter to convert {@code WGS84Coordinates} to text. Used to show the coordinates in the tooltips.
   private static final WGS84CoordinatesStringConverterAndChecker WGS84_COORDINATES_TO_STRING_CONVERTER = WGS84CoordinatesStringConverterAndChecker.getDecimalFormatInstance();
   
@@ -639,10 +643,6 @@ public class GPXLayer extends MapLayer {
         drawGPXData = false;
       }
 
-      // Waypoints
-//      getChildren().removeAll(gpxData.currentWaypointsOnMap());
-//      gpxData.currentWaypointsOnMap().clear();
-      
       if (drawGPXData) {
         for (WaypointData waypointData : gpxData.waypointsDataList()) {
           final Node icon = waypointData.node();
@@ -709,12 +709,14 @@ public class GPXLayer extends MapLayer {
             
             Node icon = null;
             
+            boolean trackPoint = false;
             if (prevIcon == null) {
               icon = createStartImage();
             } else if (!trackPointIterator.hasNext()) {
               icon = createEndImage();
             } else {
               icon = createTrackPointImage();
+              trackPoint = true;
             }
             
             icon.setTranslateX(mapPoint.getX());
@@ -733,10 +735,10 @@ public class GPXLayer extends MapLayer {
                 final boolean selected = selectedGPXWaypoints.contains(point);
                 if (selected && prevSelected) {
                   // if selected AND previously selected => red line
-                  line.setStrokeWidth(3);
+                  line.setStrokeWidth(STROKE_WIDTH_SELECTED);
                   line.setStroke(Color.RED);
                 } else {
-                  line.setStrokeWidth(2);
+                  line.setStrokeWidth(STROKE_WIDTH);
                   line.setStroke(Color.BLUE);
                 }
                 prevSelected = selected;
@@ -755,7 +757,9 @@ public class GPXLayer extends MapLayer {
                 trackSegmentData.currentItemsOnMap().add(line);
             }
             
-            getChildren().add(icon);
+            if (!trackPoint  ||  DRAW_TRACK_POINTS) {
+              getChildren().add(icon);
+            }
             trackSegmentData.currentItemsOnMap().add(icon);
             
             if (prevIcon != null) {

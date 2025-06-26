@@ -4,7 +4,8 @@ package goedegep.util.emf;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.nio.file.Files;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -228,16 +229,10 @@ public class EMFResource<E extends EObject> {
    * @return the top level EObject of the resource.
    * @throws FileNotFoundException if the specified file doesn't exist.
    */
-  public E load(String resourceFileName) throws FileNotFoundException {
-    LOGGER.info("=> resourceFileName="  + resourceFileName);
+  public E load(URL resourceURL) throws FileNotFoundException {
+    LOGGER.severe("=> resourceFileName="  + resourceURL);
     
-    Path resourceFilePath = Paths.get(resourceFileName).toAbsolutePath().normalize();
-    LOGGER.fine("path=" + resourceFilePath.toString());
-    if (!Files.exists(resourceFilePath)) {
-      throw new FileNotFoundException(resourceFilePath.toString());
-    }
-    
-    URI fileURI = URI.createFileURI(resourceFilePath.toString());
+    URI fileURI = URI.createURI(resourceURL.toString());
     resource.unload();
     resource.setURI(fileURI);
     try {
@@ -258,6 +253,30 @@ public class EMFResource<E extends EObject> {
     updateFileNameProperty();
     
     return retval;
+  }
+  
+  /**
+   * Load the resource from a specific file.
+   * <p>
+   * This file will now be the 'current file'.
+   * 
+   * @param resourceFileName the name of the resource file.
+   * @return the top level EObject of the resource.
+   * @throws FileNotFoundException if the specified file doesn't exist.
+   * @throws MalformedURLException 
+   */
+  public E load(String resourceFileName) throws FileNotFoundException {
+    LOGGER.severe("=> resourceFileName="  + resourceFileName);
+    java.net.URI resourceURI = Path.of(resourceFileName).toUri();
+//    java.net.URI resourceURI = java.net.URI.create("file:" + resourceFileName);
+
+    URL resourceURL = null;
+    try {
+      resourceURL = resourceURI.toURL();
+    } catch (MalformedURLException e) {
+      throw new FileNotFoundException(resourceFileName);
+    }
+    return load(resourceURL);    
   }
   
   /**

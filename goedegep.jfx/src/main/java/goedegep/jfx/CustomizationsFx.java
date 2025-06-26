@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.net.URI;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
@@ -43,6 +45,31 @@ public class CustomizationsFx {
     return customization;
   }
 
+
+  /**
+   * Add a {@link CustomizationFx} for each {@link ModuleLook} in a configuration file.
+   * 
+   * @param configurationFileURL the URL for a configuration file.
+   */
+  public static void addCustomizations(URL configurationFileURL) {
+    LOGGER.info("'=> configurationFileURL=" + configurationFileURL.toString());
+
+    EMFResource<LookInfo> emfResource = new EMFResource<>(
+        ConfigurationPackage.eINSTANCE,
+        () -> ConfigurationFactory.eINSTANCE.createLookInfo(), ".xmi");
+    LookInfo lookInfo;
+    try {
+      
+      lookInfo = emfResource.load(configurationFileURL);
+
+      for (ModuleLook moduleLook: lookInfo.getModuleLooks()) {
+        addCustomizations(moduleLook);
+      }
+    } catch (FileNotFoundException e) {
+      e.printStackTrace();
+    }
+  }
+  
 
   /**
    * Add a {@link CustomizationFx} for each {@link ModuleLook} in a configuration file.

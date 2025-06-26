@@ -3,6 +3,7 @@ package goedegep.myworld;
 import java.awt.SplashScreen;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -29,6 +30,7 @@ import goedegep.finan.Finan;
 import goedegep.invandprop.app.InvoicesAndPropertiesRegistry;
 import goedegep.invandprop.app.guifx.InvoicesAndPropertiesLauncher;
 import goedegep.jfx.CustomizationsFx;
+import goedegep.jfx.DefaultCustomizationFx;
 import goedegep.jfx.JfxApplication;
 import goedegep.jfx.eobjecttable.EObjectTable;
 import goedegep.jfx.stringconverterandchecker.CurrencyStringConverterAndChecker;
@@ -41,6 +43,7 @@ import goedegep.myworld.app.guifx.MyWorldMenuWindowFx;
 import goedegep.pctools.app.guifx.PCToolsMenuWindow;
 import goedegep.pctools.app.logic.PCToolsRegistry;
 import goedegep.properties.app.PropertiesHandler;
+import goedegep.properties.app.PropertyFileURLProvider;
 import goedegep.rolodex.app.RolodexRegistry;
 import goedegep.rolodex.app.guifx.RolodexMenuWindow;
 import goedegep.rolodex.model.Rolodex;
@@ -63,10 +66,11 @@ import javafx.stage.Stage;
  * This class starts the MyWorld application.
  * <p>
  */
-public class MyWorld extends JfxApplication {
+public class MyWorld extends JfxApplication implements PropertyFileURLProvider {
   private static final Logger LOGGER = Logger.getLogger(MyWorld.class.getName());
   
   private static final String         PROGRAM_NAME = "MyWorld";
+  private static final int MIN_JAVA_FEATURE_NUMBER = 22;
   private static final String         PROGRAM_DESCRIPTION =
                                              PROGRAM_NAME + " is my world on the computer. It consists of the following modules:" + NEWLINE +
                                              "Events                  - Information about events" + NEWLINE +
@@ -79,7 +83,8 @@ public class MyWorld extends JfxApplication {
                                              "PCTools                 - Some PC toolts + NEWLINE";
 
 // EMF model files are accessed as File, and so they cannot be in jar files.
-private static final String         MY_WORLD_PROPERTY_DESCRIPTORS_FILE = "MyWorldPropertyDescriptors.xmi";
+private static final String MY_WORLD_PROPERTY_DESCRIPTORS_FILE = "MyWorldPropertyDescriptors.xmi";
+private static final String MY_WORLD_CONFIGURATION_FILE = "MyWorldConfiguration.xmi";
 
 // When running in Eclipse, files are read from the related project folder.
 private static final String         EVENTS_PROJECT_PATH = "../../../goedegep.events.app/target/classes";
@@ -120,21 +125,16 @@ private static final String         VACATIONS_PROJECT_PATH = "../../../goedegep.
    * </li>
    * </ul>
    */
-  @SuppressWarnings("deprecation")
   @Override
   public void start(Stage primaryStage) {
     LOGGER.info("=>");
     
 //    HttpUtil.setupFiddlerMonitoring();
     Runtime.Version version = Runtime.version();
-    if (version.major() < 16) {
-      Alert alert = new Alert(AlertType.ERROR);
-      alert.setTitle("Foutmelding");
-      StringBuilder buf = new StringBuilder();
-      buf.append("Java version too old.\n");
-      buf.append("You need at least version 16, but you have ").append(version);
-      alert.setHeaderText(buf.toString());
-      alert.showAndWait();
+    if (version.feature() < MIN_JAVA_FEATURE_NUMBER) {
+      DefaultCustomizationFx.getInstance().getComponentFactoryFx()
+        .createErrorDialog("Java runtime version too old", "You need at least version " + MIN_JAVA_FEATURE_NUMBER + ", but you have " +version.feature())
+        .showAndWait();
 
       Platform.exit();
     }
@@ -176,14 +176,11 @@ private static final String         VACATIONS_PROJECT_PATH = "../../../goedegep.
         }
       }
     } catch (ParseException e) {
-      if (e instanceof UnrecognizedOptionException) {
-        UnrecognizedOptionException unrecognizedOptionException = (UnrecognizedOptionException) e;
+      if (e instanceof UnrecognizedOptionException unrecognizedOptionException) {
         errorTexts.add("Unknown option: '" + unrecognizedOptionException.getOption() + "'");
-      } else if (e instanceof MissingArgumentException) {
-        MissingArgumentException missingArgumentException = (MissingArgumentException) e;
+      } else if (e instanceof MissingArgumentException missingArgumentException) {
         errorTexts.add("Value is missing for option: '" + missingArgumentException.getOption().getOpt() + "'");
-      } else if (e instanceof MissingOptionException) {
-        MissingOptionException missingOptionException = (MissingOptionException) e;
+      } else if (e instanceof MissingOptionException missingOptionException) {
         @SuppressWarnings("unchecked")
         List<String> missingOptions = missingOptionException.getMissingOptions();
         if (missingOptions.size() == 1) {
@@ -275,7 +272,7 @@ private static final String         VACATIONS_PROJECT_PATH = "../../../goedegep.
     createCustomizations(runningInEclipse, modulesToInitialize);
 
     // Temp: create swing customizations. Remove each one when the app is converted to javafx.
-    createCustomizationsSwing(runningInEclipse, modulesToInitialize);
+//    createCustomizationsSwing(runningInEclipse, modulesToInitialize);
     
     // Customize the EStructuralFeatureValueCellFactory class with the default formatters
     EObjectTable.addDefaultStringConverter(PgCurrency.class, CurrencyStringConverterAndChecker.getDefaultFormatInstance());
@@ -299,8 +296,10 @@ private static final String         VACATIONS_PROJECT_PATH = "../../../goedegep.
   }
   
   /**
-   * Create the PropertyDescriptorsResource for each module to initialize.
+   * Handle settings by reading the PropertyDescriptors and Property files.
    * <p>
+   * The {@code PropertyDescriptors} files are part of the project.
+   * The user {@code Property} files are not part of the project.
    * Note: Remember that the PropertyDescriptorsResource also fills the related registry.
    * 
    * @param modulesToInitialize the set of modules for which the PropertyDescriptorsResource has to be created.
@@ -308,22 +307,30 @@ private static final String         VACATIONS_PROJECT_PATH = "../../../goedegep.
   private void createPropertyDescriptorResources(boolean runningInEclipse, Set<MyWorldAppModule> modulesToInitialize) {
     try {
       LOGGER.fine("MIJN_WERELD_PROPERTY_DESCRIPTORS_FILE=" + MY_WORLD_PROPERTY_DESCRIPTORS_FILE);
-      PropertiesHandler.handleProperties(runningInEclipse, null, MY_WORLD_PROPERTY_DESCRIPTORS_FILE);
+      java.net.URL url = getPropertyFileURL();
+      PropertiesHandler.handleProperties(runningInEclipse, url, null);
             
       PropertiesMetaInfo[] propertiesMetaInfos = {
-          new PropertiesMetaInfo(MyWorldAppModule.EVENTS, EVENTS_PROJECT_PATH, MyWorldRegistry.eventsPropertyDescriptorFileName),
-          new PropertiesMetaInfo(MyWorldAppModule.FINAN, FINAN_PROJECT_PATH, MyWorldRegistry.finanPropertyDescriptorFileName),
-          new PropertiesMetaInfo(MyWorldAppModule.MEDIA, MEDIA_PROJECT_PATH, MyWorldRegistry.mediaPropertyDescriptorFileName),
-          new PropertiesMetaInfo(MyWorldAppModule.ROLODEX, ROLODEX_PROJECT_PATH, MyWorldRegistry.rolodexPropertyDescriptorFileName),
-          new PropertiesMetaInfo(MyWorldAppModule.INVOICES_AND_PROPERTIES, INVOICES_AND_PROPERTIES_PROJECT_PATH, MyWorldRegistry.invoicesAndPropertiesPropertyDescriptorFileName),
-          new PropertiesMetaInfo(MyWorldAppModule.UNIT_CONVERTER, UNIT_CONVERTER_PROJECT_PATH, MyWorldRegistry.unitConverterPropertyDescriptorFileName),
-          new PropertiesMetaInfo(MyWorldAppModule.PCTOOLS, PCTOOLS_PROJECT_PATH, MyWorldRegistry.pctoolsPropertyDescriptorsFileName),
-          new PropertiesMetaInfo(MyWorldAppModule.VACATIONS, VACATIONS_PROJECT_PATH, MyWorldRegistry.vacationsPropertyDescriptorsFileName)
+          new PropertiesMetaInfo(MyWorldAppModule.EVENTS, EVENTS_PROJECT_PATH, MyWorldRegistry.eventsPropertyDescriptorFileName, new EventsRegistry()),
+          new PropertiesMetaInfo(MyWorldAppModule.FINAN, FINAN_PROJECT_PATH, MyWorldRegistry.finanPropertyDescriptorFileName, new Finan(null)),
+          new PropertiesMetaInfo(MyWorldAppModule.MEDIA, MEDIA_PROJECT_PATH, MyWorldRegistry.mediaPropertyDescriptorFileName, new MediaRegistry()),
+          new PropertiesMetaInfo(MyWorldAppModule.ROLODEX, ROLODEX_PROJECT_PATH, MyWorldRegistry.rolodexPropertyDescriptorFileName, new RolodexRegistry()),
+          new PropertiesMetaInfo(MyWorldAppModule.INVOICES_AND_PROPERTIES, INVOICES_AND_PROPERTIES_PROJECT_PATH, MyWorldRegistry.invoicesAndPropertiesPropertyDescriptorFileName, new InvoicesAndPropertiesRegistry()),
+          new PropertiesMetaInfo(MyWorldAppModule.UNIT_CONVERTER, UNIT_CONVERTER_PROJECT_PATH, MyWorldRegistry.unitConverterPropertyDescriptorFileName, new UnitConverterRegistry()),
+          new PropertiesMetaInfo(MyWorldAppModule.PCTOOLS, PCTOOLS_PROJECT_PATH, MyWorldRegistry.pctoolsPropertyDescriptorsFileName, new PCToolsRegistry()),
+//          new PropertiesMetaInfo(MyWorldAppModule.VACATIONS, VACATIONS_PROJECT_PATH, MyWorldRegistry.vacationsPropertyDescriptorsFileName, null)
+          new PropertiesMetaInfo(MyWorldAppModule.VACATIONS, VACATIONS_PROJECT_PATH, MyWorldRegistry.vacationsPropertyDescriptorsFileName, new VacationsRegistry())
       };
       
       for (PropertiesMetaInfo propertiesMetaInfo: propertiesMetaInfos) {
         if (modulesToInitialize.contains(propertiesMetaInfo.myWorldAppModule)) {
-          PropertiesHandler.handleProperties(runningInEclipse, propertiesMetaInfo.projectPath, propertiesMetaInfo.propertyDescriptorFileName);
+          url = propertiesMetaInfo.propertyFileURLProvider.getPropertyFileURL();
+          if (url == null) {
+            reportException(DefaultCustomizationFx.getInstance(), new RuntimeException("No URL for class " + propertiesMetaInfo.propertyFileURLProvider.getClass().getCanonicalName()));
+          }
+          LOGGER.severe("URL: " + url);
+          VacationsRegistry vacationsRegistry = new VacationsRegistry();
+          PropertiesHandler.handleProperties(runningInEclipse, url, vacationsRegistry::getURLForFileName);
         }
       }
             
@@ -356,31 +363,41 @@ private static final String         VACATIONS_PROJECT_PATH = "../../../goedegep.
     // Currently the configurations are not editable, so they are in the installation directory.
     // If I make them editable there will be a copy of the configuration files in the dataDirectory.
     if (modulesToInitialize.contains(MyWorldAppModule.MY_WORLD)) {
-      CustomizationsFx.addCustomizations(new File(createResourcePath(runningInEclipse, null, MyWorldRegistry.configurationFile)));
+//      CustomizationsFx.addCustomizations(new File(createResourcePath(runningInEclipse, null, MyWorldRegistry.configurationFile)));
+      CustomizationsFx.addCustomizations(this.getCustomizationFileURL());
     }
     if (modulesToInitialize.contains(MyWorldAppModule.EVENTS)) {
-      CustomizationsFx.addCustomizations(new File(createResourcePath(runningInEclipse, EVENTS_PROJECT_PATH, EventsRegistry.configurationFile)));
+//      CustomizationsFx.addCustomizations(new File(createResourcePath(runningInEclipse, EVENTS_PROJECT_PATH, EventsRegistry.configurationFile)));
+      CustomizationsFx.addCustomizations(new EventsRegistry().getCustomizationFileURL());
     }
     if (modulesToInitialize.contains(MyWorldAppModule.FINAN)) {
-      CustomizationsFx.addCustomizations(new File(createResourcePath(runningInEclipse, FINAN_PROJECT_PATH, FinanRegistry.configurationFile)));
+//      CustomizationsFx.addCustomizations(new File(createResourcePath(runningInEclipse, FINAN_PROJECT_PATH, FinanRegistry.configurationFile)));
+      CustomizationsFx.addCustomizations(new Finan(null).getCustomizationFileURL());
     }
     if (modulesToInitialize.contains(MyWorldAppModule.MEDIA)) {
-      CustomizationsFx.addCustomizations(new File(createResourcePath(runningInEclipse, MEDIA_PROJECT_PATH, MediaRegistry.configurationFile)));
+//      CustomizationsFx.addCustomizations(new File(createResourcePath(runningInEclipse, MEDIA_PROJECT_PATH, MediaRegistry.configurationFile)));
+      CustomizationsFx.addCustomizations(new MediaRegistry().getCustomizationFileURL());
     }
     if (modulesToInitialize.contains(MyWorldAppModule.ROLODEX)) {
-      CustomizationsFx.addCustomizations(new File(createResourcePath(runningInEclipse, ROLODEX_PROJECT_PATH, RolodexRegistry.configurationFile)));
+//      CustomizationsFx.addCustomizations(new File(createResourcePath(runningInEclipse, ROLODEX_PROJECT_PATH, RolodexRegistry.configurationFile)));
+      CustomizationsFx.addCustomizations(new RolodexRegistry().getCustomizationFileURL());
     }
     if (modulesToInitialize.contains(MyWorldAppModule.INVOICES_AND_PROPERTIES)) {
-      CustomizationsFx.addCustomizations(new File(createResourcePath(runningInEclipse, INVOICES_AND_PROPERTIES_PROJECT_PATH, InvoicesAndPropertiesRegistry.configurationFile)));
+//      CustomizationsFx.addCustomizations(new File(createResourcePath(runningInEclipse, INVOICES_AND_PROPERTIES_PROJECT_PATH, InvoicesAndPropertiesRegistry.configurationFile)));
+      CustomizationsFx.addCustomizations(new InvoicesAndPropertiesRegistry().getCustomizationFileURL());
     }
     if (modulesToInitialize.contains(MyWorldAppModule.UNIT_CONVERTER)) {
-      CustomizationsFx.addCustomizations(new File(createResourcePath(runningInEclipse, UNIT_CONVERTER_PROJECT_PATH, UnitConverterRegistry.configurationFile)));
+//      CustomizationsFx.addCustomizations(new File(createResourcePath(runningInEclipse, UNIT_CONVERTER_PROJECT_PATH, UnitConverterRegistry.configurationFile)));
+      CustomizationsFx.addCustomizations(new UnitConverterRegistry().getCustomizationFileURL());
     }
     if (modulesToInitialize.contains(MyWorldAppModule.PCTOOLS)) {
-      CustomizationsFx.addCustomizations(new File(createResourcePath(runningInEclipse, PCTOOLS_PROJECT_PATH, PCToolsRegistry.configurationFile)));
+//      CustomizationsFx.addCustomizations(new File(createResourcePath(runningInEclipse, PCTOOLS_PROJECT_PATH, PCToolsRegistry.configurationFile)));
+      CustomizationsFx.addCustomizations(new PCToolsRegistry().getCustomizationFileURL());
     }
     if (modulesToInitialize.contains(MyWorldAppModule.VACATIONS)) {
-      CustomizationsFx.addCustomizations(new File(createResourcePath(runningInEclipse, VACATIONS_PROJECT_PATH, VacationsRegistry.configurationFile)));
+//      CustomizationsFx.addCustomizations(new File(createResourcePath(runningInEclipse, VACATIONS_PROJECT_PATH, VacationsRegistry.configurationFile)));
+      VacationsRegistry vacationsRegistry = new VacationsRegistry();
+      CustomizationsFx.addCustomizations(vacationsRegistry.getCustomizationFileURL());
     }
   }
 
@@ -401,9 +418,9 @@ private static final String         VACATIONS_PROJECT_PATH = "../../../goedegep.
     if (modulesToInitialize.contains(MyWorldAppModule.FINAN)) {
       Customizations.addCustomizations(new File(createResourcePath(runningInEclipse, FINAN_PROJECT_PATH, FinanRegistry.configurationFile)));
     }
-    if (modulesToInitialize.contains(MyWorldAppModule.INVOICES_AND_PROPERTIES)) {
-      Customizations.addCustomizations(new File(createResourcePath(runningInEclipse, INVOICES_AND_PROPERTIES_PROJECT_PATH, InvoicesAndPropertiesRegistry.configurationFile)));
-    }
+//    if (modulesToInitialize.contains(MyWorldAppModule.INVOICES_AND_PROPERTIES)) {
+//      Customizations.addCustomizations(new File(createResourcePath(runningInEclipse, INVOICES_AND_PROPERTIES_PROJECT_PATH, InvoicesAndPropertiesRegistry.configurationFile)));
+//    }
   }
   
   /**
@@ -417,7 +434,7 @@ private static final String         VACATIONS_PROJECT_PATH = "../../../goedegep.
    * @param fileName filename of the resource.
    * @return a path to the resource
    */
-  private String createResourcePath(boolean runningInEclipse, String projectPath, String fileName) {
+  private static String createResourcePath(boolean runningInEclipse, String projectPath, String fileName) {
     if (runningInEclipse  &&  projectPath != null) {
       File file = new File(projectPath, fileName);
       LOGGER.info("Resource path = " + file.getAbsolutePath());
@@ -519,16 +536,32 @@ private static final String         VACATIONS_PROJECT_PATH = "../../../goedegep.
   public static void main(String[] args) {
     MyWorld.launch(args);
   }
+
+  @Override
+  public URL getPropertyFileURL() {
+    URL url = getClass().getResource(MY_WORLD_PROPERTY_DESCRIPTORS_FILE);
+    
+    return url;
+  }
+
+  @Override
+  public URL getCustomizationFileURL() {
+    URL url = getClass().getResource(MY_WORLD_CONFIGURATION_FILE);
+    
+    return url;
+  }
 }
 
 class PropertiesMetaInfo {
   public MyWorldAppModule myWorldAppModule;
   public String projectPath;
   public String propertyDescriptorFileName;
+  public PropertyFileURLProvider propertyFileURLProvider;
   
-  public PropertiesMetaInfo(MyWorldAppModule myWorldAppModule, String projectPath, String propertyDescriptorFileName) {
+  public PropertiesMetaInfo(MyWorldAppModule myWorldAppModule, String projectPath, String propertyDescriptorFileName, PropertyFileURLProvider propertyFileURLProvider) {
     this.myWorldAppModule = myWorldAppModule;
     this.projectPath = projectPath;
     this.propertyDescriptorFileName = propertyDescriptorFileName;
+    this.propertyFileURLProvider = propertyFileURLProvider;
   }
 }

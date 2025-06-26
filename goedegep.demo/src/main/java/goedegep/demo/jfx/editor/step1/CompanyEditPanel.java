@@ -11,8 +11,14 @@ import goedegep.jfx.editor.controls.EditorControlDate;
 import goedegep.jfx.editor.controls.EditorControlString;
 import goedegep.util.emf.EmfUtil;
 import javafx.scene.Node;
+import javafx.scene.layout.Border;
+import javafx.scene.layout.BorderStroke;
+import javafx.scene.layout.BorderStrokeStyle;
+import javafx.scene.layout.BorderWidths;
+import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 
 /**
  * This class is the main edit panel for the {@link CompanyEditor} (step 1).
@@ -141,6 +147,7 @@ public class CompanyEditPanel extends EditPanelTemplate<Company> {
   @Override
   protected void createEditPanel() {
     mainPane = componentFactory.createVBox();
+    mainPane.setBorder(new Border(new BorderStroke(Color.BLUE, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT)));
 
     GridPane gridPane = componentFactory.createGridPane(12.0, 12.0, 12.0);
     int row = 0;

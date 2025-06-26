@@ -57,7 +57,7 @@ public class Customizations {
    * Get the customizaton for a specific module.
    * 
    * @param moduleName the name of the module for which the customization is requested.
-   * @return the Customization for the specified module.
+   * @return the "@code Customization} for the specified module.
    * @throws RuntimeException if no customization is available for the specified module.
    */
   public static Customization getCustomization(String moduleName) {

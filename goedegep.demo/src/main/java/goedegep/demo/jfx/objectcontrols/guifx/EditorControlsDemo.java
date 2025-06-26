@@ -2,27 +2,25 @@ package goedegep.demo.jfx.objectcontrols.guifx;
 
 import java.util.logging.Logger;
 
-import goedegep.emfsample.model.Gender;
 import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.JfxStage;
 import goedegep.jfx.editor.controls.EditorControlAutoCompleteTextField;
 import goedegep.jfx.editor.controls.EditorControlBoolean;
 import goedegep.jfx.editor.controls.EditorControlCurrency;
 import goedegep.jfx.editor.controls.EditorControlEnumComboBox;
+import goedegep.jfx.editor.controls.EditorControlFileSelecter;
 import goedegep.jfx.editor.controls.EditorControlFixedPointValue;
+import goedegep.jfx.editor.controls.EditorControlFlexDate;
+import goedegep.jfx.editor.controls.EditorControlFolderSelecter;
+import goedegep.jfx.editor.controls.EditorControlHTMLString;
+import goedegep.jfx.editor.controls.EditorControlImageFile;
 import goedegep.jfx.editor.controls.EditorControlInteger;
+import goedegep.jfx.editor.controls.EditorControlLocalDate;
+import goedegep.jfx.editor.controls.EditorControlMultiLineString;
 import goedegep.jfx.editor.controls.EditorControlString;
-import goedegep.jfx.objectcontrols.ObjectControlFileSelecter;
-import goedegep.jfx.objectcontrols.ObjectControlFlexDate;
-import goedegep.jfx.objectcontrols.ObjectControlFolderSelecter;
-import goedegep.jfx.objectcontrols.ObjectControlHTMLString;
-import goedegep.jfx.objectcontrols.ObjectControlImageFile;
-import goedegep.jfx.objectcontrols.ObjectControlLocalDate;
-import goedegep.jfx.objectcontrols.ObjectControlMultiLineString;
 import goedegep.jfx.stringconverterandchecker.StringConverterAndChecker;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
-import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
 
 /**
@@ -39,18 +37,17 @@ public class EditorControlsDemo extends JfxStage {
   private EditorControlString nameControl;
   private EditorControlBoolean iAmHappyControl;
   private EditorControlAutoCompleteTextField<City> birthPlaceControl;
-  private EditorControlEnumComboBox<Gender> genderControl;
   private EditorControlInteger ageControl;
   private EditorControlCurrency priceLastHolidayControl;
   private EditorControlEnumComboBox<TravelerType> travelerTypeControl;
-  private EditorControlFixedPointValue lastTravelRatingObjectControlFixedPointValue;
-  private ObjectControlLocalDate lastTravelDateObjectControlLocalDate;
-  private ObjectControlFileSelecter travelReportFileObjectControlFileSelecter;
-  private ObjectControlFlexDate nextTravelDateObjectControlFlexDate;
-  private ObjectControlFolderSelecter picturesFolderObjectControlFolderSelecter;
-  private ObjectControlImageFile imageFileObjectControlImageFile;
-  private ObjectControlMultiLineString notesObjectControlMultiLineString;
-  private ObjectControlHTMLString detailsObjectControlHTMLString;
+  private EditorControlFixedPointValue lastTravelRatingControl;
+  private EditorControlLocalDate lastTravelDateControl;
+  private EditorControlFileSelecter travelReportFileControl;
+  private EditorControlFlexDate nextTravelDateControl;
+  private EditorControlFolderSelecter picturesFolderControl;
+  private EditorControlImageFile favoritePictureControl;
+  private EditorControlMultiLineString notesControl;
+  private EditorControlHTMLString detailsControl;
   
   
   /**
@@ -79,7 +76,11 @@ public class EditorControlsDemo extends JfxStage {
         .setErrorTextSupplier(() -> "The name is not filled in")
         .build();
     
-    iAmHappyControl = componentFactory.createEditorControlBoolean("iAmHappy", "I'm happy", "Uncheck if you're not happy\nThis is an example of an EditorControlBoolean");
+    iAmHappyControl = new EditorControlBoolean.Builder("iAmHappy")
+        .setCustomization(customization)
+        .setLabelBaseText("I'm _happy")
+        .setToolTipText("Uncheck if you're not happy\nThis is an example of an EditorControlBoolean")
+        .build();
     iAmHappyControl.setObject(true);
     
     birthPlaceControl = EditorControlAutoCompleteTextField.newInstance(customization, new StringConverterAndChecker<City>() {
@@ -108,12 +109,6 @@ public class EditorControlsDemo extends JfxStage {
     birthPlaceControl.setLabelBaseText("Birthplace");
     birthPlaceControl.setOptions(City.getCities());
     
-    genderControl = new EditorControlEnumComboBox.Builder<Gender>(Gender.FEMALE, "gender")
-        .setCustomization(customization)
-        .setLabelBaseText("Gender")
-        .setToolTipText("What is your gender?\nThis is an example of en EditorControlEnumComboBox")
-        .build();
-    
     ageControl = new EditorControlInteger.IntegerBuilder("age")
         .setCustomization(customization)
         .setOptional(false)
@@ -132,21 +127,49 @@ public class EditorControlsDemo extends JfxStage {
     
     travelerTypeControl = new EditorControlEnumComboBox.Builder<TravelerType>(TravelerType.REGULAR, "travelerType")
         .setCustomization(customization)
-        .setLabelBaseText("Traveler type:")
+        .setLabelBaseText("Traveler type")
         .setToolTipText("What kind of traveler are you?\nThis is an example of en EditorControlEnumComboBox")
         .build();
     
-//    lastTravelRatingObjectControlFixedPointValue = componentFactory.createObjectControlFixedPointValue(null, 150.0, false, "How do you rate your last travel (scale 0 to 10, with 2 decimal digits)");
-//    lastTravelRatingObjectControlFixedPointValue.setValidFactorRange(100, 100);
+    lastTravelRatingControl = new EditorControlFixedPointValue.FixedPointValueBuilder("lastTravelRating")
+        .setCustomization(customization)
+        .setLabelBaseText("Last travel rating")
+        .setToolTipText("How do you rate your last travel (scale 0 to 10, with 2 decimal digits)")
+        .setValidFactorRange(100, 100)
+        .build();
+        
+    lastTravelDateControl = new EditorControlLocalDate.LocalDateBuilder("lastTravelDate")
+        .setCustomization(customization)
+        .setLabelBaseText("Last travel date")
+        .setToolTipText("When was your last travel?)")
+        .build();
+        
+    travelReportFileControl = EditorControlFileSelecter.newInstance(customization, 300, "The file with you're travel report",
+        "Select file", "Select travel report", "Select the file with your travel report", false);
+    travelReportFileControl.setLabelBaseText("Travel report");
+
+    nextTravelDateControl = new EditorControlFlexDate.FlexDateBuilder("nextTravelDate")
+        .setCustomization(customization)
+        .setLabelBaseText("Next travel date")
+        .setToolTipText("When do you expect to travel again?")
+        .build();
     
-    lastTravelDateObjectControlLocalDate = componentFactory.createObjectControlLocalDate(null, 300.0, false, "When was your last travel?");
-    travelReportFileObjectControlFileSelecter = componentFactory.createFileSelecterObjectControl(300, "The file with you're travel report", "Select file", "Select travel report", "Select the file with your travel report", false);
-    nextTravelDateObjectControlFlexDate = componentFactory.createObjectControlFlexDate(null, 300.0, false, "When do you expect to travel again?");
-    picturesFolderObjectControlFolderSelecter = componentFactory.createFolderSelecter(300, "The folder with pictures", "Select folder", "Select pictures folder", "Select the folder with the pictures", false);
-    picturesFolderObjectControlFolderSelecter.setInitialFolderProvider(() -> "C:\\Users");
-    imageFileObjectControlImageFile = componentFactory.createObjectControlImageFile(false);
-    notesObjectControlMultiLineString = componentFactory.createObjectControlMultiLineString(null, false);
-    detailsObjectControlHTMLString = componentFactory.createObjectControlHTMLString(null, false);    
+    
+    picturesFolderControl = EditorControlFolderSelecter.newInstance(customization, 300, "The folder with pictures",
+        "Select folder", "Select pictures folder", "Select the folder with the pictures", false);
+    picturesFolderControl.setLabelBaseText("Pictures folder");
+    picturesFolderControl.setInitialFolderProvider(() -> "C:\\Users");
+   
+    favoritePictureControl = new EditorControlImageFile.Builder("favoritePicture")
+        .setCustomization(customization)
+        .setLabelBaseText("Favorite picture")
+        .build();
+    
+    notesControl = EditorControlMultiLineString.newInstance(customization, false);
+    notesControl.setLabelBaseText("Notes");
+    
+    detailsControl = EditorControlHTMLString.newInstance(customization, false);
+    detailsControl.setLabelBaseText("Details");
   }
   
   /**
@@ -159,97 +182,36 @@ public class EditorControlsDemo extends JfxStage {
     gridPane.setPadding(new Insets(12.0));
     
     int row = 0;
-    Label label;
     
-    gridPane.addRow(row, nameControl.getLabel(), nameControl.getControl(), nameControl.getStatusIndicator());
+    gridPane.addRow(row++, nameControl.getLabel(), nameControl.getControl(), nameControl.getStatusIndicator());
     
-    row++;
+    gridPane.addRow(row++, iAmHappyControl.getLabel(), iAmHappyControl.getControl(), iAmHappyControl.getStatusIndicator());
     
-    gridPane.addRow(row, iAmHappyControl.getLabel(), iAmHappyControl.getControl(), iAmHappyControl.getStatusIndicator());
+    gridPane.addRow(row++, birthPlaceControl.getLabel(), birthPlaceControl.getControl(), birthPlaceControl.getStatusIndicator());
     
-    row++;
+    gridPane.addRow(row++, ageControl.getLabel(), ageControl.getControl(), ageControl.getStatusIndicator());
     
-    gridPane.addRow(row, birthPlaceControl.getLabel(), birthPlaceControl.getControl(), birthPlaceControl.getStatusIndicator());
+    gridPane.addRow(row++, priceLastHolidayControl.getLabel(), priceLastHolidayControl.getControl(), priceLastHolidayControl.getStatusIndicator());
     
-    row++;
+    gridPane.addRow(row++, travelerTypeControl.getLabel(), travelerTypeControl.getControl(), travelerTypeControl.getStatusIndicator());
     
-    gridPane.addRow(row, genderControl.getLabel(), genderControl.getControl(), genderControl.getStatusIndicator());
+    gridPane.addRow(row++, lastTravelRatingControl.getLabel(), lastTravelRatingControl.getControl(), lastTravelRatingControl.getStatusIndicator());
     
-    row++;
+    gridPane.addRow(row++, lastTravelDateControl.getLabel(), lastTravelDateControl.getControl(), lastTravelDateControl.getStatusIndicator());
     
-    gridPane.addRow(row, ageControl.getLabel(), ageControl.getControl(), ageControl.getStatusIndicator());
+    gridPane.addRow(row++, travelReportFileControl.getLabel(), travelReportFileControl.getControl(), travelReportFileControl.getStatusIndicator(), travelReportFileControl.getFileChooserButton());
     
-    row++;
+    gridPane.addRow(row++, nextTravelDateControl.getLabel(), nextTravelDateControl.getControl(), nextTravelDateControl.getStatusIndicator());
     
-    gridPane.addRow(row, priceLastHolidayControl.getLabel(), priceLastHolidayControl.getControl(), priceLastHolidayControl.getStatusIndicator());
+    gridPane.addRow(row++, picturesFolderControl.getLabel(), picturesFolderControl.getControl(), picturesFolderControl.getStatusIndicator(), picturesFolderControl.getFolderChooserButton());
     
-    row++;
+    gridPane.addRow(row++, favoritePictureControl.getLabel(), favoritePictureControl.getControl(), favoritePictureControl.getStatusIndicator());
     
-    gridPane.addRow(row, travelerTypeControl.getLabel(), travelerTypeControl.getControl(), travelerTypeControl.getStatusIndicator());
+    notesControl.getControl().setMaxHeight(80.0);
+    gridPane.addRow(row++, notesControl.getLabel(), notesControl.getControl(), notesControl.getStatusIndicator());
     
-    row++;
-    
-    label = componentFactory.createLabel("Last travel rating:");
-    gridPane.add(label, 0, row);
-    gridPane.add(lastTravelRatingObjectControlFixedPointValue.getControl(), 1, row);
-    gridPane.add(lastTravelRatingObjectControlFixedPointValue.getStatusIndicator(), 2, row);
-    
-    row++;
-    
-    label = componentFactory.createLabel("Last travel date:");
-    gridPane.add(label, 0, row);
-    gridPane.add(lastTravelDateObjectControlLocalDate.getControl(), 1, row);
-    gridPane.add(lastTravelDateObjectControlLocalDate.getStatusIndicator(), 2, row);
-    
-    row++;
-    
-    label = componentFactory.createLabel("Traval report:");
-    gridPane.add(label, 0, row);
-    gridPane.add(travelReportFileObjectControlFileSelecter.getControl(), 1, row);
-    gridPane.add(travelReportFileObjectControlFileSelecter.getStatusIndicator(), 2, row);
-    gridPane.add(travelReportFileObjectControlFileSelecter.getFileChooserButton(), 3, row);
-    
-    row++;
-    
-    label = componentFactory.createLabel("Next travel date:");
-    gridPane.add(label, 0, row);
-    gridPane.add(nextTravelDateObjectControlFlexDate.getControl(), 1, row);
-    gridPane.add(nextTravelDateObjectControlFlexDate.getStatusIndicator(), 2, row);
-    
-    row++;
-    
-    label = componentFactory.createLabel("Pictures folder:");
-    gridPane.add(label, 0, row);
-    gridPane.add(picturesFolderObjectControlFolderSelecter.getControl(), 1, row);
-    gridPane.add(picturesFolderObjectControlFolderSelecter.getStatusIndicator(), 2, row);
-    gridPane.add(picturesFolderObjectControlFolderSelecter.getFolderChooserButton(), 3, row);
-    
-    row++;
-    
-    label = componentFactory.createLabel("Favorite picture:");
-    gridPane.add(label, 0, row);
-    gridPane.add(imageFileObjectControlImageFile.getControl(), 1, row);
-    gridPane.add(imageFileObjectControlImageFile.getStatusIndicator(), 2, row);
-    
-    row++;
-    
-    label = componentFactory.createLabel("Notes:");
-    gridPane.add(label, 0, row);
-    notesObjectControlMultiLineString.getControl().setMaxHeight(80.0);
-    gridPane.add(notesObjectControlMultiLineString.getControl(), 1, row);
-    gridPane.add(notesObjectControlMultiLineString.getStatusIndicator(), 2, row);
-    
-    row++;
-    
-    label = componentFactory.createLabel("Details:");
-    gridPane.add(label, 0, row);
-    detailsObjectControlHTMLString.getControl().setMaxHeight(200.0);
-    gridPane.add(detailsObjectControlHTMLString.getControl(), 1, row);
-    gridPane.add(detailsObjectControlHTMLString.getStatusIndicator(), 2, row);
-    
-    
-//    getChildren().add(gridPane);
-    
+    detailsControl.getControl().setMaxHeight(200.0);
+    gridPane.addRow(row++, detailsControl.getLabel(), detailsControl.getControl(), detailsControl.getStatusIndicator());    
 
     setScene(new Scene(gridPane));
   }

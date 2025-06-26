@@ -59,7 +59,7 @@ public class EditorControlDate extends EditorControlTextField<Date> {
     }
     
     @Override
-    public EditorControlDateBuilder setWidth(Double width) {
+    public EditorControlDateBuilder setWidth(double width) {
       super.setWidth(width);
       
       return this;

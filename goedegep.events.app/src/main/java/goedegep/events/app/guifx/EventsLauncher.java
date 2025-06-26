@@ -258,7 +258,6 @@ public class EventsLauncher {
       LOGGER.info("classLoader: " + classLoader.getName());
       return ResourceBundle.getBundle(bundlePath, locale, classLoader);
   }
-
 }
 
 /**

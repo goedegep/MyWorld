@@ -5,6 +5,7 @@ module goedegep.unitconverter.app {
   requires goedegep.appgen;
   requires transitive goedegep.appgenfx;
   requires goedegep.model.properties;
+  requires goedegep.properties.app;
   requires transitive goedegep.util;
   requires java.logging;
   requires javafx.base;
