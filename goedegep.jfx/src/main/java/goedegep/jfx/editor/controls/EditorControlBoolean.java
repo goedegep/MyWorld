@@ -3,6 +3,7 @@ package goedegep.jfx.editor.controls;
 import java.util.logging.Logger;
 
 import goedegep.jfx.CustomizationFx;
+import goedegep.jfx.editor.EditorControlBuilder;
 import goedegep.jfx.editor.EditorControlTemplate;
 import javafx.scene.Node;
 import javafx.scene.control.CheckBox;
@@ -12,6 +13,7 @@ import javafx.scene.control.Tooltip;
  * This class provides a CheckBox to be used to edit a {@code boolean}.
  */
 public class EditorControlBoolean extends EditorControlTemplate<Boolean> {
+  @SuppressWarnings("unused")
   private static final Logger         LOGGER = Logger.getLogger(EditorControlBoolean.class.getName());
   
   
@@ -24,35 +26,19 @@ public class EditorControlBoolean extends EditorControlTemplate<Boolean> {
 
   
   /**
-   * Create a new {@code EditorControlBoolean} instance.
-   * 
-   * @param customization The GUI customization.
-   * @param id the (unique) Id of the control
-   * @param labelBaseText the base text for the label
-   * @param toolTipText An optional Tooltip text.
-   * @return the newly created {@code EditorControlBoolean}.
-   */
-  public static EditorControlBoolean newInstance(CustomizationFx customization, String id, String labelBaseText, String toolTipText) {
-    EditorControlBoolean editorControlBoolean = new EditorControlBoolean(customization, id, labelBaseText, toolTipText);
-    editorControlBoolean.performInitialization();
-    
-    return editorControlBoolean;
-  }
-  
-  /**
-   * Constructor.
+   * Constructor using a builder.
    * 
    * @param customization The GUI customization.
    * @param id the (unique) Id of the control
    * @param labelBaseText the base text for the label
    * @param toolTipText An optional Tooltip text.
    */
-  public EditorControlBoolean(CustomizationFx customization, String id, String labelBaseText, String toolTipText) {
-    super(customization, true);
+  public EditorControlBoolean(Builder builder) {
+    super(builder.customization, true);
     
-    this.toolTipText = toolTipText;
-    setId(id);
-    setLabelBaseText(labelBaseText);
+    setId(builder.id);  // TODO add as argument to super
+    toolTipText = builder.toolTipText;
+    setLabelBaseText(builder.labelBaseText);
   }
 
   @Override
@@ -110,5 +96,68 @@ public class EditorControlBoolean extends EditorControlTemplate<Boolean> {
   protected void setErrorFeedback(boolean valid) {
     // No action needed
     
+  }
+  
+  
+  /**
+   * This class is a builder to build an instance of {@code EditorControlBoolean}.
+   */
+  public static class Builder extends EditorControlBuilder {
+    
+    /**
+     * Constructor
+     * 
+   * @param id The unique id of the ObjectControl (may not be null).
+     */
+    public Builder(String id) {
+      super(id);
+    }
+    
+    /**
+     * Set the GUI customization.
+     * 
+     * @param customization The GUI customization
+     * @return this
+     */
+    public Builder setCustomization(CustomizationFx customization) {
+      this.customization = customization;
+      
+      return this;
+    }
+    
+    /**
+     * Set the base text for the label.
+     * 
+     * @param labelBaseText  the base text for the label.
+     * @return this
+     */
+    public Builder setLabelBaseText(String labelBaseText) {
+      this.labelBaseText = labelBaseText;
+      
+      return this;
+    }
+    
+    /**
+     * Set the ToolTip text.
+     * 
+     * @param toolTipText the ToolTip text
+     * @return this
+     */
+    public Builder setToolTipText(String toolTipText) {
+      this.toolTipText = toolTipText;
+      
+      return this;
+    }
+    
+    /**
+     * Create the {@code EditorControlBoolean} instance.
+     * @return the {@code EditorControlBoolean} instance.
+     */
+    public EditorControlBoolean build() {
+      EditorControlBoolean editorControlBoolean = new EditorControlBoolean(this);
+      editorControlBoolean.performInitialization();
+      
+      return editorControlBoolean;
+    }
   }
 }

@@ -7,9 +7,10 @@ import java.util.logging.Logger;
 import goedegep.appgen.swing.DefaultCustomization;
 import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.DefaultCustomizationFx;
+import goedegep.jfx.editor.EditorControl;
 import goedegep.jfx.editor.EditorControlTemplate;
-import goedegep.jfx.objectcontrols.ObjectControl;
 import goedegep.jfx.stringconverterandchecker.AnyTypeStringConverterAndChecker;
+import goedegep.jfx.stringconverterandchecker.StringConverterAndChecker;
 import javafx.scene.control.TextField;
 import javafx.util.StringConverter;
 
@@ -44,7 +45,7 @@ public class EditorControlTextField<T> extends EditorControlTemplate<T> {
   
   private StringConverter<T> stringConverter = null;
   
-  private double width;
+  private Double width;
   
   private String toolTipText;
   
@@ -77,13 +78,13 @@ public class EditorControlTextField<T> extends EditorControlTemplate<T> {
   public void createControls() {
     textField = customization.getComponentFactoryFx().createTextField(width, toolTipText);
     
-    textField.textProperty().addListener((observableValue, oldValue, newValue) -> {
+    textField.textProperty().addListener((_, _, _) -> {
       if (!ignoreChanges) {
         handleNewUserInput(textField);
       }
     });
     
-    textField.focusedProperty().addListener((observableValue, oldValue, newValue) -> {
+    textField.focusedProperty().addListener((_, _, newValue) -> {
       if (!newValue)
         redrawValue();
     });
@@ -254,7 +255,7 @@ public class EditorControlTextField<T> extends EditorControlTemplate<T> {
     /**
      * Width of the text field.
      */
-    private Double width;
+    private double width;
     
     /**
      * ToolTip text for the control (optional).
@@ -280,6 +281,7 @@ public class EditorControlTextField<T> extends EditorControlTemplate<T> {
       Objects.requireNonNull(id, "The id may not be null");
       
       this.id = id;
+      width = -1;
     }
     
     /**
@@ -324,7 +326,7 @@ public class EditorControlTextField<T> extends EditorControlTemplate<T> {
      * @param width  the width of the text field.
      * @return this
      */
-    public Builder<T> setWidth(Double width) {
+    public Builder<T> setWidth(double width) {
       this.width = width;
       
       return this;

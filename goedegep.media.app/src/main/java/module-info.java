@@ -13,4 +13,5 @@ module goedegep.media.app {
   requires transitive javafx.graphics;
   requires org.eclipse.emf.common;
   requires org.eclipse.emf.ecore;
+  requires goedegep.properties.app;
 }

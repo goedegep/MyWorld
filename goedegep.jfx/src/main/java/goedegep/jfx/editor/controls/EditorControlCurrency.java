@@ -64,7 +64,7 @@ public class EditorControlCurrency extends EditorControlTextField<PgCurrency> {
     }
     
     @Override
-    public CurrencyBuilder setWidth(Double width) {
+    public CurrencyBuilder setWidth(double width) {
       super.setWidth(width);
       
       return this;

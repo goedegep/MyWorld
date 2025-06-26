@@ -22,37 +22,6 @@ public class EditorControlString extends EditorControlTemplate<String> {
   private Double width;
   private String toolTipText;
   
-//  /**
-//   * Get an {@code EditorControlString} instance.
-//   * 
-//   * @param customization The GUI customization.
-//   * @param initialValue the initial value.
-//   * @param width width of the TextField.
-//   * @param optional indication of whether the value is optional or not.
-//   * @param toolTipText an optional tooltip text.
-//   * @return a new {@code EditorControlString} instance.
-//   */
-//  public static EditorControlString newInstance(CustomizationFx customization, double width, boolean optional, String toolTipText) {
-//    EditorControlString objectControlString = new EditorControlString(customization, width, optional, toolTipText);
-//    objectControlString.performInitialization();
-//    
-//    return objectControlString;
-//  }
-      
-//  /**
-//   * Constructor.
-//   * 
-//   * @param customization The GUI customization.
-//   * @param width width of the TextField.
-//   * @param optional indication of whether the value is optional or not.
-//   * @param toolTipText an optional tooltip text.
-//   */
-//  private EditorControlString(CustomizationFx customization, double width, boolean optional, String toolTipText) {
-//    super(customization, optional);
-//    
-//    this.width = width;
-//    this.toolTipText = toolTipText;
-//  }
   
   /**
    * Constructor using a Builder.

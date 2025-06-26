@@ -3,8 +3,12 @@ package goedegep.properties.app;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.lang.reflect.Field;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URL;
 import java.nio.file.Files;
-import java.nio.file.Paths;
+import java.nio.file.Path;
+import java.util.function.Function;
 import java.util.logging.Logger;
 
 import goedegep.properties.model.PropertiesFactory;
@@ -14,7 +18,6 @@ import goedegep.properties.model.PropertyDescriptor;
 import goedegep.properties.model.PropertyDescriptorGroup;
 import goedegep.properties.model.PropertyGroup;
 import goedegep.properties.model.PropertyType;
-import goedegep.util.clazz.ClassUtil;
 import goedegep.util.emf.EMFResource;
 
 /**
@@ -47,51 +50,56 @@ public class PropertiesHandler {
    * Else it is simply <code>propertyDescriptorsFileName</code> (as it is in the current directory).
    * 
    * @param runningInEclipse shall be set to true if running within Eclipse.
-   * @param projectPath a path to the Eclipse project in which the file with the name <b>propertyDescriptorsFileName</b> is located.
-   * @param propertyDescriptorsFileName the name of the file with property descriptors.
+   * @param propertyDescriptorsFileURI the URL of the file with property descriptors.
+   * @param urlForFileNameFunction a function for providing a URL for a file name. Used for handling custom property files.
    */
-  public static void handleProperties(boolean runningInEclipse, String projectPath, String propertyDescriptorsFileName) {
-    LOGGER.info("=> runningInEclipse=" + runningInEclipse + ", projectPath=" + projectPath + ", propertyDescriptorsFileName=" + propertyDescriptorsFileName);
-    
-    String resourceFileName;
+  public static void handleProperties(boolean runningInEclipse, URL propertyDescriptorsFileURI, Function<String, URL> urlForFileNameFunction) throws FileNotFoundException {
     
     EMFResource<PropertyDescriptorGroup> emfResource = new EMFResource<>(
         PropertiesPackage.eINSTANCE,
         () -> PropertiesFactory.eINSTANCE.createPropertyDescriptorGroup(), ".xmi");
-    
+
+    PropertyDescriptorGroup propertyDescriptorGroup = emfResource.load(propertyDescriptorsFileURI);
+    Class<?> registryClass = fillRegistryFromPropertiesDescriptorGroup(propertyDescriptorGroup);
+
     try {
-      resourceFileName = createResourcePath(runningInEclipse, projectPath, propertyDescriptorsFileName, false);
-      PropertyDescriptorGroup propertyDescriptorGroup = emfResource.load(resourceFileName);
-      LOGGER.info("propertyDescriptorGroup: " + propertyDescriptorGroup.toString());
-      Class<?> registryClass = fillRegistryGroup(propertyDescriptorGroup);
-      LOGGER.info(ClassUtil.staticFieldsToString(registryClass));
-      
-      try {
-        Field propertyDescriptorsResourceField = registryClass.getField(PROPERTY_DESCRIPTORS_RESOURCE_FIELDNAME);
-        propertyDescriptorsResourceField.set(null, emfResource);
-      } catch (NoSuchFieldException e) {
-        throw new RuntimeException("Registry \'" + registryClass.getName() +
-            "\' is missing the mandatory field \'" + PROPERTY_DESCRIPTORS_RESOURCE_FIELDNAME +
-            "\'. This problem was detected while handling property descriptor file \'" + resourceFileName + "\'");
-      } catch (SecurityException | IllegalArgumentException | IllegalAccessException e) {
-        e.printStackTrace();
-      }
-      LOGGER.info(ClassUtil.staticFieldsToString(registryClass));
-      
-      try {
-        Field customPropertiesFileField = registryClass.getField(CUSTOM_PROPERTIES_FILE_FIELDNAME);
-        String customPropertiesFileName = (String) customPropertiesFileField.get(null);
-        LOGGER.info("customPropertiesFileName: " + customPropertiesFileName);
-        if (customPropertiesFileName != null) {
-          EMFResource<PropertyGroup> propertiesResource = new EMFResource<PropertyGroup>(
-              PropertiesPackage.eINSTANCE,
-              () -> PropertiesFactory.eINSTANCE.createPropertyGroup(), ".xmi");
-          resourceFileName = createResourcePath(runningInEclipse, projectPath, customPropertiesFileName, true);
-          LOGGER.info("resourceFileName: " + resourceFileName);
-          customPropertiesFileField.set(customPropertiesFileField, resourceFileName);
-          if (Files.exists(Paths.get(resourceFileName))) {
+      Field propertyDescriptorsResourceField = registryClass.getField(PROPERTY_DESCRIPTORS_RESOURCE_FIELDNAME);
+      propertyDescriptorsResourceField.set(null, emfResource);
+    } catch (NoSuchFieldException e) {
+      throw new RuntimeException("Registry \'" + registryClass.getName() +
+          "\' is missing the mandatory field \'" + PROPERTY_DESCRIPTORS_RESOURCE_FIELDNAME +
+          "\'. This problem was detected while handling property descriptor file \'" + propertyDescriptorsFileURI.toString() + "\'");
+    } catch (SecurityException | IllegalArgumentException | IllegalAccessException e) {
+      throw new RuntimeException("Unexpected exception in handleProperties.");
+    }
+
+    try {
+      Field customPropertiesFileField = registryClass.getField(CUSTOM_PROPERTIES_FILE_FIELDNAME);
+      String customPropertiesFileName = (String) customPropertiesFileField.get(null);
+      if (customPropertiesFileName != null) {
+        EMFResource<PropertyGroup> propertiesResource = new EMFResource<PropertyGroup>(
+            PropertiesPackage.eINSTANCE,
+            () -> PropertiesFactory.eINSTANCE.createPropertyGroup(), ".xmi");
+
+        URL url = null;
+        if (urlForFileNameFunction != null) {
+          url = urlForFileNameFunction.apply(customPropertiesFileName);
+        } else {
+          URI uri = Path.of(customPropertiesFileName).toUri();
+          try {
+            url = uri.toURL();
+          } catch (MalformedURLException e) {
+            e.printStackTrace();
+          }
+        }
+        LOGGER.severe("resourceFileName: " + url);
+        if (url != null) {
+          String pathString = url.getPath().substring(1);
+          Path path = Path.of(pathString);
+          if (Files.exists(path)) {       
+            //        if (Files.exists(Paths.get(resourceFileName))) {
             try {
-              PropertyGroup propertyGroup = propertiesResource.load(resourceFileName);
+              PropertyGroup propertyGroup = propertiesResource.load(url);
               updateRegistryGroup(registryClass, propertyGroup, propertyDescriptorGroup);
               //            LOGGER.info(ClassUtil.staticFieldsToString(registryClass));
             } catch (FileNotFoundException e) {
@@ -99,51 +107,48 @@ public class PropertiesHandler {
             }
           }
         }
-      } catch (SecurityException | IllegalArgumentException | IllegalAccessException e) {
-        e.printStackTrace();
-      } catch (NoSuchFieldException e) {
-        LOGGER.severe("NoSuchFieldException: " + e);
-        LOGGER.severe("NoSuchFieldException; field " + CUSTOM_PROPERTIES_FILE_FIELDNAME + " doesn't exist in registry class " + registryClass.getName());
-        e.printStackTrace();
       }
-      
-    } catch (FileNotFoundException e) {
+    } catch (SecurityException | IllegalArgumentException | IllegalAccessException e) {
       e.printStackTrace();
-      System.exit(-1);
+    } catch (NoSuchFieldException e) {
+      LOGGER.severe("NoSuchFieldException: " + e);
+      LOGGER.severe("NoSuchFieldException; field " + CUSTOM_PROPERTIES_FILE_FIELDNAME + " doesn't exist in registry class " + registryClass.getName());
+      e.printStackTrace();
     }
-    
+
     LOGGER.info("<=");
   }
   
-  /**
-   * Create the path name for a resource file.
-   * <p>
-   * If the program is running in Eclipse, the resource path is the <code>fileName</code> in the <code>projectPath</code> directory.
-   * Else it is simply <code>fileName</code> (as it is in the current directory).
-   * 
-   * @param runningInEclipse indicates whether the program is running in Eclipse or not.
-   * @param projectPath path to the project which contains the resource.
-   * @param fileName filename of the resource.
-   * @return a path to the resource
-   */
-  private static String createResourcePath(boolean runningInEclipse, String projectPath, String fileName, boolean isUserFile) {
-    if (runningInEclipse) {
-      if (projectPath != null) {
-        File file = new File(projectPath, fileName);
-        LOGGER.info("Resource path = " + file.getAbsolutePath());
-        return file.getAbsolutePath();
-      } else {
-        return fileName;
-      }
-    } else {
-      if (isUserFile) {
-        LOGGER.info("Resource path = " + fileName);
-        return "..\\" + fileName;
-      } else {
-        return fileName;
-      }
-    }
-  }
+  
+//  /**
+//   * Create the path name for a resource file.
+//   * <p>
+//   * If the program is running in Eclipse, the resource path is the <code>fileName</code> in the <code>projectPath</code> directory.
+//   * Else it is simply <code>fileName</code> (as it is in the current directory).
+//   * 
+//   * @param runningInEclipse indicates whether the program is running in Eclipse or not.
+//   * @param projectPath path to the project which contains the resource.
+//   * @param fileName filename of the resource.
+//   * @return a path to the resource
+//   */
+//  private static String createResourcePath(boolean runningInEclipse, String projectPath, String fileName, boolean isUserFile) {
+//    if (runningInEclipse) {
+//      if (projectPath != null) {
+//        File file = new File(projectPath, fileName);
+//        LOGGER.info("Resource path = " + file.getAbsolutePath());
+//        return file.getAbsolutePath();
+//      } else {
+//        return fileName;
+//      }
+//    } else {
+//      if (isUserFile) {
+//        LOGGER.info("Resource path = " + fileName);
+//        return "..\\" + fileName;
+//      } else {
+//        return fileName;
+//      }
+//    }
+//  }
   
   /**
    * Fill a Registry with values of a {@link PropertiesDescriptorGroup}.
@@ -153,7 +158,7 @@ public class PropertiesHandler {
    * 
    * @param propertyDescriptorGroup the PropertyDescriptorGroup which's values are to be stored in a Registry.
    */
-  private static Class<?> fillRegistryGroup(PropertyDescriptorGroup propertyDescriptorGroup) {
+  private static Class<?> fillRegistryFromPropertiesDescriptorGroup(PropertyDescriptorGroup propertyDescriptorGroup) {
     LOGGER.info("=> propertyDescriptorGroup.name=\"" + propertyDescriptorGroup.getName() + "\"");
 
     // Only try to fill a registry if both packageName and registryClassName are set.

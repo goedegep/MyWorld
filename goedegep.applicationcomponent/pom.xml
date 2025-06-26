@@ -1,0 +1,20 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>goedegep.applicationcomponent</groupId>
+  <artifactId>goedegep-applicationcomponent</artifactId>
+  <packaging>jar</packaging>
+  <name>Goedegep Application Component</name>
+  <description>This project contains classes to work with application components.</description>
+  <parent>
+    <groupId>goedegep.toplevelpom</groupId>
+    <artifactId>goedegep-toplevelpom</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <relativePath>../goedegep.toplevelpom</relativePath>
+  </parent>
+  <dependencies>
+    <dependency>
+      <groupId>com.google.common.geometry</groupId>
+      <artifactId>com.google.common.geometry</artifactId>
+    </dependency>
+  </dependencies>
+</project>

@@ -272,7 +272,11 @@ public class InvoiceAndPropertyEditPanel extends EditPanelTemplate<InvoiceAndPro
         .setOptional(true)
         .build();
         
-    archiveControl = componentFactory.createEditorControlBoolean("archived", "Archived", "Archived");
+    archiveControl = new EditorControlBoolean.Builder("archived")
+        .setCustomization(customization)
+        .setLabelBaseText("Archived")
+        .setToolTipText("Archived")
+        .build();
     
     documentsEditPanel = new FileReferencesEditPanelBuilder(customization)
         .setReferencesEditPanelTitle("Documents")
@@ -283,7 +287,7 @@ public class InvoiceAndPropertyEditPanel extends EditPanelTemplate<InvoiceAndPro
         .setPrefix(InvoicesAndPropertiesRegistry.propertyRelatedFilesFolder)
         .build();
     documentsEditPanel.setId("documents");
-    documentsEditPanel.addValueAndOrStatusChangeListener((valueChanged, statusChanged) -> updateAttachmentsFolderPathProperty());
+    documentsEditPanel.addValueAndOrStatusChangeListener((_, _) -> updateAttachmentsFolderPathProperty());
     
     picturesEditPanel = new FileReferencesEditPanelBuilder(customization)
         .setReferencesEditPanelTitle("Pictures")
@@ -294,7 +298,7 @@ public class InvoiceAndPropertyEditPanel extends EditPanelTemplate<InvoiceAndPro
         .setPrefix(InvoicesAndPropertiesRegistry.propertyRelatedFilesFolder)
         .build();
     documentsEditPanel.setId("pictures");
-    documentsEditPanel.addValueAndOrStatusChangeListener((valueChanged, statusChanged) -> updateAttachmentsFolderPathProperty());
+    documentsEditPanel.addValueAndOrStatusChangeListener((_, _) -> updateAttachmentsFolderPathProperty());
     
     invoiceAndPropertyItemsPanel = InvoiceAndPropertyItemsPanel.newInstance(customization, invoicesAndPropertiesService);
     invoiceAndPropertyItemsPanel.setId("invoiceAndPropertyItemsPanel");
@@ -304,7 +308,7 @@ public class InvoiceAndPropertyEditPanel extends EditPanelTemplate<InvoiceAndPro
     
     
     attachmentsFolderPathProperty = new SimpleObjectProperty<>();
-    attachmentsFolderPathProperty.addListener((e) -> updateAttachmentsFolderInfo());
+    attachmentsFolderPathProperty.addListener((_) -> updateAttachmentsFolderInfo());
     
     attachmentsFolderControl = new EditorControlString.Builder("attachments folder")
         .setWidth(300d)
@@ -327,7 +331,7 @@ public class InvoiceAndPropertyEditPanel extends EditPanelTemplate<InvoiceAndPro
     selectedPictureImageView.setFitHeight(400);
     selectedPictureImageView.setPreserveRatio(true);
     
-    picturesEditPanel.addObjectSelectionListener((source, fileReference) -> {
+    picturesEditPanel.addObjectSelectionListener((_, fileReference) -> {
       if (fileReference != null  &&  fileReference.getFile() != null) {
         Image image = new Image("file:" + FileUtils.createPathNameFromPrefixAndFileName(InvoicesAndPropertiesRegistry.propertyRelatedFilesFolder, fileReference.getFile()));
         selectedPictureImageView.setImage(image);

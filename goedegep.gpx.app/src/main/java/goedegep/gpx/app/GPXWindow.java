@@ -84,8 +84,8 @@ public class GPXWindow extends JfxStage {
     createGUI();
     
     gpxResource = GpxUtil.createEMFResource();
-    gpxResource.dirtyProperty().addListener((observable, oldValue, newValue) -> updateTitle());
-    gpxResource.fileNameProperty().addListener((observable, oldValue, newValue) -> updateTitle());
+    gpxResource.dirtyProperty().addListener((_, _, _) -> updateTitle());
+    gpxResource.fileNameProperty().addListener((_, _, _) -> updateTitle());
     
     updateTitle();
     

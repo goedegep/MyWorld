@@ -1075,18 +1075,6 @@ public class ComponentFactoryFx {
   }
 
   /**
-   * Create a Boolean EditorControl.
-   * 
-   * @param toolTipText an optional tooltip text.
-   * @return the newly created {@code ObjectControlBoolean}.
-   */
-  public EditorControlBoolean createEditorControlBoolean(String id, String labelBaseText, String toolTipText) {
-    EditorControlBoolean editorControlBoolean = EditorControlBoolean.newInstance(customization, id, labelBaseText, toolTipText);
-
-    return editorControlBoolean;
-  }
-
-  /**
    * Create a Multi Line String ObjectControl.
    * 
    * @param text The initial value.

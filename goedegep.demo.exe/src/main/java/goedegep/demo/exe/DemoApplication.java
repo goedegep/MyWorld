@@ -2,6 +2,8 @@ package goedegep.demo.exe;
 
 import java.util.logging.Level;
 
+import goedegep.demo.guifx.DemoCustomization;
+import goedegep.demo.guifx.DemoMenuWindow;
 import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.DefaultCustomizationFx;
 import goedegep.jfx.JfxApplication;
@@ -45,7 +47,7 @@ public class DemoApplication extends JfxApplication {
     javaFxApplicationThread.setUncaughtExceptionHandler(uncaughtExceptionHandler);
     
     try {
-      new DemoWindow();
+      new DemoMenuWindow(DemoCustomization.getInstance());
     } catch (Exception ex) {
       reportException(customization, ex);
     }

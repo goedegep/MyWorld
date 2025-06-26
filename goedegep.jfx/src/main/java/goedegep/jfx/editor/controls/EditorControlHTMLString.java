@@ -4,7 +4,6 @@ import java.util.logging.Logger;
 
 import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.editor.EditorControlTemplate;
-import goedegep.jfx.editor.EditorException;
 import javafx.scene.input.InputEvent;
 import javafx.scene.web.HTMLEditor;
 
@@ -43,7 +42,7 @@ public class EditorControlHTMLString extends EditorControlTemplate<String> {
   @Override
   public void createControls() {
     htmlEditor = customization.getComponentFactoryFx().createHTMLEditor();
-    htmlEditor.addEventHandler(InputEvent.ANY, (e) -> handleNewUserInput(htmlEditor));
+    htmlEditor.addEventHandler(InputEvent.ANY, (_) -> handleNewUserInput(htmlEditor));
   }
   
   /**

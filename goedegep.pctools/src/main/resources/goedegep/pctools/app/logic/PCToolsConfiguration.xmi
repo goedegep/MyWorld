@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration:LookInfo xmi:version="2.0"
+    xmlns:xmi="http://www.omg.org/XMI" xmlns:configuration="http:///goedegep.configuration/model">
+  <moduleLooks moduleName="PCTOOLS" resourcesClassName="goedegep.pctools.app.guifx.PCToolsAppResourcesFx">
+    <look backgroundColor="238,238,238" buttonBackgroundColor="238,238,238" panelBackgroundColor="238,238,238"
+        listBackgroundColor="238,238,238" labelBackgroundColor="200,200,200" boxBackgroundColor="238,238,238"
+        textFieldBackgroundColor="255,255,255"/>
+  </moduleLooks>
+</configuration:LookInfo>

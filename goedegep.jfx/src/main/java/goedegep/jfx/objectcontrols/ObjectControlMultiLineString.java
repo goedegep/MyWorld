@@ -13,7 +13,6 @@ public class ObjectControlMultiLineString extends ObjectControlTemplate<String> 
    * Constructor.
    * 
    * @param text Initial value to set the text to (may be null).
-   * @param width The width of the TextField
    * @param isOptional Indicates whether the control is optional (if true) or mandatory.
    * @param toolTipText An optional ToolTip text.
    */

@@ -59,7 +59,7 @@ public class EditorControlInteger extends EditorControlTextField<Integer> {
     }
     
     @Override
-    public IntegerBuilder setWidth(Double width) {
+    public IntegerBuilder setWidth(double width) {
       super.setWidth(width);
       
       return this;
