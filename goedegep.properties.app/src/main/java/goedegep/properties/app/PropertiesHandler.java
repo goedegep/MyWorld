@@ -85,7 +85,8 @@ public class PropertiesHandler {
         if (urlForFileNameFunction != null) {
           url = urlForFileNameFunction.apply(customPropertiesFileName);
         } else {
-          URI uri = Path.of(customPropertiesFileName).toUri();
+          String userHomeDir = System.getProperty("user.home");
+          URI uri = Path.of(userHomeDir, "MyWorld", customPropertiesFileName).toUri();
           try {
             url = uri.toURL();
           } catch (MalformedURLException e) {
