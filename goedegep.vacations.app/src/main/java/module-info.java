@@ -1,4 +1,5 @@
 module goedegep.vacations.app {
+  exports goedegep.vacations.app;
   exports goedegep.vacations.app.logic;
   exports goedegep.vacations.app.guifx;
   
