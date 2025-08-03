@@ -85,10 +85,6 @@
       <artifactId>goedegep-poi-app</artifactId>
     </dependency>
     <dependency>
-      <groupId>goedegep.poi</groupId>
-      <artifactId>goedegep-poi-model</artifactId>
-    </dependency>
-    <dependency>
       <groupId>goedegep.properties</groupId>
       <artifactId>goedegep-properties-app</artifactId>
     </dependency>

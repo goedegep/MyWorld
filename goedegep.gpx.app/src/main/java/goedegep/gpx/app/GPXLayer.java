@@ -29,8 +29,6 @@ import goedegep.gpx.model.WptType;
 import goedegep.jfx.stringconverterandchecker.WGS84CoordinatesStringConverterAndChecker;
 import goedegep.mapview.MapViewUtil;
 import goedegep.poi.app.LocationCategory;
-import goedegep.poi.app.guifx.POIIcons;
-import goedegep.poi.model.POICategoryId;
 import goedegep.resources.ImageResource;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;

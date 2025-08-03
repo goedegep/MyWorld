@@ -3,7 +3,6 @@
 package goedegep.vacations.model.impl;
 
 import goedegep.poi.app.LocationCategory;
-import goedegep.poi.model.POIPackage;
 import goedegep.types.model.TypesPackage;
 import goedegep.vacations.model.Boundary;
 import goedegep.vacations.model.BoundingBox;
@@ -211,7 +210,6 @@ public class VacationsPackageImpl extends EPackageImpl implements VacationsPacka
     isInited = true;
 
     // Initialize simple dependencies
-    POIPackage.eINSTANCE.eClass();
     TypesPackage.eINSTANCE.eClass();
     XMLTypePackage.eINSTANCE.eClass();
 

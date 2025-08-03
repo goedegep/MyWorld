@@ -22,7 +22,6 @@ import de.micromata.opengis.kml.v_2_2_0.Placemark;
 import de.micromata.opengis.kml.v_2_2_0.Polygon;
 import goedegep.geo.WGS84Coordinates;
 import goedegep.poi.app.LocationCategory;
-import goedegep.poi.model.POICategoryId;
 import goedegep.vacations.model.BoundingBox;
 import goedegep.vacations.model.Location;
 import goedegep.vacations.model.VacationsFactory;

@@ -1610,7 +1610,8 @@ public class LocationImpl extends VacationElementImpl implements Location {
   public String toString() {
     StringBuilder buf = new StringBuilder();
 
-    buf.append("LocationCategory: ").append(getLocationCategory() != null ? LocationCategory.getDisplayName(getLocationCategory()) : "(null)");
+    buf.append("LocationCategory: ")
+        .append(getLocationCategory() != null ? LocationCategory.getDisplayName(getLocationCategory()) : "(null)");
     buf.append(", Name: ").append(getName() != null ? getName().toString() : "(null)");
     buf.append(", City: ").append(getCity() != null ? getCity().toString() : "(null)");
 

@@ -11,6 +11,7 @@ import goedegep.resources.ImageResource;
 import goedegep.vacations.app.guifx.VacationsWindow;
 
 public class TravelsApplication {
+  @SuppressWarnings("unused")
   private static final Logger LOGGER = Logger.getLogger(TravelsApplication.class.getName());
   
   private static final String VACATIONS_PROPERTY_DESCRIPTORS_FILE = "VacationsPropertyDescriptors.xmi";
@@ -22,7 +23,6 @@ public class TravelsApplication {
   private TravelsApplication(boolean runningInEclipse) {
     // Handle properties
     URL url = getClass().getResource(VACATIONS_PROPERTY_DESCRIPTORS_FILE);
-    LOGGER.severe("url = " + (url != null ? url.toString() : "<null>"));
     
     try {
       PropertiesHandler.handleProperties(runningInEclipse, url, null);

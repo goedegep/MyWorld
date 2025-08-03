@@ -18,7 +18,6 @@ module goedegep.vacations.app {
   requires transitive goedegep.vacations.model;
   requires goedegep.ov2;
   requires transitive goedegep.poi.app;
-  requires transitive goedegep.poi.model;
   requires goedegep.properties.app;
   requires goedegep.util;
   requires java.desktop;

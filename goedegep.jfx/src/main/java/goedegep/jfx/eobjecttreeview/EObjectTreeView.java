@@ -431,11 +431,11 @@ public class EObjectTreeView extends TreeView<Object> implements ObjectSelector<
    * @param eEnum the <code>EEnum</code> to get the descriptor for.
    * @return the {@code EnumStringConverter} for <code>eEnum</code>, or null if it is not set.
    */
+  @SuppressWarnings("unchecked")
   public <E extends Enum<E>> EnumStringConverter<E> getEnumStringConverterEnum(Object enumerator) {
-    @SuppressWarnings("unchecked")
     EnumStringConverter<E> enumStringConverter = (EnumStringConverter<E>) enumToEnumStringConverterMap.get(enumerator);
     if (enumStringConverter == null) {
-      enumStringConverter = new EnumStringConverter<E>((Class<E>) enumerator.getClass(), null);
+      enumStringConverter = new EnumStringConverter<E>((Class<E>) enumerator, null);
       enumToEnumStringConverterMap.put(enumerator, enumStringConverter);
     }
     return enumStringConverter;

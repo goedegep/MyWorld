@@ -93,7 +93,6 @@ public class PropertiesHandler {
             e.printStackTrace();
           }
         }
-        LOGGER.severe("resourceFileName: " + url);
         if (url != null) {
           String pathString = url.getPath().substring(1);
           Path path = Path.of(pathString);

@@ -6,7 +6,7 @@
     modelPluginID="" modelName="Vacations" editPluginClass="" editorPluginClass=""
     rootExtendsClass="org.eclipse.emf.ecore.impl.MinimalEObjectImpl$Container" codeFormatting="true"
     testSuiteClass="goedegep.vacations.model.tests.VacationsAllTests" importerID="org.eclipse.emf.importer.ecore"
-    bundleManifest="false" complianceLevel="8.0" copyrightFields="false" usedGenPackages="../../goedegep.poi.model/model/POI.genmodel#//model ../../goedegep.types.model/model/types.genmodel#//model"
+    bundleManifest="false" complianceLevel="8.0" copyrightFields="false" usedGenPackages="../../goedegep.types.model/model/types.genmodel#//model"
     operationReflection="true" importOrganizing="true">
   <foreignModel>vacations.ecore</foreignModel>
   <testsDirectory xsi:nil="true"/>

@@ -1,8 +1,7 @@
 module goedegep.poi.app {
   exports goedegep.poi.app;
 
-  requires transitive goedegep.poi.model;
-  requires goedegep.resources;
+  requires transitive goedegep.resources;
   requires goedegep.util;
   requires java.logging;
   requires javafx.base;

@@ -13,7 +13,6 @@ import org.eclipse.emf.common.util.TreeIterator;
 import org.eclipse.emf.ecore.EObject;
 
 import goedegep.poi.app.LocationCategory;
-import goedegep.poi.model.POICategoryId;
 import goedegep.util.html.HtmlUtil;
 import goedegep.util.sgml.SgmlUtil;
 import goedegep.util.text.Indent;
@@ -112,10 +111,10 @@ public class OsmAndUtil {
   }
   
   /**
-   * Check whether there is an OsmAnd icon available for each POICategoryId.
+   * Check whether there is an OsmAnd icon available for each LocationCategory.
    */
   public static void checkIcons() {
-    for (POICategoryId id: POICategoryId.values()) {
+    for (LocationCategory id: LocationCategory.values()) {
       String iconName = iconMap.get(id);
       if (iconName == null) {
         LOGGER.severe("No icon for: " + id);
