@@ -46,7 +46,6 @@ import goedegep.gpx.model.TrkType;
 import goedegep.gpx.model.TrksegType;
 import goedegep.gpx.model.WptType;
 import goedegep.poi.app.LocationCategory;
-import goedegep.poi.model.POICategoryId;
 import goedegep.types.model.FileReference;
 import goedegep.types.model.TypesFactory;
 import goedegep.util.datetime.DateUtil;

@@ -10,10 +10,6 @@
   </parent>
   <dependencies>
     <dependency>
-      <groupId>goedegep.poi</groupId>
-      <artifactId>goedegep-poi-model</artifactId>
-    </dependency>
-    <dependency>
       <groupId>goedegep.resources</groupId>
       <artifactId>goedegep-resources</artifactId>
     </dependency>

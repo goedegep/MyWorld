@@ -12,7 +12,6 @@ import goedegep.ov2.Ov2FileEncoderDecoder;
 import goedegep.ov2.Ov2Item;
 import goedegep.ov2.Ov2ItemType2;
 import goedegep.poi.app.LocationCategory;
-import goedegep.poi.model.POICategoryId;
 import goedegep.vacations.model.Location;
 import goedegep.vacations.model.VacationsPackage;
 

@@ -12,7 +12,6 @@ import goedegep.jfx.JfxStage;
 import goedegep.jfx.eobjecttreeview.EObjectTreeItem;
 import goedegep.jfx.eobjecttreeview.EObjectTreeView;
 import goedegep.poi.app.LocationCategory;
-import goedegep.poi.model.POICategoryId;
 import goedegep.types.model.FileReference;
 import goedegep.vacations.app.logic.PhotoImportResult;
 import goedegep.vacations.app.logic.VacationsUtils;

@@ -315,7 +315,11 @@ public class EObjectTreeCell extends TreeCell<Object> {
         EStructuralFeature eStructuralFeature = eObjectTreeItem.getEStructuralFeature();
         if (eStructuralFeature instanceof EAttribute eAttribute) {
           EDataType eDataType = eAttribute.getEAttributeType();
-          if (eDataType instanceof EEnum) {
+          Class<?> instanceClass = eDataType.getInstanceClass();
+          if (instanceClass.isEnum()) {
+            LOGGER.info("eDataType is an enum: " + eDataType.getName());
+          }
+          if (eDataType instanceof Enum  ||  instanceClass.isEnum()) {
             helperClass = EObjectTreeCellHelperForAttributeEnumeration.class;
           } else {
             switch (eDataType.getName()) {

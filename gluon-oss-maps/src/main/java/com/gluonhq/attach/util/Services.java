@@ -57,7 +57,6 @@ public class Services<T> {
      * @param factory The ServiceFactory instance
      */
     public static <T> void registerServiceFactory(ServiceFactory<T> factory) {
-        LOGGER.severe("Register " + factory);
         FACTORY_MAP.put(factory.getServiceType(), factory);
     }
 
@@ -73,7 +72,6 @@ public class Services<T> {
      * @return An optional with the service 
      */
     public static <T> Optional<T> get(Class<T> service) {
-        LOGGER.severe("Get Service " + service.getName());
         if (!FACTORY_MAP.containsKey(service)) {
             final ServiceFactory<T> factory = getFactory(service);
             if (factory != null) {
@@ -87,7 +85,6 @@ public class Services<T> {
             FACTORY_MAP.get(service).getInstance()
                     .ifPresent(t -> SERVICE_MAP.put(service, t));
         }
-        LOGGER.severe("Return service: " + SERVICE_MAP.get(service));
         return Optional.ofNullable((T) SERVICE_MAP.get(service));
     }
 

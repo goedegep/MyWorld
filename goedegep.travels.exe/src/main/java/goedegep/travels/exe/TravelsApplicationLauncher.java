@@ -60,8 +60,6 @@ public class TravelsApplicationLauncher extends JfxApplication {
   @Override
   public void start(Stage primaryStage) throws Exception {
     
-    LOGGER.severe("=>");
-        
     boolean runningInEclipse = runningInEclipse();
 
     // DevelopmentMode

@@ -230,7 +230,7 @@ public class EMFResource<E extends EObject> {
    * @throws FileNotFoundException if the specified file doesn't exist.
    */
   public E load(URL resourceURL) throws FileNotFoundException {
-    LOGGER.severe("=> resourceFileName="  + resourceURL);
+//    LOGGER.severe("=> resourceFileName="  + resourceURL);
     
     URI fileURI = URI.createURI(resourceURL.toString());
     resource.unload();
@@ -266,7 +266,6 @@ public class EMFResource<E extends EObject> {
    * @throws MalformedURLException 
    */
   public E load(String resourceFileName) throws FileNotFoundException {
-    LOGGER.severe("=> resourceFileName="  + resourceFileName);
     java.net.URI resourceURI = Path.of(resourceFileName).toUri();
 //    java.net.URI resourceURI = java.net.URI.create("file:" + resourceFileName);
 

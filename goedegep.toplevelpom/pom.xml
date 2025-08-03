@@ -330,11 +330,6 @@
         <version>${goedegep.myworld.version}</version>
       </dependency>
       <dependency>
-        <groupId>goedegep.poi</groupId>
-        <artifactId>goedegep-poi-model</artifactId>
-        <version>${goedegep.myworld.version}</version>
-      </dependency>
-      <dependency>
         <groupId>goedegep.properties</groupId>
         <artifactId>goedegep-properties-app</artifactId>
         <version>${goedegep.myworld.version}</version>
@@ -685,7 +680,6 @@
     
     <!-- MyWorld -->
     <module>../tim.prune</module>
-    <module>../goedegep.poi.model</module>
     <module>../goedegep.poi.app</module>
     <module>../goedegep.rolodex.model</module>
     <module>../goedegep.events.model</module>

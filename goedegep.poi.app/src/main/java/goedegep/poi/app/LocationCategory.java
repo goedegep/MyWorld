@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
-import goedegep.poi.model.POICategoryId;
 import goedegep.resources.ImageResource;
 import goedegep.resources.ImageSize;
 import javafx.scene.image.Image;
@@ -204,7 +203,4 @@ public enum LocationCategory {
     return null;
   }
   
-  public static LocationCategory locationCategoryForPOICategoryId(POICategoryId poiCategoryId) {
-    return null;
-  }
 }

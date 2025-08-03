@@ -3,6 +3,7 @@ package goedegep.jfx.eobjecttreeview;
 import java.util.logging.Logger;
 
 import org.eclipse.emf.ecore.EClassifier;
+import org.eclipse.emf.ecore.EDataType;
 import org.eclipse.emf.ecore.EEnum;
 import org.eclipse.emf.ecore.EObject;
 
@@ -29,25 +30,26 @@ public class EObjectTreeCellHelperForAttributeEnumeration extends EObjectTreeCel
   protected void changeGraphicForEditing() {
     /*
      *  replace the valueLabel with a ChoiceBox.
-     *  The value for the control is obtained from the item of this cell.
+     *  The initial value for the control is obtained from the item of this cell.
      */
     graphic.getChildren().remove(valueLabel);    
     valueChoiceBox = new ChoiceBox<>();
     
     // If there is a descriptor for this enum with the display names specified, fill the items with the provided names.
-    // Else fill it with the enums themselves, relying on toString for the texts to display.
-    EClassifier eClassifier = itemDescriptor.getEAttribute().getEType();
-    final EEnum eEnum = (EEnum) eClassifier;
+//    EClassifier eClassifier = itemDescriptor.getEAttribute().getEType();
+//    final EEnum eEnum = (EEnum) eClassifier;
+    EDataType eDataType = itemDescriptor.getEAttribute().getEAttributeType();
+    Class<?> instanceClass = eDataType.getInstanceClass();
     EObjectTreeView eObjectTreeView = treeItem.getEObjectTreeView();
-    final EnumStringConverter<?> eEnumEditorDescriptorForEEnum = eObjectTreeView.getEnumStringConverterEnum(eEnum.getDefaultValue());
-    valueChoiceBox.getItems().addAll(eEnumEditorDescriptorForEEnum.getDisplayNames());
+    final EnumStringConverter<?> enumStringConverter = eObjectTreeView.getEnumStringConverterEnum(instanceClass);
+    valueChoiceBox.getItems().addAll(enumStringConverter.getDisplayNames());
     
     LOGGER.info("Going to select: " + valueLabel.getText());
     valueChoiceBox.getSelectionModel().select(valueLabel.getText());
     
     valueChoiceBox.onActionProperty().set((_) -> {
         String displayName = valueChoiceBox.getValue();
-        Object object = eEnumEditorDescriptorForEEnum.fromDisplayName(displayName);
+        Object object = enumStringConverter.fromDisplayName(displayName);
         eObjectTreeCell.commitEdit(object);
     });
     

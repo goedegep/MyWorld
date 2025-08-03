@@ -63,7 +63,7 @@ public class ReduceBoundarySizesWindow extends JfxStage {
     
     previewLocation = VacationsFactory.eINSTANCE.createLocation();
     
-    mapRelatedItemsLayer = new MapRelatedItemsLayer(customization, null, this);
+    mapRelatedItemsLayer = new MapRelatedItemsLayer(customization, this);
     mapView.addLayer(mapRelatedItemsLayer);
     
     createGUI();
