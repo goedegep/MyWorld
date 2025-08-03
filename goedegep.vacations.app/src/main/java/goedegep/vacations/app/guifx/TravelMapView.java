@@ -9,7 +9,6 @@ import com.gluonhq.maps.MapView;
 
 import goedegep.gpx.app.GPXLayer;
 import goedegep.jfx.CustomizationFx;
-import goedegep.poi.app.guifx.POIIcons;
 import goedegep.util.objectselector.ObjectSelectionListener;
 import goedegep.util.objectselector.ObjectSelector;
 import javafx.stage.Stage;
@@ -28,9 +27,9 @@ public class TravelMapView extends MapView implements ObjectSelector<Object> {
   
   private List<ObjectSelectionListener<Object>> objectSelectionListeners = new ArrayList<>();
 
-  public TravelMapView(CustomizationFx customization, Stage ownerWindow, POIIcons poiIcons, Supplier<LocationSearchWindow> searchWindowSupplier) {
+  public TravelMapView(CustomizationFx customization, Stage ownerWindow, Supplier<LocationSearchWindow> searchWindowSupplier) {
     
-    mapRelatedItemsLayer = new MapRelatedItemsLayer(customization, poiIcons, ownerWindow);
+    mapRelatedItemsLayer = new MapRelatedItemsLayer(customization, ownerWindow);
     addLayer(mapRelatedItemsLayer);
     
     trackLayer = new GPXLayer();
@@ -42,7 +41,7 @@ public class TravelMapView extends MapView implements ObjectSelector<Object> {
     controlsLayer = new ControlsLayer(customization, searchWindowSupplier);
     addLayer(controlsLayer);
     
-    mapRelatedItemsLayer.addObjectSelectionListener((source, object) -> notifyListeners(object));
+    mapRelatedItemsLayer.addObjectSelectionListener((_, object) -> notifyListeners(object));
   }
   
   public void setEditMode(boolean editMode) {

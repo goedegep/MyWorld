@@ -39,8 +39,6 @@ import goedegep.jfx.eobjecttreeview.NodeOperationDescriptorNewBefore;
 import goedegep.jfx.eobjecttreeview.NodeOperationDescriptorOpen;
 import goedegep.jfx.eobjecttreeview.PresentationType;
 import goedegep.poi.app.LocationCategory;
-import goedegep.poi.app.guifx.POIIcons;
-import goedegep.poi.model.POIPackage;
 import goedegep.resources.ImageResource;
 import goedegep.resources.ImageSize;
 import goedegep.types.model.FileReference;
@@ -76,18 +74,12 @@ public class VacationsTreeViewCreator {
   private static final SimpleDateFormat DF = new SimpleDateFormat("dd-MM-yyyy");
   private static final FlexDateFormat FDF = new FlexDateFormat();
   private static final VacationsPackage VACATIONS_PACKAGE = VacationsPackage.eINSTANCE;
-  private static final POIPackage POI_PACKAGE = POIPackage.eINSTANCE;
   private final TypesPackage typesPackage = TypesPackage.eINSTANCE;
   
   /**
    * The GUI customization (mandatory)
    */
   private CustomizationFx customization = null;
-  
-  /**
-   * The class to provide POI icons (optional).
-   */
-  private POIIcons poiIcons = null;
   
   /**
    * A new {@code EObject} initialization function (optional).
@@ -121,18 +113,6 @@ public class VacationsTreeViewCreator {
    */
   public VacationsTreeViewCreator(CustomizationFx customization) {
     this.customization = customization;
-  }
-  
-  /**
-   * Set the class to provide POI icons.
-   * 
-   * @param poiIcons the class to provide POI icons.
-   * @return this
-   */
-  public VacationsTreeViewCreator setPOIIcons(POIIcons poiIcons) {
-    this.poiIcons = poiIcons;
-    
-    return this;
   }
   
   /**
@@ -260,10 +240,10 @@ public class VacationsTreeViewCreator {
         
     // Vacations (root node)
     EObjectTreeItemClassDescriptor eObjectTreeItemClassDescriptor = new EObjectTreeItemClassDescriptor()
-        .setNodeTextFunction(eObject -> "Travel information")
+        .setNodeTextFunction(_ -> "Travel information")
         .setStrongText(true)
         .setExpandOnCreation(true)
-        .setNodeIconFunction(eObject -> TravelImageResource.TRAVEL.getIcon(ImageSize.SIZE_1));
+        .setNodeIconFunction(_ -> TravelImageResource.TRAVEL.getIcon(ImageSize.SIZE_1));
     
     EObjectTreeItemAttributeDescriptor eObjectTreeItemAttributeDescriptor;
 
@@ -275,7 +255,7 @@ public class VacationsTreeViewCreator {
 
     // Vacations.home
     EObjectTreeItemClassReferenceDescriptor homeDescriptor = new EObjectTreeItemClassReferenceDescriptor(VACATIONS_PACKAGE.getVacations_Home())
-        .setNodeTextFunction(eObject -> "Home location")
+        .setNodeTextFunction(_ -> "Home location")
         .setStrongText(true)
         .addNodeOperationDescriptor(new NodeOperationDescriptorNew("Create home location", null, null))
         .addNodeOperationDescriptor(new NodeOperationDescriptorDelete("Delete home location", null));
@@ -285,7 +265,7 @@ public class VacationsTreeViewCreator {
     eObjectTreeItemClassListReferenceDescriptor = new EObjectTreeItemClassListReferenceDescriptor(VACATIONS_PACKAGE.getVacations_Vacations())
         .setLabelText("Vacations")
         .setStrongText(true)
-        .setNodeIconFunction(eObject -> TravelImageResource.VACATIONS.getIcon(ImageSize.SIZE_1))
+        .setNodeIconFunction(_ -> TravelImageResource.VACATIONS.getIcon(ImageSize.SIZE_1))
         .setExpandOnCreation(true)
         .addNodeOperationDescriptor(new NodeOperationDescriptorNew("New vacation", null, null));
     eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(eObjectTreeItemClassListReferenceDescriptor);
@@ -318,7 +298,7 @@ public class VacationsTreeViewCreator {
           }
         })
         .setStrongText(true)
-        .setNodeIconFunction(eObject -> {
+        .setNodeIconFunction(_ -> {
           return customization.getResources().getApplicationImage(ImageSize.SIZE_0);
         })
         .addNodeOperationDescriptor(new NodeOperationDescriptorNew("New ...", null, null))
@@ -369,7 +349,7 @@ public class VacationsTreeViewCreator {
     // Vacation.elements
     eObjectTreeItemClassListReferenceDescriptor = new EObjectTreeItemClassListReferenceDescriptor(VACATIONS_PACKAGE.getVacation_Elements())
         .setLabelText("Elements")
-        .setNodeIconFunction(object -> EObjectTreeView.getListIcon())
+        .setNodeIconFunction(_ -> EObjectTreeView.getListIcon())
         .setExpandOnCreation(true)
         .addNodeOperationDescriptor(new NodeOperationDescriptorNew("New element", null, newEObjectInitializationFunction));
     eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(eObjectTreeItemClassListReferenceDescriptor);
@@ -389,7 +369,7 @@ public class VacationsTreeViewCreator {
           DayTrip dayTrip = (DayTrip) eObject;
           return dayTrip.getId();
         })
-        .setNodeIconFunction(eObject -> {
+        .setNodeIconFunction(_ -> {
           return TravelImageResource.DAY_TRIP.getIcon(ImageSize.SIZE_0);
         })
         .addNodeOperationDescriptor(new NodeOperationDescriptorNew("New ...", null, null))
@@ -413,7 +393,7 @@ public class VacationsTreeViewCreator {
     // Vacation.elements
     EObjectTreeItemClassListReferenceDescriptor eObjectTreeItemClassListReferenceDescriptor = new EObjectTreeItemClassListReferenceDescriptor(VACATIONS_PACKAGE.getDayTrip_Elements())
         .setLabelText("Elements")
-        .setNodeIconFunction(object -> EObjectTreeView.getListIcon())
+        .setNodeIconFunction(_ -> EObjectTreeView.getListIcon())
         .setExpandOnCreation(true)
         .addNodeOperationDescriptor(new NodeOperationDescriptorNew("New element", null, newEObjectInitializationFunction));
     eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(eObjectTreeItemClassListReferenceDescriptor);
@@ -446,7 +426,7 @@ public class VacationsTreeViewCreator {
           }
           return buf.toString();
         })
-        .setNodeIconFunction(object -> TravelImageResource.DAY.getIcon(ImageSize.SIZE_0))
+        .setNodeIconFunction(_ -> TravelImageResource.DAY.getIcon(ImageSize.SIZE_0))
         .addNodeOperationDescriptor(new NodeOperationDescriptorNewBefore("New element before this one ...", null, null))
         .addNodeOperationDescriptor(new NodeOperationDescriptorNewAfter("New element after this one ...", null, null))
         .addNodeOperationDescriptor(new NodeOperationDescriptorDelete("Delete element", null));
@@ -466,7 +446,7 @@ public class VacationsTreeViewCreator {
     // Day.children
     EObjectTreeItemClassListReferenceDescriptor eObjectTreeItemClassListReferenceDescriptor = new EObjectTreeItemClassListReferenceDescriptor(VACATIONS_PACKAGE.getVacationElement_Children())
         .setLabelText("Elements")
-        .setNodeIconFunction(object -> EObjectTreeView.getListIcon())
+        .setNodeIconFunction(_ -> EObjectTreeView.getListIcon())
         .setExpandOnCreation(true)
         .addNodeOperationDescriptor(new NodeOperationDescriptorNew("New element", null, newEObjectInitializationFunction));
     eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(eObjectTreeItemClassListReferenceDescriptor);
@@ -493,7 +473,7 @@ public class VacationsTreeViewCreator {
             return "Text";
           }
         })
-        .setNodeIconFunction(object -> ImageResource.TEXT.getImage(ImageSize.SIZE_0))
+        .setNodeIconFunction(_ -> ImageResource.TEXT.getImage(ImageSize.SIZE_0))
         .addNodeOperationDescriptor(new NodeOperationDescriptorNewBefore("New element before this one ...", null, null))
         .addNodeOperationDescriptor(new NodeOperationDescriptorNewAfter("New element after this one ...", null, null))
         .addNodeOperationDescriptor(new NodeOperationDescriptorDelete("Delete element", null));
@@ -509,7 +489,7 @@ public class VacationsTreeViewCreator {
     // VacationElementText.children
     EObjectTreeItemClassListReferenceDescriptor eObjectTreeItemClassListReferenceDescriptor = new EObjectTreeItemClassListReferenceDescriptor(VACATIONS_PACKAGE.getVacationElement_Children())
         .setLabelText("Elements")
-        .setNodeIconFunction(object -> EObjectTreeView.getListIcon())
+        .setNodeIconFunction(_ -> EObjectTreeView.getListIcon())
         .setExpandOnCreation(true)
         .addNodeOperationDescriptor(new NodeOperationDescriptorNew("New element", null, newEObjectInitializationFunction));
     eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(eObjectTreeItemClassListReferenceDescriptor);
@@ -548,13 +528,9 @@ public class VacationsTreeViewCreator {
           return buf.toString();
         })
         .setNodeIconFunction(object -> {
-          if (poiIcons != null) {
-            Location location = (Location) object;
-            LocationCategory locationCategory = location.getLocationCategory();
-            return locationCategory.getIcon(ImageSize.SIZE_0);
-          } else {
-            return null;
-          }
+          Location location = (Location) object;
+          LocationCategory locationCategory = location.getLocationCategory();
+          return locationCategory.getIcon(ImageSize.SIZE_0);
         })
         .addNodeOperationDescriptor(new NodeOperationDescriptorNewBefore("New element before ...", null, VacationsTreeViewCreator::initNewObject))
         .addNodeOperationDescriptor(new NodeOperationDescriptorNewAfter("New element after ...", null, VacationsTreeViewCreator::initNewObject))
@@ -657,7 +633,7 @@ public class VacationsTreeViewCreator {
 
     // Location.boundingBox
     EObjectTreeItemClassReferenceDescriptor eObjectTreeItemClassReferenceDescriptor = new EObjectTreeItemClassReferenceDescriptor(VACATIONS_PACKAGE.getLocation_Boundingbox())
-        .setNodeTextFunction(eObject -> "Bounding box")
+        .setNodeTextFunction(_ -> "Bounding box")
         .setExpandOnCreation(true)
         .addNodeOperationDescriptor(new NodeOperationDescriptorNew("Create bounding box", null, VacationsTreeViewCreator::initNewObject))
         .addNodeOperationDescriptor(new NodeOperationDescriptorDelete("Delete Bounding Box", null))
@@ -667,7 +643,7 @@ public class VacationsTreeViewCreator {
     // Location.children
     EObjectTreeItemClassListReferenceDescriptor eObjectTreeItemClassListReferenceDescriptor = new EObjectTreeItemClassListReferenceDescriptor(VACATIONS_PACKAGE.getVacationElement_Children())
         .setLabelText("Elements")
-        .setNodeIconFunction(object -> EObjectTreeView.getListIcon())
+        .setNodeIconFunction(_ -> EObjectTreeView.getListIcon())
         .setExpandOnCreation(true)
         .addNodeOperationDescriptor(new NodeOperationDescriptorNew("New element", null, newEObjectInitializationFunction));
     eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(eObjectTreeItemClassListReferenceDescriptor);
@@ -690,14 +666,14 @@ public class VacationsTreeViewCreator {
     
     // VacationElementGPX.trackReference
     EObjectTreeItemClassReferenceDescriptor eObjectTreeItemClassReferenceDescriptor = new EObjectTreeItemClassReferenceDescriptor(VACATIONS_PACKAGE.getGPXTrack_TrackReference())
-        .setNodeTextFunction(eObject -> "GPX track reference")
+        .setNodeTextFunction(_ -> "GPX track reference")
         .setExpandOnCreation(true);
     eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(eObjectTreeItemClassReferenceDescriptor);
     
     // VacationElementGPX.children
     EObjectTreeItemClassListReferenceDescriptor eObjectTreeItemClassListReferenceDescriptor = new EObjectTreeItemClassListReferenceDescriptor(VACATIONS_PACKAGE.getVacationElement_Children())
         .setLabelText("Elements")
-        .setNodeIconFunction(object -> EObjectTreeView.getListIcon())
+        .setNodeIconFunction(_ -> EObjectTreeView.getListIcon())
         .setExpandOnCreation(true)
         .addNodeOperationDescriptor(new NodeOperationDescriptorNew("New element", null, newEObjectInitializationFunction));
     eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(eObjectTreeItemClassListReferenceDescriptor);
@@ -752,7 +728,7 @@ public class VacationsTreeViewCreator {
 
     // Document.documentReference
     EObjectTreeItemClassReferenceDescriptor eObjectTreeItemClassReferenceDescriptor = new EObjectTreeItemClassReferenceDescriptor(VACATIONS_PACKAGE.getDocument_DocumentReference())
-        .setNodeTextFunction(eObject -> "Document reference")
+        .setNodeTextFunction(_ -> "Document reference")
         .setExpandOnCreation(true)
         .addNodeOperationDescriptor(new NodeOperationDescriptorNew("Create document reference", null, null))
         .addNodeOperationDescriptor(new NodeOperationDescriptorDelete("Delete document reference", null));
@@ -761,7 +737,7 @@ public class VacationsTreeViewCreator {
     //Document.children
     EObjectTreeItemClassListReferenceDescriptor eObjectTreeItemClassListReferenceDescriptor = new EObjectTreeItemClassListReferenceDescriptor(VACATIONS_PACKAGE.getVacationElement_Children())
         .setLabelText("Elements")
-        .setNodeIconFunction(object -> EObjectTreeView.getListIcon())
+        .setNodeIconFunction(_ -> EObjectTreeView.getListIcon())
         .setExpandOnCreation(true)
         .addNodeOperationDescriptor(new NodeOperationDescriptorNew("New element", null, newEObjectInitializationFunction));
     eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(eObjectTreeItemClassListReferenceDescriptor);
@@ -829,7 +805,7 @@ public class VacationsTreeViewCreator {
 
     // VacationElementPicture.pictureReference
     EObjectTreeItemClassReferenceDescriptor eObjectTreeItemClassReferenceDescriptor = new EObjectTreeItemClassReferenceDescriptor(VACATIONS_PACKAGE.getPicture_PictureReference())
-        .setNodeTextFunction(eObject -> "Photo reference")
+        .setNodeTextFunction(_ -> "Photo reference")
         .setExpandOnCreation(true)
         .addNodeOperationDescriptor(new NodeOperationDescriptorNew("Create photo reference", null, null))
         .addNodeOperationDescriptor(new NodeOperationDescriptorDelete("Delete photo reference", null));
@@ -838,7 +814,7 @@ public class VacationsTreeViewCreator {
     // VacationElementText.children
     EObjectTreeItemClassListReferenceDescriptor eObjectTreeItemClassListReferenceDescriptor = new EObjectTreeItemClassListReferenceDescriptor(VACATIONS_PACKAGE.getVacationElement_Children())
         .setLabelText("Elements")
-        .setNodeIconFunction(object -> EObjectTreeView.getListIcon())
+        .setNodeIconFunction(_ -> EObjectTreeView.getListIcon())
         .setExpandOnCreation(true)
         .addNodeOperationDescriptor(new NodeOperationDescriptorNew("New element", null, newEObjectInitializationFunction));
     eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(eObjectTreeItemClassListReferenceDescriptor);
@@ -861,11 +837,11 @@ public class VacationsTreeViewCreator {
             return "MapImage";
           }
         })
-        .setNodeIconFunction(object -> ImageResource.MAP.getImage())
+        .setNodeIconFunction(_ -> ImageResource.MAP.getImage())
         .addNodeOperationDescriptor(new NodeOperationDescriptorNewBefore("New element before this one ...", null, null))
         .addNodeOperationDescriptor(new NodeOperationDescriptorNewAfter("New element after this one ...", null, null))
         .addNodeOperationDescriptor(new NodeOperationDescriptorDelete("Delete element", null))
-        .addNodeOperationDescriptor(new NodeOperationDescriptorCustom("Update  image file", (eObjectTreeItem) -> true, updateMapImageFileFunction));
+        .addNodeOperationDescriptor(new NodeOperationDescriptorCustom("Update  image file", (_) -> true, updateMapImageFileFunction));
     
     EObjectTreeItemAttributeDescriptor eObjectTreeItemAttributeDescriptor;
 
@@ -908,7 +884,7 @@ public class VacationsTreeViewCreator {
     // MapImage.children
     EObjectTreeItemClassListReferenceDescriptor eObjectTreeItemClassListReferenceDescriptor = new EObjectTreeItemClassListReferenceDescriptor(VACATIONS_PACKAGE.getVacationElement_Children())
         .setLabelText("Elements")
-        .setNodeIconFunction(object -> EObjectTreeView.getListIcon())
+        .setNodeIconFunction(_ -> EObjectTreeView.getListIcon())
         .setExpandOnCreation(true)
         .addNodeOperationDescriptor(new NodeOperationDescriptorNew("New element", null, newEObjectInitializationFunction));
     eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(eObjectTreeItemClassListReferenceDescriptor);

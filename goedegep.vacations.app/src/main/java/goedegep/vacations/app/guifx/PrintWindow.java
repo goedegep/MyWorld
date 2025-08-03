@@ -2,7 +2,6 @@ package goedegep.vacations.app.guifx;
 
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.FileSystem;
 import java.nio.file.Files;
@@ -16,23 +15,15 @@ import com.google.common.jimfs.Configuration;
 import com.google.common.jimfs.Jimfs;
 import com.openhtmltopdf.pdfboxout.PdfRendererBuilder;
 
-import goedegep.jfx.ComponentFactoryFx;
 import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.JfxStage;
-import goedegep.poi.app.guifx.POIIcons;
 import goedegep.vacations.app.logic.VacationToHtmlConverter;
 import goedegep.vacations.model.Vacation;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
 import javafx.print.PrinterJob;
-import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
 import javafx.scene.transform.Scale;
 
 /**
@@ -57,7 +48,6 @@ public class PrintWindow extends JfxStage {
   
   private CustomizationFx customization;
 //  private Label status = new Label();
-  private POIIcons poiIcons;
   private VacationToHtmlConverter vacationToHtmlConverter;
   private Path pdfFilePath;
   private int currentPageIndex = 0;
@@ -90,8 +80,7 @@ public class PrintWindow extends JfxStage {
     this.customization = customization;
     
     // Generate HTML for the vacation.
-    poiIcons = new POIIcons("POIIconResourceInfo.xmi");
-    vacationToHtmlConverter = new VacationToHtmlConverter(poiIcons);
+    vacationToHtmlConverter = new VacationToHtmlConverter();
     String htmlText = vacationToHtmlConverter.vacationToHtml(vacation, false);
     LOGGER.severe(htmlText);
         

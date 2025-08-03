@@ -57,7 +57,6 @@ import goedegep.jfx.browser.Browser;
 import goedegep.jfx.eobjecttreeview.EObjectTreeCell;
 import goedegep.jfx.eobjecttreeview.EObjectTreeItem;
 import goedegep.jfx.eobjecttreeview.EObjectTreeView;
-import goedegep.poi.app.guifx.POIIcons;
 import goedegep.properties.app.guifx.PropertiesEditor;
 import goedegep.properties.model.PropertiesFactory;
 import goedegep.properties.model.PropertiesPackage;
@@ -191,7 +190,6 @@ public class VacationsWindow extends JfxStage {
   private Label statusLabel = new Label("");
   
   private VacationToHtmlConverter vacationToHtmlConverter;
-  private POIIcons poiIcons;
   private TravelMapView travelMapView;
   private LocationSearchWindow locationSearchWindow = null;
   
@@ -264,12 +262,9 @@ public class VacationsWindow extends JfxStage {
     this.customization = customization;
     staticCustomization = customization;
     
-    poiIcons = new POIIcons("POIIconResourceInfo.xmi");
-    LocationDescriptionDialog.setPoiIcons(poiIcons);
-    
     createGUI();
     
-    vacationToHtmlConverter = new VacationToHtmlConverter(poiIcons);
+    vacationToHtmlConverter = new VacationToHtmlConverter();
     
     vacationsResource = new EMFResource<>(
         VacationsPackage.eINSTANCE, 
@@ -344,14 +339,14 @@ public class VacationsWindow extends JfxStage {
     flyHome();
     updateTitle();
     
-    vacationsResource.dirtyProperty().addListener((observable, oldValue, newValue) -> updateTitle());
+    vacationsResource.dirtyProperty().addListener((_, _, _) -> updateTitle());
         
     vacationsResource.addNotificationListener(this::handleChangesInTheVacationsData);
     
     handleNewTreeItemSelected(null, null);
     updateTipsPane();
     
-    setOnCloseRequest( event -> {
+    setOnCloseRequest(_ -> {
       if (locationSearchWindow != null) {
         locationSearchWindow.close();
       }
@@ -359,12 +354,12 @@ public class VacationsWindow extends JfxStage {
     
     show();
     
-    selectedTravelProperty.addListener((o, p, q) -> updateTravelFilesFolderBar());
+    selectedTravelProperty.addListener((_, _, _) -> updateTravelFilesFolderBar());
 
 
     DirectoryChangesMonitoringTask directoryMonitoringTask = new DirectoryChangesMonitoringTask("D:\\Database");
 
-    directoryMonitoringTask.valueProperty().addListener((observable, oldValue, newValue) -> updateTravelFilesFolderBar());
+    directoryMonitoringTask.valueProperty().addListener((_, _, _) -> updateTravelFilesFolderBar());
 
     Thread directoryMonitoringThread = new Thread(directoryMonitoringTask);
     directoryMonitoringThread.setDaemon(true);
@@ -476,7 +471,7 @@ public class VacationsWindow extends JfxStage {
     final String travelFilesFolder2 = travelFilesFolder;
     if (fileExists) {
       createOrOpenButton.setText("Open");
-      createOrOpenButton.setOnAction((e) -> {
+      createOrOpenButton.setOnAction((_) -> {
         try {
           Desktop.getDesktop().open(new File(travelFilesFolder2));
         } catch (IOException e1) {
@@ -485,7 +480,7 @@ public class VacationsWindow extends JfxStage {
       });
     } else {
       createOrOpenButton.setText("Create");
-      createOrOpenButton.setOnAction((e) -> {
+      createOrOpenButton.setOnAction((_) -> {
         File folder = new File(travelFilesFolder2);
         folder.mkdir();
       });
@@ -514,10 +509,6 @@ public class VacationsWindow extends JfxStage {
       ClassLoader classLoader = clazz.getClassLoader();
       LOGGER.info("classLoader: " + classLoader.getName());
       return ResourceBundle.getBundle(bundlePath, locale, classLoader);
-  }
-  
-  public POIIcons getPOIIcons() {
-    return poiIcons;
   }
   
   /**
@@ -570,7 +561,7 @@ public class VacationsWindow extends JfxStage {
     centerPane.setDividerPositions(0.3);
 
     // MapView
-    travelMapView = new TravelMapView(customization, this, poiIcons, this::openLocationSearchWindow);
+    travelMapView = new TravelMapView(customization, this, this::openLocationSearchWindow);
     travelMapView.setOnMouseClicked(new EventHandler<MouseEvent>() {
 
       @Override
@@ -588,7 +579,7 @@ public class VacationsWindow extends JfxStage {
           
           // Get location information
           menuItem = componentFactory.createMenuItem("Get location information");          
-          menuItem.setOnAction((ActionEvent event) -> {
+          menuItem.setOnAction((ActionEvent _) -> {
             openLocationSearchWindow();
             locationSearchWindow.reverseGeocodeSearch(newPoint.getLatitude(), newPoint.getLongitude());
           });
@@ -611,7 +602,6 @@ public class VacationsWindow extends JfxStage {
     
     // Vacations TreeView - centerPane left
     treeView = new VacationsTreeViewCreator(customization)
-        .setPOIIcons(poiIcons)
         .setNewEObjectInitializationFunction(this::initializeNewEObject)
         .setMenuToBeEnabledPredicate(this::isMenuToBeEnabled)
         .setReduceBoundariesSizesFunction(this::reduceBoundariesSizes)
@@ -623,7 +613,7 @@ public class VacationsWindow extends JfxStage {
     treeView.addObjectSelectionListener(this::handleNewTreeItemSelected);
     centerPane.getItems().add(treeView);
     
-    travelMapView.addObjectSelectionListener((source, object) -> {
+    travelMapView.addObjectSelectionListener((_, object) -> {
       treeView.selectObjectForObject(object);
     });
     
@@ -682,7 +672,7 @@ public class VacationsWindow extends JfxStage {
    */
   private LocationSearchWindow openLocationSearchWindow() {
     if (locationSearchWindow == null) {
-      locationSearchWindow = new LocationSearchWindow(customization, poiIcons, getNominatimAPI(), this);
+      locationSearchWindow = new LocationSearchWindow(customization, getNominatimAPI(), this);
     }
     
     locationSearchWindow.show();
@@ -719,33 +709,33 @@ public class VacationsWindow extends JfxStage {
 
     // File: Save vacations
     menuItem = componentFactory.createMenuItem("Save vacations");
-    menuItem.setOnAction(event -> saveVacations());
+    menuItem.setOnAction(_ -> saveVacations());
     menuItem.setAccelerator(new KeyCodeCombination(KeyCode.S, KeyCombination.CONTROL_DOWN));
     menu.getItems().add(menuItem);
 
     // File: Print selected vacation
     menuItem = componentFactory.createMenuItem("Print selected vacation");
-    menuItem.setOnAction(event -> printVacation());
+    menuItem.setOnAction(_ -> printVacation());
     menu.getItems().add(menuItem);
 
     // File: Export selected vacation as PDF
     menuItem = componentFactory.createMenuItem("Export selected vacation as PDF");
-    menuItem.setOnAction(event -> exportVacationToPdf());
+    menuItem.setOnAction(_ -> exportVacationToPdf());
     menu.getItems().add(menuItem);
 
     // File: Export selected vacation as HTML
     menuItem = componentFactory.createMenuItem("Export selected vacation as HTML");
-    menuItem.setOnAction(event -> exportVacationToHtml());
+    menuItem.setOnAction(_ -> exportVacationToHtml());
     menu.getItems().add(menuItem);
 
     // File: Print current map
     menuItem = componentFactory.createMenuItem("Print current map");
-    menuItem.setOnAction(event -> print(travelMapView));
+    menuItem.setOnAction(_ -> print(travelMapView));
     menu.getItems().add(menuItem);
     
     // File: Import photos
     menuItem = componentFactory.createMenuItem("Import photos");
-    menuItem.setOnAction(event -> {
+    menuItem.setOnAction(_ -> {
       EObjectTreeItem treeItem = treeView.getSelectedObject();
       Vacation vacation = getVacationForTreeItem(treeItem, VACATIONS_PACKAGE.getVacation());
       if (vacation == null) {
@@ -774,46 +764,46 @@ public class VacationsWindow extends JfxStage {
 
     // File: Import vacations
     menuItem = componentFactory.createMenuItem("Import vacations");
-    menuItem.setOnAction(event -> importVacations());
+    menuItem.setOnAction(_ -> importVacations());
     menu.getItems().add(menuItem);
     
     // File: Export vacations to KML file
     menuItem = componentFactory.createMenuItem("Export vacations to KML file");
-    menuItem.setOnAction(event -> exportVacationsToKml());
+    menuItem.setOnAction(_ -> exportVacationsToKml());
     menu.getItems().add(menuItem);
     
     // File: Export selected vacation to KML file
     menuItem = componentFactory.createMenuItem("Export selected vacation to KML file");
-    menuItem.setOnAction(event -> exportVacationToKml());
+    menuItem.setOnAction(_ -> exportVacationToKml());
     menu.getItems().add(menuItem);
     
     // File: Import information from a kml/kmz file
     menuItem = componentFactory.createMenuItem("Import information from a kml/kmz file");
-    menuItem.setOnAction(event -> importLocationsFromKmlFile());
+    menuItem.setOnAction(_ -> importLocationsFromKmlFile());
     menu.getItems().add(menuItem);
     
     // File: Create OsmAnd import file
     menuItem = componentFactory.createMenuItem("Create OsmAnd import file");
-    menuItem.setOnAction(event -> createOsmAndImportFile());
+    menuItem.setOnAction(_ -> createOsmAndImportFile());
     menu.getItems().add(menuItem);
     
     // File: Create TomTom ov2 file
     menuItem = componentFactory.createMenuItem("Create TomTom ov2 file");
-    menuItem.setOnAction(event -> createTomTomOv2File());
+    menuItem.setOnAction(_ -> createTomTomOv2File());
     menu.getItems().add(menuItem);
     
     if (VacationsRegistry.developmentMode) {
       // File: Edit Property Descriptors
-      MenuUtil.addMenuItem(menu, "Edit Property Descriptors", event -> showPropertyDescriptorsEditor());
+      MenuUtil.addMenuItem(menu, "Edit Property Descriptors", _ -> showPropertyDescriptorsEditor());
       
       // File: Edit Properties
-      MenuUtil.addMenuItem(menu, "Edit Properties", event -> showPropertiesEditor());
+      MenuUtil.addMenuItem(menu, "Edit Properties", _ -> showPropertiesEditor());
       
       // File: Map Snapshot popup
-      MenuUtil.addMenuItem(menu, "Map Snapshot popup", event -> showMapSnapshotPopup());
+      MenuUtil.addMenuItem(menu, "Map Snapshot popup", _ -> showMapSnapshotPopup());
       
       // File: Use demo vacations file
-      MenuUtil.addMenuItem(menu, "Use demo vacations file", event -> useDemoVacationsFile());
+      MenuUtil.addMenuItem(menu, "Use demo vacations file", _ -> useDemoVacationsFile());
     }
     
     menuBar.getMenus().add(menu);
@@ -825,7 +815,7 @@ public class VacationsWindow extends JfxStage {
     vacationTreeEditableMenuItem = new CheckMenuItem("Edit vacations");
     vacationTreeEditableMenuItem.setSelected(false);
     
-    vacationTreeEditableMenuItem.setOnAction(event -> {
+    vacationTreeEditableMenuItem.setOnAction(_ -> {
         treeView.setEditMode(vacationTreeEditableMenuItem.isSelected());
         travelMapView.setEditMode(vacationTreeEditableMenuItem.isSelected());
     });
@@ -833,7 +823,7 @@ public class VacationsWindow extends JfxStage {
     
     
     // Menu: Update map image files
-    MenuUtil.addMenuItem(menu, "Update map image files", event -> updateMapImageFiles());
+    MenuUtil.addMenuItem(menu, "Update map image files", _ -> updateMapImageFiles());
     
     menuBar.getMenus().add(menu);
     
@@ -843,7 +833,7 @@ public class VacationsWindow extends JfxStage {
     CheckMenuItem showCoordinatesInDocumentMenuItem = componentFactory.createCheckMenuItem("Show coordinates in Document");
     showCoordinatesInDocumentMenuItem.setSelected(VacationsRegistry.showCoordinatesInDocument);
     
-    showCoordinatesInDocumentMenuItem.setOnAction(event -> {
+    showCoordinatesInDocumentMenuItem.setOnAction(_ -> {
         VacationsRegistry.showCoordinatesInDocument = showCoordinatesInDocumentMenuItem.isSelected();
         updateDocumentView();
     });
@@ -857,10 +847,10 @@ public class VacationsWindow extends JfxStage {
     menu = new Menu("Checklist");
 
     // Checklist: Vacation checklist
-    MenuUtil.addMenuItem(menu, "Vacation checklist", event ->  new VacationChecklistWindow(customization, vacationChecklistResource));
+    MenuUtil.addMenuItem(menu, "Vacation checklist", _ ->  new VacationChecklistWindow(customization, vacationChecklistResource));
 
     // Checklist: Edit vacation Checklist
-    MenuUtil.addMenuItem(menu, "Edit vacation Checklist", event -> new VacationChecklistEditor(customization, vacationChecklistResource));
+    MenuUtil.addMenuItem(menu, "Edit vacation Checklist", _ -> new VacationChecklistEditor(customization, vacationChecklistResource));
     
     menuBar.getMenus().add(menu);
     
@@ -868,10 +858,10 @@ public class VacationsWindow extends JfxStage {
     menu = new Menu("Tools");
 
     // Tools: Check selected vacation
-    MenuUtil.addMenuItem(menu, "Check selected vacation", event -> checkSelectedVacation());
+    MenuUtil.addMenuItem(menu, "Check selected vacation", _ -> checkSelectedVacation());
 
     // Tools: Check vacations
-    MenuUtil.addMenuItem(menu, "Check vacations", event -> new CheckVacationsWindow(customization, vacations));
+    MenuUtil.addMenuItem(menu, "Check vacations", _ -> new CheckVacationsWindow(customization, vacations));
     
     menuBar.getMenus().add(menu);
 
@@ -879,7 +869,7 @@ public class VacationsWindow extends JfxStage {
     menu = new Menu("Help");
 
     // Help: About
-    MenuUtil.addMenuItem(menu, "About", event -> showHelpAboutDialog());
+    MenuUtil.addMenuItem(menu, "About", _ -> showHelpAboutDialog());
 
     menuBar.getMenus().add(menu);
 
@@ -903,7 +893,7 @@ public class VacationsWindow extends JfxStage {
     
     Label label = componentFactory.createLabel("Search:");
     TextField searchTextField = componentFactory.createTextField(null, 300, "Enter text to search for");
-    searchTextField.setOnAction((e) -> updateSearch(searchTextField.getText()));
+    searchTextField.setOnAction((_) -> updateSearch(searchTextField.getText()));
     searchBar.getChildren().addAll(label, searchTextField);
     
     return searchBar;
@@ -2409,7 +2399,7 @@ public class VacationsWindow extends JfxStage {
     LOGGER.severe("Creating kml file: " + file.getAbsolutePath());
         
     // Generate the file using the VacationsKmlConverter
-    VacationsKmlConverter vacationsKmlConverter = new VacationsKmlConverter(poiIcons);
+    VacationsKmlConverter vacationsKmlConverter = new VacationsKmlConverter();
     try {
       vacationsKmlConverter.createKmlForVacations(vacations, file);
       statusLabel.setText("KML file " + file.getAbsolutePath() + " created");
@@ -2439,7 +2429,7 @@ public class VacationsWindow extends JfxStage {
     }
     
     // Generate the file using the VacationsKmlConverter
-    VacationsKmlConverter vacationsKmlConverter = new VacationsKmlConverter(poiIcons);
+    VacationsKmlConverter vacationsKmlConverter = new VacationsKmlConverter();
     try {
       vacationsKmlConverter.createKmlForVacation(vacation, file);
       statusLabel.setText("KML file " + file.getAbsolutePath() + " created");
@@ -2483,7 +2473,7 @@ public class VacationsWindow extends JfxStage {
 //        .setVacationFolder(VacationsUtils.getVacationFolder(getVacationForTreeItem(treeView.getSelectedObject())))
 //        .build();
 //    List<Tuplet<VacationElement, Object>> vacationElements = kmlFileImporter.getLocationsFromKmlFile(file);
-    new KmlFileImportWindow(customization, this, poiIcons, getNominatimAPI());
+    new KmlFileImportWindow(customization, this, getNominatimAPI());
     // Add the locations to the currently selected tree item.
 //    EObjectTreeItem treeItem = (EObjectTreeItem) treeView.getSelectedObject();
 //    Object object = treeItem.getValue();
@@ -2907,7 +2897,7 @@ public class VacationsWindow extends JfxStage {
     while (vacationIterator.hasNext()) {
       EObject eObject = vacationIterator.next();
       if (eObject instanceof MapImage mapImage) {
-        createMapImageView(mapImage, poiIcons, false);
+        createMapImageView(mapImage, false);
       }
     }
   }
@@ -2915,17 +2905,17 @@ public class VacationsWindow extends JfxStage {
   void updateMapImageFile(EObjectTreeItem eObjectTreeItem) {
     Object object = eObjectTreeItem.getValue();
     if (object instanceof MapImage mapImage) {
-      createMapImageView(mapImage, poiIcons, false);
+      createMapImageView(mapImage, false);
     }
   }
 
-  public MapView createMapImageView(MapImage mapImage, POIIcons poiIcons, boolean show) {
+  public MapView createMapImageView(MapImage mapImage, boolean show) {
     String title = mapImage.getTitle();
     if (title == null) {
       title = "MapImage";
     }
     JfxStage jfxStage = new JfxStage(staticCustomization, title);
-    TravelMapView imageTravelMapView = new TravelMapView(customization, jfxStage, poiIcons, null);
+    TravelMapView imageTravelMapView = new TravelMapView(customization, jfxStage, null);
 
     Double height = mapImage.getImageHeight();
     if (height != null) {
@@ -2987,9 +2977,9 @@ public class VacationsWindow extends JfxStage {
     return imageTravelMapView;
   }
   
-  public void createMapImageFile(MapImage mapImage, POIIcons poiIcons) {
+  public void createMapImageFile(MapImage mapImage) {
     
-    createMapImageView(mapImage, poiIcons, false);
+    createMapImageView(mapImage, false);
        
   }
 

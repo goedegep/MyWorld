@@ -28,8 +28,6 @@ import goedegep.gpx.model.DocumentRoot;
 import goedegep.gpx.model.GpxType;
 import goedegep.gpx.model.MetadataType;
 import goedegep.poi.app.LocationCategory;
-import goedegep.poi.app.guifx.POIIcons;
-import goedegep.poi.model.POICategoryId;
 import goedegep.resources.ImageSize;
 import goedegep.types.model.FileReference;
 import goedegep.util.emf.EMFResource;
@@ -53,7 +51,6 @@ public class VacationToHtmlConverter extends VacationToTextConverterAbstract {
   private static final Logger LOGGER = Logger.getLogger(VacationToHtmlConverter.class.getName());
   private static final SimpleDateFormat DF = new SimpleDateFormat("dd-MM-yyyy");
   
-  private POIIcons poiIcons;
   private StringBuilder buf = new StringBuilder();
   private Parser parser = Parser.builder().build();
   private HtmlRenderer renderer = HtmlRenderer.builder().build();
@@ -87,8 +84,7 @@ public class VacationToHtmlConverter extends VacationToTextConverterAbstract {
    * 
    * @param poiIcons the object to provide POI icons.
    */
-  public VacationToHtmlConverter(POIIcons poiIcons) {
-    this.poiIcons = poiIcons;
+  public VacationToHtmlConverter() {
   }
   
   /**

@@ -28,6 +28,7 @@ import goedegep.gpx.model.TrksegType;
 import goedegep.gpx.model.WptType;
 import goedegep.jfx.stringconverterandchecker.WGS84CoordinatesStringConverterAndChecker;
 import goedegep.mapview.MapViewUtil;
+import goedegep.poi.app.LocationCategory;
 import goedegep.poi.app.guifx.POIIcons;
 import goedegep.poi.model.POICategoryId;
 import goedegep.resources.ImageResource;
@@ -309,14 +310,13 @@ public class GPXLayer extends MapLayer {
   }
 
   private Image getIconForOsmAndValue(String anyAnyType) {
-    POIIcons poiIcons = new POIIcons("POIIconResourceInfo.xmi");
 
     switch (anyAnyType) {
     case "amenity_restaurant":
-      return poiIcons.getIcon(POICategoryId.RESTAURANT);
+      return LocationCategory.RESTAURANT.getIcon();
       
     case "tourism_camp_site":
-      return poiIcons.getIcon(POICategoryId.CAMPING);
+      return LocationCategory.CAMPING.getIcon();
       
     default:
       LOGGER.severe("UNKNOWN ICON: " + anyAnyType);

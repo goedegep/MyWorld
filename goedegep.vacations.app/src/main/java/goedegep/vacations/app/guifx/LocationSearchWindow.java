@@ -26,7 +26,6 @@ import goedegep.jfx.ComponentFactoryFx;
 import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.JfxStage;
 import goedegep.jfx.JfxUtil;
-import goedegep.jfx.eobjecttreeview.EEnumEditorDescriptor;
 import goedegep.jfx.eobjecttreeview.EObjectTreeItem;
 import goedegep.jfx.eobjecttreeview.EObjectTreeItemClassDescriptor;
 import goedegep.jfx.eobjecttreeview.EObjectTreeItemClassListReferenceDescriptor;
@@ -35,8 +34,6 @@ import goedegep.jfx.eobjecttreeview.EObjectTreeItemForObjectList;
 import goedegep.jfx.eobjecttreeview.EObjectTreeView;
 import goedegep.jfx.eobjecttreeview.EnumStringConverter;
 import goedegep.poi.app.LocationCategory;
-import goedegep.poi.app.guifx.POIIcons;
-import goedegep.poi.model.POICategoryId;
 import goedegep.resources.ImageSize;
 import goedegep.util.emf.EmfUtil;
 import goedegep.util.objectselector.ObjectSelectionListener;
@@ -126,11 +123,6 @@ public class LocationSearchWindow extends JfxStage {
   private ComponentFactoryFx componentFactory;
   
   /**
-   * A {@link POIIcons} instance for getting POI icons
-   */
-  private POIIcons poiIcons;
-  
-  /**
    * Panel for showing status information.
    */
   private Label statusPanel;
@@ -168,11 +160,10 @@ public class LocationSearchWindow extends JfxStage {
    * @param nominatimAPI a reference to a <code>NominatimAPI</code>.
    * @param searchResultLayer a reference to a <code>SearchResultLayer</code> for showing search results.
    */
-  public LocationSearchWindow(CustomizationFx customization, POIIcons poiIcons, NominatimAPI nominatimAPI, VacationsWindow vacationsWindow) {
+  public LocationSearchWindow(CustomizationFx customization, NominatimAPI nominatimAPI, VacationsWindow vacationsWindow) {
     super(customization, "Search for a Location");
     
     this.customization = customization;
-    this.poiIcons = poiIcons;
     this.nominatimAPI = nominatimAPI;
     this.vacationsWindow = vacationsWindow;
     
@@ -207,7 +198,7 @@ public class LocationSearchWindow extends JfxStage {
     mainVBox.getChildren().add(searchControlsHBox);
     
     locationInfosPanel = new OsmSearchResultsPanel(customization, searchResultLayer);
-    locationPanel = new LocationPanel(customization, reverseGeoCodePanel, vacationsWindow, poiIcons, locationInfosPanel);
+    locationPanel = new LocationPanel(customization, reverseGeoCodePanel, vacationsWindow, locationInfosPanel);
     mainVBox.getChildren().addAll(locationInfosPanel, locationPanel);
     
     statusPanel = componentFactory.createLabel(null);
@@ -334,7 +325,7 @@ class FreeTextSearchPanel extends VBox {
     getChildren().add(freeTextSearchParamPane);
     
     Button button = componentFactory.createButton("Free text search", "Click to perform a free text search");
-    button.setOnAction((actionEvent) -> performFreeTextSearchMethod.accept(searchTextField.getText()));
+    button.setOnAction((_) -> performFreeTextSearchMethod.accept(searchTextField.getText()));
     getChildren().add(button);
   }  
 }
@@ -382,7 +373,7 @@ class ReverseGeoCodePanel extends VBox {
     getChildren().add(reverseGeoCodeSearchParamPane);
     
     Button button = componentFactory.createButton("Reverse geocode search", "Click to perform a reverse geocode search (find an address for coordinates)");
-    button.setOnAction((actionEvent) -> reverseGeocodeSearchMethod.accept(getLatitude(), getLongitude()));
+    button.setOnAction((_) -> reverseGeocodeSearchMethod.accept(getLatitude(), getLongitude()));
     getChildren().add(button);
   }
   
@@ -478,7 +469,7 @@ class HierarchicalSearchPanel extends VBox {
     getChildren().add(hierarchicalSearchParamPane);
     
     Button performFreeTextSearchButton = componentFactory.createButton("Hierarchical search", "Click to perform a hierarchical search");
-    performFreeTextSearchButton.setOnAction((actionEvent) -> hierarchicalSearch.searchHierarchical(getCountry(), getCity(), getStreet(), getHouseNumber()));
+    performFreeTextSearchButton.setOnAction((_) -> hierarchicalSearch.searchHierarchical(getCountry(), getCity(), getStreet(), getHouseNumber()));
     getChildren().add(performFreeTextSearchButton);
   }
   
@@ -611,7 +602,7 @@ class OsmSearchResultsPanel extends VBox implements ObjectSelector<OSMLocationIn
     gridPane.add(label, 0, 0);
     
     displayNamesComboBox = componentFactory.createComboBox(null);
-    displayNamesComboBox.setOnAction((actionEvent) -> updateLocationInfo());
+    displayNamesComboBox.setOnAction((_) -> updateLocationInfo());
     gridPane.add(displayNamesComboBox, 1, 0);
     
     this.getChildren().add(gridPane);
@@ -1027,7 +1018,6 @@ class LocationPanel extends VBox {
   private ComponentFactoryFx componentFactory;
   private ReverseGeoCodePanel reverseGeoCodePanel;
   private VacationsWindow vacationsWindow;
-  private POIIcons poiIcons;
   private EObjectTreeItem selectedTreeItem;
   
   private TextField nameTextField;
@@ -1063,10 +1053,9 @@ class LocationPanel extends VBox {
    * @param poiIcons a reference to {@code POIIcons} used to show an icon for the selected {@code POICategoryId}.
    * @param osmLocationInfoSelector provider of the selected OSM search result
    */
-  public LocationPanel(CustomizationFx customization, ReverseGeoCodePanel reverseGeoCodePanel, VacationsWindow vacationsWindow, POIIcons poiIcons, ObjectSelector<OSMLocationInfo> osmLocationInfoSelector) {
+  public LocationPanel(CustomizationFx customization, ReverseGeoCodePanel reverseGeoCodePanel, VacationsWindow vacationsWindow, ObjectSelector<OSMLocationInfo> osmLocationInfoSelector) {
     this.reverseGeoCodePanel = reverseGeoCodePanel;
     this.vacationsWindow = vacationsWindow;
-    this.poiIcons = poiIcons;
     
     locationCategoryStringConverter = EnumStringConverterForLocationCategory.getInstance();
     
@@ -1127,7 +1116,7 @@ class LocationPanel extends VBox {
     gridPane.add(label, 0, row);
     
     locationTypeComboBox = componentFactory.createComboBox(locationCategoryStringConverter.getDisplayNames());
-    locationTypeComboBox.setOnAction((actionEvent) -> {
+    locationTypeComboBox.setOnAction((_) -> {
       String choice = locationTypeComboBox.getValue();
       if (choice != null) {
         LocationCategory locationCategory = locationCategoryStringConverter.fromDisplayName(choice);
@@ -1161,7 +1150,7 @@ class LocationPanel extends VBox {
     gridPane.add(boundingBoxTextField, 3, row);
     
     Button button = componentFactory.createButton("show on map", null);
-    button.setOnAction(e -> focusMapViewOnLocation());
+    button.setOnAction(_ -> focusMapViewOnLocation());
     gridPane.add(button, 4, row);
     
     this.getChildren().add(gridPane);
@@ -1173,11 +1162,11 @@ class LocationPanel extends VBox {
     
     // actionHBox items for when a list of Locations is selected
     addLocationButton = componentFactory.createButton("Add location", "Add this location at the selected tree item");
-    addLocationButton.setOnAction((actionEvent) -> addLocation());
+    addLocationButton.setOnAction((_) -> addLocation());
     setLocationButton = componentFactory.createButton("Set location", "Change the selected location to the specified value");
-    setLocationButton.setOnAction((actionEvent) -> setLocation());
+    setLocationButton.setOnAction((_) -> setLocation());
     updateBoundaryButton = componentFactory.createButton("Update boundary", "Change the boundary and bounding box of the selected location to the specified values");
-    updateBoundaryButton.setOnAction((actionEvent) -> updateBoundary());
+    updateBoundaryButton.setOnAction((_) -> updateBoundary());
     addAsLastChildToListLabel = componentFactory.createLabel("as last child to");
     beforeOrAfterComboBox = componentFactory.createComboBox(null);
     beforeOrAfterComboBox.getItems().addAll(BEFORE_TEXT, AFTER_TEXT);
@@ -1190,8 +1179,8 @@ class LocationPanel extends VBox {
     this.getChildren().add(actionVBox);
     
     EObjectTreeView treeView = vacationsWindow.getTreeView();
-    treeView.addObjectSelectionListener((source, selectedTreeItem) -> handleNewTreeItemSelected(selectedTreeItem));
-    osmLocationInfoSelector.addObjectSelectionListener((source, osmLocationInfo) -> setLocation(osmLocationInfo));
+    treeView.addObjectSelectionListener((_, selectedTreeItem) -> handleNewTreeItemSelected(selectedTreeItem));
+    osmLocationInfoSelector.addObjectSelectionListener((_, osmLocationInfo) -> setLocation(osmLocationInfo));
     handleNewTreeItemSelected(treeView.getSelectedObject());
   }
   
