@@ -5,7 +5,6 @@ import java.util.logging.Logger;
 
 import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.JfxUtil;
-import goedegep.poi.app.guifx.POIIcons;
 import goedegep.resources.ImageSize;
 import goedegep.vacations.model.Location;
 import javafx.scene.control.ButtonType;
@@ -24,13 +23,7 @@ public class LocationDescriptionDialog extends Dialog<ButtonType> {
   @SuppressWarnings("unused")
   private final static Logger LOGGER = Logger.getLogger(LocationDescriptionDialog.class.getName());
   
-  private static POIIcons poiIcons;
   private static VacationToHtmlConverter vacationToHtmlConverter;
-  
-  public static void setPoiIcons(POIIcons poiIcons) {
-    LocationDescriptionDialog.poiIcons = poiIcons;
-    vacationToHtmlConverter = new VacationToHtmlConverter(poiIcons);
-  }
 
   /**
    * Constructor
@@ -40,6 +33,7 @@ public class LocationDescriptionDialog extends Dialog<ButtonType> {
    */
   public LocationDescriptionDialog(CustomizationFx customization, Stage ownerWindow, Location location) {
     setTitle("Informatie over " + location.getName());
+    vacationToHtmlConverter = new VacationToHtmlConverter();
     Image locationIcon = null;
     if (location.isSetLocationCategory()) {
       locationIcon = location.getLocationCategory().getIcon(ImageSize.SIZE_0);

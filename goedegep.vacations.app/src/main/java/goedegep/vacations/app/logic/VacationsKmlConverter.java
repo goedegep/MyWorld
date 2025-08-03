@@ -34,8 +34,6 @@ import de.micromata.opengis.kml.v_2_2_0.StyleMap;
 import de.micromata.opengis.kml.v_2_2_0.StyleState;
 import goedegep.geo.WGS84Coordinates;
 import goedegep.poi.app.LocationCategory;
-import goedegep.poi.app.guifx.POIIcons;
-import goedegep.poi.model.POICategoryId;
 import goedegep.types.model.FileReference;
 import goedegep.util.datetime.FlexDateFormat;
 import goedegep.util.html.HtmlUtil;
@@ -49,7 +47,6 @@ import goedegep.vacations.model.Vacation;
 import goedegep.vacations.model.VacationElement;
 import goedegep.vacations.model.Vacations;
 import goedegep.vacations.model.VacationsPackage;
-import javafx.collections.FXCollections;
 
 /**
  * This class creates a KML file for a Vacations structure.
@@ -64,7 +61,6 @@ public class VacationsKmlConverter extends VacationToTextConverterAbstract {
 
   private Parser parser = Parser.builder().build();
   private HtmlRenderer renderer = HtmlRenderer.builder().build();
-  private POIIcons poiIcons = null;
   private StringBuilder buf = new StringBuilder();
   private final Kml kml = new Kml();
   private Document kmlDocument;
@@ -73,10 +69,8 @@ public class VacationsKmlConverter extends VacationToTextConverterAbstract {
   /**
    * Constructor
    * 
-   * @param poiIcons the object to provide POI icons.
    */
-  public VacationsKmlConverter(POIIcons poiIcons) {
-    this.poiIcons = poiIcons;
+  public VacationsKmlConverter() {
   }
   
   /**

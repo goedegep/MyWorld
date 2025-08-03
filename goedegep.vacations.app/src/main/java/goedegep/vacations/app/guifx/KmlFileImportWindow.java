@@ -45,23 +45,19 @@ import goedegep.jfx.eobjecttreeview.EObjectTreeItemForObjectList;
 import goedegep.jfx.eobjecttreeview.EObjectTreeView;
 import goedegep.jfx.objectcontrols.ObjectControlBoolean;
 import goedegep.jfx.objectcontrols.ObjectControlFileSelecter;
-import goedegep.poi.app.guifx.POIIcons;
 import goedegep.resources.ImageResource;
 import goedegep.types.model.FileReference;
 import goedegep.types.model.TypesPackage;
 import goedegep.util.emf.EMFResource;
 import goedegep.util.emf.EmfUtil;
-import goedegep.util.file.FileUtils;
 import goedegep.util.objectselector.ObjectSelectionListener;
 import goedegep.util.objectselector.ObjectSelector;
 import goedegep.vacations.app.logic.KmlFileImporter;
 import goedegep.vacations.app.logic.KmlPlacemarkImportData;
 import goedegep.vacations.app.logic.VacationsUtils;
-import goedegep.vacations.model.DayTrip;
 import goedegep.vacations.model.GPXTrack;
 import goedegep.vacations.model.Location;
 import goedegep.vacations.model.Travel;
-import goedegep.vacations.model.Vacation;
 import goedegep.vacations.model.VacationElement;
 import goedegep.vacations.model.Vacations;
 import goedegep.vacations.model.VacationsPackage;
@@ -161,11 +157,6 @@ public class KmlFileImportWindow extends JfxStage {
   private VacationsWindow vacationsWindow;
 
   /**
-   * {@code POIIcons} for the icons shown in the tree views.
-   */
-  private POIIcons poiIcons;
-
-  /**
    * A {@code NominatimAPI} to get Open Street Map information about a location.
    */
   private NominatimAPI nominatimAPI;
@@ -208,12 +199,11 @@ public class KmlFileImportWindow extends JfxStage {
    * @param poiIcons {@code POIIcons} for the icons in the tree views
    * @param nominatimAPI a {@code NominatimAPI} to retrieve location information from
    */
-  public KmlFileImportWindow(CustomizationFx customization, VacationsWindow vacationsWindow, POIIcons poiIcons, NominatimAPI nominatimAPI) {
+  public KmlFileImportWindow(CustomizationFx customization, VacationsWindow vacationsWindow, NominatimAPI nominatimAPI) {
     super(customization, WINDOW_TITLE);
 
     this.customization = customization;
     this.vacationsWindow = vacationsWindow;
-    this.poiIcons = poiIcons;
     this.nominatimAPI = nominatimAPI;
 
     componentFactory = customization.getComponentFactoryFx();
@@ -232,10 +222,10 @@ public class KmlFileImportWindow extends JfxStage {
 
     // listen to Vacations tree view selection changes
     EObjectTreeView vacationsTreeView = vacationsWindow.getTreeView();
-    vacationsTreeView.addObjectSelectionListener((source, selectedTreeItem) -> handleNewTreeItemSelected(selectedTreeItem));
+    vacationsTreeView.addObjectSelectionListener((_, selectedTreeItem) -> handleNewTreeItemSelected(selectedTreeItem));
 
     // react to a new element selected.
-    kmlFileSelectionPanel.addObjectSelectionListener((source, element) -> handleNewTupletSelected(element));
+    kmlFileSelectionPanel.addObjectSelectionListener((_, element) -> handleNewTupletSelected(element));
 
     handleNewTreeItemSelected(vacationsTreeView.getSelectedObject());
 
@@ -349,8 +339,8 @@ public class KmlFileImportWindow extends JfxStage {
       createControls();
       createGUI();
 
-      fileSelecter.addListener((file) -> handleNewKmlFileSelected());
-      kmlPlacemarkImportDataComboBox.setOnAction((actionEvent) -> handleNewKmlPlacemarkImportDataSelected());
+      fileSelecter.addListener((_) -> handleNewKmlFileSelected());
+      kmlPlacemarkImportDataComboBox.setOnAction((_) -> handleNewKmlPlacemarkImportDataSelected());
     }
 
     /**
@@ -450,7 +440,7 @@ public class KmlFileImportWindow extends JfxStage {
 
       if (vacationElement instanceof Location location) {
         return "Location: " + location.getName();
-      } else if (vacationElement instanceof GPXTrack gpxTrack) {
+      } else if (vacationElement instanceof GPXTrack) {
         DocumentRoot documentRoot = kmlPlacemarkImportData.gpxFileDocumentRoot();
         GpxType gpxType = documentRoot.getGpx();
         MetadataType metadata = gpxType.getMetadata();
@@ -644,12 +634,11 @@ public class KmlFileImportWindow extends JfxStage {
      * Create the GUI controls.
      */
     private void createControls() {
-      travelMapView = new TravelMapView(customization, null, poiIcons, null);
+      travelMapView = new TravelMapView(customization, null, null);
       travelMapView.setMinWidth(800);
       travelMapView.removeControlsLayer();
 
       vacationsTreeView = new VacationsTreeViewCreator(customization)
-          .setPOIIcons(poiIcons)
           .createVacationsTreeView();
       vacationsTreeView.setEditMode(true);
       vacationsTreeView.setMinWidth(300);
@@ -1164,11 +1153,11 @@ public class KmlFileImportWindow extends JfxStage {
 
       // actionHBox items for when a Location is selected
       addLocationButton = componentFactory.createButton("Add Location", "Add this Location at the selected tree item");
-      addLocationButton.setOnAction((actionEvent) -> addLocation());
+      addLocationButton.setOnAction((_) -> addLocation());
 
       // actionHBox items for when a GPXTrack is selected
       addGPXTrackButton = componentFactory.createButton("Add GPXTrack", "Add this GPXTrack at the selected tree item and create the GPX file");
-      addGPXTrackButton.setOnAction((actionEvent) -> addGPXTrack());
+      addGPXTrackButton.setOnAction((_) -> addGPXTrack());
 
       this.getChildren().add(actionVBox);
 
@@ -1299,7 +1288,7 @@ public class KmlFileImportWindow extends JfxStage {
           VacationElement vacationElement = selectedKmlPlacemarkImportData.vacationElement();
           selectedTreeItemDescription.setText(getTreeItemDescription(selectedTreeItem));
 
-          if (vacationElement instanceof Location location) {
+          if (vacationElement instanceof Location) {
             // fill box for adding Location
             if (selectedTreeItemIsLocationsList) {
               // add as last child to list

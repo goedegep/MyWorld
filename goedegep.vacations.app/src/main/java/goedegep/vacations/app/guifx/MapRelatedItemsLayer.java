@@ -12,8 +12,6 @@ import goedegep.geo.WGS84Coordinates;
 import goedegep.jfx.CustomizationFx;
 import goedegep.mapview.MapViewUtil;
 import goedegep.poi.app.LocationCategory;
-import goedegep.poi.app.guifx.POIIcons;
-import goedegep.poi.model.POICategoryId;
 import goedegep.resources.ImageResource;
 import goedegep.util.img.ImageUtils;
 import goedegep.util.objectselector.ObjectSelectionListener;
@@ -65,8 +63,6 @@ public class MapRelatedItemsLayer extends MapLayer implements ObjectSelector<Obj
    */
   private Stage ownerWindow;
   
-  private POIIcons poiIcons;
-  
   /**
    * For items added for display, the Nodes (e.g. ImageView, Canvas, Polygon) are added as children to this instance and information is kept
    * in the following fields. In layoutLayer the 'locations on the map' are re-calculated.
@@ -95,9 +91,8 @@ public class MapRelatedItemsLayer extends MapLayer implements ObjectSelector<Obj
    * @param customization the GUI customization.
    * @param ownerWindow the window which created this layer.
    */
-  public MapRelatedItemsLayer(CustomizationFx customization, POIIcons poiIcons, Stage ownerWindow) {
+  public MapRelatedItemsLayer(CustomizationFx customization, Stage ownerWindow) {
     this.customization = customization;
-    this.poiIcons = poiIcons;
     this.ownerWindow = ownerWindow;
   }
   
@@ -221,7 +216,7 @@ public class MapRelatedItemsLayer extends MapLayer implements ObjectSelector<Obj
     LOGGER.info("=> coordinates: " + coordinates.toString());
     Image photoImage = ImageResource.CAMERA_BLACK.getImage(12, 12);
     ImageView photoIcon = new ImageView(photoImage);
-    photoIcon.setOnMouseClicked(e -> showCurrentPhoto(coordinates, text, fileName));
+    photoIcon.setOnMouseClicked(_ -> showCurrentPhoto(coordinates, text, fileName));
     getChildren().add(photoIcon);
     
     PhotoData photoData = new PhotoData(coordinates, fileName, text, photoIcon);
@@ -279,7 +274,7 @@ public class MapRelatedItemsLayer extends MapLayer implements ObjectSelector<Obj
 
     getChildren().add(canvas);
     currentPhoto = new PhotoData(coordinates, fileName, text, canvas);
-    canvas.setOnMouseClicked(e -> removeCurrentPhoto());
+    canvas.setOnMouseClicked(_ -> removeCurrentPhoto());
   }
   
   /**
