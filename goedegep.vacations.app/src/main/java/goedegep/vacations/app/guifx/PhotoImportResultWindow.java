@@ -11,6 +11,7 @@ import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.JfxStage;
 import goedegep.jfx.eobjecttreeview.EObjectTreeItem;
 import goedegep.jfx.eobjecttreeview.EObjectTreeView;
+import goedegep.poi.app.LocationCategory;
 import goedegep.poi.model.POICategoryId;
 import goedegep.types.model.FileReference;
 import goedegep.vacations.app.logic.PhotoImportResult;
@@ -199,8 +200,8 @@ public class PhotoImportResultWindow extends JfxStage {
 
       case VacationsPackage.LOCATION:
         Location location = (Location) vacationElement;
-        buf.append(location.getLocationType().getLiteral()).append(" - ");
-        if (location.getLocationType().equals(POICategoryId.CITY)) {
+        buf.append(LocationCategory.getDisplayName(location.getLocationCategory())).append(" - ");
+        if (location.getLocationCategory().equals(LocationCategory.CITY)) {
           buf.append(location.getCity());
         } else {
           buf.append(location.getName());

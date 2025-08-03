@@ -21,6 +21,7 @@ import de.micromata.opengis.kml.v_2_2_0.MultiGeometry;
 import de.micromata.opengis.kml.v_2_2_0.Placemark;
 import de.micromata.opengis.kml.v_2_2_0.Polygon;
 import goedegep.geo.WGS84Coordinates;
+import goedegep.poi.app.LocationCategory;
 import goedegep.poi.model.POICategoryId;
 import goedegep.vacations.model.BoundingBox;
 import goedegep.vacations.model.Location;
@@ -42,10 +43,10 @@ public class NominatimUtil {
   /**
    * Mapping of the OSM 'type' attribute to a POICategoryId.
    */
-  private static Map<String, POICategoryId> osmTypeToPOICategoryMap = new HashMap<>();
+  private static Map<String, LocationCategory> osmTypeToPOICategoryMap = new HashMap<>();
   
   
-  private static Map<String, POICategoryId> osmPOIAttributeNameToPOICategoryMap = new HashMap<>();
+  private static Map<String, LocationCategory> osmPOIAttributeNameToPOICategoryMap = new HashMap<>();
   private static VacationsFactory VACATIONS_FACTORY = VacationsFactory.eINSTANCE;
   
   /**
@@ -55,22 +56,22 @@ public class NominatimUtil {
   
   
   static {
-    osmTypeToPOICategoryMap.put("aerodrome", POICategoryId.AIRPORT);
-    osmTypeToPOICategoryMap.put("car_rental", POICategoryId.CAR_RENTAL);
-    osmTypeToPOICategoryMap.put("cathedral", POICategoryId.CHURCH);
-    osmTypeToPOICategoryMap.put("hotel", POICategoryId.HOTEL);
-    osmTypeToPOICategoryMap.put("monument", POICategoryId.MONUMENT);
-    osmTypeToPOICategoryMap.put("peak", POICategoryId.MOUNTAIN);
-    osmTypeToPOICategoryMap.put("place_of_worship", POICategoryId.CHURCH);
+    osmTypeToPOICategoryMap.put("aerodrome", LocationCategory.AIRPORT);
+    osmTypeToPOICategoryMap.put("car_rental", LocationCategory.CAR_RENTAL);
+    osmTypeToPOICategoryMap.put("cathedral", LocationCategory.PLACE_OF_WORSHIP);
+    osmTypeToPOICategoryMap.put("hotel", LocationCategory.HOTEL);
+    osmTypeToPOICategoryMap.put("monument", LocationCategory.MONUMENT);
+    osmTypeToPOICategoryMap.put("peak", LocationCategory.MOUNTAIN);
+    osmTypeToPOICategoryMap.put("place_of_worship", LocationCategory.PLACE_OF_WORSHIP);
     
-    osmPOIAttributeNameToPOICategoryMap.put("attraction", POICategoryId.TOURIST_ATTRACTION);
-    osmPOIAttributeNameToPOICategoryMap.put("castle", POICategoryId.CASTLE);
-    osmPOIAttributeNameToPOICategoryMap.put("hospital", POICategoryId.HOSPITAL);
-    osmPOIAttributeNameToPOICategoryMap.put("memorial", POICategoryId.MEMORIAL);
-//    osmPOIAttributeNameToPOICategoryMap.put("monument", POICategoryId.MONUMENT);
-    osmPOIAttributeNameToPOICategoryMap.put("museum", POICategoryId.MUSEUM);
-    osmPOIAttributeNameToPOICategoryMap.put("theme park", POICategoryId.AMUSEMENT);
-    osmPOIAttributeNameToPOICategoryMap.put("tourism", POICategoryId.HOTEL);
+    osmPOIAttributeNameToPOICategoryMap.put("attraction", LocationCategory.TOURIST_ATTRACTION);
+    osmPOIAttributeNameToPOICategoryMap.put("castle", LocationCategory.CASTLE);
+    osmPOIAttributeNameToPOICategoryMap.put("hospital", LocationCategory.HOSPITAL);
+    osmPOIAttributeNameToPOICategoryMap.put("memorial", LocationCategory.MEMORIAL);
+//    osmPOIAttributeNameToPOICategoryMap.put("monument", LocationCategory.MONUMENT);
+    osmPOIAttributeNameToPOICategoryMap.put("museum", LocationCategory.MUSEUM);
+    osmPOIAttributeNameToPOICategoryMap.put("theme park", LocationCategory.AMUSEMENT);
+    osmPOIAttributeNameToPOICategoryMap.put("tourism", LocationCategory.HOTEL);
   }
   
   /**
@@ -161,7 +162,7 @@ public class NominatimUtil {
     }
 
     // First source for the POICategoryId; the 'type' attribute.
-    POICategoryId poiCategoryId = getPOICategoryIdForType(osmLocationInfo.getType());
+    LocationCategory poiCategoryId = getPOICategoryIdForType(osmLocationInfo.getType());
     
     // First source for the name; the 'name' attribute.
     String name = osmLocationInfo.getName();
@@ -232,7 +233,7 @@ public class NominatimUtil {
     }
     
     if (poiCategoryId != null) {
-      location.setLocationType(poiCategoryId);
+      location.setLocationCategory(poiCategoryId);
     }
     
     if (name != null) {
@@ -255,7 +256,7 @@ public class NominatimUtil {
    * @param type OSM type.
    * @return the POICategoryId corresponding to the <code>type</code>.
    */
-  public static POICategoryId getPOICategoryIdForType(String type) {
+  public static LocationCategory getPOICategoryIdForType(String type) {
     LOGGER.info("type=" + (type != null ? type : "(null)"));
     if (type == null) {
       return null;
@@ -272,7 +273,7 @@ public class NominatimUtil {
    * @param osmPoiTypeName an OSM POI type name.
    * @return the POICategoryId corresponding to the <code>osmPoiTypeName</code>.
    */
-  public static POICategoryId getPOICategoryId(String osmPoiTypeName) {
+  public static LocationCategory getPOICategoryId(String osmPoiTypeName) {
     return osmPOIAttributeNameToPOICategoryMap.get(osmPoiTypeName);
   }
   

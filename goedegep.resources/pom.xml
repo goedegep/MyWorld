@@ -17,5 +17,9 @@
       <artifactId>javafx-graphics</artifactId>
       <classifier>win</classifier>
     </dependency>
+    <dependency>
+      <groupId>goedegep.util</groupId>
+      <artifactId>goedegep-util</artifactId>
+    </dependency>
   </dependencies>
 </project>

@@ -11,6 +11,7 @@ import org.eclipse.emf.ecore.EObject;
 import goedegep.ov2.Ov2FileEncoderDecoder;
 import goedegep.ov2.Ov2Item;
 import goedegep.ov2.Ov2ItemType2;
+import goedegep.poi.app.LocationCategory;
 import goedegep.poi.model.POICategoryId;
 import goedegep.vacations.model.Location;
 import goedegep.vacations.model.VacationsPackage;
@@ -40,7 +41,7 @@ public class Ov2Util {
           
           if (location.isSetName()) {
             ov2ItemType2.setDescription(location.getName());
-          } else if (location.getLocationType() == POICategoryId.CITY  &&  location.isSetCity()) {
+          } else if (location.getLocationCategory() == LocationCategory.CITY  &&  location.isSetCity()) {
             ov2ItemType2.setDescription(location.getCity());
           }
           

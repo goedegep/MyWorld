@@ -6,6 +6,7 @@ import java.util.logging.Logger;
 import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.JfxUtil;
 import goedegep.poi.app.guifx.POIIcons;
+import goedegep.resources.ImageSize;
 import goedegep.vacations.model.Location;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Dialog;
@@ -40,8 +41,8 @@ public class LocationDescriptionDialog extends Dialog<ButtonType> {
   public LocationDescriptionDialog(CustomizationFx customization, Stage ownerWindow, Location location) {
     setTitle("Informatie over " + location.getName());
     Image locationIcon = null;
-    if (location.isSetLocationType()) {
-      locationIcon = poiIcons.getIcon(location.getLocationType());
+    if (location.isSetLocationCategory()) {
+      locationIcon = location.getLocationCategory().getIcon(ImageSize.SIZE_0);
     }
     if (locationIcon != null) {
       setGraphic(new ImageView(locationIcon));

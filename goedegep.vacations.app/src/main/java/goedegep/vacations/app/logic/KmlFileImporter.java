@@ -45,6 +45,7 @@ import goedegep.gpx.model.MetadataType;
 import goedegep.gpx.model.TrkType;
 import goedegep.gpx.model.TrksegType;
 import goedegep.gpx.model.WptType;
+import goedegep.poi.app.LocationCategory;
 import goedegep.poi.model.POICategoryId;
 import goedegep.types.model.FileReference;
 import goedegep.types.model.TypesFactory;
@@ -58,7 +59,7 @@ public class KmlFileImporter {
   private static final Logger LOGGER = Logger.getLogger(KmlFileImporter.class.getName());
   
   private static Map<String, Activity> kmlCategoryToActivityMap = new HashMap<>();
-  private static Map<String, POICategoryId> kmlCategoryToPOICategoryIdMap = new HashMap<>();
+  private static Map<String, LocationCategory> kmlCategoryToPOICategoryIdMap = new HashMap<>();
   private static String[] knownUnsupportedAddresses = {
       "C. de los Helechos, s/n, 38611, Santa Cruz de Tenerife, Spanje",
       "C. Cupido, 12, 38400 Puerto de la Cruz, Santa Cruz de Tenerife, Spanje"
@@ -101,65 +102,65 @@ public class KmlFileImporter {
     kmlCategoryToActivityMap.put("Walking", Activity.WALKING);
     
     // initialize the kmlCategoryToPOICategoryIdMap
-    kmlCategoryToPOICategoryIdMap.put("Autoverhuur", POICategoryId.CAR_RENTAL);
-    kmlCategoryToPOICategoryIdMap.put("Bakkerij", POICategoryId.SHOP);
-    kmlCategoryToPOICategoryIdMap.put("Bar", POICategoryId.BAR);
-    kmlCategoryToPOICategoryIdMap.put("Barbecue", POICategoryId.RESTAURANT);
-    kmlCategoryToPOICategoryIdMap.put("Bergkabelbaan", POICategoryId.CABLE_CAR);
-    kmlCategoryToPOICategoryIdMap.put("Bergtop", POICategoryId.MOUNTAIN);
-    kmlCategoryToPOICategoryIdMap.put("Bierwinkel", POICategoryId.SHOP);
-    kmlCategoryToPOICategoryIdMap.put("Cultureel monument", POICategoryId.MONUMENT);
-    kmlCategoryToPOICategoryIdMap.put("Station bergspoorweg", POICategoryId.RAILWAY_STATION);
-    kmlCategoryToPOICategoryIdMap.put("Boerenmarkt", POICategoryId.MARKET);
-    kmlCategoryToPOICategoryIdMap.put("Buffet", POICategoryId.RESTAURANT);
-    kmlCategoryToPOICategoryIdMap.put("Buitenzwembad", POICategoryId.SWIMMING_POOL);
-    kmlCategoryToPOICategoryIdMap.put("Bushalte", POICategoryId.BUS_STOP);
-    kmlCategoryToPOICategoryIdMap.put("Cadeauwinkel", POICategoryId.SHOP);
-    kmlCategoryToPOICategoryIdMap.put("Dierentuin", POICategoryId.ZOO);
-    kmlCategoryToPOICategoryIdMap.put("Delicatessenwinkel", POICategoryId.SHOP);
-    kmlCategoryToPOICategoryIdMap.put("Eiland", POICategoryId.ISLAND);
-    kmlCategoryToPOICategoryIdMap.put("Espressobar", POICategoryId.CAFE);
-    kmlCategoryToPOICategoryIdMap.put("Fastfood", POICategoryId.RESTAURANT);
-    kmlCategoryToPOICategoryIdMap.put("Gebouw", POICategoryId.BUILDING);
-    kmlCategoryToPOICategoryIdMap.put("Grieks", POICategoryId.RESTAURANT);
-    kmlCategoryToPOICategoryIdMap.put("Herberg", POICategoryId.GUESTHOUSE);
-    kmlCategoryToPOICategoryIdMap.put("Historisch herkenningspunt", POICategoryId.DEFAULT_POI);
-    kmlCategoryToPOICategoryIdMap.put("Hotel", POICategoryId.HOTEL);
-    kmlCategoryToPOICategoryIdMap.put("Italiaans", POICategoryId.RESTAURANT);
-    kmlCategoryToPOICategoryIdMap.put("Kabelbaanstation", POICategoryId.RAILWAY_STATION);
-    kmlCategoryToPOICategoryIdMap.put("Kantoor van lokale/provinciale overheid", POICategoryId.GOVERMENT);
-    kmlCategoryToPOICategoryIdMap.put("Koffiehuis", POICategoryId.CAFE);
-    kmlCategoryToPOICategoryIdMap.put("Internationaal vliegveld", POICategoryId.AIRPORT);
-    kmlCategoryToPOICategoryIdMap.put("Lodge", POICategoryId.LODGE);
-    kmlCategoryToPOICategoryIdMap.put("Luchthaven", POICategoryId.AIRPORT);
-    kmlCategoryToPOICategoryIdMap.put("Markt", POICategoryId.MARKET);
-    kmlCategoryToPOICategoryIdMap.put("Momo restaurant", POICategoryId.RESTAURANT);
-    kmlCategoryToPOICategoryIdMap.put("Nationaal park", POICategoryId.PARK);
-    kmlCategoryToPOICategoryIdMap.put("Nepalees", POICategoryId.RESTAURANT);
-    kmlCategoryToPOICategoryIdMap.put("Observatieplatform", POICategoryId.SCENIC_VIEWPOINT);
-    kmlCategoryToPOICategoryIdMap.put("Ov-station", POICategoryId.RAILWAY_STATION);
-    kmlCategoryToPOICategoryIdMap.put("Pannenkoekenrestaurant", POICategoryId.RESTAURANT);
-    kmlCategoryToPOICategoryIdMap.put("Panoramisch uitzicht", POICategoryId.SCENIC_VIEWPOINT);
-    kmlCategoryToPOICategoryIdMap.put("Park", POICategoryId.PARK);
-    kmlCategoryToPOICategoryIdMap.put("Parkeergarage", POICategoryId.PARKING);
-    kmlCategoryToPOICategoryIdMap.put("Parkeerplaats", POICategoryId.PARKING);
-    kmlCategoryToPOICategoryIdMap.put("Paspoortkantoor", POICategoryId.BORDER_CROSSING);
-    kmlCategoryToPOICategoryIdMap.put("Pension", POICategoryId.GUESTHOUSE);
-    kmlCategoryToPOICategoryIdMap.put("Plein", POICategoryId.SQUARE);
-    kmlCategoryToPOICategoryIdMap.put("Rivier", POICategoryId.RIVER);
-    kmlCategoryToPOICategoryIdMap.put("Restaurant", POICategoryId.RESTAURANT);
-    kmlCategoryToPOICategoryIdMap.put("Restaurant", POICategoryId.RESTAURANT);
-    kmlCategoryToPOICategoryIdMap.put("Snackbar", POICategoryId.RESTAURANT);
-    kmlCategoryToPOICategoryIdMap.put("Skioord", POICategoryId.SKI_RESORT);
-    kmlCategoryToPOICategoryIdMap.put("Supermarkt", POICategoryId.SHOP);
-    kmlCategoryToPOICategoryIdMap.put("Tankstation", POICategoryId.PETROL_STATION);
-    kmlCategoryToPOICategoryIdMap.put("Thais", POICategoryId.RESTAURANT);
-    kmlCategoryToPOICategoryIdMap.put("Toeristische attractie", POICategoryId.TOURIST_ATTRACTION);
-    kmlCategoryToPOICategoryIdMap.put("Treinstation", POICategoryId.RAILWAY_STATION);
-    kmlCategoryToPOICategoryIdMap.put("Vakantiecomplex", POICategoryId.HOTEL);
-    kmlCategoryToPOICategoryIdMap.put("Veerbootterminal", POICategoryId.FERRY);
-    kmlCategoryToPOICategoryIdMap.put("Winkelcentrum", POICategoryId.SHOPPING_CENTER);
-    kmlCategoryToPOICategoryIdMap.put("Woods", POICategoryId.FOREST);
+    kmlCategoryToPOICategoryIdMap.put("Autoverhuur", LocationCategory.CAR_RENTAL);
+    kmlCategoryToPOICategoryIdMap.put("Bakkerij", LocationCategory.SHOP);
+    kmlCategoryToPOICategoryIdMap.put("Bar", LocationCategory.BAR);
+    kmlCategoryToPOICategoryIdMap.put("Barbecue", LocationCategory.RESTAURANT);
+    kmlCategoryToPOICategoryIdMap.put("Bergkabelbaan", LocationCategory.CABLE_CAR);
+    kmlCategoryToPOICategoryIdMap.put("Bergtop", LocationCategory.MOUNTAIN);
+    kmlCategoryToPOICategoryIdMap.put("Bierwinkel", LocationCategory.SHOP);
+    kmlCategoryToPOICategoryIdMap.put("Cultureel monument", LocationCategory.MONUMENT);
+    kmlCategoryToPOICategoryIdMap.put("Station bergspoorweg", LocationCategory.RAILWAY_STATION);
+    kmlCategoryToPOICategoryIdMap.put("Boerenmarkt", LocationCategory.MARKET);
+    kmlCategoryToPOICategoryIdMap.put("Buffet", LocationCategory.RESTAURANT);
+    kmlCategoryToPOICategoryIdMap.put("Buitenzwembad", LocationCategory.SWIMMING_POOL);
+    kmlCategoryToPOICategoryIdMap.put("Bushalte", LocationCategory.BUS_STOP);
+    kmlCategoryToPOICategoryIdMap.put("Cadeauwinkel", LocationCategory.SHOP);
+    kmlCategoryToPOICategoryIdMap.put("Dierentuin", LocationCategory.ZOO);
+    kmlCategoryToPOICategoryIdMap.put("Delicatessenwinkel", LocationCategory.SHOP);
+    kmlCategoryToPOICategoryIdMap.put("Eiland", LocationCategory.ISLAND);
+    kmlCategoryToPOICategoryIdMap.put("Espressobar", LocationCategory.CAFE);
+    kmlCategoryToPOICategoryIdMap.put("Fastfood", LocationCategory.RESTAURANT);
+    kmlCategoryToPOICategoryIdMap.put("Gebouw", LocationCategory.BUILDING);
+    kmlCategoryToPOICategoryIdMap.put("Grieks", LocationCategory.RESTAURANT);
+    kmlCategoryToPOICategoryIdMap.put("Herberg", LocationCategory.GUESTHOUSE);
+    kmlCategoryToPOICategoryIdMap.put("Historisch herkenningspunt", LocationCategory.DEFAULT_POI);
+    kmlCategoryToPOICategoryIdMap.put("Hotel", LocationCategory.HOTEL);
+    kmlCategoryToPOICategoryIdMap.put("Italiaans", LocationCategory.RESTAURANT);
+    kmlCategoryToPOICategoryIdMap.put("Kabelbaanstation", LocationCategory.RAILWAY_STATION);
+    kmlCategoryToPOICategoryIdMap.put("Kantoor van lokale/provinciale overheid", LocationCategory.GOVERMENT);
+    kmlCategoryToPOICategoryIdMap.put("Koffiehuis", LocationCategory.CAFE);
+    kmlCategoryToPOICategoryIdMap.put("Internationaal vliegveld", LocationCategory.AIRPORT);
+    kmlCategoryToPOICategoryIdMap.put("Lodge", LocationCategory.LODGE);
+    kmlCategoryToPOICategoryIdMap.put("Luchthaven", LocationCategory.AIRPORT);
+    kmlCategoryToPOICategoryIdMap.put("Markt", LocationCategory.MARKET);
+    kmlCategoryToPOICategoryIdMap.put("Momo restaurant", LocationCategory.RESTAURANT);
+    kmlCategoryToPOICategoryIdMap.put("Nationaal park", LocationCategory.PARK);
+    kmlCategoryToPOICategoryIdMap.put("Nepalees", LocationCategory.RESTAURANT);
+    kmlCategoryToPOICategoryIdMap.put("Observatieplatform", LocationCategory.SCENIC_VIEWPOINT);
+    kmlCategoryToPOICategoryIdMap.put("Ov-station", LocationCategory.RAILWAY_STATION);
+    kmlCategoryToPOICategoryIdMap.put("Pannenkoekenrestaurant", LocationCategory.RESTAURANT);
+    kmlCategoryToPOICategoryIdMap.put("Panoramisch uitzicht", LocationCategory.SCENIC_VIEWPOINT);
+    kmlCategoryToPOICategoryIdMap.put("Park", LocationCategory.PARK);
+    kmlCategoryToPOICategoryIdMap.put("Parkeergarage", LocationCategory.PARKING);
+    kmlCategoryToPOICategoryIdMap.put("Parkeerplaats", LocationCategory.PARKING);
+    kmlCategoryToPOICategoryIdMap.put("Paspoortkantoor", LocationCategory.BORDER_CROSSING);
+    kmlCategoryToPOICategoryIdMap.put("Pension", LocationCategory.GUESTHOUSE);
+    kmlCategoryToPOICategoryIdMap.put("Plein", LocationCategory.SQUARE);
+    kmlCategoryToPOICategoryIdMap.put("Rivier", LocationCategory.RIVER);
+    kmlCategoryToPOICategoryIdMap.put("Restaurant", LocationCategory.RESTAURANT);
+    kmlCategoryToPOICategoryIdMap.put("Restaurant", LocationCategory.RESTAURANT);
+    kmlCategoryToPOICategoryIdMap.put("Snackbar", LocationCategory.RESTAURANT);
+    kmlCategoryToPOICategoryIdMap.put("Skioord", LocationCategory.SKI_RESORT);
+    kmlCategoryToPOICategoryIdMap.put("Supermarkt", LocationCategory.SHOP);
+    kmlCategoryToPOICategoryIdMap.put("Tankstation", LocationCategory.PETROL_STATION);
+    kmlCategoryToPOICategoryIdMap.put("Thais", LocationCategory.RESTAURANT);
+    kmlCategoryToPOICategoryIdMap.put("Toeristische attractie", LocationCategory.TOURIST_ATTRACTION);
+    kmlCategoryToPOICategoryIdMap.put("Treinstation", LocationCategory.RAILWAY_STATION);
+    kmlCategoryToPOICategoryIdMap.put("Vakantiecomplex", LocationCategory.HOTEL);
+    kmlCategoryToPOICategoryIdMap.put("Veerbootterminal", LocationCategory.FERRY);
+    kmlCategoryToPOICategoryIdMap.put("Winkelcentrum", LocationCategory.SHOPPING_CENTER);
+    kmlCategoryToPOICategoryIdMap.put("Woods", LocationCategory.FOREST);
   }
   
   /**
@@ -309,8 +310,8 @@ public class KmlFileImporter {
     
     String category = getExtendedDataValue(placemark, "Category");
     if (category != null  &&  !category.trim().isEmpty()) {
-      POICategoryId poiCategoryId = kmlCategoryToPOICategoryId(category);
-      location.setLocationType(poiCategoryId);
+      LocationCategory poiCategoryId = kmlCategoryToPOICategoryId(category);
+      location.setLocationCategory(poiCategoryId);
     }
     
     String locationName = placemark.getName();
@@ -350,12 +351,12 @@ public class KmlFileImporter {
     vacationElements.add(new KmlPlacemarkImportData(location, null, placemark.getAddress(), locationFromNominatim));
   }
 
-  private POICategoryId kmlCategoryToPOICategoryId(String category) {
-    POICategoryId poiCategoryId = kmlCategoryToPOICategoryIdMap.get(category);
+  private LocationCategory kmlCategoryToPOICategoryId(String category) {
+    LocationCategory poiCategoryId = kmlCategoryToPOICategoryIdMap.get(category);
     
     if (poiCategoryId == null) {
      LOGGER.severe("Unsupported KML category: " + category);
-     poiCategoryId = POICategoryId.DEFAULT_POI;
+     poiCategoryId = LocationCategory.DEFAULT_POI;
     }
     
     return poiCategoryId;

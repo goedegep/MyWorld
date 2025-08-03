@@ -258,7 +258,7 @@ public class EObjectTreeCellHelperForAttributeListValue extends EObjectTreeCellH
       final EEnum eEnum = (EEnum) eDataType;
       EObjectTreeView eObjectTreeView = treeItem.getEObjectTreeView();
 //      EObjectTreeDescriptor eObjectTreeDescriptor = eObjectTreeView.getEObjectTreeDescriptor();
-      final EEnumEditorDescriptor<?> eEnumEditorDescriptorForEEnum = eObjectTreeView.getEEnumEditorDescriptorForEEnum(eEnum);
+      final EnumStringConverter<?> eEnumEditorDescriptorForEEnum = eObjectTreeView.getEnumStringConverterEnum(eEnum);
       if (eEnumEditorDescriptorForEEnum != null) {
         valueChoiceBox.getItems().addAll(eEnumEditorDescriptorForEEnum.getDisplayNames());
       } else {
@@ -273,7 +273,7 @@ public class EObjectTreeCellHelperForAttributeListValue extends EObjectTreeCellH
       valueChoiceBox.onActionProperty().set((actionEvent) -> {
         Object value = valueChoiceBox.getValue();
         if (eEnumEditorDescriptorForEEnum != null) {
-          value = eEnumEditorDescriptorForEEnum.getEEnumLiteralForDisplayName((String) value);
+          value = eEnumEditorDescriptorForEEnum.fromDisplayName((String) value);
           LOGGER.severe("value: " + value.toString() + ", " + value.getClass().getName());
         }
         eObjectTreeCell.commitEdit(value);

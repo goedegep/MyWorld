@@ -2,7 +2,7 @@
  */
 package goedegep.vacations.model;
 
-import goedegep.poi.model.POICategoryId;
+import goedegep.poi.app.LocationCategory;
 import goedegep.util.datetime.FlexDate;
 import org.eclipse.emf.common.util.EList;
 
@@ -15,7 +15,7 @@ import org.eclipse.emf.common.util.EList;
  * The following features are supported:
  * </p>
  * <ul>
- *   <li>{@link goedegep.vacations.model.Location#getLocationType <em>Location Type</em>}</li>
+ *   <li>{@link goedegep.vacations.model.Location#getLocationCategory <em>Location Category</em>}</li>
  *   <li>{@link goedegep.vacations.model.Location#getCountry <em>Country</em>}</li>
  *   <li>{@link goedegep.vacations.model.Location#getCity <em>City</em>}</li>
  *   <li>{@link goedegep.vacations.model.Location#getStreet <em>Street</em>}</li>
@@ -40,61 +40,54 @@ import org.eclipse.emf.common.util.EList;
  */
 public interface Location extends VacationElement {
   /**
-   * Returns the value of the '<em><b>Location Type</b></em>' attribute.
-   * The default value is <code>"Default POI"</code>.
-   * The literals are from the enumeration {@link goedegep.poi.model.POICategoryId}.
+   * Returns the value of the '<em><b>Location Category</b></em>' attribute.
+   * The default value is <code>"DEFAULT_POI"</code>.
    * <!-- begin-user-doc -->
-   * <p>
-   * If the meaning of the '<em>Location Type</em>' attribute isn't clear,
-   * there really should be more of a description here...
-   * </p>
    * <!-- end-user-doc -->
-   * @return the value of the '<em>Location Type</em>' attribute.
-   * @see goedegep.poi.model.POICategoryId
-   * @see #isSetLocationType()
-   * @see #unsetLocationType()
-   * @see #setLocationType(POICategoryId)
-   * @see goedegep.vacations.model.VacationsPackage#getLocation_LocationType()
-   * @model default="Default POI" unsettable="true"
+   * @return the value of the '<em>Location Category</em>' attribute.
+   * @see #isSetLocationCategory()
+   * @see #unsetLocationCategory()
+   * @see #setLocationCategory(LocationCategory)
+   * @see goedegep.vacations.model.VacationsPackage#getLocation_LocationCategory()
+   * @model default="DEFAULT_POI" unsettable="true" dataType="goedegep.vacations.model.ELocationCategory"
    * @generated
    */
-  POICategoryId getLocationType();
+  LocationCategory getLocationCategory();
 
   /**
-   * Sets the value of the '{@link goedegep.vacations.model.Location#getLocationType <em>Location Type</em>}' attribute.
+   * Sets the value of the '{@link goedegep.vacations.model.Location#getLocationCategory <em>Location Category</em>}' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @param value the new value of the '<em>Location Type</em>' attribute.
-   * @see goedegep.poi.model.POICategoryId
-   * @see #isSetLocationType()
-   * @see #unsetLocationType()
-   * @see #getLocationType()
+   * @param value the new value of the '<em>Location Category</em>' attribute.
+   * @see #isSetLocationCategory()
+   * @see #unsetLocationCategory()
+   * @see #getLocationCategory()
    * @generated
    */
-  void setLocationType(POICategoryId value);
+  void setLocationCategory(LocationCategory value);
 
   /**
-   * Unsets the value of the '{@link goedegep.vacations.model.Location#getLocationType <em>Location Type</em>}' attribute.
+   * Unsets the value of the '{@link goedegep.vacations.model.Location#getLocationCategory <em>Location Category</em>}' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see #isSetLocationType()
-   * @see #getLocationType()
-   * @see #setLocationType(POICategoryId)
+   * @see #isSetLocationCategory()
+   * @see #getLocationCategory()
+   * @see #setLocationCategory(LocationCategory)
    * @generated
    */
-  void unsetLocationType();
+  void unsetLocationCategory();
 
   /**
-   * Returns whether the value of the '{@link goedegep.vacations.model.Location#getLocationType <em>Location Type</em>}' attribute is set.
+   * Returns whether the value of the '{@link goedegep.vacations.model.Location#getLocationCategory <em>Location Category</em>}' attribute is set.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return whether the value of the '<em>Location Type</em>' attribute is set.
-   * @see #unsetLocationType()
-   * @see #getLocationType()
-   * @see #setLocationType(POICategoryId)
+   * @return whether the value of the '<em>Location Category</em>' attribute is set.
+   * @see #unsetLocationCategory()
+   * @see #getLocationCategory()
+   * @see #setLocationCategory(LocationCategory)
    * @generated
    */
-  boolean isSetLocationType();
+  boolean isSetLocationCategory();
 
   /**
    * Returns the value of the '<em><b>Country</b></em>' attribute.

@@ -11,6 +11,7 @@ import goedegep.geo.WGS84BoundingBox;
 import goedegep.geo.WGS84Coordinates;
 import goedegep.jfx.CustomizationFx;
 import goedegep.mapview.MapViewUtil;
+import goedegep.poi.app.LocationCategory;
 import goedegep.poi.app.guifx.POIIcons;
 import goedegep.poi.model.POICategoryId;
 import goedegep.resources.ImageResource;
@@ -139,8 +140,8 @@ public class MapRelatedItemsLayer extends MapLayer implements ObjectSelector<Obj
     // Icon with text at the coordinates of the location.
     LabeledIcon labeledIcon = null;
     if (location.getLatitude() != null  ||  location.getLongitude() != null) {
-      POICategoryId poiCategoryId = location.getLocationType();
-      Image locationIcon = poiIcons.getIcon(poiCategoryId);    
+      LocationCategory poiCategoryId = location.getLocationCategory();
+      Image locationIcon = poiCategoryId.getIcon();    
       labeledIcon = new LabeledIcon(locationIcon, text);
       labeledIcon.installMouseEventHandling(e -> {
         LOGGER.severe("Mouse clicked on: " + location);

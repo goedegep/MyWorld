@@ -63,8 +63,8 @@
         eType="#//VacationElement" containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Location" eSuperTypes="#//VacationElement">
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="locationType" eType="ecore:EEnum ../../goedegep.poi.model/model/POI.ecore#//POICategoryId"
-        defaultValueLiteral="Default POI" unsettable="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="locationCategory" eType="#//ELocationCategory"
+        defaultValueLiteral="DEFAULT_POI" unsettable="true"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="country" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
         unsettable="true"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="city" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
@@ -188,4 +188,5 @@
     <eStructuralFeatures xsi:type="ecore:EReference" name="travelcategories" upperBound="-1"
         eType="#//TravelCategory" containment="true"/>
   </eClassifiers>
+  <eClassifiers xsi:type="ecore:EDataType" name="ELocationCategory" instanceClassName="goedegep.poi.app.LocationCategory"/>
 </ecore:EPackage>

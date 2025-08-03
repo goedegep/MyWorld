@@ -11,7 +11,7 @@ import javafx.scene.control.ChoiceBox;
 public class EObjectTreeCellHelperForAttributeEnumeration extends EObjectTreeCellHelperForAttributeAbstract {
   private static final Logger LOGGER = Logger.getLogger(EObjectTreeCellHelperForAttributeMultiLineText.class.getName());
   
-  private ChoiceBox<Object> valueChoiceBox = null;
+  private ChoiceBox<String> valueChoiceBox = null;
   
   /**
    * Constructor
@@ -39,18 +39,16 @@ public class EObjectTreeCellHelperForAttributeEnumeration extends EObjectTreeCel
     EClassifier eClassifier = itemDescriptor.getEAttribute().getEType();
     final EEnum eEnum = (EEnum) eClassifier;
     EObjectTreeView eObjectTreeView = treeItem.getEObjectTreeView();
-    final EEnumEditorDescriptor<?> eEnumEditorDescriptorForEEnum = eObjectTreeView.getEEnumEditorDescriptorForEEnum(eEnum.getDefaultValue());
+    final EnumStringConverter<?> eEnumEditorDescriptorForEEnum = eObjectTreeView.getEnumStringConverterEnum(eEnum.getDefaultValue());
     valueChoiceBox.getItems().addAll(eEnumEditorDescriptorForEEnum.getDisplayNames());
     
     LOGGER.info("Going to select: " + valueLabel.getText());
     valueChoiceBox.getSelectionModel().select(valueLabel.getText());
     
-    valueChoiceBox.onActionProperty().set((actionEvent) -> {
-        Object value = valueChoiceBox.getValue();
-        if (eEnumEditorDescriptorForEEnum != null) {
-          value = eEnumEditorDescriptorForEEnum.getEEnumLiteralForDisplayName((String) value);
-        }
-        eObjectTreeCell.commitEdit(value);
+    valueChoiceBox.onActionProperty().set((_) -> {
+        String displayName = valueChoiceBox.getValue();
+        Object object = eEnumEditorDescriptorForEEnum.fromDisplayName(displayName);
+        eObjectTreeCell.commitEdit(object);
     });
     
     graphic.getChildren().add(valueChoiceBox);

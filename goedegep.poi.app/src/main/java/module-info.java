@@ -1,4 +1,5 @@
 module goedegep.poi.app {
+  exports goedegep.poi.app;
   exports goedegep.poi.app.guifx;
 
   requires transitive goedegep.poi.model;

@@ -33,6 +33,7 @@ import de.micromata.opengis.kml.v_2_2_0.Style;
 import de.micromata.opengis.kml.v_2_2_0.StyleMap;
 import de.micromata.opengis.kml.v_2_2_0.StyleState;
 import goedegep.geo.WGS84Coordinates;
+import goedegep.poi.app.LocationCategory;
 import goedegep.poi.app.guifx.POIIcons;
 import goedegep.poi.model.POICategoryId;
 import goedegep.types.model.FileReference;
@@ -67,7 +68,7 @@ public class VacationsKmlConverter extends VacationToTextConverterAbstract {
   private StringBuilder buf = new StringBuilder();
   private final Kml kml = new Kml();
   private Document kmlDocument;
-  private Map<POICategoryId, StyleMap> iconStyleMapMap = new HashMap<>();
+  private Map<LocationCategory, StyleMap> iconStyleMapMap = new HashMap<>();
 
   /**
    * Constructor
@@ -191,7 +192,7 @@ public class VacationsKmlConverter extends VacationToTextConverterAbstract {
       addLocationTextToBuffer(homeLocation, buf);
       homePlacemark.setDescription(SgmlUtil.encloseInCData(buf.toString()));
       
-      StyleMap iconStyleMap = getIconStyleMap(POICategoryId.HOME);
+      StyleMap iconStyleMap = getIconStyleMap(LocationCategory.HOME);
       homePlacemark.setStyleUrl(iconStyleMap.getId());
     }
   }
@@ -359,7 +360,7 @@ public class VacationsKmlConverter extends VacationToTextConverterAbstract {
       placemark.createAndSetPoint().addToCoordinates(location.getLongitude(), location.getLatitude(), 0F);      
     }
     
-    StyleMap iconStyleMap = getIconStyleMap(location.getLocationType());
+    StyleMap iconStyleMap = getIconStyleMap(location.getLocationCategory());
     placemark.setStyleUrl(iconStyleMap.getId());
     
     if (location.getChildren().size() == 0) {
@@ -587,7 +588,7 @@ public class VacationsKmlConverter extends VacationToTextConverterAbstract {
    * @param locationType the <code>POICategoryId</code> representing the location type.
    * @return the <code>StyleMap</code> for <code>locationType</code>.
    */
-  private StyleMap getIconStyleMap(POICategoryId locationType) {
+  private StyleMap getIconStyleMap(LocationCategory locationType) {
     StyleMap styleMap = iconStyleMapMap.get(locationType);
     
     if (styleMap == null) {
@@ -615,13 +616,13 @@ public class VacationsKmlConverter extends VacationToTextConverterAbstract {
    * @param poiCategoryId The POICategoryId for the style to be created
    * @return the created StyleMap
    */
-  private StyleMap createAndAddIconStyleMap(POICategoryId poiCategoryId) {
-    String imageId = poiCategoryId.getLiteral();
+  private StyleMap createAndAddIconStyleMap(LocationCategory poiCategoryId) {
+    String imageId = poiCategoryId.name();
     String styleNormalId = String.format("s_%s", imageId);
     String styleHighlightId = String.format("s_%s_hl", imageId);
     String styleMapId = String.format("m_%s", imageId);
     
-    Icon icon = KmlFactory.createIcon().withHref(ICON_DIRECTORY + "/" + poiIcons.getIconFileName(poiCategoryId));
+    Icon icon = KmlFactory.createIcon().withHref(ICON_DIRECTORY + "/" + poiCategoryId.getIconFilename());
     
     Style normalStyle = kmlDocument
         .createAndAddStyle()
