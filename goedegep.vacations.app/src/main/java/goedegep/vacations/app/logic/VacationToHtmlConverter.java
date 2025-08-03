@@ -27,6 +27,7 @@ import goedegep.gpx.app.GpxAppUtil;
 import goedegep.gpx.model.DocumentRoot;
 import goedegep.gpx.model.GpxType;
 import goedegep.gpx.model.MetadataType;
+import goedegep.poi.app.LocationCategory;
 import goedegep.poi.app.guifx.POIIcons;
 import goedegep.poi.model.POICategoryId;
 import goedegep.resources.ImageSize;
@@ -378,9 +379,9 @@ public class VacationToHtmlConverter extends VacationToTextConverterAbstract {
       buf.append("<br/>");
     }
     
-    if (location.getLocationType() != null) {
-      POICategoryId poiCategoryId = location.getLocationType();
-      URL url = poiIcons.getIconUrl(poiCategoryId);
+    if (location.getLocationCategory() != null) {
+      LocationCategory poiCategoryId = location.getLocationCategory();
+      URL url = poiCategoryId.getIconURL();
       if (url != null) {
         addImage(buf, url.toString(), 32, null, generateForWeb);
         separatorNeeded = true;

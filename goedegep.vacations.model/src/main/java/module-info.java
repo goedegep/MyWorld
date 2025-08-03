@@ -4,6 +4,7 @@ module goedegep.vacations.model {
 
   requires transitive goedegep.types.model;
   requires transitive goedegep.poi.model;
+  requires transitive goedegep.poi.app;
   requires goedegep.util;
   requires java.logging;
   requires org.eclipse.emf.common;

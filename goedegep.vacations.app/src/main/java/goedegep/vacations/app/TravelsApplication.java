@@ -7,6 +7,7 @@ import java.util.logging.Logger;
 import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.CustomizationsFx;
 import goedegep.properties.app.PropertiesHandler;
+import goedegep.resources.ImageResource;
 import goedegep.vacations.app.guifx.VacationsWindow;
 
 public class TravelsApplication {
@@ -43,6 +44,7 @@ public class TravelsApplication {
     if (instance == null) {
       instance = new TravelsApplication(runningInEclipse);
     }
+    ImageResource.checkResources();
     
     return instance;    
   }

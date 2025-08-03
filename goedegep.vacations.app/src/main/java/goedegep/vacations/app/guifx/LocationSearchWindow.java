@@ -33,12 +33,16 @@ import goedegep.jfx.eobjecttreeview.EObjectTreeItemClassListReferenceDescriptor;
 import goedegep.jfx.eobjecttreeview.EObjectTreeItemForObject;
 import goedegep.jfx.eobjecttreeview.EObjectTreeItemForObjectList;
 import goedegep.jfx.eobjecttreeview.EObjectTreeView;
+import goedegep.jfx.eobjecttreeview.EnumStringConverter;
+import goedegep.poi.app.LocationCategory;
 import goedegep.poi.app.guifx.POIIcons;
 import goedegep.poi.model.POICategoryId;
+import goedegep.resources.ImageSize;
 import goedegep.util.emf.EmfUtil;
 import goedegep.util.objectselector.ObjectSelectionListener;
 import goedegep.util.objectselector.ObjectSelector;
 import goedegep.util.string.StringUtil;
+import goedegep.vacations.app.EnumStringConverterForLocationCategory;
 import goedegep.vacations.app.logic.NominatimUtil;
 import goedegep.vacations.model.Boundary;
 import goedegep.vacations.model.BoundingBox;
@@ -1031,7 +1035,7 @@ class LocationPanel extends VBox {
   private TextField cityTextField;
   private TextField streetTextField;
   private TextField houseNumberTextField;
-  private EEnumEditorDescriptor<POICategoryId> eEnumEditorDescriptor;
+  private EnumStringConverter<LocationCategory> locationCategoryStringConverter;
   private ComboBox<String> locationTypeComboBox;
   private ImageView locationTypeIconImageView;
   private TextField coordinatesTextField;
@@ -1064,7 +1068,7 @@ class LocationPanel extends VBox {
     this.vacationsWindow = vacationsWindow;
     this.poiIcons = poiIcons;
     
-    eEnumEditorDescriptor = EEnumEditorDescriptorForPOIs.getInstance();
+    locationCategoryStringConverter = EnumStringConverterForLocationCategory.getInstance();
     
     setBorder(new Border(new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT)));
     setPadding(new Insets(12.0));
@@ -1122,12 +1126,12 @@ class LocationPanel extends VBox {
     label = componentFactory.createLabel("Location type:");
     gridPane.add(label, 0, row);
     
-    locationTypeComboBox = componentFactory.createComboBox(eEnumEditorDescriptor.getDisplayNames());
+    locationTypeComboBox = componentFactory.createComboBox(locationCategoryStringConverter.getDisplayNames());
     locationTypeComboBox.setOnAction((actionEvent) -> {
-      Object choice = locationTypeComboBox.getValue();
+      String choice = locationTypeComboBox.getValue();
       if (choice != null) {
-        POICategoryId poiCategoryId = eEnumEditorDescriptor.getEEnumLiteralForDisplayName((String) choice);
-        Image locationIcon = poiIcons.getIcon(poiCategoryId);
+        LocationCategory locationCategory = locationCategoryStringConverter.fromDisplayName(choice);
+        Image locationIcon = locationCategory.getIcon();
         locationTypeIconImageView.setImage(locationIcon);
       } else {
         locationTypeIconImageView.setImage(null);
@@ -1249,14 +1253,12 @@ class LocationPanel extends VBox {
         houseNumberTextField.setText(null);
       }
 
-      if (location.isSetLocationType()) {
-        POICategoryId poiCategoryId = location.getLocationType();
-        LOGGER.info("poiCategoryId=" + poiCategoryId.getLiteral() + ", " + poiCategoryId.getName());
-        String poiLiteral = eEnumEditorDescriptor.getDisplayNameForEEnumLiteral(poiCategoryId);
-        LOGGER.info("poiLiteral=" + poiLiteral);
+      if (location.isSetLocationCategory()) {
+        LocationCategory poiCategoryId = location.getLocationCategory();
+        String poiLiteral = locationCategoryStringConverter.toDisplayName(poiCategoryId);
         locationTypeComboBox.setValue(poiLiteral);
         
-        Image locationIcon = poiIcons.getIcon(location.getLocationType());
+        Image locationIcon = poiCategoryId.getIcon(ImageSize.SIZE_0);
         locationTypeIconImageView.setImage(locationIcon);
       } else {
         locationTypeIconImageView.setImage(null);
@@ -1326,9 +1328,9 @@ class LocationPanel extends VBox {
       location.setHouseNumber(value);
     }
     
-    Object choice = locationTypeComboBox.getValue();
-    POICategoryId poiCategoryId = eEnumEditorDescriptor.getEEnumLiteralForDisplayName((String) choice);
-    location.setLocationType(poiCategoryId);
+    String choice = locationTypeComboBox.getValue();
+    LocationCategory poiCategoryId = locationCategoryStringConverter.fromDisplayName(choice);
+    location.setLocationCategory(poiCategoryId);
     
     if (useReverseGeocodeSearchCoordinates.isSelected()) {
       Double latitude = reverseGeoCodePanel.getLatitude();

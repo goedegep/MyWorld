@@ -107,9 +107,9 @@ public class EObjectTreeView extends TreeView<Object> implements ObjectSelector<
   private Map<EClass, EObjectTreeItemClassDescriptor> eClassToClassDescriptorMap = new HashMap<>();
   
   /**
-   * EEnumEditorDescriptor's per EEnum.
+   * EnumStringConverter's per Enum.
    */
-  private Map<Object, EEnumEditorDescriptor<?>> eEnumToEEnumEditorDescriptorMap = new HashMap<>();
+  private Map<Object, EnumStringConverter<?>> enumToEnumStringConverterMap = new HashMap<>();
   
   /**
    * Content adapter to react to changes in the root EObject hierarchy.
@@ -214,10 +214,10 @@ public class EObjectTreeView extends TreeView<Object> implements ObjectSelector<
   }
   
   /**
-   * Add an EEnum editor descriptor.
+   * Add an Enum string converter.
    */
-  public EObjectTreeView addEEnumEditorDescriptor(EEnum eEnum, EEnumEditorDescriptor<?> eEnumEditorDescriptor) {
-    eEnumToEEnumEditorDescriptorMap.put(eEnum, eEnumEditorDescriptor);
+  public EObjectTreeView addEnumStringConverter(Object enumerator, EnumStringConverter<?> enumStringConverter) {
+    enumToEnumStringConverterMap.put(enumerator, enumStringConverter);
     
     return this;
   }
@@ -425,40 +425,41 @@ public class EObjectTreeView extends TreeView<Object> implements ObjectSelector<
   }
   
   /**
-   * Get the descriptor for a specific {@code Enumerator}.
-   * 
-   * @param eEnum the <code>EEnum</code> to get the descriptor for.
-   * @return the <code>EEnumEditorDescriptor</code> for <code>eEnum</code>, or null if it is not set.
-   */
-  public <E> EEnumEditorDescriptor<E> getEEnumEditorDescriptorForEEnum(E enumerator) {
-    @SuppressWarnings("unchecked")
-    EEnumEditorDescriptor<E> eEnumEditorDescriptor = (EEnumEditorDescriptor<E>) eEnumToEEnumEditorDescriptorMap.get(enumerator);
-    if (eEnumEditorDescriptor == null) {
-      eEnumEditorDescriptor = createEEnumEditorDescriptor(enumerator);
-      eEnumToEEnumEditorDescriptorMap.put(enumerator, eEnumEditorDescriptor);
-    }
-    return eEnumEditorDescriptor;
-  }
-  
-  /**
-   * Create an {@code EEnumEditorDescriptor} for an {@code Enumerator}.
-   * <p>
-   * The string values are obtained by calling {@code toString()} on the literals.
+   * Get the string converter for a specific {@code Enum}.
    * 
    * @param <E> The {@code Enumerator} type.
-   * @param enumerator the {@code Enumerator}
-   * @return the created {@code EEnumEditorDescriptor}.
+   * @param eEnum the <code>EEnum</code> to get the descriptor for.
+   * @return the {@code EnumStringConverter} for <code>eEnum</code>, or null if it is not set.
    */
-  private <E> EEnumEditorDescriptor<E> createEEnumEditorDescriptor (E enumerator) {
-    EEnumEditorDescriptor<E> eEnumEditorDescriptor = new EEnumEditorDescriptor<>(true);
-    
-        
-    for (Object value: enumerator.getClass().getEnumConstants()) {
-      eEnumEditorDescriptor.addDisplayNameForEEnum(value, value.toString());
+  public <E extends Enum<E>> EnumStringConverter<E> getEnumStringConverterEnum(Object enumerator) {
+    @SuppressWarnings("unchecked")
+    EnumStringConverter<E> enumStringConverter = (EnumStringConverter<E>) enumToEnumStringConverterMap.get(enumerator);
+    if (enumStringConverter == null) {
+      enumStringConverter = new EnumStringConverter<E>((Class<E>) enumerator.getClass(), null);
+      enumToEnumStringConverterMap.put(enumerator, enumStringConverter);
     }
-            
-    return eEnumEditorDescriptor;
+    return enumStringConverter;
   }
+  
+//  /**
+//   * Create an {@code EnumStringConverter} for an {@code Enumerator}.
+//   * <p>
+//   * The string values are obtained by calling {@code toString()} on the literals.
+//   * 
+//   * @param <E> The {@code Enumerator} type.
+//   * @param enumerator the {@code Enumerator}
+//   * @return the created {@code EnumStringConverter}.
+//   */
+//  private <E> EnumStringConverter<E> createEnumStringConverter (E enumerator) {
+//    EEnumEditorDescriptor<E> eEnumEditorDescriptor = new EEnumEditorDescriptor<>(true);
+//    
+//        
+//    for (Object value: enumerator.getClass().getEnumConstants()) {
+//      eEnumEditorDescriptor.addDisplayNameForEEnum(value, value.toString());
+//    }
+//            
+//    return eEnumEditorDescriptor;
+//  }
   
   public static Image getListIcon() {
     return new Image(EObjectTreeCellHelperForObjectList.class.getResourceAsStream("Three dots.png"), 36, 18, true, true);

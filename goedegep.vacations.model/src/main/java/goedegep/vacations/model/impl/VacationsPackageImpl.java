@@ -2,6 +2,7 @@
  */
 package goedegep.vacations.model.impl;
 
+import goedegep.poi.app.LocationCategory;
 import goedegep.poi.model.POIPackage;
 import goedegep.types.model.TypesPackage;
 import goedegep.vacations.model.Boundary;
@@ -25,6 +26,7 @@ import goedegep.vacations.model.VacationsPackage;
 
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
+import org.eclipse.emf.ecore.EDataType;
 import org.eclipse.emf.ecore.EOperation;
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.EReference;
@@ -150,6 +152,13 @@ public class VacationsPackageImpl extends EPackageImpl implements VacationsPacka
    * @generated
    */
   private EClass travelCategoriesEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EDataType eLocationCategoryEDataType = null;
 
   /**
    * Creates an instance of the model <b>Package</b>, registered with
@@ -406,7 +415,7 @@ public class VacationsPackageImpl extends EPackageImpl implements VacationsPacka
    * @generated
    */
   @Override
-  public EAttribute getLocation_LocationType() {
+  public EAttribute getLocation_LocationCategory() {
     return (EAttribute) locationEClass.getEStructuralFeatures().get(0);
   }
 
@@ -1016,6 +1025,16 @@ public class VacationsPackageImpl extends EPackageImpl implements VacationsPacka
    * @generated
    */
   @Override
+  public EDataType getELocationCategory() {
+    return eLocationCategoryEDataType;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
   public VacationsFactory getVacationsFactory() {
     return (VacationsFactory) getEFactoryInstance();
   }
@@ -1060,7 +1079,7 @@ public class VacationsPackageImpl extends EPackageImpl implements VacationsPacka
     createEOperation(vacationEClass, VACATION___GET_DAY_NR__VACATIONELEMENT);
 
     locationEClass = createEClass(LOCATION);
-    createEAttribute(locationEClass, LOCATION__LOCATION_TYPE);
+    createEAttribute(locationEClass, LOCATION__LOCATION_CATEGORY);
     createEAttribute(locationEClass, LOCATION__COUNTRY);
     createEAttribute(locationEClass, LOCATION__CITY);
     createEAttribute(locationEClass, LOCATION__STREET);
@@ -1134,6 +1153,9 @@ public class VacationsPackageImpl extends EPackageImpl implements VacationsPacka
 
     travelCategoriesEClass = createEClass(TRAVEL_CATEGORIES);
     createEReference(travelCategoriesEClass, TRAVEL_CATEGORIES__TRAVELCATEGORIES);
+
+    // Create data types
+    eLocationCategoryEDataType = createEDataType(ELOCATION_CATEGORY);
   }
 
   /**
@@ -1163,7 +1185,6 @@ public class VacationsPackageImpl extends EPackageImpl implements VacationsPacka
     // Obtain other dependent packages
     TypesPackage theTypesPackage = (TypesPackage) EPackage.Registry.INSTANCE.getEPackage(TypesPackage.eNS_URI);
     XMLTypePackage theXMLTypePackage = (XMLTypePackage) EPackage.Registry.INSTANCE.getEPackage(XMLTypePackage.eNS_URI);
-    POIPackage thePOIPackage = (POIPackage) EPackage.Registry.INSTANCE.getEPackage(POIPackage.eNS_URI);
 
     // Create type parameters
 
@@ -1235,7 +1256,7 @@ public class VacationsPackageImpl extends EPackageImpl implements VacationsPacka
     addEParameter(op, this.getVacationElement(), "vacationElement", 0, 1, IS_UNIQUE, IS_ORDERED);
 
     initEClass(locationEClass, Location.class, "Location", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-    initEAttribute(getLocation_LocationType(), thePOIPackage.getPOICategoryId(), "locationType", "Default POI", 0, 1,
+    initEAttribute(getLocation_LocationCategory(), this.getELocationCategory(), "locationCategory", "DEFAULT_POI", 0, 1,
         Location.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED,
         IS_ORDERED);
     initEAttribute(getLocation_Country(), ecorePackage.getEString(), "country", null, 0, 1, Location.class,
@@ -1377,6 +1398,10 @@ public class VacationsPackageImpl extends EPackageImpl implements VacationsPacka
     initEReference(getTravelCategories_Travelcategories(), this.getTravelCategory(), null, "travelcategories", null, 0,
         -1, TravelCategories.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES,
         !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+    // Initialize data types
+    initEDataType(eLocationCategoryEDataType, LocationCategory.class, "ELocationCategory", IS_SERIALIZABLE,
+        !IS_GENERATED_INSTANCE_CLASS);
 
     // Create resource
     createResource(eNS_URI);

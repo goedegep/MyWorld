@@ -2,7 +2,9 @@
  */
 package goedegep.vacations.model.impl;
 
+import goedegep.poi.app.LocationCategory;
 import org.eclipse.emf.ecore.EClass;
+import org.eclipse.emf.ecore.EDataType;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EPackage;
 
@@ -88,6 +90,36 @@ public class VacationsFactoryImpl extends EFactoryImpl implements VacationsFacto
       return createTravelCategories();
     default:
       throw new IllegalArgumentException("The class '" + eClass.getName() + "' is not a valid classifier");
+    }
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public Object createFromString(EDataType eDataType, String initialValue) {
+    switch (eDataType.getClassifierID()) {
+    case VacationsPackage.ELOCATION_CATEGORY:
+      return createELocationCategoryFromString(eDataType, initialValue);
+    default:
+      throw new IllegalArgumentException("The datatype '" + eDataType.getName() + "' is not a valid classifier");
+    }
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public String convertToString(EDataType eDataType, Object instanceValue) {
+    switch (eDataType.getClassifierID()) {
+    case VacationsPackage.ELOCATION_CATEGORY:
+      return convertELocationCategoryToString(eDataType, instanceValue);
+    default:
+      throw new IllegalArgumentException("The datatype '" + eDataType.getName() + "' is not a valid classifier");
     }
   }
 
@@ -254,6 +286,24 @@ public class VacationsFactoryImpl extends EFactoryImpl implements VacationsFacto
   public TravelCategories createTravelCategories() {
     TravelCategoriesImpl travelCategories = new TravelCategoriesImpl();
     return travelCategories;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public LocationCategory createELocationCategoryFromString(EDataType eDataType, String initialValue) {
+    return (LocationCategory) super.createFromString(eDataType, initialValue);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public String convertELocationCategoryToString(EDataType eDataType, Object instanceValue) {
+    return super.convertToString(eDataType, instanceValue);
   }
 
   /**

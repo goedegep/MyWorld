@@ -2,6 +2,7 @@
  */
 package goedegep.vacations.model.impl;
 
+import goedegep.poi.app.LocationCategory;
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
 import org.eclipse.emf.common.util.EList;
@@ -10,12 +11,11 @@ import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.util.EObjectContainmentEList;
 import org.eclipse.emf.ecore.util.InternalEList;
-
-import goedegep.poi.model.POICategoryId;
 import goedegep.util.datetime.FlexDate;
 import goedegep.vacations.model.Boundary;
 import goedegep.vacations.model.BoundingBox;
 import goedegep.vacations.model.Location;
+import goedegep.vacations.model.VacationsFactory;
 import goedegep.vacations.model.VacationsPackage;
 
 import java.util.Collection;
@@ -28,7 +28,7 @@ import java.util.Collection;
  * The following features are implemented:
  * </p>
  * <ul>
- *   <li>{@link goedegep.vacations.model.impl.LocationImpl#getLocationType <em>Location Type</em>}</li>
+ *   <li>{@link goedegep.vacations.model.impl.LocationImpl#getLocationCategory <em>Location Category</em>}</li>
  *   <li>{@link goedegep.vacations.model.impl.LocationImpl#getCountry <em>Country</em>}</li>
  *   <li>{@link goedegep.vacations.model.impl.LocationImpl#getCity <em>City</em>}</li>
  *   <li>{@link goedegep.vacations.model.impl.LocationImpl#getStreet <em>Street</em>}</li>
@@ -51,33 +51,34 @@ import java.util.Collection;
  */
 public class LocationImpl extends VacationElementImpl implements Location {
   /**
-   * The default value of the '{@link #getLocationType() <em>Location Type</em>}' attribute.
+   * The default value of the '{@link #getLocationCategory() <em>Location Category</em>}' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see #getLocationType()
+   * @see #getLocationCategory()
    * @generated
    * @ordered
    */
-  protected static final POICategoryId LOCATION_TYPE_EDEFAULT = POICategoryId.DEFAULT_POI;
+  protected static final LocationCategory LOCATION_CATEGORY_EDEFAULT = (LocationCategory) VacationsFactory.eINSTANCE
+      .createFromString(VacationsPackage.eINSTANCE.getELocationCategory(), "DEFAULT_POI");
 
   /**
-   * The cached value of the '{@link #getLocationType() <em>Location Type</em>}' attribute.
+   * The cached value of the '{@link #getLocationCategory() <em>Location Category</em>}' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see #getLocationType()
+   * @see #getLocationCategory()
    * @generated
    * @ordered
    */
-  protected POICategoryId locationType = LOCATION_TYPE_EDEFAULT;
+  protected LocationCategory locationCategory = LOCATION_CATEGORY_EDEFAULT;
 
   /**
-   * This is true if the Location Type attribute has been set.
+   * This is true if the Location Category attribute has been set.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  protected boolean locationTypeESet;
+  protected boolean locationCategoryESet;
 
   /**
    * The default value of the '{@link #getCountry() <em>Country</em>}' attribute.
@@ -521,8 +522,8 @@ public class LocationImpl extends VacationElementImpl implements Location {
    * @generated
    */
   @Override
-  public POICategoryId getLocationType() {
-    return locationType;
+  public LocationCategory getLocationCategory() {
+    return locationCategory;
   }
 
   /**
@@ -531,14 +532,14 @@ public class LocationImpl extends VacationElementImpl implements Location {
    * @generated
    */
   @Override
-  public void setLocationType(POICategoryId newLocationType) {
-    POICategoryId oldLocationType = locationType;
-    locationType = newLocationType == null ? LOCATION_TYPE_EDEFAULT : newLocationType;
-    boolean oldLocationTypeESet = locationTypeESet;
-    locationTypeESet = true;
+  public void setLocationCategory(LocationCategory newLocationCategory) {
+    LocationCategory oldLocationCategory = locationCategory;
+    locationCategory = newLocationCategory;
+    boolean oldLocationCategoryESet = locationCategoryESet;
+    locationCategoryESet = true;
     if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, VacationsPackage.LOCATION__LOCATION_TYPE, oldLocationType,
-          locationType, !oldLocationTypeESet));
+      eNotify(new ENotificationImpl(this, Notification.SET, VacationsPackage.LOCATION__LOCATION_CATEGORY,
+          oldLocationCategory, locationCategory, !oldLocationCategoryESet));
   }
 
   /**
@@ -547,14 +548,14 @@ public class LocationImpl extends VacationElementImpl implements Location {
    * @generated
    */
   @Override
-  public void unsetLocationType() {
-    POICategoryId oldLocationType = locationType;
-    boolean oldLocationTypeESet = locationTypeESet;
-    locationType = LOCATION_TYPE_EDEFAULT;
-    locationTypeESet = false;
+  public void unsetLocationCategory() {
+    LocationCategory oldLocationCategory = locationCategory;
+    boolean oldLocationCategoryESet = locationCategoryESet;
+    locationCategory = LOCATION_CATEGORY_EDEFAULT;
+    locationCategoryESet = false;
     if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.UNSET, VacationsPackage.LOCATION__LOCATION_TYPE, oldLocationType,
-          LOCATION_TYPE_EDEFAULT, oldLocationTypeESet));
+      eNotify(new ENotificationImpl(this, Notification.UNSET, VacationsPackage.LOCATION__LOCATION_CATEGORY,
+          oldLocationCategory, LOCATION_CATEGORY_EDEFAULT, oldLocationCategoryESet));
   }
 
   /**
@@ -563,8 +564,8 @@ public class LocationImpl extends VacationElementImpl implements Location {
    * @generated
    */
   @Override
-  public boolean isSetLocationType() {
-    return locationTypeESet;
+  public boolean isSetLocationCategory() {
+    return locationCategoryESet;
   }
 
   /**
@@ -1388,8 +1389,8 @@ public class LocationImpl extends VacationElementImpl implements Location {
   @Override
   public Object eGet(int featureID, boolean resolve, boolean coreType) {
     switch (featureID) {
-    case VacationsPackage.LOCATION__LOCATION_TYPE:
-      return getLocationType();
+    case VacationsPackage.LOCATION__LOCATION_CATEGORY:
+      return getLocationCategory();
     case VacationsPackage.LOCATION__COUNTRY:
       return getCountry();
     case VacationsPackage.LOCATION__CITY:
@@ -1435,8 +1436,8 @@ public class LocationImpl extends VacationElementImpl implements Location {
   @Override
   public void eSet(int featureID, Object newValue) {
     switch (featureID) {
-    case VacationsPackage.LOCATION__LOCATION_TYPE:
-      setLocationType((POICategoryId) newValue);
+    case VacationsPackage.LOCATION__LOCATION_CATEGORY:
+      setLocationCategory((LocationCategory) newValue);
       return;
     case VacationsPackage.LOCATION__COUNTRY:
       setCountry((String) newValue);
@@ -1499,8 +1500,8 @@ public class LocationImpl extends VacationElementImpl implements Location {
   @Override
   public void eUnset(int featureID) {
     switch (featureID) {
-    case VacationsPackage.LOCATION__LOCATION_TYPE:
-      unsetLocationType();
+    case VacationsPackage.LOCATION__LOCATION_CATEGORY:
+      unsetLocationCategory();
       return;
     case VacationsPackage.LOCATION__COUNTRY:
       unsetCountry();
@@ -1562,8 +1563,8 @@ public class LocationImpl extends VacationElementImpl implements Location {
   @Override
   public boolean eIsSet(int featureID) {
     switch (featureID) {
-    case VacationsPackage.LOCATION__LOCATION_TYPE:
-      return isSetLocationType();
+    case VacationsPackage.LOCATION__LOCATION_CATEGORY:
+      return isSetLocationCategory();
     case VacationsPackage.LOCATION__COUNTRY:
       return isSetCountry();
     case VacationsPackage.LOCATION__CITY:
@@ -1609,7 +1610,7 @@ public class LocationImpl extends VacationElementImpl implements Location {
   public String toString() {
     StringBuilder buf = new StringBuilder();
 
-    buf.append("LocationType: ").append(getLocationType() != null ? getLocationType().getLiteral() : "(null)");
+    buf.append("LocationCategory: ").append(getLocationCategory() != null ? LocationCategory.getDisplayName(getLocationCategory()) : "(null)");
     buf.append(", Name: ").append(getName() != null ? getName().toString() : "(null)");
     buf.append(", City: ").append(getCity() != null ? getCity().toString() : "(null)");
 

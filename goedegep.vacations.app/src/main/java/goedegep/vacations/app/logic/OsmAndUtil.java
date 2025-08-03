@@ -12,6 +12,7 @@ import java.util.logging.Logger;
 import org.eclipse.emf.common.util.TreeIterator;
 import org.eclipse.emf.ecore.EObject;
 
+import goedegep.poi.app.LocationCategory;
 import goedegep.poi.model.POICategoryId;
 import goedegep.util.html.HtmlUtil;
 import goedegep.util.sgml.SgmlUtil;
@@ -23,8 +24,8 @@ public class OsmAndUtil {
   private static final Logger LOGGER = Logger.getLogger(OsmAndUtil.class.getName());
   static final String NEW_LINE = System.getProperty("line.separator");
   
-  private static Map<POICategoryId, String> colorMap = new HashMap<>();
-  private static Map<POICategoryId, String> iconMap = new HashMap<>();
+  private static Map<LocationCategory, String> colorMap = new HashMap<>();
+  private static Map<LocationCategory, String> iconMap = new HashMap<>();
   
   static {
     /*
@@ -32,82 +33,82 @@ public class OsmAndUtil {
      */
     
     // Red for places to stay.
-    colorMap.put(POICategoryId.BED_AND_BREAKFAST, "#ff0000");
-    colorMap.put(POICategoryId.CAMPING, "#ff0000");
-    colorMap.put(POICategoryId.HOTEL, "#ff0000");
+    colorMap.put(LocationCategory.BED_AND_BREAKFAST, "#ff0000");
+    colorMap.put(LocationCategory.CAMPING, "#ff0000");
+    colorMap.put(LocationCategory.HOTEL, "#ff0000");
     
     // Travel information
     
     // Things to see or do
-    colorMap.put(POICategoryId.SCENIC_VIEWPOINT, "#0000ff");
-    colorMap.put(POICategoryId.CASTLE, "#00ff00");
-    colorMap.put(POICategoryId.MONUMENT, "#00ff00");
+    colorMap.put(LocationCategory.SCENIC_VIEWPOINT, "#0000ff");
+    colorMap.put(LocationCategory.CASTLE, "#00ff00");
+    colorMap.put(LocationCategory.MONUMENT, "#00ff00");
     
     /*
      * Category icons
      * zie C:\Users\Peter\Downloads\OsmAnd-resources-master\rendering_styles\style-icons\poi-icons-png\drawable-hdpi
      * Geyser toevoegen aan pois, met mx_natural_geyser
      */
-    iconMap.put(POICategoryId.AIRPORT, "aeroway_airport");
-    iconMap.put(POICategoryId.AMUSEMENT, "attraction_amusement_ride");
-    iconMap.put(POICategoryId.AQUADUCT, "bridge_structure_arch");
-    iconMap.put(POICategoryId.ATM, "amenity_atm");
-    iconMap.put(POICategoryId.BANK, "accommodation");
-    iconMap.put(POICategoryId.BAR, "amenity_bar");
-    iconMap.put(POICategoryId.BEACH, "beach");
-    iconMap.put(POICategoryId.BUILDING, "building");
-    iconMap.put(POICategoryId.BRIDGE, "bridge_structure_suspension");
-    iconMap.put(POICategoryId.BUS_STATION, "amenity_bus_station");
-    iconMap.put(POICategoryId.CAMPING, "camp_pitch");
-    iconMap.put(POICategoryId.CANYON, "strait");
-    iconMap.put(POICategoryId.CAR_RENTAL, "amenity_car_rental");
-    iconMap.put(POICategoryId.CASINO, "amenity_casino");
-    iconMap.put(POICategoryId.CASTLE, "historic_castle");
-    iconMap.put(POICategoryId.CAVE, "natural_cave_entrance");
-    iconMap.put(POICategoryId.CHURCH, "building_type_church");
-    iconMap.put(POICategoryId.CINEMA, "amenity_cinema");
-    iconMap.put(POICategoryId.CITY, "place_city");
-    iconMap.put(POICategoryId.COMMUNITY_BUILDING, "amenity_community_centre");
-    iconMap.put(POICategoryId.CONVENTION_CENTER, "conference_centre");
-    iconMap.put(POICategoryId.FERRY, "cargo_vehicle");
-    iconMap.put(POICategoryId.FIRE_DEPARTMENT, "amenity_fire_station");
-    iconMap.put(POICategoryId.GOLF_COURSE, "golf_course");
-    iconMap.put(POICategoryId.GOVERMENT, "special_poi_us_capitol");
-    iconMap.put(POICategoryId.HIKING, "piste_hike");
-    iconMap.put(POICategoryId.HOSPITAL, "amenity_hospital");
-    iconMap.put(POICategoryId.HOTEL, "accomodation");
-    iconMap.put(POICategoryId.ICE_SKATING_RING, "ice_skating");
-    iconMap.put(POICategoryId.INDUSTRY, "industrial");
-    iconMap.put(POICategoryId.LAKE, "water");
-    iconMap.put(POICategoryId.LANDSCAPE, "hill");
-    iconMap.put(POICategoryId.LIBRARY, "amenity_library");
-    iconMap.put(POICategoryId.MARINA, "leisure_marina");
-    iconMap.put(POICategoryId.MEMORIAL, "memorial_plaque");
-    iconMap.put(POICategoryId.MONUMENT, "monument");
-    iconMap.put(POICategoryId.MOUNTAIN, "natural");
-    iconMap.put(POICategoryId.MOUNTAIN_PASS, "mountain_pass");
-    iconMap.put(POICategoryId.MUSEUM, "tourism_museum");
-    iconMap.put(POICategoryId.NEIGHBOURHOOD, "village");
-    iconMap.put(POICategoryId.NIGHTLIFE, "dance_floor");
-    iconMap.put(POICategoryId.PETROL_STATION, "amenity_fuel");
-    iconMap.put(POICategoryId.PHARMACY, "amenity_pharmacy");
-    iconMap.put(POICategoryId.PARK, "park");
-    iconMap.put(POICategoryId.PARKING, "parking");
-    iconMap.put(POICategoryId.POLICE, "amenity_police");
-    iconMap.put(POICategoryId.POST_OFFICE, "amenity_post_office");
-    iconMap.put(POICategoryId.RESTAURANT, "amenity_restaurant");
-    iconMap.put(POICategoryId.SCENIC_VIEWPOINT, "for_tourists");
-    iconMap.put(POICategoryId.SHOP, "bag");
-    iconMap.put(POICategoryId.SHOPPING_CENTER, "bag");
-    iconMap.put(POICategoryId.SKI_RESORT, "piste");
-    iconMap.put(POICategoryId.SNORKELING_LOCATION, "scuba_diving_shop");
-    iconMap.put(POICategoryId.SQUARE, "square");
-    iconMap.put(POICategoryId.SWIMMING_POOL, "swimming_pool");
-    iconMap.put(POICategoryId.RAILWAY_STATION, "locomotive");
-    iconMap.put(POICategoryId.THEATER, "amenity_theatre");
-    iconMap.put(POICategoryId.TOURIST_ATTRACTION, "camera");
-    iconMap.put(POICategoryId.WATERFALL, "waterfall");
-    iconMap.put(POICategoryId.WINERY, "craft_winery");
+    iconMap.put(LocationCategory.AIRPORT, "aeroway_airport");
+    iconMap.put(LocationCategory.AMUSEMENT, "attraction_amusement_ride");
+    iconMap.put(LocationCategory.AQUADUCT, "bridge_structure_arch");
+    iconMap.put(LocationCategory.ATM, "amenity_atm");
+    iconMap.put(LocationCategory.BANK, "accommodation");
+    iconMap.put(LocationCategory.BAR, "amenity_bar");
+    iconMap.put(LocationCategory.BEACH, "beach");
+    iconMap.put(LocationCategory.BUILDING, "building");
+    iconMap.put(LocationCategory.BRIDGE, "bridge_structure_suspension");
+    iconMap.put(LocationCategory.BUSSTATION, "amenity_bus_station");
+    iconMap.put(LocationCategory.CAMPING, "camp_pitch");
+    iconMap.put(LocationCategory.CANYON, "strait");
+    iconMap.put(LocationCategory.CAR_RENTAL, "amenity_car_rental");
+    iconMap.put(LocationCategory.CASINO, "amenity_casino");
+    iconMap.put(LocationCategory.CASTLE, "historic_castle");
+    iconMap.put(LocationCategory.CAVE, "natural_cave_entrance");
+    iconMap.put(LocationCategory.PLACE_OF_WORSHIP, "building_type_church");
+    iconMap.put(LocationCategory.CINEMA, "amenity_cinema");
+    iconMap.put(LocationCategory.CITY, "place_city");
+    iconMap.put(LocationCategory.COMMUNITY_CENTER, "amenity_community_centre");
+    iconMap.put(LocationCategory.CONVENTION_CENTER, "conference_centre");
+    iconMap.put(LocationCategory.FERRY, "cargo_vehicle");
+    iconMap.put(LocationCategory.FIRE_DEPARTMENT, "amenity_fire_station");
+    iconMap.put(LocationCategory.GOLF_COURSE, "golf_course");
+    iconMap.put(LocationCategory.GOVERMENT, "special_poi_us_capitol");
+    iconMap.put(LocationCategory.HIKING, "piste_hike");
+    iconMap.put(LocationCategory.HOSPITAL, "amenity_hospital");
+    iconMap.put(LocationCategory.HOTEL, "accomodation");
+    iconMap.put(LocationCategory.ICE_SKATING_RING, "ice_skating");
+    iconMap.put(LocationCategory.INDUSTRY, "industrial");
+    iconMap.put(LocationCategory.LAKE, "water");
+    iconMap.put(LocationCategory.LANDSCAPE, "hill");
+    iconMap.put(LocationCategory.LIBRARY, "amenity_library");
+    iconMap.put(LocationCategory.MARINA, "leisure_marina");
+    iconMap.put(LocationCategory.MEMORIAL, "memorial_plaque");
+    iconMap.put(LocationCategory.MONUMENT, "monument");
+    iconMap.put(LocationCategory.MOUNTAIN, "natural");
+    iconMap.put(LocationCategory.MOUNTAIN_PASS, "mountain_pass");
+    iconMap.put(LocationCategory.MUSEUM, "tourism_museum");
+    iconMap.put(LocationCategory.NEIGHBOURHOOD, "village");
+    iconMap.put(LocationCategory.NIGHTLIFE, "dance_floor");
+    iconMap.put(LocationCategory.PETROL_STATION, "amenity_fuel");
+    iconMap.put(LocationCategory.PHARMACY, "amenity_pharmacy");
+    iconMap.put(LocationCategory.PARK, "park");
+    iconMap.put(LocationCategory.PARKING, "parking");
+    iconMap.put(LocationCategory.POLICE, "amenity_police");
+    iconMap.put(LocationCategory.POST_OFFICE, "amenity_post_office");
+    iconMap.put(LocationCategory.RESTAURANT, "amenity_restaurant");
+    iconMap.put(LocationCategory.SCENIC_VIEWPOINT, "for_tourists");
+    iconMap.put(LocationCategory.SHOP, "bag");
+    iconMap.put(LocationCategory.SHOPPING_CENTER, "bag");
+    iconMap.put(LocationCategory.SKI_RESORT, "piste");
+    iconMap.put(LocationCategory.SNORKELING_LOCATION, "scuba_diving_shop");
+    iconMap.put(LocationCategory.SQUARE, "square");
+    iconMap.put(LocationCategory.SWIMMING_POOL, "swimming_pool");
+    iconMap.put(LocationCategory.RAILWAY_STATION, "locomotive");
+    iconMap.put(LocationCategory.THEATER, "amenity_theatre");
+    iconMap.put(LocationCategory.TOURIST_ATTRACTION, "camera");
+    iconMap.put(LocationCategory.WATERFALL, "waterfall");
+    iconMap.put(LocationCategory.WINERY, "craft_winery");
   }
   
   /**
@@ -232,7 +233,7 @@ public class OsmAndUtil {
         String name = null;
         if (location.isSetName()) {
           name = location.getName();
-        } else if (location.getLocationType() == POICategoryId.CITY  &&  location.isSetCity()) {
+        } else if (location.getLocationCategory() == LocationCategory.CITY  &&  location.isSetCity()) {
           name = location.getCity();
         }
         if (name != null) {
@@ -244,8 +245,8 @@ public class OsmAndUtil {
         if (group != null) {
           category = group;
         }
-        if ((category == null)  &&  location.isSetLocationType()) {
-          category = location.getLocationType().getLiteral();
+        if ((category == null)  &&  location.isSetLocationCategory()) {
+          category = LocationCategory.getDisplayName(location.getLocationCategory());
         }
         if (category == null) {
           category = "Other";
@@ -258,12 +259,12 @@ public class OsmAndUtil {
         }
         
         // color: based on the location type and color map.
-        if (location.getLocationType() != null) {
-          String colorString = colorMap.get(location.getLocationType());
-          String iconString = iconMap.get(location.getLocationType());
+        if (location.getLocationCategory() != null) {
+          String colorString = colorMap.get(location.getLocationCategory());
+          String iconString = iconMap.get(location.getLocationCategory());
           if (iconString == null) {
             message = "No OsmAnd icon for this location type";
-            LOGGER.severe("No OsmAnd icon for location type " + location.getLocationType().getName());
+            LOGGER.severe("No OsmAnd icon for location type " + LocationCategory.getDisplayName(location));
           }
           if (colorString != null  ||  iconString != null) {
             buf.append(SgmlUtil.createElementOpen(indent, null, "extensions")).append(NEW_LINE);

@@ -12,6 +12,7 @@
   <testsDirectory xsi:nil="true"/>
   <genPackages prefix="Vacations" basePackage="goedegep.vacations" disposableProviderFactory="true"
       ecorePackage="vacations.ecore#/">
+    <genDataTypes ecoreDataType="vacations.ecore#//ELocationCategory"/>
     <genClasses ecoreClass="vacations.ecore#//Vacations">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference vacations.ecore#//Vacations/vacations"/>
       <genFeatures children="true" createChild="true" propertySortChoices="true" ecoreFeature="ecore:EReference vacations.ecore#//Vacations/home"/>
@@ -43,7 +44,7 @@
       </genOperations>
     </genClasses>
     <genClasses ecoreClass="vacations.ecore#//Location">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute vacations.ecore#//Location/locationType"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute vacations.ecore#//Location/locationCategory"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute vacations.ecore#//Location/country"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute vacations.ecore#//Location/city"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute vacations.ecore#//Location/street"/>

@@ -31,15 +31,15 @@ import goedegep.jfx.eobjecttreeview.EObjectTreeItemClassListReferenceDescriptor;
 import goedegep.jfx.eobjecttreeview.EObjectTreeItemClassReferenceDescriptor;
 import goedegep.jfx.eobjecttreeview.EObjectTreeItemForObject;
 import goedegep.jfx.eobjecttreeview.EObjectTreeView;
-import goedegep.jfx.eobjecttreeview.NodeOperationDescriptorDelete;
 import goedegep.jfx.eobjecttreeview.NodeOperationDescriptorCustom;
+import goedegep.jfx.eobjecttreeview.NodeOperationDescriptorDelete;
 import goedegep.jfx.eobjecttreeview.NodeOperationDescriptorNew;
 import goedegep.jfx.eobjecttreeview.NodeOperationDescriptorNewAfter;
 import goedegep.jfx.eobjecttreeview.NodeOperationDescriptorNewBefore;
 import goedegep.jfx.eobjecttreeview.NodeOperationDescriptorOpen;
 import goedegep.jfx.eobjecttreeview.PresentationType;
+import goedegep.poi.app.LocationCategory;
 import goedegep.poi.app.guifx.POIIcons;
-import goedegep.poi.model.POICategoryId;
 import goedegep.poi.model.POIPackage;
 import goedegep.resources.ImageResource;
 import goedegep.resources.ImageSize;
@@ -50,6 +50,7 @@ import goedegep.util.datetime.FlexDateFormat;
 import goedegep.util.emf.EmfUtil;
 import goedegep.util.file.FileUtils;
 import goedegep.util.img.PhotoFileMetaDataHandler;
+import goedegep.vacations.app.EnumStringConverterForLocationCategory;
 import goedegep.vacations.model.BoundingBox;
 import goedegep.vacations.model.Day;
 import goedegep.vacations.model.DayTrip;
@@ -218,7 +219,7 @@ public class VacationsTreeViewCreator {
         .addEClassDescriptor(VACATIONS_PACKAGE.getMapImage(), createDescriptorForMapImage())
         .addEClassDescriptor(VACATIONS_PACKAGE.getBoundingBox(), createDescriptorForBoundingBox())
         .addEClassDescriptor(typesPackage.getFileReference(), createDescriptorForFileReference())
-        .addEEnumEditorDescriptor(POI_PACKAGE.getPOICategoryId(), EEnumEditorDescriptorForPOIs.getInstance())
+        .addEnumStringConverter(VACATIONS_PACKAGE.getELocationCategory().eClass(), EnumStringConverterForLocationCategory.getInstance())
         .setIsDropPossibleFunction(this::isDropPossible)
         .setHandleDropFunction(this::handleDrop);
 
@@ -526,7 +527,7 @@ public class VacationsTreeViewCreator {
           StringBuilder buf = new StringBuilder();
           boolean spaceNeeded = false;
           Location location = (Location) eObject;
-          if (location.isSetLocationType()) {
+          if (location.isSetLocationCategory()) {
             spaceNeeded = true;
           }
           if (location.isSetName()) {
@@ -549,8 +550,8 @@ public class VacationsTreeViewCreator {
         .setNodeIconFunction(object -> {
           if (poiIcons != null) {
             Location location = (Location) object;
-            POICategoryId poiCategoryId = location.getLocationType();
-            return poiIcons.getIcon(poiCategoryId, 16, 16);
+            LocationCategory locationCategory = location.getLocationCategory();
+            return locationCategory.getIcon(ImageSize.SIZE_0);
           } else {
             return null;
           }
@@ -608,8 +609,8 @@ public class VacationsTreeViewCreator {
     eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(eObjectTreeItemAttributeDescriptor);
     
     // Location.locationType
-    eObjectTreeItemAttributeDescriptor = new EObjectTreeItemAttributeDescriptor(VACATIONS_PACKAGE.getLocation_LocationType())
-        .setLabelText("Location type");
+    eObjectTreeItemAttributeDescriptor = new EObjectTreeItemAttributeDescriptor(VACATIONS_PACKAGE.getLocation_LocationCategory())
+        .setLabelText("Location category");
     eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(eObjectTreeItemAttributeDescriptor);
     
     // Location.country

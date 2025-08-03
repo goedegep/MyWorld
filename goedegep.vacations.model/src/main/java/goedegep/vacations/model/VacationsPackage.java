@@ -4,6 +4,7 @@ package goedegep.vacations.model;
 
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
+import org.eclipse.emf.ecore.EDataType;
 import org.eclipse.emf.ecore.EOperation;
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.EReference;
@@ -392,13 +393,13 @@ public interface VacationsPackage extends EPackage {
   int LOCATION__CHILDREN = VACATION_ELEMENT__CHILDREN;
 
   /**
-   * The feature id for the '<em><b>Location Type</b></em>' attribute.
+   * The feature id for the '<em><b>Location Category</b></em>' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int LOCATION__LOCATION_TYPE = VACATION_ELEMENT_FEATURE_COUNT + 0;
+  int LOCATION__LOCATION_CATEGORY = VACATION_ELEMENT_FEATURE_COUNT + 0;
 
   /**
    * The feature id for the '<em><b>Country</b></em>' attribute.
@@ -1502,6 +1503,16 @@ public interface VacationsPackage extends EPackage {
   int TRAVEL_CATEGORIES_OPERATION_COUNT = 0;
 
   /**
+   * The meta object id for the '<em>ELocation Category</em>' data type.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see goedegep.poi.app.LocationCategory
+   * @see goedegep.vacations.model.impl.VacationsPackageImpl#getELocationCategory()
+   * @generated
+   */
+  int ELOCATION_CATEGORY = 16;
+
+  /**
    * Returns the meta object for class '{@link goedegep.vacations.model.Vacations <em>Vacations</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -1691,15 +1702,15 @@ public interface VacationsPackage extends EPackage {
   EClass getLocation();
 
   /**
-   * Returns the meta object for the attribute '{@link goedegep.vacations.model.Location#getLocationType <em>Location Type</em>}'.
+   * Returns the meta object for the attribute '{@link goedegep.vacations.model.Location#getLocationCategory <em>Location Category</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return the meta object for the attribute '<em>Location Type</em>'.
-   * @see goedegep.vacations.model.Location#getLocationType()
+   * @return the meta object for the attribute '<em>Location Category</em>'.
+   * @see goedegep.vacations.model.Location#getLocationCategory()
    * @see #getLocation()
    * @generated
    */
-  EAttribute getLocation_LocationType();
+  EAttribute getLocation_LocationCategory();
 
   /**
    * Returns the meta object for the attribute '{@link goedegep.vacations.model.Location#getCountry <em>Country</em>}'.
@@ -2341,6 +2352,17 @@ public interface VacationsPackage extends EPackage {
   EReference getTravelCategories_Travelcategories();
 
   /**
+   * Returns the meta object for data type '{@link goedegep.poi.app.LocationCategory <em>ELocation Category</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for data type '<em>ELocation Category</em>'.
+   * @see goedegep.poi.app.LocationCategory
+   * @model instanceClass="goedegep.poi.app.LocationCategory"
+   * @generated
+   */
+  EDataType getELocationCategory();
+
+  /**
    * Returns the factory that creates the instances of the model.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -2514,12 +2536,12 @@ public interface VacationsPackage extends EPackage {
     EClass LOCATION = eINSTANCE.getLocation();
 
     /**
-    	 * The meta object literal for the '<em><b>Location Type</b></em>' attribute feature.
+    	 * The meta object literal for the '<em><b>Location Category</b></em>' attribute feature.
     	 * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
+    	 * <!-- end-user-doc -->
     	 * @generated
     	 */
-    EAttribute LOCATION__LOCATION_TYPE = eINSTANCE.getLocation_LocationType();
+    EAttribute LOCATION__LOCATION_CATEGORY = eINSTANCE.getLocation_LocationCategory();
 
     /**
     	 * The meta object literal for the '<em><b>Country</b></em>' attribute feature.
@@ -3026,6 +3048,16 @@ public interface VacationsPackage extends EPackage {
     	 * @generated
     	 */
     EReference TRAVEL_CATEGORIES__TRAVELCATEGORIES = eINSTANCE.getTravelCategories_Travelcategories();
+
+    /**
+    	 * The meta object literal for the '<em>ELocation Category</em>' data type.
+    	 * <!-- begin-user-doc -->
+    	 * <!-- end-user-doc -->
+    	 * @see goedegep.poi.app.LocationCategory
+    	 * @see goedegep.vacations.model.impl.VacationsPackageImpl#getELocationCategory()
+    	 * @generated
+    	 */
+    EDataType ELOCATION_CATEGORY = eINSTANCE.getELocationCategory();
 
   }
 

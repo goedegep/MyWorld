@@ -33,7 +33,7 @@ public class EEnumEditorDescriptor<T> {
    * 
    * @param sort if <code>true</code> the returned list of display names shall be sorted.
    */
-  public EEnumEditorDescriptor(boolean sort) {
+  private EEnumEditorDescriptor(boolean sort) {
     this.sort = sort;
   }
   
