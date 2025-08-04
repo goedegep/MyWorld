@@ -44,9 +44,9 @@ public class GpxAppUtil {
           }
         }
       }
+      LOGGER.severe("No Activity found for GPX Keywords '" + keywords + "'");
     }
     
-    LOGGER.severe("No Activity found for GPX Keywords '" + keywords + "'");
     return null;
   }
 }

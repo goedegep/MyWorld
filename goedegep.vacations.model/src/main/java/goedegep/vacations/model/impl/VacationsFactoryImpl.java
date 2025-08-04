@@ -294,7 +294,8 @@ public class VacationsFactoryImpl extends EFactoryImpl implements VacationsFacto
    * @generated
    */
   public LocationCategory createELocationCategoryFromString(EDataType eDataType, String initialValue) {
-    return (LocationCategory) super.createFromString(eDataType, initialValue);
+    LocationCategory locationCategory = Enum.valueOf(LocationCategory.class, initialValue);
+    return locationCategory;
   }
 
   /**
@@ -303,7 +304,8 @@ public class VacationsFactoryImpl extends EFactoryImpl implements VacationsFacto
    * @generated
    */
   public String convertELocationCategoryToString(EDataType eDataType, Object instanceValue) {
-    return super.convertToString(eDataType, instanceValue);
+    String locationCategoryName = ((LocationCategory) instanceValue).name();
+    return locationCategoryName;
   }
 
   /**
