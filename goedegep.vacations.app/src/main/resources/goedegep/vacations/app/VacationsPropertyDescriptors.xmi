@@ -3,25 +3,11 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:properties="http://goedegep.properties/model"
     name="Vacations" description="Standard settings for the Vacations application."
     packageName="goedegep.vacations.app.logic" registryClassName="VacationsRegistry">
-  <propertyDescriptors name="author" description="Author of this program" displayName="Author"
-      initialValue="Peter Goedegebure" installInitialValue="true"/>
   <propertyDescriptors xsi:type="properties:FilePropertyDescriptor" type="FILE" name="configurationFile"
       description="Name of the file with configuration information." displayName="Configuration file name"
       initialValue="VacationsConfiguration.xmi" installInitialValue="true">
     <fileExtensions>xmi</fileExtensions>
   </propertyDescriptors>
-  <propertyDescriptors name="copyrightMessage" description="Copyright informatie."
-      displayName="Copyright Text" initialValue="Copyright (c) 2001-2020" installInitialValue="true"/>
-  <propertyDescriptors xsi:type="properties:FilePropertyDescriptor" type="FILE" name="customPropertiesFile"
-      description="Name of the file with user preferences." displayName="User preferences file name"
-      initialValue="VacationsUserPreferences.xmi" installInitialValue="true">
-    <fileExtensions>xmi</fileExtensions>
-  </propertyDescriptors>
-  <propertyDescriptors name="shortProductInfo" description="A short description of this program."
-      displayName="Short product information" initialValue="Vacations - Information about vacations"
-      installInitialValue="true"/>
-  <propertyDescriptors name="version" description="Software version information."
-      displayName="Version" initialValue="0.1" installInitialValue="true"/>
   <propertyDescriptors xsi:type="properties:FilePropertyDescriptor" type="FILE" name="vacationsFileName"
       description="Name of the file with information about all vacations." displayName="Vacations file name"
       initialValue="D:\Database\Vacations\Vacation.xmi" userSettable="true" installInitialValue="true">

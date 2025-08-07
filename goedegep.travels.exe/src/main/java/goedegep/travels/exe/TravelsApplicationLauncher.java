@@ -1,8 +1,10 @@
 package goedegep.travels.exe;
 
 import java.io.File;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -55,6 +57,7 @@ public class TravelsApplicationLauncher extends JfxApplication {
       logFileBaseName = System.getProperty("user.home") + File.separator + LOG_SUBFOLDER + File.separator + PROGRAM_NAME + "_logfile";
     }
     logSetup(Level.SEVERE, logFileBaseName);
+    LOGGER.severe("<= TravelsApplicationLauncher");
   }
   
   @Override
@@ -68,9 +71,21 @@ public class TravelsApplicationLauncher extends JfxApplication {
     if (runningInEclipse) {
       VacationsRegistry.developmentMode = true;
     }
+    LOGGER.severe("=> runningInEclipse: " + runningInEclipse);
+    
+    Properties props = new Properties();
+    try (InputStream in = getClass().getResourceAsStream("/Application.properties")) {
+        props.load(in);
+        String appVersion = props.getProperty("app.version");
+        VacationsRegistry.version = appVersion;
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+    
     
     try {
       TravelsApplication travelsApplication = TravelsApplication.getInstance(runningInEclipse);
+      LOGGER.severe("TravelsApplication started ");
       travelsApplication.showTravelsWindow();
 
 

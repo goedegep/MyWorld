@@ -75,7 +75,6 @@ import goedegep.util.i18n.TranslationFormatter;
 import goedegep.util.img.ImageUtils;
 import goedegep.vacations.app.logic.Item;
 import goedegep.vacations.app.logic.ItemGpx;
-import goedegep.vacations.app.logic.LocationDescriptionDialog;
 import goedegep.vacations.app.logic.NominatimUtil;
 import goedegep.vacations.app.logic.OsmAndItems;
 import goedegep.vacations.app.logic.OsmAndUtil;
@@ -706,6 +705,11 @@ public class VacationsWindow extends JfxStage {
 
     // File menu
     menu = new Menu("File");
+
+    // File: Open travels file
+    menuItem = componentFactory.createMenuItem("Open travels file");
+    menuItem.setOnAction(_ -> openTravelsFile());
+    menu.getItems().add(menuItem);
 
     // File: Save vacations
     menuItem = componentFactory.createMenuItem("Save vacations");
@@ -2162,6 +2166,31 @@ public class VacationsWindow extends JfxStage {
     imageView.setFitWidth(targetWidth);
     imageView.setFitHeight(targetHeight);
     return imageView.snapshot(null, null);
+  }
+  
+  /**
+   * Open a (non standard) travels file
+   */
+  private void openTravelsFile() {
+    FileChooser fileChooser = componentFactory.createFileChooser("Open a travels file");
+    if (VacationsRegistry.vacationsFolderName != null) {
+      File travelsFolder = new File(VacationsRegistry.vacationsFolderName);
+      fileChooser.setInitialDirectory(travelsFolder);
+    }
+    File travelsFile = fileChooser.showOpenDialog(locationSearchWindow);
+    if (travelsFile != null) {
+      try {
+        vacations = vacationsResource.load(travelsFile.getAbsolutePath());
+                
+        if (vacations != null) {
+          treeView.setEObject(vacations);
+          travelMapView.clear();
+          updateTitle();
+        }
+      } catch (FileNotFoundException e) {
+        e.printStackTrace();
+      }
+    }
   }
 
   /**

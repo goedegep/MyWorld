@@ -75,7 +75,7 @@
             <mainclass>goedegep.demo.exe.DemoWrapper</mainclass>
             <type>EXE</type>
             <javaoptions>--enable-preview</javaoptions>
-            <dest>.</dest>
+            <dest>target</dest>
             <icon>${project.basedir}/src/main/resources/Demo-128x128.ico</icon>
             <winconsole>false</winconsole>
             <winmenu>true</winmenu>

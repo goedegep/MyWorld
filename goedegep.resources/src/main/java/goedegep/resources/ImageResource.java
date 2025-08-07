@@ -117,7 +117,7 @@ public enum ImageResource {
   GLACIER(new ImageFileInfo[] {new ImageFileInfo("Glacier - 128x128.png", 128, 128)}, "mountains with glacier", null),
   GOLFING(new ImageFileInfo[] {new ImageFileInfo("Golfing - 34x39.png", 34, 39)}, "golfing", null),
   GOVERMENT(new ImageFileInfo[] {new ImageFileInfo("Goverment - 34x39.png", 34, 39)}, "capitol like building", null),
-  GPX(new ImageFileInfo[] {new ImageFileInfo("Gpx - 256x240.png", 256, 240)}, "a map with a track and a location", null),
+  GPX(new ImageFileInfo[] {new ImageFileInfo("GPX - 256x240.png", 256, 240)}, "a map with a track and a location", null),
   GUESTHOUSE(new ImageFileInfo[] {new ImageFileInfo("Guesthouse - 34x39.png", 34, 39)}, "guesthouse", null),
   HORSE_RIDING(new ImageFileInfo[] {
       new ImageFileInfo("HorseRiding - 48x48.png", 48, 48),

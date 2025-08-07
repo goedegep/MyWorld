@@ -80,11 +80,11 @@
             <vendor>${vendor.name}</vendor>
             <mainjar>${app.name}-${app.version}-jar-with-dependencies.jar</mainjar>
             <input>target/</input>
-            <mainclass>goedegep.gpx.exe.GPXWrapper</mainclass>
+            <mainclass>goedegep.travels.exe.TravelsWrapper</mainclass>
             <type>EXE</type>
             <javaoptions>--enable-preview</javaoptions>
-            <dest>.</dest>
-            <icon>${project.basedir}/src/main/resources/GPX-128x128.ico</icon>
+            <dest>target</dest>
+            <icon>${project.basedir}/src/main/resources/RoadToHorizon-128x128.ico</icon>
             <winconsole>false</winconsole>
             <winmenu>true</winmenu>
             <winshortcut>true</winshortcut>
@@ -116,7 +116,7 @@
         <configuration>
           <archive>
             <manifest>
-              <mainClass>goedegep.gpx.exe.GPXWrapper</mainClass>
+              <mainClass>goedegep.travels.exe.TravelsWrapper</mainClass>
             </manifest>
           </archive>
           <descriptorRefs>
@@ -148,5 +148,11 @@
         </executions>
       </plugin>
     </plugins>
+    <resources>
+      <resource>
+        <directory>src/main/resources</directory>
+        <filtering>true</filtering>
+      </resource>
+    </resources>
   </build>
 </project>

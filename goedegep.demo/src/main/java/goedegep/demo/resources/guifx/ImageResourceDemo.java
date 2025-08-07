@@ -107,6 +107,7 @@ public class ImageResourceDemo extends JfxStage {
     });    
     
     for (ImageResource imageResource: ImageResource.values()) {
+      LOGGER.severe("Adding image resource: " + imageResource.name() + ", " + imageResource.getImageFilename(ImageSize.SIZE_3));
       flowPane.getChildren().add(createImagePanel(imageResource));
     }
     mainVBox.getChildren().add(scrollPane);

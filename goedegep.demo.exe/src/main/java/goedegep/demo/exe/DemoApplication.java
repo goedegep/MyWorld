@@ -1,5 +1,6 @@
 package goedegep.demo.exe;
 
+import java.io.File;
 import java.util.logging.Level;
 
 import goedegep.demo.guifx.DemoCustomization;
@@ -12,7 +13,8 @@ import javafx.stage.Stage;
 
 
 public class DemoApplication extends JfxApplication {
-  private static final String         PROGRAM_NAME = "Demo";
+  private static final String PROGRAM_NAME = "Demo";
+  private static final String LOG_SUBFOLDER = "MyWorld";
   
   public static void main(String[] args) {
     launch();
@@ -26,11 +28,17 @@ public class DemoApplication extends JfxApplication {
    * The constructor sets up the logging.
    */
   public DemoApplication() {
-    String logfileName = null;
+//    String logfileName = null;
+//    if (!runningInEclipse()) {
+//      logfileName = PROGRAM_NAME + "_logfile";
+//    }
+    
+    String logFileBaseName = null;
     if (!runningInEclipse()) {
-      logfileName = PROGRAM_NAME + "_logfile";
+      logFileBaseName = System.getProperty("user.home") + File.separator + LOG_SUBFOLDER + File.separator + PROGRAM_NAME + "_logfile";
     }
-    logSetup(Level.SEVERE, logfileName);
+    logSetup(Level.SEVERE, logFileBaseName);
+//    logSetup(Level.SEVERE, logfileName);
   }
   
   @Override
