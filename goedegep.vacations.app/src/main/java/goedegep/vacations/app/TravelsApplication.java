@@ -1,7 +1,9 @@
 package goedegep.vacations.app;
 
 import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.net.URL;
+import java.util.Properties;
 import java.util.logging.Logger;
 
 import goedegep.jfx.CustomizationFx;
@@ -9,20 +11,22 @@ import goedegep.jfx.CustomizationsFx;
 import goedegep.properties.app.PropertiesHandler;
 import goedegep.resources.ImageResource;
 import goedegep.vacations.app.guifx.VacationsWindow;
+import goedegep.vacations.app.logic.VacationsRegistry;
 
 public class TravelsApplication {
   @SuppressWarnings("unused")
   private static final Logger LOGGER = Logger.getLogger(TravelsApplication.class.getName());
   
-  private static final String VACATIONS_PROPERTY_DESCRIPTORS_FILE = "VacationsPropertyDescriptors.xmi";
   private static final String VACATIONS_CONFIGURATION_FILE = "VacationsConfiguration.xmi";
 
   private static TravelsApplication instance;
   private static CustomizationFx customization;
   
   private TravelsApplication(boolean runningInEclipse) {
+    
+    
     // Handle properties
-    URL url = getClass().getResource(VACATIONS_PROPERTY_DESCRIPTORS_FILE);
+    URL url = getClass().getResource(VacationsRegistry.propertyDescriptorsFile);
     
     try {
       PropertiesHandler.handleProperties(runningInEclipse, url, null);

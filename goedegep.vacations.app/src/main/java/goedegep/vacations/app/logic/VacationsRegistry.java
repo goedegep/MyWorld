@@ -18,7 +18,7 @@ public class VacationsRegistry implements PropertyFileURLProvider {
   /**
    * Name of the author of the application.
    */
-  public static String author = null;
+  public static String author = "Peter Goedegebure";
   
   /**
    * Name of the file with Configuration data.
@@ -28,17 +28,24 @@ public class VacationsRegistry implements PropertyFileURLProvider {
   /**
    * Copyright message for the application.
    */
-  public static String copyrightMessage = null;
+  public static String copyrightMessage = "Copyright (c) 2001-2025";
+  
+  /**
+   * Name of the file with the property descriptors.
+   */
+  public static String propertyDescriptorsFile = "VacationsPropertyDescriptors.xmi";
   
   /**
    * Name of the file with custom properties.
+   * <p>
+   * This file shall be located in the "MyWorld" folder under the user's home directory.
    */
-  public static String customPropertiesFile = null;
+  public static String customPropertiesFile = "VacationsUserPreferences.xmi";
   
   /**
    * Short description of this application.
    */
-  public static String shortProductInfo = null;
+  public static String shortProductInfo = "Travels - Information about travels, like vacations, trips, etc.";
   
   /**
    * Current software version.
