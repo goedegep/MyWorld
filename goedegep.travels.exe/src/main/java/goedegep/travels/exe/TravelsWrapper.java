@@ -1,20 +1,20 @@
 package goedegep.travels.exe;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.nio.file.StandardOpenOption;
-import java.util.Collections;
-
+/**
+ * This class is a wrapper around the TravelsApplicationLauncher.
+ * <p>
+ * It is needed because there seems to be a problem with starting a JavaFX application directly as the main class.
+ */
 public class TravelsWrapper {
+  
+  /**
+   * Main method to start the Travels application.
+   * <p>
+   * This method just calls {@link TravelsApplicationLauncher.main}.
+   * 
+   * @param args command line arguments
+   */
   public static void main(String[] args) {
-    try {
-      Files.write(Paths.get("D:\\SoulSeek\\output.txt"), Collections.singletonList("Your text here"), StandardOpenOption.CREATE, StandardOpenOption.WRITE);
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
-
-    
     TravelsApplicationLauncher.main(args);
   }
 

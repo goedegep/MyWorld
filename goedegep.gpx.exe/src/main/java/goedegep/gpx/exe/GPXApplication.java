@@ -128,7 +128,7 @@ public class GPXApplication extends JfxApplication {
       // Handle properties
       java.net.URL url = new PCToolsRegistry().getPropertyFileURL();
       LOGGER.severe("url = " + (url != null ? url.toString() : "<null>"));
-      PropertiesHandler.handleProperties(runningInEclipse, url, null);
+      PropertiesHandler.handleProperties(url, null);
       
       LOGGER.severe("Properties handled");
 

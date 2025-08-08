@@ -49,11 +49,10 @@ public class PropertiesHandler {
    * If the program is running in Eclipse, the actual path is <code>propertyDescriptorsFileName</code> in the <code>projectPath</code> directory.
    * Else it is simply <code>propertyDescriptorsFileName</code> (as it is in the current directory).
    * 
-   * @param runningInEclipse shall be set to true if running within Eclipse.
    * @param propertyDescriptorsFileURI the URL of the file with property descriptors.
    * @param urlForFileNameFunction a function for providing a URL for a file name. Used for handling custom property files.
    */
-  public static void handleProperties(boolean runningInEclipse, URL propertyDescriptorsFileURI, Function<String, URL> urlForFileNameFunction) throws FileNotFoundException {
+  public static void handleProperties(URL propertyDescriptorsFileURI, Function<String, URL> urlForFileNameFunction) throws FileNotFoundException {
     
     EMFResource<PropertyDescriptorGroup> emfResource = new EMFResource<>(
         PropertiesPackage.eINSTANCE,

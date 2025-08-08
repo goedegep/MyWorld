@@ -107,13 +107,15 @@ public enum ImageResource {
   CYCLING(new ImageFileInfo[] {new ImageFileInfo("RegularBiking - 128x128.png", 128, 128)}, "regular biking", "from https://findicons.com/"),
   DEFAULT_POI(new ImageFileInfo[] {new ImageFileInfo("DefaultPOI - 32x32.gif", 32, 32)}, "default POI", null),
   DEMO(new ImageFileInfo[] {new ImageFileInfo("Demo - 256x179.png", 256, 179)}, "computer screen with demo as text", "<a href=\"https://www.flaticon.com/free-icons/demo\" title=\"demo icons\">Demo icons created by Freepik - Flaticon</a>"),
+  DOCUMENT(new ImageFileInfo[] {new ImageFileInfo("Document - 512x512.png", 512, 512)}, "a document", "<a href=\"https://www.flaticon.com/free-icons/paper\" title=\"paper icons\">Paper icons created by Chanut - Flaticon</a>"),
+  DOCUMENTS(new ImageFileInfo[] {new ImageFileInfo("Documents - 64x64.png", 64, 64)}, "a number of documents", "<a href=\"https://www.flaticon.com/free-icons/paper\" title=\"paper icons\">Paper icons created by Chanut - Flaticon</a>"),
   EMERGENCY(new ImageFileInfo[] {new ImageFileInfo("Emergency - 34x39.png", 34, 39)}, "emergency", null),
   ENVELOPE(new ImageFileInfo[] {new ImageFileInfo("Envelope - 34x39.png", 34, 39)}, "envelope", null),
   EXHIBITION(new ImageFileInfo[] {new ImageFileInfo("Exhibition - 32x32.gif", 32, 32)}, "exhibition", null),
   FACTORY(new ImageFileInfo[] {new ImageFileInfo("Factory - 34x39.png", 34, 39)}, "factory", null),
   FERRY(new ImageFileInfo[] {new ImageFileInfo("Ferry - 34x39.png", 34, 39)}, "ferry", null),
   FIRE_DEPARTMENT(new ImageFileInfo[] {new ImageFileInfo("FireDepartment - 34x39.png", 34, 39)}, "fire department", null),
-  FOLDER_WITH_FILES(new ImageFileInfo[] {new ImageFileInfo("FolderWithFiles - 64x64.png", 64, 64)}, "a folder containing files", "<a href=\"https://www.flaticon.com/free-icons/files-and-folders\" title=\"files and folders icons\">Files and folders icons created by NajmunNahar - Flaticon</a>"),
+  FOLDER_WITH_FILES(new ImageFileInfo[] {new ImageFileInfo("FolderWithFiles - 64x64.png", 64, 64)}, "a folder containing files", "<a href=\"https://www.flaticon.com/free-icons/document\" title=\"document icons\">Document icons created by Freepik - Flaticon</a>"),
   GLACIER(new ImageFileInfo[] {new ImageFileInfo("Glacier - 128x128.png", 128, 128)}, "mountains with glacier", null),
   GOLFING(new ImageFileInfo[] {new ImageFileInfo("Golfing - 34x39.png", 34, 39)}, "golfing", null),
   GOVERMENT(new ImageFileInfo[] {new ImageFileInfo("Goverment - 34x39.png", 34, 39)}, "capitol like building", null),
@@ -194,6 +196,14 @@ public enum ImageResource {
   SHOPPING_CENTER(new ImageFileInfo[] {new ImageFileInfo("ShoppingCenter - 34x39.png", 34, 39)}, "shopping center", null),
   SKIÏNG(new ImageFileInfo[] {new ImageFileInfo("Skiïng - 34x39.png", 34, 39)}, "a skiër", null),
   SNORKELER(new ImageFileInfo[] {new ImageFileInfo("Snorkeler - 200x200.png", 200, 200)}, "a snorkeler", null),
+  SNOW_MOUNTAIN(new ImageFileInfo[] {
+      new ImageFileInfo("SnowMountain - 16x16.png", 16, 16),
+      new ImageFileInfo("SnowMountain - 32x32.png", 32, 32),
+      new ImageFileInfo("SnowMountain - 48x48.png", 48, 48),
+      new ImageFileInfo("SnowMountain - 64x64.png", 64, 64),
+      new ImageFileInfo("SnowMountain - 128x128.png", 128, 128),
+      new ImageFileInfo("SnowMountain - 256x256.png", 256, 256)},
+      "snow capped mountains", null),
   SNOW_MOUNTAINS(new ImageFileInfo[] {new ImageFileInfo("SnowMountains - 64x30.png", 64, 30)}, "snow capped mountains", null),
   SPORT(new ImageFileInfo[] {new ImageFileInfo("Sport - 34x39.png", 34, 39)}, "a soccer field", null),
   SQUARE(new ImageFileInfo[] {new ImageFileInfo("Square - 256x256.png", 256, 256)}, "square", null),
@@ -589,6 +599,21 @@ public enum ImageResource {
       }
     }
     
+  }
+
+  /**
+   * Get all images for this ImageResource.
+   * 
+   * @return an array of all images for this ImageResource.
+   */
+  public Image[] getImages() {
+    Image[] images = new Image[imageFilesInfo.length];
+    int imageIndex = 0;
+    for (ImageFileInfo imageFileInfo: imageFilesInfo) {
+      Image image = getImage(imageFileInfo.width(), imageFileInfo.height());
+      images[imageIndex++] = image;
+    }
+    return images;
   }
 
 }
