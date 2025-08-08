@@ -22,14 +22,16 @@ public class TravelsApplication {
   private static TravelsApplication instance;
   private static CustomizationFx customization;
   
-  private TravelsApplication(boolean runningInEclipse) {
-    
+  /**
+   * Private constructor to ensure singleton pattern.
+   */
+  private TravelsApplication() {
     
     // Handle properties
     URL url = getClass().getResource(VacationsRegistry.propertyDescriptorsFile);
     
     try {
-      PropertiesHandler.handleProperties(runningInEclipse, url, null);
+      PropertiesHandler.handleProperties(url, null);
 
       // Read the customization info.
       url = getClass().getResource(VACATIONS_CONFIGURATION_FILE);
@@ -43,10 +45,10 @@ public class TravelsApplication {
 
   }
 
-  public static TravelsApplication getInstance(boolean runningInEclipse) {
+  public static TravelsApplication getInstance() {
     // Ensure that the application is a singleton
     if (instance == null) {
-      instance = new TravelsApplication(runningInEclipse);
+      instance = new TravelsApplication();
     }
     ImageResource.checkResources();
     

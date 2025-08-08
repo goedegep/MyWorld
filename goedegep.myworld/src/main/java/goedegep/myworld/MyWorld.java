@@ -308,7 +308,7 @@ private static final String         VACATIONS_PROJECT_PATH = "../../../goedegep.
     try {
       LOGGER.fine("MIJN_WERELD_PROPERTY_DESCRIPTORS_FILE=" + MY_WORLD_PROPERTY_DESCRIPTORS_FILE);
       java.net.URL url = getPropertyFileURL();
-      PropertiesHandler.handleProperties(runningInEclipse, url, null);
+      PropertiesHandler.handleProperties(url, null);
             
       PropertiesMetaInfo[] propertiesMetaInfos = {
           new PropertiesMetaInfo(MyWorldAppModule.EVENTS, EVENTS_PROJECT_PATH, MyWorldRegistry.eventsPropertyDescriptorFileName, new EventsRegistry()),
@@ -330,7 +330,7 @@ private static final String         VACATIONS_PROJECT_PATH = "../../../goedegep.
           }
           LOGGER.severe("URL: " + url);
           VacationsRegistry vacationsRegistry = new VacationsRegistry();
-          PropertiesHandler.handleProperties(runningInEclipse, url, vacationsRegistry::getURLForFileName);
+          PropertiesHandler.handleProperties(url, vacationsRegistry::getURLForFileName);
         }
       }
             

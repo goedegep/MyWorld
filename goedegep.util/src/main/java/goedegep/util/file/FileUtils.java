@@ -583,7 +583,7 @@ public class FileUtils {
    * Check whether a file is a PDF file (based on its extension).
    * 
    * @param fileName a filename. This value may not be null.
-   * @return true is the file is a PDF file, false otherwise.
+   * @return true if the file is a PDF file, false otherwise.
    */
   public static boolean isPDFFile(String fileName) {
     String fileExtension = getFileExtension(fileName);
@@ -595,10 +595,25 @@ public class FileUtils {
   }
 
   /**
+   * Check whether a file is a MarkDown file (based on its extension).
+   * 
+   * @param fileName a filename. This value may not be null.
+   * @return true if the file is a MarkDown file, false otherwise.
+   */
+  public static boolean isMarkDownFile(String fileName) {
+    String fileExtension = getFileExtension(fileName);
+    if (fileExtension != null) {
+      return fileExtension.equalsIgnoreCase(".md");
+    } else {
+      return false;
+    }
+  }
+
+  /**
    * Check whether a file is a text file (based on its extension).
    * 
    * @param fileName a filename. This value may not be null.
-   * @return true is the file is a text file, false otherwise.
+   * @return true if the file is a text file, false otherwise.
    */
   public static boolean isTextFile(String fileName) {
     String fileExtension = getFileExtension(fileName);

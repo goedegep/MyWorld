@@ -246,7 +246,7 @@ public class VacationsTreeViewCreator {
         .setNodeTextFunction(_ -> "Travel information")
         .setStrongText(true)
         .setExpandOnCreation(true)
-        .setNodeIconFunction(_ -> TravelImageResource.TRAVEL.getIcon(ImageSize.SIZE_1));
+        .setNodeIconFunction(_ -> TravelImageResource.TRAVELS.getIcon(ImageSize.SIZE_1));
     
     EObjectTreeItemAttributeDescriptor eObjectTreeItemAttributeDescriptor;
 
@@ -301,9 +301,7 @@ public class VacationsTreeViewCreator {
           }
         })
         .setStrongText(true)
-        .setNodeIconFunction(_ -> {
-          return customization.getResources().getApplicationImage(ImageSize.SIZE_0);
-        })
+        .setNodeIconFunction(_ -> TravelImageResource.VACATION.getIcon(ImageSize.SIZE_1))
         .addNodeOperationDescriptor(new NodeOperationDescriptorNew("New ...", null, null))
         .addNodeOperationDescriptor(new NodeOperationDescriptorNewBefore("New vacation before this one", null, null))
         .addNodeOperationDescriptor(new NodeOperationDescriptorNewAfter("New vacation after this one", null, null))
@@ -338,6 +336,7 @@ public class VacationsTreeViewCreator {
     // Vacation.documents
     eObjectTreeItemClassListReferenceDescriptor = new EObjectTreeItemClassListReferenceDescriptor(VACATIONS_PACKAGE.getVacation_Documents())
         .setLabelText("Documents")
+        .setNodeIconFunction(_ -> ImageResource.DOCUMENTS.getImage(ImageSize.SIZE_1))
         .addNodeOperationDescriptor(new NodeOperationDescriptorNew("New document", null, null));
     eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(eObjectTreeItemClassListReferenceDescriptor);
     
@@ -476,7 +475,7 @@ public class VacationsTreeViewCreator {
             return "Text";
           }
         })
-        .setNodeIconFunction(_ -> ImageResource.TEXT.getImage(ImageSize.SIZE_0))
+        .setNodeIconFunction(_ -> TravelImageResource.TEXT.getIcon(ImageSize.SIZE_0))
         .addNodeOperationDescriptor(new NodeOperationDescriptorNewBefore("New element before this one ...", null, null))
         .addNodeOperationDescriptor(new NodeOperationDescriptorNewAfter("New element after this one ...", null, null))
         .addNodeOperationDescriptor(new NodeOperationDescriptorDelete("Delete element", null));
@@ -708,22 +707,7 @@ public class VacationsTreeViewCreator {
 
           return text;
         })
-        .setNodeIconFunction(object -> {
-          Image image = null;
-          if (object instanceof Document document) {
-            FileReference fileReference = document.getDocumentReference();
-            if (fileReference != null) {
-              String fileName = fileReference.getFile();
-              LOGGER.info("Creating image for: " + fileName);
-              if (fileName != null  &&  FileUtils.isPDFFile(fileName)) {
-                image = ImageResource.PDF.getImage();
-              }
-              LOGGER.info("image = " + image);
-            }
-          }
-
-          return image;
-        })
+        .setNodeIconFunction(VacationsTreeViewCreator::getIconForDocumentFilename)
         .addNodeOperationDescriptor(new NodeOperationDescriptorNewBefore("New element before this one ...", null, null))
         .addNodeOperationDescriptor(new NodeOperationDescriptorNewAfter("New element after this one ...", null, null))
         .addNodeOperationDescriptor(new NodeOperationDescriptorOpen("Open document", VacationsTreeViewCreator::canDocumentBeOpened, VacationsTreeViewCreator::openDocument))
@@ -746,6 +730,35 @@ public class VacationsTreeViewCreator {
     eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(eObjectTreeItemClassListReferenceDescriptor);
     
     return eObjectTreeItemClassDescriptor;
+  }
+
+  private static Image getIconForDocumentFilename(Object object) {
+    Image image = null;
+    if (object instanceof Document document) {
+      FileReference fileReference = document.getDocumentReference();
+      if (fileReference != null) {
+        String fileName = fileReference.getFile();
+        LOGGER.info("Creating image for: " + fileName);
+        if (fileName != null) {
+          if (FileUtils.isPDFFile(fileName)) {
+            image = ImageResource.PDF.getImage();
+          } else if (FileUtils.isODTFile(fileName)) {
+            image = ImageResource.ODT.getImage();
+          } else if (FileUtils.isMSWordFile(fileName)) {
+            image = ImageResource.MS_WORD.getImage();
+          } else if (FileUtils.isTextFile(fileName)) {
+            image = ImageResource.TEXT_FILE.getImage();
+          } else if (FileUtils.isMarkDownFile(fileName)) {
+            image = ImageResource.MARKDOWN.getImage();
+          } else {
+            image = ImageResource.DOCUMENT.getImage();
+          }
+        }
+        LOGGER.info("image = " + image);
+      }
+    }
+
+    return image;
   }
 
   /**
@@ -840,7 +853,7 @@ public class VacationsTreeViewCreator {
             return "MapImage";
           }
         })
-        .setNodeIconFunction(_ -> ImageResource.MAP.getImage())
+        .setNodeIconFunction(_ -> TravelImageResource.MAP_IMAGE.getIcon(ImageSize.SIZE_0))
         .addNodeOperationDescriptor(new NodeOperationDescriptorNewBefore("New element before this one ...", null, null))
         .addNodeOperationDescriptor(new NodeOperationDescriptorNewAfter("New element after this one ...", null, null))
         .addNodeOperationDescriptor(new NodeOperationDescriptorDelete("Delete element", null))

@@ -2,33 +2,20 @@ package goedegep.travels.exe;
 
 import java.io.File;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.apache.commons.cli.CommandLine;
-import org.apache.commons.cli.CommandLineParser;
-import org.apache.commons.cli.DefaultParser;
-import org.apache.commons.cli.MissingArgumentException;
-import org.apache.commons.cli.MissingOptionException;
-import org.apache.commons.cli.Options;
-import org.apache.commons.cli.ParseException;
-import org.apache.commons.cli.UnrecognizedOptionException;
-
-import goedegep.jfx.CustomizationFx;
-import goedegep.jfx.CustomizationsFx;
 import goedegep.jfx.DefaultCustomizationFx;
 import goedegep.jfx.JfxApplication;
-import goedegep.myworld.app.MyWorldAppModule;
-import goedegep.properties.app.PropertiesHandler;
 import goedegep.util.thread.ThreadUtil;
 import goedegep.vacations.app.TravelsApplication;
-import goedegep.vacations.app.guifx.VacationsWindow;
 import goedegep.vacations.app.logic.VacationsRegistry;
 import javafx.stage.Stage;
 
+/**
+ * This class is the main entry point for the Travels JavaFX application.
+ */
 public class TravelsApplicationLauncher extends JfxApplication {
   private static final Logger LOGGER = Logger.getLogger(TravelsApplicationLauncher.class.getName());
   
@@ -37,12 +24,6 @@ public class TravelsApplicationLauncher extends JfxApplication {
   private static final String PROGRAM_DESCRIPTION =
       PROGRAM_NAME + "Is an application for planning, enjoying and archiving travels.";
   
-  private static String[] args;
-      
-  public static void main(String[] args) {
-    TravelsApplicationLauncher.args = args;
-    launch();
-  }
 
 
   /**
@@ -57,35 +38,44 @@ public class TravelsApplicationLauncher extends JfxApplication {
       logFileBaseName = System.getProperty("user.home") + File.separator + LOG_SUBFOLDER + File.separator + PROGRAM_NAME + "_logfile";
     }
     logSetup(Level.SEVERE, logFileBaseName);
-    LOGGER.severe("<= TravelsApplicationLauncher");
   }
   
+   /**  
+   * Main method to start the Travels JavaFX application.
+   * 
+   * @param args command line arguments, which are ignored in this application.
+   */
+  public static void main(String[] args) {
+    launch();
+  }
+
   @Override
   public void start(Stage primaryStage) throws Exception {
     
-    boolean runningInEclipse = runningInEclipse();
-
-    // DevelopmentMode
+     // DevelopmentMode
     // In development mode extra items are added to menu's.
     // For now DevelopmentMode is active when 'Running in eclipse'.
-    if (runningInEclipse) {
+    if (runningInEclipse()) {
       VacationsRegistry.developmentMode = true;
     }
-    LOGGER.severe("=> runningInEclipse: " + runningInEclipse);
     
+    /*
+     * Read the application properties.
+     * This is done here because the application properties contain the application version, which is derived from the version in the pom.xml file.
+     */
     Properties props = new Properties();
     try (InputStream in = getClass().getResourceAsStream("/Application.properties")) {
         props.load(in);
         String appVersion = props.getProperty("app.version");
         VacationsRegistry.version = appVersion;
     } catch (Exception e) {
-        e.printStackTrace();
+      LOGGER.severe("Error reading application properties: " + e.getMessage());
+      System.exit(1);
     }
     
+    TravelsApplication travelsApplication = TravelsApplication.getInstance();
     
     try {
-      TravelsApplication travelsApplication = TravelsApplication.getInstance(runningInEclipse);
-      LOGGER.severe("TravelsApplication started ");
       travelsApplication.showTravelsWindow();
 
 
