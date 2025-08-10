@@ -1,4 +1,4 @@
-package goedegep.travels.exe;
+package goedegep.travels.inst;
 
 import java.io.File;
 import java.io.InputStream;

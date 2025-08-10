@@ -2,10 +2,10 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>goedegep.travels</groupId>
-  <artifactId>goedegep-travels-exe</artifactId>
+  <artifactId>goedegep-travels-inst</artifactId>
   <packaging>jar</packaging>
   <name>Travels application installer</name>
-  <description>This project creates an installer for the goedegep.travels application.</description>
+  <description>This project creates an installer for the goedegep Travels application.</description>
   
   <parent>
     <groupId>goedegep.toplevelpom</groupId>
@@ -21,7 +21,7 @@
     <vendor.name>goedegep</vendor.name>
     <copyright>Copyright (c) 2001-2025</copyright>
     <lombok.version>1.18.36</lombok.version>
-  </properties>	
+  </properties>
   
   <dependencies>
     <dependency>
