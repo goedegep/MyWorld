@@ -34,7 +34,6 @@ import java.lang.reflect.InvocationTargetException;
  * </p>
  * <ul>
  *   <li>{@link goedegep.properties.model.impl.PropertyDescriptorGroupImpl#getPropertyDescriptors <em>Property Descriptors</em>}</li>
- *   <li>{@link goedegep.properties.model.impl.PropertyDescriptorGroupImpl#getPropertyDescriptorGroups <em>Property Descriptor Groups</em>}</li>
  *   <li>{@link goedegep.properties.model.impl.PropertyDescriptorGroupImpl#getName <em>Name</em>}</li>
  *   <li>{@link goedegep.properties.model.impl.PropertyDescriptorGroupImpl#getDescription <em>Description</em>}</li>
  *   <li>{@link goedegep.properties.model.impl.PropertyDescriptorGroupImpl#getPackageName <em>Package Name</em>}</li>
@@ -55,16 +54,6 @@ public class PropertyDescriptorGroupImpl extends MinimalEObjectImpl.Container im
    * @ordered
    */
   protected EList<PropertyDescriptor> propertyDescriptors;
-
-  /**
-   * The cached value of the '{@link #getPropertyDescriptorGroups() <em>Property Descriptor Groups</em>}' containment reference list.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getPropertyDescriptorGroups()
-   * @generated
-   * @ordered
-   */
-  protected EList<PropertyDescriptorGroup> propertyDescriptorGroups;
 
   /**
    * The default value of the '{@link #getName() <em>Name</em>}' attribute.
@@ -213,20 +202,6 @@ public class PropertyDescriptorGroupImpl extends MinimalEObjectImpl.Container im
           PropertiesPackage.PROPERTY_DESCRIPTOR_GROUP__PROPERTY_DESCRIPTORS);
     }
     return propertyDescriptors;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public EList<PropertyDescriptorGroup> getPropertyDescriptorGroups() {
-    if (propertyDescriptorGroups == null) {
-      propertyDescriptorGroups = new EObjectContainmentEList<PropertyDescriptorGroup>(PropertyDescriptorGroup.class,
-          this, PropertiesPackage.PROPERTY_DESCRIPTOR_GROUP__PROPERTY_DESCRIPTOR_GROUPS);
-    }
-    return propertyDescriptorGroups;
   }
 
   /**
@@ -459,36 +434,6 @@ public class PropertyDescriptorGroupImpl extends MinimalEObjectImpl.Container im
   /**
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @generated NOT
-   */
-  public PropertyDescriptorGroup getPropertyDescriptorGroup(String qualifiedGroupName) {
-    int firstDotIndex = qualifiedGroupName.indexOf(".");
-
-    if (firstDotIndex == -1) {
-      System.out.println("Searching in this group");
-      for (PropertyDescriptorGroup propertyDescriptorGroup : getPropertyDescriptorGroups()) {
-        if (propertyDescriptorGroup.getName().equals(qualifiedGroupName)) {
-          return propertyDescriptorGroup;
-        }
-      }
-    } else {
-      String groupName = qualifiedGroupName.substring(0, firstDotIndex);
-      qualifiedGroupName = qualifiedGroupName.substring(firstDotIndex + 1);
-      System.out.println(
-          "Going to search in sub group, groupName = " + groupName + ", qualifiedGroupName = " + qualifiedGroupName);
-      for (PropertyDescriptorGroup propertyDescriptorGroup : propertyDescriptorGroups) {
-        if (propertyDescriptorGroup.getName().equals(groupName)) {
-          return propertyDescriptorGroup.getPropertyDescriptorGroup(qualifiedGroupName);
-        }
-      }
-    }
-
-    return null;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
    * @generated
    */
   @Override
@@ -496,8 +441,6 @@ public class PropertyDescriptorGroupImpl extends MinimalEObjectImpl.Container im
     switch (featureID) {
     case PropertiesPackage.PROPERTY_DESCRIPTOR_GROUP__PROPERTY_DESCRIPTORS:
       return ((InternalEList<?>) getPropertyDescriptors()).basicRemove(otherEnd, msgs);
-    case PropertiesPackage.PROPERTY_DESCRIPTOR_GROUP__PROPERTY_DESCRIPTOR_GROUPS:
-      return ((InternalEList<?>) getPropertyDescriptorGroups()).basicRemove(otherEnd, msgs);
     }
     return super.eInverseRemove(otherEnd, featureID, msgs);
   }
@@ -512,8 +455,6 @@ public class PropertyDescriptorGroupImpl extends MinimalEObjectImpl.Container im
     switch (featureID) {
     case PropertiesPackage.PROPERTY_DESCRIPTOR_GROUP__PROPERTY_DESCRIPTORS:
       return getPropertyDescriptors();
-    case PropertiesPackage.PROPERTY_DESCRIPTOR_GROUP__PROPERTY_DESCRIPTOR_GROUPS:
-      return getPropertyDescriptorGroups();
     case PropertiesPackage.PROPERTY_DESCRIPTOR_GROUP__NAME:
       return getName();
     case PropertiesPackage.PROPERTY_DESCRIPTOR_GROUP__DESCRIPTION:
@@ -538,10 +479,6 @@ public class PropertyDescriptorGroupImpl extends MinimalEObjectImpl.Container im
     case PropertiesPackage.PROPERTY_DESCRIPTOR_GROUP__PROPERTY_DESCRIPTORS:
       getPropertyDescriptors().clear();
       getPropertyDescriptors().addAll((Collection<? extends PropertyDescriptor>) newValue);
-      return;
-    case PropertiesPackage.PROPERTY_DESCRIPTOR_GROUP__PROPERTY_DESCRIPTOR_GROUPS:
-      getPropertyDescriptorGroups().clear();
-      getPropertyDescriptorGroups().addAll((Collection<? extends PropertyDescriptorGroup>) newValue);
       return;
     case PropertiesPackage.PROPERTY_DESCRIPTOR_GROUP__NAME:
       setName((String) newValue);
@@ -570,9 +507,6 @@ public class PropertyDescriptorGroupImpl extends MinimalEObjectImpl.Container im
     case PropertiesPackage.PROPERTY_DESCRIPTOR_GROUP__PROPERTY_DESCRIPTORS:
       getPropertyDescriptors().clear();
       return;
-    case PropertiesPackage.PROPERTY_DESCRIPTOR_GROUP__PROPERTY_DESCRIPTOR_GROUPS:
-      getPropertyDescriptorGroups().clear();
-      return;
     case PropertiesPackage.PROPERTY_DESCRIPTOR_GROUP__NAME:
       unsetName();
       return;
@@ -599,8 +533,6 @@ public class PropertyDescriptorGroupImpl extends MinimalEObjectImpl.Container im
     switch (featureID) {
     case PropertiesPackage.PROPERTY_DESCRIPTOR_GROUP__PROPERTY_DESCRIPTORS:
       return propertyDescriptors != null && !propertyDescriptors.isEmpty();
-    case PropertiesPackage.PROPERTY_DESCRIPTOR_GROUP__PROPERTY_DESCRIPTOR_GROUPS:
-      return propertyDescriptorGroups != null && !propertyDescriptorGroups.isEmpty();
     case PropertiesPackage.PROPERTY_DESCRIPTOR_GROUP__NAME:
       return isSetName();
     case PropertiesPackage.PROPERTY_DESCRIPTOR_GROUP__DESCRIPTION:
@@ -623,8 +555,6 @@ public class PropertyDescriptorGroupImpl extends MinimalEObjectImpl.Container im
     switch (operationID) {
     case PropertiesPackage.PROPERTY_DESCRIPTOR_GROUP___GET_PROPERTY_DESCRIPTOR__STRING:
       return getPropertyDescriptor((String) arguments.get(0));
-    case PropertiesPackage.PROPERTY_DESCRIPTOR_GROUP___GET_PROPERTY_DESCRIPTOR_GROUP__STRING:
-      return getPropertyDescriptorGroup((String) arguments.get(0));
     }
     return super.eInvoke(operationID, arguments);
   }

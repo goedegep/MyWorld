@@ -4,9 +4,12 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
@@ -15,11 +18,13 @@ import goedegep.configuration.model.ConfigurationPackage;
 import goedegep.configuration.model.Look;
 import goedegep.configuration.model.LookInfo;
 import goedegep.configuration.model.ModuleLook;
+import goedegep.util.Tuplet;
 import goedegep.util.emf.EMFResource;
 import goedegep.util.string.StringUtil;
 
 /**
- * This class can be used to maintain a set of {@link CustomizationFx}s, identified by their related module names.
+ * This class reads configuration files and creates {@link CustomizationFx}s from their contents.<br/>
+ * The customizations can also be added to a set of customizations, from which they can then be obtained by their module name.<br/>
  */
 public class CustomizationsFx {
   private static final Logger LOGGER = Logger.getLogger(CustomizationsFx.class.getName());
@@ -44,71 +49,104 @@ public class CustomizationsFx {
     }
     return customization;
   }
-
-
+  
   /**
-   * Add a {@link CustomizationFx} for each {@link ModuleLook} in a configuration file.
+   * Read a single CustomizationFx from a configuration file.
+   * <p>
+   * This method expects the configuration file to contain exactly one Customization.
+   * If the configuration file contains no Customization or more than one Customization, a RuntimeException is thrown.
    * 
    * @param configurationFileURL the URL for a configuration file.
+   * @return the CustomizationFx read from the configuration file.
+   * @throws RuntimeException if no Customization or more than one Customization is found in the configuration file.
    */
-  public static void addCustomizations(URL configurationFileURL) {
-    LOGGER.info("'=> configurationFileURL=" + configurationFileURL.toString());
+  public static CustomizationFx readCustomization(URL configurationFileURL) {
+    List<Tuplet<String, CustomizationFx>> customizations = readCustomizations(configurationFileURL);
+    if (customizations.isEmpty()) {
+      throw new RuntimeException("No Customizations found in configuration file: " + configurationFileURL);
+    }
+    if (customizations.size() > 1) {
+      throw new RuntimeException("More than one Customization found in configuration file: " + configurationFileURL);
+    }
+    return customizations.get(0).getObject2();
+  }
+
+  /**
+   * Read the Customizations from a configuration file.
+   * 
+   * @param configurationFileURL the URL for a configuration file.
+   * @return a list of Tuples containing the module name and the corresponding CustomizationFx.
+   */
+  public static List<Tuplet<String, CustomizationFx>> readCustomizations(URL configurationFileURL) {
+    List<Tuplet<String, CustomizationFx>> customizations = new ArrayList<>();
 
     EMFResource<LookInfo> emfResource = new EMFResource<>(
         ConfigurationPackage.eINSTANCE,
         () -> ConfigurationFactory.eINSTANCE.createLookInfo(), ".xmi");
+    
     LookInfo lookInfo;
     try {
       
       lookInfo = emfResource.load(configurationFileURL);
 
       for (ModuleLook moduleLook: lookInfo.getModuleLooks()) {
-        addCustomizations(moduleLook);
+        Tuplet<String, CustomizationFx> customizationTuplet = customizationFromModuleLook(moduleLook);
+        customizations.add(customizationTuplet);
       }
     } catch (FileNotFoundException e) {
       e.printStackTrace();
     }
+    
+    return customizations;
   }
   
+  /**
+   * Read the Customization from a configuration file and add them to the set of Customizations.
+   * 
+   * @param configurationFileURL URL for a configuration file containing Customizations.
+   * @return a list of Tuples containing the module name and the corresponding CustomizationFx read from the file.
+   */
+  public static List<Tuplet<String, CustomizationFx>> addCustomizations(URL configurationFileURL) {
+    List<Tuplet<String, CustomizationFx>> customizations = readCustomizations(configurationFileURL);
+    for (Tuplet<String, CustomizationFx> customization : customizations) {
+      String moduleName = customization.getObject1();
+      CustomizationFx existingCustomization = moduleNameToCustomizationMap.put(moduleName, customization.getObject2());
+      
+      if (existingCustomization != null) {
+        throw new RuntimeException("Existing customization overwritten for moduleName: " + moduleName);
+      }
+    }
+    
+    return customizations;
+  }
 
   /**
-   * Add a {@link CustomizationFx} for each {@link ModuleLook} in a configuration file.
+   * Read the Customization from a configuration file and add them to the set of Customizations.
    * 
-   * @param configurationFile a configuration file
+   * @param configurationFileURL a File object representing the configuration file containing Customizations.
+   * @return a list of Tuples containing the module name and the corresponding CustomizationFx read from the file.
    */
   public static void addCustomizations(File configurationFile) {
-    LOGGER.info("'=> configurationFile=" + configurationFile.getAbsolutePath());
-
-    EMFResource<LookInfo> emfResource = new EMFResource<>(
-        ConfigurationPackage.eINSTANCE,
-        () -> ConfigurationFactory.eINSTANCE.createLookInfo(), ".xmi");
-    LookInfo lookInfo;
+    URI configurationFileUri = configurationFile.toURI();
     try {
-      lookInfo = emfResource.load(configurationFile.getAbsolutePath());
-      
-      for (ModuleLook moduleLook: lookInfo.getModuleLooks()) {
-        addCustomizations(moduleLook);
-      }
-    } catch (FileNotFoundException e) {
-      e.printStackTrace();
+      URL configurationFileUrl = configurationFileUri.toURL();
+      addCustomizations(configurationFileUrl);
+    } catch (MalformedURLException e) {
+      LOGGER.severe("Malformed URL for configuration file: " + configurationFile.getAbsolutePath());
     }
   }
   
   /**
-   * Add Customizations for a ModuleLook (and recursively for any sub module looks).
+   * Create a CustomizationFx from a ModuleLook.
    * 
-   * @param moduleLook the ModuleLook for which customizations are to be added.
+   * @param moduleLook the ModuleLook to create a CustomizationFx from.
+   * @return a Tuple containing the module name and the corresponding CustomizationFx.
    */
-  public static void addCustomizations(ModuleLook moduleLook) {
-    /*
-     * add the customization for this module
-     */
-    
+  private static Tuplet<String, CustomizationFx> customizationFromModuleLook(ModuleLook moduleLook) {
     String moduleName = moduleLook.getModuleName();
     if (moduleName == null) {
-      throw new RuntimeException("No moduleName for moduleLook");
+      throw new RuntimeException("No moduleName for moduleLook: " + moduleLook.toString());
     }
-    LOGGER.info("Adding Customizations for module: " + moduleName);
     
     Look look = moduleLook.getLook();
     if (look == null) {
@@ -121,17 +159,11 @@ public class CustomizationsFx {
     }
     
     try {
-      LOGGER.info("resourcesClassName: " + resourcesClassName);
       Class<?> resourceClass = Class.forName(resourcesClassName);
-      LOGGER.fine("resourceClass: " + resourceClass.getName());
       Constructor<?> constructor = resourceClass.getConstructor();
       AppResourcesFx appResources = (AppResourcesFx) constructor.newInstance();
       CustomizationFx customization = new CustomizationFx(look, appResources);
-      CustomizationFx existingCustomization = moduleNameToCustomizationMap.put(moduleName, customization);
-      
-      if (existingCustomization != null) {
-        throw new RuntimeException("Existing customization overwritten for moduleName: " + moduleName);
-      }
+      return new Tuplet<>(moduleName, customization);
     } catch (ClassNotFoundException e) {
       e.printStackTrace();
     } catch (InstantiationException e) {
@@ -144,11 +176,7 @@ public class CustomizationsFx {
       e.printStackTrace();
     }
     
-    /*
-     * handle add child modules
-     */
-    for (ModuleLook childModuleLook: moduleLook.getModuleLooks()) {
-      addCustomizations(childModuleLook);
-    }
+    return null; // This should not happen, but just in case.
   }
+  
 }

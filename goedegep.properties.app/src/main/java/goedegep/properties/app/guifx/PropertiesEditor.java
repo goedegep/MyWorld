@@ -3,6 +3,7 @@ package goedegep.properties.app.guifx;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.Objects;
 import java.util.ResourceBundle;
 import java.util.logging.Logger;
 
@@ -19,7 +20,6 @@ import org.eclipse.emf.ecore.EcoreFactory;
 import org.eclipse.emf.ecore.EcorePackage;
 import org.eclipse.emf.ecore.util.EContentAdapter;
 
-import goedegep.jfx.ComponentFactoryFx;
 import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.JfxStage;
 import goedegep.jfx.eobjecttreeview.EObjectTreeItemAttributeDescriptor;
@@ -60,11 +60,12 @@ public class PropertiesEditor extends JfxStage {
    */
   private PropertyDescriptorGroup propertyDescriptorGroup;
   private EObjectTreeView editablePropertiesTreeView = null;
-  
+
+  private static EPackage editablePropertiesPackage = null;
+
   /*
    * The created EditablePropertiesGroup items.
    */
-  private static EPackage editablePropertiesPackage = null;
   private static EClass editablePropertyGroup = null;
   private static EAttribute editablePropertyGroup_name = null;
   private static EReference editablePropertyGroup_editablePropertyGroups = null;
@@ -87,7 +88,6 @@ public class PropertiesEditor extends JfxStage {
   private EMFResource<PropertyDescriptorGroup> propertyDescriptorsResource;
   private EMFResource<PropertyGroup> propertiesResource;
   private String propertiesFileName;
-  private ComponentFactoryFx componentFactory;
   private EContentAdapter eContentAdapter = null;  // to detect changes in the resource.
   private boolean isDirty = false;
   
@@ -127,22 +127,16 @@ public class PropertiesEditor extends JfxStage {
    */
   public PropertiesEditor(String windowTitle, CustomizationFx customization, ResourceBundle resourceBundle,
       EMFResource<PropertyDescriptorGroup> propertyDescriptorsResource, String propertiesFileName) {
-    super(customization, null);
+    super(customization, null);  // window title is filled/updated via method updateTitle()
     
-    if (propertyDescriptorsResource == null) {
-      throw new IllegalArgumentException("Argument propertyDescriptorsResource may not be null");
-    }
-    
-    if (propertiesFileName == null) {
-      throw new IllegalArgumentException("Argument propertiesFileName may not be null");
-    }
+    Objects.requireNonNull(propertyDescriptorsResource, "Argument propertyDescriptorsResource may not be null");
+    Objects.requireNonNull(propertiesFileName, "Argument propertiesFileName may not be null");
     
     this.windowTitle = windowTitle;
     this.resourceBundle = resourceBundle;
     this.propertyDescriptorsResource = propertyDescriptorsResource;
     
     propertyDescriptorGroup = propertyDescriptorsResource.getEObject();
-    componentFactory = getComponentFactory();
     
     propertiesResource = new EMFResource<PropertyGroup>(PropertiesPackage.eINSTANCE, () -> PropertiesFactory.eINSTANCE.createPropertyGroup(), ".xmi");
     
@@ -152,7 +146,6 @@ public class PropertiesEditor extends JfxStage {
     this.propertiesFileName = propertiesFile.getAbsolutePath();
     
     if (propertiesFile.exists()) {
-      System.out.println("File exists");
       fillEditablePropertiesFromPropertiesFile(editableProperties);
     } else {
       componentFactory.createInformationDialog(
@@ -259,12 +252,12 @@ public class PropertiesEditor extends JfxStage {
     editablePropertyGroup_name.setEType(EcorePackage.eINSTANCE.getEString());
     structuralFeatures.add(editablePropertyGroup_name);
     
-    editablePropertyGroup_editablePropertyGroups = EcoreFactory.eINSTANCE.createEReference();
-    editablePropertyGroup_editablePropertyGroups.setName("editablePropertyGroups");
-    editablePropertyGroup_editablePropertyGroups.setUpperBound(-1);
-    editablePropertyGroup_editablePropertyGroups.setContainment(true);
-    editablePropertyGroup_editablePropertyGroups.setEType(editablePropertyGroup);
-    structuralFeatures.add(editablePropertyGroup_editablePropertyGroups);
+//    editablePropertyGroup_editablePropertyGroups = EcoreFactory.eINSTANCE.createEReference();
+//    editablePropertyGroup_editablePropertyGroups.setName("editablePropertyGroups");
+//    editablePropertyGroup_editablePropertyGroups.setUpperBound(-1);
+//    editablePropertyGroup_editablePropertyGroups.setContainment(true);
+//    editablePropertyGroup_editablePropertyGroups.setEType(editablePropertyGroup);
+//    structuralFeatures.add(editablePropertyGroup_editablePropertyGroups);
     
     editablePropertyGroup_editableProperties = EcoreFactory.eINSTANCE.createEReference();
     editablePropertyGroup_editableProperties.setName("editableProperties");
@@ -333,10 +326,10 @@ public class PropertiesEditor extends JfxStage {
         .setLabelText("User changeable properties");
     eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(eObjectTreeItemClassListReferenceDescriptor);
     
-    // Sub groups
-    eObjectTreeItemClassListReferenceDescriptor = new EObjectTreeItemClassListReferenceDescriptor(editablePropertyGroup_editablePropertyGroups)
-        .setLabelText("Sub groups");
-    eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(eObjectTreeItemClassListReferenceDescriptor);
+//    // Sub groups
+//    eObjectTreeItemClassListReferenceDescriptor = new EObjectTreeItemClassListReferenceDescriptor(editablePropertyGroup_editablePropertyGroups)
+//        .setLabelText("Sub groups");
+//    eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(eObjectTreeItemClassListReferenceDescriptor);
     
     return eObjectTreeItemClassDescriptor;
   }
@@ -474,17 +467,17 @@ public class PropertiesEditor extends JfxStage {
       }
     }
     
-    // Handle any sub groups
-    @SuppressWarnings("unchecked")
-    EList <EObject> editablePropertySubGroups = (EList<EObject>) editablePropertyGroup.eGet(editablePropertyGroup_editablePropertyGroups);
-    for (PropertyGroup subPropertyGroup: propertyGroup.getPropertyGroups()) {
-      for (EObject editablePropertySubGroup: editablePropertySubGroups) {
-        String editablePropertySubGroupName = (String) editablePropertySubGroup.eGet(editablePropertyGroup_name);
-        if (editablePropertySubGroupName.equals(subPropertyGroup.getName())) {
-          fillEditablePropertiesGroupFromPropertyGroup(editablePropertySubGroup, subPropertyGroup);
-        }
-      }
-    }
+//    // Handle any sub groups
+//    @SuppressWarnings("unchecked")
+//    EList <EObject> editablePropertySubGroups = (EList<EObject>) editablePropertyGroup.eGet(editablePropertyGroup_editablePropertyGroups);
+//    for (PropertyGroup subPropertyGroup: propertyGroup.getPropertyGroups()) {
+//      for (EObject editablePropertySubGroup: editablePropertySubGroups) {
+//        String editablePropertySubGroupName = (String) editablePropertySubGroup.eGet(editablePropertyGroup_name);
+//        if (editablePropertySubGroupName.equals(subPropertyGroup.getName())) {
+//          fillEditablePropertiesGroupFromPropertyGroup(editablePropertySubGroup, subPropertyGroup);
+//        }
+//      }
+//    }
     
     LOGGER.info("<=");
   }
@@ -500,46 +493,30 @@ public class PropertiesEditor extends JfxStage {
     
     // save changes
     try {
-      System.out.println("trying");
-
+ 
       if (propertiesResource.getFileName() != null) {
-        System.out.println("saving to file: " + propertiesResource.getFileName());
-
         propertiesResource.save();
-        
-        System.out.println("saved");
-
       } else {
-        System.out.println("saving2");
         propertiesResource.save(propertiesFileName);
-        System.out.println("saved2");
       }
     } catch (IOException e) {
       e.printStackTrace();
-      System.out.println("IOException: " + e.getMessage());
     }
     
     // notify that there aren't any changes
     isDirty = false;
-    System.out.println("updateTitle");
     updateTitle();
-
-    System.out.println("=>");
   }
   
   /**
    * Copy the values of the <code>editableProperties</code> to the <code>propertiesResource</code>.
    */
   private void copyEditablePropertyValuesToPropertiesResource() {
-    LOGGER.severe("=>");
-    
     PropertyGroup propertyGroup = propertiesResource.getEObject();
     if (propertyGroup == null) {
       propertyGroup = propertiesResource.newEObject();
     }
     copyEditablePropertyGroupValuesToCustomProperties(editableProperties, propertyGroup);
-    
-    LOGGER.severe("<=");
   }
   
   /**
@@ -573,26 +550,26 @@ public class PropertiesEditor extends JfxStage {
       properties.add(property);      
     }
     
-    // Handle the sub groups
-    @SuppressWarnings("unchecked")
-    EList<EObject> editablePropertyGroups = (EList<EObject>) editablePropertyGroup.eGet(editablePropertyGroup_editablePropertyGroups);
-    EList<PropertyGroup> propertyGroups = propertyGroup.getPropertyGroups();
-    for (EObject editablePropertySubGroup: editablePropertyGroups) {
-      PropertyGroup propertySubGroupToHandle = null;
-      for (PropertyGroup propertySubGroup: propertyGroups) {
-        String name = (String) editablePropertySubGroup.eGet(editablePropertyGroup_name);
-        if (propertySubGroup.getName().equals(name)) {
-          propertySubGroupToHandle = propertySubGroup;
-          break;
-        }
-        
-        if (propertySubGroupToHandle != null) {
-          copyEditablePropertyGroupValuesToCustomProperties(editablePropertySubGroup, propertySubGroupToHandle);
-        } else {
-          LOGGER.severe("No corresponding group found");
-        }
-      }
-    }
+//    // Handle the sub groups
+//    @SuppressWarnings("unchecked")
+//    EList<EObject> editablePropertyGroups = (EList<EObject>) editablePropertyGroup.eGet(editablePropertyGroup_editablePropertyGroups);
+//    EList<PropertyGroup> propertyGroups = propertyGroup.getPropertyGroups();
+//    for (EObject editablePropertySubGroup: editablePropertyGroups) {
+//      PropertyGroup propertySubGroupToHandle = null;
+//      for (PropertyGroup propertySubGroup: propertyGroups) {
+//        String name = (String) editablePropertySubGroup.eGet(editablePropertyGroup_name);
+//        if (propertySubGroup.getName().equals(name)) {
+//          propertySubGroupToHandle = propertySubGroup;
+//          break;
+//        }
+//        
+//        if (propertySubGroupToHandle != null) {
+//          copyEditablePropertyGroupValuesToCustomProperties(editablePropertySubGroup, propertySubGroupToHandle);
+//        } else {
+//          LOGGER.severe("No corresponding group found");
+//        }
+//      }
+//    }
     
     LOGGER.severe("<=");
   }

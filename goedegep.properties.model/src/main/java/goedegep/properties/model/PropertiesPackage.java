@@ -96,22 +96,13 @@ public interface PropertiesPackage extends EPackage {
   int PROPERTY_DESCRIPTOR_GROUP__PROPERTY_DESCRIPTORS = 0;
 
   /**
-   * The feature id for the '<em><b>Property Descriptor Groups</b></em>' containment reference list.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int PROPERTY_DESCRIPTOR_GROUP__PROPERTY_DESCRIPTOR_GROUPS = 1;
-
-  /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int PROPERTY_DESCRIPTOR_GROUP__NAME = 2;
+  int PROPERTY_DESCRIPTOR_GROUP__NAME = 1;
 
   /**
    * The feature id for the '<em><b>Description</b></em>' attribute.
@@ -120,7 +111,7 @@ public interface PropertiesPackage extends EPackage {
    * @generated
    * @ordered
    */
-  int PROPERTY_DESCRIPTOR_GROUP__DESCRIPTION = 3;
+  int PROPERTY_DESCRIPTOR_GROUP__DESCRIPTION = 2;
 
   /**
    * The feature id for the '<em><b>Package Name</b></em>' attribute.
@@ -129,7 +120,7 @@ public interface PropertiesPackage extends EPackage {
    * @generated
    * @ordered
    */
-  int PROPERTY_DESCRIPTOR_GROUP__PACKAGE_NAME = 4;
+  int PROPERTY_DESCRIPTOR_GROUP__PACKAGE_NAME = 3;
 
   /**
    * The feature id for the '<em><b>Registry Class Name</b></em>' attribute.
@@ -138,7 +129,7 @@ public interface PropertiesPackage extends EPackage {
    * @generated
    * @ordered
    */
-  int PROPERTY_DESCRIPTOR_GROUP__REGISTRY_CLASS_NAME = 5;
+  int PROPERTY_DESCRIPTOR_GROUP__REGISTRY_CLASS_NAME = 4;
 
   /**
    * The number of structural features of the '<em>Property Descriptor Group</em>' class.
@@ -147,7 +138,7 @@ public interface PropertiesPackage extends EPackage {
    * @generated
    * @ordered
    */
-  int PROPERTY_DESCRIPTOR_GROUP_FEATURE_COUNT = 6;
+  int PROPERTY_DESCRIPTOR_GROUP_FEATURE_COUNT = 5;
 
   /**
    * The operation id for the '<em>Get Property Descriptor</em>' operation.
@@ -159,22 +150,13 @@ public interface PropertiesPackage extends EPackage {
   int PROPERTY_DESCRIPTOR_GROUP___GET_PROPERTY_DESCRIPTOR__STRING = 0;
 
   /**
-   * The operation id for the '<em>Get Property Descriptor Group</em>' operation.
-   * <!-- begin-user-doc -->
-  	 * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int PROPERTY_DESCRIPTOR_GROUP___GET_PROPERTY_DESCRIPTOR_GROUP__STRING = 1;
-
-  /**
    * The number of operations of the '<em>Property Descriptor Group</em>' class.
    * <!-- begin-user-doc -->
   	 * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int PROPERTY_DESCRIPTOR_GROUP_OPERATION_COUNT = 2;
+  int PROPERTY_DESCRIPTOR_GROUP_OPERATION_COUNT = 1;
 
   /**
    * The meta object id for the '{@link goedegep.properties.model.impl.PropertyDescriptorImpl <em>Property Descriptor</em>}' class.
@@ -460,22 +442,13 @@ public interface PropertiesPackage extends EPackage {
   int PROPERTY_GROUP__NAME = 1;
 
   /**
-   * The feature id for the '<em><b>Property Groups</b></em>' containment reference list.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int PROPERTY_GROUP__PROPERTY_GROUPS = 2;
-
-  /**
    * The number of structural features of the '<em>Property Group</em>' class.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int PROPERTY_GROUP_FEATURE_COUNT = 3;
+  int PROPERTY_GROUP_FEATURE_COUNT = 2;
 
   /**
    * The number of operations of the '<em>Property Group</em>' class.
@@ -516,17 +489,6 @@ public interface PropertiesPackage extends EPackage {
    * @generated
    */
   EReference getPropertyDescriptorGroup_PropertyDescriptors();
-
-  /**
-   * Returns the meta object for the containment reference list '{@link goedegep.properties.model.PropertyDescriptorGroup#getPropertyDescriptorGroups <em>Property Descriptor Groups</em>}'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the meta object for the containment reference list '<em>Property Descriptor Groups</em>'.
-   * @see goedegep.properties.model.PropertyDescriptorGroup#getPropertyDescriptorGroups()
-   * @see #getPropertyDescriptorGroup()
-   * @generated
-   */
-  EReference getPropertyDescriptorGroup_PropertyDescriptorGroups();
 
   /**
    * Returns the meta object for the attribute '{@link goedegep.properties.model.PropertyDescriptorGroup#getName <em>Name</em>}'.
@@ -581,16 +543,6 @@ public interface PropertiesPackage extends EPackage {
    * @generated
    */
   EOperation getPropertyDescriptorGroup__GetPropertyDescriptor__String();
-
-  /**
-   * Returns the meta object for the '{@link goedegep.properties.model.PropertyDescriptorGroup#getPropertyDescriptorGroup(java.lang.String) <em>Get Property Descriptor Group</em>}' operation.
-   * <!-- begin-user-doc -->
-  	 * <!-- end-user-doc -->
-   * @return the meta object for the '<em>Get Property Descriptor Group</em>' operation.
-   * @see goedegep.properties.model.PropertyDescriptorGroup#getPropertyDescriptorGroup(java.lang.String)
-   * @generated
-   */
-  EOperation getPropertyDescriptorGroup__GetPropertyDescriptorGroup__String();
 
   /**
    * Returns the meta object for class '{@link goedegep.properties.model.PropertyDescriptor <em>Property Descriptor</em>}'.
@@ -776,17 +728,6 @@ public interface PropertiesPackage extends EPackage {
   EAttribute getPropertyGroup_Name();
 
   /**
-   * Returns the meta object for the containment reference list '{@link goedegep.properties.model.PropertyGroup#getPropertyGroups <em>Property Groups</em>}'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the meta object for the containment reference list '<em>Property Groups</em>'.
-   * @see goedegep.properties.model.PropertyGroup#getPropertyGroups()
-   * @see #getPropertyGroup()
-   * @generated
-   */
-  EReference getPropertyGroup_PropertyGroups();
-
-  /**
    * Returns the meta object for enum '{@link goedegep.properties.model.PropertyType <em>Property Type</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -838,15 +779,6 @@ public interface PropertiesPackage extends EPackage {
         .getPropertyDescriptorGroup_PropertyDescriptors();
 
     /**
-    	 * The meta object literal for the '<em><b>Property Descriptor Groups</b></em>' containment reference list feature.
-    	 * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-    	 * @generated
-    	 */
-    EReference PROPERTY_DESCRIPTOR_GROUP__PROPERTY_DESCRIPTOR_GROUPS = eINSTANCE
-        .getPropertyDescriptorGroup_PropertyDescriptorGroups();
-
-    /**
     	 * The meta object literal for the '<em><b>Name</b></em>' attribute feature.
     	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -887,15 +819,6 @@ public interface PropertiesPackage extends EPackage {
     	 */
     EOperation PROPERTY_DESCRIPTOR_GROUP___GET_PROPERTY_DESCRIPTOR__STRING = eINSTANCE
         .getPropertyDescriptorGroup__GetPropertyDescriptor__String();
-
-    /**
-    	 * The meta object literal for the '<em><b>Get Property Descriptor Group</b></em>' operation.
-    	 * <!-- begin-user-doc -->
-    	 * <!-- end-user-doc -->
-    	 * @generated
-    	 */
-    EOperation PROPERTY_DESCRIPTOR_GROUP___GET_PROPERTY_DESCRIPTOR_GROUP__STRING = eINSTANCE
-        .getPropertyDescriptorGroup__GetPropertyDescriptorGroup__String();
 
     /**
     	 * The meta object literal for the '{@link goedegep.properties.model.impl.PropertyDescriptorImpl <em>Property Descriptor</em>}' class.
@@ -1040,14 +963,6 @@ public interface PropertiesPackage extends EPackage {
     	 * @generated
     	 */
     EAttribute PROPERTY_GROUP__NAME = eINSTANCE.getPropertyGroup_Name();
-
-    /**
-    	 * The meta object literal for the '<em><b>Property Groups</b></em>' containment reference list feature.
-    	 * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-    	 * @generated
-    	 */
-    EReference PROPERTY_GROUP__PROPERTY_GROUPS = eINSTANCE.getPropertyGroup_PropertyGroups();
 
     /**
     	 * The meta object literal for the '{@link goedegep.properties.model.PropertyType <em>Property Type</em>}' enum.

@@ -21,7 +21,6 @@ import org.eclipse.emf.ecore.EObject;
  * <ul>
  *   <li>{@link goedegep.properties.model.PropertyGroup#getProperties <em>Properties</em>}</li>
  *   <li>{@link goedegep.properties.model.PropertyGroup#getName <em>Name</em>}</li>
- *   <li>{@link goedegep.properties.model.PropertyGroup#getPropertyGroups <em>Property Groups</em>}</li>
  * </ul>
  *
  * @see goedegep.properties.model.PropertiesPackage#getPropertyGroup()
@@ -97,21 +96,5 @@ public interface PropertyGroup extends EObject {
    * @generated
    */
   boolean isSetName();
-
-  /**
-   * Returns the value of the '<em><b>Property Groups</b></em>' containment reference list.
-   * The list contents are of type {@link goedegep.properties.model.PropertyGroup}.
-   * <!-- begin-user-doc -->
-   * <p>
-   * If the meaning of the '<em>Property Groups</em>' containment reference list isn't clear,
-   * there really should be more of a description here...
-   * </p>
-   * <!-- end-user-doc -->
-   * @return the value of the '<em>Property Groups</em>' containment reference list.
-   * @see goedegep.properties.model.PropertiesPackage#getPropertyGroup_PropertyGroups()
-   * @model containment="true"
-   * @generated
-   */
-  EList<PropertyGroup> getPropertyGroups();
 
 } // PropertyGroup

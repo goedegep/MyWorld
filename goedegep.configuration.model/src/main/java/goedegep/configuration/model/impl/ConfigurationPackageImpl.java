@@ -167,28 +167,8 @@ public class ConfigurationPackageImpl extends EPackageImpl implements Configurat
    * @generated
    */
   @Override
-  public EReference getModuleLook_ModuleLooks() {
-    return (EReference) moduleLookEClass.getEStructuralFeatures().get(2);
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
   public EAttribute getModuleLook_ResourcesClassName() {
-    return (EAttribute) moduleLookEClass.getEStructuralFeatures().get(3);
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public EReference getModuleLook_ParentModuleLook() {
-    return (EReference) moduleLookEClass.getEStructuralFeatures().get(4);
+    return (EAttribute) moduleLookEClass.getEStructuralFeatures().get(2);
   }
 
   /**
@@ -313,9 +293,7 @@ public class ConfigurationPackageImpl extends EPackageImpl implements Configurat
     moduleLookEClass = createEClass(MODULE_LOOK);
     createEReference(moduleLookEClass, MODULE_LOOK__LOOK);
     createEAttribute(moduleLookEClass, MODULE_LOOK__MODULE_NAME);
-    createEReference(moduleLookEClass, MODULE_LOOK__MODULE_LOOKS);
     createEAttribute(moduleLookEClass, MODULE_LOOK__RESOURCES_CLASS_NAME);
-    createEReference(moduleLookEClass, MODULE_LOOK__PARENT_MODULE_LOOK);
 
     lookInfoEClass = createEClass(LOOK_INFO);
     createEReference(lookInfoEClass, LOOK_INFO__MODULE_LOOKS);
@@ -384,15 +362,9 @@ public class ConfigurationPackageImpl extends EPackageImpl implements Configurat
         IS_ORDERED);
     initEAttribute(getModuleLook_ModuleName(), ecorePackage.getEString(), "moduleName", null, 0, 1, ModuleLook.class,
         !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEReference(getModuleLook_ModuleLooks(), this.getModuleLook(), null, "moduleLooks", null, 0, -1,
-        ModuleLook.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, IS_UNSETTABLE,
-        IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getModuleLook_ResourcesClassName(), ecorePackage.getEString(), "resourcesClassName", null, 0, 1,
         ModuleLook.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED,
         IS_ORDERED);
-    initEReference(getModuleLook_ParentModuleLook(), this.getModuleLook(), null, "parentModuleLook", null, 1, 1,
-        ModuleLook.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE,
-        IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(lookInfoEClass, LookInfo.class, "LookInfo", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEReference(getLookInfo_ModuleLooks(), this.getModuleLook(), null, "moduleLooks", null, 0, -1, LookInfo.class,

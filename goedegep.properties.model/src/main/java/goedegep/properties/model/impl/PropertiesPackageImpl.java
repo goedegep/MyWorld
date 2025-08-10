@@ -163,18 +163,8 @@ public class PropertiesPackageImpl extends EPackageImpl implements PropertiesPac
    * @generated
    */
   @Override
-  public EReference getPropertyDescriptorGroup_PropertyDescriptorGroups() {
-    return (EReference) propertyDescriptorGroupEClass.getEStructuralFeatures().get(1);
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
   public EAttribute getPropertyDescriptorGroup_Name() {
-    return (EAttribute) propertyDescriptorGroupEClass.getEStructuralFeatures().get(2);
+    return (EAttribute) propertyDescriptorGroupEClass.getEStructuralFeatures().get(1);
   }
 
   /**
@@ -184,7 +174,7 @@ public class PropertiesPackageImpl extends EPackageImpl implements PropertiesPac
    */
   @Override
   public EAttribute getPropertyDescriptorGroup_Description() {
-    return (EAttribute) propertyDescriptorGroupEClass.getEStructuralFeatures().get(3);
+    return (EAttribute) propertyDescriptorGroupEClass.getEStructuralFeatures().get(2);
   }
 
   /**
@@ -194,7 +184,7 @@ public class PropertiesPackageImpl extends EPackageImpl implements PropertiesPac
    */
   @Override
   public EAttribute getPropertyDescriptorGroup_PackageName() {
-    return (EAttribute) propertyDescriptorGroupEClass.getEStructuralFeatures().get(4);
+    return (EAttribute) propertyDescriptorGroupEClass.getEStructuralFeatures().get(3);
   }
 
   /**
@@ -204,7 +194,7 @@ public class PropertiesPackageImpl extends EPackageImpl implements PropertiesPac
    */
   @Override
   public EAttribute getPropertyDescriptorGroup_RegistryClassName() {
-    return (EAttribute) propertyDescriptorGroupEClass.getEStructuralFeatures().get(5);
+    return (EAttribute) propertyDescriptorGroupEClass.getEStructuralFeatures().get(4);
   }
 
   /**
@@ -215,16 +205,6 @@ public class PropertiesPackageImpl extends EPackageImpl implements PropertiesPac
   @Override
   public EOperation getPropertyDescriptorGroup__GetPropertyDescriptor__String() {
     return propertyDescriptorGroupEClass.getEOperations().get(0);
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-  	 * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public EOperation getPropertyDescriptorGroup__GetPropertyDescriptorGroup__String() {
-    return propertyDescriptorGroupEClass.getEOperations().get(1);
   }
 
   /**
@@ -403,16 +383,6 @@ public class PropertiesPackageImpl extends EPackageImpl implements PropertiesPac
    * @generated
    */
   @Override
-  public EReference getPropertyGroup_PropertyGroups() {
-    return (EReference) propertyGroupEClass.getEStructuralFeatures().get(2);
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
   public EEnum getPropertyType() {
     return propertyTypeEEnum;
   }
@@ -449,13 +419,11 @@ public class PropertiesPackageImpl extends EPackageImpl implements PropertiesPac
     // Create classes and their features
     propertyDescriptorGroupEClass = createEClass(PROPERTY_DESCRIPTOR_GROUP);
     createEReference(propertyDescriptorGroupEClass, PROPERTY_DESCRIPTOR_GROUP__PROPERTY_DESCRIPTORS);
-    createEReference(propertyDescriptorGroupEClass, PROPERTY_DESCRIPTOR_GROUP__PROPERTY_DESCRIPTOR_GROUPS);
     createEAttribute(propertyDescriptorGroupEClass, PROPERTY_DESCRIPTOR_GROUP__NAME);
     createEAttribute(propertyDescriptorGroupEClass, PROPERTY_DESCRIPTOR_GROUP__DESCRIPTION);
     createEAttribute(propertyDescriptorGroupEClass, PROPERTY_DESCRIPTOR_GROUP__PACKAGE_NAME);
     createEAttribute(propertyDescriptorGroupEClass, PROPERTY_DESCRIPTOR_GROUP__REGISTRY_CLASS_NAME);
     createEOperation(propertyDescriptorGroupEClass, PROPERTY_DESCRIPTOR_GROUP___GET_PROPERTY_DESCRIPTOR__STRING);
-    createEOperation(propertyDescriptorGroupEClass, PROPERTY_DESCRIPTOR_GROUP___GET_PROPERTY_DESCRIPTOR_GROUP__STRING);
 
     propertyDescriptorEClass = createEClass(PROPERTY_DESCRIPTOR);
     createEAttribute(propertyDescriptorEClass, PROPERTY_DESCRIPTOR__TYPE);
@@ -477,7 +445,6 @@ public class PropertiesPackageImpl extends EPackageImpl implements PropertiesPac
     propertyGroupEClass = createEClass(PROPERTY_GROUP);
     createEReference(propertyGroupEClass, PROPERTY_GROUP__PROPERTIES);
     createEAttribute(propertyGroupEClass, PROPERTY_GROUP__NAME);
-    createEReference(propertyGroupEClass, PROPERTY_GROUP__PROPERTY_GROUPS);
 
     // Create enums
     propertyTypeEEnum = createEEnum(PROPERTY_TYPE);
@@ -520,9 +487,6 @@ public class PropertiesPackageImpl extends EPackageImpl implements PropertiesPac
     initEReference(getPropertyDescriptorGroup_PropertyDescriptors(), this.getPropertyDescriptor(), null,
         "propertyDescriptors", null, 0, -1, PropertyDescriptorGroup.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE,
         IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEReference(getPropertyDescriptorGroup_PropertyDescriptorGroups(), this.getPropertyDescriptorGroup(), null,
-        "propertyDescriptorGroups", null, 0, -1, PropertyDescriptorGroup.class, !IS_TRANSIENT, !IS_VOLATILE,
-        IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getPropertyDescriptorGroup_Name(), ecorePackage.getEString(), "name", null, 0, 1,
         PropertyDescriptorGroup.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_UNSETTABLE, !IS_ID, IS_UNIQUE,
         !IS_DERIVED, IS_ORDERED);
@@ -539,10 +503,6 @@ public class PropertiesPackageImpl extends EPackageImpl implements PropertiesPac
     EOperation op = initEOperation(getPropertyDescriptorGroup__GetPropertyDescriptor__String(),
         this.getPropertyDescriptor(), "getPropertyDescriptor", 0, 1, IS_UNIQUE, IS_ORDERED);
     addEParameter(op, ecorePackage.getEString(), "propertyName", 0, 1, IS_UNIQUE, IS_ORDERED);
-
-    op = initEOperation(getPropertyDescriptorGroup__GetPropertyDescriptorGroup__String(),
-        this.getPropertyDescriptorGroup(), "getPropertyDescriptorGroup", 0, 1, IS_UNIQUE, IS_ORDERED);
-    addEParameter(op, ecorePackage.getEString(), "groupName", 0, 1, IS_UNIQUE, IS_ORDERED);
 
     initEClass(propertyDescriptorEClass, PropertyDescriptor.class, "PropertyDescriptor", !IS_ABSTRACT, !IS_INTERFACE,
         IS_GENERATED_INSTANCE_CLASS);
@@ -590,9 +550,6 @@ public class PropertiesPackageImpl extends EPackageImpl implements PropertiesPac
         !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getPropertyGroup_Name(), ecorePackage.getEString(), "name", null, 1, 1, PropertyGroup.class,
         !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEReference(getPropertyGroup_PropertyGroups(), this.getPropertyGroup(), null, "propertyGroups", null, 0, -1,
-        PropertyGroup.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES,
-        !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     // Initialize enums and add enum literals
     initEEnum(propertyTypeEEnum, PropertyType.class, "PropertyType");

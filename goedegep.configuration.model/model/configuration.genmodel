@@ -23,9 +23,7 @@
     <genClasses ecoreClass="configuration.ecore#//ModuleLook">
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference configuration.ecore#//ModuleLook/look"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute configuration.ecore#//ModuleLook/moduleName"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference configuration.ecore#//ModuleLook/moduleLooks"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute configuration.ecore#//ModuleLook/resourcesClassName"/>
-      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference configuration.ecore#//ModuleLook/parentModuleLook"/>
     </genClasses>
     <genClasses ecoreClass="configuration.ecore#//LookInfo">
       <genFeatures children="true" createChild="true" propertySortChoices="true" ecoreFeature="ecore:EReference configuration.ecore#//LookInfo/moduleLooks"/>

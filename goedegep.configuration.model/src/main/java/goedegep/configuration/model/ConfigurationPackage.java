@@ -186,31 +186,13 @@ public interface ConfigurationPackage extends EPackage {
   int MODULE_LOOK__MODULE_NAME = 1;
 
   /**
-   * The feature id for the '<em><b>Module Looks</b></em>' containment reference list.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int MODULE_LOOK__MODULE_LOOKS = 2;
-
-  /**
    * The feature id for the '<em><b>Resources Class Name</b></em>' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int MODULE_LOOK__RESOURCES_CLASS_NAME = 3;
-
-  /**
-   * The feature id for the '<em><b>Parent Module Look</b></em>' reference.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int MODULE_LOOK__PARENT_MODULE_LOOK = 4;
+  int MODULE_LOOK__RESOURCES_CLASS_NAME = 2;
 
   /**
    * The number of structural features of the '<em>Module Look</em>' class.
@@ -219,7 +201,7 @@ public interface ConfigurationPackage extends EPackage {
    * @generated
    * @ordered
    */
-  int MODULE_LOOK_FEATURE_COUNT = 5;
+  int MODULE_LOOK_FEATURE_COUNT = 3;
 
   /**
    * The number of operations of the '<em>Module Look</em>' class.
@@ -311,17 +293,6 @@ public interface ConfigurationPackage extends EPackage {
   EAttribute getModuleLook_ModuleName();
 
   /**
-   * Returns the meta object for the containment reference list '{@link goedegep.configuration.model.ModuleLook#getModuleLooks <em>Module Looks</em>}'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the meta object for the containment reference list '<em>Module Looks</em>'.
-   * @see goedegep.configuration.model.ModuleLook#getModuleLooks()
-   * @see #getModuleLook()
-   * @generated
-   */
-  EReference getModuleLook_ModuleLooks();
-
-  /**
    * Returns the meta object for the attribute '{@link goedegep.configuration.model.ModuleLook#getResourcesClassName <em>Resources Class Name</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -331,17 +302,6 @@ public interface ConfigurationPackage extends EPackage {
    * @generated
    */
   EAttribute getModuleLook_ResourcesClassName();
-
-  /**
-   * Returns the meta object for the reference '{@link goedegep.configuration.model.ModuleLook#getParentModuleLook <em>Parent Module Look</em>}'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the meta object for the reference '<em>Parent Module Look</em>'.
-   * @see goedegep.configuration.model.ModuleLook#getParentModuleLook()
-   * @see #getModuleLook()
-   * @generated
-   */
-  EReference getModuleLook_ParentModuleLook();
 
   /**
    * Returns the meta object for class '{@link goedegep.configuration.model.Look <em>Look</em>}'.
@@ -498,28 +458,12 @@ public interface ConfigurationPackage extends EPackage {
     EAttribute MODULE_LOOK__MODULE_NAME = eINSTANCE.getModuleLook_ModuleName();
 
     /**
-    	 * The meta object literal for the '<em><b>Module Looks</b></em>' containment reference list feature.
-    	 * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-    	 * @generated
-    	 */
-    EReference MODULE_LOOK__MODULE_LOOKS = eINSTANCE.getModuleLook_ModuleLooks();
-
-    /**
     	 * The meta object literal for the '<em><b>Resources Class Name</b></em>' attribute feature.
     	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
     	 * @generated
     	 */
     EAttribute MODULE_LOOK__RESOURCES_CLASS_NAME = eINSTANCE.getModuleLook_ResourcesClassName();
-
-    /**
-    	 * The meta object literal for the '<em><b>Parent Module Look</b></em>' reference feature.
-    	 * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-    	 * @generated
-    	 */
-    EReference MODULE_LOOK__PARENT_MODULE_LOOK = eINSTANCE.getModuleLook_ParentModuleLook();
 
     /**
     	 * The meta object literal for the '{@link goedegep.configuration.model.impl.LookImpl <em>Look</em>}' class.

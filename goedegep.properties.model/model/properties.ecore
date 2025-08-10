@@ -8,13 +8,8 @@
     <eOperations name="getPropertyDescriptor" eType="#//PropertyDescriptor">
       <eParameters name="propertyName" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     </eOperations>
-    <eOperations name="getPropertyDescriptorGroup" eType="#//PropertyDescriptorGroup">
-      <eParameters name="groupName" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
-    </eOperations>
     <eStructuralFeatures xsi:type="ecore:EReference" name="propertyDescriptors" upperBound="-1"
         eType="#//PropertyDescriptor" containment="true"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="propertyDescriptorGroups"
-        upperBound="-1" eType="#//PropertyDescriptorGroup" containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
         unsettable="true">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
@@ -112,7 +107,5 @@
         eType="#//Property" containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
         unsettable="true"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="propertyGroups" upperBound="-1"
-        eType="#//PropertyGroup" containment="true"/>
   </eClassifiers>
 </ecore:EPackage>

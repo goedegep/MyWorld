@@ -64,6 +64,7 @@ public class OsmAndUtil {
     iconMap.put(LocationCategory.CASINO, "amenity_casino");
     iconMap.put(LocationCategory.CASTLE, "historic_castle");
     iconMap.put(LocationCategory.CAVE, "natural_cave_entrance");
+    iconMap.put(LocationCategory.CITY_CENTER, "attraction_maze");
     iconMap.put(LocationCategory.PLACE_OF_WORSHIP, "building_type_church");
     iconMap.put(LocationCategory.CINEMA, "amenity_cinema");
     iconMap.put(LocationCategory.CITY, "place_city");
@@ -80,6 +81,7 @@ public class OsmAndUtil {
     iconMap.put(LocationCategory.INDUSTRY, "industrial");
     iconMap.put(LocationCategory.LAKE, "water");
     iconMap.put(LocationCategory.LANDSCAPE, "hill");
+    iconMap.put(LocationCategory.LEARNING, "amenity_school");
     iconMap.put(LocationCategory.LIBRARY, "amenity_library");
     iconMap.put(LocationCategory.MARINA, "leisure_marina");
     iconMap.put(LocationCategory.MEMORIAL, "memorial_plaque");
@@ -263,7 +265,7 @@ public class OsmAndUtil {
           String iconString = iconMap.get(location.getLocationCategory());
           if (iconString == null) {
             message = "No OsmAnd icon for this location type";
-            LOGGER.severe("No OsmAnd icon for location type " + LocationCategory.getDisplayName(location));
+            LOGGER.severe("No OsmAnd icon for location type " + LocationCategory.getDisplayName(location.getLocationCategory()));
           }
           if (colorString != null  ||  iconString != null) {
             buf.append(SgmlUtil.createElementOpen(indent, null, "extensions")).append(NEW_LINE);
