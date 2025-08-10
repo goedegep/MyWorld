@@ -1,4 +1,4 @@
-package goedegep.travels.exe;
+package goedegep.travels.inst;
 
 /**
  * This class is a wrapper around the TravelsApplicationLauncher.
