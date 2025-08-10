@@ -48,7 +48,7 @@ public class PropertyDescriptorsTreeViewCreator {
    */
   private EObjectTreeItemClassDescriptor createDescriptorForPropertyDescriptorGroup() {
     EObjectTreeItemClassDescriptor eObjectTreeItemClassDescriptor = new EObjectTreeItemClassDescriptor()
-        .setNodeTextFunction(eObject -> "Group of Property Descriptors")
+        .setNodeTextFunction(_ -> "Group of Property Descriptors")
         .setExpandOnCreation(true);
     
     EObjectTreeItemAttributeDescriptor eObjectTreeItemAttributeDescriptor;
@@ -79,12 +79,7 @@ public class PropertyDescriptorsTreeViewCreator {
     eObjectTreeItemClassListReferenceDescriptor = new EObjectTreeItemClassListReferenceDescriptor(PROPERTIES_PACKAGE.getPropertyDescriptorGroup_PropertyDescriptors())
         .setLabelText("Property Descriptors");
     eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(eObjectTreeItemClassListReferenceDescriptor);
-    
-    eObjectTreeItemClassListReferenceDescriptor = new EObjectTreeItemClassListReferenceDescriptor(PROPERTIES_PACKAGE.getPropertyDescriptorGroup_PropertyDescriptorGroups())
-        .setLabelText("Property Descriptor groups")
-        .addNodeOperationDescriptor(new NodeOperationDescriptorNew("New Property Descriptors group", null, null));
-    eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(eObjectTreeItemClassListReferenceDescriptor);
-    
+        
     return eObjectTreeItemClassDescriptor;
   }
 

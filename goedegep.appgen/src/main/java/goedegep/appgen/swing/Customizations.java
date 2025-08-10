@@ -150,10 +150,10 @@ public class Customizations {
       e.printStackTrace();
     }
     
-    // handle add child modules
-    for (ModuleLook childModuleLook: moduleLook.getModuleLooks()) {
-      addCustomizations(childModuleLook);
-    }
+//    // handle add child modules
+//    for (ModuleLook childModuleLook: moduleLook.getModuleLooks()) {
+//      addCustomizations(childModuleLook);
+//    }
   }
     
   /**

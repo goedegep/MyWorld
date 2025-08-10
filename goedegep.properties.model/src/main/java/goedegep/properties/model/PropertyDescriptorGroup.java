@@ -20,7 +20,6 @@ import org.eclipse.emf.ecore.EObject;
  * </p>
  * <ul>
  *   <li>{@link goedegep.properties.model.PropertyDescriptorGroup#getPropertyDescriptors <em>Property Descriptors</em>}</li>
- *   <li>{@link goedegep.properties.model.PropertyDescriptorGroup#getPropertyDescriptorGroups <em>Property Descriptor Groups</em>}</li>
  *   <li>{@link goedegep.properties.model.PropertyDescriptorGroup#getName <em>Name</em>}</li>
  *   <li>{@link goedegep.properties.model.PropertyDescriptorGroup#getDescription <em>Description</em>}</li>
  *   <li>{@link goedegep.properties.model.PropertyDescriptorGroup#getPackageName <em>Package Name</em>}</li>
@@ -47,22 +46,6 @@ public interface PropertyDescriptorGroup extends EObject {
    * @generated
    */
   EList<PropertyDescriptor> getPropertyDescriptors();
-
-  /**
-   * Returns the value of the '<em><b>Property Descriptor Groups</b></em>' containment reference list.
-   * The list contents are of type {@link goedegep.properties.model.PropertyDescriptorGroup}.
-   * <!-- begin-user-doc -->
-   * <p>
-   * If the meaning of the '<em>Property Descriptor Groups</em>' containment reference list isn't clear,
-   * there really should be more of a description here...
-   * </p>
-   * <!-- end-user-doc -->
-   * @return the value of the '<em>Property Descriptor Groups</em>' containment reference list.
-   * @see goedegep.properties.model.PropertiesPackage#getPropertyDescriptorGroup_PropertyDescriptorGroups()
-   * @model containment="true"
-   * @generated
-   */
-  EList<PropertyDescriptorGroup> getPropertyDescriptorGroups();
 
   /**
    * Returns the value of the '<em><b>Name</b></em>' attribute.
@@ -299,13 +282,5 @@ public interface PropertyDescriptorGroup extends EObject {
    * @generated
    */
   PropertyDescriptor getPropertyDescriptor(String propertyName);
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @model
-   * @generated
-   */
-  PropertyDescriptorGroup getPropertyDescriptorGroup(String groupName);
 
 } // PropertyDescriptorGroup

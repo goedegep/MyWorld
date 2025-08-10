@@ -54,12 +54,8 @@
     <eStructuralFeatures xsi:type="ecore:EReference" name="look" lowerBound="1" eType="#//Look"
         containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="moduleName" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="moduleLooks" upperBound="-1"
-        eType="#//ModuleLook" unsettable="true" containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="resourcesClassName" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
         unsettable="true"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="parentModuleLook" lowerBound="1"
-        eType="#//ModuleLook"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="LookInfo">
     <eStructuralFeatures xsi:type="ecore:EReference" name="moduleLooks" upperBound="-1"

@@ -2,18 +2,13 @@
  */
 package goedegep.configuration.model.impl;
 
-import java.util.Collection;
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
-import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EClass;
 
 import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
-import org.eclipse.emf.ecore.util.EObjectContainmentEList;
-import org.eclipse.emf.ecore.util.InternalEList;
-
 import goedegep.configuration.model.ConfigurationPackage;
 import goedegep.configuration.model.Look;
 import goedegep.configuration.model.ModuleLook;
@@ -28,9 +23,7 @@ import goedegep.configuration.model.ModuleLook;
  * <ul>
  *   <li>{@link goedegep.configuration.model.impl.ModuleLookImpl#getLook <em>Look</em>}</li>
  *   <li>{@link goedegep.configuration.model.impl.ModuleLookImpl#getModuleName <em>Module Name</em>}</li>
- *   <li>{@link goedegep.configuration.model.impl.ModuleLookImpl#getModuleLooks <em>Module Looks</em>}</li>
  *   <li>{@link goedegep.configuration.model.impl.ModuleLookImpl#getResourcesClassName <em>Resources Class Name</em>}</li>
- *   <li>{@link goedegep.configuration.model.impl.ModuleLookImpl#getParentModuleLook <em>Parent Module Look</em>}</li>
  * </ul>
  *
  * @generated
@@ -65,15 +58,6 @@ public class ModuleLookImpl extends MinimalEObjectImpl.Container implements Modu
    */
   protected String moduleName = MODULE_NAME_EDEFAULT;
   /**
-   * The cached value of the '{@link #getModuleLooks() <em>Module Looks</em>}' containment reference list.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getModuleLooks()
-   * @generated
-   * @ordered
-   */
-  protected EList<ModuleLook> moduleLooks;
-  /**
    * The default value of the '{@link #getResourcesClassName() <em>Resources Class Name</em>}' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -99,15 +83,6 @@ public class ModuleLookImpl extends MinimalEObjectImpl.Container implements Modu
    * @ordered
    */
   protected boolean resourcesClassNameESet;
-  /**
-   * The cached value of the '{@link #getParentModuleLook() <em>Parent Module Look</em>}' reference.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getParentModuleLook()
-   * @generated
-   * @ordered
-   */
-  protected ModuleLook parentModuleLook;
 
   /**
    * <!-- begin-user-doc -->
@@ -209,41 +184,6 @@ public class ModuleLookImpl extends MinimalEObjectImpl.Container implements Modu
    * @generated
    */
   @Override
-  public EList<ModuleLook> getModuleLooks() {
-    if (moduleLooks == null) {
-      moduleLooks = new EObjectContainmentEList.Unsettable<ModuleLook>(ModuleLook.class, this,
-          ConfigurationPackage.MODULE_LOOK__MODULE_LOOKS);
-    }
-    return moduleLooks;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public void unsetModuleLooks() {
-    if (moduleLooks != null)
-      ((InternalEList.Unsettable<?>) moduleLooks).unset();
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public boolean isSetModuleLooks() {
-    return moduleLooks != null && ((InternalEList.Unsettable<?>) moduleLooks).isSet();
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
   public String getResourcesClassName() {
     return resourcesClassName;
   }
@@ -296,54 +236,10 @@ public class ModuleLookImpl extends MinimalEObjectImpl.Container implements Modu
    * @generated
    */
   @Override
-  public ModuleLook getParentModuleLook() {
-    if (parentModuleLook != null && parentModuleLook.eIsProxy()) {
-      InternalEObject oldParentModuleLook = (InternalEObject) parentModuleLook;
-      parentModuleLook = (ModuleLook) eResolveProxy(oldParentModuleLook);
-      if (parentModuleLook != oldParentModuleLook) {
-        if (eNotificationRequired())
-          eNotify(new ENotificationImpl(this, Notification.RESOLVE,
-              ConfigurationPackage.MODULE_LOOK__PARENT_MODULE_LOOK, oldParentModuleLook, parentModuleLook));
-      }
-    }
-    return parentModuleLook;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public ModuleLook basicGetParentModuleLook() {
-    return parentModuleLook;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public void setParentModuleLook(ModuleLook newParentModuleLook) {
-    ModuleLook oldParentModuleLook = parentModuleLook;
-    parentModuleLook = newParentModuleLook;
-    if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, ConfigurationPackage.MODULE_LOOK__PARENT_MODULE_LOOK,
-          oldParentModuleLook, parentModuleLook));
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
   public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
     switch (featureID) {
     case ConfigurationPackage.MODULE_LOOK__LOOK:
       return basicSetLook(null, msgs);
-    case ConfigurationPackage.MODULE_LOOK__MODULE_LOOKS:
-      return ((InternalEList<?>) getModuleLooks()).basicRemove(otherEnd, msgs);
     }
     return super.eInverseRemove(otherEnd, featureID, msgs);
   }
@@ -360,14 +256,8 @@ public class ModuleLookImpl extends MinimalEObjectImpl.Container implements Modu
       return getLook();
     case ConfigurationPackage.MODULE_LOOK__MODULE_NAME:
       return getModuleName();
-    case ConfigurationPackage.MODULE_LOOK__MODULE_LOOKS:
-      return getModuleLooks();
     case ConfigurationPackage.MODULE_LOOK__RESOURCES_CLASS_NAME:
       return getResourcesClassName();
-    case ConfigurationPackage.MODULE_LOOK__PARENT_MODULE_LOOK:
-      if (resolve)
-        return getParentModuleLook();
-      return basicGetParentModuleLook();
     }
     return super.eGet(featureID, resolve, coreType);
   }
@@ -387,15 +277,8 @@ public class ModuleLookImpl extends MinimalEObjectImpl.Container implements Modu
     case ConfigurationPackage.MODULE_LOOK__MODULE_NAME:
       setModuleName((String) newValue);
       return;
-    case ConfigurationPackage.MODULE_LOOK__MODULE_LOOKS:
-      getModuleLooks().clear();
-      getModuleLooks().addAll((Collection<? extends ModuleLook>) newValue);
-      return;
     case ConfigurationPackage.MODULE_LOOK__RESOURCES_CLASS_NAME:
       setResourcesClassName((String) newValue);
-      return;
-    case ConfigurationPackage.MODULE_LOOK__PARENT_MODULE_LOOK:
-      setParentModuleLook((ModuleLook) newValue);
       return;
     }
     super.eSet(featureID, newValue);
@@ -415,14 +298,8 @@ public class ModuleLookImpl extends MinimalEObjectImpl.Container implements Modu
     case ConfigurationPackage.MODULE_LOOK__MODULE_NAME:
       setModuleName(MODULE_NAME_EDEFAULT);
       return;
-    case ConfigurationPackage.MODULE_LOOK__MODULE_LOOKS:
-      unsetModuleLooks();
-      return;
     case ConfigurationPackage.MODULE_LOOK__RESOURCES_CLASS_NAME:
       unsetResourcesClassName();
-      return;
-    case ConfigurationPackage.MODULE_LOOK__PARENT_MODULE_LOOK:
-      setParentModuleLook((ModuleLook) null);
       return;
     }
     super.eUnset(featureID);
@@ -440,12 +317,8 @@ public class ModuleLookImpl extends MinimalEObjectImpl.Container implements Modu
       return look != null;
     case ConfigurationPackage.MODULE_LOOK__MODULE_NAME:
       return MODULE_NAME_EDEFAULT == null ? moduleName != null : !MODULE_NAME_EDEFAULT.equals(moduleName);
-    case ConfigurationPackage.MODULE_LOOK__MODULE_LOOKS:
-      return isSetModuleLooks();
     case ConfigurationPackage.MODULE_LOOK__RESOURCES_CLASS_NAME:
       return isSetResourcesClassName();
-    case ConfigurationPackage.MODULE_LOOK__PARENT_MODULE_LOOK:
-      return parentModuleLook != null;
     }
     return super.eIsSet(featureID);
   }

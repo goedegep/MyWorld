@@ -158,7 +158,10 @@ public abstract class JfxApplication extends Application {
    * And if the application is not running in Eclipse (an official installation), the stack trace is also shown in an exception dialog.
    * @param exception
    */
-  protected static void reportException(CustomizationFx customization, Exception exception) {
+  public static void reportException(CustomizationFx customization, Exception exception) {
+    if (customization == null) {
+      customization = DefaultCustomizationFx.getInstance();
+    }
     ComponentFactoryFx componentFactory = customization.getComponentFactoryFx();
     
     StringWriter sw = new StringWriter();

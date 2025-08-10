@@ -8,6 +8,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintWriter;
+import java.net.URI;
 import java.nio.file.FileSystem;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -796,12 +797,12 @@ public class VacationsWindow extends JfxStage {
     menuItem.setOnAction(_ -> createTomTomOv2File());
     menu.getItems().add(menuItem);
     
+    // File: Edit Properties
+    MenuUtil.addMenuItem(menu, "Edit Properties", _ -> showPropertiesEditor());
+    
     if (VacationsRegistry.developmentMode) {
       // File: Edit Property Descriptors
       MenuUtil.addMenuItem(menu, "Edit Property Descriptors", _ -> showPropertyDescriptorsEditor());
-      
-      // File: Edit Properties
-      MenuUtil.addMenuItem(menu, "Edit Properties", _ -> showPropertiesEditor());
       
       // File: Map Snapshot popup
       MenuUtil.addMenuItem(menu, "Map Snapshot popup", _ -> showMapSnapshotPopup());
@@ -2722,8 +2723,11 @@ public class VacationsWindow extends JfxStage {
    * Show the User Properties editor.
    */
   private void showPropertiesEditor() {
+    String userHomeDir = System.getProperty("user.home");
+    Path customPropertiesFilePath = Path.of(userHomeDir, "MyWorld", VacationsRegistry.customPropertiesFile);
+    
     new PropertiesEditor("Vacation properties", customization, getBundle(VacationsWindow.class, "VacationsPropertyDescriptorsResource"),
-        VacationsRegistry.propertyDescriptorsResource, VacationsRegistry.customPropertiesFile);
+        VacationsRegistry.propertyDescriptorsResource, customPropertiesFilePath.toString());
   }
 
   /**

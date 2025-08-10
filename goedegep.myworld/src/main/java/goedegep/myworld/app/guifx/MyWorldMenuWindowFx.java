@@ -31,6 +31,7 @@ import goedegep.rolodex.app.RolodexRegistry;
 import goedegep.rolodex.app.guifx.RolodexMenuWindow;
 import goedegep.unitconverter.app.guifx.UnitConverterWindow;
 import goedegep.util.emf.EMFResource;
+import goedegep.vacations.app.TravelsApplication;
 import goedegep.vacations.app.guifx.VacationsLauncher;
 import javafx.animation.Interpolator;
 import javafx.animation.KeyFrame;
@@ -197,10 +198,13 @@ public class MyWorldMenuWindowFx extends JfxStage {
     });
     grid.add(applicationButton, 1, 1);
     
-    // Travel
+    // Travels
+    TravelsApplication travelsApplication = TravelsApplication.getInstance();
+    CustomizationFx travelsCustomization = travelsApplication.getCustomization();
+  
     applicationButton = createModuleButton(
         MyWorldAppModule.VACATIONS.getModuleName(),
-        CustomizationsFx.getCustomization(MyWorldAppModule.VACATIONS.name()).getResources().getApplicationImage(ImageSize.SIZE_3));
+        travelsCustomization.getResources().getApplicationImage(ImageSize.SIZE_3));
     applicationButton.setOnAction(new EventHandler<ActionEvent>() {
 
       @Override

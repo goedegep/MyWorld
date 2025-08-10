@@ -35,7 +35,6 @@ import goedegep.properties.model.PropertyGroup;
  * <ul>
  *   <li>{@link goedegep.properties.model.impl.PropertyGroupImpl#getProperties <em>Properties</em>}</li>
  *   <li>{@link goedegep.properties.model.impl.PropertyGroupImpl#getName <em>Name</em>}</li>
- *   <li>{@link goedegep.properties.model.impl.PropertyGroupImpl#getPropertyGroups <em>Property Groups</em>}</li>
  * </ul>
  *
  * @generated
@@ -79,16 +78,6 @@ public class PropertyGroupImpl extends MinimalEObjectImpl.Container implements P
    * @ordered
    */
   protected boolean nameESet;
-
-  /**
-   * The cached value of the '{@link #getPropertyGroups() <em>Property Groups</em>}' containment reference list.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getPropertyGroups()
-   * @generated
-   * @ordered
-   */
-  protected EList<PropertyGroup> propertyGroups;
 
   /**
    * <!-- begin-user-doc -->
@@ -181,26 +170,10 @@ public class PropertyGroupImpl extends MinimalEObjectImpl.Container implements P
    * @generated
    */
   @Override
-  public EList<PropertyGroup> getPropertyGroups() {
-    if (propertyGroups == null) {
-      propertyGroups = new EObjectContainmentEList<PropertyGroup>(PropertyGroup.class, this,
-          PropertiesPackage.PROPERTY_GROUP__PROPERTY_GROUPS);
-    }
-    return propertyGroups;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
   public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
     switch (featureID) {
     case PropertiesPackage.PROPERTY_GROUP__PROPERTIES:
       return ((InternalEList<?>) getProperties()).basicRemove(otherEnd, msgs);
-    case PropertiesPackage.PROPERTY_GROUP__PROPERTY_GROUPS:
-      return ((InternalEList<?>) getPropertyGroups()).basicRemove(otherEnd, msgs);
     }
     return super.eInverseRemove(otherEnd, featureID, msgs);
   }
@@ -217,8 +190,6 @@ public class PropertyGroupImpl extends MinimalEObjectImpl.Container implements P
       return getProperties();
     case PropertiesPackage.PROPERTY_GROUP__NAME:
       return getName();
-    case PropertiesPackage.PROPERTY_GROUP__PROPERTY_GROUPS:
-      return getPropertyGroups();
     }
     return super.eGet(featureID, resolve, coreType);
   }
@@ -239,10 +210,6 @@ public class PropertyGroupImpl extends MinimalEObjectImpl.Container implements P
     case PropertiesPackage.PROPERTY_GROUP__NAME:
       setName((String) newValue);
       return;
-    case PropertiesPackage.PROPERTY_GROUP__PROPERTY_GROUPS:
-      getPropertyGroups().clear();
-      getPropertyGroups().addAll((Collection<? extends PropertyGroup>) newValue);
-      return;
     }
     super.eSet(featureID, newValue);
   }
@@ -261,9 +228,6 @@ public class PropertyGroupImpl extends MinimalEObjectImpl.Container implements P
     case PropertiesPackage.PROPERTY_GROUP__NAME:
       unsetName();
       return;
-    case PropertiesPackage.PROPERTY_GROUP__PROPERTY_GROUPS:
-      getPropertyGroups().clear();
-      return;
     }
     super.eUnset(featureID);
   }
@@ -280,8 +244,6 @@ public class PropertyGroupImpl extends MinimalEObjectImpl.Container implements P
       return properties != null && !properties.isEmpty();
     case PropertiesPackage.PROPERTY_GROUP__NAME:
       return isSetName();
-    case PropertiesPackage.PROPERTY_GROUP__PROPERTY_GROUPS:
-      return propertyGroups != null && !propertyGroups.isEmpty();
     }
     return super.eIsSet(featureID);
   }

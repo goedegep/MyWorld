@@ -318,8 +318,6 @@ private static final String         VACATIONS_PROJECT_PATH = "../../../goedegep.
           new PropertiesMetaInfo(MyWorldAppModule.INVOICES_AND_PROPERTIES, INVOICES_AND_PROPERTIES_PROJECT_PATH, MyWorldRegistry.invoicesAndPropertiesPropertyDescriptorFileName, new InvoicesAndPropertiesRegistry()),
           new PropertiesMetaInfo(MyWorldAppModule.UNIT_CONVERTER, UNIT_CONVERTER_PROJECT_PATH, MyWorldRegistry.unitConverterPropertyDescriptorFileName, new UnitConverterRegistry()),
           new PropertiesMetaInfo(MyWorldAppModule.PCTOOLS, PCTOOLS_PROJECT_PATH, MyWorldRegistry.pctoolsPropertyDescriptorsFileName, new PCToolsRegistry()),
-//          new PropertiesMetaInfo(MyWorldAppModule.VACATIONS, VACATIONS_PROJECT_PATH, MyWorldRegistry.vacationsPropertyDescriptorsFileName, null)
-          new PropertiesMetaInfo(MyWorldAppModule.VACATIONS, VACATIONS_PROJECT_PATH, MyWorldRegistry.vacationsPropertyDescriptorsFileName, new VacationsRegistry())
       };
       
       for (PropertiesMetaInfo propertiesMetaInfo: propertiesMetaInfos) {
@@ -328,7 +326,6 @@ private static final String         VACATIONS_PROJECT_PATH = "../../../goedegep.
           if (url == null) {
             reportException(DefaultCustomizationFx.getInstance(), new RuntimeException("No URL for class " + propertiesMetaInfo.propertyFileURLProvider.getClass().getCanonicalName()));
           }
-          LOGGER.severe("URL: " + url);
           VacationsRegistry vacationsRegistry = new VacationsRegistry();
           PropertiesHandler.handleProperties(url, vacationsRegistry::getURLForFileName);
         }
@@ -393,11 +390,6 @@ private static final String         VACATIONS_PROJECT_PATH = "../../../goedegep.
     if (modulesToInitialize.contains(MyWorldAppModule.PCTOOLS)) {
 //      CustomizationsFx.addCustomizations(new File(createResourcePath(runningInEclipse, PCTOOLS_PROJECT_PATH, PCToolsRegistry.configurationFile)));
       CustomizationsFx.addCustomizations(new PCToolsRegistry().getCustomizationFileURL());
-    }
-    if (modulesToInitialize.contains(MyWorldAppModule.VACATIONS)) {
-//      CustomizationsFx.addCustomizations(new File(createResourcePath(runningInEclipse, VACATIONS_PROJECT_PATH, VacationsRegistry.configurationFile)));
-      VacationsRegistry vacationsRegistry = new VacationsRegistry();
-      CustomizationsFx.addCustomizations(vacationsRegistry.getCustomizationFileURL());
     }
   }
 
