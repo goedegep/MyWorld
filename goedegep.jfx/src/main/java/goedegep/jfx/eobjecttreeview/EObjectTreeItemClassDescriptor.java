@@ -99,6 +99,19 @@ public class EObjectTreeItemClassDescriptor extends EObjectTreeItemDescriptor {
   }
   
   /**
+   * Set whether the children of the node shall be expanded when the node is expanded.
+   * <p>
+   * This is only relevant for nodes that have children.
+   * 
+   * @param expandChildrenOnExpand if true, the children of the node will be expanded when the node is expanded.
+   */
+  public EObjectTreeItemClassDescriptor setExpandChildrenOnExpand(boolean expandChildrenOnExpand) {
+    super.setExpandChildrenOnExpand(expandChildrenOnExpand);
+    
+    return this;
+  }
+  
+  /**
    * Add a node operation.
    * <p>
    * This operation will be added to the end of the list of operations.

@@ -40,6 +40,15 @@ public abstract class EObjectTreeItemDescriptor {
   private boolean expandOnCreation = false;
   
   /**
+   * If true, the children of the node will be expanded when the node is expanded.
+   * <p>
+   * This is only relevant for nodes that have children.<br/>
+   * This only works for one level at the time. So if an item is expanded and {@code expandChildrenOnExpand} is true, its children will be expanded, but their children will not be expanded,
+   * even if they also have {@code expandChildrenOnExpand} set to true.
+   */
+  private boolean expandChildrenOnExpand = false;
+  
+  /**
    * If true, the text is in a strong font (bold).
    */
   private boolean strongText = false;
@@ -89,7 +98,7 @@ public abstract class EObjectTreeItemDescriptor {
   public boolean isExpandOnCreation() {
     return expandOnCreation;
   }
-  
+
   /**
    * Set whether the node shall be expanded upon creation or not
    * 
@@ -98,6 +107,30 @@ public abstract class EObjectTreeItemDescriptor {
    */
   public EObjectTreeItemDescriptor setExpandOnCreation(boolean expandOnCreation) {
     this.expandOnCreation = expandOnCreation;
+    
+    return this;
+  }
+  
+  /**
+   * Check whether the children of the node shall be expanded when the node is expanded.
+   * <p>
+   * This is only relevant for nodes that have children.
+   * 
+   * @return true if the children of the node shall be expanded when the node is expanded, false otherwise.
+   */  
+  public boolean isExpandChildrenOnExpand() {
+    return expandChildrenOnExpand;
+  }
+  
+  /**
+   * Set whether the children of the node shall be expanded when the node is expanded.
+   * <p>
+   * This is only relevant for nodes that have children.
+   * 
+   * @param expandChildrenOnExpand if true, the children of the node will be expanded when the node is expanded.
+   */
+  public EObjectTreeItemDescriptor setExpandChildrenOnExpand(boolean expandChildrenOnExpand) {
+    this.expandChildrenOnExpand = expandChildrenOnExpand;
     
     return this;
   }

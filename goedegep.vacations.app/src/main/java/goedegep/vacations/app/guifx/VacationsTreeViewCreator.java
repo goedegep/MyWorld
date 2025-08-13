@@ -302,6 +302,7 @@ public class VacationsTreeViewCreator {
         })
         .setStrongText(true)
         .setNodeIconFunction(_ -> TravelImageResource.VACATION.getIcon(ImageSize.SIZE_1))
+        .setExpandChildrenOnExpand(true)
         .addNodeOperationDescriptor(new NodeOperationDescriptorNew("New ...", null, null))
         .addNodeOperationDescriptor(new NodeOperationDescriptorNewBefore("New vacation before this one", null, null))
         .addNodeOperationDescriptor(new NodeOperationDescriptorNewAfter("New vacation after this one", null, null))
@@ -429,6 +430,7 @@ public class VacationsTreeViewCreator {
           return buf.toString();
         })
         .setNodeIconFunction(_ -> TravelImageResource.DAY.getIcon(ImageSize.SIZE_0))
+        .setExpandChildrenOnExpand(true)
         .addNodeOperationDescriptor(new NodeOperationDescriptorNewBefore("New element before this one ...", null, null))
         .addNodeOperationDescriptor(new NodeOperationDescriptorNewAfter("New element after this one ...", null, null))
         .addNodeOperationDescriptor(new NodeOperationDescriptorDelete("Delete element", null));

@@ -52,7 +52,7 @@ public class EObjectTreeItemForAttributeSimple extends EObjectTreeItem {
   public EObjectTreeItemForAttributeSimple(Object object, EAttribute eAttribute,
       EObjectTreeItemAttributeDescriptor eObjectTreeItemAttributeDescriptor, EObjectTreeView eObjectTreeView) {
     
-    super(object, EObjectTreeItemType.ATTRIBUTE_SIMPLE, eObjectTreeView);
+    super(object, EObjectTreeItemType.ATTRIBUTE_SIMPLE, eObjectTreeItemAttributeDescriptor, eObjectTreeView);
     
     if (eObjectTreeItemAttributeDescriptor == null) {
       throw new IllegalArgumentException("presentationDescriptor cannot be null for EObjectTreeItemForAttributeSimple. object=" +
