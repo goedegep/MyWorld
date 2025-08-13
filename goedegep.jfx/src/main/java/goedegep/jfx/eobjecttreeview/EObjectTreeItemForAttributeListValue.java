@@ -28,7 +28,7 @@ public class EObjectTreeItemForAttributeListValue extends EObjectTreeItem {
    */
   public EObjectTreeItemForAttributeListValue(Object object, EObjectTreeItemAttributeListValueDescriptor eObjectTreeItemAttributeListValueDescriptor, EObjectTreeView eObjectTreeView) {
     
-    super(object, EObjectTreeItemType.ATTRIBUTE_LIST_VALUE, eObjectTreeView);
+    super(object, EObjectTreeItemType.ATTRIBUTE_LIST_VALUE, eObjectTreeItemAttributeListValueDescriptor, eObjectTreeView);
     
     this.eObjectTreeItemAttributeListValueDescriptor = eObjectTreeItemAttributeListValueDescriptor;
   }

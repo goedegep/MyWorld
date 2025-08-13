@@ -44,7 +44,7 @@ public class EObjectTreeItemForAttributeList extends EObjectTreeItem {
   public EObjectTreeItemForAttributeList(Object object, EAttribute eAttribute,
       EObjectTreeItemAttributeListDescriptor eObjectTreeItemAttributeListDescriptor, EObjectTreeView eObjectTreeView) {
     
-    super(object, EObjectTreeItemType.ATTRIBUTE_LIST, eObjectTreeView);
+    super(object, EObjectTreeItemType.ATTRIBUTE_LIST, eObjectTreeItemAttributeListDescriptor, eObjectTreeView);
     
     if (object == null) {
       throw new IllegalArgumentException("object cannot be null for an EObjectTreeItemForAttributeList");

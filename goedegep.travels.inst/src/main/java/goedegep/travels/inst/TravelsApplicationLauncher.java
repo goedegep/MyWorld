@@ -19,11 +19,7 @@ import javafx.stage.Stage;
 public class TravelsApplicationLauncher extends JfxApplication {
   private static final Logger LOGGER = Logger.getLogger(TravelsApplicationLauncher.class.getName());
   
-  private static final String PROGRAM_NAME = "Travels";
-  private static final String LOG_SUBFOLDER = "MyWorld";
-  private static final String PROGRAM_DESCRIPTION =
-      PROGRAM_NAME + "Is an application for planning, enjoying and archiving travels.";
-  
+  private static final String LOG_SUBFOLDER = "MyWorld";  
 
 
   /**
@@ -33,11 +29,6 @@ public class TravelsApplicationLauncher extends JfxApplication {
    * The constructor sets up the logging.
    */
   public TravelsApplicationLauncher() {
-    String logFileBaseName = null;
-    if (!runningInEclipse()) {
-      logFileBaseName = System.getProperty("user.home") + File.separator + LOG_SUBFOLDER + File.separator + PROGRAM_NAME + "_logfile";
-    }
-    logSetup(Level.SEVERE, logFileBaseName);
   }
   
    /**  
@@ -52,7 +43,7 @@ public class TravelsApplicationLauncher extends JfxApplication {
   @Override
   public void start(Stage primaryStage) throws Exception {
     
-     // DevelopmentMode
+    // DevelopmentMode
     // In development mode extra items are added to menu's.
     // For now DevelopmentMode is active when 'Running in eclipse'.
     if (runningInEclipse()) {
@@ -68,26 +59,26 @@ public class TravelsApplicationLauncher extends JfxApplication {
         props.load(in);
         String appVersion = props.getProperty("app.version");
         VacationsRegistry.version = appVersion;
+        String appName = props.getProperty("app.name");
+        VacationsRegistry.applicationName = appName;
     } catch (Exception e) {
       LOGGER.severe("Error reading application properties: " + e.getMessage());
       System.exit(1);
     }
+    
+    // Setup logging. Only log to a file when not running in Eclipse.
+    String logFileBaseName = null;
+    if (!runningInEclipse()) {
+      logFileBaseName = System.getProperty("user.home") + File.separator + LOG_SUBFOLDER + File.separator + VacationsRegistry.applicationName + "_logfile";
+    }
+    logSetup(Level.SEVERE, logFileBaseName);
     
     TravelsApplication travelsApplication = TravelsApplication.getInstance();
     
     try {
       travelsApplication.showTravelsWindow();
 
-
-//      // Read the customization info.
-//      CustomizationsFx.addCustomizations(new VacationsRegistry().getCustomizationFileURL());
-//      
-//      LOGGER.severe("Customization added");
-//
-//      CustomizationFx customization = CustomizationsFx.getCustomization(MyWorldAppModule.VACATIONS.name());
-//
-//      Logger.getGlobal().severe("Hello World");
-
+      // Catch any uncaught exceptions in the JavaFX application thread.
       Thread.UncaughtExceptionHandler uncaughtExceptionHandler = new Thread.UncaughtExceptionHandler() {
         @Override
         public void uncaughtException(Thread thread, Throwable ex) {
@@ -97,7 +88,6 @@ public class TravelsApplicationLauncher extends JfxApplication {
       Thread javaFxApplicationThread = ThreadUtil.getThread("JavaFX Application Thread");
       javaFxApplicationThread.setUncaughtExceptionHandler(uncaughtExceptionHandler);
 
-//      new VacationsWindow(customization);
     } catch (Exception ex) {
       reportException(DefaultCustomizationFx.getInstance(), ex);
     }

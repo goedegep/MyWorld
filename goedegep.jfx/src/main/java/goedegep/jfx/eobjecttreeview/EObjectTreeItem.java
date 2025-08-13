@@ -52,7 +52,18 @@ public abstract class EObjectTreeItem extends TreeItem<Object> {
    * The type of information stored in the item. This value determines what is stored in the other fields.
    */
   private EObjectTreeItemType eObjectTreeItemType = null;
-
+  
+//  /**
+//   * If true, the children of the node will be expanded when the node is expanded.
+//   * <p>
+//   * This is only relevant for nodes that have children.<br/>
+//   * This only works for one level at the time. So if an item is expanded and {@code expandChildrenOnExpand} is true, its children will be expanded, but their children will not be expanded,
+//   * even if they also have {@code expandChildrenOnExpand} set to true.
+//   */
+//  protected boolean expandChildrenOnExpand = false;
+  
+  protected EObjectTreeItemDescriptor eObjectTreeItemDescriptor = null;
+  
 
   /**
    * Constructor.
@@ -61,11 +72,26 @@ public abstract class EObjectTreeItem extends TreeItem<Object> {
    * @param eObjectTreeItemType the {@code EObjectTreeItemType} for this tree item (mandatory)
    * @param presentationDescriptor a TreeNode containing the specification for the representation of this item (mandatory)
    */
-  public EObjectTreeItem(Object value, EObjectTreeItemType eObjectTreeItemType, EObjectTreeView eObjectTreeView) {
+  public EObjectTreeItem(Object value, EObjectTreeItemType eObjectTreeItemType, EObjectTreeItemDescriptor eObjectTreeItemDescriptor, EObjectTreeView eObjectTreeView) {
     super(value);
     
+    this.eObjectTreeItemDescriptor = eObjectTreeItemDescriptor;
+    
+//    if (eObjectTreeItemDescriptor != null  &&  eObjectTreeItemDescriptor.isExpandChildrenOnExpand()) {
+//      expandChildrenOnExpand = true;
+//    }
+        
     this.eObjectTreeItemType = eObjectTreeItemType;
     this.eObjectTreeView = eObjectTreeView;
+    
+    expandedProperty().addListener((_, _, newValue) -> {
+      LOGGER.fine("=> expandedProperty changed: " + newValue);
+      if (newValue  &&  eObjectTreeItemDescriptor.isExpandChildrenOnExpand()  &&  !eObjectTreeView.autoExpandingChildren) {
+        eObjectTreeView.autoExpandingChildren = true;
+        getChildren().forEach((TreeItem<Object> treeItem) -> treeItem.setExpanded(true));
+        eObjectTreeView.autoExpandingChildren = false;
+      }
+    });
         
     LOGGER.info("<=>");
   }

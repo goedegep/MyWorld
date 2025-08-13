@@ -67,7 +67,7 @@ public class EObjectTreeItemForObjectList extends EObjectTreeItem {
   public EObjectTreeItemForObjectList(Object value, EReference eReference,
       EObjectTreeItemClassListReferenceDescriptor eObjectTreeItemClassListReferenceDescriptor, EObjectTreeView eObjectTreeView) {
     
-    super(value, EObjectTreeItemType.OBJECT_LIST, eObjectTreeView);
+    super(value, EObjectTreeItemType.OBJECT_LIST, eObjectTreeItemClassListReferenceDescriptor, eObjectTreeView);
     
     Objects.requireNonNull(value, "The value may not be null");
     if (!(value instanceof EList)) {
@@ -119,7 +119,7 @@ public class EObjectTreeItemForObjectList extends EObjectTreeItem {
         throw new RuntimeException("No presentation descriptor found for class: " + listEObject.eClass().getName());
       }
       // Use the eClass from the reference, the value may be a sub type of this.
-      EObjectTreeItem child = new EObjectTreeItemForObject(listEObject, (EClass) eReference.getEType(), null, getEObjectTreeView());
+      EObjectTreeItem child = EObjectTreeItemForObject.createEObjectTreeItemForObject(listEObject, (EClass) eReference.getEType(), null, getEObjectTreeView());
       children.add(child);
     }
     
@@ -241,7 +241,7 @@ public class EObjectTreeItemForObjectList extends EObjectTreeItem {
     @SuppressWarnings("unchecked")
     List<? extends EObject> eObjects = (List<? extends EObject>) object;
     EObject listEObject = eObjects.get(position);
-    EObjectTreeItem child = new EObjectTreeItemForObject(listEObject, (EClass) eReference.getEType(), null, getEObjectTreeView());
+    EObjectTreeItem child = EObjectTreeItemForObject.createEObjectTreeItemForObject(listEObject, (EClass) eReference.getEType(), null, getEObjectTreeView());
     if (children.size() < position + 1) {
       children.add(child);
     } else {

@@ -142,6 +142,11 @@ public class EObjectTreeView extends TreeView<Object> implements ObjectSelector<
   boolean dontNotifyListeners = false;
   
   /**
+   * If true, children are automatically being expanded when the item is expanded as a result of {@code expandChildrenOnExpand} set for the item.
+   */
+  boolean autoExpandingChildren = false;
+  
+  /**
    * Constructor
    */
   public EObjectTreeView() {
@@ -479,7 +484,7 @@ public class EObjectTreeView extends TreeView<Object> implements ObjectSelector<
     }
     
     if (eObject != null) {
-      EObjectTreeItem rootItem = new EObjectTreeItemForObject(eObject, eObject.eClass(), null, this);
+      EObjectTreeItem rootItem = EObjectTreeItemForObject.createEObjectTreeItemForObject(eObject, eObject.eClass(), null, this);
       setRoot(rootItem);
       eObject.eAdapters().add(eContentAdapter);
     } else {
@@ -615,8 +620,9 @@ public class EObjectTreeView extends TreeView<Object> implements ObjectSelector<
           } else {
             EObjectTreeItem changedTreeItem = (EObjectTreeItemForObject) changedContainingTreeItem.findChildTreeItem(eReference);
             if (notification.getEventType() == Notification.SET) {
-              // the referred value has changed
-              ((EObjectTreeItemForObject) changedTreeItem).handleAttributeValueChanged(eReference, notification.getNewValue());
+              if (changedTreeItem != null) {
+                 ((EObjectTreeItemForObject) changedTreeItem).handleAttributeValueChanged(eReference, notification.getNewValue());
+              }
             } else {
               throw new RuntimeException("Notification event type '" + notification.getEventType() + "' not implemented for single reference");
             }

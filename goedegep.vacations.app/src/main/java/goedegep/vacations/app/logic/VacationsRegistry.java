@@ -14,6 +14,10 @@ public class VacationsRegistry implements PropertyFileURLProvider {
   private static final String VACATIONS_PROPERTY_DESCRIPTORS_FILE = "VacationsPropertyDescriptors.xmi";
   private static final String VACATIONS_CONFIGURATION_FILE = "VacationsConfiguration.xmi";
   
+  /**
+   * The name of the application.
+   */
+  public static String applicationName;
   
   /**
    * Name of the author of the application.
