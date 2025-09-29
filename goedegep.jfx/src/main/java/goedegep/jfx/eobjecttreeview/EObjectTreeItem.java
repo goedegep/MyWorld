@@ -3,6 +3,7 @@ package goedegep.jfx.eobjecttreeview;
 import java.nio.ByteBuffer;
 import java.util.logging.Logger;
 
+import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
 
 import goedegep.util.emf.EObjectPath;
@@ -132,6 +133,23 @@ public abstract class EObjectTreeItem extends TreeItem<Object> {
    * Determine whether this tree item is a leaf item.
    */
   abstract boolean isItemALeafItem();
+  
+  /**
+   * Get the first parent tree item (including this item) which contains an EObject.
+   * 
+   * @return the first parent tree item (including this item) which contains an EObject, or null if no such parent exists.
+   */
+  public EObjectTreeItem getFirstEObjectParent() {
+    Object value = getValue();
+    EObjectTreeItem currentTreeItem = this;
+    
+    while (!(value instanceof EObject)  &&  currentTreeItem != null) {
+      currentTreeItem = (EObjectTreeItem) currentTreeItem.getParent();
+      value = currentTreeItem.getValue();
+    }
+    
+    return currentTreeItem;
+  }
 
   /**
    * @inheritDoc

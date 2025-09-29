@@ -262,7 +262,7 @@ public class VacationChecklistWindow extends JfxStage {
     for (VacationChecklistLabel vacationChecklistLabel: vacationChecklist.getVacationChecklistLabelsList().getVacationChecklistLabels()) {
       CheckBox checkBox = componentFactory.createCheckBox(vacationChecklistLabel.getName(), false);
       checkBox.selectedProperty().addListener(
-          (ObservableValue<? extends Boolean> ov, Boolean oldValue, Boolean newValue) -> {
+          (ObservableValue<? extends Boolean> _, Boolean _, Boolean newValue) -> {
              if (newValue) {
                // add label to list
                LOGGER.info("Adding label: " + vacationChecklistLabel.getName() + " to current vacation");
@@ -352,7 +352,7 @@ public class VacationChecklistWindow extends JfxStage {
       Text text = componentFactory.createText(vacationChecklistItem.getName());
       updateItemControls(finalItemStatus, checkBox, text);
             
-      text.setOnMouseClicked(e -> {
+      text.setOnMouseClicked((_) -> {
         if (finalItemStatus.getPackStatus() == PackStatus.NOT_NEEDED) {
           finalItemStatus.setPackStatus(PackStatus.TODO);
         } else {
@@ -362,7 +362,7 @@ public class VacationChecklistWindow extends JfxStage {
         updateToDoList();
       });
       
-      checkBox.selectedProperty().addListener((ObservableValue<? extends Boolean> ov, Boolean oldValue, Boolean newValue) -> {
+      checkBox.selectedProperty().addListener((ObservableValue<? extends Boolean> _, Boolean _, Boolean newValue) -> {
         if (newValue) {
           finalItemStatus.setPackStatus(PackStatus.PACKED);
         } else {
@@ -480,15 +480,15 @@ public class VacationChecklistWindow extends JfxStage {
     buttonsBox.getChildren().add(spacer);
     
     Button clearButton = componentFactory.createButton("Clear", "Clear the list for the current vacation");
-    clearButton.setOnAction(e -> clearCurrentVacation());
+    clearButton.setOnAction((_) -> clearCurrentVacation());
     buttonsBox.getChildren().add(clearButton);
     
     Button cancelButton = componentFactory.createButton("Cancel", "Close this window without saving any changes");
-    cancelButton.setOnAction(e -> close());
+    cancelButton.setOnAction((_) -> close());
     buttonsBox.getChildren().add(cancelButton);
     
     Button saveButton = componentFactory.createButton("Save", "Save changes");
-    saveButton.setOnAction(e -> saveVacationChecklist());
+    saveButton.setOnAction((_) -> saveVacationChecklist());
     buttonsBox.getChildren().add(saveButton);
         
     return  buttonsBox;

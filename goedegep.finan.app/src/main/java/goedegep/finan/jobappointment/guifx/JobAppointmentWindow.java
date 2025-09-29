@@ -1,7 +1,6 @@
 package goedegep.finan.jobappointment.guifx;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Calendar;
 import java.util.logging.Logger;
@@ -77,7 +76,7 @@ public class JobAppointmentWindow extends JfxStage {
     String jobAppointmentFileName = file.getAbsolutePath();
     try {
       jobAppointment = jobAppointmentResource.load(jobAppointmentFileName);
-    } catch (FileNotFoundException e) {
+    } catch (IOException e) {
       LOGGER.severe("File not found: " + e.getMessage());
       Alert alert = componentFactory.createYesNoConfirmationDialog(
           null,

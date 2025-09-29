@@ -174,10 +174,21 @@ public enum LocationCategory {
   
   /**
    * Get the URL of the icon for this location category.
+   * 
    * @return the URL of the icon.
    */
   public URL getIconURL() {
     return imageResource.getImageUrl();
+  }
+  
+  /**
+   * Get the URL of the icon for this location category in a specific size.
+   * 
+   * @param imageSize the size of the icon to be returned.
+   * @return the URL of the icon in the specified size.
+   */
+  public URL getIconURL(ImageSize imageSize) {
+    return imageResource.getImageUrl(imageSize);
   }
   
   /**

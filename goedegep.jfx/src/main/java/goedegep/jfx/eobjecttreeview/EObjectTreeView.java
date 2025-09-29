@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.BiConsumer;
 import java.util.function.BiPredicate;
 import java.util.logging.Logger;
 
@@ -146,6 +147,11 @@ public class EObjectTreeView extends TreeView<Object> implements ObjectSelector<
    */
   boolean autoExpandingChildren = false;
   
+//  /**
+//   * A new {@code EObject} initialization function (optional).
+//   */
+//  private BiConsumer<EObject, EObjectTreeItem> newEObjectInitializationFunction = null;
+  
   /**
    * Constructor
    */
@@ -239,6 +245,12 @@ public class EObjectTreeView extends TreeView<Object> implements ObjectSelector<
     return this;
   }
   
+//  public EObjectTreeView setNewEObjectInitializationFunction(BiConsumer<EObject, EObjectTreeItem> newEObjectInitializationFunction) {
+//    this.newEObjectInitializationFunction = newEObjectInitializationFunction;
+//    
+//    return this;
+//  }
+
   /**
    * Get the isDropPossible function.
    * 
@@ -609,6 +621,15 @@ public class EObjectTreeView extends TreeView<Object> implements ObjectSelector<
                 LOGGER.severe("notification: " + EmfUtil.printNotification(notification));
               } else {
                 ((EObjectTreeItemForObjectList) changedTreeItem).addObjectListChild(notification.getPosition());
+//                Object listAsObject = changedTreeItem.getValue();
+//                List list = (List) listAsObject;
+//                Object newObject = list.get(notification.getPosition());
+//                EObject newEObject = (EObject) newObject;
+//                EClass eClass = newEObject.eClass();
+//                EObjectTreeItemClassDescriptor desc = getBestClassDescriptor(eClass);
+//                if (newEObjectInitializationFunction != null) {
+//                  newEObjectInitializationFunction.accept(newEObject, changedTreeItem);
+//                }
               }
             } else if (notification.getEventType() == Notification.REMOVE) {
               // an element is removed from a list of objects
@@ -665,8 +686,9 @@ public class EObjectTreeView extends TreeView<Object> implements ObjectSelector<
               // the value of an attribute has changed
               if (changedTreeItem == null) {
                 LOGGER.severe("changedTreeItem is null!!!");
+              } else {
+                ((EObjectTreeItemForAttributeSimple) changedTreeItem).handleAttributeValueChanged(eAttribute, notification.getNewValue());
               }
-              ((EObjectTreeItemForAttributeSimple) changedTreeItem).handleAttributeValueChanged(eAttribute, notification.getNewValue());
             } else {
               throw new RuntimeException("EventType: " + notification.getEventType() + " , for eAttribute not supported: " + eAttribute.toString());
             }
@@ -781,7 +803,6 @@ public class EObjectTreeView extends TreeView<Object> implements ObjectSelector<
   }
 
   public void selectObjectForObject(Object object) {
-    LOGGER.severe("object=" + object);
     EObjectTreeItem treeItem = findTreeItem(object);
     selectObject(treeItem);
   }

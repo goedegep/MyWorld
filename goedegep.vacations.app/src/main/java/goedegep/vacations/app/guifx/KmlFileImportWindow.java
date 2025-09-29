@@ -250,7 +250,7 @@ public class KmlFileImportWindow extends JfxStage {
    * @param selectedTreeItem the currently selected item in the Vacations tree view.
    */
   private void handleNewTreeItemSelected(TreeItem<Object> selectedTreeItem) {
-    Travel travel = VacationsWindow.getVacationForTreeItem(selectedTreeItem, VacationsPackage.eINSTANCE.getTravel());
+    Travel travel = VacationsWindow.getTravelForTreeItem(selectedTreeItem, VacationsPackage.eINSTANCE.getTravel());
     if (travel != null) {
       vacationElementPanel.handleNewVacationSelected(travel);
       addElementToVacationPanel.handleNewTreeItemSelected(selectedTreeItem);

@@ -103,7 +103,7 @@ public class GpxUtil {
       gpxResource.load(fileName);
       DocumentRoot documentRoot = gpxResource.getEObject();
       return getStartLocation(documentRoot.getGpx());
-    } catch (FileNotFoundException e) {
+    } catch (IOException e) {
       e.printStackTrace();
       return null;
     }

@@ -238,7 +238,7 @@ public class OsmAndUtil {
           name = location.getCity();
         }
         if (name != null) {
-          buf.append(SgmlUtil.createElement(indent, null, "name", HtmlUtil.encodeHTML(name))).append(NEW_LINE);
+          buf.append(SgmlUtil.createElement(indent, null, "name", HtmlUtil.encodeHTML(name, false))).append(NEW_LINE);
         }
         
         // category: is the literal of the location type if available, else 'Other'.
@@ -252,11 +252,11 @@ public class OsmAndUtil {
         if (category == null) {
           category = "Other";
         }
-        buf.append(SgmlUtil.createElement(indent, null, "category", HtmlUtil.encodeHTML(category))).append(NEW_LINE);
+        buf.append(SgmlUtil.createElement(indent, null, "category", HtmlUtil.encodeHTML(category, false))).append(NEW_LINE);
         
         // description: is the location description if available.
         if (location.isSetDescription()) {
-          buf.append(SgmlUtil.createElement(indent, null, "desc", HtmlUtil.encodeHTML(location.getDescription()))).append(NEW_LINE);
+          buf.append(SgmlUtil.createElement(indent, null, "desc", HtmlUtil.encodeHTML(location.getDescription(), false))).append(NEW_LINE);
         }
         
         // color: based on the location type and color map.

@@ -28,4 +28,7 @@
   <propertyDescriptors name="knownFiles" description="List of known files in the vacations folder."
       displayName="Known files" initialValue="Vakanties.xmi;VakantieChecklist.xmi"
       installInitialValue="true"/>
+  <propertyDescriptors name="ignoreVacationPictureFolders" description="List of folder names which are to be ignored in a vacation pictures folder."
+      displayName="Picture folders to ignore" initialValue="weg;Originals"
+      installInitialValue="true"/>
 </properties:PropertyDescriptorGroup>

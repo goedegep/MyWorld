@@ -1,6 +1,5 @@
 package goedegep.media.mediadb.app;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Map;
@@ -12,7 +11,6 @@ import goedegep.media.app.MediaRegistry;
 import goedegep.media.mediadb.app.guifx.AlbumDetailsWindow;
 import goedegep.media.mediadb.app.guifx.AlbumsTable;
 import goedegep.media.mediadb.app.guifx.MediaDbWindow;
-import goedegep.media.mediadb.model.Album;
 import goedegep.media.mediadb.model.MediaDb;
 import goedegep.media.mediadb.model.MediadbFactory;
 import goedegep.media.mediadb.model.MediadbPackage;
@@ -110,7 +108,7 @@ public class MediaDbAppLauncher {
     try {
       mediaDbResource.load(MediaRegistry.mediaDbFile);
       returnValue = true;
-    } catch (FileNotFoundException e) {
+    } catch (IOException e) {
       Alert alert = customization.getComponentFactoryFx().createYesNoConfirmationDialog(
           null,
           "The file with media information (" + MediaRegistry.mediaDbFile + ") doesn't exist yet.",

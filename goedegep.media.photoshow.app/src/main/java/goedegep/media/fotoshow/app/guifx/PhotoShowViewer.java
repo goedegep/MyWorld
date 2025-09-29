@@ -1,7 +1,6 @@
 package goedegep.media.fotoshow.app.guifx;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.DirectoryIteratorException;
 import java.nio.file.DirectoryStream;
@@ -159,7 +158,7 @@ public class PhotoShowViewer extends JfxStage {
       PhotoShowSpecification photoShowSpecification = emfResource.load(currentPhotospecificationFile.getAbsolutePath());
       List<String> photosToShow = photoShowSpecification.getPhotosToShow();
       currentPhotoWindow = new PhotoWindow(customization, photosToShow, photoShowSpecification.getTitle());
-    } catch (FileNotFoundException e) {
+    } catch (IOException e) {
       e.printStackTrace();
     } catch (WrappedException wrappedException) {
       componentFactory.createExceptionDialog("An exception occurred while reading the file: '" + currentPhotospecificationFile.getAbsolutePath() + "'.", wrappedException).show();

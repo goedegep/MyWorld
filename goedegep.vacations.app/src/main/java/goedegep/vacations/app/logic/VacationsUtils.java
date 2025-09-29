@@ -53,16 +53,13 @@ public class VacationsUtils {
   private static final Logger LOGGER = Logger.getLogger(VacationsUtils.class.getName());
   
   /**
-   * For a given treeItem, check whether it is the vacations attribute of a Vacations object. If so, return the vacations list, else return null.
+   * Get the vacation to which an object belongs.
    * 
-   * @param treeItem the <code>TreeItem</code> to check.
-   * @return the vacations list, or null.
+   * @param object the {@code Object} for which the vacation is to be obtained.
+   * @return The {@code Vacation} to which the {@code object} belongs, or null if the object is not part of a vacation.
    */
-  public static Vacation getVacationForObject(Object object) {
-    LOGGER.severe("=> object=" + (object != null ? object.toString() : "(null)"));
-    
+  public static Vacation getVacationForObject(Object object) {    
     if (object == null) {
-      LOGGER.info("<= (null)");
       return null;
     }
     
@@ -72,15 +69,38 @@ public class VacationsUtils {
       }
       
       if (eObject instanceof Vacation vacation) {
-        LOGGER.severe("<= vacation=" + vacation);
         return vacation;
       }
     }
         
-    LOGGER.severe("<= vacation=" + "(null)");
     return null;
   }
   
+  /**
+   * Get the type of map image that can be used for an object.
+   * <p>
+   * The type is determined by the class of the object, or by the class of its container.
+   * 
+   * @param eObject the {@code Object} for which the map image type is to be obtained.
+   * @return The {@code MapImageType} for the {@code object}, or null if no type can be determined.
+   */
+  public static MapImageType getMapImageType(EObject eObject) {
+    while (eObject != null) {
+      switch (eObject) {
+      case Day _ -> {return MapImageType.DAY;}
+      case DayTrip _ -> {return MapImageType.TRAVEL;}
+      case GPXTrack _ -> {return MapImageType.LOCATION;}
+      case Location _ -> {return MapImageType.LOCATION;}
+      case Picture _ -> {return MapImageType.LOCATION;}
+      case Travel _ -> {return MapImageType.TRAVEL;}
+      default -> {}
+      }
+      
+      eObject = eObject.eContainer();
+    }
+    
+    return null;
+  }
   
   /**
    * Get a list of lines connecting the locations of a vacation.
@@ -118,7 +138,45 @@ public class VacationsUtils {
     
     return locationConnectingLines;
   }
+
+  
+  /**
+   * Get a list of lines connecting the locations of a day trip.
+   * <p>
+   * For point locations, a line connects the points.<br/>
+   * For a GPX track, the line ends at the start of the track and a new line starts at the end of the track.<br/>
+   * At the end of a day, if there is a stayed at location for that day, the line goes back to that stayed at location.
+   * 
+   * @param dayTrip the {@code DayTrip} for which the locations are to be collected.
+   * @return a list of polylines (a list of code WGS84Coordinates) of all locations of {@code dayTrip}.
+   * @throws FileNotFoundException if a file, referenced by an element, doesn't exist.
+   */
+  public static List<List<WGS84Coordinates>> getLocationConnectingLines(DayTrip dayTrip) throws FileNotFoundException {
+    // The list of polylines
+    List<List<WGS84Coordinates>> locationConnectingLines = new ArrayList<>();
     
+    /*
+     * The current polyline.
+     * A polyline often goes across vacation elements. Therefore the method addGeoLocationsForVacationElement() gets the current polyline as a parameter.
+     * If a polyline ends addGeoLocationsForVacationElement() creates a new line and adds it to the locationConnectingLines.
+     * The last line may be empty, so we have to remove that in that case.
+     */
+    List<WGS84Coordinates> locationsConnectingLine = new ArrayList<>();
+        
+    locationConnectingLines.add(locationsConnectingLine);
+    
+    for (VacationElement element: dayTrip.getElements()) {
+      locationsConnectingLine = addGeoLocationsForVacationElement(locationConnectingLines, locationsConnectingLine, element);
+    }
+    
+    if (locationConnectingLines.getLast().size() < 2) {
+      locationConnectingLines.removeLast();
+    }
+    
+    
+    return locationConnectingLines;
+  }
+  
   /**
    * Get all geo-locations of a day.
    * 
@@ -634,7 +692,7 @@ public class VacationsUtils {
       
       WGS84Coordinates coordinates = new WGS84Coordinates(firstTrackPoint.getLat().doubleValue(), firstTrackPoint.getLon().doubleValue());
       geoLocations.add(coordinates);
-    } catch (FileNotFoundException e) {
+    } catch (IOException e) {
       e.printStackTrace();
     }
     
@@ -682,8 +740,8 @@ public class VacationsUtils {
         geoLocations.add(endCoordinates);
         locationsConnectingLines.add(geoLocations);
       }
-    } catch (FileNotFoundException e) {
-      e.printStackTrace();
+    } catch (IOException e) {
+      LOGGER.severe("Error loading GPX file: " + fileName);
     }
     
     return geoLocations;
@@ -1051,18 +1109,40 @@ public class VacationsUtils {
     return new Triplet<WGS84Coordinates, BoundingBox, List<Boundary>>(GpxUtil.getStartLocation(fileName), null, null);    
   }
   
-  public static Day getDay(VacationElement vacationElement) {
-    if (vacationElement == null) {
+//  public static Day getDay(VacationElement vacationElement) {
+//    if (vacationElement == null) {
+//      return null;
+//    }
+//    
+//    EObject container = vacationElement.eContainer();
+//
+//    while ((container != null) && !(container instanceof Day)) {
+//      container = container.eContainer();
+//    }
+//
+//    return (Day) container;
+//  }
+  
+  /**
+   * Get the first ancestor (including the {@code eObject} itself) of a specific type of an EObject.
+   * 
+   * @param eObject the EObject for which to get the ancestor.
+   * @param clazz the class of the ancestor to get.
+   * @return the first ancestor (including the {@code eObject} itself) of (including the {@code eObject itself) which is an instance of {@code clazz}, or null if no such ancestor exists.
+   */
+  @SuppressWarnings("unchecked")
+  public static <T> T getAncestorOfType(EObject eObject, Class<T> clazz) {
+    if (eObject == null) {
       return null;
     }
     
-    EObject container = vacationElement.eContainer();
+    EObject container = eObject;
 
-    while ((container != null) && !(container instanceof Day)) {
+    while ((container != null) && !clazz.isInstance(container)) {
       container = container.eContainer();
     }
 
-    return (Day) container;
+    return (T) container;
   }
   
   /**

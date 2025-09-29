@@ -93,11 +93,11 @@ public class VacationChecklistEditor extends JfxStage {
     buttonsBox.getChildren().add(spacer);
     
     Button cancelButton = componentFactory.createButton("Cancel", "Close this window without saving any changes");
-    cancelButton.setOnAction(e -> close());
+    cancelButton.setOnAction((_) -> close());
     buttonsBox.getChildren().add(cancelButton);
     
     Button saveButton = componentFactory.createButton("Save", "Save changes");
-    saveButton.setOnAction(e -> saveVacationChecklist());
+    saveButton.setOnAction((_) -> saveVacationChecklist());
     buttonsBox.getChildren().add(saveButton);
         
     return  buttonsBox;

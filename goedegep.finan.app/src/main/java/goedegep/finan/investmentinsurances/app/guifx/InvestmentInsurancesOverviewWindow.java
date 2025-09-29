@@ -1,7 +1,6 @@
 package goedegep.finan.investmentinsurances.app.guifx;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
@@ -16,7 +15,6 @@ import goedegep.jfx.ComponentFactoryFx;
 import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.JfxStage;
 import goedegep.jfx.MenuUtil;
-import goedegep.jfx.browser.BrowserWindow;
 import goedegep.properties.app.guifx.PropertiesEditor;
 import goedegep.util.desktop.DesktopUtil;
 import goedegep.util.emf.EMFResource;
@@ -92,7 +90,7 @@ public class InvestmentInsurancesOverviewWindow extends JfxStage {
     File investmentInsurancesFile = new File(FinanRegistry.dataDirectory, FinanRegistry.investmentInsurancesFileName);
     try {
       investmentInsurancesData = investmentInsurancesResource.load(investmentInsurancesFile.getAbsolutePath());
-    } catch (FileNotFoundException e) {
+    } catch (IOException e) {
       LOGGER.severe("File not found: " + e.getMessage());
       
       Alert alert = componentFactory.createYesNoConfirmationDialog(

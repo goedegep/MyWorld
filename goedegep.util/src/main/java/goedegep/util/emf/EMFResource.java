@@ -229,17 +229,17 @@ public class EMFResource<E extends EObject> {
    * @return the top level EObject of the resource.
    * @throws FileNotFoundException if the specified file doesn't exist.
    */
-  public E load(URL resourceURL) throws FileNotFoundException {
+  public E load(URL resourceURL) throws IOException, FileNotFoundException {
 //    LOGGER.severe("=> resourceFileName="  + resourceURL);
     
     URI fileURI = URI.createURI(resourceURL.toString());
     resource.unload();
     resource.setURI(fileURI);
-    try {
+//    try {
       resource.load(null);
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
+//    } catch (IOException e) {
+//      e.printStackTrace();
+//    }
         
     if (resource.getContents().size() != 1) {
       throw new RuntimeException("Wrong number of elements in contents: " + resource.getContents().size());
@@ -265,7 +265,7 @@ public class EMFResource<E extends EObject> {
    * @throws FileNotFoundException if the specified file doesn't exist.
    * @throws MalformedURLException 
    */
-  public E load(String resourceFileName) throws FileNotFoundException {
+  public E load(String resourceFileName) throws IOException, FileNotFoundException {
     java.net.URI resourceURI = Path.of(resourceFileName).toUri();
 //    java.net.URI resourceURI = java.net.URI.create("file:" + resourceFileName);
 

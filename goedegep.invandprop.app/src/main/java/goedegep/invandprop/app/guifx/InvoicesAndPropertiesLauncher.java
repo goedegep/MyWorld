@@ -497,7 +497,7 @@ public class InvoicesAndPropertiesLauncher {
     try {
       invoicesAndPropertiesResource.load(InvoicesAndPropertiesRegistry.invoicesAndPropertiesFile);
       returnValue = true;
-    } catch (FileNotFoundException e) {
+    } catch (IOException e) {
       LOGGER.severe("File not found: " + e.getMessage());
       Alert alert = customization.getComponentFactoryFx().createYesNoConfirmationDialog(
           null,

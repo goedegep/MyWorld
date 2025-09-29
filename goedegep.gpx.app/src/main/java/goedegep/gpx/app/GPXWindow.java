@@ -358,7 +358,7 @@ public class GPXWindow extends JfxStage {
         gpxResource.setEObject(documentRoot);
         gpxResource.setFileName(gpxFile.getAbsolutePath());
         handleNewGpxFile();
-      } catch (FileNotFoundException e) {
+      } catch (IOException e) {
         e.printStackTrace();
       } catch (WrappedException wrappedException) {
         componentFactory.createExceptionDialog("An exception occurred while reading the file: '" + gpxFile.getAbsolutePath() + "'.", wrappedException).show();
@@ -369,7 +369,7 @@ public class GPXWindow extends JfxStage {
       try {
         documentRoot = gpxResource.load(gpxFile.getAbsolutePath());
         handleNewGpxFile();
-      } catch (FileNotFoundException e) {
+      } catch (IOException e) {
         e.printStackTrace();
       } catch (WrappedException wrappedException) {
         componentFactory.createExceptionDialog("An exception occurred while reading the file: '" + gpxFile.getAbsolutePath() + "'.", wrappedException).show();
@@ -546,7 +546,7 @@ public class GPXWindow extends JfxStage {
        }
      }
       
-    } catch (FileNotFoundException e) {
+    } catch (IOException e) {
       LOGGER.severe("Error reading GPX file: " + gpxFile.getAbsolutePath());
       e.printStackTrace();
     }

@@ -87,14 +87,14 @@ public class VacationsRegistry implements PropertyFileURLProvider {
   public static String vacationPicturesFolderName = null;
   
   /**
+   * Comma-separated list of folder names to ignore in the vacation pictures folder.
+   */
+  public static String ignoreVacationPictureFolders = null;
+  
+  /**
    * List of known files in the vacations folder.
    */
   public static String knownFiles = null;
-  
-  /**
-   * If true coordinates shall be shown in the document
-   */
-  public static boolean showCoordinatesInDocument = true;
   
 
   @Override

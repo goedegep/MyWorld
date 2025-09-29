@@ -1,7 +1,6 @@
 package goedegep.properties.app.guifx;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Objects;
 import java.util.ResourceBundle;
@@ -425,7 +424,7 @@ public class PropertiesEditor extends JfxStage {
       }
       fillEditablePropertiesGroupFromPropertyGroup(editablePropertyGroup, propertyGroup);
 
-    } catch (FileNotFoundException e) {
+    } catch (IOException e) {
       LOGGER.severe("FileNotFoundException");
       e.printStackTrace();
     }

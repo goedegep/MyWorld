@@ -505,6 +505,16 @@ public class FileUtils {
   /**
    * Check whether a file is a picture file (based on its extension).
    * 
+   * @param path a {@code Path}. This value may not be null.
+   * @return true is the file is a picture file, false otherwise.
+   */
+  public static boolean isPictureFile(Path path) {
+    return isPictureFile(path.toAbsolutePath().toString());
+  }
+
+  /**
+   * Check whether a file is a picture file (based on its extension).
+   * 
    * @param file a File. This value may not be null.
    * @return true is the file is a picture file, false otherwise.
    */
@@ -528,20 +538,30 @@ public class FileUtils {
   }
 
   /**
+   * Check whether a path is a jpeg file (based on its extension).
+   * 
+   * @param path a {@code Path}. This value may not be null.
+   * @return true is the {@code path} is a jpeg file, false otherwise.
+   */
+  public static boolean isJpegFile(Path path) {
+    return isJpegFile(path.toString());
+  }
+
+  /**
    * Check whether a file is a jpeg file (based on its extension).
    * 
-   * @param file a File. This value may not be null.
-   * @return true is the file is a jpeg file, false otherwise.
+   * @param file a {@code File}. This value may not be null.
+   * @return true is the {@code file} is a jpeg file, false otherwise.
    */
   public static boolean isJpegFile(File file) {
     return isJpegFile(file.getAbsolutePath());
   }
   
   /**
-   * Check whether a file is a jpeg file.
+   * Check whether a file name is a jpeg file (based on its extension).
    * 
    * @param fileName a filename. This value may not be null.
-   * @return true is the file is a jpeg file, false otherwise.
+   * @return true is the {@code fileName} is a jpeg file, false otherwise.
    */
   public static boolean isJpegFile(String fileName) {
     String fileExtension = getFileExtension(fileName);

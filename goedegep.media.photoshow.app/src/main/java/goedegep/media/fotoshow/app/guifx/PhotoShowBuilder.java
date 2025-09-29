@@ -992,7 +992,7 @@ public class PhotoShowBuilder extends JfxStage {
           "Any photos that were selected for the show and now don't exist anymore will be reported after all photo information" +
           "has been read from the file system.").showAndWait();
       
-    } catch (FileNotFoundException e) {
+    } catch (IOException e) {
       e.printStackTrace();
     } catch (WrappedException wrappedException) {
       componentFactory.createExceptionDialog("An exception occurred while reading the file: '" + photoShowSpecificationFile.getAbsolutePath() + "'.", wrappedException).show();

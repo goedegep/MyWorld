@@ -16,7 +16,6 @@ import java.util.logging.Logger;
 import org.apache.commons.imaging.ImageReadException;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EClass;
-import org.eclipse.emf.ecore.EDataType;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EStructuralFeature;
@@ -185,9 +184,6 @@ public class VacationsTreeViewCreator {
    * @return the {@code EObjectTreeView} for {@code Vacations}.
    */
   public EObjectTreeView createVacationsTreeView() {
-    EDataType eDataType = VACATIONS_PACKAGE.getELocationCategory();
-    Class<?> instanceClass = eDataType.getInstanceClass();
-
     EObjectTreeView eObjectTreeView = new EObjectTreeView()
         .setCustomization(customization)
         .addEClassDescriptor(VACATIONS_PACKAGE.getVacations(), createDescriptorForVacations())
@@ -205,6 +201,7 @@ public class VacationsTreeViewCreator {
         .addEnumStringConverter(VACATIONS_PACKAGE.getELocationCategory().getInstanceClass(), EnumStringConverterForLocationCategory.getInstance())
         .setIsDropPossibleFunction(this::isDropPossible)
         .setHandleDropFunction(this::handleDrop);
+//        .setNewEObjectInitializationFunction(newEObjectInitializationFunction);
 
     return eObjectTreeView;
   }
