@@ -33,7 +33,7 @@ public class LocationDescriptionDialog extends Dialog<ButtonType> {
    */
   public LocationDescriptionDialog(CustomizationFx customization, Stage ownerWindow, Location location) {
     setTitle("Informatie over " + location.getName());
-    vacationToHtmlConverter = new VacationToHtmlConverter();
+    vacationToHtmlConverter = new VacationToHtmlConverter(VacationToHtmlConverterSetting.getDefaultSettings());
     Image locationIcon = null;
     if (location.isSetLocationCategory()) {
       locationIcon = location.getLocationCategory().getIcon(ImageSize.SIZE_0);
@@ -53,7 +53,7 @@ public class LocationDescriptionDialog extends Dialog<ButtonType> {
    */
   private void createGUI(CustomizationFx customization, Stage ownerWindow, Location location) {
     WebView webView = new WebView();
-    String description = vacationToHtmlConverter.LocationToHtml(location, false);
+    String description = vacationToHtmlConverter.LocationToHtml(location);
     webView.getEngine().loadContent("<div style=\"background-color:" + JfxUtil.colorToCssString(customization.getLook().getPanelBackgroundColor()) + "\">" +
                                     description +
                                     "</div>");

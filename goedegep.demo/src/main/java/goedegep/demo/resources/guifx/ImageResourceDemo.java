@@ -267,7 +267,7 @@ public class ImageResourceDemo extends JfxStage {
     buf.append("Walking icon (at 16x16): ");
     buf.append("<img src=\"");
     URL url = ImageResource.WALKING.getImageUrl(ImageSize.SIZE_0);
-    buf.append(HtmlUtil.encodeHTML(url.toString()));
+    buf.append(HtmlUtil.encodeHTML(url.toString(), true));
     buf.append("\" height=\"16\" width=\"16\"/> ");
 
     buf.append("<br/>");
@@ -275,7 +275,7 @@ public class ImageResourceDemo extends JfxStage {
     buf.append("Cycling image (largest available): ");
     buf.append("<img src=\"");
     url = ImageResource.CYCLING.getImageUrl();
-    buf.append(HtmlUtil.encodeHTML(url.toString()));
+    buf.append(HtmlUtil.encodeHTML(url.toString(), true));
     buf.append("\"");
     
     buf.append("</body>");

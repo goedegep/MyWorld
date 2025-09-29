@@ -2,7 +2,6 @@ package goedegep.pctools.filescontrolled.guifx;
 
 import java.awt.Desktop;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -515,7 +514,7 @@ public class FilesControlledWindow extends JfxStage {
     try {
       discStructureSpecification = emfResource.load(discStructureSpecificationFile);
       handleNewDiscStructureSpecification();
-    } catch (FileNotFoundException e) {
+    } catch (IOException e) {
       e.printStackTrace();
     } catch (WrappedException wrappedException) {
       componentFactory.createExceptionDialog("An exception occurred while reading the file: '" + discStructureSpecificationFile + "'.", wrappedException).show();

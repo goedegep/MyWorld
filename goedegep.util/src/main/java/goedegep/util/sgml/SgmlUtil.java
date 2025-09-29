@@ -60,7 +60,7 @@ public class SgmlUtil {
       indentation = "";
     }
     
-    text = HtmlUtil.encodeHTML(text);
+    text = HtmlUtil.encodeHTML(text, false);
     if (nameSpace != null) {
       if (nameSpace.length() == 0) {
         throw new IllegalArgumentException("nameSpace may not be an empty String in createElement()");

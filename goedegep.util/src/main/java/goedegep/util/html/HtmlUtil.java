@@ -89,7 +89,7 @@ public final class HtmlUtil {
     indent.increment();
     
     for (String columnName: columnNames) {
-      writer.write(SgmlUtil.createElement(indent, null, "th", encodeHTML(columnName)));
+      writer.write(SgmlUtil.createElement(indent, null, "th", encodeHTML(columnName, false)));
       writer.write(NEWLINE);
     }
 
@@ -113,7 +113,7 @@ public final class HtmlUtil {
       indent.increment();
       
       for (String columnValue: rowData) {
-        writer.write(SgmlUtil.createElement(indent, null, "td", encodeHTML(columnValue)));
+        writer.write(SgmlUtil.createElement(indent, null, "td", encodeHTML(columnValue, false)));
         writer.write(NEWLINE);
       }
       
@@ -129,25 +129,22 @@ public final class HtmlUtil {
    * @param s the String to be HTML encoded.
    * @return the encoded string
    */
-  public static String encodeHTML(String s)
+  public static String encodeHTML(String s, boolean encodeSpaceAsPercent20)
   {
     if (s.startsWith("<![CDATA[")) {
       return s;
     }
     
       StringBuilder out = new StringBuilder();
-      for(int i=0; i<s.length(); i++)
-      {
+      for(int i = 0; i < s.length(); i++) {
           char c = s.charAt(i);
-//          if(c > 127 || c=='"' || c=='<' || c=='>')
-          if(c > 127 || c=='<' || c=='>')
-          {
+          if (c > 127 || c=='<' || c=='>') {
              out.append("&#"+(int)c+";");
-          }
-          else if (c == '&') {
+          } else if (c == '&') {
              out.append("&amp;");
-          } else
-          {
+          } else if (encodeSpaceAsPercent20  &&  c == ' ') {
+            out.append("%20");
+          } else {
               out.append(c);
           }
       }
@@ -169,7 +166,40 @@ public final class HtmlUtil {
     } else {
       return text;
     }
-  }  
+  }
+  
+  /**
+   * Create an HTML element for a link.
+   * 
+   * @param linkUrlString the URL, as {@code String}, for the link.
+   * @param linkText the text to be shown for the link.
+   * 
+   * @return the created HTML element.
+   */
+  public static String createLinkElement(String linkUrlString, String linkText) {
+    StringBuilder buf = new StringBuilder();
+    
+    buf.append("<a href=\"")
+    .append(encodeHTML(linkUrlString, true))
+    .append("\">")
+    .append(encodeHTML(linkText, false))
+    .append("</a>");
+    
+    return buf.toString();
+  }
+  
+  public static String createEmbeddedPictureElement(String encodedImageData, String imageType) {
+     StringBuilder buf = new StringBuilder();
+    
+    buf.append("<img src=\"data:image/")
+    .append(imageType)
+    .append(";base64,")
+    .append(encodedImageData)
+    .append("\" >")
+    .append("</img>");
+    
+    return buf.toString();
+  }
   
   /**
    * Create an HTML element for a picture with a link and a caption.
@@ -185,16 +215,16 @@ public final class HtmlUtil {
     StringBuilder buf = new StringBuilder();
     
     buf.append("<a href=\"")
-    .append(encodeHTML(linkUrlString))
+    .append(encodeHTML(linkUrlString, true))
     .append("\"><figure><img src=\"")
-    .append(encodeHTML(imageUrlString))
+    .append(encodeHTML(imageUrlString, true))
     .append("\" height=\"")
     .append(height)
     .append("\" >");
     
     if (caption != null) {
       buf.append("<figcaption>")
-      .append(encodeHTML(caption))
+      .append(encodeHTML(caption, false))
       .append("</figcaption>");
     }
     

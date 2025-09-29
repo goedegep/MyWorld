@@ -200,7 +200,7 @@ public class VacationsKmlConverter extends VacationToTextConverterAbstract {
   private void createKmlForVacation(Vacation vacation, Folder vacationsFolder) {
     
     // Folder name
-    Folder vacationFolder = vacationsFolder.createAndAddFolder().withName(HtmlUtil.encodeHTML(getVacationTitle(vacation)));
+    Folder vacationFolder = vacationsFolder.createAndAddFolder().withName(HtmlUtil.encodeHTML(getVacationTitle(vacation), false));
     
     // Folder description
     buf.setLength(0);
@@ -319,14 +319,14 @@ public class VacationsKmlConverter extends VacationToTextConverterAbstract {
     if (location.isSetName()) {
       buf.append(location.getName());
     }
-    String name = HtmlUtil.encodeHTML(buf.toString());
+    String name = HtmlUtil.encodeHTML(buf.toString(), true);
     
     // Folder/Placemark description
     buf.setLength(0);
     
     if (location.isStayedAtThisLocation()) {
       buf.append("<b><i>");
-      buf.append(HtmlUtil.encodeHTML("Verblijf"));
+      buf.append(HtmlUtil.encodeHTML("Verblijf", false));
       buf.append("</i></b><br/>");
     }
     
@@ -419,7 +419,7 @@ public class VacationsKmlConverter extends VacationToTextConverterAbstract {
     // Placemark/Folder name
     String name = pictureReference.getTitle();
     if (name != null) {
-      name = HtmlUtil.encodeHTML(name);
+      name = HtmlUtil.encodeHTML(name, false);
     } else {
       File file = new File(pictureReference.getFile());
       name = file.getName();

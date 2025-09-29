@@ -3,6 +3,8 @@ package goedegep.jfx.eobjecttreeview;
 import java.awt.Desktop;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -214,8 +216,9 @@ public abstract class EObjectTreeCellHelperForAttributeAbstract extends EObjectT
 //          e.printStackTrace();
 //        }
 //      }
-      
-      DesktopUtil.open(documentReference);
+      if (Files.exists(Paths.get(documentReference))) {
+        DesktopUtil.open(documentReference);
+      }
     }
     
     LOGGER.info("<=");

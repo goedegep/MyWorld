@@ -1,7 +1,6 @@
 package goedegep.finan.mortgage.app.guifx;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
@@ -122,7 +121,7 @@ public class MortgagesWindow extends JfxStage implements EMFNotificationListener
     String mortgagesFileName = mortgagesFile.getAbsolutePath();
     try {
       mortgages = mortgagesResource.load(mortgagesFileName);
-    } catch (FileNotFoundException e) {
+    } catch (IOException e) {
       LOGGER.severe("File not found: " + e.getMessage());
       
       Alert alert = componentFactory.createYesNoConfirmationDialog(

@@ -4,10 +4,26 @@ import org.eclipse.emf.ecore.EObject;
 
 import goedegep.vacations.model.VacationElement;
 
+/**
+ * Represents the result of a photo import operation.
+ * Contains details about the photo, the result type, associated vacation elements, and any relevant messages.
+ * 
+ */
 public class PhotoImportResult {
+  /**
+   * The filename of the photo.
+   */
   private String photoFilename;
+  
+  /**
+   * The type of result from the photo import operation.
+   */
   private PhotoImportResultType photoImportResultType;
-  private EObject vacationElement;
+  
+  /**
+   * The vacation element associated with the photo, if applicable.
+   */
+  private VacationElement vacationElement;
   private String text;
   private VacationElement newVacationElement;
   
@@ -24,7 +40,7 @@ public class PhotoImportResult {
     this.text = text;
   }
   
-  public PhotoImportResult(String photoFilename, PhotoImportResultType photoImportResultType, EObject vacationElement, String text, VacationElement newVacationElement) {
+  public PhotoImportResult(String photoFilename, PhotoImportResultType photoImportResultType, VacationElement vacationElement, String text, VacationElement newVacationElement) {
     this.photoFilename = photoFilename;
     this.photoImportResultType = photoImportResultType;
     this.vacationElement = vacationElement;
@@ -40,7 +56,7 @@ public class PhotoImportResult {
     return photoImportResultType;
   }
 
-  public EObject getVacationElement() {
+  public VacationElement getVacationElement() {
     return vacationElement;
   }
 

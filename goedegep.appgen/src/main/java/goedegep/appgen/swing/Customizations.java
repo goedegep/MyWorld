@@ -2,6 +2,7 @@ package goedegep.appgen.swing;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
@@ -91,7 +92,7 @@ public class Customizations {
         }
         addCustomizations(moduleLook);
       }
-    } catch (FileNotFoundException e) {
+    } catch (IOException e) {
       e.printStackTrace();
     }
   }

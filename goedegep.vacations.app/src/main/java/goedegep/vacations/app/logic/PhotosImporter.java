@@ -55,7 +55,7 @@ public class PhotosImporter {
    * Information related to the vacation
    */
   
-  // A list of all elements with location information  (for the second option)
+  // A list of all elements with location information  (for the second option: a match on Location)
   private Map<VacationElement, Triplet<WGS84Coordinates, BoundingBox, List<Boundary>>> geoLocations = null;
   
   /*
@@ -104,7 +104,7 @@ public class PhotosImporter {
    * A photo is only added if it doesn't exist in the vacation yet (based on its filename).
    * This makes it possible to start with adding some photos manually and later perform an import.<br/>
    * The following order is used to find the item of the vacation where the photo is added:
-   * <ul>
+   * <ol>
    * <li>
    * A match on Location and Day<br/>
    * If there is a Day for which the date matches with the time the photo is taken, and that Day has a child Location which matches with the coordinates of the photo,
@@ -122,35 +122,37 @@ public class PhotosImporter {
    * No match on day and/or location<br/>
    * If there is no match with a Day and/or a Location , then the photo is added as last element of the <code>vacation</code>.
    * </li>
-   * </ul>
+   * </ol>
+   * 
+   * @param vacation the vacation to which photos are added.
    */
   public List<PhotoImportResult> importPhotos(Vacation vacation) {
     // Information that is returned.
     List<PhotoImportResult> photoImportResults = new ArrayList<>();
     
     // get a list of all filenames of the photos which are already part of the vacation.
-    Map<String, EObject> photoFileNameToParentElementMap = getPhotoFileNameToParentElementMap(vacation);
+    Map<String, VacationElement> photoFileNameToParentElementMap = generatePhotoFileNameToParentElementMap(vacation);
     Set<String> existingPhotosFileNames = photoFileNameToParentElementMap.keySet();
     for (String photoFilename: existingPhotosFileNames) {
       LOGGER.severe("Existing photo filename: " + photoFilename);
     }
     
-    // get a list of all days (for the third option, and to create the map from days to elements with location information)
+    // get a list of all days (for the third option, and to create the map from days to elements of that day with location information)
     List<Day> vacationDays = VacationsUtils.getVacationDays(vacation);
     
-    // create the list of all elements with location information  (for the second option)
+    // get the map of all elements with location information with their location information  (for the second option)
     geoLocations = VacationsUtils.getVacationGeoLocations(vacation);
     for (VacationElement element: geoLocations.keySet()) {
       LOGGER.severe("Element with location information: " + element);
     }
     
-    // create a map from days to elements with location information (for the first option)
+    // create a map from days to the elements of that day with location information (for the first option)
     Map<Day, List<VacationElement>> dayElementsMap = new HashMap<>();
     
     for (Day day: vacationDays) {
       List<VacationElement> geoElements = new ArrayList<>();
       for (VacationElement vacationElement: geoLocations.keySet()) {
-        Day elementDay = VacationsUtils.getDay(vacationElement);
+        Day elementDay = VacationsUtils.getAncestorOfType(vacationElement, Day.class);
         if (day.equals(elementDay)) {
           geoElements.add(vacationElement);
         }
@@ -203,8 +205,7 @@ public class PhotosImporter {
           }
           
           // Skip non jpeg files.
-          String fileExtension = FileUtils.getFileExtension(checkFile);
-          if (!fileExtension.equals(".jpg")) {
+          if (!FileUtils.isJpegFile(checkFile)) {
             photoImportResults.add(new PhotoImportResult(filename, PhotoImportResultType.NON_JPEG_FILE_SKIPPED, filename));
             LOGGER.severe("Skipping a non jpeg file: " + checkFile);
             continue;
@@ -286,7 +287,7 @@ public class PhotosImporter {
           }
           
           if (photoAlreadyPartOfVacation) {
-            EObject currentVacationElement = photoFileNameToParentElementMap.get(filename);
+            VacationElement currentVacationElement = photoFileNameToParentElementMap.get(filename);
             VacationElement newVacationElement = null;
             if (!currentVacationElement.equals(bestMatchVacationElement)) {
               newVacationElement = bestMatchVacationElement;
@@ -543,11 +544,11 @@ public class PhotosImporter {
    * Get a map with photo filenames to the parent element of the related Picture element.
    * There will be an entry for each Picture in the specified vacation.
    * 
-   * @param vacation a <code>Vacation</code>
+   * @param vacation a {@code Vacation}
    * @return the generated photo filename to parent element map.
    */
-  public static Map<String, EObject> getPhotoFileNameToParentElementMap(Vacation vacation) {
-    Map<String, EObject> photoFileNameToParentElementMap = new HashMap<>();
+  public static Map<String, VacationElement> generatePhotoFileNameToParentElementMap(Vacation vacation) {
+    Map<String, VacationElement> photoFileNameToParentElementMap = new HashMap<>();
     
     TreeIterator<EObject> iterator = vacation.eAllContents();
     
@@ -558,7 +559,10 @@ public class PhotosImporter {
         if (fileReference != null) {
           String filename = fileReference.getFile();
           if (filename != null) {
-            photoFileNameToParentElementMap.put(filename, picture.eContainer());
+            EObject container = picture.eContainer();
+            if (container instanceof VacationElement vacationElement) {
+              photoFileNameToParentElementMap.put(filename, vacationElement);
+            }
           }
         }
       }

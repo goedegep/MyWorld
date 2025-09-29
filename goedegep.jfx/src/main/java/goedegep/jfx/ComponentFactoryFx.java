@@ -4,6 +4,8 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.time.LocalDate;
 import java.util.Collection;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.logging.Logger;
 
 import org.commonmark.parser.Parser;
@@ -54,6 +56,7 @@ import javafx.scene.control.ChoiceDialog;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.ContextMenu;
+import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.Menu;
@@ -399,6 +402,20 @@ public class ComponentFactoryFx {
     VBox vBox = new VBox(spacing);
     customizePane(vBox);
     
+    return vBox;
+  }
+  
+  /**
+   * Create a VBox with a specified padding.
+   * 
+   * @param padding the gap between the children and the border of the box.
+   * @return the newly created VBox
+   */
+  public VBox createVBox(Insets padding) {
+    VBox vBox = new VBox();
+    vBox.setPadding(padding);
+    customizePane(vBox);
+
     return vBox;
   }
   
@@ -899,13 +916,12 @@ public class ComponentFactoryFx {
   /**
    * Create an {@link EditorControlFileSelecter}.
    * 
-   * @param initiallySelecterFolder The initially selected folder. If not null, this is filled-in in the text field,
-   *                                and it is used as initial value for the FileChooser.
    * @param textFieldWidth Width of the TextField (in pixels). If this value is -1, the default width is used.
    * @param textFiedlToolTipText if not null, this text will be used as Tooltip for the TextField
    * @param folderChooserButtonText the text shown on the button to call up a DirectoryChooser (may not be null)
    * @param folderChooserButtonToolTipText if not null, this text will be used as Tooltip for the button to call up a DirectoryChooser.
    * @param directoryChooserTitle title for the DirectoryChooser (may not be null)
+   * @param isOptional if true, the text field is optional, i.e. it may be empty.
    * @return the newly created FolderSelecter
    */
   public EditorControlFileSelecter createEditorControlFileSelecter(int textFieldWidth, String textFieldToolTipText,
@@ -1594,6 +1610,45 @@ public class ComponentFactoryFx {
     alert.setResizable(true);
         
     return alert;
+  }
+
+  /**
+   * Create a dialog for entering a String value.
+   * Returns Optional.of(value) if OK is pressed, or Optional.empty() if cancelled.
+   *
+   * @param title the dialog title
+   * @param header the dialog header text
+   * @param initialValue the initial value for the input field (may be null)
+   * @return Optional containing the entered value, or empty if cancelled
+   */
+  public Dialog<String> createStringInputDialog(String title, String header, String labelText, String initialValue) {
+    Objects.requireNonNull(title, "title may not be null");
+    Objects.requireNonNull(header, "header may not be null");
+    Objects.requireNonNull(labelText, "labelText may not be null");
+    
+    Dialog<String> dialog = new Dialog<>();
+    dialog.setTitle(title);
+    dialog.setHeaderText(header);
+    Stage stage = (Stage) dialog.getDialogPane().getScene().getWindow();
+    stage.getIcons().add(appResources.getApplicationImage(ImageSize.SIZE_0));
+    dialog.setResizable(true);
+
+    // Layout
+    VBox vbox = createVBox(16, 16);
+    Label label = createLabel(labelText + ":");
+    TextField inputField = createTextField(initialValue, 300, null);
+    vbox.getChildren().addAll(inputField);
+    dialog.getDialogPane().setContent(vbox);
+
+    dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
+    dialog.setResultConverter(buttonType -> {
+      if (buttonType == ButtonType.OK) {
+        return inputField.getText();
+      }
+      return null;
+    });
+
+    return dialog;  
   }
   
   public  Background getPanelBackground() {

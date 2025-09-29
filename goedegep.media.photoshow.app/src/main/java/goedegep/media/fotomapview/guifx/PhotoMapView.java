@@ -926,7 +926,7 @@ public class PhotoMapView extends JfxStage {
           "Photoshow specification " + photoShowSpecificationFile.getAbsolutePath() + " is being opened.",
           "").showAndWait();
 
-    } catch (FileNotFoundException e) {
+    } catch (IOException e) {
       e.printStackTrace();
     } catch (WrappedException wrappedException) {
       componentFactory.createExceptionDialog("An exception occurred while reading the file: '" + photoShowSpecificationFile.getAbsolutePath() + "'.", wrappedException).show();

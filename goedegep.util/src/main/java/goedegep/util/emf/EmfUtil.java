@@ -79,10 +79,6 @@ public final class EmfUtil {
     
     List<EClass> superTypes = subType.getESuperTypes();
     
-    for (EClass eClass: superTypes) {
-      LOGGER.info(eClass.getName());
-    }
-    
     if (superTypes.contains(superType)) {
       return true;
     } else {

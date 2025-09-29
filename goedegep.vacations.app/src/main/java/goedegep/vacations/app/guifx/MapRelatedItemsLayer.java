@@ -128,7 +128,6 @@ public class MapRelatedItemsLayer extends MapLayer implements ObjectSelector<Obj
    * @param boundariesColor an optional {@code Color} for the color of the boundaries.
    */
   public WGS84BoundingBox addLocation(final Location location, String text, Color boundariesColor) {
-    LOGGER.info("=> location=" + location.toString() + " - " + (text != null ? text : "<no text>"));
     
     WGS84BoundingBox wgs84BoundingBox = null;
 
@@ -139,7 +138,6 @@ public class MapRelatedItemsLayer extends MapLayer implements ObjectSelector<Obj
       Image locationIcon = poiCategoryId.getIcon();    
       labeledIcon = new LabeledIcon(locationIcon, text);
       labeledIcon.installMouseEventHandling(e -> {
-        LOGGER.severe("Mouse clicked on: " + location);
         if (!e.isControlDown()) {
           setSelectedObject(location);
         } else {
@@ -171,9 +169,6 @@ public class MapRelatedItemsLayer extends MapLayer implements ObjectSelector<Obj
         for (WGS84Coordinates wgs84Coordinates: boundaryPoints) {
           wgs84BoundingBox = WGS84BoundingBox.extend(wgs84BoundingBox, wgs84Coordinates);
         }
-        LOGGER.info("Polyline added");
-      } else {
-        LOGGER.info("Empty points list, no Polyline added");
       }
     }
     
@@ -201,7 +196,6 @@ public class MapRelatedItemsLayer extends MapLayer implements ObjectSelector<Obj
     
     markDirty();
 
-    LOGGER.info("<=");
     return wgs84BoundingBox;
   }
 

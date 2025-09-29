@@ -27,6 +27,13 @@ public class TravelMapView extends MapView implements ObjectSelector<Object> {
   
   private List<ObjectSelectionListener<Object>> objectSelectionListeners = new ArrayList<>();
 
+  /**
+   * Constructor for TravelMapView.
+   * 
+   * @param customization The GUI customization.
+   * @param ownerWindow The owner window for dialogs.
+   * @param searchWindowSupplier A supplier for the LocationSearchWindow.
+   */
   public TravelMapView(CustomizationFx customization, Stage ownerWindow, Supplier<LocationSearchWindow> searchWindowSupplier) {
     
     mapRelatedItemsLayer = new MapRelatedItemsLayer(customization, ownerWindow);
@@ -71,7 +78,6 @@ public class TravelMapView extends MapView implements ObjectSelector<Object> {
   }
   
   private void notifyListeners(Object object) {
-    LOGGER.severe("=> object=" + object);
     for (ObjectSelectionListener<Object> listener: objectSelectionListeners) {
       listener.objectSelected(this, object);
     }

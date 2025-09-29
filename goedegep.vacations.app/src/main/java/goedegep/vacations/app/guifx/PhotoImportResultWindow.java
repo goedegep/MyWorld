@@ -128,13 +128,13 @@ public class PhotoImportResultWindow extends JfxStage {
     }
     
     StringBuilder buf = new StringBuilder();
-    EObject vacationElement = photoImportResult.getVacationElement();
+    VacationElement vacationElement = photoImportResult.getVacationElement();
     VacationElement newVacationElement = photoImportResult.getVacationNewElement();
     Day day = null;
     if (vacationElement instanceof Day) {
       day = (Day) vacationElement;
-    } else if (vacationElement instanceof VacationElement e){
-      day = VacationsUtils.getDay(e);
+    } else {
+      day = VacationsUtils.getAncestorOfType(vacationElement, Day.class);
     }
     
     switch(photoImportResult.getPhotoImportResultType()) {

@@ -1,7 +1,6 @@
 package goedegep.events.app.guifx;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -222,7 +221,7 @@ public class EventsLauncher {
     try {
       eventsResource.load(EventsRegistry.eventsFileName);
       returnValue = true;
-    } catch (FileNotFoundException e) {
+    } catch (IOException e) {
       Alert alert = customization.getComponentFactoryFx().createYesNoConfirmationDialog(
           null,
           "The file with event information (" + EventsRegistry.eventsFileName + ") doesn't exist yet.",

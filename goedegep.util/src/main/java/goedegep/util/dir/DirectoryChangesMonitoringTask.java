@@ -23,58 +23,67 @@ public class DirectoryChangesMonitoringTask extends Task<WatchEvent<Path>> {
   private static final String NEW_LINE = System.getProperty("line.separator");
   private static final Logger LOGGER = Logger.getLogger(DirectoryChangesMonitoringTask.class.getName());
 
-  private Path folderPath;
+//  private Path folderPath;
   private WatchService watchService;
   
-  public DirectoryChangesMonitoringTask(String folderName) {
+  public DirectoryChangesMonitoringTask(String... folderNames) {
     try {
       watchService = FileSystems.getDefault().newWatchService();
-      folderPath = Paths.get(folderName);
-      LOGGER.info("Going to register folder: " + folderPath.toString());
-      WatchKey key = folderPath.register(watchService, ENTRY_CREATE, ENTRY_DELETE, ENTRY_MODIFY);
-      LOGGER.info("Obtained WatchKey: " + key);
+      for (String folderName : folderNames) {
+        Path folderPath = Paths.get(folderName);
+        LOGGER.info("Going to register folder: " + folderPath.toString());
+        folderPath.register(watchService, ENTRY_CREATE, ENTRY_DELETE, ENTRY_MODIFY);
+      }
     } catch (IOException e) {
       e.printStackTrace();
     }
     
+  }
+  
+  public void addDirectoryToMonitor(String folderName) {
+    try {
+      Path folderPath = Paths.get(folderName);
+      LOGGER.info("Going to register folder: " + folderPath.toString());
+      folderPath.register(watchService, ENTRY_CREATE, ENTRY_DELETE, ENTRY_MODIFY);
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+  }
+  
+  public void removeDirectoryToMonitor(String folderName) {
+    // Not implemented yet.
   }
 
   @Override
   protected WatchEvent<Path> call() throws Exception {
     while (true) {
 
-      // wait for key to be signalled
+      // wait for key to be signaled
       WatchKey key;
       try {
         key = watchService.take();
       } catch (InterruptedException x) {
-        return null;
+        continue;
       }
 
       for (WatchEvent<?> event: key.pollEvents()) {
         WatchEvent.Kind<?> kind = event.kind();
         LOGGER.severe("event: " + watchEventToString(event));
 
-        // TBD - provide example of how OVERFLOW event is handled
         if (kind == OVERFLOW) {
-          continue;
+          throw new RuntimeException("Overflow event occurred in DirectoryChangesMonitoringTask.");
         }
 
         // Context for directory entry event is the file name of entry
         @SuppressWarnings("unchecked")
         WatchEvent<Path> watchEvent = (WatchEvent<Path>) event;
-        Path name = watchEvent.context();
-        Path child = folderPath.resolve(name);
-        LOGGER.info("child: " + child.toString());
+        Path eventPath = watchEvent.context();
+        LOGGER.severe("eventPath: " + eventPath.toString());
         updateValue(watchEvent);
       }
       
-      // Cancel this task if the directory no longer accessible
-      boolean valid = key.reset();
-      LOGGER.severe("valid: " + valid);
-      if (!valid) {
-        cancel();
-      }
+      // No action if the key is no longer valid. This shall not happen, and we may be monitoring multiple directories.
+      key.reset();
     }
     
   }

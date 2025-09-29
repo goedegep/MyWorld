@@ -1,7 +1,7 @@
 package goedegep.properties.app;
 
-import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.lang.reflect.Field;
 import java.net.MalformedURLException;
 import java.net.URI;
@@ -52,7 +52,7 @@ public class PropertiesHandler {
    * @param propertyDescriptorsFileURI the URL of the file with property descriptors.
    * @param urlForFileNameFunction a function for providing a URL for a file name. Used for handling custom property files.
    */
-  public static void handleProperties(URL propertyDescriptorsFileURI, Function<String, URL> urlForFileNameFunction) throws FileNotFoundException {
+  public static void handleProperties(URL propertyDescriptorsFileURI, Function<String, URL> urlForFileNameFunction) throws IOException {
     
     EMFResource<PropertyDescriptorGroup> emfResource = new EMFResource<>(
         PropertiesPackage.eINSTANCE,

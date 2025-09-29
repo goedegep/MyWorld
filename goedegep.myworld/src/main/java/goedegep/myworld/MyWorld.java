@@ -2,7 +2,7 @@ package goedegep.myworld;
 
 import java.awt.SplashScreen;
 import java.io.File;
-import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -515,7 +515,7 @@ private static final String         VACATIONS_PROJECT_PATH = "../../../goedegep.
 //        File rolodexFile = new File(RolodexRegistry.dataDirectory, RolodexRegistry.rolodexFile);
         File rolodexFile = new File(RolodexRegistry.rolodexFile);
         RolodexRegistry.rolodexResource.load(rolodexFile.getAbsolutePath());
-      } catch (FileNotFoundException e) {
+      } catch (IOException e) {
         e.printStackTrace();
         System.exit(1);
       }
