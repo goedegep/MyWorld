@@ -32,9 +32,10 @@ import goedegep.gpx.app.GpxAppUtil;
 import goedegep.gpx.model.DocumentRoot;
 import goedegep.gpx.model.GpxType;
 import goedegep.gpx.model.MetadataType;
-import goedegep.jfx.ComponentFactoryFx;
 import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.JfxStage;
+import goedegep.jfx.editor.controls.EditorControlBoolean;
+import goedegep.jfx.editor.controls.EditorControlFileSelecter;
 import goedegep.jfx.eobjecttreeview.EObjectTreeCell;
 import goedegep.jfx.eobjecttreeview.EObjectTreeItem;
 import goedegep.jfx.eobjecttreeview.EObjectTreeItemAttributeDescriptor;
@@ -43,8 +44,6 @@ import goedegep.jfx.eobjecttreeview.EObjectTreeItemClassListReferenceDescriptor;
 import goedegep.jfx.eobjecttreeview.EObjectTreeItemForObject;
 import goedegep.jfx.eobjecttreeview.EObjectTreeItemForObjectList;
 import goedegep.jfx.eobjecttreeview.EObjectTreeView;
-import goedegep.jfx.objectcontrols.ObjectControlBoolean;
-import goedegep.jfx.objectcontrols.ObjectControlFileSelecter;
 import goedegep.resources.ImageResource;
 import goedegep.types.model.FileReference;
 import goedegep.types.model.TypesPackage;
@@ -162,11 +161,6 @@ public class KmlFileImportWindow extends JfxStage {
   private NominatimAPI nominatimAPI;
 
   /**
-   * The {@code ComponentFactoryFx} to create al GUI components.
-   */
-  private ComponentFactoryFx componentFactory;
-
-  /**
    * {@code EMFResource} for the selected element. The element has to be placed in a {@code Resource} in order to show it in an {@code EObjectTree}.
    */
   private EMFResource<EObject> elementEmfResource;
@@ -190,6 +184,11 @@ public class KmlFileImportWindow extends JfxStage {
    * The {@code AddElementToVacationPanel}. The bottom panel to add the selected element to a vacation.
    */
   private AddElementToVacationPanel addElementToVacationPanel;
+  
+  /**
+   * If an imported GPX track has no name, we give it a number.
+   */
+  private int gpxTrackNumber = 0;
 
   /**
    * Constructor.
@@ -205,8 +204,6 @@ public class KmlFileImportWindow extends JfxStage {
     this.customization = customization;
     this.vacationsWindow = vacationsWindow;
     this.nominatimAPI = nominatimAPI;
-
-    componentFactory = customization.getComponentFactoryFx();
 
     elementEmfResource = new EMFResource<>(
         VacationsPackage.eINSTANCE, 
@@ -312,12 +309,12 @@ public class KmlFileImportWindow extends JfxStage {
     /**
      * Control for selecting the KML file.
      */
-    private ObjectControlFileSelecter fileSelecter;
+    private EditorControlFileSelecter fileSelecter;
 
     /**
      * Indication of whether information is to be obtained from the NominatimAPI.
      */
-    private ObjectControlBoolean useNominatimApi;
+    private EditorControlBoolean useNominatimApi;
 
     /**
      * The elements that can be imported
@@ -339,7 +336,7 @@ public class KmlFileImportWindow extends JfxStage {
       createControls();
       createGUI();
 
-      fileSelecter.addListener((_) -> handleNewKmlFileSelected());
+      fileSelecter.addValueAndOrStatusChangeListener((_, _) -> handleNewKmlFileSelected());
       kmlPlacemarkImportDataComboBox.setOnAction((_) -> handleNewKmlPlacemarkImportDataSelected());
     }
 
@@ -347,10 +344,16 @@ public class KmlFileImportWindow extends JfxStage {
      * Create the GUI controls.
      */
     private void createControls() {
-      fileSelecter = componentFactory.createFileSelecterObjectControl(300, "Path to KML file", "Choose file", "click to select a KML file via a file chooser", "Select KML file", false);
+      fileSelecter = componentFactory.createEditorControlFileSelecter(300, "Path to KML file", "Choose file", "click to select a KML file via a file chooser", "Select KML file", false);
+      fileSelecter.setLabelBaseText("KML file");
       fileSelecter.addFileType(".kml", "Google KML file", true);
 
-      useNominatimApi = componentFactory.createObjectControlBoolean("use Nominatim API", false, true, "If selected address information is also obtained from the Open Street Map nominatim API (based on the coordinates of the location");
+      
+      useNominatimApi = new EditorControlBoolean.Builder("useNominatimApi")
+          .setCustomization(customization)
+          .setLabelBaseText("use Nominatim API")
+          .setToolTipText("If selected address information is also obtained from the Open Street Map nominatim API (based on the coordinates of the location")
+          .build();
 
       kmlPlacemarkImportDataComboBox = componentFactory.createComboBox(null);    
     }
@@ -368,8 +371,7 @@ public class KmlFileImportWindow extends JfxStage {
 
       HBox hBox = componentFactory.createHBox(12.0, 12.0);
 
-      label = componentFactory.createLabel("KML file:");
-      hBox.getChildren().addAll(label, fileSelecter.getControl(), fileSelecter.getFileChooserButton(), useNominatimApi.getControl());
+      hBox.getChildren().addAll(fileSelecter.getLabel(), fileSelecter.getControl(), fileSelecter.getFileChooserButton(), useNominatimApi.getLabel(), useNominatimApi.getControl());
 
       Region spacer = new Region();
       spacer.setPrefWidth(100);
@@ -408,6 +410,7 @@ public class KmlFileImportWindow extends JfxStage {
      */
     void handleNewListOfKmlPlacemarkImportData() {
       kmlPlacemarkImportDataComboBox.getItems().clear();
+      gpxTrackNumber = 1;
 
       if (kmlPlacemarksImportData != null) {
         for (KmlPlacemarkImportData tuplet: kmlPlacemarksImportData) {
@@ -444,7 +447,14 @@ public class KmlFileImportWindow extends JfxStage {
         DocumentRoot documentRoot = kmlPlacemarkImportData.gpxFileDocumentRoot();
         GpxType gpxType = documentRoot.getGpx();
         MetadataType metadata = gpxType.getMetadata();
-        return "GPXTrack: " + metadata.getName();
+        String name = metadata.getName();
+        if (name == null || name.isEmpty()) {
+          name = kmlPlacemarkImportData.placemarkAddress();
+        }
+        if (name == null || name.isEmpty()) {
+          name = String.valueOf(gpxTrackNumber++);
+        }
+        return "GPXTrack: " + name;
       } else {
         throw new RuntimeException("Unsupported sub type of VacationElement: " + vacationElement.getClass().toString());
       }

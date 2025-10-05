@@ -1,7 +1,5 @@
 package goedegep.vacations.app.logic;
 
-import org.eclipse.emf.ecore.EObject;
-
 import goedegep.vacations.model.VacationElement;
 
 /**
