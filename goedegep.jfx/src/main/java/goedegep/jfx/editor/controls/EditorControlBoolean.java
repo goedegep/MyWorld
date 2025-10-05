@@ -66,6 +66,7 @@ public class EditorControlBoolean extends EditorControlTemplate<Boolean> {
   @Override
   protected void fillControlsWithDefaultValues() {
     checkBox.setSelected(false);
+    handleNewUserInput(null);  // needed because setSelected does not trigger the listener if the selected state isn't actually changed.
   }
 
   @Override

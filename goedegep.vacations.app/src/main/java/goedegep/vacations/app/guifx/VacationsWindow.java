@@ -169,16 +169,17 @@ import javafx.stage.Stage;
 public class VacationsWindow extends JfxStage {
   private static final Logger LOGGER = Logger.getLogger(VacationsWindow.class.getName());
   private static final String NEWLINE = System.getProperty("line.separator");
+  
   private static final ResourceBundle TRANSLATIONS = getBundle(VacationsWindow.class, "VacationsResource");
   private static final VacationsPackage VACATIONS_PACKAGE = VacationsPackage.eINSTANCE;
   private static final TypesFactory TYPES_FACTORY = TypesFactory.eINSTANCE;
+  
   
   private static final double FULL_MAP_ZOOM_LEVEL = 1.7;     // Shows almost complete world map. Determined with trial and error.
   private static final double VACATION_ZOOM_LEVEL = 8.0;     // For the time being hard coded zoom level to show one vacation. Determined with trial and error.
   private static final double PICTURE_ZOOM_LEVEL = 12.0;     // For the time being hard coded zoom level to show a picture. Determined with trial and error.
   private static final double HOME_ZOOM_LEVEL = 8.0;         // The zoom level for showing the home location.
   
-  private CustomizationFx customization = null;
   private VacationsAppResourcesFx appResources;
   private TranslationFormatter translationFormatter = new TranslationFormatter(TRANSLATIONS);
   private EMFResource<Vacations> vacationsResource = null;
@@ -187,7 +188,14 @@ public class VacationsWindow extends JfxStage {
   private EObjectTreeView treeView = null;
   private Label statusLabel = new Label("");
   
+  /**
+   * Settings for the {@link vacationToHtmlConverter}.
+   */
   private Set<VacationToHtmlConverterSetting> vacationToHtmlConverterSettings;
+  
+  /**
+   * The converter to convert a {@link Vacation} to an HTML document.
+   */
   private VacationToHtmlConverter vacationToHtmlConverter;
   private TravelMapView travelMapView;
   private LocationSearchWindow locationSearchWindow = null;
@@ -256,8 +264,6 @@ public class VacationsWindow extends JfxStage {
     }
     
     editUserSettingsIfNeeded();
-    
-    this.customization = customization;
     
     vacationToHtmlConverterSettings = VacationToHtmlConverterSetting.getDefaultSettings();
     vacationToHtmlConverter = new VacationToHtmlConverter(vacationToHtmlConverterSettings);

@@ -1,11 +1,8 @@
 package goedegep.vacations.app.logic;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.math.BigDecimal;
-import java.net.URL;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.time.ZoneId;
@@ -17,11 +14,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
-import javax.net.ssl.HttpsURLConnection;
-
 import com.atlis.location.nominatim.NominatimAPI;
 import com.atlis.location.nominatim.OSMLocationInfo;
-import com.google.gson.Gson;
 
 import de.micromata.opengis.kml.v_2_2_0.Coordinate;
 import de.micromata.opengis.kml.v_2_2_0.Data;
@@ -64,7 +58,6 @@ public class KmlFileImporter {
       "C. Cupido, 12, 38400 Puerto de la Cruz, Santa Cruz de Tenerife, Spanje"
   };
   
-  private Gson gson = new Gson();      // JSON parser
   private DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("uuuu-MM-dd'T'HH:mm:ss");
  
   
@@ -288,9 +281,9 @@ public class KmlFileImporter {
       return;
     }
     
-    if (geometry instanceof Point point) {
+    if (geometry instanceof Point) {
       getLocationFromKmlPlacemark(placemark, vacationElements);
-    } else if (geometry instanceof LineString lineString) {
+    } else if (geometry instanceof LineString) {
       getGPXTrackFromKmlPlacemark(previousPlacemark, placemark, nextPlacemark, vacationElements);
     } else {
       throw new RuntimeException("Unsupported Geometry subtype: " + geometry.getClass().getName());
@@ -319,13 +312,6 @@ public class KmlFileImporter {
     }
     
     // Descriptions doesn't seem interesting
-//    String description = placemark.getDescription();
-//    if (description != null) {
-//      description = description.trim();
-//    }
-//    if (description != null  &&  !description.isEmpty()) {
-//      location.setDescription(description);
-//    }
     
     Double latitude = null;
     Double longitude = null;
@@ -382,6 +368,10 @@ public class KmlFileImporter {
   private void fillLocationAddressFromPlacemark(Location location, Placemark placemark, Location locationFromNominatim) {
     String placemarkAddressText = placemark.getAddress();
     
+    if (placemarkAddressText == null  ||  placemarkAddressText.trim().isEmpty()) {
+      return;
+    }
+    
     if (isKnownUnsupportedAddress(placemarkAddressText)) {
       return;
     }
@@ -389,7 +379,6 @@ public class KmlFileImporter {
     String[] addressParts = placemarkAddressText.split(",");
     if (addressParts.length < 1  ||  addressParts.length > 3) {
       return;
-//      throw new RuntimeException("Unsupported address format: " + placemarkAddressText);
     }
     
     String part1 = addressParts[0].trim();
@@ -547,7 +536,6 @@ public class KmlFileImporter {
     
     MetadataType metadataType = gpxFactory.createMetadataType();
     metadataType.setName(createGpxTrackName(previousPlacemark, placemark, nextPlacemark));
-//    metadataType.setDesc(placemark.getDescription()); Description doesn't seem interesting
     if (placemark.getName() != null) {
       metadataType.setKeywords(placemark.getName());
     }
@@ -603,40 +591,6 @@ public class KmlFileImporter {
   
   private ZoneId getZoneId(Coordinate coordinate) {
     return TimeZoneRetriever.getZoneId(coordinate.getLatitude(), coordinate.getLongitude());
-//    String lat = String.valueOf(coordinate.getLatitude());
-//    String lon = String.valueOf(coordinate.getLongitude());
-//
-//    String urlString = "https://api.geotimezone.com/public/timezone?latitude=" + lat + "&longitude=" + lon;
-//    try {
-//      HttpsURLConnection connection = (HttpsURLConnection) new URL(urlString).openConnection();
-//      String responseStr = new BufferedReader(new InputStreamReader(connection.getInputStream())).readLine();
-//      LOGGER.info("Response: " + responseStr);
-//
-//      GeoTimeZoneResponse geoTimeZoneResponse = gson.fromJson(responseStr, GeoTimeZoneResponse.class);
-//      LOGGER.info("geoTimeZoneResponse: " + geoTimeZoneResponse.toString());
-//      
-//      String ianaTimeZone = geoTimeZoneResponse.getIana_timezone();
-//      if (ianaTimeZone != null) {
-//        ZoneId zoneId = ZoneId.of(ianaTimeZone);
-//        return zoneId;
-//      } else if (geoTimeZoneResponse.getTimezone_abbreviation() != null) {
-//        ZoneId zoneId = ZoneId.of(geoTimeZoneResponse.getTimezone_abbreviation());
-//        LOGGER.info("ZoneId from abbreviation: " + zoneId);
-//        return zoneId;
-//      } else if (geoTimeZoneResponse.getOffset() != null) {
-//        String offset = geoTimeZoneResponse.getOffset();
-//        offset = offset.substring(3);
-//        ZoneId zoneId = ZoneId.of(offset);
-//        LOGGER.info("ZoneId from offset: " + zoneId);
-//        return zoneId;
-//      }
-//      
-//      
-//    } catch (IOException e) {
-//      e.printStackTrace();
-//    }
-//    
-//    return null;
   }
   
   /**
@@ -660,14 +614,14 @@ public class KmlFileImporter {
     
     if (previousPlacemark != null) {
       Geometry geometry = previousPlacemark.getGeometry();
-      if (geometry != null  &&  geometry instanceof Point point) {
+      if (geometry != null  &&  geometry instanceof Point) {
         buf.append(" van ").append(previousPlacemark.getName());
       }
     }
     
     if (nextPlacemark != null) {
       Geometry geometry = nextPlacemark.getGeometry();
-      if (geometry != null  &&  geometry instanceof Point point) {
+      if (geometry != null  &&  geometry instanceof Point) {
         buf.append(" naar ").append(nextPlacemark.getName());
       }
     }
@@ -698,6 +652,11 @@ public class KmlFileImporter {
    */
   public static String getExtendedDataValue(Placemark placemark, String name) {
     ExtendedData extendedData = placemark.getExtendedData();
+    
+    if (extendedData == null) {
+      return null;
+    }
+    
     for (Data data: extendedData.getData()) {
       if (name.equals(data.getName())) {
         return data.getValue();

@@ -980,8 +980,6 @@ public class VacationToHtmlConverter extends VacationToTextConverterAbstract {
    * @param generateForWeb if {@code true} information for deploying on a website is generated.
    */
   private void addImage(StringBuilder buf, Path path, int height, String caption) {
-    String resizedFile = null;
-    
     buf.append("<img src=\"");
     if (!embedImages) {
       if (createZipFile && path != null) {
@@ -1010,20 +1008,12 @@ public class VacationToHtmlConverter extends VacationToTextConverterAbstract {
       }
       
     } else {
-//      InputStream inputStream;
-//      try {
-//        inputStream = Files.newInputStream(path);
         buf.append("data:image/")
         .append(getImageType(path.toString()))
         .append(";base64,")
         .append(createBase64EncodedImage(path));
-//      } catch (IOException e) {
-//        e.printStackTrace();
-//      }
     }
     
-//    buf.append("\" height=\"")
-//    .append(height)
     buf.append("\" >");
     if (caption != null) {
       buf.append("<figcaption>");
@@ -1031,37 +1021,7 @@ public class VacationToHtmlConverter extends VacationToTextConverterAbstract {
       buf.append("</figcaption>");
     }
     buf.append("</img>");
-    if (resizedFile != null) {
-      try {
-        Files.delete(Paths.get(resizedFile));
-      } catch (IOException e) {
-        // TODO Auto-generated catch block
-        e.printStackTrace();
-      }
-    }
   }
-  
-//  private String createResizedImageFile(String urlString, int height) {
-//    // TODO Auto-generated method stub
-//    return null;
-//  }
-
-//  private boolean imageHasToBeResized(Path path, int height) {
-//    // TODO Auto-generated method stub
-//    return false;
-//  }
-
-//  private Object getBase64EncodedImage(String urlString, int height, int width) {
-//    try {
-//      byte[] fileContent = IOUtils.toByteArray((new URL(urlString)).openStream());
-//      String encodedString = Base64.getEncoder().encodeToString(fileContent);
-//      return encodedString;
-//    } catch (IOException e) {
-//      e.printStackTrace();
-//    }
-//    
-//    return null;
-//  }
 
   /**
    * Get the base64 encoded image.
@@ -1074,18 +1034,6 @@ public class VacationToHtmlConverter extends VacationToTextConverterAbstract {
    * @return the base64 encoded image, or {@code null} if the image could not be read.
    */
   private Object createBase64EncodedImage(Path path) {
-//    URI uri = path.toUri();
-//    URL url;
-//    try {
-//      url = uri.toURL();
-//      Files.stream
-//      InputStream input = url.openStream();
-//      byte[] fileContent = IOUtils.toByteArray(input);
-//      String encodedString = Base64.getEncoder().encodeToString(fileContent);
-//    } catch (IOException e) {
-//      // TODO Auto-generated catch block
-//      e.printStackTrace();
-//    }
     try {
       byte[] fileContent = IOUtils.toByteArray(Files.newInputStream(path));
       String encodedString = Base64.getEncoder().encodeToString(fileContent);
@@ -1094,35 +1042,6 @@ public class VacationToHtmlConverter extends VacationToTextConverterAbstract {
       e.printStackTrace();
     }
     
-    return null;
-  }
-
-  /**
-   * Get the base64 encoded image.
-   * <p>
-   * The image is read from the file system.
-   * 
-   * @param path the path to the image file.
-   * @param height maximum image height (to be implemented).
-   * @param width maximum image width (to be implemented).
-   * @return the base64 encoded image, or {@code null} if the image could not be read.
-   */
-  private String getBase64EncodedImage(InputStream inputStream, int height, int width) {
-    try {
-      BufferedImage originalImage = ImageIO.read(inputStream);
-      Image scaledImage = originalImage.getScaledInstance(width, height, Image.SCALE_SMOOTH);
-      BufferedImage resizedImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
-      Graphics2D g2d = resizedImage.createGraphics();
-      g2d.drawImage(scaledImage, 0, 0, null);
-      g2d.dispose();
-      java.io.ByteArrayOutputStream baos = new java.io.ByteArrayOutputStream();
-      ImageIO.write(resizedImage, "png", baos);
-      byte[] fileContent = baos.toByteArray();
-      String encodedString = Base64.getEncoder().encodeToString(fileContent);
-      return encodedString;
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
     return null;
   }
   
