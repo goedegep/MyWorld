@@ -4,7 +4,6 @@ module goedegep.myworld {
   exports goedegep.myworld.app.guifx;
   
   requires org.apache.commons.cli;
-  requires goedegep.app.finan;
   requires goedegep.appgen;
   requires transitive goedegep.appgenfx;
   requires goedegep.finan.nota.app;
@@ -24,7 +23,6 @@ module goedegep.myworld {
   requires goedegep.media.app.guifx;
   requires java.desktop;
   requires goedegep.resources;
-  requires goedegep.events.app;
   requires goedegep.demo;
   requires javafx.base; 
 }

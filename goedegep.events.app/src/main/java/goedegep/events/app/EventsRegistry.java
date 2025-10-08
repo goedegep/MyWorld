@@ -30,6 +30,11 @@ public class EventsRegistry implements PropertyFileURLProvider {
   public static String copyrightMessage = null;
   
   /**
+   * Name of the file with the property descriptors.
+   */
+  public static String propertyDescriptorsFile = "EventsPropertyDescriptors.xmi";
+  
+  /**
    * Name of the file with custom properties.
    */
   public static String customPropertiesFile = null;

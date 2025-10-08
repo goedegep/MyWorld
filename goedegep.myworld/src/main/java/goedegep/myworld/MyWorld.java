@@ -21,14 +21,6 @@ import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.apache.commons.cli.UnrecognizedOptionException;
 
-import goedegep.app.finan.guifx.FinanMenuWindow;
-import goedegep.app.finan.registry.FinanRegistry;
-import goedegep.appgen.swing.Customizations;
-import goedegep.events.app.EventsRegistry;
-import goedegep.events.app.guifx.EventsLauncher;
-import goedegep.finan.Finan;
-import goedegep.invandprop.app.InvoicesAndPropertiesRegistry;
-import goedegep.invandprop.app.guifx.InvoicesAndPropertiesLauncher;
 import goedegep.jfx.CustomizationsFx;
 import goedegep.jfx.DefaultCustomizationFx;
 import goedegep.jfx.JfxApplication;
@@ -44,19 +36,12 @@ import goedegep.pctools.app.guifx.PCToolsMenuWindow;
 import goedegep.pctools.app.logic.PCToolsRegistry;
 import goedegep.properties.app.PropertiesHandler;
 import goedegep.properties.app.PropertyFileURLProvider;
-import goedegep.rolodex.app.RolodexRegistry;
-import goedegep.rolodex.app.guifx.RolodexMenuWindow;
-import goedegep.rolodex.model.Rolodex;
-import goedegep.rolodex.model.RolodexFactory;
-import goedegep.rolodex.model.RolodexPackage;
 import goedegep.unitconverter.app.UnitConverterRegistry;
 import goedegep.unitconverter.app.guifx.UnitConverterWindow;
 import goedegep.util.emf.EMFResource;
 import goedegep.util.file.FileUtils;
 import goedegep.util.fixedpointvalue.FixedPointValue;
 import goedegep.util.money.PgCurrency;
-import goedegep.vacations.app.guifx.VacationsLauncher;
-import goedegep.vacations.app.logic.VacationsRegistry;
 import javafx.application.Platform;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
@@ -73,13 +58,8 @@ public class MyWorld extends JfxApplication implements PropertyFileURLProvider {
   private static final int MIN_JAVA_FEATURE_NUMBER = 22;
   private static final String         PROGRAM_DESCRIPTION =
                                              PROGRAM_NAME + " is my world on the computer. It consists of the following modules:" + NEWLINE +
-                                             "Events                  - Information about events" + NEWLINE +
-                                             "Finan                   - Financial related stuff" + NEWLINE +
-                                             "Invoices and Properties - Information about expenses and properties we own" + NEWLINE +
                                              "Media                   - Music and photos (and later movies)" + NEWLINE +
-                                             "Rolodex                 - Names, adressess, phonenumbers en phone memories" + NEWLINE +
                                              "Unit Converter          - To convert distances and times" + NEWLINE +
-                                             "Vacations               - Information about vacations we've had" + NEWLINE +
                                              "PCTools                 - Some PC toolts + NEWLINE";
 
 // EMF model files are accessed as File, and so they cannot be in jar files.
@@ -87,14 +67,9 @@ private static final String MY_WORLD_PROPERTY_DESCRIPTORS_FILE = "MyWorldPropert
 private static final String MY_WORLD_CONFIGURATION_FILE = "MyWorldConfiguration.xmi";
 
 // When running in Eclipse, files are read from the related project folder.
-private static final String         EVENTS_PROJECT_PATH = "../../../goedegep.events.app/target/classes";
-private static final String         FINAN_PROJECT_PATH = "../../../goedegep.finan.app/target/classes";
 private static final String         MEDIA_PROJECT_PATH = "../../../goedegep.media.app/target/classes";
-private static final String         INVOICES_AND_PROPERTIES_PROJECT_PATH = "../../../goedegep.invandprop.app/target/classes";
-private static final String         ROLODEX_PROJECT_PATH = "../../../goedegep.rolodex.app/target/classes";
 private static final String         UNIT_CONVERTER_PROJECT_PATH = "../../../goedegep.unitconverter.app/target/classes";
 private static final String         PCTOOLS_PROJECT_PATH = "../../../goedegep.pctools/target/classes";
-private static final String         VACATIONS_PROJECT_PATH = "../../../goedegep.vacations.app/target/classes";
 
   /**
    * Constructor
@@ -143,7 +118,7 @@ private static final String         VACATIONS_PROJECT_PATH = "../../../goedegep.
     Options options = new Options();
     Option applicationOption = Option.builder("a").hasArg().argName("application").
         desc("the application within MyWorld that has to be directly started (optional). Possible values are: " +
-            "\"Events\", \"Finan\", \"MediaDb\", \"Invoices and Properties\", \"Rolodex\", \"Unit Converter\", \"PCTools\", \\\"Vacations\\\"").build();
+            "\"MediaDb\", \"Unit Converter\", \"PCTools\"").build();
     options.addOption(applicationOption);
     
     boolean optionsOK = true;
@@ -240,29 +215,14 @@ private static final String         VACATIONS_PROJECT_PATH = "../../../goedegep.
     // For now DevelopmentMode is active when 'Running in eclipse'.
     if (runningInEclipse) {
       MyWorldRegistry.developmentMode = true;
-      if (modulesToInitialize.contains(MyWorldAppModule.EVENTS)) {
-        EventsRegistry.developmentMode = true;
-      }
-      if (modulesToInitialize.contains(MyWorldAppModule.FINAN)) {
-        FinanRegistry.developmentMode = true;
-      }
       if (modulesToInitialize.contains(MyWorldAppModule.MEDIA)) {
         MediaRegistry.developmentMode = true;
-      }
-      if (modulesToInitialize.contains(MyWorldAppModule.ROLODEX)) {
-        RolodexRegistry.developmentMode = true;
-      }
-      if (modulesToInitialize.contains(MyWorldAppModule.INVOICES_AND_PROPERTIES)) {
-        InvoicesAndPropertiesRegistry.developmentMode = true;
       }
       if (modulesToInitialize.contains(MyWorldAppModule.UNIT_CONVERTER)) {
         UnitConverterRegistry.developmentMode = true;
       }
       if (modulesToInitialize.contains(MyWorldAppModule.PCTOOLS)) {
         PCToolsRegistry.developmentMode = true;
-      }
-      if (modulesToInitialize.contains(MyWorldAppModule.VACATIONS)) {
-        VacationsRegistry.developmentMode = true;
       }
     }
 
@@ -311,11 +271,7 @@ private static final String         VACATIONS_PROJECT_PATH = "../../../goedegep.
       PropertiesHandler.handleProperties(url, null);
             
       PropertiesMetaInfo[] propertiesMetaInfos = {
-          new PropertiesMetaInfo(MyWorldAppModule.EVENTS, EVENTS_PROJECT_PATH, MyWorldRegistry.eventsPropertyDescriptorFileName, new EventsRegistry()),
-          new PropertiesMetaInfo(MyWorldAppModule.FINAN, FINAN_PROJECT_PATH, MyWorldRegistry.finanPropertyDescriptorFileName, new Finan(null)),
           new PropertiesMetaInfo(MyWorldAppModule.MEDIA, MEDIA_PROJECT_PATH, MyWorldRegistry.mediaPropertyDescriptorFileName, new MediaRegistry()),
-          new PropertiesMetaInfo(MyWorldAppModule.ROLODEX, ROLODEX_PROJECT_PATH, MyWorldRegistry.rolodexPropertyDescriptorFileName, new RolodexRegistry()),
-          new PropertiesMetaInfo(MyWorldAppModule.INVOICES_AND_PROPERTIES, INVOICES_AND_PROPERTIES_PROJECT_PATH, MyWorldRegistry.invoicesAndPropertiesPropertyDescriptorFileName, new InvoicesAndPropertiesRegistry()),
           new PropertiesMetaInfo(MyWorldAppModule.UNIT_CONVERTER, UNIT_CONVERTER_PROJECT_PATH, MyWorldRegistry.unitConverterPropertyDescriptorFileName, new UnitConverterRegistry()),
           new PropertiesMetaInfo(MyWorldAppModule.PCTOOLS, PCTOOLS_PROJECT_PATH, MyWorldRegistry.pctoolsPropertyDescriptorsFileName, new PCToolsRegistry()),
       };
@@ -326,8 +282,6 @@ private static final String         VACATIONS_PROJECT_PATH = "../../../goedegep.
           if (url == null) {
             reportException(DefaultCustomizationFx.getInstance(), new RuntimeException("No URL for class " + propertiesMetaInfo.propertyFileURLProvider.getClass().getCanonicalName()));
           }
-          VacationsRegistry vacationsRegistry = new VacationsRegistry();
-          PropertiesHandler.handleProperties(url, vacationsRegistry::getURLForFileName);
         }
       }
             
@@ -363,25 +317,9 @@ private static final String         VACATIONS_PROJECT_PATH = "../../../goedegep.
 //      CustomizationsFx.addCustomizations(new File(createResourcePath(runningInEclipse, null, MyWorldRegistry.configurationFile)));
       CustomizationsFx.addCustomizations(this.getCustomizationFileURL());
     }
-    if (modulesToInitialize.contains(MyWorldAppModule.EVENTS)) {
-//      CustomizationsFx.addCustomizations(new File(createResourcePath(runningInEclipse, EVENTS_PROJECT_PATH, EventsRegistry.configurationFile)));
-      CustomizationsFx.addCustomizations(new EventsRegistry().getCustomizationFileURL());
-    }
-    if (modulesToInitialize.contains(MyWorldAppModule.FINAN)) {
-//      CustomizationsFx.addCustomizations(new File(createResourcePath(runningInEclipse, FINAN_PROJECT_PATH, FinanRegistry.configurationFile)));
-      CustomizationsFx.addCustomizations(new Finan(null).getCustomizationFileURL());
-    }
     if (modulesToInitialize.contains(MyWorldAppModule.MEDIA)) {
 //      CustomizationsFx.addCustomizations(new File(createResourcePath(runningInEclipse, MEDIA_PROJECT_PATH, MediaRegistry.configurationFile)));
       CustomizationsFx.addCustomizations(new MediaRegistry().getCustomizationFileURL());
-    }
-    if (modulesToInitialize.contains(MyWorldAppModule.ROLODEX)) {
-//      CustomizationsFx.addCustomizations(new File(createResourcePath(runningInEclipse, ROLODEX_PROJECT_PATH, RolodexRegistry.configurationFile)));
-      CustomizationsFx.addCustomizations(new RolodexRegistry().getCustomizationFileURL());
-    }
-    if (modulesToInitialize.contains(MyWorldAppModule.INVOICES_AND_PROPERTIES)) {
-//      CustomizationsFx.addCustomizations(new File(createResourcePath(runningInEclipse, INVOICES_AND_PROPERTIES_PROJECT_PATH, InvoicesAndPropertiesRegistry.configurationFile)));
-      CustomizationsFx.addCustomizations(new InvoicesAndPropertiesRegistry().getCustomizationFileURL());
     }
     if (modulesToInitialize.contains(MyWorldAppModule.UNIT_CONVERTER)) {
 //      CustomizationsFx.addCustomizations(new File(createResourcePath(runningInEclipse, UNIT_CONVERTER_PROJECT_PATH, UnitConverterRegistry.configurationFile)));
@@ -391,28 +329,6 @@ private static final String         VACATIONS_PROJECT_PATH = "../../../goedegep.
 //      CustomizationsFx.addCustomizations(new File(createResourcePath(runningInEclipse, PCTOOLS_PROJECT_PATH, PCToolsRegistry.configurationFile)));
       CustomizationsFx.addCustomizations(new PCToolsRegistry().getCustomizationFileURL());
     }
-  }
-
-
-  // The top level application needs the customizations of all applications, because it shows their images in the
-  // application start page.
-  private void createCustomizationsSwing(boolean runningInEclipse, Set<MyWorldAppModule> modulesToInitialize) {
-    // TODO Files shall be in the system directory and not in the user directory. Only if, later, user config files are introduced, these shall be in the user directory.
-    // Files are used already from system directory. Remove from Google Drive is Finan installation is also updated.
-    
-    // Add a Customization to Customizations for each application module, where:
-    // - the name is taken from AppModules
-    // - a File for the ConfigurationResource is taken for the related Registry (typically configurationFile)
-    // - a new AppResources for the module
-    
-    // Currently the configurations are not editable, so they are in the installation directory.
-    // If I make them editable there will be a copy of the configuration files in the dataDirectory.
-    if (modulesToInitialize.contains(MyWorldAppModule.FINAN)) {
-      Customizations.addCustomizations(new File(createResourcePath(runningInEclipse, FINAN_PROJECT_PATH, FinanRegistry.configurationFile)));
-    }
-//    if (modulesToInitialize.contains(MyWorldAppModule.INVOICES_AND_PROPERTIES)) {
-//      Customizations.addCustomizations(new File(createResourcePath(runningInEclipse, INVOICES_AND_PROPERTIES_PROJECT_PATH, InvoicesAndPropertiesRegistry.configurationFile)));
-//    }
   }
   
   /**
@@ -445,20 +361,9 @@ private static final String         VACATIONS_PROJECT_PATH = "../../../goedegep.
   private void createAndShowApplicationWindow(MyWorldAppModule appModule, String fileToOpen) {
     Stage stage = null;
     if ((appModule == null)  ||  (appModule.equals(MyWorldAppModule.MY_WORLD))) {
-      getRolodexResource();
       stage = new MyWorldMenuWindowFx(CustomizationsFx.getCustomization(MyWorldAppModule.MY_WORLD.name()));
     } else {
       switch (appModule) {
-      case EVENTS:
-        EventsLauncher.setCustomization(CustomizationsFx.getCustomization(MyWorldAppModule.EVENTS.name()));
-        EventsLauncher.getInstance().launchEventsWindow();
-        break;
-        
-      case FINAN:
-        Finan finan = new Finan(getRolodexResource().getEObject());
-        stage = new FinanMenuWindow(CustomizationsFx.getCustomization(MyWorldAppModule.FINAN.name()), finan);
-        break;
-        
       case MEDIA:
         stage = new MediaMenuWindow(CustomizationsFx.getCustomization(MyWorldAppModule.MEDIA.name()));
         break;
@@ -467,25 +372,12 @@ private static final String         VACATIONS_PROJECT_PATH = "../../../goedegep.
         // No action, as this is handled in the 'if'. This case is only here to keep cases compleet.
         break;
         
-      case INVOICES_AND_PROPERTIES:
-        InvoicesAndPropertiesLauncher.launchInvoicesAndPropertiesApplication(CustomizationsFx.getCustomization(MyWorldAppModule.INVOICES_AND_PROPERTIES.name()));
-        break;
-        
-      case ROLODEX:
-        getRolodexResource();
-        stage = new RolodexMenuWindow(CustomizationsFx.getCustomization(MyWorldAppModule.ROLODEX.name()));
-        break;
-        
       case UNIT_CONVERTER:
         stage = new UnitConverterWindow(CustomizationsFx.getCustomization(appModule.name()));
         break;
         
       case PCTOOLS:
         stage = new PCToolsMenuWindow(CustomizationsFx.getCustomization(MyWorldAppModule.PCTOOLS.name()), fileToOpen);
-        break;
-        
-      case VACATIONS:
-        VacationsLauncher.launchVacationsWindow(CustomizationsFx.getCustomization(MyWorldAppModule.VACATIONS.name()));
         break;
         
       default:
@@ -497,33 +389,7 @@ private static final String         VACATIONS_PROJECT_PATH = "../../../goedegep.
       stage.centerOnScreen();
       stage.show();      
     }
-  }
-  
-  /**
-   * Get the Rolodex resource.
-   * <p>
-   * If the RolodexRegistry.rolodexResource is null, a new RolodexResource is created.
-   * 
-   * @return the existing or newly created RolodexRegistry.rolodexResource
-   */
-  private EMFResource<Rolodex> getRolodexResource() {
-    if (RolodexRegistry.rolodexResource == null) {
-      try {
-        RolodexRegistry.rolodexResource = new EMFResource<>(
-            RolodexPackage.eINSTANCE,
-            () -> RolodexFactory.eINSTANCE.createRolodex(), ".xmi");
-//        File rolodexFile = new File(RolodexRegistry.dataDirectory, RolodexRegistry.rolodexFile);
-        File rolodexFile = new File(RolodexRegistry.rolodexFile);
-        RolodexRegistry.rolodexResource.load(rolodexFile.getAbsolutePath());
-      } catch (IOException e) {
-        e.printStackTrace();
-        System.exit(1);
-      }
-    }
-
-    return RolodexRegistry.rolodexResource;
-  }
-  
+  }  
 
   public static void main(String[] args) {
     MyWorld.launch(args);

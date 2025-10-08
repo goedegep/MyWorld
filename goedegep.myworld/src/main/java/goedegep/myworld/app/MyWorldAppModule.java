@@ -13,23 +13,23 @@ import java.util.List;
  */
 public enum MyWorldAppModule {
   DEMO("Demo"),
-  EVENTS("Events"),
+//  EVENTS("Events"),
   INVOICES_AND_PROPERTIES("InvoicesAndProperties"),
   ROLODEX("Rolodex"),
-  FINAN("Finan", ROLODEX),
-  FINAN_AANSTELLING(null),
-  FINAN_ABNAMRO_BANK(null),
-  FINAN_COMPANIES(null),
-  FINAN_DIREKTBANK(null),
-  FINAN_HYPOTHEEK(null),
-  FINAN_INVESTMENT_INSURANCES(null),
-  FINAN_LYNX(null),
-  FINAN_POSTBANK(null),
+//  FINAN("Finan", ROLODEX),
+//  FINAN_AANSTELLING(null),
+//  FINAN_ABNAMRO_BANK(null),
+//  FINAN_COMPANIES(null),
+//  FINAN_DIREKTBANK(null),
+//  FINAN_HYPOTHEEK(null),
+//  FINAN_INVESTMENT_INSURANCES(null),
+//  FINAN_LYNX(null),
+//  FINAN_POSTBANK(null),
   MEDIA("Media"),
   PCTOOLS("PCTools"),
   UNIT_CONVERTER("UnitConverter"),
   VACATIONS("Vacations"),
-  MY_WORLD("MyWorld", EVENTS, FINAN, MEDIA, INVOICES_AND_PROPERTIES, PCTOOLS, ROLODEX, UNIT_CONVERTER, VACATIONS);
+  MY_WORLD("MyWorld", MEDIA, INVOICES_AND_PROPERTIES, PCTOOLS, ROLODEX, UNIT_CONVERTER, VACATIONS);
   
   private String moduleName;
   private List<MyWorldAppModule> dependsOnModules = new ArrayList<>();
