@@ -42,6 +42,7 @@ import org.xml.sax.SAXException;
 
 import goedegep.app.finan.abnamrobank.AbnAmroBankTransactionContentHandler;
 import goedegep.app.finan.abnamrobank.AbnAmroBankWindow;
+import goedegep.app.finan.direktbankapp.DirektBank;
 import goedegep.app.finan.direktbankapp.DirektbankTransactionContentHandler;
 import goedegep.app.finan.direktbankapp.DirektbankWindow;
 import goedegep.app.finan.gen.AppModules;
@@ -52,6 +53,7 @@ import goedegep.app.finan.postbankapp.PbEffRekTestWindow;
 import goedegep.app.finan.postbankapp.PbRekWindow;
 import goedegep.app.finan.postbankapp.PbResources;
 import goedegep.app.finan.postbankapp.PbTransactionContentHandler;
+import goedegep.app.finan.postbankapp.Postbank;
 import goedegep.app.finan.registry.FinanRegistry;
 import goedegep.app.finan.stocksapp.CompanyWindow;
 import goedegep.appgen.MessageDialogType;
@@ -214,21 +216,21 @@ public class FinanMainWindow extends AppFrame implements SumAccountListener {
     
     bank = new PbRek(sumStockDepot);
     bankNamePostbankString = bank.getName();
-    appResources = Customizations.getCustomization(AppModules.FINAN_POSTBANK.name()).getResources();
+    appResources = Postbank.getAppResources();
     finanBank = new FinanBank(bank, appResources.getApplicationIcon(ImageSize.SIZE_0), appResources.getSmallIconDisabled());
     sumAccount.addBank(finanBank);
     bankInfoList.add(new BankInfo(bank.getName(), PbTransactionContentHandler.class));
     
     bank = new AbnAmroBank(sumStockDepot);
     bankNameAbnAmroString = bank.getName();
-    appResources = Customizations.getCustomization(AppModules.FINAN_ABNAMRO_BANK.name()).getResources();
+    appResources = AbnAmroBank.getAppResources();
     finanBank = new FinanBank(bank, appResources.getApplicationIcon(ImageSize.SIZE_0), appResources.getSmallIconDisabled());
     sumAccount.addBank(finanBank);
     bankInfoList.add(new BankInfo(bank.getName(), AbnAmroBankTransactionContentHandler.class));
     
     bank = new Direktbank();
     bankNameDirektbankString = bank.getName();
-    appResources = Customizations.getCustomization(AppModules.FINAN_DIREKTBANK.name()).getResources();
+    appResources = DirektBank.getAppResources();
     finanBank = new FinanBank(bank, appResources.getApplicationIcon(ImageSize.SIZE_0), appResources.getSmallIconDisabled());
     sumAccount.addBank(finanBank);
     bankInfoList.add(new BankInfo(bank.getName(), DirektbankTransactionContentHandler.class));
@@ -452,7 +454,7 @@ public class FinanMainWindow extends AppFrame implements SumAccountListener {
     menu = new JMenu("Banken");
 
     // Banken: AbnAmro bank
-    appResources = Customizations.getCustomization(AppModules.FINAN_ABNAMRO_BANK.name()).getResources();
+    appResources = AbnAmroBank.getAppResources();
     MenuFactory.addMenuItem(menu, "ABN AMRO Bank", appResources.getApplicationIcon(ImageSize.SIZE_0),
         new ActionListener() {
       public void actionPerformed(ActionEvent e) {
@@ -461,7 +463,7 @@ public class FinanMainWindow extends AppFrame implements SumAccountListener {
     });
 
     // Banken: Direktbank
-    appResources = Customizations.getCustomization(AppModules.FINAN_DIREKTBANK.name()).getResources();
+    appResources = DirektBank.getAppResources();
     MenuFactory.addMenuItem(menu, "Direktbank", appResources.getApplicationIcon(ImageSize.SIZE_0),
         new ActionListener() {
       public void actionPerformed(ActionEvent e) {
@@ -484,7 +486,7 @@ public class FinanMainWindow extends AppFrame implements SumAccountListener {
     menu = new JMenu("Effecten");
 
     // Effecten: Bedrijven window
-    appResources = Customizations.getCustomization(AppModules.FINAN_COMPANIES.name()).getResources();
+    appResources = CompanyPool.getAppResources();
     MenuFactory.addMenuItem(menu, "Bedrijven ...", appResources.getApplicationIcon(ImageSize.SIZE_0), new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         algemeenBedrijven_actionPerformed(e);

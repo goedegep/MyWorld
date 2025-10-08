@@ -58,6 +58,11 @@ public class FinanRegistry {
   public static String copyrightMessage = null;
   
   /**
+   * Name of the file with the property descriptors.
+   */
+  public static String propertyDescriptorsFile = "FinanPropertyDescriptors.xmi";
+  
+  /**
    * Name of the file with custom properties (settings).
    */
   public static String customPropertiesFile = null;   // Name of the file with custom properties.

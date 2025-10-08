@@ -8,10 +8,6 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import goedegep.app.finan.guifx.FinanMenuWindow;
-import goedegep.events.app.guifx.EventsLauncher;
-import goedegep.finan.Finan;
-import goedegep.invandprop.app.guifx.InvoicesAndPropertiesLauncher;
 import goedegep.jfx.ComponentFactoryFx;
 import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.CustomizationsFx;
@@ -27,12 +23,8 @@ import goedegep.properties.app.guifx.PropertiesEditor;
 import goedegep.properties.model.PropertyDescriptor;
 import goedegep.properties.model.PropertyDescriptorGroup;
 import goedegep.resources.ImageSize;
-import goedegep.rolodex.app.RolodexRegistry;
-import goedegep.rolodex.app.guifx.RolodexMenuWindow;
 import goedegep.unitconverter.app.guifx.UnitConverterWindow;
 import goedegep.util.emf.EMFResource;
-import goedegep.vacations.app.TravelsApplication;
-import goedegep.vacations.app.guifx.VacationsLauncher;
 import javafx.animation.Interpolator;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
@@ -122,37 +114,6 @@ public class MyWorldMenuWindowFx extends JfxStage {
     
     Button applicationButton;
     
-    // Finan
-    applicationButton = createModuleButton(
-        MyWorldAppModule.FINAN.getModuleName(),
-        CustomizationsFx.getCustomization(MyWorldAppModule.FINAN.name()).getResources().getApplicationImage(ImageSize.SIZE_3));
-    applicationButton.setOnAction(new EventHandler<ActionEvent>() {
-
-      @Override
-      public void handle(ActionEvent event) {
-        Finan finan = new Finan(RolodexRegistry.rolodexResource.getEObject());
-        Stage stage = new FinanMenuWindow(CustomizationsFx.getCustomization(MyWorldAppModule.FINAN.name()), finan);
-        stage.centerOnScreen();
-        stage.show();
-      }
-      
-    });
-    grid.add(applicationButton, 0, 0);
-    
-    // InvoicesAndProperties
-    applicationButton = createModuleButton(
-        MyWorldAppModule.INVOICES_AND_PROPERTIES.getModuleName(),
-        CustomizationsFx.getCustomization(MyWorldAppModule.INVOICES_AND_PROPERTIES.name()).getResources().getApplicationImage(ImageSize.SIZE_3));
-    applicationButton.setOnAction(new EventHandler<ActionEvent>() {
-
-      @Override
-      public void handle(ActionEvent event) {
-        InvoicesAndPropertiesLauncher.launchInvoicesAndPropertiesApplication(CustomizationsFx.getCustomization(MyWorldAppModule.INVOICES_AND_PROPERTIES.name()));
-      }
-      
-    });
-    grid.add(applicationButton, 1, 0);
-    
     // Media
     applicationButton = createModuleButton(
         MyWorldAppModule.MEDIA.getModuleName(),
@@ -168,21 +129,6 @@ public class MyWorldMenuWindowFx extends JfxStage {
     });
     grid.add(applicationButton, 2, 0);
     
-    // Rolodex
-    applicationButton = createModuleButton(
-        MyWorldAppModule.ROLODEX.getModuleName(),
-        CustomizationsFx.getCustomization(MyWorldAppModule.ROLODEX.name()).getResources().getApplicationImage(ImageSize.SIZE_3));
-    applicationButton.setOnAction(new EventHandler<ActionEvent>() {
-
-      @Override
-      public void handle(ActionEvent event) {
-        Stage stage = new RolodexMenuWindow(CustomizationsFx.getCustomization(MyWorldAppModule.ROLODEX.name()));
-        stage.show();
-      }
-      
-    });
-    grid.add(applicationButton, 0, 1);
-    
     // UnitConverter
     applicationButton = createModuleButton(
         MyWorldAppModule.UNIT_CONVERTER.getModuleName(),
@@ -197,39 +143,7 @@ public class MyWorldMenuWindowFx extends JfxStage {
       
     });
     grid.add(applicationButton, 1, 1);
-    
-    // Travels
-    TravelsApplication travelsApplication = TravelsApplication.getInstance();
-    CustomizationFx travelsCustomization = travelsApplication.getCustomization();
-  
-    applicationButton = createModuleButton(
-        MyWorldAppModule.VACATIONS.getModuleName(),
-        travelsCustomization.getResources().getApplicationImage(ImageSize.SIZE_3));
-    applicationButton.setOnAction(new EventHandler<ActionEvent>() {
-
-      @Override
-      public void handle(ActionEvent event) {
-        VacationsLauncher.launchVacationsWindow(CustomizationsFx.getCustomization(MyWorldAppModule.VACATIONS.name()));
-      }
-      
-    });
-    grid.add(applicationButton, 2, 1);
-    
-    // Events
-    applicationButton = createModuleButton(
-        MyWorldAppModule.EVENTS.getModuleName(),
-        CustomizationsFx.getCustomization(MyWorldAppModule.EVENTS.name()).getResources().getApplicationImage(ImageSize.SIZE_3));
-    applicationButton.setOnAction(new EventHandler<ActionEvent>() {
-
-      @Override
-      public void handle(ActionEvent event) {
-        EventsLauncher.setCustomization(CustomizationsFx.getCustomization(MyWorldAppModule.EVENTS.name()));
-        EventsLauncher.getInstance().launchEventsWindow();
-      }
-      
-    });
-    grid.add(applicationButton, 1, 2);
-    
+        
     // PC Tools
     applicationButton = createModuleButton(
         MyWorldAppModule.PCTOOLS.getModuleName(),

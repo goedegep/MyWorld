@@ -10,6 +10,7 @@ import java.util.logging.Logger;
 import com.openhtmltopdf.outputdevice.helper.BaseRendererBuilder.PageSizeUnits;
 import com.openhtmltopdf.pdfboxout.PdfRendererBuilder;
 
+import goedegep.events.app.EventsLauncher;
 import goedegep.events.app.EventsRegistry;
 import goedegep.events.app.EventsService;
 import goedegep.events.app.EventsToHtmlConverter;

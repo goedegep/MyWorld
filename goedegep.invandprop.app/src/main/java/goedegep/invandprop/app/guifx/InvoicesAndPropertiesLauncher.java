@@ -1,24 +1,20 @@
 package goedegep.invandprop.app.guifx;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import java.net.URL;
 import java.util.Optional;
 import java.util.logging.Logger;
-
-import org.eclipse.emf.ecore.util.EcoreUtil;
 
 import goedegep.invandprop.app.InvoicesAndPropertiesRegistry;
 import goedegep.invandprop.app.InvoicesAndPropertiesService;
 import goedegep.invandprop.model.InvAndPropFactory;
 import goedegep.invandprop.model.InvAndPropPackage;
-import goedegep.invandprop.model.InvoiceAndProperty;
-import goedegep.invandprop.model.InvoiceAndPropertyItem;
 import goedegep.invandprop.model.InvoicesAndProperties;
 import goedegep.jfx.CustomizationFx;
+import goedegep.jfx.CustomizationsFx;
+import goedegep.jfx.JfxApplication;
+import goedegep.properties.app.PropertiesHandler;
 import goedegep.properties.app.guifx.PropertiesEditor;
-import goedegep.types.model.FileReference;
 import goedegep.util.emf.EMFResource;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
@@ -32,12 +28,27 @@ import javafx.stage.Stage;
 public class InvoicesAndPropertiesLauncher {
   private static final Logger LOGGER = Logger.getLogger(InvoicesAndPropertiesLauncher.class.getName());
   private static final String NEWLINE = System.getProperty("line.separator");
+  
+  private static final String INVOICES_AND_PROPERTIES_CONFIGURATION_FILE = "InvoicesAndPropertiesConfiguration.xmi";
 
   private static CustomizationFx customization = null;
   private static InvoicesAndPropertiesService invoicesAndPropertiesService;
 
-  public static void launchInvoicesAndPropertiesApplication(CustomizationFx customization) {
-    InvoicesAndPropertiesLauncher.customization = customization;
+  public static void launchInvoicesAndPropertiesApplication() {
+    
+    
+    try {
+      // Read the properties, which are stored in the registry.
+      URL url = InvoicesAndPropertiesLauncher.class.getResource(InvoicesAndPropertiesRegistry.propertyDescriptorsFile);
+      PropertiesHandler.handleProperties(url, null);
+
+      // Read the customization info.
+      url = InvoicesAndPropertiesLauncher.class.getResource(INVOICES_AND_PROPERTIES_CONFIGURATION_FILE);
+      InvoicesAndPropertiesLauncher.customization = CustomizationsFx.readCustomization(url);
+    } catch (IOException e) {
+      JfxApplication.reportException(null, e);
+    }
+    
     
     if (!checkRegistry(customization)) {
       return;

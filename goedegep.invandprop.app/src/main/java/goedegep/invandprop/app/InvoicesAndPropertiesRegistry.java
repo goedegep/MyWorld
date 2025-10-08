@@ -14,6 +14,11 @@ public class InvoicesAndPropertiesRegistry implements PropertyFileURLProvider {
   public static String author = null;                        // Name of the author of the application.
   public static String configurationFile = null;             // Name of the file with Configuration data.
   public static String copyrightMessage = null;              // Copyright message for the application.
+  
+  /**
+   * Name of the file with the property descriptors.
+   */
+  public static String propertyDescriptorsFile = "InvoicesAndPropertiesPropertyDescriptors.xmi";
   public static String customPropertiesFile = null;          // Name of the file with custom properties.
   public static String propertyRelatedFilesFolder = null;    // Directory with files related to the properties (documents and pictures).
   public static String invoicesAndPropertiesFile = null;     // Name of the file with all invoices and properties.

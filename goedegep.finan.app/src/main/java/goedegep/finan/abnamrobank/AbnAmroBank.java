@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import goedegep.app.finan.abnamrobank.AbnAmroBankResources;
+import goedegep.appgen.swing.AppResources;
 import goedegep.finan.abnamrobank.aaeffrek.AAEffRek;
 import goedegep.finan.basic.Bank;
 import goedegep.finan.basic.DefaultAccount;
@@ -18,6 +20,7 @@ public class AbnAmroBank extends Bank {
   private StockDepot  parentDepot;
   private AAEffRek    aaEffRek;
   private PgAccount   aaDekkingsRekening;
+  private static AppResources appResources = null;
 
   public AbnAmroBank(StockDepot parentDepot) {
     super();
@@ -33,6 +36,14 @@ public class AbnAmroBank extends Bank {
   public String toString(PgTransaction transaction) {
     return transaction.getAccount().getName() + "\t" +
     transaction.toString();
+  }
+  
+  public static AppResources getAppResources() {
+    if (appResources == null) {
+      appResources = new AbnAmroBankResources();
+    }
+    
+    return appResources;
   }
 
   /**

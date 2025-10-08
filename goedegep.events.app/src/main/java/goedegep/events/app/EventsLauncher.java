@@ -1,7 +1,8 @@
-package goedegep.events.app.guifx;
+package goedegep.events.app;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Locale;
@@ -9,16 +10,18 @@ import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.logging.Logger;
 
-import goedegep.events.app.EventsRegistry;
-import goedegep.events.app.EventsService;
+import goedegep.events.app.guifx.EventEditor;
+import goedegep.events.app.guifx.EventsWindow;
 import goedegep.events.model.EventInfo;
 import goedegep.events.model.Events;
 import goedegep.events.model.EventsFactory;
 import goedegep.events.model.EventsPackage;
 import goedegep.jfx.ComponentFactoryFx;
 import goedegep.jfx.CustomizationFx;
-import goedegep.jfx.DefaultCustomizationFx;
+import goedegep.jfx.CustomizationsFx;
+import goedegep.jfx.JfxApplication;
 import goedegep.jfx.editor.Editor;
+import goedegep.properties.app.PropertiesHandler;
 import goedegep.properties.app.guifx.PropertiesEditor;
 import goedegep.util.emf.EMFResource;
 import javafx.scene.control.Alert;
@@ -35,10 +38,12 @@ public class EventsLauncher {
   private static final Logger LOGGER = Logger.getLogger(EventsLauncher.class.getName());
   private static final String NEWLINE = System.getProperty("line.separator");
   
+  private static final String EVENTS_CONFIGURATION_FILE = "EventsConfiguration.xmi";
+  
   /**
    * The GUI customization for the complete events application.
    */
-  private static CustomizationFx customization;
+  private CustomizationFx customization;
   
   /**
    * The {@code EventsLauncher} singleton.
@@ -50,14 +55,6 @@ public class EventsLauncher {
    */
   private EventsService eventsService;
 
-  /**
-   * Set the GUI customization for the events application.
-   * 
-   * @param customization the GUI customization for the events application.
-   */
-  public static void setCustomization(CustomizationFx customization) {
-    EventsLauncher.customization = customization;
-  }
   
   /**
    * Get the {@code EventsLauncher} singleton.
@@ -74,8 +71,6 @@ public class EventsLauncher {
 
   /**
    * Launch the EventsWindow
-   * 
-   * @param customization the GUI customization.
    */
   public void launchEventsWindow() {
     LOGGER.info("=>");
@@ -108,8 +103,16 @@ public class EventsLauncher {
    * Private constructor as this is a singleton.
    */
   private EventsLauncher() {
-    if (customization == null) {
-      customization = DefaultCustomizationFx.getInstance();
+    try {
+      // Read the properties, which are stored in the registry.
+      URL url = getClass().getResource(EventsRegistry.propertyDescriptorsFile);
+      PropertiesHandler.handleProperties(url, null);
+
+      // Read the customization info.
+      url = getClass().getResource(EVENTS_CONFIGURATION_FILE);
+      customization = CustomizationsFx.readCustomization(url);
+    } catch (IOException e) {
+      JfxApplication.reportException(null, e);
     }
     
     EMFResource<Events> eventsResource = getEventsResource(customization);

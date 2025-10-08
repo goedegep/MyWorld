@@ -4,6 +4,7 @@ module goedegep.media.app {
 
   requires goedegep.appgen;
   requires goedegep.appgenfx;
+//  requires goedegep.media.app.guifx;
   requires transitive goedegep.media.mediadb.model;
   requires transitive goedegep.model.properties;
   requires goedegep.util;

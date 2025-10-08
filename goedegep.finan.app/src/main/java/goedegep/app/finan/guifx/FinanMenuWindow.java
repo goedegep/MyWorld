@@ -9,11 +9,11 @@ import goedegep.app.finan.registry.FinanRegistry;
 import goedegep.appgen.swing.Customizations;
 import goedegep.finan.Finan;
 import goedegep.finan.investmentinsurances.app.guifx.InvestmentInsurancesOverviewWindow;
+import goedegep.finan.jobappointment.JobAppointmentService;
 import goedegep.finan.jobappointment.guifx.JobAppointmentWindow;
+import goedegep.finan.mortgage.MortgageService;
 import goedegep.finan.mortgage.app.guifx.MortgagesWindow;
 import goedegep.jfx.AppResourcesFx;
-import goedegep.jfx.ComponentFactoryFx;
-import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.CustomizationsFx;
 import goedegep.jfx.JfxStage;
 import goedegep.jfx.MenuUtil;
@@ -39,8 +39,6 @@ public class FinanMenuWindow extends JfxStage {
   private static final String WINDOW_TITLE   = "Finan";
   
   private Finan finan;
-  private CustomizationFx customization;
-  private ComponentFactoryFx componentFactory;
   private FinanResourcesFx appResources;
 
   /**
@@ -49,10 +47,9 @@ public class FinanMenuWindow extends JfxStage {
    * @param customization GUI customization.
    * @param finan the financial information.
    */
-  public FinanMenuWindow(CustomizationFx customization, Finan finan) {
-    super(customization, WINDOW_TITLE);
+  public FinanMenuWindow(Finan finan) {
+    super(finan.getCustomizationFx(), WINDOW_TITLE);
     
-    this.customization = customization;
     this.finan = finan;
 //    PropertyDescriptorGroup propertyDescriptorGroup = FinanRegistry.propertyDescriptorsResource.getEObject();
 //    String customPropertiesFileName = null;
@@ -110,22 +107,22 @@ public class FinanMenuWindow extends JfxStage {
     Button applicationButton;
 
     applicationButton = componentFactory.createToolButton("Finan Classic", appResources.getApplicationImage(ImageSize.SIZE_0), "Start the 'old' Finan app");
-    applicationButton.setOnAction(event -> new FinanMainWindow(Customizations.getCustomization("FINAN"), false, false, RolodexRegistry.rolodexResource));
+    applicationButton.setOnAction(_ -> new FinanMainWindow(finan.getCustomization(), false, false, RolodexRegistry.rolodexResource));
     grid.add(applicationButton, 0, 0);
 
-    AppResourcesFx appResourcesHypotheek = CustomizationsFx.getCustomization(AppModules.FINAN_HYPOTHEEK.name()).getResources();
+    AppResourcesFx appResourcesHypotheek = MortgageService.getInstance().getCustomization().getResources();
     applicationButton = componentFactory.createToolButton("Mortgages", appResourcesHypotheek.getApplicationImage(ImageSize.SIZE_0), "Mortgages");
-    applicationButton.setOnAction(event -> new MortgagesWindow(CustomizationsFx.getCustomization(AppModules.FINAN_HYPOTHEEK.name()), finan.getRolodex()));
+    applicationButton.setOnAction(_ -> new MortgagesWindow(MortgageService.getInstance().getCustomization(), finan.getRolodex()));
     grid.add(applicationButton, 1, 0);
 
     applicationButton = componentFactory.createToolButton("Investment Insurances", appResources.getApplicationImage(ImageSize.SIZE_0), "Investment Insurances");
-    applicationButton.setOnAction(event -> new InvestmentInsurancesOverviewWindow(CustomizationsFx.getCustomization(AppModules.FINAN.name())));
+    applicationButton.setOnAction(_ -> new InvestmentInsurancesOverviewWindow(finan.getCustomizationFx()));
     grid.add(applicationButton, 2, 0);
 
-    AppResourcesFx appResourcesAanstelling = CustomizationsFx.getCustomization(AppModules.FINAN_AANSTELLING.name()).getResources();
+    AppResourcesFx appResourcesAanstelling = JobAppointmentService.getInstance().getCustomization().getResources();
     applicationButton = componentFactory.createToolButton("Job Appointment", appResourcesAanstelling.getApplicationImage(ImageSize.SIZE_0), "Start the 'Job Appointment' app");
-    applicationButton.setOnAction(event -> {
-        new JobAppointmentWindow(CustomizationsFx.getCustomization(AppModules.FINAN_AANSTELLING.name()));
+    applicationButton.setOnAction(_ -> {
+        new JobAppointmentWindow(JobAppointmentService.getInstance().getCustomization());
     });
     grid.add(applicationButton, 3, 0);
 

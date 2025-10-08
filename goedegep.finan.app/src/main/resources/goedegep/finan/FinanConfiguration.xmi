@@ -6,6 +6,7 @@
         listBackgroundColor="175,175,175" labelBackgroundColor="150,150,150" boxBackgroundColor="175,175,175"
         textFieldBackgroundColor="170,170,170"/>
   </moduleLooks>
+  <!--
   <moduleLooks moduleName="FINAN_AANSTELLING" resourcesClassName="goedegep.finan.jobappointment.guifx.JobAppointmentResources">
     <look backgroundColor="255,255,100" buttonBackgroundColor="100,100,0" panelBackgroundColor="255,255,100"
         listBackgroundColor="220,220,100" labelBackgroundColor="255,255,100" boxBackgroundColor="220,220,100"
@@ -36,4 +37,5 @@
         listBackgroundColor="50,210,255" labelBackgroundColor="30,190,255" boxBackgroundColor="50,210,255"
         textFieldBackgroundColor="60,220,255"/>
   </moduleLooks>
+  -->
 </configuration:LookInfo>
