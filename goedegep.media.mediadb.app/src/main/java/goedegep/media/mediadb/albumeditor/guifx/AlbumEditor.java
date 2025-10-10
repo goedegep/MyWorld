@@ -25,7 +25,7 @@ import goedegep.jfx.objectcontrols.ObjectEditPanelTemplate;
 import goedegep.jfx.objecteditor.EditMode;
 import goedegep.jfx.objecteditor.ObjectEditorException;
 import goedegep.jfx.objecteditor.ObjectEditorTemplate;
-import goedegep.media.app.MediaRegistry;
+import goedegep.media.common.MediaRegistry;
 import goedegep.media.mediadb.app.MediaDbService;
 import goedegep.media.mediadb.app.derivealbuminfo.AlbumInfo;
 import goedegep.media.mediadb.app.derivealbuminfo.DeriveAlbumInfo;

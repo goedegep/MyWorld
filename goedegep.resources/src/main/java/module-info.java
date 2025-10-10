@@ -4,4 +4,5 @@ module goedegep.resources {
   requires transitive javafx.graphics;
   requires java.logging;
   requires goedegep.util;
+  requires org.apache.commons.imaging;
 }

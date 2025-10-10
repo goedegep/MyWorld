@@ -1,18 +1,20 @@
 module goedegep.media.app {
   exports goedegep.media.app;
-  exports goedegep.media.app.base;
+  exports goedegep.media.app.guifx;
+  exports goedegep.media.app.logic;
 
-  requires goedegep.appgen;
+//  requires goedegep.appgen;
   requires goedegep.appgenfx;
-//  requires goedegep.media.app.guifx;
   requires transitive goedegep.media.mediadb.model;
-  requires transitive goedegep.model.properties;
-  requires goedegep.util;
-  requires java.desktop;
+//  requires transitive goedegep.model.properties;
+//  requires goedegep.util;
+//  requires java.desktop;
   requires java.logging;
-  requires javafx.base;
-  requires transitive javafx.graphics;
-  requires org.eclipse.emf.common;
-  requires org.eclipse.emf.ecore;
+//  requires javafx.base;
+//  requires transitive javafx.graphics;
+//  requires org.eclipse.emf.common;
+//  requires org.eclipse.emf.ecore;
   requires goedegep.properties.app;
+  requires goedegep.media.common;
+  requires goedegep.media.mediadb.app;
 }

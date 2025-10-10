@@ -7,7 +7,7 @@ import java.util.Optional;
 
 import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.PropertyDescriptorsEditorFx;
-import goedegep.media.app.MediaRegistry;
+import goedegep.media.common.MediaRegistry;
 import goedegep.media.mediadb.app.guifx.AlbumDetailsWindow;
 import goedegep.media.mediadb.app.guifx.AlbumsTable;
 import goedegep.media.mediadb.app.guifx.MediaDbWindow;

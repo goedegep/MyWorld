@@ -29,10 +29,6 @@
       <artifactId>goedegep-jfx</artifactId>
     </dependency>
     <dependency>
-      <groupId>goedegep.myworld</groupId>
-      <artifactId>goedegep-myworld</artifactId>
-    </dependency>
-    <dependency>
       <groupId>goedegep.vacations</groupId>
       <artifactId>goedegep-vacations-app</artifactId>
     </dependency>

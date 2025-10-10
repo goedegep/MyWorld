@@ -30,6 +30,10 @@
       <artifactId>commons-io</artifactId>
     </dependency>
     <dependency>
+      <groupId>gluon-oss-maps</groupId>
+      <artifactId>gluon-oss-maps</artifactId>
+    </dependency>
+    <dependency>
       <groupId>goedegep.appgen</groupId>
       <artifactId>goedegep-appgen</artifactId>
     </dependency>
@@ -38,12 +42,20 @@
       <artifactId>goedegep-jfx</artifactId>
     </dependency>
     <dependency>
+      <groupId>goedegep.mapview</groupId>
+      <artifactId>goedegep-mapview</artifactId>
+    </dependency>
+    <dependency>
       <groupId>goedegep.media</groupId>
-      <artifactId>goedegep-media-app</artifactId>
+      <artifactId>goedegep-media-common</artifactId>
     </dependency>
     <dependency>
         <groupId>goedegep.media</groupId>
         <artifactId>goedegep-media-mediadb-model</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>goedegep.media</groupId>
+      <artifactId>goedegep-media-photoshow-model</artifactId>
     </dependency>
     <dependency>
       <groupId>goedegep.properties</groupId>

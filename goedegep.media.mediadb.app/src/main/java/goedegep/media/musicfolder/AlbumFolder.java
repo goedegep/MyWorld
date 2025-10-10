@@ -17,7 +17,7 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.text.similarity.FuzzyScore;
 
-import goedegep.media.app.MediaRegistry;
+import goedegep.media.common.MediaRegistry;
 import goedegep.util.datetime.FlexDate;
 import goedegep.util.datetime.FlexDateFormat;
 import goedegep.util.file.FileUtils;

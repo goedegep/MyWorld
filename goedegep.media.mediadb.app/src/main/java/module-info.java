@@ -4,12 +4,16 @@ module goedegep.media.mediadb.app {
   exports goedegep.media.mediadb.app.derivealbuminfo;
   exports goedegep.media.mediadb.albumeditor.guifx;
   exports goedegep.media.musicfolder;
+  exports goedegep.media.photo.photoshow.guifx;
+  exports goedegep.media.photo.photomapview.guifx;
 
+  requires com.gluonhq.maps;
   requires com.google.common;
   requires goedegep.appgen;
+  requires goedegep.mapview;
   requires transitive goedegep.appgenfx;
-  requires goedegep.media.app;
   requires transitive goedegep.media.mediadb.model;
+  requires goedegep.media.photoshow.model;
   requires goedegep.model.configuration;
   requires goedegep.model.properties;
   requires goedegep.properties.app;
@@ -29,4 +33,6 @@ module goedegep.media.mediadb.app {
   requires org.apache.commons.text;
   requires goedegep.resources;
   requires org.apache.commons.io;
+  requires goedegep.media.common;
+  requires javafx.swing;
 }
