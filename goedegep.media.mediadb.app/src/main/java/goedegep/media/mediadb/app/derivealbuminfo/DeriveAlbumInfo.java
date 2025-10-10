@@ -32,7 +32,7 @@ import ealvatag.tag.NullTag;
 import ealvatag.tag.Tag;
 import ealvatag.tag.TagException;
 import ealvatag.tag.TagField;
-import goedegep.media.app.MediaRegistry;
+import goedegep.media.common.MediaRegistry;
 import goedegep.media.mediadb.model.Album;
 import goedegep.media.mediadb.model.Artist;
 import goedegep.media.mediadb.model.Disc;

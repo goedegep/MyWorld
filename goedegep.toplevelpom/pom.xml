@@ -276,7 +276,7 @@
       </dependency>
       <dependency>
         <groupId>goedegep.media</groupId>
-        <artifactId>goedegep-media-app-guifx</artifactId>
+        <artifactId>goedegep-media-common</artifactId>
         <version>${goedegep.myworld.version}</version>
       </dependency>
       <dependency>
@@ -287,11 +287,6 @@
       <dependency>
         <groupId>goedegep.media</groupId>
         <artifactId>goedegep-media-mediadb-model</artifactId>
-        <version>${goedegep.myworld.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>goedegep.media</groupId>
-        <artifactId>goedegep-media-photoshow-app</artifactId>
         <version>${goedegep.myworld.version}</version>
       </dependency>
       <dependency>
@@ -696,11 +691,10 @@
     <module>../goedegep.rolodex.app</module>
     <module>../goedegep.rolodextest.app</module>
     <module>../goedegep.events.app</module>
-    <module>../goedegep.media.app</module>
+    <module>../goedegep.media.common</module>
     <module>../goedegep.media.photoshow.model</module>
-    <module>../goedegep.media.photoshow.app</module>
     <module>../goedegep.media.mediadb.app</module>
-    <module>../goedegep.media.app.guifx</module>
+    <module>../goedegep.media.app</module>
     <module>../goedegep.finan.app</module>
     <module>../goedegep.finan.apptest</module>
     <module>../goedegep.invandprop.app</module>

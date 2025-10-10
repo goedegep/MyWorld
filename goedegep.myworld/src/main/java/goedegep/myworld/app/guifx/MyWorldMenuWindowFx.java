@@ -15,7 +15,6 @@ import goedegep.jfx.JfxStage;
 import goedegep.jfx.JfxUtil;
 import goedegep.jfx.MenuUtil;
 import goedegep.jfx.PropertyDescriptorsEditorFx;
-import goedegep.media.app.guifx.MediaMenuWindow;
 import goedegep.myworld.app.MyWorldAppModule;
 import goedegep.myworld.app.MyWorldRegistry;
 import goedegep.pctools.app.guifx.PCToolsMenuWindow;
@@ -113,21 +112,6 @@ public class MyWorldMenuWindowFx extends JfxStage {
     grid.setPadding(new Insets(50, 200, 100, 600));
     
     Button applicationButton;
-    
-    // Media
-    applicationButton = createModuleButton(
-        MyWorldAppModule.MEDIA.getModuleName(),
-        CustomizationsFx.getCustomization(MyWorldAppModule.MEDIA.name()).getResources().getApplicationImage(ImageSize.SIZE_3));
-    applicationButton.setOnAction(new EventHandler<ActionEvent>() {
-
-      @Override
-      public void handle(ActionEvent event) {
-        Stage stage = new MediaMenuWindow(CustomizationsFx.getCustomization(MyWorldAppModule.MEDIA.name()));
-        stage.show();
-      }
-      
-    });
-    grid.add(applicationButton, 2, 0);
     
     // UnitConverter
     applicationButton = createModuleButton(

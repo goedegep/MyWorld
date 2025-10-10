@@ -13,7 +13,7 @@ import goedegep.jfx.objectcontrols.ObjectControlGroup;
 import goedegep.jfx.objectcontrols.ObjectControlImageFile;
 import goedegep.jfx.objectcontrols.ObjectControlStatus;
 import goedegep.jfx.objectcontrols.ObjectControlTemplate;
-import goedegep.media.app.MediaRegistry;
+import goedegep.media.common.MediaRegistry;
 import goedegep.util.file.FileUtils;
 import goedegep.util.string.StringUtil;
 import javafx.geometry.Pos;

@@ -47,5 +47,5 @@ module goedegep.vacations.app {
   requires goedegep.resources;
   requires transitive goedegep.gpx.app;
   requires goedegep.gpx10.model;
-  requires goedegep.media.app;
+//  requires goedegep.media.app;
 }

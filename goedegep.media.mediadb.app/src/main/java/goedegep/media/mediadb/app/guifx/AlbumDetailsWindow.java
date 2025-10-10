@@ -9,7 +9,7 @@ import java.util.logging.Logger;
 
 import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.JfxStage;
-import goedegep.media.app.MediaRegistry;
+import goedegep.media.common.MediaRegistry;
 import goedegep.media.mediadb.albumeditor.guifx.AlbumEditor;
 import goedegep.media.mediadb.app.MediaDbService;
 import goedegep.media.mediadb.model.Album;

@@ -2,7 +2,6 @@ package goedegep.myworld;
 
 import java.awt.SplashScreen;
 import java.io.File;
-import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -27,8 +26,6 @@ import goedegep.jfx.JfxApplication;
 import goedegep.jfx.eobjecttable.EObjectTable;
 import goedegep.jfx.stringconverterandchecker.CurrencyStringConverterAndChecker;
 import goedegep.jfx.stringconverterandchecker.FixedPointValueStringConverterAndChecker;
-import goedegep.media.app.MediaRegistry;
-import goedegep.media.app.guifx.MediaMenuWindow;
 import goedegep.myworld.app.MyWorldAppModule;
 import goedegep.myworld.app.MyWorldRegistry;
 import goedegep.myworld.app.guifx.MyWorldMenuWindowFx;
@@ -38,7 +35,6 @@ import goedegep.properties.app.PropertiesHandler;
 import goedegep.properties.app.PropertyFileURLProvider;
 import goedegep.unitconverter.app.UnitConverterRegistry;
 import goedegep.unitconverter.app.guifx.UnitConverterWindow;
-import goedegep.util.emf.EMFResource;
 import goedegep.util.file.FileUtils;
 import goedegep.util.fixedpointvalue.FixedPointValue;
 import goedegep.util.money.PgCurrency;
@@ -58,7 +54,6 @@ public class MyWorld extends JfxApplication implements PropertyFileURLProvider {
   private static final int MIN_JAVA_FEATURE_NUMBER = 22;
   private static final String         PROGRAM_DESCRIPTION =
                                              PROGRAM_NAME + " is my world on the computer. It consists of the following modules:" + NEWLINE +
-                                             "Media                   - Music and photos (and later movies)" + NEWLINE +
                                              "Unit Converter          - To convert distances and times" + NEWLINE +
                                              "PCTools                 - Some PC toolts + NEWLINE";
 
@@ -67,7 +62,6 @@ private static final String MY_WORLD_PROPERTY_DESCRIPTORS_FILE = "MyWorldPropert
 private static final String MY_WORLD_CONFIGURATION_FILE = "MyWorldConfiguration.xmi";
 
 // When running in Eclipse, files are read from the related project folder.
-private static final String         MEDIA_PROJECT_PATH = "../../../goedegep.media.app/target/classes";
 private static final String         UNIT_CONVERTER_PROJECT_PATH = "../../../goedegep.unitconverter.app/target/classes";
 private static final String         PCTOOLS_PROJECT_PATH = "../../../goedegep.pctools/target/classes";
 
@@ -118,7 +112,7 @@ private static final String         PCTOOLS_PROJECT_PATH = "../../../goedegep.pc
     Options options = new Options();
     Option applicationOption = Option.builder("a").hasArg().argName("application").
         desc("the application within MyWorld that has to be directly started (optional). Possible values are: " +
-            "\"MediaDb\", \"Unit Converter\", \"PCTools\"").build();
+            "\"Unit Converter\", \"PCTools\"").build();
     options.addOption(applicationOption);
     
     boolean optionsOK = true;
@@ -215,9 +209,6 @@ private static final String         PCTOOLS_PROJECT_PATH = "../../../goedegep.pc
     // For now DevelopmentMode is active when 'Running in eclipse'.
     if (runningInEclipse) {
       MyWorldRegistry.developmentMode = true;
-      if (modulesToInitialize.contains(MyWorldAppModule.MEDIA)) {
-        MediaRegistry.developmentMode = true;
-      }
       if (modulesToInitialize.contains(MyWorldAppModule.UNIT_CONVERTER)) {
         UnitConverterRegistry.developmentMode = true;
       }
@@ -271,7 +262,6 @@ private static final String         PCTOOLS_PROJECT_PATH = "../../../goedegep.pc
       PropertiesHandler.handleProperties(url, null);
             
       PropertiesMetaInfo[] propertiesMetaInfos = {
-          new PropertiesMetaInfo(MyWorldAppModule.MEDIA, MEDIA_PROJECT_PATH, MyWorldRegistry.mediaPropertyDescriptorFileName, new MediaRegistry()),
           new PropertiesMetaInfo(MyWorldAppModule.UNIT_CONVERTER, UNIT_CONVERTER_PROJECT_PATH, MyWorldRegistry.unitConverterPropertyDescriptorFileName, new UnitConverterRegistry()),
           new PropertiesMetaInfo(MyWorldAppModule.PCTOOLS, PCTOOLS_PROJECT_PATH, MyWorldRegistry.pctoolsPropertyDescriptorsFileName, new PCToolsRegistry()),
       };
@@ -317,10 +307,6 @@ private static final String         PCTOOLS_PROJECT_PATH = "../../../goedegep.pc
 //      CustomizationsFx.addCustomizations(new File(createResourcePath(runningInEclipse, null, MyWorldRegistry.configurationFile)));
       CustomizationsFx.addCustomizations(this.getCustomizationFileURL());
     }
-    if (modulesToInitialize.contains(MyWorldAppModule.MEDIA)) {
-//      CustomizationsFx.addCustomizations(new File(createResourcePath(runningInEclipse, MEDIA_PROJECT_PATH, MediaRegistry.configurationFile)));
-      CustomizationsFx.addCustomizations(new MediaRegistry().getCustomizationFileURL());
-    }
     if (modulesToInitialize.contains(MyWorldAppModule.UNIT_CONVERTER)) {
 //      CustomizationsFx.addCustomizations(new File(createResourcePath(runningInEclipse, UNIT_CONVERTER_PROJECT_PATH, UnitConverterRegistry.configurationFile)));
       CustomizationsFx.addCustomizations(new UnitConverterRegistry().getCustomizationFileURL());
@@ -364,10 +350,6 @@ private static final String         PCTOOLS_PROJECT_PATH = "../../../goedegep.pc
       stage = new MyWorldMenuWindowFx(CustomizationsFx.getCustomization(MyWorldAppModule.MY_WORLD.name()));
     } else {
       switch (appModule) {
-      case MEDIA:
-        stage = new MediaMenuWindow(CustomizationsFx.getCustomization(MyWorldAppModule.MEDIA.name()));
-        break;
-        
       case MY_WORLD:
         // No action, as this is handled in the 'if'. This case is only here to keep cases compleet.
         break;

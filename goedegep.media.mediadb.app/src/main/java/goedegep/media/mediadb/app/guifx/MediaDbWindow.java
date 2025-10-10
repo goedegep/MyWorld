@@ -17,7 +17,7 @@ import goedegep.jfx.JfxStage;
 import goedegep.jfx.MenuUtil;
 import goedegep.jfx.browser.BrowserWindow;
 import goedegep.jfx.eobjecttable.EObjectTable;
-import goedegep.media.app.MediaRegistry;
+import goedegep.media.common.MediaRegistry;
 import goedegep.media.mediadb.albumeditor.guifx.AlbumEditor;
 import goedegep.media.mediadb.albumeditor.guifx.TrackEditor;
 import goedegep.media.mediadb.app.MediaDbAppLauncher;

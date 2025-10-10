@@ -77,10 +77,6 @@
       <artifactId>goedegep-mapview</artifactId>
     </dependency>
     <dependency>
-      <groupId>goedegep.media</groupId>
-      <artifactId>goedegep-media-app</artifactId>
-    </dependency>
-    <dependency>
       <groupId>goedegep.ov2</groupId>
       <artifactId>goedegep-ov2</artifactId>
     </dependency>
