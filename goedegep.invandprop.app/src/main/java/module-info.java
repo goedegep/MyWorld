@@ -4,7 +4,7 @@ module goedegep.finan.nota.app {
 
 //  requires goedegep.app.finan;
   requires goedegep.appgen;
-  requires transitive goedegep.appgenfx;
+  requires transitive goedegep.jfx;
   requires transitive goedegep.invandprop.model;
   requires transitive goedegep.model.properties;
   requires transitive goedegep.types.model;

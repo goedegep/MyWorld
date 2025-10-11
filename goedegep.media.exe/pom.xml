@@ -32,8 +32,6 @@
       <groupId>goedegep.media</groupId>
       <artifactId>goedegep-media-app</artifactId>
     </dependency>
-  <!--
-    -->
   </dependencies>
 
   <build>

@@ -8,7 +8,7 @@ module goedegep.pctools {
   exports goedegep.pctools.filefinder.guifx;
 
   requires goedegep.appgen;
-  requires transitive goedegep.appgenfx;
+  requires transitive goedegep.jfx;
   requires goedegep.model.properties;
   requires transitive goedegep.pctools.filescontrolled.model;
   requires goedegep.properties.app;

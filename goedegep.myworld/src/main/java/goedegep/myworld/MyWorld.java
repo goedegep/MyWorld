@@ -29,12 +29,8 @@ import goedegep.jfx.stringconverterandchecker.FixedPointValueStringConverterAndC
 import goedegep.myworld.app.MyWorldAppModule;
 import goedegep.myworld.app.MyWorldRegistry;
 import goedegep.myworld.app.guifx.MyWorldMenuWindowFx;
-import goedegep.pctools.app.guifx.PCToolsMenuWindow;
-import goedegep.pctools.app.logic.PCToolsRegistry;
 import goedegep.properties.app.PropertiesHandler;
 import goedegep.properties.app.PropertyFileURLProvider;
-import goedegep.unitconverter.app.UnitConverterRegistry;
-import goedegep.unitconverter.app.guifx.UnitConverterWindow;
 import goedegep.util.file.FileUtils;
 import goedegep.util.fixedpointvalue.FixedPointValue;
 import goedegep.util.money.PgCurrency;
@@ -53,17 +49,11 @@ public class MyWorld extends JfxApplication implements PropertyFileURLProvider {
   private static final String         PROGRAM_NAME = "MyWorld";
   private static final int MIN_JAVA_FEATURE_NUMBER = 22;
   private static final String         PROGRAM_DESCRIPTION =
-                                             PROGRAM_NAME + " is my world on the computer. It consists of the following modules:" + NEWLINE +
-                                             "Unit Converter          - To convert distances and times" + NEWLINE +
-                                             "PCTools                 - Some PC toolts + NEWLINE";
+                                             PROGRAM_NAME + " is my world on the computer. It consists of the following modules: <nothing anymore" + NEWLINE;
 
 // EMF model files are accessed as File, and so they cannot be in jar files.
 private static final String MY_WORLD_PROPERTY_DESCRIPTORS_FILE = "MyWorldPropertyDescriptors.xmi";
 private static final String MY_WORLD_CONFIGURATION_FILE = "MyWorldConfiguration.xmi";
-
-// When running in Eclipse, files are read from the related project folder.
-private static final String         UNIT_CONVERTER_PROJECT_PATH = "../../../goedegep.unitconverter.app/target/classes";
-private static final String         PCTOOLS_PROJECT_PATH = "../../../goedegep.pctools/target/classes";
 
   /**
    * Constructor
@@ -111,8 +101,7 @@ private static final String         PCTOOLS_PROJECT_PATH = "../../../goedegep.pc
     // Define command line arguments.
     Options options = new Options();
     Option applicationOption = Option.builder("a").hasArg().argName("application").
-        desc("the application within MyWorld that has to be directly started (optional). Possible values are: " +
-            "\"Unit Converter\", \"PCTools\"").build();
+        desc("the application within MyWorld that has to be directly started (optional). Possible values are: <none>").build();
     options.addOption(applicationOption);
     
     boolean optionsOK = true;
@@ -179,13 +168,6 @@ private static final String         PCTOOLS_PROJECT_PATH = "../../../goedegep.pc
       LOGGER.severe("!optionsOK");
       showUsageInfoDialogAndExit(PROGRAM_NAME, options, PROGRAM_DESCRIPTION, errorTexts, args);
     }
-    
-    if (fileToOpen != null) {
-      String fileToOpenExtension = FileUtils.getFileExtension(fileToOpen);
-      if (".gpx".equals(fileToOpenExtension)  ||  ".md".equals(fileToOpenExtension)) {
-        appModule = MyWorldAppModule.PCTOOLS;
-      }
-    }
 
     // Every module has its own registry.
     // Values in a registry are only set if the MyWorld Menu Window is used (so all modules are needed), or if the specific module is needed, 
@@ -209,12 +191,7 @@ private static final String         PCTOOLS_PROJECT_PATH = "../../../goedegep.pc
     // For now DevelopmentMode is active when 'Running in eclipse'.
     if (runningInEclipse) {
       MyWorldRegistry.developmentMode = true;
-      if (modulesToInitialize.contains(MyWorldAppModule.UNIT_CONVERTER)) {
-        UnitConverterRegistry.developmentMode = true;
-      }
-      if (modulesToInitialize.contains(MyWorldAppModule.PCTOOLS)) {
-        PCToolsRegistry.developmentMode = true;
-      }
+      // ToDo set development mode in each application.
     }
 
     // FIXME: //AAA HIER VERDER
@@ -261,19 +238,6 @@ private static final String         PCTOOLS_PROJECT_PATH = "../../../goedegep.pc
       java.net.URL url = getPropertyFileURL();
       PropertiesHandler.handleProperties(url, null);
             
-      PropertiesMetaInfo[] propertiesMetaInfos = {
-          new PropertiesMetaInfo(MyWorldAppModule.UNIT_CONVERTER, UNIT_CONVERTER_PROJECT_PATH, MyWorldRegistry.unitConverterPropertyDescriptorFileName, new UnitConverterRegistry()),
-          new PropertiesMetaInfo(MyWorldAppModule.PCTOOLS, PCTOOLS_PROJECT_PATH, MyWorldRegistry.pctoolsPropertyDescriptorsFileName, new PCToolsRegistry()),
-      };
-      
-      for (PropertiesMetaInfo propertiesMetaInfo: propertiesMetaInfos) {
-        if (modulesToInitialize.contains(propertiesMetaInfo.myWorldAppModule)) {
-          url = propertiesMetaInfo.propertyFileURLProvider.getPropertyFileURL();
-          if (url == null) {
-            reportException(DefaultCustomizationFx.getInstance(), new RuntimeException("No URL for class " + propertiesMetaInfo.propertyFileURLProvider.getClass().getCanonicalName()));
-          }
-        }
-      }
             
     } catch (Exception e) {
       Alert alert = new Alert(AlertType.ERROR);
@@ -306,14 +270,6 @@ private static final String         PCTOOLS_PROJECT_PATH = "../../../goedegep.pc
     if (modulesToInitialize.contains(MyWorldAppModule.MY_WORLD)) {
 //      CustomizationsFx.addCustomizations(new File(createResourcePath(runningInEclipse, null, MyWorldRegistry.configurationFile)));
       CustomizationsFx.addCustomizations(this.getCustomizationFileURL());
-    }
-    if (modulesToInitialize.contains(MyWorldAppModule.UNIT_CONVERTER)) {
-//      CustomizationsFx.addCustomizations(new File(createResourcePath(runningInEclipse, UNIT_CONVERTER_PROJECT_PATH, UnitConverterRegistry.configurationFile)));
-      CustomizationsFx.addCustomizations(new UnitConverterRegistry().getCustomizationFileURL());
-    }
-    if (modulesToInitialize.contains(MyWorldAppModule.PCTOOLS)) {
-//      CustomizationsFx.addCustomizations(new File(createResourcePath(runningInEclipse, PCTOOLS_PROJECT_PATH, PCToolsRegistry.configurationFile)));
-      CustomizationsFx.addCustomizations(new PCToolsRegistry().getCustomizationFileURL());
     }
   }
   
@@ -352,14 +308,6 @@ private static final String         PCTOOLS_PROJECT_PATH = "../../../goedegep.pc
       switch (appModule) {
       case MY_WORLD:
         // No action, as this is handled in the 'if'. This case is only here to keep cases compleet.
-        break;
-        
-      case UNIT_CONVERTER:
-        stage = new UnitConverterWindow(CustomizationsFx.getCustomization(appModule.name()));
-        break;
-        
-      case PCTOOLS:
-        stage = new PCToolsMenuWindow(CustomizationsFx.getCustomization(MyWorldAppModule.PCTOOLS.name()), fileToOpen);
         break;
         
       default:

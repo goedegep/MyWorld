@@ -39,7 +39,7 @@ module goedegep.app.finan {
   exports goedegep.finan.investmentinsurances.app.guifx;
     
   requires transitive goedegep.appgen;
-  requires transitive goedegep.appgenfx;
+  requires transitive goedegep.jfx;
   requires goedegep.model.configuration;
   requires transitive goedegep.model.properties;
   requires transitive goedegep.model.rolodex;

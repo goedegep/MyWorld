@@ -2,7 +2,6 @@ package goedegep.pctools.app.guifx;
 
 import java.util.logging.Logger;
 
-import goedegep.gpx.app.GPXWindow;
 import goedegep.jfx.ComponentFactoryFx;
 import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.JfxStage;
@@ -11,9 +10,7 @@ import goedegep.jfx.PropertyDescriptorsEditorFx;
 import goedegep.pctools.app.logic.PCToolsRegistry;
 import goedegep.pctools.filefinder.guifx.FileFinderWindow;
 import goedegep.pctools.filescontrolled.guifx.FilesControlledWindow;
-import goedegep.pctools.markdown.guifx.MarkdownViewer;
 import goedegep.properties.app.guifx.PropertiesEditor;
-import goedegep.resources.ImageResource;
 import goedegep.resources.ImageSize;
 import goedegep.util.file.FileUtils;
 import javafx.event.ActionEvent;
@@ -23,14 +20,11 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
-import tim.prune.GpsPrune;
-import tim.prune.gui.IconManager;
 
 public class PCToolsMenuWindow extends JfxStage {
   @SuppressWarnings("unused")
@@ -39,7 +33,6 @@ public class PCToolsMenuWindow extends JfxStage {
   private static final String WINDOW_TITLE = "PC Tools";
   
   private CustomizationFx customization;
-  private String gpxFileToOpen;
   private ComponentFactoryFx componentFactory;
   private PCToolsAppResourcesFx appResources;
 
@@ -47,23 +40,10 @@ public class PCToolsMenuWindow extends JfxStage {
     super(customization, WINDOW_TITLE);
         
     this.customization = customization;
-    this.gpxFileToOpen = fileToOpen;
     componentFactory = getComponentFactory();
     appResources = (PCToolsAppResourcesFx) getResources();
     
     createGUI();
-    
-    setOnShown(e -> {
-      if (fileToOpen != null) {
-        String fileToOpenExtension = FileUtils.getFileExtension(fileToOpen);
-        if (".gpx".equals(fileToOpenExtension)) {
-          showGPXWindow(fileToOpen);
-        } else if (".md".equals(fileToOpenExtension)) {
-          new MarkdownViewer(customization, fileToOpen);
-        }
-      }
-      
-    });
     
     show();
     
@@ -123,40 +103,6 @@ public class PCToolsMenuWindow extends JfxStage {
     });
     gridPane.add(toolButton, 1, 0);
     
-    Image gpsPruneImage = IconManager.getImage("window_icon_72.png");
-    toolButton = componentFactory.createToolButton("GpsPrune", gpsPruneImage, "Edit gpx file");
-    toolButton.setOnAction(new EventHandler<ActionEvent>() {
-
-      @Override
-      public void handle(ActionEvent event) {
-        showGpsPruneWindow();
-      }
-      
-    });
-    gridPane.add(toolButton, 2, 0);
-    
-    toolButton = componentFactory.createToolButton("GPX Editor", ImageResource.GPX.getImage(), "Edit gpx file");
-    toolButton.setOnAction(new EventHandler<ActionEvent>() {
-
-      @Override
-      public void handle(ActionEvent event) {
-        showGPXWindow(null);
-      }
-      
-    });
-    gridPane.add(toolButton, 3, 0);
-    
-    toolButton = componentFactory.createToolButton("Markdown Viewer", ImageResource.MARKDOWN.getImage(), "View the content of a Markdown file");
-    toolButton.setOnAction(new EventHandler<ActionEvent>() {
-
-      @Override
-      public void handle(ActionEvent event) {
-        new MarkdownViewer(customization, null);
-      }
-      
-    });
-    gridPane.add(toolButton, 0, 1);
-   
     mainLayout.getChildren().add(gridPane);
         
     rootPane.setCenter(mainLayout);
@@ -223,26 +169,6 @@ public class PCToolsMenuWindow extends JfxStage {
    */
   private void showPropertiesEditor() {
     new PropertiesEditor("PC Tools Properties Editor", customization, PCToolsRegistry.propertyDescriptorsResource, PCToolsRegistry.customPropertiesFile);
-  }
-  
-  /**
-   * Show the GpsPrune window.
-   */
-  private void showGpsPruneWindow() {
-    int nrOfArguments = (gpxFileToOpen == null) ? 1 : 2;
-    String[] args = new String[nrOfArguments];
-    args[0] = "--lang=en";
-    if (gpxFileToOpen != null) {
-      args[1] = gpxFileToOpen;
-    }
-    GpsPrune.main(args);
-  }
-  
-  /**
-   * Show the GPX window.
-   */
-  private void showGPXWindow(String fileToOpen) {
-    new GPXWindow(customization, fileToOpen);
   }
   
   /**

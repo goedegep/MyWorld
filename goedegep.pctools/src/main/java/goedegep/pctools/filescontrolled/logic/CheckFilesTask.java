@@ -11,6 +11,9 @@ import java.nio.file.Paths;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.logging.Logger;
 
+import org.eclipse.emf.common.util.TreeIterator;
+import org.eclipse.emf.ecore.EObject;
+
 import com.google.common.jimfs.Configuration;
 import com.google.common.jimfs.Jimfs;
 
@@ -19,19 +22,11 @@ import goedegep.pctools.filescontrolled.model.DirectorySpecification;
 import goedegep.pctools.filescontrolled.model.DiscStructureSpecification;
 import goedegep.pctools.filescontrolled.model.EqualityType;
 import goedegep.pctools.filescontrolled.model.FileInfo;
-import goedegep.pctools.filescontrolled.model.FolderInfo;
 import goedegep.pctools.filescontrolled.model.PCToolsFactory;
 import goedegep.pctools.filescontrolled.model.Result;
 import goedegep.pctools.filescontrolled.model.UncontrolledFolderInfo;
 import goedegep.pctools.filescontrolled.model.UncontrolledRootFolderInfo;
-//import goedegep.pctools.filescontrolled.types.FileInfo;
-import goedegep.pctools.filescontrolled.types.FileInfoMap;
-import goedegep.util.file.FileUtils;
-import goedegep.util.tree.TreeNode;
 import javafx.concurrent.Task;
-
-import org.eclipse.emf.common.util.TreeIterator;
-import org.eclipse.emf.ecore.EObject;
 
 /**
  * A {@link Task} to check for uncontrolled files and probable copies of files.

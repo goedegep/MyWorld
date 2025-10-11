@@ -11,7 +11,7 @@ module goedegep.media.mediadb.app {
   requires com.google.common;
   requires goedegep.appgen;
   requires goedegep.mapview;
-  requires transitive goedegep.appgenfx;
+  requires transitive goedegep.jfx;
   requires transitive goedegep.media.mediadb.model;
   requires goedegep.media.photoshow.model;
   requires goedegep.model.configuration;
