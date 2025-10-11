@@ -2,7 +2,7 @@ module goedegep.myworld.installer {
   exports goedegep.myworld.installer;
   
   requires goedegep.appgen;
-  requires goedegep.appgenfx;
+  requires goedegep.jfx;
   requires goedegep.model.properties;
   requires goedegep.util;
   requires java.logging;

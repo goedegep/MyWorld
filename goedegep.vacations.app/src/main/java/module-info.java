@@ -10,7 +10,7 @@ module goedegep.vacations.app {
   requires com.google.common.geometry;
   requires de.micromata.opengis.kml.v220;
   requires goedegep.appgen;
-  requires transitive goedegep.appgenfx;
+  requires transitive goedegep.jfx;
   requires transitive goedegep.geo;
   requires transitive goedegep.model.properties;
   requires transitive goedegep.types.model;

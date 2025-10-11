@@ -5,8 +5,16 @@ Original Track is found via Track (like now), but check on referred by reference
 For now: only let original track reference refer to itself.
 
 h2. ToDo list
-
+* check all project for the naming convention
+** rename goedegep.travels.int to goedegep.travels.exe
+* Properties that are used in maven and in java shall be in a file that will be filtered by maven.
+See goedegep.travels.int (exe), Application.properties.
+* Properties that are not user setable can be hardcoded
+** handling: 
+* PropertyDescriptors can be hardcoded
 * Remove PgUtilities.equals(), replace by Objects.equals()
+* Use hard coded default values for the colors of a Look. A user file may overwrite these.
+* customization resources (images) are in a class, so are not user setable. So only the colors of the Look have to be read from a possible user file
 * ObjectControl: look for better handling of error feedback, use ObjectControlImageFile for reference
 * Continue cleanup of ObjectControlImageFile
 * compilationTrackReference shall be renamed to trackReference.

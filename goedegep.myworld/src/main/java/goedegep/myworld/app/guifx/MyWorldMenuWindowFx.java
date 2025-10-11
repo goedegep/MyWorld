@@ -10,19 +10,15 @@ import java.util.logging.Logger;
 
 import goedegep.jfx.ComponentFactoryFx;
 import goedegep.jfx.CustomizationFx;
-import goedegep.jfx.CustomizationsFx;
 import goedegep.jfx.JfxStage;
 import goedegep.jfx.JfxUtil;
 import goedegep.jfx.MenuUtil;
 import goedegep.jfx.PropertyDescriptorsEditorFx;
-import goedegep.myworld.app.MyWorldAppModule;
 import goedegep.myworld.app.MyWorldRegistry;
-import goedegep.pctools.app.guifx.PCToolsMenuWindow;
 import goedegep.properties.app.guifx.PropertiesEditor;
 import goedegep.properties.model.PropertyDescriptor;
 import goedegep.properties.model.PropertyDescriptorGroup;
 import goedegep.resources.ImageSize;
-import goedegep.unitconverter.app.guifx.UnitConverterWindow;
 import goedegep.util.emf.EMFResource;
 import javafx.animation.Interpolator;
 import javafx.animation.KeyFrame;
@@ -44,7 +40,6 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
-import javafx.stage.Stage;
 import javafx.util.Duration;
 
 public class MyWorldMenuWindowFx extends JfxStage {
@@ -110,39 +105,6 @@ public class MyWorldMenuWindowFx extends JfxStage {
     grid.setHgap(10);
     grid.setVgap(10);
     grid.setPadding(new Insets(50, 200, 100, 600));
-    
-    Button applicationButton;
-    
-    // UnitConverter
-    applicationButton = createModuleButton(
-        MyWorldAppModule.UNIT_CONVERTER.getModuleName(),
-        CustomizationsFx.getCustomization(MyWorldAppModule.UNIT_CONVERTER.name()).getResources().getApplicationImage(ImageSize.SIZE_3));
-    applicationButton.setOnAction(new EventHandler<ActionEvent>() {
-
-      @Override
-      public void handle(ActionEvent event) {
-        Stage stage = new UnitConverterWindow(CustomizationsFx.getCustomization(MyWorldAppModule.UNIT_CONVERTER.name()));
-        stage.show();
-      }
-      
-    });
-    grid.add(applicationButton, 1, 1);
-        
-    // PC Tools
-    applicationButton = createModuleButton(
-        MyWorldAppModule.PCTOOLS.getModuleName(),
-        CustomizationsFx.getCustomization(MyWorldAppModule.PCTOOLS.name()).getResources().getApplicationImage(ImageSize.SIZE_3));
-    applicationButton.setOnAction(new EventHandler<ActionEvent>() {
-
-      @Override
-      public void handle(ActionEvent event) {
-        Stage stage = new PCToolsMenuWindow(CustomizationsFx.getCustomization(MyWorldAppModule.PCTOOLS.name()), null);
-        stage.centerOnScreen();
-        stage.show();
-      }
-      
-    });
-    grid.add(applicationButton, 2, 2);
    
     mainLayout.getChildren().add(grid);
     
@@ -230,47 +192,6 @@ public class MyWorldMenuWindowFx extends JfxStage {
     menuBar.getMenus().add(menu);
 
     return menuBar;
-  }
-  
-  private Button createModuleButton(String text, Image image) {
-    Button button = new Button(text);
-    button.setMaxWidth(100);
-    button.setMinWidth(100);
-    button.setMinHeight(100);
-    button.wrapTextProperty().setValue(true);
-    
-    String hex = JfxUtil.colorToCssString(getLook().getPanelBackgroundColor());
-    button.setStyle("-fx-alignment: CENTER; -fx-font-weight: bold; -fx-background-color: " + hex + ";");
-    
-    ImageView buttonImageView = new ImageView(image);
-    buttonImageView.setFitWidth(48);
-    buttonImageView.setPreserveRatio(true);
-    buttonImageView.setSmooth(true);
-    button.setGraphic(buttonImageView);
-    button.setContentDisplay(ContentDisplay.TOP);
-
-    ColorAdjust colorAdjust = new ColorAdjust();
-    final double normalBrightnessAdjust = -0.1;
-    colorAdjust.setBrightness(normalBrightnessAdjust);
-
-    buttonImageView.setEffect(colorAdjust);
-    button.setOnMouseEntered(_ -> {
-
-      Timeline highlightTimeline = new Timeline(
-          new KeyFrame(Duration.seconds(0.2), new KeyValue(colorAdjust.brightnessProperty(), 0.4, Interpolator.LINEAR)));
-      highlightTimeline.play();
-
-    });
-    button.setOnMouseExited(_ -> {
-
-      Timeline backToNormalTimeline = new Timeline(
-          new KeyFrame(Duration.seconds(1), new KeyValue(colorAdjust.brightnessProperty(), normalBrightnessAdjust, Interpolator.LINEAR)
-              ));
-      backToNormalTimeline.play();
-
-    });
-
-    return button;
   }
 
   private void showPropertyDescriptorsEditor() {

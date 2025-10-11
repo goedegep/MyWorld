@@ -6,7 +6,7 @@ module goedegep.rolodex.app {
   opens goedegep.rolodex.app.guifx;
   
   requires goedegep.appgen;
-  requires transitive goedegep.appgenfx;
+  requires transitive goedegep.jfx;
   requires goedegep.model.configuration;
   requires goedegep.model.properties;
   requires transitive goedegep.model.rolodex;

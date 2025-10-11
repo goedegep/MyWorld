@@ -2,7 +2,7 @@ module goedegep.events.app {
   exports goedegep.events.app;
   exports goedegep.events.app.guifx;
 
-  requires transitive goedegep.appgenfx;
+  requires transitive goedegep.jfx;
   requires transitive goedegep.events.model;
   requires goedegep.gpx.app;
   requires goedegep.model.properties;

@@ -1,4 +1,4 @@
-module goedegep.appgenfx {
+module goedegep.jfx {
   exports goedegep.jfx;
   exports goedegep.jfx.browser;
   exports goedegep.jfx.collage;

@@ -3,7 +3,7 @@ module goedegep.unitconverter.app {
   exports goedegep.unitconverter.app.guifx;
 
   requires goedegep.appgen;
-  requires transitive goedegep.appgenfx;
+  requires transitive goedegep.jfx;
   requires goedegep.model.properties;
   requires goedegep.properties.app;
   requires transitive goedegep.util;

@@ -1,7 +1,7 @@
 module goedegep.appgenfxtext {
   exports goedegep.jfxtest.jfxjunitrunner;
   
-  requires goedegep.appgenfx;
+  requires goedegep.jfx;
   requires junit;
   requires org.junit.jupiter.api;
   
