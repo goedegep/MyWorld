@@ -13,6 +13,7 @@ import goedegep.rolodex.app.RolodexRegistry;
 import goedegep.rolodex.model.Rolodex;
 import goedegep.rolodex.model.RolodexFactory;
 import goedegep.rolodex.model.RolodexPackage;
+import goedegep.util.RunningInEclipse;
 import goedegep.util.emf.EMFResource;
 import goedegep.util.thread.ThreadUtil;
 import javafx.stage.Stage;
@@ -40,7 +41,7 @@ public class FinanApplication extends JfxApplication {
 //    }
     
     String logFileBaseName = null;
-    if (!runningInEclipse()) {
+    if (!RunningInEclipse.runningInEclipse()) {
       logFileBaseName = System.getProperty("user.home") + File.separator + LOG_SUBFOLDER + File.separator + PROGRAM_NAME + "_logfile";
     }
     logSetup(Level.SEVERE, logFileBaseName);

@@ -23,6 +23,7 @@ import goedegep.jfx.JfxApplication;
 import goedegep.myworld.app.MyWorldAppModule;
 import goedegep.pctools.app.logic.PCToolsRegistry;
 import goedegep.properties.app.PropertiesHandler;
+import goedegep.util.RunningInEclipse;
 import goedegep.util.thread.ThreadUtil;
 import javafx.stage.Stage;
 
@@ -51,7 +52,7 @@ public class GPXApplication extends JfxApplication {
    */
   public GPXApplication() {
     String logFileBaseName = null;
-    if (!runningInEclipse()) {
+    if (!RunningInEclipse.runningInEclipse()) {
       logFileBaseName = System.getProperty("user.home") + File.separator + LOG_SUBFOLDER + File.separator + PROGRAM_NAME + "_logfile";
     }
     logSetup(Level.SEVERE, logFileBaseName);
@@ -115,12 +116,10 @@ public class GPXApplication extends JfxApplication {
     
     LOGGER.severe("optionsOK");
     
-    boolean runningInEclipse = runningInEclipse();
-
     // DevelopmentMode
     // In development mode extra items are added to menu's.
     // For now DevelopmentMode is active when 'Running in eclipse'.
-    if (runningInEclipse) {
+    if (RunningInEclipse.runningInEclipse()) {
       PCToolsRegistry.developmentMode = true;  // FIXME TODO decouple GPX from PCTools
     }
     

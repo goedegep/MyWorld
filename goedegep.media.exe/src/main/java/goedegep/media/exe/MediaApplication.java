@@ -7,6 +7,7 @@ import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.DefaultCustomizationFx;
 import goedegep.jfx.JfxApplication;
 import goedegep.media.app.MediaService;
+import goedegep.util.RunningInEclipse;
 import goedegep.util.thread.ThreadUtil;
 import javafx.stage.Stage;
 
@@ -32,7 +33,7 @@ public class MediaApplication extends JfxApplication {
 //    }
     
     String logFileBaseName = null;
-    if (!runningInEclipse()) {
+    if (!RunningInEclipse.runningInEclipse()) {
       logFileBaseName = System.getProperty("user.home") + File.separator + LOG_SUBFOLDER + File.separator + PROGRAM_NAME + "_logfile";
     }
     logSetup(Level.SEVERE, logFileBaseName);
