@@ -19,6 +19,15 @@
     <!-- com.google.common.geometry follows the goedegep.myworld.version -->
     
     <goedegep.myworld.version>1.0-SNAPSHOT</goedegep.myworld.version>
+    
+    <!-- Settings for all applications -->
+    <copyright>Copyright (c) 2001-2025</copyright>
+    <author.name>goedegep</author.name>  <!-- Is also the vendor name of the applications -->
+    
+    <!-- Settings for the Travels application-->
+    <travels.app.name>Travels</travels.app.name>
+    <travels.app.version>0.0.4</travels.app.version>
+	
   </properties>
   <groupId>goedegep.toplevelpom</groupId>
   <artifactId>goedegep-toplevelpom</artifactId>
@@ -79,12 +88,7 @@
         <artifactId>guava</artifactId>
         <version>30.1.1-jre</version>
       </dependency>
-<!--      <dependency>
-        <groupId>com.itextpdf</groupId>
-        <artifactId>itextpdf</artifactId>
-        <version>5.5.3</version>
-      </dependency>
--->      <dependency>
+      <dependency>
         <groupId>com.mpatric</groupId>
         <artifactId>mp3agic</artifactId>
         <version>0.9.1</version>
@@ -583,42 +587,42 @@
       <dependency>
         <groupId>org.openjfx</groupId>
         <artifactId>javafx-base</artifactId>
-        <version>25-ea+11</version>
+        <version>26-ea+10</version>
         <classifier>win</classifier>
       </dependency>
       <dependency>
         <groupId>org.openjfx</groupId>
         <artifactId>javafx-controls</artifactId>
-        <version>25-ea+11</version>
+        <version>26-ea+10</version>
         <classifier>win</classifier>
       </dependency>
       <dependency>
         <groupId>org.openjfx</groupId>
         <artifactId>javafx-fxml</artifactId>
-        <version>25-ea+11</version>
+        <version>26-ea+10</version>
       </dependency>
       <dependency>
         <groupId>org.openjfx</groupId>
         <artifactId>javafx-graphics</artifactId>
-        <version>25-ea+11</version>
+        <version>26-ea+10</version>
         <classifier>win</classifier>
       </dependency>
       <dependency>
         <groupId>org.openjfx</groupId>
         <artifactId>javafx-media</artifactId>
-        <version>25-ea+11</version>
+        <version>26-ea+10</version>
         <classifier>win</classifier>
       </dependency>
       <dependency>
         <groupId>org.openjfx</groupId>
         <artifactId>javafx-swing</artifactId>
-        <version>25-ea+11</version>
+        <version>26-ea+10</version>
         <classifier>win</classifier>
       </dependency>
       <dependency>
         <groupId>org.openjfx</groupId>
         <artifactId>javafx-web</artifactId>
-        <version>25-ea+11</version>
+        <version>26-ea+10</version>
         <classifier>win</classifier>
       </dependency>
       <dependency>
@@ -684,8 +688,8 @@
     <module>../goedegep.finan.jobappointment.model</module>
     <module>../goedegep.finan.lynx2finan.model</module>
     <module>../goedegep.finan.mortgage.model</module>
-    <module>../goedegep.vacations.checklist.model</module>
-    <module>../goedegep.vacations.model</module>
+    <module>../goedegep.travels.checklist.model</module>
+    <module>../goedegep.travels.model</module>
     <module>../goedegep.pctools.model</module>
     <module>../goedegep.unitconverter.app</module>
     <module>../goedegep.rolodex.app</module>
@@ -701,7 +705,7 @@
     <module>../goedegep.gpx.app</module>
     <module>../goedegep.pctools</module>
     <module>../goedegep.pctoolstest</module>
-    <module>../goedegep.vacations.app</module>
+    <module>../goedegep.travels.app</module>
     <module>../goedegep.demo</module>
     <module>../goedegep.myworld</module>
 
@@ -794,7 +798,7 @@
       <plugins>
         <plugin>
           <artifactId>maven-dependency-plugin</artifactId>
-          <version>3.6.1</version>
+          <version>3.9.0</version>
         </plugin>
       </plugins>
     </pluginManagement>

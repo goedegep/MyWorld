@@ -31,6 +31,7 @@ import goedegep.myworld.app.MyWorldRegistry;
 import goedegep.myworld.app.guifx.MyWorldMenuWindowFx;
 import goedegep.properties.app.PropertiesHandler;
 import goedegep.properties.app.PropertyFileURLProvider;
+import goedegep.util.RunningInEclipse;
 import goedegep.util.file.FileUtils;
 import goedegep.util.fixedpointvalue.FixedPointValue;
 import goedegep.util.money.PgCurrency;
@@ -184,20 +185,18 @@ private static final String MY_WORLD_CONFIGURATION_FILE = "MyWorldConfiguration.
 
     getComputerName();
     
-    boolean runningInEclipse = runningInEclipse();
-
     // DevelopmentMode
     // In development mode extra items are added to menu's.
     // For now DevelopmentMode is active when 'Running in eclipse'.
-    if (runningInEclipse) {
+    if (RunningInEclipse.runningInEclipse()) {
       MyWorldRegistry.developmentMode = true;
       // ToDo set development mode in each application.
     }
 
     // FIXME: //AAA HIER VERDER
-    createPropertyDescriptorResources(runningInEclipse, modulesToInitialize);
+    createPropertyDescriptorResources(RunningInEclipse.runningInEclipse(), modulesToInitialize);
 
-    createCustomizations(runningInEclipse, modulesToInitialize);
+    createCustomizations(RunningInEclipse.runningInEclipse(), modulesToInitialize);
 
     // Temp: create swing customizations. Remove each one when the app is converted to javafx.
 //    createCustomizationsSwing(runningInEclipse, modulesToInitialize);

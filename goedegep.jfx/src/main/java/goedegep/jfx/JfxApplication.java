@@ -1,6 +1,5 @@
 package goedegep.jfx;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -14,6 +13,7 @@ import java.util.logging.Logger;
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Options;
 
+import goedegep.util.RunningInEclipse;
 import goedegep.util.logging.MyLoggingFormatter;
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -25,7 +25,6 @@ public abstract class JfxApplication extends Application {
   protected static final String         NEWLINE = System.getProperty("line.separator");
   
   private static boolean loggingAlreadySetup = false;  // Used to detect that logging is setup more than once.
-  private static Boolean runningInEclipse = null;
     
   /**
    * Logging setup.
@@ -170,29 +169,8 @@ public abstract class JfxApplication extends Application {
     String exceptionText = sw.toString();
     Logger.getGlobal().severe(exceptionText);
 
-    if (!runningInEclipse()) {
+    if (!RunningInEclipse.runningInEclipse()) {
       componentFactory.createExceptionDialog("An exception occurred", (Exception) exception).showAndWait();
     }
-  }
-
-  /**
-   * This method determines whether the application is running in Eclipse or not (i.e. it is an official installation.
-   * <p>
-   * If this program is an official installation, the property descriptor files are all in the
-   * directory from where the program is started.
-   * If the program is running in eclipse, each property descriptor file is in the directory of the related project.
-   * 
-   * If the current directory ends with 'target/classes' we assume we're running within eclipse.
-   * So make sure to set the working directory in your run configuration to .../target/classes.
-   * 
-   * @return true, if the program is running within Eclipse, false otherwise.
-   */
-  protected static boolean runningInEclipse() {
-    if (runningInEclipse == null) {
-      String currentDirectory = System.getProperty("user.dir");
-      runningInEclipse = currentDirectory.endsWith("target" + File.separator + "classes");
-    }
-
-    return runningInEclipse;
   }
 }

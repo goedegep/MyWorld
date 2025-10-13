@@ -27,7 +27,7 @@ public class EventsRegistry implements PropertyFileURLProvider {
   /**
    * Copyright message for the application.
    */
-  public static String copyrightMessage = null;
+  public static String copyrightMessage = null;  // provided by
   
   /**
    * Name of the file with the property descriptors.
