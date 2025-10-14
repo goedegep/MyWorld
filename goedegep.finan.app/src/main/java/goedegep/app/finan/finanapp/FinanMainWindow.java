@@ -98,7 +98,6 @@ import goedegep.jfx.PropertyDescriptorsEditorFx;
 import goedegep.properties.app.guifx.PropertiesEditor;
 import goedegep.resources.ImageSize;
 import goedegep.rolodex.model.Rolodex;
-import goedegep.util.emf.EMFResource;
 import goedegep.util.sax.ParseException;
 import goedegep.util.text.TextWriter;
 
@@ -173,7 +172,7 @@ public class FinanMainWindow extends AppFrame implements SumAccountListener {
   private PgJFileChooser fileChooser = new PgJFileChooser();
   
   
-  public FinanMainWindow(Customization customization, boolean isMainWindow, boolean userPropertiesFileInstalled, EMFResource<Rolodex> rolodexResource) {
+  public FinanMainWindow(Customization customization, boolean isMainWindow, boolean userPropertiesFileInstalled, Rolodex rolodex) {
     super(WINDOW_TITLE, customization);
     LOGGER.setLevel(Level.SEVERE);
     this.isMainWindow = isMainWindow;
@@ -189,7 +188,7 @@ public class FinanMainWindow extends AppFrame implements SumAccountListener {
     
     pack();
     
-    initFinance(userPropertiesFileInstalled, rolodexResource);
+    initFinance(userPropertiesFileInstalled, rolodex);
     
     setVisible(true);
   }
@@ -530,7 +529,7 @@ public class FinanMainWindow extends AppFrame implements SumAccountListener {
     return splitPane;
   }
   
-  public void initFinance(boolean userPropertiesFileInstalled, EMFResource<Rolodex> rolodexResource) {
+  public void initFinance(boolean userPropertiesFileInstalled, Rolodex rolodex) {
     if (userPropertiesFileInstalled) {
       // Show message to user.
       showMessageDialog(MessageDialogType.WARNING,
@@ -564,7 +563,6 @@ public class FinanMainWindow extends AppFrame implements SumAccountListener {
       // Initialize financiele eenheden.
       fileName = FinanRegistry.financieleEenhedenFile;
       file = new File(dataDirectory, fileName);
-      rolodex = rolodexResource.getEObject();
       if (rolodex != null) {
         FinancieleEenheidHandler financieleEenheidHandler = new FinancieleEenheidHandler(rolodex);
         LOGGER.fine("Going to read Financiele Eenheden file: " + file.getAbsolutePath());

@@ -9,19 +9,37 @@ import goedegep.jfx.CustomizationsFx;
 import goedegep.jfx.JfxApplication;
 import goedegep.properties.app.PropertiesHandler;
 import goedegep.rolodex.app.guifx.RolodexMenuWindow;
+import goedegep.rolodex.model.Rolodex;
 import goedegep.rolodex.model.RolodexFactory;
 import goedegep.rolodex.model.RolodexPackage;
 import goedegep.util.RunningInEclipse;
 import goedegep.util.emf.EMFResource;
 
+/**
+ * The RolodexService class is a singleton which provides access to the Rolodex application functionality.
+ * <p>
+ * The class reads the configuration and property descriptor files, creates the Rolodex resource and provides access to the main menu window.
+ *
+ */
 public class RolodexService {
   
   private static final String VACATIONS_CONFIGURATION_FILE = "RolodexConfiguration.xmi";
   
+  /**
+   * The singleton instance of the RolodexService class.
+   */
   private static RolodexService instance = null;
   
+  /**
+   * The GUI customization.
+   */
   private static CustomizationFx customization; 
 
+  /**
+   * Get the singleton instance of the RolodexService class.
+   * 
+   * @return the singleton instance of the RolodexService class
+   */
   public static RolodexService getInstance() {
     if (instance == null) {
       instance = new RolodexService();
@@ -30,9 +48,21 @@ public class RolodexService {
     return instance;
   }
   
+  /**
+   * Show the main menu window.
+   */
   public void showMenuWindow() {
     RolodexMenuWindow menuWindow = new RolodexMenuWindow(customization);
     menuWindow.show();
+  }
+  
+  /**
+   * Get the Rolodex.
+   * 
+   * @return the Rolodex
+   */
+  public Rolodex getRolodex() {
+    return RolodexRegistry.rolodexResource.getEObject();
   }
   
   /**
