@@ -9,6 +9,7 @@ import goedegep.jfx.JfxApplication;
 import goedegep.pctools.app.guifx.PCToolsMenuWindow;
 import goedegep.pctools.app.logic.PCToolsRegistry;
 import goedegep.properties.app.PropertiesHandler;
+import goedegep.util.RunningInEclipse;
 import javafx.stage.Stage;
 
 public class PCToolsService {
@@ -44,7 +45,15 @@ public class PCToolsService {
     stage.show();
   }
   
+  /**
+   * Private constructor to ensure that the application is a singleton.
+   */
   private PCToolsService() {
+    
+    // If we're running within Eclipse, we set development mode to true. The application can use this information to add functionality which is for development only.
+    if (RunningInEclipse.runningInEclipse()) {
+      PCToolsRegistry.developmentMode = true;
+    }
     
   }
 

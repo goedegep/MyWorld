@@ -6,7 +6,7 @@ import java.util.logging.Level;
 import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.DefaultCustomizationFx;
 import goedegep.jfx.JfxApplication;
-import goedegep.pctools.markdown.MarkdownService;
+import goedegep.markdown.app.MarkdownService;
 import goedegep.util.RunningInEclipse;
 import goedegep.util.thread.ThreadUtil;
 import javafx.stage.Stage;

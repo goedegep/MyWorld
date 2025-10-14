@@ -3,7 +3,7 @@ package goedegep.events.exe;
 import java.io.File;
 import java.util.logging.Level;
 
-import goedegep.events.app.EventsLauncher;
+import goedegep.events.app.EventsService;
 import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.DefaultCustomizationFx;
 import goedegep.jfx.JfxApplication;
@@ -55,7 +55,7 @@ public class EventsApplication extends JfxApplication {
     javaFxApplicationThread.setUncaughtExceptionHandler(uncaughtExceptionHandler);
     
     try {
-      EventsLauncher.getInstance().launchEventsWindow();
+      EventsService.getInstance().showEventsWindow();
     } catch (Exception ex) {
       reportException(customization, ex);
     }

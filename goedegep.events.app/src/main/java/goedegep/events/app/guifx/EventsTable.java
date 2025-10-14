@@ -16,8 +16,8 @@ import org.commonmark.renderer.html.HtmlRenderer;
 
 import goedegep.appgen.Operation;
 import goedegep.appgen.TableRowOperationDescriptor;
-import goedegep.events.app.EventsLauncher;
 import goedegep.events.app.EventsRegistry;
+import goedegep.events.app.EventsService;
 import goedegep.events.model.EventInfo;
 import goedegep.events.model.EventsPackage;
 import goedegep.gpx.app.GPXWindow;
@@ -66,7 +66,7 @@ public class EventsTable extends EObjectTable<EventInfo> {
   @Override
   protected void handleRowDoubleClicked(EventInfo event) {
     if (event != null) {
-      EventsLauncher.getInstance().LaunchEventsEditor(event);
+      EventsService.getInstance().LaunchEventsEditor(event);
     }
   }
 }

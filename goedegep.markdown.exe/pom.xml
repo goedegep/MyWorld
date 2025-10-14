@@ -29,8 +29,8 @@
       <artifactId>goedegep-jfx</artifactId>
     </dependency>
     <dependency>
-      <groupId>goedegep.pctools</groupId>
-      <artifactId>goedegep-pctools</artifactId>
+      <groupId>goedegep.markdown</groupId>
+      <artifactId>goedegep-markdown-app</artifactId>
     </dependency>
   </dependencies>
 
