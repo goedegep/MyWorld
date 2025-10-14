@@ -1,4 +1,4 @@
-package goedegep.pctools.markdown.guifx;
+package goedegep.markdown.app.guifx;
 
 import java.io.File;
 import java.io.FileReader;

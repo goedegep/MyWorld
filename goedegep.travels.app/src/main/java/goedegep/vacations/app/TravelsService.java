@@ -30,7 +30,6 @@ import goedegep.vacations.app.logic.VacationsRegistry;
  * It is built on top of logic and guifx sub packages.
  */
 public class TravelsService {
-  @SuppressWarnings("unused")
   private static final Logger LOGGER = Logger.getLogger(TravelsService.class.getName());
   
   private static final String VACATIONS_CONFIGURATION_FILE = "VacationsConfiguration.xmi";
@@ -83,7 +82,7 @@ public class TravelsService {
    */
   private TravelsService() {
     
-    // If we're running within Eclipse, we set development mode to true. The application can use this information add functionality which is for development only.
+    // If we're running within Eclipse, we set development mode to true. The application can use this information to add functionality which is for development only.
     if (RunningInEclipse.runningInEclipse()) {
       VacationsRegistry.developmentMode = true;
     }

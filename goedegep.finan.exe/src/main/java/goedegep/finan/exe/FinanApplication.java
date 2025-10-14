@@ -1,20 +1,13 @@
 package goedegep.finan.exe;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.logging.Level;
 
-import goedegep.app.finan.guifx.FinanMenuWindow;
-import goedegep.finan.Finan;
+import goedegep.finan.app.FinanService;
 import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.DefaultCustomizationFx;
 import goedegep.jfx.JfxApplication;
-import goedegep.rolodex.app.RolodexRegistry;
-import goedegep.rolodex.model.Rolodex;
-import goedegep.rolodex.model.RolodexFactory;
-import goedegep.rolodex.model.RolodexPackage;
 import goedegep.util.RunningInEclipse;
-import goedegep.util.emf.EMFResource;
 import goedegep.util.thread.ThreadUtil;
 import javafx.stage.Stage;
 
@@ -62,39 +55,11 @@ public class FinanApplication extends JfxApplication {
     javaFxApplicationThread.setUncaughtExceptionHandler(uncaughtExceptionHandler);
     
     try {
-      Finan finan = new Finan(getRolodexResource().getEObject());
-      Stage stage = new FinanMenuWindow(finan);
-      stage.centerOnScreen();
-      stage.show();
+      FinanService.getInstance().showFinanMenuWindow();
     } catch (Exception ex) {
       reportException(customization, ex);
     }
     
   }
   
-  
-  /**
-   * Get the Rolodex resource.
-   * <p>
-   * If the RolodexRegistry.rolodexResource is null, a new RolodexResource is created.
-   * 
-   * @return the existing or newly created RolodexRegistry.rolodexResource
-   */
-  private EMFResource<Rolodex> getRolodexResource() {
-    if (RolodexRegistry.rolodexResource == null) {
-      try {
-        RolodexRegistry.rolodexResource = new EMFResource<>(
-            RolodexPackage.eINSTANCE,
-            () -> RolodexFactory.eINSTANCE.createRolodex(), ".xmi");
-//        File rolodexFile = new File(RolodexRegistry.dataDirectory, RolodexRegistry.rolodexFile);
-        File rolodexFile = new File("D:\\Database\\MyWorld\\Rolodex.xmi");
-        RolodexRegistry.rolodexResource.load(rolodexFile.getAbsolutePath());
-      } catch (IOException e) {
-        e.printStackTrace();
-        System.exit(1);
-      }
-    }
-
-    return RolodexRegistry.rolodexResource;
-  }
 }

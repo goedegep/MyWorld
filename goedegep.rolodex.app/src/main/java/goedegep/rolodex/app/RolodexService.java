@@ -9,9 +9,9 @@ import goedegep.jfx.CustomizationsFx;
 import goedegep.jfx.JfxApplication;
 import goedegep.properties.app.PropertiesHandler;
 import goedegep.rolodex.app.guifx.RolodexMenuWindow;
-import goedegep.rolodex.model.Rolodex;
 import goedegep.rolodex.model.RolodexFactory;
 import goedegep.rolodex.model.RolodexPackage;
+import goedegep.util.RunningInEclipse;
 import goedegep.util.emf.EMFResource;
 
 public class RolodexService {
@@ -35,7 +35,15 @@ public class RolodexService {
     menuWindow.show();
   }
   
+  /**
+   * Private constructor to ensure that the application is a singleton.
+   */
   private RolodexService() {
+    
+    // If we're running within Eclipse, we set development mode to true. The application can use this information to add functionality which is for development only.
+    if (RunningInEclipse.runningInEclipse()) {
+      RolodexRegistry.developmentMode = true;
+    }
 
     try {
       // Read the properties, which are stored in the registry.

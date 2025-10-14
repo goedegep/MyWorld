@@ -274,6 +274,11 @@
         <version>${goedegep.myworld.version}</version>
       </dependency>
       <dependency>
+        <groupId>goedegep.markdown</groupId>
+        <artifactId>goedegep-markdown-app</artifactId>
+        <version>${goedegep.myworld.version}</version>
+      </dependency>
+      <dependency>
         <groupId>goedegep.media</groupId>
         <artifactId>goedegep-media-app</artifactId>
         <version>${goedegep.myworld.version}</version>
@@ -680,6 +685,7 @@
     <!-- MyWorld -->
     <module>../tim.prune</module>
     <module>../goedegep.poi.app</module>
+    <module>../goedegep.markdown.app</module>
     <module>../goedegep.rolodex.model</module>
     <module>../goedegep.events.model</module>
     <module>../goedegep.media.mediadb.model</module>

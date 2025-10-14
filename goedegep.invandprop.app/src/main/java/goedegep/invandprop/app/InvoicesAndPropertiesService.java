@@ -9,6 +9,7 @@ import goedegep.invandprop.model.InvoicesAndProperties;
 import goedegep.types.model.FileReference;
 import goedegep.util.Result;
 import goedegep.util.Result.ResultType;
+import goedegep.util.RunningInEclipse;
 import goedegep.util.datetime.FlexDate;
 import goedegep.util.datetime.FlexDateFormat;
 import goedegep.util.emf.EMFResource;
@@ -21,6 +22,12 @@ public class InvoicesAndPropertiesService {
   private InvoicesAndProperties invoicesAndProperties;
 
   public InvoicesAndPropertiesService(EMFResource<InvoicesAndProperties> invoicesAndPropertiesResource) {
+    
+    // If we're running within Eclipse, we set development mode to true. The application can use this information to add functionality which is for development only.
+    if (RunningInEclipse.runningInEclipse()) {
+      InvoicesAndPropertiesRegistry.developmentMode = true;
+    }
+    
     this.invoicesAndPropertiesResource = invoicesAndPropertiesResource;
     invoicesAndProperties = invoicesAndPropertiesResource.getEObject();
   }

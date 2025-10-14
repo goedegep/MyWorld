@@ -8,8 +8,12 @@ import goedegep.jfx.CustomizationsFx;
 import goedegep.jfx.JfxApplication;
 import goedegep.properties.app.PropertiesHandler;
 import goedegep.unitconverter.app.guifx.UnitConverterWindow;
+import goedegep.util.RunningInEclipse;
 import javafx.stage.Stage;
 
+/**
+ * This class is the main class of the Unit Converter application.
+ */
 public class UnitConverterService {
   
   private static final String UNIT_CONVERTER_CONFIGURATION_FILE = "UnitConverterConfiguration.xmi";
@@ -18,6 +22,11 @@ public class UnitConverterService {
   
   private static CustomizationFx customization;
   
+  /**
+   * Get the singleton instance of the UnitConverterService.
+   * 
+   * @return the singleton instance of UnitConverterService.
+   */
   public static UnitConverterService getInstance() {
     if (instance == null) {
       instance = new UnitConverterService();
@@ -37,12 +46,23 @@ public class UnitConverterService {
     return instance;
   }
   
+  /**
+   * Show the main window of the application.
+   */
   public void showUnitConverterMenuWindow() {
     Stage stage = new UnitConverterWindow(customization);
     stage.show();
   }
   
+  /**
+   * Private constructor to ensure that the application is a singleton.
+   */
   private UnitConverterService() {
+    
+    // If we're running within Eclipse, we set development mode to true. The application can use this information to add functionality which is for development only.
+    if (RunningInEclipse.runningInEclipse()) {
+      UnitConverterRegistry.developmentMode = true;
+    }
     
   }
 

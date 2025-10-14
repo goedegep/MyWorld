@@ -10,7 +10,6 @@ import java.util.logging.Logger;
 import com.openhtmltopdf.outputdevice.helper.BaseRendererBuilder.PageSizeUnits;
 import com.openhtmltopdf.pdfboxout.PdfRendererBuilder;
 
-import goedegep.events.app.EventsLauncher;
 import goedegep.events.app.EventsRegistry;
 import goedegep.events.app.EventsService;
 import goedegep.events.app.EventsToHtmlConverter;
@@ -183,7 +182,7 @@ public class EventsWindow extends JfxStage {
     menu = new Menu("Help");
 
     // Help: About
-    MenuUtil.addMenuItem(menu, "About", event -> showHelpAboutDialog());
+    MenuUtil.addMenuItem(menu, "About", _ -> showHelpAboutDialog());
 
     menuBar.getMenus().add(menu);
 
@@ -199,8 +198,8 @@ public class EventsWindow extends JfxStage {
     hBox.getChildren().add(spacer);
         
     Button newEventButton = componentFactory.createButton("New Event", "Open the Event Editor for a new event");
-    newEventButton.setOnAction(e -> {
-      EventsLauncher.getInstance().LaunchEventsEditor(null);
+    newEventButton.setOnAction(_ -> {
+      EventsService.getInstance().LaunchEventsEditor(null);
     });
     hBox.getChildren().add(newEventButton);
     

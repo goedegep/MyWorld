@@ -9,6 +9,7 @@ import goedegep.jfx.JfxApplication;
 import goedegep.media.app.guifx.MediaMenuWindow;
 import goedegep.media.common.MediaRegistry;
 import goedegep.properties.app.PropertiesHandler;
+import goedegep.util.RunningInEclipse;
 import javafx.stage.Stage;
 
 public class MediaService {
@@ -43,7 +44,15 @@ public class MediaService {
     stage.show();
   }
   
+  /**
+   * Private constructor to ensure that the application is a singleton.
+   */
   private MediaService() {
+    
+    // If we're running within Eclipse, we set development mode to true. The application can use this information to add functionality which is for development only.
+    if (RunningInEclipse.runningInEclipse()) {
+      MediaRegistry.developmentMode = true;
+    }
     
   }
 }

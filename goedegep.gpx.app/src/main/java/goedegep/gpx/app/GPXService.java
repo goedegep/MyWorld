@@ -26,7 +26,16 @@ public class GPXService {
     gpxWindow.show();
   }
   
+  /**
+   * Private constructor to enforce singleton pattern.
+   */
   private GPXService() {
+    
+    // If we're running within Eclipse, we set development mode to true. The application can use this information to add functionality which is for development only.
+    if (RunningInEclipse.runningInEclipse()) {
+      GPXRegistry.developmentMode = true;
+    }
+    
     RunningInEclipse.runningInEclipse();
   }
 }
