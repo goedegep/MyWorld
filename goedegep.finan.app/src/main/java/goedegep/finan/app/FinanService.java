@@ -1,25 +1,30 @@
 package goedegep.finan.app;
 
-import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 
+import goedegep.app.finan.finanapp.FinanMainWindow;
+import goedegep.app.finan.finanapp.FinanResources;
 import goedegep.app.finan.guifx.FinanMenuWindow;
 import goedegep.app.finan.registry.FinanRegistry;
-import goedegep.finan.Finan;
+import goedegep.appgen.swing.Customization;
 import goedegep.jfx.CustomizationFx;
-import goedegep.jfx.DefaultCustomizationFx;
-import goedegep.rolodex.app.RolodexRegistry;
-import goedegep.rolodex.model.Rolodex;
-import goedegep.rolodex.model.RolodexFactory;
-import goedegep.rolodex.model.RolodexPackage;
+import goedegep.jfx.CustomizationsFx;
+import goedegep.jfx.JfxApplication;
+import goedegep.properties.app.PropertiesHandler;
+import goedegep.properties.app.PropertyFileURLProvider;
+import goedegep.rolodex.app.RolodexService;
 import goedegep.util.RunningInEclipse;
-import goedegep.util.emf.EMFResource;
 import javafx.stage.Stage;
 
-public class FinanService {
-  private CustomizationFx customization;
+public class FinanService implements PropertyFileURLProvider {
+  
+  private static final String FINAN_PROPERTY_DESCRIPTORS_FILE = "FinanPropertyDescriptors.xmi";
+  private static final String FINAN_CONFIGURATION_FILE = "FinanConfiguration.xmi";
+
+  private Customization customization;
+  private CustomizationFx customizationFx;
   private static FinanService instance = null;
-  private Finan finan;
   
   public static FinanService getInstance() {
     if (instance == null) {
@@ -29,10 +34,38 @@ public class FinanService {
   }
   
   public void showFinanMenuWindow() {
-    Stage stage = new FinanMenuWindow(finan);
+    Stage stage = new FinanMenuWindow();
     stage.centerOnScreen();
     stage.show();
   }
+  
+  public void showFinanMainWindow() {
+    new FinanMainWindow(customization, false, false, RolodexService.getInstance().getRolodex());
+  }
+  
+
+  @Override
+  public URL getPropertyFileURL() {
+    URL url = getClass().getResource(FINAN_PROPERTY_DESCRIPTORS_FILE);
+    
+    return url;
+  }
+  
+  @Override
+  public URL getCustomizationFileURL() {
+    URL url = getClass().getResource(FINAN_CONFIGURATION_FILE);
+    
+    return url;
+  }
+
+  public CustomizationFx getCustomizationFx() {
+    return customizationFx;
+  }
+
+  public Customization getCustomization() {
+    return customization;
+  }
+  
   
   /**
    * Constructor.
@@ -46,34 +79,20 @@ public class FinanService {
       FinanRegistry.developmentMode = true;
     }
     
-    customization = DefaultCustomizationFx.getInstance();
+    try {
+      // Read the properties, which are stored in the registry.
+      URL url = getClass().getResource(FinanRegistry.propertyDescriptorsFile);
+      PropertiesHandler.handleProperties(url, null);
+
+      // Read the customization info.
+      url = getClass().getResource(FINAN_CONFIGURATION_FILE);
+      customizationFx = CustomizationsFx.readCustomization(url);
+    } catch (IOException e) {
+      JfxApplication.reportException(null, e);
+    }
     
-    finan = new Finan(getRolodexResource().getEObject());
+    customization = new Customization(new FinanResources());    
   }
 
   
-  /**
-   * Get the Rolodex resource.
-   * <p>
-   * If the RolodexRegistry.rolodexResource is null, a new RolodexResource is created.
-   * 
-   * @return the existing or newly created RolodexRegistry.rolodexResource
-   */
-  private EMFResource<Rolodex> getRolodexResource() {
-    if (RolodexRegistry.rolodexResource == null) {
-      try {
-        RolodexRegistry.rolodexResource = new EMFResource<>(
-            RolodexPackage.eINSTANCE,
-            () -> RolodexFactory.eINSTANCE.createRolodex(), ".xmi");
-//        File rolodexFile = new File(RolodexRegistry.dataDirectory, RolodexRegistry.rolodexFile);
-        File rolodexFile = new File("D:\\Database\\MyWorld\\Rolodex.xmi");
-        RolodexRegistry.rolodexResource.load(rolodexFile.getAbsolutePath());
-      } catch (IOException e) {
-        e.printStackTrace();
-        System.exit(1);
-      }
-    }
-
-    return RolodexRegistry.rolodexResource;
-  }
 }

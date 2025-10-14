@@ -2,25 +2,20 @@ package goedegep.app.finan.guifx;
 
 import java.util.logging.Logger;
 
-import goedegep.app.finan.finanapp.FinanMainWindow;
 import goedegep.app.finan.finanapp.guifx.FinanResourcesFx;
-import goedegep.app.finan.gen.AppModules;
 import goedegep.app.finan.registry.FinanRegistry;
-import goedegep.appgen.swing.Customizations;
-import goedegep.finan.Finan;
+import goedegep.finan.app.FinanService;
 import goedegep.finan.investmentinsurances.app.guifx.InvestmentInsurancesOverviewWindow;
 import goedegep.finan.jobappointment.JobAppointmentService;
 import goedegep.finan.jobappointment.guifx.JobAppointmentWindow;
 import goedegep.finan.mortgage.MortgageService;
 import goedegep.finan.mortgage.app.guifx.MortgagesWindow;
 import goedegep.jfx.AppResourcesFx;
-import goedegep.jfx.CustomizationsFx;
 import goedegep.jfx.JfxStage;
 import goedegep.jfx.MenuUtil;
 import goedegep.jfx.PropertyDescriptorsEditorFx;
 import goedegep.properties.app.guifx.PropertiesEditor;
 import goedegep.resources.ImageSize;
-import goedegep.rolodex.app.RolodexRegistry;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -38,7 +33,6 @@ public class FinanMenuWindow extends JfxStage {
   private static final Logger LOGGER = Logger.getLogger(FinanMenuWindow.class.getName());
   private static final String WINDOW_TITLE   = "Finan";
   
-  private Finan finan;
   private FinanResourcesFx appResources;
 
   /**
@@ -47,10 +41,9 @@ public class FinanMenuWindow extends JfxStage {
    * @param customization GUI customization.
    * @param finan the financial information.
    */
-  public FinanMenuWindow(Finan finan) {
-    super(finan.getCustomizationFx(), WINDOW_TITLE);
+  public FinanMenuWindow() {
+    super(FinanService.getInstance().getCustomizationFx(), WINDOW_TITLE);
     
-    this.finan = finan;
 //    PropertyDescriptorGroup propertyDescriptorGroup = FinanRegistry.propertyDescriptorsResource.getEObject();
 //    String customPropertiesFileName = null;
     if (FinanRegistry.projectPath != null) {
@@ -107,16 +100,16 @@ public class FinanMenuWindow extends JfxStage {
     Button applicationButton;
 
     applicationButton = componentFactory.createToolButton("Finan Classic", appResources.getApplicationImage(ImageSize.SIZE_0), "Start the 'old' Finan app");
-    applicationButton.setOnAction(_ -> new FinanMainWindow(finan.getCustomization(), false, false, RolodexRegistry.rolodexResource));
+    applicationButton.setOnAction(_ -> FinanService.getInstance().showFinanMainWindow());
     grid.add(applicationButton, 0, 0);
 
     AppResourcesFx appResourcesHypotheek = MortgageService.getInstance().getCustomization().getResources();
     applicationButton = componentFactory.createToolButton("Mortgages", appResourcesHypotheek.getApplicationImage(ImageSize.SIZE_0), "Mortgages");
-    applicationButton.setOnAction(_ -> new MortgagesWindow(MortgageService.getInstance().getCustomization(), finan.getRolodex()));
+    applicationButton.setOnAction(_ -> new MortgagesWindow(MortgageService.getInstance().getCustomization()));
     grid.add(applicationButton, 1, 0);
 
     applicationButton = componentFactory.createToolButton("Investment Insurances", appResources.getApplicationImage(ImageSize.SIZE_0), "Investment Insurances");
-    applicationButton.setOnAction(_ -> new InvestmentInsurancesOverviewWindow(finan.getCustomizationFx()));
+    applicationButton.setOnAction(_ -> new InvestmentInsurancesOverviewWindow(FinanService.getInstance().getCustomizationFx()));
     grid.add(applicationButton, 2, 0);
 
     AppResourcesFx appResourcesAanstelling = JobAppointmentService.getInstance().getCustomization().getResources();

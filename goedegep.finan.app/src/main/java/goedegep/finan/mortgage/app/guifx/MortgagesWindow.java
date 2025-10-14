@@ -34,7 +34,6 @@ import goedegep.jfx.JfxStage;
 import goedegep.jfx.eobjecttable.EObjectListContainerSpecification;
 import goedegep.jfx.eobjecttable.EObjectTable;
 import goedegep.properties.app.guifx.PropertiesEditor;
-import goedegep.rolodex.model.Rolodex;
 import goedegep.util.emf.EMFNotificationListener;
 import goedegep.util.emf.EMFResource;
 import goedegep.util.emf.EmfUtil;
@@ -91,7 +90,7 @@ public class MortgagesWindow extends JfxStage implements EMFNotificationListener
   
   private MortgageInfoPanel hypotheekInfoPanel;
 
-  public MortgagesWindow(CustomizationFx customization, Rolodex rolodex) {
+  public MortgagesWindow(CustomizationFx customization) {
     super(customization, null);
     
     if (FinanRegistry.mortgagesFileName == null) {
@@ -101,7 +100,7 @@ public class MortgagesWindow extends JfxStage implements EMFNotificationListener
       ButtonType editorButtonType = new ButtonType(TRANSLATIONS.getString("MortgagesWindow.alertNoMortgagesFileName.editorButton"));
       alert.getButtonTypes().add(editorButtonType);
       
-      alert.showAndWait().filter(response -> response == editorButtonType).ifPresent(response -> {
+      alert.showAndWait().filter(response -> response == editorButtonType).ifPresent(_ -> {
         showPropertiesEditor();
       });
       
@@ -128,7 +127,7 @@ public class MortgagesWindow extends JfxStage implements EMFNotificationListener
           TRANSLATIONS.getString("MortgagesWindow.alertMortgagesFileNotFound.title"),
           translationFormatter.formatText("MortgagesWindow.alertMortgagesFileNotFound.header", mortgagesFileName),
           TRANSLATIONS.getString("MortgagesWindow.alertMortgagesFileNotFound.content"));
-      alert.showAndWait().filter(response -> response == ButtonType.YES).ifPresent(response -> {
+      alert.showAndWait().filter(response -> response == ButtonType.YES).ifPresent(_ -> {
         mortgages = mortgagesResource.newEObject();
         try {
           mortgagesResource.save(mortgagesFileName);
@@ -187,7 +186,7 @@ public class MortgagesWindow extends JfxStage implements EMFNotificationListener
     Label label = componentFactory.createLabel("Mortgage");
     hBox.getChildren().add(label);
     mortgagesComboBox = componentFactory.createComboBox(null);
-    mortgagesComboBox.setOnAction((event) -> {
+    mortgagesComboBox.setOnAction((_) -> {
       MortgageWrapper mortgageWrapper = mortgagesComboBox.getValue();
       if (mortgageWrapper != null) {
         mortgage = mortgageWrapper.getMortgage();
@@ -356,11 +355,11 @@ public class MortgagesWindow extends JfxStage implements EMFNotificationListener
     gridPane.add(label, 0, 0);
 
     Button button = componentFactory.createButton("New interest rate", "Add a new interest rate event");
-    button.setOnAction((e) -> addNewInterestRateEvent());
+    button.setOnAction((_) -> addNewInterestRateEvent());
     gridPane.add(button, 1, 0);
 
     button = componentFactory.createButton("Final payment", "Add a new final payment event");
-    button.setOnAction((e) -> addNewFinalPaymentEvent());
+    button.setOnAction((_) -> addNewFinalPaymentEvent());
     gridPane.add(button, 2, 0);
     
     // Second row: Show fixed events or all events
@@ -370,12 +369,12 @@ public class MortgagesWindow extends JfxStage implements EMFNotificationListener
     final ToggleGroup radioButtonGroup = new ToggleGroup();
 
     RadioButton radioButton = new RadioButton("Fixed events");
-    radioButton.setOnAction((e) -> showFixedEvents());
+    radioButton.setOnAction((_) -> showFixedEvents());
     radioButton.setToggleGroup(radioButtonGroup);
     gridPane.add(radioButton, 1, 1);
 
     radioButton = new RadioButton("All events");
-    radioButton.setOnAction((e) -> showAllEvents());
+    radioButton.setOnAction((_) -> showAllEvents());
     radioButton.setToggleGroup(radioButtonGroup);
     radioButton.setSelected(true);
     gridPane.add(radioButton, 2, 1);
