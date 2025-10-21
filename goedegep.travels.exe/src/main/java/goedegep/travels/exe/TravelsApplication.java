@@ -6,6 +6,7 @@ import java.util.logging.Logger;
 
 import goedegep.jfx.DefaultCustomizationFx;
 import goedegep.jfx.JfxApplication;
+import goedegep.util.RunningInEclipse;
 import goedegep.util.thread.ThreadUtil;
 import goedegep.vacations.app.TravelsService;
 import goedegep.vacations.app.logic.VacationsRegistry;
@@ -40,20 +41,13 @@ public class TravelsApplication extends JfxApplication {
 
   @Override
   public void start(Stage primaryStage) throws Exception {
-    
-    // DevelopmentMode
-    // In development mode extra items are added to menu's.
-    // For now DevelopmentMode is active when 'Running in eclipse'.
-//    if (runningInEclipse()) {
-//      VacationsRegistry.developmentMode = true;
-//    }
-    
+        
     // Setup logging. Only log to a file when not running in Eclipse.
     String logFileBaseName = null;
-//    if (!runningInEclipse()) {
-//      logFileBaseName = System.getProperty("user.home") + File.separator + LOG_SUBFOLDER + File.separator + VacationsRegistry.applicationName + "_logfile";
-//    }
-//    logSetup(Level.SEVERE, logFileBaseName);
+    if (!RunningInEclipse.runningInEclipse()) {
+      logFileBaseName = System.getProperty("user.home") + File.separator + LOG_SUBFOLDER + File.separator + VacationsRegistry.applicationName + "_logfile";
+    }
+    logSetup(Level.SEVERE, logFileBaseName);
     
     TravelsService travelsApplication = TravelsService.getInstance();
     

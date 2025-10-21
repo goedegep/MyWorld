@@ -9,28 +9,93 @@ import goedegep.util.emf.EMFResource;
 public class MediaRegistry implements PropertyFileURLProvider {
   private static final String MEDIA_PROPERTY_DESCRIPTORS_FILE = "MediaPropertyDescriptors.xmi";
   private static final String MEDIA_CONFIGURATION_FILE = "MediaConfiguration.xmi";
+  
+  /**
+   * The name of the application.
+   */
+  public static String applicationName;
 
-  public static String author = null;                   // Name of the author of the application.
-  public static String configurationFile = null;        // Name of the system file (in the currentDirectory) with Configuration data.
-  public static String copyrightMessage = null;         // Copyright message for the application.
+  /**
+   * Name of the author of the application.
+   */
+  public static String author = "Peter Goedegebure";
+  
+  /**
+   * Name of the file with Configuration data.
+   */
+  public static String configurationFile = null;
+  
+  /**
+   * Copyright message for the application.
+   */
+  public static String copyrightMessage = "Copyright (c) 2001-2025";
   
   /**
    * Name of the file with the property descriptors.
    */
   public static String propertyDescriptorsFile = "MediaPropertyDescriptors.xmi";
-  public static String customPropertiesFile = null;     // Name of the file with custom properties.
-  public static String mediaDbFile = null;              // Name of the file with de media database.
-  public static String musicDataDirectory = null;       // Directory where pictures of albums and artists are located.
-  public static String albumInfoDirectory = null;       // Directory where the AlbumInfo xml files are located.
-  public static String musicDirectory = null;           // Directory where all music is stored.
-  public static String albumImportDirectory = null;     // Default location for selecting a directory from which album import information is to be derived.
-  public static String duneMusicFolderPath = null;      // Directory on the Dune where the music is stored.
-  public static String dunePlaylistsFolderPath = null;  // Directory on the Dune where the playlists are stored.
-  public static String shortProductInfo = null;         // Short description of this application.
-  public static String version = null;                  // Current software version.
-  public static boolean developmentMode = false;        // Voor extra functies tijdens ontwikkeling
+  
+  /**
+   * Name of the file with custom properties.
+   * <p>
+   * This file shall be located in the "MyWorld" folder under the user's home directory.
+   */
+  public static String customPropertiesFile = "VacationsUserPreferences.xmi";
+  
+  /**
+   * Name of the file with de media database.
+   */
+  public static String mediaDbFile = null;
+  
+  /**
+   * Directory where pictures of albums and artists are located.
+   */
+  public static String musicDataDirectory = null;
+  
+  /**
+   * Directory where all music is stored.
+   */
+  public static String musicDirectory = null;
+  
+  /**
+   * Default location for selecting a directory from which album import information is to be derived.
+   */
+  public static String albumImportDirectory = null;
+  
+  /**
+   * Directory on the Dune where the music is stored.
+   */
+  public static String duneMusicFolderPath = null;
+  
+  /**
+   *  Directory on the Dune where the playlists are stored.
+   */
+  public static String dunePlaylistsFolderPath = null;
+  
+  /**
+   * Short description of this application.
+   */
+  public static String shortProductInfo = "Media database";
+  
+  /**
+   * Current software version.
+   */
+  public static String version = null;
+  
+  /**
+   * For extra functionality during development.
+   */
+  public static boolean developmentMode = false;
+  
+  /**
+   * EMFResource for the Property Descriptors.
+   */
   public static EMFResource<PropertyDescriptorGroup> propertyDescriptorsResource = null;
-  public static String mediaPlayerClassicExecutable = null;  // Full path to the MPC-HC executable.
+  
+  /**
+   * Full path to the MPC-HC executable.
+   */
+  public static String mediaPlayerClassicExecutable = null;
   
   /*
    * Photoshow fields

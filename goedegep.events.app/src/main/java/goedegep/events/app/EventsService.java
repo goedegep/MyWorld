@@ -2,12 +2,14 @@ package goedegep.events.app;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
+import java.util.Properties;
 import java.util.ResourceBundle;
 import java.util.logging.Logger;
 
@@ -22,6 +24,7 @@ import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.CustomizationsFx;
 import goedegep.jfx.JfxApplication;
 import goedegep.jfx.editor.Editor;
+import goedegep.myworld.common.Service;
 import goedegep.properties.app.PropertiesHandler;
 import goedegep.properties.app.guifx.PropertiesEditor;
 import goedegep.types.model.FileReference;
@@ -37,7 +40,7 @@ import javafx.scene.control.ButtonType;
 /**
  * This class is the main class of the Events application.
  */
-public class EventsService {
+public class EventsService extends Service {
   private static final Logger LOGGER = Logger.getLogger(EventsService.class.getName());
   private static final String NEWLINE = System.getProperty("line.separator");
   
@@ -60,6 +63,7 @@ public class EventsService {
   public static EventsService getInstance() {
     if (instance == null) {
       instance = new EventsService();
+      instance.initialize();
     }
     
     return instance;
@@ -398,6 +402,25 @@ public class EventsService {
     }
 
     return returnValue ? eventsResource : null;
+  }
+
+  @Override
+  protected void setDevelopmentMode(boolean developmentMode) {
+    EventsRegistry.developmentMode = developmentMode;
+  }
+  
+  @Override
+  protected void readApplicationProperties() {
+    Properties props = new Properties();
+    try (InputStream in = getClass().getResourceAsStream("EventsApplication.properties")) {
+        props.load(in);
+        
+        EventsRegistry.version = props.getProperty("events.app.version");
+        EventsRegistry.applicationName = props.getProperty("events.app.name");
+    } catch (Exception e) {
+      JfxApplication.reportException(null, e);
+      System.exit(1);
+    }
   }
 }
 

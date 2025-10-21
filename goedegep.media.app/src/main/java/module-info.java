@@ -17,4 +17,5 @@ module goedegep.media.app {
   requires goedegep.properties.app;
   requires goedegep.media.common;
   requires goedegep.media.mediadb.app;
+  requires goedegep.myworld.common;
 }

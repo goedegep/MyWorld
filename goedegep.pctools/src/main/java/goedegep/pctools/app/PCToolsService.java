@@ -1,18 +1,21 @@
 package goedegep.pctools.app;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
+import java.util.Properties;
 
 import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.CustomizationsFx;
 import goedegep.jfx.JfxApplication;
+import goedegep.myworld.common.Service;
 import goedegep.pctools.app.guifx.PCToolsMenuWindow;
 import goedegep.pctools.app.logic.PCToolsRegistry;
 import goedegep.properties.app.PropertiesHandler;
 import goedegep.util.RunningInEclipse;
 import javafx.stage.Stage;
 
-public class PCToolsService {
+public class PCToolsService extends Service {
   
   private static final String PC_TOOLS_CONFIGURATION_FILE = "PCToolsConfiguration.xmi";
 
@@ -23,6 +26,7 @@ public class PCToolsService {
   public static PCToolsService getInstance() {
     if (instance == null) {
       instance = new PCToolsService();
+      instance.initialize();
       
       try {
         // Read the properties, which are stored in the registry.
@@ -57,4 +61,22 @@ public class PCToolsService {
     
   }
 
+  @Override
+  protected void setDevelopmentMode(boolean developmentMode) {
+    PCToolsRegistry.developmentMode = developmentMode;
+  }
+  
+  @Override
+  protected void readApplicationProperties() {
+    Properties props = new Properties();
+    try (InputStream in = getClass().getResourceAsStream("PCToolsApplication.properties")) {
+        props.load(in);
+        
+        PCToolsRegistry.version = props.getProperty("pctools.app.version");
+        PCToolsRegistry.applicationName = props.getProperty("pctools.app.name");
+    } catch (Exception e) {
+      JfxApplication.reportException(null, e);
+      System.exit(1);
+    }
+  }
 }

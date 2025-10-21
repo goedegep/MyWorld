@@ -14,9 +14,9 @@ import java.util.logging.Logger;
 import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.CustomizationsFx;
 import goedegep.jfx.JfxApplication;
+import goedegep.myworld.common.Service;
 import goedegep.properties.app.PropertiesHandler;
 import goedegep.resources.ImageResource;
-import goedegep.util.RunningInEclipse;
 import goedegep.util.dir.DirectoryChangesListener;
 import goedegep.util.string.StringUtil;
 import goedegep.vacations.app.guifx.VacationsWindow;
@@ -29,7 +29,7 @@ import goedegep.vacations.app.logic.VacationsRegistry;
  * It holds the customization information and provides methods to show the main window of the application.
  * It is built on top of logic and guifx sub packages.
  */
-public class TravelsService {
+public class TravelsService extends Service {
   private static final Logger LOGGER = Logger.getLogger(TravelsService.class.getName());
   
   private static final String VACATIONS_CONFIGURATION_FILE = "VacationsConfiguration.xmi";
@@ -48,8 +48,10 @@ public class TravelsService {
     // Ensure that the application is a singleton
     if (instance == null) {
       instance = new TravelsService();
+      instance.initialize();
+      
+      ImageResource.checkResources();
     }
-    ImageResource.checkResources();
     
     return instance;    
   }
@@ -81,11 +83,6 @@ public class TravelsService {
    * Private constructor to ensure singleton pattern.
    */
   private TravelsService() {
-    
-    // If we're running within Eclipse, we set development mode to true. The application can use this information to add functionality which is for development only.
-    if (RunningInEclipse.runningInEclipse()) {
-      VacationsRegistry.developmentMode = true;
-    }
     
     try {
       
@@ -119,17 +116,14 @@ public class TravelsService {
     startPhotoThumbnailsCreation();
   }
   
-  /**
-   * Read application properties from the .properties file.
-   */
-  private void readApplicationProperties() {
+  @Override
+  protected void readApplicationProperties() {
     Properties props = new Properties();
     try (InputStream in = getClass().getResourceAsStream("TravelsApplication.properties")) {
         props.load(in);
-        String appVersion = props.getProperty("travels.app.version");
-        VacationsRegistry.version = appVersion;
-        String appName = props.getProperty("travals.app.name");
-        VacationsRegistry.applicationName = appName;
+        
+        VacationsRegistry.version = props.getProperty("travels.app.version");
+        VacationsRegistry.applicationName = props.getProperty("travels.app.name");
     } catch (Exception e) {
       JfxApplication.reportException(null, e);
       System.exit(1);
@@ -166,5 +160,10 @@ public class TravelsService {
     for (DirectoryChangesListener listener : directoryChangesListeners) {
       listener.directoryChange(watchEvent);
     }
+  }
+
+  @Override
+  protected void setDevelopmentMode(boolean developmentMode) {
+    VacationsRegistry.developmentMode = developmentMode;
   }
 }

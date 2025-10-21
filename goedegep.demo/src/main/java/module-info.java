@@ -10,4 +10,5 @@ module goedegep.demo {
   requires goedegep.util;
   requires goedegep.emfsample.model;
   requires goedegep.model.configuration;
+  requires goedegep.myworld.common;
 }

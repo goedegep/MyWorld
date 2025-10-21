@@ -20,6 +20,7 @@ module goedegep.rolodex.app {
   requires javafx.graphics;
   requires org.eclipse.emf.common;
   requires org.eclipse.emf.ecore;
+  requires goedegep.myworld.common;
   requires goedegep.resources;
   requires com.openhtmltopdf;
   requires com.openhtmltopdf.pdfboxout;

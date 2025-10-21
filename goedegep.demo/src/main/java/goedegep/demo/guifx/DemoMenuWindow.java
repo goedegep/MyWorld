@@ -2,6 +2,7 @@ package goedegep.demo.guifx;
 
 import java.util.logging.Logger;
 
+import goedegep.demo.DemoRegistry;
 import goedegep.demo.jfx.editor.CompanyService;
 import goedegep.demo.jfx.eobjecttreeview.guifx.EObjectTreeViewDemo;
 import goedegep.demo.jfx.objectcontrols.guifx.EditorControlsDemo;
@@ -10,6 +11,8 @@ import goedegep.demo.xtree.guifx.XTreeDemo;
 import goedegep.jfx.ComponentFactoryFx;
 import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.JfxStage;
+import goedegep.jfx.MenuUtil;
+import goedegep.resources.ImageSize;
 import javafx.scene.Scene;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
@@ -23,16 +26,15 @@ import javafx.scene.layout.VBox;
 public class DemoMenuWindow extends JfxStage {
   @SuppressWarnings("unused")
   private final static Logger LOGGER = Logger.getLogger(DemoMenuWindow.class.getName());
+  private static final String NEWLINE = System.getProperty("line.separator");
   
   private final static String WINDOW_TITLE = "Demo";
   
-  private CustomizationFx customization;
   private ComponentFactoryFx componentFactory;
   
   public DemoMenuWindow(CustomizationFx customization) {
     super(customization, WINDOW_TITLE);
     
-    this.customization = customization;
     componentFactory = customization.getComponentFactoryFx();
     
     createGUI();
@@ -115,7 +117,32 @@ public class DemoMenuWindow extends JfxStage {
     
     menuBar.getMenus().add(menu);
 
+
+    // Help menu
+    menu = new Menu("Help");
+
+    // Help: About
+    MenuUtil.addMenuItem(menu, "About", _ -> showHelpAboutDialog());
+
+    menuBar.getMenus().add(menu);
     return menuBar;
+  }
+
+
+
+  /**
+   * Show a dialog with information about this application.
+   */
+  private void showHelpAboutDialog() {
+    componentFactory.createApplicationInformationDialog(
+        "About " + DemoRegistry.applicationName,
+        customization.getResources().getApplicationImage(ImageSize.SIZE_3),
+        null,
+        DemoRegistry.shortProductInfo + NEWLINE +
+        "Version: " + DemoRegistry.version + NEWLINE +
+        DemoRegistry.copyrightMessage + NEWLINE +
+        "Author: " + DemoRegistry.author)
+        .showAndWait();
   }
   
 }

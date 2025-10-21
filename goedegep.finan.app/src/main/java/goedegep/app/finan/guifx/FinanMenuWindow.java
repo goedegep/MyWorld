@@ -31,6 +31,7 @@ import javafx.scene.layout.StackPane;
 public class FinanMenuWindow extends JfxStage {
   @SuppressWarnings("unused")
   private static final Logger LOGGER = Logger.getLogger(FinanMenuWindow.class.getName());
+  private static final String NEWLINE = System.getProperty("line.separator");
   private static final String WINDOW_TITLE   = "Finan";
   
   private FinanResourcesFx appResources;
@@ -154,8 +155,31 @@ public class FinanMenuWindow extends JfxStage {
     });
     
     menuBar.getMenus().add(menu);
+
+    // Help menu
+    menu = new Menu("Help");
+
+    // Help: About
+    MenuUtil.addMenuItem(menu, "About", _ -> showHelpAboutDialog());
+    
+    menuBar.getMenus().add(menu);
     
     return menuBar;
+  }
+
+  /**
+   * Show a dialog with information about this application.
+   */
+  private void showHelpAboutDialog() {
+    componentFactory.createApplicationInformationDialog(
+        "About " + FinanRegistry.applicationName,
+        appResources.getApplicationImage(ImageSize.SIZE_3),
+        null, 
+        FinanRegistry.shortProductInfo + NEWLINE +
+        "Version: " + FinanRegistry.version + NEWLINE +
+        FinanRegistry.copyrightMessage + NEWLINE +
+        "Author: " + FinanRegistry.author)
+        .showAndWait();
   }
   
   private void showPropertyDescriptorsEditor() {

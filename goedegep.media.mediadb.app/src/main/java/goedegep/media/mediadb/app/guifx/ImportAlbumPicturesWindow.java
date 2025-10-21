@@ -46,7 +46,7 @@ public class ImportAlbumPicturesWindow extends JfxStage {
     this.album = album;
     componentFactory = customization.getComponentFactoryFx();
     
-    picturesFolderName = MediaRegistry.albumInfoDirectory + "\\" + "Pictures";
+    picturesFolderName = MediaRegistry.musicDataDirectory + "\\" + "Pictures";
 
     createGUI();
   }

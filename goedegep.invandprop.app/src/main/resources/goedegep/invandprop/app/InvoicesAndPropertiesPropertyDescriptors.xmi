@@ -19,13 +19,4 @@
   <propertyDescriptors type="DIRECTORY" name="propertyRelatedFilesFolder" description="Folder with property related files (documents and pictures)"
       displayName="Property related files folder" initialValue="D:\Database\Handleidingen"
       userSettable="true" installInitialValue="true"/>
-  <propertyDescriptors name="shortProductInfo" description="Short product information."
-      displayName="Short product information" initialValue="A database like application to store information about Invoices and Properties."
-      installInitialValue="true"/>
-  <propertyDescriptors name="version" description="Software version information." displayName="Version"
-      initialValue="1.0" installInitialValue="true"/>
-  <propertyDescriptors name="copyrightMessage" description="Copyright information."
-      displayName="Copyright Text" initialValue="Copyright (c) 2001-2021" installInitialValue="true"/>
-  <propertyDescriptors name="author" description="Author of this program." displayName="Author"
-      initialValue="Peter Goedegebure" installInitialValue="true"/>
 </properties:PropertyDescriptorGroup>

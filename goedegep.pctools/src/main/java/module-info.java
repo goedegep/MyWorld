@@ -22,6 +22,7 @@ module goedegep.pctools {
   requires javafx.web;
   requires tim.prune;
   requires goedegep.gpx.app;
+  requires goedegep.myworld.common;
   requires goedegep.resources;
   requires org.commonmark;
   requires com.google.common.jimfs;

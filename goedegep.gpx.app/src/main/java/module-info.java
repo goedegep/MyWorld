@@ -12,6 +12,7 @@ module goedegep.gpx.app {
   requires transitive goedegep.gpx;
   requires goedegep.poi.app;
   requires goedegep.mapview;
+  requires goedegep.myworld.common;
   requires javafx.controls;
   requires goedegep.util;
   requires javafx.base;

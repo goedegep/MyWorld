@@ -29,6 +29,10 @@
       <artifactId>goedegep-jfx</artifactId>
     </dependency>
     <dependency>
+      <groupId>goedegep.myworld</groupId>
+      <artifactId>goedegep-myworld-common</artifactId>
+    </dependency>
+    <dependency>
       <groupId>goedegep.util</groupId>
       <artifactId>goedegep-util</artifactId>
     </dependency>
@@ -85,4 +89,12 @@
       <artifactId>tim.prune.gpsprune</artifactId>
     </dependency>
   </dependencies>
+  <build>
+    <resources>
+      <resource>
+        <directory>src/main/resources</directory>
+        <filtering>true</filtering>
+      </resource>
+    </resources>
+  </build>
 </project>

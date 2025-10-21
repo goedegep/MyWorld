@@ -483,7 +483,7 @@ class AlbumsTableDescriptor extends EObjectTableDescriptor<Album> {
     MyInfoPlayCellFactory myInfoPlayCellFactory = new MyInfoPlayCellFactory(customization, IMAGE_HEIGHT);
     playColumnDescriptor.setCellFactory(myInfoPlayCellFactory);
     
-    ImageListCellFactory imageListCellFactory = new ImageListCellFactory(customization, IMAGE_HEIGHT, MediaRegistry.albumInfoDirectory);
+    ImageListCellFactory imageListCellFactory = new ImageListCellFactory(customization, IMAGE_HEIGHT, MediaRegistry.musicDataDirectory);
     frontImagesColumnDescriptor.setCellFactory(imageListCellFactory);
     insideImagesColumnDescriptor.setCellFactory(imageListCellFactory);
     backImagesColumnDescriptor.setCellFactory(imageListCellFactory);

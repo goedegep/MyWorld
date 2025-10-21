@@ -19,5 +19,6 @@ module goedegep.finan.nota.app {
   requires org.eclipse.emf.common;
   requires org.eclipse.emf.ecore;
   requires org.eclipse.emf.ecore.xmi;
+  requires goedegep.myworld.common;
   requires goedegep.resources;
 }

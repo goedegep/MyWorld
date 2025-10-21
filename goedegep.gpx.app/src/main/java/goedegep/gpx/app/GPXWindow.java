@@ -28,7 +28,10 @@ import goedegep.gpx.model.WptType;
 import goedegep.jfx.ComponentFactoryFx;
 import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.JfxStage;
+import goedegep.jfx.MenuUtil;
 import goedegep.jfx.eobjecttreeview.EObjectTreeView;
+import goedegep.resources.ImageSize;
+import goedegep.util.RunningInEclipse;
 import goedegep.util.douglaspeuckerreducer.DouglasPeuckerReducer;
 import goedegep.util.emf.EMFResource;
 import goedegep.util.objectselector.ObjectSelectionListener;
@@ -55,6 +58,7 @@ import tim.prune.GpsPrune;
 
 public class GPXWindow extends JfxStage {
   private static final Logger LOGGER = Logger.getLogger(GPXWindow.class.getName());
+  private static final String NEWLINE = System.getProperty("line.separator");
   private static final String WINDOW_TITLE = "GPX Editor";
 
   private CustomizationFx customization;
@@ -264,6 +268,15 @@ public class GPXWindow extends JfxStage {
     menu.getItems().add(menuItem);
     
     menuBar.getMenus().add(menu);
+
+    // Help menu
+    menu = new Menu("Help");
+
+    // Help: About
+    MenuUtil.addMenuItem(menu, "About", _ -> showHelpAboutDialog());
+
+    menuBar.getMenus().add(menu);
+
         
 
     return menuBar;
@@ -602,12 +615,12 @@ public class GPXWindow extends JfxStage {
   
   private void reduceTrackPoints() {
     reduceTrackPointsWindow = new ReduceTrackPointsWindow(customization, documentRoot != null ? documentRoot.getGpx() : null);
-    reduceTrackPointsWindow.setOnHidden((e) -> {
+    reduceTrackPointsWindow.setOnHidden((_) -> {
       reduceTrackPointsWindow = null;
       gpxTreeView.removeObjectSelectionListener(gpxTreeViewSelectionListener);
     });
       
-    gpxTreeViewSelectionListener = (source, treeItem) -> {
+    gpxTreeViewSelectionListener = (_, treeItem) -> {
       if (treeItem == null) {
         reduceTrackPointsWindow.objectSelected(null, null);
         return;
@@ -645,6 +658,22 @@ public class GPXWindow extends JfxStage {
   
   public static WGS84Coordinates coordinateExtractor(Object object) {
     return GpxUtil.waypointLatLonToWGS84Coordinates((WptType) object);
+  }
+
+  /**
+   * Show a dialog with information about this application.
+   */
+  private void showHelpAboutDialog() {
+    componentFactory.createApplicationInformationDialog(
+        "About " + GPXRegistry.applicationName,
+        customization.getResources().getApplicationImage(ImageSize.SIZE_3),
+        null, 
+        (RunningInEclipse.runningInEclipse() ? "Development Mode"+ NEWLINE : "") +
+        GPXRegistry.shortProductInfo + NEWLINE +
+        "Version: " + GPXRegistry.version + NEWLINE +
+        GPXRegistry.copyrightMessage + NEWLINE +
+        "Author: " + GPXRegistry.author)
+        .showAndWait();
   }
 
   /**

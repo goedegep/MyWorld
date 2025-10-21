@@ -494,11 +494,11 @@ public class RolodexMenuWindow extends JfxStage {
    */
   private void showHelpAboutDialog() {
     componentFactory.createApplicationInformationDialog(
-        "About the Rolodex application",
+        "About " + RolodexRegistry.applicationName,
         appResources.getApplicationImage(ImageSize.SIZE_3),
         null, 
         RolodexRegistry.shortProductInfo + NEWLINE +
-        "Versie: " + RolodexRegistry.version + NEWLINE +
+        "Version: " + RolodexRegistry.version + NEWLINE +
         RolodexRegistry.copyrightMessage + NEWLINE +
         "Auteur: " + RolodexRegistry.author)
         .showAndWait();

@@ -12,6 +12,9 @@ import org.commonmark.renderer.html.HtmlRenderer;
 import goedegep.jfx.ComponentFactoryFx;
 import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.JfxStage;
+import goedegep.jfx.MenuUtil;
+import goedegep.markdown.app.MarkdownRegistry;
+import goedegep.resources.ImageSize;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Node;
@@ -27,6 +30,7 @@ import javafx.stage.FileChooser;
 
 public class MarkdownViewer extends JfxStage {
   private static final Logger LOGGER = Logger.getLogger(MarkdownViewer.class.getName());
+  private static final String NEWLINE = System.getProperty("line.separator");
   private static final String WINDOW_TITLE = "Markdown Viewer";
   
   private ComponentFactoryFx componentFactory = null;
@@ -83,6 +87,14 @@ public class MarkdownViewer extends JfxStage {
     
     menuBar.getMenus().add(menu);
 
+    // Help menu
+    menu = new Menu("Help");
+
+    // Help: About
+    MenuUtil.addMenuItem(menu, "About", _ -> showHelpAboutDialog());
+
+    menuBar.getMenus().add(menu);
+
     return menuBar;
   }
   
@@ -118,6 +130,21 @@ public class MarkdownViewer extends JfxStage {
     }
     
     webEngine.loadContent(buf.toString());
+  }
+
+  /**
+   * Show a dialog with information about this application.
+   */
+  private void showHelpAboutDialog() {
+    componentFactory.createApplicationInformationDialog(
+        "About " + MarkdownRegistry.applicationName,
+        customization.getResources().getApplicationImage(ImageSize.SIZE_3),
+        null, 
+        MarkdownRegistry.shortProductInfo + NEWLINE +
+        "Version: " + MarkdownRegistry.version + NEWLINE +
+        MarkdownRegistry.copyrightMessage + NEWLINE +
+        "Author: " + MarkdownRegistry.author)
+        .showAndWait();
   }
   
 }

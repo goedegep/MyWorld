@@ -164,7 +164,7 @@ public class DeriveAlbumInfo {
           boolean b = matcher.matches();
           if (b) {
             LOGGER.severe("Matching file: " + fileName);
-            String relativeFileName = FileUtils.getPathRelativeToFolder(MediaRegistry.albumInfoDirectory + "\\", path.toString());
+            String relativeFileName = FileUtils.getPathRelativeToFolder(MediaRegistry.musicDataDirectory + "\\", path.toString());
              album.getImagesFront().add(relativeFileName);
           }
         }

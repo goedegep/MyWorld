@@ -8,14 +8,6 @@
       initialValue="MediaSettings.xmi" installInitialValue="true">
     <fileExtensions>xmi</fileExtensions>
   </propertyDescriptors>
-  <propertyDescriptors name="shortProductInfo" description="Korte productinformatie."
-      displayName="KorteProductInformatie" initialValue="Media database" installInitialValue="true"/>
-  <propertyDescriptors name="version" description="Software versie informatie." displayName="Versie"
-      initialValue="1.0" installInitialValue="true"/>
-  <propertyDescriptors name="copyrightMessage" description="Copyright informatie."
-      displayName="Copyright Tekst" initialValue="Copyright (c) 2001-2024" installInitialValue="true"/>
-  <propertyDescriptors name="author" description="Auteur van dit programma." displayName="Auteur"
-      initialValue="Peter Goedegebure" installInitialValue="true"/>
   <propertyDescriptors xsi:type="properties:FilePropertyDescriptor" type="FILE" name="configurationFile"
       description="Name of the file with configuration information." displayName="Configuration filename"
       initialValue="MediaConfiguration.xmi" installInitialValue="true">
@@ -29,8 +21,6 @@
   <propertyDescriptors type="DIRECTORY" name="musicDataDirectory" description="Directory where pictures of albums and artists are located."
       displayName="Music data directory" initialValue="D:\Database\Muziek" userSettable="true"
       installInitialValue="true"/>
-  <propertyDescriptors type="DIRECTORY" name="albumInfoDirectory" description="Folder with the AlbumInfo files (Artist *.xml)."
-      displayName="Album Info folder" initialValue="D:\Database\Muziek\Albums" installInitialValue="true"/>
   <propertyDescriptors type="DIRECTORY" name="musicDirectory" description="Folder with all music."
       displayName="Music folder" initialValue="D:\Music" installInitialValue="true"/>
   <propertyDescriptors type="DIRECTORY" name="albumImportDirectory" description="Default location for selecting a directory from which album import information is to be derived."

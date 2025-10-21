@@ -336,7 +336,7 @@ public class AlbumDetailsWindow extends JfxStage {
       imageFileNames.addAll(album.getImagesLabel());
 
       for (String imageFileName: imageFileNames) {
-        String imagePathName = MediaRegistry.albumInfoDirectory + "\\" + imageFileName;
+        String imagePathName = MediaRegistry.musicDataDirectory + "\\" + imageFileName;
         LOGGER.info("Going to read image from file: " + imagePathName);
         Image image = new Image("file:" + imagePathName, 0.0, 200.0, true, true);
         ImageView imageView = new ImageView(image);
