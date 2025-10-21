@@ -2744,7 +2744,7 @@ public class VacationsWindow extends JfxStage {
    */
   private void showHelpAboutDialog() {
     componentFactory.createApplicationInformationDialog(
-        "About Vacations",
+        "About " + VacationsRegistry.applicationName,
         appResources.getApplicationImage(ImageSize.SIZE_3),
         null, 
         VacationsRegistry.shortProductInfo + NEWLINE +

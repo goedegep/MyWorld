@@ -1,11 +1,14 @@
 package goedegep.unitconverter.app;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
+import java.util.Properties;
 
 import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.CustomizationsFx;
 import goedegep.jfx.JfxApplication;
+import goedegep.myworld.common.Service;
 import goedegep.properties.app.PropertiesHandler;
 import goedegep.unitconverter.app.guifx.UnitConverterWindow;
 import goedegep.util.RunningInEclipse;
@@ -14,7 +17,7 @@ import javafx.stage.Stage;
 /**
  * This class is the main class of the Unit Converter application.
  */
-public class UnitConverterService {
+public class UnitConverterService extends Service {
   
   private static final String UNIT_CONVERTER_CONFIGURATION_FILE = "UnitConverterConfiguration.xmi";
 
@@ -30,9 +33,11 @@ public class UnitConverterService {
   public static UnitConverterService getInstance() {
     if (instance == null) {
       instance = new UnitConverterService();
+      instance.initialize();
       
       try {
         // Read the properties, which are stored in the registry.
+        String s = UnitConverterRegistry.propertyDescriptorsFile;
         URL url = instance.getClass().getResource(UnitConverterRegistry.propertyDescriptorsFile);
         PropertiesHandler.handleProperties(url, null);
 
@@ -66,4 +71,22 @@ public class UnitConverterService {
     
   }
 
+  @Override
+  protected void setDevelopmentMode(boolean developmentMode) {
+    UnitConverterRegistry.developmentMode = developmentMode;
+  }
+  
+  @Override
+  protected void readApplicationProperties() {
+    Properties props = new Properties();
+    try (InputStream in = getClass().getResourceAsStream("UnitConverterApplication.properties")) {
+        props.load(in);
+        
+        UnitConverterRegistry.version = props.getProperty("unitconverter.app.version");
+        UnitConverterRegistry.applicationName = props.getProperty("unitconverter.app.name");
+    } catch (Exception e) {
+      JfxApplication.reportException(null, e);
+      System.exit(1);
+    }
+  }
 }

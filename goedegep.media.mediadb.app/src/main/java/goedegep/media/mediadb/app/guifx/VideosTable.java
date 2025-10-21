@@ -350,7 +350,7 @@ class VideosTableDescriptor extends EObjectTableDescriptor<Video> {
     VideoPlayCellFactory myInfoPlayCellFactory = new VideoPlayCellFactory(customization, IMAGE_HEIGHT);
     playColumnDescriptor.setCellFactory(myInfoPlayCellFactory);
     
-    VideoImageCellFactory imageListCellFactory = new VideoImageCellFactory(customization, IMAGE_HEIGHT, MediaRegistry.albumInfoDirectory);
+    VideoImageCellFactory imageListCellFactory = new VideoImageCellFactory(customization, IMAGE_HEIGHT, MediaRegistry.musicDataDirectory);
     imageColumnDescriptor.setCellFactory(imageListCellFactory);
     
     setComparator(new VideoComparator());

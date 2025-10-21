@@ -496,7 +496,7 @@ public class AlbumEditor extends ObjectEditorTemplate<Album> {
     mainPane.getChildren().add(discsVBox);
 
     Button newDiscButton = componentFactory.createButton("Add disc", "click to add a disc to the album");
-    newDiscButton.setOnAction((e) -> addNewDiscPanel(null));
+    newDiscButton.setOnAction((_) -> addNewDiscPanel(null));
     mainPane.getChildren().add(newDiscButton);
 
     rootPane.getChildren().add(mainPane);
@@ -510,7 +510,7 @@ public class AlbumEditor extends ObjectEditorTemplate<Album> {
    */
   private void newAlbumBasedOnTrackInFolder(String albumFolderName) {
     
-    String imagesFolder = Paths.get(MediaRegistry.albumInfoDirectory, "Pictures").toString();
+    String imagesFolder = Paths.get(MediaRegistry.musicDataDirectory, "Pictures").toString();
     MediaDb importMediaDb = new DeriveAlbumInfo(MEDIA_DB_FACTORY.createMediaDb()).deriveAlbumDetails(albumFolderName, imagesFolder);
     Album importAlbum = !importMediaDb.getAlbums().isEmpty() ? importMediaDb.getAlbums().get(0) : null;
     if (importAlbum != null) {
@@ -704,7 +704,7 @@ public class AlbumEditor extends ObjectEditorTemplate<Album> {
     List<String> fileNames = new ArrayList<>(imageFileNames);
     imageFileNames.clear();
     for (String fileName: fileNames) {
-      imageFileNames.add(FileUtils.getPathRelativeToFolder(MediaRegistry.albumInfoDirectory, fileName));
+      imageFileNames.add(FileUtils.getPathRelativeToFolder(MediaRegistry.musicDataDirectory, fileName));
     }
   }
   

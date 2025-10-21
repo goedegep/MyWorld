@@ -535,7 +535,7 @@ public class UnitConverterWindow extends JfxStage {
    */
   private void showHelpAboutDialog() {    
     componentFactory.createApplicationInformationDialog(
-        "About " + WINDOW_TITLE,
+        "About " + UnitConverterRegistry.applicationName,
         appResources.getApplicationImage(ImageSize.SIZE_3),
         null, 
         UnitConverterRegistry.shortProductInfo + NEWLINE +

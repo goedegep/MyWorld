@@ -2,11 +2,14 @@ package goedegep.rolodex.app;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
+import java.util.Properties;
 
 import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.CustomizationsFx;
 import goedegep.jfx.JfxApplication;
+import goedegep.myworld.common.Service;
 import goedegep.properties.app.PropertiesHandler;
 import goedegep.rolodex.app.guifx.RolodexMenuWindow;
 import goedegep.rolodex.model.Rolodex;
@@ -21,7 +24,7 @@ import goedegep.util.emf.EMFResource;
  * The class reads the configuration and property descriptor files, creates the Rolodex resource and provides access to the main menu window.
  *
  */
-public class RolodexService {
+public class RolodexService extends Service {
   
   private static final String VACATIONS_CONFIGURATION_FILE = "RolodexConfiguration.xmi";
   
@@ -43,6 +46,7 @@ public class RolodexService {
   public static RolodexService getInstance() {
     if (instance == null) {
       instance = new RolodexService();
+      instance.initialize();
     }
     
     return instance;
@@ -113,5 +117,24 @@ public class RolodexService {
       }
     }
 
+  }
+
+  @Override
+  protected void setDevelopmentMode(boolean developmentMode) {
+    RolodexRegistry.developmentMode = developmentMode;
+  }
+  
+  @Override
+  protected void readApplicationProperties() {
+    Properties props = new Properties();
+    try (InputStream in = getClass().getResourceAsStream("RolodexApplication.properties")) {
+        props.load(in);
+        
+        RolodexRegistry.version = props.getProperty("rolodex.app.version");
+        RolodexRegistry.applicationName = props.getProperty("rolodex.app.name");
+    } catch (Exception e) {
+      JfxApplication.reportException(null, e);
+      System.exit(1);
+    }
   }
 }

@@ -6,6 +6,7 @@ module goedegep.events.app {
   requires transitive goedegep.events.model;
   requires goedegep.gpx.app;
   requires goedegep.model.properties;
+  requires goedegep.myworld.common;
   requires goedegep.properties.app;
   requires goedegep.resources;
   requires goedegep.types.model;

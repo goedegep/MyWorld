@@ -1,7 +1,9 @@
 package goedegep.finan.app;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
+import java.util.Properties;
 
 import goedegep.app.finan.finanapp.FinanMainWindow;
 import goedegep.app.finan.finanapp.FinanResources;
@@ -11,13 +13,14 @@ import goedegep.appgen.swing.Customization;
 import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.CustomizationsFx;
 import goedegep.jfx.JfxApplication;
+import goedegep.myworld.common.Service;
 import goedegep.properties.app.PropertiesHandler;
 import goedegep.properties.app.PropertyFileURLProvider;
 import goedegep.rolodex.app.RolodexService;
 import goedegep.util.RunningInEclipse;
 import javafx.stage.Stage;
 
-public class FinanService implements PropertyFileURLProvider {
+public class FinanService extends Service implements PropertyFileURLProvider {
   
   private static final String FINAN_PROPERTY_DESCRIPTORS_FILE = "FinanPropertyDescriptors.xmi";
   private static final String FINAN_CONFIGURATION_FILE = "FinanConfiguration.xmi";
@@ -29,6 +32,7 @@ public class FinanService implements PropertyFileURLProvider {
   public static FinanService getInstance() {
     if (instance == null) {
       instance = new FinanService();
+      instance.initialize();
     }
     return instance;
   }
@@ -93,6 +97,23 @@ public class FinanService implements PropertyFileURLProvider {
     
     customization = new Customization(new FinanResources());    
   }
-
   
+  @Override
+  protected void readApplicationProperties() {
+    Properties props = new Properties();
+    try (InputStream in = getClass().getResourceAsStream("FinanApplication.properties")) {
+        props.load(in);
+        
+        FinanRegistry.version = props.getProperty("finan.app.version");
+        FinanRegistry.applicationName = props.getProperty("finan.app.name");
+    } catch (Exception e) {
+      JfxApplication.reportException(null, e);
+      System.exit(1);
+    }
+  }
+
+  @Override
+  protected void setDevelopmentMode(boolean developmentMode) {
+    FinanRegistry.developmentMode = developmentMode;
+  }
 }

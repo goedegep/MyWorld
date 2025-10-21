@@ -12,7 +12,6 @@ import goedegep.pctools.filefinder.guifx.FileFinderWindow;
 import goedegep.pctools.filescontrolled.guifx.FilesControlledWindow;
 import goedegep.properties.app.guifx.PropertiesEditor;
 import goedegep.resources.ImageSize;
-import goedegep.util.file.FileUtils;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -176,13 +175,13 @@ public class PCToolsMenuWindow extends JfxStage {
    */
   private void showHelpAboutDialog() {
     componentFactory.createApplicationInformationDialog(
-        "About " + WINDOW_TITLE,
+        "About " + PCToolsRegistry.applicationName,
         appResources.getApplicationImage(ImageSize.SIZE_3),
         null, 
         PCToolsRegistry.shortProductInfo + NEWLINE +
-        "Versie: " + PCToolsRegistry.version + NEWLINE +
+        "Version: " + PCToolsRegistry.version + NEWLINE +
         PCToolsRegistry.copyrightMessage + NEWLINE +
-        "Auteur: " + PCToolsRegistry.author)
+        "Author: " + PCToolsRegistry.author)
         .showAndWait();
   }
 }

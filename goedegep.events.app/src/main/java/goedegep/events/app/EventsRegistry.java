@@ -15,9 +15,14 @@ public class EventsRegistry implements PropertyFileURLProvider {
   private static final String EVENTS_CONFIGURATION_FILE = "EventsConfiguration.xmi";
   
   /**
+   * The name of the application.
+   */
+  public static String applicationName;
+  
+  /**
    * Name of the author of the application.
    */
-  public static String author = null;
+  public static String author = "Peter Goedegebure";
   
   /**
    * Name of the file with Configuration data.
@@ -27,7 +32,7 @@ public class EventsRegistry implements PropertyFileURLProvider {
   /**
    * Copyright message for the application.
    */
-  public static String copyrightMessage = null;  // provided by
+  public static String copyrightMessage = "Copyright (c) 2001-2025";
   
   /**
    * Name of the file with the property descriptors.
@@ -37,12 +42,12 @@ public class EventsRegistry implements PropertyFileURLProvider {
   /**
    * Name of the file with custom properties.
    */
-  public static String customPropertiesFile = null;
+  public static String customPropertiesFile = "VacationsUserPreferences.xmi";
   
   /**
    * Short description of this application.
    */
-  public static String shortProductInfo = null;
+  public static String shortProductInfo = "Information about events, etc.";
   
   /**
    * Current software version.

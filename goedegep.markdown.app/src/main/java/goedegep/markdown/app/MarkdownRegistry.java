@@ -6,6 +6,36 @@ package goedegep.markdown.app;
 public class MarkdownRegistry {
   
   /**
+   * The name of the application.
+   */
+  public static String applicationName;
+  
+  /**
+   * Name of the author of the application.
+   */
+  public static String author = "Peter Goedegebure";
+  
+  /**
+   * Name of the file with Configuration data.
+   */
+  public static String configurationFile = null;
+  
+  /**
+   * Copyright message for the application.
+   */
+  public static String copyrightMessage = "Copyright (c) 2001-2025";
+  
+  /**
+   * Short description of this application.
+   */
+  public static String shortProductInfo = "Markdown Viewer";
+  
+  /**
+   * Current software version.
+   */
+  public static String version = null;
+  
+  /**
    * For extra functionality during development.
    */
   public static boolean developmentMode = false;

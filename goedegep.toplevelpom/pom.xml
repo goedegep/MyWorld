@@ -22,11 +22,51 @@
     
     <!-- Settings for all applications -->
     <copyright>Copyright (c) 2001-2025</copyright>
-    <author.name>goedegep</author.name>  <!-- Is also the vendor name of the applications -->
+    <author.name>Peter Goedegebure</author.name>  <!-- Is also the vendor name of the applications -->
+    
+    <!-- Settings for the Demo application-->
+    <demo.app.name>Demo</demo.app.name>
+    <demo.app.version>0.0.1</demo.app.version>
+    
+    <!-- Settings for the Events application-->
+    <events.app.name>Events</events.app.name>
+    <events.app.version>0.0.1</events.app.version>
+    
+    <!-- Settings for the Finan application-->
+    <finan.app.name>Finan</finan.app.name>
+    <finan.app.version>0.0.1</finan.app.version>
+    
+    <!-- Settings for the GPX Editor application-->
+    <gpx.app.name>GPX Editor</gpx.app.name>
+    <gpx.app.version>0.0.1</gpx.app.version>
+    
+    <!-- Settings for the Invoices and Properties application-->
+    <invandprop.app.name>Invoices and Properties</invandprop.app.name>
+    <invandprop.app.version>0.0.1</invandprop.app.version>
+    
+    <!-- Settings for the Markdown application-->
+    <markdown.app.name>Markdown</markdown.app.name>
+    <markdown.app.version>0.0.1</markdown.app.version>
+    
+    <!-- Settings for the Media application-->
+    <media.app.name>Media</media.app.name>
+    <media.app.version>0.0.1</media.app.version>
+    
+    <!-- Settings for the PC Tools application-->
+    <pctools.app.name>PC Tools</pctools.app.name>
+    <pctools.app.version>0.0.1</pctools.app.version>
+    
+    <!-- Settings for the Rolodex application-->
+    <rolodex.app.name>Rolodex</rolodex.app.name>
+    <rolodex.app.version>0.0.1</rolodex.app.version>
     
     <!-- Settings for the Travels application-->
     <travels.app.name>Travels</travels.app.name>
     <travels.app.version>0.0.4</travels.app.version>
+    
+    <!-- Settings for the Unit Converter application-->
+    <unitconverter.app.name>Unit Converter</unitconverter.app.name>
+    <unitconverter.app.version>0.0.1</unitconverter.app.version>
 	
   </properties>
   <groupId>goedegep.toplevelpom</groupId>
@@ -306,6 +346,11 @@
       <dependency>
         <groupId>goedegep.myworld</groupId>
         <artifactId>goedegep-myworld</artifactId>
+        <version>${goedegep.myworld.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>goedegep.myworld</groupId>
+        <artifactId>goedegep-myworld-common</artifactId>
         <version>${goedegep.myworld.version}</version>
       </dependency>
       <dependency>
@@ -684,6 +729,7 @@
     
     <!-- MyWorld -->
     <module>../tim.prune</module>
+    <module>../goedegep.myworld.common</module>
     <module>../goedegep.poi.app</module>
     <module>../goedegep.markdown.app</module>
     <module>../goedegep.rolodex.model</module>

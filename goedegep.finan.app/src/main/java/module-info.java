@@ -35,7 +35,6 @@ module goedegep.app.finan {
   exports goedegep.finan.effrek;
   exports goedegep.app.finan.overzichten;
   exports goedegep.finan.mortgage.app.guifx;
-  exports goedegep.finan;
   exports goedegep.finan.investmentinsurances.app.guifx;
     
   requires transitive goedegep.appgen;
@@ -65,5 +64,6 @@ module goedegep.app.finan {
   requires transitive goedegep.finan.investmentinsurance.model;
   requires transitive goedegep.finan.lynx2finan.model;
   requires transitive goedegep.finan.jobappointment.model;
+  requires goedegep.myworld.common;
   requires goedegep.resources;
 }

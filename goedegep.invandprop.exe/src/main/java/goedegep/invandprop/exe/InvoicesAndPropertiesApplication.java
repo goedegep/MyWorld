@@ -3,7 +3,7 @@ package goedegep.invandprop.exe;
 import java.io.File;
 import java.util.logging.Level;
 
-import goedegep.invandprop.app.guifx.InvoicesAndPropertiesLauncher;
+import goedegep.invandprop.app.InvoicesAndPropertiesService;
 import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.DefaultCustomizationFx;
 import goedegep.jfx.JfxApplication;
@@ -54,7 +54,7 @@ public class InvoicesAndPropertiesApplication extends JfxApplication {
     javaFxApplicationThread.setUncaughtExceptionHandler(uncaughtExceptionHandler);
     
     try {
-      InvoicesAndPropertiesLauncher.launchInvoicesAndPropertiesApplication();
+      InvoicesAndPropertiesService.getInstance().showInvoicesAndPropertiesWindow();
     } catch (Exception ex) {
       reportException(customization, ex);
     }

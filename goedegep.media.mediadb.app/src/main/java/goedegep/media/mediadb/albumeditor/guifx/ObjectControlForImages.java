@@ -128,7 +128,7 @@ public class ObjectControlForImages extends ObjectControlTemplate<List<String>> 
    */
   private void addImageControl(ObjectControlImageFileWithDelete objectControlImageFileWithDelete, String imageFileName) {
     LOGGER.info("=>");
-    objectControlImageFileWithDelete.setObject(new File(MediaRegistry.albumInfoDirectory + File.separator + imageFileName));
+    objectControlImageFileWithDelete.setObject(new File(MediaRegistry.musicDataDirectory + File.separator + imageFileName));
     
     objectControlsGroup.addObjectControls(objectControlImageFileWithDelete);
     
@@ -180,7 +180,7 @@ public class ObjectControlForImages extends ObjectControlTemplate<List<String>> 
       ObjectControlStatus objectControl = iterator.next();
       if (objectControl instanceof ObjectControlImageFile objectControlImageFile) {
         String fileName = objectControlImageFile.getValue().getAbsolutePath();
-        fileName = FileUtils.getPathRelativeToFolder(MediaRegistry.albumInfoDirectory, fileName);
+        fileName = FileUtils.getPathRelativeToFolder(MediaRegistry.musicDataDirectory, fileName);
         newValue.add(fileName);
       }
     }
@@ -239,8 +239,8 @@ class ObjectControlImageFileWithDelete extends ObjectControlImageFile {
     super(customization, false);
     LOGGER.info("=>");
 
-    if (MediaRegistry.albumInfoDirectory != null) {
-      setInitialDirectory(new File(MediaRegistry.albumInfoDirectory + File.separator + "Pictures"));
+    if (MediaRegistry.musicDataDirectory != null) {
+      setInitialDirectory(new File(MediaRegistry.musicDataDirectory + File.separator + "Pictures"));
     }
     
     StackPane stackPane = getControl();

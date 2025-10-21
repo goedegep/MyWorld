@@ -2,10 +2,24 @@ package goedegep.invandprop.app;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+import java.util.Optional;
+import java.util.Properties;
+import java.util.logging.Logger;
 
+import goedegep.invandprop.app.guifx.InvoicesAndPropertiesWindow;
+import goedegep.invandprop.model.InvAndPropFactory;
+import goedegep.invandprop.model.InvAndPropPackage;
 import goedegep.invandprop.model.InvoiceAndProperty;
 import goedegep.invandprop.model.InvoiceAndPropertyItem;
 import goedegep.invandprop.model.InvoicesAndProperties;
+import goedegep.jfx.CustomizationFx;
+import goedegep.jfx.CustomizationsFx;
+import goedegep.jfx.JfxApplication;
+import goedegep.myworld.common.Service;
+import goedegep.properties.app.PropertiesHandler;
+import goedegep.properties.app.guifx.PropertiesEditor;
 import goedegep.types.model.FileReference;
 import goedegep.util.Result;
 import goedegep.util.Result.ResultType;
@@ -13,19 +27,79 @@ import goedegep.util.RunningInEclipse;
 import goedegep.util.datetime.FlexDate;
 import goedegep.util.datetime.FlexDateFormat;
 import goedegep.util.emf.EMFResource;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 
-public class InvoicesAndPropertiesService {
+public class InvoicesAndPropertiesService extends Service {
+  private static final Logger LOGGER = Logger.getLogger(InvoicesAndPropertiesService.class.getName());
+  private static final String NEWLINE = System.getProperty("line.separator");
+  private static final String INVOICES_AND_PROPERTIES_CONFIGURATION_FILE = "InvoicesAndPropertiesConfiguration.xmi";
   private static final FlexDateFormat FDF = new FlexDateFormat();
   
+  /**
+   * The singleton instance of the InvoicesAndPropertiesService.
+   */
+  private static InvoicesAndPropertiesService instance;
   
+  /**
+   * The resource containing the Invoices and Properties information.
+   */
   private EMFResource<InvoicesAndProperties> invoicesAndPropertiesResource;
+  
+  /**
+   * The Invoices and Properties information.
+   */
   private InvoicesAndProperties invoicesAndProperties;
+  
+  private static CustomizationFx customization;
+  
 
-  public InvoicesAndPropertiesService(EMFResource<InvoicesAndProperties> invoicesAndPropertiesResource) {
+  /**
+   * Get the singleton instance of the InvoicesAndPropertiesService.
+   * 
+   * @return the singleton instance of the InvoicesAndPropertiesService.
+   */
+  public static InvoicesAndPropertiesService getInstance() {
+    if (instance == null) {
+      instance = new InvoicesAndPropertiesService();
+      instance.initialize();
+    }
+    return instance;
+  }
+  
+  public void showInvoicesAndPropertiesWindow() {
+    InvoicesAndPropertiesWindow invoicesAndPropertiesWindow = new InvoicesAndPropertiesWindow(customization, this);
+    invoicesAndPropertiesWindow.show();
+  }
+
+  private InvoicesAndPropertiesService() {
     
     // If we're running within Eclipse, we set development mode to true. The application can use this information to add functionality which is for development only.
     if (RunningInEclipse.runningInEclipse()) {
       InvoicesAndPropertiesRegistry.developmentMode = true;
+    }
+    try {
+      // Read the properties, which are stored in the registry.
+      URL url = getClass().getResource(InvoicesAndPropertiesRegistry.propertyDescriptorsFile);
+      PropertiesHandler.handleProperties(url, null);
+
+      // Read the customization info.
+      url = getClass().getResource(INVOICES_AND_PROPERTIES_CONFIGURATION_FILE);
+      customization = CustomizationsFx.readCustomization(url);
+    } catch (IOException e) {
+      JfxApplication.reportException(null, e);
+    }
+    
+    
+    if (!checkRegistry(customization)) {
+      return;
+    }
+
+    checkAndRepairDataModel();
+    
+    EMFResource<InvoicesAndProperties> invoicesAndPropertiesResource = getInvoicesAndPropertiesResource(customization);
+    if (invoicesAndPropertiesResource == null) {
+      return;
     }
     
     this.invoicesAndPropertiesResource = invoicesAndPropertiesResource;
@@ -188,5 +262,124 @@ public class InvoicesAndPropertiesService {
     }
     
     return buf.toString();
+  }
+
+  /**
+   * Try to get the Invoices and Properties resource.
+   * 
+   * @return true if the resource could be opened, false otherwise.
+   */
+  private static EMFResource<InvoicesAndProperties> getInvoicesAndPropertiesResource(CustomizationFx customization) {
+    boolean returnValue = false;
+
+    EMFResource<InvoicesAndProperties> invoicesAndPropertiesResource = new EMFResource<InvoicesAndProperties>(InvAndPropPackage.eINSTANCE, () -> InvAndPropFactory.eINSTANCE.createInvoicesAndProperties(), ".xmi", true);
+
+    try {
+      invoicesAndPropertiesResource.load(InvoicesAndPropertiesRegistry.invoicesAndPropertiesFile);
+      returnValue = true;
+    } catch (IOException e) {
+      LOGGER.severe("File not found: " + e.getMessage());
+      Alert alert = customization.getComponentFactoryFx().createYesNoConfirmationDialog(
+          null,
+          "The file with invoices and properties (" + InvoicesAndPropertiesRegistry.invoicesAndPropertiesFile + ") doesn't exist yet.",
+          "Do you want to create this file now?" + NEWLINE +
+          "If you choose \"No\" the InvoicesAndProperties application will not be started.");
+      Optional<ButtonType> response = alert.showAndWait();
+      if (response.isPresent()  &&  response.get() == ButtonType.YES) {
+        LOGGER.severe("yes, create file");
+        invoicesAndPropertiesResource.newEObject();
+        try {
+          invoicesAndPropertiesResource.save(InvoicesAndPropertiesRegistry.invoicesAndPropertiesFile);
+          returnValue = true;
+        } catch (IOException e1) {
+          e1.printStackTrace();
+        }
+      } else {
+        LOGGER.severe("no, don't create file");
+      }
+    }
+
+    return returnValue ? invoicesAndPropertiesResource : null;
+  }
+
+  private static boolean checkRegistry(CustomizationFx customization) {
+    
+    if (InvoicesAndPropertiesRegistry.invoicesAndPropertiesFile == null) {
+      Alert alert = customization.getComponentFactoryFx().createErrorDialog(
+          "There's no filename configured for the file with invoices and properties",
+          "Configure the filename (e.g. via the 'Edit User Settings' button below) and restart the application." +
+              NEWLINE +
+              "A restart is needed, because the settings are only read at startup.");
+      
+      ButtonType editorButtonType = new ButtonType("Edit User Settings");
+      alert.getButtonTypes().add(editorButtonType);
+      
+      alert.showAndWait().ifPresent(response -> {
+        if (response == editorButtonType) {
+          showPropertiesEditor(customization);
+        }
+      });
+      
+      return false;
+    }
+    
+    return true;
+  }
+
+  /**
+   * Show the User Properties editor.
+   */
+  private static void showPropertiesEditor(CustomizationFx customization) {
+    new PropertiesEditor("Invoices and Properties properties", customization, InvoicesAndPropertiesRegistry.propertyDescriptorsResource, InvoicesAndPropertiesRegistry.customPropertiesFile);
+  }
+  
+  private static void checkAndRepairDataModel() {
+//    InvoicesAndProperties invoicesAndProperties = invoicesAndPropertiesService.getInvoicesAndPropertiesResource().getEObject();
+//    
+//    Invoices invoices = invoicesAndProperties.getInvoices();
+//    for (Invoice invoice: invoices.getInvoices()) {
+//      checkAndRepairInvoice(invoice);
+//    }
+  }
+
+//  private static void checkAndRepairInvoice(Invoice invoice) {
+//    // descriptionFromProperty may only be set if: there is a related purchase AND the description of the invoice is not set.
+//    if (invoice.isDescriptionFromProperty()) {
+//      if (invoice.getPurchase() == null) {
+//        LOGGER.severe("Description from property is set, but there is no related purchase: " + invoice);
+//      }
+//    }
+//    
+//    if (invoice.isDescriptionFromProperty()) {
+//      if (invoice.getDescription() != null) {
+//        Property property = invoice.getPurchase();
+//        String descriptionFromProperty = getDescriptionFromProperty(property);
+//        if (!invoice.getDescription().equals(descriptionFromProperty)) {
+//          LOGGER.severe("Description from property is set, but differs: '" + invoice.getDescription() + "' , generated: '" + descriptionFromProperty + "'");
+////          invoice.setDescription(descriptionFromProperty);
+//        }
+//      }
+//    }
+//    
+//  }
+  
+
+  @Override
+  protected void setDevelopmentMode(boolean developmentMode) {
+   InvoicesAndPropertiesRegistry.developmentMode = developmentMode;
+  }
+  
+  @Override
+  protected void readApplicationProperties() {
+    Properties props = new Properties();
+    try (InputStream in = getClass().getResourceAsStream("InvoicesAndPropertiesApplication.properties")) {
+        props.load(in);
+        
+        InvoicesAndPropertiesRegistry.version = props.getProperty("invandprop.app.version");
+        InvoicesAndPropertiesRegistry.applicationName = props.getProperty("invandprop.app.name");
+    } catch (Exception e) {
+      JfxApplication.reportException(null, e);
+      System.exit(1);
+    }
   }
 }

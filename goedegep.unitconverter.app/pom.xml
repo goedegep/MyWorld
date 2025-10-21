@@ -17,6 +17,10 @@
       <artifactId>goedegep-jfx</artifactId>
     </dependency>
     <dependency>
+      <groupId>goedegep.myworld</groupId>
+      <artifactId>goedegep-myworld-common</artifactId>
+    </dependency>
+    <dependency>
       <groupId>goedegep.properties</groupId>
       <artifactId>goedegep-properties-app</artifactId>
     </dependency>
@@ -63,5 +67,11 @@
         </configuration>
       </plugin>
     </plugins>
+    <resources>
+      <resource>
+        <directory>src/main/resources</directory>
+        <filtering>true</filtering>
+      </resource>
+    </resources>
   </build>
 </project>

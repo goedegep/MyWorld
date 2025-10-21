@@ -38,28 +38,4 @@
       installInitialValue="true">
     <fileExtensions>xmi</fileExtensions>
   </propertyDescriptors>
-  <propertyDescriptors
-      name="shortProductInfo"
-      description="Short product information."
-      displayName="Short product information"
-      initialValue="Rolodex - Addresses, phonenumbers and phone address books."
-      installInitialValue="true"/>
-  <propertyDescriptors
-      name="version"
-      description="Software version information."
-      displayName="Version"
-      initialValue="1.0"
-      installInitialValue="true"/>
-  <propertyDescriptors
-      name="copyrightMessage"
-      description="Copyright information."
-      displayName="Copyright Text"
-      initialValue="Copyright (c) 2001-2021"
-      installInitialValue="true"/>
-  <propertyDescriptors
-      name="author"
-      description="Author of this program."
-      displayName="Author"
-      initialValue="Peter Goedegebure"
-      installInitialValue="true"/>
 </properties:PropertyDescriptorGroup>

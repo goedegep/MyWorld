@@ -18,6 +18,11 @@ public class FinanRegistry {
   private static final Logger         LOGGER = Logger.getLogger(FinanRegistry.class.getName());
   
   /**
+   * The name of the application.
+   */
+  public static String applicationName;
+  
+  /**
    * Name of the file with a job appointment.
    */
   public static String jobAppointmentFile = null;
@@ -25,7 +30,7 @@ public class FinanRegistry {
   /**
    * Name of the author of the application.
    */
-  public static String author = null;
+  public static String author = "Peter Goedegebure";
 
   /**
    * Name of the file with all beleggingsverzekeringen.
@@ -55,7 +60,7 @@ public class FinanRegistry {
   /**
    * Copyright message for the application.
    */
-  public static String copyrightMessage = null;
+  public static String copyrightMessage = "Copyright (c) 2001-2025";
   
   /**
    * Name of the file with the property descriptors.
@@ -145,7 +150,7 @@ public class FinanRegistry {
   /**
    * Short description of this application.
    */
-  public static String shortProductInfo = null;
+  public static String shortProductInfo = "Financial program";
   
   /**
    * File with all financial transactions.

@@ -15,6 +15,7 @@ import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.apache.commons.cli.UnrecognizedOptionException;
 
+import goedegep.gpx.app.GPXService;
 import goedegep.gpx.app.GPXWindow;
 import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.CustomizationsFx;
@@ -116,40 +117,34 @@ public class GPXApplication extends JfxApplication {
     
     LOGGER.severe("optionsOK");
     
-    // DevelopmentMode
-    // In development mode extra items are added to menu's.
-    // For now DevelopmentMode is active when 'Running in eclipse'.
-    if (RunningInEclipse.runningInEclipse()) {
-      PCToolsRegistry.developmentMode = true;  // FIXME TODO decouple GPX from PCTools
-    }
     
     try {
       // Handle properties
-      java.net.URL url = new PCToolsRegistry().getPropertyFileURL();
-      LOGGER.severe("url = " + (url != null ? url.toString() : "<null>"));
-      PropertiesHandler.handleProperties(url, null);
-      
-      LOGGER.severe("Properties handled");
+//      java.net.URL url = new PCToolsRegistry().getPropertyFileURL();
+//      LOGGER.severe("url = " + (url != null ? url.toString() : "<null>"));
+//      PropertiesHandler.handleProperties(url, null);
+//      
+//      LOGGER.severe("Properties handled");
 
-      // Read the customization info.
-      CustomizationsFx.addCustomizations(new PCToolsRegistry().getCustomizationFileURL());
+//      // Read the customization info.
+//      CustomizationsFx.addCustomizations(new PCToolsRegistry().getCustomizationFileURL());
       
       LOGGER.severe("Customization added");
 
-      CustomizationFx customization = CustomizationsFx.getCustomization(MyWorldAppModule.PCTOOLS.name());
+//      CustomizationFx customization = CustomizationsFx.getCustomization(MyWorldAppModule.PCTOOLS.name());
 
       Logger.getGlobal().severe("Hello World");
 
       Thread.UncaughtExceptionHandler uncaughtExceptionHandler = new Thread.UncaughtExceptionHandler() {
         @Override
         public void uncaughtException(Thread thread, Throwable ex) {
-          reportException(customization, (Exception) ex);
+          reportException(null, (Exception) ex);
         }
       };
       Thread javaFxApplicationThread = ThreadUtil.getThread("JavaFX Application Thread");
       javaFxApplicationThread.setUncaughtExceptionHandler(uncaughtExceptionHandler);
 
-      new GPXWindow(customization, fileToOpen);
+      GPXService.getInstance().showGPXWindow(fileToOpen);
     } catch (Exception ex) {
       reportException(DefaultCustomizationFx.getInstance(), ex);
     }
