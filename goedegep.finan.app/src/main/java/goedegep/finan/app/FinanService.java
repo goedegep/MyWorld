@@ -7,28 +7,38 @@ import java.util.Properties;
 
 import goedegep.app.finan.finanapp.FinanMainWindow;
 import goedegep.app.finan.finanapp.FinanResources;
+import goedegep.app.finan.finanapp.guifx.FinanResourcesFx;
 import goedegep.app.finan.guifx.FinanMenuWindow;
 import goedegep.app.finan.registry.FinanRegistry;
 import goedegep.appgen.swing.Customization;
+import goedegep.configuration.model.Look;
+import goedegep.jfx.AppResourcesFx;
 import goedegep.jfx.CustomizationFx;
-import goedegep.jfx.CustomizationsFx;
 import goedegep.jfx.JfxApplication;
 import goedegep.myworld.common.Service;
 import goedegep.properties.app.PropertiesHandler;
-import goedegep.properties.app.PropertyFileURLProvider;
 import goedegep.rolodex.app.RolodexService;
 import goedegep.util.RunningInEclipse;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
-public class FinanService extends Service implements PropertyFileURLProvider {
-  
-  private static final String FINAN_PROPERTY_DESCRIPTORS_FILE = "FinanPropertyDescriptors.xmi";
-  private static final String FINAN_CONFIGURATION_FILE = "FinanConfiguration.xmi";
+public class FinanService extends Service {
 
-  private Customization customization;
-  private CustomizationFx customizationFx;
+  /**
+   * The 'old' Swing GUI customization.
+   */
+  private Customization swingCustomization;
+  
+  /**
+   * The singleton instance of the FinanService.
+   */
   private static FinanService instance = null;
   
+  /**
+   * Get the singleton instance of the FinanService.
+   * 
+   * @return the singleton instance of FinanService.
+   */
   public static FinanService getInstance() {
     if (instance == null) {
       instance = new FinanService();
@@ -37,37 +47,28 @@ public class FinanService extends Service implements PropertyFileURLProvider {
     return instance;
   }
   
+  /**
+   * Show the Finan menu window.
+   */
   public void showFinanMenuWindow() {
     Stage stage = new FinanMenuWindow();
     stage.centerOnScreen();
     stage.show();
   }
   
+  /**
+   * Show the Finan main window.
+   */
   public void showFinanMainWindow() {
-    new FinanMainWindow(customization, false, false, RolodexService.getInstance().getRolodex());
+    new FinanMainWindow(swingCustomization, false, false, RolodexService.getInstance().getRolodex());
   }
   
-
-  @Override
-  public URL getPropertyFileURL() {
-    URL url = getClass().getResource(FINAN_PROPERTY_DESCRIPTORS_FILE);
-    
-    return url;
-  }
-  
-  @Override
-  public URL getCustomizationFileURL() {
-    URL url = getClass().getResource(FINAN_CONFIGURATION_FILE);
-    
-    return url;
-  }
-
   public CustomizationFx getCustomizationFx() {
-    return customizationFx;
+    return customization;
   }
 
   public Customization getCustomization() {
-    return customization;
+    return swingCustomization;
   }
   
   
@@ -88,14 +89,11 @@ public class FinanService extends Service implements PropertyFileURLProvider {
       URL url = getClass().getResource(FinanRegistry.propertyDescriptorsFile);
       PropertiesHandler.handleProperties(url, null);
 
-      // Read the customization info.
-      url = getClass().getResource(FINAN_CONFIGURATION_FILE);
-      customizationFx = CustomizationsFx.readCustomization(url);
     } catch (IOException e) {
       JfxApplication.reportException(null, e);
     }
     
-    customization = new Customization(new FinanResources());    
+    swingCustomization = new Customization(new FinanResources());    
   }
   
   @Override
@@ -115,5 +113,21 @@ public class FinanService extends Service implements PropertyFileURLProvider {
   @Override
   protected void setDevelopmentMode(boolean developmentMode) {
     FinanRegistry.developmentMode = developmentMode;
+  }
+  
+  @Override
+  protected void fillLook(Look look) {
+    look.setBackgroundColor(Color.rgb(255,255,100));
+    look.setButtonBackgroundColor(Color.rgb(100,100,0));
+    look.setPanelBackgroundColor(Color.rgb(255,255,100));
+    look.setListBackgroundColor(Color.rgb(220,220,100));
+    look.setLabelBackgroundColor(Color.rgb(255,255,100));
+    look.setBoxBackgroundColor(Color.rgb(220,220,100));
+    look.setTextFieldBackgroundColor(Color.rgb(150,150,50));
+  }
+  
+  @Override
+  protected AppResourcesFx getAppResourcesFxClass() {
+    return new FinanResourcesFx();
   }
 }

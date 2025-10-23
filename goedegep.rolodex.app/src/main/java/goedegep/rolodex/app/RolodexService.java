@@ -6,17 +6,19 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.Properties;
 
-import goedegep.jfx.CustomizationFx;
-import goedegep.jfx.CustomizationsFx;
+import goedegep.configuration.model.Look;
+import goedegep.jfx.AppResourcesFx;
 import goedegep.jfx.JfxApplication;
 import goedegep.myworld.common.Service;
 import goedegep.properties.app.PropertiesHandler;
+import goedegep.rolodex.app.guifx.AdminResourcesFx;
 import goedegep.rolodex.app.guifx.RolodexMenuWindow;
 import goedegep.rolodex.model.Rolodex;
 import goedegep.rolodex.model.RolodexFactory;
 import goedegep.rolodex.model.RolodexPackage;
 import goedegep.util.RunningInEclipse;
 import goedegep.util.emf.EMFResource;
+import javafx.scene.paint.Color;
 
 /**
  * The RolodexService class is a singleton which provides access to the Rolodex application functionality.
@@ -26,17 +28,10 @@ import goedegep.util.emf.EMFResource;
  */
 public class RolodexService extends Service {
   
-  private static final String VACATIONS_CONFIGURATION_FILE = "RolodexConfiguration.xmi";
-  
   /**
    * The singleton instance of the RolodexService class.
    */
   private static RolodexService instance = null;
-  
-  /**
-   * The GUI customization.
-   */
-  private static CustomizationFx customization; 
 
   /**
    * Get the singleton instance of the RolodexService class.
@@ -84,9 +79,6 @@ public class RolodexService extends Service {
       URL url = getClass().getResource(RolodexRegistry.propertyDescriptorsFile);
       PropertiesHandler.handleProperties(url, null);
 
-      // Read the customization info.
-      url = getClass().getResource(VACATIONS_CONFIGURATION_FILE);
-      customization = CustomizationsFx.readCustomization(url);
     } catch (IOException e) {
       JfxApplication.reportException(null, e);
     }
@@ -136,5 +128,21 @@ public class RolodexService extends Service {
       JfxApplication.reportException(null, e);
       System.exit(1);
     }
+  }
+  
+  @Override
+  protected void fillLook(Look look) {
+    look.setBackgroundColor(Color.rgb(238,238,238));
+    look.setButtonBackgroundColor(Color.rgb(238,238,238));
+    look.setPanelBackgroundColor(Color.rgb(238,238,238));
+    look.setListBackgroundColor(Color.rgb(238,238,238));
+    look.setLabelBackgroundColor(Color.rgb(238,238,238));
+    look.setBoxBackgroundColor(Color.rgb(238,238,238));
+    look.setTextFieldBackgroundColor(Color.rgb(255,255,255));
+  }
+  
+  @Override
+  protected AppResourcesFx getAppResourcesFxClass() {
+    return new AdminResourcesFx();
   }
 }

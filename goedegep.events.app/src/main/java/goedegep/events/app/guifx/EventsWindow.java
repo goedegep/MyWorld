@@ -280,7 +280,7 @@ public class EventsWindow extends JfxStage {
         EventsRegistry.shortProductInfo + NEWLINE +
         "Version: " + EventsRegistry.version + NEWLINE +
         EventsRegistry.copyrightMessage + NEWLINE +
-        "Author: " + EventsRegistry.author)
+        "Author: " + EventsRegistry.AUTHOR)
         .showAndWait();
   }
 

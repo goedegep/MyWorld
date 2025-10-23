@@ -1,15 +1,9 @@
 package goedegep.unitconverter.app;
 
-import java.net.URL;
-
-import goedegep.properties.app.PropertyFileURLProvider;
 import goedegep.properties.model.PropertyDescriptorGroup;
 import goedegep.util.emf.EMFResource;
 
-public class UnitConverterRegistry implements PropertyFileURLProvider {
-  
-  private static final String UNIT_CONVERTER_PROPERTY_DESCRIPTORS_FILE = "UnitConverterPropertyDescriptors.xmi";
-  private static final String UNIT_CONVERTER_CONFIGURATION_FILE = "UnitConverterConfiguration.xmi";
+public class UnitConverterRegistry {
   
   /**
    * The name of the application.
@@ -68,18 +62,4 @@ public class UnitConverterRegistry implements PropertyFileURLProvider {
    */
   public static EMFResource<PropertyDescriptorGroup> propertyDescriptorsResource = null;
 
-
-  @Override
-  public URL getPropertyFileURL() {
-    URL url = getClass().getResource(UNIT_CONVERTER_PROPERTY_DESCRIPTORS_FILE);
-    
-    return url;
-  }
-
-  @Override
-  public URL getCustomizationFileURL() {
-    URL url = getClass().getResource(UNIT_CONVERTER_CONFIGURATION_FILE);
-    
-    return url;
-  }
 }

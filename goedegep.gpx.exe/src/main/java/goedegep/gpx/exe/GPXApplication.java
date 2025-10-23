@@ -4,7 +4,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
@@ -16,56 +15,81 @@ import org.apache.commons.cli.ParseException;
 import org.apache.commons.cli.UnrecognizedOptionException;
 
 import goedegep.gpx.app.GPXService;
-import goedegep.gpx.app.GPXWindow;
-import goedegep.jfx.CustomizationFx;
-import goedegep.jfx.CustomizationsFx;
-import goedegep.jfx.DefaultCustomizationFx;
 import goedegep.jfx.JfxApplication;
-import goedegep.myworld.app.MyWorldAppModule;
-import goedegep.pctools.app.logic.PCToolsRegistry;
-import goedegep.properties.app.PropertiesHandler;
 import goedegep.util.RunningInEclipse;
 import goedegep.util.thread.ThreadUtil;
 import javafx.stage.Stage;
 
-
+/**
+ * This class is the main entry point for the GPX Editor JavaFX application.
+ */
 public class GPXApplication extends JfxApplication {
-  private static final Logger LOGGER = Logger.getLogger(GPXApplication.class.getName());
-  
   private static final String PROGRAM_NAME = "GPX Editor";
   private static final String LOG_SUBFOLDER = "MyWorld";
   private static final String PROGRAM_DESCRIPTION =
-      PROGRAM_NAME + "Is an application for viewing and editing GPX files.";
+      PROGRAM_NAME + " is an application for viewing and editing GPX files.";
   
   private static String[] args;
-      
-  public static void main(String[] args) {
-    GPXApplication.args = args;
-    launch();
-  }
 
 
   /**
    * Constructor
    * <p>
    * Called during the JavaFx launch sequence.<br/>
-   * The constructor sets up the logging.
    */
   public GPXApplication() {
+  }
+
+  /**  
+   * Main method to start the GPX Editor JavaFX application.
+   * 
+   * @param args command line arguments.
+   */
+  public static void main(String[] args) {
+    GPXApplication.args = args;
+    launch();
+  }
+
+  @Override
+  public void start(Stage primaryStage) throws Exception {
+    
+    // Setup logging. Only log to a file when not running in Eclipse.
     String logFileBaseName = null;
     if (!RunningInEclipse.runningInEclipse()) {
       logFileBaseName = System.getProperty("user.home") + File.separator + LOG_SUBFOLDER + File.separator + PROGRAM_NAME + "_logfile";
     }
     logSetup(Level.SEVERE, logFileBaseName);
+    
+    String fileToOpen = handleCommandLineArguments();
+    
+    
+    try {
+      Thread.UncaughtExceptionHandler uncaughtExceptionHandler = new Thread.UncaughtExceptionHandler() {
+        @Override
+        public void uncaughtException(Thread thread, Throwable ex) {
+          reportException(null, (Exception) ex);
+        }
+      };
+      Thread javaFxApplicationThread = ThreadUtil.getThread("JavaFX Application Thread");
+      javaFxApplicationThread.setUncaughtExceptionHandler(uncaughtExceptionHandler);
+
+      GPXService.getInstance().showGPXWindow(fileToOpen);
+    } catch (Exception ex) {
+      reportException(null, ex);
+    }
+    
   }
   
-  @Override
-  public void start(Stage primaryStage) throws Exception {
-    
-    LOGGER.severe("=>");
-    
+  /**
+   * Handle command line arguments.
+   * <p>
+   * Only a single optional filename argument is supported.
+   * 
+   * @return the filename to open, or null when no filename was specified.
+   */
+  private String handleCommandLineArguments() {
     // Define command line arguments.
-    Options options = new Options();    
+    Options options = new Options();  // just empty options  
     boolean optionsOK = true;
     String fileToOpen = null;
     List<String> errorTexts = new ArrayList<>();
@@ -108,47 +132,11 @@ public class GPXApplication extends JfxApplication {
       }
       optionsOK = false;
     }
-    
-    LOGGER.severe("Command line arguments handled");
 
     if (!optionsOK) {
       showUsageInfoDialogAndExit(PROGRAM_NAME, options, PROGRAM_DESCRIPTION, errorTexts, args);
     }
     
-    LOGGER.severe("optionsOK");
-    
-    
-    try {
-      // Handle properties
-//      java.net.URL url = new PCToolsRegistry().getPropertyFileURL();
-//      LOGGER.severe("url = " + (url != null ? url.toString() : "<null>"));
-//      PropertiesHandler.handleProperties(url, null);
-//      
-//      LOGGER.severe("Properties handled");
-
-//      // Read the customization info.
-//      CustomizationsFx.addCustomizations(new PCToolsRegistry().getCustomizationFileURL());
-      
-      LOGGER.severe("Customization added");
-
-//      CustomizationFx customization = CustomizationsFx.getCustomization(MyWorldAppModule.PCTOOLS.name());
-
-      Logger.getGlobal().severe("Hello World");
-
-      Thread.UncaughtExceptionHandler uncaughtExceptionHandler = new Thread.UncaughtExceptionHandler() {
-        @Override
-        public void uncaughtException(Thread thread, Throwable ex) {
-          reportException(null, (Exception) ex);
-        }
-      };
-      Thread javaFxApplicationThread = ThreadUtil.getThread("JavaFX Application Thread");
-      javaFxApplicationThread.setUncaughtExceptionHandler(uncaughtExceptionHandler);
-
-      GPXService.getInstance().showGPXWindow(fileToOpen);
-    } catch (Exception ex) {
-      reportException(DefaultCustomizationFx.getInstance(), ex);
-    }
-    
+    return fileToOpen;
   }
-  
 }

@@ -1,8 +1,5 @@
 package goedegep.rolodex.app;
 
-import java.net.URL;
-
-import goedegep.properties.app.PropertyFileURLProvider;
 import goedegep.properties.model.PropertyDescriptorGroup;
 import goedegep.rolodex.model.Rolodex;
 import goedegep.util.emf.EMFResource;
@@ -10,10 +7,7 @@ import goedegep.util.emf.EMFResource;
 /**
  * This registry class provides information to be shared within the complete Rolodex application.
  */
-public class RolodexRegistry implements PropertyFileURLProvider {
-  
-  private static final String ROLODEX_PROPERTY_DESCRIPTORS_FILE = "RolodexPropertyDescriptors.xmi";
-  private static final String ROLODEX_CONFIGURATION_FILE = "RolodexConfiguration.xmi";
+public class RolodexRegistry {
   
   /**
    * The name of the application.
@@ -74,18 +68,4 @@ public class RolodexRegistry implements PropertyFileURLProvider {
   
   public static EMFResource<Rolodex> rolodexResource = null;  // TODO as the rolodex resource is part of the RolodexRegistry it doesn't have to be passed as a parameter
   
-
-  @Override
-  public URL getPropertyFileURL() {
-    URL url = getClass().getResource(ROLODEX_PROPERTY_DESCRIPTORS_FILE);
-    
-    return url;
-  }
-
-  @Override
-  public URL getCustomizationFileURL() {
-    URL url = getClass().getResource(ROLODEX_CONFIGURATION_FILE);
-    
-    return url;
-  }
 }

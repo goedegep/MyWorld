@@ -5,23 +5,21 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.Properties;
 
-import goedegep.jfx.CustomizationFx;
-import goedegep.jfx.CustomizationsFx;
+import goedegep.configuration.model.Look;
+import goedegep.jfx.AppResourcesFx;
 import goedegep.jfx.JfxApplication;
 import goedegep.myworld.common.Service;
+import goedegep.pctools.app.guifx.PCToolsAppResourcesFx;
 import goedegep.pctools.app.guifx.PCToolsMenuWindow;
 import goedegep.pctools.app.logic.PCToolsRegistry;
 import goedegep.properties.app.PropertiesHandler;
 import goedegep.util.RunningInEclipse;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
 public class PCToolsService extends Service {
-  
-  private static final String PC_TOOLS_CONFIGURATION_FILE = "PCToolsConfiguration.xmi";
 
   private static PCToolsService instance = null;
-  
-  private static CustomizationFx customization;
   
   public static PCToolsService getInstance() {
     if (instance == null) {
@@ -32,10 +30,6 @@ public class PCToolsService extends Service {
         // Read the properties, which are stored in the registry.
         URL url = instance.getClass().getResource(PCToolsRegistry.propertyDescriptorsFile);
         PropertiesHandler.handleProperties(url, null);
-
-        // Read the customization info.
-        url = instance.getClass().getResource(PC_TOOLS_CONFIGURATION_FILE);
-        customization = CustomizationsFx.readCustomization(url);
       } catch (IOException e) {
         JfxApplication.reportException(null, e);
       }
@@ -78,5 +72,21 @@ public class PCToolsService extends Service {
       JfxApplication.reportException(null, e);
       System.exit(1);
     }
+  }
+  
+  @Override
+  protected void fillLook(Look look) {
+    look.setBackgroundColor(Color.rgb(238,238,238));
+    look.setButtonBackgroundColor(Color.rgb(238,238,238));
+    look.setPanelBackgroundColor(Color.rgb(238,238,238));
+    look.setListBackgroundColor(Color.rgb(238,238,238));
+    look.setLabelBackgroundColor(Color.rgb(200,200,200));
+    look.setBoxBackgroundColor(Color.rgb(238,238,238));
+    look.setTextFieldBackgroundColor(Color.rgb(255,255,255));
+  }
+  
+  @Override
+  protected AppResourcesFx getAppResourcesFxClass() {
+    return new PCToolsAppResourcesFx();
   }
 }

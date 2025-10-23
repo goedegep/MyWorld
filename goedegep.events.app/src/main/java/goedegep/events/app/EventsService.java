@@ -13,15 +13,16 @@ import java.util.Properties;
 import java.util.ResourceBundle;
 import java.util.logging.Logger;
 
+import goedegep.configuration.model.Look;
 import goedegep.events.app.guifx.EventEditor;
+import goedegep.events.app.guifx.EventsAppResources;
 import goedegep.events.app.guifx.EventsWindow;
 import goedegep.events.model.EventInfo;
 import goedegep.events.model.Events;
 import goedegep.events.model.EventsFactory;
 import goedegep.events.model.EventsPackage;
+import goedegep.jfx.AppResourcesFx;
 import goedegep.jfx.ComponentFactoryFx;
-import goedegep.jfx.CustomizationFx;
-import goedegep.jfx.CustomizationsFx;
 import goedegep.jfx.JfxApplication;
 import goedegep.jfx.editor.Editor;
 import goedegep.myworld.common.Service;
@@ -30,12 +31,12 @@ import goedegep.properties.app.guifx.PropertiesEditor;
 import goedegep.types.model.FileReference;
 import goedegep.util.Result;
 import goedegep.util.Result.ResultType;
-import goedegep.util.RunningInEclipse;
 import goedegep.util.datetime.FlexDate;
 import goedegep.util.datetime.FlexDateFormat;
 import goedegep.util.emf.EMFResource;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
+import javafx.scene.paint.Color;
 
 /**
  * This class is the main class of the Events application.
@@ -44,10 +45,11 @@ public class EventsService extends Service {
   private static final Logger LOGGER = Logger.getLogger(EventsService.class.getName());
   private static final String NEWLINE = System.getProperty("line.separator");
   
-  private static final String EVENTS_CONFIGURATION_FILE = "EventsConfiguration.xmi";
   private static final FlexDateFormat FDF = new FlexDateFormat();
   
-  private CustomizationFx customization = null;
+  /**
+   * The singleton instance of the EventsService.
+   */
   private static EventsService instance = null;
   
   /**
@@ -60,6 +62,11 @@ public class EventsService extends Service {
    */
   private Events events;
   
+  /**
+   * Get the singleton instance of the EventsService.
+   * 
+   * @return the singleton instance of EventsService.
+   */
   public static EventsService getInstance() {
     if (instance == null) {
       instance = new EventsService();
@@ -75,7 +82,7 @@ public class EventsService extends Service {
   public void showEventsWindow() {
     LOGGER.info("=>");
     
-    boolean eventsInitializationOk = handleEventsInitialization(customization);
+    boolean eventsInitializationOk = checkThatEventsFileAndFolderExist();
     
     if (!eventsInitializationOk) {
       return;
@@ -92,6 +99,12 @@ public class EventsService extends Service {
    * @param event the {@code EventInfo} to be edited.
    */
   public void LaunchEventsEditor(EventInfo event) {
+    boolean eventsInitializationOk = checkThatEventsFileAndFolderExist();
+    
+    if (!eventsInitializationOk) {
+      return;
+    }
+
     Editor<EventInfo> eventEditor = EventEditor.newInstance(customization, this);
     if (event != null) {
       eventEditor.setObject(event);
@@ -102,10 +115,11 @@ public class EventsService extends Service {
   /**
    * Show the User Properties editor.
    */
-  public void showPropertiesEditor(CustomizationFx customization) {
+  public void showPropertiesEditor() {
     new PropertiesEditor("Events properties", customization, null,
         EventsRegistry.propertyDescriptorsResource, EventsRegistry.customPropertiesFile);
   }
+  
   /**
    * Get a {@link ResourceBundle} for the default locale.
    * 
@@ -115,10 +129,8 @@ public class EventsService extends Service {
    */
   public static ResourceBundle getBundle(Class<? extends Object> clazz, String bundle) {
       String bundlePath = clazz.getPackage().getName() + "." + bundle;
-      LOGGER.info("bundlePath: " + bundlePath);
       Locale locale = Locale.getDefault();
       ClassLoader classLoader = clazz.getClassLoader();
-      LOGGER.info("classLoader: " + classLoader.getName());
       return ResourceBundle.getBundle(bundlePath, locale, classLoader);
   }
 
@@ -263,43 +275,34 @@ public class EventsService extends Service {
    * 
    * @param eventsResource the {@link EMFResource} for loading and storing the events database.
    */
-  private EventsService() {
-    
-    // If we're running within Eclipse, we set development mode to true. The application can use this information to add functionality which is for development only.
-    if (RunningInEclipse.runningInEclipse()) {
-      EventsRegistry.developmentMode = true;
-    }
-    
+  private EventsService() {    
     try {
       // Read the properties, which are stored in the registry.
       URL url = getClass().getResource(EventsRegistry.propertyDescriptorsFile);
       PropertiesHandler.handleProperties(url, null);
 
-      // Read the customization info.
-      url = getClass().getResource(EVENTS_CONFIGURATION_FILE);
-      customization = CustomizationsFx.readCustomization(url);
     } catch (IOException e) {
       JfxApplication.reportException(null, e);
     }
     
-    eventsResource = getEventsResource(customization);
+    eventsResource = createEventsResource();
     if (eventsResource == null) {
       return;
     }
     
     events = eventsResource.getEObject();
-  }  
+  }
   
   /**
    * If the events file doesn't exist and/or the events folder doesn't exist, ask the user whether they should be created, or whether the user wants to edit the User Settings.
    */
-  private boolean handleEventsInitialization(CustomizationFx customization) {
+  private boolean checkThatEventsFileAndFolderExist() {
     boolean returnValue = false;
     
     File eventsFile = new File(EventsRegistry.eventsFileName);
     File eventsFolder = new File(EventsRegistry.eventsFolderName);
     
-    if (!eventsFile.exists()  ||  !eventsFile.exists()) {
+    if (!eventsFile.exists()  ||  !eventsFolder.exists()) {
       StringBuilder buf = new StringBuilder();
       buf.append("The following files and/or folders don't exist yet:").append(NEWLINE);
       if (!eventsFile.exists()) {
@@ -320,7 +323,7 @@ public class EventsService extends Service {
         switch (userChoice) {
         case SHOW_SETTINGS_EDITOR:
           returnValue = false; // If the user settings are changed, a restart of the application is needed
-          showPropertiesEditor(customization);
+          showPropertiesEditor();
           break;
           
         case CREATE_MISSING_FILES_AND_OR_FOLDERS:
@@ -375,7 +378,7 @@ public class EventsService extends Service {
    * 
    * @return true if the resource could be opened, false otherwise.
    */
-  private EMFResource<Events> getEventsResource(CustomizationFx customization) {
+  private EMFResource<Events> createEventsResource() {
     boolean returnValue = false;
 
     EMFResource<Events> eventsResource = new EMFResource<>(EventsPackage.eINSTANCE, () -> EventsFactory.eINSTANCE.createEvents(), ".xmi", true);
@@ -421,6 +424,22 @@ public class EventsService extends Service {
       JfxApplication.reportException(null, e);
       System.exit(1);
     }
+  }
+  
+  @Override
+  protected void fillLook(Look look) {
+    look.setBackgroundColor(Color.rgb(238,238,238));
+    look.setButtonBackgroundColor(Color.rgb(238,238,238));
+    look.setPanelBackgroundColor(Color.rgb(238,238,238));
+    look.setListBackgroundColor(Color.rgb(238,238,238));
+    look.setLabelBackgroundColor(Color.rgb(238,238,238));
+    look.setBoxBackgroundColor(Color.rgb(238,238,238));
+    look.setTextFieldBackgroundColor(Color.rgb(255,255,255));
+  }
+  
+  @Override
+  protected AppResourcesFx getAppResourcesFxClass() {
+    return new EventsAppResources();
   }
 }
 
