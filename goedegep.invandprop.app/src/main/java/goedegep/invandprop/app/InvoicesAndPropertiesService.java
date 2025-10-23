@@ -8,12 +8,15 @@ import java.util.Optional;
 import java.util.Properties;
 import java.util.logging.Logger;
 
+import goedegep.configuration.model.Look;
+import goedegep.invandprop.app.guifx.InvoicesAndPropertiesAppResourcesFx;
 import goedegep.invandprop.app.guifx.InvoicesAndPropertiesWindow;
 import goedegep.invandprop.model.InvAndPropFactory;
 import goedegep.invandprop.model.InvAndPropPackage;
 import goedegep.invandprop.model.InvoiceAndProperty;
 import goedegep.invandprop.model.InvoiceAndPropertyItem;
 import goedegep.invandprop.model.InvoicesAndProperties;
+import goedegep.jfx.AppResourcesFx;
 import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.CustomizationsFx;
 import goedegep.jfx.JfxApplication;
@@ -29,11 +32,11 @@ import goedegep.util.datetime.FlexDateFormat;
 import goedegep.util.emf.EMFResource;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
+import javafx.scene.paint.Color;
 
 public class InvoicesAndPropertiesService extends Service {
   private static final Logger LOGGER = Logger.getLogger(InvoicesAndPropertiesService.class.getName());
   private static final String NEWLINE = System.getProperty("line.separator");
-  private static final String INVOICES_AND_PROPERTIES_CONFIGURATION_FILE = "InvoicesAndPropertiesConfiguration.xmi";
   private static final FlexDateFormat FDF = new FlexDateFormat();
   
   /**
@@ -50,9 +53,7 @@ public class InvoicesAndPropertiesService extends Service {
    * The Invoices and Properties information.
    */
   private InvoicesAndProperties invoicesAndProperties;
-  
-  private static CustomizationFx customization;
-  
+    
 
   /**
    * Get the singleton instance of the InvoicesAndPropertiesService.
@@ -82,16 +83,12 @@ public class InvoicesAndPropertiesService extends Service {
       // Read the properties, which are stored in the registry.
       URL url = getClass().getResource(InvoicesAndPropertiesRegistry.propertyDescriptorsFile);
       PropertiesHandler.handleProperties(url, null);
-
-      // Read the customization info.
-      url = getClass().getResource(INVOICES_AND_PROPERTIES_CONFIGURATION_FILE);
-      customization = CustomizationsFx.readCustomization(url);
     } catch (IOException e) {
       JfxApplication.reportException(null, e);
     }
     
     
-    if (!checkRegistry(customization)) {
+    if (!checkRegistry()) {
       return;
     }
 
@@ -302,7 +299,7 @@ public class InvoicesAndPropertiesService extends Service {
     return returnValue ? invoicesAndPropertiesResource : null;
   }
 
-  private static boolean checkRegistry(CustomizationFx customization) {
+  private boolean checkRegistry() {
     
     if (InvoicesAndPropertiesRegistry.invoicesAndPropertiesFile == null) {
       Alert alert = customization.getComponentFactoryFx().createErrorDialog(
@@ -316,7 +313,7 @@ public class InvoicesAndPropertiesService extends Service {
       
       alert.showAndWait().ifPresent(response -> {
         if (response == editorButtonType) {
-          showPropertiesEditor(customization);
+          showPropertiesEditor();
         }
       });
       
@@ -329,7 +326,7 @@ public class InvoicesAndPropertiesService extends Service {
   /**
    * Show the User Properties editor.
    */
-  private static void showPropertiesEditor(CustomizationFx customization) {
+  private void showPropertiesEditor() {
     new PropertiesEditor("Invoices and Properties properties", customization, InvoicesAndPropertiesRegistry.propertyDescriptorsResource, InvoicesAndPropertiesRegistry.customPropertiesFile);
   }
   
@@ -381,5 +378,21 @@ public class InvoicesAndPropertiesService extends Service {
       JfxApplication.reportException(null, e);
       System.exit(1);
     }
+  }
+  
+  @Override
+  protected void fillLook(Look look) {
+    look.setBackgroundColor(Color.rgb(238,238,238));
+    look.setButtonBackgroundColor(Color.rgb(238,238,238));
+    look.setPanelBackgroundColor(Color.rgb(238,238,238));
+    look.setListBackgroundColor(Color.rgb(238,238,238));
+    look.setLabelBackgroundColor(Color.rgb(238,238,238));
+    look.setBoxBackgroundColor(Color.rgb(238,238,238));
+    look.setTextFieldBackgroundColor(Color.rgb(255,255,255));
+  }
+  
+  @Override
+  protected AppResourcesFx getAppResourcesFxClass() {
+    return new InvoicesAndPropertiesAppResourcesFx();
   }
 }

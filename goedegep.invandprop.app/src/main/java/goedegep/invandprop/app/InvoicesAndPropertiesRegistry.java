@@ -1,15 +1,10 @@
 package goedegep.invandprop.app;
 
-import java.net.URL;
-
-import goedegep.properties.app.PropertyFileURLProvider;
 import goedegep.properties.model.PropertyDescriptorGroup;
 import goedegep.util.emf.EMFResource;
 
-public class InvoicesAndPropertiesRegistry implements PropertyFileURLProvider {
+public class InvoicesAndPropertiesRegistry {
   
-  private static final String INV_AND_PROP_PROPERTY_DESCRIPTORS_FILE = "InvoicesAndPropertiesPropertyDescriptors.xmi";
-  private static final String INV_AND_PROP_CONFIGURATION_FILE = "InvoicesAndPropertiesConfiguration.xmi";
   /**
    * The name of the application.
    */
@@ -75,18 +70,4 @@ public class InvoicesAndPropertiesRegistry implements PropertyFileURLProvider {
    */
   public static EMFResource<PropertyDescriptorGroup> propertyDescriptorsResource = null;
   
-
-  @Override
-  public URL getPropertyFileURL() {
-    URL url = getClass().getResource(INV_AND_PROP_PROPERTY_DESCRIPTORS_FILE);
-    
-    return url;
-  }
-
-  @Override
-  public URL getCustomizationFileURL() {
-    URL url = getClass().getResource(INV_AND_PROP_CONFIGURATION_FILE);
-    
-    return url;
-  }
 }

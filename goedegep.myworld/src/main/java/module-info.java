@@ -1,5 +1,4 @@
 module goedegep.myworld {
-  exports goedegep.myworld;
   exports goedegep.myworld.app;
   exports goedegep.myworld.app.guifx;
   

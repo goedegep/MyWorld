@@ -4,7 +4,6 @@ import java.io.File;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import goedegep.jfx.DefaultCustomizationFx;
 import goedegep.jfx.JfxApplication;
 import goedegep.util.RunningInEclipse;
 import goedegep.util.thread.ThreadUtil;
@@ -58,14 +57,14 @@ public class TravelsApplication extends JfxApplication {
       Thread.UncaughtExceptionHandler uncaughtExceptionHandler = new Thread.UncaughtExceptionHandler() {
         @Override
         public void uncaughtException(Thread thread, Throwable ex) {
-          reportException(DefaultCustomizationFx.getInstance(), (Exception) ex);
+          reportException(null, (Exception) ex);
         }
       };
       Thread javaFxApplicationThread = ThreadUtil.getThread("JavaFX Application Thread");
       javaFxApplicationThread.setUncaughtExceptionHandler(uncaughtExceptionHandler);
 
     } catch (Exception ex) {
-      reportException(DefaultCustomizationFx.getInstance(), ex);
+      reportException(null, ex);
     }
     
   }

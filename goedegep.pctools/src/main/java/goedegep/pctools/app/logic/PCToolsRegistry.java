@@ -1,17 +1,12 @@
 package goedegep.pctools.app.logic;
 
-import java.net.URL;
-
-import goedegep.properties.app.PropertyFileURLProvider;
 import goedegep.properties.model.PropertyDescriptorGroup;
 import goedegep.util.emf.EMFResource;
 
 /**
  * This registry class provides information to be shared within the complete PCTools application.
  */
-public class PCToolsRegistry implements PropertyFileURLProvider {
-  private static final String PC_TOOLS_PROPERTY_DESCRIPTORS_FILE = "PCToolsPropertyDescriptors.xmi";
-  private static final String PC_TOOLS_CONFIGURATION_FILE = "PCToolsConfiguration.xmi";
+public class PCToolsRegistry {
 
   /**
    * The name of the application.
@@ -75,16 +70,4 @@ public class PCToolsRegistry implements PropertyFileURLProvider {
    */
   public static EMFResource<PropertyDescriptorGroup> propertyDescriptorsResource = null;
   
-  public URL getPropertyFileURL() {    
-    URL url = getClass().getResource(PC_TOOLS_PROPERTY_DESCRIPTORS_FILE);
-    
-    return url;
-  }
-  
-  @Override
-  public URL getCustomizationFileURL() {
-    URL url = getClass().getResource(PC_TOOLS_CONFIGURATION_FILE);
-    
-    return url;
-  }
 }

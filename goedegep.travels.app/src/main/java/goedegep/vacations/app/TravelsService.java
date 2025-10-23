@@ -9,19 +9,21 @@ import java.nio.file.WatchEvent;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
-import java.util.logging.Logger;
 
+import goedegep.configuration.model.Look;
+import goedegep.jfx.AppResourcesFx;
 import goedegep.jfx.CustomizationFx;
-import goedegep.jfx.CustomizationsFx;
 import goedegep.jfx.JfxApplication;
 import goedegep.myworld.common.Service;
 import goedegep.properties.app.PropertiesHandler;
 import goedegep.resources.ImageResource;
 import goedegep.util.dir.DirectoryChangesListener;
 import goedegep.util.string.StringUtil;
+import goedegep.vacations.app.guifx.VacationsAppResourcesFx;
 import goedegep.vacations.app.guifx.VacationsWindow;
 import goedegep.vacations.app.logic.PhotoThumbnailManager;
 import goedegep.vacations.app.logic.VacationsRegistry;
+import javafx.scene.paint.Color;
 
 /**
  * This class is the Travels application.
@@ -30,12 +32,8 @@ import goedegep.vacations.app.logic.VacationsRegistry;
  * It is built on top of logic and guifx sub packages.
  */
 public class TravelsService extends Service {
-  private static final Logger LOGGER = Logger.getLogger(TravelsService.class.getName());
-  
-  private static final String VACATIONS_CONFIGURATION_FILE = "VacationsConfiguration.xmi";
 
   private static TravelsService instance;
-  private static CustomizationFx customization;
   
   private List<DirectoryChangesListener> directoryChangesListeners = new ArrayList<>();
   
@@ -86,48 +84,15 @@ public class TravelsService extends Service {
     
     try {
       
-      /*
-       * Read the application properties.
-       * This is done here because the application properties contain the application version, which is derived from the version in the pom.xml file.
-       */
-      Properties props = new Properties();
-      try (InputStream in = getClass().getResourceAsStream("TravelsApplication.properties")) {
-          props.load(in);
-          String appVersion = props.getProperty("travels.app.version");
-          VacationsRegistry.version = appVersion;
-          String appName = props.getProperty("travals.app.name");
-          VacationsRegistry.applicationName = appName;
-      } catch (Exception e) {
-        LOGGER.severe("Error reading application properties: " + e.getMessage());
-        System.exit(1);
-      }
-
       // Read the properties, which are stored in the registry.
       URL url = getClass().getResource(VacationsRegistry.propertyDescriptorsFile);
       PropertiesHandler.handleProperties(url, null);
 
-      // Read the customization info.
-      url = getClass().getResource(VACATIONS_CONFIGURATION_FILE);
-      customization = CustomizationsFx.readCustomization(url);
     } catch (IOException e) {
       JfxApplication.reportException(null, e);
     }
 
     startPhotoThumbnailsCreation();
-  }
-  
-  @Override
-  protected void readApplicationProperties() {
-    Properties props = new Properties();
-    try (InputStream in = getClass().getResourceAsStream("TravelsApplication.properties")) {
-        props.load(in);
-        
-        VacationsRegistry.version = props.getProperty("travels.app.version");
-        VacationsRegistry.applicationName = props.getProperty("travels.app.name");
-    } catch (Exception e) {
-      JfxApplication.reportException(null, e);
-      System.exit(1);
-    }
   }
   
   /**
@@ -165,5 +130,35 @@ public class TravelsService extends Service {
   @Override
   protected void setDevelopmentMode(boolean developmentMode) {
     VacationsRegistry.developmentMode = developmentMode;
+  }
+  
+  @Override
+  protected void readApplicationProperties() {
+    Properties props = new Properties();
+    try (InputStream in = getClass().getResourceAsStream("TravelsApplication.properties")) {
+        props.load(in);
+        
+        VacationsRegistry.version = props.getProperty("travels.app.version");
+        VacationsRegistry.applicationName = props.getProperty("travels.app.name");
+    } catch (Exception e) {
+      JfxApplication.reportException(null, e);
+      System.exit(1);
+    }
+  }
+  
+  @Override
+  protected void fillLook(Look look) {
+    look.setBackgroundColor(Color.rgb(238,238,238));
+    look.setButtonBackgroundColor(Color.rgb(238,238,238));
+    look.setPanelBackgroundColor(Color.rgb(238,238,238));
+    look.setListBackgroundColor(Color.rgb(238,238,238));
+    look.setLabelBackgroundColor(Color.rgb(238,238,238));
+    look.setBoxBackgroundColor(Color.rgb(238,238,238));
+    look.setTextFieldBackgroundColor(Color.rgb(255,255,255));
+  }
+  
+  @Override
+  protected AppResourcesFx getAppResourcesFxClass() {
+    return new VacationsAppResourcesFx();
   }
 }

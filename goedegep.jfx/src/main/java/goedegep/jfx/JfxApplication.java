@@ -109,7 +109,7 @@ public abstract class JfxApplication extends Application {
     // How the application was called
     buf.append("<pre>");
     buf.append(programName);
-    buf.append(" is alsvolgt aangeroepen:");
+    buf.append(" is called as follows:");
     buf.append(NEWLINE);
     
     boolean first = true;
@@ -131,16 +131,16 @@ public abstract class JfxApplication extends Application {
     StringWriter out = new StringWriter();
     PrintWriter writer = new PrintWriter(out);
     HelpFormatter formatter = new HelpFormatter();
-    formatter.printHelp(writer, 110, programName, null, options, 4, 4, NEWLINE + programDescription, true);
-    String helpText = out.toString().replaceFirst("usage", "Gebruik");
+    formatter.printHelp(writer, 110, programName + " <optional-file-to-open>", null, options, 4, 4, NEWLINE + programDescription, true);
+    String helpText = out.toString().replaceFirst("usage", "Usage");
     helpText = helpText.replaceAll("<", "&lt;").replaceAll(">", "&gt;");
     buf.append(helpText);
     buf.append("</pre>");
     buf.append("</html>");
     
     Alert alert = new Alert(AlertType.ERROR);
-    alert.setTitle("Foutmelding");
-    alert.setHeaderText(programName + " is niet correct aangeroepen");
+    alert.setTitle("Error");
+    alert.setHeaderText(programName + " isn't called correctly");
     WebView webView = new WebView();
     webView.getEngine().loadContent(buf.toString());
     webView.setPrefSize(900, 300);
@@ -155,7 +155,9 @@ public abstract class JfxApplication extends Application {
    * <p>
    * The stack trace of the exception is logged.<br/>
    * And if the application is not running in Eclipse (an official installation), the stack trace is also shown in an exception dialog.
-   * @param exception
+   * 
+   * @param customization the GUI customization. If null, the {@link DefaultCustomizationFx} is used.
+   * @param exception the {@link Exception} to be reported.
    */
   public static void reportException(CustomizationFx customization, Exception exception) {
     if (customization == null) {

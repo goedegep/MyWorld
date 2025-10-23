@@ -5,25 +5,23 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.Properties;
 
-import goedegep.jfx.CustomizationFx;
-import goedegep.jfx.CustomizationsFx;
+import goedegep.configuration.model.Look;
+import goedegep.jfx.AppResourcesFx;
 import goedegep.jfx.JfxApplication;
 import goedegep.myworld.common.Service;
 import goedegep.properties.app.PropertiesHandler;
+import goedegep.unitconverter.app.guifx.UnitConverterAppResourcesFx;
 import goedegep.unitconverter.app.guifx.UnitConverterWindow;
 import goedegep.util.RunningInEclipse;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
 /**
  * This class is the main class of the Unit Converter application.
  */
 public class UnitConverterService extends Service {
-  
-  private static final String UNIT_CONVERTER_CONFIGURATION_FILE = "UnitConverterConfiguration.xmi";
 
   private static UnitConverterService instance = null;
-  
-  private static CustomizationFx customization;
   
   /**
    * Get the singleton instance of the UnitConverterService.
@@ -37,13 +35,8 @@ public class UnitConverterService extends Service {
       
       try {
         // Read the properties, which are stored in the registry.
-        String s = UnitConverterRegistry.propertyDescriptorsFile;
         URL url = instance.getClass().getResource(UnitConverterRegistry.propertyDescriptorsFile);
         PropertiesHandler.handleProperties(url, null);
-
-        // Read the customization info.
-        url = instance.getClass().getResource(UNIT_CONVERTER_CONFIGURATION_FILE);
-        customization = CustomizationsFx.readCustomization(url);
       } catch (IOException e) {
         JfxApplication.reportException(null, e);
       }
@@ -88,5 +81,21 @@ public class UnitConverterService extends Service {
       JfxApplication.reportException(null, e);
       System.exit(1);
     }
+  }
+  
+  @Override
+  protected void fillLook(Look look) {
+    look.setBackgroundColor(Color.rgb(238,238,238));
+    look.setButtonBackgroundColor(Color.rgb(238,238,238));
+    look.setPanelBackgroundColor(Color.rgb(238,238,238));
+    look.setListBackgroundColor(Color.rgb(238,238,238));
+    look.setLabelBackgroundColor(Color.rgb(238,238,238));
+    look.setBoxBackgroundColor(Color.rgb(238,238,238));
+    look.setTextFieldBackgroundColor(Color.rgb(255,255,255));
+  }
+  
+  @Override
+  protected AppResourcesFx getAppResourcesFxClass() {
+    return new UnitConverterAppResourcesFx();
   }
 }

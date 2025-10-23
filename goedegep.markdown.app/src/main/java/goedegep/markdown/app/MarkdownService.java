@@ -3,15 +3,15 @@ package goedegep.markdown.app;
 import java.io.InputStream;
 import java.util.Properties;
 
-import goedegep.jfx.CustomizationFx;
-import goedegep.jfx.DefaultCustomizationFx;
+import goedegep.configuration.model.Look;
+import goedegep.jfx.AppResourcesFx;
 import goedegep.jfx.JfxApplication;
+import goedegep.markdown.app.guifx.MarkdownAppResources;
 import goedegep.markdown.app.guifx.MarkdownViewer;
 import goedegep.myworld.common.Service;
-import goedegep.util.RunningInEclipse;
+import javafx.scene.paint.Color;
 
 public class MarkdownService extends Service {
-  private CustomizationFx customization;
   private static MarkdownService instance = null;
   
   public static MarkdownService getInstance() {
@@ -33,13 +33,6 @@ public class MarkdownService extends Service {
    * Private constructor to ensure singleton pattern.
    */
   private MarkdownService() {
-    
-    // If we're running within Eclipse, we set development mode to true. The application can use this information to add functionality which is for development only.
-    if (RunningInEclipse.runningInEclipse()) {
-      MarkdownRegistry.developmentMode = true;
-    }
-    
-    customization = DefaultCustomizationFx.getInstance();
   }
   
   @Override
@@ -59,5 +52,21 @@ public class MarkdownService extends Service {
   @Override
   protected void setDevelopmentMode(boolean developmentMode) {
     MarkdownRegistry.developmentMode = developmentMode;
+  }
+  
+  @Override
+  protected void fillLook(Look look) {
+    look.setBackgroundColor(Color.rgb(238,238,238));
+    look.setButtonBackgroundColor(Color.rgb(238,238,238));
+    look.setPanelBackgroundColor(Color.rgb(238,238,238));
+    look.setListBackgroundColor(Color.rgb(238,238,238));
+    look.setLabelBackgroundColor(Color.rgb(238,238,238));
+    look.setBoxBackgroundColor(Color.rgb(238,238,238));
+    look.setTextFieldBackgroundColor(Color.rgb(255,255,255));
+  }
+  
+  @Override
+  protected AppResourcesFx getAppResourcesFxClass() {
+    return new MarkdownAppResources();
   }
 }

@@ -12,6 +12,10 @@
   </parent>
   <dependencies>
     <dependency>
+      <groupId>goedegep.configuration</groupId>
+      <artifactId>goedegep-configuration-model</artifactId>
+    </dependency>
+    <dependency>
       <groupId>goedegep.jfx</groupId>
       <artifactId>goedegep-jfx</artifactId>
     </dependency>
