@@ -56,7 +56,6 @@ public class TransactionDialog extends AppDialog implements ActionListener, Focu
   
   private static final String       DIALOG_TITLE = "Nieuwe transactie invoeren";
   private static final String       INITIAL_REKENINGFIELD_TEXT = "Kies eerst een bank";
-//  private static final String[]     INITIAL_REKENINGSELECTOR_DATA = {INITIAL_REKENINGFIELD_TEXT};
   private final AccountWrapper[]     INITIAL_REKENINGSELECTOR_DATA = {new AccountWrapper(null)};
 
   private final static int  TOP_MARGIN       = 5;
@@ -71,6 +70,7 @@ public class TransactionDialog extends AppDialog implements ActionListener, Focu
   
   private Customization              customization         = null;
   private ComponentFactory           componentFactory      = null;
+  private FinanRegistry              finanRegistry;
   private SumAccount                 sumAccount            = null;  // Account to which the new transactions shall be added.
   private FinanTransaction           insertLocation        = null;  // Transaction before/after which new transactions shall be inserted. 
   private boolean                    insertBefore;                  // Insert before if true, else insert after.
@@ -92,6 +92,7 @@ public class TransactionDialog extends AppDialog implements ActionListener, Focu
     super(owner, DIALOG_TITLE);
     customization = getCustomization();
     componentFactory = getTheComponentFactory();
+    finanRegistry = FinanRegistry.getInstance();
     transactionEntryStatus.setCompanyPool(companyPool);
     this.sumAccount = sumAccount;
     this.insertLocation = insertLocation;
@@ -163,8 +164,8 @@ public class TransactionDialog extends AppDialog implements ActionListener, Focu
     for (FinanBank account: sumAccount.getBanks()) {
       Bank bank = account.getBank();
       if ((defaultBankIndex == -1)  &&
-          (FinanRegistry.defaultBank != null)  &&
-          bank.getName().equals(FinanRegistry.defaultBank)) {
+          (finanRegistry.getDefaultBank() != null)  &&
+          bank.getName().equals(finanRegistry.getDefaultBank())) {
         defaultBankIndex = index;
       }
       banks[index++] = bank;
@@ -497,7 +498,6 @@ public class TransactionDialog extends AppDialog implements ActionListener, Focu
     return b;
   }
 
-  @SuppressWarnings("unchecked")
   public void actionPerformed(ActionEvent e) {
     if (e.getSource() == toevoegenButton) {
       apply();

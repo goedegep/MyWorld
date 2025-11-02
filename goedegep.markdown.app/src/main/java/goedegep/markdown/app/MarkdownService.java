@@ -8,12 +8,30 @@ import goedegep.jfx.AppResourcesFx;
 import goedegep.jfx.JfxApplication;
 import goedegep.markdown.app.guifx.MarkdownAppResources;
 import goedegep.markdown.app.guifx.MarkdownViewer;
+import goedegep.myworld.common.Registry;
 import goedegep.myworld.common.Service;
 import javafx.scene.paint.Color;
 
+/**
+ * The MarkdownService class is the main class for the Markdown application.
+ * <p>
+ * It provides methods to show the main window and manages
+ * application-wide resources and customization.
+ */
 public class MarkdownService extends Service {
+  
+  /**
+   * The singleton instance of the MarkdownService.
+   */
   private static MarkdownService instance = null;
   
+  private MarkdownRegistry markdownRegistry;
+  
+  /**
+   * Get the singleton instance of the MarkdownService.
+   * 
+   * @return the singleton instance of MarkdownService.
+   */
   public static MarkdownService getInstance() {
     if (instance == null) {
       instance = new MarkdownService();
@@ -33,6 +51,7 @@ public class MarkdownService extends Service {
    * Private constructor to ensure singleton pattern.
    */
   private MarkdownService() {
+    markdownRegistry = MarkdownRegistry.getInstance();
   }
   
   @Override
@@ -41,17 +60,12 @@ public class MarkdownService extends Service {
     try (InputStream in = getClass().getResourceAsStream("MarkdownApplication.properties")) {
         props.load(in);
         
-        MarkdownRegistry.version = props.getProperty("markdown.app.version");
-        MarkdownRegistry.applicationName = props.getProperty("markdown.app.name");
+        markdownRegistry.setVersion(props.getProperty("markdown.app.version"));
+        markdownRegistry.setApplicationName(props.getProperty("markdown.app.name"));
     } catch (Exception e) {
       JfxApplication.reportException(null, e);
       System.exit(1);
     }
-  }
-
-  @Override
-  protected void setDevelopmentMode(boolean developmentMode) {
-    MarkdownRegistry.developmentMode = developmentMode;
   }
   
   @Override
@@ -68,5 +82,10 @@ public class MarkdownService extends Service {
   @Override
   protected AppResourcesFx getAppResourcesFxClass() {
     return new MarkdownAppResources();
+  }
+  
+  @Override
+  protected Registry getRegistry() {
+    return markdownRegistry;
   }
 }

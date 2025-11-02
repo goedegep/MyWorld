@@ -60,7 +60,7 @@ public class MusicFolderWindow extends JfxStage {
     
     componentFactory = customization.getComponentFactoryFx();
     appResources = (MediaAppResourcesFx) getResources();
-    currentMusicFolder = MediaRegistry.musicDirectory;
+    currentMusicFolder = MediaRegistry.getInstance().getMusicDirectory();
     
     musicFolder = new MusicFolder();
     

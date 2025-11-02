@@ -24,6 +24,8 @@ import javafx.stage.Stage;
 public class MediaDbAppLauncher {
   private static final String NEWLINE = System.getProperty("line.separator");
   
+  private static MediaRegistry mediaRegistry = MediaRegistry.getInstance();
+  
   public static void launchMediaApplication(CustomizationFx customization) {
     if (!checkThatMediaDbFileNameIsSetInRegistry(customization)) {
       return;
@@ -49,7 +51,7 @@ public class MediaDbAppLauncher {
    * Open the PropertyDescriptors editor.
    */
   public static void showPropertyDescriptorsEditor(CustomizationFx customization) {
-    new PropertyDescriptorsEditorFx(customization, MediaRegistry.propertyDescriptorsResource);
+    new PropertyDescriptorsEditorFx(customization, mediaRegistry.getPropertyDescriptorsFileURI());
   }
 
   /**
@@ -57,7 +59,7 @@ public class MediaDbAppLauncher {
    */
   public static void showUserSettingsEditor(CustomizationFx customization) {
     PropertiesEditor propertiesEditor = new PropertiesEditor("Edit Media settings", customization,
-        MediaRegistry.propertyDescriptorsResource, MediaRegistry.customPropertiesFile);
+        mediaRegistry.getPropertyDescriptorsFileURI(), mediaRegistry.getUserPropertiesFileName());
     propertiesEditor.show();
   }  
 
@@ -69,7 +71,7 @@ public class MediaDbAppLauncher {
    * @return true if the file name is set, false otherwise.
    */
   private static boolean checkThatMediaDbFileNameIsSetInRegistry(CustomizationFx customization) {
-    if (MediaRegistry.mediaDbFile != null) {
+    if (mediaRegistry.getMediaDbFile() != null) {
       return true;
     } else {
       Alert alert = customization.getComponentFactoryFx().createErrorDialog(
@@ -106,19 +108,19 @@ public class MediaDbAppLauncher {
     EMFResource<MediaDb> mediaDbResource = new EMFResource<>(MediadbPackage.eINSTANCE, () -> MediadbFactory.eINSTANCE.createMediaDb(), ".xmi", true);
 
     try {
-      mediaDbResource.load(MediaRegistry.mediaDbFile);
+      mediaDbResource.load(mediaRegistry.getMediaDbFile());
       returnValue = true;
     } catch (IOException e) {
       Alert alert = customization.getComponentFactoryFx().createYesNoConfirmationDialog(
           null,
-          "The file with media information (" + MediaRegistry.mediaDbFile + ") doesn't exist yet.",
+          "The file with media information (" + mediaRegistry.getMediaDbFile() + ") doesn't exist yet.",
           "Do you want to create this file now?" + NEWLINE +
           "If you choose \"No\" the mediaDb application will not be started.");
       Optional<ButtonType> response = alert.showAndWait();
       if (response.isPresent()  &&  response.get() == ButtonType.YES) {
         mediaDbResource.newEObject();
         try {
-          mediaDbResource.save(MediaRegistry.mediaDbFile);
+          mediaDbResource.save(mediaRegistry.getMediaDbFile());
           returnValue = true;
         } catch (IOException e1) {
           e1.printStackTrace();

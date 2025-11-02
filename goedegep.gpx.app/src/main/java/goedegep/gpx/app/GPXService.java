@@ -7,12 +7,20 @@ import goedegep.configuration.model.Look;
 import goedegep.gpx.app.guifx.GPXAppResources;
 import goedegep.jfx.AppResourcesFx;
 import goedegep.jfx.JfxApplication;
+import goedegep.myworld.common.Registry;
 import goedegep.myworld.common.Service;
-import goedegep.util.RunningInEclipse;
 import javafx.scene.paint.Color;
 
+/**
+ * The GPXService class is the main class for the GPX application.
+ */
 public class GPXService extends Service {
+  /**
+   * The singleton instance of the GPXService.
+   */
   private static GPXService instance;
+  
+  private GPXRegistry gpxRegistry;
 
   /**
    * Get the singleton instance of the GPXService.
@@ -28,6 +36,11 @@ public class GPXService extends Service {
     return instance;
   }
   
+  /**
+   * Show the GPX main window.
+   * 
+   * @param fileToOpen the GPX file to open, or null to start without a file.
+   */
   public void showGPXWindow(String fileToOpen) {
     GPXWindow gpxWindow = new GPXWindow(customization, fileToOpen);
     gpxWindow.show();
@@ -37,19 +50,7 @@ public class GPXService extends Service {
    * Private constructor to enforce singleton pattern.
    */
   private GPXService() {
-    
-    // If we're running within Eclipse, we set development mode to true. The application can use this information to add functionality which is for development only.
-    if (RunningInEclipse.runningInEclipse()) {
-      GPXRegistry.developmentMode = true;
-    }
-    
-    RunningInEclipse.runningInEclipse();
-  }
-  
-
-  @Override
-  protected void setDevelopmentMode(boolean developmentMode) {
-    GPXRegistry.developmentMode = developmentMode;
+    gpxRegistry = GPXRegistry.getInstance();
   }
   
   @Override
@@ -58,8 +59,8 @@ public class GPXService extends Service {
     try (InputStream in = getClass().getResourceAsStream("GPXApplication.properties")) {
         props.load(in);
         
-        GPXRegistry.version = props.getProperty("gpx.app.version");
-        GPXRegistry.applicationName = props.getProperty("gpx.app.name");
+        gpxRegistry.setVersion(props.getProperty("gpx.app.version"));
+        gpxRegistry.setApplicationName(props.getProperty("gpx.app.name"));
     } catch (Exception e) {
       JfxApplication.reportException(null, e);
       System.exit(1);
@@ -80,5 +81,10 @@ public class GPXService extends Service {
   @Override
   protected AppResourcesFx getAppResourcesFxClass() {
     return new GPXAppResources();
+  }
+  
+  @Override
+  protected Registry getRegistry() {
+    return gpxRegistry;
   }
 }

@@ -78,13 +78,6 @@
         <details key="documentation" value="Indicates whether the property can be set by the user of not. Set by the user means that the user can specify a value for the property in a user properties file."/>
       </eAnnotations>
     </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="installInitialValue" lowerBound="1"
-        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean" defaultValueLiteral="false"
-        unsettable="true">
-      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="Indicates whether the property value has to be installed in the Registry or not."/>
-      </eAnnotations>
-    </eStructuralFeatures>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EEnum" name="PropertyType">
     <eLiterals name="Directory" literal="DIRECTORY"/>

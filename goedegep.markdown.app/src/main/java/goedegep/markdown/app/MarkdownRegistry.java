@@ -1,43 +1,40 @@
 package goedegep.markdown.app;
 
+import goedegep.myworld.common.Registry;
+
 /**
  * This registry class provides information to be shared within the complete Demo application.
  */
-public class MarkdownRegistry {
+public class MarkdownRegistry extends Registry {
   
   /**
-   * The name of the application.
+   * Singleton instance of the MarkdownRegistry.
    */
-  public static String applicationName;
+  private static MarkdownRegistry instance = null;
+
+  /**
+   * Get the singleton instance of the MarkdownRegistry.
+   * 
+   * @return the singleton instance of the MarkdownRegistry.
+   */
+  public static MarkdownRegistry getInstance() {
+    if (instance == null) {
+      instance = new MarkdownRegistry();
+    }
+    
+    return instance;
+  }
   
   /**
-   * Name of the author of the application.
+   * Private constructor for the MarkdownRegistry.
    */
-  public static String author = "Peter Goedegebure";
-  
-  /**
-   * Name of the file with Configuration data.
-   */
-  public static String configurationFile = null;
-  
-  /**
-   * Copyright message for the application.
-   */
-  public static String copyrightMessage = "Copyright (c) 2001-2025";
-  
-  /**
-   * Short description of this application.
-   */
-  public static String shortProductInfo = "Markdown Viewer";
-  
-  /**
-   * Current software version.
-   */
-  public static String version = null;
-  
-  /**
-   * For extra functionality during development.
-   */
-  public static boolean developmentMode = false;
+  private MarkdownRegistry() {
+    super();
+    
+    setAuthor("Peter Goedegebure");
+    setShortProductInfo("Markdown Viewer");
+    setPropertyDescriptorsFileName("EventsPropertyDescriptors.xmi");
+    setUserPropertiesFileName("EventsUserPreferences.xmi");
+  }
 
 }

@@ -23,7 +23,6 @@ import org.eclipse.emf.ecore.EStructuralFeature;
 import com.gluonhq.maps.MapPoint;
 
 import goedegep.gpx.app.GPXService;
-import goedegep.gpx.app.GPXWindow;
 import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.eobjecttreeview.EObjectTreeItem;
 import goedegep.jfx.eobjecttreeview.EObjectTreeItemAttributeDescriptor;

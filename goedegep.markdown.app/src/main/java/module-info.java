@@ -3,4 +3,5 @@ module goedegep.markdown.app {
   
   requires transitive goedegep.jfx;
   requires goedegep.myworld.common;
+  requires org.commonmark;
 }

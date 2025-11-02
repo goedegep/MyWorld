@@ -330,7 +330,6 @@ class VideosTableDescriptor extends EObjectTableDescriptor<Video> {
       })      
   );
   
-  @SuppressWarnings("serial")
   private static Map<Operation, TableRowOperationDescriptor<Video>> rowOperations = new HashMap<>() {
     {
       put(Operation.OPEN, new TableRowOperationDescriptor<>("Play"));
@@ -350,7 +349,7 @@ class VideosTableDescriptor extends EObjectTableDescriptor<Video> {
     VideoPlayCellFactory myInfoPlayCellFactory = new VideoPlayCellFactory(customization, IMAGE_HEIGHT);
     playColumnDescriptor.setCellFactory(myInfoPlayCellFactory);
     
-    VideoImageCellFactory imageListCellFactory = new VideoImageCellFactory(customization, IMAGE_HEIGHT, MediaRegistry.musicDataDirectory);
+    VideoImageCellFactory imageListCellFactory = new VideoImageCellFactory(customization, IMAGE_HEIGHT, MediaRegistry.getInstance().getMusicDataDirectory());
     imageColumnDescriptor.setCellFactory(imageListCellFactory);
     
     setComparator(new VideoComparator());

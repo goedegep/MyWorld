@@ -4,7 +4,7 @@ module goedegep.media.app {
   exports goedegep.media.app.logic;
 
 //  requires goedegep.appgen;
-  requires goedegep.jfx;
+  requires transitive goedegep.jfx;
   requires transitive goedegep.media.mediadb.model;
 //  requires transitive goedegep.model.properties;
 //  requires goedegep.util;

@@ -46,7 +46,7 @@ public class ImportAlbumPicturesWindow extends JfxStage {
     this.album = album;
     componentFactory = customization.getComponentFactoryFx();
     
-    picturesFolderName = MediaRegistry.musicDataDirectory + "\\" + "Pictures";
+    picturesFolderName = MediaRegistry.getInstance().getMusicDataDirectory() + "\\" + "Pictures";
 
     createGUI();
   }
@@ -185,11 +185,11 @@ public class ImportAlbumPicturesWindow extends JfxStage {
     Button button;
     
     button = componentFactory.createButton("Copy pictures", "Copy images to Pictures folder");
-    button.setOnAction(e -> copyPictures());
+    button.setOnAction(_ -> copyPictures());
     hBox.getChildren().add(button);
     
     button = componentFactory.createButton("Cancel", "Exit window without copying");
-    button.setOnAction(e -> closeWindow());
+    button.setOnAction(_ -> closeWindow());
     hBox.getChildren().add(button);
     
     return hBox;

@@ -2,7 +2,6 @@ package goedegep.media.mediadb.app.guifx;
 
 import java.util.logging.Logger;
 
-import goedegep.jfx.ComponentFactoryFx;
 import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.JfxStage;
 import goedegep.jfx.objectcontrols.ObjectControlFolderSelecter;
@@ -41,7 +40,7 @@ public class DuneWindow extends JfxStage {
   private static final String WINDOW_TITLE   = "Dune HD TV-303D synchronization";
   private static final String NEW_LINE = System.getProperty("line.separator");
   
-  private ComponentFactoryFx componentFactory;
+  private MediaRegistry mediaRegistry;
   private MediaAppResourcesFx appResources;
   private String currentMusicFolder = null;
   private String currentDuneMusicFolderPath = null;
@@ -65,11 +64,11 @@ public class DuneWindow extends JfxStage {
   public DuneWindow(CustomizationFx customization) {
     super(customization, WINDOW_TITLE);
     
-    componentFactory = customization.getComponentFactoryFx();
+    mediaRegistry = MediaRegistry.getInstance();
     appResources = (MediaAppResourcesFx) getResources();
-    currentMusicFolder = MediaRegistry.musicDirectory;
-    currentDuneMusicFolderPath = MediaRegistry.duneMusicFolderPath;
-    currentDunePlaylistsFolderPath = MediaRegistry.dunePlaylistsFolderPath;
+    currentMusicFolder = mediaRegistry.getMusicDirectory();
+    currentDuneMusicFolderPath = mediaRegistry.getDuneMusicFolderPath();
+    currentDunePlaylistsFolderPath = mediaRegistry.getDunePlaylistsFolderPath();
     
     createGUI();
   }
@@ -121,7 +120,7 @@ public class DuneWindow extends JfxStage {
     
     // Second row
     synchronizeToDuneCheckBox = componentFactory.createCheckBox("Synchronize to Dune", false);
-    synchronizeToDuneCheckBox.selectedProperty().addListener(e -> handleChanges());
+    synchronizeToDuneCheckBox.selectedProperty().addListener(_ -> handleChanges());
     grid.add(synchronizeToDuneCheckBox, 0, 1);
     
     label = componentFactory.createLabel("Dune music folder path:");
@@ -131,7 +130,7 @@ public class DuneWindow extends JfxStage {
         "Choose folder", "Select  Dune music folder path via a file chooser", "Select the music folder on the Dune", false);
     duneMusicFolderSelecter.setInitialFolderProvider(() -> currentDuneMusicFolderPath);
     Node duneFolderPathTextField = duneMusicFolderSelecter.getControl();
-    duneMusicFolderSelecter.addListener(e -> {
+    duneMusicFolderSelecter.addListener(_ -> {
       currentDuneMusicFolderPath = duneMusicFolderSelecter.getAbsolutePath();
       handleChanges();
       });
@@ -142,7 +141,7 @@ public class DuneWindow extends JfxStage {
     
     // Third row
     updatePlayListsCheckBox = componentFactory.createCheckBox("Update playlists on Dune", false);
-    updatePlayListsCheckBox.selectedProperty().addListener(e -> handleChanges());
+    updatePlayListsCheckBox.selectedProperty().addListener(_ -> handleChanges());
     grid.add(updatePlayListsCheckBox, 0, 2);
     
     label = componentFactory.createLabel("Dune playlist folder path:");
@@ -152,7 +151,7 @@ public class DuneWindow extends JfxStage {
         "Choose folder", "Select Dune playlists folder path via a file chooser", "Select the playlists folder on the Dune", false);
     playListFolderPathSelecter.setInitialFolderProvider(() -> currentDunePlaylistsFolderPath);
     Node playListFolderPathTextField = playListFolderPathSelecter.getControl();
-    playListFolderPathSelecter.addListener(e -> {
+    playListFolderPathSelecter.addListener(_ -> {
       currentDunePlaylistsFolderPath = playListFolderPathSelecter.getAbsolutePath();
       handleChanges();
       });
@@ -258,7 +257,7 @@ public class DuneWindow extends JfxStage {
       currentTask = synchronizeToDuneTask;
 
       // Messages are always error messages and thus are reported as such.
-      synchronizeToDuneTask.messageProperty().addListener((observable, oldValue, newValue) -> {
+      synchronizeToDuneTask.messageProperty().addListener((_, _, newValue) -> {
           LOGGER.severe("Message: " + newValue);
           addTextToStatusPanel(NEW_LINE + "Error: " + newValue + NEW_LINE);
       });
@@ -313,7 +312,7 @@ public class DuneWindow extends JfxStage {
       currentTask = updatePlaylistsTask;
 
       // Messages are always error messages and thus are reported as such.
-      updatePlaylistsTask.messageProperty().addListener((observable, oldValue, newValue) -> {
+      updatePlaylistsTask.messageProperty().addListener((_, _, newValue) -> {
           LOGGER.severe("Message: " + newValue);
           addTextToStatusPanel(NEW_LINE + "Error: " + newValue + NEW_LINE);
       });

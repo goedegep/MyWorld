@@ -72,6 +72,7 @@ public class InvoicesAndPropertiesMenuWindow extends JfxStage {
 
   private CustomizationFx customization;
   private ComponentFactoryFx componentFactory;
+  private InvoicesAndPropertiesRegistry invoicesAndPropertiesRegistry;
   private InvoicesAndPropertiesAppResourcesFx appResources;
 //  private EMFResource<InvoicesAndProperties> invoicesAndPropertiesResource;
   private InvoicesAndProperties invoicesAndProperties;
@@ -94,6 +95,7 @@ public class InvoicesAndPropertiesMenuWindow extends JfxStage {
     
     componentFactory = getComponentFactory();
     appResources = (InvoicesAndPropertiesAppResourcesFx) getResources();
+    invoicesAndPropertiesRegistry = InvoicesAndPropertiesRegistry.getInstance();
     invoicesAndProperties = invoicesAndPropertiesService.getInvoicesAndPropertiesResource().getEObject();
     
     createGUI();
@@ -107,14 +109,7 @@ public class InvoicesAndPropertiesMenuWindow extends JfxStage {
       
     });
     
-    invoicesAndPropertiesService.getInvoicesAndPropertiesResource().fileNameProperty().addListener(new ChangeListener<String>() {
-
-      @Override
-      public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-        updateTitle();
-      }
-      
-    });
+    invoicesAndPropertiesService.getInvoicesAndPropertiesResource().uriProperty().addListener((_, _, _) -> updateTitle());
 
     updateTitle();
   }
@@ -198,15 +193,15 @@ public class InvoicesAndPropertiesMenuWindow extends JfxStage {
     menu.getItems().add(menuItem);
 
     // File: Edit property descriptors
-    if (InvoicesAndPropertiesRegistry.developmentMode) {
-      MenuUtil.addMenuItem(menu, "Edit property descriptors", e -> showPropertyDescriptorsEditor());
+    if (invoicesAndPropertiesRegistry.isDevelopmentMode()) {
+      MenuUtil.addMenuItem(menu, "Edit property descriptors", _ -> showPropertyDescriptorsEditor());
     }
 
     // File: Edit user settings
-    MenuUtil.addMenuItem(menu, "Edit user settings", e -> showPropertiesEditor());
+    MenuUtil.addMenuItem(menu, "Edit user settings", _ -> showPropertiesEditor());
     
     // File: Dump data
-    MenuUtil.addMenuItem(menu, "Dump data", e-> dumpData());
+    MenuUtil.addMenuItem(menu, "Dump data", _-> dumpData());
     
 
     menuBar.getMenus().add(menu);
@@ -216,7 +211,7 @@ public class InvoicesAndPropertiesMenuWindow extends JfxStage {
     menu = componentFactory.createMenu("Help");
 
     // Help: About
-    MenuUtil.addMenuItem(menu, "About", e-> showHelpAboutDialog());
+    MenuUtil.addMenuItem(menu, "About", _-> showHelpAboutDialog());
 
     menuBar.getMenus().add(menu);
 
@@ -266,7 +261,7 @@ public class InvoicesAndPropertiesMenuWindow extends JfxStage {
       for (FileReference fileReference: candidates) {
         File file = new File(fileReference.getFile());
         if (!file.isAbsolute()) {
-          file = new File(InvoicesAndPropertiesRegistry.propertyRelatedFilesFolder, fileReference.getFile());
+          file = new File(invoicesAndPropertiesRegistry.getPropertyRelatedFilesFolder(), fileReference.getFile());
         }
         
         imageFiles.add(file);
@@ -297,11 +292,11 @@ public class InvoicesAndPropertiesMenuWindow extends JfxStage {
   }
 
   private void showPropertyDescriptorsEditor() {
-    new PropertyDescriptorsEditorFx(customization, InvoicesAndPropertiesRegistry.propertyDescriptorsResource);
+    new PropertyDescriptorsEditorFx(customization, invoicesAndPropertiesRegistry.getPropertyDescriptorsFileURI());
   }
 
   private void showPropertiesEditor() {
-    new PropertiesEditor("Invoices and Properties properties", customization, InvoicesAndPropertiesRegistry.propertyDescriptorsResource, InvoicesAndPropertiesRegistry.customPropertiesFile);
+    new PropertiesEditor("Invoices and Properties properties", customization, invoicesAndPropertiesRegistry.getPropertyDescriptorsFileURI(), invoicesAndPropertiesRegistry.getUserPropertiesFileName());
   }
 
   private void dumpData() {
@@ -309,7 +304,7 @@ public class InvoicesAndPropertiesMenuWindow extends JfxStage {
     if (dataDumpFile != null) {
       fileChooser.setInitialFileName(dataDumpFile.getAbsolutePath());
     } else {
-      File file = new File(InvoicesAndPropertiesRegistry.invoicesAndPropertiesFile);
+      File file = new File(invoicesAndPropertiesRegistry.getInvoicesAndPropertiesFile());
       fileChooser.setInitialDirectory(new File(file.getParent()));
     }
     ExtensionFilter extFilter = new FileChooser.ExtensionFilter("Text files", "*.txt");
@@ -347,10 +342,10 @@ public class InvoicesAndPropertiesMenuWindow extends JfxStage {
         "About Invoices and Properties",
         appResources.getApplicationImage(ImageSize.SIZE_3),
         null, 
-        InvoicesAndPropertiesRegistry.shortProductInfo + NEWLINE +
-        "Versie: " + InvoicesAndPropertiesRegistry.version + NEWLINE +
-        InvoicesAndPropertiesRegistry.copyrightMessage + NEWLINE +
-        "Auteur: " + InvoicesAndPropertiesRegistry.author)
+        invoicesAndPropertiesRegistry.getShortProductInfo() + NEWLINE +
+        "Versie: " + invoicesAndPropertiesRegistry.getVersion() + NEWLINE +
+        invoicesAndPropertiesRegistry.getCopyrightMessage() + NEWLINE +
+        "Auteur: " + invoicesAndPropertiesRegistry.getAuthor())
         .showAndWait();
   }
   

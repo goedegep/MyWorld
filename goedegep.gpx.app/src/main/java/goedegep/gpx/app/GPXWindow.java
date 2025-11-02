@@ -25,7 +25,6 @@ import goedegep.gpx.model.GpxType;
 import goedegep.gpx.model.TrkType;
 import goedegep.gpx.model.TrksegType;
 import goedegep.gpx.model.WptType;
-import goedegep.jfx.ComponentFactoryFx;
 import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.JfxStage;
 import goedegep.jfx.MenuUtil;
@@ -61,8 +60,7 @@ public class GPXWindow extends JfxStage {
   private static final String NEWLINE = System.getProperty("line.separator");
   private static final String WINDOW_TITLE = "GPX Editor";
 
-  private CustomizationFx customization;
-  private ComponentFactoryFx componentFactory;
+  private GPXRegistry gpxRegistry;
   private EMFResource<DocumentRoot> gpxResource = null;
   private EObjectTreeView gpxTreeView;
   private MapView mapView;
@@ -82,14 +80,13 @@ public class GPXWindow extends JfxStage {
   public GPXWindow(CustomizationFx customization, String fileToOpen) {
     super(customization, WINDOW_TITLE);
 
-    this.customization = customization;
-    componentFactory = customization.getComponentFactoryFx();
+    gpxRegistry = GPXRegistry.getInstance();
     
     createGUI();
     
     gpxResource = GpxUtil.createEMFResource();
     gpxResource.dirtyProperty().addListener((_, _, _) -> updateTitle());
-    gpxResource.fileNameProperty().addListener((_, _, _) -> updateTitle());
+    gpxResource.uriProperty().addListener((_, _, _) -> updateTitle());
     
     updateTitle();
     
@@ -256,7 +253,7 @@ public class GPXWindow extends JfxStage {
     menuItem = componentFactory.createMenuItem("Open in GPSPrune");
     menuItem.setOnAction(new EventHandler<ActionEvent>() {
       public void handle(ActionEvent e) {
-        String fileName = gpxResource.getFileName();
+        String fileName = gpxResource.getURI().toFileString();
         if (fileName != null) {
         String[] args = new String[2];
         args[0] = "--lang=en";
@@ -438,7 +435,7 @@ public class GPXWindow extends JfxStage {
    * Otherwise the specification is saved by calling {@link #handleSaveGpxFileAsRequest}.
    */
   private void handleSaveGpxFileRequest() {
-    if (!gpxResource.getFileName().isEmpty()) {
+    if (gpxResource.getURI() != null) {
       try {
         gpxResource.save();
       } catch (IOException e) {
@@ -483,7 +480,7 @@ public class GPXWindow extends JfxStage {
     	LOGGER.info("Track length: " + track.getLength());
     }
     
-    WGS84BoundingBox gpxBoundingBox = gpxLayer.addGpx(null, gpxResource.getFileName(), gpx);
+    WGS84BoundingBox gpxBoundingBox = gpxLayer.addGpx(null, gpxResource.getURI().toFileString(), gpx);
     if (gpxBoundingBox != null) {
       Double zoomLevel = MapView.getZoomLevel(gpxBoundingBox);
       if (zoomLevel != null) {
@@ -665,14 +662,14 @@ public class GPXWindow extends JfxStage {
    */
   private void showHelpAboutDialog() {
     componentFactory.createApplicationInformationDialog(
-        "About " + GPXRegistry.applicationName,
+        "About " + gpxRegistry.getApplicationName(),
         customization.getResources().getApplicationImage(ImageSize.SIZE_3),
         null, 
         (RunningInEclipse.runningInEclipse() ? "Development Mode"+ NEWLINE : "") +
-        GPXRegistry.shortProductInfo + NEWLINE +
-        "Version: " + GPXRegistry.version + NEWLINE +
-        GPXRegistry.copyrightMessage + NEWLINE +
-        "Author: " + GPXRegistry.author)
+        gpxRegistry.getShortProductInfo() + NEWLINE +
+        "Version: " + gpxRegistry.getVersion() + NEWLINE +
+        gpxRegistry.getCopyrightMessage() + NEWLINE +
+        "Author: " + gpxRegistry.getAuthor())
         .showAndWait();
   }
 
@@ -694,7 +691,7 @@ public class GPXWindow extends JfxStage {
     if (gpxResource.isDirty()) {
       buf.append("*");
     }
-    String fileName = gpxResource.getFileName();
+    String fileName = gpxResource.getURI().toFileString();
     if (fileName == null) {
       fileName = "<NoName>";
     }

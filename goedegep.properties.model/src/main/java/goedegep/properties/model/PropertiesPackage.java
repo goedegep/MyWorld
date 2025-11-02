@@ -232,22 +232,13 @@ public interface PropertiesPackage extends EPackage {
   int PROPERTY_DESCRIPTOR__USER_SETTABLE = 6;
 
   /**
-   * The feature id for the '<em><b>Install Initial Value</b></em>' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int PROPERTY_DESCRIPTOR__INSTALL_INITIAL_VALUE = 7;
-
-  /**
    * The number of structural features of the '<em>Property Descriptor</em>' class.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int PROPERTY_DESCRIPTOR_FEATURE_COUNT = 8;
+  int PROPERTY_DESCRIPTOR_FEATURE_COUNT = 7;
 
   /**
    * The number of operations of the '<em>Property Descriptor</em>' class.
@@ -330,15 +321,6 @@ public interface PropertiesPackage extends EPackage {
    * @ordered
    */
   int FILE_PROPERTY_DESCRIPTOR__USER_SETTABLE = PROPERTY_DESCRIPTOR__USER_SETTABLE;
-
-  /**
-   * The feature id for the '<em><b>Install Initial Value</b></em>' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int FILE_PROPERTY_DESCRIPTOR__INSTALL_INITIAL_VALUE = PROPERTY_DESCRIPTOR__INSTALL_INITIAL_VALUE;
 
   /**
    * The feature id for the '<em><b>File Extensions</b></em>' attribute list.
@@ -632,17 +614,6 @@ public interface PropertiesPackage extends EPackage {
   EAttribute getPropertyDescriptor_UserSettable();
 
   /**
-   * Returns the meta object for the attribute '{@link goedegep.properties.model.PropertyDescriptor#isInstallInitialValue <em>Install Initial Value</em>}'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the meta object for the attribute '<em>Install Initial Value</em>'.
-   * @see goedegep.properties.model.PropertyDescriptor#isInstallInitialValue()
-   * @see #getPropertyDescriptor()
-   * @generated
-   */
-  EAttribute getPropertyDescriptor_InstallInitialValue();
-
-  /**
    * Returns the meta object for class '{@link goedegep.properties.model.FilePropertyDescriptor <em>File Property Descriptor</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -885,14 +856,6 @@ public interface PropertiesPackage extends EPackage {
     	 * @generated
     	 */
     EAttribute PROPERTY_DESCRIPTOR__USER_SETTABLE = eINSTANCE.getPropertyDescriptor_UserSettable();
-
-    /**
-    	 * The meta object literal for the '<em><b>Install Initial Value</b></em>' attribute feature.
-    	 * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-    	 * @generated
-    	 */
-    EAttribute PROPERTY_DESCRIPTOR__INSTALL_INITIAL_VALUE = eINSTANCE.getPropertyDescriptor_InstallInitialValue();
 
     /**
     	 * The meta object literal for the '{@link goedegep.properties.model.impl.FilePropertyDescriptorImpl <em>File Property Descriptor</em>}' class.

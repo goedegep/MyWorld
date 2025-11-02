@@ -3,7 +3,6 @@ package goedegep.events.app;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
@@ -25,8 +24,8 @@ import goedegep.jfx.AppResourcesFx;
 import goedegep.jfx.ComponentFactoryFx;
 import goedegep.jfx.JfxApplication;
 import goedegep.jfx.editor.Editor;
+import goedegep.myworld.common.Registry;
 import goedegep.myworld.common.Service;
-import goedegep.properties.app.PropertiesHandler;
 import goedegep.properties.app.guifx.PropertiesEditor;
 import goedegep.types.model.FileReference;
 import goedegep.util.Result;
@@ -53,6 +52,11 @@ public class EventsService extends Service {
   private static EventsService instance = null;
   
   /**
+   * The EventsRegistry
+   */
+  private EventsRegistry eventsRegistry;
+  
+  /**
    * the {@link EMFResource} for loading and storing the events database.
    */
   private EMFResource<Events> eventsResource;
@@ -71,6 +75,13 @@ public class EventsService extends Service {
     if (instance == null) {
       instance = new EventsService();
       instance.initialize();
+      
+      instance.eventsResource = instance.createEventsResource();
+      if (instance.eventsResource == null) {
+        return null;
+      }
+      
+      instance.events = instance.eventsResource.getEObject();
     }
     
     return instance;
@@ -117,7 +128,7 @@ public class EventsService extends Service {
    */
   public void showPropertiesEditor() {
     new PropertiesEditor("Events properties", customization, null,
-        EventsRegistry.propertyDescriptorsResource, EventsRegistry.customPropertiesFile);
+        eventsRegistry.getPropertyDescriptorsFileURI(), eventsRegistry.getUserPropertiesFileName());
   }
   
   /**
@@ -195,7 +206,7 @@ public class EventsService extends Service {
    * @param event the {@code EventInfo} for which the folder name is requested.
    * @return the name of the folder where the attachments of a {@code event} are stored, or null if this cannot be determined.
    */
-  public static String determineEventFolderName(EventInfo event) {
+  public String determineEventFolderName(EventInfo event) {
     String eventFolderName = deriveEventFolderNameFromAttachments(event);
     
     if (eventFolderName == null) {
@@ -213,8 +224,8 @@ public class EventsService extends Service {
    * @param event the {@code EventInfo} for which the folder name is requested.
    * @return the event folder name derived from the attachments, or null if this cannot be determined.
    */
-  public static String deriveEventFolderNameFromAttachments(EventInfo event) {
-    if (EventsRegistry.eventsFolderName == null) {
+  public String deriveEventFolderNameFromAttachments(EventInfo event) {
+    if (eventsRegistry.getEventsFolderName() == null) {
       return null;
     }
     
@@ -224,13 +235,13 @@ public class EventsService extends Service {
         continue;
       }
       
-      File file = new File(EventsRegistry.eventsFolderName, fileName);
+      File file = new File(eventsRegistry.getEventsFolderName(), fileName);
       if (file != null ) {
         file = file.getParentFile();  // This is the possible event directory
         if (file != null) {
           File eventsFolder = file.getParentFile();
           String eventsFolderName = eventsFolder.getAbsolutePath();
-          if (eventsFolderName != null  &&  eventsFolderName.equals(EventsRegistry.eventsFolderName)) {
+          if (eventsFolderName != null  &&  eventsFolderName.equals(eventsRegistry.getEventsFolderName())) {
             String eventFolderName = file.getAbsolutePath();
             return eventFolderName;
           }
@@ -247,8 +258,8 @@ public class EventsService extends Service {
    * @param event the {@code EventInfo} for which the folder name is requested.
    * @return the event folder derived from the date and title controls, or null if these controls don't have the needed information.
    */
-  public static String deriveEventFolderNameFromDateAndTitle(EventInfo event) {
-    if (EventsRegistry.eventsFolderName == null) {
+  public String deriveEventFolderNameFromDateAndTitle(EventInfo event) {
+    if (eventsRegistry.getEventsFolderName() == null) {
       return null;
     }
     
@@ -265,7 +276,7 @@ public class EventsService extends Service {
     }
     
     String subFolderName = eventDateText + " " + title;
-    File eventFolder = new File(EventsRegistry.eventsFolderName, subFolderName);
+    File eventFolder = new File(eventsRegistry.getEventsFolderName(), subFolderName);
     
     return eventFolder.getAbsolutePath();
   }
@@ -275,22 +286,8 @@ public class EventsService extends Service {
    * 
    * @param eventsResource the {@link EMFResource} for loading and storing the events database.
    */
-  private EventsService() {    
-    try {
-      // Read the properties, which are stored in the registry.
-      URL url = getClass().getResource(EventsRegistry.propertyDescriptorsFile);
-      PropertiesHandler.handleProperties(url, null);
-
-    } catch (IOException e) {
-      JfxApplication.reportException(null, e);
-    }
-    
-    eventsResource = createEventsResource();
-    if (eventsResource == null) {
-      return;
-    }
-    
-    events = eventsResource.getEObject();
+  private EventsService() {
+    eventsRegistry = EventsRegistry.getInstance();
   }
   
   /**
@@ -299,17 +296,17 @@ public class EventsService extends Service {
   private boolean checkThatEventsFileAndFolderExist() {
     boolean returnValue = false;
     
-    File eventsFile = new File(EventsRegistry.eventsFileName);
-    File eventsFolder = new File(EventsRegistry.eventsFolderName);
+    File eventsFile = new File(eventsRegistry.getEventsFileName());
+    File eventsFolder = new File(eventsRegistry.getEventsFolderName());
     
     if (!eventsFile.exists()  ||  !eventsFolder.exists()) {
       StringBuilder buf = new StringBuilder();
       buf.append("The following files and/or folders don't exist yet:").append(NEWLINE);
       if (!eventsFile.exists()) {
-        buf.append("* The events file '").append(EventsRegistry.eventsFileName).append("'").append(NEWLINE);
+        buf.append("* The events file '").append(eventsRegistry.getEventsFileName()).append("'").append(NEWLINE);
       }
       if (!eventsFolder.exists()) {
-        buf.append("* The events folder '").append(EventsRegistry.eventsFolderName).append("'").append(NEWLINE);
+        buf.append("* The events folder '").append(eventsRegistry.getEventsFolderName()).append("'").append(NEWLINE);
       }
       buf.append("""
           If you are just starting to use this application, you may want to edit the User Settings, to set the file and folder names to your preference.
@@ -342,7 +339,7 @@ public class EventsService extends Service {
                   true);
               eventsResource.newEObject();
               try {
-                eventsResource.save(EventsRegistry.eventsFileName);
+                eventsResource.save(eventsRegistry.getEventsFileName());
               } catch (IOException e1) {
                 e1.printStackTrace();
               }
@@ -351,7 +348,7 @@ public class EventsService extends Service {
             
             // Create the events folder if it doesn't exist
             if (!eventsFolder.exists()) {
-              Files.createDirectories(Paths.get(EventsRegistry.eventsFolderName));
+              Files.createDirectories(Paths.get(eventsRegistry.getEventsFolderName()));
             }
             
             returnValue = true; // required file and folders now exist, so we can continue.
@@ -384,19 +381,19 @@ public class EventsService extends Service {
     EMFResource<Events> eventsResource = new EMFResource<>(EventsPackage.eINSTANCE, () -> EventsFactory.eINSTANCE.createEvents(), ".xmi", true);
 
     try {
-      eventsResource.load(EventsRegistry.eventsFileName);
+      eventsResource.load(eventsRegistry.getEventsFileName());
       returnValue = true;
     } catch (IOException e) {
       Alert alert = customization.getComponentFactoryFx().createYesNoConfirmationDialog(
           null,
-          "The file with event information (" + EventsRegistry.eventsFileName + ") doesn't exist yet.",
+          "The file with event information (" + eventsRegistry.getEventsFileName() + ") doesn't exist yet.",
           "Do you want to create this file now?" + NEWLINE +
           "If you choose \"No\" the events application will not be started.");
       Optional<ButtonType> response = alert.showAndWait();
       if (response.isPresent()  &&  response.get() == ButtonType.YES) {
         eventsResource.newEObject();
         try {
-          eventsResource.save(EventsRegistry.eventsFileName);
+          eventsResource.save(eventsRegistry.getEventsFileName());
           returnValue = true;
         } catch (IOException e1) {
           e1.printStackTrace();
@@ -406,11 +403,6 @@ public class EventsService extends Service {
 
     return returnValue ? eventsResource : null;
   }
-
-  @Override
-  protected void setDevelopmentMode(boolean developmentMode) {
-    EventsRegistry.developmentMode = developmentMode;
-  }
   
   @Override
   protected void readApplicationProperties() {
@@ -418,8 +410,8 @@ public class EventsService extends Service {
     try (InputStream in = getClass().getResourceAsStream("EventsApplication.properties")) {
         props.load(in);
         
-        EventsRegistry.version = props.getProperty("events.app.version");
-        EventsRegistry.applicationName = props.getProperty("events.app.name");
+        eventsRegistry.setVersion(props.getProperty("events.app.version"));
+        eventsRegistry.setApplicationName(props.getProperty("events.app.name"));
     } catch (Exception e) {
       JfxApplication.reportException(null, e);
       System.exit(1);
@@ -440,6 +432,11 @@ public class EventsService extends Service {
   @Override
   protected AppResourcesFx getAppResourcesFxClass() {
     return new EventsAppResources();
+  }
+  
+  @Override
+  protected Registry getRegistry() {
+    return eventsRegistry;
   }
 }
 

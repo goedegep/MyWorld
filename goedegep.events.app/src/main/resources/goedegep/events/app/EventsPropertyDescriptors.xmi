@@ -3,25 +3,6 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:properties="http://goedegep.properties/model"
     name="Events" description="Standard settings for the Events application."
     packageName="goedegep.events.app" registryClassName="EventsRegistry">
-  <propertyDescriptors name="author" description="Author of this program" displayName="Author"
-      initialValue="Peter Goedegebure" installInitialValue="true"/>
-  <propertyDescriptors xsi:type="properties:FilePropertyDescriptor" type="FILE" name="configurationFile"
-      description="Name of the file with configuration information." displayName="Configuration file name"
-      initialValue="EventsConfiguration.xmi" installInitialValue="true">
-    <fileExtensions>xmi</fileExtensions>
-  </propertyDescriptors>
-  <propertyDescriptors name="copyrightMessage" description="Copyright informatie."
-      displayName="Copyright Text" initialValue="Copyright (c) 2001-2022" installInitialValue="true"/>
-  <propertyDescriptors xsi:type="properties:FilePropertyDescriptor" type="FILE" name="customPropertiesFile"
-      description="Name of the file with user preferences." displayName="User preferences file name"
-      initialValue="EventsUserPreferences.xmi" installInitialValue="true">
-    <fileExtensions>xmi</fileExtensions>
-  </propertyDescriptors>
-  <propertyDescriptors name="shortProductInfo" description="A short description of this program."
-      displayName="Short product information" initialValue="Events - Information about events"
-      installInitialValue="true"/>
-  <propertyDescriptors name="version" description="Software version information."
-      displayName="Version" initialValue="0.1" installInitialValue="true"/>
   <propertyDescriptors xsi:type="properties:FilePropertyDescriptor" type="FILE" name="eventsFileName"
       description="Name of the file with information about all events." displayName="Events file name"
       initialValue="D:\Database\Gebeurtenissen\Gebeurtenissen.xmi" userSettable="true" installInitialValue="true">

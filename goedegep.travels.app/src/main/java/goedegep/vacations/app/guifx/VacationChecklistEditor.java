@@ -53,14 +53,7 @@ public class VacationChecklistEditor extends JfxStage {
       
     });
     
-    vacationChecklistResource.fileNameProperty().addListener(new ChangeListener<String>() {
-
-      @Override
-      public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-        updateTitle();
-      }
-      
-    });
+    vacationChecklistResource.uriProperty().addListener((_, _, _) -> updateTitle());
     
     show();
   }

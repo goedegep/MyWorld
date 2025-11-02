@@ -5,7 +5,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.MalformedURLException;
-import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -25,9 +24,9 @@ import org.eclipse.emf.ecore.xmi.XMLResource;
 
 import goedegep.util.file.FileUtils;
 import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
+import javafx.beans.property.SimpleObjectProperty;
 
 /**
  * This class handles an EMF {@link Resource}.
@@ -111,25 +110,55 @@ import javafx.beans.property.StringProperty;
  * @param <E> The data type handled by this resource.
  */
 public class EMFResource<E extends EObject> {
+  @SuppressWarnings("unused")
   private static final Logger LOGGER = Logger.getLogger(EMFResource.class.getName());
-  private static final String DEFAULT_URI  = "http:/goedegep.emfsample/model/defaultfile";
   
-  private EmfObjectCreator<E> emfObjectCreator;  // Used to create a new object of type E.
-  private boolean createBackupFileOnSave;        // If true, the save() method makes a backup of the file before saving.
-  
-  private ResourceSet resourceSet = null;        // needed to handle a Resource
-  
-  /*
-   * When a Resource is created, it is always coupled to a file.
-   * Therefore, to allow creating and editing an object before any load or save operation, the object is stored
-   * separately in eObject. As soon as the resource is created, the object is added to it (and eObject is set to null).
+  /**
+   * Functional interface to create a new instance of type E.
    */
-  private Resource resource = null;              // the current resource
-  private URI defaultURI = null;
+  private EmfObjectCreator<E> emfObjectCreator;
   
-  private EContentAdapter eContentAdapter = null;  // to detect changes in the resource.
-  private BooleanProperty dirty = new SimpleBooleanProperty();  // indicates whether there are unsaved changes.
-  private StringProperty fileNameProperty = new SimpleStringProperty();    // the last known file from which the resource was loaded, or to which it was saved
+  /**
+   * If true, the save() method makes a backup of the file before saving.
+   */
+  private boolean createBackupFileOnSave;
+  
+  /**
+   * An {@link EMFResourceSet} needed to handle a Resource.
+   */
+  private ResourceSet resourceSet = null;
+  
+  /**
+   * The {@link Resource} handled by this class.
+   * <p>
+   * When no file name/URI is known yet, the resource if for a dummy URI.
+   * By always having a Resource, it is possible to find references using EcoreUtil.UsageCrossReferencer.find(eObject, resourceSet).
+   */
+  private Resource resource = null;
+  
+  /**
+   * Dummy URI used when no file is yet known.
+   */
+  private static URI dummyURI = URI.createURI("http:/goedegep.dummy/dummyfile");
+  
+  /**
+   * An {@link EContentAdapter} to detect changes in the resource.
+   */
+  private EContentAdapter eContentAdapter = null;
+  
+  /**
+   * Indicaton of whether there are unsaved changes or not.
+   */
+  private BooleanProperty dirty = new SimpleBooleanProperty();
+  
+  /**
+   * The current URI of the resource file.
+   */
+  private ObjectProperty<URI> uriProperty = new SimpleObjectProperty<>();
+  
+  /**
+   * Listeners for changes in the resource.
+   */
   private List<EMFNotificationListener> emfNotificationListeners = new ArrayList<>();
   
 
@@ -155,13 +184,10 @@ public class EMFResource<E extends EObject> {
    * @param ePackage dummy parameter, just to make sure the EPackage is registered.
    * @param emfObjectCreator method (functional interface) to create a new instance of type E.
    */
-  public EMFResource(EPackage ePackage, EmfObjectCreator<E> emfObjectCreator, String fileExtension, boolean createBackupFileOnSave) {
-    LOGGER.info("=> ePackage="  + ePackage.getName());
-    
+  public EMFResource(EPackage ePackage, EmfObjectCreator<E> emfObjectCreator, String fileExtension, boolean createBackupFileOnSave) {    
     this.emfObjectCreator = emfObjectCreator;
     this.createBackupFileOnSave = createBackupFileOnSave;
     dirty.set(false);
-    updateFileNameProperty();
     
     eContentAdapter = new EContentAdapter() {
 
@@ -170,7 +196,6 @@ public class EMFResource<E extends EObject> {
        */
       @Override
       public void notifyChanged(Notification notification) {
-//        LOGGER.info(EmfUtil.printNotification(notification));
         
         super.notifyChanged(notification);
         dirty.set(true);
@@ -181,27 +206,15 @@ public class EMFResource<E extends EObject> {
     
     resourceSet = EMFResourceSet.getResourceSet();
     
-    defaultURI = URI.createURI(DEFAULT_URI + fileExtension);
-    resource = resourceSet.createResource(defaultURI);
+    resource = resourceSet.createResource(dummyURI);
+    uriProperty.set(null);
 
     // disable DTD resolution
     Map<String, Boolean> parserFeatures = new HashMap<>();
     parserFeatures.put("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
     resourceSet.getLoadOptions().put(XMLResource.OPTION_PARSER_FEATURES, parserFeatures);
     
-    LOGGER.info("<=");
   }
-  
-//  /**
-//   * Add a Resource.Factory for a file extension.
-//   * 
-//   * @param fileExtension the file extension (e.g. "gpx").
-//   * @param resourceFactory the Resource.Factory for files with this extension.
-//   */
-//  public void addResourceFactoryForFileExtension(String fileExtension, Resource.Factory resourceFactory) {
-//    resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap().put(fileExtension, resourceFactory);
-//    
-//  }
   
   /**
    * Create a new instance of type E.
@@ -210,6 +223,11 @@ public class EMFResource<E extends EObject> {
    */
   public E newEObject() {
     E newEObject = emfObjectCreator.createEObject();
+    
+    E currentEObject = getEObject();
+    if (currentEObject != null) {
+      currentEObject.eAdapters().remove(eContentAdapter);
+    }
     
     resource.getContents().clear();
     resource.getContents().add(newEObject);
@@ -228,31 +246,12 @@ public class EMFResource<E extends EObject> {
    * @param resourceFileName the name of the resource file.
    * @return the top level EObject of the resource.
    * @throws FileNotFoundException if the specified file doesn't exist.
+   * @throws MalformedURLException 
    */
-  public E load(URL resourceURL) throws IOException, FileNotFoundException {
-//    LOGGER.severe("=> resourceFileName="  + resourceURL);
-    
-    URI fileURI = URI.createURI(resourceURL.toString());
-    resource.unload();
-    resource.setURI(fileURI);
-//    try {
-      resource.load(null);
-//    } catch (IOException e) {
-//      e.printStackTrace();
-//    }
-        
-    if (resource.getContents().size() != 1) {
-      throw new RuntimeException("Wrong number of elements in contents: " + resource.getContents().size());
-    }
-    LOGGER.info("<= " + resource.getContents().get(0).toString());
-    
-    @SuppressWarnings("unchecked")
-    E retval = (E) resource.getContents().get(0);
-    dirty.set(false);
-    retval.eAdapters().add(eContentAdapter);
-    updateFileNameProperty();
-    
-    return retval;
+  public E load(String resourceFileName) throws IOException, FileNotFoundException {
+    java.net.URI resourceURI = Path.of(resourceFileName).toUri();
+
+    return load(resourceURI);    
   }
   
   /**
@@ -263,19 +262,25 @@ public class EMFResource<E extends EObject> {
    * @param resourceFileName the name of the resource file.
    * @return the top level EObject of the resource.
    * @throws FileNotFoundException if the specified file doesn't exist.
-   * @throws MalformedURLException 
    */
-  public E load(String resourceFileName) throws IOException, FileNotFoundException {
-    java.net.URI resourceURI = Path.of(resourceFileName).toUri();
-//    java.net.URI resourceURI = java.net.URI.create("file:" + resourceFileName);
-
-    URL resourceURL = null;
-    try {
-      resourceURL = resourceURI.toURL();
-    } catch (MalformedURLException e) {
-      throw new FileNotFoundException(resourceFileName);
+  public E load(java.net.URI resourceURL) throws IOException, FileNotFoundException {
+    URI fileURI = URI.createURI(resourceURL.toString());
+    
+    resource.unload();
+    resource.setURI(fileURI);
+    uriProperty.set(resource.getURI());
+    resource.load(null);
+        
+    if (resource.getContents().size() != 1) {
+      throw new RuntimeException("Wrong number of elements in contents: " + resource.getContents().size());
     }
-    return load(resourceURL);    
+    
+    @SuppressWarnings("unchecked")
+    E retval = (E) resource.getContents().get(0);
+    dirty.set(false);
+    retval.eAdapters().add(eContentAdapter);
+    
+    return retval;
   }
   
   /**
@@ -284,24 +289,20 @@ public class EMFResource<E extends EObject> {
    * @throws IOException Thrown if saving to the file failed.
    */
   public void save() throws IOException {
-    LOGGER.info("=>");
 
-    if (resource.getURI() == defaultURI) {
+    if (resource.getURI() == dummyURI) {
       throw new RuntimeException("No current file name. This method can only be called if there is a current file name.");
     }
 
     if (createBackupFileOnSave) {
-      File file = new File(fileNameProperty.get());
+      File file = new File(uriProperty.get().toFileString());
       String directory = file.getParent();
       String fileName = file.getName();
-      LOGGER.info("directory: " + directory + ", fileName: " + fileName);
       FileUtils.moveFileToBackupFolder(directory, fileName, true);
     }
 
     resource.save(null);
     dirty.set(false);
-
-    LOGGER.info("<=");
   }
   
   /**
@@ -313,35 +314,23 @@ public class EMFResource<E extends EObject> {
    * @throws IOException Thrown if saving to the file failed.
    */
   public void save(String resourceFileName) throws IOException {
-    LOGGER.info("=> resourceFileName=" + resourceFileName);
         
     Path resourceFilePath = Paths.get(resourceFileName).toAbsolutePath().normalize();
-    LOGGER.fine("path=" + resourceFilePath.toString());
         
     URI fileURI = URI.createFileURI(resourceFilePath.toString());
     resource.setURI(fileURI);
+    uriProperty.set(resource.getURI());
     
-    try {
-      resource.save(null);
-      dirty.set(false);
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
-    updateFileNameProperty();
-    
-    LOGGER.info("<=");
+    save();    
   }
     
   /**
    * Unload the resource.
    */
   public void unload() {
-    LOGGER.info("=>");
     
     resource.unload();
     dirty.set(false);
-    
-    LOGGER.info("<=");
   }
   
   /**
@@ -350,19 +339,16 @@ public class EMFResource<E extends EObject> {
    * The current resource file is deleted and the resource is unloaded.
    */
   public void delete() {
-    LOGGER.info("=>");
     
     try {
       resource.delete(null);
-      resourceSet.getResources().remove(resource);
-      resource = resourceSet.createResource(defaultURI);
-
+      resource = resourceSet.createResource(dummyURI);
+      uriProperty.set(null);
       dirty.set(false);
     } catch (IOException e) {
       e.printStackTrace();
     }
     
-    LOGGER.info("<=");
   }
   
   /**
@@ -384,34 +370,50 @@ public class EMFResource<E extends EObject> {
   }
   
   /**
-   * Get the 'fileName' property
-   * @return
+   * Get the resource file URI property.
+   * 
+   * @return the current URI property.
    */
-  public StringProperty fileNameProperty() {
-    return fileNameProperty;
+  public ObjectProperty<URI> uriProperty() {
+    return uriProperty;
   }
   
   /**
-   * Get the absolute pathname of the resource file.
+   * Get the URI of the resource file.
    * 
    * @return the absolute pathname of the resource file.
    */
+  public URI getURI() {
+    return uriProperty.get();
+  }
+  
+  /**
+   * Get file name of the resource file. This is a String representation of the URI of the resource file.
+   * 
+   * @return file name of the resource file.
+   */
   public String getFileName() {
-    return fileNameProperty.get();
+    URI uri = uriProperty.get();
+    
+    return uri != null ? uri.toFileString() : null;
   }
   
   /**
    * Set the absolute pathname of the resource file.
-   * 
-   * @return the absolute pathname of the resource file.
    */
   public void setFileName(String resourceFileName) {
     Path resourceFilePath = Paths.get(resourceFileName).toAbsolutePath().normalize();
-    LOGGER.fine("path=" + resourceFilePath.toString());
-        
-    URI fileURI = URI.createFileURI(resourceFilePath.toString());
-    resource.setURI(fileURI);
-    updateFileNameProperty();
+    java.net.URI  uri = resourceFilePath.toUri();
+    setFileURI(uri);        
+  }
+  
+  /**
+   * Set the URI of the resource file.
+   */
+  public void setFileURI(java.net.URI resourceFileURI) {
+    URI uri = URI.createURI(resourceFileURI.toString());
+    resource.setURI(uri);
+    uriProperty.set(resource.getURI());
   }
   
   /**
@@ -419,9 +421,15 @@ public class EMFResource<E extends EObject> {
    * 
    * @return the current EObject value, which may be null.
    */
+  @SuppressWarnings("unchecked")
   public E getEObject() {
-    @SuppressWarnings("unchecked")
-    E retval = (E) resource.getContents().get(0);
+    E retval = null;
+    
+    List<EObject> contents = resource.getContents();
+    if (!contents.isEmpty()) {
+      retval = (E) resource.getContents().get(0);
+    }
+     
     return retval;
   }
   
@@ -431,9 +439,14 @@ public class EMFResource<E extends EObject> {
    * Any current instance will be discarded.
    */
   public void setEObject(E eObject) {
+    E currentEObject = getEObject();
+    if (currentEObject != null) {
+      currentEObject.eAdapters().remove(eContentAdapter);
+    }
+    
     resource.getContents().clear();
     resource.getContents().add(eObject);
-    
+
     dirty.set(false);
     eObject.eAdapters().add(eContentAdapter);
   }
@@ -466,23 +479,5 @@ public class EMFResource<E extends EObject> {
       emfNotificationListener.notifyChanged(notification);
     }
   }
-  
-  /**
-   * Update the 'fileName' property.
-   * <p>
-   * The filename is obtained from the URI known to the resource.
-   */
-  private void updateFileNameProperty() {
-    String newFileName = null;
-
-    if (resource != null) {
-      URI uri = resource.getURI();
-      if (uri != null) {
-        newFileName = uri.toFileString();
-      }
-    }
-
-    fileNameProperty.set(newFileName);
-  }
-  
+    
 }

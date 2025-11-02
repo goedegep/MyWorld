@@ -16,7 +16,6 @@ import org.eclipse.emf.common.util.TreeIterator;
 import org.eclipse.emf.common.util.WrappedException;
 import org.eclipse.emf.ecore.EObject;
 
-import goedegep.jfx.ComponentFactoryFx;
 import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.JfxStage;
 import goedegep.jfx.eobjecttreeview.EObjectTreeView;
@@ -146,7 +145,7 @@ public class FilesControlledWindow extends JfxStage {
   private static final PCToolsPackage PC_TOOLS_PACKAGE = PCToolsPackage.eINSTANCE;  
   private static final PCToolsFactory PCTOOLS_FACTORY = PCToolsFactory.eINSTANCE;
   
-  private ComponentFactoryFx componentFactory = null;
+  private PCToolsRegistry pcToolsRegistry = null;
   private EMFResource<DiscStructureSpecification> emfResource = null;
   private DiscStructureSpecification discStructureSpecification = null;
   private EObjectTreeView treeView = null;
@@ -170,17 +169,18 @@ public class FilesControlledWindow extends JfxStage {
     LOGGER.info("=>");
     
     componentFactory = customization.getComponentFactoryFx();
+    pcToolsRegistry = PCToolsRegistry.getInstance();
     
     emfResource = new EMFResource<>(
         PCToolsPackage.eINSTANCE,
         () -> PCToolsFactory.eINSTANCE.createDiscStructureSpecification(), ".xmi");
-    emfResource.dirtyProperty().addListener((observable, oldValue, newValue) -> updateTitle());
+    emfResource.dirtyProperty().addListener((_, _, _) -> updateTitle());
     
     createControls();
     createGUI();
 
-    if (PCToolsRegistry.defaultDiscStructureSpecificationFile != null) {
-      openDiscStructureSpecification(PCToolsRegistry.defaultDiscStructureSpecificationFile);
+    if (pcToolsRegistry.getDefaultDiscStructureSpecificationFile() != null) {
+      openDiscStructureSpecification(pcToolsRegistry.getDefaultDiscStructureSpecificationFile());
     } else {
       newDiscStructureSpecification();
     }
@@ -214,7 +214,7 @@ public class FilesControlledWindow extends JfxStage {
   private void createGUI() {
     BorderPane mainPane = new BorderPane();
     
-    mainPane.setTop(createMenuBar(PCToolsRegistry.developmentMode));
+    mainPane.setTop(createMenuBar(pcToolsRegistry.isDevelopmentMode()));
     
     HBox centerLayout = new HBox();
     
@@ -279,30 +279,30 @@ public class FilesControlledWindow extends JfxStage {
     
     // File/New Disc Structure Specification
     menuItem = componentFactory.createMenuItem("New Disc Structure Specification");
-    menuItem.setOnAction((e) -> newDiscStructureSpecification());
+    menuItem.setOnAction((_) -> newDiscStructureSpecification());
     menu.getItems().add(menuItem);
     
     // File/Open Disc Structure Specification ...
     menuItem = componentFactory.createMenuItem("Open Disc Structure Specification ...");
-    menuItem.setOnAction((e) -> openDiscStructureSpecification());
+    menuItem.setOnAction((_) -> openDiscStructureSpecification());
     menu.getItems().add(menuItem);
     
     // File/Save Disc Structure Specification
     menuItem = componentFactory.createMenuItem("Save Disc Structure Specification");
-    menuItem.setOnAction((e) -> saveDiscStructureSpecification());
+    menuItem.setOnAction((_) -> saveDiscStructureSpecification());
     menuItem.setAccelerator(new KeyCodeCombination(KeyCode.S, KeyCombination.CONTROL_DOWN));
     menu.getItems().add(menuItem);
     
     // File/Save Disc Structure Specification as ...
     menuItem = componentFactory.createMenuItem("Save Disc Structure Specification as ...");
-    menuItem.setOnAction((e) -> saveDiscStructureSpecificationAs());
+    menuItem.setOnAction((_) -> saveDiscStructureSpecificationAs());
     menu.getItems().add(menuItem);
     
     // File/Generate Disc Structure Report
     // This menu item toggles between "Generate Disc Structure Report" (if generatingDiscStructureReport is false) and
     // "Cancel Disc Structure Report generation" (if generatingDiscStructureReport is true).
     generateDiscStructureReportMenuItem = componentFactory.createMenuItem("Generate Disc Structure Report");
-    generateDiscStructureReportMenuItem.setOnAction((e) -> {
+    generateDiscStructureReportMenuItem.setOnAction((_) -> {
       if (generatingDiscStructureReport) {
         // clean up
         controlledSetBuildingTask.cancel();
@@ -318,14 +318,14 @@ public class FilesControlledWindow extends JfxStage {
     
     // File/Print
     menuItem = componentFactory.createMenuItem("Print");
-    menuItem.setOnAction((e) -> System.out.println(treeView.toString()));
+    menuItem.setOnAction((_) -> System.out.println(treeView.toString()));
     menu.getItems().add(menuItem);
     
     // File/Use Test Disc Structure Specification (Development only)
     if (developmentMode) {
       
       menuItem = componentFactory.createMenuItem("Use Test Disc Structure Specification");
-      menuItem.setOnAction((e) -> {
+      menuItem.setOnAction((_) -> {
         createTestDiscStructureSpecification();
         treeView.setEObject(discStructureSpecification);
       });
@@ -333,7 +333,7 @@ public class FilesControlledWindow extends JfxStage {
       
       // File/Use hard-coded Disc Structure Specification (Development only)
       menuItem = componentFactory.createMenuItem("Use hard-coded Disc Structure Specification");
-      menuItem.setOnAction((e) -> {
+      menuItem.setOnAction((_) -> {
         createDiscStructureSpecification();
         treeView.setEObject(discStructureSpecification);
       });
@@ -342,7 +342,7 @@ public class FilesControlledWindow extends JfxStage {
     
     // File/Exit
     menuItem = componentFactory.createMenuItem("Exit");
-    menuItem.setOnAction((e) -> Platform.exit());
+    menuItem.setOnAction((_) -> Platform.exit());
     menu.getItems().add(menuItem);
     
     menuBar.getMenus().add(menu);
@@ -352,7 +352,7 @@ public class FilesControlledWindow extends JfxStage {
     
     // Help/Help
     menuItem = componentFactory.createMenuItem("Help");
-    menuItem.setOnAction((e) -> provideHelp());
+    menuItem.setOnAction((_) -> provideHelp());
     menu.getItems().add(menuItem);
     
     menuBar.getMenus().add(menu); 
@@ -495,8 +495,8 @@ public class FilesControlledWindow extends JfxStage {
   private void openDiscStructureSpecification() {
     FileChooser fileChooser = new FileChooser();
     fileChooser.setTitle("Open Disc Structure Specification");
-    if (PCToolsRegistry.dataDirectory != null) {
-      File dataDirectory = new File(PCToolsRegistry.dataDirectory);
+    if (pcToolsRegistry.getDataDirectory() != null) {
+      File dataDirectory = new File(pcToolsRegistry.getDataDirectory());
       fileChooser.setInitialDirectory(dataDirectory);
     }
     File file = fileChooser.showOpenDialog(this);
@@ -588,13 +588,13 @@ public class FilesControlledWindow extends JfxStage {
     workerMonitor.show();
 
     // show messages in the statusLabel
-    controlledSetBuildingTask.messageProperty().addListener((observable, oldValue, newValue) -> {
+    controlledSetBuildingTask.messageProperty().addListener((_, _, newValue) -> {
 //      LOGGER.severe("Message: " + newValue);
       statusLabel.setText(newValue);
     });
 
     // upon successful completion, call generateDiscStructureReportStep2()
-    controlledSetBuildingTask.setOnSucceeded((event) -> {
+    controlledSetBuildingTask.setOnSucceeded((_) -> {
 //      LOGGER.severe("Step 1 succeeded: " + event);
       workerMonitor.close();
 //      Tuplet<FileInfoMap, List<FileCopyInfo>> resultOld = controlledSetBuildingTask.getValue();
@@ -616,7 +616,7 @@ public class FilesControlledWindow extends JfxStage {
     });
 
     // report any intermediate suspicious file copies found.
-    controlledSetBuildingTask.valueProperty().addListener((observable, oldValue, newValue) -> reportSuspiciousCopies(result));
+    controlledSetBuildingTask.valueProperty().addListener((_, _, _) -> reportSuspiciousCopies(result));
 
     Thread  buildControlledSetThread = new Thread(controlledSetBuildingTask);
     buildControlledSetThread.setDaemon(true);
@@ -638,7 +638,7 @@ public class FilesControlledWindow extends JfxStage {
     workerMonitor.show();
     
     // show messages in the statusLabel
-    checkFilesTask.messageProperty().addListener((observable, oldValue, newValue) -> {
+    checkFilesTask.messageProperty().addListener((_, _, newValue) -> {
       LOGGER.info("Message: " + newValue);
       statusLabel.setText(newValue);
     });
@@ -665,7 +665,7 @@ public class FilesControlledWindow extends JfxStage {
     });
 
     // Show intermediate results
-    checkFilesTask.valueProperty().addListener((observable, oldValue, newValue) -> {
+    checkFilesTask.valueProperty().addListener((_, _, _) -> {
       LOGGER.severe("Changed...");
 //      reportprobablyRemovableFiles(newValue.getObject1());
 //      reportUncontrolledFiles(newValue.getObject2());
@@ -693,12 +693,12 @@ public class FilesControlledWindow extends JfxStage {
     
     radioButton = new RadioButton("Controlled copies");
     radioButton.setToggleGroup(toggleGroup);
-    radioButton.setOnAction((e) -> reportSuspiciousCopies(result));
+    radioButton.setOnAction((_) -> reportSuspiciousCopies(result));
     resultSelectionBox.getChildren().add(radioButton);
     
     radioButton = new RadioButton("Empty folders");
     radioButton.setToggleGroup(toggleGroup);
-    radioButton.setOnAction((e) -> reportEmptyFolders(result));
+    radioButton.setOnAction((_) -> reportEmptyFolders(result));
     resultSelectionBox.getChildren().add(radioButton);
   }
 
@@ -731,7 +731,7 @@ public class FilesControlledWindow extends JfxStage {
             textField = componentFactory.createTextField(copyFileInfo.getFullPathname(), 1000.0, null);
             gridPane.add(textField, 1, 1);
             Button button = componentFactory.createButton("Delete", "Delete the file in this folder");
-            button.setOnAction((e) -> {
+            button.setOnAction((_) -> {
               try {
                 Path path = Paths.get(copyFileInfo.getFullPathname());
                 LOGGER.severe("Going to delete: " + path.toString());
@@ -744,7 +744,7 @@ public class FilesControlledWindow extends JfxStage {
             textField = componentFactory.createTextField(controlledFileInfo.getFullPathname(), 1000.0, null);
             gridPane.add(textField, 1, 2);
             button = componentFactory.createButton("Delete", "Delete the file in this folder");
-            button.setOnAction((e) -> {
+            button.setOnAction((_) -> {
               try {
                 Path path = Paths.get(controlledFileInfo.getFullPathname());
                 LOGGER.severe("Going to delete: " + path.toString());

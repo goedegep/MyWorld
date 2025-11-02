@@ -11,6 +11,7 @@ import goedegep.finan.jobappointment.guifx.JobAppointmentWindow;
 import goedegep.finan.mortgage.MortgageService;
 import goedegep.finan.mortgage.app.guifx.MortgagesWindow;
 import goedegep.jfx.AppResourcesFx;
+import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.JfxStage;
 import goedegep.jfx.MenuUtil;
 import goedegep.jfx.PropertyDescriptorsEditorFx;
@@ -34,7 +35,9 @@ public class FinanMenuWindow extends JfxStage {
   private static final String NEWLINE = System.getProperty("line.separator");
   private static final String WINDOW_TITLE   = "Finan";
   
+  private CustomizationFx customization;
   private FinanResourcesFx appResources;
+  private FinanRegistry finanRegistry;
 
   /**
    * Constructor.
@@ -42,17 +45,13 @@ public class FinanMenuWindow extends JfxStage {
    * @param customization GUI customization.
    * @param finan the financial information.
    */
-  public FinanMenuWindow() {
-    super(FinanService.getInstance().getCustomizationFx(), WINDOW_TITLE);
+  public FinanMenuWindow(CustomizationFx customization) {
+    super(customization, WINDOW_TITLE);
+    this.customization = customization;
+    finanRegistry = FinanRegistry.getInstance();
     
 //    PropertyDescriptorGroup propertyDescriptorGroup = FinanRegistry.propertyDescriptorsResource.getEObject();
 //    String customPropertiesFileName = null;
-    if (FinanRegistry.projectPath != null) {
-//      Path filePath = Paths.get(FinanRegistry.projectPath, FinanRegistry.customPropertiesFile);
-//      customPropertiesFileName = filePath.toAbsolutePath().toString();
-    } else {
-//      customPropertiesFileName = FinanRegistry.customPropertiesFile;
-    }
     
 //    EMFResource<PropertyGroup> propertiesResource = new EMFResource<>(
 //        PropertiesPackage.eINSTANCE,
@@ -110,7 +109,7 @@ public class FinanMenuWindow extends JfxStage {
     grid.add(applicationButton, 1, 0);
 
     applicationButton = componentFactory.createToolButton("Investment Insurances", appResources.getApplicationImage(ImageSize.SIZE_0), "Investment Insurances");
-    applicationButton.setOnAction(_ -> new InvestmentInsurancesOverviewWindow(FinanService.getInstance().getCustomizationFx()));
+    applicationButton.setOnAction(_ -> new InvestmentInsurancesOverviewWindow(customization));
     grid.add(applicationButton, 2, 0);
 
     AppResourcesFx appResourcesAanstelling = JobAppointmentService.getInstance().getCustomization().getResources();
@@ -140,7 +139,7 @@ public class FinanMenuWindow extends JfxStage {
     menu = new Menu("File");
     
     // Bestand: property descriptors bewerken
-    if (FinanRegistry.developmentMode) {
+    if (finanRegistry.isDevelopmentMode()) {
       MenuUtil.addMenuItem(menu, "Edit Property Descriptors", new EventHandler<ActionEvent>()  {
         public void handle(ActionEvent e) {
           showPropertyDescriptorsEditor();
@@ -172,21 +171,21 @@ public class FinanMenuWindow extends JfxStage {
    */
   private void showHelpAboutDialog() {
     componentFactory.createApplicationInformationDialog(
-        "About " + FinanRegistry.applicationName,
+        "About " + finanRegistry.getApplicationName(),
         appResources.getApplicationImage(ImageSize.SIZE_3),
         null, 
-        FinanRegistry.shortProductInfo + NEWLINE +
-        "Version: " + FinanRegistry.version + NEWLINE +
-        FinanRegistry.copyrightMessage + NEWLINE +
-        "Author: " + FinanRegistry.author)
+        finanRegistry.getShortProductInfo() + NEWLINE +
+        "Version: " + finanRegistry.getVersion() + NEWLINE +
+        finanRegistry.getCopyrightMessage() + NEWLINE +
+        "Author: " + finanRegistry.getAuthor())
         .showAndWait();
   }
   
   private void showPropertyDescriptorsEditor() {
-    new PropertyDescriptorsEditorFx(customization, FinanRegistry.propertyDescriptorsResource);
+    new PropertyDescriptorsEditorFx(customization, finanRegistry.getPropertyDescriptorsFileURI());
   }
   
   private void showPropertiesEditor() {
-    new PropertiesEditor("Finan properties", customization, FinanRegistry.propertyDescriptorsResource, FinanRegistry.customPropertiesFile);
+    new PropertiesEditor("Finan properties", customization, finanRegistry.getPropertyDescriptorsFileURI(), finanRegistry.getUserPropertiesFileName());
   }
 }

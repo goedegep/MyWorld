@@ -56,17 +56,17 @@ public class CustomizationsFx {
    * This method expects the configuration file to contain exactly one Customization.
    * If the configuration file contains no Customization or more than one Customization, a RuntimeException is thrown.
    * 
-   * @param configurationFileURL the URL for a configuration file.
+   * @param configurationFileURI the URL for a configuration file.
    * @return the CustomizationFx read from the configuration file.
    * @throws RuntimeException if no Customization or more than one Customization is found in the configuration file.
    */
-  public static CustomizationFx readCustomization(URL configurationFileURL) {
-    List<Tuplet<String, CustomizationFx>> customizations = readCustomizations(configurationFileURL);
+  public static CustomizationFx readCustomization(URI configurationFileURI) {
+    List<Tuplet<String, CustomizationFx>> customizations = readCustomizations(configurationFileURI);
     if (customizations.isEmpty()) {
-      throw new RuntimeException("No Customizations found in configuration file: " + configurationFileURL);
+      throw new RuntimeException("No Customizations found in configuration file: " + configurationFileURI);
     }
     if (customizations.size() > 1) {
-      throw new RuntimeException("More than one Customization found in configuration file: " + configurationFileURL);
+      throw new RuntimeException("More than one Customization found in configuration file: " + configurationFileURI);
     }
     return customizations.get(0).getObject2();
   }
@@ -74,10 +74,10 @@ public class CustomizationsFx {
   /**
    * Read the Customizations from a configuration file.
    * 
-   * @param configurationFileURL the URL for a configuration file.
+   * @param configurationFileURI the URI for a configuration file.
    * @return a list of Tuples containing the module name and the corresponding CustomizationFx.
    */
-  public static List<Tuplet<String, CustomizationFx>> readCustomizations(URL configurationFileURL) {
+  public static List<Tuplet<String, CustomizationFx>> readCustomizations(URI configurationFileURI) {
     List<Tuplet<String, CustomizationFx>> customizations = new ArrayList<>();
 
     EMFResource<LookInfo> emfResource = new EMFResource<>(
@@ -87,7 +87,7 @@ public class CustomizationsFx {
     LookInfo lookInfo;
     try {
       
-      lookInfo = emfResource.load(configurationFileURL);
+      lookInfo = emfResource.load(configurationFileURI);
 
       for (ModuleLook moduleLook: lookInfo.getModuleLooks()) {
         Tuplet<String, CustomizationFx> customizationTuplet = customizationFromModuleLook(moduleLook);
@@ -103,11 +103,11 @@ public class CustomizationsFx {
   /**
    * Read the Customization from a configuration file and add them to the set of Customizations.
    * 
-   * @param configurationFileURL URL for a configuration file containing Customizations.
+   * @param configurationFileURI URL for a configuration file containing Customizations.
    * @return a list of Tuples containing the module name and the corresponding CustomizationFx read from the file.
    */
-  public static List<Tuplet<String, CustomizationFx>> addCustomizations(URL configurationFileURL) {
-    List<Tuplet<String, CustomizationFx>> customizations = readCustomizations(configurationFileURL);
+  public static List<Tuplet<String, CustomizationFx>> addCustomizations(URI configurationFileURI) {
+    List<Tuplet<String, CustomizationFx>> customizations = readCustomizations(configurationFileURI);
     for (Tuplet<String, CustomizationFx> customization : customizations) {
       String moduleName = customization.getObject1();
       CustomizationFx existingCustomization = moduleNameToCustomizationMap.put(moduleName, customization.getObject2());
@@ -128,12 +128,7 @@ public class CustomizationsFx {
    */
   public static void addCustomizations(File configurationFile) {
     URI configurationFileUri = configurationFile.toURI();
-    try {
-      URL configurationFileUrl = configurationFileUri.toURL();
-      addCustomizations(configurationFileUrl);
-    } catch (MalformedURLException e) {
-      LOGGER.severe("Malformed URL for configuration file: " + configurationFile.getAbsolutePath());
-    }
+    addCustomizations(configurationFileUri);
   }
   
   /**

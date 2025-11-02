@@ -1,73 +1,86 @@
 package goedegep.pctools.app.logic;
 
-import goedegep.properties.model.PropertyDescriptorGroup;
-import goedegep.util.emf.EMFResource;
+import goedegep.myworld.common.Registry;
 
 /**
  * This registry class provides information to be shared within the complete PCTools application.
  */
-public class PCToolsRegistry {
-
-  /**
-   * The name of the application.
-   */
-  public static String applicationName;
-  
-  /**
-   * Name of the author of the application.
-   */
-  public static String author = "Peter Goedegebure";
-  
-  /**
-   * Name of the file with Configuration data.
-   */
-  public static String configurationFile = null;
-  
-  /**
-   * Copyright message for the application.
-   */
-  public static String copyrightMessage = "Copyright (c) 2001-2025";
-  
-  /**
-   * Name of the file with the property descriptors.
-   */
-  public static String propertyDescriptorsFile = "PCToolsPropertyDescriptors.xmi";
-
-  /**
-   * Name of the file with custom properties.
-   * <p>
-   * This file shall be located in the "MyWorld" folder under the user's home directory.
-   */
-  public static String customPropertiesFile = "VacationsUserPreferences.xmi";
+public class PCToolsRegistry extends Registry {
   
   /**
    * Directory where all data files are stored.
    */
-  public static String dataDirectory = null;
-  
-  /**
-   * Short description of this application.
-   */
-  public static String shortProductInfo = "My computer tools";
-  
-  /**
-   * Current software version.
-   */
-  public static String version = null;
-  
-  /**
-   * For extra functionality during development.
-   */
-  public static boolean developmentMode = false;
+  private static String dataDirectory = null;
   
   /**
    * Default file for the disc structure specification.
    */
-  public static String defaultDiscStructureSpecificationFile = null;
+  private static String defaultDiscStructureSpecificationFile = null;
   
   /**
-   * EMFResource for the Property Descriptors.
+   * Singleton instance of the PCToolsRegistry.
    */
-  public static EMFResource<PropertyDescriptorGroup> propertyDescriptorsResource = null;
+  private static PCToolsRegistry instance = null;
+
+  /**
+   * Get the singleton instance of the PCToolsRegistry.
+   * 
+   * @return the singleton instance of the PCToolsRegistry.
+   */
+  public static PCToolsRegistry getInstance() {
+    if (instance == null) {
+      instance = new PCToolsRegistry();
+    }
+    
+    return instance;
+  }
   
+  /**
+   * Get the directory where all data files are stored.
+   * 
+   * @return the directory where all data files are stored.
+   */
+  public String getDataDirectory() {
+    return dataDirectory;
+  }
+
+  /**
+   * Set the directory where all data files are stored.
+   * 
+   * @param dataDirectory the directory where all data files are stored.
+   */
+  public void setDataDirectory(String dataDirectory) {
+    PCToolsRegistry.dataDirectory = dataDirectory;
+  }
+
+  /**
+   * Get the default file for the disc structure specification.
+   * 
+   * @return the default file for the disc structure specification.
+   */
+  public String getDefaultDiscStructureSpecificationFile() {
+    return defaultDiscStructureSpecificationFile;
+  }
+
+  /**
+   * Set the default file for the disc structure specification.
+   * 
+   * @param defaultDiscStructureSpecificationFile the default file for the disc structure specification.
+   */
+  public void setDefaultDiscStructureSpecificationFile(String defaultDiscStructureSpecificationFile) {
+    PCToolsRegistry.defaultDiscStructureSpecificationFile = defaultDiscStructureSpecificationFile;
+  }
+
+  /**
+   * Private constructor for the singleton pattern.
+   */
+  private PCToolsRegistry() {
+    super();
+    
+    setAuthor("Peter Goedegebure");
+    setShortProductInfo("My computer tools");
+    setPropertyDescriptorsFileName("PCToolsPropertyDescriptors.xmi");
+    setUserPropertiesFileName("PCToolsUserPreferences.xmi");
+  }
+
 }

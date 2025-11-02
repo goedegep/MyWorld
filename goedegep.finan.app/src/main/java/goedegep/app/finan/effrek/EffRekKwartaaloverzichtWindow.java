@@ -42,6 +42,7 @@ public class EffRekKwartaaloverzichtWindow extends AppFrame {
   private static final String     JAAR_TOOLTIP = "Vul het jaar in waarvoor het overzicht weergegeven moet worden.";
   private static final String     KWARTAAL_TOOLTIP = "Vul het kwartaal (1 t/m 4) in waarvoor het overzicht weergegeven moet worden.";
   
+  private FinanRegistry           finanRegistry;
   private StockDepot              stockDepot = null;
   private List<StockDepotPeriodicReport<Quarter>> quarterReports;
   private ComponentFactory        componentFactory;
@@ -61,6 +62,7 @@ public class EffRekKwartaaloverzichtWindow extends AppFrame {
     LOGGER.severe("=>");
     LOGGER.severe("Number of Quarter Reports: " + stockDepot.getQuarterReports().size());
     this.stockDepot = stockDepot;
+    finanRegistry = FinanRegistry.getInstance();
     quarterReports = stockDepot.getQuarterReports();
     componentFactory = getTheComponentFactory();
     
@@ -231,7 +233,7 @@ public class EffRekKwartaaloverzichtWindow extends AppFrame {
   }
 
   private void showPopupIfTransactionsNotHandled() {
-    if (!FinanRegistry.transactionsHandled) {
+    if (!finanRegistry.areTransactionsHandled()) {
       MessageDialog messageDialog = MessageDialog.createMessageDialog(this, MessageDialogType.WARNING, null, "De transacties zijn niet verwerkt, dus er zijn geen kwartaaloverzichten beschikbaar");
       WindowUtil.showDialogCenteredOnParent(this, messageDialog);
     }    

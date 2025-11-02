@@ -28,7 +28,6 @@ import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.util.EContentAdapter;
 
 import goedegep.geo.WGS84Coordinates;
-import goedegep.jfx.ComponentFactoryFx;
 import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.JfxStage;
 import goedegep.jfx.eobjecttreeview.EObjectTreeView;
@@ -108,8 +107,7 @@ public class PhotoShowBuilder extends JfxStage {
   private final static List<String> SUPPORTED_FILE_TYPES = Arrays.asList(".jpg");
   private static final PhotoShowFactory PHOTO_SHOW_FACTORY = PhotoShowFactory.eINSTANCE;
 
-  private CustomizationFx customization;
-  private ComponentFactoryFx componentFactory;
+  private MediaRegistry mediaRegistry = MediaRegistry.getInstance();
   private final Stage thisStage = this;
   
   // GUI objects
@@ -152,8 +150,7 @@ public class PhotoShowBuilder extends JfxStage {
   public PhotoShowBuilder(CustomizationFx customization) {
     super(customization, WINDOW_TITLE);
     
-    this.customization = customization;
-    componentFactory = customization.getComponentFactoryFx();
+    mediaRegistry = MediaRegistry.getInstance();
         
     // react to changes in the photoShowList.
     photoShowList.addListener(new ListChangeListener<IPhotoInfo>() {
@@ -225,14 +222,7 @@ public class PhotoShowBuilder extends JfxStage {
     });
     
     // Update the window title if the file name changes
-    emfResource.fileNameProperty().addListener(new ChangeListener<String>() {
-
-      @Override
-      public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-        updateWindowTitle();
-      }
-      
-    });
+    emfResource.uriProperty().addListener((_, _, _) -> updateWindowTitle());
     
     handleNewPhotoShowSpecification();
   }
@@ -414,10 +404,10 @@ public class PhotoShowBuilder extends JfxStage {
               });
 
               // React to mouse entered/exited to show/hide 'Details' button.
-              setOnMouseEntered(event -> {
+              setOnMouseEntered(_ -> {
                 if (photoInfo.isSelectedForTheShow()  &&  (stackPane.getChildren().size() == 1)) {
                   Button detailsButton = new Button("Details");
-                  detailsButton.setOnAction(actionEvent -> {
+                  detailsButton.setOnAction(_ -> {
                     showDetailsPopup(thisStage, photoInfo);
                   });
                   stackPane.getChildren().add(detailsButton);              
@@ -425,7 +415,7 @@ public class PhotoShowBuilder extends JfxStage {
                 }
               });
 
-              setOnMouseExited(event -> {
+              setOnMouseExited(_ -> {
                 ObservableList<Node> stackPaneChildren = stackPane.getChildren();
                 if (stackPaneChildren.size() > 1) {
                   stackPaneChildren.remove(1);
@@ -603,12 +593,12 @@ public class PhotoShowBuilder extends JfxStage {
     actionButtonsPanel.getChildren().add(button);
     
     button = componentFactory.createButton("View selection full screen", null);
-    button.setOnAction(actionEvent -> viewSelectionFullScreen());
+    button.setOnAction(_ -> viewSelectionFullScreen());
     actionButtonsPanel.getChildren().add(button);
     wizardPanel.add(actionButtonsPanel, 0, 4, 2, 1);
     
     button = componentFactory.createButton("Play show", null);
-    button.setOnAction(actionEvent -> playShow());
+    button.setOnAction(_ -> playShow());
     wizardPanel.add(button, 0, 5);
     
     return wizardPanel;
@@ -651,11 +641,11 @@ public class PhotoShowBuilder extends JfxStage {
   private void showFolderSelectionWizard() {
     String initiallySelectedFolder = currentlySelectedFolder;
     if (initiallySelectedFolder == null) {
-      initiallySelectedFolder = MediaRegistry.photosFolder;
+      initiallySelectedFolder = mediaRegistry.getPhotosFolder();
     }
     String initialIgnoreFolders = ignoreFolders;
     if (initialIgnoreFolders == null) {
-      initialIgnoreFolders = MediaRegistry.ignoreFolderNames;
+      initialIgnoreFolders = mediaRegistry.getIgnoreFolderNames();
     }
     
     final FolderSelectionWizard folderSelectionWizard = new FolderSelectionWizard(customization, this, initiallySelectedFolder, initialIgnoreFolders);
@@ -946,8 +936,8 @@ public class PhotoShowBuilder extends JfxStage {
     }
     
     FileChooser fileChooser = componentFactory.createFileChooser("Open Photo Show Specification");
-    if (MediaRegistry.photosFolder != null) {
-      File photosFolder = new File(MediaRegistry.photosFolder);
+    if (mediaRegistry.getPhotosFolder() != null) {
+      File photosFolder = new File(mediaRegistry.getPhotosFolder());
       fileChooser.setInitialDirectory(photosFolder);
     }
     File photoShowSpecificationFile = fileChooser.showOpenDialog(this);

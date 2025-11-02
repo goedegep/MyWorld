@@ -1,27 +1,49 @@
 package goedegep.myworld.common;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.net.URI;
+import java.nio.file.Files;
+import java.nio.file.Path;
+
 import goedegep.configuration.model.ConfigurationFactory;
 import goedegep.configuration.model.Look;
 import goedegep.jfx.AppResourcesFx;
 import goedegep.jfx.CustomizationFx;
+import goedegep.properties.model.PropertiesFactory;
+import goedegep.properties.model.PropertiesPackage;
+import goedegep.properties.model.PropertyGroup;
 import goedegep.util.RunningInEclipse;
-import javafx.scene.paint.Color;
+import goedegep.util.emf.EMFResource;
 
+/**
+ * This is the abstract base class for all MyWorld services.
+ * <p>
+ * It provides the basic functionality to initialize the service, read application properties, create customization and handle user properties.
+ */
 public abstract class Service {
   protected CustomizationFx customization;
   
+  /**
+   * Initialize the service.
+   * <p>
+   * This method sets the development mode, reads application properties, creates customization and handles user properties.
+   * Every subclass must call this method during its initialization.
+   */
   public void initialize() {
     
     // If we're running within Eclipse, we set development mode to true. The application can use this information to add functionality which is for development only.
     setDevelopmentMode(RunningInEclipse.runningInEclipse());
     
+    // Read application properties. These are typically stored in a properties file, named <application-name>Application.properties, within the application jar.
+    // These are properties which are used by maven and the application.
     readApplicationProperties();
     
-    ConfigurationFactory configurationFactory = ConfigurationFactory.eINSTANCE;
-    Look look = configurationFactory.createLook();
-    fillLook(look);
-    AppResourcesFx resources = getAppResourcesFxClass();
-    customization = new CustomizationFx(look, resources);
+    // Create customization
+    createCustomization();
+    
+    // Handle the user specific properties.
+    handleUserProperties();
   }
 
   /**
@@ -31,28 +53,34 @@ public abstract class Service {
    * 
    * @param developmentMode if true, the application is in development mode.
    */
-  protected abstract void setDevelopmentMode(boolean developmentMode);
+  protected void setDevelopmentMode(boolean developmentMode) {
+    getRegistry().setDevelopmentMode(developmentMode);
+  }
 
   /**
    * Read the application specific properties, which are read from a properties file.
    */
   protected abstract void readApplicationProperties();
+  
+  /**
+   * Create the GUI customization.
+   * <p>
+   * The customization object holds the look and resources for the application.
+   */
+  protected void createCustomization() {
+    ConfigurationFactory configurationFactory = ConfigurationFactory.eINSTANCE;
+    Look look = configurationFactory.createLook();
+    fillLook(look);
+    AppResourcesFx resources = getAppResourcesFxClass();
+    customization = new CustomizationFx(look, resources);
+  }
 
   /**
    * Fill the look object with application specific look information.
    * 
    * @param look the look object to fill.
    */
-//  protected abstract void fillLook(Look look);
-  protected void fillLook(Look look) {
-    look.setBackgroundColor(Color.rgb(238,238,238));
-    look.setButtonBackgroundColor(Color.rgb(238,238,238));
-    look.setPanelBackgroundColor(Color.rgb(238,238,238));
-    look.setListBackgroundColor(Color.rgb(238,238,238));
-    look.setLabelBackgroundColor(Color.rgb(238,238,238));
-    look.setBoxBackgroundColor(Color.rgb(238,238,238));
-    look.setTextFieldBackgroundColor(Color.rgb(255,255,255));
-  }
+  protected abstract void fillLook(Look look);
   
   /**
    * Get the application resources class.
@@ -60,7 +88,50 @@ public abstract class Service {
    * @return the application resources class.
    */
   protected abstract AppResourcesFx getAppResourcesFxClass();
-//  protected AppResourcesFx getAppResourcesFxClass() {
-//    return new DefaultAppResourcesFx();
-//  }
+  
+  /**
+   * Handle the user properties.
+   * <p>
+   * If the user properties file exists, the properties are read and stored in the registry.
+   */
+  protected void handleUserProperties() {
+    Registry registry = getRegistry();
+    String userPropertiesFileName = registry.getUserPropertiesFileName();
+
+    if (userPropertiesFileName == null) {
+      return;
+    }
+
+    Path userPropertiesFilePath = Path.of(
+        System.getProperty("user.home"),
+        "MyWorld",
+        registry.getApplicationName(),
+        userPropertiesFileName
+        );
+
+    if (!Files.exists(userPropertiesFilePath)) {
+      return;
+    }
+
+    EMFResource<PropertyGroup> propertiesResource = new EMFResource<PropertyGroup>(
+        PropertiesPackage.eINSTANCE,
+        () -> PropertiesFactory.eINSTANCE.createPropertyGroup(), ".xmi");
+
+    try {
+      URI uri = userPropertiesFilePath.toUri();
+      PropertyGroup propertyGroup = propertiesResource.load(uri);
+      propertyGroup.getProperties().forEach(p -> registry.setValue(p.getName(), p.getValue()));
+    } catch (FileNotFoundException e) {
+      e.printStackTrace();
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+  }
+
+  /**
+   * Get the application registry.
+   * 
+   * @return the application registry.
+   */
+  protected abstract Registry getRegistry();
 }

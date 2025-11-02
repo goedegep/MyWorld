@@ -1,8 +1,6 @@
 package goedegep.media.app;
 
-import java.io.IOException;
 import java.io.InputStream;
-import java.net.URL;
 import java.util.Properties;
 
 import goedegep.configuration.model.Look;
@@ -11,18 +9,25 @@ import goedegep.jfx.JfxApplication;
 import goedegep.media.app.guifx.MediaMenuWindow;
 import goedegep.media.common.MediaAppResourcesFx;
 import goedegep.media.common.MediaRegistry;
+import goedegep.myworld.common.Registry;
 import goedegep.myworld.common.Service;
-import goedegep.properties.app.PropertiesHandler;
-import goedegep.util.RunningInEclipse;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
+/**
+ * The MediaService class is the main class for the Media application.
+ * <p>
+ * It provides methods to show the main media menu window and manages
+ * application-wide resources and customization.
+ */
 public class MediaService extends Service {
 
   /**
    * The singleton instance of the MediaService.
    */
   private static MediaService instance = null;
+  
+  private MediaRegistry mediaRegistry;
   
   /**
    * Get the singleton instance of the MediaService.
@@ -32,16 +37,9 @@ public class MediaService extends Service {
   public static MediaService getInstance() {
     if (instance == null) {
       instance = new MediaService();
-      instance.initialize();
-      
-      try {
-        // Read the properties, which are stored in the registry.
-        URL url = instance.getClass().getResource(MediaRegistry.propertyDescriptorsFile);
-        PropertiesHandler.handleProperties(url, null);
-      } catch (IOException e) {
-        JfxApplication.reportException(null, e);
-      }
+      instance.initialize();      
     }
+    
     return instance;
   }
   
@@ -57,17 +55,7 @@ public class MediaService extends Service {
    * Private constructor to ensure that the application is a singleton.
    */
   private MediaService() {
-    
-    // If we're running within Eclipse, we set development mode to true. The application can use this information to add functionality which is for development only.
-    if (RunningInEclipse.runningInEclipse()) {
-      MediaRegistry.developmentMode = true;
-    }
-    
-  }
-
-  @Override
-  protected void setDevelopmentMode(boolean developmentMode) {
-    MediaRegistry.developmentMode = developmentMode;
+    mediaRegistry = MediaRegistry.getInstance();
   }
   
   @Override
@@ -76,8 +64,8 @@ public class MediaService extends Service {
     try (InputStream in = getClass().getResourceAsStream("MediaApplication.properties")) {
         props.load(in);
         
-        MediaRegistry.version = props.getProperty("media.app.version");
-        MediaRegistry.applicationName = props.getProperty("media.app.name");
+        mediaRegistry.setVersion(props.getProperty("media.app.version"));
+        mediaRegistry.setApplicationName(props.getProperty("media.app.name"));
     } catch (Exception e) {
       JfxApplication.reportException(null, e);
       System.exit(1);
@@ -98,5 +86,10 @@ public class MediaService extends Service {
   @Override
   protected AppResourcesFx getAppResourcesFxClass() {
     return new MediaAppResourcesFx();
+  }
+  
+  @Override
+  protected Registry getRegistry() {
+    return mediaRegistry;
   }
 }

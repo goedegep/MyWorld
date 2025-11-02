@@ -70,7 +70,7 @@ public class MortgagesWindow extends JfxStage implements EMFNotificationListener
 
   private static final String ZWITSERLEVEN_HYPOTHEEK_ID = "ZwitserLeven Hypotheek van Betere Huize 01-03-1996";
 
-  private CustomizationFx customization;
+  private FinanRegistry finanRegistry;
   private TranslationFormatter translationFormatter = new TranslationFormatter(TRANSLATIONS);
   private EMFResource<Mortgages> mortgagesResource;
   private Mortgages mortgages;
@@ -93,7 +93,9 @@ public class MortgagesWindow extends JfxStage implements EMFNotificationListener
   public MortgagesWindow(CustomizationFx customization) {
     super(customization, null);
     
-    if (FinanRegistry.mortgagesFileName == null) {
+    finanRegistry = FinanRegistry.getInstance();
+    
+    if (finanRegistry.getMortgagesFileName() == null) {
       statusLabel.setText(TRANSLATIONS.getString("MortgagesWindow.statusLabel.noMortgagesFileNameMsg"));
       Alert alert = componentFactory.createErrorDialog(TRANSLATIONS.getString("MortgagesWindow.alertNoMortgagesFileName.header"), TRANSLATIONS.getString("MortgagesWindow.alertNoMortgagesFileName.content"));
       
@@ -116,7 +118,7 @@ public class MortgagesWindow extends JfxStage implements EMFNotificationListener
         () -> MortgageFactory.eINSTANCE.createMortgages(),
         ".xmi");
     
-    File mortgagesFile = new File(FinanRegistry.dataDirectory, FinanRegistry.mortgagesFileName);
+    File mortgagesFile = new File(finanRegistry.getDataDirectory(), finanRegistry.getMortgagesFileName());
     String mortgagesFileName = mortgagesFile.getAbsolutePath();
     try {
       mortgages = mortgagesResource.load(mortgagesFileName);
@@ -257,7 +259,7 @@ public class MortgagesWindow extends JfxStage implements EMFNotificationListener
     menu.getItems().add(menuItem);
     
     // File: Dump Data
-    if (FinanRegistry.developmentMode) {
+    if (finanRegistry.isDevelopmentMode()) {
       menuItem = componentFactory.createMenuItem("Dump data");
       menuItem.setOnAction(new EventHandler<ActionEvent>() {
         public void handle(ActionEvent e) {
@@ -559,7 +561,7 @@ public class MortgagesWindow extends JfxStage implements EMFNotificationListener
   }
 
   private void showPropertiesEditor() {
-    new PropertiesEditor("Finan properties", customization, FinanRegistry.propertyDescriptorsResource, FinanRegistry.customPropertiesFile);
+    new PropertiesEditor("Finan properties", customization, finanRegistry.getPropertyDescriptorsFileURI(), finanRegistry.getUserPropertiesFileName());
   }
   
   private void addNewInterestRateEvent() {

@@ -57,10 +57,12 @@ public class DeriveAlbumInfo {
   private final FlexDateFormat flexDateFormat = new FlexDateFormat();
   
   private MediaDb mediaDb;
+  private MediaRegistry mediaRegistry;
   private InformationType informationType;
   
   public DeriveAlbumInfo(MediaDb mediaDb) {
     this.mediaDb = mediaDb;
+    mediaRegistry = MediaRegistry.getInstance();
   }
   
   /**
@@ -164,7 +166,7 @@ public class DeriveAlbumInfo {
           boolean b = matcher.matches();
           if (b) {
             LOGGER.severe("Matching file: " + fileName);
-            String relativeFileName = FileUtils.getPathRelativeToFolder(MediaRegistry.musicDataDirectory + "\\", path.toString());
+            String relativeFileName = FileUtils.getPathRelativeToFolder(mediaRegistry.getMusicDataDirectory() + "\\", path.toString());
              album.getImagesFront().add(relativeFileName);
           }
         }

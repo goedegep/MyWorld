@@ -1,71 +1,102 @@
 package goedegep.events.app;
 
-import goedegep.properties.model.PropertyDescriptorGroup;
-import goedegep.util.emf.EMFResource;
+import goedegep.myworld.common.Registry;
 
 /**
  * This registry class provides information to be shared within the complete Events application.
  */
-public class EventsRegistry {
-  
-  /**
-   * The name of the application.
-   */
-  public static String applicationName;
-  
-  /**
-   * Name of the author of the application.
-   */
-  public static final String AUTHOR = "Peter Goedegebure";
-  
-  /**
-   * Name of the file with Configuration data.
-   */
-  public static String configurationFile = null;
-  
-  /**
-   * Copyright message for the application.
-   */
-  public static String copyrightMessage = "Copyright (c) 2001-2025";
-  
-  /**
-   * Name of the file with the property descriptors.
-   */
-  public static String propertyDescriptorsFile = "EventsPropertyDescriptors.xmi";
-  
-  /**
-   * Name of the file with custom properties.
-   */
-  public static String customPropertiesFile = "EventsUserPreferences.xmi";
-  
-  /**
-   * Short description of this application.
-   */
-  public static String shortProductInfo = "Information about events, etc.";
-  
-  /**
-   * Current software version.
-   */
-  public static String version = null;
-  
-  /**
-   * For extra functionality during development.
-   */
-  public static boolean developmentMode = false;
-  
-  /**
-   * EMFResource for the Property Descriptors.
-   */
-  public static EMFResource<PropertyDescriptorGroup> propertyDescriptorsResource = null;
+public class EventsRegistry extends Registry {
   
   /**
    * Name of the file with information about the events.
    */
-  public static String eventsFileName = null;
+  public static String eventsFileName = "D:\\Database\\Events\\Events.xmi";
   
   /**
    * Name of the folder with all information about events.
    */
-  public static String eventsFolderName = null;
+  public static String eventsFolderName = "D:\\Database\\Events";
+  
+  /**
+   * Singleton instance of the EventsRegistry.
+   */
+  private static EventsRegistry instance = null;
 
+  /**
+   * Get the singleton instance of the EventsRegistry.
+   * 
+   * @return the singleton instance of the EventsRegistry.
+   */
+  public static EventsRegistry getInstance() {
+    if (instance == null) {
+      instance = new EventsRegistry();
+    }
+    
+    return instance;
+  }
+
+  /**
+   * Get the name of the file with information about the events.
+   * 
+   * @return the name of the file with information about the events.
+   */
+  public String getEventsFileName() {
+    return eventsFileName;
+  }
+
+  /*
+   * Set the name of the file with information about the events.
+   * 
+   * @param eventsFileName the name of the file with information about the events.
+   */
+  public void setEventsFileName(String eventsFileName) {
+    EventsRegistry.eventsFileName = eventsFileName;
+  }
+  
+  /**
+   * Get the name of the folder with all information about events.
+   * 
+   * @return the name of the folder with all information about events.
+   */
+  public String getEventsFolderName() {
+    return eventsFolderName;
+  }
+
+  /*
+   * Set the name of the folder with all information about events.
+   * 
+   * @param eventsFolderName the name of the folder with all information about events.
+   */
+  public void setEventsFolderName(String eventsFolderName) {
+    EventsRegistry.eventsFolderName = eventsFolderName;
+  }
+  
+  @Override
+  public boolean setValue(String name, String value) {
+    if (super.setValue(name, value)) {
+      return true;
+    }
+    
+    boolean known = true;
+    switch (name) {
+      case "eventsFileName" -> eventsFileName = value;
+      case "eventsFolderName" -> eventsFolderName = value;
+      default -> known = false;
+      
+    }
+    return known;
+
+  }
+  
+  /**
+   * Private constructor for the singleton EventsRegistry.
+   */
+  private EventsRegistry() {
+    super();
+    
+    setAuthor("Peter Goedegebure");
+    setShortProductInfo("Information about events, etc.");
+    setPropertyDescriptorsFileName("EventsPropertyDescriptors.xmi");
+    setUserPropertiesFileName("EventsUserPreferences.xmi");
+  }
 }

@@ -60,12 +60,12 @@ public class MyLoggingFormatter extends SimpleFormatter {
     buf.append(formatMessage(record));
     
     if (record.getThrown() != null) {
-        StringWriter sw = new StringWriter();
-        PrintWriter pw = new PrintWriter(sw);
+      StringWriter sw = new StringWriter();
+      try (PrintWriter pw = new PrintWriter(sw)) {
         pw.println();
         record.getThrown().printStackTrace(pw);
-        pw.close();
-        buf.append(sw.toString());
+      }
+      buf.append(sw.toString());
     }
     
     buf.append(" (");

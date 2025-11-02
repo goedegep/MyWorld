@@ -22,7 +22,6 @@ import goedegep.util.mslinks.io.ByteReader;
 import goedegep.util.mslinks.io.ByteWriter;
 
 public class HotKeyFlags implements Serializable {
-	@SuppressWarnings("serial")
   private static HashMap<Byte, String> keys = new HashMap<Byte, String>() {{
 		put((byte)0x30, "0");
 		put((byte)0x31, "1");

@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.time.Duration;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
@@ -15,12 +14,10 @@ import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.eobjecttable.EObjectTable;
 import goedegep.jfx.eobjecttable.EObjectTableColumnDescriptorAbstract;
 import goedegep.jfx.eobjecttable.EObjectTableColumnDescriptorBasic;
-import goedegep.jfx.eobjecttable.EObjectTableColumnDescriptorChoiceBox;
 import goedegep.jfx.eobjecttable.EObjectTableColumnDescriptorCustom;
 import goedegep.jfx.eobjecttable.EObjectTableDescriptor;
 import goedegep.media.common.MediaRegistry;
 import goedegep.media.mediadb.model.Artist;
-import goedegep.media.mediadb.model.Collection;
 import goedegep.media.mediadb.model.Disc;
 import goedegep.media.mediadb.model.MediadbPackage;
 import goedegep.media.mediadb.model.MediumInfo;
@@ -29,10 +26,8 @@ import goedegep.media.mediadb.model.Player;
 import goedegep.media.mediadb.model.Track;
 import goedegep.media.mediadb.model.TrackReference;
 import goedegep.util.datetime.DurationFormat;
-import javafx.collections.FXCollections;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
-import javafx.util.StringConverter;
 
 /**
  * This class provides a table which lists the tracks of a single disc of an album.
@@ -41,6 +36,8 @@ public class DiscTracksTable extends EObjectTable<TrackReference> {
   private static final Logger LOGGER = Logger.getLogger(DiscTracksTable.class.getName());
   
   private Map<Track, Path> trackDiscLocationMap;
+  
+  private MediaRegistry mediaRegistry;
   
   /**
    * The media player process. If not null, currentlyPlayingTrack is also not null.
@@ -59,6 +56,9 @@ public class DiscTracksTable extends EObjectTable<TrackReference> {
    */
   public DiscTracksTable(CustomizationFx customization, Disc disc, Map<Track, Path> trackDiscLocationMap) {
     super(customization, MediadbPackage.eINSTANCE.getTrackReference(), new DiscTracksTableDescriptor(), disc, MediadbPackage.eINSTANCE.getDisc_TrackReferences());
+    
+    mediaRegistry = MediaRegistry.getInstance();
+    
     for (TableColumn<TrackReference, ?> column: getColumns()) {
       boolean hide = false;
       switch (column.getText()) {
@@ -175,7 +175,7 @@ public class DiscTracksTable extends EObjectTable<TrackReference> {
     }
         
     // Can't play anything if the path to MPC-HC isn't set.
-    if (MediaRegistry.mediaPlayerClassicExecutable == null) {
+    if (mediaRegistry.getMediaPlayerClassicExecutable() == null) {
       return;
     }
     
@@ -185,7 +185,7 @@ public class DiscTracksTable extends EObjectTable<TrackReference> {
       // Build the command to start the media player.
       // First argument is the MPC-HC player executable.
       List<String> commandArguments = new ArrayList<>();
-      commandArguments.add(MediaRegistry.mediaPlayerClassicExecutable);        
+      commandArguments.add(mediaRegistry.getMediaPlayerClassicExecutable());        
 
       LOGGER.severe("file: " + trackPath.toAbsolutePath().toString());
       commandArguments.add("/play ");
@@ -210,7 +210,7 @@ class DiscTracksTableDescriptor extends EObjectTableDescriptor<TrackReference> {
 
   private static List<EObjectTableColumnDescriptorAbstract<TrackReference>> columnDescriptors = List.<EObjectTableColumnDescriptorAbstract<TrackReference>>of(
       new EObjectTableColumnDescriptorBasic<TrackReference>(MEDIA_DB_PACKAGE.getTrackReference__GetTrackNr(), "Nr.", false, true),
-      new EObjectTableColumnDescriptorCustom<TrackReference>(null, "Title", null, true, true, column -> {
+      new EObjectTableColumnDescriptorCustom<TrackReference>(null, "Title", null, true, true, _ -> {
         TableCell<TrackReference, Object> cell = new TableCell<>() {
 
           @Override
@@ -229,7 +229,7 @@ class DiscTracksTableDescriptor extends EObjectTableDescriptor<TrackReference> {
 
         return cell;
       }),
-      new EObjectTableColumnDescriptorCustom<TrackReference>(null, "Artist", null, true, true, column -> {
+      new EObjectTableColumnDescriptorCustom<TrackReference>(null, "Artist", null, true, true, _ -> {
         TableCell<TrackReference, Object> cell = new TableCell<>() {
 
           @Override
@@ -252,7 +252,7 @@ class DiscTracksTableDescriptor extends EObjectTableDescriptor<TrackReference> {
 
         return cell;
       }),
-      new EObjectTableColumnDescriptorCustom<TrackReference>(null, "Duration", null, true, true, column -> {
+      new EObjectTableColumnDescriptorCustom<TrackReference>(null, "Duration", null, true, true, _ -> {
         TableCell<TrackReference, Object> cell = new TableCell<>() {
           private DurationFormat format = new DurationFormat();
 
@@ -282,7 +282,7 @@ class DiscTracksTableDescriptor extends EObjectTableDescriptor<TrackReference> {
 
         return cell;
       }),
-      new EObjectTableColumnDescriptorCustom<TrackReference>(null, "Players", null, true, true, column -> {
+      new EObjectTableColumnDescriptorCustom<TrackReference>(null, "Players", null, true, true, _ -> {
         TableCell<TrackReference, Object> cell = new TableCell<>() {
 
           @Override
@@ -326,7 +326,7 @@ class DiscTracksTableDescriptor extends EObjectTableDescriptor<TrackReference> {
 
         return cell;
       }),
-      new EObjectTableColumnDescriptorCustom<TrackReference>(null, "Author", null, true, true, column -> {
+      new EObjectTableColumnDescriptorCustom<TrackReference>(null, "Author", null, true, true, _ -> {
         TableCell<TrackReference, Object> cell = new TableCell<>() {
 
           @Override
@@ -357,7 +357,7 @@ class DiscTracksTableDescriptor extends EObjectTableDescriptor<TrackReference> {
 
         return cell;
       }),
-      new EObjectTableColumnDescriptorCustom<TrackReference>(null, "Bonus track", null, true, true, column -> {
+      new EObjectTableColumnDescriptorCustom<TrackReference>(null, "Bonus track", null, true, true, _ -> {
         TableCell<TrackReference, Object> cell = new TableCell<>() {
 
           @Override
@@ -376,7 +376,7 @@ class DiscTracksTableDescriptor extends EObjectTableDescriptor<TrackReference> {
 
         return cell;
       }),
-      new EObjectTableColumnDescriptorCustom<TrackReference>(null, "Have on", null, true, true, column -> {
+      new EObjectTableColumnDescriptorCustom<TrackReference>(null, "Have on", null, true, true, _ -> {
         TableCell<TrackReference, Object> cell = new TableCell<>() {
 
           @Override
@@ -411,7 +411,7 @@ class DiscTracksTableDescriptor extends EObjectTableDescriptor<TrackReference> {
 
         return cell;
       }),
-      new EObjectTableColumnDescriptorCustom<TrackReference>(null, "Original track reference", null, true, true, column -> {
+      new EObjectTableColumnDescriptorCustom<TrackReference>(null, "Original track reference", null, true, true, _ -> {
         TableCell<TrackReference, Object> cell = new TableCell<>() {
 
           @Override
@@ -433,7 +433,7 @@ class DiscTracksTableDescriptor extends EObjectTableDescriptor<TrackReference> {
 
         return cell;
       }),
-      new EObjectTableColumnDescriptorCustom<TrackReference>(null, "Track reference", null, true, true, column -> {
+      new EObjectTableColumnDescriptorCustom<TrackReference>(null, "Track reference", null, true, true, _ -> {
         TableCell<TrackReference, Object> cell = new TableCell<>() {
 
           @Override

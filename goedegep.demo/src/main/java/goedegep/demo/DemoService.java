@@ -8,6 +8,7 @@ import goedegep.demo.guifx.DemoAppResources;
 import goedegep.demo.guifx.DemoMenuWindow;
 import goedegep.jfx.AppResourcesFx;
 import goedegep.jfx.JfxApplication;
+import goedegep.myworld.common.Registry;
 import goedegep.myworld.common.Service;
 import javafx.scene.paint.Color;
 
@@ -22,6 +23,8 @@ public class DemoService extends Service {
    * The singleton instance of the DemoService.
    */
   private static DemoService instance = null;
+  
+  private DemoRegistry demoRegistry;
   
   /**
    * Get the singleton instance of the DemoService.
@@ -48,11 +51,7 @@ public class DemoService extends Service {
    * Private constructor to ensure singleton pattern.
    */
   private DemoService() {
-  }
-
-  @Override
-  protected void setDevelopmentMode(boolean developmentMode) {
-    DemoRegistry.developmentMode = developmentMode;
+    demoRegistry = DemoRegistry.getInstance();
   }
   
   @Override
@@ -61,8 +60,8 @@ public class DemoService extends Service {
     try (InputStream in = getClass().getResourceAsStream("DemoApplication.properties")) {
         props.load(in);
         
-        DemoRegistry.version = props.getProperty("demo.app.version");
-        DemoRegistry.applicationName = props.getProperty("demo.app.name");
+        demoRegistry.setVersion(props.getProperty("demo.app.version"));
+        demoRegistry.setApplicationName(props.getProperty("demo.app.name"));
     } catch (Exception e) {
       JfxApplication.reportException(null, e);
       System.exit(1);
@@ -95,5 +94,10 @@ public class DemoService extends Service {
   @Override
   protected AppResourcesFx getAppResourcesFxClass() {
     return new DemoAppResources();
+  }
+  
+  @Override
+  protected Registry getRegistry() {
+    return demoRegistry;
   }
 }

@@ -37,7 +37,6 @@
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute properties.ecore#//PropertyDescriptor/registryName"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute properties.ecore#//PropertyDescriptor/initialValue"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute properties.ecore#//PropertyDescriptor/userSettable"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute properties.ecore#//PropertyDescriptor/installInitialValue"/>
     </genClasses>
     <genClasses ecoreClass="properties.ecore#//FilePropertyDescriptor">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute properties.ecore#//FilePropertyDescriptor/fileExtensions"/>

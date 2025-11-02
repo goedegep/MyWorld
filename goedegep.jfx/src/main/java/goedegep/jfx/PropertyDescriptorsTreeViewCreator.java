@@ -140,11 +140,6 @@ public class PropertyDescriptorsTreeViewCreator {
         .setLabelText("Changeable");
     eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(eObjectTreeItemAttributeDescriptor);
     
-    // Store in Registry
-    eObjectTreeItemAttributeDescriptor = new EObjectTreeItemAttributeDescriptor(PROPERTIES_PACKAGE.getPropertyDescriptor_InstallInitialValue())
-        .setLabelText("Store in Registry");
-    eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(eObjectTreeItemAttributeDescriptor);
-    
     return eObjectTreeItemClassDescriptor;
   }
 
@@ -204,11 +199,6 @@ public class PropertyDescriptorsTreeViewCreator {
     // Changeable
     eObjectTreeItemAttributeDescriptor = new EObjectTreeItemAttributeDescriptor(PROPERTIES_PACKAGE.getPropertyDescriptor_UserSettable())
         .setLabelText("Changeable");
-    eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(eObjectTreeItemAttributeDescriptor);
-    
-    // Store in Registry
-    eObjectTreeItemAttributeDescriptor = new EObjectTreeItemAttributeDescriptor(PROPERTIES_PACKAGE.getPropertyDescriptor_InstallInitialValue())
-        .setLabelText("Store in Registry");
     eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(eObjectTreeItemAttributeDescriptor);
     
     // File extensions

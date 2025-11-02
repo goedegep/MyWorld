@@ -2,7 +2,6 @@ package goedegep.pctools.app.guifx;
 
 import java.util.logging.Logger;
 
-import goedegep.jfx.ComponentFactoryFx;
 import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.JfxStage;
 import goedegep.jfx.MenuUtil;
@@ -31,15 +30,13 @@ public class PCToolsMenuWindow extends JfxStage {
   private final static String NEWLINE = System.getProperty("line.separator");
   private static final String WINDOW_TITLE = "PC Tools";
   
-  private CustomizationFx customization;
-  private ComponentFactoryFx componentFactory;
+  private PCToolsRegistry pcToolsRegistry;
   private PCToolsAppResourcesFx appResources;
 
   public PCToolsMenuWindow(CustomizationFx customization, String fileToOpen) {
     super(customization, WINDOW_TITLE);
         
-    this.customization = customization;
-    componentFactory = getComponentFactory();
+    pcToolsRegistry = PCToolsRegistry.getInstance();
     appResources = (PCToolsAppResourcesFx) getResources();
     
     createGUI();
@@ -119,7 +116,7 @@ public class PCToolsMenuWindow extends JfxStage {
     MenuBar    menuBar = new MenuBar();
     Menu       menu;
     
-    if (PCToolsRegistry.developmentMode) {
+    if (pcToolsRegistry.isDevelopmentMode()) {
       // Bestand menu
       menu = componentFactory.createMenu("Bestand");
 
@@ -160,14 +157,14 @@ public class PCToolsMenuWindow extends JfxStage {
    * Show the standard PropertyDescriptors editor.
    */
   private void showPropertyDescriptorsEditor() {
-    new PropertyDescriptorsEditorFx(customization, PCToolsRegistry.propertyDescriptorsResource);
+    new PropertyDescriptorsEditorFx(customization, pcToolsRegistry.getPropertyDescriptorsFileURI());
   }
   
   /**
    * Show the standard Properties editor.
    */
   private void showPropertiesEditor() {
-    new PropertiesEditor("PC Tools Properties Editor", customization, PCToolsRegistry.propertyDescriptorsResource, PCToolsRegistry.customPropertiesFile);
+    new PropertiesEditor("PC Tools Properties Editor", customization, pcToolsRegistry.getPropertyDescriptorsFileURI(), pcToolsRegistry.getUserPropertiesFileName());
   }
   
   /**
@@ -175,13 +172,13 @@ public class PCToolsMenuWindow extends JfxStage {
    */
   private void showHelpAboutDialog() {
     componentFactory.createApplicationInformationDialog(
-        "About " + PCToolsRegistry.applicationName,
+        "About " + pcToolsRegistry.getApplicationName(),
         appResources.getApplicationImage(ImageSize.SIZE_3),
         null, 
-        PCToolsRegistry.shortProductInfo + NEWLINE +
-        "Version: " + PCToolsRegistry.version + NEWLINE +
-        PCToolsRegistry.copyrightMessage + NEWLINE +
-        "Author: " + PCToolsRegistry.author)
+        pcToolsRegistry.getShortProductInfo() + NEWLINE +
+        "Version: " + pcToolsRegistry.getVersion() + NEWLINE +
+        pcToolsRegistry.getCopyrightMessage() + NEWLINE +
+        "Author: " + pcToolsRegistry.getAuthor())
         .showAndWait();
   }
 }

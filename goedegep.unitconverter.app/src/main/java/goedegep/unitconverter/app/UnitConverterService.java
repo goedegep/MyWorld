@@ -1,18 +1,15 @@
 package goedegep.unitconverter.app;
 
-import java.io.IOException;
 import java.io.InputStream;
-import java.net.URL;
 import java.util.Properties;
 
 import goedegep.configuration.model.Look;
 import goedegep.jfx.AppResourcesFx;
 import goedegep.jfx.JfxApplication;
+import goedegep.myworld.common.Registry;
 import goedegep.myworld.common.Service;
-import goedegep.properties.app.PropertiesHandler;
 import goedegep.unitconverter.app.guifx.UnitConverterAppResourcesFx;
 import goedegep.unitconverter.app.guifx.UnitConverterWindow;
-import goedegep.util.RunningInEclipse;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
@@ -21,7 +18,12 @@ import javafx.stage.Stage;
  */
 public class UnitConverterService extends Service {
 
+  /**
+   * The singleton instance of the UnitConverterService.
+   */
   private static UnitConverterService instance = null;
+  
+  private UnitConverterRegistry unitConverterRegistry = UnitConverterRegistry.getInstance();
   
   /**
    * Get the singleton instance of the UnitConverterService.
@@ -32,15 +34,8 @@ public class UnitConverterService extends Service {
     if (instance == null) {
       instance = new UnitConverterService();
       instance.initialize();
-      
-      try {
-        // Read the properties, which are stored in the registry.
-        URL url = instance.getClass().getResource(UnitConverterRegistry.propertyDescriptorsFile);
-        PropertiesHandler.handleProperties(url, null);
-      } catch (IOException e) {
-        JfxApplication.reportException(null, e);
-      }
     }
+      
     return instance;
   }
   
@@ -56,17 +51,7 @@ public class UnitConverterService extends Service {
    * Private constructor to ensure that the application is a singleton.
    */
   private UnitConverterService() {
-    
-    // If we're running within Eclipse, we set development mode to true. The application can use this information to add functionality which is for development only.
-    if (RunningInEclipse.runningInEclipse()) {
-      UnitConverterRegistry.developmentMode = true;
-    }
-    
-  }
-
-  @Override
-  protected void setDevelopmentMode(boolean developmentMode) {
-    UnitConverterRegistry.developmentMode = developmentMode;
+    unitConverterRegistry = UnitConverterRegistry.getInstance();
   }
   
   @Override
@@ -75,8 +60,8 @@ public class UnitConverterService extends Service {
     try (InputStream in = getClass().getResourceAsStream("UnitConverterApplication.properties")) {
         props.load(in);
         
-        UnitConverterRegistry.version = props.getProperty("unitconverter.app.version");
-        UnitConverterRegistry.applicationName = props.getProperty("unitconverter.app.name");
+        unitConverterRegistry.setVersion(props.getProperty("unitconverter.app.version"));
+        unitConverterRegistry.setApplicationName(props.getProperty("unitconverter.app.name"));
     } catch (Exception e) {
       JfxApplication.reportException(null, e);
       System.exit(1);
@@ -97,5 +82,10 @@ public class UnitConverterService extends Service {
   @Override
   protected AppResourcesFx getAppResourcesFxClass() {
     return new UnitConverterAppResourcesFx();
+  }
+  
+  @Override
+  protected Registry getRegistry() {
+    return unitConverterRegistry;
   }
 }

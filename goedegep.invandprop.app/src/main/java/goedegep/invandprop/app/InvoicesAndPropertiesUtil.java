@@ -16,6 +16,7 @@ import goedegep.util.money.PgCurrencyFormat;
 public class InvoicesAndPropertiesUtil {
   private static final FlexDateFormat FDF = new FlexDateFormat();
   private static final PgCurrencyFormat  CF = new PgCurrencyFormat();
+  private static InvoicesAndPropertiesRegistry invoicesAndPropertiesRegistry = InvoicesAndPropertiesRegistry.getInstance();
   
   /**
    * Constructor - private as this is a utility class
@@ -33,7 +34,7 @@ public class InvoicesAndPropertiesUtil {
   public static String prependBaseDirToRelativeFilename(String filename) {
     File file = new File(filename);
     if (!file.isAbsolute()) {
-      file = new File(InvoicesAndPropertiesRegistry.propertyRelatedFilesFolder, filename);
+      file = new File(invoicesAndPropertiesRegistry.getPropertyRelatedFilesFolder(), filename);
       return file.getAbsolutePath();
     } else {
       return filename;

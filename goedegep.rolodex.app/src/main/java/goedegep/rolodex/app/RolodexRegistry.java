@@ -1,71 +1,64 @@
 package goedegep.rolodex.app;
 
-import goedegep.properties.model.PropertyDescriptorGroup;
-import goedegep.rolodex.model.Rolodex;
-import goedegep.util.emf.EMFResource;
+import goedegep.myworld.common.Registry;
 
 /**
  * This registry class provides information to be shared within the complete Rolodex application.
  */
-public class RolodexRegistry {
-  
-  /**
-   * The name of the application.
-   */
-  public static String applicationName;
-  
-  /**
-   * Name of the author of the application.
-   */
-  public static String author = "Peter Goedegebure";
-  
-  /**
-   * Name of the file with Configuration data.
-   */
-  public static String configurationFile = null;
-  
-  /**
-   * Copyright message for the application.
-   */
-  public static String copyrightMessage = "Copyright (c) 2001-2025";
-  
-  /**
-   * Name of the file with the property descriptors.
-   */
-  public static String propertyDescriptorsFile = "RolodexPropertyDescriptors.xmi";
-  
-  /**
-   * Name of the file with custom properties.
-   * <p>
-   * This file shall be located in the "MyWorld" folder under the user's home directory.
-   */
-  public static String customPropertiesFile = "VacationsUserPreferences.xmi";
+public class RolodexRegistry extends Registry {
   
   /**
    * Name of the file with all rolodex data.
    */
-  public static String rolodexFile = null;
+  private static String rolodexFile = null;
   
   /**
-   * Short description of this application.
+   * Singleton instance of the RolodexRegistry.
    */
-  public static String shortProductInfo = "Addresses, phonenumbers and phone address books.";
+  private static RolodexRegistry instance = null;
+
+  /**
+   * Get the singleton instance of the RolodexRegistry.
+   * 
+   * @return the singleton instance of the RolodexRegistry.
+   */
+  public static RolodexRegistry getInstance() {
+    if (instance == null) {
+      instance = new RolodexRegistry();
+    }
+    
+    return instance;
+  }
   
   /**
-   * Current software version.
-   */
-  public static String version = null;
-  
+   * Get the name of the file with all rolodex data.
+   * 
+   * @return the name of the file with all rolodex data.
+   */  
+  public String getRolodexFile() {
+    return rolodexFile;
+  }
+
   /**
-   * For extra functionality during development.
+   * Set the name of the file with all rolodex data.
+   * 
+   * @param rolodexFile the name of the file with all rolodex data.
    */
-  public static boolean developmentMode = false;
-  
+  public void setRolodexFile(String rolodexFile) {
+    RolodexRegistry.rolodexFile = rolodexFile;
+  }
+
   /**
-   * EMFResource for the Property Descriptors.
+   * Private constructor for the singleton RolodexRegistry.
    */
-  public static EMFResource<PropertyDescriptorGroup> propertyDescriptorsResource = null;
-  
-  public static EMFResource<Rolodex> rolodexResource = null;  // TODO as the rolodex resource is part of the RolodexRegistry it doesn't have to be passed as a parameter
-  
+  private RolodexRegistry() {
+    super();
+    
+    setAuthor("Peter Goedegebure");
+    setShortProductInfo("Addresses, phonenumbers and phone address books.");
+    setPropertyDescriptorsFileName("RolodexPropertyDescriptors.xmi");
+    setUserPropertiesFileName("RolodexUserPreferences.xmi");
+    setRolodexFile("D:\\Database\\MyWorld\\Rolodex.xmi");
+  }
+
 }

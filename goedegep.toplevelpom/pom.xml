@@ -759,7 +759,6 @@
     <module>../goedegep.pctoolstest</module>
     <module>../goedegep.travels.app</module>
     <module>../goedegep.demo</module>
-    <module>../goedegep.myworld</module>
 
   </modules>
   <build>

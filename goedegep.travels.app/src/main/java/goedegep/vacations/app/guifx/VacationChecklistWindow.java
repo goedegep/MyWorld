@@ -80,14 +80,7 @@ public class VacationChecklistWindow extends JfxStage {
     });
     
     // Update the title to show the filename of the checklist (although this will never happen).
-    vacationChecklistResource.fileNameProperty().addListener(new ChangeListener<String>() {
-
-      @Override
-      public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-        updateTitle();
-      }
-      
-    });
+    vacationChecklistResource.uriProperty().addListener((_, _, _) -> updateTitle());
     
     // Listen to any changes in the checklist, handleChecklistChangeNotification() acts on specific types of changes.
     vacationChecklistResource.addNotificationListener(this::handleChecklistChangeNotification);

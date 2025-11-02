@@ -43,6 +43,8 @@ public class AlbumFolder {
    * My compilation albums have the issue date set to 9999.
    */
   private static final FlexDate   COMPILATION_MARKER_DATE = new FlexDate(9999);
+  
+  private static MediaRegistry mediaRegistry = MediaRegistry.getInstance();
 
   /**
    * Check whether a folder name satisfies the naming convention for an Album Folder.
@@ -337,7 +339,7 @@ public class AlbumFolder {
       boolean haveMoreThanOneAlbumOfContainerArtistInThisYearOnDisc, boolean isMyCompilationAlbum, List<Object> errors) {
     StringBuilder buf = new StringBuilder();
     
-    buf.append(MediaRegistry.musicDirectory);
+    buf.append(mediaRegistry.getMusicDirectory());
     
     buf.append(File.separator);
     
@@ -466,7 +468,7 @@ public class AlbumFolder {
   public static String generateSoundtrackAlbumDiscFolderName(String albumTitle, String artistName, FlexDate releaseDate, String discId, boolean isMyCompilationAlbum, List<Object> errors) {
     StringBuilder buf = new StringBuilder();
     
-    buf.append(MediaRegistry.musicDirectory);
+    buf.append(mediaRegistry.getMusicDirectory());
     
     buf.append(File.separator);
     

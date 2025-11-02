@@ -31,6 +31,7 @@ import javafx.stage.FileChooser;
 public class ObjectControlForImages extends ObjectControlTemplate<List<String>> {
   private static final Logger LOGGER = Logger.getLogger(ObjectControlForImages.class.getName());
 
+  private MediaRegistry mediaRegistry;
   
   /**
    * Main layout
@@ -63,6 +64,7 @@ public class ObjectControlForImages extends ObjectControlTemplate<List<String>> 
     super(customization, true);
     
     LOGGER.info("=>");
+    mediaRegistry = MediaRegistry.getInstance();
     mainLayout = componentFactory.createHBox(10.0, 10.0);
     
     // Controls
@@ -79,7 +81,7 @@ public class ObjectControlForImages extends ObjectControlTemplate<List<String>> 
     mainLayout.getChildren().add(imagesHBox);
     
     objectControlsGroup = new ObjectControlGroup();
-    objectControlsGroup.addListener((e) -> {
+    objectControlsGroup.addListener((_) -> {
       if (!ignoreChanges) {
         ociHandleNewUserInput(this);
       }
@@ -88,7 +90,7 @@ public class ObjectControlForImages extends ObjectControlTemplate<List<String>> 
     // Status indicator
     mainLayout.getChildren().add(getStatusIndicator());
     
-    addImageButton.setOnAction((e) -> {
+    addImageButton.setOnAction((_) -> {
       LOGGER.info("Adding new image control =>");
       ObjectControlImageFileWithDelete objectControlImageFile = new ObjectControlImageFileWithDelete(customization, this::deleteImageObjectControl);
       FileChooser fileChooser = objectControlImageFile.getFileChooser();
@@ -128,7 +130,7 @@ public class ObjectControlForImages extends ObjectControlTemplate<List<String>> 
    */
   private void addImageControl(ObjectControlImageFileWithDelete objectControlImageFileWithDelete, String imageFileName) {
     LOGGER.info("=>");
-    objectControlImageFileWithDelete.setObject(new File(MediaRegistry.musicDataDirectory + File.separator + imageFileName));
+    objectControlImageFileWithDelete.setObject(new File(mediaRegistry.getMusicDataDirectory() + File.separator + imageFileName));
     
     objectControlsGroup.addObjectControls(objectControlImageFileWithDelete);
     
@@ -180,7 +182,7 @@ public class ObjectControlForImages extends ObjectControlTemplate<List<String>> 
       ObjectControlStatus objectControl = iterator.next();
       if (objectControl instanceof ObjectControlImageFile objectControlImageFile) {
         String fileName = objectControlImageFile.getValue().getAbsolutePath();
-        fileName = FileUtils.getPathRelativeToFolder(MediaRegistry.musicDataDirectory, fileName);
+        fileName = FileUtils.getPathRelativeToFolder(mediaRegistry.getMusicDataDirectory(), fileName);
         newValue.add(fileName);
       }
     }
@@ -234,13 +236,14 @@ public class ObjectControlForImages extends ObjectControlTemplate<List<String>> 
 
 class ObjectControlImageFileWithDelete extends ObjectControlImageFile {
   private static final Logger LOGGER = Logger.getLogger(ObjectControlImageFileWithDelete.class.getName());
-
+  
   ObjectControlImageFileWithDelete(CustomizationFx customization, Consumer<ObjectControlImageFileWithDelete> deleteImageObjectControl) {
     super(customization, false);
     LOGGER.info("=>");
 
-    if (MediaRegistry.musicDataDirectory != null) {
-      setInitialDirectory(new File(MediaRegistry.musicDataDirectory + File.separator + "Pictures"));
+    MediaRegistry mediaRegistry = MediaRegistry.getInstance();
+    if (mediaRegistry.getMusicDataDirectory() != null) {
+      setInitialDirectory(new File(mediaRegistry.getMusicDataDirectory() + File.separator + "Pictures"));
     }
     
     StackPane stackPane = getControl();
@@ -248,7 +251,7 @@ class ObjectControlImageFileWithDelete extends ObjectControlImageFile {
     Button deleteImageButton = customization.getComponentFactoryFx().createButton("Delete", "Remove this image");
     StackPane.setAlignment(deleteImageButton, Pos.TOP_RIGHT);
     stackPane.getChildren().add(deleteImageButton);
-    deleteImageButton.setOnAction((e) -> {
+    deleteImageButton.setOnAction((_) -> {
       LOGGER.info("Removing image =>");
       deleteImageObjectControl.accept(this);
       LOGGER.info("Removing image <=");

@@ -50,7 +50,6 @@ public class ConsoleFEData implements Serializable {
 	public String getLanguage() { return lang; }
 	public ConsoleFEData setLanguage(String s) { lang = s; return this;}
 	
-	@SuppressWarnings("serial")
   private static HashMap<String, Integer> langs = new HashMap<String, Integer>() {{
 		put("ar", 0x0001); put("bg", 0x0002); put("ca", 0x0003); put("zh-Hans", 0x0004); put("cs", 0x0005); put("da", 0x0006); put("de", 0x0007); put("el", 0x0008); put("en", 0x0009); put("es", 0x000a);
 		put("fi", 0x000b); put("fr", 0x000c); put("he", 0x000d); put("hu", 0x000e); put("is", 0x000f); put("it", 0x0010); put("ja", 0x0011); put("ko", 0x0012); put("nl", 0x0013); put("no", 0x0014);
