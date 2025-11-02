@@ -74,7 +74,6 @@ public class ShellLink {
 
   private static Map<String, String> env = System.getenv();
 
-  @SuppressWarnings("serial")
   private static HashMap<Integer, Class<? extends Object>> extraTypes = new HashMap<Integer, Class<? extends Object>>() {{
     put(ConsoleData.signature, ConsoleData.class);
     put(ConsoleFEData.signature, ConsoleFEData.class);

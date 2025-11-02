@@ -104,7 +104,7 @@ public class BirthdaysWindow extends JfxStage {
 class BirthdaysTableDescriptor extends EObjectTableDescriptor<Person> {
   
   private static List<EObjectTableColumnDescriptorAbstract<Person>> columnDescriptors = List.<EObjectTableColumnDescriptorAbstract<Person>>of(
-      new EObjectTableColumnDescriptorCustom<Person>(null, "Name", null, true, true, column -> {
+      new EObjectTableColumnDescriptorCustom<Person>(null, "Name", null, true, true, _ -> {
         TableCell<Person, Object> cell = new TableCell<>() {
 
           @Override
@@ -145,7 +145,7 @@ class BirthdaysTableDescriptor extends EObjectTableDescriptor<Person> {
 
         return cell;
       }),
-      new EObjectTableColumnDescriptorCustom<Person>(null, "Birthday", null, true, true, column -> {
+      new EObjectTableColumnDescriptorCustom<Person>(null, "Birthday", null, true, true, _ -> {
         TableCell<Person, Object> cell = new TableCell<>() {
 
           @Override

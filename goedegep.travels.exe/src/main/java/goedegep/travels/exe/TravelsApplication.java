@@ -1,6 +1,8 @@
 package goedegep.travels.exe;
 
 import java.io.File;
+import java.io.InputStream;
+import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -8,7 +10,6 @@ import goedegep.jfx.JfxApplication;
 import goedegep.util.RunningInEclipse;
 import goedegep.util.thread.ThreadUtil;
 import goedegep.vacations.app.TravelsService;
-import goedegep.vacations.app.logic.VacationsRegistry;
 import javafx.stage.Stage;
 
 /**
@@ -18,7 +19,7 @@ public class TravelsApplication extends JfxApplication {
   @SuppressWarnings("unused")
   private static final Logger LOGGER = Logger.getLogger(TravelsApplication.class.getName());
   
-  private static final String LOG_SUBFOLDER = "MyWorld";  
+  private static final String LOG_SUBFOLDER = "MyWorld";
 
 
   /**
@@ -40,11 +41,12 @@ public class TravelsApplication extends JfxApplication {
 
   @Override
   public void start(Stage primaryStage) throws Exception {
+    String applicationName = getApplicationNameFromApplicationProperties();
         
     // Setup logging. Only log to a file when not running in Eclipse.
     String logFileBaseName = null;
     if (!RunningInEclipse.runningInEclipse()) {
-      logFileBaseName = System.getProperty("user.home") + File.separator + LOG_SUBFOLDER + File.separator + VacationsRegistry.applicationName + "_logfile";
+      logFileBaseName = System.getProperty("user.home") + File.separator + LOG_SUBFOLDER + File.separator + applicationName + "_logfile";
     }
     logSetup(Level.SEVERE, logFileBaseName);
     
@@ -69,5 +71,21 @@ public class TravelsApplication extends JfxApplication {
     
   }
   
+  protected String getApplicationNameFromApplicationProperties() {
+    Properties properties = TravelsService.getApplicationProperties();
+    return properties.getProperty("travels.app.name");
+    
+//    Properties props = new Properties();
+//    try (InputStream in = getClass().getResourceAsStream("TravelsApplication.properties")) {
+//        props.load(in);
+//        
+//        return props.getProperty("travels.app.name");
+//    } catch (Exception e) {
+//      JfxApplication.reportException(null, e);
+//      System.exit(1);
+//    }
+//    
+//    return null;
+  }
 
 }

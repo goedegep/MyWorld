@@ -57,6 +57,8 @@ public class TracksTable extends EObjectTable<Track> {
 //   */
 //  private MediaDbWindow mediaDbWindow;
   
+  private MediaRegistry mediaRegistry;
+  
   /**
    * This map relates a track (as in the mediaDb) to its location on disc.
    */
@@ -85,7 +87,7 @@ public class TracksTable extends EObjectTable<Track> {
   public TracksTable(CustomizationFx customization, MediaDbWindow mediaDbWindow, MediaDb mediaDb, Map<Track, Path> trackDiscLocationMap) {
     super(customization, MediadbPackage.eINSTANCE.getTrack(), new TracksTableDescriptor(customization, trackDiscLocationMap), mediaDb, MediadbPackage.eINSTANCE.getMediaDb_Tracks());
     
-//    this.mediaDbWindow = mediaDbWindow;
+    mediaRegistry = MediaRegistry.getInstance();
     this.trackDiscLocationMap = trackDiscLocationMap;
     
     setTableMenuButtonVisible(true);
@@ -127,7 +129,7 @@ public class TracksTable extends EObjectTable<Track> {
 //    }
     
     // Can't play anything if the path to MPC-HC isn't set.
-    if (MediaRegistry.mediaPlayerClassicExecutable == null) {
+    if (mediaRegistry.getMediaPlayerClassicExecutable() == null) {
       return;
     }
     
@@ -135,7 +137,7 @@ public class TracksTable extends EObjectTable<Track> {
     // Build the command to start the media player.
     // First argument is the MPC-HC player executable. Then for each track ....
     List<String> commandArguments = new ArrayList<>();
-    commandArguments.add(MediaRegistry.mediaPlayerClassicExecutable);        
+    commandArguments.add(mediaRegistry.getMediaPlayerClassicExecutable());        
 
     Path trackPath = trackDiscLocationMap.get(track);
     if (trackPath != null) {
@@ -182,7 +184,7 @@ class TracksTableDescriptor extends EObjectTableDescriptor<Track> {
    */
   private List<EObjectTableColumnDescriptorAbstract<Track>> columnDescriptors = List.<EObjectTableColumnDescriptorAbstract<Track>>of(
       playColumnDescriptor,
-      new EObjectTableColumnDescriptorCustom<Track>(null, "Artist", null, true, true, item -> {
+      new EObjectTableColumnDescriptorCustom<Track>(null, "Artist", null, true, true, _ -> {
         TableCell<Track, Object> cell = new TableCell<>() {
 
           @Override
@@ -209,7 +211,7 @@ class TracksTableDescriptor extends EObjectTableDescriptor<Track> {
         return cell;
       }),
       new EObjectTableColumnDescriptorBasic<Track>(MEDIA_DB_PACKAGE.getTrack_Title(), "Title", true, true),
-      new EObjectTableColumnDescriptorCustom<Track>(null, "Album", null, false, true, column -> {
+      new EObjectTableColumnDescriptorCustom<Track>(null, "Album", null, false, true, _ -> {
         TableCell<Track, Object> cell = new TableCell<>() {
 
           @Override
@@ -241,7 +243,7 @@ class TracksTableDescriptor extends EObjectTableDescriptor<Track> {
 
         return cell;
       }),
-      new EObjectTableColumnDescriptorCustom<Track>(null, "File", null, false, true, column -> {
+      new EObjectTableColumnDescriptorCustom<Track>(null, "File", null, false, true, _ -> {
         TableCell<Track, Object> cell = new TableCell<>() {
 
           @Override
@@ -264,7 +266,7 @@ class TracksTableDescriptor extends EObjectTableDescriptor<Track> {
 
         return cell;
       }),
-      new EObjectTableColumnDescriptorCustom<Track>(MEDIA_DB_PACKAGE.getTrack_ReferredBy(), "Referred by", null, false, true, column -> {
+      new EObjectTableColumnDescriptorCustom<Track>(MEDIA_DB_PACKAGE.getTrack_ReferredBy(), "Referred by", null, false, true, _ -> {
         TableCell<Track, Object> cell = new TableCell<>() {
 
           @Override
@@ -305,7 +307,6 @@ class TracksTableDescriptor extends EObjectTableDescriptor<Track> {
       })
   );
   
-  @SuppressWarnings("serial")
   private static Map<Operation, TableRowOperationDescriptor<Track>> rowOperations = new HashMap<>() {
     {
       put(Operation.OPEN, new TableRowOperationDescriptor<>("Play"));

@@ -1,65 +1,58 @@
 package goedegep.unitconverter.app;
 
-import goedegep.properties.model.PropertyDescriptorGroup;
-import goedegep.util.emf.EMFResource;
+import goedegep.myworld.common.Registry;
 
-public class UnitConverterRegistry {
-  
-  /**
-   * The name of the application.
-   */
-  public static String applicationName;
-  
-  /**
-   * Name of the author of the application.
-   */
-  public static String author = "Peter Goedegebure";
-  
-  /**
-   * Name of the file with Configuration data.
-   */
-  public static String configurationFile = null;
-  
-  /**
-   * Copyright message for the application.
-   */
-  public static String copyrightMessage = "Copyright (c) 2001-2025";
-  
-  /**
-   * Name of the file with the property descriptors.
-   */
-  public static String propertyDescriptorsFile = "UnitConverterPropertyDescriptors.xmi";
-  
-  /**
-   * Name of the file with custom properties.
-   * <p>
-   * This file shall be located in the "MyWorld" folder under the user's home directory.
-   */
-  public static String customPropertiesFile = "UnitConverterUserPreferences.xmi";
+public class UnitConverterRegistry extends Registry {
   
   /**
    * Directory where all data files are stored.
    */
-  public static String dataDirectory = null;
+  private static String dataDirectory = null;
   
   /**
-   * Short description of this application.
+   * Singleton instance of the UnitConverterRegistry.
    */
-  public static String shortProductInfo = "Unit conversion application.";
+  private static UnitConverterRegistry instance = null;
+
+  /**
+   * Get the singleton instance of the UnitConverterRegistry.
+   * 
+   * @return the singleton instance of the UnitConverterRegistry.
+   */
+  public static UnitConverterRegistry getInstance() {
+    if (instance == null) {
+      instance = new UnitConverterRegistry();
+    }
+    
+    return instance;
+  }
   
   /**
-   * Current software version.
+   * Get the directory where all data files are stored.
+   * 
+   * @return the directory where all data files are stored.
    */
-  public static String version = null;
-  
+  public String getDataDirectory() {
+    return dataDirectory;
+  }
+
   /**
-   * For extra functionality during development.
+   * Set the directory where all data files are stored.
+   * 
+   * @param dataDirectory the directory where all data files are stored.
    */
-  public static boolean developmentMode = false;
-  
-  /**
-   * EMFResource for the Property Descriptors.
-   */
-  public static EMFResource<PropertyDescriptorGroup> propertyDescriptorsResource = null;
+  public void setDataDirectory(String dataDirectory) {
+    UnitConverterRegistry.dataDirectory = dataDirectory;
+  }
+
+
+  private UnitConverterRegistry() {
+    super();
+    
+    setAuthor("Peter Goedegebure");
+    setShortProductInfo("Unit conversion application.");
+    setPropertyDescriptorsFileName("UnitConverterPropertyDescriptors.xmi");
+    setUserPropertiesFileName("UnitConverterUserPreferences.xmi");
+  }
 
 }

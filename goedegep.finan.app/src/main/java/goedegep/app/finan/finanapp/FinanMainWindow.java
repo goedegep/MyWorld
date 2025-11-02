@@ -133,6 +133,8 @@ public class FinanMainWindow extends AppFrame implements SumAccountListener {
   private boolean                      isMainWindow;
   private ComponentFactory             componentFactory;
   
+  private FinanRegistry finanRegistry;
+  
   private SAXParser                    parser;
   private TransactionContentHandler    contentHandler;
   private CompanyPool                  companyPool = new CompanyPool();
@@ -177,6 +179,8 @@ public class FinanMainWindow extends AppFrame implements SumAccountListener {
     LOGGER.setLevel(Level.SEVERE);
     this.isMainWindow = isMainWindow;
     componentFactory = getTheComponentFactory();
+    
+    finanRegistry = FinanRegistry.getInstance();
     
     enableEvents(AWTEvent.WINDOW_EVENT_MASK);
     try {
@@ -348,14 +352,12 @@ public class FinanMainWindow extends AppFrame implements SumAccountListener {
 //  }
   
   private void showPropertyDescriptorsEditor() {
-    new PropertyDescriptorsEditorFx(DefaultCustomizationFx.getInstance(), FinanRegistry.propertyDescriptorsResource);
-//    JFrame propertyDescriptorsEditor = new PropertyDescriptorsEditor(getCustomization(), FinanRegistry.propertyDescriptorsResource);
-//    WindowUtil.showFrameCenteredOnScreen(propertyDescriptorsEditor, -50, -50);
+    new PropertyDescriptorsEditorFx(DefaultCustomizationFx.getInstance(), finanRegistry.getPropertyDescriptorsFileURI());
   }
 
   private void showUserSettingsEditor() {
     PropertiesEditor propertiesEditor = new PropertiesEditor("Edit Finan settings", DefaultCustomizationFx.getInstance(),
-        FinanRegistry.propertyDescriptorsResource, FinanRegistry.customPropertiesFile);
+        finanRegistry.getPropertyDescriptorsFileURI(), finanRegistry.getUserPropertiesFileName());
     propertiesEditor.show();
 //    JFrame propertiesWindow = new PropertiesWindow(getCustomization(), FinanRegistry.propertyDescriptorsResource);
 //    WindowUtil.showFrameCenteredOnScreen(propertiesWindow, -50, -50);
@@ -398,7 +400,7 @@ public class FinanMainWindow extends AppFrame implements SumAccountListener {
 
 
     // Bestand: property descriptors bewerken
-    if (FinanRegistry.developmentMode) {
+    if (finanRegistry.isDevelopmentMode()) {
       MenuFactory.addMenuItem(menu, "Property Descriptors bewerken", new ActionListener()  {
         public void actionPerformed(ActionEvent e) {
           showPropertyDescriptorsEditor();
@@ -552,7 +554,7 @@ public class FinanMainWindow extends AppFrame implements SumAccountListener {
 //      }
     }
     
-    File dataDirectory = new File(FinanRegistry.dataDirectory);
+    File dataDirectory = new File(finanRegistry.getDataDirectory());
 //    checkRequiredDataFiles();           // Check that the data files exist.
     
 
@@ -561,7 +563,7 @@ public class FinanMainWindow extends AppFrame implements SumAccountListener {
     String fileName = null;
     try {
       // Initialize financiele eenheden.
-      fileName = FinanRegistry.financieleEenhedenFile;
+      fileName = finanRegistry.getFinancieleEenhedenFile();
       file = new File(dataDirectory, fileName);
       if (rolodex != null) {
         FinancieleEenheidHandler financieleEenheidHandler = new FinancieleEenheidHandler(rolodex);
@@ -572,37 +574,37 @@ public class FinanMainWindow extends AppFrame implements SumAccountListener {
       }
       
       // Initialize companies.
-      fileName = FinanRegistry.companiesFile;
+      fileName = finanRegistry.getCompaniesFile();
       file = new File(dataDirectory, fileName);
       (new CompaniesContentHandler(companyPool)).read(file.getPath());
       
       // Initialize company funds.
-      fileName = FinanRegistry.companyFundsFile;
+      fileName = finanRegistry.getCompanyFundsFile();
       file = new File(dataDirectory, fileName);
       (new CompanyFundsContentHandler(companyPool)).read(file.getPath());
       
       // Initialize fund shares.
-      fileName = FinanRegistry.fundSharesFile;
+      fileName = finanRegistry.getFundSharesFile();
       file = new File(dataDirectory, fileName);
       (new FundSharesContentHandler()).read(file.getPath());
       
       // Initialize share dividends.
-      fileName = FinanRegistry.shareDividendsFile;
+      fileName = finanRegistry.getShareDividendsFile();
       file = new File(dataDirectory, fileName);
       (new ShareDividendsContentHandler()).read(parser, file.getPath());
       
       // Initialize option series.
-      fileName = FinanRegistry.optionSeriesFile;
+      fileName = finanRegistry.getOptionSeriesFile();
       file = new File(dataDirectory, fileName);
       (new OptionSeriesContentHandler()).read(parser, file.getPath());
       
       // Initialize share and stock dividend tax rates.
-      fileName = FinanRegistry.shareTaxRatesFile;
+      fileName = finanRegistry.getShareTaxRatesFile();
       file = new File(dataDirectory, fileName);
       (new ShareTaxRatesContentHandler()).read(parser, file.getPath());
       
       // Initialize claim emissions.
-      fileName = FinanRegistry.claimEmissionsFile;
+      fileName = finanRegistry.getClaimEmissionsFile();
       file = new File(dataDirectory, fileName);
       (new ClaimEmissionsContentHandler()).read(parser, file.getPath());
             
@@ -618,7 +620,7 @@ public class FinanMainWindow extends AppFrame implements SumAccountListener {
     }
 
     // Open de transactie file.
-    FinanRegistry.transactionsFile = new File(dataDirectory, FinanRegistry.transactionsFileName);
+    finanRegistry.setTransactionsFile(new File(dataDirectory, finanRegistry.getTransactionsFileName()));
     loadTransactions();
     
     revalidate();
@@ -645,7 +647,7 @@ public class FinanMainWindow extends AppFrame implements SumAccountListener {
   }
   
   public void loadTransactions() {
-    readTransactionsFromFile(FinanRegistry.transactionsFile);
+    readTransactionsFromFile(finanRegistry.getTransactionsFile());
 
     updateTitle();
     extractRatesFromTransactions();
@@ -673,7 +675,7 @@ public class FinanMainWindow extends AppFrame implements SumAccountListener {
   }
 
   boolean saveTransactions() {
-    File transactionsFile = FinanRegistry.transactionsFile;
+    File transactionsFile = finanRegistry.getTransactionsFile();
     Path transactionsFilePath = transactionsFile.toPath();
     // If we are saving to an existing file, rename it first (with date/time extension)
     LOGGER.severe("saveCurrentFile: currentFile = " + transactionsFilePath.toAbsolutePath().toString());
@@ -702,7 +704,7 @@ public class FinanMainWindow extends AppFrame implements SumAccountListener {
     try {
       contentHandler.write();
 
-      statusBar.setText("Opgeslagen in " + FinanRegistry.transactionsFile.getPath());
+      statusBar.setText("Opgeslagen in " + finanRegistry.getTransactionsFile().getPath());
 
       transactionsFileDirty = false;
       transactiesOpslaanMenuItem.setEnabled(true);
@@ -722,7 +724,7 @@ public class FinanMainWindow extends AppFrame implements SumAccountListener {
       WindowUtil.showFrameCenteredOnScreen(transactionProblemsWindow);
     }
     
-    FinanRegistry.transactionsHandled = true;
+    finanRegistry.setTransactionsHandled(true);
     statusBar.setText("Transacties zijn verwerkt");
     handleTransactionsMenuItem.setEnabled(false);
 
@@ -800,7 +802,7 @@ public class FinanMainWindow extends AppFrame implements SumAccountListener {
     if (transactionsFileDirty) {
       buf.append("*");
     }
-    buf.append(FinanRegistry.transactionsFile.getName());
+    buf.append(finanRegistry.getTransactionsFile().getName());
     
     setTitle(buf.toString());
   }
@@ -854,7 +856,7 @@ public class FinanMainWindow extends AppFrame implements SumAccountListener {
   
   public void dumpData_actionPerformed(ActionEvent e) {
     // Dump Data only works if the transactions are handled.
-    if (FinanRegistry.transactionsHandled == false) {
+    if (finanRegistry.areTransactionsHandled() == false) {
       Image image = getCustomization().getResources().getAttentionImage(ImageSize.SIZE_3);
       OptionDialog optionDialog = new OptionDialog(
           this,
@@ -886,7 +888,7 @@ public class FinanMainWindow extends AppFrame implements SumAccountListener {
     if (dataDumpFile != null) {
       fileChooser.setSelectedFile(dataDumpFile);
     } else {
-      fileChooser.setCurrentDirectory(new File(FinanRegistry.dataDirectory));
+      fileChooser.setCurrentDirectory(new File(finanRegistry.getDataDirectory()));
     }
     fileChooser.addChoosableFileFilter(new PgFileFilter("txt", "Tekstbestanden"));
     fileChooser.setApproveButtonToolTipText("Data naar het gekozen bestand dumpen");
@@ -979,9 +981,9 @@ public class FinanMainWindow extends AppFrame implements SumAccountListener {
       transactiesOpslaanMenuItem.setEnabled(true);
       updateTitle();
     }
-    if (FinanRegistry.transactionsHandled) {
+    if (finanRegistry.areTransactionsHandled()) {
       rewindTransactions();
-      FinanRegistry.transactionsHandled = false;
+      finanRegistry.setTransactionsHandled(false);
       statusBar.setText("Transacties zijn niet verwerkt.");
       handleTransactionsMenuItem.setEnabled(true);
     }

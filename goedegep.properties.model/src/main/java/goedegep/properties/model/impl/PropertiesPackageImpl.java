@@ -293,16 +293,6 @@ public class PropertiesPackageImpl extends EPackageImpl implements PropertiesPac
    * @generated
    */
   @Override
-  public EAttribute getPropertyDescriptor_InstallInitialValue() {
-    return (EAttribute) propertyDescriptorEClass.getEStructuralFeatures().get(7);
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
   public EClass getFilePropertyDescriptor() {
     return filePropertyDescriptorEClass;
   }
@@ -433,7 +423,6 @@ public class PropertiesPackageImpl extends EPackageImpl implements PropertiesPac
     createEAttribute(propertyDescriptorEClass, PROPERTY_DESCRIPTOR__REGISTRY_NAME);
     createEAttribute(propertyDescriptorEClass, PROPERTY_DESCRIPTOR__INITIAL_VALUE);
     createEAttribute(propertyDescriptorEClass, PROPERTY_DESCRIPTOR__USER_SETTABLE);
-    createEAttribute(propertyDescriptorEClass, PROPERTY_DESCRIPTOR__INSTALL_INITIAL_VALUE);
 
     filePropertyDescriptorEClass = createEClass(FILE_PROPERTY_DESCRIPTOR);
     createEAttribute(filePropertyDescriptorEClass, FILE_PROPERTY_DESCRIPTOR__FILE_EXTENSIONS);
@@ -527,9 +516,6 @@ public class PropertiesPackageImpl extends EPackageImpl implements PropertiesPac
     initEAttribute(getPropertyDescriptor_UserSettable(), ecorePackage.getEBoolean(), "userSettable", "false", 0, 1,
         PropertyDescriptor.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE,
         !IS_DERIVED, IS_ORDERED);
-    initEAttribute(getPropertyDescriptor_InstallInitialValue(), ecorePackage.getEBoolean(), "installInitialValue",
-        "false", 1, 1, PropertyDescriptor.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_UNSETTABLE, !IS_ID,
-        IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(filePropertyDescriptorEClass, FilePropertyDescriptor.class, "FilePropertyDescriptor", !IS_ABSTRACT,
         !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);

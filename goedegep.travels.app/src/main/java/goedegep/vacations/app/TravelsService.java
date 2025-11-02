@@ -1,21 +1,21 @@
 package goedegep.vacations.app;
 
-import java.io.IOException;
 import java.io.InputStream;
-import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.WatchEvent;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
+import java.util.logging.Logger;
 
 import goedegep.configuration.model.Look;
 import goedegep.jfx.AppResourcesFx;
 import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.JfxApplication;
+import goedegep.jfx.PropertyDescriptorsEditorFx;
+import goedegep.myworld.common.Registry;
 import goedegep.myworld.common.Service;
-import goedegep.properties.app.PropertiesHandler;
 import goedegep.resources.ImageResource;
 import goedegep.util.dir.DirectoryChangesListener;
 import goedegep.util.string.StringUtil;
@@ -32,8 +32,14 @@ import javafx.scene.paint.Color;
  * It is built on top of logic and guifx sub packages.
  */
 public class TravelsService extends Service {
+  private static final Logger LOGGER = Logger.getLogger(TravelsService.class.getName());
 
+  /**
+   * Singleton instance of the TravelsService.
+   */
   private static TravelsService instance;
+  
+  private VacationsRegistry vacationsRegistry;
   
   private List<DirectoryChangesListener> directoryChangesListeners = new ArrayList<>();
   
@@ -59,7 +65,7 @@ public class TravelsService extends Service {
    */
   public void showTravelsWindow() {
     // Show the main window of the application
-    VacationsWindow travelsWindow = new VacationsWindow(customization);
+    VacationsWindow travelsWindow = new VacationsWindow(customization, this);
     travelsWindow.show();
   }
 
@@ -81,16 +87,7 @@ public class TravelsService extends Service {
    * Private constructor to ensure singleton pattern.
    */
   private TravelsService() {
-    
-    try {
-      
-      // Read the properties, which are stored in the registry.
-      URL url = getClass().getResource(VacationsRegistry.propertyDescriptorsFile);
-      PropertiesHandler.handleProperties(url, null);
-
-    } catch (IOException e) {
-      JfxApplication.reportException(null, e);
-    }
+    vacationsRegistry = VacationsRegistry.getInstance();
 
     startPhotoThumbnailsCreation();
   }
@@ -99,8 +96,14 @@ public class TravelsService extends Service {
    * Start the background task to create photo thumbnails.
    */
   private void startPhotoThumbnailsCreation() {
-    List<String> ignoreFoldersAsList = StringUtil.semicolonSeparatedValuesToListOfValues(VacationsRegistry.ignoreVacationPictureFolders);
-    Path vacationPicturesFolderPath = Paths.get(VacationsRegistry.vacationPicturesFolderName);
+    List<String> ignoreFoldersAsList = StringUtil.semicolonSeparatedValuesToListOfValues(vacationsRegistry.getIgnoreVacationPictureFolders());
+    String vacationPicturesFolderName = vacationsRegistry.getVacationPicturesFolderName();
+    if (vacationPicturesFolderName == null) {
+      LOGGER.severe("Photo thumbnails creation not started because the vacation pictures folder name isn't specified.");
+      return;
+    }
+    
+    Path vacationPicturesFolderPath = Paths.get(vacationPicturesFolderName);
     PhotoThumbnailManager photoThumbnailManager = new PhotoThumbnailManager(vacationPicturesFolderPath, ignoreFoldersAsList);
     Thread photoThumbnailManagerThread = new Thread(photoThumbnailManager);
     photoThumbnailManagerThread.setDaemon(true);
@@ -126,11 +129,6 @@ public class TravelsService extends Service {
       listener.directoryChange(watchEvent);
     }
   }
-
-  @Override
-  protected void setDevelopmentMode(boolean developmentMode) {
-    VacationsRegistry.developmentMode = developmentMode;
-  }
   
   @Override
   protected void readApplicationProperties() {
@@ -138,12 +136,26 @@ public class TravelsService extends Service {
     try (InputStream in = getClass().getResourceAsStream("TravelsApplication.properties")) {
         props.load(in);
         
-        VacationsRegistry.version = props.getProperty("travels.app.version");
-        VacationsRegistry.applicationName = props.getProperty("travels.app.name");
+        vacationsRegistry.setVersion(props.getProperty("travels.app.version"));
+        vacationsRegistry.setApplicationName(props.getProperty("travels.app.name"));
     } catch (Exception e) {
       JfxApplication.reportException(null, e);
       System.exit(1);
     }
+  }
+  
+  public static Properties getApplicationProperties() {
+    Properties props = new Properties();
+    try (InputStream in = TravelsService.class.getResourceAsStream("TravelsApplication.properties")) {
+        props.load(in);
+        
+        return props;
+    } catch (Exception e) {
+      JfxApplication.reportException(null, e);
+      System.exit(1);
+    }
+    
+    return null;
   }
   
   @Override
@@ -160,5 +172,14 @@ public class TravelsService extends Service {
   @Override
   protected AppResourcesFx getAppResourcesFxClass() {
     return new VacationsAppResourcesFx();
+  }
+  
+  @Override
+  protected Registry getRegistry() {
+    return vacationsRegistry;
+  }
+
+  public void showPropertyDescriptorsEditor() {
+    new PropertyDescriptorsEditorFx(customization, vacationsRegistry.getPropertyDescriptorsFileURI());
   }
 }

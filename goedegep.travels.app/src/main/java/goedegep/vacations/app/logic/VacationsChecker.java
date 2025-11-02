@@ -41,6 +41,8 @@ public class VacationsChecker {
       "backup"                 // Folder with backup files.
       );
   
+  private static VacationsRegistry vacationsRegistry = VacationsRegistry.getInstance();
+  
   /**
    * Check that all references (type <code>FileReference</code>) of a Vacation have the 'file' attribute set.
    * 
@@ -208,7 +210,7 @@ public class VacationsChecker {
    * @return a list of folder names for which no vacation exists, or null if there are no errors.
    */
   public static List<String> checkThatAllVacationFoldersAndFilesAreReferredTo(List<Vacation> vacations) {
-    String vacationsFoldername = VacationsRegistry.vacationsFolderName;
+    String vacationsFoldername = vacationsRegistry.getVacationsFolderName();
     if (vacationsFoldername == null) {
       throw new IllegalArgumentException("VacationsRegistry.vacationsFolderName is null");
     }
@@ -381,14 +383,14 @@ public class VacationsChecker {
    * @return a list of suspicious files, or null if there are no such files.
    */
   public static List<String> findSupiciousTopLevelFiles() {
-    String vacationsFoldername = VacationsRegistry.vacationsFolderName;
+    String vacationsFoldername = vacationsRegistry.getVacationsFolderName();
     if (vacationsFoldername == null) {
       throw new IllegalArgumentException("VacationsRegistry.vacationsFolderName is null");
     }
     LOGGER.info("vacationsFoldername=" + vacationsFoldername);
     
     List<String> suspiciousFiles = null;
-    List<String> knownFileNames = StringUtil.semicolonSeparatedValuesToListOfValues(VacationsRegistry.knownFiles);
+    List<String> knownFileNames = StringUtil.semicolonSeparatedValuesToListOfValues(vacationsRegistry.getKnownFiles());
     LOGGER.info("knownFileNames: " + knownFileNames);
     
     Path vacationsPath = Paths.get(vacationsFoldername);

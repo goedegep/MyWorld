@@ -72,6 +72,7 @@ public class UnitConverterWindow extends JfxStage {
   private static final String OK_TEXT_STYLE = "-fx-text-fill: black;";
   private static final String ERROR_TEXT_STYLE = "-fx-text-fill: red;";
   
+  private UnitConverterRegistry unitConverterRegistry;
   private UnitConverterAppResourcesFx appResources;
   
   private Node errorComponent;  // There can only be one error component, the last entered value. Others are overwritten with calculated or null values.
@@ -128,6 +129,7 @@ public class UnitConverterWindow extends JfxStage {
   public UnitConverterWindow(CustomizationFx customization) {
     super(customization, WINDOW_TITLE);
     
+    unitConverterRegistry = UnitConverterRegistry.getInstance();
     appResources = (UnitConverterAppResourcesFx) getResources();
     
     createGUI();
@@ -177,8 +179,8 @@ public class UnitConverterWindow extends JfxStage {
     
     // TextField: "afstand in km"
     afstandInKmTextField = componentFactory.createTextField(60, KM_FIELD_TOOLTIP);
-    afstandInKmTextField.setOnAction(event -> handleNewValueAfstandInKmTextField());
-    afstandInKmTextField.focusedProperty().addListener((obs, oldVal, newVal) -> {
+    afstandInKmTextField.setOnAction(_ -> handleNewValueAfstandInKmTextField());
+    afstandInKmTextField.focusedProperty().addListener((_, _, newVal) -> {
       if (newVal) {
         afstandInKmTextField.selectAll();
       } else {
@@ -203,8 +205,8 @@ public class UnitConverterWindow extends JfxStage {
 
     // TextField: "afstand in mijl"
     afstandInMijlTextField = componentFactory.createTextField(60, MILE_FIELD_TOOLTIP);
-    afstandInMijlTextField.setOnAction(event -> handleNewValueAfstandInMijlTextField());
-    afstandInMijlTextField.focusedProperty().addListener((obs, oldVal, newVal) -> {
+    afstandInMijlTextField.setOnAction(_ -> handleNewValueAfstandInMijlTextField());
+    afstandInMijlTextField.focusedProperty().addListener((_, _, newVal) -> {
       if (newVal) {
         afstandInMijlTextField.selectAll();
       } else {
@@ -238,8 +240,8 @@ public class UnitConverterWindow extends JfxStage {
     
     // TextField: "hh"
     tijdUrenTextField = componentFactory.createTextField(30, HOURS_FIELD_TOOLTIP);
-    tijdUrenTextField.setOnAction(event -> handleNewValueTijdUrenTextField());
-    tijdUrenTextField.focusedProperty().addListener((obs, oldVal, newVal) -> {
+    tijdUrenTextField.setOnAction(_ -> handleNewValueTijdUrenTextField());
+    tijdUrenTextField.focusedProperty().addListener((_, _, newVal) -> {
       if (newVal) {
         tijdUrenTextField.selectAll();
       } else {
@@ -254,8 +256,8 @@ public class UnitConverterWindow extends JfxStage {
    
     // TextField: "mm"
     tijdMinutenTextField = componentFactory.createTextField(30, MINUTES_FIELD_TOOLTIP);
-    tijdMinutenTextField.setOnAction(event -> handleNewValueTijdMinutenTextField());
-    tijdMinutenTextField.focusedProperty().addListener((obs, oldVal, newVal) -> {
+    tijdMinutenTextField.setOnAction(_ -> handleNewValueTijdMinutenTextField());
+    tijdMinutenTextField.focusedProperty().addListener((_, _, newVal) -> {
       if (newVal) {
         tijdMinutenTextField.selectAll();
       } else {
@@ -270,8 +272,8 @@ public class UnitConverterWindow extends JfxStage {
 
     // TextField: "ss"
     tijdSecondenTextField = componentFactory.createTextField(30, SECONDS_FIELD_TOOLTIP);
-    tijdSecondenTextField.setOnAction(event -> handleNewValueTijdSecondenTextField());
-    tijdSecondenTextField.focusedProperty().addListener((obs, oldVal, newVal) -> {
+    tijdSecondenTextField.setOnAction(_ -> handleNewValueTijdSecondenTextField());
+    tijdSecondenTextField.focusedProperty().addListener((_, _, newVal) -> {
       if (newVal) {
         tijdSecondenTextField.selectAll();
       } else {
@@ -306,8 +308,8 @@ public class UnitConverterWindow extends JfxStage {
     
     // TextField: "snelheid in km/h"
     snelheidInKmhTextField = componentFactory.createTextField(60, SPEED_FIELD_TOOLTIP);
-    snelheidInKmhTextField.setOnAction(event -> handleNewValueSnelheidInKmhTextField());
-    snelheidInKmhTextField.focusedProperty().addListener((obs, oldVal, newVal) -> {
+    snelheidInKmhTextField.setOnAction(_ -> handleNewValueSnelheidInKmhTextField());
+    snelheidInKmhTextField.focusedProperty().addListener((_, _, newVal) -> {
       if (newVal) {
         snelheidInKmhTextField.selectAll();
       } else {
@@ -333,8 +335,8 @@ public class UnitConverterWindow extends JfxStage {
     
     // TextField: "snelheid in mijl/h"
     snelheidInMijlhTextField = componentFactory.createTextField(60, SPEED_FIELD_TOOLTIP);
-    snelheidInMijlhTextField.setOnAction(event -> handleNewValueSnelheidInMijlhTextField());
-    snelheidInMijlhTextField.focusedProperty().addListener((obs, oldVal, newVal) -> {
+    snelheidInMijlhTextField.setOnAction(_ -> handleNewValueSnelheidInMijlhTextField());
+    snelheidInMijlhTextField.focusedProperty().addListener((_, _, newVal) -> {
       if (newVal) {
         snelheidInMijlhTextField.selectAll();
       } else {
@@ -368,8 +370,8 @@ public class UnitConverterWindow extends JfxStage {
 
     // TextField: "minuten"
     tempoInMinPerKmMinutenTextField = componentFactory.createTextField(30, MINUTES_FIELD_TOOLTIP);
-    tempoInMinPerKmMinutenTextField.setOnAction(event -> handleNewValueTempoInMinPerKmMinutenTextField());
-    tempoInMinPerKmMinutenTextField.focusedProperty().addListener((obs, oldVal, newVal) -> {
+    tempoInMinPerKmMinutenTextField.setOnAction(_ -> handleNewValueTempoInMinPerKmMinutenTextField());
+    tempoInMinPerKmMinutenTextField.focusedProperty().addListener((_, _, newVal) -> {
       if (newVal) {
         tempoInMinPerKmMinutenTextField.selectAll();
       } else {
@@ -384,8 +386,8 @@ public class UnitConverterWindow extends JfxStage {
     
     // TextField: "seconden"
     tempoInMinPerKmSecondenTextField = componentFactory.createTextField(30, SECONDS_FIELD_TOOLTIP);
-    tempoInMinPerKmSecondenTextField.setOnAction(event -> handleNewValueTempoInMinPerKmSecondenTextField());
-    tempoInMinPerKmSecondenTextField.focusedProperty().addListener((obs, oldVal, newVal) -> {
+    tempoInMinPerKmSecondenTextField.setOnAction(_ -> handleNewValueTempoInMinPerKmSecondenTextField());
+    tempoInMinPerKmSecondenTextField.focusedProperty().addListener((_, _, newVal) -> {
       if (newVal) {
         tempoInMinPerKmSecondenTextField.selectAll();
       } else {
@@ -411,8 +413,8 @@ public class UnitConverterWindow extends JfxStage {
     
     // TextField: "minuten"
     tempoInMinPerMijlMinutenTextField = componentFactory.createTextField(30, MINUTES_FIELD_TOOLTIP);
-    tempoInMinPerMijlMinutenTextField.setOnAction(event -> handleNewValueTempoInMinPerMijlMinutenTextField());
-    tempoInMinPerMijlMinutenTextField.focusedProperty().addListener((obs, oldVal, newVal) -> {
+    tempoInMinPerMijlMinutenTextField.setOnAction(_ -> handleNewValueTempoInMinPerMijlMinutenTextField());
+    tempoInMinPerMijlMinutenTextField.focusedProperty().addListener((_, _, newVal) -> {
       if (newVal) {
         tempoInMinPerMijlMinutenTextField.selectAll();
       } else {
@@ -427,8 +429,8 @@ public class UnitConverterWindow extends JfxStage {
     
     // TextField: "seconden"
     tempoInMinPerMijlSecondenTextField = componentFactory.createTextField(30, SECONDS_FIELD_TOOLTIP);
-    tempoInMinPerMijlSecondenTextField.setOnAction(event -> handleNewValueTempoInMinPerMijlSecondenTextField());
-    tempoInMinPerMijlSecondenTextField.focusedProperty().addListener((obs, oldVal, newVal) -> {
+    tempoInMinPerMijlSecondenTextField.setOnAction(_ -> handleNewValueTempoInMinPerMijlSecondenTextField());
+    tempoInMinPerMijlSecondenTextField.focusedProperty().addListener((_, _, newVal) -> {
       if (newVal) {
         tempoInMinPerMijlSecondenTextField.selectAll();
       } else {
@@ -493,7 +495,7 @@ public class UnitConverterWindow extends JfxStage {
     MenuBar    menuBar = new MenuBar();
     Menu       menu;
     
-    if (UnitConverterRegistry.developmentMode) {
+    if (unitConverterRegistry.isDevelopmentMode()) {
       // Bestand menu
       menu = componentFactory.createMenu("Bestand");
 
@@ -527,7 +529,7 @@ public class UnitConverterWindow extends JfxStage {
    * Show the standard PropertyDescriptors editor.
    */
   private void showPropertyDescriptorsEditor() {
-    new PropertyDescriptorsEditorFx(customization, UnitConverterRegistry.propertyDescriptorsResource);
+    new PropertyDescriptorsEditorFx(customization, unitConverterRegistry.getPropertyDescriptorsFileURI());
   }
   
   /**
@@ -535,13 +537,13 @@ public class UnitConverterWindow extends JfxStage {
    */
   private void showHelpAboutDialog() {    
     componentFactory.createApplicationInformationDialog(
-        "About " + UnitConverterRegistry.applicationName,
+        "About " + unitConverterRegistry.getApplicationName(),
         appResources.getApplicationImage(ImageSize.SIZE_3),
         null, 
-        UnitConverterRegistry.shortProductInfo + NEWLINE +
-        "Versie: " + UnitConverterRegistry.version + NEWLINE +
-        UnitConverterRegistry.copyrightMessage + NEWLINE +
-        "Auteur: " + UnitConverterRegistry.author)
+        unitConverterRegistry.getShortProductInfo() + NEWLINE +
+        "Version: " + unitConverterRegistry.getVersion() + NEWLINE +
+        unitConverterRegistry.getCopyrightMessage() + NEWLINE +
+        "Author: " + unitConverterRegistry.getAuthor())
         .showAndWait();
   }
   

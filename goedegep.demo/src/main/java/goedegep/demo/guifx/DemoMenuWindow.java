@@ -31,10 +31,17 @@ public class DemoMenuWindow extends JfxStage {
   private final static String WINDOW_TITLE = "Demo";
   
   private ComponentFactoryFx componentFactory;
+  private DemoRegistry demoRegistry;
   
+  /**
+   * Constructor for the DemoMenuWindow.
+   * 
+   * @param customization the GUI customization.
+   */
   public DemoMenuWindow(CustomizationFx customization) {
     super(customization, WINDOW_TITLE);
     
+    demoRegistry = DemoRegistry.getInstance();
     componentFactory = customization.getComponentFactoryFx();
     
     createGUI();
@@ -135,13 +142,14 @@ public class DemoMenuWindow extends JfxStage {
    */
   private void showHelpAboutDialog() {
     componentFactory.createApplicationInformationDialog(
-        "About " + DemoRegistry.applicationName,
+        "About " + demoRegistry.getApplicationName(),
         customization.getResources().getApplicationImage(ImageSize.SIZE_3),
         null,
-        DemoRegistry.shortProductInfo + NEWLINE +
-        "Version: " + DemoRegistry.version + NEWLINE +
-        DemoRegistry.copyrightMessage + NEWLINE +
-        "Author: " + DemoRegistry.author)
+        demoRegistry.getShortProductInfo() + NEWLINE +
+        "Version: " + demoRegistry.getVersion() + NEWLINE +
+        demoRegistry.getCopyrightMessage() + NEWLINE +
+        "Author: " + demoRegistry.getAuthor()
+        )
         .showAndWait();
   }
   

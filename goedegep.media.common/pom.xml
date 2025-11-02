@@ -17,6 +17,10 @@
       <artifactId>goedegep-jfx</artifactId>
     </dependency>
     <dependency>
+      <groupId>goedegep.myworld</groupId>
+      <artifactId>goedegep-myworld-common</artifactId>
+    </dependency>
+    <dependency>
       <groupId>goedegep.properties</groupId>
       <artifactId>goedegep-properties-app</artifactId>
     </dependency>

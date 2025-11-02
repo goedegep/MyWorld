@@ -9,7 +9,6 @@ import java.util.logging.Logger;
 import org.commonmark.parser.Parser;
 import org.commonmark.renderer.html.HtmlRenderer;
 
-import goedegep.jfx.ComponentFactoryFx;
 import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.JfxStage;
 import goedegep.jfx.MenuUtil;
@@ -33,7 +32,7 @@ public class MarkdownViewer extends JfxStage {
   private static final String NEWLINE = System.getProperty("line.separator");
   private static final String WINDOW_TITLE = "Markdown Viewer";
   
-  private ComponentFactoryFx componentFactory = null;
+  private MarkdownRegistry markdownRegistry = MarkdownRegistry.getInstance();
   private Parser parser = Parser.builder().build();
   private HtmlRenderer renderer = HtmlRenderer.builder().build();
   private WebView webView = new WebView();
@@ -43,7 +42,7 @@ public class MarkdownViewer extends JfxStage {
     super(customization, WINDOW_TITLE);
     LOGGER.info("=>");
     
-    componentFactory = customization.getComponentFactoryFx();
+    markdownRegistry = MarkdownRegistry.getInstance();
     
     createGUI();
     
@@ -137,13 +136,13 @@ public class MarkdownViewer extends JfxStage {
    */
   private void showHelpAboutDialog() {
     componentFactory.createApplicationInformationDialog(
-        "About " + MarkdownRegistry.applicationName,
+        "About " + markdownRegistry.getApplicationName(),
         customization.getResources().getApplicationImage(ImageSize.SIZE_3),
         null, 
-        MarkdownRegistry.shortProductInfo + NEWLINE +
-        "Version: " + MarkdownRegistry.version + NEWLINE +
-        MarkdownRegistry.copyrightMessage + NEWLINE +
-        "Author: " + MarkdownRegistry.author)
+        markdownRegistry.getShortProductInfo() + NEWLINE +
+        "Version: " + markdownRegistry.getVersion() + NEWLINE +
+        markdownRegistry.getCopyrightMessage() + NEWLINE +
+        "Author: " + markdownRegistry.getAuthor())
         .showAndWait();
   }
   

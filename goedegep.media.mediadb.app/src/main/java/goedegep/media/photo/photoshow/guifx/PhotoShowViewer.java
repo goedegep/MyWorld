@@ -78,7 +78,7 @@ public class PhotoShowViewer extends JfxStage {
     label = componentFactory.createLabel("Run from a Photoshow specification:");
     gridPane.add(label, 0, row);
     
-    String initiallySelectedFolder = MediaRegistry.photosFolder;
+    String initiallySelectedFolder = MediaRegistry.getInstance().getPhotosFolder();
     ObjectControlFileSelecter fileSelecter = componentFactory.createFileSelecterObjectControl(
         300,
         "Enter Photoshow specification file name",
@@ -90,7 +90,7 @@ public class PhotoShowViewer extends JfxStage {
     fileSelecter.setInitialFolderProvider(() -> initiallySelectedFolder);
     gridPane.add(fileSelecter.getControl(), 1, row);
     gridPane.add(fileSelecter.getFileChooserButton(), 2, row);
-    fileSelecter.addListener((e) -> {
+    fileSelecter.addListener((_) -> {
       File photoshowSpecificationFile = fileSelecter.getValue();
       LOGGER.severe("photoshowSpecificationFile: " + photoshowSpecificationFile);
       if (photoshowSpecificationFile.exists()  &&
@@ -120,7 +120,7 @@ public class PhotoShowViewer extends JfxStage {
     folderSelecter.setInitialFolderProvider(() -> initiallySelectedFolder);
     gridPane.add(folderSelecter.getControl(), 1, row);
     gridPane.add(folderSelecter.getFolderChooserButton(), 2, row);
-    folderSelecter.addListener((e) -> {
+    folderSelecter.addListener((_) -> {
       File photosFolder = folderSelecter.getValue();
       LOGGER.severe("photosFolder: " + photosFolder);
       if (photosFolder.exists()  &&

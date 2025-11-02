@@ -2,7 +2,6 @@ package goedegep.vacations.app.guifx;
 
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -10,10 +9,8 @@ import java.nio.file.Paths;
 
 import javax.imageio.ImageIO;
 
-import org.apache.pdfbox.pdmodel.PDDocument;
 import org.eclipse.emf.ecore.EObject;
 
-import com.gluonhq.impl.maps.BaseMap;
 import com.gluonhq.maps.MapPoint;
 
 import goedegep.jfx.CustomizationFx;
@@ -26,7 +23,6 @@ import goedegep.vacations.model.MapImage;
 import goedegep.vacations.model.Vacation;
 import javafx.beans.value.ChangeListener;
 import javafx.embed.swing.SwingFXUtils;
-import javafx.geometry.Point2D;
 import javafx.scene.Scene;
 import javafx.scene.SnapshotParameters;
 import javafx.scene.image.Image;
@@ -134,7 +130,7 @@ public class MapImageViewGenerator extends JfxStage {
     imageTravelMapView.snapshot(snapShotParameters, writebleImage);
     
     // Save the image
-    Path path = Paths.get(VacationsRegistry.vacationsFolderName, mapImage.getFileName());
+    Path path = Paths.get(VacationsRegistry.getInstance().getVacationsFolderName(), mapImage.getFileName());
     try {
       Files.deleteIfExists(path);
     } catch (IOException e) {

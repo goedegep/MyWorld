@@ -33,7 +33,7 @@ public class DiscStructureSpecificationTreeViewCreator {
   private EObjectTreeItemClassDescriptor createDescriptorForDiscStructureSpecification() {
     // DiscStructureSpecification (root node)
     EObjectTreeItemClassDescriptor eObjectTreeItemClassDescriptor = new EObjectTreeItemClassDescriptor()
-        .setNodeTextFunction(eObject -> "Disc Structure Specification")
+        .setNodeTextFunction(_ -> "Disc Structure Specification")
         .setExpandOnCreation(true);
 
     EObjectTreeItemClassListReferenceDescriptor eObjectTreeItemClassListReferenceDescriptor;

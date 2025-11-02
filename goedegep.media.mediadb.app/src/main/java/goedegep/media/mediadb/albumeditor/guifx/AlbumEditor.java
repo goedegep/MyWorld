@@ -85,6 +85,7 @@ public class AlbumEditor extends ObjectEditorTemplate<Album> {
   private static final MediadbPackage MEDIA_DB_PACKAGE = MediadbPackage.eINSTANCE;
   
   private MediaDbService mediaDbService;
+  private MediaRegistry mediaRegistry;
   
   /**
    * The Media Database.
@@ -235,6 +236,7 @@ public class AlbumEditor extends ObjectEditorTemplate<Album> {
     super(customization, null, mediaDbService::addAlbumToMediaDatabase);
     
     this.mediaDbService = mediaDbService;
+    mediaRegistry = MediaRegistry.getInstance();
     mediaDb = mediaDbService.getMediaDbResource().getEObject();
     
     objectControlsGroup.setId("AlbumEditor");
@@ -510,7 +512,7 @@ public class AlbumEditor extends ObjectEditorTemplate<Album> {
    */
   private void newAlbumBasedOnTrackInFolder(String albumFolderName) {
     
-    String imagesFolder = Paths.get(MediaRegistry.musicDataDirectory, "Pictures").toString();
+    String imagesFolder = Paths.get(mediaRegistry.getMusicDataDirectory(), "Pictures").toString();
     MediaDb importMediaDb = new DeriveAlbumInfo(MEDIA_DB_FACTORY.createMediaDb()).deriveAlbumDetails(albumFolderName, imagesFolder);
     Album importAlbum = !importMediaDb.getAlbums().isEmpty() ? importMediaDb.getAlbums().get(0) : null;
     if (importAlbum != null) {
@@ -704,7 +706,7 @@ public class AlbumEditor extends ObjectEditorTemplate<Album> {
     List<String> fileNames = new ArrayList<>(imageFileNames);
     imageFileNames.clear();
     for (String fileName: fileNames) {
-      imageFileNames.add(FileUtils.getPathRelativeToFolder(MediaRegistry.musicDataDirectory, fileName));
+      imageFileNames.add(FileUtils.getPathRelativeToFolder(mediaRegistry.getMusicDataDirectory(), fileName));
     }
   }
   
@@ -921,8 +923,8 @@ public class AlbumEditor extends ObjectEditorTemplate<Album> {
     // Import folder selection: Label, textField, Chooser button, import button
     ObjectControlFolderSelecter folderSelecter = componentFactory.createFolderSelecter(600, "Folder to import album information from", "Select source folder", "Open source folder chooser", "Source folder", false);
     
-    if (MediaRegistry.albumImportDirectory != null) {
-      folderSelecter.setInitialFolderProvider(() -> MediaRegistry.albumImportDirectory);
+    if (mediaRegistry.getAlbumImportDirectory() != null) {
+      folderSelecter.setInitialFolderProvider(() -> mediaRegistry.getAlbumImportDirectory());
     }
     
     Label label = componentFactory.createLabel("Derive album details from:");

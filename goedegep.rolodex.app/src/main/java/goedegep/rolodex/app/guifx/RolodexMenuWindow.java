@@ -8,7 +8,6 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.logging.Logger;
 
-import goedegep.jfx.ComponentFactoryFx;
 import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.JfxStage;
 import goedegep.jfx.JfxUtil;
@@ -17,6 +16,7 @@ import goedegep.jfx.PropertyDescriptorsEditorFx;
 import goedegep.properties.app.guifx.PropertiesEditor;
 import goedegep.resources.ImageSize;
 import goedegep.rolodex.app.RolodexRegistry;
+import goedegep.rolodex.app.RolodexService;
 import goedegep.rolodex.app.logic.AddressBookExporter;
 import goedegep.rolodex.model.Employee;
 import goedegep.rolodex.model.Family;
@@ -60,19 +60,18 @@ public class RolodexMenuWindow extends JfxStage {
   private static final String WINDOW_TITLE   = "Rolodex";
   private static final String NEWLINE = System.getProperty("line.separator");
   
+  private RolodexRegistry rolodexRegistry;
+  private RolodexService rolodexService;
   private AdminResourcesFx appResources;
-  private CustomizationFx customization;
-  private ComponentFactoryFx componentFactory;
   private Rolodex rolodex;
 
-  public RolodexMenuWindow(CustomizationFx customization) {
+  public RolodexMenuWindow(CustomizationFx customization, RolodexService rolodexService) {
     super(customization, WINDOW_TITLE);
     
-    this.customization = customization;
-    
-    componentFactory = getComponentFactory();
+    this.rolodexService = rolodexService;
+    rolodexRegistry = RolodexRegistry.getInstance();
     appResources = (AdminResourcesFx) getResources();
-    rolodex = RolodexRegistry.rolodexResource.getEObject();
+    rolodex = rolodexService.getRolodex();
 
     createGUI();
     
@@ -80,7 +79,7 @@ public class RolodexMenuWindow extends JfxStage {
       closeWindowEvent(event);
     });
     
-    RolodexRegistry.rolodexResource.dirtyProperty().addListener(new ChangeListener<Boolean>() {
+    rolodexService.getRolodexResource().dirtyProperty().addListener(new ChangeListener<Boolean>() {
 
       @Override
       public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
@@ -210,7 +209,7 @@ public class RolodexMenuWindow extends JfxStage {
     });
 
     // Bestand: property descriptors bewerken
-    if (RolodexRegistry.developmentMode) {
+    if (rolodexRegistry.isDevelopmentMode()) {
       MenuUtil.addMenuItem(menu, "Edit Property Descriptors", new EventHandler<ActionEvent>()  {
         public void handle(ActionEvent e) {
           showPropertyDescriptorsEditor();
@@ -336,14 +335,14 @@ public class RolodexMenuWindow extends JfxStage {
     colorAdjust.setBrightness(normalBrightnessAdjust);
 
     button.setEffect(colorAdjust);
-    button.setOnMouseEntered(e -> {
+    button.setOnMouseEntered(_ -> {
 
       Timeline highlightTimeline = new Timeline(
           new KeyFrame(Duration.seconds(0.2), new KeyValue(colorAdjust.brightnessProperty(), 0.4, Interpolator.LINEAR)));
       highlightTimeline.play();
 
     });
-    button.setOnMouseExited(e -> {
+    button.setOnMouseExited(_ -> {
 
       Timeline backToNormalTimeline = new Timeline(
           new KeyFrame(Duration.seconds(1), new KeyValue(colorAdjust.brightnessProperty(), normalBrightnessAdjust, Interpolator.LINEAR)
@@ -377,7 +376,7 @@ public class RolodexMenuWindow extends JfxStage {
   private void saveRolodex() {
     // Save the contents of the resource to the file system.
     try {
-      RolodexRegistry.rolodexResource.save();
+      rolodexService.getRolodexResource().save();
     } catch (IOException e) {
       e.printStackTrace();
     }
@@ -446,11 +445,11 @@ public class RolodexMenuWindow extends JfxStage {
   }
 
   private void showPropertyDescriptorsEditor() {
-    new PropertyDescriptorsEditorFx(customization, RolodexRegistry.propertyDescriptorsResource);
+    new PropertyDescriptorsEditorFx(customization, rolodexRegistry.getPropertyDescriptorsFileURI());
   }
 
   private void showPropertiesEditor() {
-    new PropertiesEditor("Rolodex properties", customization, RolodexRegistry.propertyDescriptorsResource, RolodexRegistry.customPropertiesFile);
+    new PropertiesEditor("Rolodex properties", customization, rolodexRegistry.getPropertyDescriptorsFileURI(), rolodexRegistry.getUserPropertiesFileName());
   }
   
   protected void telefoonAdresboekenTabel_actionPerformed() {
@@ -494,13 +493,14 @@ public class RolodexMenuWindow extends JfxStage {
    */
   private void showHelpAboutDialog() {
     componentFactory.createApplicationInformationDialog(
-        "About " + RolodexRegistry.applicationName,
+        "About " + rolodexRegistry.getApplicationName(),
         appResources.getApplicationImage(ImageSize.SIZE_3),
         null, 
-        RolodexRegistry.shortProductInfo + NEWLINE +
-        "Version: " + RolodexRegistry.version + NEWLINE +
-        RolodexRegistry.copyrightMessage + NEWLINE +
-        "Auteur: " + RolodexRegistry.author)
+        rolodexRegistry.getShortProductInfo() + NEWLINE +
+        "Version: " + rolodexRegistry.getVersion() + NEWLINE +
+        rolodexRegistry.getCopyrightMessage() + NEWLINE +
+        "Auteur: " + rolodexRegistry.getAuthor()
+        )
         .showAndWait();
   }
 
@@ -519,7 +519,7 @@ public class RolodexMenuWindow extends JfxStage {
   private void closeWindowEvent(WindowEvent event) {
     LOGGER.info("Window close request ...");
 
-    if(RolodexRegistry.rolodexResource.isDirty()) {
+    if(rolodexService.getRolodexResource().isDirty()) {
       Alert alert = componentFactory.createOkCancelConfirmationDialog("Close Rolodex?", null, "There are unsaved changes in the Rolodex. Do you want to save changes before closing?");
       alert.getButtonTypes().remove(ButtonType.OK);
       alert.getButtonTypes().add(ButtonType.YES);
@@ -545,7 +545,7 @@ public class RolodexMenuWindow extends JfxStage {
    * The window title starts with a '*' if the rolodex has been modified since it was last saved. 
    */
   private void updateWindowTitle() {
-    if (RolodexRegistry.rolodexResource.isDirty()) {
+    if (rolodexService.getRolodexResource().isDirty()) {
       setTitle("*" + WINDOW_TITLE);
     } else {
       setTitle(WINDOW_TITLE);

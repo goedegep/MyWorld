@@ -48,6 +48,7 @@ public class AlbumDetailsWindow extends JfxStage {
   private static final Logger LOGGER = Logger.getLogger(AlbumDetailsWindow.class.getName());
   private static final FlexDateFormat FDF = new FlexDateFormat();
   
+  private MediaRegistry mediaRegistry;
   private MediaDbService mediaDbService;  
   private Map<Track, Path> trackDiscLocationMap;
   private AlbumsTable albumsTable;
@@ -114,6 +115,7 @@ public class AlbumDetailsWindow extends JfxStage {
     this.mediaDbService = mediaDbService;
     this.albumsTable = albumsTable;
     this.trackDiscLocationMap = trackDiscLocationMap;
+    mediaRegistry = MediaRegistry.getInstance();
 
     createGUI();
   }
@@ -157,7 +159,7 @@ public class AlbumDetailsWindow extends JfxStage {
     gridPane.add(albumTitleTextField, 1, 0);
     
     Button editButton = componentFactory.createButton("Open in Album Editor", "Open edit window");
-    editButton.setOnAction((e) -> {
+    editButton.setOnAction((_) -> {
       AlbumEditor albumEditor = AlbumEditor.newInstance(customization, mediaDbService);
       albumEditor.setObject(album);
       albumEditor.show();
@@ -165,7 +167,7 @@ public class AlbumDetailsWindow extends JfxStage {
     gridPane.add(editButton, 3, 0);
     
     CheckBox syncToAlbumsTableCheckBox = componentFactory.createCheckBox("Synchronize to Albums Table", false);
-    syncToAlbumsTableCheckBox.setOnAction((e) -> {
+    syncToAlbumsTableCheckBox.setOnAction((_) -> {
       setSyncToAlbumsTable(syncToAlbumsTableCheckBox.isSelected());
     });
     gridPane.add(syncToAlbumsTableCheckBox, 4, 0);
@@ -336,12 +338,12 @@ public class AlbumDetailsWindow extends JfxStage {
       imageFileNames.addAll(album.getImagesLabel());
 
       for (String imageFileName: imageFileNames) {
-        String imagePathName = MediaRegistry.musicDataDirectory + "\\" + imageFileName;
+        String imagePathName = mediaRegistry.getMusicDataDirectory() + "\\" + imageFileName;
         LOGGER.info("Going to read image from file: " + imagePathName);
         Image image = new Image("file:" + imagePathName, 0.0, 200.0, true, true);
         ImageView imageView = new ImageView(image);
         imageView.setOnMouseEntered(e -> showLargePicture(e, "file:" + imagePathName));
-        imageView.setOnMouseExited(e -> {
+        imageView.setOnMouseExited(_ -> {
           if (currentLargePictureStage != null) {
             currentLargePictureStage.close();
           }

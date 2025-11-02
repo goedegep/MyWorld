@@ -20,7 +20,6 @@ import org.eclipse.emf.ecore.EObject;
  *   <li>{@link goedegep.properties.model.PropertyDescriptor#getRegistryName <em>Registry Name</em>}</li>
  *   <li>{@link goedegep.properties.model.PropertyDescriptor#getInitialValue <em>Initial Value</em>}</li>
  *   <li>{@link goedegep.properties.model.PropertyDescriptor#isUserSettable <em>User Settable</em>}</li>
- *   <li>{@link goedegep.properties.model.PropertyDescriptor#isInstallInitialValue <em>Install Initial Value</em>}</li>
  * </ul>
  *
  * @see goedegep.properties.model.PropertiesPackage#getPropertyDescriptor()
@@ -366,62 +365,5 @@ public interface PropertyDescriptor extends EObject {
    * @generated
    */
   void setUserSettable(boolean value);
-
-  /**
-   * Returns the value of the '<em><b>Install Initial Value</b></em>' attribute.
-   * The default value is <code>"false"</code>.
-   * <!-- begin-user-doc -->
-   * <p>
-   * If the meaning of the '<em>Install Initial Value</em>' attribute isn't clear,
-   * there really should be more of a description here...
-   * </p>
-   * <!-- end-user-doc -->
-   * <!-- begin-model-doc -->
-   * Indicates whether the property value has to be installed in the Registry or not.
-   * <!-- end-model-doc -->
-   * @return the value of the '<em>Install Initial Value</em>' attribute.
-   * @see #isSetInstallInitialValue()
-   * @see #unsetInstallInitialValue()
-   * @see #setInstallInitialValue(boolean)
-   * @see goedegep.properties.model.PropertiesPackage#getPropertyDescriptor_InstallInitialValue()
-   * @model default="false" unsettable="true" required="true"
-   * @generated
-   */
-  boolean isInstallInitialValue();
-
-  /**
-   * Sets the value of the '{@link goedegep.properties.model.PropertyDescriptor#isInstallInitialValue <em>Install Initial Value</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @param value the new value of the '<em>Install Initial Value</em>' attribute.
-   * @see #isSetInstallInitialValue()
-   * @see #unsetInstallInitialValue()
-   * @see #isInstallInitialValue()
-   * @generated
-   */
-  void setInstallInitialValue(boolean value);
-
-  /**
-   * Unsets the value of the '{@link goedegep.properties.model.PropertyDescriptor#isInstallInitialValue <em>Install Initial Value</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #isSetInstallInitialValue()
-   * @see #isInstallInitialValue()
-   * @see #setInstallInitialValue(boolean)
-   * @generated
-   */
-  void unsetInstallInitialValue();
-
-  /**
-   * Returns whether the value of the '{@link goedegep.properties.model.PropertyDescriptor#isInstallInitialValue <em>Install Initial Value</em>}' attribute is set.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return whether the value of the '<em>Install Initial Value</em>' attribute is set.
-   * @see #unsetInstallInitialValue()
-   * @see #isInstallInitialValue()
-   * @see #setInstallInitialValue(boolean)
-   * @generated
-   */
-  boolean isSetInstallInitialValue();
 
 } // PropertyDescriptor

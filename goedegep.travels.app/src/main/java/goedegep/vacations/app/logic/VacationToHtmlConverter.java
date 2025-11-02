@@ -146,6 +146,8 @@ public class VacationToHtmlConverter extends VacationToTextConverterAbstract {
    */
   boolean firstRow;
   
+  private VacationsRegistry vacationsRegistry;
+  
   /**
    * The picture cache, containing the thumbnails of the pictures.
    */
@@ -172,6 +174,7 @@ public class VacationToHtmlConverter extends VacationToTextConverterAbstract {
   public VacationToHtmlConverter(Set<VacationToHtmlConverterSetting> vacationToHtmlConverterSettings) {
     Objects.requireNonNull(vacationToHtmlConverterSettings, "argument vacationToHtmlConverterSettings may not be null");
     
+    vacationsRegistry = VacationsRegistry.getInstance();
     updateSettings(vacationToHtmlConverterSettings);
   }
   
@@ -252,7 +255,7 @@ public class VacationToHtmlConverter extends VacationToTextConverterAbstract {
     if (vacationHasPhotos(vacation)) {
       String vacationPhotosFolder = determinePhotosFolder(vacation);
       if (vacationPhotosFolder != null) {
-        vacationPhotosPath = Paths.get(VacationsRegistry.vacationPicturesFolderName, vacationPhotosFolder);
+        vacationPhotosPath = Paths.get(vacationsRegistry.getVacationPicturesFolderName(), vacationPhotosFolder);
         Path thumbnailZipPath = vacationPhotosPath.resolve(".thumbnails.zip");
         if (Files.exists(thumbnailZipPath)) {
           try {
@@ -384,7 +387,7 @@ public class VacationToHtmlConverter extends VacationToTextConverterAbstract {
         FileReference fileReference = picture.getPictureReference();
         if (fileReference != null) {
           String filePathName = fileReference.getFile();
-          if (filePathName != null  &&  filePathName.startsWith(VacationsRegistry.vacationPicturesFolderName)) {
+          if (filePathName != null  &&  filePathName.startsWith(vacationsRegistry.getVacationPicturesFolderName())) {
             String relativeFileName = FileUtils.getPathRelativeToFolder(filePathName, filePathName);
             int index = relativeFileName.indexOf(File.separator);
             String photosFolder = relativeFileName.substring(0, index);

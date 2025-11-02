@@ -19,6 +19,8 @@ import goedegep.util.emf.EmfUtil;
  */
 public class MediaDbService {
   
+  private MediaRegistry mediaRegistry = MediaRegistry.getInstance();
+  
   /**
    * The {@link EMFResource} for loading and storing the media database.
    */
@@ -37,6 +39,7 @@ public class MediaDbService {
   public MediaDbService(EMFResource<MediaDb> mediaDbResource) {
     this.mediaDbResource = mediaDbResource;
     
+    mediaRegistry = MediaRegistry.getInstance();
     mediaDb = mediaDbResource.getEObject();
   }
   
@@ -89,7 +92,7 @@ public class MediaDbService {
     Result result = new Result();
     
     try {
-      mediaDbResource.save(MediaRegistry.mediaDbFile);
+      mediaDbResource.save(mediaRegistry.getMediaDbFile());
       result.setResultType(ResultType.OK);
     } catch (IOException e) {
       result.setResultType(ResultType.FAILED);

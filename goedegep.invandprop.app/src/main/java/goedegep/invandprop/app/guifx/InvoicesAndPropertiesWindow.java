@@ -14,7 +14,6 @@ import javax.swing.JDialog;
 
 import goedegep.appgen.MessageDialogType;
 import goedegep.appgen.swing.MessageDialog;
-import goedegep.invandprop.app.FileReferenceWrapper;
 import goedegep.invandprop.app.InvoicesAndPropertiesRegistry;
 import goedegep.invandprop.app.InvoicesAndPropertiesService;
 import goedegep.invandprop.app.InvoicesAndPropertiesUtil;
@@ -39,7 +38,6 @@ import goedegep.util.file.FileUtils;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Scene;
@@ -86,8 +84,7 @@ public class InvoicesAndPropertiesWindow extends JfxStage {
   private static final int WINDOW_WIDTH = 1920 / 2;
   private static final int WINDOW_HEIGHT = 1080 / 2;
 
-//  private CustomizationFx customization;
-//  private ComponentFactoryFx componentFactory;
+  private InvoicesAndPropertiesRegistry invoicesAndPropertiesRegistry;
   private InvoicesAndPropertiesAppResourcesFx appResources;
   private InvoicesAndPropertiesTable invoicesAndPropertiesTable;
   private EObjectTableControlPanel eObjectTableControlPanel;
@@ -109,6 +106,8 @@ public class InvoicesAndPropertiesWindow extends JfxStage {
    */
   public InvoicesAndPropertiesWindow(CustomizationFx customization, InvoicesAndPropertiesService invoicesAndPropertiesService) {
     super(customization, WINDOW_TITLE);
+    
+    invoicesAndPropertiesRegistry = InvoicesAndPropertiesRegistry.getInstance();
 
     // SETTING CUSTOM EVENT DISPATCHER TO SCENE
     setEventDispatcher(new DoubleClickEventDispatcher(getEventDispatcher()));
@@ -123,14 +122,14 @@ public class InvoicesAndPropertiesWindow extends JfxStage {
     
     createControls();
     
-    invoicesAndPropertiesTable.addObjectSelectionListener((source, invoiceAndProperty) -> {
+    invoicesAndPropertiesTable.addObjectSelectionListener((_, invoiceAndProperty) -> {
       EObjectListContainerSpecification eObjectListContainerSpecification = new EObjectListContainerSpecification(invoiceAndProperty, INV_AND_PROP_PACKAGE.getInvoiceAndProperty_Invoiceandpropertyitems());
       invoiceAndPropertyItemsTable.setObjects(eObjectListContainerSpecification);
       updateDocumentsList();
       updatePicturesList();
     });
     
-    invoiceAndPropertyItemsTable.addObjectSelectionListener((source, invoiceAndProperty) -> {
+    invoiceAndPropertyItemsTable.addObjectSelectionListener((_, _) -> {
       updateDocumentsList();
       updatePicturesList();
     });
@@ -146,14 +145,7 @@ public class InvoicesAndPropertiesWindow extends JfxStage {
       
     });
     
-    invoicesAndPropertiesService.getInvoicesAndPropertiesResource().fileNameProperty().addListener(new ChangeListener<String>() {
-
-      @Override
-      public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-        updateTitle();
-      }
-      
-    });
+    invoicesAndPropertiesService.getInvoicesAndPropertiesResource().uriProperty().addListener((_, _, _) -> updateTitle());
 
     updateTitle();
   }
@@ -163,7 +155,7 @@ public class InvoicesAndPropertiesWindow extends JfxStage {
     invoicesAndPropertiesTable.setEditable(false);
 
     eObjectTableControlPanel = new EObjectTableControlPanel(customization);
-    eObjectTableControlPanel.filterTextProperty().addListener((observable, oldValue, newValue) -> invoicesAndPropertiesTable.setFilterExpression(newValue, null));
+    eObjectTableControlPanel.filterTextProperty().addListener((_, _, newValue) -> invoicesAndPropertiesTable.setFilterExpression(newValue, null));
     
     invoiceAndPropertyItemsTable = new InvoiceAndPropertyItemsTable(customization);
   }
@@ -186,7 +178,7 @@ public class InvoicesAndPropertiesWindow extends JfxStage {
     controlsBox.getChildren().add(eObjectTableControlPanel);
         
     Button newInvoiceAndPropertyButton = componentFactory.createButton("New Invoice and Property", "click to enter the details of a new invoice and property");
-    newInvoiceAndPropertyButton.setOnAction((e) -> {
+    newInvoiceAndPropertyButton.setOnAction((_) -> {
       InvoiceAndPropertyEditor2.newInstance(customization, invoicesAndPropertiesService).show();
     });
     controlsBox.getChildren().add(newInvoiceAndPropertyButton);
@@ -233,7 +225,7 @@ public class InvoicesAndPropertiesWindow extends JfxStage {
     pictureReferences = componentFactory.createListView(FXCollections.observableArrayList());
     pictureReferences.setPlaceholder(new Label("No pictures for current selection"));
     pictureReferences.setCellFactory((listView) -> new FileReferenceListCell(listView));
-    pictureReferences.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> updatePictureViewPanel(newValue));
+    pictureReferences.getSelectionModel().selectedItemProperty().addListener((_, _, newValue) -> updatePictureViewPanel(newValue));
     vBox.getChildren().add(pictureReferences);
     documentsAndPicturesHBox.getChildren().add(vBox);
     
@@ -274,15 +266,15 @@ public class InvoicesAndPropertiesWindow extends JfxStage {
     menu.getItems().add(menuItem);
 
     // File: Edit property descriptors
-    if (InvoicesAndPropertiesRegistry.developmentMode) {
-      MenuUtil.addMenuItem(menu, "Edit property descriptors", e -> showPropertyDescriptorsEditor());
+    if (invoicesAndPropertiesRegistry.isDevelopmentMode()) {
+      MenuUtil.addMenuItem(menu, "Edit property descriptors", _ -> showPropertyDescriptorsEditor());
     }
 
     // File: Edit user settings
-    MenuUtil.addMenuItem(menu, "Edit user settings", e -> showPropertiesEditor());
+    MenuUtil.addMenuItem(menu, "Edit user settings", _ -> showPropertiesEditor());
     
     // File: Dump data
-    MenuUtil.addMenuItem(menu, "Dump data", e-> dumpData());
+    MenuUtil.addMenuItem(menu, "Dump data", _-> dumpData());
     
 
     menuBar.getMenus().add(menu);
@@ -292,7 +284,7 @@ public class InvoicesAndPropertiesWindow extends JfxStage {
     menu = componentFactory.createMenu("Help");
 
     // Help: About
-    MenuUtil.addMenuItem(menu, "About", e-> showHelpAboutDialog());
+    MenuUtil.addMenuItem(menu, "About", _ -> showHelpAboutDialog());
 
     menuBar.getMenus().add(menu);
 
@@ -360,7 +352,7 @@ public class InvoicesAndPropertiesWindow extends JfxStage {
   }
   
   private String prependBaseDirToFilename(String filename) {
-    File file = new File(InvoicesAndPropertiesRegistry.propertyRelatedFilesFolder, filename);
+    File file = new File(invoicesAndPropertiesRegistry.getPropertyRelatedFilesFolder(), filename);
     
     return file.getAbsolutePath();
   }
@@ -408,7 +400,7 @@ public class InvoicesAndPropertiesWindow extends JfxStage {
       for (FileReference fileReference: candidates) {
         File file = new File(fileReference.getFile());
         if (!file.isAbsolute()) {
-          file = new File(InvoicesAndPropertiesRegistry.propertyRelatedFilesFolder, fileReference.getFile());
+          file = new File(invoicesAndPropertiesRegistry.getPropertyRelatedFilesFolder(), fileReference.getFile());
         }
         
         imageFiles.add(file);
@@ -439,11 +431,11 @@ public class InvoicesAndPropertiesWindow extends JfxStage {
   }
 
   private void showPropertyDescriptorsEditor() {
-    new PropertyDescriptorsEditorFx(customization, InvoicesAndPropertiesRegistry.propertyDescriptorsResource);
+    new PropertyDescriptorsEditorFx(customization, invoicesAndPropertiesRegistry.getPropertyDescriptorsFileURI());
   }
 
   private void showPropertiesEditor() {
-    new PropertiesEditor("Invoices and Properties properties", customization, InvoicesAndPropertiesRegistry.propertyDescriptorsResource, InvoicesAndPropertiesRegistry.customPropertiesFile);
+    new PropertiesEditor("Invoices and Properties properties", customization, invoicesAndPropertiesRegistry.getPropertyDescriptorsFileURI(), invoicesAndPropertiesRegistry.getUserPropertiesFileName());
   }
 
   private void dumpData() {
@@ -451,7 +443,7 @@ public class InvoicesAndPropertiesWindow extends JfxStage {
     if (dataDumpFile != null) {
       fileChooser.setInitialFileName(dataDumpFile.getAbsolutePath());
     } else {
-      File file = new File(InvoicesAndPropertiesRegistry.invoicesAndPropertiesFile);
+      File file = new File(invoicesAndPropertiesRegistry.getInvoicesAndPropertiesFile());
       fileChooser.setInitialDirectory(new File(file.getParent()));
     }
     ExtensionFilter extFilter = new FileChooser.ExtensionFilter("Text files", "*.txt");
@@ -489,10 +481,10 @@ public class InvoicesAndPropertiesWindow extends JfxStage {
         "About Invoices and Properties",
         appResources.getApplicationImage(ImageSize.SIZE_3),
         null, 
-        InvoicesAndPropertiesRegistry.shortProductInfo + NEWLINE +
-        "Versie: " + InvoicesAndPropertiesRegistry.version + NEWLINE +
-        InvoicesAndPropertiesRegistry.copyrightMessage + NEWLINE +
-        "Auteur: " + InvoicesAndPropertiesRegistry.author)
+        invoicesAndPropertiesRegistry.getShortProductInfo() + NEWLINE +
+        "Versie: " + invoicesAndPropertiesRegistry.getVersion() + NEWLINE +
+        invoicesAndPropertiesRegistry.getCopyrightMessage() + NEWLINE +
+        "Auteur: " + invoicesAndPropertiesRegistry.getAuthor())
         .showAndWait();
   }
   

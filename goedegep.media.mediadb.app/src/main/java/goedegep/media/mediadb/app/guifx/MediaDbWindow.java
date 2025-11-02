@@ -1,6 +1,5 @@
 package goedegep.media.mediadb.app.guifx;
 
-import java.io.File;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
@@ -15,7 +14,6 @@ import goedegep.jfx.AppResourcesFx;
 import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.JfxStage;
 import goedegep.jfx.MenuUtil;
-import goedegep.jfx.browser.BrowserWindow;
 import goedegep.jfx.eobjecttable.EObjectTable;
 import goedegep.media.common.MediaRegistry;
 import goedegep.media.mediadb.albumeditor.guifx.AlbumEditor;
@@ -94,6 +92,7 @@ public class MediaDbWindow extends JfxStage {
 
   private MediaDbService mediaDbService;
   private AppResourcesFx appResources;
+  private MediaRegistry mediaRegistry;
 
   /**
    * The {@code EMFResource} for the media database ({@link #mediaDb}).
@@ -162,6 +161,7 @@ public class MediaDbWindow extends JfxStage {
     super(customization, WINDOW_TITLE);
 
     this.mediaDbService = mediaDbService;
+    mediaRegistry = MediaRegistry.getInstance();
     appResources = customization.getResources();
     mediaDbResource = mediaDbService.getMediaDbResource();
     mediaDb = mediaDbService.getMediaDb();
@@ -174,7 +174,7 @@ public class MediaDbWindow extends JfxStage {
     MediaDbChecker.checkMediaDb(mediaDb, allErrors);
 
     // Scan the Music Folder: The Main Index folders, the soundtrack folder and the tracks folders.
-    MusicFolderContent musicFolderContent = new MusicFolderContent(MediaRegistry.musicDirectory);
+    MusicFolderContent musicFolderContent = new MusicFolderContent(mediaRegistry.getMusicDirectory());
     boolean allOk = musicFolderContent.gatherMusicFolderContent();
     if (!allOk) {
       allErrors.addAll(musicFolderContent.getErrors());
@@ -265,7 +265,7 @@ public class MediaDbWindow extends JfxStage {
     };
     mediaDb.eAdapters().add(eContentAdapter);
     
-    mediaDbResource.dirtyProperty().addListener((observable, oldValue, newValue) -> updateTitle());    
+    mediaDbResource.dirtyProperty().addListener((_, _, _) -> updateTitle());    
   }
   
   private void tempFixProblems() {
@@ -341,7 +341,7 @@ public class MediaDbWindow extends JfxStage {
     });
 
     // File: Edit Property Descriptors
-    if (MediaRegistry.developmentMode) {
+    if (mediaRegistry.isDevelopmentMode()) {
       MenuUtil.addMenuItem(menu, "Edit Property Descriptors", new EventHandler<ActionEvent>()  {
         public void handle(ActionEvent e) {
           MediaDbAppLauncher.showPropertyDescriptorsEditor(customization);
@@ -357,7 +357,7 @@ public class MediaDbWindow extends JfxStage {
     }
     
     // File: Convert Database
-    if (MediaRegistry.developmentMode) {
+    if (mediaRegistry.isDevelopmentMode()) {
       MenuUtil.addMenuItem(menu, "Convert Database", new EventHandler<ActionEvent>()  {
         public void handle(ActionEvent e) {
           convertDatabase();
@@ -446,21 +446,21 @@ public class MediaDbWindow extends JfxStage {
     
     // TextField: for the text to filter on
     TextField textField = componentFactory.createTextField(200, "Voer de tekst in die in de album informatie voor moet komen");
-    textField.textProperty().addListener((observable, oldValue, newValue) -> {
+    textField.textProperty().addListener((_, _, newValue) -> {
       setFilter(newValue);
     });
     controlPanel.getChildren().add(textField);
     
     // Button to open the MediaDbProblemsWindow
     Button openProblemsWindowButton = componentFactory.createButton("Open problem solving screen", "opens the problem solving screen");
-    openProblemsWindowButton.setOnAction((e) -> new MediaDbProblemsWindow(customization, mediaDb, allErrors));
+    openProblemsWindowButton.setOnAction((_) -> new MediaDbProblemsWindow(customization, mediaDb, allErrors));
     controlPanel.getChildren().add(openProblemsWindowButton);
 
     Button albumsButton = componentFactory.createButton("Albums", "switch to the albums table");
     Button tracksButton = componentFactory.createButton("Tracks", "switch to the tracks table");
     Button artistsButton = componentFactory.createButton("Artists", "switch to the artists table");
     
-    albumsButton.setOnAction((e) -> {
+    albumsButton.setOnAction((_) -> {
       ObservableList<Node> centerPaneChildren = centerPane.getChildren();
       centerPaneChildren.remove(centerPaneChildren.size() - 1);
       currentTable = albumsTable;
@@ -471,7 +471,7 @@ public class MediaDbWindow extends JfxStage {
     });
     albumsButton.setDisable(true);
     
-    tracksButton.setOnAction((e) -> {
+    tracksButton.setOnAction((_) -> {
       ObservableList<Node> centerPaneChildren = centerPane.getChildren();
       centerPaneChildren.remove(centerPaneChildren.size() - 1);
       currentTable = tracksTable;
@@ -481,7 +481,7 @@ public class MediaDbWindow extends JfxStage {
       artistsButton.setDisable(false);
     });
     
-    artistsButton.setOnAction((e) -> {
+    artistsButton.setOnAction((_) -> {
       ObservableList<Node> centerPaneChildren = centerPane.getChildren();
       centerPaneChildren.remove(centerPaneChildren.size() - 1);
       currentTable = artistsTable;
@@ -558,10 +558,10 @@ public class MediaDbWindow extends JfxStage {
         "About MediaDb",
         appResources.getApplicationImage(ImageSize.SIZE_3),
         null,
-        MediaRegistry.shortProductInfo + NEWLINE +
-        "Versie: " + MediaRegistry.version + NEWLINE +
-        MediaRegistry.copyrightMessage + NEWLINE +
-        "Auteur: " + MediaRegistry.author)
+        mediaRegistry.getShortProductInfo() + NEWLINE +
+        "Versie: " + mediaRegistry.getVersion() + NEWLINE +
+        mediaRegistry.getCopyrightMessage() + NEWLINE +
+        "Auteur: " + mediaRegistry.getAuthor())
         .showAndWait();
   }
   

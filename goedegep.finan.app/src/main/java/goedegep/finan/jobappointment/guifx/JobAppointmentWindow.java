@@ -32,6 +32,7 @@ public class JobAppointmentWindow extends JfxStage {
   private static final String NEWLINE = System.getProperty("line.separator");
   private static final String WINDOW_TITLE   = "Job Appointment";
   
+  private FinanRegistry finanRegistry;
   private JobAppointment jobAppointment;
   private CustomizationFx customization;
   private ComponentFactoryFx componentFactory = null;
@@ -47,8 +48,9 @@ public class JobAppointmentWindow extends JfxStage {
     super(customization, WINDOW_TITLE);
     
     this.customization = customization;
+    finanRegistry = FinanRegistry.getInstance();
     
-    if (FinanRegistry.jobAppointmentFile == null) {
+    if (finanRegistry.getJobAppointmentFile() == null) {
       Alert alert = componentFactory.createErrorDialog("There's no filename configured for the file with the job appointment",
           "Configure the filename (e.g. via the 'Edit User Settings' below) and restart the application.");
       
@@ -72,7 +74,7 @@ public class JobAppointmentWindow extends JfxStage {
         ".xmi",
         true);
     
-    File file = new File(FinanRegistry.dataDirectory, FinanRegistry.jobAppointmentFile);
+    File file = new File(finanRegistry.getDataDirectory(), finanRegistry.getJobAppointmentFile());
     String jobAppointmentFileName = file.getAbsolutePath();
     try {
       jobAppointment = jobAppointmentResource.load(jobAppointmentFileName);
@@ -107,7 +109,7 @@ public class JobAppointmentWindow extends JfxStage {
   }
   
   private void showPropertiesEditor() {
-    new PropertiesEditor("Finan properties", customization, FinanRegistry.propertyDescriptorsResource, FinanRegistry.customPropertiesFile);
+    new PropertiesEditor("Finan properties", customization, finanRegistry.getPropertyDescriptorsFileURI(), finanRegistry.getUserPropertiesFileName());
   }
 
   private void createGUI() {
@@ -163,7 +165,7 @@ public class JobAppointmentWindow extends JfxStage {
 
     // Salary: Salary events
     menuItem = componentFactory.createMenuItem("Salary events");
-    menuItem.setOnAction(e -> showSalaryEventsWindow());
+    menuItem.setOnAction(_ -> showSalaryEventsWindow());
     menu.getItems().add(menuItem);
     
     menuBar.getMenus().add(menu);

@@ -52,6 +52,7 @@ public class InvestmentInsurancesOverviewWindow extends JfxStage {
   
   private CustomizationFx customization;
   private ComponentFactoryFx componentFactory;
+  private FinanRegistry finanRegistry;
   
   private EMFResource<InvestmentInsurancesData> investmentInsurancesResource = null;
   private InvestmentInsurancesData investmentInsurancesData;
@@ -63,8 +64,9 @@ public class InvestmentInsurancesOverviewWindow extends JfxStage {
     
     this.customization = customization;
     componentFactory = customization.getComponentFactoryFx();
+    finanRegistry = FinanRegistry.getInstance();
     
-    if (FinanRegistry.investmentInsurancesFileName == null) {
+    if (finanRegistry.getInvestmentInsurancesFileName() == null) {
 
       Alert alert = componentFactory.createErrorDialog(
           "No investment insurances filename configured",
@@ -76,9 +78,7 @@ public class InvestmentInsurancesOverviewWindow extends JfxStage {
       ButtonType editorButtonType = new ButtonType("Edit User Settings");
       alert.getButtonTypes().add(editorButtonType);
       
-      alert.showAndWait().filter(response -> response == editorButtonType).ifPresent(response -> {
-        showPropertiesEditor();
-      });
+      alert.showAndWait().filter(response -> response == editorButtonType).ifPresent(_ ->  showPropertiesEditor());
       
       return;
     }
@@ -87,7 +87,7 @@ public class InvestmentInsurancesOverviewWindow extends JfxStage {
         InvestmentInsurancePackage.eINSTANCE, 
         () -> InvestmentInsuranceFactory.eINSTANCE.createInvestmentInsurancesData(), ".xmi");
 
-    File investmentInsurancesFile = new File(FinanRegistry.dataDirectory, FinanRegistry.investmentInsurancesFileName);
+    File investmentInsurancesFile = new File(finanRegistry.getDataDirectory(), finanRegistry.getInvestmentInsurancesFileName());
     try {
       investmentInsurancesData = investmentInsurancesResource.load(investmentInsurancesFile.getAbsolutePath());
     } catch (IOException e) {
@@ -98,11 +98,11 @@ public class InvestmentInsurancesOverviewWindow extends JfxStage {
           "The file with investment insurances '" + investmentInsurancesFile.getAbsolutePath() + "' doesn't exist yet.",
           "Do you want to create this file now?" + NEWLINE +
           "If you choose \"No\" you can't do anything in this screen.");
-      alert.showAndWait().filter(response -> response == ButtonType.YES).ifPresent(response -> {
+      alert.showAndWait().filter(response -> response == ButtonType.YES).ifPresent(_ -> {
         LOGGER.severe("yes, create file");
         investmentInsurancesData = investmentInsurancesResource.newEObject();
         try {
-          investmentInsurancesResource.save(FinanRegistry.investmentInsurancesFileName);
+          investmentInsurancesResource.save(finanRegistry.getInvestmentInsurancesFileName());
         } catch (IOException e1) {
           e1.printStackTrace();
         }
@@ -122,20 +122,13 @@ public class InvestmentInsurancesOverviewWindow extends JfxStage {
       
     });
     
-    investmentInsurancesResource.fileNameProperty().addListener(new ChangeListener<String>() {
-
-      @Override
-      public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-        updateTitle();
-      }
-      
-    });
+    investmentInsurancesResource.uriProperty().addListener((_ , _, _) -> updateTitle());
     
     show();
   }
   
   private void showPropertiesEditor() {
-    new PropertiesEditor("Finan properties", customization, FinanRegistry.propertyDescriptorsResource, FinanRegistry.customPropertiesFile);
+    new PropertiesEditor("Finan properties", customization, finanRegistry.getPropertyDescriptorsFileURI(), finanRegistry.getUserPropertiesFileName());
   }
   
   private void CreateGUI() {
@@ -186,7 +179,7 @@ public class InvestmentInsurancesOverviewWindow extends JfxStage {
     menu.getItems().add(menuItem);
     
     // File: Dump Data
-    if (FinanRegistry.developmentMode) {
+    if (finanRegistry.isDevelopmentMode()) {
       menuItem = componentFactory.createMenuItem("Dump data");
       menuItem.setOnAction(new EventHandler<ActionEvent>() {
         public void handle(ActionEvent e) {
@@ -276,7 +269,7 @@ public class InvestmentInsurancesOverviewWindow extends JfxStage {
     if (dataDumpFile != null) {
       fileChooser.setInitialFileName(dataDumpFile.getAbsolutePath());
     } else {
-      fileChooser.setInitialDirectory(new File(FinanRegistry.dataDirectory));
+      fileChooser.setInitialDirectory(new File(finanRegistry.getDataDirectory()));
     }
     dataDumpFile = fileChooser.showSaveDialog(this);
     dumpDataToFile(dataDumpFile);

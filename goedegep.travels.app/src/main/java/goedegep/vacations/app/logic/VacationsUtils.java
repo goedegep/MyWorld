@@ -52,6 +52,8 @@ import goedegep.vacations.model.VacationsPackage;
 public class VacationsUtils {
   private static final Logger LOGGER = Logger.getLogger(VacationsUtils.class.getName());
   
+  private static VacationsRegistry vacationsRegistry = VacationsRegistry.getInstance();
+  
   /**
    * Get the vacation to which an object belongs.
    * 
@@ -771,7 +773,7 @@ public class VacationsUtils {
         File parentFile = file.getParentFile();
         String parentFolder = file.getParentFile().getParent();
         if (travel instanceof Vacation) {
-          if (VacationsRegistry.vacationsFolderName.equals(parentFolder)) {
+          if (vacationsRegistry.getVacationsFolderName().equals(parentFolder)) {
             travelFilesFolder = file.getParent();
             break;
           }
@@ -787,7 +789,7 @@ public class VacationsUtils {
     if (travelFilesFolder == null) {
       String baseFolder = null;
       if (travel instanceof Vacation) {
-        baseFolder = VacationsRegistry.vacationsFolderName;
+        baseFolder = vacationsRegistry.getVacationsFolderName();
       } else if (travel instanceof DayTrip) {
         baseFolder = "D:\\Database\\Dagtochten";
       }
@@ -883,7 +885,7 @@ public class VacationsUtils {
    * @return a Path to the folder with photos for all vacations, or null if this cannot be determined.
    */
   public static Path getVacationsPhotosFolderPath() {
-    String vacationsPhotosFolderName = VacationsRegistry.vacationPicturesFolderName;
+    String vacationsPhotosFolderName = vacationsRegistry.getVacationPicturesFolderName();
     Path vacationsPhotosFolderPath = Paths.get(vacationsPhotosFolderName);
     if (Files.exists(vacationsPhotosFolderPath)  &&  Files.isDirectory(vacationsPhotosFolderPath)) {
       return vacationsPhotosFolderPath;

@@ -1,8 +1,6 @@
 package goedegep.finan.app;
 
-import java.io.IOException;
 import java.io.InputStream;
-import java.net.URL;
 import java.util.Properties;
 
 import goedegep.app.finan.finanapp.FinanMainWindow;
@@ -13,15 +11,18 @@ import goedegep.app.finan.registry.FinanRegistry;
 import goedegep.appgen.swing.Customization;
 import goedegep.configuration.model.Look;
 import goedegep.jfx.AppResourcesFx;
-import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.JfxApplication;
+import goedegep.myworld.common.Registry;
 import goedegep.myworld.common.Service;
-import goedegep.properties.app.PropertiesHandler;
 import goedegep.rolodex.app.RolodexService;
-import goedegep.util.RunningInEclipse;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
+/**
+ * The FinanService class is the main service class for the Finan application.
+ * It provides methods to show the main window and menu window, and manages
+ * application-wide resources and customization.
+ */
 public class FinanService extends Service {
 
   /**
@@ -33,6 +34,8 @@ public class FinanService extends Service {
    * The singleton instance of the FinanService.
    */
   private static FinanService instance = null;
+  
+  private FinanRegistry finanRegistry;
   
   /**
    * Get the singleton instance of the FinanService.
@@ -51,7 +54,7 @@ public class FinanService extends Service {
    * Show the Finan menu window.
    */
   public void showFinanMenuWindow() {
-    Stage stage = new FinanMenuWindow();
+    Stage stage = new FinanMenuWindow(customization);
     stage.centerOnScreen();
     stage.show();
   }
@@ -63,36 +66,14 @@ public class FinanService extends Service {
     new FinanMainWindow(swingCustomization, false, false, RolodexService.getInstance().getRolodex());
   }
   
-  public CustomizationFx getCustomizationFx() {
-    return customization;
-  }
-
-  public Customization getCustomization() {
-    return swingCustomization;
-  }
-  
-  
   /**
    * Constructor.
    * <p>
    * The constructor is private, so the class can only be instantiated from within, using the getInstance() method.
    */
   private FinanService() {
-    
-    // If we're running within Eclipse, we set development mode to true. The application can use this information to add functionality which is for development only.
-    if (RunningInEclipse.runningInEclipse()) {
-      FinanRegistry.developmentMode = true;
-    }
-    
-    try {
-      // Read the properties, which are stored in the registry.
-      URL url = getClass().getResource(FinanRegistry.propertyDescriptorsFile);
-      PropertiesHandler.handleProperties(url, null);
-
-    } catch (IOException e) {
-      JfxApplication.reportException(null, e);
-    }
-    
+    finanRegistry = FinanRegistry.getInstance();
+        
     swingCustomization = new Customization(new FinanResources());    
   }
   
@@ -102,17 +83,12 @@ public class FinanService extends Service {
     try (InputStream in = getClass().getResourceAsStream("FinanApplication.properties")) {
         props.load(in);
         
-        FinanRegistry.version = props.getProperty("finan.app.version");
-        FinanRegistry.applicationName = props.getProperty("finan.app.name");
+        finanRegistry.setVersion(props.getProperty("finan.app.version"));
+        finanRegistry.setApplicationName(props.getProperty("finan.app.name"));
     } catch (Exception e) {
       JfxApplication.reportException(null, e);
       System.exit(1);
     }
-  }
-
-  @Override
-  protected void setDevelopmentMode(boolean developmentMode) {
-    FinanRegistry.developmentMode = developmentMode;
   }
   
   @Override
@@ -129,5 +105,10 @@ public class FinanService extends Service {
   @Override
   protected AppResourcesFx getAppResourcesFxClass() {
     return new FinanResourcesFx();
+  }
+  
+  @Override
+  protected Registry getRegistry() {
+    return finanRegistry;
   }
 }

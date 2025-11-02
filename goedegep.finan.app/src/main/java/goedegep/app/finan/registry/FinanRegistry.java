@@ -7,173 +7,475 @@ import java.io.File;
 import java.lang.reflect.Field;
 import java.util.logging.Logger;
 
-import goedegep.properties.model.PropertyDescriptorGroup;
-import goedegep.util.emf.EMFResource;
+import goedegep.myworld.common.Registry;
 
 /**
  * This class contains settings which are shared throughout the Finan application.
  *
  */
-public class FinanRegistry {
+public class FinanRegistry extends Registry {
   private static final Logger         LOGGER = Logger.getLogger(FinanRegistry.class.getName());
-  
-  /**
-   * The name of the application.
-   */
-  public static String applicationName;
   
   /**
    * Name of the file with a job appointment.
    */
-  public static String jobAppointmentFile = null;
-  
-  /**
-   * Name of the author of the application.
-   */
-  public static String author = "Peter Goedegebure";
+  private static String jobAppointmentFile = null;
 
   /**
    * Name of the file with all beleggingsverzekeringen.
    */
-  public static String investmentInsurancesFileName = null;
+  private static String investmentInsurancesFileName = null;
   
   /**
    * Name of the file with all information on claim emissions.
    */
-  public static String claimEmissionsFile = null;
+  private static String claimEmissionsFile = null;
   
   /**
    * Name of the file with all information on companies.
    */
-  public static String companiesFile = null;
+  private static String companiesFile = null;
   
   /**
    * Name of the file with all information on company funds.
    */
-  public static String companyFundsFile = null;
+  private static String companyFundsFile = null;
   
   /**
    * Name of the file with Configuration data.
    */
-  public static String configurationFile = null;
-  
-  /**
-   * Copyright message for the application.
-   */
-  public static String copyrightMessage = "Copyright (c) 2001-2025";
-  
-  /**
-   * Name of the file with the property descriptors.
-   */
-  public static String propertyDescriptorsFile = "FinanPropertyDescriptors.xmi";
-  
-  /**
-   * Name of the file with custom properties (settings).
-   */
-  public static String customPropertiesFile = null;   // Name of the file with custom properties.
+  private static String configurationFile = null;
   
   /**
    * Directory where all user data files are stored.
    */
-  public static String dataDirectory = null;
+  private static String dataDirectory = null;
   
   /**
    * Name of the bank which is selected by default.
    */
-  public static String defaultBank = null;
+  private static String defaultBank = null;
   
   /**
    * Identification of the morgage which is selected by default.
    */
-  public static String defaultHypotheekId = null;
-  
-  /**
-   * If true, the application runs in development mode. In this mode e.g. extra menu items related to development may be available.
-   */
-  public static boolean developmentMode = false;
-  
-  /**
-   * Name of the directory where pictures and documents related to properties (products) are stored.
-   */
-  public static String eigendommenDocumentenMap = null;
+  private static String defaultHypotheekId = null;
   
   /**
    * Name of the file describing the financial units.
    */
-  public static String financieleEenhedenFile = null;
+  private static String financieleEenhedenFile = null;
   
   /**
    * Name of the file with all shares issued for a fund.
    */
-  public static String fundSharesFile = null;
+  private static String fundSharesFile = null;
   
   /**
    * File with share mappings from Lynx to Finan.
    */
-  public static String lynxShareIdToFinanShareNamesFile = null;
+  private static String lynxShareIdToFinanShareNamesFile = null;
   
   /**
    * Name of the file containing information on mortgages.
    */
-  public static String mortgagesFileName = null;
+  private static String mortgagesFileName = null;
   
   /**
    * Name of the file with all option series.
    */
-  public static String optionSeriesFile = null;
+  private static String optionSeriesFile = null;
   
   /**
    * Default account for the 'Postbank'.
    */
-  public static String postbankDefaultRekening = null;
-  
-  /**
-   * Used in development mode to find e.g. the customPropertiesFile.
-   */
-  public static String projectPath = null;
-  
-  /**
-   * The Property Descriptors EMF resource.
-   */
-  public static EMFResource<PropertyDescriptorGroup> propertyDescriptorsResource = null;
+  private static String postbankDefaultRekening = null;
   
   /**
    * Name of the file with all dividends per share.
    */
-  public static String shareDividendsFile = null;
+  private static String shareDividendsFile = null;
   
   /**
    * Name of the file with all tax rates per share.
    */
-  public static String shareTaxRatesFile = null;
-  
-  /**
-   * Short description of this application.
-   */
-  public static String shortProductInfo = "Financial program";
+  private static String shareTaxRatesFile = null;
   
   /**
    * File with all financial transactions.
    */
-  public static File transactionsFile = null;
+  private static File transactionsFile = null;
   
   /**
    * Name of the file with all financial transactions.
    */
-  public static String transactionsFileName = null;
+  private static String transactionsFileName = null;
   
   /*
    * If transactions are handled and there's any change in the transactions,
    * the transactions are rewind. A manual 'handle transactions' is needed to handle them again.
    */
-  public static boolean transactionsHandled = false;
+  private static boolean transactionsHandled = false;
+  
   
   /**
-   * Current software version of this application.
+   * Singleton instance of the FinanRegistry.
    */
-  public static String version = null;
-   
+  private static FinanRegistry instance = null;
+
+  /**
+   * Get the singleton instance of the FinanRegistry.
+   * 
+   * @return the singleton instance of the FinanRegistry.
+   */
+  public static FinanRegistry getInstance() {
+    if (instance == null) {
+      instance = new FinanRegistry();
+    }
+    
+    return instance;
+  }
   
+  /**
+   * Gets the name of the file with job appointments.
+   * 
+   * @return the name of the file with job appointments.
+   */
+  public String getJobAppointmentFile() {
+    return jobAppointmentFile;
+  }
+
+  /**
+   * Sets the name of the file with job appointments.
+   * 
+   * @param jobAppointmentFile the name of the file with job appointments.
+   */
+  public void setJobAppointmentFile(String jobAppointmentFile) {
+    FinanRegistry.jobAppointmentFile = jobAppointmentFile;
+  }
+
+  /**
+   * Gets the name of the file with all investment insurances.
+   * 
+   * @return the name of the file with all investment insurances.
+   */
+  public String getInvestmentInsurancesFileName() {
+    return investmentInsurancesFileName;
+  }
+
+  /**
+   * Set the name of the file with all investment insurances.
+   * 
+   * @param investmentInsurancesFileName the name of the file with all investment insurances.
+   */
+  public void setInvestmentInsurancesFileName(String investmentInsurancesFileName) {
+    FinanRegistry.investmentInsurancesFileName = investmentInsurancesFileName;
+  }
+
+  /**
+   * Gets the name of the file with all claim emissions.
+   * 
+   * @return the name of the file with all claim emissions.
+   */
+  public String getClaimEmissionsFile() {
+    return claimEmissionsFile;
+  }
+
+  /**
+   * Sets the name of the file with all claim emissions.
+   * 
+   * @param claimEmissionsFile the name of the file with all claim emissions.
+   */
+  public void setClaimEmissionsFile(String claimEmissionsFile) {
+    FinanRegistry.claimEmissionsFile = claimEmissionsFile;
+  }
+
+  /**
+   * Gets the name of the file with all companies.
+   * 
+   * @return the name of the file with all companies.
+   */
+  public String getCompaniesFile() {
+    return companiesFile;
+  }
+
+  /**
+   * Sets the name of the file with all companies.
+   * 
+   * @param companiesFile the name of the file with all companies.
+   */
+  public void setCompaniesFile(String companiesFile) {
+    FinanRegistry.companiesFile = companiesFile;
+  }
+
+  /**
+   * Gets the name of the file with all company funds.
+   * 
+   * @return the name of the file with all company funds.
+   */
+  public String getCompanyFundsFile() {
+    return companyFundsFile;
+  }
+
+  /**
+   * Sets the name of the file with all company funds.
+   * 
+   * @param companyFundsFile the name of the file with all company funds.
+   */
+  public void setCompanyFundsFile(String companyFundsFile) {
+    FinanRegistry.companyFundsFile = companyFundsFile;
+  }
+
+  /**
+   * Gets the name of the file with Configuration data.
+   * 
+   * @return the name of the file with Configuration data.
+   */
+  public String getConfigurationFile() {
+    return configurationFile;
+  }
+
+  /**
+   * Sets the name of the file with Configuration data.
+   * 
+   * @param configurationFile the name of the file with Configuration data.
+   */
+  public void setConfigurationFile(String configurationFile) {
+    FinanRegistry.configurationFile = configurationFile;
+  }
+
+  /**
+   * Gets the directory where all user data files are stored.
+   * 
+   * @return the directory where all user data files are stored.
+   */
+  public String getDataDirectory() {
+    return dataDirectory;
+  }
+
+  /**
+   * Sets the directory where all user data files are stored.
+   * 
+   * @param dataDirectory the directory where all user data files are stored.
+   */
+  public void setDataDirectory(String dataDirectory) {
+    FinanRegistry.dataDirectory = dataDirectory;
+  }
+
+  /**
+   * Gets the name of the default bank.
+   * 
+   * @return the name of the defautl bank.
+   */
+  public String getDefaultBank() {
+    return defaultBank;
+  }
+
+  /**
+   * Sets the name of the default bank.
+   * 
+   * @param defaultBank the name of the default bank.
+   */
+  public void setDefaultBank(String defaultBank) {
+    FinanRegistry.defaultBank = defaultBank;
+  }
+
+  /**
+   * Gets the identification of the default mortgage.
+   * 
+   * @return the identification of the default mortgage.
+   */
+  public String getDefaultHypotheekId() {
+    return defaultHypotheekId;
+  }
+
+  /**
+   * Sets the identification of the default mortgage.
+   * 
+   * @param defaultHypotheekId the identification of the default mortgage.
+   */
+  public void setDefaultHypotheekId(String defaultHypotheekId) {
+    FinanRegistry.defaultHypotheekId = defaultHypotheekId;
+  }
+
+  /**
+   * Gets the name of the file with the financial units.
+   * 
+   * @return the name of the file with the financial units.
+   */
+  public String getFinancieleEenhedenFile() {
+    return financieleEenhedenFile;
+  }
+
+  /**
+   * Sets the name of the file with the financial units.
+   * 
+   * @param financieleEenhedenFile the name of the file with the financial units.
+   */
+  public void setFinancieleEenhedenFile(String financieleEenhedenFile) {
+    FinanRegistry.financieleEenhedenFile = financieleEenhedenFile;
+  }
+
+  /**
+   * Gets the name of the file with all shares issued for a fund.
+   * 
+   * @return the name of the file with all shares issued for a fund.
+   */
+  public String getFundSharesFile() {
+    return fundSharesFile;
+  }
+
+  /**
+   * Sets the name of the file with all shares issued for a fund.
+   * 
+   * @param fundSharesFile the name of the file with all shares issued for a fund.
+   */
+  public void setFundSharesFile(String fundSharesFile) {
+    FinanRegistry.fundSharesFile = fundSharesFile;
+  }
+
+  /**
+   * Gets the file with share mappings from Lynx to Finan.
+   * 
+   * @return the file with share mappings from Lynx to Finan.
+   */
+  public String getLynxShareIdToFinanShareNamesFile() {
+    return lynxShareIdToFinanShareNamesFile;
+  }
+
+  /**
+   * Sets the file with share mappings from Lynx to Finan.
+   * 
+   * @param lynxShareIdToFinanShareNamesFile the file with share mappings from Lynx to Finan.
+   */
+  public void setLynxShareIdToFinanShareNamesFile(String lynxShareIdToFinanShareNamesFile) {
+    FinanRegistry.lynxShareIdToFinanShareNamesFile = lynxShareIdToFinanShareNamesFile;
+  }
+
+  /**
+   * Gets the name of the file containing information on mortgages.
+   * 
+   * @return the name of the file containing information on mortgages.
+   */
+  public String getMortgagesFileName() {
+    return mortgagesFileName;
+  }
+
+  /**
+   * Sets the name of the file containing information on mortgages.
+   * 
+   * @param mortgagesFileName the name of the file containing information on mortgages.
+   */
+  public void setMortgagesFileName(String mortgagesFileName) {
+    FinanRegistry.mortgagesFileName = mortgagesFileName;
+  }
+
+  /**
+   * Gets the name of the file with all option series.
+   * 
+   * @return the name of the file with all option series.
+   */
+  public String getOptionSeriesFile() {
+    return optionSeriesFile;
+  }
+
+   /**
+    * Sets the name of the file with all option series.
+    * 
+    * @param optionSeriesFile the name of the file with all option series.
+    */
+  public void setOptionSeriesFile(String optionSeriesFile) {
+    FinanRegistry.optionSeriesFile = optionSeriesFile;
+  }
+
+  /**
+   * Gets the default account for the 'Postbank'.
+   * 
+   * @return the default account for the 'Postbank'.
+   */
+  public String getPostbankDefaultRekening() {
+    return postbankDefaultRekening;
+  }
+
+  /**
+   * Sets the default account for the 'Postbank'.
+   * 
+   * @param postbankDefaultRekening the default account for the 'Postbank'.
+   */
+  public void setPostbankDefaultRekening(String postbankDefaultRekening) {
+    FinanRegistry.postbankDefaultRekening = postbankDefaultRekening;
+  }
+
+  /**
+   * Gets the name of the file with all dividends per share.
+   */
+  public String getShareDividendsFile() {
+    return shareDividendsFile;
+  }
+
+  /**
+   * Sets the name of the file with all dividends per share.
+   */
+  public void setShareDividendsFile(String shareDividendsFile) {
+    FinanRegistry.shareDividendsFile = shareDividendsFile;
+  }
+
+  /**
+   * Gets the name of the file with all tax rates per share.
+   */
+  public String getShareTaxRatesFile() {
+    return shareTaxRatesFile;
+  }
+
+  /**
+   * Sets the name of the file with all tax rates per share.
+   */
+  public void setShareTaxRatesFile(String shareTaxRatesFile) {
+    FinanRegistry.shareTaxRatesFile = shareTaxRatesFile;
+  }
+
+  /**
+   * Gets the file with all financial transactions.
+   */
+  public File getTransactionsFile() {
+    return transactionsFile;
+  }
+
+  /**
+   * Sets the file with all financial transactions.
+   */
+  public void setTransactionsFile(File transactionsFile) {
+    FinanRegistry.transactionsFile = transactionsFile;
+  }
+
+  /**
+   * Gets the name of the file with all financial transactions.
+   */
+  public String getTransactionsFileName() {
+    return transactionsFileName;
+  }
+
+  /**
+   * Sets the name of the file with all financial transactions.
+   */
+  public void setTransactionsFileName(String transactionsFileName) {
+    FinanRegistry.transactionsFileName = transactionsFileName;
+  }
+
+  /**
+   * Checks if the transactions are handled.
+   */
+  public boolean areTransactionsHandled() {
+    return transactionsHandled;
+  }
+
+  /**
+   * Sets if the transactions are handled.
+   */
+  public void setTransactionsHandled(boolean transactionsHandled) {
+    FinanRegistry.transactionsHandled = transactionsHandled;
+  }
+
 
   /**
    * Gets the default account for a specific Bank.
@@ -238,5 +540,17 @@ public class FinanRegistry {
     }
 		
 	return sb.toString();
+  }
+  
+  /**
+   * Private constructor for the singleton FinanRegistry.
+   */
+  private FinanRegistry() {
+    super();
+    
+    setAuthor("Peter Goedegebure");
+    setShortProductInfo("Financial program");
+    setPropertyDescriptorsFileName("FinanPropertyDescriptors.xmi");
+    setUserPropertiesFileName("FinanUserPreferences.xmi");
   }
 }

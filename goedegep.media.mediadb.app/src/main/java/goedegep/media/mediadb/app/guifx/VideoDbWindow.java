@@ -1,6 +1,5 @@
 package goedegep.media.mediadb.app.guifx;
 
-import java.io.File;
 import java.util.logging.Logger;
 
 import org.eclipse.emf.common.notify.Notification;
@@ -8,12 +7,10 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.util.EContentAdapter;
 
 import goedegep.jfx.AppResourcesFx;
-import goedegep.jfx.ComponentFactoryFx;
 import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.JfxStage;
 import goedegep.jfx.MenuUtil;
 import goedegep.jfx.PropertyDescriptorsEditorFx;
-import goedegep.jfx.browser.BrowserWindow;
 import goedegep.media.common.MediaRegistry;
 import goedegep.media.mediadb.model.MediaDb;
 import goedegep.media.mediadb.model.MediadbFactory;
@@ -50,14 +47,14 @@ public class VideoDbWindow extends JfxStage {
   private static final MediadbFactory FACTORY = MediadbFactory.eINSTANCE;
   private static final MediadbPackage MEDIA_DB_PACKAGE = MediadbPackage.eINSTANCE;
 
-  private CustomizationFx customization;
-  private ComponentFactoryFx componentFactory;
   private AppResourcesFx appResources;
 
   /**
    * The Media Database.
    */
   private MediaDb mediaDb;
+  
+  private MediaRegistry mediaRegistry;
 
   /**
    * A table listing all films.
@@ -76,8 +73,7 @@ public class VideoDbWindow extends JfxStage {
   public VideoDbWindow(CustomizationFx customization) {
     super(customization, WINDOW_TITLE);
 
-    this.customization = customization;
-    componentFactory = customization.getComponentFactoryFx();
+    mediaRegistry = MediaRegistry.getInstance();
     appResources = customization.getResources();
 
     // Start with an empty media database
@@ -193,7 +189,7 @@ public class VideoDbWindow extends JfxStage {
     });
     
     // File: Edit Property Descriptors
-    if (MediaRegistry.developmentMode) {
+    if (mediaRegistry.isDevelopmentMode()) {
       MenuUtil.addMenuItem(menu, "Edit Property Descriptors", new EventHandler<ActionEvent>()  {
         public void handle(ActionEvent e) {
           showPropertyDescriptorsEditor();
@@ -254,7 +250,7 @@ public class VideoDbWindow extends JfxStage {
     
     // TextField: for the text to filter on
     TextField textField = componentFactory.createTextField(200, "Enter the text that has to be in de video information");
-    textField.textProperty().addListener((observable, oldValue, newValue) -> {
+    textField.textProperty().addListener((_, _, newValue) -> {
       setFilter(newValue);
     });
     controlPanel.getChildren().add(textField);
@@ -273,7 +269,7 @@ public class VideoDbWindow extends JfxStage {
    * Open the PropertyDescriptors editor.
    */
   private void showPropertyDescriptorsEditor() {
-    new PropertyDescriptorsEditorFx(customization, MediaRegistry.propertyDescriptorsResource);
+    new PropertyDescriptorsEditorFx(customization, mediaRegistry.getPropertyDescriptorsFileURI());
   }
 
   /**
@@ -281,7 +277,7 @@ public class VideoDbWindow extends JfxStage {
    */
   private void showUserSettingsEditor() {
     PropertiesEditor propertiesEditor = new PropertiesEditor("Edit Media settings", customization,
-        MediaRegistry.propertyDescriptorsResource, MediaRegistry.customPropertiesFile);
+        mediaRegistry.getPropertyDescriptorsFileURI(), mediaRegistry.getUserPropertiesFileName());
     propertiesEditor.show();
   }
 
@@ -293,10 +289,10 @@ public class VideoDbWindow extends JfxStage {
         "About MediaDb",
         appResources.getApplicationImage(ImageSize.SIZE_3),
         null,
-        MediaRegistry.shortProductInfo + NEWLINE +
-        "Versie: " + MediaRegistry.version + NEWLINE +
-        MediaRegistry.copyrightMessage + NEWLINE +
-        "Auteur: " + MediaRegistry.author)
+        mediaRegistry.getShortProductInfo() + NEWLINE +
+        "Versie: " + mediaRegistry.getVersion() + NEWLINE +
+        mediaRegistry.getCopyrightMessage() + NEWLINE +
+        "Auteur: " + mediaRegistry.getAuthor())
         .showAndWait();
   }
   

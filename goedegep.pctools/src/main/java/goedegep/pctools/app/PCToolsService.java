@@ -1,42 +1,51 @@
 package goedegep.pctools.app;
 
-import java.io.IOException;
 import java.io.InputStream;
-import java.net.URL;
 import java.util.Properties;
 
 import goedegep.configuration.model.Look;
 import goedegep.jfx.AppResourcesFx;
 import goedegep.jfx.JfxApplication;
+import goedegep.myworld.common.Registry;
 import goedegep.myworld.common.Service;
 import goedegep.pctools.app.guifx.PCToolsAppResourcesFx;
 import goedegep.pctools.app.guifx.PCToolsMenuWindow;
 import goedegep.pctools.app.logic.PCToolsRegistry;
-import goedegep.properties.app.PropertiesHandler;
-import goedegep.util.RunningInEclipse;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
+/**
+ * The PCToolsService class is the main class for the PCTools application.
+ * <p>
+ * It provides methods to show the menu window, and manages
+ * application-wide resources and customization.
+ */
 public class PCToolsService extends Service {
 
+  /**
+   * The singleton instance of the PCToolsService.
+   */
   private static PCToolsService instance = null;
   
+  private PCToolsRegistry pcToolsRegistry;
+  
+  /**
+   * Get the singleton instance of the PCToolsService.
+   * 
+   * @return the singleton instance of PCToolsService.
+   */
   public static PCToolsService getInstance() {
     if (instance == null) {
       instance = new PCToolsService();
-      instance.initialize();
-      
-      try {
-        // Read the properties, which are stored in the registry.
-        URL url = instance.getClass().getResource(PCToolsRegistry.propertyDescriptorsFile);
-        PropertiesHandler.handleProperties(url, null);
-      } catch (IOException e) {
-        JfxApplication.reportException(null, e);
-      }
+      instance.initialize();      
     }
+    
     return instance;
   }
   
+  /**
+   * Show the PCTools menu window.
+   */
   public void showPCToolsMenuWindow() {
     Stage stage = new PCToolsMenuWindow(customization, null);
     stage.centerOnScreen();
@@ -47,17 +56,7 @@ public class PCToolsService extends Service {
    * Private constructor to ensure that the application is a singleton.
    */
   private PCToolsService() {
-    
-    // If we're running within Eclipse, we set development mode to true. The application can use this information to add functionality which is for development only.
-    if (RunningInEclipse.runningInEclipse()) {
-      PCToolsRegistry.developmentMode = true;
-    }
-    
-  }
-
-  @Override
-  protected void setDevelopmentMode(boolean developmentMode) {
-    PCToolsRegistry.developmentMode = developmentMode;
+    pcToolsRegistry = PCToolsRegistry.getInstance();
   }
   
   @Override
@@ -66,8 +65,8 @@ public class PCToolsService extends Service {
     try (InputStream in = getClass().getResourceAsStream("PCToolsApplication.properties")) {
         props.load(in);
         
-        PCToolsRegistry.version = props.getProperty("pctools.app.version");
-        PCToolsRegistry.applicationName = props.getProperty("pctools.app.name");
+        pcToolsRegistry.setVersion(props.getProperty("pctools.app.version"));
+        pcToolsRegistry.setApplicationName(props.getProperty("pctools.app.name"));
     } catch (Exception e) {
       JfxApplication.reportException(null, e);
       System.exit(1);
@@ -88,5 +87,10 @@ public class PCToolsService extends Service {
   @Override
   protected AppResourcesFx getAppResourcesFxClass() {
     return new PCToolsAppResourcesFx();
+  }
+  
+  @Override
+  protected Registry getRegistry() {
+    return pcToolsRegistry;
   }
 }

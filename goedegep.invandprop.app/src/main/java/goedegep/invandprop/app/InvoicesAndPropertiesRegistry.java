@@ -1,73 +1,83 @@
 package goedegep.invandprop.app;
 
-import goedegep.properties.model.PropertyDescriptorGroup;
-import goedegep.util.emf.EMFResource;
+import goedegep.myworld.common.Registry;
 
-public class InvoicesAndPropertiesRegistry {
-  
-  /**
-   * The name of the application.
-   */
-  public static String applicationName;
-  
-  /**
-   * Name of the author of the application.
-   */
-  public static String author = "Peter Goedegebure";
-  
-  /**
-   * Name of the file with Configuration data.
-   */
-  public static String configurationFile = null;
-  
-  /**
-   * Copyright message for the application.
-   */
-  public static String copyrightMessage = "Copyright (c) 2001-2025";
-  
-  /**
-   * Name of the file with the property descriptors.
-   */
-  public static String propertyDescriptorsFile = "InvoicesAndPropertiesPropertyDescriptors.xmi";
-  
-  
-  /**
-   * Name of the file with custom properties.
-   * <p>
-   * This file shall be located in the "MyWorld" folder under the user's home directory.
-   */
-  public static String customPropertiesFile = "VacationsUserPreferences.xmi";
+public class InvoicesAndPropertiesRegistry extends Registry {
   
   /**
    * Directory with files related to the properties (documents and pictures).
    */
-  public static String propertyRelatedFilesFolder = null;
+  private static String propertyRelatedFilesFolder = null;
   
   /**
    * Name of the file with all invoices and properties.
    */
-  public static String invoicesAndPropertiesFile = null;
+  private static String invoicesAndPropertiesFile = null;
   
   /**
-   * Short description of this application.
+   * Singleton instance of the InvoicesAndPropertiesRegistry.
    */
-  public static String shortProductInfo = "A database like application to store information about Invoices and Properties.";
+  private static InvoicesAndPropertiesRegistry instance = null;
+
+  /**
+   * Get the singleton instance of the InvoicesAndPropertiesRegistry.
+   * 
+   * @return the singleton instance of the InvoicesAndPropertiesRegistry.
+   */
+  public static InvoicesAndPropertiesRegistry getInstance() {
+    if (instance == null) {
+      instance = new InvoicesAndPropertiesRegistry();
+    }
+    
+    return instance;
+  }
   
   /**
-   * Current software version.
+   * Get the directory with files related to the properties (documents and pictures).
+   * 
+   * @return the directory with files related to the properties (documents and pictures).
    */
-  public static String version = null;
-  
+  public String getPropertyRelatedFilesFolder() {
+    return propertyRelatedFilesFolder;
+  }
+
   /**
-   * For extra functionality during development.
+   * Set the directory with files related to the properties (documents and pictures).
+   * 
+   * @param propertyRelatedFilesFolder the directory with files related to the properties (documents and pictures).
    */
-  public static boolean developmentMode = false;
-  
-  public static String projectPath = null;                   // Used in development mode to find e.g. the customPropertiesFile.
-  
+  public void setPropertyRelatedFilesFolder(String propertyRelatedFilesFolder) {
+    InvoicesAndPropertiesRegistry.propertyRelatedFilesFolder = propertyRelatedFilesFolder;
+  }
+
   /**
-   * EMFResource for the Property Descriptors.
+   * Get the name of the file with all invoices and properties.
+   * 
+   * @return the name of the file with all invoices and properties.
    */
-  public static EMFResource<PropertyDescriptorGroup> propertyDescriptorsResource = null;
-  
+  public String getInvoicesAndPropertiesFile() {
+    return invoicesAndPropertiesFile;
+  }
+
+  /**
+   * Set the name of the file with all invoices and properties.
+   * 
+   * @param invoicesAndPropertiesFile the name of the file with all invoices and properties.
+   */
+  public void setInvoicesAndPropertiesFile(String invoicesAndPropertiesFile) {
+    InvoicesAndPropertiesRegistry.invoicesAndPropertiesFile = invoicesAndPropertiesFile;
+  }
+
+  /**
+   * Private constructor for the singleton InvoicesAndPropertiesRegistry.
+   */
+  private InvoicesAndPropertiesRegistry() {
+    super();
+    
+    setAuthor("Peter Goedegebure");
+    setShortProductInfo("A database like application to store information about Invoices and Properties.");
+    setPropertyDescriptorsFileName("InvoicesAndPropertiesPropertyDescriptors.xmi");
+    setUserPropertiesFileName("InvoicesAndPropertiesUserPreferences.xmi");
+  }
+ 
 }

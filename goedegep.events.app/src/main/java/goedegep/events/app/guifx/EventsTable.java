@@ -292,7 +292,7 @@ class AttachmentsCell extends TableCell<EventInfo, Object> {
           vBox.getChildren().add(createImageView(image));
           vBox.getChildren().add(createLabel(fileReference));
 
-          vBox.setOnMouseClicked((e) -> new ImageStage(customization, imagePath.toString()));
+          vBox.setOnMouseClicked((_) -> new ImageStage(customization, imagePath.toString()));
 
           hBox.getChildren().add(vBox);
         } else if (FileUtils.isPDFFile(attachmentFileName)) {
@@ -307,7 +307,7 @@ class AttachmentsCell extends TableCell<EventInfo, Object> {
           vBox.getChildren().add(createImageView(ImageResource.GPX.getImage()));
           vBox.getChildren().add(createLabel(fileReference));
 
-          vBox.setOnMouseClicked((e) -> {
+          vBox.setOnMouseClicked((_) -> {
             File file = new File(eventsDirectory, fileReference.getFile());
             new GPXWindow(customization, file.getAbsolutePath());
           });
@@ -315,7 +315,7 @@ class AttachmentsCell extends TableCell<EventInfo, Object> {
           hBox.getChildren().add(vBox);
         } else {
           Label label = createLabel(fileReference);
-          label.setOnMouseClicked((e) -> {
+          label.setOnMouseClicked((_) -> {
             try {
               Desktop.getDesktop().open(new File(eventsDirectory, fileReference.getFile()));
             } catch (IOException e1) {
@@ -343,7 +343,7 @@ class AttachmentsCell extends TableCell<EventInfo, Object> {
             label = componentFactory.createLabel("Event folder");
           }
           vBox.getChildren().add(label);
-          vBox.setOnMouseClicked((e) -> {
+          vBox.setOnMouseClicked((_) -> {
             try {
               Desktop.getDesktop().open(new File(eventFolderName));
             } catch (IOException e1) {
@@ -373,7 +373,7 @@ class AttachmentsCell extends TableCell<EventInfo, Object> {
     vBox.getChildren().add(createImageView(image));
     vBox.getChildren().add(createLabel(fileReference));
 
-    vBox.setOnMouseClicked((e) -> {
+    vBox.setOnMouseClicked((_) -> {
       try {
         File file = prefix != null ? new File(prefix, fileReference.getFile()) : new File(fileReference.getFile());
         Desktop.getDesktop().open(file);

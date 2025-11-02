@@ -52,6 +52,11 @@ public class InvoiceAndPropertyEditPanel extends EditPanelTemplate<InvoiceAndPro
   private InvoicesAndPropertiesService invoicesAndPropertiesService;
   
   /**
+   * The invoices and properties registry.
+   */
+  private InvoicesAndPropertiesRegistry invoicesAndPropertiesRegistry = InvoicesAndPropertiesRegistry.getInstance();
+  
+  /**
    * Editor controls
    */
   
@@ -190,6 +195,7 @@ public class InvoiceAndPropertyEditPanel extends EditPanelTemplate<InvoiceAndPro
     super(customization, false);
     
     this.invoicesAndPropertiesService = invoicesAndPropertiesService;
+    invoicesAndPropertiesRegistry = InvoicesAndPropertiesRegistry.getInstance();
     
     setId("InvoiceAndPropertyEditPanel");
   }
@@ -284,7 +290,7 @@ public class InvoiceAndPropertyEditPanel extends EditPanelTemplate<InvoiceAndPro
         .setAddFileReferenceButtonText("Add document")
         .setAddFileReferenceButtonTooltipText("Add a document")
         .setInitialFolderSupplier(this::getInitialFolder)
-        .setPrefix(InvoicesAndPropertiesRegistry.propertyRelatedFilesFolder)
+        .setPrefix(invoicesAndPropertiesRegistry.getPropertyRelatedFilesFolder())
         .build();
     documentsEditPanel.setId("documents");
     documentsEditPanel.addValueAndOrStatusChangeListener((_, _) -> updateAttachmentsFolderPathProperty());
@@ -295,7 +301,7 @@ public class InvoiceAndPropertyEditPanel extends EditPanelTemplate<InvoiceAndPro
         .setAddFileReferenceButtonText("Add picture")
         .setAddFileReferenceButtonTooltipText("Add a picture")
         .setInitialFolderSupplier(this::getInitialFolder)
-        .setPrefix(InvoicesAndPropertiesRegistry.propertyRelatedFilesFolder)
+        .setPrefix(invoicesAndPropertiesRegistry.getPropertyRelatedFilesFolder())
         .build();
     documentsEditPanel.setId("pictures");
     documentsEditPanel.addValueAndOrStatusChangeListener((_, _) -> updateAttachmentsFolderPathProperty());
@@ -333,7 +339,7 @@ public class InvoiceAndPropertyEditPanel extends EditPanelTemplate<InvoiceAndPro
     
     picturesEditPanel.addObjectSelectionListener((_, fileReference) -> {
       if (fileReference != null  &&  fileReference.getFile() != null) {
-        Image image = new Image("file:" + FileUtils.createPathNameFromPrefixAndFileName(InvoicesAndPropertiesRegistry.propertyRelatedFilesFolder, fileReference.getFile()));
+        Image image = new Image("file:" + FileUtils.createPathNameFromPrefixAndFileName(invoicesAndPropertiesRegistry.getPropertyRelatedFilesFolder(), fileReference.getFile()));
         selectedPictureImageView.setImage(image);
       }
     });
@@ -532,7 +538,7 @@ public class InvoiceAndPropertyEditPanel extends EditPanelTemplate<InvoiceAndPro
   private void updateAttachmentsFolderPathProperty() {
     String attachmentsFolderName = null;
     try {
-      attachmentsFolderName = InvoicesAndPropertiesService.determineAttachmentsFolderName(getCurrentValue());
+      attachmentsFolderName = invoicesAndPropertiesService.determineAttachmentsFolderName(getCurrentValue());
     } catch (EditorException e) {
       e.printStackTrace();
     }
@@ -555,7 +561,7 @@ public class InvoiceAndPropertyEditPanel extends EditPanelTemplate<InvoiceAndPro
     String attachmentsFolderName = null;
     String toolTipText = "Folder where invoice and property attachments are stored";
     if (attachmentsFolder != null) {
-      attachmentsFolderName = FileUtils.getPathRelativeToFolder(InvoicesAndPropertiesRegistry.propertyRelatedFilesFolder, attachmentsFolder.toString());
+      attachmentsFolderName = FileUtils.getPathRelativeToFolder(invoicesAndPropertiesRegistry.getPropertyRelatedFilesFolder(), attachmentsFolder.toString());
       toolTipText = "Attachments of the invoice and property are stored in the folder: " + attachmentsFolder.toString();
     }
     attachmentsFolderControl.setObject(attachmentsFolderName);
@@ -563,7 +569,7 @@ public class InvoiceAndPropertyEditPanel extends EditPanelTemplate<InvoiceAndPro
     
     if (attachmentsFolder != null  &&  Files.exists(attachmentsFolder)) {
       createOrOpenAttachmentsFolderButton.setText("Open");
-      createOrOpenAttachmentsFolderButton.setOnAction((e) -> {
+      createOrOpenAttachmentsFolderButton.setOnAction((_) -> {
         try {
           Desktop.getDesktop().open(attachmentsFolder.toFile());
         } catch (IOException e1) {
@@ -572,7 +578,7 @@ public class InvoiceAndPropertyEditPanel extends EditPanelTemplate<InvoiceAndPro
       });
     } else {
       createOrOpenAttachmentsFolderButton.setText("Create");
-      createOrOpenAttachmentsFolderButton.setOnAction((e) -> {
+      createOrOpenAttachmentsFolderButton.setOnAction((_) -> {
         createAttachmentsFolder(null);
       });
       createOrOpenAttachmentsFolderButton.setDisable(attachmentsFolder == null);
@@ -601,7 +607,7 @@ public class InvoiceAndPropertyEditPanel extends EditPanelTemplate<InvoiceAndPro
     if (attachmentsFolderPathProperty.get() != null) {
       return attachmentsFolderPathProperty.get().toString();
     } else {
-      return InvoicesAndPropertiesRegistry.propertyRelatedFilesFolder;
+      return invoicesAndPropertiesRegistry.getPropertyRelatedFilesFolder();
     }
   }
   

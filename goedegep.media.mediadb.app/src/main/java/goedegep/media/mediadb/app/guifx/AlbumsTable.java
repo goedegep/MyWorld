@@ -48,7 +48,6 @@ import goedegep.media.musicfolder.AlbumOnDiscInfo;
 import goedegep.util.datetime.FlexDate;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
-import javafx.event.ActionEvent;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TableCell;
@@ -70,6 +69,7 @@ public class AlbumsTable extends EObjectTable<Album> {
   
   private CustomizationFx customization;
   private ComponentFactoryFx componentFactory;
+  private MediaRegistry mediaRegistry;
   
   /**
    * The Media Database
@@ -128,6 +128,7 @@ public class AlbumsTable extends EObjectTable<Album> {
     super(customization, MediadbPackage.eINSTANCE.getAlbum(), new AlbumsTableDescriptor(customization, mediaDbService), mediaDbService.getMediaDbResource().getEObject(), MediadbPackage.eINSTANCE.getMediaDb_Albums());
     
     this.customization = customization;
+    mediaRegistry = MediaRegistry.getInstance();
     mediaDb = mediaDbService.getMediaDbResource().getEObject();
     this.mediaDbWindow = mediaDbWindow;
     this.albumToMusicFolderLocationMap = albumToMusicFolderLocationMap;
@@ -157,7 +158,7 @@ public class AlbumsTable extends EObjectTable<Album> {
     
     // Add AlbumsTable specific items.
     MenuItem menuItem = componentFactory.createMenuItem("Importeer tracks");
-    menuItem.setOnAction((ActionEvent event) -> {
+    menuItem.setOnAction((_) -> {
       importTracks(row.getItem());
     });
     contextMenu.getItems().add(menuItem);
@@ -202,7 +203,7 @@ public class AlbumsTable extends EObjectTable<Album> {
 //    }
     
     // Can't play anything if the path to MPC-HC isn't set.
-    if (MediaRegistry.mediaPlayerClassicExecutable == null) {
+    if (mediaRegistry.getMediaPlayerClassicExecutable() == null) {
       return;
     }
     
@@ -232,7 +233,7 @@ public class AlbumsTable extends EObjectTable<Album> {
 
         // If more than one disc available for the album, let the user chose one.
         if (discsInMusicFolder.size() > 1) {
-          discToPlay.addListener((e) -> {
+          discToPlay.addListener((_) -> {
             playDisc(album);
           });
           DiscSelectionDialog discSelectionDialog = new DiscSelectionDialog(customization, mediaDbWindow, discsInMusicFolder, albumDiscLocationInfos, discToPlay);
@@ -246,7 +247,7 @@ public class AlbumsTable extends EObjectTable<Album> {
       // Build the command to start the media player.
       // First argument is the MPC-HC player executable. Then for each album folder a '/play' argument followed by the folder.
       List<String> commandArguments = new ArrayList<>();
-      commandArguments.add(MediaRegistry.mediaPlayerClassicExecutable);
+      commandArguments.add(mediaRegistry.getMediaPlayerClassicExecutable());
       LOGGER.info("albumDiscLocationInfo: " + albumDiscLocationInfo.toString());
       commandArguments.add("/play ");
       commandArguments.add(albumDiscLocationInfo.getAlbumFolderName());
@@ -270,7 +271,7 @@ public class AlbumsTable extends EObjectTable<Album> {
       // Build the command to start the media player.
       // First argument is the MPC-HC player executable. Then for each track ....
       List<String> commandArguments = new ArrayList<>();
-      commandArguments.add(MediaRegistry.mediaPlayerClassicExecutable);        
+      commandArguments.add(mediaRegistry.getMediaPlayerClassicExecutable());        
 
 //      List<DiscAndTrackNrs> tracks = MediaDbUtil.getAlbumTracksIHave(album, true);
       
@@ -340,7 +341,7 @@ public class AlbumsTable extends EObjectTable<Album> {
     // Build the command to start the media player.
     // First argument is the MPC-HC player executable. Then for each album folder a '/play' argument followed by the folder.
     List<String> commandArguments = new ArrayList<>();
-    commandArguments.add(MediaRegistry.mediaPlayerClassicExecutable);
+    commandArguments.add(mediaRegistry.getMediaPlayerClassicExecutable());
     LOGGER.severe("albumDiscLocationInfo: " + albumDiscLocationInfo.toString());
     commandArguments.add("/play ");
     commandArguments.add(albumDiscLocationInfo.getAlbumFolderName());
@@ -373,6 +374,7 @@ class AlbumsTableDescriptor extends EObjectTableDescriptor<Album> {
   private static final int IMAGE_HEIGHT = 60;
   private static final MediadbPackage MEDIA_DB_PACKAGE = MediadbPackage.eINSTANCE;
   
+  MediaRegistry mediaRegistry = MediaRegistry.getInstance();
 
   /*
    * Column descriptors which have to be adapted in the constructor.
@@ -399,7 +401,7 @@ class AlbumsTableDescriptor extends EObjectTableDescriptor<Album> {
       labelImagesColumnDescriptor,
       new EObjectTableColumnDescriptorCheckBox<Album>(MEDIA_DB_PACKAGE.getAlbum_Soundtrack(), "Soundtrack", false, true),
       albumReferenceColumnDescriptor,
-      new EObjectTableColumnDescriptorCustom<>(null, "Source", 300, false, true, column -> {
+      new EObjectTableColumnDescriptorCustom<>(null, "Source", 300, false, true, _ -> {
             TableCell<Album, Object> cell = new TableCell<>() {
 
               @Override
@@ -457,7 +459,6 @@ class AlbumsTableDescriptor extends EObjectTableDescriptor<Album> {
           })
   );
   
-  @SuppressWarnings("serial")
   private static Map<Operation, TableRowOperationDescriptor<Album>> rowOperations = new HashMap<>() {
     {
       put(Operation.OPEN, new TableRowOperationDescriptor<>("Play"));
@@ -483,7 +484,7 @@ class AlbumsTableDescriptor extends EObjectTableDescriptor<Album> {
     MyInfoPlayCellFactory myInfoPlayCellFactory = new MyInfoPlayCellFactory(customization, IMAGE_HEIGHT);
     playColumnDescriptor.setCellFactory(myInfoPlayCellFactory);
     
-    ImageListCellFactory imageListCellFactory = new ImageListCellFactory(customization, IMAGE_HEIGHT, MediaRegistry.musicDataDirectory);
+    ImageListCellFactory imageListCellFactory = new ImageListCellFactory(customization, IMAGE_HEIGHT, mediaRegistry.getMusicDataDirectory());
     frontImagesColumnDescriptor.setCellFactory(imageListCellFactory);
     insideImagesColumnDescriptor.setCellFactory(imageListCellFactory);
     backImagesColumnDescriptor.setCellFactory(imageListCellFactory);

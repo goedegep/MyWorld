@@ -28,7 +28,6 @@ import goedegep.properties.model.PropertyType;
  *   <li>{@link goedegep.properties.model.impl.PropertyDescriptorImpl#getRegistryName <em>Registry Name</em>}</li>
  *   <li>{@link goedegep.properties.model.impl.PropertyDescriptorImpl#getInitialValue <em>Initial Value</em>}</li>
  *   <li>{@link goedegep.properties.model.impl.PropertyDescriptorImpl#isUserSettable <em>User Settable</em>}</li>
- *   <li>{@link goedegep.properties.model.impl.PropertyDescriptorImpl#isInstallInitialValue <em>Install Initial Value</em>}</li>
  * </ul>
  *
  * @generated
@@ -218,35 +217,6 @@ public class PropertyDescriptorImpl extends MinimalEObjectImpl.Container impleme
    * @ordered
    */
   protected boolean userSettable = USER_SETTABLE_EDEFAULT;
-
-  /**
-   * The default value of the '{@link #isInstallInitialValue() <em>Install Initial Value</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #isInstallInitialValue()
-   * @generated
-   * @ordered
-   */
-  protected static final boolean INSTALL_INITIAL_VALUE_EDEFAULT = false;
-
-  /**
-   * The cached value of the '{@link #isInstallInitialValue() <em>Install Initial Value</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #isInstallInitialValue()
-   * @generated
-   * @ordered
-   */
-  protected boolean installInitialValue = INSTALL_INITIAL_VALUE_EDEFAULT;
-
-  /**
-   * This is true if the Install Initial Value attribute has been set.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  protected boolean installInitialValueESet;
 
   /**
    * <!-- begin-user-doc -->
@@ -581,60 +551,6 @@ public class PropertyDescriptorImpl extends MinimalEObjectImpl.Container impleme
    * @generated
    */
   @Override
-  public boolean isInstallInitialValue() {
-    return installInitialValue;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public void setInstallInitialValue(boolean newInstallInitialValue) {
-    boolean oldInstallInitialValue = installInitialValue;
-    installInitialValue = newInstallInitialValue;
-    boolean oldInstallInitialValueESet = installInitialValueESet;
-    installInitialValueESet = true;
-    if (eNotificationRequired())
-      eNotify(
-          new ENotificationImpl(this, Notification.SET, PropertiesPackage.PROPERTY_DESCRIPTOR__INSTALL_INITIAL_VALUE,
-              oldInstallInitialValue, installInitialValue, !oldInstallInitialValueESet));
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public void unsetInstallInitialValue() {
-    boolean oldInstallInitialValue = installInitialValue;
-    boolean oldInstallInitialValueESet = installInitialValueESet;
-    installInitialValue = INSTALL_INITIAL_VALUE_EDEFAULT;
-    installInitialValueESet = false;
-    if (eNotificationRequired())
-      eNotify(
-          new ENotificationImpl(this, Notification.UNSET, PropertiesPackage.PROPERTY_DESCRIPTOR__INSTALL_INITIAL_VALUE,
-              oldInstallInitialValue, INSTALL_INITIAL_VALUE_EDEFAULT, oldInstallInitialValueESet));
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public boolean isSetInstallInitialValue() {
-    return installInitialValueESet;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
   public Object eGet(int featureID, boolean resolve, boolean coreType) {
     switch (featureID) {
     case PropertiesPackage.PROPERTY_DESCRIPTOR__TYPE:
@@ -651,8 +567,6 @@ public class PropertyDescriptorImpl extends MinimalEObjectImpl.Container impleme
       return getInitialValue();
     case PropertiesPackage.PROPERTY_DESCRIPTOR__USER_SETTABLE:
       return isUserSettable();
-    case PropertiesPackage.PROPERTY_DESCRIPTOR__INSTALL_INITIAL_VALUE:
-      return isInstallInitialValue();
     }
     return super.eGet(featureID, resolve, coreType);
   }
@@ -685,9 +599,6 @@ public class PropertyDescriptorImpl extends MinimalEObjectImpl.Container impleme
       return;
     case PropertiesPackage.PROPERTY_DESCRIPTOR__USER_SETTABLE:
       setUserSettable((Boolean) newValue);
-      return;
-    case PropertiesPackage.PROPERTY_DESCRIPTOR__INSTALL_INITIAL_VALUE:
-      setInstallInitialValue((Boolean) newValue);
       return;
     }
     super.eSet(featureID, newValue);
@@ -722,9 +633,6 @@ public class PropertyDescriptorImpl extends MinimalEObjectImpl.Container impleme
     case PropertiesPackage.PROPERTY_DESCRIPTOR__USER_SETTABLE:
       setUserSettable(USER_SETTABLE_EDEFAULT);
       return;
-    case PropertiesPackage.PROPERTY_DESCRIPTOR__INSTALL_INITIAL_VALUE:
-      unsetInstallInitialValue();
-      return;
     }
     super.eUnset(featureID);
   }
@@ -751,8 +659,6 @@ public class PropertyDescriptorImpl extends MinimalEObjectImpl.Container impleme
       return isSetInitialValue();
     case PropertiesPackage.PROPERTY_DESCRIPTOR__USER_SETTABLE:
       return userSettable != USER_SETTABLE_EDEFAULT;
-    case PropertiesPackage.PROPERTY_DESCRIPTOR__INSTALL_INITIAL_VALUE:
-      return isSetInstallInitialValue();
     }
     return super.eIsSet(featureID);
   }
@@ -797,11 +703,6 @@ public class PropertyDescriptorImpl extends MinimalEObjectImpl.Container impleme
       result.append("<unset>");
     result.append(", userSettable: ");
     result.append(userSettable);
-    result.append(", installInitialValue: ");
-    if (installInitialValueESet)
-      result.append(installInitialValue);
-    else
-      result.append("<unset>");
     result.append(')');
     return result.toString();
   }

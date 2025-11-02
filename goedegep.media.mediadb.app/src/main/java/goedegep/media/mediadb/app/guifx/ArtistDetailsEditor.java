@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Consumer;
 import java.util.logging.Logger;
 
 import org.eclipse.emf.common.notify.Notification;
@@ -54,6 +53,8 @@ public class ArtistDetailsEditor extends ObjectEditorTemplate<Artist> {
    * The media database
    */
   private MediaDb mediaDb;
+  
+  private MediaRegistry mediaRegistry;
   
   /**
    * Factory for creating GUI components.
@@ -129,6 +130,7 @@ public class ArtistDetailsEditor extends ObjectEditorTemplate<Artist> {
     
     mediaDb = mediaDbService.getMediaDbResource().getEObject();
     
+    mediaRegistry = MediaRegistry.getInstance();
     componentFactory = customization.getComponentFactoryFx();
 
   }
@@ -182,7 +184,7 @@ public class ArtistDetailsEditor extends ObjectEditorTemplate<Artist> {
 
         }, null, 400, true, "Select an optional container artist");
     photoObjectControl = componentFactory.createObjectControlImageFile(true);
-    photoObjectControl.setInitialDirectory(new File(MediaRegistry.musicDataDirectory + "\\ArtistInformation\\Pictures"));
+    photoObjectControl.setInitialDirectory(new File(mediaRegistry.getMusicDataDirectory() + "\\ArtistInformation\\Pictures"));
     styleObjectControl = componentFactory.createObjectControlString(null, 300, true, "Free text describing the music style of the artist");
     myCommentsControl = componentFactory.createObjectControlMultiLineString(null, true);
     sampleTrackObjectControl = componentFactory.createObjectControlAutoCompleteTextField(
@@ -255,7 +257,7 @@ public class ArtistDetailsEditor extends ObjectEditorTemplate<Artist> {
     };
     mediaDb.eAdapters().add(eContentAdapter);
     
-    nameObjectControl.addListener((observable) -> updateSampleTrackObjectControl());
+    nameObjectControl.addListener((_) -> updateSampleTrackObjectControl());
     
     // Add the object controls to the {@code objectControlsGroup}
     objectControlsGroup.addObjectControls(nameObjectControl, containerArtistObjectControl, photoObjectControl, styleObjectControl, myCommentsControl, sampleTrackObjectControl);
@@ -426,7 +428,7 @@ public class ArtistDetailsEditor extends ObjectEditorTemplate<Artist> {
     if (photoFile == null) {
       EmfUtil.setFeatureValue(object, MEDIA_DB_PACKAGE.getArtist_Photo(), null);
     } else {
-      String photoFileName = FileUtils.getPathRelativeToFolder(MediaRegistry.musicDataDirectory + "\\ArtistInformation\\Pictures\\", photoFile.getAbsolutePath());
+      String photoFileName = FileUtils.getPathRelativeToFolder(mediaRegistry.getMusicDataDirectory() + "\\ArtistInformation\\Pictures\\", photoFile.getAbsolutePath());
       LOGGER.severe("photoFileName: " + photoFileName);
       EmfUtil.setFeatureValue(object, MEDIA_DB_PACKAGE.getArtist_Photo(), photoFileName);
     }
@@ -465,7 +467,7 @@ public class ArtistDetailsEditor extends ObjectEditorTemplate<Artist> {
     containerArtistObjectControl.setObject(object.getContainerArtist());
     String photoFileName = object.getPhoto();
     if (photoFileName != null) {
-      String photosFolder = MediaRegistry.musicDataDirectory + "\\ArtistInformation\\Pictures";
+      String photosFolder = mediaRegistry.getMusicDataDirectory() + "\\ArtistInformation\\Pictures";
       File file = new File(photosFolder, photoFileName);
       if (file.exists()) {
         LOGGER.severe("OK");

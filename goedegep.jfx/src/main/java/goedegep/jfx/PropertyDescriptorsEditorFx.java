@@ -1,11 +1,14 @@
 package goedegep.jfx;
 
 import java.io.IOException;
+import java.net.URI;
 import java.util.logging.Logger;
 
 import org.eclipse.emf.ecore.util.EContentAdapter;
 
 import goedegep.jfx.eobjecttreeview.EObjectTreeView;
+import goedegep.properties.model.PropertiesFactory;
+import goedegep.properties.model.PropertiesPackage;
 import goedegep.properties.model.PropertyDescriptorGroup;
 import goedegep.util.emf.EMFResource;
 import javafx.event.ActionEvent;
@@ -26,11 +29,17 @@ public class PropertyDescriptorsEditorFx extends JfxStage {
   private ComponentFactoryFx componentFactory;
   private EObjectTreeView treeView = null;
   private boolean isDirty = false;
-      
-  public PropertyDescriptorsEditorFx(CustomizationFx customization, EMFResource<PropertyDescriptorGroup> propertyDescriptorsResource) {
+  
+  public PropertyDescriptorsEditorFx(CustomizationFx customization, URI propertyDescriptorsFileURI) {
     super(customization, WINDOW_TITLE);
     
-    this.propertyDescriptorsResource = propertyDescriptorsResource;
+    propertyDescriptorsResource = new EMFResource<PropertyDescriptorGroup>(PropertiesPackage.eINSTANCE, () -> PropertiesFactory.eINSTANCE.createPropertyDescriptorGroup(), ".xmi");
+    try {
+      propertyDescriptorsResource.load(propertyDescriptorsFileURI);
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+        
     propertyDescriptorGroup = propertyDescriptorsResource.getEObject();
     EContentAdapter eContentAdapter = new EContentAdapter() {
 

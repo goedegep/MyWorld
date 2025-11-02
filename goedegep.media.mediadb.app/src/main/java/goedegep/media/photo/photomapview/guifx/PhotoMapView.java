@@ -39,7 +39,6 @@ import com.google.common.geometry.S2PointIndex;
 
 import goedegep.geo.WGS84BoundingBox;
 import goedegep.geo.WGS84Coordinates;
-import goedegep.jfx.ComponentFactoryFx;
 import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.JfxStage;
 import goedegep.media.common.MediaRegistry;
@@ -124,11 +123,7 @@ public class PhotoMapView extends JfxStage {
    */
   private final static int MAX_NUMBER_OF_PHOTO_FOLDERS = 1000;
   
-  /**
-   * GUI customization
-   */
-  private CustomizationFx customization;
-  private ComponentFactoryFx componentFactory;
+  private MediaRegistry mediaRegistry;
   
   /**
    * Main photos folder.
@@ -245,20 +240,19 @@ public class PhotoMapView extends JfxStage {
   public PhotoMapView(CustomizationFx customization) {
     super(customization, WINDOW_TITLE);
 
-    this.customization = customization;
-    componentFactory = customization.getComponentFactoryFx();
+    mediaRegistry = MediaRegistry.getInstance();
     
     PhotoListCell.setCustomization(customization);
     PhotoMetaDataEditor.setModifiedPhotos(modifiedPhotos);
     
 //    photosFolder = MediaRegistry.photosFolder + "\\Vakanties\\2022-10-24 Hotel Koener - Clervaux";
-    mainPhotosFolder = MediaRegistry.photosFolder;
-    ignoreFolderNames = MediaRegistry.ignoreFolderNames;
+    mainPhotosFolder = mediaRegistry.getPhotosFolder();
+    ignoreFolderNames = mediaRegistry.getIgnoreFolderNames();
     
     createGUI();
     
     // If an item is selected in the list view, this photo will also be selected in the map view and we fly to this photo.
-    listView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+    listView.getSelectionModel().selectedItemProperty().addListener((_, _, newValue) -> {
       photoMapLayer.setSelectedPhoto(this, newValue);
       if (newValue.getCoordinates() != null) {
         MapPoint mapPoint = new MapPoint(newValue.getCoordinates().getLatitude(), newValue.getCoordinates().getLongitude());
@@ -270,7 +264,7 @@ public class PhotoMapView extends JfxStage {
     statusPanel.updateText("Nothing to report for now");
     
     // Update the dirty indication in the window title when photos are changed.
-    modifiedPhotos.addListener((javafx.collections.SetChangeListener.Change<? extends IPhotoMetaData> change) -> updateWindowTitle());
+    modifiedPhotos.addListener((javafx.collections.SetChangeListener.Change<? extends IPhotoMetaData> _) -> updateWindowTitle());
     
     /*
      *  React to changes in the photoInfosPerFolder map
@@ -578,8 +572,8 @@ public class PhotoMapView extends JfxStage {
 
     // Handle results - new information for a folder is added to the ....
     gatherPhotoMetaDataTask.valueProperty().addListener(
-        (ObservableValue<? extends Tuplet<String, List<PhotoMetaData>>> observable,
-            Tuplet<String, List<PhotoMetaData>> oldValue, Tuplet<String, List<PhotoMetaData>> newValue) -> {
+        (ObservableValue<? extends Tuplet<String, List<PhotoMetaData>>> _,
+            Tuplet<String, List<PhotoMetaData>> _, Tuplet<String, List<PhotoMetaData>> newValue) -> {
               if (newValue != null) {
                 LOGGER.info("Info obtained for folder: " + newValue);
                 List<IPhotoInfo> photoInfos = new ArrayList<>();
@@ -598,10 +592,10 @@ public class PhotoMapView extends JfxStage {
             });
 
     // Handle messages - messages are shown in the message part of the statusPanel
-    gatherPhotoMetaDataTask.messageProperty().addListener((observable, oldValue , newValue) -> statusPanel.updateText(newValue));
+    gatherPhotoMetaDataTask.messageProperty().addListener((_, _ , newValue) -> statusPanel.updateText(newValue));
 
     // Handle progress reports - progress is shown in the progress bar of the statusPanel
-    gatherPhotoMetaDataTask.progressProperty().addListener((observable, oldValue , newValue) -> statusPanel.updateProgress(newValue.doubleValue()));
+    gatherPhotoMetaDataTask.progressProperty().addListener((_, _ , newValue) -> statusPanel.updateProgress(newValue.doubleValue()));
 
     Thread gatherPhotoMetaDataThread = new Thread(gatherPhotoMetaDataTask);
     gatherPhotoMetaDataThread.setDaemon(true);
@@ -643,8 +637,8 @@ public class PhotoMapView extends JfxStage {
     
     // Handle results - new information for a folder is added to the photoInfosPerFolder map.
     gatherPhotoInfoTask.valueProperty().addListener(
-        (ObservableValue<? extends Tuplet<String, List<IPhotoMetaDataWithImage>>> observable,
-        Tuplet<String, List<IPhotoMetaDataWithImage>> oldValue, Tuplet<String, List<IPhotoMetaDataWithImage>> newValue) -> {
+        (ObservableValue<? extends Tuplet<String, List<IPhotoMetaDataWithImage>>> _,
+        Tuplet<String, List<IPhotoMetaDataWithImage>> _, Tuplet<String, List<IPhotoMetaDataWithImage>> newValue) -> {
       LOGGER.info("Info obtained for folder: " + newValue.getObject1());
       List<IPhotoInfo> photoInfos = new ArrayList<>();
       for (IPhotoMetaDataWithImage iPhotoMetaDataWithImage: newValue.getObject2()) {
@@ -657,10 +651,10 @@ public class PhotoMapView extends JfxStage {
     });
     
     // Handle messages - messages are shown in the message part of the statusPanel
-    gatherPhotoInfoTask.messageProperty().addListener((observable, oldValue , newValue) -> statusPanel.updateText(newValue));
+    gatherPhotoInfoTask.messageProperty().addListener((_, _ , newValue) -> statusPanel.updateText(newValue));
     
     // Handle progress reports - progress is shown in the progress bar of the statusPanel
-    gatherPhotoInfoTask.progressProperty().addListener((observable, oldValue , newValue) -> statusPanel.updateProgress(newValue.doubleValue()));
+    gatherPhotoInfoTask.progressProperty().addListener((_, _ , newValue) -> statusPanel.updateProgress(newValue.doubleValue()));
 
     gatherPhotoInfoThread = new Thread(gatherPhotoInfoTask);
     gatherPhotoInfoThread.setDaemon(true);
@@ -703,7 +697,7 @@ public class PhotoMapView extends JfxStage {
     listView = new ListView<>();
     listView.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
     
-    listView.setCellFactory(listView -> new PhotoListCell());
+    listView.setCellFactory(_ -> new PhotoListCell());
     
     listView.setMinHeight(600.0);
     listView.setMinWidth(500.0);
@@ -798,18 +792,18 @@ public class PhotoMapView extends JfxStage {
     
     // File: Open photo folder
     menuItem = componentFactory.createMenuItem("Open Photo folder ...");
-    menuItem.setOnAction(event -> handleOpenFolderRequest());    
+    menuItem.setOnAction(_ -> handleOpenFolderRequest());    
     guiNodesToBeDisabled.add(menuItem);
     menu.getItems().add(menuItem);
     
     // File: Open photo show file
     menuItem = componentFactory.createMenuItem("Open Photo Show Specification ...");
-    menuItem.setOnAction(event -> handleOpenPhotoShowSpecificationRequest());
+    menuItem.setOnAction(_ -> handleOpenPhotoShowSpecificationRequest());
     menu.getItems().add(menuItem);
     
     // File: Save modified photos
     menuItem = componentFactory.createMenuItem("Save modified photos");
-    menuItem.setOnAction(event -> showModifiedPhotosDialog());
+    menuItem.setOnAction(_ -> showModifiedPhotosDialog());
     menu.getItems().add(menuItem);
     
 //    // File: Save photo information
@@ -819,7 +813,7 @@ public class PhotoMapView extends JfxStage {
     
     // File: Create/update index
     menuItem = componentFactory.createMenuItem("Create/update index");
-    menuItem.setOnAction(event -> createOrUpdateIndex());
+    menuItem.setOnAction(_ -> createOrUpdateIndex());
     menu.getItems().add(menuItem);
         
     menuBar.getMenus().add(menu);
@@ -831,7 +825,7 @@ public class PhotoMapView extends JfxStage {
     CheckMenuItem editModeMenuItem = componentFactory.createCheckMenuItem("Edit mode (no index used)");
     editModeMenuItem.setSelected(false);
     
-    editModeMenuItem.setOnAction(event -> handleNewEditMode());
+    editModeMenuItem.setOnAction(_ -> handleNewEditMode());
     menu.getItems().add(editModeMenuItem);
     
     // Separator
@@ -842,12 +836,12 @@ public class PhotoMapView extends JfxStage {
     // Settings: Show selected photos / Show all photos in the index
     ToggleGroup toggleGroup = new ToggleGroup();
     radioMenuItem = componentFactory.createRadioMenuItem("Show selected photos");
-    radioMenuItem.setOnAction(event -> showIndexPhotos(false));
+    radioMenuItem.setOnAction(_ -> showIndexPhotos(false));
     radioMenuItem.setSelected(true);
     radioMenuItem.setToggleGroup(toggleGroup);
     menu.getItems().add(radioMenuItem);
     radioMenuItem = componentFactory.createRadioMenuItem("Show all photos in the index");
-    radioMenuItem.setOnAction(event -> showIndexPhotos(true));
+    radioMenuItem.setOnAction(_ -> showIndexPhotos(true));
     radioMenuItem.setToggleGroup(toggleGroup);
     menu.getItems().add(radioMenuItem);
     

@@ -6,6 +6,8 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.nio.file.FileSystem;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -69,6 +71,7 @@ import goedegep.util.emf.EmfUtil;
 import goedegep.util.file.FileUtils;
 import goedegep.util.i18n.TranslationFormatter;
 import goedegep.util.img.ImageUtils;
+import goedegep.vacations.app.TravelsService;
 import goedegep.vacations.app.logic.Item;
 import goedegep.vacations.app.logic.ItemGpx;
 import goedegep.vacations.app.logic.MapImageType;
@@ -180,6 +183,8 @@ public class VacationsWindow extends JfxStage {
   private static final double PICTURE_ZOOM_LEVEL = 12.0;     // For the time being hard coded zoom level to show a picture. Determined with trial and error.
   private static final double HOME_ZOOM_LEVEL = 8.0;         // The zoom level for showing the home location.
   
+  private TravelsService travelsService;
+  private VacationsRegistry vacationsRegistry;
   private VacationsAppResourcesFx appResources;
   private TranslationFormatter translationFormatter = new TranslationFormatter(TRANSLATIONS);
   private EMFResource<Vacations> vacationsResource = null;
@@ -221,13 +226,15 @@ public class VacationsWindow extends JfxStage {
    * 
    * @param customization the GUI customization.
    */
-  public VacationsWindow(CustomizationFx customization) {
+  public VacationsWindow(CustomizationFx customization, TravelsService travelsService) {
     super(customization, null);
     LOGGER.info("=>");
     
+    this.travelsService = travelsService;
+    vacationsRegistry = VacationsRegistry.getInstance();
     appResources = (VacationsAppResourcesFx) getResources();
     
-    if (VacationsRegistry.vacationsFileName == null) {
+    if (vacationsRegistry.getVacationsFileName() == null) {
       statusLabel.setText(TRANSLATIONS.getString("VacationsWindow.statusLabel.noVacationsFileNameMsg"));
       Alert alert = componentFactory.createErrorDialog(
           TRANSLATIONS.getString("VacationsWindow.alertNoVacationsFileName.header"),
@@ -245,7 +252,7 @@ public class VacationsWindow extends JfxStage {
       return;
     }
     
-    if (VacationsRegistry.vacationChecklistFileName == null) {
+    if (vacationsRegistry.getVacationChecklistFileName() == null) {
       statusLabel.setText(TRANSLATIONS.getString("VacationsWindow.statusLabel.noVacationChecklistFileNameMsg"));
       Alert alert = componentFactory.createErrorDialog(
           TRANSLATIONS.getString("VacationsWindow.alertNoVacationChecklistFileName.header"),
@@ -279,19 +286,19 @@ public class VacationsWindow extends JfxStage {
         true);
     
     try {
-      vacations = vacationsResource.load(VacationsRegistry.vacationsFileName);
+      vacations = vacationsResource.load(vacationsRegistry.getVacationsFileName());
     } catch (IOException e) {
       LOGGER.severe("File not found: " + e.getMessage());
       Alert alert = componentFactory.createYesNoConfirmationDialog(
           null,
-          translationFormatter.formatText("VacationsWindow.alertVacationsFileNotFound.header", VacationsRegistry.vacationsFileName),
+          translationFormatter.formatText("VacationsWindow.alertVacationsFileNotFound.header", vacationsRegistry.getVacationsFileName()),
           TRANSLATIONS.getString("VacationsWindow.alertVacationsFileNotFound.content"));
       alert.showAndWait().ifPresent(response -> {
         if (response == ButtonType.YES) {
           LOGGER.severe("yes, create file");
           vacations = vacationsResource.newEObject();
           try {
-            vacationsResource.save(VacationsRegistry.vacationsFileName);
+            vacationsResource.save(vacationsRegistry.getVacationsFileName());
           } catch (IOException e1) {
             e1.printStackTrace();
           }
@@ -308,13 +315,13 @@ public class VacationsWindow extends JfxStage {
         true);
     
     try {
-      vacationChecklistResource.load(VacationsRegistry.vacationChecklistFileName);
-      LOGGER.info(VacationsRegistry.vacationChecklistFileName);
+      vacationChecklistResource.load(vacationsRegistry.getVacationChecklistFileName());
+      LOGGER.info(vacationsRegistry.getVacationChecklistFileName());
     } catch (IOException e) {
       LOGGER.severe("File not found: " + e.getMessage());
       Alert alert = componentFactory.createYesNoConfirmationDialog(
           null,
-          translationFormatter.formatText("VacationsWindow.alertVacationChecklistFileNotFound.header", VacationsRegistry.vacationChecklistFileName),
+          translationFormatter.formatText("VacationsWindow.alertVacationChecklistFileNotFound.header", vacationsRegistry.getVacationChecklistFileName()),
           TRANSLATIONS.getString("VacationsWindow.alertVacationChecklistFileNotFound.content"));
       alert.showAndWait().ifPresent(response -> {
         if (response == ButtonType.YES) {
@@ -325,7 +332,7 @@ public class VacationsWindow extends JfxStage {
           VacationChecklistLabelsList vacationChecklistLabelsList = VacationChecklistFactory.eINSTANCE.createVacationChecklistLabelsList();
           vacationChecklist.setVacationChecklistLabelsList(vacationChecklistLabelsList);
           try {
-            vacationChecklistResource.save(VacationsRegistry.vacationChecklistFileName);
+            vacationChecklistResource.save(vacationsRegistry.getVacationChecklistFileName());
           } catch (IOException e1) {
             e1.printStackTrace();
           }
@@ -388,16 +395,16 @@ public class VacationsWindow extends JfxStage {
    * If the vacations file doesn't exist and/or the vacations folder doesn't exist ask the user whether they should be created, or to change the user settings.
    */
   private void editUserSettingsIfNeeded() {
-    File vacationsFile = new File(VacationsRegistry.vacationsFileName);
-    File vacationsFolder = new File(VacationsRegistry.vacationsFolderName);
+    File vacationsFile = new File(vacationsRegistry.getVacationsFileName());
+    File vacationsFolder = new File(vacationsRegistry.getVacationsFolderName());
     if (!vacationsFile.exists()  ||  !vacationsFolder.exists()) {
       String headerText = null;
       if (!vacationsFile.exists()  &&  !vacationsFolder.exists()) {
-        headerText = "The vacations file '" + VacationsRegistry.vacationsFileName + "' and the vacations folder '" + VacationsRegistry.vacationsFolderName + "' both don't exist";
+        headerText = "The vacations file '" + vacationsRegistry.getVacationsFileName() + "' and the vacations folder '" + vacationsRegistry.getVacationsFolderName() + "' both don't exist";
       } else if (!vacationsFile.exists()) {
-        headerText = "The vacations file '" + VacationsRegistry.vacationsFileName + "' doesn't exist";
+        headerText = "The vacations file '" + vacationsRegistry.getVacationsFileName() + "' doesn't exist";
       } else {
-        headerText = "The vacations folder '" + VacationsRegistry.vacationsFolderName + "' doesn't exist";
+        headerText = "The vacations folder '" + vacationsRegistry.getVacationsFolderName() + "' doesn't exist";
       }
       Optional<UserChoice> optionalUserChoice = componentFactory.createChoiceDialog("How to continue?", headerText, "what to do?", UserChoice.SHOW_SETTINGS_EDITOR, UserChoice.values()).showAndWait();
       if (optionalUserChoice.isPresent()) {
@@ -421,7 +428,7 @@ public class VacationsWindow extends JfxStage {
         }
       }
     }
-    File userPropertiesFile = new File(VacationsRegistry.customPropertiesFile);
+    File userPropertiesFile = new File(vacationsRegistry.getUserPropertiesFileName());
     LOGGER.info("userPropertiesFile: " + userPropertiesFile.getAbsolutePath());
     if (!userPropertiesFile.exists()) {
       EMFResource<PropertyGroup> propertiesResource = new EMFResource<>(PropertiesPackage.eINSTANCE, () -> PropertiesFactory.eINSTANCE.createPropertyGroup(), ".xmi");
@@ -796,9 +803,9 @@ public class VacationsWindow extends JfxStage {
     // File: Edit Properties
     MenuUtil.addMenuItem(menu, "Edit Properties", _ -> showPropertiesEditor());
     
-    if (VacationsRegistry.developmentMode) {
+    if (vacationsRegistry.isDevelopmentMode()) {
       // File: Edit Property Descriptors
-      MenuUtil.addMenuItem(menu, "Edit Property Descriptors", _ -> showPropertyDescriptorsEditor());
+      MenuUtil.addMenuItem(menu, "Edit Property Descriptors", _ -> travelsService.showPropertyDescriptorsEditor());
       
       // File: Map Snapshot popup
       MenuUtil.addMenuItem(menu, "Map Snapshot popup", _ -> showMapSnapshotPopup());
@@ -900,6 +907,13 @@ public class VacationsWindow extends JfxStage {
 
     // Help menu
     menu = new Menu("Help");
+
+    // Help: Online Manual
+    MenuUtil.addMenuItem(menu, "Online Manual", new EventHandler<ActionEvent>()  {
+      public void handle(ActionEvent e) {
+        showOnlineManual();
+      }
+    });
 
     // Help: About
     MenuUtil.addMenuItem(menu, "About", _ -> showHelpAboutDialog());
@@ -2260,8 +2274,8 @@ public class VacationsWindow extends JfxStage {
    */
   private void openTravelsFile() {
     FileChooser fileChooser = componentFactory.createFileChooser("Open a travels file");
-    if (VacationsRegistry.vacationsFolderName != null) {
-      File travelsFolder = new File(VacationsRegistry.vacationsFolderName);
+    if (vacationsRegistry.getVacationsFolderName() != null) {
+      File travelsFolder = new File(vacationsRegistry.getVacationsFolderName());
       fileChooser.setInitialDirectory(travelsFolder);
     }
     File travelsFile = fileChooser.showOpenDialog(locationSearchWindow);
@@ -2287,7 +2301,7 @@ public class VacationsWindow extends JfxStage {
     if (vacationsResource != null) {
       try {
         vacationsResource.save();
-        statusLabel.setText("Vacations saved to '" + vacationsResource.getFileName() + "'");
+        statusLabel.setText("Vacations saved to '" + vacationsResource.getURI().toFileString() + "'");
       } catch (IOException e) {        
         componentFactory.createErrorDialog(
             "Saving the vacations has failed.",
@@ -2419,7 +2433,7 @@ public class VacationsWindow extends JfxStage {
    */
   private void importVacations() {
     VacationsImporter vacationsImporter = new VacationsImporter(customization, vacations);
-    vacationsImporter.importVacations(VacationsRegistry.vacationsFolderName, VacationsRegistry.vacationPicturesFolderName);
+    vacationsImporter.importVacations(vacationsRegistry.getVacationsFolderName(), vacationsRegistry.getVacationPicturesFolderName());
     treeView.setEObject(vacations);  // trick to update the treeView
   }
   
@@ -2724,19 +2738,32 @@ public class VacationsWindow extends JfxStage {
   }
 
   
-  private void showPropertyDescriptorsEditor() {
-    new PropertyDescriptorsEditorFx(customization, VacationsRegistry.propertyDescriptorsResource);
-  }
-  
   /**
    * Show the User Properties editor.
    */
   private void showPropertiesEditor() {
+    URI uri = vacationsRegistry.getPropertyDescriptorsFileURI();
     String userHomeDir = System.getProperty("user.home");
-    Path customPropertiesFilePath = Path.of(userHomeDir, "MyWorld", VacationsRegistry.customPropertiesFile);
+//    Path propertyDescriptorsFilePath = Path.of("resources", VacationsRegistry.propertyDescriptorsResource);
+    Path userPropertiesFilePath = Path.of(userHomeDir, "MyWorld", vacationsRegistry.getUserPropertiesFileName());
     
     new PropertiesEditor("Vacation properties", customization, getBundle(VacationsWindow.class, "VacationsPropertyDescriptorsResource"),
-        VacationsRegistry.propertyDescriptorsResource, customPropertiesFilePath.toString());
+        uri, userPropertiesFilePath.toString());
+  }
+  
+  /**
+   * Open a browser with the online manual.
+   */
+  private void showOnlineManual() {
+    if (Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE)) {
+      try {
+        Desktop.getDesktop().browse(new URI("https://petersdigitallife.nl/myworld-user-manual/vacations-user-manual/"));
+      } catch (IOException e) {
+        e.printStackTrace();
+      } catch (URISyntaxException e) {
+        e.printStackTrace();
+      }
+    }
   }
 
   /**
@@ -2744,13 +2771,13 @@ public class VacationsWindow extends JfxStage {
    */
   private void showHelpAboutDialog() {
     componentFactory.createApplicationInformationDialog(
-        "About " + VacationsRegistry.applicationName,
+        "About " + vacationsRegistry.getApplicationName(),
         appResources.getApplicationImage(ImageSize.SIZE_3),
         null, 
-        VacationsRegistry.shortProductInfo + NEWLINE +
-        "Version: " + VacationsRegistry.version + NEWLINE +
-        VacationsRegistry.copyrightMessage + NEWLINE +
-        "Author: " + VacationsRegistry.author)
+        vacationsRegistry.getShortProductInfo() + NEWLINE +
+        "Version: " + vacationsRegistry.getVersion() + NEWLINE +
+        vacationsRegistry.getCopyrightMessage() + NEWLINE +
+        "Author: " + vacationsRegistry.getAuthor())
         .showAndWait();
   }
   
@@ -2962,7 +2989,7 @@ public class VacationsWindow extends JfxStage {
       fileName = FileUtils.createBackupFileName("MapImage.jpg");
     }
     File file = new File(vacationFolderName, fileName);
-    String filenameRelativeToVacationsFolder = FileUtils.getPathRelativeToFolder(VacationsRegistry.vacationsFolderName, file.getAbsolutePath());
+    String filenameRelativeToVacationsFolder = FileUtils.getPathRelativeToFolder(vacationsRegistry.getVacationsFolderName(), file.getAbsolutePath());
     mapImage.setFileName(filenameRelativeToVacationsFolder);
     
     MapImageViewGenerator mapImageViewCreator = new MapImageViewGenerator(customization, this, (EObject) value, mapImage, mapImageType);
@@ -3061,7 +3088,7 @@ public class VacationsWindow extends JfxStage {
   }
   
   private void writeMapViewToFile(MapImage mapImage, MapView mapView) {
-    Path mapImageFilePath = Path.of(VacationsRegistry.vacationsFolderName, mapImage.getFileName());
+    Path mapImageFilePath = Path.of(vacationsRegistry.getVacationsFolderName(), mapImage.getFileName());
     try {
       Files.deleteIfExists(mapImageFilePath);
       

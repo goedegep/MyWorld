@@ -5,4 +5,5 @@ module goedegep.media.common {
   requires goedegep.jfx;
   requires goedegep.properties.app;
   requires goedegep.model.properties;
+  requires goedegep.myworld.common;
 }

@@ -55,6 +55,11 @@ public class EventsWindow extends JfxStage {
   private EventsService eventsService;
   
   /**
+   * The events registry.
+   */
+  private EventsRegistry eventsRegistry;
+  
+  /**
    * The resources for this application.
    */
   private EventsAppResources appResources;
@@ -93,6 +98,7 @@ public class EventsWindow extends JfxStage {
     LOGGER.info("=>");
     
     this.eventsService = eventsService;
+    eventsRegistry = EventsRegistry.getInstance();
     appResources = (EventsAppResources) getResources();
         
     createGUI();
@@ -107,7 +113,7 @@ public class EventsWindow extends JfxStage {
     
     updateTitle();
     
-    eventsResource.dirtyProperty().addListener((observable, oldValue, newValue) -> updateTitle());
+    eventsResource.dirtyProperty().addListener((_, _, _) -> updateTitle());
     
     show();
     
@@ -158,21 +164,21 @@ public class EventsWindow extends JfxStage {
 
     // File: Save events
     menuItem = componentFactory.createMenuItem("Save events");
-    menuItem.setOnAction(event -> saveEvents());
+    menuItem.setOnAction(_ -> saveEvents());
     menuItem.setAccelerator(new KeyCodeCombination(KeyCode.S, KeyCombination.CONTROL_DOWN));
     menu.getItems().add(menuItem);
 
     // File: Export events as PDF
     menuItem = componentFactory.createMenuItem("Export events as PDF");
-    menuItem.setOnAction(event -> exportEventsToPdf());
+    menuItem.setOnAction(_ -> exportEventsToPdf());
     menu.getItems().add(menuItem);
     
     // File: Edit Properties
-    MenuUtil.addMenuItem(menu, "Edit Properties", event -> showPropertiesEditor());
+    MenuUtil.addMenuItem(menu, "Edit Properties", _ -> showPropertiesEditor());
     
-    if (EventsRegistry.developmentMode) {
+    if (eventsRegistry.isDevelopmentMode()) {
       // File: Edit Property Descriptors
-      MenuUtil.addMenuItem(menu, "Edit Property Descriptors", event -> showPropertyDescriptorsEditor());
+      MenuUtil.addMenuItem(menu, "Edit Property Descriptors", _ -> showPropertyDescriptorsEditor());
     }
     
     menuBar.getMenus().add(menu);
@@ -235,7 +241,7 @@ public class EventsWindow extends JfxStage {
     EventsToHtmlConverter eventsToHtmlConverter = new EventsToHtmlConverter();
     String eventsHtmlDocument = eventsToHtmlConverter.eventsToHtml(events);
     
-    String eventsFolder = EventsRegistry.eventsFolderName;
+    String eventsFolder = eventsRegistry.getEventsFolderName();
 
     Path pdfFilePath = Paths.get(eventsFolder, "Events.pdf");
     try(OutputStream os = Files.newOutputStream(pdfFilePath)) {
@@ -258,7 +264,7 @@ public class EventsWindow extends JfxStage {
    * Open an editor to edit the property descriptors (in development mode only).
    */
   private void showPropertyDescriptorsEditor() {
-    new PropertyDescriptorsEditorFx(customization, EventsRegistry.propertyDescriptorsResource);
+    new PropertyDescriptorsEditorFx(customization, eventsRegistry.getPropertyDescriptorsFileURI());
   }
   
   /**
@@ -266,7 +272,7 @@ public class EventsWindow extends JfxStage {
    */
   private void showPropertiesEditor() {
     new PropertiesEditor("Events properties", customization, null,
-        EventsRegistry.propertyDescriptorsResource, EventsRegistry.customPropertiesFile);
+        eventsRegistry.getPropertyDescriptorsFileURI(), eventsRegistry.getUserPropertiesFileName());
   }
 
   /**
@@ -277,10 +283,11 @@ public class EventsWindow extends JfxStage {
         "About Events",
         appResources.getApplicationImage(ImageSize.SIZE_3),
         null, 
-        EventsRegistry.shortProductInfo + NEWLINE +
-        "Version: " + EventsRegistry.version + NEWLINE +
-        EventsRegistry.copyrightMessage + NEWLINE +
-        "Author: " + EventsRegistry.AUTHOR)
+        eventsRegistry.getShortProductInfo() + NEWLINE +
+        "Version: " + eventsRegistry.getVersion() + NEWLINE +
+        eventsRegistry.getCopyrightMessage() + NEWLINE +
+        "Author: " + eventsRegistry.getAuthor()
+        )
         .showAndWait();
   }
 

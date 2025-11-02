@@ -3,20 +3,18 @@ package goedegep.rolodex.app;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URL;
 import java.util.Properties;
 
 import goedegep.configuration.model.Look;
 import goedegep.jfx.AppResourcesFx;
 import goedegep.jfx.JfxApplication;
+import goedegep.myworld.common.Registry;
 import goedegep.myworld.common.Service;
-import goedegep.properties.app.PropertiesHandler;
 import goedegep.rolodex.app.guifx.AdminResourcesFx;
 import goedegep.rolodex.app.guifx.RolodexMenuWindow;
 import goedegep.rolodex.model.Rolodex;
 import goedegep.rolodex.model.RolodexFactory;
 import goedegep.rolodex.model.RolodexPackage;
-import goedegep.util.RunningInEclipse;
 import goedegep.util.emf.EMFResource;
 import javafx.scene.paint.Color;
 
@@ -32,6 +30,11 @@ public class RolodexService extends Service {
    * The singleton instance of the RolodexService class.
    */
   private static RolodexService instance = null;
+  
+  private RolodexRegistry rolodexRegistry;
+  private EMFResource<Rolodex> rolodexResource = null;
+  private Rolodex rolodex = null;
+
 
   /**
    * Get the singleton instance of the RolodexService class.
@@ -42,6 +45,18 @@ public class RolodexService extends Service {
     if (instance == null) {
       instance = new RolodexService();
       instance.initialize();
+
+      // Read the Rolodex file.
+      instance.rolodexResource = new EMFResource<>(
+          RolodexPackage.eINSTANCE,
+          () -> RolodexFactory.eINSTANCE.createRolodex(), ".xmi");
+      File rolodexFile = new File(instance.rolodexRegistry.getRolodexFile());
+      try {
+        instance.rolodexResource.load(rolodexFile.getAbsolutePath());
+        instance.rolodex = instance.rolodexResource.getEObject();
+      } catch (IOException e) {
+        e.printStackTrace();
+      }
     }
     
     return instance;
@@ -51,41 +66,9 @@ public class RolodexService extends Service {
    * Show the main menu window.
    */
   public void showMenuWindow() {
-    RolodexMenuWindow menuWindow = new RolodexMenuWindow(customization);
+    RolodexMenuWindow menuWindow = new RolodexMenuWindow(customization, this);
     menuWindow.show();
   }
-  
-  /**
-   * Get the Rolodex.
-   * 
-   * @return the Rolodex
-   */
-  public Rolodex getRolodex() {
-    return RolodexRegistry.rolodexResource.getEObject();
-  }
-  
-  /**
-   * Private constructor to ensure that the application is a singleton.
-   */
-  private RolodexService() {
-    
-    // If we're running within Eclipse, we set development mode to true. The application can use this information to add functionality which is for development only.
-    if (RunningInEclipse.runningInEclipse()) {
-      RolodexRegistry.developmentMode = true;
-    }
-
-    try {
-      // Read the properties, which are stored in the registry.
-      URL url = getClass().getResource(RolodexRegistry.propertyDescriptorsFile);
-      PropertiesHandler.handleProperties(url, null);
-
-    } catch (IOException e) {
-      JfxApplication.reportException(null, e);
-    }
-
-    getRolodexResource();
-  }
-
 
   /**
    * Get the Rolodex resource.
@@ -94,27 +77,26 @@ public class RolodexService extends Service {
    * 
    * @return the existing or newly created RolodexRegistry.rolodexResource
    */
-  private void getRolodexResource() {
-    if (RolodexRegistry.rolodexResource == null) {
-      try {
-        RolodexRegistry.rolodexResource = new EMFResource<>(
-            RolodexPackage.eINSTANCE,
-            () -> RolodexFactory.eINSTANCE.createRolodex(), ".xmi");
-        //        File rolodexFile = new File(RolodexRegistry.dataDirectory, RolodexRegistry.rolodexFile);
-        File rolodexFile = new File(RolodexRegistry.rolodexFile);
-        RolodexRegistry.rolodexResource.load(rolodexFile.getAbsolutePath());
-      } catch (IOException e) {
-        e.printStackTrace();
-        System.exit(1);
-      }
-    }
-
+  public EMFResource<Rolodex> getRolodexResource() {
+    return rolodexResource;
+  }
+  
+  /**
+   * Get the Rolodex.
+   * 
+   * @return the Rolodex
+   */
+  public Rolodex getRolodex() {
+    return rolodex;
+  }
+  
+  /**
+   * Private constructor to ensure that the application is a singleton.
+   */
+  private RolodexService() {
+    rolodexRegistry = RolodexRegistry.getInstance();
   }
 
-  @Override
-  protected void setDevelopmentMode(boolean developmentMode) {
-    RolodexRegistry.developmentMode = developmentMode;
-  }
   
   @Override
   protected void readApplicationProperties() {
@@ -122,8 +104,8 @@ public class RolodexService extends Service {
     try (InputStream in = getClass().getResourceAsStream("RolodexApplication.properties")) {
         props.load(in);
         
-        RolodexRegistry.version = props.getProperty("rolodex.app.version");
-        RolodexRegistry.applicationName = props.getProperty("rolodex.app.name");
+        rolodexRegistry.setVersion(props.getProperty("rolodex.app.version"));
+        rolodexRegistry.setApplicationName(props.getProperty("rolodex.app.name"));
     } catch (Exception e) {
       JfxApplication.reportException(null, e);
       System.exit(1);
@@ -144,5 +126,10 @@ public class RolodexService extends Service {
   @Override
   protected AppResourcesFx getAppResourcesFxClass() {
     return new AdminResourcesFx();
+  }
+  
+  @Override
+  protected Registry getRegistry() {
+    return rolodexRegistry;
   }
 }

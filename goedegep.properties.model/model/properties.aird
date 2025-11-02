@@ -5,7 +5,7 @@
     <semanticResources>properties.genmodel</semanticResources>
     <ownedViews xmi:type="viewpoint:DView" uid="_5ov7EJZrEeeUeaGo571GtA">
       <viewpoint xmi:type="description:Viewpoint" href="platform:/plugin/org.eclipse.emf.ecoretools.design/description/ecore.odesign#//@ownedViewpoints[name='Design']"/>
-      <ownedRepresentationDescriptors xmi:type="viewpoint:DRepresentationDescriptor" uid="_5pkadZZrEeeUeaGo571GtA" name="properties" repPath="#_5pkacJZrEeeUeaGo571GtA" changeId="1754683030039">
+      <ownedRepresentationDescriptors xmi:type="viewpoint:DRepresentationDescriptor" uid="_5pkadZZrEeeUeaGo571GtA" name="properties" repPath="#_5pkacJZrEeeUeaGo571GtA" changeId="1761246354741">
         <description xmi:type="description_1:DiagramDescription" href="platform:/plugin/org.eclipse.emf.ecoretools.design/description/ecore.odesign#//@ownedViewpoints[name='Design']/@ownedRepresentations[name='Entities']"/>
         <target xmi:type="ecore:EPackage" href="properties.ecore#/"/>
       </ownedRepresentationDescriptors>
@@ -92,10 +92,6 @@
             <children xmi:type="notation:Node" xmi:id="_6EGk5pZsEeeUeaGo571GtA" type="3010" element="_6D37YpZsEeeUeaGo571GtA">
               <styles xmi:type="notation:FontStyle" xmi:id="_6EGk55ZsEeeUeaGo571GtA" fontName="Segoe UI" fontHeight="8"/>
               <layoutConstraint xmi:type="notation:Location" xmi:id="_6EGk6JZsEeeUeaGo571GtA"/>
-            </children>
-            <children xmi:type="notation:Node" xmi:id="_6EHL8JZsEeeUeaGo571GtA" type="3010" element="_6D4icZZsEeeUeaGo571GtA">
-              <styles xmi:type="notation:FontStyle" xmi:id="_6EHL8ZZsEeeUeaGo571GtA" fontName="Segoe UI" fontHeight="8" bold="true"/>
-              <layoutConstraint xmi:type="notation:Location" xmi:id="_6EHL8pZsEeeUeaGo571GtA"/>
             </children>
             <styles xmi:type="notation:SortingStyle" xmi:id="_6EC6hZZsEeeUeaGo571GtA"/>
             <styles xmi:type="notation:FilteringStyle" xmi:id="_6EC6hpZsEeeUeaGo571GtA"/>
@@ -337,14 +333,6 @@
         <semanticElements xmi:type="ecore:EAttribute" href="properties.ecore#//PropertyDescriptor/userSettable"/>
         <ownedStyle xmi:type="diagram:BundledImage" uid="_6D4icJZsEeeUeaGo571GtA" labelAlignment="LEFT">
           <description xmi:type="style:BundledImageDescription" href="platform:/plugin/org.eclipse.emf.ecoretools.design/description/ecore.odesign#//@ownedViewpoints[name='Design']/@ownedRepresentations[name='Entities']/@defaultLayer/@containerMappings[name='EC%20EClass']/@subNodeMappings[name='EC%20EAttribute']/@style"/>
-        </ownedStyle>
-        <actualMapping xmi:type="description_1:NodeMapping" href="platform:/plugin/org.eclipse.emf.ecoretools.design/description/ecore.odesign#//@ownedViewpoints[name='Design']/@ownedRepresentations[name='Entities']/@defaultLayer/@containerMappings[name='EC%20EClass']/@subNodeMappings[name='EC%20EAttribute']"/>
-      </ownedElements>
-      <ownedElements xmi:type="diagram:DNodeListElement" uid="_6D4icZZsEeeUeaGo571GtA" name="installInitialValue : EBoolean = false" tooltipText="">
-        <target xmi:type="ecore:EAttribute" href="properties.ecore#//PropertyDescriptor/installInitialValue"/>
-        <semanticElements xmi:type="ecore:EAttribute" href="properties.ecore#//PropertyDescriptor/installInitialValue"/>
-        <ownedStyle xmi:type="diagram:BundledImage" uid="_6D4icpZsEeeUeaGo571GtA" labelAlignment="LEFT" description="_6D1fIJZsEeeUeaGo571GtA">
-          <labelFormat>bold</labelFormat>
         </ownedStyle>
         <actualMapping xmi:type="description_1:NodeMapping" href="platform:/plugin/org.eclipse.emf.ecoretools.design/description/ecore.odesign#//@ownedViewpoints[name='Design']/@ownedRepresentations[name='Entities']/@defaultLayer/@containerMappings[name='EC%20EClass']/@subNodeMappings[name='EC%20EAttribute']"/>
       </ownedElements>

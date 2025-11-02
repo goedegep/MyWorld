@@ -33,6 +33,7 @@ import javafx.scene.layout.VBox;
 public class InvoiceAndPropertyItemPanel extends EditPanelTemplate<InvoiceAndPropertyItem> {
   private static InvAndPropPackage INV_AND_PROP_PACKAGE = InvAndPropPackage.eINSTANCE;
   
+  private InvoicesAndPropertiesRegistry invoicesAndPropertiesRegistry;
   
   /**
    * {@code EditorControl} for the description of the InvoiceAndProperty.
@@ -122,6 +123,7 @@ public class InvoiceAndPropertyItemPanel extends EditPanelTemplate<InvoiceAndPro
   private InvoiceAndPropertyItemPanel(CustomizationFx customization) {
     super(customization, true);
             
+    invoicesAndPropertiesRegistry = InvoicesAndPropertiesRegistry.getInstance();
     value = InvAndPropFactory.eINSTANCE.createInvoiceAndPropertyItem();  // TODO shall there be a createObject() ?
   }
 
@@ -202,7 +204,7 @@ public class InvoiceAndPropertyItemPanel extends EditPanelTemplate<InvoiceAndPro
         .setAddFileReferenceButtonText("Add document")
         .setAddFileReferenceButtonTooltipText("Add a document")
 //        .setInitialFolderSupplier(this::getInitialFolder)
-        .setPrefix(InvoicesAndPropertiesRegistry.propertyRelatedFilesFolder + "/")
+        .setPrefix(invoicesAndPropertiesRegistry.getPropertyRelatedFilesFolder() + "/")
         .build();
     documentsEditPanel.setId("documents");
     
@@ -212,7 +214,7 @@ public class InvoiceAndPropertyItemPanel extends EditPanelTemplate<InvoiceAndPro
         .setAddFileReferenceButtonText("Add picture")
         .setAddFileReferenceButtonTooltipText("Add a picture")
 //        .setInitialFolderSupplier(this::getInitialFolder)
-        .setPrefix(InvoicesAndPropertiesRegistry.propertyRelatedFilesFolder + "/")
+        .setPrefix(invoicesAndPropertiesRegistry.getPropertyRelatedFilesFolder() + "/")
         .build();
     documentsEditPanel.setId("pictures");    
    
@@ -223,7 +225,7 @@ public class InvoiceAndPropertyItemPanel extends EditPanelTemplate<InvoiceAndPro
     selectedPictureImageView.setFitWidth(400);
     selectedPictureImageView.setPreserveRatio(true);
     
-    picturesEditPanel.addObjectSelectionListener((source, fileReference) -> {
+    picturesEditPanel.addObjectSelectionListener((_, fileReference) -> {
       if (fileReference != null  &&  fileReference.getFile() != null) {
         Image image = new Image("file:" + fileReference.getFile());
         selectedPictureImageView.setImage(image);
@@ -344,7 +346,7 @@ public class InvoiceAndPropertyItemPanel extends EditPanelTemplate<InvoiceAndPro
 
   private void makeReferencesRelative(List<FileReference> fileReferences) {
     for (FileReference fileReference: fileReferences) {
-      fileReference.setFile(FileUtils.getPathRelativeToFolder(InvoicesAndPropertiesRegistry.propertyRelatedFilesFolder, fileReference.getFile()));
+      fileReference.setFile(FileUtils.getPathRelativeToFolder(invoicesAndPropertiesRegistry.getPropertyRelatedFilesFolder(), fileReference.getFile()));
     }
     
   }
@@ -416,6 +418,6 @@ public class InvoiceAndPropertyItemPanel extends EditPanelTemplate<InvoiceAndPro
   
   @Override
   protected void installChangeListeners() {
-    addValueAndOrStatusChangeListener((valueChanged, statusChanged) -> updatePaneTitle());
+    addValueAndOrStatusChangeListener((_, _) -> updatePaneTitle());
   }
 }

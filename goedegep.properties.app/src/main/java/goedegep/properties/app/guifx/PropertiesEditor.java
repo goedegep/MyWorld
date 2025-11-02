@@ -2,6 +2,7 @@ package goedegep.properties.app.guifx;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URI;
 import java.util.Objects;
 import java.util.ResourceBundle;
 import java.util.logging.Logger;
@@ -67,7 +68,6 @@ public class PropertiesEditor extends JfxStage {
    */
   private static EClass editablePropertyGroup = null;
   private static EAttribute editablePropertyGroup_name = null;
-  private static EReference editablePropertyGroup_editablePropertyGroups = null;
   private static EReference editablePropertyGroup_editableProperties = null;
   
   /*
@@ -97,35 +97,32 @@ public class PropertiesEditor extends JfxStage {
     createEditablePropertyClasses();
   }
   
-
   /**
-   * Constructor
+   * Constructor for NOT using a resource bundle.
    * <p>
    * This constructor creates and shows the editor.
    * 
    * @param windowTitle the window title
    * @param customization the GUI customization
-   * @param propertyDescriptorsResource an EMFResource for a PropertyDescriptorGroup.
+   * @param propertyDescriptorsURI the URI to the PropertyDescriptors file.
    * @param propertiesFileName name of the Properties file to be edited.
    */
-  public PropertiesEditor(String windowTitle, CustomizationFx customization,
-      EMFResource<PropertyDescriptorGroup> propertyDescriptorsResource, String propertiesFileName) {
-    this(windowTitle, customization, null, propertyDescriptorsResource, propertiesFileName);
+  public PropertiesEditor(String windowTitle, CustomizationFx customization, URI propertyDescriptorsURI, String propertiesFileName) {
+    this(windowTitle, customization, null, propertyDescriptorsURI, propertiesFileName);
   }
-
+  
   /**
-   * Constructor
+   * Constructor for using a resource bundle
    * <p>
    * This constructor creates and shows the editor.
    * 
    * @param windowTitle the window title
    * @param customization the GUI customization
    * @param resourceBundle translations
-   * @param propertyDescriptorsResource an EMFResource for a PropertyDescriptorGroup.
+   * @param propertyDescriptorsURI the URI to the PropertyDescriptors file.
    * @param propertiesFileName name of the Properties file to be edited.
    */
-  public PropertiesEditor(String windowTitle, CustomizationFx customization, ResourceBundle resourceBundle,
-      EMFResource<PropertyDescriptorGroup> propertyDescriptorsResource, String propertiesFileName) {
+  public PropertiesEditor(String windowTitle, CustomizationFx customization, ResourceBundle resourceBundle, URI propertyDescriptorsURI, String propertiesFileName) {
     super(customization, null);  // window title is filled/updated via method updateTitle()
     
     Objects.requireNonNull(propertyDescriptorsResource, "Argument propertyDescriptorsResource may not be null");
@@ -133,7 +130,13 @@ public class PropertiesEditor extends JfxStage {
     
     this.windowTitle = windowTitle;
     this.resourceBundle = resourceBundle;
-    this.propertyDescriptorsResource = propertyDescriptorsResource;
+    
+    propertyDescriptorsResource = new EMFResource<PropertyDescriptorGroup>(PropertiesPackage.eINSTANCE, () -> PropertiesFactory.eINSTANCE.createPropertyDescriptorGroup(), ".xmi");
+    try {
+      propertyDescriptorsResource.load(propertyDescriptorsURI);
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
     
     propertyDescriptorGroup = propertyDescriptorsResource.getEObject();
     
@@ -309,7 +312,7 @@ public class PropertiesEditor extends JfxStage {
    */
   private EObjectTreeItemClassDescriptor createDescriptorForEditablePropertyGroup() {
     EObjectTreeItemClassDescriptor eObjectTreeItemClassDescriptor = new EObjectTreeItemClassDescriptor()
-        .setNodeTextFunction(eObject -> "Group of user changeable properties")
+        .setNodeTextFunction(_ -> "Group of user changeable properties")
         .setExpandOnCreation(true);
     
     EObjectTreeItemAttributeDescriptor eObjectTreeItemAttributeDescriptor;

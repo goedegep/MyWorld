@@ -3,6 +3,7 @@ package goedegep.invandprop.app;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Optional;
 import java.util.Properties;
@@ -18,15 +19,14 @@ import goedegep.invandprop.model.InvoiceAndPropertyItem;
 import goedegep.invandprop.model.InvoicesAndProperties;
 import goedegep.jfx.AppResourcesFx;
 import goedegep.jfx.CustomizationFx;
-import goedegep.jfx.CustomizationsFx;
 import goedegep.jfx.JfxApplication;
+import goedegep.myworld.common.Registry;
 import goedegep.myworld.common.Service;
 import goedegep.properties.app.PropertiesHandler;
 import goedegep.properties.app.guifx.PropertiesEditor;
 import goedegep.types.model.FileReference;
 import goedegep.util.Result;
 import goedegep.util.Result.ResultType;
-import goedegep.util.RunningInEclipse;
 import goedegep.util.datetime.FlexDate;
 import goedegep.util.datetime.FlexDateFormat;
 import goedegep.util.emf.EMFResource;
@@ -34,6 +34,9 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.paint.Color;
 
+/**
+ * The InvoicesAndPropertiesService class is the main class for the Invoices and Properties application.
+ */
 public class InvoicesAndPropertiesService extends Service {
   private static final Logger LOGGER = Logger.getLogger(InvoicesAndPropertiesService.class.getName());
   private static final String NEWLINE = System.getProperty("line.separator");
@@ -43,6 +46,8 @@ public class InvoicesAndPropertiesService extends Service {
    * The singleton instance of the InvoicesAndPropertiesService.
    */
   private static InvoicesAndPropertiesService instance;
+  
+  private InvoicesAndPropertiesRegistry invoicesAndPropertiesRegistry;
   
   /**
    * The resource containing the Invoices and Properties information.
@@ -54,7 +59,6 @@ public class InvoicesAndPropertiesService extends Service {
    */
   private InvoicesAndProperties invoicesAndProperties;
     
-
   /**
    * Get the singleton instance of the InvoicesAndPropertiesService.
    * 
@@ -64,29 +68,31 @@ public class InvoicesAndPropertiesService extends Service {
     if (instance == null) {
       instance = new InvoicesAndPropertiesService();
       instance.initialize();
+      instance.invoicesAndPropertiesRegistry = InvoicesAndPropertiesRegistry.getInstance();
     }
     return instance;
   }
   
+  /**
+   * Show the Invoices and Properties main window.
+   */
   public void showInvoicesAndPropertiesWindow() {
     InvoicesAndPropertiesWindow invoicesAndPropertiesWindow = new InvoicesAndPropertiesWindow(customization, this);
     invoicesAndPropertiesWindow.show();
   }
 
+  /**
+   * Private constructor to enforce singleton pattern.
+   */
   private InvoicesAndPropertiesService() {
     
-    // If we're running within Eclipse, we set development mode to true. The application can use this information to add functionality which is for development only.
-    if (RunningInEclipse.runningInEclipse()) {
-      InvoicesAndPropertiesRegistry.developmentMode = true;
-    }
     try {
       // Read the properties, which are stored in the registry.
-      URL url = getClass().getResource(InvoicesAndPropertiesRegistry.propertyDescriptorsFile);
-      PropertiesHandler.handleProperties(url, null);
-    } catch (IOException e) {
+      URL url = getClass().getResource(invoicesAndPropertiesRegistry.getPropertyDescriptorsFileName());
+      PropertiesHandler.handleProperties(url.toURI());
+    } catch (IOException | URISyntaxException e) {
       JfxApplication.reportException(null, e);
     }
-    
     
     if (!checkRegistry()) {
       return;
@@ -106,16 +112,6 @@ public class InvoicesAndPropertiesService extends Service {
   public EMFResource<InvoicesAndProperties> getInvoicesAndPropertiesResource() {
     return invoicesAndPropertiesResource;
   }
-
-  
-//  /**
-//   * Add a new {@code Invoice} to the database.
-//   * 
-//   * @param invoice the {@code Invoice} to be added.
-//   */
-//  public void addInvoiceToInvoicesAndPropertiesDatabase(Invoice invoice) {
-//    invoicesAndProperties.getInvoices().getInvoices().add(invoice);
-//  }
   
   /**
    * Add a new {@code InvoiceAndProperty} to the database.
@@ -126,6 +122,11 @@ public class InvoicesAndPropertiesService extends Service {
     invoicesAndProperties.getInvoicseandpropertys().add(invoiceAndProperty);
   }
   
+  /**
+   * Save the invoices and properties to file.
+   * 
+   * @return the result of the save operation.
+   */
   public Result saveInvoicesAndProperties() {
     Result result = new Result();
     
@@ -151,7 +152,7 @@ public class InvoicesAndPropertiesService extends Service {
    * @param invoiceAndProperty the {@code InvoiceAndProperty} for which the folder name is requested.
    * @return the name of the folder where the attachments of a {@code event} are stored, or null if this cannot be determined.
    */
-  public static String determineAttachmentsFolderName(InvoiceAndProperty invoiceAndProperty) {
+  public String determineAttachmentsFolderName(InvoiceAndProperty invoiceAndProperty) {
     String attachmentsFolderName = deriveAttachmentsFolderNameFromAttachments(invoiceAndProperty);
     
     if (attachmentsFolderName == null) {
@@ -170,8 +171,8 @@ public class InvoicesAndPropertiesService extends Service {
    * @param invoiceAndProperty the {@code InvoiceAndProperty} for which the folder name is requested.
    * @return the attachments folder name derived from the attachments, or null if this cannot be determined.
    */
-  public static String deriveAttachmentsFolderNameFromAttachments(InvoiceAndProperty invoiceAndProperty) {
-    if (InvoicesAndPropertiesRegistry.propertyRelatedFilesFolder == null) {
+  public String deriveAttachmentsFolderNameFromAttachments(InvoiceAndProperty invoiceAndProperty) {
+    if (invoicesAndPropertiesRegistry.getPropertyRelatedFilesFolder() == null) {
       return null;
     }
     
@@ -181,13 +182,13 @@ public class InvoicesAndPropertiesService extends Service {
         continue;
       }
       
-      File file = new File(InvoicesAndPropertiesRegistry.propertyRelatedFilesFolder, fileName);
+      File file = new File(invoicesAndPropertiesRegistry.getPropertyRelatedFilesFolder(), fileName);
       if (file != null ) {
         file = file.getParentFile();  // This is the possible attachments directory
         if (file != null) {
           File attachmentsFolder = file.getParentFile();
           String attachmentsFolderName = attachmentsFolder.getAbsolutePath();
-          if (attachmentsFolderName != null  &&  attachmentsFolderName.equals(InvoicesAndPropertiesRegistry.propertyRelatedFilesFolder)) {
+          if (attachmentsFolderName != null  &&  attachmentsFolderName.equals(invoicesAndPropertiesRegistry.getPropertyRelatedFilesFolder())) {
             String attachmentFolderName = file.getAbsolutePath();
             return attachmentFolderName;
           }
@@ -204,8 +205,8 @@ public class InvoicesAndPropertiesService extends Service {
    * @param invoiceAndProperty the {@code InvoiceAndProperty} for which the folder name is requested.
    * @return the event folder derived from the date and title controls, or null if these controls don't have the needed information.
    */
-  public static String deriveAttachmentsFolderNameFromDateAndDescription(InvoiceAndProperty invoiceAndProperty) {
-    if (InvoicesAndPropertiesRegistry.propertyRelatedFilesFolder == null) {
+  public String deriveAttachmentsFolderNameFromDateAndDescription(InvoiceAndProperty invoiceAndProperty) {
+    if (invoicesAndPropertiesRegistry.getPropertyRelatedFilesFolder() == null) {
       return null;
     }
     
@@ -222,7 +223,7 @@ public class InvoicesAndPropertiesService extends Service {
     }
     
     String subFolderName = dateText + " " + description;
-    File attachmentsFolder = new File(InvoicesAndPropertiesRegistry.propertyRelatedFilesFolder, subFolderName);
+    File attachmentsFolder = new File(invoicesAndPropertiesRegistry.getPropertyRelatedFilesFolder(), subFolderName);
     
     return attachmentsFolder.getAbsolutePath();
   }
@@ -266,19 +267,19 @@ public class InvoicesAndPropertiesService extends Service {
    * 
    * @return true if the resource could be opened, false otherwise.
    */
-  private static EMFResource<InvoicesAndProperties> getInvoicesAndPropertiesResource(CustomizationFx customization) {
+  private EMFResource<InvoicesAndProperties> getInvoicesAndPropertiesResource(CustomizationFx customization) {
     boolean returnValue = false;
 
     EMFResource<InvoicesAndProperties> invoicesAndPropertiesResource = new EMFResource<InvoicesAndProperties>(InvAndPropPackage.eINSTANCE, () -> InvAndPropFactory.eINSTANCE.createInvoicesAndProperties(), ".xmi", true);
 
     try {
-      invoicesAndPropertiesResource.load(InvoicesAndPropertiesRegistry.invoicesAndPropertiesFile);
+      invoicesAndPropertiesResource.load(invoicesAndPropertiesRegistry.getInvoicesAndPropertiesFile());
       returnValue = true;
     } catch (IOException e) {
       LOGGER.severe("File not found: " + e.getMessage());
       Alert alert = customization.getComponentFactoryFx().createYesNoConfirmationDialog(
           null,
-          "The file with invoices and properties (" + InvoicesAndPropertiesRegistry.invoicesAndPropertiesFile + ") doesn't exist yet.",
+          "The file with invoices and properties (" + invoicesAndPropertiesRegistry.getInvoicesAndPropertiesFile() + ") doesn't exist yet.",
           "Do you want to create this file now?" + NEWLINE +
           "If you choose \"No\" the InvoicesAndProperties application will not be started.");
       Optional<ButtonType> response = alert.showAndWait();
@@ -286,7 +287,7 @@ public class InvoicesAndPropertiesService extends Service {
         LOGGER.severe("yes, create file");
         invoicesAndPropertiesResource.newEObject();
         try {
-          invoicesAndPropertiesResource.save(InvoicesAndPropertiesRegistry.invoicesAndPropertiesFile);
+          invoicesAndPropertiesResource.save(invoicesAndPropertiesRegistry.getInvoicesAndPropertiesFile());
           returnValue = true;
         } catch (IOException e1) {
           e1.printStackTrace();
@@ -299,9 +300,14 @@ public class InvoicesAndPropertiesService extends Service {
     return returnValue ? invoicesAndPropertiesResource : null;
   }
 
+  /**
+   * Check the registry for required settings.
+   * 
+   * @return true if the registry is OK, false otherwise.
+   */
   private boolean checkRegistry() {
     
-    if (InvoicesAndPropertiesRegistry.invoicesAndPropertiesFile == null) {
+    if (invoicesAndPropertiesRegistry.getInvoicesAndPropertiesFile() == null) {
       Alert alert = customization.getComponentFactoryFx().createErrorDialog(
           "There's no filename configured for the file with invoices and properties",
           "Configure the filename (e.g. via the 'Edit User Settings' button below) and restart the application." +
@@ -327,7 +333,7 @@ public class InvoicesAndPropertiesService extends Service {
    * Show the User Properties editor.
    */
   private void showPropertiesEditor() {
-    new PropertiesEditor("Invoices and Properties properties", customization, InvoicesAndPropertiesRegistry.propertyDescriptorsResource, InvoicesAndPropertiesRegistry.customPropertiesFile);
+    new PropertiesEditor("Invoices and Properties properties", customization, invoicesAndPropertiesRegistry.getPropertyDescriptorsFileURI(), invoicesAndPropertiesRegistry.getUserPropertiesFileName());
   }
   
   private static void checkAndRepairDataModel() {
@@ -360,11 +366,6 @@ public class InvoicesAndPropertiesService extends Service {
 //    
 //  }
   
-
-  @Override
-  protected void setDevelopmentMode(boolean developmentMode) {
-   InvoicesAndPropertiesRegistry.developmentMode = developmentMode;
-  }
   
   @Override
   protected void readApplicationProperties() {
@@ -372,8 +373,8 @@ public class InvoicesAndPropertiesService extends Service {
     try (InputStream in = getClass().getResourceAsStream("InvoicesAndPropertiesApplication.properties")) {
         props.load(in);
         
-        InvoicesAndPropertiesRegistry.version = props.getProperty("invandprop.app.version");
-        InvoicesAndPropertiesRegistry.applicationName = props.getProperty("invandprop.app.name");
+        invoicesAndPropertiesRegistry.setVersion(props.getProperty("invandprop.app.version"));
+        invoicesAndPropertiesRegistry.setApplicationName(props.getProperty("invandprop.app.name"));
     } catch (Exception e) {
       JfxApplication.reportException(null, e);
       System.exit(1);
@@ -394,5 +395,10 @@ public class InvoicesAndPropertiesService extends Service {
   @Override
   protected AppResourcesFx getAppResourcesFxClass() {
     return new InvoicesAndPropertiesAppResourcesFx();
+  }
+  
+  @Override
+  protected Registry getRegistry() {
+    return invoicesAndPropertiesRegistry;
   }
 }

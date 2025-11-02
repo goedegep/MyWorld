@@ -109,7 +109,7 @@ public class FileFinderWindow extends JfxStage {
     });
     
     searchFrameMakerFilesButton = componentFactory.createButton("FrameMaker files", "zoek FrameMaker files");
-    searchFrameMakerFilesButton.setOnAction(e -> searchFrameMakerFiles(folderSelecter.getAbsolutePath()));
+    searchFrameMakerFilesButton.setOnAction(_ -> searchFrameMakerFiles(folderSelecter.getAbsolutePath()));
     controlsPane.getChildren().add(searchFrameMakerFilesButton);
     
     rootPane.getChildren().add(controlsPane);

@@ -47,6 +47,11 @@ public class EventEditPanel extends EditPanelTemplate<EventInfo> {
   private static final String ATTACHMENTS_PANEL_TITLE = "Attachments";
   private static final String ATTACHMENT_PANEL_TITLE = "Attachment";
   
+  /**
+   * The Events Service
+   */
+  EventsService eventsService;
+  
   /*
    * Controls
    */
@@ -136,6 +141,8 @@ public class EventEditPanel extends EditPanelTemplate<EventInfo> {
    */
   private EventEditPanel(CustomizationFx customization, EventsService eventsService) {
     super(customization, false);
+    
+    this.eventsService = eventsService;
     
     setId("EventEditPanel");
   }
@@ -347,7 +354,7 @@ public class EventEditPanel extends EditPanelTemplate<EventInfo> {
   private void updateEventFolderPathProperty() {
     String eventFolderName = null;
     try {
-      eventFolderName = EventsService.determineEventFolderName(getCurrentValue());
+      eventFolderName = eventsService.determineEventFolderName(getCurrentValue());
     } catch (EditorException e) {
       e.printStackTrace();
     }

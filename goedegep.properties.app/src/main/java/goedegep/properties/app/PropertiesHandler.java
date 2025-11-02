@@ -52,7 +52,7 @@ public class PropertiesHandler {
    * @param propertyDescriptorsFileURI the URL of the file with property descriptors.
    * @param urlForFileNameFunction a function for providing a URL for a file name. Used for handling custom property files.
    */
-  public static void handleProperties(URL propertyDescriptorsFileURI, Function<String, URL> urlForFileNameFunction) throws IOException {
+  public static void handleProperties(URI propertyDescriptorsFileURI) throws IOException {
     
     EMFResource<PropertyDescriptorGroup> emfResource = new EMFResource<>(
         PropertiesPackage.eINSTANCE,
@@ -81,24 +81,19 @@ public class PropertiesHandler {
             () -> PropertiesFactory.eINSTANCE.createPropertyGroup(), ".xmi");
 
         URL url = null;
-        if (urlForFileNameFunction != null) {
-          url = urlForFileNameFunction.apply(customPropertiesFileName);
-        } else {
-          String userHomeDir = System.getProperty("user.home");
-          URI uri = Path.of(userHomeDir, "MyWorld", customPropertiesFileName).toUri();
-          try {
-            url = uri.toURL();
-          } catch (MalformedURLException e) {
-            e.printStackTrace();
-          }
+        String userHomeDir = System.getProperty("user.home");
+        URI uri = Path.of(userHomeDir, "MyWorld", customPropertiesFileName).toUri();
+        try {
+          url = uri.toURL();
+        } catch (MalformedURLException e) {
+          e.printStackTrace();
         }
         if (url != null) {
           String pathString = url.getPath().substring(1);
           Path path = Path.of(pathString);
           if (Files.exists(path)) {       
-            //        if (Files.exists(Paths.get(resourceFileName))) {
             try {
-              PropertyGroup propertyGroup = propertiesResource.load(url);
+              PropertyGroup propertyGroup = propertiesResource.load(uri);
               updateRegistryGroup(registryClass, propertyGroup, propertyDescriptorGroup);
               //            LOGGER.info(ClassUtil.staticFieldsToString(registryClass));
             } catch (FileNotFoundException e) {
@@ -171,53 +166,53 @@ public class PropertiesHandler {
     String registryName = null;
     String propertyName = "<none>";
     Class<?> registryClass = null;
-    try {
-      registryClass = Class.forName(qualifiedRegistryClassName);
-      
-
-      for (PropertyDescriptor propertyDescriptor: propertyDescriptorGroup.getPropertyDescriptors()) {
-        propertyName = propertyDescriptor.getName();
-        
-        if (propertyDescriptor.isSetInstallInitialValue()  &&  propertyDescriptor.isInstallInitialValue()  &&
-            propertyDescriptor.isSetInitialValue()) {
-          registryName = propertyDescriptor.getRegistryName();
-          if (registryName == null) {
-            registryName = propertyName;
-          }
-          LOGGER.info("Handling field: " + registryName);
-//          for (Field field: registryClass.getFields()) {
-//            LOGGER.severe("Field: " + field.getName());
-//            if (field.getName().equals(registryName)) {
-//              LOGGER.severe("Field found");
-//              break;
-//            }
+//    try {
+//      registryClass = Class.forName(qualifiedRegistryClassName);
+//      
+//
+//      for (PropertyDescriptor propertyDescriptor: propertyDescriptorGroup.getPropertyDescriptors()) {
+//        propertyName = propertyDescriptor.getName();
+//        
+//        if (propertyDescriptor.isSetInstallInitialValue()  &&  propertyDescriptor.isInstallInitialValue()  &&
+//            propertyDescriptor.isSetInitialValue()) {
+//          registryName = propertyDescriptor.getRegistryName();
+//          if (registryName == null) {
+//            registryName = propertyName;
 //          }
-
-          Field field = registryClass.getField(registryName);
-          if (propertyDescriptor.getType() == PropertyType.BOOLEAN) {
-            Boolean booleanValue = Boolean.parseBoolean(propertyDescriptor.getInitialValue());
-            field.set(null, booleanValue);
-          } else {
-            field.set(null, propertyDescriptor.getInitialValue());
-          }
-          LOGGER.info("Registry entry set for property " + propertyName +
-              ". Registry entry name = " + registryName + ", value = " + propertyDescriptor.getInitialValue());
-        } else {
-          LOGGER.info("No initial value specified for property " + propertyName + ", no value written to the registry.");
-        }
-      }
-    } catch (ClassNotFoundException e1) {
-      e1.printStackTrace();
-    } catch (SecurityException e) {
-      e.printStackTrace();
-    } catch (NoSuchFieldException e) {
-      LOGGER.severe("No field found in registry for property: \"" + propertyName + "\", registry class name is: " + qualifiedRegistryClassName);    
-      e.printStackTrace();
-    } catch (IllegalArgumentException e) {
-      e.printStackTrace();
-    } catch (IllegalAccessException e) {
-      e.printStackTrace();
-    }
+//          LOGGER.info("Handling field: " + registryName);
+////          for (Field field: registryClass.getFields()) {
+////            LOGGER.severe("Field: " + field.getName());
+////            if (field.getName().equals(registryName)) {
+////              LOGGER.severe("Field found");
+////              break;
+////            }
+////          }
+//
+//          Field field = registryClass.getField(registryName);
+//          if (propertyDescriptor.getType() == PropertyType.BOOLEAN) {
+//            Boolean booleanValue = Boolean.parseBoolean(propertyDescriptor.getInitialValue());
+//            field.set(null, booleanValue);
+//          } else {
+//            field.set(null, propertyDescriptor.getInitialValue());
+//          }
+//          LOGGER.info("Registry entry set for property " + propertyName +
+//              ". Registry entry name = " + registryName + ", value = " + propertyDescriptor.getInitialValue());
+//        } else {
+//          LOGGER.info("No initial value specified for property " + propertyName + ", no value written to the registry.");
+//        }
+//      }
+//    } catch (ClassNotFoundException e1) {
+//      e1.printStackTrace();
+//    } catch (SecurityException e) {
+//      e.printStackTrace();
+//    } catch (NoSuchFieldException e) {
+//      LOGGER.severe("No field found in registry for property: \"" + propertyName + "\", registry class name is: " + qualifiedRegistryClassName);    
+//      e.printStackTrace();
+//    } catch (IllegalArgumentException e) {
+//      e.printStackTrace();
+//    } catch (IllegalAccessException e) {
+//      e.printStackTrace();
+//    }
     
     return registryClass;
   }

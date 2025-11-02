@@ -2,7 +2,6 @@ package goedegep.media.app.guifx;
 
 import java.util.logging.Logger;
 
-import goedegep.jfx.ComponentFactoryFx;
 import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.JfxStage;
 import goedegep.jfx.MenuUtil;
@@ -48,8 +47,7 @@ public class MediaMenuWindow extends JfxStage {
 //  private static final int MIN_NR_OF_PICTURES_IN_COLLAGE = 5;
 //  private static final int WINDOW_WIDTH = 1920 / 2;
   
-  private CustomizationFx customization;
-  private ComponentFactoryFx componentFactory;
+  private MediaRegistry mediaRegistry;
   private MediaAppResourcesFx appResources;
   
   
@@ -61,8 +59,7 @@ public class MediaMenuWindow extends JfxStage {
   public MediaMenuWindow(CustomizationFx customization) {
     super(customization, WINDOW_TITLE);
     
-    this.customization = customization;
-    componentFactory = getComponentFactory();
+    mediaRegistry = MediaRegistry.getInstance();
     appResources = (MediaAppResourcesFx) getResources();
     
     createGUI();
@@ -102,38 +99,38 @@ public class MediaMenuWindow extends JfxStage {
     
     // First row: Music
     applicationButton = componentFactory.createToolButton("Music database", appResources.getApplicationImage(ImageSize.SIZE_0), "Open the Music database window");
-    applicationButton.setOnAction((event) -> MediaDbAppLauncher.launchMediaApplication(customization));
+    applicationButton.setOnAction((_) -> MediaDbAppLauncher.launchMediaApplication(customization));
     grid.add(applicationButton, 0, 0);
     
     applicationButton = componentFactory.createToolButton("Music Folder", appResources.getMusicFolderImage(), "Open the Music Folder window");
-    applicationButton.setOnAction((event) -> showMusicFolderWindow());
+    applicationButton.setOnAction((_) -> showMusicFolderWindow());
     grid.add(applicationButton, 1, 0);
     
     // Second row: Photos
     applicationButton = componentFactory.createToolButton("Photoshow builder", appResources.getApplicationImage(ImageSize.SIZE_0), "Start the Photoshow builder");
-    applicationButton.setOnAction((event) -> new PhotoShowBuilder(customization));
+    applicationButton.setOnAction((_) -> new PhotoShowBuilder(customization));
     grid.add(applicationButton, 0, 1);
     
     applicationButton = componentFactory.createToolButton("Photoshow viewer", appResources.getApplicationImage(ImageSize.SIZE_0), "Start the Photoshow viewer");
-    applicationButton.setOnAction((event) -> startPhotoShow());
+    applicationButton.setOnAction((_) -> startPhotoShow());
     grid.add(applicationButton, 1, 1);
     
     applicationButton = componentFactory.createToolButton("Photo Map View", appResources.getApplicationImage(ImageSize.SIZE_0), "Open the Photo Map View");
-    applicationButton.setOnAction((event) -> new PhotoMapView(customization));
+    applicationButton.setOnAction((_) -> new PhotoMapView(customization));
     grid.add(applicationButton, 2, 1);
     
     applicationButton = componentFactory.createToolButton("Photo Editor", appResources.getApplicationImage(ImageSize.SIZE_0), "Open the Photo Editor");
-    applicationButton.setOnAction((event) -> new PhotoEditor(customization));
+    applicationButton.setOnAction((_) -> new PhotoEditor(customization));
     grid.add(applicationButton, 3, 1);
     
     // Third row: Videos
     applicationButton = componentFactory.createToolButton("Video database", appResources.getApplicationImage(ImageSize.SIZE_0), "Open the video database window");
-    applicationButton.setOnAction((event) -> showFilmDbWindow());
+    applicationButton.setOnAction((_) -> showFilmDbWindow());
     grid.add(applicationButton, 0, 2);
     
     // Fourth row: Other    
     applicationButton = componentFactory.createToolButton("Dune", appResources.getDuneImage(), "Open the Dune media player window");
-    applicationButton.setOnAction((event) -> showDuneWindow());
+    applicationButton.setOnAction((_) -> showDuneWindow());
     grid.add(applicationButton, 0, 3);
     
     mainLayout.getChildren().add(grid);
@@ -164,7 +161,7 @@ public class MediaMenuWindow extends JfxStage {
     });
     
     // File: Edit Property Descriptors
-    if (MediaRegistry.developmentMode) {
+    if (mediaRegistry.isDevelopmentMode()) {
       MenuUtil.addMenuItem(menu, "Edit Property Descriptors", new EventHandler<ActionEvent>()  {
         public void handle(ActionEvent e) {
           showPropertyDescriptorsEditor();
@@ -193,14 +190,14 @@ public class MediaMenuWindow extends JfxStage {
    * Start the property descriptors editor.
    */
   private void showPropertyDescriptorsEditor() {
-    new PropertyDescriptorsEditorFx(customization, MediaRegistry.propertyDescriptorsResource);
+    new PropertyDescriptorsEditorFx(customization, mediaRegistry.getPropertyDescriptorsFileURI());
   }
   
   /**
    * Start the properties editor.
    */
   private void showPropertiesEditor() {
-    new PropertiesEditor("Media properties", customization, MediaRegistry.propertyDescriptorsResource, MediaRegistry.customPropertiesFile);
+    new PropertiesEditor("Media properties", customization, mediaRegistry.getPropertyDescriptorsFileURI(), mediaRegistry.getUserPropertiesFileName());
   }
 
   /**
@@ -208,13 +205,13 @@ public class MediaMenuWindow extends JfxStage {
    */
   private void showHelpAboutDialog() {
     componentFactory.createApplicationInformationDialog(
-        "About " + MediaRegistry.applicationName,
+        "About " + mediaRegistry.getApplicationName(),
         appResources.getApplicationImage(ImageSize.SIZE_3),
         null, 
-        MediaRegistry.shortProductInfo + NEWLINE +
-        "Version: " + MediaRegistry.version + NEWLINE +
-        MediaRegistry.copyrightMessage + NEWLINE +
-        "Author: " + MediaRegistry.author)
+        mediaRegistry.getShortProductInfo() + NEWLINE +
+        "Version: " + mediaRegistry.getVersion() + NEWLINE +
+        mediaRegistry.getCopyrightMessage() + NEWLINE +
+        "Author: " + mediaRegistry.getAuthor())
         .showAndWait();
   }
   

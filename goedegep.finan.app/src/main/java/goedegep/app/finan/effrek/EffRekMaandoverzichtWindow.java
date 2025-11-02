@@ -209,7 +209,7 @@ public class EffRekMaandoverzichtWindow extends AppFrame {
   }
   
   private void showPopupIfTransactionsNotHandled() {
-    if (!FinanRegistry.transactionsHandled) {
+    if (!FinanRegistry.getInstance().areTransactionsHandled()) {
       showMessageDialog(MessageDialogType.WARNING, "De transacties zijn niet verwerkt, dus er zijn geen maandoverzichten beschikbaar");
     }    
   }

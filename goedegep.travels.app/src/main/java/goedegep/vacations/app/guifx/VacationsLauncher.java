@@ -13,6 +13,7 @@ import goedegep.jfx.ComponentFactoryFx;
 import goedegep.jfx.CustomizationFx;
 import goedegep.properties.app.guifx.PropertiesEditor;
 import goedegep.util.emf.EMFResource;
+import goedegep.vacations.app.TravelsService;
 import goedegep.vacations.app.logic.VacationsRegistry;
 import goedegep.vacations.checklist.model.VacationChecklist;
 import goedegep.vacations.checklist.model.VacationChecklistCategoriesList;
@@ -34,6 +35,7 @@ public class VacationsLauncher {
   private static final Logger LOGGER = Logger.getLogger(VacationsLauncher.class.getName());
   private static final String NEWLINE = System.getProperty("line.separator");
 
+  private static VacationsRegistry vacationsRegistry = VacationsRegistry.getInstance();
   /**
    * Launch the VactionsWindow
    * 
@@ -45,7 +47,7 @@ public class VacationsLauncher {
     boolean vacationsInitializationOk = handleVacationsInitiolization(customization);
     
     if (vacationsInitializationOk) {
-      new VacationsWindow(customization);      
+      new VacationsWindow(customization, TravelsService.getInstance());      
     }
         
     LOGGER.info("<=");
@@ -57,21 +59,21 @@ public class VacationsLauncher {
   private static boolean handleVacationsInitiolization(CustomizationFx customization) {
     boolean returnValue = false;
     
-    File vacationsFile = new File(VacationsRegistry.vacationsFileName);
-    File vacationsFolder = new File(VacationsRegistry.vacationsFolderName);
-    File checklistFile = new File(VacationsRegistry.vacationChecklistFileName);
+    File vacationsFile = new File(vacationsRegistry.getVacationsFileName());
+    File vacationsFolder = new File(vacationsRegistry.getVacationsFolderName());
+    File checklistFile = new File(vacationsRegistry.getVacationChecklistFileName());
     
     if (!vacationsFile.exists()  ||  !vacationsFolder.exists()  ||  !checklistFile.exists()) {
       StringBuilder buf = new StringBuilder();
       buf.append("The following files and/or folders don't exist yet:").append(NEWLINE);
       if (!vacationsFile.exists()) {
-        buf.append("* The vacations file '").append(VacationsRegistry.vacationsFileName).append("'").append(NEWLINE);
+        buf.append("* The vacations file '").append(vacationsRegistry.getVacationsFileName()).append("'").append(NEWLINE);
       }
       if (!vacationsFolder.exists()) {
-        buf.append("* The vacations folder '").append(VacationsRegistry.vacationsFolderName).append("'").append(NEWLINE);
+        buf.append("* The vacations folder '").append(vacationsRegistry.getVacationsFolderName()).append("'").append(NEWLINE);
       }
       if (!checklistFile.exists()) {
-        buf.append("* The vacation checklist file '").append(VacationsRegistry.vacationChecklistFileName).append("'").append(NEWLINE);
+        buf.append("* The vacation checklist file '").append(vacationsRegistry.getVacationChecklistFileName()).append("'").append(NEWLINE);
       }
       buf.append("""
           If you are just starting to use this application, you may want to edit the User Settings, to set the file and folder names to your preference.
@@ -104,7 +106,7 @@ public class VacationsLauncher {
                   true);
               vacationsResource.newEObject();
               try {
-                vacationsResource.save(VacationsRegistry.vacationsFileName);
+                vacationsResource.save(vacationsRegistry.getVacationsFileName());
               } catch (IOException e1) {
                 e1.printStackTrace();
               }
@@ -113,7 +115,7 @@ public class VacationsLauncher {
             
             // Create the vacations folder if it doesn't exist
             if (!vacationsFolder.exists()) {
-              Files.createDirectories(Paths.get(VacationsRegistry.vacationsFolderName));
+              Files.createDirectories(Paths.get(vacationsRegistry.getVacationsFolderName()));
             }
             // create the parent folder if it doesn't exist
             String parent = checklistFile.getParent();
@@ -131,7 +133,7 @@ public class VacationsLauncher {
               vacationChecklist.setVacationChecklistCategoriesList(vacationChecklistCategoriesList);
               VacationChecklistLabelsList vacationChecklistLabelsList = VacationChecklistFactory.eINSTANCE.createVacationChecklistLabelsList();
               vacationChecklist.setVacationChecklistLabelsList(vacationChecklistLabelsList);
-              vacationChecklistResource.save(VacationsRegistry.vacationChecklistFileName);
+              vacationChecklistResource.save(vacationsRegistry.getVacationChecklistFileName());
             }
             
             returnValue = true; // required file and folders now exist, so we can continue.
@@ -168,8 +170,8 @@ public class VacationsLauncher {
    * Show the User Properties editor.
    */
   private static void showPropertiesEditor(CustomizationFx customization) {
-    new PropertiesEditor("Vacation properties", customization, getBundle(VacationsWindow.class, "VacationsPropertyDescriptorsResource"),
-        VacationsRegistry.propertyDescriptorsResource, VacationsRegistry.customPropertiesFile);
+    new PropertiesEditor("Vacation user settings", customization, getBundle(VacationsWindow.class, "VacationsPropertyDescriptorsResource"),
+        vacationsRegistry.getPropertyDescriptorsFileURI(), vacationsRegistry.getUserPropertiesFileName());
   }
 
   /**
