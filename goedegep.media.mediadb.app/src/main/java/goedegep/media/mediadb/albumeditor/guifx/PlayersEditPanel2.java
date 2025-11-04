@@ -10,7 +10,7 @@ import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.editor.EditPanelTemplate;
 import goedegep.jfx.editor.EditorException;
 import goedegep.jfx.editor.ListEditPanelTemplate;
-import goedegep.media.mediadb.app.MediaDbService;
+import goedegep.media.common.IMediaDbService;
 import goedegep.media.mediadb.model.Player;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
@@ -49,7 +49,7 @@ public class PlayersEditPanel2 extends ListEditPanelTemplate<List<Player>, Playe
   /**
    * the media database service.
    */
-  private MediaDbService mediaDbService;
+  private IMediaDbService mediaDbService;
   
   /**
    * Top level panel.
@@ -91,7 +91,7 @@ public class PlayersEditPanel2 extends ListEditPanelTemplate<List<Player>, Playe
    * @param mediaDbService the media database service.
    * @return a newly created {@code PlayersEditPanel2}
    */
-  public static PlayersEditPanel2 newInstance(CustomizationFx customization, MediaDbService mediaDbService) {
+  public static PlayersEditPanel2 newInstance(CustomizationFx customization, IMediaDbService mediaDbService) {
     PlayersEditPanel2 playersEditPanel = new PlayersEditPanel2(customization, mediaDbService);
     
     playersEditPanel.performInitialization();
@@ -105,7 +105,7 @@ public class PlayersEditPanel2 extends ListEditPanelTemplate<List<Player>, Playe
    * @param customization The GUI customization.
    * @param mediaDbService the media database service.
    */
-  private PlayersEditPanel2(CustomizationFx customization, MediaDbService mediaDbService) {
+  private PlayersEditPanel2(CustomizationFx customization, IMediaDbService mediaDbService) {
     super(customization, true);
     
     this.mediaDbService = mediaDbService;

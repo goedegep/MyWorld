@@ -5,91 +5,82 @@
     registryClassName="FinanRegistry">
   <propertyDescriptors xsi:type="properties:FilePropertyDescriptor" type="FILE" name="customPropertiesFile"
       description="Name of the file with user preferences." displayName="User preferences filename"
-      initialValue="FinanUserPreferences.xmi" installInitialValue="true">
+      initialValue="FinanUserPreferences.xmi">
     <fileExtensions>xmi</fileExtensions>
   </propertyDescriptors>
   <propertyDescriptors xsi:type="properties:FilePropertyDescriptor" type="FILE" name="configurationFile"
       description="Name of the file with configuration information." displayName="Configuration filename"
-      initialValue="FinanConfiguration.xmi" installInitialValue="true">
+      initialValue="FinanConfiguration.xmi">
     <fileExtensions>xmi</fileExtensions>
   </propertyDescriptors>
   <propertyDescriptors type="DIRECTORY" name="dataDirectory"
       description="Folder with all financial information files."
       displayName="Finan data folder"
-      initialValue="D:\Database\MyWorld\Finan"
-      installInitialValue="true"/>
+      initialValue="D:\Database\MyWorld\Finan"/>
   <propertyDescriptors xsi:type="properties:FilePropertyDescriptor" type="FILE" name="jobAppointmentFile"
       description="Name of the file with the job appointments." displayName="Job appointment file name"
-      registryName="jobAppointmentFile" initialValue="JobAppointment.xmi" userSettable="true"
-      installInitialValue="true">
+      registryName="jobAppointmentFile" initialValue="JobAppointment.xmi" userSettable="true">
     <fileExtensions>xml</fileExtensions>
   </propertyDescriptors>
   <propertyDescriptors xsi:type="properties:FilePropertyDescriptor" type="FILE" name="claimEmissionsFile"
       description="Name of the file with claim emission information." displayName="Claim emissions filename"
-      registryName="claimEmissionsFile" initialValue="ClaimEmissions.xml" userSettable="true"
-      installInitialValue="true">
+      registryName="claimEmissionsFile" initialValue="ClaimEmissions.xml" userSettable="true">
     <fileExtensions>xml</fileExtensions>
   </propertyDescriptors>
   <propertyDescriptors xsi:type="properties:FilePropertyDescriptor" type="FILE" name="companiesFile"
       description="Name of the file with companies information." displayName="Companies filename"
-      registryName="companiesFile" initialValue="Companies.xml" userSettable="true"
-      installInitialValue="true">
+      registryName="companiesFile" initialValue="Companies.xml" userSettable="true">
     <fileExtensions>xml</fileExtensions>
   </propertyDescriptors>
   <propertyDescriptors xsi:type="properties:FilePropertyDescriptor" type="FILE" name="companyFundsFile"
       description="Name of the file with company funds information." displayName="Funds filename"
-      registryName="companyFundsFile" initialValue="CompanyFunds.xml" installInitialValue="true">
+      registryName="companyFundsFile" initialValue="CompanyFunds.xml">
     <fileExtensions>xml</fileExtensions>
   </propertyDescriptors>
   <propertyDescriptors xsi:type="properties:FilePropertyDescriptor" type="FILE" name="financieleEenhedenFile"
       description="Name of the file with financial units." displayName="Financial units filename"
       registryName="financieleEenhedenFile" initialValue="FinancieleEenheden.xml"
-      userSettable="true" installInitialValue="true">
+      userSettable="true">
     <fileExtensions>xml</fileExtensions>
   </propertyDescriptors>
   <propertyDescriptors xsi:type="properties:FilePropertyDescriptor" type="FILE" name="fundSharesFile"
       description="Name of the file with shares information." displayName="Shares filename"
-      registryName="fundSharesFile" initialValue="FundShares.xml" userSettable="true"
-      installInitialValue="true">
+      registryName="fundSharesFile" initialValue="FundShares.xml" userSettable="true">
     <fileExtensions>xml</fileExtensions>
   </propertyDescriptors>
   <propertyDescriptors xsi:type="properties:FilePropertyDescriptor" type="FILE" name="mortgagesFileName"
       description="Name of the file containing the mortgages information" displayName="Mortgages filename"
-      initialValue="Mortgages.xmi" userSettable="true" installInitialValue="true"/>
+      initialValue="Mortgages.xmi" userSettable="true"/>
   <propertyDescriptors xsi:type="properties:FilePropertyDescriptor" type="FILE" name="optionSeriesFile"
       description="Name of the file with option series." displayName="Option series filename"
-      registryName="optionSeriesFile" initialValue="OptionSeries.xml" userSettable="true"
-      installInitialValue="true">
+      registryName="optionSeriesFile" initialValue="OptionSeries.xml" userSettable="true">
     <fileExtensions>xml</fileExtensions>
   </propertyDescriptors>
   <propertyDescriptors xsi:type="properties:FilePropertyDescriptor" type="FILE" name="shareDividendsFile"
       description="Name of the file with share dividends." displayName="Dividends filename"
-      registryName="shareDividendsFile" initialValue="ShareDividends.xml" userSettable="true"
-      installInitialValue="true">
+      registryName="shareDividendsFile" initialValue="ShareDividends.xml" userSettable="true">
     <fileExtensions>xml</fileExtensions>
   </propertyDescriptors>
   <propertyDescriptors xsi:type="properties:FilePropertyDescriptor" type="FILE" name="shareTaxRatesFile"
       description="Name of the file with dividend tax rates." displayName="Tax rates filename"
-      registryName="shareTaxRatesFile" initialValue="BelastingKoersen.xml" userSettable="true"
-      installInitialValue="true">
+      registryName="shareTaxRatesFile" initialValue="BelastingKoersen.xml" userSettable="true">
     <fileExtensions>xml</fileExtensions>
   </propertyDescriptors>
   <propertyDescriptors xsi:type="properties:FilePropertyDescriptor" type="FILE" name="transactionsFile"
       description="Name of the file with financial transactions." displayName="Transactions filename"
-      registryName="transactionsFileName" initialValue="FinanTransactions.xml" userSettable="true"
-      installInitialValue="true">
+      registryName="transactionsFileName" initialValue="FinanTransactions.xml" userSettable="true">
     <fileExtensions>xml</fileExtensions>
   </propertyDescriptors>
   <propertyDescriptors xsi:type="properties:FilePropertyDescriptor" type="FILE" name="lynxShareIdToFinanShareNamesFile"
       description="Name of the file with mappings of Lynx share Id's to share names." displayName="Lynx to Finan mapping filename"
       registryName="lynxShareIdToFinanShareNamesFile" initialValue="LynxShareIdToFinanShareNames.xml"
-      userSettable="true" installInitialValue="true">
+      userSettable="true">
     <fileExtensions>xml</fileExtensions>
   </propertyDescriptors>
   <propertyDescriptors xsi:type="properties:FilePropertyDescriptor" type="FILE" name="investmentInsurancesFileName"
       description="Name of the file with information on all investment insurances." displayName="Investment insurances filename"
       registryName="investmentInsurancesFileName" initialValue="InvestmentInsurances.xmi"
-      userSettable="true" installInitialValue="true">
+      userSettable="true">
     <fileExtensions>xmi</fileExtensions>
   </propertyDescriptors>
 </properties:PropertyDescriptorGroup>

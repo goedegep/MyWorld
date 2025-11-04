@@ -7,6 +7,7 @@ import java.io.OutputStreamWriter;
 import java.util.logging.Logger;
 
 import goedegep.app.finan.registry.FinanRegistry;
+import goedegep.finan.app.FinanService;
 import goedegep.finan.investmentinsurance.model.InvestmentInsuranceFactory;
 import goedegep.finan.investmentinsurance.model.InvestmentInsurancePackage;
 import goedegep.finan.investmentinsurance.model.InvestmentInsurancesData;
@@ -15,7 +16,6 @@ import goedegep.jfx.ComponentFactoryFx;
 import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.JfxStage;
 import goedegep.jfx.MenuUtil;
-import goedegep.properties.app.guifx.PropertiesEditor;
 import goedegep.util.desktop.DesktopUtil;
 import goedegep.util.emf.EMFResource;
 import goedegep.util.text.TextWriter;
@@ -53,6 +53,7 @@ public class InvestmentInsurancesOverviewWindow extends JfxStage {
   private CustomizationFx customization;
   private ComponentFactoryFx componentFactory;
   private FinanRegistry finanRegistry;
+  private FinanService finanService;
   
   private EMFResource<InvestmentInsurancesData> investmentInsurancesResource = null;
   private InvestmentInsurancesData investmentInsurancesData;
@@ -65,6 +66,7 @@ public class InvestmentInsurancesOverviewWindow extends JfxStage {
     this.customization = customization;
     componentFactory = customization.getComponentFactoryFx();
     finanRegistry = FinanRegistry.getInstance();
+    finanService = FinanService.getInstance();
     
     if (finanRegistry.getInvestmentInsurancesFileName() == null) {
 
@@ -78,7 +80,7 @@ public class InvestmentInsurancesOverviewWindow extends JfxStage {
       ButtonType editorButtonType = new ButtonType("Edit User Settings");
       alert.getButtonTypes().add(editorButtonType);
       
-      alert.showAndWait().filter(response -> response == editorButtonType).ifPresent(_ ->  showPropertiesEditor());
+      alert.showAndWait().filter(response -> response == editorButtonType).ifPresent(_ ->  finanService.showPropertiesEditor());
       
       return;
     }
@@ -125,10 +127,6 @@ public class InvestmentInsurancesOverviewWindow extends JfxStage {
     investmentInsurancesResource.uriProperty().addListener((_ , _, _) -> updateTitle());
     
     show();
-  }
-  
-  private void showPropertiesEditor() {
-    new PropertiesEditor("Finan properties", customization, finanRegistry.getPropertyDescriptorsFileURI(), finanRegistry.getUserPropertiesFileName());
   }
   
   private void CreateGUI() {

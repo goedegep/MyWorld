@@ -25,11 +25,9 @@ import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.DoubleClickEventDispatcher;
 import goedegep.jfx.JfxStage;
 import goedegep.jfx.MenuUtil;
-import goedegep.jfx.PropertyDescriptorsEditorFx;
 import goedegep.jfx.collage.CollageImage;
 import goedegep.jfx.eobjecttable.EObjectListContainerSpecification;
 import goedegep.jfx.eobjecttable.EObjectTableControlPanel;
-import goedegep.properties.app.guifx.PropertiesEditor;
 import goedegep.resources.ImageSize;
 import goedegep.types.model.FileReference;
 import goedegep.util.Result;
@@ -267,11 +265,11 @@ public class InvoicesAndPropertiesWindow extends JfxStage {
 
     // File: Edit property descriptors
     if (invoicesAndPropertiesRegistry.isDevelopmentMode()) {
-      MenuUtil.addMenuItem(menu, "Edit property descriptors", _ -> showPropertyDescriptorsEditor());
+      MenuUtil.addMenuItem(menu, "Edit property descriptors", _ -> invoicesAndPropertiesService.showPropertyDescriptorsEditor());
     }
 
     // File: Edit user settings
-    MenuUtil.addMenuItem(menu, "Edit user settings", _ -> showPropertiesEditor());
+    MenuUtil.addMenuItem(menu, "Edit user settings", _ -> invoicesAndPropertiesService.showPropertiesEditor());
     
     // File: Dump data
     MenuUtil.addMenuItem(menu, "Dump data", _-> dumpData());
@@ -428,14 +426,6 @@ public class InvoicesAndPropertiesWindow extends JfxStage {
           ).showAndWait();
       
     }
-  }
-
-  private void showPropertyDescriptorsEditor() {
-    new PropertyDescriptorsEditorFx(customization, invoicesAndPropertiesRegistry.getPropertyDescriptorsFileURI());
-  }
-
-  private void showPropertiesEditor() {
-    new PropertiesEditor("Invoices and Properties properties", customization, invoicesAndPropertiesRegistry.getPropertyDescriptorsFileURI(), invoicesAndPropertiesRegistry.getUserPropertiesFileName());
   }
 
   private void dumpData() {

@@ -6,6 +6,7 @@ import java.util.Calendar;
 import java.util.logging.Logger;
 
 import goedegep.app.finan.registry.FinanRegistry;
+import goedegep.finan.app.FinanService;
 import goedegep.finan.jobappointment.JobAppointmentUtil;
 import goedegep.finan.jobappointment.model.JobAppointment;
 import goedegep.finan.jobappointment.model.JobAppointmentFactory;
@@ -15,7 +16,6 @@ import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.JfxStage;
 import goedegep.jfx.objectcontrols.ObjectControlCurrency;
 import goedegep.jfx.objectcontrols.ObjectControlLocalDate;
-import goedegep.properties.app.guifx.PropertiesEditor;
 import goedegep.util.emf.EMFResource;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
@@ -33,6 +33,7 @@ public class JobAppointmentWindow extends JfxStage {
   private static final String WINDOW_TITLE   = "Job Appointment";
   
   private FinanRegistry finanRegistry;
+  private FinanService finanService;
   private JobAppointment jobAppointment;
   private CustomizationFx customization;
   private ComponentFactoryFx componentFactory = null;
@@ -49,6 +50,7 @@ public class JobAppointmentWindow extends JfxStage {
     
     this.customization = customization;
     finanRegistry = FinanRegistry.getInstance();
+    finanService = FinanService.getInstance();
     
     if (finanRegistry.getJobAppointmentFile() == null) {
       Alert alert = componentFactory.createErrorDialog("There's no filename configured for the file with the job appointment",
@@ -59,7 +61,7 @@ public class JobAppointmentWindow extends JfxStage {
       
       alert.showAndWait().ifPresent(response -> {
         if (response == editorButtonType) {
-          showPropertiesEditor();
+          finanService.showPropertiesEditor();
         }
       });
       
@@ -106,10 +108,6 @@ public class JobAppointmentWindow extends JfxStage {
     }
     
     show();
-  }
-  
-  private void showPropertiesEditor() {
-    new PropertiesEditor("Finan properties", customization, finanRegistry.getPropertyDescriptorsFileURI(), finanRegistry.getUserPropertiesFileName());
   }
 
   private void createGUI() {

@@ -4,7 +4,7 @@ import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.editor.EditorException;
 import goedegep.jfx.editor.EditorMultiControlTemplate;
 import goedegep.jfx.editor.controls.EditorControlString;
-import goedegep.media.mediadb.app.MediaDbService;
+import goedegep.media.common.IMediaDbService;
 import goedegep.media.mediadb.model.Artist;
 import goedegep.media.mediadb.model.MediadbFactory;
 import goedegep.media.mediadb.model.MediadbPackage;
@@ -39,7 +39,7 @@ public class PlayerMultiControl extends EditorMultiControlTemplate<Player> {
   /**
    * the media database service.
    */
-  private MediaDbService mediaDbService;
+  private IMediaDbService mediaDbService;
 
   /**
    * Create an instance of the {@code PlayerEditPanel}.
@@ -48,7 +48,7 @@ public class PlayerMultiControl extends EditorMultiControlTemplate<Player> {
    * @param mediaDbService the media database service.
    * @return the newly created {@code PlayerEditPanel}.
    */
-  public static PlayerMultiControl newInstance(CustomizationFx customization, MediaDbService mediaDbService) {
+  public static PlayerMultiControl newInstance(CustomizationFx customization, IMediaDbService mediaDbService) {
     PlayerMultiControl playerEditPanel = new PlayerMultiControl(customization, mediaDbService);
     playerEditPanel.performInitialization();
     
@@ -61,7 +61,7 @@ public class PlayerMultiControl extends EditorMultiControlTemplate<Player> {
    * @param customization the GUI customization
    * @param mediaDbService the media database service.
    */
-  private PlayerMultiControl(CustomizationFx customization, MediaDbService mediaDbService) {
+  private PlayerMultiControl(CustomizationFx customization, IMediaDbService mediaDbService) {
     super(customization, false);
     
     this.mediaDbService = mediaDbService;

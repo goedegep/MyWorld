@@ -12,7 +12,7 @@ import goedegep.jfx.objectcontrols.ObjectControlString;
 import goedegep.jfx.objectcontrols.ObjectEditPanelTemplate;
 import goedegep.jfx.objecteditor.EditMode;
 import goedegep.jfx.objecteditor.ObjectEditorException;
-import goedegep.media.mediadb.app.MediaDbService;
+import goedegep.media.common.IMediaDbService;
 import goedegep.media.mediadb.app.derivealbuminfo.DiscInfo;
 import goedegep.media.mediadb.app.derivealbuminfo.TrackInfo;
 import goedegep.media.mediadb.model.AlbumType;
@@ -54,7 +54,7 @@ class DiscEditPanel extends ObjectEditPanelTemplate<Disc> {
    */
   private CustomizationFx customization;
   
-  private MediaDbService mediaDbService;
+  private IMediaDbService mediaDbService;
   
   /**
    * The media database.
@@ -109,7 +109,7 @@ class DiscEditPanel extends ObjectEditPanelTemplate<Disc> {
    * @param mediaDb the media database.
    * @return a newly created {@code MediumInfoListEditor}.
    */
-  public static DiscEditPanel newInstance(CustomizationFx customization, MediaDbService mediaDbService) {
+  public static DiscEditPanel newInstance(CustomizationFx customization, IMediaDbService mediaDbService) {
     DiscEditPanel discEditPanel = new DiscEditPanel(customization, mediaDbService);
     discEditPanel.performInitialization();
     
@@ -123,7 +123,7 @@ class DiscEditPanel extends ObjectEditPanelTemplate<Disc> {
    * @param customization the GUI customization.
    * @param mediaDb The Media Database, used to find/add tracks.
    */
-  private DiscEditPanel(CustomizationFx customization, MediaDbService mediaDbService) {
+  private DiscEditPanel(CustomizationFx customization, IMediaDbService mediaDbService) {
     super(customization);
     
     this.customization = customization;

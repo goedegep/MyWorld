@@ -9,8 +9,8 @@ import org.eclipse.emf.ecore.util.EContentAdapter;
 import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.DoubleClickEventDispatcher;
 import goedegep.jfx.editor.controls.EditorControlAutoCompleteTextField;
+import goedegep.media.common.IMediaDbService;
 import goedegep.media.mediadb.app.ArtistStringConverterAndChecker;
-import goedegep.media.mediadb.app.MediaDbService;
 import goedegep.media.mediadb.app.guifx.ArtistDetailsEditor;
 import goedegep.media.mediadb.model.Artist;
 import goedegep.media.mediadb.model.MediadbPackage;
@@ -29,7 +29,7 @@ public class EditorControlArtist extends EditorControlAutoCompleteTextField<Arti
   /**
    * The media database service.
    */
-  private MediaDbService mediaDbService;
+  private IMediaDbService mediaDbService;
   
   /**
    * Factory method to create an {@code EditorControlArtist}.
@@ -38,7 +38,7 @@ public class EditorControlArtist extends EditorControlAutoCompleteTextField<Arti
    * @param mediaDb the media database.
    * @return a new {@code EditorControlArtist} instance
    */
-  public static EditorControlArtist newInstance(CustomizationFx customization, MediaDbService mediaDbService) {
+  public static EditorControlArtist newInstance(CustomizationFx customization, IMediaDbService mediaDbService) {
     EditorControlArtist editorControlArtist = new EditorControlArtist(customization, mediaDbService);
     editorControlArtist.performInitialization();
     
@@ -51,7 +51,7 @@ public class EditorControlArtist extends EditorControlAutoCompleteTextField<Arti
    * @param customization The GUI customization.
    * @param mediaDb the media database.
    */
-  public EditorControlArtist(CustomizationFx customization, MediaDbService mediaDbService) {
+  public EditorControlArtist(CustomizationFx customization, IMediaDbService mediaDbService) {
     super(customization, new ArtistStringConverterAndChecker(mediaDbService.getMediaDbResource().getEObject()), 200, false, "Click and start typing to select an artist");
     
     this.customization = customization;

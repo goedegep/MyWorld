@@ -6,7 +6,7 @@ import java.util.logging.Logger;
 import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.objectcontrols.ObjectControlTemplate;
 import goedegep.jfx.objectcontrols.ObjectControlTextField;
-import goedegep.media.mediadb.app.MediaDbService;
+import goedegep.media.common.IMediaDbService;
 import goedegep.media.mediadb.model.Artist;
 import goedegep.media.mediadb.model.MediadbFactory;
 import goedegep.media.mediadb.model.Player;
@@ -45,7 +45,7 @@ public class ObjectControlForPlayer extends ObjectControlTemplate<Player> {
    * @param customization the GUI customization.
    * @param mediaDb the media database holding the artists.
    */
-  public ObjectControlForPlayer(CustomizationFx customization, MediaDbService mediaDbService) {
+  public ObjectControlForPlayer(CustomizationFx customization, IMediaDbService mediaDbService) {
     super(customization, false);  // If there is a control for a Player, the player has to be filled in. So this control is never optional.
     
     artistObjectControl = new ArtistObjectControl(customization, mediaDbService);

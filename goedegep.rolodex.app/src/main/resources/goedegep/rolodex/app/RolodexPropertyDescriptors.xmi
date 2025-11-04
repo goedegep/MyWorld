@@ -13,8 +13,7 @@
       name="configurationFile"
       description="Name of the file with configuration information."
       displayName="Configuration filename"
-      initialValue="RolodexConfiguration.xmi"
-      installInitialValue="true">
+      initialValue="RolodexConfiguration.xmi">
     <fileExtensions>xmi</fileExtensions>
   </propertyDescriptors>
   <propertyDescriptors
@@ -23,8 +22,7 @@
       name="customPropertiesFile"
       description="Name of the file with user settings."
       displayName="User settings filename"
-      initialValue="RolodexSettings.xmi"
-      installInitialValue="true">
+      initialValue="RolodexSettings.xmi">
     <fileExtensions>xmi</fileExtensions>
   </propertyDescriptors>
   <propertyDescriptors
@@ -34,8 +32,7 @@
       description="Name of the file with the rolodex data."
       displayName="Rolodex filename"
       initialValue="D:\Database\MyWorld\Rolodex.xmi"
-      userSettable="true"
-      installInitialValue="true">
+      userSettable="true">
     <fileExtensions>xmi</fileExtensions>
   </propertyDescriptors>
 </properties:PropertyDescriptorGroup>

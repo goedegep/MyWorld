@@ -1,8 +1,9 @@
 package goedegep.properties.app.guifx;
 
-import java.io.File;
 import java.io.IOException;
 import java.net.URI;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Objects;
 import java.util.ResourceBundle;
 import java.util.logging.Logger;
@@ -86,7 +87,7 @@ public class PropertiesEditor extends JfxStage {
   private ResourceBundle resourceBundle;
   private EMFResource<PropertyDescriptorGroup> propertyDescriptorsResource;
   private EMFResource<PropertyGroup> propertiesResource;
-  private String propertiesFileName;
+  private Path propertiesFilePath;
   private EContentAdapter eContentAdapter = null;  // to detect changes in the resource.
   private boolean isDirty = false;
   
@@ -105,10 +106,10 @@ public class PropertiesEditor extends JfxStage {
    * @param windowTitle the window title
    * @param customization the GUI customization
    * @param propertyDescriptorsURI the URI to the PropertyDescriptors file.
-   * @param propertiesFileName name of the Properties file to be edited.
+   * @param propertiesFilePath name of the Properties file to be edited.
    */
-  public PropertiesEditor(String windowTitle, CustomizationFx customization, URI propertyDescriptorsURI, String propertiesFileName) {
-    this(windowTitle, customization, null, propertyDescriptorsURI, propertiesFileName);
+  public PropertiesEditor(String windowTitle, CustomizationFx customization, URI propertyDescriptorsURI, Path propertiesFilePath) {
+    this(windowTitle, customization, null, propertyDescriptorsURI, propertiesFilePath);
   }
   
   /**
@@ -120,13 +121,15 @@ public class PropertiesEditor extends JfxStage {
    * @param customization the GUI customization
    * @param resourceBundle translations
    * @param propertyDescriptorsURI the URI to the PropertyDescriptors file.
-   * @param propertiesFileName name of the Properties file to be edited.
+   * @param propertiesFilePath name of the Properties file to be edited.
    */
-  public PropertiesEditor(String windowTitle, CustomizationFx customization, ResourceBundle resourceBundle, URI propertyDescriptorsURI, String propertiesFileName) {
+  public PropertiesEditor(String windowTitle, CustomizationFx customization, ResourceBundle resourceBundle, URI propertyDescriptorsURI, Path propertiesFilePath) {
+    Objects.requireNonNull(windowTitle, "Argument windowTitle may not be null");
+    Objects.requireNonNull(propertyDescriptorsURI, "Argument propertyDescriptorsURI may not be null");
+    Objects.requireNonNull(propertiesFilePath, "Argument propertiesFileName may not be null");
+
     super(customization, null);  // window title is filled/updated via method updateTitle()
     
-    Objects.requireNonNull(propertyDescriptorsResource, "Argument propertyDescriptorsResource may not be null");
-    Objects.requireNonNull(propertiesFileName, "Argument propertiesFileName may not be null");
     
     this.windowTitle = windowTitle;
     this.resourceBundle = resourceBundle;
@@ -144,15 +147,14 @@ public class PropertiesEditor extends JfxStage {
     
     editableProperties = createEditableProperties();
     
-    File propertiesFile = new File(propertiesFileName);
-    this.propertiesFileName = propertiesFile.getAbsolutePath();
+    this.propertiesFilePath = propertiesFilePath;
     
-    if (propertiesFile.exists()) {
+    if (Files.exists(propertiesFilePath)) {
       fillEditablePropertiesFromPropertiesFile(editableProperties);
     } else {
       componentFactory.createInformationDialog(
           "User Settings file doesn't exist yet",
-          "The file with the User Settings (" + propertiesFileName + ") doesn't exist yet",
+          "The file with the User Settings (" + propertiesFilePath + ") doesn't exist yet",
           "When you save changes it will be created").showAndWait();
     }
     
@@ -415,7 +417,7 @@ public class PropertiesEditor extends JfxStage {
   
   private void fillEditablePropertiesFromPropertiesFile(EObject editablePropertyGroup) {
     try {
-      PropertyGroup propertyGroup = propertiesResource.load(propertiesFileName);
+      PropertyGroup propertyGroup = propertiesResource.load(propertiesFilePath.toString());
 
       String propertyGroupName = propertyGroup.getName();
       String editablePropertyGroupName = (String) editablePropertyGroup.eGet(editablePropertyGroup_name);
@@ -499,7 +501,7 @@ public class PropertiesEditor extends JfxStage {
       if (propertiesResource.getFileName() != null) {
         propertiesResource.save();
       } else {
-        propertiesResource.save(propertiesFileName);
+        propertiesResource.save(propertiesFilePath.toString());
       }
     } catch (IOException e) {
       e.printStackTrace();

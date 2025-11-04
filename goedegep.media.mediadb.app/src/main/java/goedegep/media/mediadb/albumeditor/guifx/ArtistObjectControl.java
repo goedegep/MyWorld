@@ -9,8 +9,8 @@ import org.eclipse.emf.ecore.util.EContentAdapter;
 import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.DoubleClickEventDispatcher;
 import goedegep.jfx.objectcontrols.ObjectControlAutoCompleteTextField;
+import goedegep.media.common.IMediaDbService;
 import goedegep.media.mediadb.app.ArtistStringConverterAndChecker;
-import goedegep.media.mediadb.app.MediaDbService;
 import goedegep.media.mediadb.app.guifx.ArtistDetailsEditor;
 import goedegep.media.mediadb.model.Artist;
 import goedegep.media.mediadb.model.MediadbPackage;
@@ -28,7 +28,7 @@ public class ArtistObjectControl extends ObjectControlAutoCompleteTextField<Arti
   /**
    * The media database service.
    */
-  private MediaDbService mediaDbService;
+  private IMediaDbService mediaDbService;
   
   /**
    * Constructor.
@@ -36,7 +36,7 @@ public class ArtistObjectControl extends ObjectControlAutoCompleteTextField<Arti
    * @param customization The GUI customization.
    * @param mediaDb the media database.
    */
-  public ArtistObjectControl(CustomizationFx customization, MediaDbService mediaDbService) {
+  public ArtistObjectControl(CustomizationFx customization, IMediaDbService mediaDbService) {
     super(customization, new ArtistStringConverterAndChecker(mediaDbService.getMediaDbResource().getEObject()), null, 200, false, "Click and start typing to select an artist, or double click to add a new artist");
     this.customization = customization;
     this.mediaDbService = mediaDbService;

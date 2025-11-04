@@ -6,4 +6,5 @@ module goedegep.media.common {
   requires goedegep.properties.app;
   requires goedegep.model.properties;
   requires goedegep.myworld.common;
+  requires transitive goedegep.media.mediadb.model;
 }

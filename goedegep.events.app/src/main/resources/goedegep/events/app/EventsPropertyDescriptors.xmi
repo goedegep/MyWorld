@@ -5,10 +5,9 @@
     packageName="goedegep.events.app" registryClassName="EventsRegistry">
   <propertyDescriptors xsi:type="properties:FilePropertyDescriptor" type="FILE" name="eventsFileName"
       description="Name of the file with information about all events." displayName="Events file name"
-      initialValue="D:\Database\Gebeurtenissen\Gebeurtenissen.xmi" userSettable="true" installInitialValue="true">
+      initialValue="D:\Database\Gebeurtenissen\Gebeurtenissen.xmi" userSettable="true">
     <fileExtensions>xmi</fileExtensions>
   </propertyDescriptors>
   <propertyDescriptors type="DIRECTORY" name="eventsFolderName" description="Name of the folder with information about events."
-      displayName="Events folder name" initialValue="D:\Database\Gebeurtenissen" userSettable="true"
-      installInitialValue="true"/>
+      displayName="Events folder name" initialValue="D:\Database\Gebeurtenissen" userSettable="true"/>
 </properties:PropertyDescriptorGroup>

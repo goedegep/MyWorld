@@ -15,10 +15,11 @@ import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.JfxStage;
 import goedegep.jfx.MenuUtil;
 import goedegep.jfx.eobjecttable.EObjectTable;
+import goedegep.media.common.IAlbumDetailsWindow;
+import goedegep.media.common.IMediaService;
 import goedegep.media.common.MediaRegistry;
 import goedegep.media.mediadb.albumeditor.guifx.AlbumEditor;
 import goedegep.media.mediadb.albumeditor.guifx.TrackEditor;
-import goedegep.media.mediadb.app.MediaDbAppLauncher;
 import goedegep.media.mediadb.app.MediaDbAppUtil;
 import goedegep.media.mediadb.app.MediaDbChecker;
 import goedegep.media.mediadb.app.MediaDbService;
@@ -90,6 +91,7 @@ public class MediaDbWindow extends JfxStage {
   private static final String WINDOW_TITLE = "Music Database";
   private static final MediadbPackage MEDIA_DB_PACKAGE = MediadbPackage.eINSTANCE;
 
+  private IMediaService iMediaService;
   private MediaDbService mediaDbService;
   private AppResourcesFx appResources;
   private MediaRegistry mediaRegistry;
@@ -157,9 +159,10 @@ public class MediaDbWindow extends JfxStage {
    * @param customization the GUI customization.
    * @param mediaDbService 
    */
-  public MediaDbWindow(CustomizationFx customization, MediaDbService mediaDbService) {
+  public MediaDbWindow(CustomizationFx customization, IMediaService iMediaService, MediaDbService mediaDbService) {
     super(customization, WINDOW_TITLE);
 
+    this.iMediaService = iMediaService;
     this.mediaDbService = mediaDbService;
     mediaRegistry = MediaRegistry.getInstance();
     appResources = customization.getResources();
@@ -344,14 +347,14 @@ public class MediaDbWindow extends JfxStage {
     if (mediaRegistry.isDevelopmentMode()) {
       MenuUtil.addMenuItem(menu, "Edit Property Descriptors", new EventHandler<ActionEvent>()  {
         public void handle(ActionEvent e) {
-          MediaDbAppLauncher.showPropertyDescriptorsEditor(customization);
+          iMediaService.showPropertyDescriptorsEditor();
         }
       });
 
       // File: Edit User Settings
       MenuUtil.addMenuItem(menu, "Edit User Settings", new EventHandler<ActionEvent>()  {
         public void handle(ActionEvent e) {
-          MediaDbAppLauncher.showUserSettingsEditor(customization);
+          iMediaService.showPropertiesEditor();
         }
       });
     }
@@ -575,7 +578,7 @@ public class MediaDbWindow extends JfxStage {
   }
   
   void openAlbumInAlbumDetailsWindow() {
-    AlbumDetailsWindow albumDetailsWindow = MediaDbAppLauncher.openAlbumDetailsWindow(customization, mediaDbService, trackDiscLocationMap, albumsTable);
+    IAlbumDetailsWindow albumDetailsWindow = iMediaService.openAlbumDetailsWindow(mediaDbService, trackDiscLocationMap, albumsTable);
     albumDetailsWindow.setAlbum((Album) albumsTable.getSelectedObject());
   }
   

@@ -14,6 +14,7 @@
     <maven-surefire-plugin.version>3.5.3</maven-surefire-plugin.version>
     <maven-pmd-plugin.version>3.26.0</maven-pmd-plugin.version>
     <versions-maven-plugin.version>2.18.0</versions-maven-plugin.version>
+    <lombok.version>1.18.38</lombok.version>
     
     <!-- Imported project versions -->
     <!-- com.google.common.geometry follows the goedegep.myworld.version -->

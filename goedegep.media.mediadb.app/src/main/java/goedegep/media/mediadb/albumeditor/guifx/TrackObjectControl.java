@@ -15,7 +15,7 @@ import goedegep.jfx.DoubleClickEventDispatcher;
 import goedegep.jfx.objectcontrols.ObjectControl;
 import goedegep.jfx.objectcontrols.ObjectControlAutoCompleteTextField;
 import goedegep.jfx.stringconverterandchecker.StringConverterAndChecker;
-import goedegep.media.mediadb.app.MediaDbService;
+import goedegep.media.common.IMediaDbService;
 import goedegep.media.mediadb.model.Album;
 import goedegep.media.mediadb.model.Artist;
 import goedegep.media.mediadb.model.Disc;
@@ -39,7 +39,7 @@ public class TrackObjectControl extends ObjectControlAutoCompleteTextField<Track
    */
   private static TrackStringConverterAndChecker trackStringConverter = new TrackStringConverterAndChecker();
   
-  private MediaDbService mediaDbService;
+  private IMediaDbService mediaDbService;
   
   /**
    * The media database.
@@ -56,7 +56,7 @@ public class TrackObjectControl extends ObjectControlAutoCompleteTextField<Track
    * 
    * @param customization - The GUI customization.
    */
-  public TrackObjectControl(CustomizationFx customization, MediaDbService mediaDbService) {
+  public TrackObjectControl(CustomizationFx customization, IMediaDbService mediaDbService) {
     super(customization, trackStringConverter, null, 200, false, "TODO");
 
     this.customization = customization;

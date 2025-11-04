@@ -20,7 +20,6 @@
     <app.version>0.0.1</app.version>
     <vendor.name>goedegep</vendor.name>
     <copyright>Copyright (c) 2001-2025</copyright>
-    <lombok.version>1.18.38</lombok.version>
   </properties>	
   
   <dependencies>

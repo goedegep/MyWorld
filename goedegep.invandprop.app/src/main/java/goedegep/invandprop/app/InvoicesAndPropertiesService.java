@@ -23,7 +23,6 @@ import goedegep.jfx.JfxApplication;
 import goedegep.myworld.common.Registry;
 import goedegep.myworld.common.Service;
 import goedegep.properties.app.PropertiesHandler;
-import goedegep.properties.app.guifx.PropertiesEditor;
 import goedegep.types.model.FileReference;
 import goedegep.util.Result;
 import goedegep.util.Result.ResultType;
@@ -327,13 +326,6 @@ public class InvoicesAndPropertiesService extends Service {
     }
     
     return true;
-  }
-
-  /**
-   * Show the User Properties editor.
-   */
-  private void showPropertiesEditor() {
-    new PropertiesEditor("Invoices and Properties properties", customization, invoicesAndPropertiesRegistry.getPropertyDescriptorsFileURI(), invoicesAndPropertiesRegistry.getUserPropertiesFileName());
   }
   
   private static void checkAndRepairDataModel() {

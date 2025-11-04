@@ -9,9 +9,9 @@ import java.util.logging.Logger;
 import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.JfxStage;
 import goedegep.jfx.MenuUtil;
-import goedegep.jfx.PropertyDescriptorsEditorFx;
 import goedegep.resources.ImageSize;
 import goedegep.unitconverter.app.UnitConverterRegistry;
+import goedegep.unitconverter.app.UnitConverterService;
 //import goedegep.util.datetime.ClockTime;
 import goedegep.util.datetime.DurationFormat;
 import goedegep.util.unit.UnitUtils;
@@ -502,7 +502,7 @@ public class UnitConverterWindow extends JfxStage {
       // Bestand: property descriptors bewerken
       MenuUtil.addMenuItem(menu, "Property Descriptors bewerken", new EventHandler<ActionEvent>()  {
         public void handle(ActionEvent e) {
-          showPropertyDescriptorsEditor();
+          UnitConverterService.getInstance().showPropertyDescriptorsEditor();
         }
       });
 
@@ -523,13 +523,6 @@ public class UnitConverterWindow extends JfxStage {
     menuBar.getMenus().add(menu);
 
     return menuBar;
-  }
-  
-  /**
-   * Show the standard PropertyDescriptors editor.
-   */
-  private void showPropertyDescriptorsEditor() {
-    new PropertyDescriptorsEditorFx(customization, unitConverterRegistry.getPropertyDescriptorsFileURI());
   }
   
   /**

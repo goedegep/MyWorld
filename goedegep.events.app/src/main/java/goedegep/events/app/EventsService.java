@@ -26,7 +26,6 @@ import goedegep.jfx.JfxApplication;
 import goedegep.jfx.editor.Editor;
 import goedegep.myworld.common.Registry;
 import goedegep.myworld.common.Service;
-import goedegep.properties.app.guifx.PropertiesEditor;
 import goedegep.types.model.FileReference;
 import goedegep.util.Result;
 import goedegep.util.Result.ResultType;
@@ -41,6 +40,7 @@ import javafx.scene.paint.Color;
  * This class is the main class of the Events application.
  */
 public class EventsService extends Service {
+  @SuppressWarnings("unused")
   private static final Logger LOGGER = Logger.getLogger(EventsService.class.getName());
   private static final String NEWLINE = System.getProperty("line.separator");
   
@@ -60,12 +60,7 @@ public class EventsService extends Service {
    * the {@link EMFResource} for loading and storing the events database.
    */
   private EMFResource<Events> eventsResource;
-  
-  /**
-   * The events
-   */
-  private Events events;
-  
+    
   /**
    * Get the singleton instance of the EventsService.
    * 
@@ -75,15 +70,10 @@ public class EventsService extends Service {
     if (instance == null) {
       instance = new EventsService();
       instance.initialize();
-      
-      instance.eventsResource = instance.createEventsResource();
-      if (instance.eventsResource == null) {
-        return null;
-      }
-      
-      instance.events = instance.eventsResource.getEObject();
+
+
     }
-    
+
     return instance;
   }
   
@@ -91,7 +81,9 @@ public class EventsService extends Service {
    * Show the EventsWindow
    */
   public void showEventsWindow() {
-    LOGGER.info("=>");
+    if (!checkThatEventsFileNameIsSet()) {
+      return;
+    }
     
     boolean eventsInitializationOk = checkThatEventsFileAndFolderExist();
     
@@ -100,8 +92,6 @@ public class EventsService extends Service {
     }
     
     new EventsWindow(customization, this);      
-        
-    LOGGER.info("<=");
   }
   
   /**
@@ -124,14 +114,6 @@ public class EventsService extends Service {
   }
   
   /**
-   * Show the User Properties editor.
-   */
-  public void showPropertiesEditor() {
-    new PropertiesEditor("Events properties", customization, null,
-        eventsRegistry.getPropertyDescriptorsFileURI(), eventsRegistry.getUserPropertiesFileName());
-  }
-  
-  /**
    * Get a {@link ResourceBundle} for the default locale.
    * 
    * @param clazz a class from the package in which the ResourceBundle is located.
@@ -144,13 +126,19 @@ public class EventsService extends Service {
       ClassLoader classLoader = clazz.getClassLoader();
       return ResourceBundle.getBundle(bundlePath, locale, classLoader);
   }
-
+  
   /**
    * Get the events resource.
    * 
    * @return the {@link EMFResource} for loading and storing the events database.
    */
   public EMFResource<Events> getEventsResource() {
+    if (eventsResource == null) {
+      eventsResource = createEventsResource();
+
+      
+      
+    }
     return eventsResource;
   }
   
@@ -160,6 +148,7 @@ public class EventsService extends Service {
    * The events are kept ordered by date.
    */
   public void addEvent(EventInfo eventInfo) {
+    Events events = eventsResource.getEObject();
     List<EventInfo> eventList = events.getEvents();
     
     FlexDate newEventDate = eventInfo.getDate();
@@ -291,6 +280,33 @@ public class EventsService extends Service {
   }
   
   /**
+   * C
+   */
+  private boolean checkThatEventsFileNameIsSet() {
+    
+    if (eventsRegistry.getEventsFileName() == null) {
+      Alert alert = customization.getComponentFactoryFx().createErrorDialog(
+          "There's no filename configured for the file with the information about the events",
+          "Configure the filename (e.g. via the 'Edit User Settings' below) and restart the application." +
+              NEWLINE +
+              "A restart is needed, because the settings are only read at startup.");
+      
+      ButtonType editorButtonType = new ButtonType("Edit User Settings");
+      alert.getButtonTypes().add(editorButtonType);
+      
+      alert.showAndWait().ifPresent(response -> {
+        if (response == editorButtonType) {
+          showPropertiesEditor();
+        }
+      });
+      
+      return false;
+    }
+    
+    return true;
+  }
+  
+  /**
    * If the events file doesn't exist and/or the events folder doesn't exist, ask the user whether they should be created, or whether the user wants to edit the User Settings.
    */
   private boolean checkThatEventsFileAndFolderExist() {
@@ -412,6 +428,7 @@ public class EventsService extends Service {
         
         eventsRegistry.setVersion(props.getProperty("events.app.version"));
         eventsRegistry.setApplicationName(props.getProperty("events.app.name"));
+        eventsRegistry.setAuthor(props.getProperty("events.app.author"));
     } catch (Exception e) {
       JfxApplication.reportException(null, e);
       System.exit(1);

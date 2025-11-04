@@ -33,6 +33,6 @@ module goedegep.media.mediadb.app {
   requires org.apache.commons.text;
   requires goedegep.resources;
   requires org.apache.commons.io;
-  requires goedegep.media.common;
+  requires transitive goedegep.media.common;
   requires javafx.swing;
 }
