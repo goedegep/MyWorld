@@ -9,9 +9,11 @@ import java.util.logging.Logger;
 
 import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.JfxStage;
+import goedegep.jfx.eobjecttable.EObjectTable;
+import goedegep.media.common.IAlbumDetailsWindow;
+import goedegep.media.common.IMediaDbService;
 import goedegep.media.common.MediaRegistry;
 import goedegep.media.mediadb.albumeditor.guifx.AlbumEditor;
-import goedegep.media.mediadb.app.MediaDbService;
 import goedegep.media.mediadb.model.Album;
 import goedegep.media.mediadb.model.Artist;
 import goedegep.media.mediadb.model.Disc;
@@ -44,12 +46,12 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
 // TODO handle collection per track
-public class AlbumDetailsWindow extends JfxStage {
+public class AlbumDetailsWindow extends JfxStage implements IAlbumDetailsWindow {
   private static final Logger LOGGER = Logger.getLogger(AlbumDetailsWindow.class.getName());
   private static final FlexDateFormat FDF = new FlexDateFormat();
   
   private MediaRegistry mediaRegistry;
-  private MediaDbService mediaDbService;  
+  private IMediaDbService mediaDbService;  
   private Map<Track, Path> trackDiscLocationMap;
   private AlbumsTable albumsTable;
   
@@ -109,7 +111,8 @@ public class AlbumDetailsWindow extends JfxStage {
    * 
    * @param customization the GUI customization.
    */
-  public AlbumDetailsWindow(CustomizationFx customization, MediaDbService mediaDbService, Map<Track, Path> trackDiscLocationMap, AlbumsTable albumsTable) {
+  public AlbumDetailsWindow(CustomizationFx customization, IMediaDbService mediaDbService, Map<Track, Path> trackDiscLocationMap, EObjectTable<Album> at) {
+    AlbumsTable albumsTable = (AlbumsTable) at;
     super(customization, "Album details");
     
     this.mediaDbService = mediaDbService;
@@ -125,6 +128,7 @@ public class AlbumDetailsWindow extends JfxStage {
    * 
    * @param album the <code>Album</code> for which the information is shown in this window.
    */
+  @Override
   public void setAlbum(Album album) {
     this.album = album;
     

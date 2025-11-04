@@ -1,8 +1,5 @@
 package goedegep.properties.apptest;
 
-import goedegep.properties.model.PropertyDescriptorGroup;
-import goedegep.util.emf.EMFResource;
-
 public class TestRegistry {
   
   public static String author = null;                   // Name of the author of the application.
@@ -12,5 +9,4 @@ public class TestRegistry {
   public static String dataDirectory = null;            // Directory where all data files are stored.
   public static String version = null;                  // Current software version.
   public static boolean developmentMode = false;        // Voor extra functies tijdens ontwikkeling
-  public static EMFResource<PropertyDescriptorGroup> propertyDescriptorsResource = null;
 }

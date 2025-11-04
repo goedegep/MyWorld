@@ -50,10 +50,10 @@ public class TravelsApplication extends JfxApplication {
     }
     logSetup(Level.SEVERE, logFileBaseName);
     
-    TravelsService travelsApplication = TravelsService.getInstance();
+    TravelsService travelsService = TravelsService.getInstance();
     
     try {
-      travelsApplication.showTravelsWindow();
+      travelsService.showTravelsWindow();
 
       // Catch any uncaught exceptions in the JavaFX application thread.
       Thread.UncaughtExceptionHandler uncaughtExceptionHandler = new Thread.UncaughtExceptionHandler() {

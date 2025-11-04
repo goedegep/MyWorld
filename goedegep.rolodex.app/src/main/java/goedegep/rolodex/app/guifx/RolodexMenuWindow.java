@@ -12,8 +12,6 @@ import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.JfxStage;
 import goedegep.jfx.JfxUtil;
 import goedegep.jfx.MenuUtil;
-import goedegep.jfx.PropertyDescriptorsEditorFx;
-import goedegep.properties.app.guifx.PropertiesEditor;
 import goedegep.resources.ImageSize;
 import goedegep.rolodex.app.RolodexRegistry;
 import goedegep.rolodex.app.RolodexService;
@@ -212,7 +210,7 @@ public class RolodexMenuWindow extends JfxStage {
     if (rolodexRegistry.isDevelopmentMode()) {
       MenuUtil.addMenuItem(menu, "Edit Property Descriptors", new EventHandler<ActionEvent>()  {
         public void handle(ActionEvent e) {
-          showPropertyDescriptorsEditor();
+          rolodexService.showPropertyDescriptorsEditor();
         }
       });
     }
@@ -220,7 +218,7 @@ public class RolodexMenuWindow extends JfxStage {
     // Bestand: Gebruikers instellingen bewerken
     MenuUtil.addMenuItem(menu, "Edit user settings", new EventHandler<ActionEvent>()  {
       public void handle(ActionEvent e) {
-        showPropertiesEditor();
+        rolodexService.showPropertiesEditor();
       }
     });
 
@@ -442,14 +440,6 @@ public class RolodexMenuWindow extends JfxStage {
   
   private void checkRolodexWindow() {
     new RolodexCheckWindow(customization, rolodex);
-  }
-
-  private void showPropertyDescriptorsEditor() {
-    new PropertyDescriptorsEditorFx(customization, rolodexRegistry.getPropertyDescriptorsFileURI());
-  }
-
-  private void showPropertiesEditor() {
-    new PropertiesEditor("Rolodex properties", customization, rolodexRegistry.getPropertyDescriptorsFileURI(), rolodexRegistry.getUserPropertiesFileName());
   }
   
   protected void telefoonAdresboekenTabel_actionPerformed() {

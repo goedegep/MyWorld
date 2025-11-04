@@ -19,7 +19,6 @@ import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.JfxStage;
 import goedegep.jfx.MenuUtil;
 import goedegep.jfx.PropertyDescriptorsEditorFx;
-import goedegep.properties.app.guifx.PropertiesEditor;
 import goedegep.resources.ImageSize;
 import goedegep.util.Result;
 import goedegep.util.emf.EMFResource;
@@ -174,11 +173,11 @@ public class EventsWindow extends JfxStage {
     menu.getItems().add(menuItem);
     
     // File: Edit Properties
-    MenuUtil.addMenuItem(menu, "Edit Properties", _ -> showPropertiesEditor());
+    MenuUtil.addMenuItem(menu, "Edit Properties", _ -> eventsService.showPropertiesEditor());
     
     if (eventsRegistry.isDevelopmentMode()) {
       // File: Edit Property Descriptors
-      MenuUtil.addMenuItem(menu, "Edit Property Descriptors", _ -> showPropertyDescriptorsEditor());
+      MenuUtil.addMenuItem(menu, "Edit Property Descriptors", _ -> eventsService.showPropertyDescriptorsEditor());
     }
     
     menuBar.getMenus().add(menu);
@@ -258,21 +257,6 @@ public class EventsWindow extends JfxStage {
     } catch (Exception e) {
       e.printStackTrace();
     }
-  }
-    
-  /**
-   * Open an editor to edit the property descriptors (in development mode only).
-   */
-  private void showPropertyDescriptorsEditor() {
-    new PropertyDescriptorsEditorFx(customization, eventsRegistry.getPropertyDescriptorsFileURI());
-  }
-  
-  /**
-   * Open an editor where the user can edit his preferences.
-   */
-  private void showPropertiesEditor() {
-    new PropertiesEditor("Events properties", customization, null,
-        eventsRegistry.getPropertyDescriptorsFileURI(), eventsRegistry.getUserPropertiesFileName());
   }
 
   /**

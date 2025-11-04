@@ -5,10 +5,9 @@ import java.util.logging.Logger;
 import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.JfxStage;
 import goedegep.jfx.MenuUtil;
-import goedegep.jfx.PropertyDescriptorsEditorFx;
+import goedegep.media.common.IMediaService;
 import goedegep.media.common.MediaAppResourcesFx;
 import goedegep.media.common.MediaRegistry;
-import goedegep.media.mediadb.app.MediaDbAppLauncher;
 import goedegep.media.mediadb.app.guifx.DuneWindow;
 import goedegep.media.mediadb.app.guifx.MusicFolderWindow;
 import goedegep.media.mediadb.app.guifx.VideoDbWindow;
@@ -16,7 +15,6 @@ import goedegep.media.photo.photomapview.guifx.PhotoEditor;
 import goedegep.media.photo.photomapview.guifx.PhotoMapView;
 import goedegep.media.photo.photoshow.guifx.PhotoShowBuilder;
 import goedegep.media.photo.photoshow.guifx.PhotoShowViewer;
-import goedegep.properties.app.guifx.PropertiesEditor;
 import goedegep.resources.ImageSize;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -48,6 +46,7 @@ public class MediaMenuWindow extends JfxStage {
 //  private static final int WINDOW_WIDTH = 1920 / 2;
   
   private MediaRegistry mediaRegistry;
+  private IMediaService iMediaService;
   private MediaAppResourcesFx appResources;
   
   
@@ -56,9 +55,10 @@ public class MediaMenuWindow extends JfxStage {
    * 
    * @param customization GUI customization.
    */
-  public MediaMenuWindow(CustomizationFx customization) {
+  public MediaMenuWindow(CustomizationFx customization, IMediaService iMediaService) {
     super(customization, WINDOW_TITLE);
     
+    this.iMediaService = iMediaService;
     mediaRegistry = MediaRegistry.getInstance();
     appResources = (MediaAppResourcesFx) getResources();
     
@@ -99,7 +99,7 @@ public class MediaMenuWindow extends JfxStage {
     
     // First row: Music
     applicationButton = componentFactory.createToolButton("Music database", appResources.getApplicationImage(ImageSize.SIZE_0), "Open the Music database window");
-    applicationButton.setOnAction((_) -> MediaDbAppLauncher.launchMediaApplication(customization));
+    applicationButton.setOnAction((_) -> iMediaService.showMediaDbWindow());
     grid.add(applicationButton, 0, 0);
     
     applicationButton = componentFactory.createToolButton("Music Folder", appResources.getMusicFolderImage(), "Open the Music Folder window");
@@ -156,7 +156,7 @@ public class MediaMenuWindow extends JfxStage {
     // File: Edit Properties
     MenuUtil.addMenuItem(menu, "Edit Properties", new EventHandler<ActionEvent>()  {
       public void handle(ActionEvent e) {
-        showPropertiesEditor();
+        iMediaService.showPropertiesEditor();
       }
     });
     
@@ -164,7 +164,7 @@ public class MediaMenuWindow extends JfxStage {
     if (mediaRegistry.isDevelopmentMode()) {
       MenuUtil.addMenuItem(menu, "Edit Property Descriptors", new EventHandler<ActionEvent>()  {
         public void handle(ActionEvent e) {
-          showPropertyDescriptorsEditor();
+          iMediaService.showPropertyDescriptorsEditor();
         }
       });
     }
@@ -186,20 +186,6 @@ public class MediaMenuWindow extends JfxStage {
     return menuBar;
   }
   
-  /**
-   * Start the property descriptors editor.
-   */
-  private void showPropertyDescriptorsEditor() {
-    new PropertyDescriptorsEditorFx(customization, mediaRegistry.getPropertyDescriptorsFileURI());
-  }
-  
-  /**
-   * Start the properties editor.
-   */
-  private void showPropertiesEditor() {
-    new PropertiesEditor("Media properties", customization, mediaRegistry.getPropertyDescriptorsFileURI(), mediaRegistry.getUserPropertiesFileName());
-  }
-
   /**
    * Show a dialog with information about this application.
    */
@@ -229,7 +215,7 @@ public class MediaMenuWindow extends JfxStage {
   private void showFilmDbWindow() {
     
     
-    Stage stage = new VideoDbWindow(customization);
+    Stage stage = new VideoDbWindow(customization, iMediaService);
     stage.show();
   }
   

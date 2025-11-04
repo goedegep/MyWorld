@@ -5,11 +5,15 @@ import java.io.IOException;
 import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ResourceBundle;
 
 import goedegep.configuration.model.ConfigurationFactory;
 import goedegep.configuration.model.Look;
 import goedegep.jfx.AppResourcesFx;
 import goedegep.jfx.CustomizationFx;
+import goedegep.jfx.PropertyDescriptorsEditorFx;
+import goedegep.properties.app.guifx.PropertiesEditor;
 import goedegep.properties.model.PropertiesFactory;
 import goedegep.properties.model.PropertiesPackage;
 import goedegep.properties.model.PropertyGroup;
@@ -21,8 +25,29 @@ import goedegep.util.emf.EMFResource;
  * <p>
  * It provides the basic functionality to initialize the service, read application properties, create customization and handle user properties.
  */
-public abstract class Service {
+public abstract class Service implements IService {
   protected CustomizationFx customization;
+  
+  
+  /**
+   * Show the User Properties editor, using a {@link ResourceBundle}.
+   */
+  @Override
+  public void showPropertiesEditor(ResourceBundle resourceBundle) {
+    String applicationName = getRegistry().getApplicationName();
+    new PropertiesEditor(applicationName + " user settings", customization, resourceBundle,
+        getRegistry().getPropertyDescriptorsFileURI(), getUserSettingsFilePath());    
+  }
+  
+  @Override
+  public void showPropertiesEditor() {
+    showPropertiesEditor(null);    
+  }
+  
+  @Override
+  public void showPropertyDescriptorsEditor() {
+    new PropertyDescriptorsEditorFx(customization, getRegistry().getPropertyDescriptorsFileURI());
+  }
   
   /**
    * Initialize the service.
@@ -30,7 +55,7 @@ public abstract class Service {
    * This method sets the development mode, reads application properties, creates customization and handles user properties.
    * Every subclass must call this method during its initialization.
    */
-  public void initialize() {
+  protected void initialize() {
     
     // If we're running within Eclipse, we set development mode to true. The application can use this information to add functionality which is for development only.
     setDevelopmentMode(RunningInEclipse.runningInEclipse());
@@ -96,18 +121,8 @@ public abstract class Service {
    */
   protected void handleUserProperties() {
     Registry registry = getRegistry();
-    String userPropertiesFileName = registry.getUserPropertiesFileName();
 
-    if (userPropertiesFileName == null) {
-      return;
-    }
-
-    Path userPropertiesFilePath = Path.of(
-        System.getProperty("user.home"),
-        "MyWorld",
-        registry.getApplicationName(),
-        userPropertiesFileName
-        );
+    Path userPropertiesFilePath = getUserSettingsFilePath();
 
     if (!Files.exists(userPropertiesFilePath)) {
       return;
@@ -134,4 +149,25 @@ public abstract class Service {
    * @return the application registry.
    */
   protected abstract Registry getRegistry();
+  
+  /**
+   * Get the Path for the file with user settings.
+   * <p>
+   * The user settings file is located in [user-home]/MyWorld/[application-name]/[user-settings-file-name]
+   * Where:<br/>
+   * [user-home] is the users home directory.<br/>
+   * [application-name] is the name of the application.<br/>
+   * [user-settings-file-name] is the name of the user settings file.
+   * 
+   *  @return the Path for the file with user settings.
+   */
+  @Override
+  public Path getUserSettingsFilePath() {
+    String userHomeDir = System.getProperty("user.home");
+    String applicationName = getRegistry().getApplicationName();
+    String userSettingsFileName = getRegistry().getUserPropertiesFileName();
+    Path userSettingsFilePath = Paths.get(userHomeDir, "MyWorld", applicationName, userSettingsFileName);
+
+    return userSettingsFilePath;
+  }
 }

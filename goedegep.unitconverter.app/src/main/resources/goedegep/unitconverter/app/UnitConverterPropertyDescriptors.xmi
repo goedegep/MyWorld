@@ -13,8 +13,7 @@
       name="configurationFile"
       description="Name of the file with configuration information."
       displayName="Configuration filename"
-      initialValue="UnitConverterConfiguration.xmi"
-      installInitialValue="true">
+      initialValue="UnitConverterConfiguration.xmi">
     <fileExtensions>xmi</fileExtensions>
   </propertyDescriptors>
 </properties:PropertyDescriptorGroup>

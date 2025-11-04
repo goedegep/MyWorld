@@ -8,8 +8,8 @@ import goedegep.jfx.objectcontrols.ObjectControlEnumComboBox;
 import goedegep.jfx.objectcontrols.ObjectControlTextField;
 import goedegep.jfx.objecteditor.ObjectEditorException;
 import goedegep.jfx.objecteditor.ObjectEditorTemplate;
+import goedegep.media.common.IMediaDbService;
 import goedegep.media.mediadb.app.ArtistStringConverterAndChecker;
-import goedegep.media.mediadb.app.MediaDbService;
 import goedegep.media.mediadb.app.guifx.ArtistDetailsEditor;
 import goedegep.media.mediadb.model.Artist;
 import goedegep.media.mediadb.model.IWant;
@@ -40,7 +40,7 @@ public class TrackReferenceEditor extends ObjectEditorTemplate<TrackReference> {
   /**
    * The Media Database service.
    */
-  private MediaDbService mediaDbService;
+  private IMediaDbService mediaDbService;
   
   private ArtistStringConverterAndChecker artistStringConverterAndChecker;
   
@@ -68,7 +68,7 @@ public class TrackReferenceEditor extends ObjectEditorTemplate<TrackReference> {
    * @param mediaDb the media database.
    * @return a newly created {@code TrackEditor}.
    */
-  public static TrackReferenceEditor newInstance(CustomizationFx customization, Consumer<TrackReference> addTrackReferenceMethod, MediaDbService mediaDbService) {
+  public static TrackReferenceEditor newInstance(CustomizationFx customization, Consumer<TrackReference> addTrackReferenceMethod, IMediaDbService mediaDbService) {
     TrackReferenceEditor trackEditor = new TrackReferenceEditor(customization, addTrackReferenceMethod, mediaDbService);
     trackEditor.performInitialization();
     
@@ -81,7 +81,7 @@ public class TrackReferenceEditor extends ObjectEditorTemplate<TrackReference> {
    * @param customization the GUI customization.
    * @param mediaDb the media database.
    */
-  private TrackReferenceEditor(CustomizationFx customization, Consumer<TrackReference> addTrackReferenceMethod, MediaDbService mediaDbService) {
+  private TrackReferenceEditor(CustomizationFx customization, Consumer<TrackReference> addTrackReferenceMethod, IMediaDbService mediaDbService) {
     super(customization, null, addTrackReferenceMethod);
     
     this.mediaDbService = mediaDbService;

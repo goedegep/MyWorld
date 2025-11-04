@@ -6,6 +6,7 @@ import java.util.logging.Logger;
 import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.editor.EditPanel;
 import goedegep.jfx.editor.EditorTemplate;
+import goedegep.media.common.IMediaDbService;
 import goedegep.media.mediadb.app.MediaDbService;
 import goedegep.media.mediadb.model.Album;
 
@@ -19,7 +20,7 @@ public class AlbumEditor2 extends EditorTemplate<Album> {
   private static final String WINDOW_TITLE = "Album editor";
   
   
-  private MediaDbService mediaDbService;
+  private IMediaDbService mediaDbService;
   
   /**
    * Main {@code EditPanel}.
@@ -49,7 +50,7 @@ public class AlbumEditor2 extends EditorTemplate<Album> {
    * @param customization the GUI customization.
    * @param mediaDbService the media database service.
    */
-  private AlbumEditor2(CustomizationFx customization, MediaDbService mediaDbService) {
+  private AlbumEditor2(CustomizationFx customization, IMediaDbService mediaDbService) {
     super(customization, WINDOW_TITLE, mediaDbService::addAlbumToMediaDatabase);
     
     this.mediaDbService = mediaDbService;

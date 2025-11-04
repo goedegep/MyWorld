@@ -5,9 +5,7 @@ Original Track is found via Track (like now), but check on referred by reference
 For now: only let original track reference refer to itself.
 
 h2. ToDo list
-* Starting PropertiesEditor and PropertiesDescriptorsEditors should be done via service only.
-* move     <lombok.version>1.18.38</lombok.version> to parent pom (and remove from all *.exe project poms)
-* Remove propertyDescriptorsResource from all registries
+* Cleanup PropertyDescriptors
 * review all Registries
 * Default StringConverters for PgCurrency and FixedPointValue are no longer set, so applications have to do this themselves.
     

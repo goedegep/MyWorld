@@ -13,7 +13,7 @@ import goedegep.jfx.objectcontrols.ObjectControlTemplate;
 import goedegep.jfx.objectcontrols.ObjectEditPanelTemplate;
 import goedegep.jfx.objecteditor.ObjectEditorException;
 import goedegep.jfx.objectcontrols.ObjectControlGroup;
-import goedegep.media.mediadb.app.MediaDbService;
+import goedegep.media.common.IMediaDbService;
 import goedegep.media.mediadb.model.MediaDb;
 import goedegep.media.mediadb.model.MediadbFactory;
 import goedegep.media.mediadb.model.MediadbPackage;
@@ -40,7 +40,7 @@ public class PlayersEditPanel extends ObjectEditPanelTemplate<List<Player>> {
   /**
    * The media database service (containing the artists)
    */
-  private MediaDbService mediaDbService;
+  private IMediaDbService mediaDbService;
   
   /**
    * Main panel
@@ -65,7 +65,7 @@ public class PlayersEditPanel extends ObjectEditPanelTemplate<List<Player>> {
    * @param mediaDb the media database.
    * @return a newly created {@code PlayersEditPanel}.
    */
-  public static PlayersEditPanel newInstance(CustomizationFx customization, MediaDbService mediaDbService) {
+  public static PlayersEditPanel newInstance(CustomizationFx customization, IMediaDbService mediaDbService) {
     PlayersEditPanel playersEditPanel = new PlayersEditPanel(customization, mediaDbService);
     playersEditPanel.performInitialization();
     
@@ -78,7 +78,7 @@ public class PlayersEditPanel extends ObjectEditPanelTemplate<List<Player>> {
    * @param customization The GUI customization.
    * @param mediaDb The media database.
    */
-  private PlayersEditPanel(CustomizationFx customization, MediaDbService mediaDbService) {
+  private PlayersEditPanel(CustomizationFx customization, IMediaDbService mediaDbService) {
     super(customization);
     
     this.customization = customization;

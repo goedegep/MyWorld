@@ -25,8 +25,8 @@ import goedegep.jfx.objectcontrols.ObjectEditPanelTemplate;
 import goedegep.jfx.objecteditor.EditMode;
 import goedegep.jfx.objecteditor.ObjectEditorException;
 import goedegep.jfx.objecteditor.ObjectEditorTemplate;
+import goedegep.media.common.IMediaDbService;
 import goedegep.media.common.MediaRegistry;
-import goedegep.media.mediadb.app.MediaDbService;
 import goedegep.media.mediadb.app.derivealbuminfo.AlbumInfo;
 import goedegep.media.mediadb.app.derivealbuminfo.DeriveAlbumInfo;
 import goedegep.media.mediadb.app.derivealbuminfo.DiscInfo;
@@ -84,7 +84,7 @@ public class AlbumEditor extends ObjectEditorTemplate<Album> {
   private static final MediadbFactory MEDIA_DB_FACTORY = MediadbFactory.eINSTANCE;
   private static final MediadbPackage MEDIA_DB_PACKAGE = MediadbPackage.eINSTANCE;
   
-  private MediaDbService mediaDbService;
+  private IMediaDbService mediaDbService;
   private MediaRegistry mediaRegistry;
   
   /**
@@ -216,7 +216,7 @@ public class AlbumEditor extends ObjectEditorTemplate<Album> {
    * @param mediaDbService the media database service.
    * @return a newly created {@code AlbumEditor}.
    */
-  public static AlbumEditor newInstance(CustomizationFx customization, MediaDbService mediaDbService) {
+  public static AlbumEditor newInstance(CustomizationFx customization, IMediaDbService mediaDbService) {
     AlbumEditor albumEditor = new AlbumEditor(customization, mediaDbService);
     albumEditor.performInitialization();
     
@@ -231,7 +231,7 @@ public class AlbumEditor extends ObjectEditorTemplate<Album> {
    * @param customization the GUI customization.
    * @param mediaDb the media database.
    */
-  private AlbumEditor(CustomizationFx customization, MediaDbService mediaDbService) {
+  private AlbumEditor(CustomizationFx customization, IMediaDbService mediaDbService) {
     // title is set to null, as it is updated via updateTitle().
     super(customization, null, mediaDbService::addAlbumToMediaDatabase);
     

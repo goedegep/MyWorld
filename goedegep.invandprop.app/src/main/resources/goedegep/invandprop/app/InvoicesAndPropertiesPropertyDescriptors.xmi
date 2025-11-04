@@ -5,18 +5,18 @@
     registryClassName="InvoicesAndPropertiesRegistry">
   <propertyDescriptors xsi:type="properties:FilePropertyDescriptor" type="FILE" name="configurationFile"
       description="Name of the file with configuration information." displayName="Configuration filename"
-      initialValue="InvoicesAndPropertiesConfiguration.xmi" installInitialValue="true">
+      initialValue="InvoicesAndPropertiesConfiguration.xmi">
     <fileExtensions>xmi</fileExtensions>
   </propertyDescriptors>
   <propertyDescriptors xsi:type="properties:FilePropertyDescriptor" type="FILE" name="customPropertiesFile"
       description="Name of the file with user settings." displayName="User settings filename"
-      initialValue="InvoicesAndPropertiesSettings.xmi" installInitialValue="true">
+      initialValue="InvoicesAndPropertiesSettings.xmi">
     <fileExtensions>xmi</fileExtensions>
   </propertyDescriptors>
   <propertyDescriptors xsi:type="properties:FilePropertyDescriptor" type="FILE" name="invoicesAndPropertiesFile"
       description="Name of the file with all invoices and properties" displayName="Invoices and properties file"
-      initialValue="D:\Database\MyWorld\InvoicesAndProperties.xmi" userSettable="true" installInitialValue="true"/>
+      initialValue="D:\Database\MyWorld\InvoicesAndProperties.xmi" userSettable="true"/>
   <propertyDescriptors type="DIRECTORY" name="propertyRelatedFilesFolder" description="Folder with property related files (documents and pictures)"
       displayName="Property related files folder" initialValue="D:\Database\Handleidingen"
-      userSettable="true" installInitialValue="true"/>
+      userSettable="true"/>
 </properties:PropertyDescriptorGroup>

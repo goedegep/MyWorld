@@ -50,12 +50,10 @@ import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.DefaultCustomizationFx;
 import goedegep.jfx.JfxStage;
 import goedegep.jfx.MenuUtil;
-import goedegep.jfx.PropertyDescriptorsEditorFx;
 import goedegep.jfx.browser.Browser;
 import goedegep.jfx.eobjecttreeview.EObjectTreeCell;
 import goedegep.jfx.eobjecttreeview.EObjectTreeItem;
 import goedegep.jfx.eobjecttreeview.EObjectTreeView;
-import goedegep.properties.app.guifx.PropertiesEditor;
 import goedegep.properties.model.PropertiesFactory;
 import goedegep.properties.model.PropertiesPackage;
 import goedegep.properties.model.Property;
@@ -245,7 +243,7 @@ public class VacationsWindow extends JfxStage {
       
       alert.showAndWait().ifPresent(response -> {
         if (response == editorButtonType) {
-          showPropertiesEditor();
+          travelsService.showPropertiesEditor(getBundle(VacationsWindow.class, "VacationsPropertyDescriptorsResource"));
         }
       });
       
@@ -263,7 +261,7 @@ public class VacationsWindow extends JfxStage {
       
       alert.showAndWait().ifPresent(response -> {
         if (response == editorButtonType) {
-          showPropertiesEditor();
+          travelsService.showPropertiesEditor(getBundle(VacationsWindow.class, "VacationsPropertyDescriptorsResource"));
         }
       });
       
@@ -411,7 +409,7 @@ public class VacationsWindow extends JfxStage {
         UserChoice userChoice = optionalUserChoice.get();
         switch (userChoice) {
         case SHOW_SETTINGS_EDITOR:
-          showPropertiesEditor();
+          travelsService.showPropertiesEditor(getBundle(VacationsWindow.class, "VacationsPropertyDescriptorsResource"));
           break;
           
         case CREATE_VACATIONS_FILE:
@@ -801,7 +799,7 @@ public class VacationsWindow extends JfxStage {
     menu.getItems().add(menuItem);
     
     // File: Edit Properties
-    MenuUtil.addMenuItem(menu, "Edit Properties", _ -> showPropertiesEditor());
+    MenuUtil.addMenuItem(menu, "Edit Properties", _ -> travelsService.showPropertiesEditor(getBundle(VacationsWindow.class, "VacationsPropertyDescriptorsResource")));
     
     if (vacationsRegistry.isDevelopmentMode()) {
       // File: Edit Property Descriptors
@@ -2735,20 +2733,6 @@ public class VacationsWindow extends JfxStage {
       // Generate file
       Ov2Util.createOv2File(eObject, file.getAbsolutePath());
     }
-  }
-
-  
-  /**
-   * Show the User Properties editor.
-   */
-  private void showPropertiesEditor() {
-    URI uri = vacationsRegistry.getPropertyDescriptorsFileURI();
-    String userHomeDir = System.getProperty("user.home");
-//    Path propertyDescriptorsFilePath = Path.of("resources", VacationsRegistry.propertyDescriptorsResource);
-    Path userPropertiesFilePath = Path.of(userHomeDir, "MyWorld", vacationsRegistry.getUserPropertiesFileName());
-    
-    new PropertiesEditor("Vacation properties", customization, getBundle(VacationsWindow.class, "VacationsPropertyDescriptorsResource"),
-        uri, userPropertiesFilePath.toString());
   }
   
   /**

@@ -9,7 +9,7 @@ import goedegep.jfx.editor.EditorException;
 import goedegep.jfx.editor.controls.EditorControlEnumComboBox;
 import goedegep.jfx.editor.controls.EditorControlFlexDate;
 import goedegep.jfx.editor.controls.EditorControlString;
-import goedegep.media.mediadb.app.MediaDbService;
+import goedegep.media.common.IMediaDbService;
 import goedegep.media.mediadb.app.guifx.ArtistDetailsEditor;
 import goedegep.media.mediadb.model.Album;
 import goedegep.media.mediadb.model.AlbumType;
@@ -88,7 +88,7 @@ public class AlbumEditPanel extends EditPanelTemplate<Album> {
   /**
    * the media database service.
    */
-  private MediaDbService mediaDbService;
+  private IMediaDbService mediaDbService;
 
   /**
    * Create an instance of the {@code AlbumEditPanel}.
@@ -97,7 +97,7 @@ public class AlbumEditPanel extends EditPanelTemplate<Album> {
    * @param mediaDbService the media database service.
    * @return the newly created {@code EventEditPanel2}.
    */
-  public static AlbumEditPanel newInstance(CustomizationFx customization, MediaDbService mediaDbService) {
+  public static AlbumEditPanel newInstance(CustomizationFx customization, IMediaDbService mediaDbService) {
     AlbumEditPanel albumEditPanel = new AlbumEditPanel(customization, mediaDbService);
     albumEditPanel.performInitialization();
     
@@ -110,7 +110,7 @@ public class AlbumEditPanel extends EditPanelTemplate<Album> {
    * @param customization the GUI customization
    * @param mediaDbService the media database service.
    */
-  private AlbumEditPanel(CustomizationFx customization, MediaDbService mediaDbService) {
+  private AlbumEditPanel(CustomizationFx customization, IMediaDbService mediaDbService) {
     super(customization, false);
     
     this.mediaDbService = mediaDbService;

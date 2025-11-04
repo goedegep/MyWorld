@@ -11,7 +11,7 @@ import goedegep.jfx.objectcontrols.ObjectControlEnumComboBox;
 import goedegep.jfx.objectcontrols.ObjectControlString;
 import goedegep.jfx.objectcontrols.ObjectControlTextField;
 import goedegep.jfx.objecteditor.ObjectEditorException;
-import goedegep.media.mediadb.app.MediaDbService;
+import goedegep.media.common.IMediaDbService;
 import goedegep.media.mediadb.app.derivealbuminfo.TrackInfo;
 import goedegep.media.mediadb.model.Album;
 import goedegep.media.mediadb.model.AlbumType;
@@ -71,7 +71,7 @@ class TrackReferenceAndMyTrackInfoControls extends ObjectControlAggregationTempl
    */
   private List<TrackReferenceAndMyTrackInfoControls> trackReferenceControls;
   
-  private MediaDbService mediaDbService;
+  private IMediaDbService mediaDbService;
   
   /**
    * The media database.
@@ -110,7 +110,7 @@ class TrackReferenceAndMyTrackInfoControls extends ObjectControlAggregationTempl
       CustomizationFx customization,
       List<TrackReferenceAndMyTrackInfoControls> trackReferenceControls,
       AlbumType albumType,
-      MediaDbService mediaDbService) {
+      IMediaDbService mediaDbService) {
     TrackReferenceAndMyTrackInfoControls trackReferenceAndMyTrackInfoControls = new TrackReferenceAndMyTrackInfoControls(customization, trackReferenceControls, albumType, mediaDbService);
     trackReferenceAndMyTrackInfoControls.performInitialization();
     
@@ -129,7 +129,7 @@ class TrackReferenceAndMyTrackInfoControls extends ObjectControlAggregationTempl
       CustomizationFx customization,
       List<TrackReferenceAndMyTrackInfoControls> trackReferenceControls,
       AlbumType albumType,
-      MediaDbService mediaDbService) {
+      IMediaDbService mediaDbService) {
     super(customization);
     
     this.trackReferenceControls = trackReferenceControls;

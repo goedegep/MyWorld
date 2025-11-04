@@ -19,8 +19,8 @@ import goedegep.jfx.objectcontrols.ObjectControlMultiLineString;
 import goedegep.jfx.objectcontrols.ObjectControlString;
 import goedegep.jfx.objecteditor.ObjectEditorTemplate;
 import goedegep.jfx.stringconverterandchecker.StringConverterAndChecker;
+import goedegep.media.common.IMediaDbService;
 import goedegep.media.common.MediaRegistry;
-import goedegep.media.mediadb.app.MediaDbService;
 import goedegep.media.mediadb.model.Album;
 import goedegep.media.mediadb.model.Artist;
 import goedegep.media.mediadb.model.Disc;
@@ -107,7 +107,7 @@ public class ArtistDetailsEditor extends ObjectEditorTemplate<Artist> {
    * @param mediaDb the media database.
    * @return a newly created {@code ArtistDetailsEditor}.
    */
-  public static ArtistDetailsEditor newInstance(CustomizationFx customization, String windowTitle, MediaDbService mediaDbService) {
+  public static ArtistDetailsEditor newInstance(CustomizationFx customization, String windowTitle, IMediaDbService mediaDbService) {
     ArtistDetailsEditor artistDetailsEditor = new ArtistDetailsEditor(customization, windowTitle, mediaDbService);
     artistDetailsEditor.performInitialization();
     
@@ -125,7 +125,7 @@ public class ArtistDetailsEditor extends ObjectEditorTemplate<Artist> {
    * @param windowTitle the window title
    * @param mediaDb the media database to add the artist to
    */
-  private ArtistDetailsEditor(CustomizationFx customization, String windowTitle, MediaDbService mediaDbService) {
+  private ArtistDetailsEditor(CustomizationFx customization, String windowTitle, IMediaDbService mediaDbService) {
     super(customization, windowTitle, mediaDbService::addArtistToMediaDatabase);
     
     mediaDb = mediaDbService.getMediaDbResource().getEObject();

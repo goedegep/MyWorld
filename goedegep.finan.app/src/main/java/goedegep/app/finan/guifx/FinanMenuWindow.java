@@ -14,8 +14,6 @@ import goedegep.jfx.AppResourcesFx;
 import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.JfxStage;
 import goedegep.jfx.MenuUtil;
-import goedegep.jfx.PropertyDescriptorsEditorFx;
-import goedegep.properties.app.guifx.PropertiesEditor;
 import goedegep.resources.ImageSize;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -38,6 +36,7 @@ public class FinanMenuWindow extends JfxStage {
   private CustomizationFx customization;
   private FinanResourcesFx appResources;
   private FinanRegistry finanRegistry;
+  private FinanService finanService;
 
   /**
    * Constructor.
@@ -49,22 +48,8 @@ public class FinanMenuWindow extends JfxStage {
     super(customization, WINDOW_TITLE);
     this.customization = customization;
     finanRegistry = FinanRegistry.getInstance();
-    
-//    PropertyDescriptorGroup propertyDescriptorGroup = FinanRegistry.propertyDescriptorsResource.getEObject();
-//    String customPropertiesFileName = null;
-    
-//    EMFResource<PropertyGroup> propertiesResource = new EMFResource<>(
-//        PropertiesPackage.eINSTANCE,
-//        () -> PropertiesFactory.eINSTANCE.createPropertyGroup());
-//    PropertyGroup propertyGroup;
-//    try {
-//      propertyGroup = propertiesResource.load(customPropertiesFileName);
-//      LOGGER.severe(propertyGroup.toString());
-//    } catch (FileNotFoundException e) {
-//      e.printStackTrace();
-//      System.exit(-1);
-//    }
-    
+    finanService = FinanService.getInstance();
+        
     componentFactory = getComponentFactory();
     appResources = (FinanResourcesFx) getResources();
     
@@ -142,14 +127,14 @@ public class FinanMenuWindow extends JfxStage {
     if (finanRegistry.isDevelopmentMode()) {
       MenuUtil.addMenuItem(menu, "Edit Property Descriptors", new EventHandler<ActionEvent>()  {
         public void handle(ActionEvent e) {
-          showPropertyDescriptorsEditor();
+          finanService.showPropertyDescriptorsEditor();
         }
       });
     }
       
     MenuUtil.addMenuItem(menu, "Edit Properties", new EventHandler<ActionEvent>()  {
       public void handle(ActionEvent e) {
-        showPropertiesEditor();
+        finanService.showPropertiesEditor();
       }
     });
     
@@ -179,13 +164,5 @@ public class FinanMenuWindow extends JfxStage {
         finanRegistry.getCopyrightMessage() + NEWLINE +
         "Author: " + finanRegistry.getAuthor())
         .showAndWait();
-  }
-  
-  private void showPropertyDescriptorsEditor() {
-    new PropertyDescriptorsEditorFx(customization, finanRegistry.getPropertyDescriptorsFileURI());
-  }
-  
-  private void showPropertiesEditor() {
-    new PropertiesEditor("Finan properties", customization, finanRegistry.getPropertyDescriptorsFileURI(), finanRegistry.getUserPropertiesFileName());
   }
 }

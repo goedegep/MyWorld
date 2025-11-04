@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import goedegep.media.common.IMediaDbService;
 import goedegep.media.common.MediaRegistry;
 import goedegep.media.mediadb.model.Album;
 import goedegep.media.mediadb.model.Artist;
@@ -17,7 +18,7 @@ import goedegep.util.emf.EmfUtil;
 /**
  * This class is a service on top of a media database.
  */
-public class MediaDbService {
+public class MediaDbService implements IMediaDbService {
   
   private MediaRegistry mediaRegistry = MediaRegistry.getInstance();
   
@@ -43,12 +44,14 @@ public class MediaDbService {
     mediaDb = mediaDbResource.getEObject();
   }
   
+  @Override
   public MediaDb getMediaDb() {
     return mediaDb;
   }
 
 
 
+  @Override
   public EMFResource<MediaDb> getMediaDbResource() {
     return mediaDbResource;
   }
@@ -56,6 +59,7 @@ public class MediaDbService {
   /**
    * Add a new {@code Album} to the media database.
    */
+  @Override
   public void addAlbumToMediaDatabase(Album album) {
     mediaDb.getAlbums().add(album);
   }
@@ -63,6 +67,7 @@ public class MediaDbService {
   /**
    * Add a new {@code Artist} to the media database.
    */
+  @Override
   public void addArtistToMediaDatabase(Artist artist) {
     mediaDb.getArtists().add(artist);
   }
@@ -70,6 +75,7 @@ public class MediaDbService {
   /**
    * Add a new {@code Track} to the media database.
    */
+  @Override
   public void addTrackToMediaDatabase(Track track) {
     mediaDb.getTracks().add(track);
   }
@@ -78,6 +84,7 @@ public class MediaDbService {
   /**
    * Check and save the media database.
    */
+  @Override
   public Result checkAndSaveMediaDb() {
     List<Object> errors = new ArrayList<>();
     MediaDbChecker.checkMediaDb(mediaDb, errors);
@@ -87,6 +94,7 @@ public class MediaDbService {
   /**
    * Save the media database to the related file.
    */
+  @Override
   public Result saveMediaDb() { 
     EmfUtil.checkCompleteContainment(mediaDb);
     Result result = new Result();

@@ -17,7 +17,6 @@
   <properties>
     <project.build.sourceEncoding>UTF8</project.build.sourceEncoding>
     <copyright>Copyright (c) 2001-2025</copyright>
-    <lombok.version>1.18.38</lombok.version>
   </properties>
   
   <dependencies>

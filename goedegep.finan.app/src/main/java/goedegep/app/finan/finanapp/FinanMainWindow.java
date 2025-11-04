@@ -69,6 +69,7 @@ import goedegep.appgen.swing.Customizations;
 import goedegep.appgen.swing.MenuFactory;
 import goedegep.appgen.swing.OptionDialog;
 import goedegep.finan.abnamrobank.AbnAmroBank;
+import goedegep.finan.app.FinanService;
 import goedegep.finan.basic.Bank;
 import goedegep.finan.basic.FinanTransaction;
 import goedegep.finan.basic.FinancieleEenheid;
@@ -93,9 +94,6 @@ import goedegep.finan.stocks.Share;
 import goedegep.finan.stocks.ShareDividendsContentHandler;
 import goedegep.finan.stocks.ShareTaxRatesContentHandler;
 import goedegep.finan.stocks.StockDepot;
-import goedegep.jfx.DefaultCustomizationFx;
-import goedegep.jfx.PropertyDescriptorsEditorFx;
-import goedegep.properties.app.guifx.PropertiesEditor;
 import goedegep.resources.ImageSize;
 import goedegep.rolodex.model.Rolodex;
 import goedegep.util.sax.ParseException;
@@ -134,6 +132,7 @@ public class FinanMainWindow extends AppFrame implements SumAccountListener {
   private ComponentFactory             componentFactory;
   
   private FinanRegistry finanRegistry;
+  private FinanService finanService;
   
   private SAXParser                    parser;
   private TransactionContentHandler    contentHandler;
@@ -144,9 +143,6 @@ public class FinanMainWindow extends AppFrame implements SumAccountListener {
   private File            dataDumpFile = null;              // File to which data has been dumped.
   private SumAccount      sumAccount = new SumAccount();
   private StockDepot      sumStockDepot;
-  
-  // Voor de personen
-  private Rolodex rolodex;
   
   // Accounts overview table
   private BankTable       bankTable;
@@ -181,6 +177,7 @@ public class FinanMainWindow extends AppFrame implements SumAccountListener {
     componentFactory = getTheComponentFactory();
     
     finanRegistry = FinanRegistry.getInstance();
+    finanService = FinanService.getInstance();
     
     enableEvents(AWTEvent.WINDOW_EVENT_MASK);
     try {
@@ -350,18 +347,6 @@ public class FinanMainWindow extends AppFrame implements SumAccountListener {
 //      }
 //    }
 //  }
-  
-  private void showPropertyDescriptorsEditor() {
-    new PropertyDescriptorsEditorFx(DefaultCustomizationFx.getInstance(), finanRegistry.getPropertyDescriptorsFileURI());
-  }
-
-  private void showUserSettingsEditor() {
-    PropertiesEditor propertiesEditor = new PropertiesEditor("Edit Finan settings", DefaultCustomizationFx.getInstance(),
-        finanRegistry.getPropertyDescriptorsFileURI(), finanRegistry.getUserPropertiesFileName());
-    propertiesEditor.show();
-//    JFrame propertiesWindow = new PropertiesWindow(getCustomization(), FinanRegistry.propertyDescriptorsResource);
-//    WindowUtil.showFrameCenteredOnScreen(propertiesWindow, -50, -50);
-  }
 
   private JMenuBar createMenuBar() {
     JMenuBar     menuBar = new JMenuBar();
@@ -403,7 +388,7 @@ public class FinanMainWindow extends AppFrame implements SumAccountListener {
     if (finanRegistry.isDevelopmentMode()) {
       MenuFactory.addMenuItem(menu, "Property Descriptors bewerken", new ActionListener()  {
         public void actionPerformed(ActionEvent e) {
-          showPropertyDescriptorsEditor();
+          finanService.showPropertyDescriptorsEditor();
         }
       });
     }
@@ -411,7 +396,7 @@ public class FinanMainWindow extends AppFrame implements SumAccountListener {
     // Bestand: Gebruikers instellingen bewerken
     MenuFactory.addMenuItem(menu, "Gebruikers instellingen bewerken", new ActionListener()  {
       public void actionPerformed(ActionEvent e) {
-        showUserSettingsEditor();
+        finanService.showPropertiesEditor();
       }
     });
     
@@ -541,7 +526,7 @@ public class FinanMainWindow extends AppFrame implements SumAccountListener {
           "Het scherm hiervoor wordt nu eenmalig gestart." +
           "Dit kan je later altijd opnieuw starten via \"Bestand/Gebruikersinstellingen bewerken\"");
 
-      showPropertyDescriptorsEditor();
+      finanService.showPropertyDescriptorsEditor();
       
 //      // re-read properties file.
 //      try {

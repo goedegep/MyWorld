@@ -8,7 +8,7 @@ import goedegep.jfx.objectcontrols.ObjectControlDuration;
 import goedegep.jfx.objectcontrols.ObjectControlString;
 import goedegep.jfx.objecteditor.ObjectEditorException;
 import goedegep.jfx.objecteditor.ObjectEditorTemplate;
-import goedegep.media.mediadb.app.MediaDbService;
+import goedegep.media.common.IMediaDbService;
 import goedegep.media.mediadb.model.Artist;
 import goedegep.media.mediadb.model.MediadbFactory;
 import goedegep.media.mediadb.model.MediadbPackage;
@@ -58,7 +58,7 @@ public class TrackEditor extends ObjectEditorTemplate<Track> {
    * @param mediaDb the media database.
    * @return a newly created {@code TrackEditor}.
    */
-  public static TrackEditor newInstance(CustomizationFx customization, MediaDbService mediaDbService) {
+  public static TrackEditor newInstance(CustomizationFx customization, IMediaDbService mediaDbService) {
     TrackEditor trackEditor = new TrackEditor(customization, mediaDbService);
     trackEditor.performInitialization();
     
@@ -80,7 +80,7 @@ public class TrackEditor extends ObjectEditorTemplate<Track> {
    * @param customization the GUI customization.
    * @param mediaDb the media database.
    */
-  private TrackEditor(CustomizationFx customization, MediaDbService mediaDbService) {
+  private TrackEditor(CustomizationFx customization, IMediaDbService mediaDbService) {
     super(customization, "Track selecter/editor", mediaDbService::addTrackToMediaDatabase);
     
     componentFactory = customization.getComponentFactoryFx();

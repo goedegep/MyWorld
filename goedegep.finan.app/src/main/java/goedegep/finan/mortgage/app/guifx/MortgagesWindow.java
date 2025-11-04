@@ -14,6 +14,7 @@ import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.ecore.EReference;
 
 import goedegep.app.finan.registry.FinanRegistry;
+import goedegep.finan.app.FinanService;
 import goedegep.finan.mortgage.InterestCompensationMortgageCalculator;
 import goedegep.finan.mortgage.MortgageCalculator;
 import goedegep.finan.mortgage.MortgageReportsGenerator;
@@ -33,7 +34,6 @@ import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.JfxStage;
 import goedegep.jfx.eobjecttable.EObjectListContainerSpecification;
 import goedegep.jfx.eobjecttable.EObjectTable;
-import goedegep.properties.app.guifx.PropertiesEditor;
 import goedegep.util.emf.EMFNotificationListener;
 import goedegep.util.emf.EMFResource;
 import goedegep.util.emf.EmfUtil;
@@ -103,7 +103,7 @@ public class MortgagesWindow extends JfxStage implements EMFNotificationListener
       alert.getButtonTypes().add(editorButtonType);
       
       alert.showAndWait().filter(response -> response == editorButtonType).ifPresent(_ -> {
-        showPropertiesEditor();
+        FinanService.getInstance().showPropertiesEditor();
       });
       
       return;
@@ -558,10 +558,6 @@ public class MortgagesWindow extends JfxStage implements EMFNotificationListener
   
   private void editMortgage() {
     new MortgageClosingDataEditor(customization, mortgage);
-  }
-
-  private void showPropertiesEditor() {
-    new PropertiesEditor("Finan properties", customization, finanRegistry.getPropertyDescriptorsFileURI(), finanRegistry.getUserPropertiesFileName());
   }
   
   private void addNewInterestRateEvent() {

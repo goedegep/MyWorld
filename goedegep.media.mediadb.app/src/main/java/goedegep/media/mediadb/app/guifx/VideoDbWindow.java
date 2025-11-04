@@ -10,14 +10,13 @@ import goedegep.jfx.AppResourcesFx;
 import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.JfxStage;
 import goedegep.jfx.MenuUtil;
-import goedegep.jfx.PropertyDescriptorsEditorFx;
+import goedegep.media.common.IMediaService;
 import goedegep.media.common.MediaRegistry;
 import goedegep.media.mediadb.model.MediaDb;
 import goedegep.media.mediadb.model.MediadbFactory;
 import goedegep.media.mediadb.model.MediadbPackage;
 import goedegep.media.mediadb.model.Subject;
 import goedegep.media.mediadb.model.Video;
-import goedegep.properties.app.guifx.PropertiesEditor;
 import goedegep.resources.ImageSize;
 import goedegep.util.datetime.FlexDate;
 import goedegep.util.desktop.DesktopUtil;
@@ -55,6 +54,8 @@ public class VideoDbWindow extends JfxStage {
   private MediaDb mediaDb;
   
   private MediaRegistry mediaRegistry;
+  
+  private IMediaService iMediaService;
 
   /**
    * A table listing all films.
@@ -70,9 +71,10 @@ public class VideoDbWindow extends JfxStage {
    * 
    * @param customization the GUI customization.
    */
-  public VideoDbWindow(CustomizationFx customization) {
+  public VideoDbWindow(CustomizationFx customization, IMediaService iMediaService) {
     super(customization, WINDOW_TITLE);
-
+    
+    this.iMediaService = iMediaService;
     mediaRegistry = MediaRegistry.getInstance();
     appResources = customization.getResources();
 
@@ -192,14 +194,14 @@ public class VideoDbWindow extends JfxStage {
     if (mediaRegistry.isDevelopmentMode()) {
       MenuUtil.addMenuItem(menu, "Edit Property Descriptors", new EventHandler<ActionEvent>()  {
         public void handle(ActionEvent e) {
-          showPropertyDescriptorsEditor();
+          iMediaService.showPropertyDescriptorsEditor();
         }
       });
 
       // File: Edit User Settings
       MenuUtil.addMenuItem(menu, "Edit User Settings", new EventHandler<ActionEvent>()  {
         public void handle(ActionEvent e) {
-          showUserSettingsEditor();
+          iMediaService.showPropertiesEditor();
         }
       });
     }
@@ -265,21 +267,6 @@ public class VideoDbWindow extends JfxStage {
     // TODO
   }
   
-  /**
-   * Open the PropertyDescriptors editor.
-   */
-  private void showPropertyDescriptorsEditor() {
-    new PropertyDescriptorsEditorFx(customization, mediaRegistry.getPropertyDescriptorsFileURI());
-  }
-
-  /**
-   * Open the User Settings editor.
-   */
-  private void showUserSettingsEditor() {
-    PropertiesEditor propertiesEditor = new PropertiesEditor("Edit Media settings", customization,
-        mediaRegistry.getPropertyDescriptorsFileURI(), mediaRegistry.getUserPropertiesFileName());
-    propertiesEditor.show();
-  }
 
   /**
    * Show the dialog with information about this application.

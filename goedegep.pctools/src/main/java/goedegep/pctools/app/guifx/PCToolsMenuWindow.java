@@ -5,11 +5,10 @@ import java.util.logging.Logger;
 import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.JfxStage;
 import goedegep.jfx.MenuUtil;
-import goedegep.jfx.PropertyDescriptorsEditorFx;
+import goedegep.pctools.app.PCToolsService;
 import goedegep.pctools.app.logic.PCToolsRegistry;
 import goedegep.pctools.filefinder.guifx.FileFinderWindow;
 import goedegep.pctools.filescontrolled.guifx.FilesControlledWindow;
-import goedegep.properties.app.guifx.PropertiesEditor;
 import goedegep.resources.ImageSize;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -123,14 +122,14 @@ public class PCToolsMenuWindow extends JfxStage {
       // Bestand: property descriptors bewerken
       MenuUtil.addMenuItem(menu, "Property Descriptors bewerken", new EventHandler<ActionEvent>()  {
         public void handle(ActionEvent e) {
-          showPropertyDescriptorsEditor();
+          PCToolsService.getInstance().showPropertyDescriptorsEditor();
         }
       });
 
       // Bestand: properties bewerken
       MenuUtil.addMenuItem(menu, "Properties bewerken", new EventHandler<ActionEvent>()  {
         public void handle(ActionEvent e) {
-          showPropertiesEditor();
+          PCToolsService.getInstance().showPropertiesEditor();
         }
       });
 
@@ -151,20 +150,6 @@ public class PCToolsMenuWindow extends JfxStage {
     menuBar.getMenus().add(menu);
 
     return menuBar;
-  }
-  
-  /**
-   * Show the standard PropertyDescriptors editor.
-   */
-  private void showPropertyDescriptorsEditor() {
-    new PropertyDescriptorsEditorFx(customization, pcToolsRegistry.getPropertyDescriptorsFileURI());
-  }
-  
-  /**
-   * Show the standard Properties editor.
-   */
-  private void showPropertiesEditor() {
-    new PropertiesEditor("PC Tools Properties Editor", customization, pcToolsRegistry.getPropertyDescriptorsFileURI(), pcToolsRegistry.getUserPropertiesFileName());
   }
   
   /**
