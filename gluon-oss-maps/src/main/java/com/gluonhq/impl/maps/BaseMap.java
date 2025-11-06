@@ -64,14 +64,11 @@ public class BaseMap extends Group {
      * the higher-level zoom and scale down.
      */
     public static final double TIPPING = 0.2;
-    
-    public static final int TILE_SIZE = 256;
 
     /**
      * The maximum zoom level this map supports.
      */
     public static final int MAX_ZOOM = 20;
-    @SuppressWarnings("unchecked")
     private final Map<Long, SoftReference<MapTile>>[] tiles = new HashMap[MAX_ZOOM];
 
     private double lat;
@@ -87,6 +84,8 @@ public class BaseMap extends Group {
     private final DoubleProperty prefCenterLon = new SimpleDoubleProperty();
     private final DoubleProperty prefCenterLat = new SimpleDoubleProperty();
     private final DoubleProperty prefZoom = new SimpleDoubleProperty();
+    
+    private double zoomValue;
 
 
 
@@ -138,7 +137,7 @@ public class BaseMap extends Group {
         SoftReference<MapTile> ref = tiles[nearestZoom].get(key);
         MapTile mapTile = ref.get();
         
-        if (!mapTile.ready) {
+        if (mapTile.loading()) {
           logger.severe("<= false - not ready: " + key);
           return false;
         }
@@ -146,6 +145,7 @@ public class BaseMap extends Group {
 
       return true;
     }
+    
     
     /**
      * Move the center of this map to the specified coordinates
@@ -338,57 +338,50 @@ public class BaseMap extends Group {
         return prefCenterLat;
     }
     
-    /**
-     * Load tiles
-     */
     private final void loadTiles() {
-        logger.info("=>");
+        logger.fine("[JVDBG] loadTiles");
         if (getScene() == null) {
-            logger.fine("Can't load tiles, scene null");
+            logger.fine("[JVDBG] can't load tiles, scene null");
             return;
         }
-        // Tiles have fixed zoom levels.
         int nearestZoom = (Math.min((int) floor(zoom.get() + TIPPING), MAX_ZOOM - 1));
         double activeZoom = zoom.get();
         double deltaZ = nearestZoom - activeZoom;
-        // at zoom level z, there are 2^z tiles in each direction.
         long i_max = 1 << nearestZoom;
         long j_max = 1 << nearestZoom;
         double tx = getTranslateX();
         double ty = getTranslateY();
         double width = getMyWidth();
         double height = getMyHeight();
-        long imin = Math.max(0, (long) (-tx * Math.pow(2, deltaZ) / TILE_SIZE) - 1);
-        long jmin = Math.max(0, (long) (-ty * Math.pow(2, deltaZ) / TILE_SIZE));
-        long imax = Math.min(i_max, imin + (long) (width * Math.pow(2, deltaZ) / TILE_SIZE) + 3);
-        long jmax = Math.min(j_max, jmin + (long) (height * Math.pow(2, deltaZ) / TILE_SIZE) + 3);
-        logger.info("Zoom = " + nearestZoom + ", active = " + activeZoom + ", tx = " + tx + ", loadtiles, check i-range: " + imin + ", " + imax + " and j-range: " + jmin + ", " + jmax);
+        long imin = Math.max(0, (long) (-tx * Math.pow(2, deltaZ) / 256) - 1);
+        long jmin = Math.max(0, (long) (-ty * Math.pow(2, deltaZ) / 256));
+        long imax = Math.min(i_max, imin + (long) (width * Math.pow(2, deltaZ) / 256) + 3);
+        long jmax = Math.min(j_max, jmin + (long) (height * Math.pow(2, deltaZ) / 256) + 3);
+        logger.fine("Zoom = " + nearestZoom + ", active = " + activeZoom + ", tx = " + tx + ", loadtiles, check i-range: " + imin + ", " + imax + " and j-range: " + jmin + ", " + jmax);
         for (long i = imin; i < imax; i++) {
             for (long j = jmin; j < jmax; j++) {
                 Long key = i * i_max + j;
-                logger.info("loading tile: " + key);
                 SoftReference<MapTile> ref = tiles[nearestZoom].get(key);
-                MapTile mapTile;
                 if ((ref == null) || (ref.get() == null)) {
                     if (ref != null) {
                         logger.fine("RECLAIMED: z=" + nearestZoom + ",i=" + i + ",j=" + j);
                     }
-                    mapTile = new MapTile(this, nearestZoom, i, j);
-                    tiles[nearestZoom].put(key, new SoftReference<>(mapTile));
-                    MapTile covering = getCoveringTile(mapTile);
+                    MapTile tile = new MapTile(this, nearestZoom, i, j);
+                    tiles[nearestZoom].put(key, new SoftReference<>(tile));
+                    MapTile covering = getCoveringTile(tile);
                     if (covering != null) {
-                        covering.addCovering(mapTile);
+                        covering.addCovering(tile);
                         if (!getChildren().contains(covering)) {
                             getChildren().add(covering);
                         }
                     }
 
-                    getChildren().add(mapTile);
+                    getChildren().add(tile);
                 } else {
-                    mapTile = ref.get();
-                }
-                if (!getChildren().contains(mapTile)) {
-                  getChildren().add(mapTile);
+                    MapTile tile = ref.get();
+                    if (!getChildren().contains(tile)) {
+                        getChildren().add(tile);
+                    }
                 }
             }
         }

@@ -28,7 +28,6 @@
 package com.gluonhq.maps;
 
 import com.gluonhq.impl.maps.BaseMap;
-
 import javafx.geometry.Point2D;
 import javafx.scene.Parent;
 
@@ -92,7 +91,6 @@ public class MapLayer extends Parent {
     protected void layoutChildren() {
         if (dirty) {
             layoutLayer();
-            dirty = false;
         }
     }
     /**
@@ -119,4 +117,3 @@ public class MapLayer extends Parent {
     }
 
 }
-
