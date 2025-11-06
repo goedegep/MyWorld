@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018, 2019, Gluon
+ * Copyright (c) 2018, 2020, Gluon
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,18 +25,35 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-module com.gluonhq.maps {
-    requires transitive javafx.controls;
+package com.gluonhq.impl.maps.tile.osm;
 
-//    requires com.gluonhq.attach.storage;
-//    requires com.gluonhq.attach.util;
+import com.gluonhq.maps.tile.TileRetriever;
+import javafx.scene.image.Image;
 
-    requires transitive java.logging;
-    requires transitive goedegep.geo;
+import java.util.concurrent.CompletableFuture;
 
-    uses com.gluonhq.maps.tile.TileRetriever;
+public class OsmTileRetriever implements TileRetriever {
 
-    exports com.gluonhq.impl.maps;
-    exports com.gluonhq.maps;
-    exports com.gluonhq.maps.tile;
+    private static final String host = "https://tile.openstreetmap.org/";
+    static final String httpAgent;
+
+    static {
+        String agent = System.getProperty("http.agent");
+        if (agent == null) {
+            agent = "(" + System.getProperty("os.name") + " / " + System.getProperty("os.version") + " / " + System.getProperty("os.arch") + ")";
+        }
+        httpAgent = "Gluon Maps/2.0.0 " + agent;
+        System.setProperty("http.agent", httpAgent);
+    }
+
+    static String buildImageUrlString(int zoom, long i, long j) {
+        return host + zoom + "/" + i + "/" + j + ".png";
+    }
+
+    @Override
+    public CompletableFuture<Image> loadTile(int zoom, long i, long j) {
+        String urlString = buildImageUrlString(zoom, i, j);
+        return CompletableFuture.completedFuture(new Image(urlString, true));
+    }
+
 }

@@ -27,12 +27,9 @@
  */
 package com.gluonhq.maps;
 
-import java.util.LinkedList;
-import java.util.List;
-import java.util.logging.Logger;
-
-//import com.gluonhq.attach.util.Platform;
+import com.gluonhq.attach.util.Platform;
 import com.gluonhq.impl.maps.BaseMap;
+import com.gluonhq.impl.maps.TileImageView;
 
 import goedegep.geo.WGS84BoundingBox;
 import javafx.animation.Animation.Status;
@@ -41,9 +38,14 @@ import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
 import javafx.geometry.Point2D;
+import javafx.scene.image.Image;
 import javafx.scene.layout.Region;
 import javafx.scene.shape.Rectangle;
 import javafx.util.Duration;
+
+import java.util.LinkedList;
+import java.util.List;
+import java.util.function.Supplier;
 
 /**
  *
@@ -52,7 +54,6 @@ import javafx.util.Duration;
  * or by calling the methods setCenter and setZoom.
  */
 public class MapView extends Region {
-    private static final Logger LOGGER = Logger.getLogger(MapView.class.getName());
 
     private final BaseMap baseMap;
     private Timeline timeline;
@@ -85,10 +86,11 @@ public class MapView extends Region {
             }
         });
     }
-
+    
     public BaseMap getBaseMap() {
       return baseMap;
     }
+
     
     private void registerInputListeners() {
         setOnMousePressed(t -> {
@@ -100,7 +102,6 @@ public class MapView extends Region {
             enableDragging = true;
         });
         setOnMouseDragged(t -> {
-            LOGGER.info("Mouse Dragged.");
             if (zooming || !enableDragging) {
                 return;
             }
@@ -109,19 +110,19 @@ public class MapView extends Region {
             baseMap.x0 = t.getX();
             baseMap.y0 = t.getY();
         });
-        setOnMouseReleased(t -> {
-          LOGGER.info("Mouse Released.");
-          enableDragging = false;
-        });
+        setOnMouseReleased(t -> enableDragging = false);
         setOnZoomStarted(t -> {
             zooming = true;
             enableDragging = false;
         });
         setOnZoomFinished(t -> zooming = false);
         setOnZoom(t -> baseMap.zoom(t.getZoomFactor() - 1, t.getX(), t.getY()));
-//        if (Platform.isDesktop()) {
-            setOnScroll(t -> baseMap.zoom(t.getDeltaY() > 1 ? .1 : -.1, t.getX(), t.getY()));
-//        }
+        if (Platform.isDesktop()) {
+            setOnScroll(t -> {
+                final double delta = t.getDeltaY() > 1 ? .1 : t.getDeltaY() < -1 ? -.1 : 0;
+                baseMap.zoom(delta, t.getX(), t.getY());
+            });
+        }
     }
 
    /**
@@ -249,6 +250,16 @@ public class MapView extends Region {
       return zoomLevel;
     }
 
+    /**
+     * Set a supplier of an Image that can be used as placeholder by the Tile
+     * while the final image is being retrieved
+     *
+     * @param supplier a supplier that provides a placeholder Image
+     */
+    public static void setPlaceholderImageSupplier(Supplier<Image> supplier) {
+        TileImageView.setPlaceholderImageSupplier(supplier);
+    }
+
     private boolean dirty = false;
 
     protected void markDirty() {
@@ -261,8 +272,6 @@ public class MapView extends Region {
      */
     @Override
     protected void layoutChildren() {
-        long startTime = System.nanoTime();
-      
         final double w = getWidth();
         final double h = getHeight();
 
@@ -271,8 +280,8 @@ public class MapView extends Region {
                 layer.layoutLayer();
             }
         }
-        dirty = false;
         super.layoutChildren();
+        dirty = false;
 
         // we need to get these values or we won't be notified on new changes
         baseMap.centerLon().get();
@@ -281,8 +290,5 @@ public class MapView extends Region {
         // update clip
         clip.setWidth(w);
         clip.setHeight(h);
-        
-        long endTime = System.nanoTime();
-        LOGGER.info("layoutChildren took: " + (endTime - startTime));
     }
 }
