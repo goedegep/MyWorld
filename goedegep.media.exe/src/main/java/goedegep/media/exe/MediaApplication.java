@@ -23,12 +23,6 @@ public class MediaApplication extends JfxApplication {
    * Called during the JavaFx launch sequence.<br/>
    */
   public MediaApplication() {
-    
-    String logFileBaseName = null;
-    if (!RunningInEclipse.runningInEclipse()) {
-      logFileBaseName = System.getProperty("user.home") + File.separator + LOG_SUBFOLDER + File.separator + PROGRAM_NAME + "_logfile";
-    }
-    logSetup(Level.SEVERE, logFileBaseName);
   }
   
   /**

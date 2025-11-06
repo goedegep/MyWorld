@@ -36,8 +36,6 @@ import java.lang.reflect.InvocationTargetException;
  *   <li>{@link goedegep.properties.model.impl.PropertyDescriptorGroupImpl#getPropertyDescriptors <em>Property Descriptors</em>}</li>
  *   <li>{@link goedegep.properties.model.impl.PropertyDescriptorGroupImpl#getName <em>Name</em>}</li>
  *   <li>{@link goedegep.properties.model.impl.PropertyDescriptorGroupImpl#getDescription <em>Description</em>}</li>
- *   <li>{@link goedegep.properties.model.impl.PropertyDescriptorGroupImpl#getPackageName <em>Package Name</em>}</li>
- *   <li>{@link goedegep.properties.model.impl.PropertyDescriptorGroupImpl#getRegistryClassName <em>Registry Class Name</em>}</li>
  * </ul>
  *
  * @generated
@@ -112,64 +110,6 @@ public class PropertyDescriptorGroupImpl extends MinimalEObjectImpl.Container im
    * @ordered
    */
   protected boolean descriptionESet;
-
-  /**
-   * The default value of the '{@link #getPackageName() <em>Package Name</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getPackageName()
-   * @generated
-   * @ordered
-   */
-  protected static final String PACKAGE_NAME_EDEFAULT = null;
-
-  /**
-   * The cached value of the '{@link #getPackageName() <em>Package Name</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getPackageName()
-   * @generated
-   * @ordered
-   */
-  protected String packageName = PACKAGE_NAME_EDEFAULT;
-
-  /**
-   * This is true if the Package Name attribute has been set.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  protected boolean packageNameESet;
-
-  /**
-   * The default value of the '{@link #getRegistryClassName() <em>Registry Class Name</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getRegistryClassName()
-   * @generated
-   * @ordered
-   */
-  protected static final String REGISTRY_CLASS_NAME_EDEFAULT = null;
-
-  /**
-   * The cached value of the '{@link #getRegistryClassName() <em>Registry Class Name</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getRegistryClassName()
-   * @generated
-   * @ordered
-   */
-  protected String registryClassName = REGISTRY_CLASS_NAME_EDEFAULT;
-
-  /**
-   * This is true if the Registry Class Name attribute has been set.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  protected boolean registryClassNameESet;
 
   /**
    * <!-- begin-user-doc -->
@@ -311,112 +251,6 @@ public class PropertyDescriptorGroupImpl extends MinimalEObjectImpl.Container im
   /**
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public String getPackageName() {
-    return packageName;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public void setPackageName(String newPackageName) {
-    String oldPackageName = packageName;
-    packageName = newPackageName;
-    boolean oldPackageNameESet = packageNameESet;
-    packageNameESet = true;
-    if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, PropertiesPackage.PROPERTY_DESCRIPTOR_GROUP__PACKAGE_NAME,
-          oldPackageName, packageName, !oldPackageNameESet));
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public void unsetPackageName() {
-    String oldPackageName = packageName;
-    boolean oldPackageNameESet = packageNameESet;
-    packageName = PACKAGE_NAME_EDEFAULT;
-    packageNameESet = false;
-    if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.UNSET, PropertiesPackage.PROPERTY_DESCRIPTOR_GROUP__PACKAGE_NAME,
-          oldPackageName, PACKAGE_NAME_EDEFAULT, oldPackageNameESet));
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public boolean isSetPackageName() {
-    return packageNameESet;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public String getRegistryClassName() {
-    return registryClassName;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public void setRegistryClassName(String newRegistryClassName) {
-    String oldRegistryClassName = registryClassName;
-    registryClassName = newRegistryClassName;
-    boolean oldRegistryClassNameESet = registryClassNameESet;
-    registryClassNameESet = true;
-    if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET,
-          PropertiesPackage.PROPERTY_DESCRIPTOR_GROUP__REGISTRY_CLASS_NAME, oldRegistryClassName, registryClassName,
-          !oldRegistryClassNameESet));
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public void unsetRegistryClassName() {
-    String oldRegistryClassName = registryClassName;
-    boolean oldRegistryClassNameESet = registryClassNameESet;
-    registryClassName = REGISTRY_CLASS_NAME_EDEFAULT;
-    registryClassNameESet = false;
-    if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.UNSET,
-          PropertiesPackage.PROPERTY_DESCRIPTOR_GROUP__REGISTRY_CLASS_NAME, oldRegistryClassName,
-          REGISTRY_CLASS_NAME_EDEFAULT, oldRegistryClassNameESet));
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public boolean isSetRegistryClassName() {
-    return registryClassNameESet;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
    * @generated NOT
    */
   public PropertyDescriptor getPropertyDescriptor(String propertyName) {
@@ -459,10 +293,6 @@ public class PropertyDescriptorGroupImpl extends MinimalEObjectImpl.Container im
       return getName();
     case PropertiesPackage.PROPERTY_DESCRIPTOR_GROUP__DESCRIPTION:
       return getDescription();
-    case PropertiesPackage.PROPERTY_DESCRIPTOR_GROUP__PACKAGE_NAME:
-      return getPackageName();
-    case PropertiesPackage.PROPERTY_DESCRIPTOR_GROUP__REGISTRY_CLASS_NAME:
-      return getRegistryClassName();
     }
     return super.eGet(featureID, resolve, coreType);
   }
@@ -486,12 +316,6 @@ public class PropertyDescriptorGroupImpl extends MinimalEObjectImpl.Container im
     case PropertiesPackage.PROPERTY_DESCRIPTOR_GROUP__DESCRIPTION:
       setDescription((String) newValue);
       return;
-    case PropertiesPackage.PROPERTY_DESCRIPTOR_GROUP__PACKAGE_NAME:
-      setPackageName((String) newValue);
-      return;
-    case PropertiesPackage.PROPERTY_DESCRIPTOR_GROUP__REGISTRY_CLASS_NAME:
-      setRegistryClassName((String) newValue);
-      return;
     }
     super.eSet(featureID, newValue);
   }
@@ -513,12 +337,6 @@ public class PropertyDescriptorGroupImpl extends MinimalEObjectImpl.Container im
     case PropertiesPackage.PROPERTY_DESCRIPTOR_GROUP__DESCRIPTION:
       unsetDescription();
       return;
-    case PropertiesPackage.PROPERTY_DESCRIPTOR_GROUP__PACKAGE_NAME:
-      unsetPackageName();
-      return;
-    case PropertiesPackage.PROPERTY_DESCRIPTOR_GROUP__REGISTRY_CLASS_NAME:
-      unsetRegistryClassName();
-      return;
     }
     super.eUnset(featureID);
   }
@@ -537,10 +355,6 @@ public class PropertyDescriptorGroupImpl extends MinimalEObjectImpl.Container im
       return isSetName();
     case PropertiesPackage.PROPERTY_DESCRIPTOR_GROUP__DESCRIPTION:
       return isSetDescription();
-    case PropertiesPackage.PROPERTY_DESCRIPTOR_GROUP__PACKAGE_NAME:
-      return isSetPackageName();
-    case PropertiesPackage.PROPERTY_DESCRIPTOR_GROUP__REGISTRY_CLASS_NAME:
-      return isSetRegistryClassName();
     }
     return super.eIsSet(featureID);
   }
@@ -578,16 +392,6 @@ public class PropertyDescriptorGroupImpl extends MinimalEObjectImpl.Container im
     result.append(", description: ");
     if (descriptionESet)
       result.append(description);
-    else
-      result.append("<unset>");
-    result.append(", packageName: ");
-    if (packageNameESet)
-      result.append(packageName);
-    else
-      result.append("<unset>");
-    result.append(", registryClassName: ");
-    if (registryClassNameESet)
-      result.append(registryClassName);
     else
       result.append("<unset>");
     result.append(')');

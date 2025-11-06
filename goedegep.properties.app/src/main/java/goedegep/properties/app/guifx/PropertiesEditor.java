@@ -78,7 +78,6 @@ public class PropertiesEditor extends JfxStage {
   private static EAttribute editableProperty_name = null;
   private static EAttribute editableProperty_displayName = null;
   private static EAttribute editableProperty_description = null;
-  private static EAttribute editableProperty_defaultValue = null;
   private static EAttribute editableProperty_value = null;
   
   private EObject editableProperties;
@@ -234,11 +233,6 @@ public class PropertiesEditor extends JfxStage {
     editableProperty_description.setEType(EcorePackage.eINSTANCE.getEString());
     structuralFeatures.add(editableProperty_description);
     
-    editableProperty_defaultValue = EcoreFactory.eINSTANCE.createEAttribute();
-    editableProperty_defaultValue.setName("defaultValue");
-    editableProperty_defaultValue.setEType(EcorePackage.eINSTANCE.getEString());
-    structuralFeatures.add(editableProperty_defaultValue);
-    
     editableProperty_value = EcoreFactory.eINSTANCE.createEAttribute();
     editableProperty_value.setName("value");
     editableProperty_value.setEType(EcorePackage.eINSTANCE.getEString());
@@ -354,11 +348,6 @@ public class PropertiesEditor extends JfxStage {
         .setPresentationType(PresentationType.MULTI_LINE_TEXT);
     eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(eObjectTreeItemAttributeDescriptor);
     
-    // Default value
-    eObjectTreeItemAttributeDescriptor = new EObjectTreeItemAttributeDescriptor(editableProperty_defaultValue)
-        .setLabelText("Default value");
-    eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(eObjectTreeItemAttributeDescriptor);
-    
     // User value
     eObjectTreeItemAttributeDescriptor = new EObjectTreeItemAttributeDescriptor(editableProperty_value)
         .setLabelText("User value");
@@ -376,31 +365,27 @@ public class PropertiesEditor extends JfxStage {
    */
   private EObject createEditableProperties() {
     EFactory editablePropertiesFactory = editablePropertiesPackage.getEFactoryInstance();
-    
+
     EObject editablePropertyGroupEObject = editablePropertiesFactory.create(editablePropertyGroup);
     editablePropertyGroupEObject.eSet(editablePropertyGroup_name, propertyDescriptorGroup.getName());
-    
+
     @SuppressWarnings("unchecked")
     EList<EObject> editableProperties = (EList<EObject>) editablePropertyGroupEObject.eGet(editablePropertyGroup_editableProperties);
     for (PropertyDescriptor propertyDescriptor: propertyDescriptorGroup.getPropertyDescriptors()) {
-      if (propertyDescriptor.isUserSettable()) {
-        EObject ep = editablePropertiesFactory.create(editableProperty);
-        ep.eSet(editableProperty_name, propertyDescriptor.getName());
-        ep.eSet(editableProperty_displayName, propertyDescriptor.getDisplayName());
-        String description = null;
-        if (resourceBundle != null) {
-          description = resourceBundle.getString(getQualifiedGroupName(propertyDescriptorGroup) + "." + propertyDescriptor.getName() + ".description");
-        }
-        if (description == null) {
-          description = propertyDescriptor.getDescription();
-        }
-        ep.eSet(editableProperty_description, description);
-        ep.eSet(editableProperty_defaultValue, propertyDescriptor.getInitialValue());
-        //      private static EAttribute editableProperty_value = null;
-        editableProperties.add(ep);
+      EObject ep = editablePropertiesFactory.create(editableProperty);
+      ep.eSet(editableProperty_name, propertyDescriptor.getName());
+      ep.eSet(editableProperty_displayName, propertyDescriptor.getDisplayName());
+      String description = null;
+      if (resourceBundle != null) {
+        description = resourceBundle.getString(getQualifiedGroupName(propertyDescriptorGroup) + "." + propertyDescriptor.getName() + ".description");
       }
+      if (description == null) {
+        description = propertyDescriptor.getDescription();
+      }
+      ep.eSet(editableProperty_description, description);
+      editableProperties.add(ep);
     }
-    
+
     return editablePropertyGroupEObject;
   }
   

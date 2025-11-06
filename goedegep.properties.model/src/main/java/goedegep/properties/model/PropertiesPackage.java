@@ -114,31 +114,13 @@ public interface PropertiesPackage extends EPackage {
   int PROPERTY_DESCRIPTOR_GROUP__DESCRIPTION = 2;
 
   /**
-   * The feature id for the '<em><b>Package Name</b></em>' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int PROPERTY_DESCRIPTOR_GROUP__PACKAGE_NAME = 3;
-
-  /**
-   * The feature id for the '<em><b>Registry Class Name</b></em>' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int PROPERTY_DESCRIPTOR_GROUP__REGISTRY_CLASS_NAME = 4;
-
-  /**
    * The number of structural features of the '<em>Property Descriptor Group</em>' class.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int PROPERTY_DESCRIPTOR_GROUP_FEATURE_COUNT = 5;
+  int PROPERTY_DESCRIPTOR_GROUP_FEATURE_COUNT = 3;
 
   /**
    * The operation id for the '<em>Get Property Descriptor</em>' operation.
@@ -214,31 +196,13 @@ public interface PropertiesPackage extends EPackage {
   int PROPERTY_DESCRIPTOR__REGISTRY_NAME = 4;
 
   /**
-   * The feature id for the '<em><b>Initial Value</b></em>' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int PROPERTY_DESCRIPTOR__INITIAL_VALUE = 5;
-
-  /**
-   * The feature id for the '<em><b>User Settable</b></em>' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int PROPERTY_DESCRIPTOR__USER_SETTABLE = 6;
-
-  /**
    * The number of structural features of the '<em>Property Descriptor</em>' class.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int PROPERTY_DESCRIPTOR_FEATURE_COUNT = 7;
+  int PROPERTY_DESCRIPTOR_FEATURE_COUNT = 5;
 
   /**
    * The number of operations of the '<em>Property Descriptor</em>' class.
@@ -303,24 +267,6 @@ public interface PropertiesPackage extends EPackage {
    * @ordered
    */
   int FILE_PROPERTY_DESCRIPTOR__REGISTRY_NAME = PROPERTY_DESCRIPTOR__REGISTRY_NAME;
-
-  /**
-   * The feature id for the '<em><b>Initial Value</b></em>' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int FILE_PROPERTY_DESCRIPTOR__INITIAL_VALUE = PROPERTY_DESCRIPTOR__INITIAL_VALUE;
-
-  /**
-   * The feature id for the '<em><b>User Settable</b></em>' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int FILE_PROPERTY_DESCRIPTOR__USER_SETTABLE = PROPERTY_DESCRIPTOR__USER_SETTABLE;
 
   /**
    * The feature id for the '<em><b>File Extensions</b></em>' attribute list.
@@ -495,28 +441,6 @@ public interface PropertiesPackage extends EPackage {
   EAttribute getPropertyDescriptorGroup_Description();
 
   /**
-   * Returns the meta object for the attribute '{@link goedegep.properties.model.PropertyDescriptorGroup#getPackageName <em>Package Name</em>}'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the meta object for the attribute '<em>Package Name</em>'.
-   * @see goedegep.properties.model.PropertyDescriptorGroup#getPackageName()
-   * @see #getPropertyDescriptorGroup()
-   * @generated
-   */
-  EAttribute getPropertyDescriptorGroup_PackageName();
-
-  /**
-   * Returns the meta object for the attribute '{@link goedegep.properties.model.PropertyDescriptorGroup#getRegistryClassName <em>Registry Class Name</em>}'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the meta object for the attribute '<em>Registry Class Name</em>'.
-   * @see goedegep.properties.model.PropertyDescriptorGroup#getRegistryClassName()
-   * @see #getPropertyDescriptorGroup()
-   * @generated
-   */
-  EAttribute getPropertyDescriptorGroup_RegistryClassName();
-
-  /**
    * Returns the meta object for the '{@link goedegep.properties.model.PropertyDescriptorGroup#getPropertyDescriptor(java.lang.String) <em>Get Property Descriptor</em>}' operation.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -590,28 +514,6 @@ public interface PropertiesPackage extends EPackage {
    * @generated
    */
   EAttribute getPropertyDescriptor_RegistryName();
-
-  /**
-   * Returns the meta object for the attribute '{@link goedegep.properties.model.PropertyDescriptor#getInitialValue <em>Initial Value</em>}'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the meta object for the attribute '<em>Initial Value</em>'.
-   * @see goedegep.properties.model.PropertyDescriptor#getInitialValue()
-   * @see #getPropertyDescriptor()
-   * @generated
-   */
-  EAttribute getPropertyDescriptor_InitialValue();
-
-  /**
-   * Returns the meta object for the attribute '{@link goedegep.properties.model.PropertyDescriptor#isUserSettable <em>User Settable</em>}'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the meta object for the attribute '<em>User Settable</em>'.
-   * @see goedegep.properties.model.PropertyDescriptor#isUserSettable()
-   * @see #getPropertyDescriptor()
-   * @generated
-   */
-  EAttribute getPropertyDescriptor_UserSettable();
 
   /**
    * Returns the meta object for class '{@link goedegep.properties.model.FilePropertyDescriptor <em>File Property Descriptor</em>}'.
@@ -766,23 +668,6 @@ public interface PropertiesPackage extends EPackage {
     EAttribute PROPERTY_DESCRIPTOR_GROUP__DESCRIPTION = eINSTANCE.getPropertyDescriptorGroup_Description();
 
     /**
-    	 * The meta object literal for the '<em><b>Package Name</b></em>' attribute feature.
-    	 * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-    	 * @generated
-    	 */
-    EAttribute PROPERTY_DESCRIPTOR_GROUP__PACKAGE_NAME = eINSTANCE.getPropertyDescriptorGroup_PackageName();
-
-    /**
-    	 * The meta object literal for the '<em><b>Registry Class Name</b></em>' attribute feature.
-    	 * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-    	 * @generated
-    	 */
-    EAttribute PROPERTY_DESCRIPTOR_GROUP__REGISTRY_CLASS_NAME = eINSTANCE
-        .getPropertyDescriptorGroup_RegistryClassName();
-
-    /**
     	 * The meta object literal for the '<em><b>Get Property Descriptor</b></em>' operation.
     	 * <!-- begin-user-doc -->
     	 * <!-- end-user-doc -->
@@ -840,22 +725,6 @@ public interface PropertiesPackage extends EPackage {
     	 * @generated
     	 */
     EAttribute PROPERTY_DESCRIPTOR__REGISTRY_NAME = eINSTANCE.getPropertyDescriptor_RegistryName();
-
-    /**
-    	 * The meta object literal for the '<em><b>Initial Value</b></em>' attribute feature.
-    	 * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-    	 * @generated
-    	 */
-    EAttribute PROPERTY_DESCRIPTOR__INITIAL_VALUE = eINSTANCE.getPropertyDescriptor_InitialValue();
-
-    /**
-    	 * The meta object literal for the '<em><b>User Settable</b></em>' attribute feature.
-    	 * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-    	 * @generated
-    	 */
-    EAttribute PROPERTY_DESCRIPTOR__USER_SETTABLE = eINSTANCE.getPropertyDescriptor_UserSettable();
 
     /**
     	 * The meta object literal for the '{@link goedegep.properties.model.impl.FilePropertyDescriptorImpl <em>File Property Descriptor</em>}' class.

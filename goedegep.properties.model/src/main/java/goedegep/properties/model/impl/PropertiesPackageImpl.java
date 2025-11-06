@@ -183,26 +183,6 @@ public class PropertiesPackageImpl extends EPackageImpl implements PropertiesPac
    * @generated
    */
   @Override
-  public EAttribute getPropertyDescriptorGroup_PackageName() {
-    return (EAttribute) propertyDescriptorGroupEClass.getEStructuralFeatures().get(3);
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public EAttribute getPropertyDescriptorGroup_RegistryClassName() {
-    return (EAttribute) propertyDescriptorGroupEClass.getEStructuralFeatures().get(4);
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
   public EOperation getPropertyDescriptorGroup__GetPropertyDescriptor__String() {
     return propertyDescriptorGroupEClass.getEOperations().get(0);
   }
@@ -265,26 +245,6 @@ public class PropertiesPackageImpl extends EPackageImpl implements PropertiesPac
   @Override
   public EAttribute getPropertyDescriptor_RegistryName() {
     return (EAttribute) propertyDescriptorEClass.getEStructuralFeatures().get(4);
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public EAttribute getPropertyDescriptor_InitialValue() {
-    return (EAttribute) propertyDescriptorEClass.getEStructuralFeatures().get(5);
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public EAttribute getPropertyDescriptor_UserSettable() {
-    return (EAttribute) propertyDescriptorEClass.getEStructuralFeatures().get(6);
   }
 
   /**
@@ -411,8 +371,6 @@ public class PropertiesPackageImpl extends EPackageImpl implements PropertiesPac
     createEReference(propertyDescriptorGroupEClass, PROPERTY_DESCRIPTOR_GROUP__PROPERTY_DESCRIPTORS);
     createEAttribute(propertyDescriptorGroupEClass, PROPERTY_DESCRIPTOR_GROUP__NAME);
     createEAttribute(propertyDescriptorGroupEClass, PROPERTY_DESCRIPTOR_GROUP__DESCRIPTION);
-    createEAttribute(propertyDescriptorGroupEClass, PROPERTY_DESCRIPTOR_GROUP__PACKAGE_NAME);
-    createEAttribute(propertyDescriptorGroupEClass, PROPERTY_DESCRIPTOR_GROUP__REGISTRY_CLASS_NAME);
     createEOperation(propertyDescriptorGroupEClass, PROPERTY_DESCRIPTOR_GROUP___GET_PROPERTY_DESCRIPTOR__STRING);
 
     propertyDescriptorEClass = createEClass(PROPERTY_DESCRIPTOR);
@@ -421,8 +379,6 @@ public class PropertiesPackageImpl extends EPackageImpl implements PropertiesPac
     createEAttribute(propertyDescriptorEClass, PROPERTY_DESCRIPTOR__DESCRIPTION);
     createEAttribute(propertyDescriptorEClass, PROPERTY_DESCRIPTOR__DISPLAY_NAME);
     createEAttribute(propertyDescriptorEClass, PROPERTY_DESCRIPTOR__REGISTRY_NAME);
-    createEAttribute(propertyDescriptorEClass, PROPERTY_DESCRIPTOR__INITIAL_VALUE);
-    createEAttribute(propertyDescriptorEClass, PROPERTY_DESCRIPTOR__USER_SETTABLE);
 
     filePropertyDescriptorEClass = createEClass(FILE_PROPERTY_DESCRIPTOR);
     createEAttribute(filePropertyDescriptorEClass, FILE_PROPERTY_DESCRIPTOR__FILE_EXTENSIONS);
@@ -482,12 +438,6 @@ public class PropertiesPackageImpl extends EPackageImpl implements PropertiesPac
     initEAttribute(getPropertyDescriptorGroup_Description(), ecorePackage.getEString(), "description", null, 0, 1,
         PropertyDescriptorGroup.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_UNSETTABLE, !IS_ID, IS_UNIQUE,
         !IS_DERIVED, IS_ORDERED);
-    initEAttribute(getPropertyDescriptorGroup_PackageName(), ecorePackage.getEString(), "packageName", null, 0, 1,
-        PropertyDescriptorGroup.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_UNSETTABLE, !IS_ID, IS_UNIQUE,
-        !IS_DERIVED, IS_ORDERED);
-    initEAttribute(getPropertyDescriptorGroup_RegistryClassName(), ecorePackage.getEString(), "registryClassName", null,
-        0, 1, PropertyDescriptorGroup.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_UNSETTABLE, !IS_ID,
-        IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     EOperation op = initEOperation(getPropertyDescriptorGroup__GetPropertyDescriptor__String(),
         this.getPropertyDescriptor(), "getPropertyDescriptor", 0, 1, IS_UNIQUE, IS_ORDERED);
@@ -509,12 +459,6 @@ public class PropertiesPackageImpl extends EPackageImpl implements PropertiesPac
         !IS_DERIVED, IS_ORDERED);
     initEAttribute(getPropertyDescriptor_RegistryName(), ecorePackage.getEString(), "registryName", null, 0, 1,
         PropertyDescriptor.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_UNSETTABLE, !IS_ID, IS_UNIQUE,
-        !IS_DERIVED, IS_ORDERED);
-    initEAttribute(getPropertyDescriptor_InitialValue(), ecorePackage.getEString(), "initialValue", null, 0, 1,
-        PropertyDescriptor.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_UNSETTABLE, !IS_ID, IS_UNIQUE,
-        !IS_DERIVED, IS_ORDERED);
-    initEAttribute(getPropertyDescriptor_UserSettable(), ecorePackage.getEBoolean(), "userSettable", "false", 0, 1,
-        PropertyDescriptor.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE,
         !IS_DERIVED, IS_ORDERED);
 
     initEClass(filePropertyDescriptorEClass, FilePropertyDescriptor.class, "FilePropertyDescriptor", !IS_ABSTRACT,

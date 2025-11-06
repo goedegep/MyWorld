@@ -26,6 +26,7 @@ import goedegep.jfx.JfxApplication;
 import goedegep.jfx.editor.Editor;
 import goedegep.myworld.common.Registry;
 import goedegep.myworld.common.Service;
+import goedegep.myworld.common.UserChoice;
 import goedegep.types.model.FileReference;
 import goedegep.util.Result;
 import goedegep.util.Result.ResultType;
@@ -135,10 +136,8 @@ public class EventsService extends Service {
   public EMFResource<Events> getEventsResource() {
     if (eventsResource == null) {
       eventsResource = createEventsResource();
-
-      
-      
     }
+    
     return eventsResource;
   }
   
@@ -307,7 +306,10 @@ public class EventsService extends Service {
   }
   
   /**
-   * If the events file doesn't exist and/or the events folder doesn't exist, ask the user whether they should be created, or whether the user wants to edit the User Settings.
+   * Check that the events file and events folder exist and are available via the settings.
+   * <p>
+   * If the events file doesn't exist and/or the events folder doesn't exist,
+   * ask the user whether they should be created, or whether the user wants to edit the User Settings.
    */
   private boolean checkThatEventsFileAndFolderExist() {
     boolean returnValue = false;
@@ -389,35 +391,20 @@ public class EventsService extends Service {
    * If the file doesn't exist, there are two options; either the file name in the registry is incorrect, or the file hasn't been created yet.
    * Therefore a dialog is shown asking the user whether this file shall be created or not. In the latter case the user has to correct the file name in the registry.
    * 
-   * @return true if the resource could be opened, false otherwise.
+   * @return the Events resource, or null if this couldn't be created.
    */
   private EMFResource<Events> createEventsResource() {
-    boolean returnValue = false;
+    boolean creationOK = false;
 
     EMFResource<Events> eventsResource = new EMFResource<>(EventsPackage.eINSTANCE, () -> EventsFactory.eINSTANCE.createEvents(), ".xmi", true);
 
     try {
       eventsResource.load(eventsRegistry.getEventsFileName());
-      returnValue = true;
+      creationOK = true;
     } catch (IOException e) {
-      Alert alert = customization.getComponentFactoryFx().createYesNoConfirmationDialog(
-          null,
-          "The file with event information (" + eventsRegistry.getEventsFileName() + ") doesn't exist yet.",
-          "Do you want to create this file now?" + NEWLINE +
-          "If you choose \"No\" the events application will not be started.");
-      Optional<ButtonType> response = alert.showAndWait();
-      if (response.isPresent()  &&  response.get() == ButtonType.YES) {
-        eventsResource.newEObject();
-        try {
-          eventsResource.save(eventsRegistry.getEventsFileName());
-          returnValue = true;
-        } catch (IOException e1) {
-          e1.printStackTrace();
-        }
-      }
     }
 
-    return returnValue ? eventsResource : null;
+    return creationOK ? eventsResource : null;
   }
   
   @Override
@@ -454,24 +441,5 @@ public class EventsService extends Service {
   @Override
   protected Registry getRegistry() {
     return eventsRegistry;
-  }
-}
-
-
-/**
- * Possible user choices.
- */
-enum UserChoice {
-  SHOW_SETTINGS_EDITOR("Edit User Settings"),
-  CREATE_MISSING_FILES_AND_OR_FOLDERS("Create missing files and/or folders");
-
-  private String text;
-
-  UserChoice(String text) {
-    this.text = text;
-  }
-
-  public String toString() {
-    return text;
   }
 }

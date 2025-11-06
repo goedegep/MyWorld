@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<configuration:LookInfo xmi:version="2.0"
-    xmlns:xmi="http://www.omg.org/XMI" xmlns:configuration="http:///goedegep.configuration/model">
-  <moduleLooks moduleName="MEDIA" resourcesClassName="goedegep.media.common.MediaAppResourcesFx">
-    <look backgroundColor="140,140,170" buttonBackgroundColor="100,100,130" panelBackgroundColor="130,130,190"
-        listBackgroundColor="135,135,180" labelBackgroundColor="135,135,180" boxBackgroundColor="165,165,195"
-        textFieldBackgroundColor="155,155,200"/>
-  </moduleLooks>
-</configuration:LookInfo>

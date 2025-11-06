@@ -20,7 +20,11 @@ public class VacationsPropertyDescriptorsResource_nl extends ListResourceBundle 
       
       {"Vacations.vacationPicturesFolderName.description", "Naam van de map met vakantie foto's."},
       
-      {"Vacations.askToEditProperties.description", "Als deze vlag gezet is wordt de gebruiker gevraagd om de gebruikerseigenschappen te bewerken."}
+      {"Vacations.askToEditProperties.description", "Als deze vlag gezet is wordt de gebruiker gevraagd om de gebruikerseigenschappen te bewerken."},
+      
+      {"Vacations.knownFiles.description", "Bestanden die bekend zijn en waar geen meldingen over gegeven worden"},
+      
+      {"Vacations.ignoreVacationPictureFolders.description", "Mappen die genegeerd worden"}
     };
   }
 

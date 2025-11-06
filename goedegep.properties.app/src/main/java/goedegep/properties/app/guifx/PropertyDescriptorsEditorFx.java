@@ -1,4 +1,4 @@
-package goedegep.jfx;
+package goedegep.properties.app.guifx;
 
 import java.io.IOException;
 import java.net.URI;
@@ -6,6 +6,8 @@ import java.util.logging.Logger;
 
 import org.eclipse.emf.ecore.util.EContentAdapter;
 
+import goedegep.jfx.CustomizationFx;
+import goedegep.jfx.JfxStage;
 import goedegep.jfx.eobjecttreeview.EObjectTreeView;
 import goedegep.properties.model.PropertiesFactory;
 import goedegep.properties.model.PropertiesPackage;
@@ -21,12 +23,11 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 
 public class PropertyDescriptorsEditorFx extends JfxStage {
-  private static final Logger         LOGGER = Logger.getLogger(PropertyDescriptorsEditorFx.class.getName());
+  private static final Logger LOGGER = Logger.getLogger(PropertyDescriptorsEditorFx.class.getName());
   private static final String WINDOW_TITLE = "Edit Property Desciptors";
   
   private EMFResource<PropertyDescriptorGroup> propertyDescriptorsResource;
   private PropertyDescriptorGroup propertyDescriptorGroup;
-  private ComponentFactoryFx componentFactory;
   private EObjectTreeView treeView = null;
   private boolean isDirty = false;
   
@@ -57,7 +58,6 @@ public class PropertyDescriptorsEditorFx extends JfxStage {
 
     };
     propertyDescriptorGroup.eAdapters().add(eContentAdapter);
-    componentFactory = getComponentFactory();
     
     setX(10);
     setY(20);

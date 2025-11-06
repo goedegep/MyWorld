@@ -243,6 +243,15 @@ public class MediaRegistry extends Registry {
     setShortProductInfo("Media database");
     setPropertyDescriptorsFileName("MediaPropertyDescriptors.xmi");
     setUserPropertiesFileName("MediaUserPreferences.xmi");
+    setMediaDbFile("D:\\Database\\MyWorld\\MediaDb.xmi");
+    setMusicDataDirectory("D:\\Database\\Muziek");
+    setMusicDirectory("D:\\Music");
+    setAlbumImportDirectory("D:\\SoulSeek\\complete");
+    setDuneMusicFolderPath("\\\\Dune\\DuneHDD_00f1f4a3_110b_40ec_b5a1_d89bd7c8f93f\\Music");
+    setDunePlaylistsFolderPath("\\\\Dune\\DuneHDD_00f1f4a3_110b_40ec_b5a1_d89bd7c8f93f\\Playlists");
+    setPhotosFolder("D:\\Photo");
+    setIgnoreFolderNames("show;selectie;weg;Originals;.SynologyWorkingDirectory");
+    setMediaPlayerClassicExecutable("C:\\Program Files\\MPC-BE x64\\mpc-be64.exe");
   }
 
 }

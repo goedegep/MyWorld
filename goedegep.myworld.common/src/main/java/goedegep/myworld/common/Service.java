@@ -12,8 +12,8 @@ import goedegep.configuration.model.ConfigurationFactory;
 import goedegep.configuration.model.Look;
 import goedegep.jfx.AppResourcesFx;
 import goedegep.jfx.CustomizationFx;
-import goedegep.jfx.PropertyDescriptorsEditorFx;
 import goedegep.properties.app.guifx.PropertiesEditor;
+import goedegep.properties.app.guifx.PropertyDescriptorsEditorFx;
 import goedegep.properties.model.PropertiesFactory;
 import goedegep.properties.model.PropertiesPackage;
 import goedegep.properties.model.PropertyGroup;
@@ -124,7 +124,7 @@ public abstract class Service implements IService {
 
     Path userPropertiesFilePath = getUserSettingsFilePath();
 
-    if (!Files.exists(userPropertiesFilePath)) {
+    if (userPropertiesFilePath == null  ||  !Files.exists(userPropertiesFilePath)) {
       return;
     }
 
@@ -159,13 +159,17 @@ public abstract class Service implements IService {
    * [application-name] is the name of the application.<br/>
    * [user-settings-file-name] is the name of the user settings file.
    * 
-   *  @return the Path for the file with user settings.
+   *  @return the Path for the file with user settings, or null if the user properties file name isn't set in the registry.
    */
   @Override
   public Path getUserSettingsFilePath() {
     String userHomeDir = System.getProperty("user.home");
     String applicationName = getRegistry().getApplicationName();
     String userSettingsFileName = getRegistry().getUserPropertiesFileName();
+    if (userSettingsFileName == null) {
+      return null;
+    }
+    
     Path userSettingsFilePath = Paths.get(userHomeDir, "MyWorld", applicationName, userSettingsFileName);
 
     return userSettingsFilePath;

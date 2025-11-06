@@ -81,6 +81,7 @@ public class PCToolsRegistry extends Registry {
     setShortProductInfo("My computer tools");
     setPropertyDescriptorsFileName("PCToolsPropertyDescriptors.xmi");
     setUserPropertiesFileName("PCToolsUserPreferences.xmi");
+    setDefaultDiscStructureSpecificationFile("D:\\Database\\MyWorld\\DiscStructureSpecification.xmi");
   }
 
 }

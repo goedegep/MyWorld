@@ -184,7 +184,7 @@ public class EMFResource<E extends EObject> {
    * @param ePackage dummy parameter, just to make sure the EPackage is registered.
    * @param emfObjectCreator method (functional interface) to create a new instance of type E.
    */
-  public EMFResource(EPackage ePackage, EmfObjectCreator<E> emfObjectCreator, String fileExtension, boolean createBackupFileOnSave) {    
+  public EMFResource(EPackage ePackage, EmfObjectCreator<E> emfObjectCreator, String fileExtension, boolean createBackupFileOnSave) {
     this.emfObjectCreator = emfObjectCreator;
     this.createBackupFileOnSave = createBackupFileOnSave;
     dirty.set(false);
@@ -267,7 +267,9 @@ public class EMFResource<E extends EObject> {
     URI fileURI = URI.createURI(resourceURL.toString());
     
     resource.unload();
-    resource.setURI(fileURI);
+    // creation of the Resource depends on the file name extension. So we have to create a new Resource.
+    resourceSet.getResources().remove(resource);
+    resource = resourceSet.createResource(fileURI);
     uriProperty.set(resource.getURI());
     resource.load(null);
         

@@ -180,6 +180,12 @@ public class VacationsRegistry extends Registry {
     setShortProductInfo("Travels - Information about travels, like vacations, trips, etc.");
     setPropertyDescriptorsFileName("VacationsPropertyDescriptors.xmi");
     setUserPropertiesFileName("VacationsUserPreferences.xmi");
+    setVacationsFileName("D:\\Database\\Vacations\\Vacation.xmi");
+    setVacationChecklistFileName("D:\\Database\\Vacations\\VacationChecklist.xmi");
+    setVacationsFolderName("D:\\Database\\Vacations");
+    setKnownFiles("Vakanties.xmi;VakantieChecklist.xmi");
+    setVacationPicturesFolderName("D:\\Photo\\Vacations");
+    setIgnoreVacationPictureFolders("weg;Originals");
   }
     
   @Override

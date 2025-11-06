@@ -18,8 +18,6 @@ import org.eclipse.emf.ecore.EObject;
  *   <li>{@link goedegep.properties.model.PropertyDescriptor#getDescription <em>Description</em>}</li>
  *   <li>{@link goedegep.properties.model.PropertyDescriptor#getDisplayName <em>Display Name</em>}</li>
  *   <li>{@link goedegep.properties.model.PropertyDescriptor#getRegistryName <em>Registry Name</em>}</li>
- *   <li>{@link goedegep.properties.model.PropertyDescriptor#getInitialValue <em>Initial Value</em>}</li>
- *   <li>{@link goedegep.properties.model.PropertyDescriptor#isUserSettable <em>User Settable</em>}</li>
  * </ul>
  *
  * @see goedegep.properties.model.PropertiesPackage#getPropertyDescriptor()
@@ -279,91 +277,5 @@ public interface PropertyDescriptor extends EObject {
    * @generated
    */
   boolean isSetRegistryName();
-
-  /**
-   * Returns the value of the '<em><b>Initial Value</b></em>' attribute.
-   * <!-- begin-user-doc -->
-   * <p>
-   * If the meaning of the '<em>Initial Value</em>' attribute isn't clear,
-   * there really should be more of a description here...
-   * </p>
-   * <!-- end-user-doc -->
-   * <!-- begin-model-doc -->
-   * The system default value of the property. This is the value used, if it isn't overwritten by a user specific value (see Property).
-   * <!-- end-model-doc -->
-   * @return the value of the '<em>Initial Value</em>' attribute.
-   * @see #isSetInitialValue()
-   * @see #unsetInitialValue()
-   * @see #setInitialValue(String)
-   * @see goedegep.properties.model.PropertiesPackage#getPropertyDescriptor_InitialValue()
-   * @model unsettable="true"
-   * @generated
-   */
-  String getInitialValue();
-
-  /**
-   * Sets the value of the '{@link goedegep.properties.model.PropertyDescriptor#getInitialValue <em>Initial Value</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @param value the new value of the '<em>Initial Value</em>' attribute.
-   * @see #isSetInitialValue()
-   * @see #unsetInitialValue()
-   * @see #getInitialValue()
-   * @generated
-   */
-  void setInitialValue(String value);
-
-  /**
-   * Unsets the value of the '{@link goedegep.properties.model.PropertyDescriptor#getInitialValue <em>Initial Value</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #isSetInitialValue()
-   * @see #getInitialValue()
-   * @see #setInitialValue(String)
-   * @generated
-   */
-  void unsetInitialValue();
-
-  /**
-   * Returns whether the value of the '{@link goedegep.properties.model.PropertyDescriptor#getInitialValue <em>Initial Value</em>}' attribute is set.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return whether the value of the '<em>Initial Value</em>' attribute is set.
-   * @see #unsetInitialValue()
-   * @see #getInitialValue()
-   * @see #setInitialValue(String)
-   * @generated
-   */
-  boolean isSetInitialValue();
-
-  /**
-   * Returns the value of the '<em><b>User Settable</b></em>' attribute.
-   * The default value is <code>"false"</code>.
-   * <!-- begin-user-doc -->
-   * <p>
-   * If the meaning of the '<em>User Settable</em>' attribute isn't clear,
-   * there really should be more of a description here...
-   * </p>
-   * <!-- end-user-doc -->
-   * <!-- begin-model-doc -->
-   * Indicates whether the property can be set by the user of not. Set by the user means that the user can specify a value for the property in a user properties file.
-   * <!-- end-model-doc -->
-   * @return the value of the '<em>User Settable</em>' attribute.
-   * @see #setUserSettable(boolean)
-   * @see goedegep.properties.model.PropertiesPackage#getPropertyDescriptor_UserSettable()
-   * @model default="false"
-   * @generated
-   */
-  boolean isUserSettable();
-
-  /**
-   * Sets the value of the '{@link goedegep.properties.model.PropertyDescriptor#isUserSettable <em>User Settable</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @param value the new value of the '<em>User Settable</em>' attribute.
-   * @see #isUserSettable()
-   * @generated
-   */
-  void setUserSettable(boolean value);
 
 } // PropertyDescriptor

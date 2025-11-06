@@ -1,5 +1,4 @@
 module goedegep.properties.app {
-  exports goedegep.properties.app;
   exports goedegep.properties.app.guifx;
 
   requires goedegep.appgen;
