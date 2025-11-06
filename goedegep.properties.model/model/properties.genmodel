@@ -23,8 +23,6 @@
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference properties.ecore#//PropertyDescriptorGroup/propertyDescriptors"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute properties.ecore#//PropertyDescriptorGroup/name"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute properties.ecore#//PropertyDescriptorGroup/description"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute properties.ecore#//PropertyDescriptorGroup/packageName"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute properties.ecore#//PropertyDescriptorGroup/registryClassName"/>
       <genOperations ecoreOperation="properties.ecore#//PropertyDescriptorGroup/getPropertyDescriptor">
         <genParameters ecoreParameter="properties.ecore#//PropertyDescriptorGroup/getPropertyDescriptor/propertyName"/>
       </genOperations>
@@ -35,8 +33,6 @@
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute properties.ecore#//PropertyDescriptor/description"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute properties.ecore#//PropertyDescriptor/displayName"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute properties.ecore#//PropertyDescriptor/registryName"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute properties.ecore#//PropertyDescriptor/initialValue"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute properties.ecore#//PropertyDescriptor/userSettable"/>
     </genClasses>
     <genClasses ecoreClass="properties.ecore#//FilePropertyDescriptor">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute properties.ecore#//FilePropertyDescriptor/fileExtensions"/>

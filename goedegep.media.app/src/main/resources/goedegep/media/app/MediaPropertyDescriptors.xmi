@@ -1,40 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <properties:PropertyDescriptorGroup xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:properties="http://goedegep.properties/model"
-    name="Media" packageName="goedegep.media.common"
-    registryClassName="MediaRegistry">
-  <propertyDescriptors xsi:type="properties:FilePropertyDescriptor" type="FILE" name="customPropertiesFile"
-      description="Name of the file with user settings." displayName="User settings filename"
-      initialValue="MediaSettings.xmi">
-    <fileExtensions>xmi</fileExtensions>
-  </propertyDescriptors>
-  <propertyDescriptors xsi:type="properties:FilePropertyDescriptor" type="FILE" name="configurationFile"
-      description="Name of the file with configuration information." displayName="Configuration filename"
-      initialValue="MediaConfiguration.xmi">
-    <fileExtensions>xmi</fileExtensions>
-  </propertyDescriptors>
+    name="Media">
   <propertyDescriptors xsi:type="properties:FilePropertyDescriptor" type="FILE" name="mediaDbFile"
-      description="Name of the file with media information." displayName="Media database filename"
-      initialValue="D:\Database\MyWorld\MediaDb.xmi">
+      description="Name of the file with media information." displayName="Media database filename">
     <fileExtensions>xmi</fileExtensions>
   </propertyDescriptors>
   <propertyDescriptors type="DIRECTORY" name="musicDataDirectory" description="Directory where pictures of albums and artists are located."
-      displayName="Music data directory" initialValue="D:\Database\Muziek" userSettable="true"/>
+      displayName="Music data directory"/>
   <propertyDescriptors type="DIRECTORY" name="musicDirectory" description="Folder with all music."
-      displayName="Music folder" initialValue="D:\Music"/>
+      displayName="Music folder"/>
   <propertyDescriptors type="DIRECTORY" name="albumImportDirectory" description="Default location for selecting a directory from which album import information is to be derived."
-      displayName="Album Import Directory" initialValue="D:\SoulSeek\complete" userSettable="true"/>
+      displayName="Album Import Directory"/>
   <propertyDescriptors type="DIRECTORY" name="duneMusicFolderPath" description="Folder with all music on the Dune media player."
-      displayName="Dune Music Folder Path" initialValue="\\Dune\DuneHDD_00f1f4a3_110b_40ec_b5a1_d89bd7c8f93f\Music"/>
+      displayName="Dune Music Folder Path"/>
   <propertyDescriptors type="DIRECTORY" name="dunePlaylistsFolderPath" description="Folder with all playlists on the Dune media player."
-      displayName="Dune Playlist Folder Path" initialValue="\\Dune\DuneHDD_00f1f4a3_110b_40ec_b5a1_d89bd7c8f93f\Playlists"/>
+      displayName="Dune Playlist Folder Path"/>
   <propertyDescriptors type="DIRECTORY" name="photosFolder" description="Top level folder of all photos."
-      displayName="Photo folder" initialValue="D:\Photo"/>
+      displayName="Photo folder"/>
   <propertyDescriptors name="ignoreFolderNames" description="List of folder names to be ignored."
-      displayName="Ignore folders" initialValue="show;selectie;weg;Originals;.SynologyWorkingDirectory"/>
+      displayName="Ignore folders"/>
   <propertyDescriptors xsi:type="properties:FilePropertyDescriptor" type="FILE" name="mediaPlayerClassicExecutable"
-      description="Full path to the MPC-BE media player." displayName="Media Player Classic (MPC-BE) file"
-      initialValue="C:\Program Files\MPC-BE x64\mpc-be64.exe">
+      description="Full path to the MPC-BE media player." displayName="Media Player Classic (MPC-BE) file">
     <fileExtensions>xmi</fileExtensions>
   </propertyDescriptors>
 </properties:PropertyDescriptorGroup>

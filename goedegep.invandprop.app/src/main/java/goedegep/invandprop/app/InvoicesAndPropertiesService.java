@@ -3,8 +3,8 @@ package goedegep.invandprop.app;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URISyntaxException;
-import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Optional;
 import java.util.Properties;
 import java.util.logging.Logger;
@@ -18,11 +18,11 @@ import goedegep.invandprop.model.InvoiceAndProperty;
 import goedegep.invandprop.model.InvoiceAndPropertyItem;
 import goedegep.invandprop.model.InvoicesAndProperties;
 import goedegep.jfx.AppResourcesFx;
-import goedegep.jfx.CustomizationFx;
+import goedegep.jfx.ComponentFactoryFx;
 import goedegep.jfx.JfxApplication;
 import goedegep.myworld.common.Registry;
 import goedegep.myworld.common.Service;
-import goedegep.properties.app.PropertiesHandler;
+import goedegep.myworld.common.UserChoice;
 import goedegep.types.model.FileReference;
 import goedegep.util.Result;
 import goedegep.util.Result.ResultType;
@@ -37,6 +37,7 @@ import javafx.scene.paint.Color;
  * The InvoicesAndPropertiesService class is the main class for the Invoices and Properties application.
  */
 public class InvoicesAndPropertiesService extends Service {
+  @SuppressWarnings("unused")
   private static final Logger LOGGER = Logger.getLogger(InvoicesAndPropertiesService.class.getName());
   private static final String NEWLINE = System.getProperty("line.separator");
   private static final FlexDateFormat FDF = new FlexDateFormat();
@@ -46,6 +47,9 @@ public class InvoicesAndPropertiesService extends Service {
    */
   private static InvoicesAndPropertiesService instance;
   
+  /**
+   * The {@link InvoicesAndPropertiesRegistry}.
+   */
   private InvoicesAndPropertiesRegistry invoicesAndPropertiesRegistry;
   
   /**
@@ -53,10 +57,6 @@ public class InvoicesAndPropertiesService extends Service {
    */
   private EMFResource<InvoicesAndProperties> invoicesAndPropertiesResource;
   
-  /**
-   * The Invoices and Properties information.
-   */
-  private InvoicesAndProperties invoicesAndProperties;
     
   /**
    * Get the singleton instance of the InvoicesAndPropertiesService.
@@ -67,17 +67,47 @@ public class InvoicesAndPropertiesService extends Service {
     if (instance == null) {
       instance = new InvoicesAndPropertiesService();
       instance.initialize();
-      instance.invoicesAndPropertiesRegistry = InvoicesAndPropertiesRegistry.getInstance();
+      
+      
+      if (!instance.checkRegistry()) {
+        return null;
+      }
+
+      checkAndRepairDataModel();
     }
+    
     return instance;
   }
   
   /**
    * Show the Invoices and Properties main window.
+   * <p>
+   * It is first checked whether the required file and folder exist. If not the user is given options
+   * on how to proceed.
    */
   public void showInvoicesAndPropertiesWindow() {
+    
+    boolean invAndPropInitializationOK = checkThatInvoicesAndPropertiesFileAndFolderExist();
+    
+    if (!invAndPropInitializationOK) {
+      return;
+    }
+    
     InvoicesAndPropertiesWindow invoicesAndPropertiesWindow = new InvoicesAndPropertiesWindow(customization, this);
     invoicesAndPropertiesWindow.show();
+  }
+
+  /**
+   * Get the {@code InvoicesAndProperties} resource.
+   * 
+   * @return the {@code InvoicesAndProperties} resource.
+   */
+  public EMFResource<InvoicesAndProperties> getInvoicesAndPropertiesResource() {
+    if (invoicesAndPropertiesResource == null) {
+      invoicesAndPropertiesResource = createInvoicesAndPropertiesResource();
+    }
+    
+    return invoicesAndPropertiesResource;
   }
 
   /**
@@ -85,31 +115,7 @@ public class InvoicesAndPropertiesService extends Service {
    */
   private InvoicesAndPropertiesService() {
     
-    try {
-      // Read the properties, which are stored in the registry.
-      URL url = getClass().getResource(invoicesAndPropertiesRegistry.getPropertyDescriptorsFileName());
-      PropertiesHandler.handleProperties(url.toURI());
-    } catch (IOException | URISyntaxException e) {
-      JfxApplication.reportException(null, e);
-    }
-    
-    if (!checkRegistry()) {
-      return;
-    }
-
-    checkAndRepairDataModel();
-    
-    EMFResource<InvoicesAndProperties> invoicesAndPropertiesResource = getInvoicesAndPropertiesResource(customization);
-    if (invoicesAndPropertiesResource == null) {
-      return;
-    }
-    
-    this.invoicesAndPropertiesResource = invoicesAndPropertiesResource;
-    invoicesAndProperties = invoicesAndPropertiesResource.getEObject();
-  }
-
-  public EMFResource<InvoicesAndProperties> getInvoicesAndPropertiesResource() {
-    return invoicesAndPropertiesResource;
+    invoicesAndPropertiesRegistry = InvoicesAndPropertiesRegistry.getInstance();
   }
   
   /**
@@ -118,7 +124,7 @@ public class InvoicesAndPropertiesService extends Service {
    * @param invoice the {@code Invoice} to be added.
    */
   public void addInvoiceAndPropertyToInvoicesAndPropertiesDatabase(InvoiceAndProperty invoiceAndProperty) {
-    invoicesAndProperties.getInvoicseandpropertys().add(invoiceAndProperty);
+    invoicesAndPropertiesResource.getEObject().getInvoicseandpropertys().add(invoiceAndProperty);
   }
   
   /**
@@ -262,41 +268,101 @@ public class InvoicesAndPropertiesService extends Service {
   }
 
   /**
-   * Try to get the Invoices and Properties resource.
+   * Check that the InvoicesAndProperties file and InvoicesAndProperties folder exist and are available via the settings.
+   * <p>
+   * If the InvoicesAndProperties file doesn't exist and/or the InvoicesAndProperties folder doesn't exist,
+   * ask the user whether they should be created, or whether the user wants to edit the User Settings.
+   */
+  private boolean checkThatInvoicesAndPropertiesFileAndFolderExist() {
+    boolean returnValue = false;
+    
+    File invoicesAndPropertiesFile = new File(invoicesAndPropertiesRegistry.getInvoicesAndPropertiesFile());
+    File invoicesAndPropertiesFolder = new File(invoicesAndPropertiesRegistry.getPropertyRelatedFilesFolder());
+    
+    if (!invoicesAndPropertiesFile.exists()  ||  !invoicesAndPropertiesFolder.exists()) {
+      StringBuilder buf = new StringBuilder();
+      buf.append("The following files and/or folders don't exist yet:").append(NEWLINE);
+      if (!invoicesAndPropertiesFile.exists()) {
+        buf.append("* The Invoices and Properties file '").append(invoicesAndPropertiesRegistry.getInvoicesAndPropertiesFile()).append("'").append(NEWLINE);
+      }
+      if (!invoicesAndPropertiesFolder.exists()) {
+        buf.append("* The Invoices and Properties folder '").append(invoicesAndPropertiesRegistry.getPropertyRelatedFilesFolder()).append("'").append(NEWLINE);
+      }
+      buf.append("""
+          If you are just starting to use this application, you may want to edit the User Settings, to set the file and folder names to your preference.
+          In this case you have to restart the application after saving the changes.
+          Otherwise you can let the file and/or folder be created for you.
+          """);
+      ComponentFactoryFx componentFactory = customization.getComponentFactoryFx();
+      Optional<UserChoice> optionalUserChoice = componentFactory.createChoiceDialog("How to continue?", buf.toString(), "what to do?", UserChoice.SHOW_SETTINGS_EDITOR, UserChoice.values()).showAndWait();
+      if (optionalUserChoice.isPresent()) {
+        UserChoice userChoice = optionalUserChoice.get();
+        switch (userChoice) {
+        case SHOW_SETTINGS_EDITOR:
+          returnValue = false; // If the user settings are changed, a restart of the application is needed
+          showPropertiesEditor();
+          break;
+          
+        case CREATE_MISSING_FILES_AND_OR_FOLDERS:
+          try {
+            // Create an InvoicesAndProperties file if it doesn't exist
+            if (!invoicesAndPropertiesFile.exists()) {
+              // create the parent folder if it doesn't exist
+              String parent = invoicesAndPropertiesFile.getParent();
+              Files.createDirectories(Paths.get(parent));
+              
+              // create the file
+              EMFResource<InvoicesAndProperties> eventsResource = new EMFResource<>(
+                  InvAndPropPackage.eINSTANCE, 
+                  () ->  InvAndPropFactory.eINSTANCE.createInvoicesAndProperties(),
+                  ".xmi",
+                  true);
+              eventsResource.newEObject();
+              try {
+                eventsResource.save(invoicesAndPropertiesRegistry.getInvoicesAndPropertiesFile());
+              } catch (IOException e1) {
+                e1.printStackTrace();
+              }
+              
+            }
+            
+            // Create the events folder if it doesn't exist
+            if (!invoicesAndPropertiesFolder.exists()) {
+              Files.createDirectories(Paths.get(invoicesAndPropertiesRegistry.getPropertyRelatedFilesFolder()));
+            }
+            
+            returnValue = true; // required file and folders now exist, so we can continue.
+          } catch (IOException e) {
+            e.printStackTrace();
+          }
+          break;
+        }
+      }
+      
+    } else {
+      returnValue = true;
+    }
+
+    return returnValue;
+  }
+
+  /**
+   * Try to get (load) the Invoices and Properties resource.
    * 
    * @return true if the resource could be opened, false otherwise.
    */
-  private EMFResource<InvoicesAndProperties> getInvoicesAndPropertiesResource(CustomizationFx customization) {
-    boolean returnValue = false;
+  private EMFResource<InvoicesAndProperties> createInvoicesAndPropertiesResource() {
+    boolean creationOK = false;
 
     EMFResource<InvoicesAndProperties> invoicesAndPropertiesResource = new EMFResource<InvoicesAndProperties>(InvAndPropPackage.eINSTANCE, () -> InvAndPropFactory.eINSTANCE.createInvoicesAndProperties(), ".xmi", true);
 
     try {
       invoicesAndPropertiesResource.load(invoicesAndPropertiesRegistry.getInvoicesAndPropertiesFile());
-      returnValue = true;
+      creationOK = true;
     } catch (IOException e) {
-      LOGGER.severe("File not found: " + e.getMessage());
-      Alert alert = customization.getComponentFactoryFx().createYesNoConfirmationDialog(
-          null,
-          "The file with invoices and properties (" + invoicesAndPropertiesRegistry.getInvoicesAndPropertiesFile() + ") doesn't exist yet.",
-          "Do you want to create this file now?" + NEWLINE +
-          "If you choose \"No\" the InvoicesAndProperties application will not be started.");
-      Optional<ButtonType> response = alert.showAndWait();
-      if (response.isPresent()  &&  response.get() == ButtonType.YES) {
-        LOGGER.severe("yes, create file");
-        invoicesAndPropertiesResource.newEObject();
-        try {
-          invoicesAndPropertiesResource.save(invoicesAndPropertiesRegistry.getInvoicesAndPropertiesFile());
-          returnValue = true;
-        } catch (IOException e1) {
-          e1.printStackTrace();
-        }
-      } else {
-        LOGGER.severe("no, don't create file");
-      }
     }
 
-    return returnValue ? invoicesAndPropertiesResource : null;
+    return creationOK ? invoicesAndPropertiesResource : null;
   }
 
   /**

@@ -26,8 +26,6 @@ import goedegep.properties.model.PropertyType;
  *   <li>{@link goedegep.properties.model.impl.PropertyDescriptorImpl#getDescription <em>Description</em>}</li>
  *   <li>{@link goedegep.properties.model.impl.PropertyDescriptorImpl#getDisplayName <em>Display Name</em>}</li>
  *   <li>{@link goedegep.properties.model.impl.PropertyDescriptorImpl#getRegistryName <em>Registry Name</em>}</li>
- *   <li>{@link goedegep.properties.model.impl.PropertyDescriptorImpl#getInitialValue <em>Initial Value</em>}</li>
- *   <li>{@link goedegep.properties.model.impl.PropertyDescriptorImpl#isUserSettable <em>User Settable</em>}</li>
  * </ul>
  *
  * @generated
@@ -168,55 +166,6 @@ public class PropertyDescriptorImpl extends MinimalEObjectImpl.Container impleme
    * @ordered
    */
   protected boolean registryNameESet;
-
-  /**
-   * The default value of the '{@link #getInitialValue() <em>Initial Value</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getInitialValue()
-   * @generated
-   * @ordered
-   */
-  protected static final String INITIAL_VALUE_EDEFAULT = null;
-
-  /**
-   * The cached value of the '{@link #getInitialValue() <em>Initial Value</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getInitialValue()
-   * @generated
-   * @ordered
-   */
-  protected String initialValue = INITIAL_VALUE_EDEFAULT;
-
-  /**
-   * This is true if the Initial Value attribute has been set.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  protected boolean initialValueESet;
-
-  /**
-   * The default value of the '{@link #isUserSettable() <em>User Settable</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #isUserSettable()
-   * @generated
-   * @ordered
-   */
-  protected static final boolean USER_SETTABLE_EDEFAULT = false;
-
-  /**
-   * The cached value of the '{@link #isUserSettable() <em>User Settable</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #isUserSettable()
-   * @generated
-   * @ordered
-   */
-  protected boolean userSettable = USER_SETTABLE_EDEFAULT;
 
   /**
    * <!-- begin-user-doc -->
@@ -475,82 +424,6 @@ public class PropertyDescriptorImpl extends MinimalEObjectImpl.Container impleme
    * @generated
    */
   @Override
-  public String getInitialValue() {
-    return initialValue;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public void setInitialValue(String newInitialValue) {
-    String oldInitialValue = initialValue;
-    initialValue = newInitialValue;
-    boolean oldInitialValueESet = initialValueESet;
-    initialValueESet = true;
-    if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, PropertiesPackage.PROPERTY_DESCRIPTOR__INITIAL_VALUE,
-          oldInitialValue, initialValue, !oldInitialValueESet));
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public void unsetInitialValue() {
-    String oldInitialValue = initialValue;
-    boolean oldInitialValueESet = initialValueESet;
-    initialValue = INITIAL_VALUE_EDEFAULT;
-    initialValueESet = false;
-    if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.UNSET, PropertiesPackage.PROPERTY_DESCRIPTOR__INITIAL_VALUE,
-          oldInitialValue, INITIAL_VALUE_EDEFAULT, oldInitialValueESet));
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public boolean isSetInitialValue() {
-    return initialValueESet;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public boolean isUserSettable() {
-    return userSettable;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public void setUserSettable(boolean newUserSettable) {
-    boolean oldUserSettable = userSettable;
-    userSettable = newUserSettable;
-    if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, PropertiesPackage.PROPERTY_DESCRIPTOR__USER_SETTABLE,
-          oldUserSettable, userSettable));
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
   public Object eGet(int featureID, boolean resolve, boolean coreType) {
     switch (featureID) {
     case PropertiesPackage.PROPERTY_DESCRIPTOR__TYPE:
@@ -563,10 +436,6 @@ public class PropertyDescriptorImpl extends MinimalEObjectImpl.Container impleme
       return getDisplayName();
     case PropertiesPackage.PROPERTY_DESCRIPTOR__REGISTRY_NAME:
       return getRegistryName();
-    case PropertiesPackage.PROPERTY_DESCRIPTOR__INITIAL_VALUE:
-      return getInitialValue();
-    case PropertiesPackage.PROPERTY_DESCRIPTOR__USER_SETTABLE:
-      return isUserSettable();
     }
     return super.eGet(featureID, resolve, coreType);
   }
@@ -593,12 +462,6 @@ public class PropertyDescriptorImpl extends MinimalEObjectImpl.Container impleme
       return;
     case PropertiesPackage.PROPERTY_DESCRIPTOR__REGISTRY_NAME:
       setRegistryName((String) newValue);
-      return;
-    case PropertiesPackage.PROPERTY_DESCRIPTOR__INITIAL_VALUE:
-      setInitialValue((String) newValue);
-      return;
-    case PropertiesPackage.PROPERTY_DESCRIPTOR__USER_SETTABLE:
-      setUserSettable((Boolean) newValue);
       return;
     }
     super.eSet(featureID, newValue);
@@ -627,12 +490,6 @@ public class PropertyDescriptorImpl extends MinimalEObjectImpl.Container impleme
     case PropertiesPackage.PROPERTY_DESCRIPTOR__REGISTRY_NAME:
       unsetRegistryName();
       return;
-    case PropertiesPackage.PROPERTY_DESCRIPTOR__INITIAL_VALUE:
-      unsetInitialValue();
-      return;
-    case PropertiesPackage.PROPERTY_DESCRIPTOR__USER_SETTABLE:
-      setUserSettable(USER_SETTABLE_EDEFAULT);
-      return;
     }
     super.eUnset(featureID);
   }
@@ -655,10 +512,6 @@ public class PropertyDescriptorImpl extends MinimalEObjectImpl.Container impleme
       return isSetDisplayName();
     case PropertiesPackage.PROPERTY_DESCRIPTOR__REGISTRY_NAME:
       return isSetRegistryName();
-    case PropertiesPackage.PROPERTY_DESCRIPTOR__INITIAL_VALUE:
-      return isSetInitialValue();
-    case PropertiesPackage.PROPERTY_DESCRIPTOR__USER_SETTABLE:
-      return userSettable != USER_SETTABLE_EDEFAULT;
     }
     return super.eIsSet(featureID);
   }
@@ -696,13 +549,6 @@ public class PropertyDescriptorImpl extends MinimalEObjectImpl.Container impleme
       result.append(registryName);
     else
       result.append("<unset>");
-    result.append(", initialValue: ");
-    if (initialValueESet)
-      result.append(initialValue);
-    else
-      result.append("<unset>");
-    result.append(", userSettable: ");
-    result.append(userSettable);
     result.append(')');
     return result.toString();
   }

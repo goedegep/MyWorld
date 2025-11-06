@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.logging.Logger;
 
+import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.common.util.WrappedException;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 
@@ -691,10 +692,12 @@ public class GPXWindow extends JfxStage {
     if (gpxResource.isDirty()) {
       buf.append("*");
     }
-    String fileName = gpxResource.getURI().toFileString();
-    if (fileName == null) {
-      fileName = "<NoName>";
+    String fileName  = "<NoName>";
+    URI uri = gpxResource.getURI();
+    if (uri != null) {
+      fileName = uri.toFileString();
     }
+    
     buf.append(fileName);
     
     setTitle(buf.toString());

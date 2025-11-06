@@ -67,6 +67,23 @@ public class InvoicesAndPropertiesRegistry extends Registry {
   public void setInvoicesAndPropertiesFile(String invoicesAndPropertiesFile) {
     InvoicesAndPropertiesRegistry.invoicesAndPropertiesFile = invoicesAndPropertiesFile;
   }
+  
+  @Override
+  public boolean setValue(String name, String value) {
+    if (super.setValue(name, value)) {
+      return true;
+    }
+    
+    boolean known = true;
+    switch (name) {
+      case "invoicesAndPropertiesFile" -> invoicesAndPropertiesFile = value;
+      case "propertyRelatedFilesFolder" -> propertyRelatedFilesFolder = value;
+      default -> known = false;
+      
+    }
+    return known;
+
+  }
 
   /**
    * Private constructor for the singleton InvoicesAndPropertiesRegistry.
@@ -78,6 +95,8 @@ public class InvoicesAndPropertiesRegistry extends Registry {
     setShortProductInfo("A database like application to store information about Invoices and Properties.");
     setPropertyDescriptorsFileName("InvoicesAndPropertiesPropertyDescriptors.xmi");
     setUserPropertiesFileName("InvoicesAndPropertiesUserPreferences.xmi");
+    setPropertyRelatedFilesFolder("D:\\Database\\InvoicesAndProperties");
+    setInvoicesAndPropertiesFile("D:\\Database\\InvoicesAndProperties\\InvoicesAndProperties.xmi");
   }
  
 }

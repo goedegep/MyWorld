@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<configuration:LookInfo xmi:version="2.0"
-    xmlns:xmi="http://www.omg.org/XMI" xmlns:configuration="http:///org/goedegep/configuration.ecore">
-    <mainLook achtergrondKleur="238,238,238" knopAchtergrondKleur="238,238,238" paneelAchtergrondKleur="238,238,238"
-        lijstAchtergrondKleur="238,238,238" labelAchtergrondKleur="238,238,238" boxAchtergrondKleur="238,238,238"
-        tekstVeldAchtergrondKleur="255,255,255"/>
-</configuration:LookInfo>

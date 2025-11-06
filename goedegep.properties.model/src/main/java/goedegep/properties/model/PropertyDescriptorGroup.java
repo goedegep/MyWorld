@@ -22,8 +22,6 @@ import org.eclipse.emf.ecore.EObject;
  *   <li>{@link goedegep.properties.model.PropertyDescriptorGroup#getPropertyDescriptors <em>Property Descriptors</em>}</li>
  *   <li>{@link goedegep.properties.model.PropertyDescriptorGroup#getName <em>Name</em>}</li>
  *   <li>{@link goedegep.properties.model.PropertyDescriptorGroup#getDescription <em>Description</em>}</li>
- *   <li>{@link goedegep.properties.model.PropertyDescriptorGroup#getPackageName <em>Package Name</em>}</li>
- *   <li>{@link goedegep.properties.model.PropertyDescriptorGroup#getRegistryClassName <em>Registry Class Name</em>}</li>
  * </ul>
  *
  * @see goedegep.properties.model.PropertiesPackage#getPropertyDescriptorGroup()
@@ -158,122 +156,6 @@ public interface PropertyDescriptorGroup extends EObject {
    * @generated
    */
   boolean isSetDescription();
-
-  /**
-   * Returns the value of the '<em><b>Package Name</b></em>' attribute.
-   * <!-- begin-user-doc -->
-   * <p>
-   * If the meaning of the '<em>Package Name</em>' attribute isn't clear,
-   * there really should be more of a description here...
-   * </p>
-   * <!-- end-user-doc -->
-   * <!-- begin-model-doc -->
-   * The package name for the Registry class.
-   * <p/>
-   * Together with the registryClassName, this specifies the Registry class.
-   * <!-- end-model-doc -->
-   * @return the value of the '<em>Package Name</em>' attribute.
-   * @see #isSetPackageName()
-   * @see #unsetPackageName()
-   * @see #setPackageName(String)
-   * @see goedegep.properties.model.PropertiesPackage#getPropertyDescriptorGroup_PackageName()
-   * @model unsettable="true"
-   * @generated
-   */
-  String getPackageName();
-
-  /**
-   * Sets the value of the '{@link goedegep.properties.model.PropertyDescriptorGroup#getPackageName <em>Package Name</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @param value the new value of the '<em>Package Name</em>' attribute.
-   * @see #isSetPackageName()
-   * @see #unsetPackageName()
-   * @see #getPackageName()
-   * @generated
-   */
-  void setPackageName(String value);
-
-  /**
-   * Unsets the value of the '{@link goedegep.properties.model.PropertyDescriptorGroup#getPackageName <em>Package Name</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #isSetPackageName()
-   * @see #getPackageName()
-   * @see #setPackageName(String)
-   * @generated
-   */
-  void unsetPackageName();
-
-  /**
-   * Returns whether the value of the '{@link goedegep.properties.model.PropertyDescriptorGroup#getPackageName <em>Package Name</em>}' attribute is set.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return whether the value of the '<em>Package Name</em>' attribute is set.
-   * @see #unsetPackageName()
-   * @see #getPackageName()
-   * @see #setPackageName(String)
-   * @generated
-   */
-  boolean isSetPackageName();
-
-  /**
-   * Returns the value of the '<em><b>Registry Class Name</b></em>' attribute.
-   * <!-- begin-user-doc -->
-   * <p>
-   * If the meaning of the '<em>Registry Class Name</em>' attribute isn't clear,
-   * there really should be more of a description here...
-   * </p>
-   * <!-- end-user-doc -->
-   * <!-- begin-model-doc -->
-   * The name of the Registry class.
-   * <p/>
-   * Together with the packageName, this specifies the Registry class.
-   * <!-- end-model-doc -->
-   * @return the value of the '<em>Registry Class Name</em>' attribute.
-   * @see #isSetRegistryClassName()
-   * @see #unsetRegistryClassName()
-   * @see #setRegistryClassName(String)
-   * @see goedegep.properties.model.PropertiesPackage#getPropertyDescriptorGroup_RegistryClassName()
-   * @model unsettable="true"
-   * @generated
-   */
-  String getRegistryClassName();
-
-  /**
-   * Sets the value of the '{@link goedegep.properties.model.PropertyDescriptorGroup#getRegistryClassName <em>Registry Class Name</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @param value the new value of the '<em>Registry Class Name</em>' attribute.
-   * @see #isSetRegistryClassName()
-   * @see #unsetRegistryClassName()
-   * @see #getRegistryClassName()
-   * @generated
-   */
-  void setRegistryClassName(String value);
-
-  /**
-   * Unsets the value of the '{@link goedegep.properties.model.PropertyDescriptorGroup#getRegistryClassName <em>Registry Class Name</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #isSetRegistryClassName()
-   * @see #getRegistryClassName()
-   * @see #setRegistryClassName(String)
-   * @generated
-   */
-  void unsetRegistryClassName();
-
-  /**
-   * Returns whether the value of the '{@link goedegep.properties.model.PropertyDescriptorGroup#getRegistryClassName <em>Registry Class Name</em>}' attribute is set.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return whether the value of the '<em>Registry Class Name</em>' attribute is set.
-   * @see #unsetRegistryClassName()
-   * @see #getRegistryClassName()
-   * @see #setRegistryClassName(String)
-   * @generated
-   */
-  boolean isSetRegistryClassName();
 
   /**
    * <!-- begin-user-doc -->

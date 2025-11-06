@@ -1,22 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <properties:PropertyDescriptorGroup xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:properties="http://goedegep.properties/model"
-    name="InvoicesAndProperties" packageName="goedegep.invandprop.app"
-    registryClassName="InvoicesAndPropertiesRegistry">
-  <propertyDescriptors xsi:type="properties:FilePropertyDescriptor" type="FILE" name="configurationFile"
-      description="Name of the file with configuration information." displayName="Configuration filename"
-      initialValue="InvoicesAndPropertiesConfiguration.xmi">
-    <fileExtensions>xmi</fileExtensions>
-  </propertyDescriptors>
-  <propertyDescriptors xsi:type="properties:FilePropertyDescriptor" type="FILE" name="customPropertiesFile"
-      description="Name of the file with user settings." displayName="User settings filename"
-      initialValue="InvoicesAndPropertiesSettings.xmi">
-    <fileExtensions>xmi</fileExtensions>
-  </propertyDescriptors>
+    name="InvoicesAndProperties">
   <propertyDescriptors xsi:type="properties:FilePropertyDescriptor" type="FILE" name="invoicesAndPropertiesFile"
-      description="Name of the file with all invoices and properties" displayName="Invoices and properties file"
-      initialValue="D:\Database\MyWorld\InvoicesAndProperties.xmi" userSettable="true"/>
+      description="Name of the file with all invoices and properties" displayName="Invoices and properties file"/>
   <propertyDescriptors type="DIRECTORY" name="propertyRelatedFilesFolder" description="Folder with property related files (documents and pictures)"
-      displayName="Property related files folder" initialValue="D:\Database\Handleidingen"
-      userSettable="true"/>
+      displayName="Property related files folder"/>
 </properties:PropertyDescriptorGroup>

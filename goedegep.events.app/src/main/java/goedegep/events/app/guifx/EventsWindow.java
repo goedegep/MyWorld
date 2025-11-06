@@ -18,7 +18,7 @@ import goedegep.events.model.EventsPackage;
 import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.JfxStage;
 import goedegep.jfx.MenuUtil;
-import goedegep.jfx.PropertyDescriptorsEditorFx;
+import goedegep.properties.app.guifx.PropertyDescriptorsEditorFx;
 import goedegep.resources.ImageSize;
 import goedegep.util.Result;
 import goedegep.util.emf.EMFResource;

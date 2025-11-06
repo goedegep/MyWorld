@@ -22,8 +22,12 @@ public class VacationsPropertyDescriptorsResource extends ListResourceBundle {
       
       {"Vacations.vacationPicturesFolderName.description", "Name of the folder with vacation pictures."},
       
-      {"Vacations.askToEditProperties.description", "If true, the user will be asked to edit the User Properties at application startup."}
+      {"Vacations.askToEditProperties.description", "If true, the user will be asked to edit the User Properties at application startup."},
       
+      {"Vacations.knownFiles.description", "Known files about which no warnings are shown"},
+      
+      {"Vacations.ignoreVacationPictureFolders.description", "Folders that will be ignored"}
+
     };
   }
 

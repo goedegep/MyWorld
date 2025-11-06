@@ -4,35 +4,13 @@
     xmlns:xmi="http://www.omg.org/XMI"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xmlns:properties="http://goedegep.properties/model"
-    name="Rolodex"
-    packageName="goedegep.rolodex.app"
-    registryClassName="RolodexRegistry">
-  <propertyDescriptors
-      xsi:type="properties:FilePropertyDescriptor"
-      type="FILE"
-      name="configurationFile"
-      description="Name of the file with configuration information."
-      displayName="Configuration filename"
-      initialValue="RolodexConfiguration.xmi">
-    <fileExtensions>xmi</fileExtensions>
-  </propertyDescriptors>
-  <propertyDescriptors
-      xsi:type="properties:FilePropertyDescriptor"
-      type="FILE"
-      name="customPropertiesFile"
-      description="Name of the file with user settings."
-      displayName="User settings filename"
-      initialValue="RolodexSettings.xmi">
-    <fileExtensions>xmi</fileExtensions>
-  </propertyDescriptors>
+    name="Rolodex">
   <propertyDescriptors
       xsi:type="properties:FilePropertyDescriptor"
       type="FILE"
       name="rolodexFile"
       description="Name of the file with the rolodex data."
-      displayName="Rolodex filename"
-      initialValue="D:\Database\MyWorld\Rolodex.xmi"
-      userSettable="true">
+      displayName="Rolodex filename">
     <fileExtensions>xmi</fileExtensions>
   </propertyDescriptors>
 </properties:PropertyDescriptorGroup>

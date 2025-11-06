@@ -724,7 +724,6 @@
     <module>../goedegep.jfx</module>
     <module>../goedegep.jfxtest</module>
     <module>../goedegep.properties.app</module>
-    <module>../goedegep.properties.apptest</module>
     <module>../goedegep.mapview</module>
     <module>../goedegep.applicationcomponent</module>
     

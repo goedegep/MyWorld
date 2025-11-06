@@ -1,8 +1,9 @@
-package goedegep.jfx;
+package goedegep.properties.app.guifx;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.eobjecttreeview.EObjectTreeItemAttributeDescriptor;
 import goedegep.jfx.eobjecttreeview.EObjectTreeItemAttributeListDescriptor;
 import goedegep.jfx.eobjecttreeview.EObjectTreeItemAttributeListValueDescriptor;
@@ -65,16 +66,6 @@ public class PropertyDescriptorsTreeViewCreator {
         .setPresentationType(PresentationType.MULTI_LINE_TEXT);
     eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(eObjectTreeItemAttributeDescriptor);
     
-    // PackageName
-    eObjectTreeItemAttributeDescriptor = new EObjectTreeItemAttributeDescriptor(PROPERTIES_PACKAGE.getPropertyDescriptorGroup_PackageName())
-        .setLabelText("PackageName");
-    eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(eObjectTreeItemAttributeDescriptor);
-    
-    // Registry class
-    eObjectTreeItemAttributeDescriptor = new EObjectTreeItemAttributeDescriptor(PROPERTIES_PACKAGE.getPropertyDescriptorGroup_RegistryClassName())
-        .setLabelText("Registry class");
-    eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(eObjectTreeItemAttributeDescriptor);
-    
     // Property Descriptors
     eObjectTreeItemClassListReferenceDescriptor = new EObjectTreeItemClassListReferenceDescriptor(PROPERTIES_PACKAGE.getPropertyDescriptorGroup_PropertyDescriptors())
         .setLabelText("Property Descriptors");
@@ -94,8 +85,6 @@ public class PropertyDescriptorsTreeViewCreator {
           StringBuilder buf = new StringBuilder();
           PropertyDescriptor propertyDescriptor = (PropertyDescriptor) eObject;
           buf.append(propertyDescriptor.getName());
-          buf.append(" - ");
-          buf.append(propertyDescriptor.getInitialValue());
           return buf.toString();
         })
         .addNodeOperationDescriptor(new NodeOperationDescriptorNewBefore("New Property Descriptor before", null, null))
@@ -130,16 +119,6 @@ public class PropertyDescriptorsTreeViewCreator {
         .setLabelText("Registry name");
     eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(eObjectTreeItemAttributeDescriptor);
     
-    // Initial value
-    eObjectTreeItemAttributeDescriptor = new EObjectTreeItemAttributeDescriptor(PROPERTIES_PACKAGE.getPropertyDescriptor_InitialValue())
-        .setLabelText("Initial value");
-    eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(eObjectTreeItemAttributeDescriptor);
-    
-    // Changeable
-    eObjectTreeItemAttributeDescriptor = new EObjectTreeItemAttributeDescriptor(PROPERTIES_PACKAGE.getPropertyDescriptor_UserSettable())
-        .setLabelText("Changeable");
-    eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(eObjectTreeItemAttributeDescriptor);
-    
     return eObjectTreeItemClassDescriptor;
   }
 
@@ -156,8 +135,6 @@ public class PropertyDescriptorsTreeViewCreator {
           StringBuilder buf = new StringBuilder();
           PropertyDescriptor propertyDescriptor = (PropertyDescriptor) eObject;
           buf.append(propertyDescriptor.getName());
-          buf.append(" - ");
-          buf.append(propertyDescriptor.getInitialValue());
           return buf.toString();
         })
         .addNodeOperationDescriptor(new NodeOperationDescriptorNewBefore("New Property Descriptor before", null, null))
@@ -189,16 +166,6 @@ public class PropertyDescriptorsTreeViewCreator {
     // Registry name
     eObjectTreeItemAttributeDescriptor = new EObjectTreeItemAttributeDescriptor(PROPERTIES_PACKAGE.getPropertyDescriptor_RegistryName())
         .setLabelText("Registry name");
-    eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(eObjectTreeItemAttributeDescriptor);
-    
-    // Initial value
-    eObjectTreeItemAttributeDescriptor = new EObjectTreeItemAttributeDescriptor(PROPERTIES_PACKAGE.getPropertyDescriptor_InitialValue())
-        .setLabelText("Initial value");
-    eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(eObjectTreeItemAttributeDescriptor);
-    
-    // Changeable
-    eObjectTreeItemAttributeDescriptor = new EObjectTreeItemAttributeDescriptor(PROPERTIES_PACKAGE.getPropertyDescriptor_UserSettable())
-        .setLabelText("Changeable");
     eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(eObjectTreeItemAttributeDescriptor);
     
     // File extensions

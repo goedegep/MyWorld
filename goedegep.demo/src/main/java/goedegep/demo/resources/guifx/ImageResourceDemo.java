@@ -107,7 +107,6 @@ public class ImageResourceDemo extends JfxStage {
     });    
     
     for (ImageResource imageResource: ImageResource.values()) {
-      LOGGER.severe("Adding image resource: " + imageResource.name() + ", " + imageResource.getImageFilename(ImageSize.SIZE_3));
       flowPane.getChildren().add(createImagePanel(imageResource));
     }
     mainVBox.getChildren().add(scrollPane);
@@ -178,7 +177,7 @@ public class ImageResourceDemo extends JfxStage {
     }
     
     imageSelectionComboBox = new ComboBox<>(imageResourceWrappers);
-    imageSelectionComboBox.setOnAction((e) -> updateDifferentSizesBox());
+    imageSelectionComboBox.setOnAction((_) -> updateDifferentSizesBox());
     controlsVBox.getChildren().add(imageSelectionComboBox);
     
     toggleGroup = new ToggleGroup();
@@ -188,7 +187,7 @@ public class ImageResourceDemo extends JfxStage {
     RadioButton availableFilesButton = new RadioButton(RADIO_BUTTON_AVAILABLE_FILES);
     availableFilesButton.setToggleGroup(toggleGroup);
 //    availableFilesButton.setOnAction((e) -> updateDifferentSizesBox());
-    toggleGroup.selectedToggleProperty().addListener((c) -> updateDifferentSizesBox());
+    toggleGroup.selectedToggleProperty().addListener((_) -> updateDifferentSizesBox());
     controlsVBox.getChildren().addAll(fixedSizesButton, availableFilesButton);
     
     HBox hBox = new HBox();

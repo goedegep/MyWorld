@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<properties:PropertyGroup xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:properties="http://goedegep.properties/model"
-    name="Vacations">
-  <properties name="vacationsFileName" value="D:\Database\Vakantie\Vakanties.xmi"/>
-  <properties name="vacationChecklistFileName" value="D:\Database\Vakantie\VakantieChecklist.xmi"/>
-  <properties name="vacationsFolderName" value="D:\Database\Vakantie"/>
-  <properties name="vacationPicturesFolderName" value="D:\Photo\Vakanties"/>
-</properties:PropertyGroup>
