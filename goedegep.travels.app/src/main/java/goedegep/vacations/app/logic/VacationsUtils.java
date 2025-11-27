@@ -9,8 +9,11 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.attribute.BasicFileAttributes;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -27,6 +30,7 @@ import goedegep.gpx.model.GpxType;
 import goedegep.gpx.model.TrkType;
 import goedegep.gpx.model.TrksegType;
 import goedegep.gpx.model.WptType;
+import goedegep.poi.app.LocationCategory;
 import goedegep.types.model.FileReference;
 import goedegep.util.Triplet;
 import goedegep.util.datetime.FlexDate;
@@ -38,12 +42,14 @@ import goedegep.vacations.model.Boundary;
 import goedegep.vacations.model.BoundingBox;
 import goedegep.vacations.model.Day;
 import goedegep.vacations.model.DayTrip;
+import goedegep.vacations.model.Document;
 import goedegep.vacations.model.GPXTrack;
 import goedegep.vacations.model.Location;
 import goedegep.vacations.model.Picture;
 import goedegep.vacations.model.Travel;
 import goedegep.vacations.model.Vacation;
 import goedegep.vacations.model.VacationElement;
+import goedegep.vacations.model.Vacations;
 import goedegep.vacations.model.VacationsPackage;
 
 /**
@@ -51,6 +57,7 @@ import goedegep.vacations.model.VacationsPackage;
  */
 public class VacationsUtils {
   private static final Logger LOGGER = Logger.getLogger(VacationsUtils.class.getName());
+  private static DateFormat DF = new SimpleDateFormat("dd-MM-yyyy");
   
   private static VacationsRegistry vacationsRegistry = VacationsRegistry.getInstance();
   
@@ -60,7 +67,7 @@ public class VacationsUtils {
    * @param object the {@code Object} for which the vacation is to be obtained.
    * @return The {@code Vacation} to which the {@code object} belongs, or null if the object is not part of a vacation.
    */
-  public static Vacation getVacationForObject(Object object) {    
+  public static Vacation getVacationForObject(Object object) {
     if (object == null) {
       return null;
     }
@@ -211,6 +218,7 @@ public class VacationsUtils {
     return locationConnectingLines;
   }
   
+  @SuppressWarnings("unused")
   private static void printLocations(List<List<WGS84Coordinates>> locationConnectingLines, String title) {
     LOGGER.severe(title);
     for (List<WGS84Coordinates> list: locationConnectingLines) {
@@ -770,7 +778,6 @@ public class VacationsUtils {
       String filename = fileReference.getFile();
       if (filename != null) {
         File file = new File(filename);
-        File parentFile = file.getParentFile();
         String parentFolder = file.getParentFile().getParent();
         if (travel instanceof Vacation) {
           if (vacationsRegistry.getVacationsFolderName().equals(parentFolder)) {
@@ -806,7 +813,7 @@ public class VacationsUtils {
    * @return the folder in which the documents related to <code>dayTrip</code> are stored
    */
   public static String getDayTripFolder(DayTrip dayTrip) {
-    String vacationFolder = null;
+//    String vacationFolder = null;
 
 //    for (FileReference fileReference: dayTrip.getAllFileReferences()) {
 //      String filename = fileReference.getFile();
@@ -868,11 +875,9 @@ public class VacationsUtils {
      */
     
     Path vacationPhotosFolderPath = getVacationPhotosFolderPathByConvention(vacation);
-    if (Files.exists(vacationPhotosFolderPath)  &&  Files.isDirectory(vacationPhotosFolderPath)) {
-      LOGGER.severe("<= " + vacationPhotosFolderPath);
+    if (vacationPhotosFolderPath != null  &&  Files.exists(vacationPhotosFolderPath)  &&  Files.isDirectory(vacationPhotosFolderPath)) {
       return vacationPhotosFolderPath;
     } else {
-      LOGGER.severe("<= " + null);
       return null;
     }
   }
@@ -941,6 +946,10 @@ public class VacationsUtils {
    * @return a list of all paths of all folders, under the vacation's photo folder, which contain photos.
    */
   public static List<Path> getVactionPhotosSubFoldersPaths(Vacation vacation) {
+    List<String> skippedFolderNames = new ArrayList<>();
+    skippedFolderNames.add("Originals");
+    skippedFolderNames.add("weg");
+    
     List<Path> vacationPhotoFolderPaths = new ArrayList<>();
     
     Path vacationPhotosFolderPath = getVacationPhotosFolderPath(vacation);
@@ -956,8 +965,12 @@ public class VacationsUtils {
         @Override
         public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
           LOGGER.info("preVisitDirectory");
-          containsPhoto = false;
-          return FileVisitResult.CONTINUE;
+          if (skippedFolderNames.contains(dir.getFileName().toString())) {
+            return FileVisitResult.SKIP_SUBTREE;
+          } else {
+            containsPhoto = false;
+            return FileVisitResult.CONTINUE;
+          }
         }
 
         @Override
@@ -1185,5 +1198,188 @@ public class VacationsUtils {
     }
     
     return text;
+  }
+  
+  /**
+   * Get the number of points in the boundaries of a location.
+   * 
+   * @param location the {@code Location} for which to get the number of boundary points.
+   * @return the number of points in the boundaries of {@code location}.
+   */
+  public static int getNumberOfPointsInLocationBoundary(Location location) {
+    return location.getBoundaries().stream()
+    .mapToInt(boundary -> boundary.getPoints().size())
+    .sum();
+  }
+  
+  /**
+   * Get a textual 'absolute' path to an {@code EObject}.
+   * 
+   * @param eObject the {@code EObject} to get a path to.
+   * @return a textual path to {@code eObject}.
+   */
+  public static String getTextPathToEObject(EObject eObject) {
+    List<String> items = new ArrayList<>();
+    
+    items.add(getShortTextForEObject(eObject));
+    
+    EObject container = eObject.eContainer();
+    while (container != null) {
+      items.add(getShortTextForEObject(container));
+      container = container.eContainer();
+    }
+    
+    StringBuilder buf = new StringBuilder();
+    
+    boolean first = true;
+    while (!items.isEmpty()) {
+      if (first) {
+        first = false;
+      } else {
+        buf.append(":");
+      }
+      buf.append(items.removeLast());
+    }
+    
+    return buf.toString();
+  }
+  
+  /**
+   * Get a textual 'relative' path to an {@code EObject}.
+   * 
+   * @param eObject the {@code EObject} to get a path to.
+   * @return a textual path to {@code eObject}.
+   */
+  public static String getTextPathToEObject(EObject eObject, EObject prefix) {
+    List<String> items = new ArrayList<>();
+    
+    items.add(getShortTextForEObject(eObject));
+    
+    EObject container = eObject.eContainer();
+    while (container != null  &&  container != prefix) {
+      items.add(getShortTextForEObject(container));
+      container = container.eContainer();
+    }
+    
+    StringBuilder buf = new StringBuilder();
+    
+    boolean first = true;
+    while (!items.isEmpty()) {
+      if (first) {
+        first = false;
+      } else {
+        buf.append(":");
+      }
+      buf.append(items.removeLast());
+    }
+    
+    return buf.toString();
+  }
+
+  private static String getShortTextForEObject(EObject eObject) {
+    String text;
+    
+   text = switch (eObject) {
+    case Day day -> getShortTextForDay(day);
+    case DayTrip dayTrip -> getShortTextForDayTrip(dayTrip);
+    case Document _ -> "Document";
+    case GPXTrack gpxTrack -> getShortTextForGPXTrack(gpxTrack);
+    case FileReference _ -> "File Reference";
+    case Location location -> getShortTextForLocation(location);
+    case Vacation vacation -> getShortTextForVacation(vacation);
+    case Vacations _ -> "Vacations";
+    default -> "?";
+    };
+   
+    return text;
+  }
+
+  private static String getShortTextForVacation(Vacation vacation) {
+    String shortText = null;
+    shortText = vacation.getId();
+    
+    return shortText;
+  }
+
+  private static String getShortTextForDay(Day day) {
+    String shortText = null;
+    shortText = day.getTitle();
+    
+    if (shortText == null) {
+      Date date = day.getDate();
+      if (date != null) {
+        shortText = DF.format(date);
+      }
+    }
+    
+    if (shortText == null) {
+      shortText = String.valueOf(day.getDayNr());
+    }
+    
+    return "Day " + shortText;
+  }
+
+  private static String getShortTextForDayTrip(DayTrip dayTrip) {
+    String shortText = null;
+    shortText = dayTrip.getId();
+    
+    return shortText;
+  }
+
+  private static String getShortTextForGPXTrack(GPXTrack gpxTrack) {
+    String shortText = null;
+    
+    FileReference fileReference = gpxTrack.getTrackReference();
+    if (fileReference != null) {
+      shortText = fileReference.getTitle();
+    }
+    
+    if (shortText == null) {
+      shortText = "GPXTrack";
+    }
+    
+    return shortText;
+  }
+  
+  private static String getShortTextForLocation(Location location) {
+    String shortText = null;
+    shortText = location.getName();
+    
+    if (shortText == null) {
+      LocationCategory locationCategory = location.getLocationCategory();
+      if (locationCategory != null) {
+        shortText = LocationCategory.getDisplayName(locationCategory);
+      }
+    }
+    
+    if (shortText == null) {
+      shortText = location.getCity();
+    }
+    
+    return shortText;
+  }
+  
+  public static boolean doesTravelHavePictures(Vacation vacation) {
+    TreeIterator<EObject> iterator = vacation.eAllContents();
+    Path vacationPhotosFolderPath = getVacationsPhotosFolderPath();
+    
+    while (iterator.hasNext()) {
+      EObject eObject = iterator.next();
+      if (eObject instanceof Picture picture) {
+        FileReference fileReference = picture.getPictureReference();
+        if (fileReference != null) {
+          String fileName = fileReference.getFile();
+          
+          if (fileName != null) {
+            Path picturePath = Paths.get(fileName);
+            if (FileUtils.isSubPathOfPath(picturePath, vacationPhotosFolderPath)) {
+              return true;
+            }
+          }
+        }
+      }
+    }
+    
+    return false;
   }
 }

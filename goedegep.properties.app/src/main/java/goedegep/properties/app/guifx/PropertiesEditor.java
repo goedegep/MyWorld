@@ -404,14 +404,14 @@ public class PropertiesEditor extends JfxStage {
     try {
       PropertyGroup propertyGroup = propertiesResource.load(propertiesFilePath.toString());
 
-      String propertyGroupName = propertyGroup.getName();
-      String editablePropertyGroupName = (String) editablePropertyGroup.eGet(editablePropertyGroup_name);
-      if (!propertyGroupName.contentEquals(editablePropertyGroupName)) {
-        LOGGER.severe("Group names don't match");
-        LOGGER.severe("propertyGroupName=" + propertyGroupName + ", editablePropertyGroupName=" + editablePropertyGroupName);
-
-        return;
-      }
+//      String propertyGroupName = propertyGroup.getName();
+//      String editablePropertyGroupName = (String) editablePropertyGroup.eGet(editablePropertyGroup_name);
+//      if (!propertyGroupName.contentEquals(editablePropertyGroupName)) {
+//        LOGGER.severe("Group names don't match");
+//        LOGGER.severe("propertyGroupName=" + propertyGroupName + ", editablePropertyGroupName=" + editablePropertyGroupName);
+//
+//        return;
+//      }
       fillEditablePropertiesGroupFromPropertyGroup(editablePropertyGroup, propertyGroup);
 
     } catch (IOException e) {

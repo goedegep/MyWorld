@@ -20,7 +20,7 @@ import org.eclipse.emf.ecore.EObject;
  *   <li>{@link goedegep.vacations.model.Vacations#getHome <em>Home</em>}</li>
  *   <li>{@link goedegep.vacations.model.Vacations#getTips <em>Tips</em>}</li>
  *   <li>{@link goedegep.vacations.model.Vacations#getDayTrips <em>Day Trips</em>}</li>
- *   <li>{@link goedegep.vacations.model.Vacations#getTravelcategories <em>Travelcategories</em>}</li>
+ *   <li>{@link goedegep.vacations.model.Vacations#getTravelCategories <em>Travel Categories</em>}</li>
  * </ul>
  *
  * @see goedegep.vacations.model.VacationsPackage#getVacations()
@@ -155,16 +155,16 @@ public interface Vacations extends EObject {
   EList<DayTrip> getDayTrips();
 
   /**
-   * Returns the value of the '<em><b>Travelcategories</b></em>' containment reference list.
-   * The list contents are of type {@link goedegep.vacations.model.TravelCategories}.
+   * Returns the value of the '<em><b>Travel Categories</b></em>' containment reference list.
+   * The list contents are of type {@link goedegep.vacations.model.TravelCategory}.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return the value of the '<em>Travelcategories</em>' containment reference list.
-   * @see goedegep.vacations.model.VacationsPackage#getVacations_Travelcategories()
+   * @return the value of the '<em>Travel Categories</em>' containment reference list.
+   * @see goedegep.vacations.model.VacationsPackage#getVacations_TravelCategories()
    * @model containment="true"
    * @generated
    */
-  EList<TravelCategories> getTravelcategories();
+  EList<TravelCategory> getTravelCategories();
 
   /**
    * <!-- begin-user-doc -->
@@ -200,5 +200,13 @@ public interface Vacations extends EObject {
    * @generated
    */
   Vacation findVacation(FlexDate date);
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @model kind="operation"
+   * @generated
+   */
+  EList<Travel> getTravels();
 
 } // Vakanties

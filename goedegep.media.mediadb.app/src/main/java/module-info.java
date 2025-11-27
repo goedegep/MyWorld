@@ -7,7 +7,7 @@ module goedegep.media.mediadb.app {
   exports goedegep.media.photo.photoshow.guifx;
   exports goedegep.media.photo.photomapview.guifx;
 
-  requires com.gluonhq.maps;
+  requires transitive com.gluonhq.maps;
   requires com.google.common;
   requires goedegep.appgen;
   requires goedegep.mapview;

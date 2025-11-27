@@ -81,7 +81,6 @@ import goedegep.vacations.app.logic.PhotoImportResult;
 import goedegep.vacations.app.logic.PhotosImporter;
 import goedegep.vacations.app.logic.VacationToHtmlConverter;
 import goedegep.vacations.app.logic.VacationToHtmlConverterSetting;
-import goedegep.vacations.app.logic.VacationsChecker;
 import goedegep.vacations.app.logic.VacationsKmlConverter;
 import goedegep.vacations.app.logic.VacationsRegistry;
 import goedegep.vacations.app.logic.VacationsUtils;
@@ -895,11 +894,8 @@ public class VacationsWindow extends JfxStage {
     // Tools menu
     menu = new Menu("Tools");
 
-    // Tools: Check selected vacation
-    MenuUtil.addMenuItem(menu, "Check selected vacation", _ -> checkSelectedVacation());
-
     // Tools: Check vacations
-    MenuUtil.addMenuItem(menu, "Check vacations", _ -> new CheckVacationsWindow(customization, vacations));
+    MenuUtil.addMenuItem(menu, "Check vacations", _ -> new CheckVacationsWindow(customization, vacations, treeView));
     
     menuBar.getMenus().add(menu);
 
@@ -2329,64 +2325,7 @@ public class VacationsWindow extends JfxStage {
       e.printStackTrace();
     }
   }
-    
-  /**
-   * Check the selected vacation and report any problems and suspicious things.
-   * <p>
-   * The followings things are checked:
-   * <ul>
-   * <li>FileReferences to non-existing files<br/>
-   * The 'file' attribute of a {@code FileReference} shall be name of an existing file.
-   * If it is {@code null} it is a warning, if the file doesn't exist it is an error.
-   * </li>
-   * </ul>
-   */
-  private void checkSelectedVacation() {
-    EObjectTreeItem treeItem = treeView.getSelectedObject();
-    Vacation vacation = getTravelForTreeItem(treeItem, VACATIONS_PACKAGE.getVacation());
-    if (vacation == null) {
-      statusLabel.setText("No vacation selected");
-      return;
-    }
-    
-    VacationCheckResultWindow.VacationCheckResultWindowBuilder builder = new VacationCheckResultWindow.VacationCheckResultWindowBuilder(customization, vacation.getId());
-    
-    Set<String> fileReferencesNotSet = VacationsChecker.checkThatAllReferencesAreSet(treeView, vacation);
-    builder.setReferencesNotSet(fileReferencesNotSet);
-
-    Set<String> nonExistingReferences = VacationsChecker.checkThatAllReferencesExist(treeView, vacation);
-    builder.setNonExistingReferences(nonExistingReferences);
-    
-    Set<String> filesNotReferredTo = VacationsChecker.checkThatAllFilesAreReferredTo(vacation);
-    builder.setFilesNotReferredTo(filesNotReferredTo);
-    
-    String photosFolderProblem = "";
-    Path vacationPhotosFolderPathByConvention = VacationsUtils.getVacationPhotosFolderPathByConvention(vacation);
-    boolean vacationPhotosFolderPathByConventionExists = Files.exists(vacationPhotosFolderPathByConvention);
-    if (vacation.getPictures() == null) {
-      // If there is a folder with photos for this vacation, the pictures attribute should be set.
-      if (vacationPhotosFolderPathByConventionExists) {
-        photosFolderProblem = "There is a folder with photos for this vacation, but the 'Photos' attribute is not set.";
-      }
-    } else {
-      // if the pictures attribute differs from the path by convention, the convention isn't followed.
-      String vacationPhotosFolderNameByConvention = vacationPhotosFolderPathByConvention.toString();
-      LOGGER.severe("vacationPhotosFolderPathByConvention: " + vacationPhotosFolderNameByConvention);
-      LOGGER.severe("vacation.getPictures(): " + vacation.getPictures());
-      if (!vacation.getPictures().equals(vacationPhotosFolderNameByConvention)) {
-        photosFolderProblem = "The folder with photos for this vacation doesn't follow the naming convention. The name is '" + vacation.getPictures() + "' but should be '" + vacationPhotosFolderPathByConvention + "'";
-      }
-    }
-    builder.setPhotosFolderProblem(photosFolderProblem);
-    
-    if (vacation.getPictures() != null  ||  vacationPhotosFolderPathByConventionExists) {
-      Set<String> photosNotReferredTo = VacationsChecker.checkThatAllPhotosAreReferredTo(vacation);
-      builder.setPhotosNotReferredTo(photosNotReferredTo);
-    }
-    
-    builder.build();
-  }
-  
+      
   /**
    * Print a <code>Node</code>.
    * 
@@ -2761,7 +2700,9 @@ public class VacationsWindow extends JfxStage {
         vacationsRegistry.getShortProductInfo() + NEWLINE +
         "Version: " + vacationsRegistry.getVersion() + NEWLINE +
         vacationsRegistry.getCopyrightMessage() + NEWLINE +
-        "Author: " + vacationsRegistry.getAuthor())
+        "Author: " + vacationsRegistry.getAuthor() + 
+        (vacationsRegistry.isDevelopmentMode() ? (NEWLINE + NEWLINE + "Running in development mode!") : "")
+        )
         .showAndWait();
   }
   

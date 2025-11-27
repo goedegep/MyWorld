@@ -2,6 +2,15 @@
  */
 package goedegep.vacations.model.impl;
 
+import org.eclipse.emf.ecore.EAttribute;
+import org.eclipse.emf.ecore.EClass;
+import org.eclipse.emf.ecore.EDataType;
+import org.eclipse.emf.ecore.EOperation;
+import org.eclipse.emf.ecore.EPackage;
+import org.eclipse.emf.ecore.EReference;
+import org.eclipse.emf.ecore.impl.EPackageImpl;
+import org.eclipse.emf.ecore.xml.type.XMLTypePackage;
+
 import goedegep.poi.app.LocationCategory;
 import goedegep.types.model.TypesPackage;
 import goedegep.vacations.model.Boundary;
@@ -15,23 +24,12 @@ import goedegep.vacations.model.MapImage;
 import goedegep.vacations.model.Picture;
 import goedegep.vacations.model.Text;
 import goedegep.vacations.model.Travel;
-import goedegep.vacations.model.TravelCategories;
 import goedegep.vacations.model.TravelCategory;
 import goedegep.vacations.model.Vacation;
 import goedegep.vacations.model.VacationElement;
 import goedegep.vacations.model.Vacations;
 import goedegep.vacations.model.VacationsFactory;
 import goedegep.vacations.model.VacationsPackage;
-
-import org.eclipse.emf.ecore.EAttribute;
-import org.eclipse.emf.ecore.EClass;
-import org.eclipse.emf.ecore.EDataType;
-import org.eclipse.emf.ecore.EOperation;
-import org.eclipse.emf.ecore.EPackage;
-import org.eclipse.emf.ecore.EReference;
-
-import org.eclipse.emf.ecore.impl.EPackageImpl;
-import org.eclipse.emf.ecore.xml.type.XMLTypePackage;
 
 /**
  * <!-- begin-user-doc -->
@@ -144,13 +142,6 @@ public class VacationsPackageImpl extends EPackageImpl implements VacationsPacka
    * @generated
    */
   private EClass travelEClass = null;
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  private EClass travelCategoriesEClass = null;
 
   /**
    * <!-- begin-user-doc -->
@@ -283,7 +274,7 @@ public class VacationsPackageImpl extends EPackageImpl implements VacationsPacka
    * @generated
    */
   @Override
-  public EReference getVacations_Travelcategories() {
+  public EReference getVacations_TravelCategories() {
     return (EReference) vacationsEClass.getEStructuralFeatures().get(4);
   }
 
@@ -315,6 +306,16 @@ public class VacationsPackageImpl extends EPackageImpl implements VacationsPacka
   @Override
   public EOperation getVacations__FindVacation__FlexDate() {
     return vacationsEClass.getEOperations().get(2);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public EOperation getVacations__GetTravels() {
+    return vacationsEClass.getEOperations().get(3);
   }
 
   /**
@@ -1003,26 +1004,6 @@ public class VacationsPackageImpl extends EPackageImpl implements VacationsPacka
    * @generated
    */
   @Override
-  public EClass getTravelCategories() {
-    return travelCategoriesEClass;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public EReference getTravelCategories_Travelcategories() {
-    return (EReference) travelCategoriesEClass.getEStructuralFeatures().get(0);
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
   public EDataType getELocationCategory() {
     return eLocationCategoryEDataType;
   }
@@ -1062,10 +1043,11 @@ public class VacationsPackageImpl extends EPackageImpl implements VacationsPacka
     createEReference(vacationsEClass, VACATIONS__HOME);
     createEAttribute(vacationsEClass, VACATIONS__TIPS);
     createEReference(vacationsEClass, VACATIONS__DAY_TRIPS);
-    createEReference(vacationsEClass, VACATIONS__TRAVELCATEGORIES);
+    createEReference(vacationsEClass, VACATIONS__TRAVEL_CATEGORIES);
     createEOperation(vacationsEClass, VACATIONS___FIND_VACATION__FLEXDATE_STRING);
     createEOperation(vacationsEClass, VACATIONS___ADD_VACATION__VACATION);
     createEOperation(vacationsEClass, VACATIONS___FIND_VACATION__FLEXDATE);
+    createEOperation(vacationsEClass, VACATIONS___GET_TRAVELS);
 
     vacationEClass = createEClass(VACATION);
     createEAttribute(vacationEClass, VACATION__END_DATE);
@@ -1149,9 +1131,6 @@ public class VacationsPackageImpl extends EPackageImpl implements VacationsPacka
     createEOperation(travelEClass, TRAVEL___GET_ID);
     createEOperation(travelEClass, TRAVEL___GET_ALL_FILE_REFERENCES);
 
-    travelCategoriesEClass = createEClass(TRAVEL_CATEGORIES);
-    createEReference(travelCategoriesEClass, TRAVEL_CATEGORIES__TRAVELCATEGORIES);
-
     // Create data types
     eLocationCategoryEDataType = createEDataType(ELOCATION_CATEGORY);
   }
@@ -1214,7 +1193,7 @@ public class VacationsPackageImpl extends EPackageImpl implements VacationsPacka
     initEReference(getVacations_DayTrips(), this.getDayTrip(), null, "dayTrips", null, 0, -1, Vacations.class,
         !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE,
         !IS_DERIVED, IS_ORDERED);
-    initEReference(getVacations_Travelcategories(), this.getTravelCategories(), null, "travelcategories", null, 0, -1,
+    initEReference(getVacations_TravelCategories(), this.getTravelCategory(), null, "travelCategories", null, 0, -1,
         Vacations.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE,
         IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
@@ -1229,6 +1208,8 @@ public class VacationsPackageImpl extends EPackageImpl implements VacationsPacka
     op = initEOperation(getVacations__FindVacation__FlexDate(), this.getVacation(), "findVacation", 0, 1, IS_UNIQUE,
         IS_ORDERED);
     addEParameter(op, theTypesPackage.getEFlexDate(), "date", 0, 1, IS_UNIQUE, IS_ORDERED);
+
+    initEOperation(getVacations__GetTravels(), this.getTravel(), "getTravels", 0, -1, IS_UNIQUE, IS_ORDERED);
 
     initEClass(vacationEClass, Vacation.class, "Vacation", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getVacation_EndDate(), theTypesPackage.getEFlexDate(), "endDate", null, 0, 1, Vacation.class,
@@ -1390,12 +1371,6 @@ public class VacationsPackageImpl extends EPackageImpl implements VacationsPacka
 
     initEOperation(getTravel__GetAllFileReferences(), theTypesPackage.getFileReference(), "getAllFileReferences", 0, -1,
         IS_UNIQUE, !IS_ORDERED);
-
-    initEClass(travelCategoriesEClass, TravelCategories.class, "TravelCategories", !IS_ABSTRACT, !IS_INTERFACE,
-        IS_GENERATED_INSTANCE_CLASS);
-    initEReference(getTravelCategories_Travelcategories(), this.getTravelCategory(), null, "travelcategories", null, 0,
-        -1, TravelCategories.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES,
-        !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     // Initialize data types
     initEDataType(eLocationCategoryEDataType, LocationCategory.class, "ELocationCategory", IS_SERIALIZABLE,

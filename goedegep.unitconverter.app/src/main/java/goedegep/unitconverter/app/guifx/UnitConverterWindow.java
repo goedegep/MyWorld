@@ -536,7 +536,9 @@ public class UnitConverterWindow extends JfxStage {
         unitConverterRegistry.getShortProductInfo() + NEWLINE +
         "Version: " + unitConverterRegistry.getVersion() + NEWLINE +
         unitConverterRegistry.getCopyrightMessage() + NEWLINE +
-        "Author: " + unitConverterRegistry.getAuthor())
+        "Author: " + unitConverterRegistry.getAuthor() + 
+        (unitConverterRegistry.isDevelopmentMode() ? (NEWLINE + NEWLINE + "Running in development mode!") : "")
+        )
         .showAndWait();
   }
   

@@ -24,6 +24,8 @@
  * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ * 
+ * This is a modified version of com.gluonhq.maps.tile.TileRetrieverProvider from the Gluon Maps library.
  */
 package com.gluonhq.maps.tile;
 
@@ -32,9 +34,21 @@ import com.gluonhq.impl.maps.tile.osm.CachedOsmTileRetriever;
 import java.util.Iterator;
 import java.util.ServiceLoader;
 
+/**
+ * Provider for the {@link TileRetriever} implementation.
+ */
 public class TileRetrieverProvider {
 
+    /**
+     * Singleton instance of the TileRetrieverProvider.
+     */
     private static TileRetrieverProvider provider;
+    
+    /**
+     * Returns the singleton instance of the TileRetrieverProvider.
+     *
+     * @return the TileRetrieverProvider instance
+     */
     public static synchronized TileRetrieverProvider getInstance() {
         if (provider == null) {
             provider = new TileRetrieverProvider();
@@ -42,12 +56,25 @@ public class TileRetrieverProvider {
         return provider;
     }
 
+    /**
+     * ServiceLoader to load TileRetriever implementations.
+     */
     private final ServiceLoader<TileRetriever> loader;
 
+    /**
+     * Private constructor to avoid external instantiation.
+     */
     private TileRetrieverProvider() {
         loader = ServiceLoader.load(TileRetriever.class);
     }
-
+    
+    /**
+     * Loads and returns a TileRetriever implementation.
+     * It return the first implementation found by the ServiceLoader.
+     * If no implementation is found, it defaults to CachedOsmTileRetriever.
+     *
+     * @return the TileRetriever instance
+     */
     public TileRetriever load() {
         Iterator<TileRetriever> tileRetrievers = loader.iterator();
         if (tileRetrievers.hasNext()) {

@@ -24,6 +24,7 @@
       </eAnnotations>
       <eParameters name="date" eType="ecore:EDataType ../../goedegep.types.model/model/types.ecore#//EFlexDate"/>
     </eOperations>
+    <eOperations name="getTravels" upperBound="-1" eType="#//Travel"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="vacations" upperBound="-1"
         eType="#//Vacation" unsettable="true" containment="true">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
@@ -35,8 +36,8 @@
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="tips" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="dayTrips" upperBound="-1"
         eType="#//DayTrip" containment="true"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="travelcategories" upperBound="-1"
-        eType="#//TravelCategories" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="travelCategories" upperBound="-1"
+        eType="#//TravelCategory" containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Vacation" eSuperTypes="../../goedegep.types.model/model/types.ecore#//Event #//Travel">
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
@@ -183,10 +184,6 @@
     </eOperations>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="title" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
         unsettable="true"/>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="TravelCategories">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="travelcategories" upperBound="-1"
-        eType="#//TravelCategory" containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EDataType" name="ELocationCategory" instanceClassName="goedegep.poi.app.LocationCategory"/>
 </ecore:EPackage>

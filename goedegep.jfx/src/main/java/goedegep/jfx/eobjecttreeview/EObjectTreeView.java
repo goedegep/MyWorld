@@ -147,6 +147,8 @@ public class EObjectTreeView extends TreeView<Object> implements ObjectSelector<
    */
   boolean autoExpandingChildren = false;
   
+  private static int recursionCount;
+  
 //  /**
 //   * A new {@code EObject} initialization function (optional).
 //   */
@@ -701,11 +703,30 @@ public class EObjectTreeView extends TreeView<Object> implements ObjectSelector<
     };
   }
   
+  /**
+   * Find the {@code EObjectTreeItem} in the TreeView, which contains a specific object.
+   * 
+   * @param object the {@code Object} to search for.
+   * @return the first {@code EObjectTreeItem} found that contains the {@code object}, or null if the TreeView doesn't contain the {@code object}.
+   */
   public EObjectTreeItem findTreeItem(Object object) {
-    return (EObjectTreeItem) findTreeItem(getRoot(), object);
+    recursionCount = 0;
+    EObjectTreeItem eObjectTreeItem = (EObjectTreeItem) findTreeItem(getRoot(), object);
+    LOGGER.severe("recursionCount = " + recursionCount);
+    
+    return eObjectTreeItem;
   }
   
+  /**
+   * Find the {@code EObjectTreeItem} below a specific node in the TreeView, which contains a specific object.
+   * 
+   * @param treeItem the node to start the search.
+   * @param object the {@code Object} to search for.
+   * @return the first {@code EObjectTreeItem} found that contains the {@code object}, or null if the subtree starting at {@code treeItem} doesn't contain the {@code object}.
+   */
   public TreeItem<Object> findTreeItem(TreeItem<Object> treeItem, Object object) {
+    recursionCount++;
+    
     Object treeItemContent = treeItem.getValue();
     if (treeItemContent == object) {
       return treeItem;
@@ -795,7 +816,7 @@ public class EObjectTreeView extends TreeView<Object> implements ObjectSelector<
     
     LOGGER.info("treeItem=" + treeItem);
     getSelectionModel().select(treeItem);
-//    this.scrollTo(getSelectionModel().getSelectedIndex());
+    this.scrollTo(getSelectionModel().getSelectedIndex());
     
     dontNotifyListeners = false;
     

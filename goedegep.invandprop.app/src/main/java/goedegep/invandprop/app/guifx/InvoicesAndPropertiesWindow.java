@@ -66,7 +66,7 @@ import javafx.stage.FileChooser.ExtensionFilter;
  * This class is the overview window for the Invoices and Properties application.
  */
 public class InvoicesAndPropertiesWindow extends JfxStage {
-  private final static Logger LOGGER = Logger.getLogger(InvoicesAndPropertiesMenuWindow.class.getName());
+  private final static Logger LOGGER = Logger.getLogger(InvoicesAndPropertiesWindow.class.getName());
   private final static String NEWLINE = System.getProperty("line.separator");
   private final static InvAndPropPackage INV_AND_PROP_PACKAGE = InvAndPropPackage.eINSTANCE;
   
@@ -468,13 +468,15 @@ public class InvoicesAndPropertiesWindow extends JfxStage {
    */
   private void showHelpAboutDialog() {
     componentFactory.createApplicationInformationDialog(
-        "About Invoices and Properties",
+        "About " + invoicesAndPropertiesRegistry.getApplicationName(),
         appResources.getApplicationImage(ImageSize.SIZE_3),
         null, 
         invoicesAndPropertiesRegistry.getShortProductInfo() + NEWLINE +
         "Versie: " + invoicesAndPropertiesRegistry.getVersion() + NEWLINE +
         invoicesAndPropertiesRegistry.getCopyrightMessage() + NEWLINE +
-        "Auteur: " + invoicesAndPropertiesRegistry.getAuthor())
+        "Auteur: " + invoicesAndPropertiesRegistry.getAuthor() + 
+        (invoicesAndPropertiesRegistry.isDevelopmentMode() ? (NEWLINE + NEWLINE + "Running in development mode!") : "")
+        )
         .showAndWait();
   }
   

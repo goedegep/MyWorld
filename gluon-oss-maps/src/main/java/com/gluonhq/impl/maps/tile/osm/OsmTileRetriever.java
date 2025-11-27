@@ -24,6 +24,8 @@
  * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ * 
+ * This is a modified version of com.gluonhq.impl.maps.tile.osm.OsmTileRetriever from the Gluon Maps library.
  */
 package com.gluonhq.impl.maps.tile.osm;
 
@@ -38,7 +40,7 @@ public class OsmTileRetriever implements TileRetriever {
     static final String httpAgent;
 
     static {
-        String agent = System.getProperty("http.agent");
+        String agent = System.getProperty("http.agent");  // The http.agent java system property sets the default user agent for http requests.
         if (agent == null) {
             agent = "(" + System.getProperty("os.name") + " / " + System.getProperty("os.version") + " / " + System.getProperty("os.arch") + ")";
         }

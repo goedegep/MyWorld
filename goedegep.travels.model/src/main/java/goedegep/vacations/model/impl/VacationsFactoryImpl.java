@@ -86,8 +86,6 @@ public class VacationsFactoryImpl extends EFactoryImpl implements VacationsFacto
       return createTravelCategory();
     case VacationsPackage.TRAVEL:
       return createTravel();
-    case VacationsPackage.TRAVEL_CATEGORIES:
-      return createTravelCategories();
     default:
       throw new IllegalArgumentException("The class '" + eClass.getName() + "' is not a valid classifier");
     }
@@ -277,21 +275,11 @@ public class VacationsFactoryImpl extends EFactoryImpl implements VacationsFacto
     return travel;
   }
 
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public TravelCategories createTravelCategories() {
-    TravelCategoriesImpl travelCategories = new TravelCategoriesImpl();
-    return travelCategories;
-  }
 
   /**
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @generated
+   * @generated NOT
    */
   public LocationCategory createELocationCategoryFromString(EDataType eDataType, String initialValue) {
     LocationCategory locationCategory = Enum.valueOf(LocationCategory.class, initialValue);
@@ -301,7 +289,7 @@ public class VacationsFactoryImpl extends EFactoryImpl implements VacationsFacto
   /**
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @generated
+   * @generated NOT
    */
   public String convertELocationCategoryToString(EDataType eDataType, Object instanceValue) {
     String locationCategoryName = ((LocationCategory) instanceValue).name();

@@ -71,7 +71,7 @@ public class DesktopUtil {
    * Get the {@code Desktop} instance.
    * @return the {@code Desktop} instance.
    */
-  private static Desktop getDesktopInstance() {
+  public static Desktop getDesktopInstance() {
     if (desktop == null) {
       desktop = Desktop.getDesktop();
     }

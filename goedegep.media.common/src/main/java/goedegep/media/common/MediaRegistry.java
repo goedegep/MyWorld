@@ -254,4 +254,25 @@ public class MediaRegistry extends Registry {
     setMediaPlayerClassicExecutable("C:\\Program Files\\MPC-BE x64\\mpc-be64.exe");
   }
 
+  @Override
+  public boolean setValue(String name, String value) {
+    if (super.setValue(name, value)) {
+      return true;
+    }
+
+    boolean known = true;
+    switch (name) {
+    case "albumImportDirectory" -> albumImportDirectory = value;
+    case "duneMusicFolderPath" -> duneMusicFolderPath = value;
+    case "ignoreFolderNames" -> ignoreFolderNames = value;
+    case "mediaDbFile" -> mediaDbFile = value;
+    case "mediaPlayerClassicExecutable" -> mediaPlayerClassicExecutable = value;
+    case "musicDataDirectory" -> musicDataDirectory = value;
+    case "photosFolder" -> photosFolder = value;
+    default -> known = false;
+    }
+
+    return known;
+  }
+
 }

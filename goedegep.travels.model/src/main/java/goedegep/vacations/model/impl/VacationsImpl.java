@@ -5,7 +5,8 @@ package goedegep.vacations.model.impl;
 import goedegep.util.datetime.FlexDate;
 import goedegep.vacations.model.DayTrip;
 import goedegep.vacations.model.Location;
-import goedegep.vacations.model.TravelCategories;
+import goedegep.vacations.model.Travel;
+import goedegep.vacations.model.TravelCategory;
 import goedegep.vacations.model.Vacation;
 import goedegep.vacations.model.Vacations;
 import goedegep.vacations.model.VacationsPackage;
@@ -15,7 +16,7 @@ import java.util.Collection;
 
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
-
+import org.eclipse.emf.common.util.BasicEList;
 import org.eclipse.emf.common.util.EList;
 
 import org.eclipse.emf.ecore.EClass;
@@ -37,7 +38,7 @@ import org.eclipse.emf.ecore.util.InternalEList;
  *   <li>{@link goedegep.vacations.model.impl.VacationsImpl#getHome <em>Home</em>}</li>
  *   <li>{@link goedegep.vacations.model.impl.VacationsImpl#getTips <em>Tips</em>}</li>
  *   <li>{@link goedegep.vacations.model.impl.VacationsImpl#getDayTrips <em>Day Trips</em>}</li>
- *   <li>{@link goedegep.vacations.model.impl.VacationsImpl#getTravelcategories <em>Travelcategories</em>}</li>
+ *   <li>{@link goedegep.vacations.model.impl.VacationsImpl#getTravelCategories <em>Travel Categories</em>}</li>
  * </ul>
  *
  * @generated
@@ -102,14 +103,14 @@ public class VacationsImpl extends MinimalEObjectImpl.Container implements Vacat
   protected EList<DayTrip> dayTrips;
 
   /**
-   * The cached value of the '{@link #getTravelcategories() <em>Travelcategories</em>}' containment reference list.
+   * The cached value of the '{@link #getTravelCategories() <em>Travel Categories</em>}' containment reference list.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see #getTravelcategories()
+   * @see #getTravelCategories()
    * @generated
    * @ordered
    */
-  protected EList<TravelCategories> travelcategories;
+  protected EList<TravelCategory> travelCategories;
 
   /**
    * <!-- begin-user-doc -->
@@ -319,12 +320,12 @@ public class VacationsImpl extends MinimalEObjectImpl.Container implements Vacat
    * @generated
    */
   @Override
-  public EList<TravelCategories> getTravelcategories() {
-    if (travelcategories == null) {
-      travelcategories = new EObjectContainmentEList<TravelCategories>(TravelCategories.class, this,
-          VacationsPackage.VACATIONS__TRAVELCATEGORIES);
+  public EList<TravelCategory> getTravelCategories() {
+    if (travelCategories == null) {
+      travelCategories = new EObjectContainmentEList<TravelCategory>(TravelCategory.class, this,
+          VacationsPackage.VACATIONS__TRAVEL_CATEGORIES);
     }
-    return travelcategories;
+    return travelCategories;
   }
 
   /**
@@ -340,6 +341,25 @@ public class VacationsImpl extends MinimalEObjectImpl.Container implements Vacat
     }
 
     return null;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated NOT
+   */
+  @Override
+  public EList<Travel> getTravels() {
+    EList<Travel> travels = new BasicEList<>();
+
+    travels.addAll(getVacations());
+    travels.addAll(getDayTrips());
+
+    for (TravelCategory travelCategory : getTravelCategories()) {
+      travels.addAll(travelCategory.getTravels());
+    }
+
+    return travels;
   }
 
   /**
@@ -398,8 +418,8 @@ public class VacationsImpl extends MinimalEObjectImpl.Container implements Vacat
       return basicUnsetHome(msgs);
     case VacationsPackage.VACATIONS__DAY_TRIPS:
       return ((InternalEList<?>) getDayTrips()).basicRemove(otherEnd, msgs);
-    case VacationsPackage.VACATIONS__TRAVELCATEGORIES:
-      return ((InternalEList<?>) getTravelcategories()).basicRemove(otherEnd, msgs);
+    case VacationsPackage.VACATIONS__TRAVEL_CATEGORIES:
+      return ((InternalEList<?>) getTravelCategories()).basicRemove(otherEnd, msgs);
     }
     return super.eInverseRemove(otherEnd, featureID, msgs);
   }
@@ -420,8 +440,8 @@ public class VacationsImpl extends MinimalEObjectImpl.Container implements Vacat
       return getTips();
     case VacationsPackage.VACATIONS__DAY_TRIPS:
       return getDayTrips();
-    case VacationsPackage.VACATIONS__TRAVELCATEGORIES:
-      return getTravelcategories();
+    case VacationsPackage.VACATIONS__TRAVEL_CATEGORIES:
+      return getTravelCategories();
     }
     return super.eGet(featureID, resolve, coreType);
   }
@@ -449,9 +469,9 @@ public class VacationsImpl extends MinimalEObjectImpl.Container implements Vacat
       getDayTrips().clear();
       getDayTrips().addAll((Collection<? extends DayTrip>) newValue);
       return;
-    case VacationsPackage.VACATIONS__TRAVELCATEGORIES:
-      getTravelcategories().clear();
-      getTravelcategories().addAll((Collection<? extends TravelCategories>) newValue);
+    case VacationsPackage.VACATIONS__TRAVEL_CATEGORIES:
+      getTravelCategories().clear();
+      getTravelCategories().addAll((Collection<? extends TravelCategory>) newValue);
       return;
     }
     super.eSet(featureID, newValue);
@@ -477,8 +497,8 @@ public class VacationsImpl extends MinimalEObjectImpl.Container implements Vacat
     case VacationsPackage.VACATIONS__DAY_TRIPS:
       getDayTrips().clear();
       return;
-    case VacationsPackage.VACATIONS__TRAVELCATEGORIES:
-      getTravelcategories().clear();
+    case VacationsPackage.VACATIONS__TRAVEL_CATEGORIES:
+      getTravelCategories().clear();
       return;
     }
     super.eUnset(featureID);
@@ -500,8 +520,8 @@ public class VacationsImpl extends MinimalEObjectImpl.Container implements Vacat
       return TIPS_EDEFAULT == null ? tips != null : !TIPS_EDEFAULT.equals(tips);
     case VacationsPackage.VACATIONS__DAY_TRIPS:
       return dayTrips != null && !dayTrips.isEmpty();
-    case VacationsPackage.VACATIONS__TRAVELCATEGORIES:
-      return travelcategories != null && !travelcategories.isEmpty();
+    case VacationsPackage.VACATIONS__TRAVEL_CATEGORIES:
+      return travelCategories != null && !travelCategories.isEmpty();
     }
     return super.eIsSet(featureID);
   }
@@ -521,6 +541,8 @@ public class VacationsImpl extends MinimalEObjectImpl.Container implements Vacat
       return null;
     case VacationsPackage.VACATIONS___FIND_VACATION__FLEXDATE:
       return findVacation((FlexDate) arguments.get(0));
+    case VacationsPackage.VACATIONS___GET_TRAVELS:
+      return getTravels();
     }
     return super.eInvoke(operationID, arguments);
   }

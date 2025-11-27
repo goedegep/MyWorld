@@ -135,6 +135,10 @@ public class MapRelatedItemsLayer extends MapLayer implements ObjectSelector<Obj
     LabeledIcon labeledIcon = null;
     if (location.getLatitude() != null  ||  location.getLongitude() != null) {
       LocationCategory poiCategoryId = location.getLocationCategory();
+      if (poiCategoryId == null) {
+        LOGGER.severe("poiCategoryId is null for location: " + location.toString());
+        poiCategoryId = LocationCategory.DEFAULT_POI;
+      }
       Image locationIcon = poiCategoryId.getIcon();    
       labeledIcon = new LabeledIcon(locationIcon, text);
       labeledIcon.installMouseEventHandling(e -> {

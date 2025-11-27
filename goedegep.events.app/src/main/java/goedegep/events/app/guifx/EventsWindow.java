@@ -18,7 +18,6 @@ import goedegep.events.model.EventsPackage;
 import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.JfxStage;
 import goedegep.jfx.MenuUtil;
-import goedegep.properties.app.guifx.PropertyDescriptorsEditorFx;
 import goedegep.resources.ImageSize;
 import goedegep.util.Result;
 import goedegep.util.emf.EMFResource;
@@ -270,7 +269,9 @@ public class EventsWindow extends JfxStage {
         eventsRegistry.getShortProductInfo() + NEWLINE +
         "Version: " + eventsRegistry.getVersion() + NEWLINE +
         eventsRegistry.getCopyrightMessage() + NEWLINE +
-        "Author: " + eventsRegistry.getAuthor()
+        "Author: " + eventsRegistry.getAuthor() + 
+        (eventsRegistry.isDevelopmentMode() ? (NEWLINE + NEWLINE + "Running in development mode!") : "")
+
         )
         .showAndWait();
   }

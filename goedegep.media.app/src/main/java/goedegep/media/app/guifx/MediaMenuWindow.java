@@ -197,7 +197,9 @@ public class MediaMenuWindow extends JfxStage {
         mediaRegistry.getShortProductInfo() + NEWLINE +
         "Version: " + mediaRegistry.getVersion() + NEWLINE +
         mediaRegistry.getCopyrightMessage() + NEWLINE +
-        "Author: " + mediaRegistry.getAuthor())
+        "Author: " + mediaRegistry.getAuthor() + 
+        (mediaRegistry.isDevelopmentMode() ? (NEWLINE + NEWLINE + "Running in development mode!") : "")
+        )
         .showAndWait();
   }
   

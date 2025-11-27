@@ -484,9 +484,14 @@ public class PhotoMapView extends JfxStage {
       }
     }
     
-    WGS84Coordinates centerCoordinates = boundingBox.getCenter();
-    LOGGER.info("center: " + centerCoordinates.toString());
-    MapPoint mapCenter = new MapPoint(centerCoordinates.getLatitude(), centerCoordinates.getLongitude());
+    MapPoint mapCenter;
+    if (boundingBox != null) {
+      WGS84Coordinates centerCoordinates = boundingBox.getCenter();
+      LOGGER.info("center: " + centerCoordinates.toString());
+      mapCenter = new MapPoint(centerCoordinates.getLatitude(), centerCoordinates.getLongitude());
+    } else {
+      mapCenter = new MapPoint(coordinates.getLatitude(), coordinates.getLongitude());
+    }
     mapView.flyTo(0, mapCenter, 1.0);
     
     Double zoomLevel = MapView.getZoomLevel(boundingBox);

@@ -55,6 +55,8 @@ public class TravelsService extends Service {
       instance.initialize();
       
       ImageResource.checkResources();
+
+      instance.startPhotoThumbnailsCreation();
     }
     
     return instance;    
@@ -88,8 +90,6 @@ public class TravelsService extends Service {
    */
   private TravelsService() {
     vacationsRegistry = VacationsRegistry.getInstance();
-
-    startPhotoThumbnailsCreation();
   }
   
   
