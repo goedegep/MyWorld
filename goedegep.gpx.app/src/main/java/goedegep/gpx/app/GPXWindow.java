@@ -670,7 +670,9 @@ public class GPXWindow extends JfxStage {
         gpxRegistry.getShortProductInfo() + NEWLINE +
         "Version: " + gpxRegistry.getVersion() + NEWLINE +
         gpxRegistry.getCopyrightMessage() + NEWLINE +
-        "Author: " + gpxRegistry.getAuthor())
+        "Author: " + gpxRegistry.getAuthor() + 
+        (gpxRegistry.isDevelopmentMode() ? (NEWLINE + NEWLINE + "Running in development mode!") : "")
+        )
         .showAndWait();
   }
 

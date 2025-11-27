@@ -163,7 +163,9 @@ public class PCToolsMenuWindow extends JfxStage {
         pcToolsRegistry.getShortProductInfo() + NEWLINE +
         "Version: " + pcToolsRegistry.getVersion() + NEWLINE +
         pcToolsRegistry.getCopyrightMessage() + NEWLINE +
-        "Author: " + pcToolsRegistry.getAuthor())
+        "Author: " + pcToolsRegistry.getAuthor() + 
+        (pcToolsRegistry.isDevelopmentMode() ? (NEWLINE + NEWLINE + "Running in development mode!") : "")
+        )
         .showAndWait();
   }
 }

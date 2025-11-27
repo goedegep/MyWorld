@@ -489,7 +489,8 @@ public class RolodexMenuWindow extends JfxStage {
         rolodexRegistry.getShortProductInfo() + NEWLINE +
         "Version: " + rolodexRegistry.getVersion() + NEWLINE +
         rolodexRegistry.getCopyrightMessage() + NEWLINE +
-        "Auteur: " + rolodexRegistry.getAuthor()
+        "Auteur: " + rolodexRegistry.getAuthor() + 
+        (rolodexRegistry.isDevelopmentMode() ? (NEWLINE + NEWLINE + "Running in development mode!") : "")
         )
         .showAndWait();
   }

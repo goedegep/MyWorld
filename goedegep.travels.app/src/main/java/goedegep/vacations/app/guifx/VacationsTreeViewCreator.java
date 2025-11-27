@@ -531,6 +531,9 @@ public class VacationsTreeViewCreator {
         .setNodeIconFunction(object -> {
           Location location = (Location) object;
           LocationCategory locationCategory = location.getLocationCategory();
+          if (locationCategory == null) {
+            locationCategory = LocationCategory.DEFAULT_POI;
+          }
           return locationCategory.getIcon(ImageSize.SIZE_0);
         })
         .addNodeOperationDescriptor(new NodeOperationDescriptorNewBefore("New element before ...", null, VacationsTreeViewCreator::initNewObject))
@@ -641,8 +644,16 @@ public class VacationsTreeViewCreator {
         .addNodeOperationDescriptor(new NodeOperationDescriptorCustom("Obtain bounding box", null, new BoundingBoxObtainer()));
     eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(eObjectTreeItemClassReferenceDescriptor);
 
+    // Location.boundaries
+    EObjectTreeItemClassListReferenceDescriptor eObjectTreeItemClassListReferenceDescriptor = new EObjectTreeItemClassListReferenceDescriptor(VACATIONS_PACKAGE.getLocation_Boundaries())
+        .setLabelText("Boundaries")
+        .setExpandOnCreation(true)
+        .addNodeOperationDescriptor(new NodeOperationDescriptorCustom("Delete boundaries", null, this::deleteBoundaries))
+        .addNodeOperationDescriptor(new NodeOperationDescriptorCustom("Reduce number of points", null, this::showBoundariesPointsReductionWindow));
+    eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(eObjectTreeItemClassListReferenceDescriptor);
+
     // Location.children
-    EObjectTreeItemClassListReferenceDescriptor eObjectTreeItemClassListReferenceDescriptor = new EObjectTreeItemClassListReferenceDescriptor(VACATIONS_PACKAGE.getVacationElement_Children())
+    eObjectTreeItemClassListReferenceDescriptor = new EObjectTreeItemClassListReferenceDescriptor(VACATIONS_PACKAGE.getVacationElement_Children())
         .setLabelText("Elements")
         .setNodeIconFunction(_ -> EObjectTreeView.getListIcon())
         .setExpandOnCreation(true)
@@ -650,6 +661,15 @@ public class VacationsTreeViewCreator {
     eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(eObjectTreeItemClassListReferenceDescriptor);
     
     return eObjectTreeItemClassDescriptor;
+  }
+  
+  private void deleteBoundaries(EObjectTreeItem treeItem) {
+    Object value = treeItem.getValue();
+    // TODO implement deletion of boundaries
+  }
+  
+  private void showBoundariesPointsReductionWindow(EObjectTreeItem treeItem) {
+    new BoundariesPointsReductionWindow(customization, treeItem);
   }
 
   /**

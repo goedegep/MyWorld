@@ -24,6 +24,8 @@
  * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ * 
+ * This is a modified version of com.gluonhq.maps.tile.TileRetriever from the Gluon Maps library.
  */
 package com.gluonhq.maps.tile;
 
@@ -31,6 +33,10 @@ import javafx.scene.image.Image;
 
 import java.util.concurrent.CompletableFuture;
 
+/**
+ * Interface defining the contract for retrieving map tiles.
+ */
+@FunctionalInterface
 public interface TileRetriever {
 
     /**

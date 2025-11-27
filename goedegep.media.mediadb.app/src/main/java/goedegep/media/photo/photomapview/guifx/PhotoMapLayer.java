@@ -63,7 +63,7 @@ import javafx.scene.text.Font;
  * Photo files can be dropped on this layer. If the photo already has coordinates, these are not changed. Otherwise the coordinates are set to the location where the photo(s) is/are dropped.
  * 
  * In the photo information, the photo pathname is shown relative to the <code>rootFolderName</code>, which is passed to the constructor.<br/>
- * This map layer add itself as layer to the specified mapView.
+ * This map layer adds itself as layer to the specified mapView.
  */
 public class PhotoMapLayer extends MapLayer implements ObjectSelector<IPhotoInfo> {
   private static final Logger LOGGER = Logger.getLogger(PhotoMapView.class.getName());
@@ -119,7 +119,7 @@ public class PhotoMapLayer extends MapLayer implements ObjectSelector<IPhotoInfo
   
   /**
    * If true, only all photos of the index are shown on the map.
-   * Otherwise the photos set via ... are shown.
+   * Otherwise the photos set via addPhoto(IPhotoMetaDataWithImage) are shown.
    */
   private boolean showPhotoIndexOnMap = false;
   
@@ -129,7 +129,7 @@ public class PhotoMapLayer extends MapLayer implements ObjectSelector<IPhotoInfo
   private List<ObjectSelectionListener<IPhotoInfo>> objectSelectionListeners = new ArrayList<>();
 
   /**
-   * MapView
+   * The {@code MapView} to which this map layer is added.
    */
   private MapView mapView;
   
@@ -139,7 +139,6 @@ public class PhotoMapLayer extends MapLayer implements ObjectSelector<IPhotoInfo
   private BoundingBoxData zoomRectangle = null;
 
 
-
   /**
    * Constructor.
    * 
@@ -147,11 +146,9 @@ public class PhotoMapLayer extends MapLayer implements ObjectSelector<IPhotoInfo
    * @param photoMapView the PhotoMapView for which this is a layer.
    * @param photoInfosPerFolder information on the photos per folder.
    * @param modifiedPhotos a list of modified photos
-   * @param rootFolderName the root folder name.
    */
   public PhotoMapLayer(CustomizationFx customization, PhotoMapView photoMapView, MapView mapView, ObservableMap<String, List<IPhotoInfo>> photoInfosPerFolder, ObservableSet<IPhotoInfo> modifiedPhotos) {
     this.customization = customization;
-//    this.photoInfosPerFolder = photoInfosPerFolder;
     this.mapView = mapView;
     this.modifiedPhotos = modifiedPhotos;
    
@@ -161,7 +158,8 @@ public class PhotoMapLayer extends MapLayer implements ObjectSelector<IPhotoInfo
     mapView.addLayer(this);
             
     // Handle a drag dropped; add photos for the dropped files.
-    baseMap.setOnDragDropped(dragEvent -> {
+    mapView.setOnDragDropped(dragEvent -> {
+      LOGGER.severe("Drag Dropped");
       Dragboard dragboard = dragEvent.getDragboard();
       boolean success = false;
       if (dragboard.hasFiles()) {
@@ -188,7 +186,11 @@ public class PhotoMapLayer extends MapLayer implements ObjectSelector<IPhotoInfo
     });
         
     // Indicate that files can be dropped on the mapView (on this layer)
-    baseMap.setOnDragOver(dragEvent -> {
+    mapView.setOnDragOver(dragEvent -> {
+//      LOGGER.severe("Drag Over");
+//      for (File file: dragEvent.getDragboard().getFiles()) {
+//        LOGGER.severe("File: " + file.getAbsolutePath());
+//      }
       if (dragEvent.getGestureSource() != baseMap
           && dragEvent.getDragboard().hasFiles()) {
         dragEvent.acceptTransferModes(TransferMode.COPY);
@@ -196,33 +198,35 @@ public class PhotoMapLayer extends MapLayer implements ObjectSelector<IPhotoInfo
       dragEvent.consume();
     });
     
+    mapView.setOnDragEntered(_ -> LOGGER.severe("Drag Entered"));
+    
     // Dragging to create a zoom rectangle
-    this.setOnMouseDragged(event -> {
-      LOGGER.severe("Mouse Dragged");
-      LOGGER.info("SceneX: " + event.getSceneX() + ", SceneY: " + event.getSceneY());
-      if (!event.isControlDown()) {
-        return;
-      }
-      Point2D point2D = mapView.sceneToLocal(event.getSceneX(), event.getSceneY());
-      MapPoint mapPoint = baseMap.getMapPosition(point2D.getX(), point2D.getY());
-      if (zoomRectangle != null) {
-        LOGGER.severe("point2D: " + point2D.getX() + ", " + point2D.getY());
-        WGS84BoundingBox bb = zoomRectangle.boundingBox();
-        bb = bb.extend(mapPoint.getLatitude(), mapPoint.getLongitude());
-        LOGGER.severe("bb: " + bb.toString());
-        zoomRectangle = new BoundingBoxData(bb, zoomRectangle.polygon());
-      } else {
-        getScene().setCursor(Cursor.CROSSHAIR);
-        Polygon polygon = new Polygon();
-        polygon.setStroke(Color.BLUE);
-        polygon.setFill(Color.TRANSPARENT);
-        polygon.setVisible(true);
-        getChildren().add(polygon);
-        zoomRectangle = new BoundingBoxData(new WGS84BoundingBox(mapPoint.getLatitude(), mapPoint.getLongitude()), polygon);
-      }
-      markDirty();
-      event.consume();
-    });
+//    mapView.setOnMouseDragged(event -> {
+//      LOGGER.severe("Mouse Dragged");
+//      LOGGER.info("SceneX: " + event.getSceneX() + ", SceneY: " + event.getSceneY());
+//      if (!event.isControlDown()) {
+//        return;
+//      }
+//      Point2D point2D = mapView.sceneToLocal(event.getSceneX(), event.getSceneY());
+//      MapPoint mapPoint = baseMap.getMapPosition(point2D.getX(), point2D.getY());
+//      if (zoomRectangle != null) {
+//        LOGGER.severe("point2D: " + point2D.getX() + ", " + point2D.getY());
+//        WGS84BoundingBox bb = zoomRectangle.boundingBox();
+//        bb = bb.extend(mapPoint.getLatitude(), mapPoint.getLongitude());
+//        LOGGER.severe("bb: " + bb.toString());
+//        zoomRectangle = new BoundingBoxData(bb, zoomRectangle.polygon());
+//      } else {
+//        getScene().setCursor(Cursor.CROSSHAIR);
+//        Polygon polygon = new Polygon();
+//        polygon.setStroke(Color.BLUE);
+//        polygon.setFill(Color.TRANSPARENT);
+//        polygon.setVisible(true);
+//        getChildren().add(polygon);
+//        zoomRectangle = new BoundingBoxData(new WGS84BoundingBox(mapPoint.getLatitude(), mapPoint.getLongitude()), polygon);
+//      }
+//      markDirty();
+//      event.consume();
+//    });
     
     // End of dragging, zoom to rectangle.
     this.setOnMouseReleased(event -> {
@@ -297,7 +301,7 @@ public class PhotoMapLayer extends MapLayer implements ObjectSelector<IPhotoInfo
    */
   private ImageView getImageViewForPhoto(IPhotoMetaData photoMetaData) {
     Image photoImage;
-    if (photoMetaData.hasApproximateGPScoordinates()) {
+    if (photoMetaData == null  ||  photoMetaData.hasApproximateGPScoordinates()) {
       photoImage = ImageResource.CAMERA_GRAY.getImage(ImageSize.SIZE_0);
     } else {
       photoImage = ImageResource.CAMERA_BLACK.getImage(ImageSize.SIZE_0);

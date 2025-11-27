@@ -142,7 +142,9 @@ public class MarkdownViewer extends JfxStage {
         markdownRegistry.getShortProductInfo() + NEWLINE +
         "Version: " + markdownRegistry.getVersion() + NEWLINE +
         markdownRegistry.getCopyrightMessage() + NEWLINE +
-        "Author: " + markdownRegistry.getAuthor())
+        "Author: " + markdownRegistry.getAuthor() + 
+        (markdownRegistry.isDevelopmentMode() ? (NEWLINE + NEWLINE + "Running in development mode!") : "")
+        )
         .showAndWait();
   }
   

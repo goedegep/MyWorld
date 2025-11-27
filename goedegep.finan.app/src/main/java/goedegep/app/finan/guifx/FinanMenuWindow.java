@@ -162,7 +162,9 @@ public class FinanMenuWindow extends JfxStage {
         finanRegistry.getShortProductInfo() + NEWLINE +
         "Version: " + finanRegistry.getVersion() + NEWLINE +
         finanRegistry.getCopyrightMessage() + NEWLINE +
-        "Author: " + finanRegistry.getAuthor())
+        "Author: " + finanRegistry.getAuthor() + 
+        (finanRegistry.isDevelopmentMode() ? (NEWLINE + NEWLINE + "Running in development mode!") : "")
+        )
         .showAndWait();
   }
 }

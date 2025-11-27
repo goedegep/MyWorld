@@ -148,7 +148,8 @@ public class DemoMenuWindow extends JfxStage {
         demoRegistry.getShortProductInfo() + NEWLINE +
         "Version: " + demoRegistry.getVersion() + NEWLINE +
         demoRegistry.getCopyrightMessage() + NEWLINE +
-        "Author: " + demoRegistry.getAuthor()
+        "Author: " + demoRegistry.getAuthor() + 
+        (demoRegistry.isDevelopmentMode() ? (NEWLINE + NEWLINE + "Running in development mode!") : "")
         )
         .showAndWait();
   }

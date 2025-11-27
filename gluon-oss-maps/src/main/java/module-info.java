@@ -33,6 +33,7 @@ module com.gluonhq.maps {
 
     requires transitive java.logging;
     requires transitive goedegep.geo;
+    requires javafx.base;
 
     uses com.gluonhq.maps.tile.TileRetriever;
 

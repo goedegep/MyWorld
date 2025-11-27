@@ -5,6 +5,9 @@ Original Track is found via Track (like now), but check on referred by reference
 For now: only let original track reference refer to itself.
 
 h2. ToDo list
+* add special folders in vacations folder to the settings (folders that are skipped in certain checks)
+* Fix photos on map view. Dragging a photo onto the map doesn't work anymore.
+If it is fixed continue with photos Singapore
 * review all Registries
 * Default StringConverters for PgCurrency and FixedPointValue are no longer set, so applications have to do this themselves.
     
@@ -12,7 +15,6 @@ h2. ToDo list
     EObjectTable.addDefaultStringConverter(PgCurrency.class, CurrencyStringConverterAndChecker.getDefaultFormatInstance());
     EObjectTable.addDefaultStringConverter(FixedPointValue.class, FixedPointValueStringConverterAndChecker.getDefaultFormatFixedPointValueStringConverterAndChecker());
 
-* Add 'development mode' indication to each About dialog.
 * MediaDb: fix showing album pictures, using registry field musicDataDirectory
 * remove getRolodexResource() from FinanService. Get this from RolodexService instance.
 * Properties that are used in maven and in java shall be in a file that will be filtered by maven.

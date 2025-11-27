@@ -71,6 +71,12 @@ public class EObjectTreeCellHelperForObjectList extends EObjectTreeCellHelperTem
       return null;
     }
     
+    String labelText = itemDescriptor.getLabelText();
+    LOGGER.severe("labelText=" + labelText);
+    if (labelText.equals("Boundaries")) {
+      LOGGER.severe("Found Boundaries list " + object.toString());
+    }
+    
     EObjectTreeItemForObjectList eObjectTreeItem = (EObjectTreeItemForObjectList) eObjectTreeCell.getTreeItem();
     
     EReference eReference = eObjectTreeItem.getEReference();
@@ -109,7 +115,7 @@ public class EObjectTreeCellHelperForObjectList extends EObjectTreeCellHelperTem
         case NEW_OBJECT:
           menuItem = new MenuItem(nodeOperationDescriptor.getMenuText());
           contextMenu.getItems().add(menuItem);
-          menuItem.setOnAction((actionEvent) -> createAndAddObject(null, ((NodeOperationDescriptorNew) nodeOperationDescriptor).getNewEObjectInitializationFunction()));
+          menuItem.setOnAction((_) -> createAndAddObject(null, ((NodeOperationDescriptorNew) nodeOperationDescriptor).getNewEObjectInitializationFunction()));
 
           if (!eReference.isContainment()) {
             LOGGER.info("Not containment: " + eReference.getName());
@@ -145,7 +151,13 @@ public class EObjectTreeCellHelperForObjectList extends EObjectTreeCellHelperTem
         case MOVE_OBJECT_DOWN:
         case ATTRIBUTE_EDITOR:
         case OPEN:
+          throw new IllegalArgumentException("EObjectTreeView doesn't support the operation: " + operation);
+          
         case EXTENDED_OPERATION:
+          NodeOperationDescriptorCustom nodeOperationDescriptorCustom = (NodeOperationDescriptorCustom) nodeOperationDescriptor;
+          menuItem = new MenuItem(nodeOperationDescriptor.getMenuText());
+          contextMenu.getItems().add(menuItem);
+          menuItem.setOnAction((_) -> nodeOperationDescriptorCustom.getNodeOperationFunction().accept(eObjectTreeItem));
           break;
         }  
       }

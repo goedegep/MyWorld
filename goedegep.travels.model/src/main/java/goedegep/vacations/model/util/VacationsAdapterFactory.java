@@ -143,11 +143,6 @@ public class VacationsAdapterFactory extends AdapterFactoryImpl {
     }
 
     @Override
-    public Adapter caseTravelCategories(TravelCategories object) {
-      return createTravelCategoriesAdapter();
-    }
-
-    @Override
     public Adapter caseEvent(Event object) {
       return createEventAdapter();
     }
@@ -378,20 +373,6 @@ public class VacationsAdapterFactory extends AdapterFactoryImpl {
    * @generated
    */
   public Adapter createTravelAdapter() {
-    return null;
-  }
-
-  /**
-   * Creates a new adapter for an object of class '{@link goedegep.vacations.model.TravelCategories <em>Travel Categories</em>}'.
-   * <!-- begin-user-doc -->
-   * This default implementation returns null so that we can easily ignore cases;
-   * it's useful to ignore a case when inheritance will catch all the cases anyway.
-   * <!-- end-user-doc -->
-   * @return the new adapter.
-   * @see goedegep.vacations.model.TravelCategories
-   * @generated
-   */
-  public Adapter createTravelCategoriesAdapter() {
     return null;
   }
 

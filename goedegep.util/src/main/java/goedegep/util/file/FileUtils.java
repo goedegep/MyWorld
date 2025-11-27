@@ -565,7 +565,7 @@ public class FileUtils {
    */
   public static boolean isJpegFile(String fileName) {
     String fileExtension = getFileExtension(fileName);
-    return JPEG_EXTENSIONS.contains(fileExtension);
+    return JPEG_EXTENSIONS.contains(fileExtension.toLowerCase());
   }
 
   /**
@@ -962,5 +962,17 @@ public class FileUtils {
         e.printStackTrace();
       }      
     }
+  }
+
+  public static boolean isSubPathOfPath(Path subPath, Path parentPath) {
+    Path path = subPath;
+    
+    while (path != null) {
+      if (path.equals(parentPath)) {
+        return true;
+      }
+      path = path.getParent();
+    }
+    return false;
   }
 }
