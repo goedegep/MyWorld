@@ -1,9 +1,9 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <groupId>goedegep.vacations</groupId>
-  <artifactId>goedegep-vacations-checklist-model</artifactId>
-  <name>Vacation checklist data model</name>
-  <description>This project defines a data model to create vacation checklists.</description>
+  <groupId>goedegep.travels</groupId>
+  <artifactId>goedegep-travels-checklist-model</artifactId>
+  <name>Travels checklist data model</name>
+  <description>This project defines a data model to create travel checklists.</description>
   <parent>
     <groupId>goedegep.toplevelpom</groupId>
     <artifactId>goedegep-toplevelpom</artifactId>

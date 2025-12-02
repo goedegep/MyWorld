@@ -1,10 +1,10 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <groupId>goedegep.vacations</groupId>
-  <artifactId>goedegep-vacations-model</artifactId>
+  <groupId>goedegep.travels</groupId>
+  <artifactId>goedegep-travels-model</artifactId>
   <packaging>jar</packaging>
   <name>Vacations data model</name>
-  <description>Dit project bevat een data model voor informatie over vakanties.</description>
+  <description>This project provides a data model for travels.</description>
   <parent>
     <groupId>goedegep.toplevelpom</groupId>
     <artifactId>goedegep-toplevelpom</artifactId>

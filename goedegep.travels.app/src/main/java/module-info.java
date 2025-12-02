@@ -1,9 +1,9 @@
-module goedegep.vacations.app {
-  exports goedegep.vacations.app;
-  exports goedegep.vacations.app.logic;
-  exports goedegep.vacations.app.guifx;
+module goedegep.travels.app {
+  exports goedegep.travels.app;
+  exports goedegep.travels.app.logic;
+  exports goedegep.travels.app.guifx;
   
-  opens goedegep.vacations.app.logic;
+  opens goedegep.travels.app.logic;
 
   requires transitive com.atlis.location.nominatim;
   requires transitive com.gluonhq.maps;
@@ -14,7 +14,7 @@ module goedegep.vacations.app {
   requires transitive goedegep.geo;
   requires transitive goedegep.model.properties;
   requires transitive goedegep.types.model;
-  requires transitive goedegep.vacations.model;
+  requires transitive goedegep.travels.model;
   requires goedegep.ov2;
   requires transitive goedegep.poi.app;
   requires goedegep.properties.app;
@@ -41,7 +41,7 @@ module goedegep.vacations.app {
   requires transitive goedegep.gpx;
   requires javafx.media;
   requires jdk.jsobject;
-  requires transitive goedegep.vacations.checklist.model;
+  requires transitive goedegep.travels.checklist.model;
   requires goedegep.gpx.model;
   requires goedegep.mapview;
   requires goedegep.resources;
