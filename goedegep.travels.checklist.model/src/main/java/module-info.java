@@ -1,4 +1,4 @@
-module goedegep.vacations.checklist.model {
+module goedegep.travels.checklist.model {
   exports goedegep.vacations.checklist.model;
   exports goedegep.vacations.checklist.model.util;
 

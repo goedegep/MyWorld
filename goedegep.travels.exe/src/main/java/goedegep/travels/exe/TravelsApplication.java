@@ -7,9 +7,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import goedegep.jfx.JfxApplication;
+import goedegep.travels.app.TravelsService;
 import goedegep.util.RunningInEclipse;
 import goedegep.util.thread.ThreadUtil;
-import goedegep.vacations.app.TravelsService;
 import javafx.stage.Stage;
 
 /**

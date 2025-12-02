@@ -470,18 +470,18 @@
         <version>${goedegep.myworld.version}</version>
       </dependency>
       <dependency>
-        <groupId>goedegep.vacations</groupId>
-        <artifactId>goedegep-vacations-checklist-model</artifactId>
+        <groupId>goedegep.travels</groupId>
+        <artifactId>goedegep-travels-checklist-model</artifactId>
         <version>${goedegep.myworld.version}</version>
       </dependency>
       <dependency>
-        <groupId>goedegep.vacations</groupId>
-        <artifactId>goedegep-vacations-model</artifactId>
+        <groupId>goedegep.travels</groupId>
+        <artifactId>goedegep-travels-model</artifactId>
         <version>${goedegep.myworld.version}</version>
       </dependency>
       <dependency>
-        <groupId>goedegep.vacations</groupId>
-        <artifactId>goedegep-vacations-app</artifactId>
+        <groupId>goedegep.travels</groupId>
+        <artifactId>goedegep-travels-app</artifactId>
         <version>${goedegep.myworld.version}</version>
       </dependency>
       <dependency>

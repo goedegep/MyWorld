@@ -25,8 +25,8 @@
       <artifactId>goedegep-jfx</artifactId>
     </dependency>
     <dependency>
-      <groupId>goedegep.vacations</groupId>
-      <artifactId>goedegep-vacations-app</artifactId>
+      <groupId>goedegep.travels</groupId>
+      <artifactId>goedegep-travels-app</artifactId>
     </dependency>
     <dependency>
       <groupId>org.openjfx</groupId>

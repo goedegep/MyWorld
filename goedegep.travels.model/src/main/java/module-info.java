@@ -1,4 +1,4 @@
-module goedegep.vacations.model {
+module goedegep.travels.model {
   exports goedegep.vacations.model;
   exports goedegep.vacations.model.util;
 
