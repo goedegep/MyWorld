@@ -78,4 +78,12 @@ public interface VacationElement extends EObject {
    */
   Day getDay();
 
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @model kind="operation"
+   * @generated
+   */
+  String getLabelText();
+
 } // VacationElement

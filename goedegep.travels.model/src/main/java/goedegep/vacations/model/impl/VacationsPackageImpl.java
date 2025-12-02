@@ -644,6 +644,16 @@ public class VacationsPackageImpl extends EPackageImpl implements VacationsPacka
    * @generated
    */
   @Override
+  public EOperation getVacationElement__GetLabelText() {
+    return vacationElementEClass.getEOperations().get(4);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
   public EClass getText() {
     return textEClass;
   }
@@ -1083,6 +1093,7 @@ public class VacationsPackageImpl extends EPackageImpl implements VacationsPacka
     createEOperation(vacationElementEClass, VACATION_ELEMENT___GET_VACATION);
     createEOperation(vacationElementEClass, VACATION_ELEMENT___GET_DAY_TRIP);
     createEOperation(vacationElementEClass, VACATION_ELEMENT___GET_DAY);
+    createEOperation(vacationElementEClass, VACATION_ELEMENT___GET_LABEL_TEXT);
 
     textEClass = createEClass(TEXT);
     createEAttribute(textEClass, TEXT__TEXT);
@@ -1288,6 +1299,9 @@ public class VacationsPackageImpl extends EPackageImpl implements VacationsPacka
     initEOperation(getVacationElement__GetDayTrip(), this.getDayTrip(), "getDayTrip", 0, 1, IS_UNIQUE, IS_ORDERED);
 
     initEOperation(getVacationElement__GetDay(), this.getDay(), "getDay", 0, 1, IS_UNIQUE, IS_ORDERED);
+
+    initEOperation(getVacationElement__GetLabelText(), ecorePackage.getEString(), "getLabelText", 0, 1, IS_UNIQUE,
+        IS_ORDERED);
 
     initEClass(textEClass, Text.class, "Text", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getText_Text(), ecorePackage.getEString(), "text", null, 0, 1, Text.class, !IS_TRANSIENT,

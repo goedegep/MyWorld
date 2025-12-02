@@ -142,6 +142,16 @@ public abstract class VacationElementImpl extends MinimalEObjectImpl.Container i
   /**
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
+   * @generated NOT
+   */
+  @Override
+  public String getLabelText() {
+    throw new UnsupportedOperationException();
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
    * @generated
    */
   @Override
@@ -229,6 +239,8 @@ public abstract class VacationElementImpl extends MinimalEObjectImpl.Container i
       return getDayTrip();
     case VacationsPackage.VACATION_ELEMENT___GET_DAY:
       return getDay();
+    case VacationsPackage.VACATION_ELEMENT___GET_LABEL_TEXT:
+      return getLabelText();
     }
     return super.eInvoke(operationID, arguments);
   }

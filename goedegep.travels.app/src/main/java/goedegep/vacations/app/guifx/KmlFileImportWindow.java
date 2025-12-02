@@ -843,7 +843,7 @@ public class KmlFileImportWindow extends JfxStage {
       travelMapView.setCenter(mapCenter);
       travelMapView.setZoom(8.0);
 
-      travelMapView.getMapRelatedItemsLayer().addLocation(location, location.getName());
+      travelMapView.getMapRelatedItemsLayer().addLocation(location);
 
       vacationsTreeView.setEObject(location);
       vacationsTreeView.getRoot().setExpanded(true);

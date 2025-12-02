@@ -497,7 +497,7 @@ public class GPXWindow extends JfxStage {
       if (mapCenter != null) {
         mapView.flyTo(0.0, mapCenter, 2);
       }
-    }    
+    } 
   }
 
   private void importTrackSegments() {

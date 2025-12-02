@@ -1618,4 +1618,20 @@ public class LocationImpl extends VacationElementImpl implements Location {
     return buf.toString();
   }
 
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated NOT
+   */
+  @Override
+  public String getLabelText() {
+    if (getName() != null && !getName().isEmpty()) {
+      return getName();
+    } else if (getCity() != null && !getCity().isEmpty()) {
+      return getCity();
+    } else {
+      return "<no name>";
+    }
+  }
+
 } //LocatieImpl

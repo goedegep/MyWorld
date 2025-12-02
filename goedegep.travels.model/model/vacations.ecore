@@ -111,6 +111,7 @@
     </eOperations>
     <eOperations name="getDayTrip" eType="#//DayTrip"/>
     <eOperations name="getDay" eType="#//Day"/>
+    <eOperations name="getLabelText" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="children" upperBound="-1"
         eType="#//VacationElement" containment="true"/>
   </eClassifiers>

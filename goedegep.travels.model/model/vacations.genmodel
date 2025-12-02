@@ -69,6 +69,7 @@
       <genOperations ecoreOperation="vacations.ecore#//VacationElement/getVacation"/>
       <genOperations ecoreOperation="vacations.ecore#//VacationElement/getDayTrip"/>
       <genOperations ecoreOperation="vacations.ecore#//VacationElement/getDay"/>
+      <genOperations ecoreOperation="vacations.ecore#//VacationElement/getLabelText"/>
     </genClasses>
     <genClasses ecoreClass="vacations.ecore#//Text">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute vacations.ecore#//Text/text"/>

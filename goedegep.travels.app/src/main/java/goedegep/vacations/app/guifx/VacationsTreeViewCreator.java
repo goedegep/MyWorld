@@ -49,6 +49,7 @@ import goedegep.util.emf.EmfUtil;
 import goedegep.util.file.FileUtils;
 import goedegep.util.img.PhotoFileMetaDataHandler;
 import goedegep.vacations.app.EnumStringConverterForLocationCategory;
+import goedegep.vacations.app.TravelsService;
 import goedegep.vacations.model.BoundingBox;
 import goedegep.vacations.model.Day;
 import goedegep.vacations.model.DayTrip;
@@ -92,11 +93,6 @@ public class VacationsTreeViewCreator {
   private Predicate<EObjectTreeItem> isMenuToBeEnabledPredicate;
   
   /**
-   * A function to reduce the number of points in the boundaries of a {@code Location}.
-   */
-  private Consumer<EObjectTreeItem> reduceBoundariesSizesFunction;
-  
-  /**
    * A reference to the {@code TravelMapView}
    */
   private TravelMapView travelMapView;
@@ -138,18 +134,6 @@ public class VacationsTreeViewCreator {
    */
   public VacationsTreeViewCreator setMenuToBeEnabledPredicate(Predicate<EObjectTreeItem> isMenuToBeEnabledPredicate) {
     this.isMenuToBeEnabledPredicate = isMenuToBeEnabledPredicate;
-    
-    return this;
-  }
-  
-  /**
-   * Set the function to reduce the number of points in the boundaries of a {@code Location}.
-   * 
-   * @param reduceBoundariesSizesFunction the function to reduce the number of points in the boundaries of a {@code Location}.
-   * @return this
-   */
-  public VacationsTreeViewCreator setReduceBoundariesSizesFunction(Consumer<EObjectTreeItem> reduceBoundariesSizesFunction) {
-    this.reduceBoundariesSizesFunction = reduceBoundariesSizesFunction;
     
     return this;
   }
@@ -540,17 +524,14 @@ public class VacationsTreeViewCreator {
         .addNodeOperationDescriptor(new NodeOperationDescriptorNewAfter("New element after ...", null, VacationsTreeViewCreator::initNewObject))
         .addNodeOperationDescriptor(new NodeOperationDescriptorDelete("Delete element", null))
         .addNodeOperationDescriptor(new NodeOperationDescriptorCustom("Show on map", isMenuToBeEnabledPredicate, eObject -> {
-          LOGGER.severe("eObject type:" + eObject.getClass().getName());
           Object value = eObject.getValue();
-          LOGGER.severe("value type:" + value.getClass().getName());
           if (value instanceof Location location) {
             if (location.getLatitude() != null  &&  location.getLongitude() != null) {
               MapPoint mapPoint = new MapPoint(location.getLatitude(), location.getLongitude());
               travelMapView.flyTo(0.0, mapPoint, 2.0);
             }
           }
-        }))
-        .addNodeOperationDescriptor(new NodeOperationDescriptorCustom("Reduce boundaries sizes", isMenuToBeEnabledPredicate, reduceBoundariesSizesFunction));
+        }));
     
     EObjectTreeItemAttributeDescriptor eObjectTreeItemAttributeDescriptor;
 
@@ -668,8 +649,26 @@ public class VacationsTreeViewCreator {
     // TODO implement deletion of boundaries
   }
   
+  /**
+   * Show the boundaries points reduction window.
+   * <p>
+   * If the provided tree item isn't part of a Location, an IllegalArgumentException is thrown.
+   * 
+   * @param treeItem the tree item representing the boundaries list.
+   */
   private void showBoundariesPointsReductionWindow(EObjectTreeItem treeItem) {
-    new BoundariesPointsReductionWindow(customization, treeItem);
+    EObjectTreeItem parentTreeItem = (EObjectTreeItem) treeItem.getParent();
+    if (parentTreeItem == null) {
+      throw new IllegalArgumentException("treeItem must not be the root item");
+    }    
+    
+    Object parentValue = parentTreeItem.getValue();
+    if (!(parentValue instanceof Location)) {
+      throw new IllegalArgumentException("treeItem's parent must be a Location");
+    }
+    Location location = (Location) parentValue;
+    
+    TravelsService.getInstance().showBoundariesPointsReductionWindow(location);
   }
 
   /**
