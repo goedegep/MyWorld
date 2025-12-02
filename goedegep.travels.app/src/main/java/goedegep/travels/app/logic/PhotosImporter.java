@@ -27,6 +27,13 @@ import com.google.common.geometry.S2Loop;
 import com.google.common.geometry.S2Point;
 
 import goedegep.geo.WGS84Coordinates;
+import goedegep.travels.model.Boundary;
+import goedegep.travels.model.BoundingBox;
+import goedegep.travels.model.Day;
+import goedegep.travels.model.Picture;
+import goedegep.travels.model.Vacation;
+import goedegep.travels.model.VacationElement;
+import goedegep.travels.model.TravelsFactory;
 import goedegep.types.model.FileReference;
 import goedegep.types.model.TypesFactory;
 import goedegep.util.Triplet;
@@ -34,13 +41,6 @@ import goedegep.util.datetime.DateUtil;
 import goedegep.util.file.FileUtils;
 import goedegep.util.img.PhotoFileMetaDataHandler;
 import goedegep.util.string.StringUtil;
-import goedegep.vacations.model.Boundary;
-import goedegep.vacations.model.BoundingBox;
-import goedegep.vacations.model.Day;
-import goedegep.vacations.model.Picture;
-import goedegep.vacations.model.Vacation;
-import goedegep.vacations.model.VacationElement;
-import goedegep.vacations.model.VacationsFactory;
 
 /**
  * This class provides functionality to import photos to a Vacation.
@@ -48,7 +48,7 @@ import goedegep.vacations.model.VacationsFactory;
  */
 public class PhotosImporter {
   private static final Logger LOGGER = Logger.getLogger(PhotosImporter.class.getName());
-  private static final VacationsFactory VACATIONS_FACTORY = VacationsFactory.eINSTANCE;
+  private static final TravelsFactory VACATIONS_FACTORY = TravelsFactory.eINSTANCE;
   private static TypesFactory TYPES_FACTORY = TypesFactory.eINSTANCE;
   
   /*

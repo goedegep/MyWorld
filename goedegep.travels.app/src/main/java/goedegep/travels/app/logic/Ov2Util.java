@@ -12,8 +12,8 @@ import goedegep.ov2.Ov2FileEncoderDecoder;
 import goedegep.ov2.Ov2Item;
 import goedegep.ov2.Ov2ItemType2;
 import goedegep.poi.app.LocationCategory;
-import goedegep.vacations.model.Location;
-import goedegep.vacations.model.VacationsPackage;
+import goedegep.travels.model.Location;
+import goedegep.travels.model.TravelsPackage;
 
 public class Ov2Util {
   private static final Logger LOGGER = Logger.getLogger(Ov2Util.class.getName());
@@ -31,7 +31,7 @@ public class Ov2Util {
       switch(eObject.eClass().getClassifierID()) {
         
       // Only locations are written as waypoints
-      case VacationsPackage.LOCATION:
+      case TravelsPackage.LOCATION:
         Location location = (Location) eObject;
         if (location.isSetLatitude()  &&  location.isSetLongitude()) {
           Ov2ItemType2 ov2ItemType2 = new Ov2ItemType2();

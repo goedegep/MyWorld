@@ -6,7 +6,7 @@ import java.util.logging.Logger;
 import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.JfxUtil;
 import goedegep.resources.ImageSize;
-import goedegep.vacations.model.Location;
+import goedegep.travels.model.Location;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Dialog;
 import javafx.scene.image.Image;

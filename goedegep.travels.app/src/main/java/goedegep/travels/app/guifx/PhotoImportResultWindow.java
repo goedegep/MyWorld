@@ -14,13 +14,13 @@ import goedegep.jfx.eobjecttreeview.EObjectTreeView;
 import goedegep.poi.app.LocationCategory;
 import goedegep.travels.app.logic.PhotoImportResult;
 import goedegep.travels.app.logic.VacationsUtils;
+import goedegep.travels.model.Day;
+import goedegep.travels.model.GPXTrack;
+import goedegep.travels.model.Location;
+import goedegep.travels.model.Picture;
+import goedegep.travels.model.VacationElement;
+import goedegep.travels.model.TravelsPackage;
 import goedegep.types.model.FileReference;
-import goedegep.vacations.model.Day;
-import goedegep.vacations.model.GPXTrack;
-import goedegep.vacations.model.Location;
-import goedegep.vacations.model.Picture;
-import goedegep.vacations.model.VacationElement;
-import goedegep.vacations.model.VacationsPackage;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -193,11 +193,11 @@ public class PhotoImportResultWindow extends JfxStage {
     
     if (eObject instanceof VacationElement vacationElement) {
       switch(vacationElement.eClass().getClassifierID()) {
-      case VacationsPackage.DAY:
+      case TravelsPackage.DAY:
         // A day has no location, so the photo can't be added here, so no text needed.
         break;
 
-      case VacationsPackage.LOCATION:
+      case TravelsPackage.LOCATION:
         Location location = (Location) vacationElement;
         buf.append(LocationCategory.getDisplayName(location.getLocationCategory())).append(" - ");
         if (location.getLocationCategory().equals(LocationCategory.CITY)) {
@@ -207,17 +207,17 @@ public class PhotoImportResultWindow extends JfxStage {
         }
         break;
 
-      case VacationsPackage.TEXT:
+      case TravelsPackage.TEXT:
         // A text has no location, so the photo can't be added here, so no text needed.
         break;
 
-      case VacationsPackage.PICTURE:
+      case TravelsPackage.PICTURE:
         Picture picture = (Picture) vacationElement;
         FileReference fileReference = picture.getPictureReference();
         buf.append("Photo: ").append(fileReference.getFile());
         break;
 
-      case VacationsPackage.GPX_TRACK:
+      case TravelsPackage.GPX_TRACK:
         GPXTrack gpxTrack = (GPXTrack) vacationElement;
         FileReference gpxFileReference = gpxTrack.getTrackReference();
         buf.append("GPX track: ").append(gpxFileReference.getFile());

@@ -31,6 +31,19 @@ import goedegep.gpx.model.TrkType;
 import goedegep.gpx.model.TrksegType;
 import goedegep.gpx.model.WptType;
 import goedegep.poi.app.LocationCategory;
+import goedegep.travels.model.Boundary;
+import goedegep.travels.model.BoundingBox;
+import goedegep.travels.model.Day;
+import goedegep.travels.model.DayTrip;
+import goedegep.travels.model.Document;
+import goedegep.travels.model.GPXTrack;
+import goedegep.travels.model.Location;
+import goedegep.travels.model.Picture;
+import goedegep.travels.model.Travel;
+import goedegep.travels.model.Vacation;
+import goedegep.travels.model.VacationElement;
+import goedegep.travels.model.Vacations;
+import goedegep.travels.model.TravelsPackage;
 import goedegep.types.model.FileReference;
 import goedegep.util.Triplet;
 import goedegep.util.datetime.FlexDate;
@@ -38,19 +51,6 @@ import goedegep.util.emf.EMFResource;
 import goedegep.util.file.FileUtils;
 import goedegep.util.img.ImageUtils;
 import goedegep.util.img.PhotoFileMetaDataHandler;
-import goedegep.vacations.model.Boundary;
-import goedegep.vacations.model.BoundingBox;
-import goedegep.vacations.model.Day;
-import goedegep.vacations.model.DayTrip;
-import goedegep.vacations.model.Document;
-import goedegep.vacations.model.GPXTrack;
-import goedegep.vacations.model.Location;
-import goedegep.vacations.model.Picture;
-import goedegep.vacations.model.Travel;
-import goedegep.vacations.model.Vacation;
-import goedegep.vacations.model.VacationElement;
-import goedegep.vacations.model.Vacations;
-import goedegep.vacations.model.VacationsPackage;
 
 /**
  * This class provides utility methods for the Vacations application.
@@ -397,23 +397,23 @@ public class VacationsUtils {
   private static void addGeoLocationsForVacationElement(List<WGS84Coordinates> geoLocations, VacationElement element, WGS84Coordinates[] stayedAtLocations) throws FileNotFoundException {
     
     switch(element.eClass().getClassifierID()) {
-    case VacationsPackage.DAY:
+    case TravelsPackage.DAY:
       // A day has no location. Stayed at locations are handled after handling the children.
       break;
       
-    case VacationsPackage.LOCATION:
+    case TravelsPackage.LOCATION:
       addGeoLocationForVacationElementLocation(geoLocations, (Location) element);
       break;
       
-    case VacationsPackage.TEXT:
+    case TravelsPackage.TEXT:
       // No action; a Text has no location.
       break;
       
-    case VacationsPackage.PICTURE:
+    case TravelsPackage.PICTURE:
       addGeoLocationForVacationElementPicture(geoLocations, (Picture) element);
       break;
       
-    case VacationsPackage.GPX_TRACK:
+    case TravelsPackage.GPX_TRACK:
       addGeoLocationForVacationElementGPXTrack(geoLocations, (GPXTrack) element);
       break;
     }
@@ -422,7 +422,7 @@ public class VacationsUtils {
       addGeoLocationsForVacationElement(geoLocations, childElement, stayedAtLocations);
     }
     
-    if (element.eClass().getClassifierID() == VacationsPackage.DAY) {
+    if (element.eClass().getClassifierID() == TravelsPackage.DAY) {
       Day day = (Day) element;
       int dayNr = day.getDayNr();
       LOGGER.info("Trying to retrieve stayed at for day number: " + dayNr);
@@ -450,24 +450,24 @@ public class VacationsUtils {
   private static List<WGS84Coordinates> addGeoLocationsForVacationElement(List<List<WGS84Coordinates>> locationsConnectingLines, List<WGS84Coordinates> geoLocations, VacationElement element) throws FileNotFoundException {
     
     switch(element.eClass().getClassifierID()) {
-    case VacationsPackage.DAY:
+    case TravelsPackage.DAY:
       // A day has no location. Stayed at locations are handled after handling the children.
       break;
       
-    case VacationsPackage.LOCATION:
+    case TravelsPackage.LOCATION:
       addGeoLocationForVacationElementLocation(geoLocations, (Location) element);
       break;
       
-    case VacationsPackage.TEXT:
-    case VacationsPackage.DOCUMENT:
+    case TravelsPackage.TEXT:
+    case TravelsPackage.DOCUMENT:
       // No action; a Text or Document has no location.
       break;
       
-    case VacationsPackage.PICTURE:
+    case TravelsPackage.PICTURE:
       addGeoLocationForVacationElementPicture(geoLocations, (Picture) element);
       break;
       
-    case VacationsPackage.GPX_TRACK:
+    case TravelsPackage.GPX_TRACK:
       geoLocations = addGeoLocationForVacationElementGPXTrack(locationsConnectingLines, geoLocations, (GPXTrack) element);
       break;
     }
@@ -476,7 +476,7 @@ public class VacationsUtils {
       geoLocations = addGeoLocationsForVacationElement(locationsConnectingLines, geoLocations, childElement);
     }
     
-    if (element.eClass().getClassifierID() == VacationsPackage.DAY) {
+    if (element.eClass().getClassifierID() == TravelsPackage.DAY) {
       Day day = (Day) element;
       Location stayedAtLocation = getStayedAtLocation(day);
       if (stayedAtLocation != null  &&  stayedAtLocation.getLatitude() != null  &&  stayedAtLocation.getLongitude() != null) {
@@ -1027,25 +1027,25 @@ public class VacationsUtils {
     LOGGER.info("=> vacationElement=" + vacationElement.toString());
     
     switch(vacationElement.eClass().getClassifierID()) {
-    case VacationsPackage.DAY:
+    case TravelsPackage.DAY:
       // A day has no location.
       LOGGER.info("<= null");
       return null;
       
-    case VacationsPackage.LOCATION:
+    case TravelsPackage.LOCATION:
       LOGGER.info("<= getGeoLocation(<Location>)");
       return getGeoLocation((Location) vacationElement);
       
-    case VacationsPackage.TEXT:
+    case TravelsPackage.TEXT:
       // No action; a Text has no location.
       LOGGER.info("<= null");
       return null;
       
-    case VacationsPackage.PICTURE:
+    case TravelsPackage.PICTURE:
       LOGGER.info("<= getGeoLocation(<Picture>)");
       return getGeoLocation((Picture) vacationElement);
       
-    case VacationsPackage.GPX_TRACK:
+    case TravelsPackage.GPX_TRACK:
       LOGGER.info("<= getGeoLocation(<GPXTrack>)");
       return getGeoLocation((GPXTrack) vacationElement);
     }

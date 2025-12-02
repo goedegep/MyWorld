@@ -13,7 +13,7 @@ import com.openhtmltopdf.outputdevice.helper.BaseRendererBuilder.PageSizeUnits;
 import com.openhtmltopdf.pdfboxout.PdfRendererBuilder;
 
 import goedegep.travels.app.logic.VacationToHtmlConverter;
-import goedegep.vacations.model.Vacation;
+import goedegep.travels.model.Vacation;
 import javafx.concurrent.Task;
 
 /**

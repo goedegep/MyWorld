@@ -5,16 +5,16 @@ import goedegep.jfx.eobjecttreeview.EObjectTreeItemAttributeDescriptor;
 import goedegep.jfx.eobjecttreeview.EObjectTreeItemClassDescriptor;
 import goedegep.jfx.eobjecttreeview.EObjectTreeItemClassReferenceDescriptor;
 import goedegep.jfx.eobjecttreeview.EObjectTreeView;
+import goedegep.travels.model.GPXTrack;
+import goedegep.travels.model.TravelsPackage;
 import goedegep.types.model.FileReference;
 import goedegep.types.model.TypesPackage;
-import goedegep.vacations.model.GPXTrack;
-import goedegep.vacations.model.VacationsPackage;
 
 /**
  * This class creates an {@link EObjectTreeView} for a {@link GPXTrack} vacation element.
  */
 public class GPXElementTreeViewCreator {
-  private final VacationsPackage vacationsPackage = VacationsPackage.eINSTANCE;
+  private final TravelsPackage vacationsPackage = TravelsPackage.eINSTANCE;
   private final TypesPackage typesPackage = TypesPackage.eINSTANCE;
     
   /**
