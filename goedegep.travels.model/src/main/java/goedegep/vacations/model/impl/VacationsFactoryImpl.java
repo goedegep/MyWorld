@@ -275,7 +275,6 @@ public class VacationsFactoryImpl extends EFactoryImpl implements VacationsFacto
     return travel;
   }
 
-
   /**
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->

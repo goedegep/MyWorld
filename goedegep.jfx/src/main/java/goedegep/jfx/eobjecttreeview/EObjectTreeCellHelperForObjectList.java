@@ -71,12 +71,6 @@ public class EObjectTreeCellHelperForObjectList extends EObjectTreeCellHelperTem
       return null;
     }
     
-    String labelText = itemDescriptor.getLabelText();
-    LOGGER.severe("labelText=" + labelText);
-    if (labelText.equals("Boundaries")) {
-      LOGGER.severe("Found Boundaries list " + object.toString());
-    }
-    
     EObjectTreeItemForObjectList eObjectTreeItem = (EObjectTreeItemForObjectList) eObjectTreeCell.getTreeItem();
     
     EReference eReference = eObjectTreeItem.getEReference();

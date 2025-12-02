@@ -12,7 +12,7 @@
     <semanticResources>platform:/resource/goedegep.types.model/model/types.genmodel</semanticResources>
     <ownedViews xmi:type="viewpoint:DView" uid="_lcEugCcHEeihDpOdkZknzg">
       <viewpoint xmi:type="description:Viewpoint" href="platform:/plugin/org.eclipse.emf.ecoretools.design/description/ecore.odesign#//@ownedViewpoints[name='Design']"/>
-      <ownedRepresentationDescriptors xmi:type="viewpoint:DRepresentationDescriptor" uid="_sqT21ycHEeihDpOdkZknzg" name="Vacations class diagram" repPath="#_sqT20CcHEeihDpOdkZknzg" changeId="1763494415589">
+      <ownedRepresentationDescriptors xmi:type="viewpoint:DRepresentationDescriptor" uid="_sqT21ycHEeihDpOdkZknzg" name="Vacations class diagram" repPath="#_sqT20CcHEeihDpOdkZknzg" changeId="1764693590328">
         <description xmi:type="description_1:DiagramDescription" href="platform:/plugin/org.eclipse.emf.ecoretools.design/description/ecore.odesign#//@ownedViewpoints[name='Design']/@ownedRepresentations[name='Entities']"/>
         <target xmi:type="ecore:EPackage" href="vacations.ecore#/"/>
       </ownedRepresentationDescriptors>
@@ -185,6 +185,10 @@
             <children xmi:type="notation:Node" xmi:id="_lRwPYMJJEe-vTfRH1sLmwg" type="3010" element="_lROD4MJJEe-vTfRH1sLmwg">
               <styles xmi:type="notation:FontStyle" xmi:id="_lRwPYcJJEe-vTfRH1sLmwg" fontName="Segoe UI" fontHeight="8"/>
               <layoutConstraint xmi:type="notation:Location" xmi:id="_lRwPYsJJEe-vTfRH1sLmwg"/>
+            </children>
+            <children xmi:type="notation:Node" xmi:id="_c7AU4M-dEfC0KfRDxZtEYA" type="3010" element="_c6cUMM-dEfC0KfRDxZtEYA">
+              <styles xmi:type="notation:FontStyle" xmi:id="_c7AU4c-dEfC0KfRDxZtEYA" fontName="Segoe UI" fontHeight="8"/>
+              <layoutConstraint xmi:type="notation:Location" xmi:id="_c7AU4s-dEfC0KfRDxZtEYA"/>
             </children>
             <styles xmi:type="notation:SortingStyle" xmi:id="_fwpYMg6zEemw9ttFz7T35Q"/>
             <styles xmi:type="notation:FilteringStyle" xmi:id="_fwpYMw6zEemw9ttFz7T35Q"/>
@@ -1080,6 +1084,14 @@
         <target xmi:type="ecore:EOperation" href="vacations.ecore#//VacationElement/getDay"/>
         <semanticElements xmi:type="ecore:EOperation" href="vacations.ecore#//VacationElement/getDay"/>
         <ownedStyle xmi:type="diagram:BundledImage" uid="_lROq8MJJEe-vTfRH1sLmwg" labelAlignment="LEFT">
+          <description xmi:type="style:BundledImageDescription" href="platform:/plugin/org.eclipse.emf.ecoretools.design/description/ecore.odesign#//@ownedViewpoints[name='Design']/@ownedRepresentations[name='Entities']/@defaultLayer/@containerMappings[name='EC%20EClass']/@subNodeMappings[name='Operation']/@style"/>
+        </ownedStyle>
+        <actualMapping xmi:type="description_1:NodeMapping" href="platform:/plugin/org.eclipse.emf.ecoretools.design/description/ecore.odesign#//@ownedViewpoints[name='Design']/@ownedRepresentations[name='Entities']/@defaultLayer/@containerMappings[name='EC%20EClass']/@subNodeMappings[name='Operation']"/>
+      </ownedElements>
+      <ownedElements xmi:type="diagram:DNodeListElement" uid="_c6cUMM-dEfC0KfRDxZtEYA" name="getLabelText() : EString" tooltipText="getLabelText() : EString">
+        <target xmi:type="ecore:EOperation" href="vacations.ecore#//VacationElement/getLabelText"/>
+        <semanticElements xmi:type="ecore:EOperation" href="vacations.ecore#//VacationElement/getLabelText"/>
+        <ownedStyle xmi:type="diagram:BundledImage" uid="_c6c7QM-dEfC0KfRDxZtEYA" labelAlignment="LEFT">
           <description xmi:type="style:BundledImageDescription" href="platform:/plugin/org.eclipse.emf.ecoretools.design/description/ecore.odesign#//@ownedViewpoints[name='Design']/@ownedRepresentations[name='Entities']/@defaultLayer/@containerMappings[name='EC%20EClass']/@subNodeMappings[name='Operation']/@style"/>
         </ownedStyle>
         <actualMapping xmi:type="description_1:NodeMapping" href="platform:/plugin/org.eclipse.emf.ecoretools.design/description/ecore.odesign#//@ownedViewpoints[name='Design']/@ownedRepresentations[name='Entities']/@defaultLayer/@containerMappings[name='EC%20EClass']/@subNodeMappings[name='Operation']"/>

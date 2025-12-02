@@ -47,7 +47,6 @@ import goedegep.gpx.model.DocumentRoot;
 import goedegep.gpx.model.GpxType;
 import goedegep.gpx.model.MetadataType;
 import goedegep.jfx.CustomizationFx;
-import goedegep.jfx.DefaultCustomizationFx;
 import goedegep.jfx.JfxStage;
 import goedegep.jfx.MenuUtil;
 import goedegep.jfx.browser.Browser;
@@ -614,7 +613,6 @@ public class VacationsWindow extends JfxStage {
     treeView = new VacationsTreeViewCreator(customization)
         .setNewEObjectInitializationFunction(this::initializeNewEObject)
         .setMenuToBeEnabledPredicate(this::isMenuToBeEnabled)
-        .setReduceBoundariesSizesFunction(this::reduceBoundariesSizes)
         .setTravelMapView(travelMapView)
         .setUpdateMapImageFileFunction(this::updateMapImageFile)
         .createVacationsTreeView();
@@ -1821,7 +1819,7 @@ public class VacationsWindow extends JfxStage {
     if ((vacations != null)  &&  vacations.getHome() != null) {
       Location homeLocation = vacations.getHome();
       if (homeLocation.isSetLatitude()  &&  homeLocation.isSetLongitude()) {
-        travelMapView.getMapRelatedItemsLayer().addLocation(homeLocation, "Home");
+        travelMapView.getMapRelatedItemsLayer().addLocation(homeLocation);
       }
     }
         
@@ -1981,11 +1979,7 @@ public class VacationsWindow extends JfxStage {
     WGS84BoundingBox wgs84BoundingBox = null;
     
     if (!stayedAtOnly  ||  location.isStayedAtThisLocation()) {
-      String text = location.getName();
-      if (text == null) {
-        text = location.getCity();
-      }
-      wgs84BoundingBox = travelMapView.getMapRelatedItemsLayer().addLocation(location, text);
+      wgs84BoundingBox = travelMapView.getMapRelatedItemsLayer().addLocation(location);
     }
     
     return wgs84BoundingBox;
@@ -2807,21 +2801,6 @@ public class VacationsWindow extends JfxStage {
   
   public boolean isMenuToBeEnabled(EObjectTreeItem eObjectTreeItem) {
     return true;
-  }
-  
-  public void reduceBoundariesSizes(EObjectTreeItem eObjectTreeItem) {
-    LOGGER.info("=> " + eObjectTreeItem);
-    
-    Object object = eObjectTreeItem.getValue();
-    if (!(object instanceof Location)) {
-      LOGGER.severe("EObjectTreeItem doesn't contain a Location");
-      return;
-    }
-    
-    Location location = (Location) object;
-    
-    new ReduceBoundarySizesWindow(DefaultCustomizationFx.getInstance(), location, travelMapView);
-
   }
   
   /**

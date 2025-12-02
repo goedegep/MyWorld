@@ -374,13 +374,22 @@ public interface VacationsPackage extends EPackage {
   int VACATION_ELEMENT___GET_DAY = 3;
 
   /**
+   * The operation id for the '<em>Get Label Text</em>' operation.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int VACATION_ELEMENT___GET_LABEL_TEXT = 4;
+
+  /**
    * The number of operations of the '<em>Vacation Element</em>' class.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int VACATION_ELEMENT_OPERATION_COUNT = 4;
+  int VACATION_ELEMENT_OPERATION_COUNT = 5;
 
   /**
    * The meta object id for the '{@link goedegep.vacations.model.impl.LocationImpl <em>Location</em>}' class.
@@ -600,6 +609,15 @@ public interface VacationsPackage extends EPackage {
   int LOCATION___GET_DAY = VACATION_ELEMENT___GET_DAY;
 
   /**
+   * The operation id for the '<em>Get Label Text</em>' operation.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int LOCATION___GET_LABEL_TEXT = VACATION_ELEMENT___GET_LABEL_TEXT;
+
+  /**
    * The number of operations of the '<em>Location</em>' class.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -680,6 +698,15 @@ public interface VacationsPackage extends EPackage {
    * @ordered
    */
   int TEXT___GET_DAY = VACATION_ELEMENT___GET_DAY;
+
+  /**
+   * The operation id for the '<em>Get Label Text</em>' operation.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int TEXT___GET_LABEL_TEXT = VACATION_ELEMENT___GET_LABEL_TEXT;
 
   /**
    * The number of operations of the '<em>Text</em>' class.
@@ -773,6 +800,15 @@ public interface VacationsPackage extends EPackage {
   int DAY___GET_DAY = VACATION_ELEMENT___GET_DAY;
 
   /**
+   * The operation id for the '<em>Get Label Text</em>' operation.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int DAY___GET_LABEL_TEXT = VACATION_ELEMENT___GET_LABEL_TEXT;
+
+  /**
    * The operation id for the '<em>Get Date</em>' operation.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -864,6 +900,15 @@ public interface VacationsPackage extends EPackage {
   int PICTURE___GET_DAY = VACATION_ELEMENT___GET_DAY;
 
   /**
+   * The operation id for the '<em>Get Label Text</em>' operation.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int PICTURE___GET_LABEL_TEXT = VACATION_ELEMENT___GET_LABEL_TEXT;
+
+  /**
    * The number of operations of the '<em>Picture</em>' class.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -944,6 +989,15 @@ public interface VacationsPackage extends EPackage {
    * @ordered
    */
   int GPX_TRACK___GET_DAY = VACATION_ELEMENT___GET_DAY;
+
+  /**
+   * The operation id for the '<em>Get Label Text</em>' operation.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int GPX_TRACK___GET_LABEL_TEXT = VACATION_ELEMENT___GET_LABEL_TEXT;
 
   /**
    * The number of operations of the '<em>GPX Track</em>' class.
@@ -1192,6 +1246,15 @@ public interface VacationsPackage extends EPackage {
   int MAP_IMAGE___GET_DAY = VACATION_ELEMENT___GET_DAY;
 
   /**
+   * The operation id for the '<em>Get Label Text</em>' operation.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int MAP_IMAGE___GET_LABEL_TEXT = VACATION_ELEMENT___GET_LABEL_TEXT;
+
+  /**
    * The number of operations of the '<em>Map Image</em>' class.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -1437,6 +1500,15 @@ public interface VacationsPackage extends EPackage {
    * @ordered
    */
   int DOCUMENT___GET_DAY = VACATION_ELEMENT___GET_DAY;
+
+  /**
+   * The operation id for the '<em>Get Label Text</em>' operation.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int DOCUMENT___GET_LABEL_TEXT = VACATION_ELEMENT___GET_LABEL_TEXT;
 
   /**
    * The number of operations of the '<em>Document</em>' class.
@@ -1930,6 +2002,16 @@ public interface VacationsPackage extends EPackage {
    * @generated
    */
   EOperation getVacationElement__GetDay();
+
+  /**
+   * Returns the meta object for the '{@link goedegep.vacations.model.VacationElement#getLabelText() <em>Get Label Text</em>}' operation.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the '<em>Get Label Text</em>' operation.
+   * @see goedegep.vacations.model.VacationElement#getLabelText()
+   * @generated
+   */
+  EOperation getVacationElement__GetLabelText();
 
   /**
    * Returns the meta object for class '{@link goedegep.vacations.model.Text <em>Text</em>}'.
@@ -2689,6 +2771,14 @@ public interface VacationsPackage extends EPackage {
     	 * @generated
     	 */
     EOperation VACATION_ELEMENT___GET_DAY = eINSTANCE.getVacationElement__GetDay();
+
+    /**
+    	 * The meta object literal for the '<em><b>Get Label Text</b></em>' operation.
+    	 * <!-- begin-user-doc -->
+    	 * <!-- end-user-doc -->
+    	 * @generated
+    	 */
+    EOperation VACATION_ELEMENT___GET_LABEL_TEXT = eINSTANCE.getVacationElement__GetLabelText();
 
     /**
     	 * The meta object literal for the '{@link goedegep.vacations.model.impl.TextImpl <em>Text</em>}' class.

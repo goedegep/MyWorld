@@ -18,10 +18,12 @@ import goedegep.myworld.common.Service;
 import goedegep.resources.ImageResource;
 import goedegep.util.dir.DirectoryChangesListener;
 import goedegep.util.string.StringUtil;
+import goedegep.vacations.app.guifx.BoundariesPointsReductionWindow;
 import goedegep.vacations.app.guifx.VacationsAppResourcesFx;
 import goedegep.vacations.app.guifx.VacationsWindow;
 import goedegep.vacations.app.logic.PhotoThumbnailManager;
 import goedegep.vacations.app.logic.VacationsRegistry;
+import goedegep.vacations.model.Location;
 import javafx.scene.paint.Color;
 
 /**
@@ -69,6 +71,15 @@ public class TravelsService extends Service {
     // Show the main window of the application
     VacationsWindow travelsWindow = new VacationsWindow(customization, this);
     travelsWindow.show();
+  }
+  
+  /**
+   * Show the Boundaries Points Reduction window.
+   * 
+   * @param location the location for which the boundaries points reduction window should be shown.
+   */
+  public void showBoundariesPointsReductionWindow(Location location) {
+    new BoundariesPointsReductionWindow(customization, location);
   }
 
   public CustomizationFx getCustomization() {

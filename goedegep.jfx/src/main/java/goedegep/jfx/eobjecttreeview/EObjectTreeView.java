@@ -662,15 +662,17 @@ public class EObjectTreeView extends TreeView<Object> implements ObjectSelector<
               ((EObjectTreeItemForAttributeList) changedTreeItem).addAttributeListChild(notification.getPosition());
             } else if (notification.getEventType() == Notification.ADD_MANY) {
               // elements are added to a list of values
-             
-              ((EObjectTreeItemForAttributeList) changedTreeItem).rebuildChildren();
+              if (changedTreeItem != null) {
+                ((EObjectTreeItemForAttributeList) changedTreeItem).rebuildChildren();
+              }
             } else if (notification.getEventType() == Notification.REMOVE) {
               // an element is removed from a list of values
               ((EObjectTreeItemForAttributeList) changedTreeItem).removeAttributeListChild(notification.getPosition());
             } else if (notification.getEventType() == Notification.REMOVE_MANY) {
               // elements are removed from a list of values
-              LOGGER.severe("notification: " + notification);
-              ((EObjectTreeItemForAttributeList) changedTreeItem).removeAttributeListChildren();
+              if (changedTreeItem != null) {
+                ((EObjectTreeItemForAttributeList) changedTreeItem).removeAttributeListChildren();
+              }
             } else if (notification.getEventType() == Notification.SET) {
               // the value has changed
               EObjectTreeItemForAttributeList listItem = (EObjectTreeItemForAttributeList) changedTreeItem;

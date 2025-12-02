@@ -97,7 +97,12 @@ public class DouglasPeuckerReducer {
     WGS84Coordinates lastPoint = coordinateExtractor != null ? coordinateExtractor.call(shape.get(lastIdx)) : (WGS84Coordinates) shape.get(lastIdx);
 
     for (int idx = firstIdx + 1; idx < lastIdx; idx++) {
-      WGS84Coordinates point = coordinateExtractor.call(shape.get(idx));
+      WGS84Coordinates point;
+      if (coordinateExtractor == null) {
+        point = (WGS84Coordinates) shape.get(idx);
+      } else {
+        point = coordinateExtractor.call(shape.get(idx));
+      }
 
       double distance = orthogonalDistance(point, firstPoint, lastPoint);
 

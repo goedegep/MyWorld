@@ -1,20 +1,20 @@
 package goedegep.vacations.app.guifx;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.logging.Logger;
 
+import com.gluonhq.maps.MapPoint;
 import com.gluonhq.maps.MapView;
 
-import goedegep.gpx.app.GPXLayer;
-import goedegep.gpx.app.GPXTreeViewCreator;
-import goedegep.gpx.app.GPXWindow;
-import goedegep.gpx.model.TrkType;
-import goedegep.gpx.model.TrksegType;
-import goedegep.gpx.model.WptType;
+import goedegep.geo.WGS84BoundingBox;
+import goedegep.geo.WGS84Coordinates;
 import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.JfxStage;
-import goedegep.jfx.eobjecttreeview.EObjectTreeItem;
 import goedegep.util.douglaspeuckerreducer.DouglasPeuckerReducer;
+import goedegep.vacations.model.Boundary;
+import goedegep.vacations.model.Location;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.scene.Node;
@@ -32,6 +32,7 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 
 public class BoundariesPointsReductionWindow extends JfxStage {
+  @SuppressWarnings("unused")
   private static final Logger LOGGER = Logger.getLogger(BoundariesPointsReductionWindow.class.getName());
   private static final String NEWLINE = System.getProperty("line.separator");
   
@@ -41,16 +42,19 @@ public class BoundariesPointsReductionWindow extends JfxStage {
   
   private MapView mapView;
   private MapRelatedItemsLayer mapRelatedItemsLayer;
+  private Location location;
+  private List<List<WGS84Coordinates>> originalBoundaryPoints;
 
-
-  public BoundariesPointsReductionWindow(CustomizationFx customization, EObjectTreeItem treeItem) {
+  public BoundariesPointsReductionWindow(CustomizationFx customization, Location location) {
+    Objects.requireNonNull(customization, "customization must not be null");
+    Objects.requireNonNull(location, "location must not be null");
+    
     super(customization, "Boundaries Points Reduction");
-    
-    LOGGER.severe("=>");
-    
-    Object value = treeItem.getValue();
-    
+        
     createGUI();
+    setOnCloseRequest(_ -> closeWithoutMakingChanges());
+    
+    setLocation(location);
     
     show();
   }
@@ -147,11 +151,11 @@ public class BoundariesPointsReductionWindow extends JfxStage {
     buttonsBox.getChildren().add(spacer);
     
     Button cancelButton = componentFactory.createButton("Cancel", "Close this window without changing the boundaries");
-    cancelButton.setOnAction(e -> closeWithoutMakingChanges());
+    cancelButton.setOnAction(_ -> closeWithoutMakingChanges());
     buttonsBox.getChildren().add(cancelButton);
     
     Button reduceButton = componentFactory.createButton("Reduce", "Reduce the boundaries and close this window");
-    reduceButton.setOnAction(e -> closeWindow());  // as the changes are already in the original GPX track, nothing has to be done here.
+    reduceButton.setOnAction(_ -> closeWindow());  // as the changes are already in the original GPX track, nothing has to be done here.
     buttonsBox.getChildren().add(reduceButton);
         
     return  buttonsBox;
@@ -165,6 +169,31 @@ public class BoundariesPointsReductionWindow extends JfxStage {
     return mapView;
   }
   
+  private void setLocation(Location location) {
+    this.location = location;
+    
+    originalBoundaryPoints = new ArrayList<>();
+    for (Boundary boundary: location.getBoundaries()) {
+      originalBoundaryPoints.add(new ArrayList<>(boundary.getPoints()));
+    }
+    
+    mapRelatedItemsLayer.clear();
+    WGS84BoundingBox boundingBox = mapRelatedItemsLayer.addLocation(location);
+    Double zoomLevel = MapView.getZoomLevel(boundingBox);
+    if (zoomLevel != null) {
+      mapView.setZoom(zoomLevel);
+    }
+
+    WGS84Coordinates center = boundingBox.getCenter();
+    MapPoint mapCenter = new MapPoint(center.getLatitude(), center.getLongitude());
+
+    if (mapCenter != null) {
+      mapView.flyTo(0.0, mapCenter, 2);
+    }
+    
+    handleNewSliderValue(slider.getValue());
+  }
+  
   /**
    * Handle a new slider value.
    * <p>
@@ -174,40 +203,19 @@ public class BoundariesPointsReductionWindow extends JfxStage {
    * @param sliderValue the new slider value.
    */
   private void handleNewSliderValue(double sliderValue) {
-//    
-//    switch (gpxPartToReduce) {
-//    case NULL:
-//      // no action
-//      break;
-//      
-//    case GPX:
-//      for (TrkType aTrack: gpx.getTrk()) {
-//        for (TrksegType aSegment: aTrack.getTrkseg()) {
-//          List<WptType> reducedWaypoints = DouglasPeuckerReducer.reduceWithTolerance(originalWaypointsPerSegment.get(aSegment), 2 * sliderValue, GPXWindow::coordinateExtractor);
-//          aSegment.getTrkpt().clear();
-//          aSegment.getTrkpt().addAll(reducedWaypoints);
-//        }
-//      }
-//      break;
-//      
-//    case TRACK:
-//      for (TrksegType aSegment: track.getTrkseg()) {
-//        List<WptType> reducedWaypoints = DouglasPeuckerReducer.reduceWithTolerance(originalWaypointsPerSegment.get(aSegment), 2 * sliderValue, GPXWindow::coordinateExtractor);
-//        aSegment.getTrkpt().clear();
-//        aSegment.getTrkpt().addAll(reducedWaypoints);
-//      }
-//      break;
-//      
-//    case SEGMENT:
-//      List<WptType> reducedWaypoints = DouglasPeuckerReducer.reduceWithTolerance(originalWaypointsPerSegment.get(segment), 2 * sliderValue, GPXWindow::coordinateExtractor);
-//      segment.getTrkpt().clear();
-//      segment.getTrkpt().addAll(reducedWaypoints);
-//      break;
-//      
-//    }
-//        
-//    updateGUI();    
-//    
+    
+    for (int i = 0; i < location.getBoundaries().size(); i++) {
+      
+      List<WGS84Coordinates> originalPoints = originalBoundaryPoints.get(i);
+      originalNumberOfPointsTextField.setText(Integer.toString(originalPoints.size()));
+      List<WGS84Coordinates> reducedBoundary = DouglasPeuckerReducer.reduceWithTolerance(originalPoints, Math.pow(sliderValue, 1.8), null);
+      reducedNumberOfPointsTextField.setText(Integer.toString(reducedBoundary.size()));
+      
+      Boundary boundary = location.getBoundaries().get(i);
+      boundary.getPoints().clear();
+      boundary.getPoints().addAll(reducedBoundary);
+    }
+
   }
 
 
@@ -217,14 +225,15 @@ public class BoundariesPointsReductionWindow extends JfxStage {
    * As the changes are currently in the GPX track, the original lists of track points have to be restored.
    */
   private void closeWithoutMakingChanges() {
-//    // restore original segment points
-//    for (TrkType track: gpx.getTrk()) {
-//      for (TrksegType segment: track.getTrkseg()) {
-//        segment.getTrkpt().clear();
-//        segment.getTrkpt().addAll(originalWaypointsPerSegment.get(segment));
-//      }
-//    }
-
+    // restore original boundary points
+    for (int i = 0; i < location.getBoundaries().size(); i++) {
+      
+      List<WGS84Coordinates> originalPoints = originalBoundaryPoints.get(i);      
+      Boundary boundary = location.getBoundaries().get(i);
+      boundary.getPoints().clear();
+      boundary.getPoints().addAll(originalPoints);
+    }
+    
     closeWindow();
   }
 
@@ -232,8 +241,6 @@ public class BoundariesPointsReductionWindow extends JfxStage {
    * Close the window
    */
   private void closeWindow() {
-
-
     close();
   }
 }

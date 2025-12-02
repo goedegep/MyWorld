@@ -4,6 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
+import org.eclipse.emf.common.notify.Notification;
+import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.util.EContentAdapter;
+
 import com.gluonhq.maps.LabeledIcon;
 import com.gluonhq.maps.MapLayer;
 
@@ -84,6 +88,8 @@ public class MapRelatedItemsLayer extends MapLayer implements ObjectSelector<Obj
   private Object selectedObject;
   
   VBox group;
+  
+  private EContentAdapter eContentAdapter;
 
   /**
    * Constructor.
@@ -94,6 +100,8 @@ public class MapRelatedItemsLayer extends MapLayer implements ObjectSelector<Obj
   public MapRelatedItemsLayer(CustomizationFx customization, Stage ownerWindow) {
     this.customization = customization;
     this.ownerWindow = ownerWindow;
+    
+    eContentAdapter = createEContentAdapter();
   }
   
   /**
@@ -109,8 +117,8 @@ public class MapRelatedItemsLayer extends MapLayer implements ObjectSelector<Obj
    * @param location the {@code Location} (mandatory).
    * @param text an optional text to be shown below the icon.
    */
-  public WGS84BoundingBox addLocation(final Location location, String text) {
-    return addLocation(location, text, null);
+  public WGS84BoundingBox addLocation(final Location location) {
+    return addLocation(location, null);
   }
   
   /**
@@ -127,7 +135,7 @@ public class MapRelatedItemsLayer extends MapLayer implements ObjectSelector<Obj
    * @param text an optional text to be shown below the icon.
    * @param boundariesColor an optional {@code Color} for the color of the boundaries.
    */
-  public WGS84BoundingBox addLocation(final Location location, String text, Color boundariesColor) {
+  public WGS84BoundingBox addLocation(final Location location, Color boundariesColor) {
     
     WGS84BoundingBox wgs84BoundingBox = null;
 
@@ -140,7 +148,7 @@ public class MapRelatedItemsLayer extends MapLayer implements ObjectSelector<Obj
         poiCategoryId = LocationCategory.DEFAULT_POI;
       }
       Image locationIcon = poiCategoryId.getIcon();    
-      labeledIcon = new LabeledIcon(locationIcon, text);
+      labeledIcon = new LabeledIcon(locationIcon, location.getLabelText());
       labeledIcon.installMouseEventHandling(e -> {
         if (!e.isControlDown()) {
           setSelectedObject(location);
@@ -198,6 +206,8 @@ public class MapRelatedItemsLayer extends MapLayer implements ObjectSelector<Obj
     LocationData locationData = new LocationData(location, labeledIcon, boundariesDataList, boundingBoxData);
     locations.add(locationData);
     
+    location.eAdapters().add(eContentAdapter);
+    
     markDirty();
 
     return wgs84BoundingBox;
@@ -211,7 +221,6 @@ public class MapRelatedItemsLayer extends MapLayer implements ObjectSelector<Obj
    * @param fileName the photo filename.
    */
   public WGS84BoundingBox addPhoto(WGS84Coordinates coordinates, String text, String fileName) {
-    LOGGER.info("=> coordinates: " + coordinates.toString());
     Image photoImage = ImageResource.CAMERA_BLACK.getImage(12, 12);
     ImageView photoIcon = new ImageView(photoImage);
     photoIcon.setOnMouseClicked(_ -> showCurrentPhoto(coordinates, text, fileName));
@@ -289,9 +298,7 @@ public class MapRelatedItemsLayer extends MapLayer implements ObjectSelector<Obj
    * 
    * @param wgs84BoundingBox the bounding box to be added.
    */
-  public void addBoundingBox(WGS84BoundingBox wgs84BoundingBox) {
-    LOGGER.info("=> wgs84BoundingBox=" + wgs84BoundingBox);
-    
+  public void addBoundingBox(WGS84BoundingBox wgs84BoundingBox) {    
     Polygon polygon = new Polygon();
     polygon.setStroke(Color.YELLOW);
     polygon.setFill(Color.TRANSPARENT);
@@ -342,8 +349,6 @@ public class MapRelatedItemsLayer extends MapLayer implements ObjectSelector<Obj
    * Clear the layer, i.e. remove all nodes to be shown.
    */
   public void clear() {
-    LOGGER.info("=>");
-
     boundingBoxes.clear();
     locationsVisitedList.clear();
     locations.clear();
@@ -352,8 +357,6 @@ public class MapRelatedItemsLayer extends MapLayer implements ObjectSelector<Obj
     markDirty();
     
     currentPhoto = null;
-
-    LOGGER.info("<=");
   }
   
   /**
@@ -370,7 +373,6 @@ public class MapRelatedItemsLayer extends MapLayer implements ObjectSelector<Obj
    */
   @Override
   protected void layoutLayer() {
-    LOGGER.info("=>");
     
     // locations
     for (LocationData locationData: locations) {
@@ -409,7 +411,6 @@ public class MapRelatedItemsLayer extends MapLayer implements ObjectSelector<Obj
       imageView.setTranslateY(mapPoint.getY());
     }
 
-    LOGGER.info("<=");
   }
 
   /**
@@ -423,12 +424,18 @@ public class MapRelatedItemsLayer extends MapLayer implements ObjectSelector<Obj
     // Labeled icon
     LabeledIcon labeledIcon = locationData.labeledIcon();
     if (labeledIcon != null) {
-      double zoomLevel = baseMap.zoom().get();
-      Translate zoomCorrection = labeledIcon.getZoomDependendTranslateCorrection(zoomLevel);
-
       Point2D mapPoint = baseMap.getMapPoint(location.getLatitude(), location.getLongitude());
-      labeledIcon.setTranslateX(mapPoint.getX() - zoomCorrection.getX());
-      labeledIcon.setTranslateY(mapPoint.getY() - zoomCorrection.getY());
+      double zoomLevel = baseMap.zoom().get();
+
+      if (zoomLevel > 0.0) {
+        Translate zoomCorrection = labeledIcon.getZoomDependendTranslateCorrection(zoomLevel);
+
+        labeledIcon.setTranslateX(mapPoint.getX() - zoomCorrection.getX());
+        labeledIcon.setTranslateY(mapPoint.getY() - zoomCorrection.getY());
+      } else {
+        labeledIcon.setTranslateX(mapPoint.getX());
+        labeledIcon.setTranslateY(mapPoint.getY());
+      }
     }
     
     // Polylines
@@ -506,6 +513,77 @@ public class MapRelatedItemsLayer extends MapLayer implements ObjectSelector<Obj
   @Override
   public Object getSelectedObject() {
     return selectedObject;
+  }
+  
+  /**
+   * Create the content adapter for handling changes in an eObject.
+   */
+  private EContentAdapter createEContentAdapter() {
+    return new EContentAdapter() {
+
+      /**
+       * {@inheritDoc}
+       */
+      @Override
+      public void notifyChanged(Notification notification) {
+        super.notifyChanged(notification);
+
+        if (notification.isTouch()) {
+          // no action needed
+          return;
+        }
+
+        if (notification.getEventType() == Notification.REMOVING_ADAPTER) {
+          // for now no action
+          return;
+        }
+
+        // If anything is changed, we just rebuild the information for that item.
+
+        EObject notifierEObject = (EObject) notification.getNotifier();
+        
+        EObject eObject = notifierEObject;
+        while (eObject != null  &&  !(eObject instanceof Location)) {
+          eObject = eObject.eContainer();
+        }
+        
+        if (eObject instanceof Location location) {
+          updateLocation(location);
+        }
+      }
+    };
+  }
+  
+  private void updateLocation(Location location) {
+    
+    // Remove existing location data
+    LocationData locationDataToRemove = null;
+    for (LocationData locationData: locations) {
+      if (location.equals(locationData.location())) {
+        locationDataToRemove = locationData;
+        break;
+      }
+    }
+    
+    if (locationDataToRemove != null) {
+      // Remove nodes from the layer
+      LabeledIcon labeledIcon = locationDataToRemove.labeledIcon();
+      if (labeledIcon != null) {
+        getChildren().remove(labeledIcon);
+      }
+      for (PolylineData polylineData: locationDataToRemove.boundaryDataList()) {
+        getChildren().remove(polylineData.polyline());
+      }
+      BoundingBoxData boundingBoxData = locationDataToRemove.boundingBoxData();
+      if (boundingBoxData != null) {
+        getChildren().remove(boundingBoxData.polygon());
+      }
+      
+      locations.remove(locationDataToRemove);
+    }
+    
+    // Re-add the location
+    addLocation(location);
   }
 }
 
