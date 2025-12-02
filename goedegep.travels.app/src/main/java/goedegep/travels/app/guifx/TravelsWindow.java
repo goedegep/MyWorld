@@ -74,6 +74,21 @@ import goedegep.travels.app.logic.VacationToHtmlConverterSetting;
 import goedegep.travels.app.logic.VacationsKmlConverter;
 import goedegep.travels.app.logic.TravelsRegistry;
 import goedegep.travels.app.logic.VacationsUtils;
+import goedegep.travels.model.BoundingBox;
+import goedegep.travels.model.Day;
+import goedegep.travels.model.DayTrip;
+import goedegep.travels.model.Document;
+import goedegep.travels.model.GPXTrack;
+import goedegep.travels.model.Location;
+import goedegep.travels.model.MapImage;
+import goedegep.travels.model.Picture;
+import goedegep.travels.model.Travel;
+import goedegep.travels.model.Vacation;
+import goedegep.travels.model.VacationElement;
+import goedegep.travels.model.Vacations;
+import goedegep.travels.model.TravelsFactory;
+import goedegep.travels.model.TravelsPackage;
+import goedegep.travels.model.util.VacationElementReferenceException;
 import goedegep.types.model.FileReference;
 import goedegep.types.model.TypesFactory;
 import goedegep.util.Tuplet;
@@ -88,21 +103,6 @@ import goedegep.vacations.checklist.model.VacationChecklistCategoriesList;
 import goedegep.vacations.checklist.model.VacationChecklistFactory;
 import goedegep.vacations.checklist.model.VacationChecklistLabelsList;
 import goedegep.vacations.checklist.model.VacationChecklistPackage;
-import goedegep.vacations.model.BoundingBox;
-import goedegep.vacations.model.Day;
-import goedegep.vacations.model.DayTrip;
-import goedegep.vacations.model.Document;
-import goedegep.vacations.model.GPXTrack;
-import goedegep.vacations.model.Location;
-import goedegep.vacations.model.MapImage;
-import goedegep.vacations.model.Picture;
-import goedegep.vacations.model.Travel;
-import goedegep.vacations.model.Vacation;
-import goedegep.vacations.model.VacationElement;
-import goedegep.vacations.model.Vacations;
-import goedegep.vacations.model.VacationsFactory;
-import goedegep.vacations.model.VacationsPackage;
-import goedegep.vacations.model.util.VacationElementReferenceException;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -170,7 +170,7 @@ public class TravelsWindow extends JfxStage {
   private static final String NEWLINE = System.getProperty("line.separator");
   
   private static final ResourceBundle TRANSLATIONS = getBundle(TravelsWindow.class, "TravelsResource");
-  private static final VacationsPackage VACATIONS_PACKAGE = VacationsPackage.eINSTANCE;
+  private static final TravelsPackage VACATIONS_PACKAGE = TravelsPackage.eINSTANCE;
   private static final TypesFactory TYPES_FACTORY = TypesFactory.eINSTANCE;
   
   
@@ -276,8 +276,8 @@ public class TravelsWindow extends JfxStage {
     vacationToHtmlConverter = new VacationToHtmlConverter(vacationToHtmlConverterSettings);
     
     vacationsResource = new EMFResource<>(
-        VacationsPackage.eINSTANCE, 
-        () -> VacationsFactory.eINSTANCE.createVacations(),
+        TravelsPackage.eINSTANCE, 
+        () -> TravelsFactory.eINSTANCE.createVacations(),
         ".xmi",
         true);
     
@@ -3153,7 +3153,7 @@ class BoundingBoxObtainer implements Consumer<EObjectTreeItem> {
       boundingBox = (BoundingBox) object;
     } else {
             
-      boundingBox = VacationsFactory.eINSTANCE.createBoundingBox();
+      boundingBox = TravelsFactory.eINSTANCE.createBoundingBox();
            
       location.setBoundingbox(boundingBox);
       

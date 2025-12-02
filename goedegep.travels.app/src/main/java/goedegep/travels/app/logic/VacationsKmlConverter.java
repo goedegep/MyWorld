@@ -34,19 +34,19 @@ import de.micromata.opengis.kml.v_2_2_0.StyleMap;
 import de.micromata.opengis.kml.v_2_2_0.StyleState;
 import goedegep.geo.WGS84Coordinates;
 import goedegep.poi.app.LocationCategory;
+import goedegep.travels.model.Day;
+import goedegep.travels.model.Location;
+import goedegep.travels.model.Picture;
+import goedegep.travels.model.Text;
+import goedegep.travels.model.Vacation;
+import goedegep.travels.model.VacationElement;
+import goedegep.travels.model.Vacations;
+import goedegep.travels.model.TravelsPackage;
 import goedegep.types.model.FileReference;
 import goedegep.util.datetime.FlexDateFormat;
 import goedegep.util.html.HtmlUtil;
 import goedegep.util.img.PhotoFileMetaDataHandler;
 import goedegep.util.sgml.SgmlUtil;
-import goedegep.vacations.model.Day;
-import goedegep.vacations.model.Location;
-import goedegep.vacations.model.Picture;
-import goedegep.vacations.model.Text;
-import goedegep.vacations.model.Vacation;
-import goedegep.vacations.model.VacationElement;
-import goedegep.vacations.model.Vacations;
-import goedegep.vacations.model.VacationsPackage;
 
 /**
  * This class creates a KML file for a Vacations structure.
@@ -250,23 +250,23 @@ public class VacationsKmlConverter extends VacationToTextConverterAbstract {
     Feature feature = null;
     
     switch(element.eClass().getClassifierID()) {
-    case VacationsPackage.DAY:
+    case TravelsPackage.DAY:
       feature = createKmlForVacationElementDay((Day) element, parentFolder);
       break;
       
-    case VacationsPackage.LOCATION:
+    case TravelsPackage.LOCATION:
       feature = createKmlForVacationElementLocation((Location) element, parentFolder);
       break;
       
-    case VacationsPackage.TEXT:
+    case TravelsPackage.TEXT:
       feature = createKmlForVacationElementText((Text) element, parentFolder);
       break;
       
-    case VacationsPackage.PICTURE:
+    case TravelsPackage.PICTURE:
       createKmlForVacationElementPicture((Picture) element, parentFolder);
       break;
       
-    case VacationsPackage.GPX_TRACK:
+    case TravelsPackage.GPX_TRACK:
 //      createKmlForVacationElementGPXT((VacationElementGPX) element);
       break;
     }

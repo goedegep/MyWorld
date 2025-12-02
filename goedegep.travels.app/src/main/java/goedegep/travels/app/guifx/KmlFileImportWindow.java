@@ -48,18 +48,18 @@ import goedegep.resources.ImageResource;
 import goedegep.travels.app.logic.KmlFileImporter;
 import goedegep.travels.app.logic.KmlPlacemarkImportData;
 import goedegep.travels.app.logic.VacationsUtils;
+import goedegep.travels.model.GPXTrack;
+import goedegep.travels.model.Location;
+import goedegep.travels.model.Travel;
+import goedegep.travels.model.VacationElement;
+import goedegep.travels.model.Vacations;
+import goedegep.travels.model.TravelsPackage;
 import goedegep.types.model.FileReference;
 import goedegep.types.model.TypesPackage;
 import goedegep.util.emf.EMFResource;
 import goedegep.util.emf.EmfUtil;
 import goedegep.util.objectselector.ObjectSelectionListener;
 import goedegep.util.objectselector.ObjectSelector;
-import goedegep.vacations.model.GPXTrack;
-import goedegep.vacations.model.Location;
-import goedegep.vacations.model.Travel;
-import goedegep.vacations.model.VacationElement;
-import goedegep.vacations.model.Vacations;
-import goedegep.vacations.model.VacationsPackage;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.scene.Scene;
@@ -206,7 +206,7 @@ public class KmlFileImportWindow extends JfxStage {
     this.nominatimAPI = nominatimAPI;
 
     elementEmfResource = new EMFResource<>(
-        VacationsPackage.eINSTANCE, 
+        TravelsPackage.eINSTANCE, 
         null,
         ".xmi",
         true);
@@ -247,7 +247,7 @@ public class KmlFileImportWindow extends JfxStage {
    * @param selectedTreeItem the currently selected item in the Vacations tree view.
    */
   private void handleNewTreeItemSelected(TreeItem<Object> selectedTreeItem) {
-    Travel travel = TravelsWindow.getTravelForTreeItem(selectedTreeItem, VacationsPackage.eINSTANCE.getTravel());
+    Travel travel = TravelsWindow.getTravelForTreeItem(selectedTreeItem, TravelsPackage.eINSTANCE.getTravel());
     if (travel != null) {
       vacationElementPanel.handleNewVacationSelected(travel);
       addElementToVacationPanel.handleNewTreeItemSelected(selectedTreeItem);
@@ -674,7 +674,7 @@ public class KmlFileImportWindow extends JfxStage {
       eObjectTreeItemAttributeDescriptor.setInitialDirectoryNameFunction(this::getInitialFolderName);
       eObjectTreeItemAttributeDescriptor.setInitialFileNameFunction(this::getInitialFileName);
       
-      EObjectTreeItemClassDescriptor eObjectTreeItemClassDescriptor  = gpxElementTreeView.getDescriptorForEClass(VacationsPackage.eINSTANCE.getGPXTrack());
+      EObjectTreeItemClassDescriptor eObjectTreeItemClassDescriptor  = gpxElementTreeView.getDescriptorForEClass(TravelsPackage.eINSTANCE.getGPXTrack());
       eObjectTreeItemClassDescriptor.setNodeTextFunction(this::generateTextForGpxTrack);
       eObjectTreeItemClassDescriptor.setNodeIconFunction(this::generateIconForGpxTrack);
 
@@ -1181,7 +1181,7 @@ public class KmlFileImportWindow extends JfxStage {
      * The value of the <code>beforeOrAfterComboBox</code> determines whether it is added before or after the selected item.<br/>
      */
     private void addLocation() {
-      addElementToVacations(VacationsPackage.eINSTANCE.getLocation());
+      addElementToVacations(TravelsPackage.eINSTANCE.getLocation());
     }
 
     /**
@@ -1193,7 +1193,7 @@ public class KmlFileImportWindow extends JfxStage {
      */
     private void addGPXTrack() {
       createGPXFile();
-      addElementToVacations(VacationsPackage.eINSTANCE.getGPXTrack());
+      addElementToVacations(TravelsPackage.eINSTANCE.getGPXTrack());
     }
 
     /**

@@ -44,19 +44,19 @@ import goedegep.gpx.model.GpxType;
 import goedegep.gpx.model.MetadataType;
 import goedegep.poi.app.LocationCategory;
 import goedegep.resources.ImageSize;
+import goedegep.travels.model.Day;
+import goedegep.travels.model.Document;
+import goedegep.travels.model.GPXTrack;
+import goedegep.travels.model.Location;
+import goedegep.travels.model.MapImage;
+import goedegep.travels.model.Picture;
+import goedegep.travels.model.Text;
+import goedegep.travels.model.Vacation;
+import goedegep.travels.model.VacationElement;
 import goedegep.types.model.FileReference;
 import goedegep.util.emf.EMFResource;
 import goedegep.util.file.FileUtils;
 import goedegep.util.html.HtmlUtil;
-import goedegep.vacations.model.Day;
-import goedegep.vacations.model.Document;
-import goedegep.vacations.model.GPXTrack;
-import goedegep.vacations.model.Location;
-import goedegep.vacations.model.MapImage;
-import goedegep.vacations.model.Picture;
-import goedegep.vacations.model.Text;
-import goedegep.vacations.model.Vacation;
-import goedegep.vacations.model.VacationElement;
 
 /**
  * This class generates an HTML document for a Vacation.
@@ -691,7 +691,7 @@ public class VacationToHtmlConverter extends VacationToTextConverterAbstract {
    * 
    * @param text the <code>Text</code> element for which HTML text is to be generated.
    */
-  private void vacationElementTextToHtml(goedegep.vacations.model.Text text) {
+  private void vacationElementTextToHtml(goedegep.travels.model.Text text) {
     if (text.isSetText()) {
       buf.append("<p/>");
       

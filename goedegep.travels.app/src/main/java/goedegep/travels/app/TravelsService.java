@@ -21,9 +21,9 @@ import goedegep.travels.app.guifx.TravelsAppResourcesFx;
 import goedegep.travels.app.guifx.TravelsWindow;
 import goedegep.travels.app.logic.PhotoThumbnailManager;
 import goedegep.travels.app.logic.TravelsRegistry;
+import goedegep.travels.model.Location;
 import goedegep.util.dir.DirectoryChangesListener;
 import goedegep.util.string.StringUtil;
-import goedegep.vacations.model.Location;
 import javafx.scene.paint.Color;
 
 /**

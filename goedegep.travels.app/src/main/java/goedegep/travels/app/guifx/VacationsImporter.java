@@ -14,14 +14,14 @@ import java.util.logging.Logger;
 
 import goedegep.jfx.ComponentFactoryFx;
 import goedegep.jfx.CustomizationFx;
+import goedegep.travels.model.Vacation;
+import goedegep.travels.model.Vacations;
+import goedegep.travels.model.TravelsFactory;
 import goedegep.types.model.FileReference;
 import goedegep.types.model.TypesFactory;
 import goedegep.util.Tuplet;
 import goedegep.util.datetime.FlexDate;
 import goedegep.util.datetime.FlexDateFormat;
-import goedegep.vacations.model.Vacation;
-import goedegep.vacations.model.Vacations;
-import goedegep.vacations.model.VacationsFactory;
 import javafx.scene.control.ChoiceDialog;
 import javafx.scene.control.TextInputDialog;
 
@@ -33,7 +33,7 @@ import javafx.scene.control.TextInputDialog;
 public class VacationsImporter {
   private static final Logger LOGGER = Logger.getLogger(VacationsImporter.class.getName());
   private static final String NEWLINE = System.getProperty("line.separator");
-  private static final VacationsFactory VACATIONS_FACTORY = VacationsFactory.eINSTANCE;
+  private static final TravelsFactory VACATIONS_FACTORY = TravelsFactory.eINSTANCE;
   private static final TypesFactory TYPES_FACTORY = TypesFactory.eINSTANCE;
   private static final FlexDateFormat FDF = new FlexDateFormat(true, true);
   

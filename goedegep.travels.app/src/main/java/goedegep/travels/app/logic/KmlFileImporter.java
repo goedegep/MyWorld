@@ -40,13 +40,13 @@ import goedegep.gpx.model.TrkType;
 import goedegep.gpx.model.TrksegType;
 import goedegep.gpx.model.WptType;
 import goedegep.poi.app.LocationCategory;
+import goedegep.travels.model.GPXTrack;
+import goedegep.travels.model.Location;
+import goedegep.travels.model.TravelsFactory;
 import goedegep.types.model.FileReference;
 import goedegep.types.model.TypesFactory;
 import goedegep.util.datetime.DateUtil;
 import goedegep.util.datetime.TimeZoneRetriever;
-import goedegep.vacations.model.GPXTrack;
-import goedegep.vacations.model.Location;
-import goedegep.vacations.model.VacationsFactory;
 
 public class KmlFileImporter {
   private static final Logger LOGGER = Logger.getLogger(KmlFileImporter.class.getName());
@@ -297,7 +297,7 @@ public class KmlFileImporter {
    * @param vacationElements the {@code Map} to add the element to.
    */
   private void getLocationFromKmlPlacemark(Placemark placemark, List<KmlPlacemarkImportData> vacationElements) {
-    VacationsFactory vacationsFactory = VacationsFactory.eINSTANCE;
+    TravelsFactory vacationsFactory = TravelsFactory.eINSTANCE;
     Location location = vacationsFactory.createLocation();
     
     String category = getExtendedDataValue(placemark, "Category");
@@ -520,7 +520,7 @@ public class KmlFileImporter {
    * @param vacationElements the {@code Map} to add the element to.
    */
   private void getGPXTrackFromKmlPlacemark(Placemark previousPlacemark, Placemark placemark, Placemark nextPlacemark, List<KmlPlacemarkImportData> vacationElements) {
-    VacationsFactory vacationsFactory = VacationsFactory.eINSTANCE;
+    TravelsFactory vacationsFactory = TravelsFactory.eINSTANCE;
     GPXTrack gpxTrack = vacationsFactory.createGPXTrack();
     
     // Only create the file reference. Leave the title empty, the file is filled in later by the application, when a vacation is specified.

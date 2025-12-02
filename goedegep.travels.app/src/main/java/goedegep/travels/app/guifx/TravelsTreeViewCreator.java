@@ -43,6 +43,18 @@ import goedegep.resources.ImageResource;
 import goedegep.resources.ImageSize;
 import goedegep.travels.app.TravelsService;
 import goedegep.travels.app.logic.EnumStringConverterForLocationCategory;
+import goedegep.travels.model.BoundingBox;
+import goedegep.travels.model.Day;
+import goedegep.travels.model.DayTrip;
+import goedegep.travels.model.Document;
+import goedegep.travels.model.GPXTrack;
+import goedegep.travels.model.Location;
+import goedegep.travels.model.MapImage;
+import goedegep.travels.model.Picture;
+import goedegep.travels.model.Text;
+import goedegep.travels.model.Vacation;
+import goedegep.travels.model.TravelsFactory;
+import goedegep.travels.model.TravelsPackage;
 import goedegep.types.model.FileReference;
 import goedegep.types.model.TypesFactory;
 import goedegep.types.model.TypesPackage;
@@ -50,18 +62,6 @@ import goedegep.util.datetime.FlexDateFormat;
 import goedegep.util.emf.EmfUtil;
 import goedegep.util.file.FileUtils;
 import goedegep.util.img.PhotoFileMetaDataHandler;
-import goedegep.vacations.model.BoundingBox;
-import goedegep.vacations.model.Day;
-import goedegep.vacations.model.DayTrip;
-import goedegep.vacations.model.Document;
-import goedegep.vacations.model.GPXTrack;
-import goedegep.vacations.model.Location;
-import goedegep.vacations.model.MapImage;
-import goedegep.vacations.model.Picture;
-import goedegep.vacations.model.Text;
-import goedegep.vacations.model.Vacation;
-import goedegep.vacations.model.VacationsFactory;
-import goedegep.vacations.model.VacationsPackage;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.image.Image;
@@ -74,7 +74,7 @@ public class TravelsTreeViewCreator {
   private static final Logger LOGGER = Logger.getLogger(TravelsTreeViewCreator.class.getName());
   private static final SimpleDateFormat DF = new SimpleDateFormat("dd-MM-yyyy");
   private static final FlexDateFormat FDF = new FlexDateFormat();
-  private static final VacationsPackage VACATIONS_PACKAGE = VacationsPackage.eINSTANCE;
+  private static final TravelsPackage VACATIONS_PACKAGE = TravelsPackage.eINSTANCE;
   private final TypesPackage typesPackage = TypesPackage.eINSTANCE;
   
   /**
@@ -201,7 +201,7 @@ public class TravelsTreeViewCreator {
       return false;
     }
     
-    EClass locationEClass = VacationsPackage.eINSTANCE.getLocation();
+    EClass locationEClass = TravelsPackage.eINSTANCE.getLocation();
 
     EStructuralFeature eStructuralFeature = treeItem.getEStructuralFeature();
     if (eStructuralFeature instanceof EReference) {
@@ -1068,7 +1068,7 @@ public class TravelsTreeViewCreator {
         LOGGER.info("contentEReference=" + contentEReference.toString());
         EClass contentReferenceType = contentEReference.getEReferenceType();
         LOGGER.info("contentReferenceType=" + contentReferenceType.toString());
-        VacationsPackage vacationsPackage = VacationsPackage.eINSTANCE;
+        TravelsPackage vacationsPackage = TravelsPackage.eINSTANCE;
         if (contentEReference.isMany()  &&  contentReferenceType.equals(vacationsPackage.getVacationElement())) {
           LOGGER.info("<= true (it is a list of VacationElement reference)");
           return true;
@@ -1085,7 +1085,7 @@ public class TravelsTreeViewCreator {
         LOGGER.info("contentEReference=" + contentEReference.toString());
         EClass contentReferenceType = contentEReference.getEReferenceType();
         LOGGER.info("contentReferenceType=" + contentReferenceType.toString());
-        VacationsPackage vacationsPackage = VacationsPackage.eINSTANCE;
+        TravelsPackage vacationsPackage = TravelsPackage.eINSTANCE;
         if (contentEReference.isMany()  &&  contentReferenceType.equals(vacationsPackage.getVacationElement())) {
           LOGGER.info("<= true (parent is a list of VacationElement reference)");
           return true;
@@ -1112,7 +1112,7 @@ public class TravelsTreeViewCreator {
           LOGGER.severe("contentEReference=" + contentEReference.toString());
           EClass contentReferenceType = contentEReference.getEReferenceType();
           LOGGER.severe("contentReferenceType=" + contentReferenceType.toString());
-          VacationsPackage vacationsPackage = VacationsPackage.eINSTANCE;
+          TravelsPackage vacationsPackage = TravelsPackage.eINSTANCE;
           if (contentEReference.equals(vacationsPackage.getVacation_Documents())) {
             LOGGER.severe("<= true (it is the list of Vacation/Documents)");
             return true;
@@ -1130,7 +1130,7 @@ public class TravelsTreeViewCreator {
           LOGGER.severe("contentEReference=" + contentEReference.toString());
           EClass contentReferenceType = contentEReference.getEReferenceType();
           LOGGER.severe("contentReferenceType=" + contentReferenceType.toString());
-          VacationsPackage vacationsPackage = VacationsPackage.eINSTANCE;
+          TravelsPackage vacationsPackage = TravelsPackage.eINSTANCE;
           if (contentEReference.equals(vacationsPackage.getVacation_Documents())) {
             LOGGER.severe("<= true (parent is the list of Vacation/Documents)");
             return true;
@@ -1172,7 +1172,7 @@ public class TravelsTreeViewCreator {
       LOGGER.info("contentStructuralFeature=" + contentStructuralFeature.toString());
       if (contentStructuralFeature instanceof EReference contentEReference) {
         EClass contentReferenceType = contentEReference.getEReferenceType();
-        VacationsPackage vacationsPackage = VacationsPackage.eINSTANCE;
+        TravelsPackage vacationsPackage = TravelsPackage.eINSTANCE;
         if (contentEReference.isMany()  &&  contentReferenceType.equals(vacationsPackage.getVacationElement())) {
           @SuppressWarnings("unchecked")
           EList<Object> list = (EList<Object>) object;
@@ -1204,7 +1204,7 @@ public class TravelsTreeViewCreator {
         LOGGER.info("contentEReference=" + contentEReference.toString());
         EClass contentReferenceType = contentEReference.getEReferenceType();
         LOGGER.info("contentReferenceType=" + contentReferenceType.toString());
-        VacationsPackage vacationsPackage = VacationsPackage.eINSTANCE;
+        TravelsPackage vacationsPackage = TravelsPackage.eINSTANCE;
         if (contentEReference.isMany()  &&  contentReferenceType.equals(vacationsPackage.getVacationElement())) {
           LOGGER.severe("<= true (parent is a list of VacationElement reference)");
           @SuppressWarnings("unchecked")
@@ -1232,7 +1232,7 @@ public class TravelsTreeViewCreator {
     if (contentStructuralFeature != null) {
       LOGGER.info("contentStructuralFeature=" + contentStructuralFeature.toString());
       if (contentStructuralFeature instanceof EReference contentEReference) {
-        VacationsPackage vacationsPackage = VacationsPackage.eINSTANCE;
+        TravelsPackage vacationsPackage = TravelsPackage.eINSTANCE;
         if (contentEReference.equals(vacationsPackage.getVacation_Documents())) {
           LOGGER.severe("Yes it is the list of Vacation/Documents");
           @SuppressWarnings("unchecked")
@@ -1259,7 +1259,7 @@ public class TravelsTreeViewCreator {
         LOGGER.info("contentEReference=" + contentEReference.toString());
         EClass contentReferenceType = contentEReference.getEReferenceType();
         LOGGER.info("contentReferenceType=" + contentReferenceType.toString());
-        VacationsPackage vacationsPackage = VacationsPackage.eINSTANCE;
+        TravelsPackage vacationsPackage = TravelsPackage.eINSTANCE;
         if (contentEReference.equals(vacationsPackage.getVacation_Documents())) {
           LOGGER.severe("<= true (parent is the list of Vacation/Documents)");
           @SuppressWarnings("unchecked")
@@ -1315,7 +1315,7 @@ public class TravelsTreeViewCreator {
       }
     }
     
-    VacationsFactory vacationsFactory = VacationsFactory.eINSTANCE;
+    TravelsFactory vacationsFactory = TravelsFactory.eINSTANCE;
     Picture picture = vacationsFactory.createPicture();
     TypesFactory typesFactory = TypesFactory.eINSTANCE;
     FileReference fileReference = typesFactory.createFileReference();
@@ -1332,7 +1332,7 @@ public class TravelsTreeViewCreator {
    * @return a GPXTrack for the specified {@code file}.
    */
   private GPXTrack createGPXTrack(File file) {
-    VacationsFactory vacationsFactory = VacationsFactory.eINSTANCE;
+    TravelsFactory vacationsFactory = TravelsFactory.eINSTANCE;
     GPXTrack gpxTrack = vacationsFactory.createGPXTrack();
     TypesFactory typesFactory = TypesFactory.eINSTANCE;
     FileReference fileReference = typesFactory.createFileReference();
@@ -1349,7 +1349,7 @@ public class TravelsTreeViewCreator {
    * @return a Document for the specified {@code file}.
    */
   private Document createDocument(File file) {
-    VacationsFactory vacationsFactory = VacationsFactory.eINSTANCE;
+    TravelsFactory vacationsFactory = TravelsFactory.eINSTANCE;
     Document document = vacationsFactory.createDocument();
     TypesFactory typesFactory = TypesFactory.eINSTANCE;
     FileReference fileReference = typesFactory.createFileReference();

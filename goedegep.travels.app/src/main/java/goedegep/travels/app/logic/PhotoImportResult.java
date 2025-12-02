@@ -1,6 +1,6 @@
 package goedegep.travels.app.logic;
 
-import goedegep.vacations.model.VacationElement;
+import goedegep.travels.model.VacationElement;
 
 /**
  * Represents the result of a photo import operation.

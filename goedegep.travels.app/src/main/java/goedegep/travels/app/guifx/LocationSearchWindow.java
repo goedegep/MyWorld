@@ -37,15 +37,15 @@ import goedegep.poi.app.LocationCategory;
 import goedegep.resources.ImageSize;
 import goedegep.travels.app.logic.EnumStringConverterForLocationCategory;
 import goedegep.travels.app.logic.NominatimUtil;
+import goedegep.travels.model.Boundary;
+import goedegep.travels.model.BoundingBox;
+import goedegep.travels.model.Location;
+import goedegep.travels.model.TravelsFactory;
+import goedegep.travels.model.TravelsPackage;
 import goedegep.util.emf.EmfUtil;
 import goedegep.util.objectselector.ObjectSelectionListener;
 import goedegep.util.objectselector.ObjectSelector;
 import goedegep.util.string.StringUtil;
-import goedegep.vacations.model.Boundary;
-import goedegep.vacations.model.BoundingBox;
-import goedegep.vacations.model.Location;
-import goedegep.vacations.model.VacationsFactory;
-import goedegep.vacations.model.VacationsPackage;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
@@ -1011,7 +1011,7 @@ class OsmSearchResultsPanel extends VBox implements ObjectSelector<OSMLocationIn
  */
 class LocationPanel extends VBox {
   private static final Logger LOGGER = Logger.getLogger(LocationPanel.class.getName());
-  private static VacationsFactory VACATIONS_FACTORY = VacationsFactory.eINSTANCE;
+  private static TravelsFactory VACATIONS_FACTORY = TravelsFactory.eINSTANCE;
   private static final String BEFORE_TEXT = "before";
   private static final String AFTER_TEXT = "after";
 
@@ -1399,7 +1399,7 @@ class LocationPanel extends VBox {
     if (eStructuralFeature instanceof EReference) {
       EReference eReference = (EReference) eStructuralFeature;
       EClass listType = eReference.getEReferenceType();
-      EClass locationEClass = VacationsPackage.eINSTANCE.getLocation();
+      EClass locationEClass = TravelsPackage.eINSTANCE.getLocation();
       if (EmfUtil.isInstanceof(locationEClass, listType)  && eReference.isMany()) {
         LOGGER.severe("match");
         @SuppressWarnings("unchecked")
@@ -1419,7 +1419,7 @@ class LocationPanel extends VBox {
     if (eStructuralFeatureParentTreeItem instanceof EReference) {
       EReference eReference = (EReference) eStructuralFeatureParentTreeItem;
       EClass listType = eReference.getEReferenceType();
-      EClass locationEClass = VacationsPackage.eINSTANCE.getLocation();
+      EClass locationEClass = TravelsPackage.eINSTANCE.getLocation();
       if (EmfUtil.isInstanceof(locationEClass, listType)  && eReference.isMany()) {
         LOGGER.info("parent match");
         @SuppressWarnings("unchecked")
@@ -1455,7 +1455,7 @@ class LocationPanel extends VBox {
     if (eStructuralFeature instanceof EReference) {
       EReference eReference = (EReference) eStructuralFeature;
       EClass listType = eReference.getEReferenceType();
-      EClass locationEClass = VacationsPackage.eINSTANCE.getLocation();
+      EClass locationEClass = TravelsPackage.eINSTANCE.getLocation();
       if (EmfUtil.isInstanceof(locationEClass, listType)  && !eReference.isMany()) {
         LOGGER.severe("set match");
         // Set this attribute on the Object of the parent item.
@@ -1624,7 +1624,7 @@ class LocationPanel extends VBox {
       return false;
     }
     
-    EClass locationEClass = VacationsPackage.eINSTANCE.getLocation();
+    EClass locationEClass = TravelsPackage.eINSTANCE.getLocation();
 
     EStructuralFeature eStructuralFeature = selectedTreeItem.getEStructuralFeature();
     if (eStructuralFeature instanceof EReference) {

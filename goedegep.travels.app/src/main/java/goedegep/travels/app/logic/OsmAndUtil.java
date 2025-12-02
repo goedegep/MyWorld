@@ -13,11 +13,11 @@ import org.eclipse.emf.common.util.TreeIterator;
 import org.eclipse.emf.ecore.EObject;
 
 import goedegep.poi.app.LocationCategory;
+import goedegep.travels.model.Location;
+import goedegep.travels.model.TravelsPackage;
 import goedegep.util.html.HtmlUtil;
 import goedegep.util.sgml.SgmlUtil;
 import goedegep.util.text.Indent;
-import goedegep.vacations.model.Location;
-import goedegep.vacations.model.VacationsPackage;
 
 public class OsmAndUtil {
   private static final Logger LOGGER = Logger.getLogger(OsmAndUtil.class.getName());
@@ -219,7 +219,7 @@ public class OsmAndUtil {
     switch(eObject.eClass().getClassifierID()) {
     
     // Only locations are written as waypoints
-    case VacationsPackage.LOCATION:
+    case TravelsPackage.LOCATION:
       Location location = (Location) eObject;
       
       // Only add a location if it has a latitude and longitude.

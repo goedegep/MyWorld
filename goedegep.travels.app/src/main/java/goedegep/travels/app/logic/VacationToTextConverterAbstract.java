@@ -1,7 +1,7 @@
 package goedegep.travels.app.logic;
 
+import goedegep.travels.model.Vacation;
 import goedegep.util.datetime.FlexDateFormat;
-import goedegep.vacations.model.Vacation;
 
 
 public class VacationToTextConverterAbstract {

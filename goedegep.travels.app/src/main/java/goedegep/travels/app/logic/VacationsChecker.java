@@ -18,14 +18,14 @@ import java.util.stream.Collectors;
 import org.eclipse.emf.common.util.TreeIterator;
 import org.eclipse.emf.ecore.EObject;
 
+import goedegep.travels.model.Location;
+import goedegep.travels.model.Picture;
+import goedegep.travels.model.Travel;
+import goedegep.travels.model.Vacation;
+import goedegep.travels.model.Vacations;
 import goedegep.types.model.FileReference;
 import goedegep.util.file.FileUtils;
 import goedegep.util.string.StringUtil;
-import goedegep.vacations.model.Location;
-import goedegep.vacations.model.Picture;
-import goedegep.vacations.model.Travel;
-import goedegep.vacations.model.Vacation;
-import goedegep.vacations.model.Vacations;
 
 /**
  * This class provides various checks on a {@code Vacations} structure.

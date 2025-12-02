@@ -22,9 +22,9 @@ import de.micromata.opengis.kml.v_2_2_0.Placemark;
 import de.micromata.opengis.kml.v_2_2_0.Polygon;
 import goedegep.geo.WGS84Coordinates;
 import goedegep.poi.app.LocationCategory;
-import goedegep.vacations.model.BoundingBox;
-import goedegep.vacations.model.Location;
-import goedegep.vacations.model.VacationsFactory;
+import goedegep.travels.model.BoundingBox;
+import goedegep.travels.model.Location;
+import goedegep.travels.model.TravelsFactory;
 import javafx.util.Pair;
 
 /**
@@ -46,7 +46,7 @@ public class NominatimUtil {
   
   
   private static Map<String, LocationCategory> osmPOIAttributeNameToPOICategoryMap = new HashMap<>();
-  private static VacationsFactory VACATIONS_FACTORY = VacationsFactory.eINSTANCE;
+  private static TravelsFactory VACATIONS_FACTORY = TravelsFactory.eINSTANCE;
   
   /**
    * Instance (singleton) of the Nominatim API.
@@ -239,7 +239,7 @@ public class NominatimUtil {
       location.setName(name);
     }
     
-    List<goedegep.vacations.model.Boundary> boundaries = getBoundaries(osmLocationInfo);
+    List<goedegep.travels.model.Boundary> boundaries = getBoundaries(osmLocationInfo);
     if (!boundaries.isEmpty()) {
       location.getBoundaries().addAll(boundaries);
     }
@@ -301,8 +301,8 @@ public class NominatimUtil {
    * @param osmLocationInfo the <code>OSMLocationInfo</code> to get the boundaries from.
    * @return the Boundaries from the <code>osmLocationInfo</code>.
    */
-  public static List<goedegep.vacations.model.Boundary> getBoundaries(OSMLocationInfo osmLocationInfo) {
-    List<goedegep.vacations.model.Boundary> boundaries = new ArrayList<>();
+  public static List<goedegep.travels.model.Boundary> getBoundaries(OSMLocationInfo osmLocationInfo) {
+    List<goedegep.travels.model.Boundary> boundaries = new ArrayList<>();
 
     Kml kml = osmLocationInfo.getKml();
     if (kml != null) {
@@ -316,7 +316,7 @@ public class NominatimUtil {
           LinearRing linearRing = boundary.getLinearRing();
           List<Coordinate> coordinates = linearRing.getCoordinates();
 
-          goedegep.vacations.model.Boundary locationBoundary = VACATIONS_FACTORY.createBoundary();
+          goedegep.travels.model.Boundary locationBoundary = VACATIONS_FACTORY.createBoundary();
           List<WGS84Coordinates> points = locationBoundary.getPoints();
           for (Coordinate coordinate: coordinates) {
             Double altitude = null;
@@ -338,7 +338,7 @@ public class NominatimUtil {
               LinearRing linearRing = boundary.getLinearRing();
               List<Coordinate> coordinates = linearRing.getCoordinates();
 
-              goedegep.vacations.model.Boundary locationBoundary = VACATIONS_FACTORY.createBoundary();
+              goedegep.travels.model.Boundary locationBoundary = VACATIONS_FACTORY.createBoundary();
               List<WGS84Coordinates> points = locationBoundary.getPoints();
               for (Coordinate coordinate: coordinates) {
                 Double altitude = null;
