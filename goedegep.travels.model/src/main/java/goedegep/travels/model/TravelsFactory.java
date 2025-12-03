@@ -22,13 +22,13 @@ public interface TravelsFactory extends EFactory {
   TravelsFactory eINSTANCE = goedegep.travels.model.impl.TravelsFactoryImpl.init();
 
   /**
-   * Returns a new object of class '<em>Vacations</em>'.
+   * Returns a new object of class '<em>Travels</em>'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return a new object of class '<em>Vacations</em>'.
+   * @return a new object of class '<em>Travels</em>'.
    * @generated
    */
-  Vacations createVacations();
+  Travels createTravels();
 
   /**
    * Returns a new object of class '<em>Vacation</em>'.

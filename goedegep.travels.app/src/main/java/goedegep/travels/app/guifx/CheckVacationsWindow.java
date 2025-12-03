@@ -17,7 +17,7 @@ import goedegep.travels.app.logic.VacationsUtils;
 import goedegep.travels.model.Location;
 import goedegep.travels.model.Travel;
 import goedegep.travels.model.Vacation;
-import goedegep.travels.model.Vacations;
+import goedegep.travels.model.Travels;
 import goedegep.types.model.FileReference;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
@@ -60,7 +60,7 @@ public class CheckVacationsWindow extends JfxStage {
   /**
    * The {@code Vacations} structure to be checked (if the check is not on a specific vacation.
    */
-  private Vacations vacations;
+  private Travels vacations;
   
   /**
    * The tree view showing the vacations structure.
@@ -82,7 +82,7 @@ public class CheckVacationsWindow extends JfxStage {
    * @param customization The GUI customization.
    * @param vacations the {@code Vacations} structure.
    */
-  public CheckVacationsWindow(CustomizationFx customization, Vacations vacations, EObjectTreeView treeView) {
+  public CheckVacationsWindow(CustomizationFx customization, Travels vacations, EObjectTreeView treeView) {
     super(customization, WINDOW_TITLE);
     
     this.vacations = vacations;

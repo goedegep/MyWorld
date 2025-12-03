@@ -22,7 +22,7 @@ import goedegep.travels.model.Location;
 import goedegep.travels.model.Picture;
 import goedegep.travels.model.Travel;
 import goedegep.travels.model.Vacation;
-import goedegep.travels.model.Vacations;
+import goedegep.travels.model.Travels;
 import goedegep.types.model.FileReference;
 import goedegep.util.file.FileUtils;
 import goedegep.util.string.StringUtil;
@@ -103,7 +103,7 @@ public class VacationsChecker {
     return fileReferencesNotFound;
   }
     
-  public static List<Path> checkThatAllVacationFoldersAreReferredTo(Vacations vacations) {
+  public static List<Path> checkThatAllVacationFoldersAreReferredTo(Travels vacations) {
     // Create a list of all vacation folders
     List<Path> vacationFolders = getVacationFolders();
     

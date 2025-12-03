@@ -15,7 +15,7 @@ import java.util.logging.Logger;
 import goedegep.jfx.ComponentFactoryFx;
 import goedegep.jfx.CustomizationFx;
 import goedegep.travels.model.Vacation;
-import goedegep.travels.model.Vacations;
+import goedegep.travels.model.Travels;
 import goedegep.travels.model.TravelsFactory;
 import goedegep.types.model.FileReference;
 import goedegep.types.model.TypesFactory;
@@ -28,7 +28,7 @@ import javafx.scene.control.TextInputDialog;
 /**
  * Import vacation information from files.
  * <p>
- * This class provides functionality to import vacation information into a {@link Vacations} structure.
+ * This class provides functionality to import vacation information into a {@link Travels} structure.
  */
 public class VacationsImporter {
   private static final Logger LOGGER = Logger.getLogger(VacationsImporter.class.getName());
@@ -37,7 +37,7 @@ public class VacationsImporter {
   private static final TypesFactory TYPES_FACTORY = TypesFactory.eINSTANCE;
   private static final FlexDateFormat FDF = new FlexDateFormat(true, true);
   
-  private Vacations vacations;     // the vacation information to which the imported data will be added.
+  private Travels vacations;     // the vacation information to which the imported data will be added.
   private ComponentFactoryFx componentFactory;
   private boolean abort;           // set to true when importing has to be aborted.
   
@@ -47,7 +47,7 @@ public class VacationsImporter {
    * @param customization the GUI customization.
    * @param vacations the vacation information to which the imported data will be added. This value may not be null.
    */
-  public VacationsImporter(CustomizationFx customization, Vacations vacations) {
+  public VacationsImporter(CustomizationFx customization, Travels vacations) {
     Objects.requireNonNull(customization, "argument ‘customization’ must not be null");
     this.vacations = Objects.requireNonNull(vacations, "argument ‘vacations’ must not be null");
     

@@ -13,23 +13,23 @@
   <genPackages prefix="Travels" basePackage="goedegep.travels" disposableProviderFactory="true"
       ecorePackage="travels.ecore#/">
     <genDataTypes ecoreDataType="travels.ecore#//ELocationCategory"/>
-    <genClasses ecoreClass="travels.ecore#//Vacations">
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference travels.ecore#//Vacations/vacations"/>
-      <genFeatures children="true" createChild="true" propertySortChoices="true" ecoreFeature="ecore:EReference travels.ecore#//Vacations/home"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute travels.ecore#//Vacations/tips"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference travels.ecore#//Vacations/dayTrips"/>
-      <genFeatures children="true" createChild="true" propertySortChoices="true" ecoreFeature="ecore:EReference travels.ecore#//Vacations/travelCategories"/>
-      <genOperations ecoreOperation="travels.ecore#//Vacations/findVacation">
-        <genParameters ecoreParameter="travels.ecore#//Vacations/findVacation/date"/>
-        <genParameters ecoreParameter="travels.ecore#//Vacations/findVacation/title"/>
+    <genClasses ecoreClass="travels.ecore#//Travels">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference travels.ecore#//Travels/vacations"/>
+      <genFeatures children="true" createChild="true" propertySortChoices="true" ecoreFeature="ecore:EReference travels.ecore#//Travels/home"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute travels.ecore#//Travels/tips"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference travels.ecore#//Travels/dayTrips"/>
+      <genFeatures children="true" createChild="true" propertySortChoices="true" ecoreFeature="ecore:EReference travels.ecore#//Travels/travelCategories"/>
+      <genOperations ecoreOperation="travels.ecore#//Travels/findVacation">
+        <genParameters ecoreParameter="travels.ecore#//Travels/findVacation/date"/>
+        <genParameters ecoreParameter="travels.ecore#//Travels/findVacation/title"/>
       </genOperations>
-      <genOperations ecoreOperation="travels.ecore#//Vacations/addVacation">
-        <genParameters ecoreParameter="travels.ecore#//Vacations/addVacation/vacation"/>
+      <genOperations ecoreOperation="travels.ecore#//Travels/addVacation">
+        <genParameters ecoreParameter="travels.ecore#//Travels/addVacation/vacation"/>
       </genOperations>
-      <genOperations ecoreOperation="travels.ecore#//Vacations/findVacation.1">
-        <genParameters ecoreParameter="travels.ecore#//Vacations/findVacation.1/date"/>
+      <genOperations ecoreOperation="travels.ecore#//Travels/findVacation.1">
+        <genParameters ecoreParameter="travels.ecore#//Travels/findVacation.1/date"/>
       </genOperations>
-      <genOperations ecoreOperation="travels.ecore#//Vacations/getTravels"/>
+      <genOperations ecoreOperation="travels.ecore#//Travels/getTravels"/>
     </genClasses>
     <genClasses ecoreClass="travels.ecore#//Vacation">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute travels.ecore#//Vacation/endDate"/>

@@ -40,7 +40,7 @@ import goedegep.travels.model.Picture;
 import goedegep.travels.model.Text;
 import goedegep.travels.model.Vacation;
 import goedegep.travels.model.VacationElement;
-import goedegep.travels.model.Vacations;
+import goedegep.travels.model.Travels;
 import goedegep.travels.model.TravelsPackage;
 import goedegep.types.model.FileReference;
 import goedegep.util.datetime.FlexDateFormat;
@@ -87,7 +87,7 @@ public class VacationsKmlConverter extends VacationToTextConverterAbstract {
    * @param file The file to be created.
    * @throws FileNotFoundException if the file cannot be written.
    */
-  public void createKmlForVacations(Vacations vacations, File file) throws FileNotFoundException {
+  public void createKmlForVacations(Travels vacations, File file) throws FileNotFoundException {
     if (!Files.isWritable(file.getParentFile().toPath())) {
       LOGGER.severe("Geen schrijfrechten in " + file.getParentFile().toString());
       throw new RuntimeException("Geen schrijfrechten in " + file.getParentFile().toString());
@@ -175,7 +175,7 @@ public class VacationsKmlConverter extends VacationToTextConverterAbstract {
    * 
    * @param vacations The Vacations structure from which the home location is to be taken
    */
-  private void createAndAddKmlForHome(Vacations vacations) {
+  private void createAndAddKmlForHome(Travels vacations) {
     if (vacations.isSetHome()) {
       Placemark homePlacemark = kmlDocument.createAndAddPlacemark().withName("Home").withOpen(true);
       Location homeLocation = vacations.getHome();
