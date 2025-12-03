@@ -4,7 +4,7 @@
   <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
     <details key="documentation" value="Een vakantie is een Event, waarbij de 'date' de vertrekdatum is.&#xD;&#xA;De 'notes' bevatten de algemene informatie over de vakantie."/>
   </eAnnotations>
-  <eClassifiers xsi:type="ecore:EClass" name="Vacations">
+  <eClassifiers xsi:type="ecore:EClass" name="Travels">
     <eOperations name="findVacation" eType="#//Vacation">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
         <details key="documentation" value="Find a vacation that started on a specific date and with a specific title."/>

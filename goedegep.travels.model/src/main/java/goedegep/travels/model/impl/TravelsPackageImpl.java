@@ -20,7 +20,7 @@ import goedegep.travels.model.TravelsFactory;
 import goedegep.travels.model.TravelsPackage;
 import goedegep.travels.model.Vacation;
 import goedegep.travels.model.VacationElement;
-import goedegep.travels.model.Vacations;
+import goedegep.travels.model.Travels;
 
 import goedegep.types.model.TypesPackage;
 
@@ -47,7 +47,7 @@ public class TravelsPackageImpl extends EPackageImpl implements TravelsPackage {
    * <!-- end-user-doc -->
    * @generated
    */
-  private EClass vacationsEClass = null;
+  private EClass travelsEClass = null;
 
   /**
    * <!-- begin-user-doc -->
@@ -228,8 +228,8 @@ public class TravelsPackageImpl extends EPackageImpl implements TravelsPackage {
    * @generated
    */
   @Override
-  public EClass getVacations() {
-    return vacationsEClass;
+  public EClass getTravels() {
+    return travelsEClass;
   }
 
   /**
@@ -238,8 +238,8 @@ public class TravelsPackageImpl extends EPackageImpl implements TravelsPackage {
    * @generated
    */
   @Override
-  public EReference getVacations_Vacations() {
-    return (EReference) vacationsEClass.getEStructuralFeatures().get(0);
+  public EReference getTravels_Vacations() {
+    return (EReference) travelsEClass.getEStructuralFeatures().get(0);
   }
 
   /**
@@ -248,8 +248,8 @@ public class TravelsPackageImpl extends EPackageImpl implements TravelsPackage {
    * @generated
    */
   @Override
-  public EReference getVacations_Home() {
-    return (EReference) vacationsEClass.getEStructuralFeatures().get(1);
+  public EReference getTravels_Home() {
+    return (EReference) travelsEClass.getEStructuralFeatures().get(1);
   }
 
   /**
@@ -258,8 +258,8 @@ public class TravelsPackageImpl extends EPackageImpl implements TravelsPackage {
    * @generated
    */
   @Override
-  public EAttribute getVacations_Tips() {
-    return (EAttribute) vacationsEClass.getEStructuralFeatures().get(2);
+  public EAttribute getTravels_Tips() {
+    return (EAttribute) travelsEClass.getEStructuralFeatures().get(2);
   }
 
   /**
@@ -268,8 +268,8 @@ public class TravelsPackageImpl extends EPackageImpl implements TravelsPackage {
    * @generated
    */
   @Override
-  public EReference getVacations_DayTrips() {
-    return (EReference) vacationsEClass.getEStructuralFeatures().get(3);
+  public EReference getTravels_DayTrips() {
+    return (EReference) travelsEClass.getEStructuralFeatures().get(3);
   }
 
   /**
@@ -278,8 +278,8 @@ public class TravelsPackageImpl extends EPackageImpl implements TravelsPackage {
    * @generated
    */
   @Override
-  public EReference getVacations_TravelCategories() {
-    return (EReference) vacationsEClass.getEStructuralFeatures().get(4);
+  public EReference getTravels_TravelCategories() {
+    return (EReference) travelsEClass.getEStructuralFeatures().get(4);
   }
 
   /**
@@ -288,8 +288,8 @@ public class TravelsPackageImpl extends EPackageImpl implements TravelsPackage {
    * @generated
    */
   @Override
-  public EOperation getVacations__FindVacation__FlexDate_String() {
-    return vacationsEClass.getEOperations().get(0);
+  public EOperation getTravels__FindVacation__FlexDate_String() {
+    return travelsEClass.getEOperations().get(0);
   }
 
   /**
@@ -298,8 +298,8 @@ public class TravelsPackageImpl extends EPackageImpl implements TravelsPackage {
    * @generated
    */
   @Override
-  public EOperation getVacations__AddVacation__Vacation() {
-    return vacationsEClass.getEOperations().get(1);
+  public EOperation getTravels__AddVacation__Vacation() {
+    return travelsEClass.getEOperations().get(1);
   }
 
   /**
@@ -308,8 +308,8 @@ public class TravelsPackageImpl extends EPackageImpl implements TravelsPackage {
    * @generated
    */
   @Override
-  public EOperation getVacations__FindVacation__FlexDate() {
-    return vacationsEClass.getEOperations().get(2);
+  public EOperation getTravels__FindVacation__FlexDate() {
+    return travelsEClass.getEOperations().get(2);
   }
 
   /**
@@ -318,8 +318,8 @@ public class TravelsPackageImpl extends EPackageImpl implements TravelsPackage {
    * @generated
    */
   @Override
-  public EOperation getVacations__GetTravels() {
-    return vacationsEClass.getEOperations().get(3);
+  public EOperation getTravels__GetTravels() {
+    return travelsEClass.getEOperations().get(3);
   }
 
   /**
@@ -1052,16 +1052,16 @@ public class TravelsPackageImpl extends EPackageImpl implements TravelsPackage {
     isCreated = true;
 
     // Create classes and their features
-    vacationsEClass = createEClass(VACATIONS);
-    createEReference(vacationsEClass, VACATIONS__VACATIONS);
-    createEReference(vacationsEClass, VACATIONS__HOME);
-    createEAttribute(vacationsEClass, VACATIONS__TIPS);
-    createEReference(vacationsEClass, VACATIONS__DAY_TRIPS);
-    createEReference(vacationsEClass, VACATIONS__TRAVEL_CATEGORIES);
-    createEOperation(vacationsEClass, VACATIONS___FIND_VACATION__FLEXDATE_STRING);
-    createEOperation(vacationsEClass, VACATIONS___ADD_VACATION__VACATION);
-    createEOperation(vacationsEClass, VACATIONS___FIND_VACATION__FLEXDATE);
-    createEOperation(vacationsEClass, VACATIONS___GET_TRAVELS);
+    travelsEClass = createEClass(TRAVELS);
+    createEReference(travelsEClass, TRAVELS__VACATIONS);
+    createEReference(travelsEClass, TRAVELS__HOME);
+    createEAttribute(travelsEClass, TRAVELS__TIPS);
+    createEReference(travelsEClass, TRAVELS__DAY_TRIPS);
+    createEReference(travelsEClass, TRAVELS__TRAVEL_CATEGORIES);
+    createEOperation(travelsEClass, TRAVELS___FIND_VACATION__FLEXDATE_STRING);
+    createEOperation(travelsEClass, TRAVELS___ADD_VACATION__VACATION);
+    createEOperation(travelsEClass, TRAVELS___FIND_VACATION__FLEXDATE);
+    createEOperation(travelsEClass, TRAVELS___GET_TRAVELS);
 
     vacationEClass = createEClass(VACATION);
     createEAttribute(vacationEClass, VACATION__END_DATE);
@@ -1196,35 +1196,35 @@ public class TravelsPackageImpl extends EPackageImpl implements TravelsPackage {
     travelEClass.getESuperTypes().add(theTypesPackage.getEvent());
 
     // Initialize classes, features, and operations; add parameters
-    initEClass(vacationsEClass, Vacations.class, "Vacations", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-    initEReference(getVacations_Vacations(), this.getVacation(), null, "vacations", null, 0, -1, Vacations.class,
+    initEClass(travelsEClass, Travels.class, "Travels", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEReference(getTravels_Vacations(), this.getVacation(), null, "vacations", null, 0, -1, Travels.class,
         !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, IS_UNSETTABLE, IS_UNIQUE,
         !IS_DERIVED, IS_ORDERED);
-    initEReference(getVacations_Home(), this.getLocation(), null, "home", null, 0, 1, Vacations.class, !IS_TRANSIENT,
+    initEReference(getTravels_Home(), this.getLocation(), null, "home", null, 0, 1, Travels.class, !IS_TRANSIENT,
         !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED,
         IS_ORDERED);
-    initEAttribute(getVacations_Tips(), ecorePackage.getEString(), "tips", null, 0, 1, Vacations.class, !IS_TRANSIENT,
+    initEAttribute(getTravels_Tips(), ecorePackage.getEString(), "tips", null, 0, 1, Travels.class, !IS_TRANSIENT,
         !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEReference(getVacations_DayTrips(), this.getDayTrip(), null, "dayTrips", null, 0, -1, Vacations.class,
+    initEReference(getTravels_DayTrips(), this.getDayTrip(), null, "dayTrips", null, 0, -1, Travels.class,
         !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE,
         !IS_DERIVED, IS_ORDERED);
-    initEReference(getVacations_TravelCategories(), this.getTravelCategory(), null, "travelCategories", null, 0, -1,
-        Vacations.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE,
+    initEReference(getTravels_TravelCategories(), this.getTravelCategory(), null, "travelCategories", null, 0, -1,
+        Travels.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE,
         IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
-    EOperation op = initEOperation(getVacations__FindVacation__FlexDate_String(), this.getVacation(), "findVacation", 0,
+    EOperation op = initEOperation(getTravels__FindVacation__FlexDate_String(), this.getVacation(), "findVacation", 0,
         1, IS_UNIQUE, IS_ORDERED);
     addEParameter(op, theTypesPackage.getEFlexDate(), "date", 0, 1, IS_UNIQUE, IS_ORDERED);
     addEParameter(op, ecorePackage.getEString(), "title", 0, 1, IS_UNIQUE, IS_ORDERED);
 
-    op = initEOperation(getVacations__AddVacation__Vacation(), null, "addVacation", 0, 1, IS_UNIQUE, IS_ORDERED);
+    op = initEOperation(getTravels__AddVacation__Vacation(), null, "addVacation", 0, 1, IS_UNIQUE, IS_ORDERED);
     addEParameter(op, this.getVacation(), "vacation", 0, 1, IS_UNIQUE, IS_ORDERED);
 
-    op = initEOperation(getVacations__FindVacation__FlexDate(), this.getVacation(), "findVacation", 0, 1, IS_UNIQUE,
+    op = initEOperation(getTravels__FindVacation__FlexDate(), this.getVacation(), "findVacation", 0, 1, IS_UNIQUE,
         IS_ORDERED);
     addEParameter(op, theTypesPackage.getEFlexDate(), "date", 0, 1, IS_UNIQUE, IS_ORDERED);
 
-    initEOperation(getVacations__GetTravels(), this.getTravel(), "getTravels", 0, -1, IS_UNIQUE, IS_ORDERED);
+    initEOperation(getTravels__GetTravels(), this.getTravel(), "getTravels", 0, -1, IS_UNIQUE, IS_ORDERED);
 
     initEClass(vacationEClass, Vacation.class, "Vacation", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getVacation_EndDate(), theTypesPackage.getEFlexDate(), "endDate", null, 0, 1, Vacation.class,

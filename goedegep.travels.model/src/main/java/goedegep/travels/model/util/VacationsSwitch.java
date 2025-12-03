@@ -67,8 +67,8 @@ public class VacationsSwitch<T> extends Switch<T> {
   @Override
   protected T doSwitch(int classifierID, EObject theEObject) {
     switch (classifierID) {
-    case TravelsPackage.VACATIONS: {
-      Vacations vacations = (Vacations) theEObject;
+    case TravelsPackage.TRAVELS: {
+      Travels vacations = (Travels) theEObject;
       T result = caseVacations(vacations);
       if (result == null)
         result = defaultCase(theEObject);
@@ -212,7 +212,7 @@ public class VacationsSwitch<T> extends Switch<T> {
    * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
    * @generated
    */
-  public T caseVacations(Vacations object) {
+  public T caseVacations(Travels object) {
     return null;
   }
 

@@ -52,7 +52,7 @@ import goedegep.travels.model.GPXTrack;
 import goedegep.travels.model.Location;
 import goedegep.travels.model.Travel;
 import goedegep.travels.model.VacationElement;
-import goedegep.travels.model.Vacations;
+import goedegep.travels.model.Travels;
 import goedegep.travels.model.TravelsPackage;
 import goedegep.types.model.FileReference;
 import goedegep.types.model.TypesPackage;
@@ -289,7 +289,7 @@ public class KmlFileImportWindow extends JfxStage {
     /**
      * {@code Vacations} used to get the home location, which in turn is used to get the home country.
      */
-    private Vacations vacations;
+    private Travels vacations;
 
     /**
      * Import data retrieved from a KML file and extended with information obtained via a {@code NominatimAPI}.
@@ -327,7 +327,7 @@ public class KmlFileImportWindow extends JfxStage {
      * 
      * @param vacations {@code Vacations} used to get the home location, which in turn is used to get the home country.
      */
-    public KmlFileSelectionPanel(Vacations vacations) {
+    public KmlFileSelectionPanel(Travels vacations) {
       this.vacations = vacations;
 
       setBorder(new Border(new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT)));

@@ -170,7 +170,7 @@ public class TravelsTreeViewCreator {
   public EObjectTreeView createVacationsTreeView() {
     EObjectTreeView eObjectTreeView = new EObjectTreeView()
         .setCustomization(customization)
-        .addEClassDescriptor(VACATIONS_PACKAGE.getVacations(), createDescriptorForVacations())
+        .addEClassDescriptor(VACATIONS_PACKAGE.getTravels(), createDescriptorForVacations())
         .addEClassDescriptor(VACATIONS_PACKAGE.getVacation(), createDescriptorForVacation())
         .addEClassDescriptor(VACATIONS_PACKAGE.getDayTrip(), createDescriptorForDayTrip())
         .addEClassDescriptor(VACATIONS_PACKAGE.getDay(), createDescriptorForDay())
@@ -232,13 +232,13 @@ public class TravelsTreeViewCreator {
     EObjectTreeItemAttributeDescriptor eObjectTreeItemAttributeDescriptor;
 
     // Vacations.tips
-    eObjectTreeItemAttributeDescriptor = new EObjectTreeItemAttributeDescriptor(VACATIONS_PACKAGE.getVacations_Tips())
+    eObjectTreeItemAttributeDescriptor = new EObjectTreeItemAttributeDescriptor(VACATIONS_PACKAGE.getTravels_Tips())
         .setLabelText("Tips")
         .setPresentationType(PresentationType.MULTI_LINE_TEXT);
     eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(eObjectTreeItemAttributeDescriptor);
 
     // Vacations.home
-    EObjectTreeItemClassReferenceDescriptor homeDescriptor = new EObjectTreeItemClassReferenceDescriptor(VACATIONS_PACKAGE.getVacations_Home())
+    EObjectTreeItemClassReferenceDescriptor homeDescriptor = new EObjectTreeItemClassReferenceDescriptor(VACATIONS_PACKAGE.getTravels_Home())
         .setNodeTextFunction(_ -> "Home location")
         .setStrongText(true)
         .addNodeOperationDescriptor(new NodeOperationDescriptorNew("Create home location", null, null))
@@ -246,7 +246,7 @@ public class TravelsTreeViewCreator {
     eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(homeDescriptor);
     
     // Vacations.vacations
-    eObjectTreeItemClassListReferenceDescriptor = new EObjectTreeItemClassListReferenceDescriptor(VACATIONS_PACKAGE.getVacations_Vacations())
+    eObjectTreeItemClassListReferenceDescriptor = new EObjectTreeItemClassListReferenceDescriptor(VACATIONS_PACKAGE.getTravels_Vacations())
         .setLabelText("Vacations")
         .setStrongText(true)
         .setNodeIconFunction(_ -> TravelImageResource.VACATIONS.getIcon(ImageSize.SIZE_1))
@@ -255,7 +255,7 @@ public class TravelsTreeViewCreator {
     eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(eObjectTreeItemClassListReferenceDescriptor);
     
     // Vacations.dayTrips
-    eObjectTreeItemClassListReferenceDescriptor = new EObjectTreeItemClassListReferenceDescriptor(VACATIONS_PACKAGE.getVacations_DayTrips())
+    eObjectTreeItemClassListReferenceDescriptor = new EObjectTreeItemClassListReferenceDescriptor(VACATIONS_PACKAGE.getTravels_DayTrips())
         .setLabelText("Day trips")
         .setStrongText(true)
         .setExpandOnCreation(true)

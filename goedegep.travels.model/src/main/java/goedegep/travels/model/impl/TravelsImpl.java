@@ -7,7 +7,7 @@ import goedegep.travels.model.Location;
 import goedegep.travels.model.Travel;
 import goedegep.travels.model.TravelCategory;
 import goedegep.travels.model.Vacation;
-import goedegep.travels.model.Vacations;
+import goedegep.travels.model.Travels;
 import goedegep.travels.model.TravelsPackage;
 import goedegep.util.datetime.FlexDate;
 
@@ -34,16 +34,16 @@ import org.eclipse.emf.ecore.util.InternalEList;
  * The following features are implemented:
  * </p>
  * <ul>
- *   <li>{@link goedegep.travels.model.impl.VacationsImpl#getVacations <em>Vacations</em>}</li>
- *   <li>{@link goedegep.travels.model.impl.VacationsImpl#getHome <em>Home</em>}</li>
- *   <li>{@link goedegep.travels.model.impl.VacationsImpl#getTips <em>Tips</em>}</li>
- *   <li>{@link goedegep.travels.model.impl.VacationsImpl#getDayTrips <em>Day Trips</em>}</li>
- *   <li>{@link goedegep.travels.model.impl.VacationsImpl#getTravelCategories <em>Travel Categories</em>}</li>
+ *   <li>{@link goedegep.travels.model.impl.TravelsImpl#getVacations <em>Vacations</em>}</li>
+ *   <li>{@link goedegep.travels.model.impl.TravelsImpl#getHome <em>Home</em>}</li>
+ *   <li>{@link goedegep.travels.model.impl.TravelsImpl#getTips <em>Tips</em>}</li>
+ *   <li>{@link goedegep.travels.model.impl.TravelsImpl#getDayTrips <em>Day Trips</em>}</li>
+ *   <li>{@link goedegep.travels.model.impl.TravelsImpl#getTravelCategories <em>Travel Categories</em>}</li>
  * </ul>
  *
  * @generated
  */
-public class VacationsImpl extends MinimalEObjectImpl.Container implements Vacations {
+public class TravelsImpl extends MinimalEObjectImpl.Container implements Travels {
   /**
    * The cached value of the '{@link #getVacations() <em>Vacations</em>}' containment reference list.
    * <!-- begin-user-doc -->
@@ -117,7 +117,7 @@ public class VacationsImpl extends MinimalEObjectImpl.Container implements Vacat
    * <!-- end-user-doc -->
    * @generated
    */
-  protected VacationsImpl() {
+  protected TravelsImpl() {
     super();
   }
 
@@ -128,7 +128,7 @@ public class VacationsImpl extends MinimalEObjectImpl.Container implements Vacat
    */
   @Override
   protected EClass eStaticClass() {
-    return TravelsPackage.Literals.VACATIONS;
+    return TravelsPackage.Literals.TRAVELS;
   }
 
   /**
@@ -140,7 +140,7 @@ public class VacationsImpl extends MinimalEObjectImpl.Container implements Vacat
   public EList<Vacation> getVacations() {
     if (vacations == null) {
       vacations = new EObjectContainmentEList.Unsettable<Vacation>(Vacation.class, this,
-          TravelsPackage.VACATIONS__VACATIONS);
+          TravelsPackage.TRAVELS__VACATIONS);
     }
     return vacations;
   }
@@ -187,7 +187,7 @@ public class VacationsImpl extends MinimalEObjectImpl.Container implements Vacat
     boolean oldHomeESet = homeESet;
     homeESet = true;
     if (eNotificationRequired()) {
-      ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, TravelsPackage.VACATIONS__HOME,
+      ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, TravelsPackage.TRAVELS__HOME,
           oldHome, newHome, !oldHomeESet);
       if (msgs == null)
         msgs = notification;
@@ -207,10 +207,10 @@ public class VacationsImpl extends MinimalEObjectImpl.Container implements Vacat
     if (newHome != home) {
       NotificationChain msgs = null;
       if (home != null)
-        msgs = ((InternalEObject) home).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - TravelsPackage.VACATIONS__HOME,
+        msgs = ((InternalEObject) home).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - TravelsPackage.TRAVELS__HOME,
             null, msgs);
       if (newHome != null)
-        msgs = ((InternalEObject) newHome).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - TravelsPackage.VACATIONS__HOME,
+        msgs = ((InternalEObject) newHome).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - TravelsPackage.TRAVELS__HOME,
             null, msgs);
       msgs = basicSetHome(newHome, msgs);
       if (msgs != null)
@@ -219,7 +219,7 @@ public class VacationsImpl extends MinimalEObjectImpl.Container implements Vacat
       boolean oldHomeESet = homeESet;
       homeESet = true;
       if (eNotificationRequired())
-        eNotify(new ENotificationImpl(this, Notification.SET, TravelsPackage.VACATIONS__HOME, newHome, newHome,
+        eNotify(new ENotificationImpl(this, Notification.SET, TravelsPackage.TRAVELS__HOME, newHome, newHome,
             !oldHomeESet));
     }
   }
@@ -235,7 +235,7 @@ public class VacationsImpl extends MinimalEObjectImpl.Container implements Vacat
     boolean oldHomeESet = homeESet;
     homeESet = false;
     if (eNotificationRequired()) {
-      ENotificationImpl notification = new ENotificationImpl(this, Notification.UNSET, TravelsPackage.VACATIONS__HOME,
+      ENotificationImpl notification = new ENotificationImpl(this, Notification.UNSET, TravelsPackage.TRAVELS__HOME,
           oldHome, null, oldHomeESet);
       if (msgs == null)
         msgs = notification;
@@ -254,8 +254,8 @@ public class VacationsImpl extends MinimalEObjectImpl.Container implements Vacat
   public void unsetHome() {
     if (home != null) {
       NotificationChain msgs = null;
-      msgs = ((InternalEObject) home).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - TravelsPackage.VACATIONS__HOME,
-          null, msgs);
+      msgs = ((InternalEObject) home).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - TravelsPackage.TRAVELS__HOME, null,
+          msgs);
       msgs = basicUnsetHome(msgs);
       if (msgs != null)
         msgs.dispatch();
@@ -263,8 +263,7 @@ public class VacationsImpl extends MinimalEObjectImpl.Container implements Vacat
       boolean oldHomeESet = homeESet;
       homeESet = false;
       if (eNotificationRequired())
-        eNotify(
-            new ENotificationImpl(this, Notification.UNSET, TravelsPackage.VACATIONS__HOME, null, null, oldHomeESet));
+        eNotify(new ENotificationImpl(this, Notification.UNSET, TravelsPackage.TRAVELS__HOME, null, null, oldHomeESet));
     }
   }
 
@@ -298,7 +297,7 @@ public class VacationsImpl extends MinimalEObjectImpl.Container implements Vacat
     String oldTips = tips;
     tips = newTips;
     if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, TravelsPackage.VACATIONS__TIPS, oldTips, tips));
+      eNotify(new ENotificationImpl(this, Notification.SET, TravelsPackage.TRAVELS__TIPS, oldTips, tips));
   }
 
   /**
@@ -309,7 +308,7 @@ public class VacationsImpl extends MinimalEObjectImpl.Container implements Vacat
   @Override
   public EList<DayTrip> getDayTrips() {
     if (dayTrips == null) {
-      dayTrips = new EObjectContainmentEList<DayTrip>(DayTrip.class, this, TravelsPackage.VACATIONS__DAY_TRIPS);
+      dayTrips = new EObjectContainmentEList<DayTrip>(DayTrip.class, this, TravelsPackage.TRAVELS__DAY_TRIPS);
     }
     return dayTrips;
   }
@@ -323,7 +322,7 @@ public class VacationsImpl extends MinimalEObjectImpl.Container implements Vacat
   public EList<TravelCategory> getTravelCategories() {
     if (travelCategories == null) {
       travelCategories = new EObjectContainmentEList<TravelCategory>(TravelCategory.class, this,
-          TravelsPackage.VACATIONS__TRAVEL_CATEGORIES);
+          TravelsPackage.TRAVELS__TRAVEL_CATEGORIES);
     }
     return travelCategories;
   }
@@ -412,13 +411,13 @@ public class VacationsImpl extends MinimalEObjectImpl.Container implements Vacat
   @Override
   public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
     switch (featureID) {
-    case TravelsPackage.VACATIONS__VACATIONS:
+    case TravelsPackage.TRAVELS__VACATIONS:
       return ((InternalEList<?>) getVacations()).basicRemove(otherEnd, msgs);
-    case TravelsPackage.VACATIONS__HOME:
+    case TravelsPackage.TRAVELS__HOME:
       return basicUnsetHome(msgs);
-    case TravelsPackage.VACATIONS__DAY_TRIPS:
+    case TravelsPackage.TRAVELS__DAY_TRIPS:
       return ((InternalEList<?>) getDayTrips()).basicRemove(otherEnd, msgs);
-    case TravelsPackage.VACATIONS__TRAVEL_CATEGORIES:
+    case TravelsPackage.TRAVELS__TRAVEL_CATEGORIES:
       return ((InternalEList<?>) getTravelCategories()).basicRemove(otherEnd, msgs);
     }
     return super.eInverseRemove(otherEnd, featureID, msgs);
@@ -432,15 +431,15 @@ public class VacationsImpl extends MinimalEObjectImpl.Container implements Vacat
   @Override
   public Object eGet(int featureID, boolean resolve, boolean coreType) {
     switch (featureID) {
-    case TravelsPackage.VACATIONS__VACATIONS:
+    case TravelsPackage.TRAVELS__VACATIONS:
       return getVacations();
-    case TravelsPackage.VACATIONS__HOME:
+    case TravelsPackage.TRAVELS__HOME:
       return getHome();
-    case TravelsPackage.VACATIONS__TIPS:
+    case TravelsPackage.TRAVELS__TIPS:
       return getTips();
-    case TravelsPackage.VACATIONS__DAY_TRIPS:
+    case TravelsPackage.TRAVELS__DAY_TRIPS:
       return getDayTrips();
-    case TravelsPackage.VACATIONS__TRAVEL_CATEGORIES:
+    case TravelsPackage.TRAVELS__TRAVEL_CATEGORIES:
       return getTravelCategories();
     }
     return super.eGet(featureID, resolve, coreType);
@@ -455,21 +454,21 @@ public class VacationsImpl extends MinimalEObjectImpl.Container implements Vacat
   @Override
   public void eSet(int featureID, Object newValue) {
     switch (featureID) {
-    case TravelsPackage.VACATIONS__VACATIONS:
+    case TravelsPackage.TRAVELS__VACATIONS:
       getVacations().clear();
       getVacations().addAll((Collection<? extends Vacation>) newValue);
       return;
-    case TravelsPackage.VACATIONS__HOME:
+    case TravelsPackage.TRAVELS__HOME:
       setHome((Location) newValue);
       return;
-    case TravelsPackage.VACATIONS__TIPS:
+    case TravelsPackage.TRAVELS__TIPS:
       setTips((String) newValue);
       return;
-    case TravelsPackage.VACATIONS__DAY_TRIPS:
+    case TravelsPackage.TRAVELS__DAY_TRIPS:
       getDayTrips().clear();
       getDayTrips().addAll((Collection<? extends DayTrip>) newValue);
       return;
-    case TravelsPackage.VACATIONS__TRAVEL_CATEGORIES:
+    case TravelsPackage.TRAVELS__TRAVEL_CATEGORIES:
       getTravelCategories().clear();
       getTravelCategories().addAll((Collection<? extends TravelCategory>) newValue);
       return;
@@ -485,19 +484,19 @@ public class VacationsImpl extends MinimalEObjectImpl.Container implements Vacat
   @Override
   public void eUnset(int featureID) {
     switch (featureID) {
-    case TravelsPackage.VACATIONS__VACATIONS:
+    case TravelsPackage.TRAVELS__VACATIONS:
       unsetVacations();
       return;
-    case TravelsPackage.VACATIONS__HOME:
+    case TravelsPackage.TRAVELS__HOME:
       unsetHome();
       return;
-    case TravelsPackage.VACATIONS__TIPS:
+    case TravelsPackage.TRAVELS__TIPS:
       setTips(TIPS_EDEFAULT);
       return;
-    case TravelsPackage.VACATIONS__DAY_TRIPS:
+    case TravelsPackage.TRAVELS__DAY_TRIPS:
       getDayTrips().clear();
       return;
-    case TravelsPackage.VACATIONS__TRAVEL_CATEGORIES:
+    case TravelsPackage.TRAVELS__TRAVEL_CATEGORIES:
       getTravelCategories().clear();
       return;
     }
@@ -512,15 +511,15 @@ public class VacationsImpl extends MinimalEObjectImpl.Container implements Vacat
   @Override
   public boolean eIsSet(int featureID) {
     switch (featureID) {
-    case TravelsPackage.VACATIONS__VACATIONS:
+    case TravelsPackage.TRAVELS__VACATIONS:
       return isSetVacations();
-    case TravelsPackage.VACATIONS__HOME:
+    case TravelsPackage.TRAVELS__HOME:
       return isSetHome();
-    case TravelsPackage.VACATIONS__TIPS:
+    case TravelsPackage.TRAVELS__TIPS:
       return TIPS_EDEFAULT == null ? tips != null : !TIPS_EDEFAULT.equals(tips);
-    case TravelsPackage.VACATIONS__DAY_TRIPS:
+    case TravelsPackage.TRAVELS__DAY_TRIPS:
       return dayTrips != null && !dayTrips.isEmpty();
-    case TravelsPackage.VACATIONS__TRAVEL_CATEGORIES:
+    case TravelsPackage.TRAVELS__TRAVEL_CATEGORIES:
       return travelCategories != null && !travelCategories.isEmpty();
     }
     return super.eIsSet(featureID);
@@ -534,14 +533,14 @@ public class VacationsImpl extends MinimalEObjectImpl.Container implements Vacat
   @Override
   public Object eInvoke(int operationID, EList<?> arguments) throws InvocationTargetException {
     switch (operationID) {
-    case TravelsPackage.VACATIONS___FIND_VACATION__FLEXDATE_STRING:
+    case TravelsPackage.TRAVELS___FIND_VACATION__FLEXDATE_STRING:
       return findVacation((FlexDate) arguments.get(0), (String) arguments.get(1));
-    case TravelsPackage.VACATIONS___ADD_VACATION__VACATION:
+    case TravelsPackage.TRAVELS___ADD_VACATION__VACATION:
       addVacation((Vacation) arguments.get(0));
       return null;
-    case TravelsPackage.VACATIONS___FIND_VACATION__FLEXDATE:
+    case TravelsPackage.TRAVELS___FIND_VACATION__FLEXDATE:
       return findVacation((FlexDate) arguments.get(0));
-    case TravelsPackage.VACATIONS___GET_TRAVELS:
+    case TravelsPackage.TRAVELS___GET_TRAVELS:
       return getTravels();
     }
     return super.eInvoke(operationID, arguments);

@@ -59,8 +59,8 @@ public class TravelsFactoryImpl extends EFactoryImpl implements TravelsFactory {
   @Override
   public EObject create(EClass eClass) {
     switch (eClass.getClassifierID()) {
-    case TravelsPackage.VACATIONS:
-      return createVacations();
+    case TravelsPackage.TRAVELS:
+      return createTravels();
     case TravelsPackage.VACATION:
       return createVacation();
     case TravelsPackage.LOCATION:
@@ -128,9 +128,9 @@ public class TravelsFactoryImpl extends EFactoryImpl implements TravelsFactory {
    * @generated
    */
   @Override
-  public Vacations createVacations() {
-    VacationsImpl vacations = new VacationsImpl();
-    return vacations;
+  public Travels createTravels() {
+    TravelsImpl travels = new TravelsImpl();
+    return travels;
   }
 
   /**

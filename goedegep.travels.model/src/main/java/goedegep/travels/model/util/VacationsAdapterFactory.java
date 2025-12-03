@@ -68,7 +68,7 @@ public class VacationsAdapterFactory extends AdapterFactoryImpl {
    */
   protected VacationsSwitch<Adapter> modelSwitch = new VacationsSwitch<Adapter>() {
     @Override
-    public Adapter caseVacations(Vacations object) {
+    public Adapter caseVacations(Travels object) {
       return createVacationsAdapter();
     }
 
@@ -167,13 +167,13 @@ public class VacationsAdapterFactory extends AdapterFactoryImpl {
   }
 
   /**
-   * Creates a new adapter for an object of class '{@link goedegep.travels.model.Vacations <em>Vacations</em>}'.
+   * Creates a new adapter for an object of class '{@link goedegep.travels.model.Travels <em>Vacations</em>}'.
    * <!-- begin-user-doc -->
    * This default implementation returns null so that we can easily ignore cases;
    * it's useful to ignore a case when inheritance will catch all the cases anyway.
    * <!-- end-user-doc -->
    * @return the new adapter.
-   * @see goedegep.travels.model.Vacations
+   * @see goedegep.travels.model.Travels
    * @generated
    */
   public Adapter createVacationsAdapter() {

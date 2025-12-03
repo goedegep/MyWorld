@@ -16,18 +16,18 @@ import org.eclipse.emf.ecore.EObject;
  * The following features are supported:
  * </p>
  * <ul>
- *   <li>{@link goedegep.travels.model.Vacations#getVacations <em>Vacations</em>}</li>
- *   <li>{@link goedegep.travels.model.Vacations#getHome <em>Home</em>}</li>
- *   <li>{@link goedegep.travels.model.Vacations#getTips <em>Tips</em>}</li>
- *   <li>{@link goedegep.travels.model.Vacations#getDayTrips <em>Day Trips</em>}</li>
- *   <li>{@link goedegep.travels.model.Vacations#getTravelCategories <em>Travel Categories</em>}</li>
+ *   <li>{@link goedegep.travels.model.Travels#getVacations <em>Vacations</em>}</li>
+ *   <li>{@link goedegep.travels.model.Travels#getHome <em>Home</em>}</li>
+ *   <li>{@link goedegep.travels.model.Travels#getTips <em>Tips</em>}</li>
+ *   <li>{@link goedegep.travels.model.Travels#getDayTrips <em>Day Trips</em>}</li>
+ *   <li>{@link goedegep.travels.model.Travels#getTravelCategories <em>Travel Categories</em>}</li>
  * </ul>
  *
- * @see goedegep.travels.model.TravelsPackage#getVacations()
+ * @see goedegep.travels.model.TravelsPackage#getTravels()
  * @model
  * @generated
  */
-public interface Vacations extends EObject {
+public interface Travels extends EObject {
   /**
    * Returns the value of the '<em><b>Vacations</b></em>' containment reference list.
    * The list contents are of type {@link goedegep.travels.model.Vacation}.
@@ -40,14 +40,14 @@ public interface Vacations extends EObject {
    * @return the value of the '<em>Vacations</em>' containment reference list.
    * @see #isSetVacations()
    * @see #unsetVacations()
-   * @see goedegep.travels.model.TravelsPackage#getVacations_Vacations()
+   * @see goedegep.travels.model.TravelsPackage#getTravels_Vacations()
    * @model containment="true" unsettable="true"
    * @generated
    */
   EList<Vacation> getVacations();
 
   /**
-   * Unsets the value of the '{@link goedegep.travels.model.Vacations#getVacations <em>Vacations</em>}' containment reference list.
+   * Unsets the value of the '{@link goedegep.travels.model.Travels#getVacations <em>Vacations</em>}' containment reference list.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @see #isSetVacations()
@@ -57,7 +57,7 @@ public interface Vacations extends EObject {
   void unsetVacations();
 
   /**
-   * Returns whether the value of the '{@link goedegep.travels.model.Vacations#getVacations <em>Vacations</em>}' containment reference list is set.
+   * Returns whether the value of the '{@link goedegep.travels.model.Travels#getVacations <em>Vacations</em>}' containment reference list is set.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @return whether the value of the '<em>Vacations</em>' containment reference list is set.
@@ -79,14 +79,14 @@ public interface Vacations extends EObject {
    * @see #isSetHome()
    * @see #unsetHome()
    * @see #setHome(Location)
-   * @see goedegep.travels.model.TravelsPackage#getVacations_Home()
+   * @see goedegep.travels.model.TravelsPackage#getTravels_Home()
    * @model containment="true" unsettable="true"
    * @generated
    */
   Location getHome();
 
   /**
-   * Sets the value of the '{@link goedegep.travels.model.Vacations#getHome <em>Home</em>}' containment reference.
+   * Sets the value of the '{@link goedegep.travels.model.Travels#getHome <em>Home</em>}' containment reference.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @param value the new value of the '<em>Home</em>' containment reference.
@@ -98,7 +98,7 @@ public interface Vacations extends EObject {
   void setHome(Location value);
 
   /**
-   * Unsets the value of the '{@link goedegep.travels.model.Vacations#getHome <em>Home</em>}' containment reference.
+   * Unsets the value of the '{@link goedegep.travels.model.Travels#getHome <em>Home</em>}' containment reference.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @see #isSetHome()
@@ -109,7 +109,7 @@ public interface Vacations extends EObject {
   void unsetHome();
 
   /**
-   * Returns whether the value of the '{@link goedegep.travels.model.Vacations#getHome <em>Home</em>}' containment reference is set.
+   * Returns whether the value of the '{@link goedegep.travels.model.Travels#getHome <em>Home</em>}' containment reference is set.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @return whether the value of the '<em>Home</em>' containment reference is set.
@@ -126,14 +126,14 @@ public interface Vacations extends EObject {
    * <!-- end-user-doc -->
    * @return the value of the '<em>Tips</em>' attribute.
    * @see #setTips(String)
-   * @see goedegep.travels.model.TravelsPackage#getVacations_Tips()
+   * @see goedegep.travels.model.TravelsPackage#getTravels_Tips()
    * @model
    * @generated
    */
   String getTips();
 
   /**
-   * Sets the value of the '{@link goedegep.travels.model.Vacations#getTips <em>Tips</em>}' attribute.
+   * Sets the value of the '{@link goedegep.travels.model.Travels#getTips <em>Tips</em>}' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @param value the new value of the '<em>Tips</em>' attribute.
@@ -148,7 +148,7 @@ public interface Vacations extends EObject {
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @return the value of the '<em>Day Trips</em>' containment reference list.
-   * @see goedegep.travels.model.TravelsPackage#getVacations_DayTrips()
+   * @see goedegep.travels.model.TravelsPackage#getTravels_DayTrips()
    * @model containment="true"
    * @generated
    */
@@ -160,7 +160,7 @@ public interface Vacations extends EObject {
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @return the value of the '<em>Travel Categories</em>' containment reference list.
-   * @see goedegep.travels.model.TravelsPackage#getVacations_TravelCategories()
+   * @see goedegep.travels.model.TravelsPackage#getTravels_TravelCategories()
    * @model containment="true"
    * @generated
    */

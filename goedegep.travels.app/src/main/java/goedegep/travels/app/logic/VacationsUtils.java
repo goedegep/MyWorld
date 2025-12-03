@@ -42,7 +42,7 @@ import goedegep.travels.model.Picture;
 import goedegep.travels.model.Travel;
 import goedegep.travels.model.Vacation;
 import goedegep.travels.model.VacationElement;
-import goedegep.travels.model.Vacations;
+import goedegep.travels.model.Travels;
 import goedegep.travels.model.TravelsPackage;
 import goedegep.types.model.FileReference;
 import goedegep.util.Triplet;
@@ -1287,7 +1287,7 @@ public class VacationsUtils {
     case FileReference _ -> "File Reference";
     case Location location -> getShortTextForLocation(location);
     case Vacation vacation -> getShortTextForVacation(vacation);
-    case Vacations _ -> "Vacations";
+    case Travels _ -> "Vacations";
     default -> "?";
     };
    

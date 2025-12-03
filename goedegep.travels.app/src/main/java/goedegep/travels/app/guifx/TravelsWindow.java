@@ -69,10 +69,10 @@ import goedegep.travels.app.logic.OsmAndUtil;
 import goedegep.travels.app.logic.Ov2Util;
 import goedegep.travels.app.logic.PhotoImportResult;
 import goedegep.travels.app.logic.PhotosImporter;
+import goedegep.travels.app.logic.TravelsRegistry;
 import goedegep.travels.app.logic.VacationToHtmlConverter;
 import goedegep.travels.app.logic.VacationToHtmlConverterSetting;
 import goedegep.travels.app.logic.VacationsKmlConverter;
-import goedegep.travels.app.logic.TravelsRegistry;
 import goedegep.travels.app.logic.VacationsUtils;
 import goedegep.travels.model.BoundingBox;
 import goedegep.travels.model.Day;
@@ -83,11 +83,11 @@ import goedegep.travels.model.Location;
 import goedegep.travels.model.MapImage;
 import goedegep.travels.model.Picture;
 import goedegep.travels.model.Travel;
-import goedegep.travels.model.Vacation;
-import goedegep.travels.model.VacationElement;
-import goedegep.travels.model.Vacations;
+import goedegep.travels.model.Travels;
 import goedegep.travels.model.TravelsFactory;
 import goedegep.travels.model.TravelsPackage;
+import goedegep.travels.model.Vacation;
+import goedegep.travels.model.VacationElement;
 import goedegep.travels.model.util.VacationElementReferenceException;
 import goedegep.types.model.FileReference;
 import goedegep.types.model.TypesFactory;
@@ -183,9 +183,9 @@ public class TravelsWindow extends JfxStage {
   private TravelsRegistry vacationsRegistry;
   private TravelsAppResourcesFx appResources;
   private TranslationFormatter translationFormatter = new TranslationFormatter(TRANSLATIONS);
-  private EMFResource<Vacations> vacationsResource = null;
+  private EMFResource<Travels> vacationsResource = null;
   private EMFResource<VacationChecklist> vacationChecklistResource = null;
-  private Vacations vacations = null;
+  private Travels vacations = null;
   private EObjectTreeView treeView = null;
   private Label statusLabel = new Label("");
   
@@ -277,7 +277,7 @@ public class TravelsWindow extends JfxStage {
     
     vacationsResource = new EMFResource<>(
         TravelsPackage.eINSTANCE, 
-        () -> TravelsFactory.eINSTANCE.createVacations(),
+        () -> TravelsFactory.eINSTANCE.createTravels(),
         ".xmi",
         true);
     
@@ -1129,7 +1129,7 @@ public class TravelsWindow extends JfxStage {
     Tuplet<Location, Vacation> locationDataTuplet;
     Tuplet<GPXTrack, Vacation> trackDataTuplet;
     Vacation vacation = null;
-    Vacations vacations = null;
+    Travels vacations = null;
     DayTrip dayTrip = null;
     List<DayTrip> dayTrips = null;
     List<Vacation> vacationsList = null;
@@ -1721,7 +1721,7 @@ public class TravelsWindow extends JfxStage {
     Object treeItemContent = treeItem.getValue();;
     
     if ((((EObjectTreeItem) treeItem).getEStructuralFeature() != null)  &&
-        ((EObjectTreeItem) treeItem).getEStructuralFeature().equals(VACATIONS_PACKAGE.getVacations_Vacations())) {
+        ((EObjectTreeItem) treeItem).getEStructuralFeature().equals(VACATIONS_PACKAGE.getTravels_Vacations())) {
       vacations = (List<Vacation>) treeItemContent;
     }
     
@@ -1749,7 +1749,7 @@ public class TravelsWindow extends JfxStage {
     Object treeItemContent = treeItem.getValue();;
     
     if ((((EObjectTreeItem) treeItem).getEStructuralFeature() != null)  &&
-        ((EObjectTreeItem) treeItem).getEStructuralFeature().equals(VACATIONS_PACKAGE.getVacations_DayTrips())) {
+        ((EObjectTreeItem) treeItem).getEStructuralFeature().equals(VACATIONS_PACKAGE.getTravels_DayTrips())) {
       dayTrips = (List<DayTrip>) treeItemContent;
     }
     
@@ -1763,7 +1763,7 @@ public class TravelsWindow extends JfxStage {
    * @param treeItem the <code>TreeItem</code> to check.
    * @return the vacations list, or null.
    */
-  private Vacations getVacationsForTreeItem(TreeItem<Object> treeItem) {
+  private Travels getVacationsForTreeItem(TreeItem<Object> treeItem) {
     LOGGER.info("=> treeItem=" + (treeItem != null ? treeItem.toString() : "(null)"));
     
     if (treeItem == null) {
@@ -1771,11 +1771,11 @@ public class TravelsWindow extends JfxStage {
       return null;
     }
     
-    Vacations vacations = null;
+    Travels vacations = null;
     Object object = treeItem.getValue();
     
-    if (object instanceof Vacations) {
-      vacations = (Vacations) object;
+    if (object instanceof Travels) {
+      vacations = (Travels) object;
     }
         
     LOGGER.info("<= vacations=" + (vacations != null ? vacations.toString() : "(null)"));
@@ -3127,7 +3127,7 @@ public class TravelsWindow extends JfxStage {
        
   }
 
-  public Vacations getVacations() {
+  public Travels getVacations() {
     return vacations;
   }
   
