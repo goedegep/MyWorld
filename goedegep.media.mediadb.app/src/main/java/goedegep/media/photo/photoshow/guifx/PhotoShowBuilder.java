@@ -726,7 +726,6 @@ public class PhotoShowBuilder extends JfxStage {
       fileChooser.setInitialDirectory(initialPlaylistFolder);
     }
     File playlistFile = fileChooser.showSaveDialog(this);
-    LOGGER.severe("Playlist file: " + (playlistFile != null ? playlistFile.getAbsolutePath() : "(null)"));
     
     // Write the list
     writePlaylist(playlistFile);
@@ -741,10 +740,10 @@ public class PhotoShowBuilder extends JfxStage {
    * @param playlistFile the file in which the playlist is to be created.
    */
   private void writePlaylist(File playlistFile) {
-    FileOutputStream fileOutputStream;
-    try {
-      fileOutputStream = new FileOutputStream(playlistFile);
-      BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(fileOutputStream));
+    try (
+        FileOutputStream fileOutputStream = new FileOutputStream(playlistFile);
+        BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(fileOutputStream))
+        ) {
 
       for (IPhotoInfo photoInfo: photoShowList) {
         if (photoInfo.isSelectedForTheShow()) {
@@ -1419,7 +1418,7 @@ public class PhotoShowBuilder extends JfxStage {
       }
     }
     
-    new PhotoWindow(customization, showList, photoShowSpecification.getTitle());
+    new PhotoWindow(customization, showList, photoShowSpecification.getTitle(), null);
   }
   
   /*

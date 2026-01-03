@@ -255,9 +255,10 @@ public class UpdatePlaylistsTask extends Task<Void> {
       LOGGER.fine("output: " + output);
 
       Charset charset = Charset.forName("windows-1252");
-      BufferedWriter writer = Files.newBufferedWriter(playListFilePath, charset);
-      writer.write(output, 0, output.length());
-      writer.close();
+      try (BufferedWriter writer = Files.newBufferedWriter(playListFilePath, charset);) {
+        writer.write(output, 0, output.length());
+        writer.close();
+      }
     } catch (IOException e) {
       LOGGER.severe("Error occurred while writing PlayList: " + playListFilePath.getFileName().toString() + ", system message: " + e.getMessage());
       e.printStackTrace();

@@ -4,20 +4,26 @@ package goedegep.travels.model.impl;
 
 import goedegep.travels.model.Travel;
 import goedegep.travels.model.TravelsPackage;
+import goedegep.travels.model.VacationElement;
 import goedegep.types.model.FileReference;
 
 import goedegep.types.model.impl.EventImpl;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.Collection;
 import java.util.logging.Logger;
 
 import org.eclipse.emf.common.notify.Notification;
+import org.eclipse.emf.common.notify.NotificationChain;
 import org.eclipse.emf.common.util.BasicEList;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.TreeIterator;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
+import org.eclipse.emf.ecore.util.EObjectContainmentEList;
+import org.eclipse.emf.ecore.util.InternalEList;
 
 /**
  * <!-- begin-user-doc -->
@@ -28,6 +34,9 @@ import org.eclipse.emf.ecore.impl.ENotificationImpl;
  * </p>
  * <ul>
  *   <li>{@link goedegep.travels.model.impl.TravelImpl#getTitle <em>Title</em>}</li>
+ *   <li>{@link goedegep.travels.model.impl.TravelImpl#getElements <em>Elements</em>}</li>
+ *   <li>{@link goedegep.travels.model.impl.TravelImpl#getDocuments <em>Documents</em>}</li>
+ *   <li>{@link goedegep.travels.model.impl.TravelImpl#getPictures <em>Pictures</em>}</li>
  * </ul>
  *
  * @generated
@@ -62,6 +71,45 @@ public class TravelImpl extends EventImpl implements Travel {
    * @ordered
    */
   protected boolean titleESet;
+
+  /**
+   * The cached value of the '{@link #getElements() <em>Elements</em>}' containment reference list.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getElements()
+   * @generated
+   * @ordered
+   */
+  protected EList<VacationElement> elements;
+
+  /**
+   * The cached value of the '{@link #getDocuments() <em>Documents</em>}' containment reference list.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getDocuments()
+   * @generated
+   * @ordered
+   */
+  protected EList<FileReference> documents;
+
+  /**
+   * The default value of the '{@link #getPictures() <em>Pictures</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getPictures()
+   * @generated
+   * @ordered
+   */
+  protected static final String PICTURES_EDEFAULT = null;
+  /**
+   * The cached value of the '{@link #getPictures() <em>Pictures</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getPictures()
+   * @generated
+   * @ordered
+   */
+  protected String pictures = PICTURES_EDEFAULT;
 
   /**
    * <!-- begin-user-doc -->
@@ -140,10 +188,64 @@ public class TravelImpl extends EventImpl implements Travel {
    * @generated
    */
   @Override
+  public EList<VacationElement> getElements() {
+    if (elements == null) {
+      elements = new EObjectContainmentEList<VacationElement>(VacationElement.class, this,
+          TravelsPackage.TRAVEL__ELEMENTS);
+    }
+    return elements;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public EList<FileReference> getDocuments() {
+    if (documents == null) {
+      documents = new EObjectContainmentEList<FileReference>(FileReference.class, this,
+          TravelsPackage.TRAVEL__DOCUMENTS);
+    }
+    return documents;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public String getPictures() {
+    return pictures;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public void setPictures(String newPictures) {
+    String oldPictures = pictures;
+    pictures = newPictures;
+    if (eNotificationRequired())
+      eNotify(new ENotificationImpl(this, Notification.SET, TravelsPackage.TRAVEL__PICTURES, oldPictures, pictures));
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated NOT
+   */
+  @Override
   public String getId() {
-    // TODO: implement this method
-    // Ensure that you remove @generated or mark it @generated NOT
-    throw new UnsupportedOperationException();
+    String id = getTitle();
+    if (id == null || id.isEmpty()) {
+      id = "Unnamed Travel";
+    }
+    
+    return id;
   }
 
   /**
@@ -173,10 +275,56 @@ public class TravelImpl extends EventImpl implements Travel {
    * @generated
    */
   @Override
+  public FileReference findDocument(String documentPath) {
+    // TODO: implement this method
+    // Ensure that you remove @generated or mark it @generated NOT
+    throw new UnsupportedOperationException();
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public EList<String> getAllReferencedFiles() {
+    // TODO: implement this method
+    // Ensure that you remove @generated or mark it @generated NOT
+    throw new UnsupportedOperationException();
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
+    switch (featureID) {
+    case TravelsPackage.TRAVEL__ELEMENTS:
+      return ((InternalEList<?>) getElements()).basicRemove(otherEnd, msgs);
+    case TravelsPackage.TRAVEL__DOCUMENTS:
+      return ((InternalEList<?>) getDocuments()).basicRemove(otherEnd, msgs);
+    }
+    return super.eInverseRemove(otherEnd, featureID, msgs);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
   public Object eGet(int featureID, boolean resolve, boolean coreType) {
     switch (featureID) {
     case TravelsPackage.TRAVEL__TITLE:
       return getTitle();
+    case TravelsPackage.TRAVEL__ELEMENTS:
+      return getElements();
+    case TravelsPackage.TRAVEL__DOCUMENTS:
+      return getDocuments();
+    case TravelsPackage.TRAVEL__PICTURES:
+      return getPictures();
     }
     return super.eGet(featureID, resolve, coreType);
   }
@@ -186,11 +334,23 @@ public class TravelImpl extends EventImpl implements Travel {
    * <!-- end-user-doc -->
    * @generated
    */
+  @SuppressWarnings("unchecked")
   @Override
   public void eSet(int featureID, Object newValue) {
     switch (featureID) {
     case TravelsPackage.TRAVEL__TITLE:
       setTitle((String) newValue);
+      return;
+    case TravelsPackage.TRAVEL__ELEMENTS:
+      getElements().clear();
+      getElements().addAll((Collection<? extends VacationElement>) newValue);
+      return;
+    case TravelsPackage.TRAVEL__DOCUMENTS:
+      getDocuments().clear();
+      getDocuments().addAll((Collection<? extends FileReference>) newValue);
+      return;
+    case TravelsPackage.TRAVEL__PICTURES:
+      setPictures((String) newValue);
       return;
     }
     super.eSet(featureID, newValue);
@@ -207,6 +367,15 @@ public class TravelImpl extends EventImpl implements Travel {
     case TravelsPackage.TRAVEL__TITLE:
       unsetTitle();
       return;
+    case TravelsPackage.TRAVEL__ELEMENTS:
+      getElements().clear();
+      return;
+    case TravelsPackage.TRAVEL__DOCUMENTS:
+      getDocuments().clear();
+      return;
+    case TravelsPackage.TRAVEL__PICTURES:
+      setPictures(PICTURES_EDEFAULT);
+      return;
     }
     super.eUnset(featureID);
   }
@@ -221,6 +390,12 @@ public class TravelImpl extends EventImpl implements Travel {
     switch (featureID) {
     case TravelsPackage.TRAVEL__TITLE:
       return isSetTitle();
+    case TravelsPackage.TRAVEL__ELEMENTS:
+      return elements != null && !elements.isEmpty();
+    case TravelsPackage.TRAVEL__DOCUMENTS:
+      return documents != null && !documents.isEmpty();
+    case TravelsPackage.TRAVEL__PICTURES:
+      return PICTURES_EDEFAULT == null ? pictures != null : !PICTURES_EDEFAULT.equals(pictures);
     }
     return super.eIsSet(featureID);
   }
@@ -237,6 +412,10 @@ public class TravelImpl extends EventImpl implements Travel {
       return getId();
     case TravelsPackage.TRAVEL___GET_ALL_FILE_REFERENCES:
       return getAllFileReferences();
+    case TravelsPackage.TRAVEL___FIND_DOCUMENT__STRING:
+      return findDocument((String) arguments.get(0));
+    case TravelsPackage.TRAVEL___GET_ALL_REFERENCED_FILES:
+      return getAllReferencedFiles();
     }
     return super.eInvoke(operationID, arguments);
   }
@@ -257,6 +436,8 @@ public class TravelImpl extends EventImpl implements Travel {
       result.append(title);
     else
       result.append("<unset>");
+    result.append(", pictures: ");
+    result.append(pictures);
     result.append(')');
     return result.toString();
   }

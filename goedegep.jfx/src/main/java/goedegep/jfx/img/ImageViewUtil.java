@@ -5,6 +5,7 @@ import java.util.logging.Logger;
 import javafx.geometry.Dimension2D;
 import javafx.geometry.Point2D;
 import javafx.geometry.Rectangle2D;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
 /**
@@ -21,6 +22,28 @@ public class ImageViewUtil {
    */
   private ImageViewUtil() {
     
+  }
+  
+  /**
+   * Calculate the scale factor between an Image and the Region (specified by the Regions width and height) in which it will be displayed (via an ImageView).
+   * <p>
+   * If the Image is larger than the Region, the factor is less than 1.
+   * The factor is such that the largest size (horizontal or vertical) will exactly fit the Region and the other size may be smaller than the Region.<br/>
+   * Instead of passing the Region, its width and height are passed as parameters. This is because the size of a region is only available after layouting.
+   * So you should only use this method if you known what the width and height of the Region will be.
+   * 
+   * @param image the Image for which the factor is to be calculated.
+   * @param width the width of the Region in which the <code>image</code> shall fit.
+   * @param height the height of the Region in which the <code>image</code> shall fit.
+   * @return the scale factor to be applied to the <code>image</code> for the best fit in the <code>region</code>.
+   */
+  public static double calculateImageToViewScaleFactor(ImageView imageView, double width, double height) {
+    double horizontalImageScreenRatio =  width / imageView.getImage().getWidth();
+    double verticalImageScreenRatio =  height / imageView.getImage().getHeight();
+    
+    double imageToViewScaleFactor = Math.min(horizontalImageScreenRatio, verticalImageScreenRatio);
+    
+    return imageToViewScaleFactor;
   }
   
   /**
@@ -53,7 +76,6 @@ public class ImageViewUtil {
     double imageViewWidth =  imageView.getImage().getWidth() * imageToViewScaleFactor;
     double imageViewHeight =  imageView.getImage().getHeight() * imageToViewScaleFactor;
     Dimension2D imageViewDimensions = new Dimension2D(imageViewWidth, imageViewHeight);
-    LOGGER.info("<= " + imageViewDimensions.getWidth() + ", " + imageViewDimensions.getHeight());
     
     return imageViewDimensions;
   }
@@ -131,7 +153,7 @@ public class ImageViewUtil {
   /**
    * Translate the coordinates within an Image, shown in an ImageView, to the coordinates within the ImageView.
    * <p>
-   * Note: the result is based on the current viewport on the ImageView.
+   * If the ImageView has a Viewport, this is taken into account.
    * 
    * @param imageView the ImageView.
    * @param imageX the X-coordinate within the Image shown in the {@code imageView}.
@@ -139,13 +161,18 @@ public class ImageViewUtil {
    * @return the coordinates within the {@code imageView}.
    */
   public static Point2D imageCoordinatesToImageViewCoordinates(ImageView imageView, double imageX, double imageY) {
-    Rectangle2D viewport = imageView.getViewport();
-    double zoomFactor = getImageViewImageHorizontalSize(imageView) / (viewport.getMaxX() - viewport.getMinX());
-    double imageToViewScaleFactor = imageView.getFitWidth() / getImageViewImageHorizontalSize(imageView);
-    double imageViewX = (imageX - viewport.getMinX()) * imageToViewScaleFactor * zoomFactor;
-    double imageViewY = (imageY - viewport.getMinY()) * imageToViewScaleFactor * zoomFactor;
+    Rectangle2D viewportRectangle = imageView.getViewport();
+    Image image = imageView.getImage();
     
-    LOGGER.info("=> imageX=" + imageX + ", imageY=" + imageY + "   <= imageViewX=" + imageViewX + ", imageViewY=" + imageViewY);
+    if (viewportRectangle == null) {
+      viewportRectangle = new Rectangle2D(0, 0, image.getWidth(), image.getHeight());
+    }
+
+    double zoomFactor = image.getWidth() / (viewportRectangle.getMaxX() - viewportRectangle.getMinX());
+    double imageToViewScaleFactor = imageView.getFitWidth() / getImageViewImageHorizontalSize(imageView);
+    double imageViewX = (imageX - viewportRectangle.getMinX()) * imageToViewScaleFactor * zoomFactor;
+    double imageViewY = (imageY - viewportRectangle.getMinY()) * imageToViewScaleFactor * zoomFactor;
+    
     if ((imageViewX < 0)  ||  (imageViewX > imageView.getFitWidth() - 1)  ||
         (imageViewY < 0)  ||  (imageViewY > imageView.getFitHeight() - 1)) {
       System.out.println("<= null");
@@ -158,7 +185,7 @@ public class ImageViewUtil {
   /**
    * Translate the coordinates within an ImageView to the coordinates within the Image shown in the ImageView.
    * <p>
-   * Note: the result is based on the current viewport on the ImageView.
+   * If the imageView has a ViewPort, this is also taken into account.
    * 
    * @param imageView the ImageView.
    * @param imageViewX the X-coordinate within the {@code imageView}.
@@ -166,27 +193,24 @@ public class ImageViewUtil {
    * @return the coordinates within the Image shown in the {@code imageView}.
    */
   public static Point2D imageViewCoordinatesToImageCoordinates(ImageView imageView, double imageViewX, double imageViewY) {
-    Rectangle2D viewport = imageView.getViewport();
+    Rectangle2D viewportRectangle = imageView.getViewport();
+    Image image = imageView.getImage();
+    
+    if (viewportRectangle == null) {
+      viewportRectangle = new Rectangle2D(0, 0, image.getWidth(), image.getHeight());
+    }
     
     double imageX;
     double imageY;
-    double zoomFactor = getImageViewImageHorizontalSize(imageView) / (viewport.getMaxX() - viewport.getMinX());
-    double imageToViewScaleFactor = imageView.getFitWidth() / getImageViewImageHorizontalSize(imageView);
+    double viewPortZoomFactor = image.getWidth() / (viewportRectangle.getMaxX() - viewportRectangle.getMinX());
+    double imageToViewScaleFactor = imageView.getFitWidth() / image.getWidth();
     
-    double rotation = imageView.rotateProperty().getValue();
+    imageX = viewportRectangle.getMinX() + imageViewX / imageToViewScaleFactor / viewPortZoomFactor;
+    imageY = viewportRectangle.getMinY() + imageViewY / imageToViewScaleFactor / viewPortZoomFactor;
     
-    if (rotation == 90.0  ||  rotation == -90.0) {
-      imageX = viewport.getMinY() + imageViewY / imageToViewScaleFactor / zoomFactor;
-      imageY = viewport.getMinX() + imageViewX / imageToViewScaleFactor / zoomFactor;
-    } else {
-      imageX = viewport.getMinX() + imageViewX / imageToViewScaleFactor / zoomFactor;
-      imageY = viewport.getMinY() + imageViewY / imageToViewScaleFactor / zoomFactor;
-    }
+    imageX = viewportRectangle.getMinX() + imageViewX / imageToViewScaleFactor / viewPortZoomFactor;
+    imageY = viewportRectangle.getMinY() + imageViewY / imageToViewScaleFactor / viewPortZoomFactor;
     
-    imageX = viewport.getMinX() + imageViewX / imageToViewScaleFactor / zoomFactor;
-    imageY = viewport.getMinY() + imageViewY / imageToViewScaleFactor / zoomFactor;
-    
-    LOGGER.info("=> imageViewX=" + imageViewX + ", imageViewY=" + imageViewY + ", viewport.getMinX()=" + viewport.getMinX() + ", imageToViewScaleFactor= " + imageToViewScaleFactor + ", zoomFactor" + zoomFactor + "   <= imageX=" + imageX + ", imageY=" + imageY);
     return new Point2D(imageX, imageY);
   }
 

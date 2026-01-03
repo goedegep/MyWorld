@@ -1,17 +1,11 @@
 package goedegep.resources;
 
-import java.io.File;
-import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
-import org.apache.commons.imaging.ImageReadException;
-
 import javafx.scene.image.Image;
-
-import goedegep.util.img.PhotoFileMetaDataHandler;
 
 /**
  * This enum defines and provides available images.
@@ -161,6 +155,7 @@ public enum ImageResource {
   PARK(new ImageFileInfo[] {new ImageFileInfo("Park - 34x39.png", 34, 39)}, "park", null),
   PARK_AND_RIDE(new ImageFileInfo[] {new ImageFileInfo("ParkAndRide - 32x32.gif", 32, 32)}, "park and Ride", null),
   PARKING(new ImageFileInfo[] {new ImageFileInfo("Parking - 34x39.png", 34, 39)}, "parking", null),
+  PLANE_AROUND_THE_WORLD(new ImageFileInfo[] {new ImageFileInfo("PlaneAroundTheWorld - 256x256.png", 256, 256)}, "plane flying around the world", "<a href=\"https://www.flaticon.com/free-icons/around-the-world\" title=\"around the world icons\">Around the world icons created by Good Ware - Flaticon</a>)"),
   PLANE_TAKEOFF(new ImageFileInfo[] {
       new ImageFileInfo("PlaneTakeoff - 32x32.png", 32, 32),
       new ImageFileInfo("PlaneTakeoff - 64x64.png", 64, 64),

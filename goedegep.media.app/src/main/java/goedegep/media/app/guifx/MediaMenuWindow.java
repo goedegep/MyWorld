@@ -14,7 +14,7 @@ import goedegep.media.mediadb.app.guifx.VideoDbWindow;
 import goedegep.media.photo.photomapview.guifx.PhotoEditor;
 import goedegep.media.photo.photomapview.guifx.PhotoMapView;
 import goedegep.media.photo.photoshow.guifx.PhotoShowBuilder;
-import goedegep.media.photo.photoshow.guifx.PhotoShowViewer;
+import goedegep.media.photo.photoshow.guifx.PhotoViewerMenuWindow;
 import goedegep.resources.ImageSize;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -233,6 +233,6 @@ public class MediaMenuWindow extends JfxStage {
    * Show the photo show window.
    */
   private void startPhotoShow() {
-    new PhotoShowViewer(customization);
+    new PhotoViewerMenuWindow(customization);
   }
 }

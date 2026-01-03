@@ -3,6 +3,7 @@ package goedegep.demo.guifx;
 import java.util.logging.Logger;
 
 import goedegep.demo.DemoRegistry;
+import goedegep.demo.fontsamples.guifx.FontSamplesWindow;
 import goedegep.demo.jfx.editor.CompanyService;
 import goedegep.demo.jfx.eobjecttreeview.guifx.EObjectTreeViewDemo;
 import goedegep.demo.jfx.objectcontrols.guifx.EditorControlsDemo;
@@ -120,6 +121,15 @@ public class DemoMenuWindow extends JfxStage {
     // Jfx:EObjectTreeView
     menuItem = componentFactory.createMenuItem("EObjectTreeView");
     menuItem.setOnAction((_) -> new EObjectTreeViewDemo(customization));
+    menu.getItems().add(menuItem);
+    
+    menuBar.getMenus().add(menu);
+
+    // Tools
+    menu = componentFactory.createMenu("Tools");
+    
+    menuItem = componentFactory.createMenuItem("Font samples");
+    menuItem.setOnAction((_) -> new FontSamplesWindow(customization));
     menu.getItems().add(menuItem);
     
     menuBar.getMenus().add(menu);

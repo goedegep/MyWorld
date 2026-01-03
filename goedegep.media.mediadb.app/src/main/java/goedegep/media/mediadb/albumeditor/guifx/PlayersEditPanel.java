@@ -6,17 +6,12 @@ import java.util.logging.Logger;
 
 import org.eclipse.emf.ecore.util.EcoreUtil;
 
-import goedegep.jfx.ComponentFactoryFx;
 import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.objectcontrols.ObjectControl;
-import goedegep.jfx.objectcontrols.ObjectControlTemplate;
 import goedegep.jfx.objectcontrols.ObjectEditPanelTemplate;
 import goedegep.jfx.objecteditor.ObjectEditorException;
-import goedegep.jfx.objectcontrols.ObjectControlGroup;
 import goedegep.media.common.IMediaDbService;
-import goedegep.media.mediadb.model.MediaDb;
 import goedegep.media.mediadb.model.MediadbFactory;
-import goedegep.media.mediadb.model.MediadbPackage;
 import goedegep.media.mediadb.model.Player;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
@@ -28,8 +23,9 @@ import javafx.scene.layout.VBox;
  * This class is an {@link ObjectControl} for a list of {@code Player}s.
  */
 public class PlayersEditPanel extends ObjectEditPanelTemplate<List<Player>> {
+  @SuppressWarnings("unused")
   private static final Logger LOGGER = Logger.getLogger(PlayersEditPanel.class.getName());
-  private static final MediadbPackage MEDIA_DB_PACKAGE = MediadbPackage.eINSTANCE;
+//  private static final MediadbPackage MEDIA_DB_PACKAGE = MediadbPackage.eINSTANCE;
   private static final MediadbFactory MEDIA_DB_FACTORY = MediadbFactory.eINSTANCE;
   
   /**
@@ -115,7 +111,7 @@ public class PlayersEditPanel extends ObjectEditPanelTemplate<List<Player>> {
     
 //    mainPanel.getChildren().add(getStatusIndicator());  // TODO per player
     
-    addPlayerButton.setOnAction((e) -> {
+    addPlayerButton.setOnAction((_) -> {
       ObjectControlForPlayer objectControlForPlayer = new ObjectControlForPlayer(customization, mediaDbService);
       playersPanel.getChildren().add(objectControlForPlayer.getControl());
       objectControlsGroup.addObjectControls(objectControlForPlayer);

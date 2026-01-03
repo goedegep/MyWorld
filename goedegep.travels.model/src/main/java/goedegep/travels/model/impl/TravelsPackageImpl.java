@@ -348,58 +348,8 @@ public class TravelsPackageImpl extends EPackageImpl implements TravelsPackage {
    * @generated
    */
   @Override
-  public EReference getVacation_Documents() {
-    return (EReference) vacationEClass.getEStructuralFeatures().get(1);
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public EAttribute getVacation_Pictures() {
-    return (EAttribute) vacationEClass.getEStructuralFeatures().get(2);
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public EReference getVacation_Elements() {
-    return (EReference) vacationEClass.getEStructuralFeatures().get(3);
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public EOperation getVacation__FindDocument__String() {
-    return vacationEClass.getEOperations().get(0);
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public EOperation getVacation__GetAllReferencedFiles() {
-    return vacationEClass.getEOperations().get(1);
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
   public EOperation getVacation__GetDayNr__VacationElement() {
-    return vacationEClass.getEOperations().get(2);
+    return vacationEClass.getEOperations().get(0);
   }
 
   /**
@@ -928,16 +878,6 @@ public class TravelsPackageImpl extends EPackageImpl implements TravelsPackage {
    * @generated
    */
   @Override
-  public EReference getDayTrip_Elements() {
-    return (EReference) dayTripEClass.getEStructuralFeatures().get(0);
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
   public EClass getDocument() {
     return documentEClass;
   }
@@ -978,6 +918,16 @@ public class TravelsPackageImpl extends EPackageImpl implements TravelsPackage {
    * @generated
    */
   @Override
+  public EAttribute getTravelCategory_TravelCategoryName() {
+    return (EAttribute) travelCategoryEClass.getEStructuralFeatures().get(1);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
   public EClass getTravel() {
     return travelEClass;
   }
@@ -998,6 +948,36 @@ public class TravelsPackageImpl extends EPackageImpl implements TravelsPackage {
    * @generated
    */
   @Override
+  public EReference getTravel_Elements() {
+    return (EReference) travelEClass.getEStructuralFeatures().get(1);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public EReference getTravel_Documents() {
+    return (EReference) travelEClass.getEStructuralFeatures().get(2);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public EAttribute getTravel_Pictures() {
+    return (EAttribute) travelEClass.getEStructuralFeatures().get(3);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
   public EOperation getTravel__GetId() {
     return travelEClass.getEOperations().get(0);
   }
@@ -1010,6 +990,26 @@ public class TravelsPackageImpl extends EPackageImpl implements TravelsPackage {
   @Override
   public EOperation getTravel__GetAllFileReferences() {
     return travelEClass.getEOperations().get(1);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public EOperation getTravel__FindDocument__String() {
+    return travelEClass.getEOperations().get(2);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public EOperation getTravel__GetAllReferencedFiles() {
+    return travelEClass.getEOperations().get(3);
   }
 
   /**
@@ -1065,11 +1065,6 @@ public class TravelsPackageImpl extends EPackageImpl implements TravelsPackage {
 
     vacationEClass = createEClass(VACATION);
     createEAttribute(vacationEClass, VACATION__END_DATE);
-    createEReference(vacationEClass, VACATION__DOCUMENTS);
-    createEAttribute(vacationEClass, VACATION__PICTURES);
-    createEReference(vacationEClass, VACATION__ELEMENTS);
-    createEOperation(vacationEClass, VACATION___FIND_DOCUMENT__STRING);
-    createEOperation(vacationEClass, VACATION___GET_ALL_REFERENCED_FILES);
     createEOperation(vacationEClass, VACATION___GET_DAY_NR__VACATIONELEMENT);
 
     locationEClass = createEClass(LOCATION);
@@ -1133,18 +1128,23 @@ public class TravelsPackageImpl extends EPackageImpl implements TravelsPackage {
     createEAttribute(mapImageEClass, MAP_IMAGE__FILE_NAME);
 
     dayTripEClass = createEClass(DAY_TRIP);
-    createEReference(dayTripEClass, DAY_TRIP__ELEMENTS);
 
     documentEClass = createEClass(DOCUMENT);
     createEReference(documentEClass, DOCUMENT__DOCUMENT_REFERENCE);
 
     travelCategoryEClass = createEClass(TRAVEL_CATEGORY);
     createEReference(travelCategoryEClass, TRAVEL_CATEGORY__TRAVELS);
+    createEAttribute(travelCategoryEClass, TRAVEL_CATEGORY__TRAVEL_CATEGORY_NAME);
 
     travelEClass = createEClass(TRAVEL);
     createEAttribute(travelEClass, TRAVEL__TITLE);
+    createEReference(travelEClass, TRAVEL__ELEMENTS);
+    createEReference(travelEClass, TRAVEL__DOCUMENTS);
+    createEAttribute(travelEClass, TRAVEL__PICTURES);
     createEOperation(travelEClass, TRAVEL___GET_ID);
     createEOperation(travelEClass, TRAVEL___GET_ALL_FILE_REFERENCES);
+    createEOperation(travelEClass, TRAVEL___FIND_DOCUMENT__STRING);
+    createEOperation(travelEClass, TRAVEL___GET_ALL_REFERENCED_FILES);
 
     // Create data types
     eLocationCategoryEDataType = createEDataType(ELOCATION_CATEGORY);
@@ -1229,21 +1229,6 @@ public class TravelsPackageImpl extends EPackageImpl implements TravelsPackage {
     initEClass(vacationEClass, Vacation.class, "Vacation", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getVacation_EndDate(), theTypesPackage.getEFlexDate(), "endDate", null, 0, 1, Vacation.class,
         !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEReference(getVacation_Documents(), theTypesPackage.getFileReference(), null, "documents", null, 0, -1,
-        Vacation.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE,
-        IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEAttribute(getVacation_Pictures(), ecorePackage.getEString(), "pictures", null, 0, 1, Vacation.class,
-        !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEReference(getVacation_Elements(), this.getVacationElement(), null, "elements", null, 0, -1, Vacation.class,
-        !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE,
-        !IS_DERIVED, IS_ORDERED);
-
-    op = initEOperation(getVacation__FindDocument__String(), theTypesPackage.getFileReference(), "findDocument", 0, 1,
-        IS_UNIQUE, IS_ORDERED);
-    addEParameter(op, ecorePackage.getEString(), "documentPath", 0, 1, IS_UNIQUE, IS_ORDERED);
-
-    initEOperation(getVacation__GetAllReferencedFiles(), theXMLTypePackage.getString(), "getAllReferencedFiles", 0, -1,
-        IS_UNIQUE, IS_ORDERED);
 
     op = initEOperation(getVacation__GetDayNr__VacationElement(), ecorePackage.getEIntegerObject(), "getDayNr", 0, 1,
         IS_UNIQUE, IS_ORDERED);
@@ -1366,9 +1351,6 @@ public class TravelsPackageImpl extends EPackageImpl implements TravelsPackage {
         !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(dayTripEClass, DayTrip.class, "DayTrip", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-    initEReference(getDayTrip_Elements(), this.getVacationElement(), null, "elements", null, 0, -1, DayTrip.class,
-        !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE,
-        !IS_DERIVED, IS_ORDERED);
 
     initEClass(documentEClass, Document.class, "Document", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEReference(getDocument_DocumentReference(), theTypesPackage.getFileReference(), null, "documentReference", null,
@@ -1380,15 +1362,33 @@ public class TravelsPackageImpl extends EPackageImpl implements TravelsPackage {
     initEReference(getTravelCategory_Travels(), this.getTravel(), null, "travels", null, 0, -1, TravelCategory.class,
         !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE,
         !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getTravelCategory_TravelCategoryName(), ecorePackage.getEString(), "travelCategoryName", null, 0, 1,
+        TravelCategory.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED,
+        IS_ORDERED);
 
     initEClass(travelEClass, Travel.class, "Travel", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getTravel_Title(), ecorePackage.getEString(), "title", null, 0, 1, Travel.class, !IS_TRANSIENT,
         !IS_VOLATILE, IS_CHANGEABLE, IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEReference(getTravel_Elements(), this.getVacationElement(), null, "elements", null, 0, -1, Travel.class,
+        !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE,
+        !IS_DERIVED, IS_ORDERED);
+    initEReference(getTravel_Documents(), theTypesPackage.getFileReference(), null, "documents", null, 0, -1,
+        Travel.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE,
+        IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getTravel_Pictures(), ecorePackage.getEString(), "pictures", null, 0, 1, Travel.class, !IS_TRANSIENT,
+        !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEOperation(getTravel__GetId(), ecorePackage.getEString(), "getId", 0, 1, IS_UNIQUE, IS_ORDERED);
 
     initEOperation(getTravel__GetAllFileReferences(), theTypesPackage.getFileReference(), "getAllFileReferences", 0, -1,
         IS_UNIQUE, !IS_ORDERED);
+
+    op = initEOperation(getTravel__FindDocument__String(), theTypesPackage.getFileReference(), "findDocument", 0, 1,
+        IS_UNIQUE, IS_ORDERED);
+    addEParameter(op, ecorePackage.getEString(), "documentPath", 0, 1, IS_UNIQUE, IS_ORDERED);
+
+    initEOperation(getTravel__GetAllReferencedFiles(), theXMLTypePackage.getString(), "getAllReferencedFiles", 0, -1,
+        IS_UNIQUE, IS_ORDERED);
 
     // Initialize data types
     initEDataType(eLocationCategoryEDataType, LocationCategory.class, "ELocationCategory", IS_SERIALIZABLE,

@@ -1382,4 +1382,26 @@ public class VacationsUtils {
     
     return false;
   }
+
+  public static List<String> getShowFileNames(Travel travel) {
+    List<String> showFileNames = new ArrayList<>();
+    
+    TreeIterator<EObject> iterator = travel.eAllContents();
+    
+    while (iterator.hasNext()) {
+      EObject eObject = iterator.next();
+      if (eObject instanceof Picture picture) {
+        FileReference fileReference = picture.getPictureReference();
+        if (fileReference != null) {
+          String fileName = fileReference.getFile();
+          
+          if (fileName != null) {
+            showFileNames.add(fileName);
+          }
+        }
+      }
+    }
+    
+    return showFileNames;
+  }
 }

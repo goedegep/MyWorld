@@ -36,6 +36,11 @@ public enum TravelImageResource {
   TEXT(ImageResource.TEXT),
   
   /**
+   * Image for {@code TravelCategory}.
+   */
+  TRAVEL_CATEGORY(ImageResource.PLANE_AROUND_THE_WORLD),
+  
+  /**
    * Image for {@code Travels}.
    */
   TRAVELS(ImageResource.ROAD_TO_HORIZON),

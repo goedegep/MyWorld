@@ -48,5 +48,6 @@ module goedegep.travels.app {
   requires goedegep.myworld.common;
   requires transitive goedegep.gpx.app;
   requires goedegep.gpx10.model;
+  requires goedegep.media.mediadb.app;
 //  requires goedegep.media.app;
 }

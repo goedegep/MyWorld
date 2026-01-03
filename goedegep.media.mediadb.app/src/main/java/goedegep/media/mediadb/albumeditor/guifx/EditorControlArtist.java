@@ -15,7 +15,6 @@ import goedegep.media.mediadb.app.guifx.ArtistDetailsEditor;
 import goedegep.media.mediadb.model.Artist;
 import goedegep.media.mediadb.model.MediadbPackage;
 import javafx.scene.Node;
-import javafx.scene.control.Tooltip;
 import javafx.scene.input.MouseEvent;
 
 public class EditorControlArtist extends EditorControlAutoCompleteTextField<Artist> {

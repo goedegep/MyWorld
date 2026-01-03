@@ -1,8 +1,5 @@
 package goedegep.jfx.eobjecttreeview;
 
-import java.awt.Desktop;
-import java.io.File;
-import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
@@ -11,10 +8,7 @@ import java.util.logging.Logger;
 import org.eclipse.emf.ecore.EAttribute;
 
 import goedegep.appgen.Operation;
-import goedegep.jfx.DefaultCustomizationFx;
-import goedegep.jfx.browser.BrowserWindow;
 import goedegep.util.desktop.DesktopUtil;
-import goedegep.util.url.UrlUtil;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.ContextMenu;

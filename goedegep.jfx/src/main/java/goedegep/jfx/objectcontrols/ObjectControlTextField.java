@@ -32,9 +32,7 @@ import javafx.util.StringConverter;
  *
  * @param <T> The object type represented by this control.
  */
-@Deprecated
 public class ObjectControlTextField<T> extends ObjectControlTemplate<T> {
-  @SuppressWarnings("unused")
   private static final Logger         LOGGER = Logger.getLogger(ObjectControlTextField.class.getName());
   
   

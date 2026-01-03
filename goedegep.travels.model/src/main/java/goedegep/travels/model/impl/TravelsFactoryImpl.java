@@ -279,19 +279,23 @@ public class TravelsFactoryImpl extends EFactoryImpl implements TravelsFactory {
   /**
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @generated
+   * @generated NOT
    */
   public LocationCategory createELocationCategoryFromString(EDataType eDataType, String initialValue) {
-    return (LocationCategory) super.createFromString(eDataType, initialValue);
+    return LocationCategory.getLocationCategoryForName(initialValue);
   }
 
   /**
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @generated
+   * @generated NOT
    */
   public String convertELocationCategoryToString(EDataType eDataType, Object instanceValue) {
-    return super.convertToString(eDataType, instanceValue);
+    if (instanceValue instanceof LocationCategory locationCategory) {
+      return locationCategory.toString();
+    }
+    
+    return null;
   }
 
   /**

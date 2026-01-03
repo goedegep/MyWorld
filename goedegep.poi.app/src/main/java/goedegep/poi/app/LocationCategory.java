@@ -205,7 +205,7 @@ public enum LocationCategory {
    * @param displayName the name of the location category.
    * @return the location category for the given name, or null if no such category exists.
    */
-  public LocationCategory getLocationCategoryForName(String displayName) {
+  public static LocationCategory getLocationCategoryForName(String displayName) {
     for (LocationCategory locationCategory : LocationCategory.values()) {
       if (getDisplayName(locationCategory).equals(displayName)) {
         return locationCategory;
