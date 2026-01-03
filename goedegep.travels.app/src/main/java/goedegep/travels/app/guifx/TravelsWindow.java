@@ -53,6 +53,7 @@ import goedegep.jfx.browser.Browser;
 import goedegep.jfx.eobjecttreeview.EObjectTreeCell;
 import goedegep.jfx.eobjecttreeview.EObjectTreeItem;
 import goedegep.jfx.eobjecttreeview.EObjectTreeView;
+import goedegep.media.photo.photoshow.guifx.PhotoWindow;
 import goedegep.properties.model.PropertiesFactory;
 import goedegep.properties.model.PropertiesPackage;
 import goedegep.properties.model.Property;
@@ -894,6 +895,9 @@ public class TravelsWindow extends JfxStage {
 
     // Tools: Check vacations
     MenuUtil.addMenuItem(menu, "Check vacations", _ -> new CheckVacationsWindow(customization, vacations, treeView));
+
+    // Tools: Play photoshow
+    MenuUtil.addMenuItem(menu, "Play photoshow", _ -> playPhotoShow());
     
     menuBar.getMenus().add(menu);
 
@@ -2666,6 +2670,28 @@ public class TravelsWindow extends JfxStage {
       // Generate file
       Ov2Util.createOv2File(eObject, file.getAbsolutePath());
     }
+  }
+  
+  private void playPhotoShow() {
+    // Get the selected Travel
+    EObjectTreeItem treeItem = treeView.getSelectedObject();
+    
+    Object value = treeItem.getValue();
+    while (treeItem != null  &&  !(value instanceof Travel)) {
+      treeItem = (EObjectTreeItem) treeItem.getParent();
+      if (treeItem != null) {
+        value = treeItem.getValue();
+      }
+    }
+    
+    if (treeItem == null) {
+      statusLabel.setText("No travel selected for photo show");
+      return;
+    }
+    
+    Travel travel = (Travel) value;
+    List<String> photoFileNames = VacationsUtils.getShowFileNames(travel);
+    new PhotoWindow(customization, photoFileNames, travel.getTitle(), travel.getDate());
   }
   
   /**

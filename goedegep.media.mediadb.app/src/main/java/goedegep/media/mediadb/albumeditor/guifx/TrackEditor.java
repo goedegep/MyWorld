@@ -1,7 +1,5 @@
 package goedegep.media.mediadb.albumeditor.guifx;
 
-import java.util.function.Consumer;
-
 import goedegep.jfx.ComponentFactoryFx;
 import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.objectcontrols.ObjectControlDuration;

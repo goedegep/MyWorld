@@ -2,10 +2,8 @@
  */
 package goedegep.travels.model;
 
-import goedegep.types.model.FileReference;
 import goedegep.types.model.Event;
 import goedegep.util.datetime.FlexDate;
-import org.eclipse.emf.common.util.EList;
 
 /**
  * <!-- begin-user-doc -->
@@ -23,9 +21,6 @@ import org.eclipse.emf.common.util.EList;
  * </p>
  * <ul>
  *   <li>{@link goedegep.travels.model.Vacation#getEndDate <em>End Date</em>}</li>
- *   <li>{@link goedegep.travels.model.Vacation#getDocuments <em>Documents</em>}</li>
- *   <li>{@link goedegep.travels.model.Vacation#getPictures <em>Pictures</em>}</li>
- *   <li>{@link goedegep.travels.model.Vacation#getElements <em>Elements</em>}</li>
  * </ul>
  *
  * @see goedegep.travels.model.TravelsPackage#getVacation()
@@ -86,83 +81,6 @@ public interface Vacation extends Event, Travel {
    * @generated
    */
   boolean isSetEndDate();
-
-  /**
-   * Returns the value of the '<em><b>Documents</b></em>' containment reference list.
-   * The list contents are of type {@link goedegep.types.model.FileReference}.
-   * <!-- begin-user-doc -->
-   * <p>
-   * If the meaning of the '<em>Documents</em>' containment reference list isn't clear,
-   * there really should be more of a description here...
-   * </p>
-   * <!-- end-user-doc -->
-   * @return the value of the '<em>Documents</em>' containment reference list.
-   * @see goedegep.travels.model.TravelsPackage#getVacation_Documents()
-   * @model containment="true"
-   * @generated
-   */
-  EList<FileReference> getDocuments();
-
-  /**
-   * Returns the value of the '<em><b>Pictures</b></em>' attribute.
-   * <!-- begin-user-doc -->
-   * <p>
-   * If the meaning of the '<em>Pictures</em>' attribute isn't clear,
-   * there really should be more of a description here...
-   * </p>
-   * <!-- end-user-doc -->
-   * @return the value of the '<em>Pictures</em>' attribute.
-   * @see #setPictures(String)
-   * @see goedegep.travels.model.TravelsPackage#getVacation_Pictures()
-   * @model
-   * @generated
-   */
-  String getPictures();
-
-  /**
-   * Sets the value of the '{@link goedegep.travels.model.Vacation#getPictures <em>Pictures</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @param value the new value of the '<em>Pictures</em>' attribute.
-   * @see #getPictures()
-   * @generated
-   */
-  void setPictures(String value);
-
-  /**
-   * Returns the value of the '<em><b>Elements</b></em>' containment reference list.
-   * The list contents are of type {@link goedegep.travels.model.VacationElement}.
-   * <!-- begin-user-doc -->
-   * <p>
-   * If the meaning of the '<em>Elements</em>' containment reference list isn't clear,
-   * there really should be more of a description here...
-   * </p>
-   * <!-- end-user-doc -->
-   * @return the value of the '<em>Elements</em>' containment reference list.
-   * @see goedegep.travels.model.TravelsPackage#getVacation_Elements()
-   * @model containment="true"
-   * @generated
-   */
-  EList<VacationElement> getElements();
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @model
-   * @generated
-   */
-  FileReference findDocument(String documentPath);
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * <!-- begin-model-doc -->
-   * This method returns all referenced files (as String) of the vacation. This means all  'Bestand' attributes  of the documents of the vacation and all pictures of all Locations.
-   * <!-- end-model-doc -->
-   * @model kind="operation" dataType="org.eclipse.emf.ecore.xml.type.String"
-   * @generated
-   */
-  EList<String> getAllReferencedFiles();
 
   /**
    * <!-- begin-user-doc -->

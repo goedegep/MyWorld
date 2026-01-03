@@ -12,11 +12,10 @@ import java.util.logging.Logger;
 
 import org.eclipse.emf.common.util.WrappedException;
 
-import goedegep.jfx.ComponentFactoryFx;
 import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.JfxStage;
-import goedegep.jfx.objectcontrols.ObjectControlFileSelecter;
-import goedegep.jfx.objectcontrols.ObjectControlFolderSelecter;
+import goedegep.jfx.editor.controls.EditorControlFileSelecter;
+import goedegep.jfx.editor.controls.EditorControlFolderSelecter;
 import goedegep.media.common.MediaRegistry;
 import goedegep.media.photo.photoshow.logic.PhotoshowCommons;
 import goedegep.media.photoshow.model.PhotoShowFactory;
@@ -32,19 +31,18 @@ import javafx.scene.layout.VBox;
 /**
  * This class is the main window for the Photo show player.
  * <p>
- * The list of photos can either be defined by a Photoshow specification or it can be all files in a folder.
+ * The list of photos can either be defined by a Photoshow specification, it can be all files in a folder or it can be provided as a list of files.<br/>
+ * On the first photo an optional title is shown.
  *
  */
-public class PhotoShowViewer extends JfxStage {
-  private final static Logger LOGGER = Logger.getLogger(PhotoShowViewer.class.getName());
+public class PhotoViewerMenuWindow extends JfxStage {
+  private final static Logger LOGGER = Logger.getLogger(PhotoViewerMenuWindow.class.getName());
   
-  private final static String WINDOW_TITLE = "Photoshow builder";
+  private final static String WINDOW_TITLE = "Photoshow viewer";
   
-  private CustomizationFx customization;
-  private ComponentFactoryFx componentFactory;
-  
-  private File currentPhotospecificationFile = null;
-  private File currentPhotosFolder = null;
+  /**
+   * The current window showing the photos.
+   */
   private PhotoWindow currentPhotoWindow = null;
   
   /**
@@ -52,16 +50,15 @@ public class PhotoShowViewer extends JfxStage {
    * 
    * @param customization The GUI customization
    */
-  public PhotoShowViewer(CustomizationFx customization) {
+  public PhotoViewerMenuWindow(CustomizationFx customization) {
     super(customization, WINDOW_TITLE);
-    
-    this.customization = customization;
-    componentFactory = customization.getComponentFactoryFx();
     
     createGUI();
 
     show();
     
+//    File file = new File("D:\\Photo\\Vakanties\\2025-08-30 Zuid Duitsland\\Pixel 7\\PXL_20250831_111347745.PHOTOSPHERE.jpg");
+//    new Panorama360Viewer(file);
   }
   
   /**
@@ -76,10 +73,9 @@ public class PhotoShowViewer extends JfxStage {
     
     // First row: "Run from a Photoshow specification:" <File text field> <open file chooser button> <show all checkbox>
     label = componentFactory.createLabel("Run from a Photoshow specification:");
-    gridPane.add(label, 0, row);
     
-    String initiallySelectedFolder = MediaRegistry.getInstance().getPhotosFolder();
-    ObjectControlFileSelecter fileSelecter = componentFactory.createFileSelecterObjectControl(
+    String initiallySelectedFolder = MediaRegistry.getInstance().getPhotosFolder();    
+    EditorControlFileSelecter fileSelecter = componentFactory.createEditorControlFileSelecter(
         300,
         "Enter Photoshow specification file name",
         "Select Photoshow specification",
@@ -88,29 +84,24 @@ public class PhotoShowViewer extends JfxStage {
     fileSelecter.addFileType(PhotoshowCommons.DEFAULT_PHOTOSHOW_SPECIFICATION_FILE_EXTENSION, "Photoshow specification file", true);
     fileSelecter.addFileType(".*", "Any file", false);
     fileSelecter.setInitialFolderProvider(() -> initiallySelectedFolder);
-    gridPane.add(fileSelecter.getControl(), 1, row);
-    gridPane.add(fileSelecter.getFileChooserButton(), 2, row);
-    fileSelecter.addListener((_) -> {
+    fileSelecter.addValueAndOrStatusChangeListener((_, _) -> {
       File photoshowSpecificationFile = fileSelecter.getValue();
-      LOGGER.severe("photoshowSpecificationFile: " + photoshowSpecificationFile);
       if (photoshowSpecificationFile.exists()  &&
           photoshowSpecificationFile.isFile()  &&
           ".psw".equals(FileUtils.getFileExtension(photoshowSpecificationFile))) {
-        LOGGER.severe("Opening show");
-        currentPhotospecificationFile = photoshowSpecificationFile;
-        startPhotoshowFromSpecification();
+        startPhotoshowFromSpecification(photoshowSpecificationFile);
       } else {
         LOGGER.severe("Skipping");
       }
     });
+    gridPane.addRow(row, label, fileSelecter.getControl(), fileSelecter.getFileChooserButton());
     
     row++;
     
     // Second row: "Run from files from a folder:" <Folder text field> <open folder chooser button>
     label = componentFactory.createLabel("Run from files from a folder");
-    gridPane.add(label, 0, row);
     
-    ObjectControlFolderSelecter folderSelecter = componentFactory.createFolderSelecter(
+    EditorControlFolderSelecter folderSelecter = componentFactory.createEditorControlFolderSelecter(
         300,
         "Enter folder that contains the photos to show",
         "Select photos folder",
@@ -118,36 +109,35 @@ public class PhotoShowViewer extends JfxStage {
         "Select a photos folder",
         false);
     folderSelecter.setInitialFolderProvider(() -> initiallySelectedFolder);
-    gridPane.add(folderSelecter.getControl(), 1, row);
-    gridPane.add(folderSelecter.getFolderChooserButton(), 2, row);
-    folderSelecter.addListener((_) -> {
+    folderSelecter.addValueAndOrStatusChangeListener((_, _) -> {
       File photosFolder = folderSelecter.getValue();
-      LOGGER.severe("photosFolder: " + photosFolder);
       if (photosFolder.exists()  &&
           photosFolder.isDirectory()) {
-        LOGGER.severe("Opening show");
-        currentPhotosFolder = photosFolder;
-        startPhotoshowForFolder();
+        startPhotoshowForFolder(photosFolder);
       } else {
         LOGGER.severe("Skipping");
       }
     });
+    gridPane.addRow(row, label, folderSelecter.getControl(), folderSelecter.getFolderChooserButton());
     
     topLevelVBox.getChildren().add(gridPane);
     
-    Scene scene = new Scene(topLevelVBox, 1300, 950);
+    Scene scene = new Scene(topLevelVBox);
     setScene(scene);
   }
   
   /**
-   * Start a Photoshow.
+   * Start a Photoshow from a {@code PhotoShowSpecification}.
    * <p>
    * If there is a show running, this will be closed.<br/>
-   * The {@code currentPhotospecificationFile} will be opened and a {@code PhotoWindow} is opened with the photos to show and the title.
+   * The {@code photoshowSpecificationFile} will be opened and a {@code PhotoWindow} is opened with the photos to show and the title.
+   * 
+   * @param photoshowSpecificationFile The Photoshow specification file
    */
-  private void startPhotoshowFromSpecification() {
+  private void startPhotoshowFromSpecification(File photoshowSpecificationFile) {
     if (currentPhotoWindow != null) {
       currentPhotoWindow.close();
+      currentPhotoWindow = null;
     }
     
     try {
@@ -155,13 +145,13 @@ public class PhotoShowViewer extends JfxStage {
           PhotoShowPackage.eINSTANCE,
           () -> PhotoShowFactory.eINSTANCE.createPhotoShowSpecification(),
           ".xmi");
-      PhotoShowSpecification photoShowSpecification = emfResource.load(currentPhotospecificationFile.getAbsolutePath());
+      PhotoShowSpecification photoShowSpecification = emfResource.load(photoshowSpecificationFile.toURI());
       List<String> photosToShow = photoShowSpecification.getPhotosToShow();
-      currentPhotoWindow = new PhotoWindow(customization, photosToShow, photoShowSpecification.getTitle());
+      currentPhotoWindow = new PhotoWindow(customization, photosToShow, photoShowSpecification.getTitle(), null);
     } catch (IOException e) {
-      e.printStackTrace();
+      e.printStackTrace();  // should not occur as we already checked existence.
     } catch (WrappedException wrappedException) {
-      componentFactory.createExceptionDialog("An exception occurred while reading the file: '" + currentPhotospecificationFile.getAbsolutePath() + "'.", wrappedException).show();
+      componentFactory.createExceptionDialog("An exception occurred while reading the file: '" + photoshowSpecificationFile.getAbsolutePath() + "'.", wrappedException).show();
     }
   }
   
@@ -171,9 +161,14 @@ public class PhotoShowViewer extends JfxStage {
    * If there is a show running, this will be closed.<br/>
    * The {@code currentPhotosFolder} is scanned for image files and a {@code PhotoWindow} is opened with this list of files. There is no title in this case.
    */
-  private void startPhotoshowForFolder() {
+  private void startPhotoshowForFolder(File photosFolder) {
+    if (currentPhotoWindow != null) {
+      currentPhotoWindow.close();
+      currentPhotoWindow = null;
+    }
+    
     List<String> photosToShow = new ArrayList<>();
-    try (DirectoryStream<Path> stream = Files.newDirectoryStream(currentPhotosFolder.toPath())) {
+    try (DirectoryStream<Path> stream = Files.newDirectoryStream(photosFolder.toPath())) {
 
       for (Path path: stream) {
         if (!Files.isDirectory(path)) {
@@ -184,7 +179,7 @@ public class PhotoShowViewer extends JfxStage {
         }
       }
       
-      currentPhotoWindow = new PhotoWindow(customization, photosToShow, null);
+      currentPhotoWindow = new PhotoWindow(customization, photosToShow, null, null);
       
     } catch (IOException | DirectoryIteratorException x) {
       System.err.println(x);

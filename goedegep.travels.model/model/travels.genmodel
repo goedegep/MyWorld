@@ -33,13 +33,6 @@
     </genClasses>
     <genClasses ecoreClass="travels.ecore#//Vacation">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute travels.ecore#//Vacation/endDate"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference travels.ecore#//Vacation/documents"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute travels.ecore#//Vacation/pictures"/>
-      <genFeatures children="true" createChild="true" propertySortChoices="true" ecoreFeature="ecore:EReference travels.ecore#//Vacation/elements"/>
-      <genOperations ecoreOperation="travels.ecore#//Vacation/findDocument">
-        <genParameters ecoreParameter="travels.ecore#//Vacation/findDocument/documentPath"/>
-      </genOperations>
-      <genOperations ecoreOperation="travels.ecore#//Vacation/getAllReferencedFiles"/>
       <genOperations ecoreOperation="travels.ecore#//Vacation/getDayNr">
         <genParameters ecoreParameter="travels.ecore#//Vacation/getDayNr/vacationElement"/>
       </genOperations>
@@ -104,19 +97,25 @@
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute travels.ecore#//MapImage/centerLongitude"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute travels.ecore#//MapImage/fileName"/>
     </genClasses>
-    <genClasses ecoreClass="travels.ecore#//DayTrip">
-      <genFeatures children="true" createChild="true" propertySortChoices="true" ecoreFeature="ecore:EReference travels.ecore#//DayTrip/elements"/>
-    </genClasses>
+    <genClasses ecoreClass="travels.ecore#//DayTrip"/>
     <genClasses ecoreClass="travels.ecore#//Document">
       <genFeatures children="true" createChild="true" propertySortChoices="true" ecoreFeature="ecore:EReference travels.ecore#//Document/documentReference"/>
     </genClasses>
     <genClasses ecoreClass="travels.ecore#//TravelCategory">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference travels.ecore#//TravelCategory/travels"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute travels.ecore#//TravelCategory/travelCategoryName"/>
     </genClasses>
     <genClasses ecoreClass="travels.ecore#//Travel">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute travels.ecore#//Travel/title"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference travels.ecore#//Travel/elements"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference travels.ecore#//Travel/documents"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute travels.ecore#//Travel/pictures"/>
       <genOperations ecoreOperation="travels.ecore#//Travel/getId"/>
       <genOperations ecoreOperation="travels.ecore#//Travel/getAllFileReferences"/>
+      <genOperations ecoreOperation="travels.ecore#//Travel/findDocument">
+        <genParameters ecoreParameter="travels.ecore#//Travel/findDocument/documentPath"/>
+      </genOperations>
+      <genOperations ecoreOperation="travels.ecore#//Travel/getAllReferencedFiles"/>
     </genClasses>
   </genPackages>
 </genmodel:GenModel>

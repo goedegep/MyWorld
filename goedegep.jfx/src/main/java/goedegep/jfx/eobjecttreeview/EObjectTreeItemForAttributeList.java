@@ -255,7 +255,6 @@ public class EObjectTreeItemForAttributeList extends EObjectTreeItem {
     
     if (isFirstTimeChildren) {
       // The children haven't been built yet, so we don't have to add anything.
-      LOGGER.severe("Children haven't been built yet, so no action");
       return;
     }
     

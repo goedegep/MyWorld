@@ -16,7 +16,6 @@ import org.apache.commons.imaging.ImageReadException;
 import org.apache.commons.imaging.formats.tiff.constants.TiffDirectoryConstants;
 import org.apache.commons.imaging.formats.tiff.constants.TiffTagConstants;
 
-import goedegep.media.photo.IPhotoMetaDataWithImage;
 import goedegep.util.Tuplet;
 import goedegep.util.file.FileUtils;
 import goedegep.util.img.PhotoFileMetaDataHandler;

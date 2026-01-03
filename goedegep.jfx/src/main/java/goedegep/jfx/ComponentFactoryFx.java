@@ -5,7 +5,6 @@ import java.io.StringWriter;
 import java.time.LocalDate;
 import java.util.Collection;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.logging.Logger;
 
 import org.commonmark.parser.Parser;
@@ -14,7 +13,6 @@ import org.commonmark.renderer.html.HtmlRenderer;
 import goedegep.configuration.model.Look;
 import goedegep.geo.WGS84Coordinates;
 import goedegep.jfx.controls.AutoCompleteTextField;
-import goedegep.jfx.editor.controls.EditorControlBoolean;
 import goedegep.jfx.editor.controls.EditorControlFileSelecter;
 import goedegep.jfx.editor.controls.EditorControlFolderSelecter;
 import goedegep.jfx.editor.controls.EditorControlHTMLString;
@@ -947,7 +945,6 @@ public class ComponentFactoryFx {
    * @param directoryChooserTitle title for the DirectoryChooser (may not be null)
    * @return the newly created FolderSelecter
    */
-  @Deprecated
   public ObjectControlFolderSelecter createFolderSelecter(int textFieldWidth, String textFieldToolTipText,
       String folderChooserButtonText, String folderChooserButtonToolTipText, String directoryChooserTitle, boolean isOptional) {
     ObjectControlFolderSelecter folderSelecter = new ObjectControlFolderSelecter(customization, textFieldWidth, textFieldToolTipText,
@@ -1045,7 +1042,6 @@ public class ComponentFactoryFx {
    * @param toolTipText an optional tooltip text.
    * @return the newly created {@code ObjectControlBoolean}.
    */
-  @Deprecated
   public ObjectControlBoolean createObjectControlBoolean(String text, boolean selected, boolean isOptional, String toolTipText) {
     ObjectControlBoolean objectControlBoolean = new ObjectControlBoolean(customization, text, selected, isOptional, toolTipText);
 
@@ -1065,7 +1061,6 @@ public class ComponentFactoryFx {
    * @param toolTipText an optional tooltip text.
    * @return the newly created {@code ObjectControlInteger}.
    */
-  @Deprecated
   public ObjectControlInteger createObjectControlInteger(Integer integer, double width, boolean isOptional, String toolTipText) {
     ObjectControlInteger objectControlInteger = new ObjectControlInteger(customization, integer, width, isOptional, toolTipText);
 
@@ -1097,7 +1092,6 @@ public class ComponentFactoryFx {
    * @param isOptional if true, the value provided by this control is optional.
    * @return the newly created {@code ObjectControlMultiLineString}.
    */
-  @Deprecated
   public ObjectControlMultiLineString createObjectControlMultiLineString(String text, boolean isOptional) {
     ObjectControlMultiLineString objectControlMultiLineString = new ObjectControlMultiLineString(customization, text, isOptional);
 
@@ -1111,7 +1105,6 @@ public class ComponentFactoryFx {
    * @param isOptional if true, the value provided by this control is optional.
    * @return the newly created {@code ObjectControlHTMLString}.
    */
-  @Deprecated
   public ObjectControlHTMLString createObjectControlHTMLString(String text, boolean isOptional) {
     ObjectControlHTMLString objectControlHTMLString = new ObjectControlHTMLString(customization, text, isOptional);
 
@@ -1139,7 +1132,6 @@ public class ComponentFactoryFx {
    * @param toolTipText an optional tooltip text.
    * @return the newly created {@code ObjectControlCurrency}.
    */
-  @Deprecated
   public ObjectControlCurrency createObjectControlCurrency(PgCurrency pgCurrency, double width, boolean isOptional, String toolTipText) {
     ObjectControlCurrency objectControlCurrency = new ObjectControlCurrency(customization, pgCurrency, width, isOptional, toolTipText);
 
@@ -1155,7 +1147,6 @@ public class ComponentFactoryFx {
    * @param toolTipText an optional tooltip text.
    * @return the newly created {@code ObjectControlFixedPointValue}.
    */
-  @Deprecated
   public ObjectControlFixedPointValue createObjectControlFixedPointValue(FixedPointValue objectValue, double width, boolean isOptional, String toolTipText) {
     ObjectControlFixedPointValue objectControlFixedPointValue = new ObjectControlFixedPointValue(customization, objectValue, width, isOptional, toolTipText);
 
@@ -1189,7 +1180,6 @@ public class ComponentFactoryFx {
    * @param toolTipText an optional tooltip text.
    * @return the newly created {@code ObjectControlLocalDate}.
    */
-  @Deprecated
   public ObjectControlLocalDate createObjectControlLocalDate(LocalDate localDate, double width, boolean isOptional, String toolTipText) {
     ObjectControlLocalDate objectControlLocalDate = new ObjectControlLocalDate(customization, localDate, width, isOptional, toolTipText);
 
@@ -1209,7 +1199,6 @@ public class ComponentFactoryFx {
    * @param toolTipText an optional tooltip text.
    * @return the newly created {@code ObjectControlTextField}.
    */
-  @Deprecated
   public <T>ObjectControlTextField<T> createObjectControlTextField(StringConverterAndChecker<T> stringConverter, T initialValue, double width, boolean isOptional, String toolTipText) {
     ObjectControlTextField<T> objectControlTextField = new ObjectControlTextField<>(customization, stringConverter, initialValue, width, isOptional, toolTipText);
 
@@ -1227,7 +1216,6 @@ public class ComponentFactoryFx {
    * @param toolTipText an optional tooltip text
    * @return the newly created {@code ObjectControlEnumComboBox}.
    */
-  @Deprecated
   public <T extends Enum<T>> ObjectControlEnumComboBox<T> createObjectControlEnumComboBox(T enumConstant, boolean isOptional, String toolTipText) {
     return new ObjectControlEnumComboBox<T>(customization, enumConstant, isOptional, toolTipText);
   }
@@ -1243,7 +1231,6 @@ public class ComponentFactoryFx {
    * @param toolTipText an optional tooltip text
    * @return the newly created {@code ObjectControlAutoCompleteTextField}.
    */
-  @Deprecated
   public <T> ObjectControlAutoCompleteTextField<T> createObjectControlAutoCompleteTextField(StringConverterAndChecker<T> stringConverter, T initialValue, double width, boolean isOptional, String toolTipText) {
     return new ObjectControlAutoCompleteTextField<T>(customization, stringConverter, initialValue, width, isOptional, toolTipText);
   }

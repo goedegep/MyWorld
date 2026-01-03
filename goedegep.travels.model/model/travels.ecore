@@ -43,25 +43,11 @@
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
       <details key="documentation" value="A vacation may have been at a single location. In this case fill in 'location'. Fill in 'bezochteLocaties' for any location visited.&lt;br/>&#xD;&#xA;If you stayed at different locations, you can mix the locations where you stayed with the visited places, all in 'bezochteLocaties'.&#xD;&#xA;"/>
     </eAnnotations>
-    <eOperations name="findDocument" eType="ecore:EClass ../../goedegep.types.model/model/types.ecore#//FileReference">
-      <eParameters name="documentPath" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
-    </eOperations>
-    <eOperations name="getAllReferencedFiles" upperBound="-1" eType="ecore:EDataType http://www.eclipse.org/emf/2003/XMLType#//String">
-      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="This method returns all referenced files (as String) of the vacation. This means all  'Bestand' attributes  of the documents of the vacation and all pictures of all Locations."/>
-      </eAnnotations>
-    </eOperations>
     <eOperations name="getDayNr" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EIntegerObject">
       <eParameters name="vacationElement" eType="#//VacationElement"/>
     </eOperations>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="endDate" eType="ecore:EDataType ../../goedegep.types.model/model/types.ecore#//EFlexDate"
         unsettable="true"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="documents" upperBound="-1"
-        eType="ecore:EClass ../../goedegep.types.model/model/types.ecore#//FileReference"
-        containment="true"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="pictures" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="elements" upperBound="-1"
-        eType="#//VacationElement" containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Location" eSuperTypes="#//VacationElement">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="locationCategory" eType="#//ELocationCategory"
@@ -164,10 +150,7 @@
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="fileName" lowerBound="1"
         eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="DayTrip" eSuperTypes="#//Travel">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="elements" upperBound="-1"
-        eType="#//VacationElement" containment="true"/>
-  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="DayTrip" eSuperTypes="#//Travel"/>
   <eClassifiers xsi:type="ecore:EClass" name="Document" eSuperTypes="#//VacationElement">
     <eStructuralFeatures xsi:type="ecore:EReference" name="documentReference" eType="ecore:EClass ../../goedegep.types.model/model/types.ecore#//FileReference"
         unsettable="true" containment="true"/>
@@ -175,6 +158,8 @@
   <eClassifiers xsi:type="ecore:EClass" name="TravelCategory">
     <eStructuralFeatures xsi:type="ecore:EReference" name="travels" upperBound="-1"
         eType="#//Travel" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="travelCategoryName" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
+        unsettable="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Travel" eSuperTypes="../../goedegep.types.model/model/types.ecore#//Event">
     <eOperations name="getId" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
@@ -183,8 +168,22 @@
         <details key="documentation" value="This method returns all file references (as FileReference) of the vacation. This means all documents of the vacation and all pictures of all Locations."/>
       </eAnnotations>
     </eOperations>
+    <eOperations name="findDocument" eType="ecore:EClass ../../goedegep.types.model/model/types.ecore#//FileReference">
+      <eParameters name="documentPath" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    </eOperations>
+    <eOperations name="getAllReferencedFiles" upperBound="-1" eType="ecore:EDataType http://www.eclipse.org/emf/2003/XMLType#//String">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="This method returns all referenced files (as String) of the vacation. This means all  'Bestand' attributes  of the documents of the vacation and all pictures of all Locations."/>
+      </eAnnotations>
+    </eOperations>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="title" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
         unsettable="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="elements" upperBound="-1"
+        eType="#//VacationElement" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="documents" upperBound="-1"
+        eType="ecore:EClass ../../goedegep.types.model/model/types.ecore#//FileReference"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="pictures" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EDataType" name="ELocationCategory" instanceClassName="goedegep.poi.app.LocationCategory"/>
 </ecore:EPackage>
