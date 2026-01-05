@@ -308,7 +308,7 @@ public class PropertiesEditor extends JfxStage {
    */
   private EObjectTreeItemClassDescriptor createDescriptorForEditablePropertyGroup() {
     EObjectTreeItemClassDescriptor eObjectTreeItemClassDescriptor = new EObjectTreeItemClassDescriptor()
-        .setNodeTextFunction(_ -> "Group of user changeable properties")
+        .setNodeTextFunction(_ -> "User settings")
         .setExpandOnCreation(true);
     
     EObjectTreeItemAttributeDescriptor eObjectTreeItemAttributeDescriptor;
@@ -319,9 +319,9 @@ public class PropertiesEditor extends JfxStage {
         .setLabelText("Name");
     eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(eObjectTreeItemAttributeDescriptor);
     
-    // User changeable properties
+    // Editable properties
     eObjectTreeItemClassListReferenceDescriptor = new EObjectTreeItemClassListReferenceDescriptor(editablePropertyGroup_editableProperties)
-        .setLabelText("User changeable properties");
+        .setLabelText("Settings");
     eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(eObjectTreeItemClassListReferenceDescriptor);
     
 //    // Sub groups
@@ -619,7 +619,7 @@ public class PropertiesEditor extends JfxStage {
     if (isDirty) {
       buf.append("*");
     }
-    buf.append(propertyDescriptorsResource.getFileName());
+    buf.append(propertiesResource.getFileName());
     
     setTitle(buf.toString());
   }
