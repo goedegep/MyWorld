@@ -64,7 +64,7 @@ public class RolodexMenuWindow extends JfxStage {
   private Rolodex rolodex;
 
   public RolodexMenuWindow(CustomizationFx customization, RolodexService rolodexService) {
-    super(customization, WINDOW_TITLE);
+    super(customization, null);  // the title is set via updateWindowTitle()
     
     this.rolodexService = rolodexService;
     rolodexRegistry = RolodexRegistry.getInstance();
@@ -85,7 +85,9 @@ public class RolodexMenuWindow extends JfxStage {
         updateWindowTitle();
       }
       
-    });    
+    });
+    
+    updateWindowTitle();
   }
 
   
@@ -536,10 +538,14 @@ public class RolodexMenuWindow extends JfxStage {
    * The window title starts with a '*' if the rolodex has been modified since it was last saved. 
    */
   private void updateWindowTitle() {
+    StringBuilder buf = new StringBuilder();
+    
+    buf.append(WINDOW_TITLE).append(" ");
     if (rolodexService.getRolodexResource().isDirty()) {
-      setTitle("*" + WINDOW_TITLE);
-    } else {
-      setTitle(WINDOW_TITLE);
+      buf.append("*");
     }
+    buf.append(rolodexService.getRolodexResource().getFileName());
+    
+    setTitle(buf.toString());
   }
 }

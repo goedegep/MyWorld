@@ -1,13 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <properties:PropertyDescriptorGroup xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:properties="http://goedegep.properties/model"
-    name="Events" description="Standard settings for the Events application."
-    packageName="goedegep.events.app" registryClassName="EventsRegistry">
+    name="Events" description="Standard settings for the Events application.">
   <propertyDescriptors xsi:type="properties:FilePropertyDescriptor" type="FILE" name="eventsFileName"
-      description="Name of the file with information about all events." displayName="Events file name"
-      initialValue="D:\Database\Gebeurtenissen\Gebeurtenissen.xmi" userSettable="true">
+      description="Name of the file with information about all events." displayName="Events file name">
     <fileExtensions>xmi</fileExtensions>
   </propertyDescriptors>
   <propertyDescriptors type="DIRECTORY" name="eventsFolderName" description="Name of the folder with information about events."
-      displayName="Events folder name" initialValue="D:\Database\Gebeurtenissen" userSettable="true"/>
+      displayName="Events folder name"/>
 </properties:PropertyDescriptorGroup>
