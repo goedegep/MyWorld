@@ -526,10 +526,8 @@ public class PropertiesEditor extends JfxStage {
     properties.clear();
     for (EObject editableProperty: editableProperties) {
       String name = (String) editableProperty.eGet(editableProperty_name);
-      LOGGER.severe("Handling property: " + name);
       String value = (String) editableProperty.eGet(editableProperty_value);
       if (value == null  ||  value.isEmpty()) {
-        LOGGER.severe("Skipping empty value, name: " + name);
         continue;
       }
       

@@ -22,6 +22,7 @@ import java.util.logging.Logger;
 
 import goedegep.finan.basic.PgTransaction;
 import goedegep.types.model.DateRateTuplet;
+import goedegep.util.datetime.DateUtil;
 import goedegep.util.datetime.Quarter;
 import goedegep.util.fixedpointvalue.FixedPointValue;
 import goedegep.util.money.PgCurrency;
@@ -476,7 +477,7 @@ public class StockDepot {
    * @param naarAantal To amount.
    */
   public void overname(LocalDate date, Share vanEffect, Share naarEffect, int vanAantal, int naarAantal) {
-    LOGGER.fine("=> date = " + DF.format(date) + ", vanEffect = " + vanEffect.getName() +
+    LOGGER.fine("=> date = " + DF.format(DateUtil.localDateToDate(date)) + ", vanEffect = " + vanEffect.getName() +
                 ", naarEffect = " + naarEffect.getName() + ", vanAantal = " + vanAantal + ", naarAantal = " + naarAantal);
     StockPosition fromStockPosition = stockPositions.get(vanEffect);
     if (fromStockPosition == null) {

@@ -62,7 +62,6 @@ module goedegep.app.finan {
   requires org.eclipse.emf.ecore.xmi;
   requires transitive goedegep.finan.mortgage.model;
   requires transitive goedegep.finan.investmentinsurance.model;
-  requires transitive goedegep.finan.lynx2finan.model;
   requires transitive goedegep.finan.jobappointment.model;
   requires goedegep.myworld.common;
   requires goedegep.resources;

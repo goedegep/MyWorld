@@ -1,6 +1,7 @@
 package goedegep.app.finan.stocksapp;
 
 import java.awt.Dimension;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -282,8 +283,12 @@ public class StockDepotVModelPanel extends AppPanel implements ChangeListener {
           averageRateField.setText("-");          
         }
         StockVModelStatus status = stockPosition.getVModelStatus();
+        if (status != null) {
         totalProfitField.setText(cf.format(status.getTotalBuySellProfit()));
-        stockBuySellComboTable.setBuySellCombos(status.getBuySellCombos());
+        } else {
+          totalProfitField.setText("-");          
+        }
+        stockBuySellComboTable.setBuySellCombos(status != null ? status.getBuySellCombos() : new ArrayList<>());
         stockBuysTable.setBuys(status.getBuys());
         PgCurrency lastBuyRate = null;
         if (status.getBuys().size() != 0) {

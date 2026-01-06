@@ -46,13 +46,13 @@ public abstract class PbSpRekTransaction extends PgTransaction {
     
     account.handleFirst(this);
 
-    try {
-      if (transactionInEuros(getBookingDate())  &&  account.getCurrency() != PgCurrency.EURO) {
-        account.certifyCurrency(PgCurrency.EURO);
-      }
-    } catch (IllegalArgumentException e) {
-      // Do nothing.
-    }
+//    try {
+//      if (transactionInEuros(getBookingDate())  &&  account.getCurrency() != PgCurrency.EURO) {
+//        account.certifyCurrency(PgCurrency.EURO);
+//      }
+//    } catch (IllegalArgumentException e) {
+//      // Do nothing.
+//    }
   }
 
   public void handleLast() {
@@ -65,6 +65,9 @@ public abstract class PbSpRekTransaction extends PgTransaction {
   }
 
   static boolean transactionInEuros(LocalDate trDate) {
+    if (trDate == null) {
+      throw new IllegalArgumentException("Transaction date is null");
+    }
     final   LocalDate euroIntroDate = LocalDate.of(1999, Month.JANUARY, 1);
     boolean inEuro;
 

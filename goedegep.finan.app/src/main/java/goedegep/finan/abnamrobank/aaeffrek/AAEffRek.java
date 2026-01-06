@@ -27,6 +27,7 @@ import goedegep.finan.stocks.StockDepotPeriodicReport;
 import goedegep.finan.stocks.StockPosition;
 import goedegep.finan.stocks.StockPositionHistory;
 import goedegep.finan.stocks.StockVModelStatus;
+import goedegep.util.datetime.DateUtil;
 import goedegep.util.datetime.Quarter;
 import goedegep.util.datetime.QuarterFormat;
 import goedegep.util.money.PgCurrency;
@@ -102,7 +103,7 @@ public class AAEffRek extends EffRek {
 
       date = transaction.getBookingDate();
       if (date != null) {
-        textWriter.write(df.format(date));
+        textWriter.write(df.format(DateUtil.localDateToDate(date)));
       }
       textWriter.write('\t');
 
@@ -111,7 +112,7 @@ public class AAEffRek extends EffRek {
 
       date = transaction.getExecutionDate();
       if (date != null) {
-        textWriter.write(df.format(date));
+        textWriter.write(df.format(DateUtil.localDateToDate(date)));
       }
       textWriter.write('\t');
 
@@ -402,7 +403,7 @@ public class AAEffRek extends EffRek {
     if (buys != null  &&  buys.size() != 0) {      
       
       for (StockPositionHistory history: buys) {
-        textWriter.write(df.format(history.getDate()));
+        textWriter.write(df.format(DateUtil.localDateToDate(history.getDate())));
         textWriter.write("   ");
         if (history.isIntegerAmount()) {
           textWriter.write(String.valueOf(history.getIntAmount()));

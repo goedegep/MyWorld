@@ -5,6 +5,7 @@ import goedegep.finan.basic.TransactionError;
 import goedegep.finan.postbank.pbeffrek.PbEffRek;
 import goedegep.finan.stocks.Share;
 import goedegep.finan.stocks.TerugBetaling;
+import goedegep.util.datetime.DateUtil;
 import goedegep.util.money.PgCurrency;
 import goedegep.util.money.PgCurrencyFormat;
 
@@ -45,7 +46,7 @@ public abstract class EffRekTerugBetaling extends EffRekTransactie {
       output.append(" ");   
     }
     output.append("Gedeeltelijke terugbetaling dd  ");
-    output.append(DF.format(this.getBookingDate()));
+    output.append(DF.format(DateUtil.localDateToDate(getBookingDate())));
     output.append(",  ");
     if (isHandled()) {
       output.append(terugBetaling.getAantalRechten() + " ");    

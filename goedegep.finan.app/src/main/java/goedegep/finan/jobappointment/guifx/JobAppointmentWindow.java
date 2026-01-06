@@ -11,7 +11,6 @@ import goedegep.finan.jobappointment.JobAppointmentUtil;
 import goedegep.finan.jobappointment.model.JobAppointment;
 import goedegep.finan.jobappointment.model.JobAppointmentFactory;
 import goedegep.finan.jobappointment.model.JobAppointmentPackage;
-import goedegep.jfx.ComponentFactoryFx;
 import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.JfxStage;
 import goedegep.jfx.objectcontrols.ObjectControlCurrency;
@@ -35,8 +34,6 @@ public class JobAppointmentWindow extends JfxStage {
   private FinanRegistry finanRegistry;
   private FinanService finanService;
   private JobAppointment jobAppointment;
-  private CustomizationFx customization;
-  private ComponentFactoryFx componentFactory = null;
   private EMFResource<JobAppointment> jobAppointmentResource = null;
 
   /**
@@ -48,7 +45,6 @@ public class JobAppointmentWindow extends JfxStage {
   public JobAppointmentWindow(CustomizationFx customization) {
     super(customization, WINDOW_TITLE);
     
-    this.customization = customization;
     finanRegistry = FinanRegistry.getInstance();
     finanService = FinanService.getInstance();
     

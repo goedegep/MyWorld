@@ -6,6 +6,7 @@ import java.util.List;
 import goedegep.finan.basic.PgAccount;
 import goedegep.finan.basic.TransactionError;
 import goedegep.finan.stocks.Share;
+import goedegep.util.datetime.DateUtil;
 import goedegep.util.fixedpointvalue.FixedPointValue;
 import goedegep.util.fixedpointvalue.FixedPointValueFormat;
 import goedegep.util.money.PgCurrency;
@@ -93,7 +94,7 @@ public abstract class EffRekFractieVerrekeningNieuweWaarden extends EffRekTransa
 
     output.append(" aandelen " + getEffect().getName());
     output.append(", bedrag per stuk " + CF.format(getKoers()));
-    output.append(", dd " + DF.format(getExecutionDate()));
+    output.append(", dd " + DF.format(DateUtil.localDateToDate(getExecutionDate())));
 
     if (isAankoop()) {
       output.append(", af:  ");

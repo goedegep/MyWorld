@@ -225,7 +225,7 @@ public class SumAccount {
     List<TransactionError> errors = new ArrayList<>();
     
     for (FinanTransaction finanTransaction: finanTransactions) {
-      LOGGER.fine("Going to handle transaction: (type=" + finanTransaction.getTransaction().getClass().getName() + ") " + finanTransaction.getTransaction().toString());
+//      LOGGER.severe("Going to handle transaction: (type=" + finanTransaction.getTransaction().getClass().getName() + ") " + finanTransaction.getTransaction().toString());
       finanTransaction.getTransaction().handle(errors);
     }
     

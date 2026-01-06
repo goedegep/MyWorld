@@ -246,11 +246,6 @@
       </dependency>
       <dependency>
         <groupId>goedegep.finan</groupId>
-        <artifactId>goedegep-finan-lynx2finan-model</artifactId>
-        <version>${goedegep.myworld.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>goedegep.finan</groupId>
         <artifactId>goedegep-finan-mortgage-model</artifactId>
         <version>${goedegep.myworld.version}</version>
       </dependency>
@@ -738,7 +733,6 @@
     <module>../goedegep.invandprop.model</module>
     <module>../goedegep.finan.investmentinsurance.model</module>
     <module>../goedegep.finan.jobappointment.model</module>
-    <module>../goedegep.finan.lynx2finan.model</module>
     <module>../goedegep.finan.mortgage.model</module>
     <module>../goedegep.travels.checklist.model</module>
     <module>../goedegep.travels.model</module>
