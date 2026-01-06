@@ -4,6 +4,7 @@ import goedegep.finan.basic.PgAccount;
 import goedegep.finan.basic.TransactionError;
 import goedegep.finan.stocks.Share;
 import goedegep.finan.stocks.ShareDividend;
+import goedegep.util.datetime.DateUtil;
 import goedegep.util.fixedpointvalue.FixedPointValue;
 import goedegep.util.fixedpointvalue.FixedPointValueFormat;
 import goedegep.util.money.PgCurrency;
@@ -174,7 +175,7 @@ public abstract class EffRekStockDivTransactie extends EffRekTransactie {
     StringBuilder     buf = new StringBuilder();
 
     // valutadatum
-    buf.append(DF.format(getBookingDate()));
+    buf.append(DF.format(DateUtil.localDateToDate(getBookingDate())));
 
     // transaction type
     if (aankoop) {

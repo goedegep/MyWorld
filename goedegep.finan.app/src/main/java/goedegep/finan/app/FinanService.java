@@ -14,7 +14,6 @@ import goedegep.jfx.AppResourcesFx;
 import goedegep.jfx.JfxApplication;
 import goedegep.myworld.common.Registry;
 import goedegep.myworld.common.Service;
-import goedegep.rolodex.app.RolodexService;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
@@ -63,7 +62,7 @@ public class FinanService extends Service {
    * Show the Finan main window.
    */
   public void showFinanMainWindow() {
-    new FinanMainWindow(swingCustomization, false, false, RolodexService.getInstance().getRolodex());
+    new FinanMainWindow(swingCustomization);
   }
   
   /**
@@ -89,6 +88,25 @@ public class FinanService extends Service {
       JfxApplication.reportException(null, e);
       System.exit(1);
     }
+  }
+  
+  /**
+   * Get the application properties from the FinanApplication.properties file.
+   * 
+   * @return the application properties.
+   */
+  public static Properties getApplicationProperties() {
+    Properties props = new Properties();
+    try (InputStream in = FinanService.class.getResourceAsStream("FinanApplication.properties")) {
+        props.load(in);
+        
+        return props;
+    } catch (Exception e) {
+      JfxApplication.reportException(null, e);
+      System.exit(1);
+    }
+    
+    return null;
   }
   
   @Override

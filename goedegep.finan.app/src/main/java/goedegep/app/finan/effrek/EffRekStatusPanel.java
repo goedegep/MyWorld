@@ -235,7 +235,6 @@ public class EffRekStatusPanel extends AppPanel {
     PgCurrency cashFlow = balance.subtract(nettoStorting);
     
     PgCurrency handelWinst = effRek.getVerzamelDepot().getTotalVModelProfit();
-    handelWinst = handelWinst.certifyCurrency(currencyUnitToUse);
 
     textFieldSaldo.setObjectValue(balance);
     textFieldSaldo2.setObjectValue(balance);
@@ -246,6 +245,7 @@ public class EffRekStatusPanel extends AppPanel {
     textFieldWinst2.setObjectValue(profit);
     PgCurrency overigeWinst = null;
     if (handelWinst != null) {
+      handelWinst = handelWinst.certifyCurrency(currencyUnitToUse);
       overigeWinst = profit.subtract(handelWinst);
     }
     textFieldOverigeWinst.setObjectValue(overigeWinst);

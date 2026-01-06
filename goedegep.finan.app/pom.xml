@@ -54,10 +54,6 @@
     </dependency>
     <dependency>
       <groupId>goedegep.finan</groupId>
-      <artifactId>goedegep-finan-lynx2finan-model</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>goedegep.finan</groupId>
       <artifactId>goedegep-finan-mortgage-model</artifactId>
     </dependency>
     <dependency>

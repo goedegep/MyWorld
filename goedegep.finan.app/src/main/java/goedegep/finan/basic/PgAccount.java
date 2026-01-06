@@ -170,6 +170,7 @@ public abstract class PgAccount implements DataDump {
       if (balance == null) {
         balance = amount;
       } else {
+        balance = balance.certifyCurrency(amount.getCurrency());
         balance = balance.add(amount);
       }
     } else {
@@ -207,6 +208,7 @@ public abstract class PgAccount implements DataDump {
     if (nettoStorting == null) {
       nettoStorting = amount;
     } else {
+      nettoStorting = nettoStorting.certifyCurrency(amount.getCurrency());
       nettoStorting = nettoStorting.add(amount);
     }
   }

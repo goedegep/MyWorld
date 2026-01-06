@@ -11,6 +11,7 @@ import goedegep.finan.stocks.DividendType;
 import goedegep.finan.stocks.Drip;
 import goedegep.finan.stocks.Share;
 import goedegep.finan.stocks.ShareDividend;
+import goedegep.util.datetime.DateUtil;
 import goedegep.util.fixedpointvalue.FixedPointValue;
 import goedegep.util.fixedpointvalue.FixedPointValueFormat;
 import goedegep.util.money.PgCurrency;
@@ -94,7 +95,7 @@ public abstract class EffRekVerwStockDiv extends EffRekTransactie {
     output.append(CF.format(brutoBedrag) + " ");
     
     output.append("keuzediv. zonder contante verw. dd  ");
-    output.append(DF.format(getBookingDate()));
+    output.append(DF.format(DateUtil.localDateToDate(getBookingDate())));
     output.append(", ");
     FixedPointValue verwisseldeDividenden = shareDividend.getDrip().getFromAmount().multiply(aantalAandelen);
     output.append(FPVF.format(verwisseldeDividenden) + " stdiv ");
@@ -175,7 +176,7 @@ public abstract class EffRekVerwStockDiv extends EffRekTransactie {
   }
   
   private void handleDrip(List<TransactionError> errors) {
-    LOGGER.severe("=> " + toString());
+//    LOGGER.severe("=> " + toString());
     EffRek        effectenRekening = (EffRek) getAccount();
 
     /*
@@ -203,12 +204,12 @@ public abstract class EffRekVerwStockDiv extends EffRekTransactie {
      * Zo ja, verwijder wat er in het depot zit, zo niet geen actie en rapporteer een fout.
      */
     FixedPointValue dividendenInDepot = effectenRekening.getVerzamelDepot().getStockDividendAmount(shareDividend);
-    LOGGER.severe(shareDividend.getName() + "  dividendenInDepot: " + FPVF.format(dividendenInDepot));
-    LOGGER.severe(shareDividend.getName() + "  this.aantalStockdividenden: " + FPVF.format(aantalStockdividenden));
-    LOGGER.severe(shareDividend.getName() + "  fromAmount: " + FPVF.format(shareDividend.getDrip().getFromAmount()));
+//    LOGGER.severe(shareDividend.getName() + "  dividendenInDepot: " + FPVF.format(dividendenInDepot));
+//    LOGGER.severe(shareDividend.getName() + "  this.aantalStockdividenden: " + FPVF.format(aantalStockdividenden));
+//    LOGGER.severe(shareDividend.getName() + "  fromAmount: " + FPVF.format(shareDividend.getDrip().getFromAmount()));
     FixedPointValue roundingValue = shareDividend.getDrip().getFromAmount().divide(2l);
-    LOGGER.severe(shareDividend.getName() + "  roundingValue: " + FPVF.format(roundingValue));
-    LOGGER.severe(shareDividend.getName() + "  this.verwisseldeDividenden: " + FPVF.format(aantalStockdividenden));
+//    LOGGER.severe(shareDividend.getName() + "  roundingValue: " + FPVF.format(roundingValue));
+//    LOGGER.severe(shareDividend.getName() + "  this.verwisseldeDividenden: " + FPVF.format(aantalStockdividenden));
     FixedPointValue differenceBetweenDividendsInDepotAndExchanged = dividendenInDepot.subtract(aantalStockdividenden).abs();
     if (differenceBetweenDividendsInDepotAndExchanged.isGreaterThan(roundingValue)) {
       LOGGER.severe("Aantal dividenden klopt niet voor " + shareDividend.getName() +

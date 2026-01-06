@@ -74,7 +74,6 @@ public class MortgagesWindow extends JfxStage implements EMFNotificationListener
   private TranslationFormatter translationFormatter = new TranslationFormatter(TRANSLATIONS);
   private EMFResource<Mortgages> mortgagesResource;
   private Mortgages mortgages;
-  private ComponentFactoryFx componentFactory;
   private MenuItem compensationPaymentsMenuItem;
   private MenuItem interestRateDevelopmentChartMenuItem;
   private Mortgage mortgage = null;

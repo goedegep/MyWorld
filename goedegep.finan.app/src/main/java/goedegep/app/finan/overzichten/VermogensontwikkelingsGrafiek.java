@@ -3,6 +3,7 @@ package goedegep.app.finan.overzichten;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.Paint;
 import java.text.DateFormat;
 import java.text.FieldPosition;
 import java.text.ParsePosition;
@@ -197,7 +198,8 @@ public class VermogensontwikkelingsGrafiek extends ChartPanel {
 
     // Customize the chart ...
     // set the background color for the chart...
-//    chart.setBackgroundPaint(look.getBackgroundColor());
+    Paint lookBackgroundColor = Color.white; // Temporary
+    chart.setBackgroundPaint(lookBackgroundColor);
 
     // Get the plot to customize it and to add a second renderer + data set.
     XYPlot plot = (XYPlot) chart.getPlot();
@@ -205,17 +207,17 @@ public class VermogensontwikkelingsGrafiek extends ChartPanel {
     // The crosshairs make it easier to determine values in the chart.
     plot.setDomainCrosshairVisible(true);
     plot.setRangeCrosshairVisible(true);
-//    plot.setBackgroundPaint(look.getListBackgroundColor());
-//    plot.setDomainGridlinePaint(look.getButtonBackgroundColor());
+    plot.setBackgroundPaint(Color.LIGHT_GRAY);
+    plot.setDomainGridlinePaint(Color.GRAY);
     plot.setDomainGridlinesVisible(true);
-//    plot.setRangeGridlinePaint(look.getBackgroundColor());
+    plot.setRangeGridlinePaint(Color.GRAY);
 
     // customize the renderer
     XYItemRenderer renderer = plot.getRenderer();
     if (renderer instanceof XYLineAndShapeRenderer) {
       XYLineAndShapeRenderer rr = (XYLineAndShapeRenderer) renderer;
-//      rr.setBaseShapesVisible(true);
-//      rr.setBaseShapesFilled(true);
+      rr.setBaseShapesVisible(true);
+      rr.setBaseShapesFilled(true);
       rr.setBaseItemLabelsVisible(true);
       rr.setSeriesPaint(0, Color.black);
       rr.setSeriesPaint(1, Color.black);

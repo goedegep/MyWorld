@@ -29,17 +29,17 @@ public class FinanRegistry extends Registry {
   /**
    * Name of the file with all information on claim emissions.
    */
-  private static String claimEmissionsFile = null;
+  private static String claimEmissionsFile = "ClaimEmissions.xml";
   
   /**
    * Name of the file with all information on companies.
    */
-  private static String companiesFile = null;
+  private static String companiesFile = "Companies.xml";
   
   /**
    * Name of the file with all information on company funds.
    */
-  private static String companyFundsFile = null;
+  private static String companyFundsFile = "CompanyFunds.xml";
   
   /**
    * Name of the file with Configuration data.
@@ -69,7 +69,7 @@ public class FinanRegistry extends Registry {
   /**
    * Name of the file with all shares issued for a fund.
    */
-  private static String fundSharesFile = null;
+  private static String fundSharesFile = "FundShares.xml";
   
   /**
    * File with share mappings from Lynx to Finan.
@@ -84,7 +84,7 @@ public class FinanRegistry extends Registry {
   /**
    * Name of the file with all option series.
    */
-  private static String optionSeriesFile = null;
+  private static String optionSeriesFile = "OptionSeries.xml";
   
   /**
    * Default account for the 'Postbank'.
@@ -94,12 +94,12 @@ public class FinanRegistry extends Registry {
   /**
    * Name of the file with all dividends per share.
    */
-  private static String shareDividendsFile = null;
+  private static String shareDividendsFile = "ShareDividends.xml";
   
   /**
    * Name of the file with all tax rates per share.
    */
-  private static String shareTaxRatesFile = null;
+  private static String shareTaxRatesFile = "BelastingKoersen.xml";
   
   /**
    * File with all financial transactions.
@@ -552,5 +552,24 @@ public class FinanRegistry extends Registry {
     setShortProductInfo("Financial program");
     setPropertyDescriptorsFileName("FinanPropertyDescriptors.xmi");
     setUserPropertiesFileName("FinanUserPreferences.xmi");
+  }
+
+  @Override
+  public boolean setValue(String name, String value) {
+    if (super.setValue(name, value)) {
+      return true;
+    }
+
+    boolean known = true;
+    switch (name) {
+    case "dataDirectory" -> dataDirectory = value;
+    case "jobAppointmentFile" -> jobAppointmentFile = value;
+    case "transactionsFile" -> transactionsFileName = value;
+    case "investmentInsurancesFileName" -> investmentInsurancesFileName = value;
+    case "mortgagesFileName" -> mortgagesFileName = value;
+    default -> known = false;
+    }
+
+    return known;
   }
 }

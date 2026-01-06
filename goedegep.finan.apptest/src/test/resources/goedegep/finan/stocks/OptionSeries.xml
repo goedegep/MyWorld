@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-
-<OptionSeries xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="OptionSeries.xsd">
-  <OptionSerie><Type>CALL</Type><FondsNaam>ASM LITHOGRAPHY EUR0.02</FondsNaam><Maand>7</Maand><Jaar>2002</Jaar><UitoefeningsKoers>e22,00</UitoefeningsKoers></OptionSerie>
-</OptionSeries>

@@ -1,7 +1,6 @@
 package goedegep.travels.exe;
 
 import java.io.File;
-import java.io.InputStream;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -50,42 +49,32 @@ public class TravelsApplication extends JfxApplication {
     }
     logSetup(Level.SEVERE, logFileBaseName);
     
-    TravelsService travelsService = TravelsService.getInstance();
+    // Catch any uncaught exceptions in the JavaFX application thread.
+    Thread.UncaughtExceptionHandler uncaughtExceptionHandler = new Thread.UncaughtExceptionHandler() {
+      @Override
+      public void uncaughtException(Thread thread, Throwable ex) {
+        reportException(null, (Exception) ex);
+      }
+    };
+    Thread javaFxApplicationThread = ThreadUtil.getThread("JavaFX Application Thread");
+    javaFxApplicationThread.setUncaughtExceptionHandler(uncaughtExceptionHandler);
     
     try {
-      travelsService.showTravelsWindow();
-
-      // Catch any uncaught exceptions in the JavaFX application thread.
-      Thread.UncaughtExceptionHandler uncaughtExceptionHandler = new Thread.UncaughtExceptionHandler() {
-        @Override
-        public void uncaughtException(Thread thread, Throwable ex) {
-          reportException(null, (Exception) ex);
-        }
-      };
-      Thread javaFxApplicationThread = ThreadUtil.getThread("JavaFX Application Thread");
-      javaFxApplicationThread.setUncaughtExceptionHandler(uncaughtExceptionHandler);
-
+      TravelsService.getInstance().showTravelsWindow();
     } catch (Exception ex) {
       reportException(null, ex);
     }
     
   }
   
+  /**
+   * Get the application name from the application properties.
+   * 
+   * @return the application name.
+   */
   protected String getApplicationNameFromApplicationProperties() {
     Properties properties = TravelsService.getApplicationProperties();
     return properties.getProperty("travels.app.name");
-    
-//    Properties props = new Properties();
-//    try (InputStream in = getClass().getResourceAsStream("TravelsApplication.properties")) {
-//        props.load(in);
-//        
-//        return props.getProperty("travels.app.name");
-//    } catch (Exception e) {
-//      JfxApplication.reportException(null, e);
-//      System.exit(1);
-//    }
-//    
-//    return null;
   }
 
 }

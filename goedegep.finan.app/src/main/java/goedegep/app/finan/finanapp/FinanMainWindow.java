@@ -66,14 +66,13 @@ import goedegep.appgen.swing.AppResources;
 import goedegep.appgen.swing.ComponentFactory;
 import goedegep.appgen.swing.Customization;
 import goedegep.appgen.swing.Customizations;
+import goedegep.appgen.swing.DefaultCustomization;
 import goedegep.appgen.swing.MenuFactory;
 import goedegep.appgen.swing.OptionDialog;
 import goedegep.finan.abnamrobank.AbnAmroBank;
 import goedegep.finan.app.FinanService;
 import goedegep.finan.basic.Bank;
 import goedegep.finan.basic.FinanTransaction;
-import goedegep.finan.basic.FinancieleEenheid;
-import goedegep.finan.basic.FinancieleEenheidHandler;
 import goedegep.finan.basic.PgTransaction;
 import goedegep.finan.basic.SumAccount;
 import goedegep.finan.basic.SumAccountListener;
@@ -128,7 +127,6 @@ public class FinanMainWindow extends AppFrame implements SumAccountListener {
       CANCEL, TRANSACTIES_VERWERKEN_EN_DOORGAAN, TRANSACTIES_NIET_VERWERKEN_EN_DOORGAAN
   };
   
-  private boolean                      isMainWindow;
   private ComponentFactory             componentFactory;
   
   private FinanRegistry finanRegistry;
@@ -151,10 +149,6 @@ public class FinanMainWindow extends AppFrame implements SumAccountListener {
   // 'All transactions'table
   private FinanTransactionsTable finanTransactionsTable;
   
-  // Financiele eenheden (under development)
-  private List<FinancieleEenheid> financieleEenheden = null;
-  private FinancieleEenheid financieleEenheid = null;
-  
   //
   // GUI elements
   //
@@ -170,10 +164,9 @@ public class FinanMainWindow extends AppFrame implements SumAccountListener {
   private PgJFileChooser fileChooser = new PgJFileChooser();
   
   
-  public FinanMainWindow(Customization customization, boolean isMainWindow, boolean userPropertiesFileInstalled, Rolodex rolodex) {
+  public FinanMainWindow(Customization customization) {
     super(WINDOW_TITLE, customization);
     LOGGER.setLevel(Level.SEVERE);
-    this.isMainWindow = isMainWindow;
     componentFactory = getTheComponentFactory();
     
     finanRegistry = FinanRegistry.getInstance();
@@ -189,7 +182,7 @@ public class FinanMainWindow extends AppFrame implements SumAccountListener {
     
     pack();
     
-    initFinance(userPropertiesFileInstalled, rolodex);
+    initFinance();
     
     setVisible(true);
   }
@@ -400,20 +393,20 @@ public class FinanMainWindow extends AppFrame implements SumAccountListener {
       }
     });
     
-    // Bestand: Uiterlijk voorbeeld scherm
-    JMenu vbMenu = new JMenu("Uiterlijk voorbeeld scherm");
-
-    PgMenuItem subMenuItem;
-    for (final AppModules module: AppModules.values()) {
-      subMenuItem = new PgMenuItem(module.name());
-      subMenuItem.addActionListener(new ActionListener()  {
-        public void actionPerformed(ActionEvent e) {
-          uiterlijkVoorbeeldScherm_actionPerformed(module);
-        }
-      });
-      vbMenu.add(subMenuItem);
-    }
-    menu.add(vbMenu);
+//    // Bestand: Uiterlijk voorbeeld scherm
+//    JMenu vbMenu = new JMenu("Uiterlijk voorbeeld scherm");
+//
+//    PgMenuItem subMenuItem;
+//    for (final AppModules module: AppModules.values()) {
+//      subMenuItem = new PgMenuItem(module.name());
+//      subMenuItem.addActionListener(new ActionListener()  {
+//        public void actionPerformed(ActionEvent e) {
+//          uiterlijkVoorbeeldScherm_actionPerformed(module);
+//        }
+//      });
+//      vbMenu.add(subMenuItem);
+//    }
+//    menu.add(vbMenu);
 
     menu.addSeparator();
 
@@ -516,8 +509,10 @@ public class FinanMainWindow extends AppFrame implements SumAccountListener {
     return splitPane;
   }
   
-  public void initFinance(boolean userPropertiesFileInstalled, Rolodex rolodex) {
-    if (userPropertiesFileInstalled) {
+  public void initFinance() {
+    boolean userPropertiesFileInstalled = (finanRegistry.getDataDirectory() != null);
+    
+    if (!userPropertiesFileInstalled) {
       // Show message to user.
       showMessageDialog(MessageDialogType.WARNING,
           "Het bestand met gebruiker specifieke eigenschappen bestond nog niet." +
@@ -546,18 +541,7 @@ public class FinanMainWindow extends AppFrame implements SumAccountListener {
     // Initialize financiele eenheden, companies, hypotheken.
     File file = null;
     String fileName = null;
-    try {
-      // Initialize financiele eenheden.
-      fileName = finanRegistry.getFinancieleEenhedenFile();
-      file = new File(dataDirectory, fileName);
-      if (rolodex != null) {
-        FinancieleEenheidHandler financieleEenheidHandler = new FinancieleEenheidHandler(rolodex);
-        LOGGER.fine("Going to read Financiele Eenheden file: " + file.getAbsolutePath());
-        financieleEenheidHandler.read(file.getPath());
-        financieleEenheden = financieleEenheidHandler.getFinancieleEenheden();
-        financieleEenheid = financieleEenheden.get(0);
-      }
-      
+    try {      
       // Initialize companies.
       fileName = finanRegistry.getCompaniesFile();
       file = new File(dataDirectory, fileName);
@@ -689,7 +673,7 @@ public class FinanMainWindow extends AppFrame implements SumAccountListener {
     try {
       contentHandler.write();
 
-      statusBar.setText("Opgeslagen in " + finanRegistry.getTransactionsFile().getPath());
+      statusBar.setText("Opgeslagen in " + finanRegistry.getTransactionsFile());
 
       transactionsFileDirty = false;
       transactiesOpslaanMenuItem.setEnabled(true);
@@ -779,15 +763,10 @@ public class FinanMainWindow extends AppFrame implements SumAccountListener {
     buf.append(WINDOW_TITLE);
     buf.append(" - ");
     
-    if (financieleEenheid != null) {
-      buf.append(financieleEenheid.getTeNaamStelling());
-      buf.append(" - ");
-    }
-    
     if (transactionsFileDirty) {
       buf.append("*");
     }
-    buf.append(finanRegistry.getTransactionsFile().getName());
+    buf.append(finanRegistry.getTransactionsFile());
     
     setTitle(buf.toString());
   }
@@ -831,12 +810,6 @@ public class FinanMainWindow extends AppFrame implements SumAccountListener {
 
     //repaints menu after item is selected
     this.repaint();
-  }
-  
-  private void uiterlijkVoorbeeldScherm_actionPerformed(AppModules appModule) {
-    Customization customization = Customizations.getCustomization(appModule.name());
-    JFrame frame = new CustomizationExampleFrame(this, appModule.name(), customization);
-    WindowUtil.showFrameCenteredOnScreen(frame);
   }
   
   public void dumpData_actionPerformed(ActionEvent e) {
@@ -898,9 +871,6 @@ public class FinanMainWindow extends AppFrame implements SumAccountListener {
   public void fileExit_actionPerformed(ActionEvent e) {
     if (okToAbandon()) {
       dispose();
-      if (isMainWindow) {
-        System.exit(0);
-      }
     }
   }
 
@@ -926,17 +896,17 @@ public class FinanMainWindow extends AppFrame implements SumAccountListener {
 
   void abnAmroBank_actionPerformed(ActionEvent e) {
     FinanBank finanBank = sumAccount.getBankForBankName(bankNameAbnAmroString);
-    WindowUtil.showFrameCenteredOnScreen(new AbnAmroBankWindow(Customizations.getCustomization(AppModules.FINAN_ABNAMRO_BANK.name()), finanBank), 22, 22);
+    WindowUtil.showFrameCenteredOnScreen(new AbnAmroBankWindow(DefaultCustomization.getInstance(), finanBank), 22, 22);
   }
 
   void direktbank_actionPerformed(ActionEvent e) {
     Direktbank direktbank = (Direktbank) sumAccount.getBankForBankName(bankNameDirektbankString).getBank();
-    WindowUtil.showFrameCenteredOnScreen(new DirektbankWindow(Customizations.getCustomization(AppModules.FINAN_DIREKTBANK.name()), direktbank), 22, 22);
+    WindowUtil.showFrameCenteredOnScreen(new DirektbankWindow(DefaultCustomization.getInstance(), direktbank), 22, 22);
   }
 
   void postbank_actionPerformed(ActionEvent e) {
     FinanBank finanBank = sumAccount.getBankForBankName(bankNamePostbankString);
-    WindowUtil.showFrameCenteredOnScreen(new PbRekWindow(Customizations.getCustomization(AppModules.FINAN_POSTBANK.name()), finanBank), 22, 22);
+    WindowUtil.showFrameCenteredOnScreen(new PbRekWindow(DefaultCustomization.getInstance(), finanBank), 22, 22);
   }
 
   void postbankEffRekVModel_actionPerformed(ActionEvent e) {

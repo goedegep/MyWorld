@@ -12,6 +12,7 @@ import goedegep.finan.basic.PgTransaction;
 import goedegep.finan.stocks.Fund;
 import goedegep.finan.stocks.Share;
 import goedegep.types.model.DateRateTuplet;
+import goedegep.util.datetime.DateUtil;
 import goedegep.util.fixedpointvalue.FixedPointValue;
 import goedegep.util.money.PgCurrency;
 import goedegep.util.text.TextWriter;
@@ -347,7 +348,7 @@ public class PbFonds extends PgAccount {
 
       date = transaction.getBookingDate();
       if (date != null) {
-        textWriter.write(df.format(date));
+        textWriter.write(df.format(DateUtil.localDateToDate(date)));
       }
       textWriter.write('\t');
 
@@ -356,7 +357,7 @@ public class PbFonds extends PgAccount {
 
       date = transaction.getExecutionDate();
       if (date != null) {
-        textWriter.write(df.format(date));
+        textWriter.write(df.format(DateUtil.localDateToDate(date)));
       }
       textWriter.write('\t');
 

@@ -1,6 +1,7 @@
 package goedegep.finan.exe;
 
 import java.io.File;
+import java.util.Properties;
 import java.util.logging.Level;
 
 import goedegep.finan.app.FinanService;
@@ -13,7 +14,6 @@ import javafx.stage.Stage;
  * This class is the main entry point for the Finan JavaFX application.
  */
 public class FinanApplication extends JfxApplication {
-  private static final String PROGRAM_NAME = "Finan";
   private static final String LOG_SUBFOLDER = "MyWorld";
 
 
@@ -36,11 +36,12 @@ public class FinanApplication extends JfxApplication {
   
   @Override
   public void start(Stage primaryStage) throws Exception {
-    
+    String applicationName = getApplicationNameFromApplicationProperties();
+            
     // Setup logging. Only log to a file when not running in Eclipse.
     String logFileBaseName = null;
     if (!RunningInEclipse.runningInEclipse()) {
-      logFileBaseName = System.getProperty("user.home") + File.separator + LOG_SUBFOLDER + File.separator + PROGRAM_NAME + "_logfile";
+      logFileBaseName = System.getProperty("user.home") + File.separator + LOG_SUBFOLDER + File.separator + applicationName + "_logfile";
     }
     logSetup(Level.SEVERE, logFileBaseName);
     
@@ -58,7 +59,15 @@ public class FinanApplication extends JfxApplication {
     } catch (Exception ex) {
       reportException(null, ex);
     }
-    
   }
   
+  /**
+   * Get the application name from the application properties.
+   * 
+   * @return the application name.
+   */
+  protected String getApplicationNameFromApplicationProperties() {
+    Properties properties = FinanService.getApplicationProperties();
+    return properties.getProperty("travels.app.name");
+  }
 }
