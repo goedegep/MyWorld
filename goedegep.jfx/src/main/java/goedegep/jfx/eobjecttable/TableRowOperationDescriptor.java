@@ -1,4 +1,4 @@
-package goedegep.appgen;
+package goedegep.jfx.eobjecttable;
 
 import java.util.List;
 import java.util.function.BiConsumer;

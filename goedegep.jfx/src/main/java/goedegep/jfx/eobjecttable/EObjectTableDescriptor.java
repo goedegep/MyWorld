@@ -10,8 +10,7 @@ import java.util.function.Predicate;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 
-import goedegep.appgen.Operation;
-import goedegep.appgen.TableRowOperationDescriptor;
+import goedegep.jfx.Operation;
 
 /**
  * This class provides a descriptor to customize an <code>EObjectTable</code>

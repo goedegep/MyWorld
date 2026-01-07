@@ -18,4 +18,6 @@ module goedegep.app.finan {
   requires transitive goedegep.finan.investmentinsurance.model;
   requires transitive goedegep.finan.jobappointment.model;
   requires goedegep.myworld.common;
+  requires goedegep.model.configuration;
+  requires goedegep.resources;
 }

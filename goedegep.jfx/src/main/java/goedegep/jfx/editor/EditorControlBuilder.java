@@ -19,7 +19,7 @@ public abstract class EditorControlBuilder {
   /**
    * The GUI customization (optional).
    * <p>
-   * If not set an instance of the {@link DefaultCustomization} is used.
+   * If not set an instance of the {@link DefaultCustomizationFx} is used.
    */
   public CustomizationFx customization;
   

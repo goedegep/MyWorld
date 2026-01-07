@@ -3,7 +3,7 @@ package goedegep.jfx.eobjecttreeview;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
-import goedegep.appgen.Operation;
+import goedegep.jfx.Operation;
 
 /**
  * This class is a {@code NodeOperationDescriptor} for a custom operation.

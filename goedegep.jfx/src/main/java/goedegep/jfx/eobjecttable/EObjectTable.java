@@ -27,11 +27,10 @@ import org.eclipse.emf.ecore.EcoreFactory;
 import org.eclipse.emf.ecore.EcorePackage;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 
-import goedegep.appgen.Operation;
-import goedegep.appgen.TableRowOperationDescriptor;
 import goedegep.jfx.ComponentFactoryFx;
 import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.DoubleClickEventDispatcher;
+import goedegep.jfx.Operation;
 import goedegep.jfx.observableelist.ObservableEList;
 import goedegep.jfx.stringconverterandchecker.AnyTypeStringConverterAndChecker;
 import goedegep.jfx.stringconverterandchecker.DateStringConverterAndChecker;

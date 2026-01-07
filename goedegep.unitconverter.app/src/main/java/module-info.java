@@ -2,7 +2,6 @@ module goedegep.unitconverter.app {
   exports goedegep.unitconverter.app;
   exports goedegep.unitconverter.app.guifx;
 
-  requires goedegep.appgen;
   requires transitive goedegep.jfx;
   requires goedegep.model.properties;
   requires goedegep.properties.app;
@@ -15,4 +14,5 @@ module goedegep.unitconverter.app {
   requires org.eclipse.emf.ecore;
   requires goedegep.myworld.common;
   requires goedegep.resources;
+  requires goedegep.model.configuration;
 }

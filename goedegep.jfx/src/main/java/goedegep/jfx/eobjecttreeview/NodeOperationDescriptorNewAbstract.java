@@ -5,7 +5,7 @@ import java.util.function.Predicate;
 
 import org.eclipse.emf.ecore.EObject;
 
-import goedegep.appgen.Operation;
+import goedegep.jfx.Operation;
 
 /**
  * This class is the base class for all 'new' operations (being 'New', 'New Before' and 'New After').

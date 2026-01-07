@@ -3,7 +3,6 @@ package goedegep.jfx;
 import java.lang.reflect.InvocationTargetException;
 import java.util.logging.Logger;
 
-import goedegep.appgen.swing.AppResources;
 import goedegep.configuration.model.Look;
 import goedegep.configuration.model.ModuleLook;
 
@@ -44,7 +43,7 @@ public class CustomizationFx {
   /**
    * Set the AppResources of this Customization.
    * 
-   * @param appResources the {@link AppResources} for icons. This parameter may be null.
+   * @param appResources the {@link AppResourcesFx} for icons. This parameter may be null.
    */
   public void setResources(AppResourcesFx appResources) {
     this.appResources = appResources;

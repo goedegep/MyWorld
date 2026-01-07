@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
-import goedegep.appgen.swing.AppFrame;
 import goedegep.finan.investmentinsurance.model.InsuranceCompany;
 import goedegep.finan.investmentinsurance.model.InvestmentFund;
 import goedegep.jfx.ComponentFactoryFx;
@@ -37,7 +36,7 @@ public class InvestmentFundStockPriceDevelopmentPanel extends SplitPane {
     componentFactory = customization.getComponentFactoryFx();
     
     investmentFundStockPriceDevelopmentChart = new InvestmentFundStockPriceDevelopmentChart();
-    VBox controlPanel = createFondsOntwikkelingsGrafiekControlPanel(null, insuranceCompanies);
+    VBox controlPanel = createFondsOntwikkelingsGrafiekControlPanel(insuranceCompanies);
         
     updateFondsOntwikkelingsGrafiek();
     
@@ -62,7 +61,7 @@ public class InvestmentFundStockPriceDevelopmentPanel extends SplitPane {
    * @param maatschappijen de maatschappijen die ingevuld worden in het paneel.
    * @return het controle paneel.
    */
-  private VBox createFondsOntwikkelingsGrafiekControlPanel(AppFrame owner, List<InsuranceCompany> maatschappijen) {
+  private VBox createFondsOntwikkelingsGrafiekControlPanel(List<InsuranceCompany> maatschappijen) {
     VBox vBox = componentFactory.createVBox(12.0);
     
     VBox buttonPanel = createButtonPanel();
@@ -100,7 +99,7 @@ public class InvestmentFundStockPriceDevelopmentPanel extends SplitPane {
     normalizedRadioButton.setToggleGroup(toggleGroup);
     vBox.getChildren().addAll(absoluteRadioButton, normalizedRadioButton);
 
-    toggleGroup.selectedToggleProperty().addListener((observable, oldVal, newVal) -> {
+    toggleGroup.selectedToggleProperty().addListener((_, _, newVal) -> {
       RadioButton radioButton = (RadioButton) newVal;
       normalizedStockPricesSelected = radioButton.getText().equals("Normalized");
       updateFondsOntwikkelingsGrafiek();
@@ -138,7 +137,7 @@ class FundSelectionPanel extends VBox {
         
         CheckBox checkBox = componentFactory.createCheckBox(fundId, true);
         selectedInvestmentFunds.add(investmentFund);
-        checkBox.setOnAction((e) -> {
+        checkBox.setOnAction((_) -> {
           String checkBoxFundId = checkBox.getText();
           InvestmentFund checkBoxInvestmentFund = fundIdToFundMap.get(checkBoxFundId);
           if (checkBoxInvestmentFund != null) {

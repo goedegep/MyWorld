@@ -2,8 +2,6 @@ module goedegep.finan.nota.app {
   exports goedegep.invandprop.app;
   exports goedegep.invandprop.app.guifx;
 
-//  requires goedegep.app.finan;
-  requires goedegep.appgen;
   requires transitive goedegep.jfx;
   requires transitive goedegep.invandprop.model;
   requires transitive goedegep.model.properties;
@@ -21,4 +19,5 @@ module goedegep.finan.nota.app {
   requires org.eclipse.emf.ecore.xmi;
   requires goedegep.myworld.common;
   requires goedegep.resources;
+  requires goedegep.model.configuration;
 }

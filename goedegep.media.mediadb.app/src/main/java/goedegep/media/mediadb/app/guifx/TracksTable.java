@@ -11,16 +11,16 @@ import java.util.logging.Logger;
 
 import org.eclipse.emf.ecore.EObject;
 
-import goedegep.appgen.Operation;
-import goedegep.appgen.TableRowOperationDescriptor;
 import goedegep.jfx.AppResourcesFx;
 import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.DefaultAppResourcesFx;
+import goedegep.jfx.Operation;
 import goedegep.jfx.eobjecttable.EObjectTable;
 import goedegep.jfx.eobjecttable.EObjectTableColumnDescriptorAbstract;
 import goedegep.jfx.eobjecttable.EObjectTableColumnDescriptorBasic;
 import goedegep.jfx.eobjecttable.EObjectTableColumnDescriptorCustom;
 import goedegep.jfx.eobjecttable.EObjectTableDescriptor;
+import goedegep.jfx.eobjecttable.TableRowOperationDescriptor;
 import goedegep.media.common.MediaAppResourcesFx;
 import goedegep.media.common.MediaRegistry;
 import goedegep.media.mediadb.model.Album;

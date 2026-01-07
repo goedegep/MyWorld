@@ -5,7 +5,7 @@ import java.util.function.Predicate;
 
 import org.eclipse.emf.ecore.EObject;
 
-import goedegep.appgen.Operation;
+import goedegep.jfx.Operation;
 
 /**
  * This class is a {@code NodeOperationDescriptor} for a 'New Before' operation.

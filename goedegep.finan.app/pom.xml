@@ -20,10 +20,6 @@
       <groupId>goedegep.rolodex</groupId>
       <artifactId>goedegep-rolodex-app</artifactId>
     </dependency>
-     <dependency>
-      <groupId>goedegep.appgen</groupId>
-      <artifactId>goedegep-appgen</artifactId>
-    </dependency>
     <dependency>
       <groupId>goedegep.jfx</groupId>
       <artifactId>goedegep-jfx</artifactId>

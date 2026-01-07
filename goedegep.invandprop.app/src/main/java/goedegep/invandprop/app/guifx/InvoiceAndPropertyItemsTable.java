@@ -5,16 +5,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
-import goedegep.appgen.Operation;
-import goedegep.appgen.TableRowOperationDescriptor;
 import goedegep.invandprop.model.InvAndPropPackage;
 import goedegep.invandprop.model.InvoiceAndPropertyItem;
 import goedegep.jfx.CustomizationFx;
+import goedegep.jfx.Operation;
 import goedegep.jfx.eobjecttable.EObjectTable;
 import goedegep.jfx.eobjecttable.EObjectTableColumnDescriptorAbstract;
 import goedegep.jfx.eobjecttable.EObjectTableColumnDescriptorBasic;
 import goedegep.jfx.eobjecttable.EObjectTableColumnDescriptorCustom;
 import goedegep.jfx.eobjecttable.EObjectTableDescriptor;
+import goedegep.jfx.eobjecttable.TableRowOperationDescriptor;
 import goedegep.util.money.PgCurrency;
 import goedegep.util.money.PgCurrencyFormat;
 import javafx.scene.control.TableCell;

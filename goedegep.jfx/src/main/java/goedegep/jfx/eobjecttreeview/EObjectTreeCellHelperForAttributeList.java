@@ -5,7 +5,7 @@ import java.util.logging.Logger;
 
 import org.eclipse.emf.common.util.EList;
 
-import goedegep.appgen.Operation;
+import goedegep.jfx.Operation;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.image.Image;

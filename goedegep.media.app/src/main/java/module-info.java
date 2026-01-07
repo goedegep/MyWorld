@@ -10,4 +10,6 @@ module goedegep.media.app {
   requires transitive goedegep.media.common;
   requires goedegep.media.mediadb.app;
   requires goedegep.myworld.common;
+  requires goedegep.model.configuration;
+  requires goedegep.resources;
 }

@@ -18,10 +18,10 @@ import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 
-import goedegep.appgen.Operation;
 import goedegep.jfx.ComponentFactoryFx;
 import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.DefaultCustomizationFx;
+import goedegep.jfx.Operation;
 import goedegep.util.emf.EmfPackageHelper;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;

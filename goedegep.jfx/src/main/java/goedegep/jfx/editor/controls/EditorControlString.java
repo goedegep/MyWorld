@@ -4,7 +4,6 @@ import java.util.Objects;
 import java.util.function.Supplier;
 import java.util.logging.Logger;
 
-import goedegep.appgen.swing.DefaultCustomization;
 import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.DefaultCustomizationFx;
 import goedegep.jfx.editor.EditorControlTemplate;
@@ -153,7 +152,7 @@ public class EditorControlString extends EditorControlTemplate<String> {
     /**
      * The GUI customization (optional).
      * <p>
-     * If not set an instance of the {@link DefaultCustomization} is used.
+     * If not set an instance of the {@link DefaultCustomizationFx} is used.
      */
     private CustomizationFx customization;
     

@@ -44,6 +44,10 @@
       <artifactId>goedegep-pctools</artifactId>
     </dependency>
     <dependency>
+      <groupId>org.apache.commons.cli</groupId>
+      <artifactId>org.apache.commons.cli</artifactId>
+    </dependency>
+    <dependency>
       <groupId>org.openjfx</groupId>
       <artifactId>javafx-base</artifactId>
       <classifier>win</classifier>

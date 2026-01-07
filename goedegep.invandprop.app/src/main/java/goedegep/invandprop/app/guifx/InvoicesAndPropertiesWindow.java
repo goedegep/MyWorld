@@ -10,10 +10,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
-import javax.swing.JDialog;
-
-import goedegep.appgen.MessageDialogType;
-import goedegep.appgen.swing.MessageDialog;
 import goedegep.invandprop.app.InvoicesAndPropertiesRegistry;
 import goedegep.invandprop.app.InvoicesAndPropertiesService;
 import goedegep.invandprop.app.InvoicesAndPropertiesUtil;
@@ -444,7 +440,10 @@ public class InvoicesAndPropertiesWindow extends JfxStage {
       try {
         FileUtils.moveFileToBackupFolder(dataDumpFile.getParent(), dataDumpFile.getName(), true);
       } catch (IOException e1) {
-        showMessageDialog(MessageDialogType.ERROR, "Het opslaan is mislukt, melding: " + e1.getMessage());
+        componentFactory.createErrorDialog(
+            "Creation of a backup of the data dump failed.",
+            e1.getMessage()
+            ).showAndWait();
       }
 
       dumpDataToFile(dataDumpFile);
@@ -480,18 +479,6 @@ public class InvoicesAndPropertiesWindow extends JfxStage {
         .showAndWait();
   }
   
-  // TODO remove
-  public void showMessageDialog(MessageDialogType messageDialogType, String message) {
-    showMessageDialog(messageDialogType, message, null);
-  }
-  
-  public void showMessageDialog(MessageDialogType messageDialogType, String message, Image image) {
-    JDialog dlg;
-    dlg = MessageDialog.createMessageDialog(null, messageDialogType, null, message);
-    dlg.setModalityType(java.awt.Dialog.ModalityType.APPLICATION_MODAL);
-    dlg.setVisible(true);
-  }
-
   /**
    * Update the window title.
    * <p>

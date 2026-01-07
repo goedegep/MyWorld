@@ -6,14 +6,14 @@ import java.util.Map;
 
 import org.eclipse.emf.ecore.EReference;
 
-import goedegep.appgen.Operation;
-import goedegep.appgen.TableRowOperationDescriptor;
 import goedegep.jfx.ComponentFactoryFx;
 import goedegep.jfx.CustomizationFx;
+import goedegep.jfx.Operation;
 import goedegep.jfx.eobjecttable.EObjectTable;
 import goedegep.jfx.eobjecttable.EObjectTableColumnDescriptorAbstract;
 import goedegep.jfx.eobjecttable.EObjectTableColumnDescriptorBasic;
 import goedegep.jfx.eobjecttable.EObjectTableDescriptor;
+import goedegep.jfx.eobjecttable.TableRowOperationDescriptor;
 import goedegep.rolodex.model.Address;
 import goedegep.rolodex.model.AddressForPeriod;
 import goedegep.rolodex.model.AddressHolder;

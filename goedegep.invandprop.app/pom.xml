@@ -13,10 +13,6 @@
   </parent>
   <dependencies>
     <dependency>
-      <groupId>goedegep.appgen</groupId>
-      <artifactId>goedegep-appgen</artifactId>
-    </dependency>
-    <dependency>
       <groupId>goedegep.invandprop</groupId>
       <artifactId>goedegep-invandprop-model</artifactId>
     </dependency>

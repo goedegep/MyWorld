@@ -9,11 +9,10 @@ import java.util.logging.Logger;
 
 import org.eclipse.emf.ecore.EReference;
 
-import goedegep.appgen.Operation;
-import goedegep.appgen.TableRowOperationDescriptor;
 import goedegep.jfx.ComponentFactoryFx;
 import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.JfxStage;
+import goedegep.jfx.Operation;
 import goedegep.jfx.eobjecttable.EObjectTable;
 import goedegep.jfx.eobjecttable.EObjectTableColumnDescriptorAbstract;
 import goedegep.jfx.eobjecttable.EObjectTableColumnDescriptorBasic;
@@ -23,6 +22,7 @@ import goedegep.jfx.eobjecttable.EObjectTableColumnGroupDescriptor;
 import goedegep.jfx.eobjecttable.EObjectTableControlPanel;
 import goedegep.jfx.eobjecttable.EObjectTableDescriptor;
 import goedegep.jfx.eobjecttable.TableFilterBooleanPredicate;
+import goedegep.jfx.eobjecttable.TableRowOperationDescriptor;
 import goedegep.jfx.objectcontrols.ObjectControlBoolean;
 import goedegep.jfx.objectcontrols.ObjectControlGroup;
 import goedegep.jfx.objectcontrols.ObjectControlInteger;

@@ -1,4 +1,4 @@
-package goedegep.appgen;
+package goedegep.jfx;
 
 public enum Operation {
   NEW_OBJECT,                  // Shown in case of an empty table

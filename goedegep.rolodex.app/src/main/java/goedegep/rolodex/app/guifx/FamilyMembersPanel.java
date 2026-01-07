@@ -5,14 +5,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.BiConsumer;
 
-import goedegep.appgen.Operation;
-import goedegep.appgen.TableRowOperationDescriptor;
 import goedegep.jfx.ComponentFactoryFx;
 import goedegep.jfx.CustomizationFx;
+import goedegep.jfx.Operation;
 import goedegep.jfx.eobjecttable.EObjectTable;
 import goedegep.jfx.eobjecttable.EObjectTableColumnDescriptorAbstract;
 import goedegep.jfx.eobjecttable.EObjectTableColumnDescriptorBasic;
 import goedegep.jfx.eobjecttable.EObjectTableDescriptor;
+import goedegep.jfx.eobjecttable.TableRowOperationDescriptor;
 import goedegep.rolodex.app.logic.PersonsComparator;
 import goedegep.rolodex.model.Family;
 import goedegep.rolodex.model.Person;

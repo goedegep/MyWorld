@@ -7,7 +7,7 @@ import java.util.logging.Logger;
 
 import org.eclipse.emf.ecore.EAttribute;
 
-import goedegep.appgen.Operation;
+import goedegep.jfx.Operation;
 import goedegep.util.desktop.DesktopUtil;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;

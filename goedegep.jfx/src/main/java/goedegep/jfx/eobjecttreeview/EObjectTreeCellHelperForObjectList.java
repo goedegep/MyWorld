@@ -13,7 +13,7 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.util.EObjectResolvingEList;
 
-import goedegep.appgen.Operation;
+import goedegep.jfx.Operation;
 import goedegep.util.emf.EmfPackageHelper;
 import goedegep.util.emf.EmfUtil;
 import javafx.event.ActionEvent;

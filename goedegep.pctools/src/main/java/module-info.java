@@ -7,7 +7,6 @@ module goedegep.pctools {
   exports goedegep.pctools.app.logic;
   exports goedegep.pctools.filefinder.guifx;
 
-  requires goedegep.appgen;
   requires transitive goedegep.jfx;
   requires goedegep.model.properties;
   requires transitive goedegep.pctools.filescontrolled.model;
@@ -26,4 +25,5 @@ module goedegep.pctools {
   requires goedegep.resources;
   requires org.commonmark;
   requires com.google.common.jimfs;
+  requires goedegep.model.configuration;
 }

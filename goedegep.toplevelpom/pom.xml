@@ -180,11 +180,6 @@
         <version>1.0-SNAPSHOT</version>
       </dependency>
       <dependency>
-        <groupId>goedegep.appgen</groupId>
-        <artifactId>goedegep-appgen</artifactId>
-        <version>${goedegep.myworld.version}</version>
-      </dependency>
-      <dependency>
         <groupId>goedegep.applicationcomponent</groupId>
         <artifactId>goedegep-applicationcomponent</artifactId>
         <version>${goedegep.myworld.version}</version>
@@ -715,7 +710,6 @@
     <module>../goedegep.icons.iconset.model</module>
     <module>../goedegep.configuration.model</module>
     <module>../goedegep.properties.model</module>
-    <module>../goedegep.appgen</module>
     <module>../goedegep.jfx</module>
     <module>../goedegep.jfxtest</module>
     <module>../goedegep.properties.app</module>

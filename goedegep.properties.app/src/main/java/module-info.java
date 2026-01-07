@@ -1,7 +1,6 @@
 module goedegep.properties.app {
   exports goedegep.properties.app.guifx;
 
-  requires goedegep.appgen;
   requires transitive goedegep.jfx;
   requires transitive goedegep.model.properties;
   requires goedegep.util;

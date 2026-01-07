@@ -17,4 +17,5 @@ module goedegep.gpx.app {
   requires goedegep.util;
   requires javafx.base;
   requires tim.prune;
+  requires goedegep.model.configuration;
 }

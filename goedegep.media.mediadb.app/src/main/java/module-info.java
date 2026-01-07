@@ -9,7 +9,6 @@ module goedegep.media.mediadb.app {
 
   requires transitive com.gluonhq.maps;
   requires com.google.common;
-  requires goedegep.appgen;
   requires goedegep.mapview;
   requires transitive goedegep.jfx;
   requires transitive goedegep.media.mediadb.model;

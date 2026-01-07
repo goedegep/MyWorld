@@ -2,7 +2,7 @@ package goedegep.jfx.eobjecttreeview;
 
 import java.util.function.Predicate;
 
-import goedegep.appgen.Operation;
+import goedegep.jfx.Operation;
 
 /**
  * This class is the base class for the descriptors that describe the operations in an {@code EObjectTreeView}.

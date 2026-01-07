@@ -9,7 +9,6 @@ module goedegep.travels.app {
   requires transitive com.gluonhq.maps;
   requires com.google.common.geometry;
   requires de.micromata.opengis.kml.v220;
-  requires goedegep.appgen;
   requires transitive goedegep.jfx;
   requires transitive goedegep.geo;
   requires transitive goedegep.model.properties;
@@ -49,5 +48,6 @@ module goedegep.travels.app {
   requires transitive goedegep.gpx.app;
   requires goedegep.gpx10.model;
   requires goedegep.media.mediadb.app;
+  requires goedegep.model.configuration;
 //  requires goedegep.media.app;
 }

@@ -20,7 +20,6 @@ module goedegep.jfx {
   exports goedegep.jfx.xtreeview;
 
   requires org.apache.commons.cli;
-  requires transitive goedegep.appgen;
   requires goedegep.model.configuration;
   requires transitive goedegep.model.properties;
   requires transitive goedegep.util;
