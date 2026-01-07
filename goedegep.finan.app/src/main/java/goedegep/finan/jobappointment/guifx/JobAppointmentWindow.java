@@ -5,7 +5,7 @@ import java.io.IOException;
 import java.util.Calendar;
 import java.util.logging.Logger;
 
-import goedegep.app.finan.registry.FinanRegistry;
+import goedegep.finan.app.FinanRegistry;
 import goedegep.finan.app.FinanService;
 import goedegep.finan.jobappointment.JobAppointmentUtil;
 import goedegep.finan.jobappointment.model.JobAppointment;
