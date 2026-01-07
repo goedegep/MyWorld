@@ -3,13 +3,9 @@ package goedegep.finan.app;
 import java.io.InputStream;
 import java.util.Properties;
 
-import goedegep.app.finan.finanapp.FinanMainWindow;
-import goedegep.app.finan.finanapp.FinanResources;
-import goedegep.app.finan.finanapp.guifx.FinanResourcesFx;
-import goedegep.app.finan.guifx.FinanMenuWindow;
-import goedegep.app.finan.registry.FinanRegistry;
-import goedegep.appgen.swing.Customization;
 import goedegep.configuration.model.Look;
+import goedegep.finan.guifx.FinanMenuWindow;
+import goedegep.finan.guifx.FinanResourcesFx;
 import goedegep.jfx.AppResourcesFx;
 import goedegep.jfx.JfxApplication;
 import goedegep.myworld.common.Registry;
@@ -24,11 +20,6 @@ import javafx.stage.Stage;
  */
 public class FinanService extends Service {
 
-  /**
-   * The 'old' Swing GUI customization.
-   */
-  private Customization swingCustomization;
-  
   /**
    * The singleton instance of the FinanService.
    */
@@ -59,21 +50,12 @@ public class FinanService extends Service {
   }
   
   /**
-   * Show the Finan main window.
-   */
-  public void showFinanMainWindow() {
-    new FinanMainWindow(swingCustomization);
-  }
-  
-  /**
    * Constructor.
    * <p>
    * The constructor is private, so the class can only be instantiated from within, using the getInstance() method.
    */
   private FinanService() {
     finanRegistry = FinanRegistry.getInstance();
-        
-    swingCustomization = new Customization(new FinanResources());    
   }
   
   @Override

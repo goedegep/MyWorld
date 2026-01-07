@@ -2,7 +2,7 @@ package goedegep.finan.mortgage;
 
 import goedegep.configuration.model.ConfigurationFactory;
 import goedegep.configuration.model.Look;
-import goedegep.finan.mortgage.app.guifx.HypotheekResourcesFx;
+import goedegep.finan.mortgage.guifx.HypotheekResourcesFx;
 import goedegep.jfx.CustomizationFx;
 import javafx.scene.paint.Color;
 
