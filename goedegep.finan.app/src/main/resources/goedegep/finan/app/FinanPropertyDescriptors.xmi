@@ -11,52 +11,14 @@
       displayName="Finan data folder"/>
   <propertyDescriptors xsi:type="properties:FilePropertyDescriptor" type="FILE" name="jobAppointmentFile"
       description="Name of the file with the job appointments." displayName="Job appointment file name">
-    <fileExtensions>xml</fileExtensions>
-  </propertyDescriptors>
-  <propertyDescriptors xsi:type="properties:FilePropertyDescriptor" type="FILE" name="claimEmissionsFile"
-      description="Name of the file with claim emission information." displayName="Claim emissions filename">
-    <fileExtensions>xml</fileExtensions>
-  </propertyDescriptors>
-  <propertyDescriptors xsi:type="properties:FilePropertyDescriptor" type="FILE" name="companiesFile"
-      description="Name of the file with companies information." displayName="Companies filename">
-    <fileExtensions>xml</fileExtensions>
-  </propertyDescriptors>
-  <propertyDescriptors xsi:type="properties:FilePropertyDescriptor" type="FILE" name="companyFundsFile"
-      description="Name of the file with company funds information." displayName="Funds filename">
-    <fileExtensions>xml</fileExtensions>
-  </propertyDescriptors>
-  <propertyDescriptors xsi:type="properties:FilePropertyDescriptor" type="FILE" name="financieleEenhedenFile"
-      description="Name of the file with financial units." displayName="Financial units filename">
-    <fileExtensions>xml</fileExtensions>
-  </propertyDescriptors>
-  <propertyDescriptors xsi:type="properties:FilePropertyDescriptor" type="FILE" name="fundSharesFile"
-      description="Name of the file with shares information." displayName="Shares filename">
-    <fileExtensions>xml</fileExtensions>
+    <fileExtensions>job</fileExtensions>
   </propertyDescriptors>
   <propertyDescriptors xsi:type="properties:FilePropertyDescriptor" type="FILE" name="mortgagesFileName"
       description="Name of the file containing the mortgages information" displayName="Mortgages filename"/>
-  <propertyDescriptors xsi:type="properties:FilePropertyDescriptor" type="FILE" name="optionSeriesFile"
-      description="Name of the file with option series." displayName="Option series filename">
-    <fileExtensions>xml</fileExtensions>
-  </propertyDescriptors>
-  <propertyDescriptors xsi:type="properties:FilePropertyDescriptor" type="FILE" name="shareDividendsFile"
-      description="Name of the file with share dividends." displayName="Dividends filename">
-    <fileExtensions>xml</fileExtensions>
-  </propertyDescriptors>
-  <propertyDescriptors xsi:type="properties:FilePropertyDescriptor" type="FILE" name="shareTaxRatesFile"
-      description="Name of the file with dividend tax rates." displayName="Tax rates filename">
-    <fileExtensions>xml</fileExtensions>
-  </propertyDescriptors>
-  <propertyDescriptors xsi:type="properties:FilePropertyDescriptor" type="FILE" name="transactionsFile"
-      description="Name of the file with financial transactions." displayName="Transactions filename">
-    <fileExtensions>xml</fileExtensions>
-  </propertyDescriptors>
-  <propertyDescriptors xsi:type="properties:FilePropertyDescriptor" type="FILE" name="lynxShareIdToFinanShareNamesFile"
-      description="Name of the file with mappings of Lynx share Id's to share names." displayName="Lynx to Finan mapping filename">
     <fileExtensions>xml</fileExtensions>
   </propertyDescriptors>
   <propertyDescriptors xsi:type="properties:FilePropertyDescriptor" type="FILE" name="investmentInsurancesFileName"
       description="Name of the file with information on all investment insurances." displayName="Investment insurances filename">
-    <fileExtensions>xmi</fileExtensions>
+    <fileExtensions>invins</fileExtensions>
   </propertyDescriptors>
 </properties:PropertyDescriptorGroup>

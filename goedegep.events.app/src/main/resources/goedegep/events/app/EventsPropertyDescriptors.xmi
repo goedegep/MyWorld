@@ -4,7 +4,7 @@
     name="Events" description="Standard settings for the Events application.">
   <propertyDescriptors xsi:type="properties:FilePropertyDescriptor" type="FILE" name="eventsFileName"
       description="Name of the file with information about all events." displayName="Events file name">
-    <fileExtensions>xmi</fileExtensions>
+    <fileExtensions>events</fileExtensions>
   </propertyDescriptors>
   <propertyDescriptors type="DIRECTORY" name="eventsFolderName" description="Name of the folder with information about events."
       displayName="Events folder name"/>

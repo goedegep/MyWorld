@@ -11,6 +11,6 @@
       name="rolodexFile"
       description="Name of the file with the rolodex data."
       displayName="Rolodex filename">
-    <fileExtensions>xmi</fileExtensions>
+    <fileExtensions>rldx</fileExtensions>
   </propertyDescriptors>
 </properties:PropertyDescriptorGroup>

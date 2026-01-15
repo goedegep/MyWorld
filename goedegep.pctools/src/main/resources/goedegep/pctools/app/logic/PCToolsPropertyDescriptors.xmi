@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<properties:PropertyDescriptorGroup xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:properties="http://goedegep.properties/model"
+    name="PCTools">
+  <propertyDescriptors xsi:type="properties:FilePropertyDescriptor" type="FILE" name="defaultDiscStructureSpecificationFile"
+      description="The file to be opened when the FilesControlled application starts up."
+      displayName="Disc Structure Specification filename">
+    <fileExtensions>dss</fileExtensions>
+  </propertyDescriptors>
+  <propertyDescriptors type="DIRECTORY" name="dataDirectory" description="Default folder for saving Disc Structure Specifications."
+      displayName="Disc Structure Specifications folder"/>
+</properties:PropertyDescriptorGroup>

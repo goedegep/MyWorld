@@ -581,12 +581,23 @@ public class PhotoShowBuilder extends JfxStage {
     });
     actionButtonsPanel.getChildren().add(button);
     
-    button = componentFactory.createButton("Write show folder", null);
+    button = componentFactory.createButton("Write links show folder", null);
     button.setOnAction(new EventHandler<ActionEvent>() {
 
       @Override
       public void handle(ActionEvent event) {
         writeShowFolder();
+      }
+      
+    });
+    actionButtonsPanel.getChildren().add(button);
+    
+    button = componentFactory.createButton("Write copies show folder", null);
+    button.setOnAction(new EventHandler<ActionEvent>() {
+
+      @Override
+      public void handle(ActionEvent event) {
+        writeCopiesShowFolder();
       }
       
     });
@@ -780,7 +791,30 @@ public class PhotoShowBuilder extends JfxStage {
     File showFolder = directoryChooser.showDialog(this);
     
     // Create the show
-    writeShowFolder(showFolder);
+    writeShowFolder(showFolder, ShowFileType.SHORTCUT);
+  }
+  
+  /**
+   * Create a photo show folder with copies of the photos
+   * <p>
+   * Via a DirectoryChooser the user is requested to select a folder, to which the show photos will be written.<br/>
+   * If the {@link #currentlySelectedFolder} is set, this will be set as the initial folder for the DirectoryChooser.<br/>
+   * The actual show is created by calling {@link #writeCopiesShowFolder(File)}.
+   * 
+   */
+  private void writeCopiesShowFolder() {
+    // Let user select folder name
+    DirectoryChooser directoryChooser = new DirectoryChooser();
+    directoryChooser.setTitle("Create copies show folder");
+    
+    if (currentlySelectedFolder != null) {
+      File initialPlaylistFolder = new File(currentlySelectedFolder);
+      directoryChooser.setInitialDirectory(initialPlaylistFolder);
+    }
+    File showFolder = directoryChooser.showDialog(this);
+    
+    // Create the show
+    writeShowFolder(showFolder, ShowFileType.COPY);
   }
   
   /**
@@ -792,7 +826,7 @@ public class PhotoShowBuilder extends JfxStage {
    * 
    * @param showFolder to folder to which the photos will be copied.
    */
-  private void writeShowFolder(File showFolder) {    
+  private void writeShowFolder(File showFolder, ShowFileType showFileType) {    
     OrderedNameGenerator orderedNameGenerator = new OrderedNameGenerator();
     
     for (IPhotoInfo photoInfo: photoShowList) {

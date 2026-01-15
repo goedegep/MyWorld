@@ -250,13 +250,6 @@ public class PropertiesEditor extends JfxStage {
     editablePropertyGroup_name.setEType(EcorePackage.eINSTANCE.getEString());
     structuralFeatures.add(editablePropertyGroup_name);
     
-//    editablePropertyGroup_editablePropertyGroups = EcoreFactory.eINSTANCE.createEReference();
-//    editablePropertyGroup_editablePropertyGroups.setName("editablePropertyGroups");
-//    editablePropertyGroup_editablePropertyGroups.setUpperBound(-1);
-//    editablePropertyGroup_editablePropertyGroups.setContainment(true);
-//    editablePropertyGroup_editablePropertyGroups.setEType(editablePropertyGroup);
-//    structuralFeatures.add(editablePropertyGroup_editablePropertyGroups);
-    
     editablePropertyGroup_editableProperties = EcoreFactory.eINSTANCE.createEReference();
     editablePropertyGroup_editableProperties.setName("editableProperties");
     editablePropertyGroup_editableProperties.setUpperBound(-1);
@@ -323,12 +316,7 @@ public class PropertiesEditor extends JfxStage {
     eObjectTreeItemClassListReferenceDescriptor = new EObjectTreeItemClassListReferenceDescriptor(editablePropertyGroup_editableProperties)
         .setLabelText("Settings");
     eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(eObjectTreeItemClassListReferenceDescriptor);
-    
-//    // Sub groups
-//    eObjectTreeItemClassListReferenceDescriptor = new EObjectTreeItemClassListReferenceDescriptor(editablePropertyGroup_editablePropertyGroups)
-//        .setLabelText("Sub groups");
-//    eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(eObjectTreeItemClassListReferenceDescriptor);
-    
+        
     return eObjectTreeItemClassDescriptor;
   }
     
@@ -404,14 +392,6 @@ public class PropertiesEditor extends JfxStage {
     try {
       PropertyGroup propertyGroup = propertiesResource.load(propertiesFilePath.toString());
 
-//      String propertyGroupName = propertyGroup.getName();
-//      String editablePropertyGroupName = (String) editablePropertyGroup.eGet(editablePropertyGroup_name);
-//      if (!propertyGroupName.contentEquals(editablePropertyGroupName)) {
-//        LOGGER.severe("Group names don't match");
-//        LOGGER.severe("propertyGroupName=" + propertyGroupName + ", editablePropertyGroupName=" + editablePropertyGroupName);
-//
-//        return;
-//      }
       fillEditablePropertiesGroupFromPropertyGroup(editablePropertyGroup, propertyGroup);
 
     } catch (IOException e) {
@@ -455,18 +435,6 @@ public class PropertiesEditor extends JfxStage {
         LOGGER.severe("No match found for property: " + property.getName());
       }
     }
-    
-//    // Handle any sub groups
-//    @SuppressWarnings("unchecked")
-//    EList <EObject> editablePropertySubGroups = (EList<EObject>) editablePropertyGroup.eGet(editablePropertyGroup_editablePropertyGroups);
-//    for (PropertyGroup subPropertyGroup: propertyGroup.getPropertyGroups()) {
-//      for (EObject editablePropertySubGroup: editablePropertySubGroups) {
-//        String editablePropertySubGroupName = (String) editablePropertySubGroup.eGet(editablePropertyGroup_name);
-//        if (editablePropertySubGroupName.equals(subPropertyGroup.getName())) {
-//          fillEditablePropertiesGroupFromPropertyGroup(editablePropertySubGroup, subPropertyGroup);
-//        }
-//      }
-//    }
     
     LOGGER.info("<=");
   }
@@ -515,8 +483,6 @@ public class PropertiesEditor extends JfxStage {
    * @param propertyGroup the <code>PropertyGroup</code> to copy the values into.
    */
   private void copyEditablePropertyGroupValuesToCustomProperties(EObject editablePropertyGroup, PropertyGroup propertyGroup) {
-    LOGGER.severe("=> propertyGroup.getName()=" + propertyGroup.getName());
-    
     // Copy the values of the editable properties to the corresponding Properties.
     // Some properties may have to be added, other may have to be cleared/removed.
     // Therefore the simplest way is to remove all existing properties and add necessary values.
@@ -537,28 +503,6 @@ public class PropertiesEditor extends JfxStage {
       properties.add(property);      
     }
     
-//    // Handle the sub groups
-//    @SuppressWarnings("unchecked")
-//    EList<EObject> editablePropertyGroups = (EList<EObject>) editablePropertyGroup.eGet(editablePropertyGroup_editablePropertyGroups);
-//    EList<PropertyGroup> propertyGroups = propertyGroup.getPropertyGroups();
-//    for (EObject editablePropertySubGroup: editablePropertyGroups) {
-//      PropertyGroup propertySubGroupToHandle = null;
-//      for (PropertyGroup propertySubGroup: propertyGroups) {
-//        String name = (String) editablePropertySubGroup.eGet(editablePropertyGroup_name);
-//        if (propertySubGroup.getName().equals(name)) {
-//          propertySubGroupToHandle = propertySubGroup;
-//          break;
-//        }
-//        
-//        if (propertySubGroupToHandle != null) {
-//          copyEditablePropertyGroupValuesToCustomProperties(editablePropertySubGroup, propertySubGroupToHandle);
-//        } else {
-//          LOGGER.severe("No corresponding group found");
-//        }
-//      }
-//    }
-    
-    LOGGER.severe("<=");
   }
 
   /**

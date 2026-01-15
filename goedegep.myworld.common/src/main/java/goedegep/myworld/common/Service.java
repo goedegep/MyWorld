@@ -135,7 +135,12 @@ public abstract class Service implements IService {
     try {
       URI uri = userPropertiesFilePath.toUri();
       PropertyGroup propertyGroup = propertiesResource.load(uri);
-      propertyGroup.getProperties().forEach(p -> registry.setValue(p.getName(), p.getValue()));
+      propertyGroup.getProperties().forEach(p -> {
+        boolean known = registry.setValue(p.getName(), p.getValue());
+        if (!known) {
+          throw new RuntimeException("Unknown property name: " + p.getName() + " in user properties file: " + userPropertiesFilePath.toString());
+        }
+      });
     } catch (FileNotFoundException e) {
       e.printStackTrace();
     } catch (IOException e) {

@@ -58,7 +58,21 @@ public class RolodexRegistry extends Registry {
     setShortProductInfo("Addresses, phonenumbers and phone address books.");
     setPropertyDescriptorsFileName("RolodexPropertyDescriptors.xmi");
     setUserPropertiesFileName("RolodexUserPreferences.xmi");
-    setRolodexFile("D:\\Database\\MyWorld\\Rolodex.xmi");
+  }
+
+  @Override
+  public boolean setValue(String name, String value) {
+    if (super.setValue(name, value)) {
+      return true;
+    }
+
+    boolean known = true;
+    switch (name) {
+    case "rolodexFile" -> rolodexFile = value;
+    default -> known = false;
+    }
+
+    return known;
   }
 
 }

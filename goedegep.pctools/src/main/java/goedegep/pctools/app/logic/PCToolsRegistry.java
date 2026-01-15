@@ -84,4 +84,20 @@ public class PCToolsRegistry extends Registry {
     setDefaultDiscStructureSpecificationFile("D:\\Database\\MyWorld\\DiscStructureSpecification.xmi");
   }
 
+  @Override
+  public boolean setValue(String name, String value) {
+    if (super.setValue(name, value)) {
+      return true;
+    }
+
+    boolean known = true;
+    switch (name) {
+    case "defaultDiscStructureSpecificationFile" -> defaultDiscStructureSpecificationFile = value;
+    case "dataDirectory" -> dataDirectory = value;
+    default -> known = false;
+    }
+
+    return known;
+  }
+
 }
