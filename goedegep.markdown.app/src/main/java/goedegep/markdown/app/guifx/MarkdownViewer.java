@@ -22,6 +22,8 @@ import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.SplitPane;
+import javafx.scene.control.TextArea;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
@@ -35,6 +37,7 @@ public class MarkdownViewer extends JfxStage {
   private MarkdownRegistry markdownRegistry = MarkdownRegistry.getInstance();
   private Parser parser = Parser.builder().build();
   private HtmlRenderer renderer = HtmlRenderer.builder().build();
+  private TextArea textArea = new TextArea();
   private WebView webView = new WebView();
   private WebEngine webEngine = webView.getEngine();
   
@@ -45,6 +48,13 @@ public class MarkdownViewer extends JfxStage {
     markdownRegistry = MarkdownRegistry.getInstance();
     
     createGUI();
+    
+    textArea.textProperty().addListener((_, _, newValue) -> {
+      updateFormattedView(newValue);
+      org.commonmark.node.Node document = parser.parse(newValue);
+      String htmlText = renderer.render(document);
+      webEngine.loadContent(htmlText);
+    });
     
     if (filename != null) {
       showMarkdownFile(new File(filename));
@@ -58,10 +68,11 @@ public class MarkdownViewer extends JfxStage {
     
     mainPane.setTop(createMenuBar());
     
-//    HBox hBox = new HBox();
-//    hBox.getChildren().add(new Label("CENTER"));
-//    hBox.getChildren().add(webView);
-    mainPane.setCenter(webView);
+    SplitPane splitPane = new SplitPane();
+    splitPane.getItems().add(textArea);
+    splitPane.getItems().add(webView);
+    
+    mainPane.setCenter(splitPane);
     
     mainPane.setBottom(new Label("Status label"));
     
@@ -108,26 +119,40 @@ public class MarkdownViewer extends JfxStage {
   }
   
   private void showMarkdownFile(File file) {
-    StringBuilder buf = new StringBuilder();
-
+    // load the text into the text area.
     if (file != null) {
-      buf.append("<html>");
-      buf.append("<header>");
-      buf.append("</header>");
-      buf.append("<body>");
-      try {
-        Reader reader = new FileReader(file);
-        org.commonmark.node.Node document = parser.parseReader(reader);
-        String htmlText = renderer.render(document);
-        buf.append(htmlText);
+      try (Reader reader = new FileReader(file)) {
+        StringBuilder buf = new StringBuilder();
+        int ch;
+        while ((ch = reader.read()) != -1) {
+          buf.append((char) ch);
+        }
+        textArea.setText(buf.toString());
+        reader.close();
       } catch (IOException e) {
         e.printStackTrace();
       }
-      
-      buf.append("</body>");
-      buf.append("</html>");
+    } else {
+      textArea.setText("");
     }
     
+  }
+  
+  private void updateFormattedView(String markdownText) {
+    StringBuilder buf = new StringBuilder();
+
+    buf.append("<html>");
+    buf.append("<header>");
+    buf.append("</header>");
+    buf.append("<body>");
+    
+    org.commonmark.node.Node document = parser.parse(markdownText);
+    String htmlText = renderer.render(document);
+    buf.append(htmlText);
+
+    buf.append("</body>");
+    buf.append("</html>");
+
     webEngine.loadContent(buf.toString());
   }
 

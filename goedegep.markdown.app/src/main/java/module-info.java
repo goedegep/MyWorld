@@ -6,4 +6,5 @@ module goedegep.markdown.app {
   requires goedegep.resources;
   requires org.commonmark;
   requires goedegep.model.configuration;
+  requires javafx.controls;
 }
