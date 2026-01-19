@@ -14,7 +14,6 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import goedegep.rolodex.app.RolodexRegistry;
-import goedegep.rolodex.app.RolodexService;
 import goedegep.rolodex.model.Address;
 import goedegep.rolodex.model.Gender;
 import goedegep.rolodex.model.Person;
@@ -34,18 +33,17 @@ public class RolodexTest {
     Logger.getLogger("").setLevel(Level.WARNING);
     RolodexRegistry rolodexRegistry = RolodexRegistry.getInstance();
 
-//    RolodexRegistry.dataDirectory = TEST_DATA_DIR;
     rolodexRegistry.setRolodexFile(TEST_ROLODEX);
     
     EMFResource<Rolodex> rolodexResource = new EMFResource<>(
         RolodexPackage.eINSTANCE,
         () -> RolodexFactory.eINSTANCE.createRolodex(),
         ".xmi");
-    File rolodexFile = new File(rolodexRegistry.getRolodexFile());
+    File rolodexFile = new File(TEST_ROLODEX);
     rolodexResource.load(rolodexFile.getAbsolutePath());
 
-    RolodexService rolodexService = RolodexService.getInstance();
-    rolodex = rolodexService.getRolodex();
+    // Read the Rolodex file.
+      rolodex = rolodexResource.getEObject();
   }
   
   @AfterClass

@@ -52,7 +52,7 @@
 
   <build>
     <finalName>${travels.app.name}-${travels.app.version}</finalName>
-    <pluginManagement>
+<!--    <pluginManagement>
       <plugins>
         <plugin>
           <groupId>com.github.akman</groupId>
@@ -74,7 +74,7 @@
             <input>target/</input>
             <mainclass>goedegep.travels.exe.TravelsWrapper</mainclass>
             <type>EXE</type>
-            <javaoptions>--enable-preview</javaoptions>
+            <javaoptions>- -enable-preview</javaoptions>
             <dest>target</dest>
             <icon>${project.basedir}/src/main/resources/RoadToHorizon-128x128.ico</icon>
             <winconsole>false</winconsole>
@@ -83,7 +83,7 @@
           </configuration>
         </plugin>
       </plugins>
-    </pluginManagement>
+    </pluginManagement> -->
     
     <plugins>
       <plugin>
@@ -104,16 +104,17 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-assembly-plugin</artifactId>
-        <version>3.3.0</version>
+        <version>3.11.0</version>
         <configuration>
-          <archive>
+<!--          <archive>
             <manifest>
               <mainClass>goedegep.travels.exe.TravelsWrapper</mainClass>
             </manifest>
-          </archive>
+          </archive> -->
           <descriptorRefs>
             <descriptorRef>jar-with-dependencies</descriptorRef>
           </descriptorRefs>
+          <outputDirectory>target/jpackageInput</outputDirectory>
         </configuration>
         <executions>
           <execution>
@@ -126,7 +127,7 @@
         </executions>
       </plugin>
 
-      <plugin>
+<!--      <plugin>
         <groupId>com.github.akman</groupId>
         <artifactId>jpackage-maven-plugin</artifactId>
         <executions>
@@ -138,7 +139,7 @@
             </goals>
           </execution>
         </executions>
-      </plugin>
+      </plugin> -->
     </plugins>
   </build>
 </project>
