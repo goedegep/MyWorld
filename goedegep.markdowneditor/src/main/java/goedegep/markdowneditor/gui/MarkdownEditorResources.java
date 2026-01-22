@@ -1,11 +1,14 @@
-package goedegep.markdown.app.guifx;
+package goedegep.markdowneditor.gui;
 
 import goedegep.jfx.AbstractAppResourcesFx;
 import goedegep.resources.ImageResource;
 import goedegep.resources.ImageSize;
 import javafx.scene.image.Image;
 
-public class MarkdownAppResources extends AbstractAppResourcesFx {
+/**
+ * This class provides the application resources for the Markdown editor.
+ */
+public class MarkdownEditorResources extends AbstractAppResourcesFx {
 
   @Override
   protected void readResources() {

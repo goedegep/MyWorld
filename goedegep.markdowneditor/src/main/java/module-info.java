@@ -1,5 +1,5 @@
 module goedegep.markdown.app {
-  exports goedegep.markdown.app;
+  exports goedegep.markdowneditor.exe;
   
   requires transitive goedegep.jfx;
   requires goedegep.myworld.common;

@@ -21,9 +21,14 @@
     
     <goedegep.myworld.version>1.0-SNAPSHOT</goedegep.myworld.version>
     
-    <!-- Settings for all applications -->
-    <copyright>Copyright (c) 2001-2025</copyright>
-    <author.name>Peter Goedegebure</author.name>  <!-- Is also the vendor name of the applications -->
+    <!-- Settings for all projects -->
+    <copyright>Copyright(c) 2001-2026 Peter Goedegebure</copyright>
+    <author.name>Peter Goedegebure</author.name>
+    <vendor.name>goedegep</vendor.name>
+
+    
+    <!-- Versions for the MyWorld applications. These are kept here as other applications may depend on them.  -->
+    <markdowneditor.version>1.0.0</markdowneditor.version>
     
     <!-- Settings for the Demo application-->
     <demo.app.name>Demo</demo.app.name>
@@ -44,10 +49,6 @@
     <!-- Settings for the Invoices and Properties application-->
     <invandprop.app.name>Invoices and Properties</invandprop.app.name>
     <invandprop.app.version>0.0.1</invandprop.app.version>
-    
-    <!-- Settings for the Markdown application-->
-    <markdown.app.name>Markdown</markdown.app.name>
-    <markdown.app.version>0.0.1</markdown.app.version>
     
     <!-- Settings for the Media application-->
     <media.app.name>Media</media.app.name>
@@ -306,8 +307,8 @@
       </dependency>
       <dependency>
         <groupId>goedegep.markdown</groupId>
-        <artifactId>goedegep-markdown-app</artifactId>
-        <version>${goedegep.myworld.version}</version>
+        <artifactId>goedegep-markdown-editor</artifactId>
+        <version>${markdowneditor.version}</version>
       </dependency>
       <dependency>
         <groupId>goedegep.media</groupId>
@@ -720,7 +721,7 @@
     <module>../tim.prune</module>
     <module>../goedegep.myworld.common</module>
     <module>../goedegep.poi.app</module>
-    <module>../goedegep.markdown.app</module>
+    <module>../goedegep.markdowneditor</module>
     <module>../goedegep.rolodex.model</module>
     <module>../goedegep.events.model</module>
     <module>../goedegep.media.mediadb.model</module>

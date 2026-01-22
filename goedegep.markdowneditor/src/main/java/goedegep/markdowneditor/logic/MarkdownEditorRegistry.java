@@ -1,25 +1,25 @@
-package goedegep.markdown.app;
+package goedegep.markdowneditor.logic;
 
 import goedegep.myworld.common.Registry;
 
 /**
  * This registry class provides information to be shared within the complete Demo application.
  */
-public class MarkdownRegistry extends Registry {
+public class MarkdownEditorRegistry extends Registry {
   
   /**
    * Singleton instance of the MarkdownRegistry.
    */
-  private static MarkdownRegistry instance = null;
+  private static MarkdownEditorRegistry instance = null;
 
   /**
    * Get the singleton instance of the MarkdownRegistry.
    * 
    * @return the singleton instance of the MarkdownRegistry.
    */
-  public static MarkdownRegistry getInstance() {
+  public static MarkdownEditorRegistry getInstance() {
     if (instance == null) {
-      instance = new MarkdownRegistry();
+      instance = new MarkdownEditorRegistry();
     }
     
     return instance;
@@ -28,13 +28,10 @@ public class MarkdownRegistry extends Registry {
   /**
    * Private constructor for the MarkdownRegistry.
    */
-  private MarkdownRegistry() {
+  private MarkdownEditorRegistry() {
     super();
     
-    setAuthor("Peter Goedegebure");
-    setShortProductInfo("Markdown Viewer");
     setPropertyDescriptorsFileName("EventsPropertyDescriptors.xmi");
-    setUserPropertiesFileName("EventsUserPreferences.xmi");
   }
 
 }
