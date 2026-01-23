@@ -5,11 +5,11 @@ package goedegep.markdowneditor.exe;
  * <p>
  * This wrapper is needed because if the main class extends from javafx.application.Application the installed executable doesn't work.
  */
-public class MarkdownWrapper {
+public class MarkdownEditorWrapper {
   
   public static void main(String[] args) {
     
-    MarkdownApplication.main(args);
+    MarkdownEditorApplication.main(args);
     
   }
 }

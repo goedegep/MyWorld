@@ -1,12 +1,12 @@
 package goedegep.markdowneditor.exe;
 
-import java.io.File;
 import java.io.InputStream;
 import java.util.Properties;
 import java.util.logging.Level;
 
 import goedegep.jfx.JfxApplication;
 import goedegep.markdowneditor.svc.MarkdownEditorService;
+import goedegep.myworld.common.MyWorldUtil;
 import goedegep.util.RunningInEclipse;
 import goedegep.util.thread.ThreadUtil;
 import javafx.stage.Stage;
@@ -14,8 +14,7 @@ import javafx.stage.Stage;
 /**
  * This class is the main entry point for the Markdown JavaFX application.
  */
-public class MarkdownApplication extends JfxApplication {
-  private static final String LOG_SUBFOLDER = "MyWorld";
+public class MarkdownEditorApplication extends JfxApplication {
 
   /**
    * Command line arguments passed to the application.
@@ -23,14 +22,6 @@ public class MarkdownApplication extends JfxApplication {
    */
   private static String[] appArgs;
 
-  /**
-   * Constructor
-   * <p>
-   * Called during the JavaFx launch sequence.<br/>
-   */
-  public MarkdownApplication() {
-  }
-  
   /**  
    * Main method to start the Markdown editor JavaFX application.
    * 
@@ -46,21 +37,20 @@ public class MarkdownApplication extends JfxApplication {
     
     // Setup logging. Only log to a file when not running in Eclipse.
     String logFileBaseName = null;
-    
     String applicationName = null;
-    Properties props = new Properties();
-    try (InputStream in = MarkdownEditorService.class.getResourceAsStream(MarkdownEditorService.MARKDOWN_EDITOR_APPLICATION_PROPERTIES_FILE_NAME)) {
-        props.load(in);
-        
-        applicationName = props.getProperty("markdowneditor.name");
-    } catch (Exception e) {
-      JfxApplication.reportException(null, e);
-      System.exit(1);
-    }
-    
     
     if (!RunningInEclipse.runningInEclipse()) {
-      logFileBaseName = System.getProperty("user.home") + File.separator + LOG_SUBFOLDER + File.separator + applicationName + File.separator + applicationName + "_logfile";
+      Properties props = new Properties();
+      try (InputStream in = MarkdownEditorService.class.getResourceAsStream(MarkdownEditorService.MARKDOWN_EDITOR_APPLICATION_PROPERTIES_FILE_NAME)) {
+          props.load(in);
+          
+          applicationName = props.getProperty("markdowneditor.name");
+      } catch (Exception e) {
+        JfxApplication.reportException(null, e);
+        System.exit(1);
+      }
+
+      logFileBaseName = MyWorldUtil.createLogFileBaseName(applicationName);
     }
     logSetup(Level.SEVERE, logFileBaseName);
     

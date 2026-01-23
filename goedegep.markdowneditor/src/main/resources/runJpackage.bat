@@ -1,3 +1,3 @@
 rem During development add --win-console to see console output (from logging and System.out)
-jpackage --type exe --app-version ${markdowneditor.version} --copyright "${copyright}" --description "${markdowneditor.description}" --vendor "${vendor.name}" --name "${markdowneditor.name}" --icon src\main\resources\MarkdownLogo.ico --dest target --input target/jpackageInput --main-jar "Markdown editor-1.0.0-jar-with-dependencies.jar" --main-class goedegep.markdowneditor.exe.MarkdownWrapper
+jpackage --type exe --app-version ${markdowneditor.version} --copyright "${copyright}" --description "${markdowneditor.description}" --vendor "${vendor.name}" --name "${markdowneditor.name}" --icon src\main\resources\MarkdownLogo.ico --dest target --input target/jpackageInput --main-jar "Markdown editor-1.0.0-jar-with-dependencies.jar" --main-class goedegep.markdowneditor.exe.MarkdownEditorWrapper
 attrib -r "target\${markdowneditor.name}-${markdowneditor.version}.exe"
