@@ -26,6 +26,7 @@ import javafx.util.Pair;
 public class NominatimAPIUnitTest {
 
     String endpointUrl = "https://nominatim.openstreetmap.org/";
+    String userAgent = "goedegep MyWorld Travels";
 
 //    @Test
 //    public void testAddressToMapPoint() {
@@ -51,7 +52,7 @@ public class NominatimAPIUnitTest {
                         new Pair<>(33.510414, 36.278336),
                         new Pair<>(35.715298, 51.404343));
         for (Pair<Double, Double> point : points) {
-            OSMLocationInfo locationInfo = NominatimAPI.with(endpointUrl).getAddressFromMapPoint(point.getKey(), point.getValue());
+            OSMLocationInfo locationInfo = NominatimAPI.with(endpointUrl).getAddressFromMapPoint(userAgent, point.getKey(), point.getValue());
             OSMAddress address = locationInfo.getAddress();
             assertNotNull("Address object is bad.", address);
         }

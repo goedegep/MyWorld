@@ -28,11 +28,11 @@
 
     
     <!-- Versions for the MyWorld applications. These are kept here as other applications may depend on them.  -->
+    <demo.version>1.0.0</demo.version>
     <markdowneditor.version>1.0.0</markdowneditor.version>
     
     <!-- Settings for the Demo application-->
     <demo.app.name>Demo</demo.app.name>
-    <demo.app.version>0.0.1</demo.app.version>
     
     <!-- Settings for the Events application-->
     <events.app.name>Events</events.app.name>

@@ -1,4 +1,4 @@
-package goedegep.demo;
+package goedegep.demo.logic;
 
 import goedegep.myworld.common.Registry;
 

@@ -3,7 +3,7 @@ package goedegep.demo.exe;
 import java.io.File;
 import java.util.logging.Level;
 
-import goedegep.demo.DemoService;
+import goedegep.demo.svc.DemoService;
 import goedegep.jfx.JfxApplication;
 import goedegep.util.RunningInEclipse;
 import goedegep.util.thread.ThreadUtil;

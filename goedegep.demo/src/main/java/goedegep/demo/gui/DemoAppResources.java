@@ -1,4 +1,4 @@
-package goedegep.demo.guifx;
+package goedegep.demo.gui;
 
 import goedegep.jfx.AbstractAppResourcesFx;
 import goedegep.jfx.AppResourcesFx;

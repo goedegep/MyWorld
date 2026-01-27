@@ -1,4 +1,4 @@
-package goedegep.demo.jfx.editor;
+package goedegep.demo.jfx.editor.logic;
 
 import goedegep.emfsample.model.Company;
 

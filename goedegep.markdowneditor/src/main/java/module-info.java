@@ -1,4 +1,4 @@
-module goedegep.markdown.app {
+module goedegep.markdowneditor {
   exports goedegep.markdowneditor.exe;
   
   requires transitive goedegep.jfx;

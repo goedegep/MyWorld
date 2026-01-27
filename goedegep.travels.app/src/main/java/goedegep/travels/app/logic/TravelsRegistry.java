@@ -40,6 +40,11 @@ public class TravelsRegistry extends Registry {
   private static String knownFiles = null;
   
   /**
+   * User Agent string for the Nominatim geocoding service.
+   */
+  private static String nominatimUserAgent = null;
+  
+  /**
    * Singleton instance of the VacationsRegistry.
    */
   private static TravelsRegistry instance = null;
@@ -172,13 +177,31 @@ public class TravelsRegistry extends Registry {
     TravelsRegistry.knownFiles = knownFiles;
   }
 
+  /**
+   * Get the User Agent string for the Nominatim geocoding service.
+   * 
+   * @return the User Agent string for the Nominatim geocoding service.
+   */
+  public String getNominatimUserAgent() {
+    return nominatimUserAgent;
+  }
+
+  /**
+   * Set the User Agent string for the Nominatim geocoding service.
+   * 
+   * @param nominatimUserAgent the User Agent string for the Nominatim geocoding service.
+   */
+  public void setNominatimUserAgent(String nominatimUserAgent) {
+    TravelsRegistry.nominatimUserAgent = nominatimUserAgent;
+  }
+
 
   private TravelsRegistry() {
     super();
     
     setAuthor("Peter Goedegebure");
     setShortProductInfo("Travels - Information about travels, like vacations, trips, etc.");
-    setPropertyDescriptorsFileName("VacationsPropertyDescriptors.xmi");
+    setPropertyDescriptorsFileName("..\\..\\..\\goedegep.travels.app\\src\\main\\resources\\goedegep\\travels\\app\\logic\\VacationsPropertyDescriptors.xmi");
     setUserPropertiesFileName("VacationsUserPreferences.xmi");
     setVacationsFileName("D:\\Database\\Vacations\\Vacation.xmi");
     setVacationChecklistFileName("D:\\Database\\Vacations\\VacationChecklist.xmi");
@@ -201,6 +224,7 @@ public class TravelsRegistry extends Registry {
       case "vacationsFolderName" -> vacationsFolderName = value;
       case "vacationPicturesFolderName" -> vacationPicturesFolderName = value;
       case "ignoreVacationPictureFolders" -> ignoreVacationPictureFolders = value;
+      case "nominatimUserAgent" -> nominatimUserAgent = value;
       default -> known = false;
     }
     

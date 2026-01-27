@@ -365,7 +365,11 @@ public class PropertiesEditor extends JfxStage {
       ep.eSet(editableProperty_displayName, propertyDescriptor.getDisplayName());
       String description = null;
       if (resourceBundle != null) {
-        description = resourceBundle.getString(getQualifiedGroupName(propertyDescriptorGroup) + "." + propertyDescriptor.getName() + ".description");
+        try {
+          description = resourceBundle.getString(getQualifiedGroupName(propertyDescriptorGroup) + "." + propertyDescriptor.getName() + ".description");
+        } catch (Exception e) {
+          // ignore
+        }
       }
       if (description == null) {
         description = propertyDescriptor.getDescription();

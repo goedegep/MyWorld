@@ -37,6 +37,7 @@ import goedegep.poi.app.LocationCategory;
 import goedegep.resources.ImageSize;
 import goedegep.travels.app.logic.EnumStringConverterForLocationCategory;
 import goedegep.travels.app.logic.NominatimUtil;
+import goedegep.travels.app.logic.TravelsRegistry;
 import goedegep.travels.model.Boundary;
 import goedegep.travels.model.BoundingBox;
 import goedegep.travels.model.Location;
@@ -101,6 +102,8 @@ public class LocationSearchWindow extends JfxStage {
    * The GUI customization.
    */
   private CustomizationFx customization;
+  
+  private TravelsRegistry travelsRegistry = TravelsRegistry.getInstance();
   
   /**
    * An instance of the {@link NominatimAPI} used to perform the search queries.
@@ -213,10 +216,15 @@ public class LocationSearchWindow extends JfxStage {
    * The result is handed over to the {@code locationInfosPanel}.
    */
   void performReverseGeocodeSearch(double latitude, double longitude) {
+    if (travelsRegistry.getNominatimUserAgent() == null) {
+      reportProblemViaStatusPanel(new IOException("Nominatim user agent is not set in the vacations preferences"));
+      return;
+    }
+    
     statusPanel.setText(null);
     OSMLocationInfo locationInfo;
     try {
-      locationInfo = nominatimAPI.getAddressFromMapPoint(latitude, longitude);
+      locationInfo = nominatimAPI.getAddressFromMapPoint(travelsRegistry.getNominatimUserAgent(), latitude, longitude);
       List<OSMLocationInfo> osmLocationInfos = new ArrayList<>();
       osmLocationInfos.add(locationInfo);
       locationInfosPanel.setLocationInfos(osmLocationInfos);
@@ -243,10 +251,14 @@ public class LocationSearchWindow extends JfxStage {
   void searchOnFreeText(String searchText) {
     LOGGER.info("=> searchText=" + searchText);
     
+    if (travelsRegistry.getNominatimUserAgent() == null) {
+      reportProblemViaStatusPanel(new IOException("Nominatim user agent is not set in the vacations preferences"));
+      return;
+    }
     
     statusPanel.setText(null);
     try {
-      List<OSMLocationInfo> osmLocationInfos = nominatimAPI.freeTextSearch(searchText);
+      List<OSMLocationInfo> osmLocationInfos = nominatimAPI.freeTextSearch(travelsRegistry.getNominatimUserAgent(), searchText);
       LOGGER.info("osmLocationInfos=" + osmLocationInfos.size());
       
       locationInfosPanel.setLocationInfos(osmLocationInfos);
@@ -262,8 +274,14 @@ public class LocationSearchWindow extends JfxStage {
    * The result is handed over to the {@code locationInfosPanel}.
    */
   void searchHierarchical(String country, String city, String street, String houseNumber) {
+    
+    if (travelsRegistry.getNominatimUserAgent() == null) {
+      reportProblemViaStatusPanel(new IOException("Nominatim user agent is not set in the vacations preferences"));
+      return;
+    }
+    
     try {
-      List<OSMLocationInfo> osmLocationInfos = nominatimAPI.searchHierarchical(country, city, street, houseNumber);
+      List<OSMLocationInfo> osmLocationInfos = nominatimAPI.searchHierarchical(travelsRegistry.getNominatimUserAgent(), country, city, street, houseNumber);
 
       locationInfosPanel.setLocationInfos(osmLocationInfos);
     } catch (IOException e) {

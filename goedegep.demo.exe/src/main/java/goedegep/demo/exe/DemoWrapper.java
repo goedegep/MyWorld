@@ -1,5 +1,6 @@
 package goedegep.demo.exe;
 
+import goedegep.demo.exe.DemoApplication;
 
 /*
  * This class is the entyry point for the Demo executable.

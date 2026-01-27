@@ -1,4 +1,4 @@
-package goedegep.demo.resources.guifx;
+package goedegep.demo.resources.gui;
 
 import java.net.URL;
 import java.util.logging.Logger;
@@ -31,6 +31,9 @@ import javafx.scene.layout.VBox;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 
+/**
+ * Demo for the goedegep.resources package.
+ */
 public class ImageResourceDemo extends JfxStage {
   @SuppressWarnings("unused")
   private final static Logger LOGGER = Logger.getLogger(ImageResourceDemo.class.getName());
@@ -43,6 +46,11 @@ public class ImageResourceDemo extends JfxStage {
   private HBox differentSizesHBox;
   private ToggleGroup toggleGroup;
 
+  /**
+   * Constructor for the ImageResourceDemo.
+   * 
+   * @param customization the GUI customization.
+   */
   public ImageResourceDemo(CustomizationFx customization) {
     super(customization, WINDOW_TITLE);
     
@@ -183,10 +191,8 @@ public class ImageResourceDemo extends JfxStage {
     toggleGroup = new ToggleGroup();
     RadioButton fixedSizesButton = new RadioButton(RADIO_BUTTON_FIXED_SIZES);
     fixedSizesButton.setToggleGroup(toggleGroup);
-//    fixedSizesButton.setOnAction((e) -> updateDifferentSizesBox());
     RadioButton availableFilesButton = new RadioButton(RADIO_BUTTON_AVAILABLE_FILES);
     availableFilesButton.setToggleGroup(toggleGroup);
-//    availableFilesButton.setOnAction((e) -> updateDifferentSizesBox());
     toggleGroup.selectedToggleProperty().addListener((_) -> updateDifferentSizesBox());
     controlsVBox.getChildren().addAll(fixedSizesButton, availableFilesButton);
     

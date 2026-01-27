@@ -1,4 +1,4 @@
-package goedegep.demo.fontsamples.guifx;
+package goedegep.demo.fontsamples.gui;
 
 import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.JfxStage;

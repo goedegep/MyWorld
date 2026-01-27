@@ -1,4 +1,4 @@
-package goedegep.demo.xtree.guifx;
+package goedegep.demo.xtree.gui;
 
 import java.util.logging.Logger;
 

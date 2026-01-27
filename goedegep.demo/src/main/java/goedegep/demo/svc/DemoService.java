@@ -1,11 +1,12 @@
-package goedegep.demo;
+package goedegep.demo.svc;
 
 import java.io.InputStream;
 import java.util.Properties;
 
 import goedegep.configuration.model.Look;
-import goedegep.demo.guifx.DemoAppResources;
-import goedegep.demo.guifx.DemoMenuWindow;
+import goedegep.demo.gui.DemoAppResources;
+import goedegep.demo.gui.DemoMenuWindow;
+import goedegep.demo.logic.DemoRegistry;
 import goedegep.jfx.AppResourcesFx;
 import goedegep.jfx.JfxApplication;
 import goedegep.myworld.common.Registry;
@@ -19,11 +20,16 @@ import javafx.scene.paint.Color;
  * It is built on top of logic and guifx sub packages.
  */
 public class DemoService extends Service {
+  public static final String DEMO_APPLICATION_PROPERTIES_FILE_NAME = "DemoApplication.properties";
+  
   /**
    * The singleton instance of the DemoService.
    */
   private static DemoService instance = null;
   
+  /**
+   * The registry for the Demo application.
+   */
   private DemoRegistry demoRegistry;
   
   /**
@@ -60,8 +66,11 @@ public class DemoService extends Service {
     try (InputStream in = getClass().getResourceAsStream("DemoApplication.properties")) {
         props.load(in);
         
-        demoRegistry.setVersion(props.getProperty("demo.app.version"));
-        demoRegistry.setApplicationName(props.getProperty("demo.app.name"));
+        demoRegistry.setVersion(props.getProperty("demo.version"));
+        demoRegistry.setApplicationName(props.getProperty("demo.name"));
+        demoRegistry.setAuthor(props.getProperty("demo.author"));
+        demoRegistry.setCopyrightMessage(props.getProperty("demo.copyright"));
+        demoRegistry.setShortProductInfo(props.getProperty("demo.description"));
     } catch (Exception e) {
       JfxApplication.reportException(null, e);
       System.exit(1);

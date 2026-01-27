@@ -15,10 +15,9 @@
 
   <properties>
     <project.build.sourceEncoding>UTF8</project.build.sourceEncoding>
-    <app.name>Demo</app.name>
-    <app.version>1.0.0</app.version>
+    <demo.name>Demo</demo.name>
+    <demo.description>Demo application for MyWorld libraries</demo.description>
     <vendor.name>goedegep</vendor.name>
-    <copyright>Copyright (c) 2001-2025</copyright>
     <maven.compiler.source>20</maven.compiler.source>
     <maven.compiler.target>${maven.compiler.source}</maven.compiler.target>
     <lombok.version>1.18.36</lombok.version>
@@ -80,7 +79,7 @@
   </dependencies>
 
   <build>
-    <finalName>${app.name}-${app.version}</finalName>
+    <finalName>${demo.name}-${demo.version}</finalName>
     
     <resources>
       <resource>

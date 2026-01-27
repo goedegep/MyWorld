@@ -1,4 +1,4 @@
-package goedegep.demo.jfx.objectcontrols.guifx;
+package goedegep.demo.jfx.objectcontrols.gui;
 
 import java.util.Arrays;
 import java.util.List;

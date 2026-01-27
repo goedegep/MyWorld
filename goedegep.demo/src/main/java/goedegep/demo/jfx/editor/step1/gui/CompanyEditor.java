@@ -1,8 +1,8 @@
-package goedegep.demo.jfx.editor.step1;
+package goedegep.demo.jfx.editor.step1.gui;
 
 import java.util.Objects;
 
-import goedegep.demo.jfx.editor.CompanyService;
+import goedegep.demo.jfx.editor.logic.CompanyService;
 import goedegep.emfsample.model.Company;
 import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.editor.EditPanel;

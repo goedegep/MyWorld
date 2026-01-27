@@ -1,5 +1,5 @@
 module goedegep.demo {
-  exports goedegep.demo.guifx;
+  exports goedegep.demo.exe;
   
   requires transitive goedegep.jfx;
   requires goedegep.resources;

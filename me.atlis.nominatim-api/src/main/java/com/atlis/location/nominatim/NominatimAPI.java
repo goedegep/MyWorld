@@ -168,7 +168,7 @@ public class NominatimAPI {
    * @return a list of OSMLocationInfo with the search results.
    * @throws IOException 
    */
-  public List<OSMLocationInfo> searchHierarchical(String country, String city, String street, String housenumber) throws IOException {
+  public List<OSMLocationInfo> searchHierarchical(String userAgent, String country, String city, String street, String housenumber) throws IOException {
     LOGGER.severe("=> country=" + country + ", city=" + city + ", street=" + street + ", housenumber=" + housenumber);
 
     String url = createBaseUrl(ENDPOINT_FOR_GECODING);
@@ -203,7 +203,7 @@ public class NominatimAPI {
 
     LOGGER.severe("url=" + url);
 
-    String responseStr = performQuery(url);
+    String responseStr = performQuery(url, userAgent);
     
     return getLocationInfosFromOSMResponse(responseStr);
   }
@@ -217,7 +217,7 @@ public class NominatimAPI {
    * @return the <code>OSMLocationInfo</code> obtained for the <code>mapPoint</code>, or null in case the information couldn't be obtained.
    * @throws IOException 
    */
-  public OSMLocationInfo getAddressFromMapPoint(double latitude, double longitude) throws IOException {
+  public OSMLocationInfo getAddressFromMapPoint(String userAgent, double latitude, double longitude) throws IOException {
     LOGGER.info("=>");
 
     String url = createBaseUrl(ENDPOINT_FOR_REVERSE_GECODING);
@@ -239,7 +239,7 @@ public class NominatimAPI {
     }
 
     LOGGER.info("url=" + url);
-    String responseStr = performQuery(url);
+    String responseStr = performQuery(url, userAgent);
     OSMLocationInfo openStreetMapResponse = gson.fromJson(responseStr, OSMLocationInfo.class);
     
     if (openStreetMapResponse == null || openStreetMapResponse.getError() != null) {
@@ -264,7 +264,7 @@ public class NominatimAPI {
    * @param searchText the free text to search with.
    * @return the <code>OSMLocationInfo</code> obtained for the <code>searchText</code>, or null in case the information couldn't be obtained.
    */
-  public List<OSMLocationInfo> freeTextSearch(String searchText) throws IOException {
+  public List<OSMLocationInfo> freeTextSearch(String userAgent, String searchText) throws IOException {
     if (searchText == null) {
       throw new IllegalArgumentException("searchText may not be null");
     }
@@ -291,7 +291,7 @@ public class NominatimAPI {
 
     LOGGER.severe("url=" + url);
         
-    String responseStr = performQuery(url);
+    String responseStr = performQuery(url, userAgent);
 
     return getLocationInfosFromOSMResponse(responseStr);
   }
@@ -450,12 +450,12 @@ public class NominatimAPI {
    * @param endpoint
    * @return
    */
-  private String performQuery(String url) throws IOException {
+  private String performQuery(String url, String userAgent) throws IOException {
     LOGGER.severe("=>");
 
     String responseStr;
       HttpsURLConnection connection = (HttpsURLConnection) new URL(url).openConnection();
-      connection.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.95 Safari/537.11");
+      connection.setRequestProperty("User-Agent", userAgent);  // "goedegep MyWorld Travels"
 
       responseStr = new BufferedReader(new InputStreamReader(connection.getInputStream())).readLine();
 

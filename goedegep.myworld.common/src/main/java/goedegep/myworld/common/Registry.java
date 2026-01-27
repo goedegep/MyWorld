@@ -1,5 +1,6 @@
 package goedegep.myworld.common;
 
+import java.io.File;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -159,15 +160,23 @@ public abstract class Registry {
   }
   
   public URI getPropertyDescriptorsFileURI() {
-    URL url = getClass().getResource(propertyDescriptorsFileName);
-    try {
-      URI uri = url.toURI();
-      return uri;
-    } catch (URISyntaxException e) {
-      e.printStackTrace();
-    }
+//    try {
+      File file = new File(propertyDescriptorsFileName);
+      return file.toURI();
+//      return new URI("file:" + propertyDescriptorsFileName);
+//    } catch (URISyntaxException e) {
+//      e.printStackTrace();
+//    }
     
-    return null;
+//    URL url = getClass().getResource(propertyDescriptorsFileName);
+//    try {
+//      URI uri = url.toURI();
+//      return uri;
+//    } catch (URISyntaxException e) {
+//      e.printStackTrace();
+//    }
+//    
+//    return null;
   }
 
   /**

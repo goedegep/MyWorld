@@ -1,4 +1,4 @@
-package goedegep.demo.jfx.objectcontrols.guifx;
+package goedegep.demo.jfx.objectcontrols.gui;
 
 public enum TravelerType {
   NEVER("I never travel"),

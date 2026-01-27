@@ -12,7 +12,7 @@ import goedegep.util.thread.ThreadUtil;
 import javafx.stage.Stage;
 
 /**
- * This class is the main entry point for the Markdown JavaFX application.
+ * This class is the main entry point for the Markdown editor JavaFX application.
  */
 public class MarkdownEditorApplication extends JfxApplication {
 
@@ -23,7 +23,7 @@ public class MarkdownEditorApplication extends JfxApplication {
   private static String[] appArgs;
 
   /**  
-   * Main method to start the Markdown editor JavaFX application.
+   * Main method to start the Markdown editor application.
    * 
    * @param args command line arguments. If there is at least one argument, the first argument is treated as the filename to open.
    */
@@ -37,9 +37,9 @@ public class MarkdownEditorApplication extends JfxApplication {
     
     // Setup logging. Only log to a file when not running in Eclipse.
     String logFileBaseName = null;
-    String applicationName = null;
     
     if (!RunningInEclipse.runningInEclipse()) {
+      String applicationName = null;
       Properties props = new Properties();
       try (InputStream in = MarkdownEditorService.class.getResourceAsStream(MarkdownEditorService.MARKDOWN_EDITOR_APPLICATION_PROPERTIES_FILE_NAME)) {
           props.load(in);

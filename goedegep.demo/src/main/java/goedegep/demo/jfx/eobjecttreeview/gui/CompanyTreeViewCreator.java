@@ -1,4 +1,4 @@
-package goedegep.demo.jfx.eobjecttreeview.guifx;
+package goedegep.demo.jfx.eobjecttreeview.gui;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;

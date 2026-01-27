@@ -3186,7 +3186,12 @@ class BoundingBoxObtainer implements Consumer<EObjectTreeItem> {
     }
     
     // Obtain the BB from OSM
-    Location locationFromNominatim = NominatimUtil.obtainLocationInfoFromNominatim(location.getLatitude(), location.getLongitude());
+    String userAgent = TravelsRegistry.getInstance().getNominatimUserAgent();
+    if (userAgent == null) {
+      return;
+    }
+    
+    Location locationFromNominatim = NominatimUtil.obtainLocationInfoFromNominatim(userAgent, location.getLatitude(), location.getLongitude());
     BoundingBox boundingBoxFromNominatim = locationFromNominatim.getBoundingbox();
     if (boundingBoxFromNominatim != null) {
       boundingBox.setWest(boundingBoxFromNominatim.getWest());

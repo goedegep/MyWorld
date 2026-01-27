@@ -1,11 +1,10 @@
-package goedegep.demo.jfx.eobjecttreeview.guifx;
+package goedegep.demo.jfx.eobjecttreeview.gui;
 
 import java.util.logging.Logger;
 
 import goedegep.emfsample.model.Birthday;
 import goedegep.emfsample.model.Company;
 import goedegep.emfsample.model.EmfSampleFactory;
-import goedegep.emfsample.model.EmfSamplePackage;
 import goedegep.emfsample.model.Gender;
 import goedegep.emfsample.model.Person;
 import goedegep.jfx.ComponentFactoryFx;
@@ -93,12 +92,12 @@ public class EObjectTreeViewDemo extends JfxStage {
 
     // Action: Add former employee
     menuItem = componentFactory.createMenuItem("Add former employee");
-    menuItem.setOnAction(event -> addFormerEmployee());
+    menuItem.setOnAction(_ -> addFormerEmployee());
     menu.getItems().add(menuItem);
 
     // Action: Employee to former employees
     menuItem = componentFactory.createMenuItem("Employee to former employees");
-    menuItem.setOnAction(event -> employeeToFormerEmployees());
+    menuItem.setOnAction(_ -> employeeToFormerEmployees());
     menu.getItems().add(menuItem);
 
     menuBar.getMenus().add(menu);

@@ -83,12 +83,12 @@ public class NominatimUtil {
    * @param longitude the longitude of the search coordinates
    * @return The nominatim response translated to a Location, or null if there was no useful response.
    */
-  public static Location obtainLocationInfoFromNominatim(double latitude, double longitude) {
+  public static Location obtainLocationInfoFromNominatim(String userAgent, double latitude, double longitude) {
     LOGGER.severe("=>");
     Location location = null;
     
     try {
-      OSMLocationInfo locationInfo = getNominatimAPI().getAddressFromMapPoint(latitude, longitude);
+      OSMLocationInfo locationInfo = getNominatimAPI().getAddressFromMapPoint(userAgent, latitude, longitude);
       if (locationInfo != null) {
         location = NominatimUtil.osmLocationInfoToLocation(locationInfo);
       }

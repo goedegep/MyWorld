@@ -1,2 +1,2 @@
-jpackage --type exe --app-version ${app.version} --copyright "Copyright 2026 Peter Goedegebure" --description "Demo application installer" --vendor goedegep --name ${app.name} --icon src\main\resources\Demo-128x128.ico --dest target --input target/jpackageInput --main-jar Demo-1.0.0-jar-with-dependencies.jar --main-class goedegep.demo.exe.DemoWrapper
-attrib -r target\${app.name}-${app.version}.exe
+jpackage --type exe --app-version ${demo.version} --copyright "${copyright}" --description "${demo.description}" --vendor "${vendor.name}" --name "${demo.name}" --icon src\main\resources\Demo-128x128.ico --dest target --input target/jpackageInput --main-jar Demo-1.0.0-jar-with-dependencies.jar --main-class goedegep.demo.exe.DemoWrapper
+attrib -r target\${demo.name}-${demo.version}.exe

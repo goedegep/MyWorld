@@ -1,14 +1,14 @@
-package goedegep.demo.guifx;
+package goedegep.demo.gui;
 
 import java.util.logging.Logger;
 
-import goedegep.demo.DemoRegistry;
-import goedegep.demo.fontsamples.guifx.FontSamplesWindow;
-import goedegep.demo.jfx.editor.CompanyService;
-import goedegep.demo.jfx.eobjecttreeview.guifx.EObjectTreeViewDemo;
-import goedegep.demo.jfx.objectcontrols.guifx.EditorControlsDemo;
-import goedegep.demo.resources.guifx.ImageResourceDemo;
-import goedegep.demo.xtree.guifx.XTreeDemo;
+import goedegep.demo.fontsamples.gui.FontSamplesWindow;
+import goedegep.demo.jfx.editor.logic.CompanyService;
+import goedegep.demo.jfx.eobjecttreeview.gui.EObjectTreeViewDemo;
+import goedegep.demo.jfx.objectcontrols.gui.EditorControlsDemo;
+import goedegep.demo.logic.DemoRegistry;
+import goedegep.demo.resources.gui.ImageResourceDemo;
+import goedegep.demo.xtree.gui.XTreeDemo;
 import goedegep.jfx.ComponentFactoryFx;
 import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.JfxStage;
@@ -111,7 +111,7 @@ public class DemoMenuWindow extends JfxStage {
     menuItem = componentFactory.createMenuItem("Editor step1");
     menuItem.setOnAction((_) -> {
       CompanyService companyService = new CompanyService();
-      goedegep.demo.jfx.editor.step1.CompanyEditor.newInstance(customization, companyService).show();
+      goedegep.demo.jfx.editor.step1.gui.CompanyEditor.newInstance(customization, companyService).show();
       
     });
     editorMenu.getItems().add(menuItem);

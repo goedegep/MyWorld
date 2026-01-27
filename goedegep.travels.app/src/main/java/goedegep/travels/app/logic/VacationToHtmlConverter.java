@@ -388,7 +388,8 @@ public class VacationToHtmlConverter extends VacationToTextConverterAbstract {
         if (fileReference != null) {
           String filePathName = fileReference.getFile();
           if (filePathName != null  &&  filePathName.startsWith(vacationsRegistry.getVacationPicturesFolderName())) {
-            String relativeFileName = FileUtils.getPathRelativeToFolder(filePathName, filePathName);
+            
+            String relativeFileName = FileUtils.getPathRelativeToFolder(vacationsRegistry.getVacationPicturesFolderName(), filePathName);
             int index = relativeFileName.indexOf(File.separator);
             String photosFolder = relativeFileName.substring(0, index);
             return photosFolder;

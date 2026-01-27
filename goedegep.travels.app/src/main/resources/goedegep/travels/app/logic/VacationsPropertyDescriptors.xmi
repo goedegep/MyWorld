@@ -18,4 +18,6 @@
       displayName="Known files"/>
   <propertyDescriptors name="ignoreVacationPictureFolders" description="List of folder names which are to be ignored in a vacation pictures folder."
       displayName="Picture folders to ignore"/>
+  <propertyDescriptors name="nominatimUserAgent" description="To search for locations OpenStreetMap nominatim is used. This requires a text called a User Agent. This is only used to identify you as a user and to check that only a fair amount of search requests is performed.&#xA;If you do many searches they would like you to enter your email address. Otherwise any unique text will do."
+      displayName="Search request name"/>
 </properties:PropertyDescriptorGroup>
