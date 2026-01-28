@@ -1,10 +1,10 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <groupId>goedegep.demo</groupId>
-  <artifactId>goedegep-demo</artifactId>
+  <groupId>goedegep.gpx</groupId>
+  <artifactId>goedegep-gpx-editor</artifactId>
   <packaging>jar</packaging>
-  <name>Demo application</name>
-  <description>This project provides demos for the MyWorld libraries.</description>
+  <name>Goedegep GPX application</name>
+  <description>This project contains the GPX application.</description>
   
   <parent>
     <groupId>goedegep.toplevelpom</groupId>
@@ -14,30 +14,46 @@
   </parent>
 
   <properties>
-    <project.build.sourceEncoding>UTF8</project.build.sourceEncoding>
-    <demo.name>Demo</demo.name>
-    <demo.description>Demo application for MyWorld libraries</demo.description>
-    <maven.compiler.source>20</maven.compiler.source>
-    <maven.compiler.target>${maven.compiler.source}</maven.compiler.target>
-    <lombok.version>1.18.36</lombok.version>
+    <gpxeditor.name>Events</gpxeditor.name>
+    <gpxeditor.description>Application to edit GPX files</gpxeditor.description>
   </properties>
   
   <dependencies>
     <dependency>
-      <groupId>goedegep.configuration</groupId>
-      <artifactId>goedegep-configuration-model</artifactId>
+      <groupId>gluon-oss-maps</groupId>
+      <artifactId>gluon-oss-maps</artifactId>
     </dependency>
     <dependency>
-      <groupId>goedegep.emfsample</groupId>
-      <artifactId>goedegep-emfsample-model</artifactId>
+      <groupId>goedegep.geo</groupId>
+      <artifactId>goedegep-geo</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>goedegep.gpx</groupId>
+      <artifactId>goedegep-gpx</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>goedegep.gpx</groupId>
+      <artifactId>goedegep-gpx-model</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>goedegep.gpx</groupId>
+      <artifactId>goedegep-gpx10-model</artifactId>
     </dependency>
     <dependency>
       <groupId>goedegep.jfx</groupId>
       <artifactId>goedegep-jfx</artifactId>
     </dependency>
     <dependency>
+      <groupId>goedegep.mapview</groupId>
+      <artifactId>goedegep-mapview</artifactId>
+    </dependency>
+    <dependency>
       <groupId>goedegep.myworld</groupId>
       <artifactId>goedegep-myworld-common</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>goedegep.poi</groupId>
+      <artifactId>goedegep-poi</artifactId>
     </dependency>
     <dependency>
       <groupId>goedegep.resources</groupId>
@@ -48,12 +64,12 @@
       <artifactId>goedegep-util</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.eclipse.emf</groupId>
-	  <artifactId>org.eclipse.emf.common</artifactId>
+     <groupId>org.eclipse.emf</groupId>
+    <artifactId>org.eclipse.emf.common</artifactId>
     </dependency>
     <dependency>
      <groupId>org.eclipse.emf</groupId>
-	  <artifactId>org.eclipse.emf.ecore</artifactId>
+    <artifactId>org.eclipse.emf.ecore</artifactId>
     </dependency>
     <dependency>
       <groupId>org.openjfx</groupId>
@@ -71,43 +87,16 @@
       <classifier>win</classifier>
     </dependency>
     <dependency>
-      <groupId>org.openjfx</groupId>
-      <artifactId>javafx-web</artifactId>
-      <classifier>win</classifier>
+      <groupId>tim.prune</groupId>
+      <artifactId>tim.prune.gpsprune</artifactId>
     </dependency>
   </dependencies>
-
   <build>
-    <finalName>${demo.name}-${demo.version}</finalName>
-    
     <resources>
       <resource>
         <directory>src/main/resources</directory>
         <filtering>true</filtering>
       </resource>
     </resources>
-    
-    <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-assembly-plugin</artifactId>
-        <version>3.3.0</version>
-        <configuration>
-          <descriptorRefs>
-            <descriptorRef>jar-with-dependencies</descriptorRef>
-          </descriptorRefs>
-          <outputDirectory>target/jpackageInput</outputDirectory>
-        </configuration>
-        <executions>
-          <execution>
-            <id>make-assembly</id>
-            <phase>package</phase>
-            <goals>
-              <goal>single</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-    </plugins>
   </build>
 </project>

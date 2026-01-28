@@ -1,10 +1,10 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <groupId>goedegep.demo</groupId>
-  <artifactId>goedegep-demo</artifactId>
+  <groupId>goedegep.events</groupId>
+  <artifactId>goedegep-events</artifactId>
   <packaging>jar</packaging>
-  <name>Demo application</name>
-  <description>This project provides demos for the MyWorld libraries.</description>
+  <name>Events application</name>
+  <description>This project contains an application for events.</description>
   
   <parent>
     <groupId>goedegep.toplevelpom</groupId>
@@ -14,22 +14,30 @@
   </parent>
 
   <properties>
-    <project.build.sourceEncoding>UTF8</project.build.sourceEncoding>
-    <demo.name>Demo</demo.name>
-    <demo.description>Demo application for MyWorld libraries</demo.description>
-    <maven.compiler.source>20</maven.compiler.source>
-    <maven.compiler.target>${maven.compiler.source}</maven.compiler.target>
-    <lombok.version>1.18.36</lombok.version>
+    <events.name>Events</events.name>
+    <events.description>Application to store information on events</events.description>
   </properties>
-  
+
   <dependencies>
     <dependency>
-      <groupId>goedegep.configuration</groupId>
-      <artifactId>goedegep-configuration-model</artifactId>
+      <groupId>com.atlassian.commonmark</groupId>
+      <artifactId>commonmark</artifactId>
+    </dependency>
+  	<dependency>
+      <groupId>com.openhtmltopdf</groupId>
+      <artifactId>com.openhtmltopdf.openhtmltopdf-pdfbox</artifactId>
+  	</dependency>
+  	<dependency>
+      <groupId>com.openhtmltopdf</groupId>
+      <artifactId>com.openhtmltopdf.openhtmltopdf-core</artifactId>
+  	</dependency>
+    <dependency>
+      <groupId>goedegep.events</groupId>
+      <artifactId>goedegep-events-model</artifactId>
     </dependency>
     <dependency>
-      <groupId>goedegep.emfsample</groupId>
-      <artifactId>goedegep-emfsample-model</artifactId>
+      <groupId>goedegep.gpx</groupId>
+      <artifactId>goedegep-gpx-editor</artifactId>
     </dependency>
     <dependency>
       <groupId>goedegep.jfx</groupId>
@@ -40,15 +48,27 @@
       <artifactId>goedegep-myworld-common</artifactId>
     </dependency>
     <dependency>
+      <groupId>goedegep.properties</groupId>
+      <artifactId>goedegep-properties</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>goedegep.properties</groupId>
+      <artifactId>goedegep-properties-model</artifactId>
+    </dependency>
+    <dependency>
       <groupId>goedegep.resources</groupId>
       <artifactId>goedegep-resources</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>goedegep.types</groupId>
+      <artifactId>goedegep-types-model</artifactId>
     </dependency>
     <dependency>
       <groupId>goedegep.util</groupId>
       <artifactId>goedegep-util</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.eclipse.emf</groupId>
+     <groupId>org.eclipse.emf</groupId>
 	  <artifactId>org.eclipse.emf.common</artifactId>
     </dependency>
     <dependency>
@@ -76,38 +96,12 @@
       <classifier>win</classifier>
     </dependency>
   </dependencies>
-
   <build>
-    <finalName>${demo.name}-${demo.version}</finalName>
-    
     <resources>
       <resource>
         <directory>src/main/resources</directory>
         <filtering>true</filtering>
       </resource>
     </resources>
-    
-    <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-assembly-plugin</artifactId>
-        <version>3.3.0</version>
-        <configuration>
-          <descriptorRefs>
-            <descriptorRef>jar-with-dependencies</descriptorRef>
-          </descriptorRefs>
-          <outputDirectory>target/jpackageInput</outputDirectory>
-        </configuration>
-        <executions>
-          <execution>
-            <id>make-assembly</id>
-            <phase>package</phase>
-            <goals>
-              <goal>single</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-    </plugins>
   </build>
 </project>

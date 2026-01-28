@@ -14,7 +14,7 @@
   <dependencies>
     <dependency>
       <groupId>goedegep.rolodex</groupId>
-      <artifactId>goedegep-rolodex-app</artifactId>
+      <artifactId>goedegep-rolodex</artifactId>
     </dependency>
     <dependency>
       <groupId>junit</groupId>

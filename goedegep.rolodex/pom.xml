@@ -1,10 +1,10 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <groupId>goedegep.pctools</groupId>
-  <artifactId>goedegep-pctools</artifactId>
+  <groupId>goedegep.rolodex</groupId>
+  <artifactId>goedegep-rolodex</artifactId>
   <packaging>jar</packaging>
-  <name>PC Tools</name>
-  <description>This project contains PC tools.</description>
+  <name>Goedegep Rolodex Application</name>
+  <description>This project contains the goedegep rolodex application.</description>
   
   <parent>
     <groupId>goedegep.toplevelpom</groupId>
@@ -14,34 +14,34 @@
   </parent>
 
   <properties>
-    <events.name>PC Tools</events.name>
-    <events.description>Application with general PC tools</events.description>
+    <rolodex.name>Rolodex</rolodex.name>
+    <rolodex.description>Addressbook application</rolodex.description>
   </properties>
   
   <dependencies>
+  	<dependency>
+      <groupId>com.openhtmltopdf</groupId>
+      <artifactId>com.openhtmltopdf.openhtmltopdf-pdfbox</artifactId>
+  	</dependency>
+  	<dependency>
+      <groupId>com.openhtmltopdf</groupId>
+      <artifactId>com.openhtmltopdf.openhtmltopdf-core</artifactId>
+  	</dependency>
     <dependency>
-      <groupId>com.atlassian.commonmark</groupId>
-      <artifactId>commonmark</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>com.google.common.jimfs</groupId>
-      <artifactId>com.google.common.jimfs</artifactId>
+      <groupId>commons-io</groupId>
+      <artifactId>commons-io</artifactId>
     </dependency>
     <dependency>
       <groupId>goedegep.jfx</groupId>
       <artifactId>goedegep-jfx</artifactId>
     </dependency>
     <dependency>
+        <groupId>goedegep.configuration</groupId>
+        <artifactId>goedegep-configuration-model</artifactId>
+    </dependency>
+    <dependency>
       <groupId>goedegep.myworld</groupId>
       <artifactId>goedegep-myworld-common</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>goedegep.util</groupId>
-      <artifactId>goedegep-util</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>goedegep.pctools</groupId>
-      <artifactId>goedegep-pctools-model</artifactId>
     </dependency>
     <dependency>
       <groupId>goedegep.properties</groupId>
@@ -56,40 +56,35 @@
       <artifactId>goedegep-resources</artifactId>
     </dependency>
     <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
+      <groupId>goedegep.rolodex</groupId>
+      <artifactId>goedegep-rolodex-model</artifactId>
     </dependency>
+    <dependency>
+      <groupId>goedegep.util</groupId>
+      <artifactId>goedegep-util</artifactId>
+     </dependency>
     <dependency>
       <groupId>org.eclipse.emf</groupId>
 	  <artifactId>org.eclipse.emf.common</artifactId>
     </dependency>
     <dependency>
-     <groupId>org.eclipse.emf</groupId>
+      <groupId>org.eclipse.emf</groupId>
 	  <artifactId>org.eclipse.emf.ecore</artifactId>
     </dependency>
     <dependency>
       <groupId>org.openjfx</groupId>
-      <artifactId>javafx-base</artifactId>
-      <classifier>win</classifier>
+	  <artifactId>javafx-base</artifactId>
+	  <classifier>win</classifier>
     </dependency>
     <dependency>
       <groupId>org.openjfx</groupId>
-      <artifactId>javafx-controls</artifactId>
-      <classifier>win</classifier>
+	  <artifactId>javafx-controls</artifactId>
+	  <classifier>win</classifier>
     </dependency>
     <dependency>
       <groupId>org.openjfx</groupId>
-      <artifactId>javafx-graphics</artifactId>
-      <classifier>win</classifier>
-    </dependency>
-    <dependency>
-      <groupId>org.openjfx</groupId>
-      <artifactId>javafx-web</artifactId>
-      <classifier>win</classifier>
-    </dependency>
-    <dependency>
-      <groupId>tim.prune</groupId>
-      <artifactId>tim.prune.gpsprune</artifactId>
+	  <artifactId>javafx-graphics</artifactId>
+	  <classifier>win</classifier>
     </dependency>
   </dependencies>
   <build>

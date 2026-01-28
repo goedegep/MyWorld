@@ -29,48 +29,18 @@
     
     <!-- Versions for the MyWorld applications. These are kept here as other applications may depend on them.  -->
     <demo.version>1.0.0</demo.version>
-    <markdowneditor.version>1.0.0</markdowneditor.version>
-    
-    <!-- Settings for the Demo application-->
-    <demo.app.name>Demo</demo.app.name>
-    
-    <!-- Settings for the Events application-->
-    <events.app.name>Events</events.app.name>
-    <events.app.version>0.0.1</events.app.version>
-    
-    <!-- Settings for the Finan application-->
-    <finan.app.name>Finan</finan.app.name>
-    <finan.app.version>0.0.1</finan.app.version>
-    
-    <!-- Settings for the GPX Editor application-->
-    <gpx.app.name>GPX Editor</gpx.app.name>
-    <gpx.app.version>0.0.1</gpx.app.version>
-    
-    <!-- Settings for the Invoices and Properties application-->
-    <invandprop.app.name>Invoices and Properties</invandprop.app.name>
-    <invandprop.app.version>0.0.1</invandprop.app.version>
-    
-    <!-- Settings for the Media application-->
-    <media.app.name>Media</media.app.name>
-    <media.app.version>0.0.1</media.app.version>
-    
-    <!-- Settings for the PC Tools application-->
-    <pctools.app.name>PC Tools</pctools.app.name>
-    <pctools.app.version>0.0.1</pctools.app.version>
-    
-    <!-- Settings for the Rolodex application-->
-    <rolodex.app.name>Rolodex</rolodex.app.name>
-    <rolodex.app.version>0.0.1</rolodex.app.version>
-    
-    <!-- Settings for the Travels application-->
-    <travels.app.name>Travels</travels.app.name>
-    <travels.app.version>0.0.4</travels.app.version>
-    
-    <!-- Settings for the Unit Converter application-->
-    <unitconverter.app.name>Unit Converter</unitconverter.app.name>
-    <unitconverter.app.version>0.0.1</unitconverter.app.version>
-	
+    <events.version>1.0.0</events.version>
+    <finan.version>1.0.0</finan.version>
+    <gpxeditor.version>1.0.0</gpxeditor.version>
+    <invandprop.version>1.0.0</invandprop.version>
+    <markdowneditor.version>1.0.0</markdowneditor.version>    
+    <media.version>1.0.0</media.version>    
+    <pctools.version>1.0.0</pctools.version>    
+    <rolodex.version>1.0.0</rolodex.version>
+    <travels.version>1.0.0</travels.version>
+    <unitconverterversion>1.0.0</unitconverterversion>
   </properties>
+  
   <groupId>goedegep.toplevelpom</groupId>
   <artifactId>goedegep-toplevelpom</artifactId>
   <version>1.0-SNAPSHOT</version>
@@ -196,18 +166,13 @@
         <version>${goedegep.myworld.version}</version>
       </dependency>
       <dependency>
-        <groupId>goedegep.demo</groupId>
-        <artifactId>goedegep-demo-exe</artifactId>
-        <version>${goedegep.myworld.version}</version>
-      </dependency>
-      <dependency>
         <groupId>goedegep.emfsample</groupId>
         <artifactId>goedegep-emfsample-model</artifactId>
         <version>${goedegep.myworld.version}</version>
       </dependency>
       <dependency>
         <groupId>goedegep.events</groupId>
-        <artifactId>goedegep-events-app</artifactId>
+        <artifactId>goedegep-events</artifactId>
         <version>${goedegep.myworld.version}</version>
       </dependency>
       <dependency>
@@ -222,7 +187,7 @@
       </dependency>
       <dependency>
           <groupId>goedegep.finan</groupId>
-          <artifactId>goedegep-finan-app</artifactId>
+          <artifactId>goedegep-finan</artifactId>
           <version>${goedegep.myworld.version}</version>
       </dependency>
       <dependency>
@@ -257,7 +222,7 @@
       </dependency>
       <dependency>
         <groupId>goedegep.gpx</groupId>
-        <artifactId>goedegep-gpx-app</artifactId>
+        <artifactId>goedegep-gpx-editor</artifactId>
         <version>${goedegep.myworld.version}</version>
       </dependency>
       <dependency>
@@ -277,7 +242,7 @@
       </dependency>
       <dependency>
         <groupId>goedegep.invandprop</groupId>
-        <artifactId>goedegep-invandprop-app</artifactId>
+        <artifactId>goedegep-invandprop</artifactId>
         <version>${goedegep.myworld.version}</version>
       </dependency>
       <dependency>
@@ -312,7 +277,7 @@
       </dependency>
       <dependency>
         <groupId>goedegep.media</groupId>
-        <artifactId>goedegep-media-app</artifactId>
+        <artifactId>goedegep-media</artifactId>
         <version>${goedegep.myworld.version}</version>
       </dependency>
       <dependency>
@@ -333,11 +298,6 @@
       <dependency>
         <groupId>goedegep.media</groupId>
         <artifactId>goedegep-media-photoshow-model</artifactId>
-        <version>${goedegep.myworld.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>goedegep.myworld</groupId>
-        <artifactId>goedegep-myworld</artifactId>
         <version>${goedegep.myworld.version}</version>
       </dependency>
       <dependency>
@@ -367,12 +327,12 @@
       </dependency>
       <dependency>
         <groupId>goedegep.poi</groupId>
-        <artifactId>goedegep-poi-app</artifactId>
+        <artifactId>goedegep-poi</artifactId>
         <version>${goedegep.myworld.version}</version>
       </dependency>
       <dependency>
         <groupId>goedegep.properties</groupId>
-        <artifactId>goedegep-properties-app</artifactId>
+        <artifactId>goedegep-properties</artifactId>
         <version>${goedegep.myworld.version}</version>
       </dependency>
       <dependency>
@@ -392,7 +352,7 @@
       </dependency>
       <dependency>
         <groupId>goedegep.rolodex</groupId>
-        <artifactId>goedegep-rolodex-app</artifactId>
+        <artifactId>goedegep-rolodex</artifactId>
         <version>${goedegep.myworld.version}</version>
       </dependency>
       <dependency>
@@ -447,7 +407,7 @@
       </dependency>
       <dependency>
         <groupId>goedegep.unitconverter</groupId>
-        <artifactId>goedegep-unitconverter-app</artifactId>
+        <artifactId>goedegep-unitconverter</artifactId>
         <version>${goedegep.myworld.version}</version>
       </dependency>
       <dependency>
@@ -472,7 +432,7 @@
       </dependency>
       <dependency>
         <groupId>goedegep.travels</groupId>
-        <artifactId>goedegep-travels-app</artifactId>
+        <artifactId>goedegep-travels</artifactId>
         <version>${goedegep.myworld.version}</version>
       </dependency>
       <dependency>
@@ -713,14 +673,14 @@
     <module>../goedegep.properties.model</module>
     <module>../goedegep.jfx</module>
     <module>../goedegep.jfxtest</module>
-    <module>../goedegep.properties.app</module>
+    <module>../goedegep.properties</module>
     <module>../goedegep.mapview</module>
     <module>../goedegep.applicationcomponent</module>
     
     <!-- MyWorld -->
     <module>../tim.prune</module>
     <module>../goedegep.myworld.common</module>
-    <module>../goedegep.poi.app</module>
+    <module>../goedegep.poi</module>
     <module>../goedegep.markdowneditor</module>
     <module>../goedegep.rolodex.model</module>
     <module>../goedegep.events.model</module>
@@ -732,21 +692,21 @@
     <module>../goedegep.travels.checklist.model</module>
     <module>../goedegep.travels.model</module>
     <module>../goedegep.pctools.model</module>
-    <module>../goedegep.unitconverter.app</module>
-    <module>../goedegep.rolodex.app</module>
+    <module>../goedegep.unitconverter</module>
+    <module>../goedegep.rolodex</module>
     <module>../goedegep.rolodextest.app</module>
-    <module>../goedegep.events.app</module>
+    <module>../goedegep.events</module>
     <module>../goedegep.media.common</module>
     <module>../goedegep.media.photoshow.model</module>
     <module>../goedegep.media.mediadb.app</module>
-    <module>../goedegep.media.app</module>
-    <module>../goedegep.finan.app</module>
+    <module>../goedegep.media</module>
+    <module>../goedegep.finan</module>
     <module>../goedegep.finan.apptest</module>
-    <module>../goedegep.invandprop.app</module>
-    <module>../goedegep.gpx.app</module>
+    <module>../goedegep.invandprop</module>
+    <module>../goedegep.gpxeditor</module>
     <module>../goedegep.pctools</module>
     <module>../goedegep.pctoolstest</module>
-    <module>../goedegep.travels.app</module>
+    <module>../goedegep.travels</module>
     <module>../goedegep.demo</module>
 
   </modules>

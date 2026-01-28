@@ -1,0 +1,55 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>goedegep.media</groupId>
+  <artifactId>goedegep-media</artifactId>
+  <packaging>jar</packaging>
+  <name>Media application</name>
+  <description>This project contains the application to work with media.</description>
+  
+  <parent>
+    <groupId>goedegep.toplevelpom</groupId>
+    <artifactId>goedegep-toplevelpom</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <relativePath>../goedegep.toplevelpom</relativePath>
+  </parent>
+
+  <properties>
+    <media.name>Media</media.name>
+    <media.description>Application to work with media</media.description>
+  </properties>
+  
+  <dependencies>
+    <dependency>
+      <groupId>goedegep.jfx</groupId>
+      <artifactId>goedegep-jfx</artifactId>
+    </dependency>
+    <dependency>
+        <groupId>goedegep.media</groupId>
+        <artifactId>goedegep-media-common</artifactId>
+    </dependency>
+    <dependency>
+        <groupId>goedegep.media</groupId>
+        <artifactId>goedegep-media-mediadb-app</artifactId>
+    </dependency>
+    <dependency>
+        <groupId>goedegep.media</groupId>
+        <artifactId>goedegep-media-mediadb-model</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>goedegep.myworld</groupId>
+      <artifactId>goedegep-myworld-common</artifactId>
+    </dependency>
+    <dependency>
+        <groupId>goedegep.properties</groupId>
+        <artifactId>goedegep-properties</artifactId>
+    </dependency>
+  </dependencies>
+  <build>
+    <resources>
+      <resource>
+        <directory>src/main/resources</directory>
+        <filtering>true</filtering>
+      </resource>
+    </resources>
+  </build>
+</project>

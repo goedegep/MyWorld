@@ -18,7 +18,7 @@
     </dependency>
     <dependency>
       <groupId>goedegep.poi</groupId>
-      <artifactId>goedegep-poi-app</artifactId>
+      <artifactId>goedegep-poi</artifactId>
     </dependency>
     <dependency>
       <groupId>goedegep.types</groupId>
