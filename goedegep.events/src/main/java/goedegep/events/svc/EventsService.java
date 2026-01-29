@@ -13,9 +13,9 @@ import java.util.ResourceBundle;
 import java.util.logging.Logger;
 
 import goedegep.configuration.model.Look;
-import goedegep.events.app.guifx.EventEditor;
-import goedegep.events.app.guifx.EventsAppResources;
-import goedegep.events.app.guifx.EventsWindow;
+import goedegep.events.gui.EventEditor;
+import goedegep.events.gui.EventsAppResources;
+import goedegep.events.gui.EventsWindow;
 import goedegep.events.logic.EventsRegistry;
 import goedegep.events.model.EventInfo;
 import goedegep.events.model.Events;
@@ -416,8 +416,8 @@ public class EventsService extends Service {
         eventsRegistry.setVersion(props.getProperty("events.version"));
         eventsRegistry.setApplicationName(props.getProperty("events.name"));
         eventsRegistry.setAuthor(props.getProperty("events.author"));
-        eventsRegistry.setAuthor(props.getProperty("events.copyright"));
-        eventsRegistry.setAuthor(props.getProperty("events.description"));
+        eventsRegistry.setCopyrightMessage(props.getProperty("events.copyright"));
+        eventsRegistry.setShortProductInfo(props.getProperty("events.description"));
     } catch (Exception e) {
       JfxApplication.reportException(null, e);
       System.exit(1);

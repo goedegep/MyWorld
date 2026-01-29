@@ -1,0 +1,2 @@
+jpackage --type exe --app-version ${unitconverter.version} --copyright "${copyright}" --description "${unitconverter.description}" --vendor "${vendor.name}" --name "${unitconverter.name}" --icon src\main\resources\Stopwatch_32x32.ico --dest target --input target/jpackageInput --main-jar "Unit Converter-${unitconverter.version}-jar-with-dependencies.jar" --main-class goedegep.unitconverter.exe.UnitConverterWrapper
+attrib -r "target\${unitconverter.name}-${unitconverter.version}.exe"

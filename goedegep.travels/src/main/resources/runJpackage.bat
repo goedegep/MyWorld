@@ -1,0 +1,2 @@
+jpackage --type exe --app-version ${travels.version} --copyright "${copyright}" --description "${travels.description}" --vendor "${vendor.name}" --name "${travels.name}" --icon src\main\resources\RoadToHorizon-128x128.ico --dest target --input target/jpackageInput --main-jar Travels-${travels.version}-jar-with-dependencies.jar --main-class goedegep.travels.exe.TravelsWrapper
+attrib -r target\${travels.name}-${travels.version}.exe

@@ -5,7 +5,9 @@ Original Track is found via Track (like now), but check on referred by reference
 For now: only let original track reference refer to itself.
 
 h2. ToDo list
+* Change jar file names for appliction projects. Shall not have spaces. E.g. use maven artifact id?
 * Design new project and package names and refactor
+* Where to put PropertyDescriptors files? User settings must get it from jar file, descriptors editor must get it from file in resoureces.
 * rename CustomizationFx etc to Customization
 * EObjectTreeView: For the root node (e.g. Travels), createContextMenu() in EObjectTreeCellHelperForObject cannot get an EReference and so just returns.
 * Edit properties (User Settings) shall open the real file. Can be removed from project.

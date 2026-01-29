@@ -1,6 +1,7 @@
-module goedegep.unitconverter.app {
-  exports goedegep.unitconverter.app;
-  exports goedegep.unitconverter.app.guifx;
+module goedegep.unitconverter {
+  exports goedegep.unitconverter.exe;
+  exports goedegep.unitconverter.svc;
+  exports goedegep.unitconverter.gui;
 
   requires transitive goedegep.jfx;
   requires goedegep.model.properties;

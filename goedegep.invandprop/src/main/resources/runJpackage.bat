@@ -1,0 +1,2 @@
+jpackage --type exe --app-version ${invandprop.version} --copyright "${copyright}" --description "${invandprop.description}" --vendor "${vendor.name}" --name "${invandprop.name}" --icon src\main\resources\InvoicesAndProperties.ico --dest target --input target/jpackageInput --main-jar "Invoices and Properties-${invandprop.version}-jar-with-dependencies.jar" --main-class goedegep.invandprop.exe.InvoicesAndPropertiesWrapper
+attrib -r "target\${invandprop.name}-${invandprop.version}.exe"

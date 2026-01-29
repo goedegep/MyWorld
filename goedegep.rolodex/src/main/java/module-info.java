@@ -1,9 +1,11 @@
-module goedegep.rolodex.app {
-  exports goedegep.rolodex.app.guifx;
-  exports goedegep.rolodex.app;
+module goedegep.rolodex {
+  exports goedegep.rolodex.exe;
+  exports goedegep.rolodex.logic;
+  exports goedegep.rolodex.gui;
+  exports goedegep.rolodex.svc;
   
-  opens goedegep.rolodex.app;
-  opens goedegep.rolodex.app.guifx;
+  opens goedegep.rolodex.svc;
+  opens goedegep.rolodex.gui;
   
   requires transitive goedegep.jfx;
   requires goedegep.model.configuration;

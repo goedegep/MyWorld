@@ -1,6 +1,7 @@
-module goedegep.finan.nota.app {
-  exports goedegep.invandprop.app;
-  exports goedegep.invandprop.app.guifx;
+module goedegep.invandprop {
+  exports goedegep.invandprop.exe;
+  exports goedegep.invandprop.logic;
+  exports goedegep.invandprop.gui;
 
   requires transitive goedegep.jfx;
   requires transitive goedegep.invandprop.model;

@@ -1,0 +1,2 @@
+jpackage --type exe --app-version ${rolodex.version} --copyright "${copyright}" --description "${rolodex.description}" --vendor "${vendor.name}" --name "${rolodex.name}" --icon src\main\resources\Rolodex.ico --dest target --input target/jpackageInput --main-jar Rolodex-${rolodex.version}-jar-with-dependencies.jar --main-class goedegep.rolodex.exe.RolodexWrapper
+attrib -r target\${rolodex.name}-${rolodex.version}.exe

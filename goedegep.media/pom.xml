@@ -20,20 +20,32 @@
   
   <dependencies>
     <dependency>
+      <groupId>com.ealva</groupId>
+      <artifactId>ealvatag</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.mpatric</groupId>
+      <artifactId>mp3agic</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>gluon-oss-maps</groupId>
+      <artifactId>gluon-oss-maps</artifactId>
+    </dependency>
+    <dependency>
       <groupId>goedegep.jfx</groupId>
       <artifactId>goedegep-jfx</artifactId>
     </dependency>
     <dependency>
-        <groupId>goedegep.media</groupId>
-        <artifactId>goedegep-media-common</artifactId>
-    </dependency>
-    <dependency>
-        <groupId>goedegep.media</groupId>
-        <artifactId>goedegep-media-mediadb-app</artifactId>
+      <groupId>goedegep.mapview</groupId>
+      <artifactId>goedegep-mapview</artifactId>
     </dependency>
     <dependency>
         <groupId>goedegep.media</groupId>
         <artifactId>goedegep-media-mediadb-model</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>goedegep.media</groupId>
+      <artifactId>goedegep-media-photoshow-model</artifactId>
     </dependency>
     <dependency>
       <groupId>goedegep.myworld</groupId>
@@ -43,13 +55,43 @@
         <groupId>goedegep.properties</groupId>
         <artifactId>goedegep-properties</artifactId>
     </dependency>
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-text</artifactId>
+    </dependency>
   </dependencies>
+  
   <build>
+    <finalName>${media.name}-${media.version}</finalName>
+    
     <resources>
       <resource>
         <directory>src/main/resources</directory>
         <filtering>true</filtering>
       </resource>
     </resources>
+    
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <version>3.3.0</version>
+        <configuration>
+          <descriptorRefs>
+            <descriptorRef>jar-with-dependencies</descriptorRef>
+          </descriptorRefs>
+          <outputDirectory>target/jpackageInput</outputDirectory>
+        </configuration>
+        <executions>
+          <execution>
+            <id>make-assembly</id>
+            <phase>package</phase>
+            <goals>
+              <goal>single</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
   </build>
 </project>

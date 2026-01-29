@@ -1,0 +1,2 @@
+jpackage --type exe --app-version ${pctools.version} --copyright "${copyright}" --description "${pctools.description}" --vendor "${vendor.name}" --name "${pctools.name}" --icon src\main\resources\PCTools.ico --dest target --input target/jpackageInput --main-jar "PC Tools-${pctools.version}-jar-with-dependencies.jar" --main-class goedegep.pctools.exe.PCToolsWrapper
+attrib -r "target\${pctools.name}-${pctools.version}.exe"

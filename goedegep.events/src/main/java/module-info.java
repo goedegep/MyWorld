@@ -3,7 +3,7 @@ module goedegep.events {
 
   requires transitive goedegep.jfx;
   requires transitive goedegep.events.model;
-  requires goedegep.gpx.app;
+  requires goedegep.gpxeditor;
   requires goedegep.model.properties;
   requires goedegep.myworld.common;
   requires goedegep.properties.app;

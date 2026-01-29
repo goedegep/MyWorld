@@ -1,0 +1,2 @@
+jpackage --type exe --app-version ${events.version} --copyright "${copyright}" --description "${events.description}" --vendor "${vendor.name}" --name "${events.name}" --icon src\main\resources\event-272x187.ico --dest target --input target/jpackageInput --main-jar Events-${events.version}-jar-with-dependencies.jar --main-class goedegep.events.exe.EventsWrapper
+attrib -r target\${events.name}-${events.version}.exe

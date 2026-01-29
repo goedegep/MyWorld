@@ -1070,7 +1070,6 @@ public class ComponentFactoryFx {
   }
 
   /**
-   * @deprecated
    * Create a String ObjectControl.
    * 
    * @param text The initial value.
@@ -1156,7 +1155,6 @@ public class ComponentFactoryFx {
   }
 
   /**
-   * @deprecated
    * Create a FlexDate ObjectControl.
    * 
    * @param flexDate the initial value.

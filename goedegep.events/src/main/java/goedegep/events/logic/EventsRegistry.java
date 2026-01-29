@@ -94,9 +94,7 @@ public class EventsRegistry extends Registry {
   private EventsRegistry() {
     super();
     
-    setAuthor("Peter Goedegebure");
-    setShortProductInfo("Information about events, etc.");
-    setPropertyDescriptorsFileName("EventsPropertyDescriptors.xmi");
+    setPropertyDescriptorsFileName("../../src/main/resources/EventsPropertyDescriptors.xmi");
     setUserPropertiesFileName("EventsUserPreferences.xmi");
   }
 }

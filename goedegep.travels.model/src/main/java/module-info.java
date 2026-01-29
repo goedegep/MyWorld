@@ -3,7 +3,7 @@ module goedegep.travels.model {
   exports goedegep.travels.model.util;
 
   requires transitive goedegep.types.model;
-  requires transitive goedegep.poi.app;
+  requires transitive goedegep.poi;
   requires goedegep.util;
   requires java.logging;
   requires org.eclipse.emf.common;

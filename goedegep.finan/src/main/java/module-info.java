@@ -1,12 +1,12 @@
-module goedegep.app.finan {
-  exports goedegep.finan.investmentinsurances;
-  exports goedegep.finan.jobappointment;
-  exports goedegep.finan.guifx;
-  exports goedegep.finan.jobappointment.guifx;
+module goedegep.finan {
+  exports goedegep.finan.investmentinsurances.logic;
+  exports goedegep.finan.jobappointment.logic;
+  exports goedegep.finan.gui;
+  exports goedegep.finan.jobappointment.gui;
   exports goedegep.finan.pensioen.nn;
-  exports goedegep.finan.mortgage;
-  exports goedegep.finan.mortgage.guifx;
-  exports goedegep.finan.investmentinsurances.guifx;
+  exports goedegep.finan.mortgage.logic;
+  exports goedegep.finan.mortgage.gui;
+  exports goedegep.finan.investmentinsurances.gui;
     
   requires transitive goedegep.jfx;
   requires java.logging;

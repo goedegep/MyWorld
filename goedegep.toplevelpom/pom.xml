@@ -25,7 +25,6 @@
     <copyright>Copyright(c) 2001-2026 Peter Goedegebure</copyright>
     <author.name>Peter Goedegebure</author.name>
     <vendor.name>goedegep</vendor.name>
-
     
     <!-- Versions for the MyWorld applications. These are kept here as other applications may depend on them.  -->
     <demo.version>1.0.0</demo.version>
@@ -38,7 +37,7 @@
     <pctools.version>1.0.0</pctools.version>    
     <rolodex.version>1.0.0</rolodex.version>
     <travels.version>1.0.0</travels.version>
-    <unitconverterversion>1.0.0</unitconverterversion>
+    <unitconverter.version>1.0.0</unitconverter.version>
   </properties>
   
   <groupId>goedegep.toplevelpom</groupId>
@@ -192,7 +191,7 @@
       </dependency>
       <dependency>
           <groupId>goedegep.finan</groupId>
-          <artifactId>goedegep-finan-apptest</artifactId>
+          <artifactId>goedegep-finantest</artifactId>
           <version>${goedegep.myworld.version}</version>
       </dependency>
       <dependency>
@@ -278,16 +277,6 @@
       <dependency>
         <groupId>goedegep.media</groupId>
         <artifactId>goedegep-media</artifactId>
-        <version>${goedegep.myworld.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>goedegep.media</groupId>
-        <artifactId>goedegep-media-common</artifactId>
-        <version>${goedegep.myworld.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>goedegep.media</groupId>
-        <artifactId>goedegep-media-mediadb-app</artifactId>
         <version>${goedegep.myworld.version}</version>
       </dependency>
       <dependency>
@@ -694,14 +683,12 @@
     <module>../goedegep.pctools.model</module>
     <module>../goedegep.unitconverter</module>
     <module>../goedegep.rolodex</module>
-    <module>../goedegep.rolodextest.app</module>
+    <module>../goedegep.rolodextest</module>
     <module>../goedegep.events</module>
-    <module>../goedegep.media.common</module>
     <module>../goedegep.media.photoshow.model</module>
-    <module>../goedegep.media.mediadb.app</module>
     <module>../goedegep.media</module>
     <module>../goedegep.finan</module>
-    <module>../goedegep.finan.apptest</module>
+    <module>../goedegep.finantest</module>
     <module>../goedegep.invandprop</module>
     <module>../goedegep.gpxeditor</module>
     <module>../goedegep.pctools</module>

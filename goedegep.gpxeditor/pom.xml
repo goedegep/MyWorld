@@ -3,7 +3,7 @@
   <groupId>goedegep.gpx</groupId>
   <artifactId>goedegep-gpx-editor</artifactId>
   <packaging>jar</packaging>
-  <name>Goedegep GPX application</name>
+  <name>GPX Editor</name>
   <description>This project contains the GPX application.</description>
   
   <parent>
@@ -14,7 +14,7 @@
   </parent>
 
   <properties>
-    <gpxeditor.name>Events</gpxeditor.name>
+    <gpxeditor.name>GPX Editor</gpxeditor.name>
     <gpxeditor.description>Application to edit GPX files</gpxeditor.description>
   </properties>
   
@@ -64,6 +64,10 @@
       <artifactId>goedegep-util</artifactId>
     </dependency>
     <dependency>
+      <groupId>org.apache.commons.cli</groupId>
+      <artifactId>org.apache.commons.cli</artifactId>
+    </dependency>
+    <dependency>
      <groupId>org.eclipse.emf</groupId>
     <artifactId>org.eclipse.emf.common</artifactId>
     </dependency>
@@ -91,12 +95,38 @@
       <artifactId>tim.prune.gpsprune</artifactId>
     </dependency>
   </dependencies>
+  
   <build>
+    <finalName>${gpxeditor.name}-${gpxeditor.version}</finalName>
+    
     <resources>
       <resource>
         <directory>src/main/resources</directory>
         <filtering>true</filtering>
       </resource>
     </resources>
+    
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <version>3.3.0</version>
+        <configuration>
+          <descriptorRefs>
+            <descriptorRef>jar-with-dependencies</descriptorRef>
+          </descriptorRefs>
+          <outputDirectory>target/jpackageInput</outputDirectory>
+        </configuration>
+        <executions>
+          <execution>
+            <id>make-assembly</id>
+            <phase>package</phase>
+            <goals>
+              <goal>single</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
   </build>
 </project>

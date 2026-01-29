@@ -1,0 +1,2 @@
+jpackage --type exe --app-version ${media.version} --copyright "${copyright}" --description "${media.description}" --vendor "${vendor.name}" --name "${media.name}" --icon src\main\resources\Media.ico --dest target --input target/jpackageInput --main-jar Media-${media.version}-jar-with-dependencies.jar --main-class goedegep.media.exe.MediaWrapper
+attrib -r target\${media.name}-${media.version}.exe

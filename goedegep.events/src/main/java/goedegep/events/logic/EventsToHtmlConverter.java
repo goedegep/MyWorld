@@ -7,7 +7,7 @@ import java.util.logging.Logger;
 
 import org.eclipse.emf.common.util.EList;
 
-import goedegep.events.app.guifx.AttachmentTypeInfo;
+import goedegep.events.gui.AttachmentTypeInfo;
 import goedegep.events.model.EventInfo;
 import goedegep.events.model.Events;
 import goedegep.resources.ImageResource;

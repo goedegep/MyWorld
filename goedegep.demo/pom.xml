@@ -14,12 +14,8 @@
   </parent>
 
   <properties>
-    <project.build.sourceEncoding>UTF8</project.build.sourceEncoding>
     <demo.name>Demo</demo.name>
     <demo.description>Demo application for MyWorld libraries</demo.description>
-    <maven.compiler.source>20</maven.compiler.source>
-    <maven.compiler.target>${maven.compiler.source}</maven.compiler.target>
-    <lombok.version>1.18.36</lombok.version>
   </properties>
   
   <dependencies>

@@ -1,4 +1,4 @@
-module goedegep.poi.app {
+module goedegep.poi {
   exports goedegep.poi.app;
 
   requires transitive goedegep.resources;

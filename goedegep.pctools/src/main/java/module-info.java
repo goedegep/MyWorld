@@ -1,10 +1,11 @@
 module goedegep.pctools {
+  exports goedegep.pctools.exe;
   exports goedegep.pctools.filefinder.logic;
   exports goedegep.pctools.filescontrolled.logic;
-  exports goedegep.pctools.app.guifx;
+  exports goedegep.pctools.gui;
   exports goedegep.pctools.filescontrolled.guifx;
   exports goedegep.pctools.filescontrolled.types;
-  exports goedegep.pctools.app.logic;
+  exports goedegep.pctools.logic;
   exports goedegep.pctools.filefinder.guifx;
 
   requires transitive goedegep.jfx;
@@ -20,7 +21,6 @@ module goedegep.pctools {
   requires org.eclipse.emf.ecore;
   requires javafx.web;
   requires tim.prune;
-  requires goedegep.gpx.app;
   requires goedegep.myworld.common;
   requires goedegep.resources;
   requires org.commonmark;

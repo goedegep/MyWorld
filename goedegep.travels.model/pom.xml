@@ -3,7 +3,7 @@
   <groupId>goedegep.travels</groupId>
   <artifactId>goedegep-travels-model</artifactId>
   <packaging>jar</packaging>
-  <name>Vacations data model</name>
+  <name>Travels data model</name>
   <description>This project provides a data model for travels.</description>
   <parent>
     <groupId>goedegep.toplevelpom</groupId>

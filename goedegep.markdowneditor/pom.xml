@@ -14,12 +14,8 @@
   </parent>
 
   <properties>
-    <project.build.sourceEncoding>UTF8</project.build.sourceEncoding>
     <markdowneditor.name>Markdown editor</markdowneditor.name>
     <markdowneditor.description>Editor/viewer for Markdown files</markdowneditor.description>
-    <maven.compiler.source>20</maven.compiler.source>
-    <maven.compiler.target>${maven.compiler.source}</maven.compiler.target>
-    <lombok.version>1.18.36</lombok.version>
   </properties>
   
   <dependencies>

@@ -14,7 +14,7 @@
   </parent>
 
   <properties>
-    <finan.name>Events</finan.name>
+    <finan.name>Finan</finan.name>
     <finan.description>Application for financial stuff</finan.description>
   </properties>
   
@@ -107,12 +107,38 @@
       <classifier>win</classifier>
     </dependency>
   </dependencies>
+  
   <build>
+    <finalName>${finan.name}-${finan.version}</finalName>
+    
     <resources>
       <resource>
         <directory>src/main/resources</directory>
         <filtering>true</filtering>
       </resource>
     </resources>
+    
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <version>3.3.0</version>
+        <configuration>
+          <descriptorRefs>
+            <descriptorRef>jar-with-dependencies</descriptorRef>
+          </descriptorRefs>
+          <outputDirectory>target/jpackageInput</outputDirectory>
+        </configuration>
+        <executions>
+          <execution>
+            <id>make-assembly</id>
+            <phase>package</phase>
+            <goals>
+              <goal>single</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
   </build>
 </project>

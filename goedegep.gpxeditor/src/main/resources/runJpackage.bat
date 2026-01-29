@@ -1,0 +1,2 @@
+jpackage --type exe --app-version ${gpxeditor.version} --copyright "${copyright}" --description "${gpxeditor.description}" --vendor "${vendor.name}" --name "${gpxeditor.name}" --icon src\main\resources\GPX-128x128.ico --dest target --input target/jpackageInput --main-jar "GPX Editor-${gpxeditor.version}-jar-with-dependencies.jar" --main-class goedegep.gpxeditor.exe.GPXEditorWrapper
+attrib -r "target\${gpxeditor.name}-${gpxeditor.version}.exe"

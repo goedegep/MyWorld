@@ -1,0 +1,2 @@
+jpackage --type exe --app-version ${finan.version} --copyright "${copyright}" --description "${finan.description}" --vendor "${vendor.name}" --name "${finan.name}" --icon src\main\resources\FinanLogo.ico --dest target --input target/jpackageInput --main-jar Finan-${finan.version}-jar-with-dependencies.jar --main-class goedegep.finan.exe.FinanWrapper
+attrib -r target\${finan.name}-${finan.version}.exe
