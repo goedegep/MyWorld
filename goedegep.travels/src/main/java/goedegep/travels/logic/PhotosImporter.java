@@ -138,10 +138,10 @@ public class PhotosImporter {
     }
     
     // get a list of all days (for the third option, and to create the map from days to elements of that day with location information)
-    List<Day> vacationDays = VacationsUtils.getVacationDays(vacation);
+    List<Day> vacationDays = TravelsUtils.getVacationDays(vacation);
     
     // get the map of all elements with location information with their location information  (for the second option)
-    geoLocations = VacationsUtils.getVacationGeoLocations(vacation);
+    geoLocations = TravelsUtils.getVacationGeoLocations(vacation);
     for (VacationElement element: geoLocations.keySet()) {
       LOGGER.severe("Element with location information: " + element);
     }
@@ -152,7 +152,7 @@ public class PhotosImporter {
     for (Day day: vacationDays) {
       List<VacationElement> geoElements = new ArrayList<>();
       for (VacationElement vacationElement: geoLocations.keySet()) {
-        Day elementDay = VacationsUtils.getAncestorOfType(vacationElement, Day.class);
+        Day elementDay = TravelsUtils.getAncestorOfType(vacationElement, Day.class);
         if (day.equals(elementDay)) {
           geoElements.add(vacationElement);
         }
@@ -161,7 +161,7 @@ public class PhotosImporter {
     }
     
     // Get all photo folders to handle
-    List<Path> vacationPhotoFolderPaths = VacationsUtils.getVactionPhotosSubFoldersPaths(vacation);
+    List<Path> vacationPhotoFolderPaths = TravelsUtils.getVactionPhotosSubFoldersPaths(vacation);
     for (Path path: vacationPhotoFolderPaths) {
       LOGGER.severe("Vacation folder path: " + path);
     }

@@ -745,7 +745,7 @@ public class VacationToHtmlConverter extends VacationToTextConverterAbstract {
     buf.append(HtmlUtil.encodeHTML(pictureFileName, true));
     buf.append("\">");
     buf.append("<figure>");
-    String caption = VacationsUtils.getPictureCaption(picture);
+    String caption = TravelsUtils.getPictureCaption(picture);
     addImage(buf, picturePath, 250, caption);
     //      addImage(buf, picturePath.toUri().toString(), 250, caption);
     buf.append("</figure>");   

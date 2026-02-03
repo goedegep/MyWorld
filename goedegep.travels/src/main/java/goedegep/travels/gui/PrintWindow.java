@@ -27,7 +27,7 @@ import goedegep.jfx.JfxStage;
 import goedegep.jfx.editor.controls.EditorControlFileSelecter;
 import goedegep.travels.logic.VacationToHtmlConverter;
 import goedegep.travels.logic.VacationToHtmlConverterSetting;
-import goedegep.travels.logic.VacationsUtils;
+import goedegep.travels.logic.TravelsUtils;
 import goedegep.travels.model.Vacation;
 import goedegep.util.file.FileUtils;
 import javafx.beans.value.ChangeListener;
@@ -342,7 +342,7 @@ public class PrintWindow extends JfxStage {
     EditorControlFileSelecter editorControlFileSelecter = componentFactory.createEditorControlFileSelecter(400, "path to save the PDF file to",
         "change path", "click to save to a different location", "Select file to save to", true);
     editorControlFileSelecter.setOpenOrSaveDialog(true);
-    String vacationFolder = VacationsUtils.getTravelFilesFolder(vacation);
+    String vacationFolder = TravelsUtils.getTravelFilesFolder(vacation);
     if (vacationFolder != null) {
       Path vacationFolderPath = Paths.get(vacationFolder);
       if (Files.exists(vacationFolderPath) && Files.isDirectory(vacationFolderPath)) {
@@ -404,7 +404,7 @@ public class PrintWindow extends JfxStage {
     EditorControlFileSelecter editorControlFileSelecter = componentFactory.createEditorControlFileSelecter(400, "path to save the HTML (zip) file to",
         "change path", "click to save to a different location", "Select file to save to", true);
     editorControlFileSelecter.setOpenOrSaveDialog(true);
-    String vacationFolder = VacationsUtils.getTravelFilesFolder(vacation);
+    String vacationFolder = TravelsUtils.getTravelFilesFolder(vacation);
     if (vacationFolder != null) {
       Path vacationFolderPath = Paths.get(vacationFolder);
       if (Files.exists(vacationFolderPath) && Files.isDirectory(vacationFolderPath)) {

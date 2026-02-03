@@ -225,7 +225,7 @@ public class VacationsKmlConverter extends VacationToTextConverterAbstract {
     }
     
     try {
-      List<List<WGS84Coordinates>> locationsConnectingLines = VacationsUtils.getLocationConnectingLines(vacation);
+      List<List<WGS84Coordinates>> locationsConnectingLines = TravelsUtils.getLocationConnectingLines(vacation);
       for (List<WGS84Coordinates> locationsConnectingLine: locationsConnectingLines) {
         addPath(vacationFolder, locationsConnectingLine);
       }

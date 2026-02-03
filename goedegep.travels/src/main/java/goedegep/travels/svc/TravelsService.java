@@ -27,10 +27,12 @@ import goedegep.util.string.StringUtil;
 import javafx.scene.paint.Color;
 
 /**
- * This class is the Travels application.
+ * This class is the Service of the Travels application.
  * <p>
  * It holds the customization information and provides methods to show the main window of the application.
- * It is built on top of logic and guifx sub packages.
+ * It is built on top of logic and gui packages.
+ * The TravelsService is a singleton of which the instance can be obtained by {@link getInstance()}.<br/>
+ * The service checks for changes in the vacation pictures folder and the vacations folder, and notifies registered listeners about these changes.
  */
 public class TravelsService extends Service {
   private static final Logger LOGGER = Logger.getLogger(TravelsService.class.getName());
@@ -40,22 +42,29 @@ public class TravelsService extends Service {
    */
   private static TravelsService instance;
   
+  /**
+   * Registry.
+   */
   private TravelsRegistry vacationsRegistry;
   
+  /**
+   * Registered listeners for directory changes.
+   * <p>
+   * Registering is done via {@link #addDirectoryChangesListener(DirectoryChangesListener)}.
+   */
   private List<DirectoryChangesListener> directoryChangesListeners = new ArrayList<>();
   
   /**
    * Get the singleton instance of the TravelsApplication.
+   * <p>
+   * If the instance doesn't exist yet, it is created and initialized.
    * 
    * @return the singleton instance of TravelsApplication.
    */
   public static TravelsService getInstance() {
-    // Ensure that the application is a singleton
     if (instance == null) {
       instance = new TravelsService();
       instance.initialize();
-      
-      ImageResource.checkResources();
 
       instance.startPhotoThumbnailsCreation();
     }
@@ -67,9 +76,7 @@ public class TravelsService extends Service {
    * Show the main window of the application.
    */
   public void showTravelsWindow() {
-    // Show the main window of the application
-    TravelsWindow travelsWindow = new TravelsWindow(customization, this);
-    travelsWindow.show();
+    new TravelsWindow(customization, this);
   }
   
   /**
@@ -80,15 +87,19 @@ public class TravelsService extends Service {
   public void showBoundariesPointsReductionWindow(Location location) {
     new BoundariesPointsReductionWindow(customization, location);
   }
-
-  public CustomizationFx getCustomization() {
-    return customization;
-  }
   
+  /**
+   * Add a listener for changes in the vacations folder and the vacation pictures folder.
+   * <p>
+   * When the first listener is added, the monitoring of the directories is started.
+   * 
+   * @param listener the {@link DirectoryChangesListener} to add.
+   */
   public void addDirectoryChangesListener(DirectoryChangesListener listener) {
     if (!directoryChangesListeners.contains(listener)) {
       directoryChangesListeners.add(listener);
     }
+    
     if (directoryChangesListeners.size() == 1) {
       startDirectoryChangesMonitoring();
     }

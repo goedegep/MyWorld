@@ -36,15 +36,48 @@ public class BoundariesPointsReductionWindow extends JfxStage {
   private static final Logger LOGGER = Logger.getLogger(BoundariesPointsReductionWindow.class.getName());
   private static final String NEWLINE = System.getProperty("line.separator");
   
+  /**
+   * The slider to select the amount of reduction.
+   */
   private Slider slider;
+  
+  /**
+   * Text field to show the number of points before reduction.
+   */
   private TextField originalNumberOfPointsTextField;
+  
+  /**
+   * Text field to show the number of points after reduction.
+   */
   private TextField reducedNumberOfPointsTextField;
   
+  /**
+   * The basic map to which the {@code MapRelatedItemsLayer} is added.
+   */
   private MapView mapView;
+  
+  /**
+   * The {@code MapRelatedItemsLayer} showing the boundaries with the currently selected reduction.
+   */
   private MapRelatedItemsLayer mapRelatedItemsLayer;
+  
+  /**
+   * The location being edited.
+   */
   private Location location;
-  private List<List<WGS84Coordinates>> originalBoundaryPoints;
+  
+  /**
+   * The original boundaries (as a list of lists of boundary points) of the location, before any reduction was applied.
+   * Used to restore the original boundary points if the user cancels the operation.
+   */
+  private List<List<WGS84Coordinates>> originalBoundaries;
 
+  /**
+   * Constructor.
+   * 
+   * @param customization the GUI customization, may not be null.
+   * @param location the {@code Location} whose boundaries are to be reduced. May not be null.
+   */
   public BoundariesPointsReductionWindow(CustomizationFx customization, Location location) {
     Objects.requireNonNull(customization, "customization must not be null");
     Objects.requireNonNull(location, "location must not be null");
@@ -62,12 +95,9 @@ public class BoundariesPointsReductionWindow extends JfxStage {
   /**
    * Create the GUI.
    * <p>
-   * Main panel is an HBox; left is the control panel, right is the map panel.
+   * Main panel is a {@code SplitPane}; left is the control panel, right is the map panel.
    */
   private void createGUI() {
-    HBox mainPanel = componentFactory.createHBox();
-    
-    // Splitpane: left is control panel, right is map
     SplitPane centerPane = new SplitPane();
     centerPane.setOrientation(Orientation.HORIZONTAL);
     centerPane.setDividerPositions(0.3);
@@ -78,13 +108,11 @@ public class BoundariesPointsReductionWindow extends JfxStage {
     // MapView
     centerPane.getItems().add(createMapView());
     
-    mainPanel.getChildren().add(centerPane);
-    
-    setScene(new Scene(mainPanel, 1700, 900));
+    setScene(new Scene(centerPane, 1700, 900));
   }
   
   /**
-   * Create the control panel on the left side of the window.
+   * Create the control panel for the left side of the window.
    * 
    * @return the control panel
    */
@@ -161,6 +189,11 @@ public class BoundariesPointsReductionWindow extends JfxStage {
     return  buttonsBox;
   }
   
+  /**
+   * Create the MapView for the right side of the window.
+   * 
+   * @return the created MapView
+   */
   private Node createMapView() {
     mapView = new MapView();
     mapRelatedItemsLayer = new MapRelatedItemsLayer(customization, this);
@@ -169,14 +202,23 @@ public class BoundariesPointsReductionWindow extends JfxStage {
     return mapView;
   }
   
+  /**
+   * Set the location whose boundaries are to be reduced.
+   * <p>
+   * The map is updated to show the location boundaries.
+   * 
+   * @param location the location, may not be null.
+   */
   private void setLocation(Location location) {
     this.location = location;
     
-    originalBoundaryPoints = new ArrayList<>();
+    // save original boundaries
+    originalBoundaries = new ArrayList<>();
     for (Boundary boundary: location.getBoundaries()) {
-      originalBoundaryPoints.add(new ArrayList<>(boundary.getPoints()));
+      originalBoundaries.add(new ArrayList<>(boundary.getPoints()));
     }
     
+    // Clear the map, add the location, zoom and center the map
     mapRelatedItemsLayer.clear();
     WGS84BoundingBox boundingBox = mapRelatedItemsLayer.addLocation(location);
     Double zoomLevel = MapView.getZoomLevel(boundingBox);
@@ -203,21 +245,23 @@ public class BoundariesPointsReductionWindow extends JfxStage {
    * @param sliderValue the new slider value.
    */
   private void handleNewSliderValue(double sliderValue) {
+    int originalTotalPoints = 0;
+    int reducedTotalPoints = 0;
     
     for (int i = 0; i < location.getBoundaries().size(); i++) {
       
-      List<WGS84Coordinates> originalPoints = originalBoundaryPoints.get(i);
-      originalNumberOfPointsTextField.setText(Integer.toString(originalPoints.size()));
+      List<WGS84Coordinates> originalPoints = originalBoundaries.get(i);
+      originalTotalPoints += originalPoints.size();
       List<WGS84Coordinates> reducedBoundary = DouglasPeuckerReducer.reduceWithTolerance(originalPoints, Math.pow(sliderValue, 1.8), null);
-      reducedNumberOfPointsTextField.setText(Integer.toString(reducedBoundary.size()));
+      reducedTotalPoints += reducedBoundary.size();
       
       Boundary boundary = location.getBoundaries().get(i);
       boundary.getPoints().clear();
       boundary.getPoints().addAll(reducedBoundary);
     }
-
+    originalNumberOfPointsTextField.setText(Integer.toString(originalTotalPoints));
+    reducedNumberOfPointsTextField.setText(Integer.toString(reducedTotalPoints));
   }
-
 
   /**
    * Close the window without making changes.
@@ -228,7 +272,7 @@ public class BoundariesPointsReductionWindow extends JfxStage {
     // restore original boundary points
     for (int i = 0; i < location.getBoundaries().size(); i++) {
       
-      List<WGS84Coordinates> originalPoints = originalBoundaryPoints.get(i);      
+      List<WGS84Coordinates> originalPoints = originalBoundaries.get(i);      
       Boundary boundary = location.getBoundaries().get(i);
       boundary.getPoints().clear();
       boundary.getPoints().addAll(originalPoints);

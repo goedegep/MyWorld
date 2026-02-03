@@ -17,7 +17,7 @@ import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.JfxStage;
 import goedegep.travels.logic.MapImageType;
 import goedegep.travels.logic.TravelsRegistry;
-import goedegep.travels.logic.VacationsUtils;
+import goedegep.travels.logic.TravelsUtils;
 import goedegep.travels.model.Day;
 import goedegep.travels.model.MapImage;
 import goedegep.travels.model.Vacation;
@@ -88,13 +88,13 @@ public class MapImageViewGenerator extends JfxStage {
       //    }
     }
     case DAY -> {
-      Day day = VacationsUtils.getAncestorOfType(mapImageParent, Day.class);
+      Day day = TravelsUtils.getAncestorOfType(mapImageParent, Day.class);
       if (day != null) {
         vacationsWindow.addDayToMapView(imageTravelMapView, day, false);
       }
     }
     case TRAVEL -> {
-      Vacation vacation = VacationsUtils.getVacationForObject(mapImageParent);
+      Vacation vacation = TravelsUtils.getVacationForObject(mapImageParent);
       if (vacation != null) {
         vacationsWindow.addVacationToMapView(imageTravelMapView, vacation, false, false);
       }

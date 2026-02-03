@@ -42,6 +42,7 @@ import goedegep.poi.app.LocationCategory;
 import goedegep.resources.ImageResource;
 import goedegep.resources.ImageSize;
 import goedegep.travels.logic.EnumStringConverterForLocationCategory;
+import goedegep.travels.logic.TravelsUtils;
 import goedegep.travels.model.BoundingBox;
 import goedegep.travels.model.Day;
 import goedegep.travels.model.DayTrip;
@@ -444,6 +445,11 @@ public class TravelsTreeViewCreator {
           if (day.isSetTitle()) {
             buf.append(" - ");
             buf.append(day.getTitle());
+          }
+          
+          Double distance = TravelsUtils.getDayTravelDisctance(day);
+          if (distance != null) {
+            buf.append(String.format(" (%.1f km)", distance));
           }
           return buf.toString();
         })

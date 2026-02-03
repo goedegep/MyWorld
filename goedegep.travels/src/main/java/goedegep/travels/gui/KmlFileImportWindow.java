@@ -47,7 +47,7 @@ import goedegep.jfx.eobjecttreeview.EObjectTreeView;
 import goedegep.resources.ImageResource;
 import goedegep.travels.logic.KmlFileImporter;
 import goedegep.travels.logic.KmlPlacemarkImportData;
-import goedegep.travels.logic.VacationsUtils;
+import goedegep.travels.logic.TravelsUtils;
 import goedegep.travels.model.GPXTrack;
 import goedegep.travels.model.Location;
 import goedegep.travels.model.Travel;
@@ -718,14 +718,14 @@ public class KmlFileImportWindow extends JfxStage {
     /**
      * Set the GPX track reference.
      * <p>
-     * The folder name is the name of the folder where the files related to the current Vacation are stored (see {@link VacationsUtils.getVacationFolder}).<br/>
+     * The folder name is the name of the folder where the files related to the current Vacation are stored (see {@link TravelsUtils.getVacationFolder}).<br/>
      * The complete filename is obtained by calling {@link #createGpxTrackFileName}.
      */
     private void setGpxTrackReferenceForTravel() {
       String travelFolder = null;
 
       if (travel != null) {
-        travelFolder = VacationsUtils.getTravelFilesFolder(travel);
+        travelFolder = TravelsUtils.getTravelFilesFolder(travel);
       }
 
       String gpxTrackFileName = null;

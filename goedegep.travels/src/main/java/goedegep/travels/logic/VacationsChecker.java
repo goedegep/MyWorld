@@ -393,7 +393,7 @@ public class VacationsChecker {
       return true;
     }
     
-    Path vacationPhotosFolderPathByConvention = VacationsUtils.getVacationPhotosFolderPathByConvention(vacation);
+    Path vacationPhotosFolderPathByConvention = TravelsUtils.getVacationPhotosFolderPathByConvention(vacation);
     if (vacationPhotosFolderPathByConvention == null) {
       // If the vacationPhotosFolderPathByConvention couldn't be determined, it means that the title and/or date of the vacation isn't set.
       // This is checked elsewhere, so just return true (OK) here.
@@ -415,7 +415,7 @@ public class VacationsChecker {
     
     Vacation vacation = (Vacation) travel;
     
-    boolean travelHasPictures = VacationsUtils.doesTravelHavePictures(vacation);
+    boolean travelHasPictures = TravelsUtils.doesTravelHavePictures(vacation);
     if (travelHasPictures) {
       String picturesFoldername = vacation.getPictures();
       if (picturesFoldername == null) {
@@ -436,7 +436,7 @@ public class VacationsChecker {
     Vacation vacation = (Vacation) travel;
     
     // Get all photos in the vacation photos folder
-    List<Path> vacationPhotosFolderPaths = VacationsUtils.getVactionPhotosSubFoldersPaths(vacation);
+    List<Path> vacationPhotosFolderPaths = TravelsUtils.getVactionPhotosSubFoldersPaths(vacation);
     for (Path vacationPhotosFolderPath: vacationPhotosFolderPaths) {
       try (DirectoryStream<Path> stream = Files.newDirectoryStream(vacationPhotosFolderPath)) {
         for (Path path: stream) {

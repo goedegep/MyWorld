@@ -3,6 +3,7 @@ package goedegep.travels.logic;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.nio.file.FileVisitResult;
 import java.nio.file.FileVisitor;
 import java.nio.file.Files;
@@ -26,6 +27,7 @@ import org.eclipse.emf.ecore.EObject;
 import goedegep.geo.WGS84Coordinates;
 import goedegep.gpx.GpxUtil;
 import goedegep.gpx.model.DocumentRoot;
+import goedegep.gpx.model.GPXFactory;
 import goedegep.gpx.model.GpxType;
 import goedegep.gpx.model.TrkType;
 import goedegep.gpx.model.TrksegType;
@@ -55,8 +57,8 @@ import goedegep.util.img.PhotoFileMetaDataHandler;
 /**
  * This class provides utility methods for the Vacations application.
  */
-public class VacationsUtils {
-  private static final Logger LOGGER = Logger.getLogger(VacationsUtils.class.getName());
+public class TravelsUtils {
+  private static final Logger LOGGER = Logger.getLogger(TravelsUtils.class.getName());
   private static DateFormat DF = new SimpleDateFormat("dd-MM-yyyy");
   
   private static TravelsRegistry vacationsRegistry = TravelsRegistry.getInstance();
@@ -130,7 +132,7 @@ public class VacationsUtils {
      * The current polyline.
      * A polyline often goes across vacation elements. Therefore the method addGeoLocationsForVacationElement() gets the current polyline as a parameter.
      * If a polyline ends addGeoLocationsForVacationElement() creates a new line and adds it to the locationConnectingLines.
-     * The last line may be empty, so we have to remove that in that case.
+     * The last line may be empty, so we have to remove it in that case.
      */
     List<WGS84Coordinates> locationsConnectingLine = new ArrayList<>();
         
@@ -237,8 +239,8 @@ public class VacationsUtils {
   /**
    * Get all geo-locations of a day.
    * 
-   * @param day the <code>Day</code> for which the locations are to be collected.
-   * @return a list of coordinates of all locations of <code>day</code>.
+   * @param day the {@code Day} for which the locations are to be collected.
+   * @return a list of coordinates of all locations of {@code day}.
    * @throws FileNotFoundException In case a file, which is referenced by an element, doesn't exist
    */
   public static List<WGS84Coordinates> getGeoLocations(Day day) throws FileNotFoundException {
@@ -385,12 +387,72 @@ public class VacationsUtils {
     
     return geoLocations;
   }
+  
+  /**
+   * Get the total travel distance of a day.
+   * 
+   * @param day the <code>Day</code> for which the travel distance is to be calculated.
+   * @return the total travel distance of the {@code day}.
+   */
+  public static Double getDayTravelDisctance(Day day) {
+    GPXFactory gpxFactory = GPXFactory.eINSTANCE;
+    GpxType gpxType = gpxFactory.createGpxType();
+    List<TrkType> tracks = gpxType.getTrk();
+    TrkType track = gpxFactory.createTrkType();
+    tracks.add(track);
+    List<TrksegType> segments = track.getTrkseg();
+    TrksegType segment = gpxFactory.createTrksegType();
+    segments.add(segment);
+    List<WptType> trackPoints = segment.getTrkpt();
+    
+    // If there is a previous day with a stayed at location, add that as first point.
+    // Else if there is previous day without a stayed at location, add the last location of that day as first point.
+    Day previousDay = getPreviousDay(day);
+    if (previousDay != null) {
+      Location stayedAtLocation = getStayedAtLocation(previousDay);
+      if (stayedAtLocation != null  &&  stayedAtLocation.getLatitude() != null  &&  stayedAtLocation.getLongitude() != null) {
+        WptType trackPoint = gpxFactory.createWptType();
+        trackPoint.setLat(new BigDecimal(stayedAtLocation.getLatitude()));
+        trackPoint.setLon(new BigDecimal(stayedAtLocation.getLongitude()));
+        trackPoints.add(trackPoint);        
+      } else {
+        try {
+          List<WGS84Coordinates> previousDayGeoLocations = getGeoLocations(previousDay);
+          if (!previousDayGeoLocations.isEmpty()) {
+            WGS84Coordinates lastCoordinates = previousDayGeoLocations.get(previousDayGeoLocations.size() - 1);
+            WptType trackPoint = gpxFactory.createWptType();
+            trackPoint.setLat(new BigDecimal(lastCoordinates.getLatitude()));
+            trackPoint.setLon(new BigDecimal(lastCoordinates.getLongitude()));
+            trackPoints.add(trackPoint);        
+          } else {
+          }
+        } catch (FileNotFoundException e) {
+          // ignore exceptions
+        }
+      }
+    }
+    
+    try {
+      List<WGS84Coordinates> geoLocations = getGeoLocations(day);
+      for (WGS84Coordinates coordinates: geoLocations) {
+        WptType trackPoint = gpxFactory.createWptType();
+        trackPoint.setLat(new BigDecimal(coordinates.getLatitude()));
+        trackPoint.setLon(new BigDecimal(coordinates.getLongitude()));
+        trackPoints.add(trackPoint);        
+      }
+      return segment.getLength() / 1000.0; // in km
+    } catch (FileNotFoundException e) {
+      // ignore exceptions
+    }
+    
+    return null;
+  }
 
   /**
-   * Add the geo-locations of a <code>VacationElement</code> and all its children to a list of geo-locations.
+   * Add the geo-locations of a {@code VacationElement} and all its children to a list of geo-locations.
    * 
    * @param geoLocations the list to which the locations are added.
-   * @param element the <code>VacationElement</code> for which the locations will be added.
+   * @param element the {@code VacationElement} for which the locations will be added.
    * @param stayedAtLocations optional array of stayed at locations
    * @throws FileNotFoundException in case the file specified by the pictureReference of a Picture element doesn't exist.
    */
@@ -437,7 +499,7 @@ public class VacationsUtils {
   }
 
   /**
-   * Add the geo-locations of a <code>VacationElement</code> and all its children to a list of geo-locations.
+   * Add the geo-locations of a {@code VacationElement} and all its children to a list of geo-locations.
    * <p>
    * If the {@code element} is a day, then at the end of the day the line is drawn back to the stayed at location (if available).
    * 
@@ -576,22 +638,22 @@ public class VacationsUtils {
   }
 
   /**
-   * Add the geo-location of a <code>Location</code> to a list of geo-locations or to an array of stayed at locations.
+   * Add the geo-location of a {@code Location} to a list of geo-locations or to an array of stayed at locations.
    * <p>
-   * The location can only be added if both latitude and longitude of the <code>Location</code> are set.<br/>
+   * The location can only be added if both latitude and longitude of the {@code Location} are set.<br/>
    * If the location is a 'stayed at' location, it is added to the stayed at locations for the corresponding days.
    * Otherwise it is added to the geoLocations.
    * 
-   * @param geoLocations a list of coordinates to which the coordinates of the <code>location</code> are added if this <code>location</code> isn't a 'stayed at' location.
-   * @param location a <code>Location</code>
-   * @param stayedAtLocations optional array of 'stayed at' locations. If the <code>location</code> is a 'stayed at' location, the coordinates of the <code>location</code> are set
+   * @param geoLocations a list of coordinates to which the coordinates of the {@code location} are added if this {@code location} isn't a 'stayed at' location.
+   * @param location a {@code Location}
+   * @param stayedAtLocations optional array of 'stayed at' locations. If the {@code location} is a 'stayed at' location, the coordinates of the {@code location} are set
    *        in the elements corresponding to the days you stayed at this location.
    */
   private static void addGeoLocationForVacationElementLocation(List<WGS84Coordinates> geoLocations, Location location) {
-    if (elementIsChildOfGpxTrackOrLocation(location)) {
-      // These elements are not added as they are supposed to be on or close to the line.
-      return;
-    }
+//    if (elementIsChildOfGpxTrackOrLocation(location)) {
+//      // These elements are not added as they are supposed to be on or close to the line.
+//      return;
+//    }
     
     if (!location.isReferenceOnly()  &&                                                   // Reference only locations are not part of the lines
         !(location.isStayedAtThisLocation()  &&  elementIsChildOfVacation(location))  &&  // If a 'stayed at' location exists at vacation level, it is not added here.
@@ -606,8 +668,8 @@ public class VacationsUtils {
    * <p>
    * The coordinates can only be added if the picture element has a valid reference to a picture file which has coordinates set.
    * 
-   * @param geoLocations a list of coordinates to which the coordinates of the <code>picture</code> are added.
-   * @param picture a <code>Picture</code> element.
+   * @param geoLocations a list of coordinates to which the coordinates of the {@code picture} are added.
+   * @param picture a {@code Picture} element.
    * @throws FileNotFoundException in case the file specified by the pictureReference doesn't exist.
    */
   private static void addGeoLocationForVacationElementPicture(List<WGS84Coordinates> geoLocations, Picture picture) throws FileNotFoundException {
@@ -769,7 +831,7 @@ public class VacationsUtils {
    * If the folder can't be derived from the file references, the default is used. This is a subfolder, with the name of the travel id, of the folder where all travels of that category are stored
    * 
    * @param travel the Travel to determine the folder for.
-   * @return the folder in which the files related to <code>travel</code> are stored
+   * @return the folder in which the files related to {@code travel} are stored
    */
   public static String getTravelFilesFolder(Travel travel) {
     String travelFilesFolder = null;
@@ -810,7 +872,7 @@ public class VacationsUtils {
    * Guess the folder in which the documents related to a dayTrip are stored.
    * 
    * @param dayTrip the DayTrop to determine the folder for.
-   * @return the folder in which the documents related to <code>dayTrip</code> are stored
+   * @return the folder in which the documents related to {@code dayTrip} are stored
    */
   public static String getDayTripFolder(DayTrip dayTrip) {
 //    String vacationFolder = null;
@@ -835,7 +897,7 @@ public class VacationsUtils {
 //   * Guess the folder in which the pictures related to a vacation are stored.
 //   * 
 //   * @param vacation the Vacation to determine the folder for.
-//   * @return the folder in which the pictures related to <code>vacation</code> are stored
+//   * @return the folder in which the pictures related to {@code vacation} are stored
 //   */
 //  public static String vacationPicturesFolder(Vacation vacation) {
 //    Path vacationPicturesFolderPath = Paths.get(VacationsRegistry.vacationPicturesFolderName, vacation.getId());
@@ -854,7 +916,7 @@ public class VacationsUtils {
    * folder with all photos of all vacations.
    * 
    * @param vacation the vacation for which to get a Path to its photos folder.
-   * @return a Path to the folder with photos for <code>vacation</code>, or null if this cannot be determined.
+   * @return a Path to the folder with photos for {@code vacation}, or null if this cannot be determined.
    */
   public static Path getVacationPhotosFolderPath(Vacation vacation) {
     String vacationPhotosFolder = vacation.getPictures();
@@ -1015,13 +1077,13 @@ public class VacationsUtils {
    * <p>
    * A value is returned for:
    * <ul>
-   * <li>A <code>Location</code> with both latitude and longitude set.
+   * <li>A <{@code Location} with both latitude and longitude set.
    * </li>
    * </ul>
-   * In all other cases <code>null</code> will be returned.
+   * In all other cases {@code null} will be returned.
    * 
-   * @param vacationElement a <code>VacationElement</code>
-   * @return the geo location (coordinates) of <code>vacationElement</code>, or null if the <code>vacationElement</code> can't have a location or doesn't have its location set.
+   * @param vacationElement a {@code VacationElement}
+   * @return the geo location (coordinates) of {@code vacationElement}, or null if the {@code vacationElement} can't have a location or doesn't have its location set.
    */
   public static Triplet<WGS84Coordinates, BoundingBox, List<Boundary>> getGeoLocation(VacationElement vacationElement) {
     LOGGER.info("=> vacationElement=" + vacationElement.toString());
@@ -1054,10 +1116,10 @@ public class VacationsUtils {
   }
   
   /**
-   * Get the geo location (coordinates) of a <code>Location</code> element.
+   * Get the geo location (coordinates) of a {@code Location} element.
    * 
-   * @param location a <code>Location</code>
-   * @return the geo location (coordinates) of the <code>location</code>, or null if not both latitude and longitude are set.
+   * @param location a {@code Location}
+   * @return the geo location (coordinates) of the {@code location}, or null if not both latitude and longitude are set.
    */
   public static Triplet<WGS84Coordinates, BoundingBox, List<Boundary>> getGeoLocation(Location location) {
     LOGGER.info("=> vacationElement=" + location.toString());
@@ -1085,10 +1147,10 @@ public class VacationsUtils {
   }
   
   /**
-   * Get the geo location (coordinates) of a <code>Picture</code> element.
+   * Get the geo location (coordinates) of a {@code Picture} element.
    * 
-   * @param picture a <code>Picture</code>
-   * @return the geo location (coordinates) of the <code>picture</code>, or null if the file reference isn't set,
+   * @param picture a {@code Picture}
+   * @return the geo location (coordinates) of the {@code picture}, or null if the file reference isn't set,
    *         or the file name in the file reference isn't set, or if the picture doesn't have a location set.
    */
   public static Triplet<WGS84Coordinates, BoundingBox, List<Boundary>> getGeoLocation(Picture picture) {
@@ -1105,9 +1167,9 @@ public class VacationsUtils {
   }
   
   /**
-   * Get the geo location (coordinates) of a <code>GPXTrack</code> element.
+   * Get the geo location (coordinates) of a {@code GPXTrack} element.
    * 
-   * @param gpxTrack a <code>GPXTrack</code>
+   * @param gpxTrack a {@code GPXTrack}
    * @return the coordinates of the the location of the first point of the first segment of the first track, or null if this isn't available.
    */
   public static Triplet<WGS84Coordinates, BoundingBox, List<Boundary>> getGeoLocation(GPXTrack gpxTrack) {
@@ -1166,8 +1228,8 @@ public class VacationsUtils {
    * If the title is set in the file reference, this is the text to show.<br/>
    * Else, if the title is set in the picture file, this is the text to show.
    * 
-   * @param picture a <code>Picture</code>
-   * @return the text to show for the <code>picture</code>.
+   * @param picture a {@code Picture}
+   * @return the text to show for the {@code picture}.
    */
   public static String getPictureCaption(Picture picture) {
     String text = null;

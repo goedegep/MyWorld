@@ -13,7 +13,7 @@ import goedegep.jfx.eobjecttreeview.EObjectTreeItem;
 import goedegep.jfx.eobjecttreeview.EObjectTreeView;
 import goedegep.poi.app.LocationCategory;
 import goedegep.travels.logic.PhotoImportResult;
-import goedegep.travels.logic.VacationsUtils;
+import goedegep.travels.logic.TravelsUtils;
 import goedegep.travels.model.Day;
 import goedegep.travels.model.GPXTrack;
 import goedegep.travels.model.Location;
@@ -134,7 +134,7 @@ public class PhotoImportResultWindow extends JfxStage {
     if (vacationElement instanceof Day) {
       day = (Day) vacationElement;
     } else {
-      day = VacationsUtils.getAncestorOfType(vacationElement, Day.class);
+      day = TravelsUtils.getAncestorOfType(vacationElement, Day.class);
     }
     
     switch(photoImportResult.getPhotoImportResultType()) {

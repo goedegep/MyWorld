@@ -61,6 +61,8 @@ public class ImageResourceDemo extends JfxStage {
     if (!imageSelectionComboBox.getItems().isEmpty()) {
       imageSelectionComboBox.getSelectionModel().select(0);
     }
+    
+    ImageResource.checkResources();
   }
   
   /**

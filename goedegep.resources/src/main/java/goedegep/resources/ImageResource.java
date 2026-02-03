@@ -537,6 +537,11 @@ public enum ImageResource {
     return imageInfo;
   }
   
+  /**
+   * Check whether all image resources have the correct filenames and sizes.
+   * <p>
+   * For details see {@link #checkFileName(ImageResource)} and {@link #checkSize(ImageResource)}.
+   */
   public static void checkResources() {
     for (ImageResource imageResource: ImageResource.values()) {
       imageResource.checkFileName(imageResource);
@@ -545,7 +550,7 @@ public enum ImageResource {
   }
 
   /**
-   * Check whether the image files have the correct width and height specified.
+   * Check whether the image files have the correct width and height specified in their {@code ImageFileInfo}.
    * 
    * @param imageResource the ImageResource to check
    */
@@ -564,6 +569,10 @@ public enum ImageResource {
 
   /**
    * Check whether the image files have the correct filename.
+   * <p>
+   * The expected format is: {@code <name> - <width>x<height>.<extension>}.
+   * Where each part of the name starts with an uppercase character.
+   * Both {@code <width>} and {@code <height>} must match the width and height specified in the {@code ImageFileInfo}.
    * 
    * @param imageResource the ImageResource to check
    */

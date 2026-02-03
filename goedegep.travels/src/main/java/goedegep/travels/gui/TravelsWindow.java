@@ -73,7 +73,7 @@ import goedegep.travels.logic.TravelsRegistry;
 import goedegep.travels.logic.VacationToHtmlConverter;
 import goedegep.travels.logic.VacationToHtmlConverterSetting;
 import goedegep.travels.logic.VacationsKmlConverter;
-import goedegep.travels.logic.VacationsUtils;
+import goedegep.travels.logic.TravelsUtils;
 import goedegep.travels.model.BoundingBox;
 import goedegep.travels.model.Day;
 import goedegep.travels.model.DayTrip;
@@ -462,7 +462,7 @@ public class TravelsWindow extends JfxStage {
     // This determines the travel files folder
     String travelFilesFolder = null;
     if (travel != null) {
-      travelFilesFolder = VacationsUtils.getTravelFilesFolder(travel);
+      travelFilesFolder = TravelsUtils.getTravelFilesFolder(travel);
     }
     
     // show the folder name
@@ -894,7 +894,7 @@ public class TravelsWindow extends JfxStage {
     menu = new Menu("Tools");
 
     // Tools: Check vacations
-    MenuUtil.addMenuItem(menu, "Check vacations", _ -> new CheckVacationsWindow(customization, vacations, treeView));
+    MenuUtil.addMenuItem(menu, "Check vacations", _ -> new CheckTravelsWindow(customization, vacations, treeView));
 
     // Tools: Play photoshow
     MenuUtil.addMenuItem(menu, "Play photoshow", _ -> playPhotoShow());
@@ -1849,7 +1849,7 @@ public class TravelsWindow extends JfxStage {
     
     if (!stayedAtOnly) {
       try {
-        List<List<WGS84Coordinates>> locationsConnectingLines = VacationsUtils.getLocationConnectingLines(vacation);
+        List<List<WGS84Coordinates>> locationsConnectingLines = TravelsUtils.getLocationConnectingLines(vacation);
         if (!locationsConnectingLines.isEmpty()) {
           travelMapView.getMapRelatedItemsLayer().addLocationsVisitedPolyLines(FXCollections.observableList(locationsConnectingLines));
         }
@@ -1882,7 +1882,7 @@ public class TravelsWindow extends JfxStage {
     }
         
     try {
-      List<List<WGS84Coordinates>> locationsConnectingLines = VacationsUtils.getLocationConnectingLines(day);
+      List<List<WGS84Coordinates>> locationsConnectingLines = TravelsUtils.getLocationConnectingLines(day);
       if (!locationsConnectingLines.isEmpty()) {
         travelMapView.getMapRelatedItemsLayer().addLocationsVisitedPolyLines(FXCollections.observableList(locationsConnectingLines));
       }
@@ -1910,7 +1910,7 @@ public class TravelsWindow extends JfxStage {
     }
 
     try {
-      List<List<WGS84Coordinates>> locationsConnectingLines = VacationsUtils.getLocationConnectingLines(dayTrip);
+      List<List<WGS84Coordinates>> locationsConnectingLines = TravelsUtils.getLocationConnectingLines(dayTrip);
       if (!locationsConnectingLines.isEmpty()) {
         travelMapView.getMapRelatedItemsLayer().addLocationsVisitedPolyLines(FXCollections.observableList(locationsConnectingLines));
       }
@@ -2093,7 +2093,7 @@ public class TravelsWindow extends JfxStage {
     
     Vacation vacation = getTravelForTreeItem(eObjectTreeCell.getTreeItem(), VACATIONS_PACKAGE.getVacation());
     LOGGER.severe("vacation=" + vacation.getId());
-    Path vacationFolderPath = VacationsUtils.getVacationPhotosFolderPath(vacation);
+    Path vacationFolderPath = TravelsUtils.getVacationPhotosFolderPath(vacation);
     if (vacationFolderPath != null) {
       LOGGER.severe("vacationFolderPath=" + vacationFolderPath.toString());
       return vacationFolderPath.toString();
@@ -2132,10 +2132,10 @@ public class TravelsWindow extends JfxStage {
         Object object = grandparentTreeItem.getValue();
         LOGGER.info("Class=" + object.getClass().getName());
         if (object instanceof Picture) {
-          Path path = VacationsUtils.getVacationPhotosFolderPath(vacation);
+          Path path = TravelsUtils.getVacationPhotosFolderPath(vacation);
           return path != null ? path.toAbsolutePath().toString() : null;
         } else {
-          return VacationsUtils.getTravelFilesFolder(vacation);      
+          return TravelsUtils.getTravelFilesFolder(vacation);      
         }
       } else {
         LOGGER.severe("grandparentTreeItem is null");
@@ -2690,7 +2690,7 @@ public class TravelsWindow extends JfxStage {
     }
     
     Travel travel = (Travel) value;
-    List<String> photoFileNames = VacationsUtils.getShowFileNames(travel);
+    List<String> photoFileNames = TravelsUtils.getShowFileNames(travel);
     new PhotoWindow(customization, photoFileNames, travel.getTitle(), travel.getDate());
   }
   
@@ -2876,7 +2876,7 @@ public class TravelsWindow extends JfxStage {
       EObjectTreeItem parent = (EObjectTreeItem) treeItem.getParent();
       value = parent.getValue();
     }
-    MapImageType mapImageType = VacationsUtils.getMapImageType((EObject) value);
+    MapImageType mapImageType = TravelsUtils.getMapImageType((EObject) value);
     String defaultTitle = createDefaultTitleForMapImage(mapImageType, treeItem);
     Dialog<String> titleDialog = componentFactory.createStringInputDialog("MapImage title",
         """
@@ -2911,7 +2911,7 @@ public class TravelsWindow extends JfxStage {
     
     // Get the related vacation to determine the folder for storing the MapImage.
     Vacation vacation = getTravelForTreeItem(treeItem, VACATIONS_PACKAGE.getVacation());
-    String vacationFolderName = VacationsUtils.getTravelFilesFolder(vacation);
+    String vacationFolderName = TravelsUtils.getTravelFilesFolder(vacation);
     String fileName;
     if (mapImage.getTitle() != null  &&  !mapImage.getTitle().isEmpty()) {
       fileName = "MapImage_" + mapImage.getTitle() + ".jpg";

@@ -13,7 +13,7 @@ import goedegep.jfx.editor.controls.EditorControlInteger.IntegerBuilder;
 import goedegep.jfx.eobjecttreeview.EObjectTreeItem;
 import goedegep.jfx.eobjecttreeview.EObjectTreeView;
 import goedegep.travels.logic.VacationsChecker;
-import goedegep.travels.logic.VacationsUtils;
+import goedegep.travels.logic.TravelsUtils;
 import goedegep.travels.model.Location;
 import goedegep.travels.model.Travel;
 import goedegep.travels.model.Vacation;
@@ -49,9 +49,9 @@ import javafx.scene.paint.Color;
  * This class presents a window to check the {@code Vacations} structure.
  * 
  */
-public class CheckVacationsWindow extends JfxStage {
+public class CheckTravelsWindow extends JfxStage {
   @SuppressWarnings("unused")
-  private static final Logger LOGGER = Logger.getLogger(CheckVacationsWindow.class.getName());
+  private static final Logger LOGGER = Logger.getLogger(CheckTravelsWindow.class.getName());
   protected static final String NEWLINE = System.getProperty("line.separator");
   private static final String WINDOW_TITLE = "Check Vacations";
   
@@ -82,7 +82,7 @@ public class CheckVacationsWindow extends JfxStage {
    * @param customization The GUI customization.
    * @param vacations the {@code Vacations} structure.
    */
-  public CheckVacationsWindow(CustomizationFx customization, Travels vacations, EObjectTreeView treeView) {
+  public CheckTravelsWindow(CustomizationFx customization, Travels vacations, EObjectTreeView treeView) {
     super(customization, WINDOW_TITLE);
     
     this.vacations = vacations;
@@ -184,7 +184,7 @@ public class CheckVacationsWindow extends JfxStage {
     Vacation vacation = null;
     if (!checkAllTravels) {
       EObjectTreeItem treeItem = treeView.getSelectedObject();
-      if (treeItem == null  ||  ((vacation = VacationsUtils.getVacationForObject(treeItem.getValue())) == null)) {
+      if (treeItem == null  ||  ((vacation = TravelsUtils.getVacationForObject(treeItem.getValue())) == null)) {
         checkResultsPanel.getChildren().add(createNoTravelSelectedPanel());
         return;
       }
@@ -318,7 +318,7 @@ public class CheckVacationsWindow extends JfxStage {
         TextArea textArea = componentFactory.createTextArea();
         textArea.setMinHeight(MIN_TEXT_AREA_HEIGHT);
         StringBuilder buf = new StringBuilder();
-        buf.append("Path in travel: ").append(VacationsUtils.getTextPathToEObject(fileReference, travel)).append(NEWLINE)
+        buf.append("Path in travel: ").append(TravelsUtils.getTextPathToEObject(fileReference, travel)).append(NEWLINE)
         .append("File: ").append(fileReference.getFile()).append(", title: ").append(fileReference.getTitle());
         textArea.setText(buf.toString());
         Button button = componentFactory.createButton("Select in tree view", "Select the file reference in the tree view");
@@ -372,7 +372,7 @@ public class CheckVacationsWindow extends JfxStage {
           TextArea textArea = componentFactory.createTextArea();
           textArea.setMinHeight(MIN_TEXT_AREA_HEIGHT);
           StringBuilder buf = new StringBuilder();
-          buf.append("Path in travel: ").append(VacationsUtils.getTextPathToEObject(fileReference, travel)).append(NEWLINE)
+          buf.append("Path in travel: ").append(TravelsUtils.getTextPathToEObject(fileReference, travel)).append(NEWLINE)
           .append("File: ").append(fileReference.getFile()).append(", title: ").append(fileReference.getTitle());
           textArea.setText(buf.toString());
           Button button = componentFactory.createButton("Select in tree view", "Select the file reference in the tree view");
@@ -419,7 +419,7 @@ public class CheckVacationsWindow extends JfxStage {
         TextArea textArea = componentFactory.createTextArea();
         textArea.setMinHeight(MIN_TEXT_AREA_HEIGHT);
         StringBuilder buf = new StringBuilder();
-        buf.append("Path in travel: ").append(VacationsUtils.getTextPathToEObject(fileReference, travel)).append(NEWLINE)
+        buf.append("Path in travel: ").append(TravelsUtils.getTextPathToEObject(fileReference, travel)).append(NEWLINE)
         .append("File: ").append(fileReference.getFile()).append(", title: ").append(fileReference.getTitle());
         textArea.setText(buf.toString());
         Button button = componentFactory.createButton("Select in tree view", "Select the file reference in the tree view");
@@ -473,7 +473,7 @@ public class CheckVacationsWindow extends JfxStage {
           TextArea textArea = componentFactory.createTextArea();
           textArea.setMinHeight(MIN_TEXT_AREA_HEIGHT);
           StringBuilder buf = new StringBuilder();
-          buf.append("Path in travel: ").append(VacationsUtils.getTextPathToEObject(fileReference, aTravel)).append(NEWLINE)
+          buf.append("Path in travel: ").append(TravelsUtils.getTextPathToEObject(fileReference, aTravel)).append(NEWLINE)
           .append("File: ").append(fileReference.getFile()).append(", title: ").append(fileReference.getTitle());
           textArea.setText(buf.toString());
           Button button = componentFactory.createButton("Select in tree view", "Select the file reference in the tree view");
@@ -502,7 +502,7 @@ public class CheckVacationsWindow extends JfxStage {
   private void runCheckThatAllFilesInVacationFolderAreReferredTo(Travel travel) {
     
     // Get the related travel folder. If this doesn't exist, report this. The check cannot be performed.
-    String travelFolder = VacationsUtils.getTravelFilesFolder(travel);
+    String travelFolder = TravelsUtils.getTravelFilesFolder(travel);
     Path travelFolderPath = Path.of(travelFolder);
     if (!Files.exists(travelFolderPath)) {
       Label label = createTitleLabel(false, "The folder with travel related files '" + travelFolder + "' doesn't exist. So the check couldn't be performed.", null);
@@ -575,7 +575,7 @@ public class CheckVacationsWindow extends JfxStage {
     for (Travel travel: vacations.getTravels()) {
       
       // Get the related travel folder. If this doesn't exist, the check cannot be performed.
-      String travelFolder = VacationsUtils.getTravelFilesFolder(travel);
+      String travelFolder = TravelsUtils.getTravelFilesFolder(travel);
       Path travelFolderPath = Path.of(travelFolder);
       if (!Files.exists(travelFolderPath)) {
         // Skip check for this travel. If the travel has references, these either have no correct file reference (reported by another check), or the folder must exist.
@@ -671,7 +671,7 @@ public class CheckVacationsWindow extends JfxStage {
         buf.append("The location \'")
         .append(locationWithLargeBoundaries.getName())
         .append(" has boundaries with ")
-        .append(VacationsUtils.getNumberOfPointsInLocationBoundary(locationWithLargeBoundaries))
+        .append(TravelsUtils.getNumberOfPointsInLocationBoundary(locationWithLargeBoundaries))
         .append(" points.");
         TextArea textArea = componentFactory.createTextArea(buf.toString());
         textArea.setMaxHeight(16);  // Low value, actual height determined by the button
@@ -706,7 +706,7 @@ public class CheckVacationsWindow extends JfxStage {
     for (Travel travel: vacations.getTravels()) {
       
       // Get the related travel folder. If this doesn't exist, the check cannot be performed.
-      String travelFolder = VacationsUtils.getTravelFilesFolder(travel);
+      String travelFolder = TravelsUtils.getTravelFilesFolder(travel);
       Path travelFolderPath = Path.of(travelFolder);
       if (!Files.exists(travelFolderPath)) {
         // Skip check for this travel.
@@ -738,7 +738,7 @@ public class CheckVacationsWindow extends JfxStage {
           buf.append("The location \'")
           .append(locationWithLargeBoundaries.getName())
           .append(" has boundaries with ")
-          .append(VacationsUtils.getNumberOfPointsInLocationBoundary(locationWithLargeBoundaries))
+          .append(TravelsUtils.getNumberOfPointsInLocationBoundary(locationWithLargeBoundaries))
           .append(" points.");
           TextArea textArea = componentFactory.createTextArea(buf.toString());
           textArea.setMaxHeight(16);  // Low value, actual height determined by the button
@@ -792,7 +792,7 @@ public class CheckVacationsWindow extends JfxStage {
       buf.append("Pictures folder name:  \'")
       .append(vacation.getPictures())
       .append("\', according to the convention it should be: \'")
-      .append(VacationsUtils.getVacationPhotosFolderPathByConvention(vacation))
+      .append(TravelsUtils.getVacationPhotosFolderPathByConvention(vacation))
       .append("\'.");
       TextArea textArea = componentFactory.createTextArea(buf.toString());
       textArea.setMaxHeight(16);  // Low value, actual height determined by the button
@@ -856,7 +856,7 @@ public class CheckVacationsWindow extends JfxStage {
         .append("\': Pictures folder name:  \'")
         .append(vacation.getPictures())
         .append("\', according to the convention it should be: \'")
-        .append(VacationsUtils.getVacationPhotosFolderPathByConvention(vacation))
+        .append(TravelsUtils.getVacationPhotosFolderPathByConvention(vacation))
         .append("\'.");
         TextArea textArea = componentFactory.createTextArea(buf.toString());
         textArea.setMaxHeight(16);  // Low value, actual height determined by the button
