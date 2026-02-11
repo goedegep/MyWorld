@@ -40,21 +40,24 @@ public class DiscStructureSpecificationTreeViewCreator {
 
     // DiscStructureSpecification.directorySpecifications
     eObjectTreeItemClassListReferenceDescriptor = new EObjectTreeItemClassListReferenceDescriptor(PC_TOOLS_PACKAGE.getDiscStructureSpecification_DirectorySpecifications())
-        .setLabelText("Directory specifications")
+//        .setLabelText("Directory specifications")
+        .setNodeTextFunction(_ -> "Directory specifications")
         .setExpandOnCreation(true)
         .addNodeOperationDescriptor(new NodeOperationDescriptorNew("Create Directory Specification", null, null));
     eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(eObjectTreeItemClassListReferenceDescriptor);
 
     // DiscStructureSpecification.filesToIgnoreCompletely
     eObjectTreeItemClassListReferenceDescriptor = new EObjectTreeItemClassListReferenceDescriptor(PC_TOOLS_PACKAGE.getDiscStructureSpecification_FilesToIgnoreCompletely())
-        .setLabelText("Files to ignore completely")
+//        .setLabelText("Files to ignore completely")
+        .setNodeTextFunction(_ -> "Files to ignore completely")
         .setExpandOnCreation(true)
         .addNodeOperationDescriptor(new NodeOperationDescriptorNew("New file to ignore completely", null, null));
     eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(eObjectTreeItemClassListReferenceDescriptor);
 
     // DiscStructureSpecification.directoriesToIgnoreCompletely
     eObjectTreeItemClassListReferenceDescriptor = new EObjectTreeItemClassListReferenceDescriptor(PC_TOOLS_PACKAGE.getDiscStructureSpecification_DirectoriesToIgnoreCompletely())
-        .setLabelText("Directories to ignore completely")
+//        .setLabelText("Directories to ignore completely")
+        .setNodeTextFunction(_ -> "Directories to ignore completely")
         .setExpandOnCreation(true)
         .addNodeOperationDescriptor(new NodeOperationDescriptorNew("New directory to ignore completely", null, null));
     eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(eObjectTreeItemClassListReferenceDescriptor);

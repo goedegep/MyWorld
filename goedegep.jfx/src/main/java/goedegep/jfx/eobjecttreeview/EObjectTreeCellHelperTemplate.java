@@ -35,11 +35,6 @@ public abstract class EObjectTreeCellHelperTemplate<I extends EObjectTreeItem, D
    */
   protected G graphic = null;
   
-  /**
-   * Indication of whether initialization has taken place or not.
-   */
-  private boolean initialized = false;
-  
   
   /**
    * Constructor.
@@ -56,8 +51,6 @@ public abstract class EObjectTreeCellHelperTemplate<I extends EObjectTreeItem, D
   @SuppressWarnings("unchecked")
   @Override
   public void updateItem(Object value) {
-    LOGGER.info("=> item=" + (value != null ? value.toString() : "(null)"));
-    
     init();
     
     Node cellGraphic = eObjectTreeCell.getGraphic();
@@ -75,22 +68,17 @@ public abstract class EObjectTreeCellHelperTemplate<I extends EObjectTreeItem, D
     eObjectTreeCell.setContextMenu(contextMenu); // also set when null to clear any previous value
     
     updateContent(value);
-
-    LOGGER.info("<=");
   }
   
   /**
    * Perform initialization if it hasn't been done yet.
    */
   private void init() {
-//    if (!initialized) {
-      createGraphic();
-      if (graphic != null) {
-        eObjectTreeCell.setGraphic(graphic);
-      }      
-      
-      initialized = true;
-//    }
+    createGraphic();
+    if (graphic != null) {
+      eObjectTreeCell.setGraphic(graphic);
+    }      
+
   }
 
   /**

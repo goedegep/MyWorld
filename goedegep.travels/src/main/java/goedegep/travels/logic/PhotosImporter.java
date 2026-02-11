@@ -31,6 +31,7 @@ import goedegep.travels.model.Boundary;
 import goedegep.travels.model.BoundingBox;
 import goedegep.travels.model.Day;
 import goedegep.travels.model.Picture;
+import goedegep.travels.model.Travel;
 import goedegep.travels.model.Vacation;
 import goedegep.travels.model.VacationElement;
 import goedegep.travels.model.TravelsFactory;
@@ -124,24 +125,24 @@ public class PhotosImporter {
    * </li>
    * </ol>
    * 
-   * @param vacation the vacation to which photos are added.
+   * @param travel the vacation to which photos are added.
    */
-  public List<PhotoImportResult> importPhotos(Vacation vacation) {
+  public List<PhotoImportResult> importPhotos(Travel travel) {
     // Information that is returned.
     List<PhotoImportResult> photoImportResults = new ArrayList<>();
     
     // get a list of all filenames of the photos which are already part of the vacation.
-    Map<String, VacationElement> photoFileNameToParentElementMap = generatePhotoFileNameToParentElementMap(vacation);
+    Map<String, VacationElement> photoFileNameToParentElementMap = generatePhotoFileNameToParentElementMap(travel);
     Set<String> existingPhotosFileNames = photoFileNameToParentElementMap.keySet();
     for (String photoFilename: existingPhotosFileNames) {
       LOGGER.severe("Existing photo filename: " + photoFilename);
     }
     
     // get a list of all days (for the third option, and to create the map from days to elements of that day with location information)
-    List<Day> vacationDays = TravelsUtils.getVacationDays(vacation);
+    List<Day> vacationDays = TravelsUtils.getVacationDays(travel);
     
     // get the map of all elements with location information with their location information  (for the second option)
-    geoLocations = TravelsUtils.getVacationGeoLocations(vacation);
+    geoLocations = TravelsUtils.getTravelGeoLocations(travel);
     for (VacationElement element: geoLocations.keySet()) {
       LOGGER.severe("Element with location information: " + element);
     }
@@ -161,7 +162,7 @@ public class PhotosImporter {
     }
     
     // Get all photo folders to handle
-    List<Path> vacationPhotoFolderPaths = TravelsUtils.getVactionPhotosSubFoldersPaths(vacation);
+    List<Path> vacationPhotoFolderPaths = TravelsUtils.getVactionPhotosSubFoldersPaths(travel);
     for (Path path: vacationPhotoFolderPaths) {
       LOGGER.severe("Vacation folder path: " + path);
     }
@@ -306,7 +307,7 @@ public class PhotosImporter {
               photoImportResults.add(new PhotoImportResult(filename, photoImportResultType, bestMatchVacationElement, null));
             } else {
               LOGGER.severe("Going to add photo at vacation level");
-              vacation.getElements().add(vacationElementPicture);
+              travel.getElements().add(vacationElementPicture);
               photoImportResults.add(new PhotoImportResult(filename, PhotoImportResultType.ADDED_TO_VACATION, null, null));
             }
           }
@@ -544,13 +545,13 @@ public class PhotosImporter {
    * Get a map with photo filenames to the parent element of the related Picture element.
    * There will be an entry for each Picture in the specified vacation.
    * 
-   * @param vacation a {@code Vacation}
+   * @param travel a {@code Travel}
    * @return the generated photo filename to parent element map.
    */
-  public static Map<String, VacationElement> generatePhotoFileNameToParentElementMap(Vacation vacation) {
+  public static Map<String, VacationElement> generatePhotoFileNameToParentElementMap(Travel travel) {
     Map<String, VacationElement> photoFileNameToParentElementMap = new HashMap<>();
     
-    TreeIterator<EObject> iterator = vacation.eAllContents();
+    TreeIterator<EObject> iterator = travel.eAllContents();
     
     while (iterator.hasNext()) {
       EObject eObject = iterator.next();

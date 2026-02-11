@@ -412,7 +412,8 @@ public class EObjectTreeItemForObjectList extends EObjectTreeItem {
    *{@inheritDoc}
    */
   public String getText() {
-    return eObjectTreeItemClassListReferenceDescriptor.getLabelText();
+    return eObjectTreeItemClassListReferenceDescriptor.getNodeTextFunction().apply(null);
+//    return eObjectTreeItemClassListReferenceDescriptor.getLabelText();
   }
  
   /**

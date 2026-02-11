@@ -465,8 +465,6 @@ public class VacationsChecker {
       }
     }
     
-    LOGGER.severe("Number of photos not referred to: " + photosNotReferredTo.size());
-    
     return photosNotReferredTo;
   }
 }

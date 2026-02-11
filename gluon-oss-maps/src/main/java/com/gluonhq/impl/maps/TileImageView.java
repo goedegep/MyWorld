@@ -34,8 +34,8 @@ import com.gluonhq.maps.tile.TileRetriever;
 import com.gluonhq.maps.tile.TileRetrieverProvider;
 import javafx.application.Platform;
 //import javafx.beans.property.BooleanProperty;
-//import javafx.beans.property.ReadOnlyBooleanProperty;
-//import javafx.beans.property.ReadOnlyBooleanWrapper;
+import javafx.beans.property.ReadOnlyBooleanProperty;
+import javafx.beans.property.ReadOnlyBooleanWrapper;
 import javafx.beans.property.ReadOnlyDoubleProperty;
 import javafx.beans.property.ReadOnlyDoubleWrapper;
 import javafx.beans.property.ReadOnlyObjectProperty;
@@ -82,7 +82,7 @@ public class TileImageView extends ImageView {
 //        setPreserveRatio(true);
       
 // PG: Moved to !future.isDone(). In this location the lazy creation of 'progress' property doesn't make sense.
-//        setProgress(0);
+        setProgress(0);
         CompletableFuture<Image> future = TILE_RETRIEVER.loadTile(zoom, i, j);
         if (!future.isDone()) {
             setProgress(0);
@@ -92,7 +92,7 @@ public class TileImageView extends ImageView {
 //            LOGGER.severe("downloading tile: " + zoom + "/" + i + "/" + j);
 
 // PG: The downloading indication removed. It wasn't used and isn't needed, as the progress property is available.
-//            downloading.setValue(true);
+            downloading.setValue(true);
             
             future.handle((image, throwable) -> {
                 if (throwable != null) {
@@ -105,7 +105,7 @@ public class TileImageView extends ImageView {
             }).thenAccept(tileImage -> {
 //                LOGGER.severe("Tile available from downloaded file: " + zoom + "/" + i + "/" + j);
                 Platform.runLater(() -> {
-//                    downloading.setValue(false);
+                    downloading.setValue(false);
                     setImage(tileImage);
                     setProgress(1);
                 });
@@ -133,15 +133,15 @@ public class TileImageView extends ImageView {
         placeholderImageSupplier = supplier;
     }
 
-//    private final ReadOnlyBooleanWrapper downloading = new ReadOnlyBooleanWrapper(TileImageView.this, "downloading", false);
+    private final ReadOnlyBooleanWrapper downloading = new ReadOnlyBooleanWrapper(TileImageView.this, "downloading", false);
 
-//    public final boolean isDownloading() {
-//        return downloading != null && downloading.get();
-//    }
+    public final boolean isDownloading() {
+        return downloading != null && downloading.get();
+    }
 
-//    public final ReadOnlyBooleanProperty downloadingProperty() {
-//        return downloading.getReadOnlyProperty();
-//    }
+    public final ReadOnlyBooleanProperty downloadingProperty() {
+        return downloading.getReadOnlyProperty();
+    }
 
     /**
      * The exception occurred during loading the tile image, or null if no

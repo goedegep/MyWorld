@@ -1,5 +1,6 @@
 package goedegep.travels.logic;
 
+import goedegep.travels.model.Travel;
 import goedegep.travels.model.Vacation;
 import goedegep.util.datetime.FlexDateFormat;
 
@@ -7,7 +8,7 @@ import goedegep.util.datetime.FlexDateFormat;
 public class VacationToTextConverterAbstract {
   protected static final FlexDateFormat FDF = new FlexDateFormat();
 
-  protected String getVacationTitle(Vacation vacation) {
+  protected String getVacationTitle(Travel vacation) {
     StringBuilder buf = new StringBuilder();
     
     if (vacation.isSetDate()) {

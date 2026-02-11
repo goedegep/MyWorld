@@ -5,8 +5,6 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.logging.Logger;
 
-import org.eclipse.emf.ecore.EObject;
-
 import goedegep.util.text.Indent;
 import javafx.scene.image.Image;
 
@@ -80,7 +78,7 @@ public class EObjectTreeItemClassDescriptor extends EObjectTreeItemDescriptor {
    * @param nodeTextFunction the function to provide the node text.
    * @return this
    */
-  public EObjectTreeItemClassDescriptor setNodeTextFunction(Function<EObject, String> nodeTextFunction) {
+  public EObjectTreeItemClassDescriptor setNodeTextFunction(Function<Object, String> nodeTextFunction) {
     super.setNodeTextFunction(nodeTextFunction);
     
     return this;

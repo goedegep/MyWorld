@@ -13,6 +13,7 @@ import com.openhtmltopdf.outputdevice.helper.BaseRendererBuilder.PageSizeUnits;
 import com.openhtmltopdf.pdfboxout.PdfRendererBuilder;
 
 import goedegep.travels.logic.VacationToHtmlConverter;
+import goedegep.travels.model.Travel;
 import goedegep.travels.model.Vacation;
 import javafx.concurrent.Task;
 
@@ -35,7 +36,7 @@ public class VacationToPDFTask extends Task<PDDocument> {
   /**
    * The Vacation object for which the PDF will be generated.
    */
-  private final Vacation vacation;
+  private final Travel vacation;
   
   /**
    * The temporary directory path where the PDF file will be created.
@@ -56,7 +57,7 @@ public class VacationToPDFTask extends Task<PDDocument> {
    * @param imfs The in-memory file system used to create the PDF file.
    * @param vacation The Vacation object for which the PDF will be generated.
    */
-  public VacationToPDFTask(VacationToHtmlConverter vacationToHtmlConverter, FileSystem imfs, Vacation vacation) {
+  public VacationToPDFTask(VacationToHtmlConverter vacationToHtmlConverter, FileSystem imfs, Travel vacation) {
     this.vacationToHtmlConverter = vacationToHtmlConverter;
     this.imfs = imfs;
     this.vacation = vacation;    

@@ -338,26 +338,6 @@ public class TravelsPackageImpl extends EPackageImpl implements TravelsPackage {
    * @generated
    */
   @Override
-  public EAttribute getVacation_EndDate() {
-    return (EAttribute) vacationEClass.getEStructuralFeatures().get(0);
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public EOperation getVacation__GetDayNr__VacationElement() {
-    return vacationEClass.getEOperations().get(0);
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
   public EClass getLocation() {
     return locationEClass;
   }
@@ -600,6 +580,16 @@ public class TravelsPackageImpl extends EPackageImpl implements TravelsPackage {
   @Override
   public EOperation getVacationElement__GetLabelText() {
     return vacationElementEClass.getEOperations().get(4);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public EOperation getVacationElement__GetTravel() {
+    return vacationElementEClass.getEOperations().get(5);
   }
 
   /**
@@ -978,6 +968,16 @@ public class TravelsPackageImpl extends EPackageImpl implements TravelsPackage {
    * @generated
    */
   @Override
+  public EAttribute getTravel_EndDate() {
+    return (EAttribute) travelEClass.getEStructuralFeatures().get(4);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
   public EOperation getTravel__GetId() {
     return travelEClass.getEOperations().get(0);
   }
@@ -1010,6 +1010,16 @@ public class TravelsPackageImpl extends EPackageImpl implements TravelsPackage {
   @Override
   public EOperation getTravel__GetAllReferencedFiles() {
     return travelEClass.getEOperations().get(3);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public EOperation getTravel__GetDayNr__VacationElement() {
+    return travelEClass.getEOperations().get(4);
   }
 
   /**
@@ -1064,8 +1074,6 @@ public class TravelsPackageImpl extends EPackageImpl implements TravelsPackage {
     createEOperation(travelsEClass, TRAVELS___GET_TRAVELS);
 
     vacationEClass = createEClass(VACATION);
-    createEAttribute(vacationEClass, VACATION__END_DATE);
-    createEOperation(vacationEClass, VACATION___GET_DAY_NR__VACATIONELEMENT);
 
     locationEClass = createEClass(LOCATION);
     createEAttribute(locationEClass, LOCATION__LOCATION_CATEGORY);
@@ -1093,6 +1101,7 @@ public class TravelsPackageImpl extends EPackageImpl implements TravelsPackage {
     createEOperation(vacationElementEClass, VACATION_ELEMENT___GET_DAY_TRIP);
     createEOperation(vacationElementEClass, VACATION_ELEMENT___GET_DAY);
     createEOperation(vacationElementEClass, VACATION_ELEMENT___GET_LABEL_TEXT);
+    createEOperation(vacationElementEClass, VACATION_ELEMENT___GET_TRAVEL);
 
     textEClass = createEClass(TEXT);
     createEAttribute(textEClass, TEXT__TEXT);
@@ -1141,10 +1150,12 @@ public class TravelsPackageImpl extends EPackageImpl implements TravelsPackage {
     createEReference(travelEClass, TRAVEL__ELEMENTS);
     createEReference(travelEClass, TRAVEL__DOCUMENTS);
     createEAttribute(travelEClass, TRAVEL__PICTURES);
+    createEAttribute(travelEClass, TRAVEL__END_DATE);
     createEOperation(travelEClass, TRAVEL___GET_ID);
     createEOperation(travelEClass, TRAVEL___GET_ALL_FILE_REFERENCES);
     createEOperation(travelEClass, TRAVEL___FIND_DOCUMENT__STRING);
     createEOperation(travelEClass, TRAVEL___GET_ALL_REFERENCED_FILES);
+    createEOperation(travelEClass, TRAVEL___GET_DAY_NR__VACATIONELEMENT);
 
     // Create data types
     eLocationCategoryEDataType = createEDataType(ELOCATION_CATEGORY);
@@ -1227,12 +1238,6 @@ public class TravelsPackageImpl extends EPackageImpl implements TravelsPackage {
     initEOperation(getTravels__GetTravels(), this.getTravel(), "getTravels", 0, -1, IS_UNIQUE, IS_ORDERED);
 
     initEClass(vacationEClass, Vacation.class, "Vacation", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-    initEAttribute(getVacation_EndDate(), theTypesPackage.getEFlexDate(), "endDate", null, 0, 1, Vacation.class,
-        !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-
-    op = initEOperation(getVacation__GetDayNr__VacationElement(), ecorePackage.getEIntegerObject(), "getDayNr", 0, 1,
-        IS_UNIQUE, IS_ORDERED);
-    addEParameter(op, this.getVacationElement(), "vacationElement", 0, 1, IS_UNIQUE, IS_ORDERED);
 
     initEClass(locationEClass, Location.class, "Location", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getLocation_LocationCategory(), this.getELocationCategory(), "locationCategory", "DEFAULT_POI", 0, 1,
@@ -1291,6 +1296,8 @@ public class TravelsPackageImpl extends EPackageImpl implements TravelsPackage {
 
     initEOperation(getVacationElement__GetLabelText(), ecorePackage.getEString(), "getLabelText", 0, 1, IS_UNIQUE,
         IS_ORDERED);
+
+    initEOperation(getVacationElement__GetTravel(), this.getTravel(), "getTravel", 0, 1, IS_UNIQUE, IS_ORDERED);
 
     initEClass(textEClass, Text.class, "Text", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getText_Text(), ecorePackage.getEString(), "text", null, 0, 1, Text.class, !IS_TRANSIENT,
@@ -1377,6 +1384,8 @@ public class TravelsPackageImpl extends EPackageImpl implements TravelsPackage {
         IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getTravel_Pictures(), ecorePackage.getEString(), "pictures", null, 0, 1, Travel.class, !IS_TRANSIENT,
         !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getTravel_EndDate(), theTypesPackage.getEFlexDate(), "endDate", null, 0, 1, Travel.class,
+        !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEOperation(getTravel__GetId(), ecorePackage.getEString(), "getId", 0, 1, IS_UNIQUE, IS_ORDERED);
 
@@ -1389,6 +1398,10 @@ public class TravelsPackageImpl extends EPackageImpl implements TravelsPackage {
 
     initEOperation(getTravel__GetAllReferencedFiles(), theXMLTypePackage.getString(), "getAllReferencedFiles", 0, -1,
         IS_UNIQUE, IS_ORDERED);
+
+    op = initEOperation(getTravel__GetDayNr__VacationElement(), ecorePackage.getEIntegerObject(), "getDayNr", 0, 1,
+        IS_UNIQUE, IS_ORDERED);
+    addEParameter(op, this.getVacationElement(), "vacationElement", 0, 1, IS_UNIQUE, IS_ORDERED);
 
     // Initialize data types
     initEDataType(eLocationCategoryEDataType, LocationCategory.class, "ELocationCategory", IS_SERIALIZABLE,

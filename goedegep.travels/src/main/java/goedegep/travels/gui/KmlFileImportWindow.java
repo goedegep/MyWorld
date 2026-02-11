@@ -992,8 +992,8 @@ public class KmlFileImportWindow extends JfxStage {
      * 
      * @param gpxTrack The <code>GPXTrack</code> for which a text is to be generated.
      */
-    String generateTextForGpxTrack(EObject eObject) {
-      GPXTrack gpxTrack = (GPXTrack) eObject;
+    String generateTextForGpxTrack(Object object) {
+      GPXTrack gpxTrack = (GPXTrack) object;
       String text = null;
       FileReference fileReference = gpxTrack.getTrackReference();
 
@@ -1356,7 +1356,7 @@ public class KmlFileImportWindow extends JfxStage {
       if (eObjectTreeItem instanceof EObjectTreeItemForObjectList eObjectTreeItemForObjectList) {
         EObjectTreeItemClassListReferenceDescriptor eObjectTreeItemClassListReferenceDescriptor = eObjectTreeItemForObjectList.getEObjectTreeItemClassListReferenceDescriptor();
 
-        itemText =  eObjectTreeItemClassListReferenceDescriptor.getLabelText();
+        itemText =  eObjectTreeItemClassListReferenceDescriptor.getNodeTextFunction().apply(null);
       } else if (eObjectTreeItem instanceof EObjectTreeItemForObject eObjectTreeItemForObject) {
         EObjectTreeItemClassDescriptor eObjectTreeItemClassDescriptor = eObjectTreeItemForObject.getClassDescriptor();
         if (eObjectTreeItemClassDescriptor == null) {

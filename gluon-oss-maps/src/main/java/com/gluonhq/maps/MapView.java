@@ -46,6 +46,7 @@ import javafx.util.Duration;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.function.Supplier;
+import java.util.logging.Logger;
 
 /**
  *
@@ -54,6 +55,8 @@ import java.util.function.Supplier;
  * or by calling the methods setCenter and setZoom.
  */
 public class MapView extends Region {
+  @SuppressWarnings("unused")
+  private static final Logger LOGGER = Logger.getLogger(MapView.class.getName());
 
     private final BaseMap baseMap;
     private Timeline timeline;
@@ -274,6 +277,12 @@ public class MapView extends Region {
     protected void layoutChildren() {
         final double w = getWidth();
         final double h = getHeight();
+//        LOGGER.severe("MapView.layoutChildren: w=" + w + ", h=" + h);
+        
+        // PG why isn't this done before calling super.layoutChildren()?
+        // update clip
+        clip.setWidth(w);
+        clip.setHeight(h);
 
         if (dirty) {
             for (MapLayer layer : layers) {
@@ -286,9 +295,5 @@ public class MapView extends Region {
         // we need to get these values or we won't be notified on new changes
         baseMap.centerLon().get();
         baseMap.centerLat().get();
-
-        // update clip
-        clip.setWidth(w);
-        clip.setHeight(h);
     }
 }

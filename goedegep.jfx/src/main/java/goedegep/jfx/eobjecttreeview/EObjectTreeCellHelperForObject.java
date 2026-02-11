@@ -65,13 +65,9 @@ public class EObjectTreeCellHelperForObject extends EObjectTreeCellHelperTemplat
    */
   @Override
   protected void createGraphic() {
-    LOGGER.info("=>");
-    
     graphic = new ImageView();
     graphic.setFitHeight(24);
     graphic.setPreserveRatio(true);
-    
-    LOGGER.info("<=");
   }
 
   /**
@@ -129,7 +125,6 @@ public class EObjectTreeCellHelperForObject extends EObjectTreeCellHelperTemplat
 
     // The type is needed for the 'new' operations.
     EClass listType = eReference.getEReferenceType();
-    LOGGER.info("Reference type=" + listType.getName());
     
     // If the type has subtypes, a submenu is added with entries for each (non-abstract) subtype.
     EmfPackageHelper emfPackageHelper = new EmfPackageHelper(listType.getEPackage());
@@ -240,7 +235,6 @@ public class EObjectTreeCellHelperForObject extends EObjectTreeCellHelperTemplat
       }
     }
     
-    LOGGER.info("<= contextMenu");
     return contextMenu;
   }
   
@@ -280,7 +274,6 @@ public class EObjectTreeCellHelperForObject extends EObjectTreeCellHelperTemplat
    */
   @Override
   public void updateContent(Object value) {
-    LOGGER.info("=> treeItem=" + treeItem);
     
     // This cell type cannot be edited, so we don't have to check on isEditing()
     eObjectTreeCell.setText(buildText(value));
@@ -299,15 +292,12 @@ public class EObjectTreeCellHelperForObject extends EObjectTreeCellHelperTemplat
     }
     
     graphic.setImage(iconImage != null ? iconImage : DEFAULT_GRAPHIC_IMAGE);
-    
-    LOGGER.info("<=");
   }
   
   /**
    * Create a new object (of the type of the {@code itemDescriptor} and set the reference to this object.
    */
   private void createObjectAndSetReferenceToIt() {
-    LOGGER.severe("=>");
     EObjectTreeItem parentEObjectTreeItem = (EObjectTreeItem) treeItem.getParent();
     
     EClass eClass = itemDescriptor.getEClass();
@@ -319,7 +309,6 @@ public class EObjectTreeCellHelperForObject extends EObjectTreeCellHelperTemplat
     EReference eReference2 = (EReference) treeItem.getEStructuralFeature();
     parentEObject.eSet(eReference2, newEObject);
 
-    LOGGER.info("<=");
   }
   
   /** Create a new object of a specific subclass and add it to the many reference.
@@ -328,7 +317,6 @@ public class EObjectTreeCellHelperForObject extends EObjectTreeCellHelperTemplat
    * @param before if {@code true} the new object is inserted before this object, else after this object.
    */
   private void createAndAddObject(EClass subClass, boolean before) {
-    LOGGER.info("=>");
     EObjectTreeItem parentEObjectTreeItem = (EObjectTreeItem) treeItem.getParent();
     
     EObject eObject = (EObject) treeItem.getValue();
@@ -342,10 +330,8 @@ public class EObjectTreeCellHelperForObject extends EObjectTreeCellHelperTemplat
     if (!before) {
       index++;
     }
-    LOGGER.info("index=" + index);
     eObjectList.add(index, newEObject);
 
-    LOGGER.info("<=");
   }
   
   /**
@@ -377,7 +363,6 @@ public class EObjectTreeCellHelperForObject extends EObjectTreeCellHelperTemplat
    * Delete the object related to this tree cell.
    */
   private void deleteObject() {
-    LOGGER.info("=>");
     
     // Get the object to be deleted.
     EObject eObjectToBeDeleted = (EObject) treeItem.getValue();  // By definition the object will be an EOBject
@@ -386,7 +371,6 @@ public class EObjectTreeCellHelperForObject extends EObjectTreeCellHelperTemplat
     // If the object to be deleted is referenced by a containment reference, check whether there are other references to this object. Inform the user about this.
     EReference eReferenceToObjectToBeDeleted = EObjectTreeItemForObject.getApplicableEReference(treeItem);
     if (eReferenceToObjectToBeDeleted.isContainment()) {
-      LOGGER.info("Containment");
 //      ResourceSet resourceSet = eObjectToBeDeleted.eResource().getResourceSet();
       Collection<EStructuralFeature.Setting> settings = EcoreUtil.UsageCrossReferencer.find(eObjectToBeDeleted, rootEObject);
       
@@ -418,8 +402,7 @@ public class EObjectTreeCellHelperForObject extends EObjectTreeCellHelperTemplat
     if (parentObject instanceof EList) {
       @SuppressWarnings("unchecked")
       EList<EObject> eObjectList = (EList<EObject>) parentObject;
-      boolean removed = eObjectList.remove(eObjectToBeDeleted);
-      LOGGER.info("Object removed=" + removed);
+      eObjectList.remove(eObjectToBeDeleted);
     } else if (parentObject instanceof EObject parentEObject) {
       parentEObject.eSet(eReferenceToObjectToBeDeleted, null);
     } else {
@@ -481,7 +464,6 @@ public class EObjectTreeCellHelperForObject extends EObjectTreeCellHelperTemplat
    */
   @Override
   protected String buildText(Object value) {
-    LOGGER.info("=>");
     
     String labelText = null;
     EObject eObject = (EObject) value;
@@ -497,12 +479,10 @@ public class EObjectTreeCellHelperForObject extends EObjectTreeCellHelperTemplat
     }
     
     if (labelText == null  &&  eObject != null) {
-      LOGGER.info("Fall back to class name");
       String className = eObject.getClass().getSimpleName();
       labelText = className.substring(0, className.length() - 4);
     }
         
-    LOGGER.info("<= labelText=" + labelText);
     return labelText;
   }
   

@@ -86,4 +86,12 @@ public interface VacationElement extends EObject {
    */
   String getLabelText();
 
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @model kind="operation"
+   * @generated
+   */
+  Travel getTravel();
+
 } // VacationElement

@@ -1,6 +1,8 @@
 package goedegep.travels.logic;
 
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
 import goedegep.myworld.common.Registry;
 
@@ -40,9 +42,11 @@ public class TravelsRegistry extends Registry {
   private static String knownFiles = null;
   
   /**
-   * User Agent string for the Nominatim geocoding service.
+   * User Agent string for the OpenStreetMap API's; map tiles and Nominatim geocoding service.
    */
-  private static String nominatimUserAgent = null;
+  private static String osmUserAgent = null;
+  
+  private List<TravelCategoryDescriptor> travelCategoryDescriptors = new ArrayList<>();
   
   /**
    * Singleton instance of the VacationsRegistry.
@@ -178,21 +182,26 @@ public class TravelsRegistry extends Registry {
   }
 
   /**
-   * Get the User Agent string for the Nominatim geocoding service.
+   * Get the User Agent string for the OpenStreetMap API's; map tiles and Nominatim geocoding service.
    * 
    * @return the User Agent string for the Nominatim geocoding service.
    */
-  public String getNominatimUserAgent() {
-    return nominatimUserAgent;
+  public String getOSMUserAgent() {
+    return osmUserAgent;
   }
 
+  public List<TravelCategoryDescriptor> getTravelCategoryDescriptors() {
+    return travelCategoryDescriptors;
+  }
+
+
   /**
-   * Set the User Agent string for the Nominatim geocoding service.
+   * Set the User Agent string for the OpenStreetMap API's; map tiles and Nominatim geocoding service..
    * 
    * @param nominatimUserAgent the User Agent string for the Nominatim geocoding service.
    */
-  public void setNominatimUserAgent(String nominatimUserAgent) {
-    TravelsRegistry.nominatimUserAgent = nominatimUserAgent;
+  public void setOSMUserAgent(String nominatimUserAgent) {
+    TravelsRegistry.osmUserAgent = nominatimUserAgent;
   }
 
 
@@ -201,7 +210,7 @@ public class TravelsRegistry extends Registry {
     
     setAuthor("Peter Goedegebure");
     setShortProductInfo("Travels - Information about travels, like vacations, trips, etc.");
-    setPropertyDescriptorsFileName("..\\..\\..\\goedegep.travels.app\\src\\main\\resources\\goedegep\\travels\\app\\logic\\VacationsPropertyDescriptors.xmi");
+    setPropertyDescriptorsFileName("..\\..\\src\\main\\resources\\goedegep\\travels\\logic\\VacationsPropertyDescriptors.xmi");
     setUserPropertiesFileName("VacationsUserPreferences.xmi");
     setVacationsFileName("D:\\Database\\Vacations\\Vacation.xmi");
     setVacationChecklistFileName("D:\\Database\\Vacations\\VacationChecklist.xmi");
@@ -224,11 +233,26 @@ public class TravelsRegistry extends Registry {
       case "vacationsFolderName" -> vacationsFolderName = value;
       case "vacationPicturesFolderName" -> vacationPicturesFolderName = value;
       case "ignoreVacationPictureFolders" -> ignoreVacationPictureFolders = value;
-      case "nominatimUserAgent" -> nominatimUserAgent = value;
+      case "osmUserAgent" -> osmUserAgent = value;
+      case "travelCategories" -> addTravelCategories(value);
       default -> known = false;
     }
     
     return known;
   }
+  
+  private void addTravelCategories(String travelCategoriesString) {
+    String[] travelCategories = travelCategoriesString.split(",");
+    
+    for (String travelCategory : travelCategories) {
+      String[] travelCategoryParts = travelCategory.split(";");
+      
+      if (travelCategoryParts.length == 3) {
+        TravelCategoryDescriptor travelCategoryDescriptor = new TravelCategoryDescriptor(travelCategoryParts[0], travelCategoryParts[1], travelCategoryParts[2]);
+        travelCategoryDescriptors.add(travelCategoryDescriptor);
+      }
+    }
+  }
 
 }
+

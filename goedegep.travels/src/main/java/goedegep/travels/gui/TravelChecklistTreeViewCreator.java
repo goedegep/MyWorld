@@ -49,14 +49,14 @@ public class TravelChecklistTreeViewCreator {
    */
   private EObjectTreeItemClassDescriptor createDescriptorForVacationChecklist() {
     EObjectTreeItemClassDescriptor eObjectTreeItemClassDescriptor = new EObjectTreeItemClassDescriptor()
-        .setNodeTextFunction(eObject -> "Vacation checklist labels and categories")
+        .setNodeTextFunction(_ -> "Vacation checklist labels and categories")
         .setExpandOnCreation(true);
     EObjectTreeItemClassReferenceDescriptor eObjectTreeItemClassReferenceDescriptor = new EObjectTreeItemClassReferenceDescriptor(VACATION_CHECKLIST_PACKAGE.getVacationChecklist_VacationChecklistLabelsList())
-        .setNodeTextFunction(eObject -> "Label list")
+        .setNodeTextFunction(_ -> "Label list")
         .setExpandOnCreation(true);
     eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(eObjectTreeItemClassReferenceDescriptor);
     eObjectTreeItemClassReferenceDescriptor = new EObjectTreeItemClassReferenceDescriptor(VACATION_CHECKLIST_PACKAGE.getVacationChecklist_VacationChecklistCategoriesList())
-        .setNodeTextFunction(eObject -> "Categories list")
+        .setNodeTextFunction(_ -> "Categories list")
         .setExpandOnCreation(true);
     eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(eObjectTreeItemClassReferenceDescriptor);
     return eObjectTreeItemClassDescriptor;
@@ -69,12 +69,13 @@ public class TravelChecklistTreeViewCreator {
    */
   private EObjectTreeItemClassDescriptor createDescriptorForVacationChecklistLabelsList() {
     EObjectTreeItemClassDescriptor eObjectTreeItemClassDescriptor = new EObjectTreeItemClassDescriptor()
-        .setNodeTextFunction(eObject -> "Label list")
+        .setNodeTextFunction(_ -> "Label list")
         .setExpandOnCreation(true);
     
     // VacationChecklistLabelsList.vacationChecklistLabels
     EObjectTreeItemClassListReferenceDescriptor eObjectTreeItemClassListReferenceDescriptor = new EObjectTreeItemClassListReferenceDescriptor(VACATION_CHECKLIST_PACKAGE.getVacationChecklistLabelsList_VacationChecklistLabels())
-        .setLabelText("Labels")
+//        .setLabelText("Labels")
+        .setNodeTextFunction(_ -> "Labels")
         .setExpandOnCreation(true)
         .addNodeOperationDescriptor(new NodeOperationDescriptorNew("New label", null, null));
     eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(eObjectTreeItemClassListReferenceDescriptor);
@@ -112,12 +113,13 @@ public class TravelChecklistTreeViewCreator {
    */
   private EObjectTreeItemClassDescriptor createDescriptorForVacationChecklistCategoriesList() {
     EObjectTreeItemClassDescriptor eObjectTreeItemClassDescriptor = new EObjectTreeItemClassDescriptor()
-        .setNodeTextFunction(eObject -> "Categories list")
+        .setNodeTextFunction(_ -> "Categories list")
         .setExpandOnCreation(true);
     
     // VacationChecklistCategoriesList.vacationChecklistCategories
     EObjectTreeItemClassListReferenceDescriptor eObjectTreeItemClassListReferenceDescriptor = new EObjectTreeItemClassListReferenceDescriptor(VACATION_CHECKLIST_PACKAGE.getVacationChecklistCategoriesList_VacationChecklistCategories())
-        .setLabelText("Categories")
+//        .setLabelText("Categories")
+        .setNodeTextFunction(_ -> "Categories")
         .setExpandOnCreation(true)
         .addNodeOperationDescriptor(new NodeOperationDescriptorNew("New category", null, null));
     eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(eObjectTreeItemClassListReferenceDescriptor);
@@ -144,7 +146,8 @@ public class TravelChecklistTreeViewCreator {
     
     // VacationChecklistCategory.vacationChecklistItems
     EObjectTreeItemClassListReferenceDescriptor eObjectTreeItemClassListReferenceDescriptor = new EObjectTreeItemClassListReferenceDescriptor(VACATION_CHECKLIST_PACKAGE.getVacationChecklistCategory_VacationChecklistItems())
-        .setLabelText("Items")
+//        .setLabelText("Items")
+        .setNodeTextFunction(_ -> "Items")
         .setExpandOnCreation(true)
         .addNodeOperationDescriptor(new NodeOperationDescriptorNew("New item", null, null));
     eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(eObjectTreeItemClassListReferenceDescriptor);
@@ -172,7 +175,8 @@ public class TravelChecklistTreeViewCreator {
     
     // VacationChecklistItem.vacationChecklistLabels
     EObjectTreeItemClassListReferenceDescriptor eObjectTreeItemClassListReferenceDescriptor = new EObjectTreeItemClassListReferenceDescriptor(VACATION_CHECKLIST_PACKAGE.getVacationChecklistItem_VacationChecklistLabels())
-        .setLabelText("Labels")
+//        .setLabelText("Labels")
+        .setNodeTextFunction(_ -> "Labels")
         .setExpandOnCreation(true)
         .addNodeOperationDescriptor(new NodeOperationDescriptorNew("Add label", null, null));
     eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(eObjectTreeItemClassListReferenceDescriptor);

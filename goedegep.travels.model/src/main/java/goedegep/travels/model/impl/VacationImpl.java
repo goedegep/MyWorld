@@ -565,6 +565,8 @@ public class VacationImpl extends EventImpl implements Vacation {
         return TravelsPackage.TRAVEL__DOCUMENTS;
       case TravelsPackage.VACATION__PICTURES:
         return TravelsPackage.TRAVEL__PICTURES;
+      case TravelsPackage.VACATION__END_DATE:
+        return TravelsPackage.TRAVEL__END_DATE;
       default:
         return -1;
       }
@@ -589,6 +591,8 @@ public class VacationImpl extends EventImpl implements Vacation {
         return TravelsPackage.VACATION__DOCUMENTS;
       case TravelsPackage.TRAVEL__PICTURES:
         return TravelsPackage.VACATION__PICTURES;
+      case TravelsPackage.TRAVEL__END_DATE:
+        return TravelsPackage.VACATION__END_DATE;
       default:
         return -1;
       }
@@ -613,6 +617,8 @@ public class VacationImpl extends EventImpl implements Vacation {
         return TravelsPackage.VACATION___FIND_DOCUMENT__STRING;
       case TravelsPackage.TRAVEL___GET_ALL_REFERENCED_FILES:
         return TravelsPackage.VACATION___GET_ALL_REFERENCED_FILES;
+      case TravelsPackage.TRAVEL___GET_DAY_NR__VACATIONELEMENT:
+        return TravelsPackage.VACATION___GET_DAY_NR__VACATIONELEMENT;
       default:
         return -1;
       }
@@ -628,8 +634,6 @@ public class VacationImpl extends EventImpl implements Vacation {
   @Override
   public Object eInvoke(int operationID, EList<?> arguments) throws InvocationTargetException {
     switch (operationID) {
-    case TravelsPackage.VACATION___GET_DAY_NR__VACATIONELEMENT:
-      return getDayNr((VacationElement) arguments.get(0));
     case TravelsPackage.VACATION___GET_ID:
       return getId();
     case TravelsPackage.VACATION___GET_ALL_FILE_REFERENCES:
@@ -638,6 +642,8 @@ public class VacationImpl extends EventImpl implements Vacation {
       return findDocument((String) arguments.get(0));
     case TravelsPackage.VACATION___GET_ALL_REFERENCED_FILES:
       return getAllReferencedFiles();
+    case TravelsPackage.VACATION___GET_DAY_NR__VACATIONELEMENT:
+      return getDayNr((VacationElement) arguments.get(0));
     }
     return super.eInvoke(operationID, arguments);
   }

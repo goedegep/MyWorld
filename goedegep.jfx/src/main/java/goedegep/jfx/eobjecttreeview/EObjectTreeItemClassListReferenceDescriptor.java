@@ -102,26 +102,26 @@ public class EObjectTreeItemClassListReferenceDescriptor extends EObjectTreeItem
     return eClass;
   }
 
-  /**
-   * Get the text to display.
-   * 
-   * @return the text to display.
-   */
-  public String getLabelText() {
-    return labelText;
-  }
+//  /**
+//   * Get the text to display.
+//   * 
+//   * @return the text to display.
+//   */
+//  public String getLabelText() {
+//    return labelText;
+//  }
   
-  /**
-   * Set the text to display.
-   * 
-   * @param labelText the text to display.
-   * @return this
-   */
-  public EObjectTreeItemClassListReferenceDescriptor setLabelText(String labelText) {
-    this.labelText = labelText;
-    
-    return this;
-  }
+//  /**
+//   * Set the text to display.
+//   * 
+//   * @param labelText the text to display.
+//   * @return this
+//   */
+//  public EObjectTreeItemClassListReferenceDescriptor setLabelText(String labelText) {
+//    this.labelText = labelText;
+//    
+//    return this;
+//  }
 
   /**
    * Set whether the text shall be in a strong font (bold) or not.
@@ -131,6 +131,19 @@ public class EObjectTreeItemClassListReferenceDescriptor extends EObjectTreeItem
    */
   public EObjectTreeItemClassListReferenceDescriptor setStrongText(boolean strongText) {
     super.setStrongText(strongText);
+    
+    return this;
+  }
+  
+  /**
+   * Set the function to provide the node text.
+   * TODO instead of overwriting this method implement a solution 
+   * 
+   * @param nodeTextFunction the function to provide the node text.
+   * @return this
+   */
+  public EObjectTreeItemClassListReferenceDescriptor setNodeTextFunction(Function<Object, String> nodeTextFunction) {
+    super.setNodeTextFunction(nodeTextFunction);
     
     return this;
   }

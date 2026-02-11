@@ -216,15 +216,10 @@ public class LocationSearchWindow extends JfxStage {
    * The result is handed over to the {@code locationInfosPanel}.
    */
   void performReverseGeocodeSearch(double latitude, double longitude) {
-    if (travelsRegistry.getNominatimUserAgent() == null) {
-      reportProblemViaStatusPanel(new IOException("Nominatim user agent is not set in the vacations preferences"));
-      return;
-    }
-    
     statusPanel.setText(null);
     OSMLocationInfo locationInfo;
     try {
-      locationInfo = nominatimAPI.getAddressFromMapPoint(travelsRegistry.getNominatimUserAgent(), latitude, longitude);
+      locationInfo = nominatimAPI.getAddressFromMapPoint(latitude, longitude);
       List<OSMLocationInfo> osmLocationInfos = new ArrayList<>();
       osmLocationInfos.add(locationInfo);
       locationInfosPanel.setLocationInfos(osmLocationInfos);
@@ -251,14 +246,9 @@ public class LocationSearchWindow extends JfxStage {
   void searchOnFreeText(String searchText) {
     LOGGER.info("=> searchText=" + searchText);
     
-    if (travelsRegistry.getNominatimUserAgent() == null) {
-      reportProblemViaStatusPanel(new IOException("Nominatim user agent is not set in the vacations preferences"));
-      return;
-    }
-    
     statusPanel.setText(null);
     try {
-      List<OSMLocationInfo> osmLocationInfos = nominatimAPI.freeTextSearch(travelsRegistry.getNominatimUserAgent(), searchText);
+      List<OSMLocationInfo> osmLocationInfos = nominatimAPI.freeTextSearch(searchText);
       LOGGER.info("osmLocationInfos=" + osmLocationInfos.size());
       
       locationInfosPanel.setLocationInfos(osmLocationInfos);
@@ -273,15 +263,9 @@ public class LocationSearchWindow extends JfxStage {
    * <p>
    * The result is handed over to the {@code locationInfosPanel}.
    */
-  void searchHierarchical(String country, String city, String street, String houseNumber) {
-    
-    if (travelsRegistry.getNominatimUserAgent() == null) {
-      reportProblemViaStatusPanel(new IOException("Nominatim user agent is not set in the vacations preferences"));
-      return;
-    }
-    
+  void searchHierarchical(String country, String city, String street, String houseNumber) {    
     try {
-      List<OSMLocationInfo> osmLocationInfos = nominatimAPI.searchHierarchical(travelsRegistry.getNominatimUserAgent(), country, city, street, houseNumber);
+      List<OSMLocationInfo> osmLocationInfos = nominatimAPI.searchHierarchical(country, city, street, houseNumber);
 
       locationInfosPanel.setLocationInfos(osmLocationInfos);
     } catch (IOException e) {
@@ -1581,7 +1565,7 @@ class LocationPanel extends VBox {
     if (eObjectTreeItem instanceof EObjectTreeItemForObjectList eObjectTreeItemForObjectList) {
       EObjectTreeItemClassListReferenceDescriptor eObjectTreeItemClassListReferenceDescriptor = eObjectTreeItemForObjectList.getEObjectTreeItemClassListReferenceDescriptor();
       
-      itemText =  eObjectTreeItemClassListReferenceDescriptor.getLabelText();
+      itemText =  eObjectTreeItemClassListReferenceDescriptor.getNodeTextFunction().apply(null);
     } else if (eObjectTreeItem instanceof EObjectTreeItemForObject eObjectTreeItemForObject) {
       EObjectTreeItemClassDescriptor eObjectTreeItemClassDescriptor = eObjectTreeItemForObject.getClassDescriptor();
       if (eObjectTreeItemClassDescriptor == null) {

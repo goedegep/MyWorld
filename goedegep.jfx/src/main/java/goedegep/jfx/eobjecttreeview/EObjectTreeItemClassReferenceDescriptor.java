@@ -5,10 +5,10 @@ import java.util.function.Function;
 import java.util.logging.Logger;
 
 import org.eclipse.emf.ecore.EClass;
-import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EReference;
 
 import goedegep.util.text.Indent;
+import javafx.scene.image.Image;
 
 /**
  * This class is an {@link EObjectTreeItemDescriptor} for an item of type {@link EObjectTreeItemType.CLASS_REFERENCE}.
@@ -96,7 +96,7 @@ public class EObjectTreeItemClassReferenceDescriptor extends EObjectTreeItemDesc
    * @param nodeTextFunction the function to provide the node text.
    * @return this
    */
-  public EObjectTreeItemClassReferenceDescriptor setNodeTextFunction(Function<EObject, String> nodeTextFunction) {
+  public EObjectTreeItemClassReferenceDescriptor setNodeTextFunction(Function<Object, String> nodeTextFunction) {
     super.setNodeTextFunction(nodeTextFunction);
     
     return this;
@@ -111,6 +111,19 @@ public class EObjectTreeItemClassReferenceDescriptor extends EObjectTreeItemDesc
    */
   public EObjectTreeItemClassReferenceDescriptor setStrongText(boolean strongText) {
     super.setStrongText(strongText);
+    
+    return this;
+  }
+  
+  /**
+   * Set the function to provide the node icon.
+   * TODO instead of overwriting this method implement a solution 
+   * 
+   * @param nodeIconFunction the function to provide the node icon.
+   * @return this
+   */
+  public EObjectTreeItemClassReferenceDescriptor setNodeIconFunction(Function<Object, Image> nodeIconFunction) {
+    super.setNodeIconFunction(nodeIconFunction);
     
     return this;
   }

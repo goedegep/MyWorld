@@ -31,12 +31,7 @@
       </genOperations>
       <genOperations ecoreOperation="travels.ecore#//Travels/getTravels"/>
     </genClasses>
-    <genClasses ecoreClass="travels.ecore#//Vacation">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute travels.ecore#//Vacation/endDate"/>
-      <genOperations ecoreOperation="travels.ecore#//Vacation/getDayNr">
-        <genParameters ecoreParameter="travels.ecore#//Vacation/getDayNr/vacationElement"/>
-      </genOperations>
-    </genClasses>
+    <genClasses ecoreClass="travels.ecore#//Vacation"/>
     <genClasses ecoreClass="travels.ecore#//Location">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute travels.ecore#//Location/locationCategory"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute travels.ecore#//Location/country"/>
@@ -63,6 +58,7 @@
       <genOperations ecoreOperation="travels.ecore#//VacationElement/getDayTrip"/>
       <genOperations ecoreOperation="travels.ecore#//VacationElement/getDay"/>
       <genOperations ecoreOperation="travels.ecore#//VacationElement/getLabelText"/>
+      <genOperations ecoreOperation="travels.ecore#//VacationElement/getTravel"/>
     </genClasses>
     <genClasses ecoreClass="travels.ecore#//Text">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute travels.ecore#//Text/text"/>
@@ -110,12 +106,16 @@
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference travels.ecore#//Travel/elements"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference travels.ecore#//Travel/documents"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute travels.ecore#//Travel/pictures"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute travels.ecore#//Travel/endDate"/>
       <genOperations ecoreOperation="travels.ecore#//Travel/getId"/>
       <genOperations ecoreOperation="travels.ecore#//Travel/getAllFileReferences"/>
       <genOperations ecoreOperation="travels.ecore#//Travel/findDocument">
         <genParameters ecoreParameter="travels.ecore#//Travel/findDocument/documentPath"/>
       </genOperations>
       <genOperations ecoreOperation="travels.ecore#//Travel/getAllReferencedFiles"/>
+      <genOperations ecoreOperation="travels.ecore#//Travel/getDayNr">
+        <genParameters ecoreParameter="travels.ecore#//Travel/getDayNr/vacationElement"/>
+      </genOperations>
     </genClasses>
   </genPackages>
 </genmodel:GenModel>

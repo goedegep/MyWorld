@@ -17,6 +17,7 @@ import org.eclipse.emf.ecore.util.InternalEList;
 
 import goedegep.travels.model.Day;
 import goedegep.travels.model.DayTrip;
+import goedegep.travels.model.Travel;
 import goedegep.travels.model.Vacation;
 import goedegep.travels.model.VacationElement;
 import goedegep.travels.model.TravelsPackage;
@@ -152,6 +153,22 @@ public abstract class VacationElementImpl extends MinimalEObjectImpl.Container i
   /**
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
+   * @generated NOT
+   */
+  @Override
+  public Travel getTravel() {
+    EObject container = eContainer();
+
+    while ((container != null) && !(container instanceof Travel)) {
+      container = container.eContainer();
+    }
+
+    return (Travel) container;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
    * @generated
    */
   @Override
@@ -241,6 +258,8 @@ public abstract class VacationElementImpl extends MinimalEObjectImpl.Container i
       return getDay();
     case TravelsPackage.VACATION_ELEMENT___GET_LABEL_TEXT:
       return getLabelText();
+    case TravelsPackage.VACATION_ELEMENT___GET_TRAVEL:
+      return getTravel();
     }
     return super.eInvoke(operationID, arguments);
   }

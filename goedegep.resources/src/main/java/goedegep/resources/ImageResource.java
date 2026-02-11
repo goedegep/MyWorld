@@ -43,8 +43,9 @@ public enum ImageResource {
   BACKPACK(new ImageFileInfo[] {
       new ImageFileInfo("Backpack - 64x64.png", 64, 64),
       new ImageFileInfo("Backpack - 128x128.png", 128, 128),
-      new ImageFileInfo("Backpack - 512x512.png", 512, 512),
+      new ImageFileInfo("Backpack - 512x512.png", 512, 512)
       }, "a backpack", null),
+  BACKPACKS(new ImageFileInfo[] {new ImageFileInfo("Backpacks - 295x248.png", 64, 64)}, "backpacks", null),
   BANK(new ImageFileInfo[] {new ImageFileInfo("Bank - 34x39.png", 34, 39)}, "bank", null),
   BAR(new ImageFileInfo[] {new ImageFileInfo("Bar - 34x39.png", 34, 39)}, "a drink", null),
   BEACH(new ImageFileInfo[] {new ImageFileInfo("Beach - 256x246.png", 256, 246)}, "beach", null),

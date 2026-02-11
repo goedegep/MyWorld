@@ -7,10 +7,16 @@ import org.eclipse.emf.ecore.EObject;
 
 import javafx.stage.FileChooser;
 
+/**
+ * This class is a {@link EObjectTreeCellHelper} for an attribute of type {@code File}.
+ */
 public class EObjectTreeCellHelperForAttributeFile extends EObjectTreeCellHelperForAttributeAbstract {
 //  @SuppressWarnings("unused")
   private static final Logger LOGGER = Logger.getLogger(EObjectTreeCellHelperForAttributeMultiLineText.class.getName());
   
+  /**
+   * The {@code FileChooser} used for editing the value.
+   */
   private FileChooser fileChooser = null;
   
   /**

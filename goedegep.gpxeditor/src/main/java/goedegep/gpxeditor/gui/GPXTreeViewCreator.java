@@ -57,7 +57,7 @@ public class GPXTreeViewCreator extends EObjectTreeView {
   private EObjectTreeItemClassDescriptor createDescriptorForDocumentRoot() {
     // DocumentRoot is root node
     EObjectTreeItemClassDescriptor eObjectTreeItemClassDescriptor = new EObjectTreeItemClassDescriptor()
-        .setNodeTextFunction(eObject -> "Document root")
+        .setNodeTextFunction(_ -> "Document root")
         .setExpandOnCreation(true);
 
     EObjectTreeItemClassListReferenceDescriptor eObjectTreeItemClassListReferenceDescriptor;
@@ -66,17 +66,19 @@ public class GPXTreeViewCreator extends EObjectTreeView {
     
     // DocumentRoot.XMLNSPrefixMap
     eObjectTreeItemClassListReferenceDescriptor = new EObjectTreeItemClassListReferenceDescriptor(GPX_PACKAGE.getDocumentRoot_XMLNSPrefixMap())
-        .setLabelText("XMLNSPrefixMap");
+//        .setLabelText("XMLNSPrefixMap");
+        .setNodeTextFunction(_ -> "XMLNSPrefixMap");
     eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(eObjectTreeItemClassListReferenceDescriptor);
     
     // DocumentRoot.XSISchemaLocation
     eObjectTreeItemClassListReferenceDescriptor = new EObjectTreeItemClassListReferenceDescriptor(GPX_PACKAGE.getDocumentRoot_XSISchemaLocation())
-        .setLabelText("XSISchemaLocation");
+//        .setLabelText("XSISchemaLocation");
+        .setNodeTextFunction(_ -> "XSISchemaLocation");
     eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(eObjectTreeItemClassListReferenceDescriptor);
 
     // DocumentRoot.gpx
     EObjectTreeItemClassReferenceDescriptor eObjectTreeItemClassReferenceDescriptor = new EObjectTreeItemClassReferenceDescriptor(GPX_PACKAGE.getDocumentRoot_Gpx())
-        .setNodeTextFunction(eObject -> "GPX");
+        .setNodeTextFunction(_ -> "GPX");
     eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(eObjectTreeItemClassReferenceDescriptor);
     
     return eObjectTreeItemClassDescriptor;
@@ -88,17 +90,15 @@ public class GPXTreeViewCreator extends EObjectTreeView {
   private EObjectTreeItemClassDescriptor createDescriptorForGpxType() {
     // GpxType
     EObjectTreeItemClassDescriptor eObjectTreeItemClassDescriptor = new EObjectTreeItemClassDescriptor()
-        .setNodeTextFunction(eObject -> "GPX (gpx)")
-        .setNodeIconFunction(eObject -> {
-          return ImageResource.GPX.getImage();
-        });
+        .setNodeTextFunction(_ -> "GPX (gpx)")
+        .setNodeIconFunction(_ -> ImageResource.GPX.getImage());
     
     EObjectTreeItemClassReferenceDescriptor eObjectTreeItemClassReferenceDescriptor;
     EObjectTreeItemClassListReferenceDescriptor eObjectTreeItemClassListReferenceDescriptor;
     
     // GpxType.metadata
     eObjectTreeItemClassReferenceDescriptor = new EObjectTreeItemClassReferenceDescriptor(GPX_PACKAGE.getGpxType_Metadata())
-        .setNodeTextFunction(eObject -> "Meta data (metadata)")
+        .setNodeTextFunction(_ -> "Meta data (metadata)")
         .setExpandOnCreation(true)
         .addNodeOperationDescriptor(new NodeOperationDescriptorNew("Create Metadata", null, null));
     eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(eObjectTreeItemClassReferenceDescriptor);
@@ -117,22 +117,25 @@ public class GPXTreeViewCreator extends EObjectTreeView {
     
     // GpxType.wpt
     eObjectTreeItemClassListReferenceDescriptor = new EObjectTreeItemClassListReferenceDescriptor(GPX_PACKAGE.getGpxType_Wpt())
-        .setLabelText("Waypoints (wpt)");
+//        .setLabelText("Waypoints (wpt)");
+        .setNodeTextFunction(_ -> "Waypoints (wpt)");
     eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(eObjectTreeItemClassListReferenceDescriptor);
     
     // GpxType.rte
     eObjectTreeItemClassListReferenceDescriptor = new EObjectTreeItemClassListReferenceDescriptor(GPX_PACKAGE.getGpxType_Rte())
-        .setLabelText("Routes (rte)");
+//        .setLabelText("Routes (rte)");
+        .setNodeTextFunction(_ -> "Routes (rte)");
     eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(eObjectTreeItemClassListReferenceDescriptor);
     
     // GpxType.trk
     eObjectTreeItemClassListReferenceDescriptor = new EObjectTreeItemClassListReferenceDescriptor(GPX_PACKAGE.getGpxType_Trk())
-        .setLabelText("Tracks (trk)");
+//        .setLabelText("Tracks (trk)");
+        .setNodeTextFunction(_ -> "Tracks (trk)");
     eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(eObjectTreeItemClassListReferenceDescriptor);
     
     // GpxType.extensions
     eObjectTreeItemClassReferenceDescriptor = new EObjectTreeItemClassReferenceDescriptor(GPX_PACKAGE.getGpxType_Extensions())
-        .setNodeTextFunction(eObject -> "Extensions (extensions)")
+        .setNodeTextFunction(_ -> "Extensions (extensions)")
         .setExpandOnCreation(true)
         .addNodeOperationDescriptor(new NodeOperationDescriptorNew("Create Metadata", null, null));
     eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(eObjectTreeItemClassReferenceDescriptor);
@@ -146,10 +149,8 @@ public class GPXTreeViewCreator extends EObjectTreeView {
   private EObjectTreeItemClassDescriptor createDescriptorForWptType() {
     // WptType
     EObjectTreeItemClassDescriptor eObjectTreeItemClassDescriptor = new EObjectTreeItemClassDescriptor()
-        .setNodeTextFunction(eObject -> "Waypoint")
-        .setNodeIconFunction(eObject -> {
-          return ImageResource.LOCATION_FLAG_YELLOW.getImage();
-        })
+        .setNodeTextFunction(_ -> "Waypoint")
+        .setNodeIconFunction(_ -> ImageResource.LOCATION_FLAG_YELLOW.getImage())
         .addNodeOperationDescriptor(new NodeOperationDescriptorDelete("Delete", null));
 
     EObjectTreeItemAttributeDescriptor eObjectTreeItemAttributeDescriptor;
@@ -251,12 +252,13 @@ public class GPXTreeViewCreator extends EObjectTreeView {
     
     // WptType.link
     EObjectTreeItemClassListReferenceDescriptor eObjectTreeItemClassListReferenceDescriptor = new EObjectTreeItemClassListReferenceDescriptor(GPX_PACKAGE.getWptType_Link())
-        .setLabelText("Links (link)");
+//        .setLabelText("Links (link)");
+        .setNodeTextFunction(_ -> "Links (link)");
     eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(eObjectTreeItemClassListReferenceDescriptor);
     
     // WptType.extensions    
     EObjectTreeItemClassReferenceDescriptor eObjectTreeItemClassReferenceDescriptor = new EObjectTreeItemClassReferenceDescriptor(GPX_PACKAGE.getWptType_Extensions())
-        .setNodeTextFunction(eObject -> "Extensions (extensions)");
+        .setNodeTextFunction(_ -> "Extensions (extensions)");
     eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(eObjectTreeItemClassReferenceDescriptor);
    
     return eObjectTreeItemClassDescriptor;
@@ -271,7 +273,7 @@ public class GPXTreeViewCreator extends EObjectTreeView {
         
     // RteType
     EObjectTreeItemClassDescriptor eObjectTreeItemClassDescriptor = new EObjectTreeItemClassDescriptor()
-        .setNodeTextFunction(eObject -> "Route (rte)");
+        .setNodeTextFunction(_ -> "Route (rte)");
 
     // RteType.name
     eObjectTreeItemAttributeDescriptor = new EObjectTreeItemAttributeDescriptor(GPX_PACKAGE.getRteType_Name())
@@ -305,17 +307,19 @@ public class GPXTreeViewCreator extends EObjectTreeView {
     
     // WptType.rtept
     eObjectTreeItemClassListReferenceDescriptor = new EObjectTreeItemClassListReferenceDescriptor(GPX_PACKAGE.getRteType_Rtept())
-        .setLabelText("Route points (rtept)");
+//        .setLabelText("Route points (rtept)");
+        .setNodeTextFunction(_ -> "Route points (rtept)");
     eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(eObjectTreeItemClassListReferenceDescriptor);
     
     // WptType.link
     eObjectTreeItemClassListReferenceDescriptor = new EObjectTreeItemClassListReferenceDescriptor(GPX_PACKAGE.getRteType_Link())
-        .setLabelText("Links (link)");
+//        .setLabelText("Links (link)");
+        .setNodeTextFunction(_ -> "Links (link)");
     eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(eObjectTreeItemClassListReferenceDescriptor);
     
     // WptType.extensions
     EObjectTreeItemClassReferenceDescriptor eObjectTreeItemClassReferenceDescriptor = new EObjectTreeItemClassReferenceDescriptor(GPX_PACKAGE.getRteType_Extensions())
-        .setNodeTextFunction(eObject -> "Extensions (extensions)");
+        .setNodeTextFunction(_ -> "Extensions (extensions)");
     eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(eObjectTreeItemClassReferenceDescriptor);
     
     return eObjectTreeItemClassDescriptor;
@@ -329,7 +333,7 @@ public class GPXTreeViewCreator extends EObjectTreeView {
         
     // TrkType
     EObjectTreeItemClassDescriptor eObjectTreeItemClassDescriptor = new EObjectTreeItemClassDescriptor()
-        .setNodeTextFunction(eObject -> "Track (trk)");
+        .setNodeTextFunction(_ -> "Track (trk)");
 
     EObjectTreeItemAttributeDescriptor eObjectTreeItemAttributeDescriptor;
 
@@ -365,17 +369,19 @@ public class GPXTreeViewCreator extends EObjectTreeView {
     
     // TrkType.trkseg
     eObjectTreeItemClassListReferenceDescriptor = new EObjectTreeItemClassListReferenceDescriptor(GPX_PACKAGE.getTrkType_Trkseg())
-        .setLabelText("Track segments (trkseg)");
+//        .setLabelText("Track segments (trkseg)");
+        .setNodeTextFunction(_ -> "Track segments (trkseg)");
     eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(eObjectTreeItemClassListReferenceDescriptor);
     
     // TrkType.link
     eObjectTreeItemClassListReferenceDescriptor = new EObjectTreeItemClassListReferenceDescriptor(GPX_PACKAGE.getTrkType_Link())
-        .setLabelText("Links (link)");
+//        .setLabelText("Links (link)");
+        .setNodeTextFunction(_ -> "Links (link)");
     eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(eObjectTreeItemClassListReferenceDescriptor);
     
     // TrkType.extensions
     EObjectTreeItemClassReferenceDescriptor eObjectTreeItemClassReferenceDescriptor = new EObjectTreeItemClassReferenceDescriptor(GPX_PACKAGE.getTrkType_Extensions())
-        .setNodeTextFunction(eObject -> "Extensions (extensions)");
+        .setNodeTextFunction(_ -> "Extensions (extensions)");
     eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(eObjectTreeItemClassReferenceDescriptor);
     
     return eObjectTreeItemClassDescriptor;
@@ -387,16 +393,17 @@ public class GPXTreeViewCreator extends EObjectTreeView {
   private EObjectTreeItemClassDescriptor createDescriptorForTrksegType() {
     // TrksegType
     EObjectTreeItemClassDescriptor eObjectTreeItemClassDescriptor = new EObjectTreeItemClassDescriptor()
-        .setNodeTextFunction(eObject -> "Track segment (trkseg)");
+        .setNodeTextFunction(_ -> "Track segment (trkseg)");
     
     // TrksegType.trkpt
     EObjectTreeItemClassListReferenceDescriptor eObjectTreeItemClassListReferenceDescriptor = new EObjectTreeItemClassListReferenceDescriptor(GPX_PACKAGE.getTrksegType_Trkpt())
-        .setLabelText("Track points (trkpt)");
+//        .setLabelText("Track points (trkpt)");
+        .setNodeTextFunction(_ -> "Track points (trkpt)");
     eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(eObjectTreeItemClassListReferenceDescriptor);
     
     // TrksegType.extensions
     EObjectTreeItemClassReferenceDescriptor eObjectTreeItemClassReferenceDescriptor = new EObjectTreeItemClassReferenceDescriptor(GPX_PACKAGE.getTrksegType_Extensions())
-        .setNodeTextFunction(eObject -> "Extensions (extensions)");
+        .setNodeTextFunction(_ -> "Extensions (extensions)");
     eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(eObjectTreeItemClassReferenceDescriptor);
     
     return eObjectTreeItemClassDescriptor;
@@ -410,7 +417,7 @@ public class GPXTreeViewCreator extends EObjectTreeView {
         
     // MetadataType
     EObjectTreeItemClassDescriptor eObjectTreeItemClassDescriptor = new EObjectTreeItemClassDescriptor()
-        .setNodeTextFunction(eObject -> "Meta data (metadata)");
+        .setNodeTextFunction(_ -> "Meta data (metadata)");
 
     EObjectTreeItemAttributeDescriptor eObjectTreeItemAttributeDescriptor;
 
@@ -436,27 +443,28 @@ public class GPXTreeViewCreator extends EObjectTreeView {
 
     // MetadataType.bounds
     eObjectTreeItemClassReferenceDescriptor = new EObjectTreeItemClassReferenceDescriptor(GPX_PACKAGE.getMetadataType_Bounds())
-        .setNodeTextFunction(eObject -> "Bounds (bounds)");
+        .setNodeTextFunction(_ -> "Bounds (bounds)");
     eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(eObjectTreeItemClassReferenceDescriptor);
     
     // MetadataType.author
     eObjectTreeItemClassReferenceDescriptor = new EObjectTreeItemClassReferenceDescriptor(GPX_PACKAGE.getMetadataType_Author())
-        .setNodeTextFunction(eObject -> "Author (author)");
+        .setNodeTextFunction(_ -> "Author (author)");
     eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(eObjectTreeItemClassReferenceDescriptor);
     
     // MetadataType.copyright
     eObjectTreeItemClassReferenceDescriptor = new EObjectTreeItemClassReferenceDescriptor(GPX_PACKAGE.getMetadataType_Copyright())
-        .setNodeTextFunction(eObject -> "Copyright (copyright)");
+        .setNodeTextFunction(_ -> "Copyright (copyright)");
     eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(eObjectTreeItemClassReferenceDescriptor);
 
     // MetadataType.link
     EObjectTreeItemClassListReferenceDescriptor eObjectTreeItemClassListReferenceDescriptor = new EObjectTreeItemClassListReferenceDescriptor(GPX_PACKAGE.getMetadataType_Link())
-        .setLabelText("Links (link)");
+//        .setLabelText("Links (link)");
+        .setNodeTextFunction(_ -> "Links (link)");
     eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(eObjectTreeItemClassListReferenceDescriptor);
     
     // MetadataType.extensions
     eObjectTreeItemClassReferenceDescriptor = new EObjectTreeItemClassReferenceDescriptor(GPX_PACKAGE.getMetadataType_Extensions())
-        .setNodeTextFunction(eObject -> "Extensions (extensions)");
+        .setNodeTextFunction(_ -> "Extensions (extensions)");
     eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(eObjectTreeItemClassReferenceDescriptor);
     
     return eObjectTreeItemClassDescriptor;
@@ -468,7 +476,7 @@ public class GPXTreeViewCreator extends EObjectTreeView {
   private EObjectTreeItemClassDescriptor createDescriptorForBoundsType() {
     // BoundsType
     EObjectTreeItemClassDescriptor eObjectTreeItemClassDescriptor = new EObjectTreeItemClassDescriptor()
-        .setNodeTextFunction(eObject -> "Bounds (bounds)");
+        .setNodeTextFunction(_ -> "Bounds (bounds)");
 
     EObjectTreeItemAttributeDescriptor eObjectTreeItemAttributeDescriptor;
 
@@ -503,7 +511,7 @@ public class GPXTreeViewCreator extends EObjectTreeView {
         
     // PersonType
     EObjectTreeItemClassDescriptor eObjectTreeItemClassDescriptor = new EObjectTreeItemClassDescriptor()
-        .setNodeTextFunction(eObject -> "Bounds (bounds)");
+        .setNodeTextFunction(_ -> "Bounds (bounds)");
 
     EObjectTreeItemAttributeDescriptor eObjectTreeItemAttributeDescriptor;
 
@@ -514,12 +522,12 @@ public class GPXTreeViewCreator extends EObjectTreeView {
 
     // PersonType.email
     eObjectTreeItemClassReferenceDescriptor = new EObjectTreeItemClassReferenceDescriptor(GPX_PACKAGE.getPersonType_Email())
-        .setNodeTextFunction(eObject -> "Email (email)");
+        .setNodeTextFunction(_ -> "Email (email)");
     eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(eObjectTreeItemClassReferenceDescriptor);
 
     // PersonType.link
     eObjectTreeItemClassReferenceDescriptor = new EObjectTreeItemClassReferenceDescriptor(GPX_PACKAGE.getPersonType_Link())
-        .setNodeTextFunction(eObject -> "Link (link)");
+        .setNodeTextFunction(_ -> "Link (link)");
     eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(eObjectTreeItemClassReferenceDescriptor);
     
     return eObjectTreeItemClassDescriptor;
@@ -531,7 +539,7 @@ public class GPXTreeViewCreator extends EObjectTreeView {
   private EObjectTreeItemClassDescriptor createDescriptorForCopyrightType() {
     // CopyrightType
     EObjectTreeItemClassDescriptor eObjectTreeItemClassDescriptor = new EObjectTreeItemClassDescriptor()
-        .setNodeTextFunction(eObject -> "Bounds (bounds)");
+        .setNodeTextFunction(_ -> "Bounds (bounds)");
 
     EObjectTreeItemAttributeDescriptor eObjectTreeItemAttributeDescriptor;
 
@@ -559,7 +567,7 @@ public class GPXTreeViewCreator extends EObjectTreeView {
   private EObjectTreeItemClassDescriptor createDescriptorForEmailType() {
     // EmailType
     EObjectTreeItemClassDescriptor eObjectTreeItemClassDescriptor = new EObjectTreeItemClassDescriptor()
-        .setNodeTextFunction(eObject -> "Email (email)");
+        .setNodeTextFunction(_ -> "Email (email)");
 
     EObjectTreeItemAttributeDescriptor eObjectTreeItemAttributeDescriptor;
 
@@ -582,7 +590,7 @@ public class GPXTreeViewCreator extends EObjectTreeView {
   private EObjectTreeItemClassDescriptor createDescriptorForLinkType() {
     // LinkType
     EObjectTreeItemClassDescriptor eObjectTreeItemClassDescriptor = new EObjectTreeItemClassDescriptor()
-        .setNodeTextFunction(eObject -> "Link (link)");
+        .setNodeTextFunction(_ -> "Link (link)");
 
     EObjectTreeItemAttributeDescriptor eObjectTreeItemAttributeDescriptor;
 
@@ -610,7 +618,7 @@ public class GPXTreeViewCreator extends EObjectTreeView {
   private EObjectTreeItemClassDescriptor createDescriptorForExtensionsType() {
     // ExtensionsType
     EObjectTreeItemClassDescriptor eObjectTreeItemClassDescriptor = new EObjectTreeItemClassDescriptor()
-        .setNodeTextFunction(eObject -> "Extensions (extensions)");
+        .setNodeTextFunction(_ -> "Extensions (extensions)");
 
     // ExtensionsType.any
     EObjectTreeItemAttributeListDescriptor eObjectTreeItemAttributeListDescriptor = new EObjectTreeItemAttributeListDescriptor(GPX_PACKAGE.getExtensionsType_Any())
@@ -628,7 +636,7 @@ public class GPXTreeViewCreator extends EObjectTreeView {
         
     // EStringToStringMapEntry
     EObjectTreeItemClassDescriptor eObjectTreeItemClassDescriptor = new EObjectTreeItemClassDescriptor()
-        .setNodeTextFunction(eObject -> "Entry");
+        .setNodeTextFunction(_ -> "Entry");
 
     EObjectTreeItemAttributeDescriptor eObjectTreeItemAttributeDescriptor;
 

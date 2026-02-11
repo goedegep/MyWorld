@@ -45,7 +45,7 @@ public class PhotoShowSpecificationTreeViewCreator {
    */
   private EObjectTreeItemClassDescriptor createDescriptorForPhotoShowSpecification() {
     EObjectTreeItemClassDescriptor eObjectTreeItemClassDescriptor = new EObjectTreeItemClassDescriptor()
-        .setNodeTextFunction(eObject -> "Photo show specification")
+        .setNodeTextFunction(_ -> "Photo show specification")
         .setExpandOnCreation(true);
 
     EObjectTreeItemAttributeDescriptor eObjectTreeItemAttributeDescriptor;
@@ -70,7 +70,8 @@ public class PhotoShowSpecificationTreeViewCreator {
 
     // PhotoShowSpecification.foldertimeoffsetspecifications
     EObjectTreeItemClassListReferenceDescriptor eObjectTreeItemClassListReferenceDescriptor = new EObjectTreeItemClassListReferenceDescriptor(PHOTO_SHOW_PACKAGE.getPhotoShowSpecification_FolderTimeOffsetSpecifications())
-        .setLabelText("Folder time offsets")
+//        .setLabelText("Folder time offsets")
+        .setNodeTextFunction(_ -> "Folder time offset")
         .setExpandOnCreation(true)
         .addNodeOperationDescriptor(new NodeOperationDescriptorNew("New time offset", null, null));
     eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(eObjectTreeItemClassListReferenceDescriptor);

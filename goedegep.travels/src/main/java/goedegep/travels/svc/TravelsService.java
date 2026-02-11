@@ -67,9 +67,23 @@ public class TravelsService extends Service {
       instance.initialize();
 
       instance.startPhotoThumbnailsCreation();
+      instance.setOSMUserAgentSystemProperty();
     }
     
     return instance;    
+  }
+  
+  /**
+   * Set the http.agent system property to the OSM User Agent string from the registry, if it is not set yet.
+   * <p>
+   * This is needed for proper usage of the OpenStreetMap API's; map tiles and Nominatim geocoding service.
+   */
+  private void setOSMUserAgentSystemProperty() {
+    String httpAgent = System.getProperty("http.agent");
+    if (httpAgent == null) {
+      String osmUserAgent = vacationsRegistry.getOSMUserAgent();
+      System.setProperty("http.agent", osmUserAgent);
+    }    
   }
   
   /**

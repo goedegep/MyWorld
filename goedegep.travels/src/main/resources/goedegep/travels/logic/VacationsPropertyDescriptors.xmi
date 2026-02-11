@@ -20,4 +20,6 @@
       displayName="Picture folders to ignore"/>
   <propertyDescriptors name="nominatimUserAgent" description="To search for locations OpenStreetMap nominatim is used. This requires a text called a User Agent. This is only used to identify you as a user and to check that only a fair amount of search requests is performed.&#xA;If you do many searches they would like you to enter your email address. Otherwise any unique text will do."
       displayName="Search request name"/>
+  <propertyDescriptors name="travelCategories" description="list of travel categories, separated by commas. Each categay has a name, a category icon and a travel icon, separated by a semicolon. The icon can be the name of a standard icon (so it has no prefix), or it can be a file name of an icon in the $HOME/MyWorld/Travels folder (so it has a prefix)."
+      displayName="Travel categories"/>
 </properties:PropertyDescriptorGroup>

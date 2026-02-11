@@ -30,11 +30,14 @@
 package com.gluonhq.impl.maps.tile.osm;
 
 import com.gluonhq.maps.tile.TileRetriever;
+
 import javafx.scene.image.Image;
 
 import java.util.concurrent.CompletableFuture;
+import java.util.logging.Logger;
 
 public class OsmTileRetriever implements TileRetriever {
+    private static final Logger LOGGER = Logger.getLogger(OsmTileRetriever.class.getName());
 
     private static final String host = "https://tile.openstreetmap.org/";
     static final String httpAgent;
@@ -43,10 +46,10 @@ public class OsmTileRetriever implements TileRetriever {
         String agent = System.getProperty("http.agent");  // The http.agent java system property sets the default user agent for http requests.
         if (agent == null) {
             agent = "(" + System.getProperty("os.name") + " / " + System.getProperty("os.version") + " / " + System.getProperty("os.arch") + ")";
+            LOGGER.severe("http.agent system property not set, using default: " + agent);
         }
-//        httpAgent = "Gluon Maps/2.0.0 " + agent;
-        httpAgent = "goedegep MyWorld Travels " + agent;
-        System.setProperty("http.agent", httpAgent);
+        httpAgent = "Gluon Maps/2.0.0 " + agent;
+//        System.setProperty("http.agent", httpAgent);
     }
 
     static String buildImageUrlString(int zoom, long i, long j) {

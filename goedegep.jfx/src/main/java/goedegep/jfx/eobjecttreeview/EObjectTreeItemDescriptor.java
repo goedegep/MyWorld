@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 
-import org.eclipse.emf.ecore.EObject;
 import goedegep.util.text.Indent;
 import javafx.scene.image.Image;
 
@@ -62,7 +61,7 @@ public abstract class EObjectTreeItemDescriptor {
   /**
    * Function to provide the node text (optional).
    */
-  private Function<EObject, String> nodeTextFunction = null;
+  private Function<Object, String> nodeTextFunction = null;
   
   /**
    * A function to provide the node icon (optional).
@@ -188,7 +187,7 @@ public abstract class EObjectTreeItemDescriptor {
    * 
    * @return the function to provide the node text.
    */
-  public Function<EObject, String> getNodeTextFunction() {
+  public Function<Object, String> getNodeTextFunction() {
     return nodeTextFunction;
   }
   
@@ -198,7 +197,7 @@ public abstract class EObjectTreeItemDescriptor {
    * @param nodeTextFunction the function to provide the node text.
    * @return this
    */
-  public EObjectTreeItemDescriptor setNodeTextFunction(Function<EObject, String> nodeTextFunction) {
+  public EObjectTreeItemDescriptor setNodeTextFunction(Function<Object, String> nodeTextFunction) {
     this.nodeTextFunction = nodeTextFunction;
     
     return this;

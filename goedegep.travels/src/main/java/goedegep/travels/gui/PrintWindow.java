@@ -28,6 +28,7 @@ import goedegep.jfx.editor.controls.EditorControlFileSelecter;
 import goedegep.travels.logic.VacationToHtmlConverter;
 import goedegep.travels.logic.VacationToHtmlConverterSetting;
 import goedegep.travels.logic.TravelsUtils;
+import goedegep.travels.model.Travel;
 import goedegep.travels.model.Vacation;
 import goedegep.util.file.FileUtils;
 import javafx.beans.value.ChangeListener;
@@ -147,7 +148,7 @@ public class PrintWindow extends JfxStage {
    * The <code>Vacation</code> to be printed.
    * This is passed to the constructor.
    */
-  private Vacation vacation;
+  private Travel vacation;
   
   /**
    * The label that shows the status of the PDF generation task.
@@ -161,7 +162,7 @@ public class PrintWindow extends JfxStage {
    * @param vacation the <code>Vacation</code> to be printed
    * @throws Exception if something goes wrong
    */
-  public PrintWindow(CustomizationFx customization, Vacation vacation) throws Exception {
+  public PrintWindow(CustomizationFx customization, Travel vacation) throws Exception {
     super(customization, WINDOW_TITLE);
     
     this.vacation = vacation;

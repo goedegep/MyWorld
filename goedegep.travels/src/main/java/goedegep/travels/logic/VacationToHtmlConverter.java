@@ -51,6 +51,7 @@ import goedegep.travels.model.Location;
 import goedegep.travels.model.MapImage;
 import goedegep.travels.model.Picture;
 import goedegep.travels.model.Text;
+import goedegep.travels.model.Travel;
 import goedegep.travels.model.Vacation;
 import goedegep.travels.model.VacationElement;
 import goedegep.types.model.FileReference;
@@ -208,7 +209,7 @@ public class VacationToHtmlConverter extends VacationToTextConverterAbstract {
    * @return an HTML document for the {@code vacation}.
    * @deprecated
    */
-  public String vacationToHtml(Vacation vacation) {
+  public String vacationToHtml(Travel vacation) {
     return vacationToHtml(vacation, false, null);
   }
   
@@ -220,7 +221,7 @@ public class VacationToHtmlConverter extends VacationToTextConverterAbstract {
    * @param vacation the {@code Vacation} for which an HTML document is to be generated. This argument may not be null.
    * @return an HTML document for the {@code vacation}.
    */
-  public String vacationToHtmlWithEmbedImages(Vacation vacation) {
+  public String vacationToHtmlWithEmbedImages(Travel vacation) {
     return vacationToHtml(vacation, true, null);
   }
   
@@ -232,7 +233,7 @@ public class VacationToHtmlConverter extends VacationToTextConverterAbstract {
    * @param vacation the {@code Vacation} for which an HTML document is to be generated. This argument may not be null.
    * @return an HTML document for the {@code vacation}.
    */
-  public String vacationToHtmlZipFile(Vacation vacation, Path zipFile) {
+  public String vacationToHtmlZipFile(Travel vacation, Path zipFile) {
     return vacationToHtml(vacation, true, zipFile);
   }
   
@@ -242,7 +243,7 @@ public class VacationToHtmlConverter extends VacationToTextConverterAbstract {
    * @param vacation the <code>Vacation</code> for which an HTML document is to be generated.
    * @return the generated HTML document.
    */
-  private String vacationToHtml(Vacation vacation, boolean embedImages, Path zipFile) {
+  private String vacationToHtml(Travel vacation, boolean embedImages, Path zipFile) {
     Objects.requireNonNull(vacation, "argument vacation may not be null");
     
     this.embedImages = embedImages;
@@ -373,7 +374,7 @@ public class VacationToHtmlConverter extends VacationToTextConverterAbstract {
    * @param vacation
    * @return the name of the folder (only that name, not an absolute path) in which the photos of the vacation are stored, or {@code null} if it cannot be determined.
    */
-  private String determinePhotosFolder(Vacation vacation) {
+  private String determinePhotosFolder(Travel vacation) {
     if (vacation.getPictures() != null) {
       String picturesPath = vacation.getPictures();
       File picturesFile = new File(picturesPath);
@@ -408,7 +409,7 @@ public class VacationToHtmlConverter extends VacationToTextConverterAbstract {
    * @param vacation the vacation to be checked.
    * @return {@code true} if the vacation has photos, {@code false} otherwise.
    */
-  private boolean vacationHasPhotos(Vacation vacation) {
+  private boolean vacationHasPhotos(Travel vacation) {
     Iterator<EObject> iterator = vacation.eAllContents();
     while (iterator.hasNext()) {
       Object e = iterator.next();

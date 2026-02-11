@@ -55,13 +55,13 @@ import goedegep.util.img.ImageUtils;
 import goedegep.util.img.PhotoFileMetaDataHandler;
 
 /**
- * This class provides utility methods for the Vacations application.
+ * This class provides utility methods for the Travels application.
  */
 public class TravelsUtils {
   private static final Logger LOGGER = Logger.getLogger(TravelsUtils.class.getName());
   private static DateFormat DF = new SimpleDateFormat("dd-MM-yyyy");
   
-  private static TravelsRegistry vacationsRegistry = TravelsRegistry.getInstance();
+  private static TravelsRegistry travelsRegistry = TravelsRegistry.getInstance();
   
   /**
    * Get the vacation to which an object belongs.
@@ -69,18 +69,18 @@ public class TravelsUtils {
    * @param object the {@code Object} for which the vacation is to be obtained.
    * @return The {@code Vacation} to which the {@code object} belongs, or null if the object is not part of a vacation.
    */
-  public static Vacation getVacationForObject(Object object) {
+  public static Travel getVacationForObject(Object object) {
     if (object == null) {
       return null;
     }
     
     if (object instanceof EObject eObject) {
-      while ((eObject != null)  &&  !(eObject instanceof Vacation)) {
+      while ((eObject != null)  &&  !(eObject instanceof Travel)) {
         eObject = eObject.eContainer();
       }
       
-      if (eObject instanceof Vacation vacation) {
-        return vacation;
+      if (eObject instanceof Travel travel) {
+        return travel;
       }
     }
         
@@ -114,17 +114,17 @@ public class TravelsUtils {
   }
   
   /**
-   * Get a list of lines connecting the locations of a vacation.
+   * Get a list of lines connecting the locations of a travel.
    * <p>
    * For point locations, a line connects the points.<br/>
    * For a GPX track, the line ends at the start of the track and a new line starts at the end of the track.<br/>
    * At the end of a day, if there is a stayed at location for that day, the line goes back to that stayed at location.
    * 
-   * @param vacation the {@code Vacation} for which the locations are to be collected.
-   * @return a list of polylines (a list of code WGS84Coordinates) of all locations of {@code vacation}.
+   * @param travel the {@code Travel} for which the locations are to be collected.
+   * @return a list of polylines (a list of code WGS84Coordinates) of all locations of {@code travel}.
    * @throws FileNotFoundException if a file, referenced by an element, doesn't exist.
    */
-  public static List<List<WGS84Coordinates>> getLocationConnectingLines(Vacation vacation) throws FileNotFoundException {
+  public static List<List<WGS84Coordinates>> getLocationConnectingLines(Travel travel) throws FileNotFoundException {
     // The list of polylines
     List<List<WGS84Coordinates>> locationConnectingLines = new ArrayList<>();
     
@@ -138,7 +138,7 @@ public class TravelsUtils {
         
     locationConnectingLines.add(locationsConnectingLine);
     
-    for (VacationElement element: vacation.getElements()) {
+    for (VacationElement element: travel.getElements()) {
       locationsConnectingLine = addGeoLocationsForVacationElement(locationConnectingLines, locationsConnectingLine, element);
     }
     
@@ -335,15 +335,15 @@ public class TravelsUtils {
   }
   
   /**
-   * Get a list of all the <code>Day</code> elements of a vacation.
+   * Get a list of all the {@code Day} elements of a {@code Travel}.
    * 
-   * @param vacation a <code>Vacation</code>
+   * @param travel a <code>Vacation</code>
    * @return a list of all the <code>Day</code> elements of a vacation.
    */
-  public static List<Day> getVacationDays(Vacation vacation) {
+  public static List<Day> getVacationDays(Travel travel) {
     List<Day> days = new ArrayList<>();
     
-    TreeIterator<EObject> iterator = vacation.eAllContents();
+    TreeIterator<EObject> iterator = travel.eAllContents();
     
     while (iterator.hasNext()) {
       EObject eObject = iterator.next();
@@ -366,13 +366,13 @@ public class TravelsUtils {
    * <li>the third object contains the boundaries, or null if these aren't available.</li>
    * </ul>
    * 
-   * @param vacation a <code>Vacation</code>
+   * @param travel a <code>Vacation</code>
    * @return a mapping of VacationElements to their geo locations.
    */
-  public static Map<VacationElement, Triplet<WGS84Coordinates, BoundingBox, List<Boundary>>> getVacationGeoLocations(Vacation vacation) {
+  public static Map<VacationElement, Triplet<WGS84Coordinates, BoundingBox, List<Boundary>>> getTravelGeoLocations(Travel travel) {
     Map<VacationElement, Triplet<WGS84Coordinates, BoundingBox, List<Boundary>>> geoLocations = new HashMap<>();
     
-    TreeIterator<EObject> iterator = vacation.eAllContents();
+    TreeIterator<EObject> iterator = travel.eAllContents();
     
     while (iterator.hasNext()) {
       EObject eObject = iterator.next();
@@ -842,7 +842,7 @@ public class TravelsUtils {
         File file = new File(filename);
         String parentFolder = file.getParentFile().getParent();
         if (travel instanceof Vacation) {
-          if (vacationsRegistry.getVacationsFolderName().equals(parentFolder)) {
+          if (travelsRegistry.getVacationsFolderName().equals(parentFolder)) {
             travelFilesFolder = file.getParent();
             break;
           }
@@ -858,7 +858,7 @@ public class TravelsUtils {
     if (travelFilesFolder == null) {
       String baseFolder = null;
       if (travel instanceof Vacation) {
-        baseFolder = vacationsRegistry.getVacationsFolderName();
+        baseFolder = travelsRegistry.getVacationsFolderName();
       } else if (travel instanceof DayTrip) {
         baseFolder = "D:\\Database\\Dagtochten";
       }
@@ -918,7 +918,7 @@ public class TravelsUtils {
    * @param vacation the vacation for which to get a Path to its photos folder.
    * @return a Path to the folder with photos for {@code vacation}, or null if this cannot be determined.
    */
-  public static Path getVacationPhotosFolderPath(Vacation vacation) {
+  public static Path getVacationPhotosFolderPath(Travel vacation) {
     String vacationPhotosFolder = vacation.getPictures();
     
     if (vacationPhotosFolder != null) {
@@ -952,7 +952,7 @@ public class TravelsUtils {
    * @return a Path to the folder with photos for all vacations, or null if this cannot be determined.
    */
   public static Path getVacationsPhotosFolderPath() {
-    String vacationsPhotosFolderName = vacationsRegistry.getVacationPicturesFolderName();
+    String vacationsPhotosFolderName = travelsRegistry.getVacationPicturesFolderName();
     Path vacationsPhotosFolderPath = Paths.get(vacationsPhotosFolderName);
     if (Files.exists(vacationsPhotosFolderPath)  &&  Files.isDirectory(vacationsPhotosFolderPath)) {
       return vacationsPhotosFolderPath;
@@ -977,7 +977,7 @@ public class TravelsUtils {
    * @param vacation the {@Vacation} to get the path for.
    * @return the photo folder path by convention for {@code vacation}, or null if this cannot be determined.
    */
-  public static Path getVacationPhotosFolderPathByConvention(Vacation vacation) {
+  public static Path getVacationPhotosFolderPathByConvention(Travel vacation) {
     Path vacationsPhotosFolderPath = getVacationsPhotosFolderPath();
     
     if (vacationsPhotosFolderPath == null) {
@@ -1000,15 +1000,16 @@ public class TravelsUtils {
   }
   
   /**
-   * Get all photo folders for a vacation.
+   * Get all photo folders for a travel.
    * <p>
    * See {@link #getVacationPhotosFolderPath} for determining the Path to the main photo folder for the vacation.<br/>
    * Below this folder all folders are scanned to see if they contain pictures. If so the folder is added to the result list.
    * 
    * @return a list of all paths of all folders, under the vacation's photo folder, which contain photos.
    */
-  public static List<Path> getVactionPhotosSubFoldersPaths(Vacation vacation) {
-    List<String> skippedFolderNames = new ArrayList<>();
+  public static List<Path> getVactionPhotosSubFoldersPaths(Travel vacation) {
+     List<String> skippedFolderNames = new ArrayList<>();
+     // TODO get skipp folder names from user settings
     skippedFolderNames.add("Originals");
     skippedFolderNames.add("weg");
     
@@ -1016,7 +1017,7 @@ public class TravelsUtils {
     
     Path vacationPhotosFolderPath = getVacationPhotosFolderPath(vacation);
 
-    if (vacationPhotosFolderPath == null) {
+    if (vacationPhotosFolderPath == null  ||  !Files.exists(vacationPhotosFolderPath)) {
       return vacationPhotoFolderPaths;
     }
     
@@ -1064,11 +1065,7 @@ public class TravelsUtils {
     } catch (IOException e) {
       e.printStackTrace();
     }
-    
-    for (Path path: vacationPhotoFolderPaths) {
-      LOGGER.severe("path: " + path.toString());
-    }
-    
+        
     return vacationPhotoFolderPaths;
   }
   

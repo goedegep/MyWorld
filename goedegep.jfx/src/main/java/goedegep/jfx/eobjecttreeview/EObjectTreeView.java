@@ -539,7 +539,8 @@ public class EObjectTreeView extends TreeView<Object> implements ObjectSelector<
           } else {
             eObjectTreeItemClassListReferenceDescriptor = new EObjectTreeItemClassListReferenceDescriptor(eReference, eClass);
           }
-          eObjectTreeItemClassListReferenceDescriptor.setLabelText(eReference.getName());
+//          eObjectTreeItemClassListReferenceDescriptor.setLabelText(eReference.getName());
+          eObjectTreeItemClassListReferenceDescriptor.setNodeTextFunction(_ ->eReference.getName());
           eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(eObjectTreeItemClassListReferenceDescriptor);          
         } else {
           EObjectTreeItemClassReferenceDescriptor eObjectTreeItemClassReferenceDescriptor;

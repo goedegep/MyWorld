@@ -314,7 +314,8 @@ public class PropertiesEditor extends JfxStage {
     
     // Editable properties
     eObjectTreeItemClassListReferenceDescriptor = new EObjectTreeItemClassListReferenceDescriptor(editablePropertyGroup_editableProperties)
-        .setLabelText("Settings");
+//        .setLabelText("Settings");
+        .setNodeTextFunction(_ -> "Settings");
     eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(eObjectTreeItemClassListReferenceDescriptor);
         
     return eObjectTreeItemClassDescriptor;
@@ -325,7 +326,7 @@ public class PropertiesEditor extends JfxStage {
    */
   private EObjectTreeItemClassDescriptor createDescriptorForEditableProperty() {
     EObjectTreeItemClassDescriptor eObjectTreeItemClassDescriptor = new EObjectTreeItemClassDescriptor()
-        .setNodeTextFunction(eObject -> (String) eObject.eGet(editableProperty_displayName))
+        .setNodeTextFunction(object -> (String) ((EObject) object).eGet(editableProperty_displayName))
         .setExpandOnCreation(true);
     
     EObjectTreeItemAttributeDescriptor eObjectTreeItemAttributeDescriptor;

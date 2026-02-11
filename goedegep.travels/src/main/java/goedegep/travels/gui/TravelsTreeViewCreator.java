@@ -42,6 +42,8 @@ import goedegep.poi.app.LocationCategory;
 import goedegep.resources.ImageResource;
 import goedegep.resources.ImageSize;
 import goedegep.travels.logic.EnumStringConverterForLocationCategory;
+import goedegep.travels.logic.TravelCategoryDescriptor;
+import goedegep.travels.logic.TravelsRegistry;
 import goedegep.travels.logic.TravelsUtils;
 import goedegep.travels.model.BoundingBox;
 import goedegep.travels.model.Day;
@@ -52,11 +54,12 @@ import goedegep.travels.model.Location;
 import goedegep.travels.model.MapImage;
 import goedegep.travels.model.Picture;
 import goedegep.travels.model.Text;
-import goedegep.travels.model.Vacation;
-import goedegep.travels.svc.TravelsService;
+import goedegep.travels.model.Travel;
 import goedegep.travels.model.TravelCategory;
 import goedegep.travels.model.TravelsFactory;
 import goedegep.travels.model.TravelsPackage;
+import goedegep.travels.model.Vacation;
+import goedegep.travels.svc.TravelsService;
 import goedegep.types.model.FileReference;
 import goedegep.types.model.TypesFactory;
 import goedegep.types.model.TypesPackage;
@@ -103,6 +106,8 @@ public class TravelsTreeViewCreator {
    * Function to update a map image file.
    */
   private Consumer<EObjectTreeItem> updateMapImageFileFunction;
+  
+  private TravelsRegistry travelsRegistry = TravelsRegistry.getInstance();
 
   /**
    * Constructor
@@ -176,6 +181,7 @@ public class TravelsTreeViewCreator {
         .addEClassDescriptor(TRAVELS_PACKAGE.getVacation(), createDescriptorForVacation())
         .addEClassDescriptor(TRAVELS_PACKAGE.getDayTrip(), createDescriptorForDayTrip())
         .addEClassDescriptor(TRAVELS_PACKAGE.getTravelCategory(), createDescriptorForTravelCategory())
+        .addEClassDescriptor(TRAVELS_PACKAGE.getTravel(), createDescriptorForTravel())
         .addEClassDescriptor(TRAVELS_PACKAGE.getDay(), createDescriptorForDay())
         .addEClassDescriptor(TRAVELS_PACKAGE.getDocument(), createDescriptorForDocument())
         .addEClassDescriptor(TRAVELS_PACKAGE.getText(), createDescriptorForText())
@@ -223,14 +229,12 @@ public class TravelsTreeViewCreator {
    * @param eObjectTreeDescriptor the tree descriptor to which the Vacations descriptor is to be added.
    */
   private EObjectTreeItemClassDescriptor createDescriptorForTravels() {
-    EObjectTreeItemClassListReferenceDescriptor eObjectTreeItemClassListReferenceDescriptor;
         
     // Travels (root node)
     EObjectTreeItemClassDescriptor eObjectTreeItemClassDescriptor = new EObjectTreeItemClassDescriptor()
         .setNodeTextFunction(_ -> "Travel information")
         .setStrongText(true)
         .setExpandOnCreation(true)
-        .addNodeOperationDescriptor(new NodeOperationDescriptorNew("Add a Travel Category", null, null))
         .setNodeIconFunction(_ -> TravelImageResource.TRAVELS.getIcon(ImageSize.SIZE_1));
     
     EObjectTreeItemAttributeDescriptor eObjectTreeItemAttributeDescriptor;
@@ -245,13 +249,19 @@ public class TravelsTreeViewCreator {
     EObjectTreeItemClassReferenceDescriptor homeDescriptor = new EObjectTreeItemClassReferenceDescriptor(TRAVELS_PACKAGE.getTravels_Home())
         .setNodeTextFunction(_ -> "Home location")
         .setStrongText(true)
+        .setNodeIconFunction(_ -> ImageResource.HOUSE.getImage(ImageSize.SIZE_1))
         .addNodeOperationDescriptor(new NodeOperationDescriptorNew("Create home location", null, null))
         .addNodeOperationDescriptor(new NodeOperationDescriptorDelete("Delete home location", null));
     eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(homeDescriptor);
+
+    EObjectTreeItemClassListReferenceDescriptor eObjectTreeItemClassListReferenceDescriptor;
     
     // Travels.vacations
     eObjectTreeItemClassListReferenceDescriptor = new EObjectTreeItemClassListReferenceDescriptor(TRAVELS_PACKAGE.getTravels_Vacations())
-        .setLabelText("Vacations")
+//        .setLabelText("Vacations")
+        .setNodeTextFunction(_ -> {
+          return "Vacations";
+          })
         .setStrongText(true)
         .setNodeIconFunction(_ -> TravelImageResource.VACATIONS.getIcon(ImageSize.SIZE_1))
         .setExpandOnCreation(true)
@@ -260,18 +270,116 @@ public class TravelsTreeViewCreator {
     
     // Travels.dayTrips
     eObjectTreeItemClassListReferenceDescriptor = new EObjectTreeItemClassListReferenceDescriptor(TRAVELS_PACKAGE.getTravels_DayTrips())
-        .setLabelText("Day trips")
+//        .setLabelText("Day trips")
+        .setNodeTextFunction(_ -> "Day trips")
         .setStrongText(true)
+        .setNodeIconFunction(_ -> ImageResource.BACKPACKS.getImage(ImageSize.SIZE_0))
         .setExpandOnCreation(true)
         .addNodeOperationDescriptor(new NodeOperationDescriptorNew("New day trip", null, null));
     eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(eObjectTreeItemClassListReferenceDescriptor);
     
     // Travels.travelCategories
     eObjectTreeItemClassListReferenceDescriptor = new EObjectTreeItemClassListReferenceDescriptor(TRAVELS_PACKAGE.getTravels_TravelCategories())
-        .setLabelText("Other travel categories")
+//        .setLabelText("Travel categories")
+        .setNodeTextFunction(_ -> "Travel categories")
         .setStrongText(true)
+        .setNodeIconFunction(_ -> TravelImageResource.TRAVEL_CATEGORY.getIcon(ImageSize.SIZE_0))
         .setExpandOnCreation(true)
         .addNodeOperationDescriptor(new NodeOperationDescriptorNew("New travel category", null, null));
+    eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(eObjectTreeItemClassListReferenceDescriptor);
+    
+    return eObjectTreeItemClassDescriptor;
+  }
+  
+
+  /**
+   * Create the descriptor for the EClass goedegep.model.travels.Travel.
+   */
+  private EObjectTreeItemClassDescriptor createDescriptorForTravel() {
+    TypesPackage typesPackage = TypesPackage.eINSTANCE;
+    
+    // Travel
+    EObjectTreeItemClassDescriptor eObjectTreeItemClassDescriptor = new EObjectTreeItemClassDescriptor()
+        .setNodeTextFunction(eObject -> {
+          if (eObject instanceof Travel travel) {
+            return travel.getId();
+          } else {
+            LOGGER.severe("Wrong type, Travel expected, but is: " + eObject.getClass().getSimpleName());
+            return "Not a travel";
+          }
+        })
+        .setStrongText(true)
+        .setNodeIconFunction(object -> {
+          if (object instanceof Travel travel) {
+            TravelCategory travelCategory = (TravelCategory) travel.eContainer();
+            String categoryName = travelCategory.getTravelCategoryName();
+            List<TravelCategoryDescriptor> travelCategoryDescriptors = travelsRegistry.getTravelCategoryDescriptors();
+            for (TravelCategoryDescriptor travelCategoryDescriptor : travelCategoryDescriptors) {
+              if (travelCategoryDescriptor.categoryName().equals(categoryName)) {
+                ImageResource imageResource = ImageResource.valueOf(travelCategoryDescriptor.travelIcon());
+                if (imageResource != null) {
+                  return imageResource.getImage(ImageSize.SIZE_1);
+                }
+              }   
+            }
+          }
+          return TravelImageResource.TRAVELS.getIcon(ImageSize.SIZE_1);
+        })
+        .setExpandChildrenOnExpand(true)
+        .addNodeOperationDescriptor(new NodeOperationDescriptorNew("New ...", null, null))
+        .addNodeOperationDescriptor(new NodeOperationDescriptorNewBefore("New travel before this one", null, null))
+        .addNodeOperationDescriptor(new NodeOperationDescriptorNewAfter("New travel after this one", null, null))
+        .addNodeOperationDescriptor(new NodeOperationDescriptorDelete("Delete travel", null));
+    
+    EObjectTreeItemAttributeDescriptor eObjectTreeItemAttributeDescriptor;
+    EObjectTreeItemClassListReferenceDescriptor eObjectTreeItemClassListReferenceDescriptor;
+    
+    // Travel.title
+    eObjectTreeItemAttributeDescriptor = new EObjectTreeItemAttributeDescriptor(TRAVELS_PACKAGE.getTravel_Title())
+        .setLabelText("Travel");
+    eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(eObjectTreeItemAttributeDescriptor);
+    
+    // Travel.date (startDate)
+    eObjectTreeItemAttributeDescriptor = new EObjectTreeItemAttributeDescriptor(typesPackage.getEvent_Date())
+        .setLabelText("From")
+        .setFormat(FDF);
+    eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(eObjectTreeItemAttributeDescriptor);
+
+//    // Travel.endDate
+//    eObjectTreeItemAttributeDescriptor = new EObjectTreeItemAttributeDescriptor(TRAVELS_PACKAGE.getVacation_EndDate())
+//        .setLabelText("Until")
+//        .setFormat(FDF);
+//    eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(eObjectTreeItemAttributeDescriptor);
+
+    // Travel.notes
+    eObjectTreeItemAttributeDescriptor = new EObjectTreeItemAttributeDescriptor(typesPackage.getEvent_Notes())
+        .setLabelText("General")
+        .setPresentationType(PresentationType.MULTI_LINE_TEXT);
+    eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(eObjectTreeItemAttributeDescriptor);
+    
+    // Travel.documents
+    eObjectTreeItemClassListReferenceDescriptor = new EObjectTreeItemClassListReferenceDescriptor(TRAVELS_PACKAGE.getTravel_Documents())
+//        .setLabelText("Documents")
+        .setNodeTextFunction(_ -> "Documents")
+        .setNodeIconFunction(_ -> ImageResource.DOCUMENTS.getImage(ImageSize.SIZE_1))
+        .addNodeOperationDescriptor(new NodeOperationDescriptorNew("New document", null, null));
+    eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(eObjectTreeItemClassListReferenceDescriptor);
+    
+    // Travel.pictures
+    eObjectTreeItemAttributeDescriptor = new EObjectTreeItemAttributeDescriptor(TRAVELS_PACKAGE.getTravel_Pictures())
+        .setLabelText("Photos")
+        .setPresentationType(PresentationType.FOLDER)
+        .addNodeOperationDescriptor(new NodeOperationDescriptorOpen("Open photos folder", null, null))
+        .setInitialDirectoryNameFunction(TravelsWindow::getInitialPhotoFolderName);
+    eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(eObjectTreeItemAttributeDescriptor);
+
+    // Travel.elements
+    eObjectTreeItemClassListReferenceDescriptor = new EObjectTreeItemClassListReferenceDescriptor(TRAVELS_PACKAGE.getTravel_Elements())
+//        .setLabelText("Elements")
+        .setNodeTextFunction(_ -> "Elements")
+        .setNodeIconFunction(_ -> EObjectTreeView.getListIcon())
+        .setExpandOnCreation(true)
+        .addNodeOperationDescriptor(new NodeOperationDescriptorNew("New element", null, newEObjectInitializationFunction));
     eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(eObjectTreeItemClassListReferenceDescriptor);
     
     return eObjectTreeItemClassDescriptor;
@@ -316,7 +424,7 @@ public class TravelsTreeViewCreator {
     eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(eObjectTreeItemAttributeDescriptor);
 
     // Vacation.endDate
-    eObjectTreeItemAttributeDescriptor = new EObjectTreeItemAttributeDescriptor(TRAVELS_PACKAGE.getVacation_EndDate())
+    eObjectTreeItemAttributeDescriptor = new EObjectTreeItemAttributeDescriptor(TRAVELS_PACKAGE.getTravel_EndDate())
         .setLabelText("Until")
         .setFormat(FDF);
     eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(eObjectTreeItemAttributeDescriptor);
@@ -329,7 +437,8 @@ public class TravelsTreeViewCreator {
     
     // Vacation.documents
     eObjectTreeItemClassListReferenceDescriptor = new EObjectTreeItemClassListReferenceDescriptor(TRAVELS_PACKAGE.getTravel_Documents())
-        .setLabelText("Documents")
+//        .setLabelText("Documents")
+        .setNodeTextFunction(_ -> "Documents")
         .setNodeIconFunction(_ -> ImageResource.DOCUMENTS.getImage(ImageSize.SIZE_1))
         .addNodeOperationDescriptor(new NodeOperationDescriptorNew("New document", null, null));
     eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(eObjectTreeItemClassListReferenceDescriptor);
@@ -344,7 +453,8 @@ public class TravelsTreeViewCreator {
 
     // Vacation.elements
     eObjectTreeItemClassListReferenceDescriptor = new EObjectTreeItemClassListReferenceDescriptor(TRAVELS_PACKAGE.getTravel_Elements())
-        .setLabelText("Elements")
+//        .setLabelText("Elements")
+        .setNodeTextFunction(_ -> "Elements")
         .setNodeIconFunction(_ -> EObjectTreeView.getListIcon())
         .setExpandOnCreation(true)
         .addNodeOperationDescriptor(new NodeOperationDescriptorNew("New element", null, newEObjectInitializationFunction));
@@ -386,7 +496,8 @@ public class TravelsTreeViewCreator {
 
     // Vacation.elements
     EObjectTreeItemClassListReferenceDescriptor eObjectTreeItemClassListReferenceDescriptor = new EObjectTreeItemClassListReferenceDescriptor(TRAVELS_PACKAGE.getTravel_Elements())
-        .setLabelText("Elements")
+//        .setLabelText("Elements")
+        .setNodeTextFunction(_ -> "Elements")
         .setNodeIconFunction(_ -> EObjectTreeView.getListIcon())
         .setExpandOnCreation(true)
         .addNodeOperationDescriptor(new NodeOperationDescriptorNew("New element", null, newEObjectInitializationFunction));
@@ -401,8 +512,22 @@ public class TravelsTreeViewCreator {
   private EObjectTreeItemClassDescriptor createDescriptorForTravelCategory() {
     // TravelCategory
     EObjectTreeItemClassDescriptor eObjectTreeItemClassDescriptor = new EObjectTreeItemClassDescriptor()
-        .setNodeTextFunction(eObject -> ((TravelCategory) eObject).getTravelCategoryName())
-        .setNodeIconFunction(_ -> TravelImageResource.TRAVEL_CATEGORY.getIcon(ImageSize.SIZE_0))
+        .setNodeTextFunction(eObject -> "Category " + ((TravelCategory) eObject).getTravelCategoryName())
+        .setNodeIconFunction(v -> {
+          TravelCategory travelCategory = (TravelCategory) v;
+          String name = travelCategory.getTravelCategoryName();
+          List<TravelCategoryDescriptor> travelCategoryDescriptors = travelsRegistry.getTravelCategoryDescriptors();
+          for (TravelCategoryDescriptor travelCategoryDescriptor : travelCategoryDescriptors) {
+            if (travelCategoryDescriptor.categoryName().equals(name)) {
+              ImageResource imageResource = ImageResource.valueOf(travelCategoryDescriptor.categoryIcon());
+              if (imageResource != null) {
+                return imageResource.getImage(ImageSize.SIZE_1);
+              }
+            }   
+          }
+          
+          return TravelImageResource.TRAVEL_CATEGORY.getIcon(ImageSize.SIZE_1);
+        })
         .addNodeOperationDescriptor(new NodeOperationDescriptorNewBefore("New Travel Category before this one ...", null, null))
         .addNodeOperationDescriptor(new NodeOperationDescriptorNewAfter("New  Travel Category after this one ...", null, null))
         .addNodeOperationDescriptor(new NodeOperationDescriptorDelete("Delete  Travel Category", null));
@@ -414,7 +539,12 @@ public class TravelsTreeViewCreator {
     
     // TravelCategory.children
     EObjectTreeItemClassListReferenceDescriptor eObjectTreeItemClassListReferenceDescriptor = new EObjectTreeItemClassListReferenceDescriptor(TRAVELS_PACKAGE.getTravelCategory_Travels())
-        .setLabelText("Travels")
+//        .setLabelText("Travels")
+        .setNodeTextFunction(object -> {
+          org.eclipse.emf.ecore.util.EObjectContainmentEList<?> list = (org.eclipse.emf.ecore.util.EObjectContainmentEList<?>) object;
+          TravelCategory travelCategory = (TravelCategory) list.getEObject();
+          return travelCategory.getTravelCategoryName();
+        })
         .setNodeIconFunction(_ -> EObjectTreeView.getListIcon())
         .setExpandOnCreation(true)
         .addNodeOperationDescriptor(new NodeOperationDescriptorNew("New travel", null, newEObjectInitializationFunction));
@@ -473,7 +603,8 @@ public class TravelsTreeViewCreator {
 
     // Day.children
     EObjectTreeItemClassListReferenceDescriptor eObjectTreeItemClassListReferenceDescriptor = new EObjectTreeItemClassListReferenceDescriptor(TRAVELS_PACKAGE.getVacationElement_Children())
-        .setLabelText("Elements")
+//        .setLabelText("Elements")
+        .setNodeTextFunction(_ -> "Elements")
         .setNodeIconFunction(_ -> EObjectTreeView.getListIcon())
         .setExpandOnCreation(true)
         .addNodeOperationDescriptor(new NodeOperationDescriptorNew("New element", null, newEObjectInitializationFunction));
@@ -516,7 +647,8 @@ public class TravelsTreeViewCreator {
 
     // VacationElementText.children
     EObjectTreeItemClassListReferenceDescriptor eObjectTreeItemClassListReferenceDescriptor = new EObjectTreeItemClassListReferenceDescriptor(TRAVELS_PACKAGE.getVacationElement_Children())
-        .setLabelText("Elements")
+//        .setLabelText("Elements")
+        .setNodeTextFunction(_ -> "Elements")
         .setNodeIconFunction(_ -> EObjectTreeView.getListIcon())
         .setExpandOnCreation(true)
         .addNodeOperationDescriptor(new NodeOperationDescriptorNew("New element", null, newEObjectInitializationFunction));
@@ -670,7 +802,8 @@ public class TravelsTreeViewCreator {
 
     // Location.boundaries
     EObjectTreeItemClassListReferenceDescriptor eObjectTreeItemClassListReferenceDescriptor = new EObjectTreeItemClassListReferenceDescriptor(TRAVELS_PACKAGE.getLocation_Boundaries())
-        .setLabelText("Boundaries")
+//        .setLabelText("Boundaries")
+        .setNodeTextFunction(_ -> "Boundaries")
         .setExpandOnCreation(true)
         .addNodeOperationDescriptor(new NodeOperationDescriptorCustom("Delete boundaries", null, this::deleteBoundaries))
         .addNodeOperationDescriptor(new NodeOperationDescriptorCustom("Reduce number of points", null, this::showBoundariesPointsReductionWindow));
@@ -678,7 +811,8 @@ public class TravelsTreeViewCreator {
 
     // Location.children
     eObjectTreeItemClassListReferenceDescriptor = new EObjectTreeItemClassListReferenceDescriptor(TRAVELS_PACKAGE.getVacationElement_Children())
-        .setLabelText("Elements")
+//        .setLabelText("Elements")
+        .setNodeTextFunction(_ -> "Elements")
         .setNodeIconFunction(_ -> EObjectTreeView.getListIcon())
         .setExpandOnCreation(true)
         .addNodeOperationDescriptor(new NodeOperationDescriptorNew("New element", null, newEObjectInitializationFunction));
@@ -688,8 +822,9 @@ public class TravelsTreeViewCreator {
   }
   
   private void deleteBoundaries(EObjectTreeItem treeItem) {
-    Object value = treeItem.getValue();
-    // TODO implement deletion of boundaries
+    EObjectTreeItem locationTreeItem = (EObjectTreeItem) treeItem.getParent();
+    Location location = (Location) locationTreeItem.getValue();
+    location.getBoundaries().clear();
   }
   
   /**
@@ -735,7 +870,8 @@ public class TravelsTreeViewCreator {
     
     // VacationElementGPX.children
     EObjectTreeItemClassListReferenceDescriptor eObjectTreeItemClassListReferenceDescriptor = new EObjectTreeItemClassListReferenceDescriptor(TRAVELS_PACKAGE.getVacationElement_Children())
-        .setLabelText("Elements")
+//        .setLabelText("Elements")
+        .setNodeTextFunction(_ -> "Elements")
         .setNodeIconFunction(_ -> EObjectTreeView.getListIcon())
         .setExpandOnCreation(true)
         .addNodeOperationDescriptor(new NodeOperationDescriptorNew("New element", null, newEObjectInitializationFunction));
@@ -784,7 +920,8 @@ public class TravelsTreeViewCreator {
     
     //Document.children
     EObjectTreeItemClassListReferenceDescriptor eObjectTreeItemClassListReferenceDescriptor = new EObjectTreeItemClassListReferenceDescriptor(TRAVELS_PACKAGE.getVacationElement_Children())
-        .setLabelText("Elements")
+//        .setLabelText("Elements")
+        .setNodeTextFunction(_ -> "Elements")
         .setNodeIconFunction(_ -> EObjectTreeView.getListIcon())
         .setExpandOnCreation(true)
         .addNodeOperationDescriptor(new NodeOperationDescriptorNew("New element", null, newEObjectInitializationFunction));
@@ -890,7 +1027,8 @@ public class TravelsTreeViewCreator {
     
     // VacationElementText.children
     EObjectTreeItemClassListReferenceDescriptor eObjectTreeItemClassListReferenceDescriptor = new EObjectTreeItemClassListReferenceDescriptor(TRAVELS_PACKAGE.getVacationElement_Children())
-        .setLabelText("Elements")
+//        .setLabelText("Elements")
+        .setNodeTextFunction(_ -> "Elements")
         .setNodeIconFunction(_ -> EObjectTreeView.getListIcon())
         .setExpandOnCreation(true)
         .addNodeOperationDescriptor(new NodeOperationDescriptorNew("New element", null, newEObjectInitializationFunction));
@@ -960,7 +1098,8 @@ public class TravelsTreeViewCreator {
     
     // MapImage.children
     EObjectTreeItemClassListReferenceDescriptor eObjectTreeItemClassListReferenceDescriptor = new EObjectTreeItemClassListReferenceDescriptor(TRAVELS_PACKAGE.getVacationElement_Children())
-        .setLabelText("Elements")
+//        .setLabelText("Elements")
+        .setNodeTextFunction(_ -> "Elements")
         .setNodeIconFunction(_ -> EObjectTreeView.getListIcon())
         .setExpandOnCreation(true)
         .addNodeOperationDescriptor(new NodeOperationDescriptorNew("New element", null, newEObjectInitializationFunction));

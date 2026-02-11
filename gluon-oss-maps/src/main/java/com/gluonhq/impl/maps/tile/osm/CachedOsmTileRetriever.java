@@ -101,7 +101,7 @@ public class CachedOsmTileRetriever extends OsmTileRetriever {
         }
         String tag = zoom + File.separator + i + File.separator + j + ".png";
         File f = new File(cacheRoot, tag);
-        return f.exists() ? new Image(f.toURI().toString(), true) : null;
+        return f.exists() ? new Image(f.toURI().toString(), false) : null;
     }
 
     private static class CacheThread {

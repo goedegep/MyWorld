@@ -156,4 +156,4 @@ public interface TravelsFactory extends EFactory {
    */
   TravelsPackage getTravelsPackage();
 
-} //VacationsFactory
+} //TravelsFactory

@@ -215,7 +215,7 @@ public class TravelsWindow extends JfxStage {
   private Button createOrOpenButton;
   
   private TreeItem<Object> selectedTreeItem;
-  private int showLevel;
+  private ShowLevel showLevel;
   
 
   /**
@@ -346,6 +346,8 @@ public class TravelsWindow extends JfxStage {
       treeView.setEObject(vacations);
     }
     
+    show();
+    
     flyHome();
     updateTitle();
     
@@ -361,8 +363,6 @@ public class TravelsWindow extends JfxStage {
         locationSearchWindow.close();
       }
     });
-    
-    show();
     
     selectedTravelProperty.addListener((_, _, _) -> updateTravelFilesFolderBar());
 
@@ -552,16 +552,17 @@ public class TravelsWindow extends JfxStage {
     final Pane spacer2 = new Pane();
     spacer2.setMinWidth(50);
     LevelSelectionPanel levelSelectionPanel = new LevelSelectionPanel(customization);
-    IntegerProperty levelProperty = levelSelectionPanel.levelProperty();
+    ObjectProperty<ShowLevel> levelProperty = levelSelectionPanel.levelProperty();
     
-    ChangeListener<Number> cl = new ChangeListener<>() {
+    ChangeListener<ShowLevel> cl = new ChangeListener<>() {
 
       @Override
-      public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
-        setShowLevel(newValue.intValue());
+      public void changed(ObservableValue<? extends ShowLevel> observable, ShowLevel oldValue, ShowLevel newValue) {
+        setShowLevel(newValue);
       }
     };
     levelProperty.addListener(cl);
+    showLevel = levelProperty.get();
 
     menuAndSearchBox.getChildren().addAll(createMenuBar(), spacer, levelSelectionPanel, createTravelFilesFolderBar(), spacer2, createSearchBar());
     mainPane.setTop(menuAndSearchBox);
@@ -668,7 +669,7 @@ public class TravelsWindow extends JfxStage {
     setScene(new Scene(mainPane, 1700, 900));
   }
   
-  protected void setShowLevel(int newShowLevel) {
+  protected void setShowLevel(ShowLevel newShowLevel) {
    showLevel = newShowLevel;
    handleNewTreeItemSelected(null, selectedTreeItem);
   }
@@ -741,15 +742,15 @@ public class TravelsWindow extends JfxStage {
     menuItem = componentFactory.createMenuItem("Import photos");
     menuItem.setOnAction(_ -> {
       EObjectTreeItem treeItem = treeView.getSelectedObject();
-      Vacation vacation = getTravelForTreeItem(treeItem, VACATIONS_PACKAGE.getVacation());
-      if (vacation == null) {
+      Travel travel = getTravelForTreeItem(treeItem, VACATIONS_PACKAGE.getVacation());
+      if (travel == null) {
         Alert alert = componentFactory.createErrorDialog(
             "No vacation selected",
             "You have to select a vacation in order to be able to import photos for that vacation");
         
         alert.showAndWait();
       } else {
-        if (vacation.getPictures() == null  ||  vacation.getPictures().isEmpty()) {
+        if (travel.getPictures() == null  ||  travel.getPictures().isEmpty()) {
           Alert alert = componentFactory.createErrorDialog(
               "No picture folder set for vacation",
               "You have to set the pictures folder for the vacation in order to be able to import photos for that vacation");
@@ -758,7 +759,7 @@ public class TravelsWindow extends JfxStage {
           
         } else {
           treeView.setEObject(null);
-          List<PhotoImportResult> photoImportResults = new PhotosImporter().importPhotos(vacation);
+          List<PhotoImportResult> photoImportResults = new PhotosImporter().importPhotos(travel);
           treeView.setEObject(vacations);
           new PhotoImportResultWindow(customization, treeView, photoImportResults);
         }
@@ -961,8 +962,6 @@ public class TravelsWindow extends JfxStage {
    * Animation is used while moving to the new location.
    */
   private void flyHome() {
-    LOGGER.info("=>");
-    
     travelMapView.clear();
     
     travelMapView.setZoom(8);
@@ -976,9 +975,7 @@ public class TravelsWindow extends JfxStage {
     if (mapCenter != null) {
       travelMapView.setZoom(HOME_ZOOM_LEVEL);
       flyToIfEnabled(0.1, mapCenter, 3.0);
-    }
-    
-    LOGGER.info("<=");
+    }    
   }
   
   /**
@@ -1016,7 +1013,7 @@ public class TravelsWindow extends JfxStage {
     selectedTreeItem = treeItem;
     updateDocumentView();
     LOGGER.info("Before updateMapForTreeItem");
-    updateMapForTreeItem(travelMapView);
+    updateMapForSelectedTreeItem();
     
     selectedTravelProperty.setValue(getTravelForTreeItem(treeItem));
     
@@ -1043,7 +1040,7 @@ public class TravelsWindow extends JfxStage {
     LOGGER.info("htmlText=" + htmlText);
     
     if (selectedTreeItem != null) {
-      Vacation vacation = getTravelForTreeItem(selectedTreeItem, VACATIONS_PACKAGE.getVacation());
+      Travel vacation = getTravelForTreeItem(selectedTreeItem, VACATIONS_PACKAGE.getVacation());
       if (vacation != null) {
         htmlText = vacationToHtmlConverter.vacationToHtmlWithEmbedImages(vacation);
       }
@@ -1075,10 +1072,10 @@ public class TravelsWindow extends JfxStage {
   }
 
   /**
-   * Update the information shown on the map.
+   * Update the information shown on the map for the currenly selected tree item.
    * <p>
-   * The <b>home</b> location of the <b>Vacations</b> is always shown.<br/>
-   * Any other information shown, is related to the specified {@code TreeItem}:
+   * The <b>home</b> location of the <b>Travels</b> is always shown.<br/>
+   * Any other information shown, is related to the selected {@code TreeItem}:
    * <ul>
    * <li>
    * If the <code>treeItem</code> is null, nothing is shown and the center of the map and the zoom level aren't changed.
@@ -1112,15 +1109,12 @@ public class TravelsWindow extends JfxStage {
    * The world map is shown.
    * </li>
    * </ul>
-   * @param mapViewStructure represents the map on which the information is to be drawn.
-   * @param treeItem the <code>TreeItem</code> for which information is to be shown.
    */
-  private void updateMapForTreeItem(TravelMapView travelMapView) {
-    LOGGER.info("=>");
-    
+  private void updateMapForSelectedTreeItem() {
     // Remove any existing information.
     travelMapView.clear();
     
+    // The home location, if available, is always shown.
     addHomeLocationToVacationsLayer(travelMapView);
     
     if (selectedTreeItem == null) {
@@ -1130,57 +1124,101 @@ public class TravelsWindow extends JfxStage {
     MapPoint mapCenter = null;
     Double zoomLevel = null;
     Tuplet<Picture, WGS84Coordinates> pictureDataTuplet;
-    Tuplet<Location, Vacation> locationDataTuplet;
-    Tuplet<GPXTrack, Vacation> trackDataTuplet;
-    Vacation vacation = null;
+    Tuplet<Location, Travel> locationDataTuplet;
+    Tuplet<GPXTrack, Travel> trackDataTuplet;
+    Vacation vacation = null;   // TODO remove
+    Travel travel = null;
     Travels vacations = null;
-    DayTrip dayTrip = null;
+    DayTrip dayTrip = null;  //  TODO remove
     List<DayTrip> dayTrips = null;
     List<Vacation> vacationsList = null;
     
-    
-    if ((pictureDataTuplet = getPictureDataForTreeItem(selectedTreeItem)) != null) {                // Picture
-      Picture vacationElementPicture = pictureDataTuplet.getObject1();
+    if ((pictureDataTuplet = getPictureDataForTreeItem(selectedTreeItem)) != null) {                // Picture selected
+      Picture picture = pictureDataTuplet.getObject1();
       
-      if (showLevel == 1) {
+      switch (showLevel) {
+      case SELECTED_ITEM:
         // nothing else to do, only the selected item (a picture in this case) is shown.
-      } else {
-        vacation = vacationElementPicture.getVacation();
-        dayTrip = vacationElementPicture.getDayTrip();
+        break;
         
-        if (showLevel == 2) {
-          if (vacation != null) {
-            // if the picture is part of a day, show that information, else the complete vacation.
-            Day day = vacationElementPicture.getDay();
-            if (day != null) {
-              addDayToMapView(travelMapView, day, false);
-            }
+      case DAY:
+        travel = picture.getTravel();
+        if (travel != null) {
+          // if the picture is part of a day, show that information, else the complete vacation.
+          Day day = picture.getDay();
+          if (day != null) {
+            addDayToMapView(travelMapView, day, false);
+          } else {
+            addTravelToMapView(travelMapView, travel, false, vacationTreeEditableMenuItem.isSelected());
           }
-        } else {  // currently only level 3
-          if (vacation != null) {
-            addVacationToMapView(travelMapView, vacation, false, vacationTreeEditableMenuItem.isSelected());
-          }
-          if (dayTrip != null) {
-            addDayTripToMapView(travelMapView, dayTrip);
-          }
-
         }
+        break;
+        
+      case TRAVEL:
+        travel = picture.getTravel();
+        if (travel != null) {
+          addTravelToMapView(travelMapView, travel, false, false);
+        }
+        break;
       }
-      
+            
       WGS84Coordinates coordinates = pictureDataTuplet.getObject2();
-      travelMapView.getMapRelatedItemsLayer().showCurrentPhoto(vacationElementPicture.getPictureReference().getFile(), coordinates);
+      travelMapView.getMapRelatedItemsLayer().showCurrentPhoto(picture.getPictureReference().getFile(), coordinates);
       mapCenter = new MapPoint(coordinates.getLatitude() - 0.05, coordinates.getLongitude() + 0.1);
       zoomLevel = PICTURE_ZOOM_LEVEL;
     } else if ((locationDataTuplet = getLocationDataForTreeItem(selectedTreeItem)) != null) {       // Location
       Location location = locationDataTuplet.getObject1();
-      vacation = locationDataTuplet.getObject2();
-      addVacationToMapView(travelMapView, vacation, false, vacationTreeEditableMenuItem.isSelected());
+      
+      switch (showLevel) {
+      case SELECTED_ITEM:
+        addLocationToMapView(travelMapView, location, false);
+        break;
+        
+      case DAY:
+        travel = locationDataTuplet.getObject2();
+        // if the picture is part of a day, show that information, else the complete vacation.
+        Day day = location.getDay();
+        if (day != null) {
+          addDayToMapView(travelMapView, day, false);
+        } else {
+          addTravelToMapView(travelMapView, travel, false, vacationTreeEditableMenuItem.isSelected());
+        }
+        break;
+        
+      case TRAVEL:
+        travel = locationDataTuplet.getObject2();
+        addTravelToMapView(travelMapView, travel, false, vacationTreeEditableMenuItem.isSelected());
+        zoomLevel = VACATION_ZOOM_LEVEL;
+        break;
+      }
+      
       mapCenter = new MapPoint(location.getLatitude(), location.getLongitude());
-      zoomLevel = VACATION_ZOOM_LEVEL;
-    } else if ((trackDataTuplet = getTrackDataForTreeItem(selectedTreeItem)) != null) {             // Track
+    } else if ((trackDataTuplet = getTrackDataForTreeItem(selectedTreeItem)) != null) {             // GPXTrack
       GPXTrack track = trackDataTuplet.getObject1();
-      vacation = trackDataTuplet.getObject2();
-      addVacationToMapView(travelMapView, vacation, false, vacationTreeEditableMenuItem.isSelected());
+      
+      switch (showLevel) {
+      case SELECTED_ITEM:
+        addGPXTrackToMapView(travelMapView, track, false);
+        break;
+        
+      case DAY:
+        travel = trackDataTuplet.getObject2();
+        // if the track is part of a day, show that information, else the complete vacation.
+        Day day = track.getDay();
+        if (day != null) {
+          addDayToMapView(travelMapView, day, false);
+        } else {
+          addTravelToMapView(travelMapView, travel, false, vacationTreeEditableMenuItem.isSelected());
+        }
+        break;
+        
+      case TRAVEL:
+        travel = trackDataTuplet.getObject2();
+        addTravelToMapView(travelMapView, travel, false, vacationTreeEditableMenuItem.isSelected());
+        zoomLevel = VACATION_ZOOM_LEVEL;
+        break;
+      }
+      
       FileReference fileReference = track.getTrackReference();
       if ((fileReference != null)  &&  (fileReference.getFile() != null)) {
         EMFResource<DocumentRoot> gpxResource = GpxUtil.createEMFResource();
@@ -1192,14 +1230,14 @@ public class TravelsWindow extends JfxStage {
           WGS84Coordinates center = boundingBox.getCenter();
           LOGGER.info("center: " + center.toString());
           mapCenter = new MapPoint(center.getLatitude(), center.getLongitude());
-          zoomLevel = VACATION_ZOOM_LEVEL;
         } catch (IOException e) {
           LOGGER.severe("Error loading GPX file: " + fileReference.getFile() + ", " + e.getMessage());
         }    	  
       }
-    } else if ((vacation = getTravelForTreeItem(selectedTreeItem, VACATIONS_PACKAGE.getVacation())) != null) {                      // vacation
+    } else if ((travel = getTravelForTreeItem(selectedTreeItem, VACATIONS_PACKAGE.getVacation())) != null) {                      // Travel
+      // In this case the showLevel isn't applicable
       LOGGER.info("before addVacationToMapView");
-      WGS84BoundingBox vacationsLayerBoundingBox = addVacationToMapView(travelMapView, vacation, false, vacationTreeEditableMenuItem.isSelected());
+      WGS84BoundingBox vacationsLayerBoundingBox = addTravelToMapView(travelMapView, travel, false, vacationTreeEditableMenuItem.isSelected());
       LOGGER.info("after addVacationToMapView");
       if (vacationsLayerBoundingBox != null) {
         WGS84Coordinates center = vacationsLayerBoundingBox.getCenter();
@@ -1211,15 +1249,15 @@ public class TravelsWindow extends JfxStage {
     } else if ((vacationsList = getVacationsListForTreeItem(selectedTreeItem)) != null) {            // vacations (the list)
       addVacationsToVacationsLayer(vacationsList);
       showWorldMap();
-    } else if ((dayTrip = getDayTripForTreeItem(selectedTreeItem)) != null) {                      // day trip
-      WGS84BoundingBox vacationsLayerBoundingBox = addDayTripToMapView(travelMapView, dayTrip);
-      if (vacationsLayerBoundingBox != null) {
-        WGS84Coordinates center = vacationsLayerBoundingBox.getCenter();
-        mapCenter = new MapPoint(center.getLatitude(), center.getLongitude());
-      }
-      if (vacationsLayerBoundingBox != null) {
-        zoomLevel = MapView.getZoomLevel(vacationsLayerBoundingBox);
-      }
+//    } else if ((dayTrip = getDayTripForTreeItem(selectedTreeItem)) != null) {                        // day trip
+//      WGS84BoundingBox vacationsLayerBoundingBox = addDayTripToMapView(travelMapView, dayTrip);
+//      if (vacationsLayerBoundingBox != null) {
+//        WGS84Coordinates center = vacationsLayerBoundingBox.getCenter();
+//        mapCenter = new MapPoint(center.getLatitude(), center.getLongitude());
+//      }
+//      if (vacationsLayerBoundingBox != null) {
+//        zoomLevel = MapView.getZoomLevel(vacationsLayerBoundingBox);
+//      }
     } else if ((dayTrips = getDayTripListForTreeItem(selectedTreeItem)) != null) {                  // day trips (the list)
       WGS84BoundingBox vacationsLayerBoundingBox = addDayTripsToVacationsLayer(dayTrips);
       if (vacationsLayerBoundingBox != null) {
@@ -1250,29 +1288,26 @@ public class TravelsWindow extends JfxStage {
   }
 
   /**
-   * For a given treeItem, try to find the related picture and, if found, try to find the related Location.
+   * For a given {@code TreeItem}, try to find the related picture and, if found, try to find the related coordinates.
    * <p>
-   * If the item is a <code>Picture</code>, this is the related picture. Otherwise the parent relations are followed until
-   * either a <code>Picture</code> is found, or that the top of the hierarchy is encountered.
-   * If a <code>Picture</code> is found, that will be the related picture, otherwise there is no related picture.<br/>
-   * Parent relations are followed, because if one of the children of a picture is selected, we also want to focus on the picture.<br/>
+   * See {@link #getRelatedPictureForTreeItem} finding the related picture.<br/>
    * If there is a related picture, the location for this picture is determined. First it is tried to obtain the location from the picture file
    * itself. If this fails, from this picture parent relations (container) are followed until a Location is encountered, or until there's no parent anymore.
    * 
-   * @param treeItem the <code>TreeItem</code> for which the related picture and location are to be found.
-   * @return a <code>Tuplet</code> with the related picture and location, or null if one of these doesn't exist.
+   * @param treeItem the {@code TreeItem} for which the related picture and coordinates are to be found.
+   * @return a {@code Tuplet} with the related picture and coordinates, or null if one of these doesn't exist.
    */
   private Tuplet<Picture, WGS84Coordinates> getPictureDataForTreeItem(TreeItem<Object> treeItem) {
     LOGGER.info("=>");
-    Picture vacationElementPicture = getRelatedPictureForTreeItem(treeItem);
+    Picture picture = getRelatedPictureForTreeItem(treeItem);
 
-    if (vacationElementPicture == null) {
+    if (picture == null) {
       LOGGER.info("<= (null)");
       return null;
     }
 
     try {
-      WGS84Coordinates pictureCoordinates = getPictureCoordinates(vacationElementPicture);
+      WGS84Coordinates pictureCoordinates = getPictureCoordinates(picture);
 
       if (pictureCoordinates == null) {
         LOGGER.severe("<= (null) (picture has no coordinates)");
@@ -1280,14 +1315,14 @@ public class TravelsWindow extends JfxStage {
       }
 
       LOGGER.info("<= <picture>");
-      return new Tuplet<>(vacationElementPicture, pictureCoordinates);
+      return new Tuplet<>(picture, pictureCoordinates);
     } catch (VacationElementReferenceException vacationElementReferenceException) {
       LOGGER.severe("VacationElementReferenceException");
       VacationElement vacationElement = vacationElementReferenceException.getVacationElement();
       String fileName = null;
       String elementType = "Unknown";
-      if (vacationElement instanceof Picture picture) {
-        FileReference fileReference = picture.getPictureReference();
+      if (vacationElement instanceof Picture exceptionPicture) {
+        FileReference fileReference = exceptionPicture.getPictureReference();
         if (fileReference != null) {
           fileName = fileReference.getFile();
         }
@@ -1302,13 +1337,14 @@ public class TravelsWindow extends JfxStage {
   }
   
   /**
-   * Get the <code>VacationElementPicture</code> related to a <code>TreeItem</code>.
+   * Get the {@code Picture} related to a {@code TreeItem}.
    * <p>
-   * If the item is a <code>Picture</code>, this is the related picture. Otherwise the parent relations are followed until
-   * either a <code>Picture</code> is found, or that the top of the hierarchy is encountered.
-   * If a <code>Picture</code> is found, with a non empty file reference, that will be the related picture,
+   * If the item is a {@code Picture}, this is the related picture. Otherwise the parent relations are followed until
+   * either a {@code Picture} is found, or that different type of {{@code TravelElement}, or the top of the hierarchy is encountered.
+   * If a {@code Picture} is found, with a non empty file reference, that will be the related picture,
    * otherwise there is no related picture.<br/>
-   * If the <code>treeItem</code> is null, there is also no related picture.
+   * Parent relations are followed, because if one of the children of a picture (not being one of its elements) is selected, we also want to focus on the picture.<br/>
+   * If the {@code TreeItem} is null, there is also no related picture.
    * 
    * @param treeItem
    * @return the <code>Picture</code> related to <code>treeItem</code>, or null if there is no related <code>Picture</code>.
@@ -1322,9 +1358,9 @@ public class TravelsWindow extends JfxStage {
     }
     
     Object treeItemObject = treeItem.getValue();
-    Picture vacationElementPicture = null;
+//    Picture picture = null;
     
-    while (treeItem != null  &&  !(treeItemObject instanceof Picture)) {
+    while (treeItem != null  &&  !(treeItemObject instanceof VacationElement)) {
       treeItem = treeItem.getParent();
       LOGGER.info("after getParent() treeItem=" + (treeItem != null ? treeItem.toString() : "(null)"));
       if (treeItem != null) {
@@ -1332,21 +1368,23 @@ public class TravelsWindow extends JfxStage {
       }
     }
     
-    if (treeItemObject instanceof Picture) {
-      vacationElementPicture = (Picture) treeItemObject;
-      if (vacationElementPicture.isSetPictureReference()) {
-        FileReference pictureReference = vacationElementPicture.getPictureReference();
+    if (treeItemObject instanceof Picture picture) {
+      if (picture.isSetPictureReference()) {
+        FileReference pictureReference = picture.getPictureReference();
         String fileName = pictureReference.getFile();
         if (fileName == null  ||  fileName.isEmpty()) {
-          vacationElementPicture = null;
+          picture = null;
+        } else {
+          LOGGER.info("<= vacationElementPicture=" + (picture != null ? picture.toString() : "(null)"));
+          return picture;
         }
       } else {
-        vacationElementPicture = null;
+        picture = null;
       }
     }
 
-    LOGGER.info("<= vacationElementPicture=" + (vacationElementPicture != null ? vacationElementPicture.toString() : "(null)"));
-    return vacationElementPicture;
+    LOGGER.info("<= null");
+    return null;
   }
   
   /**
@@ -1358,18 +1396,18 @@ public class TravelsWindow extends JfxStage {
    * @return the coordinates for the photo, or null is no coordinates are available.
    * @throws VacationElementReferenceException if the file, specified in the picture reference, doesn't exist.
    */
-  private static WGS84Coordinates getPictureCoordinates(Picture vacationElementPicture) throws VacationElementReferenceException {
-    String fileName = vacationElementPicture.getPictureReference().getFile();
+  private static WGS84Coordinates getPictureCoordinates(Picture picture) throws VacationElementReferenceException {
+    String fileName = picture.getPictureReference().getFile();
     if (!new File(fileName).exists()) {
-//      throw new VacationElementReferenceException(vacationElementPicture);
+      throw new VacationElementReferenceException(picture);
     }
     
     LOGGER.info("before getting geo location");
-    WGS84Coordinates coordinates = ImageUtils.getGeoLocation(vacationElementPicture.getPictureReference().getFile());
+    WGS84Coordinates coordinates = ImageUtils.getGeoLocation(fileName);
     LOGGER.info("after getting geo location");
     
     if (coordinates == null) {
-      Location location = getRelatedLocation(vacationElementPicture);
+      Location location = getRelatedLocation(picture);
       if ((location != null)  &&  (location.getLatitude() != null)  &&  (location.getLongitude() != null)) {
         LOGGER.info("Location: " + location.getLatitude() + ", " + location.getLongitude());
         coordinates = new WGS84Coordinates(location.getLatitude(), location.getLongitude());
@@ -1404,55 +1442,51 @@ public class TravelsWindow extends JfxStage {
   /**
    * For a given treeItem, try to find the related Location and, if found, try to find the related Vacation.
    * <p>
-   * If the item is a <code>Location</code>, this is the related Location. Otherwise the parent relations are followed until
-   * either a <code>Location</code> is found, or that the top of the hierarchy is encountered.
-   * If a <code>Location</code> is found, that will be the related location, otherwise there is no related location.<br/>
-   * If there is a related location, from this location parent relations (container) are followed until a Vacation is encountered, or until there's no parent anymore.
+   * If the item is a {@code Location}, this is the related Location. Otherwise the parent relations are followed until
+   * either a {@code Location} is found, or that the top of the hierarchy is encountered.
+   * If a {@code Location} is found, that will be the related location, otherwise there is no related location.<br/>
+   * If there is a related location, from this location parent relations (container) are followed until a {@code Travel} is encountered, or until there's no parent anymore.
    * 
-   * @param treeItem the <code>TreeItem</code> for which the related Location and Vacation are to be found.
-   * @return a <code>Tuplet</code> with the related Location and Vacation, or null if one of these doesn't exist.
+   * @param treeItem the {@code TreeItem} for which the related {@code Location} and {@code Travel} are to be found.
+   * @return a {@code Tuplet} with the related {@code Location} and {@code Travel}, or null if one of these doesn't exist.
    */
-  private Tuplet<Location, Vacation> getLocationDataForTreeItem(TreeItem<Object> treeItem) {
+  private Tuplet<Location, Travel> getLocationDataForTreeItem(TreeItem<Object> treeItem) {
     LOGGER.info("=>");
     
     Location location = getRelatedLocationForTreeItem(treeItem);
     
     if (location == null) {
-      LOGGER.info("<= (null)");
       return null;
     }
     
-    Vacation vacation = location.getVacation();
+    Travel travel = location.getTravel();
     
-    if (vacation == null) {
+    if (travel == null) {
       LOGGER.info("<= (null)");
       return null;
     }
     
     LOGGER.info("<= <location>");
-    return new Tuplet<>(location, vacation);
+    return new Tuplet<>(location, travel);
   }
   
   /**
-   * Get the <code>Location</code> related to a <code>TreeItem</code>.
+   * Get the {@code Location} related to a {@code TreeItem}.
    * <p>
-   * If the item is a <code>Location</code>, this is the related Location. Otherwise the parent relations are followed until
-   * either a <code>Location</code> is found, or that the top of the hierarchy is encountered.
-   * If a <code>Location</code> is found, that will be the related Location, otherwise there is no related Location.<br/>
-   * If the <code>treeItem</code> is null, there is also no related location.
+   * If the item is a {@code Location}, this is the related Location. Otherwise the parent relations are followed until
+   * either a {@code Location} is found, or that the top of the hierarchy is encountered.
+   * If a {@code Location} is found, that will be the related Location, otherwise there is no related Location.<br/>
+   * If the {@code TreeItem} is null, there is also no related location.
    * 
-   * @param treeItem the <code>TreeItem</code> for which the related location is to be found.
-   * @return the <code>Location</code> related to the <code>treeItem</code>, or null if this doesn't exist.
+   * @param treeItem the {@code TreeItem} for which the related location is to be found.
+   * @return the {@code Location} related to the {@code treeItem}, or null if this doesn't exist.
    */
-  private Location getRelatedLocationForTreeItem(TreeItem<Object> treeItem) {
-    LOGGER.info("=> treeItem=" + (treeItem != null ? treeItem.toString() : "(null)"));
-    
+  private Location getRelatedLocationForTreeItem(TreeItem<Object> treeItem) {    
     if (treeItem == null) {
       return null;
     }
     
     Object treeItemObject = treeItem.getValue();
-    Location location = null;
     
     while (treeItem != null  &&  !(treeItemObject instanceof Location)) {
       treeItem = treeItem.getParent();
@@ -1462,31 +1496,33 @@ public class TravelsWindow extends JfxStage {
       }
     }
     
-    if (treeItemObject instanceof Location) {
-      location = (Location) treeItemObject;
+    if (treeItemObject instanceof Location location) {
       // It is only a useful location if the coordinates are set.
       if (!location.isSetLatitude()  ||  !location.isSetLongitude()) {
         location = null;
+      } else {
+        LOGGER.info("<= location=" + (location != null ? location.toString() : "(null)"));
+        return location;
       }
     }
 
-    LOGGER.info("<= location=" + (location != null ? location.toString() : "(null)"));
-    return location;
+    LOGGER.info("<= location=(null)");
+    return null;
   }
   
   /**
-   * For a given treeItem, try to find the related Track and, if found, try to find the related Vacation.
+   * For a given treeItem, try to find the related {@code GPXTrack} and, if found, try to find the related {@code Travel}.
    * <p>
-   * If the item is a <code>VacationElementGPX</code>, this is the related Track. Otherwise the parent relations are followed until
-   * either a <code>VacationElementGPX</code> is found, or that the top of the hierarchy is encountered.
-   * If a <code>VacationElementGPX</code> is found, that will be the related Track, otherwise there is no related Track.<br/>
-   * If there is a related Track, from this location parent relations (container) are followed until a Vacation is encountered,
+   * If the item is a {@code GPXTrack}, this is the related track. Otherwise the parent relations are followed until
+   * either a {@code GPXTrack} is found, or that the top of the hierarchy is encountered.
+   * If a {@code GPXTrack} is found, that will be the related track, otherwise there is no related track.<br/>
+   * If there is a related track, from this track parent relations (container) are followed until a {@code Travel} is encountered,
    * or until there's no parent anymore.
    * 
-   * @param treeItem the <code>TreeItem</code> for which the related Track and Vacation are to be found.
-   * @return a <code>Tuplet</code> with the related Track and Vacation, or null if one of these doesn't exist.
+   * @param treeItem the {@code TreeItem} for which the related {@code GPXTrack} and {@code Travel} are to be found.
+   * @return a {@code Tuplet} with the related {@code GPXTrack} and {@code Travel}, or null if one of these doesn't exist.
    */
-  private Tuplet<GPXTrack, Vacation> getTrackDataForTreeItem(TreeItem<Object> treeItem) {
+  private Tuplet<GPXTrack, Travel> getTrackDataForTreeItem(TreeItem<Object> treeItem) {
 //    LOGGER.severe("=> treeItem=" + (treeItem != null ? treeItem.toString() : "(null)"));
     LOGGER.info("=>");
     
@@ -1497,28 +1533,28 @@ public class TravelsWindow extends JfxStage {
       return null;
     }
     
-    Vacation vacation = track.getVacation();
+    Travel travel = track.getTravel();
     
-    if (vacation == null) {
+    if (travel == null) {
       LOGGER.info("<= (null) (no vacation for track)");
       return null;
     }
     
-    LOGGER.info("<= track=" + (track != null ? track.toString() : "(null)") + ", vacation=" + (vacation != null ? vacation.toString() : "(null)"));
+    LOGGER.info("<= track=" + (track != null ? track.toString() : "(null)") + ", vacation=" + (travel != null ? travel.toString() : "(null)"));
     
-    return new Tuplet<>(track, vacation);
+    return new Tuplet<>(track, travel);
   }
   
   /**
-   * Get the <code>VacationElementGPX</code> related to a <code>TreeItem</code>.
+   * Get the {@code GPXTrack} related to a {@code TreeItem}.
    * <p>
-   * If the item is a <code>VacationElementGPX</code>, this is the related Track. Otherwise the parent relations are followed until
-   * either a <code>VacationElementGPX</code> is found, or that the top of the hierarchy is encountered.
-   * If a <code>VacationElementGPX</code> is found, that will be the related Track, otherwise there is no related Track.<br/>
-   * If the <code>treeItem</code> is null, there is also no related Track.
+   * If the item is a {@code GPXTrack}, this is the related track. Otherwise the parent relations are followed until
+   * either a {@code GPXTrack} is found, or that the top of the hierarchy is encountered.
+   * If a {@code GPXTrack} is found, that will be the related track, otherwise there is no related Track.<br/>
+   * If the {@code TreeItem} is null, there is also no related Track.
    * 
-   * @param treeItem the <code>TreeItem</code> for which the related Track is to be found.
-   * @return the <code>VacationElementGPX</code> related to the <code>treeItem</code>, or null if this doesn't exist.
+   * @param treeItem the {@code TreeItem} for which the related track is to be found.
+   * @return the {@code GPXTrack} related to the {@code treeItem}, or null if this doesn't exist.
    */
   private GPXTrack getRelatedTrackForTreeItem(TreeItem<Object> treeItem) {
     LOGGER.info("=> treeItem=" + (treeItem != null ? treeItem.toString() : "(null)"));
@@ -1529,7 +1565,6 @@ public class TravelsWindow extends JfxStage {
     }
     
     Object treeItemObject = treeItem.getValue();
-    GPXTrack track = null;
     
     while (treeItem != null  &&  !(treeItemObject instanceof GPXTrack)) {
       treeItem = treeItem.getParent();
@@ -1539,12 +1574,13 @@ public class TravelsWindow extends JfxStage {
       }
     }
     
-    if (treeItemObject instanceof GPXTrack) {
-      track = (GPXTrack) treeItemObject;
+    if (treeItemObject instanceof GPXTrack track) {
+      LOGGER.info("<= track=" + (track != null ? track.toString() : "(null)"));
+      return track;
     }
 
-    LOGGER.info("<= track=" + (track != null ? track.toString() : "(null)"));
-    return track;
+    LOGGER.info("<= track=(null)");
+    return null;
   }
   
   static Travel getTravelForTreeItem(TreeItem<Object> treeItem) {
@@ -1576,24 +1612,25 @@ public class TravelsWindow extends JfxStage {
   }
   
   /**
-   * For a given treeItem, try to find the related Travel.
+   * For a given treeItem, try to find the related {@ code Travel}.
    * <p>
-   * If the item is a {@code Travel}, this is the related Travel. Otherwise the parent relations are followed until
+   * If the item is a {@code Travel}, this is the related travel. Otherwise the parent relations are followed until
    * either a {@code Travel} is found, or that the top of the hierarchy is encountered.
    * If a {@code Travel} is found, that will be the related Travel, otherwise there is no related Travel.
    * 
-   * @param treeItem the {@code TreeItem} for which the related Travel is to be found.
-   * @return the related Travel, or null if this doesn't exist.
+   * @param treeItem the {@code TreeItem} for which the related travel is to be found.
+   * @return the related {@ code Travel}, or null if this doesn't exist.
    */
   @SuppressWarnings("unchecked")
-  static <T> T getTravelForTreeItem(TreeItem<Object> treeItem, EClass eClass) {
+//  static <T> T getTravelForTreeItem(TreeItem<Object> treeItem, EClass eClass) {
+    static Travel getTravelForTreeItem(TreeItem<Object> treeItem, EClass eClass) {
     
     if (treeItem == null) {
       return null;
     }
     
     Object treeItemObject = treeItem.getValue();
-    T t = null;
+//    T t = null;
     
     while (treeItem != null  &&  !(treeItemObject instanceof Travel)) {
       treeItem = treeItem.getParent();
@@ -1604,14 +1641,15 @@ public class TravelsWindow extends JfxStage {
     }
     
     if (treeItemObject instanceof Travel travel) {
-      EClass treeItemObjectEClass = travel.eClass();
-      boolean b = EmfUtil.isInstanceof(treeItemObjectEClass, eClass);
-      if (b) {
-        t = (T) travel;
-      }
+      return travel;
+//      EClass treeItemObjectEClass = travel.eClass();
+//      boolean b = EmfUtil.isInstanceof(treeItemObjectEClass, eClass);
+//      if (b) {
+//        t = (T) travel;
+//      }
     }
 
-    return t;
+    return null;
   }
   
   /**
@@ -1839,7 +1877,7 @@ public class TravelsWindow extends JfxStage {
    * @param drawBoundingBox if {@code true} a bounding box is drawn around the added items, if {@code false} no bounding box is drawn.
    * @return a {@code WGS84BoundingBox} around all items added to the map view.
    */
-  WGS84BoundingBox addVacationToMapView(TravelMapView travelMapView, Vacation vacation, boolean stayedAtOnly, boolean drawBoundingBox) {
+  WGS84BoundingBox addVacationToMapView(TravelMapView travelMapView, Travel vacation, boolean stayedAtOnly, boolean drawBoundingBox) {
     WGS84BoundingBox vacationWGS84BoundingBox = null;
     
     for (VacationElement vacationElement: vacation.getElements()) {
@@ -1856,6 +1894,42 @@ public class TravelsWindow extends JfxStage {
       } catch (FileNotFoundException e) {
         LOGGER.severe("File not found");
         //      componentFactory.createErrorDialog("File not found", e.toString()).showAndWait();
+      }
+    }
+    
+    if (drawBoundingBox  &&  (vacationWGS84BoundingBox != null)) {
+      travelMapView.getMapRelatedItemsLayer().addBoundingBox(vacationWGS84BoundingBox);
+    }
+    
+    return vacationWGS84BoundingBox;
+  }
+  
+  /**
+   * Add all relevant information of a {@code Travel} to a map view.
+   * 
+   * @param travelMapView the {@code TravelMapView} to which the travel information is to be added.
+   * @param travel the {@code Travel} of which the information is to be added.
+   * @param stayedAtOnly if {@code true} only the 'stayed at' locations are added.
+   * @param drawBoundingBox if {@code true} a bounding box is drawn around the added items, if {@code false} no bounding box is drawn.
+   * @return a {@code WGS84BoundingBox} around all items added to the map view.
+   */
+  WGS84BoundingBox addTravelToMapView(TravelMapView travelMapView, Travel travel, boolean stayedAtOnly, boolean drawBoundingBox) {
+    WGS84BoundingBox vacationWGS84BoundingBox = null;
+    
+    for (VacationElement vacationElement: travel.getElements()) {
+      WGS84BoundingBox wgs84BoundingBox = addVacationElementToMapView(travelMapView, vacationElement, stayedAtOnly, null);
+      vacationWGS84BoundingBox = WGS84BoundingBox.extend(vacationWGS84BoundingBox, wgs84BoundingBox);
+    }
+    
+    if (!stayedAtOnly) {
+      try {
+        List<List<WGS84Coordinates>> locationsConnectingLines = TravelsUtils.getLocationConnectingLines(travel);
+        if (!locationsConnectingLines.isEmpty()) {
+          travelMapView.getMapRelatedItemsLayer().addLocationsVisitedPolyLines(FXCollections.observableList(locationsConnectingLines));
+        }
+      } catch (FileNotFoundException e) {
+        LOGGER.severe("File not found");
+        componentFactory.createErrorDialog("File not found", e.toString()).showAndWait();
       }
     }
     
@@ -2091,7 +2165,7 @@ public class TravelsWindow extends JfxStage {
     
     LOGGER.severe("eObjectTreeItemContent=" + eObjectTreeItemContent);
     
-    Vacation vacation = getTravelForTreeItem(eObjectTreeCell.getTreeItem(), VACATIONS_PACKAGE.getVacation());
+    Travel vacation = getTravelForTreeItem(eObjectTreeCell.getTreeItem(), VACATIONS_PACKAGE.getVacation());
     LOGGER.severe("vacation=" + vacation.getId());
     Path vacationFolderPath = TravelsUtils.getVacationPhotosFolderPath(vacation);
     if (vacationFolderPath != null) {
@@ -2113,7 +2187,7 @@ public class TravelsWindow extends JfxStage {
    */
   static String getReferredFilesFolder(EObjectTreeCell eObjectTreeCell) {
     EObjectTreeItem treeItem = (EObjectTreeItem) eObjectTreeCell.getTreeItem();
-    Vacation vacation = getTravelForTreeItem(treeItem, VACATIONS_PACKAGE.getVacation());
+    Travel vacation = getTravelForTreeItem(treeItem, VACATIONS_PACKAGE.getVacation());
     
     if (vacation == null) {
       LOGGER.severe("No vacation found for: " + treeItem.toString());
@@ -2159,8 +2233,8 @@ public class TravelsWindow extends JfxStage {
    * 
    * @param gpxTrack The <code>GPXTrack</code> for which a text is to be generated.
    */
-  static String generateTextForGpxTrack(EObject eObject) {
-    GPXTrack gpxTrack = (GPXTrack) eObject;
+  static String generateTextForGpxTrack(Object object) {
+    GPXTrack gpxTrack = (GPXTrack) object;
     String text = null;
     FileReference fileReference = gpxTrack.getTrackReference();
 
@@ -2309,7 +2383,7 @@ public class TravelsWindow extends JfxStage {
   private void printOrExportVacation() {
     try {
       EObjectTreeItem treeItem = treeView.getSelectedObject();
-      Vacation vacation = getTravelForTreeItem(treeItem, VACATIONS_PACKAGE.getVacation());
+      Travel vacation = getTravelForTreeItem(treeItem, VACATIONS_PACKAGE.getVacation());
       if (vacation == null) {
         statusLabel.setText("No vacation selected");
         return;
@@ -2409,7 +2483,7 @@ public class TravelsWindow extends JfxStage {
     LOGGER.severe("Creating kml file: " + file.getAbsolutePath());
     
     EObjectTreeItem treeItem = treeView.getSelectedObject();
-    Vacation vacation = getTravelForTreeItem(treeItem, VACATIONS_PACKAGE.getVacation());
+    Travel vacation = getTravelForTreeItem(treeItem, VACATIONS_PACKAGE.getVacation());
     if (vacation == null) {
       statusLabel.setText("No vacation selected");
       return;
@@ -2910,7 +2984,7 @@ public class TravelsWindow extends JfxStage {
 //    }
     
     // Get the related vacation to determine the folder for storing the MapImage.
-    Vacation vacation = getTravelForTreeItem(treeItem, VACATIONS_PACKAGE.getVacation());
+    Travel vacation = getTravelForTreeItem(treeItem, VACATIONS_PACKAGE.getVacation());
     String vacationFolderName = TravelsUtils.getTravelFilesFolder(vacation);
     String fileName;
     if (mapImage.getTitle() != null  &&  !mapImage.getTitle().isEmpty()) {
@@ -2973,7 +3047,7 @@ public class TravelsWindow extends JfxStage {
       break;
       
     case TRAVEL:
-      Vacation vacation = getTravelForTreeItem(treeItem, VACATIONS_PACKAGE.getVacation());
+      Travel vacation = getTravelForTreeItem(treeItem, VACATIONS_PACKAGE.getVacation());
       if (vacation != null  && vacation.getTitle() != null) {
         defaultTitle = vacation.getTitle() + " overview";
       }
@@ -2984,7 +3058,7 @@ public class TravelsWindow extends JfxStage {
 
   private void updateMapImageFiles() {
     EObjectTreeItem treeItem = treeView.getSelectedObject();
-    Vacation vacation = getTravelForTreeItem(treeItem, VACATIONS_PACKAGE.getVacation());
+    Travel vacation = getTravelForTreeItem(treeItem, VACATIONS_PACKAGE.getVacation());
     if (vacation == null) {
       statusLabel.setText("No vacation selected");
       return;
@@ -2992,7 +3066,7 @@ public class TravelsWindow extends JfxStage {
     updateMapImageFiles(vacation);
   }
   
-  private void updateMapImageFiles(Vacation vacation) {
+  private void updateMapImageFiles(Travel vacation) {
     TreeIterator<EObject> vacationIterator = vacation.eAllContents();
     while (vacationIterator.hasNext()) {
       EObject eObject = vacationIterator.next();
@@ -3186,12 +3260,12 @@ class BoundingBoxObtainer implements Consumer<EObjectTreeItem> {
     }
     
     // Obtain the BB from OSM
-    String userAgent = TravelsRegistry.getInstance().getNominatimUserAgent();
-    if (userAgent == null) {
-      return;
-    }
+//    String userAgent = TravelsRegistry.getInstance().getOSMUserAgent();
+//    if (userAgent == null) {
+//      return;
+//    }
     
-    Location locationFromNominatim = NominatimUtil.obtainLocationInfoFromNominatim(userAgent, location.getLatitude(), location.getLongitude());
+    Location locationFromNominatim = NominatimUtil.obtainLocationInfoFromNominatim(location.getLatitude(), location.getLongitude());
     BoundingBox boundingBoxFromNominatim = locationFromNominatim.getBoundingbox();
     if (boundingBoxFromNominatim != null) {
       boundingBox.setWest(boundingBoxFromNominatim.getWest());
@@ -3206,3 +3280,4 @@ class BoundingBoxObtainer implements Consumer<EObjectTreeItem> {
   }
   
 }
+

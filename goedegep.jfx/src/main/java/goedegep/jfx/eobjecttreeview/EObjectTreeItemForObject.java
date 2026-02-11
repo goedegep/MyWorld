@@ -95,7 +95,6 @@ public class EObjectTreeItemForObject extends EObjectTreeItem {
 //    if (classDescriptor.isExpandChildrenOnExpand()) {
 //      expandChildrenOnExpand = true;
 //    }
-    LOGGER.info("<=");
   }
   
   /**
@@ -141,7 +140,6 @@ public class EObjectTreeItemForObject extends EObjectTreeItem {
    */
   @Override
   boolean isItemALeafItem() {
-    LOGGER.info("=> this=" + this);
     
     EObject value = (EObject) getValue();
 //    if (value.eClass().getName().equals("Day")) {
@@ -179,7 +177,6 @@ public class EObjectTreeItemForObject extends EObjectTreeItem {
       }
     }
 
-    LOGGER.info("<= " + isLeaf);
     return isLeaf;
   }
   
@@ -216,8 +213,6 @@ public class EObjectTreeItemForObject extends EObjectTreeItem {
 
     // Create the children as specified by the descriptor.
     for (EObjectTreeItemDescriptor descriptor: classDescriptor.getStructuralFeatureDescriptors()) {
-      LOGGER.info("Handling descriptor: " + descriptor.toString());
-      LOGGER.info("Descriptor class: " + descriptor.getClass().getName());
       
       EObjectTreeItem treeItem;
       switch (descriptor.getDescriptorType()) {
@@ -257,7 +252,6 @@ public class EObjectTreeItemForObject extends EObjectTreeItem {
       }
     }
     
-    LOGGER.info("<=");
     if (children.isEmpty()) {
       return null;
     } else {
@@ -277,7 +271,6 @@ public class EObjectTreeItemForObject extends EObjectTreeItem {
    */
   static EObjectTreeItem createChildEObjectTreeItemForSingleObjectReference(EObject parentEObject, EReference eReference, EObjectTreeItemClassReferenceDescriptor eObjectTreeItemClassReferenceDescriptor,
       EObjectTreeView eObjectTreeView, boolean editMode) {
-    LOGGER.info("=>");
 //    Objects.requireNonNull(eReference, "eReference may not be null");
     
     if (parentEObject.eClass().getName().equals("Day")) {
@@ -396,8 +389,6 @@ public class EObjectTreeItemForObject extends EObjectTreeItem {
    */
   @Override
   void switchToEditMode() {
-    LOGGER.info("=> eObjectTreeItem=" + toString());
-    
     EObject eObject = (EObject) getValue();
     if (eObject == null) {
       return;
@@ -410,8 +401,6 @@ public class EObjectTreeItemForObject extends EObjectTreeItem {
     int childIndex = 0;
     // Create the children as specified by the descriptor.
     for (EObjectTreeItemDescriptor descriptor: classDescriptor.getStructuralFeatureDescriptors()) {
-      LOGGER.info("Handling descriptor: " + descriptor.toString());
-      LOGGER.info("Descriptor class: " + descriptor.getClass().getName());
       
       EObjectTreeItem treeItem = null;
       switch (descriptor.getDescriptorType()) {
@@ -468,8 +457,6 @@ public class EObjectTreeItemForObject extends EObjectTreeItem {
       EObjectTreeItem eObjectTreeItem = (EObjectTreeItem) child;
       eObjectTreeItem.setEditMode(true);
     }
-    
-    LOGGER.info("<=");
   }
   
   /**
@@ -540,7 +527,6 @@ public class EObjectTreeItemForObject extends EObjectTreeItem {
    * @param newValue the new value
    */
   public void handleAttributeValueChanged(EStructuralFeature eStructuralFeature, Object newValue) {
-    LOGGER.severe("=> " + toString());
     setValue(newValue);
     
     EObjectTreeItem parentTreeItem = (EObjectTreeItem) getParent();
@@ -617,7 +603,6 @@ public class EObjectTreeItemForObject extends EObjectTreeItem {
     EReference sourceReference = null;
     if (dropPossible) {
       ByteBuffer eObjectPathBytes = (ByteBuffer) dragboard.getContent(EOBJECT_PATH);
-      LOGGER.info("EObjectPath received!!");
       EObjectPath eObjectPath = new EObjectPath(eObjectPathBytes);
 //      EObjectTreeItemForObject sourceEObjectTreeItem = (EObjectTreeItemForObject) getEObjectTreeView().findTreeItem(eObjectPath);
 //      sourceReference = getApplicableEReference(sourceEObjectTreeItem);
@@ -659,7 +644,6 @@ public class EObjectTreeItemForObject extends EObjectTreeItem {
    */
   @Override
   public void handleDragDropped(DragEvent dragEvent) {
-    LOGGER.info("=> dragEvent" + dragEventToString(dragEvent));
 
     if (getTransferModeForDrop(dragEvent) == null) {
       return;
@@ -668,7 +652,6 @@ public class EObjectTreeItemForObject extends EObjectTreeItem {
     // delete the source object from its reference
     Dragboard dragboard = dragEvent.getDragboard();
     ByteBuffer eObjectPathBytes = (ByteBuffer) dragboard.getContent(EOBJECT_PATH);
-    LOGGER.info("EObjectPath received!!");
     EObjectPath eObjectPath = new EObjectPath(eObjectPathBytes);
     EObject sourceObject = eObjectPath.resolveToEObject((EObject) getEObjectTreeView().getRoot().getValue());
     EReference eReference = eObjectPath.resolveToEObjectReference((EObject) getEObjectTreeView().getRoot().getValue());
@@ -723,7 +706,6 @@ public class EObjectTreeItemForObject extends EObjectTreeItem {
       labelText = className.substring(0, className.length() - 4);
     }
         
-    LOGGER.info("<= labelText=" + labelText);
     return labelText;
   }
   

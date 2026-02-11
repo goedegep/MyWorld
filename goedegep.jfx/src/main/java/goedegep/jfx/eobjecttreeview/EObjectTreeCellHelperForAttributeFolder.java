@@ -1,6 +1,7 @@
 package goedegep.jfx.eobjecttreeview;
 
 import java.io.File;
+import java.nio.file.Files;
 import java.util.logging.Logger;
 
 import org.eclipse.emf.ecore.EObject;
@@ -31,7 +32,10 @@ public class EObjectTreeCellHelperForAttributeFolder extends EObjectTreeCellHelp
     if (itemDescriptor.getInitialDirectoryNameFunction() != null) {
       String initialDirectoryName = itemDescriptor.getInitialDirectoryNameFunction().apply(eObjectTreeCell);
       if (initialDirectoryName != null) {
-        folderChooser.setInitialDirectory(new File(initialDirectoryName));
+        File initialDirectory = new File(initialDirectoryName);
+        if (Files.exists(initialDirectory.toPath())) {
+          folderChooser.setInitialDirectory(initialDirectory);
+        }
       }
     }
     File folder = folderChooser.showDialog(null);

@@ -38,7 +38,22 @@ public class EditorControlInteger extends EditorControlTextField<Integer> {
 
   protected EditorControlInteger(IntegerBuilder builder) {
     super(builder);
-  }  
+  }
+  
+  @Override
+  public Integer stringToObject(String string) {
+    Integer value = null;
+    
+    if (string != null && !string.isEmpty()) {
+      try {
+        value = Integer.valueOf(string);
+      } catch (NumberFormatException e) {
+        // ignore, value will be null and thus illegal.
+      }
+    }
+    
+    return value;
+  }
   
   public static class IntegerBuilder extends EditorControlTextField.Builder<Integer> {
     

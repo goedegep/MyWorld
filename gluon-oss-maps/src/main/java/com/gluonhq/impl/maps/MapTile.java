@@ -77,7 +77,7 @@ class MapTile extends Region {
         debug("[JVDBG] load image [" + myZoom + "], i = " + i + ", j = " + j);
 
         final TileImageView imageView = new TileImageView(myZoom, i, j);
-        imageView.exceptionProperty().addListener((obs, ov, nv) -> logger.info("Error: " + nv.getMessage()));
+        imageView.exceptionProperty().addListener((obs, ov, nv) -> logger.severe("Error: " + nv.getMessage()));
         imageView.setMouseTransparent(true);
         progress = imageView.progressProperty();
 

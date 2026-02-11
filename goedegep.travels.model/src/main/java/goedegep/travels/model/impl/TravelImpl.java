@@ -9,6 +9,7 @@ import goedegep.types.model.FileReference;
 
 import goedegep.types.model.impl.EventImpl;
 
+import goedegep.util.datetime.FlexDate;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
 import java.util.logging.Logger;
@@ -37,6 +38,7 @@ import org.eclipse.emf.ecore.util.InternalEList;
  *   <li>{@link goedegep.travels.model.impl.TravelImpl#getElements <em>Elements</em>}</li>
  *   <li>{@link goedegep.travels.model.impl.TravelImpl#getDocuments <em>Documents</em>}</li>
  *   <li>{@link goedegep.travels.model.impl.TravelImpl#getPictures <em>Pictures</em>}</li>
+ *   <li>{@link goedegep.travels.model.impl.TravelImpl#getEndDate <em>End Date</em>}</li>
  * </ul>
  *
  * @generated
@@ -110,6 +112,33 @@ public class TravelImpl extends EventImpl implements Travel {
    * @ordered
    */
   protected String pictures = PICTURES_EDEFAULT;
+
+  /**
+   * The default value of the '{@link #getEndDate() <em>End Date</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getEndDate()
+   * @generated
+   * @ordered
+   */
+  protected static final FlexDate END_DATE_EDEFAULT = null;
+  /**
+   * The cached value of the '{@link #getEndDate() <em>End Date</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getEndDate()
+   * @generated
+   * @ordered
+   */
+  protected FlexDate endDate = END_DATE_EDEFAULT;
+  /**
+   * This is true if the End Date attribute has been set.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  protected boolean endDateESet;
 
   /**
    * <!-- begin-user-doc -->
@@ -236,6 +265,58 @@ public class TravelImpl extends EventImpl implements Travel {
   /**
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public FlexDate getEndDate() {
+    return endDate;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public void setEndDate(FlexDate newEndDate) {
+    FlexDate oldEndDate = endDate;
+    endDate = newEndDate;
+    boolean oldEndDateESet = endDateESet;
+    endDateESet = true;
+    if (eNotificationRequired())
+      eNotify(new ENotificationImpl(this, Notification.SET, TravelsPackage.TRAVEL__END_DATE, oldEndDate, endDate,
+          !oldEndDateESet));
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public void unsetEndDate() {
+    FlexDate oldEndDate = endDate;
+    boolean oldEndDateESet = endDateESet;
+    endDate = END_DATE_EDEFAULT;
+    endDateESet = false;
+    if (eNotificationRequired())
+      eNotify(new ENotificationImpl(this, Notification.UNSET, TravelsPackage.TRAVEL__END_DATE, oldEndDate,
+          END_DATE_EDEFAULT, oldEndDateESet));
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public boolean isSetEndDate() {
+    return endDateESet;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
    * @generated NOT
    */
   @Override
@@ -244,7 +325,7 @@ public class TravelImpl extends EventImpl implements Travel {
     if (id == null || id.isEmpty()) {
       id = "Unnamed Travel";
     }
-    
+
     return id;
   }
 
@@ -299,6 +380,18 @@ public class TravelImpl extends EventImpl implements Travel {
    * @generated
    */
   @Override
+  public Integer getDayNr(VacationElement vacationElement) {
+    // TODO: implement this method
+    // Ensure that you remove @generated or mark it @generated NOT
+    throw new UnsupportedOperationException();
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
   public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
     switch (featureID) {
     case TravelsPackage.TRAVEL__ELEMENTS:
@@ -325,6 +418,8 @@ public class TravelImpl extends EventImpl implements Travel {
       return getDocuments();
     case TravelsPackage.TRAVEL__PICTURES:
       return getPictures();
+    case TravelsPackage.TRAVEL__END_DATE:
+      return getEndDate();
     }
     return super.eGet(featureID, resolve, coreType);
   }
@@ -352,6 +447,9 @@ public class TravelImpl extends EventImpl implements Travel {
     case TravelsPackage.TRAVEL__PICTURES:
       setPictures((String) newValue);
       return;
+    case TravelsPackage.TRAVEL__END_DATE:
+      setEndDate((FlexDate) newValue);
+      return;
     }
     super.eSet(featureID, newValue);
   }
@@ -376,6 +474,9 @@ public class TravelImpl extends EventImpl implements Travel {
     case TravelsPackage.TRAVEL__PICTURES:
       setPictures(PICTURES_EDEFAULT);
       return;
+    case TravelsPackage.TRAVEL__END_DATE:
+      unsetEndDate();
+      return;
     }
     super.eUnset(featureID);
   }
@@ -396,6 +497,8 @@ public class TravelImpl extends EventImpl implements Travel {
       return documents != null && !documents.isEmpty();
     case TravelsPackage.TRAVEL__PICTURES:
       return PICTURES_EDEFAULT == null ? pictures != null : !PICTURES_EDEFAULT.equals(pictures);
+    case TravelsPackage.TRAVEL__END_DATE:
+      return isSetEndDate();
     }
     return super.eIsSet(featureID);
   }
@@ -416,6 +519,8 @@ public class TravelImpl extends EventImpl implements Travel {
       return findDocument((String) arguments.get(0));
     case TravelsPackage.TRAVEL___GET_ALL_REFERENCED_FILES:
       return getAllReferencedFiles();
+    case TravelsPackage.TRAVEL___GET_DAY_NR__VACATIONELEMENT:
+      return getDayNr((VacationElement) arguments.get(0));
     }
     return super.eInvoke(operationID, arguments);
   }
@@ -438,6 +543,11 @@ public class TravelImpl extends EventImpl implements Travel {
       result.append("<unset>");
     result.append(", pictures: ");
     result.append(pictures);
+    result.append(", endDate: ");
+    if (endDateESet)
+      result.append(endDate);
+    else
+      result.append("<unset>");
     result.append(')');
     return result.toString();
   }

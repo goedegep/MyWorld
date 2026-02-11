@@ -20,6 +20,7 @@ import goedegep.travels.logic.TravelsRegistry;
 import goedegep.travels.logic.TravelsUtils;
 import goedegep.travels.model.Day;
 import goedegep.travels.model.MapImage;
+import goedegep.travels.model.Travel;
 import goedegep.travels.model.Vacation;
 import javafx.beans.value.ChangeListener;
 import javafx.embed.swing.SwingFXUtils;
@@ -94,7 +95,7 @@ public class MapImageViewGenerator extends JfxStage {
       }
     }
     case TRAVEL -> {
-      Vacation vacation = TravelsUtils.getVacationForObject(mapImageParent);
+      Travel vacation = TravelsUtils.getVacationForObject(mapImageParent);
       if (vacation != null) {
         vacationsWindow.addVacationToMapView(imageTravelMapView, vacation, false, false);
       }

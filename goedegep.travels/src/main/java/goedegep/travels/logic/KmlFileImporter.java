@@ -503,14 +503,9 @@ public class KmlFileImporter {
       return null;
     }
     
-    String userAgent = TravelsRegistry.getInstance().getNominatimUserAgent();
-    if (userAgent == null) {
-      return null;
-    }
-    
     OSMLocationInfo locationInfo = null;
     try {
-      locationInfo = nominatimAPI.getAddressFromMapPoint(userAgent, latitude, longitude);
+      locationInfo = nominatimAPI.getAddressFromMapPoint(latitude, longitude);
     } catch (IOException e) {
       e.printStackTrace();
     }

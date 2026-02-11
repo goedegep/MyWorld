@@ -65,12 +65,12 @@ public class CompanyTreeViewCreator {
   private EObjectTreeItemClassDescriptor createDescriptorForCompany() {
     // Company
     EObjectTreeItemClassDescriptor eObjectTreeItemClassDescriptor = new EObjectTreeItemClassDescriptor()
-        .setNodeTextFunction(eObject -> {
+        .setNodeTextFunction(_ -> {
           return "My Digital Life";
         })
         .setStrongText(true)
         .setExpandOnCreation(true)
-        .setNodeIconFunction(eObject -> {
+        .setNodeIconFunction(_ -> {
           return Resources.getCompanyImage();
         });
     
@@ -79,24 +79,27 @@ public class CompanyTreeViewCreator {
     // Note: we use a different order for the children than the default order.
     // Company.employees
     classListReferenceDescriptor = new EObjectTreeItemClassListReferenceDescriptor(EMF_SAMPLE_PACKAGE.getCompany_Employees())
-        .setLabelText("Employees")
+//        .setLabelText("Employees")
+        .setNodeTextFunction(_ -> "Employees")
         .setStrongText(true)
-        .setNodeIconFunction(object -> Resources.getEmployeesImage())
+        .setNodeIconFunction(_ -> Resources.getEmployeesImage())
         .addNodeOperationDescriptor(new NodeOperationDescriptorNew("New employee", null, null));
     eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(classListReferenceDescriptor);
     
     // Company.formerEmployees
     classListReferenceDescriptor = new EObjectTreeItemClassListReferenceDescriptor(EMF_SAMPLE_PACKAGE.getCompany_FormerEmployees())
-        .setLabelText("Former employees");
+//        .setLabelText("Former employees");
+        .setNodeTextFunction(_ -> "Former employees");
     classListReferenceDescriptor.setStrongText(true);
-    classListReferenceDescriptor.setNodeIconFunction(object -> Resources.getFormerEmployeesImage());
+    classListReferenceDescriptor.setNodeIconFunction(_ -> Resources.getFormerEmployeesImage());
     eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(classListReferenceDescriptor);
     
     // Company.birthdays
     classListReferenceDescriptor = new EObjectTreeItemClassListReferenceDescriptor(EMF_SAMPLE_PACKAGE.getCompany_Birthdays(), EMF_SAMPLE_PACKAGE.getCompany())
-        .setLabelText("Birthdays");
+//        .setLabelText("Birthdays");
+        .setNodeTextFunction(_ -> "Birthdays");
     classListReferenceDescriptor.setStrongText(true);
-    classListReferenceDescriptor.setNodeIconFunction(object -> Resources.getBirthdayImage());
+    classListReferenceDescriptor.setNodeIconFunction(_ -> Resources.getBirthdayImage());
     eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(classListReferenceDescriptor);
         
     return eObjectTreeItemClassDescriptor;
@@ -132,7 +135,7 @@ public class CompanyTreeViewCreator {
           return buf.toString();
         })
         .setStrongText(true)
-        .setNodeIconFunction(eObject -> Resources.getPersonImage())
+        .setNodeIconFunction(_ -> Resources.getPersonImage())
         .addNodeOperationDescriptor(new NodeOperationDescriptorNew("New employee after this employee", null, null));
     
     // Person.firstNames
@@ -201,7 +204,7 @@ public class CompanyTreeViewCreator {
           return buf.toString();
         })
         .setStrongText(true)
-        .setNodeIconFunction(eObject -> {
+        .setNodeIconFunction(_ -> {
           return Resources.getBirthdayImage();
         });
     

@@ -94,6 +94,8 @@ public class BaseMap extends Group {
 
     private final ChangeListener<Number> resizeListener = (o, oldValue, newValue) -> markDirty();
     private ChangeListener<Scene> sceneListener;   
+    
+    private boolean  ignoreDoSetCenter = false;
 
     public BaseMap() {
         for (int i = 0; i < tiles.length; i++) {
@@ -153,7 +155,9 @@ public class BaseMap extends Group {
      * @param lon the longitude of the new center
      */
     public void setCenter(double lat, double lon) {
+        ignoreDoSetCenter = true;
         prefCenterLat.set(lat);
+        ignoreDoSetCenter = false;
         prefCenterLon.set(lon);
     }
 
@@ -167,6 +171,10 @@ public class BaseMap extends Group {
     }
 
     private void doSetCenter(double lat, double lon) {
+        if (ignoreDoSetCenter) {
+            return;
+        }
+        
         this.lat = lat;
         this.lon = lon;
         if (getScene() == null) {
@@ -459,22 +467,22 @@ public class BaseMap extends Group {
         logger.fine("DONE CLEANUP, #children = " + getChildren().size());
     }
 
-    private void clearTiles() {
-
-        List<Node> toRemove = new ArrayList<>();
-        ObservableList<Node> children = this.getChildren();
-        for (Node child : children) {
-            if (child instanceof MapTile) {
-                toRemove.add(child);
-            }
-        }
-        getChildren().removeAll(children);
-
-        for (int i = 0; i < tiles.length; i++) {
-            tiles[i].clear();
-        }
-
-    }
+//    private void clearTiles() {
+//
+//        List<Node> toRemove = new ArrayList<>();
+//        ObservableList<Node> children = this.getChildren();
+//        for (Node child : children) {
+//            if (child instanceof MapTile) {
+//                toRemove.add(child);
+//            }
+//        }
+//        getChildren().removeAll(children);
+//
+//        for (int i = 0; i < tiles.length; i++) {
+//            tiles[i].clear();
+//        }
+//
+//    }
 
 
     private MapTile getCoveringTile(MapTile tile) {
@@ -539,11 +547,11 @@ public class BaseMap extends Group {
         Platform.requestNextPulse();
     }
 
-    private double getMyWidth() {
+    public double getMyWidth() {
         return this.getParent().getLayoutBounds().getWidth();
     }
 
-    private double getMyHeight() {
+    public double getMyHeight() {
         return this.getParent().getLayoutBounds().getHeight();
     }
 

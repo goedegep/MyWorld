@@ -181,7 +181,7 @@ public class CheckTravelsWindow extends JfxStage {
     checkResultsPanel.getChildren().clear();
     
     // If the selected travel is to be checked, but there is no travel selected, report this and return.
-    Vacation vacation = null;
+    Travel vacation = null;
     if (!checkAllTravels) {
       EObjectTreeItem treeItem = treeView.getSelectedObject();
       if (treeItem == null  ||  ((vacation = TravelsUtils.getVacationForObject(treeItem.getValue())) == null)) {
@@ -734,9 +734,13 @@ public class CheckTravelsWindow extends JfxStage {
 
         // Report the list of errors. For each error, show the title if available and the file name referred to. Show the path in travel and button to go to in treeview
         for (Location locationWithLargeBoundaries: locationsWithLargeBoundaries) {
+          String name = locationWithLargeBoundaries.getName();
+          if (name == null) {
+            name = locationWithLargeBoundaries.getCity();
+          }
           StringBuilder buf = new StringBuilder();
           buf.append("The location \'")
-          .append(locationWithLargeBoundaries.getName())
+          .append(name)
           .append(" has boundaries with ")
           .append(TravelsUtils.getNumberOfPointsInLocationBoundary(locationWithLargeBoundaries))
           .append(" points.");

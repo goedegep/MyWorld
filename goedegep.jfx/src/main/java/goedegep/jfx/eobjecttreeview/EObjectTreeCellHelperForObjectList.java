@@ -267,13 +267,13 @@ public class EObjectTreeCellHelperForObjectList extends EObjectTreeCellHelperTem
    * @param eObjectTreeItemContent the item content. This parameter is ignored.
    * @return the text to be shown for this cell.
    */
+  @Override
   protected String buildText(Object value) {
     LOGGER.info("=>");
- 
     
-    String labelText = itemDescriptor.getLabelText() + ":";
+    String labelText = itemDescriptor.getNodeTextFunction().apply(value) + ":";
+//    String labelText = itemDescriptor.getLabelText() + ":";
             
-    LOGGER.info("<= labelText=" + labelText);
     return labelText;
   }
   

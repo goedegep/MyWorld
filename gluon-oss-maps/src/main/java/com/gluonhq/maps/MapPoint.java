@@ -53,5 +53,8 @@ public class MapPoint {
         this.latitude = lat;
         this.longitude = lon;
     }
-    
+
+    public String toString() {
+        return "MapPoint[lat=" + latitude + ", lon=" + longitude + "]";
+    }
 }
