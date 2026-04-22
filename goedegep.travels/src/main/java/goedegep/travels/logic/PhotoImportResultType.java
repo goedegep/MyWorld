@@ -40,6 +40,6 @@ public enum PhotoImportResultType {
   /**
    * The photo is added at vacation level, because there was no match.
    */
-  ADDED_TO_VACATION
+  ADDED_TO_TRAVEL
   
 }

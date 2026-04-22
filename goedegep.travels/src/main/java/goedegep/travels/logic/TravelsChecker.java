@@ -28,7 +28,7 @@ import goedegep.util.file.FileUtils;
 import goedegep.util.string.StringUtil;
 
 /**
- * This class provides various checks on a {@code Vacations} structure.
+ * This class provides various checks on a {@code Travels} structure.
  * <p>
  * Where applicable, the checks are per travel, because reporting is also done per travel.
  * So the application has to iterate over all travels and call the checks and reporting for each travel.
@@ -37,20 +37,20 @@ import goedegep.util.string.StringUtil;
  * <li>Check that all references (type <code>FileReference</code>) of a Vacation have the 'file' attribute set. See {@link #checkThatAllReferencesAreSet}.</li>
  * </ul>
  */
-public class VacationsChecker {
-  private static final Logger LOGGER = Logger.getLogger(VacationsChecker.class.getName());
+public class TravelsChecker {
+  private static final Logger LOGGER = Logger.getLogger(TravelsChecker.class.getName());
   
   /**
-   * Folders in the vacations folder, which can exist and or not related to a vacation.
+   * Folders in the travels folders, which can exist and or not related to a travel.
    */
   private static List<String> specialFolders = Arrays.asList(
       "backup"                 // Folder with backup files.
       );
   
   /**
-   * The {@code VacationsRegistry}
+   * The {@code TravelsRegistry}
    */
-  private static TravelsRegistry vacationsRegistry = TravelsRegistry.getInstance();
+  private static TravelsRegistry travelsRegistry = TravelsRegistry.getInstance();
   
   /**
    * Check that all references (type <code>FileReference</code>) of a {@code Travel} have the 'file' attribute set.
@@ -61,9 +61,9 @@ public class VacationsChecker {
   public static List<FileReference> checkThatAllReferencesAreSet(Travel travel) {
     List<FileReference> fileReferencesNotSet = new ArrayList<>();
     
-    TreeIterator<EObject> vacationIterator = travel.eAllContents();
-    while (vacationIterator.hasNext()) {
-      EObject eObject = vacationIterator.next();
+    TreeIterator<EObject> travelIterator = travel.eAllContents();
+    while (travelIterator.hasNext()) {
+      EObject eObject = travelIterator.next();
       if (eObject instanceof FileReference fileReference) {
         if (fileReference.getFile() == null) {
 //          String referencePath = getReferencePathFromTreeView(treeView, fileReference, fileReference.getTitle()); 
@@ -84,9 +84,9 @@ public class VacationsChecker {
   public static List<FileReference> checkThatAllReferencesExist(Travel travel) {
     List<FileReference> fileReferencesNotFound = new ArrayList<>();
 
-    TreeIterator<EObject> vacationIterator = travel.eAllContents();
-    while (vacationIterator.hasNext()) {
-      EObject eObject = vacationIterator.next();
+    TreeIterator<EObject> travelIterator = travel.eAllContents();
+    while (travelIterator.hasNext()) {
+      EObject eObject = travelIterator.next();
       if (eObject instanceof FileReference fileReference) {
         String fileName = fileReference.getFile();
         if (fileName == null) {
@@ -103,21 +103,21 @@ public class VacationsChecker {
     return fileReferencesNotFound;
   }
     
-  public static List<Path> checkThatAllVacationFoldersAreReferredTo(Travels vacations) {
-    // Create a list of all vacation folders
-    List<Path> vacationFolders = getVacationFolders();
+  public static List<Path> checkThatAllTravelFoldersAreReferredTo(Travels travels) {
+    // Create a list of all travel folders
+    List<Path> travelFolders = getVacationFolders();
     
-    // For each Vacation, iterate over its contents. If a reference is found, get the related vacation folder. Remove this folder from the list.
-    for (Vacation vacation: vacations.getVacations()) {
-      FileReference fileReference = getFirstNonPictureFileReference(vacation);
+    // For each Travel, iterate over its contents. If a reference is found, get the related vacation folder. Remove this folder from the list.
+    for (Travel travek: travels.getTravels()) {
+      FileReference fileReference = getFirstNonPictureFileReference(travek);
       if (fileReference != null) {
         Path fileReferencePath = Paths.get(fileReference.getFile());
         Path vacationFolderPath = getVacationFolderPath(fileReferencePath);
-        vacationFolders.remove(vacationFolderPath);
+        travelFolders.remove(vacationFolderPath);
       }
     }
     
-    return vacationFolders;
+    return travelFolders;
    }
   
   /**
@@ -126,7 +126,7 @@ public class VacationsChecker {
    * @return a list of all vacation folders.
    */
   public static List<Path> getVacationFolders() {
-    String vacationsFoldername = vacationsRegistry.getVacationsFolderName();
+    String vacationsFoldername = travelsRegistry.getVacationsFolderName();
     if (vacationsFoldername == null) {
       throw new IllegalArgumentException("VacationsRegistry.vacationsFolderName is null");
     }
@@ -151,15 +151,15 @@ public class VacationsChecker {
   }
   
   /**
-   * Get the first {@code FileReference} in a {@code Vacation} which isn't part of a Picture.
+   * Get the first {@code FileReference} in a {@code Travel} which isn't part of a Picture.
    * <p>
-   * Picture references are excluded, because the pictures aren't normally in the vacation folder.
+   * Picture references are excluded, because the pictures aren't normally in the travel folder.
    * 
-   * @param vacation the {@code Vacation} to get the reference for.
-   * @return the first {@code FileReference} in {@code vacation} which isn't part of a Picture, or null if this doesn't exist.
+   * @param travel the {@code Travel} to get the reference for.
+   * @return the first {@code FileReference} in {@code travel} which isn't part of a Picture, or null if this doesn't exist.
    */
-  public static FileReference getFirstNonPictureFileReference(Vacation vacation) {
-    Iterator<EObject> iterator = vacation.eAllContents();
+  public static FileReference getFirstNonPictureFileReference(Travel travel) {
+    Iterator<EObject> iterator = travel.eAllContents();
     while (iterator.hasNext()) {
       EObject eObject = iterator.next();
       if (eObject instanceof FileReference fileReference) {
@@ -181,7 +181,7 @@ public class VacationsChecker {
    * or null if the {@code Path} couldn't be determined (which only happens if {@code pathInVacation} isn't in a vacation).
    */
   public static Path getVacationFolderPath(Path pathInVacation) {
-    String vacationsFoldername = vacationsRegistry.getVacationsFolderName();
+    String vacationsFoldername = travelsRegistry.getVacationsFolderName();
     Path vacationsPath = Paths.get(vacationsFoldername);
     
     Path parentPath = pathInVacation.getParent();
@@ -197,7 +197,7 @@ public class VacationsChecker {
   /**
    * Check that all files in a travel folder are referenced from a travel.
    * <p>
-   * The vacations folder is obtained from the {@code vacationsRegistry}.
+   * The travels folder is obtained from the {@code travelsRegistry}.
    * 
    * @param travel the {@code Travel} for which the related folder is to be checked.
    * @param travelFolderPath the {@code Path} to the travel related files folder.
@@ -223,22 +223,22 @@ public class VacationsChecker {
   }
   
   /**
-   * Check that all photos in the vacation photos folder are referred to.
+   * Check that all photos in the travel photos folder are referred to.
    * MediaRegistry.ignoreFolderNames
    * 
-   * @param vacation the {@code Vacation} to check
+   * @param travel the {@code Vacation} to check
    * @return the set of file names of photos which aren't referred to.
    */
-  public static Set<String> checkThatAllPhotosAreReferredTo(Vacation vacation) {
+  public static Set<String> checkThatAllPhotosAreReferredTo(Travel travel) {
     Set<String> photosNotReferredTo = new HashSet<>();
     
-    String vacationPhotoFolderName = vacation.getPictures();
+    String vacationPhotoFolderName = travel.getPictures();
     if (vacationPhotoFolderName == null) {
       photosNotReferredTo.add("Check could not be performed because the 'Photos' attribute is not set.");
       return photosNotReferredTo;
     }
     
-    Set<String> referredPhotos = getReferredPhotos(vacation);
+    Set<String> referredPhotos = getReferredPhotos(travel);
     
     Path vacationPhotoFolderPath = Paths.get(vacationPhotoFolderName);
     List<String> photosInVacationPhotosFolder = new ArrayList<>();
@@ -254,17 +254,17 @@ public class VacationsChecker {
   }
   
   /**
-   * Get the set of all photos referred to in a {@code Vacation}.
+   * Get the set of all photos referred to in a {@code Travel}.
    * 
-   * @param vacation the {@code Vacation} to check
-   * @return the set of file names of photos referred to in the {@code Vacation}.
+   * @param travel the {@code Travel} to check
+   * @return the set of file names of photos referred to in the {@code travel}.
    */
-  public static Set<String> getReferredPhotos(Vacation vacation) {
+  public static Set<String> getReferredPhotos(Travel travel) {
     Set<String> referredPhotos = new HashSet<>();
      
-    TreeIterator<EObject> vacationIterator = vacation.eAllContents();
-    while (vacationIterator.hasNext()) {
-      EObject eObject = vacationIterator.next();
+    TreeIterator<EObject> travelIterator = travel.eAllContents();
+    while (travelIterator.hasNext()) {
+      EObject eObject = travelIterator.next();
       if (eObject instanceof Picture picture) {
         FileReference fileReference = picture.getPictureReference();
         if (fileReference.getFile() != null) {
@@ -328,13 +328,13 @@ public class VacationsChecker {
    * @return a (possibly empty) list of suspicious files.
    */
   public static List<String> findSupiciousTopLevelFiles() {
-    String vacationsFoldername = vacationsRegistry.getVacationsFolderName();
+    String vacationsFoldername = travelsRegistry.getVacationsFolderName();
     if (vacationsFoldername == null) {
       throw new IllegalArgumentException("VacationsRegistry.vacationsFolderName is null");
     }
     
     List<String> suspiciousFiles = new ArrayList<>();
-    List<String> knownFileNames = StringUtil.semicolonSeparatedValuesToListOfValues(vacationsRegistry.getKnownFiles());
+    List<String> knownFileNames = StringUtil.semicolonSeparatedValuesToListOfValues(travelsRegistry.getKnownFiles());
     
     Path vacationsPath = Paths.get(vacationsFoldername);
     try (DirectoryStream<Path> stream = Files.newDirectoryStream(vacationsPath)) {
@@ -381,19 +381,19 @@ public class VacationsChecker {
   }
   
   /**
-   * Check whether the picture folder of a vacation, if set, is according to the convention.
+   * Check whether the picture folder of a travel, if set, is according to the convention.
    * 
-   * @param vacation the {@code Vacation} to check
+   * @param travel the {@code Travel} to check
    * @return true if the picture folder is according to the convention (or can't be checked), false otherwise.
    */
-  public static boolean isPicturesFolderAccordingToConvention(Vacation vacation) {
-    String picturesFoldername = vacation.getPictures();
+  public static boolean isPicturesFolderAccordingToConvention(Travel travel) {
+    String picturesFoldername = travel.getPictures();
     if (picturesFoldername == null) {
       // Checking whether the picture folder is set is done elsewhere. So just return true (OK) here.
       return true;
     }
     
-    Path vacationPhotosFolderPathByConvention = TravelsUtils.getVacationPhotosFolderPathByConvention(vacation);
+    Path vacationPhotosFolderPathByConvention = TravelsUtils.getVacationPhotosFolderPathByConvention(travel);
     if (vacationPhotosFolderPathByConvention == null) {
       // If the vacationPhotosFolderPathByConvention couldn't be determined, it means that the title and/or date of the vacation isn't set.
       // This is checked elsewhere, so just return true (OK) here.

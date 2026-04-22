@@ -40,4 +40,6 @@ module com.gluonhq.maps {
     exports com.gluonhq.impl.maps;
     exports com.gluonhq.maps;
     exports com.gluonhq.maps.tile;
+    exports com.gluonhq.attach.storage;
+    exports com.gluonhq.attach.util;
 }

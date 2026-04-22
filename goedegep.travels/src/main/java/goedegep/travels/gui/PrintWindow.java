@@ -25,11 +25,10 @@ import com.google.common.jimfs.Jimfs;
 import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.JfxStage;
 import goedegep.jfx.editor.controls.EditorControlFileSelecter;
-import goedegep.travels.logic.VacationToHtmlConverter;
-import goedegep.travels.logic.VacationToHtmlConverterSetting;
+import goedegep.travels.logic.TravelToHtmlConverter;
+import goedegep.travels.logic.TravelToHtmlConverterSetting;
 import goedegep.travels.logic.TravelsUtils;
 import goedegep.travels.model.Travel;
-import goedegep.travels.model.Vacation;
 import goedegep.util.file.FileUtils;
 import javafx.beans.value.ChangeListener;
 import javafx.embed.swing.SwingFXUtils;
@@ -55,9 +54,9 @@ import javafx.scene.layout.VBox;
 import javafx.scene.transform.Scale;
 
 /**
- * This class provides a window to print a <code>Vacation</code>.
+ * This class provides a window to print a {@code Travel}.
  * <p>
- * On the left, the window shows the document representation of the vacation.<br/>
+ * On the left, the window shows the document representation of the travel.<br/>
  * The right side provides controls:
  * <ul>
  * <li>converter settings, to control which information is show in the docuement and how it is formatted</li>
@@ -72,7 +71,7 @@ public class PrintWindow extends JfxStage {
   
   @SuppressWarnings("unused")
   private static final Logger LOGGER = Logger.getLogger(PrintWindow.class.getName());
-  private static final String WINDOW_TITLE = "Print a vacation or save it as a PDF file";
+  private static final String WINDOW_TITLE = "Print a travel or save it as a PDF file";
   
   /**
    * Texts for the HTML output types radio buttons.
@@ -82,22 +81,22 @@ public class PrintWindow extends JfxStage {
   private final static String HTML_ZIP = "Zip file with HTML and related files";
  
   /**
-   * The in-memory file system used to by the VacationToPDFTask.
-   * We create this in this class and pass it on to the VacationToPDFTask, so that it can be reused.
+   * The in-memory file system used to by the TravelToPDFTask.
+   * We create this in this class and pass it on to the TravelToPDFTask, so that it can be reused.
    */
   FileSystem imfs = null;
   
   /**
-   * The converter to generate HTML for a Vacation object.
-   * We create this in this class and pass it on to the VacationToPDFTask, so that it can be reused.
+   * The converter to generate HTML for a Travel object.
+   * We create this in this class and pass it on to the TravelToPDFTask, so that it can be reused.
    */
-  private VacationToHtmlConverter vacationToHtmlConverter;
+  private TravelToHtmlConverter travelToHtmlConverter;
   
   /**
-   * The settings for the VacationToHtmlConverter.
+   * The settings for the TravelToHtmlConverter.
    * These settings can be changed in this window.
    */
-  private Set<VacationToHtmlConverterSetting> settings = null;
+  private Set<TravelToHtmlConverterSetting> settings = null;
   
   /**
    * Index of the page currently shown in the preview.
@@ -128,15 +127,15 @@ public class PrintWindow extends JfxStage {
   private PrinterJob printerJob;
   
   /**
-   * The thread that runs the VacationToPDFTask.
+   * The thread that runs the TravelToPDFTask.
    */
   private Thread pdfRendererThread = null;
   
   /**
-   * The task that generates the PDF document from the Vacation object.
+   * The task that generates the PDF document from the {@code Travel} object.
    * This task runs in a separate thread (the pdfRendererThread) to avoid blocking the GUI.
    */
-  private VacationToPDFTask vacationToPDFTask;
+  private TravelToPDFTask travelToPDFTask;
   
   /**
    * An image that is shown while the PDF document is being (re)generated.
@@ -145,10 +144,10 @@ public class PrintWindow extends JfxStage {
   private Image updatingImage = null;
 
   /**
-   * The <code>Vacation</code> to be printed.
+   * The {@code Travel} to be printed.
    * This is passed to the constructor.
    */
-  private Travel vacation;
+  private Travel travel;
   
   /**
    * The label that shows the status of the PDF generation task.
@@ -159,28 +158,28 @@ public class PrintWindow extends JfxStage {
    * Constructor
    * 
    * @param customization the GUI customization
-   * @param vacation the <code>Vacation</code> to be printed
+   * @param travel the {@code Travel} to be printed
    * @throws Exception if something goes wrong
    */
-  public PrintWindow(CustomizationFx customization, Travel vacation) throws Exception {
+  public PrintWindow(CustomizationFx customization, Travel travel) throws Exception {
     super(customization, WINDOW_TITLE);
     
-    this.vacation = vacation;
+    this.travel = travel;
     
-    settings = VacationToHtmlConverterSetting.getDefaultSettings();  // Start with the default settings.
+    settings = TravelToHtmlConverterSetting.getDefaultSettings();  // Start with the default settings.
     
     // Create the in-memory file system for the PDF generation task.
     imfs = Jimfs.newFileSystem(Configuration.unix());
     
-    // Create the VacationToHtmlConverter for the PDF generation task.
-    vacationToHtmlConverter = new VacationToHtmlConverter(settings);
+    // Create the travelToHtmlConverter for the PDF generation task.
+    travelToHtmlConverter = new TravelToHtmlConverter(settings);
     
     createUpdatingImage();
     createGui();
     
     show();
     
-    runVacationToPDFTask();
+    runTravelToPDFTask();
   }
 
   /**
@@ -266,7 +265,7 @@ public class PrintWindow extends JfxStage {
   /**
    * Create the settings panel.
    * <p>
-   * This panel contains the settings for the VacationToHtmlConverter.
+   * This panel contains the settings for the TravelToHtmlConverter.
    * The user can change these settings and the PDF generation task will be restarted to apply the new settings.
    * 
    * @return the settings panel
@@ -276,24 +275,24 @@ public class PrintWindow extends JfxStage {
     titledPane.setText("Settings for the PDF generation");
     
     Label label;
-    VacationToHtmlConverterSetting setting;
+    TravelToHtmlConverterSetting setting;
     int row = 0;
 
     GridPane settingsPanel = componentFactory.createGridPane(16, 16);
     
-    setting = VacationToHtmlConverterSetting.SHOW_LOCATION_COORDINATES;
+    setting = TravelToHtmlConverterSetting.SHOW_LOCATION_COORDINATES;
     label = componentFactory.createLabel(setting.getDisplayName());
-    CheckBox settingCheckBox = componentFactory.createCheckBox(null, settings.contains(VacationToHtmlConverterSetting.SHOW_LOCATION_COORDINATES));
+    CheckBox settingCheckBox = componentFactory.createCheckBox(null, settings.contains(TravelToHtmlConverterSetting.SHOW_LOCATION_COORDINATES));
     settingsPanel.addRow(row, label, settingCheckBox);
     settingCheckBox.setOnAction(_ -> {
       if (settingCheckBox.isSelected()) {
-        if (!settings.contains(VacationToHtmlConverterSetting.SHOW_LOCATION_COORDINATES)) {
-          settings.add(VacationToHtmlConverterSetting.SHOW_LOCATION_COORDINATES);
+        if (!settings.contains(TravelToHtmlConverterSetting.SHOW_LOCATION_COORDINATES)) {
+          settings.add(TravelToHtmlConverterSetting.SHOW_LOCATION_COORDINATES);
         }
       } else {
-        settings.remove(VacationToHtmlConverterSetting.SHOW_LOCATION_COORDINATES);
+        settings.remove(TravelToHtmlConverterSetting.SHOW_LOCATION_COORDINATES);
       }
-      runVacationToPDFTask(); // Restart the PDF generation task to apply the new setting
+      runTravelToPDFTask(); // Restart the PDF generation task to apply the new setting
     });
 
     titledPane.setContent(settingsPanel);
@@ -343,13 +342,13 @@ public class PrintWindow extends JfxStage {
     EditorControlFileSelecter editorControlFileSelecter = componentFactory.createEditorControlFileSelecter(400, "path to save the PDF file to",
         "change path", "click to save to a different location", "Select file to save to", true);
     editorControlFileSelecter.setOpenOrSaveDialog(true);
-    String vacationFolder = TravelsUtils.getTravelFilesFolder(vacation);
-    if (vacationFolder != null) {
-      Path vacationFolderPath = Paths.get(vacationFolder);
-      if (Files.exists(vacationFolderPath) && Files.isDirectory(vacationFolderPath)) {
-        String vacationId = vacation.getId();
-        if (vacationId != null  &&  !vacationId.isEmpty()) {
-          Path pdfFilePath = Paths.get(vacationFolder, vacationId + ".pdf");
+    String travelFolder = TravelsUtils.getTravelFilesFolder(travel);
+    if (travelFolder != null) {
+      Path travelFolderPath = Paths.get(travelFolder);
+      if (Files.exists(travelFolderPath) && Files.isDirectory(travelFolderPath)) {
+        String travelId = travel.getId();
+        if (travelId != null  &&  !travelId.isEmpty()) {
+          Path pdfFilePath = Paths.get(travelFolder, travelId + ".pdf");
           editorControlFileSelecter.setObject(pdfFilePath.toFile());
         }
       }
@@ -373,7 +372,7 @@ public class PrintWindow extends JfxStage {
   /**
    * Create the "Save as HTML" panel.
    * <p>
-   * This panel allows the user to save the vacation information in HTML format.
+   * This panel allows the user to save the travel information in HTML format.
    * The user can select type or HTML output, the file path and click the "Save" button to save the HTML.
    *
    * @return the "Save as HTML file" panel
@@ -405,13 +404,13 @@ public class PrintWindow extends JfxStage {
     EditorControlFileSelecter editorControlFileSelecter = componentFactory.createEditorControlFileSelecter(400, "path to save the HTML (zip) file to",
         "change path", "click to save to a different location", "Select file to save to", true);
     editorControlFileSelecter.setOpenOrSaveDialog(true);
-    String vacationFolder = TravelsUtils.getTravelFilesFolder(vacation);
-    if (vacationFolder != null) {
-      Path vacationFolderPath = Paths.get(vacationFolder);
-      if (Files.exists(vacationFolderPath) && Files.isDirectory(vacationFolderPath)) {
-        String vacationId = vacation.getId();
-        if (vacationId != null  &&  !vacationId.isEmpty()) {
-          Path pdfFilePath = Paths.get(vacationFolder, vacationId + ".html");
+    String travelFolder = TravelsUtils.getTravelFilesFolder(travel);
+    if (travelFolder != null) {
+      Path travelFolderPath = Paths.get(travelFolder);
+      if (Files.exists(travelFolderPath) && Files.isDirectory(travelFolderPath)) {
+        String travelId = travel.getId();
+        if (travelId != null  &&  !travelId.isEmpty()) {
+          Path pdfFilePath = Paths.get(travelFolder, travelId + ".html");
           editorControlFileSelecter.setObject(pdfFilePath.toFile());
         }
       }
@@ -556,7 +555,7 @@ public class PrintWindow extends JfxStage {
    * @param file The file to save the PDF document to.
    */
   private void saveDocumentAsPDFFile(File file) {
-    Path source = vacationToPDFTask.getPDFFilePath();
+    Path source = travelToPDFTask.getPDFFilePath();
     Path target = file.toPath();
     try {
       Files.copy(source, target);
@@ -567,7 +566,7 @@ public class PrintWindow extends JfxStage {
   }
   
   /**
-   * Save the vacation information as an HTML file.
+   * Save the travel information as an HTML file.
    * <p>
    * This method is called when the user clicks the "Save" button in the "Save as HTML" panel.
    *
@@ -576,30 +575,30 @@ public class PrintWindow extends JfxStage {
   private void saveDocumentAsHTML(String htmlType, File file) {
     switch (htmlType) {
     case HTML_STANDARD -> {
-      String htmlString = vacationToHtmlConverter.vacationToHtml(vacation);
+      String htmlString = travelToHtmlConverter.travelToHtml(travel);
       file = secureExtension(file, ".html");
       try(PrintWriter out = new PrintWriter(file)) {
         out.println(htmlString);
         out.close();
-        statusLabel.setText("Vacation exported to " + file);
+        statusLabel.setText("Travel exported to " + file);
       } catch (FileNotFoundException e) {
         e.printStackTrace();
       }
     }
     case HTML_EMBED -> {
-      String htmlString = vacationToHtmlConverter.vacationToHtmlWithEmbedImages(vacation);
+      String htmlString = travelToHtmlConverter.travelToHtmlWithEmbedImages(travel);
       file = secureExtension(file, ".html");
       try(PrintWriter out = new PrintWriter(file)) {
         out.println(htmlString);
         out.close();
-        statusLabel.setText("Vacation exported to " + file);
+        statusLabel.setText("Travel exported to " + file);
       } catch (FileNotFoundException e) {
         e.printStackTrace();
       }
       }
     case HTML_ZIP -> {
       file = secureExtension(file, ".zip");
-      vacationToHtmlConverter.vacationToHtmlZipFile(vacation, file.toPath());
+      travelToHtmlConverter.travelToHtmlZipFile(travel, file.toPath());
     }
     default -> {
       return;
@@ -638,26 +637,26 @@ public class PrintWindow extends JfxStage {
   
   
   /**
-   * Create a VacationToPDFTask
+   * Create a TravelToPDFTask
    * <p>
    * When the task is ready, it will call the handleNewDocumentReceived method to display the PDF document.
    */
-  private void runVacationToPDFTask() {
+  private void runTravelToPDFTask() {
     previewImageView.setImage(updatingImage);
-    cleanupVacationToPDFTask();
+    cleanupTravelToPDFTask();
     
     /*
      * Create a RenderPDFTask and handle information provided by this task.
      */
-    vacationToPDFTask = new VacationToPDFTask(vacationToHtmlConverter, imfs, vacation);
+    travelToPDFTask = new TravelToPDFTask(travelToHtmlConverter, imfs, travel);
     
     // Handle results - fill the preview window with the created document.
     ChangeListener<PDDocument> listener = (_, _, newDoc) -> {
       handleNewDocumentReceived(newDoc);
     };
-    vacationToPDFTask.valueProperty().addListener(listener);
+    travelToPDFTask.valueProperty().addListener(listener);
 
-    pdfRendererThread = new Thread(vacationToPDFTask);
+    pdfRendererThread = new Thread(travelToPDFTask);
     pdfRendererThread.setDaemon(true);
     pdfRendererThread.start();
   }
@@ -665,7 +664,7 @@ public class PrintWindow extends JfxStage {
   /**
    * Handle a newly created PDF document.
    * <p>
-   * This method is called by VacationToPDFTask upon completion.
+   * This method is called by TravelToPDFTask upon completion.
    * It sets the document and renderer, and displays the first page.
    *
    * @param document The new PDF document to be displayed.
@@ -687,16 +686,16 @@ public class PrintWindow extends JfxStage {
   }
   
   /**
-   * Cleanup the VacationToPDFTask and the PDF renderer thread.
+   * Cleanup the TravelToPDFTask and the PDF renderer thread.
    * <p>
    * This method is called when a new task is started.<br/>
-   * The VacationToPDFTask keeps the PDF file in the in-memory file system, so we just copy it for saving it to a file.
+   * The TravelToPDFTask keeps the PDF file in the in-memory file system, so we just copy it for saving it to a file.
    */
-  private void cleanupVacationToPDFTask() {
-    if (vacationToPDFTask != null) {
-      vacationToPDFTask.cleanup();
-      vacationToPDFTask.cancel();
-      vacationToPDFTask = null;
+  private void cleanupTravelToPDFTask() {
+    if (travelToPDFTask != null) {
+      travelToPDFTask.cleanup();
+      travelToPDFTask.cancel();
+      travelToPDFTask = null;
     }
     if (pdfRendererThread != null) {
       pdfRendererThread.interrupt();

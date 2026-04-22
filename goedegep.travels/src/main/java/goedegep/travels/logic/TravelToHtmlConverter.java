@@ -52,7 +52,6 @@ import goedegep.travels.model.MapImage;
 import goedegep.travels.model.Picture;
 import goedegep.travels.model.Text;
 import goedegep.travels.model.Travel;
-import goedegep.travels.model.Vacation;
 import goedegep.travels.model.VacationElement;
 import goedegep.types.model.FileReference;
 import goedegep.util.emf.EMFResource;
@@ -60,10 +59,10 @@ import goedegep.util.file.FileUtils;
 import goedegep.util.html.HtmlUtil;
 
 /**
- * This class generates an HTML document for a Vacation.
+ * This class generates an HTML document for a {@code Travel}.
  * <p>
  * The generation can be controlled via settings, which are passed on to the constructor.<br/>
- * The main method ({@link #vacationToHtml(vacation)}) can generate a plain HTML document
+ * The main method ({@link #travelToHtml(travel)}) can generate a plain HTML document
  * or a complete zip file also containing all images and documents referred to ({@code createZipFile = true}).<br/>
  * The plain file can only be used on the computer on which it was generated, because the links are to the files on that computer.<br/>
  * The zip file can be extracted anywhere (so also on a web server) and than the links will work.
@@ -81,7 +80,7 @@ import goedegep.util.html.HtmlUtil;
  * There are different types of images:
  * <ul>
  * <li>Pictures:<br/>
- * These are e.g. pictures taken during the vacation. They are represented by {@code Picture} elements.
+ * These are e.g. pictures taken during the travel. They are represented by {@code Picture} elements.
  * The pictures aren't shown in their original (typically large) size. They are shown in the size determined by the {@code PhotoThumbnailManager} class.<br/>
  * When you click on a picture, the original picture is shown.<br/>
  * </li>
@@ -94,8 +93,8 @@ import goedegep.util.html.HtmlUtil;
  * In both cases, the images can be embedded in the HTML document (base64 encoding).
  * TODO: I think I will always embed the images. If not, it should be a setting, instead of a separate method.
  */
-public class VacationToHtmlConverter extends VacationToTextConverterAbstract {
-  private static final Logger LOGGER = Logger.getLogger(VacationToHtmlConverter.class.getName());
+public class TravelToHtmlConverter extends TravelToTextConverterAbstract {
+  private static final Logger LOGGER = Logger.getLogger(TravelToHtmlConverter.class.getName());
   private static final SimpleDateFormat DF = new SimpleDateFormat("dd-MM-yyyy");
   
   /**
@@ -124,10 +123,10 @@ public class VacationToHtmlConverter extends VacationToTextConverterAbstract {
   private boolean createZipFile;
 
   /**
-   * If {@code createZipFile = true}, this is the path to the folder in the in-memory file system in which the vacation files are gathered.
+   * If {@code createZipFile = true}, this is the path to the folder in the in-memory file system in which the travel files are gathered.
    * From there, the zip file is created.
    */
-  private Path vacationFolderPath;
+  private Path travelFolderPath;
 
   /**
    * If {@code true}, paragraph mode is used. Otherwise table mode is used.
@@ -147,7 +146,7 @@ public class VacationToHtmlConverter extends VacationToTextConverterAbstract {
    */
   boolean firstRow;
   
-  private TravelsRegistry vacationsRegistry;
+  private TravelsRegistry travelsRegistry;
   
   /**
    * The picture cache, containing the thumbnails of the pictures.
@@ -158,7 +157,7 @@ public class VacationToHtmlConverter extends VacationToTextConverterAbstract {
    * The zip file system for the current thumbnails zip file.
    */
   private FileSystem zipfs;
-  private Path vacationPhotosPath;
+  private Path travelPhotosPath;
   
   /**
    * If {@code true}, the coordinates of locations are shown.
@@ -170,24 +169,24 @@ public class VacationToHtmlConverter extends VacationToTextConverterAbstract {
   /**
    * Constructor
    * 
-   * @param vacationToHtmlConverterSettings settings used to control the generation of the HTML document.
+   * @param travelToHtmlConverterSettings settings used to control the generation of the HTML document.
    */
-  public VacationToHtmlConverter(Set<VacationToHtmlConverterSetting> vacationToHtmlConverterSettings) {
-    Objects.requireNonNull(vacationToHtmlConverterSettings, "argument vacationToHtmlConverterSettings may not be null");
+  public TravelToHtmlConverter(Set<TravelToHtmlConverterSetting> travelToHtmlConverterSettings) {
+    Objects.requireNonNull(travelToHtmlConverterSettings, "argument travelToHtmlConverterSettings may not be null");
     
-    vacationsRegistry = TravelsRegistry.getInstance();
-    updateSettings(vacationToHtmlConverterSettings);
+    travelsRegistry = TravelsRegistry.getInstance();
+    updateSettings(travelToHtmlConverterSettings);
   }
   
-  public void updateSettings(Set<VacationToHtmlConverterSetting> vacationToHtmlConverterSettings) {
-    Objects.requireNonNull(vacationToHtmlConverterSettings, "argument vacationToHtmlConverterSettings may not be null");
+  public void updateSettings(Set<TravelToHtmlConverterSetting> travelToHtmlConverterSettings) {
+    Objects.requireNonNull(travelToHtmlConverterSettings, "argument travelToHtmlConverterSettings may not be null");
     
     // Set default values.
     showLocationCoordinates = false;
     paragraphMode = false;
     
     // Update settings.
-    for (VacationToHtmlConverterSetting setting: vacationToHtmlConverterSettings) {
+    for (TravelToHtmlConverterSetting setting: travelToHtmlConverterSettings) {
       switch(setting) {
       case SHOW_LOCATION_COORDINATES:
         showLocationCoordinates = true;
@@ -201,50 +200,50 @@ public class VacationToHtmlConverter extends VacationToTextConverterAbstract {
   }
   
   /**
-   * Generate an HTML document for a Vacation.
+   * Generate an HTML document for a {@code Travel}.
    * <p>
    * The links in the document (for images, documents, etc.) are to files on the computer..
    * 
-   * @param vacation the {@code Vacation} for which an HTML document is to be generated. This argument may not be null.
+   * @param travel the {@code Vacation} for which an HTML document is to be generated. This argument may not be null.
    * @return an HTML document for the {@code vacation}.
    * @deprecated
    */
-  public String vacationToHtml(Travel vacation) {
-    return vacationToHtml(vacation, false, null);
+  public String travelToHtml(Travel travel) {
+    return travelToHtml(travel, false, null);
   }
   
   /**
-   * Generate an HTML document for a Vacation, with images embedded in the HTML.
+   * Generate an HTML document for a {@code Travel}, with images embedded in the HTML.
    * <p>
    * Images will be embedded in the HTML, but other links are to files on the computer..
    * 
-   * @param vacation the {@code Vacation} for which an HTML document is to be generated. This argument may not be null.
+   * @param travel the {@code Vacation} for which an HTML document is to be generated. This argument may not be null.
    * @return an HTML document for the {@code vacation}.
    */
-  public String vacationToHtmlWithEmbedImages(Travel vacation) {
-    return vacationToHtml(vacation, true, null);
+  public String travelToHtmlWithEmbedImages(Travel travel) {
+    return travelToHtml(travel, true, null);
   }
   
   /**
-   * Generate an HTML document for a Vacation, which with all related images and documents is put in a zip file.
+   * Generate an HTML document for a {@code Travel}, which with all related images and documents is put in a zip file.
    * <p>
    * The links in the document are to the files in the zip file.
    * 
-   * @param vacation the {@code Vacation} for which an HTML document is to be generated. This argument may not be null.
+   * @param travel the {@code Vacation} for which an HTML document is to be generated. This argument may not be null.
    * @return an HTML document for the {@code vacation}.
    */
-  public String vacationToHtmlZipFile(Travel vacation, Path zipFile) {
-    return vacationToHtml(vacation, true, zipFile);
+  public String travelToHtmlZipFile(Travel travel, Path zipFile) {
+    return travelToHtml(travel, true, zipFile);
   }
   
   /**
-   * Create an HTML document for a Vacation.
+   * Create an HTML document for a {@code Travel}.
    * 
-   * @param vacation the <code>Vacation</code> for which an HTML document is to be generated.
+   * @param travel the {@code Travel} for which an HTML document is to be generated.
    * @return the generated HTML document.
    */
-  private String vacationToHtml(Travel vacation, boolean embedImages, Path zipFile) {
-    Objects.requireNonNull(vacation, "argument vacation may not be null");
+  private String travelToHtml(Travel travel, boolean embedImages, Path zipFile) {
+    Objects.requireNonNull(travel, "argument travel may not be null");
     
     this.embedImages = embedImages;
     if (zipFile != null) {
@@ -253,11 +252,11 @@ public class VacationToHtmlConverter extends VacationToTextConverterAbstract {
     
     // open thumbnails file.
     zipfs = null;
-    if (vacationHasPhotos(vacation)) {
-      String vacationPhotosFolder = determinePhotosFolder(vacation);
-      if (vacationPhotosFolder != null) {
-        vacationPhotosPath = Paths.get(vacationsRegistry.getVacationPicturesFolderName(), vacationPhotosFolder);
-        Path thumbnailZipPath = vacationPhotosPath.resolve(".thumbnails.zip");
+    if (vacationHasPhotos(travel)) {
+      String travelsPhotosFolder = determinePhotosFolder(travel);
+      if (travelsPhotosFolder != null) {
+        travelPhotosPath = Paths.get(travelsRegistry.getVacationPicturesFolderName(), travelsPhotosFolder);
+        Path thumbnailZipPath = travelPhotosPath.resolve(".thumbnails.zip");
         if (Files.exists(thumbnailZipPath)) {
           try {
             URI zipFileUri = thumbnailZipPath.toUri();  // Extra step needed because URI.create(String) requires *encoded* string.
@@ -279,9 +278,9 @@ public class VacationToHtmlConverter extends VacationToTextConverterAbstract {
     FileSystem imfs = null;
     if (createZipFile) {
       imfs = Jimfs.newFileSystem(Configuration.unix());
-      vacationFolderPath = imfs.getPath("/Vacation");
+      travelFolderPath = imfs.getPath("/Vacation");
       try {
-        Files.createDirectory(vacationFolderPath);
+        Files.createDirectory(travelFolderPath);
       } catch (IOException e) {
         e.printStackTrace();
       }
@@ -290,7 +289,7 @@ public class VacationToHtmlConverter extends VacationToTextConverterAbstract {
     firstRow = true;
     tableStarted = false;
     
-    buf.setLength(0);  // clear the buffer as vacationToHtml may be called multiple times.
+    buf.setLength(0);  // clear the buffer as travelsToHtml may be called multiple times.
     
     buf.append("<html>");
     buf.append("<header>\n");    
@@ -299,27 +298,27 @@ public class VacationToHtmlConverter extends VacationToTextConverterAbstract {
     buf.append("<body>");
     
     buf.append("<h1>");
-    buf.append(HtmlUtil.encodeHTML(getVacationTitle(vacation), false));
+    buf.append(HtmlUtil.encodeHTML(getTravelTitle(travel), false));
     buf.append("</h1>");
     
-    // Vacation: Notes
-    if (vacation.isSetNotes()) {
+    // Notes
+    if (travel.isSetNotes()) {
       buf.append("<h2>Algemeen</h2>");
-      String htmlText = markDownToHtml(vacation.getNotes());      
+      String htmlText = markDownToHtml(travel.getNotes());      
       buf.append(htmlText);
     }
     
     // Documents
-    if (!vacation.getDocuments().isEmpty()) {
+    if (!travel.getDocuments().isEmpty()) {
       buf.append("<h2>Documenten</h2>");
       
-      for (FileReference fileReference: vacation.getDocuments()) {
+      for (FileReference fileReference: travel.getDocuments()) {
         String text = getTheTextForAFileReference(fileReference);
         
         String filePathName = fileReference.getFile();
         String filename = filePathName;
         if (createZipFile  &&  filePathName != null) {
-          filename = addFileToVacationFolderPath(filePathName);
+          filename = addFileToTravelFolderPath(filePathName);
         }
         
         buf.append(HtmlUtil.createLinkElement(filename, text))
@@ -327,7 +326,7 @@ public class VacationToHtmlConverter extends VacationToTextConverterAbstract {
       }
     }
     
-    for (VacationElement element: vacation.getElements()) {
+    for (VacationElement element: travel.getElements()) {
       vacationElementToHtml(element);
     }
     
@@ -366,31 +365,31 @@ public class VacationToHtmlConverter extends VacationToTextConverterAbstract {
   }
   
   /**
-   * Determine the folder in which the photos of the vacation are stored.
+   * Determine the folder in which the photos of the travel are stored.
    * <p>
    * If the pictures attribute is set, this is returned.
    * Else, the first Picture element is searched for, and if found, and it is in any subfolder of the ..., the folder in which the picture is stored is returned.
    * 
-   * @param vacation
+   * @param travel
    * @return the name of the folder (only that name, not an absolute path) in which the photos of the vacation are stored, or {@code null} if it cannot be determined.
    */
-  private String determinePhotosFolder(Travel vacation) {
-    if (vacation.getPictures() != null) {
-      String picturesPath = vacation.getPictures();
+  private String determinePhotosFolder(Travel travel) {
+    if (travel.getPictures() != null) {
+      String picturesPath = travel.getPictures();
       File picturesFile = new File(picturesPath);
       return picturesFile.getName();
     }
     
-    Iterator<EObject> iterator = vacation.eAllContents();
+    Iterator<EObject> iterator = travel.eAllContents();
     while (iterator.hasNext()) {
       Object e = iterator.next();
       if (e instanceof Picture picture) {
         FileReference fileReference = picture.getPictureReference();
         if (fileReference != null) {
           String filePathName = fileReference.getFile();
-          if (filePathName != null  &&  filePathName.startsWith(vacationsRegistry.getVacationPicturesFolderName())) {
+          if (filePathName != null  &&  filePathName.startsWith(travelsRegistry.getVacationPicturesFolderName())) {
             
-            String relativeFileName = FileUtils.getPathRelativeToFolder(vacationsRegistry.getVacationPicturesFolderName(), filePathName);
+            String relativeFileName = FileUtils.getPathRelativeToFolder(travelsRegistry.getVacationPicturesFolderName(), filePathName);
             int index = relativeFileName.indexOf(File.separator);
             String photosFolder = relativeFileName.substring(0, index);
             return photosFolder;
@@ -404,13 +403,13 @@ public class VacationToHtmlConverter extends VacationToTextConverterAbstract {
   }
 
   /**
-   * Determine if the vacation has photos.
+   * Determine if a {@code Travel} has photos.
    * 
-   * @param vacation the vacation to be checked.
+   * @param travel the vacation to be checked.
    * @return {@code true} if the vacation has photos, {@code false} otherwise.
    */
-  private boolean vacationHasPhotos(Travel vacation) {
-    Iterator<EObject> iterator = vacation.eAllContents();
+  private boolean vacationHasPhotos(Travel travel) {
+    Iterator<EObject> iterator = travel.eAllContents();
     while (iterator.hasNext()) {
       Object e = iterator.next();
       if (e instanceof Picture picture) {
@@ -557,7 +556,7 @@ public class VacationToHtmlConverter extends VacationToTextConverterAbstract {
     String filePathName = fileReference.getFile();
     String filename = filePathName;
     if (createZipFile  &&  filePathName != null) {
-      filename = addFileToVacationFolderPath(filePathName);
+      filename = addFileToTravelFolderPath(filePathName);
     }
     
     buf.append("<p>")
@@ -728,13 +727,13 @@ public class VacationToHtmlConverter extends VacationToTextConverterAbstract {
 
     buf.append("<p>");
     if (createZipFile) {
-      addFileToVacationFolderPath(pictureFileName);
+      addFileToTravelFolderPath(pictureFileName);
     }
     
     Path picturePath = Paths.get(pictureFileName);  // by default, assume it's a normal file.
     if (zipfs != null) {
       // See if there is a thumbnail in the thumbnails zip file. If so, use that.
-      String thumbFileName = FileUtils.getPathRelativeToFolder(vacationPhotosPath.toString(), pictureFileName);
+      String thumbFileName = FileUtils.getPathRelativeToFolder(travelPhotosPath.toString(), pictureFileName);
       thumbFileName = thumbFileName.replaceAll("\\.jpg$", "_thumb.jpg");
       Path pathInZipfile = zipfs.getPath(thumbFileName);
       if (Files.exists(pathInZipfile)) {
@@ -897,15 +896,15 @@ public class VacationToHtmlConverter extends VacationToTextConverterAbstract {
   }
   
   /**
-   * Add a file to the vacation folder path in the imfs file system.
+   * Add a file to the travel folder path in the imfs file system.
    * 
    * @param filePathName the path name of the file to be added. This argument may not be null.
    */
-  private String addFileToVacationFolderPath(String filePathName) {
+  private String addFileToTravelFolderPath(String filePathName) {
     File file = new File(filePathName);
     String filename = file.getName();
     try {
-      Path destinationPath = vacationFolderPath.resolve(filename);
+      Path destinationPath = travelFolderPath.resolve(filename);
       if (!Files.exists(destinationPath)) {
         Files.copy(Paths.get(filePathName), destinationPath);
       }
@@ -921,14 +920,14 @@ public class VacationToHtmlConverter extends VacationToTextConverterAbstract {
    * <p>
    * First the HTML document is written to a file in the imfs file system, then a zip file is created from the imfs folder.
    * 
-   * @param imfs the in-memory file system containing the vacation folder path. This argument may not be null.
+   * @param imfs the in-memory file system containing the travel folder path. This argument may not be null.
    * @param zipFile the path to the zip file to be created. This argument may not be null.
    */
   private void createZipFile(FileSystem imfs, Path zipFile) {
     try {
       // Write the HTML document to a file in the imfs file system.
-      String htmlFileName = "Vacation.html";
-      Path htmlFilePath = vacationFolderPath.resolve(htmlFileName);
+      String htmlFileName = "Travel.html";
+      Path htmlFilePath = travelFolderPath.resolve(htmlFileName);
       Files.write(htmlFilePath, buf.toString().getBytes(StandardCharsets.UTF_8));
       
       // Create a zip file from the imfs folder
@@ -999,7 +998,7 @@ public class VacationToHtmlConverter extends VacationToTextConverterAbstract {
           LOGGER.severe("Illegal start: " + absoluteFileName);
         }
         try {
-          Path destinationPath = vacationFolderPath.resolve(filename);
+          Path destinationPath = travelFolderPath.resolve(filename);
           if (!Files.exists(destinationPath)) {
             Files.copy(Paths.get(absoluteFileName), destinationPath);
           }

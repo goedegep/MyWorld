@@ -32,7 +32,6 @@ import goedegep.travels.model.BoundingBox;
 import goedegep.travels.model.Day;
 import goedegep.travels.model.Picture;
 import goedegep.travels.model.Travel;
-import goedegep.travels.model.Vacation;
 import goedegep.travels.model.VacationElement;
 import goedegep.travels.model.TravelsFactory;
 import goedegep.types.model.FileReference;
@@ -44,16 +43,16 @@ import goedegep.util.img.PhotoFileMetaDataHandler;
 import goedegep.util.string.StringUtil;
 
 /**
- * This class provides functionality to import photos to a Vacation.
+ * This class provides functionality to import photos to a {@code Travel}.
  * 
  */
 public class PhotosImporter {
   private static final Logger LOGGER = Logger.getLogger(PhotosImporter.class.getName());
-  private static final TravelsFactory VACATIONS_FACTORY = TravelsFactory.eINSTANCE;
+  private static final TravelsFactory TRAVELS_FACTORY = TravelsFactory.eINSTANCE;
   private static TypesFactory TYPES_FACTORY = TypesFactory.eINSTANCE;
   
   /*
-   * Information related to the vacation
+   * Information related to the Travel
    */
   
   // A list of all elements with location information  (for the second option: a match on Location)
@@ -84,7 +83,7 @@ public class PhotosImporter {
    */
   
   // Best match vacation element.
-  private VacationElement bestMatchVacationElement = null;
+  private VacationElement bestMatchTravelElement = null;
 
   // Best match ...
 //  private S2LatLng bestMatchS2LatLng = null;
@@ -100,11 +99,11 @@ public class PhotosImporter {
   
   
   /**
-   * Import photos to a vacation.
+   * Import photos to a {@code Travel}.
    * <p>
-   * A photo is only added if it doesn't exist in the vacation yet (based on its filename).
+   * A photo is only added if it doesn't exist in the travel yet (based on its filename).
    * This makes it possible to start with adding some photos manually and later perform an import.<br/>
-   * The following order is used to find the item of the vacation where the photo is added:
+   * The following order is used to find the item of the travel where the photo is added:
    * <ol>
    * <li>
    * A match on Location and Day<br/>
@@ -121,17 +120,17 @@ public class PhotosImporter {
    * </li>
    * <li>
    * No match on day and/or location<br/>
-   * If there is no match with a Day and/or a Location , then the photo is added as last element of the <code>vacation</code>.
+   * If there is no match with a Day and/or a Location , then the photo is added as last element of the {@code travel}.
    * </li>
    * </ol>
    * 
-   * @param travel the vacation to which photos are added.
+   * @param travel the {@code Travel} to which photos are added.
    */
   public List<PhotoImportResult> importPhotos(Travel travel) {
     // Information that is returned.
     List<PhotoImportResult> photoImportResults = new ArrayList<>();
     
-    // get a list of all filenames of the photos which are already part of the vacation.
+    // get a list of all filenames of the photos which are already part of the travel.
     Map<String, VacationElement> photoFileNameToParentElementMap = generatePhotoFileNameToParentElementMap(travel);
     Set<String> existingPhotosFileNames = photoFileNameToParentElementMap.keySet();
     for (String photoFilename: existingPhotosFileNames) {
@@ -139,7 +138,7 @@ public class PhotosImporter {
     }
     
     // get a list of all days (for the third option, and to create the map from days to elements of that day with location information)
-    List<Day> vacationDays = TravelsUtils.getVacationDays(travel);
+    List<Day> travelDays = TravelsUtils.getTravelDays(travel);
     
     // get the map of all elements with location information with their location information  (for the second option)
     geoLocations = TravelsUtils.getTravelGeoLocations(travel);
@@ -150,7 +149,7 @@ public class PhotosImporter {
     // create a map from days to the elements of that day with location information (for the first option)
     Map<Day, List<VacationElement>> dayElementsMap = new HashMap<>();
     
-    for (Day day: vacationDays) {
+    for (Day day: travelDays) {
       List<VacationElement> geoElements = new ArrayList<>();
       for (VacationElement vacationElement: geoLocations.keySet()) {
         Day elementDay = TravelsUtils.getAncestorOfType(vacationElement, Day.class);
@@ -188,7 +187,7 @@ public class PhotosImporter {
           
           PhotoImportResultType photoImportResultType = null;
           
-          boolean photoAlreadyPartOfVacation = false;
+          boolean photoAlreadyPartOfTravel = false;
           
           // skip directories
           if (Files.isDirectory(checkFile)) {
@@ -199,10 +198,10 @@ public class PhotosImporter {
           File file = new File(checkFile.toAbsolutePath().toString());
           String filename = file.getAbsolutePath();
           
-          // Skip photos which are already part of the vacation.
+          // Skip photos which are already part of the travel.
           if (existingPhotosFileNames.contains(filename)) {
-            LOGGER.severe("Skipping photo which is already part of the vacation: " + filename);
-            photoAlreadyPartOfVacation = true;  // continue to check that the same match will be found.
+            LOGGER.severe("Skipping photo which is already part of the travel: " + filename);
+            photoAlreadyPartOfTravel = true;  // continue to check that the same match will be found.
           }
           
           // Skip non jpeg files.
@@ -214,7 +213,7 @@ public class PhotosImporter {
 
           // Get the coordinates of the photo and the date/time it was taken.
           // Skip the photo if it doesn't have coordinates.
-          // TODO add option to add these files at the top level of the vacation, so they can be manually moved to the right element.
+          // TODO add option to add these files at the top level of the travel, so they can be manually moved to the right element.
           WGS84Coordinates photoCoordinates = null;
           LocalDateTime photoTakenDateTime = null;
           try {
@@ -237,7 +236,7 @@ public class PhotosImporter {
           photoS2LatLng = S2LatLng.fromDegrees(photoCoordinates.getLatitude(), photoCoordinates.getLongitude());
           photoS2Point = photoS2LatLng.toPoint();
           
-          bestMatchVacationElement = null;
+          bestMatchTravelElement = null;
           bestMatchS2Loop = null;
           bestDistanceMatch = null;
 
@@ -256,7 +255,7 @@ public class PhotosImporter {
                   }
                 }
 
-                if (bestMatchVacationElement == null) {
+                if (bestMatchTravelElement == null) {
                   LOGGER.severe("No match found for this day");
                 }
               }
@@ -264,7 +263,7 @@ public class PhotosImporter {
           }
           
           // Second option: add photo to matching location.
-          if (bestMatchVacationElement == null) {
+          if (bestMatchTravelElement == null) {
             for (VacationElement aVacationElement: geoLocations.keySet()) {
               vacationElement = aVacationElement;
               if (handlePossibleBestMatch()) {
@@ -274,41 +273,41 @@ public class PhotosImporter {
           }
           
           // Third option: match on Day.
-          if (bestMatchVacationElement == null) {
+          if (bestMatchTravelElement == null) {
             if (photoTakenDateTime != null) {
               long photoTakenEpochDay = photoTakenDateTime.toLocalDate().toEpochDay();
               
               for (Day day: dayElementsMap.keySet()) {
                 if (isEpochDayMatchingForDayElement(photoTakenEpochDay, day)) {
-                  bestMatchVacationElement = day;
+                  bestMatchTravelElement = day;
                   photoImportResultType = PhotoImportResultType.ADDED_TO_DAY;
                 }
               }
             }
           }
           
-          if (photoAlreadyPartOfVacation) {
+          if (photoAlreadyPartOfTravel) {
             VacationElement currentVacationElement = photoFileNameToParentElementMap.get(filename);
             VacationElement newVacationElement = null;
-            if (!currentVacationElement.equals(bestMatchVacationElement)) {
-              newVacationElement = bestMatchVacationElement;
+            if (!currentVacationElement.equals(bestMatchTravelElement)) {
+              newVacationElement = bestMatchTravelElement;
             }
             photoImportResults.add(new PhotoImportResult(filename, PhotoImportResultType.EXISTING_PHOTO_SKIPPED, currentVacationElement, filename, newVacationElement));
           } else {
 
-            Picture vacationElementPicture = VACATIONS_FACTORY.createPicture();
+            Picture vacationElementPicture = TRAVELS_FACTORY.createPicture();
             FileReference pictureReference = TYPES_FACTORY.createFileReference();
             pictureReference.setFile(file.getAbsolutePath());
             vacationElementPicture.setPictureReference(pictureReference);
 
-            if (bestMatchVacationElement != null) {
-              LOGGER.severe("Going to add photo to: " + bestMatchVacationElement.toString());
-              bestMatchVacationElement.getChildren().add(vacationElementPicture);
-              photoImportResults.add(new PhotoImportResult(filename, photoImportResultType, bestMatchVacationElement, null));
+            if (bestMatchTravelElement != null) {
+              LOGGER.severe("Going to add photo to: " + bestMatchTravelElement.toString());
+              bestMatchTravelElement.getChildren().add(vacationElementPicture);
+              photoImportResults.add(new PhotoImportResult(filename, photoImportResultType, bestMatchTravelElement, null));
             } else {
-              LOGGER.severe("Going to add photo at vacation level");
+              LOGGER.severe("Going to add photo at travel level");
               travel.getElements().add(vacationElementPicture);
-              photoImportResults.add(new PhotoImportResult(filename, PhotoImportResultType.ADDED_TO_VACATION, null, null));
+              photoImportResults.add(new PhotoImportResult(filename, PhotoImportResultType.ADDED_TO_TRAVEL, null, null));
             }
           }
         }
@@ -457,8 +456,8 @@ public class PhotosImporter {
   private boolean handleNewPolygonMatch(S2Loop loop) {
     boolean result = false;
 
-    if (bestMatchVacationElement == null) {
-      bestMatchVacationElement = vacationElement;
+    if (bestMatchTravelElement == null) {
+      bestMatchTravelElement = vacationElement;
       bestMatchS2Loop = loop;
       result = true;
     } else {
@@ -467,7 +466,7 @@ public class PhotosImporter {
           LOGGER.severe("Found match on larger polygon; no action");
         } else if (bestMatchS2Loop.contains(loop)) {
           LOGGER.severe("Found match on smaller polygon; set this as best match");
-          bestMatchVacationElement = vacationElement;
+          bestMatchTravelElement = vacationElement;
           bestMatchS2Loop = loop;
           result = true;
         } else {
@@ -484,13 +483,13 @@ public class PhotosImporter {
   private boolean handleNewDistanceMatch(double distance) {
     boolean result = false;
     
-    if (bestMatchVacationElement == null) {
-      bestMatchVacationElement = vacationElement;
+    if (bestMatchTravelElement == null) {
+      bestMatchTravelElement = vacationElement;
       bestDistanceMatch = distance;
       result = true;
     } else {
       if (isBetterMatch(distance)) {
-        bestMatchVacationElement = vacationElement;
+        bestMatchTravelElement = vacationElement;
         bestDistanceMatch = distance;
         bestMatchS2Loop = null;
         result = true;
@@ -543,7 +542,7 @@ public class PhotosImporter {
     
   /**
    * Get a map with photo filenames to the parent element of the related Picture element.
-   * There will be an entry for each Picture in the specified vacation.
+   * There will be an entry for each Picture in the specified travel.
    * 
    * @param travel a {@code Travel}
    * @return the generated photo filename to parent element map.

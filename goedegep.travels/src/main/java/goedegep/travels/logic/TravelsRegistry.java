@@ -78,7 +78,7 @@ public class TravelsRegistry extends Registry {
    * 
    * @return the name of the file with information about the vacations.
    */  
-  public String getVacationsFileName() {
+  public String getTravelsFileName() {
     return vacationsFileName;
   }
 

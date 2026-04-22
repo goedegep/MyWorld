@@ -37,7 +37,11 @@ enum ShowLevel {
    * @return the next show level
    */
   public ShowLevel next() {
-    return values()[(ordinal() + 1)];
+    if (ordinal() < values().length - 1) {
+      return values()[(ordinal() + 1)];
+    } else {
+      return this;
+    }
   }
   
   /**
@@ -46,6 +50,15 @@ enum ShowLevel {
    * @return the previous show level
    */
   public ShowLevel previous() {
-    return values()[(ordinal() - 1)];
+    if (ordinal() > 0) {
+      return values()[(ordinal() - 1)];
+    } else {
+      return this;
+    }
+  }
+  
+  @Override
+  public String toString() {
+    return displayName;
   }
 }

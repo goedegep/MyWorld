@@ -17,6 +17,7 @@ import goedegep.myworld.common.Registry;
 import goedegep.myworld.common.Service;
 import goedegep.resources.ImageResource;
 import goedegep.travels.gui.BoundariesPointsReductionWindow;
+import goedegep.travels.gui.MapViewTestWindow;
 import goedegep.travels.gui.TravelsAppResourcesFx;
 import goedegep.travels.gui.TravelsWindow;
 import goedegep.travels.logic.PhotoThumbnailManager;
@@ -90,7 +91,8 @@ public class TravelsService extends Service {
    * Show the main window of the application.
    */
   public void showTravelsWindow() {
-    new TravelsWindow(customization, this);
+//    new TravelsWindow(customization, this);
+    new MapViewTestWindow();
   }
   
   /**

@@ -9,11 +9,11 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.util.EContentAdapter;
 
 import com.gluonhq.maps.LabeledIcon;
-import com.gluonhq.maps.MapLayer;
 
 import goedegep.geo.WGS84BoundingBox;
 import goedegep.geo.WGS84Coordinates;
 import goedegep.jfx.CustomizationFx;
+import goedegep.mapview.MapLayer;
 import goedegep.mapview.MapViewUtil;
 import goedegep.poi.app.LocationCategory;
 import goedegep.resources.ImageResource;
@@ -372,7 +372,7 @@ public class MapRelatedItemsLayer extends MapLayer implements ObjectSelector<Obj
    * {@inheritDoc}
    */
   @Override
-  protected void layoutLayer() {
+  public void layoutLayer() {
     
     // locations
     for (LocationData locationData: locations) {
@@ -383,7 +383,7 @@ public class MapRelatedItemsLayer extends MapLayer implements ObjectSelector<Obj
     for (PhotoData photoData: photos) {
       Node photoIcon = photoData.node();
       WGS84Coordinates coordinates = photoData.coordinates();
-      final Point2D mapPoint = baseMap.getMapPoint(coordinates.getLatitude(), coordinates.getLongitude());
+      final Point2D mapPoint = mapViewAbstract.getMapPoint(coordinates.getLatitude(), coordinates.getLongitude());
       
       photoIcon.setTranslateX(mapPoint.getX());
       photoIcon.setTranslateY(mapPoint.getY());
@@ -397,7 +397,7 @@ public class MapRelatedItemsLayer extends MapLayer implements ObjectSelector<Obj
     
     // boundingBoxes
     for (BoundingBoxData boundingBoxData: boundingBoxes) {
-      MapViewUtil.updateBoundingBoxPolygon(boundingBoxData.polygon(), boundingBoxData.boundingBox(), baseMap);
+      MapViewUtil.updateBoundingBoxPolygon(boundingBoxData.polygon(), boundingBoxData.boundingBox(), mapViewAbstract);
 //      layoutBoundingBox(boundingBoxData);
     }
             
@@ -405,7 +405,7 @@ public class MapRelatedItemsLayer extends MapLayer implements ObjectSelector<Obj
     if (currentPhoto != null) {
       Node imageView = currentPhoto.node();
       WGS84Coordinates coordinates = currentPhoto.coordinates();
-      final Point2D mapPoint = baseMap.getMapPoint(coordinates.getLatitude(), coordinates.getLongitude());
+      final Point2D mapPoint = mapViewAbstract.getMapPoint(coordinates.getLatitude(), coordinates.getLongitude());
       
       imageView.setTranslateX(mapPoint.getX());
       imageView.setTranslateY(mapPoint.getY());
@@ -424,8 +424,8 @@ public class MapRelatedItemsLayer extends MapLayer implements ObjectSelector<Obj
     // Labeled icon
     LabeledIcon labeledIcon = locationData.labeledIcon();
     if (labeledIcon != null) {
-      Point2D mapPoint = baseMap.getMapPoint(location.getLatitude(), location.getLongitude());
-      double zoomLevel = baseMap.zoom().get();
+      Point2D mapPoint = mapViewAbstract.getMapPoint(location.getLatitude(), location.getLongitude());
+      double zoomLevel = mapViewAbstract.getZoom();
 
       if (zoomLevel > 0.0) {
         Translate zoomCorrection = labeledIcon.getZoomDependendTranslateCorrection(zoomLevel);
@@ -446,7 +446,7 @@ public class MapRelatedItemsLayer extends MapLayer implements ObjectSelector<Obj
     // Bounding box
     BoundingBoxData boundingBoxData = locationData.boundingBoxData();
     if (boundingBoxData != null) {
-      MapViewUtil.updateBoundingBoxPolygon(boundingBoxData.polygon(), boundingBoxData.boundingBox(), baseMap);
+      MapViewUtil.updateBoundingBoxPolygon(boundingBoxData.polygon(), boundingBoxData.boundingBox(), mapViewAbstract);
 //      layoutBoundingBox(boundingBoxData);
     }
   }
@@ -462,7 +462,7 @@ public class MapRelatedItemsLayer extends MapLayer implements ObjectSelector<Obj
     ObservableList<Double> polylinePoints = polyline.getPoints();
     polylinePoints.clear();
     for (WGS84Coordinates coordinates: coordinatesList) {
-      Point2D point2D = baseMap.getMapPoint(coordinates.getLatitude(), coordinates.getLongitude());
+      Point2D point2D = mapViewAbstract.getMapPoint(coordinates.getLatitude(), coordinates.getLongitude());
       polylinePoints.add(point2D.getX());
       polylinePoints.add(point2D.getY());
     }

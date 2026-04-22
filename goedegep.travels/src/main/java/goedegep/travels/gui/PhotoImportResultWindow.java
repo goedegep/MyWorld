@@ -155,7 +155,7 @@ public class PhotoImportResultWindow extends JfxStage {
       buf.append("Element: ").append(getElementText(vacationElement)).append(NEWLINE);
       break;
       
-    case ADDED_TO_VACATION:
+    case ADDED_TO_TRAVEL:
       buf.append("Photo is added as top level element of the vacation.").append(NEWLINE);
       break;
             

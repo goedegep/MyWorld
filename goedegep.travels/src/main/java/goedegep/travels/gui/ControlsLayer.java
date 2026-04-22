@@ -1,36 +1,22 @@
 package goedegep.travels.gui;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.function.Supplier;
 import java.util.logging.Logger;
 
-import com.gluonhq.maps.MapLayer;
-
 import goedegep.jfx.CustomizationFx;
+import goedegep.mapview.MapLayer;
 import goedegep.resources.ImageSize;
-import javafx.event.EventHandler;
-import javafx.geometry.Bounds;
-import javafx.geometry.Insets;
-import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseEvent;
-import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
-import javafx.scene.layout.CornerRadii;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
-
-import java.awt.Desktop;
-import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
 
 public class ControlsLayer extends MapLayer {
   @SuppressWarnings("unused")
@@ -129,9 +115,9 @@ public class ControlsLayer extends MapLayer {
   @Override
   public void layoutLayer() {
 
-    double height = baseMap.getMyHeight();
+    double height = mapViewAbstract.getHeight();
     attribution.setTranslateY(height - attributionHeight);
-    double width = baseMap.getMyWidth();
+    double width = mapViewAbstract.getWidth();
     attribution.setTranslateX(width - attributionWidth);
   }
 }

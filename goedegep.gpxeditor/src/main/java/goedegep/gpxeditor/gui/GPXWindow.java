@@ -12,9 +12,6 @@ import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.common.util.WrappedException;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 
-import com.gluonhq.maps.MapPoint;
-import com.gluonhq.maps.MapView;
-
 import goedegep.geo.WGS84BoundingBox;
 import goedegep.geo.WGS84Coordinates;
 import goedegep.gpx.Gpx10To11Converter;
@@ -31,6 +28,8 @@ import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.JfxStage;
 import goedegep.jfx.MenuUtil;
 import goedegep.jfx.eobjecttreeview.EObjectTreeView;
+import goedegep.mapview.MapPoint;
+import goedegep.mapview.view.MapView;
 import goedegep.resources.ImageSize;
 import goedegep.util.RunningInEclipse;
 import goedegep.util.douglaspeuckerreducer.DouglasPeuckerReducer;
@@ -87,10 +86,10 @@ public class GPXWindow extends JfxStage {
     createGUI();
     
     gpxResource = GpxUtil.createEMFResource();
-    gpxResource.dirtyProperty().addListener((_, _, _) -> updateTitle());
-    gpxResource.uriProperty().addListener((_, _, _) -> updateTitle());
+//    gpxResource.dirtyProperty().addListener((_, _, _) -> updateTitle());
+//    gpxResource.uriProperty().addListener((_, _, _) -> updateTitle());
     
-    updateTitle();
+//    updateTitle();
     
     show();
     
@@ -255,13 +254,22 @@ public class GPXWindow extends JfxStage {
     menuItem = componentFactory.createMenuItem("Open in GPSPrune");
     menuItem.setOnAction(new EventHandler<ActionEvent>() {
       public void handle(ActionEvent e) {
-        String fileName = gpxResource.getURI().toFileString();
-        if (fileName != null) {
-        String[] args = new String[2];
-        args[0] = "--lang=en";
-          args[1] = fileName;
-         GpsPrune.main(args);
+        URI uri = gpxResource.getURI();
+        String fileName = null;
+        if (uri != null) {
+          fileName = uri.toFileString();
         }
+        String[] args = null;
+        if (fileName != null) {
+          args = new String[2];
+        } else {
+          args = new String[1];
+        }
+        args[0] = "--lang=en";
+        if (fileName != null) {
+          args[1] = fileName;
+        }
+        GpsPrune.main(args);
       }
     });
     menu.getItems().add(menuItem);
@@ -314,17 +322,17 @@ public class GPXWindow extends JfxStage {
    */
   private void handleOpenGpxFileRequest() {
     // If there are unsaved changes, only continue after user confirmation.
-    if(gpxResource.isDirty()) {
-      Alert alert = componentFactory.createOkCancelConfirmationDialog("Open GPX file?", "The current GPX file hasn't been saved.", "Continue without saving?");
-      alert.getButtonTypes().remove(ButtonType.OK);
-      alert.getButtonTypes().add(ButtonType.YES);
-      
-      Optional<ButtonType> usersChoice = alert.showAndWait();
-
-      if(!usersChoice.isPresent()  ||  usersChoice.get().equals(ButtonType.CANCEL)) {
-        return;
-      }
-    }
+//    if(gpxResource.isDirty()) {
+//      Alert alert = componentFactory.createOkCancelConfirmationDialog("Open GPX file?", "The current GPX file hasn't been saved.", "Continue without saving?");
+//      alert.getButtonTypes().remove(ButtonType.OK);
+//      alert.getButtonTypes().add(ButtonType.YES);
+//      
+//      Optional<ButtonType> usersChoice = alert.showAndWait();
+//
+//      if(!usersChoice.isPresent()  ||  usersChoice.get().equals(ButtonType.CANCEL)) {
+//        return;
+//      }
+//    }
     
     FileChooser fileChooser = componentFactory.createFileChooser("Open GPX file");    
     ExtensionFilter extensionFilter = new ExtensionFilter("GPX file", "*.gpx");
@@ -496,7 +504,7 @@ public class GPXWindow extends JfxStage {
       MapPoint mapCenter = new MapPoint(center.getLatitude(), center.getLongitude());
 
       if (mapCenter != null) {
-        mapView.flyTo(0.0, mapCenter, 2);
+        mapView.flyTo(0.0, mapCenter, 2, null);
       }
     } 
   }

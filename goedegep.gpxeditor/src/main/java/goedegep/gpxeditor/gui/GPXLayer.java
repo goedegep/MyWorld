@@ -14,9 +14,6 @@ import org.eclipse.emf.ecore.util.FeatureMap;
 import org.eclipse.emf.ecore.util.FeatureMap.Entry;
 import org.eclipse.emf.ecore.xml.type.AnyType;
 
-import com.gluonhq.maps.MapLayer;
-import com.gluonhq.maps.MapPoint;
-
 import goedegep.geo.WGS84BoundingBox;
 import goedegep.geo.WGS84Coordinates;
 import goedegep.gpx.model.ExtensionsType;
@@ -27,6 +24,8 @@ import goedegep.gpx.model.TrkType;
 import goedegep.gpx.model.TrksegType;
 import goedegep.gpx.model.WptType;
 import goedegep.jfx.stringconverterandchecker.WGS84CoordinatesStringConverterAndChecker;
+import goedegep.mapview.MapLayer;
+import goedegep.mapview.MapPoint;
 import goedegep.mapview.MapViewUtil;
 import goedegep.poi.app.LocationCategory;
 import goedegep.resources.ImageResource;
@@ -462,7 +461,7 @@ public class GPXLayer extends MapLayer {
     List<WptType> trackPoints = trackSegment.getTrkpt();
     double ratio = MAX_DATAPOINTS / trackPoints.size();
     
-    double zoom = baseMap.getZoom();
+    double zoom = mapViewAbstract.getZoom();
     if (ratio > 1.0) {
       ratio = (zoom + 1) / 20;
     }
@@ -623,7 +622,7 @@ public class GPXLayer extends MapLayer {
    * In more detail: Only if the bounding box of the {@code GpxData} intersects with the visible map area, all its information is drawn (so also the parts that are not visible).
    */
   @Override
-  protected void layoutLayer() {
+  public void layoutLayer() {
     
     for (GpxFileData gpxFileData: gpxFileDataMap.values()) {
       GpxData gpxData = gpxFileData.gpx();
@@ -632,10 +631,10 @@ public class GPXLayer extends MapLayer {
       boolean drawGPXData = true;
       BoundingBoxData boundingBoxData = gpxData.boundingBox();
       WGS84BoundingBox boundingBox = boundingBoxData.boundingBox();
-      MapPoint topLeft = baseMap.getMapPosition(0, 0);
-      double width = baseMap.getParent().getLayoutBounds().getWidth();
-      double height = baseMap.getParent().getLayoutBounds().getHeight();
-      MapPoint bottomRight = baseMap.getMapPosition(width - 1, height - 1);
+      MapPoint topLeft = mapViewAbstract.getMapPosition(0, 0);
+      double width = mapViewAbstract.getWidth();
+      double height = mapViewAbstract.getHeight();
+      MapPoint bottomRight = mapViewAbstract.getMapPosition(width - 1, height - 1);
       WGS84BoundingBox mapBoundingBox = new WGS84BoundingBox(topLeft.getLongitude(), topLeft.getLatitude(), bottomRight.getLongitude(), bottomRight.getLatitude());
       if (boundingBox == null  ||  !mapBoundingBox.intersects(boundingBox)) {
         drawGPXData = false;
@@ -646,7 +645,7 @@ public class GPXLayer extends MapLayer {
           final Node icon = waypointData.node();
           final WptType point = waypointData.waypoint();
 
-          final Point2D mapPoint = baseMap.getMapPoint(point.getLat().doubleValue(), point.getLon().doubleValue());
+          final Point2D mapPoint = mapViewAbstract.getMapPoint(point.getLat().doubleValue(), point.getLon().doubleValue());
           icon.setTranslateX(mapPoint.getX());
           icon.setTranslateY(mapPoint.getY());
 
@@ -668,7 +667,7 @@ public class GPXLayer extends MapLayer {
             final WptType point = waypointData.waypoint();
             Node icon = waypointData.node();
 
-            final Point2D mapPoint = baseMap.getMapPoint(point.getLat().doubleValue(), point.getLon().doubleValue());
+            final Point2D mapPoint = mapViewAbstract.getMapPoint(point.getLat().doubleValue(), point.getLon().doubleValue());
             icon.setTranslateX(mapPoint.getX());
             icon.setTranslateY(mapPoint.getY());
             
@@ -698,7 +697,7 @@ public class GPXLayer extends MapLayer {
           while (trackPointIterator.hasNext()) {
             final WptType point = trackPointIterator.next();
             
-            final Point2D mapPoint = baseMap.getMapPoint(point.getLat().doubleValue(), point.getLon().doubleValue());
+            final Point2D mapPoint = mapViewAbstract.getMapPoint(point.getLat().doubleValue(), point.getLon().doubleValue());
             if (previousMapPoint != null  &&  trackPointIterator.hasNext()) {
               if (Math.abs(mapPoint.getX() - previousMapPoint.getX()) +  Math.abs(mapPoint.getY() - previousMapPoint.getY()) < 14) {
                 continue;
@@ -772,7 +771,7 @@ public class GPXLayer extends MapLayer {
       
       // Bounding box
       if (boundingBoxData != null) {
-        MapViewUtil.updateBoundingBoxPolygon(boundingBoxData.polygon(), boundingBoxData.boundingBox(), baseMap);
+        MapViewUtil.updateBoundingBoxPolygon(boundingBoxData.polygon(), boundingBoxData.boundingBox(), mapViewAbstract);
 //        layoutBoundingBox(boundingBoxData);
       }
       
@@ -780,7 +779,7 @@ public class GPXLayer extends MapLayer {
       if (boundingBoxData != null) {
         if (boundingBox != null) {
           WGS84Coordinates center = boundingBox.getCenter();
-          Point2D mapPoint = baseMap.getMapPoint(center.getLatitude(), center.getLongitude());
+          Point2D mapPoint = mapViewAbstract.getMapPoint(center.getLatitude(), center.getLongitude());
           Node node = gpxFileData.label();
           node.setTranslateX(mapPoint.getX() - node.prefWidth(-1) / 2);
           node.setTranslateY(mapPoint.getY() - node.prefHeight(-1) / 2);

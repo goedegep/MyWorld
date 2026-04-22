@@ -12,7 +12,7 @@ import goedegep.jfx.editor.controls.EditorControlInteger;
 import goedegep.jfx.editor.controls.EditorControlInteger.IntegerBuilder;
 import goedegep.jfx.eobjecttreeview.EObjectTreeItem;
 import goedegep.jfx.eobjecttreeview.EObjectTreeView;
-import goedegep.travels.logic.VacationsChecker;
+import goedegep.travels.logic.TravelsChecker;
 import goedegep.travels.logic.TravelsUtils;
 import goedegep.travels.model.Location;
 import goedegep.travels.model.Travel;
@@ -40,7 +40,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 
 /**
- * TODO: Check vacation folder on naming convention
+ * TODO: Check travel folders on naming convention
  * TODO: Check that all references, except for pictures, are to the related vacation folder
  * TODO: Check that if there is a photo folder for a vacation, that the corresponding attribute is set.
  * TODO: Check that all picture references are to the pictures folder of the vacation. And not in an ignore directory.
@@ -184,7 +184,7 @@ public class CheckTravelsWindow extends JfxStage {
     Travel vacation = null;
     if (!checkAllTravels) {
       EObjectTreeItem treeItem = treeView.getSelectedObject();
-      if (treeItem == null  ||  ((vacation = TravelsUtils.getVacationForObject(treeItem.getValue())) == null)) {
+      if (treeItem == null  ||  ((vacation = TravelsUtils.getTravelForObject(treeItem.getValue())) == null)) {
         checkResultsPanel.getChildren().add(createNoTravelSelectedPanel());
         return;
       }
@@ -219,7 +219,7 @@ public class CheckTravelsWindow extends JfxStage {
   private void runSuspiciousFilesCheck() {
     VBox checkResultPanel = createCheckResultPanel();
 
-    List<String> suspiciousFiles = VacationsChecker.findSupiciousTopLevelFiles();
+    List<String> suspiciousFiles = TravelsChecker.findSupiciousTopLevelFiles();
     
     Label label = null;
     if (suspiciousFiles.isEmpty()) {
@@ -261,7 +261,7 @@ public class CheckTravelsWindow extends JfxStage {
   private void runVacationFoldersNotReferredToCheck() {
     VBox checkResultPanel = createCheckResultPanel();
 
-    List<Path> vacationFoldersNotReferredTo = VacationsChecker.checkThatAllVacationFoldersAreReferredTo(vacations);
+    List<Path> vacationFoldersNotReferredTo = TravelsChecker.checkThatAllTravelFoldersAreReferredTo(vacations);
     
     Label label = null;
     if (vacationFoldersNotReferredTo.isEmpty()) {
@@ -302,7 +302,7 @@ public class CheckTravelsWindow extends JfxStage {
     VBox checkResultPanel = createCheckResultPanel();
 
     // Run the check on the travel
-    List<FileReference> referencesNotSet = VacationsChecker.checkThatAllReferencesAreSet(travel);
+    List<FileReference> referencesNotSet = TravelsChecker.checkThatAllReferencesAreSet(travel);
 
     // If there are errors
     if (!referencesNotSet.isEmpty()) {
@@ -350,7 +350,7 @@ public class CheckTravelsWindow extends JfxStage {
 
     for (Travel travel: vacations.getTravels()) {
       // Run the check on the travel
-      List<FileReference> referencesNotSet = VacationsChecker.checkThatAllReferencesAreSet(travel);
+      List<FileReference> referencesNotSet = TravelsChecker.checkThatAllReferencesAreSet(travel);
 
       // If there are errors
       if (!referencesNotSet.isEmpty()) {
@@ -403,7 +403,7 @@ public class CheckTravelsWindow extends JfxStage {
     VBox checkResultPanel = createCheckResultPanel();
 
     // Run the check on the travel
-    List<FileReference> referencesNotFound = VacationsChecker.checkThatAllReferencesExist(travel);
+    List<FileReference> referencesNotFound = TravelsChecker.checkThatAllReferencesExist(travel);
 
     // If there are errors
     if (!referencesNotFound.isEmpty()) {
@@ -451,7 +451,7 @@ public class CheckTravelsWindow extends JfxStage {
 
     for (Travel aTravel: vacations.getTravels()) {
       // Run the check on the travel
-      List<FileReference> referencesNotFound = VacationsChecker.checkThatAllReferencesExist(aTravel);
+      List<FileReference> referencesNotFound = TravelsChecker.checkThatAllReferencesExist(aTravel);
 
       // If there are errors
       if (!referencesNotFound.isEmpty()) {
@@ -513,7 +513,7 @@ public class CheckTravelsWindow extends JfxStage {
     //  Run the check on the travel
     List<Path> filesNotReferredTo;
     try {
-      filesNotReferredTo = VacationsChecker.checkThatAllFilesInTravelFolderAreReferredTo(travel, travelFolderPath);
+      filesNotReferredTo = TravelsChecker.checkThatAllFilesInTravelFolderAreReferredTo(travel, travelFolderPath);
     } catch (IOException e) {
       Label label = createTitleLabel(false, "The folder with travel related files '" + travelFolder + "' couldn't be checked. System error" + e.getMessage(), null);
       checkResultsPanel.getChildren().add(label);
@@ -586,7 +586,7 @@ public class CheckTravelsWindow extends JfxStage {
       List<Path> filesNotReferredTo = null;
       IOException ioException = null;
       try {
-        filesNotReferredTo = VacationsChecker.checkThatAllFilesInTravelFolderAreReferredTo(travel, travelFolderPath);
+        filesNotReferredTo = TravelsChecker.checkThatAllFilesInTravelFolderAreReferredTo(travel, travelFolderPath);
       } catch (IOException e) {
         ioException = e;
       }
@@ -651,7 +651,7 @@ public class CheckTravelsWindow extends JfxStage {
   private void runCheckOnBoundarySizes(Travel travel) {
     
     //  Run the check on the travel
-    List<Location> locationsWithLargeBoundaries = VacationsChecker.getLocationsWithLargeBoundaries(travel, integerControlBoundarySizeThreshold.getValue());
+    List<Location> locationsWithLargeBoundaries = TravelsChecker.getLocationsWithLargeBoundaries(travel, integerControlBoundarySizeThreshold.getValue());
     
     VBox checkResultPanel = createCheckResultPanel();
     
@@ -714,7 +714,7 @@ public class CheckTravelsWindow extends JfxStage {
       }
       
       //  Run the check on the travel
-      List<Location> locationsWithLargeBoundaries = VacationsChecker.getLocationsWithLargeBoundaries(travel, integerControlBoundarySizeThreshold.getValue());
+      List<Location> locationsWithLargeBoundaries = TravelsChecker.getLocationsWithLargeBoundaries(travel, integerControlBoundarySizeThreshold.getValue());
 
       // If there are errors
       if (!locationsWithLargeBoundaries.isEmpty()) {
@@ -777,7 +777,7 @@ public class CheckTravelsWindow extends JfxStage {
     Vacation vacation = (Vacation) travel;
     
     //  Run the check on the travel
-    boolean picturesFolderAccordingToConvention = VacationsChecker.isPicturesFolderAccordingToConvention(vacation);
+    boolean picturesFolderAccordingToConvention = TravelsChecker.isPicturesFolderAccordingToConvention(vacation);
     
     VBox checkResultPanel = createCheckResultPanel();
     
@@ -835,7 +835,7 @@ public class CheckTravelsWindow extends JfxStage {
       Vacation vacation = (Vacation) travel;
       
       //  Run the check on the travel
-      boolean picturesFolderAccordingToConvention = VacationsChecker.isPicturesFolderAccordingToConvention(vacation);
+      boolean picturesFolderAccordingToConvention = TravelsChecker.isPicturesFolderAccordingToConvention(vacation);
 
       // If there are errors
       if (!picturesFolderAccordingToConvention) {
@@ -894,7 +894,7 @@ public class CheckTravelsWindow extends JfxStage {
     Vacation vacation = (Vacation) travel;
     
     //  Run the check on the travel
-    boolean picturesSetIfTravelHasPictures = VacationsChecker.isPicturesSetIfTravelHasPictures(vacation);
+    boolean picturesSetIfTravelHasPictures = TravelsChecker.isPicturesSetIfTravelHasPictures(vacation);
     
     VBox checkResultPanel = createCheckResultPanel();
     
@@ -932,7 +932,7 @@ public class CheckTravelsWindow extends JfxStage {
       Vacation vacation = (Vacation) travel;
       
       //  Run the check on the travel
-      boolean picturesSetIfTravelHasPictures = VacationsChecker.isPicturesSetIfTravelHasPictures(vacation);
+      boolean picturesSetIfTravelHasPictures = TravelsChecker.isPicturesSetIfTravelHasPictures(vacation);
 
       // If there are errors
       if (!picturesSetIfTravelHasPictures) {
@@ -983,7 +983,7 @@ public class CheckTravelsWindow extends JfxStage {
     VBox checkResultPanel = createCheckResultPanel();
 
     // Run the check on the travel
-    List<Path> photosNotReferredTo = VacationsChecker.getTravelPhotosNotReferredTo(travel);
+    List<Path> photosNotReferredTo = TravelsChecker.getTravelPhotosNotReferredTo(travel);
 
     // If there are photos not referred to
     if (!photosNotReferredTo.isEmpty()) {
@@ -1034,7 +1034,7 @@ public class CheckTravelsWindow extends JfxStage {
 
     for (Travel aTravel: vacations.getTravels()) {
       // Run the check on the travel
-      List<Path> photosNotReferredTo = VacationsChecker.getTravelPhotosNotReferredTo(aTravel);
+      List<Path> photosNotReferredTo = TravelsChecker.getTravelPhotosNotReferredTo(aTravel);
 
       // If there are errors
       if (!photosNotReferredTo.isEmpty()) {

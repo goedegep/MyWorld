@@ -23,7 +23,7 @@ public class MapImageViewProgressTask extends Task<Boolean> {
 //    scene.addPostLayoutPulseListener(() -> layoutDone = true);
     while (!ready()) {
       Thread.sleep(4000);
-      System.out.println("layoutDone = " + layoutDone + ", allTilesAvailable = " + imageTravelMapView.getBaseMap().allTilesAvailable());
+      System.out.println("layoutDone = " + layoutDone);
       ready = true;
     }
     updateValue(true);
@@ -40,9 +40,9 @@ public class MapImageViewProgressTask extends Task<Boolean> {
       return true;
     }
     
-    if (imageTravelMapView.getBaseMap().allTilesAvailable()  && layoutDone) {
-      return true;
-    }
+//    if (imageTravelMapView.getBaseMap().allTilesAvailable()  && layoutDone) {
+//      return true;
+//    }
     return false;
   }
 

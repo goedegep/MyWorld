@@ -1,3 +1,29 @@
+h2. Maps
+
+h3. Implementation steps
+* Adapt package names
+* Adapt imports
+* Create test window in Travels, using the gluon version and my version.
+** Button Zoom to full map
+** Button for increase and decrease zoom level
+* Test zoom in 5 times, home, 6 * left, zoom in. Both zoom in on home
+* Test zoom in 5 times, 6 * left, zoom in. Both zoom in on center of last zoom
+
+h3. Improvements
+* Center the map in the panel in which it is shown. Note that this is only relevant for the lowest zoom levels.
+
+h3. Manual
+The map is shown from the top left corner of the panel in which it is shown.
+
+h3. Problems in my MapView
+* The right hand side of the test panel is white, instead of covered by the map.
+This is only the case on low zoom values.
+* Zoom (mouse or button) always zoom from last zoom end or last setCenter()
+
+h3. Problems in gluonhq MapView
+* After dragging the map setCenter(51.476743, 5.429724) doesn't work anymore
+* Crash on setting negative zoom level
+
 h2. Notes
 * MediaDb Original Track Reference
 Change this to a boolean. Only set on original track.
@@ -5,8 +31,6 @@ Original Track is found via Track (like now), but check on referred by reference
 For now: only let original track reference refer to itself.
 
 h2. ToDo list
-* Change jar file names for appliction projects. Shall not have spaces. E.g. use maven artifact id?
-* Design new project and package names and refactor
 * Where to put PropertyDescriptors files? User settings must get it from jar file, descriptors editor must get it from file in resoureces.
 * rename CustomizationFx etc to Customization
 * EObjectTreeView: For the root node (e.g. Travels), createContextMenu() in EObjectTreeCellHelperForObject cannot get an EReference and so just returns.

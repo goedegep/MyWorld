@@ -5,13 +5,12 @@ import java.util.List;
 import java.util.Objects;
 import java.util.logging.Logger;
 
-import com.gluonhq.maps.MapPoint;
-import com.gluonhq.maps.MapView;
-
 import goedegep.geo.WGS84BoundingBox;
 import goedegep.geo.WGS84Coordinates;
 import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.JfxStage;
+import goedegep.mapview.MapPoint;
+import goedegep.mapview.view.MapView;
 import goedegep.travels.model.Boundary;
 import goedegep.travels.model.Location;
 import goedegep.util.douglaspeuckerreducer.DouglasPeuckerReducer;
@@ -230,7 +229,7 @@ public class BoundariesPointsReductionWindow extends JfxStage {
     MapPoint mapCenter = new MapPoint(center.getLatitude(), center.getLongitude());
 
     if (mapCenter != null) {
-      mapView.flyTo(0.0, mapCenter, 2);
+      mapView.flyTo(0.0, mapCenter, 2, null);
     }
     
     handleNewSliderValue(slider.getValue());

@@ -17,8 +17,6 @@ import org.eclipse.emf.ecore.EStructuralFeature;
 import com.atlis.location.nominatim.NominatimAPI;
 import com.atlis.location.nominatim.OSMAddress;
 import com.atlis.location.nominatim.OSMLocationInfo;
-import com.gluonhq.maps.MapPoint;
-import com.gluonhq.maps.MapView;
 
 import goedegep.geo.WGS84BoundingBox;
 import goedegep.geo.WGS84Coordinates;
@@ -33,6 +31,8 @@ import goedegep.jfx.eobjecttreeview.EObjectTreeItemForObject;
 import goedegep.jfx.eobjecttreeview.EObjectTreeItemForObjectList;
 import goedegep.jfx.eobjecttreeview.EObjectTreeView;
 import goedegep.jfx.eobjecttreeview.EnumStringConverter;
+import goedegep.mapview.MapPoint;
+import goedegep.mapview.MapViewAbstract;
 import goedegep.poi.app.LocationCategory;
 import goedegep.resources.ImageSize;
 import goedegep.travels.logic.EnumStringConverterForLocationCategory;
@@ -1194,9 +1194,9 @@ class LocationPanel extends VBox {
     if (coordinates != null) {
       vacationsWindow.toFront();
 
-      MapView mapView = vacationsWindow.getTravelMapView();
+      MapViewAbstract mapView = vacationsWindow.getTravelMapView();
       MapPoint mapPoint = new MapPoint(coordinates.getLatitude(), coordinates.getLongitude());
-      mapView.flyTo(0, mapPoint, 2);
+      mapView.flyTo(0, mapPoint, 2, null);
     }
   }
    

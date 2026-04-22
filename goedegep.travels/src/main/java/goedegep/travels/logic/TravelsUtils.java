@@ -64,12 +64,12 @@ public class TravelsUtils {
   private static TravelsRegistry travelsRegistry = TravelsRegistry.getInstance();
   
   /**
-   * Get the vacation to which an object belongs.
+   * Get the {@code Travel} to which an object belongs.
    * 
-   * @param object the {@code Object} for which the vacation is to be obtained.
-   * @return The {@code Vacation} to which the {@code object} belongs, or null if the object is not part of a vacation.
+   * @param object the {@code Object} for which the {@code Travel} is to be obtained.
+   * @return The {@code Travel} to which the {@code object} belongs, or null if the object is not part of a travel.
    */
-  public static Travel getVacationForObject(Object object) {
+  public static Travel getTravelForObject(Object object) {
     if (object == null) {
       return null;
     }
@@ -130,7 +130,7 @@ public class TravelsUtils {
     
     /*
      * The current polyline.
-     * A polyline often goes across vacation elements. Therefore the method addGeoLocationsForVacationElement() gets the current polyline as a parameter.
+     * A polyline often goes across travel elements. Therefore the method addGeoLocationsForVacationElement() gets the current polyline as a parameter.
      * If a polyline ends addGeoLocationsForVacationElement() creates a new line and adds it to the locationConnectingLines.
      * The last line may be empty, so we have to remove it in that case.
      */
@@ -246,9 +246,9 @@ public class TravelsUtils {
   public static List<WGS84Coordinates> getGeoLocations(Day day) throws FileNotFoundException {
     List<WGS84Coordinates> geoLocations = new ArrayList<>();
     int numberOfDays = 0;
-    Vacation vacation = day.getVacation();
-    if (vacation != null) {
-      numberOfDays = getNumberOfDays(vacation);
+    Travel travel = day.getTravel();
+    if (travel != null) {
+      numberOfDays = getNumberOfDays(travel);
     }
     WGS84Coordinates[] stayedAtLocations = null;
     if (numberOfDays != 0) {
@@ -263,22 +263,22 @@ public class TravelsUtils {
   }
   
   /**
-   * Get the number of days of a vacation.
+   * Get the number of days of a {@code Travel}.
    * <p>
    * If the (start) date and end date are set, and both are complete dates, then these dates are used to calculate the duration.
-   * Otherwise the number of days is the sum of all days of all Day elements of the vacation (calculated by calling {@link #countNumberOfDays}.
+   * Otherwise the number of days is the sum of all days of all Day elements of the travel (calculated by calling {@link #countNumberOfDays}.
    * 
-   * @param vacation a <code>Vacation</code>
-   * @return the number of days of the vacation.
+   * @param travel a {@code Travel}
+   * @return the number of days of the {@code travel}.
    */
-  public static int getNumberOfDays(Vacation vacation) {
+  public static int getNumberOfDays(Travel travel) {
     int numberOfDays = 0;
     
-    if (vacation.isSetDate()  &&  vacation.isSetEndDate()) {
-      FlexDate flexDate = vacation.getDate();
+    if (travel.isSetDate()  &&  travel.isSetEndDate()) {
+      FlexDate flexDate = travel.getDate();
       LocalDateTime startDate = flexDate.toLocalDateTime();
       
-      flexDate = vacation.getEndDate();
+      flexDate = travel.getEndDate();
       LocalDateTime endDate = flexDate.toLocalDateTime();
 
 // Tried this, but it sometimes the result is one day short.
@@ -299,25 +299,25 @@ public class TravelsUtils {
     }
     
     if (numberOfDays == 0) {
-      numberOfDays = countNumberOfDays(vacation);
+      numberOfDays = countNumberOfDays(travel);
     }
     
     return numberOfDays;
   }
   
   /**
-   * Count the number of days of a vacation.
+   * Count the number of days of a {@code Travel}.
    * <p>
-   * The number of days is the sum of all days of all Day elements of the vacation.
-   * This method only gives the correct value if Day elements are consistently used for the vacation.
+   * The number of days is the sum of all days of all Day elements of the travel.
+   * This method only gives the correct value if Day elements are consistently used for the travel.
    * 
-   * @param vacation a <code>Vacation</code>
-   * @return the number of days of the <code>vacation</code>
+   * @param travel a {@code Travel}
+   * @return the number of days of the {@code travel}
    */
-  public static int countNumberOfDays(Vacation vacation) {
+  public static int countNumberOfDays(Travel travel) {
     int numberOfDays = 0;
     
-    TreeIterator<EObject> iterator = vacation.eAllContents();
+    TreeIterator<EObject> iterator = travel.eAllContents();
     
     while (iterator.hasNext()) {
       EObject eObject = iterator.next();
@@ -337,10 +337,10 @@ public class TravelsUtils {
   /**
    * Get a list of all the {@code Day} elements of a {@code Travel}.
    * 
-   * @param travel a <code>Vacation</code>
-   * @return a list of all the <code>Day</code> elements of a vacation.
+   * @param travel a {@code Travel}
+   * @return a list of all the {@code Day} elements of the {@code travel}.
    */
-  public static List<Day> getVacationDays(Travel travel) {
+  public static List<Day> getTravelDays(Travel travel) {
     List<Day> days = new ArrayList<>();
     
     TreeIterator<EObject> iterator = travel.eAllContents();
@@ -366,7 +366,7 @@ public class TravelsUtils {
    * <li>the third object contains the boundaries, or null if these aren't available.</li>
    * </ul>
    * 
-   * @param travel a <code>Vacation</code>
+   * @param travel a <code>Travel</code>
    * @return a mapping of VacationElements to their geo locations.
    */
   public static Map<VacationElement, Triplet<WGS84Coordinates, BoundingBox, List<Boundary>>> getTravelGeoLocations(Travel travel) {
@@ -575,7 +575,7 @@ public class TravelsUtils {
       }
     }
 
-    Location location = getTopLevelStayedAtLocationElement(day.getVacation());
+    Location location = getTopLevelStayedAtLocationElement(day.getTravel());
     if (location != null  &&  location.getDuration() != null  &&  location.getDuration() >= day.getDayNr()) {
       return location;
     }
@@ -583,9 +583,9 @@ public class TravelsUtils {
     return null;
   }
 
-  private static Location getTopLevelStayedAtLocationElement(Vacation vacation) {
+  private static Location getTopLevelStayedAtLocationElement(Travel travel) {
     
-    for (VacationElement vacationElement: vacation.getElements()) {
+    for (VacationElement vacationElement: travel.getElements()) {
       if (vacationElement instanceof Location location  &&  location.isStayedAtThisLocation()) {
         return location;
       }
@@ -601,11 +601,11 @@ public class TravelsUtils {
    * @return the previous {@code Day} of {@code day}, or null if this doesn't exist.
    */
   private static Day getPreviousDay(Day day) {
-    Vacation vacation = day.getVacation();
+    Travel travel = day.getTravel();
     
     Day previousDay = null;
     
-    for (VacationElement vacationElement: vacation.getElements()) {
+    for (VacationElement vacationElement: travel.getElements()) {
       if (vacationElement instanceof Day aDay) {
         if (aDay == day) {
           return previousDay;
@@ -656,7 +656,7 @@ public class TravelsUtils {
 //    }
     
     if (!location.isReferenceOnly()  &&                                                   // Reference only locations are not part of the lines
-        !(location.isStayedAtThisLocation()  &&  elementIsChildOfVacation(location))  &&  // If a 'stayed at' location exists at vacation level, it is not added here.
+        !(location.isStayedAtThisLocation()  &&  elementIsChildOfTravel(location))  &&  // If a 'stayed at' location exists at travel level, it is not added here.
         location.isSetLatitude()  &&  location.isSetLongitude()) {                        // And of course it must have coordinates.
       WGS84Coordinates coordinates = new WGS84Coordinates(location.getLatitude(), location.getLongitude());      
       geoLocations.add(coordinates);
@@ -699,16 +699,28 @@ public class TravelsUtils {
     }
   }
   
-  private static boolean elementIsChildOfVacation(VacationElement element) {
+  /**
+   * Check whether a {@code VacationElement} is part of a {@code Travel}.
+   * 
+   * @param element the {@code VacationElement} to check.
+   * @return true if {@code element} is part of a {@code Travel}, false otherwise.
+   */
+  private static boolean elementIsChildOfTravel(VacationElement element) {
     EObject containingObject = element.eContainer();
     
-    if (containingObject instanceof Vacation) {
+    if (containingObject instanceof Travel) {
       return true;
     } else {
       return false;
     }
   }
   
+  /**
+   * Check whether a {@code VacationElement} is part of a {@code GPXTrack} or {@code Location}.
+   * 
+   * @param element the {@code VacationElement} to check.
+   * @return true if {@code element} is part of a @code GPXTrack} or {@code Location}, false otherwise.
+   */
   private static boolean elementIsChildOfGpxTrackOrLocation(VacationElement element) {
     EObject containingObject = element.eContainer();
     
@@ -911,15 +923,15 @@ public class TravelsUtils {
   /**
    * Get a Path for the folder with photos for a specific vacation.
    * <p>
-   * If the 'Pictures' attribute is set on the vacation, then this is the photos folder.
-   * Otherwise, the folder is expected to be a folder with the name equal to the Id of the vacation, and being a sub folder of the
-   * folder with all photos of all vacations.
+   * If the 'Pictures' attribute is set on the travel, then this is the photos folder.
+   * Otherwise, the folder is expected to be a folder with the name equal to the Id of the travel, and being a sub folder of the
+   * folder with all photos of all travels.
    * 
-   * @param vacation the vacation for which to get a Path to its photos folder.
-   * @return a Path to the folder with photos for {@code vacation}, or null if this cannot be determined.
+   * @param travel the vacation for which to get a Path to its photos folder.
+   * @return a Path to the folder with photos for {@code travel}, or null if this cannot be determined.
    */
-  public static Path getVacationPhotosFolderPath(Travel vacation) {
-    String vacationPhotosFolder = vacation.getPictures();
+  public static Path getVacationPhotosFolderPath(Travel travel) {
+    String vacationPhotosFolder = travel.getPictures();
     
     if (vacationPhotosFolder != null) {
       vacationPhotosFolder = vacationPhotosFolder.trim();
@@ -936,7 +948,7 @@ public class TravelsUtils {
      *  - a valid vacation title
      */
     
-    Path vacationPhotosFolderPath = getVacationPhotosFolderPathByConvention(vacation);
+    Path vacationPhotosFolderPath = getVacationPhotosFolderPathByConvention(travel);
     if (vacationPhotosFolderPath != null  &&  Files.exists(vacationPhotosFolderPath)  &&  Files.isDirectory(vacationPhotosFolderPath)) {
       return vacationPhotosFolderPath;
     } else {
@@ -974,25 +986,25 @@ public class TravelsUtils {
    * </li>
    * </ul>
    * 
-   * @param vacation the {@Vacation} to get the path for.
+   * @param travel the {@Vacation} to get the path for.
    * @return the photo folder path by convention for {@code vacation}, or null if this cannot be determined.
    */
-  public static Path getVacationPhotosFolderPathByConvention(Travel vacation) {
+  public static Path getVacationPhotosFolderPathByConvention(Travel travel) {
     Path vacationsPhotosFolderPath = getVacationsPhotosFolderPath();
     
     if (vacationsPhotosFolderPath == null) {
       return null;
     }
     
-    if (vacation.getDate() == null) {
+    if (travel.getDate() == null) {
       return null;
     }
     
-    if (vacation.getTitle() == null  ||  vacation.getTitle().isEmpty()) {
+    if (travel.getTitle() == null  ||  travel.getTitle().isEmpty()) {
       return null;
     }
     
-    String vacationId = vacation.getId();
+    String vacationId = travel.getId();
     
     Path vacationPhotosFolderPath = vacationsPhotosFolderPath.resolve(vacationId);
     
@@ -1345,7 +1357,8 @@ public class TravelsUtils {
     case GPXTrack gpxTrack -> getShortTextForGPXTrack(gpxTrack);
     case FileReference _ -> "File Reference";
     case Location location -> getShortTextForLocation(location);
-    case Vacation vacation -> getShortTextForVacation(vacation);
+    case Vacation vacation -> getShortTextForTravel(vacation);
+    case Travel travel -> getShortTextForTravel(travel);
     case Travels _ -> "Vacations";
     default -> "?";
     };
@@ -1353,9 +1366,9 @@ public class TravelsUtils {
     return text;
   }
 
-  private static String getShortTextForVacation(Vacation vacation) {
+  private static String getShortTextForTravel(Travel travel) {
     String shortText = null;
-    shortText = vacation.getId();
+    shortText = travel.getId();
     
     return shortText;
   }
@@ -1418,8 +1431,8 @@ public class TravelsUtils {
     return shortText;
   }
   
-  public static boolean doesTravelHavePictures(Vacation vacation) {
-    TreeIterator<EObject> iterator = vacation.eAllContents();
+  public static boolean doesTravelHavePictures(Travel travel) {
+    TreeIterator<EObject> iterator = travel.eAllContents();
     Path vacationPhotosFolderPath = getVacationsPhotosFolderPath();
     
     while (iterator.hasNext()) {

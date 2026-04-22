@@ -31,7 +31,7 @@ import com.gluonhq.attach.storage.StorageService;
 import javafx.scene.image.Image;
 
 import java.io.File;
-import java.io.FileInputStream;
+//import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -40,113 +40,160 @@ import java.net.URLConnection;
 import java.nio.file.Files;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ThreadFactory;
+//import java.util.concurrent.ExecutorService;
+//import java.util.concurrent.Executors;
+//import java.util.concurrent.ThreadFactory;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class CachedOsmTileRetriever extends OsmTileRetriever {
 
-    private static final Logger logger = Logger.getLogger(CachedOsmTileRetriever.class.getName());
-    private static final int TIMEOUT = 10000;
-    private static final ExecutorService EXECUTOR = Executors.newFixedThreadPool(2, new DaemonThreadFactory());
+  private static final Logger logger = Logger.getLogger(CachedOsmTileRetriever.class.getName());
+  private static final int TIMEOUT = 10000;
+//  private static final ExecutorService EXECUTOR = Executors.newFixedThreadPool(2, new DaemonThreadFactory());
 
-    static File cacheRoot;
-    static boolean hasFileCache;
-    static {
-        try {
-            Optional<File> storageRoot = StorageService.create()
-                    .flatMap(StorageService::getPrivateStorage);
-            if (storageRoot.isEmpty()) {
-                cacheRoot = Files.createTempDirectory(".gluonmaps").toFile();
-                logger.info("StorageService implementation not found.\n" +
-                        "Tiles will be cached at a temporary directory: " + cacheRoot);
-            } else {
-                cacheRoot = new File(storageRoot.get(), ".gluonmaps");
-            }
-            logger.fine("[JVDBG] cacheroot = " + cacheRoot);
-            if (!cacheRoot.isDirectory()) {
-                hasFileCache = cacheRoot.mkdirs();
-            } else {
-                hasFileCache = true;
-            }
-            logger.fine("hasfilecache = " + hasFileCache);
-        } catch (IOException ex) {
-            hasFileCache = false;
-            logger.log(Level.SEVERE, null, ex);
-        }
+  static File cacheRoot;
+  static boolean hasFileCache;
+  static {
+    try {
+      Optional<File> storageRoot = StorageService.create()
+          .flatMap(StorageService::getPrivateStorage);
+      if (storageRoot.isEmpty()) {
+        cacheRoot = Files.createTempDirectory(".gluonmaps").toFile();
+        logger.info("StorageService implementation not found.\n" +
+            "Tiles will be cached at a temporary directory: " + cacheRoot);
+      } else {
+        cacheRoot = new File(storageRoot.get(), ".gluonmaps");
+      }
+      logger.fine("[JVDBG] cacheroot = " + cacheRoot);
+      if (!cacheRoot.isDirectory()) {
+        hasFileCache = cacheRoot.mkdirs();
+      } else {
+        hasFileCache = true;
+      }
+      logger.fine("hasfilecache = " + hasFileCache);
+    } catch (IOException ex) {
+      hasFileCache = false;
+      logger.log(Level.SEVERE, null, ex);
+    }
+  }
+
+  @Override
+  public CompletableFuture<Image> loadTile(int zoom, long i, long j) {
+    try {
+      cacheFileIfNotYetCached(zoom, i, j);
+    } catch (IOException e) {
+      logger.severe("Exception in caching tile: " + e.toString());
     }
 
-    @Override
-    public CompletableFuture<Image> loadTile(int zoom, long i, long j) {
-        Image image = fromFileCache(zoom, i, j);
-        if (image != null) {
-            return CompletableFuture.completedFuture(image);
-        }
-        return CompletableFuture.supplyAsync(() -> {
-            logger.fine("start downloading tile " + zoom + "/" + i + "/" + j);
-            try {
-                return CacheThread.cacheImage(zoom, i, j);
-            } catch (IOException e) {
-                throw new RuntimeException("Error " + e.getMessage());
-            }
-        }, EXECUTOR);
-    }
-
-
-    static private Image fromFileCache(int zoom, long i, long j) {
-        if (!hasFileCache) {
-            return null;
-        }
-        String tag = zoom + File.separator + i + File.separator + j + ".png";
-        File f = new File(cacheRoot, tag);
-        return f.exists() ? new Image(f.toURI().toString(), false) : null;
-    }
-
-    private static class CacheThread {
-
-        public static Image cacheImage(int zoom, long i, long j) throws IOException {
-            File file = doCache(buildImageUrlString(zoom, i, j), zoom, i, j);
-            return new Image(new FileInputStream(file));
-        }
-
-        private static File doCache(String urlString, int zoom, long i, long j) throws IOException {
-            final URLConnection openConnection;
-            URL url = new URL(urlString);
-            openConnection = url.openConnection();
-            openConnection.addRequestProperty("User-Agent", httpAgent);
-            openConnection.setConnectTimeout(TIMEOUT);
-            openConnection.setReadTimeout(TIMEOUT);
-            try (InputStream inputStream = openConnection.getInputStream()) {
-                String enc = File.separator + zoom + File.separator + i + File.separator + j + ".png";
-                logger.fine("retrieve " + urlString + " and store " + enc);
-                File candidate = new File(cacheRoot, enc);
-                candidate.getParentFile().mkdirs();
-                try (FileOutputStream fos = new FileOutputStream(candidate)) {
-                    byte[] buff = new byte[4096];
-                    int len = inputStream.read(buff);
-                    while (len > 0) {
-                        fos.write(buff, 0, len);
-                        len = inputStream.read(buff);
-                    }
-                    return candidate;
-                }
-            } catch (Exception e) {
-              logger.severe("Exception in retrieving tile: " + e.toString());
-              return null;
-            }
-        }
-    }
-
-    private static class DaemonThreadFactory implements ThreadFactory {
-
-        @Override
-        public Thread newThread(final Runnable r) {
-            Thread t = new Thread(r);
-            t.setDaemon(true);
-            return t;
-        }
+    Image image = fromFileCache(zoom, i, j);
+    if (image != null) {
+      return CompletableFuture.completedFuture(image);
     }
     
+    return null;
+//    return CompletableFuture.supplyAsync(() -> {
+//      logger.fine("start downloading tile " + zoom + "/" + i + "/" + j);
+//      try {
+//        return CacheThread.cacheImage(zoom, i, j);
+//      } catch (IOException e) {
+//        throw new RuntimeException("Error " + e.getMessage());
+//      }
+//    }, EXECUTOR);
+  }
+
+  private void cacheFileIfNotYetCached(int zoom, long i, long j) throws IOException {
+    if (!hasFileCache) {
+      return;
+    }
+
+    String tag = zoom + File.separator + i + File.separator + j + ".png";
+    File f = new File(cacheRoot, tag);
+    if (f.exists()) {
+      return;
+    }
+
+    String urlString = buildImageUrlString(zoom, i, j);
+    final URLConnection openConnection;
+    URL url = new URL(urlString);
+    openConnection = url.openConnection();
+    openConnection.addRequestProperty("User-Agent", httpAgent);
+    openConnection.setConnectTimeout(TIMEOUT);
+    openConnection.setReadTimeout(TIMEOUT);
+    try (InputStream inputStream = openConnection.getInputStream()) {
+      String enc = File.separator + zoom + File.separator + i + File.separator + j + ".png";
+      logger.fine("retrieve " + urlString + " and store " + enc);
+      File candidate = new File(cacheRoot, enc);
+      candidate.getParentFile().mkdirs();
+      try (FileOutputStream fos = new FileOutputStream(candidate)) {
+        byte[] buff = new byte[4096];
+        int len = inputStream.read(buff);
+        while (len > 0) {
+          fos.write(buff, 0, len);
+          len = inputStream.read(buff);
+        }
+        return;
+      }
+    } catch (Exception e) {
+      logger.severe("Exception in retrieving tile: " + e.toString());
+      return;
+    }
+
+  }
+
+
+  static private Image fromFileCache(int zoom, long i, long j) {
+    if (!hasFileCache) {
+      return null;
+    }
+    String tag = zoom + File.separator + i + File.separator + j + ".png";
+    File f = new File(cacheRoot, tag);
+    return f.exists() ? new Image(f.toURI().toString(), false) : null;
+  }
+
+//  private static class CacheThread {
+//
+//    public static Image cacheImage(int zoom, long i, long j) throws IOException {
+//      File file = doCache(buildImageUrlString(zoom, i, j), zoom, i, j);
+//      return new Image(new FileInputStream(file));
+//    }
+//
+//    private static File doCache(String urlString, int zoom, long i, long j) throws IOException {
+//      final URLConnection openConnection;
+//      URL url = new URL(urlString);
+//      openConnection = url.openConnection();
+//      openConnection.addRequestProperty("User-Agent", httpAgent);
+//      openConnection.setConnectTimeout(TIMEOUT);
+//      openConnection.setReadTimeout(TIMEOUT);
+//      try (InputStream inputStream = openConnection.getInputStream()) {
+//        String enc = File.separator + zoom + File.separator + i + File.separator + j + ".png";
+//        logger.fine("retrieve " + urlString + " and store " + enc);
+//        File candidate = new File(cacheRoot, enc);
+//        candidate.getParentFile().mkdirs();
+//        try (FileOutputStream fos = new FileOutputStream(candidate)) {
+//          byte[] buff = new byte[4096];
+//          int len = inputStream.read(buff);
+//          while (len > 0) {
+//            fos.write(buff, 0, len);
+//            len = inputStream.read(buff);
+//          }
+//          return candidate;
+//        }
+//      } catch (Exception e) {
+//        logger.severe("Exception in retrieving tile: " + e.toString());
+//        return null;
+//      }
+//    }
+//  }
+
+//  private static class DaemonThreadFactory implements ThreadFactory {
+//
+//    @Override
+//    public Thread newThread(final Runnable r) {
+//      Thread t = new Thread(r);
+//      t.setDaemon(true);
+//      return t;
+//    }
+//  }
+
 }

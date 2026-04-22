@@ -23,7 +23,7 @@ public class LocationDescriptionDialog extends Dialog<ButtonType> {
   @SuppressWarnings("unused")
   private final static Logger LOGGER = Logger.getLogger(LocationDescriptionDialog.class.getName());
   
-  private static VacationToHtmlConverter vacationToHtmlConverter;
+  private static TravelToHtmlConverter vacationToHtmlConverter;
 
   /**
    * Constructor
@@ -33,7 +33,7 @@ public class LocationDescriptionDialog extends Dialog<ButtonType> {
    */
   public LocationDescriptionDialog(CustomizationFx customization, Stage ownerWindow, Location location) {
     setTitle("Informatie over " + location.getName());
-    vacationToHtmlConverter = new VacationToHtmlConverter(VacationToHtmlConverterSetting.getDefaultSettings());
+    vacationToHtmlConverter = new TravelToHtmlConverter(TravelToHtmlConverterSetting.getDefaultSettings());
     Image locationIcon = null;
     if (location.isSetLocationCategory()) {
       locationIcon = location.getLocationCategory().getIcon(ImageSize.SIZE_0);

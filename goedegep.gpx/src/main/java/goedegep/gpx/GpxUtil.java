@@ -11,6 +11,7 @@ import java.util.logging.Logger;
 
 import org.eclipse.emf.common.util.EMap;
 import org.eclipse.emf.ecore.resource.ResourceSet;
+import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 
 import goedegep.geo.WGS84BoundingBox;
 import goedegep.geo.WGS84Coordinates;
@@ -25,6 +26,7 @@ import goedegep.gpx.model.WptType;
 import goedegep.gpx.model.util.GPXResourceFactoryImpl;
 import goedegep.gpx10.model.GPX10Factory;
 import goedegep.gpx10.model.GPX10Package;
+import goedegep.gpx10.model.util.GPX10ResourceFactoryImpl;
 import goedegep.util.emf.EMFResource;
 import goedegep.util.emf.EMFResourceSet;
 
@@ -60,11 +62,12 @@ public class GpxUtil {
    * @return an {@link EMFResource} for a GPX file.
    */
   public static EMFResource<goedegep.gpx10.model.DocumentRoot> createGPX10EMFResource() {
-    ResourceSet resourceSet = EMFResourceSet.getResourceSet();
+    ResourceSet resourceSet = new ResourceSetImpl();
+//    ResourceSet resourceSet = EMFResourceSet.getResourceSet();
     resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap().put(
-        "gpx", new GPXResourceFactoryImpl());
+        "gpx", new GPX10ResourceFactoryImpl());
     
-    EMFResource<goedegep.gpx10.model.DocumentRoot> gpx10Resource = new EMFResource<>(GPX10Package.eINSTANCE, () -> GPX10Factory.eINSTANCE.createDocumentRoot(), ".gpx", false);
+    EMFResource<goedegep.gpx10.model.DocumentRoot> gpx10Resource = new EMFResource<>(GPX10Package.eINSTANCE, GpxUtil::createBasicGPX10DocumentRoot, ".gpx", false);
     
     return gpx10Resource;
   }
@@ -84,6 +87,25 @@ public class GpxUtil {
     
     EMap<String, String> xsiSchemaLocationMap = documentRoot.getXSISchemaLocation();
     xsiSchemaLocationMap.put("http://www.topografix.com/GPX/1/1", "http://www.topografix.com/GPX/1/1/gpx.xsd");
+    
+    return documentRoot;
+  }
+  
+  public static goedegep.gpx10.model.DocumentRoot createBasicGPX10DocumentRoot() {
+    GPX10Factory gpxFactory = GPX10Factory.eINSTANCE;
+    
+    goedegep.gpx10.model.DocumentRoot documentRoot = gpxFactory.createDocumentRoot();
+    
+    goedegep.gpx10.model.GpxType gpxType = gpxFactory.createGpxType();
+    gpxType.setVersion("1.0");
+    documentRoot.setGpx(gpxType);
+    
+    EMap<String, String> xmlNsPrefixMap = documentRoot.getXMLNSPrefixMap();
+    xmlNsPrefixMap.put("xsi", "http://www.w3.org/2001/XMLSchema-instance");
+    xmlNsPrefixMap.put("", "http://www.topografix.com/GPX/1/0");
+    
+    EMap<String, String> xsiSchemaLocationMap = documentRoot.getXSISchemaLocation();
+    xsiSchemaLocationMap.put("http://www.topografix.com/GPX/1/0", "http://www.topografix.com/GPX/1/0/gpx.xsd");
     
     return documentRoot;
   }
@@ -524,7 +546,13 @@ public class GpxUtil {
     try (FileReader fileReader = new FileReader(file)) {
       BufferedReader reader = new BufferedReader(fileReader);
       String line = reader.readLine();
-      line = reader.readLine();
+      while (!line.contains("<gpx")) {
+        line = reader.readLine();
+        if (line == null) {
+          // end of file reached without finding <gpx, so this isn't a GPX file
+          return GpxVersion.NO_GPX;
+        }
+      }
       if (line.contains("version=\"1.0\"")) {
         gpxVersion = GpxVersion.VERSION_1_0;
       } else if (line.contains("version=\"1.1\"")) {

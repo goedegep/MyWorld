@@ -53,7 +53,7 @@ public class PictureCache {
   
   public void createThumbnails(Path picturePath) {
     List<String> pictures = new ArrayList<>();
-    VacationsChecker.getPhotosInFolder(picturePath, pictures);
+    TravelsChecker.getPhotosInFolder(picturePath, pictures);
     
     for (String picture : pictures) {
       createThumbnail(picture);

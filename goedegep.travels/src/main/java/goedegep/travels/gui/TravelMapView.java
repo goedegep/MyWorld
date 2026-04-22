@@ -5,8 +5,8 @@ import java.util.List;
 import java.util.function.Supplier;
 import java.util.logging.Logger;
 
-import com.gluonhq.maps.MapView;
-
+//import com.gluonhq.maps.MapView;
+import goedegep.mapview.view.MapView;
 import goedegep.gpxeditor.gui.GPXLayer;
 import goedegep.jfx.CustomizationFx;
 import goedegep.util.objectselector.ObjectSelectionListener;

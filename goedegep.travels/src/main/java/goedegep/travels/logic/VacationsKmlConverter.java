@@ -52,7 +52,7 @@ import goedegep.util.sgml.SgmlUtil;
 /**
  * This class creates a KML file for a Vacations structure.
  */
-public class VacationsKmlConverter extends VacationToTextConverterAbstract {
+public class VacationsKmlConverter extends TravelToTextConverterAbstract {
   private static final Logger LOGGER = Logger.getLogger(VacationsKmlConverter.class.getName());
   private static final String NEWLINE = System.getProperty("line.separator");
   private static final String ICON_DIRECTORY = "C:/MyWorld/goedegep.poi.app/src/main/resources/goedegep/poi/app/guifx";
@@ -100,8 +100,8 @@ public class VacationsKmlConverter extends VacationToTextConverterAbstract {
     
     Folder vacationsFolder = kmlDocument.createAndAddFolder().withName("Vakanties").withOpen(true);
     
-    for (Vacation vacation: vacations.getVacations()) {
-      createKmlForVacation(vacation, vacationsFolder);
+    for (Travel travel: vacations.getTravels()) {
+      createKmlForVacation(travel, vacationsFolder);
     }
     
     saveToFile(file);
@@ -201,7 +201,7 @@ public class VacationsKmlConverter extends VacationToTextConverterAbstract {
   private void createKmlForVacation(Travel vacation, Folder vacationsFolder) {
     
     // Folder name
-    Folder vacationFolder = vacationsFolder.createAndAddFolder().withName(HtmlUtil.encodeHTML(getVacationTitle(vacation), false));
+    Folder vacationFolder = vacationsFolder.createAndAddFolder().withName(HtmlUtil.encodeHTML(getTravelTitle(vacation), false));
     
     // Folder description
     buf.setLength(0);

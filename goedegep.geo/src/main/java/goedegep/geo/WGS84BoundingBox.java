@@ -29,6 +29,7 @@ private static final Logger LOGGER = Logger.getLogger(WGS84BoundingBox.class.get
     this.south = south;
   }
   
+  // TODO where is this used ??
   public WGS84BoundingBox(double westAndEast, double northAndSouth) {
     this(westAndEast, northAndSouth, westAndEast, northAndSouth);
   }

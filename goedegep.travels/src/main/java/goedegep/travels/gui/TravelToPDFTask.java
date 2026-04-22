@@ -12,7 +12,7 @@ import org.apache.pdfbox.pdmodel.PDDocument;
 import com.openhtmltopdf.outputdevice.helper.BaseRendererBuilder.PageSizeUnits;
 import com.openhtmltopdf.pdfboxout.PdfRendererBuilder;
 
-import goedegep.travels.logic.VacationToHtmlConverter;
+import goedegep.travels.logic.TravelToHtmlConverter;
 import goedegep.travels.model.Travel;
 import goedegep.travels.model.Vacation;
 import javafx.concurrent.Task;
@@ -21,7 +21,7 @@ import javafx.concurrent.Task;
  * This class is a Task that generates a PDF document for a given Vacation object.
  * The task generates HTML from the Vacation object and then converts that HTML to a PDF.
  */
-public class VacationToPDFTask extends Task<PDDocument> {
+public class TravelToPDFTask extends Task<PDDocument> {
   
   /**
    * The in-memory file system used to generate the PDF file.
@@ -31,7 +31,7 @@ public class VacationToPDFTask extends Task<PDDocument> {
   /**
    * The converter to generate HTML for a Vacation object.
    */
-  private VacationToHtmlConverter vacationToHtmlConverter;
+  private TravelToHtmlConverter vacationToHtmlConverter;
   
   /**
    * The Vacation object for which the PDF will be generated.
@@ -57,7 +57,7 @@ public class VacationToPDFTask extends Task<PDDocument> {
    * @param imfs The in-memory file system used to create the PDF file.
    * @param vacation The Vacation object for which the PDF will be generated.
    */
-  public VacationToPDFTask(VacationToHtmlConverter vacationToHtmlConverter, FileSystem imfs, Travel vacation) {
+  public TravelToPDFTask(TravelToHtmlConverter vacationToHtmlConverter, FileSystem imfs, Travel vacation) {
     this.vacationToHtmlConverter = vacationToHtmlConverter;
     this.imfs = imfs;
     this.vacation = vacation;    
@@ -66,7 +66,7 @@ public class VacationToPDFTask extends Task<PDDocument> {
   @Override
   protected PDDocument call() throws Exception {
     // Generate HTML for the vacation.
-    String htmlText = vacationToHtmlConverter.vacationToHtml(vacation);
+    String htmlText = vacationToHtmlConverter.travelToHtml(vacation);
 
     tmpPdfDirPath = imfs.getPath("/tmpPdf");
     try {

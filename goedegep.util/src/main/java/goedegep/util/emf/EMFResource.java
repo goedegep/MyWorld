@@ -277,6 +277,7 @@ public class EMFResource<E extends EObject> {
       throw new RuntimeException("Wrong number of elements in contents: " + resource.getContents().size());
     }
     
+    Object o = resource.getContents().get(0);
     @SuppressWarnings("unchecked")
     E retval = (E) resource.getContents().get(0);
     dirty.set(false);

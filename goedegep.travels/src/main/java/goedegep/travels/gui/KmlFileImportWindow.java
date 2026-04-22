@@ -20,8 +20,6 @@ import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EStructuralFeature;
 
 import com.atlis.location.nominatim.NominatimAPI;
-import com.gluonhq.maps.MapPoint;
-import com.gluonhq.maps.MapView;
 
 import goedegep.geo.WGS84BoundingBox;
 import goedegep.geo.WGS84Coordinates;
@@ -44,6 +42,8 @@ import goedegep.jfx.eobjecttreeview.EObjectTreeItemClassListReferenceDescriptor;
 import goedegep.jfx.eobjecttreeview.EObjectTreeItemForObject;
 import goedegep.jfx.eobjecttreeview.EObjectTreeItemForObjectList;
 import goedegep.jfx.eobjecttreeview.EObjectTreeView;
+import goedegep.mapview.MapPoint;
+import goedegep.mapview.view.MapView;
 import goedegep.resources.ImageResource;
 import goedegep.travels.logic.KmlFileImporter;
 import goedegep.travels.logic.KmlPlacemarkImportData;
@@ -96,7 +96,7 @@ import javafx.scene.paint.Color;
  * Once the information is available you can select a vacation element, which will then be shown in the next part.
  * 
  * <h3>The middle part to view and edit the element</h3>
- * This part shows the selected element and you can modify it before adding it to a vacation.<br/>
+ * This part shows the selected element and you can modify it before adding it to a travel.<br/>
  * The content of this part fully depends on the type of element.
  * 
  * <h4>Location</h4>
@@ -122,8 +122,8 @@ import javafx.scene.paint.Color;
  * <li><b>The GPXTrack in a tree view</b><br/>
  * This tree view is always in edit mode, so here you can edit the GPX track.
  * However, you typically don't enter a 'Title' if you have a good name in the GPX data.<br/>
- * And the 'File' field is automatically filled in when you select an item in the tree view in the Vacations window.
- * The folder name is derived from the vacation to which the element will be added and the filename consists of the start time and the name
+ * And the 'File' field is automatically filled in when you select an item in the tree view in the {@code TravelsWindow}.
+ * The folder name is derived from the travel to which the element will be added and the filename consists of the start time and the name
  * of the GPX track.
  * </li>
  * <li><b>A map view centered on the GPX track</b><br/>
@@ -132,8 +132,8 @@ import javafx.scene.paint.Color;
  * </li>
  * </ul>
  * 
- * <h3>The bottom part to add the element to a vacation</h3>
- * To add the element to a vacation, you have to select an item in the vacations tree view in the Vacations window.
+ * <h3>The bottom part to add the element to a travel</h3>
+ * To add the element to a travel, you have to select an item in the travels tree view in the {@code TravelsWindow}.
  * If this is not done, you will be informed about this. If a list is selected, the element will be added to the end of the list.
  * If an element in a list is selected, you can choose between adding the element before or after this element.<br/>
  * In case of a GPXTrack, adding the element is accompanied by creating the GPX file.
@@ -149,11 +149,11 @@ public class KmlFileImportWindow extends JfxStage {
   private CustomizationFx customization;
 
   /**
-   * The {@code VacationsWindow} used for:<br/>
-   * Knowing the item selected in the vacations tree view.<br/>
-   * Obtaining the Home location from the Vacations (used to determine the home country and to skip it when importing information from a KML file).
+   * The {@code TravelsWindow} used for:<br/>
+   * Knowing the item selected in the travels tree view.<br/>
+   * Obtaining the Home location from the Travels (used to determine the home country and to skip it when importing information from a KML file).
    */
-  private TravelsWindow vacationsWindow;
+  private TravelsWindow travelsWindow;
 
   /**
    * A {@code NominatimAPI} to get Open Street Map information about a location.
@@ -181,9 +181,9 @@ public class KmlFileImportWindow extends JfxStage {
   private VacationElementPanel vacationElementPanel;
 
   /**
-   * The {@code AddElementToVacationPanel}. The bottom panel to add the selected element to a vacation.
+   * The {@code AddElementToVacationPanel}. The bottom panel to add the selected element to a travel.
    */
-  private AddElementToVacationPanel addElementToVacationPanel;
+  private AddElementToTravelPanel addElementToVacationPanel;
   
   /**
    * If an imported GPX track has no name, we give it a number.
@@ -194,15 +194,15 @@ public class KmlFileImportWindow extends JfxStage {
    * Constructor.
    * 
    * @param customization the GUI customization
-   * @param vacationsWindow the {@code VacationsWindow} to which this window belongs
+   * @param travelsWindow the {@code VacationsWindow} to which this window belongs
    * @param poiIcons {@code POIIcons} for the icons in the tree views
    * @param nominatimAPI a {@code NominatimAPI} to retrieve location information from
    */
-  public KmlFileImportWindow(CustomizationFx customization, TravelsWindow vacationsWindow, NominatimAPI nominatimAPI) {
+  public KmlFileImportWindow(CustomizationFx customization, TravelsWindow travelsWindow, NominatimAPI nominatimAPI) {
     super(customization, WINDOW_TITLE);
 
     this.customization = customization;
-    this.vacationsWindow = vacationsWindow;
+    this.travelsWindow = travelsWindow;
     this.nominatimAPI = nominatimAPI;
 
     elementEmfResource = new EMFResource<>(
@@ -217,14 +217,14 @@ public class KmlFileImportWindow extends JfxStage {
 
     createGUI();
 
-    // listen to Vacations tree view selection changes
-    EObjectTreeView vacationsTreeView = vacationsWindow.getTreeView();
-    vacationsTreeView.addObjectSelectionListener((_, selectedTreeItem) -> handleNewTreeItemSelected(selectedTreeItem));
+    // listen to Travels tree view selection changes
+    EObjectTreeView travelsTreeView = travelsWindow.getTreeView();
+    travelsTreeView.addObjectSelectionListener((_, selectedTreeItem) -> handleNewTreeItemSelected(selectedTreeItem));
 
     // react to a new element selected.
     kmlFileSelectionPanel.addObjectSelectionListener((_, element) -> handleNewTupletSelected(element));
 
-    handleNewTreeItemSelected(vacationsTreeView.getSelectedObject());
+    handleNewTreeItemSelected(travelsTreeView.getSelectedObject());
 
     show();
   }
@@ -233,23 +233,23 @@ public class KmlFileImportWindow extends JfxStage {
    * Create the controls, which in this case are the three panels.
    */
   private void createControls() {
-    kmlFileSelectionPanel = new KmlFileSelectionPanel(vacationsWindow.getVacations());
+    kmlFileSelectionPanel = new KmlFileSelectionPanel(travelsWindow.getTravels());
     vacationElementPanel = new VacationElementPanel();
-    addElementToVacationPanel = new AddElementToVacationPanel();    
+    addElementToVacationPanel = new AddElementToTravelPanel();    
   }
 
   /**
    * Handle the fact that a new item is selected in the Travels tree view.
    * <p>
-   * The related {@code Vacation} is passed on to the {@code vacationElementPanel}.
+   * The related {@code Travel} is passed on to the {@code vacationElementPanel}.
    * The {@code selectedTreeItem} is passed on to the {@code addElementToVacationPanel}.
    * 
-   * @param selectedTreeItem the currently selected item in the Vacations tree view.
+   * @param selectedTreeItem the currently selected item in the Travels tree view.
    */
   private void handleNewTreeItemSelected(TreeItem<Object> selectedTreeItem) {
     Travel travel = TravelsWindow.getTravelForTreeItem(selectedTreeItem, TravelsPackage.eINSTANCE.getTravel());
     if (travel != null) {
-      vacationElementPanel.handleNewVacationSelected(travel);
+      vacationElementPanel.handleNewTravelSelected(travel);
       addElementToVacationPanel.handleNewTreeItemSelected(selectedTreeItem);
     }
   }
@@ -287,9 +287,9 @@ public class KmlFileImportWindow extends JfxStage {
     //  private final static Logger LOGGER = Logger.getLogger(KmlFileSelectionPanel.class.getName());
 
     /**
-     * {@code Vacations} used to get the home location, which in turn is used to get the home country.
+     * {@code Travels} used to get the home location, which in turn is used to get the home country.
      */
-    private Travels vacations;
+    private Travels travels;
 
     /**
      * Import data retrieved from a KML file and extended with information obtained via a {@code NominatimAPI}.
@@ -325,10 +325,10 @@ public class KmlFileImportWindow extends JfxStage {
     /**
      * Constructor
      * 
-     * @param vacations {@code Vacations} used to get the home location, which in turn is used to get the home country.
+     * @param travels {@code Vacations} used to get the home location, which in turn is used to get the home country.
      */
-    public KmlFileSelectionPanel(Travels vacations) {
-      this.vacations = vacations;
+    public KmlFileSelectionPanel(Travels travels) {
+      this.travels = travels;
 
       setBorder(new Border(new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT)));
       setPadding(new Insets(12.0));
@@ -394,7 +394,7 @@ public class KmlFileImportWindow extends JfxStage {
       File file = fileSelecter.getValue();
       NominatimAPI actualNominatimAPI = useNominatimApi.getValue() ? nominatimAPI : null;
       KmlFileImporter kmlFileImporter = new KmlFileImporter.Builder(file, actualNominatimAPI)
-          .setHomeCountry(vacations.getHome().getCountry())
+          .setHomeCountry(travels.getHome().getCountry())
           .build();
       kmlPlacemarksImportData = kmlFileImporter.getLocationsFromKmlFile();
 
@@ -605,7 +605,7 @@ public class KmlFileImportWindow extends JfxStage {
     /**
      * A {@code VacationsTreeView} used to show a {@code Location}.
      */
-    private EObjectTreeView vacationsTreeView;
+    private EObjectTreeView travelsTreeView;
 
     /**
      * A tree view for showing GPX data (a {@code DocumentRoot}).
@@ -648,10 +648,10 @@ public class KmlFileImportWindow extends JfxStage {
       travelMapView.setMinWidth(800);
       travelMapView.removeControlsLayer();
 
-      vacationsTreeView = new TravelsTreeViewCreator(customization)
-          .createVacationsTreeView();
-      vacationsTreeView.setEditMode(true);
-      vacationsTreeView.setMinWidth(300);
+      travelsTreeView = new TravelsTreeViewCreator(customization)
+          .createTravelsTreeView();
+      travelsTreeView.setEditMode(true);
+      travelsTreeView.setMinWidth(300);
 
 //      gpxElementTreeView = new GPXElementTreeView(customization,
 //          this::generateTextForGpxTrack, this::generateIconForGpxTrack,
@@ -705,7 +705,7 @@ public class KmlFileImportWindow extends JfxStage {
      * 
      * @param travel the new {@code Travel}.
      */
-    void handleNewVacationSelected(Travel travel) {
+    void handleNewTravelSelected(Travel travel) {
       LOGGER.info("New travel selected: " + (travel != null ? travel.getTitle() : "null"));
       this.travel = travel;
 
@@ -718,7 +718,7 @@ public class KmlFileImportWindow extends JfxStage {
     /**
      * Set the GPX track reference.
      * <p>
-     * The folder name is the name of the folder where the files related to the current Vacation are stored (see {@link TravelsUtils.getVacationFolder}).<br/>
+     * The folder name is the name of the folder where the files related to the current Travel are stored (see {@link TravelsUtils.getVacationFolder}).<br/>
      * The complete filename is obtained by calling {@link #createGpxTrackFileName}.
      */
     private void setGpxTrackReferenceForTravel() {
@@ -748,8 +748,8 @@ public class KmlFileImportWindow extends JfxStage {
      * 
      * @return the file name for the GPX track.
      */
-    private String createGpxTrackFileName(String vacationFolder) {
-      LOGGER.info("=> vacationFolder=" + vacationFolder);
+    private String createGpxTrackFileName(String travelFolder) {
+      LOGGER.info("=> travelFolder=" + travelFolder);
 
       String fileName = "track.gpx";  // Default filename
       if (documentRoot != null) {
@@ -760,7 +760,7 @@ public class KmlFileImportWindow extends JfxStage {
         LOGGER.info("startTime (" + name + "): " + startTime);
         fileName = DF.format(startTime) + " " + name + ".gpx";
       }
-      Path path = Paths.get(vacationFolder, fileName);
+      Path path = Paths.get(travelFolder, fileName);
 
       return path.toString();
     }
@@ -845,8 +845,8 @@ public class KmlFileImportWindow extends JfxStage {
 
       travelMapView.getMapRelatedItemsLayer().addLocation(location);
 
-      vacationsTreeView.setEObject(location);
-      vacationsTreeView.getRoot().setExpanded(true);
+      travelsTreeView.setEObject(location);
+      travelsTreeView.getRoot().setExpanded(true);
 
       previewBox.getChildren().clear();
 
@@ -859,7 +859,7 @@ public class KmlFileImportWindow extends JfxStage {
 
       VBox addressOptionsPane = createAddressOptionsPane();
       rightSplitPane.getItems().addAll(travelMapView, addressOptionsPane);
-      mainSplitPane.getItems().addAll(vacationsTreeView, rightSplitPane);
+      mainSplitPane.getItems().addAll(travelsTreeView, rightSplitPane);
 
       previewBox.getChildren().add(mainSplitPane);
     }
@@ -955,7 +955,7 @@ public class KmlFileImportWindow extends JfxStage {
           MapPoint mapCenter = new MapPoint(center.getLatitude(), center.getLongitude());
 
           if (mapCenter != null) {
-            travelMapView.flyTo(0.0, mapCenter, 2);
+            travelMapView.flyTo(0.0, mapCenter, 2, null);
           }
         }
       }
@@ -1074,12 +1074,12 @@ public class KmlFileImportWindow extends JfxStage {
   /**
    * This inner class is a panel for adding the element to a vacation.
    */
-  class AddElementToVacationPanel extends VBox {
+  class AddElementToTravelPanel extends VBox {
     private static final String BEFORE_TEXT = "before";
     private static final String AFTER_TEXT = "after";
 
     /**
-     * Item currently selected in the vacations tree, determining the location where the element is to be added.
+     * Item currently selected in the travels tree, determining the location where the element is to be added.
      */
     private EObjectTreeItem selectedTreeItem;
     
@@ -1099,7 +1099,7 @@ public class KmlFileImportWindow extends JfxStage {
     private Label selectElementLabel;
     
     /**
-     * Label used to inform the user that a node in the Vacations tree has to be selected.
+     * Label used to inform the user that a node in the Travels tree has to be selected.
      */
     private Label infoLabel;
     
@@ -1132,7 +1132,7 @@ public class KmlFileImportWindow extends JfxStage {
     /**
      * Constructor
      */
-    public AddElementToVacationPanel() {
+    public AddElementToTravelPanel() {
 
       setBorder(new Border(new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT)));
       setPadding(new Insets(12.0));
@@ -1148,10 +1148,10 @@ public class KmlFileImportWindow extends JfxStage {
       actionVBox = componentFactory.createVBox(12.0);
 
       // actionHBox items for when no element is selected.
-      selectElementLabel = componentFactory.createLabel("Select an element to be added to a vacation");
+      selectElementLabel = componentFactory.createLabel("Select an element to be added to a travel");
 
       // actionHBox items for when no tree item is selected to add the location to.
-      infoLabel = componentFactory.createLabel("Select a node in the Vacations tree where an element can be added");
+      infoLabel = componentFactory.createLabel("Select a node in the Travels tree where an element can be added");
 
       // actionHBox items for when a list of Locations is selected
       addAsLastChildToListLabel = componentFactory.createLabel("as last child to");
@@ -1181,7 +1181,7 @@ public class KmlFileImportWindow extends JfxStage {
      * The value of the <code>beforeOrAfterComboBox</code> determines whether it is added before or after the selected item.<br/>
      */
     private void addLocation() {
-      addElementToVacations(TravelsPackage.eINSTANCE.getLocation());
+      addElementToTravels(TravelsPackage.eINSTANCE.getLocation());
     }
 
     /**
@@ -1193,15 +1193,15 @@ public class KmlFileImportWindow extends JfxStage {
      */
     private void addGPXTrack() {
       createGPXFile();
-      addElementToVacations(TravelsPackage.eINSTANCE.getGPXTrack());
+      addElementToTravels(TravelsPackage.eINSTANCE.getGPXTrack());
     }
 
     /**
-     * Add the {@code selectedKmlPlacemarkImportData} to the Vacations data.
+     * Add the {@code selectedKmlPlacemarkImportData} to the travels data.
      * 
      * @param elementClass the {code @EClass} of the element to be added.
      */
-    private void addElementToVacations(EClass elementClass) {
+    private void addElementToTravels(EClass elementClass) {
       Object eObjectTreeItemContent = selectedTreeItem.getValue();
 
       // If the selected tree item is a list of (a supertype of) the elementClass, it is added as last child of this list.
@@ -1268,7 +1268,7 @@ public class KmlFileImportWindow extends JfxStage {
     }
 
     /**
-     * Handle the fact that a new element is selected to be added to a vacation.
+     * Handle the fact that a new element is selected to be added to a travel.
      */
     void handleElementSelected(KmlPlacemarkImportData kmlPlacemarkImportData) {
       this.selectedKmlPlacemarkImportData = kmlPlacemarkImportData;
@@ -1292,7 +1292,7 @@ public class KmlFileImportWindow extends JfxStage {
         boolean selectedTreeItemIsLocationsListItem = selectedTreeItemIsLocationsListItem();
 
         if (!selectedTreeItemIsLocationsList  &&  !selectedTreeItemIsLocationsListItem) {
-          // message: select an item in the vacations tree where an element can be added.
+          // message: select an item in the travels tree where an element can be added.
           actionVBox.getChildren().add(infoLabel);
         } else {
           VacationElement vacationElement = selectedKmlPlacemarkImportData.vacationElement();

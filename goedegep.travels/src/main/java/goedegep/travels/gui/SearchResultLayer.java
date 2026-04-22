@@ -6,11 +6,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
-import com.gluonhq.maps.MapLayer;
 import com.gluonhq.maps.MapPoint;
 
 import goedegep.geo.WGS84BoundingBox;
 import goedegep.geo.WGS84Coordinates;
+import goedegep.mapview.MapLayer;
 import goedegep.mapview.MapViewUtil;
 import javafx.collections.ObservableList;
 import javafx.geometry.Point2D;
@@ -117,18 +117,18 @@ public class SearchResultLayer extends MapLayer {
   }
   
   @Override
-  protected void layoutLayer() {
+  public void layoutLayer() {
     for (Pair<WGS84BoundingBox, Polygon> boundingBoxPair: boundingBoxesMap.values()) {
       WGS84BoundingBox boundingBoxCoords = boundingBoxPair.getKey();
       Polygon boxPolygon = boundingBoxPair.getValue();
       
-      MapViewUtil.updateBoundingBoxPolygon(boxPolygon, boundingBoxCoords, baseMap);
+      MapViewUtil.updateBoundingBoxPolygon(boxPolygon, boundingBoxCoords, mapViewAbstract);
     }
     
     for (Pair<MapPoint, Node> locationPair: locationsMap.values()) {
       MapPoint point = locationPair.getKey();
       Node icon = locationPair.getValue();
-      final Point2D mapPoint = baseMap.getMapPoint(point.getLatitude(), point.getLongitude());
+      final Point2D mapPoint = mapViewAbstract.getMapPoint(point.getLatitude(), point.getLongitude());
       icon.toFront();
       icon.setTranslateX(mapPoint.getX());
       icon.setTranslateY(mapPoint.getY());
@@ -141,7 +141,7 @@ public class SearchResultLayer extends MapLayer {
         ObservableList<Double> points = polyline.getPoints();
         points.clear();
         for (WGS84Coordinates coordinates: coordinatesList) {
-          Point2D point2D = baseMap.getMapPoint(coordinates.getLatitude(), coordinates.getLongitude());
+          Point2D point2D = mapViewAbstract.getMapPoint(coordinates.getLatitude(), coordinates.getLongitude());
           points.add(point2D.getX());
           points.add(point2D.getY());
         }
