@@ -16,6 +16,7 @@ import goedegep.mapview.MapPoint;
 import goedegep.mapview.image.MapImage;
 import goedegep.mapview.view.MapView;
 import javafx.embed.swing.SwingFXUtils;
+import javafx.geometry.Dimension2D;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.Scene;
@@ -28,6 +29,7 @@ import javafx.scene.layout.Border;
 import javafx.scene.layout.BorderStroke;
 import javafx.scene.layout.BorderStrokeStyle;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 
@@ -48,13 +50,13 @@ public class MapViewTestWindow extends JfxStage {
 //    mapViewTestLayer = new MapViewTestLayer();
 //    myMapView.addLayer(mapViewTestLayer);
     
-    myMapView.zoom().addListener((_, _, _) -> updateStatusTextArea());
+    myMapView.zoomReadOnlyProperty().addListener((_, _, _) -> updateStatusTextArea());
     
     createGUI();
     
-    updateStatusTextArea();
-    
     this.show();
+    
+    updateStatusTextArea();
   }
   
   private void createGUI() {
@@ -88,6 +90,8 @@ public class MapViewTestWindow extends JfxStage {
     mainBox.getChildren().add(mapsBox);    
     
     mainBox.getChildren().add(statusTextArea = new TextArea());
+    statusTextArea.setMinHeight(400);
+    statusTextArea.setPrefHeight(400);
     
     Scene scene = new Scene(mainBox);
     setScene(scene);
@@ -144,7 +148,7 @@ public class MapViewTestWindow extends JfxStage {
   }
 
   private Object zoomToFullMap() {
-    gluonMapView.setZoom(FULL_MAP_ZOOM_LEVEL);
+//    gluonMapView.setZoom(FULL_MAP_ZOOM_LEVEL);
     myMapView.setZoom(FULL_MAP_ZOOM_LEVEL);
     
     return null;
@@ -161,27 +165,28 @@ public class MapViewTestWindow extends JfxStage {
   private void zoomOut() {
 //    double gluonZoom = gluonMapView.getZoom();
 //    gluonMapView.setZoom(gluonZoom - 1);
+    
     double myZoom = myMapView.getZoom();
     myMapView.setZoom(myZoom - 1);
   }
 
   private void moveUp() {
-    gluonMapView.moveY(50.0);
+//    gluonMapView.moveY(50.0);
     myMapView.moveY(50.0);
   }
 
   private void moveDown() {
-    gluonMapView.moveY(-50.0);
+//    gluonMapView.moveY(-50.0);
     myMapView.moveY(-50.0);
   }
 
   private void moveLeft() {
-    gluonMapView.moveX(50.0);
+//    gluonMapView.moveX(50.0);
     myMapView.moveX(50.0);
   }
 
   private void moveRight() {
-    gluonMapView.moveX(-50.0);
+//    gluonMapView.moveX(-50.0);
     myMapView.moveX(-50.0);
   }
 
@@ -234,18 +239,28 @@ public class MapViewTestWindow extends JfxStage {
   }
   
   private void updateStatusTextArea() {
+    // Basic info about the map view: center, zoom level, dimension and visible map coordinates.
     StringBuilder buf = new StringBuilder();
     MapPoint center = myMapView.getCenter();
-    buf.append("Center: ").append(center.getLatitude()).append(", ").append(center.getLongitude()).append("\n");
+    buf.append("Center: ")
+    .append(center != null ? center.getLatitude() : "<null>")
+    .append(", ")
+    .append(center != null ? center.getLongitude() : "<null>")
+    .append("\n");
     buf.append("Zoom: ").append(myMapView.getZoom()).append("\n");
-    WGS84BoundingBox visibleMapCoordinates = myMapView.getVisibleMapCoordinates();
+    Dimension2D dimension = myMapView.getDimension();
+    buf.append("Dimension: ").append(dimension != null ? dimension.getWidth() : "<null>").append(" x ").append(dimension != null ? dimension.getHeight() : "<null>").append("\n");
+    WGS84BoundingBox visibleMapCoordinates = myMapView.getVisibleMapBoundingBox();
     buf.append("Visible map coordinates: ");
     if (visibleMapCoordinates != null) {
       buf.append(visibleMapCoordinates.getNorth()).append(", ").append(visibleMapCoordinates.getEast()).append(", ")
       .append(visibleMapCoordinates.getSouth()).append(", ").append(visibleMapCoordinates.getWest()).append("\n");
     } else {
-      buf.append("not available\n");
+      buf.append("<not available>\n");
     }
+    
+    // Get all other details from the map view.
+    buf.append(myMapView.getStatusInformation());
     
     statusTextArea.setText(buf.toString());
   }

@@ -1,54 +1,26 @@
-/*
- * Copyright (c) 2016 - 2018, Gluon
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL GLUON BE LIABLE FOR ANY
- * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
- * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
- * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
- * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
- * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
 package goedegep.mapview.view;
 
-import java.util.LinkedList;
-import java.util.List;
 import java.util.function.Supplier;
 import java.util.logging.Logger;
 
 import com.gluonhq.attach.util.Platform;
 
 import goedegep.geo.WGS84BoundingBox;
+import goedegep.geo.WGS84Coordinates;
 import goedegep.mapview.MapPoint;
-import goedegep.mapview.impl.BaseMapAbstract;
 import goedegep.mapview.impl.MapViewCommon;
-import goedegep.mapview.MapLayer;
 import goedegep.mapview.view.impl.BaseMap;
 import goedegep.mapview.view.impl.TileImageView;
-import javafx.animation.Animation.Status;
 import javafx.animation.Interpolator;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
+import javafx.animation.Animation.Status;
+import javafx.beans.property.ReadOnlyObjectProperty;
+import javafx.geometry.BoundingBox;
+import javafx.geometry.Dimension2D;
 import javafx.geometry.Point2D;
 import javafx.scene.image.Image;
-import javafx.scene.shape.Rectangle;
 import javafx.util.Duration;
 
 /**
@@ -58,7 +30,7 @@ import javafx.util.Duration;
  * or by calling the methods setCenter and setZoom.
  */
 public class MapView extends MapViewCommon {
-  @SuppressWarnings("unused")
+//  @SuppressWarnings("unused")
   private static final Logger LOGGER = Logger.getLogger(MapView.class.getName());
   
   /**
@@ -66,38 +38,138 @@ public class MapView extends MapViewCommon {
    */
   public double x0, y0;
 
-  private MapPoint centerPoint = null;
+//  private MapPoint centerPoint = null;
   private boolean zooming = false;
   private boolean enableDragging = false;
+  
+  /**
+   * {@code TimeLine} used for the flyTo animation.
+   */
+  private Timeline timeline;
 
   /**
    * Create a MapView component.
    */
   public MapView() {
-    LOGGER.severe("=>");
+    super();
     
     baseMapAbstract = new BaseMap(this);
     getChildren().add(baseMapAbstract);
     registerInputListeners();
 
     center.addListener(_ -> markDirty());
-    this.layoutBoundsProperty().addListener(_ -> {
-      // in case our assigned space changes, AND in case we are requested
-      // to center at a specific point, we need to re-center.
-      if (centerPoint != null) {
-        // we will set the center to a slightly different location first, in order 
-        // to trigger the invalidationListeners.
-        setCenter(centerPoint.getLatitude()+.00001, centerPoint.getLongitude()+.00001);
-        setCenter(centerPoint);
-      }
+
+    parentProperty().addListener((_, _, _) ->        {
+      getParent().layoutBoundsProperty().addListener(observable -> {
+        if (observable instanceof ReadOnlyObjectProperty) {
+          ReadOnlyObjectProperty<?> property = (javafx.beans.property.ReadOnlyObjectProperty<?>) observable;
+          Object object = property.get();
+          if (object instanceof BoundingBox boundingBox) {
+            dimension = new Dimension2D(boundingBox.getWidth(), boundingBox.getHeight());
+            LOGGER.severe("Parent layoutBounds changed, dimension: " + dimension);
+            if (boundingBox.getWidth() != 0  &&  boundingBox.getHeight() != 0) {
+              initialize();
+            }
+          } else {
+            LOGGER.severe("Parent layoutBounds changed, but value is not a BoundingBox: " + object);
+          }
+        }
+      });
     });
-    
-    LOGGER.severe("<=");
   }
 
-  //    public BaseMap getBaseMap() {
-  //      return baseMap;
-  //    }
+  /**
+   * Wait a bit, then move to the specified mapPoint in seconds time.
+   * <p>
+   * Before flying the map will zoom out to an appropriate level based on the distance to fly, and then zoom in to the specified endZoom level at the end of the flight.
+   * If endZoom is null, the current zoom level will used for the end location.
+   *
+   * @param waitTime the time to wait before we start moving
+   * @param mapPoint the destination of the move
+   * @param seconds the time the move should take // TODO currently ignored. Change to speed factor!
+   * @param endZoom the zoom level to end. If null, the end zoom level will be the current zoom level.
+   */
+  public void flyTo(double waitTime, MapPoint mapPoint, double seconds, Double endZoom) {
+    if ((timeline != null) && (timeline.getStatus() == Status.RUNNING)) {
+      timeline.stop();
+    }
+    
+    if (endZoom == null) {
+      endZoom = getZoom();
+    }
+    
+    // calculate flying distance.
+    WGS84Coordinates flyToPoint = new WGS84Coordinates(mapPoint.getLatitude(), mapPoint.getLongitude());
+    MapPoint center = getCenter();
+    WGS84Coordinates currentCenter = new WGS84Coordinates(center.getLatitude(), center.getLongitude());
+    double flyingDistance = currentCenter.getDistanceMeters(flyToPoint) / 1000.0;
+    
+    // As each zoom level is 2 times more zoomed in than the previous one, we can calculate the zoom level for flying as follows:
+    double d1 = Math.pow(flyingDistance, 0.15);
+    double zoomLevel = 20 / d1;
+    
+    if (zoomLevel < 0) {
+      LOGGER.severe("Value too low for zoomLevel: " + zoomLevel);
+      zoomLevel = 0;
+    }
+    if (zoomLevel > 20) {
+      LOGGER.severe("Value too high for zoomLevel: " + zoomLevel);
+      zoomLevel = 20;
+    }
+//    LOGGER.severe("flyingDistance: " + flyingDistance + " km, zoomLevel: " + zoomLevel);
+    
+    // Don't fly at calculated zoom level and then zoom out at the end.
+    // So if endZoom is lower than the calculated zoom level, use endZoom as the zoom level for flying.
+    if (endZoom < zoomLevel) {
+      zoomLevel = endZoom;
+    }
+    
+    // Also we don't zoom in before flying.
+    if (zoomLevel > getZoom()) {
+      zoomLevel = getZoom();
+    }
+    
+    double zoomOutTime = 0.5 * (getZoom() - zoomLevel);
+    double zoomInTime = 0.5 * (endZoom - zoomLevel);
+    
+    double t0 = 0;         // start time, current location and zoom level
+    double t1 = t0 + waitTime;  // t0 - t1 waiting, current location and zoom level
+    double t2 = t1 + zoomOutTime; // t1 - t2 zooming out, current location and zoomLevel
+    double t3 = t2 + 3; // t2 - t3 flying, mapPoint and zoom level is zoomLevel
+    double t4 = t3 + zoomInTime; // t3 - t4 zooming in, mapPoint and zoom level is endZoom
+    
+    double currentLat = center.getLatitude();
+    double currentLon = center.getLongitude();
+    
+    // Use prefCenter (MapPoint) as the target of the animation. A custom Interpolator
+    // is provided to interpolate between two MapPoint instances by linearly
+    // interpolating latitude and longitude.
+    Interpolator mapPointInterpolator = new Interpolator() {
+      @Override
+      public double curve(double t) {
+        // linear progression
+        return t;
+      }
+
+      @Override
+      public Object interpolate(Object startValue, Object endValue, double frac) {
+        MapPoint s = (MapPoint) startValue;
+        MapPoint e = (MapPoint) endValue;
+        double lat = s.getLatitude() + (e.getLatitude() - s.getLatitude()) * frac;
+        double lon = s.getLongitude() + (e.getLongitude() - s.getLongitude()) * frac;
+        return new MapPoint(lat, lon);
+      }
+    };
+    
+    timeline = new Timeline(
+        new KeyFrame(Duration.ZERO, new KeyValue(prefCenter, new MapPoint(currentLat, currentLon)), new KeyValue(prefZoom, zoom.get())),
+        new KeyFrame(Duration.seconds(t1), new KeyValue(prefCenter, new MapPoint(currentLat, currentLon)), new KeyValue(prefZoom, zoom.get())),
+        new KeyFrame(Duration.seconds(t2), new KeyValue(prefCenter, new MapPoint(currentLat, currentLon)), new KeyValue(prefZoom, zoomLevel)),
+        new KeyFrame(Duration.seconds(t3), new KeyValue(prefCenter, mapPoint, mapPointInterpolator), new KeyValue(prefZoom, zoomLevel)),
+        new KeyFrame(Duration.seconds(t4), new KeyValue(prefCenter, mapPoint), new KeyValue(prefZoom, endZoom))
+        );
+    timeline.play();
+  }
 
 
   /**
@@ -109,7 +181,7 @@ public class MapView extends MapViewCommon {
       if (zooming) return;
       x0 = t.getX();
       y0 = t.getY();
-      centerPoint = null; // once the user starts moving, we don't track the center anymore.
+//      centerPoint = null; // once the user starts moving, we don't track the center anymore.
       // dragging is enabled only after a pressed event, to prevent dragging right after zooming
       enableDragging = true;
     });
@@ -212,7 +284,7 @@ public class MapView extends MapViewCommon {
 
   private boolean dirty = false;
 
-  protected void markDirty() {
+  public void markDirty() {
     dirty = true;
     this.setNeedsLayout(true);
   }
@@ -232,18 +304,13 @@ public class MapView extends MapViewCommon {
   }
 
   @Override
-  public WGS84BoundingBox getVisibleMapCoordinates() {
+  public WGS84BoundingBox getVisibleMapBoundingBox() {
     return baseMapAbstract.getVisibleMapCoordinates();
   }
 
   @Override
   public Point2D getMapPoint(double lat, double lon) {
     return baseMapAbstract.getMapPoint(lat, lon);
-  }
-
-  @Override
-  public Point2D getMapPoint(double zoom, double lat, double lon) {
-    return baseMapAbstract.getMapPoint(zoom, lat, lon);
   }
   
   public void moveX(double distance) {

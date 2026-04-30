@@ -10,6 +10,7 @@ import java.util.logging.Logger;
 
 import goedegep.mapview.impl.BaseMapAbstract;
 import goedegep.mapview.impl.MapTileAbstract;
+import goedegep.mapview.impl.MapTileImageViewAbstract;
 import goedegep.mapview.impl.MapViewCommon;
 import javafx.beans.value.ChangeListener;
 import javafx.scene.Scene;
@@ -19,7 +20,7 @@ import javafx.scene.Scene;
  * The BaseMap provides the underlying maptiles.
  * On top of this, additional layers can be rendered.
  */
-public class BaseMap extends BaseMapAbstract<MapTile> {
+public class BaseMap extends BaseMapAbstract<MapTileImageView> {
   private static final Logger LOGGER = Logger.getLogger( BaseMap.class.getName() );
 
 //  /**
@@ -58,44 +59,7 @@ public class BaseMap extends BaseMapAbstract<MapTile> {
    * @param mapView the map view for which this is the base map.
    */
   public BaseMap(MapViewCommon mapView) {
-    LOGGER.severe("=> BaseMap");
     super(mapView);
-    
-//    area = new Rectangle(-10, -10, 810, 610);
-//    area.setVisible(false);
-    
-//    ReadOnlyObjectProperty<Bounds> layoutBoundsProperty = layoutBoundsProperty();
-//    LOGGER.severe("layout bounds: " + layoutBoundsProperty.get());
-    
-//    // React to changes in the width and height of the parent.
-//    area.widthProperty().addListener(resizeListener);
-//    area.heightProperty().addListener(resizeListener);
-    
-    // Keep the area X and Y translation in sync with the map translation, but in the opposite direction.
-//    area.translateXProperty().bind(translateXProperty().multiply(-1));
-//    area.translateYProperty().bind(translateYProperty().multiply(-1));
-
-    sceneListener = (_, _, newScene) -> {
-      if (newScene != null) {
-//        //TODO Do we need to unbind from previous scene?
-//        LOGGER.severe("Scene set");
-//
-//        // Keep the area width and height in sync with the parent layout bounds.
-//        getParent().layoutBoundsProperty().addListener(_ -> {
-//          area.setWidth(getParent().getLayoutBounds().getWidth());
-//          area.setHeight(getParent().getLayoutBounds().getHeight());
-//        });
-//        markDirty();
-      }
-//      if (abortedTileLoad) {
-//        abortedTileLoad = false;
-//                  doSetCenter(mapViewCommon.getCenterLatitude(), mapViewCommon.getCenterLongitude());
-//        doSetCenter(lat, lon);
-//      }
-    };
-    this.sceneProperty().addListener(sceneListener);
-    
-    LOGGER.severe("<= BaseMap");
   }
 
   /**
@@ -103,10 +67,7 @@ public class BaseMap extends BaseMapAbstract<MapTile> {
    */
   public void loadTiles() {
     LOGGER.severe("=>");
-//    if (getScene() == null) {
-//      LOGGER.fine("[JVDBG] can't load tiles, scene null");
-//      return;
-//    }
+
     int nearestZoom = (Math.min((int) floor(mapViewCommon.getZoom() + TIPPING), NUMBER_OF_ZOOM_LEVELS - 1));
     double activeZoom = mapViewCommon.getZoom();
 //    if (activeZoom >= 2) {
@@ -129,26 +90,23 @@ public class BaseMap extends BaseMapAbstract<MapTile> {
     jmax = Math.min(j_max, jmax);
     
 //    LOGGER.severe("Zoom = " + nearestZoom + ", activeZoom = " + activeZoom + ", tx = " + tx + ", i-range: " + imin + ", " + imax + " and j-range: " + jmin + ", " + jmax);
-    List<MapTile> tilesNeeded = new ArrayList<>();
+    List<MapTileImageView> tilesNeeded = new ArrayList<>();
     for (long i = imin; i < imax; i++) {
       for (long j = jmin; j < jmax; j++) {
-//        Long key = i * i_max + j;
         Long key = createTileKey(i, j, nearestZoom);
-        long iRetrieved = getIFromTileKey(key, nearestZoom);
-        long jRetrieved = getJFromTileKey(key, nearestZoom);
-        LOGGER.severe("Zoom = " + nearestZoom + ", i = " + i + ", j = " + j + ", key = " + key + ", iRetrieved = " + iRetrieved + ", jRetrieved = " + jRetrieved);
-        SoftReference<MapTile> ref = tiles[nearestZoom].get(key);
+        SoftReference<MapTileImageView> ref = tiles[nearestZoom].get(key);
         if ((ref == null) || (ref.get() == null)) {
           if (ref != null) {
             LOGGER.fine("RECLAIMED: z=" + nearestZoom + ",i=" + i + ",j=" + j);
           }
-          MapTile tile = new MapTile(this, nearestZoom, i, j);
+//          MapTile tile = new MapTile(this, nearestZoom, i, j);
+          MapTileImageView tile = new MapTileImageView(this, nearestZoom, i, j);
           tilesNeeded.add(tile);
           tiles[nearestZoom].put(key, new SoftReference<>(tile));
           
           // If the tile is still loading, we try to find a covering tile to show in the meantime.
 //          if (tile.progress.get() < 1.0) {
-            MapTile covering = getCoveringTile(tile);
+            MapTileImageView covering = getCoveringTile(tile);
             if (covering != null) {
               tilesNeeded.add(covering);
               covering.addCovering(tile);
@@ -160,7 +118,7 @@ public class BaseMap extends BaseMapAbstract<MapTile> {
 
           getChildren().add(tile);
         } else {
-          MapTile tile = ref.get();
+          MapTileImageView tile = ref.get();
           tilesNeeded.add(tile);
           if (!getChildren().contains(tile)) {
             getChildren().add(tile);
@@ -169,15 +127,15 @@ public class BaseMap extends BaseMapAbstract<MapTile> {
       }
     }
     StringBuilder buf = new StringBuilder();
-    for (MapTile mt: tilesNeeded) {
+    for (MapTileImageView mt: tilesNeeded) {
       buf.append(", ").append(mt);
     }
-//    LOGGER.severe("Tiles needed: " + buf.toString());
+    LOGGER.severe("Tiles needed: " + buf.toString());
     
-    List<MapTile> currentTiles = new ArrayList<>();
-    List<MapTile> tilesToDelete = new ArrayList<>();
+    List<MapTileImageView> currentTiles = new ArrayList<>();
+    List<MapTileImageView> tilesToDelete = new ArrayList<>();
     for (Object o: getChildren()) {
-      if (o instanceof MapTile mt) {
+      if (o instanceof MapTileImageView mt) {
         currentTiles.add(mt);
         if (!tilesNeeded.contains(mt)) {
           tilesToDelete.add(mt);
@@ -185,21 +143,21 @@ public class BaseMap extends BaseMapAbstract<MapTile> {
       }
     }
     buf = new StringBuilder();
-    for (MapTile mt: currentTiles) {
+    for (MapTileImageView mt: currentTiles) {
       buf.append(", ").append(mt);
     }
-//    LOGGER.severe("Current Tiles: " + buf.toString());
+    LOGGER.severe("Current Tiles: " + buf.toString());
     buf = new StringBuilder();
-    for (MapTile mt: tilesToDelete) {
+    for (MapTileImageView mt: tilesToDelete) {
       buf.append(", ").append(mt);
     }
-//    LOGGER.severe("Tiles to delete: " + buf.toString());
+    LOGGER.severe("Tiles to delete: " + buf.toString());
     getChildren().removeAll(tilesToDelete);
 
     //   calculateCenterCoords();
 //    cleanupTiles();
-    cleanupTileCache(nearestZoom, imin, imax, jmin, jmax);
-    cleanupDiskTileCache();
+//    cleanupTileCache(nearestZoom, imin, imax, jmin, jmax);
+//    cleanupDiskTileCache();
     LOGGER.severe("<= loadTiles");
   }
   
@@ -211,7 +169,7 @@ public class BaseMap extends BaseMapAbstract<MapTile> {
     long totalTilesInCache = 0;
     // Keep levels 0 up to 5 in cache.
     for (int z = zoom; z > 6; z--) {
-      Map<Long, SoftReference<MapTile>> tileMap = tiles[z];
+      Map<Long, SoftReference<MapTileImageView>> tileMap = tiles[z];
       
       long iFirstKeep= iMin - 5;
       long iLastKeep= iMax + 5;
@@ -286,7 +244,7 @@ public class BaseMap extends BaseMapAbstract<MapTile> {
     //TODO implement
   }
 
-  private MapTile getCoveringTile(MapTile tile) {
+  private MapTileImageView getCoveringTile(MapTileImageView tile) {
     int z = tile.getTileZoom();
     if (z > 0) {
       long pi = tile.i / 2;
@@ -294,7 +252,7 @@ public class BaseMap extends BaseMapAbstract<MapTile> {
       long i_max = 1 << (z - 1);
       Long key = pi * i_max + pj;
       // LongTuple it = new LongTuple(i,j);
-      SoftReference<MapTile> ref = tiles[z - 1].get(key);
+      SoftReference<MapTileImageView> ref = tiles[z - 1].get(key);
       if (ref != null) {
         LOGGER.severe("Covering tile found for maptile " + tile + "covered by " + ref.get());
         return ref.get();
@@ -316,12 +274,12 @@ public class BaseMap extends BaseMapAbstract<MapTile> {
    * @param j
    * @return the lower-zoom tile which covers the specified tile
    */
-  protected MapTileAbstract findCovering(int zoom, long i, long j) {
+  protected MapTileImageView findCovering(int zoom, long i, long j) {
     while (zoom > 0) {
       zoom--;
       i = i / 2;
       j = j / 2;
-      MapTile candidate = (MapTile) findTile(zoom, i, j);
+      MapTileImageView candidate = (MapTileImageView) findTile(zoom, i, j);
       if ((candidate != null) && (!candidate.loading())) {
         return candidate;
       }

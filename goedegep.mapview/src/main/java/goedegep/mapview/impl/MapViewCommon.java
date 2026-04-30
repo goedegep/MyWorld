@@ -5,29 +5,47 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import goedegep.geo.WGS84BoundingBox;
-import goedegep.geo.WGS84Coordinates;
 import goedegep.mapview.MapLayer;
 import goedegep.mapview.MapPoint;
 import goedegep.mapview.MapViewAbstract;
-import javafx.animation.Animation.Status;
-import javafx.animation.Interpolator;
-import javafx.animation.KeyFrame;
-import javafx.animation.KeyValue;
-import javafx.animation.Timeline;
+import javafx.application.Platform;
 import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.ReadOnlyDoubleProperty;
 import javafx.beans.property.ReadOnlyDoubleWrapper;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.property.SimpleDoubleProperty;
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.geometry.Dimension2D;
+import javafx.geometry.Point2D;
 import javafx.scene.shape.Rectangle;
-import javafx.util.Duration;
 
 /**
  * This class implements the common functionality of a map view.
  * <p>
- * This class maintains the main parameters of the map, such as the center location and the zoom level.
+ * This class maintains the main parameters of the map; the center location, the zoom level and the dimensions.
  * It provides a base map, on top of which map layers can be added.
  * The base map is responsible for rendering the map tiles, while the map layers are responsible for rendering additional information on top of the base map.
+ * 
+ * Initialization
+ * Initialization cannot be done from the constructor. The constructor of this class is called from the subclass constructor. At that time the subclass isn't initialized yet, so we can't call methods of the subclass.
+ * Therefore initialization is done when the MapView gets a Parent, or when the width and height are set for the MapImage.
+ * 
+ * Sequences
+ * 
+ * MapView initialization
+ * It starts of course when the MapView constructor is called.
+ * This calls its parents constructor (MapViewCommon), which:
+ * * Creates a clipping rectangle and sets this on the Region.
+ * * Adds listeners to the prefCenter and prefZoom, which call doSetCenter() and doZoom() respectively.
+ * Next it creates a BaseMap and adds this as a child. The BaseMap constructor calls its parents constructor (BaseMapAbstract), which initializes the tiles HashMap array.
+ * It calls registerInputListeners(), which registers listeners on mouse events for panning and zooming the map.
+ * A listener is added to the center, which calls markDirty(). TODO I think this can go.
+ * A listener is added to the parentProperty. If there is a parent, a listener is added to its layoutBoundsProperty. This listener takes care of setting the width and height. Also now the initialize() method is called.
+ * 
+ * In a sample application, the MapView is added to an HBox which is part of a Stage. When show() is called on the Stage, layoutChildren() is called. This just returns because the MapView isn't initialized yet.
+ * After this the layoutBounds of the parent are set, the width and height of the MapView are set, and initialize() is called. This sets the center to (0, 0) and sets initialized to true.
+ * 
  */
 public abstract class MapViewCommon extends MapViewAbstract {
 //  @SuppressWarnings("unused")
@@ -37,17 +55,8 @@ public abstract class MapViewCommon extends MapViewAbstract {
   /**
    * The center point of the map. Latitude and longitude in degrees.
    */
-  public final ReadOnlyObjectWrapper<MapPoint> center = new ReadOnlyObjectWrapper();  // TODO Don't make public
+  public final ReadOnlyObjectWrapper<MapPoint> center = new ReadOnlyObjectWrapper<>();  // TODO Don't make public
   
-//  /**
-//   *  the latitude of the center of the map in degrees.
-//   */
-//  protected final ReadOnlyDoubleWrapper centerLat = new ReadOnlyDoubleWrapper();
-  
-//  /**
-//   *  the longitude of the center of the map in degrees.
-//   */
-//  protected final ReadOnlyDoubleWrapper centerLon = new ReadOnlyDoubleWrapper();
   
   /**
    * the zoom level of the map.
@@ -55,27 +64,23 @@ public abstract class MapViewCommon extends MapViewAbstract {
   protected final ReadOnlyDoubleWrapper zoom = new ReadOnlyDoubleWrapper();
   
   /**
-   * The value to which the center longitude has to change.
-   * Main reason why this is a {@link javafx.beans.property.Property} is that it can be used in a {@link javafx.animation.KeyValue} of an animation
-   * like flyTo().
-   * TODO rename to prefCenterLongitude.
+   * Dimension (width and height) of the map.
    */
-  private final DoubleProperty prefCenterLon = new SimpleDoubleProperty();
+  protected Dimension2D dimension;
   
   /**
-   * The value to which the center latitude has to change.
+   * The value to which the center has to change.
    * Main reason why this is a {@link javafx.beans.property.Property} is that it can be used in a {@link javafx.animation.KeyValue} of an animation
    * like flyTo().
-   * TODO rename to prefCenterLatitude.
    */
-  private final DoubleProperty prefCenterLat = new SimpleDoubleProperty();
-
+  public final ObjectProperty<MapPoint> prefCenter = new SimpleObjectProperty<>();
+  
   /**
    * The value to which the zoom level has to change.
    * Main reason why this is a {@link javafx.beans.property.Property} is that it can be used in a {@link javafx.animation.KeyValue} of an animation
    * like flyTo().
    */
-  private final DoubleProperty prefZoom  = new SimpleDoubleProperty();
+  protected final DoubleProperty prefZoom  = new SimpleDoubleProperty();
   
 
   /*
@@ -84,12 +89,6 @@ public abstract class MapViewCommon extends MapViewAbstract {
   private final Rectangle clip;
 
   
-  /**
-   * {@code TimeLine} used for the flyTo animation.
-   */
-  private Timeline timeline;
-  
-
   /**
    * The basic map (map tiles).
    */
@@ -109,51 +108,43 @@ public abstract class MapViewCommon extends MapViewAbstract {
    */
   private boolean initialized = false;
   
+  private boolean dirty = false;
+  
   /**
    * Constructor.
    */
   public MapViewCommon() {
-    LOGGER.severe("=>");
-
+    
     clip = new Rectangle();
     this.setClip(clip);
 
-    prefCenterLat.addListener(_ -> 
-    baseMapAbstract.doSetCenter(new MapPoint(prefCenterLat.get(), prefCenterLon.get()))
+    prefCenter.addListener(_ -> 
+      baseMapAbstract.doSetCenter(prefCenter.get())
     );
-    prefCenterLon.addListener(_ -> baseMapAbstract.doSetCenter(new MapPoint(prefCenterLat.get(), prefCenterLon.get())));
+
     prefZoom.addListener(_ -> doZoom(prefZoom.get()));
     
-    center.addListener(_ -> {
+    center.addListener(_ -> {  // TODO Temp
       LOGGER.severe("centerLat updated: " + center.get());
     });
-
-    parentProperty().addListener((_, _, _) ->        {
-      initialize();
-    });
-    LOGGER.severe("<= centerLat: " + center.get());
+    
   }
   
-  private void initialize() {
+  /**
+   * Initialize the map view.
+   */
+  protected void initialize() {
+    LOGGER.severe("=> initialized: " + initialized);
     if (initialized) {
       return;
     }
     
-    double width = getWidth();
-    double height = getHeight();
-    LOGGER.severe("initialize, width: " + width + ", height: " + height);
+    baseMapAbstract.doSetCenter(new MapPoint(0, 0));
     
-    baseMapAbstract.doSetCenter(new MapPoint(prefCenterLat.get(), prefCenterLon.get()));
+    initialized = true;
+    baseMapAbstract.initialized = true;
     
-    widthProperty().addListener(_ -> {
-      LOGGER.severe("Width changed, width: " + getWidth());
-      baseMapAbstract.doSetCenter(new MapPoint(prefCenterLat.get(), prefCenterLon.get()));
-    });
-    
-    heightProperty().addListener(_ -> {
-      LOGGER.severe("Height changed, height: " + getHeight());
-      baseMapAbstract.doSetCenter(new MapPoint(prefCenterLat.get(), prefCenterLon.get()));
-    });
+    baseMapAbstract.markDirty();
   }
 
   @Override
@@ -178,7 +169,7 @@ public abstract class MapViewCommon extends MapViewAbstract {
 //    return zoom.get();
   }
   
-  public ReadOnlyDoubleProperty zoom() {
+  public ReadOnlyDoubleProperty zoomReadOnlyProperty() {
     return zoom.getReadOnlyProperty();
   }
   
@@ -245,82 +236,25 @@ public abstract class MapViewCommon extends MapViewAbstract {
    * @param longitude the longitude of the center point of the map in degrees.
    */
   public void setCenter(double latitude, double longitude) {
-    prefCenterLat.set(latitude);
-    prefCenterLon.set(longitude);
+    prefCenter.set(new MapPoint(latitude, longitude));
+//    prefCenterLat.set(latitude);
+//    prefCenterLon.set(longitude);
   }
   
-  public DoubleProperty prefCenterLon() {
-      return prefCenterLon;
-  }
   
-  public DoubleProperty prefCenterLat() {
-      return prefCenterLat;
-  }
-
+//  public DoubleProperty prefCenterLon() {
+//      return prefCenterLon;
+//  }
+  
   @Override
-  public void flyTo(double waitTime, MapPoint mapPoint, double seconds, Double endZoom) {
-    if ((timeline != null) && (timeline.getStatus() == Status.RUNNING)) {
-      timeline.stop();
-    }
-    
-    if (endZoom == null) {
-      endZoom = getZoom();
-    }
-    
-    // calculate flying distance.
-    WGS84Coordinates flyToPoint = new WGS84Coordinates(mapPoint.getLatitude(), mapPoint.getLongitude());
-    MapPoint center = getCenter();
-    WGS84Coordinates currentCenter = new WGS84Coordinates(center.getLatitude(), center.getLongitude());
-    double flyingDistance = currentCenter.getDistanceMeters(flyToPoint) / 1000.0;
-    
-    // As each zoom level is 2 times more zoomed in than the previous one, we can calculate the zoom level for flying as follows:
-    double d1 = Math.pow(flyingDistance, 0.15);
-    double zoomLevel = 20 / d1;
-    
-    if (zoomLevel < 0) {
-      LOGGER.severe("Value too low for zoomLevel: " + zoomLevel);
-      zoomLevel = 0;
-    }
-    if (zoomLevel > 20) {
-      LOGGER.severe("Value too high for zoomLevel: " + zoomLevel);
-      zoomLevel = 20;
-    }
-//    LOGGER.severe("flyingDistance: " + flyingDistance + " km, zoomLevel: " + zoomLevel);
-    
-    // Don't fly at calculated zoom level and then zoom out at the end.
-    // So if endZoom is lower than the calculated zoom level, use endZoom as the zoom level for flying.
-    if (endZoom < zoomLevel) {
-      zoomLevel = endZoom;
-    }
-    
-    // Also we don't zoom in before flying.
-    if (zoomLevel > getZoom()) {
-      zoomLevel = getZoom();
-    }
-    
-    double zoomOutTime = 0.5 * (getZoom() - zoomLevel);
-    double zoomInTime = 0.5 * (endZoom - zoomLevel);
-    
-    double t0 = 0;         // start time, current location and zoom level
-    double t1 = t0 + waitTime;  // t0 - t1 waiting, current location and zoom level
-    double t2 = t1 + zoomOutTime; // t1 - t2 zooming out, current location and zoomLevel
-    double t3 = t2 + 3; // t2 - t3 flying, mapPoint and zoom level is zoomLevel
-    double t4 = t3 + zoomInTime; // t3 - t4 zooming in, mapPoint and zoom level is endZoom
-    
-    double currentLat = center.getLatitude();
-    double currentLon = center.getLongitude();
-    
-    timeline = new Timeline(
-        new KeyFrame(Duration.ZERO, new KeyValue(prefCenterLat, currentLat), new KeyValue(prefCenterLon, currentLon), new KeyValue(prefZoom, zoom.get())),
-        new KeyFrame(Duration.seconds(t1), new KeyValue(prefCenterLat, currentLat), new KeyValue(prefCenterLon, currentLon), new KeyValue(prefZoom, zoom.get())),
-        new KeyFrame(Duration.seconds(t2), new KeyValue(prefCenterLat, currentLat), new KeyValue(prefCenterLon, currentLon), new KeyValue(prefZoom, zoomLevel)),
-        new KeyFrame(Duration.seconds(t3), new KeyValue(prefCenterLat, mapPoint.getLatitude()), new KeyValue(prefCenterLon, mapPoint.getLongitude(), Interpolator.EASE_BOTH), new KeyValue(prefZoom, zoomLevel)),
-        new KeyFrame(Duration.seconds(t4), new KeyValue(prefCenterLat, mapPoint.getLatitude()), new KeyValue(prefCenterLon, mapPoint.getLongitude()), new KeyValue(prefZoom, endZoom))
-        );
-    timeline.play();
+  public Dimension2D getDimension() {
+    return dimension;
   }
 
-  public abstract WGS84BoundingBox getVisibleMapCoordinates();
+  //  public DoubleProperty prefCenterLat() {
+//      return prefCenterLat;
+//  }
+  public abstract WGS84BoundingBox getVisibleMapBoundingBox();
 
   /**
    * Zoom to a specific zoom level.
@@ -359,16 +293,49 @@ public abstract class MapViewCommon extends MapViewAbstract {
   @Override
   protected void layoutChildren() {
     
-    final double w = getWidth();
-    final double h = getHeight();
-    LOGGER.severe("=> layoutChildren: w=" + w + ", h=" + h);
-
-    clip.setWidth(w);
-    clip.setHeight(h);
+    clip.setWidth(dimension.getWidth());
+    clip.setHeight(dimension.getHeight());
+    
+    baseMapAbstract.layoutChildren();
 
     for (MapLayer layer : layers) {
       layer.layoutLayer();
     }
+    
     super.layoutChildren();
+    
+    dirty = false;
+  }
+  
+  /**
+   * Get the position on the map, as a [Point2D] with scene coordinates, for the given zoom level, latitude and longitude.
+   *
+   * @param zoom zoom level
+   * @param lat latitude
+   * @param lon longitude
+   * @return a [Point2D] with the scene coordinates for the given zoom level, latitude and longitude.
+   */
+  public Point2D getMapPoint(double zoom, double lat, double lon) {
+    return baseMapAbstract.getMapPoint(zoom, lat, lon);
+  }
+  
+  @Override
+  public String getStatusInformation() {
+    StringBuilder buf = new StringBuilder();
+    
+    buf.append(baseMapAbstract.getStatusInformation());
+    
+    return buf.toString();
+  }
+
+  public void markDirty() {
+    LOGGER.severe("=> markDirty");
+    
+    dirty = true;
+
+    setNeedsLayout(true);
+    Platform.requestNextPulse();
+    
+    LOGGER.severe("<= markDirty");
   }
 }
