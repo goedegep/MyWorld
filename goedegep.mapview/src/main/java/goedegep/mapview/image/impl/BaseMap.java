@@ -1,7 +1,5 @@
 package goedegep.mapview.image.impl;
 
-import static java.lang.Math.floor;
-
 import java.lang.ref.SoftReference;
 import java.util.ArrayList;
 import java.util.List;
@@ -9,14 +7,13 @@ import java.util.logging.Logger;
 
 import goedegep.mapview.impl.BaseMapAbstract;
 import goedegep.mapview.impl.MapViewCommon;
-import goedegep.mapview.image.impl.MapTileImageView;
 
 /**
  *
  * The BaseMap provides the underlying maptiles.
  * On top of this, additional layers can be rendered.
  */
-public class BaseMap extends BaseMapAbstract<MapTileImageView> {
+public class BaseMap extends BaseMapAbstract<TileImageView> {
   private static final Logger LOGGER = Logger.getLogger(BaseMap.class.getName() );
 
 
@@ -29,11 +26,6 @@ public class BaseMap extends BaseMapAbstract<MapTileImageView> {
     super(mapView);
     
     dirty = true;
-  }
-
-  @Override
-  public MapTile createMapTile(BaseMapAbstract baseMapAbstract, int zoom, long i, long j) {
-    return new MapTile(this, zoom, i, j);
   }
 
   @Override
@@ -67,23 +59,19 @@ public class BaseMap extends BaseMapAbstract<MapTileImageView> {
 //    long imax = Math.min(i_max, imin + (long) (width * Math.pow(2, deltaZ) / 256) + 3);
 //    long jmax = Math.min(j_max, jmin + (long) (height * Math.pow(2, deltaZ) / 256) + 3);
     LOGGER.fine("Zoom = " + nearestZoom + ", active = " + activeZoom + ", tx = " + tx + ", loadtiles, check i-range: " + imin + ", " + imax + " and j-range: " + jmin + ", " + jmax);
-    List<MapTileImageView> tilesNeeded = new ArrayList<>();
+    List<TileImageView> tilesNeeded = new ArrayList<>();
     for (long i = imin; i < imax; i++) {
       for (long j = jmin; j < jmax; j++) {
         Long key = i * i_max + j;
-        SoftReference<MapTileImageView> ref = tiles[nearestZoom].get(key);
-        if ((ref == null) || (ref.get() == null)) {
-          if (ref != null) {
-            LOGGER.fine("RECLAIMED: z=" + nearestZoom + ",i=" + i + ",j=" + j);
-          }
-          MapTileImageView tile = new MapTileImageView(this, nearestZoom, i, j);
+        TileImageView tile = tiles[nearestZoom].get(key);
+        if ((tile == null)) {
+          tile = new TileImageView(this, nearestZoom, i, j);
           tilesNeeded.add(tile);
-          tiles[nearestZoom].put(key, new SoftReference<>(tile));
+          tiles[nearestZoom].put(key, tile);
 
           getChildren().add(tile);
           tile.calculatePosition();
         } else {
-          MapTileImageView tile = ref.get();
           tilesNeeded.add(tile);
           if (!getChildren().contains(tile)) {
             getChildren().add(tile);
@@ -93,7 +81,7 @@ public class BaseMap extends BaseMapAbstract<MapTileImageView> {
     }
     
     StringBuilder buf = new StringBuilder();
-    for (MapTileImageView mt: tilesNeeded) {
+    for (TileImageView mt: tilesNeeded) {
       buf.append(", ").append(mt);
     }
     LOGGER.severe("Tiles needed: " + buf.toString());

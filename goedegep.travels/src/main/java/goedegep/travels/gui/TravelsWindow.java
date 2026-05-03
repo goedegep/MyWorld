@@ -3051,10 +3051,10 @@ public class TravelsWindow extends JfxStage {
     // fill attributes based on the current map view
     mapImage.setImageHeight(travelMapView.getHeight());
     mapImage.setImageWidth(travelMapView.getWidth());
-    mapImage.setCenterLatitude(travelMapView.center.get().getLatitude());
-    LOGGER.severe("travelMapView.getCenterLatitude(): " + travelMapView.center.get().getLatitude());
-    mapImage.setCenterLongitude(travelMapView.center.get().getLongitude());
-    LOGGER.severe("travelMapView.getCenterLongitude(): " + travelMapView.center.get().getLongitude());
+    mapImage.setCenterLatitude(travelMapView.centerProperty.get().getLatitude());
+    LOGGER.severe("travelMapView.getCenterLatitude(): " + travelMapView.centerProperty.get().getLatitude());
+    mapImage.setCenterLongitude(travelMapView.centerProperty.get().getLongitude());
+    LOGGER.severe("travelMapView.getCenterLongitude(): " + travelMapView.centerProperty.get().getLongitude());
     mapImage.setZoom(travelMapView.getZoom());
     
 //    EObject eObject = getFirstAncesterEObject(treeItem);

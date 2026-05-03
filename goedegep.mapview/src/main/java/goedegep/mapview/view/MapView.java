@@ -57,7 +57,7 @@ public class MapView extends MapViewCommon {
     getChildren().add(baseMapAbstract);
     registerInputListeners();
 
-    center.addListener(_ -> markDirty());
+    centerProperty.addListener(_ -> markDirty());
 
     parentProperty().addListener((_, _, _) ->        {
       getParent().layoutBoundsProperty().addListener(observable -> {
@@ -65,8 +65,7 @@ public class MapView extends MapViewCommon {
           ReadOnlyObjectProperty<?> property = (javafx.beans.property.ReadOnlyObjectProperty<?>) observable;
           Object object = property.get();
           if (object instanceof BoundingBox boundingBox) {
-            dimension = new Dimension2D(boundingBox.getWidth(), boundingBox.getHeight());
-            LOGGER.severe("Parent layoutBounds changed, dimension: " + dimension);
+            super.setDimensions(boundingBox.getWidth(), boundingBox.getHeight());
             if (boundingBox.getWidth() != 0  &&  boundingBox.getHeight() != 0) {
               initialize();
             }
@@ -162,11 +161,11 @@ public class MapView extends MapViewCommon {
     };
     
     timeline = new Timeline(
-        new KeyFrame(Duration.ZERO, new KeyValue(prefCenter, new MapPoint(currentLat, currentLon)), new KeyValue(prefZoom, zoom.get())),
-        new KeyFrame(Duration.seconds(t1), new KeyValue(prefCenter, new MapPoint(currentLat, currentLon)), new KeyValue(prefZoom, zoom.get())),
-        new KeyFrame(Duration.seconds(t2), new KeyValue(prefCenter, new MapPoint(currentLat, currentLon)), new KeyValue(prefZoom, zoomLevel)),
-        new KeyFrame(Duration.seconds(t3), new KeyValue(prefCenter, mapPoint, mapPointInterpolator), new KeyValue(prefZoom, zoomLevel)),
-        new KeyFrame(Duration.seconds(t4), new KeyValue(prefCenter, mapPoint), new KeyValue(prefZoom, endZoom))
+        new KeyFrame(Duration.ZERO, new KeyValue(prefCenterProperty, new MapPoint(currentLat, currentLon)), new KeyValue(prefZoomProperty, zoomProperty.get())),
+        new KeyFrame(Duration.seconds(t1), new KeyValue(prefCenterProperty, new MapPoint(currentLat, currentLon)), new KeyValue(prefZoomProperty, zoomProperty.get())),
+        new KeyFrame(Duration.seconds(t2), new KeyValue(prefCenterProperty, new MapPoint(currentLat, currentLon)), new KeyValue(prefZoomProperty, zoomLevel)),
+        new KeyFrame(Duration.seconds(t3), new KeyValue(prefCenterProperty, mapPoint, mapPointInterpolator), new KeyValue(prefZoomProperty, zoomLevel)),
+        new KeyFrame(Duration.seconds(t4), new KeyValue(prefCenterProperty, mapPoint), new KeyValue(prefZoomProperty, endZoom))
         );
     timeline.play();
   }
@@ -231,15 +230,6 @@ public class MapView extends MapViewCommon {
     return baseMapAbstract.getMapPosition(sceneX, sceneY);
   }
 
-  /**
-   * Request the map to position itself around the specified center
-   *
-   * @param mapPoint
-   */
-  public void setCenter(MapPoint mapPoint) {
-    setCenter(mapPoint.getLatitude(), mapPoint.getLongitude());
-  }
-
   //    /**
   //     * Returns the center point of this map
   //     * @return the center point
@@ -282,12 +272,10 @@ public class MapView extends MapViewCommon {
     TileImageView.setPlaceholderImageSupplier(supplier);
   }
 
-  private boolean dirty = false;
-
-  public void markDirty() {
-    dirty = true;
-    this.setNeedsLayout(true);
-  }
+//  public void markDirty() {
+//    dirty = true;
+//    this.setNeedsLayout(true);
+//  }
 
   /**
    * {@inheritDoc}
@@ -297,10 +285,10 @@ public class MapView extends MapViewCommon {
     LOGGER.severe("=>");
 
     super.layoutChildren();
-    dirty = false;
+//    dirty = false;
 
     // we need to get these values or we won't be notified on new changes
-    center.get();
+    centerProperty.get();
   }
 
   @Override

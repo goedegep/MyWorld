@@ -3,13 +3,11 @@ package goedegep.mapview.image;
 import java.util.logging.Logger;
 
 import goedegep.geo.WGS84BoundingBox;
-import goedegep.mapview.MapLayer;
 import goedegep.mapview.MapPoint;
 import goedegep.mapview.image.impl.BaseMap;
 import goedegep.mapview.impl.MapViewCommon;
 import javafx.geometry.Dimension2D;
 import javafx.geometry.Point2D;
-import javafx.scene.shape.Rectangle;
 
 /**
  *
@@ -39,15 +37,6 @@ public class MapImage extends MapViewCommon {
    */
   public MapPoint getMapPosition(double sceneX, double sceneY) {
     return baseMapAbstract.getMapPosition(sceneX, sceneY);
-  }
-
-  /**
-   * Request the map to position itself around the specified center
-   *
-   * @param mapPoint
-   */
-  public void setCenter(MapPoint mapPoint) {
-    setCenter(mapPoint.getLatitude(), mapPoint.getLongitude());
   }
 
 
@@ -81,7 +70,7 @@ public class MapImage extends MapViewCommon {
    * @param height the height of the map image
    */
   public void setSize(double width, double height) {
-    dimension = new Dimension2D(width, height);
+    super.setDimensions(width, height);
     setWidth(width);
     setHeight(height);
     setPrefWidth(width);

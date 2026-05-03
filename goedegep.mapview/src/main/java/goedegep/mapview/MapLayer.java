@@ -1,7 +1,5 @@
 package goedegep.mapview;
 
-import goedegep.gluonhq.impl.maps.BaseMap;
-import goedegep.mapview.impl.BaseMapAbstract;
 import javafx.scene.Parent;
 
 /**

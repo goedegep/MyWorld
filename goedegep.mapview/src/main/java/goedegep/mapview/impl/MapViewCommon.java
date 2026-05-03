@@ -55,39 +55,36 @@ public abstract class MapViewCommon extends MapViewAbstract {
   /**
    * The center point of the map. Latitude and longitude in degrees.
    */
-  public final ReadOnlyObjectWrapper<MapPoint> center = new ReadOnlyObjectWrapper<>();  // TODO Don't make public
-  
+  public final ReadOnlyObjectWrapper<MapPoint> centerProperty = new ReadOnlyObjectWrapper<>();
   
   /**
    * the zoom level of the map.
    */
-  protected final ReadOnlyDoubleWrapper zoom = new ReadOnlyDoubleWrapper();
+  protected final ReadOnlyDoubleWrapper zoomProperty = new ReadOnlyDoubleWrapper();
   
   /**
-   * Dimension (width and height) of the map.
+   * Dimensions (width and height) of the map.
    */
-  protected Dimension2D dimension;
+  protected Dimension2D dimensions;
   
   /**
    * The value to which the center has to change.
    * Main reason why this is a {@link javafx.beans.property.Property} is that it can be used in a {@link javafx.animation.KeyValue} of an animation
    * like flyTo().
    */
-  public final ObjectProperty<MapPoint> prefCenter = new SimpleObjectProperty<>();
+  protected final ObjectProperty<MapPoint> prefCenterProperty = new SimpleObjectProperty<>();
   
   /**
    * The value to which the zoom level has to change.
    * Main reason why this is a {@link javafx.beans.property.Property} is that it can be used in a {@link javafx.animation.KeyValue} of an animation
    * like flyTo().
    */
-  protected final DoubleProperty prefZoom  = new SimpleDoubleProperty();
-  
+  protected final DoubleProperty prefZoomProperty  = new SimpleDoubleProperty();
 
   /*
-   *  Node clipping rectangle.
+   *  Node clipping rectangle. This is kept at the same size as the map view ({@code dimensions}).
    */
-  private final Rectangle clip;
-
+  private final Rectangle clipRectangle;
   
   /**
    * The basic map (map tiles).
@@ -106,35 +103,30 @@ public abstract class MapViewCommon extends MapViewAbstract {
    * The center and zoom can be set before we have a width and height, but the map view will only be initialized when we have a width and height.
    * We listen to changes in the width and height, and when we have a width and height, we initialize the map view.
    */
-  private boolean initialized = false;
+  public boolean initialized = false;
   
+  /**
+   * Indicates whether the map view needs to be laid out. This is set to true when the center or zoom level changes, and is set to false after layout.
+   */
   private boolean dirty = false;
+  
   
   /**
    * Constructor.
    */
   public MapViewCommon() {
-    
-    clip = new Rectangle();
-    this.setClip(clip);
+    clipRectangle = new Rectangle();
+    this.setClip(clipRectangle);
 
-    prefCenter.addListener(_ -> 
-      baseMapAbstract.doSetCenter(prefCenter.get())
-    );
+    prefCenterProperty.addListener(_ -> baseMapAbstract.doSetCenter(prefCenterProperty.get()));
 
-    prefZoom.addListener(_ -> doZoom(prefZoom.get()));
-    
-    center.addListener(_ -> {  // TODO Temp
-      LOGGER.severe("centerLat updated: " + center.get());
-    });
-    
+    prefZoomProperty.addListener(_ -> doZoom(prefZoomProperty.get()));    
   }
   
   /**
    * Initialize the map view.
    */
   protected void initialize() {
-    LOGGER.severe("=> initialized: " + initialized);
     if (initialized) {
       return;
     }
@@ -142,9 +134,8 @@ public abstract class MapViewCommon extends MapViewAbstract {
     baseMapAbstract.doSetCenter(new MapPoint(0, 0));
     
     initialized = true;
-    baseMapAbstract.initialized = true;
     
-    baseMapAbstract.markDirty();
+    markDirty();
   }
 
   @Override
@@ -156,104 +147,50 @@ public abstract class MapViewCommon extends MapViewAbstract {
       zoom = BaseMapAbstract.getMaximumZoomLevel();
     }
     
-    // Set prefZoom, which will result in a call to doZoom().
-    prefZoom.set(zoom);
+    doZoom(zoom);
   }
 
   /**
    * Returns the zoom level of the map.
+   * 
    * @return the zoom level of the map.
    */
   public double getZoom() {
-    return prefZoom.get();
-//    return zoom.get();
+    return zoomProperty.get();
   }
   
   public ReadOnlyDoubleProperty zoomReadOnlyProperty() {
-    return zoom.getReadOnlyProperty();
+    return zoomProperty.getReadOnlyProperty();
   }
-  
-//  /**
-//   *  Get the latitude of the center point of the map.
-//   * @return the latitude of the center point of the map.
-//   */
-//  public double getCenterLatitude() {
-//    return centerLat.get();
-//  }
-  
-//  /**
-//   * Get the property representing the latitude of the center point of the map.
-//   * @return the property representing the latitude of the center point of the map.
-//   */
-//  protected DoubleProperty centerLatitudeProperty() {
-//    return centerLat;
-//  }
-  
-//  /**
-//   * Get the read-only property representing the latitude of the center point of the map.
-//   * @return the read-only property representing the latitude of the center point of the map.
-//   */
-//  public ReadOnlyDoubleProperty centerLatitudeReadOnlyProperty() {
-//    return centerLat.getReadOnlyProperty();
-//  }
-  
-//  /**
-//   * Get the longitude of the center point of the map.
-//   * @return the longitude of the center point of the map.
-//   */
-//  public double getCenterLongitude() {
-//    return centerLon.get();
-//  }
-  
-//  /**
-//   * Get the property representing the longitude of the center point of the map.
-//   * @return the property representing the longitude of the center point of the map.
-//   */
-//  protected DoubleProperty centerLongitudeProperty() {
-//    return centerLon;
-//  }
-  
-//  /**
-//   * Get the read-only property representing the longitude of the center point of the map.
-//   * @return the read-only property representing the longitude of the center point of the map.
-//   */
-//  public ReadOnlyDoubleProperty centerLongitudeReadOnlyProperty() {
-//    return centerLon.getReadOnlyProperty();
-//  }
-  
+    
   /**
    * Get the center point of the map.
    * @return the center point of the map.
    */
   public MapPoint getCenter() {
-    return center.get();
-  }
-  
-  /**
-   * Set the center point of the map to the specified latitude and longitude.
-   * 
-   * @param latitude the latitude of the center point of the map in degrees.
-   * @param longitude the longitude of the center point of the map in degrees.
-   */
-  public void setCenter(double latitude, double longitude) {
-    prefCenter.set(new MapPoint(latitude, longitude));
-//    prefCenterLat.set(latitude);
-//    prefCenterLon.set(longitude);
-  }
-  
-  
-//  public DoubleProperty prefCenterLon() {
-//      return prefCenterLon;
-//  }
-  
-  @Override
-  public Dimension2D getDimension() {
-    return dimension;
+    return centerProperty.get();
   }
 
-  //  public DoubleProperty prefCenterLat() {
-//      return prefCenterLat;
-//  }
+  @Override
+  public void setCenter(MapPoint mapPoint) {
+    baseMapAbstract.doSetCenter(mapPoint);
+  }
+  
+  @Override
+  public void setCenter(double latitude, double longitude) {
+    setCenter(new MapPoint(latitude, longitude));
+  }
+  
+  @Override
+  public Dimension2D getDimensions() {
+    return dimensions;
+  }
+
+  /**
+   * Get the bounding box of the currently visible map area.
+   * 
+   * @return the bounding box of the currently visible map area.
+   */
   public abstract WGS84BoundingBox getVisibleMapBoundingBox();
 
   /**
@@ -262,10 +199,8 @@ public abstract class MapViewCommon extends MapViewAbstract {
    * @param z the zoom level to use.
    */
   private void doZoom(double z) {
-      zoom.set(z);
-//      baseMapAbstract.doSetCenter(baseMapAbstract.lat, baseMapAbstract.lon);
-      baseMapAbstract.doSetCenter(center.get());
-      baseMapAbstract.markDirty();
+      zoomProperty.set(z);
+      baseMapAbstract.doSetCenter(centerProperty.get());
   }
 
   /**
@@ -292,9 +227,9 @@ public abstract class MapViewCommon extends MapViewAbstract {
 
   @Override
   protected void layoutChildren() {
-    
-    clip.setWidth(dimension.getWidth());
-    clip.setHeight(dimension.getHeight());
+    if (!dirty) {
+      return;
+    }
     
     baseMapAbstract.layoutChildren();
 
@@ -305,6 +240,19 @@ public abstract class MapViewCommon extends MapViewAbstract {
     super.layoutChildren();
     
     dirty = false;
+  }
+  
+  /**
+   * Set the dimensions (width and height) of the map.
+   * 
+   * @param width the width of the map in pixels.
+   * @param height the height of the map in pixels.
+   */
+  public void setDimensions(double width, double height) {
+    dimensions = new Dimension2D(width, height);
+    
+    clipRectangle.setWidth(width);
+    clipRectangle.setHeight(height);
   }
   
   /**

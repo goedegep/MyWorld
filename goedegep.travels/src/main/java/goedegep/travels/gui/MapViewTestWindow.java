@@ -248,7 +248,7 @@ public class MapViewTestWindow extends JfxStage {
     .append(center != null ? center.getLongitude() : "<null>")
     .append("\n");
     buf.append("Zoom: ").append(myMapView.getZoom()).append("\n");
-    Dimension2D dimension = myMapView.getDimension();
+    Dimension2D dimension = myMapView.getDimensions();
     buf.append("Dimension: ").append(dimension != null ? dimension.getWidth() : "<null>").append(" x ").append(dimension != null ? dimension.getHeight() : "<null>").append("\n");
     WGS84BoundingBox visibleMapCoordinates = myMapView.getVisibleMapBoundingBox();
     buf.append("Visible map coordinates: ");

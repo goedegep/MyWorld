@@ -38,7 +38,7 @@ import javafx.scene.layout.Region;
 /// * Width and height of the map
 ///   For the MapView the width and height of the map are determined by the size of the parent container. The map will automatically resize when the parent container is resized.   
 ///   In case of the MapImage implementation, the size of the map has to be set explicitly using the [MapImage#setSize()] method.
-///   In both cases, the width and height of the map can be retrieved using the [#getDimension()] method.
+///   In both cases, the width and height of the map can be retrieved using the [#getDimensions()] method.
 ///
 /// * Fly to a location
 ///   The MapView API provides a method to fly to a location on the map ([#flyTo()]). The map will then animate the transition to the new center and zoom level.
@@ -74,11 +74,19 @@ public abstract class MapViewAbstract extends Region {
   public abstract MapPoint getCenter();
 
   /**
-   * Request the map to position itself around the specified center
+   * Request the map to position itself around the specified center.
    *
    * @param mapPoint
    */
   public abstract void setCenter(MapPoint mapPoint);
+  
+  /**
+   * Request the map to position itself around the specified center coordinates.
+   * 
+   * @param latitude the latitude of the center point of the map in degrees.
+   * @param longitude the longitude of the center point of the map in degrees.
+   */
+  public abstract void setCenter(double latitude, double longitude);
 
   /**
    * Returns the preferred zoom level of this map.
@@ -132,7 +140,7 @@ public abstract class MapViewAbstract extends Region {
    * 
    * @return the dimensions of the map, or null if the map doesn't have any dimensions yet.
    */
-  public abstract Dimension2D getDimension();
+  public abstract Dimension2D getDimensions();
   
   /**
    * Get the position on the map, as a [Point2D] with scene coordinates, for the given latitude and longitude.

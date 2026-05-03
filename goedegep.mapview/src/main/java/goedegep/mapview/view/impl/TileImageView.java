@@ -1,35 +1,37 @@
 package goedegep.mapview.view.impl;
 
-
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Supplier;
 import java.util.logging.Logger;
 
+import goedegep.mapview.impl.BaseMapAbstract;
 import goedegep.mapview.impl.TileImageViewAbstract;
 import javafx.application.Platform;
+import javafx.beans.InvalidationListener;
+import javafx.beans.Observable;
+import javafx.beans.WeakInvalidationListener;
 import javafx.beans.property.ReadOnlyDoubleProperty;
 import javafx.beans.property.ReadOnlyDoubleWrapper;
-import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.scene.image.Image;
 
-/**
- * This class is an ImageView for a single map tile (zoom, i and j).
- * The {@code Image} is loaded asynchronously using the {@link TILE_RETRIEVER}.<br/>
- * The progress of loading the image can be monitored using the {@link #progressProperty()}.
- * <br/>
- * Via the method {@link #setPlaceholderImageSupplier} a supplier of a placeholder Image can be set. This Image will then be shown while loading the actual tile.
- * <br/>
- */
 public class TileImageView extends TileImageViewAbstract {
-  private static final Logger LOGGER = Logger.getLogger(TileImageView.class.getName());
-
+  private static final Logger LOGGER = Logger.getLogger(TileImageView.class.getName() );
+  
   /**
-   * The progress of loading the tile image (0.0 to 1.0).
+   * The loading progress. 1.0 indicates fully loaded.
    */
-  protected ReadOnlyDoubleWrapper progressProperty;
-
+  public ReadOnlyDoubleProperty progressProperty;
+  
+  /**
+   *  A list of tiles that this tile is covering. In case the covered tiles are 
+   *  not yet loaded, this tile will be rendered.
+   */
+  protected final List<TileImageViewAbstract> coveredTiles = new LinkedList<>();
+  
   /**
    * An optional supplier of an Image that can be used as placeholder by the Tile
    * while the final image is being retrieved.
@@ -41,7 +43,37 @@ public class TileImageView extends TileImageViewAbstract {
    * exception occurred.
    */
   private ReadOnlyObjectWrapper<Exception> exception;
+  
+  private CompletableFuture<Image> future;
+  
 
+  private final InvalidationListener zl = _ -> calculatePosition();
+
+  /**
+   * Constructor.
+   * 
+   * @param baseMapAbstract The base map for which this is a map tile.
+   * @param myZoom The zoom level of the tile
+   * @param i The tile column.
+   * @param j The tile row.
+   */
+  TileImageView(BaseMapAbstract<?> baseMapAbstract, int myZoom, long i, long j) {
+    LOGGER.severe("=> Creating tile: " + myZoom + " [" + i + ", " + j + "]");
+    super(baseMapAbstract, myZoom, i, j);
+
+    loadTile(myZoom, i, j);
+    
+    // If the zoom level (or the translation of the base map changes), we need to recalculate the position of this tile.
+    baseMapAbstract.zoom().addListener(new WeakInvalidationListener(zl));
+//    baseMapAbstract.translateXProperty().addListener(new WeakInvalidationListener(zl));
+//    baseMapAbstract.translateYProperty().addListener(new WeakInvalidationListener(zl));
+    
+    calculatePosition();
+    this.setMouseTransparent(true);
+    
+    LOGGER.severe("<= Tile created: " + myZoom + " [" + i + ", " + j + "]");
+  }
+  
   /**
    * Creates a new TileImageView for the given zoom, i and j.
    *
@@ -49,15 +81,13 @@ public class TileImageView extends TileImageViewAbstract {
    * @param i    the tile column
    * @param j    the tile row
    */
-  public TileImageView(int zoom, long i, long j) {
+  public void loadTile(int zoom, long i, long j) {
     progressProperty = new ReadOnlyDoubleWrapper(this, "progress", 0);
 
-    CompletableFuture<Image> future = TILE_RETRIEVER.loadTile(zoom, i, j);
+    future = TILE_RETRIEVER.loadTile(zoom, i, j);
     if (!future.isDone()) {
       // Install the placeholder image if available
       Optional.ofNullable(placeholderImageSupplier).ifPresent(supplier -> setImage(supplier.get()));
-
-      //            LOGGER.severe("downloading tile: " + zoom + "/" + i + "/" + j);
 
       future.handle((image, throwable) -> {
         if (throwable != null) {
@@ -71,7 +101,7 @@ public class TileImageView extends TileImageViewAbstract {
         //                LOGGER.severe("Tile available from downloaded file: " + zoom + "/" + i + "/" + j);
         Platform.runLater(() -> {
           setImage(addTileParametersToImage(tileImage, zoom, i, j));
-          progressProperty.set(1);
+//          setNeedsLayout(true);
         });
       });
     } else {
@@ -79,18 +109,9 @@ public class TileImageView extends TileImageViewAbstract {
       Image image = future.getNow(null);
       image = addTileParametersToImage(image, zoom, i, j);
       setImage(image);
-      progressProperty.set(1);
+      markDirty();
+      //      setNeedsLayout(true);
     }
-  }
-
-  /**
-   * Set a supplier of an Image that can be used as placeholder by the Tile
-   * while the final image is being retrieved.
-   * 
-   * @param supplier the supplier of the placeholder Image
-   */
-  public static void setPlaceholderImageSupplier(Supplier<Image> supplier) {
-    placeholderImageSupplier = supplier;
   }
 
   /**
@@ -100,24 +121,6 @@ public class TileImageView extends TileImageViewAbstract {
    */
   private void setException(Exception value) {
     exceptionPropertyImpl().set(value);
-  }
-
-  /**
-   * Get the exception value.
-   * 
-   * @return the exception value, which is null if no exception occurred.
-   */
-  public final Exception getException() {
-    return exception == null ? null : exception.get();
-  }
-
-  /**
-   * Get the read-only exception {@code Property}.
-   * 
-   * @return the read-only exception property
-   */
-  public final ReadOnlyObjectProperty<Exception> exceptionProperty() {
-    return exceptionPropertyImpl().getReadOnlyProperty();
   }
 
   /**
@@ -133,14 +136,51 @@ public class TileImageView extends TileImageViewAbstract {
     return exception;
   }
 
+  /**
+   * Indication that the tile is loading.
+   * 
+   * @return true if the tile is loading, false otherwise.
+   */
+  public boolean loading() {
+    return future != null  &&  !future.isDone();
+  }
   
   /**
-   * Get the read-only progress {@code Property}.
+   * Check whether this tile is covering any tiles.
    * 
-   * @return the read-only progress property
+   * @return true if this tile is covering one or more tiles, false otherwise.
    */
-  public final ReadOnlyDoubleProperty progressProperty() {
-    return progressProperty.getReadOnlyProperty();
+  public boolean isCovering() {
+      return coveredTiles.size() > 0;
+  }
+
+  /**
+   * This tile is covering for the child tile that is still being loaded.
+   *
+   * @param child
+   */
+  public void addCovering(TileImageView child) {
+    coveredTiles.add(child);
+    InvalidationListener il = createProgressListener(child);
+    //        System.out.println("We have to cover, add "+il);
+//    child.progress.addListener(il);
+    calculatePosition();
+  }
+
+  private InvalidationListener createProgressListener(TileImageView child) {
+    return new InvalidationListener() {
+      @Override
+      public void invalidated(Observable o) {
+//        if (child.progress.get() >= 1.0d) {
+//          MapTileImageView.this.coveredTiles.remove(child);
+//          child.progress.removeListener(this);
+//        }
+      }
+    };
+  }
+
+  public static void setPlaceholderImageSupplier(Supplier<Image> supplier) {
+      placeholderImageSupplier = supplier;
   }
 
 }

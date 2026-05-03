@@ -11,11 +11,8 @@ import java.util.logging.Logger;
 
 import goedegep.geo.WGS84BoundingBox;
 import goedegep.mapview.MapPoint;
-import javafx.application.Platform;
-import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.ReadOnlyDoubleProperty;
-import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.geometry.Point2D;
 import javafx.scene.Group;
@@ -25,7 +22,7 @@ import javafx.scene.Group;
  * 
  * @param <T> the type of the map tiles, which must extend MapTileAbstract. The specific map tile is needed, because not all implementations use covering tiles.
  */
-public abstract class BaseMapAbstract<T extends MapTileImageViewAbstract> extends Group {
+public abstract class BaseMapAbstract<T extends TileImageViewAbstract> extends Group {
   private static final Logger LOGGER = Logger.getLogger(BaseMapAbstract.class.getName() );
 
   /**
@@ -50,21 +47,10 @@ public abstract class BaseMapAbstract<T extends MapTileImageViewAbstract> extend
    * The key is calculated as i * (2^zoom) + j, where i and j are the tile indices in x and y direction, respectively.
    */
   @SuppressWarnings("unchecked")
-  protected final Map<Long, SoftReference<T>>[] tiles = new HashMap[NUMBER_OF_ZOOM_LEVELS];
+  protected final Map<Long, T>[] tiles = new HashMap[NUMBER_OF_ZOOM_LEVELS];
 
-  // Usage not clear.
-//  public double lat;
-//  public double lon;
-
-//  /**
-//   * This implementation only works if it is part of a Scene. If this is not the case nothing is done and this flag is set.
-//   * When the scene is set, the flag is reset and the map is updated.
-//   */
-//  public boolean abortedTileLoad;
   
   protected boolean dirty = false;
-
-  public boolean initialized = false;
 
   /**
    * The MapView for which this is the base map.
@@ -124,8 +110,8 @@ public abstract class BaseMapAbstract<T extends MapTileImageViewAbstract> extend
     double lat = center.getLatitude();
     double lon = center.getLongitude();
         
-    double width = mapViewCommon.dimension.getWidth();
-    double height = mapViewCommon.dimension.getHeight();
+    double width = mapViewCommon.getDimensions().getWidth();
+    double height = mapViewCommon.getDimensions().getHeight();
     
     // the zoom level.
     double activeZoom = mapViewCommon.getZoom();
@@ -153,7 +139,8 @@ public abstract class BaseMapAbstract<T extends MapTileImageViewAbstract> extend
     setTranslateX(-1 * ttx);
     setTranslateY(-1 * tty);
     LOGGER.info("setCenter, tx = " + this.getTranslateX() + ", with = " + mapViewCommon.getWidth() / 2 + ", mex = " + mex);
-    mapViewCommon.center.set(new MapPoint(lat, lon));
+    mapViewCommon.centerProperty.set(new MapPoint(lat, lon));
+    markDirty();
 
     LOGGER.severe("<= doSetCenter");
   }
@@ -209,12 +196,12 @@ public abstract class BaseMapAbstract<T extends MapTileImageViewAbstract> extend
    * @param dx the number of pixels
    */
   public void moveX(double dx) {
-    MapPoint center = mapViewCommon.center.get();
+    MapPoint center = mapViewCommon.centerProperty.get();
     double currentCenterLat = center.getLatitude();
     double currentCenterLon = center.getLongitude();
     Point2D currentMapPoint = getMapPoint(currentCenterLat, currentCenterLon);
     MapPoint newMapPosition = getMapPosition(currentMapPoint.getX() + dx, currentMapPoint.getY());
-    mapViewCommon.center.set(newMapPosition);
+    mapViewCommon.centerProperty.set(newMapPosition);
 //    mapViewCommon.centerLat.set(newMapPosition.getLatitude());
 //    mapViewCommon.centerLon.set(newMapPosition.getLongitude());
     setTranslateX(getTranslateX() - dx);
@@ -349,10 +336,10 @@ public abstract class BaseMapAbstract<T extends MapTileImageViewAbstract> extend
    * @param j the y-index
    * @return the tile, only if it is still in the cache
    */
-  protected MapTileImageViewAbstract findTile(int zoom, long i, long j) {
+  protected TileImageViewAbstract findTile(int zoom, long i, long j) {
     Long key = i * (1 << zoom) + j;
-    SoftReference<T> exists = tiles[zoom].get(key);
-    return (exists == null) ? null : exists.get();
+    T tile = tiles[zoom].get(key);
+    return (tile == null) ? null : tile;
   }
 
   /**
@@ -362,8 +349,8 @@ public abstract class BaseMapAbstract<T extends MapTileImageViewAbstract> extend
    */
   @Override
   protected void layoutChildren() {
-    LOGGER.severe("=> layoutChildren, initialized = " + initialized + ", dirty = " + dirty);
-    if (!initialized) {
+    LOGGER.severe("=> layoutChildren, initialized = " + mapViewCommon.initialized + ", dirty = " + dirty);
+    if (!mapViewCommon.initialized) {
       return;
     }
     
@@ -396,14 +383,14 @@ public abstract class BaseMapAbstract<T extends MapTileImageViewAbstract> extend
 //    LOGGER.severe("translate x/y: " + getTranslateX() + ", " + getTranslateY());
     double translateX = getTranslateX();
     double translateY = getTranslateY();
-    double x = mapViewCommon.dimension.getWidth() / 2 - getTranslateX();
-    double y = mapViewCommon.dimension.getHeight() / 2 - getTranslateY();
+    double x = mapViewCommon.getDimensions().getWidth() / 2 - getTranslateX();
+    double y = mapViewCommon.getDimensions().getHeight() / 2 - getTranslateY();
 //    LOGGER.severe("x, y = " + x + ", " + y);
     
     // Set the center latitude and longitude properties based on the calculated x,y coordinates.    
-    calculateCoords(x, y, mapViewCommon.center);
+    calculateCoords(x, y, mapViewCommon.centerProperty);
     
-    LOGGER.severe("<= calculateCenterCoords, center lat/lon = " + mapViewCommon.center.get().getLatitude() + ", " + mapViewCommon.center.get().getLongitude());
+    LOGGER.severe("<= calculateCenterCoords, center lat/lon = " + mapViewCommon.centerProperty.get().getLatitude() + ", " + mapViewCommon.centerProperty.get().getLongitude());
   }
   
   /**
@@ -478,14 +465,14 @@ public abstract class BaseMapAbstract<T extends MapTileImageViewAbstract> extend
    * @return a WGS84BoundingBox which covers the visible map area.
    */
   public WGS84BoundingBox getVisibleMapCoordinates() {
-    if (mapViewCommon.center.get() == null) {
+    if (mapViewCommon.centerProperty.get() == null) {
       return null;
     }
     
     double height = mapViewCommon.getHeight();
     double width = mapViewCommon.getWidth();
 
-    Point2D center = getMapPoint(mapViewCommon.center.get().getLatitude(), mapViewCommon.center.get().getLongitude());
+    Point2D center = getMapPoint(mapViewCommon.centerProperty.get().getLatitude(), mapViewCommon.centerProperty.get().getLongitude());
     
     if (center == null) {
       return null;
@@ -513,8 +500,6 @@ public abstract class BaseMapAbstract<T extends MapTileImageViewAbstract> extend
     // For now I don't think the MAX_ZOOM - 1 check is needed, as the zoom level is already limited by the MapViewCommon.setZoom method. But maybe we should add it just to be sure.
     // (Math.min((int) floor(mapViewCommon.getZoom() + TIPPING), MAX_ZOOM - 1))
   }
-
-  public abstract MapTileAbstract createMapTile(BaseMapAbstract baseMapAbstract, int zoom, long i, long j);
   
   
   /**
@@ -527,14 +512,14 @@ public abstract class BaseMapAbstract<T extends MapTileImageViewAbstract> extend
     buf.append("Base map: \n");
     
     buf.append("TranslateX/Y: " + getTranslateX() + ", " + getTranslateY() + "\n");
-    List<MapTileImageViewAbstract> currentTiles = new ArrayList<>();
+    List<TileImageViewAbstract> currentTiles = new ArrayList<>();
     for (Object child: getChildren()) {
-      if (child instanceof MapTileImageViewAbstract tile) {
+      if (child instanceof TileImageViewAbstract tile) {
         currentTiles.add(tile);
       }
     }
     currentTiles.sort(new TileComperator());
-    for (MapTileImageViewAbstract tile: currentTiles) {
+    for (TileImageViewAbstract tile: currentTiles) {
       buf.append(tile.getStatusInformation());
     }
     
@@ -542,9 +527,9 @@ public abstract class BaseMapAbstract<T extends MapTileImageViewAbstract> extend
   }
 }
 
-class TileComperator implements java.util.Comparator<MapTileImageViewAbstract> {
+class TileComperator implements java.util.Comparator<TileImageViewAbstract> {
   @Override
-  public int compare(MapTileImageViewAbstract o1, MapTileImageViewAbstract o2) {
+  public int compare(TileImageViewAbstract o1, TileImageViewAbstract o2) {
     if (o1.tileZoom != o2.tileZoom) {
       return Integer.compare(o1.tileZoom, o2.tileZoom);
     } else if (o1.i != o2.i) {
