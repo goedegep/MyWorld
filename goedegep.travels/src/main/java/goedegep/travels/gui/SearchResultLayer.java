@@ -11,7 +11,6 @@ import com.gluonhq.maps.MapPoint;
 import goedegep.geo.WGS84BoundingBox;
 import goedegep.geo.WGS84Coordinates;
 import goedegep.mapview.MapLayer;
-import goedegep.mapview.MapViewUtil;
 import javafx.collections.ObservableList;
 import javafx.geometry.Point2D;
 import javafx.scene.Node;
@@ -122,7 +121,7 @@ public class SearchResultLayer extends MapLayer {
       WGS84BoundingBox boundingBoxCoords = boundingBoxPair.getKey();
       Polygon boxPolygon = boundingBoxPair.getValue();
       
-      MapViewUtil.updateBoundingBoxPolygon(boxPolygon, boundingBoxCoords, mapViewAbstract);
+      mapViewAbstract.updateBoundingBoxPolygon(boxPolygon, boundingBoxCoords);
     }
     
     for (Pair<MapPoint, Node> locationPair: locationsMap.values()) {

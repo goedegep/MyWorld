@@ -63,7 +63,7 @@ class MapTile extends Region {
         return coveredTiles.size() > 0;
     }
 
-    private final InvalidationListener zl = o -> calculatePosition();
+    private final InvalidationListener zl = _ -> calculatePosition();
     private ReadOnlyDoubleProperty progress;
 
     MapTile(BaseMap baseMap, int nearestZoom, long i, long j) {
@@ -77,7 +77,7 @@ class MapTile extends Region {
         debug("[JVDBG] load image [" + myZoom + "], i = " + i + ", j = " + j);
 
         final TileImageView imageView = new TileImageView(myZoom, i, j);
-        imageView.exceptionProperty().addListener((obs, ov, nv) -> logger.info("Error: " + nv.getMessage()));
+        imageView.exceptionProperty().addListener((_, _, nv) -> logger.info("Error: " + nv.getMessage()));
         imageView.setMouseTransparent(true);
         progress = imageView.progressProperty();
 

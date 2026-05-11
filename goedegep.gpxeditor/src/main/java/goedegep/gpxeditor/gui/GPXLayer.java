@@ -26,7 +26,6 @@ import goedegep.gpx.model.WptType;
 import goedegep.jfx.stringconverterandchecker.WGS84CoordinatesStringConverterAndChecker;
 import goedegep.mapview.MapLayer;
 import goedegep.mapview.MapPoint;
-import goedegep.mapview.MapViewUtil;
 import goedegep.poi.app.LocationCategory;
 import goedegep.resources.ImageResource;
 import javafx.collections.FXCollections;
@@ -636,7 +635,7 @@ public class GPXLayer extends MapLayer {
       double height = mapViewAbstract.getHeight();
       MapPoint bottomRight = mapViewAbstract.getMapPosition(width - 1, height - 1);
       WGS84BoundingBox mapBoundingBox = new WGS84BoundingBox(topLeft.getLongitude(), topLeft.getLatitude(), bottomRight.getLongitude(), bottomRight.getLatitude());
-      if (boundingBox == null  ||  !mapBoundingBox.intersects(boundingBox)) {
+      if (boundingBox == null  ||  !mapBoundingBox.containsAtLeastPartly(boundingBox)) {
         drawGPXData = false;
       }
 
@@ -771,7 +770,7 @@ public class GPXLayer extends MapLayer {
       
       // Bounding box
       if (boundingBoxData != null) {
-        MapViewUtil.updateBoundingBoxPolygon(boundingBoxData.polygon(), boundingBoxData.boundingBox(), mapViewAbstract);
+        mapViewAbstract.updateBoundingBoxPolygon(boundingBoxData.polygon(), boundingBoxData.boundingBox());
 //        layoutBoundingBox(boundingBoxData);
       }
       

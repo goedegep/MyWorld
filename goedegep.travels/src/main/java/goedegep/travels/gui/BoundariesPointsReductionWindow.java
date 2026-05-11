@@ -86,9 +86,9 @@ public class BoundariesPointsReductionWindow extends JfxStage {
     createGUI();
     setOnCloseRequest(_ -> closeWithoutMakingChanges());
     
-    setLocation(location);
-    
     show();
+    
+    setLocation(location);
   }
   
   /**
@@ -220,7 +220,7 @@ public class BoundariesPointsReductionWindow extends JfxStage {
     // Clear the map, add the location, zoom and center the map
     mapRelatedItemsLayer.clear();
     WGS84BoundingBox boundingBox = mapRelatedItemsLayer.addLocation(location);
-    Double zoomLevel = MapView.getZoomLevel(boundingBox);
+    Double zoomLevel = mapView.getZoomLevelForShowingBoundedBox(boundingBox);
     if (zoomLevel != null) {
       mapView.setZoom(zoomLevel);
     }

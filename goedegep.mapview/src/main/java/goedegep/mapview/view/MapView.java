@@ -3,23 +3,18 @@ package goedegep.mapview.view;
 import java.util.function.Supplier;
 import java.util.logging.Logger;
 
-import com.gluonhq.attach.util.Platform;
-
-import goedegep.geo.WGS84BoundingBox;
 import goedegep.geo.WGS84Coordinates;
 import goedegep.mapview.MapPoint;
 import goedegep.mapview.impl.MapViewCommon;
 import goedegep.mapview.view.impl.BaseMap;
 import goedegep.mapview.view.impl.TileImageView;
+import javafx.animation.Animation.Status;
 import javafx.animation.Interpolator;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
-import javafx.animation.Animation.Status;
 import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.geometry.BoundingBox;
-import javafx.geometry.Dimension2D;
-import javafx.geometry.Point2D;
 import javafx.scene.image.Image;
 import javafx.util.Duration;
 
@@ -36,9 +31,12 @@ public class MapView extends MapViewCommon {
   /**
    * X, Y coordinates of the start of a drag event, used to calculate the delta when dragging the map.
    */
-  public double x0, y0;
+  private double x0;
+  private double y0;
 
-//  private MapPoint centerPoint = null;
+  /**
+   * With mouse events and gestures we can be either dragging or zooming, but not both at the same time.
+   */
   private boolean zooming = false;
   private boolean enableDragging = false;
   
@@ -48,7 +46,7 @@ public class MapView extends MapViewCommon {
   private Timeline timeline;
 
   /**
-   * Create a MapView component.
+   * Constructor.
    */
   public MapView() {
     super();
@@ -57,20 +55,15 @@ public class MapView extends MapViewCommon {
     getChildren().add(baseMapAbstract);
     registerInputListeners();
 
-    centerProperty.addListener(_ -> markDirty());
-
     parentProperty().addListener((_, _, _) ->        {
       getParent().layoutBoundsProperty().addListener(observable -> {
-        if (observable instanceof ReadOnlyObjectProperty) {
-          ReadOnlyObjectProperty<?> property = (javafx.beans.property.ReadOnlyObjectProperty<?>) observable;
+        if (observable instanceof ReadOnlyObjectProperty property) {
           Object object = property.get();
           if (object instanceof BoundingBox boundingBox) {
-            super.setDimensions(boundingBox.getWidth(), boundingBox.getHeight());
+            setDimensions(boundingBox.getWidth(), boundingBox.getHeight());
             if (boundingBox.getWidth() != 0  &&  boundingBox.getHeight() != 0) {
               initialize();
             }
-          } else {
-            LOGGER.severe("Parent layoutBounds changed, but value is not a BoundingBox: " + object);
           }
         }
       });
@@ -115,7 +108,6 @@ public class MapView extends MapViewCommon {
       LOGGER.severe("Value too high for zoomLevel: " + zoomLevel);
       zoomLevel = 20;
     }
-//    LOGGER.severe("flyingDistance: " + flyingDistance + " km, zoomLevel: " + zoomLevel);
     
     // Don't fly at calculated zoom level and then zoom out at the end.
     // So if endZoom is lower than the calculated zoom level, use endZoom as the zoom level for flying.
@@ -170,98 +162,6 @@ public class MapView extends MapViewCommon {
     timeline.play();
   }
 
-
-  /**
-   * Install mouse listeners to support dragging and zooming the map.
-   */
-  private void registerInputListeners() {
-    // Save x, y for a possible drag event.
-    setOnMousePressed(t -> {
-      if (zooming) return;
-      x0 = t.getX();
-      y0 = t.getY();
-//      centerPoint = null; // once the user starts moving, we don't track the center anymore.
-      // dragging is enabled only after a pressed event, to prevent dragging right after zooming
-      enableDragging = true;
-    });
-    
-    // Handle dragging the map.
-    setOnMouseDragged(t -> {
-      if (zooming || !enableDragging) {
-        return;
-      }
-      baseMapAbstract.moveX(x0 - t.getX());
-      baseMapAbstract.moveY(y0 - t.getY());
-      x0 = t.getX();
-      y0 = t.getY();
-    });
-    
-    // End off dragging when the mouse is released.
-    setOnMouseReleased(t -> enableDragging = false);
-    
-    setOnZoomStarted(t -> {
-      zooming = true;
-      enableDragging = false;
-    });
-    setOnZoomFinished(t -> zooming = false);
-    setOnZoom(t -> baseMapAbstract.zoom(t.getZoomFactor() - 1, t.getX(), t.getY()));  // zoom factor greater than 1 means zoom in, smaller than 1 means zoom out, so we need to subtract 1 to get the delta.
-    if (Platform.isDesktop()) {
-      setOnScroll(t -> {
-        // Using the mouse wheel, we zoom in or out by a fixed .1 step.
-        final double delta;
-        if (t.isControlDown()) {
-          delta = t.getDeltaY() > 1 ? 1.0 : t.getDeltaY() < -1 ? -1.0 : 0;
-        } else {
-          delta = t.getDeltaY() > 1 ? .1 : t.getDeltaY() < -1 ? -.1 : 0;
-        }
-        baseMapAbstract.zoom(delta, t.getX(), t.getY());
-      });
-    }
-  }
-
-  /**
-   * Get the position on the map represented by a given coordinate
-   *
-   * @param sceneX x coordinate
-   * @param sceneY y coordinate
-   * @return map position
-   */
-  public MapPoint getMapPosition(double sceneX, double sceneY) {
-    return baseMapAbstract.getMapPosition(sceneX, sceneY);
-  }
-
-  //    /**
-  //     * Returns the center point of this map
-  //     * @return the center point
-  //     */
-  //    public MapPoint getCenter() {
-  //        Point2D center = baseMapAbstract.getCenter();
-  //        return new MapPoint(center.getX(), center.getY());
-  //    }
-
-  /**
-   * Calculate the zoom level needed to show a bounding box
-   * 
-   * @param boundingBox a {@code WGS84BoundingBox}.
-   * @return the zoom level needed to show {@code boundingBox}.
-   */
-  public static double getZoomLevel(WGS84BoundingBox boundingBox) {
-    // TODO: calculate zooom level
-    // http://stackoverflow.com/questions/4266754/how-to-calculate-google-maps-zoom-level-for-a-bounding-box-in-java
-    int zoomLevel;
-
-    final double maxDiff = Math.max(boundingBox.getWidth(), boundingBox.getHeight());
-    if (maxDiff < 360d / Math.pow(2, 20)) {
-      zoomLevel = 21;
-    } else {
-      zoomLevel = (int) (-1d*( (Math.log(maxDiff)/Math.log(2d)) - (Math.log(360d)/Math.log(2d))) + 1d);
-      if (zoomLevel < 1)
-        zoomLevel = 1;
-    }
-
-    return zoomLevel;
-  }
-
   /**
    * Set a supplier of an Image that can be used as placeholder by the Tile
    * while the final image is being retrieved
@@ -272,40 +172,85 @@ public class MapView extends MapViewCommon {
     TileImageView.setPlaceholderImageSupplier(supplier);
   }
 
-//  public void markDirty() {
-//    dirty = true;
-//    this.setNeedsLayout(true);
-//  }
 
   /**
-   * {@inheritDoc}
+   * Install mouse listeners to support dragging and zooming the map.
    */
-  @Override
-  protected void layoutChildren() {
-    LOGGER.severe("=>");
-
-    super.layoutChildren();
-//    dirty = false;
-
-    // we need to get these values or we won't be notified on new changes
-    centerProperty.get();
-  }
-
-  @Override
-  public WGS84BoundingBox getVisibleMapBoundingBox() {
-    return baseMapAbstract.getVisibleMapCoordinates();
-  }
-
-  @Override
-  public Point2D getMapPoint(double lat, double lon) {
-    return baseMapAbstract.getMapPoint(lat, lon);
+  private void registerInputListeners() {
+    // Handle possible start of a drag event.
+    setOnMousePressed(t -> {
+      if (zooming) return;
+      
+      // Save x, y for a possible drag event.
+      x0 = t.getX();
+      y0 = t.getY();
+      // dragging is enabled only after a pressed event, to prevent dragging right after zooming
+      enableDragging = true;
+    });
+    
+    // Handle dragging the map.
+    setOnMouseDragged(t -> {
+      if (zooming || !enableDragging) {
+        return;
+      }
+      moveXY(x0 - t.getX(), y0 - t.getY());
+      x0 = t.getX();
+      y0 = t.getY();
+    });
+    
+    // End off dragging when the mouse is released.
+    setOnMouseReleased(_ -> enableDragging = false);
+    
+    // Handle zooming started.
+    setOnZoomStarted(_ -> {
+      zooming = true;
+      enableDragging = false;
+    });
+    
+    // Handle zooming finished.
+    setOnZoomFinished(_ -> zooming = false);
+    
+    // Handle zooming the map. We use the zoom factor to calculate the delta zoom level, and we use the x and y coordinates of the zoom event as the pivot point for zooming.
+    setOnZoom(t -> baseMapAbstract.zoom(t.getZoomFactor() - 1, t.getX(), t.getY()));  // zoom factor greater than 1 means zoom in, smaller than 1 means zoom out, so we need to subtract 1 to get the delta.
+    
+    // Handle zooming with the mouse wheel.
+    setOnScroll(t -> {
+      // Using the mouse wheel, we zoom in or out by a fixed .1 step.
+      final double delta;
+      if (t.isControlDown()) {
+        delta = t.getDeltaY() > 1 ? 1.0 : t.getDeltaY() < -1 ? -1.0 : 0;
+      } else {
+        delta = t.getDeltaY() > 1 ? .1 : t.getDeltaY() < -1 ? -.1 : 0;
+      }
+      baseMapAbstract.zoom(delta, t.getX(), t.getY());
+    });
   }
   
+  /**
+   * Move the map by the specified delta in x and y direction.
+   * 
+   * @param deltaX the distance to move in x direction
+   * @param deltaY the distance to move in y direction
+   */
+  private void moveXY(double deltaX, double deltaY) {
+    baseMapAbstract.moveXY(deltaX, deltaY);
+  }
+
+  /**
+   * Move the map by the specified delta in x direction.
+   * 
+   * @param distance the distance to move in x direction
+   */
   public void moveX(double distance) {
-    baseMapAbstract.moveX(distance);
+    moveXY(distance, 0);
   }
   
+  /**
+   * Move the map by the specified delta in y direction.
+   * 
+   * @param distance the distance to move in y direction
+   */
   public void moveY(double distance) {
-    baseMapAbstract.moveY(distance);
+    moveXY(0, distance);
   }
 }

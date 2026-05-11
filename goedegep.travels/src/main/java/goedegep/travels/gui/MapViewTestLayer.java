@@ -5,7 +5,6 @@ import java.util.logging.Logger;
 import goedegep.geo.WGS84BoundingBox;
 import goedegep.mapview.MapLayer;
 import goedegep.mapview.MapPoint;
-import goedegep.mapview.MapViewUtil;
 import javafx.geometry.Point2D;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
@@ -24,15 +23,16 @@ public class MapViewTestLayer extends MapLayer {
   
   @Override
   protected void initialize() {
-    centerCircle = new Circle(0, 0, 10);
+    centerCircle = new Circle(0, 0, 4);
     centerCircle.setFill(Color.BLUE);
     getChildren().add(centerCircle);
     
     //51.476743, 5.429724
-    homeBoundingBox = new WGS84BoundingBox(5.429, 51.477, 5.430, 51.476);
+    homeBoundingBox = new WGS84BoundingBox(5.35, 51.55, 5.62, 51.38);
     homePolygon = new Polygon();
     homePolygon.setStroke(Color.YELLOW);
     homePolygon.setFill(Color.TRANSPARENT);
+    homePolygon.setStrokeWidth(8.0);
     homePolygon.setVisible(true);
     getChildren().add(homePolygon);
     
@@ -41,11 +41,17 @@ public class MapViewTestLayer extends MapLayer {
   
   @Override
   public void layoutLayer() {
-    MapViewUtil.updateBoundingBoxPolygon(homePolygon, homeBoundingBox, mapViewAbstract);
+    WGS84BoundingBox visibleArea = mapViewAbstract.getVisibleMapBoundingBox();
+    if (visibleArea.containsAtLeastPartly(homeBoundingBox)) {
+      mapViewAbstract.updateBoundingBoxPolygon(homePolygon, homeBoundingBox);
+      homePolygon.setVisible(true);
+    } else {
+      homePolygon.getPoints().clear();
+      homePolygon.setVisible(false);
+    }
     
     MapPoint centerMapPoint = mapViewAbstract.getCenter();
     Point2D centerPoint2D = mapViewAbstract.getMapPoint(centerMapPoint.getLatitude(), centerMapPoint.getLongitude());
-//    LOGGER.severe("center: " + center.getX() + ", " + center.getY());
     centerCircle.setCenterX(centerPoint2D.getX());
     centerCircle.setCenterY(centerPoint2D.getY());
   }

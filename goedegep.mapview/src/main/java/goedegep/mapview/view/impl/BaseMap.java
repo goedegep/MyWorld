@@ -1,8 +1,5 @@
 package goedegep.mapview.view.impl;
 
-import static java.lang.Math.floor;
-
-import java.lang.ref.SoftReference;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -10,8 +7,6 @@ import java.util.logging.Logger;
 
 import goedegep.mapview.impl.BaseMapAbstract;
 import goedegep.mapview.impl.MapViewCommon;
-import javafx.beans.value.ChangeListener;
-import javafx.scene.Scene;
 
 /**
  *
@@ -20,36 +15,7 @@ import javafx.scene.Scene;
  */
 public class BaseMap extends BaseMapAbstract<TileImageView> {
   private static final Logger LOGGER = Logger.getLogger( BaseMap.class.getName() );
-
-//  /**
-//   * This {@code Rectangle} is used to react to changes in the width and height and
-//   * is used to determine which tiles are currently visible.
-//   * Its width and height are bound to the parent layout bounds,
-//   * and its translation (x, y) is bound to the negative translation of this map.
-//   */
-//  private final Rectangle area;
-  
-  //    private double zoomValue;
-
-//  /**
-//   * This listener is used to react to changes in the width and height of the parent layout bounds.
-//   */
-//  private final ChangeListener<Number> resizeListener = (_, _, newValue) -> {
-//    /**
-//     * Don't do anything if there's no size.
-//     * 
-//     */
-//    if (mapViewCommon.getWidth() == 0 || mapViewCommon.getHeight() == 0) {
-//      return;
-//    }
-//    if (!initialized) {
-//      doSetCenter(mapViewCommon.center.get());
-//    }
-//    markDirty();
-//  };
     
-  private ChangeListener<Scene> sceneListener;
-
 
   /**
    * Constructor.
@@ -64,40 +30,33 @@ public class BaseMap extends BaseMapAbstract<TileImageView> {
    * Update the set of tiles.
    */
   public void loadTiles() {
-    LOGGER.severe("=>");
-
-    int nearestZoom = (Math.min((int) floor(mapViewCommon.getZoom() + TIPPING), NUMBER_OF_ZOOM_LEVELS - 1));
-    double activeZoom = mapViewCommon.getZoom();
-//    if (activeZoom >= 2) {
-//      LOGGER.severe("Zoom = " + nearestZoom + ", activeZoom = " + activeZoom + ", tx = " + getTranslateX() + ", ty = " + getTranslateY());  
-//    }
-    long i_max = 1 << nearestZoom;
-    long j_max = 1 << nearestZoom;
+    int tileZoom = getTileZoomLevel();
+    long i_max = 1 << tileZoom;
+    long j_max = 1 << tileZoom;
     double tx = getTranslateX();
     double ty = getTranslateY();
-    double width = mapViewCommon.getWidth();
-    double height = mapViewCommon.getHeight();
-    long imin = Math.max(0, (long) Math.floor(-tx / 256));  // Number of tiles left of the left edge of the visible area. We need the next tile, so we would need to add 1, but as the index start at 0, we don't need to add 1.
-    long imax = (long) Math.ceil((-tx + width) / 256);      // Number of the last tile needed. As the index starts at 0, imax is actually the index of the first tile that is not needed.
+    double width = mapViewCommon.getDimensions().getWidth();
+    double height = mapViewCommon.getDimensions().getHeight();
+    double actualTileSize = 256 * getTileScaleFactor(tileZoom);
+    long imin = Math.max(0, (long) Math.floor(-tx / actualTileSize));  // Number of tiles left of the left edge of the visible area. We need the next tile, so we would need to add 1, but as the index start at 0, we don't need to add 1.
+    long imax = (long) Math.ceil((-tx + width) / actualTileSize);      // Number of the last tile needed. As the index starts at 0, imax is actually the index of the first tile that is not needed.
     imax = Math.max(imin + 1, imax);                        // imax should be at least one more than imin.
     imax = Math.min(i_max, imax);                           // imax should not be higher than the maximum tile index.
     
-    long jmin = Math.max(0, (long) Math.floor(-ty / 256));
-    long jmax = (long) Math.ceil((-ty + height) / 256);
+    long jmin = Math.max(0, (long) Math.floor(-ty / actualTileSize));
+    long jmax = (long) Math.ceil((-ty + height) / actualTileSize);
     jmax = Math.max(jmin + 1, jmax);
     jmax = Math.min(j_max, jmax);
     
-//    LOGGER.severe("Zoom = " + nearestZoom + ", activeZoom = " + activeZoom + ", tx = " + tx + ", i-range: " + imin + ", " + imax + " and j-range: " + jmin + ", " + jmax);
     List<TileImageView> tilesNeeded = new ArrayList<>();
     for (long i = imin; i < imax; i++) {
       for (long j = jmin; j < jmax; j++) {
-        Long key = createTileKey(i, j, nearestZoom);
-        TileImageView tile = tiles[nearestZoom].get(key);
+        Long key = createTileKey(i, j, tileZoom);
+        TileImageView tile = tiles[tileZoom].get(key);
         if ((tile == null)) {
-//          MapTile tile = new MapTile(this, nearestZoom, i, j);
-          tile = new TileImageView(this, nearestZoom, i, j);
+          tile = new TileImageView(this, tileZoom, i, j);
           tilesNeeded.add(tile);
-          tiles[nearestZoom].put(key, tile);
+          tiles[tileZoom].put(key, tile);
           
           // If the tile is still loading, we try to find a covering tile to show in the meantime.
 //          if (tile.progress.get() < 1.0) {
@@ -124,7 +83,7 @@ public class BaseMap extends BaseMapAbstract<TileImageView> {
     for (TileImageView mt: tilesNeeded) {
       buf.append(", ").append(mt);
     }
-    LOGGER.severe("Tiles needed: " + buf.toString());
+//    LOGGER.severe("Tiles needed: " + buf.toString());
     
     List<TileImageView> currentTiles = new ArrayList<>();
     List<TileImageView> tilesToDelete = new ArrayList<>();
@@ -140,27 +99,33 @@ public class BaseMap extends BaseMapAbstract<TileImageView> {
     for (TileImageView mt: currentTiles) {
       buf.append(", ").append(mt);
     }
-    LOGGER.severe("Current Tiles: " + buf.toString());
+//    LOGGER.severe("Current Tiles: " + buf.toString());
     buf = new StringBuilder();
     for (TileImageView mt: tilesToDelete) {
       buf.append(", ").append(mt);
     }
-    LOGGER.severe("Tiles to delete: " + buf.toString());
+//    LOGGER.severe("Tiles to delete: " + buf.toString());
     getChildren().removeAll(tilesToDelete);
 
-    //   calculateCenterCoords();
-//    cleanupTiles();
-//    cleanupTileCache(nearestZoom, imin, imax, jmin, jmax);
+    cleanupTileCache(tileZoom, imin, imax, jmin, jmax);
+    
+//    LOGGER.severe("Tiles after cleanup:");
+    for (Object o: getChildren()) {
+      if (o instanceof TileImageView mt) {
+//        LOGGER.severe("Tile in view: " + mt);
+      }
+    }
+    
 //    cleanupDiskTileCache();
-    LOGGER.severe("<= loadTiles");
+//    LOGGER.severe("<= loadTiles");
   }
   
   private void cleanupTileCache(int zoom, long iMin, long iMax, long jMin, long jMax) {
-//    LOGGER.severe("=> cleanupTileCache, tiles in cache:");
     
     // Only clean this zoom level and lower zoom levels.
     
-    long totalTilesInCache = 0;
+//    long totalTilesInCache = 0;
+    
     // Keep levels 0 up to 5 in cache.
     for (int z = zoom; z > 6; z--) {
       Map<Long, TileImageView> tileMap = tiles[z];
@@ -170,16 +135,16 @@ public class BaseMap extends BaseMapAbstract<TileImageView> {
       long jFirstKeep= jMin - 5;
       long jLastKeep= jMax + 5;
       
-      totalTilesInCache += tileMap.size();
+//      totalTilesInCache += tileMap.size();
             
       List<Long> keysToRemove = new ArrayList<>();
       for (long key: tileMap.keySet()) {
         long i = getIFromTileKey(key, z);
-        long j = getIFromTileKey(key, z);
+        long j = getJFromTileKey(key, z);
 //        MapTile mapTile = tileMap.get(key).get();
 //        LOGGER.severe("z = " + z + ", i = " + i + ", j = " + j + ", mapTile = " + (mapTile != null ? "Set" : "Not set"));
         if ((i < iFirstKeep) || (i > iLastKeep) || (j < jFirstKeep) || (j > jLastKeep)) {
-          LOGGER.severe("Removing tile from cache, z = " + z + ", i = " + i + ", j = " + j);
+//          LOGGER.severe("Removing tile from cache, z = " + z + ", i = " + i + ", j = " + j);
           keysToRemove.add(key);
         }
       }
@@ -193,7 +158,7 @@ public class BaseMap extends BaseMapAbstract<TileImageView> {
       jMax = jMax / 2;
     }
 
-    LOGGER.severe("Total tiles in cache: " + totalTilesInCache);
+//    LOGGER.severe("Total tiles in cache: " + totalTilesInCache);
   }
   
   /**
@@ -233,11 +198,13 @@ public class BaseMap extends BaseMapAbstract<TileImageView> {
     long jMask = i_max - 1;
     return key & jMask;
   }
-  
-  private void cleanupDiskTileCache() {
-    //TODO implement
-  }
 
+  /**
+   * Get the tile that covers the specified tile. This is used to find out what tile we have to show while a new tile is still loading.
+   * 
+   * @param tile the tile for which we want to find a covering tile
+   * @return the covering tile, or null if no covering tile is available
+   */
   private TileImageView getCoveringTile(TileImageView tile) {
     int z = tile.getTileZoom();
     if (z > 0) {
@@ -248,10 +215,7 @@ public class BaseMap extends BaseMapAbstract<TileImageView> {
       // LongTuple it = new LongTuple(i,j);
       TileImageView candidate = tiles[z - 1].get(key);
       if (candidate != null) {
-        LOGGER.severe("Covering tile found for maptile " + tile + "covered by " + candidate);
         return candidate;
-      } else {
-        LOGGER.severe("No covering tile found for maptile " + tile);
       }
     }
     return null;
@@ -280,44 +244,5 @@ public class BaseMap extends BaseMapAbstract<TileImageView> {
     }
     return null;
   }
-
-
-//  protected void cleanupTiles() {
-//    //      LOGGER.severe("START CLEANUP, zp = " + mapViewCommon.getZoom());
-//    double zp = mapViewCommon.getZoom();
-//    List<MapTileAbstract> toRemove = new LinkedList<>();
-//    ObservableList<Node> children = this.getChildren();
-//    for (Node child : children) {
-//      if (child instanceof MapTileAbstract) {
-//        MapTile tile = (MapTile) child;
-//        boolean intersects = tile.getBoundsInParent().intersects(area.getBoundsInParent());
-//        LOGGER.fine("evaluate tile " + tile + ", is = " + intersects + ", tzoom = " + tile.getTileZoom());
-//        if (!intersects) {
-//          LOGGER.fine("not shown");
-//          boolean loading = tile.loading();
-//          LOGGER.fine("Reap " + tile + " loading? " + loading);
-//          if (!loading) {
-//            toRemove.add(tile);
-//          }
-//        } else if (tile.getTileZoom() > ceil(zp)) {
-//          LOGGER.fine("too detailed");
-//          toRemove.add(tile);
-//        } else if ((tile.getTileZoom() < floor(zp + TIPPING)) && (!tile.isCovering()) && (!(ceil(zp) >= NUMBER_OF_ZOOM_LEVELS))) {
-//          LOGGER.fine("not enough detailed");
-//          toRemove.add(tile);
-//        }
-//      }
-//    }
-//
-//    StringBuilder buf = new StringBuilder();
-//    for (MapTileAbstract mt: toRemove) {
-//      buf.append(", ").append(mt);
-//    }
-//    LOGGER.severe("CleanupTiles deletes: " + buf.toString());
-//    
-//    getChildren().removeAll(toRemove);
-//
-//    LOGGER.fine("DONE CLEANUP, #children = " + getChildren().size());
-//  }
 
 }

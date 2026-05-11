@@ -58,20 +58,20 @@ public class TileImageView extends TileImageViewAbstract {
    * @param j The tile row.
    */
   TileImageView(BaseMapAbstract<?> baseMapAbstract, int myZoom, long i, long j) {
-    LOGGER.severe("=> Creating tile: " + myZoom + " [" + i + ", " + j + "]");
+//    LOGGER.severe("=> Creating tile: " + myZoom + " [" + i + ", " + j + "]");
     super(baseMapAbstract, myZoom, i, j);
 
     loadTile(myZoom, i, j);
     
     // If the zoom level (or the translation of the base map changes), we need to recalculate the position of this tile.
-    baseMapAbstract.zoom().addListener(new WeakInvalidationListener(zl));
+    baseMapAbstract.readOnlyZoomProperty().addListener(new WeakInvalidationListener(zl));
 //    baseMapAbstract.translateXProperty().addListener(new WeakInvalidationListener(zl));
 //    baseMapAbstract.translateYProperty().addListener(new WeakInvalidationListener(zl));
     
     calculatePosition();
     this.setMouseTransparent(true);
     
-    LOGGER.severe("<= Tile created: " + myZoom + " [" + i + ", " + j + "]");
+//    LOGGER.severe("<= Tile created: " + myZoom + " [" + i + ", " + j + "]");
   }
   
   /**

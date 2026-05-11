@@ -8,7 +8,7 @@ module goedegep.travels {
 
   requires transitive com.atlis.location.nominatim;
   requires transitive com.gluonhq.maps;
-  requires com.google.common.geometry;
+//  requires com.google.common.geometry;
   requires de.micromata.opengis.kml.v220;
   requires transitive goedegep.jfx;
   requires transitive goedegep.geo;
@@ -40,7 +40,6 @@ module goedegep.travels {
   requires com.google.gson;
   requires transitive goedegep.gpx;
   requires javafx.media;
-  requires jdk.jsobject;
   requires transitive goedegep.travels.checklist.model;
   requires goedegep.gpx.model;
   requires goedegep.mapview;

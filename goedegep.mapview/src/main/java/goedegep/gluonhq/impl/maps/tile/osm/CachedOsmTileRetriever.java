@@ -35,6 +35,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
 import java.net.URL;
 import java.net.URLConnection;
 import java.nio.file.Files;
@@ -113,7 +114,7 @@ public class CachedOsmTileRetriever extends OsmTileRetriever {
 
         private static File doCache(String urlString, int zoom, long i, long j) throws IOException {
             final URLConnection openConnection;
-            URL url = new URL(urlString);
+            URL url = URI.create(urlString).toURL();
             openConnection = url.openConnection();
             openConnection.addRequestProperty("User-Agent", httpAgent);
             openConnection.setConnectTimeout(TIMEOUT);

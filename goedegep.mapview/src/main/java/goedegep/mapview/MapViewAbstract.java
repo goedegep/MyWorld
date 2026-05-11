@@ -3,10 +3,14 @@ package goedegep.mapview;
 import java.util.logging.Logger;
 
 import goedegep.geo.WGS84BoundingBox;
+import goedegep.mapview.image.MapImage;
 import javafx.beans.property.ReadOnlyDoubleProperty;
+import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.geometry.Dimension2D;
 import javafx.geometry.Point2D;
+import javafx.scene.image.Image;
 import javafx.scene.layout.Region;
+import javafx.scene.shape.Polygon;
 
 ///
 /// This class is the interface for a map view.   
@@ -72,6 +76,13 @@ public abstract class MapViewAbstract extends Region {
    * @return the center point of the map.
    */
   public abstract MapPoint getCenter();
+  
+    /**
+    * Get the center point of the map as a read only property.
+    * 
+    * @return the center point of the map as a read only property.
+    */
+  public abstract ReadOnlyObjectProperty<MapPoint> centerReadOnlyProperty();
 
   /**
    * Request the map to position itself around the specified center.
@@ -150,7 +161,7 @@ public abstract class MapViewAbstract extends Region {
    * @return a [Point2D] with the scene coordinates for the given latitude and longitude.
    */
   public abstract Point2D getMapPoint(double lat, double lon);
-  
+    
   /**
    * Get a WGS84BoundingBox which covers the visible map area.
    * 
@@ -159,8 +170,30 @@ public abstract class MapViewAbstract extends Region {
   public abstract WGS84BoundingBox getVisibleMapBoundingBox();
   
   /**
+   * Calculate the zoom level needed to show a bounding box
+   * 
+   * @param boundingBox a {@code WGS84BoundingBox}.
+   * @return the zoom level needed to show {@code boundingBox}.
+   */
+  public abstract double getZoomLevelForShowingBoundedBox(WGS84BoundingBox boundingBox);
+
+  /**
+   * Do the work to re-draw a polygon for a bounding box.
+   * <p>
+   * The points of the polygon are cleared and points are added for the four corners of the bounding box.
+   * 
+   * @param polygon the polygon to be updated.
+   * @param mapBoundingBox the bounding box for which the polygon is to be updated.
+   */
+  public abstract void updateBoundingBoxPolygon(Polygon polygon, WGS84BoundingBox mapBoundingBox);
+  
+  /**
    * Get status information about the map view. All information about the base map and ...
    * @return status information about the map view
    */
   public abstract String getStatusInformation();
+  
+  public Image defaultPlaceholderImageSupplier() {
+    return new Image(MapViewAbstract.class.getResourceAsStream("TilePlaceholder.png"));
+  }
 }

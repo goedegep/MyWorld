@@ -15,7 +15,6 @@ import goedegep.geo.WGS84Coordinates;
 import goedegep.jfx.CustomizationFx;
 import goedegep.mapview.MapLayer;
 import goedegep.mapview.MapPoint;
-import goedegep.mapview.MapViewUtil;
 import goedegep.mapview.view.MapView;
 import goedegep.media.photo.IPhotoMetaData;
 import goedegep.media.photo.IPhotoMetaDataWithImage;
@@ -603,7 +602,7 @@ public class PhotoMapLayer extends MapLayer implements ObjectSelector<IPhotoInfo
 
     if (zoomRectangle != null) {
       Polygon polygon = zoomRectangle.polygon();
-      MapViewUtil.updateBoundingBoxPolygon(polygon, zoomRectangle.boundingBox(), mapViewAbstract);
+      mapViewAbstract.updateBoundingBoxPolygon(polygon, zoomRectangle.boundingBox());
       LOGGER.severe("Polygon drawn");
     }
     

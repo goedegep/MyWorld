@@ -64,6 +64,8 @@ public class TileImageViewAbstract extends ImageView {
    */
   protected final Scale scale = new Scale();
   
+  private static boolean debug = false;
+  
   
   /**
    * Constructor.
@@ -90,29 +92,15 @@ public class TileImageViewAbstract extends ImageView {
    * TODO: rename to calculatePositionAndVisible or remove visibility
    */
   public void calculatePosition() {
-    LOGGER.severe("=> calculating position for " + this);
-    double mapZoom = baseMapAbstract.zoom().get();
-//    LOGGER.info("Visible: " + isVisible());
-//    if (baseMapAbstract.getChildren().contains(this)) {
-//      LOGGER.info("Tile is in scene graph");
-//    } else {
-//      LOGGER.severe("Tile is NOT in scene graph");
-//    }
-//    int visibleWindow = (int) floor(mapZoom + BaseMapAbstract.TIPPING);
-//    boolean visible =  visibleWindow == myZoom ||
-//        isCovering() ||
-//        ((visibleWindow >= BaseMap.MAX_ZOOM) && (myZoom == BaseMap.MAX_ZOOM - 1));
-//    this.setVisible(visible);
-//    LOGGER.fine("visible tile " + this + "? " + this.isVisible() + (this.isVisible() ? " covering? " + isCovering() : ""));
-    double sf = Math.pow(2, mapZoom - tileZoom);
+    double sf = baseMapAbstract.getTileScaleFactor(tileZoom);
     scale.setX(sf);
     scale.setY(sf);
     double translateX = 256 * i * sf;  //  + baseMapAbstract.translateXProperty().get()
     double translateY = 256 * j * sf;  // + baseMapAbstract.translateYProperty().get()
-//    LOGGER.severe("TILE: translateX = " + translateX + ", translateY = " + translateY);
+//    LOGGER.severe("re-calculating position for " + this + ", translateX = " + translateX + ", translateY = " + translateY);
+//    LOGGER.severe("base map translateX = " + baseMapAbstract.translateXProperty().get() + ", translateY = " + baseMapAbstract.translateYProperty().get());
     setTranslateX(translateX);
     setTranslateY(translateY);
-    LOGGER.severe("<= BASE_MAP: translateX = " + baseMapAbstract.translateXProperty().get() + ", translateY = " + baseMapAbstract.translateYProperty().get());
   }
   
   /**
@@ -122,23 +110,6 @@ public class TileImageViewAbstract extends ImageView {
    */
   public int getTileZoom() {
     return tileZoom;
-  }
-
-  /**
-   * Recalculates the position of this tile. The position depends on the current zoom level and translation of the base map.
-   */
-  private void calculatePosition2() {
-    double currentZoom = baseMapAbstract.zoom().get();
-//    int visibleWindow = (int) floor(currentZoom + BaseMapAbstract.TIPPING);
-//    boolean visible =  visibleWindow == myZoom ||
-//        ((visibleWindow >= BaseMap.MAX_ZOOM) && (myZoom == BaseMap.MAX_ZOOM - 1));
-//    this.setVisible(visible);
-//    LOGGER.fine("visible tile " + this + "? " + this.isVisible());
-    double sf = Math.pow(2, currentZoom - tileZoom);
-    scale.setX(sf);
-    scale.setY(sf);
-    setTranslateX(256 * i * sf);
-    setTranslateY(256 * j * sf);
   }
   
   protected void markDirty() {
@@ -151,6 +122,10 @@ public class TileImageViewAbstract extends ImageView {
   }
   
   protected Image addTileParametersToImage(Image image, int zoom, long i, long j) {
+    if (!debug) {
+      return image;
+    }
+    
     if (image == null) {
       return null;
     }
@@ -170,7 +145,7 @@ public class TileImageViewAbstract extends ImageView {
     String text = zoom + " [" + i + ", " + j + "]";
 
     // Choose font size relative to the tile size
-    double fontSize = Math.max(10, Math.min(width, height) * 0.18);
+    double fontSize = Math.max(10, Math.min(width, height) * 0.07);
     Font font = Font.font("System", FontWeight.BOLD, fontSize);
     gc.setFont(font);
     gc.setTextAlign(TextAlignment.CENTER);
@@ -183,11 +158,25 @@ public class TileImageViewAbstract extends ImageView {
     // Draw stroke for readability, then fill
     gc.setLineWidth(Math.max(1.0, fontSize * 0.06));
     gc.setStroke(Color.color(0.0, 0.0, 0.0, 0.85));
-    gc.strokeText(text, x, y);
     gc.setFill(Color.color(1.0, 1.0, 1.0, 0.95));
+    
+    gc.strokeText(text, x, y);
     gc.fillText(text, x, y);
     
-    gc.setLineWidth(4.0);
+    y = height - fontSize - Math.max(2.0, height * 0.03);
+    gc.strokeText(text, x, y);
+    gc.fillText(text, x, y);
+    
+    x = 55.0;
+    y = height / 2.0 - fontSize / 2.0;
+    gc.strokeText(text, x, y);
+    gc.fillText(text, x, y);
+    
+    x = width - 55.0;
+    gc.strokeText(text, x, y);
+    gc.fillText(text, x, y);
+    
+    gc.setLineWidth(2.0);
     
     gc.setStroke(Color.color(0.0, 0.0, 0.0, 0.85));
     gc.setFill(Color.color(1.0, 1.0, 1.0, 0.95));

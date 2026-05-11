@@ -373,7 +373,7 @@ public class TravelsWindow extends JfxStage {
     directoryMonitoringThread.setDaemon(true);
     directoryMonitoringThread.start();
     
-    createTestMapImage();
+//    createTestMapImage();
     
     LOGGER.info("<=");
   }
@@ -1269,7 +1269,7 @@ public class TravelsWindow extends JfxStage {
           mapCenter = new MapPoint(center.getLatitude(), center.getLongitude());
         }
         if (dayBoundingBox != null) {
-          zoomLevel = MapView.getZoomLevel(dayBoundingBox);
+          zoomLevel = travelMapView.getZoomLevelForShowingBoundedBox(dayBoundingBox);
         }
         break;
         
@@ -1281,7 +1281,7 @@ public class TravelsWindow extends JfxStage {
           mapCenter = new MapPoint(center.getLatitude(), center.getLongitude());
         }
         if (travelsLayerBoundingBox != null) {
-          zoomLevel = MapView.getZoomLevel(travelsLayerBoundingBox);
+          zoomLevel = travelMapView.getZoomLevelForShowingBoundedBox(travelsLayerBoundingBox);
         }
         break;
       }
@@ -1293,7 +1293,7 @@ public class TravelsWindow extends JfxStage {
         mapCenter = new MapPoint(center.getLatitude(), center.getLongitude());
       }
       if (travelsLayerBoundingBox != null) {
-        zoomLevel = MapView.getZoomLevel(travelsLayerBoundingBox);
+        zoomLevel = travelMapView.getZoomLevelForShowingBoundedBox(travelsLayerBoundingBox);
       }
     } else if ((vacationsList = getVacationsListForTreeItem(selectedTreeItem)) != null) {            // vacations (the list)
       addVacationsToVacationsLayer(vacationsList);

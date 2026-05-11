@@ -2,15 +2,14 @@ package goedegep.mapview.impl;
 
 import static java.lang.Math.floor;
 
-import java.lang.ref.SoftReference;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
-import goedegep.geo.WGS84BoundingBox;
 import goedegep.mapview.MapPoint;
+import goedegep.mapview.view.impl.TileImageView;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.ReadOnlyDoubleProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -18,7 +17,7 @@ import javafx.geometry.Point2D;
 import javafx.scene.Group;
 
 /**
- * This class is the base map for the MapView. It is responsible for loading and displaying the map tiles.
+ * This class is the common part for the base map for the MapView. It is responsible for loading and displaying the map tiles.
  * 
  * @param <T> the type of the map tiles, which must extend MapTileAbstract. The specific map tile is needed, because not all implementations use covering tiles.
  */
@@ -36,7 +35,7 @@ public abstract class BaseMapAbstract<T extends TileImageViewAbstract> extends G
   public static final double TIPPING = 0.21;
 
   /**
-   * The maximum zoom level this map (and OpenStreetMap) supports.
+   * The number of zoom levels this map (and OpenStreetMap).
    * The zoom levels are 0, 1, 2, ..., NUMBER_OF_ZOOM_LEVELS - 1. So the maximum zoom level is NUMBER_OF_ZOOM_LEVELS - 1.
    */
   public static final int NUMBER_OF_ZOOM_LEVELS = 20;
@@ -49,12 +48,14 @@ public abstract class BaseMapAbstract<T extends TileImageViewAbstract> extends G
   @SuppressWarnings("unchecked")
   protected final Map<Long, T>[] tiles = new HashMap[NUMBER_OF_ZOOM_LEVELS];
 
-  
+  /**
+   * Flag indicating whether the map is dirty, i.e. whether something has changed that would lead to a change in UI representation (e.g. map is dragged or zoomed).
+   * When this flag is set, we know that we need to reload/clean the tiles.
+   */
   protected boolean dirty = false;
 
   /**
    * The MapView for which this is the base map.
-   * This is needed to get the current zoom level and to set the zoom level when zooming in or out.
    */
   protected MapViewCommon mapViewCommon;
 
@@ -83,21 +84,13 @@ public abstract class BaseMapAbstract<T extends TileImageViewAbstract> extends G
 
   /**
    * Get the property of the zoom level of the map.
+   * This method is needed for the TileImageView, which has a reference to the base map, but not to the map view.
    * 
    * @return the property of the zoom level of the map.
    */
-  public ReadOnlyDoubleProperty zoom() {
+  public ReadOnlyDoubleProperty readOnlyZoomProperty() {
     return mapViewCommon.zoomReadOnlyProperty();
   }
-
-//  /**
-//   * Set the center of the map to the given center point.
-//   * 
-//   * @param center the center point to set the center of the map to.
-//   */
-//  public void setCenter(Point2D center) {
-//    doSetCenter(center.getX(), center.getY());
-//  }
 
   /**
    * Set the center of the map to the given latitude and longitude.
@@ -106,7 +99,6 @@ public abstract class BaseMapAbstract<T extends TileImageViewAbstract> extends G
    * @param lon the longitude of the center point to set the center of the map to.
    */
   protected void doSetCenter(MapPoint center) {
-    LOGGER.severe("=> doSetCenter, lat = " + center.getLatitude() + ", lon = " + center.getLongitude());
     double lat = center.getLatitude();
     double lon = center.getLongitude();
         
@@ -117,15 +109,17 @@ public abstract class BaseMapAbstract<T extends TileImageViewAbstract> extends G
     double activeZoom = mapViewCommon.getZoom();
 
     // n is the number of tiles in one direction (x or y) for the active zoom level
-    double n = nrOfTilesAtZoomLevel(activeZoom);
+    int nearestZoom = (Math.min((int) floor(activeZoom + TIPPING), getMaximumZoomLevel()));
+    double n = nrOfTilesAtZoomLevel(nearestZoom);
 
     // Calculate the x tile index.
-    double id = horizontalTileIndexForDegreesLongitude(n, lon);
+    double id = horizontalTileIndexForDegreesLongitude(n, lon, activeZoom, nearestZoom);
 
     // Calculate the y tile index.
     // Here Mercator projection has to be used, which uses radians.
     double lat_rad = Math.toRadians(lat);
-    double jd = n * (1 - (mercatorY(lat_rad) / Math.PI)) / 2;
+    double sf = Math.pow(2, activeZoom - nearestZoom);
+    double jd = sf * n * (1 - (mercatorY(lat_rad) / Math.PI)) / 2;
 
     // Calculate the pixel coordinates of the center of the map. Each tile is 256 pixels wide and high, so we multiply the tile indices by 256.
     double mex = id * 256;
@@ -138,11 +132,8 @@ public abstract class BaseMapAbstract<T extends TileImageViewAbstract> extends G
     // Set the translation of the map to the negative of the calculated offset, so that the center of the map is at the center of the screen.
     setTranslateX(-1 * ttx);
     setTranslateY(-1 * tty);
-    LOGGER.info("setCenter, tx = " + this.getTranslateX() + ", with = " + mapViewCommon.getWidth() / 2 + ", mex = " + mex);
     mapViewCommon.centerProperty.set(new MapPoint(lat, lon));
-    markDirty();
 
-    LOGGER.severe("<= doSetCenter");
   }
   
   /**
@@ -175,8 +166,9 @@ public abstract class BaseMapAbstract<T extends TileImageViewAbstract> extends G
    * @param degreesLongitude a longitude in degrees in the range -180 .. 180.
    * @return the tile index
    */
-  public double horizontalTileIndexForDegreesLongitude(double nrOfTiles, double degreesLongitude) {
-    return nrOfTiles / 360. * (180 + degreesLongitude);
+  public double horizontalTileIndexForDegreesLongitude(double nrOfTiles, double degreesLongitude, double mapZoom, double tileZoom) {
+    double sf = Math.pow(2, mapZoom - tileZoom);
+    return sf * nrOfTiles / 360. * (180 + degreesLongitude);
   }
 
   /**
@@ -190,46 +182,20 @@ public abstract class BaseMapAbstract<T extends TileImageViewAbstract> extends G
   }
 
   /**
-   * Move the center of the map horizontally by a number of pixels. After this
-   * operation, it will be checked if new tiles need to be downloaded
+   * Move the center of the map horizontally and vertically by a number of pixels.
    *
-   * @param dx the number of pixels
+   * @param dx the number of pixels to move horizontally
+   * @param dy the number of pixels to move vertically
    */
-  public void moveX(double dx) {
-    MapPoint center = mapViewCommon.centerProperty.get();
+  public void moveXY(double dx, double dy) {
+    MapPoint center = mapViewCommon.getCenter();
     double currentCenterLat = center.getLatitude();
     double currentCenterLon = center.getLongitude();
+    
     Point2D currentMapPoint = getMapPoint(currentCenterLat, currentCenterLon);
-    MapPoint newMapPosition = getMapPosition(currentMapPoint.getX() + dx, currentMapPoint.getY());
-    mapViewCommon.centerProperty.set(newMapPosition);
-//    mapViewCommon.centerLat.set(newMapPosition.getLatitude());
-//    mapViewCommon.centerLon.set(newMapPosition.getLongitude());
-    setTranslateX(getTranslateX() - dx);
-    markDirty();
+    MapPoint newMapPosition = getMapPosition(currentMapPoint.getX() + dx, currentMapPoint.getY() + dy);
+    doSetCenter(newMapPosition);
   }
-
-  /**
-   * Move the center of the map vertically by a number of pixels. After this
-   * operation, it will be checked if new tiles need to be downloaded
-   *
-   * @param dy the number of pixels
-   */
-  public void moveY(double dy) {
-    double z = mapViewCommon.getZoom();
-    double maxty = 256 * Math.pow(2, z) - mapViewCommon.getHeight();
-    LOGGER.config("ty = " + getTranslateY() + " and dy = " + dy);
-    if (getTranslateY() <= 0) {
-      if (getTranslateY() + maxty >= 0) {
-        setTranslateY(Math.min(0, getTranslateY() - dy));
-      } else {
-        setTranslateY(-maxty + 1);
-      }
-    } else {
-      setTranslateY(0);
-    }
-    markDirty();
-  }
-
 
   /**
    * Zoom the map in or out by a specific amount, around a specific pivot point. The pivot point is given in scene coordinates.
@@ -241,91 +207,81 @@ public abstract class BaseMapAbstract<T extends TileImageViewAbstract> extends G
    * @param pivotY the y coordinate of the pivot point in scene coordinates.
    */
   public void zoom(double delta, double pivotX, double pivotY) {
-    LOGGER.severe("=> zoom, delta = " + delta + ", pivotX = " + pivotX + ", pivotY = " + pivotY);
-    double currentZoomLevel = mapViewCommon.getZoom();
-
-    double currentTranslateX = getTranslateX();
-    double t1x = pivotX - getTranslateX();  // the vector from the map’s translation origin to pivotX
-
-    // Increasing the zoom level by one, is an increase of a factor of 2 in the scale.
-    // So, the factor by which we need to increase the translation is 1 - 2^delta. Note that for a delta of 0 this factor is 0 and for a delta of 1 this factor is -1.
-    double t2x = 1. - Math.pow(2, delta);
-    double totX = t1x * t2x;
-    double newTranslateX = currentTranslateX + totX;
-
-    double currentTranslateY = getTranslateY();
-    double t1y = pivotY - currentTranslateY;
-    double t2y = 1. - Math.pow(2, delta);
-    double totY = t1y * t2y;
-    double newTranslateY = currentTranslateY + totY;
-    LOGGER.fine("currentZoomLevel = " + currentZoomLevel + ", txold = " + currentTranslateX + ", totx = " + totX + ", tyold = " + currentTranslateY + ", toty = " + totY);
-    double newZoomLevel = currentZoomLevel + delta;
-//    if (newZoomLevel < 0) {
-//      newZoomLevel = 0;
-//    } else if (newZoomLevel > MAX_ZOOM) {
-//      newZoomLevel = MAX_ZOOM;
-//    }
-//    setTranslateX(newTranslateX);
-//    setTranslateY(newTranslateY);
-//    mapViewCommon.setZoom(newZoomLevel);
-//    markDirty();
-
-    if ((delta > 0)) {
-      if (currentZoomLevel < NUMBER_OF_ZOOM_LEVELS) {
-        setTranslateX(currentTranslateX + totX);
-        setTranslateY(currentTranslateY + totY);
-        mapViewCommon.setZoom(currentZoomLevel + delta);
-        markDirty();
-      }
-    } else if (currentZoomLevel > 1) {
-      double nz = currentZoomLevel + delta;
-      if (Math.pow(2, nz) * 256 > mapViewCommon.getHeight()) {
-        // also, we need to fit on the current screen
-        setTranslateX(currentTranslateX + totX);
-        setTranslateY(currentTranslateY + totY);
-        mapViewCommon.setZoom(currentZoomLevel + delta);
-        markDirty();
-      }
-    }
-    LOGGER.severe("after, zp = " + mapViewCommon.getZoom() + ", tx = " + getTranslateX());
+    // Zooming around a specific point is a bit tricky, because we need to calculate the new center of the map after zooming, so that the pivot point remains at the same position on the screen.
+    double centerScreenX = mapViewCommon.getDimensions().getWidth() / 2;
+    double centerScreenY = mapViewCommon.getDimensions().getHeight() / 2;
+    
+    double dx = centerScreenX - pivotX;
+    double dy = centerScreenY - pivotY;
+    
+    double factor = Math.pow(2, delta);
+    
+    double newDx = dx * factor;
+    double newDy = dy * factor;
+    
+    double deltaDx = newDx - dx;
+    double deltaDy = newDy - dy;
+    
+    double newCenterScreenX = centerScreenX - deltaDx;
+    double newCenterScreenY = centerScreenY - deltaDy;
+    
+    MapPoint newCenter = getMapPosition(newCenterScreenX, newCenterScreenY);
+    
+    mapViewCommon.setCenter(newCenter);
+    mapViewCommon.setZoom(mapViewCommon.getZoom() + delta);
   }
-
+  
+  /**
+   * Get the position on the map for the given scene coordinates.
+   * This is useful for example when you want to add a marker on the map at the position where the user clicked.
+   * You can use this method to convert the scene coordinates of the mouse click to map coordinates, and then add a marker at that position.
+   *
+   * @param sceneX x coordinate
+   * @param sceneY y coordinate
+   * @return map position
+   */
   public MapPoint getMapPosition(double sceneX, double sceneY) {
-//    final SimpleDoubleProperty _lat = new SimpleDoubleProperty();
-//    final SimpleDoubleProperty _lon = new SimpleDoubleProperty();
     ObjectProperty<MapPoint> mapPoint = new SimpleObjectProperty<>();
     calculateCoords(sceneX - getTranslateX(), sceneY - getTranslateY(), mapPoint);  
     return new MapPoint(mapPoint.get().getLatitude(), mapPoint.get().getLongitude());
   }
   
+  /**
+   * Get the position on the map, as a {@code Point2D} with scene coordinates, for the given latitude and longitude.
+   *
+   * @param lat latitude
+   * @param lon longitude
+   * @return a {@code Point2D} with the scene coordinates for the given latitude and longitude.
+   */
   public Point2D getMapPoint(double lat, double lon) {
     return getMapPoint(mapViewCommon.getZoom(), lat, lon);
   }
 
-  public Point2D getMapPoint(double zoom, double lat, double lon) {
-    
-    double width = mapViewCommon.getWidth();
-    double height = mapViewCommon.getHeight();
-//    if (width == 0 || height == 0) {
-//      abortedTileLoad = true;
-//      return null;
-//    }
-
+  /**
+   * Get the position on the map, as a {@code Point2D} with scene coordinates, for the given zoom level, latitude and longitude.
+   *
+   * @param lat latitude
+   * @param lon longitude
+   * @return a {@code Point2D} with the scene coordinates for the given latitude and longitude.
+   */
+  public Point2D getMapPoint(double zoom, double lat, double lon) {    
     double n = Math.pow(2, zoom);
     double lat_rad = Math.PI * lat / 180;
     double id = n / 360. * (180 + lon);
     double jd = n * (1 - (Math.log(Math.tan(lat_rad) + 1 / Math.cos(lat_rad)) / Math.PI)) / 2;
     double mex = id * 256;
     double mey = jd * 256;
-    //        double ttx = mex - this.getMyWidth() / 2;
-    //        double tty = mey - this.getMyHeight() / 2;
     double x = this.getTranslateX() + mex;
     double y = this.getTranslateY() + mey;
     Point2D answer = new Point2D(x, y);
     return answer;
   }
 
-
+  /**
+   * Update the tiles that are currently loaded and displayed.
+   * <p>
+   * Tiles needed are loaded, tiles that are no longer needed are removed and the tile cache is cleaned-up.
+   */
   public abstract void loadTiles();
   
   /**
@@ -349,77 +305,81 @@ public abstract class BaseMapAbstract<T extends TileImageViewAbstract> extends G
    */
   @Override
   protected void layoutChildren() {
-    LOGGER.severe("=> layoutChildren, initialized = " + mapViewCommon.initialized + ", dirty = " + dirty);
+//    LOGGER.severe("=> layoutChildren, initialized = " + mapViewCommon.initialized + ", dirty = " + dirty);
     if (!mapViewCommon.initialized) {
       return;
     }
     
 //    if (dirty) {
       loadTiles();
+      
+      for (Object o: getChildren()) {
+        if (o instanceof TileImageView mt) {
+          mt.calculatePosition();
+        }
+      }
 //      dirty = false;
 //    }
     super.layoutChildren();
     
-    LOGGER.severe("<= layoutChildren");
+//    LOGGER.severe("<= layoutChildren");
   }
 
-  /**
-   * Update the center latitude and longitude properties based on the current center coordinates.
-   * <p>
-   * The center coordinates are calculated based on the current translation of the map
-   * and the size of the map view, so they represent the coordinates of the point that is currently at the center of the map view.
-   * TODO rename to updateCenterCoords, as this method does not only calculates the center coordinates, but it updates the center latitude and longitude properties as well.
-   */
-  private void calculateCenterCoords() {
-    LOGGER.severe("=> calculateCenterCoords");
-    // Calculate the x,y coordinates of the center of the map (in pixels).
-    // At low zoom levels the center of the shown map is not at the center of the window. In that case we don't update the center.
-//    if (!mapFillsWindow()) {
-//      LOGGER.info("Skipping updating center coords because map doesn't fill window");
-//      return;
-//    }
-    
-    // TODO This calculation assumees that the center location is at the center of the window. So we have to make sure that that is always the case.
-//    LOGGER.severe("translate x/y: " + getTranslateX() + ", " + getTranslateY());
-    double translateX = getTranslateX();
-    double translateY = getTranslateY();
-    double x = mapViewCommon.getDimensions().getWidth() / 2 - getTranslateX();
-    double y = mapViewCommon.getDimensions().getHeight() / 2 - getTranslateY();
-//    LOGGER.severe("x, y = " + x + ", " + y);
-    
-    // Set the center latitude and longitude properties based on the calculated x,y coordinates.    
-    calculateCoords(x, y, mapViewCommon.centerProperty);
-    
-    LOGGER.severe("<= calculateCenterCoords, center lat/lon = " + mapViewCommon.centerProperty.get().getLatitude() + ", " + mapViewCommon.centerProperty.get().getLongitude());
-  }
+//  /**
+//   * Update the center latitude and longitude properties based on the current center coordinates.
+//   * <p>
+//   * The center coordinates are calculated based on the current translation of the map
+//   * and the size of the map view, so they represent the coordinates of the point that is currently at the center of the map view.
+//   * TODO rename to updateCenterCoords, as this method does not only calculates the center coordinates, but it updates the center latitude and longitude properties as well.
+//   */
+//  private void calculateCenterCoords() {
+//    LOGGER.severe("=> calculateCenterCoords");
+//    // Calculate the x,y coordinates of the center of the map (in pixels).
+//    // At low zoom levels the center of the shown map is not at the center of the window. In that case we don't update the center.
+////    if (!mapFillsWindow()) {
+////      LOGGER.info("Skipping updating center coords because map doesn't fill window");
+////      return;
+////    }
+//    
+//    // TODO This calculation assumees that the center location is at the center of the window. So we have to make sure that that is always the case.
+////    LOGGER.severe("translate x/y: " + getTranslateX() + ", " + getTranslateY());
+//    double x = mapViewCommon.getDimensions().getWidth() / 2 - getTranslateX();
+//    double y = mapViewCommon.getDimensions().getHeight() / 2 - getTranslateY();
+////    LOGGER.severe("x, y = " + x + ", " + y);
+//    
+//    // Set the center latitude and longitude properties based on the calculated x,y coordinates.    
+//    calculateCoords(x, y, mapViewCommon.centerProperty);
+//    
+//    LOGGER.severe("<= calculateCenterCoords, center lat/lon = " + mapViewCommon.centerProperty.get().getLatitude() + ", " + mapViewCommon.centerProperty.get().getLongitude());
+//  }
   
-  /**
-   * Check if the map fills the window. If the map does not fill the window, we cannot calculate the center coordinates, so we should not update them.
-   * <p>
-   * The map does not fill the window when the zoom level is too low, so that there are not enough tiles to cover the whole window.
-   * In that case, the center of the map is not at the center of the window, and we should not update the center coordinates based on the current translation and window size.
-   * 
-   * @return true if the map fills the window, false if the width and/or height is 0 or if the map doesn't fill the window.
-   */
-  private boolean mapFillsWindow() {
-    double width = mapViewCommon.getWidth();
-    double height = mapViewCommon.getHeight();
-    LOGGER.info("window dimensions: " + width + ", " + height);
-    if (width == 0.0 || height == 0.0) {
-      return false;
-    }
-    
-    int nearestZoom = (Math.min((int) floor(mapViewCommon.getZoom() + TIPPING), NUMBER_OF_ZOOM_LEVELS - 1));
-    double nrOfTilesAtNearestZoom = nrOfTilesAtZoomLevel(nearestZoom);
-    double scale = 1; // TODO calculate real scale
-    double totalTilePixels = 256 * scale * nrOfTilesAtNearestZoom;
-    
-    if (width > totalTilePixels  ||  height > totalTilePixels) {
-      return false;
-    }
-    
-    return true;
-  }
+//  /**
+//   * Check if the map fills the window. If the map does not fill the window, we cannot calculate the center coordinates, so we should not update them.
+//   * <p>
+//   * The map does not fill the window when the zoom level is too low, so that there are not enough tiles to cover the whole window.
+//   * In that case, the center of the map is not at the center of the window, and we should not update the center coordinates based on the current translation and window size.
+//   * 
+//   * @return true if the map fills the window, false if the width and/or height is 0 or if the map doesn't fill the window.
+//   */
+//  private boolean mapFillsWindow() {
+//    double width = mapViewCommon.getWidth();
+//    double height = mapViewCommon.getHeight();
+//    LOGGER.info("window dimensions: " + width + ", " + height);
+//    if (width == 0.0 || height == 0.0) {
+//      return false;
+//    }
+//    
+//    int nearestZoom = (Math.min((int) floor(mapViewCommon.getZoom() + TIPPING), getMaximumZoomLevel()));
+//    double nrOfTilesAtNearestZoom = nrOfTilesAtZoomLevel(nearestZoom);
+//    double scale = 1; // TODO calculate real scale
+//    double totalTilePixels = 256 * scale * nrOfTilesAtNearestZoom;
+//    
+//    if (width > totalTilePixels  ||  height > totalTilePixels) {
+//      return false;
+//    }
+//    
+//    return true;
+//  }
 
   /**
    * Calculate the latitude and longitude for given x, y coordinate (in pixels) and the current zoom level.
@@ -432,13 +392,12 @@ public abstract class BaseMapAbstract<T extends TileImageViewAbstract> extends G
    */
   private void calculateCoords(double x, double y, ObjectProperty<MapPoint> mapPoint) {
     double z = mapViewCommon.getZoom();
+    
     double latrad = Math.PI - (2.0 * Math.PI * y) / (Math.pow(2, z)*256.);
     double mlat = Math.toDegrees(Math.atan(Math.sinh(latrad)));
     double mlon = x / (256*Math.pow(2, z)) * 360 - 180;
-//    LOGGER.severe("calculateCoords: z = " + z + ", lat = " + mlat + ", lon = " + mlon);
+
     mapPoint.set(new MapPoint(mlat, mlon));
-//    lon.set(mlon);
-//    lat.set(mlat);
   }
 
   /**
@@ -449,41 +408,13 @@ public abstract class BaseMapAbstract<T extends TileImageViewAbstract> extends G
    * This is much more performant than redrawing the map on each input event.
    */
   protected void markDirty() {
-    LOGGER.severe("=> markDirty");
+//    LOGGER.severe("=> markDirty");
     mapViewCommon.markDirty();
 //    this.dirty = true;
 ////    calculateCenterCoords();
 //    setNeedsLayout(true);
 //    Platform.requestNextPulse();
-    LOGGER.severe("<= markDirty");
-  }
-
-  /***
-   * Get a WGS84BoundingBox which covers the visible map area.
-   * 
-   * @param mapViewCommon the <code>mapView</code> for which the bounding box is requested.
-   * @return a WGS84BoundingBox which covers the visible map area.
-   */
-  public WGS84BoundingBox getVisibleMapCoordinates() {
-    if (mapViewCommon.centerProperty.get() == null) {
-      return null;
-    }
-    
-    double height = mapViewCommon.getHeight();
-    double width = mapViewCommon.getWidth();
-
-    Point2D center = getMapPoint(mapViewCommon.centerProperty.get().getLatitude(), mapViewCommon.centerProperty.get().getLongitude());
-    
-    if (center == null) {
-      return null;
-    }
-
-    MapPoint bottomLeft = getMapPosition(center.getX() - width / 2, center.getY() - height / 2);
-    MapPoint topRight = getMapPosition(center.getX() + width / 2, center.getY() + height / 2);
-    LOGGER.info("Bottom left: " + bottomLeft.getLatitude() + ", " + bottomLeft.getLongitude());
-    LOGGER.info("Top right: " + topRight.getLatitude() + ", " + topRight.getLongitude());
-
-    return new WGS84BoundingBox(bottomLeft.getLongitude(), topRight.getLatitude(), topRight.getLongitude(), bottomLeft.getLatitude());
+//    LOGGER.severe("<= markDirty");
   }
   
   /**
@@ -493,10 +424,10 @@ public abstract class BaseMapAbstract<T extends TileImageViewAbstract> extends G
    * See the {@link #TIPPING} constant for the logic behind the calculation.
    * 
    * @param zoom
-   * @return
+   * @return the tile zoom level for a specific zoom level.
    */
-  protected int getTileZoomLevel(double zoom) {
-    return (int) floor(zoom + TIPPING);
+  protected int getTileZoomLevel() {
+    return (int) floor(mapViewCommon.getZoom() + TIPPING);
     // For now I don't think the MAX_ZOOM - 1 check is needed, as the zoom level is already limited by the MapViewCommon.setZoom method. But maybe we should add it just to be sure.
     // (Math.min((int) floor(mapViewCommon.getZoom() + TIPPING), MAX_ZOOM - 1))
   }
@@ -524,6 +455,16 @@ public abstract class BaseMapAbstract<T extends TileImageViewAbstract> extends G
     }
     
     return buf.toString();
+  }
+
+  /**
+   * Get the scale factor for a tile with a specific zoom level. The scale factor is the factor by which the tile should be scaled to fit the current zoom level of the map.
+   * 
+   * @param tileZoom the zoom level of the tile
+   * @return the scale factor for the tile
+   */
+  public double getTileScaleFactor(int tileZoom) {
+    return Math.pow(2, mapViewCommon.getZoom() - tileZoom);
   }
 }
 

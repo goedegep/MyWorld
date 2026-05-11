@@ -68,7 +68,7 @@ public class CachedOsmTileRetriever extends OsmTileRetriever {
       return CompletableFuture.completedFuture(image);
     }
     
-    LOGGER.severe("Tile not available in disk cache: " + zoom + "[" + i + "," + j + "]");
+//    LOGGER.severe("Tile not available in disk cache: " + zoom + "[" + i + "," + j + "]");
     
     // Otherwise, fetch the tile asynchronously and cache it.
     return CompletableFuture.supplyAsync(() -> {
@@ -180,7 +180,7 @@ public class CachedOsmTileRetriever extends OsmTileRetriever {
           .collect(Collectors.toList());
 
       int totalFiles = files.size();
-      LOGGER.severe("Total cached tiles: " + totalFiles);
+//      LOGGER.severe("Total cached tiles: " + totalFiles);
       if (totalFiles <= maxNumberOfFiles) {
         return;
       }
@@ -199,7 +199,7 @@ public class CachedOsmTileRetriever extends OsmTileRetriever {
       for (int i = 0; i < filesToDelete; i++) {
         Path p = files.get(i);
         try {
-          LOGGER.severe("Deleting cached tile: " + p.toString());
+//          LOGGER.severe("Deleting cached tile: " + p.toString());
           Files.deleteIfExists(p);
         } catch (IOException e) {
           LOGGER.severe("Failed to delete cached tile: " + p.toString() + " : " + e.getMessage());

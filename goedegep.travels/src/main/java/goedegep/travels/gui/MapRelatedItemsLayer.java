@@ -14,7 +14,6 @@ import goedegep.geo.WGS84BoundingBox;
 import goedegep.geo.WGS84Coordinates;
 import goedegep.jfx.CustomizationFx;
 import goedegep.mapview.MapLayer;
-import goedegep.mapview.MapViewUtil;
 import goedegep.poi.app.LocationCategory;
 import goedegep.resources.ImageResource;
 import goedegep.travels.logic.LocationDescriptionDialog;
@@ -397,7 +396,7 @@ public class MapRelatedItemsLayer extends MapLayer implements ObjectSelector<Obj
     
     // boundingBoxes
     for (BoundingBoxData boundingBoxData: boundingBoxes) {
-      MapViewUtil.updateBoundingBoxPolygon(boundingBoxData.polygon(), boundingBoxData.boundingBox(), mapViewAbstract);
+      mapViewAbstract.updateBoundingBoxPolygon(boundingBoxData.polygon(), boundingBoxData.boundingBox());
 //      layoutBoundingBox(boundingBoxData);
     }
             
@@ -446,7 +445,7 @@ public class MapRelatedItemsLayer extends MapLayer implements ObjectSelector<Obj
     // Bounding box
     BoundingBoxData boundingBoxData = locationData.boundingBoxData();
     if (boundingBoxData != null) {
-      MapViewUtil.updateBoundingBoxPolygon(boundingBoxData.polygon(), boundingBoxData.boundingBox(), mapViewAbstract);
+      mapViewAbstract.updateBoundingBoxPolygon(boundingBoxData.polygon(), boundingBoxData.boundingBox());
 //      layoutBoundingBox(boundingBoxData);
     }
   }

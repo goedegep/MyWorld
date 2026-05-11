@@ -493,7 +493,7 @@ public class PhotoMapView extends JfxStage {
     }
     mapView.flyTo(0, mapCenter, 1.0, null);
     
-    Double zoomLevel = MapView.getZoomLevel(boundingBox);
+    Double zoomLevel = mapView.getZoomLevelForShowingBoundedBox(boundingBox);
     zoomLevel = 0.85 * zoomLevel;
     LOGGER.info("zoomLevel: " + zoomLevel);
     mapView.setZoom(zoomLevel);
@@ -686,7 +686,7 @@ public class PhotoMapView extends JfxStage {
       MapPoint mapCenter = new MapPoint(centerCoordinates.getLatitude(), centerCoordinates.getLongitude());
       mapView.flyTo(0, mapCenter, 1.0, null);
 
-      Double zoomLevel = MapView.getZoomLevel(boundingBox);
+      Double zoomLevel = mapView.getZoomLevelForShowingBoundedBox(boundingBox);
       zoomLevel = 0.85 * zoomLevel;
       mapView.setZoom(zoomLevel);
     }

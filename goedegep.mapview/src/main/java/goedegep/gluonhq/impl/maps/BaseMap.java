@@ -92,7 +92,7 @@ public class BaseMap extends Group {
     public double x0, y0;
     private boolean dirty = true;
 
-    private final ChangeListener<Number> resizeListener = (o, oldValue, newValue) -> markDirty();
+    private final ChangeListener<Number> resizeListener = (_, _, _) -> markDirty();
     private ChangeListener<Scene> sceneListener;   
 
     public BaseMap() {
@@ -102,9 +102,9 @@ public class BaseMap extends Group {
         area = new Rectangle(-10, -10, 810, 610);
         area.setVisible(false);
        
-        prefCenterLat.addListener(o -> doSetCenter(prefCenterLat.get(), prefCenterLon.get()));
-        prefCenterLon.addListener(o -> doSetCenter(prefCenterLat.get(), prefCenterLon.get()));
-        prefZoom.addListener(o -> doZoom(prefZoom.get()));
+        prefCenterLat.addListener(_ -> doSetCenter(prefCenterLat.get(), prefCenterLon.get()));
+        prefCenterLon.addListener(_ -> doSetCenter(prefCenterLat.get(), prefCenterLon.get()));
+        prefZoom.addListener(_ -> doZoom(prefZoom.get()));
 
         area.widthProperty().addListener(resizeListener);
         area.heightProperty().addListener(resizeListener);
@@ -112,10 +112,10 @@ public class BaseMap extends Group {
         area.translateYProperty().bind(translateYProperty().multiply(-1));
 
         if (sceneListener == null) {
-            sceneListener = (o, oldScene, newScene) -> {
+            sceneListener = (_, _, newScene) -> {
                     if (newScene != null) {
                         //TODO Do we need to unbind from previous scene?
-                        getParent().layoutBoundsProperty().addListener(e -> {
+                        getParent().layoutBoundsProperty().addListener(_ -> {
                             area.setWidth(getParent().getLayoutBounds().getWidth());
                             area.setHeight(getParent().getLayoutBounds().getHeight());
                         });
@@ -453,23 +453,6 @@ public class BaseMap extends Group {
         getChildren().removeAll(toRemove);
 
         logger.fine("DONE CLEANUP, #children = " + getChildren().size());
-    }
-
-    private void clearTiles() {
-
-        List<Node> toRemove = new ArrayList<>();
-        ObservableList<Node> children = this.getChildren();
-        for (Node child : children) {
-            if (child instanceof MapTile) {
-                toRemove.add(child);
-            }
-        }
-        getChildren().removeAll(children);
-
-        for (int i = 0; i < tiles.length; i++) {
-            tiles[i].clear();
-        }
-
     }
 
     /**

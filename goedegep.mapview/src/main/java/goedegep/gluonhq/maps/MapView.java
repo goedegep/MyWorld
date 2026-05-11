@@ -72,11 +72,11 @@ public class MapView extends Region {
         getChildren().add(baseMap);
         registerInputListeners();
 
-        baseMap.centerLat().addListener(o -> markDirty());
-        baseMap.centerLon().addListener(o -> markDirty());
+        baseMap.centerLat().addListener(_ -> markDirty());
+        baseMap.centerLon().addListener(_ -> markDirty());
         clip = new Rectangle();
         this.setClip(clip);
-        this.layoutBoundsProperty().addListener(e -> {
+        this.layoutBoundsProperty().addListener(_ -> {
             // in case our assigned space changes, AND in case we are requested
             // to center at a specific point, we need to re-center.
             if (centerPoint != null) {
@@ -107,12 +107,12 @@ public class MapView extends Region {
             baseMap.x0 = t.getX();
             baseMap.y0 = t.getY();
         });
-        setOnMouseReleased(t -> enableDragging = false);
-        setOnZoomStarted(t -> {
+        setOnMouseReleased(_ -> enableDragging = false);
+        setOnZoomStarted(_ -> {
             zooming = true;
             enableDragging = false;
         });
-        setOnZoomFinished(t -> zooming = false);
+        setOnZoomFinished(_ -> zooming = false);
         setOnZoom(t -> baseMap.zoom(t.getZoomFactor() - 1, t.getX(), t.getY()));
         if (Platform.isDesktop()) {
             setOnScroll(t -> {

@@ -943,7 +943,7 @@ public class KmlFileImportWindow extends JfxStage {
         WGS84BoundingBox gpxBoundingBox = travelMapView.getGpxLayer().addGpx(null, null, documentRoot.getGpx());
 
         if (gpxBoundingBox != null) {
-          Double zoomLevel = MapView.getZoomLevel(gpxBoundingBox);
+          Double zoomLevel = travelMapView.getZoomLevelForShowingBoundedBox(gpxBoundingBox);
           if (zoomLevel != null) {
             travelMapView.setZoom(zoomLevel);
           }

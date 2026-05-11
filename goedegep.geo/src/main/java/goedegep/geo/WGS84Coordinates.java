@@ -3,6 +3,7 @@ package goedegep.geo;
 import java.io.Serializable;
 import java.util.logging.Logger;
 
+import com.google.common.geometry.S2ContainsPointQuery;
 import com.google.common.geometry.S2Earth;
 import com.google.common.geometry.S2LatLng;
 

@@ -115,15 +115,31 @@ private static final Logger LOGGER = Logger.getLogger(WGS84BoundingBox.class.get
     return extendedBoundingBox;
   }
   
-  public boolean containsPoint(WGS84Coordinates point) {
-    double latitude = point.getLatitude();
-    double longitude = point.getLongitude();
-    
+  public boolean containsPoint(double latitude, double longitude) {
     return (latitude >= north)  &&  (latitude <= south)  &&  (longitude >= west)  &&  (longitude <= east);
   }
   
-  public boolean intersects(WGS84BoundingBox boundingBox) {
-    return ! (boundingBox.getWest() > getEast() || boundingBox.getEast() < getWest() || boundingBox.getNorth() < getSouth() || boundingBox.getSouth() > getNorth());
+  public boolean containsPoint(WGS84Coordinates point) {
+    return containsPoint(point.getLatitude(), point.getLongitude());
+  }
+  
+  /**
+   * Check whether this bounding box contains at least partly the given bounding box.
+   * 
+   * @param boundingBox the bounding box to be checked, which may not be null.
+   * @return true if this bounding box contains at least partly the given bounding box, false otherwise.
+   */
+  public boolean containsAtLeastPartly(WGS84BoundingBox boundingBox) {
+    if (boundingBox == null) {
+      return false;
+    }
+
+    // Two axis-aligned bounding boxes intersect (at least partly) when their
+    // projections on both axes overlap. We include edge-touching as intersection.
+    boolean lonOverlap = west <= boundingBox.getEast() && east >= boundingBox.getWest();
+    boolean latOverlap = south <= boundingBox.getNorth() && north >= boundingBox.getSouth();
+
+    return lonOverlap && latOverlap;
   }
   
   public String toString() {

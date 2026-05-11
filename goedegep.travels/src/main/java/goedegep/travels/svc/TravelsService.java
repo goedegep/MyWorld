@@ -91,8 +91,8 @@ public class TravelsService extends Service {
    * Show the main window of the application.
    */
   public void showTravelsWindow() {
-//    new TravelsWindow(customization, this);
-    new MapViewTestWindow();
+    new TravelsWindow(customization, this);
+//    new MapViewTestWindow();
   }
   
   /**

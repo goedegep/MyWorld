@@ -1,6 +1,5 @@
 package goedegep.mapview.image.impl;
 
-import java.lang.ref.SoftReference;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
@@ -40,8 +39,7 @@ public class BaseMap extends BaseMapAbstract<TileImageView> {
       return;
     }
 
-//    int nearestZoom = (Math.min((int) floor(mapViewCommon.getZoom() + TIPPING), MAX_ZOOM - 1));
-    int nearestZoom = getTileZoomLevel(mapViewCommon.getZoom());
+    int nearestZoom = getTileZoomLevel();
     double activeZoom = mapViewCommon.getZoom();
 //    double deltaZ = nearestZoom - activeZoom;
     long i_max = 1 << nearestZoom;

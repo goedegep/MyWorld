@@ -492,7 +492,7 @@ public class GPXWindow extends JfxStage {
     
     WGS84BoundingBox gpxBoundingBox = gpxLayer.addGpx(null, gpxResource.getURI().toFileString(), gpx);
     if (gpxBoundingBox != null) {
-      Double zoomLevel = MapView.getZoomLevel(gpxBoundingBox);
+      Double zoomLevel = mapView.getZoomLevelForShowingBoundedBox(gpxBoundingBox);
       if (zoomLevel != null) {
         mapView.setZoom(zoomLevel);
       }

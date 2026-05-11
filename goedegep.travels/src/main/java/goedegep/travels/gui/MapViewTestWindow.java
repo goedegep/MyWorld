@@ -45,12 +45,14 @@ public class MapViewTestWindow extends JfxStage {
   public MapViewTestWindow() {
     super(null, "MapView test window");
     
-//    gluonMapView = new goedegep.gluonhq.maps.MapView();
+    gluonMapView = new goedegep.gluonhq.maps.MapView();
     myMapView = new MapView();
-//    mapViewTestLayer = new MapViewTestLayer();
-//    myMapView.addLayer(mapViewTestLayer);
+    mapViewTestLayer = new MapViewTestLayer();
+    myMapView.addLayer(mapViewTestLayer);
     
     myMapView.zoomReadOnlyProperty().addListener((_, _, _) -> updateStatusTextArea());
+    myMapView.centerReadOnlyProperty().addListener((_, _, _) -> updateStatusTextArea());
+    MapView.setPlaceholderImageSupplier(myMapView::defaultPlaceholderImageSupplier);
     
     createGUI();
     
@@ -75,7 +77,7 @@ public class MapViewTestWindow extends JfxStage {
     gluonBox.setMinHeight(150);
     gluonBox.setMaxHeight(150);
     gluonBox.setBorder(new Border(new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID, null , null)));
-//    gluonBox.getChildren().add(gluonMapView);
+    gluonBox.getChildren().add(gluonMapView);
     
     HBox myBox = new HBox();
     myBox.setMinWidth(300);
@@ -147,69 +149,87 @@ public class MapViewTestWindow extends JfxStage {
     return hBox;
   }
 
-  private Object zoomToFullMap() {
-//    gluonMapView.setZoom(FULL_MAP_ZOOM_LEVEL);
+  private void zoomToFullMap() {
+    gluonMapView.setZoom(FULL_MAP_ZOOM_LEVEL);
     myMapView.setZoom(FULL_MAP_ZOOM_LEVEL);
     
-    return null;
+    updateStatusTextArea();
   }
 
   private void zoomIn() {
-    LOGGER.severe("=> XXXXXXXXXX Zooming in");
-//    double gluonZoom = gluonMapView.getZoom();
-//    gluonMapView.setZoom(gluonZoom + 1);
+    double gluonZoom = gluonMapView.getZoom();
+    gluonMapView.setZoom(gluonZoom + 1.0);
     double myZoom = myMapView.getZoom();
-    myMapView.setZoom(myZoom + 1);
+    myMapView.setZoom(myZoom + 1.0);
+    
+    updateStatusTextArea();
   }
 
   private void zoomOut() {
-//    double gluonZoom = gluonMapView.getZoom();
-//    gluonMapView.setZoom(gluonZoom - 1);
+    double gluonZoom = gluonMapView.getZoom();
+    gluonMapView.setZoom(gluonZoom - 1.0);
     
     double myZoom = myMapView.getZoom();
-    myMapView.setZoom(myZoom - 1);
+    myMapView.setZoom(myZoom - 1.0);
+
+    updateStatusTextArea();
   }
 
   private void moveUp() {
-//    gluonMapView.moveY(50.0);
+    gluonMapView.moveY(50.0);
     myMapView.moveY(50.0);
+
+    updateStatusTextArea();
   }
 
   private void moveDown() {
-//    gluonMapView.moveY(-50.0);
+    gluonMapView.moveY(-50.0);
     myMapView.moveY(-50.0);
+
+    updateStatusTextArea();
   }
 
   private void moveLeft() {
-//    gluonMapView.moveX(50.0);
+    gluonMapView.moveX(50.0);
     myMapView.moveX(50.0);
+
+    updateStatusTextArea();
   }
 
   private void moveRight() {
-//    gluonMapView.moveX(-50.0);
+    gluonMapView.moveX(-50.0);
     myMapView.moveX(-50.0);
+
+    updateStatusTextArea();
   }
 
   private void setCenterToHome() {
-//    gluonMapView.setCenter(51.476743, 5.429724);
-    myMapView.setCenter(51.476743, 5.429724);
+    gluonMapView.setCenter(51.443611, 5.4468137);
+    gluonMapView.setZoom(4.0);
+    myMapView.setCenter(51.443611, 5.4468137);
+    myMapView.setZoom(4.0);
+
+    updateStatusTextArea();
   }
   
   private void flyHome() {
-    // gluonMapView.flyTo(0.0, new goedegep.gluonhq.maps.MapPoint(51.476743, 5.429724), 4.0);
-    myMapView.flyTo(0.0, new MapPoint(51.476743, 5.429724), 4.0, 8.0);
+    gluonMapView.flyTo(0.0, new goedegep.gluonhq.maps.MapPoint(51.443611, 5.4468137), 4.0);
+    myMapView.flyTo(0.0, new MapPoint(51.443611, 5.4468137), 4.0, 8.0);
+
+    updateStatusTextArea();
   }
 
   private void saveMapImage() {
+    // copy settings from myMapView to mapImage, so that the map image will look the same as the map view.
     MapImage mapImage =  new MapImage();
     MapViewTestLayer mapViewTestLayer = new MapViewTestLayer();
     mapImage.addLayer(mapViewTestLayer);
 
     mapImage.setSize(500, 300);
-//    double zoom = myMapView.getZoom();
-    mapImage.setZoom(6.0);
-//    MapPoint center = myMapView.getCenter();
-//    mapImage.setCenter(center);
+    double zoom = myMapView.getZoom();
+    mapImage.setZoom(zoom);
+    MapPoint center = myMapView.getCenter();
+    mapImage.setCenter(center);
     
     Path mapImageFilePath = Path.of("D:\\SoulSeek\\MapImage.jpg");
     try {
@@ -223,6 +243,8 @@ public class MapViewTestWindow extends JfxStage {
     } catch (IOException e) {
       e.printStackTrace();
     }
+
+    updateStatusTextArea();
   }
   
   public static void saveImageAsJpeg(Image image, File file) {
@@ -239,29 +261,29 @@ public class MapViewTestWindow extends JfxStage {
   }
   
   private void updateStatusTextArea() {
-    // Basic info about the map view: center, zoom level, dimension and visible map coordinates.
-    StringBuilder buf = new StringBuilder();
-    MapPoint center = myMapView.getCenter();
-    buf.append("Center: ")
-    .append(center != null ? center.getLatitude() : "<null>")
-    .append(", ")
-    .append(center != null ? center.getLongitude() : "<null>")
-    .append("\n");
-    buf.append("Zoom: ").append(myMapView.getZoom()).append("\n");
-    Dimension2D dimension = myMapView.getDimensions();
-    buf.append("Dimension: ").append(dimension != null ? dimension.getWidth() : "<null>").append(" x ").append(dimension != null ? dimension.getHeight() : "<null>").append("\n");
-    WGS84BoundingBox visibleMapCoordinates = myMapView.getVisibleMapBoundingBox();
-    buf.append("Visible map coordinates: ");
-    if (visibleMapCoordinates != null) {
-      buf.append(visibleMapCoordinates.getNorth()).append(", ").append(visibleMapCoordinates.getEast()).append(", ")
-      .append(visibleMapCoordinates.getSouth()).append(", ").append(visibleMapCoordinates.getWest()).append("\n");
-    } else {
-      buf.append("<not available>\n");
-    }
-    
-    // Get all other details from the map view.
-    buf.append(myMapView.getStatusInformation());
-    
-    statusTextArea.setText(buf.toString());
+//    // Basic info about the map view: center, zoom level, dimension and visible map coordinates.
+//    StringBuilder buf = new StringBuilder();
+//    MapPoint center = myMapView.getCenter();
+//    buf.append("Center: ")
+//    .append(center != null ? center.getLatitude() : "<null>")
+//    .append(", ")
+//    .append(center != null ? center.getLongitude() : "<null>")
+//    .append("\n");
+//    buf.append("Zoom: ").append(myMapView.getZoom()).append("\n");
+//    Dimension2D dimension = myMapView.getDimensions();
+//    buf.append("Dimension: ").append(dimension != null ? dimension.getWidth() : "<null>").append(" x ").append(dimension != null ? dimension.getHeight() : "<null>").append("\n");
+//    WGS84BoundingBox visibleMapCoordinates = myMapView.getVisibleMapBoundingBox();
+//    buf.append("Visible map coordinates: ");
+//    if (visibleMapCoordinates != null) {
+//      buf.append(visibleMapCoordinates.getWest()).append(", ").append(visibleMapCoordinates.getNorth()).append(", ")
+//      .append(visibleMapCoordinates.getEast()).append(", ").append(visibleMapCoordinates.getSouth()).append("\n");
+//    } else {
+//      buf.append("<not available>\n");
+//    }
+//    
+//    // Get all other details from the map view.
+//    buf.append(myMapView.getStatusInformation());
+//    
+//    statusTextArea.setText(buf.toString());
   }
 }
