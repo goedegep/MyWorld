@@ -13,6 +13,7 @@ import goedegep.configuration.model.Look;
 import goedegep.jfx.AppResourcesFx;
 import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.JfxApplication;
+import goedegep.mapview.maptile.osm.TileCacheCleanupTask;
 import goedegep.myworld.common.Registry;
 import goedegep.myworld.common.Service;
 import goedegep.resources.ImageResource;
@@ -69,6 +70,7 @@ public class TravelsService extends Service {
 
       instance.startPhotoThumbnailsCreation();
       instance.setOSMUserAgentSystemProperty();
+      instance.startTileCacheCleanupTask();
     }
     
     return instance;    
@@ -258,6 +260,13 @@ public class TravelsService extends Service {
 //      directoryMonitoringThread.setDaemon(true);
 //      directoryMonitoringThread.start();
 //    }
+  }
+  
+  private void startTileCacheCleanupTask() {
+    // Start the tile cache cleanup task in a background thread.
+    Thread tileCacheCleanupThread = new Thread(new TileCacheCleanupTask());
+    tileCacheCleanupThread.setDaemon(true);
+    tileCacheCleanupThread.start();
   }
   
   private void notifyDirectoryChangesListeners(WatchEvent<Path> watchEvent) {

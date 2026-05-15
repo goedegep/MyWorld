@@ -1,4 +1,4 @@
-package com.gluonhq.maps;
+package goedegep.mapview;
 
 import java.util.logging.Logger;
 

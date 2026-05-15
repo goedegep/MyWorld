@@ -28,10 +28,6 @@
       <artifactId>mp3agic</artifactId>
     </dependency>
     <dependency>
-      <groupId>gluon-oss-maps</groupId>
-      <artifactId>gluon-oss-maps</artifactId>
-    </dependency>
-    <dependency>
       <groupId>goedegep.jfx</groupId>
       <artifactId>goedegep-jfx</artifactId>
     </dependency>

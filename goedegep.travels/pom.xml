@@ -52,10 +52,6 @@
       <artifactId>JavaAPIforKml</artifactId>
     </dependency>
     <dependency>
-      <groupId>gluon-oss-maps</groupId>
-      <artifactId>gluon-oss-maps</artifactId>
-    </dependency>
-    <dependency>
       <groupId>goedegep.configuration</groupId>
       <artifactId>goedegep-configuration-model</artifactId>
     </dependency>

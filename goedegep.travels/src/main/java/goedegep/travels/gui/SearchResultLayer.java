@@ -6,11 +6,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
-import com.gluonhq.maps.MapPoint;
-
 import goedegep.geo.WGS84BoundingBox;
 import goedegep.geo.WGS84Coordinates;
 import goedegep.mapview.MapLayer;
+import goedegep.mapview.MapPoint;
 import javafx.collections.ObservableList;
 import javafx.geometry.Point2D;
 import javafx.scene.Node;

@@ -20,10 +20,6 @@
   
   <dependencies>
     <dependency>
-      <groupId>gluon-oss-maps</groupId>
-      <artifactId>gluon-oss-maps</artifactId>
-    </dependency>
-    <dependency>
       <groupId>goedegep.geo</groupId>
       <artifactId>goedegep-geo</artifactId>
     </dependency>

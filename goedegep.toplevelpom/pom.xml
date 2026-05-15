@@ -145,11 +145,6 @@
         <version>1.0-SNAPSHOT</version>
       </dependency>
       <dependency>
-        <groupId>gluon-oss-maps</groupId>
-        <artifactId>gluon-oss-maps</artifactId>
-        <version>1.0-SNAPSHOT</version>
-      </dependency>
-      <dependency>
         <groupId>goedegep.applicationcomponent</groupId>
         <artifactId>goedegep-applicationcomponent</artifactId>
         <version>${goedegep.myworld.version}</version>
@@ -639,7 +634,6 @@
     <module>../commons-imaging</module>
     <module>../com.google.common.geometry</module>
     <module>../com.google.common.jimfs</module>
-    <module>../gluon-oss-maps</module>
     <module>../de.micromata.jak.JavaAPIforKml</module>
     <module>../me.atlis.nominatim-api</module>
     <module>../javaFlacEncoder</module>

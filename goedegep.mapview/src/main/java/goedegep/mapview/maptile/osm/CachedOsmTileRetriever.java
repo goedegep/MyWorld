@@ -6,15 +6,10 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.logging.Logger;
-import java.util.stream.Collectors;
 
-import com.gluonhq.attach.storage.StorageService;
-
+import goedegep.mapview.maptile.TileRetriever;
 import javafx.scene.image.Image;
 
 /**
@@ -36,27 +31,20 @@ public class CachedOsmTileRetriever extends OsmTileRetriever {
    */
   static boolean hasFileCache;
   
-  static int tilesLoaded = 100;
-
   static {
     // Determine the cacheRoot and set hasFileCache based on whether a cache root is available or not.
     hasFileCache = false;
 
-    Optional<File> storageRoot = StorageService.create()
-        .flatMap(StorageService::getPrivateStorage);
-    if (storageRoot.isPresent()) {
-      cacheRoot = new File(storageRoot.get(), ".gluonmaps");
-      if (!cacheRoot.isDirectory()) {
-        hasFileCache = cacheRoot.mkdirs();
-      } else {
-        hasFileCache = true;
-      }
+    cacheRoot = new File("C:/User/Peter", ".gluonmaps");
+    if (!cacheRoot.isDirectory()) {
+      hasFileCache = cacheRoot.mkdirs();
+    } else {
+      hasFileCache = true;
     }
   }
 
   @Override
   public CompletableFuture<Image> loadTile(int zoom, long i, long j) {
-    cleanupTileCache();
 
     if (!hasFileCache) {
       throw new RuntimeException("Failed to open/create cache directory");
@@ -84,8 +72,6 @@ public class CachedOsmTileRetriever extends OsmTileRetriever {
 
   @Override
   public Image loadTileSynchronously(int zoom, long i, long j) throws Exception {
-    cleanupTileCache();
-
     if (!hasFileCache) {
       throw new RuntimeException("Failed to open/create cache directory");
     }
@@ -157,57 +143,5 @@ public class CachedOsmTileRetriever extends OsmTileRetriever {
    */
   private static boolean isTileAvailableInCache(int zoom, long i, long j) {
     return Files.exists(getTileFilePath(zoom, i, j));
-  }
-
-  public void cleanupTileCache() {
-    tilesLoaded++;
-    if (tilesLoaded >= 100) {
-      tilesLoaded = 0;
-    } else {
-      return;
-    }
-    
-    int maxNumberOfFiles = 2000; // Set a threshold for the maximum number of cached files
-    int cleanupToNumberOfFiles = 1700; // Set a threshold for the number of cached files to clean up to when the maximum is exceeded
-    
-    if (!hasFileCache) {
-      return;
-    }
-    
-    try {
-      List<Path> files = Files.walk(cacheRoot.toPath())
-          .filter(Files::isRegularFile)
-          .collect(Collectors.toList());
-
-      int totalFiles = files.size();
-//      LOGGER.severe("Total cached tiles: " + totalFiles);
-      if (totalFiles <= maxNumberOfFiles) {
-        return;
-      }
-
-      // Sort files by last modified time ascending (oldest first)
-      files.sort(Comparator.comparingLong(path -> {
-        try {
-          return Files.getLastModifiedTime(path).toMillis();
-        } catch (IOException e) {
-          // If we can't read last modified time, treat it as very new so it won't be deleted prematurely
-          return Long.MAX_VALUE;
-        }
-      }));
-
-      int filesToDelete = totalFiles - cleanupToNumberOfFiles;
-      for (int i = 0; i < filesToDelete; i++) {
-        Path p = files.get(i);
-        try {
-//          LOGGER.severe("Deleting cached tile: " + p.toString());
-          Files.deleteIfExists(p);
-        } catch (IOException e) {
-          LOGGER.severe("Failed to delete cached tile: " + p.toString() + " : " + e.getMessage());
-        }
-      }
-
-    } catch (IOException e) {
-      LOGGER.severe("Failed to clean up tile cache: " + e.getMessage());
-    }
   }
 }

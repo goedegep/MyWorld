@@ -34,10 +34,10 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 
 public class MapViewTestWindow extends JfxStage {
+  @SuppressWarnings("unused")
   private static final Logger LOGGER = Logger.getLogger(TravelsWindow.class.getName());
   private static final double FULL_MAP_ZOOM_LEVEL = 2.0;     // Shows almost complete world map. Determined with trial and error.
   
-  private goedegep.gluonhq.maps.MapView gluonMapView;
   private MapView myMapView;
   private MapViewTestLayer mapViewTestLayer;
   private TextArea statusTextArea;
@@ -45,7 +45,6 @@ public class MapViewTestWindow extends JfxStage {
   public MapViewTestWindow() {
     super(null, "MapView test window");
     
-    gluonMapView = new goedegep.gluonhq.maps.MapView();
     myMapView = new MapView();
     mapViewTestLayer = new MapViewTestLayer();
     myMapView.addLayer(mapViewTestLayer);
@@ -71,14 +70,6 @@ public class MapViewTestWindow extends JfxStage {
     mapsBox.setMinWidth(500);
     mapsBox.setMinHeight(300);
     
-    HBox gluonBox = new HBox();
-    gluonBox.setMinWidth(300);
-    gluonBox.setMaxWidth(300);
-    gluonBox.setMinHeight(150);
-    gluonBox.setMaxHeight(150);
-    gluonBox.setBorder(new Border(new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID, null , null)));
-    gluonBox.getChildren().add(gluonMapView);
-    
     HBox myBox = new HBox();
     myBox.setMinWidth(300);
     myBox.setMaxWidth(300);
@@ -87,7 +78,7 @@ public class MapViewTestWindow extends JfxStage {
     myBox.setBorder(new Border(new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID, null , null)));
     myBox.getChildren().add(myMapView);
     
-    mapsBox.getChildren().addAll(gluonBox, myBox);
+    mapsBox.getChildren().addAll(myBox);
     
     mainBox.getChildren().add(mapsBox);    
     
@@ -150,15 +141,12 @@ public class MapViewTestWindow extends JfxStage {
   }
 
   private void zoomToFullMap() {
-    gluonMapView.setZoom(FULL_MAP_ZOOM_LEVEL);
     myMapView.setZoom(FULL_MAP_ZOOM_LEVEL);
     
     updateStatusTextArea();
   }
 
   private void zoomIn() {
-    double gluonZoom = gluonMapView.getZoom();
-    gluonMapView.setZoom(gluonZoom + 1.0);
     double myZoom = myMapView.getZoom();
     myMapView.setZoom(myZoom + 1.0);
     
@@ -166,9 +154,6 @@ public class MapViewTestWindow extends JfxStage {
   }
 
   private void zoomOut() {
-    double gluonZoom = gluonMapView.getZoom();
-    gluonMapView.setZoom(gluonZoom - 1.0);
-    
     double myZoom = myMapView.getZoom();
     myMapView.setZoom(myZoom - 1.0);
 
@@ -176,36 +161,30 @@ public class MapViewTestWindow extends JfxStage {
   }
 
   private void moveUp() {
-    gluonMapView.moveY(50.0);
     myMapView.moveY(50.0);
 
     updateStatusTextArea();
   }
 
   private void moveDown() {
-    gluonMapView.moveY(-50.0);
     myMapView.moveY(-50.0);
 
     updateStatusTextArea();
   }
 
   private void moveLeft() {
-    gluonMapView.moveX(50.0);
     myMapView.moveX(50.0);
 
     updateStatusTextArea();
   }
 
   private void moveRight() {
-    gluonMapView.moveX(-50.0);
     myMapView.moveX(-50.0);
 
     updateStatusTextArea();
   }
 
   private void setCenterToHome() {
-    gluonMapView.setCenter(51.443611, 5.4468137);
-    gluonMapView.setZoom(4.0);
     myMapView.setCenter(51.443611, 5.4468137);
     myMapView.setZoom(4.0);
 
@@ -213,7 +192,6 @@ public class MapViewTestWindow extends JfxStage {
   }
   
   private void flyHome() {
-    gluonMapView.flyTo(0.0, new goedegep.gluonhq.maps.MapPoint(51.443611, 5.4468137), 4.0);
     myMapView.flyTo(0.0, new MapPoint(51.443611, 5.4468137), 4.0, 8.0);
 
     updateStatusTextArea();

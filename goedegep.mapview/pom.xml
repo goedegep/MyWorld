@@ -13,12 +13,18 @@
   </parent>
   <dependencies>
     <dependency>
-      <groupId>gluon-oss-maps</groupId>
-      <artifactId>gluon-oss-maps</artifactId>
-    </dependency>
-    <dependency>
       <groupId>goedegep.geo</groupId>
       <artifactId>goedegep-geo</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.openjfx</groupId>
+      <artifactId>javafx-base</artifactId>
+      <classifier>win</classifier>
+    </dependency>
+    <dependency>
+      <groupId>org.openjfx</groupId>
+      <artifactId>javafx-graphics</artifactId>
+      <classifier>win</classifier>
     </dependency>
   </dependencies>
 </project>

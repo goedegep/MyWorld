@@ -10,7 +10,6 @@ module goedegep.gpxeditor {
   requires org.eclipse.emf.ecore;
   requires org.eclipse.emf.ecore.xmi;
   requires javafx.graphics;
-  requires com.gluonhq.maps;
   requires goedegep.geo;
   requires transitive goedegep.resources;
   requires transitive goedegep.gpx;

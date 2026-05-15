@@ -8,11 +8,11 @@ import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.util.EContentAdapter;
 
-import com.gluonhq.maps.LabeledIcon;
 
 import goedegep.geo.WGS84BoundingBox;
 import goedegep.geo.WGS84Coordinates;
 import goedegep.jfx.CustomizationFx;
+import goedegep.mapview.LabeledIcon;
 import goedegep.mapview.MapLayer;
 import goedegep.poi.app.LocationCategory;
 import goedegep.resources.ImageResource;

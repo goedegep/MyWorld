@@ -18,7 +18,6 @@ module goedegep.media {
   requires org.apache.commons.text;
   requires org.apache.commons.io;
   requires javafx.swing;
-  requires com.gluonhq.maps;
   requires goedegep.mapview;
   requires goedegep.media.photoshow.model;
 }
