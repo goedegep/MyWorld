@@ -14,7 +14,6 @@ import goedegep.geo.WGS84BoundingBox;
 import goedegep.geo.WGS84Coordinates;
 import goedegep.jfx.CustomizationFx;
 import goedegep.mapview.MapLayer;
-import goedegep.mapview.MapPoint;
 import goedegep.mapview.view.MapView;
 import goedegep.media.photo.IPhotoMetaData;
 import goedegep.media.photo.IPhotoMetaDataWithImage;
@@ -173,7 +172,7 @@ public class PhotoMapLayer extends MapLayer implements ObjectSelector<IPhotoInfo
         double y = dragEvent.getY();
         LOGGER.info("x, y = " + x + ", " + y);
 //        MapPoint mapPoint = baseMap.getMapPosition(dragEvent.getX(), dragEvent.getY());
-        MapPoint mapPoint = mapViewAbstract.getMapPosition(point.getX(), point.getY());
+        WGS84Coordinates mapPoint = mapViewAbstract.getMapPosition(point.getX(), point.getY());
         WGS84Coordinates coordinates = new WGS84Coordinates(mapPoint.getLatitude(), mapPoint.getLongitude());
         photoMapView.addPhotos(dragboard.getFiles(), coordinates);
         
@@ -395,7 +394,7 @@ public class PhotoMapLayer extends MapLayer implements ObjectSelector<IPhotoInfo
       if (relocatingPhoto != null) {
         Point2D point2D = mapView.sceneToLocal(event.getSceneX(), event.getSceneY());
         LOGGER.info("point2D: " + point2D.getX() + ", " + point2D.getY());
-        MapPoint mapPoint = mapViewAbstract.getMapPosition(point2D.getX(), point2D.getY());
+        WGS84Coordinates mapPoint = mapViewAbstract.getMapPosition(point2D.getX(), point2D.getY());
         WGS84Coordinates coordinates = new WGS84Coordinates(mapPoint.getLatitude(), mapPoint.getLongitude());
         photoInfo.setCoordinates(coordinates);
         markDirty();

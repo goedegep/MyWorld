@@ -51,7 +51,6 @@ import goedegep.jfx.browser.Browser;
 import goedegep.jfx.eobjecttreeview.EObjectTreeCell;
 import goedegep.jfx.eobjecttreeview.EObjectTreeItem;
 import goedegep.jfx.eobjecttreeview.EObjectTreeView;
-import goedegep.mapview.MapPoint;
 import goedegep.mapview.view.MapView;
 import goedegep.media.photo.photoshow.guifx.PhotoWindow;
 import goedegep.properties.model.PropertiesFactory;
@@ -605,7 +604,7 @@ public class TravelsWindow extends JfxStage {
         // If 'right' button clicked, show context menu.
         if (mouseEvent.getButton().equals(MouseButton.SECONDARY)) {
           LOGGER.info("mapView MouseEvent: x=" + mouseEvent.getX() + ", y=" + mouseEvent.getY());
-          MapPoint newPoint = travelMapView.getMapPosition(mouseEvent.getX(), mouseEvent.getY());
+          WGS84Coordinates newPoint = travelMapView.getMapPosition(mouseEvent.getX(), mouseEvent.getY());
           LOGGER.info("newPoint= " + newPoint.getLatitude() + "," + newPoint.getLongitude());
           
           ContextMenu contextMenu = new ContextMenu();
@@ -703,7 +702,7 @@ public class TravelsWindow extends JfxStage {
    * Create a <code>Location</code> and add it as last child to a TreeItem.
    * 
    * @param treeItem The TreeItem to which the new <code>Location</code> is to be added.
-   * @param mapPoint A <code>MapPoint</code> which provides the coordinates of the <code>Location</code> to be created.
+   * @param mapPoint {@code WGS84Coordinates} which provides the coordinates of the {@code Location} to be created.
    */
   private LocationSearchWindow openLocationSearchWindow() {
     if (locationSearchWindow == null) {
@@ -991,10 +990,10 @@ public class TravelsWindow extends JfxStage {
 //    
 ////    travelMapView.setZoom(8);
 //    
-//    MapPoint mapCenter = null;
+//    WGS84Coordinates mapCenter = null;
 //    Location homeLocation = travels.getHome();
 //    if (homeLocation != null) {
-//      mapCenter = new MapPoint(travels.getHome().getLatitude(), travels.getHome().getLongitude());
+//      mapCenter = new WGS84Coordinates(travels.getHome().getLatitude(), travels.getHome().getLongitude());
 //    }
 //        
 //    if (mapCenter != null) {
@@ -1007,7 +1006,7 @@ public class TravelsWindow extends JfxStage {
    * Show the 'complete' world map.
    */
   private void showWorldMap() {
-    MapPoint mapCenter = new MapPoint(0.0, 0.0);
+    WGS84Coordinates mapCenter = new WGS84Coordinates(0.0, 0.0);
     
 //    travelMapView.setZoom(FULL_MAP_ZOOM_LEVEL);
     flyToIfEnabled(0.1, mapCenter, 3.0, FULL_MAP_ZOOM_LEVEL);
@@ -1146,7 +1145,7 @@ public class TravelsWindow extends JfxStage {
       return;
     }
     
-    MapPoint mapCenter = null;
+    WGS84Coordinates mapCenter = null;
     Double zoomLevel = null;
     Tuplet<Picture, WGS84Coordinates> pictureDataTuplet;
     Tuplet<Location, Travel> locationDataTuplet;
@@ -1188,7 +1187,7 @@ public class TravelsWindow extends JfxStage {
             
       WGS84Coordinates coordinates = pictureDataTuplet.getObject2();
       travelMapView.getMapRelatedItemsLayer().showCurrentPhoto(picture.getPictureReference().getFile(), coordinates);
-      mapCenter = new MapPoint(coordinates.getLatitude() - 0.05, coordinates.getLongitude() + 0.1);
+      mapCenter = new WGS84Coordinates(coordinates.getLatitude() - 0.05, coordinates.getLongitude() + 0.1);
       zoomLevel = PICTURE_ZOOM_LEVEL;
     } else if ((locationDataTuplet = getLocationDataForTreeItem(selectedTreeItem)) != null) {       // Location
       Location location = locationDataTuplet.getObject1();
@@ -1216,7 +1215,7 @@ public class TravelsWindow extends JfxStage {
         break;
       }
       
-      mapCenter = new MapPoint(location.getLatitude(), location.getLongitude());
+      mapCenter = new WGS84Coordinates(location.getLatitude(), location.getLongitude());
     } else if ((trackDataTuplet = getTrackDataForTreeItem(selectedTreeItem)) != null) {             // GPXTrack
       GPXTrack track = trackDataTuplet.getObject1();
       
@@ -1253,7 +1252,7 @@ public class TravelsWindow extends JfxStage {
           WGS84BoundingBox boundingBox = GpxUtil.calculateBoundingBox(gpxType);
           WGS84Coordinates center = boundingBox.getCenter();
           LOGGER.info("center: " + center.toString());
-          mapCenter = new MapPoint(center.getLatitude(), center.getLongitude());
+          mapCenter = new WGS84Coordinates(center.getLatitude(), center.getLongitude());
         } catch (IOException e) {
           LOGGER.severe("Error loading GPX file: " + fileReference.getFile() + ", " + e.getMessage());
         }    	  
@@ -1266,7 +1265,7 @@ public class TravelsWindow extends JfxStage {
         WGS84BoundingBox dayBoundingBox = addDayToMapView(travelMapView, day, false);
         if (dayBoundingBox != null) {
           WGS84Coordinates center = dayBoundingBox.getCenter();
-          mapCenter = new MapPoint(center.getLatitude(), center.getLongitude());
+          mapCenter = new WGS84Coordinates(center.getLatitude(), center.getLongitude());
         }
         if (dayBoundingBox != null) {
           zoomLevel = travelMapView.getZoomLevelForShowingBoundedBox(dayBoundingBox);
@@ -1278,7 +1277,7 @@ public class TravelsWindow extends JfxStage {
         WGS84BoundingBox travelsLayerBoundingBox = addTravelToMapView(travelMapView, travel, false, travelsTreeEditableMenuItem.isSelected());
         if (travelsLayerBoundingBox != null) {
           WGS84Coordinates center = travelsLayerBoundingBox.getCenter();
-          mapCenter = new MapPoint(center.getLatitude(), center.getLongitude());
+          mapCenter = new WGS84Coordinates(center.getLatitude(), center.getLongitude());
         }
         if (travelsLayerBoundingBox != null) {
           zoomLevel = travelMapView.getZoomLevelForShowingBoundedBox(travelsLayerBoundingBox);
@@ -1290,7 +1289,7 @@ public class TravelsWindow extends JfxStage {
       WGS84BoundingBox travelsLayerBoundingBox = addTravelToMapView(travelMapView, travel, false, travelsTreeEditableMenuItem.isSelected());
       if (travelsLayerBoundingBox != null) {
         WGS84Coordinates center = travelsLayerBoundingBox.getCenter();
-        mapCenter = new MapPoint(center.getLatitude(), center.getLongitude());
+        mapCenter = new WGS84Coordinates(center.getLatitude(), center.getLongitude());
       }
       if (travelsLayerBoundingBox != null) {
         zoomLevel = travelMapView.getZoomLevelForShowingBoundedBox(travelsLayerBoundingBox);
@@ -1302,7 +1301,7 @@ public class TravelsWindow extends JfxStage {
       WGS84BoundingBox travelsLayerBoundingBox = addDayTripsToTravelsLayer(dayTrips);
       if (travelsLayerBoundingBox != null) {
         WGS84Coordinates center = travelsLayerBoundingBox.getCenter();
-        mapCenter = new MapPoint(center.getLatitude(), center.getLongitude());
+        mapCenter = new WGS84Coordinates(center.getLatitude(), center.getLongitude());
       }
  
     } else if ((vacations = getVacationsForTreeItem(selectedTreeItem)) != null) {
@@ -2941,7 +2940,7 @@ public class TravelsWindow extends JfxStage {
    * @param mapPoint the destination of the move
    * @param seconds the time the move should take
    */
-  private void flyToIfEnabled(double waitTime, MapPoint mapPoint, double seconds, Double endZoomLevel) {
+  private void flyToIfEnabled(double waitTime, WGS84Coordinates mapPoint, double seconds, Double endZoomLevel) {
     
     if (!travelsTreeEditableMenuItem.isSelected()) {
 //      travelMapView.setCenter(mapPoint);
@@ -3233,7 +3232,7 @@ public class TravelsWindow extends JfxStage {
 
     imageTravelMapView.setZoom(mapImage.getZoom());
 
-    MapPoint center = new MapPoint(mapImage.getCenterLatitude(), mapImage.getCenterLongitude());
+    WGS84Coordinates center = new WGS84Coordinates(mapImage.getCenterLatitude(), mapImage.getCenterLongitude());
     imageTravelMapView.setCenter(center);
     
 //    MapImageType mapImageType = VacationsUtils.getMapImageType(mapImage);

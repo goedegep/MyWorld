@@ -20,6 +20,7 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EStructuralFeature;
 
+import goedegep.geo.WGS84Coordinates;
 import goedegep.gpxeditor.svc.GPXService;
 import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.eobjecttreeview.EObjectTreeItem;
@@ -36,7 +37,6 @@ import goedegep.jfx.eobjecttreeview.NodeOperationDescriptorNewAfter;
 import goedegep.jfx.eobjecttreeview.NodeOperationDescriptorNewBefore;
 import goedegep.jfx.eobjecttreeview.NodeOperationDescriptorOpen;
 import goedegep.jfx.eobjecttreeview.PresentationType;
-import goedegep.mapview.MapPoint;
 import goedegep.poi.app.LocationCategory;
 import goedegep.resources.ImageResource;
 import goedegep.resources.ImageSize;
@@ -694,7 +694,7 @@ public class TravelsTreeViewCreator {
           Object value = eObject.getValue();
           if (value instanceof Location location) {
             if (location.getLatitude() != null  &&  location.getLongitude() != null) {
-              MapPoint mapPoint = new MapPoint(location.getLatitude(), location.getLongitude());
+              WGS84Coordinates mapPoint = new WGS84Coordinates(location.getLatitude(), location.getLongitude());
               travelMapView.flyTo(0.0, mapPoint, 2.0, null);
             }
           }

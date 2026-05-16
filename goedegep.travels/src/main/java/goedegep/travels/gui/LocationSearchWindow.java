@@ -31,7 +31,6 @@ import goedegep.jfx.eobjecttreeview.EObjectTreeItemForObject;
 import goedegep.jfx.eobjecttreeview.EObjectTreeItemForObjectList;
 import goedegep.jfx.eobjecttreeview.EObjectTreeView;
 import goedegep.jfx.eobjecttreeview.EnumStringConverter;
-import goedegep.mapview.MapPoint;
 import goedegep.mapview.view.MapView;
 import goedegep.poi.app.LocationCategory;
 import goedegep.resources.ImageSize;
@@ -1195,7 +1194,7 @@ class LocationPanel extends VBox {
       vacationsWindow.toFront();
 
       MapView mapView = vacationsWindow.getTravelMapView();
-      MapPoint mapPoint = new MapPoint(coordinates.getLatitude(), coordinates.getLongitude());
+      WGS84Coordinates mapPoint = new WGS84Coordinates(coordinates.getLatitude(), coordinates.getLongitude());
       mapView.flyTo(0, mapPoint, 2, null);
     }
   }

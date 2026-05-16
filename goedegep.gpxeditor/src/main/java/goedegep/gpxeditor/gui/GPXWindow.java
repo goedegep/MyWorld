@@ -28,7 +28,6 @@ import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.JfxStage;
 import goedegep.jfx.MenuUtil;
 import goedegep.jfx.eobjecttreeview.EObjectTreeView;
-import goedegep.mapview.MapPoint;
 import goedegep.mapview.view.MapView;
 import goedegep.resources.ImageSize;
 import goedegep.util.RunningInEclipse;
@@ -501,7 +500,7 @@ public class GPXWindow extends JfxStage {
     if (gpxBoundingBox != null) {
       WGS84Coordinates center = gpxBoundingBox.getCenter();
       LOGGER.info("center: " + center.toString());
-      MapPoint mapCenter = new MapPoint(center.getLatitude(), center.getLongitude());
+      WGS84Coordinates mapCenter = new WGS84Coordinates(center.getLatitude(), center.getLongitude());
 
       if (mapCenter != null) {
         mapView.flyTo(0.0, mapCenter, 2, null);

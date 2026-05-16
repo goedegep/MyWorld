@@ -4,7 +4,6 @@ import java.util.function.Supplier;
 import java.util.logging.Logger;
 
 import goedegep.geo.WGS84Coordinates;
-import goedegep.mapview.MapPoint;
 import goedegep.mapview.impl.MapViewCommon;
 import goedegep.mapview.view.impl.BaseMap;
 import goedegep.mapview.view.impl.TileImageView;
@@ -81,7 +80,7 @@ public class MapView extends MapViewCommon {
    * @param seconds the time the move should take // TODO currently ignored. Change to speed factor!
    * @param endZoom the zoom level to end. If null, the end zoom level will be the current zoom level.
    */
-  public void flyTo(double waitTime, MapPoint mapPoint, double seconds, Double endZoom) {
+  public void flyTo(double waitTime, WGS84Coordinates mapPoint, double seconds, Double endZoom) {
     if ((timeline != null) && (timeline.getStatus() == Status.RUNNING)) {
       timeline.stop();
     }
@@ -92,7 +91,7 @@ public class MapView extends MapViewCommon {
     
     // calculate flying distance.
     WGS84Coordinates flyToPoint = new WGS84Coordinates(mapPoint.getLatitude(), mapPoint.getLongitude());
-    MapPoint center = getCenter();
+    WGS84Coordinates center = getCenter();
     WGS84Coordinates currentCenter = new WGS84Coordinates(center.getLatitude(), center.getLongitude());
     double flyingDistance = currentCenter.getDistanceMeters(flyToPoint) / 1000.0;
     
@@ -132,8 +131,8 @@ public class MapView extends MapViewCommon {
     double currentLat = center.getLatitude();
     double currentLon = center.getLongitude();
     
-    // Use prefCenter (MapPoint) as the target of the animation. A custom Interpolator
-    // is provided to interpolate between two MapPoint instances by linearly
+    // Use prefCenter (WGS84Coordinates) as the target of the animation. A custom Interpolator
+    // is provided to interpolate between two WGS84Coordinates instances by linearly
     // interpolating latitude and longitude.
     Interpolator mapPointInterpolator = new Interpolator() {
       @Override
@@ -144,18 +143,18 @@ public class MapView extends MapViewCommon {
 
       @Override
       public Object interpolate(Object startValue, Object endValue, double frac) {
-        MapPoint s = (MapPoint) startValue;
-        MapPoint e = (MapPoint) endValue;
+        WGS84Coordinates s = (WGS84Coordinates) startValue;
+        WGS84Coordinates e = (WGS84Coordinates) endValue;
         double lat = s.getLatitude() + (e.getLatitude() - s.getLatitude()) * frac;
         double lon = s.getLongitude() + (e.getLongitude() - s.getLongitude()) * frac;
-        return new MapPoint(lat, lon);
+        return new WGS84Coordinates(lat, lon);
       }
     };
     
     timeline = new Timeline(
-        new KeyFrame(Duration.ZERO, new KeyValue(prefCenterProperty, new MapPoint(currentLat, currentLon)), new KeyValue(prefZoomProperty, zoomProperty.get())),
-        new KeyFrame(Duration.seconds(t1), new KeyValue(prefCenterProperty, new MapPoint(currentLat, currentLon)), new KeyValue(prefZoomProperty, zoomProperty.get())),
-        new KeyFrame(Duration.seconds(t2), new KeyValue(prefCenterProperty, new MapPoint(currentLat, currentLon)), new KeyValue(prefZoomProperty, zoomLevel)),
+        new KeyFrame(Duration.ZERO, new KeyValue(prefCenterProperty, new WGS84Coordinates(currentLat, currentLon)), new KeyValue(prefZoomProperty, zoomProperty.get())),
+        new KeyFrame(Duration.seconds(t1), new KeyValue(prefCenterProperty, new WGS84Coordinates(currentLat, currentLon)), new KeyValue(prefZoomProperty, zoomProperty.get())),
+        new KeyFrame(Duration.seconds(t2), new KeyValue(prefCenterProperty, new WGS84Coordinates(currentLat, currentLon)), new KeyValue(prefZoomProperty, zoomLevel)),
         new KeyFrame(Duration.seconds(t3), new KeyValue(prefCenterProperty, mapPoint, mapPointInterpolator), new KeyValue(prefZoomProperty, zoomLevel)),
         new KeyFrame(Duration.seconds(t4), new KeyValue(prefCenterProperty, mapPoint), new KeyValue(prefZoomProperty, endZoom))
         );

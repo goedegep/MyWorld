@@ -479,9 +479,6 @@ public class MediaDbToDiscLocationMap {
   private void createTrackLocationMapForTrackCollection(TrackCollection trackCollection, boolean ignoreMissingBonusTracks) {
 
     for (TrackReference trackReference: trackCollection.getTrackReferences()) {
-      if (trackReference.getTrack().getTitle().equals("Public Image")) {
-        LOGGER.severe("STOP");
-      }
       if (!MediaDbUtil.haveTrackOnDisc(trackReference)) {
         continue;
       }

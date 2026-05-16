@@ -247,7 +247,7 @@ public class MusicFolderContent {
             errors.add(error);
           }
         } else {
-          LOGGER.severe("Skipping non-audio file: " + file.getFileName().toString());
+          LOGGER.severe("Skipping non-audio file: " + file.toString());
         }
       }
 

@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
-import goedegep.mapview.MapPoint;
+import goedegep.geo.WGS84Coordinates;
 import goedegep.mapview.view.impl.TileImageView;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.ReadOnlyDoubleProperty;
@@ -22,6 +22,7 @@ import javafx.scene.Group;
  * @param <T> the type of the map tiles, which must extend MapTileAbstract. The specific map tile is needed, because not all implementations use covering tiles.
  */
 public abstract class BaseMapAbstract<T extends TileImageViewAbstract> extends Group {
+  @SuppressWarnings("unused")
   private static final Logger LOGGER = Logger.getLogger(BaseMapAbstract.class.getName() );
 
   /**
@@ -98,7 +99,7 @@ public abstract class BaseMapAbstract<T extends TileImageViewAbstract> extends G
    * @param lat the latitude of the center point to set the center of the map to.
    * @param lon the longitude of the center point to set the center of the map to.
    */
-  protected void doSetCenter(MapPoint center) {
+  protected void doSetCenter(WGS84Coordinates center) {
     double lat = center.getLatitude();
     double lon = center.getLongitude();
         
@@ -132,7 +133,7 @@ public abstract class BaseMapAbstract<T extends TileImageViewAbstract> extends G
     // Set the translation of the map to the negative of the calculated offset, so that the center of the map is at the center of the screen.
     setTranslateX(-1 * ttx);
     setTranslateY(-1 * tty);
-    mapViewCommon.centerProperty.set(new MapPoint(lat, lon));
+    mapViewCommon.centerProperty.set(new WGS84Coordinates(lat, lon));
 
   }
   
@@ -188,12 +189,12 @@ public abstract class BaseMapAbstract<T extends TileImageViewAbstract> extends G
    * @param dy the number of pixels to move vertically
    */
   public void moveXY(double dx, double dy) {
-    MapPoint center = mapViewCommon.getCenter();
+    WGS84Coordinates center = mapViewCommon.getCenter();
     double currentCenterLat = center.getLatitude();
     double currentCenterLon = center.getLongitude();
     
     Point2D currentMapPoint = getMapPoint(currentCenterLat, currentCenterLon);
-    MapPoint newMapPosition = getMapPosition(currentMapPoint.getX() + dx, currentMapPoint.getY() + dy);
+    WGS84Coordinates newMapPosition = getMapPosition(currentMapPoint.getX() + dx, currentMapPoint.getY() + dy);
     doSetCenter(newMapPosition);
   }
 
@@ -225,7 +226,7 @@ public abstract class BaseMapAbstract<T extends TileImageViewAbstract> extends G
     double newCenterScreenX = centerScreenX - deltaDx;
     double newCenterScreenY = centerScreenY - deltaDy;
     
-    MapPoint newCenter = getMapPosition(newCenterScreenX, newCenterScreenY);
+    WGS84Coordinates newCenter = getMapPosition(newCenterScreenX, newCenterScreenY);
     
     mapViewCommon.setCenter(newCenter);
     mapViewCommon.setZoom(mapViewCommon.getZoom() + delta);
@@ -240,10 +241,10 @@ public abstract class BaseMapAbstract<T extends TileImageViewAbstract> extends G
    * @param sceneY y coordinate
    * @return map position
    */
-  public MapPoint getMapPosition(double sceneX, double sceneY) {
-    ObjectProperty<MapPoint> mapPoint = new SimpleObjectProperty<>();
+  public WGS84Coordinates getMapPosition(double sceneX, double sceneY) {
+    ObjectProperty<WGS84Coordinates> mapPoint = new SimpleObjectProperty<>();
     calculateCoords(sceneX - getTranslateX(), sceneY - getTranslateY(), mapPoint);  
-    return new MapPoint(mapPoint.get().getLatitude(), mapPoint.get().getLongitude());
+    return new WGS84Coordinates(mapPoint.get().getLatitude(), mapPoint.get().getLongitude());
   }
   
   /**
@@ -390,14 +391,14 @@ public abstract class BaseMapAbstract<T extends TileImageViewAbstract> extends G
    * @param lat the property to set the calculated latitude
    * @param lon the property to set the calculated longitude
    */
-  private void calculateCoords(double x, double y, ObjectProperty<MapPoint> mapPoint) {
+  private void calculateCoords(double x, double y, ObjectProperty<WGS84Coordinates> mapPoint) {
     double z = mapViewCommon.getZoom();
     
     double latrad = Math.PI - (2.0 * Math.PI * y) / (Math.pow(2, z)*256.);
     double mlat = Math.toDegrees(Math.atan(Math.sinh(latrad)));
     double mlon = x / (256*Math.pow(2, z)) * 360 - 180;
 
-    mapPoint.set(new MapPoint(mlat, mlon));
+    mapPoint.set(new WGS84Coordinates(mlat, mlon));
   }
 
   /**

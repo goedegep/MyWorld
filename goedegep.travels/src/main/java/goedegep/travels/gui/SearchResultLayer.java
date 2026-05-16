@@ -9,7 +9,6 @@ import java.util.logging.Logger;
 import goedegep.geo.WGS84BoundingBox;
 import goedegep.geo.WGS84Coordinates;
 import goedegep.mapview.MapLayer;
-import goedegep.mapview.MapPoint;
 import javafx.collections.ObservableList;
 import javafx.geometry.Point2D;
 import javafx.scene.Node;
@@ -25,7 +24,7 @@ public class SearchResultLayer extends MapLayer {
   
   private Integer locationId = 0;
   private Map<Integer, Pair<WGS84BoundingBox, Polygon>> boundingBoxesMap = new HashMap<>();
-  private Map<Integer, Pair<MapPoint, Node>> locationsMap = new HashMap<>();
+  private Map<Integer, Pair<WGS84Coordinates, Node>> locationsMap = new HashMap<>();
   private Map<Integer, List<Pair<List<WGS84Coordinates>, Polyline>>> polylinesMap = new HashMap<>();
   
 
@@ -38,14 +37,14 @@ public class SearchResultLayer extends MapLayer {
     locationId++;
     
     if (lat != null  &&  lon != null) {
-      MapPoint mapPoint = new MapPoint(lat, lon);
+      WGS84Coordinates mapPoint = new WGS84Coordinates(lat, lon);
       
       final Circle icon = new Circle(5, Color.BLUE);
       icon.setVisible(true);
       icon.setStroke(Color.RED);
       icon.setStrokeWidth(1);
                     
-      Pair<MapPoint, Node> locationPair = new Pair<MapPoint, Node>(mapPoint, icon);
+      Pair<WGS84Coordinates, Node> locationPair = new Pair<WGS84Coordinates, Node>(mapPoint, icon);
       locationsMap.put(locationId, locationPair);
       this.getChildren().add(icon);
    }
@@ -87,7 +86,7 @@ public class SearchResultLayer extends MapLayer {
   }
   
   public void removeLocation(Integer locationId) {
-    Pair<MapPoint, Node> locationPair = locationsMap.remove(locationId);
+    Pair<WGS84Coordinates, Node> locationPair = locationsMap.remove(locationId);
     this.getChildren().remove(locationPair.getValue());
     
     Pair<WGS84BoundingBox, Polygon> boundingBoxPair = boundingBoxesMap.remove(locationId);
@@ -123,8 +122,8 @@ public class SearchResultLayer extends MapLayer {
       mapViewAbstract.updateBoundingBoxPolygon(boxPolygon, boundingBoxCoords);
     }
     
-    for (Pair<MapPoint, Node> locationPair: locationsMap.values()) {
-      MapPoint point = locationPair.getKey();
+    for (Pair<WGS84Coordinates, Node> locationPair: locationsMap.values()) {
+      WGS84Coordinates point = locationPair.getKey();
       Node icon = locationPair.getValue();
       final Point2D mapPoint = mapViewAbstract.getMapPoint(point.getLatitude(), point.getLongitude());
       icon.toFront();

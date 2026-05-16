@@ -25,7 +25,6 @@ import goedegep.gpx.model.TrksegType;
 import goedegep.gpx.model.WptType;
 import goedegep.jfx.stringconverterandchecker.WGS84CoordinatesStringConverterAndChecker;
 import goedegep.mapview.MapLayer;
-import goedegep.mapview.MapPoint;
 import goedegep.poi.app.LocationCategory;
 import goedegep.resources.ImageResource;
 import javafx.collections.FXCollections;
@@ -630,10 +629,10 @@ public class GPXLayer extends MapLayer {
       boolean drawGPXData = true;
       BoundingBoxData boundingBoxData = gpxData.boundingBox();
       WGS84BoundingBox boundingBox = boundingBoxData.boundingBox();
-      MapPoint topLeft = mapViewAbstract.getMapPosition(0, 0);
+      WGS84Coordinates topLeft = mapViewAbstract.getMapPosition(0, 0);
       double width = mapViewAbstract.getWidth();
       double height = mapViewAbstract.getHeight();
-      MapPoint bottomRight = mapViewAbstract.getMapPosition(width - 1, height - 1);
+      WGS84Coordinates bottomRight = mapViewAbstract.getMapPosition(width - 1, height - 1);
       WGS84BoundingBox mapBoundingBox = new WGS84BoundingBox(topLeft.getLongitude(), topLeft.getLatitude(), bottomRight.getLongitude(), bottomRight.getLatitude());
       if (boundingBox == null  ||  !mapBoundingBox.containsAtLeastPartly(boundingBox)) {
         drawGPXData = false;

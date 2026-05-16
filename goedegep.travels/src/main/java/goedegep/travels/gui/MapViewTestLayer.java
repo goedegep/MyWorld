@@ -3,8 +3,8 @@ package goedegep.travels.gui;
 import java.util.logging.Logger;
 
 import goedegep.geo.WGS84BoundingBox;
+import goedegep.geo.WGS84Coordinates;
 import goedegep.mapview.MapLayer;
-import goedegep.mapview.MapPoint;
 import javafx.geometry.Point2D;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
@@ -50,7 +50,7 @@ public class MapViewTestLayer extends MapLayer {
       homePolygon.setVisible(false);
     }
     
-    MapPoint centerMapPoint = mapViewAbstract.getCenter();
+    WGS84Coordinates centerMapPoint = mapViewAbstract.getCenter();
     Point2D centerPoint2D = mapViewAbstract.getMapPoint(centerMapPoint.getLatitude(), centerMapPoint.getLongitude());
     centerCircle.setCenterX(centerPoint2D.getX());
     centerCircle.setCenterY(centerPoint2D.getY());

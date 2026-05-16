@@ -38,7 +38,6 @@ import goedegep.geo.WGS84BoundingBox;
 import goedegep.geo.WGS84Coordinates;
 import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.JfxStage;
-import goedegep.mapview.MapPoint;
 import goedegep.mapview.view.MapView;
 import goedegep.media.common.MediaRegistry;
 import goedegep.media.photo.GatherPhotoInfoTask;
@@ -254,7 +253,7 @@ public class PhotoMapView extends JfxStage {
     listView.getSelectionModel().selectedItemProperty().addListener((_, _, newValue) -> {
       photoMapLayer.setSelectedPhoto(this, newValue);
       if (newValue.getCoordinates() != null) {
-        MapPoint mapPoint = new MapPoint(newValue.getCoordinates().getLatitude(), newValue.getCoordinates().getLongitude());
+        WGS84Coordinates mapPoint = new WGS84Coordinates(newValue.getCoordinates().getLatitude(), newValue.getCoordinates().getLongitude());
         mapView.flyTo(0.2, mapPoint, 2, null);
         mapView.setZoom(18);
       }
@@ -483,13 +482,13 @@ public class PhotoMapView extends JfxStage {
       }
     }
     
-    MapPoint mapCenter;
+    WGS84Coordinates mapCenter;
     if (boundingBox != null) {
       WGS84Coordinates centerCoordinates = boundingBox.getCenter();
       LOGGER.info("center: " + centerCoordinates.toString());
-      mapCenter = new MapPoint(centerCoordinates.getLatitude(), centerCoordinates.getLongitude());
+      mapCenter = new WGS84Coordinates(centerCoordinates.getLatitude(), centerCoordinates.getLongitude());
     } else {
-      mapCenter = new MapPoint(coordinates.getLatitude(), coordinates.getLongitude());
+      mapCenter = new WGS84Coordinates(coordinates.getLatitude(), coordinates.getLongitude());
     }
     mapView.flyTo(0, mapCenter, 1.0, null);
     
@@ -683,7 +682,7 @@ public class PhotoMapView extends JfxStage {
     
     if (boundingBox != null) {
       WGS84Coordinates centerCoordinates = boundingBox.getCenter();
-      MapPoint mapCenter = new MapPoint(centerCoordinates.getLatitude(), centerCoordinates.getLongitude());
+      WGS84Coordinates mapCenter = new WGS84Coordinates(centerCoordinates.getLatitude(), centerCoordinates.getLongitude());
       mapView.flyTo(0, mapCenter, 1.0, null);
 
       Double zoomLevel = mapView.getZoomLevelForShowingBoundedBox(boundingBox);

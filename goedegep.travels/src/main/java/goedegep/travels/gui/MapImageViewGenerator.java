@@ -13,7 +13,6 @@ import org.eclipse.emf.ecore.EObject;
 
 import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.JfxStage;
-import goedegep.mapview.MapPoint;
 import goedegep.travels.logic.MapImageType;
 import goedegep.travels.logic.TravelsRegistry;
 import goedegep.travels.logic.TravelsUtils;

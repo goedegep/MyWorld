@@ -11,8 +11,8 @@ import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 
 import goedegep.geo.WGS84BoundingBox;
+import goedegep.geo.WGS84Coordinates;
 import goedegep.jfx.JfxStage;
-import goedegep.mapview.MapPoint;
 import goedegep.mapview.image.MapImage;
 import goedegep.mapview.view.MapView;
 import javafx.embed.swing.SwingFXUtils;
@@ -192,7 +192,7 @@ public class MapViewTestWindow extends JfxStage {
   }
   
   private void flyHome() {
-    myMapView.flyTo(0.0, new MapPoint(51.443611, 5.4468137), 4.0, 8.0);
+    myMapView.flyTo(0.0, new WGS84Coordinates(51.443611, 5.4468137), 4.0, 8.0);
 
     updateStatusTextArea();
   }
@@ -206,7 +206,7 @@ public class MapViewTestWindow extends JfxStage {
     mapImage.setSize(500, 300);
     double zoom = myMapView.getZoom();
     mapImage.setZoom(zoom);
-    MapPoint center = myMapView.getCenter();
+    WGS84Coordinates center = myMapView.getCenter();
     mapImage.setCenter(center);
     
     Path mapImageFilePath = Path.of("D:\\SoulSeek\\MapImage.jpg");
@@ -241,7 +241,7 @@ public class MapViewTestWindow extends JfxStage {
   private void updateStatusTextArea() {
 //    // Basic info about the map view: center, zoom level, dimension and visible map coordinates.
 //    StringBuilder buf = new StringBuilder();
-//    MapPoint center = myMapView.getCenter();
+//    WGS84Coordinates center = myMapView.getCenter();
 //    buf.append("Center: ")
 //    .append(center != null ? center.getLatitude() : "<null>")
 //    .append(", ")

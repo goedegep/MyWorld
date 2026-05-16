@@ -5,8 +5,8 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import goedegep.geo.WGS84BoundingBox;
+import goedegep.geo.WGS84Coordinates;
 import goedegep.mapview.MapLayer;
-import goedegep.mapview.MapPoint;
 import goedegep.mapview.MapViewAbstract;
 import javafx.application.Platform;
 import javafx.beans.property.DoubleProperty;
@@ -74,7 +74,7 @@ public abstract class MapViewCommon extends MapViewAbstract {
   /**
    * The center point of the map. Latitude and longitude in degrees.
    */
-  public final ReadOnlyObjectWrapper<MapPoint> centerProperty = new ReadOnlyObjectWrapper<>();
+  public final ReadOnlyObjectWrapper<WGS84Coordinates> centerProperty = new ReadOnlyObjectWrapper<>();
   
   /**
    * The zoom level of the map.
@@ -91,7 +91,7 @@ public abstract class MapViewCommon extends MapViewAbstract {
    * Main reason why this is a {@link javafx.beans.property.Property} is that it can be used in a {@link javafx.animation.KeyValue} of an animation
    * like flyTo().
    */
-  protected final ObjectProperty<MapPoint> prefCenterProperty = new SimpleObjectProperty<>();
+  protected final ObjectProperty<WGS84Coordinates> prefCenterProperty = new SimpleObjectProperty<>();
   
   /**
    * The value to which the zoom level has to change.
@@ -143,22 +143,22 @@ public abstract class MapViewCommon extends MapViewAbstract {
   }
 
   @Override
-  public MapPoint getCenter() {
+  public WGS84Coordinates getCenter() {
     return centerProperty.get();
   }
 
   @Override
   public void setCenter(double latitude, double longitude) {
-    setCenter(new MapPoint(latitude, longitude));
+    setCenter(new WGS84Coordinates(latitude, longitude));
   }
 
   @Override
-  public ReadOnlyObjectProperty<MapPoint> centerReadOnlyProperty() {
+  public ReadOnlyObjectProperty<WGS84Coordinates> centerReadOnlyProperty() {
     return centerProperty.getReadOnlyProperty();
   }
 
   @Override
-  public void setCenter(MapPoint mapPoint) {
+  public void setCenter(WGS84Coordinates mapPoint) {
     if (!initialized) {
       centerProperty.set(mapPoint);
     } else {
@@ -209,7 +209,7 @@ public abstract class MapViewCommon extends MapViewAbstract {
   }
 
   @Override
-  public MapPoint getMapPosition(double sceneX, double sceneY) {
+  public WGS84Coordinates getMapPosition(double sceneX, double sceneY) {
     return baseMapAbstract.getMapPosition(sceneX, sceneY);
   }
   
@@ -242,8 +242,8 @@ public abstract class MapViewCommon extends MapViewAbstract {
       return null;
     }
 
-    MapPoint bottomLeft = getMapPosition(center.getX() - width / 2, center.getY() + height / 2);
-    MapPoint topRight = getMapPosition(center.getX() + width / 2, center.getY() - height / 2);
+    WGS84Coordinates bottomLeft = getMapPosition(center.getX() - width / 2, center.getY() + height / 2);
+    WGS84Coordinates topRight = getMapPosition(center.getX() + width / 2, center.getY() - height / 2);
 
     return new WGS84BoundingBox(bottomLeft.getLongitude(), topRight.getLatitude(), topRight.getLongitude(), bottomLeft.getLatitude());
   }
@@ -314,7 +314,7 @@ public abstract class MapViewCommon extends MapViewAbstract {
     }
     
     if (centerProperty.get() == null) {
-      centerProperty.set(new MapPoint(0, 0));
+      centerProperty.set(new WGS84Coordinates(0, 0));
     }
     
     baseMapAbstract.doSetCenter(centerProperty.get());

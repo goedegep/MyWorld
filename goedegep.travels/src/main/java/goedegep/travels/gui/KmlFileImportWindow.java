@@ -42,7 +42,6 @@ import goedegep.jfx.eobjecttreeview.EObjectTreeItemClassListReferenceDescriptor;
 import goedegep.jfx.eobjecttreeview.EObjectTreeItemForObject;
 import goedegep.jfx.eobjecttreeview.EObjectTreeItemForObjectList;
 import goedegep.jfx.eobjecttreeview.EObjectTreeView;
-import goedegep.mapview.MapPoint;
 import goedegep.mapview.view.MapView;
 import goedegep.resources.ImageResource;
 import goedegep.travels.logic.KmlFileImporter;
@@ -839,7 +838,7 @@ public class KmlFileImportWindow extends JfxStage {
 
       travelMapView.getMapRelatedItemsLayer().clear();
       travelMapView.getGpxLayer().clear();
-      MapPoint mapCenter = new MapPoint(location.getLatitude(), location.getLongitude());
+      WGS84Coordinates mapCenter = new WGS84Coordinates(location.getLatitude(), location.getLongitude());
       travelMapView.setCenter(mapCenter);
       travelMapView.setZoom(8.0);
 
@@ -952,7 +951,7 @@ public class KmlFileImportWindow extends JfxStage {
         if (gpxBoundingBox != null) {
           WGS84Coordinates center = gpxBoundingBox.getCenter();
           LOGGER.info("center: " + center.toString());
-          MapPoint mapCenter = new MapPoint(center.getLatitude(), center.getLongitude());
+          WGS84Coordinates mapCenter = new WGS84Coordinates(center.getLatitude(), center.getLongitude());
 
           if (mapCenter != null) {
             travelMapView.flyTo(0.0, mapCenter, 2, null);

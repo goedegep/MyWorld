@@ -3,6 +3,7 @@ package goedegep.mapview;
 import java.util.logging.Logger;
 
 import goedegep.geo.WGS84BoundingBox;
+import goedegep.geo.WGS84Coordinates;
 import goedegep.mapview.image.MapImage;
 import javafx.beans.property.ReadOnlyDoubleProperty;
 import javafx.beans.property.ReadOnlyObjectProperty;
@@ -32,7 +33,7 @@ import javafx.scene.shape.Polygon;
 /// Functionality:
 ///
 /// * Center of the map *
-///   The center of the map can be set and retrieved using the [#setCenter()] and [#getCenter()] methods. The center is represented as a [MapPoint] which contains the latitude and longitude of the center point of the map.   
+///   The center of the map can be set and retrieved using the [#setCenter()] and [#getCenter()] methods. The center is represented as [WGS84Coordinates] which contains the latitude and longitude of the center point of the map.   
 ///   In case of the MapView implementation, the center can also be set by dragging the map with the mouse.
 ///
 /// * Zoom level   
@@ -51,10 +52,10 @@ import javafx.scene.shape.Polygon;
 ///   Layers can be added to the map using the [#addLayer()] method and removed using the [#removeLayer()] method. Layers are displayed in order of addition, with the last added layer to be on top.
 ///
 /// Utility methods:   
-/// A number of utility methods are provided, which a mainly meant for the implementation of map layers.
+/// A number of utility methods are provided, which are mainly meant for the implementation of map layers.
 ///
 /// * [#getMapPosition()]   
-///   This can be used to get the position on the map, as a [MapPoint], for given scene coordinates.
+///   This can be used to get the position on the map, as [WGS84Coordinates], for given scene coordinates.
 ///   When the user clicks on the map, you can use this method to convert the scene coordinates of the mouse click to map coordinates, and then add a marker at that position.
 ///
 /// * [#getMapPoint()]   
@@ -75,21 +76,21 @@ public abstract class MapViewAbstract extends Region {
    * 
    * @return the center point of the map.
    */
-  public abstract MapPoint getCenter();
+  public abstract WGS84Coordinates getCenter();
   
     /**
     * Get the center point of the map as a read only property.
     * 
     * @return the center point of the map as a read only property.
     */
-  public abstract ReadOnlyObjectProperty<MapPoint> centerReadOnlyProperty();
+  public abstract ReadOnlyObjectProperty<WGS84Coordinates> centerReadOnlyProperty();
 
   /**
    * Request the map to position itself around the specified center.
    *
    * @param mapPoint
    */
-  public abstract void setCenter(MapPoint mapPoint);
+  public abstract void setCenter(WGS84Coordinates mapPoint);
   
   /**
    * Request the map to position itself around the specified center coordinates.
@@ -144,7 +145,7 @@ public abstract class MapViewAbstract extends Region {
    * @param sceneY y coordinate
    * @return map position
    */
-  public abstract MapPoint getMapPosition(double sceneX, double sceneY);
+  public abstract WGS84Coordinates getMapPosition(double sceneX, double sceneY);
   
   /**
    * Get the dimensions (width and height) of the map.
