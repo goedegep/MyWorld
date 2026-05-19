@@ -12,6 +12,11 @@
   <testsDirectory xsi:nil="true"/>
   <genPackages prefix="Travels" basePackage="goedegep.travels" disposableProviderFactory="true"
       ecorePackage="travels.ecore#/">
+    <genEnums typeSafeEnumCompatible="false" ecoreEnum="travels.ecore#//InformationLevel">
+      <genEnumLiterals ecoreEnumLiteral="travels.ecore#//InformationLevel/ITEM"/>
+      <genEnumLiterals ecoreEnumLiteral="travels.ecore#//InformationLevel/DAY"/>
+      <genEnumLiterals ecoreEnumLiteral="travels.ecore#//InformationLevel/TRAVEL"/>
+    </genEnums>
     <genDataTypes ecoreDataType="travels.ecore#//ELocationCategory"/>
     <genClasses ecoreClass="travels.ecore#//Travels">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference travels.ecore#//Travels/vacations"/>
@@ -92,6 +97,7 @@
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute travels.ecore#//MapImage/centerLatitude"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute travels.ecore#//MapImage/centerLongitude"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute travels.ecore#//MapImage/fileName"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute travels.ecore#//MapImage/informationLevel"/>
     </genClasses>
     <genClasses ecoreClass="travels.ecore#//DayTrip"/>
     <genClasses ecoreClass="travels.ecore#//Document">

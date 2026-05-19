@@ -19,6 +19,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.Set;
+import java.util.UUID;
 import java.util.function.Consumer;
 import java.util.logging.Logger;
 
@@ -51,6 +52,7 @@ import goedegep.jfx.browser.Browser;
 import goedegep.jfx.eobjecttreeview.EObjectTreeCell;
 import goedegep.jfx.eobjecttreeview.EObjectTreeItem;
 import goedegep.jfx.eobjecttreeview.EObjectTreeView;
+import goedegep.jfx.img.ImageUtil;
 import goedegep.mapview.view.MapView;
 import goedegep.media.photo.photoshow.guifx.PhotoWindow;
 import goedegep.properties.model.PropertiesFactory;
@@ -61,7 +63,6 @@ import goedegep.resources.ImageResource;
 import goedegep.resources.ImageSize;
 import goedegep.travels.logic.Item;
 import goedegep.travels.logic.ItemGpx;
-import goedegep.travels.logic.MapImageType;
 import goedegep.travels.logic.NominatimUtil;
 import goedegep.travels.logic.OsmAndItems;
 import goedegep.travels.logic.OsmAndUtil;
@@ -78,6 +79,7 @@ import goedegep.travels.model.Day;
 import goedegep.travels.model.DayTrip;
 import goedegep.travels.model.Document;
 import goedegep.travels.model.GPXTrack;
+import goedegep.travels.model.InformationLevel;
 import goedegep.travels.model.Location;
 import goedegep.travels.model.MapImage;
 import goedegep.travels.model.Picture;
@@ -207,12 +209,11 @@ public class TravelsWindow extends JfxStage {
   private NominatimAPI nominatimAPI = null;
   private ObjectProperty<Travel> selectedTravelProperty = new SimpleObjectProperty<>();
   
-  private static int pulseCounter;
   private TextField travelRelatedFilesFolder;
   private Button createOrOpenButton;
   
   private TreeItem<Object> selectedTreeItem;
-  private ShowLevel showLevel;
+  private InformationLevel informationLevel;
   
 
   /**
@@ -222,7 +223,6 @@ public class TravelsWindow extends JfxStage {
    */
   public TravelsWindow(CustomizationFx customization, TravelsService travelsService) {
     super(customization, null);
-    LOGGER.info("=>");
     
     this.travelsService = travelsService;
     travelsRegistry = TravelsRegistry.getInstance();
@@ -372,34 +372,7 @@ public class TravelsWindow extends JfxStage {
     directoryMonitoringThread.setDaemon(true);
     directoryMonitoringThread.start();
     
-//    createTestMapImage();
-    
     LOGGER.info("<=");
-  }
-  
-  private void createTestMapImage() {
-    goedegep.mapview.image.MapImage mapImage = new goedegep.mapview.image.MapImage();
-    mapImage.setZoom(TRAVEL_ZOOM_LEVEL);
-    mapImage.setCenter(51.476743, 5.429724);
-    mapImage.setSize(1000, 700);
-    LOGGER.info("After creating map image");
-    
-//    JfxStage mapImageStage = new JfxStage(customization, null);
-//    mapImageStage.setScene(new Scene(mapImage));
-//    mapImageStage.show();
-    
-    Path mapImageFilePath = Path.of("D:\\SoulSeek\\MapImage.jpg");
-    try {
-      Files.deleteIfExists(mapImageFilePath);
-      
-      SnapshotParameters snapShotParameters = new SnapshotParameters();
-      WritableImage writebleImage = new WritableImage((int) mapImage.getWidth(), (int) mapImage.getHeight());
-      mapImage.snapshot(snapShotParameters, writebleImage);
-
-      saveImageAsJpeg(writebleImage, mapImageFilePath.toFile());
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
   }
 
   public TravelMapView getTravelMapView() {
@@ -447,15 +420,15 @@ public class TravelsWindow extends JfxStage {
         }
       }
     }
-    File userPropertiesFile = new File(travelsRegistry.getUserPropertiesFileName());
-    LOGGER.info("userPropertiesFile: " + userPropertiesFile.getAbsolutePath());
-    if (!userPropertiesFile.exists()) {
-      EMFResource<PropertyGroup> propertiesResource = new EMFResource<>(PropertiesPackage.eINSTANCE, () -> PropertiesFactory.eINSTANCE.createPropertyGroup(), ".xmi");
-      PropertyGroup propertyGroup = propertiesResource.newEObject();
-      propertyGroup.setName("Travels");
-      Property property = PropertiesFactory.eINSTANCE.createProperty();
-      property.setName(NEWLINE);
-    }
+//    File userPropertiesFile = new File(travelsRegistry.getUserPropertiesFileName());
+//    LOGGER.info("userPropertiesFile: " + userPropertiesFile.getAbsolutePath());
+//    if (!userPropertiesFile.exists()) {
+//      EMFResource<PropertyGroup> propertiesResource = new EMFResource<>(PropertiesPackage.eINSTANCE, () -> PropertiesFactory.eINSTANCE.createPropertyGroup(), ".xmi");
+//      PropertyGroup propertyGroup = propertiesResource.newEObject();
+//      propertyGroup.setName("Travels");
+//      Property property = PropertiesFactory.eINSTANCE.createProperty();
+//      property.setName(NEWLINE);
+//    }
   }
   
 
@@ -574,17 +547,17 @@ public class TravelsWindow extends JfxStage {
     final Pane spacer2 = new Pane();
     spacer2.setMinWidth(50);
     LevelSelectionPanel levelSelectionPanel = new LevelSelectionPanel(customization);
-    ObjectProperty<ShowLevel> levelProperty = levelSelectionPanel.levelProperty();
+    ObjectProperty<InformationLevel> levelProperty = levelSelectionPanel.levelProperty();
     
-    ChangeListener<ShowLevel> cl = new ChangeListener<>() {
+    ChangeListener<InformationLevel> cl = new ChangeListener<>() {
 
       @Override
-      public void changed(ObservableValue<? extends ShowLevel> observable, ShowLevel oldValue, ShowLevel newValue) {
+      public void changed(ObservableValue<? extends InformationLevel> observable, InformationLevel oldValue, InformationLevel newValue) {
         setShowLevel(newValue);
       }
     };
     levelProperty.addListener(cl);
-    showLevel = levelProperty.get();
+    informationLevel = levelProperty.get();
 
     menuAndSearchBox.getChildren().addAll(createMenuBar(), spacer, levelSelectionPanel, createTravelFilesFolderBar(), spacer2, createSearchBar());
     mainPane.setTop(menuAndSearchBox);
@@ -641,6 +614,7 @@ public class TravelsWindow extends JfxStage {
         .setMenuToBeEnabledPredicate(this::isMenuToBeEnabled)
         .setTravelMapView(travelMapView)
         .setUpdateMapImageFileFunction(this::updateMapImageFile)
+        .setUpdateMapImageWithCurrentMapViewSettingsFunction(this::updateMapImageWithCurrentMapViewSettings)
         .createTravelsTreeView();
     treeView.setEditMode(travelsTreeEditableMenuItem.isSelected());
     treeView.setMinWidth(300);
@@ -693,8 +667,8 @@ public class TravelsWindow extends JfxStage {
     setScene(new Scene(mainPane, 1700, 900));
   }
   
-  protected void setShowLevel(ShowLevel newShowLevel) {
-   showLevel = newShowLevel;
+  protected void setShowLevel(InformationLevel newInformationLevel) {
+   informationLevel = newInformationLevel;
    handleNewTreeItemSelected(null, selectedTreeItem);
   }
 
@@ -714,18 +688,18 @@ public class TravelsWindow extends JfxStage {
     return locationSearchWindow;
   }
 
-  public static void saveImageAsJpeg(Image image, File file) {
-    BufferedImage bufferedImage = SwingFXUtils.fromFXImage(image, null);
-    BufferedImage imageRGB = new BufferedImage(
-        bufferedImage.getWidth(), bufferedImage.getHeight(), BufferedImage.OPAQUE);
-    Graphics2D graphics = imageRGB.createGraphics();
-    graphics.drawImage(bufferedImage, 0, 0, null);
-    try {
-      ImageIO.write(imageRGB, "jpg", file);
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
-  }
+//  public static void saveImageAsJpeg(Image image, File file) {
+//    BufferedImage bufferedImage = SwingFXUtils.fromFXImage(image, null);
+//    BufferedImage imageRGB = new BufferedImage(
+//        bufferedImage.getWidth(), bufferedImage.getHeight(), BufferedImage.OPAQUE);
+//    Graphics2D graphics = imageRGB.createGraphics();
+//    graphics.drawImage(bufferedImage, 0, 0, null);
+//    try {
+//      ImageIO.write(imageRGB, "jpg", file);
+//    } catch (IOException e) {
+//      e.printStackTrace();
+//    }
+//  }
   
   /**
    * Create the menu bar for this window.
@@ -766,7 +740,7 @@ public class TravelsWindow extends JfxStage {
     menuItem = componentFactory.createMenuItem("Import photos");
     menuItem.setOnAction(_ -> {
       EObjectTreeItem treeItem = treeView.getSelectedObject();
-      Travel travel = getTravelForTreeItem(treeItem, TRAVELS_PACKAGE.getTravel());
+      Travel travel = getTravelForTreeItem(treeItem);
       if (travel == null) {
         Alert alert = componentFactory.createErrorDialog(
             "No travel selected",
@@ -1018,30 +992,16 @@ public class TravelsWindow extends JfxStage {
    * This is handled by updating the document view and the travels layer.
    * 
    * @parm source not used, but needed for setting this method as ObjectSelectionListener.
-   * @param treeItem the newly selected item in the <code>treeView</code>.
+   * @param treeItem the newly selected item in the {@code treeView}.
    */
   private void handleNewTreeItemSelected(Object source, TreeItem<Object> treeItem) {
-    LOGGER.info("=>");
     
-//    if (treeItem != null) {
-//      EObjectTreeItemContent value = treeItem.getValue();
-//      if (value != null) {
-//        Object object = value.getObject();
-//        if (object instanceof MapImage mapImage) {
-//          createMapImageView(mapImage, poiIcons, true);
-//          //          createMapImageFile(mapImage, poiIcons);
-//        }
-//      }
-//    }
-
     selectedTreeItem = treeItem;
     updateDocumentView();
-    LOGGER.info("Before updateMapForTreeItem");
     updateMapForSelectedTreeItem();
     
     selectedTravelProperty.setValue(getTravelForTreeItem(treeItem));
     
-    LOGGER.info("<=");
   }
   
   /**
@@ -1064,7 +1024,7 @@ public class TravelsWindow extends JfxStage {
     LOGGER.info("htmlText=" + htmlText);
     
     if (selectedTreeItem != null) {
-      Travel travel = getTravelForTreeItem(selectedTreeItem, TRAVELS_PACKAGE.getTravel());
+      Travel travel = getTravelForTreeItem(selectedTreeItem);
       if (travel != null) {
         htmlText = travelToHtmlConverter.travelToHtmlWithEmbedImages(travel);
       }
@@ -1159,8 +1119,8 @@ public class TravelsWindow extends JfxStage {
     if ((pictureDataTuplet = getPictureDataForTreeItem(selectedTreeItem)) != null) {                // Picture selected
       Picture picture = pictureDataTuplet.getObject1();
       
-      switch (showLevel) {
-      case SELECTED_ITEM:
+      switch (informationLevel) {
+      case ITEM:
         // nothing else to do, only the selected item (a picture in this case) is shown.
         break;
         
@@ -1170,7 +1130,7 @@ public class TravelsWindow extends JfxStage {
           // if the picture is part of a day, show that information, else the complete travel.
           day = picture.getDay();
           if (day != null) {
-            addDayToMapView(travelMapView, day, false);
+            addDayToMapView(travelMapView, day);
           } else {
             addTravelToMapView(travelMapView, travel, false, travelsTreeEditableMenuItem.isSelected());
           }
@@ -1192,8 +1152,8 @@ public class TravelsWindow extends JfxStage {
     } else if ((locationDataTuplet = getLocationDataForTreeItem(selectedTreeItem)) != null) {       // Location
       Location location = locationDataTuplet.getObject1();
       
-      switch (showLevel) {
-      case SELECTED_ITEM:
+      switch (informationLevel) {
+      case ITEM:
         addLocationToMapView(travelMapView, location, false);
         break;
         
@@ -1202,7 +1162,7 @@ public class TravelsWindow extends JfxStage {
         // if the picture is part of a day, show that information, else the complete travel.
         day = location.getDay();
         if (day != null) {
-          addDayToMapView(travelMapView, day, false);
+          addDayToMapView(travelMapView, day);
         } else {
           addTravelToMapView(travelMapView, travel, false, travelsTreeEditableMenuItem.isSelected());
         }
@@ -1219,8 +1179,8 @@ public class TravelsWindow extends JfxStage {
     } else if ((trackDataTuplet = getTrackDataForTreeItem(selectedTreeItem)) != null) {             // GPXTrack
       GPXTrack track = trackDataTuplet.getObject1();
       
-      switch (showLevel) {
-      case SELECTED_ITEM:
+      switch (informationLevel) {
+      case ITEM:
         addGPXTrackToMapView(travelMapView, track, false);
         break;
         
@@ -1229,7 +1189,7 @@ public class TravelsWindow extends JfxStage {
         // if the track is part of a day, show that information, else the complete travel.
         day = track.getDay();
         if (day != null) {
-          addDayToMapView(travelMapView, day, false);
+          addDayToMapView(travelMapView, day);
         } else {
           addTravelToMapView(travelMapView, travel, false, travelsTreeEditableMenuItem.isSelected());
         }
@@ -1259,10 +1219,10 @@ public class TravelsWindow extends JfxStage {
       }
     } else if ((day = getDayForTreeItem(selectedTreeItem)) != null) {       // Day
       
-      switch (showLevel) {
-      case SELECTED_ITEM:
+      switch (informationLevel) {
+      case ITEM:
       case DAY:
-        WGS84BoundingBox dayBoundingBox = addDayToMapView(travelMapView, day, false);
+        WGS84BoundingBox dayBoundingBox = addDayToMapView(travelMapView, day);
         if (dayBoundingBox != null) {
           WGS84Coordinates center = dayBoundingBox.getCenter();
           mapCenter = new WGS84Coordinates(center.getLatitude(), center.getLongitude());
@@ -1284,7 +1244,7 @@ public class TravelsWindow extends JfxStage {
         }
         break;
       }
-    } else if ((travel = getTravelForTreeItem(selectedTreeItem, TRAVELS_PACKAGE.getTravel())) != null) {                      // Travel
+    } else if ((travel = getTravelForTreeItem(selectedTreeItem)) != null) {                      // Travel
       // In this case the showLevel isn't applicable
       WGS84BoundingBox travelsLayerBoundingBox = addTravelToMapView(travelMapView, travel, false, travelsTreeEditableMenuItem.isSelected());
       if (travelsLayerBoundingBox != null) {
@@ -1315,9 +1275,9 @@ public class TravelsWindow extends JfxStage {
     Object value = selectedTreeItem.getValue();
     travelMapView.selectObject(value);
 
-//    if (zoomLevel != null) {
-//      setZoomIfEnabled(zoomLevel);
-//    }
+    if (zoomLevel != null) {
+      setZoomIfEnabled(zoomLevel);
+    }
     
     if (mapCenter != null) {
       flyToIfEnabled(0.1, mapCenter, 3.0, zoomLevel);
@@ -1658,41 +1618,37 @@ public class TravelsWindow extends JfxStage {
 //    return dayForTreeItem;
 //  }
   
-  /**
-   * Get the {@code Travel} related to a {@code TreeItem}.
-   * <p>
-   * If the {@code treeItem} is a {@code Travel}, this is returned.
-   * Otherwise the parent relations are followed until either a {@code Travel} is found, or that the top of the hierarchy is encountered.
-   * 
-   * @param treeItem the {@code TreeItem} for which the {@code Travel} is to be found.
-   * @return the {@code Travel} related to the {@code treeItem}, or null if this doesn't exist.
-   */
-  static Travel getTravelForTreeItem(TreeItem<Object> treeItem) {
-    LOGGER.info("=> treeItem=" + (treeItem != null ? treeItem.toString() : "(null)"));
-    
-    if (treeItem == null) {
-      LOGGER.info("<= (null)");
-      return null;
-    }
-    
-    Object treeItemObject = treeItem.getValue();
-    Travel travelForTreeItem = null;
-    
-    while (treeItem != null  &&  !(treeItemObject instanceof Travel)) {
-      treeItem = treeItem.getParent();
-      LOGGER.info("after getParent() treeItem=" + (treeItem != null ? treeItem.toString() : "(null)"));
-      if (treeItem != null) {
-        treeItemObject = treeItem.getValue();
-      }
-    }
-    
-    if (treeItemObject instanceof Travel travel) {
-      travelForTreeItem = travel;
-    }
-
-    LOGGER.info("<= travel=" + (travelForTreeItem != null ? travelForTreeItem.toString() : "(null)"));
-    return travelForTreeItem;
-  }
+//  /**
+//   * Get the {@code Travel} related to a {@code TreeItem}.
+//   * <p>
+//   * If the {@code treeItem} is a {@code Travel}, this is returned.
+//   * Otherwise the parent relations are followed until either a {@code Travel} is found, or that the top of the hierarchy is encountered.
+//   * 
+//   * @param treeItem the {@code TreeItem} for which the {@code Travel} is to be found.
+//   * @return the {@code Travel} related to the {@code treeItem}, or null if this doesn't exist.
+//   */
+//  static Travel getTravelForTreeItem(TreeItem<Object> treeItem) {
+//    
+//    if (treeItem == null) {
+//      return null;
+//    }
+//    
+//    Object treeItemObject = treeItem.getValue();
+//    Travel travelForTreeItem = null;
+//    
+//    while (treeItem != null  &&  !(treeItemObject instanceof Travel)) {
+//      treeItem = treeItem.getParent();
+//      if (treeItem != null) {
+//        treeItemObject = treeItem.getValue();
+//      }
+//    }
+//    
+//    if (treeItemObject instanceof Travel travel) {
+//      travelForTreeItem = travel;
+//    }
+//
+//    return travelForTreeItem;
+//  }
   
   /**
    * For a given treeItem, try to find the related {@ code Travel}.
@@ -1704,32 +1660,23 @@ public class TravelsWindow extends JfxStage {
    * @param treeItem the {@code TreeItem} for which the related travel is to be found.
    * @return the related {@ code Travel}, or null if this doesn't exist.
    */
-  @SuppressWarnings("unchecked")
-//  static <T> T getTravelForTreeItem(TreeItem<Object> treeItem, EClass eClass) {
-    static Travel getTravelForTreeItem(TreeItem<Object> treeItem, EClass eClass) {
-    
+  static Travel getTravelForTreeItem(TreeItem<Object> treeItem) {
+
     if (treeItem == null) {
       return null;
     }
-    
+
     Object treeItemObject = treeItem.getValue();
-//    T t = null;
-    
+
     while (treeItem != null  &&  !(treeItemObject instanceof Travel)) {
       treeItem = treeItem.getParent();
-      LOGGER.info("after getParent() treeItem=" + (treeItem != null ? treeItem.toString() : "(null)"));
       if (treeItem != null) {
         treeItemObject = treeItem.getValue();
       }
     }
-    
+
     if (treeItemObject instanceof Travel travel) {
       return travel;
-//      EClass treeItemObjectEClass = travel.eClass();
-//      boolean b = EmfUtil.isInstanceof(treeItemObjectEClass, eClass);
-//      if (b) {
-//        t = (T) travel;
-//      }
     }
 
     return null;
@@ -1988,17 +1935,17 @@ public class TravelsWindow extends JfxStage {
   /**
    * Add all relevant information of a {@code Travel} to a map view.
    * 
-   * @param travelMapView the {@code TravelMapView} to which the travel information is to be added.
+   * @param travelMapViewInterface the {@code TravelMapView} to which the travel information is to be added.
    * @param travel the {@code Travel} of which the information is to be added.
    * @param stayedAtOnly if {@code true} only the 'stayed at' locations are added.
    * @param drawBoundingBox if {@code true} a bounding box is drawn around the added items, if {@code false} no bounding box is drawn.
    * @return a {@code WGS84BoundingBox} around all items added to the map view.
    */
-  WGS84BoundingBox addTravelToMapView(TravelMapView travelMapView, Travel travel, boolean stayedAtOnly, boolean drawBoundingBox) {
+  WGS84BoundingBox addTravelToMapView(TravelMapViewInterface travelMapViewInterface, Travel travel, boolean stayedAtOnly, boolean drawBoundingBox) {
     WGS84BoundingBox travelWGS84BoundingBox = null;
     
     for (VacationElement vacationElement: travel.getElements()) {
-      WGS84BoundingBox wgs84BoundingBox = addVacationElementToMapView(travelMapView, vacationElement, stayedAtOnly, null);
+      WGS84BoundingBox wgs84BoundingBox = addVacationElementToMapView(travelMapViewInterface, vacationElement, stayedAtOnly, null);
       travelWGS84BoundingBox = WGS84BoundingBox.extend(travelWGS84BoundingBox, wgs84BoundingBox);
     }
     
@@ -2006,7 +1953,7 @@ public class TravelsWindow extends JfxStage {
       try {
         List<List<WGS84Coordinates>> locationsConnectingLines = TravelsUtils.getLocationConnectingLines(travel);
         if (!locationsConnectingLines.isEmpty()) {
-          travelMapView.getMapRelatedItemsLayer().addLocationsVisitedPolyLines(FXCollections.observableList(locationsConnectingLines));
+          travelMapViewInterface.getMapRelatedItemsLayer().addLocationsVisitedPolyLines(FXCollections.observableList(locationsConnectingLines));
         }
       } catch (FileNotFoundException e) {
         LOGGER.severe("File not found");
@@ -2015,7 +1962,7 @@ public class TravelsWindow extends JfxStage {
     }
     
     if (drawBoundingBox  &&  (travelWGS84BoundingBox != null)) {
-      travelMapView.getMapRelatedItemsLayer().addBoundingBox(travelWGS84BoundingBox);
+      travelMapViewInterface.getMapRelatedItemsLayer().addBoundingBox(travelWGS84BoundingBox);
     }
     
     return travelWGS84BoundingBox;
@@ -2024,22 +1971,22 @@ public class TravelsWindow extends JfxStage {
   /**
    * Add all relevant information of a {@code Day} to a map view.
    * 
-   * @param travelMapView the {@code TravelMapView} to which the information is to be added.
+   * @param travelMapViewInterface the {@code TravelMapView} to which the information is to be added.
    * @param day the {@code Day} of which the information is to be added.
    * @return a {@code WGS84BoundingBox} around all items added to the map view.
    */
-  private WGS84BoundingBox addDayToMapView(TravelMapView travelMapView, Day day) {
+  private WGS84BoundingBox addDayToMapView(TravelMapViewInterface travelMapViewInterface, Day day) {
     WGS84BoundingBox totalWGS84BoundingBox = null;
         
     for (VacationElement vacationElement: day.getChildren()) {
-      WGS84BoundingBox wgs84BoundingBox = addVacationElementToMapView(travelMapView, vacationElement, false, null);
+      WGS84BoundingBox wgs84BoundingBox = addVacationElementToMapView(travelMapViewInterface, vacationElement, false, null);
       totalWGS84BoundingBox = WGS84BoundingBox.extend(totalWGS84BoundingBox, wgs84BoundingBox);
     }
         
     try {
       List<List<WGS84Coordinates>> locationsConnectingLines = TravelsUtils.getLocationConnectingLines(day);
       if (!locationsConnectingLines.isEmpty()) {
-        travelMapView.getMapRelatedItemsLayer().addLocationsVisitedPolyLines(FXCollections.observableList(locationsConnectingLines));
+        travelMapViewInterface.getMapRelatedItemsLayer().addLocationsVisitedPolyLines(FXCollections.observableList(locationsConnectingLines));
       }
     } catch (FileNotFoundException e) {
       LOGGER.severe("File not found");
@@ -2077,20 +2024,6 @@ public class TravelsWindow extends JfxStage {
     return totalWGS84BoundingBox;
   }
   
-  /** TODO why is this method needed? It ignores stayedAtOnly
-   * Add all relevant information of a {@code Day} to a map view.
-   * 
-   * @param travelMapView the map view to which the information is to be added.
-   * @param day the {@code Day} of which the information is to be added.
-   * @param stayedAtOnly if {@code true} only the 'stayed at' locations are added.
-   * @return a {@code WGS84BoundingBox} around all items added to the map view.
-   */
-  WGS84BoundingBox addDayToMapView(TravelMapView travelMapView, Day day, boolean stayedAtOnly) {
-    WGS84BoundingBox boundingBox = addDayToMapView(travelMapView, day);
-
-    return boundingBox;
-  }
-  
   /**
    * Handle a single {@code VacationElement} for possibly adding it to a map view.
    * <p>
@@ -2101,26 +2034,26 @@ public class TravelsWindow extends JfxStage {
    * <li>GPXTrack: if {@code stayedAtOnly} is false, and if the track file exists.</li>
    * </ul>
    * 
-   * @param travelMapView the {@code TravelMapView} to which the travel information is to be added.
+   * @param travelMapViewInterface the {@code TravelMapView} to which the travel information is to be added.
    * @param vacationElement the element to be added.
    * @param stayedAtOnly if true, only 'stayed at' locations are added.
    * @param totalWGS84BoundingBox a bounding box which has to be extended with the bounding box of the {@code vacationElement}.
    * @return the extended bounding box.
    */
-  private WGS84BoundingBox addVacationElementToMapView(TravelMapView travelMapView, VacationElement vacationElement, boolean stayedAtOnly, WGS84BoundingBox totalWGS84BoundingBox) {
+  private WGS84BoundingBox addVacationElementToMapView(TravelMapViewInterface travelMapViewInterface, VacationElement vacationElement, boolean stayedAtOnly, WGS84BoundingBox totalWGS84BoundingBox) {
     WGS84BoundingBox wgs84BoundingBox = null;
     
     switch (vacationElement) {
-    case Location location -> wgs84BoundingBox = addLocationToMapView(travelMapView, location, stayedAtOnly);
-    case Picture picture -> wgs84BoundingBox = addPictureToMapView(travelMapView, picture, stayedAtOnly);
-    case GPXTrack gpxTrack -> wgs84BoundingBox = addGPXTrackToMapView(travelMapView, gpxTrack, stayedAtOnly);
+    case Location location -> wgs84BoundingBox = addLocationToMapView(travelMapViewInterface, location, stayedAtOnly);
+    case Picture picture -> wgs84BoundingBox = addPictureToMapView(travelMapViewInterface, picture, stayedAtOnly);
+    case GPXTrack gpxTrack -> wgs84BoundingBox = addGPXTrackToMapView(travelMapViewInterface, gpxTrack, stayedAtOnly);
     default -> {}  // no action for other types of VacationElement
     }
     
     totalWGS84BoundingBox = WGS84BoundingBox.extend(totalWGS84BoundingBox, wgs84BoundingBox);
         
     for (VacationElement childElement: vacationElement.getChildren()) {
-      totalWGS84BoundingBox = addVacationElementToMapView(travelMapView, childElement, stayedAtOnly, totalWGS84BoundingBox);
+      totalWGS84BoundingBox = addVacationElementToMapView(travelMapViewInterface, childElement, stayedAtOnly, totalWGS84BoundingBox);
     }
     
     LOGGER.info("<= totalWGS84BoundingBox: " + (totalWGS84BoundingBox != null ? totalWGS84BoundingBox.toString() : "(null)"));
@@ -2135,11 +2068,11 @@ public class TravelsWindow extends JfxStage {
    * @param stayedAtOnly if true, only a 'stayed at' location is added.
    * @return the bounding box of the {@code location}, which can be null.
    */
-  private WGS84BoundingBox addLocationToMapView(TravelMapView travelMapView, Location location, boolean stayedAtOnly) {
+  private WGS84BoundingBox addLocationToMapView(TravelMapViewInterface travelMapViewInterface, Location location, boolean stayedAtOnly) {
     WGS84BoundingBox wgs84BoundingBox = null;
     
     if (!stayedAtOnly  ||  location.isStayedAtThisLocation()) {
-      wgs84BoundingBox = travelMapView.getMapRelatedItemsLayer().addLocation(location);
+      wgs84BoundingBox = travelMapViewInterface.getMapRelatedItemsLayer().addLocation(location);
     }
     
     return wgs84BoundingBox;
@@ -2148,12 +2081,12 @@ public class TravelsWindow extends JfxStage {
   /**
    * Add a {@code Picture} to a map view.
    * 
-   * @param travelMapView the {@code TravelMapView} to which the picture is to be added.
+   * @param travelMapViewInterface the {@code TravelMapView} to which the picture is to be added.
    * @param picture the {@code Picture} to be added.
    * @param stayedAtOnly if true, only a 'stayed at' location is added.
    * @return the bounding box of the {@code picture}, which can be null.
    */
-  private WGS84BoundingBox addPictureToMapView(TravelMapView travelMapView, Picture picture, boolean stayedAtOnly) {
+  private WGS84BoundingBox addPictureToMapView(TravelMapViewInterface travelMapViewInterface, Picture picture, boolean stayedAtOnly) {
     WGS84BoundingBox wgs84BoundingBox = null;
     
     if (!stayedAtOnly) {
@@ -2174,7 +2107,7 @@ public class TravelsWindow extends JfxStage {
               if ((text == null)  ||  text.isEmpty()) {
                 text = fileName;
               }
-              wgs84BoundingBox = travelMapView.getMapRelatedItemsLayer().addPhoto(coordinates, text, fileName);
+              wgs84BoundingBox = travelMapViewInterface.getMapRelatedItemsLayer().addPhoto(coordinates, text, fileName);
             }
           }
         }
@@ -2201,12 +2134,12 @@ public class TravelsWindow extends JfxStage {
   /**
    * Add a {@code GPXTrack} to a map view.
    * 
-   * @param travelMapView the {@code TravelMapView} to which the GPX track is to be added.
+   * @param travelMapViewInterface the {@code TravelMapView} to which the GPX track is to be added.
    * @param gpxTrack the {@code GPXTrack} to be added.
    * @param stayedAtOnly if true, only a 'stayed at' location is added.
    * @return the bounding box of the {@code gpxTrack}, which can be null.
    */
-  private WGS84BoundingBox addGPXTrackToMapView(TravelMapView travelMapView, GPXTrack gpxTrack, boolean stayedAtOnly) {
+  private WGS84BoundingBox addGPXTrackToMapView(TravelMapViewInterface travelMapViewInterface, GPXTrack gpxTrack, boolean stayedAtOnly) {
     WGS84BoundingBox wgs84BoundingBox = null;
     
     if (!stayedAtOnly) {
@@ -2217,7 +2150,7 @@ public class TravelsWindow extends JfxStage {
           gpxResource.load(bestandReferentie.getFile());
           DocumentRoot documentRoot = gpxResource.getEObject();
           GpxType gpxType = documentRoot.getGpx();
-          wgs84BoundingBox = travelMapView.getGpxLayer().addGpx(bestandReferentie.getTitle(), bestandReferentie.getFile(), gpxType);
+          wgs84BoundingBox = travelMapViewInterface.getGpxLayer().addGpx(bestandReferentie.getTitle(), bestandReferentie.getFile(), gpxType);
         } catch (IOException e) {
           LOGGER.severe("File not found: " + bestandReferentie.getFile());
         }
@@ -2247,7 +2180,7 @@ public class TravelsWindow extends JfxStage {
     
     LOGGER.severe("eObjectTreeItemContent=" + eObjectTreeItemContent);
     
-    Travel travel = getTravelForTreeItem(eObjectTreeCell.getTreeItem(), TRAVELS_PACKAGE.getVacation());
+    Travel travel = getTravelForTreeItem(eObjectTreeCell.getTreeItem());
     LOGGER.severe("travel=" + travel.getId());
     Path vacationFolderPath = TravelsUtils.getVacationPhotosFolderPath(travel);
     if (vacationFolderPath != null) {
@@ -2269,7 +2202,7 @@ public class TravelsWindow extends JfxStage {
    */
   static String getReferredFilesFolder(EObjectTreeCell eObjectTreeCell) {
     EObjectTreeItem treeItem = (EObjectTreeItem) eObjectTreeCell.getTreeItem();
-    Travel travel = getTravelForTreeItem(treeItem, TRAVELS_PACKAGE.getVacation());
+    Travel travel = getTravelForTreeItem(treeItem);
     
     if (travel == null) {
       LOGGER.severe("No travel found for: " + treeItem.toString());
@@ -2465,7 +2398,7 @@ public class TravelsWindow extends JfxStage {
   private void printOrExportTravel() {
     try {
       EObjectTreeItem treeItem = treeView.getSelectedObject();
-      Travel travel = getTravelForTreeItem(treeItem, TRAVELS_PACKAGE.getTravel());
+      Travel travel = getTravelForTreeItem(treeItem);
       if (travel == null) {
         statusLabel.setText("No travel selected");
         return;
@@ -2565,7 +2498,7 @@ public class TravelsWindow extends JfxStage {
     LOGGER.severe("Creating kml file: " + file.getAbsolutePath());
     
     EObjectTreeItem treeItem = treeView.getSelectedObject();
-    Travel travel = getTravelForTreeItem(treeItem, TRAVELS_PACKAGE.getVacation());
+    Travel travel = getTravelForTreeItem(treeItem);
     if (travel == null) {
       statusLabel.setText("No travel selected");
       return;
@@ -2993,108 +2926,107 @@ public class TravelsWindow extends JfxStage {
    * @param treeItem the <code>EObjectTreeItem</code> to which the <code>eObject</code> is added.
    */
   private void initializeNewEObject(EObject eObject, EObjectTreeItem treeItem) {
-    LOGGER.info("=> eObject=" + eObject + ", treeItem=" + treeItem);
     
     switch (eObject) {
+    
+    case Document document -> {
+      FileReference fileReference = TYPES_FACTORY.createFileReference();
+      document.setDocumentReference(fileReference);
+    }
+    
+    case GPXTrack gpxTrack -> {
+      FileReference fileReference = TYPES_FACTORY.createFileReference();
+      gpxTrack.setTrackReference(fileReference);
+    }
+    
     case MapImage mapImage -> initializeMapImage(mapImage, treeItem);
+    
+    case Picture picture -> {
+      FileReference fileReference = TYPES_FACTORY.createFileReference();
+      picture.setPictureReference(fileReference);
+    }
+    
     default -> {} // no action, assume no initialization needed
     }
     
-    if (eObject instanceof MapImage) {
-    } else if (eObject instanceof Document document) {
-      FileReference fileReference = TYPES_FACTORY.createFileReference();
-      document.setDocumentReference(fileReference);
-    } else if (eObject instanceof Picture picture) {
-      FileReference fileReference = TYPES_FACTORY.createFileReference();
-      picture.setPictureReference(fileReference);
-    } else if (eObject instanceof GPXTrack GpxTrack) {
-      FileReference fileReference = TYPES_FACTORY.createFileReference();
-      GpxTrack.setTrackReference(fileReference);
-    }
   }
 
   /**
    * Initialize a newly created MapImage.
    * <p>
-   * The user is asked for a title, the image dimensions are set to the current map view dimensions,
-   * the center latitude and longitude and zoom level are set to the current map view values.
-   * The file name is set to a file in the travel folder of the travel containing the MapImage.
-   * Finally a jpg file is created with a snapshot of the current map view.
+   * The base map is set as a copy of the current map view.
+   * This means that width, height, center latitude and longitude and zoom level are set to the current map view values.
    * 
-   * @param mapImage the newly created MapImage
-   * @param treeItem the <code>EObjectTreeItem</code> to which the <code>mapImage</code> is added.
+   * The file name is set to a file in the travel folder of the travel containing the MapImage.
+   * A default title is created based on the information level of the MapImage (ITEM, DAY or TRAVEL) and the EObject it is added to.
+   * 
+   * @param mapImage the newly created {@code MapImage} which is to be initialized.
+   * @param parentTreeItem the {@code EObjectTreeItem} to which the {@code mapImage} will be added.
    */
-  private void initializeMapImage(MapImage mapImage, EObjectTreeItem treeItem) {
-    Object value = treeItem.getValue();
+  private void initializeMapImage(MapImage mapImage, EObjectTreeItem parentTreeItem) {
+    Object parentObject = parentTreeItem.getValue();
+    EObject parentEObject = null;
     
-    // The method getMapImageType needs an EObject, so if the value isn't an EObject, get the parent value.
     // Note: the root is an EObject, so either the value is an EObject, or the parent exists.
-    if (!(value instanceof EObject)) {
-      EObjectTreeItem parent = (EObjectTreeItem) treeItem.getParent();
-      value = parent.getValue();
+    if (!(parentObject instanceof EObject)) {
+      EObjectTreeItem grandParentTreeItem = (EObjectTreeItem) parentTreeItem.getParent();
+      parentEObject = (EObject) grandParentTreeItem.getValue();
+    } else {
+      parentEObject = (EObject) parentObject;
     }
-    MapImageType mapImageType = TravelsUtils.getMapImageType((EObject) value);
-    String defaultTitle = createDefaultTitleForMapImage(mapImageType, treeItem);
-    Dialog<String> titleDialog = componentFactory.createStringInputDialog("MapImage title",
-        """
-           The contents of a map shown for a map image depends on the place of the MapImage in the tree.
-           * If it is below a node with locaton information (e.g. a location, a GPX track or a picture), the map will only show information for that location.
-           * If it is below a day, the map will show all information for that day.
-           * if it is below a travel, the map will show all information for that travel.
-           The title of the MapImage is also used to create the file name of the related jpg file.
-           """,
-        "Enter MapImage title", defaultTitle);
-    Optional<String> result = titleDialog.showAndWait();
-    result.ifPresent(mapImage::setTitle);
+        
+    fillMapImageWithCurrentMapViewSettings(mapImage);
     
-    // fill attributes based on the current map view
-    mapImage.setImageHeight(travelMapView.getHeight());
-    mapImage.setImageWidth(travelMapView.getWidth());
-    mapImage.setCenterLatitude(travelMapView.centerProperty.get().getLatitude());
-    LOGGER.severe("travelMapView.getCenterLatitude(): " + travelMapView.centerProperty.get().getLatitude());
-    mapImage.setCenterLongitude(travelMapView.centerProperty.get().getLongitude());
-    LOGGER.severe("travelMapView.getCenterLongitude(): " + travelMapView.centerProperty.get().getLongitude());
-    mapImage.setZoom(travelMapView.getZoom());
+    switch (parentEObject) {
+    case Day _ -> mapImage.setInformationLevel(InformationLevel.DAY);
+    case Travel _ -> mapImage.setInformationLevel(InformationLevel.TRAVEL);
+    default -> mapImage.setInformationLevel(InformationLevel.ITEM);
+    }
     
-//    EObject eObject = getFirstAncesterEObject(treeItem);
-//    if (eObject != null) {
-//      Day aDay = VacationsUtils.getAncestorOfType(eObject, Day.class);
-//    }
-//    
-//    Object contentObject = getDayForTreeItem(treeItem);
-//    if (contentObject == null) {
-//      contentObject = getTravelForTreeItem(treeItem, VACATIONS_PACKAGE.getVacation());
-//    }
+    String defaultTitle = createDefaultTitleForMapImage(mapImage.getInformationLevel(), parentTreeItem);
+    mapImage.setTitle(defaultTitle);
     
     // Get the related travel to determine the folder for storing the MapImage.
-    Travel travel = getTravelForTreeItem(treeItem, TRAVELS_PACKAGE.getTravel());
+    Travel travel = getTravelForTreeItem(parentTreeItem);
     String travelFolderName = TravelsUtils.getTravelFilesFolder(travel);
     String fileName;
-    if (mapImage.getTitle() != null  &&  !mapImage.getTitle().isEmpty()) {
-      fileName = "MapImage_" + mapImage.getTitle() + ".jpg";
-    } else {
-      fileName = FileUtils.createBackupFileName("MapImage.jpg");
-    }
+    fileName = "MapImage_" + mapImage.getTitle() + ".jpg";
     File file = new File(travelFolderName, fileName);
     String filenameRelativeToVacationsFolder = FileUtils.getPathRelativeToFolder(travelsRegistry.getVacationsFolderName(), file.getAbsolutePath());
     mapImage.setFileName(filenameRelativeToVacationsFolder);
     
-    MapImageViewGenerator mapImageViewCreator = new MapImageViewGenerator(customization, this, (EObject) value, mapImage, mapImageType);
-//    createMapImageView(mapImage, false);
+  }
+  
+  private void updateMapImageWithCurrentMapViewSettings(EObjectTreeItem eObjectTreeItem) {
+    Object object = eObjectTreeItem.getValue();
+    if (object instanceof MapImage mapImage) {
+      fillMapImageWithCurrentMapViewSettings(mapImage);
+    } else {
+      throw new RuntimeException("EObjectTreeItem doesn't contain a MapImage");
+    }
+  }
+  
+  private void fillMapImageWithCurrentMapViewSettings(MapImage mapImage) {
+    mapImage.setImageHeight(travelMapView.getHeight());
+    mapImage.setImageWidth(travelMapView.getWidth());
+    WGS84Coordinates center = travelMapView.getCenter();
+    mapImage.setCenterLatitude(center.getLatitude());
+    mapImage.setCenterLongitude(center.getLongitude());
+    mapImage.setZoom(travelMapView.getZoom());
   }
   
   /**
-   * Create a default title for a MapImage based on the MapImageType and the EObjectTreeItem it is added to.
+   * Create a default title for a MapImage based on the information level and the EObjectTreeItem it is added to.
    * 
-   * @param mapImageType the type of the MapImage
-   * @param treeItem the EObjectTreeItem the MapImage is added to
-   * @return a default title, or null if no default title can be created.
+   * @param informationLevel the information level of the MapImage
+   * @param treeItem the EObjectTreeItem the MapImage will be added to
+   * @return a default title.
    */
-  private String createDefaultTitleForMapImage(MapImageType mapImageType, EObjectTreeItem treeItem) {
+  private String createDefaultTitleForMapImage(InformationLevel informationLevel, EObjectTreeItem treeItem) {
     String defaultTitle = null;
     
-    switch (mapImageType) {
-    case LOCATION:
+    switch (informationLevel) {
+    case ITEM:
       Object value = treeItem.getValue();
       switch (value) {
       case GPXTrack gpxTrack -> {
@@ -3103,17 +3035,20 @@ public class TravelsWindow extends JfxStage {
           defaultTitle = trackReference.getTitle();
         }
       }
+      
       case Location location -> {
         if (location.getName() != null) {
           defaultTitle = location.getName();
         }
       }
+      
       case Picture picture -> {
         FileReference pictureReference = picture.getPictureReference();
         if (pictureReference != null  &&  pictureReference.getTitle() != null) {
           defaultTitle = pictureReference.getTitle();
         }
       }
+      
       default -> {}
       }
       break;
@@ -3130,18 +3065,29 @@ public class TravelsWindow extends JfxStage {
       break;
       
     case TRAVEL:
-      Travel travel = getTravelForTreeItem(treeItem, TRAVELS_PACKAGE.getTravel());
+      Travel travel = getTravelForTreeItem(treeItem);
       if (travel != null  && travel.getTitle() != null) {
         defaultTitle = travel.getTitle() + " overview";
       }
       break;
     }
+   
+    if (defaultTitle == null  ||  defaultTitle.isEmpty()) {
+      UUID uuid = UUID.randomUUID();
+      defaultTitle = "MapImage" + "_" + uuid.toString().substring(0, 8);
+    }
+    
     return defaultTitle;
   }
 
+  /**
+   * Update the map image files for all MapImages in the currently selected travel.
+   * <p>
+   * If no travel is selected, a message is shown in the status bar and this method directly returns.
+   */
   private void updateMapImageFiles() {
     EObjectTreeItem treeItem = treeView.getSelectedObject();
-    Travel travel = getTravelForTreeItem(treeItem, TRAVELS_PACKAGE.getTravel());
+    Travel travel = getTravelForTreeItem(treeItem);
     if (travel == null) {
       statusLabel.setText("No travel selected");
       return;
@@ -3149,12 +3095,17 @@ public class TravelsWindow extends JfxStage {
     updateMapImageFiles(travel);
   }
   
+  /**
+   * Update the map image files for all MapImages in the specified travel.
+   * 
+   * @param travel the {@code Travel} for which to update the map image files.
+   */
   private void updateMapImageFiles(Travel travel) {
     TreeIterator<EObject> travelIterator = travel.eAllContents();
     while (travelIterator.hasNext()) {
       EObject eObject = travelIterator.next();
       if (eObject instanceof MapImage mapImage) {
-        createMapImageView(mapImage, false);
+        updateMapImageFile(mapImage);
       }
     }
   }
@@ -3164,17 +3115,34 @@ public class TravelsWindow extends JfxStage {
    *
    * @param eObjectTreeItem the EObjectTreeItem containing a MapImage. If it doesn't contain a MapImage, an exception is thrown.
    */
-  void updateMapImageFile(EObjectTreeItem eObjectTreeItem) {
+  private void updateMapImageFile(EObjectTreeItem eObjectTreeItem) {
     Object object = eObjectTreeItem.getValue();
     if (object instanceof MapImage mapImage) {
-      MapView mapView = createMapImageView(mapImage, false);
-//      writeMapViewToFile(mapImage,mapView);
+      updateMapImageFile(mapImage);
     } else {
       throw new RuntimeException("EObjectTreeItem doesn't contain a MapImage");
     }
   }
   
-  private void writeMapViewToFile(MapImage mapImage, MapView mapView) {
+  /**
+   * Update the map image file for the specified MapImage.
+   *
+   * @param mapImage the MapImage for which to update the map image file.
+   */
+  private void updateMapImageFile(MapImage mapImage) {
+    goedegep.mapview.image.MapImage mapImageView = createMapImageView(mapImage);
+    writeMapViewToFile(mapImage, mapImageView);
+  }
+  
+  /**
+   * Write the image of a MapView to the file specified in the MapImage.
+   * <p>
+   * Any existing file is first deleted.
+   * 
+   * @param mapImage the MapImage containing the file name to write to.
+   * @param mapView the MapView containing the image to write to the file.
+   */
+  private void writeMapViewToFile(MapImage mapImage, goedegep.mapview.image.MapImage mapView) {
     Path mapImageFilePath = Path.of(travelsRegistry.getVacationsFolderName(), mapImage.getFileName());
     try {
       Files.deleteIfExists(mapImageFilePath);
@@ -3183,133 +3151,79 @@ public class TravelsWindow extends JfxStage {
       WritableImage writebleImage = new WritableImage((int) mapView.getWidth(), (int) mapView.getHeight());
       mapView.snapshot(snapShotParameters, writebleImage);
 
-      // Save the image
-//      File file = new File(mapImage.getFileName());
-      saveImageAsJpeg(writebleImage, mapImageFilePath.toFile());
+      ImageUtil.saveImageToFile(writebleImage, mapImageFilePath, "jpg");
     } catch (IOException e) {
       e.printStackTrace();
     }
-    
   }
   
-//  // TODO: this is not the right way. Always create a map based on the map image type (location, day, vacation).
-//  void createMapImageJpgFile(MapImage mapImage) {
-//    if (mapImage == null) {
-//      LOGGER.severe("MapImage is null");
-//      return;
-//    }
-//    
-//    SnapshotParameters snapShotParameters = new SnapshotParameters();
-//    WritableImage writebleImage = new WritableImage((int) travelMapView.getWidth(), (int) travelMapView.getHeight());
-//    travelMapView.snapshot(snapShotParameters, writebleImage);
-//
-//    // Save the image
-//    File file = new File(VacationsRegistry.vacationsFolderName, mapImage.getFileName());
-////    if (!file.exists()) {
-//      saveImageAsJpeg(writebleImage, file);
-////    } else {
-////      LOGGER.severe("File exists");
-////    }
-//  }
+  /**
+   * Create a goedegep.mapview.image.MapImage for a {@code MapImage}.
+   * <p>
+   * The {@code MapImage} is created based on the settings in the {@code MapImage} (width, height, center latitude and longitude and zoom level).
+   * Based on the information level, the vacation elements related to the MapImage are also added as layers.
+   * 
+   * @param mapImage the {@code MapImage} for which to create a goedegep.mapview.image.MapImage.
+   * @return a goedegep.mapview.image.MapImage created for the specified {@code mapImage}.
+   */
+  private goedegep.mapview.image.MapImage createMapImageView(MapImage mapImage) {
 
-  public MapView createMapImageView(MapImage mapImage, boolean show) {
-    
     String title = mapImage.getTitle();
     if (title == null) {
       title = "MapImage";
     }
-    JfxStage jfxStage = new JfxStage(customization, title);
-    TravelMapView imageTravelMapView = new TravelMapView(customization, jfxStage, null);
 
-    Double height = mapImage.getImageHeight();
-    if (height != null) {
-      imageTravelMapView.setPrefHeight(height);
-    }
+    TravelMapViewImage travelMapViewImage = new TravelMapViewImage(customization, this);
+
     Double width = mapImage.getImageWidth();
-    if (width != null) {
-      imageTravelMapView.setPrefWidth(width);
-    }
+    Double height = mapImage.getImageHeight();
 
-    imageTravelMapView.setZoom(mapImage.getZoom());
+    if (width == null  ||  height == null) {
+      throw new RuntimeException("MapImage " + title + " doesn't have width and height");
+    }
+    travelMapViewImage.setSize(width, height);
+
+    travelMapViewImage.setZoom(mapImage.getZoom());
 
     WGS84Coordinates center = new WGS84Coordinates(mapImage.getCenterLatitude(), mapImage.getCenterLongitude());
-    imageTravelMapView.setCenter(center);
-    
-//    MapImageType mapImageType = VacationsUtils.getMapImageType(mapImage);
-//    switch (mapImageType) {
-//    case LOCATION -> {
-////      Location location = getLocationForObject();
-////      if (location != null) {
-////        addLocationToMapView(imageTravelMapView, location, false);
-////      }
-//    }
-//    case DAY -> {
-//      Day day = VacationsUtils.getAncestorOfType(mapImage, Day.class);
-//      if (day != null) {
-//        addDayToMapView(imageTravelMapView, day, false);
-//      }
-//    }
-//    case TRAVEL -> {
-//      Vacation vacation = VacationsUtils.getVacationForObject(mapImage);
-//      if (vacation != null) {
-//        addVacationToMapView(imageTravelMapView, vacation, false);
-//      }
-//    }
-//    }
+    travelMapViewImage.setCenter(center);
 
-    Scene scene = new Scene(imageTravelMapView);
-    pulseCounter = 0;
-//    if (!show) {
-//      scene.addPostLayoutPulseListener(() -> {
-//        if (imageTravelMapView.getBaseMap().allTilesAvailable()  &&  pulseCounter++ > 40) {
-//          LOGGER.severe("Map should be ready");
-//
-//
-//          SnapshotParameters snapShotParameters = new SnapshotParameters();
-//          WritableImage writebleImage = new WritableImage((int) imageTravelMapView.getWidth(), (int) imageTravelMapView.getHeight());
-//          imageTravelMapView.snapshot(snapShotParameters, writebleImage);
-//
-////          // Save the image
-////          File file = new File(mapImage.getFileName());
-//////          if (!file.exists()) {
-////            saveImageAsJpeg(writebleImage, file);
-//////          } else {
-//////            LOGGER.severe("File exists");
-//////          }
-//          jfxStage.close();
-//        }
-//      });
-//    }
-    jfxStage.setScene(scene);
-    jfxStage.show();
-    
-//    Object contentObject = null;
-//    EObject container = mapImage.eContainer();
-//    while (container != null) {
-//      if (container instanceof Day  ||  container instanceof Vacation) {
-//        contentObject = container;
-//        break;
-//      }
-//      
-//      container = container.eContainer();
-//    }
-    
-//    if (contentObject instanceof Day day) {
-//      addDayToMapView(imageTravelMapView, day, false);
-//    } else if (contentObject instanceof Vacation vacation) {
-//      addVacationToMapView(imageTravelMapView, vacation, false);
-//    }
 
-    writeMapViewToFile(mapImage, imageTravelMapView);
-    return imageTravelMapView;
-  }
-  
-  public void createMapImageFile(MapImage mapImage) {
+    travelMapViewImage.addLayer(new MapViewTestLayer());
     
-    createMapImageView(mapImage, false);
-       
+    VacationElement parent = TravelsUtils.getAncestorOfType(mapImage.eContainer(), VacationElement.class);
+    if (parent != null) {
+      addVacationElementToMapView(travelMapViewImage, parent, false, null);
+    }
+    
+    
+    InformationLevel informationLevel = mapImage.getInformationLevel();
+    switch (informationLevel) {
+    case ITEM -> {
+      addVacationElementToMapView(travelMapViewImage, (VacationElement) parent, false, null);
+    }
+    case DAY -> {
+      Day day = TravelsUtils.getAncestorOfType(mapImage, Day.class);
+      if (day != null) {
+        addDayToMapView(travelMapViewImage, day);
+      }
+    }
+    case TRAVEL -> {
+      Travel travel = TravelsUtils.getTravelForObject(mapImage);
+      if (travel != null) {
+        addTravelToMapView(travelMapViewImage, travel, false, false);
+      }
+    }
+    }
+
+    return travelMapViewImage;
   }
 
+  /**
+   * Get the travels.
+   * 
+   * @return the travels.
+   */
   public Travels getTravels() {
     return travels;
   }

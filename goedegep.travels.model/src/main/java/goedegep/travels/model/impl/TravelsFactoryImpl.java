@@ -100,6 +100,8 @@ public class TravelsFactoryImpl extends EFactoryImpl implements TravelsFactory {
   @Override
   public Object createFromString(EDataType eDataType, String initialValue) {
     switch (eDataType.getClassifierID()) {
+    case TravelsPackage.INFORMATION_LEVEL:
+      return createInformationLevelFromString(eDataType, initialValue);
     case TravelsPackage.ELOCATION_CATEGORY:
       return createELocationCategoryFromString(eDataType, initialValue);
     default:
@@ -115,6 +117,8 @@ public class TravelsFactoryImpl extends EFactoryImpl implements TravelsFactory {
   @Override
   public String convertToString(EDataType eDataType, Object instanceValue) {
     switch (eDataType.getClassifierID()) {
+    case TravelsPackage.INFORMATION_LEVEL:
+      return convertInformationLevelToString(eDataType, instanceValue);
     case TravelsPackage.ELOCATION_CATEGORY:
       return convertELocationCategoryToString(eDataType, instanceValue);
     default:
@@ -274,6 +278,28 @@ public class TravelsFactoryImpl extends EFactoryImpl implements TravelsFactory {
   public Travel createTravel() {
     TravelImpl travel = new TravelImpl();
     return travel;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public InformationLevel createInformationLevelFromString(EDataType eDataType, String initialValue) {
+    InformationLevel result = InformationLevel.get(initialValue);
+    if (result == null)
+      throw new IllegalArgumentException(
+          "The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
+    return result;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public String convertInformationLevelToString(EDataType eDataType, Object instanceValue) {
+    return instanceValue == null ? null : instanceValue.toString();
   }
 
   /**

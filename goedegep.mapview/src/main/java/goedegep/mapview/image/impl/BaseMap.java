@@ -29,7 +29,6 @@ public class BaseMap extends BaseMapAbstract<TileImageView> {
 
   @Override
   public void loadTiles() {
-    LOGGER.severe("=>");
     
     double width = mapViewCommon.getWidth();
     double height = mapViewCommon.getHeight();
@@ -56,7 +55,6 @@ public class BaseMap extends BaseMapAbstract<TileImageView> {
 //    long jmin = Math.max(0, (long) (-ty * Math.pow(2, deltaZ) / 256));
 //    long imax = Math.min(i_max, imin + (long) (width * Math.pow(2, deltaZ) / 256) + 3);
 //    long jmax = Math.min(j_max, jmin + (long) (height * Math.pow(2, deltaZ) / 256) + 3);
-    LOGGER.fine("Zoom = " + nearestZoom + ", active = " + activeZoom + ", tx = " + tx + ", loadtiles, check i-range: " + imin + ", " + imax + " and j-range: " + jmin + ", " + jmax);
     List<TileImageView> tilesNeeded = new ArrayList<>();
     for (long i = imin; i < imax; i++) {
       for (long j = jmin; j < jmax; j++) {
@@ -82,7 +80,7 @@ public class BaseMap extends BaseMapAbstract<TileImageView> {
     for (TileImageView mt: tilesNeeded) {
       buf.append(", ").append(mt);
     }
-    LOGGER.severe("Tiles needed: " + buf.toString());
+//    LOGGER.severe("Tiles needed: " + buf.toString());
     //   calculateCenterCoords();
 //    cleanupTiles();
   }

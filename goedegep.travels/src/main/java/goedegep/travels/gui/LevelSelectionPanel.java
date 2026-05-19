@@ -3,6 +3,7 @@ package goedegep.travels.gui;
 import goedegep.jfx.ComponentFactoryFx;
 import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.editor.controls.EditorControlEnumComboBox;
+import goedegep.travels.model.InformationLevel;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.geometry.Insets;
@@ -16,7 +17,7 @@ public class LevelSelectionPanel extends HBox {
   /**
    * Property to be used by the client to react on a new selected value.
    */
-  private ObjectProperty<ShowLevel> levelProperty = new SimpleObjectProperty<>();
+  private ObjectProperty<InformationLevel> levelProperty = new SimpleObjectProperty<>();
   
   /**
    * Button to choose a higher level.
@@ -31,7 +32,7 @@ public class LevelSelectionPanel extends HBox {
   /**
    * An {@code EditorControlEnumComboBox} providing the combo box.
    */
-  private EditorControlEnumComboBox<ShowLevel> showLevelComboBox;
+  private EditorControlEnumComboBox<InformationLevel> showLevelComboBox;
   
   
   /**
@@ -48,7 +49,7 @@ public class LevelSelectionPanel extends HBox {
     
     downButton = componentFactory.createButton("-", "Click to decrease the show level, to show less at once");
     downButton.setOnAction((_) -> decreaseLevel());
-    showLevelComboBox = new EditorControlEnumComboBox.Builder<>(ShowLevel.TRAVEL, "Show level")
+    showLevelComboBox = new EditorControlEnumComboBox.Builder<>(InformationLevel.TRAVEL, "Show level")
         .setCustomization(customization)
         .setLabelBaseText("Show level")
         .setToolTipText("Select the level of information to be shown on the map")
@@ -58,7 +59,7 @@ public class LevelSelectionPanel extends HBox {
     upButton.setOnAction((_) -> increaseLevel());
     
     getChildren().addAll(showLevelComboBox.getLabel(), downButton, showLevelComboBox.getControl(), upButton);
-    showLevelComboBox.setObject(ShowLevel.TRAVEL);
+    showLevelComboBox.setObject(InformationLevel.TRAVEL);
   }
   
   /**
@@ -76,7 +77,7 @@ public class LevelSelectionPanel extends HBox {
    * 
    * @return the {@code levelProperty}
    */
-  ObjectProperty<ShowLevel> levelProperty() {
+  ObjectProperty<InformationLevel> levelProperty() {
     return levelProperty;
   }
   
@@ -86,7 +87,7 @@ public class LevelSelectionPanel extends HBox {
    * If the lowest level is already selected, this doesn't change, else the level is decreased.
    */
   private void decreaseLevel() {
-    showLevelComboBox.setObject(showLevelComboBox.getValue().previous());
+    showLevelComboBox.setObject(previousInformationLevel(showLevelComboBox.getValue()));
   }
   
   /**
@@ -95,7 +96,7 @@ public class LevelSelectionPanel extends HBox {
    * If the highest level is already selected, this doesn't change, else the level is increased.
    */
   private void increaseLevel() {
-    showLevelComboBox.setObject(showLevelComboBox.getValue().next());
+    showLevelComboBox.setObject(nextInformationLevel(showLevelComboBox.getValue()));
   }
   
   /**
@@ -105,11 +106,39 @@ public class LevelSelectionPanel extends HBox {
    * If the highest level is selected, the upButton is disabled, else it is enabled.
    */
   private void enableOrDisableButtons() {
-    ShowLevel showLevel = showLevelComboBox.getValue();
+    InformationLevel informationLevel = showLevelComboBox.getValue();
     
-    showLevel.ordinal();
-    downButton.setDisable(showLevel.ordinal() == 0);
-    upButton.setDisable(showLevel.ordinal() == ShowLevel.values().length - 1);
+    informationLevel.ordinal();
+    downButton.setDisable(informationLevel.ordinal() == 0);
+    upButton.setDisable(informationLevel.ordinal() == InformationLevel.values().length - 1);
   }
   
+  /**
+   * Get the next lower information level.
+   * 
+   * @param informationLevel an information level
+   * @return the previous information level, or {@code informationLevel) if it is already the lowest level.
+   */
+  private InformationLevel previousInformationLevel(InformationLevel informationLevel) {
+    if (informationLevel.ordinal() > 0) {
+      return InformationLevel.values()[(informationLevel.ordinal() - 1)];
+    } else {
+      return informationLevel;
+    }
+  }
+  
+  
+  /**
+   * Get the next higher information level.
+   * 
+   * @param informationLevel an information level
+   * @return the next information level, or {@code informationLevel) if it is already the highest level.
+   */
+  private InformationLevel nextInformationLevel(InformationLevel informationLevel) {
+    if (informationLevel.ordinal() < InformationLevel.values().length - 1) {
+      return InformationLevel.values()[(informationLevel.ordinal() + 1)];
+    } else {
+      return informationLevel;
+    }
+  }
 }

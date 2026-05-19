@@ -18,6 +18,7 @@ package goedegep.travels.model;
  *   <li>{@link goedegep.travels.model.MapImage#getCenterLatitude <em>Center Latitude</em>}</li>
  *   <li>{@link goedegep.travels.model.MapImage#getCenterLongitude <em>Center Longitude</em>}</li>
  *   <li>{@link goedegep.travels.model.MapImage#getFileName <em>File Name</em>}</li>
+ *   <li>{@link goedegep.travels.model.MapImage#getInformationLevel <em>Information Level</em>}</li>
  * </ul>
  *
  * @see goedegep.travels.model.TravelsPackage#getMapImage()
@@ -205,5 +206,57 @@ public interface MapImage extends VacationElement {
    * @generated
    */
   void setFileName(String value);
+
+  /**
+   * Returns the value of the '<em><b>Information Level</b></em>' attribute.
+   * The literals are from the enumeration {@link goedegep.travels.model.InformationLevel}.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the value of the '<em>Information Level</em>' attribute.
+   * @see goedegep.travels.model.InformationLevel
+   * @see #isSetInformationLevel()
+   * @see #unsetInformationLevel()
+   * @see #setInformationLevel(InformationLevel)
+   * @see goedegep.travels.model.TravelsPackage#getMapImage_InformationLevel()
+   * @model unsettable="true"
+   * @generated
+   */
+  InformationLevel getInformationLevel();
+
+  /**
+   * Sets the value of the '{@link goedegep.travels.model.MapImage#getInformationLevel <em>Information Level</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @param value the new value of the '<em>Information Level</em>' attribute.
+   * @see goedegep.travels.model.InformationLevel
+   * @see #isSetInformationLevel()
+   * @see #unsetInformationLevel()
+   * @see #getInformationLevel()
+   * @generated
+   */
+  void setInformationLevel(InformationLevel value);
+
+  /**
+   * Unsets the value of the '{@link goedegep.travels.model.MapImage#getInformationLevel <em>Information Level</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #isSetInformationLevel()
+   * @see #getInformationLevel()
+   * @see #setInformationLevel(InformationLevel)
+   * @generated
+   */
+  void unsetInformationLevel();
+
+  /**
+   * Returns whether the value of the '{@link goedegep.travels.model.MapImage#getInformationLevel <em>Information Level</em>}' attribute is set.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return whether the value of the '<em>Information Level</em>' attribute is set.
+   * @see #unsetInformationLevel()
+   * @see #getInformationLevel()
+   * @see #setInformationLevel(InformationLevel)
+   * @generated
+   */
+  boolean isSetInformationLevel();
 
 } // MapImage

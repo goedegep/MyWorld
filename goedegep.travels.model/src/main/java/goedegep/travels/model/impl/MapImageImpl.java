@@ -2,6 +2,7 @@
  */
 package goedegep.travels.model.impl;
 
+import goedegep.travels.model.InformationLevel;
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
@@ -24,6 +25,7 @@ import goedegep.travels.model.TravelsPackage;
  *   <li>{@link goedegep.travels.model.impl.MapImageImpl#getCenterLatitude <em>Center Latitude</em>}</li>
  *   <li>{@link goedegep.travels.model.impl.MapImageImpl#getCenterLongitude <em>Center Longitude</em>}</li>
  *   <li>{@link goedegep.travels.model.impl.MapImageImpl#getFileName <em>File Name</em>}</li>
+ *   <li>{@link goedegep.travels.model.impl.MapImageImpl#getInformationLevel <em>Information Level</em>}</li>
  * </ul>
  *
  * @generated
@@ -175,6 +177,33 @@ public class MapImageImpl extends VacationElementImpl implements MapImage {
    * @ordered
    */
   protected String fileName = FILE_NAME_EDEFAULT;
+
+  /**
+   * The default value of the '{@link #getInformationLevel() <em>Information Level</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getInformationLevel()
+   * @generated
+   * @ordered
+   */
+  protected static final InformationLevel INFORMATION_LEVEL_EDEFAULT = InformationLevel.ITEM;
+  /**
+   * The cached value of the '{@link #getInformationLevel() <em>Information Level</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getInformationLevel()
+   * @generated
+   * @ordered
+   */
+  protected InformationLevel informationLevel = INFORMATION_LEVEL_EDEFAULT;
+  /**
+   * This is true if the Information Level attribute has been set.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  protected boolean informationLevelESet;
 
   /**
    * <!-- begin-user-doc -->
@@ -396,6 +425,58 @@ public class MapImageImpl extends VacationElementImpl implements MapImage {
    * @generated
    */
   @Override
+  public InformationLevel getInformationLevel() {
+    return informationLevel;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public void setInformationLevel(InformationLevel newInformationLevel) {
+    InformationLevel oldInformationLevel = informationLevel;
+    informationLevel = newInformationLevel == null ? INFORMATION_LEVEL_EDEFAULT : newInformationLevel;
+    boolean oldInformationLevelESet = informationLevelESet;
+    informationLevelESet = true;
+    if (eNotificationRequired())
+      eNotify(new ENotificationImpl(this, Notification.SET, TravelsPackage.MAP_IMAGE__INFORMATION_LEVEL,
+          oldInformationLevel, informationLevel, !oldInformationLevelESet));
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public void unsetInformationLevel() {
+    InformationLevel oldInformationLevel = informationLevel;
+    boolean oldInformationLevelESet = informationLevelESet;
+    informationLevel = INFORMATION_LEVEL_EDEFAULT;
+    informationLevelESet = false;
+    if (eNotificationRequired())
+      eNotify(new ENotificationImpl(this, Notification.UNSET, TravelsPackage.MAP_IMAGE__INFORMATION_LEVEL,
+          oldInformationLevel, INFORMATION_LEVEL_EDEFAULT, oldInformationLevelESet));
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public boolean isSetInformationLevel() {
+    return informationLevelESet;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
   public Object eGet(int featureID, boolean resolve, boolean coreType) {
     switch (featureID) {
     case TravelsPackage.MAP_IMAGE__TITLE:
@@ -412,6 +493,8 @@ public class MapImageImpl extends VacationElementImpl implements MapImage {
       return getCenterLongitude();
     case TravelsPackage.MAP_IMAGE__FILE_NAME:
       return getFileName();
+    case TravelsPackage.MAP_IMAGE__INFORMATION_LEVEL:
+      return getInformationLevel();
     }
     return super.eGet(featureID, resolve, coreType);
   }
@@ -444,6 +527,9 @@ public class MapImageImpl extends VacationElementImpl implements MapImage {
       return;
     case TravelsPackage.MAP_IMAGE__FILE_NAME:
       setFileName((String) newValue);
+      return;
+    case TravelsPackage.MAP_IMAGE__INFORMATION_LEVEL:
+      setInformationLevel((InformationLevel) newValue);
       return;
     }
     super.eSet(featureID, newValue);
@@ -478,6 +564,9 @@ public class MapImageImpl extends VacationElementImpl implements MapImage {
     case TravelsPackage.MAP_IMAGE__FILE_NAME:
       setFileName(FILE_NAME_EDEFAULT);
       return;
+    case TravelsPackage.MAP_IMAGE__INFORMATION_LEVEL:
+      unsetInformationLevel();
+      return;
     }
     super.eUnset(featureID);
   }
@@ -506,6 +595,8 @@ public class MapImageImpl extends VacationElementImpl implements MapImage {
           : !CENTER_LONGITUDE_EDEFAULT.equals(centerLongitude);
     case TravelsPackage.MAP_IMAGE__FILE_NAME:
       return FILE_NAME_EDEFAULT == null ? fileName != null : !FILE_NAME_EDEFAULT.equals(fileName);
+    case TravelsPackage.MAP_IMAGE__INFORMATION_LEVEL:
+      return isSetInformationLevel();
     }
     return super.eIsSet(featureID);
   }
@@ -538,6 +629,11 @@ public class MapImageImpl extends VacationElementImpl implements MapImage {
     result.append(centerLongitude);
     result.append(", fileName: ");
     result.append(fileName);
+    result.append(", informationLevel: ");
+    if (informationLevelESet)
+      result.append(informationLevel);
+    else
+      result.append("<unset>");
     result.append(')');
     return result.toString();
   }

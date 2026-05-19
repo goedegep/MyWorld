@@ -88,32 +88,6 @@ public class TravelsUtils {
   }
   
   /**
-   * Get the type of map image that can be used for an object.
-   * <p>
-   * The type is determined by the class of the object, or by the class of its container.
-   * 
-   * @param eObject the {@code Object} for which the map image type is to be obtained.
-   * @return The {@code MapImageType} for the {@code object}, or null if no type can be determined.
-   */
-  public static MapImageType getMapImageType(EObject eObject) {
-    while (eObject != null) {
-      switch (eObject) {
-      case Day _ -> {return MapImageType.DAY;}
-      case DayTrip _ -> {return MapImageType.TRAVEL;}
-      case GPXTrack _ -> {return MapImageType.LOCATION;}
-      case Location _ -> {return MapImageType.LOCATION;}
-      case Picture _ -> {return MapImageType.LOCATION;}
-      case Travel _ -> {return MapImageType.TRAVEL;}
-      default -> {}
-      }
-      
-      eObject = eObject.eContainer();
-    }
-    
-    return null;
-  }
-  
-  /**
    * Get a list of lines connecting the locations of a travel.
    * <p>
    * For point locations, a line connects the points.<br/>

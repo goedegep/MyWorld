@@ -16,7 +16,7 @@ import javafx.stage.Stage;
 /**
  * This class extends a {@link MapView} with a number of {@link MapLayer}s.
  */
-public class TravelMapView extends MapView implements ObjectSelector<Object> {
+public class TravelMapView extends MapView implements TravelMapViewInterface, ObjectSelector<Object> {
   @SuppressWarnings("unused")
   private static final Logger LOGGER = Logger.getLogger(TravelMapView.class.getName());
 
@@ -61,10 +61,12 @@ public class TravelMapView extends MapView implements ObjectSelector<Object> {
     searchResultLayer.clear();
   }
 
+  @Override
   public MapRelatedItemsLayer getMapRelatedItemsLayer() {
     return mapRelatedItemsLayer;
   }
 
+  @Override
   public GPXLayer getGpxLayer() {
     return trackLayer;
   }

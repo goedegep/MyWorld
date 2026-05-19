@@ -5,6 +5,7 @@ package goedegep.travels.model;
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EDataType;
+import org.eclipse.emf.ecore.EEnum;
 import org.eclipse.emf.ecore.EOperation;
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.EReference;
@@ -1255,13 +1256,22 @@ public interface TravelsPackage extends EPackage {
   int MAP_IMAGE__FILE_NAME = VACATION_ELEMENT_FEATURE_COUNT + 6;
 
   /**
+   * The feature id for the '<em><b>Information Level</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int MAP_IMAGE__INFORMATION_LEVEL = VACATION_ELEMENT_FEATURE_COUNT + 7;
+
+  /**
    * The number of structural features of the '<em>Map Image</em>' class.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int MAP_IMAGE_FEATURE_COUNT = VACATION_ELEMENT_FEATURE_COUNT + 7;
+  int MAP_IMAGE_FEATURE_COUNT = VACATION_ELEMENT_FEATURE_COUNT + 8;
 
   /**
    * The operation id for the '<em>Get Day Nr</em>' operation.
@@ -1745,6 +1755,16 @@ public interface TravelsPackage extends EPackage {
   int TRAVEL_CATEGORY_OPERATION_COUNT = 0;
 
   /**
+   * The meta object id for the '{@link goedegep.travels.model.InformationLevel <em>Information Level</em>}' enum.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see goedegep.travels.model.InformationLevel
+   * @see goedegep.travels.model.impl.TravelsPackageImpl#getInformationLevel()
+   * @generated
+   */
+  int INFORMATION_LEVEL = 15;
+
+  /**
    * The meta object id for the '<em>ELocation Category</em>' data type.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -1752,7 +1772,7 @@ public interface TravelsPackage extends EPackage {
    * @see goedegep.travels.model.impl.TravelsPackageImpl#getELocationCategory()
    * @generated
    */
-  int ELOCATION_CATEGORY = 15;
+  int ELOCATION_CATEGORY = 16;
 
   /**
    * Returns the meta object for class '{@link goedegep.travels.model.Travels <em>Travels</em>}'.
@@ -2425,6 +2445,17 @@ public interface TravelsPackage extends EPackage {
   EAttribute getMapImage_FileName();
 
   /**
+   * Returns the meta object for the attribute '{@link goedegep.travels.model.MapImage#getInformationLevel <em>Information Level</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Information Level</em>'.
+   * @see goedegep.travels.model.MapImage#getInformationLevel()
+   * @see #getMapImage()
+   * @generated
+   */
+  EAttribute getMapImage_InformationLevel();
+
+  /**
    * Returns the meta object for class '{@link goedegep.travels.model.DayTrip <em>Day Trip</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -2601,6 +2632,16 @@ public interface TravelsPackage extends EPackage {
    * @generated
    */
   EOperation getTravel__GetDayNr__VacationElement();
+
+  /**
+   * Returns the meta object for enum '{@link goedegep.travels.model.InformationLevel <em>Information Level</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for enum '<em>Information Level</em>'.
+   * @see goedegep.travels.model.InformationLevel
+   * @generated
+   */
+  EEnum getInformationLevel();
 
   /**
    * Returns the meta object for data type '{@link goedegep.poi.app.LocationCategory <em>ELocation Category</em>}'.
@@ -3163,6 +3204,14 @@ public interface TravelsPackage extends EPackage {
     EAttribute MAP_IMAGE__FILE_NAME = eINSTANCE.getMapImage_FileName();
 
     /**
+    	 * The meta object literal for the '<em><b>Information Level</b></em>' attribute feature.
+    	 * <!-- begin-user-doc -->
+    	 * <!-- end-user-doc -->
+    	 * @generated
+    	 */
+    EAttribute MAP_IMAGE__INFORMATION_LEVEL = eINSTANCE.getMapImage_InformationLevel();
+
+    /**
     	 * The meta object literal for the '{@link goedegep.travels.model.impl.DayTripImpl <em>Day Trip</em>}' class.
     	 * <!-- begin-user-doc -->
     	 * <!-- end-user-doc -->
@@ -3305,6 +3354,16 @@ public interface TravelsPackage extends EPackage {
     	 * @generated
     	 */
     EOperation TRAVEL___GET_DAY_NR__VACATIONELEMENT = eINSTANCE.getTravel__GetDayNr__VacationElement();
+
+    /**
+    	 * The meta object literal for the '{@link goedegep.travels.model.InformationLevel <em>Information Level</em>}' enum.
+    	 * <!-- begin-user-doc -->
+    	 * <!-- end-user-doc -->
+    	 * @see goedegep.travels.model.InformationLevel
+    	 * @see goedegep.travels.model.impl.TravelsPackageImpl#getInformationLevel()
+    	 * @generated
+    	 */
+    EEnum INFORMATION_LEVEL = eINSTANCE.getInformationLevel();
 
     /**
     	 * The meta object literal for the '<em>ELocation Category</em>' data type.

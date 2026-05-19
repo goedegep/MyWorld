@@ -1,18 +1,24 @@
 package goedegep.jfx.img;
 
+import java.awt.Graphics2D;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.nio.file.Path;
 import java.util.logging.Logger;
+
+import javax.imageio.ImageIO;
 
 import org.apache.commons.imaging.ImageReadException;
 import org.apache.commons.imaging.formats.tiff.constants.TiffDirectoryConstants;
 import org.apache.commons.imaging.formats.tiff.constants.TiffTagConstants;
 
 import goedegep.util.img.PhotoFileMetaDataHandler;
+import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.image.Image;
 import javafx.scene.image.PixelReader;
 import javafx.scene.image.PixelWriter;
@@ -194,6 +200,25 @@ public class ImageUtil {
     }
 
     return rotatedImage;
+  }
+
+  /**
+   * Save an {@code Image} to a file.
+   * @param image The {@code Image} to be saved.
+   * @param path The path to the file to which the image should be saved.
+   * @param format The format in which the image should be saved, e.g. "jpg" or "png".
+   */
+  public static void saveImageToFile(Image image, Path path, String format) {
+    BufferedImage bufferedImage = SwingFXUtils.fromFXImage(image, null);
+    BufferedImage imageRGB = new BufferedImage(
+        bufferedImage.getWidth(), bufferedImage.getHeight(), BufferedImage.OPAQUE);
+    Graphics2D graphics = imageRGB.createGraphics();
+    graphics.drawImage(bufferedImage, 0, 0, null);
+    try {
+      ImageIO.write(imageRGB, format, path.toFile());
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
   }
 
 //  /**

@@ -145,6 +145,8 @@
         eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDoubleObject"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="fileName" lowerBound="1"
         eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="informationLevel" eType="#//InformationLevel"
+        unsettable="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="DayTrip" eSuperTypes="#//Travel"/>
   <eClassifiers xsi:type="ecore:EClass" name="Document" eSuperTypes="#//VacationElement">
@@ -187,4 +189,9 @@
         unsettable="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EDataType" name="ELocationCategory" instanceClassName="goedegep.poi.app.LocationCategory"/>
+  <eClassifiers xsi:type="ecore:EEnum" name="InformationLevel">
+    <eLiterals name="ITEM"/>
+    <eLiterals name="DAY" value="1"/>
+    <eLiterals name="TRAVEL" value="2"/>
+  </eClassifiers>
 </ecore:EPackage>

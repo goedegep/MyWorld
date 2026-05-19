@@ -10,6 +10,7 @@ import goedegep.travels.model.Day;
 import goedegep.travels.model.DayTrip;
 import goedegep.travels.model.Document;
 import goedegep.travels.model.GPXTrack;
+import goedegep.travels.model.InformationLevel;
 import goedegep.travels.model.Location;
 import goedegep.travels.model.MapImage;
 import goedegep.travels.model.Picture;
@@ -27,6 +28,7 @@ import goedegep.types.model.TypesPackage;
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EDataType;
+import org.eclipse.emf.ecore.EEnum;
 import org.eclipse.emf.ecore.EOperation;
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.EReference;
@@ -146,6 +148,13 @@ public class TravelsPackageImpl extends EPackageImpl implements TravelsPackage {
    * @generated
    */
   private EClass travelEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EEnum informationLevelEEnum = null;
 
   /**
    * <!-- begin-user-doc -->
@@ -858,6 +867,16 @@ public class TravelsPackageImpl extends EPackageImpl implements TravelsPackage {
    * @generated
    */
   @Override
+  public EAttribute getMapImage_InformationLevel() {
+    return (EAttribute) mapImageEClass.getEStructuralFeatures().get(7);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
   public EClass getDayTrip() {
     return dayTripEClass;
   }
@@ -1028,6 +1047,16 @@ public class TravelsPackageImpl extends EPackageImpl implements TravelsPackage {
    * @generated
    */
   @Override
+  public EEnum getInformationLevel() {
+    return informationLevelEEnum;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
   public EDataType getELocationCategory() {
     return eLocationCategoryEDataType;
   }
@@ -1135,6 +1164,7 @@ public class TravelsPackageImpl extends EPackageImpl implements TravelsPackage {
     createEAttribute(mapImageEClass, MAP_IMAGE__CENTER_LATITUDE);
     createEAttribute(mapImageEClass, MAP_IMAGE__CENTER_LONGITUDE);
     createEAttribute(mapImageEClass, MAP_IMAGE__FILE_NAME);
+    createEAttribute(mapImageEClass, MAP_IMAGE__INFORMATION_LEVEL);
 
     dayTripEClass = createEClass(DAY_TRIP);
 
@@ -1156,6 +1186,9 @@ public class TravelsPackageImpl extends EPackageImpl implements TravelsPackage {
     createEOperation(travelEClass, TRAVEL___FIND_DOCUMENT__STRING);
     createEOperation(travelEClass, TRAVEL___GET_ALL_REFERENCED_FILES);
     createEOperation(travelEClass, TRAVEL___GET_DAY_NR__VACATIONELEMENT);
+
+    // Create enums
+    informationLevelEEnum = createEEnum(INFORMATION_LEVEL);
 
     // Create data types
     eLocationCategoryEDataType = createEDataType(ELOCATION_CATEGORY);
@@ -1356,6 +1389,9 @@ public class TravelsPackageImpl extends EPackageImpl implements TravelsPackage {
         IS_ORDERED);
     initEAttribute(getMapImage_FileName(), ecorePackage.getEString(), "fileName", null, 1, 1, MapImage.class,
         !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getMapImage_InformationLevel(), this.getInformationLevel(), "informationLevel", null, 0, 1,
+        MapImage.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED,
+        IS_ORDERED);
 
     initEClass(dayTripEClass, DayTrip.class, "DayTrip", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 
@@ -1402,6 +1438,12 @@ public class TravelsPackageImpl extends EPackageImpl implements TravelsPackage {
     op = initEOperation(getTravel__GetDayNr__VacationElement(), ecorePackage.getEIntegerObject(), "getDayNr", 0, 1,
         IS_UNIQUE, IS_ORDERED);
     addEParameter(op, this.getVacationElement(), "vacationElement", 0, 1, IS_UNIQUE, IS_ORDERED);
+
+    // Initialize enums and add enum literals
+    initEEnum(informationLevelEEnum, InformationLevel.class, "InformationLevel");
+    addEEnumLiteral(informationLevelEEnum, InformationLevel.ITEM);
+    addEEnumLiteral(informationLevelEEnum, InformationLevel.DAY);
+    addEEnumLiteral(informationLevelEEnum, InformationLevel.TRAVEL);
 
     // Initialize data types
     initEDataType(eLocationCategoryEDataType, LocationCategory.class, "ELocationCategory", IS_SERIALIZABLE,

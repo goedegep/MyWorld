@@ -106,6 +106,11 @@ public class TravelsTreeViewCreator {
   private Consumer<EObjectTreeItem> updateMapImageFileFunction;
   
   /**
+   * Function to update a map image with the current map view settings.
+   */
+  private Consumer<EObjectTreeItem> updateMapImageWithCurrentMapViewSettingsFunction;
+  
+  /**
    * The {@code TravelsRegistry}.
    */
   private TravelsRegistry travelsRegistry = TravelsRegistry.getInstance();
@@ -173,6 +178,12 @@ public class TravelsTreeViewCreator {
     
     return this;
   }
+  
+  public TravelsTreeViewCreator setUpdateMapImageWithCurrentMapViewSettingsFunction(Consumer<EObjectTreeItem> updateMapImageWithCurrentMapViewSettingsFunction) {
+    this.updateMapImageWithCurrentMapViewSettingsFunction = updateMapImageWithCurrentMapViewSettingsFunction;
+    
+    return this;
+  }
    
   /**
    * Create the {@code EObjectTreeView} for {@code Travels}.
@@ -198,8 +209,8 @@ public class TravelsTreeViewCreator {
         .addEClassDescriptor(typesPackage.getFileReference(), createDescriptorForFileReference())
         .addEnumStringConverter(travelsPackage.getELocationCategory().getInstanceClass(), EnumStringConverterForLocationCategory.getInstance())
         .setIsDropPossibleFunction(this::isDropPossible)
-        .setHandleDropFunction(this::handleDrop);
-//        .setNewEObjectInitializationFunction(newEObjectInitializationFunction);
+        .setHandleDropFunction(this::handleDrop)
+        .setNewEObjectInitializationFunction(newEObjectInitializationFunction);
 
     return eObjectTreeView;
   }
@@ -1031,8 +1042,8 @@ public class TravelsTreeViewCreator {
     // MapImage
     EObjectTreeItemClassDescriptor eObjectTreeItemClassDescriptor = new EObjectTreeItemClassDescriptor()
         .setNodeTextFunction(eObject -> {
-          MapImage picture = (MapImage) eObject;
-          String title = picture.getTitle();
+          MapImage mapImage = (MapImage) eObject;
+          String title = mapImage.getTitle();
           if (title != null  &&  !title.isEmpty()) {
             return title;
           } else {
@@ -1043,13 +1054,20 @@ public class TravelsTreeViewCreator {
         .addNodeOperationDescriptor(new NodeOperationDescriptorNewBefore("New element before this one ...", null, null))
         .addNodeOperationDescriptor(new NodeOperationDescriptorNewAfter("New element after this one ...", null, null))
         .addNodeOperationDescriptor(new NodeOperationDescriptorDelete("Delete element", null))
-        .addNodeOperationDescriptor(new NodeOperationDescriptorCustom("Update  image file", (_) -> true, updateMapImageFileFunction));
+        .addNodeOperationDescriptor(new NodeOperationDescriptorCustom("Update  image file", (_) -> true, updateMapImageFileFunction))
+        .addNodeOperationDescriptor(new NodeOperationDescriptorCustom("Update map image settings from map view", (_) -> true, updateMapImageWithCurrentMapViewSettingsFunction));
     
     EObjectTreeItemAttributeDescriptor eObjectTreeItemAttributeDescriptor;
 
     // MapImage.title
     eObjectTreeItemAttributeDescriptor = new EObjectTreeItemAttributeDescriptor(travelsPackage.getMapImage_Title())
         .setLabelText("Title");
+    eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(eObjectTreeItemAttributeDescriptor);
+    
+    // MapImage.informationLevel
+    eObjectTreeItemAttributeDescriptor = new EObjectTreeItemAttributeDescriptor(travelsPackage.getMapImage_InformationLevel())
+        .setLabelText("Information level")
+        .setPresentationType(PresentationType.ENUMERATION);
     eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(eObjectTreeItemAttributeDescriptor);
 
     // MapImage.imageWidth

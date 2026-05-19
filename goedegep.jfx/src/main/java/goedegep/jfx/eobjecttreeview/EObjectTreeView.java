@@ -149,10 +149,10 @@ public class EObjectTreeView extends TreeView<Object> implements ObjectSelector<
   
   private static int recursionCount;
   
-//  /**
-//   * A new {@code EObject} initialization function (optional).
-//   */
-//  private BiConsumer<EObject, EObjectTreeItem> newEObjectInitializationFunction = null;
+  /**
+   * A new {@code EObject} initialization function (optional).
+   */
+  private BiConsumer<EObject, EObjectTreeItem> newEObjectInitializationFunction = null;
   
   /**
    * Constructor
@@ -247,11 +247,11 @@ public class EObjectTreeView extends TreeView<Object> implements ObjectSelector<
     return this;
   }
   
-//  public EObjectTreeView setNewEObjectInitializationFunction(BiConsumer<EObject, EObjectTreeItem> newEObjectInitializationFunction) {
-//    this.newEObjectInitializationFunction = newEObjectInitializationFunction;
-//    
-//    return this;
-//  }
+  public EObjectTreeView setNewEObjectInitializationFunction(BiConsumer<EObject, EObjectTreeItem> newEObjectInitializationFunction) {
+    this.newEObjectInitializationFunction = newEObjectInitializationFunction;
+    
+    return this;
+  }
 
   /**
    * Get the isDropPossible function.
@@ -624,15 +624,15 @@ public class EObjectTreeView extends TreeView<Object> implements ObjectSelector<
                 LOGGER.severe("notification: " + EmfUtil.printNotification(notification));
               } else {
                 ((EObjectTreeItemForObjectList) changedTreeItem).addObjectListChild(notification.getPosition());
-//                Object listAsObject = changedTreeItem.getValue();
-//                List list = (List) listAsObject;
-//                Object newObject = list.get(notification.getPosition());
-//                EObject newEObject = (EObject) newObject;
+                Object listAsObject = changedTreeItem.getValue();
+                List list = (List) listAsObject;
+                Object newObject = list.get(notification.getPosition());
+                EObject newEObject = (EObject) newObject;
 //                EClass eClass = newEObject.eClass();
 //                EObjectTreeItemClassDescriptor desc = getBestClassDescriptor(eClass);
-//                if (newEObjectInitializationFunction != null) {
-//                  newEObjectInitializationFunction.accept(newEObject, changedTreeItem);
-//                }
+                if (newEObjectInitializationFunction != null) {
+                  newEObjectInitializationFunction.accept(newEObject, changedTreeItem);
+                }
               }
             } else if (notification.getEventType() == Notification.REMOVE) {
               // an element is removed from a list of objects
