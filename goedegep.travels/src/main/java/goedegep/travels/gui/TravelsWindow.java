@@ -61,6 +61,7 @@ import goedegep.properties.model.Property;
 import goedegep.properties.model.PropertyGroup;
 import goedegep.resources.ImageResource;
 import goedegep.resources.ImageSize;
+import goedegep.travels.ITravelsService;
 import goedegep.travels.logic.Item;
 import goedegep.travels.logic.ItemGpx;
 import goedegep.travels.logic.NominatimUtil;
@@ -169,24 +170,80 @@ public class TravelsWindow extends JfxStage {
   private static final Logger LOGGER = Logger.getLogger(TravelsWindow.class.getName());
   private static final String NEWLINE = System.getProperty("line.separator");
   
-  private static final ResourceBundle TRANSLATIONS = getBundle(TravelsWindow.class, "TravelsResource");
+  /**
+   * The {@code ResourceBundle} for this class. It is used for internationalization of the GUI texts.
+   * Note: this is only implemented for a small part.
+   */
+  private ResourceBundle translations;
+  
+  /**
+   * The {@code TranslationFormatter} used to format the text from the {@code TRANSLATIONS}.
+   */
+  private TranslationFormatter translationFormatter = new TranslationFormatter(translations);
+  
+  /**
+   * The EMF package for the travels model.
+   */
   private static final TravelsPackage TRAVELS_PACKAGE = TravelsPackage.eINSTANCE;
+  
+  /**
+   * The EMF package for the types model.
+   */
   private static final TypesFactory TYPES_FACTORY = TypesFactory.eINSTANCE;
   
+  /**
+   * The zoom level that shows almost the complete world map. Determined with trial and error. 
+   */
+  private static final double FULL_MAP_ZOOM_LEVEL = 1.8;
   
-  private static final double FULL_MAP_ZOOM_LEVEL = 1.8;     // Shows almost complete world map. Determined with trial and error.
-  private static final double TRAVEL_ZOOM_LEVEL = 8.0;     // For the time being hard coded zoom level to show one travel. Determined with trial and error.
-  private static final double PICTURE_ZOOM_LEVEL = 12.0;     // For the time being hard coded zoom level to show a picture. Determined with trial and error.
-  private static final double HOME_ZOOM_LEVEL = 8.0;         // The zoom level for showing the home location.
+  /**
+   * For the time being a hard coded zoom level to show a picture. Determined with trial and error.
+   */
+  private static final double PICTURE_ZOOM_LEVEL = 12.0;
   
-  private TravelsService travelsService;
+  /**
+   * The zoom level for showing the home location.
+   */
+  private static final double HOME_ZOOM_LEVEL = 8.0;
+  
+  /**
+   * The {@code TravelsService} which provides services related to travels, e.g. showing the properties editor for the travels file.
+   */
+  private ITravelsService travelsService;
+  
+  /**
+   * The {@code TravelsRegistry} which provides access to the settings.
+   */
   private TravelsRegistry travelsRegistry;
+  
+  /**
+   * The resources ({@code TravelsAppResourcesFx) for this application.
+   */
   private TravelsAppResourcesFx appResources;
-  private TranslationFormatter translationFormatter = new TranslationFormatter(TRANSLATIONS);
+  
+  /**
+   * The EMF resource for the travels file.
+   */
   private EMFResource<Travels> travelsResource = null;
+  
+  /**
+   * The EMF resource for the vacation checklist file.
+   */
   private EMFResource<VacationChecklist> vacationChecklistResource = null;
+  
+  /**
+   * The {@code Travels} data.
+   */
   private Travels travels = null;
+  
+  /**
+   * The travels tree view, shown on the left side of the window.
+   */
   private EObjectTreeView treeView = null;
+  
+  /**
+   * The status label, shown at the bottom of the window.
+   */
   private Label statusLabel = new Label("");
   
   /**
@@ -198,21 +255,67 @@ public class TravelsWindow extends JfxStage {
    * The converter to convert a {@link Travel} to an HTML document.
    */
   private TravelToHtmlConverter travelToHtmlConverter;
+  
+  /**
+   * The map view ({@code TravelMapView}), shown in the right part of the window.
+   */
   private TravelMapView travelMapView;
+  
+  /**
+   * The location search window ({@code LocationSearchWindow}), which can be opened from the context menu of the map.
+   * <p>
+   * We use a single instance of the location search window, which is opened when needed.
+   */
   private LocationSearchWindow locationSearchWindow = null;
   
+  /**
+   * The browser to show the document view, shown in the right part of the window.
+   */
   private Browser browser;
+  
+  /**
+   * The tab in which the document view is shown. We need a reference to this tab to be able to check whether the document view is currently visible.
+   */
   private Tab browserTab;
+  
+  /**
+   * The browser to show the tips, shown in the right part of the window.
+   */
   private Browser tipsBrowser;
-  // This menu item defines the 'edit status'.
-  private CheckMenuItem travelsTreeEditableMenuItem;
+  
+  /**
+   *  This menu item defines the 'edit status'.
+   */
+  private CheckMenuItem travelsTreeEditModeMenuItem;
+  
+  /**
+   * The single reference to the Nominatim API, used to get location information based on coordinates and vice versa.
+   */
   private NominatimAPI nominatimAPI = null;
+  
+  /**
+   * The currently selected item in the tree view.
+   */
+  private TreeItem<Object> selectedTreeItem;
+  
+  /**
+   * The selected {@code Travel} (selected in the tree view).
+   */
   private ObjectProperty<Travel> selectedTravelProperty = new SimpleObjectProperty<>();
   
+  /**
+   * The travel related files folder text field, shown in the top bar.
+   */
   private TextField travelRelatedFilesFolder;
-  private Button createOrOpenButton;
   
-  private TreeItem<Object> selectedTreeItem;
+  /**
+   * The button to open or create the travel related files folder, shown in the top bar.
+   */
+  private Button createOrOpenTravelRelatedFilesFolderButton;
+  
+  /**
+   * The current information level, which determines the amount of information shown on the map view.
+   */
   private InformationLevel informationLevel;
   
 
@@ -220,52 +323,52 @@ public class TravelsWindow extends JfxStage {
    * Constructor
    * 
    * @param customization the GUI customization.
+   * @param travelsService the travels service which provides services related to travels, e.g. showing the properties editor for the travels file.
    */
-  public TravelsWindow(CustomizationFx customization, TravelsService travelsService) {
+  public TravelsWindow(CustomizationFx customization, ITravelsService travelsService, ResourceBundle translations) {
     super(customization, null);
     
     this.travelsService = travelsService;
+    this.translations = translations;
     travelsRegistry = TravelsRegistry.getInstance();
     appResources = (TravelsAppResourcesFx) getResources();
     
-    if (travelsRegistry.getTravelsFileName() == null) {
-      statusLabel.setText(TRANSLATIONS.getString("VacationsWindow.statusLabel.noVacationsFileNameMsg"));
-      Alert alert = componentFactory.createErrorDialog(
-          TRANSLATIONS.getString("VacationsWindow.alertNoVacationsFileName.header"),
-          TRANSLATIONS.getString("VacationsWindow.alertNoVacationsFileName.content"));
-      
-      ButtonType editorButtonType = new ButtonType(TRANSLATIONS.getString("VacationsWindow.alertNoVacationsFileName.editorButton"));
-      alert.getButtonTypes().add(editorButtonType);
-      
-      alert.showAndWait().ifPresent(response -> {
-        if (response == editorButtonType) {
-          travelsService.showPropertiesEditor(getBundle(TravelsWindow.class, "VacationsPropertyDescriptorsResource"));
-        }
-      });
-      
-      return;
-    }
+//    if (travelsRegistry.getTravelsFileName() == null) {
+//      statusLabel.setText(translations.getString("VacationsWindow.statusLabel.noVacationsFileNameMsg"));
+//      Alert alert = componentFactory.createErrorDialog(
+//          translations.getString("VacationsWindow.alertNoVacationsFileName.header"),
+//          translations.getString("VacationsWindow.alertNoVacationsFileName.content"));
+//      
+//      ButtonType editorButtonType = new ButtonType(translations.getString("VacationsWindow.alertNoVacationsFileName.editorButton"));
+//      alert.getButtonTypes().add(editorButtonType);
+//      
+//      alert.showAndWait().ifPresent(response -> {
+//        if (response == editorButtonType) {
+//          travelsService.showPropertiesEditor(getBundle(TravelsWindow.class, "VacationsPropertyDescriptorsResource"));
+//        }
+//      });
+//      
+//      return;
+//    }
     
-    if (travelsRegistry.getVacationChecklistFileName() == null) {
-      statusLabel.setText(TRANSLATIONS.getString("VacationsWindow.statusLabel.noVacationChecklistFileNameMsg"));
-      Alert alert = componentFactory.createErrorDialog(
-          TRANSLATIONS.getString("VacationsWindow.alertNoVacationChecklistFileName.header"),
-          TRANSLATIONS.getString("VacationsWindow.alertNoVacationChecklistFileName.content"));
-      
-      ButtonType editorButtonType = new ButtonType(TRANSLATIONS.getString("VacationsWindow.alertNoVacationsFileName.editorButton"));
-      alert.getButtonTypes().add(editorButtonType);
-      
-      alert.showAndWait().ifPresent(response -> {
-        if (response == editorButtonType) {
-          travelsService.showPropertiesEditor(getBundle(TravelsWindow.class, "VacationsPropertyDescriptorsResource"));
-        }
-      });
-      
-      return;
-    }
-    
-    editUserSettingsIfNeeded();
-    
+//    if (travelsRegistry.getVacationChecklistFileName() == null) {
+//      statusLabel.setText(translations.getString("VacationsWindow.statusLabel.noVacationChecklistFileNameMsg"));
+//      Alert alert = componentFactory.createErrorDialog(
+//          translations.getString("VacationsWindow.alertNoVacationChecklistFileName.header"),
+//          translations.getString("VacationsWindow.alertNoVacationChecklistFileName.content"));
+//      
+//      ButtonType editorButtonType = new ButtonType(translations.getString("VacationsWindow.alertNoVacationsFileName.editorButton"));
+//      alert.getButtonTypes().add(editorButtonType);
+//      
+//      alert.showAndWait().ifPresent(response -> {
+//        if (response == editorButtonType) {
+//          travelsService.showPropertiesEditor(getBundle(TravelsWindow.class, "VacationsPropertyDescriptorsResource"));
+//        }
+//      });
+//      
+//      return;
+//    }
+        
     travelToHtmlConverterSettings = TravelToHtmlConverterSetting.getDefaultSettings();
     travelToHtmlConverter = new TravelToHtmlConverter(travelToHtmlConverterSettings);
     
@@ -286,7 +389,7 @@ public class TravelsWindow extends JfxStage {
       Alert alert = componentFactory.createYesNoConfirmationDialog(
           null,
           translationFormatter.formatText("VacationsWindow.alertVacationsFileNotFound.header", travelsRegistry.getTravelsFileName()),
-          TRANSLATIONS.getString("VacationsWindow.alertVacationsFileNotFound.content"));
+          translations.getString("VacationsWindow.alertVacationsFileNotFound.content"));
       alert.showAndWait().ifPresent(response -> {
         if (response == ButtonType.YES) {
           LOGGER.severe("yes, create file");
@@ -316,7 +419,7 @@ public class TravelsWindow extends JfxStage {
       Alert alert = componentFactory.createYesNoConfirmationDialog(
           null,
           translationFormatter.formatText("VacationsWindow.alertVacationChecklistFileNotFound.header", travelsRegistry.getVacationChecklistFileName()),
-          TRANSLATIONS.getString("VacationsWindow.alertVacationChecklistFileNotFound.content"));
+          translations.getString("VacationsWindow.alertVacationChecklistFileNotFound.content"));
       alert.showAndWait().ifPresent(response -> {
         if (response == ButtonType.YES) {
           LOGGER.severe("yes, create file");
@@ -379,58 +482,6 @@ public class TravelsWindow extends JfxStage {
     return travelMapView;
   }  
   
-  public ObjectProperty<Travel> selectedTravelProperty() {
-    return selectedTravelProperty;
-  }
-
-  /**
-   * If the travels file doesn't exist and/or the vacations folder doesn't exist ask the user whether they should be created, or to change the user settings.
-   */
-  private void editUserSettingsIfNeeded() {
-    File travelsFile = new File(travelsRegistry.getTravelsFileName());
-    File travelsFolder = new File(travelsRegistry.getVacationsFolderName());
-    if (!travelsFile.exists()  ||  !travelsFolder.exists()) {
-      String headerText = null;
-      if (!travelsFile.exists()  &&  !travelsFolder.exists()) {
-        headerText = "The travels file '" + travelsRegistry.getTravelsFileName() + "' and the travels folder '" + travelsRegistry.getVacationsFolderName() + "' both don't exist";
-      } else if (!travelsFile.exists()) {
-        headerText = "The travels file '" + travelsRegistry.getTravelsFileName() + "' doesn't exist";
-      } else {
-        headerText = "The travels folder '" + travelsRegistry.getVacationsFolderName() + "' doesn't exist";
-      }
-      Optional<UserChoice> optionalUserChoice = componentFactory.createChoiceDialog("How to continue?", headerText, "what to do?", UserChoice.SHOW_SETTINGS_EDITOR, UserChoice.values()).showAndWait();
-      if (optionalUserChoice.isPresent()) {
-        UserChoice userChoice = optionalUserChoice.get();
-        switch (userChoice) {
-        case SHOW_SETTINGS_EDITOR:
-          travelsService.showPropertiesEditor(getBundle(TravelsWindow.class, "TravelsPropertyDescriptorsResource"));
-          break;
-          
-        case CREATE_TRAVELS_FILE:
-          // TODO
-          break;
-          
-        case CREATE_TRAVELS_FOLDER:
-          // TODO
-          break;
-          
-        case CREATE_TRAVELS_FILE_AND_FOLDER:
-          // TODO
-          break;
-        }
-      }
-    }
-//    File userPropertiesFile = new File(travelsRegistry.getUserPropertiesFileName());
-//    LOGGER.info("userPropertiesFile: " + userPropertiesFile.getAbsolutePath());
-//    if (!userPropertiesFile.exists()) {
-//      EMFResource<PropertyGroup> propertiesResource = new EMFResource<>(PropertiesPackage.eINSTANCE, () -> PropertiesFactory.eINSTANCE.createPropertyGroup(), ".xmi");
-//      PropertyGroup propertyGroup = propertiesResource.newEObject();
-//      propertyGroup.setName("Travels");
-//      Property property = PropertiesFactory.eINSTANCE.createProperty();
-//      property.setName(NEWLINE);
-//    }
-  }
-  
 
   enum UserChoice {
     SHOW_SETTINGS_EDITOR("Edit User Settings"),
@@ -475,8 +526,8 @@ public class TravelsWindow extends JfxStage {
     // if it exists, set the button as open button, else set the button as create button
     final String travelFilesFolder2 = travelFilesFolder;
     if (fileExists) {
-      createOrOpenButton.setText("Open");
-      createOrOpenButton.setOnAction((_) -> {
+      createOrOpenTravelRelatedFilesFolderButton.setText("Open");
+      createOrOpenTravelRelatedFilesFolderButton.setOnAction((_) -> {
         try {
           Desktop.getDesktop().open(new File(travelFilesFolder2));
         } catch (IOException e1) {
@@ -484,8 +535,8 @@ public class TravelsWindow extends JfxStage {
         }
       });
     } else {
-      createOrOpenButton.setText("Create");
-      createOrOpenButton.setOnAction((_) -> {
+      createOrOpenTravelRelatedFilesFolderButton.setText("Create");
+      createOrOpenTravelRelatedFilesFolderButton.setOnAction((_) -> {
         File folder = new File(travelFilesFolder2);
         folder.mkdir();
       });
@@ -498,22 +549,6 @@ public class TravelsWindow extends JfxStage {
     updateTipsPane();
     
     LOGGER.info("<=");
-  }
-
-  /**
-   * Get a {@link ResourceBundle} for the default locale.
-   * 
-   * @param clazz a class from the package in which the ResourceBundle is located.
-   * @param bundle basename of the resource bundle
-   * @return the requested ResourceBundle
-   */
-  public static ResourceBundle getBundle(Class<? extends Object> clazz, String bundle) {
-      String bundlePath = clazz.getPackage().getName() + "." + bundle;
-      LOGGER.info("bundlePath: " + bundlePath);
-      Locale locale = Locale.getDefault();
-      ClassLoader classLoader = clazz.getClassLoader();
-      LOGGER.info("classLoader: " + classLoader.getName());
-      return ResourceBundle.getBundle(bundlePath, locale, classLoader);
   }
   
   /**
@@ -616,7 +651,7 @@ public class TravelsWindow extends JfxStage {
         .setUpdateMapImageFileFunction(this::updateMapImageFile)
         .setUpdateMapImageWithCurrentMapViewSettingsFunction(this::updateMapImageWithCurrentMapViewSettings)
         .createTravelsTreeView();
-    treeView.setEditMode(travelsTreeEditableMenuItem.isSelected());
+    treeView.setEditMode(travelsTreeEditModeMenuItem.isSelected());
     treeView.setMinWidth(300);
     treeView.addObjectSelectionListener(this::handleNewTreeItemSelected);
     centerPane.getItems().add(treeView);
@@ -635,20 +670,15 @@ public class TravelsWindow extends JfxStage {
     browserTab.setText("Document");
     browser = new Browser(null);
     browserTab.setContent(browser);
-    ChangeListener<? super Tab> c = new ChangeListener<>() {
-
-      @Override
-      public void changed(ObservableValue<? extends Tab> observable, Tab oldValue, Tab newValue) {
-        if (newValue == null  ||  newValue != browserTab) {
-          // clear browser content and disable updating
-          browser.loadContent(null);
-        } else {
-          // reload browser content and enable updating
-          updateDocumentView();                    
-        }
+    tabPane.getSelectionModel().selectedItemProperty().addListener((_, _, newValue) -> {
+      if (newValue == null  ||  newValue != browserTab) {
+        // clear browser content and disable updating
+        browser.loadContent(null);
+      } else {
+        // reload browser content and enable updating
+        updateDocumentView(true);                    
       }
-    };
-    tabPane.getSelectionModel().selectedItemProperty().addListener(c);
+    });
     tabPane.getTabs().add(browserTab);
     
     tab = new Tab();
@@ -796,7 +826,7 @@ public class TravelsWindow extends JfxStage {
     menu.getItems().add(menuItem);
     
     // File: Edit Properties
-    MenuUtil.addMenuItem(menu, "Edit Properties", _ -> travelsService.showPropertiesEditor(getBundle(TravelsWindow.class, "TravelsPropertyDescriptorsResource")));
+    MenuUtil.addMenuItem(menu, "Edit Properties", _ -> travelsService.showPropertiesEditor());
     
     if (travelsRegistry.isDevelopmentMode()) {
       // File: Edit Property Descriptors
@@ -815,14 +845,14 @@ public class TravelsWindow extends JfxStage {
     menu = new Menu("Edit");
 
     // Edit: Edit travels
-    travelsTreeEditableMenuItem = new CheckMenuItem("Edit travels");
-    travelsTreeEditableMenuItem.setSelected(false);
+    travelsTreeEditModeMenuItem = new CheckMenuItem("Edit travels");
+    travelsTreeEditModeMenuItem.setSelected(false);
     
-    travelsTreeEditableMenuItem.setOnAction(_ -> {
-        treeView.setEditMode(travelsTreeEditableMenuItem.isSelected());
-        travelMapView.setEditMode(travelsTreeEditableMenuItem.isSelected());
+    travelsTreeEditModeMenuItem.setOnAction(_ -> {
+        treeView.setEditMode(travelsTreeEditModeMenuItem.isSelected());
+        travelMapView.setEditMode(travelsTreeEditModeMenuItem.isSelected());
     });
-    menu.getItems().add(travelsTreeEditableMenuItem);
+    menu.getItems().add(travelsTreeEditModeMenuItem);
     
     
     // Menu: Update map image files
@@ -842,7 +872,7 @@ public class TravelsWindow extends JfxStage {
         travelToHtmlConverterSettings.remove(TravelToHtmlConverterSetting.SHOW_LOCATION_COORDINATES);
       }
       travelToHtmlConverter.updateSettings(travelToHtmlConverterSettings);
-      updateDocumentView();
+      updateDocumentView(browserTab.isSelected());
     });
     menu.getItems().add(showCoordinatesInDocumentMenuItem);
     
@@ -857,7 +887,7 @@ public class TravelsWindow extends JfxStage {
         travelToHtmlConverterSettings.add(TravelToHtmlConverterSetting.PARAGRAPH_MODE);
       }
       travelToHtmlConverter.updateSettings(travelToHtmlConverterSettings);
-      updateDocumentView();
+      updateDocumentView(browserTab.isSelected());
     });
     tableMode.setToggleGroup(toggleGroup);
     tableMode.setSelected(true);
@@ -871,7 +901,7 @@ public class TravelsWindow extends JfxStage {
         travelToHtmlConverterSettings.remove(TravelToHtmlConverterSetting.PARAGRAPH_MODE);
       }
       travelToHtmlConverter.updateSettings(travelToHtmlConverterSettings);
-      updateDocumentView();
+      updateDocumentView(browserTab.isSelected());
     });
     paragraphMode.setToggleGroup(toggleGroup);
     menu.getItems().addAll(tableMode, paragraphMode);
@@ -923,9 +953,9 @@ public class TravelsWindow extends JfxStage {
     
     Label label = componentFactory.createLabel("Folder with travel related files:");
     travelRelatedFilesFolder = componentFactory.createTextField(300, "Folder with travel related files");
-    createOrOpenButton = componentFactory.createButton("", "");
+    createOrOpenTravelRelatedFilesFolderButton = componentFactory.createButton("", "");
     
-    travelFilesFolderBar.getChildren().addAll(label, travelRelatedFilesFolder, createOrOpenButton);
+    travelFilesFolderBar.getChildren().addAll(label, travelRelatedFilesFolder, createOrOpenTravelRelatedFilesFolderButton);
     
     return travelFilesFolderBar;
   }
@@ -960,20 +990,17 @@ public class TravelsWindow extends JfxStage {
    * Animation is used while moving to the new location.
    */
   private void flyHome() {
-//    travelMapView.clear();
-//    
-////    travelMapView.setZoom(8);
-//    
-//    WGS84Coordinates mapCenter = null;
-//    Location homeLocation = travels.getHome();
-//    if (homeLocation != null) {
-//      mapCenter = new WGS84Coordinates(travels.getHome().getLatitude(), travels.getHome().getLongitude());
-//    }
-//        
-//    if (mapCenter != null) {
-////      travelMapView.setZoom(HOME_ZOOM_LEVEL);
-//      flyToIfEnabled(0.1, mapCenter, 3.0, HOME_ZOOM_LEVEL);
-//    }    
+    travelMapView.clear();
+    
+    WGS84Coordinates mapCenter = null;
+    Location homeLocation = travels.getHome();
+    if (homeLocation != null) {
+      mapCenter = new WGS84Coordinates(travels.getHome().getLatitude(), travels.getHome().getLongitude());
+    }
+        
+    if (mapCenter != null) {
+      flyToIfEnabled(0.1, mapCenter, 3.0, HOME_ZOOM_LEVEL);
+    }
   }
   
   /**
@@ -997,7 +1024,7 @@ public class TravelsWindow extends JfxStage {
   private void handleNewTreeItemSelected(Object source, TreeItem<Object> treeItem) {
     
     selectedTreeItem = treeItem;
-    updateDocumentView();
+    updateDocumentView(browserTab.isSelected());
     updateMapForSelectedTreeItem();
     
     selectedTravelProperty.setValue(getTravelForTreeItem(treeItem));
@@ -1005,22 +1032,26 @@ public class TravelsWindow extends JfxStage {
   }
   
   /**
-   * Update the document view for a newly selected item.
+   * Update the document view for a newly selected item, if the browser tab is selected.
    * <p>
    * The document view shows the generated document for the travel related to the selected item,
    * or a message if the selected item is not related to a travel.<br/>
    * If the selected item is a {@code Travel}, this is the related travel. Otherwise the parent relations are followed until
    * either a travel is found, or that the top of the hierarchy is encountered.
    * If a travel is found, that will be the related travel, otherwise there is no related travel.<br/>
-   * If the {@code treeItem} is null, there is also no related vacation.
+   * If the {@code selectedTreeItem} is null, there is also no related vacation.
    * 
+   * @param browserTabSelected indication of whether the browser tab is selected or not.<br/>
+   *                           We use a listener to the selected tab.
+   *                           When this listener indicates that the browser tab is selected, {@code browserTab.isSelected()} still returns false.
+   *                           Therefore we use this parameter.
    */
-  private void updateDocumentView() {
-    if (!browserTab.isSelected()) {
+  private void updateDocumentView(boolean browserTabSelected) {
+    if (!browserTabSelected) {
       return;
     }
     
-    String htmlText = TRANSLATIONS.getString("VacationsWindow.noVacationSelectedMsg");
+    String htmlText = translations.getString("VacationsWindow.noVacationSelectedMsg");
     LOGGER.info("htmlText=" + htmlText);
     
     if (selectedTreeItem != null) {
@@ -1129,10 +1160,16 @@ public class TravelsWindow extends JfxStage {
         if (travel != null) {
           // if the picture is part of a day, show that information, else the complete travel.
           day = picture.getDay();
+          WGS84BoundingBox boundingBox;
           if (day != null) {
-            addDayToMapView(travelMapView, day);
+            boundingBox = addDayToMapView(travelMapView, day);
           } else {
-            addTravelToMapView(travelMapView, travel, false, travelsTreeEditableMenuItem.isSelected());
+            boundingBox = addTravelToMapView(travelMapView, travel, false, travelsTreeEditModeMenuItem.isSelected());
+          }
+          if (boundingBox != null) {
+            WGS84Coordinates center = boundingBox.getCenter();
+            mapCenter = new WGS84Coordinates(center.getLatitude(), center.getLongitude());
+            zoomLevel = travelMapView.getZoomLevelForShowingBoundedBox(boundingBox);
           }
         }
         break;
@@ -1140,7 +1177,12 @@ public class TravelsWindow extends JfxStage {
       case TRAVEL:
         travel = picture.getTravel();
         if (travel != null) {
-          addTravelToMapView(travelMapView, travel, false, false);
+          WGS84BoundingBox travelsLayerBoundingBox = addTravelToMapView(travelMapView, travel, false, false);
+          if (travelsLayerBoundingBox != null) {
+            WGS84Coordinates center = travelsLayerBoundingBox.getCenter();
+            mapCenter = new WGS84Coordinates(center.getLatitude(), center.getLongitude());
+            zoomLevel = travelMapView.getZoomLevelForShowingBoundedBox(travelsLayerBoundingBox);
+          }
         }
         break;
       }
@@ -1164,14 +1206,23 @@ public class TravelsWindow extends JfxStage {
         if (day != null) {
           addDayToMapView(travelMapView, day);
         } else {
-          addTravelToMapView(travelMapView, travel, false, travelsTreeEditableMenuItem.isSelected());
+          WGS84BoundingBox travelsLayerBoundingBox = addTravelToMapView(travelMapView, travel, false, travelsTreeEditModeMenuItem.isSelected());
+          if (travelsLayerBoundingBox != null) {
+            WGS84Coordinates center = travelsLayerBoundingBox.getCenter();
+            mapCenter = new WGS84Coordinates(center.getLatitude(), center.getLongitude());
+            zoomLevel = travelMapView.getZoomLevelForShowingBoundedBox(travelsLayerBoundingBox);
+          }
         }
         break;
         
       case TRAVEL:
         travel = locationDataTuplet.getObject2();
-        addTravelToMapView(travelMapView, travel, false, travelsTreeEditableMenuItem.isSelected());
-        zoomLevel = TRAVEL_ZOOM_LEVEL;
+        WGS84BoundingBox travelsLayerBoundingBox = addTravelToMapView(travelMapView, travel, false, travelsTreeEditModeMenuItem.isSelected());
+        if (travelsLayerBoundingBox != null) {
+          WGS84Coordinates center = travelsLayerBoundingBox.getCenter();
+          mapCenter = new WGS84Coordinates(center.getLatitude(), center.getLongitude());
+          zoomLevel = travelMapView.getZoomLevelForShowingBoundedBox(travelsLayerBoundingBox);
+        }
         break;
       }
       
@@ -1191,14 +1242,23 @@ public class TravelsWindow extends JfxStage {
         if (day != null) {
           addDayToMapView(travelMapView, day);
         } else {
-          addTravelToMapView(travelMapView, travel, false, travelsTreeEditableMenuItem.isSelected());
+          WGS84BoundingBox travelsLayerBoundingBox = addTravelToMapView(travelMapView, travel, false, travelsTreeEditModeMenuItem.isSelected());
+          if (travelsLayerBoundingBox != null) {
+            WGS84Coordinates center = travelsLayerBoundingBox.getCenter();
+            mapCenter = new WGS84Coordinates(center.getLatitude(), center.getLongitude());
+            zoomLevel = travelMapView.getZoomLevelForShowingBoundedBox(travelsLayerBoundingBox);
+          }
         }
         break;
         
       case TRAVEL:
         travel = trackDataTuplet.getObject2();
-        addTravelToMapView(travelMapView, travel, false, travelsTreeEditableMenuItem.isSelected());
-        zoomLevel = TRAVEL_ZOOM_LEVEL;
+        WGS84BoundingBox travelsLayerBoundingBox = addTravelToMapView(travelMapView, travel, false, travelsTreeEditModeMenuItem.isSelected());
+        if (travelsLayerBoundingBox != null) {
+          WGS84Coordinates center = travelsLayerBoundingBox.getCenter();
+          mapCenter = new WGS84Coordinates(center.getLatitude(), center.getLongitude());
+          zoomLevel = travelMapView.getZoomLevelForShowingBoundedBox(travelsLayerBoundingBox);
+        }
         break;
       }
       
@@ -1211,7 +1271,6 @@ public class TravelsWindow extends JfxStage {
           GpxType gpxType = documentRoot.getGpx();
           WGS84BoundingBox boundingBox = GpxUtil.calculateBoundingBox(gpxType);
           WGS84Coordinates center = boundingBox.getCenter();
-          LOGGER.info("center: " + center.toString());
           mapCenter = new WGS84Coordinates(center.getLatitude(), center.getLongitude());
         } catch (IOException e) {
           LOGGER.severe("Error loading GPX file: " + fileReference.getFile() + ", " + e.getMessage());
@@ -1234,24 +1293,20 @@ public class TravelsWindow extends JfxStage {
         
       case TRAVEL:
         travel = day.getTravel();
-        WGS84BoundingBox travelsLayerBoundingBox = addTravelToMapView(travelMapView, travel, false, travelsTreeEditableMenuItem.isSelected());
+        WGS84BoundingBox travelsLayerBoundingBox = addTravelToMapView(travelMapView, travel, false, travelsTreeEditModeMenuItem.isSelected());
         if (travelsLayerBoundingBox != null) {
           WGS84Coordinates center = travelsLayerBoundingBox.getCenter();
           mapCenter = new WGS84Coordinates(center.getLatitude(), center.getLongitude());
-        }
-        if (travelsLayerBoundingBox != null) {
           zoomLevel = travelMapView.getZoomLevelForShowingBoundedBox(travelsLayerBoundingBox);
         }
         break;
       }
     } else if ((travel = getTravelForTreeItem(selectedTreeItem)) != null) {                      // Travel
       // In this case the showLevel isn't applicable
-      WGS84BoundingBox travelsLayerBoundingBox = addTravelToMapView(travelMapView, travel, false, travelsTreeEditableMenuItem.isSelected());
+      WGS84BoundingBox travelsLayerBoundingBox = addTravelToMapView(travelMapView, travel, false, travelsTreeEditModeMenuItem.isSelected());
       if (travelsLayerBoundingBox != null) {
         WGS84Coordinates center = travelsLayerBoundingBox.getCenter();
         mapCenter = new WGS84Coordinates(center.getLatitude(), center.getLongitude());
-      }
-      if (travelsLayerBoundingBox != null) {
         zoomLevel = travelMapView.getZoomLevelForShowingBoundedBox(travelsLayerBoundingBox);
       }
     } else if ((vacationsList = getVacationsListForTreeItem(selectedTreeItem)) != null) {            // vacations (the list)
@@ -2840,7 +2895,7 @@ public class TravelsWindow extends JfxStage {
       Alert alert = componentFactory.createYesNoConfirmationDialog(
           null,
           translationFormatter.formatText("VacationsWindow.alertVacationsFileNotFound.header", "../../../goedegep.vacations.app/src/main/resources/goedegep/vacations/VacationsDemo.xmi"),
-          TRANSLATIONS.getString("VacationsWindow.alertVacationsFileNotFound.content"));
+          translations.getString("VacationsWindow.alertVacationsFileNotFound.content"));
       alert.showAndWait();
     }
     
@@ -2875,7 +2930,7 @@ public class TravelsWindow extends JfxStage {
    */
   private void flyToIfEnabled(double waitTime, WGS84Coordinates mapPoint, double seconds, Double endZoomLevel) {
     
-    if (!travelsTreeEditableMenuItem.isSelected()) {
+    if (!travelsTreeEditModeMenuItem.isSelected()) {
 //      travelMapView.setCenter(mapPoint);
       travelMapView.flyTo(0.0, mapPoint, seconds, endZoomLevel);
     }
@@ -2883,7 +2938,7 @@ public class TravelsWindow extends JfxStage {
   }
   
   private void setZoomIfEnabled(Double zoomLevel) {
-    if (!travelsTreeEditableMenuItem.isSelected()) {
+    if (!travelsTreeEditModeMenuItem.isSelected()) {
       travelMapView.setZoom(zoomLevel);
     }
   }
@@ -2901,7 +2956,7 @@ public class TravelsWindow extends JfxStage {
   private void updateTitle() {
     StringBuilder buf = new StringBuilder();
     
-    buf.append(TRANSLATIONS.getString("VacationsWindow.windowTitle"));
+    buf.append(translations.getString("VacationsWindow.windowTitle"));
     buf.append(" - ");
     if (travelsResource.isDirty()) {
       buf.append("*");

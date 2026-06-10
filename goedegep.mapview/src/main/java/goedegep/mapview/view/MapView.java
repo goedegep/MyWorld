@@ -4,6 +4,7 @@ import java.util.function.Supplier;
 import java.util.logging.Logger;
 
 import goedegep.geo.WGS84Coordinates;
+import goedegep.mapview.impl.BaseMapAbstract;
 import goedegep.mapview.impl.MapViewCommon;
 import goedegep.mapview.view.impl.BaseMap;
 import goedegep.mapview.view.impl.TileImageView;
@@ -81,6 +82,10 @@ public class MapView extends MapViewCommon {
    * @param endZoom the zoom level to end. If null, the end zoom level will be the current zoom level.
    */
   public void flyTo(double waitTime, WGS84Coordinates mapPoint, double seconds, Double endZoom) {
+    if (endZoom != null && (endZoom < 0 || endZoom > BaseMapAbstract.getMaximumZoomLevel())) {
+      throw new IllegalArgumentException("Invalid endZoom: " + endZoom);
+    }
+    
     if ((timeline != null) && (timeline.getStatus() == Status.RUNNING)) {
       timeline.stop();
     }
@@ -103,9 +108,8 @@ public class MapView extends MapViewCommon {
       LOGGER.severe("Value too low for zoomLevel: " + zoomLevel);
       zoomLevel = 0;
     }
-    if (zoomLevel > 20) {
-      LOGGER.severe("Value too high for zoomLevel: " + zoomLevel);
-      zoomLevel = 20;
+    if (zoomLevel > BaseMapAbstract.getMaximumZoomLevel()) {
+      zoomLevel = BaseMapAbstract.getMaximumZoomLevel();
     }
     
     // Don't fly at calculated zoom level and then zoom out at the end.

@@ -139,7 +139,12 @@ public abstract class MapViewCommon extends MapViewAbstract {
 
     prefCenterProperty.addListener(_ -> baseMapAbstract.doSetCenter(prefCenterProperty.get()));
 
-    prefZoomProperty.addListener(_ -> doZoom(prefZoomProperty.get()));    
+    prefZoomProperty.addListener(_ -> doZoom(prefZoomProperty.get()));   
+    zoomProperty.addListener(_ -> {
+      if (zoomProperty.get() > 19) {
+        LOGGER.severe("zoom changed to: " + zoomProperty.get());
+      }
+    });
   }
 
   @Override
@@ -258,8 +263,11 @@ public abstract class MapViewCommon extends MapViewAbstract {
       zoomLevel = BaseMapAbstract.getMaximumZoomLevel();
     } else {
       zoomLevel = (int) (-1d*( (Math.log(maxDiff)/Math.log(2d)) - (Math.log(360d)/Math.log(2d))) + 1d);
-      if (zoomLevel < 1)
+      if (zoomLevel < 1) {
         zoomLevel = 1;
+      } else if (zoomLevel > BaseMapAbstract.getMaximumZoomLevel()) {
+        zoomLevel = BaseMapAbstract.getMaximumZoomLevel();
+      }
     }
 
     return zoomLevel;

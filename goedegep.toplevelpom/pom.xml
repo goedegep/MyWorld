@@ -36,7 +36,7 @@
     <media.version>1.0.0</media.version>    
     <pctools.version>1.0.0</pctools.version>    
     <rolodex.version>1.0.0</rolodex.version>
-    <travels.version>1.0.0</travels.version>
+    <travels.version>1.0.1</travels.version>
     <unitconverter.version>1.0.0</unitconverter.version>
   </properties>
   

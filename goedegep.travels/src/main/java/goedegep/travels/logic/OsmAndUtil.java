@@ -58,6 +58,7 @@ public class OsmAndUtil {
     iconMap.put(LocationCategory.BUILDING, "building");
     iconMap.put(LocationCategory.BRIDGE, "bridge_structure_suspension");
     iconMap.put(LocationCategory.BUSSTATION, "amenity_bus_station");
+    iconMap.put(LocationCategory.CABLE_CAR, "aerialway_cable_car");
     iconMap.put(LocationCategory.CAMPING, "camp_pitch");
     iconMap.put(LocationCategory.CANYON, "strait");
     iconMap.put(LocationCategory.CAR_RENTAL, "amenity_car_rental");
@@ -65,13 +66,13 @@ public class OsmAndUtil {
     iconMap.put(LocationCategory.CASTLE, "historic_castle");
     iconMap.put(LocationCategory.CAVE, "natural_cave_entrance");
     iconMap.put(LocationCategory.CITY_CENTER, "attraction_maze");
-    iconMap.put(LocationCategory.PLACE_OF_WORSHIP, "building_type_church");
     iconMap.put(LocationCategory.CINEMA, "amenity_cinema");
     iconMap.put(LocationCategory.CITY, "place_city");
     iconMap.put(LocationCategory.COMMUNITY_CENTER, "amenity_community_centre");
     iconMap.put(LocationCategory.CONVENTION_CENTER, "conference_centre");
     iconMap.put(LocationCategory.FERRY, "cargo_vehicle");
     iconMap.put(LocationCategory.FIRE_DEPARTMENT, "amenity_fire_station");
+    iconMap.put(LocationCategory.GUESTHOUSE, "accomodation");
     iconMap.put(LocationCategory.GOLF_COURSE, "golf_course");
     iconMap.put(LocationCategory.GOVERMENT, "special_poi_us_capitol");
     iconMap.put(LocationCategory.HIKING, "piste_hike");
@@ -95,6 +96,7 @@ public class OsmAndUtil {
     iconMap.put(LocationCategory.PHARMACY, "amenity_pharmacy");
     iconMap.put(LocationCategory.PARK, "park");
     iconMap.put(LocationCategory.PARKING, "parking");
+    iconMap.put(LocationCategory.PLACE_OF_WORSHIP, "building_type_church");
     iconMap.put(LocationCategory.POLICE, "amenity_police");
     iconMap.put(LocationCategory.POST_OFFICE, "amenity_post_office");
     iconMap.put(LocationCategory.RESTAURANT, "amenity_restaurant");

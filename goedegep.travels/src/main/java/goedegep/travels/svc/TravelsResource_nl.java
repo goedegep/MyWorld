@@ -1,4 +1,4 @@
-package goedegep.travels.gui;
+package goedegep.travels.svc;
 
 import java.util.ListResourceBundle;
 
