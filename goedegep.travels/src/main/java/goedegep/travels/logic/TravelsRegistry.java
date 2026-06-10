@@ -210,7 +210,7 @@ public class TravelsRegistry extends Registry {
     
     setAuthor("Peter Goedegebure");
     setShortProductInfo("Travels - Information about travels, like vacations, trips, etc.");
-    setPropertyDescriptorsFileName("..\\..\\src\\main\\resources\\goedegep\\travels\\logic\\VacationsPropertyDescriptors.xmi");
+    setPropertyDescriptorsFileName("goedegep\\travels\\logic\\VacationsPropertyDescriptors.xmi");
     setUserPropertiesFileName("VacationsUserPreferences.xmi");
     setVacationsFileName("D:\\Database\\Vacations\\Vacation.xmi");
     setVacationChecklistFileName("D:\\Database\\Vacations\\VacationChecklist.xmi");

@@ -69,7 +69,8 @@ public class PropertyDescriptorsTreeViewCreator {
     // Property Descriptors
     eObjectTreeItemClassListReferenceDescriptor = new EObjectTreeItemClassListReferenceDescriptor(PROPERTIES_PACKAGE.getPropertyDescriptorGroup_PropertyDescriptors())
 //        .setLabelText("Property Descriptors");
-        .setNodeTextFunction(_ -> "Property Descriptors");
+        .setNodeTextFunction(_ -> "Property Descriptors")
+        .addNodeOperationDescriptor(new NodeOperationDescriptorNew("New Property Descriptor", null, null));
     eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(eObjectTreeItemClassListReferenceDescriptor);
         
     return eObjectTreeItemClassDescriptor;

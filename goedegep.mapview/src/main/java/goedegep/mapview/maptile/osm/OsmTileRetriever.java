@@ -54,7 +54,7 @@ public class OsmTileRetriever implements TileRetriever {
       agent = "(" + System.getProperty("os.name") + " / " + System.getProperty("os.version") + " / " + System.getProperty("os.arch") + ")";
       LOGGER.severe("http.agent system property not set, using default: " + agent);
     }
-    httpAgent = "Gluon Maps/2.0.0 " + agent;
+    httpAgent = "goedegep MyWorld " + agent;
   }
 
   /**

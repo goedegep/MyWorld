@@ -19,6 +19,7 @@ import goedegep.events.model.EventInfo;
 import goedegep.events.model.EventsPackage;
 import goedegep.events.svc.EventsService;
 import goedegep.gpxeditor.gui.GPXWindow;
+import goedegep.gpxeditor.svc.GPXService;
 import goedegep.jfx.ComponentFactoryFx;
 import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.Operation;
@@ -309,7 +310,7 @@ class AttachmentsCell extends TableCell<EventInfo, Object> {
 
           vBox.setOnMouseClicked((_) -> {
             File file = new File(eventsDirectory, fileReference.getFile());
-            new GPXWindow(customization, file.getAbsolutePath());
+            new GPXWindow(customization, GPXService.getInstance(), file.getAbsolutePath());
           });
 
           hBox.getChildren().add(vBox);

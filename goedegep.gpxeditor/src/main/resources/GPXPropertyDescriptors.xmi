@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<properties:PropertyDescriptorGroup xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI"
+    xmlns:properties="http://goedegep.properties/model">
+  <propertyDescriptors name="osmUserAgent" description="To search for locations OpenStreetMap is used. This requires a text called a User Agent. This is only used to identify you as a user and to check that only a fair amount of search requests is performed.&#xA;If you do many searches they would like you to enter your email address. Otherwise any unique text will do."
+      displayName="Search request name"/>
+</properties:PropertyDescriptorGroup>

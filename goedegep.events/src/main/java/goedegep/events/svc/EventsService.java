@@ -408,7 +408,7 @@ public class EventsService extends Service {
   }
   
   @Override
-  protected void readApplicationProperties() {
+  protected void handleApplicationProperties() {
     Properties props = new Properties();
     try (InputStream in = getClass().getResourceAsStream("EventsApplication.properties")) {
         props.load(in);

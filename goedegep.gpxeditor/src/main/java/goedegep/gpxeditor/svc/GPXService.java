@@ -33,9 +33,24 @@ public class GPXService extends Service {
     if (instance == null) {
       instance = new GPXService();
       instance.initialize();
+      
+      instance.setOSMUserAgentSystemProperty();
     }
 
     return instance;
+  }
+  
+  /**
+   * Set the http.agent system property to the OSM User Agent string from the registry, if it is not set yet.
+   * <p>
+   * This is needed for proper usage of the OpenStreetMap API's; map tiles and Nominatim geocoding service.
+   */
+  private void setOSMUserAgentSystemProperty() {
+    String httpAgent = System.getProperty("http.agent");
+    if (httpAgent == null) {
+      String osmUserAgent = gpxRegistry.getOSMUserAgent();
+      System.setProperty("http.agent", osmUserAgent);
+    }    
   }
   
   /**
@@ -44,7 +59,7 @@ public class GPXService extends Service {
    * @param fileToOpen the GPX file to open, or null to start without a file.
    */
   public void showGPXWindow(String fileToOpen) {
-    GPXWindow gpxWindow = new GPXWindow(customization, fileToOpen);
+    GPXWindow gpxWindow = new GPXWindow(customization, instance, fileToOpen);
     gpxWindow.show();
   }
   
@@ -56,7 +71,7 @@ public class GPXService extends Service {
   }
   
   @Override
-  protected void readApplicationProperties() {
+  protected void handleApplicationProperties() {
     Properties props = new Properties();
     try (InputStream in = getClass().getResourceAsStream("GPXEditorApplication.properties")) {
         props.load(in);

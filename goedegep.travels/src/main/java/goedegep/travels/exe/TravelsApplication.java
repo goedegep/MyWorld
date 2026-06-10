@@ -6,6 +6,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import goedegep.jfx.JfxApplication;
+import goedegep.myworld.common.MyWorldUtil;
 import goedegep.travels.svc.TravelsService;
 import goedegep.util.RunningInEclipse;
 import goedegep.util.thread.ThreadUtil;
@@ -40,12 +41,13 @@ public class TravelsApplication extends JfxApplication {
 
   @Override
   public void start(Stage primaryStage) throws Exception {
-    String applicationName = getApplicationNameFromApplicationProperties();
         
     // Setup logging. Only log to a file when not running in Eclipse.
     String logFileBaseName = null;
     if (!RunningInEclipse.runningInEclipse()) {
-      logFileBaseName = System.getProperty("user.home") + File.separator + LOG_SUBFOLDER + File.separator + applicationName + "_logfile";
+      String applicationName = getApplicationNameFromApplicationProperties();
+//      logFileBaseName = System.getProperty("user.home") + File.separator + LOG_SUBFOLDER + File.separator + applicationName + "_logfile";
+      logFileBaseName = MyWorldUtil.createLogFileBaseName(applicationName);
     }
     logSetup(Level.SEVERE, logFileBaseName);
     

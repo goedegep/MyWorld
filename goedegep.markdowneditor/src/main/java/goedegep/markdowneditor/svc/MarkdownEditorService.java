@@ -6,9 +6,9 @@ import java.util.Properties;
 import goedegep.configuration.model.Look;
 import goedegep.jfx.AppResourcesFx;
 import goedegep.jfx.JfxApplication;
+import goedegep.markdowneditor.gui.MarkdownEditor;
 import goedegep.markdowneditor.gui.MarkdownEditorResources;
 import goedegep.markdowneditor.logic.MarkdownEditorRegistry;
-import goedegep.markdowneditor.gui.MarkdownEditor;
 import goedegep.myworld.common.Registry;
 import goedegep.myworld.common.Service;
 import javafx.scene.paint.Color;
@@ -60,20 +60,33 @@ public class MarkdownEditorService extends Service {
   }
   
   @Override
-  protected void readApplicationProperties() {
+  protected void handleApplicationProperties() {
+    Properties props = getApplicationProperties();
+
+    markdownEditorRegistry.setVersion(props.getProperty("markdowneditor.version"));
+    markdownEditorRegistry.setApplicationName(props.getProperty("markdowneditor.name"));
+    markdownEditorRegistry.setAuthor(props.getProperty("markdowneditor.author"));
+    markdownEditorRegistry.setCopyrightMessage(props.getProperty("markdowneditor.copyright"));
+    markdownEditorRegistry.setShortProductInfo(props.getProperty("markdowneditor.description"));    
+  }
+  
+  /**
+   * Get the application properties from the properties file.
+   * 
+   * @return the application properties read from the properties file.
+   */
+  public static Properties getApplicationProperties() {
     Properties props = new Properties();
-    try (InputStream in = getClass().getResourceAsStream(MARKDOWN_EDITOR_APPLICATION_PROPERTIES_FILE_NAME)) {
+    try (InputStream in = MarkdownEditorService.class.getResourceAsStream(MARKDOWN_EDITOR_APPLICATION_PROPERTIES_FILE_NAME)) {
         props.load(in);
         
-        markdownEditorRegistry.setVersion(props.getProperty("markdowneditor.version"));
-        markdownEditorRegistry.setApplicationName(props.getProperty("markdowneditor.name"));
-        markdownEditorRegistry.setAuthor(props.getProperty("markdowneditor.author"));
-        markdownEditorRegistry.setCopyrightMessage(props.getProperty("markdowneditor.copyright"));
-        markdownEditorRegistry.setShortProductInfo(props.getProperty("markdowneditor.description"));
+        return props;
     } catch (Exception e) {
       JfxApplication.reportException(null, e);
       System.exit(1);
     }
+    
+    return null;
   }
   
   @Override

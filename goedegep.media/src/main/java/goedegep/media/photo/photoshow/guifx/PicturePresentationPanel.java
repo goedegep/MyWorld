@@ -154,12 +154,9 @@ public class PicturePresentationPanel extends MediumPresentationPanelAbstract {
     zoomLevel = INITIAL_ZOOM_LEVEL;
     
     imageToViewScaleFactor = ImageViewUtil.calculateImageToViewScaleFactor(imageView, screenWidth, screenHeight);
-    LOGGER.severe("imageToViewScaleFactor: " + imageToViewScaleFactor);
     imageToViewScaleFactor = Math.min(imageToViewScaleFactor, MAX_SCALE_FACTOR);
-    LOGGER.severe("maximized imageToViewScaleFactor: " + imageToViewScaleFactor);
     
     Dimension2D imageViewDimensions = ImageViewUtil.calculateImageViewDimensions(imageView, imageToViewScaleFactor);
-    LOGGER.severe("imageViewDimensions: " + imageViewDimensions.getWidth() + ", " + imageViewDimensions.getHeight());
     
     // The actual zooming is done by setting the dimensions of the imageView.
     imageView.setFitWidth(imageViewDimensions.getWidth());

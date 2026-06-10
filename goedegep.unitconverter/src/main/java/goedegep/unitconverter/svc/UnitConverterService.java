@@ -56,7 +56,7 @@ public class UnitConverterService extends Service {
   }
   
   @Override
-  protected void readApplicationProperties() {
+  protected void handleApplicationProperties() {
     Properties props = new Properties();
     try (InputStream in = getClass().getResourceAsStream("UnitConverterApplication.properties")) {
         props.load(in);

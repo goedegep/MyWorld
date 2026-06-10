@@ -103,7 +103,7 @@ public class MediaService extends Service implements IMediaService {
   }
   
   @Override
-  protected void readApplicationProperties() {
+  protected void handleApplicationProperties() {
     Properties props = new Properties();
     try (InputStream in = getClass().getResourceAsStream("MediaApplication.properties")) {
         props.load(in);

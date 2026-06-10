@@ -1,6 +1,5 @@
 package goedegep.markdowneditor.exe;
 
-import java.io.InputStream;
 import java.util.Properties;
 import java.util.logging.Level;
 
@@ -37,33 +36,17 @@ public class MarkdownEditorApplication extends JfxApplication {
     
     // Setup logging. Only log to a file when not running in Eclipse.
     String logFileBaseName = null;
-    
     if (!RunningInEclipse.runningInEclipse()) {
-      String applicationName = null;
-      Properties props = new Properties();
-      try (InputStream in = MarkdownEditorService.class.getResourceAsStream(MarkdownEditorService.MARKDOWN_EDITOR_APPLICATION_PROPERTIES_FILE_NAME)) {
-          props.load(in);
-          
-          applicationName = props.getProperty("markdowneditor.name");
-      } catch (Exception e) {
-        JfxApplication.reportException(null, e);
-        System.exit(1);
-      }
-
+      String applicationName = getApplicationNameFromApplicationProperties();
       logFileBaseName = MyWorldUtil.createLogFileBaseName(applicationName);
     }
     logSetup(Level.SEVERE, logFileBaseName);
-    
+        
     // Catch any uncaught exceptions and report them.
-    Thread.UncaughtExceptionHandler uncaughtExceptionHandler = new Thread.UncaughtExceptionHandler() {
-      @Override
-      public void uncaughtException(Thread thread, Throwable ex) {
-        reportException(null, (Exception) ex);
-      }
-    };
     Thread javaFxApplicationThread = ThreadUtil.getThread("JavaFX Application Thread");
-    javaFxApplicationThread.setUncaughtExceptionHandler(uncaughtExceptionHandler);
+    javaFxApplicationThread.setUncaughtExceptionHandler((_, ex) -> reportException(null, (Exception) ex));
     
+    // Handle command line arguments. If there is at least one argument, the first argument is treated as the filename to open.
     String filename = null;
     if (appArgs.length > 0) {
       filename = appArgs[0];
@@ -75,5 +58,15 @@ public class MarkdownEditorApplication extends JfxApplication {
       reportException(null, ex);
     }
     
+  }
+  
+  /**
+   * Get the application name from the application properties.
+   * 
+   * @return the application name.
+   */
+  protected String getApplicationNameFromApplicationProperties() {
+    Properties properties = MarkdownEditorService.getApplicationProperties();
+    return properties.getProperty("travels.app.name");
   }
 }

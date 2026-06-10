@@ -24,6 +24,7 @@ import goedegep.gpx.model.TrkType;
 import goedegep.gpx.model.TrksegType;
 import goedegep.gpx.model.WptType;
 import goedegep.gpxeditor.logic.GPXRegistry;
+import goedegep.gpxeditor.svc.GPXService;
 import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.JfxStage;
 import goedegep.jfx.MenuUtil;
@@ -60,6 +61,7 @@ public class GPXWindow extends JfxStage {
   private static final String NEWLINE = System.getProperty("line.separator");
   private static final String WINDOW_TITLE = "GPX Editor";
 
+  private GPXService gpxService;
   private GPXRegistry gpxRegistry;
   private EMFResource<DocumentRoot> gpxResource = null;
   private EObjectTreeView gpxTreeView;
@@ -77,8 +79,10 @@ public class GPXWindow extends JfxStage {
    * 
    * @param customization the GUI customization.
    */
-  public GPXWindow(CustomizationFx customization, String fileToOpen) {
+  public GPXWindow(CustomizationFx customization, GPXService gpxService, String fileToOpen) {
     super(customization, WINDOW_TITLE);
+    
+    this.gpxService = gpxService;
 
     gpxRegistry = GPXRegistry.getInstance();
     
@@ -176,6 +180,14 @@ public class GPXWindow extends JfxStage {
       }
     });
     menu.getItems().add(menuItem);
+    
+    // File: Edit Properties
+    MenuUtil.addMenuItem(menu, "Edit Properties", _ -> gpxService.showPropertiesEditor());
+    
+    if (gpxRegistry.isDevelopmentMode()) {
+      // File: Edit Property Descriptors
+      MenuUtil.addMenuItem(menu, "Edit Property Descriptors", _ -> gpxService.showPropertyDescriptorsEditor());
+    }
             
     // File:Exit
     menuItem = componentFactory.createMenuItem("Exit");
@@ -348,7 +360,6 @@ public class GPXWindow extends JfxStage {
    * @param gpxFile - the GPX file to open.
    */
   private void openGpxFile(File gpxFile) {
-    LOGGER.severe("Opening: " + gpxFile.getAbsolutePath());
     
     GpxVersion gpxVersion = null;
     try {

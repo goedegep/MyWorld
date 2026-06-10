@@ -60,7 +60,7 @@ public class PCToolsService extends Service {
   }
   
   @Override
-  protected void readApplicationProperties() {
+  protected void handleApplicationProperties() {
     Properties props = new Properties();
     try (InputStream in = getClass().getResourceAsStream("PCToolsApplication.properties")) {
         props.load(in);

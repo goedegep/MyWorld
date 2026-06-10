@@ -427,7 +427,7 @@ public class InvoicesAndPropertiesService extends Service {
   
   
   @Override
-  protected void readApplicationProperties() {
+  protected void handleApplicationProperties() {
     Properties props = new Properties();
     try (InputStream in = getClass().getResourceAsStream("InvoicesAndPropertiesApplication.properties")) {
         props.load(in);

@@ -2,11 +2,13 @@ package goedegep.myworld.common;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ResourceBundle;
+import java.util.logging.Logger;
 
 import goedegep.configuration.model.ConfigurationFactory;
 import goedegep.configuration.model.Look;
@@ -16,6 +18,7 @@ import goedegep.properties.app.guifx.PropertiesEditor;
 import goedegep.properties.app.guifx.PropertyDescriptorsEditorFx;
 import goedegep.properties.model.PropertiesFactory;
 import goedegep.properties.model.PropertiesPackage;
+import goedegep.properties.model.PropertyDescriptorGroup;
 import goedegep.properties.model.PropertyGroup;
 import goedegep.util.RunningInEclipse;
 import goedegep.util.emf.EMFResource;
@@ -26,6 +29,11 @@ import goedegep.util.emf.EMFResource;
  * It provides the basic functionality to initialize the service, read application properties, create customization and handle user properties.
  */
 public abstract class Service implements IService {
+  private static final Logger LOGGER = Logger.getLogger(Service.class.getName());
+
+  /**
+   * The GUI custominzation.
+   */
   protected CustomizationFx customization;
   
   
@@ -46,7 +54,47 @@ public abstract class Service implements IService {
   
   @Override
   public void showPropertyDescriptorsEditor() {
-    new PropertyDescriptorsEditorFx(customization, getRegistry().getPropertyDescriptorsFileURI());
+    // We are not editing the file in targer/classes, but in src/main/resources. So we have to patch the path.
+    URI propertyDescriptorsFileURI = getRegistry().getPropertyDescriptorsFileURI();
+    LOGGER.severe("Property descriptors file URI: " + propertyDescriptorsFileURI);
+    
+    // Create a URI in the src/main/resources directory.
+    String propertyDescriptorsFileName = propertyDescriptorsFileURI.toString();
+    String propertyDescriptorsFileNameInSrc = propertyDescriptorsFileName.replace("target/classes", "src/main/resources");
+    LOGGER.severe("Source property descriptors file name: " + propertyDescriptorsFileNameInSrc);
+    
+    URI propertyDescriptorsFileURIInSrc = URI.create(propertyDescriptorsFileNameInSrc);
+    
+    if (!createEmptyPropertyDescriptorsFileIfNotExisting(propertyDescriptorsFileURIInSrc)) {
+      return;
+    }
+        
+    new PropertyDescriptorsEditorFx(customization, propertyDescriptorsFileURIInSrc);
+  }
+  
+  /**
+   * Create an empty property descriptors file if it doesn't exist.
+   * 
+   * @param propertyDescriptorsFileURIInSrc the URI of the property descriptors file in the src/main/resources directory.
+   * @return true if the file exists or was created successfully, false otherwise.
+   */
+  private boolean createEmptyPropertyDescriptorsFileIfNotExisting(URI propertyDescriptorsFileURIInSrc) {
+    Path propertyDescriptorsFilePath = Paths.get(propertyDescriptorsFileURIInSrc);
+    
+    if (!Files.exists(propertyDescriptorsFilePath)) {
+      LOGGER.severe("Property descriptors file doesn't exist: " + propertyDescriptorsFilePath.toString() + " - creating an empty property descriptors file.");
+                  
+      EMFResource<PropertyDescriptorGroup> propertyDescriptorsResource =  new EMFResource<PropertyDescriptorGroup>(PropertiesPackage.eINSTANCE, () -> PropertiesFactory.eINSTANCE.createPropertyDescriptorGroup(), ".xmi");
+      propertyDescriptorsResource.newEObject();
+      try {
+        propertyDescriptorsResource.save(propertyDescriptorsFilePath.toString());
+      } catch (IOException e) {
+        e.printStackTrace();
+        return false;
+      }
+    }
+    
+    return true;
   }
   
   /**
@@ -62,7 +110,7 @@ public abstract class Service implements IService {
     
     // Read application properties. These are typically stored in a properties file, named <application-name>Application.properties, within the application jar.
     // These are properties which are used by maven and the application.
-    readApplicationProperties();
+    handleApplicationProperties();
     
     // Create customization
     createCustomization();
@@ -85,7 +133,7 @@ public abstract class Service implements IService {
   /**
    * Read the application specific properties, which are read from a properties file.
    */
-  protected abstract void readApplicationProperties();
+  protected abstract void handleApplicationProperties();
   
   /**
    * Create the GUI customization.
@@ -113,7 +161,7 @@ public abstract class Service implements IService {
    * @return the application resources class.
    */
   protected abstract AppResourcesFx getAppResourcesFxClass();
-  
+    
   /**
    * Handle the user properties.
    * <p>

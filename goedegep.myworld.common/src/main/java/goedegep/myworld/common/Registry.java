@@ -1,14 +1,20 @@
 package goedegep.myworld.common;
 
 import java.io.File;
+import java.lang.reflect.Field;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
+
+import goedegep.util.Tuplet;
 
 /**
  * Common part of the registry of each MyWorld application.
  */
 public abstract class Registry {
+  private static final String NEWLINE = System.getProperty("line.separator");
   
   /**
    * The name of the application.
@@ -234,5 +240,50 @@ public abstract class Registry {
     }
     return known;
 
+  }
+  
+  public List<Tuplet<Field, Object>> getFields() {
+    return new ArrayList<Tuplet<Field, Object>>();
+  }
+  
+  public String toString() {
+
+    StringBuilder buf = new StringBuilder();
+
+    Class<?> c = getClass();
+    for (Tuplet<Field, Object> tuplet: getFields()) {
+      java.lang.reflect.Field f = tuplet.getObject1();
+      Object value = tuplet.getObject2();
+      buf.append(c.getSimpleName()).append(".").append(f.getName())
+      .append("=").append(String.valueOf(value)).append(NEWLINE);
+    }
+    
+    c = c.getSuperclass();
+    for (java.lang.reflect.Field f : c.getDeclaredFields()) {
+      try {
+        Object value = f.get(null); // null because field is static
+        buf.append(c.getSimpleName()).append(".").append(f.getName())
+        .append("=").append(String.valueOf(value)).append(NEWLINE);
+      } catch (Exception ex) {
+        buf.append(c.getSimpleName()).append(".").append(f.getName())
+        .append("=<error>").append(ex.getClass().getSimpleName()).append(NEWLINE);
+      }
+    }
+
+
+//    while (c != null && c != Object.class) {
+//      for (java.lang.reflect.Field f : c.getDeclaredFields()) {
+//        try {
+//          Object value = f.get(null); // null because field is static
+//          buf.append(c.getSimpleName()).append(".").append(f.getName())
+//          .append("=").append(String.valueOf(value)).append(NEWLINE);
+//        } catch (Exception ex) {
+//          buf.append(c.getSimpleName()).append(".").append(f.getName())
+//          .append("=<error>").append(ex.getClass().getSimpleName()).append(NEWLINE);
+//        }
+//      }
+//      c = c.getSuperclass();
+//    }
+    return buf.toString();
   }
 }

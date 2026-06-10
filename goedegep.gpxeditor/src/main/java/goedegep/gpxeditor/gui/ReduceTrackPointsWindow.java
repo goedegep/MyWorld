@@ -270,7 +270,6 @@ public class ReduceTrackPointsWindow extends JfxStage implements ObjectSelection
    */
   @Override
   public void objectSelected(Object source, Object object) {
-    LOGGER.severe("=> " + object);
     GpxType newGpx = getGpxForObject(object);
     
     if (!Objects.equals(gpx, newGpx)) {

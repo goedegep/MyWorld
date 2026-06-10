@@ -58,6 +58,8 @@ import javafx.scene.paint.Color;
 public class TravelsService extends Service implements ITravelsService {
   private static final Logger LOGGER = Logger.getLogger(TravelsService.class.getName());
   private static final String NEWLINE = System.getProperty("line.separator");
+  private static final String TRAVELS_APPLICATION_PROPERTIES_FILE_NAME = "TravelsApplication.properties";
+  
 
   /**
    * Singleton instance of the TravelsService.
@@ -317,26 +319,24 @@ public class TravelsService extends Service implements ITravelsService {
   }
   
   @Override
-  protected void readApplicationProperties() {
-    Properties props = new Properties();
-    try (InputStream in = getClass().getResourceAsStream("TravelsApplication.properties")) {
-        props.load(in);
-        
-        travelsRegistry.setVersion(props.getProperty("travels.version"));
-        travelsRegistry.setApplicationName(props.getProperty("travels.name"));
-        travelsRegistry.setAuthor(props.getProperty("travels.author"));
-        travelsRegistry.setCopyrightMessage(props.getProperty("travels.copyright"));
-        travelsRegistry.setShortProductInfo(props.getProperty("travels.description"));
-
-    } catch (Exception e) {
-      JfxApplication.reportException(null, e);
-      System.exit(1);
-    }
+  protected void handleApplicationProperties() {
+    Properties props = getApplicationProperties();
+    
+    travelsRegistry.setVersion(props.getProperty("travels.version"));
+    travelsRegistry.setApplicationName(props.getProperty("travels.name"));
+    travelsRegistry.setAuthor(props.getProperty("travels.author"));
+    travelsRegistry.setCopyrightMessage(props.getProperty("travels.copyright"));
+    travelsRegistry.setShortProductInfo(props.getProperty("travels.description"));    
   }
   
+  /**
+   * Get the application properties from the properties file.
+   * 
+   * @return the application properties read from the properties file.
+   */
   public static Properties getApplicationProperties() {
     Properties props = new Properties();
-    try (InputStream in = TravelsService.class.getResourceAsStream("TravelsApplication.properties")) {
+    try (InputStream in = TravelsService.class.getResourceAsStream(TRAVELS_APPLICATION_PROPERTIES_FILE_NAME)) {
         props.load(in);
         
         return props;
