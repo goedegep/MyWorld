@@ -192,12 +192,10 @@ public class InvoiceAndPropertyEditPanel extends EditPanelTemplate<InvoiceAndPro
    * @param invoicesAndPropertiesService a service used for adding invoices and properties.
    */
   private InvoiceAndPropertyEditPanel(CustomizationFx customization, InvoicesAndPropertiesService invoicesAndPropertiesService) {
-    super(customization, false);
+    super(customization, "InvoiceAndPropertyEditPanel", false);
     
     this.invoicesAndPropertiesService = invoicesAndPropertiesService;
     invoicesAndPropertiesRegistry = InvoicesAndPropertiesRegistry.getInstance();
-    
-    setId("InvoiceAndPropertyEditPanel");
   }
 
   @Override
@@ -284,7 +282,7 @@ public class InvoiceAndPropertyEditPanel extends EditPanelTemplate<InvoiceAndPro
         .setToolTipText("Archived")
         .build();
     
-    documentsEditPanel = new FileReferencesEditPanelBuilder(customization)
+    documentsEditPanel = new FileReferencesEditPanelBuilder(customization, "documents")
         .setReferencesEditPanelTitle("Documents")
         .setReferenceEditPanelTitle("Document")
         .setAddFileReferenceButtonText("Add document")
@@ -292,10 +290,9 @@ public class InvoiceAndPropertyEditPanel extends EditPanelTemplate<InvoiceAndPro
         .setInitialFolderSupplier(this::getInitialFolder)
         .setPrefix(invoicesAndPropertiesRegistry.getPropertyRelatedFilesFolder())
         .build();
-    documentsEditPanel.setId("documents");
     documentsEditPanel.addValueAndOrStatusChangeListener((_, _) -> updateAttachmentsFolderPathProperty());
     
-    picturesEditPanel = new FileReferencesEditPanelBuilder(customization)
+    picturesEditPanel = new FileReferencesEditPanelBuilder(customization, "pictures")
         .setReferencesEditPanelTitle("Pictures")
         .setReferenceEditPanelTitle("Picture")
         .setAddFileReferenceButtonText("Add picture")
@@ -303,11 +300,9 @@ public class InvoiceAndPropertyEditPanel extends EditPanelTemplate<InvoiceAndPro
         .setInitialFolderSupplier(this::getInitialFolder)
         .setPrefix(invoicesAndPropertiesRegistry.getPropertyRelatedFilesFolder())
         .build();
-    documentsEditPanel.setId("pictures");
     documentsEditPanel.addValueAndOrStatusChangeListener((_, _) -> updateAttachmentsFolderPathProperty());
     
-    invoiceAndPropertyItemsPanel = InvoiceAndPropertyItemsPanel.newInstance(customization, invoicesAndPropertiesService);
-    invoiceAndPropertyItemsPanel.setId("invoiceAndPropertyItemsPanel");
+    invoiceAndPropertyItemsPanel = InvoiceAndPropertyItemsPanel.newInstance(customization, "invoiceAndPropertyItemsPanel", invoicesAndPropertiesService);
    
     registerEditorComponents(dateControl, companyControl, descriptionControl, brandControl, typeControl, serialNumberControl,
         amountControl, fromDateControl, untilDateControl, remarksControl, archiveControl, invoiceAndPropertyItemsPanel);
@@ -356,17 +351,17 @@ public class InvoiceAndPropertyEditPanel extends EditPanelTemplate<InvoiceAndPro
       return;
     }
     
-    dateControl.setObject(value.getDate());
-    companyControl.setObject(value.getCompany());
-    descriptionControl.setObject(value.getDescription());
-    brandControl.setObject(value.getBrand());
-    typeControl.setObject(value.getType());
-    serialNumberControl.setObject(value.getSerialNumber());
-    amountControl.setObject(value.getAmount());
-    fromDateControl.setObject(value.getFromDate());
-    untilDateControl.setObject(value.getUntilDate());
-    remarksControl.setObject(value.getRemarks());
-    archiveControl.setObject(value.isArchive());
+    dateControl.setValue(value.getDate());
+    companyControl.setValue(value.getCompany());
+    descriptionControl.setValue(value.getDescription());
+    brandControl.setValue(value.getBrand());
+    typeControl.setValue(value.getType());
+    serialNumberControl.setValue(value.getSerialNumber());
+    amountControl.setValue(value.getAmount());
+    fromDateControl.setValue(value.getFromDate());
+    untilDateControl.setValue(value.getUntilDate());
+    remarksControl.setValue(value.getRemarks());
+    archiveControl.setValue(value.isArchive());
     
     documentsEditPanel.setObject(value.getDocuments());
     picturesEditPanel.setObject(value.getPictures());
@@ -564,7 +559,7 @@ public class InvoiceAndPropertyEditPanel extends EditPanelTemplate<InvoiceAndPro
       attachmentsFolderName = FileUtils.getPathRelativeToFolder(invoicesAndPropertiesRegistry.getPropertyRelatedFilesFolder(), attachmentsFolder.toString());
       toolTipText = "Attachments of the invoice and property are stored in the folder: " + attachmentsFolder.toString();
     }
-    attachmentsFolderControl.setObject(attachmentsFolderName);
+    attachmentsFolderControl.setValue(attachmentsFolderName);
     attachmentsFolderControl.getControl().setTooltip(new Tooltip(toolTipText));
     
     if (attachmentsFolder != null  &&  Files.exists(attachmentsFolder)) {

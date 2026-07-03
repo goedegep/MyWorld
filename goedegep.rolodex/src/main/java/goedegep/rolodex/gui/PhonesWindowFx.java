@@ -75,7 +75,7 @@ public class PhonesWindowFx extends JfxStage {
     
     createGUI();
     
-    phonesTable.addObjectSelectionListener((source, phone) -> {
+    phonesTable.addObjectSelectionListener((_, phone) -> {
         referredByPanel.setObject(phone);
         phoneEditPanel.setPhone(phone);
         if (phone != null) {
@@ -87,7 +87,7 @@ public class PhonesWindowFx extends JfxStage {
         }
     });
     
-    phoneAddressBookTable.addObjectSelectionListener((source, phoneAddressBookEntry) -> {
+    phoneAddressBookTable.addObjectSelectionListener((_, phoneAddressBookEntry) -> {
         phoneAddressBookEntryEditPanel.setPhoneAddressBookEntry(phoneAddressBookEntry);
     });
     
@@ -190,7 +190,7 @@ class PhoneEditPanel {
 
     HBox buttonsBox = componentFactory.createHBox(12.0);
     Button addButton = componentFactory.createButton("Add phone", "Add the phone to the Rolodex");
-    addButton.setOnAction((e) -> {
+    addButton.setOnAction((_) -> {
       Phone newPhone = createPhoneFromFields();
       if (newPhone != null) {
         rolodex.getPhoneList().getPhones().add(newPhone);
@@ -209,7 +209,7 @@ class PhoneEditPanel {
     });
     updateButton.setDisable(phoneProperty.getValue() == null);
 
-    updateButton.setOnAction((e) -> {
+    updateButton.setOnAction((_) -> {
       updatePhoneIfControlsAreValid();
     });
     buttonsBox.getChildren().add(updateButton);
@@ -383,7 +383,7 @@ class PhoneAddressBookEntryEditPanel {
 
     HBox buttonsBox = componentFactory.createHBox(12.0);
     Button addButton = componentFactory.createButton("Add entry", "Add the phone address book entry");
-    addButton.setOnAction((e) -> {
+    addButton.setOnAction((_) -> {
       PhoneAddressBookEntry newPhoneAddressBookEntry = createPhoneAddressBookEntryFromFields();
       if (newPhoneAddressBookEntry != null) {
         int index = 1;
@@ -410,7 +410,7 @@ class PhoneAddressBookEntryEditPanel {
     });
     updateButton.setDisable(phoneAddressBookEntryProperty.getValue() == null);
 
-    updateButton.setOnAction((e) -> {
+    updateButton.setOnAction((_) -> {
       updatePhoneAddressBookEntryIfControlsAreValid();
     });
     buttonsBox.getChildren().add(updateButton);
@@ -564,7 +564,6 @@ class PhonesTableDescriptor extends EObjectTableDescriptor<Phone> {
       new EObjectTableColumnDescriptorBasic<Phone>(ROLODEX_PACKAGE.getPhone_PhoneType(), "Phone type", true, true)
       );
   
-  @SuppressWarnings("serial")
   private static Map<Operation, TableRowOperationDescriptor<Phone>> rowOperations = new HashMap<>() {
     {
     put(Operation.DELETE_OBJECT, new TableRowOperationDescriptor<>("Delete"));
@@ -590,7 +589,6 @@ class PhoneAddressBookTableDescriptor extends EObjectTableDescriptor<PhoneAddres
       new EObjectTableColumnDescriptorBasic<PhoneAddressBookEntry>(ROLODEX_PACKAGE.getPhoneAddressBookEntry_PhoneNumber(), "Phone number", 300, true, true)
       );
   
-  @SuppressWarnings("serial")
   private static Map<Operation, TableRowOperationDescriptor<PhoneAddressBookEntry>> rowOperations = new HashMap<>() {
     {
     put(Operation.DELETE_OBJECT, new TableRowOperationDescriptor<>("Delete"));

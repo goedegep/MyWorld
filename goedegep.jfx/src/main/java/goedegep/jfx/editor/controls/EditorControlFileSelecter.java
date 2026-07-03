@@ -106,9 +106,9 @@ public class EditorControlFileSelecter extends EditorControlFileOrFolderSelecter
    * @param fileChooserTitle title for the FileChooser (may not be null)
    * @param optional Indication of whether the control is optional (if true) or mandatory.
    */
-  public static EditorControlFileSelecter newInstance(CustomizationFx customization, int textFieldWidth, String textFiedlToolTipText,
+  public static EditorControlFileSelecter newInstance(CustomizationFx customization, String id, int textFieldWidth, String textFiedlToolTipText,
       String fileChooserButtonText, String fileChooserButtonToolTipText, String fileChooserTitle, boolean optional) {
-    EditorControlFileSelecter editorControlFileSelecter = new EditorControlFileSelecter(customization, textFieldWidth, textFiedlToolTipText,
+    EditorControlFileSelecter editorControlFileSelecter = new EditorControlFileSelecter(customization, id, textFieldWidth, textFiedlToolTipText,
         fileChooserButtonText, fileChooserButtonToolTipText, fileChooserTitle, optional);
     editorControlFileSelecter.performInitialization();
     
@@ -126,9 +126,9 @@ public class EditorControlFileSelecter extends EditorControlFileOrFolderSelecter
    * @param fileChooserTitle title for the FileChooser (may not be null)
    * @param optional Indication of whether the control is optional (if true) or mandatory.
    */
-  private EditorControlFileSelecter(CustomizationFx customization, int textFieldWidth, String textFiedlToolTipText,
+  private EditorControlFileSelecter(CustomizationFx customization, String id, int textFieldWidth, String textFiedlToolTipText,
       String fileChooserButtonText, String fileChooserButtonToolTipText, String fileChooserTitle, boolean optional) {
-    super(customization, textFieldWidth, textFiedlToolTipText, fileChooserTitle, optional);
+    super(customization, id, textFieldWidth, textFiedlToolTipText, fileChooserTitle, optional);
     
     this.fileChooserButtonText = fileChooserButtonText;
     this.fileChooserButtonToolTipText = fileChooserButtonToolTipText;

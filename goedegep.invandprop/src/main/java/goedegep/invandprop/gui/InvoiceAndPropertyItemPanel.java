@@ -107,8 +107,8 @@ public class InvoiceAndPropertyItemPanel extends EditPanelTemplate<InvoiceAndPro
    * @param customization The GUI customization.
    * @return a new {@code InvoiceAndPropertyItemPanel} instance.
    */
-  public static InvoiceAndPropertyItemPanel newInstance(CustomizationFx customization) {
-    InvoiceAndPropertyItemPanel invoiceAndPropertyItemPanel = new InvoiceAndPropertyItemPanel(customization);
+  public static InvoiceAndPropertyItemPanel newInstance(CustomizationFx customization, String id) {
+    InvoiceAndPropertyItemPanel invoiceAndPropertyItemPanel = new InvoiceAndPropertyItemPanel(customization, id);
     
     invoiceAndPropertyItemPanel.performInitialization();
     
@@ -120,8 +120,8 @@ public class InvoiceAndPropertyItemPanel extends EditPanelTemplate<InvoiceAndPro
    * <p>
    * @param customization The GUI customization.
    */
-  private InvoiceAndPropertyItemPanel(CustomizationFx customization) {
-    super(customization, true);
+  private InvoiceAndPropertyItemPanel(CustomizationFx customization, String id) {
+    super(customization, id, true);
             
     invoicesAndPropertiesRegistry = InvoicesAndPropertiesRegistry.getInstance();
     value = InvAndPropFactory.eINSTANCE.createInvoiceAndPropertyItem();  // TODO shall there be a createObject() ?
@@ -198,7 +198,7 @@ public class InvoiceAndPropertyItemPanel extends EditPanelTemplate<InvoiceAndPro
         .setToolTipText("Archived")
         .build();
     
-    documentsEditPanel = new FileReferencesEditPanelBuilder(customization)
+    documentsEditPanel = new FileReferencesEditPanelBuilder(customization, "documents")
         .setReferencesEditPanelTitle("Documents")
         .setReferenceEditPanelTitle("Document")
         .setAddFileReferenceButtonText("Add document")
@@ -206,9 +206,8 @@ public class InvoiceAndPropertyItemPanel extends EditPanelTemplate<InvoiceAndPro
 //        .setInitialFolderSupplier(this::getInitialFolder)
         .setPrefix(invoicesAndPropertiesRegistry.getPropertyRelatedFilesFolder() + "/")
         .build();
-    documentsEditPanel.setId("documents");
     
-    picturesEditPanel = new FileReferencesEditPanelBuilder(customization)
+    picturesEditPanel = new FileReferencesEditPanelBuilder(customization, "pictures")
         .setReferencesEditPanelTitle("Pictures")
         .setReferenceEditPanelTitle("Picture")
         .setAddFileReferenceButtonText("Add picture")
@@ -216,7 +215,6 @@ public class InvoiceAndPropertyItemPanel extends EditPanelTemplate<InvoiceAndPro
 //        .setInitialFolderSupplier(this::getInitialFolder)
         .setPrefix(invoicesAndPropertiesRegistry.getPropertyRelatedFilesFolder() + "/")
         .build();
-    documentsEditPanel.setId("pictures");    
    
     registerEditorComponents(descriptionControl, brandControl, typeControl, serialNumberControl,
         amountControl, fromDateControl, untilDateControl, remarksControl, archiveControl);
@@ -402,15 +400,15 @@ public class InvoiceAndPropertyItemPanel extends EditPanelTemplate<InvoiceAndPro
       return;
     }
     
-    descriptionControl.setObject(value.getDescription());
-    brandControl.setObject(value.getBrand());
-    typeControl.setObject(value.getType());
-    serialNumberControl.setObject(value.getSerialNumber());
-    amountControl.setObject(value.getAmount());
-    fromDateControl.setObject(value.getFromDate());
-    untilDateControl.setObject(value.getUntilDate());
-    remarksControl.setObject(value.getRemarks());
-    archiveControl.setObject(value.isArchive());
+    descriptionControl.setValue(value.getDescription());
+    brandControl.setValue(value.getBrand());
+    typeControl.setValue(value.getType());
+    serialNumberControl.setValue(value.getSerialNumber());
+    amountControl.setValue(value.getAmount());
+    fromDateControl.setValue(value.getFromDate());
+    untilDateControl.setValue(value.getUntilDate());
+    remarksControl.setValue(value.getRemarks());
+    archiveControl.setValue(value.isArchive());
     
     documentsEditPanel.setObject(value.getDocuments());
     picturesEditPanel.setObject(value.getPictures());

@@ -81,9 +81,9 @@ public class EditorControlFolderSelecter extends EditorControlFileOrFolderSelect
    * @param folderChooserTitle title for the FolderChooser (may not be null)
    * @param optional Indication of whether the control is optional (if true) or mandatory.
    */
-  public static EditorControlFolderSelecter newInstance(CustomizationFx customization, int textFieldWidth, String textFiedlToolTipText,
+  public static EditorControlFolderSelecter newInstance(CustomizationFx customization, String id, int textFieldWidth, String textFiedlToolTipText,
       String folderChooserButtonText, String folderChooserButtonToolTipText, String folderChooserTitle, boolean optional) {
-    EditorControlFolderSelecter editorControlFolderSelecter = new EditorControlFolderSelecter(customization, textFieldWidth, textFiedlToolTipText,
+    EditorControlFolderSelecter editorControlFolderSelecter = new EditorControlFolderSelecter(customization, id, textFieldWidth, textFiedlToolTipText,
         folderChooserButtonText, folderChooserButtonToolTipText, folderChooserTitle, optional);
     editorControlFolderSelecter.performInitialization();
     
@@ -102,9 +102,9 @@ public class EditorControlFolderSelecter extends EditorControlFileOrFolderSelect
    * @param directoryChooserTitle title for the DirectoryChooser (may not be null)
    * @param optional Indication of whether the control is optional (if true) or mandatory.
    */
-  private EditorControlFolderSelecter(CustomizationFx customization, int textFieldWidth, String textFieldToolTipText,
+  private EditorControlFolderSelecter(CustomizationFx customization, String id, int textFieldWidth, String textFieldToolTipText,
       String folderChooserButtonText, String folderChooserButtonToolTipText, String directoryChooserTitle, boolean optional) {
-    super(customization, textFieldWidth, textFieldToolTipText, directoryChooserTitle, optional);
+    super(customization, id, textFieldWidth, textFieldToolTipText, directoryChooserTitle, optional);
     
     this.folderChooserButtonText = folderChooserButtonText;
     this.folderChooserButtonToolTipText = folderChooserButtonToolTipText;

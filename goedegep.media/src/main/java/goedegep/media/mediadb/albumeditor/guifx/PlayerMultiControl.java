@@ -48,8 +48,8 @@ public class PlayerMultiControl extends EditorMultiControlTemplate<Player> {
    * @param mediaDbService the media database service.
    * @return the newly created {@code PlayerEditPanel}.
    */
-  public static PlayerMultiControl newInstance(CustomizationFx customization, IMediaDbService mediaDbService) {
-    PlayerMultiControl playerEditPanel = new PlayerMultiControl(customization, mediaDbService);
+  public static PlayerMultiControl newInstance(CustomizationFx customization, String id, IMediaDbService mediaDbService) {
+    PlayerMultiControl playerEditPanel = new PlayerMultiControl(customization, id, mediaDbService);
     playerEditPanel.performInitialization();
     
     return playerEditPanel;
@@ -61,19 +61,17 @@ public class PlayerMultiControl extends EditorMultiControlTemplate<Player> {
    * @param customization the GUI customization
    * @param mediaDbService the media database service.
    */
-  private PlayerMultiControl(CustomizationFx customization, IMediaDbService mediaDbService) {
-    super(customization, false);
+  private PlayerMultiControl(CustomizationFx customization, String id, IMediaDbService mediaDbService) {
+    super(customization, id, false);
     
     this.mediaDbService = mediaDbService;
-    setId("playerEditPanel");
   }
 
 
   @Override
   public void createControls() {
 
-    artistControl = EditorControlArtist.newInstance(customization, mediaDbService);
-    artistControl.setId("playerArtist");
+    artistControl = EditorControlArtist.newInstance(customization, "playerArtist", mediaDbService);
     artistControl.setLabelBaseText("_Artist");
     
     instrumentsControl = new EditorControlString.Builder("playerInstruments")
@@ -133,8 +131,8 @@ public class PlayerMultiControl extends EditorMultiControlTemplate<Player> {
 
   @Override
   protected void fillControlsFromObject() {
-    artistControl.setObject(value.getArtist());
-    instrumentsControl.setObject(StringUtil.stringCollectionToCommaSeparatedStrings(value.getInstruments()));
+    artistControl.setValue(value.getArtist());
+    instrumentsControl.setValue(StringUtil.stringCollectionToCommaSeparatedStrings(value.getInstruments()));
   }
 
   @Override

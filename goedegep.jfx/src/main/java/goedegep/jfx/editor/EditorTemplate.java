@@ -187,6 +187,12 @@ public abstract class EditorTemplate<T> extends JfxStage implements Editor<T> {
     cancelButton.setCancelButton(true);
     cancelButton.setOnAction((_) -> closeWindow());
     buttonTypes.add(ButtonType.CANCEL);
+    
+    setOnCloseRequest((event) -> {
+      if (!getUserConfirmationInCaseOfUnsavedChanges()) {
+        event.consume();
+      }
+    });
   }
   
   /**

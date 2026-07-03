@@ -119,9 +119,6 @@
         <genParameters ecoreParameter="travels.ecore#//Travel/findDocument/documentPath"/>
       </genOperations>
       <genOperations ecoreOperation="travels.ecore#//Travel/getAllReferencedFiles"/>
-      <genOperations ecoreOperation="travels.ecore#//Travel/getDayNr">
-        <genParameters ecoreParameter="travels.ecore#//Travel/getDayNr/vacationElement"/>
-      </genOperations>
     </genClasses>
   </genPackages>
 </genmodel:GenModel>

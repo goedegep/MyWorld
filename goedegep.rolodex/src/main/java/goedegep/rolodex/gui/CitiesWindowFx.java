@@ -86,7 +86,7 @@ public class CitiesWindowFx extends JfxStage {
       
     });
     
-    citiesTable.addObjectSelectionListener((source, city) -> {
+    citiesTable.addObjectSelectionListener((_, city) -> {
         referredByPanel.setObject(city);
         cityEditPanel.setCity(city);
     });
@@ -201,7 +201,7 @@ class CityEditPanel {
     countryTextFieldRow = row;
 
     Button addButton = componentFactory.createButton("Add", "Add the city to the Rolodex");
-    addButton.setOnAction((e) -> {
+    addButton.setOnAction((_) -> {
       City newCity = createCityFromFields();
       if (newCity != null) {
         rolodex.getCityList().getCities().add(newCity);
@@ -220,7 +220,7 @@ class CityEditPanel {
     });
     updateButton.setDisable(cityProperty.getValue() == null);
 
-    updateButton.setOnAction((e) -> {
+    updateButton.setOnAction((_) -> {
       updateCityIfControlsAreValid();
     });
     gridPane.add(updateButton, 3, row);
@@ -327,7 +327,7 @@ class CityEditPanel {
           "Unknown country",
           "The country \'" + countryName + "\' doesn't exist in the Rolodex yet.",
           "Do you want to add it? (if you select no, also the city isn't added to the Rolodex)");
-      alert.showAndWait().filter(response -> response == ButtonType.YES).ifPresent(response -> {
+      alert.showAndWait().filter(response -> response == ButtonType.YES).ifPresent((_) -> {
         Country country = ROLODEX_FACTORY.createCountry();
         country.setCountryName(countryName);
         rolodex.getCountryList().getCountries().add(country);
@@ -352,7 +352,6 @@ class CitiesTableDescriptor extends EObjectTableDescriptor<City> {
 
   private static EObjectTableColumnDescriptorBasic<City> cityColumnDescriptor = new EObjectTableColumnDescriptorBasic<>(ROLODEX_PACKAGE.getCity_CityName(), "City", true, true);
   
-  @SuppressWarnings("serial")
   private static Map<Operation, TableRowOperationDescriptor<City>> rowOperations = new HashMap<>() {
     {
     put(Operation.DELETE_OBJECT, new TableRowOperationDescriptor<>("Delete"));

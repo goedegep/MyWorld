@@ -77,6 +77,7 @@ public class PhotoViewerMenuWindow extends JfxStage {
     String initiallySelectedFolder = MediaRegistry.getInstance().getPhotosFolder();    
     EditorControlFileSelecter fileSelecter = componentFactory.createEditorControlFileSelecter(
         300,
+        "fileSelecter",
         "Enter Photoshow specification file name",
         "Select Photoshow specification",
         "Click to select a Photoshow specification via a file selecter",
@@ -103,6 +104,7 @@ public class PhotoViewerMenuWindow extends JfxStage {
     
     EditorControlFolderSelecter folderSelecter = componentFactory.createEditorControlFolderSelecter(
         300,
+        "folderSelecter",
         "Enter folder that contains the photos to show",
         "Select photos folder",
         "Click to select a photos folder via a folder selecter",

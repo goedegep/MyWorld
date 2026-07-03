@@ -83,7 +83,7 @@ public class PhoneNumbersWindowFx extends JfxStage {
       
     });
     
-    phoneNumbersTable.addObjectSelectionListener((source, phoneNumber) -> {
+    phoneNumbersTable.addObjectSelectionListener((_, phoneNumber) -> {
         referredByPanel.setObject(phoneNumber);
         phoneNumberEditPanel.setPhoneNumber(phoneNumber);
     });
@@ -179,7 +179,7 @@ class PhoneNumberEditPanel {
 
     HBox buttonsBox = componentFactory.createHBox(12.0);
     Button addButton = componentFactory.createButton("Add phone number", "Add the phone number to the Rolodex");
-    addButton.setOnAction((e) -> {
+    addButton.setOnAction((_) -> {
       PhoneNumber newPhoneNumber = createPhoneNumberFromFields();
       if (newPhoneNumber != null) {
         rolodex.getPhoneNumberList().getPhoneNumbers().add(newPhoneNumber);
@@ -198,7 +198,7 @@ class PhoneNumberEditPanel {
     });
     updateButton.setDisable(phoneNumberProperty.getValue() == null);
 
-    updateButton.setOnAction((e) -> {
+    updateButton.setOnAction((_) -> {
       updatePhoneNumberIfControlsAreValid();
     });
     buttonsBox.getChildren().add(updateButton);
@@ -344,7 +344,6 @@ class PhoneNumbersTableDescriptor extends EObjectTableDescriptor<PhoneNumber> {
       new EObjectTableColumnDescriptorBasic<PhoneNumber>(ROLODEX_PACKAGE.getPhoneNumber_ConnectionType(), "Type", true, true)
       );
   
-  @SuppressWarnings("serial")
   private static Map<Operation, TableRowOperationDescriptor<PhoneNumber>> rowOperations = new HashMap<>() {
     {
     put(Operation.DELETE_OBJECT, new TableRowOperationDescriptor<>("Delete"));

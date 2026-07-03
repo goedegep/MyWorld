@@ -935,7 +935,6 @@ public class TravelsTreeViewCreator {
       FileReference fileReference = document.getDocumentReference();
       if (fileReference != null) {
         String fileName = fileReference.getFile();
-        LOGGER.info("Creating image for: " + fileName);
         if (fileName != null) {
           if (FileUtils.isPDFFile(fileName)) {
             image = ImageResource.PDF.getImage();
@@ -951,7 +950,6 @@ public class TravelsTreeViewCreator {
             image = ImageResource.DOCUMENT.getImage();
           }
         }
-        LOGGER.info("image = " + image);
       }
     }
 
@@ -1003,9 +1001,7 @@ public class TravelsTreeViewCreator {
             FileReference fileReference = picture.getPictureReference();
             Image image = null;
             if (fileReference != null) {
-              LOGGER.info("Creating image for: " + picture.getPictureReference().getFile());
               image = new Image("file:" + picture.getPictureReference().getFile(), 150, 150, true, true);
-              LOGGER.info("image = " + image);
             }
             return image;
           } else {
@@ -1225,23 +1221,19 @@ public class TravelsTreeViewCreator {
    * @return true if the {@code dragboard} information can be dropped on {@code eObjectTreeItem}, false otherwise.
    */
   private boolean isDropPossible(EObjectTreeItem eObjectTreeItem, Dragboard dragboard) {
-    LOGGER.info("=>");
     
     // If the dragboard has no files, there's nothing to drop.
     if (!dragboard.hasFiles()) {
-      LOGGER.info("<= false (no files)");
       return false;
     }
     
     List<File> files = dragboard.getFiles();
     if (files == null  ||  files.isEmpty()) {
-      LOGGER.info("<= false (file list null or empty)");
       return false;
     }
     
     for (File file: files) {
       if (!FileUtils.isPictureFile(file)  && !FileUtils.isGpxFile(file)  &&  !FileUtils.isPDFFile(file)) {
-        LOGGER.info("<= false (one of the files is not a picture, GPX or PDF file)");
         return false;
       }
     }
@@ -1249,13 +1241,9 @@ public class TravelsTreeViewCreator {
     // Check whether the item is a list of VacationElement, in which case all supported files can be dropped.
     EStructuralFeature contentStructuralFeature = eObjectTreeItem.getEStructuralFeature();
     if (contentStructuralFeature != null) {
-      LOGGER.info("contentStructuralFeature=" + contentStructuralFeature.toString());
       if (contentStructuralFeature instanceof EReference contentEReference) {
-        LOGGER.info("contentEReference=" + contentEReference.toString());
         EClass contentReferenceType = contentEReference.getEReferenceType();
-        LOGGER.info("contentReferenceType=" + contentReferenceType.toString());
         if (contentEReference.isMany()  &&  contentReferenceType.equals(travelsPackage.getVacationElement())) {
-          LOGGER.info("<= true (it is a list of VacationElement reference)");
           return true;
         }
       }
@@ -1265,13 +1253,9 @@ public class TravelsTreeViewCreator {
     EObjectTreeItem parentEObjectTreeItem = (EObjectTreeItem) eObjectTreeItem.getParent();
     contentStructuralFeature = parentEObjectTreeItem.getEStructuralFeature();
     if (contentStructuralFeature != null) {
-      LOGGER.info("contentStructuralFeature=" + contentStructuralFeature.toString());
       if (contentStructuralFeature instanceof EReference contentEReference) {
-        LOGGER.info("contentEReference=" + contentEReference.toString());
         EClass contentReferenceType = contentEReference.getEReferenceType();
-        LOGGER.info("contentReferenceType=" + contentReferenceType.toString());
         if (contentEReference.isMany()  &&  contentReferenceType.equals(travelsPackage.getVacationElement())) {
-          LOGGER.info("<= true (parent is a list of VacationElement reference)");
           return true;
         }
       }
@@ -1281,7 +1265,6 @@ public class TravelsTreeViewCreator {
     boolean allFilesAreDocuments = true;
     for (File file: files) {
       if (!FileUtils.isPDFFile(file)) {
-        LOGGER.info("<= false (one of the files is not a PDF file)");
         allFilesAreDocuments = false;
         break;
       }
@@ -1316,7 +1299,6 @@ public class TravelsTreeViewCreator {
       }
     }
     
-    LOGGER.info("<= false (not a VacationElement reference)");
     return false;
   }
   
@@ -1331,7 +1313,6 @@ public class TravelsTreeViewCreator {
    * @return true if the drop was successful, false otherwise.
    */
   private boolean handleDrop(EObjectTreeItem eObjectTreeItem, Dragboard dragboard) {
-    LOGGER.info("=>");
     
     if (!isDropPossible(eObjectTreeItem, dragboard)) {
       return false;
@@ -1346,7 +1327,6 @@ public class TravelsTreeViewCreator {
     Object object = eObjectTreeItem.getValue();
     EStructuralFeature contentStructuralFeature = eObjectTreeItem.getEStructuralFeature();
     if (contentStructuralFeature != null) {
-      LOGGER.info("contentStructuralFeature=" + contentStructuralFeature.toString());
       if (contentStructuralFeature instanceof EReference contentEReference) {
         EClass contentReferenceType = contentEReference.getEReferenceType();
         if (contentEReference.isMany()  &&  contentReferenceType.equals(travelsPackage.getVacationElement())) {
@@ -1361,7 +1341,9 @@ public class TravelsTreeViewCreator {
             } else if (FileUtils.isGpxFile(file)) {
               list.add(createGPXTrack(file));
             } else if (FileUtils.isPDFFile(file)) {
-              list.add(createDocument(file));
+              Document document = createDocument(file);
+              document.getDocumentReference().setTitle("NEW DOCUMENT");
+              list.add(document);
             }
           }
           return true;
@@ -1375,11 +1357,8 @@ public class TravelsTreeViewCreator {
     Object parentEObjectTreeItemContent = parentEObjectTreeItem.getValue();
     contentStructuralFeature = parentEObjectTreeItem.getEStructuralFeature();
     if (contentStructuralFeature != null) {
-      LOGGER.info("contentStructuralFeature=" + contentStructuralFeature.toString());
       if (contentStructuralFeature instanceof EReference contentEReference) {
-        LOGGER.info("contentEReference=" + contentEReference.toString());
         EClass contentReferenceType = contentEReference.getEReferenceType();
-        LOGGER.info("contentReferenceType=" + contentReferenceType.toString());
         if (contentEReference.isMany()  &&  contentReferenceType.equals(travelsPackage.getVacationElement())) {
           LOGGER.severe("<= true (parent is a list of VacationElement reference)");
           @SuppressWarnings("unchecked")
@@ -1405,7 +1384,6 @@ public class TravelsTreeViewCreator {
     object = eObjectTreeItem.getValue();
     contentStructuralFeature = eObjectTreeItem.getEStructuralFeature();
     if (contentStructuralFeature != null) {
-      LOGGER.info("contentStructuralFeature=" + contentStructuralFeature.toString());
       if (contentStructuralFeature instanceof EReference contentEReference) {
         if (contentEReference.equals(travelsPackage.getTravel_Documents())) {
           LOGGER.severe("Yes it is the list of Travel/Documents");
@@ -1428,11 +1406,7 @@ public class TravelsTreeViewCreator {
     parentEObjectTreeItemContent = parentEObjectTreeItem.getValue();
     contentStructuralFeature = parentEObjectTreeItem.getEStructuralFeature();
     if (contentStructuralFeature != null) {
-      LOGGER.info("contentStructuralFeature=" + contentStructuralFeature.toString());
       if (contentStructuralFeature instanceof EReference contentEReference) {
-        LOGGER.info("contentEReference=" + contentEReference.toString());
-        EClass contentReferenceType = contentEReference.getEReferenceType();
-        LOGGER.info("contentReferenceType=" + contentReferenceType.toString());
         if (contentEReference.equals(travelsPackage.getTravel_Documents())) {
           LOGGER.severe("<= true (parent is the list of Travel/Documents)");
           @SuppressWarnings("unchecked")
@@ -1530,7 +1504,6 @@ public class TravelsTreeViewCreator {
   }
     
   private static boolean canDocumentBeOpened(EObjectTreeItem treeItem) {
-    LOGGER.info("=> treeItem=" + treeItem);
     
     if (treeItem == null  ||  !(treeItem instanceof EObjectTreeItemForObject)) {
       return false;
@@ -1579,7 +1552,6 @@ public class TravelsTreeViewCreator {
    * @param treeItem the {@code EObjectTreeItem} for which the file is to be opened.
    */
   private static void openDocument(EObjectTreeItem treeItem) {
-    LOGGER.info("=> treeItem=" + treeItem);
 
     if (treeItem instanceof EObjectTreeItemForObject eObjectTreeItemForObject) {
       FileReference fileReference = null;
@@ -1593,16 +1565,14 @@ public class TravelsTreeViewCreator {
         throw new IllegalArgumentException("Unsupported value: " + value);
       }
       
-      if (fileReference == null) {
+      if (fileReference == null  ||  fileReference.getFile() == null) {
         return;
       }
       
       String filename = fileReference.getFile().trim();
-      if (filename == null) {
+      if (filename.isEmpty()) {
         return;
       }
-
-      LOGGER.info("Going to open: " + filename);
 
       File file = new File(filename);
       try {
@@ -1617,7 +1587,6 @@ public class TravelsTreeViewCreator {
   
   // Probably has to go with next below
   private boolean canGPXFileBeOpened(EObjectTreeItem treeItem) {
-    LOGGER.info("=> treeItem=" + treeItem);
     
     if (treeItem == null  ||  !(treeItem instanceof EObjectTreeItemForObject)) {
       return false;
@@ -1653,14 +1622,11 @@ public class TravelsTreeViewCreator {
   
   // TODO MOVE TO TravelsWindow
   private void openGPXFile(EObjectTreeItem treeItem) {
-    LOGGER.info("=> treeItem=" + treeItem);
     
     EObjectTreeItemForObject eObjectTreeItemForObject = (EObjectTreeItemForObject) treeItem;
     GPXTrack gpxTrack = (GPXTrack) eObjectTreeItemForObject.getValue();
     FileReference trackReference = gpxTrack.getTrackReference();
     String filename = trackReference.getFile().trim();
-    
-    LOGGER.info("Going to open: " + filename);
     
     GPXService.getInstance().showGPXWindow(filename);
   }

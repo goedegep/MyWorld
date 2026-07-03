@@ -133,7 +133,7 @@ public class FileReferencesEditPanel extends EditPanelTemplate<List<FileReferenc
    * @param builder a builder specifying the panel.
    */
   private FileReferencesEditPanel(FileReferencesEditPanelBuilder builder) {
-    super(builder.customization, true);
+    super(builder.customization, builder.id, true);
     
     setLabelBaseText(builder.referencesEditPanelTitle);
 //    label = builder.referencesEditPanelTitle;
@@ -291,7 +291,7 @@ public class FileReferencesEditPanel extends EditPanelTemplate<List<FileReferenc
    * @return the created file reference (attachment) panel.
    */
   private void createNewAttachmentEditPanel(FileReference fileReference, boolean expand) {
-    FileReferenceEditPanel fileReferenceEditPanel = new FileReferenceEditPanel.FileReferencePanelBuilder(customization)
+    FileReferenceEditPanel fileReferenceEditPanel = new FileReferenceEditPanel.FileReferencePanelBuilder(customization, "fileReferencePanel")
         .setDefaultPaneTitle(referenceEditPanelTitle)
         .setExpandPaneOnCreation(expand)
         .setInitialFolderSupplier(initialFolderSupplier)
@@ -487,6 +487,11 @@ public class FileReferencesEditPanel extends EditPanelTemplate<List<FileReferenc
      */
     private CustomizationFx customization;
     
+    /**
+     * Identification of the ObjectControl.
+     */
+    String id;
+    
     
     /*
      * Optional parameters
@@ -533,9 +538,11 @@ public class FileReferencesEditPanel extends EditPanelTemplate<List<FileReferenc
      * Constructor providing required parameters.
      * 
      * @param customization the GUI customization.
+     * @param id the identification of the ObjectControl.
      */
-    public FileReferencesEditPanelBuilder(CustomizationFx customization) {
+    public FileReferencesEditPanelBuilder(CustomizationFx customization, String id) {
       this.customization = customization;
+      this.id = id;
     }
     
     /**

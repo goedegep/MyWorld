@@ -20,6 +20,7 @@ import javafx.scene.layout.HBox;
  *
  */
 public class ObjectControlForPlayer extends ObjectControlTemplate<Player> {
+  @SuppressWarnings("unused")
   private static final Logger LOGGER = Logger.getLogger(ObjectControlForPlayer.class.getName());
   
 
@@ -51,8 +52,8 @@ public class ObjectControlForPlayer extends ObjectControlTemplate<Player> {
     artistObjectControl = new ArtistObjectControl(customization, mediaDbService);
     playerInstrumentTextField = componentFactory.createObjectControlTextField(null, null, 300, true, "A comma separated list of instruments");
     
-    artistObjectControl.addListener((e) -> ociHandleNewUserInput(artistObjectControl));
-    playerInstrumentTextField.addListener((e) -> ociHandleNewUserInput(playerInstrumentTextField));
+    artistObjectControl.addListener((_) -> ociHandleNewUserInput(artistObjectControl));
+    playerInstrumentTextField.addListener((_) -> ociHandleNewUserInput(playerInstrumentTextField));
     
     hBox = componentFactory.createHBox(12.0, 2.0);
     hBox.getChildren().addAll(artistObjectControl.getControl(), playerInstrumentTextField.getControl(), getStatusIndicator());

@@ -81,9 +81,8 @@ public class EditorControlImageFile extends EditorControlTemplate<File> {
    * @param isOptional if true, the value provided by this control is optional.
    */
   private EditorControlImageFile(Builder builder) {
-    super(builder.customization, builder.optional);
+    super(builder.customization, builder.id, builder.optional);
     
-    setId(builder.id);
     setLabelBaseText(builder.labelBaseText);
   }
 

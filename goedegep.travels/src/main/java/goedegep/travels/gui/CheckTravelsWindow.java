@@ -121,7 +121,7 @@ public class CheckTravelsWindow extends JfxStage {
         .setToolTipText("The threshold for the number of points in the Location boundaries above which a warning is issued")
         .setCustomization(customization)
         .build();
-    integerControlBoundarySizeThreshold.setObject(400);
+    integerControlBoundarySizeThreshold.setValue(400);
     boundarySizeThresholdBox.getChildren().addAll(integerControlBoundarySizeThreshold.getLabel(), integerControlBoundarySizeThreshold.getControl());
     
     Button runButton = componentFactory.createButton("Run checks", "Execute the checks");

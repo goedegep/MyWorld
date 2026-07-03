@@ -28,12 +28,11 @@ public class EditorControlString extends EditorControlTemplate<String> {
    * @param builder The {@code Builder} providing all settings.
    */
   private EditorControlString(Builder builder) {
-    super(builder.customization != null ? builder.customization : DefaultCustomizationFx.getInstance(), builder.optional);
+    super(builder.customization != null ? builder.customization : DefaultCustomizationFx.getInstance(), builder.id, builder.optional);
     
     toolTipText = builder.toolTipText;
     width = builder.width;
     setLabelBaseText(builder.labelBaseText);
-    setId(builder.id);
     setErrorTextSupplier(builder.errorTextSupplier);
   }
 

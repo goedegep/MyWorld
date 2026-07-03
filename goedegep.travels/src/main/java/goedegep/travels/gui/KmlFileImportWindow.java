@@ -343,7 +343,7 @@ public class KmlFileImportWindow extends JfxStage {
      * Create the GUI controls.
      */
     private void createControls() {
-      fileSelecter = componentFactory.createEditorControlFileSelecter(300, "Path to KML file", "Choose file", "click to select a KML file via a file chooser", "Select KML file", false);
+      fileSelecter = componentFactory.createEditorControlFileSelecter(300, "fileSelecter", "Path to KML file", "Choose file", "click to select a KML file via a file chooser", "Select KML file", false);
       fileSelecter.setLabelBaseText("KML file");
       fileSelecter.addFileType(".kml", "Google KML file", true);
 

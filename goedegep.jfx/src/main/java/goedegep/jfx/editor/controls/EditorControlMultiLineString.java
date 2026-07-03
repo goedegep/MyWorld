@@ -24,8 +24,8 @@ public class EditorControlMultiLineString extends EditorControlTemplate<String> 
    * @param optional Indicates whether the control is optional (if true) or mandatory.
    * @return a new {@code EditorControlMultiLineString} instance.
    */
-  public static EditorControlMultiLineString newInstance(CustomizationFx customization, boolean optional) {
-    EditorControlMultiLineString editorControlMultiLineString = new EditorControlMultiLineString(customization, optional);
+  public static EditorControlMultiLineString newInstance(CustomizationFx customization, String id, boolean optional) {
+    EditorControlMultiLineString editorControlMultiLineString = new EditorControlMultiLineString(customization, id, optional);
     editorControlMultiLineString.performInitialization();
     
     return editorControlMultiLineString;
@@ -37,8 +37,8 @@ public class EditorControlMultiLineString extends EditorControlTemplate<String> 
    * @param customization The GUI customization.
    * @param optional Indicates whether the control is optional (if true) or mandatory.
    */
-  private EditorControlMultiLineString(CustomizationFx customization, boolean optional) {
-    super(customization, optional);
+  private EditorControlMultiLineString(CustomizationFx customization, String id, boolean optional) {
+    super(customization, id, optional);
     
   }
   

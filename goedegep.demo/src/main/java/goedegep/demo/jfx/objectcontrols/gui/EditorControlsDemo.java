@@ -81,32 +81,61 @@ public class EditorControlsDemo extends JfxStage {
         .setLabelBaseText("I'm _happy")
         .setToolTipText("Uncheck if you're not happy\nThis is an example of an EditorControlBoolean")
         .build();
-    iAmHappyControl.setObject(true);
+    iAmHappyControl.setValue(true);
     
-    birthPlaceControl = EditorControlAutoCompleteTextField.newInstance(customization, new StringConverterAndChecker<City>() {
+    birthPlaceControl = new EditorControlAutoCompleteTextField.Builder<City>("birthPlace")
+        .setCustomization(customization)
+        .setOptional(false)
+        .setWidth(300.0)
+        .setLabelBaseText("Birthplace")
+        .setToolTipText("Select the city where you were born\nThis is an example of an EditorControlAutoCompleteTextField")
+        .setStringConverterAndChecker(new StringConverterAndChecker<City>() {
 
-      @Override
-      public boolean isValid(String string) {
-        return (string == null)  ||  City.getCityForName(string) != null;
-      }
+          @Override
+          public boolean isValid(String string) {
+            return (string == null)  ||  City.getCityForName(string) != null;
+          }
 
-      @Override
-      public String toString(City city) {
-        if (city != null) {
-          return city.getName();
-        } else {
-          return null;
-        }
-      }
+          @Override
+          public String toString(City city) {
+            if (city != null) {
+              return city.getName();
+            } else {
+              return null;
+            }
+          }
 
-      @Override
-      public City fromString(String cityName) {
-        return City.getCityForName(cityName);
-      }
-      
-    }, 
-    300.0, false, "Select the city where you were born\\nThis is an example of an EditorControlAutoCompleteTextField");
-    birthPlaceControl.setLabelBaseText("Birthplace");
+          @Override
+          public City fromString(String cityName) {
+            return City.getCityForName(cityName);
+          }
+          
+        })
+        .build();
+//    birthPlaceControl = EditorControlAutoCompleteTextField.newInstance(customization, new StringConverterAndChecker<City>() {
+//
+//      @Override
+//      public boolean isValid(String string) {
+//        return (string == null)  ||  City.getCityForName(string) != null;
+//      }
+//
+//      @Override
+//      public String toString(City city) {
+//        if (city != null) {
+//          return city.getName();
+//        } else {
+//          return null;
+//        }
+//      }
+//
+//      @Override
+//      public City fromString(String cityName) {
+//        return City.getCityForName(cityName);
+//      }
+//      
+//    }, 
+//    300.0, false, "Select the city where you were born\\nThis is an example of an EditorControlAutoCompleteTextField");
+//    birthPlaceControl.setLabelBaseText("Birthplace");
     birthPlaceControl.setOptions(City.getCities());
     
     ageControl = new EditorControlInteger.IntegerBuilder("age")
@@ -144,7 +173,7 @@ public class EditorControlsDemo extends JfxStage {
         .setToolTipText("When was your last travel?)")
         .build();
         
-    travelReportFileControl = EditorControlFileSelecter.newInstance(customization, 300, "The file with you're travel report",
+    travelReportFileControl = EditorControlFileSelecter.newInstance(customization, "travelReportFile", 300, "The file with you're travel report",
         "Select file", "Select travel report", "Select the file with your travel report", false);
     travelReportFileControl.setLabelBaseText("Travel report");
 
@@ -155,7 +184,7 @@ public class EditorControlsDemo extends JfxStage {
         .build();
     
     
-    picturesFolderControl = EditorControlFolderSelecter.newInstance(customization, 300, "The folder with pictures",
+    picturesFolderControl = EditorControlFolderSelecter.newInstance(customization, "pictures", 300, "The folder with pictures",
         "Select folder", "Select pictures folder", "Select the folder with the pictures", false);
     picturesFolderControl.setLabelBaseText("Pictures folder");
     picturesFolderControl.setInitialFolderProvider(() -> "C:\\Users");
@@ -165,10 +194,10 @@ public class EditorControlsDemo extends JfxStage {
         .setLabelBaseText("Favorite picture")
         .build();
     
-    notesControl = EditorControlMultiLineString.newInstance(customization, false);
+    notesControl = EditorControlMultiLineString.newInstance(customization, "notes", false);
     notesControl.setLabelBaseText("Notes");
     
-    detailsControl = EditorControlHTMLString.newInstance(customization, false);
+    detailsControl = EditorControlHTMLString.newInstance(customization, "details", false);
     detailsControl.setLabelBaseText("Details");
   }
   

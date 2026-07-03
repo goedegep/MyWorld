@@ -293,22 +293,13 @@ public interface TravelsPackage extends EPackage {
   int VACATION___GET_ALL_REFERENCED_FILES = TypesPackage.EVENT_OPERATION_COUNT + 3;
 
   /**
-   * The operation id for the '<em>Get Day Nr</em>' operation.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int VACATION___GET_DAY_NR__VACATIONELEMENT = TypesPackage.EVENT_OPERATION_COUNT + 4;
-
-  /**
    * The number of operations of the '<em>Vacation</em>' class.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int VACATION_OPERATION_COUNT = TypesPackage.EVENT_OPERATION_COUNT + 5;
+  int VACATION_OPERATION_COUNT = TypesPackage.EVENT_OPERATION_COUNT + 4;
 
   /**
    * The meta object id for the '{@link goedegep.travels.model.impl.VacationElementImpl <em>Vacation Element</em>}' class.
@@ -1455,22 +1446,13 @@ public interface TravelsPackage extends EPackage {
   int TRAVEL___GET_ALL_REFERENCED_FILES = TypesPackage.EVENT_OPERATION_COUNT + 3;
 
   /**
-   * The operation id for the '<em>Get Day Nr</em>' operation.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int TRAVEL___GET_DAY_NR__VACATIONELEMENT = TypesPackage.EVENT_OPERATION_COUNT + 4;
-
-  /**
    * The number of operations of the '<em>Travel</em>' class.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int TRAVEL_OPERATION_COUNT = TypesPackage.EVENT_OPERATION_COUNT + 5;
+  int TRAVEL_OPERATION_COUNT = TypesPackage.EVENT_OPERATION_COUNT + 4;
 
   /**
    * The meta object id for the '{@link goedegep.travels.model.impl.DayTripImpl <em>Day Trip</em>}' class.
@@ -1609,15 +1591,6 @@ public interface TravelsPackage extends EPackage {
    * @ordered
    */
   int DAY_TRIP___GET_ALL_REFERENCED_FILES = TRAVEL___GET_ALL_REFERENCED_FILES;
-
-  /**
-   * The operation id for the '<em>Get Day Nr</em>' operation.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int DAY_TRIP___GET_DAY_NR__VACATIONELEMENT = TRAVEL___GET_DAY_NR__VACATIONELEMENT;
 
   /**
    * The number of operations of the '<em>Day Trip</em>' class.
@@ -2624,16 +2597,6 @@ public interface TravelsPackage extends EPackage {
   EOperation getTravel__GetAllReferencedFiles();
 
   /**
-   * Returns the meta object for the '{@link goedegep.travels.model.Travel#getDayNr(goedegep.travels.model.VacationElement) <em>Get Day Nr</em>}' operation.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the meta object for the '<em>Get Day Nr</em>' operation.
-   * @see goedegep.travels.model.Travel#getDayNr(goedegep.travels.model.VacationElement)
-   * @generated
-   */
-  EOperation getTravel__GetDayNr__VacationElement();
-
-  /**
    * Returns the meta object for enum '{@link goedegep.travels.model.InformationLevel <em>Information Level</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -3346,14 +3309,6 @@ public interface TravelsPackage extends EPackage {
     	 * @generated
     	 */
     EOperation TRAVEL___GET_ALL_REFERENCED_FILES = eINSTANCE.getTravel__GetAllReferencedFiles();
-
-    /**
-    	 * The meta object literal for the '<em><b>Get Day Nr</b></em>' operation.
-    	 * <!-- begin-user-doc -->
-    	 * <!-- end-user-doc -->
-    	 * @generated
-    	 */
-    EOperation TRAVEL___GET_DAY_NR__VACATIONELEMENT = eINSTANCE.getTravel__GetDayNr__VacationElement();
 
     /**
     	 * The meta object literal for the '{@link goedegep.travels.model.InformationLevel <em>Information Level</em>}' enum.

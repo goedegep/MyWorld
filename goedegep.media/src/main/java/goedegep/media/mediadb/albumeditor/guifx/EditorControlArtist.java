@@ -37,8 +37,14 @@ public class EditorControlArtist extends EditorControlAutoCompleteTextField<Arti
    * @param mediaDb the media database.
    * @return a new {@code EditorControlArtist} instance
    */
-  public static EditorControlArtist newInstance(CustomizationFx customization, IMediaDbService mediaDbService) {
-    EditorControlArtist editorControlArtist = new EditorControlArtist(customization, mediaDbService);
+  public static EditorControlArtist newInstance(CustomizationFx customization, String id, IMediaDbService mediaDbService) {
+    EditorControlAutoCompleteTextField.Builder<Artist> builder = new EditorControlAutoCompleteTextField.Builder<Artist>(id)
+        .setCustomization(customization)
+        .setOptional(false)
+        .setWidth(200)
+        .setToolTipText("Click and start typing to select an artist")
+        .setStringConverterAndChecker(new ArtistStringConverterAndChecker(mediaDbService.getMediaDbResource().getEObject()));
+    EditorControlArtist editorControlArtist = new EditorControlArtist(customization, builder, mediaDbService);
     editorControlArtist.performInitialization();
     
     return editorControlArtist;
@@ -50,8 +56,8 @@ public class EditorControlArtist extends EditorControlAutoCompleteTextField<Arti
    * @param customization The GUI customization.
    * @param mediaDb the media database.
    */
-  public EditorControlArtist(CustomizationFx customization, IMediaDbService mediaDbService) {
-    super(customization, new ArtistStringConverterAndChecker(mediaDbService.getMediaDbResource().getEObject()), 200, false, "Click and start typing to select an artist");
+  public EditorControlArtist(CustomizationFx customization, EditorControlAutoCompleteTextField.Builder<Artist> builder, IMediaDbService mediaDbService) {
+    super(builder);
     
     this.customization = customization;
     this.mediaDbService = mediaDbService;
@@ -93,7 +99,7 @@ public class EditorControlArtist extends EditorControlAutoCompleteTextField<Arti
         updateAlbumArtistComboBox();
         
         if (notification.getEventType() == Notification.ADD) {
-          setObject((Artist) notification.getNewValue());
+          setValue((Artist) notification.getNewValue());
         }
       }
 
@@ -108,7 +114,7 @@ public class EditorControlArtist extends EditorControlAutoCompleteTextField<Arti
   private void updateAlbumArtistComboBox() {
     Artist currentSelectedArtist = getValue();
     setOptions(mediaDbService.getMediaDbResource().getEObject().getArtists());
-    setObject(currentSelectedArtist);
+    setValue(currentSelectedArtist);
   }
 
   /**
@@ -123,7 +129,7 @@ public class EditorControlArtist extends EditorControlAutoCompleteTextField<Arti
     LOGGER.severe("=>");
     ArtistDetailsEditor artistDetailsEditor = ArtistDetailsEditor.newInstance(customization, "New artist", mediaDbService);
     artistDetailsEditor.setObject(value);
-    artistDetailsEditor.addListener((_) -> setObject(artistDetailsEditor.getObject()));
+    artistDetailsEditor.addListener((_) -> setValue(artistDetailsEditor.getObject()));
     artistDetailsEditor.show();
   }
 }

@@ -75,7 +75,7 @@ public class AlbumEditor2 extends EditorTemplate<Album> {
    */
   @Override
   protected EditPanel<Album> getMainEditPanel() {
-    albumEditPanel = AlbumEditPanel.newInstance(customization, mediaDbService);
+    albumEditPanel = AlbumEditPanel.newInstance(customization, "albumEditPanel", mediaDbService);
 
     return albumEditPanel;
   }

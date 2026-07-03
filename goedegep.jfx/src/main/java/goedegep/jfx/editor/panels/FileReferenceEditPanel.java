@@ -155,7 +155,7 @@ public class FileReferenceEditPanel extends EditPanelTemplate<FileReference> imp
    * @param builder A builder with all configuration information.
    */
   private FileReferenceEditPanel(FileReferencePanelBuilder builder) {
-    super(builder.customization, true);
+    super(builder.customization, builder.id, true);
     
     this.customization = builder.customization;
     this.defaultPanelTitle = builder.defaultPaneTitle;
@@ -184,9 +184,8 @@ public class FileReferenceEditPanel extends EditPanelTemplate<FileReference> imp
    */
   private EditorControlFileSelecter getFileSelecterEditorControl() {
     if (fileSelecterEditorControl == null) {
-      fileSelecterEditorControl = componentFactory.createEditorControlFileSelecter(400, "Currently selected file",
+      fileSelecterEditorControl = componentFactory.createEditorControlFileSelecter(400, "fileSelecter", "Currently selected file",
           "Choose file", "Select a file via a file chooser", "Select the file", false);
-      fileSelecterEditorControl.setId("fileSelecter");
       fileSelecterEditorControl.setInitialFolderProvider(this::getInitialFolder);
       if (prefix != null) {
         fileSelecterEditorControl.setPrefix(prefix);
@@ -214,9 +213,8 @@ public class FileReferenceEditPanel extends EditPanelTemplate<FileReference> imp
    */
   private EditorControlFolderSelecter getFolderSelecterEditorControl() {
     if (folderSelecterEditorControl == null) {
-      folderSelecterEditorControl = componentFactory.createEditorControlFolderSelecter(400, "Currently selected folder",
+      folderSelecterEditorControl = componentFactory.createEditorControlFolderSelecter(400, "folderSelecter", "Currently selected folder",
           "Choose folder", "Select a folder via a folder chooser", "Select the folder", false);
-      folderSelecterEditorControl.setId("folderSelecter");
       folderSelecterEditorControl.setInitialFolderProvider(this::getInitialFolder);
       registerEditorComponents(folderSelecterEditorControl);
     }
@@ -537,11 +535,11 @@ public class FileReferenceEditPanel extends EditPanelTemplate<FileReference> imp
         fileSelecterEditorControl.setPathNameRelativeToPrefix(fileName);
       } else {
         File file = new File(fileName);
-        fileSelecterEditorControl.setObject(file);
+        fileSelecterEditorControl.setValue(file);
       }
     }
     
-    titleEditorControl.setObject(value.getTitle());
+    titleEditorControl.setValue(value.getTitle());
   }
   
   private String getPrefixForTag(String tags) {
@@ -641,6 +639,11 @@ public class FileReferenceEditPanel extends EditPanelTemplate<FileReference> imp
      */
     private CustomizationFx customization;
     
+    /**
+     * Identification of the ObjectControl.
+     */
+    String id;
+    
     
     /*
      * Optional parameters
@@ -676,9 +679,11 @@ public class FileReferenceEditPanel extends EditPanelTemplate<FileReference> imp
      * Constructor providing required parameters.
      * 
      * @param customization the GUI customization.
+     * @param id Identification of the ObjectControl.
      */
-    public FileReferencePanelBuilder(CustomizationFx customization) {
+    public FileReferencePanelBuilder(CustomizationFx customization, String id) {
       this.customization = customization;
+      this.id = id;
     }
     
     /**

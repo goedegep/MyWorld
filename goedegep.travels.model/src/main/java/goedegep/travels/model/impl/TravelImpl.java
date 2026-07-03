@@ -380,18 +380,6 @@ public class TravelImpl extends EventImpl implements Travel {
    * @generated
    */
   @Override
-  public Integer getDayNr(VacationElement vacationElement) {
-    // TODO: implement this method
-    // Ensure that you remove @generated or mark it @generated NOT
-    throw new UnsupportedOperationException();
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
   public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
     switch (featureID) {
     case TravelsPackage.TRAVEL__ELEMENTS:
@@ -519,8 +507,6 @@ public class TravelImpl extends EventImpl implements Travel {
       return findDocument((String) arguments.get(0));
     case TravelsPackage.TRAVEL___GET_ALL_REFERENCED_FILES:
       return getAllReferencedFiles();
-    case TravelsPackage.TRAVEL___GET_DAY_NR__VACATIONELEMENT:
-      return getDayNr((VacationElement) arguments.get(0));
     }
     return super.eInvoke(operationID, arguments);
   }

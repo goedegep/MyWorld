@@ -16,7 +16,7 @@ import javafx.util.StringConverter;
 /**
  * This class forms the basis for classes implementing the {@link EditorControl} interface, using a {@code TextField} control.
  * <p>
- * The initial {@code text} of a {@code TextField} is an empty string. Also, when the user clears the field, the {@code text} is an empty string.<br/>
+ * The initial {@code text} of a {@code TextField} is an empty string.<br/>
  * This empty string is handled as 'not filled in' and the value in this case is {@code null}.
  * 
  * Information about extending this class:
@@ -37,7 +37,7 @@ import javafx.util.StringConverter;
  * </ul>
  * If you directly use this class, you have to provide a {@code StringConverterAndChecker}.
  *
- * @param <T> The object type represented by this control.
+ * @param <T> The object type represented by this editor control.
  */
 public class EditorControlTextField<T> extends EditorControlTemplate<T> {
   private static final Logger LOGGER = Logger.getLogger(EditorControlTextField.class.getName());
@@ -50,7 +50,7 @@ public class EditorControlTextField<T> extends EditorControlTemplate<T> {
   
   private TextField textField = null;
   
-  private boolean ignoreChanges = false;
+//  private boolean ignoreChanges = false;
   
 
   /**
@@ -59,12 +59,11 @@ public class EditorControlTextField<T> extends EditorControlTemplate<T> {
    * @param builder The {@code Builder} providing all settings.
    */
   protected EditorControlTextField(Builder<T> builder) {
-    super(builder.customization != null ? builder.customization : DefaultCustomizationFx.getInstance(), builder.optional);
+    super(builder.customization != null ? builder.customization : DefaultCustomizationFx.getInstance(), builder.id, builder.optional);
     
     toolTipText = builder.toolTipText;
     width = builder.width;
     setLabelBaseText(builder.labelBaseText);
-    setId(builder.id);
     setErrorTextSupplier(builder.errorTextSupplier);
     
     if (builder.stringConverter != null) {
@@ -78,16 +77,12 @@ public class EditorControlTextField<T> extends EditorControlTemplate<T> {
     textField = customization.getComponentFactoryFx().createTextField(width, toolTipText);
     
     textField.textProperty().addListener((_, _, _) -> {
-      if (!ignoreChanges) {
+//      if (!ignoreChanges) {
         handleNewUserInput(textField);
-      }
+//      }
     });
     
-    textField.focusedProperty().addListener((_, _, newValue) -> {
-      if (!newValue)
-        redrawValue();
-    });
-    
+    registerControls(textField);    
   }
   
   /**
@@ -153,7 +148,7 @@ public class EditorControlTextField<T> extends EditorControlTemplate<T> {
 
   @Override
   protected void updateNonSourceControls(Object source) {
-    ignoreChanges = true;
+//    ignoreChanges = true;
     
     if (source == null) {
       String text = null;
@@ -169,7 +164,7 @@ public class EditorControlTextField<T> extends EditorControlTemplate<T> {
       textField.setText(text);
     }
     
-    ignoreChanges = false;
+//    ignoreChanges = false;
   }
     
   /**
@@ -224,7 +219,7 @@ public class EditorControlTextField<T> extends EditorControlTemplate<T> {
  
   
   /**
-   * Builder class to set all properties for an {@code EditorControlString}.
+   * Builder class to set all properties for an {@code EditorControlTextField}.
    */
   public static class Builder<T> {
     

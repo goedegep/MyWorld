@@ -42,13 +42,9 @@ public class EObjectTreeCellHelperForObjectList extends EObjectTreeCellHelperTem
    */
   @Override
   protected void createGraphic() {
-    LOGGER.info("=>");
-    
     graphic = new ImageView();
     graphic.setPreserveRatio(true);
     graphic.setFitHeight(16);
-    
-    LOGGER.info("<=");
   }
 
   /**
@@ -64,8 +60,6 @@ public class EObjectTreeCellHelperForObjectList extends EObjectTreeCellHelperTem
    */
   @Override
   protected ContextMenu createContextMenu(Object object) {
-    LOGGER.info("=>");
-    
     List<NodeOperationDescriptor> nodeOperationDescriptors = itemDescriptor.getNodeOperationDescriptors();
     if (nodeOperationDescriptors == null) {
       return null;
@@ -75,7 +69,6 @@ public class EObjectTreeCellHelperForObjectList extends EObjectTreeCellHelperTem
     
     EReference eReference = eObjectTreeItem.getEReference();
     EClass listType = eReference.getEReferenceType();
-    LOGGER.info("Reference type=" + listType.getName());
     EmfPackageHelper emfPackageHelper = new EmfPackageHelper(listType.getEPackage());
     List<EClass> subTypesAll = emfPackageHelper.getSubTypes(listType);
     List<EClass> subTypes = null;
@@ -112,7 +105,6 @@ public class EObjectTreeCellHelperForObjectList extends EObjectTreeCellHelperTem
           menuItem.setOnAction((_) -> createAndAddObject(null, ((NodeOperationDescriptorNew) nodeOperationDescriptor).getNewEObjectInitializationFunction()));
 
           if (!eReference.isContainment()) {
-            LOGGER.info("Not containment: " + eReference.getName());
             // Find all items in the EObject hierarchy which are of the correct type, later add all subtypes.
             EObject root = (EObject) eObjectTreeCell.getTreeView().getRoot().getValue();
             List<EObject> candidates = EmfUtil.findObjectsOfType(root, eReference.getEReferenceType());
@@ -120,7 +112,6 @@ public class EObjectTreeCellHelperForObjectList extends EObjectTreeCellHelperTem
             // Make sub menu with all these objects
             Menu subMenu = new Menu(nodeOperationDescriptor.getMenuText());
             for (EObject candidate: candidates) {
-              LOGGER.info("candidate: " + candidate);
               EObjectTreeItemClassDescriptor eObjectTreeItemClassDescriptor = ((EObjectTreeView) eObjectTreeCell.getTreeView()).getDescriptorForEClass(candidate.eClass());
               MenuItem subMenuItem = new MenuItem(eObjectTreeItemClassDescriptor.getNodeTextFunction().apply(candidate));
               subMenuItem.setOnAction(new EventHandler<ActionEvent>() {
@@ -170,10 +161,10 @@ public class EObjectTreeCellHelperForObjectList extends EObjectTreeCellHelperTem
    * @param menuText the menu text
    * @param classes the subclasses
    * @param before 'before' (if set) or 'after' indication
-   * @param uponObjectCreatedMethod this method, if specified, is called after the object is created. This is typically used to do some further initialization.
+   * @param newEObjectInitializationFunction this method, if specified, is called after the object is created. This is typically used to do some further initialization.
    * @return a {@code Menu} for the {@classes}.
    */
-  private Menu createSubClassesMenu(String menuText, List<EClass> classes, BiConsumer<EObject, EObjectTreeItem> uponObjectCreatedMethod) {
+  private Menu createSubClassesMenu(String menuText, List<EClass> classes, BiConsumer<EObject, EObjectTreeItem> newEObjectInitializationFunction) {
     Menu menu = new Menu(menuText);
     MenuItem menuItem;
     
@@ -184,7 +175,7 @@ public class EObjectTreeCellHelperForObjectList extends EObjectTreeCellHelperTem
 
         @Override
         public void handle(ActionEvent event) {
-          createAndAddObject(eClass, uponObjectCreatedMethod);
+          createAndAddObject(eClass, newEObjectInitializationFunction);
         }
         
       });
@@ -200,7 +191,6 @@ public class EObjectTreeCellHelperForObjectList extends EObjectTreeCellHelperTem
    */
   @Override
   public void updateContent(Object object) {
-    LOGGER.info("=> item=" + (object != null ? object.toString() : "(null)"));
     // This cell type cannot be edited, so we don't have to check on isEditing()
     eObjectTreeCell.setText(buildText(object));
     if (itemDescriptor.isStrongText()) {
@@ -221,8 +211,6 @@ public class EObjectTreeCellHelperForObjectList extends EObjectTreeCellHelperTem
     }
     
     graphic.setImage(image);
-    
-    LOGGER.info("<=");
   }
   
   /**
@@ -232,11 +220,9 @@ public class EObjectTreeCellHelperForObjectList extends EObjectTreeCellHelperTem
    *        This is an optional parameter and if specified it must be a type compatible to the type of the objects in the list.
    *        If the type is not specified, an object of the type of the objects in the list is created.
    *        This parameter is typically used if you want to create an object which may be a sub type of the type of the objects in the list.
-   * @param uponObjectCreatedMethod this method, if specified, is called after the object is created. This is typically used to do some further initialization.
+   * @param newEObjectInitializationFunction this method, if specified, is called after the object is created. This is typically used to do some further initialization.
    */
-  private void createAndAddObject(EClass eClass, BiConsumer<EObject, EObjectTreeItem> uponObjectCreatedMethod) {
-    LOGGER.info("=>");
-    
+  private void createAndAddObject(EClass eClass, BiConsumer<EObject, EObjectTreeItem> newEObjectInitializationFunction) {
     EObjectTreeItemForObjectList eObjectTreeItem = (EObjectTreeItemForObjectList) eObjectTreeCell.getTreeItem();
     @SuppressWarnings("unchecked")
     EList<EObject> eObjectList = (EList<EObject>) eObjectTreeItem.getValue();    
@@ -245,17 +231,14 @@ public class EObjectTreeCellHelperForObjectList extends EObjectTreeCellHelperTem
       EReference eReference = eObjectTreeItem.getEReference();
       eClass = eReference.getEReferenceType();
     }
-    LOGGER.info("eClass=" + eClass.getName());
     EFactory eFactory = eClass.getEPackage().getEFactoryInstance();
     EObject eObject = eFactory.create(eClass);
     
-    if (uponObjectCreatedMethod != null) {
-      uponObjectCreatedMethod.accept(eObject, eObjectTreeItem);
+    if (newEObjectInitializationFunction != null) {
+      newEObjectInitializationFunction.accept(eObject, eObjectTreeItem);
     }
     
     eObjectList.add(eObject);
-    
-    LOGGER.info("=>");
   }
 
 
@@ -268,11 +251,8 @@ public class EObjectTreeCellHelperForObjectList extends EObjectTreeCellHelperTem
    * @return the text to be shown for this cell.
    */
   @Override
-  protected String buildText(Object value) {
-    LOGGER.info("=>");
-    
+  protected String buildText(Object value) {    
     String labelText = itemDescriptor.getNodeTextFunction().apply(value) + ":";
-//    String labelText = itemDescriptor.getLabelText() + ":";
             
     return labelText;
   }

@@ -1,9 +1,8 @@
 package goedegep.demo.jfx.editor.step1.gui;
 
-import goedegep.demo.jfx.editor.logic.CompanyService;
-import goedegep.emfsample.model.Company;
 import goedegep.emfsample.model.EmfSampleFactory;
 import goedegep.emfsample.model.EmfSamplePackage;
+import goedegep.emfsample.model.Person;
 import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.editor.EditPanelTemplate;
 import goedegep.jfx.editor.EditorException;
@@ -21,9 +20,9 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 
 /**
- * This class is the main edit panel for the {@link CompanyEditor} (step 1).
+ * This class is the main edit panel for the {@link PersonEditor} (step 1).
  */
-public class CompanyEditPanel extends EditPanelTemplate<Company> {
+public class PersonEditPanel extends EditPanelTemplate<Person> {
   private static final EmfSampleFactory EMF_SAMPLE_FACTORY = EmfSampleFactory.eINSTANCE;
   private static final EmfSamplePackage EMF_SAMPLE_PACKAGE = EmfSamplePackage.eINSTANCE;
   
@@ -32,14 +31,14 @@ public class CompanyEditPanel extends EditPanelTemplate<Company> {
    */
   
   /**
-   * Company name control
+   * Surname control
    */
-  private EditorControlString companyNameControl;
+  private EditorControlString surnameControl;
   
   /**
-   * Date of company establishment control
+   * Retirement date control
    */
-  private EditorControlDate companyEstablismentDateControl;
+  private EditorControlDate retirementDateControl;
   
   
   /**
@@ -52,28 +51,19 @@ public class CompanyEditPanel extends EditPanelTemplate<Company> {
   private VBox mainPane;
   
   
-  /**
-   * Other
-   */
   
   /**
-   * The company database service
-   */
-  @SuppressWarnings("unused")
-  private CompanyService companyService;
-  
-  /**
-   * Create an instance of the {@code CompanyEditPanel}.
+   * Create an instance of the {@code PersonEditPanel}.
    * 
    * @param customization the GUI customization.
    * @param companyService the company 'database' service.
-   * @return a newly created {@code CompanyEditPanel}.
+   * @return a newly created {@code PersonEditPanel}.
    */
-  public static CompanyEditPanel newInstance(CustomizationFx customization, CompanyService companyService) {
-    CompanyEditPanel companyEditPanel = new CompanyEditPanel(customization, companyService);
-    companyEditPanel.performInitialization();
+  public static PersonEditPanel newInstance(CustomizationFx customization) {
+    PersonEditPanel personEditPanel = new PersonEditPanel(customization);
+    personEditPanel.performInitialization();
     
-    return companyEditPanel;
+    return personEditPanel;
   }
   
   /**
@@ -82,11 +72,8 @@ public class CompanyEditPanel extends EditPanelTemplate<Company> {
    * @param customization the GUI customization.
    * @param companyService the company 'database' service.
    */
-  private CompanyEditPanel(CustomizationFx customization, CompanyService companyService) {
-    super(customization, false);
-    
-    this.companyService = companyService;
-    setId("companyEditPanel");
+  private PersonEditPanel(CustomizationFx customization) {
+    super(customization, "personEditPanel", false);
   }
   
   /**
@@ -95,21 +82,21 @@ public class CompanyEditPanel extends EditPanelTemplate<Company> {
   @Override
   public void createControls() {
     
-    companyNameControl = new EditorControlString.Builder("companyName")
+    surnameControl = new EditorControlString.Builder("surname")
         .setWidth(300d)
-        .setLabelBaseText("Company _name")
-        .setToolTipText("The company name is a mandatory field")
-        .setErrorTextSupplier(() -> "The company name is not filled in")
+        .setLabelBaseText("_Surname")
+        .setToolTipText("The surname name is a mandatory field")
+        .setErrorTextSupplier(() -> "The surname is not filled in")
         .build();
     
-    companyEstablismentDateControl = new EditorControlDate.EditorControlDateBuilder("companyEstablismentDate")
+    retirementDateControl = new EditorControlDate.EditorControlDateBuilder("retirementDate")
         .setWidth(300d)
-        .setLabelBaseText("Establisment _date")
-        .setToolTipText("Optional date of when the company was established")
+        .setLabelBaseText("_Retirement date")
+        .setToolTipText("Optional date of retirement")
         .setOptional(true)
         .build();
     
-    registerEditorComponents(companyNameControl, companyEstablismentDateControl);
+    registerEditorComponents(surnameControl, retirementDateControl);
   }
 
   /**
@@ -128,17 +115,17 @@ public class CompanyEditPanel extends EditPanelTemplate<Company> {
     if (value == null) {
       return;
     }
-    companyNameControl.setObject(value.getCompanyName());
-    companyEstablismentDateControl.setObject(value.getDateOfEstablishment());
+    surnameControl.setValue(value.getSurname());
+    retirementDateControl.setValue(value.getRetirementDate());
   }
 
   /**
    * {@inheritDoc}
    */
   @Override
-  protected void fillObjectFromControls(Company object, boolean getCurrentValue) throws EditorException {
-    EmfUtil.setFeatureValue(object, EMF_SAMPLE_PACKAGE.getCompany_CompanyName(), companyNameControl.getValue());
-    EmfUtil.setFeatureValue(object, EMF_SAMPLE_PACKAGE.getCompany_DateOfEstablishment(), companyEstablismentDateControl.getValue());
+  protected void fillObjectFromControls(Person object, boolean getCurrentValue) throws EditorException {
+    EmfUtil.setFeatureValue(object, EMF_SAMPLE_PACKAGE.getPerson_Surname(), surnameControl.getValue());
+    EmfUtil.setFeatureValue(object, EMF_SAMPLE_PACKAGE.getPerson_RetirementDate(), retirementDateControl.getValue());
   }
 
   /**
@@ -152,14 +139,13 @@ public class CompanyEditPanel extends EditPanelTemplate<Company> {
     GridPane gridPane = componentFactory.createGridPane(12.0, 12.0, 12.0);
     int row = 0;
     
-    // First row: 'Company name: <company-name>'
-    gridPane.addRow(row++, companyNameControl.getLabel(), companyNameControl.getControl(), companyNameControl.getStatusIndicator());
+    // First row: 'Surname: <surname>'
+    gridPane.addRow(row++, surnameControl.getLabel(), surnameControl.getControl(), surnameControl.getStatusIndicator());
     
-    // Second row: 'Company establisment date: <company-establisment-date>
-    gridPane.addRow(row++, companyEstablismentDateControl.getLabel(), companyEstablismentDateControl.getControl(), companyEstablismentDateControl.getStatusIndicator());
+    // Second row: 'Retirement date: <retirement date>'
+    gridPane.addRow(row++, retirementDateControl.getLabel(), retirementDateControl.getControl(), retirementDateControl.getStatusIndicator());
 
     mainPane.getChildren().add(gridPane);
-    
     
     mainPane.setMinHeight(100);
     mainPane.setPrefHeight(100);
@@ -179,8 +165,8 @@ public class CompanyEditPanel extends EditPanelTemplate<Company> {
    * {@inheritDoc}
    */
   @Override
-  protected Company createObject() {
-    return EMF_SAMPLE_FACTORY.createCompany();
+  protected Person createObject() {
+    return EMF_SAMPLE_FACTORY.createPerson();
   }
 
   @Override

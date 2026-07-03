@@ -237,6 +237,7 @@ public class MapView extends MapViewCommon {
    */
   private void moveXY(double deltaX, double deltaY) {
     baseMapAbstract.moveXY(deltaX, deltaY);
+    markDirty();
   }
 
   /**
@@ -246,6 +247,7 @@ public class MapView extends MapViewCommon {
    */
   public void moveX(double distance) {
     moveXY(distance, 0);
+    markDirty();
   }
   
   /**
@@ -255,5 +257,6 @@ public class MapView extends MapViewCommon {
    */
   public void moveY(double distance) {
     moveXY(0, distance);
+    markDirty();
   }
 }

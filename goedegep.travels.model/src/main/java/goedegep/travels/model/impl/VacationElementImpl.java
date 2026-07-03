@@ -7,7 +7,7 @@ import java.util.Collection;
 import org.eclipse.emf.common.notify.NotificationChain;
 
 import org.eclipse.emf.common.util.EList;
-
+import org.eclipse.emf.common.util.TreeIterator;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.InternalEObject;
@@ -89,8 +89,29 @@ public abstract class VacationElementImpl extends MinimalEObjectImpl.Container i
     if (vacation == null) {
       return null;
     }
+    
+    int dayNr = 0;
+    int daysPreviousDayElement = 1;
 
-    return vacation.getDayNr(this);
+    TreeIterator<EObject> vacationIterator = vacation.eAllContents();
+    while (vacationIterator.hasNext()) {
+      EObject eObject = vacationIterator.next();
+
+      if (eObject instanceof Day vacationElementDay) {
+        int nrOfDaysThisElement = 1;
+        if (vacationElementDay.getDays() != null) {
+          nrOfDaysThisElement = vacationElementDay.getDays();
+        }
+        dayNr += daysPreviousDayElement;
+        daysPreviousDayElement = nrOfDaysThisElement;
+      }
+
+      if (this.equals(eObject)) {
+        return dayNr;
+      }
+    }
+
+    return null;
   }
 
   /**

@@ -1,8 +1,6 @@
 package goedegep.jfx.editor;
 
-import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.List;
 import java.util.Objects;
 import java.util.function.Supplier;
 import java.util.logging.Logger;
@@ -11,8 +9,6 @@ import goedegep.jfx.ComponentFactoryFx;
 import goedegep.jfx.CustomizationFx;
 import goedegep.util.listener.ValueAndOrStatusChangeListener;
 import goedegep.util.listener.ValueAndOrStatusChangeListenersManager;
-import javafx.beans.InvalidationListener;
-import javafx.beans.Observable;
 import javafx.beans.property.ReadOnlyBooleanProperty;
 import javafx.beans.property.ReadOnlyBooleanWrapper;
 import javafx.scene.Node;
@@ -20,14 +16,16 @@ import javafx.scene.control.Label;
 import javafx.scene.control.Tooltip;
 
 public abstract class EditorComponentAbstract<T> implements EditorComponent<T> {
+  @SuppressWarnings("unused")
   private static final Logger         LOGGER = Logger.getLogger(EditorComponentAbstract.class.getName());
-  
-  public static final String NOK_INDICATOR = "!";
-  public static final String CHANGED_INDICATOR = "≠";
-  public static final String NOT_CHANGED_INDICATOR = "=";
 
   protected CustomizationFx customization;
   protected ComponentFactoryFx componentFactory;
+  
+  /**
+   * Id to identify the component.
+   */
+  private String id;
   
   /**
    * Indication of whether the object value is optional (if true) or mandatory.
@@ -45,18 +43,6 @@ public abstract class EditorComponentAbstract<T> implements EditorComponent<T> {
   protected boolean valid = false;
   
   /**
-   * Error information text, which can be set by the control.
-   * <p>
-   * This value is only used if there is no {@link errorTextSupplier} set.
-   */
-  protected String errorText = null;
-  
-  /**
-   * Error text supplier. A method that provides an error text.
-   */
-  protected Supplier<String> errorTextSupplier;
-  
-  /**
    * Label base text
    * I don't know if this also makes sense for a compound component. But it doesn't harm to leave it at this level.
    */
@@ -69,24 +55,36 @@ public abstract class EditorComponentAbstract<T> implements EditorComponent<T> {
   private Label label = null;
   
   /**
-   * The current value, initially set to {@code null}.
-   */
-  protected T value = null;
-  
-  /**
-   * Reference value to check for changes, initially set to {@code value}.
-   */
-  protected T referenceValue = value;
-  
-  /**
    * Indication of whether the value differs from the reference value
    */
   protected boolean changed = false;
+
+  /**
+   * Status indicator.
+   */
+  private Label statusIndicator = null;
+
+  /**
+   * Error information text, which can be set by the control.
+   * <p>
+   * This value is only used if there is no {@link errorTextSupplier} set.
+   */
+  protected String errorText = null;
   
   /**
-   * Id to identify the component.
+   * Error text supplier. A method that provides an error text.
    */
-  private String id;
+  private Supplier<String> errorTextSupplier;
+
+  /**
+   * Manager for the collection of {@link ValueAndOrStatusChangeListener}s.
+   */
+  private ValueAndOrStatusChangeListenersManager valueAndOrStatusChangeListenersManager = new ValueAndOrStatusChangeListenersManager();
+  
+  /**
+   * Focused property for providing read only property.
+   */
+  protected ReadOnlyBooleanWrapper focusedProperty = new ReadOnlyBooleanWrapper();
   
   /**
    * An optional {@link Comparator} to check on a changed {@code value}.
@@ -97,23 +95,6 @@ public abstract class EditorComponentAbstract<T> implements EditorComponent<T> {
    * Ignore new user input when setting the value (in {@code setValue}).
    */
   protected boolean ignoreNewUserInput = false;
-    
-  /**
-   * Status indicator.
-   */
-  private Label statusIndicator = null;
-  
-  /**
-   * The invalidation listeners (for the {@code Observable} implementation).
-   */
-  protected List<InvalidationListener> invalidationListeners = new ArrayList<>();
-    
-  /**
-   * The value changed.
-   */
-  private ValueAndOrStatusChangeListenersManager valueAndOrStatusChangeListenersManager = new ValueAndOrStatusChangeListenersManager();
-  
-  protected ReadOnlyBooleanWrapper focusedProperty = new ReadOnlyBooleanWrapper();
   
   /**
    * Constructor.
@@ -121,11 +102,36 @@ public abstract class EditorComponentAbstract<T> implements EditorComponent<T> {
    * @param customization the GUI customization
    * @param optional indication of whether the value is optional or not (mandatory).
    */
-  protected EditorComponentAbstract(CustomizationFx customization, boolean optional) {
+  protected EditorComponentAbstract(CustomizationFx customization, String id, boolean optional) {
     this.customization = customization;
+    this.id = id;
     this.optional = optional;
     
     componentFactory = customization.getComponentFactoryFx();
+  }
+  
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public final String getId() {
+    return id;
+  }
+  
+//  /**
+//   * {@inheritDoc}
+//   */
+//  @Override
+//  public final void setId(String id) {
+//    this.id = id;
+//  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public final boolean isOptional() {
+    return optional;
   }
   
   /**
@@ -136,6 +142,7 @@ public abstract class EditorComponentAbstract<T> implements EditorComponent<T> {
     this.labelBaseText = labelBaseText;
   }
   
+  @Override
   public String getLabelBaseText() {
     return labelBaseText;
   }
@@ -162,30 +169,6 @@ public abstract class EditorComponentAbstract<T> implements EditorComponent<T> {
     
     return label;
   }
-  
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public final String getId() {
-    return id;
-  }
-  
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public final void setId(String id) {
-    this.id = id;
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public final boolean isOptional() {
-    return optional;
-  }
 
   /**
    * {@inheritDoc}
@@ -211,9 +194,10 @@ public abstract class EditorComponentAbstract<T> implements EditorComponent<T> {
     return changed;
   }
   
+  protected abstract T getReferenceValue();
+  
   /**
    * Determine whether the new value differs from the {@code referenceValue}.
-   * TODO Why isn't this used in the EditPanel?? Remove here if not needed there.
    * 
    * @param newValue the new value
    * @return {@code true} if {@code newValue} differs from the {@code referenceValue}, false otherwise.
@@ -222,9 +206,9 @@ public abstract class EditorComponentAbstract<T> implements EditorComponent<T> {
     boolean result;
     
     if (comparator != null) {
-      result = comparator.compare(newValue, referenceValue) != 0;
+      result = comparator.compare(newValue, getReferenceValue()) != 0;
     } else {
-      result = !Objects.equals(newValue, referenceValue);
+      result = !Objects.equals(newValue, getReferenceValue());
     }
     
     return result;
@@ -304,7 +288,6 @@ public abstract class EditorComponentAbstract<T> implements EditorComponent<T> {
    */
   @Override
   public final Node getStatusIndicator() {
-    LOGGER.info("=>");
 
     if (statusIndicator == null) {
       statusIndicator = new Label();
@@ -312,7 +295,6 @@ public abstract class EditorComponentAbstract<T> implements EditorComponent<T> {
 
     updateStatusIndicator();
 
-    LOGGER.info("=> " + statusIndicator);
     return statusIndicator;
   }
   
@@ -327,12 +309,7 @@ public abstract class EditorComponentAbstract<T> implements EditorComponent<T> {
     
     return errorText;
   }
-  
-//  /**
-//   * Fill the controls with default values.
-//   */
-//  protected abstract void fillControlsWithDefaultValues();
-  
+    
   /**
    * Fill the controls with the value of the object.
    */
@@ -369,16 +346,6 @@ public abstract class EditorComponentAbstract<T> implements EditorComponent<T> {
   protected void setFocused(boolean focused) {
     focusedProperty.set(focused);
   }
-  
-  /**
-   * Notify the {@code invalidationListeners} that something has changed.
-   */
-  protected final void notifyListeners(Observable observable) {
-    for (InvalidationListener invalidationListener: invalidationListeners) {
-      invalidationListener.invalidated(observable);
-    }
-  }
-
   
   @Override
   public void addValueAndOrStatusChangeListener(ValueAndOrStatusChangeListener listener) {

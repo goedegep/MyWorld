@@ -91,7 +91,7 @@ public class FamiliesWindowFx extends JfxStage {
       
     });
     
-    familiesTable.addObjectSelectionListener((source, family) -> {
+    familiesTable.addObjectSelectionListener((_, family) -> {
         familyMembersPanel.setFamily(family);
         previousAddressesPanel.setAddressHolder(family);
         referredByPanel.setObject(family);
@@ -199,7 +199,7 @@ class FamilyEditPanel {
 
     HBox buttonsBox = componentFactory.createHBox(12.0);
     Button addButton = componentFactory.createButton("Add family", "Add the family to the Rolodex");
-    addButton.setOnAction((e) -> {
+    addButton.setOnAction((_) -> {
       Family newFamily = createFamilyFromFields();
       if (newFamily != null) {
         rolodex.getFamilyList().getFamilies().add(newFamily);
@@ -218,7 +218,7 @@ class FamilyEditPanel {
     });
     updateButton.setDisable(familyProperty.getValue() == null);
 
-    updateButton.setOnAction((e) -> {
+    updateButton.setOnAction((_) -> {
       updateFamilyIfControlsAreValid();
     });
     buttonsBox.getChildren().add(updateButton);
@@ -411,7 +411,6 @@ class FamiliesTableDescriptor extends EObjectTableDescriptor<Family> {
       new EObjectTableColumnDescriptorCheckBox<Family>(ROLODEX_PACKAGE.getArchive_Archived(), "Archived", true, true)
       );
   
-  @SuppressWarnings("serial")
   private static Map<Operation, TableRowOperationDescriptor<Family>> rowOperations = new HashMap<>() {
     {
     put(Operation.DELETE_OBJECT, new TableRowOperationDescriptor<>("Delete"));

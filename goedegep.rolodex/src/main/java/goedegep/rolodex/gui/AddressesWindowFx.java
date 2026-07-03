@@ -89,7 +89,7 @@ public class AddressesWindowFx extends JfxStage {
       
     });
     
-    addressesTable.addObjectSelectionListener((source, address) -> {
+    addressesTable.addObjectSelectionListener((_, address) -> {
         referredByPanel.setObject(address);
     });
     
@@ -179,7 +179,7 @@ class AddressEditPanel {
     objectControlGroup = new ObjectControlGroup();
     objectControlGroup.addObjectControls(streetTextField, houseNumberTextField, houseNumberExtensionTextField, poBoxTextField, postalCodeTextField, cityTextField, countryTextField);
     
-    cityTextField.addListener((o) -> {
+    cityTextField.addListener((_) -> {
         List<City> cities = cityTextField.getMatchingCities();
         if (!cities.isEmpty()) {
           Country country = cities.get(0).getCountry();
@@ -247,7 +247,7 @@ class AddressEditPanel {
     countryTextFieldRow = row;
 
     Button addButton = componentFactory.createButton("Add", "Add the address to the Rolodex");
-    addButton.setOnAction((e) -> {
+    addButton.setOnAction((_) -> {
       Address newAddress = createAddressFromFields();
       if (newAddress != null) {
         rolodex.getAddressList().getAddresses().add(newAddress);
@@ -266,7 +266,7 @@ class AddressEditPanel {
     });
     updateButton.setDisable(addressProperty.getValue() == null);
 
-    updateButton.setOnAction((e) -> {
+    updateButton.setOnAction((_) -> {
       updateAddressIfControlsAreValid();
     });
     gridPane.add(updateButton, 3, row);
@@ -426,7 +426,7 @@ class AddressEditPanel {
           "Unknown country",
           "The country \'" + countryName + "\' doesn't exist in the Rolodex yet.",
           "Do you want to add it? (if you select no, also the city isn't added to the Rolodex)");
-     alert.showAndWait().filter(response -> response == ButtonType.YES).ifPresent(response -> {
+     alert.showAndWait().filter(response -> response == ButtonType.YES).ifPresent((_) -> {
         Country country = ROLODEX_FACTORY.createCountry();
         country.setCountryName(countryName);
         rolodex.getCountryList().getCountries().add(country);
@@ -457,7 +457,7 @@ class AddressEditPanel {
           "Unknown city",
           "The city \'" + cityName + "\' doesn't exist in the Rolodex yet.",
           "Do you want to add it? (if you select no, also the address isn't added to the Rolodex)");
-      alert.showAndWait().filter(response -> response == ButtonType.YES).ifPresent(response -> {
+      alert.showAndWait().filter(response -> response == ButtonType.YES).ifPresent((_) -> {
         City city = ROLODEX_FACTORY.createCity();
         city.setCityName(cityName);
         city.setCountry(countryTextField.getCountry());
@@ -481,7 +481,7 @@ class AddressEditPanel {
             "Unknown city",
             "The city \'" + cityName + "\' in country \'" + country.getCountryName() + "\' doesn't exist in the Rolodex yet.",
             "Do you want to add it? (if you select no, also the address isn't added to the Rolodex)");
-        alert.showAndWait().filter(response -> response == ButtonType.YES).ifPresent(response -> {
+        alert.showAndWait().filter(response -> response == ButtonType.YES).ifPresent((_) -> {
           City newCity = ROLODEX_FACTORY.createCity();
           newCity.setCityName(cityName);
           newCity.setCountry(country);
@@ -517,7 +517,7 @@ class AddressesTableDescriptor extends EObjectTableDescriptor<Address> {
       new EObjectTableColumnDescriptorBasic<Address>(ROLODEX_PACKAGE.getAddress_POBox(), "PO Box", true, true),
       new EObjectTableColumnDescriptorBasic<Address>(ROLODEX_PACKAGE.getAddress_PostalCode(), "Postal code", true, true),
       cityColumnDescriptor,
-      new EObjectTableColumnDescriptorCustom<Address>(ROLODEX_PACKAGE.getAddress_City(), "Country", null, false, true, column -> {
+      new EObjectTableColumnDescriptorCustom<Address>(ROLODEX_PACKAGE.getAddress_City(), "Country", null, false, true, (_) -> {
         TableCell<Address, Object> cell = new TableCell<>() {
 
           @Override
@@ -544,7 +544,6 @@ class AddressesTableDescriptor extends EObjectTableDescriptor<Address> {
       new EObjectTableColumnDescriptorBasic<Address>(ROLODEX_PACKAGE.getAddress_Id(), "Id", false, true)
       );
   
-  @SuppressWarnings("serial")
   private static Map<Operation, TableRowOperationDescriptor<Address>> rowOperations = new HashMap<>() {
     {
     put(Operation.DELETE_OBJECT, new TableRowOperationDescriptor<>("Delete"));

@@ -110,9 +110,18 @@ public class DemoMenuWindow extends JfxStage {
     // Jfx:Editor/Step 1
     menuItem = componentFactory.createMenuItem("Editor step1");
     menuItem.setOnAction((_) -> {
-      CompanyService companyService = new CompanyService();
-      goedegep.demo.jfx.editor.step1.gui.CompanyEditor.newInstance(customization, companyService).show();
-      
+      CompanyService companyService = new CompanyService(customization);
+      companyService.showCompanyTreeView();
+      companyService.showPersonEditor();      
+    });
+    editorMenu.getItems().add(menuItem);
+    
+    // Jfx:Editor/Step 2
+    menuItem = componentFactory.createMenuItem("Editor step2");
+    menuItem.setOnAction((_) -> {
+      CompanyService companyService = new CompanyService(customization);
+      companyService.showCompanyTreeView();
+      companyService.showPersonEditorStep2();      
     });
     editorMenu.getItems().add(menuItem);
     

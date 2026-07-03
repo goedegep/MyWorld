@@ -12,7 +12,7 @@
     <semanticResources>travels.genmodel</semanticResources>
     <ownedViews xmi:type="viewpoint:DView" uid="_lcEugCcHEeihDpOdkZknzg">
       <viewpoint xmi:type="description:Viewpoint" href="platform:/plugin/org.eclipse.emf.ecoretools.design/description/ecore.odesign#//@ownedViewpoints[name='Design']"/>
-      <ownedRepresentationDescriptors xmi:type="viewpoint:DRepresentationDescriptor" uid="_sqT21ycHEeihDpOdkZknzg" name="Vacations class diagram" repPath="#_sqT20CcHEeihDpOdkZknzg" changeId="1779040649784">
+      <ownedRepresentationDescriptors xmi:type="viewpoint:DRepresentationDescriptor" uid="_sqT21ycHEeihDpOdkZknzg" name="Vacations class diagram" repPath="#_sqT20CcHEeihDpOdkZknzg" changeId="1782227777111">
         <description xmi:type="description_1:DiagramDescription" href="platform:/plugin/org.eclipse.emf.ecoretools.design/description/ecore.odesign#//@ownedViewpoints[name='Design']/@ownedRepresentations[name='Entities']"/>
         <target xmi:type="ecore:EPackage" href="travels.ecore#/"/>
       </ownedRepresentationDescriptors>
@@ -397,10 +397,6 @@
             <children xmi:type="notation:Node" xmi:id="_CGdAUNB5EfCj1rKi7eFwZg" type="3010" element="_c1zCgC7ZEeiw7Poa7IEOTg">
               <styles xmi:type="notation:FontStyle" xmi:id="_CGdAUdB5EfCj1rKi7eFwZg" fontName="Segoe UI" fontHeight="8"/>
               <layoutConstraint xmi:type="notation:Location" xmi:id="_CGdAUtB5EfCj1rKi7eFwZg"/>
-            </children>
-            <children xmi:type="notation:Node" xmi:id="_DhWGIAeREfG1BbgA8vfc0g" type="3010" element="_G74FQBc-EemNZ9P_Mzb_Hg">
-              <styles xmi:type="notation:FontStyle" xmi:id="_DhWGIQeREfG1BbgA8vfc0g" fontName="Segoe UI" fontHeight="8"/>
-              <layoutConstraint xmi:type="notation:Location" xmi:id="_DhWGIgeREfG1BbgA8vfc0g"/>
             </children>
             <styles xmi:type="notation:SortingStyle" xmi:id="_S468pbQAEe-Uk7FofH5LrA"/>
             <styles xmi:type="notation:FilteringStyle" xmi:id="_S468prQAEe-Uk7FofH5LrA"/>
@@ -1644,15 +1640,6 @@
         <target xmi:type="ecore:EOperation" href="travels.ecore#//Travel/getAllReferencedFiles"/>
         <semanticElements xmi:type="ecore:EOperation" href="travels.ecore#//Travel/getAllReferencedFiles"/>
         <ownedStyle xmi:type="diagram:BundledImage" uid="_c1zpkC7ZEeiw7Poa7IEOTg" labelAlignment="LEFT">
-          <description xmi:type="style:BundledImageDescription" href="platform:/plugin/org.eclipse.emf.ecoretools.design/description/ecore.odesign#//@ownedViewpoints[name='Design']/@ownedRepresentations[name='Entities']/@defaultLayer/@containerMappings[name='EC%20EClass']/@subNodeMappings[name='Operation']/@style"/>
-        </ownedStyle>
-        <actualMapping xmi:type="description_1:NodeMapping" href="platform:/plugin/org.eclipse.emf.ecoretools.design/description/ecore.odesign#//@ownedViewpoints[name='Design']/@ownedRepresentations[name='Entities']/@defaultLayer/@containerMappings[name='EC%20EClass']/@subNodeMappings[name='Operation']"/>
-      </ownedElements>
-      <ownedElements xmi:type="diagram:DNodeListElement" uid="_G74FQBc-EemNZ9P_Mzb_Hg" name="getDayNr(vacationElement VacationElement) : EIntegerObject" tooltipText="getDayNr(vacationElement) : EIntegerObject">
-        <target xmi:type="ecore:EOperation" href="travels.ecore#//Travel/getDayNr"/>
-        <semanticElements xmi:type="ecore:EOperation" href="travels.ecore#//Travel/getDayNr"/>
-        <semanticElements xmi:type="ecore:EParameter" href="travels.ecore#//Travel/getDayNr/vacationElement"/>
-        <ownedStyle xmi:type="diagram:BundledImage" uid="_G74sUBc-EemNZ9P_Mzb_Hg" labelAlignment="LEFT">
           <description xmi:type="style:BundledImageDescription" href="platform:/plugin/org.eclipse.emf.ecoretools.design/description/ecore.odesign#//@ownedViewpoints[name='Design']/@ownedRepresentations[name='Entities']/@defaultLayer/@containerMappings[name='EC%20EClass']/@subNodeMappings[name='Operation']/@style"/>
         </ownedStyle>
         <actualMapping xmi:type="description_1:NodeMapping" href="platform:/plugin/org.eclipse.emf.ecoretools.design/description/ecore.odesign#//@ownedViewpoints[name='Design']/@ownedRepresentations[name='Entities']/@defaultLayer/@containerMappings[name='EC%20EClass']/@subNodeMappings[name='Operation']"/>

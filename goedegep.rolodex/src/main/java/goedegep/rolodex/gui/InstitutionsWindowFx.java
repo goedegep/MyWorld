@@ -82,7 +82,7 @@ public class InstitutionsWindowFx extends JfxStage {
       
     });
     
-    institutionsTable.addObjectSelectionListener((source, institution) -> {
+    institutionsTable.addObjectSelectionListener((_, institution) -> {
         referredByPanel.setObject(institution);
         institutionEditPanel.setInstitution(institution);
     });
@@ -185,7 +185,7 @@ class InstitutionEditPanel {
 
     HBox buttonsBox = componentFactory.createHBox(12.0);
     Button addButton = componentFactory.createButton("Add institution", "Add the institution to the Rolodex");
-    addButton.setOnAction((e) -> {
+    addButton.setOnAction((_) -> {
       Institution newInstitution = createInstitutionFromFields();
       if (newInstitution != null) {
         rolodex.getInstitutionList().getInstitutions().add(newInstitution);
@@ -204,7 +204,7 @@ class InstitutionEditPanel {
     });
     updateButton.setDisable(institutionProperty.getValue() == null);
 
-    updateButton.setOnAction((e) -> {
+    updateButton.setOnAction((_) -> {
       updateInstitutionIfControlsAreValid();
     });
     buttonsBox.getChildren().add(updateButton);
@@ -386,7 +386,6 @@ class InstitutionsTableDescriptor extends EObjectTableDescriptor<Institution> {
       new EObjectTableColumnDescriptorBasic<Institution>(ROLODEX_PACKAGE.getPhoneNumberHolder_PhoneNumbers(), "Phone numbers", 150, true, true, new PhoneNumberListStringConverter())
       );
   
-  @SuppressWarnings("serial")
   private static Map<Operation, TableRowOperationDescriptor<Institution>> rowOperations = new HashMap<>() {
     {
     put(Operation.DELETE_OBJECT, new TableRowOperationDescriptor<>("Delete"));

@@ -137,7 +137,7 @@ public abstract class MapViewCommon extends MapViewAbstract {
     clipRectangle = new Rectangle();
     this.setClip(clipRectangle);
 
-    prefCenterProperty.addListener(_ -> baseMapAbstract.doSetCenter(prefCenterProperty.get()));
+    prefCenterProperty.addListener(_ -> setCenter(prefCenterProperty.get()));
 
     prefZoomProperty.addListener(_ -> doZoom(prefZoomProperty.get()));   
     zoomProperty.addListener(_ -> {
@@ -169,7 +169,10 @@ public abstract class MapViewCommon extends MapViewAbstract {
     } else {
       baseMapAbstract.doSetCenter(mapPoint);
     }
+
+    markDirty();
   }
+  
 
   @Override
   public double getZoom() {

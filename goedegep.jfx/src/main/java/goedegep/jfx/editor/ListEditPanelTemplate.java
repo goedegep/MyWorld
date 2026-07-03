@@ -26,15 +26,15 @@ public abstract class ListEditPanelTemplate<T, U, V extends EditorComponent<U>> 
   
   
   /**
-   * The list of {@code PlayerMultiControl}s.
+   * The list of item panels.
    */
   protected ObservableList<V> listItemPanels;
   
   private PseudoEditorComponent pseudoEditorComponent;
 
   
-  public ListEditPanelTemplate(CustomizationFx customization, boolean optional) {
-    super(customization, optional);
+  public ListEditPanelTemplate(CustomizationFx customization, String id, boolean optional) {
+    super(customization, id, optional);
   }
 
   /**
@@ -117,11 +117,6 @@ class PseudoEditorComponent implements EditorComponent<Object> {
   }
 
   @Override
-  public void setId(String id) {
-    this.id = id;
-  }
-
-  @Override
   public boolean isOptional() {
     return true;
   }
@@ -196,9 +191,14 @@ class PseudoEditorComponent implements EditorComponent<Object> {
   }
 
   @Override
+  public String getLabelBaseText() {
+    // Not applicable
+    return null;
+  }
+
+  @Override
   public void setLabelBaseText(String labelBaseText) {
     // Not applicable
-    
   }
 
   @Override

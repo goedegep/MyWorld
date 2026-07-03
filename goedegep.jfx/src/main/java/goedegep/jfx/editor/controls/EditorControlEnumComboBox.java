@@ -60,11 +60,10 @@ public class EditorControlEnumComboBox<T extends Enum<T>> extends EditorControlT
    * @param builder The {@code Builder} providing all settings.
    */
   private EditorControlEnumComboBox(Builder<T> builder) {
-    super(builder.customization != null ? builder.customization : DefaultCustomizationFx.getInstance(), builder.optional);
+    super(builder.customization != null ? builder.customization : DefaultCustomizationFx.getInstance(), builder.id, builder.optional);
     
     enumConstant = builder.enumConstant;
     toolTipText = builder.toolTipText;
-    setId(builder.id);
     setLabelBaseText(builder.labelBaseText);
   }
 

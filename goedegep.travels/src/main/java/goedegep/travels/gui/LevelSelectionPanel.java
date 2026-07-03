@@ -59,7 +59,7 @@ public class LevelSelectionPanel extends HBox {
     upButton.setOnAction((_) -> increaseLevel());
     
     getChildren().addAll(showLevelComboBox.getLabel(), downButton, showLevelComboBox.getControl(), upButton);
-    showLevelComboBox.setObject(InformationLevel.TRAVEL);
+    showLevelComboBox.setValue(InformationLevel.TRAVEL);
   }
   
   /**
@@ -87,7 +87,7 @@ public class LevelSelectionPanel extends HBox {
    * If the lowest level is already selected, this doesn't change, else the level is decreased.
    */
   private void decreaseLevel() {
-    showLevelComboBox.setObject(previousInformationLevel(showLevelComboBox.getValue()));
+    showLevelComboBox.setValue(previousInformationLevel(showLevelComboBox.getValue()));
   }
   
   /**
@@ -96,7 +96,7 @@ public class LevelSelectionPanel extends HBox {
    * If the highest level is already selected, this doesn't change, else the level is increased.
    */
   private void increaseLevel() {
-    showLevelComboBox.setObject(nextInformationLevel(showLevelComboBox.getValue()));
+    showLevelComboBox.setValue(nextInformationLevel(showLevelComboBox.getValue()));
   }
   
   /**

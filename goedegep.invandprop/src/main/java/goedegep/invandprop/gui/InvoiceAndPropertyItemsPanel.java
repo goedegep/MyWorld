@@ -85,8 +85,8 @@ public class InvoiceAndPropertyItemsPanel extends EditPanelTemplate<List<Invoice
    * @param invoicesAndPropertiesService the {@code InvoicesAndPropertiesService}
    * @return a newly created {@code InvoiceAndPropertyItemsPanel}
    */
-  public static InvoiceAndPropertyItemsPanel newInstance(CustomizationFx customization, InvoicesAndPropertiesService invoicesAndPropertiesService) {
-    InvoiceAndPropertyItemsPanel invoiceAndPropertyItemsPanel = new InvoiceAndPropertyItemsPanel(customization, invoicesAndPropertiesService);
+  public static InvoiceAndPropertyItemsPanel newInstance(CustomizationFx customization, String id, InvoicesAndPropertiesService invoicesAndPropertiesService) {
+    InvoiceAndPropertyItemsPanel invoiceAndPropertyItemsPanel = new InvoiceAndPropertyItemsPanel(customization, id, invoicesAndPropertiesService);
     
     invoiceAndPropertyItemsPanel.performInitialization();
     
@@ -99,8 +99,8 @@ public class InvoiceAndPropertyItemsPanel extends EditPanelTemplate<List<Invoice
    * @param customization The GUI customization.
    * @param invoicesAndPropertiesService the {@code InvoicesAndPropertiesService}
    */
-  private InvoiceAndPropertyItemsPanel(CustomizationFx customization, InvoicesAndPropertiesService invoicesAndPropertiesService) {
-    super(customization, true);
+  private InvoiceAndPropertyItemsPanel(CustomizationFx customization, String id, InvoicesAndPropertiesService invoicesAndPropertiesService) {
+    super(customization, id, true);
     
     this.invoicesAndPropertiesService = invoicesAndPropertiesService;
   }
@@ -245,7 +245,7 @@ public class InvoiceAndPropertyItemsPanel extends EditPanelTemplate<List<Invoice
    * @param expand if true, the panel will be expanded upon creation.
    */
   private void createNewInvoiceAndPropertyItemPanel(InvoiceAndPropertyItem invoiceAndPropertyItem, boolean expand) {
-    InvoiceAndPropertyItemPanel invoiceAndPropertyItemPanel = InvoiceAndPropertyItemPanel.newInstance(customization);
+    InvoiceAndPropertyItemPanel invoiceAndPropertyItemPanel = InvoiceAndPropertyItemPanel.newInstance(customization, "invoiceAndPropertyItemPanel");
     
     installDragAndDropHandling(invoiceAndPropertyItemPanel);
     invoiceAndPropertyItemPanels.add(invoiceAndPropertyItemPanel);

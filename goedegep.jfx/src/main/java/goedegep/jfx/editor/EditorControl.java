@@ -12,7 +12,7 @@ public interface EditorControl<T> extends EditorComponent<T> {
    * 
    * @param value the value of the control.
    */
-  void setObject(final T value);
+  void setValue(final T value);
 
   /**
    * Get the value of the control.

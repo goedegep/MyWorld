@@ -140,11 +140,9 @@ public class EventEditPanel extends EditPanelTemplate<EventInfo> {
    * @param eventsService the events service
    */
   private EventEditPanel(CustomizationFx customization, EventsService eventsService) {
-    super(customization, false);
+    super(customization, "EventEditPanel", false);
     
     this.eventsService = eventsService;
-    
-    setId("EventEditPanel");
   }
 
   /**
@@ -179,18 +177,16 @@ public class EventEditPanel extends EditPanelTemplate<EventInfo> {
     
     eventFolderControl.getControl().setEditable(false);
    
-    pictureFileSelecter = componentFactory.createEditorControlFileSelecter(300, "file name of a picture", "file chooser", "Start a file chooser", "Select picture file", true);
-    pictureFileSelecter.setId("pictureFileSelecter");
+    pictureFileSelecter = componentFactory.createEditorControlFileSelecter(300, "pictureFileSelecter", "file name of a picture", "file chooser", "Start a file chooser", "Select picture file", true);
     pictureFileSelecter.setLabelBaseText("Picture");
     pictureFileSelecter.setInitialFolderProvider(this::getEventRelatedFilesFolder);
     pictureFileSelecter.setPrefix(EventsRegistry.eventsFolderName);
     pictureFileSelecter.addValueAndOrStatusChangeListener((valueChanged, statusChanged) -> updatePictureImageView(valueChanged, statusChanged));
     
-    notesControl = componentFactory.createEditorControlHTMLString(true);
-    notesControl.setId("notes");
+    notesControl = componentFactory.createEditorControlHTMLString("notes", true);
     notesControl.setLabelBaseText("Notes");
     
-    attachmentsEditPanel = new FileReferencesEditPanelBuilder(customization)
+    attachmentsEditPanel = new FileReferencesEditPanelBuilder(customization, "attachments")
         .setReferencesEditPanelTitle(ATTACHMENTS_PANEL_TITLE)
         .setReferenceEditPanelTitle(ATTACHMENT_PANEL_TITLE)
         .setAddFileReferenceButtonText("Add attachment")
@@ -203,7 +199,6 @@ public class EventEditPanel extends EditPanelTemplate<EventInfo> {
             )
         .setPrefix(EventsRegistry.eventsFolderName)
         .build();
-    attachmentsEditPanel.setId("attachments");
     attachmentsEditPanel.addValueAndOrStatusChangeListener((_, _) -> updateEventFolderPathProperty());
     
     registerEditorComponents(eventDateControl, eventTitleControl, pictureFileSelecter, notesControl, attachmentsEditPanel);
@@ -234,10 +229,10 @@ public class EventEditPanel extends EditPanelTemplate<EventInfo> {
     if (value == null) {
       return;
     }
-    eventDateControl.setObject(value.getDate());
-    eventTitleControl.setObject(value.getTitle());
+    eventDateControl.setValue(value.getDate());
+    eventTitleControl.setValue(value.getTitle());
     pictureFileSelecter.setPathNameRelativeToPrefix(value.getPicture());
-    notesControl.setObject(value.getNotes());
+    notesControl.setValue(value.getNotes());
     
     attachmentsEditPanel.setObject(value.getAttachments());
   }
@@ -395,7 +390,7 @@ public class EventEditPanel extends EditPanelTemplate<EventInfo> {
       eventFolderName = eventFolder.getFileName().toString();
       toolTipText = "Attachments of the event are stored in the folder: " + eventFolder.toString();
     }
-    eventFolderControl.setObject(eventFolderName);
+    eventFolderControl.setValue(eventFolderName);
     eventFolderControl.getControl().setTooltip(new Tooltip(toolTipText));
     
     if (eventFolder != null  &&  Files.exists(eventFolder)) {

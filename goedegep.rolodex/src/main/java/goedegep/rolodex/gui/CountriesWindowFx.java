@@ -80,7 +80,7 @@ public class CountriesWindowFx extends JfxStage {
       
     });
     
-    countriesTable.addObjectSelectionListener((source, country) -> {
+    countriesTable.addObjectSelectionListener((_, country) -> {
         referredByPanel.setObject(country);
         countryEditPanel.setCountry(country);
     });
@@ -173,7 +173,7 @@ class CountryEditPanel {
     gridPane.add(countryTextField.getControl(), 1, row);
     
     Button addButton = componentFactory.createButton("Add", "Add the country to the Rolodex");
-    addButton.setOnAction((e) -> {
+    addButton.setOnAction((_) -> {
       Country newCountry = createCountryFromFields();
       if (newCountry != null) {
         rolodex.getCountryList().getCountries().add(newCountry);
@@ -191,7 +191,7 @@ class CountryEditPanel {
     });
     updateButton.setDisable(countryProperty.getValue() == null);
     
-    updateButton.setOnAction((e) -> {
+    updateButton.setOnAction((_) -> {
       updateCountryIfControlsAreValid();
     });
     gridPane.add(updateButton, 3, row);
@@ -286,7 +286,6 @@ class CountriesTableDescriptor extends EObjectTableDescriptor<Country> {
       new EObjectTableColumnDescriptorBasic<Country>(ROLODEX_PACKAGE.getCountry_CountryName(), "Country", 300, true, true)
       );
   
-  @SuppressWarnings("serial")
   private static Map<Operation, TableRowOperationDescriptor<Country>> rowOperations = new HashMap<>() {
     {
     put(Operation.DELETE_OBJECT, new TableRowOperationDescriptor<>("Delete"));

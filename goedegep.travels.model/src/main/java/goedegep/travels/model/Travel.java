@@ -211,12 +211,4 @@ public interface Travel extends Event {
    */
   EList<String> getAllReferencedFiles();
 
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @model
-   * @generated
-   */
-  Integer getDayNr(VacationElement vacationElement);
-
 } // Travel

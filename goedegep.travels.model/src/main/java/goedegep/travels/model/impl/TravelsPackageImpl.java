@@ -1037,16 +1037,6 @@ public class TravelsPackageImpl extends EPackageImpl implements TravelsPackage {
    * @generated
    */
   @Override
-  public EOperation getTravel__GetDayNr__VacationElement() {
-    return travelEClass.getEOperations().get(4);
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
   public EEnum getInformationLevel() {
     return informationLevelEEnum;
   }
@@ -1185,7 +1175,6 @@ public class TravelsPackageImpl extends EPackageImpl implements TravelsPackage {
     createEOperation(travelEClass, TRAVEL___GET_ALL_FILE_REFERENCES);
     createEOperation(travelEClass, TRAVEL___FIND_DOCUMENT__STRING);
     createEOperation(travelEClass, TRAVEL___GET_ALL_REFERENCED_FILES);
-    createEOperation(travelEClass, TRAVEL___GET_DAY_NR__VACATIONELEMENT);
 
     // Create enums
     informationLevelEEnum = createEEnum(INFORMATION_LEVEL);
@@ -1434,10 +1423,6 @@ public class TravelsPackageImpl extends EPackageImpl implements TravelsPackage {
 
     initEOperation(getTravel__GetAllReferencedFiles(), theXMLTypePackage.getString(), "getAllReferencedFiles", 0, -1,
         IS_UNIQUE, IS_ORDERED);
-
-    op = initEOperation(getTravel__GetDayNr__VacationElement(), ecorePackage.getEIntegerObject(), "getDayNr", 0, 1,
-        IS_UNIQUE, IS_ORDERED);
-    addEParameter(op, this.getVacationElement(), "vacationElement", 0, 1, IS_UNIQUE, IS_ORDERED);
 
     // Initialize enums and add enum literals
     initEEnum(informationLevelEEnum, InformationLevel.class, "InformationLevel");

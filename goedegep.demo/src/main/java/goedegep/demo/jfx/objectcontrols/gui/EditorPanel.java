@@ -98,7 +98,7 @@ public class EditorPanel extends VBox {
     createControls();
     createGUI();
     
-    objectControlGroup.addListener((observable) -> updateAddUpdateAndNewButtonsPanel());
+    objectControlGroup.addListener((_) -> updateAddUpdateAndNewButtonsPanel());
     
     setInquiryData(null, false);
   }
@@ -476,13 +476,13 @@ public class EditorPanel extends VBox {
     Button addOrUpdateButton;
     if (editMode == EditMode.NEW) {
       addOrUpdateButton = componentFactory.createButton("Add InquiryData", "Add the InquiryData to the list");
-      addOrUpdateButton.setOnAction(e -> addInquiryData());
+      addOrUpdateButton.setOnAction(_ -> addInquiryData());
       if (!objectControlGroup.isValid()) {
         addOrUpdateButton.setDisable(true);
       }
     } else {
       addOrUpdateButton = componentFactory.createButton("Update InquiryData", "Update the album in the list");
-      addOrUpdateButton.setOnAction(e -> updateInquiryData());
+      addOrUpdateButton.setOnAction(_ -> updateInquiryData());
       if (editStatus != EditStatus.CHANGES) {
         addOrUpdateButton.setDisable(true);
       }
@@ -490,7 +490,7 @@ public class EditorPanel extends VBox {
     addUpdateAndNewButtonsPanel.getChildren().add(addOrUpdateButton);
     
     button = componentFactory.createButton("New", "Clear controls to start creating new InquiryData");
-    button.setOnAction(e -> setInquiryData(null, true));
+    button.setOnAction(_ -> setInquiryData(null, true));
     addUpdateAndNewButtonsPanel.getChildren().add(button);
   }
   

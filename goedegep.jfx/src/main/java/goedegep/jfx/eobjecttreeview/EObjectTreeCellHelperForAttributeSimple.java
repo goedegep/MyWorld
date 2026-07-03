@@ -107,8 +107,9 @@ public class EObjectTreeCellHelperForAttributeSimple extends EObjectTreeCellHelp
         e.printStackTrace();
       }
     } else {
-      LOGGER.info("type name: " + treeItem.getEAttribute().getEType().getInstanceTypeName());
-      switch (treeItem.getEAttribute().getEType().getInstanceTypeName()) {
+      LOGGER.severe("type name: " + treeItem.getEAttribute().getEType().getInstanceTypeName());
+      String typeName = treeItem.getEAttribute().getEType().getInstanceTypeName();
+      switch (typeName) {
       case "java.lang.Double":
         if ((newValueString != null)  &&  !newValueString.isEmpty()) {
           newValueObject = Double.parseDouble(newValueString);
@@ -116,6 +117,7 @@ public class EObjectTreeCellHelperForAttributeSimple extends EObjectTreeCellHelp
         break;
         
       case "java.lang.Integer":
+      case "int":
         if ((newValueString != null)  &&  !newValueString.isEmpty()) {
           newValueObject = Integer.parseInt(newValueString);
         }

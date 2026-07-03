@@ -19,7 +19,8 @@ import javafx.scene.control.Label;
  * <h4>Optional versus mandatory</h4>
  * Any value in the editor is either optional or not, in which case it is mandatory. Optional means that no value has to be provided.
  * This is something that doesn't change while the editor is active.
- * Therefore the 'optional' indication shall be set via the constructor of any implementation. The value can be obtained via {@link #isOptional()}.
+ * Therefore the 'optional' indication shall be set via the constructor of any implementation. The value can be obtained via {@link #isOptional()}.<br./>
+ * In an editor this is usually indicated by a '*' in the label of the component. For this purpose the constant {@link #MANDATORY_SYMBOL} is provided.
  * 
  * <h4>Filled in</h4>
  * 'Filled in' means that something is entered in a component, it may be valid or not. The {@link #isFilledIn()} method can be used to check on this.
@@ -90,7 +91,29 @@ import javafx.scene.control.Label;
  * @param <T> the data type handled by the component.
  */
 public interface EditorComponent<T> {
+  /**
+   * Symbol to indicate that a value is mandatory (not optional).
+   */
   final static String MANDATORY_SYMBOL = "*";
+  
+  /*
+   * Status indicators.
+   */
+  
+  /**
+   * Symbol to indicate that a value is invalid. It may be changed or not, but that doesn't matter, because the user has to change it to something valid.
+   */
+  final static String NOK_INDICATOR = "!";
+  
+  /**
+   * Symbol to indicate that a value is valid and changed.
+   */
+  final static String CHANGED_INDICATOR = "≠";
+  
+  /**
+   * Symbol to indicate that a value is valid and not changed.
+   */
+  final static String NOT_CHANGED_INDICATOR = "=";
   
   /**
    * Get the unique id of the object.
@@ -99,12 +122,12 @@ public interface EditorComponent<T> {
    */
   String getId();
   
-  /**
-   * Set the unique id of the ObjectControl.
-   * 
-   * @param id the unique id for the ObjectControl.
-   */
-  void setId(String id);
+//  /**
+//   * Set the unique id of the ObjectControl.
+//   * 
+//   * @param id the unique id for the ObjectControl.
+//   */
+//  void setId(String id);
 
   /**
    * Indication of whether the Object provided by this component is optional or not (mandatory).
@@ -145,6 +168,13 @@ public interface EditorComponent<T> {
    */
   boolean isChanged();
   
+  /**
+   * Get a symbol which represents the status of the control.
+   * <p>
+   * The symbol is used in the GUI to indicate the status of the control.
+   * 
+   * @return a symbol which represents the status of the control.
+   */
   String getStatusSymbol();
   
   /**
@@ -195,11 +225,18 @@ public interface EditorComponent<T> {
   /**
    * Get the main GUI control.
    * <p>
-   * If an implementation has more than one GUI control, separate methods to obtain these have to be provided.
+   * If an implementation has more than one GUI control, separate methods to obtain these controls have to be provided.
    * 
    * @return the main GUI control.
    */
   Node getControl();
+  
+  /**
+   * Get the basis for the label text. If the component is mandatory, a '*' is added. After this a ':' is added.
+   * 
+   * @param labelBaseText the basis for the label text.
+   */
+  String getLabelBaseText();
   
   /**
    * Set the basis for the label text. If the component is mandatory, a '*' is added. After this a ':' is added.

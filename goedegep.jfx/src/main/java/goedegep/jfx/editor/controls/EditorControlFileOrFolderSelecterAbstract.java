@@ -79,11 +79,12 @@ public abstract class EditorControlFileOrFolderSelecterAbstract extends EditorCo
    */
   protected EditorControlFileOrFolderSelecterAbstract(
       CustomizationFx customization,
+      String id,
       int textFieldWidth,
       String textFieldToolTipText,
       String fileOrFolderChooserTitle,
       boolean optional) {
-    super(customization, optional);
+    super(customization, id, optional);
     
     this.textFieldWidth = textFieldWidth;
     this.textFieldToolTipText = textFieldToolTipText;
@@ -219,11 +220,11 @@ public abstract class EditorControlFileOrFolderSelecterAbstract extends EditorCo
   
   public void setPathNameRelativeToPrefix(String pathName) {
     if (pathName == null) {
-      setObject(null);
+      setValue(null);
     } else {
       pathName = addPrefixIfSet(pathName);
       File file = new File(pathName);
-      setObject(file);
+      setValue(file);
     }
   }
   

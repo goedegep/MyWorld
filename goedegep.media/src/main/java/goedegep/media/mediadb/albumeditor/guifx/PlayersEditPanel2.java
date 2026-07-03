@@ -103,7 +103,7 @@ public class PlayersEditPanel2 extends ListEditPanelTemplate<List<Player>, Playe
    * @param mediaDbService the media database service.
    */
   private PlayersEditPanel2(CustomizationFx customization, IMediaDbService mediaDbService) {
-    super(customization, true);
+    super(customization, "players", true);
     
     this.mediaDbService = mediaDbService;
   }
@@ -236,7 +236,7 @@ public class PlayersEditPanel2 extends ListEditPanelTemplate<List<Player>, Playe
    * @param player the optional value for the control
    */
   private void createNewPlayerMultiControl(Player player) {
-    PlayerMultiControl playerMultiControl = PlayerMultiControl.newInstance(customization, mediaDbService);
+    PlayerMultiControl playerMultiControl = PlayerMultiControl.newInstance(customization, "player", mediaDbService);
     
     installDragAndDropHandling(playerMultiControl);
     listItemPanels.add(playerMultiControl);

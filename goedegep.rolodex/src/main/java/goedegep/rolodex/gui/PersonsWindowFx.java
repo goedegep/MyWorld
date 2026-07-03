@@ -110,7 +110,7 @@ public class PersonsWindowFx extends JfxStage {
       
     });
     
-    personsTable.addObjectSelectionListener((source, person) -> {
+    personsTable.addObjectSelectionListener((_, person) -> {
         if (person != null) {
           previousAddressesTable.setObjects(person, RolodexPackage.eINSTANCE.getAddressHolder_PreviousAddresses());
         } else {
@@ -309,7 +309,7 @@ class PersonEditPanel {
 
     HBox buttonsBox = componentFactory.createHBox(12.0);
     Button addButton = componentFactory.createButton("Add person", "Add the person to the Rolodex");
-    addButton.setOnAction((e) -> {
+    addButton.setOnAction((_) -> {
       Person newPerson = createPersonFromFields();
       if (newPerson != null) {
         rolodex.getPersonList().getPersons().add(newPerson);
@@ -328,7 +328,7 @@ class PersonEditPanel {
     });
     updateButton.setDisable(personProperty.getValue() == null);
 
-    updateButton.setOnAction((e) -> {
+    updateButton.setOnAction((_) -> {
       updatePersonIfControlsAreValid();
     });
     buttonsBox.getChildren().add(updateButton);
@@ -652,7 +652,6 @@ class PersonsTableDescriptor extends EObjectTableDescriptor<Person> {
       new EObjectTableColumnDescriptorBasic<Person>(ROLODEX_PACKAGE.getPerson_Id(), ID_COLUMN_ID, "Id", true, true)
       );
   
-  @SuppressWarnings("serial")
   private static Map<Operation, TableRowOperationDescriptor<Person>> rowOperations = new HashMap<>() {
     {
     put(Operation.DELETE_OBJECT, new TableRowOperationDescriptor<>("Delete"));
@@ -684,7 +683,6 @@ class AddressForPeriodTableDescriptor extends EObjectTableDescriptor<AddressForP
       new EObjectTableColumnDescriptorBasic<AddressForPeriod>(ROLODEX_PACKAGE.getAddressForPeriod_UntillDate(), "Until", true, true)
       );
   
-  @SuppressWarnings("serial")
   private static Map<Operation, TableRowOperationDescriptor<AddressForPeriod>> rowOperations = new HashMap<>() {
     {
     put(Operation.DELETE_OBJECT, new TableRowOperationDescriptor<>("Delete"));

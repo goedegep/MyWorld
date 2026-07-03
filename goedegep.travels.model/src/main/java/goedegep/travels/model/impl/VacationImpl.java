@@ -617,8 +617,6 @@ public class VacationImpl extends EventImpl implements Vacation {
         return TravelsPackage.VACATION___FIND_DOCUMENT__STRING;
       case TravelsPackage.TRAVEL___GET_ALL_REFERENCED_FILES:
         return TravelsPackage.VACATION___GET_ALL_REFERENCED_FILES;
-      case TravelsPackage.TRAVEL___GET_DAY_NR__VACATIONELEMENT:
-        return TravelsPackage.VACATION___GET_DAY_NR__VACATIONELEMENT;
       default:
         return -1;
       }
@@ -642,8 +640,6 @@ public class VacationImpl extends EventImpl implements Vacation {
       return findDocument((String) arguments.get(0));
     case TravelsPackage.VACATION___GET_ALL_REFERENCED_FILES:
       return getAllReferencedFiles();
-    case TravelsPackage.VACATION___GET_DAY_NR__VACATIONELEMENT:
-      return getDayNr((VacationElement) arguments.get(0));
     }
     return super.eInvoke(operationID, arguments);
   }

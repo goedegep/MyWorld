@@ -97,8 +97,9 @@ public class AlbumEditPanel extends EditPanelTemplate<Album> {
    * @param mediaDbService the media database service.
    * @return the newly created {@code EventEditPanel2}.
    */
-  public static AlbumEditPanel newInstance(CustomizationFx customization, IMediaDbService mediaDbService) {
-    AlbumEditPanel albumEditPanel = new AlbumEditPanel(customization, mediaDbService);
+  public static AlbumEditPanel newInstance(CustomizationFx customization, String id, IMediaDbService mediaDbService) {
+    LOGGER.severe("AlbumEditPanel.newInstance()");
+    AlbumEditPanel albumEditPanel = new AlbumEditPanel(customization, id, mediaDbService);
     albumEditPanel.performInitialization();
     
     return albumEditPanel;
@@ -110,11 +111,10 @@ public class AlbumEditPanel extends EditPanelTemplate<Album> {
    * @param customization the GUI customization
    * @param mediaDbService the media database service.
    */
-  private AlbumEditPanel(CustomizationFx customization, IMediaDbService mediaDbService) {
-    super(customization, false);
+  private AlbumEditPanel(CustomizationFx customization, String id, IMediaDbService mediaDbService) {
+    super(customization, id, false);
     
     this.mediaDbService = mediaDbService;
-    setId("AlbumEditPanel");
   }
 
 
@@ -136,8 +136,7 @@ public class AlbumEditPanel extends EditPanelTemplate<Album> {
         .setErrorTextSupplier(() -> "The album title is not filled in")
         .build();
         
-    albumArtistControl = EditorControlArtist.newInstance(customization, mediaDbService);
-    albumArtistControl.setId("album artist");
+    albumArtistControl = EditorControlArtist.newInstance(customization, "album artist", mediaDbService);
     albumArtistControl.setLabelBaseText("_Artist");
     
     albumIssueDateControl = new EditorControlFlexDate.FlexDateBuilder("issueDate")
@@ -188,15 +187,15 @@ public class AlbumEditPanel extends EditPanelTemplate<Album> {
     if (value == null) {
       return;
     }
-    albumTitleControl.setObject(value.getTitle());
-    albumArtistControl.setObject(value.getArtist());
-    albumIssueDateControl.setObject(value.getReleaseDate());
-    albumIdControl.setObject(value.getId());
+    albumTitleControl.setValue(value.getTitle());
+    albumArtistControl.setValue(value.getArtist());
+    albumIssueDateControl.setValue(value.getReleaseDate());
+    albumIdControl.setValue(value.getId());
     
     playersEditPanel.setObject(value.getPlayers());
     
     MyInfo myInfo = value.getMyInfo();
-    albumTypeControl.setObject(myInfo.getAlbumType());
+    albumTypeControl.setValue(myInfo.getAlbumType());
   }
 
   /**

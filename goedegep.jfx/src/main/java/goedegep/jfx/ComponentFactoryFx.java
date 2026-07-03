@@ -922,9 +922,9 @@ public class ComponentFactoryFx {
    * @param isOptional if true, the text field is optional, i.e. it may be empty.
    * @return the newly created FolderSelecter
    */
-  public EditorControlFileSelecter createEditorControlFileSelecter(int textFieldWidth, String textFieldToolTipText,
+  public EditorControlFileSelecter createEditorControlFileSelecter(int textFieldWidth, String id, String textFieldToolTipText,
       String folderChooserButtonText, String folderChooserButtonToolTipText, String directoryChooserTitle, boolean isOptional) {
-    EditorControlFileSelecter fileSelecter = EditorControlFileSelecter.newInstance(customization, textFieldWidth, textFieldToolTipText,
+    EditorControlFileSelecter fileSelecter = EditorControlFileSelecter.newInstance(customization, id, textFieldWidth, textFieldToolTipText,
         folderChooserButtonText, folderChooserButtonToolTipText, directoryChooserTitle, isOptional);
     
     customizeTextInputControl(fileSelecter.getControl());
@@ -968,9 +968,9 @@ public class ComponentFactoryFx {
    * @param directoryChooserTitle title for the DirectoryChooser (may not be null)
    * @return the newly created FolderSelecter
    */
-  public EditorControlFolderSelecter createEditorControlFolderSelecter(int textFieldWidth, String textFieldToolTipText,
+  public EditorControlFolderSelecter createEditorControlFolderSelecter(int textFieldWidth, String id, String textFieldToolTipText,
       String folderChooserButtonText, String folderChooserButtonToolTipText, String directoryChooserTitle, boolean isOptional) {
-    EditorControlFolderSelecter folderSelecter = EditorControlFolderSelecter.newInstance(customization, textFieldWidth, textFieldToolTipText,
+    EditorControlFolderSelecter folderSelecter = EditorControlFolderSelecter.newInstance(customization, id, textFieldWidth, textFieldToolTipText,
         folderChooserButtonText, folderChooserButtonToolTipText, directoryChooserTitle, isOptional);
     
     customizeTextInputControl(folderSelecter.getControl());
@@ -1116,8 +1116,8 @@ public class ComponentFactoryFx {
    * @param optional if true, the value provided by this control is optional.
    * @return the newly created {@code EditorControlHTMLString}.
    */
-  public EditorControlHTMLString createEditorControlHTMLString(boolean optional) {
-    EditorControlHTMLString editorControlHTMLString = EditorControlHTMLString.newInstance(customization, optional);
+  public EditorControlHTMLString createEditorControlHTMLString(String id, boolean optional) {
+    EditorControlHTMLString editorControlHTMLString = EditorControlHTMLString.newInstance(customization, id, optional);
 
     return editorControlHTMLString;
   }

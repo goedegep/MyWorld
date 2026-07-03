@@ -13,6 +13,11 @@ import javafx.beans.Observable;
 public abstract class EditorMultiControlTemplate<T> extends EditorComponentAbstract<T> implements EditorMultiControl<T> {
   private static final Logger         LOGGER = Logger.getLogger(EditorMultiControlTemplate.class.getName());
   
+
+  /**
+   * The current value (as known by the client), initially set to {@code null}.
+   */
+  protected T value = null;
   
   /**
    * A list of {@link EditorComponent}s determining the status of this panel.
@@ -24,11 +29,6 @@ public abstract class EditorMultiControlTemplate<T> extends EditorComponentAbstr
    */
   private EditorComponent<?> firstInvalidEditorComponent;
   
-//  /**
-//   * An {@code InvalidationListener} to listen for changes in any of the controls in the group.
-//   */
-//  private InvalidationListener invalidationListener;
-
   /**
    * A {@code ValueAndOrStatusChangeListener} to listen for changes in any of the {@code editorComponents}.
    */
@@ -37,11 +37,20 @@ public abstract class EditorMultiControlTemplate<T> extends EditorComponentAbstr
   boolean initializationComplete = false;
 
   
-  public EditorMultiControlTemplate(CustomizationFx customization, boolean optional) {
-    super(customization, optional);
+  /**
+   * Constructor.
+   * 
+   * @param customization the GUI customization
+   * @param optional indication of whether the value is optional or not.
+   */
+  public EditorMultiControlTemplate(CustomizationFx customization, String id, boolean optional) {
+    super(customization, id, optional);
 
-//    invalidationListener = (observable) -> handleChanges(observable);
     valueAndOrStatusChangeListener = (valueChanged, statusChanged) -> handleChanges(valueChanged, statusChanged);
+  }
+  
+  protected T getReferenceValue() {
+    return value;
   }
   
   public EditorComponent<?> getFirstInvalidControl() {
@@ -53,12 +62,8 @@ public abstract class EditorMultiControlTemplate<T> extends EditorComponentAbstr
    */
   public void performInitialization() {
     createControls();
-//    fillControlsWithDefaultValues();
     
     installChangeListeners();
-//    ignoreChanges = false;
-    
-    newObject();
     
     initializationComplete = true;
     handleChanges(true, true); // during initialization changes are ignored
@@ -196,7 +201,6 @@ public abstract class EditorMultiControlTemplate<T> extends EditorComponentAbstr
     
     for (EditorComponent<?> editorComponent: editorComponents) {
       editorComponent.addValueAndOrStatusChangeListener(valueAndOrStatusChangeListener);
-//      editorComponent.addListener(invalidationListener);
       this.editorComponents.add(editorComponent);
     }
     
@@ -231,15 +235,16 @@ public abstract class EditorMultiControlTemplate<T> extends EditorComponentAbstr
   
   @Override
   public final void setObject(T newValue) {
-    LOGGER.info("=> " + newValue);
     
     if (newValue != value) {
       value = newValue;
     }
-    fillControlsFromObject();
-    referenceValue = newValue;
     
-    LOGGER.info("<=");
+    if (value == null) {
+      value = createObject();
+    }
+    
+    fillControlsFromObject();
   }
   
   @Override
@@ -259,5 +264,21 @@ public abstract class EditorMultiControlTemplate<T> extends EditorComponentAbstr
     throw new UnsupportedOperationException();
   }
 
+  /**
+   * Check whether any {@code EditorComponent} is filled-in.
+   * <p>
+   * This method shall only be called when all components are valid.
+   * 
+   * @return {@code true} if at least one component is filled in, {@code false} otherwise.
+   */
+  protected boolean anyControlNonNull() {
+    for (EditorComponent<?> editorComponent: editorComponents) {
+      if (editorComponent.isFilledIn()) {
+        return true;
+      }
+    }
+    
+    return false;
+  }
 
 }

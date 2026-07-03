@@ -88,7 +88,7 @@ public class EmployeesWindowFx extends JfxStage {
       
     });
     
-    employeesTable.addObjectSelectionListener((source, employee) -> {
+    employeesTable.addObjectSelectionListener((_, employee) -> {
         referredByPanel.setObject(employee);
         employeeEditPanel.setEmployee(employee);
     });
@@ -188,7 +188,7 @@ class EmployeeEditPanel {
 
     HBox buttonsBox = componentFactory.createHBox(12.0);
     Button addButton = componentFactory.createButton("Add employee", "Add the employee to the Rolodex");
-    addButton.setOnAction((e) -> {
+    addButton.setOnAction((_) -> {
       Employee newEmployee = createEmployeeFromFields();
       if (newEmployee != null) {
         rolodex.getEmployeeList().getEmployees().add(newEmployee);
@@ -207,7 +207,7 @@ class EmployeeEditPanel {
     });
     updateButton.setDisable(employeeProperty.getValue() == null);
 
-    updateButton.setOnAction((e) -> {
+    updateButton.setOnAction((_) -> {
       updateEmployeeIfControlsAreValid();
     });
     buttonsBox.getChildren().add(updateButton);
@@ -369,7 +369,6 @@ class EmployeeEditPanel {
 class EmployeesTableDescriptor extends EObjectTableDescriptor<Employee> {
   private static RolodexPackage ROLODEX_PACKAGE = RolodexPackage.eINSTANCE;
   
-  @SuppressWarnings("serial")
   private static Map<Operation, TableRowOperationDescriptor<Employee>> rowOperations = new HashMap<>() {
     {
     put(Operation.DELETE_OBJECT, new TableRowOperationDescriptor<>("Delete"));

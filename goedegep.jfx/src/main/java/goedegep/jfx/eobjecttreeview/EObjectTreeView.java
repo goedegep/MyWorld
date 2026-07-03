@@ -624,15 +624,15 @@ public class EObjectTreeView extends TreeView<Object> implements ObjectSelector<
                 LOGGER.severe("notification: " + EmfUtil.printNotification(notification));
               } else {
                 ((EObjectTreeItemForObjectList) changedTreeItem).addObjectListChild(notification.getPosition());
-                Object listAsObject = changedTreeItem.getValue();
-                List list = (List) listAsObject;
-                Object newObject = list.get(notification.getPosition());
-                EObject newEObject = (EObject) newObject;
+//                Object listAsObject = changedTreeItem.getValue();
+//                List list = (List) listAsObject;
+//                Object newObject = list.get(notification.getPosition());
+//                EObject newEObject = (EObject) newObject;
 //                EClass eClass = newEObject.eClass();
 //                EObjectTreeItemClassDescriptor desc = getBestClassDescriptor(eClass);
-                if (newEObjectInitializationFunction != null) {
-                  newEObjectInitializationFunction.accept(newEObject, changedTreeItem);
-                }
+//                if (newEObjectInitializationFunction != null) {
+//                  newEObjectInitializationFunction.accept(newEObject, changedTreeItem);
+//                }
               }
             } else if (notification.getEventType() == Notification.REMOVE) {
               // an element is removed from a list of objects

@@ -4,6 +4,7 @@ import java.util.logging.Logger;
 
 import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.objectcontrols.ObjectControlFileSelecter;
+import javafx.scene.Node;
 
 /**
  * This class is a Template for creating an {@code EditorControl}.
@@ -12,6 +13,16 @@ import goedegep.jfx.objectcontrols.ObjectControlFileSelecter;
  */
 public abstract class EditorControlTemplate<T> extends EditorComponentAbstract<T> implements EditorControl<T> {
   private static final Logger         LOGGER = Logger.getLogger(EditorControlTemplate.class.getName());
+
+  /**
+   * The current value (as known by the client), initially set to {@code null}.
+   */
+  protected T value = null;
+  
+  /**
+   * Reference value to check for changes, initially set to {@code value}.
+   */
+  protected T referenceValue = value;
   
   /**
    * Constructor.
@@ -19,8 +30,8 @@ public abstract class EditorControlTemplate<T> extends EditorComponentAbstract<T
    * @param customization the GUI customization
    * @param optional indication of whether the value is optional or not.
    */
-  protected EditorControlTemplate(CustomizationFx customization, boolean optional) {
-    super(customization, optional);
+  protected EditorControlTemplate(CustomizationFx customization, String id, boolean optional) {
+    super(customization, id, optional);
   }
   
   /**
@@ -28,12 +39,7 @@ public abstract class EditorControlTemplate<T> extends EditorComponentAbstract<T
    */
   public void performInitialization() {
     createControls();
-    fillControlsWithDefaultValues();
-    
-//    installChangeListeners();
-//    ignoreChanges = false;
-//    
-//    handleChanges();
+    fillControlsWithDefaultValues();    
   }
   
   protected abstract void fillControlsWithDefaultValues();
@@ -68,7 +74,7 @@ public abstract class EditorControlTemplate<T> extends EditorComponentAbstract<T
    * Set the filled in status<br/>
    * </li>
    * <li>
-   * Fill the control with the new value by calling {@code fillControlsFromObject()}.
+   * Fill the control(s) with the new value by calling {@code fillControlsFromObject()}.
    * </li>
    * <li>
    * Set the reference value to the new value.
@@ -88,26 +94,24 @@ public abstract class EditorControlTemplate<T> extends EditorComponentAbstract<T
    * 
    * @param newValue the new value.
    */
-  public  void setObject(T newValue) {
-    LOGGER.info("=> " + newValue);
+  public  void setValue(T newValue) {
+//    ignoreNewUserInput = true;
     
-    ignoreNewUserInput = true;
-    
-    boolean newFilledIn = newValue != null;
-    boolean dataLegal;
+    boolean newFilledIn = newValue != null;  // here it depends on the newValue set.
+    boolean validDataValue;  // true if something is filled in and the value is valid value.
     
     if (newFilledIn) {
-      dataLegal = true;
+      validDataValue = true;  // TODO this doesn't have to be the case. It is a valid with respect to the type, but it may be invalid with respect to the business rules. This is not checked here.
     } else {
-      dataLegal = false;
+      validDataValue = false;
     }
-    setErrorFeedback(dataLegal);
+    setErrorFeedback(validDataValue);
     
     boolean newValueIsDifferentValue = determineChanges(newValue);
     if (newValueIsDifferentValue) {
       value = newValue;
     }
-    valid = determineValidity(newFilledIn, dataLegal);
+    valid = determineValidity(newFilledIn, validDataValue);
     filledIn = newFilledIn;
     fillControlsFromObject();
     referenceValue = newValue;
@@ -118,9 +122,7 @@ public abstract class EditorControlTemplate<T> extends EditorComponentAbstract<T
       notifyValueAndOrStatusChangeListeners(true, true);
     }
     
-    ignoreNewUserInput = false;
-    
-    LOGGER.info("<=");
+//    ignoreNewUserInput = false;
   }
   
   /**
@@ -129,34 +131,33 @@ public abstract class EditorControlTemplate<T> extends EditorComponentAbstract<T
    * @param source the control which detected the changes.
    */
   protected final void handleNewUserInput(Object source) {
-    LOGGER.info("=> " + source);
-    
     if (ignoreNewUserInput) {
+      LOGGER.severe("Ignoring new user input on source: " + source.getClass().getName());
       return;
     }
     
-    boolean newFilledIn = determineFilledIn(source);
-    boolean dataValid;
-    T inputValue;
+    boolean newFilledIn = determineFilledIn(source);  // here it depends on the value in the source control.
+    boolean validDataValue;  // true if something is filled in and the value is valid value.
     
+    T inputValue;    
     if (newFilledIn) {
       inputValue = determineValue(source);
       if (inputValue != null) {
-        dataValid = true;
+        validDataValue = true;
       } else {
-        dataValid = false;
+        validDataValue = false;
       }
     } else {
-      dataValid = false;
+      validDataValue = false;
       inputValue = null;
     }
-    setErrorFeedback(dataValid);
+    setErrorFeedback(validDataValue);
     
     changed = determineChanges(inputValue);
     if (changed) {
       value = inputValue;
     }
-    valid = determineValidity(newFilledIn, dataValid);
+    valid = determineValidity(newFilledIn, validDataValue);
     filledIn = newFilledIn;
     updateNonSourceControls(source);
     updateStatusIndicator();
@@ -164,8 +165,6 @@ public abstract class EditorControlTemplate<T> extends EditorComponentAbstract<T
     if (changed) {
       notifyValueAndOrStatusChangeListeners(true, true);
     }
-
-    LOGGER.info("<=");
   }
   
   /**
@@ -187,7 +186,11 @@ public abstract class EditorControlTemplate<T> extends EditorComponentAbstract<T
    */
   @Override
   protected void fillControlsFromObject() {
-    updateNonSourceControls(null); 
+    ignoreNewUserInput = true;
+    
+    updateNonSourceControls(null);
+    
+    ignoreNewUserInput = false;
   }
   
   /**
@@ -213,8 +216,29 @@ public abstract class EditorControlTemplate<T> extends EditorComponentAbstract<T
    */
   @Override
   public final T getValue() {
-    LOGGER.info("<=> " + value);
     return value;
+  }
+  
+  @Override
+  protected T getReferenceValue() {
+    return referenceValue;
+  }
+  
+  
+  /**
+   * Add one or more {@code Nodes}s to be reacted on changees.
+   * 
+   * @param controls The {@code Node}s on which to monitor changes.
+   */
+  protected void registerControls(Node... controls) {
+    
+    for (Node control: controls) {
+      control.focusedProperty().addListener((_, _, newValue) -> {
+        if (!newValue)
+          LOGGER.severe("Focus lost on " + control.getId());
+          redrawValue();
+      });
+    }
   }
   
   /**

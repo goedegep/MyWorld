@@ -21,8 +21,8 @@ public class EditorControlHTMLString extends EditorControlTemplate<String> {
    * @param optional Indicates whether the control is optional (if true) or mandatory.
    * @return a new {@code EditorControlHTMLString} instance.
    */
-  public static EditorControlHTMLString newInstance(CustomizationFx customization, boolean optional) {
-    EditorControlHTMLString editorControlHTMLString = new EditorControlHTMLString(customization, optional);
+  public static EditorControlHTMLString newInstance(CustomizationFx customization, String id, boolean optional) {
+    EditorControlHTMLString editorControlHTMLString = new EditorControlHTMLString(customization, id, optional);
     editorControlHTMLString.performInitialization();
     
     return editorControlHTMLString;
@@ -34,8 +34,8 @@ public class EditorControlHTMLString extends EditorControlTemplate<String> {
    * @param customization The GUI customization.
    * @param optional Indicates whether the control is optional (if true) or mandatory.
    */
-  private EditorControlHTMLString(CustomizationFx customization, boolean optional) {
-    super(customization, optional);
+  private EditorControlHTMLString(CustomizationFx customization, String id, boolean optional) {
+    super(customization, id, optional);
     
   }
   

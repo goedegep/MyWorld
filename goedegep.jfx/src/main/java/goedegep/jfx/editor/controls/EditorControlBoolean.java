@@ -34,9 +34,8 @@ public class EditorControlBoolean extends EditorControlTemplate<Boolean> {
    * @param toolTipText An optional Tooltip text.
    */
   public EditorControlBoolean(Builder builder) {
-    super(builder.customization, true);
+    super(builder.customization, builder.id, true);
     
-    setId(builder.id);  // TODO add as argument to super
     toolTipText = builder.toolTipText;
     setLabelBaseText(builder.labelBaseText);
   }

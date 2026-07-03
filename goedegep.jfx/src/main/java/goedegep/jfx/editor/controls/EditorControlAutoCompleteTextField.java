@@ -1,15 +1,18 @@
 package goedegep.jfx.editor.controls;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.SortedSet;
+import java.util.function.Supplier;
 import java.util.logging.Logger;
 
 import goedegep.jfx.CustomizationFx;
+import goedegep.jfx.DefaultCustomizationFx;
 import goedegep.jfx.controls.AutoCompleteTextField;
 import goedegep.jfx.editor.EditorControlTemplate;
 import goedegep.jfx.objectcontrols.ObjectControlAutoCompleteTextField;
+import goedegep.jfx.stringconverterandchecker.AnyTypeStringConverterAndChecker;
 import goedegep.jfx.stringconverterandchecker.StringConverterAndChecker;
-import javafx.beans.value.ObservableValue;
 import javafx.scene.Node;
 import javafx.scene.control.Tooltip;
 
@@ -19,6 +22,7 @@ import javafx.scene.control.Tooltip;
  * @param <T> The data type being edited.
  */
 public class EditorControlAutoCompleteTextField<T> extends EditorControlTemplate<T> {
+  @SuppressWarnings("unused")
   private static final Logger         LOGGER = Logger.getLogger(ObjectControlAutoCompleteTextField.class.getName());
   
   /**
@@ -31,7 +35,6 @@ public class EditorControlAutoCompleteTextField<T> extends EditorControlTemplate
    */
   private String toolTipText = null;
   
-  
   /**
    * The actual GUI control.
    */
@@ -41,42 +44,29 @@ public class EditorControlAutoCompleteTextField<T> extends EditorControlTemplate
    * The converter to convert between an object and its textual representation.
    */
   private StringConverterAndChecker<T> stringConverterAndChecker = null;
-    
 
-  
+
+
   /**
-   * Factory method to create an {@code EditorControlAutoCompleteTextField}.
+   * Constructor using builder.
    * 
-   * @param customization the GUI customization
-   * @param stringConverterAndChecker the converter to convert between an object and its textual representation.
-   * @param width of the control.
-   * @param isOptional indicates whether the value is optional or not
-   * @param toolTipText an optional tooltip text
-   * @return a new {@code EditorControlEnumComboBox} instance
+   * @param builder The {@code Builder} providing all settings.
    */
-  public static <U> EditorControlAutoCompleteTextField<U> newInstance(CustomizationFx customization, StringConverterAndChecker<U> stringConverterAndChecker, double width, boolean isOptional, String toolTipText) {
-    EditorControlAutoCompleteTextField<U> editorControlAutoCompleteTextField = new EditorControlAutoCompleteTextField<U>(customization, stringConverterAndChecker, width, isOptional, toolTipText);
-    editorControlAutoCompleteTextField.performInitialization();
+  protected EditorControlAutoCompleteTextField(Builder<T> builder) {
+    super(builder.customization != null ? builder.customization : DefaultCustomizationFx.getInstance(), builder.id, builder.optional);
     
-    return editorControlAutoCompleteTextField;
+    toolTipText = builder.toolTipText;
+    width = builder.width;
+    setLabelBaseText(builder.labelBaseText);
+    setErrorTextSupplier(builder.errorTextSupplier);
+    
+    if (builder.stringConverterAndChecker != null) {
+      stringConverterAndChecker = builder.stringConverterAndChecker;
+    } else {
+      stringConverterAndChecker = new AnyTypeStringConverterAndChecker<T>();
+    }
   }
-    
-  /**
-   * Constructor.
-   * 
-   * @param customization the GUI customization
-   * @param stringConverterAndChecker the converter to convert between an object and its textual representation.
-   * @param isOptional indicates whether the value is optional or not
-   * @param toolTipText an optional tooltip text
-   */
-  public EditorControlAutoCompleteTextField(CustomizationFx customization, StringConverterAndChecker<T> stringConverterAndChecker, double width, boolean isOptional, String toolTipText) {
-    super(customization, isOptional);
-    
-    this.stringConverterAndChecker = stringConverterAndChecker;
-    this.width = width;
-    this.toolTipText = toolTipText;
-  }
-  
+     
   /**
    * Set the possible values.
    * 
@@ -101,9 +91,9 @@ public class EditorControlAutoCompleteTextField<T> extends EditorControlTemplate
       autoCompleteTextField.setTooltip(new Tooltip(toolTipText));
     }
     
-    autoCompleteTextField.textProperty().addListener((o) -> handleNewUserInput(autoCompleteTextField));
+    autoCompleteTextField.textProperty().addListener((_) -> handleNewUserInput(autoCompleteTextField));
     
-    autoCompleteTextField.focusedProperty().addListener(this::handleFocusChanged);
+    registerControls(autoCompleteTextField);
   }
 
   @Override
@@ -176,20 +166,162 @@ public class EditorControlAutoCompleteTextField<T> extends EditorControlTemplate
       autoCompleteTextField.setStyle("-fx-text-fill: red;");
     }
   }
-
-
+  
   /**
-   * On focus lost, redraw the text.
-   * 
-   * @param observableValue focus value.
-   * @param oldValue old focus value
-   * @param newValue new focus value
+   * Builder class to set all properties for an {@code EditorControlAutoCompleteTextField}.
    */
-  private void handleFocusChanged(ObservableValue<? extends Boolean> observableValue, Boolean oldValue, Boolean newValue) {
-    LOGGER.info("=> newValue=" + newValue);
-    if (!newValue) {
-      redrawValue();
+  public static class Builder<T> {
+    
+    /**
+     * The unique id of the ObjectControl (mandatory).
+     */
+    String id;
+    
+    /**
+     * The GUI customization (optional).
+     * <p>
+     * If not set an instance of the {@link DefaultCustomizationFx} is used.
+     */
+    private CustomizationFx customization;
+    
+    
+    /**
+     * Indication of whether a value is optional or not (default value is {@code false}, indicating mandatory).
+     */
+    private boolean optional;
+    
+    /**
+     * Base text for the label.
+     */
+    private String labelBaseText;
+    
+    /**
+     * Width of the text field.
+     */
+    private double width;
+    
+    /**
+     * ToolTip text for the control (optional).
+     */
+    private String toolTipText;
+    
+    /**
+     * Error text supplier. A method that provides an error text.
+     */
+    protected Supplier<String> errorTextSupplier;
+    
+    /**
+     * A StringConverterAndChecker for conversion between object of type T and String.
+     */
+    private StringConverterAndChecker<T> stringConverterAndChecker = null;
+    
+    /**
+     * Constructor with mandatory arguments.
+     * 
+     * @param id The unique id of the ObjectControl (may not be null).
+     */
+    public Builder(String id) {
+      Objects.requireNonNull(id, "The id may not be null");
+      
+      this.id = id;
+      width = -1;
     }
+    
+    /**
+     * Set the GUI customization.
+     * 
+     * @param customization The GUI customization
+     * @return this
+     */
+    public Builder<T> setCustomization(CustomizationFx customization) {
+      this.customization = customization;
+      
+      return this;
+    }
+    
+    /**
+     * Set the optional indication.
+     * 
+     * @param optional Indication of whether a value is optional or not (default value is {@code false}, indicating mandatory).
+     * @return this
+     */
+    public Builder<T> setOptional(boolean optional) {
+      this.optional = optional;
+      
+      return this;
+    }
+    
+    /**
+     * Set the base text for the label.
+     * 
+     * @param labelBaseText  the base text for the label.
+     * @return this
+     */
+    public Builder<T> setLabelBaseText(String labelBaseText) {
+      this.labelBaseText = labelBaseText;
+      
+      return this;
+    }
+    
+    /**
+     * Set the width of the text field.
+     * 
+     * @param width  the width of the text field.
+     * @return this
+     */
+    public Builder<T> setWidth(double width) {
+      this.width = width;
+      
+      return this;
+    }
+    
+    /**
+     * Set the ToolTip text.
+     * 
+     * @param toolTipText the ToolTip text
+     * @return this
+     */
+    public Builder<T> setToolTipText(String toolTipText) {
+      this.toolTipText = toolTipText;
+      
+      return this;
+    }
+    
+    /**
+     * Set the method that provides an error text.
+     * 
+     * @param errorTextSupplier the method that provides an error text.
+     * @return this
+     */
+    public Builder<T> setErrorTextSupplier(Supplier<String> errorTextSupplier) {
+      this.errorTextSupplier = errorTextSupplier;
+      
+      return this;
+    }
+    
+    /**
+     * Set the String converter.
+     * 
+     * @param stringConverter A StringConverterAndChecker for conversion between object of type T and String.
+     * @return this
+     */
+    public Builder<T> setStringConverterAndChecker(StringConverterAndChecker<T> stringConverterAndChecker) {
+      this.stringConverterAndChecker = stringConverterAndChecker;
+      
+      return this;
+    }
+    
+    /**
+     * Create the {@code EditorControlString}.
+     * 
+     * @return the {@code EditorControlString}.
+     */
+    public EditorControlAutoCompleteTextField<T> build() {
+      EditorControlAutoCompleteTextField<T> editorControlAutoCompleteTextField = new EditorControlAutoCompleteTextField<T>(this);
+      editorControlAutoCompleteTextField.performInitialization();
+      
+      return editorControlAutoCompleteTextField;
+    }
+    
   }
-
 }

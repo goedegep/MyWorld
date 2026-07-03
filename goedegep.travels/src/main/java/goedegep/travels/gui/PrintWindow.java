@@ -339,7 +339,7 @@ public class PrintWindow extends JfxStage {
     
     VBox controlPanel = componentFactory.createVBox(16);
     
-    EditorControlFileSelecter editorControlFileSelecter = componentFactory.createEditorControlFileSelecter(400, "path to save the PDF file to",
+    EditorControlFileSelecter editorControlFileSelecter = componentFactory.createEditorControlFileSelecter(400, "fileSelecter", "path to save the PDF file to",
         "change path", "click to save to a different location", "Select file to save to", true);
     editorControlFileSelecter.setOpenOrSaveDialog(true);
     String travelFolder = TravelsUtils.getTravelFilesFolder(travel);
@@ -349,7 +349,7 @@ public class PrintWindow extends JfxStage {
         String travelId = travel.getId();
         if (travelId != null  &&  !travelId.isEmpty()) {
           Path pdfFilePath = Paths.get(travelFolder, travelId + ".pdf");
-          editorControlFileSelecter.setObject(pdfFilePath.toFile());
+          editorControlFileSelecter.setValue(pdfFilePath.toFile());
         }
       }
     }
@@ -401,7 +401,7 @@ public class PrintWindow extends JfxStage {
         htmlZipFileRadioButton
         );
     
-    EditorControlFileSelecter editorControlFileSelecter = componentFactory.createEditorControlFileSelecter(400, "path to save the HTML (zip) file to",
+    EditorControlFileSelecter editorControlFileSelecter = componentFactory.createEditorControlFileSelecter(400, "htmlFileSelecter", "path to save the HTML (zip) file to",
         "change path", "click to save to a different location", "Select file to save to", true);
     editorControlFileSelecter.setOpenOrSaveDialog(true);
     String travelFolder = TravelsUtils.getTravelFilesFolder(travel);
@@ -411,7 +411,7 @@ public class PrintWindow extends JfxStage {
         String travelId = travel.getId();
         if (travelId != null  &&  !travelId.isEmpty()) {
           Path pdfFilePath = Paths.get(travelFolder, travelId + ".html");
-          editorControlFileSelecter.setObject(pdfFilePath.toFile());
+          editorControlFileSelecter.setValue(pdfFilePath.toFile());
         }
       }
     }

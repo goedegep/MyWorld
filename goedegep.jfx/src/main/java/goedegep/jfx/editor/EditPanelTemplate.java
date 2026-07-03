@@ -16,8 +16,8 @@ public abstract class EditPanelTemplate<T> extends EditorMultiControlTemplate<T>
    * @param customization the GUI customization
    * @param optional indication of whether the value is optional or not.
    */
-  protected EditPanelTemplate(CustomizationFx customization, boolean optional) {
-    super(customization, optional);   
+  protected EditPanelTemplate(CustomizationFx customization, String id, boolean optional) {
+    super(customization, id, optional);   
    }
   
   /**
@@ -26,13 +26,10 @@ public abstract class EditPanelTemplate<T> extends EditorMultiControlTemplate<T>
   @Override
   public void performInitialization() {
     createControls();
-//    fillControlsWithDefaultValues();
     
     createEditPanel();
     
     installChangeListeners();
-//    ignoreChanges = false;
-//    
     
     newObject();
 
@@ -40,6 +37,21 @@ public abstract class EditPanelTemplate<T> extends EditorMultiControlTemplate<T>
 
     // make sure the initial status information is correct.
     handleChanges(true, true); // during initialization changes are ignored
+  }
+  
+  protected <U> void acceptSubClass(EditPanelTemplate<U> editPanelTemplate, U object, java.util.function.Consumer<U> setObjectMethod) throws EditorException {
+    // If the object is null and any value is non null in the edit panel, we get the object that was created by the edit panel.
+    if (object == null && editPanelTemplate.anyControlNonNull()) {
+      object = editPanelTemplate.getReferenceValue();
+      setObjectMethod.accept(object);
+    }
+    
+    if (!editPanelTemplate.anyControlNonNull()) {
+      // If all values are null in the edit panel, we set the object to null.
+      setObjectMethod.accept(null);
+    } else {
+      editPanelTemplate.fillObjectFromControls(object, true);   
+    }
   }
   
 }
