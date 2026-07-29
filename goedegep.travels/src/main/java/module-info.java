@@ -2,7 +2,7 @@ module goedegep.travels {
   exports goedegep.travels.exe;
   exports goedegep.travels.svc;
   exports goedegep.travels.logic;
-  exports goedegep.travels.gui;
+//  exports goedegep.travels.gui;
   
   opens goedegep.travels.logic;
 

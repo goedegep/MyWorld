@@ -14,7 +14,6 @@ import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.editor.EditPanelTemplate;
 import goedegep.jfx.editor.EditorControl;
 import goedegep.jfx.editor.EditorException;
-import goedegep.jfx.editor.controls.EditorControlFileOrFolderSelecterAbstract;
 import goedegep.jfx.editor.controls.EditorControlFileSelecter;
 import goedegep.jfx.editor.controls.EditorControlFolderSelecter;
 import goedegep.jfx.editor.controls.EditorControlString;
@@ -184,12 +183,17 @@ public class FileReferenceEditPanel extends EditPanelTemplate<FileReference> imp
    */
   private EditorControlFileSelecter getFileSelecterEditorControl() {
     if (fileSelecterEditorControl == null) {
-      fileSelecterEditorControl = componentFactory.createEditorControlFileSelecter(400, "fileSelecter", "Currently selected file",
-          "Choose file", "Select a file via a file chooser", "Select the file", false);
-      fileSelecterEditorControl.setInitialFolderProvider(this::getInitialFolder);
-      if (prefix != null) {
-        fileSelecterEditorControl.setPrefix(prefix);
-      }
+      fileSelecterEditorControl = new EditorControlFileSelecter.Builder(customization, "fileSelecter")
+          .setLabelBaseText("Picture")
+          .setTextFieldWidth(400)
+          .setTextFieldToolTipText("Currently selected file")
+          .setFileChooserButtonText("Choose file")
+          .setFileChooserButtonToolTipText("Select a file via a file chooser")
+          .setFileOrFolderChooserTitle("Select the file")
+          .setInitialFolderSupplier(this::getInitialFolder)
+          .setPrefix(prefix)
+          .setOptional(false)
+          .build();
       registerEditorComponents(fileSelecterEditorControl);
     }
     
@@ -213,9 +217,19 @@ public class FileReferenceEditPanel extends EditPanelTemplate<FileReference> imp
    */
   private EditorControlFolderSelecter getFolderSelecterEditorControl() {
     if (folderSelecterEditorControl == null) {
-      folderSelecterEditorControl = componentFactory.createEditorControlFolderSelecter(400, "folderSelecter", "Currently selected folder",
-          "Choose folder", "Select a folder via a folder chooser", "Select the folder", false);
-      folderSelecterEditorControl.setInitialFolderProvider(this::getInitialFolder);
+      
+      
+      folderSelecterEditorControl = new EditorControlFolderSelecter.Builder(customization, "folderSelecter")
+          .setLabelBaseText("Folder")
+          .setTextFieldWidth(400)
+          .setTextFieldToolTipText("Currently selected folder")
+          .setFolderChooserButtonText("Choose folder")
+          .setFolderChooserButtonToolTipText("Select a folder via a folder chooser")
+          .setFileOrFolderChooserTitle("Select the folder")
+          .setInitialFolderSupplier(this::getInitialFolder)
+          .setOptional(false)
+          .build();
+      
       registerEditorComponents(folderSelecterEditorControl);
     }
     

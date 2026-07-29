@@ -64,8 +64,8 @@ public class TileCacheCleanupTask extends Task<Void> {
 
   public void cleanupTileCache() {
     
-    int maxNumberOfFiles = 2000; // Set a threshold for the maximum number of cached files
-    int cleanupToNumberOfFiles = 1700; // Set a threshold for the number of cached files to clean up to when the maximum is exceeded
+    int maxNumberOfFiles = 5000; // Set a threshold for the maximum number of cached files
+    int cleanupToNumberOfFiles = 4000; // Set a threshold for the number of cached files to clean up to when the maximum is exceeded
     
     if (!hasFileCache) {
       return;

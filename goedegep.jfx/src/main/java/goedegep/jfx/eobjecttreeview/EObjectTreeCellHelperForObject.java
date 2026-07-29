@@ -197,6 +197,14 @@ public class EObjectTreeCellHelperForObject extends EObjectTreeCellHelperTemplat
               createAndAddObject(listType, false);
               break;
               
+            case CUT_OBJECT:
+              cutObject();
+              break;
+              
+            case PASTE_OBJECT:
+              pasteObject();
+              break;
+              
             case DELETE_OBJECT:
               deleteObject();
               break;
@@ -358,7 +366,7 @@ public class EObjectTreeCellHelperForObject extends EObjectTreeCellHelperTemplat
     
     parentEObjectTreeItem.rebuildChildren();
   }
-
+ 
   /**
    * Delete the object related to this tree cell.
    */

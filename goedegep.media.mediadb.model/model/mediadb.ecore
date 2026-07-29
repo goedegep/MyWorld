@@ -50,7 +50,7 @@
     </eOperations>
     <eOperations name="getAlbum" eType="#//Album">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="Get an album based on release date (optional), artist and title.&#xD;&#xA;&#xD;&#xA;@param releaseDate The release date (issue date) of the album (optional)&#xD;&#xA;@param artist The {@code Artist} of the album (mandatory)&#xD;&#xA;@param title The {@code Title} of the album (mandatory)&#xD;&#xA;@return the spefied album, or null if no such album exists in the media database"/>
+        <details key="documentation" value="Get an album based on release date (optional), artist and title.&#xD;&#xA;&lt;p>&#xD;&#xA;The artist and title are mandatory.&lt;br/>&#xD;&#xA;An album is found when:&#xD;&#xA;&lt;ul>&#xD;&#xA;&lt;li>If a release date is specified, this has to match&lt;/li>&#xD;&#xA;&lt;li>The album title has to 'fuzzy' match&lt;/li>&#xD;&#xA;&lt;li>The artist name has to match, or the artist name has to match with the container artist of the artist of the album&lt;/li>&#xD;&#xA;&lt;/ul>&#xD;&#xA;&#xD;&#xA;@param releaseDate The release date (issue date) of the album (optional)&#xD;&#xA;@param artist The {@code Artist} of the album (mandatory)&#xD;&#xA;@param title The {@code Title} of the album (mandatory)&#xD;&#xA;@return the spefied album, or null if no such album exists in the media database"/>
       </eAnnotations>
       <eParameters name="releaseDate" eType="ecore:EDataType ../../goedegep.types.model/model/types.ecore#//EFlexDate"/>
       <eParameters name="artist" eType="#//Artist"/>

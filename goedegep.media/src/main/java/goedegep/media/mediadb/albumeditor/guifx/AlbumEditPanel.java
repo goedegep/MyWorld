@@ -139,7 +139,7 @@ public class AlbumEditPanel extends EditPanelTemplate<Album> {
     albumArtistControl = EditorControlArtist.newInstance(customization, "album artist", mediaDbService);
     albumArtistControl.setLabelBaseText("_Artist");
     
-    albumIssueDateControl = new EditorControlFlexDate.FlexDateBuilder("issueDate")
+    albumIssueDateControl = new EditorControlFlexDate.Builder("issueDate")
         .setWidth(600d)
         .setLabelBaseText("_Issued")
         .setToolTipText("Optional first issue date of the album")

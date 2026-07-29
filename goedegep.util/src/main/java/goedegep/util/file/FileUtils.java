@@ -784,14 +784,10 @@ public class FileUtils {
     
     try (DirectoryStream<Path> stream = Files.newDirectoryStream(sourceFolderPath)) {
       for (Path file: stream) {
-        LOGGER.severe("Handling path: " + file.getFileName().toString());
         if (Files.isDirectory(file)) {
-          LOGGER.severe("Skipping directory");
         } else {
           if (isAudioFile(file)) {
-            LOGGER.severe("Audio file");            
             String fileName = file.getFileName().toString();
-            LOGGER.fine("fileName: " + fileName);
             audioFileNames.add(fileName);
           }
         }

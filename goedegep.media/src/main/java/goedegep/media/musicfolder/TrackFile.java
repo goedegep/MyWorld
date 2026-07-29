@@ -257,22 +257,15 @@ public class TrackFile {
    * @return the generated file name.
    */
   public static String generateTrackFileNameForATrackInATracksFolder(String artistName, String trackTitle) {
-    LOGGER.fine("=> artistName=" + artistName + ", trackTitle=" + trackTitle);
     Objects.requireNonNull(artistName, "argument artistName may not be null");
     Objects.requireNonNull(trackTitle, "argument trackTitle may not be null");
-    StringBuilder buf = new StringBuilder();
+    LOGGER.fine("=> artistName=" + artistName + ", trackTitle=" + trackTitle);
     
-//    if (artistName != null) {
-      buf.append(MusicFolderUtil.replaceGroupSeparatorAndNameToFileName(artistName, true));
-//    } else {
-//      buf.append("<no artist>");
-//    }
+    StringBuilder buf = new StringBuilder();
+
+    buf.append(MusicFolderUtil.replaceGroupSeparatorAndNameToFileName(artistName, true));
     buf.append(" - ");
-//    if (trackTitle != null) {
-      buf.append(MusicFolderUtil.replaceGroupSeparatorAndNameToFileName(trackTitle, true));
-//    } else {
-//      buf.append("<no trackTitle>");
-//    }
+    buf.append(MusicFolderUtil.replaceGroupSeparatorAndNameToFileName(trackTitle, true));
 
     String trackFileName = buf.toString();
     

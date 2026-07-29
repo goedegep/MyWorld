@@ -8,7 +8,6 @@ import java.nio.file.StandardCopyOption;
 import java.util.List;
 import java.util.logging.Logger;
 
-import goedegep.jfx.ComponentFactoryFx;
 import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.JfxStage;
 import goedegep.jfx.objectcontrols.ObjectControlFolderSelecter;
@@ -19,6 +18,7 @@ import goedegep.media.mediadb.app.TrackImportInfo;
 import goedegep.media.mediadb.model.Album;
 import goedegep.media.mediadb.model.Disc;
 import goedegep.media.mediadb.model.MediaDb;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
@@ -31,46 +31,84 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
-import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
 public class ImportAlbumTracksWindow extends JfxStage {
+  @SuppressWarnings("unused")
   private static final Logger LOGGER = Logger.getLogger(ImportAlbumTracksWindow.class.getName());
   private static final String NEW_LINE = System.getProperty("line.separator");
   private String SOURCE_FOLDER = "D:\\SoulSeek\\Complete";
   
+  /**
+   * The media database
+   */
   private MediaDb mediaDb;
-  private Album album;
-  DiscTracksImportInfo albumTracksImportInfo;
-  private ComponentFactoryFx componentFactory;
-  private ComboBox<DiscWrapper> discComboBox = null;
-  private ObjectControlFolderSelecter sourceFolderSelector;
-  private TextField albumFolderTextField;
-  private TableView<TrackImportInfo> trackPreviewTable;
-  private TextArea statusPanel;
-  private Button importButton;
-//  private String sourceFolderName;
   
+  /**
+   * The album for which the tracks are to be imported.
+   */
+  private Album album;
+  
+  /**
+   * TODO
+   */
+  DiscTracksImportInfo albumTracksImportInfo;
+  
+  /**
+   * A {@code ComboBox} to select a disc in case of a multi disc album.
+   */
+  private ComboBox<DiscWrapper> discComboBox = null;
+  
+  /**
+   * Selecter for the folder that contains the tracks to be imported.
+   */
+  private ObjectControlFolderSelecter sourceFolderSelector;
+  
+  /**
+   * A {@code TextField} showing the album folder name.
+   */
+  private TextField albumFolderTextField;
+  
+  /**
+   * A {@code TableView} to preview the information.
+   */
+  private TableView<TrackImportInfo> trackPreviewTable;
+  
+  /**
+   * A {@code TextArea} showing status information.
+   */
+  private TextArea statusPanel;
+  
+  /**
+   * A {@code Button} to start the actual import
+   */
+  private Button importButton;
+  
+  
+  /**
+   * Constructor
+   * 
+   * @param customization the GUI customization
+   * @param mediaDb the media database
+   * @param album the {@code Album} of which the tracks are to be imported.
+   */
   public ImportAlbumTracksWindow(CustomizationFx customization, MediaDb mediaDb, Album album) {
     super(customization, createWindowTitle(album));
     
     this.mediaDb = mediaDb;
     this.album = album;
-    
-    componentFactory = customization.getComponentFactoryFx();
         
     createGUI();
     
-//    sourceFolderName = sourceFolderTextField.getText();
     updateImportButtonStatus();
   }
   
   /**
    * Create the window title.
    * 
-   * @param album The Album of which the tracks are to be imported.
+   * @param album The {@code Album} of which the tracks are to be imported.
    * @return the window title.
    */
   private static String createWindowTitle(Album album) {
@@ -83,6 +121,20 @@ public class ImportAlbumTracksWindow extends JfxStage {
   
   /**
    * Create the GUI.
+   * <p>
+   * The window has the following contents:
+   * <ul>
+   * <li>Main controls (a GridPane)</li>
+   * <ul>
+   * <li>Disc selection. Only for a multi-disc album</li>
+   * <li>Tracks source folder selection: 'Source folder:' [source-folder-text-field] [folder-chooser-button]</li>
+   * <li>Album folder selection: 'Album folder:' [album-folder-text-field]
+   * </ul>
+   * <li>A preview table showing per track: trackNr, trackTitle (from database), sourceFileName, destinationFileName</li>
+   * <li>Import and cancel buttons</li>
+   * <li>A status panel</li>
+   * </ul>
+   * 
    */
   private void createGUI() {
     VBox mainLayout =  componentFactory.createVBox(12.0);
@@ -98,7 +150,7 @@ public class ImportAlbumTracksWindow extends JfxStage {
     Label label;
     int row = 0;
     
-    // First row: 'Disc:' <disc selection combobox>
+    // Row: 'Disc:' <disc selection combobox>
     // Only shown for multi disc albums.
     if (album.isMultiDiscAlbum()) {
       label = componentFactory.createLabel("Disc:");
@@ -113,7 +165,7 @@ public class ImportAlbumTracksWindow extends JfxStage {
       row++;
     }
     
-    // First row: 'Source folder:' <source-folder-text-field> <folder-chooser-button>
+    // Row: 'Source folder:' [source-folder-text-field] [folder-chooser-button]
     label = componentFactory.createLabel("Source folder:");
     gridPane.add(label, 0, row);
     
@@ -126,7 +178,7 @@ public class ImportAlbumTracksWindow extends JfxStage {
         false);
     sourceFolderSelector.setInitialFolderProvider(() -> SOURCE_FOLDER);
     Node sourceFolderTextField = sourceFolderSelector.getControl();
-    sourceFolderSelector.addListener((observable) -> handleNewSourceFolder());
+    sourceFolderSelector.addListener((_) -> handleNewSourceFolder());
     gridPane.add(sourceFolderTextField, 1, row);
     
     Button sourceFolderChooserButton = sourceFolderSelector.getFolderChooserButton();
@@ -134,11 +186,11 @@ public class ImportAlbumTracksWindow extends JfxStage {
     
     row++;
     
-    // Second row: 'Album folder:' <album-folder-text-field>
+    // Row: 'Album folder:' [album-folder-text-field]
     label = componentFactory.createLabel("Album folder:");
     gridPane.add(label, 0, row);
     
-    albumFolderTextField = componentFactory.createTextField(550, "Generated album folder");
+    albumFolderTextField = componentFactory.createTextField(550, "");
     albumFolderTextField.setEditable(false);
     gridPane.add(albumFolderTextField, 1, row, 2, 1);
     
@@ -147,24 +199,36 @@ public class ImportAlbumTracksWindow extends JfxStage {
     /*
      * Part 2; Preview table
      */
-    // Preview table: trackNr, trackTitle (from database), sourceFileName, destinationFileName
+    // Preview table: trackNr, TODO trackTitle (from database), sourceFileName, destinationFileName
     trackPreviewTable = new TableView<>();
-    TableColumn<TrackImportInfo, Object> tableColumn;
+    TableColumn<TrackImportInfo, String> tableColumn;
     
     tableColumn = new TableColumn<>("TrackNr");
-    tableColumn.setCellValueFactory(new PropertyValueFactory<TrackImportInfo, Object>("trackNr"));
+    tableColumn.setCellValueFactory((cellDataFeatures) -> {
+      TrackImportInfo trackImportInfo = cellDataFeatures.getValue();
+      int trackNr = trackImportInfo.getTrackNr();
+      return new SimpleStringProperty(String.valueOf(trackNr));
+    });
     trackPreviewTable.getColumns().add(tableColumn);
     
     tableColumn = new TableColumn<>("Source File");
     tableColumn.setMinWidth(500.0);
-    tableColumn.setCellValueFactory(new PropertyValueFactory<TrackImportInfo, Object>("sourceFilePath"));
+    tableColumn.setCellValueFactory((cellDataFeatures) -> {
+      TrackImportInfo trackImportInfo = cellDataFeatures.getValue();
+      Path sourceFilePath = trackImportInfo.getSourceFilePath();
+      return new SimpleStringProperty(String.valueOf(sourceFilePath.getFileName().toString()));
+    });
     trackPreviewTable.getColumns().add(tableColumn);
     
     tableColumn = new TableColumn<>("Destination File");
     tableColumn.setMinWidth(500.0);
-    tableColumn.setCellValueFactory(new PropertyValueFactory<TrackImportInfo, Object>("destinationFilePath"));
+    tableColumn.setCellValueFactory((cellDataFeatures) -> {
+      TrackImportInfo trackImportInfo = cellDataFeatures.getValue();
+      Path destinationFilePath = trackImportInfo.getDestinationFilePath();
+      return new SimpleStringProperty(String.valueOf(destinationFilePath.getFileName().toString()));
+    });
     trackPreviewTable.getColumns().add(tableColumn);
-    
+        
     mainLayout.getChildren().add(trackPreviewTable);
     
     /*
@@ -181,40 +245,36 @@ public class ImportAlbumTracksWindow extends JfxStage {
     Scene scene = new Scene(mainLayout, 1300, 700);
     setScene(scene);    
   }
-  
+    
   /**
-   * Create a panel with 'Import tracks' and a 'Cancel' buttons.
+   * Create a panel with 'Import tracks' and 'Cancel' buttons.
    * <p>
    * The action for the 'Import tracks' button is {@link #importTrack()}.
    * The action for the 'Cancel' button is {@link #closeWindow()}.
    * 
-   * @return
+   * @return the created buttons panel.
    */
   private Node createButtonsPanel() {
     HBox hBox = componentFactory.createHBox(10.0, 12.0);
    
     // Two buttons: "Import tracks", "Cancel".
     importButton = componentFactory.createButton("Import", null);
-    importButton.setOnAction(e -> importAlbumTracks());
+    importButton.setOnAction((_) -> importAlbumTracks());
     hBox.getChildren().add(importButton);
     
     Button button = componentFactory.createButton("Cancel", "Exit window without making any modifications");
-    button.setOnAction(e -> closeWindow());
+    button.setOnAction((_) -> closeWindow());
     hBox.getChildren().add(button);
     
     return hBox;
   }
   
   /**
-   * Handle the fact that a new source folder is selected.
+   * Handle the fact that a new source folder is selected (via the {@link #sourceFolderSelector}).
    * <p>
    * If the name is really a directory, the directory is scanned and a preview is shown.
-   * 
-   * @param newSourceFolderName the newly selected source folder.
    */
   private void handleNewSourceFolder() {
-    LOGGER.severe("=>");
-
     albumTracksImportInfo = null;
     albumFolderTextField.setText("");
     String sourceFolderName = sourceFolderSelector.getAbsolutePath();
@@ -235,14 +295,12 @@ public class ImportAlbumTracksWindow extends JfxStage {
         createDiscTracksImportData(sourceFolderName, disc);
       }
     }
-
-    LOGGER.severe("<=");
   }
   
   /**
    * Check whether an import is possible.
    * <p>
-   * This is the case if there is <code>albumTracksImportInfo</code> available, without any errors.
+   * This is the case if the {@code albumTracksImportInfo} is available, without any errors.
    * @return
    */
   private boolean isImportPossible() {
@@ -260,8 +318,7 @@ public class ImportAlbumTracksWindow extends JfxStage {
    * Close this window.
    */
   private void closeWindow() {
-    System.out.println("AlbumDetailsEditor: closeWindow");
-    this.close();
+    close();
   }
   
   /**
@@ -286,8 +343,8 @@ public class ImportAlbumTracksWindow extends JfxStage {
   private void importAlbumTracks() {
     try {
       Files.createDirectories(albumTracksImportInfo.getDestinationFolderPath());
-      for (TrackImportInfo trackImportPreviewInfo: albumTracksImportInfo.getTrackImportPreviewInfos()) {
-        Files.copy(trackImportPreviewInfo.getSourceFilePath(), trackImportPreviewInfo.getDestinationFilePath(), StandardCopyOption.COPY_ATTRIBUTES);
+      for (TrackImportInfo trackImportInfo: albumTracksImportInfo.getTrackImportPreviewInfos()) {
+        Files.copy(trackImportInfo.getSourceFilePath(), trackImportInfo.getDestinationFilePath(), StandardCopyOption.COPY_ATTRIBUTES);
       }
       updateStatusPanel("Album tracks have been imported successfully", null);
     } catch (IOException e) {
@@ -402,3 +459,4 @@ class DiscWrapper {
     return discId;
   }
 }
+

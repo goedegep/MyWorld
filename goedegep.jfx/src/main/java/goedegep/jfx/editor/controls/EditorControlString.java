@@ -40,9 +40,7 @@ public class EditorControlString extends EditorControlTemplate<String> {
   public void createControls() {
     textField = customization.getComponentFactoryFx().createTextField(width, toolTipText);
 
-    textField.textProperty().addListener((_, _, _) -> {
-      handleNewUserInput(textField);
-    });
+    registerControls(textField);
         
     setComparator((o1, o2) -> {
       // For Strings we handle an empty String as equal to null.

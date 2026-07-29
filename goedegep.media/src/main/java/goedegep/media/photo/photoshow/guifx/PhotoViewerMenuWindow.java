@@ -74,17 +74,21 @@ public class PhotoViewerMenuWindow extends JfxStage {
     // First row: "Run from a Photoshow specification:" <File text field> <open file chooser button> <show all checkbox>
     label = componentFactory.createLabel("Run from a Photoshow specification:");
     
-    String initiallySelectedFolder = MediaRegistry.getInstance().getPhotosFolder();    
-    EditorControlFileSelecter fileSelecter = componentFactory.createEditorControlFileSelecter(
-        300,
-        "fileSelecter",
-        "Enter Photoshow specification file name",
-        "Select Photoshow specification",
-        "Click to select a Photoshow specification via a file selecter",
-        "Select a Photoshow specification", false);
-    fileSelecter.addFileType(PhotoshowCommons.DEFAULT_PHOTOSHOW_SPECIFICATION_FILE_EXTENSION, "Photoshow specification file", true);
-    fileSelecter.addFileType(".*", "Any file", false);
-    fileSelecter.setInitialFolderProvider(() -> initiallySelectedFolder);
+    String initiallySelectedFolder = MediaRegistry.getInstance().getPhotosFolder();
+    
+    EditorControlFileSelecter fileSelecter = new EditorControlFileSelecter.Builder(customization, "fileSelecter")
+    .setLabelBaseText("Travel report")
+    .setTextFieldWidth(300)
+    .setTextFieldToolTipText("Enter Photoshow specification file name")
+    .setFileChooserButtonText("Select Photoshow specification")
+    .setFileChooserButtonToolTipText("Click to select a Photoshow specification via a file selecter")
+    .setFileOrFolderChooserTitle("Select a Photoshow specification")
+    .setInitialFolderSupplier(() -> initiallySelectedFolder)
+    .addFileType(PhotoshowCommons.DEFAULT_PHOTOSHOW_SPECIFICATION_FILE_EXTENSION, "Photoshow specification file", true)
+    .addFileType(".*", "Any file", false)
+    .setOptional(false)
+    .build();
+    
     fileSelecter.addValueAndOrStatusChangeListener((_, _) -> {
       File photoshowSpecificationFile = fileSelecter.getValue();
       if (photoshowSpecificationFile.exists()  &&
@@ -102,15 +106,16 @@ public class PhotoViewerMenuWindow extends JfxStage {
     // Second row: "Run from files from a folder:" <Folder text field> <open folder chooser button>
     label = componentFactory.createLabel("Run from files from a folder");
     
-    EditorControlFolderSelecter folderSelecter = componentFactory.createEditorControlFolderSelecter(
-        300,
-        "folderSelecter",
-        "Enter folder that contains the photos to show",
-        "Select photos folder",
-        "Click to select a photos folder via a folder selecter",
-        "Select a photos folder",
-        false);
-    folderSelecter.setInitialFolderProvider(() -> initiallySelectedFolder);
+    EditorControlFolderSelecter folderSelecter = new EditorControlFolderSelecter.Builder(customization, "folderSelecter")
+        .setTextFieldWidth(300)
+        .setTextFieldToolTipText("Enter folder that contains the photos to show")
+        .setFolderChooserButtonText("Select photos folder")
+        .setFolderChooserButtonToolTipText("Click to select a photos folder via a folder selecter")
+        .setFileOrFolderChooserTitle("Select a photos folder")
+        .setInitialFolderSupplier(() -> initiallySelectedFolder)
+        .setOptional(false)
+        .build();
+    
     folderSelecter.addValueAndOrStatusChangeListener((_, _) -> {
       File photosFolder = folderSelecter.getValue();
       if (photosFolder.exists()  &&

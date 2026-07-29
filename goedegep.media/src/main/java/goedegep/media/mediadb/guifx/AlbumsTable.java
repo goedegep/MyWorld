@@ -62,7 +62,7 @@ import javafx.scene.layout.HBox;
 import javafx.util.Callback;
 
 /**
- * This class provides a table to list (music) Albums
+ * This class provides a table to list {@link Album}s
  */
 public class AlbumsTable extends EObjectTable<Album> {
   private static final Logger LOGGER = Logger.getLogger(AlbumsTable.class.getName());
@@ -182,12 +182,13 @@ public class AlbumsTable extends EObjectTable<Album> {
    * 'Open' an Album, or a disc of an album in case of a multi disc album.
    * <p>
    * Opening in this case means playing with MPC-HC.<br/>
+   * If the specified album is currently playing, the media player is destroyed.
+   * 
    * Note: This table (and so this method) are not used to find problems in the provided information.
    *       So if something is missing or wrong, this method just returns.
    */
   @Override
   public void openObject(Album album) {
-    LOGGER.severe("Opening: " + album.getTitle());
     
     // If we are currently playing this album, kill the player.
     if ((mediaPlayerProcess != null)  &&  mediaPlayerProcess.isAlive()  &&  (currentlyPlayingAlbum != null  &&  currentlyPlayingAlbum.equals(album))) {
@@ -197,17 +198,11 @@ public class AlbumsTable extends EObjectTable<Album> {
       return;
     }
     
-//    // MyInfo is used to determine whether I have the album (partly) on disc or not, or that I have it as part of a compilation.
-//    if (!album.isSetMyInfo()) {
-//      return;
-//    }
-    
     // Can't play anything if the path to MPC-HC isn't set.
     if (mediaRegistry.getMediaPlayerClassicExecutable() == null) {
       return;
     }
     
-//    MyInfo myInfo = album.getMyInfo();
     if (MediaDbUtil.haveAlbumOnDisc(album)) {
       // Complete album in MusicFolder, play complete album
       AlbumOnDiscInfo albumDiscLocationInfo;
@@ -358,9 +353,12 @@ public class AlbumsTable extends EObjectTable<Album> {
 
   }
 
+  /**
+   * Open the {@link ImportAlbumTracksWindow} to import the tracks for the specified album.
+   * 
+   * @param album the album of which the tracks are to be imported.
+   */
   protected void importTracks(Album album) {
-    
-    LOGGER.severe("Importing album: " + album.getTitle());
     ImportAlbumTracksWindow importAlbumTracksWindow = new ImportAlbumTracksWindow(customization, mediaDb, album);
     importAlbumTracksWindow.show();
   }
@@ -585,34 +583,38 @@ class MyInfoPlayCellFactory implements Callback<TableColumn<Album, Object>, Tabl
 
 /**
  * A 'Play' table cell
+ * <p>
+ * The cell shows an icon, representing the playable status.</br>
+ * Upon clicking the cell always {@code #openObject()} is called, which has to decide what to do.
  */
 class MyInfoPlayCell extends TableCell<Album, Object> {
   private static final Logger LOGGER = Logger.getLogger(MyInfoPlayCell.class.getName());
 
-//  static DefaultAppResourcesFx m = new DefaultAppResourcesFx();
-  
   private MediaAppResourcesFx mediaAppResources;
   private ImageView imageView;
 
+  /**
+   * Constructor
+   * 
+   * @param customization the GUI customization.
+   * @param imageHeight height of the icon
+   */
   public MyInfoPlayCell(CustomizationFx customization, int imageHeight) {
-    LOGGER.info("<=>");
     Background background = customization.getComponentFactoryFx().getPanelBackground();
     if (background != null) {
       setBackground(background);
     }
-//    AppResourcesFx appResources = customization.getResources();
+
     mediaAppResources = (MediaAppResourcesFx) customization.getResources();
-//    Image i = m.getAttentionImage(ImageSize.SIZE_0);
+
     imageView = new ImageView();
     imageView.setFitHeight(imageHeight);
     imageView.setPreserveRatio(true);
-//    imageView.setImage(i);
     setGraphic(imageView);
     
     addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
       MyInfoPlayCell cell = (MyInfoPlayCell) e.getSource();
       Album album = (Album) cell.getItem();
-      LOGGER.info("Mouse clicked on: " + album.toString());
       ((EObjectTable<Album>) getTableView()).openObject(album);
       e.consume();
     });
@@ -625,7 +627,6 @@ class MyInfoPlayCell extends TableCell<Album, Object> {
   
   @Override
   protected void updateItem(Object item, boolean empty) {
-    LOGGER.info("=> item=" + (item != null ? item.toString() : "(null)") + ", empty=" + empty);
     super.updateItem(item, empty);
     if (empty  ||  (item == null)) {
       setText(null);
@@ -636,9 +637,6 @@ class MyInfoPlayCell extends TableCell<Album, Object> {
         throw new IllegalArgumentException("item shall be of type 'Album', but is of type '" + item.getClass().getName() + "'");
       }
       Album album = (Album) item;
-      if ("Bigger, Better, Faster, More!".equals(album.getTitle())) {
-        LOGGER.severe("STOP");
-      }
       
       MyInfo myInfo = album.getMyInfo();
       String tooltipText = null;
@@ -743,7 +741,7 @@ class ImageListCell extends TableCell<Album, Object> {
       
       HBox hbox = new HBox(15);
       for (String imageFileName: imageFileNames) {
-        Path imagePath = Paths.get(albumInfoDirectory, imageFileName);
+        Path imagePath = Paths.get(albumInfoDirectory, "Albums", imageFileName);
         Image image = new Image("file:" + imagePath.toAbsolutePath().toString(), -1, imageHeight,  true, true);
                 
         ImageView imageView = new ImageView(image);

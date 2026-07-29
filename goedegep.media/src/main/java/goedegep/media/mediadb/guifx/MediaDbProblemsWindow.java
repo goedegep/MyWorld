@@ -900,23 +900,39 @@ private MediaDb mediaDb;
     }
     
     StringBuilder buf = new StringBuilder();
+    // It can be about a missing album track, in which case the album is set in the error info.
+    // Or it can be a track from a track collection, in which case the collection is set in the error info.
     Album album = mediaDbAppErrorInfo.getAlbum();
-    buf.append("Track of an album not found on disc:");
-    buf.append(NEWLINE);
-    buf.append("Artist: ");
+    goedegep.media.mediadb.model.Collection collection = mediaDbAppErrorInfo.getCollection();
+    
+    // Don't use else if, because this way I see when both are set, which should not happen.
     if (album != null) {
-    buf.append(album.isSetArtist() ? album.getArtist().getName() : "no artist");
-    } else if (track != null) {
-      buf.append(track.isSetArtist() ? track.getArtist().getName() : "no artist");
-    } else {
-      buf.append("no artist");
+      buf.append("Track of an album not found on disc:");
+    }
+    if (collection != null) {
+      buf.append("Track of a track collection not found on disc:");
     }
     buf.append(NEWLINE);
-    buf.append("Album title: ");
+    
+    Artist artist = null;
+    if (track != null) {
+      artist = track.getArtist();
+    }
+    
+    if (artist == null  &&  album != null) {
+      artist = album.getArtist();
+    }
+    
+    buf.append("Artist: ").append(artist != null ? artist.getName() : "no artist").append(NEWLINE);
+    
     if (album != null) {
-      buf.append(album.getTitle());
+      buf.append("Album title: ").append(album.getTitle());
+    }
+    if (collection != null) {
+      buf.append("Track collection: ").append(collection.name());
     }
     buf.append(NEWLINE);
+    
     buf.append("Track: ");
     if (track != null) {
       buf.append(track.getTitle());
@@ -926,7 +942,7 @@ private MediaDb mediaDb;
     buf.append(NEWLINE);
     
     String albumFolderName = null;
-    if (trackReference != null) {
+    if (album != null  &&  trackReference != null) {
       if (album.isSoundtrack()) {
         albumFolderName = MediaDbAppUtil.generateSoundtrackAlbumDiscFolderName(trackReference.getDisc(), null);
       } else {
@@ -934,7 +950,6 @@ private MediaDb mediaDb;
       }
       buf.append("Track expected in folder: ").append(albumFolderName).append(NEWLINE);
     }
-
 
     errorPanel.getTextArea().setText(buf.toString());
     
@@ -963,7 +978,7 @@ private MediaDb mediaDb;
         Label label = componentFactory.createLabel("file " + sourceTrackFileName + " to " + trackFileName);
 
         Button renameButton = componentFactory.createButton("Rename", "Rename audio file to proposed name");
-        renameButton.setOnAction(e -> {
+        renameButton.setOnAction((_) -> {
           Path fromPath = albumFolderPath.resolve(finalsourceTrackFileName);
           Path tempPath = albumFolderPath.resolve(finalsourceTrackFileName + "_tempForRename");
           Path toPath = albumFolderPath.resolve(trackFileName);

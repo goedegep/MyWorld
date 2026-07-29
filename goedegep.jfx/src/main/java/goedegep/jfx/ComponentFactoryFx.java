@@ -13,8 +13,6 @@ import org.commonmark.renderer.html.HtmlRenderer;
 import goedegep.configuration.model.Look;
 import goedegep.geo.WGS84Coordinates;
 import goedegep.jfx.controls.AutoCompleteTextField;
-import goedegep.jfx.editor.controls.EditorControlFileSelecter;
-import goedegep.jfx.editor.controls.EditorControlFolderSelecter;
 import goedegep.jfx.editor.controls.EditorControlHTMLString;
 import goedegep.jfx.objectcontrols.ObjectControlAutoCompleteTextField;
 import goedegep.jfx.objectcontrols.ObjectControlBoolean;
@@ -910,29 +908,7 @@ public class ComponentFactoryFx {
     
     return fileSelecter;
   }
-  
-  /**
-   * Create an {@link EditorControlFileSelecter}.
-   * 
-   * @param textFieldWidth Width of the TextField (in pixels). If this value is -1, the default width is used.
-   * @param textFiedlToolTipText if not null, this text will be used as Tooltip for the TextField
-   * @param folderChooserButtonText the text shown on the button to call up a DirectoryChooser (may not be null)
-   * @param folderChooserButtonToolTipText if not null, this text will be used as Tooltip for the button to call up a DirectoryChooser.
-   * @param directoryChooserTitle title for the DirectoryChooser (may not be null)
-   * @param isOptional if true, the text field is optional, i.e. it may be empty.
-   * @return the newly created FolderSelecter
-   */
-  public EditorControlFileSelecter createEditorControlFileSelecter(int textFieldWidth, String id, String textFieldToolTipText,
-      String folderChooserButtonText, String folderChooserButtonToolTipText, String directoryChooserTitle, boolean isOptional) {
-    EditorControlFileSelecter fileSelecter = EditorControlFileSelecter.newInstance(customization, id, textFieldWidth, textFieldToolTipText,
-        folderChooserButtonText, folderChooserButtonToolTipText, directoryChooserTitle, isOptional);
     
-    customizeTextInputControl(fileSelecter.getControl());
-    customizeButton(fileSelecter.getFileChooserButton());
-    
-    return fileSelecter;
-  }
-  
   /**
    * Create a {@link ObjectControlFolderSelecter}.
    * 
@@ -955,30 +931,7 @@ public class ComponentFactoryFx {
     
     return folderSelecter;
   }
-  
-  /**
-   * Create an {@link EditorControlFolderSelecter}.
-   * 
-   * @param initiallySelecterFolder The initially selected folder. If not null, this is filled-in in the text field,
-   *                                and it is used as initial value for the DirectoryChooser.
-   * @param textFieldWidth Width of the TextField (in pixels). If this value is -1, the default width is used.
-   * @param textFiedlToolTipText if not null, this text will be used as Tooltip for the TextField
-   * @param folderChooserButtonText the text shown on the button to call up a DirectoryChooser (may not be null)
-   * @param folderChooserButtonToolTipText if not null, this text will be used as Tooltip for the button to call up a DirectoryChooser.
-   * @param directoryChooserTitle title for the DirectoryChooser (may not be null)
-   * @return the newly created FolderSelecter
-   */
-  public EditorControlFolderSelecter createEditorControlFolderSelecter(int textFieldWidth, String id, String textFieldToolTipText,
-      String folderChooserButtonText, String folderChooserButtonToolTipText, String directoryChooserTitle, boolean isOptional) {
-    EditorControlFolderSelecter folderSelecter = EditorControlFolderSelecter.newInstance(customization, id, textFieldWidth, textFieldToolTipText,
-        folderChooserButtonText, folderChooserButtonToolTipText, directoryChooserTitle, isOptional);
     
-    customizeTextInputControl(folderSelecter.getControl());
-    customizeButton(folderSelecter.getFolderChooserButton());
-    
-    return folderSelecter;
-  }
-  
   /**
    * Create a {@link ProgressBar}.
    * 
@@ -1108,18 +1061,6 @@ public class ComponentFactoryFx {
     ObjectControlHTMLString objectControlHTMLString = new ObjectControlHTMLString(customization, text, isOptional);
 
     return objectControlHTMLString;
-  }
-
-  /**
-   * Create an HTML String EditorControl.
-   * 
-   * @param optional if true, the value provided by this control is optional.
-   * @return the newly created {@code EditorControlHTMLString}.
-   */
-  public EditorControlHTMLString createEditorControlHTMLString(String id, boolean optional) {
-    EditorControlHTMLString editorControlHTMLString = EditorControlHTMLString.newInstance(customization, id, optional);
-
-    return editorControlHTMLString;
   }
   
   /**
@@ -1479,6 +1420,23 @@ public class ComponentFactoryFx {
     Alert alert = createOkCancelConfirmationDialog(title, headerText, contentText);
     
     alert.getButtonTypes().setAll(ButtonType.YES, ButtonType.NO);
+    alert.setResizable(true);
+    
+    return alert;
+  }
+
+  /**
+   * Create a confirmation dialog with 'Yes', 'No' and 'Cancel' buttons. This is a customized {@link Alert} of type AlertType.CONFIRMATION.
+   * 
+   * @param title the title
+   * @param headerText the header text
+   * @param contentText the content text
+   * @return the created confirmation Alert
+   */
+  public Alert createYesNoCancelConfirmationDialog(String title, String headerText, String contentText) {
+    Alert alert = createOkCancelConfirmationDialog(title, headerText, contentText);
+    
+    alert.getButtonTypes().setAll(ButtonType.YES, ButtonType.NO, ButtonType.CANCEL);
     alert.setResizable(true);
     
     return alert;

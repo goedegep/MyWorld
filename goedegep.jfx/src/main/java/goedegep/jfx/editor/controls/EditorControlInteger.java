@@ -4,26 +4,14 @@ import java.util.function.Supplier;
 import java.util.logging.Logger;
 
 import goedegep.jfx.CustomizationFx;
-import goedegep.util.money.PgCurrency;
 
 /**
- * This class provides a TextField to be used to edit a {@link PgCurrency}.
+ * This class provides a TextField to be used to edit an {@link Integer}.
  */
 public class EditorControlInteger extends EditorControlTextField<Integer> {
   @SuppressWarnings("unused")
   private static final Logger         LOGGER = Logger.getLogger(EditorControlInteger.class.getName());
   
-  // TODO check on valid range.
-//
-//  if ((minimumValue != null)  &&
-//      (value < minimumValue)) {
-//    valueIsValid = false;
-//    errorText = "value too low";
-//  } else if ((maximumValue != null)  &&
-//      (value > maximumValue)) {
-//    valueIsValid = false;
-//    errorText = "value too high";
-//  }
 
   /**
    * Minimum value.
@@ -36,7 +24,7 @@ public class EditorControlInteger extends EditorControlTextField<Integer> {
   protected Integer maximumValue = null;
 
 
-  protected EditorControlInteger(IntegerBuilder builder) {
+  protected EditorControlInteger(Builder builder) {
     super(builder);
   }
   
@@ -52,57 +40,70 @@ public class EditorControlInteger extends EditorControlTextField<Integer> {
       }
     }
     
+    if ((minimumValue != null)  &&
+        (value < minimumValue)) {
+      errorText = "value too low";
+      return null;
+    } else if ((maximumValue != null)  &&
+        (value > maximumValue)) {
+      errorText = "value too high";
+      return null;
+    }
+    
     return value;
   }
   
-  public static class IntegerBuilder extends EditorControlTextField.Builder<Integer> {
+  /**
+   * Builder class to set all properties for an {@code EditorControlInteger}.
+   */
+  public static class Builder extends EditorControlTextField.Builder<Integer> {
     
     /**
      * Constructor with mandatory arguments.
      * 
      * @param id The unique id of the ObjectControl (may not be null).
      */
-    public IntegerBuilder(String id) {
+    public Builder(String id) {
       super(id);
     }
     
     @Override
-    public IntegerBuilder setCustomization(CustomizationFx customization) {
+    public Builder setCustomization(CustomizationFx customization) {
       super.setCustomization(customization);
       
       return this;
     }
     
     @Override
-    public IntegerBuilder setWidth(double width) {
+    public Builder setWidth(double width) {
       super.setWidth(width);
       
       return this;
     }
     
     @Override
-    public IntegerBuilder setLabelBaseText(String labelBaseText) {
+    public Builder setLabelBaseText(String labelBaseText) {
       super.setLabelBaseText(labelBaseText);
       
       return this;
     }
     
     @Override
-    public IntegerBuilder setToolTipText(String toolTipText) {
+    public Builder setToolTipText(String toolTipText) {
       super.setToolTipText(toolTipText);
       
       return this;
     }
     
     @Override
-    public IntegerBuilder setOptional(boolean optional) {
+    public Builder setOptional(boolean optional) {
       super.setOptional(optional);
       
       return this;
     }
     
     @Override
-    public IntegerBuilder setErrorTextSupplier(Supplier<String> errorTextSupplier) {
+    public Builder setErrorTextSupplier(Supplier<String> errorTextSupplier) {
       super.setErrorTextSupplier(errorTextSupplier);
       
       return this;

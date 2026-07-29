@@ -234,9 +234,6 @@ public class MusicFolderContent {
             LOGGER.fine("audio track OK, adding to list: " + file.toString());
             
             String trackFileName = file.toString();
-            if (trackFileName.toLowerCase().contains("sun is shining")) {
-              LOGGER.severe("Found" + trackFileName);
-            }
             TrackOnDiscInfo trackOnDiscInfo = new TrackOnDiscInfo(file);
             tracksOnDiscInfo.add(trackOnDiscInfo);
           } else {

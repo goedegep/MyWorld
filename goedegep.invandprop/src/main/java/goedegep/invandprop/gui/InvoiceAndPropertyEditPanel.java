@@ -201,7 +201,7 @@ public class InvoiceAndPropertyEditPanel extends EditPanelTemplate<InvoiceAndPro
   @Override
   public void createControls() {
     
-    dateControl = new EditorControlFlexDate.FlexDateBuilder("date")
+    dateControl = new EditorControlFlexDate.Builder("date")
         .setWidth(300d)
         .setLabelBaseText("Date")
         .setToolTipText("Date")
@@ -247,14 +247,14 @@ public class InvoiceAndPropertyEditPanel extends EditPanelTemplate<InvoiceAndPro
         .setOptional(true)
         .build();
     
-    amountControl = new EditorControlCurrency.CurrencyBuilder("amount")
+    amountControl = new EditorControlCurrency.Builder("amount")
         .setWidth(300d)
         .setLabelBaseText("Amount")
         .setToolTipText("Amount")
         .setOptional(true)
         .build();
             
-    fromDateControl = new EditorControlFlexDate.FlexDateBuilder("fromDate")
+    fromDateControl = new EditorControlFlexDate.Builder("fromDate")
         .setWidth(300d)
         .setLabelBaseText("From date")
         .setToolTipText("From date")
@@ -262,7 +262,7 @@ public class InvoiceAndPropertyEditPanel extends EditPanelTemplate<InvoiceAndPro
         .build();
     
     
-    untilDateControl = new EditorControlFlexDate.FlexDateBuilder("untilDate")
+    untilDateControl = new EditorControlFlexDate.Builder("untilDate")
         .setWidth(300d)
         .setLabelBaseText("Until date")
         .setToolTipText("Until date")

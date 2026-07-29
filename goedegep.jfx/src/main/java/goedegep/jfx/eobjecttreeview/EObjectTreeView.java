@@ -517,6 +517,8 @@ public class EObjectTreeView extends TreeView<Object> implements ObjectSelector<
     LOGGER.info("=> eClass=" + eClass.getName());
     
     EObjectTreeItemClassDescriptor eObjectTreeItemClassDescriptor = new EObjectTreeItemClassDescriptor()
+        .addNodeOperationDescriptor(new NodeOperationDescriptorCut("Cut", null))
+        .addNodeOperationDescriptor(new NodeOperationDescriptorPaste("Paste", null))
         .addNodeOperationDescriptor(new NodeOperationDescriptorDelete("Delete", null));
     
     // Add information for the attributes and references

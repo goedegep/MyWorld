@@ -15,7 +15,12 @@ public class EditorControlDate extends EditorControlTextField<Date> {
   private static final DateFormat DF = new SimpleDateFormat("dd-MM-yyyy");
   
   
-  protected EditorControlDate(EditorControlDateBuilder builder) {
+  /**
+   * Constructor using builder.
+   * 
+   * @param builder The {@code Builder} providing all settings.
+   */
+  protected EditorControlDate(Builder builder) {
     super(builder);
   }
 
@@ -47,47 +52,47 @@ public class EditorControlDate extends EditorControlTextField<Date> {
   /**
    * Builder for creating a {@code EditorControlDate}.
    */
-  public static class EditorControlDateBuilder extends EditorControlTextField.Builder<Date> {
+  public static class Builder extends EditorControlTextField.Builder<Date> {
     
     /**
      * Constructor with mandatory arguments.
      * 
      * @param id The unique id of the EditorControl (may not be null).
      */
-    public EditorControlDateBuilder(String id) {
+    public Builder(String id) {
       super(id);
     }
     
     @Override
-    public EditorControlDateBuilder setWidth(double width) {
+    public Builder setWidth(double width) {
       super.setWidth(width);
       
       return this;
     }
     
     @Override
-    public EditorControlDateBuilder setLabelBaseText(String labelBaseText) {
+    public Builder setLabelBaseText(String labelBaseText) {
       super.setLabelBaseText(labelBaseText);
       
       return this;
     }
     
     @Override
-    public EditorControlDateBuilder setToolTipText(String toolTipText) {
+    public Builder setToolTipText(String toolTipText) {
       super.setToolTipText(toolTipText);
       
       return this;
     }
     
     @Override
-    public EditorControlDateBuilder setOptional(boolean optional) {
+    public Builder setOptional(boolean optional) {
       super.setOptional(optional);
       
       return this;
     }
     
     @Override
-    public EditorControlDateBuilder setErrorTextSupplier(Supplier<String> errorTextSupplier) {
+    public Builder setErrorTextSupplier(Supplier<String> errorTextSupplier) {
       super.setErrorTextSupplier(errorTextSupplier);
       
       return this;

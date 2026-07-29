@@ -247,6 +247,11 @@ public class OSMLocationInfoAdapter extends TypeAdapter<OSMLocationInfo> {
         address.setTourism(reader.nextString());
         break;
         
+      case "ISO3166-2-lvl4":
+        // Ignore country code (with subdivision)
+        reader.nextString();
+        break;
+        
       default:
         String string = reader.nextString();
         LOGGER.severe("Unknown name: " + name  + ":" + string);

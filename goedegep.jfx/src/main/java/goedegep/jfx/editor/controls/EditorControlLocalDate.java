@@ -15,61 +15,69 @@ public class EditorControlLocalDate extends EditorControlTextField<LocalDate> {
   private static final Logger         LOGGER = Logger.getLogger(EditorControlLocalDate.class.getName());
   
   
-  protected EditorControlLocalDate(LocalDateBuilder builder) {
+  /**
+   * Constructor using a Builder.
+   * 
+   * @param builder The builder with all properties set (may not be null).
+   */
+  protected EditorControlLocalDate(Builder builder) {
     super(builder);
   }
 
   
-  public static class LocalDateBuilder extends EditorControlTextField.Builder<LocalDate> {
+  /**
+   * Builder class to set all properties for an {@code EditorControlLocalDate}.
+   */
+  public static class Builder extends EditorControlTextField.Builder<LocalDate> {
     
     /**
      * Constructor with mandatory arguments.
      * 
      * @param id The unique id of the ObjectControl (may not be null).
      */
-    public LocalDateBuilder(String id) {
+    public Builder(String id) {
       super(id);
       
       setStringConverter(LocalDateStringConverterAndChecker.getDefaultFormatInstance());
     }
     
     @Override
-    public LocalDateBuilder setCustomization(CustomizationFx customization) {
+    public Builder setCustomization(CustomizationFx customization) {
       super.setCustomization(customization);
       
       return this;
     }
     
     @Override
-    public LocalDateBuilder setWidth(double width) {
+    public Builder setWidth(double width) {
       super.setWidth(width);
       
       return this;
     }
     
     @Override
-    public LocalDateBuilder setLabelBaseText(String labelBaseText) {
+    public Builder setLabelBaseText(String labelBaseText) {
       super.setLabelBaseText(labelBaseText);
       
       return this;
     }
     
     @Override
-    public LocalDateBuilder setToolTipText(String toolTipText) {
+    public Builder setToolTipText(String toolTipText) {
       super.setToolTipText(toolTipText);
       
       return this;
     }
     
     @Override
-    public LocalDateBuilder setOptional(boolean optional) {
+    public Builder setOptional(boolean optional) {
       super.setOptional(optional);
       
       return this;
     }
     
     @Override
-    public LocalDateBuilder setErrorTextSupplier(Supplier<String> errorTextSupplier) {
+    public Builder setErrorTextSupplier(Supplier<String> errorTextSupplier) {
       super.setErrorTextSupplier(errorTextSupplier);
       
       return this;

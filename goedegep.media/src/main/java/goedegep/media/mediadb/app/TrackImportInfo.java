@@ -3,7 +3,13 @@ package goedegep.media.mediadb.app;
 import java.nio.file.Path;
 
 /**
- * This class provides the information to copy a track from some folder into the Music Folder.
+ * This class provides the information to copy a track from some folder into the Music Folder.<br/>
+ * It contains:
+ * <ul>
+ * <li>The track number</li>
+ * <li>The source file path</li>
+ * <li>The destination file path</li>
+ * </ul>
  */
 public class TrackImportInfo {
   /**
@@ -27,7 +33,17 @@ public class TrackImportInfo {
    * @return the track number.
    */
   public int getTrackNr() {
+    String.valueOf(trackNr);
     return trackNr;
+  }
+  
+  /**
+   * Get the track number (starting at 1) as text.
+   * 
+   * @return the track number.
+   */
+  public String getTrackNrText() {
+    return String.valueOf(trackNr);
   }
   
   /**
@@ -46,6 +62,15 @@ public class TrackImportInfo {
    */
   public Path getSourceFilePath() {
     return sourceFilePath;
+  }
+  
+  /**
+   * Get the file name for the source file.
+   * 
+   * @return the file name for the source file.
+   */
+  public String getSourceFile() {
+    return sourceFilePath.getFileName().toString();
   }
   
   /**
@@ -73,6 +98,22 @@ public class TrackImportInfo {
    */
   public void setDestinationFilePath(Path destinationFileName) {
     this.destinationFilePath = destinationFileName;
+  }
+  
+  @Override
+  public String toString() {
+    StringBuilder buf = new StringBuilder();
+    
+    // trackNr
+    buf.append("Track Nr: ").append(trackNr);
+    
+    // source file path
+    buf.append(", Source file path:").append(sourceFilePath.toString());
+    
+    // destination file path
+    buf.append(", Destination file  path:").append(destinationFilePath.toString());
+    
+    return buf.toString();
   }
 
 }

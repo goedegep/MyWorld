@@ -151,6 +151,14 @@ public interface MediaDb extends EObject {
    * <!-- end-user-doc -->
    * <!-- begin-model-doc -->
    * Get an album based on release date (optional), artist and title.
+   * <p>
+   * The artist and title are mandatory.<br/>
+   * An album is found when:
+   * <ul>
+   * <li>If a release date is specified, this has to match</li>
+   * <li>The album title has to 'fuzzy' match</li>
+   * <li>The artist name has to match, or the artist name has to match with the container artist of the artist of the album</li>
+   * </ul>
    * 
    * @param releaseDate The release date (issue date) of the album (optional)
    * @param artist The {@code Artist} of the album (mandatory)

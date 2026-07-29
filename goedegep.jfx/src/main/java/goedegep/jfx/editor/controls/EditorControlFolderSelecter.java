@@ -1,10 +1,11 @@
 package goedegep.jfx.editor.controls;
 
 import java.io.File;
+import java.util.Objects;
+import java.util.function.Supplier;
 import java.util.logging.Logger;
 
 import goedegep.jfx.CustomizationFx;
-import goedegep.jfx.editor.EditorException;
 import javafx.scene.control.Button;
 import javafx.stage.DirectoryChooser;
 
@@ -69,25 +70,17 @@ public class EditorControlFolderSelecter extends EditorControlFileOrFolderSelect
    */
   private String folderChooserButtonToolTipText;
   
-  
-  /**
-   * Get an {@code EditorControlFolderSelecter} instance.
-   * 
-   * @param customization the GUI customization
-   * @param textFieldWidth Width of the TextField (in pixels). If this value is -1, the default width is used.
-   * @param textFiedlToolTipText if not null, this text will be used as Tooltip for the TextField
-   * @param folderChooserButtonText the text shown on the button to call up a FolderChooser (may not be null)
-   * @param folderChooserButtonToolTipText if not null, this text will be used as Tooltip for the button to call up a FolderChooser.
-   * @param folderChooserTitle title for the FolderChooser (may not be null)
-   * @param optional Indication of whether the control is optional (if true) or mandatory.
-   */
-  public static EditorControlFolderSelecter newInstance(CustomizationFx customization, String id, int textFieldWidth, String textFiedlToolTipText,
-      String folderChooserButtonText, String folderChooserButtonToolTipText, String folderChooserTitle, boolean optional) {
-    EditorControlFolderSelecter editorControlFolderSelecter = new EditorControlFolderSelecter(customization, id, textFieldWidth, textFiedlToolTipText,
-        folderChooserButtonText, folderChooserButtonToolTipText, folderChooserTitle, optional);
-    editorControlFolderSelecter.performInitialization();
     
-    return editorControlFolderSelecter;
+  /**
+   * Constructor with a {@code Builder}.
+   * 
+   * @param builder the {@code Builder} to set all properties for this {@code EditorControlFolderSelecter}.
+   */
+  public EditorControlFolderSelecter(Builder builder) {
+    super(builder);
+
+    this.folderChooserButtonText = builder.folderChooserButtonText;
+    this.folderChooserButtonToolTipText = builder.folderChooserButtonToolTipText;
   }
     
   
@@ -116,7 +109,7 @@ public class EditorControlFolderSelecter extends EditorControlFileOrFolderSelect
 
     folderChooserButton = componentFactory.createButton(folderChooserButtonText, folderChooserButtonToolTipText);
     componentFactory.customizeButton(folderChooserButton);
-    folderChooserButton.setOnAction(actionEvent -> handleFolderChooserButtonPressed());
+    folderChooserButton.setOnAction((_) -> handleFolderChooserButtonPressed());
   }
   
 
@@ -201,6 +194,121 @@ public class EditorControlFolderSelecter extends EditorControlFileOrFolderSelect
     if (source != pathTextField) {
       setPathTextFieldText();
     }
+  }
+  
+  
+  /**
+   * Builder class to set all properties for an {@code EditorControlFolderSelecter}.
+   */
+  public static class Builder extends EditorControlFileOrFolderSelecterAbstract.Builder {
+
+    /**
+     * The text shown on the button to call up a FileChooser
+     */
+    private String folderChooserButtonText;
+
+    /**
+     * If not null, this text will be used as Tooltip for the button to call up a FileChooser.
+     */
+    private String folderChooserButtonToolTipText;
+    
+    
+    /**
+     * Constructor with mandatory arguments.
+     * 
+     * @param customization The GUI customization
+     * @param id The unique id of the ObjectControl (may not be null).
+     */
+    public Builder(CustomizationFx customization, String id) {
+      super(customization, id);
+      Objects.requireNonNull(id, "The id may not be null");
+    }
+        
+    @Override
+    public Builder setOptional(boolean optional) {
+      super.setOptional(optional);
+      
+      return this;
+    }
+    
+    @Override
+    public Builder setLabelBaseText(String labelBaseText) {
+      super.setLabelBaseText(labelBaseText);
+
+      return this;
+    }
+    
+    @Override
+    public Builder setFileOrFolderChooserTitle(String fileOrFolderChooserTitle) {
+      super.setFileOrFolderChooserTitle(fileOrFolderChooserTitle);
+      
+      return this;
+    }
+    
+    @Override
+    public Builder setTextFieldWidth(double textFieldWidth) {
+      super.setTextFieldWidth(textFieldWidth);
+      
+      return this;
+    }
+    
+    @Override
+    public Builder setTextFieldToolTipText(String textFieldToolTipText) {
+      super.setTextFieldToolTipText(textFieldToolTipText);
+      
+      return this;
+    }
+    
+    /**
+     * Set the text shown on the button to call up a FileChooser.
+     * 
+     * @param fileChooserButtonText the text shown on the button to call up a FileChooser (may not be null)
+     * @return this
+     */
+    public Builder setFolderChooserButtonText(String folderChooserButtonText) {
+      this.folderChooserButtonText = folderChooserButtonText;
+      
+      return this;
+    }
+    
+    /**
+     * Set the Tooltip text for the button to call up a FileChooser.
+     * 
+     * @param fileChooserButtonToolTipText if not null, this text will be used as Tooltip for the button to call up a FileChooser.
+     * @return this
+     */
+    public Builder setFolderChooserButtonToolTipText(String folderChooserButtonToolTipText) {
+      this.folderChooserButtonToolTipText = folderChooserButtonToolTipText;
+      
+      return this;
+    }
+    
+    @Override
+    public Builder setInitialFolderSupplier(Supplier<String> initialFolderSupplier) {
+      super.setInitialFolderSupplier(initialFolderSupplier);
+      
+      return this;
+    }
+    
+    @Override
+    public Builder setPrefix(String prefix) {
+      super.setPrefix(prefix);
+
+      return this;
+    }
+        
+    /**
+     * Create the {@code EditorControlFileSelecter}.
+     * 
+     * @return the {@code EditorControlFileSelecter}.
+     */
+    public EditorControlFolderSelecter build() {
+      EditorControlFolderSelecter editorControlFolderSelecter = new EditorControlFolderSelecter(this);
+      editorControlFolderSelecter.performInitialization();
+      
+      return editorControlFolderSelecter;
+    }
+    
   }
   
 }

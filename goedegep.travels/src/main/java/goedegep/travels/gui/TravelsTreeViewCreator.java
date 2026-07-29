@@ -31,11 +31,13 @@ import goedegep.jfx.eobjecttreeview.EObjectTreeItemClassReferenceDescriptor;
 import goedegep.jfx.eobjecttreeview.EObjectTreeItemForObject;
 import goedegep.jfx.eobjecttreeview.EObjectTreeView;
 import goedegep.jfx.eobjecttreeview.NodeOperationDescriptorCustom;
+import goedegep.jfx.eobjecttreeview.NodeOperationDescriptorCut;
 import goedegep.jfx.eobjecttreeview.NodeOperationDescriptorDelete;
 import goedegep.jfx.eobjecttreeview.NodeOperationDescriptorNew;
 import goedegep.jfx.eobjecttreeview.NodeOperationDescriptorNewAfter;
 import goedegep.jfx.eobjecttreeview.NodeOperationDescriptorNewBefore;
 import goedegep.jfx.eobjecttreeview.NodeOperationDescriptorOpen;
+import goedegep.jfx.eobjecttreeview.NodeOperationDescriptorPaste;
 import goedegep.jfx.eobjecttreeview.PresentationType;
 import goedegep.poi.app.LocationCategory;
 import goedegep.resources.ImageResource;
@@ -547,8 +549,12 @@ public class TravelsTreeViewCreator {
     EObjectTreeItemClassListReferenceDescriptor eObjectTreeItemClassListReferenceDescriptor = new EObjectTreeItemClassListReferenceDescriptor(travelsPackage.getTravelCategory_Travels())
         .setNodeTextFunction(object -> {
           org.eclipse.emf.ecore.util.EObjectContainmentEList<?> list = (org.eclipse.emf.ecore.util.EObjectContainmentEList<?>) object;
-          TravelCategory travelCategory = (TravelCategory) list.getEObject();
-          return travelCategory.getTravelCategoryName();
+          if (list != null) {
+            TravelCategory travelCategory = (TravelCategory) list.getEObject();
+            return travelCategory.getTravelCategoryName();
+          } else {
+            return "No name as list is null";
+          }
         })
         .setNodeIconFunction(_ -> EObjectTreeView.getListIcon())
         .setExpandOnCreation(true)
@@ -700,6 +706,8 @@ public class TravelsTreeViewCreator {
         })
         .addNodeOperationDescriptor(new NodeOperationDescriptorNewBefore("New element before ...", null, TravelsTreeViewCreator::initNewObject))
         .addNodeOperationDescriptor(new NodeOperationDescriptorNewAfter("New element after ...", null, TravelsTreeViewCreator::initNewObject))
+        .addNodeOperationDescriptor(new NodeOperationDescriptorCut("Cut element", null))
+        .addNodeOperationDescriptor(new NodeOperationDescriptorPaste("Paste element", null))
         .addNodeOperationDescriptor(new NodeOperationDescriptorDelete("Delete element", null))
         .addNodeOperationDescriptor(new NodeOperationDescriptorCustom("Show on map", isMenuToBeEnabledPredicate, eObject -> {
           Object value = eObject.getValue();

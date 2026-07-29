@@ -84,21 +84,21 @@ public class BirthdayEditPanel extends EditPanelTemplate<Birthday> {
   @Override
   public void createControls() {
     
-    dayControl = new EditorControlInteger.IntegerBuilder("day")
+    dayControl = new EditorControlInteger.Builder("day")
         .setWidth(300d)
         .setLabelBaseText("_Day")
         .setToolTipText("The day of the birthday (1-31)")
         .setOptional(true)
         .build();
     
-    monthControl = new EditorControlInteger.IntegerBuilder("month")
+    monthControl = new EditorControlInteger.Builder("month")
         .setWidth(300d)
         .setLabelBaseText("_Month")
         .setToolTipText("The month of the birthday (1-12)")
         .setOptional(true)
         .build();
     
-    yearControl = new EditorControlInteger.IntegerBuilder("year")
+    yearControl = new EditorControlInteger.Builder("year")
         .setWidth(300d)
         .setLabelBaseText("_Year")
         .setToolTipText("The year of the birthday (e.g. 1980)")

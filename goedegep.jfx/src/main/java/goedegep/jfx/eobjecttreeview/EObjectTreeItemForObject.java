@@ -19,6 +19,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
 import javafx.scene.control.TreeItem;
+import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.DragEvent;
 import javafx.scene.input.Dragboard;
@@ -549,6 +550,56 @@ public class EObjectTreeItemForObject extends EObjectTreeItem {
     
   }
   
+  @Override
+  public void handleCut() {
+    final Clipboard clipboard = Clipboard.getSystemClipboard();
+    
+    final ClipboardContent clipboardContent = new ClipboardContent();
+    EObject eObject = (EObject) getValue();
+    EObjectPath eObjectPath = new EObjectPath(eObject);
+    ByteBuffer eObjectPathAsBytes = eObjectPath.getSerializedData();
+    clipboardContent.put(EOBJECT_PATH, eObjectPathAsBytes);
+    
+    clipboard.setContent(clipboardContent);
+  }
+  
+  @Override
+  public void handlePaste() {
+    final Clipboard clipboard = Clipboard.getSystemClipboard();
+    ByteBuffer eObjectPathBytes = (ByteBuffer) clipboard.getContent(EOBJECT_PATH);
+    EObjectPath eObjectPath = new EObjectPath(eObjectPathBytes);
+
+    // delete the source object from its reference
+    EObject sourceObject = eObjectPath.resolveToEObject((EObject) getEObjectTreeView().getRoot().getValue());
+    EReference eReference = eObjectPath.resolveToEObjectReference((EObject) getEObjectTreeView().getRoot().getValue());
+    EObject sourceParentEObject = eObjectPath.resolveToEObjectParent((EObject) getEObjectTreeView().getRoot().getValue());
+    if (eReference.isMany()) {
+      @SuppressWarnings("unchecked")
+      List<EObject> list = (List<EObject>) sourceParentEObject.eGet(eReference);
+      int index = eObjectPath.resolveToEObjectReferenceIndex((EObject) getEObjectTreeView().getRoot().getValue());
+      list.remove(index);
+    } else {
+      sourceParentEObject.eSet(eReference, null);
+    }
+
+    // set the source object to this reference
+    EObjectTreeItem parentTreeItem = (EObjectTreeItem) getParent();
+    if (classReferenceDescriptor != null) {
+      // it is a single reference
+      EObject parentEObject = (EObject) parentTreeItem.getValue();
+      parentEObject.eSet(classReferenceDescriptor.getEReference(), sourceObject);
+    } else {
+      // parent tree item is an object list, insert before this tree item.
+      EObjectTreeItemForObjectList eObjectTreeItemForObjectList = (EObjectTreeItemForObjectList) parentTreeItem;
+      @SuppressWarnings("unchecked")
+      List<EObject> list = (List<EObject>) eObjectTreeItemForObjectList.getValue();
+      int index = getIndexInParentTreeItem();
+      list.add(index, sourceObject);
+    }
+
+    
+  }
+  
   /**
    * {@inheritDoc}
    * 
@@ -574,7 +625,7 @@ public class EObjectTreeItemForObject extends EObjectTreeItem {
    * {@inheritDoc}
    */
   @Override
-  public TransferMode getTransferModeForDrop(DragEvent dragEvent) {  
+  public TransferMode getTransferModeForDrop(DragEvent dragEvent) {
     boolean dropPossible = true;
     
     Dragboard dragboard = dragEvent.getDragboard();

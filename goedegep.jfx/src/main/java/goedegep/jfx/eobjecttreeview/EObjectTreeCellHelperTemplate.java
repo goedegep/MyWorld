@@ -186,4 +186,22 @@ public abstract class EObjectTreeCellHelperTemplate<I extends EObjectTreeItem, D
     LOGGER.info("<=");
   }
   
+  /**
+   * Cut the object related to this tree cell.
+   */
+  public void cutObject() {
+    if (treeItem != null) {
+      treeItem.handleCut();
+    }
+  }
+  
+  /**
+   * Paste the object on the clipboard before the object related to this tree cell.
+   */
+  public void pasteObject() {
+    if (treeItem != null) {
+      treeItem.handlePaste();
+    }
+  }
+  
 }

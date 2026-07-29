@@ -282,17 +282,19 @@ public class MediaDbAppUtil {
 
   /**
    * Generate the file name for a track TODO has to be for a track in a specific folder type
-   * @param track
-   * @return
+   *
+   * <pre>
+   * If the track has an original album track reference, the file name format is:
+   *   [artist-name] - [album-title] - [2-digit-tracknr] - [track-title].[extension]
+   * Else:   
+   *   [artist-name] - [track-title].[extension]
+   * </pre>
+   * 
+   * @param track the track for which the file name is to be generated.
+   * @return the file name for the {@code track}, or {@code null} if the file name can't be generated (because of missing information).
    */
   public static String generateTrackFileNameForATrackInATracksFolder(Track track, MediaDb mediaDb) {
-    LOGGER.fine("=> track=" + track.getArtist() + " - " + track.getTitle());
-    
     String trackFileName = null;
-    
-    if (track.getTitle().contains("xxSuicide Blonde")) {
-      LOGGER.severe("STOP");
-    }
     
     TrackReference originalAlbumTrackReference = track.getOriginalDiscTrackReference();
     if (originalAlbumTrackReference != null) {
@@ -349,8 +351,13 @@ public class MediaDbAppUtil {
       return null;
     }
     
+    // If the track artist is set, use that, else use the album artist.
     Album originalAlbum = originalAlbumDisc.getAlbum();
-    Artist artist = originalAlbum.getArtist();
+    Artist artist = originalAlbumTrackReference.getTrack().getArtist();
+    
+    if (artist == null) {
+      artist = originalAlbum.getArtist();
+    }
     
     if (artist == null) {
       LOGGER.severe("Cannot create filename for track without artist, originalAlbumTrackReference: " + originalAlbumTrackReference);
@@ -364,8 +371,7 @@ public class MediaDbAppUtil {
     FlexDate releaseDate = originalAlbum.getReleaseDate();
     
     if (releaseDate == null) {
-      LOGGER.severe("Cannot create filename for track without releaseDate, originalAlbumTrackReference: " + originalAlbumTrackReference);
-      return null;
+      releaseDate = new FlexDate(0);
     }
     
     int year = releaseDate.getYear();    
@@ -386,7 +392,7 @@ public class MediaDbAppUtil {
           }
 
           if (artist2.equals(anAlbumArtist)) {
-            if (anAlbum.isSetReleaseDate()) {
+            if (anAlbum.getReleaseDate() != null) {
               FlexDate anAlbumReleaseDate = anAlbum.getReleaseDate();
               int anAlbumYear = anAlbumReleaseDate.getYear();
               if (anAlbumYear == year) {
@@ -403,7 +409,8 @@ public class MediaDbAppUtil {
 
     }
     
-    buf.append(year);
+    String yearText = String.format("%04d", year);
+    buf.append(yearText);
     if (addMonthToFileName) {
       buf.append("-");
       Integer month = releaseDate.getMonth();
@@ -434,7 +441,6 @@ public class MediaDbAppUtil {
     buf.append(String.format("%02d", trackNr));
     
     buf.append(" - ");
-   
     
     // track title
     Track track = originalAlbumTrackReference.getTrack();
@@ -561,19 +567,30 @@ public class MediaDbAppUtil {
     }
   }
 
-  
+  /**
+   * Check whether I have more than one album of an {@ code Artist} released in a specific year on hard disk.
+   * <p>
+   * This can be used to add the release month to the file name in order to achieve the correct sorting.
+   * 
+   * @param mediaDb the media database providing the information about the albums.
+   * @param artist the {@code Artist} 
+   * @param year the year
+   * @return true if there is more than one {@code Album} of the {@code artist} released in the {@code year} in the {@code mediaDb} that I have on hard disk, false otherwise.
+   */
   public static boolean haveMoreThanOneAlbumOfContainerArtistInAYearOnDisc(MediaDb mediaDb, Artist artist, int year) {
-    FlexDate releaseYearFlexDate = new FlexDate(year);
-    List<Album> albumsInYear = mediaDb.getAlbums(releaseYearFlexDate, artist, null);  // should find this album and any other album from same year
-    List<Album> albumsOnDisc = new ArrayList<>();
+    List<Album> albumsInYear = mediaDb.getAlbums(new FlexDate(year), artist, null);
+    Album albumOnDiscInYear = null;
     for (Album albumInYear: albumsInYear) {
-      LOGGER.fine("albumInYear: " + albumInYear.getTitle());
       if (MediaDbUtil.haveAlbumOnDisc(albumInYear)) {
-        albumsOnDisc.add(albumInYear);
+        if (albumOnDiscInYear != null) {
+          return true;
+        } else {
+          albumOnDiscInYear = albumInYear;
+        }
       }
     }
-    
-    return albumsOnDisc.size() > 1;
+
+    return false;
   }
   
   /**

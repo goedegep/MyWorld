@@ -156,6 +156,7 @@ import javafx.scene.transform.Scale;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 
 /**
  * Window with information about Travels.
@@ -332,111 +333,44 @@ public class TravelsWindow extends JfxStage {
     this.translations = translations;
     travelsRegistry = TravelsRegistry.getInstance();
     appResources = (TravelsAppResourcesFx) getResources();
-    
-//    if (travelsRegistry.getTravelsFileName() == null) {
-//      statusLabel.setText(translations.getString("VacationsWindow.statusLabel.noVacationsFileNameMsg"));
-//      Alert alert = componentFactory.createErrorDialog(
-//          translations.getString("VacationsWindow.alertNoVacationsFileName.header"),
-//          translations.getString("VacationsWindow.alertNoVacationsFileName.content"));
-//      
-//      ButtonType editorButtonType = new ButtonType(translations.getString("VacationsWindow.alertNoVacationsFileName.editorButton"));
-//      alert.getButtonTypes().add(editorButtonType);
-//      
-//      alert.showAndWait().ifPresent(response -> {
-//        if (response == editorButtonType) {
-//          travelsService.showPropertiesEditor(getBundle(TravelsWindow.class, "VacationsPropertyDescriptorsResource"));
-//        }
-//      });
-//      
-//      return;
-//    }
-    
-//    if (travelsRegistry.getVacationChecklistFileName() == null) {
-//      statusLabel.setText(translations.getString("VacationsWindow.statusLabel.noVacationChecklistFileNameMsg"));
-//      Alert alert = componentFactory.createErrorDialog(
-//          translations.getString("VacationsWindow.alertNoVacationChecklistFileName.header"),
-//          translations.getString("VacationsWindow.alertNoVacationChecklistFileName.content"));
-//      
-//      ButtonType editorButtonType = new ButtonType(translations.getString("VacationsWindow.alertNoVacationsFileName.editorButton"));
-//      alert.getButtonTypes().add(editorButtonType);
-//      
-//      alert.showAndWait().ifPresent(response -> {
-//        if (response == editorButtonType) {
-//          travelsService.showPropertiesEditor(getBundle(TravelsWindow.class, "VacationsPropertyDescriptorsResource"));
-//        }
-//      });
-//      
-//      return;
-//    }
-        
+            
     travelToHtmlConverterSettings = TravelToHtmlConverterSetting.getDefaultSettings();
     travelToHtmlConverter = new TravelToHtmlConverter(travelToHtmlConverterSettings);
     
     createGUI();
-
-    travelToHtmlConverter = new TravelToHtmlConverter(travelToHtmlConverterSettings);
     
+    // Create the travels EMF resource.
     travelsResource = new EMFResource<>(
         TravelsPackage.eINSTANCE, 
         () -> TravelsFactory.eINSTANCE.createTravels(),
         ".xmi",
         true);
     
+    // Load the travels data from the travels file.
     try {
       travels = travelsResource.load(travelsRegistry.getTravelsFileName());
     } catch (IOException e) {
-      LOGGER.severe("File not found: " + e.getMessage());
-      Alert alert = componentFactory.createYesNoConfirmationDialog(
-          null,
-          translationFormatter.formatText("VacationsWindow.alertVacationsFileNotFound.header", travelsRegistry.getTravelsFileName()),
-          translations.getString("VacationsWindow.alertVacationsFileNotFound.content"));
-      alert.showAndWait().ifPresent(response -> {
-        if (response == ButtonType.YES) {
-          LOGGER.severe("yes, create file");
-          travels = travelsResource.newEObject();
-          try {
-            travelsResource.save(travelsRegistry.getTravelsFileName());
-          } catch (IOException e1) {
-            e1.printStackTrace();
-          }
-        } else {
-          LOGGER.severe("no, don't create file");
-        }
-      });
+      // Should never happen, because the existence of the travels file is checked by the service.
+      LOGGER.severe("Travels file not found: " + e.getMessage());
+      componentFactory.createExceptionDialog("Failed to load travels file", e).showAndWait();
+      System.exit(1);
     }
         
+    // Create the vacation checklist EMF resource.
     vacationChecklistResource = new EMFResource<>(
         VacationChecklistPackage.eINSTANCE, 
         () -> VacationChecklistFactory.eINSTANCE.createVacationChecklist(),
         ".xmi",
         true);
     
+    // Load the vacation checklist data from the vacation checklist file.
     try {
       vacationChecklistResource.load(travelsRegistry.getVacationChecklistFileName());
-      LOGGER.info(travelsRegistry.getVacationChecklistFileName());
     } catch (IOException e) {
-      LOGGER.severe("File not found: " + e.getMessage());
-      Alert alert = componentFactory.createYesNoConfirmationDialog(
-          null,
-          translationFormatter.formatText("VacationsWindow.alertVacationChecklistFileNotFound.header", travelsRegistry.getVacationChecklistFileName()),
-          translations.getString("VacationsWindow.alertVacationChecklistFileNotFound.content"));
-      alert.showAndWait().ifPresent(response -> {
-        if (response == ButtonType.YES) {
-          LOGGER.severe("yes, create file");
-          VacationChecklist vacationChecklist = vacationChecklistResource.newEObject();
-          VacationChecklistCategoriesList vacationChecklistCategoriesList = VacationChecklistFactory.eINSTANCE.createVacationChecklistCategoriesList();
-          vacationChecklist.setVacationChecklistCategoriesList(vacationChecklistCategoriesList);
-          VacationChecklistLabelsList vacationChecklistLabelsList = VacationChecklistFactory.eINSTANCE.createVacationChecklistLabelsList();
-          vacationChecklist.setVacationChecklistLabelsList(vacationChecklistLabelsList);
-          try {
-            vacationChecklistResource.save(travelsRegistry.getVacationChecklistFileName());
-          } catch (IOException e1) {
-            e1.printStackTrace();
-          }
-        } else {
-          LOGGER.severe("no, don't create file");
-        }
-      });
+      // Should never happen, because the existence of the vacation checklist file is checked by the service.
+      LOGGER.severe("Vacation checklist file not found: " + e.getMessage());
+      componentFactory.createExceptionDialog("Failed to load vacations checklist file", e).showAndWait();
+      System.exit(1);
     }
        
     setX(10);
@@ -458,10 +392,11 @@ public class TravelsWindow extends JfxStage {
     handleNewTreeItemSelected(null, null);
     updateTipsPane();
     
-    setOnCloseRequest(_ -> {
-      if (locationSearchWindow != null) {
-        locationSearchWindow.close();
-      }
+    setOnCloseRequest(event -> {
+      closeApplication(event);
+//      if (locationSearchWindow != null) {
+//        locationSearchWindow.close();
+//      }
     });
     
     selectedTravelProperty.addListener((_, _, _) -> updateTravelFilesFolderBar());
@@ -839,6 +774,9 @@ public class TravelsWindow extends JfxStage {
       MenuUtil.addMenuItem(menu, "Use demo travels file", _ -> useDemoTravelsFile());
     }
     
+    // File: Exit
+    MenuUtil.addMenuItem(menu, "Exit", _ -> closeApplication(null));
+    
     menuBar.getMenus().add(menu);
     
     // Edit menu
@@ -948,6 +886,67 @@ public class TravelsWindow extends JfxStage {
     return menuBar;
   }
   
+  /**
+   * Close the application.
+   * <p>
+   * This is called when the user selects the 'Exit' menu item or upon a window close event.<br/>
+   * If there are unsaved changes, the user is asked whether to save the changes or not (or cancel the exit action).
+   * 
+   * @return null
+   */
+  private Object closeApplication(WindowEvent event) {
+    boolean doClose = true;
+    
+    if (travelsResource.isDirty()) {
+      Alert alert = componentFactory.createYesNoCancelConfirmationDialog(
+          "Save changes?",
+          "There are unsaved changes in the travels information",
+          "Do you want to save the changes before exiting?");
+      alert.showAndWait().ifPresent(response -> {
+        if (response == ButtonType.YES) {
+          saveTravels();
+          close();
+        } else if (response == ButtonType.NO) {
+          close();
+        } else {
+          // Cancel, do nothing
+          if (event != null) {
+            event.consume();
+          }
+        }
+      });
+    } else {
+      close();
+    }
+    
+    if (vacationChecklistResource.isDirty()) {
+      Alert alert = componentFactory.createYesNoCancelConfirmationDialog(
+          "Unsaved changes?",
+          "There are unsaved changes in the vacation checklist",
+          "Do you want to exit without saving?");
+      alert.showAndWait().ifPresent(response -> {
+        if (response == ButtonType.YES) {
+          close();
+        } else if (response == ButtonType.NO) {
+          close();
+        } else {
+          // Cancel, do nothing
+          if (event != null) {
+            event.consume();
+          }
+        }
+      });
+    } else {
+      close();
+    }
+    
+    if (doClose) {
+      close();
+    }
+    
+    return null;
+  }
+
   private Node createTravelFilesFolderBar() {
     HBox travelFilesFolderBar = componentFactory.createHBox(12.0);
     

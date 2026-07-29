@@ -8,7 +8,10 @@ import java.util.function.Supplier;
 import java.util.logging.Logger;
 
 import goedegep.jfx.CustomizationFx;
+import goedegep.jfx.DefaultCustomizationFx;
 import goedegep.jfx.editor.EditorControlTemplate;
+import goedegep.jfx.editor.controls.EditorControlAutoCompleteTextField.Builder;
+import goedegep.jfx.stringconverterandchecker.StringConverterAndChecker;
 import goedegep.util.file.FileUtils;
 import javafx.scene.control.TextField;
 
@@ -54,7 +57,7 @@ public abstract class EditorControlFileOrFolderSelecterAbstract extends EditorCo
   /**
    * Width of the {@code pathTextField}.
    */
-  private int textFieldWidth;
+  private double textFieldWidth;
   
   /**
    * a tooltip text for the {@code pathTextField}
@@ -67,6 +70,29 @@ public abstract class EditorControlFileOrFolderSelecterAbstract extends EditorCo
    * If this value is null, no Prefix is used.
    */
   private String prefix = null;
+
+  
+  /**
+   * Constructor
+   * 
+   * @param customization the GUI customization.
+   * @param textFieldWidth Value for the width of the TextField. If this value is -1, the default width is used.
+   * @param textFieldToolTipText an optional tooltip text for the TextField.
+   * @param fileOrFolderChooserTitle The title of the {@code FileChooser} or {@code FolderChooser}.
+   * @param optional Indication of whether the control is optional (if true) or mandatory.
+   */
+  protected EditorControlFileOrFolderSelecterAbstract(Builder builder) {
+    super(builder.customization, builder.id, builder.optional);
+    
+    this.textFieldWidth = builder.textFieldWidth;
+    this.textFieldToolTipText = builder.textFieldToolTipText;
+    this.fileOrFolderChooserTitle = builder.fileOrFolderChooserTitle;
+    this.initialFolderSupplier = builder.initialFolderSupplier;
+    this.prefix = builder.prefix;
+
+    setLabelBaseText(builder.labelBaseText);
+  }
+
   
   /**
    * Constructor
@@ -95,18 +121,16 @@ public abstract class EditorControlFileOrFolderSelecterAbstract extends EditorCo
   public void createControls() {
     pathTextField = customization.getComponentFactoryFx().createTextField(textFieldWidth, textFieldToolTipText);
     
-    pathTextField.textProperty().addListener((o) -> {
+    pathTextField.textProperty().addListener((_) -> {
       handleNewUserInput(pathTextField);
-    });
-    pathTextField.focusedProperty().addListener((observableValue, oldValue, newValue) -> {
-      if (!newValue)
-        redrawValue();
     });
     
     setComparator((o1, o2) -> {
       int result = Objects.equals(getAbsolutePath(o1), getAbsolutePath(o2)) ? 0 : -1;
       return result;
     });
+    
+    registerControls(pathTextField);
   }
   
   /**
@@ -218,6 +242,11 @@ public abstract class EditorControlFileOrFolderSelecterAbstract extends EditorCo
     return getValue() != null ? removePrefixIfSet(getValue().getAbsolutePath()) : null;
   }
   
+  /**
+   * Set the path relative to the prefix, if the prefix is set.
+   * 
+   * @param pathName the path relative to the prefix, if the prefix is set.
+   */
   public void setPathNameRelativeToPrefix(String pathName) {
     if (pathName == null) {
       setValue(null);
@@ -307,5 +336,162 @@ public abstract class EditorControlFileOrFolderSelecterAbstract extends EditorCo
   protected void fillControlsWithDefaultValues() {
     pathTextField.setText("");
     
+  }
+  
+  
+
+  /**
+   * Builder class to set all properties for an {@code EditorControlAutoCompleteTextField}.
+   */
+  public static class Builder {
+
+    /**
+     * The unique id of the ObjectControl (mandatory).
+     */
+    String id;
+
+    /**
+     * The GUI customization (optional).
+     * <p>
+     * If not set an instance of the {@link DefaultCustomizationFx} is used.
+     */
+    private CustomizationFx customization;
+
+
+    /**
+     * Indication of whether a value is optional or not (default value is {@code false}, indicating mandatory).
+     */
+    private boolean optional;
+
+    /**
+     * Base text for the label.
+     */
+    private String labelBaseText;
+
+    /**
+     * Title of the file- or folder chooser.
+     */
+    private String fileOrFolderChooserTitle;
+
+    /**
+     * Width of the text field.
+     */
+    private double textFieldWidth;
+
+    /**
+     * ToolTip text for the text field.
+     */
+    private String textFieldToolTipText;
+
+    /**
+     * A {@link Supplier} to provide the initial folder for the {@code FileChooser} or {@code FolderChooser}.
+     */
+    protected Supplier<String> initialFolderSupplier = null;
+
+    /**
+     * Prefix - The first part of the file or folder path.
+     * <p>
+     * If this value is null, no Prefix is used.
+     */
+    private String prefix = null;
+
+
+    /**
+     * Constructor with mandatory arguments.
+     * 
+     * @param customization The GUI customization
+     * @param id The unique id of the ObjectControl (may not be null).
+     */
+    public Builder(CustomizationFx customization,String id) {
+      Objects.requireNonNull(id, "The id may not be null");
+
+      this.customization = customization;
+      this.id = id;
+      textFieldWidth = -1.0;
+    }
+
+    /**
+     * Set the optional indication.
+     * 
+     * @param optional Indication of whether a value is optional or not (default value is {@code false}, indicating mandatory).
+     * @return this
+     */
+    public Builder setOptional(boolean optional) {
+      this.optional = optional;
+
+      return this;
+    }
+
+    /**
+     * Set the base text for the label.
+     * 
+     * @param labelBaseText  the base text for the label.
+     * @return this
+     */
+    public Builder setLabelBaseText(String labelBaseText) {
+      this.labelBaseText = labelBaseText;
+
+      return this;
+    }
+
+    /**
+     * Set the base text for the label.
+     * 
+     * @param fileOrFolderChooserTitle  Title of the file- or folder chooser.
+     * @return this
+     */
+    public Builder setFileOrFolderChooserTitle(String fileOrFolderChooserTitle) {
+      this.fileOrFolderChooserTitle = fileOrFolderChooserTitle;
+
+      return this;
+    }
+
+    /**
+     * Set the width of the text field.
+     * 
+     * @param width the width of the text field.
+     * @return this
+     */
+    public Builder setTextFieldWidth(double textFieldWidth) {
+      this.textFieldWidth = textFieldWidth;
+
+      return this;
+    }
+
+    /**
+     * Set the ToolTip text.
+     * 
+     * @param textFieldToolTipText the ToolTip text for the text field.
+     * @return this
+     */
+    public Builder setTextFieldToolTipText(String textFieldToolTipText) {
+      this.textFieldToolTipText = textFieldToolTipText;
+
+      return this;
+    }
+
+    /**
+     * Set the method for obtaining the initial folder.
+     * 
+     * @param initialFolderSupplier the method for obtaining the initial folder.
+     * @return this
+     */
+    public Builder setInitialFolderSupplier(Supplier<String> initialFolderSupplier) {
+      this.initialFolderSupplier = initialFolderSupplier;
+
+      return this;
+    }
+
+    /**
+     * Set the {@link #prefix}.
+     * 
+     * @param prefix the new {@code prefix} value.
+     * @return this
+     */
+    public Builder setPrefix(String prefix) {
+      this.prefix = prefix;
+
+      return this;
+    }
   }
 }

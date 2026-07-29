@@ -159,9 +159,34 @@ public class NominatimUtil {
       boundingBox.setSouth(osmBoundingBoxValues[0]);
       location.setBoundingbox(boundingBox);
     }
+    
+    // get POI category from the OSM 'category' and 'type' attributes.
+    LocationCategory poiCategoryId = switch (osmLocationInfo.getCategory()) {
+    case "highway" -> switch (osmLocationInfo.getType()) {
+      case "bus_stop" -> LocationCategory.BUS_STOP;
+      default -> null;
+    };
+    case "railway" -> switch (osmLocationInfo.getType()) {
+      case "station" -> LocationCategory.RAILWAY_STATION;
+      default -> null;
+    };
+    default -> null;
+    };
 
     // First source for the POICategoryId; the 'type' attribute.
-    LocationCategory poiCategoryId = getPOICategoryIdForType(osmLocationInfo.getType());
+    if (poiCategoryId == null) {
+      poiCategoryId = getPOICategoryIdForType(osmLocationInfo.getType());
+    }
+    
+    // Second source for the POICategoryId; the addressType.
+    if (poiCategoryId == null) {
+      String addresstype = osmLocationInfo.getAddresstype();
+      LOGGER.severe("addresstype=" + (addresstype != null ? addresstype : "(null)"));
+      poiCategoryId = switch (addresstype) {
+        case "city" -> LocationCategory.CITY;
+        default -> null;
+      };
+    }
     
     // First source for the name; the 'name' attribute.
     String name = osmLocationInfo.getName();
@@ -214,7 +239,7 @@ public class NominatimUtil {
         location.setHouseNumber(value);
       }
       
-      // Name and second source for the POICategoryId.
+      // Name and third source for the POICategoryId.
       Pair<String, String> poiInfo = NominatimAPI.getPoiInfoFromAddress(osmAddress);
       if (poiInfo != null) {
         if (poiCategoryId == null) {

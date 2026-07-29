@@ -15,14 +15,17 @@ import goedegep.media.common.IMediaDbService;
 import goedegep.media.common.MediaRegistry;
 import goedegep.media.mediadb.albumeditor.guifx.AlbumEditor;
 import goedegep.media.mediadb.model.Album;
+import goedegep.media.mediadb.model.AlbumType;
 import goedegep.media.mediadb.model.Artist;
 import goedegep.media.mediadb.model.Disc;
 import goedegep.media.mediadb.model.DiscAndTrackNrs;
 import goedegep.media.mediadb.model.InformationType;
 import goedegep.media.mediadb.model.MediumInfo;
 import goedegep.media.mediadb.model.MyInfo;
+import goedegep.media.mediadb.model.MyTrackInfo;
 import goedegep.media.mediadb.model.Player;
 import goedegep.media.mediadb.model.Track;
+import goedegep.media.mediadb.model.TrackReference;
 import goedegep.media.mediadb.model.util.MediaDbUtil;
 import goedegep.util.datetime.FlexDateFormat;
 import goedegep.util.objectselector.ObjectSelectionListener;
@@ -50,9 +53,24 @@ public class AlbumDetailsWindow extends JfxStage implements IAlbumDetailsWindow 
   private static final Logger LOGGER = Logger.getLogger(AlbumDetailsWindow.class.getName());
   private static final FlexDateFormat FDF = new FlexDateFormat();
   
+  /**
+   * The media registry.
+   */
   private MediaRegistry mediaRegistry;
-  private IMediaDbService mediaDbService;  
+  
+  /**
+   * The media database service.
+   */
+  private IMediaDbService mediaDbService;
+  
+  /**
+   * A map with the locations of the tracks on disc.
+   */
   private Map<Track, Path> trackDiscLocationMap;
+  
+  /**
+   * The albums table, used to synchronize the selection of the album in this window with the selection in the albums table.
+   */
   private AlbumsTable albumsTable;
   
   /**
@@ -66,7 +84,7 @@ public class AlbumDetailsWindow extends JfxStage implements IAlbumDetailsWindow 
   private TextField albumArtistTextField;
   
   /**
-   * Shows the album artist name.
+   * Shows the album issue date (release date).
    */
   private TextField albumIssueDateTextField;
   
@@ -74,6 +92,11 @@ public class AlbumDetailsWindow extends JfxStage implements IAlbumDetailsWindow 
    * Shows the album id.
    */
   private TextField albumIdTextField;
+  
+  /**
+   * Shows the album type.
+   */
+  private TextField albumTypeTextField;
   
   /**
    * Shows the album front, front inlay, back and label pictures
@@ -84,50 +107,46 @@ public class AlbumDetailsWindow extends JfxStage implements IAlbumDetailsWindow 
    * Shows information as HTML
    */
   private WebView webView;
-  
-  /**
-   * Shows whether the album is 'my own' compilation or not.
-   */
-  private CheckBox isOwnCompilationCheckBox;
-  
-  /**
-   * Shows whether the album is a movie soundtrack or not.
-   */
-  private CheckBox isSoundTrackCheckBox;
-  
+    
   /**
    * Shows the tracks per disc in tables
    */
   private VBox discTracksVBox;
  
+  /**
+   * The album for which the information is shown in this window.
+   */
   private Album album;
   
+  /**
+   * Listener for the albums table, to synchronize the selection of the album in this window with the selection in the albums table.
+   */
   private ObjectSelectionListener<Album> albumsTableListener = null;
   
+  /**
+   * The stage for showing a large (full size) picture.
+   */
   private Stage currentLargePictureStage;
 
   /**
    * Constructor.
    * 
    * @param customization the GUI customization.
+   * @param mediaDbService the media service.
+   * @param trackDiscLocationMap a map with the locations of the tracks on disc.
+   * 
    */
-  public AlbumDetailsWindow(CustomizationFx customization, IMediaDbService mediaDbService, Map<Track, Path> trackDiscLocationMap, EObjectTable<Album> at) {
-    AlbumsTable albumsTable = (AlbumsTable) at;
+  public AlbumDetailsWindow(CustomizationFx customization, IMediaDbService mediaDbService, Map<Track, Path> trackDiscLocationMap, EObjectTable<Album> albumsTable) {
     super(customization, "Album details");
     
     this.mediaDbService = mediaDbService;
-    this.albumsTable = albumsTable;
     this.trackDiscLocationMap = trackDiscLocationMap;
+    this.albumsTable = (AlbumsTable) albumsTable;
     mediaRegistry = MediaRegistry.getInstance();
 
     createGUI();
   }
 
-  /**
-   * Change the <code>Album</code> for which the information is shown.
-   * 
-   * @param album the <code>Album</code> for which the information is shown in this window.
-   */
   @Override
   public void setAlbum(Album album) {
     this.album = album;
@@ -142,7 +161,12 @@ public class AlbumDetailsWindow extends JfxStage implements IAlbumDetailsWindow 
 
     /*
      * Main pane is a BorderPane.
-     * Center is a VBox; the ...
+     * Center is a VBox with:
+     *   a GridPane with general information (title, artist, issue date, album id, album type)
+     *   an HBox with the album pictures (front, front inlay, back, label)
+     *   an HBox with a WebView with HTML information showing the description, players, my info, etc.
+     *   a GridPane with the issued on media information
+     *   a VBox with the disc track tables
      */
 
     BorderPane mainPane = new BorderPane();
@@ -154,7 +178,7 @@ public class AlbumDetailsWindow extends JfxStage implements IAlbumDetailsWindow 
      */
     GridPane gridPane = componentFactory.createGridPane(10.0, 10.0, 10.0);
     
-    // First row: 'Album: <album-title>'   +  'Edit button' + 'Sync to album table checkbox'
+    // First row: 'Album: <album-title>'   +  'Open in Album Editor' button + 'Sync to album table checkbox'
     Label label = componentFactory.createLabel("Title:");
     gridPane.add(label, 0, 0);
     
@@ -200,12 +224,22 @@ public class AlbumDetailsWindow extends JfxStage implements IAlbumDetailsWindow 
     albumIdTextField.setEditable(false);
     gridPane.add(albumIdTextField, 1, 3);
     
+    // Fifth row: 'Album type: <album-type>'
+    label = componentFactory.createLabel("Album tyoe");
+    gridPane.add(label, 0, 4);
+    
+    albumTypeTextField = componentFactory.createTextField(600, null);
+    albumTypeTextField.setEditable(false);
+    gridPane.add(albumTypeTextField, 1, 4);
+    
     centerPane.getChildren().add(gridPane);
     
     /*
      * pictures
      */
     picturesHBox = componentFactory.createHBox(10.0, 10.0);
+    picturesHBox.setMinHeight(300);
+    picturesHBox.setPrefHeight(300);
     centerPane.getChildren().add(picturesHBox);
     
     /**
@@ -229,44 +263,28 @@ public class AlbumDetailsWindow extends JfxStage implements IAlbumDetailsWindow 
     centerPane.getChildren().add(gridPane);
     
     /*
-     * Checkboxes for 'compilation album', 'own compilation' and 'soundtrack'.
-     */
-    hBox = componentFactory.createHBox(10.0, 10.0);
-    isOwnCompilationCheckBox = componentFactory.createCheckBox("own compilation", false);
-    isOwnCompilationCheckBox.setDisable(true);
-    isOwnCompilationCheckBox.setStyle("-fx-opacity: 1");
-    isSoundTrackCheckBox = componentFactory.createCheckBox("soundtrack", false);
-    isSoundTrackCheckBox.setDisable(true);
-    isSoundTrackCheckBox.setStyle("-fx-opacity: 1");
-    hBox.getChildren().addAll(isOwnCompilationCheckBox, isSoundTrackCheckBox);
-    
-    centerPane.getChildren().add(hBox);
-    
-    mainPane.setCenter(centerPane);
-    
-    /*
      * Disc tracks tables.
      */
     discTracksVBox = componentFactory.createVBox(10.0, 10.0);
     centerPane.getChildren().add(discTracksVBox);
     
+    mainPane.setCenter(centerPane);
+   
 
     Scene scene = new Scene(mainPane, 1200, 1200);
     setScene(scene);
     show();
   }
   
+  /**
+   * Start/stop coupling this window to the selected album in the albums table.
+   * 
+   * @param syncToAlbumsTable if true, synchronize with the albums table, if false stop synchronization (if active).
+   */
   private void setSyncToAlbumsTable(boolean syncToAlbumsTable) {
     if (syncToAlbumsTable) {
       if (albumsTableListener == null) {
-        albumsTableListener = new ObjectSelectionListener<Album>() {
-
-          @Override
-          public void objectSelected(Object source, Album album) {
-            setAlbum(album);
-          }
-
-        };
+        albumsTableListener = (_, album) -> setAlbum(album);
       }
       albumsTable.addObjectSelectionListener(albumsTableListener);
       setAlbum(albumsTable.getSelectedObject());
@@ -278,18 +296,18 @@ public class AlbumDetailsWindow extends JfxStage implements IAlbumDetailsWindow 
   }
   
   /**
-   * Update all album details, for a new value of <code>album</code>
+   * Update all album details, for a new value of {@code album}
    */
   private void updateAlbumDetails() {
     updateGeneralInformation();
     updatePicturesPanel();
     updateHtmlInformation();
-    updateCheckBoxes();
+    updateIssuedOnInformation();
     updateDiscsPanel();
   }
   
   /**
-   * Update the general information of the <code>album</code>.
+   * Update the general information of the {@code album}.
    */
   private void updateGeneralInformation() {
     if (album != null) {
@@ -299,7 +317,7 @@ public class AlbumDetailsWindow extends JfxStage implements IAlbumDetailsWindow 
         albumTitleTextField.setText("");
       }
       
-      if (album.isSetArtist()) {
+      if (album.isSetArtist()  &&  album.getArtist() != null) {
         albumArtistTextField.setText(album.getArtist().getName());
       } else {
         albumArtistTextField.setText("");
@@ -317,11 +335,40 @@ public class AlbumDetailsWindow extends JfxStage implements IAlbumDetailsWindow 
         albumIdTextField.setText("");
       }
       
+      String albumType = "";
+      MyInfo myInfo = album.getMyInfo();
+      if (myInfo != null) {
+        if (myInfo.isSetAlbumType()) {
+          switch (myInfo.getAlbumType()) {
+          case NORMAL_ALBUM:
+            albumType = "Standard album";
+            break;
+            
+          case COMPILATION_ALBUM:
+            albumType = "Compilation album";
+            break;
+            
+          case OWN_COMPILATION_ALBUM:
+            albumType = "Own compilation album";
+            break;
+            
+          case SOUNDTRACK_ALBUM:
+            albumType = "Soundtrack";
+            break;
+            
+          case VARIOUS_ARTISTS_ALBUM:
+            albumType = "Various artists album";
+            break;
+          }
+        };
+      }
+      albumTypeTextField.setText(albumType);
     } else {
       albumTitleTextField.setText("");
       albumArtistTextField.setText("");
       albumIssueDateTextField.setText("");
       albumIdTextField.setText("");
+      albumTypeTextField.setText("");
     }
   }
   
@@ -342,11 +389,11 @@ public class AlbumDetailsWindow extends JfxStage implements IAlbumDetailsWindow 
       imageFileNames.addAll(album.getImagesLabel());
 
       for (String imageFileName: imageFileNames) {
-        String imagePathName = mediaRegistry.getMusicDataDirectory() + "\\" + imageFileName;
-        LOGGER.info("Going to read image from file: " + imagePathName);
-        Image image = new Image("file:" + imagePathName, 0.0, 200.0, true, true);
+        String imageURL = "file:" + mediaRegistry.getMusicDataDirectory() + "\\Albums\\" + imageFileName;
+        LOGGER.info("Going to read image from URL: " + imageURL);
+        Image image = new Image(imageURL, 200.0, 200.0, true, true);
         ImageView imageView = new ImageView(image);
-        imageView.setOnMouseEntered(e -> showLargePicture(e, "file:" + imagePathName));
+        imageView.setOnMouseEntered(e -> showLargePicture(e, imageURL));
         imageView.setOnMouseExited(_ -> {
           if (currentLargePictureStage != null) {
             currentLargePictureStage.close();
@@ -360,111 +407,173 @@ public class AlbumDetailsWindow extends JfxStage implements IAlbumDetailsWindow 
   /**
    * Update the information about the album that is presented as Html.
    * <p>
-   * This information is show in the <code>webView</code>.
+   * The following in formation is shown (if available):
+   * <ul>
+   * <li>the description title (a header)</li>
+   * <li>the description</li>
+   * <li>the players (with a header "Meewerkende artiesten:").<br/>
+   *     For each player the name is shown followed by the instruments played.</li>
+   * <li>My Information header</li>
+   *   <ul>
+   *   <li>I want information</li>
+   *   <li>I have on media information</li>
+   *   <li>I want information</li>
+   *   </ul>
+   * </ul>
+   * 
+   * This information is show in the {@code webView}.
    */
   private void updateHtmlInformation() {
-    if (album != null) {
-      StringBuilder buf = new StringBuilder();
-      if (album.isSetDescriptionTitle()) {
-        buf.append("<h2>");
-        buf.append(album.getDescriptionTitle());
-        buf.append("</h2>");
-      }
-      if (album.isSetDescription()) {
-        LOGGER.severe("Description: " + album.getDescription());
-        buf.append(album.getDescription());
-      }
-      List<Player> players = album.getPlayers();
-      if (players.size() > 0) {
-        buf.append("<h3>");
-        buf.append("Meewerkende artiesten:");
-        buf.append("</h3>");
+    if (album == null) {
+      webView.getEngine().loadContent("");
+      return;
+    }
 
-        for (Player player: players) {
-          Artist artist = player.getArtist();
-          if (artist != null) {
-            buf.append("<b>");
-            buf.append(artist.getName());
-            buf.append("</b>");
-            buf.append(": ");
-            boolean first = true;
-            for (String instrument: player.getInstruments()) {
-              if (first) {
-                first = false;
-              } else {
-                buf.append(", ");
-              }
-              buf.append(instrument);
-            }
-          }
-          buf.append("<br/>");
-        }
-      }
+    StringBuilder buf = new StringBuilder();
+    
+    // Description title
+    if (album.isSetDescriptionTitle()) {
+      buf.append("<h2>");
+      buf.append(album.getDescriptionTitle());
+      buf.append("</h2>");
+    }
+    
+    // Description
+    if (album.isSetDescription()) {
+      buf.append(album.getDescription());
+    }
+    
+    // Players
+    List<Player> players = album.getPlayers();
+    if (players.size() > 0) {
+      buf.append("<h3>");
+      buf.append("Meewerkende artiesten:");
+      buf.append("</h3>");
 
-      buf.append("<h2>My Information</h2>");
-
-      // IWant
-      switch (MediaDbUtil.getIWant(album)) {
-      case DONT_KNOW:
-        buf.append("I don't know yet whether I want to have this album.");
-        buf.append("<br/>");
-        break;
-
-      case NO:
-        buf.append("I don't want to have this album.");
-        buf.append("<br/>");
-        break;
-
-      case YES:
-        buf.append("I want to have this album (so I have to download it).");
-        buf.append("<br/>");
-        break;
-
-      case NOT_SET:
-        // no action
-        break;
-      }
-
-      Set<MediumInfo> iHaveOnMedia = MediaDbUtil.haveAlbumOnMediumTypes(album);
-      if (!iHaveOnMedia.isEmpty()) {
-        boolean first = true;
-        buf.append("I have this album on: ");
-        for (MediumInfo iHaveOnMedium: iHaveOnMedia) {
-          if (first) {
-            first = false;
-          } else {
-            buf.append(", ");
-          }
-          buf.append(GuiUtils.createMediumText(iHaveOnMedium.getMediumType()));
-          if (iHaveOnMedium.isSetSourceType()) {
-            buf.append(" (from ");
-            InformationType sourceType = iHaveOnMedium.getSourceType();
-            if (sourceType != InformationType.NOT_SET) {
-              buf.append(sourceType.getLiteral());
-            } else {
-              buf.append("??");
-            }
-            buf.append(")");
-          }
-          if (iHaveOnMedium.isSetSourceBitRate()) {
-            buf.append(" {bit rate ");
-            buf.append(iHaveOnMedium.getSourceBitRate());
-            buf.append("}");
-          }
-        }
-        buf.append("<br/>");
-      }
-      
-      if (iHaveOnMedia.isEmpty()) {
-        List<DiscAndTrackNrs> discAndTrackNrsList = MediaDbUtil.getAlbumTracksIWant(album);
-        if (!discAndTrackNrsList.isEmpty()) {
-          buf.append("Tracks/discs I want to have: ");
+      for (Player player: players) {
+        Artist artist = player.getArtist();
+        if (artist != null) {
+          buf.append("<b>");
+          buf.append(artist.getName());
+          buf.append("</b>");
           boolean first = true;
-          for (DiscAndTrackNrs discAndTrackNrs: discAndTrackNrsList) {
-            Integer discNr = null;
-            if (discAndTrackNrs.isSetDiscNr()) {
-              discNr = discAndTrackNrs.getDiscNr();
+          for (String instrument: player.getInstruments()) {
+            if (first) {
+              buf.append(": ");
+              first = false;
+            } else {
+              buf.append(", ");
             }
+            buf.append(instrument);
+          }
+        }
+        buf.append("<br/>");
+      }
+    }
+
+    //
+    // My Information
+    //
+    buf.append("<h2>My Information</h2>");
+
+    // IWant
+    switch (MediaDbUtil.getIWant(album)) {
+    case DONT_KNOW:
+      buf.append("I don't know yet whether I want to have this album.");
+      buf.append("<br/>");
+      break;
+
+    case NO:
+      buf.append("I don't want to have this album.");
+      buf.append("<br/>");
+      break;
+
+    case YES:
+      buf.append("I want to have this album (so I have to download it).");
+      buf.append("<br/>");
+      break;
+
+    case NOT_SET:
+      // no action
+      break;
+    }
+
+    // I have on media
+    Set<MediumInfo> iHaveOnMedia = MediaDbUtil.haveAlbumOnMediumTypes(album);
+    if (!iHaveOnMedia.isEmpty()) {
+      boolean first = true;
+      buf.append("I have this album on: ");
+      for (MediumInfo iHaveOnMedium: iHaveOnMedia) {
+        if (first) {
+          first = false;
+        } else {
+          buf.append(", ");
+        }
+        buf.append(GuiUtils.createMediumText(iHaveOnMedium.getMediumType()));
+        if (iHaveOnMedium.isSetSourceType()) {
+          buf.append(" (from ");
+          InformationType sourceType = iHaveOnMedium.getSourceType();
+          if (sourceType != InformationType.NOT_SET) {
+            buf.append(sourceType.getLiteral());
+          } else {
+            buf.append("??");
+          }
+          buf.append(")");
+        }
+        if (iHaveOnMedium.isSetSourceBitRate()) {
+          buf.append(" {bit rate ");
+          buf.append(iHaveOnMedium.getSourceBitRate());
+          buf.append("}");
+        }
+      }
+      buf.append("<br/>");
+    }
+
+    // I want
+//    if (iHaveOnMedia.isEmpty()) {
+      List<DiscAndTrackNrs> discAndTrackNrsList = MediaDbUtil.getAlbumTracksIWant(album);
+      if (!discAndTrackNrsList.isEmpty()) {
+        buf.append("Tracks/discs I want to have: ");
+        boolean first = true;
+        for (DiscAndTrackNrs discAndTrackNrs: discAndTrackNrsList) {
+          Integer discNr = null;
+          if (discAndTrackNrs.isSetDiscNr()) {
+            discNr = discAndTrackNrs.getDiscNr();
+          }
+          for (int trackNr: discAndTrackNrs.getTrackNrs()) {
+            if (first == true) {
+              first = false;
+            } else {
+              buf.append(", ");
+            }
+            if ((discNr != null)  && (discNr != -1)) {
+              buf.append(discNr);
+              buf.append(".");
+            }
+            buf.append(trackNr);
+          }
+        }
+        buf.append("<br/>");
+      }
+
+      discAndTrackNrsList = MediaDbUtil.getAlbumTracksIHave(album, false);
+      if (!discAndTrackNrsList.isEmpty()) {
+        buf.append("Track/discs I have: ");
+        boolean first = true;
+        for (DiscAndTrackNrs discAndTrackNrs: discAndTrackNrsList) {
+          Integer discNr = null;
+          if (discAndTrackNrs.isSetDiscNr()) {
+            discNr = discAndTrackNrs.getDiscNr();
+          }
+          if (discNr != null  &&  discAndTrackNrs.getTrackNrs().size() == 0) {
+            if (first == true) {
+              first = false;
+            } else {
+              buf.append(", ");
+            }
+            buf.append("disc ");
+            buf.append(discNr);
+          } else {
             for (int trackNr: discAndTrackNrs.getTrackNrs()) {
               if (first == true) {
                 first = false;
@@ -478,76 +587,32 @@ public class AlbumDetailsWindow extends JfxStage implements IAlbumDetailsWindow 
               buf.append(trackNr);
             }
           }
-          buf.append("<br/>");
         }
-
-        discAndTrackNrsList = MediaDbUtil.getAlbumTracksIHave(album, false);
-        if (!discAndTrackNrsList.isEmpty()) {
-          buf.append("Track/discs I have: ");
-          boolean first = true;
-          for (DiscAndTrackNrs discAndTrackNrs: discAndTrackNrsList) {
-            Integer discNr = null;
-            if (discAndTrackNrs.isSetDiscNr()) {
-              discNr = discAndTrackNrs.getDiscNr();
-            }
-            if (discNr != null  &&  discAndTrackNrs.getTrackNrs().size() == 0) {
-              if (first == true) {
-                first = false;
-              } else {
-                buf.append(", ");
-              }
-              buf.append("disc ");
-              buf.append(discNr);
-            } else {
-              for (int trackNr: discAndTrackNrs.getTrackNrs()) {
-                if (first == true) {
-                  first = false;
-                } else {
-                  buf.append(", ");
-                }
-                if ((discNr != null)  && (discNr != -1)) {
-                  buf.append(discNr);
-                  buf.append(".");
-                }
-                buf.append(trackNr);
-              }
-            }
-          }
-          buf.append("<br/>");
-        }
+        buf.append("<br/>");
       }
+//    }
 
-      if (album.isSetMyInfo()) {
+    if (album.isSetMyInfo()) {
 
-        MyInfo myInfo = album.getMyInfo();
-        if (myInfo.isSetMyComments()) {
-          buf.append("Remarks: ");
-          buf.append(myInfo.getMyComments());
-          buf.append("<br/>");
-        }
-        if (myInfo.isIveHadOnLP()) {
-          buf.append("I've had the LP.");
-          buf.append("<br/>");
-        }
+      MyInfo myInfo = album.getMyInfo();
+      if (myInfo.isSetMyComments()) {
+        buf.append("Remarks: ");
+        buf.append(myInfo.getMyComments());
+        buf.append("<br/>");
       }
-      webView.getEngine().loadContent(buf.toString());
-    } else {
-      webView.getEngine().loadContent("");
+      if (myInfo.isIveHadOnLP()) {
+        buf.append("I've had the LP.");
+        buf.append("<br/>");
+      }
     }
+    webView.getEngine().loadContent(buf.toString());
   }
   
   /**
-   * Update the checkboxes.
+   * Update the issued on information for the current {@code album}
    */
-  private void updateCheckBoxes() {
-    if (album != null) {      
-      isOwnCompilationCheckBox.setSelected(MediaDbUtil.isOwnCompilationAlbum(album));
-      isSoundTrackCheckBox.setSelected(album.isSoundtrack());
-
-    } else {
-      isOwnCompilationCheckBox.setSelected(false);
-      isSoundTrackCheckBox.setSelected(false);
-    }
+  private void updateIssuedOnInformation() {
+    // TODO
   }
   
   /**

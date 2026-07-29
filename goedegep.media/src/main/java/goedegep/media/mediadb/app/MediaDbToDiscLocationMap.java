@@ -10,6 +10,7 @@ import java.util.logging.Logger;
 
 import goedegep.media.mediadb.model.Album;
 import goedegep.media.mediadb.model.Artist;
+import goedegep.media.mediadb.model.Collection;
 import goedegep.media.mediadb.model.Disc;
 import goedegep.media.mediadb.model.DiscAndTrackNrs;
 import goedegep.media.mediadb.model.MediaDb;
@@ -256,7 +257,7 @@ public class MediaDbToDiscLocationMap {
             }
           }
         } else {
-          throw new RuntimeException("album partly on disc has no myTrackInfo: " + album);
+//          throw new RuntimeException("album partly on disc has no myTrackInfo: " + album);
         }
       }
     }
@@ -497,7 +498,8 @@ public class MediaDbToDiscLocationMap {
         trackDiscLocationMap.put(trackReference.getTrack(), pathToTrack);
         tracksOnDiscInfoNotMapped.remove(trackOnDiscInfo);
       } else {
-        LOGGER.severe("trackReference NOT found in DiscInfo: " + trackReference.toString());
+        LOGGER.severe("trackReference NOT found in DiscInfo:\n" + trackReference.toString());
+        LOGGER.severe("Handling track collection: " + trackCollection.getCollection().getName());
         boolean onlyReferredToAsBonusTrack = true;
         for (TrackReference referredByReference: trackReference.getTrack().getReferredBy()) {
           if (!referredByReference.isSetBonusTrack()) {
@@ -508,6 +510,7 @@ public class MediaDbToDiscLocationMap {
         if (!ignoreMissingBonusTracks  ||  !onlyReferredToAsBonusTrack) {
           MediaDbAppErrorInfo error = new MediaDbAppErrorInfo(MediaDbAppError.TRACK_IN_MEDIADB_NOT_FOUND_ON_DISC);
           error.setTrack(trackReference.getTrack());
+          error.setCollection(trackCollection.getCollection());
           errors.add(error);
         }
       }
@@ -612,15 +615,17 @@ public class MediaDbToDiscLocationMap {
    */
   private TrackOnDiscInfo findTrackInTracksOnDiscInfo(TrackReference trackReference, List<TrackOnDiscInfo> tracksOnDiscInfo) {
     String trackFileNameByConvention = MediaDbAppUtil.generateTrackFileNameForATrackInATracksFolder(trackReference.getTrack(), mediaDb);
-
+    Artist artist = MediaDbAppUtil.getTrackArtist(trackReference.getTrack());
+    String trackFileNameByConventionShort = TrackFile.generateTrackFileNameForATrackInATracksFolder(artist.getName(), trackReference.getTrack().getTitle());
+    if (trackFileNameByConvention.contains("The Earlies")) {
+      LOGGER.severe("Stop");
+    }
     for (TrackOnDiscInfo trackOnDiscInfo: tracksOnDiscInfo) {
       // first only check on filename, if a match, check the folder.
       String trackFileNameOnDisc = trackOnDiscInfo.getTrackPath().getFileName().toString();
       String trackFileNameOnDiscWithoutExtension = FileUtils.getFileNameWithoutExtension(trackFileNameOnDisc);
-      if (trackFileNameOnDiscWithoutExtension.contains("Chelsea")) {
-        LOGGER.info("Found a Chelsea: " + trackFileNameOnDiscWithoutExtension);
-      }
-      if (trackFileNameOnDiscWithoutExtension.equals(trackFileNameByConvention)) {
+      if (trackFileNameOnDiscWithoutExtension.equals(trackFileNameByConvention)
+          || trackFileNameOnDiscWithoutExtension.equals(trackFileNameByConventionShort)) {
         String trackFolder = trackOnDiscInfo.getTrackPath().getParent().getFileName().toString();
         MyTrackInfo myTrackInfo = trackReference.getMyTrackInfo();
         if (myTrackInfo == null) {

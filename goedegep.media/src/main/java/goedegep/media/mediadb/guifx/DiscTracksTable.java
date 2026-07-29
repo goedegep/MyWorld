@@ -130,9 +130,19 @@ public class DiscTracksTable extends EObjectTable<TrackReference> {
     return true;
   }
   
+  /**
+   * Check whether an {@code EStructuralFeature} is null or empty for all tracks of a {@code Disc} (all items in the table).
+   * 
+   * @param attribute the {@code EStructuralFeature} to check
+   * @return true if the {@code attribute} value is null or empty for all tracks.
+   */
   private boolean allItemsNullOrEmpty(EStructuralFeature attribute) {
     for (TrackReference trackReference: getItems()) {
       Track track = trackReference.getTrack();
+      if (track == null) {
+        continue;
+      }
+      
       Object value = track.eGet(attribute);
       if (value != null) {
         if (value instanceof List<?> list) {
@@ -222,7 +232,7 @@ class DiscTracksTableDescriptor extends EObjectTableDescriptor<TrackReference> {
             else {
               TrackReference trackReference = (TrackReference) item;
               Track track = trackReference.getTrack();
-              setText(track.getTitle());
+              setText(track != null ? track.getTitle() : "<no-title>");
             }
           }
         };
@@ -241,8 +251,11 @@ class DiscTracksTableDescriptor extends EObjectTableDescriptor<TrackReference> {
             else {
               setText(null);
               TrackReference trackReference = (TrackReference) item;
+              Artist trackArtist = null;
               Track track = trackReference.getTrack();
-              Artist trackArtist = track.getArtist();
+              if (track != null) {
+                trackArtist = track.getArtist();
+              }
               if (trackArtist != null) {
                 setText(trackArtist.getName());
               }
@@ -423,7 +436,10 @@ class DiscTracksTableDescriptor extends EObjectTableDescriptor<TrackReference> {
             else {
               setText(null);
               TrackReference trackReference = (TrackReference) item;
-              TrackReference originalTrackReference = trackReference.getTrack().getOriginalDiscTrackReference();
+              TrackReference originalTrackReference = null;
+              if (trackReference.getTrack() != null) {
+                originalTrackReference = trackReference.getTrack().getOriginalDiscTrackReference();
+              }
               if (originalTrackReference != null) {
                 setText(GuiUtils.createTrackReferenceText(originalTrackReference));
               }

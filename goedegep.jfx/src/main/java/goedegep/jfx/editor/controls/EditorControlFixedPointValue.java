@@ -30,40 +30,15 @@ public class EditorControlFixedPointValue extends EditorControlTextField<FixedPo
   protected Integer maximumFactor = null;
   
   
-  protected EditorControlFixedPointValue(FixedPointValueBuilder builder) {
+  protected EditorControlFixedPointValue(Builder builder) {
     super(builder);
     
     minimumFactor = builder.minimumFactor;
     maximumFactor = builder.maximumFactor;
   }
+    
   
-//
-//  /**
-//   * {@inheritDoc}
-//   */
-//  @Override
-//  protected FixedPointValue stringToObject(String valueAsString) {
-////    PgCurrency currency = null;
-////    
-////      try {
-////        currency = CF.parse(valueAsString);
-////      } catch (ParseException e) {
-////        LOGGER.info("ParseException on value: " + valueAsString);
-////      }
-////    
-//    return null;
-//  }
-//  
-//  /**
-//   * {@inheritDoc}
-//   */
-//  @Override
-//  protected String objectToString(FixedPointValue value) {
-//    return null;
-//  }
-  
-  
-  public static class FixedPointValueBuilder extends EditorControlTextField.Builder<FixedPointValue> {
+  public static class Builder extends EditorControlTextField.Builder<FixedPointValue> {
     
     /**
      * Minimum factor for the FixedPointValue.
@@ -80,49 +55,49 @@ public class EditorControlFixedPointValue extends EditorControlTextField<FixedPo
      * 
      * @param id The unique id of the ObjectControl (may not be null).
      */
-    public FixedPointValueBuilder(String id) {
+    public Builder(String id) {
       super(id);
       
       setStringConverter(FixedPointValueStringConverterAndChecker.getDefaultFormatFixedPointValueStringConverterAndChecker());
     }
     
     @Override
-    public FixedPointValueBuilder setCustomization(CustomizationFx customization) {
+    public Builder setCustomization(CustomizationFx customization) {
       super.setCustomization(customization);
       
       return this;
     }
     
     @Override
-    public FixedPointValueBuilder setWidth(double width) {
+    public Builder setWidth(double width) {
       super.setWidth(width);
       
       return this;
     }
     
     @Override
-    public FixedPointValueBuilder setLabelBaseText(String labelBaseText) {
+    public Builder setLabelBaseText(String labelBaseText) {
       super.setLabelBaseText(labelBaseText);
       
       return this;
     }
     
     @Override
-    public FixedPointValueBuilder setToolTipText(String toolTipText) {
+    public Builder setToolTipText(String toolTipText) {
       super.setToolTipText(toolTipText);
       
       return this;
     }
     
     @Override
-    public FixedPointValueBuilder setOptional(boolean optional) {
+    public Builder setOptional(boolean optional) {
       super.setOptional(optional);
       
       return this;
     }
     
     @Override
-    public FixedPointValueBuilder setErrorTextSupplier(Supplier<String> errorTextSupplier) {
+    public Builder setErrorTextSupplier(Supplier<String> errorTextSupplier) {
       super.setErrorTextSupplier(errorTextSupplier);
       
       return this;
@@ -134,7 +109,7 @@ public class EditorControlFixedPointValue extends EditorControlTextField<FixedPo
      * @param minimumFactor The minumum factor. Null means no limit.
      * @param maximumFactor The maximum factor. Null means no limit.
      */
-    public FixedPointValueBuilder setValidFactorRange(Integer minimumFactor, Integer maximumFactor) {
+    public Builder setValidFactorRange(Integer minimumFactor, Integer maximumFactor) {
       this.minimumFactor = minimumFactor;
       this.maximumFactor = maximumFactor;
       

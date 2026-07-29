@@ -10,7 +10,7 @@
   <foreignModel>mediadb.ecore</foreignModel>
   <testsDirectory xsi:nil="true"/>
   <genPackages prefix="Mediadb" basePackage="goedegep.media.mediadb" disposableProviderFactory="true"
-      ecorePackage="mediadb.ecore#/">
+      ecorePackage="mediadb.ecore#/" documentation="">
     <genEnums typeSafeEnumCompatible="false" ecoreEnum="mediadb.ecore#//MediumType">
       <genEnumLiterals ecoreEnumLiteral="mediadb.ecore#//MediumType/NOT_SET"/>
       <genEnumLiterals ecoreEnumLiteral="mediadb.ecore#//MediumType/CD_AUDIO"/>

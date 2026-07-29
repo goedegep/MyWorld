@@ -339,9 +339,17 @@ public class PrintWindow extends JfxStage {
     
     VBox controlPanel = componentFactory.createVBox(16);
     
-    EditorControlFileSelecter editorControlFileSelecter = componentFactory.createEditorControlFileSelecter(400, "fileSelecter", "path to save the PDF file to",
-        "change path", "click to save to a different location", "Select file to save to", true);
-    editorControlFileSelecter.setOpenOrSaveDialog(true);
+    EditorControlFileSelecter editorControlFileSelecter = new EditorControlFileSelecter.Builder(customization, "fileSelecter")
+        .setLabelBaseText("PDF file")
+        .setTextFieldWidth(400)
+        .setTextFieldToolTipText("Path to save the PDF file to")
+        .setFileChooserButtonText("Change path")
+        .setFileChooserButtonToolTipText("Click to save to a different location")
+        .setFileOrFolderChooserTitle("Select file to save to")
+        .setOpenOrSaveDialog(true)
+        .setOptional(true)
+        .build();
+    
     String travelFolder = TravelsUtils.getTravelFilesFolder(travel);
     if (travelFolder != null) {
       Path travelFolderPath = Paths.get(travelFolder);
@@ -401,9 +409,17 @@ public class PrintWindow extends JfxStage {
         htmlZipFileRadioButton
         );
     
-    EditorControlFileSelecter editorControlFileSelecter = componentFactory.createEditorControlFileSelecter(400, "htmlFileSelecter", "path to save the HTML (zip) file to",
-        "change path", "click to save to a different location", "Select file to save to", true);
-    editorControlFileSelecter.setOpenOrSaveDialog(true);
+    EditorControlFileSelecter editorControlFileSelecter = new EditorControlFileSelecter.Builder(customization, "htmlFileSelecter")
+        .setLabelBaseText("HTML file")
+        .setTextFieldWidth(400)
+        .setTextFieldToolTipText("Path to save the HTML (zip) file to")
+        .setFileChooserButtonText("Change path")
+        .setFileChooserButtonToolTipText("Click to save to a different location")
+        .setFileOrFolderChooserTitle("Select file to save to")
+        .setOpenOrSaveDialog(true)
+        .setOptional(true)
+        .build();
+        
     String travelFolder = TravelsUtils.getTravelFilesFolder(travel);
     if (travelFolder != null) {
       Path travelFolderPath = Paths.get(travelFolder);

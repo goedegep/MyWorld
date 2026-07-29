@@ -93,7 +93,7 @@ public class PersonEditPanel2 extends EditPanelTemplate<Person> {
         .setErrorTextSupplier(() -> "The surname is not filled in")
         .build();
     
-    retirementDateControl = new EditorControlDate.EditorControlDateBuilder("retirementDate")
+    retirementDateControl = new EditorControlDate.Builder("retirementDate")
         .setWidth(300d)
         .setLabelBaseText("_Retirement date")
         .setToolTipText("Optional date of retirement")

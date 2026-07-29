@@ -3,6 +3,7 @@ package goedegep.media.mediadb.app;
 import java.nio.file.Path;
 
 import goedegep.media.mediadb.model.Album;
+import goedegep.media.mediadb.model.Collection;
 import goedegep.media.mediadb.model.Disc;
 import goedegep.media.mediadb.model.Track;
 import goedegep.media.mediadb.model.TrackReference;
@@ -18,6 +19,7 @@ public class MediaDbAppErrorInfo {
   private Disc disc = null;
   private Track track = null;
   private TrackReference trackReference = null;
+  private Collection collection;
   private String details; // additional information
 
   public MediaDbAppErrorInfo(MediaDbAppError errorCode) {
@@ -78,7 +80,15 @@ public class MediaDbAppErrorInfo {
 
   public void setTrackReference(TrackReference trackReference) {
     this.trackReference = trackReference;
-  }  
+  }
+
+  public Collection getCollection() {
+    return collection;
+  }
+
+  public void setCollection(Collection collection) {
+    this.collection = collection;
+  }
 
   public String getDetails() {
     return details;

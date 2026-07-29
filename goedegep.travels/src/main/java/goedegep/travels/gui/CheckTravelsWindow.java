@@ -9,7 +9,7 @@ import java.util.logging.Logger;
 import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.JfxStage;
 import goedegep.jfx.editor.controls.EditorControlInteger;
-import goedegep.jfx.editor.controls.EditorControlInteger.IntegerBuilder;
+import goedegep.jfx.editor.controls.EditorControlInteger.Builder;
 import goedegep.jfx.eobjecttreeview.EObjectTreeItem;
 import goedegep.jfx.eobjecttreeview.EObjectTreeView;
 import goedegep.travels.logic.TravelsChecker;
@@ -115,7 +115,7 @@ public class CheckTravelsWindow extends JfxStage {
     allOrSelectedBox.getChildren().addAll(checkAllTravelsButton, checkSelectedTravelButton);
     
     HBox boundarySizeThresholdBox = componentFactory.createHBox(10.0, 0.0);
-    integerControlBoundarySizeThreshold = new IntegerBuilder("boundarySizeThreshold")
+    integerControlBoundarySizeThreshold = new Builder("boundarySizeThreshold")
         .setLabelBaseText("Boundary size threshold")
         .setWidth(40)
         .setToolTipText("The threshold for the number of points in the Location boundaries above which a warning is issued")

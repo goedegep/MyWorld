@@ -1,5 +1,7 @@
 package goedegep.jfx.eobjecttreeview;
 
+import java.util.logging.Logger;
+
 import org.eclipse.emf.ecore.EObject;
 
 import javafx.scene.control.TreeCell;

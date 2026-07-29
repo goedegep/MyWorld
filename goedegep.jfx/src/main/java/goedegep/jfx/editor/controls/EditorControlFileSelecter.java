@@ -3,6 +3,7 @@ package goedegep.jfx.editor.controls;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Supplier;
 import java.util.logging.Logger;
 
@@ -94,52 +95,29 @@ public class EditorControlFileSelecter extends EditorControlFileOrFolderSelecter
    */
   private String fileChooserButtonToolTipText;
   
-  
-  /**
-   * Get an {@code EditorControlFileSelecter} instance.
-   * 
-   * @param customization the GUI customization
-   * @param textFieldWidth Width of the TextField (in pixels). If this value is -1, the default width is used.
-   * @param textFiedlToolTipText if not null, this text will be used as Tooltip for the TextField
-   * @param fileChooserButtonText the text shown on the button to call up a FileChooser (may not be null)
-   * @param fileChooserButtonToolTipText if not null, this text will be used as Tooltip for the button to call up a FileChooser.
-   * @param fileChooserTitle title for the FileChooser (may not be null)
-   * @param optional Indication of whether the control is optional (if true) or mandatory.
-   */
-  public static EditorControlFileSelecter newInstance(CustomizationFx customization, String id, int textFieldWidth, String textFiedlToolTipText,
-      String fileChooserButtonText, String fileChooserButtonToolTipText, String fileChooserTitle, boolean optional) {
-    EditorControlFileSelecter editorControlFileSelecter = new EditorControlFileSelecter(customization, id, textFieldWidth, textFiedlToolTipText,
-        fileChooserButtonText, fileChooserButtonToolTipText, fileChooserTitle, optional);
-    editorControlFileSelecter.performInitialization();
     
-    return editorControlFileSelecter;
+  /**
+   * Constructor with a {@code Builder}.
+   * 
+   * @param builder the {@code Builder} to set all properties for this {@code EditorControlFileSelecter}.
+   */
+  public EditorControlFileSelecter(Builder builder) {
+    super(builder);
+    
+    this.fileChooserButtonText = builder.fileChooserButtonText;
+    this.fileChooserButtonToolTipText = builder.fileChooserButtonToolTipText;
+    this.isSaveDialog = builder.isSaveDialog;
+    this.extensionFilters = builder.extensionFilters;
+    this.selectedExtensionFilter = builder.selectedExtensionFilter;
   }
   
-  /**
-   * Constructor.
-   * 
-   * @param customization the GUI customization
-   * @param textFieldWidth Width of the TextField (in pixels). If this value is -1, the default width is used.
-   * @param textFiedlToolTipText if not null, this text will be used as Tooltip for the TextField
-   * @param fileChooserButtonText the text shown on the button to call up a FileChooser (may not be null)
-   * @param fileChooserButtonToolTipText if not null, this text will be used as Tooltip for the button to call up a FileChooser.
-   * @param fileChooserTitle title for the FileChooser (may not be null)
-   * @param optional Indication of whether the control is optional (if true) or mandatory.
-   */
-  private EditorControlFileSelecter(CustomizationFx customization, String id, int textFieldWidth, String textFiedlToolTipText,
-      String fileChooserButtonText, String fileChooserButtonToolTipText, String fileChooserTitle, boolean optional) {
-    super(customization, id, textFieldWidth, textFiedlToolTipText, fileChooserTitle, optional);
-    
-    this.fileChooserButtonText = fileChooserButtonText;
-    this.fileChooserButtonToolTipText = fileChooserButtonToolTipText;
-  }
   
   @Override
   public void createControls() {
     super.createControls();
 
     fileChooserButton = componentFactory.createButton(fileChooserButtonText, fileChooserButtonToolTipText);
-    fileChooserButton.setOnAction(actionEvent -> handleFileChooserButtonPressed());
+    fileChooserButton.setOnAction((_) -> handleFileChooserButtonPressed());
   }
 
   /**
@@ -149,34 +127,6 @@ public class EditorControlFileSelecter extends EditorControlFileOrFolderSelecter
    */
   public void setOpenOrSaveDialog(boolean isSaveDialog) {
     this.isSaveDialog = isSaveDialog;
-  }
-
-  /**
-   * Add a file type, being a file extension with a related description.
-   * <p>
-   * @param fileTypeExtension the file name extension for this type, e.g. ".pdf".
-   * @param fileTypeDescription a description of this file type, e.g. "Portable Data Format".
-   * @param setAsSelected if true, this file type will initially be selected in the {@code FileChooser}.
-   *        The last call to this method, with this parameter set to true, determines the initially selected file type.
-   */
-  public void addFileType(String fileTypeExtension, String fileTypeDescription, boolean setAsSelected) {
-    ExtensionFilter extensionFilter = new ExtensionFilter(fileTypeDescription, "*" + fileTypeExtension);
-    extensionFilters.add(extensionFilter);
-
-    if (setAsSelected) {
-      selectedExtensionFilter = extensionFilter;
-    }
-  }
-  
-  /**
-   * Set the method for obtaining the initial file.
-   * <p>
-   * THIS METHOD IS NOT SUPPORTED! This because it is not supported on Windows.
-   * 
-   * @param initialFileSupplier the method for obtaining the initial file.
-   */
-  public void setInitialFileProvider(Supplier<String> initialFileSupplier) {
-    throw new UnsupportedOperationException("Setting the initial file name is not implemented, as it is not supported on Windows.");
   }
 
   /**
@@ -280,4 +230,168 @@ public class EditorControlFileSelecter extends EditorControlFileOrFolderSelecter
       setPathTextFieldText();
     }
   }
+  
+  
+  /**
+   * Builder class to set all properties for an {@code EditorControlFileSelecter}.
+   */
+  public static class Builder extends EditorControlFileOrFolderSelecterAbstract.Builder {
+
+    /**
+     * The text shown on the button to call up a FileChooser
+     */
+    private String fileChooserButtonText;
+
+    /**
+     * If not null, this text will be used as Tooltip for the button to call up a FileChooser.
+     */
+    private String fileChooserButtonToolTipText;
+
+    /**
+     * Distinguish between an open or save dialog.
+     * <p>
+     * With an open dialog, the file has to exist.
+     * For save this is not the case. Instead the user has to confirm that the file will be overwritten.
+     */
+    private boolean isSaveDialog = false;  // open dialog is the default
+    
+    /**
+     * List of accepted file extensions.
+     */
+    private List<ExtensionFilter> extensionFilters = new ArrayList<>();
+    
+    /**
+     * The currently selected {@code ExtensionFilter}.
+     */
+    private ExtensionFilter selectedExtensionFilter = null;
+    
+    
+    /**
+     * Constructor with mandatory arguments.
+     * 
+     * @param customization The GUI customization
+     * @param id The unique id of the ObjectControl (may not be null).
+     */
+    public Builder(CustomizationFx customization, String id) {
+      super(customization, id);
+      Objects.requireNonNull(id, "The id may not be null");
+    }
+        
+    @Override
+    public Builder setOptional(boolean optional) {
+      super.setOptional(optional);
+      
+      return this;
+    }
+    
+    @Override
+    public Builder setLabelBaseText(String labelBaseText) {
+      super.setLabelBaseText(labelBaseText);
+
+      return this;
+    }
+    
+    @Override
+    public Builder setFileOrFolderChooserTitle(String fileOrFolderChooserTitle) {
+      super.setFileOrFolderChooserTitle(fileOrFolderChooserTitle);
+      
+      return this;
+    }
+    
+    @Override
+    public Builder setTextFieldWidth(double textFieldWidth) {
+      super.setTextFieldWidth(textFieldWidth);
+      
+      return this;
+    }
+    
+    @Override
+    public Builder setTextFieldToolTipText(String textFieldToolTipText) {
+      super.setTextFieldToolTipText(textFieldToolTipText);
+      
+      return this;
+    }
+    
+    /**
+     * Set the text shown on the button to call up a FileChooser.
+     * 
+     * @param fileChooserButtonText the text shown on the button to call up a FileChooser (may not be null)
+     * @return this
+     */
+    public Builder setFileChooserButtonText(String fileChooserButtonText) {
+      this.fileChooserButtonText = fileChooserButtonText;
+      
+      return this;
+    }
+    
+    /**
+     * Set the Tooltip text for the button to call up a FileChooser.
+     * 
+     * @param fileChooserButtonToolTipText if not null, this text will be used as Tooltip for the button to call up a FileChooser.
+     * @return this
+     */
+    public Builder setFileChooserButtonToolTipText(String fileChooserButtonToolTipText) {
+      this.fileChooserButtonToolTipText = fileChooserButtonToolTipText;
+      
+      return this;
+    }
+    
+    @Override
+    public Builder setInitialFolderSupplier(Supplier<String> initialFolderSupplier) {
+      super.setInitialFolderSupplier(initialFolderSupplier);
+      
+      return this;
+    }
+    
+    @Override
+    public Builder setPrefix(String prefix) {
+      super.setPrefix(prefix);
+
+      return this;
+    }
+
+    /**
+     * Specify whether this is a 'file open' or 'save as ..' dialog.
+     * 
+     * @param isSaveDialog if true, it is a 'save as ..' dialog, else it is a 'file open' dialog.
+     */
+    public Builder setOpenOrSaveDialog(boolean isSaveDialog) {
+      this.isSaveDialog = isSaveDialog;
+      
+      return this;
+    }
+
+    /**
+     * Add a file type, being a file extension with a related description.
+     * <p>
+     * @param fileTypeExtension the file name extension for this type, e.g. ".pdf".
+     * @param fileTypeDescription a description of this file type, e.g. "Portable Data Format".
+     * @param setAsSelected if true, this file type will initially be selected in the {@code FileChooser}.
+     *        The last call to this method, with this parameter set to true, determines the initially selected file type.
+     */
+    public Builder addFileType(String fileTypeExtension, String fileTypeDescription, boolean setAsSelected) {
+      ExtensionFilter extensionFilter = new ExtensionFilter(fileTypeDescription, "*" + fileTypeExtension);
+      extensionFilters.add(extensionFilter);
+
+      if (setAsSelected) {
+        selectedExtensionFilter = extensionFilter;
+      }
+      
+      return this;
+    }
+        
+    /**
+     * Create the {@code EditorControlFileSelecter}.
+     * 
+     * @return the {@code EditorControlFileSelecter}.
+     */
+    public EditorControlFileSelecter build() {
+      EditorControlFileSelecter editorControlFileSelecter = new EditorControlFileSelecter(this);
+      editorControlFileSelecter.performInitialization();
+      
+      return editorControlFileSelecter;
+    }
+    
+  }
+
 }

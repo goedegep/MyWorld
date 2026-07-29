@@ -138,7 +138,7 @@ public class EditorControlsDemo extends JfxStage {
 //    birthPlaceControl.setLabelBaseText("Birthplace");
     birthPlaceControl.setOptions(City.getCities());
     
-    ageControl = new EditorControlInteger.IntegerBuilder("age")
+    ageControl = new EditorControlInteger.Builder("age")
         .setCustomization(customization)
         .setOptional(false)
         .setWidth(300.0)
@@ -146,7 +146,7 @@ public class EditorControlsDemo extends JfxStage {
         .setToolTipText("Enter your age\nThis is an example of en EditorControlInteger")
         .build();
     
-    priceLastHolidayControl = new EditorControlCurrency.CurrencyBuilder("priceLastHoliday")
+    priceLastHolidayControl = new EditorControlCurrency.Builder("priceLastHoliday")
         .setCustomization(customization)
         .setOptional(false)
         .setWidth(300.0)
@@ -160,45 +160,60 @@ public class EditorControlsDemo extends JfxStage {
         .setToolTipText("What kind of traveler are you?\nThis is an example of en EditorControlEnumComboBox")
         .build();
     
-    lastTravelRatingControl = new EditorControlFixedPointValue.FixedPointValueBuilder("lastTravelRating")
+    lastTravelRatingControl = new EditorControlFixedPointValue.Builder("lastTravelRating")
         .setCustomization(customization)
         .setLabelBaseText("Last travel rating")
         .setToolTipText("How do you rate your last travel (scale 0 to 10, with 2 decimal digits)")
         .setValidFactorRange(100, 100)
         .build();
         
-    lastTravelDateControl = new EditorControlLocalDate.LocalDateBuilder("lastTravelDate")
+    lastTravelDateControl = new EditorControlLocalDate.Builder("lastTravelDate")
         .setCustomization(customization)
         .setLabelBaseText("Last travel date")
         .setToolTipText("When was your last travel?)")
         .build();
         
-    travelReportFileControl = EditorControlFileSelecter.newInstance(customization, "travelReportFile", 300, "The file with you're travel report",
-        "Select file", "Select travel report", "Select the file with your travel report", false);
-    travelReportFileControl.setLabelBaseText("Travel report");
+    travelReportFileControl = new EditorControlFileSelecter.Builder(customization, "travelReportFile")
+        .setLabelBaseText("Travel report")
+        .setTextFieldWidth(300)
+        .setTextFieldToolTipText("The file with your travel report")
+        .setFileChooserButtonText("Select file")
+        .setFileChooserButtonToolTipText("Select the file with your travel report")
+        .setFileOrFolderChooserTitle("Select travel report")
+        .setOptional(false)
+        .build();
 
-    nextTravelDateControl = new EditorControlFlexDate.FlexDateBuilder("nextTravelDate")
+    nextTravelDateControl = new EditorControlFlexDate.Builder("nextTravelDate")
         .setCustomization(customization)
         .setLabelBaseText("Next travel date")
         .setToolTipText("When do you expect to travel again?")
         .build();
     
-    
-    picturesFolderControl = EditorControlFolderSelecter.newInstance(customization, "pictures", 300, "The folder with pictures",
-        "Select folder", "Select pictures folder", "Select the folder with the pictures", false);
-    picturesFolderControl.setLabelBaseText("Pictures folder");
-    picturesFolderControl.setInitialFolderProvider(() -> "C:\\Users");
+    picturesFolderControl = new EditorControlFolderSelecter.Builder(customization, "pictures")
+        .setLabelBaseText("Pictures folder")
+        .setTextFieldWidth(300)
+        .setTextFieldToolTipText("The folder with pictures")
+        .setFolderChooserButtonText("Select folder")
+        .setFolderChooserButtonToolTipText("Select pictures folder")
+        .setFileOrFolderChooserTitle("Select the folder with the pictures")
+        .setInitialFolderSupplier(() -> "C:\\Users")
+        .setOptional(false)
+        .build();
    
     favoritePictureControl = new EditorControlImageFile.Builder("favoritePicture")
         .setCustomization(customization)
         .setLabelBaseText("Favorite picture")
         .build();
     
-    notesControl = EditorControlMultiLineString.newInstance(customization, "notes", false);
-    notesControl.setLabelBaseText("Notes");
+    notesControl = new EditorControlMultiLineString.Builder(customization, "notes")
+        .setOptional(false)
+        .setLabelBaseText("Notes")
+        .build();
     
-    detailsControl = EditorControlHTMLString.newInstance(customization, "details", false);
-    detailsControl.setLabelBaseText("Details");
+    detailsControl = new EditorControlHTMLString.Builder(customization, "details")
+        .setOptional(false)
+        .setLabelBaseText("Details")
+        .build();
   }
   
   /**

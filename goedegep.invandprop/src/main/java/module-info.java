@@ -2,6 +2,7 @@ module goedegep.invandprop {
   exports goedegep.invandprop.exe;
   exports goedegep.invandprop.logic;
   exports goedegep.invandprop.gui;
+  exports goedegep.invandprop.svc;
 
   requires transitive goedegep.jfx;
   requires transitive goedegep.invandprop.model;

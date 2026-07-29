@@ -24,6 +24,7 @@ import goedegep.media.mediadb.model.MediadbFactory;
 import goedegep.media.mediadb.model.MediadbPackage;
 import goedegep.media.mediadb.model.Track;
 import goedegep.media.mediadb.model.TrackCollection;
+import goedegep.media.mediadb.model.TrackReference;
 import goedegep.util.datetime.FlexDate;
 import goedegep.util.datetime.FlexDateFormat;
 import goedegep.util.text.FuzzyStringCompare;
@@ -213,28 +214,20 @@ public class MediaDbImpl extends MinimalEObjectImpl.Container implements MediaDb
       boolean compareOkSoFar = true;
 
       // Check release date
-      if (releaseDate == null) {
-        LOGGER.fine("date OK, not specified");
-      } else if (album.getReleaseDate() == null) {
-        LOGGER.fine("date not OK; date specified, but not available in album");
-        compareOkSoFar = false;
-      } else {
-        LOGGER.fine("Real date check");
-        LOGGER.fine("releaseDate: " + FDF.format(releaseDate) + ", this album: " + FDF.format(album.getReleaseDate()));
-        if (album.getReleaseDate().compareTo(releaseDate) == 0) {
-          LOGGER.fine("date OK!!!");
-        } else {
-          LOGGER.fine("date not OK");
+      if (releaseDate != null) {
+        if (album.getReleaseDate() == null  ||  album.getReleaseDate().compareTo(releaseDate) != 0) {
           compareOkSoFar = false;
         }
       }
 
       if (album.getArtist() == null) {
         LOGGER.severe("No artist set for album: " + album.getArtistAndTitle());
+        compareOkSoFar = false;
       }
-      if (compareOkSoFar && (album.getArtist() != null)
-          && FuzzyStringCompare.fuzzyStringCompare(album.getArtist().getName(), artist.getName())
-          && FuzzyStringCompare.fuzzyStringCompare(album.getTitle(), title)) {
+
+      if (compareOkSoFar
+          && FuzzyStringCompare.fuzzyStringCompare(album.getTitle(), title)
+          && FuzzyStringCompare.fuzzyStringCompare(album.getArtist().getName(), artist.getName())) {
         return album;
       }
     }
@@ -244,25 +237,21 @@ public class MediaDbImpl extends MinimalEObjectImpl.Container implements MediaDb
       boolean compareOkSoFar = true;
 
       // Check release date
-      if (releaseDate == null) {
-        LOGGER.fine("date OK, not specified");
-      } else if (album.getReleaseDate() == null) {
-        LOGGER.fine("date not OK; date specified, but not available in album");
-        compareOkSoFar = false;
-      } else {
-        LOGGER.fine("Real date check");
-        LOGGER.fine("releaseDate: " + FDF.format(releaseDate) + ", this album: " + FDF.format(album.getReleaseDate()));
-        if (album.getReleaseDate().compareTo(releaseDate) == 0) {
-          LOGGER.fine("date OK!!!");
-        } else {
-          LOGGER.fine("date not OK");
+      if (releaseDate != null) {
+        if (album.getReleaseDate().compareTo(releaseDate) != 0) {
           compareOkSoFar = false;
         }
       }
 
-      if (compareOkSoFar && album.getArtist().isSetContainerArtist()
-          && FuzzyStringCompare.fuzzyStringCompare(album.getArtist().getContainerArtist().getName(), artist.getName())
-          && FuzzyStringCompare.fuzzyStringCompare(album.getTitle(), title)) {
+      if (album.getArtist() == null) {
+        LOGGER.severe("No artist set for album: " + album.getArtistAndTitle());
+        compareOkSoFar = false;
+      }
+
+      if (compareOkSoFar
+          && album.getArtist().getContainerArtist() != null
+          && FuzzyStringCompare.fuzzyStringCompare(album.getTitle(), title)
+          && FuzzyStringCompare.fuzzyStringCompare(album.getArtist().getContainerArtist().getName(), artist.getName())) {
         return album;
       }
     }
@@ -292,7 +281,7 @@ public class MediaDbImpl extends MinimalEObjectImpl.Container implements MediaDb
       if (releaseDate == null) {
         // no release date check needed
         LOGGER.fine("date OK, not specified");
-      } else if (!album.isSetReleaseDate()) {
+      } else if (album.getReleaseDate() == null) {
         LOGGER.fine("date not OK; date specified, but not available in album");
         compareOkSoFar = false;
       } else {
@@ -371,7 +360,14 @@ public class MediaDbImpl extends MinimalEObjectImpl.Container implements MediaDb
   @Override
   public Track getTrack(Artist artist, String title) {
     for (Track track : getTracks()) {
-      if (artist.equals(track.getArtist()) && title.equals(track.getTitle())) {
+      Artist trackArtist = track.getArtist();
+      if (trackArtist == null) {
+        TrackReference trackReference = track.getOriginalDiscTrackReference();
+        if (trackReference != null) {
+          trackArtist = trackReference.getDisc().getAlbum().getArtist();
+        }
+      }
+      if (artist.equals(trackArtist) && title.equals(track.getTitle())) {
         return track;
       }
     }

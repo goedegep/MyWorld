@@ -159,21 +159,21 @@ public class InvoiceAndPropertyItemPanel extends EditPanelTemplate<InvoiceAndPro
         .build();
 
     
-    amountControl = new EditorControlCurrency.CurrencyBuilder("itemAmount")
+    amountControl = new EditorControlCurrency.Builder("itemAmount")
         .setWidth(300d)
         .setLabelBaseText("Amount")
         .setToolTipText("Amount")
         .setOptional(true)
         .build();
     
-    fromDateControl = new EditorControlFlexDate.FlexDateBuilder("itemFromDate")
+    fromDateControl = new EditorControlFlexDate.Builder("itemFromDate")
         .setWidth(300d)
         .setLabelBaseText("From date")
         .setToolTipText("From date")
         .setOptional(true)
         .build();
     
-    untilDateControl = new EditorControlFlexDate.FlexDateBuilder("itemUntilDate")
+    untilDateControl = new EditorControlFlexDate.Builder("itemUntilDate")
         .setWidth(300d)
         .setLabelBaseText("Until date")
         .setToolTipText("Until date")

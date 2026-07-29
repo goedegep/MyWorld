@@ -50,8 +50,6 @@ public class EditorControlTextField<T> extends EditorControlTemplate<T> {
   
   private TextField textField = null;
   
-//  private boolean ignoreChanges = false;
-  
 
   /**
    * Constructor using builder.
@@ -73,15 +71,14 @@ public class EditorControlTextField<T> extends EditorControlTemplate<T> {
     }
   }
   
+  @Override
   public void createControls() {
     textField = customization.getComponentFactoryFx().createTextField(width, toolTipText);
-    
+
     textField.textProperty().addListener((_, _, _) -> {
-//      if (!ignoreChanges) {
-        handleNewUserInput(textField);
-//      }
+      handleNewUserInput(textField);
     });
-    
+
     registerControls(textField);    
   }
   
@@ -134,7 +131,6 @@ public class EditorControlTextField<T> extends EditorControlTemplate<T> {
    */
   @Override
   public void redrawValue() {
-//    T value = ocValueProperty.get();
     if (getValue() != null) {
       String text = objectToString(getValue());
       if (text == null) {
@@ -148,7 +144,6 @@ public class EditorControlTextField<T> extends EditorControlTemplate<T> {
 
   @Override
   protected void updateNonSourceControls(Object source) {
-//    ignoreChanges = true;
     
     if (source == null) {
       String text = null;
@@ -164,7 +159,6 @@ public class EditorControlTextField<T> extends EditorControlTemplate<T> {
       textField.setText(text);
     }
     
-//    ignoreChanges = false;
   }
     
   /**
@@ -213,8 +207,6 @@ public class EditorControlTextField<T> extends EditorControlTemplate<T> {
 
   @Override
   protected void fillControlsWithDefaultValues() {
-    // TODO Auto-generated method stub
-    
   }
  
   

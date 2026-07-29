@@ -20,4 +20,6 @@ module goedegep.media {
   requires javafx.swing;
   requires goedegep.mapview;
   requires goedegep.media.photoshow.model;
+  requires javafx.controls;
+  requires goedegep.util;
 }

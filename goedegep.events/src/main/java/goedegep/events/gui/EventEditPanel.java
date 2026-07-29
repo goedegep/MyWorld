@@ -151,7 +151,7 @@ public class EventEditPanel extends EditPanelTemplate<EventInfo> {
   @Override
   public void createControls() {
     
-    eventDateControl = new EditorControlFlexDate.FlexDateBuilder("eventDate")
+    eventDateControl = new EditorControlFlexDate.Builder("eventDate")
         .setWidth(300d)
         .setLabelBaseText("Date")
         .setToolTipText("Date of the event")
@@ -176,15 +176,24 @@ public class EventEditPanel extends EditPanelTemplate<EventInfo> {
         .build();
     
     eventFolderControl.getControl().setEditable(false);
-   
-    pictureFileSelecter = componentFactory.createEditorControlFileSelecter(300, "pictureFileSelecter", "file name of a picture", "file chooser", "Start a file chooser", "Select picture file", true);
-    pictureFileSelecter.setLabelBaseText("Picture");
-    pictureFileSelecter.setInitialFolderProvider(this::getEventRelatedFilesFolder);
-    pictureFileSelecter.setPrefix(EventsRegistry.eventsFolderName);
+    
+    pictureFileSelecter = new EditorControlFileSelecter.Builder(customization, "pictureFileSelecter")
+        .setLabelBaseText("Picture")
+        .setTextFieldWidth(300)
+        .setTextFieldToolTipText("File name of a picture")
+        .setFileChooserButtonText("File chooser")
+        .setFileChooserButtonToolTipText("Start a file chooser")
+        .setFileOrFolderChooserTitle("Select picture file")
+        .setInitialFolderSupplier(this::getEventRelatedFilesFolder)
+        .setPrefix(EventsRegistry.eventsFolderName)
+        .setOptional(true)
+        .build();
     pictureFileSelecter.addValueAndOrStatusChangeListener((valueChanged, statusChanged) -> updatePictureImageView(valueChanged, statusChanged));
     
-    notesControl = componentFactory.createEditorControlHTMLString("notes", true);
-    notesControl.setLabelBaseText("Notes");
+    notesControl = new EditorControlHTMLString.Builder(customization, "notes")
+        .setOptional(true)
+        .setLabelBaseText("Notes")
+        .build();
     
     attachmentsEditPanel = new FileReferencesEditPanelBuilder(customization, "attachments")
         .setReferencesEditPanelTitle(ATTACHMENTS_PANEL_TITLE)

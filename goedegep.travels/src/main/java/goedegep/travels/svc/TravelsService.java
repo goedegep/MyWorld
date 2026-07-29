@@ -1,6 +1,5 @@
 package goedegep.travels.svc;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
@@ -23,10 +22,9 @@ import goedegep.jfx.JfxApplication;
 import goedegep.mapview.maptile.osm.TileCacheCleanupTask;
 import goedegep.myworld.common.Registry;
 import goedegep.myworld.common.Service;
-import goedegep.resources.ImageResource;
 import goedegep.travels.ITravelsService;
 import goedegep.travels.gui.BoundariesPointsReductionWindow;
-import goedegep.travels.gui.MapViewTestWindow;
+//import goedegep.travels.gui.MapViewTestWindow;
 import goedegep.travels.gui.TravelsAppResourcesFx;
 import goedegep.travels.gui.TravelsWindow;
 import goedegep.travels.logic.PhotoThumbnailManager;
@@ -36,6 +34,7 @@ import goedegep.travels.model.Travels;
 import goedegep.travels.model.TravelsFactory;
 import goedegep.travels.model.TravelsPackage;
 import goedegep.util.dir.DirectoryChangesListener;
+import goedegep.util.dir.DirectoryChangesMonitoringTask;
 import goedegep.util.emf.EMFResource;
 import goedegep.util.string.StringUtil;
 import goedegep.vacations.checklist.model.VacationChecklist;
@@ -53,7 +52,12 @@ import javafx.scene.paint.Color;
  * It holds the customization information and provides methods to show the main window of the application.
  * It is built on top of logic and gui packages.
  * The TravelsService is a singleton of which the instance can be obtained by {@link getInstance()}.<br/>
- * The service checks for changes in the vacation pictures folder and the vacations folder, and notifies registered listeners about these changes.
+ * The service:
+ * <ul>
+ * <li>Starts a background task to create photo thumbnails for the vacation pictures.</li>
+ * <li>Sets the 'http.agent' system property to the OSM User Agent string from the registry, if this property is not set yet.</li>
+ * <li>Starts a background task to clean up the OSM tile cache.</li>
+ * </ul>
  */
 public class TravelsService extends Service implements ITravelsService {
   private static final Logger LOGGER = Logger.getLogger(TravelsService.class.getName());
@@ -67,7 +71,7 @@ public class TravelsService extends Service implements ITravelsService {
   private static TravelsService instance;
   
   /**
-   * Registry.
+   * Travels Registry.
    */
   private TravelsRegistry travelsRegistry;
     
@@ -111,7 +115,7 @@ public class TravelsService extends Service implements ITravelsService {
   }
   
   /**
-   * Set the http.agent system property to the OSM User Agent string from the registry, if it is not set yet.
+   * Set the http.agent system property to the OSM User Agent string from the registry, if this property is not set yet.
    * <p>
    * This is needed for proper usage of the OpenStreetMap API's; map tiles and Nominatim geocoding service.
    */
@@ -120,7 +124,7 @@ public class TravelsService extends Service implements ITravelsService {
     if (httpAgent == null) {
       String osmUserAgent = travelsRegistry.getOSMUserAgent();
       System.setProperty("http.agent", osmUserAgent);
-    }    
+    }
   }
   
   /**
@@ -133,9 +137,9 @@ public class TravelsService extends Service implements ITravelsService {
   }
   
   /**
-   * Show the Boundaries Points Reduction window.
+   * Show a Boundaries Points Reduction window.
    * 
-   * @param location the location for which the boundaries points reduction window should be shown.
+   * @param location the {@code Location} for which the boundaries points reduction window should be shown.
    */
   public void showBoundariesPointsReductionWindow(Location location) {
     new BoundariesPointsReductionWindow(customization, location);
@@ -144,7 +148,7 @@ public class TravelsService extends Service implements ITravelsService {
   /**
    * Add a listener for changes in the vacations folder and the vacation pictures folder.
    * <p>
-   * When the first listener is added, the monitoring of the directories is started.
+   * When the first listener is added, the monitoring of these directories is started.
    * 
    * @param listener the {@link DirectoryChangesListener} to add.
    */
@@ -283,22 +287,29 @@ public class TravelsService extends Service implements ITravelsService {
     photoThumbnailManagerThread.start();
   }
   
+  /**
+   * Start the background task to monitor changes in the vacations folder and the vacation pictures folder.
+   * <p>
+   * When a change is detected, the registered listeners are notified.
+   */
   private void startDirectoryChangesMonitoring() {
-//    if (travelsRegistry.vacationPicturesFolderName != null  ||  travelsRegistry.vacationsFolderName != null) {
-//      DirectoryChangesMonitoringTask directoryMonitoringTask = new DirectoryChangesMonitoringTask(travelsRegistry.vacationPicturesFolderName, travelsRegistry.vacationsFolderName);
-//
-//      directoryMonitoringTask.valueProperty().addListener((_, _, watchEvent) -> {
-//        notifyDirectoryChangesListeners(watchEvent);
-//      });
-//
-//      Thread directoryMonitoringThread = new Thread(directoryMonitoringTask);
-//      directoryMonitoringThread.setDaemon(true);
-//      directoryMonitoringThread.start();
-//    }
+    if (travelsRegistry.getVacationPicturesFolderName() != null  ||  travelsRegistry.getVacationsFolderName() != null) {
+      DirectoryChangesMonitoringTask directoryMonitoringTask = new DirectoryChangesMonitoringTask(travelsRegistry.getVacationPicturesFolderName(), travelsRegistry.getVacationsFolderName());
+
+      directoryMonitoringTask.valueProperty().addListener((_, _, watchEvent) -> {
+        notifyDirectoryChangesListeners(watchEvent);
+      });
+
+      Thread directoryMonitoringThread = new Thread(directoryMonitoringTask);
+      directoryMonitoringThread.setDaemon(true);
+      directoryMonitoringThread.start();
+    }
   }
   
   /**
    * Start the background task to clean up the tile cache.
+   * <p>
+   * See {@link TileCacheCleanupTask} for more information about the tile cache cleanup task.
    */
   private void startTileCacheCleanupTask() {
     // Start the tile cache cleanup task in a background thread.
@@ -381,7 +392,7 @@ public class TravelsService extends Service implements ITravelsService {
    * @param bundle basename of the resource bundle
    * @return the requested ResourceBundle
    */
-  public static ResourceBundle getBundle(Class<? extends Object> clazz, String bundle) {
+  private static ResourceBundle getBundle(Class<? extends Object> clazz, String bundle) {
       String bundlePath = clazz.getPackage().getName() + "." + bundle;
       Locale locale = Locale.getDefault();
       ClassLoader classLoader = clazz.getClassLoader();
@@ -390,6 +401,9 @@ public class TravelsService extends Service implements ITravelsService {
 }
 
 
+/**
+ * Enum for the choices the user can make when the required files and/or folders don't exist yet.
+ */
 enum UserChoice {
   SHOW_SETTINGS_EDITOR("Edit User Settings"),
   CREATE_MISSING_FILES_AND_OR_FOLDERS("Create missing files and/or folders");

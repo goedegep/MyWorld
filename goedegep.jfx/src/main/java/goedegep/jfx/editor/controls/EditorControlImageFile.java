@@ -276,6 +276,9 @@ public class EditorControlImageFile extends EditorControlTemplate<File> {
 
   
   
+  /**
+   * Builder class to set all properties for an {@code EditorControlImageFile}.
+   */
   public static class Builder {
     
     /**

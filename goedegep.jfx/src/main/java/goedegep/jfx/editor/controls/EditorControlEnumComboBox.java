@@ -76,8 +76,6 @@ public class EditorControlEnumComboBox<T extends Enum<T>> extends EditorControlT
       comboBox.getItems().add(constant);
     }
     
-//    comboBox.valueProperty().addListener(_ -> handleNewUserInput(comboBox));
-            
     if (toolTipText != null) {
       comboBox.setTooltip(new Tooltip(toolTipText));
     }

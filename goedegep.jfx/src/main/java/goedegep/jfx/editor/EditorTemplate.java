@@ -154,6 +154,7 @@ public abstract class EditorTemplate<T> extends JfxStage implements Editor<T> {
    */
   protected List<InvalidationListener> invalidationListeners = new ArrayList<>();
   
+    
   /**
    * Constructor.
    * 

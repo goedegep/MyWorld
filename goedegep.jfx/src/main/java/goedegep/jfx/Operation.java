@@ -5,6 +5,8 @@ public enum Operation {
   NEW_OBJECT_BEFORE,           // Only applicable for ordered collections (where the list isn't sorted)
   NEW_OBJECT_AFTER,            // Only applicable for ordered collections (where the list isn't sorted)
   DELETE_OBJECT,               // Delete the current object
+  CUT_OBJECT,                  // Cut the current object
+  PASTE_OBJECT,                // Paste the current object
   MOVE_OBJECT_UP,              // Only applicable for ordered collections (where the list isn't sorted)
   MOVE_OBJECT_DOWN,            // Only applicable for ordered collections (where the list isn't sorted)
   ATTRIBUTE_EDITOR,            // Open the object in an editor panel, for which the function is to be specified in a descriptor (not implemented yet)

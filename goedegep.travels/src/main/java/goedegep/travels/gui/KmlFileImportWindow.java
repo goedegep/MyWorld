@@ -343,10 +343,18 @@ public class KmlFileImportWindow extends JfxStage {
      * Create the GUI controls.
      */
     private void createControls() {
-      fileSelecter = componentFactory.createEditorControlFileSelecter(300, "fileSelecter", "Path to KML file", "Choose file", "click to select a KML file via a file chooser", "Select KML file", false);
-      fileSelecter.setLabelBaseText("KML file");
-      fileSelecter.addFileType(".kml", "Google KML file", true);
-
+      
+      
+      fileSelecter = new EditorControlFileSelecter.Builder(customization, "fileSelecter")
+          .setLabelBaseText("KML file")
+          .setTextFieldWidth(300)
+          .setTextFieldToolTipText("Path to KML file")
+          .setFileChooserButtonText("Choose file")
+          .setFileChooserButtonToolTipText("Click to select a KML file via a file chooser")
+          .setFileOrFolderChooserTitle("Select KML file")
+          .addFileType(".kml", "Google KML file", true)
+          .setOptional(false)
+          .build();      
       
       useNominatimApi = new EditorControlBoolean.Builder("useNominatimApi")
           .setCustomization(customization)

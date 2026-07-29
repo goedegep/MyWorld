@@ -279,6 +279,28 @@ public abstract class EObjectTreeItem extends TreeItem<Object> {
   }
   
   /*
+   * Start of cut and paste handling
+   */
+  
+  /**
+   * Handle a 'cut' operation.
+   * <p>
+   * Override this method for tree items that support 'cut'.
+   */
+  public void handleCut() {
+    
+  }
+  
+  /**
+   * Handle a 'paste' operation.
+   * <p>
+   * Override this method for tree items that support 'paste'.
+   */
+  public void handlePaste() {
+    
+  }
+  
+  /*
    * Start of Drag and Drop handling.
    */
 

@@ -16,7 +16,7 @@ public class EditorControlCurrency extends EditorControlTextField<PgCurrency> {
   private static final PgCurrencyFormat CF = new PgCurrencyFormat();
   
   
-  protected EditorControlCurrency(CurrencyBuilder builder) {
+  protected EditorControlCurrency(Builder builder) {
     super(builder);
   }
 
@@ -45,54 +45,54 @@ public class EditorControlCurrency extends EditorControlTextField<PgCurrency> {
   }
   
   
-  public static class CurrencyBuilder extends EditorControlTextField.Builder<PgCurrency> {
+  public static class Builder extends EditorControlTextField.Builder<PgCurrency> {
     
     /**
      * Constructor with mandatory arguments.
      * 
      * @param id The unique id of the ObjectControl (may not be null).
      */
-    public CurrencyBuilder(String id) {
+    public Builder(String id) {
       super(id);
     }
     
     @Override
-    public CurrencyBuilder setCustomization(CustomizationFx customization) {
+    public Builder setCustomization(CustomizationFx customization) {
       super.setCustomization(customization);
       
       return this;
     }
     
     @Override
-    public CurrencyBuilder setWidth(double width) {
+    public Builder setWidth(double width) {
       super.setWidth(width);
       
       return this;
     }
     
     @Override
-    public CurrencyBuilder setLabelBaseText(String labelBaseText) {
+    public Builder setLabelBaseText(String labelBaseText) {
       super.setLabelBaseText(labelBaseText);
       
       return this;
     }
     
     @Override
-    public CurrencyBuilder setToolTipText(String toolTipText) {
+    public Builder setToolTipText(String toolTipText) {
       super.setToolTipText(toolTipText);
       
       return this;
     }
     
     @Override
-    public CurrencyBuilder setOptional(boolean optional) {
+    public Builder setOptional(boolean optional) {
       super.setOptional(optional);
       
       return this;
     }
     
     @Override
-    public CurrencyBuilder setErrorTextSupplier(Supplier<String> errorTextSupplier) {
+    public Builder setErrorTextSupplier(Supplier<String> errorTextSupplier) {
       super.setErrorTextSupplier(errorTextSupplier);
       
       return this;
