@@ -1,0 +1,176 @@
+package goedegep.media.mediadb.gui.albumeditor;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Logger;
+
+import org.eclipse.emf.ecore.util.EcoreUtil;
+
+import goedegep.jfx.CustomizationFx;
+import goedegep.jfx.objectcontrols.ObjectControl;
+import goedegep.jfx.objectcontrols.ObjectEditPanelTemplate;
+import goedegep.jfx.objecteditor.ObjectEditorException;
+import goedegep.media.common.IMediaDbService;
+import goedegep.media.mediadb.model.MediadbFactory;
+import goedegep.media.mediadb.model.Player;
+import javafx.scene.Node;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
+
+/**
+ * This class is an {@link ObjectControl} for a list of {@code Player}s.
+ */
+public class PlayersEditPanel extends ObjectEditPanelTemplate<List<Player>> {
+  @SuppressWarnings("unused")
+  private static final Logger LOGGER = Logger.getLogger(PlayersEditPanel.class.getName());
+//  private static final MediadbPackage MEDIA_DB_PACKAGE = MediadbPackage.eINSTANCE;
+  private static final MediadbFactory MEDIA_DB_FACTORY = MediadbFactory.eINSTANCE;
+  
+  /**
+   * The GUI customization.
+   */
+  private CustomizationFx customization;
+  
+  /**
+   * The media database service (containing the artists)
+   */
+  private IMediaDbService mediaDbService;
+  
+  /**
+   * Main panel
+   */
+  private HBox mainPanel;
+  
+  /**
+   * Panel for the players.
+   */
+  private VBox playersPanel;
+  
+  /**
+   * 
+   */
+  private List<ObjectControlForPlayer> objectControlsForPlayers = new ArrayList<>();
+ 
+  
+  /**
+   * Factory method to obtain a new instance of a {@code PlayersEditPanel}.
+   * 
+   * @param customization the GUI customization.
+   * @param mediaDb the media database.
+   * @return a newly created {@code PlayersEditPanel}.
+   */
+  public static PlayersEditPanel newInstance(CustomizationFx customization, IMediaDbService mediaDbService) {
+    PlayersEditPanel playersEditPanel = new PlayersEditPanel(customization, mediaDbService);
+    playersEditPanel.performInitialization();
+    
+    return playersEditPanel;
+  }
+  
+  /**
+   * Constructor.
+   * 
+   * @param customization The GUI customization.
+   * @param mediaDb The media database.
+   */
+  private PlayersEditPanel(CustomizationFx customization, IMediaDbService mediaDbService) {
+    super(customization);
+    
+    this.customization = customization;
+    this.mediaDbService = mediaDbService;
+    
+    objectControlsGroup.setId("PlayersEditPanel");
+  }
+  
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  protected void createControls() {
+    // players are created when needed.
+  }
+  
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  protected void createEditPanel() {
+    mainPanel = componentFactory.createHBox(12.0, 12.0);
+    
+    VBox controlsBox = componentFactory.createVBox(10.0);
+    Label label = componentFactory.createLabel("Players");
+    controlsBox.getChildren().add(label);
+    
+    Button addPlayerButton = componentFactory.createButton("Add player", "click to add a player");
+    controlsBox.getChildren().add(addPlayerButton);
+    mainPanel.getChildren().add(controlsBox);
+    
+    playersPanel = componentFactory.createVBox();
+    mainPanel.getChildren().add(playersPanel);
+    
+//    mainPanel.getChildren().add(getStatusIndicator());  // TODO per player
+    
+    addPlayerButton.setOnAction((_) -> {
+      ObjectControlForPlayer objectControlForPlayer = new ObjectControlForPlayer(customization, mediaDbService);
+      playersPanel.getChildren().add(objectControlForPlayer.getControl());
+      objectControlsGroup.addObjectControls(objectControlForPlayer);
+     });
+  }
+
+//  /**
+//   * {@inheritDoc}
+//   */
+//  @Override
+//  public void createObject() {
+//    object = new ArrayList<Player>();
+//  }
+
+  /**
+   * {@inheritDoc}
+   * 
+   * Default is an empty players list.
+   */
+  @Override
+  protected void fillControlsWithDefaultValues() {
+    if (object != null) {
+      object.clear();
+    }
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  protected void fillControlsFromObject() {
+    if (object != null) {
+      for (Player player: object) {
+        ObjectControlForPlayer objectControlForPlayer = new ObjectControlForPlayer(customization, mediaDbService);
+        objectControlsForPlayers.add(objectControlForPlayer);
+        Player playerCopy = EcoreUtil.copy(player);
+        objectControlForPlayer.setObject(playerCopy);
+        playersPanel.getChildren().add(objectControlForPlayer.getControl());
+        objectControlsGroup.addObjectControls(objectControlForPlayer);
+      }
+      
+    }
+  }
+
+  @Override
+  protected void updateObjectFromControls() throws ObjectEditorException {
+    // just rebuild the players list.
+    object.clear();
+    
+    for (ObjectControlForPlayer objectControlForPlayer: objectControlsForPlayers) {
+      Player player = MEDIA_DB_FACTORY.createPlayer();
+      player.setArtist(objectControlForPlayer.getValue().getArtist());
+      player.getInstruments().addAll(objectControlForPlayer.getValue().getInstruments());
+    }
+  }
+
+  @Override
+  public Node getControl() {
+    return mainPanel;
+  }
+
+}

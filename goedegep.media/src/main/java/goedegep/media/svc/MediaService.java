@@ -2,29 +2,27 @@ package goedegep.media.svc;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.Path;
-import java.util.Map;
 import java.util.Optional;
 import java.util.Properties;
 
 import goedegep.configuration.model.Look;
 import goedegep.jfx.AppResourcesFx;
 import goedegep.jfx.JfxApplication;
-import goedegep.jfx.eobjecttable.EObjectTable;
-import goedegep.media.app.guifx.MediaMenuWindow;
-import goedegep.media.common.IAlbumDetailsWindow;
-import goedegep.media.common.IMediaDbService;
 import goedegep.media.common.IMediaService;
 import goedegep.media.common.MediaAppResourcesFx;
 import goedegep.media.common.MediaRegistry;
-import goedegep.media.mediadb.app.MediaDbService;
-import goedegep.media.mediadb.guifx.AlbumDetailsWindow;
-import goedegep.media.mediadb.guifx.MediaDbWindow;
-import goedegep.media.mediadb.model.Album;
+import goedegep.media.dune.gui.DuneWindow;
+import goedegep.media.gui.MediaMenuWindow;
+import goedegep.media.mediadb.gui.MediaDbWindow;
+import goedegep.media.mediadb.logic.MediaDbService;
 import goedegep.media.mediadb.model.MediaDb;
 import goedegep.media.mediadb.model.MediadbFactory;
 import goedegep.media.mediadb.model.MediadbPackage;
-import goedegep.media.mediadb.model.Track;
+import goedegep.media.musicfolder.gui.MusicFolderWindow;
+import goedegep.media.photo.photomapview.guifx.PhotoMapView;
+import goedegep.media.photo.photoshow.guifx.PhotoShowBuilder;
+import goedegep.media.photo.photoshow.guifx.PhotoViewerMenuWindow;
+import goedegep.media.videodb.gui.VideoDbWindow;
 import goedegep.myworld.common.Registry;
 import goedegep.myworld.common.Service;
 import goedegep.util.emf.EMFResource;
@@ -37,7 +35,8 @@ import javafx.stage.Stage;
  * The MediaService class is the main class for the Media application.
  * <p>
  * It provides methods to show the main media menu window and manages
- * application-wide resources and customization.
+ * application-wide resources and customization.<br/>
+ * It also has methods to start the media components.
  */
 public class MediaService extends Service implements IMediaService {
   private static final String NEWLINE = System.getProperty("line.separator");
@@ -47,7 +46,12 @@ public class MediaService extends Service implements IMediaService {
    */
   private static MediaService instance = null;
   
+  /**
+   * The {@code MediaRegistry}
+   */
   private MediaRegistry mediaRegistry;
+  
+  private static MediaDbService mediaDbService;
   
   /**
    * Get the singleton instance of the MediaService.
@@ -57,43 +61,72 @@ public class MediaService extends Service implements IMediaService {
   public static MediaService getInstance() {
     if (instance == null) {
       instance = new MediaService();
-      instance.initialize();      
+      instance.initialize();
     }
     
     return instance;
   }
   
-  
-  /**
-   * Show the main media menu window.
-   */
+  private void getMediaDbService() {
+    if (mediaDbService == null) {
+      if (!checkThatMediaDbFileNameIsSetInRegistry()) {
+        return;
+      }
+
+      EMFResource<MediaDb> mediaDbResource = getMediaDbResource();
+      if (mediaDbResource == null) {
+        return;
+      }
+
+      MediaDbService.setGUICustomization(customization);
+      MediaDbService.setEMFResource(mediaDbResource);
+      mediaDbService = MediaDbService.getInstance();
+    }
+  }
+    
   @Override
   public void showMediaMenuWindow() {
-    Stage stage = new MediaMenuWindow(customization, this);
+    getMediaDbService();
+    Stage stage = new MediaMenuWindow(customization, this, mediaDbService.getMediaDb());
     stage.show();
   }
   
+  @Override
   public void showMediaDbWindow() {
-    if (!checkThatMediaDbFileNameIsSetInRegistry()) {
-      return;
-    }
-    
-    EMFResource<MediaDb> mediaDbResource = getMediaDbResource();
-    if (mediaDbResource == null) {
-      return;
-    }
-    
-    MediaDbService mediaDbService = new MediaDbService(mediaDbResource);
-    Stage stage = new MediaDbWindow(customization, this, mediaDbService);
+    getMediaDbService();
+    new MediaDbWindow(customization, this, mediaDbService).show();
+  }
+  
+  @Override
+  public void showMusicFolderWindow() {
+    Stage stage = new MusicFolderWindow(customization);
     stage.show();
   }
   
-  public IAlbumDetailsWindow openAlbumDetailsWindow(IMediaDbService iMediaDbService, Map<Track, Path> trackDiscLocationMap, EObjectTable<Album> albumsTable) {
-    AlbumDetailsWindow albumDetailsWindow = new AlbumDetailsWindow(customization, iMediaDbService, trackDiscLocationMap, albumsTable);
-    albumDetailsWindow.show();
-    return albumDetailsWindow;
+  @Override
+  public void showPhotoShowBuilder() {
+    new PhotoShowBuilder(customization);
+  }
+  
+  @Override
+  public void showPhotoShowWindow() {
+    new PhotoViewerMenuWindow(customization);
+  }
+  
+  @Override
+  public void showPhotoMapView() {
+    new PhotoMapView(customization);
   }
 
+  @Override
+  public void showVideoDbWindow() {
+    new VideoDbWindow(customization, this).show();;
+  }
+  
+  @Override
+  public void showDuneWindow() {
+    new DuneWindow(customization).show();
+  }
   
   /**
    * Private constructor to ensure that the application is a singleton.

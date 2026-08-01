@@ -24,6 +24,7 @@ import javafx.scene.transform.Rotate;
  * The method {@link #createCollageImage} creates a normal collage. This is a collage where the pictures are rotated and spread over the image.
  */
 public class CollageImage {
+  @SuppressWarnings("unused")
   private static final Logger LOGGER = Logger.getLogger(CollageImage.class.getName());
   
   /**
@@ -45,14 +46,11 @@ public class CollageImage {
    * @return the created collage
    */
   public static Canvas createTiledCollage(int collageWidth, int nrOfHorizontalImages, List<File> imageFiles) {
-    LOGGER.info("=> collageWidth=" + collageWidth + ", nrOfHorizontalImages=" + nrOfHorizontalImages);
     
     int nrOfImages = imageFiles.size();
     int nrOfVerticalImages = nrOfImages / nrOfHorizontalImages;
     int widthPerImage = collageWidth / nrOfHorizontalImages;
     int collageHeight = nrOfVerticalImages * widthPerImage;
-    LOGGER.info("nrOfImages=" + nrOfImages + ", nrOfVerticalImages= " + nrOfVerticalImages +
-        ", widthPerImage=" + widthPerImage + ", collageHeight=" + collageHeight);
     
     Canvas canvas = new Canvas(collageWidth, collageHeight);
     GraphicsContext gc = canvas.getGraphicsContext2D();
@@ -78,13 +76,11 @@ public class CollageImage {
    * @return the created collage.
    */
   public static Canvas createCollageImage(int collageWidth, int collageHeight, List<File> imageFiles) {
-    LOGGER.info("=> collageWidth = " + collageWidth + ", collageHeight = " + collageHeight);
     
     // The size of the images is made dependent on the size of the collage and the number images available.
     int collageSizeInPixels = collageWidth * collageHeight;
     double imageSizeInPixels = OVERLAP_FACTOR * collageSizeInPixels / imageFiles.size();
     double imageWidthAndLength = Math.sqrt(imageSizeInPixels);
-    LOGGER.info("imageSizeInPixels=" + imageSizeInPixels + ", imageWidthAndLength=" + imageWidthAndLength);
 
     Canvas canvas = new Canvas(collageWidth, collageHeight);
     GraphicsContext gc = canvas.getGraphicsContext2D();
@@ -139,10 +135,8 @@ public class CollageImage {
   }
   
   private static void addImage(GraphicsContext gc, QTreeFx qtree, File imageFile, double imageWidthAndLength) {
-    LOGGER.info("imageFile=" + imageFile.getAbsolutePath());
     javafx.scene.image.Image image = new javafx.scene.image.Image("file:" + imageFile.getAbsolutePath(), imageWidthAndLength, imageWidthAndLength, true, false);
     Tuplet<Integer, Integer> imageCoordinates = qtree.addImage();
-    LOGGER.info("imageCoordinates=" + imageCoordinates.getObject1() + "," + imageCoordinates.getObject2());
         
     double angle = getRandomRotation();
     javafx.scene.image.Image imageWithTransparency = addBackgroundTransparencyToImage(image); 

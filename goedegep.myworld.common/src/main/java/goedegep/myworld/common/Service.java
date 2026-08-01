@@ -56,12 +56,10 @@ public abstract class Service implements IService {
   public void showPropertyDescriptorsEditor() {
     // We are not editing the file in targer/classes, but in src/main/resources. So we have to patch the path.
     URI propertyDescriptorsFileURI = getRegistry().getPropertyDescriptorsFileURI();
-    LOGGER.severe("Property descriptors file URI: " + propertyDescriptorsFileURI);
     
     // Create a URI in the src/main/resources directory.
     String propertyDescriptorsFileName = propertyDescriptorsFileURI.toString();
     String propertyDescriptorsFileNameInSrc = propertyDescriptorsFileName.replace("target/classes", "src/main/resources");
-    LOGGER.severe("Source property descriptors file name: " + propertyDescriptorsFileNameInSrc);
     
     URI propertyDescriptorsFileURIInSrc = URI.create(propertyDescriptorsFileNameInSrc);
     

@@ -10,7 +10,6 @@ import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Path;
 import java.util.logging.Logger;
 
 import javax.imageio.ImageIO;
@@ -20,6 +19,7 @@ import org.apache.commons.imaging.formats.tiff.constants.TiffDirectoryConstants;
 import org.apache.commons.imaging.formats.tiff.constants.TiffTagConstants;
 
 import goedegep.geo.WGS84Coordinates;
+import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.ImageView;
@@ -316,6 +316,25 @@ public class ImageUtils {
     }
     
     return imageView;
+  }
+
+  /**
+   * Save an {@code Image} to a jpeg file.
+   * 
+   * @param image The {@code Image} to be saved.
+   * @param file The {@code File} to save the {@code image} to.
+   */
+  public static void saveImageAsJpeg(javafx.scene.image.Image image, File file) {
+    BufferedImage bufferedImage = SwingFXUtils.fromFXImage(image, null);
+    BufferedImage imageRGB = new BufferedImage(
+        bufferedImage.getWidth(), bufferedImage.getHeight(), BufferedImage.OPAQUE);
+    Graphics2D graphics = imageRGB.createGraphics();
+    graphics.drawImage(bufferedImage, 0, 0, null);
+    try {
+      ImageIO.write(imageRGB, "jpg", file);
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
   }
   
   public static void main(String[] args) {// scaleImageToMaxHeightWithBorderAdded

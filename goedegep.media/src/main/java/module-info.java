@@ -1,8 +1,9 @@
 module goedegep.media {
+  exports goedegep.media.common;
   exports goedegep.media.exe;
   exports goedegep.media.svc;
-  exports goedegep.media.app.guifx;
-  exports goedegep.media.app.logic;
+  exports goedegep.media.gui;
+  exports goedegep.media.logic;
   exports goedegep.media.photo.photoshow.guifx;
 
   requires transitive goedegep.jfx;

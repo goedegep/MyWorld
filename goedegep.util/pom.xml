@@ -59,5 +59,10 @@
       <artifactId>javafx-graphics</artifactId>
       <classifier>win</classifier>
     </dependency>
+    <dependency>
+      <groupId>org.openjfx</groupId>
+      <artifactId>javafx-swing</artifactId>
+      <classifier>win</classifier>
+    </dependency>
   </dependencies>
 </project>

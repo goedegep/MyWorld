@@ -165,24 +165,14 @@ public abstract class Registry {
     Registry.propertyDescriptorsFileName = propertyDescriptorsFileName;
   }
   
+  /**
+   * Get the URI for the Property Descriptors File.
+   * 
+   * @return the URI for the Property Descriptors File.
+   */
   public URI getPropertyDescriptorsFileURI() {
-//    try {
       File file = new File(propertyDescriptorsFileName);
       return file.toURI();
-//      return new URI("file:" + propertyDescriptorsFileName);
-//    } catch (URISyntaxException e) {
-//      e.printStackTrace();
-//    }
-    
-//    URL url = getClass().getResource(propertyDescriptorsFileName);
-//    try {
-//      URI uri = url.toURI();
-//      return uri;
-//    } catch (URISyntaxException e) {
-//      e.printStackTrace();
-//    }
-//    
-//    return null;
   }
 
   /**
