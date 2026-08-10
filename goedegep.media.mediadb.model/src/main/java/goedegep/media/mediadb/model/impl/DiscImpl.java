@@ -2,7 +2,6 @@
  */
 package goedegep.media.mediadb.model.impl;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
 
 import org.eclipse.emf.common.notify.Notification;
@@ -14,8 +13,6 @@ import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
 import org.eclipse.emf.ecore.util.EObjectContainmentEList;
 import org.eclipse.emf.ecore.util.InternalEList;
-
-import goedegep.media.mediadb.model.Album;
 import goedegep.media.mediadb.model.Disc;
 import goedegep.media.mediadb.model.MediadbPackage;
 import goedegep.media.mediadb.model.TrackReference;
@@ -164,26 +161,6 @@ public class DiscImpl extends MinimalEObjectImpl.Container implements Disc {
   /**
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @generated NOT
-   */
-  @Override
-  public Album getAlbum() {
-    return (Album) eContainer();
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated NOT
-   */
-  @Override
-  public int getDiscNr() {
-    return getAlbum().getDiscs().indexOf(this) + 1;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
    * @generated
    */
   @Override
@@ -263,22 +240,6 @@ public class DiscImpl extends MinimalEObjectImpl.Container implements Disc {
       return trackReferences != null && !trackReferences.isEmpty();
     }
     return super.eIsSet(featureID);
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public Object eInvoke(int operationID, EList<?> arguments) throws InvocationTargetException {
-    switch (operationID) {
-    case MediadbPackage.DISC___GET_ALBUM:
-      return getAlbum();
-    case MediadbPackage.DISC___GET_DISC_NR:
-      return getDiscNr();
-    }
-    return super.eInvoke(operationID, arguments);
   }
 
   /**

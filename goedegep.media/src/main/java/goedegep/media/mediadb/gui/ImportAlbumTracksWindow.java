@@ -18,6 +18,7 @@ import goedegep.media.mediadb.logic.TrackImportInfo;
 import goedegep.media.mediadb.model.Album;
 import goedegep.media.mediadb.model.Disc;
 import goedegep.media.mediadb.model.MediaDb;
+import goedegep.media.mediadb.model.util.MediaDbUtil;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -114,7 +115,7 @@ public class ImportAlbumTracksWindow extends JfxStage {
   private static String createWindowTitle(Album album) {
     StringBuilder buf = new StringBuilder();
     buf.append("Import tracks for album: ");
-    buf.append(album.getArtistAndTitle());
+    buf.append(MediaDbUtil.getArtistAndTitle(album));
     
     return buf.toString();
   }
@@ -152,7 +153,7 @@ public class ImportAlbumTracksWindow extends JfxStage {
     
     // Row: 'Disc:' <disc selection combobox>
     // Only shown for multi disc albums.
-    if (album.isMultiDiscAlbum()) {
+    if (MediaDbUtil.isMultiDiscAlbum(album)) {
       label = componentFactory.createLabel("Disc:");
       gridPane.add(label, 0, row);
       
@@ -286,7 +287,7 @@ public class ImportAlbumTracksWindow extends JfxStage {
         disc = discWrapper.getDisc();
       }
     } else {
-      disc = album.getDisc();
+      disc = MediaDbUtil.getDisc(album);
     }
     
     if (sourceFolderName != null  &&  disc != null) {
@@ -453,7 +454,7 @@ class DiscWrapper {
   public static String getDiscId(Disc disc) {
     String discId = disc.getTitle();
     if (discId == null) {
-      int discNr = disc.getAlbum().getDiscs().indexOf(disc);
+      int discNr = MediaDbUtil.getAlbum(disc).getDiscs().indexOf(disc);
       discId = "Disc " + discNr;
     }
     return discId;

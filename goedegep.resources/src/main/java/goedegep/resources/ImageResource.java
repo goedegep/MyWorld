@@ -48,6 +48,14 @@ public enum ImageResource {
   BACKPACKS(new ImageFileInfo[] {new ImageFileInfo("Backpacks - 295x248.png", 64, 64)}, "backpacks", null),
   BANK(new ImageFileInfo[] {new ImageFileInfo("Bank - 34x39.png", 34, 39)}, "bank", null),
   BAR(new ImageFileInfo[] {new ImageFileInfo("Bar - 34x39.png", 34, 39)}, "a drink", null),
+  BARRIER(new ImageFileInfo[] {
+      new ImageFileInfo("Barrier - 16x16.png", 16, 16),
+      new ImageFileInfo("Barrier - 24x24.png", 24, 24),
+      new ImageFileInfo("Barrier - 32x32.png", 32, 32),
+      new ImageFileInfo("Barrier - 64x64.png", 64, 64),
+      new ImageFileInfo("Barrier - 128x128.png", 128, 128),
+      new ImageFileInfo("Barrier - 512x512.png", 512, 512)},
+      "barrier", "<a href=\"https://www.flaticon.com/free-icons/gate\" title=\"gate icons\">Gate icons created by Backwoods - Flaticon</a>"),
   BEACH(new ImageFileInfo[] {new ImageFileInfo("Beach - 256x246.png", 256, 246)}, "beach", null),
   BED_AND_BREAKFAST(new ImageFileInfo[] {new ImageFileInfo("BedAndBreakfast - 250x250.png", 250, 250)}, "bed and breakfast", null),
   BOAT(new ImageFileInfo[] {
@@ -209,6 +217,14 @@ public enum ImageResource {
   TEXT(new ImageFileInfo[] {new ImageFileInfo("Text - 256x231.png", 256, 231)}, "a letter T for Text", null),
   TEXT_FILE(new ImageFileInfo[] {new ImageFileInfo("TextFile - 238x256.png", 238, 256)}, "Text file icon", "<a href=\"https://www.flaticon.com/free-icons/text-file\" title=\"text file icons\">Text file icons created by Freepik - Flaticon</a>"),
   THEATER(new ImageFileInfo[] {new ImageFileInfo("Theater - 34x39.png", 34, 39)}, "theater", null),
+  TICKET_OFFICE(new ImageFileInfo[] {
+      new ImageFileInfo("TicketOffice - 16x16.png", 16, 16),
+      new ImageFileInfo("TicketOffice - 24x24.png", 24, 24),
+      new ImageFileInfo("TicketOffice - 32x32.png", 32, 32),
+      new ImageFileInfo("TicketOffice - 64x64.png", 64, 64),
+      new ImageFileInfo("TicketOffice - 128x128.png", 128, 128),
+      new ImageFileInfo("TicketOffice - 512x512.png", 512, 512)},
+      "ticket office", "<a href=\"https://www.flaticon.com/free-icons/box-office\" title=\"box office icons\">Box office icons created by Magnific - Flaticon</a>"),
   TOURIST_INFORMATION(new ImageFileInfo[] {new ImageFileInfo("TouristInformation - 34x39.png", 34, 39)}, "tourist information", null),
   TRAIN(new ImageFileInfo[] {
       new ImageFileInfo("Train - 48x48.png", 48, 48),

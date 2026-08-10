@@ -31,6 +31,7 @@ import goedegep.media.mediadb.model.MediadbPackage;
 import goedegep.media.mediadb.model.Track;
 import goedegep.media.mediadb.model.TrackCollection;
 import goedegep.media.mediadb.model.TrackReference;
+import goedegep.media.mediadb.model.util.MediaDbUtil;
 import goedegep.resources.ImageSize;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
@@ -196,7 +197,7 @@ class TracksTableDescriptor extends EObjectTableDescriptor<Track> {
             else {
               StringBuilder buf = new StringBuilder();
               Track track = (Track) item;
-              Artist artist = track.getTrackArtist();
+              Artist artist = MediaDbUtil.getTrackArtist(track);
               if (artist != null) {
                 buf.append(artist.getName());
               } else {
@@ -223,10 +224,10 @@ class TracksTableDescriptor extends EObjectTableDescriptor<Track> {
             else {
               StringBuilder buf = new StringBuilder();
               Track track = (Track) item;
-              Disc disc = track.getOriginalDisc();
+              Disc disc = MediaDbUtil.getOriginalDisc(track);
               Album album = null;
               if (disc != null) {
-                album = disc.getAlbum();
+                album = MediaDbUtil.getAlbum(disc);
               }
               Artist artist = null;
               if (album != null) {
@@ -288,8 +289,8 @@ class TracksTableDescriptor extends EObjectTableDescriptor<Track> {
                 }
                 EObject container = trackReference.eContainer();
                 if (container instanceof Disc disc) {
-                  Album album = disc.getAlbum();
-                  buf.append(album.getArtistAndTitle());
+                  Album album = MediaDbUtil.getAlbum(disc);
+                  buf.append(MediaDbUtil.getArtistAndTitle(album));
                 } else if (container instanceof TrackCollection trackCollection) {
                   buf.append("collection ").append(trackCollection.getCollection().getName());
                 } else if (container instanceof Artist artist) {
@@ -342,8 +343,8 @@ class TrackComparator implements Comparator<Track> {
   @Override
   public int compare(Track track1, Track track2) {
     int compareResult = 0;
-    Artist artist1 = track1 != null ? track1.getTrackArtist() : null;
-    Artist artist2 = track2 != null ? track2.getTrackArtist() : null;
+    Artist artist1 = track1 != null ? MediaDbUtil.getTrackArtist(track1) : null;
+    Artist artist2 = track2 != null ? MediaDbUtil.getTrackArtist(track2) : null;
     
     if (artist1 == null || !artist1.isSetName()) {
       compareResult = -1;

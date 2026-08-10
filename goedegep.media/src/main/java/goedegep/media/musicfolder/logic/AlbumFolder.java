@@ -110,7 +110,7 @@ public class AlbumFolder {
    * @param albums a list of <code>AlbumOnDiscInfo</code>, to which the information of this album will be added.
    * @param errors a list to which all encountered problems have to be added
    */
-  public static void getAlbumOnDiscInfoForAlbumFolder(Path albumFolder, boolean checkNamingConvention, List<AlbumOnDiscInfo> albums, List<MusicFolderStructureErrorInfo> errors) {
+  public static void getAlbumOnDiscInfoForAlbumFolder(Path albumFolder, boolean checkNamingConvention, List<AlbumOnHardDiskInfo2> albums, List<MusicFolderStructureErrorInfo> errors) {
     LOGGER.fine("=> albumFolder=" + albumFolder + ", checkNamingConvention=" + checkNamingConvention);
 
     String folderName = albumFolder.getFileName().toString();
@@ -149,7 +149,7 @@ public class AlbumFolder {
     String title = matcher.group(5);
     LOGGER.fine("title:" + title );
 
-    AlbumOnDiscInfo info = gatherTrackInfoAndCreateAlbumOnDiscInfo(albumFolder, checkNamingConvention, issueDate, artist, title, errors);
+    AlbumOnHardDiskInfo2 info = gatherTrackInfoAndCreateAlbumOnDiscInfo(albumFolder, checkNamingConvention, issueDate, artist, title, errors);
     albums.add(info);
     
     LOGGER.fine("<= info.toString()");
@@ -178,7 +178,7 @@ public class AlbumFolder {
    * @param albums a list of <code>AlbumOnDiscInfo</code>, to which the information of this album will be added.
    * @param errors a list to which all encountered problems have to be added
    */
-  public static void getAlbumOnDiscInfoForSoundtrackAlbumFolder(Path albumFolder, boolean checkNamingConvention, List<AlbumOnDiscInfo> albums, List<MusicFolderStructureErrorInfo> errors) {
+  public static void getAlbumOnDiscInfoForSoundtrackAlbumFolder(Path albumFolder, boolean checkNamingConvention, List<AlbumOnHardDiskInfo2> albums, List<MusicFolderStructureErrorInfo> errors) {
     LOGGER.fine("=> albumFolder=" + albumFolder + ", checkNamingConvention=" + checkNamingConvention);
 
     String folderName = albumFolder.getFileName().toString();
@@ -215,7 +215,7 @@ public class AlbumFolder {
     String title = matcher.group(4);
     LOGGER.fine("title:" + title );
 
-    AlbumOnDiscInfo info = gatherTrackInfoAndCreateAlbumOnDiscInfo(albumFolder, checkNamingConvention, issueDate, null, title, errors);
+    AlbumOnHardDiskInfo2 info = gatherTrackInfoAndCreateAlbumOnDiscInfo(albumFolder, checkNamingConvention, issueDate, null, title, errors);
     albums.add(info);
     
     LOGGER.fine("<= info.toString()");
@@ -232,7 +232,7 @@ public class AlbumFolder {
    * @param errors a list to which all encountered problems have to be added.
    * @return the {@code AlbumOnDiscInfo} for the album in the {@code albumFolder}.
    */
-  private static AlbumOnDiscInfo gatherTrackInfoAndCreateAlbumOnDiscInfo(Path albumFolder, boolean checkNamingConvention, FlexDate issueDate, String artist, String title, List<MusicFolderStructureErrorInfo> errors) {
+  private static AlbumOnHardDiskInfo2 gatherTrackInfoAndCreateAlbumOnDiscInfo(Path albumFolder, boolean checkNamingConvention, FlexDate issueDate, String artist, String title, List<MusicFolderStructureErrorInfo> errors) {
     MusicFolderStructureErrorInfo error;
     
     // Create a sorted track list; the file names of the audio files in the albumFolder.
@@ -274,7 +274,7 @@ public class AlbumFolder {
       // In this snippet, it can only be thrown by newDirectoryStream.
       System.err.println(x);
     }
-    return new AlbumOnDiscInfo(issueDate, artist, title, albumFolder.toString(), trackList);
+    return new AlbumOnHardDiskInfo2(issueDate, artist, title, albumFolder.toString(), trackList);
   }
   
 

@@ -31,6 +31,7 @@ import goedegep.media.mediadb.model.MyTrackInfo;
 import goedegep.media.mediadb.model.Track;
 import goedegep.media.mediadb.model.TrackCollection;
 import goedegep.media.mediadb.model.TrackReference;
+import goedegep.media.mediadb.model.util.MediaDbUtil;
 import goedegep.media.mediadb.model.util.TrackReferencesIterator;
 import goedegep.util.emf.EmfUtil;
 import goedegep.util.file.FileUtils;
@@ -160,7 +161,7 @@ public class ArtistDetailsEditor extends ObjectEditorTemplate<Artist> {
             if (artistName == null) {
               return true;
             } else {
-              return mediaDb.getArtist(artistName) != null;
+              return MediaDbUtil.getArtist(mediaDb, artistName) != null;
             }
           }
 
@@ -178,7 +179,7 @@ public class ArtistDetailsEditor extends ObjectEditorTemplate<Artist> {
             if (artistName == null) {
               return null;
             } else {
-              return mediaDb.getArtist(artistName);
+              return MediaDbUtil.getArtist(mediaDb, artistName);
             }
           }
 
@@ -276,12 +277,12 @@ public class ArtistDetailsEditor extends ObjectEditorTemplate<Artist> {
     switch (trackReferenceContainer) {
     case TrackCollection trackCollection -> buf.append(trackReference.getTrack().getTitle()).append(" in collection ").append(trackCollection.getCollection().getLiteral());
     case Disc disc -> {
-      Album album = disc.getAlbum();
+      Album album = MediaDbUtil.getAlbum(disc);
       buf.append(album.getTitle());
-      if (album.isMultiDiscAlbum()) {
+      if (MediaDbUtil.isMultiDiscAlbum(album)) {
         buf.append(" - ").append(disc.getTitle());
       }
-      buf.append(" - ").append(trackReference.getTrackNr());
+      buf.append(" - ").append(MediaDbUtil.getTrackNr(trackReference));
       Track track = trackReference.getTrack();
       buf.append(" - ").append(track.getTitle());
     }
@@ -386,7 +387,7 @@ public class ArtistDetailsEditor extends ObjectEditorTemplate<Artist> {
     Artist artistBeingEdited = null;
     if (nameObjectControl.isFilledIn()) {
       String artistName = nameObjectControl.getValue();
-      artistBeingEdited = mediaDb.getArtist(artistName);
+      artistBeingEdited = MediaDbUtil.getArtist(mediaDb, artistName);
     }
     
     if (artistBeingEdited != null) {
@@ -395,7 +396,7 @@ public class ArtistDetailsEditor extends ObjectEditorTemplate<Artist> {
         TrackReference trackReference = iterator.next();
         Track track = trackReference.getTrack();
         if (track != null) {
-          if (artistBeingEdited == track.getTrackArtist()) {
+          if (artistBeingEdited == MediaDbUtil.getTrackArtist(track)) {
             trackReferences.add(trackReference);
             trackNameToReferenceMap.put(trackReferenceToString(trackReference), trackReference);
           }

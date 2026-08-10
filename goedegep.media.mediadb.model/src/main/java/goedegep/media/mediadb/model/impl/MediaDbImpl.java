@@ -2,13 +2,10 @@
  */
 package goedegep.media.mediadb.model.impl;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
-import java.util.Objects;
 import java.util.logging.Logger;
 
 import org.eclipse.emf.common.notify.NotificationChain;
-import org.eclipse.emf.common.util.BasicEList;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.InternalEObject;
@@ -18,16 +15,11 @@ import org.eclipse.emf.ecore.util.InternalEList;
 
 import goedegep.media.mediadb.model.Album;
 import goedegep.media.mediadb.model.Artist;
-import goedegep.media.mediadb.model.Video;
 import goedegep.media.mediadb.model.MediaDb;
-import goedegep.media.mediadb.model.MediadbFactory;
 import goedegep.media.mediadb.model.MediadbPackage;
 import goedegep.media.mediadb.model.Track;
 import goedegep.media.mediadb.model.TrackCollection;
-import goedegep.media.mediadb.model.TrackReference;
-import goedegep.util.datetime.FlexDate;
-import goedegep.util.datetime.FlexDateFormat;
-import goedegep.util.text.FuzzyStringCompare;
+import goedegep.media.mediadb.model.Video;
 
 /**
  * <!-- begin-user-doc -->
@@ -47,9 +39,9 @@ import goedegep.util.text.FuzzyStringCompare;
  * @generated
  */
 public class MediaDbImpl extends MinimalEObjectImpl.Container implements MediaDb {
+  @SuppressWarnings("unused")
   private static final Logger LOGGER = Logger.getLogger(MediaDbImpl.class.getName());
   private static final String NEWLINE = System.getProperty("line.separator");
-  private static final FlexDateFormat FDF = new FlexDateFormat();
 
   /**
    * The cached value of the '{@link #getArtists() <em>Artists</em>}' containment reference list.
@@ -189,195 +181,6 @@ public class MediaDbImpl extends MinimalEObjectImpl.Container implements MediaDb
   /**
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @generated NOT
-   */
-  public Artist getArtist(String artistName) {
-    for (Artist artist : getArtists()) {
-      if (artist.getName().equals(artistName)) {
-        return artist;
-      }
-    }
-
-    return null;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated NOT
-   */
-  public Album getAlbum(FlexDate releaseDate, Artist artist, String title) {
-    Objects.requireNonNull(artist, "The artist may not be null");
-    Objects.requireNonNull(title, "The title may not be null");
-
-    for (Album album : getAlbums()) {
-      boolean compareOkSoFar = true;
-
-      // Check release date
-      if (releaseDate != null) {
-        if (album.getReleaseDate() == null  ||  album.getReleaseDate().compareTo(releaseDate) != 0) {
-          compareOkSoFar = false;
-        }
-      }
-
-      if (album.getArtist() == null) {
-        LOGGER.severe("No artist set for album: " + album.getArtistAndTitle());
-        compareOkSoFar = false;
-      }
-
-      if (compareOkSoFar
-          && FuzzyStringCompare.fuzzyStringCompare(album.getTitle(), title)
-          && FuzzyStringCompare.fuzzyStringCompare(album.getArtist().getName(), artist.getName())) {
-        return album;
-      }
-    }
-
-    // No album found, go through the albums again but now check on the containerArtist.
-    for (Album album : getAlbums()) {
-      boolean compareOkSoFar = true;
-
-      // Check release date
-      if (releaseDate != null) {
-        if (album.getReleaseDate().compareTo(releaseDate) != 0) {
-          compareOkSoFar = false;
-        }
-      }
-
-      if (album.getArtist() == null) {
-        LOGGER.severe("No artist set for album: " + album.getArtistAndTitle());
-        compareOkSoFar = false;
-      }
-
-      if (compareOkSoFar
-          && album.getArtist().getContainerArtist() != null
-          && FuzzyStringCompare.fuzzyStringCompare(album.getTitle(), title)
-          && FuzzyStringCompare.fuzzyStringCompare(album.getArtist().getContainerArtist().getName(), artist.getName())) {
-        return album;
-      }
-    }
-
-    return null;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated NOT
-   */
-  public EList<Album> getAlbums(FlexDate releaseDate, Artist artist, String title) {
-    EList<Album> albums = new BasicEList<Album>();
-    if ((artist != null) && (artist.getContainerArtist() != null)) {
-      Artist containerArtist = artist.getContainerArtist();
-      if (containerArtist == null) {
-        throw new RuntimeException("container artist is null for artist: " + artist.getName());
-      }
-      artist = containerArtist;
-    }
-
-    for (Album album : getAlbums()) {
-      boolean compareOkSoFar = true;
-
-      // Check release date
-      if (releaseDate == null) {
-        // no release date check needed
-        LOGGER.fine("date OK, not specified");
-      } else if (album.getReleaseDate() == null) {
-        LOGGER.fine("date not OK; date specified, but not available in album");
-        compareOkSoFar = false;
-      } else {
-        LOGGER.fine("Real date check");
-        LOGGER.fine("releaseDate: " + FDF.format(releaseDate) + ", this album: " + FDF.format(album.getReleaseDate()));
-        if (album.getReleaseDate().getYear() == null) {
-          LOGGER.severe("Year is null for album: " + album.toString());
-        }
-        if (album.getReleaseDate().isSpecializationOf(releaseDate)) {
-          LOGGER.fine("date OK!!!");
-        } else {
-          LOGGER.fine("date not OK");
-          compareOkSoFar = false;
-        }
-      }
-
-      Artist albumArtist = album.getArtist();
-      if ((albumArtist != null) && albumArtist.isSetContainerArtist()) {
-        albumArtist = albumArtist.getContainerArtist();
-      }
-      if (albumArtist == null) {
-        LOGGER.info("albumArtist is null for album: " + album.getTitle());
-      }
-      if (compareOkSoFar) {
-        if ((artist != null) && (albumArtist == null) || (artist == null) && (albumArtist != null)) {
-          compareOkSoFar = false;
-        } else if ((artist != null) && (albumArtist != null)) {
-          compareOkSoFar = artist.getName().equals(albumArtist.getName());
-        }
-      }
-
-      if (compareOkSoFar && (title != null)) {
-        if (!title.equals(album.getTitle())) {
-          compareOkSoFar = false;
-        }
-      }
-
-      if (compareOkSoFar) {
-        albums.add(album);
-      }
-    }
-
-    return albums;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated NOT
-   */
-  @Override
-  public TrackCollection getTrackCollection(goedegep.media.mediadb.model.Collection collection) {
-    TrackCollection trackCollection = null;
-
-    for (TrackCollection aTrackCollection : getTrackcollections()) {
-      if (aTrackCollection.getCollection().equals(collection)) {
-        trackCollection = aTrackCollection;
-        break;
-      }
-    }
-
-    if (trackCollection == null) {
-      trackCollection = MediadbFactory.eINSTANCE.createTrackCollection();
-      trackCollection.setCollection(collection);
-      getTrackcollections().add(trackCollection);
-    }
-
-    return trackCollection;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated NOT
-   */
-  @Override
-  public Track getTrack(Artist artist, String title) {
-    for (Track track : getTracks()) {
-      Artist trackArtist = track.getArtist();
-      if (trackArtist == null) {
-        TrackReference trackReference = track.getOriginalDiscTrackReference();
-        if (trackReference != null) {
-          trackArtist = trackReference.getDisc().getAlbum().getArtist();
-        }
-      }
-      if (artist.equals(trackArtist) && title.equals(track.getTitle())) {
-        return track;
-      }
-    }
-
-    return null;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
    * @generated
    */
   @Override
@@ -499,28 +302,6 @@ public class MediaDbImpl extends MinimalEObjectImpl.Container implements MediaDb
       return videos != null && !videos.isEmpty();
     }
     return super.eIsSet(featureID);
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public Object eInvoke(int operationID, EList<?> arguments) throws InvocationTargetException {
-    switch (operationID) {
-    case MediadbPackage.MEDIA_DB___GET_ARTIST__STRING:
-      return getArtist((String) arguments.get(0));
-    case MediadbPackage.MEDIA_DB___GET_ALBUM__FLEXDATE_ARTIST_STRING:
-      return getAlbum((FlexDate) arguments.get(0), (Artist) arguments.get(1), (String) arguments.get(2));
-    case MediadbPackage.MEDIA_DB___GET_ALBUMS__FLEXDATE_ARTIST_STRING:
-      return getAlbums((FlexDate) arguments.get(0), (Artist) arguments.get(1), (String) arguments.get(2));
-    case MediadbPackage.MEDIA_DB___GET_TRACK_COLLECTION__COLLECTION:
-      return getTrackCollection((goedegep.media.mediadb.model.Collection) arguments.get(0));
-    case MediadbPackage.MEDIA_DB___GET_TRACK__ARTIST_STRING:
-      return getTrack((Artist) arguments.get(0), (String) arguments.get(1));
-    }
-    return super.eInvoke(operationID, arguments);
   }
 
   /**

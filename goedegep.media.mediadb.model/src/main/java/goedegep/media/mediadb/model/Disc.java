@@ -96,28 +96,4 @@ public interface Disc extends EObject {
    */
   EList<TrackReference> getTrackReferences();
 
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * <!-- begin-model-doc -->
-   * Get the {@code Album} of which this disc is a part.
-   * 
-   * @return the {@code Album} of which this disc is a part.
-   * <!-- end-model-doc -->
-   * @model kind="operation"
-   * @generated
-   */
-  Album getAlbum();
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * <!-- begin-model-doc -->
-   * Get the index of this disc (starting at 1) in the list of discs of the album.
-   * <!-- end-model-doc -->
-   * @model kind="operation"
-   * @generated
-   */
-  int getDiscNr();
-
 } // Disc

@@ -12,6 +12,7 @@ import java.util.regex.Pattern;
 
 import goedegep.media.mediadb.model.Album;
 import goedegep.media.mediadb.model.Track;
+import goedegep.media.mediadb.model.util.MediaDbUtil;
 import goedegep.util.datetime.FlexDate;
 import goedegep.util.file.FileUtils;
 
@@ -232,7 +233,7 @@ public class TrackFile {
     
     buf.append(MusicFolderUtil.replaceGroupSeparatorAndNameToFileName(album.getTitle(), true));
     buf.append(" - ");
-    if (album.isMultiDiscAlbum()) {
+    if (MediaDbUtil.isMultiDiscAlbum(album)) {
       buf.append(discNr);
       buf.append("-");
     }
@@ -240,7 +241,7 @@ public class TrackFile {
     buf.append(" - ");
 
     LOGGER.fine("Number of discs=" + album.getDiscs().size());
-    Track track = album.getTrackReference(discNr, trackNr).getTrack();
+    Track track = MediaDbUtil.getTrackReference(album, discNr, trackNr).getTrack();
 
     buf.append(MusicFolderUtil.replaceGroupSeparatorAndNameToFileName(track.getTitle(), true));
     String trackFileName = buf.toString();
@@ -339,6 +340,10 @@ public class TrackFile {
     StringBuilder buf = new StringBuilder();
     buf.append(String.format("%02d", index));
     String indexString = buf.toString();
+    
+    if (!Files.exists(folderPath)) {
+      LOGGER.severe("Folder doesn't exist: " + folderPath.toAbsolutePath().toString());
+    }
     
     try (DirectoryStream<Path> stream = Files.newDirectoryStream(folderPath)) {
       for (Path path: stream) {

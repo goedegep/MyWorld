@@ -3,8 +3,6 @@
 package goedegep.media.mediadb.model.impl;
 
 import java.util.Collection;
-import java.util.List;
-
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
 import org.eclipse.emf.common.util.EList;
@@ -19,16 +17,12 @@ import org.eclipse.emf.ecore.util.InternalEList;
 import goedegep.media.mediadb.model.Album;
 import goedegep.media.mediadb.model.Artist;
 import goedegep.media.mediadb.model.Disc;
-import goedegep.media.mediadb.model.IWant;
 import goedegep.media.mediadb.model.MediadbPackage;
 import goedegep.media.mediadb.model.MyInfo;
 import goedegep.media.mediadb.model.Player;
-import goedegep.media.mediadb.model.TrackReference;
 import goedegep.util.datetime.FlexDate;
 import goedegep.util.datetime.FlexDateFormat;
 import goedegep.util.string.StringUtil;
-
-import java.lang.reflect.InvocationTargetException;
 
 /**
  * <!-- begin-user-doc -->
@@ -976,140 +970,6 @@ public class AlbumImpl extends MinimalEObjectImpl.Container implements Album {
   /**
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @generated NOT
-   */
-  @Override
-  public TrackReference getTrackReference(Integer discNr, int trackNr) {
-    if (discNr == null) {
-      discNr = 1;
-    }
-    Disc disc = getDiscs().get(discNr - 1);
-    int nrOfTracks = disc.getTrackReferences().size();
-    if (trackNr >= nrOfTracks) {
-      return null;
-    }
-    return disc.getTrackReferences().get(trackNr - 1);
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated NOT
-   */
-  @Override
-  public Player getPlayer(Artist artist) {
-    for (Player player : getPlayers()) {
-      if (player.getArtist().equals(artist)) {
-        return player;
-      }
-    }
-
-    return null;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated NOT
-   */
-  @Override
-  public String getArtistAndTitle() {
-    StringBuilder buf = new StringBuilder();
-    if (getArtist() != null) {
-      Artist artist = getArtist();
-      buf.append(artist.getName());
-    } else {
-      buf.append("<no artist>");
-    }
-
-    buf.append(" - ");
-
-    if (isSetTitle()) {
-      buf.append(getTitle());
-    } else {
-      buf.append("<no title>");
-    }
-
-    return buf.toString();
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated NOT
-   */
-  @Override
-  public boolean isMultiDiscAlbum() {
-    return getDiscs().size() > 1;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated NOT
-   */
-  @Override
-  public Disc getDisc() {
-    if (isMultiDiscAlbum()) {
-      throw new RuntimeException("This method may not be called on a multi disc album");
-    }
-    List<Disc> discs = getDiscs();
-    if (discs.isEmpty()) {
-      return null;
-    } else {
-      return discs.get(0);
-    }
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated NOT
-   */
-  @Override
-  public boolean iWantAlbumOrTracksOfAlbum() {
-
-    if ((getMyInfo() != null) && (getMyInfo().getIWant() == IWant.YES)) {
-      return true;
-    }
-
-    for (Disc disc : getDiscs()) {
-      for (TrackReference trackReference : disc.getTrackReferences()) {
-        if (trackReference.getMyTrackInfo() != null && trackReference.getMyTrackInfo().getIWant() == IWant.YES) {
-          return true;
-        }
-      }
-    }
-
-    return false;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated NOT
-   */
-  @Override
-  public boolean iHaveToJudgeAlbumOrTracks() {
-
-    if ((getMyInfo() != null) && (getMyInfo().getIWant() == IWant.DONT_KNOW)) {
-      return true;
-    }
-
-    for (Disc disc : getDiscs()) {
-      for (TrackReference trackReference : disc.getTrackReferences()) {
-        if (trackReference.getMyTrackInfo() != null && trackReference.getMyTrackInfo().getIWant() == IWant.DONT_KNOW) {
-          return true;
-        }
-      }
-    }
-
-    return false;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
    * @generated
    */
   @Override
@@ -1320,32 +1180,6 @@ public class AlbumImpl extends MinimalEObjectImpl.Container implements Album {
       return soundtrack != SOUNDTRACK_EDEFAULT;
     }
     return super.eIsSet(featureID);
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public Object eInvoke(int operationID, EList<?> arguments) throws InvocationTargetException {
-    switch (operationID) {
-    case MediadbPackage.ALBUM___GET_TRACK_REFERENCE__INTEGER_INT:
-      return getTrackReference((Integer) arguments.get(0), (Integer) arguments.get(1));
-    case MediadbPackage.ALBUM___GET_PLAYER__ARTIST:
-      return getPlayer((Artist) arguments.get(0));
-    case MediadbPackage.ALBUM___GET_ARTIST_AND_TITLE:
-      return getArtistAndTitle();
-    case MediadbPackage.ALBUM___IS_MULTI_DISC_ALBUM:
-      return isMultiDiscAlbum();
-    case MediadbPackage.ALBUM___GET_DISC:
-      return getDisc();
-    case MediadbPackage.ALBUM___IWANT_ALBUM_OR_TRACKS_OF_ALBUM:
-      return iWantAlbumOrTracksOfAlbum();
-    case MediadbPackage.ALBUM___IHAVE_TO_JUDGE_ALBUM_OR_TRACKS:
-      return iHaveToJudgeAlbumOrTracks();
-    }
-    return super.eInvoke(operationID, arguments);
   }
 
   /**

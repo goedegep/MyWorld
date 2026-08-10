@@ -18,6 +18,7 @@ import goedegep.media.mediadb.model.MediadbPackage;
 import goedegep.media.mediadb.model.MyTrackInfo;
 import goedegep.media.mediadb.model.Track;
 import goedegep.media.mediadb.model.TrackReference;
+import goedegep.media.mediadb.model.util.MediaDbUtil;
 import goedegep.util.emf.EmfUtil;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -192,7 +193,7 @@ public class TrackReferenceEditor extends ObjectEditorTemplate<TrackReference> {
   @Override
   protected void updateObjectFromControls() throws ObjectEditorException {
     // Track
-    Track track = mediaDbService.getMediaDb().getTrack(trackArtistObjectControl.getValue(), trackTitleTextFieldObjectControl.getValue());
+    Track track = MediaDbUtil.getTrack(mediaDbService.getMediaDb(), trackArtistObjectControl.getValue(), trackTitleTextFieldObjectControl.getValue());
     
     EmfUtil.setFeatureValue(object, MEDIA_DB_PACKAGE.getTrackReference_Track(), track);
     

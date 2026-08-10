@@ -5,7 +5,7 @@ import java.util.List;
 import goedegep.jfx.ComponentFactoryFx;
 import goedegep.jfx.CustomizationFx;
 import goedegep.media.mediadb.model.Disc;
-import goedegep.media.musicfolder.logic.AlbumOnDiscInfo;
+import goedegep.media.musicfolder.logic.AlbumOnHardDiskInfo2;
 import javafx.beans.property.ObjectProperty;
 import javafx.scene.control.Button;
 import javafx.scene.control.Dialog;
@@ -20,7 +20,7 @@ public class DiscSelectionDialog extends Dialog<Boolean> {
   private int selectedDiscIndex = -1;
 
   
-  public DiscSelectionDialog(CustomizationFx customization, Stage ownerWindow, List<Disc> discs, List<AlbumOnDiscInfo> albumDiscLocationInfos, ObjectProperty<AlbumOnDiscInfo> selectedDisc) {
+  public DiscSelectionDialog(CustomizationFx customization, Stage ownerWindow, List<Disc> discs, List<AlbumOnHardDiskInfo2> albumDiscLocationInfos, ObjectProperty<AlbumOnHardDiskInfo2> selectedDisc) {
     setTitle(WINDOW_TITLE);
     
     initOwner(ownerWindow);
@@ -31,7 +31,7 @@ public class DiscSelectionDialog extends Dialog<Boolean> {
     setResizable(true);
   }
 
-  private void createGUI(List<Disc> discs, List<AlbumOnDiscInfo> albumDiscLocationInfos, ObjectProperty<AlbumOnDiscInfo> selectedDisc) {
+  private void createGUI(List<Disc> discs, List<AlbumOnHardDiskInfo2> albumDiscLocationInfos, ObjectProperty<AlbumOnHardDiskInfo2> selectedDisc) {
     setHeaderText("Select the disc to be played.");
     
     VBox vBox = componentFactory.createVBox();

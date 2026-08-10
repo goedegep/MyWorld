@@ -162,12 +162,28 @@ public class NominatimUtil {
     
     // get POI category from the OSM 'category' and 'type' attributes.
     LocationCategory poiCategoryId = switch (osmLocationInfo.getCategory()) {
+    case "aerialway" -> switch (osmLocationInfo.getType()) {
+      case "station" -> LocationCategory.CABLE_CAR;
+      default -> null;
+    };
     case "highway" -> switch (osmLocationInfo.getType()) {
       case "bus_stop" -> LocationCategory.BUS_STOP;
       default -> null;
     };
+    case "place" -> switch (osmLocationInfo.getType()) {
+      case "village" -> LocationCategory.NEIGHBOURHOOD;
+      default -> null;
+    };
     case "railway" -> switch (osmLocationInfo.getType()) {
       case "station" -> LocationCategory.RAILWAY_STATION;
+      default -> null;
+    };
+    case "shop" -> switch (osmLocationInfo.getType()) {
+      case "ticket" -> LocationCategory.TICKET_OFFICE;
+      default -> null;
+    };
+    case "tourism" -> switch (osmLocationInfo.getType()) {
+      case "viewpoint" -> LocationCategory.SCENIC_VIEWPOINT;
       default -> null;
     };
     default -> null;

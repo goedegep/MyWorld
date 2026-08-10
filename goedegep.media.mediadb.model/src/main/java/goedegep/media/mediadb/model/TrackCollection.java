@@ -99,19 +99,4 @@ public interface TrackCollection extends EObject {
    */
   EList<TrackReference> getTrackReferences();
 
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * <!-- begin-model-doc -->
-   * Find a track in any collection.
-   * 
-   * @param artist The {@code Artist} of the track.
-   * @param title The title of the track.
-   * @return A track reference for the track specified by {@code artist} and {@code title}.
-   * <!-- end-model-doc -->
-   * @model
-   * @generated
-   */
-  TrackReference getTrackReferece(Artist artist, String title);
-
 } // TrackCollection

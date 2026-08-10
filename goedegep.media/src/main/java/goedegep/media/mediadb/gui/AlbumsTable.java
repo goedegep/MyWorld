@@ -44,7 +44,7 @@ import goedegep.media.mediadb.model.MyTrackInfo;
 import goedegep.media.mediadb.model.Track;
 import goedegep.media.mediadb.model.TrackReference;
 import goedegep.media.mediadb.model.util.MediaDbUtil;
-import goedegep.media.musicfolder.logic.AlbumOnDiscInfo;
+import goedegep.media.musicfolder.logic.AlbumOnHardDiskInfo2;
 import goedegep.util.datetime.FlexDate;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -85,12 +85,12 @@ public class AlbumsTable extends EObjectTable<Album> {
   /**
    * This map relates a single disc Album (as in the mediaDb) to its location on disc.
    */
-  private Map<Album, AlbumOnDiscInfo> albumToMusicFolderLocationMap;
+  private Map<Album, AlbumOnHardDiskInfo2> albumToMusicFolderLocationMap;
   
   /**
    * This map relates an Album disc (as in the mediaDb) to its location on disc.
    */
-  private Map<Disc, AlbumOnDiscInfo> albumDiscToMusicFolderLocationMap;
+  private Map<Disc, AlbumOnHardDiskInfo2> albumDiscToMusicFolderLocationMap;
   
   /**
    * This map relates a track (as in the mediaDb) to its location on disc.
@@ -107,7 +107,7 @@ public class AlbumsTable extends EObjectTable<Album> {
    */
   private Album currentlyPlayingAlbum = null;
   
-  ObjectProperty<AlbumOnDiscInfo> discToPlay = new SimpleObjectProperty<>();
+  ObjectProperty<AlbumOnHardDiskInfo2> discToPlay = new SimpleObjectProperty<>();
 
   /**
    * Constructor
@@ -122,8 +122,8 @@ public class AlbumsTable extends EObjectTable<Album> {
       MediaDbWindow mediaDbWindow,
       Consumer<Album> addAlbumMethod,
       MediaDbService mediaDbService,
-      Map<Album, AlbumOnDiscInfo> albumToMusicFolderLocationMap,
-      Map<Disc, AlbumOnDiscInfo> albumDiscToMusicFolderLocationMap,
+      Map<Album, AlbumOnHardDiskInfo2> albumToMusicFolderLocationMap,
+      Map<Disc, AlbumOnHardDiskInfo2> albumDiscToMusicFolderLocationMap,
       Map<Track, Path> trackDiscLocationMap) {
     super(customization, MediadbPackage.eINSTANCE.getAlbum(), new AlbumsTableDescriptor(customization, mediaDbService), mediaDbService.getMediaDb(), MediadbPackage.eINSTANCE.getMediaDb_Albums());
     
@@ -205,17 +205,17 @@ public class AlbumsTable extends EObjectTable<Album> {
     
     if (MediaDbUtil.haveAlbumOnHardDisk(album)) {
       // Complete album in MusicFolder, play complete album
-      AlbumOnDiscInfo albumDiscLocationInfo;
+      AlbumOnHardDiskInfo2 albumDiscLocationInfo;
 
       albumDiscLocationInfo = albumToMusicFolderLocationMap.get(album);
       
       if (albumDiscLocationInfo == null) {
         // If the album is available on disc, MPC-HC is started with the related disc folder.
         List<Disc> discsInMusicFolder = new ArrayList<>();
-        List<AlbumOnDiscInfo> albumDiscLocationInfos = new ArrayList<>();
+        List<AlbumOnHardDiskInfo2> albumDiscLocationInfos = new ArrayList<>();
 
         for (Disc disc: album.getDiscs()) {
-          AlbumOnDiscInfo thisAlbumDiscLocationInfo = albumDiscToMusicFolderLocationMap.get(disc);
+          AlbumOnHardDiskInfo2 thisAlbumDiscLocationInfo = albumDiscToMusicFolderLocationMap.get(disc);
           if (albumDiscLocationInfo != null) {
             discsInMusicFolder.add(disc);
             albumDiscLocationInfos.add(thisAlbumDiscLocationInfo);
@@ -245,7 +245,7 @@ public class AlbumsTable extends EObjectTable<Album> {
       commandArguments.add(mediaRegistry.getMediaPlayerClassicExecutable());
       LOGGER.info("albumDiscLocationInfo: " + albumDiscLocationInfo.toString());
       commandArguments.add("/play ");
-      commandArguments.add(albumDiscLocationInfo.getAlbumFolderName());
+      commandArguments.add(albumDiscLocationInfo.albumFolderName());
       
       try {
         mediaPlayerProcess = new ProcessBuilder(commandArguments).start();
@@ -331,7 +331,7 @@ public class AlbumsTable extends EObjectTable<Album> {
   }
   
   private void playDisc(Album album) {
-    AlbumOnDiscInfo albumDiscLocationInfo = discToPlay.getValue();
+    AlbumOnHardDiskInfo2 albumDiscLocationInfo = discToPlay.getValue();
     
     // Build the command to start the media player.
     // First argument is the MPC-HC player executable. Then for each album folder a '/play' argument followed by the folder.
@@ -339,7 +339,7 @@ public class AlbumsTable extends EObjectTable<Album> {
     commandArguments.add(mediaRegistry.getMediaPlayerClassicExecutable());
     LOGGER.severe("albumDiscLocationInfo: " + albumDiscLocationInfo.toString());
     commandArguments.add("/play ");
-    commandArguments.add(albumDiscLocationInfo.getAlbumFolderName());
+    commandArguments.add(albumDiscLocationInfo.albumFolderName());
     
     try {
       mediaPlayerProcess = new ProcessBuilder(commandArguments).start();
@@ -667,7 +667,7 @@ class MyInfoPlayCell extends TableCell<Album, Object> {
         imageView.setImage(mediaAppResources.getReferenceIcon());
         tooltipText = "Referentie. TODO";
       } else {
-        LOGGER.severe("Unknown play type for album: " + album.getArtistAndTitle() + ", myInfo=" + (myInfo != null ? myInfo.toString() : "null"));
+        LOGGER.severe("Unknown play type for album: " + MediaDbUtil.getArtistAndTitle(album) + ", myInfo=" + (myInfo != null ? myInfo.toString() : "null"));
       }
       
       setGraphic(imageView);

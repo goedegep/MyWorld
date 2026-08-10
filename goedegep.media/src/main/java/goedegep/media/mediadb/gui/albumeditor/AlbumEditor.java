@@ -43,6 +43,7 @@ import goedegep.media.mediadb.model.MediumType;
 import goedegep.media.mediadb.model.MyInfo;
 import goedegep.media.mediadb.model.Player;
 import goedegep.media.mediadb.model.Track;
+import goedegep.media.mediadb.model.util.MediaDbUtil;
 import goedegep.util.datetime.FlexDate;
 import goedegep.util.emf.EmfUtil;
 import goedegep.util.file.FileUtils;
@@ -546,7 +547,7 @@ public class AlbumEditor extends ObjectEditorTemplate<Album> {
     // Therefore we use the constuction while (!importMediaDb.getArtists().isEmpty()) artist = importMediaDb.getArtists().get(0).
     while (!importMediaDb.getArtists().isEmpty()) {
       Artist artist = importMediaDb.getArtists().get(0);
-      Artist artistInMediaDb = mediaDb.getArtist(artist.getName());
+      Artist artistInMediaDb = MediaDbUtil.getArtist(mediaDb, artist.getName());
       
       if (artistInMediaDb == null) {
         ArtistDetailsEditor artistDetailsEditor = ArtistDetailsEditor.newInstance(customization, "New artist", mediaDbService);
@@ -592,7 +593,7 @@ public class AlbumEditor extends ObjectEditorTemplate<Album> {
       }
       LOGGER.severe("Track: " + track.getTitle());
       
-      Track trackInMediaDb = mediaDb.getTrack(trackArtist, track.getTitle());
+      Track trackInMediaDb = MediaDbUtil.getTrack(mediaDb, trackArtist, track.getTitle());
       
       if (trackInMediaDb == null) {
         TrackEditor trackEditor = TrackEditor.newInstance(customization, mediaDbService);
@@ -676,7 +677,7 @@ public class AlbumEditor extends ObjectEditorTemplate<Album> {
     // album artist
     Artist artist = album.getArtist();
     if (artist != null) {
-      Artist mediaDbArtist = mediaDb.getArtist(artist.getName());
+      Artist mediaDbArtist = MediaDbUtil.getArtist(mediaDb, artist.getName());
       if (mediaDbArtist == null) {
         throw new RuntimeException("New artists not yet handled");
       }
@@ -824,7 +825,7 @@ public class AlbumEditor extends ObjectEditorTemplate<Album> {
             albumReferencesVBox.getChildren().add(label);
             first = false;
           }
-          ObjectControlString albumReference = componentFactory.createObjectControlString(referredAlbum.getArtistAndTitle(), 600, false, "Reference to album");
+          ObjectControlString albumReference = componentFactory.createObjectControlString(MediaDbUtil.getArtistAndTitle(referredAlbum), 600, false, "Reference to album");
           albumReferencesVBox.getChildren().add(albumReference.getControl());
         }
       }
@@ -1087,7 +1088,7 @@ public class AlbumEditor extends ObjectEditorTemplate<Album> {
 
       for (Player newPlayer: players) {
         Player player = MEDIA_DB_FACTORY.createPlayer();
-        Artist newArtist = mediaDb.getArtist(newPlayer.getArtist().getName());
+        Artist newArtist = MediaDbUtil.getArtist(mediaDb, newPlayer.getArtist().getName());
         player.setArtist(newArtist);
         player.getInstruments().addAll(newPlayer.getInstruments());
 
@@ -1397,7 +1398,7 @@ public class AlbumEditor extends ObjectEditorTemplate<Album> {
       }
       
       buf.append("Edit album: ");
-      buf.append(object.getArtistAndTitle());
+      buf.append(MediaDbUtil.getArtistAndTitle(object));
     }
     
     setTitle(buf.toString());

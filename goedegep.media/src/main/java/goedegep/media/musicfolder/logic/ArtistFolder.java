@@ -19,7 +19,7 @@ public class ArtistFolder {
    * Gather all information on albums and their tracks for one specific artist.
    * There's one sub folder per album.
    */
-  public static void getAlbumOnDiscInfoForArtistFolder(Path artistFolder, List<AlbumOnDiscInfo> albumsOnDiscInfo, List<MusicFolderStructureErrorInfo> errors) {
+  public static void getAlbumOnDiscInfoForArtistFolder(Path artistFolder, List<AlbumOnHardDiskInfo2> albumsOnDiscInfo, List<MusicFolderStructureErrorInfo> errors) {
     MusicFolderStructureErrorInfo error;
     
     try (DirectoryStream<Path> stream = Files.newDirectoryStream(artistFolder)) {

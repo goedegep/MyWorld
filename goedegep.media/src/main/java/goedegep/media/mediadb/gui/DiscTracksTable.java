@@ -25,6 +25,7 @@ import goedegep.media.mediadb.model.MyTrackInfo;
 import goedegep.media.mediadb.model.Player;
 import goedegep.media.mediadb.model.Track;
 import goedegep.media.mediadb.model.TrackReference;
+import goedegep.media.mediadb.model.util.MediaDbUtil;
 import goedegep.util.datetime.DurationFormat;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
@@ -219,7 +220,25 @@ class DiscTracksTableDescriptor extends EObjectTableDescriptor<TrackReference> {
   private static final MediadbPackage MEDIA_DB_PACKAGE = MediadbPackage.eINSTANCE;
 
   private static List<EObjectTableColumnDescriptorAbstract<TrackReference>> columnDescriptors = List.<EObjectTableColumnDescriptorAbstract<TrackReference>>of(
-      new EObjectTableColumnDescriptorBasic<TrackReference>(MEDIA_DB_PACKAGE.getTrackReference__GetTrackNr(), "Nr.", false, true),
+      new EObjectTableColumnDescriptorCustom<TrackReference>(null, "Nr.", null, false, true, _ -> {
+        TableCell<TrackReference, Object> cell = new TableCell<>() {
+
+          @Override
+          protected void updateItem(Object item, boolean empty) {
+            super.updateItem(item, empty);
+            if(empty || (item == null)) {
+              setText(null);
+            }
+            else {
+              TrackReference trackReference = (TrackReference) item;
+              int trackNr = MediaDbUtil.getTrackNr(trackReference);
+              setText(String.valueOf(trackNr));
+            }
+          }
+        };
+
+        return cell;
+      }),
       new EObjectTableColumnDescriptorCustom<TrackReference>(null, "Title", null, true, true, _ -> {
         TableCell<TrackReference, Object> cell = new TableCell<>() {
 
@@ -438,7 +457,7 @@ class DiscTracksTableDescriptor extends EObjectTableDescriptor<TrackReference> {
               TrackReference trackReference = (TrackReference) item;
               TrackReference originalTrackReference = null;
               if (trackReference.getTrack() != null) {
-                originalTrackReference = trackReference.getTrack().getOriginalDiscTrackReference();
+                originalTrackReference = MediaDbUtil.getOriginalDiscTrackReference(trackReference.getTrack());
               }
               if (originalTrackReference != null) {
                 setText(GuiUtils.createTrackReferenceText(originalTrackReference));

@@ -14,7 +14,7 @@ import goedegep.util.file.FileUtils;
 
 
 /**
- * This class gathers the content of the MusicFolder and provides it in a way applications can use it (without disc access).
+ * This class gathers the content of the MusicFolder and provides it in a way applications can use it (without disk access).
  */
 public class MusicFolderContent {
   private static final Logger LOGGER = Logger.getLogger(MusicFolderContent.class.getName());
@@ -31,9 +31,9 @@ public class MusicFolderContent {
   
   
   /**
-   * List of {@link AlbumOnDiscInfo} to be filled with information on the albums in the Main Index folders and the soundtrack folder.
+   * List of {@link AlbumOnHardDiskInfo} to be filled with information on the albums in the Main Index folders and the soundtrack folder.
    */
-  private List<AlbumOnDiscInfo> albumsOnDiscInfo = new ArrayList<>();
+  private List<AlbumOnHardDiskInfo2> albumsOnDiscInfo = new ArrayList<>();
   
   /**
    * List of {@link TrackOnDiscInfo} to be filled with the information of the tracks in the track folders.
@@ -90,7 +90,7 @@ public class MusicFolderContent {
    * 
    * @return the gathered information for albums on disc
    */
-  public List<AlbumOnDiscInfo> getAlbumsOnDiscInfo() {
+  public List<AlbumOnHardDiskInfo2> getAlbumsOnDiscInfo() {
     return albumsOnDiscInfo;
   }
 
@@ -114,8 +114,6 @@ public class MusicFolderContent {
         gatherAlbumOnDiscInfoForMainIndexFolder(path);
       }
     }
-            
-    LOGGER.fine("<= ");
   }
   
   /**
@@ -139,18 +137,13 @@ public class MusicFolderContent {
       // IOException can never be thrown by the iteration.
       System.err.println(x);
     }
-    
-    LOGGER.fine("<= ");
   }
   
   /**
    * Gather all information on albums and their tracks in the Soundtracks Folder under the Music Folder.
    */
   private void gatherSoundtrackAlbumsOnDiscInfo() {    
-    LOGGER.fine("=> musicFolderName = " + musicFolderName);
-    
     Path soundTracksPath = Paths.get(musicFolderName, SOUNDTRACK_FOLDER);
-    LOGGER.fine("=> soundTracksPath = " + soundTracksPath.toAbsolutePath().toString());
     
     MusicFolderStructureErrorInfo error;
     
@@ -159,9 +152,7 @@ public class MusicFolderContent {
       for (Path path: stream) {
         String fileName = path.getFileName().toString();
 
-        LOGGER.fine("Handling path: " + fileName);
         if (Files.isDirectory(path)) {
-          LOGGER.fine("Is folder: " + fileName);
 
           if (AlbumFolder.isValidSoundtrackAlbumFolderName(path.getFileName().toString())) {
             AlbumFolder.getAlbumOnDiscInfoForSoundtrackAlbumFolder(path, true, albumsOnDiscInfo, errors);
@@ -180,24 +171,18 @@ public class MusicFolderContent {
       // In this snippet, it can only be thrown by newDirectoryStream.
       System.err.println(x);
     }
-    
-    LOGGER.fine("<= ");
   }
 
   /**
    * Gather all information on separate tracks in the Track Folders under the Music folder.
    */
   private void gatherTracksOnDiscInfo() {
-
-    LOGGER.fine("=> musicFolderName = " + musicFolderName);
     
     for (String mainIndexFolderName: TRACK_FOLDERS) {
       Path path = Paths.get(musicFolderName, mainIndexFolderName);
-      LOGGER.info("Handling path: " + path.toString());
       gatherTracksOnDiscInfoForTrackFolder(path, true);
     }
         
-    LOGGER.fine("<= ");
   }
 
   /**
@@ -218,22 +203,16 @@ public class MusicFolderContent {
    * @param checkNamingConvention if true, only tracks with the correct naming convention are added to the <code>TrackOnDiscInfo</code>.
    */
   private void gatherTracksOnDiscInfoForTrackFolder(Path trackFolder, boolean checkNamingConvention) {
-    LOGGER.fine("=> trackFolder=" + trackFolder + ", checkNamingConvention=" + checkNamingConvention);
-
     MusicFolderStructureErrorInfo error;
 
     try (DirectoryStream<Path> stream = Files.newDirectoryStream(trackFolder)) {
       for (Path file: stream) {
 
-        LOGGER.fine("Handling file: " + file.getFileName().toString());
         if (FileUtils.isAudioFile(file)) {
-          LOGGER.fine("Is audio track: " + file.getFileName());
 
           if (!checkNamingConvention  ||
               TrackFile.isNamingConventionSatisfiedForTrackFolderTrack(file)) {
-            LOGGER.fine("audio track OK, adding to list: " + file.toString());
             
-            String trackFileName = file.toString();
             TrackOnDiscInfo trackOnDiscInfo = new TrackOnDiscInfo(file);
             tracksOnDiscInfo.add(trackOnDiscInfo);
           } else {
@@ -253,7 +232,5 @@ public class MusicFolderContent {
       // In this snippet, it can only be thrown by newDirectoryStream.
       System.err.println(x);
     }
-        
-    LOGGER.fine("<=");
   }
 }

@@ -29,7 +29,6 @@ import goedegep.types.model.TypesPackage;
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EEnum;
-import org.eclipse.emf.ecore.EOperation;
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.EReference;
 
@@ -335,36 +334,6 @@ public class MediadbPackageImpl extends EPackageImpl implements MediadbPackage {
    * @generated
    */
   @Override
-  public EOperation getTrack__GetOriginalDiscTrackReference() {
-    return trackEClass.getEOperations().get(0);
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public EOperation getTrack__GetTrackArtist() {
-    return trackEClass.getEOperations().get(1);
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public EOperation getTrack__GetOriginalDisc() {
-    return trackEClass.getEOperations().get(2);
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
   public EClass getMediaDb() {
     return mediaDbEClass;
   }
@@ -417,56 +386,6 @@ public class MediadbPackageImpl extends EPackageImpl implements MediadbPackage {
   @Override
   public EReference getMediaDb_Videos() {
     return (EReference) mediaDbEClass.getEStructuralFeatures().get(4);
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public EOperation getMediaDb__GetArtist__String() {
-    return mediaDbEClass.getEOperations().get(0);
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public EOperation getMediaDb__GetAlbum__FlexDate_Artist_String() {
-    return mediaDbEClass.getEOperations().get(1);
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public EOperation getMediaDb__GetAlbums__FlexDate_Artist_String() {
-    return mediaDbEClass.getEOperations().get(2);
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public EOperation getMediaDb__GetTrackCollection__Collection() {
-    return mediaDbEClass.getEOperations().get(3);
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public EOperation getMediaDb__GetTrack__Artist_String() {
-    return mediaDbEClass.getEOperations().get(4);
   }
 
   /**
@@ -695,76 +614,6 @@ public class MediadbPackageImpl extends EPackageImpl implements MediadbPackage {
    * @generated
    */
   @Override
-  public EOperation getAlbum__GetTrackReference__Integer_int() {
-    return albumEClass.getEOperations().get(0);
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public EOperation getAlbum__GetPlayer__Artist() {
-    return albumEClass.getEOperations().get(1);
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public EOperation getAlbum__GetArtistAndTitle() {
-    return albumEClass.getEOperations().get(2);
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public EOperation getAlbum__IsMultiDiscAlbum() {
-    return albumEClass.getEOperations().get(3);
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public EOperation getAlbum__GetDisc() {
-    return albumEClass.getEOperations().get(4);
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public EOperation getAlbum__IWantAlbumOrTracksOfAlbum() {
-    return albumEClass.getEOperations().get(5);
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public EOperation getAlbum__IHaveToJudgeAlbumOrTracks() {
-    return albumEClass.getEOperations().get(6);
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
   public EClass getTrackReference() {
     return trackReferenceEClass;
   }
@@ -815,26 +664,6 @@ public class MediadbPackageImpl extends EPackageImpl implements MediadbPackage {
    * @generated
    */
   @Override
-  public EOperation getTrackReference__GetTrackNr() {
-    return trackReferenceEClass.getEOperations().get(0);
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public EOperation getTrackReference__GetDisc() {
-    return trackReferenceEClass.getEOperations().get(1);
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
   public EClass getDisc() {
     return discEClass;
   }
@@ -857,26 +686,6 @@ public class MediadbPackageImpl extends EPackageImpl implements MediadbPackage {
   @Override
   public EReference getDisc_TrackReferences() {
     return (EReference) discEClass.getEStructuralFeatures().get(1);
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public EOperation getDisc__GetAlbum() {
-    return discEClass.getEOperations().get(0);
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public EOperation getDisc__GetDiscNr() {
-    return discEClass.getEOperations().get(1);
   }
 
   /**
@@ -1155,16 +964,6 @@ public class MediadbPackageImpl extends EPackageImpl implements MediadbPackage {
    * @generated
    */
   @Override
-  public EOperation getTrackCollection__GetTrackReferece__Artist_String() {
-    return trackCollectionEClass.getEOperations().get(0);
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
   public EClass getVideo() {
     return videoEClass;
   }
@@ -1337,9 +1136,6 @@ public class MediadbPackageImpl extends EPackageImpl implements MediadbPackage {
     createEReference(trackEClass, TRACK__PARTS);
     createEReference(trackEClass, TRACK__AUTHORS);
     createEReference(trackEClass, TRACK__REFERRED_BY);
-    createEOperation(trackEClass, TRACK___GET_ORIGINAL_DISC_TRACK_REFERENCE);
-    createEOperation(trackEClass, TRACK___GET_TRACK_ARTIST);
-    createEOperation(trackEClass, TRACK___GET_ORIGINAL_DISC);
 
     mediaDbEClass = createEClass(MEDIA_DB);
     createEReference(mediaDbEClass, MEDIA_DB__ARTISTS);
@@ -1347,11 +1143,6 @@ public class MediadbPackageImpl extends EPackageImpl implements MediadbPackage {
     createEReference(mediaDbEClass, MEDIA_DB__TRACKS);
     createEReference(mediaDbEClass, MEDIA_DB__TRACKCOLLECTIONS);
     createEReference(mediaDbEClass, MEDIA_DB__VIDEOS);
-    createEOperation(mediaDbEClass, MEDIA_DB___GET_ARTIST__STRING);
-    createEOperation(mediaDbEClass, MEDIA_DB___GET_ALBUM__FLEXDATE_ARTIST_STRING);
-    createEOperation(mediaDbEClass, MEDIA_DB___GET_ALBUMS__FLEXDATE_ARTIST_STRING);
-    createEOperation(mediaDbEClass, MEDIA_DB___GET_TRACK_COLLECTION__COLLECTION);
-    createEOperation(mediaDbEClass, MEDIA_DB___GET_TRACK__ARTIST_STRING);
 
     artistEClass = createEClass(ARTIST);
     createEAttribute(artistEClass, ARTIST__NAME);
@@ -1376,27 +1167,16 @@ public class MediadbPackageImpl extends EPackageImpl implements MediadbPackage {
     createEAttribute(albumEClass, ALBUM__DESCRIPTION);
     createEReference(albumEClass, ALBUM__MY_INFO);
     createEAttribute(albumEClass, ALBUM__SOUNDTRACK);
-    createEOperation(albumEClass, ALBUM___GET_TRACK_REFERENCE__INTEGER_INT);
-    createEOperation(albumEClass, ALBUM___GET_PLAYER__ARTIST);
-    createEOperation(albumEClass, ALBUM___GET_ARTIST_AND_TITLE);
-    createEOperation(albumEClass, ALBUM___IS_MULTI_DISC_ALBUM);
-    createEOperation(albumEClass, ALBUM___GET_DISC);
-    createEOperation(albumEClass, ALBUM___IWANT_ALBUM_OR_TRACKS_OF_ALBUM);
-    createEOperation(albumEClass, ALBUM___IHAVE_TO_JUDGE_ALBUM_OR_TRACKS);
 
     trackReferenceEClass = createEClass(TRACK_REFERENCE);
     createEReference(trackReferenceEClass, TRACK_REFERENCE__TRACK);
     createEAttribute(trackReferenceEClass, TRACK_REFERENCE__BONUS_TRACK);
     createEReference(trackReferenceEClass, TRACK_REFERENCE__MY_TRACK_INFO);
     createEAttribute(trackReferenceEClass, TRACK_REFERENCE__ORIGINAL_ALBUM_TRACK_REFERENCE);
-    createEOperation(trackReferenceEClass, TRACK_REFERENCE___GET_TRACK_NR);
-    createEOperation(trackReferenceEClass, TRACK_REFERENCE___GET_DISC);
 
     discEClass = createEClass(DISC);
     createEAttribute(discEClass, DISC__TITLE);
     createEReference(discEClass, DISC__TRACK_REFERENCES);
-    createEOperation(discEClass, DISC___GET_ALBUM);
-    createEOperation(discEClass, DISC___GET_DISC_NR);
 
     mediumInfoEClass = createEClass(MEDIUM_INFO);
     createEAttribute(mediumInfoEClass, MEDIUM_INFO__MEDIUM_TYPE);
@@ -1431,7 +1211,6 @@ public class MediadbPackageImpl extends EPackageImpl implements MediadbPackage {
     trackCollectionEClass = createEClass(TRACK_COLLECTION);
     createEAttribute(trackCollectionEClass, TRACK_COLLECTION__COLLECTION);
     createEReference(trackCollectionEClass, TRACK_COLLECTION__TRACK_REFERENCES);
-    createEOperation(trackCollectionEClass, TRACK_COLLECTION___GET_TRACK_REFERECE__ARTIST_STRING);
 
     videoEClass = createEClass(VIDEO);
     createEAttribute(videoEClass, VIDEO__TITLE);
@@ -1507,13 +1286,6 @@ public class MediadbPackageImpl extends EPackageImpl implements MediadbPackage {
         0, -1, Track.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES,
         !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
-    initEOperation(getTrack__GetOriginalDiscTrackReference(), this.getTrackReference(), "getOriginalDiscTrackReference",
-        0, 1, IS_UNIQUE, IS_ORDERED);
-
-    initEOperation(getTrack__GetTrackArtist(), this.getArtist(), "getTrackArtist", 0, 1, IS_UNIQUE, IS_ORDERED);
-
-    initEOperation(getTrack__GetOriginalDisc(), this.getDisc(), "getOriginalDisc", 0, 1, IS_UNIQUE, IS_ORDERED);
-
     initEClass(mediaDbEClass, MediaDb.class, "MediaDb", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEReference(getMediaDb_Artists(), this.getArtist(), null, "artists", null, 0, -1, MediaDb.class, !IS_TRANSIENT,
         !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED,
@@ -1530,31 +1302,6 @@ public class MediadbPackageImpl extends EPackageImpl implements MediadbPackage {
     initEReference(getMediaDb_Videos(), this.getVideo(), null, "videos", null, 0, -1, MediaDb.class, !IS_TRANSIENT,
         !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED,
         IS_ORDERED);
-
-    EOperation op = initEOperation(getMediaDb__GetArtist__String(), this.getArtist(), "getArtist", 0, 1, IS_UNIQUE,
-        IS_ORDERED);
-    addEParameter(op, ecorePackage.getEString(), "artistName", 0, 1, IS_UNIQUE, IS_ORDERED);
-
-    op = initEOperation(getMediaDb__GetAlbum__FlexDate_Artist_String(), this.getAlbum(), "getAlbum", 0, 1, IS_UNIQUE,
-        IS_ORDERED);
-    addEParameter(op, theTypesPackage.getEFlexDate(), "releaseDate", 0, 1, IS_UNIQUE, IS_ORDERED);
-    addEParameter(op, this.getArtist(), "artist", 0, 1, IS_UNIQUE, IS_ORDERED);
-    addEParameter(op, ecorePackage.getEString(), "title", 0, 1, IS_UNIQUE, IS_ORDERED);
-
-    op = initEOperation(getMediaDb__GetAlbums__FlexDate_Artist_String(), this.getAlbum(), "getAlbums", 0, -1, IS_UNIQUE,
-        !IS_ORDERED);
-    addEParameter(op, theTypesPackage.getEFlexDate(), "releaseDate", 0, 1, IS_UNIQUE, IS_ORDERED);
-    addEParameter(op, this.getArtist(), "artist", 0, 1, IS_UNIQUE, IS_ORDERED);
-    addEParameter(op, ecorePackage.getEString(), "title", 0, 1, IS_UNIQUE, IS_ORDERED);
-
-    op = initEOperation(getMediaDb__GetTrackCollection__Collection(), this.getTrackCollection(), "getTrackCollection",
-        0, 1, IS_UNIQUE, IS_ORDERED);
-    addEParameter(op, this.getCollection(), "collection", 0, 1, IS_UNIQUE, IS_ORDERED);
-
-    op = initEOperation(getMediaDb__GetTrack__Artist_String(), this.getTrack(), "getTrack", 0, 1, IS_UNIQUE,
-        IS_ORDERED);
-    addEParameter(op, this.getArtist(), "artist", 0, 1, IS_UNIQUE, IS_ORDERED);
-    addEParameter(op, ecorePackage.getEString(), "title", 0, 1, IS_UNIQUE, IS_ORDERED);
 
     initEClass(artistEClass, Artist.class, "Artist", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getArtist_Name(), ecorePackage.getEString(), "name", null, 0, 1, Artist.class, !IS_TRANSIENT,
@@ -1607,28 +1354,6 @@ public class MediadbPackageImpl extends EPackageImpl implements MediadbPackage {
     initEAttribute(getAlbum_Soundtrack(), ecorePackage.getEBoolean(), "soundtrack", null, 0, 1, Album.class,
         !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
-    op = initEOperation(getAlbum__GetTrackReference__Integer_int(), this.getTrackReference(), "getTrackReference", 0, 1,
-        IS_UNIQUE, IS_ORDERED);
-    addEParameter(op, ecorePackage.getEIntegerObject(), "discNr", 0, 1, IS_UNIQUE, IS_ORDERED);
-    addEParameter(op, ecorePackage.getEInt(), "trackNr", 0, 1, IS_UNIQUE, IS_ORDERED);
-
-    op = initEOperation(getAlbum__GetPlayer__Artist(), this.getPlayer(), "getPlayer", 0, 1, IS_UNIQUE, IS_ORDERED);
-    addEParameter(op, this.getArtist(), "artist", 0, 1, IS_UNIQUE, IS_ORDERED);
-
-    initEOperation(getAlbum__GetArtistAndTitle(), ecorePackage.getEString(), "getArtistAndTitle", 0, 1, IS_UNIQUE,
-        IS_ORDERED);
-
-    initEOperation(getAlbum__IsMultiDiscAlbum(), ecorePackage.getEBoolean(), "isMultiDiscAlbum", 0, 1, IS_UNIQUE,
-        IS_ORDERED);
-
-    initEOperation(getAlbum__GetDisc(), this.getDisc(), "getDisc", 0, 1, IS_UNIQUE, IS_ORDERED);
-
-    initEOperation(getAlbum__IWantAlbumOrTracksOfAlbum(), ecorePackage.getEBoolean(), "iWantAlbumOrTracksOfAlbum", 0, 1,
-        IS_UNIQUE, IS_ORDERED);
-
-    initEOperation(getAlbum__IHaveToJudgeAlbumOrTracks(), ecorePackage.getEBoolean(), "iHaveToJudgeAlbumOrTracks", 0, 1,
-        IS_UNIQUE, IS_ORDERED);
-
     initEClass(trackReferenceEClass, TrackReference.class, "TrackReference", !IS_ABSTRACT, !IS_INTERFACE,
         IS_GENERATED_INSTANCE_CLASS);
     initEReference(getTrackReference_Track(), this.getTrack(), this.getTrack_ReferredBy(), "track", null, 1, 1,
@@ -1644,20 +1369,12 @@ public class MediadbPackageImpl extends EPackageImpl implements MediadbPackage {
         "originalAlbumTrackReference", null, 0, 1, TrackReference.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE,
         IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
-    initEOperation(getTrackReference__GetTrackNr(), ecorePackage.getEInt(), "getTrackNr", 0, 1, IS_UNIQUE, IS_ORDERED);
-
-    initEOperation(getTrackReference__GetDisc(), this.getDisc(), "getDisc", 0, 1, IS_UNIQUE, IS_ORDERED);
-
     initEClass(discEClass, Disc.class, "Disc", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getDisc_Title(), ecorePackage.getEString(), "title", null, 0, 1, Disc.class, !IS_TRANSIENT,
         !IS_VOLATILE, IS_CHANGEABLE, IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEReference(getDisc_TrackReferences(), this.getTrackReference(), null, "trackReferences", null, 1, -1,
         Disc.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE,
         IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-
-    initEOperation(getDisc__GetAlbum(), this.getAlbum(), "getAlbum", 0, 1, IS_UNIQUE, IS_ORDERED);
-
-    initEOperation(getDisc__GetDiscNr(), ecorePackage.getEInt(), "getDiscNr", 0, 1, IS_UNIQUE, IS_ORDERED);
 
     initEClass(mediumInfoEClass, MediumInfo.class, "MediumInfo", !IS_ABSTRACT, !IS_INTERFACE,
         IS_GENERATED_INSTANCE_CLASS);
@@ -1725,11 +1442,6 @@ public class MediadbPackageImpl extends EPackageImpl implements MediadbPackage {
     initEReference(getTrackCollection_TrackReferences(), this.getTrackReference(), null, "trackReferences", null, 0, -1,
         TrackCollection.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES,
         !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-
-    op = initEOperation(getTrackCollection__GetTrackReferece__Artist_String(), this.getTrackReference(),
-        "getTrackReferece", 0, 1, IS_UNIQUE, IS_ORDERED);
-    addEParameter(op, this.getArtist(), "artist", 0, 1, IS_UNIQUE, IS_ORDERED);
-    addEParameter(op, ecorePackage.getEString(), "title", 0, 1, IS_UNIQUE, IS_ORDERED);
 
     initEClass(videoEClass, Video.class, "Video", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getVideo_Title(), ecorePackage.getEString(), "title", null, 0, 1, Video.class, !IS_TRANSIENT,

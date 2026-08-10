@@ -8,21 +8,6 @@
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
       <details key="documentation" value="A music track that may appear on one or more albums."/>
     </eAnnotations>
-    <eOperations name="getOriginalDiscTrackReference" eType="#//TrackReference">
-      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="Get the {@code TrackReference} of the original album.&#xD;&#xA;&lt;p>&#xD;&#xA;This is the 'referred by' {@code TrackReference} which has its {@code originalAlbumTrackReference} set."/>
-      </eAnnotations>
-    </eOperations>
-    <eOperations name="getTrackArtist" eType="#//Artist">
-      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="Get the track artist. If {@code artist} is set, this is returned. Else, if {@code originalDisc} is set, the artist of the album of that disc is returned."/>
-      </eAnnotations>
-    </eOperations>
-    <eOperations name="getOriginalDisc" eType="#//Disc">
-      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="Get the {@code Disc} of the original album.&#xD;&#xA;&lt;p>&#xD;&#xA;This is equal to calling {@code getOriginalDiscTrackReference()} followed by calling {@code getDisc()} on the obtained {@code TrackReference} (if it isn't null)."/>
-      </eAnnotations>
-    </eOperations>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="title" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
         unsettable="true"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="duration" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EIntegerObject"
@@ -38,45 +23,10 @@
     <eStructuralFeatures xsi:type="ecore:EReference" name="referredBy" upperBound="-1"
         eType="#//TrackReference" eOpposite="#//TrackReference/track"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="MediaDb">
+  <eClassifiers xsi:type="ecore:EClass" name="MediaDb" abstract="true" interface="true">
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
       <details key="documentation" value="This interface is the top level interface for the media (music) database.&lt;br>&#xD;&#xA;It contains both general information like information on albums and artists, and personal information like whether I want to have an album and on what media I have it.&lt;/br>&#xD;&#xA;The interface names for personal information start with 'My', being {@code MyInfo} and {@code MyTrackInfo}.&lt;br/>&#xD;&#xA;&lt;h2>Overview of the interfaces&lt;/h2>&#xD;&#xA;&lt;h3>{@link Album}&lt;/h3>&lt;&#xD;&#xA;The database contains a list of albums, where an album can be any collection of tracks.&lt;br/>&#xD;&#xA;An album consists of one or more discs.&#xD;&#xA;&lt;h3>{@link Disc}&lt;/h3>&#xD;&#xA;This interface represents a physical disc like a CD or SACD, but can also represent any collection of tracks.&lt;br/>&#xD;&#xA;A disc contains tracks, represented by track references ({@code TrackReference}).&#xD;&#xA;&lt;h3>{@link TrackReference}&lt;/h3>&#xD;&#xA;The tracks of a disc are specified by track references and not directly by tracks. Main reason for this is that the same track (the same recording) can appear on more than one album.&#xD;&#xA;&lt;h3>{@link Track}&lt;/h3>&#xD;&#xA;The database contains a list of tracks, where a track represents a single song/recording.&#xD;&#xA;The tracks are referred to (via track references) by the tracks of the discs of the albums and by the tracks in the track collections.&#xD;&#xA;&lt;h3>{@link TrackCollection}&lt;/h3>&#xD;&#xA;The database also contains track collections, which are collections of tracks of a specific genre and for which you don't have albums details.&#xD;&#xA;&lt;h3>{@link Artist}&lt;/h3>&#xD;&#xA;The database has a list of artists, which may be an artist of an album or track, or a player on an album or track, or an author of a track.&#xD;&#xA;&lt;h3>{@link Video}&lt;/h3>&#xD;&#xA;The database has a list of videos."/>
     </eAnnotations>
-    <eOperations name="getArtist" eType="#//Artist">
-      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="Get an {@code Artist} from the media database, based on its name.&#xD;&#xA;&#xD;&#xA;@param artistName the name of the artist&#xD;&#xA;@return the  {@code Artist} with the name {@code artistName}, or null if no such artist exists in the media database."/>
-      </eAnnotations>
-      <eParameters name="artistName" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
-    </eOperations>
-    <eOperations name="getAlbum" eType="#//Album">
-      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="Get an album based on release date (optional), artist and title.&#xD;&#xA;&lt;p>&#xD;&#xA;The artist and title are mandatory.&lt;br/>&#xD;&#xA;An album is found when:&#xD;&#xA;&lt;ul>&#xD;&#xA;&lt;li>If a release date is specified, this has to match&lt;/li>&#xD;&#xA;&lt;li>The album title has to 'fuzzy' match&lt;/li>&#xD;&#xA;&lt;li>The artist name has to match, or the artist name has to match with the container artist of the artist of the album&lt;/li>&#xD;&#xA;&lt;/ul>&#xD;&#xA;&#xD;&#xA;@param releaseDate The release date (issue date) of the album (optional)&#xD;&#xA;@param artist The {@code Artist} of the album (mandatory)&#xD;&#xA;@param title The {@code Title} of the album (mandatory)&#xD;&#xA;@return the spefied album, or null if no such album exists in the media database"/>
-      </eAnnotations>
-      <eParameters name="releaseDate" eType="ecore:EDataType ../../goedegep.types.model/model/types.ecore#//EFlexDate"/>
-      <eParameters name="artist" eType="#//Artist"/>
-      <eParameters name="title" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
-    </eOperations>
-    <eOperations name="getAlbums" ordered="false" upperBound="-1" eType="#//Album">
-      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="Get all albums with specified release date (optional), artist and title.&#xD;&#xA;&#xD;&#xA;@param releaseDate The release date (issue date) of the album (optional)&#xD;&#xA;@param artist The {@code Artist} of the album (optional). If the artist has a container artist, then this will be used.&#xD;&#xA;@param title The {@code Title} of the album (optional)&#xD;&#xA;@return all albums that match the specified values. The returned list may be empty, but it's never null."/>
-      </eAnnotations>
-      <eParameters name="releaseDate" eType="ecore:EDataType ../../goedegep.types.model/model/types.ecore#//EFlexDate"/>
-      <eParameters name="artist" eType="#//Artist"/>
-      <eParameters name="title" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
-    </eOperations>
-    <eOperations name="getTrackCollection" eType="#//TrackCollection">
-      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="Get a specific track collection.&#xD;&#xA;&#xD;&#xA;@param collection The {@code Collection} for which the track collection is to be returned.&#xD;&#xA;@return the {@code TrackCollection} for the {@collection}."/>
-      </eAnnotations>
-      <eParameters name="collection" eType="#//Collection"/>
-    </eOperations>
-    <eOperations name="getTrack" eType="#//Track">
-      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="Get a track specified by its artist and title.&#xD;&#xA;&#xD;&#xA;@param artist the track {@code Artist} (mandatory).&#xD;&#xA;@param titlte the track title (mandatory).&#xD;&#xA;@return the {@code Track} with given {@code artist} and {@code title}, or null if such a track doesn't exist. "/>
-      </eAnnotations>
-      <eParameters name="artist" eType="#//Artist"/>
-      <eParameters name="title" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
-    </eOperations>
     <eStructuralFeatures xsi:type="ecore:EReference" name="artists" upperBound="-1"
         eType="#//Artist" containment="true">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
@@ -145,44 +95,6 @@
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
       <details key="documentation" value="In this model an album can be any collection of tracks. It can be an LP, CD, BD, or your own compilation of tracks.&lt;br/>&#xD;&#xA;An album consists of one or more discs. So even if you have your own compilation of tracks, which you only have on your harddisk, this is still handled via tracks on a disc."/>
     </eAnnotations>
-    <eOperations name="getTrackReference" eType="#//TrackReference">
-      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="Get the track reference specified by disc number and track number.&#xD;&#xA;&#xD;&#xA;@param discNr The disc number (starting at 1) on which a track is to be found.&#xD;&#xA;@param trackNr The track number.&#xD;&#xA;@return The {@code TrackReference} specified by {@code discNr} and {@code trackNr}, or null if such a track doesn't exist."/>
-      </eAnnotations>
-      <eParameters name="discNr" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EIntegerObject"/>
-      <eParameters name="trackNr" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
-    </eOperations>
-    <eOperations name="getPlayer" eType="#//Player">
-      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="Get a player specified by the artist.&#xD;&#xA;&#xD;&#xA;@param artist The {@code Artist} of the player.&#xD;&#xA;@return the {@code Player} for the specified {@code artist}, or null if such a player doesn't exist."/>
-      </eAnnotations>
-      <eParameters name="artist" eType="#//Artist"/>
-    </eOperations>
-    <eOperations name="getArtistAndTitle" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
-      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="Get Artist and Title of the album.&#xD;&#xA;&lt;p>&#xD;&#xA;The information is provided in the format: &amp;lt;artist&amp;gt; - &amp;lt;title&amp;gt;&lt;br/>&#xD;&#xA;where:&lt;br/>&#xD;&#xA; &amp;lt;artist&amp;gt; is the name of the artist of the album, or '&amp;lt;no artist&amp;gt;' if this information isn't available.&lt;br/>.&#xD;&#xA; &amp;lt;title&amp;gt; is the title of the album,  '&amp;lt;no title&amp;gt;' if title isn't set.&#xD;&#xA;&#xD;&#xA;@return the artist and title of the album."/>
-      </eAnnotations>
-    </eOperations>
-    <eOperations name="isMultiDiscAlbum" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean">
-      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="Check whether the album is a multi disc album, i.e. the album consists of more than one disc.&lt;br/>&#xD;&#xA;The result of this method is the same as: album.getDiscs().size() > 1.&#xD;&#xA;&#xD;&#xA;@return true if the album is a multi disc album, false otherwise."/>
-      </eAnnotations>
-    </eOperations>
-    <eOperations name="getDisc" eType="#//Disc">
-      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="Get the Disc of a single disc album. A RuntimeException is thrown if the album is a multi disc album.&#xD;&#xA;&#xD;&#xA;@return the disc of the album, or null if the album has no disc."/>
-      </eAnnotations>
-    </eOperations>
-    <eOperations name="iWantAlbumOrTracksOfAlbum" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean">
-      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="Check whether I want this album or some tracks of the album, which means I still have to obtain the album or tracks of the album.&lt;br/>&#xD;&#xA;&#xD;&#xA;@return true if {@code iWant}  is set to YES at album level or on any track, false otherwise."/>
-      </eAnnotations>
-    </eOperations>
-    <eOperations name="iHaveToJudgeAlbumOrTracks" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean">
-      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="Check whether I still have to judge the album or tracks of the album.&lt;br/>&#xD;&#xA;This is the case if {@code iWant} is set to 'DONT KNOW' at album level or on any track.&#xD;&#xA;&#xD;&#xA;@return true if I still have to judge this album, false otherwise."/>
-      </eAnnotations>
-    </eOperations>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="title" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
         unsettable="true">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
@@ -267,8 +179,6 @@
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
       <details key="documentation" value="This used for (my) compilation albums."/>
     </eAnnotations>
-    <eOperations name="getTrackNr" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
-    <eOperations name="getDisc" eType="#//Disc"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="track" lowerBound="1" eType="#//Track"
         unsettable="true" eOpposite="#//Track/referredBy"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="bonusTrack" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
@@ -286,16 +196,6 @@
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
       <details key="documentation" value="A disc of an {@code Album}."/>
     </eAnnotations>
-    <eOperations name="getAlbum" eType="#//Album">
-      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="Get the {@code Album} of which this disc is a part.&#xD;&#xA;&#xD;&#xA;@return the {@code Album} of which this disc is a part."/>
-      </eAnnotations>
-    </eOperations>
-    <eOperations name="getDiscNr" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt">
-      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="Get the index of this disc (starting at 1) in the list of discs of the album."/>
-      </eAnnotations>
-    </eOperations>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="title" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
         unsettable="true">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
@@ -480,13 +380,6 @@
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
       <details key="documentation" value="A collection of tracks of a certain category (see {@Collection})."/>
     </eAnnotations>
-    <eOperations name="getTrackReferece" eType="#//TrackReference">
-      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="Find a track in any collection.&#xD;&#xA;&#xD;&#xA;@param artist The {@code Artist} of the track.&#xD;&#xA;@param title The title of the track.&#xD;&#xA;@return A track reference for the track specified by {@code artist} and {@code title}."/>
-      </eAnnotations>
-      <eParameters name="artist" eType="#//Artist"/>
-      <eParameters name="title" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
-    </eOperations>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="collection" eType="#//Collection"
         defaultValueLiteral="&lt;not-set>" unsettable="true">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">

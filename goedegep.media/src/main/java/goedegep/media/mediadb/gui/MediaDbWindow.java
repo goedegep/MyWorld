@@ -43,7 +43,8 @@ import goedegep.media.mediadb.model.Track;
 import goedegep.media.mediadb.model.TrackCollection;
 import goedegep.media.mediadb.model.TrackReference;
 import goedegep.media.mediadb.model.util.MediaDbUtil;
-import goedegep.media.musicfolder.logic.AlbumOnDiscInfo;
+import goedegep.media.musicfolder.logic.AlbumOnHardDiskInfo;
+import goedegep.media.musicfolder.logic.AlbumOnHardDiskInfo2;
 import goedegep.media.musicfolder.logic.MusicFolderContent;
 import goedegep.resources.ImageSize;
 import goedegep.util.Result;
@@ -159,13 +160,13 @@ public class MediaDbWindow extends JfxStage {
    * This map provides the on disc location for single disc albums.
    * TODO shouldn't this be renamed to singleDiscAlbumToAlbumDiscLocationInfoMap?
    */
-  private Map<Album, AlbumOnDiscInfo> albumToMusicFolderLocationMap;
+  private Map<Album, AlbumOnHardDiskInfo2> albumToMusicFolderLocationMap;
   
   /**
    * This map provides the on disc location for the discs of multi-disc albums.
    * TODO shouldn't this be renamed to albumDiscToAlbumDiscLocationInfoMap?
    */
-  private Map<Disc, AlbumOnDiscInfo> albumDiscToMusicFolderLocationMap;
+  private Map<Disc, AlbumOnHardDiskInfo2> albumDiscToMusicFolderLocationMap;
   
   /**
    * This map provides the on disc location for separate tracks (i.e. tracks which aren't part of a complete disc).
@@ -249,9 +250,9 @@ public class MediaDbWindow extends JfxStage {
             if (trackReference.getTrack() != null) {
               trackId = trackReference.getTrack().getTitle();
             } else {
-              trackId = String.valueOf(trackReference.getTrackNr());
+              trackId = String.valueOf(MediaDbUtil.getTrackNr(trackReference));
             }
-            LOGGER.severe("No MyTrackInfo for Track: " + trackId + " of album: " + album.getArtistAndTitle());
+            LOGGER.severe("No MyTrackInfo for Track: " + trackId + " of album: " + MediaDbUtil.getArtistAndTitle(album));
             trackWithoutSourceType = true;
           } else {
             List<MediumInfo> mediumInfos2 = myTrackInfo.getIHaveOn();
@@ -271,7 +272,7 @@ public class MediaDbWindow extends JfxStage {
         if (!sourceTypeInMyInfo) {
 //          LOGGER.severe("no SourceType in MyInfo of album: " + album.getArtistAndTitle()); TODO Enable
         } else {
-          LOGGER.severe("No MyTrackInfo for a Track of album: " + album.getArtistAndTitle());
+          LOGGER.severe("No MyTrackInfo for a Track of album: " + MediaDbUtil.getArtistAndTitle(album));
         }
       }
     }
@@ -309,164 +310,36 @@ public class MediaDbWindow extends JfxStage {
   }
   
   private void tempFixProblems() {
-//    TrackReference trToRemove = null;
-//    for (TrackReference ttt: mediaDb.getTrackCollection(Collection.SAMPLE).getTrackReferences()) {
-//      Track tttt = ttt.getTrack();
-//      if (tttt != null  &&  tttt.getTitle().contains("Nothing Turned")) {
-//        trToRemove = ttt;
-//        LOGGER.severe("Found");
-//      }
-//    }
-//    if (trToRemove != null) {
-//      mediaDb.getTrackCollection(Collection.SAMPLE).getTrackReferences().remove(trToRemove);
-//    }
-//    
-//    // yo la tengo
-//    // change sample track to Big Day Coming
-//    Artist artist = mediaDb.getArtist("Yo La Tengo");
-//    if (artist != null) {
-//      LOGGER.severe("artist found");
-//    } else {
-//      LOGGER.severe("artist NOT found");
-//      return;
-//    }
-//    TrackReference tr = artist.getSample();
-//    MyTrackInfo mti2 = tr.getMyTrackInfo();
-//    artist.setSample(null);
-//    mediaDb.getTrackCollection(Collection.SAMPLE).getTrackReferences().remove(tr);
-//    
-//    Track track = mediaDb.getTrack(artist, "Big Day Coming");
-//    if (track != null) {
-//      LOGGER.severe("track found");
-//    } else {
-//      LOGGER.severe("track NOT found");
-//      return;
-//    }
-//    
-//    Album album = mediaDb.getAlbum(new FlexDate(1993), artist, "Painful");
-//    if (album != null) {
-//      LOGGER.severe("album found");
-//    } else {
-//      LOGGER.severe("album NOT found");
-//      return;
-//    }
-//    
-//    Disc disc = album.getDisc();
-//    TrackReference trackReferenceOriginal = disc.getTrackReferences().get(0);
-//    trackReferenceOriginal.setOriginalAlbumTrackReference(true);
-//
-//    artist.setMyComments("Hoef ik niet te hebben. Wel het album 'Painful' een tijd gehad.");
+//    // yo la: track must be in samples collection, album track must refer to this (is orig. album), artist sample must also refer to this.
+//    Artist artist = MediaDbUtil.getArtist(mediaDb, "Yo La Tengo");
+//    Track track = MediaDbUtil.getTrack(mediaDb, artist, "Big Day Coming");
 //    TrackReference trackReference = MediadbFactory.eINSTANCE.createTrackReference();
 //    trackReference.setTrack(track);
 //    MyTrackInfo myTrackInfo = MediadbFactory.eINSTANCE.createMyTrackInfo();
-//    myTrackInfo.setTrackReference(trackReferenceOriginal);
-//    MediumInfo iHaveOn = MediadbFactory.eINSTANCE.createMediumInfo();
-//    iHaveOn.setMediumType(MediumType.HARDDISK);
-//    iHaveOn.setInformationType(InformationType.MP3);
-//    myTrackInfo.getIHaveOn().add(iHaveOn);
-//    trackReference.setMyTrackInfo(myTrackInfo);
-//    
-//    artist.setSample(trackReference);
-//    
-//    // on the album, refer to sample, rest Iwant no
-//    trackReferenceOriginal.getMyTrackInfo().setTrackReference(trackReference);
-//    for (TrackReference t: disc.getTrackReferences()) {
-//      t.getMyTrackInfo().setIWant(IWant.NO);
-//    }
-//    
-//    Iterator iterator = mediaDb.eAllContents();
-//    while (iterator.hasNext()) {
-//      Object object = iterator.next();
-//      if (object instanceof MyTrackInfo mti) {
-//        TrackReference tref = mti.getTrackReference();
-//        if (tref != null) {
-//          Track trck = tref.getTrack();
-//          if (trck != null  &&  trck.getTitle().contains("Nothing Turned")) {
-//            LOGGER.severe("Found");
-//          }
-//        }
-//      }
-//      if (object instanceof TrackReference tref2) {
-//        Track trck = tref2.getTrack();
-//        if (trck != null  &&  trck.getTitle().contains("Nothing Turned")) {
-//          TrackCollection container = (TrackCollection) tref2.eContainer();
-//          container.getTrackReferences().remove(tref2);
-//          LOGGER.severe("Found");
-//        }
-//      }
-//      
-//      if (object instanceof EObject eObject) {
-//        EObject container = eObject.eContainer();
-//        if (container == null) {
-//          LOGGER.severe("No eContainer");
-//        }
-//      }
-//    }
-    
-//    Artist artist = mediaDb.getArtist("The Smiths");
-//    if (artist == null) {
-//      LOGGER.severe("Artist not found");
-//      return;
-//    }
-//    
-//    Album album = mediaDb.getAlbum(null, artist, "Hatful Of Hollow");
-//    if (album == null) {
-//      LOGGER.severe("Album not found");
-//      return;
-//    }
-//    LOGGER.severe(album.toString());
-//    
-//    MyInfo myInfo = album.getMyInfo();
-//    if (myInfo == null) {
-//      LOGGER.severe("Album has no MyInfo");
-//      return;
-//    }
-//
-//    LOGGER.severe("Clearing \'I want\' for: " + album.getArtistAndTitle());
-//    // Clear I want
-//    Disc disc = album.getDisc();
-//    for (TrackReference trackReference: disc.getTrackReferences()) {
-//      MyTrackInfo myTrackInfo = trackReference.getMyTrackInfo();
-//      if (myTrackInfo != null) {
-//        myTrackInfo.unsetIWant();
-//      }
-//    }
-//    
-//    // Set I have on to harddisk/flac
-//    List<MediumInfo> iHaveOn = myInfo.getIHaveOn();
-//    if (!iHaveOn.isEmpty()) {
-//      LOGGER.severe("Some i have on already filled in");
-//      return;
-//    }
-    
 //    MediumInfo mediumInfo = MediadbFactory.eINSTANCE.createMediumInfo();
+//    mediumInfo.setInformationType(InformationType.MP3);
 //    mediumInfo.setMediumType(MediumType.HARDDISK);
-//    mediumInfo.setInformationType(InformationType.FLAC);
-//    iHaveOn.add(mediumInfo);
-    
-    
-//    TrackCollection samplesCollection = mediaDb.getTrackCollection(Collection.SAMPLE);
-//    Artist artist = mediaDb.getArtist("Chris Jones");
-//    TrackReference reference = samplesCollection.getTrackReferece(artist, "Long After You're Gone");
-//    samplesCollection.getTrackReferences().remove(reference);
-//    TrackCollection eastCollection = mediaDb.getTrackCollection(Collection.EASY_LISTENING);
-//    eastCollection.getTrackReferences().add(reference);
-    
-    
-//  Artist artist = mediaDb.getArtist("Sage Francis");
-//  Track track = mediaDb.getTrack(artist, "The Runaways");
-//  track.setTitle("Runaways");
-    
-    addAlbumForSample("Breathless", "Viktor Lazlo", new FlexDate(1992), 10, "Champagne And Wine");
-//    addAlbumForSample("Ágætis Byrjun", "Sigur Rós", new FlexDate(1999), 8, "Ágætis Byrjun");
-//    addAlbumForSample("Where Our Love Grows", "Swing Out Sister", new FlexDate(2004), 0, "Love Won't Let You Down");
-//    addAlbumForSample("Red", "Taylor Swift", new FlexDate(2012), 1, "Red");
-//    addAlbumForSample("These Were The Earlies", "The Earlies", new FlexDate(2004), 4, "25 Easy Pieces");
-//    addAlbumForSample("The United States of America", "The United States of America", new FlexDate(1968), 1, "Hard Coming Love");
-    
-//    listTracksIWantToHave();
-    
-    LOGGER.severe("Done");
+//    myTrackInfo.getIHaveOn().add(mediumInfo);
+//    trackReference.setMyTrackInfo(myTrackInfo);
+//    TrackCollection trackCollection = MediaDbUtil.getTrackCollection(mediaDb, Collection.SAMPLE);
+//    trackCollection.getTrackReferences().add(trackReference);
+//        
+//    LOGGER.severe("trackReference: " + trackReference.toString());
+//    
+//    Album album = MediaDbUtil.getAlbum(mediaDb, null, artist, "Painful");
+//    Disc disc = MediaDbUtil.getDisc(album);
+//    TrackReference trackReference2 = disc.getTrackReferences().get(0);
+//    trackReference2.setTrack(track);
+//    MyTrackInfo myTrackInfo2 = trackReference2.getMyTrackInfo();
+//    myTrackInfo2.setTrackReference(trackReference);
+//    
+//    TrackReference trackReference3 = artist.getSample();
+//    trackReference3.setTrack(track);
+//    MyTrackInfo myTrackInfo3 = trackReference3.getMyTrackInfo();
+//    myTrackInfo3.getIHaveOn().clear();
+//    myTrackInfo3.setTrackReference(trackReference);
+//    
+//    LOGGER.severe("Done");
   }
   
   private void listTracksIWantToHave() {
@@ -494,63 +367,10 @@ public class MediaDbWindow extends JfxStage {
             buf.append(trackNr);
           }
         }
-        buf.append(" for album: ").append(album.getArtistAndTitle());
+        buf.append(" for album: ").append(MediaDbUtil.getArtistAndTitle(album));
         LOGGER.severe(buf.toString());
       }
     }
-  }
-  
-  private void addAlbumForSample(String albumTitle, String artistName, FlexDate releaseDate, int trackIndex, String trackTitle) {
-    Album newAlbum = MediadbFactory.eINSTANCE.createAlbum();
-    newAlbum.setTitle(albumTitle);
-    Artist artist = mediaDb.getArtist(artistName);
-    if (artist != null) {
-      LOGGER.severe("artist found");
-    } else {
-      LOGGER.severe("artist NOT found");
-      return;
-    }
-    newAlbum.setArtist(artist);
-    newAlbum.setReleaseDate(releaseDate);
-    MyInfo myInfo = MediadbFactory.eINSTANCE.createMyInfo();
-    myInfo.setIWant(IWant.NO);
-    newAlbum.setMyInfo(myInfo);
-    Disc disc = MediadbFactory.eINSTANCE.createDisc();
-    TrackReference trackReference;
-    
-    for (int i = 0; i < trackIndex; i++) {
-      trackReference = MediadbFactory.eINSTANCE.createTrackReference();
-      disc.getTrackReferences().add(trackReference);
-    }
-    
-    Track track = mediaDb.getTrack(artist, trackTitle);
-    if (track != null) {
-      LOGGER.severe("track found");
-    } else {
-      LOGGER.severe("track NOT found");
-      return;
-    }
-    
-    TrackCollection samplesCollection = mediaDb.getTrackCollection(Collection.SAMPLE);
-    TrackReference sampleReference = samplesCollection.getTrackReferece(artist, trackTitle);
-    if (sampleReference != null) {
-      LOGGER.severe("Sample reference found");
-    } else {
-      LOGGER.severe("Sample reference NOT found");
-      return;
-    }
-    
-    trackReference = MediadbFactory.eINSTANCE.createTrackReference();
-    trackReference.setTrack(track);
-    MyTrackInfo myTrackInfo = MediadbFactory.eINSTANCE.createMyTrackInfo();
-    myTrackInfo.setTrackReference(sampleReference);
-    trackReference.setMyTrackInfo(myTrackInfo);
-    trackReference.setOriginalAlbumTrackReference(true);
-    disc.getTrackReferences().add(trackReference);
-    newAlbum.getDiscs().add(disc);
-    
-    mediaDb.getAlbums().add(newAlbum);
-    
   }
   
   public String iHaveOnToString(List<MediumInfo> iHaveOnMedia) {
@@ -812,7 +632,7 @@ public class MediaDbWindow extends JfxStage {
       centerPaneChildren.remove(centerPaneChildren.size() - 1);
       Collection collection = collectionComboBox.getValue();
       ObservableList<Track> tracks = javafx.collections.FXCollections.observableArrayList();
-      for (TrackReference trackReference: mediaDb.getTrackCollection(collection).getTrackReferences()) {
+      for (TrackReference trackReference: MediaDbUtil.getTrackCollection(mediaDb, collection).getTrackReferences()) {
         tracks.add(trackReference.getTrack());
       }
       tracksTable.setItems(tracks);
@@ -870,7 +690,7 @@ public class MediaDbWindow extends JfxStage {
         for (TrackReference trackReference: disc.getTrackReferences()) {
           String bonusTrack = trackReference.getBonusTrack();
           if (bonusTrack != null  &&  bonusTrack.isEmpty()) {
-            LOGGER.severe("Bonus track empty: " + album.getArtistAndTitle() + ", " + disc.getTitle() + ", " + trackReference.getTrack().getTitle());
+            LOGGER.severe("Bonus track empty: " + MediaDbUtil.getArtistAndTitle(album) + ", " + disc.getTitle() + ", " + trackReference.getTrack().getTitle());
             trackReference.setBonusTrack(null);
           } else if (bonusTrack == null) {
 //            LOGGER.severe("Bonus track null: " + album.getArtistAndTitle() + ", " + disc.getTitle() + ", " + trackReference.getTrack().getTitle());

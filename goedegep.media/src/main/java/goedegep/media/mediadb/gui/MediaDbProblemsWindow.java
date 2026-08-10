@@ -35,7 +35,7 @@ import goedegep.media.mediadb.model.Track;
 import goedegep.media.mediadb.model.TrackReference;
 import goedegep.media.mediadb.model.util.MediaDbUtil;
 import goedegep.media.musicfolder.logic.AlbumFolder;
-import goedegep.media.musicfolder.logic.AlbumOnDiscInfo;
+import goedegep.media.musicfolder.logic.AlbumOnHardDiskInfo;
 import goedegep.media.musicfolder.logic.MusicFolderStructureErrorInfo;
 import goedegep.media.musicfolder.logic.MusicFolderUtil;
 import goedegep.media.musicfolder.logic.TrackFile;
@@ -210,7 +210,7 @@ private MediaDb mediaDb;
       buf.append("Track title contains 'bonus track'");
       album = mediaDbErrorInfo.getAlbum();
       if (album != null) {
-        buf.append(NEWLINE).append("Album: ").append(album.getArtistAndTitle());
+        buf.append(NEWLINE).append("Album: ").append(MediaDbUtil.getArtistAndTitle(album));
       }
       TrackReference trackReference = mediaDbErrorInfo.getTrackReference();
       if (trackReference != null) {
@@ -490,9 +490,9 @@ private MediaDb mediaDb;
 
         if (albumFolderNameParts.length > 1) {
           String albumTitle = albumFolderNameParts[1].trim();
-          candidateAlbums = mediaDb.getAlbums(issueDate, null, albumTitle);
+          candidateAlbums = MediaDbUtil.getAlbums(mediaDb, issueDate, null, albumTitle);
         } else {
-          candidateAlbums = mediaDb.getAlbums(issueDate, null, null);
+          candidateAlbums = MediaDbUtil.getAlbums(mediaDb, issueDate, null, null);
         }
       } catch (java.text.ParseException e) {
         e.printStackTrace();
@@ -608,7 +608,7 @@ private MediaDb mediaDb;
 
         if (albumFolderNameParts.length > 1) {
           String artistName = albumFolderNameParts[1].trim();
-          Artist artist = mediaDb.getArtist(artistName);
+          Artist artist = MediaDbUtil.getArtist(mediaDb, artistName);
           if (albumFolderNameParts.length > 2) {
             String albumTitle = albumFolderNameParts[2].trim();
             candidateAlbums = getAlbums(issueDate, artist, albumTitle);
@@ -741,7 +741,7 @@ private MediaDb mediaDb;
 
   private void fillErrorPanelFor_ALBUM_ON_DISC_NOT_FOUND_IN_MEDIADB(ErrorPanel errorPanel, MediaDbAppErrorInfo mediaDbAppErrorInfo) {
     StringBuilder buf = new StringBuilder();
-    AlbumOnDiscInfo albumOnDiscInfo = mediaDbAppErrorInfo.getAlbumOnDiscInfo();
+    AlbumOnHardDiskInfo albumOnDiscInfo = mediaDbAppErrorInfo.getAlbumOnDiscInfo();
 
     buf.append("Found an album on disc that is not found in the media database:");
     buf.append(NEWLINE);
@@ -944,9 +944,9 @@ private MediaDb mediaDb;
     String albumFolderName = null;
     if (album != null  &&  trackReference != null) {
       if (album.isSoundtrack()) {
-        albumFolderName = MediaDbAppUtil.generateSoundtrackAlbumDiscFolderName(trackReference.getDisc(), null);
+        albumFolderName = MediaDbAppUtil.generateSoundtrackAlbumDiscFolderName(MediaDbUtil.getDisc(trackReference), null);
       } else {
-        albumFolderName = MediaDbAppUtil.generateAlbumDiscFolderName(trackReference.getDisc(), mediaDb, null);
+        albumFolderName = MediaDbAppUtil.generateAlbumDiscFolderName(MediaDbUtil.getDisc(trackReference), mediaDb, null);
       }
       buf.append("Track expected in folder: ").append(albumFolderName).append(NEWLINE);
     }
@@ -956,10 +956,10 @@ private MediaDb mediaDb;
     // Offer rename option if possible
     if (albumFolderName != null) {
       Path albumFolderPath = Paths.get(albumFolderName);
-      String sourceTrackFileName = TrackFile.getTrackFileNameForTrackIndex(albumFolderPath, trackReference.getTrackNr());
+      String sourceTrackFileName = TrackFile.getTrackFileNameForTrackIndex(albumFolderPath, MediaDbUtil.getTrackNr(trackReference));
       String trackFileNameWithoutExtension = null;
       if (MediaDbUtil.isOwnCompilationAlbum(album)) {
-        TrackReference originalAlbumTrackReference = trackReference.getTrack().getOriginalDiscTrackReference();
+        TrackReference originalAlbumTrackReference = MediaDbUtil.getOriginalDiscTrackReference(trackReference.getTrack());
         if (originalAlbumTrackReference != null) {
           trackFileNameWithoutExtension = MediaDbAppUtil.generateTrackFileNameForMyCompilationAlbum(originalAlbumTrackReference, mediaDb);
         } else {

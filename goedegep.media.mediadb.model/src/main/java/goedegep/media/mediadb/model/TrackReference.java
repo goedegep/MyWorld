@@ -235,20 +235,4 @@ public interface TrackReference extends EObject {
    */
   boolean isSetOriginalAlbumTrackReference();
 
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @model kind="operation"
-   * @generated
-   */
-  int getTrackNr();
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @model kind="operation"
-   * @generated
-   */
-  Disc getDisc();
-
 } // TrackReference

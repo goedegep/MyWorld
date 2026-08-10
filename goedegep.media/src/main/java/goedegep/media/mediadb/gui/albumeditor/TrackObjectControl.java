@@ -23,6 +23,7 @@ import goedegep.media.mediadb.model.MediaDb;
 import goedegep.media.mediadb.model.MediadbPackage;
 import goedegep.media.mediadb.model.Track;
 import goedegep.media.mediadb.model.TrackReference;
+import goedegep.media.mediadb.model.util.MediaDbUtil;
 import goedegep.util.datetime.FlexDate;
 import javafx.scene.Node;
 import javafx.scene.input.MouseEvent;
@@ -224,22 +225,22 @@ class TrackStringConverterAndChecker extends StringConverterAndChecker<Track> {
     buf.append(trackTitle);
     buf.append(" (");
 
-    TrackReference originalDiscTrackReference = track.getOriginalDiscTrackReference();
+    TrackReference originalDiscTrackReference = MediaDbUtil.getOriginalDiscTrackReference(track);
     if (originalDiscTrackReference != null) {
-      Disc disc = originalDiscTrackReference.getDisc();
-      Album album = disc.getAlbum();
+      Disc disc = MediaDbUtil.getDisc(originalDiscTrackReference);
+      Album album = MediaDbUtil.getAlbum(disc);
       buf.append(album.getTitle()).append(":");
       
-      if (album.isMultiDiscAlbum()) {
+      if (MediaDbUtil.isMultiDiscAlbum(album)) {
         if (disc.getTitle() != null) {
           buf.append(disc.getTitle());
         } else {
-          buf.append(disc.getDiscNr());
+          buf.append(MediaDbUtil.getDiscNr(disc));
         }
         buf.append(":");
       }
       
-      int trackNr = originalDiscTrackReference.getTrackNr();
+      int trackNr = MediaDbUtil.getTrackNr(originalDiscTrackReference);
       buf.append(trackNr).append(":");
       
       FlexDate releaseDate = album.getReleaseDate();
@@ -249,7 +250,7 @@ class TrackStringConverterAndChecker extends StringConverterAndChecker<Track> {
       }
       buf.append(releaseYear);     
     } else {
-      Artist artist = track.getTrackArtist();
+      Artist artist = MediaDbUtil.getTrackArtist(track);
       if (artist != null) {
         buf.append(artist.getName());
       }

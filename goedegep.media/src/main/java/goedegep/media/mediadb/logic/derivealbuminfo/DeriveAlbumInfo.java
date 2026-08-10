@@ -41,6 +41,7 @@ import goedegep.media.mediadb.model.MediadbFactory;
 import goedegep.media.mediadb.model.MyInfo;
 import goedegep.media.mediadb.model.Track;
 import goedegep.media.mediadb.model.TrackReference;
+import goedegep.media.mediadb.model.util.MediaDbUtil;
 import goedegep.util.datetime.FlexDate;
 import goedegep.util.datetime.FlexDateFormat;
 import goedegep.util.file.FileUtils;
@@ -635,7 +636,7 @@ public class DeriveAlbumInfo {
     if (trackArtistName != null) {
       Artist trackArtist = getOrAddArtistByName(trackArtistName);
       
-      track = mediaDb.getTrack(trackArtist, trackTitle);
+      track = MediaDbUtil.getTrack(mediaDb, trackArtist, trackTitle);
       // As we are handling a single album in our mediaDb, there shouldn't be a track with this title and artist yet.
       if (track == null) {
         track = MEDIA_DB_FACTORY.createTrack();
@@ -819,7 +820,7 @@ public class DeriveAlbumInfo {
    * @return the {@code Artist} with the specified {@code artistName}.
    */
   private Artist getOrAddArtistByName(String artistName) {
-    Artist artist = mediaDb.getArtist(artistName);
+    Artist artist = MediaDbUtil.getArtist(mediaDb, artistName);
     if (artist == null) {
       artist = MEDIA_DB_FACTORY.createArtist();
       artist.setName(artistName);

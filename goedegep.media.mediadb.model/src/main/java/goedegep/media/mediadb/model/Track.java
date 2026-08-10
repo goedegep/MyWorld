@@ -295,41 +295,4 @@ public interface Track extends EObject {
    */
   EList<TrackReference> getReferredBy();
 
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * <!-- begin-model-doc -->
-   * Get the {@code TrackReference} of the original album.
-   * <p>
-   * This is the 'referred by' {@code TrackReference} which has its {@code originalAlbumTrackReference} set.
-   * <!-- end-model-doc -->
-   * @model kind="operation"
-   * @generated
-   */
-  TrackReference getOriginalDiscTrackReference();
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * <!-- begin-model-doc -->
-   * Get the track artist. If {@code artist} is set, this is returned. Else, if {@code originalDisc} is set, the artist of the album of that disc is returned.
-   * <!-- end-model-doc -->
-   * @model kind="operation"
-   * @generated
-   */
-  Artist getTrackArtist();
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * <!-- begin-model-doc -->
-   * Get the {@code Disc} of the original album.
-   * <p>
-   * This is equal to calling {@code getOriginalDiscTrackReference()} followed by calling {@code getDisc()} on the obtained {@code TrackReference} (if it isn't null).
-   * <!-- end-model-doc -->
-   * @model kind="operation"
-   * @generated
-   */
-  Disc getOriginalDisc();
-
 } // Track

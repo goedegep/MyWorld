@@ -5,6 +5,7 @@ import java.util.logging.Logger;
 import goedegep.jfx.stringconverterandchecker.StringConverterAndChecker;
 import goedegep.media.mediadb.model.Artist;
 import goedegep.media.mediadb.model.MediaDb;
+import goedegep.media.mediadb.model.util.MediaDbUtil;
 
 /**
  * This class is a {@link StringConverterAndChecker} for en {@link Artist}.
@@ -61,7 +62,7 @@ public class ArtistStringConverterAndChecker extends StringConverterAndChecker<A
    */
   @Override
   public Artist fromString(String artistName) {
-    Artist artist = mediaDb.getArtist(artistName);
+    Artist artist = MediaDbUtil.getArtist(mediaDb,artistName);
     LOGGER.info("=> " + (artist != null ? artist.getName() : "<null>"));
     return artist;
   }

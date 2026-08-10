@@ -24,8 +24,8 @@ import goedegep.media.mediadb.model.Player;
 import goedegep.media.mediadb.model.Track;
 import goedegep.media.mediadb.model.TrackPart;
 import goedegep.media.mediadb.model.TrackReference;
+import goedegep.media.mediadb.model.util.MediaDbUtil;
 import goedegep.util.string.StringUtil;
-import java.lang.reflect.InvocationTargetException;
 
 /**
  * <!-- begin-user-doc -->
@@ -456,59 +456,6 @@ public class TrackImpl extends MinimalEObjectImpl.Container implements Track {
   /**
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @generated NOT
-   */
-  @Override
-  public TrackReference getOriginalDiscTrackReference() {
-    for (TrackReference trackReference : getReferredBy()) {
-      if (trackReference.isOriginalAlbumTrackReference()) {
-        return trackReference;
-      }
-    }
-
-    return null;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated NOT
-   */
-  @Override
-  public Artist getTrackArtist() {
-    Artist trackArtist = getArtist();
-
-    if (trackArtist == null) {
-      Disc disc = getOriginalDisc();
-      if (disc != null) {
-        Album album = disc.getAlbum();
-        trackArtist = album.getArtist();
-      }
-    }
-
-    return trackArtist;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated NOT
-   */
-  @Override
-  public Disc getOriginalDisc() {
-    Disc originalDisc = null;
-
-    TrackReference trackReference = getOriginalDiscTrackReference();
-    if (trackReference != null) {
-      originalDisc = trackReference.getDisc();
-    }
-
-    return originalDisc;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
    * @generated
    */
   @SuppressWarnings("unchecked")
@@ -665,24 +612,6 @@ public class TrackImpl extends MinimalEObjectImpl.Container implements Track {
   /**
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public Object eInvoke(int operationID, EList<?> arguments) throws InvocationTargetException {
-    switch (operationID) {
-    case MediadbPackage.TRACK___GET_ORIGINAL_DISC_TRACK_REFERENCE:
-      return getOriginalDiscTrackReference();
-    case MediadbPackage.TRACK___GET_TRACK_ARTIST:
-      return getTrackArtist();
-    case MediadbPackage.TRACK___GET_ORIGINAL_DISC:
-      return getOriginalDisc();
-    }
-    return super.eInvoke(operationID, arguments);
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
    * @generated NOT
    */
   @Override
@@ -707,13 +636,13 @@ public class TrackImpl extends MinimalEObjectImpl.Container implements Track {
 
     buf.append("originalDisc:");
     Disc originalDisc = null;
-    TrackReference originalDiscTrackReference = getOriginalDiscTrackReference();
+    TrackReference originalDiscTrackReference = MediaDbUtil.getOriginalDiscTrackReference(this);
     if (originalDiscTrackReference != null) {
-      originalDisc = originalDiscTrackReference.getDisc();
+      originalDisc = MediaDbUtil.getDisc(originalDiscTrackReference);
     }
     if (originalDisc != null) {
       Album originalAlbum = null;
-      originalAlbum = originalDisc.getAlbum();
+      originalAlbum = MediaDbUtil.getAlbum(originalDisc);
       buf.append(originalAlbum != null ? originalAlbum.getTitle() : "<no title>").append(" - ");
       if (originalDisc.isSetTitle()) {
         buf.append(originalDisc.getTitle());
@@ -736,11 +665,11 @@ public class TrackImpl extends MinimalEObjectImpl.Container implements Track {
       } else {
         buf.append(", ");
       }
-      Disc disc = trackReference.getDisc();
+      Disc disc = MediaDbUtil.getDisc(trackReference);
       if (disc != null) {
-        Album album = disc.getAlbum();
+        Album album = MediaDbUtil.getAlbum(disc);
         if (album != null) {
-          buf.append(album.getTitle()).append(":").append(trackReference.getTrackNr());
+          buf.append(album.getTitle()).append(":").append(MediaDbUtil.getTrackNr(trackReference));
         }
       }
     }

@@ -24,6 +24,7 @@ import goedegep.media.mediadb.model.MediadbPackage;
 import goedegep.media.mediadb.model.MyTrackInfo;
 import goedegep.media.mediadb.model.Track;
 import goedegep.media.mediadb.model.TrackReference;
+import goedegep.media.mediadb.model.util.MediaDbUtil;
 import goedegep.util.emf.EmfUtil;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
@@ -516,17 +517,17 @@ class TrackReferenceAndMyTrackInfoControls extends ObjectControlAggregationTempl
     }
     
     if (compilationTrackReference != null) {
-      compilationTrackReferenceDisc = compilationTrackReference.getDisc();
-      compilationTrackReferenceAlbum = compilationTrackReferenceDisc.getAlbum();
+      compilationTrackReferenceDisc = MediaDbUtil.getDisc(compilationTrackReference);
+      compilationTrackReferenceAlbum = MediaDbUtil.getAlbum(compilationTrackReferenceDisc);
       compilationTrackReferenceDiscId = compilationTrackReferenceDisc.getTitle();
       if (compilationTrackReferenceDiscId == null) {
-        compilationTrackReferenceDiscId = String.valueOf(compilationTrackReferenceDisc.getDiscNr());
+        compilationTrackReferenceDiscId = String.valueOf(MediaDbUtil.getDiscNr(compilationTrackReferenceDisc));
       }
     }
 
     if (compilationTrackReferenceAlbum != null) {
-      compilationTrackReferenceAlbumId = compilationTrackReferenceAlbum.getArtistAndTitle();
-      if (compilationTrackReferenceAlbum.isMultiDiscAlbum() &&  (compilationTrackReferenceDiscId != null)) {
+      compilationTrackReferenceAlbumId = MediaDbUtil.getArtistAndTitle(compilationTrackReferenceAlbum);
+      if (MediaDbUtil.isMultiDiscAlbum(compilationTrackReferenceAlbum) &&  (compilationTrackReferenceDiscId != null)) {
         compilationTrackReferenceAlbumId = compilationTrackReferenceAlbumId + " - " + compilationTrackReferenceDiscId;
       }
     }
@@ -638,21 +639,21 @@ class TrackReferenceAndMyTrackInfoControls extends ObjectControlAggregationTempl
     String originalAlbumTrackReferenceDiscId = null;
     TrackReference originalTrackReference = null;
     if (object != null) {
-      originalTrackReference = object.getTrack().getOriginalDiscTrackReference();
+      originalTrackReference = MediaDbUtil.getOriginalDiscTrackReference(object.getTrack());
     }
     
     if (originalTrackReference != null) {
-      originalAlbumTrackReferenceDisc = originalTrackReference.getDisc();
-      originalAlbumTrackReferenceAlbum = originalAlbumTrackReferenceDisc.getAlbum();
+      originalAlbumTrackReferenceDisc = MediaDbUtil.getDisc(originalTrackReference);
+      originalAlbumTrackReferenceAlbum = MediaDbUtil.getAlbum(originalAlbumTrackReferenceDisc);
       originalAlbumTrackReferenceDiscId = originalAlbumTrackReferenceDisc.getTitle();
       if (originalAlbumTrackReferenceDiscId == null) {
-        originalAlbumTrackReferenceDiscId = String.valueOf(originalAlbumTrackReferenceDisc.getDiscNr());
+        originalAlbumTrackReferenceDiscId = String.valueOf(MediaDbUtil.getDiscNr(originalAlbumTrackReferenceDisc));
       }
     }
 
     if (originalAlbumTrackReferenceAlbum != null) {
-      originalAlbumTrackReferenceAlbumId = originalAlbumTrackReferenceAlbum.getArtistAndTitle();
-      if (originalAlbumTrackReferenceAlbum.isMultiDiscAlbum() &&  (originalAlbumTrackReferenceDiscId != null)) {
+      originalAlbumTrackReferenceAlbumId = MediaDbUtil.getArtistAndTitle(originalAlbumTrackReferenceAlbum);
+      if (MediaDbUtil.isMultiDiscAlbum(originalAlbumTrackReferenceAlbum) &&  (originalAlbumTrackReferenceDiscId != null)) {
         originalAlbumTrackReferenceAlbumId = originalAlbumTrackReferenceAlbumId + " - " + originalAlbumTrackReferenceDiscId;
       }
     }
@@ -714,17 +715,17 @@ class TrackReferenceAndMyTrackInfoControls extends ObjectControlAggregationTempl
     }
     
     if (compilationTrackReference != null) {
-      compilationTrackReferenceDisc = compilationTrackReference.getDisc();
-      compilationTrackReferenceAlbum = compilationTrackReferenceDisc.getAlbum();
+      compilationTrackReferenceDisc = MediaDbUtil.getDisc(compilationTrackReference);
+      compilationTrackReferenceAlbum = MediaDbUtil.getAlbum(compilationTrackReferenceDisc);
       compilationTrackReferenceDiscId = compilationTrackReferenceDisc.getTitle();
       if (compilationTrackReferenceDiscId == null) {
-        compilationTrackReferenceDiscId = String.valueOf(compilationTrackReferenceDisc.getDiscNr());
+        compilationTrackReferenceDiscId = String.valueOf(MediaDbUtil.getDiscNr(compilationTrackReferenceDisc));
       }
     }
 
     if (compilationTrackReferenceAlbum != null) {
-      compilationTrackReferenceAlbumId = compilationTrackReferenceAlbum.getArtistAndTitle();
-      if (compilationTrackReferenceAlbum.isMultiDiscAlbum() &&  (compilationTrackReferenceDiscId != null)) {
+      compilationTrackReferenceAlbumId = MediaDbUtil.getArtistAndTitle(compilationTrackReferenceAlbum);
+      if (MediaDbUtil.isMultiDiscAlbum(compilationTrackReferenceAlbum) &&  (compilationTrackReferenceDiscId != null)) {
         compilationTrackReferenceAlbumId = compilationTrackReferenceAlbumId + " - " + compilationTrackReferenceDiscId;
       }
     }
@@ -833,11 +834,11 @@ class TrackReferenceAndMyTrackInfoControls extends ObjectControlAggregationTempl
 //  }
   
   public Track getTrack() {
-    if (object.getDisc().getAlbum() == null  ||  object.getDisc().getAlbum().getArtist() == null) {
+    if (MediaDbUtil.getAlbum(MediaDbUtil.getDisc(object)) == null  ||  MediaDbUtil.getAlbum(MediaDbUtil.getDisc(object)).getArtist() == null) {
       return null;
     }
     
-    Artist artist = object.getDisc().getAlbum().getArtist();
+    Artist artist = MediaDbUtil.getAlbum(MediaDbUtil.getDisc(object)).getArtist();
     
     for (Track track: mediaDb.getTracks()) {
       String trackTitle = track.getTitle();

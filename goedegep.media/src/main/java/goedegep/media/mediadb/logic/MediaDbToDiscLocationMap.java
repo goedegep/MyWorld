@@ -22,7 +22,8 @@ import goedegep.media.mediadb.model.Track;
 import goedegep.media.mediadb.model.TrackCollection;
 import goedegep.media.mediadb.model.TrackReference;
 import goedegep.media.mediadb.model.util.MediaDbUtil;
-import goedegep.media.musicfolder.logic.AlbumOnDiscInfo;
+import goedegep.media.musicfolder.logic.AlbumOnHardDiskInfo;
+import goedegep.media.musicfolder.logic.AlbumOnHardDiskInfo2;
 import goedegep.media.musicfolder.logic.MusicFolderContent;
 import goedegep.media.musicfolder.logic.TrackFile;
 import goedegep.media.musicfolder.logic.TrackOnDiscInfo;
@@ -30,14 +31,14 @@ import goedegep.util.file.FileUtils;
 
 
 /**
- * This class creates a mapping for albums and tracks in the media database, that should be available on disc, to their locations on disc.
+ * This class creates a mapping for albums and tracks in the media database, that should be available on hard disk, to their locations on hard disk.
  * 
  */
 public class MediaDbToDiscLocationMap {
   private static final Logger LOGGER = Logger.getLogger(MediaDbToDiscLocationMap.class.getName());
   
   /**
-   * Media database which contains the information about which albums and tracks should be available on disc.
+   * Media database which contains the information about which albums and tracks should be available on hard disk.
    */
   private MediaDb mediaDb;
   
@@ -48,7 +49,7 @@ public class MediaDbToDiscLocationMap {
    * When an album is used in a mapping it is removed from this list.
    * The remaining items in this list (after performing the mapping) are albums in the MusicFolder which are not referred to in the media database.
    */
-  private List<AlbumOnDiscInfo> albumsOnDiscInfoNotMapped;
+  private List<AlbumOnHardDiskInfo2> albumsOnDiscInfoNotMapped;
   
   /**
    * List of TrackOnDiscInfo not yet used.
@@ -65,12 +66,12 @@ public class MediaDbToDiscLocationMap {
    * If an album is completely available on disc, it will be in this map.<br/>
    * If any number of tracks are available on disc (partly available), in the folder for that album (so not via track references to another album), it will be in this map.
    */
-  private Map<Album, AlbumOnDiscInfo> albumToMusicFolderLocationMap = new HashMap<>();
+  private Map<Album, AlbumOnHardDiskInfo2> albumToMusicFolderLocationMap = new HashMap<>();
   
   /**
    * A map which provides information on where a disc of a multi-disc album in the media database can be found on disc (in the MusicFolder).
    */
-  private Map<Disc, AlbumOnDiscInfo> albumDiscToMusicFolderLocationMap = new HashMap<>();
+  private Map<Disc, AlbumOnHardDiskInfo2> albumDiscToMusicFolderLocationMap = new HashMap<>();
   
   /**
    * A map which provides information on where a track in the media database can be found on disc (in the MusicFolder).
@@ -126,7 +127,7 @@ public class MediaDbToDiscLocationMap {
    * 
    * @return  The map which provides information on where a single-disc album in the media database can be found on disc (in the MusicFolder).
    */
-  public Map<Album, AlbumOnDiscInfo> getAlbumToMusicFolderLocationMap() {
+  public Map<Album, AlbumOnHardDiskInfo2> getAlbumToMusicFolderLocationMap() {
     return albumToMusicFolderLocationMap;
   }
 
@@ -135,7 +136,7 @@ public class MediaDbToDiscLocationMap {
    * 
    * @return The map which provides information on where a disc of a multi-disc album in the media database can be found on disc (in the MusicFolder).
    */
-  public Map<Disc, AlbumOnDiscInfo> getAlbumDiscToMusicFolderLocationMap() {
+  public Map<Disc, AlbumOnHardDiskInfo2> getAlbumDiscToMusicFolderLocationMap() {
     return albumDiscToMusicFolderLocationMap;
   }
 
@@ -158,7 +159,7 @@ public class MediaDbToDiscLocationMap {
   }
   
   /**
-   * Create a mapping from an {@code Album} in the media database to its location on disc.
+   * Create a mapping from an {@code Album} in the media database to its location on hard disk.
    * <p>
    * Based on information from the media database (describing which albums/tracks we should have) and from what we have in the 
    * MusicFolder, maps are filled which map:
@@ -181,15 +182,18 @@ public class MediaDbToDiscLocationMap {
      *  If found, the match is added to the albumLocationMap or albumDiscLocationMap, and the album is removed from the (copy of) albumsOnDiscInfo.
      *  If an album should be in the MusicFolder and it is not found, it is an error. So any remaining albums in albumsOnDiscInfoCopy are reported as errors.
      */
-    LOGGER.info("=> " + album.getArtistAndTitle());
     
-    if (!album.isMultiDiscAlbum()) {
+    if (album.getArtist() != null  &&  "4 Non Blondes".equals(album.getArtist().getName())) {
+      LOGGER.severe("Stop");
+    }
+    
+     if (!MediaDbUtil.isMultiDiscAlbum(album)) {
       // Single-disc album
       // Music folder is per album.
       
       // If I have album (partly) on disc, find the AlbumOnDiscInfo in the albumsOnDiscNotMapped
       if (MediaDbUtil.haveAlbumOnHardDisk(album)  ||  MediaDbUtil.haveAlbumPartlyOnHardDisk(album)) {
-        AlbumOnDiscInfo albumOnDiscInfo = null;
+        AlbumOnHardDiskInfo2 albumOnDiscInfo = null;
         if (MediaDbUtil.haveAlbumOnHardDisk(album)) {
           albumOnDiscInfo = findAlbumInAlbumsOnDiscInfo(album);
         } else {
@@ -206,7 +210,7 @@ public class MediaDbToDiscLocationMap {
           // add the tracks of the album to the trackDiscLocationMap
           addAlbumDiscTracksToTrackDiscLocationMap(album.getDiscs().get(0), albumOnDiscInfo, ignoreMissingBonusTracks);
         } else {
-          LOGGER.severe("Album in media database not found on disc: " + album.getArtistAndTitle());
+          LOGGER.severe("Album in media database not found on disc: " + MediaDbUtil.getArtistAndTitle(album));
           MediaDbAppErrorInfo error = new MediaDbAppErrorInfo(MediaDbAppError.ALBUM_IN_MEDIADB_NOT_FOUND_ON_DISC);
           error.setAlbum(album);
           errors.add(error);
@@ -241,15 +245,16 @@ public class MediaDbToDiscLocationMap {
    * 
    * @param album the album for which the mapping is to be created.
    */
-  private AlbumOnDiscInfo createAndAddMappingForAlbumPartlyOnDisc(Album album) {
-    LOGGER.info("=> album: " + album.getArtistAndTitle());
+  private AlbumOnHardDiskInfo2 createAndAddMappingForAlbumPartlyOnDisc(Album album) {
+    LOGGER.info("=> album: " + MediaDbUtil.getArtistAndTitle(album));
 
     String albumFolderName = null;
     List<String> trackFileNames = new ArrayList<>();
 
     for (Disc disc: album.getDiscs()) {
       for (TrackReference trackReference: disc.getTrackReferences()) {
-        MyTrackInfo myTrackInfo = trackReference.getMyTrackInfo();
+        TrackReference finalTrackReference = MediaDbUtil.getFinalTrackReference(trackReference);
+        MyTrackInfo myTrackInfo = finalTrackReference.getMyTrackInfo();
         if (myTrackInfo != null) {
           for (MediumInfo mediumInfo: myTrackInfo.getIHaveOn()) {
             if (mediumInfo.getMediumType() == MediumType.HARDDISK) {
@@ -283,7 +288,7 @@ public class MediaDbToDiscLocationMap {
                 discNr = discAndTrackNr.getDiscNr();
               }
               try {
-                Track track = album.getTrackReference(discNr, trackNr).getTrack();
+                Track track = MediaDbUtil.getTrackReference(album, discNr, trackNr).getTrack();
                 TrackOnDiscInfo trackOnDiscInfo = findTrackInReferredAlbum(album, discNr, trackNr, referredAlbum, albumToMusicFolderLocationMap);
 
                 if (trackOnDiscInfo != null) {
@@ -312,9 +317,9 @@ public class MediaDbToDiscLocationMap {
                 discNr = discAndTrackNrs.getDiscNr();
               }
               try {
-                Track track = album.getTrackReference(discNr, trackNr).getTrack();
-                TrackReference trackReference = album.getTrackReference(discNr, trackNr);
-                TrackReference originalAlbumTrackReference = trackReference.getTrack().getOriginalDiscTrackReference();
+                Track track = MediaDbUtil.getTrackReference(album, discNr, trackNr).getTrack();
+                TrackReference trackReference = MediaDbUtil.getTrackReference(album, discNr, trackNr);
+                TrackReference originalAlbumTrackReference = MediaDbUtil.getOriginalDiscTrackReference(trackReference.getTrack());
                 if (originalAlbumTrackReference != null) {
                   MyTrackInfo originalAlbumTrackReferenceMyTrackInfo = originalAlbumTrackReference.getMyTrackInfo();
                   if (originalAlbumTrackReferenceMyTrackInfo != null) {
@@ -348,7 +353,7 @@ public class MediaDbToDiscLocationMap {
     } else {
       throw new RuntimeException("discAndTrackNrsList is null, while there should be tracks on harddisc");
     }
-    AlbumOnDiscInfo albumOnDiscInfo = new AlbumOnDiscInfo(null, null, null, albumFolderName, trackFileNames);
+    AlbumOnHardDiskInfo2 albumOnDiscInfo = new AlbumOnHardDiskInfo2(null, null, null, albumFolderName, trackFileNames);
     
     return albumOnDiscInfo;
   }
@@ -364,7 +369,7 @@ public class MediaDbToDiscLocationMap {
     } else {
       LOGGER.fine("Path NOT found: ");
       MediaDbAppErrorInfo error = new MediaDbAppErrorInfo(MediaDbAppError.TRACK_IN_MEDIADB_NOT_FOUND_ON_DISC);
-      error.setAlbum(trackReference.getDisc().getAlbum());
+      error.setAlbum(MediaDbUtil.getAlbum(MediaDbUtil.getDisc(trackReference)));
       error.setTrack(trackReference.getTrack());
       errors.add(error);
     }
@@ -382,7 +387,7 @@ public class MediaDbToDiscLocationMap {
     } else {
       LOGGER.fine("Path NOT found: ");
       MediaDbAppErrorInfo error = new MediaDbAppErrorInfo(MediaDbAppError.TRACK_IN_MEDIADB_NOT_FOUND_ON_DISC);
-      error.setAlbum(trackReference.getDisc().getAlbum());
+      error.setAlbum(MediaDbUtil.getAlbum(MediaDbUtil.getDisc(trackReference)));
       error.setTrack(trackReference.getTrack());
       errors.add(error);
     }
@@ -431,7 +436,7 @@ public class MediaDbToDiscLocationMap {
    */
   private void createAndAddMappingForDiscCompletelyOnDisc(Disc disc, boolean ignoreMissingBonusTracks) {
     LOGGER.info("=> " + disc.getTitle());
-    AlbumOnDiscInfo albumOnDiscInfo = findAlbumDiscInAlbumsOnDiscInfo(disc, albumsOnDiscInfoNotMapped, errors);
+    AlbumOnHardDiskInfo2 albumOnDiscInfo = findAlbumDiscInAlbumsOnDiscInfo(disc, albumsOnDiscInfoNotMapped, errors);
     if (albumOnDiscInfo != null) {
       LOGGER.info("Found disc of album on disc");
 //      AlbumDiscLocationInfo albumDiscLocationInfo = new AlbumDiscLocationInfo(albumOnDiscInfo.getAlbumFolderName(), albumOnDiscInfo.getTrackFileNames());
@@ -441,16 +446,16 @@ public class MediaDbToDiscLocationMap {
       // add the tracks of the album to the trackDiscLocationMap
       addAlbumDiscTracksToTrackDiscLocationMap(disc, albumOnDiscInfo, ignoreMissingBonusTracks);
     } else {
-      LOGGER.info("Album disc in media database not found on disc: " + disc.getAlbum().getArtistAndTitle() + ", disc: " + (disc.getAlbum().getDiscs().indexOf(disc) + 1));
+      LOGGER.info("Album disc in media database not found on disc: " + MediaDbUtil.getArtistAndTitle(MediaDbUtil.getAlbum(disc)) + ", disc: " + (MediaDbUtil.getAlbum(disc).getDiscs().indexOf(disc) + 1));
       MediaDbAppErrorInfo error = new MediaDbAppErrorInfo(MediaDbAppError.ALBUM_IN_MEDIADB_NOT_FOUND_ON_DISC);
       error.setDisc(disc);
-      error.setAlbum(disc.getAlbum());
+      error.setAlbum(MediaDbUtil.getAlbum(disc));
       errors.add(error);
     }
   }
 
   private void createAndAddMappingForDiscPartlyOnDisc(Disc disc) {
-    AlbumOnDiscInfo albumOnDiscInfo = findAlbumDiscInAlbumsOnDiscInfo(disc, albumsOnDiscInfoNotMapped, errors);
+    AlbumOnHardDiskInfo2 albumOnDiscInfo = findAlbumDiscInAlbumsOnDiscInfo(disc, albumsOnDiscInfoNotMapped, errors);
     if (albumOnDiscInfo != null) {
       addAlbumDiscTracksToTrackDiscLocationMap(disc, albumOnDiscInfo, false);
     } else {
@@ -524,8 +529,8 @@ public class MediaDbToDiscLocationMap {
    * @param albumOnDiscInfo information on the album on disc.
    * @param ignoreMissingBonusTracks If set, a bonus track not found is not reported as an error.
    */
-  public void addAlbumDiscTracksToTrackDiscLocationMap(Disc disc, AlbumOnDiscInfo albumOnDiscInfo, boolean ignoreMissingBonusTracks) {
-    Album album = disc.getAlbum();
+  public void addAlbumDiscTracksToTrackDiscLocationMap(Disc disc, AlbumOnHardDiskInfo2 albumOnDiscInfo, boolean ignoreMissingBonusTracks) {
+    Album album = MediaDbUtil.getAlbum(disc);
     boolean haveAllTracksOnDisc = MediaDbUtil.haveAlbumOnHardDisk(album);
 
     boolean myCompilation = false;
@@ -542,16 +547,16 @@ public class MediaDbToDiscLocationMap {
         String trackFileName = null;
         Track track = trackReference.getTrack();
 
-        if (trackIndex < albumOnDiscInfo.getTrackFileNames().size()) {
-          trackFileName = albumOnDiscInfo.getTrackFileNames().get(trackIndex);
+        if (trackIndex < albumOnDiscInfo.trackFileNames().size()) {
+          trackFileName = albumOnDiscInfo.trackFileNames().get(trackIndex);
           trackFound = findTrackPathMatch(trackReference, trackFileName, myCompilation);
         }
 
         if (trackFound) {
-          trackDiscLocationMap.put(track, Paths.get(albumOnDiscInfo.getAlbumFolderName(), trackFileName));
+          trackDiscLocationMap.put(track, Paths.get(albumOnDiscInfo.albumFolderName(), trackFileName));
         } else {
           if (!ignoreMissingBonusTracks  ||  !trackReference.isSetBonusTrack()) {
-            LOGGER.severe("Track not found in MusicFolder: " + album.getArtistAndTitle() + " - " + track.getTitle());
+            LOGGER.severe("Track not found in MusicFolder: " + MediaDbUtil.getArtistAndTitle(album) + " - " + track.getTitle());
             MediaDbAppErrorInfo error = new MediaDbAppErrorInfo(MediaDbAppError.TRACK_IN_MEDIADB_NOT_FOUND_ON_DISC);
             error.setAlbum(album);
             error.setTrackReference(trackReference);
@@ -573,7 +578,7 @@ public class MediaDbToDiscLocationMap {
    * @param errors An error list to which errors that occur shall be added.
    * @return AlbumOnDiscInfo for the <code>album</code>, or null if it couldn't be found.
    */
-  private AlbumOnDiscInfo findAlbumInAlbumsOnDiscInfo(Album album) {
+  private AlbumOnHardDiskInfo2 findAlbumInAlbumsOnDiscInfo(Album album) {
     LOGGER.info("=> album: " + album.getArtist() + " - " + album.getTitle());
         
     String albumFolderNameShallBe;
@@ -584,17 +589,17 @@ public class MediaDbToDiscLocationMap {
     }
     
     LOGGER.info("Generated folder name: " + albumFolderNameShallBe);
-    AlbumOnDiscInfo foundAlbumOnDiscInfo = null;
+    AlbumOnHardDiskInfo2 foundAlbumOnDiscInfo = null;
 
-    for (AlbumOnDiscInfo albumOnDiscInfo: albumsOnDiscInfoNotMapped) {
-      String albumFolderNameIs = albumOnDiscInfo.getAlbumFolderName();
+    for (AlbumOnHardDiskInfo2 albumOnDiscInfo: albumsOnDiscInfoNotMapped) {
+      String albumFolderNameIs = albumOnDiscInfo.albumFolderName();
       LOGGER.info("Checking against:      " + albumFolderNameIs);
       if (albumFolderNameIs.equals(albumFolderNameShallBe)) {
         if (foundAlbumOnDiscInfo == null) {
           foundAlbumOnDiscInfo = albumOnDiscInfo;
         } else {
           // error: more than one match
-          LOGGER.severe("Album disc in mediaDb found more than once on disc: " + albumOnDiscInfo.getIssueDate() + " - " + albumOnDiscInfo.getArtist() + " - " + albumOnDiscInfo.getTitle());
+          LOGGER.severe("Album disc in mediaDb found more than once on disc: " + albumOnDiscInfo.issueDate() + " - " + albumOnDiscInfo.artist() + " - " + albumOnDiscInfo.title());
           MediaDbAppErrorInfo error = new MediaDbAppErrorInfo(MediaDbAppError.ALBUM_IN_MEDIADB_FOUND_MORE_THAN_ONCE_ON_DISC);
           error.setAlbum(album);
           errors.add(error);
@@ -655,14 +660,14 @@ public class MediaDbToDiscLocationMap {
       artistName = album.getArtist().getName();
     }
     
-    TrackReference trackReference = album.getTrackReference(discNr, trackNr);
+    TrackReference trackReference = MediaDbUtil.getTrackReference(album, discNr, trackNr);
     Track track = trackReference.getTrack();
     if ("Various Artists".equals(artistName)) {
       Artist trackArtist = MediaDbAppUtil.getTrackArtist(track);
       if (trackArtist != null) {
         artistName = trackArtist.getName();
       } else {
-        LOGGER.severe("Track artist not set for a track on a Various Artists album. Album is " + album.getArtistAndTitle() + ", track is " + track.getTitle());
+        LOGGER.severe("Track artist not set for a track on a Various Artists album. Album is " + MediaDbUtil.getArtistAndTitle(album) + ", track is " + track.getTitle());
       }
     }
     
@@ -696,7 +701,7 @@ public class MediaDbToDiscLocationMap {
    *   @param trackNr The index of the track on the disc.
    *   @param referredAlbum the album in which to find the track.
    */
-  public static TrackOnDiscInfo findTrackInReferredAlbum(Album album, Integer discNr, Integer trackNr, Album referredAlbum, Map<Album, AlbumOnDiscInfo> albumToMusicFolderLocationMap) {
+  public static TrackOnDiscInfo findTrackInReferredAlbum(Album album, Integer discNr, Integer trackNr, Album referredAlbum, Map<Album, AlbumOnHardDiskInfo2> albumToMusicFolderLocationMap) {
 
     int foundTrackIndex = -1;
     int trackIndex = 0;
@@ -706,13 +711,13 @@ public class MediaDbToDiscLocationMap {
     }
     
     for (TrackReference trackReference: referredAlbum.getDiscs().get(0).getTrackReferences()) {
-      TrackReference originalAlbumTrackReference = trackReference.getTrack().getOriginalDiscTrackReference();
+      TrackReference originalAlbumTrackReference = MediaDbUtil.getOriginalDiscTrackReference(trackReference.getTrack());
       if (originalAlbumTrackReference != null) {
-        int referredTrackNr = originalAlbumTrackReference.getTrackNr();
+        int referredTrackNr = MediaDbUtil.getTrackNr(originalAlbumTrackReference);
         LOGGER.info("referredTrackNr: " + referredTrackNr);
-        Disc disc = originalAlbumTrackReference.getDisc();
+        Disc disc = MediaDbUtil.getDisc(originalAlbumTrackReference);
         if (disc != null) {
-          Album referredBackAlbum = disc.getAlbum();
+          Album referredBackAlbum = MediaDbUtil.getAlbum(disc);
           String referredBackAlbumTitle = referredBackAlbum.getTitle();
           LOGGER.info("referredBackAlbumTitle: " + referredBackAlbumTitle);
           int referredBackDiscNr = referredBackAlbum.getDiscs().indexOf(disc) + 1;
@@ -732,11 +737,11 @@ public class MediaDbToDiscLocationMap {
     
     
     if (foundTrackIndex != -1) {
-      AlbumOnDiscInfo albumDiscLocationInfo = albumToMusicFolderLocationMap.get(referredAlbum);
+      AlbumOnHardDiskInfo2 albumDiscLocationInfo = albumToMusicFolderLocationMap.get(referredAlbum);
       if (albumDiscLocationInfo != null) {
-        String trackFileName = albumDiscLocationInfo.getTrackFileNames().get(foundTrackIndex);
+        String trackFileName = albumDiscLocationInfo.trackFileNames().get(foundTrackIndex);
 
-        Path trackPath = Paths.get(albumDiscLocationInfo.getAlbumFolderName(), trackFileName);
+        Path trackPath = Paths.get(albumDiscLocationInfo.albumFolderName(), trackFileName);
         TrackOnDiscInfo trackOnDiscInfo = new TrackOnDiscInfo(trackPath);
         return trackOnDiscInfo;
       }
@@ -755,29 +760,29 @@ public class MediaDbToDiscLocationMap {
    * @param errors An error list to which errors that occur shall be added.
    * @return AlbumOnDiscInfo for the <code>disc</code>, or null if it couldn't be found.
    */
-  public AlbumOnDiscInfo findAlbumDiscInAlbumsOnDiscInfo(Disc disc, List<AlbumOnDiscInfo> albumsOnDiscInfo, List<Object> errors) {
-    Album album = disc.getAlbum();
+  public AlbumOnHardDiskInfo2 findAlbumDiscInAlbumsOnDiscInfo(Disc disc, List<AlbumOnHardDiskInfo2> albumsOnDiscInfo, List<Object> errors) {
+    Album album = MediaDbUtil.getAlbum(disc);
     LOGGER.info("=> album: " + album.getArtist() + " - " + album.getTitle());
     
     String albumFolderNameShallBe;
-    if (disc.getAlbum().isSoundtrack()) {
+    if (MediaDbUtil.getAlbum(disc).isSoundtrack()) {
       albumFolderNameShallBe = MediaDbAppUtil.generateSoundtrackAlbumDiscFolderName(disc, errors);
     } else {
       albumFolderNameShallBe = MediaDbAppUtil.generateAlbumDiscFolderName(disc, mediaDb, errors);
     }
     
     LOGGER.info("albumFolderNameShallBe: " + albumFolderNameShallBe);
-    AlbumOnDiscInfo foundAlbumOnDiscInfo = null;
+    AlbumOnHardDiskInfo2 foundAlbumOnDiscInfo = null;
 
-    for (AlbumOnDiscInfo albumOnDiscInfo: albumsOnDiscInfo) {
-      String albumFolderNameIs = albumOnDiscInfo.getAlbumFolderName();
+    for (AlbumOnHardDiskInfo2 albumOnDiscInfo: albumsOnDiscInfo) {
+      String albumFolderNameIs = albumOnDiscInfo.albumFolderName();
       LOGGER.info("Checking against:      " + albumFolderNameIs);
       if (albumFolderNameIs.equals(albumFolderNameShallBe)) {
         if (foundAlbumOnDiscInfo == null) {
           foundAlbumOnDiscInfo = albumOnDiscInfo;
         } else {
           // error: more than one match
-          LOGGER.severe("Album disc in mediaDb found more than once on disc: " + albumOnDiscInfo.getIssueDate() + " - " + albumOnDiscInfo.getArtist() + " - " + albumOnDiscInfo.getTitle());
+          LOGGER.severe("Album disc in mediaDb found more than once on disc: " + albumOnDiscInfo.issueDate() + " - " + albumOnDiscInfo.artist() + " - " + albumOnDiscInfo.title());
           MediaDbAppErrorInfo error = new MediaDbAppErrorInfo(MediaDbAppError.ALBUM_IN_MEDIADB_FOUND_MORE_THAN_ONCE_ON_DISC);
           error.setAlbum(album);
           errors.add(error);
@@ -808,7 +813,7 @@ public class MediaDbToDiscLocationMap {
     String expectedTrackFileName;
 
     if (myCompilation) {
-      TrackReference originalAlbumTrackReference = trackReference.getTrack().getOriginalDiscTrackReference();
+      TrackReference originalAlbumTrackReference = MediaDbUtil.getOriginalDiscTrackReference(trackReference.getTrack());
       if (originalAlbumTrackReference != null) {
         // If MyTrackReferenceInfo is available, the name shall be the name which is derived from this information.
         expectedTrackFileName = MediaDbAppUtil.generateTrackFileNameForMyCompilationAlbum(originalAlbumTrackReference, mediaDb);

@@ -56,7 +56,7 @@ public class MediaDbAppUtil {
     List<Album> albumsThatNeedAttention = new ArrayList<>();
 
     for (Album album: mediaDb.getAlbums()) {
-      if (album.iHaveToJudgeAlbumOrTracks()  ||  album.iWantAlbumOrTracksOfAlbum()) {
+      if (MediaDbUtil.iHaveToJudgeAlbumOrTracks(album)  ||  MediaDbUtil.iWantAlbumOrTracksOfAlbum(album)) {
         albumsThatNeedAttention.add(album);
       }
     }
@@ -88,10 +88,10 @@ public class MediaDbAppUtil {
     Artist artist = track.getArtist();
     
     if (artist == null) {
-      Disc disc = track.getOriginalDisc();
+      Disc disc = MediaDbUtil.getOriginalDisc(track);
       
       if (disc != null) {
-        Album album = disc.getAlbum();
+        Album album = MediaDbUtil.getAlbum(disc);
         artist = album.getArtist();
       }
     }
@@ -189,10 +189,10 @@ public class MediaDbAppUtil {
       throw new RuntimeException("myTrackReferenceInfo may not be null");
     }
     
-    Disc originalAlbumDisc = originalAlbumTrackReference.getDisc();
+    Disc originalAlbumDisc = MediaDbUtil.getDisc(originalAlbumTrackReference);
     
     // four digit album year
-    Album originalAlbum = originalAlbumDisc.getAlbum();
+    Album originalAlbum = MediaDbUtil.getAlbum(originalAlbumDisc);
     FlexDate releaseDate = originalAlbum.getReleaseDate();
     int year = releaseDate.getYear();    
     
@@ -239,7 +239,7 @@ public class MediaDbAppUtil {
         }
         buf.append(month + 1);
       } else {
-        LOGGER.info("No release month for album, which should have it: " + originalAlbum.getArtistAndTitle());
+        LOGGER.info("No release month for album, which should have it: " + MediaDbUtil.getArtistAndTitle(originalAlbum));
       }
     }
     
@@ -296,7 +296,7 @@ public class MediaDbAppUtil {
   public static String generateTrackFileNameForATrackInATracksFolder(Track track, MediaDb mediaDb) {
     String trackFileName = null;
     
-    TrackReference originalAlbumTrackReference = track.getOriginalDiscTrackReference();
+    TrackReference originalAlbumTrackReference = MediaDbUtil.getOriginalDiscTrackReference(track);
     if (originalAlbumTrackReference != null) {
       trackFileName = generateTrackFileNameForATrackInATracksFolderUsingOriginalAlbum(originalAlbumTrackReference, mediaDb);
       if (trackFileName != null) {
@@ -307,11 +307,11 @@ public class MediaDbAppUtil {
     
     String artistName = null;
     if (track.isSetArtist()) {
-      artistName = track.getTrackArtist().getName();
+      artistName = MediaDbUtil.getTrackArtist(track).getName();
     } else {
-      Disc originalDisc = track.getOriginalDisc();
+      Disc originalDisc = MediaDbUtil.getOriginalDisc(track);
       if (originalDisc != null) {
-        Album album = originalDisc.getAlbum();
+        Album album = MediaDbUtil.getAlbum(originalDisc);
         Artist artist = album.getArtist();
         if (artist != null) {
           artistName = artist.getName();
@@ -344,7 +344,7 @@ public class MediaDbAppUtil {
     
     StringBuilder buf = new StringBuilder();
     
-    Disc originalAlbumDisc = originalAlbumTrackReference.getDisc();
+    Disc originalAlbumDisc = MediaDbUtil.getDisc(originalAlbumTrackReference);
     
     if (originalAlbumDisc == null) {
       LOGGER.severe("Cannot create filename for track without originalAlbumDisc, originalAlbumTrackReference: " + originalAlbumTrackReference);
@@ -352,7 +352,7 @@ public class MediaDbAppUtil {
     }
     
     // If the track artist is set, use that, else use the album artist.
-    Album originalAlbum = originalAlbumDisc.getAlbum();
+    Album originalAlbum = MediaDbUtil.getAlbum(originalAlbumDisc);
     Artist artist = originalAlbumTrackReference.getTrack().getArtist();
     
     if (artist == null) {
@@ -420,7 +420,7 @@ public class MediaDbAppUtil {
         }
         buf.append(month + 1);
       } else {
-        LOGGER.severe("No release month for album, which should have it: " + originalAlbum.getArtistAndTitle());
+        LOGGER.severe("No release month for album, which should have it: " + MediaDbUtil.getArtistAndTitle(originalAlbum));
       }
     }
     
@@ -458,7 +458,7 @@ public class MediaDbAppUtil {
    */
   public static String generateTrackFileNameForStandardAlbum(TrackReference trackReference) {
 
-    Disc disc = trackReference.getDisc();
+    Disc disc = MediaDbUtil.getDisc(trackReference);
     int trackNr = disc.getTrackReferences().indexOf(trackReference) + 1;
 
     Track track = trackReference.getTrack();
@@ -478,7 +478,7 @@ public class MediaDbAppUtil {
    * @return the name of the album folder, or null if the name can't be generated (because of missing information).
    */
   public static String generateAlbumDiscFolderName(Disc disc, MediaDb mediaDb, List<Object> errors) {
-    Album album = disc.getAlbum();
+    Album album = MediaDbUtil.getAlbum(disc);
     LOGGER.fine("=> album=" + album.getTitle());
     
     if (album.isSoundtrack()) {
@@ -502,7 +502,7 @@ public class MediaDbAppUtil {
     FlexDate releaseDate = album.getReleaseDate();
     
     if ((releaseDate == null)  &&  (album.getMyInfo() == null  ||  album.getMyInfo().getAlbumType() != AlbumType.OWN_COMPILATION_ALBUM)) {
-      LOGGER.severe("No release date specified for album: " + album.getArtistAndTitle());
+      LOGGER.severe("No release date specified for album: " + MediaDbUtil.getArtistAndTitle(album));
       if (errors != null) {
         MediaDbAppErrorInfo errorInfo = new MediaDbAppErrorInfo(MediaDbAppError.NO_RELEASE_DATE_FOR_ALBUM);
         errorInfo.setAlbum(album);
@@ -518,11 +518,11 @@ public class MediaDbAppUtil {
       haveMoreThanOneAlbumOfContainerArtistInThisYearOnDisc = haveMoreThanOneAlbumOfContainerArtistInAYearOnDisc(mediaDb, artist, releaseDate.getYear());
     }
     
-    if (album.isMultiDiscAlbum()) {
+    if (MediaDbUtil.isMultiDiscAlbum(album)) {
       if (disc.isSetTitle()) {
         return AlbumFolder.generateAlbumDiscFolderName(containerArtistName, album.getTitle(), artistName, releaseDate, disc.getTitle(), haveMoreThanOneAlbumOfContainerArtistInThisYearOnDisc, MediaDbUtil.isOwnCompilationAlbum(album), errors);
       } else {
-        return AlbumFolder.generateAlbumDiscFolderName(containerArtistName, album.getTitle(), artistName, releaseDate, disc.getDiscNr(), haveMoreThanOneAlbumOfContainerArtistInThisYearOnDisc, MediaDbUtil.isOwnCompilationAlbum(album), errors);
+        return AlbumFolder.generateAlbumDiscFolderName(containerArtistName, album.getTitle(), artistName, releaseDate, MediaDbUtil.getDiscNr(disc), haveMoreThanOneAlbumOfContainerArtistInThisYearOnDisc, MediaDbUtil.isOwnCompilationAlbum(album), errors);
      }
     } else {    
       return AlbumFolder.generateAlbumDiscFolderName(containerArtistName, album.getTitle(), artistName, releaseDate, haveMoreThanOneAlbumOfContainerArtistInThisYearOnDisc, MediaDbUtil.isOwnCompilationAlbum(album), errors);
@@ -539,7 +539,7 @@ public class MediaDbAppUtil {
    * @return the name of the soundtrack album folder for the specified <code>disc</code>.
    */ 
   public static String generateSoundtrackAlbumDiscFolderName(Disc disc, List<Object> errors) {
-    Album album = disc.getAlbum();
+    Album album = MediaDbUtil.getAlbum(disc);
     LOGGER.fine("=> album=" + album.getTitle());
 
     Artist artist = album.getArtist();
@@ -556,11 +556,11 @@ public class MediaDbAppUtil {
       return null;
     }
     
-    if (album.isMultiDiscAlbum()) {
+    if (MediaDbUtil.isMultiDiscAlbum(album)) {
       if (disc.isSetTitle()) {
         return AlbumFolder.generateSoundtrackAlbumDiscFolderName(album.getTitle(), artistName, album.getReleaseDate(), disc.getTitle(), MediaDbUtil.isOwnCompilationAlbum(album), errors);
       } else {
-        return AlbumFolder.generateSoundtrackAlbumDiscFolderName(album.getTitle(), artistName, album.getReleaseDate(), disc.getDiscNr(), MediaDbUtil.isOwnCompilationAlbum(album), errors);
+        return AlbumFolder.generateSoundtrackAlbumDiscFolderName(album.getTitle(), artistName, album.getReleaseDate(), MediaDbUtil.getDiscNr(disc), MediaDbUtil.isOwnCompilationAlbum(album), errors);
       }
     } else {    
       return AlbumFolder.generateSoundtrackAlbumDiscFolderName(album.getTitle(), artistName, album.getReleaseDate(), MediaDbUtil.isOwnCompilationAlbum(album), errors);
@@ -578,7 +578,7 @@ public class MediaDbAppUtil {
    * @return true if there is more than one {@code Album} of the {@code artist} released in the {@code year} in the {@code mediaDb} that I have on hard disk, false otherwise.
    */
   public static boolean haveMoreThanOneAlbumOfContainerArtistInAYearOnDisc(MediaDb mediaDb, Artist artist, int year) {
-    List<Album> albumsInYear = mediaDb.getAlbums(new FlexDate(year), artist, null);
+    List<Album> albumsInYear = MediaDbUtil.getAlbums(mediaDb, new FlexDate(year), artist, null);
     Album albumOnDiscInYear = null;
     for (Album albumInYear: albumsInYear) {
       if (MediaDbUtil.haveAlbumOnHardDisk(albumInYear)) {
@@ -633,7 +633,7 @@ public class MediaDbAppUtil {
     }
     
     String destinationFolderName;
-    Album album = disc.getAlbum();
+    Album album = MediaDbUtil.getAlbum(disc);
     if (album.isSoundtrack()) {
       destinationFolderName = MediaDbAppUtil.generateSoundtrackAlbumDiscFolderName(disc, errors);
     } else {

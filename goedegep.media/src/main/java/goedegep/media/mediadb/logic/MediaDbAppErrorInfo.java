@@ -7,13 +7,13 @@ import goedegep.media.mediadb.model.Collection;
 import goedegep.media.mediadb.model.Disc;
 import goedegep.media.mediadb.model.Track;
 import goedegep.media.mediadb.model.TrackReference;
-import goedegep.media.musicfolder.logic.AlbumOnDiscInfo;
+import goedegep.media.musicfolder.logic.AlbumOnHardDiskInfo;
 
 public class MediaDbAppErrorInfo {
   private static final String NEWLINE = System.getProperty("line.separator");
 
   private MediaDbAppError errorCode = null;
-  private AlbumOnDiscInfo albumOnDiscInfo = null;
+  private AlbumOnHardDiskInfo albumOnDiscInfo = null;
   private Path trackPath = null;
   private Album album = null;
   private Disc disc = null;
@@ -34,11 +34,11 @@ public class MediaDbAppErrorInfo {
     this.errorCode = errorCode;
   }
 
-  public AlbumOnDiscInfo getAlbumOnDiscInfo() {
+  public AlbumOnHardDiskInfo getAlbumOnDiscInfo() {
     return albumOnDiscInfo;
   }
 
-  public void setAlbumOnDiscInfo(AlbumOnDiscInfo albumOnDiscInfo) {
+  public void setAlbumOnDiscInfo(AlbumOnHardDiskInfo albumOnDiscInfo) {
     this.albumOnDiscInfo = albumOnDiscInfo;
   }
 

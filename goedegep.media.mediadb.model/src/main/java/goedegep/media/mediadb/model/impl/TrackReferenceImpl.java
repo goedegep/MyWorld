@@ -2,13 +2,9 @@
  */
 package goedegep.media.mediadb.model.impl;
 
-import java.lang.reflect.InvocationTargetException;
-
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
-import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EClass;
-import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
@@ -19,6 +15,7 @@ import goedegep.media.mediadb.model.MediadbPackage;
 import goedegep.media.mediadb.model.MyTrackInfo;
 import goedegep.media.mediadb.model.Track;
 import goedegep.media.mediadb.model.TrackReference;
+import goedegep.media.mediadb.model.util.MediaDbUtil;
 
 /**
  * <!-- begin-user-doc -->
@@ -502,41 +499,6 @@ public class TrackReferenceImpl extends MinimalEObjectImpl.Container implements 
   /**
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @generated NOT
-   */
-  @Override
-  public int getTrackNr() {
-    EObject container = eContainer();
-
-    if (container instanceof Disc) {
-      Disc disc = (Disc) container;
-      EList<TrackReference> tracks = disc.getTrackReferences();
-      int myIndex = tracks.indexOf(this);
-
-      return myIndex + 1;
-    } else {
-      return -1;
-    }
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated NOT
-   */
-  @Override
-  public Disc getDisc() {
-    EObject eContainer = eContainer();
-    if (eContainer instanceof Disc) {
-      return (Disc) eContainer;
-    } else {
-      return null;
-    }
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
    * @generated
    */
   @Override
@@ -659,29 +621,13 @@ public class TrackReferenceImpl extends MinimalEObjectImpl.Container implements 
   /**
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public Object eInvoke(int operationID, EList<?> arguments) throws InvocationTargetException {
-    switch (operationID) {
-    case MediadbPackage.TRACK_REFERENCE___GET_TRACK_NR:
-      return getTrackNr();
-    case MediadbPackage.TRACK_REFERENCE___GET_DISC:
-      return getDisc();
-    }
-    return super.eInvoke(operationID, arguments);
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
    * @generated NOT
    */
   @Override
   public String toString() {
     StringBuilder buf = new StringBuilder();
 
-    buf.append("track nr: ").append(getTrackNr()).append(NEW_LINE);
+    buf.append("track nr: ").append(MediaDbUtil.getTrackNr(this)).append(NEW_LINE);
     Track track = getTrack();
     String trackTitle = track != null ? track.getTitle() : "<no-track>";
     String trackArtist = track != null ? (track.getArtist() != null ? track.getArtist().getName() : "<no-artist>")
@@ -693,20 +639,20 @@ public class TrackReferenceImpl extends MinimalEObjectImpl.Container implements 
     buf.append("originalAlbumTrackReference: ");
     TrackReference originalReference = null;
     if (getTrack() != null) {
-      originalReference = getTrack().getOriginalDiscTrackReference();
+      originalReference = MediaDbUtil.getOriginalDiscTrackReference(getTrack());
     }
     if (originalReference != null) {
-      buf.append("track nr ").append(originalReference.getTrackNr());
-      Disc disc = originalReference.getDisc();
+      buf.append("track nr ").append(MediaDbUtil.getTrackNr(originalReference));
+      Disc disc = MediaDbUtil.getDisc(originalReference);
       if (disc == null) {
         buf.append("  ==Disc is null==  ");
         System.out.println("Disc is null");
       } else {
-        Album album = disc.getAlbum();
-        if (album.isMultiDiscAlbum()) {
+        Album album = MediaDbUtil.getAlbum(disc);
+        if (MediaDbUtil.isMultiDiscAlbum(album)) {
           buf.append(" on disc ").append(disc.getTitle());
         }
-        buf.append(" of album " + album.getArtistAndTitle());
+        buf.append(" of album " + MediaDbUtil.getArtistAndTitle(album));
       }
     } else {
       buf.append("<no-originalAlbumTrackReference>");

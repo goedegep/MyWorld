@@ -25,6 +25,8 @@ import goedegep.media.mediadb.model.MediumInfo;
 import goedegep.media.mediadb.model.MyTrackInfo;
 import goedegep.media.mediadb.model.TrackCollection;
 import goedegep.media.mediadb.model.TrackReference;
+import goedegep.media.mediadb.model.util.MediaDbUtil;
+
 import java.util.Collection;
 
 /**
@@ -385,7 +387,7 @@ public class MyTrackInfoImpl extends MinimalEObjectImpl.Container implements MyT
     StringBuilder buf = new StringBuilder();
 
     buf.append("  iWant: ");
-    buf.append(isSetIWant() ? getIWant().toString() : "<no-iwant>").append(NEWLINE);
+    buf.append(getIWant() != null ? getIWant().toString() : "<null>").append(NEWLINE);
 
     buf.append("  iHaveOn: ");
     buf.append(isSetIHaveOn() ? getIHaveOn().toString() : "<no-ihave-on>").append(NEWLINE);
@@ -396,7 +398,7 @@ public class MyTrackInfoImpl extends MinimalEObjectImpl.Container implements MyT
       EObject eContainer = trackReference.eContainer();
       if (eContainer instanceof Disc) {
         Disc disc = (Disc) eContainer;
-        Album compilationAlbum = disc.getAlbum();
+        Album compilationAlbum = MediaDbUtil.getAlbum(disc);
         buf.append("track '").append(trackReference.getTrack().getTitle()).append("' on '")
             .append(compilationAlbum.getTitle()).append("'");
       } else if (eContainer instanceof TrackCollection) {

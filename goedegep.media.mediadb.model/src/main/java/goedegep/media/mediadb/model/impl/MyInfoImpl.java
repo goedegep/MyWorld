@@ -22,6 +22,7 @@ import goedegep.media.mediadb.model.IWant;
 import goedegep.media.mediadb.model.MediadbPackage;
 import goedegep.media.mediadb.model.MediumInfo;
 import goedegep.media.mediadb.model.MyInfo;
+import goedegep.media.mediadb.model.util.MediaDbUtil;
 
 /**
  * <!-- begin-user-doc -->
@@ -563,7 +564,7 @@ public class MyInfoImpl extends MinimalEObjectImpl.Container implements MyInfo {
       buf.append("No album references").append(NEWLINE);
     } else {
       for (Album album : getAlbumReferences()) {
-        buf.append("Album reference: ").append(album.getArtistAndTitle()).append(NEWLINE);
+        buf.append("Album reference: ").append(MediaDbUtil.getArtistAndTitle(album)).append(NEWLINE);
       }
     }
 

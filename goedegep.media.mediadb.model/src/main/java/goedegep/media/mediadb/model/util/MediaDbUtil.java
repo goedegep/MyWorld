@@ -9,6 +9,7 @@ import java.util.logging.Logger;
 
 import org.eclipse.emf.common.util.BasicEList;
 import org.eclipse.emf.common.util.EList;
+import org.eclipse.emf.ecore.EObject;
 
 import goedegep.media.mediadb.model.Album;
 import goedegep.media.mediadb.model.AlbumType;
@@ -22,6 +23,7 @@ import goedegep.media.mediadb.model.MediumInfo;
 import goedegep.media.mediadb.model.MediumType;
 import goedegep.media.mediadb.model.MyInfo;
 import goedegep.media.mediadb.model.MyTrackInfo;
+import goedegep.media.mediadb.model.Player;
 import goedegep.media.mediadb.model.Track;
 import goedegep.media.mediadb.model.TrackCollection;
 import goedegep.media.mediadb.model.TrackPart;
@@ -63,8 +65,9 @@ public class MediaDbUtil {
    * 
    * @param mediaDb the {@code MediaDb} to search in.
    * @param artistName the name of the {@code Artist} to get.
+   * @return the {@code Artist} with the specified name, or null if no such {@code Artist} exists.
    */
-  public Artist getArtist(MediaDb mediaDb, String artistName) {
+  public static Artist getArtist(MediaDb mediaDb, String artistName) {
     for (Artist artist : mediaDb.getArtists()) {
       if (artist.getName().equals(artistName)) {
         return artist;
@@ -77,14 +80,17 @@ public class MediaDbUtil {
   /**
    * Get an {@code Album} by release date, artist and title.
    * <p>
+   * For both artist name and album title, a fuzzy string compare is done, so that small differences in spelling or punctuation do not prevent a match.
+   * See {@link FuzzyStringCompare#fuzzyStringCompare()} for details.
    * The search is first done on the artist, and if no album is found, the search is done on the container artist of the artist.
    * 
    * @param mediaDb the {@code MediaDb} to search in.
    * @param releaseDate the release date of the {@code Album} to get. May be null.
    * @param artist the {@code Artist}, or container artist, of the {@code Album} to get. May not be null.
    * @param title the title of the {@code Album} to get. May not be null.
+   * @return the {@code Album} with the specified release date, artist and title, or null if no such {@code Album} exists.
    */
-  public Album getAlbum(MediaDb mediaDb, FlexDate releaseDate, Artist artist, String title) {
+  public static Album getAlbum(MediaDb mediaDb, FlexDate releaseDate, Artist artist, String title) {
     Objects.requireNonNull(artist, "The artist may not be null");
     Objects.requireNonNull(title, "The title may not be null");
 
@@ -99,7 +105,7 @@ public class MediaDbUtil {
       }
 
       if (album.getArtist() == null) {
-        LOGGER.severe("No artist set for album: " + album.getArtistAndTitle());
+        LOGGER.severe("No artist set for album: " + MediaDbUtil.getArtistAndTitle(album));
         compareOkSoFar = false;
       }
 
@@ -122,7 +128,7 @@ public class MediaDbUtil {
       }
 
       if (album.getArtist() == null) {
-        LOGGER.severe("No artist set for album: " + album.getArtistAndTitle());
+        LOGGER.severe("No artist set for album: " + MediaDbUtil.getArtistAndTitle(album));
         compareOkSoFar = false;
       }
 
@@ -146,8 +152,9 @@ public class MediaDbUtil {
    * @param releaseDate the release date of the {@code Album}s to get. If null, no release date check is done.
    * @param artist the {@code Artist}, or container artist, of the {@code Album}s to get. If null, no artist check is done.
    * @param title the title of the {@code Album}s to get. If null, no title check is done.
+   * @return a list of {@code Album}s that match the specified release date, artist and title. The list may be empty, but is never null.
    */
-  public EList<Album> getAlbums(MediaDb mediaDb, FlexDate releaseDate, Artist artist, String title) {
+  public static EList<Album> getAlbums(MediaDb mediaDb, FlexDate releaseDate, Artist artist, String title) {
     EList<Album> albums = new BasicEList<Album>();
     if ((artist != null) && (artist.getContainerArtist() != null)) {
       Artist containerArtist = artist.getContainerArtist();
@@ -218,8 +225,9 @@ public class MediaDbUtil {
    * 
    * @param mediaDb the {@code MediaDb} to search in.
    * @param collection the {@code Collection} for which the {@code TrackCollection} is requested.
+   * @return the {@code TrackCollection} corresponding to the specified {@code Collection}.
    */
-  public TrackCollection getTrackCollection(MediaDb mediaDb, goedegep.media.mediadb.model.Collection collection) {
+  public static TrackCollection getTrackCollection(MediaDb mediaDb, goedegep.media.mediadb.model.Collection collection) {
     TrackCollection trackCollection = null;
 
     for (TrackCollection aTrackCollection : mediaDb.getTrackcollections()) {
@@ -237,6 +245,7 @@ public class MediaDbUtil {
 
     return trackCollection;
   }
+  
 
   /**
    * Get a {@code Track} by {@code Artist} and title.
@@ -244,14 +253,15 @@ public class MediaDbUtil {
    * @param mediaDb the {@code MediaDb} to search in.
    * @param artist the {@code Artist} of the {@code Track} to get.
    * @param title the title of the {@code Track} to get.
+   * @return the {@code Track} with the specified {@code Artist} and title, or null if no such {@code Track} exists.
    */
-  public Track getTrack(MediaDb mediaDb, Artist artist, String title) {
+  public static Track getTrack(MediaDb mediaDb, Artist artist, String title) {
     for (Track track : mediaDb.getTracks()) {
       Artist trackArtist = track.getArtist();
       if (trackArtist == null) {
-        TrackReference trackReference = track.getOriginalDiscTrackReference();
+        TrackReference trackReference = MediaDbUtil.getOriginalDiscTrackReference(track);
         if (trackReference != null) {
-          trackArtist = trackReference.getDisc().getAlbum().getArtist();
+          trackArtist = MediaDbUtil.getAlbum(MediaDbUtil.getDisc(trackReference)).getArtist();
         }
       }
       if (artist.equals(trackArtist) && title.equals(track.getTitle())) {
@@ -260,6 +270,40 @@ public class MediaDbUtil {
     }
 
     return null;
+  }
+  
+  
+  /*
+   * TrackCollection related methods
+   */
+  
+  /**
+   * Find a track in a track collection.
+   * <p>
+   * This method searches the complete collection and if there is more than one track with the specified artist and title, a {@code RuntimeException} is thrown.
+   * 
+   * @param trackCollection The {@code TrackCollection} to search in.
+   * @param artist The {@code Artist} of the track.
+   * @param title The title of the track.
+   * @return A track reference for the track specified by {@code artist} and {@code title}.
+   */
+  public static TrackReference getTrackReferece(TrackCollection trackCollection, Artist artist, String title) {
+    java.util.Objects.requireNonNull(artist, "Parameter artist may not be null");
+    java.util.Objects.requireNonNull(title, "Parameter title may not be null");
+
+    TrackReference collectionTrackReference = null;
+
+    for (TrackReference trackReference : trackCollection.getTrackReferences()) {
+      if (artist == trackReference.getTrack().getArtist() && title.equals(trackReference.getTrack().getTitle())) {
+        if (collectionTrackReference != null) {
+          throw new RuntimeException("Found more than one TrackReference for: " + artist.getName() + " - " + title);
+        }
+
+        collectionTrackReference = trackReference;
+      }
+    }
+
+    return collectionTrackReference;
   }
   
   
@@ -275,6 +319,16 @@ public class MediaDbUtil {
    */
   public static boolean isSingleDiscAlbum(Album album) {
     return album.getDiscs().size() == 1;
+  }
+
+  /**
+   * Check whether the album is a multi disc album, i.e. the album consists of more than one disc.<br/>
+   * The result of this method is the same as: album.getDiscs().size() > 1.
+   * 
+   * @return true if the album is a multi disc album, false otherwise.
+   */
+  public static boolean isMultiDiscAlbum(Album album) {
+    return album.getDiscs().size() > 1;
   }
   
   /**
@@ -345,12 +399,6 @@ public class MediaDbUtil {
    * Check whether I have an album on a specific medium type (e.g. CD_AUDIO or Super Audio CD).
    * <p>
    * This is about having the complete album on the specified medium type, so this information shall be specified at album level.
-   * This is the case if all track references refer to tracks that:
-   * <ul>
-   * <li>iHaveOn set with mediumType set to the specified medium type.</li>
-   * <li>have the original album set to this album.</li>
-   * </ul>
-   * Also there shall be at least one disc of which the list of tracks shall not be empty.
    * 
    * @param album the {@code Album} to be checked.
    * @param mediumType the {@code MediumType} to have the {@code album} on.
@@ -369,6 +417,78 @@ public class MediaDbUtil {
     return false;
   }
   
+  /**
+   * Check whether I have an album (doesn't matter on which medium type).
+   * <p>
+   * This is about having the complete album, so this information shall be specified at album level.
+   * Or all track references refer to track references (and so on) that I have.
+   * 
+   * @param album the {@code Album} to be checked.
+   * @return true if I have the {@code album}, false otherwise.
+   */
+  public static boolean haveAlbum(Album album) {
+    MyInfo myInfo = album.getMyInfo();
+    if (myInfo != null) {
+      return !myInfo.getIHaveOn().isEmpty();
+    }
+    
+    return false;
+  }
+  
+  /**
+   * Check whether I have an album partly (doesn't matter on which medium type).
+   * <p>
+   * This is about having at least one track of the album, but not the complete album.
+   * 
+   * @param album the {@code Album} to be checked.
+   * @return true if I have the {@code album} partly, false otherwise.
+   */
+  public static boolean haveAlbumPartly(Album album) {
+    if (haveAlbum(album)) {
+      return false;
+    }
+    
+    for (Disc disc: album.getDiscs()) {
+      for (TrackReference trackReference: disc.getTrackReferences()) {
+        TrackReference finalTrackReference = MediaDbUtil.getFinalTrackReference(trackReference);
+        if (haveTrack(finalTrackReference)) {
+          return true;
+        }
+      }
+    }
+    
+    return false;
+  }
+  
+  public static boolean haveTrack(TrackReference trackReference) {
+    TrackReference finalTrackReference = MediaDbUtil.getFinalTrackReference(trackReference);
+    MyTrackInfo myTrackInfo = finalTrackReference.getMyTrackInfo();
+    if (myTrackInfo != null  &&  !myTrackInfo.getIHaveOn().isEmpty()) {
+      return true;
+    }
+    
+    return false;
+  }
+  
+  /**
+   * Get the final track reference of a track reference.
+   * <p>
+   * This follows the MyTrackInfo.trackReference until a track reference is found that has no MyTrackInfo or the MyTrackInfo has no track reference.
+   * This may be the same track reference as the one specified in the parameter, or a different one.
+   * 
+   * @param trackReference the {@code TrackReference} to get the final track reference for.
+   * @return the final {@code TrackReference} of the specified {@code trackReference}.
+   */
+  public static TrackReference getFinalTrackReference(TrackReference trackReference) {
+    MyTrackInfo myTrackInfo = trackReference.getMyTrackInfo();
+    if (myTrackInfo == null  || myTrackInfo.getTrackReference() == null) {
+      return trackReference;
+    }
+    
+    return getFinalTrackReference(myTrackInfo.getTrackReference());
+  }
+
+
   /**
    * Return the set of medium infos of which I have the album on.
    * 
@@ -458,6 +578,28 @@ public class MediaDbUtil {
     }
     
     return iWant;
+  }
+
+  /**
+   * Check whether I want this {@code Album} or some tracks of the album, which means I still have to obtain the album or tracks of the album.<br/>
+   * 
+   * @return true if {@code iWant} is set to YES at album level or on any track, false otherwise.
+   */
+  public static boolean iWantAlbumOrTracksOfAlbum(Album album) {
+
+    if ((album.getMyInfo() != null) && (album.getMyInfo().getIWant() == IWant.YES)) {
+      return true;
+    }
+
+    for (Disc disc : album.getDiscs()) {
+      for (TrackReference trackReference : disc.getTrackReferences()) {
+        if (trackReference.getMyTrackInfo() != null && trackReference.getMyTrackInfo().getIWant() == IWant.YES) {
+          return true;
+        }
+      }
+    }
+
+    return false;
   }
   
   /**
@@ -591,6 +733,26 @@ public class MediaDbUtil {
   }
   
   /**
+   * Get the {@code TrackReference specified by disc number and track number.
+   * 
+   * @param album The {@code Album} to get the {@code TrackReference} from.
+   * @param discNr The disc number (starting at 1) on which a track is to be found.
+   * @param trackNr The track number.
+   * @return The {@code TrackReference} specified by {@code discNr} and {@code trackNr}, or null if such a track doesn't exist.
+   */
+  public static TrackReference getTrackReference(Album album, Integer discNr, int trackNr) {
+    if (discNr == null) {
+      discNr = 1;
+    }
+    Disc disc = album.getDiscs().get(discNr - 1);
+    int nrOfTracks = disc.getTrackReferences().size();
+    if (trackNr >= nrOfTracks) {
+      return null;
+    }
+    return disc.getTrackReferences().get(trackNr - 1);
+  }
+  
+  /**
    * Get the collection of tracks of an album that I have (on hard disk).
    *  
    * @param album the {@code Album} for which the information is requested.
@@ -610,11 +772,121 @@ public class MediaDbUtil {
     
     return discAndTrackNrsList;
   }
+
+  /**
+   * Get a player specified by the {@code Artist}.
+   *
+   * @param artist The {@code Artist} of the player.
+   * @return the {@code Player} for the specified {@code artist}, or null if such a player doesn't exist.
+   */
+  public static Player getPlayer(Album album, Artist artist) {
+    for (Player player : album.getPlayers()) {
+      if (player.getArtist().equals(artist)) {
+        return player;
+      }
+    }
+
+    return null;
+  }
+
+  /**
+   * Get Artist and Title of the album.
+   * <p>
+   * The information is provided in the format: &lt;artist&gt; - &lt;title&gt;<br/>
+   * where:<br/>
+   *  &lt;artist&gt; is the name of the artist of the album, or '&lt;no artist&gt;' if this information isn't available.<br/>.
+   *  &lt;title&gt; is the title of the album,  '&lt;no title&gt;' if title isn't set.
+   *  
+   *  @param album the {@code Album} for which the information is requested.
+   *  @return the artist and title of the album.
+   */
+  public static String getArtistAndTitle(Album album) {
+    StringBuilder buf = new StringBuilder();
+    if (album.getArtist() != null) {
+      Artist artist = album.getArtist();
+      buf.append(artist.getName());
+    } else {
+      buf.append("<no artist>");
+    }
+
+    buf.append(" - ");
+
+    if (album.isSetTitle()) {
+      buf.append(album.getTitle());
+    } else {
+      buf.append("<no title>");
+    }
+
+    return buf.toString();
+  }
+
+  /**
+   * Get the {@code Disc} of a single disc album. A RuntimeException is thrown if the album is a multi disc album.
+   *
+   * @param album the {@code Album} for which the information is requested.
+   * @return the {@code Disc} of the album, or null if the album has no disc.
+   */
+  public static Disc getDisc(Album album) {
+    if (MediaDbUtil.isMultiDiscAlbum(album)) {
+      throw new RuntimeException("This method may not be called on a multi disc album");
+    }
+    List<Disc> discs = album.getDiscs();
+    if (discs.isEmpty()) {
+      return null;
+    } else {
+      return discs.get(0);
+    }
+  }
+
+  /**
+   * Check whether I still have to judge the album or tracks of the album.
+   * <p>
+   * This is the case if {@code iWant} is set to 'DONT KNOW' at album level or on any track.
+   * 
+   * @param album the {@code Album} for which the information is requested.
+   * @return true if I still have to judge this album, false otherwise.
+   */
+  public static boolean iHaveToJudgeAlbumOrTracks(Album album) {
+
+    if ((album.getMyInfo() != null) && (album.getMyInfo().getIWant() == IWant.DONT_KNOW)) {
+      return true;
+    }
+
+    for (Disc disc : album.getDiscs()) {
+      for (TrackReference trackReference : disc.getTrackReferences()) {
+        if (trackReference.getMyTrackInfo() != null && trackReference.getMyTrackInfo().getIWant() == IWant.DONT_KNOW) {
+          return true;
+        }
+      }
+    }
+
+    return false;
+  }
   
   
   /*
    * Disc related methods
    */
+
+  /**
+   * Get the {@code Album} of which this disc is a part.
+   * 
+   * @param disc the {@code Disc} for which the information is requested.
+   * @return the {@code Album} of which this disc is a part.
+   */
+  public static Album getAlbum(Disc disc) {
+    return (Album) disc.eContainer();
+  }
+
+  /**
+   * Get the index of a disc (starting at 1) in the list of discs of the album.
+   * 
+   * @param disc the {@code Disc} for which the information is requested.
+   * @return the index of the disc in the list of discs of the album, starting at 1.
+   */
+  public static int getDiscNr(Disc disc) {
+    return MediaDbUtil.getAlbum(disc).getDiscs().indexOf(disc) + 1;
+  }
 
   /**
    * Get the collection of tracks of an album disc that I want.
@@ -625,7 +897,7 @@ public class MediaDbUtil {
   public static DiscAndTrackNrs getDiscTracksIWant(Disc disc) {
     DiscAndTrackNrs discAndTrackNrs = null;
     
-    Album album = disc.getAlbum();
+    Album album = MediaDbUtil.getAlbum(disc);
     
     int discNr;
     if (isSingleDiscAlbum(album)) {
@@ -667,7 +939,7 @@ public class MediaDbUtil {
    * @return true if I should have the {@code disc} on hard disk, false otherwise.
    */
   public static boolean haveDiscOnHardDisk(Disc disc) {
-    Album album = disc.getAlbum();
+    Album album = MediaDbUtil.getAlbum(disc);
     
     if (haveAlbumOnHardDisk(album)) {
       return true;
@@ -718,7 +990,7 @@ public class MediaDbUtil {
   public static DiscAndTrackNrs getDiscTracksIHave(Disc disc, boolean onHardDisk) {
     DiscAndTrackNrs discAndTrackNrs = null;
     
-    Album album = disc.getAlbum();
+    Album album = MediaDbUtil.getAlbum(disc);
     
     int discNr;
     if (isSingleDiscAlbum(album)) {
@@ -780,6 +1052,63 @@ public class MediaDbUtil {
   /*
    * TrackReference related methods
    */
+
+  /**
+   * Get the track number of a {@code TrackReference} in the list of track references of the disc.
+   * 
+   * @param trackReference the {@code TrackReference} for which the information is requested.
+   * @return the track number of the {@code TrackReference} in the list of track references of the disc, starting at 1. If the {@code TrackReference} is not part of a disc, -1 is returned.
+   */
+  public static int getTrackNr(TrackReference trackReference) {
+    EObject container = trackReference.eContainer();
+
+    if (container instanceof Disc disc) {
+      EList<TrackReference> tracks = disc.getTrackReferences();
+      int myIndex = tracks.indexOf(trackReference);
+
+      return myIndex + 1;
+    } else {
+      return -1;
+    }
+  }
+
+  /**
+   * Get the {@code Disc} of a {@code TrackReference}.
+   * 
+   * @param trackReference the {@code TrackReference} for which the information is requested.
+   * @return the {@code Disc} of the {@code TrackReference}, or null if the {@code TrackReference} is not part of a disc.
+   */
+  public static Disc getDisc(TrackReference trackReference) {
+    EObject eContainer = trackReference.eContainer();
+    if (eContainer instanceof Disc disc) {
+      return disc;
+    } else {
+      return null;
+    }
+  }
+  
+  /**
+   * Check whether a {@code TrackReference} is a dummy track reference, which is the case if the track is not set and there is no track reference in the {@code MyTrackInfo}.
+   * @param trackReference
+   * @return
+   */
+  public static boolean isDummyTrackReference(TrackReference trackReference) {
+    if (trackReference.getTrack() != null) {
+      return false;
+    }
+    
+    MyTrackInfo myTrackInfo = trackReference.getMyTrackInfo();
+    if (myTrackInfo == null) {
+      return true;
+    }
+    
+    TrackReference referredTrackReference = myTrackInfo.getTrackReference();
+    if (referredTrackReference == null) {
+      return true;
+    }
+    
+    return false;
+  }
   
   /**
    * Check whether I have a track, specified by a {@code TrackReference}, on hard disk or not.
@@ -835,6 +1164,69 @@ public class MediaDbUtil {
     
     return trackReferenceCopy;
   }
+  
+
+  /*
+   * Track related methods
+   */
+
+  /**
+   * Get the {@code TrackReference} of the original album.
+   * <p>
+   * This is the 'referred by' {@code TrackReference} which has its {@code originalAlbumTrackReference} set.
+   * 
+   * @param track the {@code Track} for which the information is requested.
+   * @return the {@code TrackReference} of the original album, or null if such a reference doesn't exist.
+   */
+  public static TrackReference getOriginalDiscTrackReference(Track track) {
+    for (TrackReference trackReference : track.getReferredBy()) {
+      if (trackReference.isOriginalAlbumTrackReference()) {
+        return trackReference;
+      }
+    }
+
+    return null;
+  }
+
+  /**
+   * Get the track artist. If {@code artist} is set, this is returned. Else, if {@code originalDisc} is set, the artist of the album of that disc is returned.
+   * 
+   * @param track the {@code Track} for which the information is requested.
+   * @return the {@code Artist} of the track, or null if no artist is set and no original disc is set.
+   */
+  public static Artist getTrackArtist(Track track) {
+    Artist trackArtist = track.getArtist();
+
+    if (trackArtist == null) {
+      Disc disc = MediaDbUtil.getOriginalDisc(track);
+      if (disc != null) {
+        Album album = MediaDbUtil.getAlbum(disc);
+        trackArtist = album.getArtist();
+      }
+    }
+
+    return trackArtist;
+  }
+
+  /**
+   * Get the {@code Disc} of the original album.
+   * <p>
+   * This is equal to calling {@code getOriginalDiscTrackReference()} followed by calling {@code getDisc()} on the obtained {@code TrackReference} (if it isn't null).
+   * 
+   * @param track the {@code Track} for which the information is requested.
+   * @return the {@code Disc} of the original album, or null if such a disc doesn't exist.
+   */
+  public static Disc getOriginalDisc(Track track) {
+    Disc originalDisc = null;
+
+    TrackReference trackReference = MediaDbUtil.getOriginalDiscTrackReference(track);
+    if (trackReference != null) {
+      originalDisc = MediaDbUtil.getDisc(trackReference);
+    }
+
+    return originalDisc;
+  }
+  
   
   /*
    * TrackPart related methods

@@ -9,6 +9,7 @@ import goedegep.media.mediadb.model.MediumType;
 import goedegep.media.mediadb.model.Track;
 import goedegep.media.mediadb.model.TrackCollection;
 import goedegep.media.mediadb.model.TrackReference;
+import goedegep.media.mediadb.model.util.MediaDbUtil;
 
 public class GuiUtils {
 
@@ -98,21 +99,21 @@ public class GuiUtils {
   public static String createTrackReferenceTextForDiscTrack(TrackReference trackReference) {
     StringBuilder buf = new StringBuilder();
     
-    Disc disc = trackReference.getDisc();
+    Disc disc = MediaDbUtil.getDisc(trackReference);
     Album album = null;
     if (disc != null) {
-      album = disc.getAlbum();
+      album = MediaDbUtil.getAlbum(disc);
       buf.append(album.getTitle());
     }
     
     buf.append(" - ");
     
-    if (album != null  &&  album.isMultiDiscAlbum()) {
+    if (album != null  &&  MediaDbUtil.isMultiDiscAlbum(album)) {
       int discNr = album.getDiscs().indexOf(disc);
       buf.append(discNr).append("-");
     }
     
-    int trackNr = trackReference.getTrackNr();
+    int trackNr = MediaDbUtil.getTrackNr(trackReference);
     buf.append(String.format("%02d", trackNr));
     
     buf.append(" - ");
@@ -128,7 +129,7 @@ public class GuiUtils {
     StringBuilder buf = new StringBuilder();
     
     Track track = trackReference.getTrack();
-    buf.append(track.getTrackArtist().getName())
+    buf.append(MediaDbUtil.getTrackArtist(track).getName())
     .append(" - ")
     .append(track.getTitle())
     .append(" in collection ")
