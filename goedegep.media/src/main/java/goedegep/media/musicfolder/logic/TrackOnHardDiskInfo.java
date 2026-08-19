@@ -5,7 +5,7 @@ import java.nio.file.Path;
 /**
  * This class provides information on where a music track is stored on disc (file system).
  */
-public class TrackOnDiscInfo {
+public class TrackOnHardDiskInfo {
   /**
    * Path for the track on disc.
    */
@@ -16,7 +16,7 @@ public class TrackOnDiscInfo {
    * 
    * @param trackPath Path for the track on disc.
    */
-  public TrackOnDiscInfo(Path trackPath) {
+  public TrackOnHardDiskInfo(Path trackPath) {
     this.trackPath = trackPath;
   }
 

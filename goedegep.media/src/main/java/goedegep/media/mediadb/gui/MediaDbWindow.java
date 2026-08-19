@@ -26,6 +26,7 @@ import goedegep.media.mediadb.logic.MediaDbChecker;
 import goedegep.media.mediadb.logic.MediaDbService;
 import goedegep.media.mediadb.logic.MediaDbToDiscLocationMap;
 import goedegep.media.mediadb.model.Album;
+import goedegep.media.mediadb.model.AlbumType;
 import goedegep.media.mediadb.model.Artist;
 import goedegep.media.mediadb.model.Collection;
 import goedegep.media.mediadb.model.Disc;
@@ -44,7 +45,6 @@ import goedegep.media.mediadb.model.TrackCollection;
 import goedegep.media.mediadb.model.TrackReference;
 import goedegep.media.mediadb.model.util.MediaDbUtil;
 import goedegep.media.musicfolder.logic.AlbumOnHardDiskInfo;
-import goedegep.media.musicfolder.logic.AlbumOnHardDiskInfo2;
 import goedegep.media.musicfolder.logic.MusicFolderContent;
 import goedegep.resources.ImageSize;
 import goedegep.util.Result;
@@ -160,13 +160,13 @@ public class MediaDbWindow extends JfxStage {
    * This map provides the on disc location for single disc albums.
    * TODO shouldn't this be renamed to singleDiscAlbumToAlbumDiscLocationInfoMap?
    */
-  private Map<Album, AlbumOnHardDiskInfo2> albumToMusicFolderLocationMap;
+  private Map<Album, AlbumOnHardDiskInfo> albumToMusicFolderLocationMap;
   
   /**
    * This map provides the on disc location for the discs of multi-disc albums.
    * TODO shouldn't this be renamed to albumDiscToAlbumDiscLocationInfoMap?
    */
-  private Map<Disc, AlbumOnHardDiskInfo2> albumDiscToMusicFolderLocationMap;
+  private Map<Disc, AlbumOnHardDiskInfo> albumDiscToMusicFolderLocationMap;
   
   /**
    * This map provides the on disc location for separate tracks (i.e. tracks which aren't part of a complete disc).
@@ -217,7 +217,7 @@ public class MediaDbWindow extends JfxStage {
     
     // Link the information in the media database to the information of the Music Folder.    
     MediaDbToDiscLocationMap mediaDbToDiscLocationMap = new MediaDbToDiscLocationMap(mediaDb, musicFolderContent);
-    allOk = mediaDbToDiscLocationMap.createMediaDbToDiscLocationMap(true);
+    allOk = mediaDbToDiscLocationMap.createMediaDbToHardDiskLocationMap(true);
     if (!allOk) {
       allErrors.addAll(mediaDbToDiscLocationMap.getErrors());
       LOGGER.severe("Errors detected while linking the information in the media database to the information of the Music Folder: " + mediaDbToDiscLocationMap.getErrors().size());
@@ -246,13 +246,13 @@ public class MediaDbWindow extends JfxStage {
         for (TrackReference trackReference: disc.getTrackReferences()) {
           MyTrackInfo myTrackInfo = trackReference.getMyTrackInfo();
           if (myTrackInfo == null) {
-            String trackId = null;
-            if (trackReference.getTrack() != null) {
-              trackId = trackReference.getTrack().getTitle();
-            } else {
-              trackId = String.valueOf(MediaDbUtil.getTrackNr(trackReference));
-            }
-            LOGGER.severe("No MyTrackInfo for Track: " + trackId + " of album: " + MediaDbUtil.getArtistAndTitle(album));
+//            String trackId = null;
+//            if (trackReference.getTrack() != null) {
+//              trackId = trackReference.getTrack().getTitle();
+//            } else {
+//              trackId = String.valueOf(MediaDbUtil.getTrackNr(trackReference));
+//            }
+//            LOGGER.severe("No MyTrackInfo for Track: " + trackId + " of album: " + MediaDbUtil.getArtistAndTitle(album));
             trackWithoutSourceType = true;
           } else {
             List<MediumInfo> mediumInfos2 = myTrackInfo.getIHaveOn();
@@ -310,36 +310,124 @@ public class MediaDbWindow extends JfxStage {
   }
   
   private void tempFixProblems() {
-//    // yo la: track must be in samples collection, album track must refer to this (is orig. album), artist sample must also refer to this.
-//    Artist artist = MediaDbUtil.getArtist(mediaDb, "Yo La Tengo");
-//    Track track = MediaDbUtil.getTrack(mediaDb, artist, "Big Day Coming");
-//    TrackReference trackReference = MediadbFactory.eINSTANCE.createTrackReference();
-//    trackReference.setTrack(track);
-//    MyTrackInfo myTrackInfo = MediadbFactory.eINSTANCE.createMyTrackInfo();
-//    MediumInfo mediumInfo = MediadbFactory.eINSTANCE.createMediumInfo();
-//    mediumInfo.setInformationType(InformationType.MP3);
-//    mediumInfo.setMediumType(MediumType.HARDDISK);
-//    myTrackInfo.getIHaveOn().add(mediumInfo);
-//    trackReference.setMyTrackInfo(myTrackInfo);
-//    TrackCollection trackCollection = MediaDbUtil.getTrackCollection(mediaDb, Collection.SAMPLE);
-//    trackCollection.getTrackReferences().add(trackReference);
-//        
-//    LOGGER.severe("trackReference: " + trackReference.toString());
+    MediadbFactory factory = MediadbFactory.eINSTANCE;
+    TrackReference trackReference;
+    Track track;
+    Artist artist;
+    Album album;
+    Disc disc;
+    
+    for (Album a: mediaDb.getAlbums()) {
+      MyInfo m = a.getMyInfo();
+      Boolean soundTrackAlbum = false;
+      if (m != null  &&  m.getAlbumType() == AlbumType.SOUNDTRACK_ALBUM) {
+        soundTrackAlbum = true;
+      }
+      if (a.isSoundtrack()  ||  soundTrackAlbum) {
+        LOGGER.severe("Soundtrack: " + a.getTitle() + "  ==  " + a.isSoundtrack() + " - " + soundTrackAlbum);
+      }
+    }
+    
+    
+    
+    
+    artist = MediaDbUtil.getArtist(mediaDb, "Het Gebeurde In Het Westen");
+    album = MediaDbUtil.getAlbum(mediaDb, null, artist, "Het Gebeurde In Het Westen");
+    
+    Artist newArtist = factory.createArtist();
+    newArtist.setName("Ennio Morricone");
+    
+    album.setArtist(newArtist);
+    mediaDb.getArtists().add(newArtist);
+    mediaDb.getArtists().remove(artist);
+    album.getMyInfo().setAlbumType(AlbumType.SOUNDTRACK_ALBUM);
+    
 //    
-//    Album album = MediaDbUtil.getAlbum(mediaDb, null, artist, "Painful");
-//    Disc disc = MediaDbUtil.getDisc(album);
-//    TrackReference trackReference2 = disc.getTrackReferences().get(0);
-//    trackReference2.setTrack(track);
-//    MyTrackInfo myTrackInfo2 = trackReference2.getMyTrackInfo();
-//    myTrackInfo2.setTrackReference(trackReference);
+//    disc = album.getDiscs().getFirst();
+//    trackReference = disc.getTrackReferences().get(1);
+//    track = trackReference.getTrack();
+//    track.setTitle("Song Of India (from the opera 'Sadko')");
 //    
-//    TrackReference trackReference3 = artist.getSample();
-//    trackReference3.setTrack(track);
-//    MyTrackInfo myTrackInfo3 = trackReference3.getMyTrackInfo();
-//    myTrackInfo3.getIHaveOn().clear();
-//    myTrackInfo3.setTrackReference(trackReference);
+//    trackReference = disc.getTrackReferences().get(2);
+//    track = trackReference.getTrack();
+//    track.setTitle("Romance (from suite 'Gadfly')");
 //    
-//    LOGGER.severe("Done");
+//    trackReference = disc.getTrackReferences().get(3);
+//    track = trackReference.getTrack();
+//    track.setTitle("Scenes From Romeo And Juliet ~ Ballet");
+    
+//    
+//    Disc newDisc = album.getDiscs().get(1);
+//    trackReference = disc.getTrackReferences().remove(19);
+//    newDisc.getTrackReferences().add(0, trackReference);
+//    trackReference = disc.getTrackReferences().remove(19);
+//    newDisc.getTrackReferences().add(1, trackReference);
+//    trackReference = disc.getTrackReferences().remove(19);
+//    newDisc.getTrackReferences().add(2, trackReference);
+//    trackReference = disc.getTrackReferences().remove(19);
+//    trackReference.getTrack().setTitle("D.J.");
+//    newDisc.getTrackReferences().add(3, trackReference);
+//    trackReference = disc.getTrackReferences().remove(19);
+//    newDisc.getTrackReferences().add(4, trackReference);
+//    trackReference = disc.getTrackReferences().remove(19);
+//    newDisc.getTrackReferences().add(5, trackReference);
+//    trackReference = disc.getTrackReferences().remove(19);
+//    newDisc.getTrackReferences().add(6, trackReference);
+//    trackReference = disc.getTrackReferences().remove(19);
+//    trackReference.getTrack().setTitle("Scary Monsters (And Super Creeps)");
+//    newDisc.getTrackReferences().add(7, trackReference);
+//    trackReference = disc.getTrackReferences().remove(19);
+//    trackReference.getTrack().setTitle("Under Pressure");
+//    newDisc.getTrackReferences().add(8, trackReference);
+//    
+//    
+//    trackReference = newDisc.getTrackReferences().get(15);
+//    track = trackReference.getTrack();
+//    track.setTitle("Dancing In The Street");
+    
+    
+//    artist = MediaDbUtil.getArtist(mediaDb, "Evanescence");
+//    album = MediaDbUtil.getAlbum(mediaDb, null, artist, "The Open Door");
+//    disc = album.getDiscs().getFirst();
+//    
+//    trackReference = disc.getTrackReferences().get(6);
+//    track = trackReference.getTrack();
+//    track.setTitle("Lacrymosa");
+//    
+//    
+//    artist = MediaDbUtil.getArtist(mediaDb, "Harry Sacksioni");
+//    album = MediaDbUtil.getAlbum(mediaDb, null, artist, "Harry Sacksioni Speciale Compilatie");
+//    disc = album.getDiscs().getFirst();
+//
+//    trackReference = disc.getTrackReferences().get(13);
+//    track = trackReference.getTrack();
+//    track.setTitle("Johan En Pirrewiet");
+//
+//    
+//    
+//    artist = MediaDbUtil.getArtist(mediaDb, "Iggy Pop");
+//    album = MediaDbUtil.getAlbum(mediaDb, null, artist, "Brick By Brick");
+//    disc = album.getDiscs().getFirst();
+//    
+//    trackReference = disc.getTrackReferences().get(13);
+//    track = trackReference.getTrack();
+//    track.setTitle("Livin' On The Edge Of The Night");
+//    
+//    
+    CreateAlbumFromAlbumTracksWindow w = new CreateAlbumFromAlbumTracksWindow(customization);
+    w.scanAlbumFolder("D:\\Music\\zSoundtracks\\1987 - Ennio Morricone - Het Gebeurde In Het Westen", null);
+//    w.scanAlbumFolder("D:\\Music\\E\\Eagles\\1987 - Eagles - The Legend Of Eagles");
+//    w.scanAlbumFolder("D:\\Music\\E\\Eurythmics\\1991 - Eurythmics - Greatest Hits");
+//    w.scanAlbumFolder("D:\\Music\\E\\Evanescence\\2003 - Evanescence - Fallen");
+//    w.scanAlbumFolder("D:\\Music\\E\\Evanescence\\2006 - Evanescence - The Open Door");
+//    w.scanAlbumFolder("D:\\Music\\F\\Fotheringay\\1970 - Fotheringay - Fotheringay");
+//    w.scanAlbumFolder("D:\\Music\\G\\Genesis\\1973 - Genesis - Selling England By The Pound");
+//    w.scanAlbumFolder("D:\\Music\\G\\Genesis\\1990 - Genesis - And The Word Was");
+//    w.scanAlbumFolder("D:\\Music\\H\\Harry Sacksioni\\1987 - Harry Sacksioni - Harry Sacksioni Speciale Compilatie");
+//    w.scanAlbumFolder("D:\\Music\\I\\Iggy Pop\\1990 - Iggy Pop - Brick By Brick");
+//    w.scanAlbumFolder("D:\\Music\\L\\London Symphony Orchestra\\1986 - London Symphony Orchestra - Bolero");
+//    w.scanAlbumFolder("D:\\Music\\V\\Various Artists\\1990 - Various Artists - 25 Golden Juke-Box Classics");
+//    w.scanAlbumFolder("D:\\Music\\zSoundtracks\\1987 - Ennio Morricone - Het Gebeurde In Het Westen");
   }
   
   private void listTracksIWantToHave() {

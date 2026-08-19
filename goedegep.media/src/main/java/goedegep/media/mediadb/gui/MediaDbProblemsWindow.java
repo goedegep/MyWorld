@@ -166,7 +166,7 @@ private MediaDb mediaDb;
 
     // Button to open the file with the problem in Notapad++.
     Button editButton = componentFactory.createButton("Open bestand in Notepad++", "opent " + parseException.getFileName() + " met Notepad++");
-    editButton.setOnAction((e) -> {
+    editButton.setOnAction((_) -> {
       List<String> commandArguments = new ArrayList<>();
 
       commandArguments.add("C:\\Program Files\\Notepad++\\Notepad++.exe");
@@ -225,7 +225,7 @@ private MediaDb mediaDb;
       buf.append(artist != null ? artist.getName() : "<no-artist>").append(" - ").append(track.getTitle());
 
       Button removeObsoleteTrack = componentFactory.createButton("Remove obsolete track", "Remove the obsolete track from the data base");
-      removeObsoleteTrack.setOnAction((e) -> mediaDb.getTracks().remove(track));
+      removeObsoleteTrack.setOnAction((_) -> mediaDb.getTracks().remove(track));
       errorPanel.getButtonsBox().getChildren().add(removeObsoleteTrack);
       break;
       
@@ -269,7 +269,7 @@ private MediaDb mediaDb;
     }
 
     Button removeArtistNotReferredTo = componentFactory.createButton("Remove artist and references", "Remove this artist (and the references to this artist) from the data base");
-    removeArtistNotReferredTo.setOnAction((e) -> {
+    removeArtistNotReferredTo.setOnAction((_) -> {
       // Delete the references
       for (EStructuralFeature.Setting setting: settings) {
         Artist referringArtist = (Artist) setting.getEObject();
@@ -313,7 +313,7 @@ private MediaDb mediaDb;
 
 
     Button openLocation = componentFactory.createButton("Open locatie", "Opent een Windows explorer window om het probleem op the lossen");
-    openLocation.setOnAction((e) -> {
+    openLocation.setOnAction((_) -> {
       Path path = musicFolderStructureErrorInfo.getFolder();
       try {
         Runtime.getRuntime().exec("explorer.exe /select,\"" + path.toString() + "\"");
@@ -334,7 +334,7 @@ private MediaDb mediaDb;
 
 
     Button openLocation = componentFactory.createButton("Open location", "Opens a Windows explorer window to solve the problem");
-    openLocation.setOnAction((e) -> {
+    openLocation.setOnAction((_) -> {
       Path path = musicFolderStructureErrorInfo.getFolder();
       try {
         Runtime.getRuntime().exec("explorer.exe /select,\"" + path.toString() + "\"");
@@ -350,7 +350,7 @@ private MediaDb mediaDb;
       proposedFolderNamesComboBox.getSelectionModel().select(0);
       
       Button renameButton = componentFactory.createButton("Change folder name to:", "Rename the folder");
-      renameButton.setOnAction((e) -> {
+      renameButton.setOnAction((_) -> {
         Path currentAlbumFolder = musicFolderStructureErrorInfo.getFolder();
         Path newAlbumFolder = currentAlbumFolder.getParent().resolve(proposedFolderNamesComboBox.getValue());
         try {
@@ -386,7 +386,7 @@ private MediaDb mediaDb;
 
     // JButton to open the folder with the track.
     Button openLocation = componentFactory.createButton("Open location", "Opens a Windows explorer window so you can solve the problem");
-    openLocation.setOnAction((e) -> {
+    openLocation.setOnAction((_) -> {
       Path albumFolder = musicFolderStructureErrorInfo.getFolder();
       LOGGER.severe("albumFolder=" + albumFolder.toAbsolutePath().toString());
       try {
@@ -402,7 +402,7 @@ private MediaDb mediaDb;
     if (proposedTrackName != null) {
       Button renameButton = componentFactory.createButton("Verander naam in: " + proposedTrackName,
           "hernoem het nummer");
-      renameButton.setOnAction((e) -> {
+      renameButton.setOnAction((_) -> {
         Path albumFolder = musicFolderStructureErrorInfo.getFolder();
         Path currentTrackPath = Paths.get(albumFolder.toAbsolutePath().toString(), musicFolderStructureErrorInfo.getFile());
         Path newTrackPath = Paths.get(albumFolder.toAbsolutePath().toString(), proposedTrackName);
@@ -436,7 +436,7 @@ private MediaDb mediaDb;
 
     // JButton to open the folder with the file.
     Button openLocationButton = componentFactory.createButton("Open location", "Opens a Windows Explorer window to solve the problem");
-    openLocationButton.setOnAction((e) -> {
+    openLocationButton.setOnAction((_) -> {
       Path albumFolder = musicFolderStructureErrorInfo.getFolder();
       LOGGER.severe("albumFolder=" + albumFolder.toAbsolutePath().toString());
       try {
@@ -449,7 +449,7 @@ private MediaDb mediaDb;
 
     // JButton to automatically delete the file
     Button deleteButton = componentFactory.createButton("Delete file: " + musicFolderStructureErrorInfo.getFile(), "Delete the file");
-    deleteButton.setOnAction((e) -> {
+    deleteButton.setOnAction((_) -> {
 //      try {
         Path path = musicFolderStructureErrorInfo.getFolder().resolve(musicFolderStructureErrorInfo.getFile());
         LOGGER.severe("Deleting: " + path.toAbsolutePath().toString());
@@ -747,26 +747,26 @@ private MediaDb mediaDb;
     buf.append(NEWLINE);
 
     buf.append("Issue date: ");
-    if (albumOnDiscInfo.getIssueDate() != null) {
-      buf.append(FDF.format(albumOnDiscInfo.getIssueDate()));
+    if (albumOnDiscInfo.issueDate() != null) {
+      buf.append(FDF.format(albumOnDiscInfo.issueDate()));
     }
     buf.append(NEWLINE);
 
     buf.append("Artist: ");
-    if (albumOnDiscInfo.getArtist() != null) {
-      buf.append(albumOnDiscInfo.getArtist());
+    if (albumOnDiscInfo.artist() != null) {
+      buf.append(albumOnDiscInfo.artist());
     }
     buf.append(NEWLINE);
 
     buf.append("Title: ");
-    if (albumOnDiscInfo.getTitle() != null) {
-      buf.append(albumOnDiscInfo.getTitle());
+    if (albumOnDiscInfo.title() != null) {
+      buf.append(albumOnDiscInfo.title());
     }
     buf.append(NEWLINE);
 
     buf.append("Folder: ");
-    if (albumOnDiscInfo.getAlbumFolderName() != null) {
-      buf.append(albumOnDiscInfo.getAlbumFolderName());
+    if (albumOnDiscInfo.albumFolderName() != null) {
+      buf.append(albumOnDiscInfo.albumFolderName());
     }
     buf.append(NEWLINE);
 

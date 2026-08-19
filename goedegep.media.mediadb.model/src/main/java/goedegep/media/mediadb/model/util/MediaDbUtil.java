@@ -105,7 +105,6 @@ public class MediaDbUtil {
       }
 
       if (album.getArtist() == null) {
-        LOGGER.severe("No artist set for album: " + MediaDbUtil.getArtistAndTitle(album));
         compareOkSoFar = false;
       }
 
@@ -122,7 +121,7 @@ public class MediaDbUtil {
 
       // Check release date
       if (releaseDate != null) {
-        if (album.getReleaseDate().compareTo(releaseDate) != 0) {
+        if (album.getReleaseDate() == null  ||  album.getReleaseDate().compareTo(releaseDate) != 0) {
           compareOkSoFar = false;
         }
       }

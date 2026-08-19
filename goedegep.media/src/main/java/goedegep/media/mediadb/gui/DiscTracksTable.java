@@ -217,6 +217,7 @@ public class DiscTracksTable extends EObjectTable<TrackReference> {
 }
 
 class DiscTracksTableDescriptor extends EObjectTableDescriptor<TrackReference> {
+  private static final Logger LOGGER = Logger.getLogger(DiscTracksTableDescriptor.class.getName());
   private static final MediadbPackage MEDIA_DB_PACKAGE = MediadbPackage.eINSTANCE;
 
   private static List<EObjectTableColumnDescriptorAbstract<TrackReference>> columnDescriptors = List.<EObjectTableColumnDescriptorAbstract<TrackReference>>of(
@@ -298,7 +299,7 @@ class DiscTracksTableDescriptor extends EObjectTableDescriptor<TrackReference> {
               TrackReference trackReference = (TrackReference) item;
               Track track = trackReference.getTrack();
               if (track == null) {
-                System.out.println("track is null");
+                LOGGER.severe("track is null");
                 setText(null);
               } else {
                 if (track.isSetDuration()) {

@@ -23,4 +23,5 @@ module goedegep.media {
   requires goedegep.media.photoshow.model;
   requires javafx.controls;
   requires goedegep.util;
+  requires javafx.base;
 }

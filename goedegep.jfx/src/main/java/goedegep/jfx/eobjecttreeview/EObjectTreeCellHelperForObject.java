@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -150,11 +151,11 @@ public class EObjectTreeCellHelperForObject extends EObjectTreeCellHelperTemplat
       Menu menu;
       if ((nodeOperationDescriptor.getOperation() == Operation.NEW_OBJECT_BEFORE)  &&
           (subTypes != null)  &&  (subTypes.size() > 1)) {
-        menu = createSubClassesMenu(nodeOperationDescriptor.getMenuText(), subTypes, true);
+        menu = createSubClassesMenu(nodeOperationDescriptor.getMenuText(), subTypes, true, ((NodeOperationDescriptorNewBefore) nodeOperationDescriptor).getNewEObjectInitializationFunction());
         contextMenu.getItems().add(menu);
       } else if ((nodeOperationDescriptor.getOperation() == Operation.NEW_OBJECT_AFTER)  &&
           (subTypes != null)  &&  (subTypes.size() > 1)) {
-        menu = createSubClassesMenu(nodeOperationDescriptor.getMenuText(), subTypes, false);
+        menu = createSubClassesMenu(nodeOperationDescriptor.getMenuText(), subTypes, false, ((NodeOperationDescriptorNewAfter) nodeOperationDescriptor).getNewEObjectInitializationFunction());
         contextMenu.getItems().add(menu);
       } else {
         menuItem = new MenuItem(nodeOperationDescriptor.getMenuText());
@@ -190,11 +191,11 @@ public class EObjectTreeCellHelperForObject extends EObjectTreeCellHelperTemplat
               break;
               
             case NEW_OBJECT_BEFORE:
-              createAndAddObject(listType, true);
+              createAndAddObject(listType, true, ((NodeOperationDescriptorNew) nodeOperationDescriptor).getNewEObjectInitializationFunction());
               break;
               
             case NEW_OBJECT_AFTER:
-              createAndAddObject(listType, false);
+              createAndAddObject(listType, false, ((NodeOperationDescriptorNew) nodeOperationDescriptor).getNewEObjectInitializationFunction());
               break;
               
             case CUT_OBJECT:
@@ -254,7 +255,7 @@ public class EObjectTreeCellHelperForObject extends EObjectTreeCellHelperTemplat
    * @param before 'before' (if set) or 'after' indication
    * @return a {@code Menu} for the {@classes}.
    */
-  private Menu createSubClassesMenu(String menuText, List<EClass> classes, boolean before) {
+  private Menu createSubClassesMenu(String menuText, List<EClass> classes, boolean before, BiConsumer<EObject, EObjectTreeItem> newEObjectInitializationFunction) {
     Menu menu = new Menu(menuText);
     MenuItem menuItem;
     
@@ -265,7 +266,7 @@ public class EObjectTreeCellHelperForObject extends EObjectTreeCellHelperTemplat
 
         @Override
         public void handle(ActionEvent event) {
-          createAndAddObject(eClass, before);
+          createAndAddObject(eClass, before, newEObjectInitializationFunction);
         }
         
       });
@@ -323,8 +324,10 @@ public class EObjectTreeCellHelperForObject extends EObjectTreeCellHelperTemplat
    * 
    * @param subClass The Class of the object to be created. The Class must be compatible with the type of the reference.
    * @param before if {@code true} the new object is inserted before this object, else after this object.
+   * @param newEObjectInitializationFunction this method, if specified, is called after the object is created. This is typically used to do some further initialization.
    */
-  private void createAndAddObject(EClass subClass, boolean before) {
+  private void createAndAddObject(EClass subClass, boolean before, BiConsumer<EObject, EObjectTreeItem> newEObjectInitializationFunction) {
+    EObjectTreeItemForObject eObjectTreeItem = (EObjectTreeItemForObject) eObjectTreeCell.getTreeItem();
     EObjectTreeItem parentEObjectTreeItem = (EObjectTreeItem) treeItem.getParent();
     
     EObject eObject = (EObject) treeItem.getValue();
@@ -338,6 +341,11 @@ public class EObjectTreeCellHelperForObject extends EObjectTreeCellHelperTemplat
     if (!before) {
       index++;
     }
+    
+    if (newEObjectInitializationFunction != null) {
+      newEObjectInitializationFunction.accept(eObject, eObjectTreeItem);
+    }
+
     eObjectList.add(index, newEObject);
 
   }

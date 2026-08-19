@@ -725,7 +725,19 @@ public class ArtistImpl extends MinimalEObjectImpl.Container implements Artist {
    */
   @Override
   public String toString() {
-    return getName();
+    StringBuilder buf = new StringBuilder();
+    buf.append("name: ").append(name != null ? name : "<no name>").append("\n");
+    buf.append("photo: ").append(photo != null ? photo : "<no photo>").append("\n");
+    buf.append("style: ").append(style != null ? style : "<no style>").append("\n");
+    buf.append("myComments: ").append(myComments != null ? style : "<no myComments>").append("\n");
+    buf.append("containerArtist: ").append(containerArtist != null ? containerArtist.getName() : "<no containerArtist>").append("\n");
+    String sampleName = null;
+    if (sample != null  &&  sample.getTrack() != null) {
+      sampleName = sample.getTrack().getTitle();
+    }
+    buf.append("sample: ").append(sampleName != null ? sampleName : "<no sample>").append("\n");
+    
+    return buf.toString();
   }
 
 } //ArtistImpl

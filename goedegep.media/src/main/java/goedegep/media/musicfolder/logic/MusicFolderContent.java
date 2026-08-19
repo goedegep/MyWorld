@@ -33,12 +33,12 @@ public class MusicFolderContent {
   /**
    * List of {@link AlbumOnHardDiskInfo} to be filled with information on the albums in the Main Index folders and the soundtrack folder.
    */
-  private List<AlbumOnHardDiskInfo2> albumsOnDiscInfo = new ArrayList<>();
+  private List<AlbumOnHardDiskInfo> albumsOnDiscInfo = new ArrayList<>();
   
   /**
-   * List of {@link TrackOnDiscInfo} to be filled with the information of the tracks in the track folders.
+   * List of {@link TrackOnHardDiskInfo} to be filled with the information of the tracks in the track folders.
    */
-  private List<TrackOnDiscInfo> tracksOnDiscInfo = new ArrayList<>();
+  private List<TrackOnHardDiskInfo> tracksOnDiscInfo = new ArrayList<>();
   
   /**
    * A list of errors of type {@link MusicFolderStructureErrorInfo} which are encountered while gathering the MusicFolder content.
@@ -90,7 +90,7 @@ public class MusicFolderContent {
    * 
    * @return the gathered information for albums on disc
    */
-  public List<AlbumOnHardDiskInfo2> getAlbumsOnDiscInfo() {
+  public List<AlbumOnHardDiskInfo> getAlbumsOnHardDiskInfo() {
     return albumsOnDiscInfo;
   }
 
@@ -99,7 +99,7 @@ public class MusicFolderContent {
    * 
    * @return the gathered information for tracks on disc.
    */
-  public List<TrackOnDiscInfo> getTracksOnDiscInfo() {
+  public List<TrackOnHardDiskInfo> getTracksOnHardDiskInfo() {
     return tracksOnDiscInfo;
   }
 
@@ -213,7 +213,7 @@ public class MusicFolderContent {
           if (!checkNamingConvention  ||
               TrackFile.isNamingConventionSatisfiedForTrackFolderTrack(file)) {
             
-            TrackOnDiscInfo trackOnDiscInfo = new TrackOnDiscInfo(file);
+            TrackOnHardDiskInfo trackOnDiscInfo = new TrackOnHardDiskInfo(file);
             tracksOnDiscInfo.add(trackOnDiscInfo);
           } else {
             LOGGER.severe("Skipping file with wrong naming convention: " + FileUtils.getFullPathName(file, PATH_SEPARATOR));

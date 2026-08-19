@@ -793,7 +793,7 @@ public class TravelsWindow extends JfxStage {
     menu.getItems().add(travelsTreeEditModeMenuItem);
     
     
-    // Menu: Update map image files
+    // Edit: Update map image files
     MenuUtil.addMenuItem(menu, "Update map image files", _ -> updateMapImageFiles());
     
     menuBar.getMenus().add(menu);
@@ -2097,17 +2097,24 @@ public class TravelsWindow extends JfxStage {
   private WGS84BoundingBox addVacationElementToMapView(TravelMapViewInterface travelMapViewInterface, VacationElement vacationElement, boolean stayedAtOnly, WGS84BoundingBox totalWGS84BoundingBox) {
     WGS84BoundingBox wgs84BoundingBox = null;
     
-    switch (vacationElement) {
-    case Location location -> wgs84BoundingBox = addLocationToMapView(travelMapViewInterface, location, stayedAtOnly);
-    case Picture picture -> wgs84BoundingBox = addPictureToMapView(travelMapViewInterface, picture, stayedAtOnly);
-    case GPXTrack gpxTrack -> wgs84BoundingBox = addGPXTrackToMapView(travelMapViewInterface, gpxTrack, stayedAtOnly);
-    default -> {}  // no action for other types of VacationElement
+    if (vacationElement != null) {
+      switch (vacationElement) {
+      case Location location -> wgs84BoundingBox = addLocationToMapView(travelMapViewInterface, location, stayedAtOnly);
+      case Picture picture -> wgs84BoundingBox = addPictureToMapView(travelMapViewInterface, picture, stayedAtOnly);
+      case GPXTrack gpxTrack -> wgs84BoundingBox = addGPXTrackToMapView(travelMapViewInterface, gpxTrack, stayedAtOnly);
+      default -> {}  // no action for other types of VacationElement
+      }
+    } else {
+      LOGGER.severe("vacationElement is null");
     }
     
     totalWGS84BoundingBox = WGS84BoundingBox.extend(totalWGS84BoundingBox, wgs84BoundingBox);
         
-    for (VacationElement childElement: vacationElement.getChildren()) {
-      totalWGS84BoundingBox = addVacationElementToMapView(travelMapViewInterface, childElement, stayedAtOnly, totalWGS84BoundingBox);
+    
+    if (vacationElement != null) {
+      for (VacationElement childElement: vacationElement.getChildren()) {
+        totalWGS84BoundingBox = addVacationElementToMapView(travelMapViewInterface, childElement, stayedAtOnly, totalWGS84BoundingBox);
+      }
     }
     
     LOGGER.info("<= totalWGS84BoundingBox: " + (totalWGS84BoundingBox != null ? totalWGS84BoundingBox.toString() : "(null)"));

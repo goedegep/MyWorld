@@ -33,6 +33,7 @@ import goedegep.media.mediadb.gui.albumeditor.AlbumEditor2;
 import goedegep.media.mediadb.logic.MediaDbAppUtil;
 import goedegep.media.mediadb.logic.MediaDbService;
 import goedegep.media.mediadb.model.Album;
+import goedegep.media.mediadb.model.Artist;
 import goedegep.media.mediadb.model.Disc;
 import goedegep.media.mediadb.model.IWant;
 import goedegep.media.mediadb.model.InformationType;
@@ -44,7 +45,7 @@ import goedegep.media.mediadb.model.MyTrackInfo;
 import goedegep.media.mediadb.model.Track;
 import goedegep.media.mediadb.model.TrackReference;
 import goedegep.media.mediadb.model.util.MediaDbUtil;
-import goedegep.media.musicfolder.logic.AlbumOnHardDiskInfo2;
+import goedegep.media.musicfolder.logic.AlbumOnHardDiskInfo;
 import goedegep.util.datetime.FlexDate;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -60,6 +61,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.HBox;
 import javafx.util.Callback;
+import javafx.util.StringConverter;
 
 /**
  * This class provides a table to list {@link Album}s
@@ -85,12 +87,12 @@ public class AlbumsTable extends EObjectTable<Album> {
   /**
    * This map relates a single disc Album (as in the mediaDb) to its location on disc.
    */
-  private Map<Album, AlbumOnHardDiskInfo2> albumToMusicFolderLocationMap;
+  private Map<Album, AlbumOnHardDiskInfo> albumToMusicFolderLocationMap;
   
   /**
    * This map relates an Album disc (as in the mediaDb) to its location on disc.
    */
-  private Map<Disc, AlbumOnHardDiskInfo2> albumDiscToMusicFolderLocationMap;
+  private Map<Disc, AlbumOnHardDiskInfo> albumDiscToMusicFolderLocationMap;
   
   /**
    * This map relates a track (as in the mediaDb) to its location on disc.
@@ -107,7 +109,7 @@ public class AlbumsTable extends EObjectTable<Album> {
    */
   private Album currentlyPlayingAlbum = null;
   
-  ObjectProperty<AlbumOnHardDiskInfo2> discToPlay = new SimpleObjectProperty<>();
+  ObjectProperty<AlbumOnHardDiskInfo> discToPlay = new SimpleObjectProperty<>();
 
   /**
    * Constructor
@@ -122,8 +124,8 @@ public class AlbumsTable extends EObjectTable<Album> {
       MediaDbWindow mediaDbWindow,
       Consumer<Album> addAlbumMethod,
       MediaDbService mediaDbService,
-      Map<Album, AlbumOnHardDiskInfo2> albumToMusicFolderLocationMap,
-      Map<Disc, AlbumOnHardDiskInfo2> albumDiscToMusicFolderLocationMap,
+      Map<Album, AlbumOnHardDiskInfo> albumToMusicFolderLocationMap,
+      Map<Disc, AlbumOnHardDiskInfo> albumDiscToMusicFolderLocationMap,
       Map<Track, Path> trackDiscLocationMap) {
     super(customization, MediadbPackage.eINSTANCE.getAlbum(), new AlbumsTableDescriptor(customization, mediaDbService), mediaDbService.getMediaDb(), MediadbPackage.eINSTANCE.getMediaDb_Albums());
     
@@ -205,20 +207,23 @@ public class AlbumsTable extends EObjectTable<Album> {
     
     if (MediaDbUtil.haveAlbumOnHardDisk(album)) {
       // Complete album in MusicFolder, play complete album
-      AlbumOnHardDiskInfo2 albumDiscLocationInfo;
+      // If the album is available on disc, MPC-HC is started with the related disc folder.
+      List<AlbumOnHardDiskInfo> albumDiscLocationInfos = new ArrayList<>();
+      AlbumOnHardDiskInfo albumDiscLocationInfo;
 
       albumDiscLocationInfo = albumToMusicFolderLocationMap.get(album);
+      if (albumDiscLocationInfo != null) {
+        albumDiscLocationInfos.add(albumDiscLocationInfo);
+      }
       
-      if (albumDiscLocationInfo == null) {
-        // If the album is available on disc, MPC-HC is started with the related disc folder.
-        List<Disc> discsInMusicFolder = new ArrayList<>();
-        List<AlbumOnHardDiskInfo2> albumDiscLocationInfos = new ArrayList<>();
-
+      if (albumDiscLocationInfos.isEmpty()) {  // It is a multi disc album
+         List<Disc> discsInMusicFolder = new ArrayList<>();
+ 
         for (Disc disc: album.getDiscs()) {
-          AlbumOnHardDiskInfo2 thisAlbumDiscLocationInfo = albumDiscToMusicFolderLocationMap.get(disc);
+          albumDiscLocationInfo = albumDiscToMusicFolderLocationMap.get(disc);
           if (albumDiscLocationInfo != null) {
             discsInMusicFolder.add(disc);
-            albumDiscLocationInfos.add(thisAlbumDiscLocationInfo);
+            albumDiscLocationInfos.add(albumDiscLocationInfo);
           }
         }
 
@@ -331,7 +336,7 @@ public class AlbumsTable extends EObjectTable<Album> {
   }
   
   private void playDisc(Album album) {
-    AlbumOnHardDiskInfo2 albumDiscLocationInfo = discToPlay.getValue();
+    AlbumOnHardDiskInfo albumDiscLocationInfo = discToPlay.getValue();
     
     // Build the command to start the media player.
     // First argument is the MPC-HC player executable. Then for each album folder a '/play' argument followed by the folder.
@@ -390,7 +395,7 @@ class AlbumsTableDescriptor extends EObjectTableDescriptor<Album> {
    */
   private List<EObjectTableColumnDescriptorAbstract<Album>> columnDescriptors = List.<EObjectTableColumnDescriptorAbstract<Album>>of(
       playColumnDescriptor,
-      new EObjectTableColumnDescriptorBasic<Album>(MEDIA_DB_PACKAGE.getAlbum_Artist(), "Artist", false, true),
+      new EObjectTableColumnDescriptorBasic<Album>(MEDIA_DB_PACKAGE.getAlbum_Artist(), "Artist", 300, false, true, new ArtistStringConverter()),
       new EObjectTableColumnDescriptorBasic<Album>(MEDIA_DB_PACKAGE.getAlbum_Title(), "Title", false, true),
       new EObjectTableColumnDescriptorBasic<Album>(MEDIA_DB_PACKAGE.getAlbum_ReleaseDate(), "Release date", false, true),
       frontImagesColumnDescriptor,
@@ -856,5 +861,22 @@ class AlbumReferenceCell extends TableCell<Album, Object> {
         LOGGER.severe("album found = " + result);
       }
     }
+  }
+}
+
+class ArtistStringConverter extends StringConverter<Artist> {
+  @Override
+  public String toString(Artist artist) {
+    if (artist != null) {
+      return artist.getName();
+    }
+    
+    return null;
+  }
+
+  @Override
+  public Artist fromString(String string) {
+    // No implementation required here
+    return null;
   }
 }

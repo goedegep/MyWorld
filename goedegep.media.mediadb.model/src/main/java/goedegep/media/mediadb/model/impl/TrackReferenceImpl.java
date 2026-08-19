@@ -2,6 +2,8 @@
  */
 package goedegep.media.mediadb.model.impl;
 
+import java.util.logging.Logger;
+
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
 import org.eclipse.emf.ecore.EClass;
@@ -34,6 +36,8 @@ import goedegep.media.mediadb.model.util.MediaDbUtil;
  * @generated
  */
 public class TrackReferenceImpl extends MinimalEObjectImpl.Container implements TrackReference {
+  private static final Logger LOGGER = Logger.getLogger(TrackReferenceImpl.class.getName());
+
   private static final String NEW_LINE = System.getProperty("line.separator");
 
   /**
@@ -646,7 +650,7 @@ public class TrackReferenceImpl extends MinimalEObjectImpl.Container implements 
       Disc disc = MediaDbUtil.getDisc(originalReference);
       if (disc == null) {
         buf.append("  ==Disc is null==  ");
-        System.out.println("Disc is null");
+        LOGGER.severe("Disc is null");
       } else {
         Album album = MediaDbUtil.getAlbum(disc);
         if (MediaDbUtil.isMultiDiscAlbum(album)) {

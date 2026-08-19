@@ -78,7 +78,7 @@ import javafx.scene.input.Dragboard;
  */
 public class TravelsTreeViewCreator {
   private static final Logger LOGGER = Logger.getLogger(TravelsTreeViewCreator.class.getName());
-  private static final SimpleDateFormat DF = new SimpleDateFormat("dd-MM-yyyy");
+  private static final SimpleDateFormat DF = new SimpleDateFormat("EE dd-MM-yyyy");
   private static final FlexDateFormat FDF = new FlexDateFormat();
   private final TypesPackage typesPackage = TypesPackage.eINSTANCE;
   
@@ -596,8 +596,8 @@ public class TravelsTreeViewCreator {
         })
         .setNodeIconFunction(_ -> TravelImageResource.DAY.getIcon(ImageSize.SIZE_0))
         .setExpandChildrenOnExpand(true)
-        .addNodeOperationDescriptor(new NodeOperationDescriptorNewBefore("New element before this one ...", null, null))
-        .addNodeOperationDescriptor(new NodeOperationDescriptorNewAfter("New element after this one ...", null, null))
+        .addNodeOperationDescriptor(new NodeOperationDescriptorNewBefore("New element before this one ...", null, newEObjectInitializationFunction))
+        .addNodeOperationDescriptor(new NodeOperationDescriptorNewAfter("New element after this one ...", null, newEObjectInitializationFunction))
         .addNodeOperationDescriptor(new NodeOperationDescriptorDelete("Delete element", null));
     
     EObjectTreeItemAttributeDescriptor eObjectTreeItemAttributeDescriptor;
@@ -643,8 +643,8 @@ public class TravelsTreeViewCreator {
           }
         })
         .setNodeIconFunction(_ -> TravelImageResource.TEXT.getIcon(ImageSize.SIZE_0))
-        .addNodeOperationDescriptor(new NodeOperationDescriptorNewBefore("New element before this one ...", null, null))
-        .addNodeOperationDescriptor(new NodeOperationDescriptorNewAfter("New element after this one ...", null, null))
+        .addNodeOperationDescriptor(new NodeOperationDescriptorNewBefore("New element before this one ...", null, newEObjectInitializationFunction))
+        .addNodeOperationDescriptor(new NodeOperationDescriptorNewAfter("New element after this one ...", null, newEObjectInitializationFunction))
         .addNodeOperationDescriptor(new NodeOperationDescriptorDelete("Delete element", null));
     
     EObjectTreeItemAttributeDescriptor eObjectTreeItemAttributeDescriptor;
@@ -704,8 +704,8 @@ public class TravelsTreeViewCreator {
           }
           return locationCategory.getIcon(ImageSize.SIZE_0);
         })
-        .addNodeOperationDescriptor(new NodeOperationDescriptorNewBefore("New element before ...", null, TravelsTreeViewCreator::initNewObject))
-        .addNodeOperationDescriptor(new NodeOperationDescriptorNewAfter("New element after ...", null, TravelsTreeViewCreator::initNewObject))
+        .addNodeOperationDescriptor(new NodeOperationDescriptorNewBefore("New element before ...", null, newEObjectInitializationFunction))
+        .addNodeOperationDescriptor(new NodeOperationDescriptorNewAfter("New element after ...", null, newEObjectInitializationFunction))
         .addNodeOperationDescriptor(new NodeOperationDescriptorCut("Cut element", null))
         .addNodeOperationDescriptor(new NodeOperationDescriptorPaste("Paste element", null))
         .addNodeOperationDescriptor(new NodeOperationDescriptorDelete("Delete element", null))
@@ -866,8 +866,8 @@ public class TravelsTreeViewCreator {
     EObjectTreeItemClassDescriptor eObjectTreeItemClassDescriptor = new EObjectTreeItemClassDescriptor()
         .setNodeTextFunction(TravelsWindow::generateTextForGpxTrack)
         .setNodeIconFunction(TravelsWindow::generateIconForGpxTrack)
-        .addNodeOperationDescriptor(new NodeOperationDescriptorNewBefore("New element before this one ...", null, null))
-        .addNodeOperationDescriptor(new NodeOperationDescriptorNewAfter("New element after this one ...", null, null))
+        .addNodeOperationDescriptor(new NodeOperationDescriptorNewBefore("New element before this one ...", null, newEObjectInitializationFunction))
+        .addNodeOperationDescriptor(new NodeOperationDescriptorNewAfter("New element after this one ...", null, newEObjectInitializationFunction))
         .addNodeOperationDescriptor(new NodeOperationDescriptorCustom("View/edit GPX file", this::canGPXFileBeOpened, this::openGPXFile))
         .addNodeOperationDescriptor(new NodeOperationDescriptorDelete("Delete element", null));
     
@@ -913,8 +913,8 @@ public class TravelsTreeViewCreator {
           return text;
         })
         .setNodeIconFunction(TravelsTreeViewCreator::getIconForDocumentFilename)
-        .addNodeOperationDescriptor(new NodeOperationDescriptorNewBefore("New element before this one ...", null, null))
-        .addNodeOperationDescriptor(new NodeOperationDescriptorNewAfter("New element after this one ...", null, null))
+        .addNodeOperationDescriptor(new NodeOperationDescriptorNewBefore("New element before this one ...", null, newEObjectInitializationFunction))
+        .addNodeOperationDescriptor(new NodeOperationDescriptorNewAfter("New element after this one ...", null, newEObjectInitializationFunction))
         .addNodeOperationDescriptor(new NodeOperationDescriptorOpen("Open document", TravelsTreeViewCreator::canDocumentBeOpened, TravelsTreeViewCreator::openDocument))
         .addNodeOperationDescriptor(new NodeOperationDescriptorDelete("Delete element", null));
 
@@ -1016,8 +1016,8 @@ public class TravelsTreeViewCreator {
             return ImageResource.CAMERA_BLACK.getImage(ImageSize.SIZE_0);
           }
         })
-        .addNodeOperationDescriptor(new NodeOperationDescriptorNewBefore("New element before this one ...", null, null))
-        .addNodeOperationDescriptor(new NodeOperationDescriptorNewAfter("New element after this one ...", null, null))
+        .addNodeOperationDescriptor(new NodeOperationDescriptorNewBefore("New element before this one ...", null, newEObjectInitializationFunction))
+        .addNodeOperationDescriptor(new NodeOperationDescriptorNewAfter("New element after this one ...", null, newEObjectInitializationFunction))
         .addNodeOperationDescriptor(new NodeOperationDescriptorDelete("Delete element", null));
 
     // Picture.pictureReference
@@ -1055,8 +1055,8 @@ public class TravelsTreeViewCreator {
           }
         })
         .setNodeIconFunction(_ -> TravelImageResource.MAP_IMAGE.getIcon(ImageSize.SIZE_0))
-        .addNodeOperationDescriptor(new NodeOperationDescriptorNewBefore("New element before this one ...", null, null))
-        .addNodeOperationDescriptor(new NodeOperationDescriptorNewAfter("New element after this one ...", null, null))
+        .addNodeOperationDescriptor(new NodeOperationDescriptorNewBefore("New element before this one ...", null, newEObjectInitializationFunction))
+        .addNodeOperationDescriptor(new NodeOperationDescriptorNewAfter("New element after this one ...", null, newEObjectInitializationFunction))
         .addNodeOperationDescriptor(new NodeOperationDescriptorDelete("Delete element", null))
         .addNodeOperationDescriptor(new NodeOperationDescriptorCustom("Update  image file", (_) -> true, updateMapImageFileFunction))
         .addNodeOperationDescriptor(new NodeOperationDescriptorCustom("Update map image settings from map view", (_) -> true, updateMapImageWithCurrentMapViewSettingsFunction));

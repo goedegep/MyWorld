@@ -266,7 +266,7 @@ public class ImportAlbumPicturesWindow extends JfxStage {
     
 
   private void closeWindow() {
-    System.out.println("AlbumDetailsEditor: closeWindow");
+    LOGGER.severe("AlbumDetailsEditor: closeWindow");
     this.close();
   }
 }
