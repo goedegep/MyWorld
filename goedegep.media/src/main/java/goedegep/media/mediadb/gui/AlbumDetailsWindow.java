@@ -352,10 +352,6 @@ public class AlbumDetailsWindow extends JfxStage implements IAlbumDetailsWindow 
             albumType = "Own compilation album";
             break;
             
-          case SOUNDTRACK_ALBUM:
-            albumType = "Soundtrack";
-            break;
-            
           case VARIOUS_ARTISTS_ALBUM:
             albumType = "Various artists album";
             break;

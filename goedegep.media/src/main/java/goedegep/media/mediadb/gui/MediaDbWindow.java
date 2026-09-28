@@ -310,37 +310,86 @@ public class MediaDbWindow extends JfxStage {
   }
   
   private void tempFixProblems() {
-    MediadbFactory factory = MediadbFactory.eINSTANCE;
-    TrackReference trackReference;
-    Track track;
-    Artist artist;
-    Album album;
-    Disc disc;
+//    listTracksIWantToHave();
+//    
+//    MediadbFactory factory = MediadbFactory.eINSTANCE;
+//    TrackReference trackReference;
+//    Track track;
+//    Artist artist;
+//    Album album;
+//    Disc disc;
+//    MyInfo myInfo;
+//    
+//    // change Very 'Eavy...Very 'Umble to have on disk, remove reference.
+//    artist = MediaDbUtil.getArtist(mediaDb, "Uriah Heep");
+//    Album albumVery = MediaDbUtil.getAlbum(mediaDb, null, artist, "Very 'Eavy...Very 'Umble");
+//    albumVery.setTitle("…Very ’Eavy …Very ’Umble");
+//    MyInfo myInfoVery = albumVery.getMyInfo(); 
+//    myInfoVery.getAlbumReferences().clear();
+//    MediumInfo mediumInfo = factory.createMediumInfo();
+//    mediumInfo.setMediumType(MediumType.HARDDISK);
+//    mediumInfo.setInformationType(InformationType.FLAC);
+//    mediumInfo.setSourceType(InformationType.WAV);
+//    myInfoVery.getIHaveOn().add(mediumInfo);
+//    disc = albumVery.getDiscs().getFirst();
+//    for (TrackReference tr: disc.getTrackReferences()) {
+//      tr.getMyTrackInfo().unsetIWant();
+//    }
+//    trackReference = disc.getTrackReferences().get(9);
+//    trackReference.getTrack().setTitle("Come Away Melinda (alternative version)");
+//    trackReference = disc.getTrackReferences().get(10);
+//    trackReference.getTrack().setTitle("Born in a Trunk (alternative version)");
+//    
+//
+//    
+//    Album albumUriah = MediaDbUtil.getAlbum(mediaDb, null, artist, "Uriah Heep");
+//    MyInfo myInfoUriah = albumUriah.getMyInfo();
+//    myInfoUriah.setMyComments("Dit is de Amerikaanse versie van 'Very 'Eavy...Very 'Umble'. Hoef ik dus niet te hebben");
+//    myInfoUriah.setIWant(IWant.NO);
+//    myInfoUriah.getIHaveOn().clear();
+//    myInfoUriah.getAlbumReferences().add(albumVery);
     
-    for (Album a: mediaDb.getAlbums()) {
-      MyInfo m = a.getMyInfo();
-      Boolean soundTrackAlbum = false;
-      if (m != null  &&  m.getAlbumType() == AlbumType.SOUNDTRACK_ALBUM) {
-        soundTrackAlbum = true;
-      }
-      if (a.isSoundtrack()  ||  soundTrackAlbum) {
-        LOGGER.severe("Soundtrack: " + a.getTitle() + "  ==  " + a.isSoundtrack() + " - " + soundTrackAlbum);
-      }
-    }
+//    // reference from artist - shall not have I have set
+//    artist = MediaDbUtil.getArtist(mediaDb, "Norah Jones");
+//    TrackReference sampleReference = artist.getSample();
+//    track = sampleReference.getTrack();
+//    LOGGER.severe("Sample reference: " + sampleReference.toString());
+//    
+//    // create reference in Sample collection
+//    TrackCollection trackCollection = MediaDbUtil.getTrackCollection(mediaDb, Collection.SAMPLE);
+//    TrackReference collectionReference = factory.createTrackReference();
+//    collectionReference.setTrack(track);
+//    MyTrackInfo myTrackInfo = factory.createMyTrackInfo();
+//    MediumInfo mediumInfo = factory.createMediumInfo();
+//    mediumInfo.setMediumType(MediumType.HARDDISK);
+//    mediumInfo.setInformationType(InformationType.MP3);
+//    myTrackInfo.getIHaveOn().add(mediumInfo);
+//    collectionReference.setMyTrackInfo(myTrackInfo);
+//    trackCollection.getTrackReferences().add(collectionReference);
+//    
+//    // now sample can refer to this
+//    sampleReference.getMyTrackInfo().setTrackReference(collectionReference); 
+//    
+//    // the album track also has to refer to this
+//    album = MediaDbUtil.getAlbum(mediaDb, null, artist, "Come Away With Me");
+//    disc = album.getDiscs().get(0);
+//    TrackReference albumReference = disc.getTrackReferences().get(4);
+//    LOGGER.severe("Album reference: " + albumReference.toString());
+//    albumReference.getMyTrackInfo().setTrackReference(collectionReference);
     
     
+//    MyTrackInfo myTrackInfo = trackReference.getMyTrackInfo();
     
-    
-    artist = MediaDbUtil.getArtist(mediaDb, "Het Gebeurde In Het Westen");
-    album = MediaDbUtil.getAlbum(mediaDb, null, artist, "Het Gebeurde In Het Westen");
-    
-    Artist newArtist = factory.createArtist();
-    newArtist.setName("Ennio Morricone");
-    
-    album.setArtist(newArtist);
-    mediaDb.getArtists().add(newArtist);
-    mediaDb.getArtists().remove(artist);
-    album.getMyInfo().setAlbumType(AlbumType.SOUNDTRACK_ALBUM);
+//    artist = MediaDbUtil.getArtist(mediaDb, "Het Gebeurde In Het Westen");
+//    album = MediaDbUtil.getAlbum(mediaDb, null, artist, "Het Gebeurde In Het Westen");
+//    
+//    Artist newArtist = factory.createArtist();
+//    newArtist.setName("Ennio Morricone");
+//    
+//    album.setArtist(newArtist);
+//    mediaDb.getArtists().add(newArtist);
+//    mediaDb.getArtists().remove(artist);
+//    album.setSoundtrack(true);
     
 //    
 //    disc = album.getDiscs().getFirst();
@@ -414,20 +463,8 @@ public class MediaDbWindow extends JfxStage {
 //    track.setTitle("Livin' On The Edge Of The Night");
 //    
 //    
-    CreateAlbumFromAlbumTracksWindow w = new CreateAlbumFromAlbumTracksWindow(customization);
-    w.scanAlbumFolder("D:\\Music\\zSoundtracks\\1987 - Ennio Morricone - Het Gebeurde In Het Westen", null);
-//    w.scanAlbumFolder("D:\\Music\\E\\Eagles\\1987 - Eagles - The Legend Of Eagles");
-//    w.scanAlbumFolder("D:\\Music\\E\\Eurythmics\\1991 - Eurythmics - Greatest Hits");
-//    w.scanAlbumFolder("D:\\Music\\E\\Evanescence\\2003 - Evanescence - Fallen");
-//    w.scanAlbumFolder("D:\\Music\\E\\Evanescence\\2006 - Evanescence - The Open Door");
-//    w.scanAlbumFolder("D:\\Music\\F\\Fotheringay\\1970 - Fotheringay - Fotheringay");
-//    w.scanAlbumFolder("D:\\Music\\G\\Genesis\\1973 - Genesis - Selling England By The Pound");
-//    w.scanAlbumFolder("D:\\Music\\G\\Genesis\\1990 - Genesis - And The Word Was");
-//    w.scanAlbumFolder("D:\\Music\\H\\Harry Sacksioni\\1987 - Harry Sacksioni - Harry Sacksioni Speciale Compilatie");
-//    w.scanAlbumFolder("D:\\Music\\I\\Iggy Pop\\1990 - Iggy Pop - Brick By Brick");
-//    w.scanAlbumFolder("D:\\Music\\L\\London Symphony Orchestra\\1986 - London Symphony Orchestra - Bolero");
-//    w.scanAlbumFolder("D:\\Music\\V\\Various Artists\\1990 - Various Artists - 25 Golden Juke-Box Classics");
-//    w.scanAlbumFolder("D:\\Music\\zSoundtracks\\1987 - Ennio Morricone - Het Gebeurde In Het Westen");
+//    CreateAlbumFromAlbumTracksWindow w = new CreateAlbumFromAlbumTracksWindow(customization);
+//    w.scanAlbumFolder("D:\\Music\\E\\Eagles\\1987 - Eagles - The Legend Of Eagles", null);
   }
   
   private void listTracksIWantToHave() {

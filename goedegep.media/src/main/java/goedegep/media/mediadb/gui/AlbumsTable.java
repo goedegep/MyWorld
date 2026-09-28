@@ -661,7 +661,7 @@ class MyInfoPlayCell extends TableCell<Album, Object> {
       } else if (MediaDbUtil.haveAlbumOnSacd(album)) {
         imageView.setImage(mediaAppResources.getSacdIcon());
         tooltipText = "I have this album on Super Audio CD, so it cannot be played here.";
-      } else if (MediaDbUtil.getIWant(album) == IWant.NO) {
+      } else if (MediaDbUtil.isAlbumAnAlbumThatIDontWant(album)) {
         LOGGER.fine("IWant is NO");
         imageView.setImage(mediaAppResources.getNotInMediaDbIcon());
         tooltipText = "I don't have this album and I don't want this album, so it cannot be played.";

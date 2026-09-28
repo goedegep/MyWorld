@@ -195,10 +195,6 @@ public class MediaDbToDiscLocationMap {
      if (!MediaDbUtil.isMultiDiscAlbum(album)) {
       // Single-disc album
       // Music folder is per album.
-       
-      if ("Het Gebeurde In Het Westen".equals(album.getTitle())) {
-        LOGGER.severe("STOP");
-      }
       
       // If I have album (partly) on disc, find the AlbumOnDiscInfo in the albumsOnDiscNotMapped
       if (MediaDbUtil.haveAlbumOnHardDisk(album)) {   //   ||  MediaDbUtil.haveAlbumPartlyOnHardDisk(album)
@@ -492,6 +488,7 @@ public class MediaDbToDiscLocationMap {
   private void createTrackLocationMapForTrackCollection(TrackCollection trackCollection, boolean ignoreMissingBonusTracks) {
 
     for (TrackReference trackReference: trackCollection.getTrackReferences()) {
+      
       if (!MediaDbUtil.doIHaveTrackOnHardDisk(trackReference)) {
         continue;
       }

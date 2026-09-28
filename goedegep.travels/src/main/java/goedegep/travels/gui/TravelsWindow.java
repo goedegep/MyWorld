@@ -73,6 +73,7 @@ import goedegep.travels.logic.PhotosImporter;
 import goedegep.travels.logic.TravelsRegistry;
 import goedegep.travels.logic.TravelToHtmlConverter;
 import goedegep.travels.logic.TravelToHtmlConverterSetting;
+import goedegep.travels.logic.TravelToHtmlConverterSettings;
 import goedegep.travels.logic.VacationsKmlConverter;
 import goedegep.travels.logic.TravelsUtils;
 import goedegep.travels.model.BoundingBox;
@@ -100,6 +101,8 @@ import goedegep.util.emf.EMFResource;
 import goedegep.util.file.FileUtils;
 import goedegep.util.i18n.TranslationFormatter;
 import goedegep.util.img.ImageUtils;
+import goedegep.util.settings.Setting;
+import goedegep.util.settings.Settings;
 import goedegep.vacations.checklist.model.VacationChecklist;
 import goedegep.vacations.checklist.model.VacationChecklistCategoriesList;
 import goedegep.vacations.checklist.model.VacationChecklistFactory;
@@ -110,6 +113,7 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -250,7 +254,7 @@ public class TravelsWindow extends JfxStage {
   /**
    * Settings for the {@link travelToHtmlConverter}.
    */
-  private Set<TravelToHtmlConverterSetting> travelToHtmlConverterSettings;
+  private TravelToHtmlConverterSettings travelToHtmlConverterSettings;
   
   /**
    * The converter to convert a {@link Travel} to an HTML document.
@@ -334,8 +338,11 @@ public class TravelsWindow extends JfxStage {
     travelsRegistry = TravelsRegistry.getInstance();
     appResources = (TravelsAppResourcesFx) getResources();
             
-    travelToHtmlConverterSettings = TravelToHtmlConverterSetting.getDefaultSettings();
+    travelToHtmlConverterSettings = new TravelToHtmlConverterSettings();
     travelToHtmlConverter = new TravelToHtmlConverter(travelToHtmlConverterSettings);
+    travelToHtmlConverterSettings.addListener((_, _, _) -> {
+      updateDocumentView(browserTab.isSelected());
+    });
     
     createGUI();
     
@@ -801,48 +808,61 @@ public class TravelsWindow extends JfxStage {
     // Settings menu
     menu = new Menu("Settings");
     
-    CheckMenuItem showCoordinatesInDocumentMenuItem = componentFactory.createCheckMenuItem("Show coordinates in Document");
+    for (Setting setting: travelToHtmlConverterSettings.get()) {
+      Object value = setting.getValue();
+      if (value instanceof Boolean) {
+        CheckMenuItem checkMenuItem = componentFactory.createCheckMenuItem(setting.getName());
+        checkMenuItem.setSelected((Boolean) setting.getValue());
+        checkMenuItem.setOnAction(_ -> {
+          setting.setValue((Boolean) checkMenuItem.isSelected());
+        });
+        menu.getItems().add(checkMenuItem);
+      } else {
+        throw new IllegalArgumentException("Only boolean settings are supported for the travel to HTML converter settings");
+      }
+    }
+//    CheckMenuItem showCoordinatesInDocumentMenuItem = componentFactory.createCheckMenuItem("Show coordinates in Document");
     
-    showCoordinatesInDocumentMenuItem.setOnAction(_ -> {
-      if (showCoordinatesInDocumentMenuItem.isSelected() ) {
-        travelToHtmlConverterSettings.add(TravelToHtmlConverterSetting.SHOW_LOCATION_COORDINATES);
-      } else {
-        travelToHtmlConverterSettings.remove(TravelToHtmlConverterSetting.SHOW_LOCATION_COORDINATES);
-      }
-      travelToHtmlConverter.updateSettings(travelToHtmlConverterSettings);
-      updateDocumentView(browserTab.isSelected());
-    });
-    menu.getItems().add(showCoordinatesInDocumentMenuItem);
+//    showCoordinatesInDocumentMenuItem.setOnAction(_ -> {
+//      if (showCoordinatesInDocumentMenuItem.isSelected() ) {
+//        travelToHtmlConverterSettings.add(TravelToHtmlConverterSetting.SHOW_LOCATION_COORDINATES);
+//      } else {
+//        travelToHtmlConverterSettings.remove(TravelToHtmlConverterSetting.SHOW_LOCATION_COORDINATES);
+//      }
+//      travelToHtmlConverter.updateSettings(travelToHtmlConverterSettings);
+//      updateDocumentView(browserTab.isSelected());
+//    });
+//    menu.getItems().add(showCoordinatesInDocumentMenuItem);
     
-    ToggleGroup toggleGroup = new ToggleGroup();
-
-    RadioMenuItem tableMode = new RadioMenuItem("Show days in a table");
-    tableMode.setOnAction((_) -> {
-      LOGGER.severe("tableMode selected: " + tableMode.isSelected());
-      if (tableMode.isSelected()) {
-        travelToHtmlConverterSettings.remove(TravelToHtmlConverterSetting.PARAGRAPH_MODE);
-      } else {
-        travelToHtmlConverterSettings.add(TravelToHtmlConverterSetting.PARAGRAPH_MODE);
-      }
-      travelToHtmlConverter.updateSettings(travelToHtmlConverterSettings);
-      updateDocumentView(browserTab.isSelected());
-    });
-    tableMode.setToggleGroup(toggleGroup);
-    tableMode.setSelected(true);
-    travelToHtmlConverterSettings.remove(TravelToHtmlConverterSetting.PARAGRAPH_MODE);
-    RadioMenuItem paragraphMode = new RadioMenuItem("Show days in paragraphs");
-    paragraphMode.setOnAction((_) -> {
-      LOGGER.severe("paragraphMode selected: " + paragraphMode.isSelected());
-      if (paragraphMode.isSelected()) {
-        travelToHtmlConverterSettings.add(TravelToHtmlConverterSetting.PARAGRAPH_MODE);
-      } else {
-        travelToHtmlConverterSettings.remove(TravelToHtmlConverterSetting.PARAGRAPH_MODE);
-      }
-      travelToHtmlConverter.updateSettings(travelToHtmlConverterSettings);
-      updateDocumentView(browserTab.isSelected());
-    });
-    paragraphMode.setToggleGroup(toggleGroup);
-    menu.getItems().addAll(tableMode, paragraphMode);
+//    ToggleGroup toggleGroup = new ToggleGroup();
+//
+//    RadioMenuItem tableMode = new RadioMenuItem("Show days in a table");
+//    tableMode.setOnAction((_) -> {
+//      LOGGER.severe("tableMode selected: " + tableMode.isSelected());
+//      if (tableMode.isSelected()) {
+//        travelToHtmlConverterSettings.remove(TravelToHtmlConverterSetting.PARAGRAPH_MODE);
+//      } else {
+//        travelToHtmlConverterSettings.add(TravelToHtmlConverterSetting.PARAGRAPH_MODE);
+//      }
+//      travelToHtmlConverter.updateSettings(travelToHtmlConverterSettings);
+//      updateDocumentView(browserTab.isSelected());
+//    });
+//    tableMode.setToggleGroup(toggleGroup);
+//    tableMode.setSelected(true);
+//    travelToHtmlConverterSettings.remove(TravelToHtmlConverterSetting.PARAGRAPH_MODE);
+//    RadioMenuItem paragraphMode = new RadioMenuItem("Show days in paragraphs");
+//    paragraphMode.setOnAction((_) -> {
+//      LOGGER.severe("paragraphMode selected: " + paragraphMode.isSelected());
+//      if (paragraphMode.isSelected()) {
+//        travelToHtmlConverterSettings.add(TravelToHtmlConverterSetting.PARAGRAPH_MODE);
+//      } else {
+//        travelToHtmlConverterSettings.remove(TravelToHtmlConverterSetting.PARAGRAPH_MODE);
+//      }
+//      travelToHtmlConverter.updateSettings(travelToHtmlConverterSettings);
+//      updateDocumentView(browserTab.isSelected());
+//    });
+//    paragraphMode.setToggleGroup(toggleGroup);
+//    menu.getItems().addAll(tableMode, paragraphMode);
     
     menuBar.getMenus().add(menu);
     
@@ -885,6 +905,12 @@ public class TravelsWindow extends JfxStage {
 
     return menuBar;
   }
+  
+//  private void updateTravelToHtmlConverterSettings() {
+//    travelToHtmlConverterSettings = TravelToHtmlConverterSetting.getDefaultSettings();
+//    travelToHtmlConverter.updateSettings(travelToHtmlConverterSettings);
+//    updateDocumentView(browserTab.isSelected());
+//  }
   
   /**
    * Close the application.
@@ -2236,16 +2262,10 @@ public class TravelsWindow extends JfxStage {
       LOGGER.severe("eObjectTreeCell is null");
       return null;
     }
-    
-    Object eObjectTreeItemContent = eObjectTreeCell.getItem();
-    
-    LOGGER.severe("eObjectTreeItemContent=" + eObjectTreeItemContent);
-    
+
     Travel travel = getTravelForTreeItem(eObjectTreeCell.getTreeItem());
-    LOGGER.severe("travel=" + travel.getId());
     Path vacationFolderPath = TravelsUtils.getVacationPhotosFolderPath(travel);
     if (vacationFolderPath != null) {
-      LOGGER.severe("vacationFolderPath=" + vacationFolderPath.toString());
       return vacationFolderPath.toString();
     }
     

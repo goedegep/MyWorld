@@ -60,7 +60,6 @@
       <genEnumLiterals ecoreEnumLiteral="mediadb.ecore#//AlbumType/NORMAL_ALBUM"/>
       <genEnumLiterals ecoreEnumLiteral="mediadb.ecore#//AlbumType/COMPILATION_ALBUM"/>
       <genEnumLiterals ecoreEnumLiteral="mediadb.ecore#//AlbumType/VARIOUS_ARTISTS_ALBUM"/>
-      <genEnumLiterals ecoreEnumLiteral="mediadb.ecore#//AlbumType/SOUNDTRACK_ALBUM"/>
       <genEnumLiterals ecoreEnumLiteral="mediadb.ecore#//AlbumType/OWN_COMPILATION_ALBUM"/>
     </genEnums>
     <genClasses ecoreClass="mediadb.ecore#//Track">

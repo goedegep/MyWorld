@@ -57,6 +57,7 @@ public class OsmAndUtil {
     iconMap.put(LocationCategory.BEACH, "beach");
     iconMap.put(LocationCategory.BUILDING, "building");
     iconMap.put(LocationCategory.BRIDGE, "bridge_structure_suspension");
+    iconMap.put(LocationCategory.BUS_STOP, "bus_yes");
     iconMap.put(LocationCategory.BUSSTATION, "amenity_bus_station");
     iconMap.put(LocationCategory.CABLE_CAR, "aerialway_cable_car");
     iconMap.put(LocationCategory.CAFE, "amenity_cafe");
@@ -73,6 +74,7 @@ public class OsmAndUtil {
     iconMap.put(LocationCategory.CONVENIENCE_STORE, "shop_supermarket");
     iconMap.put(LocationCategory.CONVENTION_CENTER, "conference_centre");
     iconMap.put(LocationCategory.ENTRANCE_GATE, "barrier_lift_gate");
+    iconMap.put(LocationCategory.EXHIBITION_CENTER, "amenity_arts_centre");
     iconMap.put(LocationCategory.FERRY, "cargo_vehicle");
     iconMap.put(LocationCategory.FIRE_DEPARTMENT, "amenity_fire_station");
     iconMap.put(LocationCategory.GUESTHOUSE, "accomodation");

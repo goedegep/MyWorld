@@ -22,7 +22,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Set;
 import java.util.logging.Logger;
 
 import javax.imageio.ImageIO;
@@ -57,6 +56,7 @@ import goedegep.types.model.FileReference;
 import goedegep.util.emf.EMFResource;
 import goedegep.util.file.FileUtils;
 import goedegep.util.html.HtmlUtil;
+import goedegep.util.settings.Settings;
 
 /**
  * This class generates an HTML document for a {@code Travel}.
@@ -112,6 +112,8 @@ public class TravelToHtmlConverter extends TravelToTextConverterAbstract {
    */
   private HtmlRenderer renderer = HtmlRenderer.builder().build();
   
+  private Settings travelToHtmlConverterSettings;
+  
   /**
    * By default images use links to the files on the computer. If this flag is set to true, they are embedded in the HTML.
    */
@@ -131,7 +133,7 @@ public class TravelToHtmlConverter extends TravelToTextConverterAbstract {
   /**
    * If {@code true}, paragraph mode is used. Otherwise table mode is used.
    */
-  private boolean paragraphMode;
+//  private boolean paragraphMode;
   
   /**
    * This flag is used in table mode.<br/>
@@ -162,7 +164,7 @@ public class TravelToHtmlConverter extends TravelToTextConverterAbstract {
   /**
    * If {@code true}, the coordinates of locations are shown.
    */
-  private boolean showLocationCoordinates;
+//  private boolean showLocationCoordinates;
   
   private Map<URL, String> iconUrlToBase64Map = new HashMap<>();
   
@@ -171,42 +173,48 @@ public class TravelToHtmlConverter extends TravelToTextConverterAbstract {
    * 
    * @param travelToHtmlConverterSettings settings used to control the generation of the HTML document.
    */
-  public TravelToHtmlConverter(Set<TravelToHtmlConverterSetting> travelToHtmlConverterSettings) {
+  public TravelToHtmlConverter(Settings travelToHtmlConverterSettings) {
     Objects.requireNonNull(travelToHtmlConverterSettings, "argument travelToHtmlConverterSettings may not be null");
+    
+    this.travelToHtmlConverterSettings = travelToHtmlConverterSettings;
     
     travelsRegistry = TravelsRegistry.getInstance();
-    updateSettings(travelToHtmlConverterSettings);
+//    updateSettings(travelToHtmlConverterSettings);
   }
   
-  public void updateSettings(Set<TravelToHtmlConverterSetting> travelToHtmlConverterSettings) {
-    Objects.requireNonNull(travelToHtmlConverterSettings, "argument travelToHtmlConverterSettings may not be null");
-    
-    // Set default values.
-    showLocationCoordinates = false;
-    paragraphMode = false;
-    
-    // Update settings.
-    for (TravelToHtmlConverterSetting setting: travelToHtmlConverterSettings) {
-      switch(setting) {
-      case SHOW_LOCATION_COORDINATES:
-        showLocationCoordinates = true;
-        break;
-        
-      case PARAGRAPH_MODE:
-        paragraphMode = true;
-        break;
-      }
-    }
-  }
+//  /**
+//   * Update the travel to HTML converter settings.
+//   * 
+//   * @param travelToHtmlConverterSettings the new settings.
+//   */
+//  public void updateSettings(Set<TravelToHtmlConverterSetting> travelToHtmlConverterSettings) {
+//    Objects.requireNonNull(travelToHtmlConverterSettings, "argument travelToHtmlConverterSettings may not be null");
+//    
+//    // Set default values.
+//    showLocationCoordinates = false;
+//    paragraphMode = false;
+//    
+//    // Update settings.
+//    for (TravelToHtmlConverterSetting setting: travelToHtmlConverterSettings) {
+//      switch(setting) {
+//      case SHOW_LOCATION_COORDINATES:
+//        showLocationCoordinates = true;
+//        break;
+//        
+//      case PARAGRAPH_MODE:
+//        paragraphMode = true;
+//        break;
+//      }
+//    }
+//  }
   
   /**
    * Generate an HTML document for a {@code Travel}.
    * <p>
-   * The links in the document (for images, documents, etc.) are to files on the computer..
+   * The links in the document (for images, documents, etc.) are to files on the computer.
    * 
-   * @param travel the {@code Vacation} for which an HTML document is to be generated. This argument may not be null.
+   * @param travel the {@code Travel} for which an HTML document is to be generated. This argument may not be null.
    * @return an HTML document for the {@code vacation}.
-   * @deprecated
    */
   public String travelToHtml(Travel travel) {
     return travelToHtml(travel, false, null);
@@ -495,6 +503,8 @@ public class TravelToHtmlConverter extends TravelToTextConverterAbstract {
    * @param day the {@code Day} element for which HTML text is to be generated.
    */
   private void vacationElementDayToHtml(Day day) {
+    boolean paragraphMode = travelToHtmlConverterSettings.getSettingValue(TravelToHtmlConverterSettings.PARAGRAPH_MODE_NAME);
+    
     if (paragraphMode) {
       buf.append("<h2>");
       buf.append("Dag ");
@@ -667,6 +677,8 @@ public class TravelToHtmlConverter extends TravelToTextConverterAbstract {
       
       newLineNeeded = true;
     }
+    
+    boolean showLocationCoordinates = travelToHtmlConverterSettings.getSettingValue(TravelToHtmlConverterSettings.SHOW_LOCATION_COORDINATES_NAME);
     
     if (showLocationCoordinates  &&  location.isSetLatitude()  &&  location.isSetLongitude()) {
       if (newLineNeeded) {

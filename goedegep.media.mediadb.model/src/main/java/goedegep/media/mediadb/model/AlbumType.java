@@ -63,19 +63,6 @@ public enum AlbumType implements Enumerator {
   VARIOUS_ARTISTS_ALBUM(2, "VARIOUS_ARTISTS_ALBUM", "Various Artists"),
 
   /**
-   * The '<em><b>SOUNDTRACK ALBUM</b></em>' literal object.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * <!-- begin-model-doc -->
-   * These albums contain the soundtracks of movies. You typically search them based on the movie title, instead of on the composer or artist.
-   * <!-- end-model-doc -->
-   * @see #SOUNDTRACK_ALBUM_VALUE
-   * @generated
-   * @ordered
-   */
-  SOUNDTRACK_ALBUM(3, "SOUNDTRACK_ALBUM", "Soundtrack"),
-
-  /**
    * The '<em><b>OWN COMPILATION ALBUM</b></em>' literal object.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -133,20 +120,6 @@ public enum AlbumType implements Enumerator {
   public static final int VARIOUS_ARTISTS_ALBUM_VALUE = 2;
 
   /**
-   * The '<em><b>SOUNDTRACK ALBUM</b></em>' literal value.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * <!-- begin-model-doc -->
-   * These albums contain the soundtracks of movies. You typically search them based on the movie title, instead of on the composer or artist.
-   * <!-- end-model-doc -->
-   * @see #SOUNDTRACK_ALBUM
-   * @model literal="Soundtrack"
-   * @generated
-   * @ordered
-   */
-  public static final int SOUNDTRACK_ALBUM_VALUE = 3;
-
-  /**
    * The '<em><b>OWN COMPILATION ALBUM</b></em>' literal value.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -167,7 +140,7 @@ public enum AlbumType implements Enumerator {
    * @generated
    */
   private static final AlbumType[] VALUES_ARRAY = new AlbumType[] { NORMAL_ALBUM, COMPILATION_ALBUM,
-      VARIOUS_ARTISTS_ALBUM, SOUNDTRACK_ALBUM, OWN_COMPILATION_ALBUM, };
+      VARIOUS_ARTISTS_ALBUM, OWN_COMPILATION_ALBUM, };
 
   /**
    * A public read-only list of all the '<em><b>Album Type</b></em>' enumerators.
@@ -229,8 +202,6 @@ public enum AlbumType implements Enumerator {
       return COMPILATION_ALBUM;
     case VARIOUS_ARTISTS_ALBUM_VALUE:
       return VARIOUS_ARTISTS_ALBUM;
-    case SOUNDTRACK_ALBUM_VALUE:
-      return SOUNDTRACK_ALBUM;
     case OWN_COMPILATION_ALBUM_VALUE:
       return OWN_COMPILATION_ALBUM;
     }

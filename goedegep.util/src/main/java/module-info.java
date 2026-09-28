@@ -32,6 +32,7 @@ module goedegep.util {
   exports goedegep.util.objectselector;
   exports goedegep.util.projectinfo;
   exports goedegep.util.sax;
+  exports goedegep.util.settings;
   exports goedegep.util.sgml;
   exports goedegep.util.string;
   exports goedegep.util.text;

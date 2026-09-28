@@ -27,9 +27,12 @@ import goedegep.jfx.JfxStage;
 import goedegep.jfx.editor.controls.EditorControlFileSelecter;
 import goedegep.travels.logic.TravelToHtmlConverter;
 import goedegep.travels.logic.TravelToHtmlConverterSetting;
+import goedegep.travels.logic.TravelToHtmlConverterSettings;
 import goedegep.travels.logic.TravelsUtils;
 import goedegep.travels.model.Travel;
 import goedegep.util.file.FileUtils;
+import goedegep.util.settings.Setting;
+import goedegep.util.settings.Settings;
 import javafx.beans.value.ChangeListener;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.geometry.Insets;
@@ -166,13 +169,14 @@ public class PrintWindow extends JfxStage {
     
     this.travel = travel;
     
-    settings = TravelToHtmlConverterSetting.getDefaultSettings();  // Start with the default settings.
+    TravelToHtmlConverterSettings travelToHtmlConverterSettings = new TravelToHtmlConverterSettings();
+    travelToHtmlConverterSettings.setSettingValue(TravelToHtmlConverterSetting.SHOW_LOCATION_COORDINATES.getDisplayName(), true);
     
     // Create the in-memory file system for the PDF generation task.
     imfs = Jimfs.newFileSystem(Configuration.unix());
     
     // Create the travelToHtmlConverter for the PDF generation task.
-    travelToHtmlConverter = new TravelToHtmlConverter(settings);
+    travelToHtmlConverter = new TravelToHtmlConverter(travelToHtmlConverterSettings);
     
     createUpdatingImage();
     createGui();

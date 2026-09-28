@@ -28,9 +28,9 @@ public enum TravelToHtmlConverterSetting {
     return displayName;
   }
 
-  public boolean getBooleanValue() {
-    return (boolean) value;
-  }
+//  public boolean getBooleanValue() {
+//    return (boolean) value;
+//  }
 
   public void setBooleanValue(boolean value) {
     this.value = value;

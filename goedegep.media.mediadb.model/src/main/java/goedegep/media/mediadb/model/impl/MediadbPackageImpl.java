@@ -1512,7 +1512,6 @@ public class MediadbPackageImpl extends EPackageImpl implements MediadbPackage {
     addEEnumLiteral(albumTypeEEnum, AlbumType.NORMAL_ALBUM);
     addEEnumLiteral(albumTypeEEnum, AlbumType.COMPILATION_ALBUM);
     addEEnumLiteral(albumTypeEEnum, AlbumType.VARIOUS_ARTISTS_ALBUM);
-    addEEnumLiteral(albumTypeEEnum, AlbumType.SOUNDTRACK_ALBUM);
     addEEnumLiteral(albumTypeEEnum, AlbumType.OWN_COMPILATION_ALBUM);
 
     // Create resource

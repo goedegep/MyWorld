@@ -561,6 +561,35 @@ public class MediaDbUtil {
   }
   
   /**
+   * Check whether an {@code Album} is an album that I don't want.
+   * <p>
+   * This is the case if 'I Want' at album level is 'No',
+   * or if all track references state 'I don't want this track'.
+   * 
+   * @param album the {@code Album} to be checked
+   * @return true if I don't want the {@code album}, false otherwise.
+   */
+  public static boolean isAlbumAnAlbumThatIDontWant(Album album) {
+    IWant iWant = getIWant(album);
+    if (iWant != IWant.NOT_SET) {
+      // it specified at album level, so return this value.
+      return iWant == IWant.NO;
+    }
+    
+    // Check all track references. If any track doesn't specify 'I don't want this track' return false.
+    for (Disc disc: album.getDiscs()) {
+      for (TrackReference trackReference: disc.getTrackReferences()) {
+        MyTrackInfo myTrackInfo = trackReference.getMyTrackInfo();
+        if (myTrackInfo == null  ||  myTrackInfo.getIWant() != IWant.NO) {
+          return false;
+        }
+      }
+    }
+    
+    return true;
+  }
+  
+  /**
    * Get the IWant information of an album at album level.
    * <p>
    * The result is the same as album.getMyInfo().getIWant(), but with checks on null values.
