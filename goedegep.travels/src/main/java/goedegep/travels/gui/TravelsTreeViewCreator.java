@@ -4,6 +4,7 @@ import java.awt.Desktop;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -21,6 +22,11 @@ import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EStructuralFeature;
 
 import goedegep.geo.WGS84Coordinates;
+import goedegep.gpx.GpxUtil;
+import goedegep.gpx.model.DocumentRoot;
+import goedegep.gpx.model.GpxType;
+import goedegep.gpxeditor.logic.Activity;
+import goedegep.gpxeditor.logic.GpxAppUtil;
 import goedegep.gpxeditor.svc.GPXService;
 import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.eobjecttreeview.EObjectTreeItem;
@@ -65,12 +71,16 @@ import goedegep.types.model.FileReference;
 import goedegep.types.model.TypesFactory;
 import goedegep.types.model.TypesPackage;
 import goedegep.util.datetime.FlexDateFormat;
+import goedegep.util.emf.EMFResource;
 import goedegep.util.emf.EmfUtil;
 import goedegep.util.file.FileUtils;
 import goedegep.util.img.PhotoFileMetaDataHandler;
+import javafx.scene.canvas.Canvas;
+import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.Dragboard;
 
 /**
@@ -865,7 +875,7 @@ public class TravelsTreeViewCreator {
     // GPXTrack
     EObjectTreeItemClassDescriptor eObjectTreeItemClassDescriptor = new EObjectTreeItemClassDescriptor()
         .setNodeTextFunction(TravelsWindow::generateTextForGpxTrack)
-        .setNodeIconFunction(TravelsWindow::generateIconForGpxTrack)
+        .setNodeIconFunction(TravelsUtils::generateIconForGpxTrack)
         .addNodeOperationDescriptor(new NodeOperationDescriptorNewBefore("New element before this one ...", null, newEObjectInitializationFunction))
         .addNodeOperationDescriptor(new NodeOperationDescriptorNewAfter("New element after this one ...", null, newEObjectInitializationFunction))
         .addNodeOperationDescriptor(new NodeOperationDescriptorCustom("View/edit GPX file", this::canGPXFileBeOpened, this::openGPXFile))
@@ -1211,6 +1221,14 @@ public class TravelsTreeViewCreator {
         .setLabelText("File")
         .setPresentationType(PresentationType.FILE)
         .setInitialDirectoryNameFunction(TravelsWindow::getReferredFilesFolder)
+        .setNodeTextFunction(o -> {
+          String fileName = (String) o;
+          if (fileName != null) {
+            File file = new File(fileName);
+            return file.getName();
+          }
+          return "<no file>";
+        })
         .addNodeOperationDescriptor(new NodeOperationDescriptorOpen("Open document", null, null));
     eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(eObjectTreeItemAttributeDescriptor);
         
@@ -1638,5 +1656,89 @@ public class TravelsTreeViewCreator {
     
     GPXService.getInstance().showGPXWindow(filename);
   }
+//  
+//  /**
+//   * Generate the icon to be shown for a GPXTrack item in the TreeView.
+//   * <p>
+//   * The icon is a combination of the GPX icon and the icon for the activity in the GPX file, if available.
+//   * 
+//   * @param gpxTrack The <code>GPXTrack</code> for which an icon is to be generated.
+//   */
+//  static Image generateIconForGpxTrack(Object object) {
+//    Image gpxTrackImage = ImageResource.GPX.getImage();
+//
+//    GPXTrack gpxTrack = (GPXTrack) object;
+//    FileReference fileReference = gpxTrack.getTrackReference();
+//
+//    List<Activity> activities = null;
+//    if (fileReference != null) {
+//      String fileName = fileReference.getFile();
+//      if (fileName != null  && !fileName.isEmpty()) {
+//        EMFResource<DocumentRoot> gpxResource = GpxUtil.createEMFResource();
+//        try {
+//          gpxResource.load(fileName);
+//          DocumentRoot documentRoot = gpxResource.getEObject();
+//          GpxType gpxType = documentRoot.getGpx();
+//          activities = GpxAppUtil.getActivities(gpxType);
+//        } catch (IOException e) {
+//          // no action, no file so no activity
+//        }
+//      }
+//    }
+//
+//    if (activities != null  &&  !activities.isEmpty()) {
+//      // First create a list of all images in order to calculate the total width of the icon.
+//      // Note: as we preserve the aspect ratio of the images, the images may have different widths.
+//      final int imageHeight = 16;
+//      final int imageSpacing = 4;
+//      List<Image> activityImages = new ArrayList<>();
+//      
+//      gpxTrackImage = scale(gpxTrackImage, imageHeight);
+//      activityImages.add(gpxTrackImage);
+//      
+//      for (Activity activity: activities) {
+//        Image activityImage = activity.getIcon();
+//        activityImage = scale(activityImage, imageHeight);
+//        activityImages.add(activityImage);
+//      }
+//      
+//      int totalWidth = 0;
+//      for (Image activityImage: activityImages) {
+//        if (totalWidth > 0) {
+//          totalWidth += imageSpacing;
+//        }
+//        totalWidth += activityImage.getWidth();
+//      }
+//      Canvas iconCanvas = new Canvas(totalWidth, imageHeight);
+//      GraphicsContext gc = iconCanvas.getGraphicsContext2D();
+//      
+//      int xOffset = 0;
+//      for (Image activityImage: activityImages) {
+//        gc.drawImage(activityImage, xOffset, 0);
+//        xOffset += activityImage.getWidth() + imageSpacing;
+//      }
+//
+//      return iconCanvas.snapshot(null, null);
+//    }
+//
+//    return gpxTrackImage;
+//  }
+//
+//  /**
+//   * Scale an image to a specific width and height.
+//   * <p>
+//   * The aspect ratio of the image is preserved.
+//   * 
+//   * @param source the source image
+//   * @param targetWidth the target width
+//   * @param targetHeight the target height
+//   * @return the scaled image
+//   */
+//  public static Image scale(Image source, double targetHeight) {
+//    ImageView imageView = new ImageView(source);
+//    imageView.setPreserveRatio(true);
+//    imageView.setFitHeight(targetHeight);
+//    return imageView.snapshot(null, null);
+//  }
   
 }

@@ -191,11 +191,11 @@ public class EObjectTreeCellHelperForObject extends EObjectTreeCellHelperTemplat
               break;
               
             case NEW_OBJECT_BEFORE:
-              createAndAddObject(listType, true, ((NodeOperationDescriptorNew) nodeOperationDescriptor).getNewEObjectInitializationFunction());
+              createAndAddObject(listType, true, ((NodeOperationDescriptorNewAbstract) nodeOperationDescriptor).getNewEObjectInitializationFunction());
               break;
               
             case NEW_OBJECT_AFTER:
-              createAndAddObject(listType, false, ((NodeOperationDescriptorNew) nodeOperationDescriptor).getNewEObjectInitializationFunction());
+              createAndAddObject(listType, false, ((NodeOperationDescriptorNewAbstract) nodeOperationDescriptor).getNewEObjectInitializationFunction());
               break;
               
             case CUT_OBJECT:

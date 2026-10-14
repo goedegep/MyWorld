@@ -1,9 +1,11 @@
 package goedegep.media.dune.gui;
 
+import java.io.File;
 import java.util.logging.Logger;
 
 import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.JfxStage;
+import goedegep.jfx.editor.controls.EditorControlFolderSelecter;
 import goedegep.jfx.objectcontrols.ObjectControlFolderSelecter;
 import goedegep.media.common.MediaAppResourcesFx;
 import goedegep.media.common.MediaRegistry;
@@ -32,15 +34,14 @@ import javafx.scene.layout.VBox;
  * <p>
  * The window provides the following functionality:
  * <ul>
- * <li>Synchronize the music on the Dune with the Music Folder on PC</li>
- * <li>Check for errors in the Music Folder and repair them</li>
+ * <li>Synchronize the music on the Dune to the Music Folder on PC</li>
+ * <li>Create playlists on the Dune</li>
  * </ul>
- *
  */
 public class DuneWindow extends JfxStage {
   private static final Logger LOGGER = Logger.getLogger(DuneWindow.class.getName());
-  private static final String WINDOW_TITLE   = "Dune HD TV-303D synchronization";
   private static final String NEW_LINE = System.getProperty("line.separator");
+  private static final String WINDOW_TITLE   = "Dune HD Solo 8K synchronization";
   
   private MediaRegistry mediaRegistry;
   private MediaAppResourcesFx appResources;
@@ -49,9 +50,9 @@ public class DuneWindow extends JfxStage {
   private String currentDunePlaylistsFolderPath = null;
 
   private CheckBox synchronizeToDuneCheckBox = null;
-  private ObjectControlFolderSelecter duneMusicFolderSelecter;
+  private EditorControlFolderSelecter duneMusicFolderSelecter;
   private CheckBox updatePlayListsCheckBox = null;
-  private ObjectControlFolderSelecter playListFolderPathSelecter;
+  private EditorControlFolderSelecter playListFolderPathSelecter;
   private Button runButton = null;
   private Button abortButton = null;
   private TextArea statusTextArea = null;
@@ -106,10 +107,16 @@ public class DuneWindow extends JfxStage {
     // First row
     label = componentFactory.createLabel("Music folder:");
     grid.add(label, 1, 0);
-    
-    ObjectControlFolderSelecter musicFolderSelecter = componentFactory.createFolderSelecter(200, "Currently selected folder",
-        "Choose folder", "Select music folder via a file chooser", "Select the folder with all music", false);
-    musicFolderSelecter.setInitialFolderProvider(() -> currentMusicFolder);
+        
+    EditorControlFolderSelecter musicFolderSelecter = new EditorControlFolderSelecter.Builder(customization, "musicFolderSelecter")
+        .setTextFieldWidth(200)
+        .setTextFieldToolTipText("Currently selected folder")
+        .setFolderChooserButtonText("Choose folder")
+        .setFolderChooserButtonToolTipText("Select Music Folder via a file chooser")
+        .setFileOrFolderChooserTitle("Select the folder with all music")
+        .setOptional(false)
+        .build();
+    musicFolderSelecter.setValue(new File(currentMusicFolder));    
     Node folderName = musicFolderSelecter.getControl();
     grid.add(folderName, 2, 0);
     
@@ -128,11 +135,18 @@ public class DuneWindow extends JfxStage {
     label = componentFactory.createLabel("Dune music folder path:");
     grid.add(label, 1, 1);
     
-    duneMusicFolderSelecter = componentFactory.createFolderSelecter(200, "Currently selected Dune music folder path",
-        "Choose folder", "Select  Dune music folder path via a file chooser", "Select the music folder on the Dune", false);
-    duneMusicFolderSelecter.setInitialFolderProvider(() -> currentDuneMusicFolderPath);
+    duneMusicFolderSelecter = new EditorControlFolderSelecter.Builder(customization, "duneMusicFolderSelecter")
+        .setTextFieldWidth(200)
+        .setTextFieldToolTipText("Currently selected Dune music folder path")
+        .setFolderChooserButtonText("Choose folder")
+        .setFolderChooserButtonToolTipText("Select  Dune music folder path via a file chooser")
+        .setFileOrFolderChooserTitle("Select the music folder on the Dune")
+        .setOptional(false)
+        .build();
+    duneMusicFolderSelecter.setValue(new File(currentDuneMusicFolderPath));
+    
     Node duneFolderPathTextField = duneMusicFolderSelecter.getControl();
-    duneMusicFolderSelecter.addListener(_ -> {
+    duneMusicFolderSelecter.addValueAndOrStatusChangeListener((_, _) -> {
       currentDuneMusicFolderPath = duneMusicFolderSelecter.getAbsolutePath();
       handleChanges();
       });
@@ -149,11 +163,18 @@ public class DuneWindow extends JfxStage {
     label = componentFactory.createLabel("Dune playlist folder path:");
     grid.add(label, 1, 2);
     
-    playListFolderPathSelecter = componentFactory.createFolderSelecter(200, "Currently selected Dune playlists folder path",
-        "Choose folder", "Select Dune playlists folder path via a file chooser", "Select the playlists folder on the Dune", false);
-    playListFolderPathSelecter.setInitialFolderProvider(() -> currentDunePlaylistsFolderPath);
+    playListFolderPathSelecter = new EditorControlFolderSelecter.Builder(customization, "playListFolderPathSelecter")
+        .setTextFieldWidth(200)
+        .setTextFieldToolTipText("Currently selected Dune playlists folder path")
+        .setFolderChooserButtonText("Choose folder")
+        .setFolderChooserButtonToolTipText("Select Dune playlists folder path via a file chooser")
+        .setFileOrFolderChooserTitle("Select the playlists folder on the Dune")
+        .setOptional(false)
+        .build();
+    playListFolderPathSelecter.setValue(new File(currentDunePlaylistsFolderPath));
+    
     Node playListFolderPathTextField = playListFolderPathSelecter.getControl();
-    playListFolderPathSelecter.addListener(_ -> {
+    playListFolderPathSelecter.addValueAndOrStatusChangeListener((_, _) -> {
       currentDunePlaylistsFolderPath = playListFolderPathSelecter.getAbsolutePath();
       handleChanges();
       });

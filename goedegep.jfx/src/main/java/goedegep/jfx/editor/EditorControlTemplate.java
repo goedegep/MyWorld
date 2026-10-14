@@ -1,5 +1,6 @@
 package goedegep.jfx.editor;
 
+import java.util.Objects;
 import java.util.logging.Logger;
 
 import goedegep.jfx.CustomizationFx;
@@ -95,13 +96,14 @@ public abstract class EditorControlTemplate<T> extends EditorComponentAbstract<T
    * @param newValue the new value.
    */
   public  void setValue(T newValue) {
-//    ignoreNewUserInput = true;
+    boolean newFilledIn = newValue != null;  // here filled in depends on the newValue set.
     
-    boolean newFilledIn = newValue != null;  // here it depends on the newValue set.
     boolean validDataValue;  // true if something is filled in and the value is valid value.
-    
     if (newFilledIn) {
-      validDataValue = true;  // TODO this doesn't have to be the case. It is a valid with respect to the type, but it may be invalid with respect to the business rules. This is not checked here.
+      validDataValue = isValidValue(newValue);
+      if (!validDataValue) {
+        LOGGER.severe("New value is not valid: " + newValue);
+      }
     } else {
       validDataValue = false;
     }
@@ -110,6 +112,8 @@ public abstract class EditorControlTemplate<T> extends EditorComponentAbstract<T
     boolean newValueIsDifferentValue = determineChanges(newValue);
     if (newValueIsDifferentValue) {
       value = newValue;
+    } else {
+      LOGGER.severe("New value is the same as the current value: " + newValue);
     }
     valid = determineValidity(newFilledIn, validDataValue);
     filledIn = newFilledIn;
@@ -121,8 +125,21 @@ public abstract class EditorControlTemplate<T> extends EditorComponentAbstract<T
     if (newValueIsDifferentValue) {
       notifyValueAndOrStatusChangeListeners(true, true);
     }
+  }
+  
+  /**
+   * Determine whether the value is valid with respect to the business rules.
+   * <p>
+   * This method is called from {@code handleNewUserInput} after it has checked that the control is filled in. TODO
+   * A subclass may override this method to check whether the value is valid with respect to the business rules.
+   * 
+   * @param value The value to be checked for validity. This value may not be {@code null}.
+   * @return true if the value is valid, false otherwise.
+   */
+  protected boolean isValidValue(T value) {
+    Objects.requireNonNull(value, "The value may not be null");
     
-//    ignoreNewUserInput = false;
+    return true;
   }
   
   /**
@@ -132,7 +149,6 @@ public abstract class EditorControlTemplate<T> extends EditorComponentAbstract<T
    */
   protected final void handleNewUserInput(Object source) {
     if (ignoreNewUserInput) {
-      LOGGER.severe("Ignoring new user input on source: " + source.getClass().getName());
       return;
     }
     
@@ -165,6 +181,24 @@ public abstract class EditorControlTemplate<T> extends EditorComponentAbstract<T
     if (changed) {
       notifyValueAndOrStatusChangeListeners(true, true);
     }
+  }
+  
+  /**
+   * Determine whether the new value differs from the current value.
+   * 
+   * @param newValue the new value
+   * @return {@code true} if {@code newValue} differs from the current value, false otherwise.
+   */
+  protected boolean determineChanges(T newValue) {
+    boolean result;
+    
+    if (comparator != null) {
+      result = comparator.compare(newValue, value) != 0;
+    } else {
+      result = !Objects.equals(newValue, value);
+    }
+    
+    return result;
   }
   
   /**

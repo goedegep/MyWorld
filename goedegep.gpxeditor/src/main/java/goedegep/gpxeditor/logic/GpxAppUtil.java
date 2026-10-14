@@ -1,5 +1,7 @@
 package goedegep.gpxeditor.logic;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Logger;
 
 import goedegep.gpx.model.GpxType;
@@ -9,16 +11,19 @@ public class GpxAppUtil {
   private static final Logger LOGGER = Logger.getLogger(GpxAppUtil.class.getName());
 
   /**
-   * Get the activity of the GPX Track
+   * Get the activities of a GPX Track.
+   * <p>
+   * Note: moving (as keyword) is not considered an activity, as it doesn't add any information.
    * 
    * @param gpxType the GPX track
-   * @return the Activity of the <code>gpxType</code>, or null if this isn't available.
+   * @return the Activities of the {@code gpxType}. If no activities are found, an empty list is returned.
    */
-  public static Activity getActivity(GpxType gpxType) {
+  public static List<Activity> getActivities(GpxType gpxType) {
+    List<Activity> activities = new ArrayList<>();
     MetadataType metadataType = gpxType.getMetadata();
     
     if (metadataType == null) {
-      return null;
+      return activities;
     }
     
     String keywords = metadataType.getKeywords();
@@ -35,18 +40,23 @@ public class GpxAppUtil {
         }
         
         for (Activity activity: Activity.values()) {
+          boolean activityFound = false;
           LOGGER.info("Handling activity: " + activity.name());
           for (String activityText: activity.getGpxKeywords()) {
             LOGGER.info("Checking on activityText: " + activityText);
             if (keyword.equals(activityText)) {
-              return activity;
+              activities.add(activity);
+              activityFound = true;
+              break;
             }
+          }
+          if (!activityFound) {
+            LOGGER.info("No Activity found for GPX Keyword '" + keyword + "'");
           }
         }
       }
-      LOGGER.severe("No Activity found for GPX Keywords '" + keywords + "'");
     }
     
-    return null;
+    return activities;
   }
 }

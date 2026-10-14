@@ -68,6 +68,18 @@ public class EObjectTreeItemAttributeDescriptor extends EObjectTreeItemDescripto
     this.eAttribute = eAttribute;
     labelText = eAttribute.getName();
   }
+  
+  /**
+   * Set the function to provide the node text.
+   * 
+   * @param nodeTextFunction the function to provide the node text.
+   * @return this
+   */
+  public EObjectTreeItemAttributeDescriptor setNodeTextFunction(Function<Object, String> nodeTextFunction) {
+    super.setNodeTextFunction(nodeTextFunction);
+    
+    return this;
+  }
       
   /**
    * Get the {@code EAttribute} to which this descriptor applies.

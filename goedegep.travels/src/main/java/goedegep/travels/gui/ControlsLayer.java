@@ -2,7 +2,7 @@ package goedegep.travels.gui;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.function.Supplier;
+import java.util.function.Consumer;
 import java.util.logging.Logger;
 
 import goedegep.jfx.CustomizationFx;
@@ -26,12 +26,12 @@ public class ControlsLayer extends MapLayer {
   private double attributionWidth;
   private double attributionHeight;
     
-  public ControlsLayer(CustomizationFx customization, Supplier<LocationSearchWindow> searchWindowSupplier) {
+  public ControlsLayer(CustomizationFx customization, Consumer<LocationSearchWindow> searchWindowSupplier) {
     
     Node searchIcon = new ImageView(TravelImageResource.SEARCH.getIcon(ImageSize.SIZE_2));
     searchIcon.setTranslateX(30);
     searchIcon.setTranslateY(30);
-    searchIcon.setOnMouseClicked(_ -> searchWindowSupplier.get());
+    searchIcon.setOnMouseClicked(_ -> searchWindowSupplier.accept(null));
     
     getChildren().add(searchIcon);
     

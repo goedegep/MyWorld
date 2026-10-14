@@ -197,7 +197,7 @@ public class MediaDbToDiscLocationMap {
       // Music folder is per album.
       
       // If I have album (partly) on disc, find the AlbumOnDiscInfo in the albumsOnDiscNotMapped
-      if (MediaDbUtil.haveAlbumOnHardDisk(album)) {   //   ||  MediaDbUtil.haveAlbumPartlyOnHardDisk(album)
+      if (MediaDbUtil.haveAlbumOnHardDisk(album)) {
         AlbumOnHardDiskInfo albumOnHardDiskInfo = null;
         if (MediaDbUtil.haveAlbumOnHardDisk(album)) {
           albumOnHardDiskInfo = findAlbumInAlbumsOnDiscInfo(album);

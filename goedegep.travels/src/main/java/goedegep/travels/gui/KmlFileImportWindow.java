@@ -46,6 +46,7 @@ import goedegep.mapview.view.MapView;
 import goedegep.resources.ImageResource;
 import goedegep.travels.logic.KmlFileImporter;
 import goedegep.travels.logic.KmlPlacemarkImportData;
+import goedegep.travels.logic.TravelsTreeViewUtils;
 import goedegep.travels.logic.TravelsUtils;
 import goedegep.travels.model.GPXTrack;
 import goedegep.travels.model.Location;
@@ -246,7 +247,7 @@ public class KmlFileImportWindow extends JfxStage {
    * @param selectedTreeItem the currently selected item in the Travels tree view.
    */
   private void handleNewTreeItemSelected(TreeItem<Object> selectedTreeItem) {
-    Travel travel = TravelsWindow.getTravelForTreeItem(selectedTreeItem);
+    Travel travel = TravelsTreeViewUtils.getTravelForTreeItem(selectedTreeItem);
     if (travel != null) {
       vacationElementPanel.handleNewTravelSelected(travel);
       addElementToVacationPanel.handleNewTreeItemSelected(selectedTreeItem);
@@ -683,7 +684,7 @@ public class KmlFileImportWindow extends JfxStage {
       
       EObjectTreeItemClassDescriptor eObjectTreeItemClassDescriptor  = gpxElementTreeView.getDescriptorForEClass(TravelsPackage.eINSTANCE.getGPXTrack());
       eObjectTreeItemClassDescriptor.setNodeTextFunction(this::generateTextForGpxTrack);
-      eObjectTreeItemClassDescriptor.setNodeIconFunction(this::generateIconForGpxTrack);
+      eObjectTreeItemClassDescriptor.setNodeIconFunction(TravelsUtils::generateIconForGpxTrack);
 
       gpxElementTreeView.setMinWidth(300);
       
@@ -1038,41 +1039,6 @@ public class KmlFileImportWindow extends JfxStage {
       }
 
       return text;
-    }
-
-    Image generateIconForGpxTrack(Object object) {
-      Image gpxTrackImage = ImageResource.GPX.getImage();
-
-      Activity activity = null;
-      GpxType gpxType = documentRoot.getGpx();
-      activity = GpxAppUtil.getActivity(gpxType);
-
-      Image activityImage = null;
-      if (activity != null) {
-        activityImage = activity.getIcon();
-      }
-
-      if (activityImage != null) {
-        gpxTrackImage = scale(gpxTrackImage, gpxTrackImage.getWidth(), activityImage.getHeight());
-        double width = gpxTrackImage.getWidth() + activityImage.getWidth() + 4;
-        double height = Math.max(gpxTrackImage.getHeight(), activityImage.getHeight());
-        Canvas iconCanvas = new Canvas(width, height);
-        GraphicsContext gc = iconCanvas.getGraphicsContext2D();
-        gc.drawImage(gpxTrackImage, 0, 0);
-        gc.drawImage(activityImage, gpxTrackImage.getWidth() + 4, 0);
-
-        return iconCanvas.snapshot(null, null);
-      }
-
-      return gpxTrackImage;
-    }
-
-    public static Image scale(Image source, double targetWidth, double targetHeight) {
-      ImageView imageView = new ImageView(source);
-      imageView.setPreserveRatio(true);
-      imageView.setFitWidth(targetWidth);
-      imageView.setFitHeight(targetHeight);
-      return imageView.snapshot(null, null);
     }
 
   } // End of VacationElementPanel

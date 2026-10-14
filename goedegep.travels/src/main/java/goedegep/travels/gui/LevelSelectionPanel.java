@@ -1,5 +1,7 @@
 package goedegep.travels.gui;
 
+import java.util.logging.Logger;
+
 import goedegep.jfx.ComponentFactoryFx;
 import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.editor.controls.EditorControlEnumComboBox;
@@ -12,8 +14,13 @@ import javafx.scene.layout.HBox;
 
 /**
  * This class is a panel to select the Show Level (what information is shown for a selected item in the travels tree).
+ * <p>
+ * The level can be selected by a combo box or by two buttons to increase or decrease the level.
  */
 public class LevelSelectionPanel extends HBox {
+  private final static Logger LOGGER = Logger.getLogger(LevelSelectionPanel.class.getName());
+
+  
   /**
    * Property to be used by the client to react on a new selected value.
    */
@@ -87,7 +94,12 @@ public class LevelSelectionPanel extends HBox {
    * If the lowest level is already selected, this doesn't change, else the level is decreased.
    */
   private void decreaseLevel() {
-    showLevelComboBox.setValue(previousInformationLevel(showLevelComboBox.getValue()));
+    InformationLevel previousLevel = previousInformationLevel(showLevelComboBox.getValue());
+    showLevelComboBox.setValue(previousLevel);
+    InformationLevel currentLevel = showLevelComboBox.getValue();
+    if (currentLevel != previousLevel) {
+      LOGGER.severe("Current level incorrect " + previousLevel + " to " + currentLevel);
+    }
   }
   
   /**
@@ -120,6 +132,7 @@ public class LevelSelectionPanel extends HBox {
    * @return the previous information level, or {@code informationLevel) if it is already the lowest level.
    */
   private InformationLevel previousInformationLevel(InformationLevel informationLevel) {
+    LOGGER.severe("InformationLevel: " + informationLevel + ", ordinal: " + informationLevel.ordinal() + ", length: " + InformationLevel.values().length);
     if (informationLevel.ordinal() > 0) {
       return InformationLevel.values()[(informationLevel.ordinal() - 1)];
     } else {
@@ -135,9 +148,12 @@ public class LevelSelectionPanel extends HBox {
    * @return the next information level, or {@code informationLevel) if it is already the highest level.
    */
   private InformationLevel nextInformationLevel(InformationLevel informationLevel) {
+    LOGGER.severe("InformationLevel: " + informationLevel + ", ordinal: " + informationLevel.ordinal() + ", length: " + InformationLevel.values().length);
     if (informationLevel.ordinal() < InformationLevel.values().length - 1) {
+      LOGGER.severe("Next InformationLevel: " + InformationLevel.values()[(informationLevel.ordinal() + 1)]);
       return InformationLevel.values()[(informationLevel.ordinal() + 1)];
     } else {
+      LOGGER.severe("Next InformationLevel is informationLevel: " + informationLevel);
       return informationLevel;
     }
   }

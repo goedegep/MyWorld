@@ -26,7 +26,6 @@ import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.JfxStage;
 import goedegep.jfx.editor.controls.EditorControlFileSelecter;
 import goedegep.travels.logic.TravelToHtmlConverter;
-import goedegep.travels.logic.TravelToHtmlConverterSetting;
 import goedegep.travels.logic.TravelToHtmlConverterSettings;
 import goedegep.travels.logic.TravelsUtils;
 import goedegep.travels.model.Travel;
@@ -74,7 +73,7 @@ public class PrintWindow extends JfxStage {
   
   @SuppressWarnings("unused")
   private static final Logger LOGGER = Logger.getLogger(PrintWindow.class.getName());
-  private static final String WINDOW_TITLE = "Print a travel or save it as a PDF file";
+  private static final String WINDOW_TITLE = "Print a travel or save it as a PDF or HTML file";
   
   /**
    * Texts for the HTML output types radio buttons.
@@ -99,7 +98,7 @@ public class PrintWindow extends JfxStage {
    * The settings for the TravelToHtmlConverter.
    * These settings can be changed in this window.
    */
-  private Set<TravelToHtmlConverterSetting> settings = null;
+  private TravelToHtmlConverterSettings travelToHtmlConverterSettings = null;
   
   /**
    * Index of the page currently shown in the preview.
@@ -169,8 +168,8 @@ public class PrintWindow extends JfxStage {
     
     this.travel = travel;
     
-    TravelToHtmlConverterSettings travelToHtmlConverterSettings = new TravelToHtmlConverterSettings();
-    travelToHtmlConverterSettings.setSettingValue(TravelToHtmlConverterSetting.SHOW_LOCATION_COORDINATES.getDisplayName(), true);
+    travelToHtmlConverterSettings = new TravelToHtmlConverterSettings();
+    travelToHtmlConverterSettings.setSettingValue(TravelToHtmlConverterSettings.SHOW_LOCATION_COORDINATES_NAME, true);
     
     // Create the in-memory file system for the PDF generation task.
     imfs = Jimfs.newFileSystem(Configuration.unix());
@@ -279,23 +278,15 @@ public class PrintWindow extends JfxStage {
     titledPane.setText("Settings for the PDF generation");
     
     Label label;
-    TravelToHtmlConverterSetting setting;
     int row = 0;
 
     GridPane settingsPanel = componentFactory.createGridPane(16, 16);
     
-    setting = TravelToHtmlConverterSetting.SHOW_LOCATION_COORDINATES;
-    label = componentFactory.createLabel(setting.getDisplayName());
-    CheckBox settingCheckBox = componentFactory.createCheckBox(null, settings.contains(TravelToHtmlConverterSetting.SHOW_LOCATION_COORDINATES));
+    label = componentFactory.createLabel(TravelToHtmlConverterSettings.SHOW_LOCATION_COORDINATES_NAME);
+    CheckBox settingCheckBox = componentFactory.createCheckBox(null, travelToHtmlConverterSettings.getSettingValue(TravelToHtmlConverterSettings.SHOW_LOCATION_COORDINATES_NAME));
     settingsPanel.addRow(row, label, settingCheckBox);
     settingCheckBox.setOnAction(_ -> {
-      if (settingCheckBox.isSelected()) {
-        if (!settings.contains(TravelToHtmlConverterSetting.SHOW_LOCATION_COORDINATES)) {
-          settings.add(TravelToHtmlConverterSetting.SHOW_LOCATION_COORDINATES);
-        }
-      } else {
-        settings.remove(TravelToHtmlConverterSetting.SHOW_LOCATION_COORDINATES);
-      }
+      travelToHtmlConverterSettings.setSettingValue(TravelToHtmlConverterSettings.SHOW_LOCATION_COORDINATES_NAME, settingCheckBox.isSelected());
       runTravelToPDFTask(); // Restart the PDF generation task to apply the new setting
     });
 

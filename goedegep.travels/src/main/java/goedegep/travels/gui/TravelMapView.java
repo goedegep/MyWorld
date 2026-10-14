@@ -2,6 +2,7 @@ package goedegep.travels.gui;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 import java.util.logging.Logger;
 
@@ -34,7 +35,7 @@ public class TravelMapView extends MapView implements TravelMapViewInterface, Ob
    * @param ownerWindow The owner window for dialogs.
    * @param searchWindowSupplier A supplier for the LocationSearchWindow.
    */
-  public TravelMapView(CustomizationFx customization, Stage ownerWindow, Supplier<LocationSearchWindow> searchWindowSupplier) {
+  public TravelMapView(CustomizationFx customization, Stage ownerWindow, Consumer<LocationSearchWindow> searchWindowSupplier) {
     
     mapRelatedItemsLayer = new MapRelatedItemsLayer(customization, ownerWindow);
     addLayer(mapRelatedItemsLayer);
@@ -55,6 +56,9 @@ public class TravelMapView extends MapView implements TravelMapViewInterface, Ob
     mapRelatedItemsLayer.setEditMode(editMode);
   }
 
+  /**
+   * Clear the map by clearing all layers.
+   */
   public void clear() {
     mapRelatedItemsLayer.clear();
     trackLayer.clear();

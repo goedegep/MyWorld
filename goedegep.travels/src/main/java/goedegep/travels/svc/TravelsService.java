@@ -106,9 +106,9 @@ public class TravelsService extends Service implements ITravelsService {
           System.exit(0);
       }
 
-      instance.startPhotoThumbnailsCreation();
+//      instance.startPhotoThumbnailsCreation();
       instance.setOSMUserAgentSystemProperty();
-      instance.startTileCacheCleanupTask();
+//      instance.startTileCacheCleanupTask();
     }
     
     return instance;    
@@ -145,13 +145,7 @@ public class TravelsService extends Service implements ITravelsService {
     new BoundariesPointsReductionWindow(customization, location);
   }
   
-  /**
-   * Add a listener for changes in the vacations folder and the vacation pictures folder.
-   * <p>
-   * When the first listener is added, the monitoring of these directories is started.
-   * 
-   * @param listener the {@link DirectoryChangesListener} to add.
-   */
+  @Override
   public void addDirectoryChangesListener(DirectoryChangesListener listener) {
     if (!directoryChangesListeners.contains(listener)) {
       directoryChangesListeners.add(listener);
@@ -397,6 +391,11 @@ public class TravelsService extends Service implements ITravelsService {
       Locale locale = Locale.getDefault();
       ClassLoader classLoader = clazz.getClassLoader();
       return ResourceBundle.getBundle(bundlePath, locale, classLoader);
+  }
+
+  @Override
+  public void exitApplication() {
+    System.exit(0);
   }
 }
 

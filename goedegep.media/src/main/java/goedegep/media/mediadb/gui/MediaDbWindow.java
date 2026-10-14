@@ -2,6 +2,7 @@ package goedegep.media.mediadb.gui;
 
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -310,8 +311,7 @@ public class MediaDbWindow extends JfxStage {
   }
   
   private void tempFixProblems() {
-//    listTracksIWantToHave();
-//    
+
 //    MediadbFactory factory = MediadbFactory.eINSTANCE;
 //    TrackReference trackReference;
 //    Track track;
@@ -320,148 +320,56 @@ public class MediaDbWindow extends JfxStage {
 //    Disc disc;
 //    MyInfo myInfo;
 //    
-//    // change Very 'Eavy...Very 'Umble to have on disk, remove reference.
-//    artist = MediaDbUtil.getArtist(mediaDb, "Uriah Heep");
-//    Album albumVery = MediaDbUtil.getAlbum(mediaDb, null, artist, "Very 'Eavy...Very 'Umble");
-//    albumVery.setTitle("…Very ’Eavy …Very ’Umble");
-//    MyInfo myInfoVery = albumVery.getMyInfo(); 
-//    myInfoVery.getAlbumReferences().clear();
+//    artist = MediaDbUtil.getArtist(mediaDb, "Thirty Seconds To Mars");
+//    if (artist == null) {
+//      artist = factory.createArtist();
+//      artist.setName("Thirty Seconds To Mars");
+//      mediaDb.getArtists().add(artist);
+//    } else {
+//      LOGGER.severe("Artist 'Thirty Seconds To Mars' already exists");
+//    }
+//    
+//    album = factory.createAlbum();
+//    album.setTitle("30 Seconds To Mars");
+//    album.setArtist(artist);
+//    myInfo = factory.createMyInfo();
 //    MediumInfo mediumInfo = factory.createMediumInfo();
 //    mediumInfo.setMediumType(MediumType.HARDDISK);
 //    mediumInfo.setInformationType(InformationType.FLAC);
-//    mediumInfo.setSourceType(InformationType.WAV);
-//    myInfoVery.getIHaveOn().add(mediumInfo);
-//    disc = albumVery.getDiscs().getFirst();
-//    for (TrackReference tr: disc.getTrackReferences()) {
-//      tr.getMyTrackInfo().unsetIWant();
+//    myInfo.getIHaveOn().add(mediumInfo);
+//    album.setMyInfo(myInfo);
+//    album.setReleaseDate(new FlexDate(27, 7, 2002));
+//    disc = factory.createDisc();
+//    List<TrackInfo> trackInfos = Arrays.asList(
+//        new TrackInfo("Capricorn (A Brand New Name)", false),
+//        new TrackInfo("Edge Of The Earth", false),
+//        new TrackInfo("Fallen", false),
+//        new TrackInfo("Oblivion", false),
+//        new TrackInfo("Buddha For Mary", false),
+//        new TrackInfo("Echelon", false),
+//        new TrackInfo("Welcome To The Universe", false),
+//        new TrackInfo("The Mission", false),
+//        new TrackInfo("End Of The Beginning", false),
+//        new TrackInfo("93 Million Miles", false),
+//        new TrackInfo("Year Zero + The Struggle", false),
+//        new TrackInfo("Jupiter", true),
+//        new TrackInfo("Revolution", true));
+//    for (TrackInfo trackInfo: trackInfos) {
+//      trackReference = factory.createTrackReference();
+//      track = factory.createTrack();
+//      track.setTitle(trackInfo.title());
+//      mediaDb.getTracks().add(track);
+//      trackReference.setTrack(track);
+//      if (trackInfo.bonusTrack()) {
+//        trackReference.setBonusTrack("bonus track");
+//      }
+//      disc.getTrackReferences().add(trackReference);
 //    }
-//    trackReference = disc.getTrackReferences().get(9);
-//    trackReference.getTrack().setTitle("Come Away Melinda (alternative version)");
-//    trackReference = disc.getTrackReferences().get(10);
-//    trackReference.getTrack().setTitle("Born in a Trunk (alternative version)");
-//    
-//
-//    
-//    Album albumUriah = MediaDbUtil.getAlbum(mediaDb, null, artist, "Uriah Heep");
-//    MyInfo myInfoUriah = albumUriah.getMyInfo();
-//    myInfoUriah.setMyComments("Dit is de Amerikaanse versie van 'Very 'Eavy...Very 'Umble'. Hoef ik dus niet te hebben");
-//    myInfoUriah.setIWant(IWant.NO);
-//    myInfoUriah.getIHaveOn().clear();
-//    myInfoUriah.getAlbumReferences().add(albumVery);
+//    album.getDiscs().add(disc);
+//    album.getImagesFront().add("Pictures\\Thirty Seconds To Mars - 30 Seconds To Mars - front.jpg");
+//    mediaDb.getAlbums().add(album);
+        
     
-//    // reference from artist - shall not have I have set
-//    artist = MediaDbUtil.getArtist(mediaDb, "Norah Jones");
-//    TrackReference sampleReference = artist.getSample();
-//    track = sampleReference.getTrack();
-//    LOGGER.severe("Sample reference: " + sampleReference.toString());
-//    
-//    // create reference in Sample collection
-//    TrackCollection trackCollection = MediaDbUtil.getTrackCollection(mediaDb, Collection.SAMPLE);
-//    TrackReference collectionReference = factory.createTrackReference();
-//    collectionReference.setTrack(track);
-//    MyTrackInfo myTrackInfo = factory.createMyTrackInfo();
-//    MediumInfo mediumInfo = factory.createMediumInfo();
-//    mediumInfo.setMediumType(MediumType.HARDDISK);
-//    mediumInfo.setInformationType(InformationType.MP3);
-//    myTrackInfo.getIHaveOn().add(mediumInfo);
-//    collectionReference.setMyTrackInfo(myTrackInfo);
-//    trackCollection.getTrackReferences().add(collectionReference);
-//    
-//    // now sample can refer to this
-//    sampleReference.getMyTrackInfo().setTrackReference(collectionReference); 
-//    
-//    // the album track also has to refer to this
-//    album = MediaDbUtil.getAlbum(mediaDb, null, artist, "Come Away With Me");
-//    disc = album.getDiscs().get(0);
-//    TrackReference albumReference = disc.getTrackReferences().get(4);
-//    LOGGER.severe("Album reference: " + albumReference.toString());
-//    albumReference.getMyTrackInfo().setTrackReference(collectionReference);
-    
-    
-//    MyTrackInfo myTrackInfo = trackReference.getMyTrackInfo();
-    
-//    artist = MediaDbUtil.getArtist(mediaDb, "Het Gebeurde In Het Westen");
-//    album = MediaDbUtil.getAlbum(mediaDb, null, artist, "Het Gebeurde In Het Westen");
-//    
-//    Artist newArtist = factory.createArtist();
-//    newArtist.setName("Ennio Morricone");
-//    
-//    album.setArtist(newArtist);
-//    mediaDb.getArtists().add(newArtist);
-//    mediaDb.getArtists().remove(artist);
-//    album.setSoundtrack(true);
-    
-//    
-//    disc = album.getDiscs().getFirst();
-//    trackReference = disc.getTrackReferences().get(1);
-//    track = trackReference.getTrack();
-//    track.setTitle("Song Of India (from the opera 'Sadko')");
-//    
-//    trackReference = disc.getTrackReferences().get(2);
-//    track = trackReference.getTrack();
-//    track.setTitle("Romance (from suite 'Gadfly')");
-//    
-//    trackReference = disc.getTrackReferences().get(3);
-//    track = trackReference.getTrack();
-//    track.setTitle("Scenes From Romeo And Juliet ~ Ballet");
-    
-//    
-//    Disc newDisc = album.getDiscs().get(1);
-//    trackReference = disc.getTrackReferences().remove(19);
-//    newDisc.getTrackReferences().add(0, trackReference);
-//    trackReference = disc.getTrackReferences().remove(19);
-//    newDisc.getTrackReferences().add(1, trackReference);
-//    trackReference = disc.getTrackReferences().remove(19);
-//    newDisc.getTrackReferences().add(2, trackReference);
-//    trackReference = disc.getTrackReferences().remove(19);
-//    trackReference.getTrack().setTitle("D.J.");
-//    newDisc.getTrackReferences().add(3, trackReference);
-//    trackReference = disc.getTrackReferences().remove(19);
-//    newDisc.getTrackReferences().add(4, trackReference);
-//    trackReference = disc.getTrackReferences().remove(19);
-//    newDisc.getTrackReferences().add(5, trackReference);
-//    trackReference = disc.getTrackReferences().remove(19);
-//    newDisc.getTrackReferences().add(6, trackReference);
-//    trackReference = disc.getTrackReferences().remove(19);
-//    trackReference.getTrack().setTitle("Scary Monsters (And Super Creeps)");
-//    newDisc.getTrackReferences().add(7, trackReference);
-//    trackReference = disc.getTrackReferences().remove(19);
-//    trackReference.getTrack().setTitle("Under Pressure");
-//    newDisc.getTrackReferences().add(8, trackReference);
-//    
-//    
-//    trackReference = newDisc.getTrackReferences().get(15);
-//    track = trackReference.getTrack();
-//    track.setTitle("Dancing In The Street");
-    
-    
-//    artist = MediaDbUtil.getArtist(mediaDb, "Evanescence");
-//    album = MediaDbUtil.getAlbum(mediaDb, null, artist, "The Open Door");
-//    disc = album.getDiscs().getFirst();
-//    
-//    trackReference = disc.getTrackReferences().get(6);
-//    track = trackReference.getTrack();
-//    track.setTitle("Lacrymosa");
-//    
-//    
-//    artist = MediaDbUtil.getArtist(mediaDb, "Harry Sacksioni");
-//    album = MediaDbUtil.getAlbum(mediaDb, null, artist, "Harry Sacksioni Speciale Compilatie");
-//    disc = album.getDiscs().getFirst();
-//
-//    trackReference = disc.getTrackReferences().get(13);
-//    track = trackReference.getTrack();
-//    track.setTitle("Johan En Pirrewiet");
-//
-//    
-//    
-//    artist = MediaDbUtil.getArtist(mediaDb, "Iggy Pop");
-//    album = MediaDbUtil.getAlbum(mediaDb, null, artist, "Brick By Brick");
-//    disc = album.getDiscs().getFirst();
-//    
-//    trackReference = disc.getTrackReferences().get(13);
-//    track = trackReference.getTrack();
-//    track.setTitle("Livin' On The Edge Of The Night");
-//    
 //    
 //    CreateAlbumFromAlbumTracksWindow w = new CreateAlbumFromAlbumTracksWindow(customization);
 //    w.scanAlbumFolder("D:\\Music\\E\\Eagles\\1987 - Eagles - The Legend Of Eagles", null);
@@ -910,3 +818,7 @@ public class MediaDbWindow extends JfxStage {
     setTitle(buf.toString());
   }
 }
+
+
+record TrackInfo(String title, boolean bonusTrack) {}
+

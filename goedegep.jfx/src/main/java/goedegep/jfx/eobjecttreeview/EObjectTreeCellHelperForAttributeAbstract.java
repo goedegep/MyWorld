@@ -51,15 +51,11 @@ public abstract class EObjectTreeCellHelperForAttributeAbstract extends EObjectT
    */
   @Override
   protected void createGraphic() {
-    LOGGER.info("=>");
-    
     createGraphicBasePart();
     
     valueLabel = new Label();
     valueLabel.setMaxWidth(400);
     graphic.getChildren().add(valueLabel);
-    
-    LOGGER.info("<=");
   }
 
   /**
@@ -86,18 +82,13 @@ public abstract class EObjectTreeCellHelperForAttributeAbstract extends EObjectT
    * @return a context menu derived from the node operation descriptors, or null if no node operation descriptors are specified.
    */
   protected ContextMenu createContextMenu(Object object) {
-    LOGGER.info("=>");
-    
     List<NodeOperationDescriptor> nodeOperationDescriptors = itemDescriptor.getNodeOperationDescriptors();
     if (nodeOperationDescriptors == null) {
-      LOGGER.info("<= null");
       return null;
     }
     
     ContextMenu contextMenu = new ContextMenu();
-    for (NodeOperationDescriptor nodeOperationDescriptor: nodeOperationDescriptors) {
-      LOGGER.info("Handling operation: " + nodeOperationDescriptor.getOperation().name());
-      
+    for (NodeOperationDescriptor nodeOperationDescriptor: nodeOperationDescriptors) {      
       if (nodeOperationDescriptor instanceof NodeOperationDescriptorCustom extendedNodeOperationDescriptor) {
         LOGGER.severe("Extended operation: " + extendedNodeOperationDescriptor.getMenuText());
         // TODO handle extended operations.
@@ -116,7 +107,6 @@ public abstract class EObjectTreeCellHelperForAttributeAbstract extends EObjectT
       }
     }
     
-    LOGGER.info("<= contextMenu");
     return contextMenu;
   }
 
@@ -131,9 +121,7 @@ public abstract class EObjectTreeCellHelperForAttributeAbstract extends EObjectT
       throw new RuntimeException("Update while editing not supported.");
     } else {
       valueLabel.setText(buildText(object));
-    }
-    
-    LOGGER.info("<=");
+    }    
   }
   
   /**
@@ -166,7 +154,6 @@ public abstract class EObjectTreeCellHelperForAttributeAbstract extends EObjectT
       labelText = eAttribute.getName() + ":";
     }
     
-    LOGGER.info("<= labelText=" + labelText);
     return labelText;
   }
   
@@ -175,15 +162,16 @@ public abstract class EObjectTreeCellHelperForAttributeAbstract extends EObjectT
    */
   @Override
   protected String buildText(Object value) {
-    LOGGER.info("=>");
-    
     String itemText = null;
-    
-    if (value != null) {
-      itemText = value.toString();
+
+    if (itemDescriptor.getNodeTextFunction() != null) {
+      itemText = itemDescriptor.getNodeTextFunction().apply(value);
+    } else {
+      if (value != null) {
+        itemText = value.toString();
+      }
     }
-    
-    LOGGER.info("<= itemText=" + itemText);
+
     return itemText;
   }
   
@@ -191,8 +179,6 @@ public abstract class EObjectTreeCellHelperForAttributeAbstract extends EObjectT
    * Open the object given by the value of the treeItem.
    */
   protected void openObject() {
-    LOGGER.info("=>");
-    
     Object object = treeItem.getValue();
     if (object == null) {
       return;
@@ -215,6 +201,5 @@ public abstract class EObjectTreeCellHelperForAttributeAbstract extends EObjectT
       }
     }
     
-    LOGGER.info("<=");
   }
 }

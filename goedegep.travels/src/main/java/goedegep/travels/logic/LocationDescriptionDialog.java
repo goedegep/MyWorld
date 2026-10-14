@@ -34,7 +34,7 @@ public class LocationDescriptionDialog extends Dialog<ButtonType> {
   public LocationDescriptionDialog(CustomizationFx customization, Stage ownerWindow, Location location) {
     setTitle("Informatie over " + location.getName());
     TravelToHtmlConverterSettings travelToHtmlConverterSettings = new TravelToHtmlConverterSettings();
-    travelToHtmlConverterSettings.setSettingValue(TravelToHtmlConverterSetting.SHOW_LOCATION_COORDINATES.getDisplayName(), true);
+    travelToHtmlConverterSettings.setSettingValue(TravelToHtmlConverterSettings.SHOW_LOCATION_COORDINATES_NAME, true);
     vacationToHtmlConverter = new TravelToHtmlConverter(travelToHtmlConverterSettings);
     Image locationIcon = null;
     if (location.isSetLocationCategory()) {

@@ -36,7 +36,7 @@ public class MediaAppResourcesFx extends AbstractAppResourcesFx  {
       dontKnowImage = new Image(getClass().getResourceAsStream("QuestionMarkIcon.png"));
       referenceImage = new Image(getClass().getResourceAsStream("Forward.png"));
       referencePartlyImage = new Image(getClass().getResourceAsStream("ForwardPartly.png"));
-      duneImage = new Image(getClass().getResourceAsStream("Dune HD TV-303D.jpg"), 500.0, 500.0, true, true);
+      duneImage = new Image(getClass().getResourceAsStream("Dune HD Solo 8K.jpg"), 500.0, 500.0, true, true);
       musicFolderImage = new Image(getClass().getResourceAsStream("MusicFolder.png"), 400.0, 400.0, true, true);
       
       titleImage = new Image(getClass().getResourceAsStream("Title.png"), 24, 24, true, true);

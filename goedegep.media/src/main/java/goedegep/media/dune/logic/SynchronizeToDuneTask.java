@@ -83,7 +83,7 @@ public class SynchronizeToDuneTask extends Task<Void> {
    * 
    * @param sourceFolder Source (master) folder
    * @param destinationFolder Destination (target) folder
-   * @param toSyncNames List of folder names to be synchronized (only used at the top level).
+   * @param toSyncNames List of folder names to be synchronized (only used at the top level, in which case they are the top level folders to synchronize).
    * @throws IOException 
    */
   public void syncFolders(Path sourceFolder, Path destinationFolder, List<String> toSyncNames) throws IOException {

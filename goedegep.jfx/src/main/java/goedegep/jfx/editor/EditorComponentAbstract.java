@@ -118,14 +118,6 @@ public abstract class EditorComponentAbstract<T> implements EditorComponent<T> {
     return id;
   }
   
-//  /**
-//   * {@inheritDoc}
-//   */
-//  @Override
-//  public final void setId(String id) {
-//    this.id = id;
-//  }
-
   /**
    * {@inheritDoc}
    */
@@ -195,24 +187,24 @@ public abstract class EditorComponentAbstract<T> implements EditorComponent<T> {
   }
   
   protected abstract T getReferenceValue();
-  
-  /**
-   * Determine whether the new value differs from the {@code referenceValue}.
-   * 
-   * @param newValue the new value
-   * @return {@code true} if {@code newValue} differs from the {@code referenceValue}, false otherwise.
-   */
-  protected boolean determineChanges(T newValue) {
-    boolean result;
-    
-    if (comparator != null) {
-      result = comparator.compare(newValue, getReferenceValue()) != 0;
-    } else {
-      result = !Objects.equals(newValue, getReferenceValue());
-    }
-    
-    return result;
-  }
+//  
+//  /**
+//   * Determine whether the new value differs from the current value.
+//   * 
+//   * @param newValue the new value
+//   * @return {@code true} if {@code newValue} differs from the current value, false otherwise.
+//   */
+//  protected boolean determineChanges(T newValue) {
+//    boolean result;
+//    
+//    if (comparator != null) {
+//      result = comparator.compare(newValue, value) != 0;
+//    } else {
+//      result = !Objects.equals(newValue, value);
+//    }
+//    
+//    return result;
+//  }
   
   /**
    * Provide feedback to the user if entered data is wrong.

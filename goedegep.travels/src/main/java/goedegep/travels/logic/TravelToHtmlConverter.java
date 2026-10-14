@@ -20,6 +20,7 @@ import java.util.Base64;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.logging.Logger;
@@ -785,8 +786,9 @@ public class TravelToHtmlConverter extends TravelToTextConverterAbstract {
           DocumentRoot documentRoot = gpxResource.getEObject();
           URL iconUrl = goedegep.resources.ImageResource.GPX.getImageUrl();
           GpxType gpxType = documentRoot.getGpx();
-          Activity activity = GpxAppUtil.getActivity(gpxType);
-          if (activity != null) {
+          List<Activity> activities = GpxAppUtil.getActivities(gpxType);
+          if (!activities.isEmpty()) {
+            Activity activity = activities.get(0);
             iconUrl = activity.getIconUrl(ImageSize.SIZE_1);
             if (iconUrl == null) {
               LOGGER.severe("Stop here");

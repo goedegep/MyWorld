@@ -67,7 +67,6 @@ public class NominatimUtil {
     osmPOIAttributeNameToPOICategoryMap.put("castle", LocationCategory.CASTLE);
     osmPOIAttributeNameToPOICategoryMap.put("hospital", LocationCategory.HOSPITAL);
     osmPOIAttributeNameToPOICategoryMap.put("memorial", LocationCategory.MEMORIAL);
-//    osmPOIAttributeNameToPOICategoryMap.put("monument", LocationCategory.MONUMENT);
     osmPOIAttributeNameToPOICategoryMap.put("museum", LocationCategory.MUSEUM);
     osmPOIAttributeNameToPOICategoryMap.put("theme park", LocationCategory.AMUSEMENT);
     osmPOIAttributeNameToPOICategoryMap.put("tourism", LocationCategory.HOTEL);
@@ -164,6 +163,10 @@ public class NominatimUtil {
     LocationCategory poiCategoryId = switch (osmLocationInfo.getCategory()) {
     case "aerialway" -> switch (osmLocationInfo.getType()) {
       case "station" -> LocationCategory.CABLE_CAR;
+      default -> null;
+    };
+    case "amenity" -> switch (osmLocationInfo.getType()) {
+      case "restaurant" -> LocationCategory.RESTAURANT;
       default -> null;
     };
     case "highway" -> switch (osmLocationInfo.getType()) {

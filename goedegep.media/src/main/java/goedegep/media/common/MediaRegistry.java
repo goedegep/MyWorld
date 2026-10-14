@@ -247,8 +247,8 @@ public class MediaRegistry extends Registry {
     setMusicDataDirectory("D:\\Database\\Muziek");
     setMusicDirectory("D:\\Music");
     setAlbumImportDirectory("D:\\SoulSeek\\complete");
-    setDuneMusicFolderPath("\\\\Dune\\DuneHDD_00f1f4a3_110b_40ec_b5a1_d89bd7c8f93f\\Music");
-    setDunePlaylistsFolderPath("\\\\Dune\\DuneHDD_00f1f4a3_110b_40ec_b5a1_d89bd7c8f93f\\Playlists");
+    setDuneMusicFolderPath("\\\\192.168.2.35\\storage_6a387c42387c0f77\\Music");
+    setDunePlaylistsFolderPath("\\\\192.168.2.35\\storage_6a387c42387c0f77\\Playlists");
     setPhotosFolder("D:\\Photo");
     setIgnoreFolderNames("show;selectie;weg;Originals;.SynologyWorkingDirectory");
     setMediaPlayerClassicExecutable("C:\\Program Files\\MPC-BE x64\\mpc-be64.exe");
