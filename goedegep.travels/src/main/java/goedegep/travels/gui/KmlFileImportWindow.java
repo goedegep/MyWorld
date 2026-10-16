@@ -28,8 +28,6 @@ import goedegep.gpx.model.DocumentRoot;
 import goedegep.gpx.model.GpxType;
 import goedegep.gpx.model.MetadataType;
 import goedegep.gpxeditor.gui.GPXTreeViewCreator;
-import goedegep.gpxeditor.logic.Activity;
-import goedegep.gpxeditor.logic.GpxAppUtil;
 import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.JfxStage;
 import goedegep.jfx.editor.controls.EditorControlBoolean;
@@ -42,8 +40,6 @@ import goedegep.jfx.eobjecttreeview.EObjectTreeItemClassListReferenceDescriptor;
 import goedegep.jfx.eobjecttreeview.EObjectTreeItemForObject;
 import goedegep.jfx.eobjecttreeview.EObjectTreeItemForObjectList;
 import goedegep.jfx.eobjecttreeview.EObjectTreeView;
-import goedegep.mapview.view.MapView;
-import goedegep.resources.ImageResource;
 import goedegep.travels.logic.KmlFileImporter;
 import goedegep.travels.logic.KmlPlacemarkImportData;
 import goedegep.travels.logic.TravelsTreeViewUtils;
@@ -51,9 +47,9 @@ import goedegep.travels.logic.TravelsUtils;
 import goedegep.travels.model.GPXTrack;
 import goedegep.travels.model.Location;
 import goedegep.travels.model.Travel;
-import goedegep.travels.model.VacationElement;
 import goedegep.travels.model.Travels;
 import goedegep.travels.model.TravelsPackage;
+import goedegep.travels.model.VacationElement;
 import goedegep.types.model.FileReference;
 import goedegep.types.model.TypesPackage;
 import goedegep.util.emf.EMFResource;
@@ -63,16 +59,12 @@ import goedegep.util.objectselector.ObjectSelector;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.scene.Scene;
-import javafx.scene.canvas.Canvas;
-import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.SplitPane;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TreeItem;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.Border;
 import javafx.scene.layout.BorderStroke;
 import javafx.scene.layout.BorderStrokeStyle;
@@ -108,7 +100,7 @@ import javafx.scene.paint.Color;
  * <li><b>A map view centered on the location</b><br/>
  * </li>
  * <li><b>Address information of the location</b><br/>
- * The address text from the Placemark from the KML file is show.
+ * The address text from the Placemark from the KML file is shown.
  * As this text has many possible formats it's not easy to parse this into a country, city, street and house number.
  * Therefor you can manually copy and paste parts of this address text to the information in the tree view.<br/>
  * If also information is obtained from the Nominatim API, this information is also shown.
@@ -142,11 +134,6 @@ import javafx.scene.paint.Color;
 public class KmlFileImportWindow extends JfxStage {
   private final static Logger LOGGER = Logger.getLogger(KmlFileImportWindow.class.getName());
   private final static String WINDOW_TITLE = "Import information from a KML file";
-
-  /**
-   * The GUI customization
-   */
-  private CustomizationFx customization;
 
   /**
    * The {@code TravelsWindow} used for:<br/>
@@ -201,7 +188,6 @@ public class KmlFileImportWindow extends JfxStage {
   public KmlFileImportWindow(CustomizationFx customization, TravelsWindow travelsWindow, NominatimAPI nominatimAPI) {
     super(customization, WINDOW_TITLE);
 
-    this.customization = customization;
     this.travelsWindow = travelsWindow;
     this.nominatimAPI = nominatimAPI;
 
@@ -284,7 +270,7 @@ public class KmlFileImportWindow extends JfxStage {
    * This inner class is the panel to select the KML file from which to import the vacation elements.
    */
   class KmlFileSelectionPanel extends VBox implements ObjectSelector<KmlPlacemarkImportData> {
-    //  private final static Logger LOGGER = Logger.getLogger(KmlFileSelectionPanel.class.getName());
+    private final static Logger LOGGER = Logger.getLogger(KmlFileSelectionPanel.class.getName());
 
     /**
      * {@code Travels} used to get the home location, which in turn is used to get the home country.
@@ -292,7 +278,7 @@ public class KmlFileImportWindow extends JfxStage {
     private Travels travels;
 
     /**
-     * Import data retrieved from a KML file and extended with information obtained via a {@code NominatimAPI}.
+     * Import data retrieved from a KML file and optionally extended with information obtained via a {@code NominatimAPI}.
      */
     private List<KmlPlacemarkImportData> kmlPlacemarksImportData;
 
@@ -317,7 +303,7 @@ public class KmlFileImportWindow extends JfxStage {
     private EditorControlBoolean useNominatimApi;
 
     /**
-     * The elements that can be imported
+     * The elements that can be imported.
      */
     private ComboBox<String> kmlPlacemarkImportDataComboBox;
 
@@ -354,6 +340,7 @@ public class KmlFileImportWindow extends JfxStage {
           .setFileChooserButtonToolTipText("Click to select a KML file via a file chooser")
           .setFileOrFolderChooserTitle("Select KML file")
           .addFileType(".kml", "Google KML file", true)
+          .addFileType(".kmz", "Google KML file (compressed)", false)
           .setOptional(false)
           .build();      
       
@@ -363,7 +350,7 @@ public class KmlFileImportWindow extends JfxStage {
           .setToolTipText("If selected address information is also obtained from the Open Street Map nominatim API (based on the coordinates of the location")
           .build();
 
-      kmlPlacemarkImportDataComboBox = componentFactory.createComboBox(null);    
+      kmlPlacemarkImportDataComboBox = componentFactory.createComboBox(null);
     }
 
     /**
@@ -661,9 +648,6 @@ public class KmlFileImportWindow extends JfxStage {
       travelsTreeView.setEditMode(true);
       travelsTreeView.setMinWidth(300);
 
-//      gpxElementTreeView = new GPXElementTreeView(customization,
-//          this::generateTextForGpxTrack, this::generateIconForGpxTrack,
-//          this::getInitialFolderName, this::getInitialFileName);
       createGpxElementTreeView();
 
       gpxTreeView = new GPXTreeViewCreator().createGPXTreeView(customization);
@@ -773,6 +757,12 @@ public class KmlFileImportWindow extends JfxStage {
       return path.toString();
     }
     
+    /**
+     * Create a legal file name from a name.
+     * 
+     * @param name the name to be converted to a legal file name.
+     * @return a legal file name for {@code name}.
+     */
     private String createLegalFileName(String name) {
       name = name.replace("|", ",");
       name = name.replace("\"", "'");
@@ -782,6 +772,11 @@ public class KmlFileImportWindow extends JfxStage {
       return name;
     }
 
+    /**
+     * Get the initial folder name for a file chooser for a {@code FileReference} in a {@code GPXTrack}.
+     * @param eObjectTreeCell dummy parameter, not used in this implementation
+     * @return the initial folder name for a file chooser for a {@code FileReference} in a {@code GPXTrack}.
+     */
     String getInitialFolderName(EObjectTreeCell eObjectTreeCell) {
       if (gpxTrack == null) {
         return null;
@@ -796,6 +791,12 @@ public class KmlFileImportWindow extends JfxStage {
       return file.getParent();
     }
 
+    /**
+     * Get the initial file name for a file chooser for a {@code FileReference} in a {@code GPXTrack}.
+     * 
+     * @param eObjectTreeCell dummy parameter, not used in this implementation
+     * @return the initial file name for a file chooser for a {@code FileReference} in a {@code GPXTrack}.
+     */
     String getInitialFileName(EObjectTreeCell eObjectTreeCell) {
       if (gpxTrack == null) {
         return null;
@@ -810,6 +811,8 @@ public class KmlFileImportWindow extends JfxStage {
       return file.getName();
     }
 
+    
+    // HIER VERDER
     void handleElementSelected(KmlPlacemarkImportData tuplet) {
       this.kmlPlacemarkImportData = tuplet;
 

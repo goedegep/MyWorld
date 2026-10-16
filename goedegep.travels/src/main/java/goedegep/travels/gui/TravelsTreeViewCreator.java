@@ -4,7 +4,6 @@ import java.awt.Desktop;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -22,11 +21,6 @@ import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EStructuralFeature;
 
 import goedegep.geo.WGS84Coordinates;
-import goedegep.gpx.GpxUtil;
-import goedegep.gpx.model.DocumentRoot;
-import goedegep.gpx.model.GpxType;
-import goedegep.gpxeditor.logic.Activity;
-import goedegep.gpxeditor.logic.GpxAppUtil;
 import goedegep.gpxeditor.svc.GPXService;
 import goedegep.jfx.CustomizationFx;
 import goedegep.jfx.eobjecttreeview.EObjectTreeItem;
@@ -71,16 +65,12 @@ import goedegep.types.model.FileReference;
 import goedegep.types.model.TypesFactory;
 import goedegep.types.model.TypesPackage;
 import goedegep.util.datetime.FlexDateFormat;
-import goedegep.util.emf.EMFResource;
 import goedegep.util.emf.EmfUtil;
 import goedegep.util.file.FileUtils;
 import goedegep.util.img.PhotoFileMetaDataHandler;
-import javafx.scene.canvas.Canvas;
-import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.input.Dragboard;
 
 /**
@@ -191,6 +181,11 @@ public class TravelsTreeViewCreator {
     return this;
   }
   
+  /**
+   * Set the function to update the base map of a MapImage with the current map view settings.
+   * 
+   * @param eObjectTreeItem the {@code EObjectTreeItem} containing a {@code MapImage}. If it doesn't contain a {@code MapImage}, an exception is thrown.
+   */
   public TravelsTreeViewCreator setUpdateMapImageWithCurrentMapViewSettingsFunction(Consumer<EObjectTreeItem> updateMapImageWithCurrentMapViewSettingsFunction) {
     this.updateMapImageWithCurrentMapViewSettingsFunction = updateMapImageWithCurrentMapViewSettingsFunction;
     
@@ -840,6 +835,11 @@ public class TravelsTreeViewCreator {
     return eObjectTreeItemClassDescriptor;
   }
   
+  /**
+   * Delete all boundaries of the location represented by the provided tree item.
+   * 
+   * @param treeItem the tree item representing the boundaries list.
+   */
   private void deleteBoundaries(EObjectTreeItem treeItem) {
     EObjectTreeItem locationTreeItem = (EObjectTreeItem) treeItem.getParent();
     Location location = (Location) locationTreeItem.getValue();
@@ -947,6 +947,12 @@ public class TravelsTreeViewCreator {
     return eObjectTreeItemClassDescriptor;
   }
 
+  /**
+   * Get the icon for a document, based on its filename.
+   * 
+   * @param object the object to get the icon for; must be an instance of Document
+   * @return the icon for the document, or null if no icon could be determined
+   */
   private static Image getIconForDocumentFilename(Object object) {
     Image image = null;
     if (object instanceof Document document) {
@@ -997,7 +1003,6 @@ public class TravelsTreeViewCreator {
                   text = photoFileMetaDataHandler.getTitle();   // second preference; title set in the photo
                 } catch (ImageReadException | IOException e) {
                   text = "NOT FOUND: " + fileName;
-//                  e.printStackTrace();
                 }
               }
               
@@ -1528,7 +1533,16 @@ public class TravelsTreeViewCreator {
     
     return document;
   }
-    
+  
+  /**
+   * Check whether a document can be opened for the specified {@code EObjectTreeItem}.
+   * <p>
+   * The document can be opened if the {@code EObjectTreeItem} is an {@code EObjectTreeItemForObject}
+   * and the value of the item is a {@code Document} with a valid {@code FileReference} that points to an existing file.
+   * 
+   * @param treeItem the {@code EObjectTreeItem} for which the document is to be opened.
+   * @return true if the document can be opened, false otherwise.
+   */
   private static boolean canDocumentBeOpened(EObjectTreeItem treeItem) {
     
     if (treeItem == null  ||  !(treeItem instanceof EObjectTreeItemForObject)) {
@@ -1656,89 +1670,5 @@ public class TravelsTreeViewCreator {
     
     GPXService.getInstance().showGPXWindow(filename);
   }
-//  
-//  /**
-//   * Generate the icon to be shown for a GPXTrack item in the TreeView.
-//   * <p>
-//   * The icon is a combination of the GPX icon and the icon for the activity in the GPX file, if available.
-//   * 
-//   * @param gpxTrack The <code>GPXTrack</code> for which an icon is to be generated.
-//   */
-//  static Image generateIconForGpxTrack(Object object) {
-//    Image gpxTrackImage = ImageResource.GPX.getImage();
-//
-//    GPXTrack gpxTrack = (GPXTrack) object;
-//    FileReference fileReference = gpxTrack.getTrackReference();
-//
-//    List<Activity> activities = null;
-//    if (fileReference != null) {
-//      String fileName = fileReference.getFile();
-//      if (fileName != null  && !fileName.isEmpty()) {
-//        EMFResource<DocumentRoot> gpxResource = GpxUtil.createEMFResource();
-//        try {
-//          gpxResource.load(fileName);
-//          DocumentRoot documentRoot = gpxResource.getEObject();
-//          GpxType gpxType = documentRoot.getGpx();
-//          activities = GpxAppUtil.getActivities(gpxType);
-//        } catch (IOException e) {
-//          // no action, no file so no activity
-//        }
-//      }
-//    }
-//
-//    if (activities != null  &&  !activities.isEmpty()) {
-//      // First create a list of all images in order to calculate the total width of the icon.
-//      // Note: as we preserve the aspect ratio of the images, the images may have different widths.
-//      final int imageHeight = 16;
-//      final int imageSpacing = 4;
-//      List<Image> activityImages = new ArrayList<>();
-//      
-//      gpxTrackImage = scale(gpxTrackImage, imageHeight);
-//      activityImages.add(gpxTrackImage);
-//      
-//      for (Activity activity: activities) {
-//        Image activityImage = activity.getIcon();
-//        activityImage = scale(activityImage, imageHeight);
-//        activityImages.add(activityImage);
-//      }
-//      
-//      int totalWidth = 0;
-//      for (Image activityImage: activityImages) {
-//        if (totalWidth > 0) {
-//          totalWidth += imageSpacing;
-//        }
-//        totalWidth += activityImage.getWidth();
-//      }
-//      Canvas iconCanvas = new Canvas(totalWidth, imageHeight);
-//      GraphicsContext gc = iconCanvas.getGraphicsContext2D();
-//      
-//      int xOffset = 0;
-//      for (Image activityImage: activityImages) {
-//        gc.drawImage(activityImage, xOffset, 0);
-//        xOffset += activityImage.getWidth() + imageSpacing;
-//      }
-//
-//      return iconCanvas.snapshot(null, null);
-//    }
-//
-//    return gpxTrackImage;
-//  }
-//
-//  /**
-//   * Scale an image to a specific width and height.
-//   * <p>
-//   * The aspect ratio of the image is preserved.
-//   * 
-//   * @param source the source image
-//   * @param targetWidth the target width
-//   * @param targetHeight the target height
-//   * @return the scaled image
-//   */
-//  public static Image scale(Image source, double targetHeight) {
-//    ImageView imageView = new ImageView(source);
-//    imageView.setPreserveRatio(true);
-//    imageView.setFitHeight(targetHeight);
-//    return imageView.snapshot(null, null);
-//  }
   
 }

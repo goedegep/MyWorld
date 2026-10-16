@@ -24,7 +24,6 @@ import goedegep.myworld.common.Registry;
 import goedegep.myworld.common.Service;
 import goedegep.travels.ITravelsService;
 import goedegep.travels.gui.BoundariesPointsReductionWindow;
-//import goedegep.travels.gui.MapViewTestWindow;
 import goedegep.travels.gui.TravelsAppResourcesFx;
 import goedegep.travels.gui.TravelsWindow;
 import goedegep.travels.logic.PhotoThumbnailManager;
@@ -133,7 +132,6 @@ public class TravelsService extends Service implements ITravelsService {
   public void showTravelsWindow() {
         
     new TravelsWindow(customization, this, TRANSLATIONS);
-//    new MapViewTestWindow();
   }
   
   /**

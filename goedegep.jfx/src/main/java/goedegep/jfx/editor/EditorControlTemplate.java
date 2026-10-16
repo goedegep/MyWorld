@@ -152,6 +152,8 @@ public abstract class EditorControlTemplate<T> extends EditorComponentAbstract<T
       return;
     }
     
+    ignoreNewUserInput = true;
+    
     boolean newFilledIn = determineFilledIn(source);  // here it depends on the value in the source control.
     boolean validDataValue;  // true if something is filled in and the value is valid value.
     
@@ -181,6 +183,8 @@ public abstract class EditorControlTemplate<T> extends EditorComponentAbstract<T
     if (changed) {
       notifyValueAndOrStatusChangeListeners(true, true);
     }
+    
+    ignoreNewUserInput = false;
   }
   
   /**
@@ -269,7 +273,6 @@ public abstract class EditorControlTemplate<T> extends EditorComponentAbstract<T
     for (Node control: controls) {
       control.focusedProperty().addListener((_, _, newValue) -> {
         if (!newValue)
-          LOGGER.severe("Focus lost on " + control.getId());
           redrawValue();
       });
     }

@@ -111,7 +111,7 @@
 	</build>
 
 	<dependencies>
-		<dependency>
+	    <dependency>
 			<groupId>de.micromata.jak</groupId>
 			<artifactId>JavaAPIforKml</artifactId>
 		</dependency>
